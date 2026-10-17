@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run build:android
+      - run: npx playwright install --with-deps chromium
+      - run: npm run smoke
+      - name: Economy snapshot
+        run: |
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          node scripts/simulate.mjs --minutes 60 --player planner >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pumpkin-patch-${{ github.sha }}
+          path: |
+            dist/pumpkin-patch.html
+            dist/android/
+          retention-days: 30

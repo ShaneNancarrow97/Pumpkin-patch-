@@ -1,0 +1,60 @@
+function story(id, subtitle, pages) {
+  return { id, subtitle, pages: pages.map(([heading, ...paragraphs], i) => ({ id: `${id}-page-${i + 1}`, heading, paragraphs })) };
+}
+var libraryStories = {
+  b01: story("b01", "Three spells for a kinder garden", [
+    ["The first spell", "Natalie found the grimoire behind a sack of compost. Its lock was a dried bean. Its warning read: Only patient witches need apply.", "The first spell promised to raise a sleeping giant. She mixed rainwater, leaf mould and a very small apology, then poured it over the neglected pumpkin bed.", "Nothing happened. Shane brought tea. They waited. In the morning, one green leaf lifted its head."],
+    ["The second spell", "The second spell summoned a thousand gardeners. It asked for fallen branches, a corner left untidy and no sweeping after sunset.", "Natalie built a little log pile. Beetles moved in. A worm appeared beneath the watering can. Even a spider contributed a rather ambitious fence.", "“Do we pay them?” Shane asked. “In peace and quiet,” she said. They left the corner alone."],
+    ["The last page", "By autumn, the giant had become a splendid orange pumpkin. The thousand gardeners had made dark, sweet soil. The final spell contained no ingredients at all.", "Look closely, it said. Learn what is needed. Begin again tomorrow.", "Shane turned the book over. “That sounds suspiciously like gardening.” Natalie tucked a fallen leaf between its pages. “It sounds like good magic to me.”"]
+  ]),
+  b02: story("b02", "A constellation finds its way home", [
+    ["A loose thread", "One windy evening, the constellation of the Fox caught its tail on a chimney. Seven stars fell into the village pond.", "A girl called Wren scooped them out with a kitchen sieve. “How do I put you back?” she asked. The stars shivered. They had never travelled without their sky."],
+    ["Seven stories", "Wren carried one star to the baker, who told it about a loaf that refused to rise. She carried another to the ferryman, who remembered a fish with an excellent singing voice.", "At each cottage, she left a star and collected a story. By the seventh door her pockets were empty, but the village windows shone brighter than they ever had."],
+    ["The way upward", "The Fox looked down and saw seven familiar lights arranged among the rooftops. It lowered its tail like a silver ladder.", "The stars climbed home, bringing stories with them. Now, when the night is clear, one star flickers as if it is laughing.", "Wren still keeps the sieve. Sometimes it catches a little moonlight. That is quite enough for her."]
+  ]),
+  b03: story("b03", "Notes from a borrowed moonlit night", [
+    ["October 12", "The moonkeeper lends the moon to nobody. That is the first rule in the almanac. The second is to write down every mistake.", "Tonight a letter arrived from a garden behind a high stone wall. We have never seen the sky, it said. Could we borrow one evening?", "I wrote Certainly not. Then I crossed it out."],
+    ["October 13", "Lowering the moon required three ropes, a ladder and a surprising amount of butter. I tucked it behind the wall like a great round lantern.", "The pale flowers opened. The gardener, who had thought them dead for seventeen years, sat down without saying a word.", "Elsewhere, tides hesitated. Owls complained. I entered these details under Consequences."],
+    ["October 14", "We returned the moon before dawn. The garden sent me one seed and a drawing of an open gate.", "The almanac now has a third rule: before lending the moon, consider whether a wall might be lowered instead.", "I planted the seed beside my office. Next spring, I shall invite the gardener. We will both be able to see the sky."]
+  ]),
+  b04: story("b04", "The mystery of the thirteenth bell", [
+    ["One chime too many", "Every midnight, the village bell rang thirteen times. The clockmaker blamed damp. The vicar blamed the clockmaker. The bats, who lived directly above the bell, blamed absolutely everybody.", "Pip was the smallest bat and the only one willing to investigate. He waited through the twelve proper chimes. Then a tiny ghost emerged from the mechanism carrying a hammer much too large for her."],
+    ["An empty table", "“Why thirteen?” Pip asked. “It was my job to ring the dinner bell,” she said. “Nobody comes any more. I thought perhaps they couldn’t hear.”", "Pip considered this. Then he flew down to the pumpkin shop and returned with a ribbon, a saucer and six extremely curious moths.", "They hung the saucer beneath the rafters. The ghost tapped it once. The moths gathered. The bats brought berries. Someone found a biscuit."],
+    ["Midnight supper", "The following midnight, the village bell rang twelve times. High above it, a saucer chimed softly.", "“Damp has cleared,” said the clockmaker. The bats were too busy having supper to disagree.", "Pip always saved a place beside the saucer. It was a small place, because its owner was a small ghost. But it was never empty again."]
+  ]),
+  b05: story("b05", "Letters from the village pumpkin contest", [
+    ["A formal objection", "Dear Committee, wrote Mr Bramble, my pumpkin weighs more than a pony. I trust this settles the matter.", "Dear Mr Bramble, replied the Committee, weight is only one category. We shall also judge colour, character and unexpected usefulness.", "Shane read the notice to a pumpkin no larger than his fist. “A difficult field,” he admitted. The pumpkin said nothing. It was saving its strength."],
+    ["Further correspondence", "Dear Committee, Mr Bramble continued, someone has entered a pumpkin with a candle inside. It cannot possibly weigh more than a pony.", "Dear Mr Bramble, replied the Committee, this is correct.", "Natalie carved two round eyes into the little pumpkin. At the judging, it sat beneath the table while the great pumpkins crowded out the light."],
+    ["The final result", "Halfway through the speeches, the village lamps went out. People stumbled. A child began to cry. Beneath the table, two small orange eyes shone steadily.", "The little pumpkin guided everyone to the door. It won Unexpected Usefulness and a ribbon much too large for it.", "Dear Committee, wrote Mr Bramble the next day, please send carving instructions. My pumpkin could illuminate the entire square."]
+  ]),
+  b06: story("b06", "One flower, three small promises", [
+    ["The traveller", "At the station, a traveller pressed a yellow flower into a notebook. “For my sister,” she told the ticket clerk. “She cannot leave her room, but she misses the fields.”", "The train arrived early. The notebook stayed on the bench. The clerk found it beside a crumb of cake and an address written carefully on the first page."],
+    ["The messenger", "The clerk sent it with the postman. Halfway up the hill, rain began. He tucked the notebook inside his coat and walked the long way, beneath the trees.", "At the door, the sister touched the little flower. “The fields must be bright today,” she said. The postman looked at the rain on his boots. “Very bright,” he replied."],
+    ["The return", "When the traveller returned, her sister had planted seeds in a pot beside the window. There was a second pot for the clerk, and a third for the postman.", "The pressed flower stayed in the notebook. It had travelled only a few miles, and could no longer stand upright.", "But three windows held yellow flowers that summer. Sometimes a small thing keeps a promise by teaching other things to grow."]
+  ]),
+  b07: story("b07", "Some treasures shine by listening", [
+    ["The collector", "Mara collected crystals that held sounds. The blue one remembered the sea. The green one kept a forest after rain. The red one contained a kettle that would never quite boil.", "Her oldest friend, Elin, had given her a clear stone. It made no sound at all. After Elin moved away, Mara carried it in the smallest pocket of her coat."],
+    ["The market", "At the midnight market, a merchant offered seven golden stones for the silent one. “A flawless specimen,” he said. “Nothing trapped inside.”", "Mara almost agreed. Then a child dropped an apple, and the merchant slipped on it with such enormous dignity that everybody laughed.", "From Mara’s pocket came a second laugh. She knew it at once."],
+    ["What it kept", "The stone had kept the afternoon when Elin fell into a stream, emerged wearing a water lily, and bowed like a queen. It had been waiting for Mara to laugh again.", "She wrote to Elin that night. Come and visit, she said. Bring boots.", "The blue crystal still held the sea. The green still held the forest. The clear one held a beginning. Mara thought it the richest of them all."]
+  ]),
+  b08: story("b08", "A house with an opinion about a chair", [
+    ["The smallest creak", "The cottage had been empty for so long that it had forgotten what most rooms were for. Rain slept in the bedroom. Ivy ate in the kitchen. A family of mice held terribly serious meetings in the bath.", "When Natalie arrived with a key and Shane arrived with a chair, the cottage made its smallest, most welcoming creak. “Subsidence,” Shane said."],
+    ["An opinionated house", "That evening, they found the chair facing the cold fireplace. They turned it towards the window. By morning, it faced the fireplace again.", "“Very opinionated subsidence,” Natalie said. They checked the chimney. Behind a loose brick lay a tin box containing a recipe, two buttons and a photograph of someone laughing in that very chair.", "They put the photograph on the mantelpiece and lit a fire. The chair stayed where they left it."],
+    ["A corner remembered", "Years later, the cottage would grow a library, a glass roof and several thoroughly unnecessary turrets. But it always kept one small corner exactly the same.", "Some houses want to be grand. This one had only wanted to be remembered."]
+  ]),
+  b09: story("b09", "A fable of little lights", [
+    ["Dusk", "At dusk, a small brown moth unfolded two very ordinary wings. Around her, the garden began to shine."],
+    ["Bright neighbours", "The butterfly wore moonlight. The beetle wore a polished green coat. Even the snail carried a silver road wherever he went."],
+    ["The window", "“I have nothing bright,” said the moth. So she followed a window, hoping to borrow a little glow."],
+    ["A borrowed sun", "Inside, a reader had fallen asleep. The lamp had gone out. Between the book’s pages, a pressed flower remembered the sun."],
+    ["A useful light", "The moth lifted the loose petal and carried it into the dark. It shone just enough for the beetle to find the path, and the butterfly to find the snail."],
+    ["Home", "By morning, the petal was only a petal again. But the garden knew the way home.", "Some lights are small. That does not make them small things."]
+  ]),
+  b10: story("b10", "Ten keys and one unexpected door", [
+    ["The first nine", "The house left a key beneath Ada’s pillow every Monday. The first opened a pantry. The second opened a cupboard full of maps. The third opened the smallest door she had ever seen, behind which a mouse was having breakfast.", "By the ninth Monday, Ada had discovered a greenhouse, a tower, a cellar and several rooms the house had apparently forgotten to mention."],
+    ["The tenth key", "The tenth key opened nothing. She tried every door, every drawer and the mysterious little gate in the garden. “Perhaps,” she said to the house, “this one is a mistake.”", "A floorboard creaked. Beneath it lay a wooden music box. Ada fitted the key into its side and turned.", "The tune was one her grandmother used to hum while putting the house to bed."],
+    ["The door without a handle", "As the music played, Ada remembered warm bread, a woollen sleeve and someone making room for her beside the fire.", "The tenth key had opened a door without a handle. She sat until the tune finished. Then she wound the box again.", "On Monday, no new key appeared. There was a note instead: You have found all my rooms. Thank you for bringing someone home."]
+  ])
+};
+
+export { libraryStories };

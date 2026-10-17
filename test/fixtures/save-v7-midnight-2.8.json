@@ -1,0 +1,217 @@
+{
+ "version": 7,
+ "shop": {
+  "version": 1,
+  "unlocked": false,
+  "capacityLevel": 0,
+  "displayLevel": 0,
+  "checkoutLevel": 0,
+  "displays": [
+   "pumpkin-orange",
+   "pumpkin-moonlight",
+   null,
+   null
+  ],
+  "customers": [],
+  "nextCustomer": 0,
+  "arrivalTimer": 2,
+  "income": 0,
+  "itemsSold": 0,
+  "served": 0,
+  "invested": 0,
+  "receipts": []
+ },
+ "wardrobe": {
+  "owned": [
+   "natalie-base",
+   "shane-base"
+  ],
+  "equipped": {
+   "natalie": "natalie-base",
+   "shane": "shane-base"
+  }
+ },
+ "house": {
+  "activeRoom": "parlour",
+  "roomStyles": {
+   "parlour": "house-default",
+   "bedroom": "bedroom-base",
+   "kitchen": "kitchen-base",
+   "attic": "attic-base"
+  },
+  "ownedRoomStyles": [],
+  "level": 0,
+  "owned": [
+   "f01",
+   "f11",
+   "b01"
+  ],
+  "wallpaper": null,
+  "nextInstance": 2,
+  "reading": {},
+  "placed": [
+   {
+    "instance": "piece-0",
+    "id": "f01",
+    "sceneId": "parlour",
+    "x": 370,
+    "y": 535,
+    "flip": false,
+    "books": [],
+    "bookSockets": {}
+   },
+   {
+    "instance": "piece-1",
+    "id": "f11",
+    "sceneId": "parlour",
+    "x": 630,
+    "y": 475,
+    "flip": false,
+    "books": [
+     "b01"
+    ],
+    "bookSockets": {
+     "row-1-slot-1": "b01"
+    }
+   }
+  ]
+ },
+ "festival": {
+  "claimed": [],
+  "comboCount": 6,
+  "comboUntil": 12.19999999999999,
+  "bestStreak": 6,
+  "bonusCoins": 5,
+  "nextBonusAt": 67.19999999999999
+ },
+ "plotLevels": [
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0
+ ],
+ "plotCrops": [
+  "pumpkin-orange",
+  "pumpkin-orange",
+  "pumpkin-orange",
+  "pumpkin-orange",
+  "pumpkin-orange",
+  "pumpkin-orange",
+  "pumpkin-orange",
+  "pumpkin-orange",
+  "pumpkin-orange",
+  "pumpkin-orange",
+  "pumpkin-orange",
+  "pumpkin-orange"
+ ],
+ "coins": 2047,
+ "inventory": {
+  "version": 1,
+  "nextLot": 1,
+  "nextReservation": 1,
+  "lots": [
+   {
+    "id": "lot-0",
+    "productId": "pumpkin-orange",
+    "quantity": 9,
+    "locationId": "barn",
+    "unitPrice": 12
+   }
+  ],
+  "reservations": []
+ },
+ "earned": 17,
+ "sold": 1,
+ "harvested": 10,
+ "clicks": 40,
+ "elapsed": 13.299999999999969,
+ "plots": [
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  },
+  {
+   "phase": "empty",
+   "progress": 0,
+   "price": 12
+  }
+ ],
+ "upgrades": {
+  "tools": 0,
+  "yield": 0,
+  "auto": 0,
+  "plots": 0,
+  "sign": 0
+ },
+ "autoTimer": 0,
+ "visitorTimer": 2.7000000000000344,
+ "visitors": [],
+ "nextVisitor": 1,
+ "paused": false,
+ "sound": false,
+ "music": true,
+ "musicVolume": 0.32,
+ "achievements": [
+  "first"
+ ],
+ "savedAt": 1792243473302
+}
