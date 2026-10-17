@@ -39,10 +39,11 @@ function initMenuUi(app2) {
   $("fullscreen-shortcut").hidden = typeof document.documentElement.requestFullscreen !== "function";
   $("fullscreen-shortcut").onclick = toggleScreen;
   $("preferences-nav").onclick = () => $("settings").click();
-  document.querySelector(".brand").onclick = (event) => {
-    event.preventDefault();
-    app2.features.home.setMode(false);
-  };
+  // The dock stays usable while a menu is open: Patch and Home close it first.
+  $("dock").addEventListener("click", (event) => {
+    if (event.target.closest("#patch-nav, #house-nav") && $("modal").open)
+      closeModal();
+  }, true);
   addSettingsSection(() => {
     const row = document.createElement("div");
     row.className = "setting-row";
@@ -88,7 +89,7 @@ function initMenuUi(app2) {
     };
   }
   function markActiveNav(id) {
-    for (const button of document.querySelectorAll(".topbar .nav")) {
+    for (const button of document.querySelectorAll(".dock .nav")) {
       const active = button.id === id;
       button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", String(active));

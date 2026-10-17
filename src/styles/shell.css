@@ -1,0 +1,163 @@
+/* 3.0 shell (docs/UI-OVERHAUL.md, UI1): the farm fills the screen, with a floating
+   HUD, floating actions, and one navigation bar: a dock along the bottom of a
+   portrait phone, a rail down the left everywhere else. Every rule is scoped to
+   body.shell so it wins over legacy.css without !important. */
+
+body.shell {
+  --pp-dock-h: calc(64px + env(safe-area-inset-bottom));
+  --pp-rail-w: 0px;
+  --pp-hud-h: 54px;
+  --pp-hud-bottom: calc(env(safe-area-inset-top) + 8px + var(--pp-hud-h) + 8px);
+  /* legacy dialogs size themselves from --game-header; see the dialog rules below */
+  --game-header: var(--pp-dock-h);
+  display: grid;
+  grid-template: "main" minmax(0, 1fr) "dock" auto / minmax(0, 1fr);
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--pp-ground);
+  font-family: var(--pp-font-body);
+}
+@media (orientation: landscape) and (min-width: 600px), (min-width: 1000px) {
+  body.shell {
+    --pp-dock-h: 0px;
+    --pp-rail-w: calc(84px + env(safe-area-inset-left));
+    --game-header: 0px;
+    grid-template: "dock main" minmax(0, 1fr) / auto minmax(0, 1fr);
+  }
+}
+.shell main { grid-area: main; position: relative; min-width: 0; min-height: 0; }
+.shell .commands, .shell .dialogue, .shell #back-to-patch { display: none; }
+.shell .world { margin: 0; }
+
+/* HUD: coins, stock and visitors, plus Settings. */
+.shell .hud {
+  position: absolute;
+  z-index: 30;
+  top: calc(env(safe-area-inset-top) + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(560px, calc(100% - 16px));
+  height: var(--pp-hud-h);
+  display: flex;
+  align-items: center;
+  gap: var(--pp-space-1);
+  padding: 4px 4px 4px var(--pp-space-2);
+  border: 1px solid var(--pp-edge);
+  border-radius: var(--pp-radius-l);
+  background: var(--pp-surface-glass);
+  box-shadow: var(--pp-shadow);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.shell.at-home .hud { position: relative; top: auto; left: auto; transform: none; flex-shrink: 0; margin: calc(env(safe-area-inset-top) + 8px) auto 0; }
+.hud-stats { flex: 1; display: flex; min-width: 0; }
+.hud-stat { flex: 1; display: flex; align-items: center; gap: var(--pp-space-2); min-width: 0; padding: 0 var(--pp-space-2); }
+.hud-stat:first-child { flex: 1.5; }
+.hud-stat + .hud-stat { border-left: 1px solid var(--pp-edge-soft); }
+.hud-stat .game-icon { width: 30px; height: 30px; }
+.hud-stat > span { min-width: 0; }
+.hud-stat small { display: block; color: var(--pp-ink-soft); font: 600 var(--pp-text-xs)/1.1 var(--pp-font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+.hud-stat strong { display: block; overflow: hidden; color: var(--pp-ink); font: 600 var(--pp-text-l)/1.15 var(--pp-font-display); font-variant-numeric: tabular-nums; white-space: nowrap; text-overflow: ellipsis; }
+.hud-button { flex-shrink: 0; display: grid; place-items: center; width: var(--pp-touch); height: var(--pp-touch); padding: 0; position: relative; border: 0; border-radius: var(--pp-radius-m); background: transparent; color: var(--pp-ink); }
+.hud-button .game-icon { width: 30px; height: 30px; }
+.hud-button:hover:not(:disabled) { background: var(--pp-raised); filter: none; }
+@media (max-width: 420px) {
+  /* Too narrow for labels: icons carry the meaning, the labels stay for screen readers. */
+  .hud-stat { gap: 6px; padding: 0 6px; }
+  .hud-stat small { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .hud-stat .game-icon { width: 26px; height: 26px; }
+  .hud-stat strong { font-size: 18px; }
+}
+
+@media (max-height: 500px) {
+  body.shell { --pp-hud-h: 46px; }
+  .shell .hud { width: min(460px, calc(100% - 16px)); padding-block: 1px; }
+  .hud-stat small { display: none; }
+  .hud-stat .game-icon { width: 26px; height: 26px; }
+  .shell .action-button { min-height: var(--pp-touch); font-size: var(--pp-text-s); }
+  .shell .action-button .game-icon, .shell .action-chip .game-icon { width: 24px; height: 24px; }
+  .shell .action-chip { font-size: var(--pp-text-xs); }
+}
+
+/* Under the HUD: the next goal on the left, pause on the right. */
+.shell .world-chip { top: var(--pp-hud-bottom); left: max(8px, env(safe-area-inset-left)); max-width: calc(100% - 76px); min-height: var(--pp-touch); padding: 8px 12px; font: var(--pp-text-xs)/1.3 var(--pp-font-body); color: var(--pp-ink); border-radius: var(--pp-radius-m); }
+.shell .patch-card > .section-head { top: var(--pp-hud-bottom); right: max(8px, env(safe-area-inset-right)); }
+
+/* Floating actions over the bottom of the farm. Plant and Harvest only appear when there is something to do. */
+.shell .actions { position: absolute; z-index: 20; left: max(8px, env(safe-area-inset-left)); right: max(8px, env(safe-area-inset-right)); bottom: 8px; display: flex; align-items: flex-end; justify-content: space-between; gap: var(--pp-space-2); pointer-events: none; }
+.shell .actions > div { display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.shell .actions-main { justify-content: flex-end; }
+.shell .actions button { pointer-events: auto; }
+.action-chip, .action-button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--pp-edge); color: var(--pp-ink); background: var(--pp-surface-glass); box-shadow: var(--pp-shadow); font: 600 var(--pp-text-s)/1 var(--pp-font-body); white-space: nowrap; transition: background var(--pp-fast), transform var(--pp-fast); }
+.action-chip { min-height: var(--pp-touch); padding: 0 14px 0 8px; border-radius: var(--pp-radius-pill); }
+.action-chip .game-icon { width: 26px; height: 26px; }
+.action-chip.active { border-color: var(--pp-gold); color: var(--pp-gold-bright); background: #4a3328; }
+.action-button { min-height: 48px; padding: 0 16px 0 10px; border-radius: var(--pp-radius-pill); font-size: var(--pp-text-m); }
+.action-button .game-icon { width: 30px; height: 30px; }
+.action-button.harvest { border-color: var(--pp-gold); background: linear-gradient(160deg, #a7693a, #6d4130); color: #fff0d2; }
+.action-button:hover:not(:disabled), .action-chip:hover:not(:disabled) { filter: brightness(1.12); }
+.action-count { min-width: 26px; height: 26px; padding: 0 7px; display: inline-grid; place-items: center; border-radius: var(--pp-radius-pill); background: rgba(10, 6, 16, 0.55); color: var(--pp-gold-bright); font: 600 var(--pp-text-xs)/1 var(--pp-font-body); font-variant-numeric: tabular-nums; }
+@media (max-width: 520px) {
+  .shell .actions { flex-direction: column; align-items: stretch; gap: 6px; }
+  .shell .actions-tools { justify-content: flex-start; }
+}
+
+/* Notices: visible, short, never in the way of a tap. */
+.shell .toast, .shell .toast.show {
+  display: block; position: absolute; z-index: 40;
+  top: calc(var(--pp-hud-bottom) + 52px); left: 50%; transform: translate(-50%, -6px);
+  width: max-content; max-width: min(420px, calc(100% - 32px)); height: auto; margin: 0; padding: 10px 14px;
+  overflow: visible; clip: auto; white-space: normal; text-align: center;
+  border: 1px solid var(--pp-edge); border-radius: var(--pp-radius-m);
+  background: var(--pp-surface); color: var(--pp-ink); box-shadow: var(--pp-shadow);
+  font: var(--pp-text-s)/1.35 var(--pp-font-body);
+  opacity: 0; pointer-events: none; transition: opacity var(--pp-fast), transform var(--pp-fast);
+}
+.shell .toast.show { opacity: 1; transform: translate(-50%, 0); }
+.shell.modal-open .toast { display: none; }
+.shell #save-warning:not([hidden]) {
+  display: block; position: absolute; z-index: 41; top: calc(var(--pp-hud-bottom) + 52px); left: 50%; transform: translateX(-50%);
+  width: max-content; max-width: calc(100% - 32px); min-height: var(--pp-touch); padding: 10px 14px;
+  border: 1px solid var(--pp-ember); border-radius: var(--pp-radius-m); background: #4d2630; color: var(--pp-ink); font: 600 var(--pp-text-s)/1.3 var(--pp-font-body);
+}
+
+/* Navigation: Patch, Shop, Home, Wardrobe, Journal. */
+.shell .dock {
+  grid-area: dock; position: relative; z-index: 50;
+  display: flex; justify-content: space-around; gap: 2px;
+  height: var(--pp-dock-h);
+  padding: 6px max(8px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  border-top: 1px solid var(--pp-edge-soft);
+  background: var(--pp-surface);
+}
+.shell .dock-tab {
+  flex: 1; max-width: 120px; min-width: 0; height: auto; min-height: 52px; position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  padding: 2px; border: 0; border-radius: var(--pp-radius-m); background: transparent;
+  color: var(--pp-ink-soft); font: 600 var(--pp-text-xs)/1.1 var(--pp-font-body);
+}
+.shell .dock-tab .game-icon { width: 30px; height: 30px; }
+.shell #manage-shop { padding: 2px; font-size: var(--pp-text-xs); white-space: normal; }
+.shell .dock-tab.active { background: var(--pp-raised); color: var(--pp-gold-bright); }
+.shell .dock-tab.active::after { display: none; }
+.shell .dock-tab:hover:not(:disabled) { background: var(--pp-raised); filter: none; }
+.shell .dock-tab .new-dot { position: absolute; top: 4px; left: calc(50% + 8px); width: 12px; height: 12px; margin: 0; border: 2px solid var(--pp-surface); border-radius: 50%; background: var(--pp-ember); }
+@media (orientation: landscape) and (min-width: 600px), (min-width: 1000px) {
+  .shell .dock {
+    flex-direction: column; justify-content: center; gap: 4px;
+    width: var(--pp-rail-w); height: auto;
+    padding: max(8px, env(safe-area-inset-top)) 6px max(8px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
+    border-top: 0; border-right: 1px solid var(--pp-edge-soft);
+  }
+  .shell .dock-tab { flex: 0 0 auto; width: 100%; max-width: none; min-height: 56px; }
+}
+
+/* Menus sit clear of the navigation (UI2 turns these into sheets). */
+.shell .modal-shade { top: 0; bottom: var(--pp-dock-h); left: var(--pp-rail-w); }
+.shell dialog.dialog-fallback {
+  top: calc(env(safe-area-inset-top) + 16px);
+  left: calc(50% + var(--pp-rail-w) / 2);
+  width: min(700px, calc(100% - var(--pp-rail-w) - 32px));
+}
+.shell dialog.dialog-fallback.menu-upgrades { --panel-top: var(--pp-hud-bottom); --panel-bottom: calc(var(--pp-dock-h) + 72px); }

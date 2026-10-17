@@ -70,6 +70,20 @@ try {
   }
   check(true, "main navigation opens and closes");
 
+  await page.locator("#manage-shop").click();
+  check(await page.locator(".farm-shop-menu").count() === 1, "the Shop tab opens Skyla's shop");
+  await page.locator("#modal .modal-close").click();
+
+  // Tap Natalie on the map to chat.
+  const world = await page.locator("#world").boundingBox();
+  const natalie = await page.evaluate(() => { const a = PumpkinPatch.app.scene.actors[0]; return { x: a.x, y: a.y }; });
+  await page.mouse.click(world.x + natalie.x / 1000 * world.width, world.y + (natalie.y - 60) / 610 * world.height);
+  check(await page.locator(".conversation-menu").count() === 1, "tapping Natalie starts a chat");
+  await page.locator("#modal .modal-close").click();
+
+  await page.evaluate(() => PumpkinPatch.app.toast("A test notice"));
+  check(await page.locator("#toast.show").isVisible(), "notices are visible");
+
   await page.locator("#preferences-nav").click();
   const version = await page.locator("#game-version").textContent();
   check(/^Pumpkin Patch \S+ · save format \d+$/.test(version), `settings shows the version (${version})`);

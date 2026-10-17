@@ -11,6 +11,7 @@ npm run build       # dist/pumpkin-patch.html
 npm run smoke       # plays the built file in headless Chromium (needs a Chromium: npx playwright install chromium, or set CHROMIUM_PATH)
 npm run check       # all three: what CI runs
 npm run sim -- --minutes 240 --player planner   # economy simulator
+npm run audit:ui -- --strict   # interface rules at five screen sizes (needs Chromium, like smoke)
 npm run dev         # http://localhost:8000 with live rebuilds
 ```
 
@@ -28,7 +29,10 @@ npm run dev         # http://localhost:8000 with live rebuilds
 
 - **New outfit:** follow `docs/ADDING-OUTFITS.md`. `test/outfits.test.mjs` checks the sheets and metadata.
 - **Visitor paths:** edit the points in `src/content/visitor-routes.mjs`. Timings follow from the route lengths.
-- **UI work:** follow `docs/UI-OVERHAUL.md`. Check phone portrait (390×844), phone landscape (844×390) and desktop (1280×800).
+- **UI work:** follow `docs/UI-OVERHAUL.md`.
+  - New styles go in `src/styles/shell.css` (or a new file listed after `legacy.css` in `scripts/build.mjs`), scoped under `body.shell` and using the `--pp-*` tokens. Don't add rules to `legacy.css`.
+  - `npm run audit:ui -- --strict` must pass.
+  - Look at phone portrait (390×844), phone landscape (844×390) and desktop (1280×800).
 
 ## Before you open a PR
 

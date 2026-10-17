@@ -20,6 +20,9 @@ const outName = dev || android ? "index.html" : "pumpkin-patch.html";
 const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 
 const MIME = { ".webp": "image/webp", ".svg": "image/svg+xml", ".png": "image/png", ".mp3": "audio/mpeg", ".woff": "font/woff", ".woff2": "font/woff2" };
+// Joined in this order. legacy.css is the pre-3.0 stylesheet; the overhaul's
+// rules come after it and replace it one screen at a time (docs/UI-OVERHAUL.md).
+const STYLESHEETS = ["src/styles/tokens.css", "src/styles/legacy.css", "src/styles/shell.css"];
 // Folders whose files the game code may request by path through asset().
 const RUNTIME_ASSET_DIRS = ["assets/house", "assets/ui"];
 
@@ -41,7 +44,7 @@ const listFiles = (dir) => fs.readdirSync(path.join(root, dir), { withFileTypes:
 
 function assemble(script) {
   const template = fs.readFileSync(path.join(root, "src/index.html"), "utf8");
-  const css = fs.readFileSync(path.join(root, "src/styles/game.css"), "utf8");
+  const css = STYLESHEETS.map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n");
   let assets = "";
   let html = template;
   if (dev) {
@@ -98,7 +101,7 @@ if (dev) {
   const ctx = await esbuild.context(options);
   await ctx.watch();
   // CSS and HTML are not part of the JS graph, so rebuild on their changes too.
-  for (const f of ["src/index.html", "src/styles/game.css"]) fs.watchFile(path.join(root, f), { interval: 300 }, () => ctx.rebuild());
+  for (const f of ["src/index.html", ...STYLESHEETS]) fs.watchFile(path.join(root, f), { interval: 300 }, () => ctx.rebuild());
   const { port } = await ctx.serve({ servedir: outDir, port: 8000 });
   console.log(`Pumpkin Patch dev server: http://localhost:${port}/`);
 } else {

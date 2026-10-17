@@ -87,6 +87,22 @@ Code asks for art by path, as in `asset("assets/house/room.webp")`, and so do th
 
 Paths that are built dynamically, such as `"assets/house/visitor-" + type + ".webp"` or the wallpaper SVGs, only work because the whole folder is in the map. Put new runtime art in `assets/house` or `assets/ui`, or add its folder to `RUNTIME_ASSET_DIRS` in `scripts/build.mjs`.
 
+## Interface shell
+
+Since 3.0 the page has one layout, `body.shell`, set out in `src/styles/shell.css`:
+
+- **Map:** fills `main`.
+- **HUD (`#hud`):** coins, stock, visitors and the Settings gear. It floats over the map, or sits at the top of the Home screen.
+- **Actions (`#actions`):** float over the bottom of the map.
+- **Navigation (`#dock`):** a bottom dock on portrait phones, a left rail elsewhere.
+
+Rules to keep:
+
+- **Sizes and layering come from the tokens.** New styles use the `--pp-*` tokens in `tokens.css` and are scoped under `body.shell`. Don't add new rules to `legacy.css`.
+- **The camera is set by `viewMap()` in `app/game.js`.** It frames the big pumpkin and the plots using `FIELD_SPAN`.
+- **`#commands` is a hidden holder** for the Settings, How to play, music and full-screen buttons that other modules still `.click()`. UI2 replaces it.
+- **`npm run audit:ui` must keep passing.** It checks every layout against the rules in `docs/UI-OVERHAUL.md`.
+
 ## Build-time values
 
 `__GAME_VERSION__` is replaced with `package.json`'s `version` at build time. Read it through `GAME_VERSION` in `platform/version.js`, which falls back to `"dev"` in Node. Settings shows it, and backups record it.

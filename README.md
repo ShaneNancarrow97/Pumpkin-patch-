@@ -32,7 +32,7 @@ To run the smoke test you need a Chromium browser: either run `npx playwright in
 src/
   main.js            entry point: creates the game, then each feature's UI
   index.html         page template (the build fills in the CSS, JS and assets)
-  styles/game.css    all styling
+  styles/           tokens.css, then legacy.css (pre-3.0), then shell.css (the 3.0 layout)
   app/game.js        game loop, canvas rendering, HUD, save/load wiring
   core/              pure game rules, no DOM: these are what the tests and simulator use
   content/           data: prices, catalogues, customers, art frame coordinates

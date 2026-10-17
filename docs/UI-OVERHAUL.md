@@ -95,19 +95,20 @@ Phone portrait                     Landscape · tablet · desktop
 
 ## 4. Design system
 
-The build already joins one stylesheet into the page. This overhaul splits it into cascade layers:
+The build joins the stylesheets into the page in this order (`STYLESHEETS` in `scripts/build.mjs`):
 
 ```
 src/styles/
-  tokens.css      @layer tokens      colour, type, spacing, radius, elevation, motion
-  base.css        @layer base        reset, typography, focus ring, reduced motion
-  components.css  @layer components  button, chip, tab, stat, card, sheet, progress, price, badge, notice
-  shell.css       @layer shell       HUD, nav bar and rail, action cluster, camera frame
-  screens/*.css   @layer screens     patch, shop, home, wardrobe, journal, settings
-  legacy.css      @layer legacy      today's game.css, shrinking to nothing
+  tokens.css      colour, type, spacing, radius, elevation, motion; the Fraunces font   (UI0, done)
+  legacy.css      the pre-3.0 stylesheet, shrinking to nothing as screens move over
+  shell.css       HUD, dock and rail, floating actions, notices                          (UI1, done)
+  components.css  button, chip, tab, card, sheet, progress, price, badge                 (UI2)
+  screens/*.css   patch, shop, home, wardrobe, journal, settings                         (UI2–UI5)
 ```
 
-The legacy layer comes first, so it always loses to the new layers and needs no `!important` fights. Each screen deletes its old rules as it moves.
+New files come after `legacy.css`, and every new rule is scoped under `body.shell`. With equal or higher specificity and a later position, they win without `!important`. Each screen deletes its old rules as it moves.
+
+**Why not cascade layers.** The first draft of this plan used `@layer`. That needs Chrome 99 or Safari 15.4, and the Android app supports older WebViews (the shell already polyfills `replaceChildren`, which is from Chrome 86). An unsupported `@layer` block is ignored completely, which would leave the game unstyled, so file order does the same job instead.
 
 ### Tokens
 
@@ -151,8 +152,8 @@ Everything can be reached by keyboard, with a visible focus ring. Sheets trap fo
 
 ## 6. Engineering approach
 
-- **Screenshot tests first.** `npm run visual` captures every screen at 390×844, 844×390, 820×1180 and 1280×800 and compares them with committed baselines in `test/visual/`. Changes are reviewed as images in the PR. The current screens become the first baseline, so nothing moves by accident.
-- **UI rules in the smoke test.** It checks that no text is under 12px, no target is under 44px, the farm is at least 70% uncovered on Patch, the big pumpkin is visible at load, and there is no horizontal scroll. These are the numbers in §1, turned into checks that fail the build.
+- **Interface audit (done in UI0).** `npm run audit:ui` checks that the farm is at least 70% uncovered on Patch, the big pumpkin is visible at load (its centre on screen and tappable, with at least 60% of it showing), no text is under 12px, no target is under 44px, and there is no sideways scroll. It runs at 390×844, 360×740, 844×390, 820×1180 and 1280×800. These are the numbers in §1, turned into checks. CI runs it with `--strict`, so a regression fails the build, and uploads a screenshot per size with each run's artifacts. It covers the Patch screen now; each later step adds its own screens.
+- **Screenshots, not pixel baselines.** The first draft planned pixel-by-pixel comparison against committed images. The farm is a live canvas, with pumpkins glowing, characters walking and visitors arriving at random, so pixel diffs would fail on every run. The audit's measurable rules and the per-size screenshots in CI do that job instead.
 - **Shell in code.** Split `app/game.js`: `ui/shell.js` (HUD, navigation, notices, sheet manager), `scene/camera.js` (opening framing, pan and fit) and `ui/actions.js`. Feature UIs ask the shell for a sheet instead of building their own modal.
 - **One screen at a time.** Each pull request moves one screen to the new components and deletes that screen's legacy CSS. Every step stays playable and passes all checks.
 - **No save changes.** This is presentation only. Remembered UI state, such as the last sheet tab and text size, goes in a separate local key, not the save.
@@ -161,13 +162,42 @@ Everything can be reached by keyboard, with a visible focus ring. Sheets trap fo
 
 | Step | Scope | Done when |
 | --- | --- | --- |
-| **UI0 Foundation** | Screenshot tests, UI rules in the smoke test (reporting only at first), cascade layers, tokens, Fraunces, the notice area replacing hidden toasts | Baselines committed; notices visible on all sizes; no visual change otherwise |
-| **UI1 Shell** | HUD, bottom bar and rail, floating actions, camera opening on the pumpkin, duplicates removed | Farm ≥ 70% uncovered on Patch at every size, including landscape; pumpkin visible at load; one route to each place |
+| **UI0 Foundation** ✓ | Interface audit with screenshots in CI, tokens, Fraunces, visible notices | Audit runs in CI; notices visible on all sizes |
+| **UI1 Shell** ✓ | HUD, bottom bar and rail, floating actions, camera opening on the pumpkin, duplicates removed | Farm ≥ 70% uncovered on Patch at every size, including landscape; pumpkin visible at load; one route to each place |
 | **UI2 Sheets** | Sheet manager; Settings, Upgrades and Journal hub moved over; Upgrade buttons in place | No full-screen dialog left except decisions; Settings in its new order |
 | **UI3 Patch** | Seed brush, plot state shapes, hide-not-dim actions, empty-state hints | Crops changed in two taps; plot states readable without colour |
 | **UI4 Home & Wardrobe** | Home in the shell with its sheet; wardrobe grid and preview | Home no longer scrolls as a page; placing an item takes at most three taps |
 | **UI5 Shop** | Shop interior in the shell; Displays, Stall, Ledger and Upgrade tabs | Shop reached one way; stall and displays editable while customers move |
 | **UI6 Accessibility & cleanup** | Text size, high contrast, reduce-motion toggle; delete `legacy.css` | No text under 12px anywhere; AA contrast; legacy layer empty; UI rules now failing the build |
+
+### UI0 and UI1 results
+
+After pictures of every main screen: [phone](ui-audit/3.0-phone.webp), [phone landscape](ui-audit/3.0-land.webp), [desktop](ui-audit/3.0-desk.webp).
+
+The Patch screen on a fresh game, measured by `npm run audit:ui`:
+
+| Size | Farm visible, before → after | Pumpkin visible | Text under 12px | Targets under 44px |
+| --- | --- | --- | --- | --- |
+| Phone 390×844 | 64% → **76%** | no → **yes** | 18 → **0** | 2 → **0** |
+| Small phone 360×740 | 58% → **71%** | no → **yes** | 20 → **0** | 5 → **0** |
+| Phone landscape 844×390 | 32% → **74%** | yes | 22 → **0** | 2 → **0** |
+| Tablet 820×1180 | 70% → **88%** | no → **yes** | 22 → **0** | 2 → **0** |
+| Desktop 1280×800 | 58% → **87%** | yes | 19 → **0** | 2 → **0** |
+
+What changed for the player:
+
+- **Navigation.** One bar with Patch, Shop, Home, Wardrobe and Journal: a dock at the bottom of a portrait phone, a rail down the left elsewhere. It replaces:
+  - the top tabs and the four tool icons
+  - the Home · Patch · Shop map chips
+  - the separate Skyla's shop button
+- **HUD.** Coins, stock and visitors in a floating bar, with the Settings gear. Music, full screen and How to play live in Settings.
+- **Actions.** Plant and Harvest float over the farm with their counts and appear only when there is something to plant or pick. Boost is always there. Crops & seeds and Upgrades sit beside them until UI2 gives each place its own Upgrade button.
+- **Camera.** It opens on the big pumpkin and the plots. A narrow phone centres between the pumpkin and the first column of plots, so both are in view.
+- **Talking.** Tap Shane or Natalie for a chat, instead of a Talk button.
+- **Notices.** Visible again, under the HUD and away from every control.
+- **Fraunces.** The headings finally use the font the design always asked for.
+
+Some buttons that other modules still click to open their menus (Settings, How to play, music, full screen) now live hidden in `#commands` in `src/index.html`. UI2 replaces those clicks with direct calls.
 
 ### How it fits [PLAN.md](PLAN.md)
 

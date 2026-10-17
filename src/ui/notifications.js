@@ -17,6 +17,8 @@ function createNotifications($) {
     } else if (feedback) {
       feedback.textContent = message;
       feedback.hidden = false;
+    } else {
+      $("toast").classList.add("show");
     }
     timer = setTimeout(clear, 2800);
   }
