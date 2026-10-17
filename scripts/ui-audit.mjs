@@ -20,6 +20,9 @@ export const SIZES = [
   ["phone", 390, 844],
   ["small phone", 360, 740],
   ["landscape", 844, 390],
+  ["fold7 cover", 412, 915],
+  ["fold7 inner", 984, 1092],
+  ["fold7 inner turned", 1092, 984],
   ["tablet", 820, 1180],
   ["desktop", 1280, 800],
 ];

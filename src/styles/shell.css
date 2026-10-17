@@ -18,7 +18,7 @@ body.shell {
   background: var(--pp-ground);
   font-family: var(--pp-font-body);
 }
-@media (orientation: landscape) and (min-width: 600px), (min-width: 1000px) {
+@media (orientation: landscape) and (min-width: 600px), (min-width: 900px) {
   body.shell {
     --pp-dock-h: 0px;
     --pp-rail-w: calc(84px + env(safe-area-inset-left));
@@ -143,7 +143,7 @@ body.shell {
 .shell .dock-tab.active::after { display: none; }
 .shell .dock-tab:hover:not(:disabled) { background: var(--pp-raised); filter: none; }
 .shell .dock-tab .new-dot { position: absolute; top: 4px; left: calc(50% + 8px); width: 12px; height: 12px; margin: 0; border: 2px solid var(--pp-surface); border-radius: 50%; background: var(--pp-ember); }
-@media (orientation: landscape) and (min-width: 600px), (min-width: 1000px) {
+@media (orientation: landscape) and (min-width: 600px), (min-width: 900px) {
   .shell .dock {
     flex-direction: column; justify-content: center; gap: 4px;
     width: var(--pp-rail-w); height: auto;
