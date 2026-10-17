@@ -1,0 +1,114 @@
+import * as THREE from "three";
+import natalieUrl from "../assets/hd-natalie.webp";
+import shaneUrl from "../assets/hd-shane.webp";
+import skylaUrl from "../assets/hd-skyla.webp";
+import visitorsUrl from "../assets/hd-visitors.webp";
+import { HD_ROWS, SHEETS } from "./sprite-meta-hd.js";
+import { PITCH } from "./world.js";
+import { recolour } from "./sprite-voxels.js";
+
+// Shane, Natalie, Skyla and the visitors drawn with the main game's own sprites:
+// flat cut-outs standing in the voxel world, lit by the moon and the lanterns,
+// and casting shadows the shape of the art. Sheets come from tools/bake_sprites.py.
+const UNIT = 2.3 / HD_ROWS;                          // world units per sprite pixel: a person is 2.3 tall
+// They lean back towards the camera like the voxel figures (so things behind
+// them stay behind them), stretched so the art keeps its proportions on screen.
+const LEAN = 0.36, STRETCH = 1 / Math.cos(PITCH - LEAN);
+const URLS = { natalie: natalieUrl, shane: shaneUrl, skyla: skylaUrl, visitors: visitorsUrl };
+export const VISITOR_KINDS = ["ghost", "witch", "vampire", "skeleton", "scarecrow"];   // model.js visitor kinds, in order
+
+const loadImage = (src) => new Promise((resolve, reject) => {
+  const img = new Image();
+  img.onload = () => resolve(img);
+  img.onerror = reject;
+  img.src = src;
+});
+
+function sheetTexture(image) {
+  const texture = image instanceof HTMLCanvasElement ? new THREE.CanvasTexture(image) : new THREE.Texture(image);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+// One plane per frame, its origin at the feet, its UVs on the frame's rectangle.
+function frameGeometry(sheet, f) {
+  const g = new THREE.PlaneGeometry(f.w * UNIT, f.h * UNIT);
+  g.translate((f.w / 2 - f.ax) * UNIT, (f.ay - f.h / 2) * UNIT, 0);
+  const uv = g.attributes.uv;
+  for (let i = 0; i < uv.count; i++) uv.setXY(i, (f.x + uv.getX(i) * f.w) / sheet.w, 1 - (f.y + (1 - uv.getY(i)) * f.h) / sheet.h);
+  return g;
+}
+
+// Loads every sheet and builds its frame planes once; characters share them.
+export async function loadSpriteSheets() {
+  const sheets = {};
+  await Promise.all(Object.entries(URLS).map(async ([name, url]) => {
+    const meta = SHEETS[name], image = await loadImage(url), frames = {};
+    for (const [key, list] of Object.entries(meta)) if (Array.isArray(list)) frames[key] = list.map((f) => frameGeometry(meta, f));
+    sheets[name] = { meta, image, texture: sheetTexture(image), frames };
+  }));
+  return sheets;
+}
+
+// The wardrobe's recolours, painted onto a copy of the sheet.
+function recolouredTexture(sheet, who, look) {
+  const canvas = document.createElement("canvas");
+  canvas.width = sheet.meta.w; canvas.height = sheet.meta.h;
+  const g = canvas.getContext("2d");
+  g.drawImage(sheet.image, 0, 0);
+  const pixels = g.getImageData(0, 0, canvas.width, canvas.height), data = pixels.data;
+  for (const list of [sheet.meta.idle, sheet.meta.walk]) for (const f of list) {
+    for (let y = 0; y < f.h; y++) {
+      const row = (y - (f.ay - HD_ROWS)) / HD_ROWS;
+      for (let x = 0; x < f.w; x++) {
+        const o = ((f.y + y) * canvas.width + f.x + x) * 4;
+        if (!data[o + 3]) continue;
+        const c = recolour(who, look, data[o], data[o + 1], data[o + 2], row);
+        if (c) { data[o] = c[0]; data[o + 1] = c[1]; data[o + 2] = c[2]; }
+      }
+    }
+  }
+  g.putImageData(pixels, 0, 0);
+  return sheetTexture(canvas);
+}
+
+// A sprite figure: one plane that swaps frames, inside a group the scene moves.
+function figure(sheet, frames, texture) {
+  const group = new THREE.Group(), lean = new THREE.Group();
+  lean.rotation.x = -LEAN;
+  lean.scale.y = STRETCH;
+  group.add(lean);
+  const material = new THREE.MeshStandardMaterial({ map: texture, alphaTest: 0.5, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: 0.3 });
+  const mesh = new THREE.Mesh(frames.idle?.[0] ?? frames.walk[0], material);
+  mesh.castShadow = true;
+  mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: texture, alphaTest: 0.5 });
+  lean.add(mesh);
+  const own = texture !== sheet.texture;
+  group.userData = {
+    idle: frames.idle ?? [], walk: frames.walk ?? [], facing: 0, shown: mesh.geometry,
+    show: (geometry) => (mesh.geometry = geometry),
+    // Frame planes and the shared sheet stay; a recoloured copy goes with the figure.
+    dispose: () => { material.dispose(); mesh.customDepthMaterial.dispose(); if (own) texture.dispose(); },
+  };
+  return group;
+}
+
+// Shane, Natalie or Skyla. They always face the viewer, as in the main game, which never mirrors them.
+export function spriteActor(sheets, who, look) {
+  const sheet = sheets[who], base = who === "natalie" ? 0x604625 : 0x1a1210;
+  const tinted = look && (look.sweater ?? look.beanie) !== undefined && (look.sweater ?? look.beanie) !== base;
+  return figure(sheet, sheet.frames, tinted ? recolouredTexture(sheet, who, look) : sheet.texture);
+}
+
+// A visitor: its four frames are a walk cycle; standing shows the first.
+export function spriteVisitor(sheets, kind) {
+  const sheet = sheets.visitors;
+  return figure(sheet, { walk: sheet.frames[VISITOR_KINDS[kind]] }, sheet.texture);
+}
+
+export function animateVisitor(group, age, walking) {
+  const { walk } = group.userData, next = walk[walking ? Math.floor(age * 5) % walk.length : 0];
+  if (next !== group.userData.shown) { group.userData.show(next); group.userData.shown = next; }
+  group.children[0].position.y = Math.sin(age * 2.4) * 0.03;                       // the main game's gentle sway
+}

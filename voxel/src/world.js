@@ -7,6 +7,9 @@ import { Voxels, seeded, vary } from "./voxels.js";
 // centre, Skyla's shop top right, the stone path up the right, fence along the
 // bottom, and an arch at the back opening onto the lake.
 export const MAP = { w: 40, d: 26 };
+// Camera tilt: low enough to see the far shore over the back fence, steep
+// enough to see under the shop awning to Skyla on the counter.
+export const PITCH = THREE.MathUtils.degToRad(48);
 // Twelve plots, three across and four rows deep; the first six are open at the start.
 export const PLOTS = [11.2, 13.8, 16.4, 19.0].flatMap((z) => [16.5, 20, 23.5].map((x) => ({ x, z })));
 export const BIG_PUMPKIN = { x: 7, z: 15.5 };

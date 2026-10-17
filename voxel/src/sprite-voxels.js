@@ -40,7 +40,8 @@ const BACK = {
 
 // Wardrobe recolours: retint Natalie's olive knit or Shane's black beanie,
 // keeping the art's shading by scaling the new colour by each pixel's value.
-function recolour(who, look, r, g, b, row) {
+// row runs from 0 at the top of the head to 1 at the feet.
+export function recolour(who, look, r, g, b, row) {
   if (!look) return null;
   const [h, s, v] = hsv(r, g, b);
   if (who === "natalie" && look.sweater !== undefined && look.sweater !== 0x604625 && row > 0.26 && row < 0.64 && h > 22 && h < 70 && s > 0.22 && v > 0.1 && v < 0.62) {
@@ -98,20 +99,32 @@ export function spriteCharacter(pixels, who, look) {
   const walk = (sheet.walk ?? []).map((f) => frameMesh(pixels, f, who, look));
   for (const mesh of [...idle, ...walk]) { mesh.visible = false; lean.add(mesh); }
   idle[0].visible = true;
-  // The sprites face front three-quarter: Natalie towards the viewer's left, Shane the right.
-  group.userData = { idle, walk, facing: who === "natalie" ? -1 : 1, shown: idle[0] };
+  // The sprites face front three-quarter: Natalie towards the viewer's left, Shane the
+  // right, so these mirror to walk the other way.
+  group.userData = { idle, walk, facing: who === "natalie" ? -1 : 1, shown: idle[0], show: (mesh) => { group.userData.shown.visible = false; mesh.visible = true; } };
   return group;
 }
 
-// Picks the frame: walking cycles the six walk frames; standing blinks now and then.
+// Animation for both kinds of character (voxel figures and flat sprites), which
+// keep their frames in userData and show one with userData.show(frame).
+function showFrame(group, next) {
+  if (next !== group.userData.shown) { group.userData.show(next); group.userData.shown = next; }
+}
+
+// Shane and Natalie: walking cycles the six walk frames; standing blinks now and then.
 export function animateSprite(group, time, moving, dx = 0, phaseOffset = 0) {
   const { idle, walk, facing } = group.userData;
-  let next;
-  if (moving && walk.length) next = walk[Math.floor(time * 9) % walk.length];
+  if (moving && walk.length) showFrame(group, walk[Math.floor(time * 9) % walk.length]);
   else {
     const phase = (time + phaseOffset) % 5;
-    next = idle[Math.min(idle.length - 1, phase < 2.7 ? 0 : phase < 3.35 ? 1 : phase < 3.48 ? 2 : phase < 4.05 ? 3 : 0)];   // Skyla has one frame
+    showFrame(group, idle[phase < 2.7 ? 0 : phase < 3.35 ? 1 : phase < 3.48 ? 2 : phase < 4.05 ? 3 : 0]);
   }
-  if (next !== group.userData.shown) { group.userData.shown.visible = false; next.visible = true; group.userData.shown = next; }
-  if (moving && Math.abs(dx) > 0.01) group.scale.x = Math.sign(dx) === facing ? 1 : -1;
+  if (facing && moving && Math.abs(dx) > 0.01) group.scale.x = Math.sign(dx) === facing ? 1 : -1;
+}
+
+// Skyla, as in the main game: she looks round, blinks, and reacts when someone
+// pays. The voxel Skyla has one frame, so she just sits.
+export function animateSkyla(group, time, paying) {
+  const { idle } = group.userData, phase = time % 5;
+  showFrame(group, idle[Math.min(idle.length - 1, paying ? 3 : phase < 3 ? 0 : phase < 3.8 ? 1 : phase < 4 ? 2 : 0)]);
 }

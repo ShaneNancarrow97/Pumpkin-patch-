@@ -18,6 +18,7 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
   await page.goto(file);
   await page.waitForSelector("body[data-ready]", { timeout: 30000 });
+  check(await page.waitForFunction(() => PumpkinVoxel.scene.characterStyle === "sprites", null, { timeout: 30000 }).then(() => true, () => false), `${name}: characters drawn with the original sprites`);
   await page.locator("#plant-all").click();
   await page.locator("#boost").click();
   const s = await page.evaluate(() => PumpkinVoxel.state());
@@ -35,6 +36,13 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   }
   await page.locator("#sheet-close").click();
   check(!(await page.locator("#sheet").isVisible()), `${name}: menu closes`);
+  // Settings swaps the characters to voxel figures and back.
+  await page.locator("#open-settings").click();
+  await page.locator("#toggle-voxel-characters").click();
+  const voxels = await page.waitForFunction(() => PumpkinVoxel.scene.characterStyle === "voxels", null, { timeout: 30000 }).then(() => true, () => false);
+  await page.locator("#toggle-voxel-characters").click();
+  check(voxels && await page.evaluate(() => PumpkinVoxel.scene.characterStyle) === "sprites", `${name}: voxel characters switch on and off`);
+  await page.locator("#sheet-close").click();
   check(errors.length === 0, `${name}: no page errors${errors.length ? " — " + errors.join(" | ") : ""}`);
   await page.close();
 }

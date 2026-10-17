@@ -4,14 +4,13 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { Voxels, seeded, vary } from "./voxels.js";
-import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, buildWorld, buildBackdrop, signBoard } from "./world.js";
+import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, signBoard } from "./world.js";
 import { buildVisitor, animateWalk } from "./characters.js";
-import { loadSprites, spriteCharacter, animateSprite } from "./sprite-voxels.js";
+import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./sprite-voxels.js";
+import { loadSpriteSheets, spriteActor, spriteVisitor, animateVisitor } from "./sprite-actors.js";
 import { VARIETIES, VISIT, LOOKS, openPlots } from "./model.js";
 
-// Camera tilt: low enough to see the far shore over the back fence, steep
-// enough to see under the shop awning to Skyla on the counter.
-const PITCH = THREE.MathUtils.degToRad(48), WALK = 2.4;
+const WALK = 2.4;
 
 function routeLength(route) { let n = 0; for (let i = 1; i < route.length; i++) n += Math.hypot(route[i][0] - route[i - 1][0], route[i][1] - route[i - 1][1]); return n; }
 function along(route, d) {
@@ -144,27 +143,38 @@ export function createScene(canvas, state, hooks) {
   const homeHit = new THREE.Mesh(new THREE.BoxGeometry(8, 8, 6), new THREE.MeshBasicMaterial({ visible: false }));
   homeHit.position.set(7, 4, 6.4); homeHit.userData = { type: "home" }; scene.add(homeHit); pickables.push(homeHit);
 
-  // Skyla on the counter.
-  // Shane, Natalie and Skyla are voxelised from the sprite art once it has loaded.
-  let pixels = null, skyla = null;
-  loadSprites().then((data) => {
-    pixels = data;
-    skyla = spriteCharacter(pixels, "skyla");
+  // Shane, Natalie, Skyla and the visitors are drawn with the main game's
+  // sprites (sprite-actors.js), or, with "Voxel characters" on in Settings,
+  // built from voxels (sprite-voxels.js, and the hand-built neighbours in
+  // characters.js). Both load in the background.
+  let voxelCharacters = false, pixels = null, sheets = null, skyla = null, paying = 0;
+  const ready = () => (voxelCharacters ? pixels : sheets);
+  const character = (who, look) => (voxelCharacters ? spriteCharacter(pixels, who, look) : spriteActor(sheets, who, look));
+  function placeSkyla() {
+    if (!ready()) return;
+    if (skyla) { scene.remove(skyla); skyla.userData.dispose?.(); }
+    skyla = character("skyla");
     skyla.position.set(SHOP.x + 1.1, 1.3, SHOP.counterZ - 0.2);
     scene.add(skyla);
-    placeActor("natalie"); placeActor("shane");
-  }).catch(() => hooks.onSpriteError?.());
+  }
+  function placeCharacters() {
+    placeSkyla(); placeActor("natalie"); placeActor("shane");
+    for (const entry of visitorModels.values()) { scene.remove(entry.m); entry.m.userData.dispose?.(); }
+    visitorModels.clear();                                                            // rebuilt in the new style next frame
+  }
+  loadSprites().then((data) => { pixels = data; if (voxelCharacters) placeCharacters(); }).catch(() => hooks.onSpriteError?.());
+  loadSpriteSheets().then((data) => { sheets = data; if (!voxelCharacters) placeCharacters(); }).catch(() => hooks.onSpriteError?.());
 
   // Shane and Natalie.
   const actors = {};
   function placeActor(who) {
     const old = actors[who];
     const look = who === "natalie" ? LOOKS.natalie.find((l) => l.id === state.looks.natalie) : LOOKS.shane.find((l) => l.id === state.looks.shane);
-    if (!pixels) return;
-    const model = spriteCharacter(pixels, who, look);
+    if (!ready()) return;
+    const model = character(who, look);
     model.position.set(old?.model.position.x ?? HOMES[who].x, 0.04, old?.model.position.z ?? HOMES[who].z);
-    model.scale.x = old?.model.scale.x ?? 1;
-    if (old) scene.remove(old.model);
+    if (model.userData.facing) model.scale.x = old?.model.scale.x ?? 1;
+    if (old) { scene.remove(old.model); old.model.userData.dispose?.(); }
     const hit = old?.hit ?? new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.2, 1.1), new THREE.MeshBasicMaterial({ visible: false }));
     hit.userData = { type: "talk", who };
     if (!old) { scene.add(hit); pickables.push(hit); }
@@ -305,7 +315,7 @@ export function createScene(canvas, state, hooks) {
       if (a.work > 0) a.work -= dt;
       else if (d > 0.12) { const step = Math.min(d, WALK * dt); pos.x += dx / d * step; pos.z += dz / d * step; }
       else if (a.queue.length) { a.queue.shift(); a.work = 0.5; }
-      // Like the sprites they come from, they always face the viewer and mirror to walk the other way.
+      // Like the sprites they come from, they always face the viewer (the voxel figures mirror to walk the other way).
       animateSprite(a.model, time, a.moving, dx, who === "shane" ? 1.7 : 0);
       a.hit.position.set(pos.x, 1.1, pos.z);
     }
@@ -313,16 +323,23 @@ export function createScene(canvas, state, hooks) {
     // Visitors along the stone path.
     for (const v of state.visitors) {
       let entry = visitorModels.get(v.id);
-      if (!entry) { const m = buildVisitor(v.kind); m.traverse((o) => o.isMesh && (o.castShadow = true)); scene.add(m); entry = { m, bag: null }; visitorModels.set(v.id, entry); }
+      if (!entry) {
+        const sprite = !voxelCharacters && sheets !== null, m = sprite ? spriteVisitor(sheets, v.kind) : buildVisitor(v.kind);
+        if (!sprite) m.traverse((o) => o.isMesh && (o.castShadow = true));
+        scene.add(m); entry = { m, sprite, bag: null }; visitorModels.set(v.id, entry);
+      }
       const leaving = v.leaveAt !== null && v.age >= v.leaveAt;
       const p = leaving ? along(ROUTE_OUT, (v.age - v.leaveAt) / VISIT.leave * outLen) : along(ROUTE_IN, Math.min(1, v.age / VISIT.arrive) * inLen);
       entry.m.position.set(p.x, 0.04, p.z);
       const walking = leaving || v.age < VISIT.arrive;
-      entry.m.rotation.y = walking ? Math.atan2(p.dx, p.dz) : Math.PI;                // at the counter they face Skyla
-      animateWalk(entry.m, time + v.id, walking);
-      if (v.bought !== null && !entry.bag) { entry.bag = carried[v.bought].clone(); entry.bag.position.set(0.45, 0.6, 0.2); entry.m.add(entry.bag); }
+      if (entry.sprite) animateVisitor(entry.m, v.age, walking);
+      else {
+        entry.m.rotation.y = walking ? Math.atan2(p.dx, p.dz) : Math.PI;              // at the counter they face Skyla
+        animateWalk(entry.m, time + v.id, walking);
+      }
+      if (v.bought !== null && !entry.bag) { entry.bag = carried[v.bought].clone(); entry.bag.position.set(entry.sprite ? 0.36 : 0.45, entry.sprite ? 0.45 : 0.6, entry.sprite ? 0.3 : 0.2); entry.m.add(entry.bag); }
     }
-    for (const [id, entry] of visitorModels) if (!state.visitors.some((v) => v.id === id)) { scene.remove(entry.m); visitorModels.delete(id); }
+    for (const [id, entry] of visitorModels) if (!state.visitors.some((v) => v.id === id)) { scene.remove(entry.m); entry.m.userData.dispose?.(); visitorModels.delete(id); }
 
     // Fireflies.
     const fp = flies.geometry.attributes.position;
@@ -333,7 +350,8 @@ export function createScene(canvas, state, hooks) {
     }
     fp.needsUpdate = true;
     flies.material.opacity = 0.6 + Math.sin(time * 4) * 0.3;
-    if (skyla) animateSprite(skyla, time, false);
+    paying = Math.max(0, paying - dt);
+    if (skyla) animateSkyla(skyla, time, paying > 0);
 
     for (let i = fx.length - 1; i >= 0; i--) {
       const f = fx[i]; f.t += dt;
@@ -351,13 +369,15 @@ export function createScene(canvas, state, hooks) {
   return {
     sendTo(plotIndex) { const p = PLOTS[plotIndex], a = nearestActor(p.x, p.z); a?.queue.push({ x: p.x - 0.9, z: p.z + 0.4 }); },
     tapPumpkin() { tapPulse = 1; floatText("✦", BIG_PUMPKIN.x, 3.6, BIG_PUMPKIN.z, "spark"); },
-    sale(amount) { floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin"); },
+    sale(amount) { paying = 1.2; floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin"); },
     harvested(i) { const p = PLOTS[i]; floatText("+1", p.x, 1.4, p.z, "crop"); },
     refreshLooks() { placeActor("natalie"); placeActor("shane"); },
     screenPoint(x, y, z) { return project(new THREE.Vector3(x, y, z)); },
     actorPosition(who) { const p = actors[who]?.model.position ?? new THREE.Vector3(HOMES[who].x, 0, HOMES[who].z); return project(new THREE.Vector3(p.x, 2.4, p.z)); },
-    focus(x, z, zoom = view.zoom) { view.x = x; view.z = z; view.zoom = zoom; clampView(); frame(); },
+    focus(x, z, zoom = view.zoom) { view.x = x; view.z = z; view.zoom = zoom; frame(); },          // frame() clamps once the new zoom is in
     setBloom(on) { bloomOn = on; },
+    setVoxelCharacters(on) { if (on !== voxelCharacters) { voxelCharacters = on; placeCharacters(); } },
+    get characterStyle() { return skyla ? (voxelCharacters ? "voxels" : "sprites") : "loading"; },
     setShadows(on) { renderer.shadowMap.enabled = on; scene.traverse((o) => { if (o.material) o.material.needsUpdate = true; }); },
     renderer,
   };

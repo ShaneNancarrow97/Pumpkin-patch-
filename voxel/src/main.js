@@ -170,20 +170,22 @@ const SHEETS = {
     body() {
       return `<div class="setting"><span>Glow<small>Bloom on lanterns, windows and ripe pumpkins</small></span><button class="button" id="toggle-glow" aria-pressed="${prefs.glow}">${prefs.glow ? "On" : "Off"}</button></div>
         <div class="setting"><span>Moonlit shadows<small>Turn off on slower phones</small></span><button class="button" id="toggle-shadows" aria-pressed="${prefs.shadows}">${prefs.shadows ? "On" : "Off"}</button></div>
+        <div class="setting"><span>Voxel characters<small>Build Shane, Natalie, Skyla and the visitors from voxels instead of the original sprites</small></span><button class="button" id="toggle-voxel-characters" aria-pressed="${prefs.voxelCharacters}">${prefs.voxelCharacters ? "On" : "Off"}</button></div>
         <div class="setting"><span>Start a new patch<small>Clears this reference build only</small></span><button class="button danger" id="reset">${confirmReset ? "Tap again to reset" : "Reset"}</button></div>
         <p class="about">Voxel reference build of Shane &amp; Natalie’s Pumpkin Patch, made from docs/GAME-BIBLE.md. Drag to look around, pinch or scroll to zoom, tap plots, the big pumpkin, the shop, or Shane and Natalie.</p>`;
     },
     bind(body) {
       body.querySelector("#toggle-glow").onclick = () => { prefs.glow = !prefs.glow; scene.setBloom(prefs.glow); savePrefs(); draw(); };
       body.querySelector("#toggle-shadows").onclick = () => { prefs.shadows = !prefs.shadows; scene.setShadows(prefs.shadows); savePrefs(); draw(); };
+      body.querySelector("#toggle-voxel-characters").onclick = () => { prefs.voxelCharacters = !prefs.voxelCharacters; scene.setVoxelCharacters(prefs.voxelCharacters); savePrefs(); draw(); };
       body.querySelector("#reset").onclick = () => { if (!confirmReset) { confirmReset = true; draw(); return; } localStorage.removeItem(SAVE_KEY); location.reload(); };
     },
   },
 };
 let confirmReset = false;
-const prefs = (() => { try { return { glow: true, shadows: true, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return { glow: true, shadows: true }; } })();
+const prefs = (() => { const base = { glow: true, shadows: true, voxelCharacters: false }; try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; } })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
-scene.setBloom(prefs.glow); if (!prefs.shadows) scene.setShadows(false);
+scene.setBloom(prefs.glow); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
 
 let lastBody = "";
 function draw() {
