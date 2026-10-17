@@ -572,8 +572,9 @@ function createGame() {
     saveReason = result.reason || "";
     $("save-status").textContent = saveAvailable ? "✓ Progress saved" : persistence.blocked ? "Stored save kept" : "Saving unavailable";
     $("save-warning").hidden = saveAvailable;
-    $("preferences-nav").classList.toggle("needs-backup", !saveAvailable);
-    $("preferences-nav").setAttribute("aria-label", saveAvailable ? "Game settings" : "Game settings. Save needs attention. Download a backup.");
+    const backupDue = saveAvailable && !!app2.features.backups?.reminder;
+    $("preferences-nav").classList.toggle("needs-backup", !saveAvailable || backupDue);
+    $("preferences-nav").setAttribute("aria-label", !saveAvailable ? "Game settings. Save needs attention. Download a backup." : backupDue ? "Game settings. A backup is due." : "Game settings");
     $("save-warning").textContent = persistence.blocked ? "Stored save needs review · open Settings" : "Saving unavailable · back up your patch";
     app2.features.backups?.refresh();
   }

@@ -1,6 +1,6 @@
 {
   "name": "pumpkin-patch",
-  "version": "2.10.0",
+  "version": "3.0.0",
   "private": true,
   "description": "Shane & Natalie's Pumpkin Patch: a cosy Halloween farm and shop game that ships as one offline HTML file.",
   "type": "module",

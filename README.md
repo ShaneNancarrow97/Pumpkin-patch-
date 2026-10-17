@@ -2,7 +2,7 @@
 
 A cosy Halloween farm, shop and home game starring Shane, Natalie and Skyla the cat. You grow pumpkins, serve ghostly visitors at the stall and in Skyla's shop, and spend the takings on upgrades, a four-room house, decor, books and costumes. It runs fully offline: the game is a single HTML file that opens in Safari or Chrome, and the same file runs inside a small Android app.
 
-This repository holds the source for **Midnight 2.10** (save schema 9). That is the build inside `Pumpkin_Patch_Midnight.apk`. See [What's in here](#whats-in-here) for how the source was recovered and what is missing.
+This repository started from the source of **Midnight 2.10** (save schema 9), the build inside `Pumpkin_Patch_Midnight.apk`. Development continues from **3.0 "Lantern"**; see [docs/PLAN.md](docs/PLAN.md) and [CHANGELOG.md](CHANGELOG.md). See [What's in here](#whats-in-here) for how the source was recovered and what is missing.
 
 ## Quick start
 
@@ -58,7 +58,8 @@ docs/                review, roadmap, improvement plan and architecture notes
 
 ## Docs
 
-- [docs/REVIEW.md](docs/REVIEW.md): a review of this code with measured economy numbers. Start here.
+- [docs/PLAN.md](docs/PLAN.md): the development plan, phase by phase. Start here.
+- [docs/REVIEW.md](docs/REVIEW.md): a review of this code with measured economy numbers.
 - [docs/IMPROVEMENT-PLAN.md](docs/IMPROVEMENT-PLAN.md): the review and improvement plan for v2.10, in workstreams A–L.
 - [docs/ROADMAP.md](docs/ROADMAP.md): the alpha-to-beta roadmap (B0–B6).
 - [docs/POLISH-REVIEW.md](docs/POLISH-REVIEW.md): the Midnight 2.2 polish review.

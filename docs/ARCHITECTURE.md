@@ -58,10 +58,12 @@ app/, ui/  DOM, canvas, menus; the only code that touches the page
 | --- | --- |
 | Storage key | `sn-pumpkin-patch-halloween-v2`. **Never change it.** |
 | Current schema | 9 (`fresh().version`) |
-| Older schemas | `decodeSave` in `core/model.mjs` reads 1–9 and validates every field. Any failure returns `null`. |
-| Unreadable save | `platform/storage.js` keeps the unreadable save, blocks overwriting it and starts a fresh game. The Settings menu explains this. |
+| Older schemas | `decodeSave` in `core/model.mjs` reads 1–9 and validates every field. Any failure returns `null`; this strict check is the gate every save must pass. |
+| Damaged save | `repairSave` in `core/save-repair.mjs` resets only the sections that fail (coins, plots, stock, shop, house, outfits, stall and so on), keeping paid upgrades and purchases where it can. It then runs the strict check, and returns `{ state, repairs }`. The original is kept under `…-before-repair`, and the player sees a one-time "We patched up your save" dialog. |
+| Unreadable or newer save | `platform/storage.js` keeps it, refuses to overwrite it and starts a fresh game. Settings explains which case it is. Saves newer than this build (schema 10 and up) are never repaired or guessed at. |
 | Upgrading | Before upgrading an old save, it keeps one copy under `…-before-schema-N`. |
-| Backups | `core/save-model.mjs` wraps the save as `{ format: "pumpkin-patch-backup", revision: 1, state }`. |
+| Snapshots | Every save may also write a rolling copy to `…-snapshots`: up to three, at least ten minutes apart. Settings → Earlier copies restores one through the import preview, with Undo. |
+| Backups | `core/save-model.mjs` wraps the save as `{ format: "pumpkin-patch-backup", revision: 1, gameVersion, state }`. Imports go through `repairSave` too, and the preview lists anything that will start fresh. The last download time is stored under `…-last-backup`; after seven days (once £1,000 is earned) a dot appears on the Settings gear. |
 
 To change the save format:
 
@@ -83,4 +85,6 @@ Paths that are built dynamically, such as `"assets/house/visitor-" + type + ".we
 
 ## Build-time values
 
-`__GAME_VERSION__` is replaced with `package.json`'s `version` at build time. It isn't used yet; see REVIEW R2.
+`__GAME_VERSION__` is replaced with `package.json`'s `version` at build time. Read it through `GAME_VERSION` in `platform/version.js`, which falls back to `"dev"` in Node. Settings shows it, and backups record it.
+
+`platform/polyfills.js` is the first import in `main.js`. It adds `Object.hasOwn` and `Element.replaceChildren` for older Safari and Android WebViews.
