@@ -5,7 +5,7 @@ import { Voxels, seeded, vary } from "./voxels.js";
 // south (0-26, the camera sits to the south), y is up. Layout follows
 // docs/GAME-BIBLE.md §3: cottage top left, big pumpkin left, the patch in the
 // centre, Skyla's shop top right, the stone path up the right, fence along the
-// bottom.
+// bottom, and an arch at the back opening onto the lake.
 export const MAP = { w: 40, d: 26 };
 // Twelve plots, three across and four rows deep; the first six are open at the start.
 export const PLOTS = [11.2, 13.8, 16.4, 19.0].flatMap((z) => [16.5, 20, 23.5].map((x) => ({ x, z })));
@@ -20,16 +20,28 @@ export const ROUTE_OUT = [[31.8, 10.2], [31.6, 12.6], [35, 10.6], [38, 8.6], [42
 const PATH = [[33, 27], ...ROUTE_IN.slice(1, 6), [35, 10.6], [38, 8.6], [41, 7]];
 
 const COL = {
-  grass: [0x3d3a26, 0x463d26, 0x38382a, 0x4a3e2a],
+  grass: [0x2e3020, 0x36321f, 0x2a2a1e, 0x3a3222],
+  yard: [0x5c4b48, 0x524245, 0x67544f, 0x584749, 0x4c3e40],
   soil: 0x4e3020, furrow: 0x3a2216,
   stone: [0x8c8094, 0x7a6f84, 0x9a8d9e, 0x6c6276],
   wood: 0x5a3a26, woodDark: 0x3b2618, woodLight: 0x7a5236,
   plaster: 0xe2d2b4, timber: 0x3b2618, roof: [0x4a2e2a, 0x553430, 0x3f2724],
   stoneWall: [0x6e6470, 0x5e5662, 0x7c7180],
   leaves: [0x8a2f1e, 0xc2552a, 0xe08a2e, 0x6a2a3a, 0xa8402a, 0x5a2a4a],
-  trunk: 0x2e1f1a, fence: 0x1c1418, lantern: 0xffc46a, window: 0xffb85a,
-  awning: [0xc76a2a, 0x5b2a4a], flowers: [0x9d55e6, 0xe8862e, 0xc2552a, 0x7a3fb0],
+  trunk: 0x2e1f1a, iron: 0x1c1418, fence: 0x4a2e1c, fenceLight: 0x6a4428, lantern: 0xffc46a, window: 0xffb85a,
+  awning: [0xd9782a, 0x5b2a4a], flowers: [0x9d55e6, 0xe8862e, 0xc2552a, 0x7a3fb0, 0xc89cff],
+  hay: 0xd9b45a, produce: [0xf0821e, 0xc2352a, 0x9d55e6, 0xe8b23a, 0xd9d2ff],
 };
+// Canopy palettes, dark (underside) to light (sunlit top): red, orange and plum trees.
+const CANOPY = [
+  [0x5a1820, 0x8a2422, 0xb8361e, 0xdc5a22, 0xf28a34],
+  [0x7a2c16, 0xb0461a, 0xd8701e, 0xf29a30, 0xffc252],
+  [0x3e1634, 0x60204a, 0x88305a, 0xb24862, 0xdc7458],
+];
+
+// The stone path out through the arch at the back, down to the lake.
+const ARCH = { x: 20, z: 3 };
+const nearArchPath = (x, z) => Math.abs(x - ARCH.x) < 1.15 && z < 9.1;
 
 const nearPath = (x, z, width) => {
   let best = Infinity;
@@ -41,59 +53,110 @@ const nearPath = (x, z, width) => {
   return best < width;
 };
 const inPatch = (x, z) => ((x - 20) / 7.6) ** 2 + ((z - 15.1) / 5.6) ** 2 < 1;
+const edge = (x, z) => x < 1.6 || x > 38.4 || z > 24.4 || (z < 2.8 && !nearArchPath(x, z));
+
+function cobbles(v, r, x, z, T, colors, amount) {
+  v.box(x, -0.5, z, T, 0.5, T, 0x2a2430);                                                // grout
+  for (const [ox, oz] of [[0, 0], [0.25, 0], [0, 0.25], [0.25, 0.25]])                   // four cobbles per tile
+    v.box(x + ox + 0.02, 0, z + oz + 0.02, 0.21, 0.04 + r() * 0.04, 0.21, vary(colors[(r() * colors.length) | 0], amount, r));
+}
 
 function ground(v, r) {
   const T = 0.5;
-  for (let x = 0; x < MAP.w; x += T) for (let z = -2; z < MAP.d + 2; z += T) {
+  for (let x = 0; x < MAP.w; x += T) for (let z = -1; z < MAP.d + 3; z += T) {
     const cx = x + T / 2, cz = z + T / 2;
-    if (nearPath(cx, cz, 0.95) || (cx > 31 && cx < 32.6 && cz > 8.6 && cz < 10.6)) {
-      v.box(x, -0.5, z, T, 0.5, T, 0x2e2834);                                              // grout
-      for (const [ox, oz] of [[0, 0], [0.25, 0], [0, 0.25], [0.25, 0.25]])                  // four cobbles per tile
-        v.box(x + ox + 0.02, 0, z + oz + 0.02, 0.21, 0.05 + r() * 0.04, 0.21, vary(COL.stone[(r() * 4) | 0], 0.1, r));
-    } else if (inPatch(cx, cz)) {
+    if (nearPath(cx, cz, 0.95) || nearArchPath(cx, cz) || (cx > 31 && cx < 32.6 && cz > 8.6 && cz < 10.6)) cobbles(v, r, x, z, T, COL.stone, 0.1);
+    else if (inPatch(cx, cz)) {
       const row = Math.round(cz * 2) % 2;
       v.box(x, -0.5, z, T, 0.5 + (row ? 0.05 : 0), T, row ? COL.soil : COL.furrow);        // tilled rows
-    } else {
+    } else if (edge(cx, cz)) {
       v.box(x, -0.5, z, T, 0.5 + r() * 0.06, T, vary(COL.grass[(r() * 4) | 0], 0.08, r));
-      if (r() < 0.06) v.box(x + r() * 0.3, 0.06, z + r() * 0.3, 0.14, 0.03, 0.14, COL.leaves[(r() * 6) | 0]); // fallen leaves
-      else if (r() < 0.025) v.box(x + 0.2, 0.05, z + 0.2, 0.1, 0.22, 0.1, COL.flowers[(r() * 4) | 0]);
+      if (r() < 0.3) v.box(x + r() * 0.3, 0.06, z + r() * 0.3, 0.16, 0.03, 0.16, COL.leaves[(r() * 6) | 0]); // a carpet of leaves
+      else if (r() < 0.06) v.box(x + 0.2, 0.05, z + 0.2, 0.12, 0.24, 0.12, COL.flowers[(r() * 5) | 0]);
+    } else {
+      cobbles(v, r, x, z, T, COL.yard, 0.08);                                            // the cobbled yard
+      if (r() < 0.07) v.box(x + r() * 0.3, 0.09, z + r() * 0.3, 0.16, 0.03, 0.16, COL.leaves[(r() * 6) | 0]);
     }
   }
-}
-
-function hills(v, r) {
-  // Distant ridges and a castle on the far hill: flat, cool and dark so they sit back.
-  for (let x = -6; x < MAP.w + 6; x += 1) {
-    const h1 = 4 + Math.sin(x / 5) * 1.6 + Math.sin(x / 2.3) * 0.5, h2 = 2.4 + Math.sin(x / 3.4 + 2) * 1.2;
-    v.box(x, 0, -12, 1, h1, 3, 0x251b38);
-    v.box(x, 0, -8, 1, h2, 3, 0x2d2142);
-  }
-  const cx = 33, cz = -11.5, base = 5.8;
-  v.box(cx - 2, base - 1, cz - 1, 4, 2.2, 2, 0x1c1528);
-  for (const [dx, h] of [[-2.2, 3.2], [1.6, 2.6], [-0.3, 4.2]]) {
-    v.box(cx + dx, base, cz - 0.4, 0.8, h, 0.8, 0x1c1528);
-    v.box(cx + dx + 0.25, base + h * 0.6, cz + 0.42, 0.3, 0.3, 0.05, 0xffc46a, true);  // lit castle windows
+  // Rough grass beyond the map's edges, for when the view is zoomed out.
+  for (let x = -16; x < MAP.w + 16; x += 2) for (let z = -1; z < MAP.d + 12; z += 2) {
+    if (x >= 0 && x < MAP.w && z < MAP.d + 3) continue;
+    v.box(x, -0.5, z, 2, 0.5, 2, vary(COL.grass[(r() * 4) | 0], 0.1, r));
   }
 }
 
-function tree(v, r, x, z, size) {
-  v.block(x, 0, z, 0.6 * size, 2.4 * size, 0.6 * size, COL.trunk);
-  const top = 2.2 * size;
-  for (let i = 0; i < 26; i++) {
-    const a = r() * Math.PI * 2, d = r() * 1.5 * size, y = top + r() * 2 * size, s = (0.6 + r() * 0.6) * size;
-    v.block(x + Math.cos(a) * d, y, z + Math.sin(a) * d * 0.8, s, s * 0.8, s, vary(COL.leaves[(r() * 6) | 0], 0.12, r));
+// Autumn trees: a trunk and a hollow, lumpy canopy shaded dark underneath and
+// bright on top, so each reads as a round voxel crown from above.
+function tree(v, r, x, z, size, kind = (r() * 3) | 0) {
+  const pal = CANOPY[kind], s = 0.42, R = 1.9 * size, cy = 3.6 * size;
+  v.block(x, 0, z, 0.5 * size, cy, 0.5 * size, COL.trunk);
+  v.block(x + 0.3 * size, cy * 0.55, z, 0.9 * size, 0.22, 0.22, COL.trunk);
+  for (let i = -R; i <= R; i += s) for (let j = -R; j <= R; j += s) for (let k = -R; k <= R; k += s) {
+    const d = Math.hypot(i, j * 1.15, k) / R;
+    if (d > 1 - r() * 0.14 || d < 0.72) continue;
+    const shade = Math.round((j / R * 0.5 + 0.5) * 3 + (k / R) * 0.7 + (r() - 0.5) * 1.1);
+    v.box(x + i, cy + j, z + k, s, s, s, vary(pal[Math.max(0, Math.min(4, shade))], 0.07, r));
   }
 }
 
-function lanternPost(v, x, z, lights, warm = true) {
-  v.block(x, 0, z, 0.18, 1.7, 0.18, COL.fence);
-  v.block(x, 1.7, z, 0.5, 0.08, 0.5, COL.fence);
-  v.block(x, 1.78, z, 0.34, 0.42, 0.34, warm ? COL.lantern : 0xd9c8ff, true);
-  v.block(x, 2.2, z, 0.44, 0.1, 0.44, COL.fence);
-  lights.push({ x, y: 2.1, z });
+function lantern(v, x, y, z, lights, light = true) {
+  v.block(x, y, z, 0.42, 0.08, 0.42, COL.iron);
+  v.block(x, y + 0.08, z, 0.32, 0.4, 0.32, COL.lantern, true);
+  v.block(x, y + 0.48, z, 0.42, 0.1, 0.42, COL.iron);
+  v.block(x, y + 0.58, z, 0.12, 0.12, 0.12, COL.iron);
+  if (light) lights.push({ x, y: y + 0.3, z });
 }
 
-function cottage(v, r) {
+function lanternPost(v, x, z, lights, light = true) {
+  v.block(x, 0, z, 0.24, 1.8, 0.24, COL.fence);
+  v.block(x, 1.8, z, 0.34, 0.1, 0.34, COL.fenceLight);
+  lantern(v, x, 1.9, z, lights, light);
+}
+
+// A jack-o'-lantern: a ribbed pumpkin with a glowing carved face.
+function jackOLantern(v, r, x, z, s, lights) {
+  pumpkinBlock(v, x, 0, z, s, 0xf0821e, r);
+  const cx = x + s * 0.11, front = z + s * 0.66;
+  for (const ex of [-0.22, 0.2]) v.box(cx + ex * s - s * 0.08, s * 0.42, front, s * 0.16, s * 0.14, 0.03, 0xffb13a, true);
+  v.box(cx - s * 0.26, s * 0.18, front, s * 0.52, s * 0.1, 0.03, 0xffb13a, true);
+  if (lights) lights.push({ x, y: 0.5, z: z + 0.6 });
+}
+
+function crate(v, r, x, z, w = 1.1) {
+  v.block(x, 0, z, w, 0.62, 0.72, vary(COL.woodLight, 0.08, r));
+  for (const y of [0.12, 0.42]) v.block(x, y, z + 0.37, w, 0.08, 0.02, COL.woodDark);   // slats
+  for (let i = 0; i < Math.round(w / 0.24); i++) for (const dz of [-0.16, 0.12])
+    v.block(x - w / 2 + 0.14 + i * 0.24, 0.62, z + dz + (r() - 0.5) * 0.05, 0.22, 0.2, 0.22, vary(COL.produce[(r() * 5) | 0], 0.08, r));
+}
+
+function barrel(v, r, x, z) {
+  v.block(x, 0, z, 0.62, 0.9, 0.62, 0x6a4028);
+  v.block(x, 0.12, z, 0.72, 0.66, 0.72, 0x7a4a2e);
+  for (const y of [0.18, 0.66]) v.block(x, y, z, 0.74, 0.06, 0.74, 0x2a2020);
+  for (let i = 0; i < 4; i++) v.block(x - 0.15 + (i % 2) * 0.3, 0.9, z - 0.15 + (i >> 1) * 0.3, 0.26, 0.2, 0.26, vary(COL.produce[(r() * 3) | 0], 0.08, r));
+}
+
+function hay(v, r, x, z, w = 1.4) {
+  for (let i = 0; i < w; i += 0.2) for (let j = 0; j < 0.7; j += 0.175) v.box(x - w / 2 + i, j, z - 0.45, 0.2, 0.175, 0.9, vary(COL.hay, 0.08, r));
+  for (const dx of [-w / 4, w / 4]) v.block(x + dx, 0, z, 0.06, 0.72, 0.92, 0x8a6a2a);  // twine
+}
+
+function bench(v, x, z) {
+  for (const dx of [-0.65, 0.65]) v.block(x + dx, 0, z, 0.12, 0.45, 0.4, COL.woodDark);
+  v.block(x, 0.45, z, 1.7, 0.1, 0.48, COL.woodLight);
+  for (const dx of [-0.65, 0.65]) v.block(x + dx, 0.45, z - 0.2, 0.1, 0.6, 0.08, COL.woodDark);
+  v.block(x, 0.82, z - 0.2, 1.7, 0.18, 0.06, COL.woodLight);
+}
+
+function flowers(v, r, x, z, n = 6) {
+  for (let i = 0; i < n; i++) {
+    const fx = x + (r() - 0.5) * 0.9, fz = z + (r() - 0.5) * 0.7;
+    v.box(fx, 0, fz, 0.05, 0.22, 0.05, 0x3d5a2a);
+    v.box(fx - 0.06, 0.22, fz - 0.06, 0.17, 0.12, 0.17, COL.flowers[(r() * 5) | 0]);
+  }
+}
+
+function cottage(v, r, lights) {
   const { x, z } = COTTAGE, w = 7, d = 5, x0 = x - w / 2, z0 = z - d / 2;
   for (let i = 0; i < w; i += 0.5) for (const zz of [z0, z0 + d - 0.5]) v.box(x0 + i, 0, zz, 0.5, 0.7, 0.5, vary(COL.stoneWall[(r() * 3) | 0], 0.06, r)); // stone footing
   v.box(x0, 0, z0, 0.5, 0.7, d, COL.stoneWall[1]); v.box(x0 + w - 0.5, 0, z0, 0.5, 0.7, d, COL.stoneWall[1]);
@@ -101,29 +164,41 @@ function cottage(v, r) {
   for (const tx of [x0, x0 + 2.2, x0 + 4.8, x0 + w - 0.25]) v.box(tx, 0.7, z0 + d - 0.1, 0.25, 3.3, 0.15, COL.timber); // timber frame
   v.box(x0, 2.4, z0 + d - 0.1, w, 0.22, 0.15, COL.timber);
   v.box(x0, 3.9, z0 + d - 0.1, w, 0.22, 0.15, COL.timber);
-  // Round-topped door with steps and pumpkins.
+  // Round-topped door under a little porch roof, with steps and pumpkins.
   v.box(x - 0.6, 0.7, z0 + d - 0.12, 1.2, 1.9, 0.2, COL.woodLight);
+  for (let i = 0; i < 4; i++) v.box(x - 0.55 + i * 0.3, 0.75, z0 + d + 0.08, 0.04, 1.8, 0.04, COL.woodDark);
   v.box(x - 0.45, 2.6, z0 + d - 0.12, 0.9, 0.2, 0.2, COL.woodLight);
   v.box(x + 0.35, 1.5, z0 + d + 0.06, 0.12, 0.12, 0.08, 0xd9a35a);
-  v.box(x - 1, 0, z0 + d, 2, 0.35, 0.6, COL.stoneWall[2]); v.box(x - 0.8, 0, z0 + d + 0.6, 1.6, 0.18, 0.5, COL.stoneWall[0]);
-  // Glowing windows with mullions.
+  for (let k = 0; k < 3; k++) v.box(x - 1.3 + k * 0.1, 3.0 - k * 0.12, z0 + d + k * 0.3, 2.6 - k * 0.2, 0.14, 0.32, vary(COL.roof[k], 0.05, r));
+  v.box(x - 1.1, 0, z0 + d, 2.2, 0.35, 0.6, COL.stoneWall[2]); v.box(x - 0.9, 0, z0 + d + 0.6, 1.8, 0.18, 0.5, COL.stoneWall[0]);
+  lantern(v, x - 1.2, 1.7, z0 + d + 0.12, lights); lantern(v, x + 1.2, 1.7, z0 + d + 0.12, lights, false);
+  // Glowing windows with mullions and window boxes of flowers.
   for (const wx of [x0 + 1.1, x0 + w - 2.1]) {
     v.box(wx, 1.6, z0 + d - 0.08, 1, 1.1, 0.12, COL.window, true);
     v.box(wx + 0.45, 1.6, z0 + d + 0.02, 0.1, 1.1, 0.06, COL.timber);
     v.box(wx, 2.1, z0 + d + 0.02, 1, 0.1, 0.06, COL.timber);
-    v.box(wx - 0.1, 1.5, z0 + d - 0.05, 1.2, 0.12, 0.3, COL.woodDark);              // sill
+    v.box(wx - 0.1, 1.3, z0 + d - 0.05, 1.2, 0.3, 0.35, COL.woodDark);
+    for (let i = 0; i < 5; i++) v.box(wx - 0.05 + i * 0.24, 1.6, z0 + d + 0.05, 0.16, 0.14, 0.16, COL.flowers[(i * 3) % 5]);
   }
   v.box(x0 + 3, 3.1, z0 + d - 0.08, 0.9, 0.7, 0.12, COL.window, true);                // dormer light
   // Steep stepped shingle roof, overhanging.
   for (let i = 0; i < 9; i++) {
     const inset = i * 0.38, y = 4 + i * 0.42;
-    for (let k = 0; k < w + 1.2; k += 0.6) v.box(x0 - 0.6 + k, y, z0 - 0.5 + inset, 0.6, 0.42, d + 1 - inset * 2, vary(COL.roof[(r() * 3) | 0], 0.08, r));
+    for (let k = 0; k < w + 1.2; k += 0.6) v.box(x0 - 0.6 + k, y, z0 - 0.5 + inset, 0.6, 0.42, d + 1 - inset * 2, vary(COL.roof[(r() * 3) | 0], 0.1, r));
   }
+  for (let k = 0; k < w + 1.2; k += 0.6) for (let i = 0; i < 9; i += 2) v.box(x0 - 0.6 + k, 4.38 + i * 0.42, z0 + d + 0.44 - i * 0.38, 0.6, 0.05, 0.06, 0x2a1a16); // shingle lines
   v.box(x0 + 5.2, 4.2, z0 + 1, 0.9, 4.4, 0.9, COL.stoneWall[1]);                       // chimney
   v.box(x0 + 5.1, 8.6, z0 + 0.9, 1.1, 0.25, 1.1, COL.stoneWall[2]);
-  for (let i = 0; i < 18; i++) v.box(x0 + r() * 0.5, 0.6 + r() * 3, z0 + d - 0.05, 0.25, 0.25, 0.12, vary(0x3d5a2a, 0.2, r)); // ivy
-  for (const [px, s] of [[x - 1.5, 0.5], [x + 1.4, 0.4], [x0 + 0.6, 0.45]]) pumpkinBlock(v, px, 0, z0 + d + 0.6, s, 0xf0821e, r);
-  return { door: { x, z: z0 + d + 1.2 }, glow: [{ x: x0 + 1.6, y: 2, z: z0 + d + 0.5 }, { x: x0 + w - 1.6, y: 2, z: z0 + d + 0.5 }] };
+  for (let i = 0; i < 22; i++) v.box(x0 + r() * 0.5, 0.6 + r() * 3, z0 + d - 0.05, 0.25, 0.25, 0.12, vary(0x3d5a2a, 0.2, r)); // ivy
+  for (let i = 0; i < 16; i++) v.box(x0 + w - 0.4 + r() * 0.4, 0.6 + r() * 3.2, z0 + d - 0.02, 0.24, 0.24, 0.12, vary(CANOPY[0][2 + (i % 3)], 0.1, r)); // red creeper
+  jackOLantern(v, r, x - 1.7, z0 + d + 0.5, 0.55, null);
+  pumpkinBlock(v, x + 1.6, 0, z0 + d + 0.6, 0.45, 0xf0821e, r);
+  pumpkinBlock(v, x + 1.5, 0.35, z0 + d + 0.1, 0.32, 0xd9d2ff, r);
+  // Signpost and crates by the garden gate.
+  v.block(x0 - 0.6, 0, z0 + d + 1.6, 0.18, 1.6, 0.18, COL.fence);
+  v.block(x0 - 0.6, 1.0, z0 + d + 1.7, 1.2, 0.6, 0.08, COL.woodLight);
+  crate(v, r, x + 3.6, z0 + d + 0.6); barrel(v, r, x + 4.7, z0 + d + 0.4);
+  return { door: { x, z: z0 + d + 1.2 } };
 }
 
 const darker = (hex) => new THREE.Color(hex).multiplyScalar(0.82).getHex();
@@ -140,93 +215,216 @@ export function pumpkinBlock(v, x, y, z, s, color, r) {
 function bigPumpkinStage(v, r) {
   const { x, z } = BIG_PUMPKIN;
   for (let a = 0; a < Math.PI * 2; a += Math.PI / 18) for (let rr = 0; rr < 2.6; rr += 0.5)
-    v.block(x + Math.cos(a) * rr, 0, z + Math.sin(a) * rr * 0.9, 0.55, 0.5, 0.55, rr > 2.2 ? COL.woodDark : vary(COL.wood, 0.1, r)); // round wooden dais
-  for (let a = 0.3; a < Math.PI * 2; a += Math.PI / 4) {
-    const cx = x + Math.cos(a) * 2.9, cz = z + Math.sin(a) * 2.6;
-    v.block(cx, 0, cz, 0.16, 0.32, 0.16, 0xe8dcc8);                                     // candles
-    v.block(cx, 0.32, cz, 0.08, 0.14, 0.08, 0xffd36a, true);
+    v.block(x + Math.cos(a) * rr, 0, z + Math.sin(a) * rr * 0.9, 0.55, 0.5, 0.55, rr > 2.2 ? 0x4a1e1a : vary(0x6a2a20, 0.1, r)); // round wine-red dais
+  for (let a = 0.3; a < Math.PI * 2; a += Math.PI / 6) {
+    const cx = x + Math.cos(a) * 2.9, cz = z + Math.sin(a) * 2.6, h = 0.22 + ((a * 7) % 3) * 0.08;
+    v.block(cx, 0, cz, 0.14, h, 0.14, 0xe8dcc8);                                       // candles
+    v.block(cx, h, cz, 0.07, 0.12, 0.07, 0xffd36a, true);
   }
+  flowers(v, r, x - 3.2, z + 2.2, 5); flowers(v, r, x + 3, z - 2.4, 4);
 }
 
 function patchBorder(v, r) {
-  for (let a = 0; a < Math.PI * 2; a += 0.09) {
+  for (let a = 0; a < Math.PI * 2; a += 0.085) {
     const x = 20 + Math.cos(a) * 7.9, z = 15.1 + Math.sin(a) * 5.9;
     if (nearPath(x, z, 1.2)) continue;
-    v.block(x, 0, z, 0.36, 0.22 + r() * 0.12, 0.36, vary(COL.stone[(r() * 4) | 0], 0.1, r)); // stone edging
+    v.block(x, 0, z, 0.4, 0.26 + r() * 0.1, 0.4, vary(0xa89cb0, 0.1, r));            // pale stone edging
   }
 }
 
-function shop(v, r) {
+function shop(v, r, lights) {
   const { x, z, counterZ } = SHOP, w = 9, d = 5, x0 = x - w / 2, z0 = z - d / 2;
   for (let i = 0; i < d; i += 0.5) { v.box(x0, 0, z0 + i, 0.4, 3.6, 0.5, vary(COL.wood, 0.1, r)); v.box(x0 + w - 0.4, 0, z0 + i, 0.4, 3.6, 0.5, vary(COL.wood, 0.1, r)); }
-  for (let i = 0; i < w; i += 0.5) v.box(x0 + i, 0, z0, 0.5, 4.4, 0.4, vary(COL.woodDark, 0.12, r)); // back wall planks
+  for (let i = 0; i < w; i += 0.5) v.box(x0 + i, 0, z0, 0.5, 4.6, 0.4, vary(COL.woodDark, 0.12, r)); // back wall planks
+  // A gable above the back wall carrying the sign and a carved pumpkin.
+  for (let i = 0; i < 8; i++) v.box(x0 - 0.3 + i * 0.32, 4.6 + i * 0.3, z0 - 0.1, w + 0.6 - i * 0.64, 0.3, 0.55, vary(COL.roof[i % 3], 0.06, r));
+  v.box(x - 0.3, 7.0, z0 + 0.5, 0.6, 0.2, 0.2, 0x5a4a1e);
   v.box(x0 + 0.4, 0, z0 + 0.4, w - 0.8, 0.12, d - 0.4, COL.woodDark);
-  // Shelves of glowing jars along the back wall.
-  for (const y of [1.3, 2.4, 3.4]) {
+  // Shelves of glowing jars and little pumpkins along the back wall.
+  for (const y of [1.3, 2.3, 3.3]) {
     v.box(x0 + 0.6, y, z0 + 0.4, w - 1.2, 0.12, 0.6, COL.woodLight);
-    for (let i = 0; i < 12; i++) v.box(x0 + 0.9 + i * 0.62, y + 0.12, z0 + 0.55, 0.3, 0.4, 0.3, [0xffb85a, 0xb774ff, 0xd9d2ff, 0xf5c84a][(i + y * 3) % 4 | 0], i % 3 === 0);
+    for (let i = 0; i < 12; i++) {
+      const c = [0xffb85a, 0xf0821e, 0xb774ff, 0xd9d2ff, 0xf5c84a][(i + y * 3) % 5 | 0];
+      v.box(x0 + 0.9 + i * 0.62, y + 0.12, z0 + 0.55, 0.32, 0.36 + (i % 2) * 0.1, 0.32, c, i % 2 === 0);
+    }
   }
   // Counter across the front.
   v.box(x0 + 0.6, 0, counterZ - 0.9, w - 1.2, 1.15, 0.9, COL.wood);
   v.box(x0 + 0.5, 1.15, counterZ - 1.0, w - 1, 0.15, 1.1, COL.woodLight);
   for (let i = 0; i < w - 1.2; i += 0.6) v.box(x0 + 0.6 + i, 0.1, counterZ - 0.02, 0.06, 0.95, 0.04, COL.woodDark);
+  for (let i = 0; i < 5; i++) jackOLantern(v, r, x0 + 1.4 + i * 1.6, counterZ + 0.25, 0.42, null);   // a row of lit pumpkins at its foot
   v.box(x - 2.6, 1.3, counterZ - 0.7, 0.6, 0.35, 0.4, 0xd9a35a);                        // brass till
-  v.box(x + 2.2, 1.3, counterZ - 0.6, 0.25, 0.25, 0.25, 0xd9a35a);                       // the bell Skyla rings
-  // Corner posts and the striped awning sloping forward.
-  for (const px of [x0, x0 + w - 0.35]) v.box(px, 0, counterZ - 0.35, 0.35, 4.3, 0.35, COL.woodDark);
+  v.box(x + 2.4, 1.3, counterZ - 0.6, 0.25, 0.25, 0.25, 0xd9a35a);                       // the bell Skyla rings
+  // Corner posts with lanterns, and the striped awning sloping forward. It sits
+  // high so Skyla on the counter shows beneath it.
+  for (const px of [x0, x0 + w - 0.35]) { v.box(px, 0, counterZ - 0.35, 0.35, 4.5, 0.35, COL.woodDark); lantern(v, px + 0.17, 2.3, counterZ + 0.05, lights); }
   for (let i = 0; i < w + 0.8; i += 0.9) for (let k = 0; k < 4; k++)
-    v.box(x0 - 0.4 + i, 4.5 - k * 0.32, z0 + 1.6 + k * 0.8, 0.9, 0.18, 0.8, COL.awning[Math.round(i / 0.9) % 2]);
-  for (let i = 0; i < w + 0.8; i += 0.45) v.box(x0 - 0.4 + i, 3.25 - (Math.round(i / 0.45) % 2) * 0.12, counterZ + 1.05, 0.45, 0.22, 0.1, COL.awning[Math.round(i / 0.9) % 2]); // scalloped edge
-  // Crates of pumpkins and a hay bale out front.
-  for (const [cx, cz] of [[x0 - 1.2, counterZ + 0.4], [x0 + w + 0.6, counterZ - 0.4]]) {
-    v.block(cx, 0, cz, 1.3, 0.8, 1, COL.woodLight);
-    for (let i = 0; i < 3; i++) pumpkinBlock(v, cx - 0.4 + i * 0.4, 0.8, cz, 0.32, [0xf0821e, 0xd9d2ff, 0x9d55e6][i], r);
-  }
-  v.block(x0 + w + 0.4, 0, counterZ + 1.2, 1.4, 0.7, 0.9, 0xc9a65a);
+    v.box(x0 - 0.4 + i, 4.9 - k * 0.24, z0 + 1.4 + k * 0.62, 0.9, 0.16, 0.62, COL.awning[Math.round(i / 0.9) % 2]);
+  for (let i = 0; i < w + 0.8; i += 0.45) v.box(x0 - 0.4 + i, 3.88 - (Math.round(i / 0.45) % 2) * 0.12, z0 + 3.86, 0.45, 0.22, 0.1, COL.awning[Math.round(i / 0.9) % 2]); // scalloped edge
+  // Crates of pumpkins, a hay bale, a chalkboard and a banner out front.
+  crate(v, r, x0 - 1.1, counterZ + 0.3); crate(v, r, x0 - 0.8, counterZ + 1.3, 0.9);
+  crate(v, r, x0 + w + 0.7, counterZ - 0.6); barrel(v, r, x0 + w + 0.8, counterZ + 0.6);
+  hay(v, r, x0 + w + 0.6, counterZ + 1.8, 1.2);
+  v.block(x + 4.2, 0, counterZ + 1.6, 0.9, 1.2, 0.12, COL.woodLight);                    // chalkboard
+  v.block(x + 4.2, 0.2, counterZ + 1.67, 0.72, 0.85, 0.02, 0x1e1e24);
+  for (let i = 0; i < 4; i++) v.block(x + 4.1 + (i % 2) * 0.1, 0.36 + i * 0.17, counterZ + 1.69, 0.42 - (i % 2) * 0.14, 0.04, 0.01, 0xe8e2d8);
+  v.block(x0 + w + 1.7, 0, counterZ - 1.4, 0.12, 3.8, 0.12, COL.iron);                   // banner pole
+  v.box(x0 + w + 1.76, 2.0, counterZ - 1.42, 1.1, 1.6, 0.06, 0x5b2a4a);
+  v.box(x0 + w + 2.06, 2.5, counterZ - 1.38, 0.5, 0.5, 0.04, 0xf0821e);
   return { lights: [{ x: x - 2, y: 3, z: counterZ - 1.5 }, { x: x + 2.4, y: 3, z: counterZ - 1.5 }] };
 }
 
-function fence(v, lights) {
-  const post = (x, z) => { v.block(x, 0, z, 0.2, 1.1, 0.2, COL.fence); v.block(x, 1.1, z, 0.12, 0.16, 0.12, COL.fence); };
-  for (let x = 0.4; x < MAP.w; x += 0.8) {
-    if (x > 31.4 && x < 34.6) continue;
-    post(x, 24.6);
-    v.box(x, 0.45, 24.55, 0.8, 0.1, 0.1, COL.fence); v.box(x, 0.85, 24.55, 0.8, 0.1, 0.1, COL.fence);
-  }
-  for (let z = 10; z < 24.6; z += 0.8) { post(0.4, z); v.box(0.35, 0.45, z, 0.1, 0.1, 0.8, COL.fence); }
-  for (let z = 12.4; z < 24.6; z += 0.8) { if (nearPath(39.6, z, 1.2)) continue; post(39.6, z); v.box(39.55, 0.45, z, 0.1, 0.1, 0.8, COL.fence); }
-  for (const x of [4, 12, 22, 30.6, 35.4]) lanternPost(v, x, 25.1, lights);
+// Wooden picket fences: round the front and sides, and across the back to the arch.
+function fence(v, r, lights) {
+  const run = (ax, az, bx, bz, skip = () => false) => {
+    const len = Math.hypot(bx - ax, bz - az), n = Math.round(len / 0.4), ux = (bx - ax) / len, uz = (bz - az) / len;
+    for (let i = 0; i <= n; i++) {
+      const x = ax + ux * i * 0.4, z = az + uz * i * 0.4;
+      if (skip(x, z)) continue;
+      if (i % 4 === 0) { v.block(x, 0, z, 0.24, 1.25, 0.24, COL.fence); v.block(x, 1.25, z, 0.3, 0.08, 0.3, COL.fenceLight); }
+      else v.block(x, 0, z, ux ? 0.16 : 0.08, 0.95 + (i % 2) * 0.06, uz ? 0.16 : 0.08, vary(COL.fenceLight, 0.12, r));
+      if (i < n && !skip(x + ux * 0.4, z + uz * 0.4)) for (const y of [0.3, 0.75]) v.box(Math.min(x, x + ux * 0.4), y, Math.min(z, z + uz * 0.4), Math.abs(ux) * 0.4 + 0.08, 0.1, Math.abs(uz) * 0.4 + 0.08, COL.fence);
+    }
+  };
+  run(0.4, 24.6, MAP.w - 0.4, 24.6, (x) => x > 31.2 && x < 34.8);
+  run(0.4, 10, 0.4, 24.6);
+  run(39.6, 12.4, 39.6, 24.6, (x, z) => nearPath(x, z, 1.2));
+  run(11.2, 2.9, 27.4, 2.9, (x) => x > ARCH.x - 1.6 && x < ARCH.x + 1.6);
+  for (const x of [4, 10, 16, 24, 30.6, 35.4]) lanternPost(v, x, 25.1, lights, x !== 10 && x !== 24);
+  for (const z of [14, 20]) lanternPost(v, 0.9, z, lights, z === 20);
+  for (const z of [16, 21.6]) lanternPost(v, 39.1, z, lights, false);
 }
 
+// The leafy arch over the back gate, with lanterns on its posts.
+function arch(v, r, lights) {
+  const { x, z } = ARCH;
+  for (const dx of [-1.5, 1.5]) { v.block(x + dx, 0, z, 0.32, 2.9, 0.32, COL.fence); lantern(v, x + dx, 2.9, z + 0.3, lights, dx < 0); }
+  for (let a = 0; a <= Math.PI; a += 0.07) for (let rr = 1.35; rr < 2.3; rr += 0.32) for (let dz = -0.45; dz < 0.5; dz += 0.32) {
+    if (r() < 0.25) continue;
+    v.block(x + Math.cos(a) * rr * 1.05, 2.4 + Math.sin(a) * rr * 0.95, z + dz, 0.34, 0.34, 0.34, vary(CANOPY[(r() * 2) | 0][1 + ((r() * 4) | 0)], 0.08, r));
+  }
+}
+
+// String lights draped along the back fence either side of the arch.
 function stringLights(v) {
-  const poles = [[11.6, 9.6], [20, 8.8], [28.4, 9.6]];
-  for (const [x, z] of poles) { v.block(x, 0, z, 0.22, 4, 0.22, COL.fence); v.block(x, 4, z, 0.4, 0.12, 0.12, COL.fence); }
-  for (let p = 1; p < poles.length; p++) {
-    const [ax, az] = poles[p - 1], [bx, bz] = poles[p];
-    for (let t = 0.04; t < 1; t += 0.06) {
-      const x = ax + (bx - ax) * t, z = az + (bz - az) * t, y = 3.9 - Math.sin(t * Math.PI) * 0.9;
-      v.block(x, y, z, 0.05, 0.05, 0.05, COL.fence);
-      v.block(x, y - 0.18, z, 0.14, 0.18, 0.14, [0xffc46a, 0xffd894, 0xff9a4a][Math.round(t * 50) % 3], true);
+  for (const [ax, bx] of [[11.2, 18.4], [21.6, 27.4]]) for (let x = ax; x < bx; x += 1.6) {
+    for (let t = 0.05; t < 1; t += 0.12) {
+      const px = x + t * 1.6, y = 1.55 - Math.sin(t * Math.PI) * 0.35;
+      if (px > bx) break;
+      v.block(px, y + 0.14, 2.9, 0.06, 0.04, 0.06, COL.iron);
+      v.block(px, y, 2.9, 0.13, 0.15, 0.13, [0xffc46a, 0xffd894, 0xff9a4a, 0xc89cff][Math.round(px * 3) % 4], true);
     }
   }
+}
+
+// The far shore, painted as pixel art on a backdrop that leans back to face the
+// camera: night sky, crescent moon, mountains, the castle on its hill, a lakeside
+// village and its reflections. One pixel is an eighth of a world unit, the same
+// grain as the finest voxels, so it reads as part of the voxel world.
+export function buildBackdrop(pitch) {
+  const U = 8, X0 = -18, W = 76 * U, H = 30 * U, horizon = H - 2.5 * U;
+  const canvas = document.createElement("canvas"); canvas.width = W; canvas.height = H;
+  const g = canvas.getContext("2d"), r = seeded(77);
+  const hex = (c) => "#" + c.toString(16).padStart(6, "0");
+  const px = (x, y, c, w = 1, h = 1) => { g.fillStyle = hex(c); g.fillRect(x, y, w, h); };
+  const X = (wx) => Math.round((wx - X0) * U);
+  const mix = (a, b, t) => { const ca = new THREE.Color(a), cb = new THREE.Color(b); return ca.lerp(cb, t).getHex(); };
+  // Sky in pixel bands, lighter towards the horizon, with stars and clouds.
+  for (let y = 0; y < horizon; y += 3) px(0, y, y / horizon < 0.5 ? mix(0x120a28, 0x2a1858, y / horizon * 2) : mix(0x2a1858, 0x5a3a8c, y / horizon * 2 - 1), W, 3);
+  for (let i = 0; i < 500; i++) px((r() * W) | 0, (r() * horizon * 0.95) | 0, r() < 0.7 ? 0xfff2c8 : 0xc8b8ff);
+  for (const [cx, up, len] of [[80, 34, 70], [300, 40, 50], [460, 28, 80], [180, 22, 56], [540, 20, 40], [20, 24, 48], [380, 58, 60], [120, 70, 44]]) {
+    const cy = horizon - up;
+    for (let k = 0; k < 4; k++) px(cx + k * 5, cy - k * 2, 0x4a3484, len - k * 10, 2);
+    px(cx - 6, cy + 2, 0x3a2870, len + 12, 3);
+  }
+  // Crescent moon with a soft dithered halo.
+  const mx = X(32.5), my = horizon - 27;
+  for (let y = -20; y <= 20; y++) for (let x = -20; x <= 20; x++) {
+    const d = Math.hypot(x, y);
+    if (d <= 10 && Math.hypot(x - 5, y + 3.5) > 8.5) px(mx + x, my + y, d > 9 ? 0xffc870 : 0xffe6a8);
+    else if (d > 11 && d < 19 && (x + y) % 2 === 0 && r() < (19 - d) / 9) px(mx + x, my + y, 0x6a4aa8);
+  }
+  // Mountains, then nearer hills.
+  for (let x = 0; x < W; x++) {
+    const h1 = 22 + Math.sin(x / 37) * 7 + Math.sin(x / 13) * 3 + Math.abs(Math.sin(x / 61)) * 8;
+    px(x, horizon - h1, 0x3a2a6a, 1, h1);
+    px(x, horizon - h1, 0x4e3a86, 1, 2);
+    const h2 = 10 + Math.sin(x / 23 + 2) * 3 + Math.sin(x / 9.1) * 1.5;
+    px(x, horizon - h2, 0x2a1e4e, 1, h2);
+  }
+  // The castle on its hill, to the right.
+  const cx = X(38.5);
+  for (let x = -60; x < 60; x++) { const h = 22 - (x * x) / 170; if (h > 0) px(cx + x, horizon - h, 0x24183e, 1, h); }
+  const castle = 0x160f26, towers = [[-11, 10, 3], [-5, 16, 4], [2, 12, 3], [8, 8, 3]];
+  px(cx - 12, horizon - 22, castle, 23, 7);
+  for (const [dx, h, w] of towers) {
+    px(cx + dx, horizon - 16 - h, castle, w, h);
+    for (let k = 0; k < w; k++) px(cx + dx + k, horizon - 16 - h - Math.min(k, w - 1 - k) - 2, castle, 1, 2 + Math.min(k, w - 1 - k));
+    px(cx + dx + 1, horizon - 16 - h + 3, 0xffc46a); if (h > 11) px(cx + dx + 1, horizon - 16 - h + 8, 0xffb85a);
+  }
+  for (let i = 0; i < 6; i++) px(cx - 10 + i * 4, horizon - 19, 0xffb85a);
+  for (let i = 0; i < 14; i++) px(cx - 26 + ((r() * 52) | 0), horizon - 2 - ((r() * 11) | 0), 0xffb85a);
+  // The village on the far shore, with lit windows, and dark pines between.
+  const lit = [];
+  for (let x = 2; x < W; x += 3 + ((r() * 5) | 0)) {
+    const t = r(), h = 3 + ((r() * 4) | 0);
+    if (t < 0.55) { for (let k = 0; k < h; k++) px(x - (k >> 1), horizon - k, 0x161a32, 1 + 2 * (k >> 1) - k % 2 + 1, 1); }
+    else {
+      const w = 4 + ((r() * 3) | 0), hh = 3 + ((r() * 2) | 0);
+      px(x, horizon - hh, 0x2a1c34, w, hh);
+      for (let k = 0; k < 3; k++) px(x - 1 + k, horizon - hh - 1 - k, 0x3a2030, w + 2 - k * 2, 1);
+      for (let k = 1; k < w - 1; k += 2) { px(x + k, horizon - hh + 1, 0xffb85a, 1, 1); lit.push(x + k); }
+    }
+  }
+  // The lake: still water with shimmer lines and the lights reflected in it.
+  for (let y = horizon; y < H - U; y++) px(0, y, mix(0x3a2c7a, 0x1e1848, (y - horizon) / (H - U - horizon)), W, 1);
+  for (let i = 0; i < 50; i++) px((r() * W) | 0, horizon + 2 + ((r() * (H - U - horizon - 3)) | 0), 0x5a48a0, 2 + ((r() * 6) | 0), 1);
+  for (const x of lit) for (let y = horizon + 1; y < H - U - 1; y += 2) px(x + (((y >> 1) % 2) ? 1 : 0), y, 0xd88a3e, 1 + (r() < 0.4), 1);
+  for (let y = horizon + 1; y < H - U - 1; y += 2) px(mx - 3 + ((r() * 3) | 0), y, 0xe8c890, 3 + ((r() * 4) | 0), 1);
+  px(0, H - U, 0x1c1626, W, U);                                                       // near shore
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.magFilter = THREE.NearestFilter; texture.minFilter = THREE.NearestFilter; texture.generateMipmaps = false;
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(W / U, H / U), new THREE.MeshBasicMaterial({ map: texture, fog: false, toneMapped: false }));
+  plane.geometry.translate(X0 + W / U / 2, H / U / 2, 0);
+  plane.position.set(0, 0, -0.6);
+  plane.rotation.x = -pitch;                                                          // lean back to face the camera
+  return plane;
 }
 
 // Builds every static voxel and returns the scene group plus the light points
 // the renderer turns into warm lamps.
 export function buildWorld() {
   const r = seeded(20261017), v = new Voxels(), lights = [];
-  ground(v, r); hills(v, r);
-  for (const [x, z, s] of [[1.5, 1.5, 1.1], [5, 0.6, 0.9], [11, 1.2, 1.2], [15.5, 0.4, 0.9], [19, 1.6, 1], [23.5, 0.8, 1.2], [27, 1.4, 0.8], [38.5, 1.2, 1], [38.8, 13, 0.9], [1, 22, 0.8], [1.2, 11.5, 0.9], [37.8, 20.5, 0.8], [8.5, 0.2, 1], [30.5, 0.4, 1.1], [35, 0.2, 0.9], [-0.5, 6, 1]]) tree(v, r, x, z, s);
-  const home = cottage(v, r);
+  ground(v, r);
+  // Trees crowd every edge, leaving the arch open onto the lake.
+  for (const [x, z, s, k] of [
+    [-0.5, 1.2, 1.2, 0], [3.2, 0.2, 1.1, 1], [10.6, 0.8, 1.15, 0], [13.6, 1.2, 1.0, 2], [16.4, 0.6, 0.9, 1],
+    [23.8, 0.6, 0.95, 0], [26.6, 1.0, 1.05, 2], [29.4, 0.4, 0.9, 1], [36.2, 0.2, 1.15, 0], [40, 1.6, 1.2, 1],
+    [-0.4, 6.8, 1.1, 1], [0.2, 11.5, 0.9, 0], [-0.6, 16.4, 1.1, 2], [0.4, 21.8, 0.9, 1], [-0.2, 26, 1.2, 0], [4.4, 27.2, 1.1, 2],
+    [37.6, 27, 1.1, 1], [41.4, 24, 1.2, 0],
+    [40.4, 18.6, 1.0, 2], [41, 13.2, 1.1, 0], [40.6, 8, 1.0, 1], [6.8, 1.2, 0.8, 2],
+  ]) tree(v, r, x, z, s, k);
+  const home = cottage(v, r, lights);
   bigPumpkinStage(v, r);
   patchBorder(v, r);
-  const stall = shop(v, r);
-  fence(v, lights);
+  const stall = shop(v, r, lights);
+  fence(v, r, lights);
+  arch(v, r, lights);
   stringLights(v);
   for (const [x, z] of [[29.2, 18.2], [33.4, 13.2], [36.6, 11.6], [10.8, 9.4]]) lanternPost(v, x, z, lights);
-  for (const [x, z, c] of [[2.6, 17, 0xf0821e], [3.4, 18.2, 0xd9d2ff], [11.5, 21.5, 0xf0821e], [27.8, 22.5, 0x9d55e6], [36.5, 22.4, 0xf0821e], [26.8, 5.5, 0xf0821e]]) pumpkinBlock(v, x, 0, z, 0.55, c, r);
+  // Props round the yard: crates along the back fence, hay and a bench by the front, pumpkins everywhere.
+  for (const x of [13, 15.6, 24.6]) crate(v, r, x, 3.7);
+  barrel(v, r, 17.2, 3.7); barrel(v, r, 26.2, 3.8);
+  hay(v, r, 5, 22.6); hay(v, r, 36.4, 23.2); hay(v, r, 36.6, 22.4, 1.0);
+  bench(v, 26.6, 23.6); crate(v, r, 37.2, 18.8); crate(v, r, 2.6, 23.2, 0.9);
+  for (const [x, z] of [[2.4, 17.6], [37.6, 14.8], [11.6, 23.4], [21.2, 23.6]]) jackOLantern(v, r, x, z, 0.6, null);
+  for (const [x, z, c] of [[3.4, 18.4, 0xd9d2ff], [27.8, 22.5, 0x9d55e6], [36.8, 21.4, 0xf0821e], [26.8, 5.5, 0xf0821e], [8.6, 21.8, 0xf0821e]]) pumpkinBlock(v, x, 0, z, 0.55, c, r);
+  for (const [x, z] of [[2.2, 12.4], [12.4, 23.8], [19, 23.8], [30, 21], [38, 16.6], [11.8, 4.2], [28, 4.4], [3.2, 9.6]]) flowers(v, r, x, z);
+  for (let x = 8; x < 32; x += 1.3) for (let k = 0; k < 7; k++)                           // low autumn hedging beyond the front fence
+    v.block(x + (r() - 0.5) * 1.2, (r() * 0.5), 25.9 + r() * 1.4, 0.42, 0.42, 0.42, vary(CANOPY[(r() * 3) | 0][1 + ((r() * 3) | 0)], 0.08, r));
   const group = v.build();
-  return { group, lights: [...lights, ...stall.lights, ...home.glow], door: home.door };
+  return { group, lights: [...lights, ...stall.lights], door: home.door };
 }
 
 // Signs carry their lettering on a canvas texture, in the game's display font.

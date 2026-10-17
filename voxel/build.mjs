@@ -27,7 +27,7 @@ const writeHtml = {
     });
   },
 };
-const options = { entryPoints: [path.join(root, "src/main.js")], bundle: true, format: "iife", minify: !dev, target: ["es2020"], write: false, outfile: "game.js", logLevel: "warning", plugins: [writeHtml] };
+const options = { entryPoints: [path.join(root, "src/main.js")], bundle: true, loader: { ".png": "dataurl" }, format: "iife", minify: !dev, target: ["es2020"], write: false, outfile: "game.js", logLevel: "warning", plugins: [writeHtml] };
 if (dev) {
   const ctx = await esbuild.context(options);
   await ctx.watch();

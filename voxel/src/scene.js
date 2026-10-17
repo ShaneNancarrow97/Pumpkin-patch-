@@ -4,11 +4,14 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { Voxels, seeded, vary } from "./voxels.js";
-import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, buildWorld, signBoard } from "./world.js";
-import { V, buildNatalie, buildShane, buildSkyla, buildVisitor, animateWalk } from "./characters.js";
+import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, buildWorld, buildBackdrop, signBoard } from "./world.js";
+import { buildVisitor, animateWalk } from "./characters.js";
+import { loadSprites, spriteCharacter, animateSprite } from "./sprite-voxels.js";
 import { VARIETIES, VISIT, LOOKS, openPlots } from "./model.js";
 
-const PITCH = THREE.MathUtils.degToRad(40), WALK = 2.4;
+// Camera tilt: low enough to see the far shore over the back fence, steep
+// enough to see under the shop awning to Skyla on the counter.
+const PITCH = THREE.MathUtils.degToRad(48), WALK = 2.4;
 
 function routeLength(route) { let n = 0; for (let i = 1; i < route.length; i++) n += Math.hypot(route[i][0] - route[i - 1][0], route[i][1] - route[i - 1][1]); return n; }
 function along(route, d) {
@@ -88,15 +91,12 @@ export function createScene(canvas, state, hooks) {
   const world = buildWorld();
   scene.add(world.group);
   for (const l of world.lights) {
-    const lamp = new THREE.PointLight(0xffa858, 9, 7, 1.6);
+    const lamp = new THREE.PointLight(0xffa04a, 9, 7.5, 1.5);
     lamp.position.set(l.x, l.y, l.z);
     scene.add(lamp);
   }
-  // The moon and its halo, high over the hills.
-  const moonDisc = new THREE.Mesh(new THREE.CircleGeometry(2.2, 32), new THREE.MeshBasicMaterial({ color: 0xf2eaff, toneMapped: false }));
-  moonDisc.position.set(34, 14, -16); scene.add(moonDisc);
-  const bite = new THREE.Mesh(new THREE.CircleGeometry(2.0, 32), new THREE.MeshBasicMaterial({ color: 0x150f24 }));
-  bite.position.set(34.8, 14.6, -15.9); scene.add(bite);
+  // The far shore: sky, moon, castle, village and lake.
+  scene.add(buildBackdrop(PITCH));
 
   // Signs.
   const patchSign = signBoard("The Pumpkin Patch", "grown with love", 3.6);
@@ -104,7 +104,7 @@ export function createScene(canvas, state, hooks) {
   const post = new THREE.Mesh(new THREE.BoxGeometry(0.2, 4.2, 0.2), new THREE.MeshStandardMaterial({ color: 0x1c1418 }));
   post.position.set(11.4, 2.1, 8.4); post.castShadow = true; scene.add(post);
   const shopSign = signBoard("The Honest Pumpkin", "farm shop", 4.2);
-  shopSign.position.set(SHOP.x, 5.6, SHOP.z - 0.6); scene.add(shopSign);
+  shopSign.position.set(SHOP.x, 6.1, SHOP.z - 2.0); scene.add(shopSign);
 
   // The big pumpkin.
   const big = bigPumpkin();
@@ -145,25 +145,32 @@ export function createScene(canvas, state, hooks) {
   homeHit.position.set(7, 4, 6.4); homeHit.userData = { type: "home" }; scene.add(homeHit); pickables.push(homeHit);
 
   // Skyla on the counter.
-  const skyla = buildSkyla(); skyla.position.set(SHOP.x + 1.1, 1.3, SHOP.counterZ - 0.5); skyla.rotation.y = -0.25; scene.add(skyla);
-  skyla.traverse((o) => { if (o.isMesh) { o.castShadow = true; } });
+  // Shane, Natalie and Skyla are voxelised from the sprite art once it has loaded.
+  let pixels = null, skyla = null;
+  loadSprites().then((data) => {
+    pixels = data;
+    skyla = spriteCharacter(pixels, "skyla");
+    skyla.position.set(SHOP.x + 1.1, 1.3, SHOP.counterZ - 0.2);
+    scene.add(skyla);
+    placeActor("natalie"); placeActor("shane");
+  }).catch(() => hooks.onSpriteError?.());
 
   // Shane and Natalie.
   const actors = {};
   function placeActor(who) {
     const old = actors[who];
     const look = who === "natalie" ? LOOKS.natalie.find((l) => l.id === state.looks.natalie) : LOOKS.shane.find((l) => l.id === state.looks.shane);
-    const model = who === "natalie" ? buildNatalie(look) : buildShane(look);
+    if (!pixels) return;
+    const model = spriteCharacter(pixels, who, look);
     model.position.set(old?.model.position.x ?? HOMES[who].x, 0.04, old?.model.position.z ?? HOMES[who].z);
-    model.rotation.y = old?.model.rotation.y ?? 0;
+    model.scale.x = old?.model.scale.x ?? 1;
     if (old) scene.remove(old.model);
     const hit = old?.hit ?? new THREE.Mesh(new THREE.BoxGeometry(1.1, 2.2, 1.1), new THREE.MeshBasicMaterial({ visible: false }));
     hit.userData = { type: "talk", who };
     if (!old) { scene.add(hit); pickables.push(hit); }
     scene.add(model);
-    actors[who] = { model, hit, queue: old?.queue ?? [], moving: false, work: 0 };
+    actors[who] = { model, hit, queue: old?.queue ?? [], moving: false, work: 0, dx: 0 };
   }
-  placeActor("natalie"); placeActor("shane");
   const nearestActor = (x, z) => Object.values(actors).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
 
   // Visitors.
@@ -179,7 +186,7 @@ export function createScene(canvas, state, hooks) {
 
   // Camera: orthographic, looking down at a gentle angle, pannable and zoomable.
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 400);
-  const view = { x: 20, z: 13.5, zoom: 1 };
+  const view = { x: 20, z: 8.4, zoom: 1 };
   let bloomOn = true;
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
@@ -189,8 +196,8 @@ export function createScene(canvas, state, hooks) {
 
   function frame() {
     const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
-    // Show the whole patch: about 26 units across on wide screens, 15 on a portrait phone.
-    const span = (aspect >= 1 ? 32 : 17) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
+    // Show the whole yard, 42 units across, on wide screens; the patch on a portrait phone.
+    const span = (aspect >= 1 ? 42 : 17) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
     camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
     camera.updateProjectionMatrix();
     clampView();
@@ -296,10 +303,10 @@ export function createScene(canvas, state, hooks) {
       const dx = target.x - pos.x, dz = target.z - pos.z, d = Math.hypot(dx, dz);
       a.moving = d > 0.12 && a.work <= 0;
       if (a.work > 0) a.work -= dt;
-      else if (d > 0.12) { const step = Math.min(d, WALK * dt); pos.x += dx / d * step; pos.z += dz / d * step; a.model.rotation.y = Math.atan2(dx, dz); }
+      else if (d > 0.12) { const step = Math.min(d, WALK * dt); pos.x += dx / d * step; pos.z += dz / d * step; }
       else if (a.queue.length) { a.queue.shift(); a.work = 0.5; }
-      else a.model.rotation.y += (0 - a.model.rotation.y) * Math.min(1, dt * 3);
-      animateWalk(a.model, time, a.moving);
+      // Like the sprites they come from, they always face the viewer and mirror to walk the other way.
+      animateSprite(a.model, time, a.moving, dx, who === "shane" ? 1.7 : 0);
       a.hit.position.set(pos.x, 1.1, pos.z);
     }
 
@@ -326,7 +333,7 @@ export function createScene(canvas, state, hooks) {
     }
     fp.needsUpdate = true;
     flies.material.opacity = 0.6 + Math.sin(time * 4) * 0.3;
-    skyla.rotation.y = -0.25 + Math.sin(time * 0.7) * 0.15;
+    if (skyla) animateSprite(skyla, time, false);
 
     for (let i = fx.length - 1; i >= 0; i--) {
       const f = fx[i]; f.t += dt;
@@ -342,13 +349,13 @@ export function createScene(canvas, state, hooks) {
   requestAnimationFrame(tick);
 
   return {
-    sendTo(plotIndex) { const p = PLOTS[plotIndex], a = nearestActor(p.x, p.z); a.queue.push({ x: p.x - 0.9, z: p.z + 0.4 }); },
+    sendTo(plotIndex) { const p = PLOTS[plotIndex], a = nearestActor(p.x, p.z); a?.queue.push({ x: p.x - 0.9, z: p.z + 0.4 }); },
     tapPumpkin() { tapPulse = 1; floatText("✦", BIG_PUMPKIN.x, 3.6, BIG_PUMPKIN.z, "spark"); },
     sale(amount) { floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin"); },
     harvested(i) { const p = PLOTS[i]; floatText("+1", p.x, 1.4, p.z, "crop"); },
     refreshLooks() { placeActor("natalie"); placeActor("shane"); },
     screenPoint(x, y, z) { return project(new THREE.Vector3(x, y, z)); },
-    actorPosition(who) { const p = actors[who].model.position; return project(new THREE.Vector3(p.x, 2.4, p.z)); },
+    actorPosition(who) { const p = actors[who]?.model.position ?? new THREE.Vector3(HOMES[who].x, 0, HOMES[who].z); return project(new THREE.Vector3(p.x, 2.4, p.z)); },
     focus(x, z, zoom = view.zoom) { view.x = x; view.z = z; view.zoom = zoom; clampView(); frame(); },
     setBloom(on) { bloomOn = on; },
     setShadows(on) { renderer.shadowMap.enabled = on; scene.traverse((o) => { if (o.material) o.material.needsUpdate = true; }); },

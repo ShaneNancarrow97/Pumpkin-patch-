@@ -6,14 +6,16 @@ A from-scratch reimagining of Shane & Natalie's Pumpkin Patch in a **slightly 3D
 
 | Close up | Phone | Shop menu |
 | --- | --- | --- |
-| ![Ripe pumpkins glowing in the patch](docs/screens/close-up.webp) | ![The phone layout](docs/screens/phone.webp) | ![The shop menu](docs/screens/desktop-shop.webp) |
+| ![Skyla on the counter, Shane by the patch](docs/screens/close-up.webp) | ![The phone layout](docs/screens/phone.webp) | ![The shop menu](docs/screens/desktop-shop.webp) |
+
+The art target the scene is staged against is in [`docs/screens/target.webp`](docs/screens/target.webp).
 
 ```sh
 cd voxel
 npm install
 npm run dev     # http://localhost:8001, rebuilds on change
 npm test        # game-rule tests
-npm run build   # dist/pumpkin-patch-voxel.html, one offline file (about 750 KB)
+npm run build   # dist/pumpkin-patch-voxel.html, one offline file (about 810 KB)
 npm run smoke   # plays the built file in headless Chromium and checks for errors
 ```
 
@@ -21,19 +23,21 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
 
 ## What's in it
 
-- **The world, laid out as in the bible.** Everything is voxels in one night scene:
-  - the crooked cottage top left
-  - the giant jack-o'-lantern on its candlelit stage
-  - the 12-plot patch in a stone-edged oval
-  - the Honest Pumpkin shop with its striped awning, shelves of glowing jars, the till and the bell
-  - the stone path the visitors walk
-  - string lights, lantern posts and a fence
-  - autumn trees, distant hills, a castle and the moon
+- **The world, laid out as in the bible.** The whole yard fits in one wide shot, framed like the art target:
+  - the crooked cottage top left, with lanterns, window boxes and red creeper
+  - the giant jack-o'-lantern on its candlelit wine-red stage
+  - the 12-plot patch in a pale stone oval, in the middle of a cobbled yard
+  - the Honest Pumpkin shop top right: a gable sign, a striped awning, shelves of glowing jars, a row of lit pumpkins, a chalkboard and a banner
+  - the lilac stone path the visitors walk, out at the bottom right
+  - a leafy arch in the back fence, with string lights, opening onto the lake
+  - wooden picket fences with lantern posts, crates, barrels, hay bales, a bench and flowers
+  - red, orange and plum autumn trees round every edge
+- **The far shore** is painted pixel art on a backdrop that leans back to face the camera: the night sky, a crescent moon, mountains, the castle on its hill, and a lakeside village with its lights reflected in the water.
 - **Lighting:** lilac moonlight casting soft shadows, warm lantern and window light, a bloom glow on everything that's lit, and fireflies.
 - **The cast, built part by part from the bible:**
-  - **Natalie:** baby bangs, gold glasses, blue eyes, gold hoops, neck tattoo, olive knit, grommet belt, charcoal jeans, yellow-stitched boots, and a pumpkin in her hands.
-  - **Shane:** black beanie, auburn hair and goatee, black hoodie under a washed-black denim jacket, cargo trousers, skate shoes with cream soles, and a rusty trowel.
-  - **Skyla:** a calico cat with a burgundy collar and pumpkin bell, sitting on the counter.
+  - **Shane, Natalie and Skyla** are voxelised from the main game's own sprites, one voxel per pixel at 120 voxels tall (Skyla 54). Every detail of the art carries over: Natalie's glasses, hoops and pumpkin, and Shane's goatee, jacket and trowel. Depth is rounded towards the silhouette's edge, and a back is painted on (hair behind the faces). They use the sprites' own six walk frames and blink frames, and lean back slightly towards the camera like sprite-game characters.
+  - **Recolours:** Natalie's knit and Shane's beanie are retinted for the wardrobe, keeping the art's shading.
+  - **Skyla** sits on the counter, visible under the raised awning.
   - **The five neighbours:** Pip, Mabel, Count Bram, Bones and Patch.
 - **The loop:**
   - Plant, grow, harvest. Tap the big pumpkin to hurry growth.
@@ -62,8 +66,10 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
 | --- | --- |
 | `src/model.js` | Game rules. No DOM and no three.js, so `test/` runs it in Node. |
 | `src/voxels.js` | Box batching: every box sharing a material becomes one instanced draw call. |
-| `src/world.js` | The map: terrain, cottage, shop, path, fence and props. Layout constants live here. |
-| `src/characters.js` | Shane, Natalie, Skyla and the visitors, with legs that swing |
+| `src/world.js` | The map: terrain, cottage, shop, path, fences, arch, trees, props and the painted far shore. Layout constants live here. |
+| `src/sprite-voxels.js` | Shane, Natalie and Skyla: sprite frames turned into voxel meshes, with frame animation |
+| `src/sprite-meta.js`, `assets/sprites.png` | The baked sprite atlas. Regenerate with `python3 voxel/tools/bake_sprites.py` from the repo root |
+| `src/characters.js` | The visiting neighbours, built by hand, with legs that swing |
 | `src/scene.js` | Renderer, lights, bloom, camera, input, and the per-frame animation |
 | `src/main.js` | Save and load, goals, menus, and the HUD |
 
