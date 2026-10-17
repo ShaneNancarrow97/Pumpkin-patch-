@@ -64,6 +64,8 @@ docs/                review, roadmap, improvement plan and architecture notes
 - [docs/ROADMAP.md](docs/ROADMAP.md): the alpha-to-beta roadmap (B0–B6).
 - [docs/POLISH-REVIEW.md](docs/POLISH-REVIEW.md): the Midnight 2.2 polish review.
 - [docs/BACKLOG.md](docs/BACKLOG.md): the first concrete tasks, in order.
+- [docs/ADDING-OUTFITS.md](docs/ADDING-OUTFITS.md): the art format and steps for a new outfit.
+- [AGENTS.md](AGENTS.md): rules and commands for coding agents such as Codex.
 - [docs/SOURCE-RECOVERY.md](docs/SOURCE-RECOVERY.md): how this source tree was rebuilt from the shipped game.
 - [docs/ANDROID.md](docs/ANDROID.md): how the Android app is put together.
 
