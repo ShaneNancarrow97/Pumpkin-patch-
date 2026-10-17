@@ -48,6 +48,10 @@ app/, ui/  DOM, canvas, menus; the only code that touches the page
 - `update(state, dt)` runs one step: growth, the helper, outdoor passers-by (`core/stall.js`), the indoor shop (`core/shop.js`) and achievements. It returns events (`sale`, `ripe`, `arrival` and so on) for the UI to animate.
 - Player actions go through `createActions` and `dispatchCommand` in `core/commands.js` as typed commands, such as `{ type: "plant", plot: 3 }`.
 
+## Visitor routes
+
+`content/visitor-routes.mjs` holds the stall visitors' paths as polylines in map units: `stallApproach` runs from below the map to the counter, and `stallDeparture` from the counter off the right edge. `scene/farm-layers.mjs` places each visitor along them at `visitorWalkSpeed`, the same pace as Shane and Natalie. The model's visit timings (`stallVisit`) are derived from the route lengths, so a sale happens exactly when the visitor reaches the counter. To change where visitors walk, edit the points and nothing else. The tests check that routes start and end off-screen and join without jumps.
+
 ## Inventory and selling
 
 `core/inventory.js` stores stock as lots: a product, a quantity, a location and a unit price. A sale first reserves stock with a hold, then commits it, so two customers can't buy the last pumpkin twice. Indoor shop holds are saved with the game, so a reload in the middle of checkout loses nothing.

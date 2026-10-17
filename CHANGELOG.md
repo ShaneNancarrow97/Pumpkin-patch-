@@ -12,6 +12,7 @@ Save safety. The save format is unchanged (schema 9), so 2.10 saves load as befo
 - **Imports list repairs.** Loading a backup with a damaged section shows what will start fresh before you confirm.
 - **Saves from newer versions are protected.** They are never overwritten, and Settings explains why.
 - **Version shown.** Settings shows the game version and save format, and backups record the version.
+- **Visitors use the stone path.** Stall visitors walk in from the bottom of the map, up the path to the fork, along the spur to Skyla's counter, then out past the shop to the top right. They used to slide in sideways and leave through the fence. Each sale now happens when the visitor reaches the counter, about 4 seconds later than before; income over 4 hours changes by under 0.1%.
 - **Older browsers.** The game works in browsers that lack `Object.hasOwn` and `replaceChildren`, such as Safari before 15.4.
 
 ## 2.10.0

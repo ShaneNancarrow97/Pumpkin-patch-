@@ -1,6 +1,6 @@
 import { asset } from "../platform/assets.js";
 import { iconArt } from "../ui/icons.js";
-import { farmPaintOrder, visitorGround } from "../scene/farm-layers.mjs";
+import { farmPaintOrder, visitorGround, visitorWalking } from "../scene/farm-layers.mjs";
 import { advanceFarmActors, characterWalkFrame, createFarmActors, queueFarmTask, resetFarmActors } from "../scene/character-motion.mjs";
 import { characterIdleMeta, characterWalkMeta } from "../content/character-walk-meta.mjs";
 import { pumpkinVarieties } from "../content/products.js";
@@ -1016,7 +1016,7 @@ function createGame() {
     c.save();
     c.translate(x, y + sway);
     ellipse(c, 0, 4, 20, 5, "#08041065");
-    const type = visitorTypes[v.id % visitorTypes.length], image = walkingVisitors[type], meta = visitorArtMeta[type], walking = v.age < 3 || v.checked && v.age >= v.leaveAt;
+    const type = visitorTypes[v.id % visitorTypes.length], image = walkingVisitors[type], meta = visitorArtMeta[type], walking = visitorWalking(v);
     if (image.complete && image.naturalWidth && meta) {
       const frame2 = walking && !reduced && !s.paused ? Math.floor(v.age * 5) % 4 : 0, r = meta.rects[frame2], height = type === "ghost" ? 82 : 110, scale = height / meta.height, dw = r[2] * scale, dh = r[3] * scale;
       if (type === "ghost")

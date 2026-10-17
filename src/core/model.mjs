@@ -7,6 +7,7 @@ import { createPasserby, decodeStall, finishMissedVisit, freshStall, sellToPasse
 import { freshWardrobe, restoreWardrobe, validWardrobe } from "./costume-model.mjs";
 import { freshFestival, restoreFestival } from "./festival-model.mjs";
 import { freshPlotCrops, freshPlotLevels, restorePlotCrops, restorePlotLevels, selectedPlotVariety } from "./plot-model.mjs";
+import { stallVisit } from "../content/visitor-routes.mjs";
 
 var SAVE_KEY = "sn-pumpkin-patch-halloween-v2";
 var upgrades = [
@@ -119,16 +120,16 @@ function update(s, dt) {
   events.push(...updateShop(s, dt));
   for (const v of s.visitors) {
     v.age += dt;
-    if (v.age >= 3 && !v.checked) {
+    if (v.age >= stallVisit.arriveSeconds && !v.checked) {
       if (sellToPasserby(s, v)) {
         events.push({ type: "sale", route: "stall", amount: v.amount, quantity: v.quantity, visitor: v.id });
-      } else if (v.age >= 9) {
+      } else if (v.age >= stallVisit.arriveSeconds + stallVisit.patienceSeconds) {
         finishMissedVisit(s, v);
         events.push({ type: "empty", reason: v.outcome, visitor: v.id });
       }
     }
   }
-  s.visitors = s.visitors.filter((v) => v.age < (v.checked ? v.leaveAt + 7 : 15));
+  s.visitors = s.visitors.filter((v) => v.age < (v.checked ? v.leaveAt + stallVisit.leaveSeconds : stallVisit.arriveSeconds + stallVisit.patienceSeconds + stallVisit.leaveSeconds));
   const conditions = { first: s.harvested >= 5, visitors: s.sold >= 10, moon: s.plotLevels.some((level2) => level2 > 0), helper: s.upgrades.auto > 0, empire: s.earned >= 1e3, clicker: s.clicks >= 100 };
   for (const [id, met] of Object.entries(conditions))
     if (met && !s.achievements.includes(id)) {

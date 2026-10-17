@@ -33,6 +33,8 @@ The lost releases 2.11–2.16 used save schemas 10–13, and a phone that ran 2.
 
 Sizes are relative: S is an evening, M a few evenings, L a couple of weekends, XL several weekends.
 
+**UI overhaul.** This runs as its own track, set out in [UI-OVERHAUL.md](UI-OVERHAUL.md). Its first two steps (UI0 foundation, UI1 shell) come before Phase 2, so the new features are built on the new interface. The remaining steps run alongside Phases 2–4.
+
 ### Phase 1: 3.0 "Lantern", save safety (in progress)
 
 - [x] The game version is shown in Settings and written into backups (`gameVersion`).
@@ -55,7 +57,7 @@ The measured problem: income is capped by demand, production is wasted, and the 
 3. **A second till** as a shop upgrade, so the capacity upgrades help. Measure the income each upgrade adds per pound spent.
 4. **Barn capacity.** Stock above the cap goes to a useful outlet instead of piling up.
 5. **Rebuild the preserving bench** (lost in 2.11): orange chutney, then premium recipes, with timed batches, held ingredients and jar demand indoors.
-6. **Visitor groups and arrival-rate levels** for the stall (lost in 2.14), tuned against the new demand.
+6. **Visitor groups and arrival-rate levels** for the stall (lost in 2.14), tuned against the new demand. Visitors already walk the stone path (`content/visitor-routes.mjs`). Groups add queue spots stepping back along that route, so guests never stand on top of each other.
 7. **Tending gives quality**, which the helper can't. A tended plot earns a quality star worth +20%, so tapping has its own value.
 8. **Rescale costs** so a full playthrough lands in the targets below.
 
