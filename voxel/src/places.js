@@ -13,16 +13,54 @@ function indoors(figure) {
   const lean = figure.children[0];
   if (figure.userData.kind === "visitor" && !figure.userData.sprite) return figure;   // the hand-built neighbours stand upright
   if (lean) { lean.rotation.x = -LEAN; lean.scale.y = STRETCH; }
+  // A sprite is one plane, and shadows are drawn from back faces by default: the
+  // key light is in front, so it would see only the side that isn't drawn.
+  figure.traverse((m) => { if (m.isMesh && m.customDepthMaterial) m.material.shadowSide = THREE.DoubleSide; });
   return figure;
 }
 const LIGHTS = 7;                                                    // a fixed pool, so shaders never recompile
+// The key light: a warm lamp hung high above the front left, so pieces and
+// people throw soft shadows back and to the right across the floor and up the
+// walls, where the camera can see them, and the light falls away into the
+// corners as in the paintings.
+const KEY = { at: { x: 1.2, y: 10, z: 7.5 }, aim: { x: 5.6, y: 0.5, z: 2.6 }, colour: 0xffd9ae, intensity: 2.8 };
+// The farm's sky and moonlight reach the rooms too, unshadowed. Indoors they are
+// turned down to a soft fill, so the lamp and the room's own lights carry it.
+const FARM_INDOORS = { hemisphere: 0.26, directional: 0.1 };
 
 export function createPlaces({ scene, state, character, visitorModel, pumpkinTemplate, animate }) {
   const root = new THREE.Group();
   scene.add(root);
   const pool = Array.from({ length: LIGHTS }, () => { const l = new THREE.PointLight(0xffb060, 0, 9, 1.4); scene.add(l); return l; });
+  // Added once and kept: only its place, brightness and shadow updates change.
+  const keyLight = new THREE.SpotLight(KEY.colour, 0, 0, 0.9, 0.5, 0);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(2048, 2048);
+  keyLight.shadow.focus = 0.85;                                       // the room, not the whole soft cone
+  keyLight.shadow.bias = -0.0002; keyLight.shadow.normalBias = 0.012;
+  keyLight.shadow.camera.near = 4; keyLight.shadow.camera.far = 24;
+  keyLight.shadow.autoUpdate = false;
+  scene.add(keyLight, keyLight.target);
+  let farm = null;
   let place = null, built = null, pieces = new Map(), pickables = [], actors = [], customers = new Map(), tables = [], skyla = null;
   let selection = null, ghost = null, showGrid = false, gridLines = null, tableKey = "";
+
+  // Light for inside (the key over this place, the farm turned down) or for the farm again.
+  function lightIndoors(origin) {
+    if (origin && !farm) farm = scene.children.filter((o) => (o.isHemisphereLight || o.isAmbientLight || o.isDirectionalLight) && o !== keyLight)
+      .map((l) => ({ l, intensity: l.intensity, update: l.shadow?.autoUpdate }));
+    if (!origin && farm) { for (const f of farm) { f.l.intensity = f.intensity; if (f.l.shadow) f.l.shadow.autoUpdate = f.update; } farm = null; }
+    if (origin) for (const f of farm) {
+      f.l.intensity = f.intensity * (f.l.isDirectionalLight ? FARM_INDOORS.directional : FARM_INDOORS.hemisphere);
+      if (f.l.shadow) f.l.shadow.autoUpdate = false;                 // the farm's shadows can wait until we're back out
+    }
+    keyLight.intensity = origin ? KEY.intensity : 0;
+    keyLight.shadow.autoUpdate = !!origin;
+    if (!origin) return;
+    keyLight.position.set(origin.x + KEY.at.x, KEY.at.y, origin.z + KEY.at.z);
+    keyLight.target.position.set(origin.x + KEY.aim.x, KEY.aim.y, origin.z + KEY.aim.z);
+    keyLight.target.updateMatrixWorld();
+  }
 
   const clear = () => {
     for (const o of [...root.children]) { root.remove(o); o.traverse?.((m) => { if (m.isMesh && m.geometry && !m.geometry.userData.shared) m.geometry.dispose?.(); }); }
@@ -51,6 +89,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     const lamps = [...shell.lights];
     if (decorReady()) for (const p of roomPieces(state, id)) lamps.push(...addPiece(p));
     light(lamps, o);
+    lightIndoors(o);
     hitPlane(GRID.w, GRID.d, "floor", new THREE.Vector3(o.x + GRID.w / 2, 0.01, o.z + GRID.d / 2), -Math.PI / 2);
     hitPlane(GRID.w, WALL_H - 1.5, "wall", new THREE.Vector3(o.x + GRID.w / 2, 1.5 + (WALL_H - 1.5) / 2, o.z + 0.02));
     // Shane and Natalie are home too, at the front of the room.
@@ -64,26 +103,34 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     setGrid(showGrid);
   }
 
+  // How high a wall piece hangs: the chandelier from the ceiling, the rest centred on the panel.
+  const hangAt = (id, height) => (id === "d04" ? WALL_H - 0.45 - height : 2.9 - height / 2);
   function addPiece(p) {
-    const fp = footprint(p.id), o = ORIGIN.room, prop = decorProp(p.id);
-    const g = new THREE.Group(), standing = fp.layer === "floor", lean = new THREE.Group();
+    const fp = footprint(p.id), o = ORIGIN.room, prop = decorProp(p.id), native = prop.userData.native === true;
+    const g = new THREE.Group(), standing = fp.layer === "floor", lean = new THREE.Group(), height = prop.userData.height;
     lean.add(prop);
     if (p.books?.length) lean.add(shelfBooks(p.id, p.books, prop));
-    if (standing) { lean.rotation.x = -LEAN; lean.scale.y = STRETCH; }
+    // Modelled pieces are real 3D and stand as they are; the old standees lean back
+    // and stretch like the sprites so their art keeps its proportions on screen.
+    if (standing && !native) { lean.rotation.x = -LEAN; lean.scale.y = STRETCH; }
     g.add(lean);
-    const cx = p.x + fp.w / 2, cz = fp.layer === "wall" ? 0 : p.z + fp.d / 2;
-    if (fp.layer === "wall") g.position.set(o.x + cx, p.id === "d04" ? WALL_H - 0.4 - prop.userData.height : 2.9 - prop.userData.height / 2, o.z + 0.02);
+    // Everything casts and takes shadows except rugs, which only take them, and what glows.
+    prop.traverse((m) => { if (m.isMesh && !m.material.isMeshBasicMaterial) { m.castShadow = fp.layer !== "rug"; m.receiveShadow = true; } });
+    const cx = p.x + fp.w / 2, cz = p.z + fp.d / 2, wall = fp.layer === "wall";
+    // Wall pieces hang with their back against the wall; the rest sit centred on their cells.
+    if (wall) g.position.set(o.x + cx, hangAt(p.id, height), o.z + (native ? 0.005 : 0.02));
     else g.position.set(o.x + cx, fp.layer === "rug" ? 0.005 : 0, o.z + cz);
     if (p.flip) lean.scale.x = -1;
     root.add(g);
-    const hit = new THREE.Mesh(new THREE.BoxGeometry(fp.w * 0.95, Math.max(0.3, prop.userData.height), fp.layer === "wall" ? 0.4 : fp.d * 0.95), new THREE.MeshBasicMaterial({ visible: false }));
-    hit.position.set(g.position.x, g.position.y + Math.max(0.3, prop.userData.height) / 2, g.position.z + (fp.layer === "wall" ? 0.2 : 0));
+    const tall = Math.max(0.3, height), deep = wall ? Math.max(0.4, prop.userData.depth ?? 0) : fp.d * 0.95;
+    const hit = new THREE.Mesh(new THREE.BoxGeometry(fp.w * 0.95, tall, deep), new THREE.MeshBasicMaterial({ visible: false }));
+    hit.position.set(g.position.x, g.position.y + tall / 2, g.position.z + (wall ? deep / 2 : 0));
     hit.userData = { type: "piece", instance: p.instance };
     root.add(hit); pickables.push(hit);
-    pieces.set(p.instance, { group: g, hit, piece: p });
+    pieces.set(p.instance, { group: g, hit, piece: p, bottom: g.position.y, height: tall });
     // Lamps, candles and glowing jars light the room around them.
     const lamp = prop.userData.glowing || ["lights"].includes(decorById[p.id].category);
-    return lamp ? [{ x: cx, y: Math.max(0.8, prop.userData.height * 0.85) + (fp.layer === "wall" ? 2 : 0), z: fp.layer === "wall" ? 0.6 : cz, intensity: 7 }] : [];
+    return lamp ? [{ x: cx, y: wall ? g.position.y + height * 0.6 : Math.max(0.8, height * 0.85), z: wall ? 0.6 : cz, intensity: 7 }] : [];
   }
 
   // The Honest Pumpkin's shop floor.
@@ -93,6 +140,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     const o = ORIGIN.shop, shell = buildShopInterior();
     shell.group.position.copy(o); root.add(shell.group);
     light(shell.lights, o);
+    lightIndoors(o);
     const c = SHOP_SPOTS.counter, cat = character("skyla");
     if (cat) { cat.position.set(o.x + c.x + 0.1, 1.27, o.z + c.z - 0.2); root.add(indoors(cat)); skyla = cat; }
     hitPlane(GRID.w, GRID.d, "shop-floor", new THREE.Vector3(o.x + GRID.w / 2, 0.01, o.z + GRID.d / 2), -Math.PI / 2);
@@ -108,6 +156,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       if (v === null) return;
       const t = SHOP_SPOTS.tables[i], n = Math.min(3, available(state, v)), g = new THREE.Group();
       for (let k = 0; k < n; k++) { const m = pumpkinTemplate(v).clone(); m.scale.setScalar(0.62); m.position.set(-0.5 + k * 0.5, 0.9, (k % 2) * 0.15); g.add(m); }
+      g.traverse((m) => { if (m.isMesh && !m.material.isMeshBasicMaterial) m.castShadow = m.receiveShadow = true; });
       g.position.set(ORIGIN.shop.x + t.x, 0, ORIGIN.shop.z + t.z);
       root.add(g); tables.push(g);
     });
@@ -162,27 +211,32 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   // Decorating: a gold outline round the chosen piece, and where it would go.
-  function outline(fp, at, colour) {
-    const box = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(fp.w, fp.layer === "wall" ? 1.6 : 0.12, fp.layer === "wall" ? 0.1 : fp.d)), new THREE.LineBasicMaterial({ color: colour, toneMapped: false }));
+  // Floor pieces show their cells; wall pieces a frame as tall as the piece.
+  function outline(fp, at, colour, height) {
+    const wall = fp.layer === "wall";
+    const box = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(fp.w, wall ? height : 0.12, wall ? 0.1 : fp.d)), new THREE.LineBasicMaterial({ color: colour, toneMapped: false }));
     box.position.copy(at);
     root.add(box);
     return box;
   }
+  const outlineAt = (entry, fp, x, z) => {
+    const o = ORIGIN.room, wall = fp.layer === "wall";
+    return new THREE.Vector3(o.x + x + fp.w / 2, wall ? entry.bottom + entry.height / 2 : 0.06, o.z + (wall ? 0.05 : z + fp.d / 2));
+  };
   function select(instance) {
     if (selection) { root.remove(selection.box); selection = null; }
     if (ghost) { root.remove(ghost); ghost = null; }
     const entry = pieces.get(instance);
     if (!entry) return;
-    const p = entry.piece, fp = footprint(p.id), o = ORIGIN.room;
-    const at = new THREE.Vector3(o.x + p.x + fp.w / 2, fp.layer === "wall" ? 2.9 : 0.06, o.z + (fp.layer === "wall" ? 0.05 : p.z + fp.d / 2));
-    selection = { instance, box: outline(fp, at, 0xffd36a) };
+    const p = entry.piece, fp = footprint(p.id);
+    selection = { instance, box: outline(fp, outlineAt(entry, fp, p.x, p.z), 0xffd36a, entry.height) };
   }
   function preview(instance, x, z, ok) {
     if (ghost) { root.remove(ghost); ghost = null; }
     const entry = pieces.get(instance);
     if (!entry || x === null) return;
-    const fp = footprint(entry.piece.id), o = ORIGIN.room;
-    ghost = outline(fp, new THREE.Vector3(o.x + x + fp.w / 2, fp.layer === "wall" ? 2.9 : 0.06, o.z + (fp.layer === "wall" ? 0.05 : z + fp.d / 2)), ok ? 0x8ae6a0 : 0xff6a5a);
+    const fp = footprint(entry.piece.id);
+    ghost = outline(fp, outlineAt(entry, fp, x, z), ok ? 0x8ae6a0 : 0xff6a5a, entry.height);
   }
   function setGrid(on) {
     showGrid = on;
@@ -201,7 +255,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     get pickables() { return pickables; },
     enterRoom(id) { buildRoomPlace(id); },
     enterShop() { buildShopPlace(); },
-    leave() { clear(); place = null; },
+    leave() { clear(); place = null; lightIndoors(null); },
     refresh() { if (place?.kind === "room") { const sel = selection?.instance; buildRoomPlace(place.id); if (sel) select(sel); } },
     select, preview, setGrid,
     // Turns a tap on the floor or the wall into a grid cell.

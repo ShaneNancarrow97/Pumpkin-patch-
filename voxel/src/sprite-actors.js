@@ -17,7 +17,7 @@ import shaneFrankenstein from "../assets/hd-shane-frankenstein.webp";
 import shaneMummy from "../assets/hd-shane-mummy.webp";
 import shaneSlasher from "../assets/hd-shane-slasher.webp";
 import { SHEETS } from "./sprite-meta-hd.js";
-import { PITCH } from "./world.js";
+import { LEAN, STRETCH } from "./world.js";
 import { recolour } from "./sprite-voxels.js";
 
 // Shane, Natalie, Skyla, the visitors and every costume drawn with the main
@@ -26,9 +26,8 @@ import { recolour } from "./sprite-voxels.js";
 // tools/bake_sprites.py; each records how many rows a person is, so the
 // smaller costume sheets stand just as tall (2.3 units).
 const unit = (meta) => 2.3 / meta.rows;
-// They lean back towards the camera like the voxel figures (so things behind
-// them stay behind them), stretched so the art keeps its proportions on screen.
-const LEAN = 0.36, STRETCH = 1 / Math.cos(PITCH - LEAN);
+// They lean back towards the camera like the voxel figures, stretched so the art
+// keeps its proportions on screen (LEAN and STRETCH in world.js).
 const URLS = {
   natalie: natalieUrl, shane: shaneUrl, skyla: skylaUrl, visitors: visitorsUrl,
   "natalie-witch": natalieWitch, "natalie-ghostbride": natalieGhostbride, "natalie-batqueen": natalieBatqueen, "natalie-vampire": natalieVampire,
@@ -95,12 +94,14 @@ function recolouredTexture(sheet, who, look) {
 }
 
 // A sprite figure: one plane that swaps frames, inside a group the scene moves.
-function figure(sheet, frames, texture) {
+// glow is how much of its own art it lights, so it still reads at night; tone
+// darkens the art's response to the lamps.
+function figure(sheet, frames, texture, glow = 0.3, tone = 0xffffff) {
   const group = new THREE.Group(), lean = new THREE.Group();
   lean.rotation.x = -LEAN;
   lean.scale.y = STRETCH;
   group.add(lean);
-  const material = new THREE.MeshStandardMaterial({ map: texture, alphaTest: 0.5, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: 0.3 });
+  const material = new THREE.MeshStandardMaterial({ map: texture, color: tone, alphaTest: 0.5, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: glow });
   const mesh = new THREE.Mesh(frames.idle?.[0] ?? frames.walk[0], material);
   mesh.castShadow = true;
   mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: texture, alphaTest: 0.5 });
@@ -121,7 +122,10 @@ export function spriteActor(sheets, who, look, outfit) {
   const costume = outfit && !outfit.endsWith("-base") && sheets[outfit];
   const sheet = costume || sheets[who], base = who === "natalie" ? 0x604625 : 0x1a1210;
   const tinted = !costume && look && (look.sweater ?? look.beanie) !== undefined && (look.sweater ?? look.beanie) !== base;
-  return figure(sheet, sheet.frames, tinted ? recolouredTexture(sheet, who, look) : sheet.texture);
+  // Skyla is cream and white: lit like the others she outshone the lanterns and
+  // the bloom caught her, so she glows less and takes the light a shade darker.
+  const [glow, tone] = who === "skyla" ? [0.06, 0xd6cdc2] : [0.3, 0xffffff];
+  return figure(sheet, sheet.frames, tinted ? recolouredTexture(sheet, who, look) : sheet.texture, glow, tone);
 }
 
 // A visitor: its four frames are a walk cycle; standing shows the first.

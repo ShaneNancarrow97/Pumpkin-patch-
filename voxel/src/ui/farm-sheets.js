@@ -1,12 +1,37 @@
-// The Shop menu: farm upgrades, seeds per plot, Skyla's indoor shop and the stall.
+// The Shop menu: farm upgrades, seeds per plot, Skyla's indoor shop, the stall
+// and the visitors.
 import * as M from "../model.js";
 import { money, segmented, plural } from "./kit.js";
 
 // Each upgrade's own icon from the main game.
-const ICONS = { tools: "tools", yield: "yield", auto: "auto", plots: "plots", sign: "sign", open: "shop", capacity: "visitors", displays: "stock", checkout: "coins" };
+const ICONS = { tools: "tools", yield: "yield", auto: "auto", plots: "plots", sign: "sign", open: "shop", capacity: "visitors", displays: "stock", checkout: "coins", party: "visitors", lights: "boost", cocoa: "talk", loyalty: "coins" };
 const icon = (id) => `<span class="thumb"><span class="ico i-${ICONS[id]}"></span></span>`;
 const SHOP_LEVELS = { capacity: "capacityLevel", displays: "displayLevel", checkout: "checkoutLevel" };
 const SHOP_MAX = { capacity: 3, displays: 1, checkout: 2 };
+
+// The visitor upgrades, Spread the word first. Each says what it does now and at the next level.
+const VISITOR_IDS = ["sign", ...M.VISITOR_UPGRADES.map((u) => u.id)];
+const secs = (n) => `${Math.round(n * 10) / 10}s`;
+const EFFECTS = {
+  sign: (s) => `a party every ${secs(M.stallArrivalSeconds(s))}, a shopper every ${secs(M.shopArrivalSeconds(s))}`,
+  party: (s) => (M.partyMax(s) > 1 ? `parties of up to ${M.partyMax(s)}` : "everyone comes on their own"),
+  lights: (s) => `a party every ${secs(M.stallArrivalSeconds(s))}`,
+  cocoa: (s) => `they wait ${secs(M.stallPatience(s))} for stock${M.mugPrice(s) ? `, ${money(M.mugPrice(s))} a cup` : ""}`,
+  loyalty: (s) => ["no regulars yet", "one in four is a regular", "one in two is a regular"][M.visitorUpgradeLevel(s, "loyalty")],
+};
+// The same farm one level on, to describe what buying it would do.
+function nextLevel(s, id) {
+  const t = { ...s, upgrades: { ...s.upgrades }, visitorUpgrades: { ...s.visitorUpgrades } };
+  (id === "sign" ? t.upgrades : t.visitorUpgrades)[id]++;
+  return t;
+}
+// What Shane and Natalie say when a bigger visitor upgrade arrives, by level.
+const VISITOR_TALK = {
+  party: { 2: ["shane", "They’re bringing their friends now. Word travels fast when the pumpkins are good."], 3: ["natalie", "Whole families coming up the path. Skyla’s going to need a longer counter."] },
+  lights: { 1: ["natalie", "Fairy lights all the way down the path. I told you it would look magical."], 3: ["shane", "You can see our path from the castle now. The bats have started complaining."] },
+  cocoa: { 1: ["shane", "A hot chocolate stand, as promised. I’ve only had three cups. For quality control."], 3: ["natalie", "Marshmallows, cinnamon and a pinch of moonlight. Nobody’s in a hurry to leave."] },
+  loyalty: { 1: ["shane", "My loyalty card, at last. Buy nine pumpkins, receive a slightly larger pumpkin. Genius."], 2: ["natalie", "Half the village has a loyalty card now. The other half is thinking about it."] },
+};
 
 function priceButton(attr, value, price, coins, owned) {
   if (owned) return `<button class="button" disabled>${owned}</button>`;
@@ -25,10 +50,11 @@ function skylaTip(s) {
 
 export function farmSheets(ui) {
   let tab = "farm";
-  const tabs = () => segmented("shoptab", "Shop sections", [["farm", "Farm"], ["seeds", "Seeds"], ["shop", "Shop"], ["stall", "Stall"]], tab);
+  const tabs = () => segmented("shoptab", "Shop sections", [["farm", "Farm"], ["seeds", "Seeds"], ["shop", "Shop"], ["stall", "Stall"], ["visitors", "Visitors"]], tab);
 
+  // Spread the word lives in the Visitors tab with the rest of its kind.
   function farm(s) {
-    return M.UPGRADES.map((u) => {
+    return M.UPGRADES.filter((u) => u.id !== "sign").map((u) => {
       const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id);
       return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.text}</p><div class="pips">${Array.from({ length: u.max }, (_, i) => `<i class="${i < level ? "on" : ""}"></i>`).join("")}</div></div>
         ${priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
@@ -69,21 +95,43 @@ export function farmSheets(ui) {
     return tip + visit + stats + `<h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades;
   }
 
+  // Who is on the path now, a party at a time.
+  function guest(v) {
+    const doing = v.outcome === "bought" ? `bought ${plural(v.quantity, "pumpkin")} for ${money(v.amount)}` : v.outcome === "shopping" ? "on the way" : v.outcome === "budget" ? "couldn’t afford what’s left" : "found the shelves empty";
+    return `<p class="guest${v.place ? " member" : ""}"><b>${M.STALL_PROFILES[v.profile].name}</b>${v.regular ? ` <span class="tag">regular</span>` : ""} · up to ${money(v.budget)} · ${doing}${v.mug ? " · a cup of hot chocolate" : ""}</p>`;
+  }
+  const partyLabel = (v) => (v.size > 1 ? `<p class="party-label">${["", "", "Two friends", "A party of three", "A family of four"][v.size]}</p>` : "");
+
   function stall(s) {
     const st = s.stall, held = (v) => M.held(s, v);
-    return `<div class="stats"><div><b>${st.served}</b><span>neighbours served</span></div><div><b>${money(st.income)}</b><span>taken at the stall</span></div><div><b>${st.itemsSold}</b><span>pumpkins sold</span></div><div><b>${st.missedBudget + st.missedStock}</b><span>left empty-handed</span></div></div>
+    return `<div class="stats"><div><b>${st.served}</b><span>neighbours served</span></div><div><b>${money(st.income)}</b><span>taken at the stall</span></div><div><b>${st.itemsSold}</b><span>pumpkins sold</span></div><div><b>${st.missedBudget + st.missedStock}</b><span>left empty-handed</span></div>${st.cocoa ? `<div><b>${money(st.cocoa)}</b><span>in hot chocolate</span></div>` : ""}</div>
       <h3 class="section">In stock</h3><div class="stock-row">${M.VARIETIES.map((v, i) => `<div class="stock">${ui.thumb(i)}<b>${M.available(s, i)}</b><span>${v.name}${held(i) ? ` · ${held(i)} in baskets` : ""}</span></div>`).join("")}</div>
-      <h3 class="section">At the stall now</h3>${s.visitors.length ? s.visitors.map((v) => `<p class="guest"><b>${M.STALL_PROFILES[v.profile].name}</b> · up to ${money(v.budget)} · ${v.outcome === "bought" ? `bought ${plural(v.quantity, "pumpkin")} for ${money(v.amount)}` : v.outcome === "shopping" ? "on the way" : v.outcome === "budget" ? "couldn’t afford what’s left" : "found the shelves empty"}</p>`).join("") : `<p>No one on the path just now.</p>`}
+      <h3 class="section">At the stall now</h3>${s.visitors.length ? s.visitors.map((v, i) => (v.place === 0 || i === 0 ? partyLabel(v) : "") + guest(v)).join("") : `<p>No one on the path just now.</p>`}
       <h3 class="section">Who comes by</h3>${M.STALL_PROFILES.map((p) => `<p class="guest"><b>${p.name}</b> · ${money(p.budget)} to spend · up to ${plural(p.basketLimit, "pumpkin")} · likes ${p.preferred.map((v) => M.VARIETIES[v].name).join(", ")}</p>`).join("")}
-      ${st.receipts.length ? `<h3 class="section">Recent sales</h3>` + st.receipts.slice(0, 6).map((r) => `<p class="guest">${M.STALL_PROFILES[r.profile].name}: ${r.lines.map((l) => `${l.quantity} ${M.VARIETIES[l.variety].name}`).join(" + ")} · ${money(r.amount)}</p>`).join("") : ""}
+      ${st.receipts.length ? `<h3 class="section">Recent sales</h3>` + st.receipts.slice(0, 6).map((r) => `<p class="guest">${M.STALL_PROFILES[r.profile].name}: ${r.lines.map((l) => `${l.quantity} ${M.VARIETIES[l.variety].name}`).join(" + ")}${r.mug ? " + a hot chocolate" : ""} · ${money(r.amount + (r.mug ?? 0))}</p>`).join("") : ""}
       <p class="small">Missed: ${st.missedBudget} over budget, ${st.missedStock} sold out.</p>`;
+  }
+
+  // The visitor upgrades: how busy the path is, then a card for each.
+  function visitors(s) {
+    const max = M.partyMax(s);
+    const stats = `<div class="stats"><div><b>${Math.round(M.visitorsPerMinute(s) * 10) / 10}</b><span>neighbours a minute</span></div><div><b>${max > 1 ? `1–${max}` : "1"}</b><span>in each party</span></div><div><b>${secs(M.stallArrivalSeconds(s))}</b><span>between parties</span></div><div><b>${secs(M.stallPatience(s))}</b><span>they’ll wait for stock</span></div></div>`;
+    const cards = VISITOR_IDS.map((id) => {
+      const sign = id === "sign", u = sign ? M.UPGRADES.find((x) => x.id === id) : M.VISITOR_UPGRADES.find((x) => x.id === id);
+      const level = M.visitorUpgradeLevel(s, id), most = sign ? u.max : u.costs.length, done = level >= most;
+      const open = sign || M.visitorUpgradeUnlocked(s, id), price = sign ? M.upgradeCost(s, id) : M.visitorUpgradeCost(s, id);
+      const effect = open ? `Now: ${EFFECTS[id](s)}.${done ? "" : ` Next: ${EFFECTS[id](nextLevel(s, id))}.`}` : u.needs.text;
+      const button = !open ? `<button class="button" disabled>Locked</button>` : priceButton(sign ? "buy" : "visitup", id, price, s.coins, done && "Done");
+      return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${u.name}</h3><p>${u.text}</p><p class="effect">${effect}</p><div class="pips">${Array.from({ length: most }, (_, i) => `<i class="${i < level ? "on" : ""}"></i>`).join("")}</div></div>${button}</article>`;
+    }).join("");
+    return stats + cards;
   }
 
   return {
     shop: {
       eyebrow: "Skyla’s counter", title: "The Honest Pumpkin",
       setTab(t) { tab = t; },
-      body() { const s = ui.state; return tabs() + ({ farm, seeds, shop, stall })[tab](s); },
+      body() { const s = ui.state; return tabs() + ({ farm, seeds, shop, stall, visitors })[tab](s); },
       bind(body) {
         const s = ui.state;
         body.querySelectorAll("[data-shoptab]").forEach((b) => (b.onclick = () => { tab = b.dataset.shoptab; ui.draw(); }));
@@ -93,6 +141,14 @@ export function farmSheets(ui) {
           ui.tone(820); ui.notice(M.UPGRADES.find((u) => u.id === id).name + " bought.");
           if (id === "auto") ui.say("shane", "You mind the shop. We’ll plant and pick. Teamwork makes the pumpkin dream work.");
           if (id === "plots") ui.say("natalie", "More room for our little empire. I might be getting carried away.");
+          ui.draw();
+        }));
+        body.querySelectorAll("[data-visitup]").forEach((b) => (b.onclick = () => {
+          const id = b.dataset.visitup;
+          if (!M.buyVisitorUpgrade(s, id)) return;
+          ui.tone(820); ui.notice(M.VISITOR_UPGRADES.find((u) => u.id === id).name + " bought.");
+          const talk = VISITOR_TALK[id]?.[M.visitorUpgradeLevel(s, id)];
+          if (talk) ui.say(...talk);
           ui.draw();
         }));
         body.querySelectorAll("[data-plot]").forEach((b) => (b.onclick = () => { const i = +b.dataset.plot; if (M.upgradePlot(s, i)) { ui.tone(820); ui.notice(`Plot ${i + 1} can now grow ${M.VARIETIES[s.plotLevels[i]].name}.`); ui.draw(); } }));

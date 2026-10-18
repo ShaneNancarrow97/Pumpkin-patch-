@@ -258,3 +258,9 @@ input[type="range"] { accent-color: var(--gold); min-height: 44px; }
 #place-back .ico { --s: 36px; }
 .hud-stat [class$="-icon"] { --s: 36px; }
 .tab [class*="tab-icon"] { --s: 36px; }
+
+/* The Visitors tab and parties at the stall */
+.card p.effect { margin-top: 4px; font-size: 12px; color: var(--gold); }
+.party-label { margin-top: 4px !important; font: 600 12px var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--gold) !important; }
+.guest.member { padding-left: 12px; border-left: 2px solid var(--edge-soft); }
+.tag { display: inline-block; padding: 0 6px; border-radius: 6px; background: rgba(157, 179, 130, .2); color: var(--moss); font-size: 12px; font-weight: 600; }

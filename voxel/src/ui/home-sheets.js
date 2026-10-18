@@ -7,6 +7,76 @@ const roomName = (id) => M.houseRooms.find((r) => r.id === id).name;
 // A characteristic piece of each room's furniture, as its icon.
 const ROOM_ICONS = { parlour: "f01", bedroom: "f06", kitchen: "d13", attic: "d06" };
 const houseIcon = `<span class="thumb"><span class="ico i-home"></span></span>`;
+const size = (L) => `${L.w} × ${L.d}`;
+// The ways between rooms, in words: from a room, and as the way a new room is reached.
+const WAYS = { stair: { up: "Stairs up to the", down: "Stairs down to the" }, ladder: { up: "A ladder up to the", down: "A ladder down to the" }, door: { through: "A doorway to the" } };
+const REACHED = { stair: (from) => `up new stairs from the ${roomName(from)}`, door: (from) => `through a new doorway from the ${roomName(from)}`, ladder: (from) => `up a ladder from the ${roomName(from)}` };
+const BUILDS = { stair: "Stairs up from the", door: "A doorway from the", ladder: "A ladder up from the" };
+
+// What the next level adds, one line each, in the game's voice.
+function additions(next) {
+  const lines = [];
+  for (const r of next.rooms) {
+    const room = `${r.to.w} × ${r.to.d}, with room for ${r.to.capacity} pieces`, link = next.links.find((l) => l.to === r.id);
+    if (r.opens) lines.push(link ? `${BUILDS[link.kind]} ${roomName(link.from)} ${link.kind === "door" ? "into" : "to"} a new ${r.name}, ${room}.` : `A new ${r.name}, ${room}.`);
+    else if (r.from.w !== r.to.w || r.from.d !== r.to.d) lines.push(`The ${r.name} grows from ${r.from.w} × ${r.from.d} to ${room}.`);
+    else lines.push(`Room for ${r.to.capacity} pieces in the ${r.name}.`);
+  }
+  return lines.sort((a, b) => b.includes(" a new ") - a.includes(" a new "));
+}
+
+// The cottage in cross-section at a level, storey on storey, to a fixed scale
+// so it visibly grows. Whatever that level adds is drawn in gold.
+const PLAN = { w: 28, h: 13.2, storey: 3.2, ground: 12.4 };
+function plan(s, level, label) {
+  const rooms = M.houseRooms.map((r) => M.roomLayout(s, r.id, level)).filter(Boolean), was = (id) => M.roomLayout(s, id, level - 1);
+  const left = Math.min(...rooms.map((L) => L.offset)), right = Math.max(...rooms.map((L) => L.offset + L.w));
+  const X = (x) => +(PLAN.w / 2 + x - (left + right) / 2).toFixed(2), top = (L) => PLAN.ground - (L.storey + 1) * PLAN.storey;
+  const tone = (fresh) => (fresh ? `style="fill:rgba(231,180,110,.3);stroke:var(--gold-bright)"` : `style="fill:#2b1f33;stroke:var(--brass)"`);
+  let walls = "", parts = "", roofs = "", words = "";
+  for (const L of rooms) {
+    const a = X(L.offset), b = X(L.offset + L.w), y = top(L), old = was(L.id);
+    walls += `<rect x="${a}" y="${y}" width="${L.w}" height="${PLAN.storey}" ${tone(!old)} />`;
+    // The new floor a room grows by, with its old wall dashed.
+    if (old) for (const [u, v] of [[L.offset, old.offset], [old.offset + old.w, L.offset + L.w]]) if (v > u) {
+      walls += `<rect x="${X(u)}" y="${y}" width="${v - u}" height="${PLAN.storey}" ${tone(true)} /><line x1="${X(u === L.offset ? v : u)}" x2="${X(u === L.offset ? v : u)}" y1="${y}" y2="${y + PLAN.storey}" style="stroke:var(--gold-bright)" stroke-dasharray=".3 .25" />`;
+    }
+    // Stairs, a ladder and a doorway, where the layout puts them.
+    const newLink = (to) => !old || !M.roomLayout(s, to, level - 1);
+    for (const st of L.stairs.filter((st) => st.up)) {
+      const fresh = newLink(st.up), x1 = b - 0.25;
+      if (st.kind === "stair") {
+        let pts = `${x1 - 2.5},${y + PLAN.storey}`;
+        for (let i = 0; i < 5; i++) pts += ` ${x1 - 2.5 + i * 0.5},${y + PLAN.storey - (i + 1) * 0.64} ${x1 - 2 + i * 0.5},${y + PLAN.storey - (i + 1) * 0.64}`;
+        parts += `<polygon points="${pts} ${x1},${y + PLAN.storey}" style="fill:${fresh ? "rgba(255,216,148,.55)" : "#6a4428"};stroke:${fresh ? "var(--gold-bright)" : "var(--brass)"}" />`;
+      } else {
+        let rungs = "";
+        for (let k = y + 0.35; k < y + PLAN.storey; k += 0.45) rungs += `<line x1="${x1 - 0.7}" x2="${x1 - 0.1}" y1="${k.toFixed(2)}" y2="${k.toFixed(2)}" />`;
+        parts += `<g style="stroke:${fresh ? "var(--gold-bright)" : "var(--ink-soft)"}"><line x1="${x1 - 0.7}" x2="${x1 - 0.7}" y1="${y}" y2="${y + PLAN.storey}" /><line x1="${x1 - 0.1}" x2="${x1 - 0.1}" y1="${y}" y2="${y + PLAN.storey}" />${rungs}</g>`;
+      }
+    }
+    for (const dr of L.doors.filter((dr) => dr.wall === "left")) {
+      const fresh = newLink(dr.to), g = PLAN.ground;
+      parts += `<path d="M${a - 0.55} ${g}V${g - 1.6}A.55 .55 0 0 1 ${a + 0.55} ${g - 1.6}V${g}Z" style="fill:${fresh ? "var(--gold-bright)" : "rgba(255,216,148,.6)"};stroke:none" />`;
+    }
+    // A gable over the top of the house; a lean-to over anything sticking out below.
+    const above = rooms.find((u) => u.storey === L.storey + 1);
+    if (!above) roofs += `<polygon points="${a - 0.6},${y} ${(a + b) / 2},${y - 2.2} ${b + 0.6},${y}" />`;
+    else {
+      const ua = X(above.offset), ub = X(above.offset + above.w);
+      if (a < ua) roofs += `<polygon points="${a - 0.5},${y} ${Math.min(ua, b)},${y - 1.1} ${Math.min(ua, b)},${y}" />`;
+      if (b > ub) roofs += `<polygon points="${b + 0.5},${y} ${Math.max(ub, a)},${y - 1.1} ${Math.max(ub, a)},${y}" />`;
+    }
+    const room = M.houseRooms.find((r) => r.id === L.id), mid = (a + b - (L.stairs.some((st) => st.up) ? 2.6 : 0)) / 2;
+    words += `<text x="${mid}" y="${y + 1.45}">${room.name}</text><text x="${mid}" y="${y + 2.65}" style="fill:var(--ink-soft)">${size(L)}</text>`;
+  }
+  const sky = [[2.2, 1.6], [5.5, 3.4], [23.4, 1.2], [26, 4], [20.5, 3]].map(([x, y]) => `<rect x="${x}" y="${y}" width=".18" height=".18" />`).join("");
+  return `<svg viewBox="0 0 ${PLAN.w} ${PLAN.h}" role="img" aria-label="${label}" style="display:block;width:100%;height:auto">
+    <rect width="${PLAN.w}" height="${PLAN.h}" rx=".8" style="fill:rgba(0,0,0,.22)" /><g style="fill:#fff2c8">${sky}</g><path d="M1.6 .7a1 1 0 1 0 .9 1.5a.8 .8 0 1 1 -.9 -1.5z" style="fill:var(--gold-bright)" />
+    <g stroke-width=".12">${walls}${parts}</g><g stroke-width=".12" style="fill:#4a2b2f;stroke:var(--brass)">${roofs}</g>
+    <line x1="1" x2="${PLAN.w - 1}" y1="${PLAN.ground + 0.06}" y2="${PLAN.ground + 0.06}" stroke-width=".12" style="stroke:var(--moss)" />
+    <g text-anchor="middle" font-size="1.1" style="fill:var(--ink);font-family:var(--body);font-weight:600">${words}</g></svg>`;
+}
 
 export function homeSheets(ui) {
   let tab = "rooms", category = "all", search = "";
@@ -16,8 +86,10 @@ export function homeSheets(ui) {
   function rooms(s) {
     const cards = M.houseRooms.map((r) => {
       const open = M.roomUnlocked(s, r.id), current = here() === r.id && ui.scene.place?.kind === "room";
-      const need = M.HOUSE_LEVELS[r.level].name, pieces = M.roomPieces(s, r.id).length;
-      return `<article class="card${current ? " current" : ""}">${decorIcon(ROOM_ICONS[r.id])}<div><h3>${r.name}</h3><p>${open ? r.description : `Opens with the ${need}.`}</p>${open ? `<p class="small">${pieces}/${M.roomCapacity(s, r.id)} pieces</p>` : ""}</div>
+      const need = M.HOUSE_LEVELS[r.level].name, pieces = M.roomPieces(s, r.id).length, L = M.roomLayout(s, r.id, Math.max(r.level, s.house.level));
+      const link = M.HOUSE_LINKS.find((l) => l.to === r.id), ways = M.connections(s, r.id).map((c) => `${WAYS[c.kind][c.way]} ${roomName(c.to)}`).join(" · ");
+      const about = open ? `<p class="small">${size(L)} floor · ${pieces}/${L.capacity} pieces</p>${ways ? `<p class="small">${ways}</p>` : ""}` : `<p class="small">${size(L)} floor, ${REACHED[link.kind](link.from)}</p>`;
+      return `<article class="card${current ? " current" : ""}">${decorIcon(ROOM_ICONS[r.id])}<div><h3>${r.name}</h3><p>${open ? r.description : `Opens with the ${need}.`}</p>${about}</div>
         ${open ? `<button class="button ${current ? "" : "gold"}" data-go="${r.id}" ${current ? "disabled" : ""}>${current ? "You’re here" : "Go in"}</button>` : `<button class="button" disabled>Locked</button>`}</article>`;
     }).join("");
     const room = here(), styles = M.roomStyles.filter((st) => st.roomId === room);
@@ -63,12 +135,18 @@ export function homeSheets(ui) {
     }).join("") || `<p>Nothing matches “${search}”.</p>`;
   }
 
+  // The house now, then what the next level adds, drawn and in words.
   function house(s) {
-    const h = s.house, level = M.HOUSE_LEVELS[h.level], next = M.HOUSE_LEVELS[h.level + 1];
-    const byRoom = M.houseRooms.filter((r) => M.roomUnlocked(s, r.id)).map((r) => `${r.name} ${M.roomPieces(s, r.id).length}/${M.roomCapacity(s, r.id)}`).join(" · ");
+    const h = s.house, level = M.HOUSE_LEVELS[h.level], next = M.nextLevel(s), short = s.coins < level.cost;
+    const byRoom = M.houseRooms.map((r) => M.roomLayout(s, r.id)).filter(Boolean).map((L) => `${roomName(L.id)} ${size(L)}`).join(" · ");
+    const grow = next
+      ? `<h3 class="section">Grow into the ${next.name}</h3>${plan(s, next.level, `The ${next.name}, with what it adds in gold`)}
+        <article class="card hero">${houseIcon}<div><h3>What it adds</h3>${additions(next).map((line) => `<p>${line}</p>`).join("")}</div></article>
+        <button class="button gold wide" data-house ${short ? "disabled" : ""}>Grow the house · ${money(level.cost)}${short ? `<small>need ${money(level.cost - s.coins)}</small>` : ""}</button>`
+      : `${plan(s, h.level, `The ${level.name}`)}<p>${level.text}</p>`;
     return `<article class="card hero">${houseIcon}<div><p class="eyebrow">Level ${h.level + 1} of 4</p><h3>${level.name}</h3><p>${byRoom}</p></div></article>
       <div class="stats"><div><b>${M.spookyScore(s)}</b><span>haunting points</span></div><div><b>${h.owned.length}/50</b><span>treasures collected</span></div><div><b>${M.shelvedBooks(s)}</b><span>books on shelves</span></div></div>
-      ${next ? `<article class="card">${houseIcon}<div><h3>Grow into the ${next.name}</h3><p>${level.text}</p></div><button class="button gold" data-house ${s.coins < level.cost ? "disabled" : ""}>${money(level.cost)}${s.coins < level.cost ? `<small>need ${money(level.cost - s.coins)}</small>` : ""}</button></article>` : `<p>${level.text}</p>`}
+      ${grow}
       <p class="small">Haunting points: 4 for each level of the house, plus every spooky piece, wallpaper and shelved book.</p>`;
   }
 
@@ -163,9 +241,11 @@ export function homeSheets(ui) {
         body.querySelectorAll("[data-shelve]").forEach((b) => (b.onclick = () => { const shelfP = M.roomPieces(s, here()).find((p) => M.shelfCapacity(p.id) > p.books.length); if (shelfP && M.shelfBook(s, shelfP.instance, b.dataset.shelve)) { ui.tone(600); refresh(); } }));
         body.querySelectorAll("[data-read]").forEach((b) => (b.onclick = () => ui.read(b.dataset.read)));
         body.querySelectorAll("[data-house]").forEach((b) => (b.onclick = () => {
-          if (!M.upgradeHouse(s)) return;
-          const lvl = M.HOUSE_LEVELS[s.house.level];
-          ui.tone(880); ui.notice(`The house is now the ${lvl.name}.`);
+          const grown = M.upgradeHouse(s);
+          if (!grown) return;
+          const lvl = M.HOUSE_LEVELS[s.house.level], names = (list) => list.map((p) => M.decorById[p.id].name).join(", ");
+          ui.tone(880);
+          ui.notice(`The house is now the ${lvl.name}.` + (grown.moved.length ? ` Moved out of the way: ${names(grown.moved)}.` : "") + (grown.stored.length ? ` Put away to make room: ${names(grown.stored)}.` : ""));
           ui.say(s.house.level % 2 ? "natalie" : "shane", ["", "A whole new room! I’ve already chosen where the bookcase goes.", "A kitchen. Finally, somewhere to keep the pumpkin pies.", "An attic full of rafters and moonlight. It’s perfectly haunted."][s.house.level]);
           refresh();
         }));

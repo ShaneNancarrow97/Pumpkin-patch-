@@ -2,6 +2,7 @@ import * as THREE from "three";
 import atlasUrl from "../assets/sprites.png";
 import costumesUrl from "../assets/costumes.png";
 import { SPRITES } from "./sprite-meta.js";
+import { LEAN, STRETCH } from "./world.js";
 
 // Shane, Natalie and Skyla are voxelised from the main game's own sprites, and
 // so are the costumes: one voxel per pixel of a 120-row frame
@@ -99,9 +100,10 @@ export function spriteCharacter(pixels, who, look, outfit) {
   const costume = outfit && !outfit.endsWith("-base") && SPRITES[outfit];
   const group = new THREE.Group(), lean = new THREE.Group(), sheet = costume || SPRITES[who];
   if (costume) look = undefined;
-  // Lean back towards the camera so the top-down view doesn't squash them,
-  // the way sprite games tilt their characters.
-  lean.rotation.x = -0.36;
+  // Lean back towards the camera so the top-down view doesn't squash them, the
+  // way sprite games tilt their characters, and stretch to keep the art's shape.
+  lean.rotation.x = -LEAN;
+  lean.scale.y = STRETCH;
   group.add(lean);
   const idle = sheet.idle.map((f) => frameMesh(pixels, f, who, look));
   const walk = (sheet.walk ?? []).map((f) => frameMesh(pixels, f, who, look));

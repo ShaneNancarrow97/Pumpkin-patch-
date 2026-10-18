@@ -320,7 +320,9 @@ export function createScene(canvas, state, hooks) {
 
   let tapPulse = 0, last = performance.now(), time = 0;
   function tick(now) {
-    const dt = Math.min(0.1, (now - last) / 1000); last = now; time += dt;
+    // The first frame's timestamp can come before the scene finished building, and
+    // a negative time would pick a walk frame that doesn't exist.
+    const dt = THREE.MathUtils.clamp((now - last) / 1000, 0, 0.1); last = now; time += dt;
     hooks.onTick(dt);
 
     // Plots.
@@ -444,7 +446,8 @@ export function createScene(canvas, state, hooks) {
     showGrid(on) { places.setGrid(on); },
     cellAt(point, type) { return places.cellAt(point, type); },
     screenPoint(x, y, z) { return project(new THREE.Vector3(x, y, z)); },
-    actorPosition(who) { const p = actors[who]?.model.position ?? new THREE.Vector3(HOMES[who].x, 0, HOMES[who].z); return project(new THREE.Vector3(p.x, 2.4, p.z)); },
+    // Just above their heads: they lean back so they stand 2.3 tall on screen, which a point straight up from the feet reaches at 2.3 / cos(PITCH).
+    actorPosition(who) { const p = actors[who]?.model.position ?? new THREE.Vector3(HOMES[who].x, 0, HOMES[who].z); return project(new THREE.Vector3(p.x, 2.5 / Math.cos(PITCH), p.z)); },
     focus(x, z, zoom = view.zoom) { view.x = x; view.z = z; view.zoom = zoom; frame(); },          // frame() clamps once the new zoom is in
     setBloom(on) { bloomOn = on; },
     setVoxelCharacters(on) { if (on !== voxelCharacters) { voxelCharacters = on; placeCharacters(); } },

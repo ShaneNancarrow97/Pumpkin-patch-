@@ -272,8 +272,10 @@ for frames in costume_voxels.values():
         for f in kind:
             f["atlas"] = "costumes"
 
-# Decor: every piece of the catalogue, its longest side 64 pixels, for voxel
-# props and pixel-art thumbnails; and the ten book spines, 40 pixels tall.
+# Decor: every piece of the catalogue, its longest side 64 pixels, for the 3D
+# decor models (one voxel per pixel, already finer than the rooms' voxels; more
+# would multiply their faces) and the pixel-art thumbnails; and the ten book
+# spines, 40 pixels tall.
 DECOR_PX = 64
 groups = []
 ids = ["f%02d" % i for i in range(1, 17)] + ["d%02d" % i for i in range(1, 17)] + ["b%02d" % i for i in range(1, 11)]
@@ -287,6 +289,36 @@ sheet = Image.open(spines["path"]).convert("RGBA")
 for i, r in enumerate(spines["rects"]):
     groups.append(("spine-b%02d" % (i + 1), None, [small_frame(sheet, r, 40 / r[3], (r[2] / 2, r[3]))]))
 decor = small_atlas("voxel/assets/decor.png", groups, 1024)
+
+
+def tuned_palette(path, groups, meta):
+    """Rewrites a small atlas with a palette fitted by k-means. The 3D decor is
+    coloured from this art, and a quick octree palette shared by forty pictures
+    speckles their velvets and woods; this one keeps them smooth (index 0 is clear)."""
+    size = Image.open(path).size
+    atlas = Image.new("RGBA", size, (0, 0, 0, 0))
+    for key, _, frames in groups:
+        atlas.paste(frames[0][0], (meta[key]["x"], meta[key]["y"]))
+    a = np.asarray(atlas)
+    solid = a[..., 3] > 128
+    colours, which, count = np.unique(a[solid][:, :3], axis=0, return_inverse=True, return_counts=True)
+    c, w = colours.astype(float), count.astype(float)
+    pal = np.asarray(atlas.convert("RGB").quantize(255, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE).getpalette()[:765], float).reshape(-1, 3)
+    nearest = lambda: np.concatenate([((c[s:s + 4096, None] - pal[None]) ** 2).sum(-1).argmin(1) for s in range(0, len(c), 4096)])
+    for _ in range(16):
+        label, sums, n = nearest(), np.zeros_like(pal), np.zeros(len(pal))
+        np.add.at(sums, label, c * w[:, None])
+        np.add.at(n, label, w)
+        pal[n > 0] = sums[n > 0] / n[n > 0, None]
+    pal = pal.round().clip(0, 255)
+    index = np.zeros(a.shape[:2], np.uint8)
+    index[solid] = nearest()[which.ravel()] + 1
+    out = Image.fromarray(index, "P")
+    out.putpalette([0, 0, 0] + pal.astype(int).ravel().tolist())
+    out.save(path, optimize=True, transparency=0)
+
+
+tuned_palette("voxel/assets/decor.png", groups, decor)
 # Bookshelves keep the main game's book sockets, moved into the small art's pixels.
 shelves = json.loads(subprocess.run(["node", "-e", 'import("./src/content/shelf-layouts.mjs").then((m) => console.log(JSON.stringify(m.shelfLayouts)))'], capture_output=True, text=True, check=True).stdout)
 for item, layout in shelves.items():

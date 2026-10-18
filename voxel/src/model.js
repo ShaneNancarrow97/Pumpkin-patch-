@@ -3,7 +3,7 @@
 // rules/; this file puts the state together, loads old saves and runs a step.
 import { VARIETIES, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
 import { freshStock } from "./rules/stock.js";
-import { closeForTheNight, freshShop, freshStall, updateShop, updateStall } from "./rules/selling.js";
+import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, updateShop, updateStall } from "./rules/selling.js";
 import { freshHouse, restoreHouse } from "./rules/house.js";
 import { freshLooks, freshWardrobe, restoreWardrobe } from "./rules/wardrobe.js";
 import { FAVOURS, checkMemories } from "./rules/progress.js";
@@ -15,16 +15,16 @@ export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 
-export const STATE_VERSION = 2;
+export const STATE_VERSION = 3;
 
 export function freshState() {
   return {
     version: STATE_VERSION,
     coins: 40, earned: 0, sold: 0, harvested: 0, taps: 0, time: 0,
     plots: freshPlots(), plotLevels: Array(12).fill(0), plotCrops: Array(12).fill(0),
-    upgrades: freshUpgrades(), helperTimer: 0, streak: freshStreak(),
+    upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(),
     stock: freshStock(), holds: [],
-    stall: freshStall(), visitors: [], nextVisitor: 0, visitorTimer: 3,
+    stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
     shop: freshShop(),
     house: freshHouse(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
@@ -34,17 +34,18 @@ export function freshState() {
 
 const count = (x) => (Number.isSafeInteger(x) && x >= 0 ? x : 0);
 const money = (x) => (Number.isFinite(x) && x >= 0 ? x : 0);
-// The first voxel saves (version 1) had different upgrades, a list of pumpkins
-// for stock, and five goals under other names.
+// The first voxel saves (version 1, unnumbered) had different upgrades, a list
+// of pumpkins for stock, and five goals under other names. Version 2 saves lack
+// only the visitor upgrades, which start at nothing.
 const OLD_GOALS = { ghost: "basket", witch: "welcome", bram: "magic", bones: "seeds", patch: "market" };
 
 // Builds a valid state from whatever was saved, keeping everything that makes sense.
 export function restoreState(raw) {
   const s = freshState();
   if (!raw || typeof raw !== "object" || !Array.isArray(raw.plots) || raw.plots.length !== 12) return s;
-  const v1 = raw.version !== STATE_VERSION;
+  const v1 = !(raw.version >= 2);
   for (const k of ["coins", "earned"]) s[k] = money(raw[k]);
-  for (const k of ["sold", "harvested", "taps", "nextVisitor"]) s[k] = count(raw[k]);
+  for (const k of ["sold", "harvested", "taps", "nextVisitor", "nextParty"]) s[k] = count(raw[k]);
   s.time = money(raw.time);
   s.paused = raw.paused === true;
   s.plotLevels = raw.plotLevels?.length === 12 ? raw.plotLevels.map((l) => Math.max(0, Math.min(3, count(l)))) : s.plotLevels;
@@ -57,10 +58,11 @@ export function restoreState(raw) {
   s.upgrades = v1
     ? { tools: Math.min(6, count(u.tools)), yield: 0, auto: Math.min(1, count(u.helper)), plots: Math.min(2, count(u.plots)), sign: Math.min(3, count(u.signs)) }
     : { tools: Math.min(6, count(u.tools)), yield: Math.min(5, count(u.yield)), auto: Math.min(1, count(u.auto)), plots: Math.min(2, count(u.plots)), sign: Math.min(3, count(u.sign)) };
+  for (const v of VISITOR_UPGRADES) s.visitorUpgrades[v.id] = Math.min(v.costs.length, count(raw.visitorUpgrades?.[v.id]));
   if (Array.isArray(raw.stock) && v1) for (const v of raw.stock) if (VARIETIES[v]) s.stock[v]++;
   if (Array.isArray(raw.stock) && !v1 && raw.stock.length === 4) s.stock = raw.stock.map(count);
   if (raw.streak) for (const k of Object.keys(s.streak)) s.streak[k] = money(raw.streak[k]);
-  if (raw.stall) for (const k of ["income", "itemsSold", "served", "missedBudget", "missedStock"]) s.stall[k] = count(raw.stall[k]);
+  if (raw.stall) for (const k of ["income", "itemsSold", "served", "missedBudget", "missedStock", "cocoa"]) s.stall[k] = count(raw.stall[k]);
   if (raw.shop && typeof raw.shop === "object") {
     const shop = raw.shop;
     s.shop.unlocked = shop.unlocked === true;
@@ -81,7 +83,7 @@ export function restoreState(raw) {
 }
 
 // What is worth saving: everything except who is out walking or shopping.
-export const saveData = (s) => ({ ...s, visitors: [], holds: [], shop: { ...s.shop, customers: [] } });
+export const saveData = (s) => ({ ...s, visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] } });
 
 // Advances the farm by dt seconds and returns what happened, for the scene to show.
 export function update(s, dt) {

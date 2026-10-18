@@ -8,9 +8,15 @@ import { pumpkinBlock } from "./pumpkins.js";
 // centre, Skyla's shop top right, the stone path up the right, fence along the
 // bottom, and an arch at the back opening onto the lake.
 export const MAP = { w: 40, d: 26 };
-// Camera tilt: low enough to see the far shore over the back fence, steep
-// enough to see under the shop awning to Skyla on the counter.
-export const PITCH = THREE.MathUtils.degToRad(48);
+// Camera tilt: low enough to show the sides of the cottage, the shop, fences and
+// trees, and the far shore over the back fence; steep enough to see over the
+// patch's front rows and under the shop awning to Skyla on the counter.
+export const PITCH = THREE.MathUtils.degToRad(36);
+// The cast are flat sprites (or sprite-deep voxel figures) that lean back
+// towards the camera, the way sprite games tilt them, stretched by 1 / cos of the
+// angle left between them and the camera so the art keeps its drawn proportions.
+// The angle stays as it was at the old, steeper camera, so they stand straighter.
+export const LEAN = PITCH - THREE.MathUtils.degToRad(27.4), STRETCH = 1 / Math.cos(PITCH - LEAN);
 // Twelve plots, three across and four rows deep; the first six are open at the start.
 export const PLOTS = [11.2, 13.8, 16.4, 19.0].flatMap((z) => [16.5, 20, 23.5].map((x) => ({ x, z })));
 export const BIG_PUMPKIN = { x: 7, z: 15.5 };
@@ -363,16 +369,21 @@ function stringLights(v) {
 // village and its reflections. One pixel is an eighth of a world unit, the same
 // grain as the finest voxels, so it reads as part of the voxel world.
 export function buildBackdrop(pitch) {
-  const U = 8, X0 = -18, W = 76 * U, H = 30 * U, horizon = H - 2.5 * U;
+  // The far shore sits just above the back row of trees (about 6 tall, a unit in
+  // front of it) as the camera sees them, so the lake and the village lights show
+  // over them at any tilt. The sky runs on up, darkest, for a zoomed-out tall phone.
+  const shore = 6 * Math.cos(pitch) - 1.6 * Math.sin(pitch) + 0.4;
+  const U = 8, X0 = -18, W = 76 * U, H = 42 * U, horizon = H - Math.round(shore * U), top = horizon - 27.5 * U;
   const canvas = document.createElement("canvas"); canvas.width = W; canvas.height = H;
-  const g = canvas.getContext("2d"), r = seeded(77);
+  const g = canvas.getContext("2d"), r = seeded(77), high = seeded(78);
   const hex = (c) => "#" + c.toString(16).padStart(6, "0");
   const px = (x, y, c, w = 1, h = 1) => { g.fillStyle = hex(c); g.fillRect(x, y, w, h); };
   const X = (wx) => Math.round((wx - X0) * U);
   const mix = (a, b, t) => { const ca = new THREE.Color(a), cb = new THREE.Color(b); return ca.lerp(cb, t).getHex(); };
   // Sky in pixel bands, lighter towards the horizon, with stars and clouds.
-  for (let y = 0; y < horizon; y += 3) px(0, y, y / horizon < 0.5 ? mix(0x120a28, 0x2a1858, y / horizon * 2) : mix(0x2a1858, 0x5a3a8c, y / horizon * 2 - 1), W, 3);
-  for (let i = 0; i < 500; i++) px((r() * W) | 0, (r() * horizon * 0.95) | 0, r() < 0.7 ? 0xfff2c8 : 0xc8b8ff);
+  for (let y = 0; y < horizon; y += 3) { const t = Math.max(0, (y - top) / (horizon - top)); px(0, y, t < 0.5 ? mix(0x120a28, 0x2a1858, t * 2) : mix(0x2a1858, 0x5a3a8c, t * 2 - 1), W, 3); }
+  for (let i = 0; i < 500; i++) px((r() * W) | 0, top + ((r() * (horizon - top) * 0.95) | 0), r() < 0.7 ? 0xfff2c8 : 0xc8b8ff);
+  for (let i = 0; i < top * 2.3; i++) px((high() * W) | 0, (high() * top) | 0, high() < 0.7 ? 0xfff2c8 : 0xc8b8ff);
   for (const [cx, up, len] of [[80, 34, 70], [300, 40, 50], [460, 28, 80], [180, 22, 56], [540, 20, 40], [20, 24, 48], [380, 58, 60], [120, 70, 44]]) {
     const cy = horizon - up;
     for (let k = 0; k < 4; k++) px(cx + k * 5, cy - k * 2, 0x4a3484, len - k * 10, 2);
@@ -420,7 +431,7 @@ export function buildBackdrop(pitch) {
   // The lake: still water with shimmer lines and the lights reflected in it.
   for (let y = horizon; y < H - U; y++) px(0, y, mix(0x3a2c7a, 0x1e1848, (y - horizon) / (H - U - horizon)), W, 1);
   for (let i = 0; i < 50; i++) px((r() * W) | 0, horizon + 2 + ((r() * (H - U - horizon - 3)) | 0), 0x5a48a0, 2 + ((r() * 6) | 0), 1);
-  for (const x of lit) for (let y = horizon + 1; y < H - U - 1; y += 2) px(x + (((y >> 1) % 2) ? 1 : 0), y, 0xd88a3e, 1 + (r() < 0.4), 1);
+  for (const x of lit) for (let y = horizon + 1; y < H - U - 1; y += 2) if (r() > (y - horizon) / (H - U - horizon)) px(x + (((y >> 1) % 2) ? 1 : 0), y, 0xd88a3e, 1 + (r() < 0.4), 1);   // fading towards us
   for (let y = horizon + 1; y < H - U - 1; y += 2) px(mx - 3 + ((r() * 3) | 0), y, 0xe8c890, 3 + ((r() * 4) | 0), 1);
   px(0, H - U, 0x1c1626, W, U);                                                       // near shore
   const texture = new THREE.CanvasTexture(canvas);
