@@ -4,13 +4,15 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { Voxels, seeded, vary } from "./voxels.js";
+import { pumpkinTemplate, sproutTemplate, bigPumpkin } from "./pumpkins.js";
 import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, buildCottage, signBoard } from "./world.js";
 import { buildVisitor, animateWalk } from "./characters.js";
 import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./sprite-voxels.js";
 import { loadSpriteSheets, spriteActor, spriteVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
 import { VARIETIES, VISIT, openPlots, activeLook } from "./model.js";
 import { createPlaces, ORIGIN } from "./places.js";
-import { loadDecor, INTERIOR } from "./interiors.js";
+import { INTERIOR } from "./interiors.js";
+import { loadDecor } from "./decor.js";
 import { GRID } from "./model.js";
 
 const WALK = 2.4;
@@ -23,46 +25,6 @@ function along(route, d) {
     d -= step;
   }
   const [x, z] = route[route.length - 1]; return { x, z, dx: 0, dz: 1 };
-}
-
-// Pumpkins for the plots, one template per variety, cloned per plot.
-export function pumpkinTemplate(variety, size = 0.62) {
-  const v = new Voxels(), r = seeded(variety + 3), n = 5, s = size / n;
-  const color = VARIETIES[variety].color, rib = new THREE.Color(color).multiplyScalar(0.78).getHex();
-  for (let x = -n; x < n; x++) for (let y = 0; y < n * 1.5; y++) for (let z = -n; z < n; z++) {
-    const nx = (x + 0.5) / n, ny = (y + 0.5 - n * 0.75) / (n * 0.75), nz = (z + 0.5) / n;
-    if (nx * nx + ny * ny + nz * nz > 1) continue;
-    const ribbed = Math.abs(Math.sin(Math.atan2(nz, nx) * 4)) < 0.3;
-    v.box(x * s, y * s, z * s, s, s, s, vary(ribbed ? rib : color, 0.05, r));
-  }
-  v.box(-s / 2, n * 1.5 * s, -s / 2, s, s * 2.2, s, 0x5a4a1e);
-  v.box(0, n * 1.5 * s + s, -s / 2, s * 2.2, s * 0.4, s * 1.4, 0x4d6a2a);           // leaf
-  return v.build();
-}
-function sproutTemplate() {
-  const v = new Voxels();
-  v.box(-0.04, 0, -0.04, 0.08, 0.32, 0.08, 0x5c8a3a);
-  v.box(-0.2, 0.26, -0.06, 0.18, 0.06, 0.12, 0x6fa046); v.box(0.02, 0.32, -0.06, 0.18, 0.06, 0.12, 0x6fa046);
-  return v.build();
-}
-
-// The giant jack-o'-lantern: a ribbed voxel sphere with a glowing carved face.
-function bigPumpkin() {
-  const v = new Voxels(), r = seeded(99), n = 9, s = 0.19;
-  for (let x = -n; x < n; x++) for (let y = 0; y < n * 1.7; y++) for (let z = -n; z < n; z++) {
-    const nx = (x + 0.5) / n, ny = (y + 0.5 - n * 0.85) / (n * 0.85), nz = (z + 0.5) / n;
-    const d = nx * nx + ny * ny + nz * nz;
-    if (d > 1 || d < 0.72) continue;                                                  // hollow shell
-    const front = nz > 0.6, eye = front && ny > 0.05 && ny < 0.42 && Math.abs(Math.abs(nx) - 0.38) < 0.2 - (ny - 0.05) * 0.4;
-    const mouth = front && ny < -0.12 && ny > -0.48 && Math.abs(nx) < 0.62 && !(ny > -0.24 && Math.abs(Math.abs(nx) - 0.25) < 0.08);
-    if (eye || mouth) { v.box(x * s, y * s, z * s, s, s, s, 0xff9a2a, true); continue; }
-    const ribbed = Math.abs(Math.sin(Math.atan2(nz, nx) * 5)) < 0.28;
-    v.box(x * s, y * s, z * s, s, s, s, vary(ribbed ? 0xc0561a : 0xf0821e, 0.05, r));
-  }
-  v.box(-0.12, n * 1.7 * s - 0.05, -0.12, 0.26, 0.6, 0.26, 0x4a3a1a);
-  v.box(0.1, n * 1.7 * s + 0.2, -0.3, 0.7, 0.08, 0.5, 0x4d6a2a);
-  const g = v.build();
-  return g;
 }
 
 export function createScene(canvas, state, hooks) {

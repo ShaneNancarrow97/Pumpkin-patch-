@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import * as M from "./model.js";
-import { createScene, pumpkinTemplate } from "./scene.js";
+import { createScene } from "./scene.js";
+import { pumpkinTemplate } from "./pumpkins.js";
 import { createAudio } from "./ui/audio.js";
 import { farmSheets } from "./ui/farm-sheets.js";
 import { homeSheets } from "./ui/home-sheets.js";

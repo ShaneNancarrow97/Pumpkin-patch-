@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
+import { pumpkinBlock } from "./pumpkins.js";
 
 // World units: 1 = one ground tile. x runs west to east (0-40), z north to
 // south (0-26, the camera sits to the south), y is up. Layout follows
@@ -250,17 +251,6 @@ export function buildCottage(level) {
     }
   }
   return v.build();
-}
-
-const darker = (hex) => new THREE.Color(hex).multiplyScalar(0.82).getHex();
-
-export function pumpkinBlock(v, x, y, z, s, color, r) {
-  for (let i = -2; i <= 2; i++) for (let j = 0; j < 4; j++) for (let k = -2; k <= 2; k++) {
-    if (i * i + (j - 1.5) ** 2 * 1.4 + k * k > 5.2) continue;
-    // Every other column a shade darker reads as the pumpkin's ribs.
-    v.box(x + i * s * 0.22, y + j * s * 0.2, z + k * s * 0.22, s * 0.22, s * 0.2, s * 0.22, vary(Math.abs(i + k) % 2 ? color : darker(color), 0.05, r));
-  }
-  v.box(x - s * 0.05, y + s * 0.8, z - s * 0.05, s * 0.1, s * 0.22, s * 0.1, 0x5a4a1e);
 }
 
 function bigPumpkinStage(v, r) {

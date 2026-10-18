@@ -1,6 +1,6 @@
 // Small shared pieces of the menus.
 import { DECOR_ART } from "../decor-meta.js";
-import { decorThumb } from "../interiors.js";
+import { decorThumb } from "../decor.js";
 
 export const money = (n) => "£" + Math.floor(n).toLocaleString("en-GB");
 export const $ = (id) => document.getElementById(id);

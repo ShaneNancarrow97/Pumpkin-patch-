@@ -1,13 +1,14 @@
 // Builds the voxel reference into one offline file: dist/pumpkin-patch-voxel.html.
 //   node build.mjs          one build
 //   node build.mjs --dev    serve on http://localhost:8001 and rebuild on change
+//   node build.mjs --out f  one build, written to f instead
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import * as esbuild from "esbuild";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
-const dev = process.argv.includes("--dev");
+const dev = process.argv.includes("--dev"), at = process.argv.indexOf("--out"), outFile = at > 0 ? path.resolve(process.argv[at + 1]) : null;
 const MIME = { ".woff": "font/woff", ".woff2": "font/woff2", ".png": "image/png" };
 const inline = (css) => css.replace(/url\('(assets\/[^']+)'\)/g, (m, rel) => `url('data:${MIME[path.extname(rel)]};base64,${fs.readFileSync(path.join(root, rel)).toString("base64")}')`);
 
@@ -20,8 +21,8 @@ const writeHtml = {
       const css = inline(["src/style.css", "src/icons.css"].map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n"));
       const html = fs.readFileSync(path.join(root, "src/index.html"), "utf8")
         .replace("/* @build:style */", () => css).replace("/* @build:script */", () => js);
-      fs.mkdirSync(path.join(root, "dist"), { recursive: true });
-      const out = path.join(root, "dist", dev ? "index.html" : "pumpkin-patch-voxel.html");
+      const out = outFile ?? path.join(root, "dist", dev ? "index.html" : "pumpkin-patch-voxel.html");
+      fs.mkdirSync(path.dirname(out), { recursive: true });
       fs.writeFileSync(out, html);
       console.log(`${new Date().toLocaleTimeString()} built ${path.relative(root, out)} (${(html.length / 1024).toFixed(0)} KB)`);
     });

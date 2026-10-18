@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GRID, footprint, roomStyle, roomPieces, available, displayCount, decorById } from "./model.js";
-import { WALL_H, INTERIOR, buildRoom, buildShopInterior, decorProp, shelfBooks, SHOP_SPOTS, decorReady } from "./interiors.js";
+import { WALL_H, INTERIOR, buildRoom, buildShopInterior, SHOP_SPOTS } from "./interiors.js";
+import { decorProp, shelfBooks, decorReady } from "./decor.js";
 
 // The places you can step into: the cottage's rooms and the Honest Pumpkin.
 // They are built away from the farm (ORIGIN), one at a time, from the save.
