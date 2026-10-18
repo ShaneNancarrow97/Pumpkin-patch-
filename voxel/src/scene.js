@@ -120,7 +120,7 @@ export function createScene(canvas, state, hooks) {
   const character = (who) => {
     if (!ready()) return null;
     const look = who === "skyla" ? undefined : activeLook(state, who), outfit = who === "skyla" ? undefined : state.wardrobe.equipped[who];
-    const m = voxelCharacters ? spriteCharacter(pixels, who, look, outfit) : spriteActor(sheets, who, look, outfit);
+    const m = voxelCharacters ? spriteCharacter(pixels, who, look, outfit, sheets) : spriteActor(sheets, who, look, outfit);
     m.userData.kind = who === "skyla" ? "skyla" : "person";
     return m;
   };
@@ -153,7 +153,8 @@ export function createScene(canvas, state, hooks) {
     else if (inside?.kind === "shop") places.enterShop();
   }
   loadSprites().then((data) => { pixels = data; if (voxelCharacters) placeCharacters(); }).catch(() => hooks.onSpriteError?.());
-  loadSpriteSheets().then((data) => { sheets = data; if (!voxelCharacters) placeCharacters(); }).catch(() => hooks.onSpriteError?.());
+  // The voxel figures are built from these sheets too, in more detail, once they arrive.
+  loadSpriteSheets().then((data) => { sheets = data; if (!voxelCharacters || pixels) placeCharacters(); }).catch(() => hooks.onSpriteError?.());
 
   // Shane and Natalie.
   const actors = {};
