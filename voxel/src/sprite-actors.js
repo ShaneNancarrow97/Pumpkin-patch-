@@ -96,22 +96,32 @@ function recolouredTexture(sheet, who, look) {
 // A sprite figure: one plane that swaps frames, inside a group the scene moves.
 // glow is how much of its own art it lights, so it still reads at night; tone
 // darkens the art's response to the lamps.
-function figure(sheet, frames, texture, glow = 0.3, tone = 0xffffff) {
+// depth is how many layers of the same frame stand behind it, a little darker,
+// so the figure has a pixel or two of thickness at its edges rather than none.
+const LAYER = 0.008;
+function figure(sheet, frames, texture, glow = 0.3, tone = 0xffffff, depth = 0) {
   const group = new THREE.Group(), lean = new THREE.Group();
   lean.rotation.x = -LEAN;
   lean.scale.y = STRETCH;
   group.add(lean);
   const material = new THREE.MeshStandardMaterial({ map: texture, color: tone, alphaTest: 0.5, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: glow });
-  const mesh = new THREE.Mesh(frames.idle?.[0] ?? frames.walk[0], material);
+  const first = frames.idle?.[0] ?? frames.walk[0], mesh = new THREE.Mesh(first, material);
   mesh.castShadow = true;
   mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: texture, alphaTest: 0.5 });
   lean.add(mesh);
+  const edge = depth ? new THREE.MeshStandardMaterial({ map: texture, color: 0x5a4c4a, alphaTest: 0.5, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: glow * 0.25 }) : null;
+  const layers = Array.from({ length: depth }, (_, k) => {
+    const m = new THREE.Mesh(first, edge);
+    m.position.z = -(k + 1) * LAYER;
+    lean.add(m);
+    return m;
+  });
   const own = texture !== sheet.texture;
   group.userData = {
     idle: frames.idle ?? [], walk: frames.walk ?? [], facing: 0, shown: mesh.geometry,
-    show: (geometry) => (mesh.geometry = geometry),
+    show: (geometry) => { mesh.geometry = geometry; for (const m of layers) m.geometry = geometry; },
     // Frame planes and the shared sheet stay; a recoloured copy goes with the figure.
-    dispose: () => { material.dispose(); mesh.customDepthMaterial.dispose(); if (own) texture.dispose(); },
+    dispose: () => { material.dispose(); edge?.dispose(); mesh.customDepthMaterial.dispose(); if (own) texture.dispose(); },
   };
   return group;
 }
@@ -125,7 +135,8 @@ export function spriteActor(sheets, who, look, outfit) {
   // Skyla is cream and white: lit like the others she outshone the lanterns and
   // the bloom caught her, so she glows less and takes the light a shade darker.
   const [glow, tone] = who === "skyla" ? [0.06, 0xd6cdc2] : [0.3, 0xffffff];
-  return figure(sheet, sheet.frames, tinted ? recolouredTexture(sheet, who, look) : sheet.texture, glow, tone);
+  // Shane and Natalie stand four layers deep: a pixel or two of thickness.
+  return figure(sheet, sheet.frames, tinted ? recolouredTexture(sheet, who, look) : sheet.texture, glow, tone, who === "skyla" ? 0 : 4);
 }
 
 // A visitor: its four frames are a walk cycle; standing shows the first.
@@ -134,7 +145,10 @@ export function spriteVisitor(sheets, kind) {
   return figure(sheet, { walk: sheet.frames[VISITOR_KINDS[kind]] }, sheet.texture);
 }
 
-export function animateVisitor(group, age, walking) {
+// dx is which way they're heading across the screen (-1 to 1). The art faces
+// right, so walking left mirrors them; mostly up or down keeps the last facing.
+export function animateVisitor(group, age, walking, dx = 0) {
+  if (walking && Math.abs(dx) > 0.3) group.scale.x = dx < 0 ? -1 : 1;
   const { walk } = group.userData, next = walk[walking ? Math.floor(age * 5) % walk.length : 0];
   if (next !== group.userData.shown) { group.userData.show(next); group.userData.shown = next; }
   group.children[0].position.y = Math.sin(age * 2.4) * 0.03;                       // the main game's gentle sway

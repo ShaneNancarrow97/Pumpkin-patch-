@@ -195,7 +195,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       const dx = target.x - a.pos.x, dz = target.z - a.pos.z, d = Math.hypot(dx, dz), step = Math.min(d, 2.4 * dt);
       if (d > 0.02) { a.pos.x += (dx / d) * step; a.pos.z += (dz / d) * step; }
       a.model.position.set(o.x + a.pos.x, 0, o.z + a.pos.z);
-      animate(a.model, time + c.id, d > 0.05, c.id + time);
+      animate(a.model, time + c.id, d > 0.05, c.id + time, d > 0.05 ? dx / d : 0);
     }
     for (const [id, a] of customers) if (!seen.has(id)) { root.remove(a.model); a.model.userData.dispose?.(); customers.delete(id); }
   }

@@ -134,7 +134,7 @@ export function createScene(canvas, state, hooks) {
   const animateFigure = (m, t, moving, offset = 0, dx = 0, isPaying = false) => {
     const u = m.userData;
     if (u.kind === "skyla") animateSkyla(m, t, isPaying);
-    else if (u.kind === "visitor") (u.sprite ? animateVisitor(m, t, moving) : animateWalk(m, t, moving));
+    else if (u.kind === "visitor") (u.sprite ? animateVisitor(m, t, moving, dx) : animateWalk(m, t, moving));
     else animateSprite(m, t, moving, dx, offset);
   };
   function placeSkyla() {
@@ -374,7 +374,7 @@ export function createScene(canvas, state, hooks) {
       const fan = leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
       entry.m.position.set(p.x + counterSide(v.spot ?? 0) * COUNTER_GAP * fan, 0.04, p.z);
       const walking = leaving || v.age < VISIT.arrive;
-      if (entry.sprite) animateVisitor(entry.m, v.age, walking);
+      if (entry.sprite) animateVisitor(entry.m, v.age, walking, p.dx / (Math.hypot(p.dx, p.dz) || 1));
       else {
         entry.m.rotation.y = walking ? Math.atan2(p.dx, p.dz) : Math.PI;              // at the counter they face Skyla
         animateWalk(entry.m, time + v.id, walking);
