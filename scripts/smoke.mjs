@@ -74,10 +74,13 @@ try {
   check(await page.locator(".farm-shop-menu").count() === 1, "the Shop tab opens Skyla's shop");
   await page.locator("#modal .modal-close").click();
 
-  // Tap Natalie on the map to chat.
-  const world = await page.locator("#world").boundingBox();
-  const natalie = await page.evaluate(() => { const a = PumpkinPatch.app.scene.actors[0]; return { x: a.x, y: a.y }; });
-  await page.mouse.click(world.x + natalie.x / 1000 * world.width, world.y + (natalie.y - 60) / 610 * world.height);
+  // Tap Natalie on the map to chat. She keeps walking, and a mouse click could
+  // land after she has moved on or on a button floating over her, so the tap
+  // goes straight to the map at the spot she is standing on that same moment.
+  await page.evaluate(() => {
+    const a = PumpkinPatch.app.scene.actors[0], world = document.getElementById("world"), box = world.getBoundingClientRect();
+    world.dispatchEvent(new MouseEvent("click", { bubbles: true, clientX: box.left + a.x / 1000 * box.width, clientY: box.top + (a.y - 60) / 610 * box.height }));
+  });
   check(await page.locator(".conversation-menu").count() === 1, "tapping Natalie starts a chat");
   await page.locator("#modal .modal-close").click();
 
