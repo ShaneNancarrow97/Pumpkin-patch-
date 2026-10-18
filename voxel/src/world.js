@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
 import { pumpkinBlock } from "./pumpkins.js";
+import { buildGround, grounds } from "./ground.js";
 
 // World units: 1 = one ground tile. x runs west to east (0-40), z north to
 // south (0-26, the camera sits to the south), y is up. Layout follows
@@ -71,24 +72,23 @@ function cobbles(v, r, x, z, T, colors, amount) {
     v.box(x + ox + 0.02, 0, z + oz + 0.02, 0.21, 0.04 + r() * 0.04, 0.21, vary(colors[(r() * colors.length) | 0], amount, r));
 }
 
-function ground(v, r) {
-  const T = 0.5;
-  for (let x = 0; x < MAP.w; x += T) for (let z = -1; z < MAP.d + 3; z += T) {
-    const cx = x + T / 2, cz = z + T / 2;
-    if (nearPath(cx, cz, 0.95) || nearArchPath(cx, cz) || (cx > 31 && cx < 32.6 && cz > 8.6 && cz < 10.6)) cobbles(v, r, x, z, T, COL.stone, 0.1);
-    else if (inPatch(cx, cz)) {
-      const row = Math.round(cz * 2) % 2;
-      v.box(x, -0.5, z, T, 0.5 + (row ? 0.05 : 0), T, row ? COL.soil : COL.furrow);        // tilled rows
-    } else if (edge(cx, cz)) {
-      v.box(x, -0.5, z, T, 0.5 + r() * 0.06, T, vary(COL.grass[(r() * 4) | 0], 0.08, r));
-      if (r() < 0.3) v.box(x + r() * 0.3, 0.06, z + r() * 0.3, 0.16, 0.03, 0.16, COL.leaves[(r() * 6) | 0]); // a carpet of leaves
-      else if (r() < 0.06) v.box(x + 0.2, 0.05, z + 0.2, 0.12, 0.24, 0.12, COL.flowers[(r() * 5) | 0]);
-    } else {
-      cobbles(v, r, x, z, T, COL.yard, 0.08);                                            // the cobbled yard
-      if (r() < 0.07) v.box(x + r() * 0.3, 0.09, z + r() * 0.3, 0.16, 0.03, 0.16, COL.leaves[(r() * 6) | 0]);
+// The yard's ground, as a dense height field (ground.js): stone paths, the
+// cobbled yard, grass and leaves round the edges, and the tilled patch with a
+// raised bed under each plot.
+function yardGround() {
+  const pad = (x, z) => x > 31 && x < 32.6 && z > 8.6 && z < 10.6;
+  return buildGround({ x0: 0, x1: MAP.w, z0: -1, z1: MAP.d + 3 }, (x, z) => {
+    if (nearPath(x, z, 0.95) || nearArchPath(x, z) || pad(x, z)) return grounds.cobble(x, z, COL.stone, 0.42, 1, 0x2a2430);
+    if (inPatch(x, z)) {
+      for (const p of PLOTS) { const b = grounds.bed(x, z, p); if (b) return b; }
+      return grounds.soil(x, z);
     }
-  }
-  // Rough grass beyond the map's edges, for when the view is zoomed out.
+    if (edge(x, z)) return grounds.grass(x, z);
+    return grounds.cobble(x, z, COL.yard, 0.3, 2, 0x2a2430);
+  });
+}
+// Rough grass beyond the map's edges, for when the view is zoomed out.
+function ground(v, r) {
   for (let x = -16; x < MAP.w + 16; x += 2) for (let z = -1; z < MAP.d + 12; z += 2) {
     if (x >= 0 && x < MAP.w && z < MAP.d + 3) continue;
     v.box(x, -0.5, z, 2, 0.5, 2, vary(COL.grass[(r() * 4) | 0], 0.1, r));
@@ -271,11 +271,13 @@ function bigPumpkinStage(v, r) {
   flowers(v, r, x - 3.2, z + 2.2, 5); flowers(v, r, x + 3, z - 2.4, 4);
 }
 
+// Pale stones edging the patch, each a little rounded and set at its own height.
 function patchBorder(v, r) {
-  for (let a = 0; a < Math.PI * 2; a += 0.085) {
-    const x = 20 + Math.cos(a) * 7.9, z = 15.1 + Math.sin(a) * 5.9;
+  for (let a = 0; a < Math.PI * 2; a += 0.05) {
+    const x = 20 + Math.cos(a) * 7.9, z = 15.1 + Math.sin(a) * 5.9, h = 0.14 + r() * 0.08, c = vary(0xa89cb0, 0.12, r);
     if (nearPath(x, z, 1.2)) continue;
-    v.block(x, 0, z, 0.4, 0.26 + r() * 0.1, 0.4, vary(0xa89cb0, 0.1, r));            // pale stone edging
+    v.block(x, 0, z, 0.26, h, 0.26, c);
+    v.block(x, h, z, 0.18, 0.05, 0.18, vary(c, 0.06, r));
   }
 }
 
@@ -476,6 +478,7 @@ export function buildWorld() {
   for (let x = 8; x < 32; x += 1.3) for (let k = 0; k < 7; k++)                           // low autumn hedging beyond the front fence
     v.block(x + (r() - 0.5) * 1.2, (r() * 0.5), 25.9 + r() * 1.4, 0.42, 0.42, 0.42, vary(CANOPY[(r() * 3) | 0][1 + ((r() * 3) | 0)], 0.08, r));
   const group = v.build();
+  group.add(yardGround());
   return { group, lights: [...lights, ...stall.lights], door: home.door };
 }
 

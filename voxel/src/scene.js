@@ -88,8 +88,7 @@ export function createScene(canvas, state, hooks) {
   const glowTexture = new THREE.CanvasTexture(glowCanvas);
   const plots = PLOTS.map((p, i) => {
     const g = new THREE.Group(); g.position.set(p.x, 0.04, p.z);
-    const mound = new Voxels(); mound.box(-0.7, 0, -0.55, 1.4, 0.12, 1.1, 0x4a2c1c); mound.box(-0.55, 0.12, -0.45, 1.1, 0.06, 0.9, 0x553422);
-    g.add(mound.build());
+    // The bed itself is part of the ground (ground.js); the plot holds what grows in it.
     const sp = sprout.clone(); sp.position.y = 0.18; g.add(sp);
     const pk = pumpkins.map((t) => { const m = t.clone(); m.position.y = 0.18; g.add(m); return m; });
     const halo = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ color: 0xffffff, map: glowTexture, transparent: true, opacity: 0.0, toneMapped: false, depthWrite: false, blending: THREE.AdditiveBlending }));
