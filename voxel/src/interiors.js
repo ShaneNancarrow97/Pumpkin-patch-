@@ -970,6 +970,7 @@ export function buildShopInterior() {
   v.box(c.x + 0.64, 1.31, c.z - 0.86, 0.22, 0.32, 0.22, 0xffc46a, true);
   v.box(c.x + 0.58, 1.67, c.z - 0.92, 0.34, 0.05, 0.34, 0x2a2226);
   v.block(c.x + 0.75, 1.72, c.z - 0.75, 0.06, 0.08, 0.06, 0x2a2226);
-  lights.push({ x: c.x, y: 2.6, z: c.z }, { x: 3.2, y: 3.6, z: 2.6 }, { x: 3.2, y: 3.4, z: 5, color: 0xffc890, intensity: 6 }, { x: 0.4, y: 1.5, z: 5.2, color: 0xb8a8ff, intensity: 4 });
+  // The till's lamp hangs to Skyla's left and low, so it lights the counter, not her (she's cream and white).
+  lights.push({ x: c.x - 0.6, y: 2.4, z: c.z + 1.2, intensity: 4 }, { x: 3.2, y: 3.6, z: 2.6 }, { x: 3.2, y: 3.4, z: 5, color: 0xffc890, intensity: 6 }, { x: 0.4, y: 1.5, z: 5.2, color: 0xb8a8ff, intensity: 4 });
   return { group: v.build(), lights };
 }
