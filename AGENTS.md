@@ -37,3 +37,7 @@ npm run dev         # http://localhost:8000 with live rebuilds
 ## Before you open a PR
 
 `npm run check` passes. The PR says what changed for the player, and includes simulator output if balance moved and screenshots if anything visible changed.
+
+## The voxel version
+
+A three.js voxel version of the game lives in `voxel/` on the `voxel-reference` branch (PR #2). It has its own build, tests, save key and CI job, and borrows this game's content files (`src/content/*.mjs`, `src/core/costume-model.mjs`), so a change to those reaches both games. Read `voxel/AGENTS.md` before working there.
