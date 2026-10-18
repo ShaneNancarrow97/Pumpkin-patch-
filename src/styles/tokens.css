@@ -1,0 +1,50 @@
+/* Design tokens for the 3.0 interface (docs/UI-OVERHAUL.md §4).
+   New rules use these; legacy.css keeps its own values until each screen moves over. */
+@font-face { font-family: 'Fraunces'; src: url('assets/fonts/fraunces-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Fraunces'; src: url('assets/fonts/fraunces-600.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+
+:root {
+  /* Plum night, lantern gold, pumpkin orange. */
+  --pp-ground: #130f1b;
+  --pp-surface: #231a28;
+  --pp-surface-glass: rgba(35, 26, 40, 0.9);
+  --pp-raised: #3a2a37;
+  --pp-edge: #8a6249;
+  --pp-edge-soft: #5a4148;
+  --pp-ink: #fbe7c6;
+  --pp-ink-soft: #d8c2ad;
+  --pp-gold: #e7b46e;
+  --pp-gold-bright: #ffd894;
+  --pp-pumpkin: #d9792f;
+  --pp-moss: #9db382;
+  --pp-ember: #e07a55;
+
+  --pp-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --pp-font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --pp-text-xs: 12px;
+  --pp-text-s: 14px;
+  --pp-text-m: 16px;
+  --pp-text-l: 20px;
+  --pp-text-xl: 26px;
+  --pp-text-xxl: 34px;
+
+  --pp-space-1: 4px;
+  --pp-space-2: 8px;
+  --pp-space-3: 12px;
+  --pp-space-4: 16px;
+  --pp-space-5: 24px;
+  --pp-space-6: 32px;
+
+  --pp-radius-s: 8px;
+  --pp-radius-m: 12px;
+  --pp-radius-l: 18px;
+  --pp-radius-pill: 999px;
+  --pp-shadow: 0 4px 18px rgba(8, 4, 14, 0.45);
+
+  --pp-touch: 44px;
+  --pp-fast: 150ms;
+  --pp-sheet: 250ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --pp-fast: 0ms; --pp-sheet: 0ms; }
+}

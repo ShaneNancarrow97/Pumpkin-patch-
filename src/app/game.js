@@ -1,6 +1,6 @@
 import { asset } from "../platform/assets.js";
 import { iconArt } from "../ui/icons.js";
-import { farmPaintOrder, visitorGround } from "../scene/farm-layers.mjs";
+import { farmPaintOrder, visitorGround, visitorWalking } from "../scene/farm-layers.mjs";
 import { advanceFarmActors, characterWalkFrame, createFarmActors, queueFarmTask, resetFarmActors } from "../scene/character-motion.mjs";
 import { characterIdleMeta, characterWalkMeta } from "../content/character-walk-meta.mjs";
 import { pumpkinVarieties } from "../content/products.js";
@@ -271,8 +271,9 @@ function createGame() {
     [...$("plots").children].forEach(renderPlotButton);
     $("plant-count").textContent = s.plots.slice(0, unlocked(s)).filter((p) => p.phase === "empty").length;
     $("harvest-count").textContent = s.plots.slice(0, unlocked(s)).filter((p) => p.phase === "ready").length * (1 + s.upgrades.yield);
-    $("plant-all").disabled = s.paused || !s.plots.slice(0, unlocked(s)).some((p) => p.phase === "empty");
-    $("harvest-all").disabled = s.paused || !s.plots.slice(0, unlocked(s)).some((p) => p.phase === "ready");
+    $("plant-all").hidden = !s.plots.slice(0, unlocked(s)).some((p) => p.phase === "empty");
+    $("harvest-all").hidden = !s.plots.slice(0, unlocked(s)).some((p) => p.phase === "ready");
+    $("plant-all").disabled = $("harvest-all").disabled = s.paused;
     $("click-pumpkin").disabled = s.paused;
     $("mobile-boost").disabled = s.paused;
     $("plot-upgrades").disabled = s.paused;
@@ -377,6 +378,9 @@ function createGame() {
     }
   }
   let mapFocus = "field";
+  // Map x-range from the left edge of the big pumpkin to the right-hand plots, and the
+  // midpoint between the pumpkin's centre and the first column of plots.
+  const FIELD_SPAN = [95, 690], FIELD_NARROW_CENTRE = 305;
   function fitMap() {
     const width = Math.round(Math.max(720, mapViewport.clientWidth, (mapViewport.clientHeight || 420) * W / H));
     $("world").style.width = width + "px";
@@ -385,23 +389,20 @@ function createGame() {
   function viewMap(shop = false, animate = true) {
     mapFocus = shop === "home" ? "home" : shop ? "shop" : "field";
     const total = mapViewport.scrollWidth, mapHeight = parseFloat($("world").style.height) || 610;
-    const target = mapFocus === "shop" ? total - mapViewport.clientWidth : mapFocus === "home" ? 0 : Math.max(0, Math.min(total - mapViewport.clientWidth, total * 0.515 - mapViewport.clientWidth / 2));
+    // The patch view frames the big pumpkin and the plots. A screen too narrow for both
+    // centres between the pumpkin and the first column of plots, so each is partly in view.
+    const scale = total / W, visible = mapViewport.clientWidth / scale;
+    const fieldLeft = visible >= FIELD_SPAN[1] - FIELD_SPAN[0] ? (FIELD_SPAN[0] + FIELD_SPAN[1] - visible) / 2 : Math.max(FIELD_SPAN[0], FIELD_NARROW_CENTRE - visible / 2);
+    const target = mapFocus === "shop" ? total - mapViewport.clientWidth : mapFocus === "home" ? 0 : Math.max(0, Math.min(total - mapViewport.clientWidth, fieldLeft * scale));
     let top = Math.max(0, Math.min(Math.max(0, mapHeight - mapViewport.clientHeight), mapHeight * (mapFocus === "home" ? 0.35 : mapFocus === "shop" ? 0.49 : 0.69) - mapViewport.clientHeight / 2));
     if (mapFocus === "field") {
-      const viewport = mapViewport.getBoundingClientRect(), resources = document.querySelector(".stats").getBoundingClientRect();
+      const viewport = mapViewport.getBoundingClientRect(), resources = $("hud").getBoundingClientRect();
       const inset = Math.max(0, Math.min(mapViewport.clientHeight, resources.bottom - viewport.top));
       const head = (positions[0].y + 24 - 160) * mapHeight / H;
       top = Math.min(top, Math.max(0, head - inset - 12));
     }
     scrollAcross(mapViewport, target, animate, top);
-    for (const [id, focus] of [["view-home", "home"], ["view-field", "field"], ["view-shop", "shop"]]) {
-      $(id).classList.toggle("active", focus === mapFocus);
-      $(id).setAttribute("aria-pressed", String(focus === mapFocus));
-    }
   }
-  $("view-field").onclick = () => viewMap(false);
-  $("view-shop").onclick = () => viewMap(true);
-  $("view-home").onclick = () => viewMap("home");
   requestAnimationFrame(() => {
     fitMap();
     viewMap(false, false);
@@ -420,7 +421,20 @@ function createGame() {
   }
   $("pause").onclick = pause;
   $("resume").onclick = pause;
-  $("talk-shortcut").onclick = () => $("talk").click();
+  // Tapping Shane or Natalie on the map starts a chat.
+  $("world").addEventListener("click", (event) => {
+    if (event.target.closest("button"))
+      return;
+    const box = $("world").getBoundingClientRect(), x = (event.clientX - box.left) * W / box.width, y = (event.clientY - box.top) * H / box.height;
+    const hit = actors.find((a) => Math.abs(x - a.x) < 34 && y < a.y + 8 && y > a.y - 150);
+    if (!hit)
+      return;
+    dialogueIndex = banter.findIndex((line, i) => i > dialogueIndex && line[0] === hit.side);
+    if (dialogueIndex < 0)
+      dialogueIndex = banter.findIndex((line) => line[0] === hit.side);
+    say(...banter[dialogueIndex]);
+    app2.features.menus.openConversation();
+  });
   $("talk").onclick = () => {
     dialogueIndex = (dialogueIndex + 1) % banter.length;
     say(...banter[dialogueIndex]);
@@ -462,7 +476,7 @@ function createGame() {
     document.querySelector("main").inert = true;
     modal.querySelector(".modal-close").focus?.();
     if (typeof app2.features.menus?.markActiveNav === "function") {
-      const id = $("modal-content").querySelector(".costume-menu") ? "outfits-nav" : $("modal-content").querySelector(".farm-upgrades-menu") ? "upgrades-nav" : $("modal-content").querySelector(".favour-menu,.achievement") ? "scrapbook-nav" : app2.features.home.active ? "house-nav" : "patch-nav";
+      const id = $("modal-content").querySelector(".costume-menu") ? "outfits-nav" : $("modal-content").querySelector(".farm-upgrades-menu") ? "upgrades-nav" : $("modal-content").querySelector(".favour-menu,.achievement") ? "scrapbook-nav" : $("modal-content").querySelector(".farm-shop-menu") ? "manage-shop" : app2.features.home.active ? "house-nav" : "patch-nav";
       app2.features.menus?.markActiveNav(id);
     }
   }
@@ -499,7 +513,7 @@ function createGame() {
         closeModal();
     }
   });
-  $("help").onclick = () => showModal('<div class="modal-subtitle">WELCOME TO YOUR LITTLE EMPIRE</div><h2>A patch to call your own.</h2><div class="help-step"><b>1</b><p><strong>Plant a little happiness.</strong><br>Tap empty plots, or Plant all. Seeds are free. Swipe the map to explore the patch and shop.</p></div><div class="help-step"><b>2</b><p><strong>Give it a little love.</strong><br>Wait for pumpkins to grow, or tap Boost or the big pumpkin to speed up every growing plot. Eight taps with nothing growing give a bonus pumpkin.</p></div><div class="help-step"><b>3</b><p><strong>Pick, stock, and prosper.</strong><br>Click ripe pumpkins or Harvest all. Visitors buy from your stock automatically and leave coins.</p></div><div class="help-step"><b>4</b><p><strong>Grow together.</strong><br>Invest in faster growing, bigger harvests, more plots, and Helping hands for automatic planting and picking.</p></div><p>Keyboard: <b>P</b> to plant all · <b>H</b> to harvest all · <b>Space</b> to tap · <b>Esc</b> to pause. Use <b>Upgrade pumpkins</b> to buy better seeds for a single plot. They take effect at its next planting. Pick six plots within five seconds for a £5 streak bonus, available once per minute; tap the map’s favour card for more rewards. Music and effects have separate controls in Settings.</p>');
+  $("help").onclick = () => showModal('<div class="modal-subtitle">WELCOME TO YOUR LITTLE EMPIRE</div><h2>A patch to call your own.</h2><div class="help-step"><b>1</b><p><strong>Plant a little happiness.</strong><br>Tap empty plots, or Plant all. Seeds are free. Swipe the map to explore the patch and shop.</p></div><div class="help-step"><b>2</b><p><strong>Give it a little love.</strong><br>Wait for pumpkins to grow, or tap Boost or the big pumpkin to speed up every growing plot. Eight taps with nothing growing give a bonus pumpkin.</p></div><div class="help-step"><b>3</b><p><strong>Pick, stock, and prosper.</strong><br>Click ripe pumpkins or Harvest all. Visitors buy from your stock automatically and leave coins.</p></div><div class="help-step"><b>4</b><p><strong>Grow together.</strong><br>Invest in faster growing, bigger harvests, more plots, and Helping hands for automatic planting and picking. Tap Shane or Natalie for a chat.</p></div><p>Keyboard: <b>P</b> to plant all · <b>H</b> to harvest all · <b>Space</b> to tap · <b>Esc</b> to pause. Use <b>Upgrade pumpkins</b> to buy better seeds for a single plot. They take effect at its next planting. Pick six plots within five seconds for a £5 streak bonus, available once per minute; tap the map’s favour card for more rewards. Music and effects have separate controls in Settings.</p>');
   $("scrapbook-nav").onclick = () => {
     showModal('<button class="secondary" id="journal-favours">Midnight favours · collect rewards</button><div class="modal-subtitle">THE GOOD THINGS WE GREW</div><h2>Our little scrapbook.</h2><p>' + s.achievements.length + " of 6 memories made. There’s plenty of autumn ahead.</p>" + Object.entries(achievements).map(([id, a]) => '<div class="achievement ' + (s.achievements.includes(id) ? "earned" : "") + '"><span>' + a[0] + "</span><div><h3>" + a[1] + "</h3><p>" + a[2] + "</p><small>" + (s.achievements.includes(id) ? "✓ " + a[3] : "A memory waiting to be made") + "</small></div></div>").join(""));
     $("journal-favours").onclick = app2.features.festivals.open;
@@ -572,8 +586,9 @@ function createGame() {
     saveReason = result.reason || "";
     $("save-status").textContent = saveAvailable ? "✓ Progress saved" : persistence.blocked ? "Stored save kept" : "Saving unavailable";
     $("save-warning").hidden = saveAvailable;
-    $("preferences-nav").classList.toggle("needs-backup", !saveAvailable);
-    $("preferences-nav").setAttribute("aria-label", saveAvailable ? "Game settings" : "Game settings. Save needs attention. Download a backup.");
+    const backupDue = saveAvailable && !!app2.features.backups?.reminder;
+    $("preferences-nav").classList.toggle("needs-backup", !saveAvailable || backupDue);
+    $("preferences-nav").setAttribute("aria-label", !saveAvailable ? "Game settings. Save needs attention. Download a backup." : backupDue ? "Game settings. A backup is due." : "Game settings");
     $("save-warning").textContent = persistence.blocked ? "Stored save needs review · open Settings" : "Saving unavailable · back up your patch";
     app2.features.backups?.refresh();
   }
@@ -1015,7 +1030,7 @@ function createGame() {
     c.save();
     c.translate(x, y + sway);
     ellipse(c, 0, 4, 20, 5, "#08041065");
-    const type = visitorTypes[v.id % visitorTypes.length], image = walkingVisitors[type], meta = visitorArtMeta[type], walking = v.age < 3 || v.checked && v.age >= v.leaveAt;
+    const type = visitorTypes[v.id % visitorTypes.length], image = walkingVisitors[type], meta = visitorArtMeta[type], walking = visitorWalking(v);
     if (image.complete && image.naturalWidth && meta) {
       const frame2 = walking && !reduced && !s.paused ? Math.floor(v.age * 5) % 4 : 0, r = meta.rects[frame2], height = type === "ghost" ? 82 : 110, scale = height / meta.height, dw = r[2] * scale, dh = r[3] * scale;
       if (type === "ghost")

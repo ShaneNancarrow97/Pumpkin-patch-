@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Staging Tests</title>
+<style>
+  :root { --bg: #130f1b; --ink: #fbe7c6; --soft: #d8c2ad; --edge: #5a4148; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, sans-serif; padding: 16px; }
+  h1 { font: 600 22px Georgia, serif; margin: 0 0 4px; }
+  p { color: var(--soft); max-width: 70ch; margin: 0 0 12px; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  button { min-height: 40px; padding: 0 14px; border: 1px solid var(--edge); border-radius: 8px; background: #2a1f2e; color: var(--ink); }
+  button[aria-pressed="true"] { border-color: #e7b46e; color: #ffd894; }
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  figure { margin: 0; }
+  canvas { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--edge); }
+  figcaption { color: var(--soft); padding: 4px 2px; }
+</style>
+</head>
+<body>
+<h1>Staging tests</h1>
+<p>The same moment rendered three ways, using the game's real sprites: the original map, the original with staging fixes, and a calmer background generated in code. Choose a house stage to compare.</p>
+<div class="controls" id="stages"></div>
+<div class="grid">
+  <figure><canvas id="original" width="1000" height="610"></canvas><figcaption>A · Original: map art with the house sprite pasted on top</figcaption></figure>
+  <figure><canvas id="staged" width="1000" height="610"></canvas><figcaption>B · Original map, restaged: calmer background, grounded house on a fixed footprint, sign and lights kept in front</figcaption></figure>
+  <figure><canvas id="own" width="1000" height="610"></canvas><figcaption>C · Generated background in the same layout, built for staging</figcaption></figure>
+</div>
+<script>
+const A = "../../assets/house/";
+const load = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.src = A + src; });
+// Same data the game uses (src/content/house-map-meta.mjs, catalog houseExteriorRects).
+const STAGES = [
+  { x: 18, y: 105.21, w: 255, h: 217.79, r: [160, 24, 514, 439] },
+  { x: 18, y: 106.46, w: 275, h: 216.54, r: [830, 0, 588, 463] },
+  { x: 18, y: 58.85, w: 285, h: 264.15, r: [87, 451, 615, 570] },
+  { x: 8, y: 85.92, w: 305, h: 237.08, r: [801, 455, 723, 562] },
+];
+const IDLE = { natalie: [167, 10, 330, 711], shane: [27, 11, 421, 850] };
+// The house footprint every stage shares when restaged: base line, centre, maximum box.
+const FOOT = { cx: 150, base: 318, maxW: 250, maxH: 230 };
+
+let art, stage = 0;
+function rngFrom(seed) { return () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646; }
+
+function drawHouse(c, s, staged) {
+  const st = STAGES[s], [sx, sy, sw, sh] = st.r;
+  if (!staged) { c.drawImage(art.ex, sx, sy, sw, sh, st.x, st.y, st.w, st.h); return; }
+  // One footprint for every stage: fit inside the box, feet on the same base line.
+  const k = Math.min(FOOT.maxW / st.w, FOOT.maxH / st.h, 1), w = st.w * k, h = st.h * k;
+  const x = FOOT.cx - w / 2, y = FOOT.base - h;
+  // Contact shadow and worn ground so the house sits on the clearing.
+  c.save();
+  const g = c.createRadialGradient(FOOT.cx, FOOT.base - 4, 10, FOOT.cx, FOOT.base - 4, w * 0.62);
+  g.addColorStop(0, "rgba(14,8,18,0.62)"); g.addColorStop(1, "rgba(14,8,18,0)");
+  c.fillStyle = g; c.beginPath(); c.ellipse(FOOT.cx, FOOT.base - 4, w * 0.62, 26, 0, 0, Math.PI * 2); c.fill();
+  c.restore();
+  // Match the night grade of the map: slightly darker and cooler.
+  c.save(); c.filter = "brightness(0.9) saturate(0.92)";
+  c.drawImage(art.ex, sx, sy, sw, sh, x, y, w, h);
+  c.restore();
+  // Warm window light spilling onto the ground in front.
+  c.save(); c.globalCompositeOperation = "lighter";
+  const l = c.createRadialGradient(FOOT.cx, FOOT.base + 6, 4, FOOT.cx, FOOT.base + 6, 90);
+  l.addColorStop(0, "rgba(255,170,80,0.18)"); l.addColorStop(1, "rgba(255,170,80,0)");
+  c.fillStyle = l; c.fillRect(FOOT.cx - 100, FOOT.base - 30, 200, 100);
+  c.restore();
+}
+
+function drawPeople(c) {
+  for (const [who, x, y] of [["natalie", 300, 350], ["shane", 690, 350]]) {
+    const [sx, sy, sw, sh] = IDLE[who], img = art[who], h = 160, w = sw * h / sh;
+    c.save(); c.fillStyle = "rgba(8,4,14,0.45)"; c.beginPath(); c.ellipse(x, y + 3, 24, 6, 0, 0, Math.PI * 2); c.fill(); c.restore();
+    c.drawImage(img, sx, sy, sw, sh, x - w / 2, y - h, w, h);
+  }
+}
+
+// A: exactly what the game draws today.
+function original(c) {
+  c.drawImage(art.map, 0, 0, 1000, 610);
+  drawHouse(c, stage, false);
+  drawPeople(c);
+}
+
+// B: same art, restaged. The busy upper band is softened (depth of field), the
+// edges are vignetted, the house sits on a fixed footprint, and the sign and
+// string lights are redrawn from the map on top so the house never covers them.
+function staged(c) {
+  c.drawImage(art.map, 0, 0, 1000, 610);
+  c.save(); c.filter = "blur(1.6px) brightness(0.78) saturate(0.8)";
+  c.beginPath(); c.rect(0, 0, 1000, 215); c.clip();
+  c.drawImage(art.map, 0, 0, 1000, 610); c.restore();
+  const fade = c.createLinearGradient(0, 190, 0, 240);
+  fade.addColorStop(0, "rgba(0,0,0,0)"); fade.addColorStop(1, "rgba(0,0,0,0)");
+  drawHouse(c, stage, true);
+  // Bring the hanging sign and its post back in front of the house.
+  const sx = art.map.width / 1000, sy = art.map.height / 610;
+  c.drawImage(art.map, 222 * sx, 18 * sy, 88 * sx, 52 * sy, 222, 18, 88, 52);
+  vignette(c);
+  drawPeople(c);
+}
+
+function vignette(c) {
+  const v = c.createRadialGradient(500, 360, 260, 500, 330, 640);
+  v.addColorStop(0, "rgba(10,6,16,0)"); v.addColorStop(1, "rgba(10,6,16,0.55)");
+  c.fillStyle = v; c.fillRect(0, 0, 1000, 610);
+}
+
+// C: a calmer background generated in code, in the same layout as the map:
+// cottage clearing top left, big-pumpkin stage left, patch centre, shop top
+// right, stone path up the right, fence along the bottom.
+function own(c) {
+  const rnd = rngFrom(7);
+  const sky = c.createLinearGradient(0, 0, 0, 230);
+  sky.addColorStop(0, "#1b1433"); sky.addColorStop(1, "#3a2550");
+  c.fillStyle = sky; c.fillRect(0, 0, 1000, 610);
+  // Moon and its halo.
+  const halo = c.createRadialGradient(860, 70, 10, 860, 70, 120);
+  halo.addColorStop(0, "rgba(200,190,255,0.35)"); halo.addColorStop(1, "rgba(200,190,255,0)");
+  c.fillStyle = halo; c.fillRect(700, 0, 300, 220);
+  c.fillStyle = "#efe6ff"; c.beginPath(); c.arc(860, 70, 26, 0, Math.PI * 2); c.fill();
+  c.fillStyle = "#3a2550"; c.beginPath(); c.arc(872, 62, 24, 0, Math.PI * 2); c.fill();
+  // Two ridges of distant hills, flat colour, no detail: they sit back.
+  for (const [base, col, amp] of [[175, "#2d2244", 26], [205, "#26193a", 18]]) {
+    c.fillStyle = col; c.beginPath(); c.moveTo(0, 230);
+    for (let x = 0; x <= 1000; x += 20) c.lineTo(x, base - Math.sin(x / 90 + base) * amp - Math.sin(x / 31) * 5);
+    c.lineTo(1000, 230); c.fill();
+  }
+  // Treeline: soft round canopies in three muted autumn values.
+  const tones = ["#4a2233", "#5a2a2e", "#6b3528", "#3a2040"];
+  for (let i = 0; i < 70; i++) {
+    const x = rnd() * 1000, y = 190 + rnd() * 50, r = 26 + rnd() * 30;
+    c.fillStyle = tones[(rnd() * tones.length) | 0]; c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+  }
+  // Ground: one colour family, lighter clearings where things happen.
+  const ground = c.createLinearGradient(0, 220, 0, 610);
+  ground.addColorStop(0, "#2a1d22"); ground.addColorStop(1, "#1d141a");
+  c.fillStyle = ground; c.fillRect(0, 225, 1000, 385);
+  const clearing = (x, y, rx, ry, col) => { const g = c.createRadialGradient(x, y, 4, x, y, rx); g.addColorStop(0, col); g.addColorStop(1, "rgba(0,0,0,0)"); c.save(); c.translate(x, y); c.scale(1, ry / rx); c.translate(-x, -y); c.fillStyle = g; c.beginPath(); c.arc(x, y, rx, 0, Math.PI * 2); c.fill(); c.restore(); };
+  clearing(520, 420, 230, 120, "rgba(70,46,40,0.9)");   // the patch
+  clearing(150, 330, 150, 50, "rgba(66,48,44,0.8)");    // cottage yard
+  clearing(185, 420, 95, 40, "rgba(80,52,40,0.7)");     // big pumpkin stage
+  // Stone path: a soft pale ribbon with a few stones, following the visitor route.
+  const route = [[901, 640], [900, 610], [899, 584], [887, 534], [825, 456], [824, 438], [825, 418], [883, 356], [956, 308], [1010, 268]];
+  c.lineCap = "round"; c.lineJoin = "round";
+  c.strokeStyle = "rgba(150,128,130,0.45)"; c.lineWidth = 46; c.beginPath(); route.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); c.stroke();
+  c.strokeStyle = "rgba(185,165,160,0.35)"; c.lineWidth = 30; c.stroke();
+  c.beginPath(); c.moveTo(883, 356); c.lineTo(835, 316); c.strokeStyle = "rgba(150,128,130,0.45)"; c.lineWidth = 30; c.stroke();
+  // Shop: a simple stall with the striped awning, a lit counter and lanterns.
+  c.fillStyle = "#3b2620"; c.fillRect(735, 230, 230, 70);
+  for (let i = 0; i < 9; i++) { c.fillStyle = i % 2 ? "#5b2a4a" : "#c76a2a"; c.beginPath(); c.moveTo(728 + i * 27, 200); c.lineTo(755 + i * 27, 200); c.lineTo(750 + i * 27, 232); c.lineTo(733 + i * 27, 232); c.fill(); }
+  c.fillStyle = "#6b4630"; c.fillRect(740, 262, 220, 16);
+  const counterGlow = c.createRadialGradient(850, 265, 5, 850, 265, 140);
+  counterGlow.addColorStop(0, "rgba(255,180,90,0.3)"); counterGlow.addColorStop(1, "rgba(255,180,90,0)");
+  c.fillStyle = counterGlow; c.fillRect(700, 180, 300, 180);
+  // Big pumpkin stage: a round dais the canvas pumpkin sits on.
+  c.fillStyle = "#4a3326"; c.beginPath(); c.ellipse(185, 432, 82, 22, 0, 0, Math.PI * 2); c.fill();
+  c.fillStyle = "#5c4030"; c.beginPath(); c.ellipse(185, 426, 80, 20, 0, 0, Math.PI * 2); c.fill();
+  // Fence along the bottom: a clean silhouette, lanterns every few posts.
+  c.fillStyle = "#120c12"; c.fillRect(0, 560, 1000, 8);
+  for (let x = 6; x < 1000; x += 26) { if (x > 860 && x < 940) continue; c.beginPath(); c.moveTo(x, 600); c.lineTo(x, 548); c.lineTo(x + 6, 540); c.lineTo(x + 12, 548); c.lineTo(x + 12, 600); c.fill(); }
+  for (const x of [120, 330, 560, 760]) {
+    const lg = c.createRadialGradient(x, 532, 2, x, 532, 60);
+    lg.addColorStop(0, "rgba(255,190,100,0.55)"); lg.addColorStop(1, "rgba(255,190,100,0)");
+    c.fillStyle = lg; c.fillRect(x - 60, 472, 120, 120);
+    c.fillStyle = "#ffcf7a"; c.fillRect(x - 4, 526, 8, 12);
+  }
+  // String lights across the field.
+  c.strokeStyle = "rgba(30,20,24,0.9)"; c.lineWidth = 1.5; c.beginPath(); c.moveTo(330, 150); c.quadraticCurveTo(520, 205, 700, 150); c.stroke();
+  for (let t = 0.05; t < 1; t += 0.07) { const x = 330 + 370 * t, y = 150 + 4 * 55 * t * (1 - t); c.fillStyle = "rgba(255,200,110,0.9)"; c.beginPath(); c.arc(x, y + 4, 2.4, 0, Math.PI * 2); c.fill(); }
+  drawHouse(c, stage, true);
+  vignette(c);
+  drawPeople(c);
+}
+
+function render() {
+  for (const [id, fn] of [["original", original], ["staged", staged], ["own", own]]) {
+    const cv = document.getElementById(id), c = cv.getContext("2d");
+    c.setTransform(cv.width / 1000, 0, 0, cv.height / 610, 0, 0);
+    c.clearRect(0, 0, 1000, 610); fn(c);
+  }
+  document.querySelectorAll("#stages button").forEach((b, i) => b.setAttribute("aria-pressed", String(i === stage)));
+}
+
+const names = ["Little cottage", "Crooked cottage", "Midnight manor", "Haunted haven"];
+names.forEach((n, i) => { const b = document.createElement("button"); b.textContent = n; b.onclick = () => { stage = i; render(); }; document.getElementById("stages").append(b); });
+for (const cv of document.querySelectorAll("canvas")) { cv.width = 2000; cv.height = 1220; }
+Promise.all([load("farm-night.webp"), load("exteriors.webp"), load("natalie-idle.webp"), load("shane-idle.webp")]).then(([map, ex, natalie, shane]) => {
+  art = { map, ex, natalie, shane };
+  render();
+  document.body.dataset.ready = "true";
+});
+</script>
+</body>
+</html>

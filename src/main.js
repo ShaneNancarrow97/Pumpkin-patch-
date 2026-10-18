@@ -1,3 +1,4 @@
+import "./platform/polyfills.js";
 import { initRoomUi } from "./ui/room-ui.js";
 import { createGame } from "./app/game.js";
 import { initAudioUi } from "./ui/audio-ui.js";

@@ -1,6 +1,6 @@
 # Backlog: first tasks
 
-These tasks are sized for a single pull request each and listed in a sensible order. They come from [REVIEW.md](REVIEW.md) and the workstreams (A–L) in [IMPROVEMENT-PLAN.md](IMPROVEMENT-PLAN.md). Each could become a GitHub issue.
+The full phased plan is in [PLAN.md](PLAN.md). These tasks are sized for a single pull request each and listed in a sensible order. They come from [REVIEW.md](REVIEW.md) and the workstreams (A–L) in [IMPROVEMENT-PLAN.md](IMPROVEMENT-PLAN.md). Each could become a GitHub issue.
 
 ## 0. Before anything else
 
@@ -8,13 +8,14 @@ These tasks are sized for a single pull request each and listed in a sensible or
 - [ ] **Find the Android signing keystore** ([ANDROID.md](ANDROID.md)).
 - [ ] **Decide who the game is for** (plan §11): just the two of you, or a wider audience. That decides how much the music and font licences matter.
 
-## 1. Save safety: v2.11 "Lantern" (plan workstream A)
+## 1. Save safety: 3.0 "Lantern" (plan workstream A)
 
-- [ ] Show the game version in Settings and write it into backups (R2).
-- [ ] Tolerant restore: repair a bad field to its default, list what was repaired, and keep strict checks for imports. Update `test/save.test.mjs` to match.
-- [ ] Keep three rolling autosave snapshots in a second localStorage key.
-- [ ] Settings shows when the last backup was made, with a gentle reminder after 7 days.
-- [ ] Move the `Object.hasOwn` and `replaceChildren` polyfills into the game itself (R5).
+- [x] Show the game version in Settings and write it into backups (R2).
+- [x] Tolerant restore: repair a damaged section, list what was repaired, and show repairs in the import preview (R1).
+- [x] Keep three rolling autosave snapshots in a second localStorage key.
+- [x] Settings shows when the last backup was made, with a gentle reminder after 7 days.
+- [x] Move the `Object.hasOwn` and `replaceChildren` polyfills into the game itself (R5).
+- [ ] A copy-and-paste transfer code for moving saves without files.
 
 ## 2. Balance: plan workstream B, measured with `npm run sim`
 

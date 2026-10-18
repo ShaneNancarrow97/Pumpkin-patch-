@@ -2,6 +2,7 @@ import { findProduct, productCatalog } from "../content/products.js";
 import { availableQuantity, commitStock, releaseStock } from "./inventory.js";
 import { stallProfiles } from "../content/stall.js";
 import { chooseBasket } from "./shop.js";
+import { stallVisit } from "../content/visitor-routes.mjs";
 
 function freshStall() {
   return { version: 1, income: 0, itemsSold: 0, served: 0, missedBudget: 0, missedStock: 0, receipts: [] };
@@ -47,7 +48,7 @@ function sellToPasserby(state, v) {
   v.bought = true;
   v.checked = true;
   v.outcome = "bought";
-  v.leaveAt = v.age + 1;
+  v.leaveAt = v.age + stallVisit.lingerSeconds;
   s.receipts.unshift({ visitorId: v.id, profile: v.profile, budget: v.budget, quantity: v.quantity, amount: v.amount, basket: v.basket.map((l) => ({ ...l })) });
   s.receipts.length = Math.min(20, s.receipts.length);
   return true;
@@ -58,7 +59,7 @@ function finishMissedVisit(state, v) {
   const key = v.outcome === "budget" ? "missedBudget" : "missedStock";
   if (state.stall[key] < Number.MAX_SAFE_INTEGER) state.stall[key]++;
   v.checked = true;
-  v.leaveAt = v.age + 1;
+  v.leaveAt = v.age + stallVisit.lingerSeconds;
 }
 var record3 = (x) => !!x && typeof x === "object" && !Array.isArray(x);
 var count2 = (x) => Number.isSafeInteger(x) && x >= 0;

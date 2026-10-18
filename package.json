@@ -1,6 +1,6 @@
 {
   "name": "pumpkin-patch",
-  "version": "2.10.0",
+  "version": "3.0.0",
   "private": true,
   "description": "Shane & Natalie's Pumpkin Patch: a cosy Halloween farm and shop game that ships as one offline HTML file.",
   "type": "module",
@@ -11,7 +11,8 @@
     "check": "npm test && npm run build && npm run smoke",
     "sim": "node scripts/simulate.mjs",
     "smoke": "node scripts/smoke.mjs",
-    "build:android": "node scripts/build.mjs --android"
+    "build:android": "node scripts/build.mjs --android",
+    "audit:ui": "node scripts/ui-audit.mjs"
   },
   "devDependencies": {
     "esbuild": "0.24.2",

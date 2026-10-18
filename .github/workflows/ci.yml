@@ -19,6 +19,10 @@ jobs:
       - run: npm run build:android
       - run: npx playwright install --with-deps chromium
       - run: npm run smoke
+      - name: Interface audit
+        run: |
+          echo '### Interface audit' >> "$GITHUB_STEP_SUMMARY"
+          node scripts/ui-audit.mjs --strict --screens dist/screens | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Economy snapshot
         run: |
           echo '```' >> "$GITHUB_STEP_SUMMARY"
@@ -30,4 +34,5 @@ jobs:
           path: |
             dist/pumpkin-patch.html
             dist/android/
+            dist/screens/
           retention-days: 30

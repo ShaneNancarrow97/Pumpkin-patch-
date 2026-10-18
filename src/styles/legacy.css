@@ -1886,3 +1886,10 @@ dialog.dialog-fallback { overflow: hidden; }
  .farm-shop-menu .skyla-dialogue,.farm-shop-menu .shop-tabs,.farm-shop-menu #shop-panel,.farm-shop-menu .shop-return { grid-column:1/-1; }
  .farm-shop-menu .shop-tabs { margin:0; }
 }
+
+/* 3.0 Lantern: save repairs, earlier copies and the build version. */
+.save-repair-note{border-left:3px solid #d99a4e;padding:6px 10px;background:rgba(217,154,78,.12);border-radius:4px}
+.snapshot-list{margin-top:14px}
+.snapshot-list h4{margin:0 0 4px;font-size:14px}
+.snapshot-list p{margin:0 0 8px}
+.game-version{margin-top:14px;font-size:11px;opacity:.65;letter-spacing:.3px}
