@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { GRID, footprint, roomStyle, roomPieces, available, displayCount, decorById } from "./model.js";
+import { GRID, footprint, roomStyle, roomPieces, roomLayout, available, displayCount, decorById } from "./model.js";
 import { WALL_H, INTERIOR, buildRoom, buildShopInterior, SHOP_SPOTS } from "./interiors.js";
 import { decorProp, shelfBooks, decorReady } from "./decor.js";
 
@@ -82,23 +82,31 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   // A room of the cottage, with every piece placed in it.
   function buildRoomPlace(id) {
     clear();
-    place = { kind: "room", id };
+    const layout = roomLayout(state, id) ?? GRID, { w, d } = layout;
+    place = { kind: "room", id, w, d };
     const o = ORIGIN.room, wallpaper = decorById[state.house.wallpapers[id]];
-    const shell = buildRoom(roomStyle(state, id).id, wallpaper);
+    const shell = buildRoom(roomStyle(state, id).id, wallpaper, layout === GRID ? null : layout);
     shell.group.position.copy(o); root.add(shell.group);
+    // Stairs, ladders and doorways: a tap takes you to the room they lead to.
+    for (const l of shell.links ?? []) {
+      const hit = new THREE.Mesh(new THREE.BoxGeometry(l.w, l.h, l.d), new THREE.MeshBasicMaterial({ visible: false }));
+      hit.position.set(o.x + l.x + l.w / 2, l.y + l.h / 2, o.z + l.z + l.d / 2);
+      hit.userData = { type: "go", to: l.to };
+      root.add(hit); pickables.push(hit);
+    }
     const lamps = [...shell.lights];
     if (decorReady()) for (const p of roomPieces(state, id)) lamps.push(...addPiece(p));
     light(lamps, o);
     lightIndoors(o);
-    hitPlane(GRID.w, GRID.d, "floor", new THREE.Vector3(o.x + GRID.w / 2, 0.01, o.z + GRID.d / 2), -Math.PI / 2);
-    hitPlane(GRID.w, WALL_H - 1.5, "wall", new THREE.Vector3(o.x + GRID.w / 2, 1.5 + (WALL_H - 1.5) / 2, o.z + 0.02));
+    hitPlane(w, d, "floor", new THREE.Vector3(o.x + w / 2, 0.01, o.z + d / 2), -Math.PI / 2);
+    hitPlane(w, WALL_H - 1.5, "wall", new THREE.Vector3(o.x + w / 2, 1.5 + (WALL_H - 1.5) / 2, o.z + 0.02));
     // Shane and Natalie are home too, at the front of the room.
-    for (const [who, x] of [["natalie", 2.2], ["shane", 7.8]]) {
+    for (const [who, x] of [["natalie", 2.2], ["shane", w - 2.2]]) {
       const a = character(who);
       if (!a) continue;
-      a.position.set(o.x + x, 0, o.z + GRID.d - 0.6);
+      a.position.set(o.x + x, 0, o.z + d - 0.6);
       root.add(indoors(a));
-      actors.push({ who, model: a, home: { x, z: GRID.d - 0.6 }, target: null, wait: 2 + Math.random() * 4 });
+      actors.push({ who, model: a, home: { x, z: d - 0.6 }, target: null, wait: 2 + Math.random() * 4 });
     }
     setGrid(showGrid);
   }
@@ -136,7 +144,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   // The Honest Pumpkin's shop floor.
   function buildShopPlace() {
     clear();
-    place = { kind: "shop" };
+    place = { kind: "shop", w: GRID.w, d: GRID.d };
     const o = ORIGIN.shop, shell = buildShopInterior();
     shell.group.position.copy(o); root.add(shell.group);
     light(shell.lights, o);
@@ -197,7 +205,8 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     for (const a of actors) {
       const pos = a.model.position, o = ORIGIN.room;
       if (!a.target && (a.wait -= dt) <= 0) {
-        const x = 1 + Math.random() * (GRID.w - 2), z = GRID.d - 0.4 - Math.random() * 1.2;
+        // Short of the right wall, where the stairs come down.
+        const x = 1 + Math.random() * (place.w - 3), z = place.d - 0.4 - Math.random() * 1.2;
         a.target = { x, z };
       }
       let moving = false, dx = 0;
@@ -243,8 +252,9 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     if (gridLines) { root.remove(gridLines); gridLines = null; }
     if (!on || place?.kind !== "room") return;
     const pts = [], o = ORIGIN.room;
-    for (let x = 0; x <= GRID.w; x++) pts.push(o.x + x, 0.02, o.z, o.x + x, 0.02, o.z + GRID.d);
-    for (let z = 0; z <= GRID.d; z++) pts.push(o.x, 0.02, o.z + z, o.x + GRID.w, 0.02, o.z + z);
+    const { w, d } = place;
+    for (let x = 0; x <= w; x++) pts.push(o.x + x, 0.02, o.z, o.x + x, 0.02, o.z + d);
+    for (let z = 0; z <= d; z++) pts.push(o.x, 0.02, o.z + z, o.x + w, 0.02, o.z + z);
     const geo = new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
     gridLines = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({ color: 0xffe0a8, transparent: true, opacity: 0.18, toneMapped: false }));
     root.add(gridLines);

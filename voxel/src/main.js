@@ -50,6 +50,7 @@ const scene = createScene($("world"), state, {
     else if (what.type === "home") openHome();
     else if (what.type === "talk") talk(what.who);
     else if (what.type === "piece") home.tools.select(what.instance);
+    else if (what.type === "go") goTo(what.to);
     else if (what.type === "floor" || what.type === "wall") { if (home.tools.selected) home.tools.tapCell(scene.cellAt(what.point, what.type)); }
   },
 });
@@ -128,6 +129,13 @@ function notice(text) {
 
 // Stepping inside the cottage or the shop, and back out.
 function enterRoom(id) { state.house.activeRoom = id; scene.enter("room", id); renderPlace(); }
+// Up or down the stairs, or through a doorway, to the next room.
+function goTo(id) {
+  const name = M.houseRooms.find((r) => r.id === id)?.name.toLowerCase() ?? id, layout = M.roomLayout(state, scene.place?.id);
+  const way = layout?.stairs.find((st) => st.up === id) ? "Up to" : layout?.stairs.find((st) => st.down === id) ? "Down to" : "Through to";
+  home.tools.select(null); enterRoom(id); notice(`${way} the ${name}.`); audio.tone(440);
+  if (openTab === "home") draw();
+}
 function enterShop() { scene.enter("shop"); renderPlace(); }
 function leavePlace() { home.tools.select(null); scene.leavePlace(); renderPlace(); }
 function openHome() { if (scene.place?.kind !== "room") enterRoom(state.house.activeRoom); openSheet("home"); }

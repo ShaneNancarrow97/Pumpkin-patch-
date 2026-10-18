@@ -9,7 +9,7 @@ import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, build
 import { buildVisitor, animateWalk } from "./characters.js";
 import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./sprite-voxels.js";
 import { loadSpriteSheets, spriteActor, spriteVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
-import { VARIETIES, VISIT, openPlots, activeLook } from "./model.js";
+import { VARIETIES, VISIT, openPlots, activeLook, counterSide } from "./model.js";
 import { createPlaces, ORIGIN } from "./places.js";
 import { INTERIOR } from "./interiors.js";
 import { loadDecor } from "./decor.js";
@@ -174,7 +174,7 @@ export function createScene(canvas, state, hooks) {
   const nearestActor = (x, z) => Object.values(actors).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
 
   // Visitors.
-  const visitorModels = new Map(), inLen = routeLength(ROUTE_IN), outLen = routeLength(ROUTE_OUT);
+  const visitorModels = new Map(), inLen = routeLength(ROUTE_IN), outLen = routeLength(ROUTE_OUT), COUNTER_GAP = 1;
   const carried = pumpkins.map((t) => { const m = t.clone(); m.scale.setScalar(0.5); return m; });
 
   // The cottage's rooms and the shop floor (places.js).
@@ -209,14 +209,16 @@ export function createScene(canvas, state, hooks) {
   function frameRoom(w, h) {
     // Wide screens show the whole room; a portrait phone shows the back wall's
     // middle, floor to cornice, and drags along to see the rest.
-    const o = ORIGIN[view.place], aspect = w / h, p = INTERIOR.pitch, tall = aspect < 1, half = tall ? 3.5 : GRID.w / 2 + 0.4;
-    const corners = tall ? [[-half, 5.4, 0], [half, 5.4, 0], [0, -0.1, GRID.d + 0.3]] : [[-half, 5.4, 0], [half, 5.4, 0], [-half, -0.1, GRID.d + 0.3], [half, -0.1, GRID.d + 0.3]];
-    const target = new THREE.Vector3(o.x + GRID.w / 2 + view.x, 2, o.z + GRID.d * 0.42 + view.z), dir = new THREE.Vector3(0, Math.sin(p), Math.cos(p));
+    // Rooms grow with the house, so the room's own size comes from the place.
+    const { w: rw, d: rd } = places.place ?? GRID;
+    const o = ORIGIN[view.place], aspect = w / h, p = INTERIOR.pitch, tall = aspect < 1, half = tall ? 3.5 : rw / 2 + 0.4;
+    const corners = tall ? [[-half, 5.4, 0], [half, 5.4, 0], [0, -0.1, rd + 0.3]] : [[-half, 5.4, 0], [half, 5.4, 0], [-half, -0.1, rd + 0.3], [half, -0.1, rd + 0.3]];
+    const target = new THREE.Vector3(o.x + rw / 2 + view.x, 2, o.z + rd * 0.42 + view.z), dir = new THREE.Vector3(0, Math.sin(p), Math.cos(p));
     probe.fov = INTERIOR.fov; probe.aspect = aspect; probe.near = 0.1; probe.far = 200; probe.updateProjectionMatrix();
     const fits = (dist) => {
       probe.position.copy(target).addScaledVector(dir, dist); probe.lookAt(target); probe.updateMatrixWorld();
       for (const [x, y, z] of corners) {
-        corner.set(o.x + GRID.w / 2 + x, y, o.z + z).project(probe);
+        corner.set(o.x + rw / 2 + x, y, o.z + z).project(probe);
         if (Math.abs(corner.x) > 1 || Math.abs(corner.y) > 1) return false;
       }
       return true;
@@ -296,7 +298,7 @@ export function createScene(canvas, state, hooks) {
   function clampView() {
     if (view.place) {
       // Offsets from the room's centre: a little way along it, and in or out.
-      const along = canvas.clientWidth < canvas.clientHeight ? 2.2 : 1.5;
+      const rw = places.place?.w ?? GRID.w, along = canvas.clientWidth < canvas.clientHeight ? rw / 2 - 2.8 : 1.5;
       view.x = THREE.MathUtils.clamp(view.x, -along, along);
       view.z = THREE.MathUtils.clamp(view.z, -1.2, 1.2);
       view.zoom = THREE.MathUtils.clamp(view.zoom, 0.85, 1.9);
@@ -365,8 +367,12 @@ export function createScene(canvas, state, hooks) {
       let entry = visitorModels.get(v.id);
       if (!entry) { const m = visitorModel(v.kind); scene.add(m); entry = { m, sprite: m.userData.sprite, bag: null }; visitorModels.set(v.id, entry); }
       const leaving = v.leaveAt !== null && v.age >= v.leaveAt;
-      const p = leaving ? along(ROUTE_OUT, (v.age - v.leaveAt) / VISIT.leave * outLen) : along(ROUTE_IN, Math.min(1, v.age / VISIT.arrive) * inLen);
-      entry.m.position.set(p.x, 0.04, p.z);
+      const t = leaving ? (v.age - v.leaveAt) / VISIT.leave : Math.min(1, v.age / VISIT.arrive);
+      const p = leaving ? along(ROUTE_OUT, t * outLen) : along(ROUTE_IN, t * inLen);
+      // Parties stand side by side along the counter: each fans out to its own
+      // place over the last stretch of the path, and back in as it sets off home.
+      const fan = leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
+      entry.m.position.set(p.x + counterSide(v.spot ?? 0) * COUNTER_GAP * fan, 0.04, p.z);
       const walking = leaving || v.age < VISIT.arrive;
       if (entry.sprite) animateVisitor(entry.m, v.age, walking);
       else {

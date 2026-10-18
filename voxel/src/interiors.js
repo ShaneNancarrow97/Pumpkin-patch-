@@ -13,6 +13,9 @@ import { GRID } from "./model.js";
 // A room's floor is GRID.w x GRID.d units from (0, 0) at the back-left corner;
 // the back wall stands along z = 0, the side walls along x = 0 and x = GRID.w.
 export const V = 0.0625;
+// The room being built: the little cottage's 10 x 6 parlour unless the house
+// layout says otherwise (rooms grow with the house). The shop is always GRID.
+let R = GRID;
 export const WALL_H = 5.2;
 const T = 0.25;                                                     // wall thickness
 const ROWS = Math.ceil(WALL_H / V);                                 // the top row tucks under the cap
@@ -65,6 +68,10 @@ class Face {
     this.colour[k] = ink[0]; this.out[k] = ink[1]; this.glow[k] = ink[2] ? 1 : 0;
   }
   rect(i0, j0, i1, j1, ink) { for (let j = j0; j < j1; j++) for (let i = i0; i < i1; i++) this.set(i, j, ink); }
+  // Cuts a hole wherever test(i, j) is true.
+  cut(i0, j0, i1, j1, test) {
+    for (let j = Math.max(0, j0); j < Math.min(this.rows, j1); j++) for (let i = Math.max(0, i0); i < Math.min(this.cols, i1); i++) if (test(i, j)) this.colour[j * this.cols + i] = -1;
+  }
   // Paints a block from a function of each cell, which returns an ink or nothing.
   paint(i0, j0, i1, j1, fn) {
     for (let j = Math.max(0, j0); j < Math.min(this.rows, j1); j++) for (let i = Math.max(0, i0); i < Math.min(this.cols, i1); i++) this.set(i, j, fn(i, j));
@@ -352,16 +359,16 @@ function tiles(look) {
   };
 }
 
-// One wall: back (along x at z = 0), left (along z at x = 0) or right (x = GRID.w).
+// One wall: back (along x at z = 0), left (along z at x = 0) or right (x = R.w).
 // put(u, y, w, h, relief, colour, glow) places a block whose face stands `relief` out.
 function wall(v, side) {
   if (side === "back") return (u, y, w, h, relief, c, glow) => v.box(u, y, -T, w, h, T + relief, c, glow);
   if (side === "left") return (u, y, w, h, relief, c, glow) => v.box(-T, y, u, T + relief, h, w, c, glow);
-  return (u, y, w, h, relief, c, glow) => v.box(GRID.w - relief, y, u, T + relief, h, w, c, glow);
+  return (u, y, w, h, relief, c, glow) => v.box(R.w - relief, y, u, T + relief, h, w, c, glow);
 }
 
 // The openings in the back wall, between the columns: where they are and their shape.
-const WINDOWS = [{ cx: 1.625, moon: { x: 1.85, y: 3.55, r: 0.2 } }, { cx: GRID.w - 1.625 }];
+const windows = () => [{ cx: 1.625, moon: { x: 1.85, y: 3.55, r: 0.2 } }, { cx: R.w - 1.625 }];
 const WIN = { w: 1.375, bottom: 1.625, spring: 3.125, top: 3.875 };
 function inOpening(kind, dx, y) {
   const half = WIN.w / 2;
@@ -531,7 +538,7 @@ function column(face, u, look) {
 }
 // The central panel's moulding, its corners cusped inwards.
 function panelFrame(face, look) {
-  const i0 = 55, i1 = 105, j0 = 26, j1 = 66, r = 4.5;
+  const i0 = 55, i1 = face.cols - 55, j0 = 26, j1 = 66, r = 4.5;
   const inside = (i, j) => i >= i0 && i < i1 && j >= j0 && j < j1 && (Math.min(i - i0, i1 - 1 - i) ** 2 + Math.min(j - j0, j1 - 1 - j) ** 2 >= r * r);
   face.paint(i0, j0, i1, j1, (i, j) => {
     if (!inside(i, j)) return null;
@@ -541,7 +548,7 @@ function panelFrame(face, look) {
 }
 // The attic's round window: a wheel of tracery round the moon.
 function roundWindow(face, look, lights) {
-  const cx = 5, cy = 3, rg = 0.84, wood = [mix(look.dark, look.trim, 0.3), -0.055];
+  const cx = R.w / 2, cy = 3, rg = 0.84, wood = [mix(look.dark, look.trim, 0.3), -0.055];
   face.paint(cell(cx - 1.1), cell(cy - 1.1), cell(cx + 1.1), cell(cy + 1.1), (i, j) => {
     const x = (i + 0.5) * V - cx, y = (j + 0.5) * V - cy, d = Math.hypot(x, y), a = Math.atan2(y, x);
     if (d < rg) {
@@ -565,17 +572,17 @@ function cobweb(face, i0, dir, look) {
 }
 
 function backWall(v, r, look, paper, lights, feature) {
-  const face = new Face(cell(GRID.w));
-  wallFace(face, look, paper ? papered(paper) : plain(look, 0), [[0.5625, 2.6875], [3.3125, 6.6875], [7.3125, 9.4375]]);
+  const face = new Face(cell(R.w));
+  wallFace(face, look, paper ? papered(paper) : plain(look, 0), [[0.5625, 2.6875], [3.3125, R.w - 3.3125], [R.w - 2.6875, R.w - 0.5625]]);
   if (feature === "panel") panelFrame(face, look);
   if (feature === "round") roundWindow(face, look, lights);
-  if (feature === "hearth") hearthFace(face, look);
-  for (const w of WINDOWS) { windowFace(face, look, w); if (look.curtains) curtains(face, look, w); }
+  if (feature === "hearth") { centreHearth(); hearthFace(face, look); }
+  for (const w of windows()) { windowFace(face, look, w); if (look.curtains) curtains(face, look, w); }
   if (look.cobwebs) { cobweb(face, 11, 1, look); cobweb(face, face.cols - 12, -1, look); }
-  for (const u of [0.25, 3, 7, GRID.w - 0.25]) column(face, u, look);
+  for (const u of [0.25, 3, R.w - 3, R.w - 0.25]) column(face, u, look);
   face.shade((i, j) => soft(Math.min(i, face.cols - 1 - i), j));
   face.build(wall(v, "back"));
-  for (const w of WINDOWS) sill(v, look, w, lights);
+  for (const w of windows()) sill(v, look, w, lights);
   if (feature === "hearth") hearth(v, r, look, lights);
 }
 
@@ -592,7 +599,9 @@ function jar(v, x, y, z, h, colour, glow, label) {
 
 // The kitchen hearth in the back wall's face: courses of brick (stone, or dark
 // under the copper hood) with a voussoired arch over a sooty firebox.
+// The hearth stands in the middle of the back wall, however wide the room.
 const HEARTH = { i0: 56, i1: 104, top: 38, c: 80, half: 12, spring: 24 };
+const centreHearth = () => { const k = cell(R.w / 2) - 80; Object.assign(HEARTH, { i0: 56 + k, i1: 104 + k, c: 80 + k }); return R.w / 2 - 5; };
 const hearthOpen = (i, j) => { const dx = i + 0.5 - HEARTH.c; return Math.abs(dx) < HEARTH.half && (j < HEARTH.spring || j + 0.5 - HEARTH.spring < 4 * (1 - (dx / HEARTH.half) ** 2)); };
 function hearthFace(face, look) {
   const stone = look.hearth === "copper" ? 0x5a4a44 : 0x8a8090, mortar = [mix(stone, look.hearth === "copper" ? 0x000000 : 0xffffff, 0.3), 0.47], { i0, i1, top, c } = HEARTH;
@@ -614,7 +623,9 @@ function hearthFace(face, look) {
 }
 // The hearth in the round: hearthstones, mantel, firedogs, logs and a fire,
 // a cauldron on a crane, and the copper hood or a row of jars above.
-function hearth(v, r, look, lights) {
+function hearth(room, r, look, lights) {
+  // Built for a 10-wide wall, then moved along to the middle of this one.
+  const dx = R.w / 2 - 5, v = { box: (x, ...a) => room.box(x + dx, ...a), block: (x, ...a) => room.block(x + dx, ...a) };
   const copper = look.hearth === "copper", stone = copper ? 0x5a4a44 : 0x8a8090, iron = 0x2a2226;
   for (let k = 0; k < 3; k++) v.box(3.4 + k * 1.07, 0, 0, 1.06, 0.08, 1.15, vary(shade(stone, 0.25), 0.1, r));
   v.box(3.3, 2.375, 0, 3.4, 0.125, 0.72, look.wood);
@@ -655,65 +666,174 @@ function hearth(v, r, look, lights) {
     v.block(5, 0.93, 0.37, 0.5, 0.03, 0.5, 0x2a262a);
     for (let i = 0; i < 6; i++) jar(v, 3.68 + i * 0.47, 2.5, 0.25, 0.24 + (i % 2) * 0.08, JARS[i % 4], i % 3 === 0, i % 2 === 1);
   }
-  lights.push({ x: 5, y: 0.8, z: 1.2, color: 0xff8a3a, intensity: 12 });
+  lights.push({ x: R.w / 2, y: 0.8, z: 1.2, color: 0xff8a3a, intensity: 12 });
 }
 
-function sideWall(v, r, look, paper, side, lights, door = false) {
-  const face = new Face(cell(GRID.d)), x = side === "left" ? 0 : GRID.w, sx = side === "left" ? 1 : -1;
-  wallFace(face, look, paper ? papered(paper) : plain(look, side === "left" ? 1 : 2), [[0.3125, 5.4375]]);
-  if (look.sconces) face.paint(44, 44, 52, 54, (i, j) => (Math.abs(i - 47.5) + Math.max(0, j - 50) <= 3.5 ? [j === 44 || i === 44 ? tint(look.trim, 0.1) : look.trim, 0.06] : null));
+function sideWall(v, r, look, paper, side, lights, door = false, arches = [], stair = false) {
+  const face = new Face(cell(R.d)), x = side === "left" ? 0 : R.w, sx = side === "left" ? 1 : -1;
+  wallFace(face, look, paper ? papered(paper) : plain(look, side === "left" ? 1 : 2), [[0.3125, R.d - 0.5625]]);
+  const sconces = look.sconces && !stair && !arches.length;
+  if (sconces) face.paint(44, 44, 52, 54, (i, j) => (Math.abs(i - 47.5) + Math.max(0, j - 50) <= 3.5 ? [j === 44 || i === 44 ? tint(look.trim, 0.1) : look.trim, 0.06] : null));
   if (look.jars) for (let k = 0; k < 2; k++) for (const u of [1.4, 4.6]) face.paint(cell(u) - 1, cell(2.6 + k * 0.8) - 5, cell(u) + 1, cell(2.6 + k * 0.8), (i, j) => [look.wood, 0.06 + (j - cell(2.6 + k * 0.8) + 5) * 0.05]);
   if (door) doorway(face, look);
-  column(face, GRID.d - 0.25, look);
+  for (const a of arches) archway(v, face, look, side, a, lights);
+  column(face, R.d - 0.25, look);
   face.shade((i, j) => soft(i, j));
   face.build(wall(v, side));
-  if (look.sconces) {
+  if (sconces) {
     v.box(x + sx * 0.06 - (sx < 0 ? 0.16 : 0), 3.05, 2.97, 0.16, 0.04, 0.06, look.trim);
     candle(v, x + sx * 0.24, 3.0, 3, 0.22);
     lights.push({ x: x + sx * 0.6, y: 3.4, z: 3, intensity: 5 });
   }
   if (look.jars) for (let k = 0; k < 2; k++) {
     const y = 2.6 + k * 0.8;
-    v.box(sx > 0 ? 0 : GRID.w - 0.36, y, 1, 0.36, 0.0625, 4, look.wood);
-    v.box(sx > 0 ? 0.33 : GRID.w - 0.36, y - 0.03, 1, 0.03, 0.03, 4, mix(look.wood, look.dark, 0.3));
-    for (let i = 0; i < 9; i++) jar(v, sx > 0 ? 0.07 : GRID.w - 0.26, y + 0.0625, 1.1 + i * 0.42, 0.24 + (i % 3) * 0.06, JARS[(i + k) % 5], i % 4 === 0, (i + k) % 3 === 1);
+    v.box(sx > 0 ? 0 : R.w - 0.36, y, 1, 0.36, 0.0625, 4, look.wood);
+    v.box(sx > 0 ? 0.33 : R.w - 0.36, y - 0.03, 1, 0.03, 0.03, 4, mix(look.wood, look.dark, 0.3));
+    for (let i = 0; i < 9; i++) jar(v, sx > 0 ? 0.07 : R.w - 0.26, y + 0.0625, 1.1 + i * 0.42, 0.24 + (i % 3) * 0.06, JARS[(i + k) % 5], i % 4 === 0, (i + k) % 3 === 1);
   }
+}
+
+// An archway through a side wall to the next room: an arched opening with a
+// moulded architrave and keystone, a stone threshold, and beyond it a glimpse
+// of the room next door, lamplit. a is the house layout's door { at, width }.
+const ARCH = { spring: 2.4 };
+function archway(v, face, look, side, a, lights) {
+  const u0 = a.at + 0.1875, u1 = a.at + a.width - 0.1875, mid = (u0 + u1) / 2, rad = (u1 - u0) / 2;
+  const open = (i, j) => { const u = (i + 0.5) * V, y = (j + 0.5) * V; return u > u0 && u < u1 && (y < ARCH.spring || (u - mid) ** 2 + (y - ARCH.spring) ** 2 < rad * rad); };
+  const i0 = cell(u0) - 4, i1 = cell(u1) + 4, top = cell(ARCH.spring + rad) + 5;
+  face.paint(i0, 0, i1, top, (i, j) => {
+    if (open(i, j)) return null;
+    const d = ring(open, i, j, 3, true);
+    return d === 1 ? [mix(look.trim, look.dark, 0.4), 0.06] : d === 2 ? [look.trim, 0.1] : d === 3 ? [tint(look.trim, 0.1), 0.12] : null;
+  });
+  face.rect(cell(mid) - 2, cell(ARCH.spring + rad) - 1, cell(mid) + 2, cell(ARCH.spring + rad) + 4, [tint(look.trim, 0.18), 0.15]);  // keystone
+  face.cut(i0, 0, i1, top, open);
+  // Beyond the wall: a short passage, its floor, a far wall with a lamp, all a little darker.
+  const out = side === "left" ? -1 : 1, edge = side === "left" ? 0 : R.w, far = 2.2, x0 = side === "left" ? edge - far : edge;
+  const z0 = a.at, w = a.width, through = shade(look.wall, 0.4);
+  v.box(x0, -0.12, z0, far, 0.12, w, shade(look.floor, 0.25));
+  v.box(side === "left" ? x0 - 0.1 : edge + far, 0, z0 - 0.4, 0.1, 3.6, w + 0.8, through);
+  for (const z of [z0 - 0.1, z0 + w]) v.box(x0, 0, z, far, 3.6, 0.1, shade(look.wall, 0.55));
+  v.box(x0, 3.5, z0 - 0.1, far, 0.1, w + 0.2, look.dark);
+  v.box(side === "left" ? x0 : edge + far - 0.05, 1.5, z0 + w / 2 - 0.12, 0.05, 0.3, 0.24, 0xffc46a, true);
+  v.box(edge - (side === "left" ? T : 0), 0, z0 + 0.1875, T, 0.04, w - 0.375, 0x8a8090);           // the threshold
+  lights.push({ x: edge + out * 1.3, y: 2, z: z0 + w / 2, color: 0xffb070, intensity: 4 });
+}
+
+// Stairs and ladders between the storeys, from the house layout: a staircase
+// climbing to the room above, the open stairwell it arrives through, a ladder
+// up to the attic and the hatch it comes up through. Each returns the box a tap
+// on it should catch, to go to the room it leads to.
+const LANDING = WALL_H - 0.15, STEPS = 10;
+function staircase(v, look, st) {
+  const x0 = st.x, w = st.w, zb = st.z, front = st.z + st.d, dz = (st.d - 1) / STEPS, rise = LANDING / (STEPS + 1);
+  const body = mix(look.wood, look.dark, 0.3), tread = tint(look.floor, 0.08), riser = shade(look.wood, 0.25), rail = look.trim;
+  for (let k = 0; k < STEPS; k++) {
+    const zf = front - k * dz, z = zf - dz, top = (k + 1) * rise;
+    v.box(x0 + 0.06, 0, z, w - 0.06, top - 0.0625, dz, body);
+    v.box(x0, top - 0.0625, z - 0.0625, w, 0.0625, dz + 0.0625, tread);
+    v.box(x0 + 0.03, top - rise, zf - 0.03, w - 0.03, rise - 0.0625, 0.03, riser);
+    for (const t of [0.25, 0.75]) v.box(x0 + 0.03, top, z + dz * t - 0.025, 0.05, 0.9, 0.05, look.dark);   // spindles
+    v.box(x0 + 0.005, top + 0.9, z - 0.03, 0.1, 0.07, dz + 0.06, rail);                                      // the handrail, stepping up
+  }
+  v.box(x0 + 0.06, 0, zb, w - 0.06, LANDING - 0.0625, 1, body);                                            // the landing, and the cupboard under it
+  v.box(x0, LANDING - 0.0625, zb, w, 0.0625, 1, tread);
+  v.box(x0 + 0.03, 0.12, zb + 0.15, 0.03, 2.1, 0.7, shade(look.wood, 0.4));
+  v.box(x0 + 0.01, 0.2, zb + 0.22, 0.03, 1.94, 0.56, mix(look.wood, look.dark, 0.15));
+  v.box(x0 - 0.01, 1.1, zb + 0.72, 0.03, 0.06, 0.05, rail);
+  v.box(x0, 0, front - 0.14, 0.14, 1.3, 0.14, look.wood);                                                 // the newel post, capped
+  v.box(x0 - 0.02, 1.3, front - 0.16, 0.18, 0.06, 0.18, rail);
+  v.block(x0 + 0.07, 1.36, front - 0.07, 0.1, 0.1, 0.1, tint(rail, 0.15));
+  return { x: x0, y: 0, z: zb, w, h: LANDING, d: st.d };
+}
+function stairwell(v, look, st) {
+  const x0 = st.x, w = st.w, z0 = st.z + 1, z1 = st.z + st.d, dz = (st.d - 1) / STEPS, rise = LANDING / (STEPS + 1), dark = shade(look.wall, 0.6);
+  for (let k = 0; k < 6; k++) {
+    const z = z0 + k * dz, top = -(k + 1) * rise;
+    v.box(x0 + 0.03, top - 0.0625, z, w - 0.03, 0.0625, dz + 0.0625, shade(tint(look.floor, 0.08), 0.12 + k * 0.1));
+    v.box(x0 + 0.03, top, z - 0.03, w - 0.03, rise, 0.03, shade(look.wood, 0.3 + k * 0.08));
+  }
+  v.box(x0, -2.8, z0, w, 0.1, z1 - z0, 0x120c10);                                                        // the dark below
+  v.box(x0 - 0.06, -2.8, z0, 0.06, 2.8, z1 - z0, dark);
+  v.box(x0, -2.8, z1, w, 2.8, 0.06, dark);
+  // A balustrade round the well: posts, spindles and a rail.
+  for (let z = z0 + 0.25; z < z1; z += 0.5) v.box(x0 - 0.04, 0, z - 0.025, 0.05, 0.9, 0.05, look.dark);
+  for (let x = x0 + 0.25; x < x0 + w; x += 0.5) v.box(x - 0.025, 0, z1 - 0.02, 0.05, 0.9, 0.05, look.dark);
+  v.box(x0 - 0.06, 0.9, z0, 0.1, 0.07, z1 - z0 + 0.06, look.trim);
+  v.box(x0 - 0.06, 0.9, z1 - 0.04, w + 0.06, 0.07, 0.1, look.trim);
+  v.box(x0 - 0.08, 0, z1 - 0.08, 0.14, 1.1, 0.14, look.wood);
+  v.block(x0 - 0.01, 1.1, z1 - 0.01, 0.12, 0.08, 0.12, look.trim);
+  return { x: x0, y: -0.6, z: z0, w, h: 1.6, d: z1 - z0 };
+}
+function ladderUp(v, look, st) {
+  const x0 = st.x, w = st.w, z = st.z, top = WALL_H + 0.25, wood = shade(look.wood, 0.1);
+  for (let y = 0; y < top; y += 0.25) {
+    const lean = 0.55 - (y / top) * 0.4;                                                                    // its feet out from the wall
+    for (const x of [x0 + 0.18, x0 + w - 0.26]) v.box(x, y, z + lean, 0.08, 0.26, 0.08, wood);
+    if (y > 0.1) v.box(x0 + 0.2, y, z + lean + 0.01, w - 0.42, 0.04, 0.06, tint(wood, 0.1));
+  }
+  v.box(x0 - 0.04, WALL_H - 0.02, z - 0.04, w + 0.08, 0.1, 0.9, look.dark);                                // the hatch's frame overhead
+  v.box(x0 + 0.08, WALL_H + 0.06, z + 0.06, w - 0.16, 0.02, 0.7, 0x120c10);
+  return { x: x0, y: 0, z, w, h: WALL_H, d: 1 };
+}
+function hatch(v, look, st) {
+  const x0 = st.x, w = st.w, z = st.z, wood = shade(look.wood, 0.1);
+  v.box(x0, -1.6, z, w, 0.1, 1, 0x120c10);
+  v.box(x0 - 0.06, -1.6, z + 1, w + 0.06, 1.6, 0.06, shade(look.wall, 0.6));
+  v.box(x0 - 0.06, -1.6, z, 0.06, 1.6, 1, shade(look.wall, 0.6));
+  for (const x of [x0 + 0.18, x0 + w - 0.26]) v.box(x, -1.4, z + 0.3, 0.08, 2.2, 0.08, wood);              // the ladder's top, through the hatch
+  for (let y = -1.2; y < 0.7; y += 0.3) v.box(x0 + 0.2, y, z + 0.31, w - 0.42, 0.04, 0.06, tint(wood, 0.1));
+  v.box(x0 + 0.05, 0, z + 0.02, w - 0.1, 0.95, 0.06, look.wood);                                           // the trapdoor, propped open
+  for (const y of [0.2, 0.7]) v.box(x0 + 0.08, y, z + 0.08, w - 0.16, 0.05, 0.02, 0x2a2226);
+  for (const [a, b] of [[0, 0], [w - 0.08, 0], [0, 0.92], [w - 0.08, 0.92]]) v.box(x0 + a, 0, z + b, 0.08, 0.06, 0.08, look.dark);
+  return { x: x0, y: -0.4, z, w, h: 1.4, d: 1 };
 }
 
 // The floor: boards in lengths, each in strips of grain with nails at its
 // ends, darker where it runs in under the walls.
-function floor(v, r, look) {
-  v.box(0, -0.3, 0, GRID.w, 0.27, GRID.d, shade(look.floor, 0.55));                  // the dark gaps between boards
-  const W = 0.375, nail = shade(look.floor, 0.6), under = (d) => (d < 0.25 ? 0.24 : d < 0.55 ? 0.12 : d < 0.9 ? 0.05 : 0);
-  for (let x = 0; x < GRID.w - 1e-6; x += W) {
-    const bw = Math.min(W, GRID.w - x) - 0.016, side = under(Math.min(x + W / 2, GRID.w - x - W / 2));
+function floor(v, r, look, holes = []) {
+  // The dark gaps between boards, in strips round any openings.
+  const under = holes.length ? holes[0] : null;
+  if (!under) v.box(0, -0.3, 0, R.w, 0.27, R.d, shade(look.floor, 0.55));
+  else {
+    v.box(0, -0.3, 0, under.x0, 0.27, R.d, shade(look.floor, 0.55));
+    v.box(under.x0, -0.3, 0, R.w - under.x0, 0.27, under.z0, shade(look.floor, 0.55));
+    v.box(under.x0, -0.3, under.z1, R.w - under.x0, 0.27, R.d - under.z1, shade(look.floor, 0.55));
+  }
+  const W = 0.375, nail = shade(look.floor, 0.6), dim = (d) => (d < 0.25 ? 0.24 : d < 0.55 ? 0.12 : d < 0.9 ? 0.05 : 0);
+  for (let x = 0; x < R.w - 1e-6; x += W) {
+    const bw = Math.min(W, R.w - x) - 0.016, side = dim(Math.min(x + W / 2, R.w - x - W / 2));
     let z = -r() * 1.5;
-    while (z < GRID.d) {
-      const len = [1.5, 2.25, 3][(r() * 3) | 0], z0 = Math.max(0, z) + 0.008, z1 = Math.min(GRID.d, z + len) - 0.008, colour = vary(look.floor, 0.14, r);
+    while (z < R.d) {
+      const len = [1.5, 2.25, 3][(r() * 3) | 0], z0 = Math.max(0, z) + 0.008, z1 = Math.min(R.d, z + len) - 0.008, colour = vary(look.floor, 0.14, r);
       if (z1 - z0 > 0.05) {
         const strips = r() < 0.5 ? [2, 1, 3] : [3, 1, 2], cuts = [z0, ...[0.25, 0.55, 0.9].filter((c) => c > z0 && c < z1), z1];
+        for (const h of holes) if (x + bw > h.x0 && x < h.x1) cuts.push(...[h.z0, h.z1].filter((c) => c > z0 && c < z1));
+        cuts.sort((a, b) => a - b);
         for (let s = 1; s < cuts.length; s++) {
-          const dark = 1 - (1 - side) * (1 - under(cuts[s - 1] + 0.01));
+          const dark = 1 - (1 - side) * (1 - dim(cuts[s - 1] + 0.01)), mid = (cuts[s - 1] + cuts[s]) / 2;
+          // Where a stairwell or hatch opens, the board stops at its edge.
+          const hole = holes.find((h) => mid > h.z0 && mid < h.z1 && x + bw > h.x0 && x < h.x1), end = hole ? hole.x0 : Infinity;
           let sx = x + 0.008;
           strips.forEach((n, k) => {
-            const sw = (bw * n) / 6, c = n === 1 ? shade(colour, 0.12) : k ? tint(colour, 0.04) : colour;
-            v.box(sx, -0.12, cuts[s - 1], sw, 0.12, cuts[s] - cuts[s - 1], shade(c, dark));
-            sx += sw;
+            const sw = Math.min((bw * n) / 6, end - sx), c = n === 1 ? shade(colour, 0.12) : k ? tint(colour, 0.04) : colour;
+            if (sw > 0.01) v.box(sx, -0.12, cuts[s - 1], sw, 0.12, cuts[s] - cuts[s - 1], shade(c, dark));
+            sx += (bw * n) / 6;
           });
         }
-        for (const nz of [z0 + 0.05, z1 - 0.09]) if (nz > 0.02 && nz < GRID.d - 0.06) for (const nx of [x + 0.07, x + bw - 0.1]) v.box(nx, 0, nz, 0.04, 0.006, 0.04, nail);
+        for (const nz of [z0 + 0.05, z1 - 0.09]) if (nz > 0.02 && nz < R.d - 0.06) for (const nx of [x + 0.07, x + bw - 0.1]) v.box(nx, 0, nz, 0.04, 0.006, 0.04, nail);
         if (r() < 0.2) v.box(x + bw * 0.4, 0, z0 + (z1 - z0) * r(), 0.06, 0.004, 0.1, shade(colour, 0.3));
       }
       z += len;
     }
   }
-  v.box(-T, -0.6, GRID.d, GRID.w + 2 * T, 0.6, 0.2, look.dark);                              // the stage's front edge
-  v.box(-T, -0.0625, GRID.d, GRID.w + 2 * T, 0.0625, 0.24, tint(look.dark, 0.08));
+  v.box(-T, -0.6, R.d, R.w + 2 * T, 0.6, 0.2, look.dark);                              // the stage's front edge
+  v.box(-T, -0.0625, R.d, R.w + 2 * T, 0.0625, 0.24, tint(look.dark, 0.08));
 }
 
 function extras(v, r, look, lights) {
   if (look.chandelier) {
-    const cx = GRID.w / 2, cz = 2.6, y = 4.1, brass = look.trim;
+    const cx = R.w / 2, cz = 2.6, y = 4.1, brass = look.trim;
     v.box(cx - 0.025, y + 0.45, cz - 0.025, 0.05, WALL_H - y - 0.45, 0.05, 0x2a1a14);
     v.block(cx, y + 0.3, cz, 0.16, 0.16, 0.16, brass);
     v.block(cx, y - 0.22, cz, 0.08, 0.52, 0.08, brass);
@@ -734,9 +854,9 @@ function extras(v, r, look, lights) {
     v.box(x - 0.01, top - 0.08, 0.24, 0.17, 0.04, 0.1, 0xc9a050);
   }
   if (look.rafters) for (const z of [1.5, 3, 4.5]) {
-    v.box(-T, WALL_H - 0.1, z, GRID.w + 2 * T, 0.3, 0.3, look.dark);
-    v.box(-T, WALL_H - 0.1, z + 0.28, GRID.w + 2 * T, 0.04, 0.03, tint(look.dark, 0.12));
-    for (const [x, d] of [[0, 1], [GRID.w, -1]]) for (let k = 0; k < 16; k++) v.box(x + d * k * 0.125 - (d < 0 ? 0.125 : 0), WALL_H - 0.95 + k * 0.05, z, 0.125, 0.2, 0.3, look.dark);
+    v.box(-T, WALL_H - 0.1, z, R.w + 2 * T, 0.3, 0.3, look.dark);
+    v.box(-T, WALL_H - 0.1, z + 0.28, R.w + 2 * T, 0.04, 0.03, tint(look.dark, 0.12));
+    for (const [x, d] of [[0, 1], [R.w, -1]]) for (let k = 0; k < 16; k++) v.box(x + d * k * 0.125 - (d < 0 ? 0.125 : 0), WALL_H - 0.95 + k * 0.05, z, 0.125, 0.2, 0.3, look.dark);
   }
   if (look.fairyLights) for (let s = 0; s < 8; s++) {
     const x0 = 0.2 + s * 1.2, sag = (t) => WALL_H - 0.4 - Math.sin(Math.PI * t) * 0.22;
@@ -746,19 +866,30 @@ function extras(v, r, look, lights) {
       if (k) { v.box(x - 0.03, sag(t0) - 0.09, 0.4, 0.06, 0.07, 0.06, [0xffd894, 0xc89cff, 0xffc46a][(s + k) % 3], true); v.box(x - 0.02, sag(t0) - 0.03, 0.41, 0.04, 0.03, 0.04, 0x2a3a24); }
     }
   }
-  lights.push({ x: GRID.w / 2, y: 3.4, z: GRID.d + 1, color: 0xffd0a0, intensity: 2.5 });   // the room's warm fill
+  lights.push({ x: R.w / 2, y: 3.4, z: R.d + 1, color: 0xffd0a0, intensity: 2.5 });   // the room's warm fill
 }
 
 // A room in a style, with the chosen wallpaper (a catalogue item) or none.
-export function buildRoom(style, wallpaper) {
-  const look = STYLES[style] ?? STYLES["parlour-warm"], v = new Voxels(), r = seeded(style.length * 31 + (wallpaper ? 7 : 0)), lights = [];
+// layout is the house's roomLayout for the room: its size, doorways and stairs.
+// Returns the voxels, the lights, and links: the boxes of stairs, ladders and
+// doorways, and the room each leads to.
+export function buildRoom(style, wallpaper, layout) {
+  R = layout ? { w: layout.w, d: layout.d } : GRID;
+  const look = STYLES[style] ?? STYLES["parlour-warm"], v = new Voxels(), r = seeded(style.length * 31 + (wallpaper ? 7 : 0) + R.w), lights = [], links = [];
   const paper = wallpaper ? { id: wallpaper.id, base: parseInt(wallpaper.color.slice(1), 16) } : null;
-  floor(v, r, look);
+  const doors = layout?.doors ?? [], stairs = layout?.stairs ?? [];
+  // Stairwells and hatches open in the floor of the room they arrive in.
+  const holes = stairs.filter((st) => st.down).map((st) => (st.kind === "ladder" ? { x0: st.x, x1: st.x + st.w, z0: st.z, z1: st.z + 1 } : { x0: st.x, x1: st.x + st.w, z0: st.z + 1, z1: st.z + st.d }));
+  floor(v, r, look, holes);
   backWall(v, r, look, paper, lights, look.hearth ? "hearth" : look.roundWindow ? "round" : "panel");
-  sideWall(v, r, look, paper, "left", lights);
-  sideWall(v, r, look, paper, "right", lights);
+  for (const side of ["left", "right"]) sideWall(v, r, look, paper, side, lights, false, doors.filter((d) => d.wall === side), stairs.some((st) => st.wall === side));
+  for (const d of doors) links.push({ to: d.to, x: d.wall === "left" ? -0.8 : R.w - 0.2, y: 0, z: d.at, w: 1, h: 3, d: d.width });
+  for (const st of stairs) {
+    const build = st.kind === "ladder" ? (st.up ? ladderUp : hatch) : st.up ? staircase : stairwell;
+    links.push({ to: st.up ?? st.down, ...build(v, look, st) });
+  }
   extras(v, r, look, lights);
-  return { group: v.build(), lights };
+  return { group: v.build(), lights, links };
 }
 
 // The shop: shelves of glowing jars, the display tables, Skyla's counter and the door.
@@ -785,18 +916,19 @@ function doorway(face, look) {
   });
 }
 export function buildShopInterior() {
+  R = GRID;
   const look = { wall: 0x5a3a26, wall2: 0x523420, wood: 0x6a4428, dark: 0x3a2214, trim: 0x8a5a36, floor: 0x7a4a2a, window: "round" }, v = new Voxels(), r = seeded(404), lights = [];
   floor(v, r, look);
-  const back = new Face(cell(GRID.w));
+  const back = new Face(cell(R.w));
   wallFace(back, look, plain(look, 0), [[0.5625, 9.4375]]);
-  for (const y of [1.9, 2.75, 3.6]) for (let x = 1; x < GRID.w - 0.5; x += 2) back.paint(cell(x) - 1, cell(y) - 4, cell(x) + 1, cell(y), (i, j) => [look.wood, 0.08 + (j - cell(y) + 4) * 0.08]);
-  for (const u of [0.25, GRID.w - 0.25]) column(back, u, look);
+  for (const y of [1.9, 2.75, 3.6]) for (let x = 1; x < R.w - 0.5; x += 2) back.paint(cell(x) - 1, cell(y) - 4, cell(x) + 1, cell(y), (i, j) => [look.wood, 0.08 + (j - cell(y) + 4) * 0.08]);
+  for (const u of [0.25, R.w - 0.25]) column(back, u, look);
   back.shade((i, j) => soft(Math.min(i, back.cols - 1 - i), j));
   back.build(wall(v, "back"));
   // Shelves along the back wall: jars, and a little pumpkin every so often.
   for (const y of [1.9, 2.75, 3.6]) {
-    v.box(0.5, y, 0, GRID.w - 1, 0.0625, 0.45, look.trim);
-    v.box(0.5, y - 0.03, 0.42, GRID.w - 1, 0.05, 0.04, shade(look.trim, 0.25));
+    v.box(0.5, y, 0, R.w - 1, 0.0625, 0.45, look.trim);
+    v.box(0.5, y - 0.03, 0.42, R.w - 1, 0.05, 0.04, shade(look.trim, 0.25));
     for (let i = 0; i < 26; i++) {
       const x = 0.6 + i * 0.34;
       if ((i + y * 2) % 7 < 1) { v.block(x + 0.1, y + 0.0625, 0.2, 0.22, 0.16, 0.2, 0xe8761e); v.block(x + 0.1, y + 0.0625, 0.2, 0.16, 0.18, 0.24, 0xf0821e); v.block(x + 0.1, y + 0.24, 0.2, 0.03, 0.06, 0.03, 0x4a6a2a); continue; }

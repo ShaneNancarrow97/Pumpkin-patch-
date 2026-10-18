@@ -201,7 +201,8 @@ export function homeSheets(ui) {
       const s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
       if (!p) return;
       if (!tools.moving) { tools.select(null); return; }
-      const fp = M.footprint(p.id), x = Math.max(0, Math.min(M.GRID.w - fp.w, cell.x - Math.floor((fp.w - 1) / 2))), z = fp.layer === "wall" ? 0 : Math.max(0, Math.min(M.GRID.d - fp.d, cell.z - Math.floor((fp.d - 1) / 2)));
+      const room = M.roomLayout(s, p.room) ?? M.GRID, fp = M.footprint(p.id);
+      const x = Math.max(0, Math.min(room.w - fp.w, cell.x - Math.floor((fp.w - 1) / 2))), z = fp.layer === "wall" ? 0 : Math.max(0, Math.min(room.d - fp.d, cell.z - Math.floor((fp.d - 1) / 2)));
       if (M.moveDecor(s, p.instance, x, z)) { ui.tone(600); tools.moving = false; ui.scene.refreshRoom(); tools.render(); }
       else { ui.scene.previewPiece(p.instance, x, z, false); ui.notice("It doesn’t fit there."); }
     },
