@@ -1,0 +1,113 @@
+// The Shop menu: farm upgrades, seeds per plot, Skyla's indoor shop and the stall.
+import * as M from "../model.js";
+import { money, segmented, plural } from "./kit.js";
+
+// Each upgrade's own icon from the main game.
+const ICONS = { tools: "tools", yield: "yield", auto: "auto", plots: "plots", sign: "sign", open: "shop", capacity: "visitors", displays: "stock", checkout: "coins" };
+const icon = (id) => `<span class="thumb"><span class="ico i-${ICONS[id]}"></span></span>`;
+const SHOP_LEVELS = { capacity: "capacityLevel", displays: "displayLevel", checkout: "checkoutLevel" };
+const SHOP_MAX = { capacity: 3, displays: 1, checkout: 2 };
+
+function priceButton(attr, value, price, coins, owned) {
+  if (owned) return `<button class="button" disabled>${owned}</button>`;
+  return `<button class="button gold" data-${attr}="${value}" ${coins < price ? "disabled" : ""}>${money(price)}${coins < price ? `<small>need ${money(price - coins)}</small>` : ""}</button>`;
+}
+
+// Skyla's advice, for whatever would help most right now.
+function skylaTip(s) {
+  if (!M.stockCount(s)) return "Nothing on the shelves. Harvest a few pumpkins and I’ll ring the bell.";
+  if (!s.shop.unlocked && s.coins >= 600) return "We could open the shop now. Customers would come inside to browse.";
+  const shown = s.shop.displays.slice(0, M.displayCount(s.shop)), best = [3, 2, 1, 0].find((v) => M.available(s, v) > 0);
+  if (s.shop.unlocked && best !== undefined && !shown.includes(best)) return `Put the ${M.VARIETIES[best].name} pumpkins on a table. They sell for ${money(M.VARIETIES[best].price)}.`;
+  if (s.stall.missedBudget > s.stall.served / 3) return "Some neighbours can’t afford what’s left. A few Orange pumpkins keep everyone happy.";
+  return "Every basket helps. Favourites first, then anything they can afford.";
+}
+
+export function farmSheets(ui) {
+  let tab = "farm";
+  const tabs = () => segmented("shoptab", "Shop sections", [["farm", "Farm"], ["seeds", "Seeds"], ["shop", "Shop"], ["stall", "Stall"]], tab);
+
+  function farm(s) {
+    return M.UPGRADES.map((u) => {
+      const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id);
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.text}</p><div class="pips">${Array.from({ length: u.max }, (_, i) => `<i class="${i < level ? "on" : ""}"></i>`).join("")}</div></div>
+        ${priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
+    }).join("");
+  }
+
+  function seeds(s) {
+    return `<p>Each plot unlocks better seeds on its own, and can grow any variety it has unlocked. Better pumpkins sell for more but take longer.</p><div class="plot-grid">` + s.plots.map((p, i) => {
+      if (i >= M.openPlots(s)) return `<div class="plot-card locked"><span class="thumb"><span class="ico i-plots"></span></span><h3>Plot ${i + 1}</h3><p>Clear more ground in Farm › Room for more</p></div>`;
+      const level = s.plotLevels[i], next = M.VARIETIES[level + 1], crop = s.plotCrops[i];
+      const chips = level ? `<div class="chips" role="group" aria-label="What plot ${i + 1} grows">${M.VARIETIES.slice(0, level + 1).map((v, k) => `<button class="chip" data-crop="${i}:${k}" aria-pressed="${crop === k}">${v.name}</button>`).join("")}</div>` : "";
+      return `<div class="plot-card">${ui.thumb(crop)}<h3>Plot ${i + 1} · ${M.VARIETIES[crop].name}</h3><p>${money(M.VARIETIES[crop].price)} each</p>${chips}
+        ${next ? `<button class="button" data-plot="${i}" ${s.coins < next.cost ? "disabled" : ""}>${next.name} seeds · ${money(next.cost)}</button>` : `<p class="small">Every seed unlocked</p>`}</div>`;
+    }).join("") + `</div>`;
+  }
+
+  function shop(s) {
+    const cat = ui.portrait("skyla"), sh = s.shop, tip = `<aside class="tip"><span class="tip-cat" aria-hidden="true">${cat ? `<img src="${cat}" alt="">` : ""}</span><p><b>Skyla</b>${skylaTip(s)}</p></aside>`;
+    if (!sh.unlocked) {
+      const price = M.shopUpgradeCost(s, "open");
+      return tip + `<article class="card">${icon("open")}<div><h3>Open the shop</h3><p>Customers come inside the Honest Pumpkin, browse the display tables and queue at Skyla’s till.</p></div>${priceButton("shopup", "open", price, s.coins)}</article>`;
+    }
+    const inside = ui.scene.place?.kind === "shop";
+    const visit = `<button class="button gold wide" data-visit="${inside ? "leave" : "shop"}">${inside ? "Back to the patch" : "Step inside the shop"}</button>`;
+    const stats = `<div class="stats"><div><b>${sh.served}</b><span>served inside</span></div><div><b>${money(sh.income)}</b><span>taken at the till</span></div><div><b>${sh.customers.filter((c) => c.phase !== "leaving").length}/${M.SHOP_CAPACITY[sh.capacityLevel]}</b><span>browsing now</span></div></div>`;
+    const tables = Array.from({ length: M.displayCount(sh) }, (_, i) => {
+      const on = sh.displays[i];
+      return `<div class="table-row"><h4>Table ${i + 1}</h4><div class="chips" role="group" aria-label="What table ${i + 1} shows">${[null, 0, 1, 2, 3].map((v) => {
+        const taken = v !== null && sh.displays.some((d, k) => k !== i && k < M.displayCount(sh) && d === v);
+        return `<button class="chip" data-display="${i}:${v}" aria-pressed="${on === v}" ${taken ? "disabled" : ""}>${v === null ? "Empty" : M.VARIETIES[v].name}${v !== null ? ` <small>${M.available(s, v)}</small>` : ""}</button>`;
+      }).join("")}</div></div>`;
+    }).join("");
+    const upgrades = M.SHOP_UPGRADES.filter((u) => u.id !== "open").map((u) => {
+      const level = sh[SHOP_LEVELS[u.id]], price = M.shopUpgradeCost(s, u.id), max = price === undefined;
+      const now = u.id === "capacity" ? `${M.SHOP_CAPACITY[level]} browsing` : u.id === "displays" ? `${M.displayCount(sh)} tables` : `${M.CHECKOUT_SECONDS[level]}s at the till`;
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.text} Now: ${now}.</p><div class="pips">${Array.from({ length: SHOP_MAX[u.id] }, (_, k) => `<i class="${k < level ? "on" : ""}"></i>`).join("")}</div></div>${priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
+    }).join("");
+    return tip + visit + stats + `<h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades;
+  }
+
+  function stall(s) {
+    const st = s.stall, held = (v) => M.held(s, v);
+    return `<div class="stats"><div><b>${st.served}</b><span>neighbours served</span></div><div><b>${money(st.income)}</b><span>taken at the stall</span></div><div><b>${st.itemsSold}</b><span>pumpkins sold</span></div><div><b>${st.missedBudget + st.missedStock}</b><span>left empty-handed</span></div></div>
+      <h3 class="section">In stock</h3><div class="stock-row">${M.VARIETIES.map((v, i) => `<div class="stock">${ui.thumb(i)}<b>${M.available(s, i)}</b><span>${v.name}${held(i) ? ` · ${held(i)} in baskets` : ""}</span></div>`).join("")}</div>
+      <h3 class="section">At the stall now</h3>${s.visitors.length ? s.visitors.map((v) => `<p class="guest"><b>${M.STALL_PROFILES[v.profile].name}</b> · up to ${money(v.budget)} · ${v.outcome === "bought" ? `bought ${plural(v.quantity, "pumpkin")} for ${money(v.amount)}` : v.outcome === "shopping" ? "on the way" : v.outcome === "budget" ? "couldn’t afford what’s left" : "found the shelves empty"}</p>`).join("") : `<p>No one on the path just now.</p>`}
+      <h3 class="section">Who comes by</h3>${M.STALL_PROFILES.map((p) => `<p class="guest"><b>${p.name}</b> · ${money(p.budget)} to spend · up to ${plural(p.basketLimit, "pumpkin")} · likes ${p.preferred.map((v) => M.VARIETIES[v].name).join(", ")}</p>`).join("")}
+      ${st.receipts.length ? `<h3 class="section">Recent sales</h3>` + st.receipts.slice(0, 6).map((r) => `<p class="guest">${M.STALL_PROFILES[r.profile].name}: ${r.lines.map((l) => `${l.quantity} ${M.VARIETIES[l.variety].name}`).join(" + ")} · ${money(r.amount)}</p>`).join("") : ""}
+      <p class="small">Missed: ${st.missedBudget} over budget, ${st.missedStock} sold out.</p>`;
+  }
+
+  return {
+    shop: {
+      eyebrow: "Skyla’s counter", title: "The Honest Pumpkin",
+      setTab(t) { tab = t; },
+      body() { const s = ui.state; return tabs() + ({ farm, seeds, shop, stall })[tab](s); },
+      bind(body) {
+        const s = ui.state;
+        body.querySelectorAll("[data-shoptab]").forEach((b) => (b.onclick = () => { tab = b.dataset.shoptab; ui.draw(); }));
+        body.querySelectorAll("[data-buy]").forEach((b) => (b.onclick = () => {
+          const id = b.dataset.buy;
+          if (!M.buyUpgrade(s, id)) return;
+          ui.tone(820); ui.notice(M.UPGRADES.find((u) => u.id === id).name + " bought.");
+          if (id === "auto") ui.say("shane", "You mind the shop. We’ll plant and pick. Teamwork makes the pumpkin dream work.");
+          if (id === "plots") ui.say("natalie", "More room for our little empire. I might be getting carried away.");
+          ui.draw();
+        }));
+        body.querySelectorAll("[data-plot]").forEach((b) => (b.onclick = () => { const i = +b.dataset.plot; if (M.upgradePlot(s, i)) { ui.tone(820); ui.notice(`Plot ${i + 1} can now grow ${M.VARIETIES[s.plotLevels[i]].name}.`); ui.draw(); } }));
+        body.querySelectorAll("[data-crop]").forEach((b) => (b.onclick = () => { const [i, v] = b.dataset.crop.split(":").map(Number); if (M.choosePlotCrop(s, i, v)) ui.draw(); }));
+        body.querySelectorAll("[data-shopup]").forEach((b) => (b.onclick = () => {
+          const id = b.dataset.shopup;
+          if (!M.upgradeShop(s, id)) return;
+          ui.tone(820);
+          if (id === "open") { ui.notice("The Honest Pumpkin is open. Customers will start coming inside."); ui.say("natalie", "We have a real shop! Skyla’s already sitting on the till like she owns it."); }
+          else ui.notice(M.SHOP_UPGRADES.find((u) => u.id === id).name + " done.");
+          ui.draw();
+        }));
+        body.querySelectorAll("[data-display]").forEach((b) => (b.onclick = () => { const [i, v] = b.dataset.display.split(":"); if (M.assignDisplay(s, +i, v === "null" ? null : +v)) ui.draw(); }));
+        body.querySelectorAll("[data-visit]").forEach((b) => (b.onclick = () => { if (b.dataset.visit === "shop") ui.enterShop(); else ui.leavePlace(); ui.draw(); }));
+      },
+    },
+  };
+}

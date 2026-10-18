@@ -4,11 +4,14 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { Voxels, seeded, vary } from "./voxels.js";
-import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, signBoard } from "./world.js";
+import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, buildCottage, signBoard } from "./world.js";
 import { buildVisitor, animateWalk } from "./characters.js";
 import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./sprite-voxels.js";
-import { loadSpriteSheets, spriteActor, spriteVisitor, animateVisitor } from "./sprite-actors.js";
-import { VARIETIES, VISIT, LOOKS, openPlots } from "./model.js";
+import { loadSpriteSheets, spriteActor, spriteVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
+import { VARIETIES, VISIT, openPlots, activeLook } from "./model.js";
+import { createPlaces, ORIGIN } from "./places.js";
+import { loadDecor, INTERIOR } from "./interiors.js";
+import { GRID } from "./model.js";
 
 const WALK = 2.4;
 
@@ -140,8 +143,11 @@ export function createScene(canvas, state, hooks) {
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
   shopHit.position.set(SHOP.x, 2.5, SHOP.z + 0.4); shopHit.userData = { type: "shop" }; scene.add(shopHit); pickables.push(shopHit);
-  const homeHit = new THREE.Mesh(new THREE.BoxGeometry(8, 8, 6), new THREE.MeshBasicMaterial({ visible: false }));
-  homeHit.position.set(7, 4, 6.4); homeHit.userData = { type: "home" }; scene.add(homeHit); pickables.push(homeHit);
+  const homeHit = new THREE.Mesh(new THREE.BoxGeometry(10, 9, 6), new THREE.MeshBasicMaterial({ visible: false }));
+  homeHit.position.set(6.5, 4.5, 6.4); homeHit.userData = { type: "home" }; scene.add(homeHit); pickables.push(homeHit);
+  // The cottage, rebuilt whenever the house moves up a level.
+  let cottage = buildCottage(state.house.level), cottageLevel = state.house.level;
+  scene.add(cottage);
 
   // Shane, Natalie, Skyla and the visitors are drawn with the main game's
   // sprites (sprite-actors.js), or, with "Voxel characters" on in Settings,
@@ -149,7 +155,27 @@ export function createScene(canvas, state, hooks) {
   // characters.js). Both load in the background.
   let voxelCharacters = false, pixels = null, sheets = null, skyla = null, paying = 0;
   const ready = () => (voxelCharacters ? pixels : sheets);
-  const character = (who, look) => (voxelCharacters ? spriteCharacter(pixels, who, look) : spriteActor(sheets, who, look));
+  // Shane and Natalie wear whatever is on in the wardrobe.
+  const character = (who) => {
+    if (!ready()) return null;
+    const look = who === "skyla" ? undefined : activeLook(state, who), outfit = who === "skyla" ? undefined : state.wardrobe.equipped[who];
+    const m = voxelCharacters ? spriteCharacter(pixels, who, look, outfit) : spriteActor(sheets, who, look, outfit);
+    m.userData.kind = who === "skyla" ? "skyla" : "person";
+    return m;
+  };
+  const visitorModel = (kind) => {
+    const sprite = !voxelCharacters && sheets !== null, m = sprite ? spriteVisitor(sheets, kind) : buildVisitor(kind);
+    if (!sprite) m.traverse((o) => o.isMesh && (o.castShadow = true));
+    m.userData.kind = "visitor"; m.userData.sprite = sprite;
+    return m;
+  };
+  // One animation call for any figure, voxel or sprite.
+  const animateFigure = (m, t, moving, offset = 0, dx = 0, isPaying = false) => {
+    const u = m.userData;
+    if (u.kind === "skyla") animateSkyla(m, t, isPaying);
+    else if (u.kind === "visitor") (u.sprite ? animateVisitor(m, t, moving) : animateWalk(m, t, moving));
+    else animateSprite(m, t, moving, dx, offset);
+  };
   function placeSkyla() {
     if (!ready()) return;
     if (skyla) { scene.remove(skyla); skyla.userData.dispose?.(); }
@@ -161,6 +187,9 @@ export function createScene(canvas, state, hooks) {
     placeSkyla(); placeActor("natalie"); placeActor("shane");
     for (const entry of visitorModels.values()) { scene.remove(entry.m); entry.m.userData.dispose?.(); }
     visitorModels.clear();                                                            // rebuilt in the new style next frame
+    const inside = places.place;
+    if (inside?.kind === "room") places.enterRoom(inside.id);
+    else if (inside?.kind === "shop") places.enterShop();
   }
   loadSprites().then((data) => { pixels = data; if (voxelCharacters) placeCharacters(); }).catch(() => hooks.onSpriteError?.());
   loadSpriteSheets().then((data) => { sheets = data; if (!voxelCharacters) placeCharacters(); }).catch(() => hooks.onSpriteError?.());
@@ -169,9 +198,8 @@ export function createScene(canvas, state, hooks) {
   const actors = {};
   function placeActor(who) {
     const old = actors[who];
-    const look = who === "natalie" ? LOOKS.natalie.find((l) => l.id === state.looks.natalie) : LOOKS.shane.find((l) => l.id === state.looks.shane);
     if (!ready()) return;
-    const model = character(who, look);
+    const model = character(who);
     model.position.set(old?.model.position.x ?? HOMES[who].x, 0.04, old?.model.position.z ?? HOMES[who].z);
     if (model.userData.facing) model.scale.x = old?.model.scale.x ?? 1;
     if (old) { scene.remove(old.model); old.model.userData.dispose?.(); }
@@ -187,6 +215,10 @@ export function createScene(canvas, state, hooks) {
   const visitorModels = new Map(), inLen = routeLength(ROUTE_IN), outLen = routeLength(ROUTE_OUT);
   const carried = pumpkins.map((t) => { const m = t.clone(); m.scale.setScalar(0.5); return m; });
 
+  // The cottage's rooms and the shop floor (places.js).
+  const places = createPlaces({ scene, state, character, visitorModel, pumpkinTemplate, animate: animateFigure });
+  loadDecor().then(() => places.refresh()).catch(() => hooks.onSpriteError?.());
+
   // Fireflies drifting over the field.
   const flyCount = 70, flyGeo = new THREE.BufferGeometry(), flySeed = seeded(5), flyBase = new Float32Array(flyCount * 3);
   for (let i = 0; i < flyCount; i++) flyBase.set([2 + flySeed() * 36, 0.6 + flySeed() * 2.6, 3 + flySeed() * 21], i * 3);
@@ -196,16 +228,48 @@ export function createScene(canvas, state, hooks) {
 
   // Camera: orthographic, looking down at a gentle angle, pannable and zoomable.
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 400);
-  const view = { x: 20, z: 8.4, zoom: 1 };
+  // Indoors: a perspective camera in front of the room, like the main game's room view.
+  const roomCam = new THREE.PerspectiveCamera(INTERIOR.fov, 1, 0.1, 200);
+  const active = () => (view.place ? roomCam : camera);
+  const view = { x: 20, z: 8.4, zoom: 1, place: null };
+  let farmView = null;
   let bloomOn = true;
   const composer = new EffectComposer(renderer);
-  composer.addPass(new RenderPass(scene, camera));
+  const renderPass = new RenderPass(scene, camera);
+  composer.addPass(renderPass);
   const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.5, 0.45, 0.86);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
 
+  // The room camera: the nearest distance that shows the top of the back wall and
+  // the front of the floor, and the room's width (most of it on a narrow phone).
+  const probe = new THREE.PerspectiveCamera(), corner = new THREE.Vector3();
+  function frameRoom(w, h) {
+    // Wide screens show the whole room; a portrait phone shows the back wall's
+    // middle, floor to cornice, and drags along to see the rest.
+    const o = ORIGIN[view.place], aspect = w / h, p = INTERIOR.pitch, tall = aspect < 1, half = tall ? 3.5 : GRID.w / 2 + 0.4;
+    const corners = tall ? [[-half, 5.4, 0], [half, 5.4, 0], [0, -0.1, GRID.d + 0.3]] : [[-half, 5.4, 0], [half, 5.4, 0], [-half, -0.1, GRID.d + 0.3], [half, -0.1, GRID.d + 0.3]];
+    const target = new THREE.Vector3(o.x + GRID.w / 2 + view.x, 2, o.z + GRID.d * 0.42 + view.z), dir = new THREE.Vector3(0, Math.sin(p), Math.cos(p));
+    probe.fov = INTERIOR.fov; probe.aspect = aspect; probe.near = 0.1; probe.far = 200; probe.updateProjectionMatrix();
+    const fits = (dist) => {
+      probe.position.copy(target).addScaledVector(dir, dist); probe.lookAt(target); probe.updateMatrixWorld();
+      for (const [x, y, z] of corners) {
+        corner.set(o.x + GRID.w / 2 + x, y, o.z + z).project(probe);
+        if (Math.abs(corner.x) > 1 || Math.abs(corner.y) > 1) return false;
+      }
+      return true;
+    };
+    let dist = 6;
+    while (dist < 80 && !fits(dist)) dist += 0.25;
+    roomCam.fov = INTERIOR.fov; roomCam.aspect = aspect; roomCam.updateProjectionMatrix();
+    roomCam.position.copy(target).addScaledVector(dir, dist / view.zoom);
+    roomCam.lookAt(target);
+    view.roomDist = dist / view.zoom;
+  }
   function frame() {
     const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
+    renderPass.camera = active();
+    if (view.place) { clampView(); frameRoom(w, h); return; }
     // Show the whole yard, 42 units across, on wide screens; the patch on a portrait phone.
     const span = (aspect >= 1 ? 42 : 17) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
     camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
@@ -242,7 +306,11 @@ export function createScene(canvas, state, hooks) {
     if (!drag) return;
     const k = worldPerPixel(), dx = e.clientX - drag.x, dy = e.clientY - drag.y;
     drag.moved = Math.max(drag.moved, Math.hypot(dx, dy));
-    view.x = drag.vx - dx * k; view.z = drag.vz - dy * k / Math.sin(PITCH);
+    if (view.place) {
+      // Indoors, dragging slides along the room and in and out a little.
+      const kr = (2 * view.roomDist * Math.tan(THREE.MathUtils.degToRad(INTERIOR.fov) / 2)) / canvas.clientHeight;
+      view.x = drag.vx - dx * kr; view.z = drag.vz - dy * kr;
+    } else { view.x = drag.vx - dx * k; view.z = drag.vz - dy * k / Math.sin(PITCH); }
     clampView(); frame();
   });
   const end = (e) => {
@@ -252,9 +320,9 @@ export function createScene(canvas, state, hooks) {
     if (wasTap) {
       const box = canvas.getBoundingClientRect();
       pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
-      ray.setFromCamera(pointer, camera);
-      const hit = ray.intersectObjects(pickables, false)[0];
-      if (hit) hooks.onPick(hit.object.userData);
+      ray.setFromCamera(pointer, active());
+      const hit = ray.intersectObjects(view.place ? places.pickables : pickables, false)[0];
+      if (hit) hooks.onPick({ ...hit.object.userData, point: hit.point });
     }
     drag = null;
   };
@@ -264,6 +332,14 @@ export function createScene(canvas, state, hooks) {
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.
   function clampView() {
+    if (view.place) {
+      // Offsets from the room's centre: a little way along it, and in or out.
+      const along = canvas.clientWidth < canvas.clientHeight ? 2.2 : 1.5;
+      view.x = THREE.MathUtils.clamp(view.x, -along, along);
+      view.z = THREE.MathUtils.clamp(view.z, -1.2, 1.2);
+      view.zoom = THREE.MathUtils.clamp(view.zoom, 0.85, 1.9);
+      return;
+    }
     const halfW = camera.right, depthHalf = camera.top / Math.sin(PITCH);
     const maxZ = MAP.d + 1 - depthHalf, maxX = MAP.w + 1 - halfW, minX = halfW - 1;
     view.z = Math.min(maxZ, Math.max(view.z, Math.min(maxZ, 6)));
@@ -276,9 +352,9 @@ export function createScene(canvas, state, hooks) {
     const el = document.createElement("div");
     el.className = "float-text " + cls; el.textContent = text;
     document.getElementById("fx").append(el);
-    fx.push({ el, pos: new THREE.Vector3(x, y, z), t: 0 });
+    fx.push({ el, pos: new THREE.Vector3(x, y, z), t: 0, life: cls === "speech" ? 2.8 : 1.4 });
   }
-  const project = (p) => { const v = p.clone().project(camera); return { x: (v.x + 1) / 2 * canvas.clientWidth, y: (1 - v.y) / 2 * canvas.clientHeight }; };
+  const project = (p) => { const v = p.clone().project(active()); return { x: (v.x + 1) / 2 * canvas.clientWidth, y: (1 - v.y) / 2 * canvas.clientHeight }; };
 
   let tapPulse = 0, last = performance.now(), time = 0;
   function tick(now) {
@@ -323,11 +399,7 @@ export function createScene(canvas, state, hooks) {
     // Visitors along the stone path.
     for (const v of state.visitors) {
       let entry = visitorModels.get(v.id);
-      if (!entry) {
-        const sprite = !voxelCharacters && sheets !== null, m = sprite ? spriteVisitor(sheets, v.kind) : buildVisitor(v.kind);
-        if (!sprite) m.traverse((o) => o.isMesh && (o.castShadow = true));
-        scene.add(m); entry = { m, sprite, bag: null }; visitorModels.set(v.id, entry);
-      }
+      if (!entry) { const m = visitorModel(v.kind); scene.add(m); entry = { m, sprite: m.userData.sprite, bag: null }; visitorModels.set(v.id, entry); }
       const leaving = v.leaveAt !== null && v.age >= v.leaveAt;
       const p = leaving ? along(ROUTE_OUT, (v.age - v.leaveAt) / VISIT.leave * outLen) : along(ROUTE_IN, Math.min(1, v.age / VISIT.arrive) * inLen);
       entry.m.position.set(p.x, 0.04, p.z);
@@ -352,16 +424,23 @@ export function createScene(canvas, state, hooks) {
     flies.material.opacity = 0.6 + Math.sin(time * 4) * 0.3;
     paying = Math.max(0, paying - dt);
     if (skyla) animateSkyla(skyla, time, paying > 0);
+    places.tick(dt, time, paying > 0);
+    if (state.house.level !== cottageLevel) {
+      scene.remove(cottage);
+      cottage.traverse((o) => o.geometry?.dispose?.());
+      cottage = buildCottage((cottageLevel = state.house.level));
+      scene.add(cottage);
+    }
 
     for (let i = fx.length - 1; i >= 0; i--) {
       const f = fx[i]; f.t += dt;
-      const s = project(f.pos.clone().setY(f.pos.y + f.t * 1.2));
+      const s = project(f.pos.clone().setY(f.pos.y + f.t * (f.life > 2 ? 0.4 : 1.2)));
       f.el.style.transform = `translate(${s.x}px, ${s.y}px) translate(-50%, -50%)`;
-      f.el.style.opacity = String(Math.max(0, 1 - f.t / 1.4));
-      if (f.t > 1.4) { f.el.remove(); fx.splice(i, 1); }
+      f.el.style.opacity = String(Math.max(0, 1 - f.t / f.life));
+      if (f.t > f.life) { f.el.remove(); fx.splice(i, 1); }
     }
 
-    if (bloomOn) composer.render(); else renderer.render(scene, camera);
+    if (bloomOn) composer.render(); else renderer.render(scene, active());
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
@@ -369,9 +448,39 @@ export function createScene(canvas, state, hooks) {
   return {
     sendTo(plotIndex) { const p = PLOTS[plotIndex], a = nearestActor(p.x, p.z); a?.queue.push({ x: p.x - 0.9, z: p.z + 0.4 }); },
     tapPumpkin() { tapPulse = 1; floatText("✦", BIG_PUMPKIN.x, 3.6, BIG_PUMPKIN.z, "spark"); },
-    sale(amount) { paying = 1.2; floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin"); },
-    harvested(i) { const p = PLOTS[i]; floatText("+1", p.x, 1.4, p.z, "crop"); },
-    refreshLooks() { placeActor("natalie"); placeActor("shane"); },
+    // A sale: Skyla reacts, and the takings float up from whichever counter you can see.
+    sale(amount, route) {
+      paying = 1.2;
+      if (route === "shop" && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
+      else if (!view.place) floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin");
+    },
+    harvested(i, n = 1) { const p = PLOTS[i]; floatText("+" + n, p.x, 1.4, p.z, "crop"); },
+    // A visitor's remark at the stall, and other words floating up from the farm.
+    say(text) { if (!view.place) floatText(text, SHOP.x - 2.4, 3.6, SHOP.counterZ + 1.8, "speech"); },
+    float(text, at, cls = "") { if (!view.place) floatText(text, at.x, 2, at.z, cls); },
+    portrait(id) { return sheets && id ? portraitURL(sheets, id) : null; },
+    refreshLooks() { placeActor("natalie"); placeActor("shane"); places.refresh(); },
+    // Stepping inside: a room of the cottage, or the shop floor. leavePlace() comes back out.
+    enter(kind, id) {
+      if (!view.place) farmView = { x: view.x, z: view.z, zoom: view.zoom };
+      view.place = kind;
+      if (kind === "room") places.enterRoom(id); else places.enterShop();
+      Object.assign(view, { x: 0, z: 0, zoom: 1 });
+      frame();
+    },
+    leavePlace() {
+      if (!view.place) return;
+      places.leave();
+      view.place = null;
+      Object.assign(view, farmView ?? { x: 20, z: 8.4, zoom: 1 });
+      frame();
+    },
+    get place() { return places.place; },
+    refreshRoom() { places.refresh(); },
+    selectPiece(instance) { places.select(instance); },
+    previewPiece(instance, x, z, ok) { places.preview(instance, x, z, ok); },
+    showGrid(on) { places.setGrid(on); },
+    cellAt(point, type) { return places.cellAt(point, type); },
     screenPoint(x, y, z) { return project(new THREE.Vector3(x, y, z)); },
     actorPosition(who) { const p = actors[who]?.model.position ?? new THREE.Vector3(HOMES[who].x, 0, HOMES[who].z); return project(new THREE.Vector3(p.x, 2.4, p.z)); },
     focus(x, z, zoom = view.zoom) { view.x = x; view.z = z; view.zoom = zoom; frame(); },          // frame() clamps once the new zoom is in

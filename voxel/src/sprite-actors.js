@@ -3,18 +3,39 @@ import natalieUrl from "../assets/hd-natalie.webp";
 import shaneUrl from "../assets/hd-shane.webp";
 import skylaUrl from "../assets/hd-skyla.webp";
 import visitorsUrl from "../assets/hd-visitors.webp";
-import { HD_ROWS, SHEETS } from "./sprite-meta-hd.js";
+import natalieWitch from "../assets/hd-natalie-witch.webp";
+import natalieGhostbride from "../assets/hd-natalie-ghostbride.webp";
+import natalieBatqueen from "../assets/hd-natalie-batqueen.webp";
+import natalieVampire from "../assets/hd-natalie-vampire.webp";
+import natalieFrankenstein from "../assets/hd-natalie-frankenstein.webp";
+import natalieMummy from "../assets/hd-natalie-mummy.webp";
+import natalieSlasher from "../assets/hd-natalie-slasher.webp";
+import shaneVampire from "../assets/hd-shane-vampire.webp";
+import shaneSkeleton from "../assets/hd-shane-skeleton.webp";
+import shaneScarecrow from "../assets/hd-shane-scarecrow.webp";
+import shaneFrankenstein from "../assets/hd-shane-frankenstein.webp";
+import shaneMummy from "../assets/hd-shane-mummy.webp";
+import shaneSlasher from "../assets/hd-shane-slasher.webp";
+import { SHEETS } from "./sprite-meta-hd.js";
 import { PITCH } from "./world.js";
 import { recolour } from "./sprite-voxels.js";
 
-// Shane, Natalie, Skyla and the visitors drawn with the main game's own sprites:
-// flat cut-outs standing in the voxel world, lit by the moon and the lanterns,
-// and casting shadows the shape of the art. Sheets come from tools/bake_sprites.py.
-const UNIT = 2.3 / HD_ROWS;                          // world units per sprite pixel: a person is 2.3 tall
+// Shane, Natalie, Skyla, the visitors and every costume drawn with the main
+// game's own sprites: flat cut-outs standing in the voxel world, lit by the moon
+// and the lanterns, and casting shadows the shape of the art. Sheets come from
+// tools/bake_sprites.py; each records how many rows a person is, so the
+// smaller costume sheets stand just as tall (2.3 units).
+const unit = (meta) => 2.3 / meta.rows;
 // They lean back towards the camera like the voxel figures (so things behind
 // them stay behind them), stretched so the art keeps its proportions on screen.
 const LEAN = 0.36, STRETCH = 1 / Math.cos(PITCH - LEAN);
-const URLS = { natalie: natalieUrl, shane: shaneUrl, skyla: skylaUrl, visitors: visitorsUrl };
+const URLS = {
+  natalie: natalieUrl, shane: shaneUrl, skyla: skylaUrl, visitors: visitorsUrl,
+  "natalie-witch": natalieWitch, "natalie-ghostbride": natalieGhostbride, "natalie-batqueen": natalieBatqueen, "natalie-vampire": natalieVampire,
+  "natalie-frankenstein": natalieFrankenstein, "natalie-mummy": natalieMummy, "natalie-slasher": natalieSlasher,
+  "shane-vampire": shaneVampire, "shane-skeleton": shaneSkeleton, "shane-scarecrow": shaneScarecrow,
+  "shane-frankenstein": shaneFrankenstein, "shane-mummy": shaneMummy, "shane-slasher": shaneSlasher,
+};
 export const VISITOR_KINDS = ["ghost", "witch", "vampire", "skeleton", "scarecrow"];   // model.js visitor kinds, in order
 
 const loadImage = (src) => new Promise((resolve, reject) => {
@@ -33,8 +54,8 @@ function sheetTexture(image) {
 
 // One plane per frame, its origin at the feet, its UVs on the frame's rectangle.
 function frameGeometry(sheet, f) {
-  const g = new THREE.PlaneGeometry(f.w * UNIT, f.h * UNIT);
-  g.translate((f.w / 2 - f.ax) * UNIT, (f.ay - f.h / 2) * UNIT, 0);
+  const u = unit(sheet), g = new THREE.PlaneGeometry(f.w * u, f.h * u);
+  g.translate((f.w / 2 - f.ax) * u, (f.ay - f.h / 2) * u, 0);
   const uv = g.attributes.uv;
   for (let i = 0; i < uv.count; i++) uv.setXY(i, (f.x + uv.getX(i) * f.w) / sheet.w, 1 - (f.y + (1 - uv.getY(i)) * f.h) / sheet.h);
   return g;
@@ -60,7 +81,7 @@ function recolouredTexture(sheet, who, look) {
   const pixels = g.getImageData(0, 0, canvas.width, canvas.height), data = pixels.data;
   for (const list of [sheet.meta.idle, sheet.meta.walk]) for (const f of list) {
     for (let y = 0; y < f.h; y++) {
-      const row = (y - (f.ay - HD_ROWS)) / HD_ROWS;
+      const row = (y - (f.ay - sheet.meta.rows)) / sheet.meta.rows;
       for (let x = 0; x < f.w; x++) {
         const o = ((f.y + y) * canvas.width + f.x + x) * 4;
         if (!data[o + 3]) continue;
@@ -94,10 +115,12 @@ function figure(sheet, frames, texture) {
   return group;
 }
 
-// Shane, Natalie or Skyla. They always face the viewer, as in the main game, which never mirrors them.
-export function spriteActor(sheets, who, look) {
-  const sheet = sheets[who], base = who === "natalie" ? 0x604625 : 0x1a1210;
-  const tinted = look && (look.sweater ?? look.beanie) !== undefined && (look.sweater ?? look.beanie) !== base;
+// Shane, Natalie or Skyla, in an outfit. They always face the viewer, as in the
+// main game, which never mirrors them. Recolours only apply to the originals.
+export function spriteActor(sheets, who, look, outfit) {
+  const costume = outfit && !outfit.endsWith("-base") && sheets[outfit];
+  const sheet = costume || sheets[who], base = who === "natalie" ? 0x604625 : 0x1a1210;
+  const tinted = !costume && look && (look.sweater ?? look.beanie) !== undefined && (look.sweater ?? look.beanie) !== base;
   return figure(sheet, sheet.frames, tinted ? recolouredTexture(sheet, who, look) : sheet.texture);
 }
 
@@ -111,4 +134,21 @@ export function animateVisitor(group, age, walking) {
   const { walk } = group.userData, next = walk[walking ? Math.floor(age * 5) % walk.length : 0];
   if (next !== group.userData.shown) { group.userData.show(next); group.userData.shown = next; }
   group.children[0].position.y = Math.sin(age * 2.4) * 0.03;                       // the main game's gentle sway
+}
+
+// A portrait for the menus: the first standing frame of an outfit, Skyla or a
+// visitor ("visitor-ghost"), as an image URL. Cached; null until sheets load.
+const portraits = new Map();
+export function portraitURL(sheets, id) {
+  if (portraits.has(id)) return portraits.get(id);
+  let sheet, f;
+  if (id.startsWith("visitor-")) { sheet = sheets.visitors; f = sheet?.meta[id.slice(8)]?.[0]; }
+  else { sheet = sheets[id.replace(/-base$/, "")]; f = sheet?.meta.idle?.[0]; }
+  if (!sheet || !f) return null;
+  const c = document.createElement("canvas");
+  c.width = f.w; c.height = f.h;
+  c.getContext("2d").drawImage(sheet.image, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+  const url = c.toDataURL("image/png");
+  portraits.set(id, url);
+  return url;
 }

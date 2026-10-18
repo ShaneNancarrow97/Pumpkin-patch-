@@ -18,21 +18,33 @@
     <div class="hud-stat"><span class="ghost-icon" aria-hidden="true"></span><span><small>Visitors</small><strong id="sold">0</strong></span></div>
   </div>
   <button class="icon-button" id="open-settings" aria-label="Settings"><span class="gear-icon" aria-hidden="true"></span></button>
+  <div class="hud-level" id="hud-level"><span class="sr">Patch level: </span><span class="sr" id="level-name">Little seed</span><i><b id="level-bar"></b></i></div>
 </header>
 
 <button class="goal-chip" id="goal"><span class="goal-star" aria-hidden="true">✦</span><span id="goal-text">A basket for a ghost</span></button>
+<div class="streak" id="streak" hidden></div>
+<div class="paused" id="paused" hidden>Tea break</div>
 <div class="notice" id="notice" role="status" aria-live="polite"></div>
 <div class="bubble" id="bubble" hidden></div>
+<button class="dialogue" id="dialogue" hidden aria-live="polite"><span class="dialogue-portrait" aria-hidden="true"></span><span class="dialogue-words"><span class="dialogue-name"></span><span class="dialogue-text"></span></span></button>
+
+<div class="place-bar" id="place-bar" hidden>
+  <button class="button" id="place-back" aria-label="Back to the patch"><span class="ico i-patch" aria-hidden="true"></span><span class="place-back-text">Back to the patch</span></button>
+  <h2 id="place-title"></h2>
+  <button class="button gold" id="place-decorate">Decorate</button>
+</div>
+<div class="piece-bar" id="piece-bar" hidden></div>
 
 <div class="actions" id="actions">
-  <button class="action" id="plant-all"><span class="seed-icon" aria-hidden="true"></span>Plant <b id="plant-count">6</b></button>
-  <button class="action" id="boost"><span class="spark-icon" aria-hidden="true"></span>Boost</button>
-  <button class="action gold" id="harvest-all"><span class="basket-icon" aria-hidden="true"></span>Harvest <b id="harvest-count">0</b></button>
+  <button class="action" id="plant-all"><span class="ico i-plant" aria-hidden="true"></span>Plant <b id="plant-count">6</b></button>
+  <button class="action" id="boost"><span class="ico i-boost" aria-hidden="true"></span>Boost</button>
+  <button class="action gold" id="harvest-all"><span class="ico i-harvest" aria-hidden="true"></span>Harvest <b id="harvest-count">0</b></button>
 </div>
 
 <nav class="dock" id="dock" aria-label="Main navigation">
   <button class="tab active" data-tab="patch" aria-pressed="true"><span class="tab-icon patch" aria-hidden="true"></span>Patch</button>
   <button class="tab" data-tab="shop" aria-pressed="false"><span class="tab-icon shop" aria-hidden="true"></span>Shop</button>
+  <button class="tab" data-tab="home" aria-pressed="false"><span class="tab-icon home" aria-hidden="true"></span>Home</button>
   <button class="tab" data-tab="wardrobe" aria-pressed="false"><span class="tab-icon wardrobe" aria-hidden="true"></span>Wardrobe</button>
   <button class="tab" data-tab="journal" aria-pressed="false"><span class="tab-icon journal" aria-hidden="true"></span>Journal<i class="badge" id="journal-badge" hidden></i></button>
 </nav>

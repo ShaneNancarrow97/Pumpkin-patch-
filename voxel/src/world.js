@@ -159,49 +159,97 @@ function flowers(v, r, x, z, n = 6) {
   }
 }
 
-function cottage(v, r, lights) {
-  const { x, z } = COTTAGE, w = 7, d = 5, x0 = x - w / 2, z0 = z - d / 2;
-  for (let i = 0; i < w; i += 0.5) for (const zz of [z0, z0 + d - 0.5]) v.box(x0 + i, 0, zz, 0.5, 0.7, 0.5, vary(COL.stoneWall[(r() * 3) | 0], 0.06, r)); // stone footing
+// The yard in front of the cottage: lanterns, pumpkins, the signpost and crates.
+// The house itself is rebuilt as it grows (buildCottage).
+function cottageYard(v, r, lights) {
+  const { x, z } = COTTAGE, z0 = z - 2.5, front = z0 + 5, x0 = x - 3.5;
+  v.box(x - 1.1, 0, front, 2.2, 0.35, 0.6, COL.stoneWall[2]); v.box(x - 0.9, 0, front + 0.6, 1.8, 0.18, 0.5, COL.stoneWall[0]);
+  lights.push({ x: x - 1.2, y: 2, z: front + 0.12 });
+  jackOLantern(v, r, x - 1.7, front + 0.5, 0.55, null);
+  pumpkinBlock(v, x + 1.6, 0, front + 0.6, 0.45, 0xf0821e, r);
+  pumpkinBlock(v, x + 1.5, 0.35, front + 0.1, 0.32, 0xd9d2ff, r);
+  v.block(x0 - 0.6, 0, front + 1.6, 0.18, 1.6, 0.18, COL.fence);                       // signpost
+  v.block(x0 - 0.6, 1.0, front + 1.7, 1.2, 0.6, 0.08, COL.woodLight);
+  crate(v, r, x + 3.6, front + 0.6); barrel(v, r, x + 4.7, front + 0.4);
+  return { door: { x, z: front + 1.2 } };
+}
+
+// The house through its four levels, after the main game's exteriors: the
+// little cottage, the crooked cottage (taller, with a leaning slate roof), the
+// midnight manor (two storeys and a turret) and the haunted haven (a second
+// spire, violet windows, ghost lights and bats). The front wall stays put.
+const HOUSE_COLOURS = [
+  { wall: 0xe2d2b4, roof: [0x4a2e2a, 0x553430, 0x3f2724], glow: 0xffb85a },
+  { wall: 0xd8c4a2, roof: [0x3c3448, 0x463c54, 0x332c3e], glow: 0xffb85a },
+  { wall: 0xcbb6a0, roof: [0x2e2a3c, 0x383248, 0x26222f], glow: 0xffb85a },
+  { wall: 0xb9a8a6, roof: [0x2a2036, 0x342840, 0x221a2c], glow: 0xc49bff },
+];
+export function buildCottage(level) {
+  const v = new Voxels(), r = seeded(77 + level), c = HOUSE_COLOURS[level];
+  const { x } = COTTAGE, front = COTTAGE.z + 2.5;
+  const w = level >= 2 ? 8.5 : 7, d = 5, x0 = level >= 2 ? x - 5 : x - 3.5, z0 = front - d;
+  const wallH = [3.3, 4.3, 5.8, 5.8][level], top = 0.7 + wallH;
+  for (let i = 0; i < w; i += 0.5) for (const zz of [z0, front - 0.5]) v.box(x0 + i, 0, zz, 0.5, 0.7, 0.5, vary(COL.stoneWall[(r() * 3) | 0], 0.06, r)); // stone footing
   v.box(x0, 0, z0, 0.5, 0.7, d, COL.stoneWall[1]); v.box(x0 + w - 0.5, 0, z0, 0.5, 0.7, d, COL.stoneWall[1]);
-  v.box(x0 + 0.05, 0.7, z0 + 0.05, w - 0.1, 3.3, d - 0.1, COL.plaster);               // plaster walls
-  for (const tx of [x0, x0 + 2.2, x0 + 4.8, x0 + w - 0.25]) v.box(tx, 0.7, z0 + d - 0.1, 0.25, 3.3, 0.15, COL.timber); // timber frame
-  v.box(x0, 2.4, z0 + d - 0.1, w, 0.22, 0.15, COL.timber);
-  v.box(x0, 3.9, z0 + d - 0.1, w, 0.22, 0.15, COL.timber);
-  // Round-topped door under a little porch roof, with steps and pumpkins.
-  v.box(x - 0.6, 0.7, z0 + d - 0.12, 1.2, 1.9, 0.2, COL.woodLight);
-  for (let i = 0; i < 4; i++) v.box(x - 0.55 + i * 0.3, 0.75, z0 + d + 0.08, 0.04, 1.8, 0.04, COL.woodDark);
-  v.box(x - 0.45, 2.6, z0 + d - 0.12, 0.9, 0.2, 0.2, COL.woodLight);
-  v.box(x + 0.35, 1.5, z0 + d + 0.06, 0.12, 0.12, 0.08, 0xd9a35a);
-  for (let k = 0; k < 3; k++) v.box(x - 1.3 + k * 0.1, 3.0 - k * 0.12, z0 + d + k * 0.3, 2.6 - k * 0.2, 0.14, 0.32, vary(COL.roof[k], 0.05, r));
-  v.box(x - 1.1, 0, z0 + d, 2.2, 0.35, 0.6, COL.stoneWall[2]); v.box(x - 0.9, 0, z0 + d + 0.6, 1.8, 0.18, 0.5, COL.stoneWall[0]);
-  lantern(v, x - 1.2, 1.7, z0 + d + 0.12, lights); lantern(v, x + 1.2, 1.7, z0 + d + 0.12, lights, false);
-  // Glowing windows with mullions and window boxes of flowers.
-  for (const wx of [x0 + 1.1, x0 + w - 2.1]) {
-    v.box(wx, 1.6, z0 + d - 0.08, 1, 1.1, 0.12, COL.window, true);
-    v.box(wx + 0.45, 1.6, z0 + d + 0.02, 0.1, 1.1, 0.06, COL.timber);
-    v.box(wx, 2.1, z0 + d + 0.02, 1, 0.1, 0.06, COL.timber);
-    v.box(wx - 0.1, 1.3, z0 + d - 0.05, 1.2, 0.3, 0.35, COL.woodDark);
-    for (let i = 0; i < 5; i++) v.box(wx - 0.05 + i * 0.24, 1.6, z0 + d + 0.05, 0.16, 0.14, 0.16, COL.flowers[(i * 3) % 5]);
+  if (level >= 2) for (let i = 0; i < w; i += 0.5) for (let j = 0.7; j < 2.9; j += 0.45) v.box(x0 + i + 0.02, j, front - 0.12, 0.48, 0.45, 0.14, vary(COL.stoneWall[(r() * 3) | 0], 0.08, r)); // stone ground floor
+  v.box(x0 + 0.05, 0.7, z0 + 0.05, w - 0.1, wallH, d - 0.1, c.wall);                   // plaster walls
+  for (let k = 0; k <= 3; k++) v.box(x0 + (w - 0.25) * k / 3, level >= 2 ? 2.9 : 0.7, front - 0.1, 0.25, level >= 2 ? wallH - 2.2 : wallH, 0.15, COL.timber); // timber frame
+  for (const y of level >= 2 ? [2.9, 4.4, top - 0.2] : [2.4, top - 0.2]) v.box(x0, y, front - 0.1, w, 0.22, 0.15, COL.timber);
+  // Round-topped door under a little porch roof.
+  v.box(x - 0.6, 0.7, front - 0.12, 1.2, 1.9, 0.2, COL.woodLight);
+  for (let i = 0; i < 4; i++) v.box(x - 0.55 + i * 0.3, 0.75, front + 0.08, 0.04, 1.8, 0.04, COL.woodDark);
+  v.box(x - 0.45, 2.6, front - 0.12, 0.9, 0.2, 0.2, COL.woodLight);
+  v.box(x + 0.35, 1.5, front + 0.06, 0.12, 0.12, 0.08, 0xd9a35a);
+  for (let k = 0; k < 3; k++) v.box(x - 1.3 + k * 0.1, 3.0 - k * 0.12, front + k * 0.3, 2.6 - k * 0.2, 0.14, 0.32, vary(c.roof[k], 0.05, r));
+  lantern(v, x - 1.2, 1.7, front + 0.12, []); lantern(v, x + 1.2, 1.7, front + 0.12, []);
+  // Glowing windows with mullions and flower boxes; one row per storey.
+  const rows = level >= 2 ? [1.3, 3.4] : level === 1 ? [1.6, 3.0] : [1.6];
+  for (const [n, wy] of rows.entries()) for (const wx of n === 0 ? [x0 + 1.1, x0 + w - 2.1] : [x0 + 1.1, x - 0.5, x0 + w - 2.1]) {
+    const glow = level === 3 && (wx + wy) % 3 < 1.2 ? 0xc49bff : c.glow;
+    v.box(wx, wy, front - 0.08, 1, 1.1, 0.12, glow, true);
+    v.box(wx + 0.45, wy, front + 0.02, 0.1, 1.1, 0.06, COL.timber);
+    v.box(wx, wy + 0.5, front + 0.02, 1, 0.1, 0.06, COL.timber);
+    v.box(wx - 0.1, wy - 0.3, front - 0.05, 1.2, 0.3, 0.35, COL.woodDark);
+    if (n === 0) for (let i = 0; i < 5; i++) v.box(wx - 0.05 + i * 0.24, wy, front + 0.05, 0.16, 0.14, 0.16, COL.flowers[(i * 3) % 5]);
   }
-  v.box(x0 + 3, 3.1, z0 + d - 0.08, 0.9, 0.7, 0.12, COL.window, true);                // dormer light
-  // Steep stepped shingle roof, overhanging.
+  // Steep stepped roof. From the crooked cottage on, it leans and grows dormers.
+  const lean = level === 1 ? 0.12 : level === 3 ? 0.05 : 0;
   for (let i = 0; i < 9; i++) {
-    const inset = i * 0.38, y = 4 + i * 0.42;
-    for (let k = 0; k < w + 1.2; k += 0.6) v.box(x0 - 0.6 + k, y, z0 - 0.5 + inset, 0.6, 0.42, d + 1 - inset * 2, vary(COL.roof[(r() * 3) | 0], 0.1, r));
+    const inset = i * 0.38, y = top + i * 0.42, shift = lean * i;
+    for (let k = 0; k < w + 1.2; k += 0.6) v.box(x0 - 0.6 + k + shift, y, z0 - 0.5 + inset, 0.6, 0.42, d + 1 - inset * 2, vary(c.roof[(r() * 3) | 0], 0.1, r));
   }
-  for (let k = 0; k < w + 1.2; k += 0.6) for (let i = 0; i < 9; i += 2) v.box(x0 - 0.6 + k, 4.38 + i * 0.42, z0 + d + 0.44 - i * 0.38, 0.6, 0.05, 0.06, 0x2a1a16); // shingle lines
-  v.box(x0 + 5.2, 4.2, z0 + 1, 0.9, 4.4, 0.9, COL.stoneWall[1]);                       // chimney
-  v.box(x0 + 5.1, 8.6, z0 + 0.9, 1.1, 0.25, 1.1, COL.stoneWall[2]);
-  for (let i = 0; i < 22; i++) v.box(x0 + r() * 0.5, 0.6 + r() * 3, z0 + d - 0.05, 0.25, 0.25, 0.12, vary(0x3d5a2a, 0.2, r)); // ivy
-  for (let i = 0; i < 16; i++) v.box(x0 + w - 0.4 + r() * 0.4, 0.6 + r() * 3.2, z0 + d - 0.02, 0.24, 0.24, 0.12, vary(CANOPY[0][2 + (i % 3)], 0.1, r)); // red creeper
-  jackOLantern(v, r, x - 1.7, z0 + d + 0.5, 0.55, null);
-  pumpkinBlock(v, x + 1.6, 0, z0 + d + 0.6, 0.45, 0xf0821e, r);
-  pumpkinBlock(v, x + 1.5, 0.35, z0 + d + 0.1, 0.32, 0xd9d2ff, r);
-  // Signpost and crates by the garden gate.
-  v.block(x0 - 0.6, 0, z0 + d + 1.6, 0.18, 1.6, 0.18, COL.fence);
-  v.block(x0 - 0.6, 1.0, z0 + d + 1.7, 1.2, 0.6, 0.08, COL.woodLight);
-  crate(v, r, x + 3.6, z0 + d + 0.6); barrel(v, r, x + 4.7, z0 + d + 0.4);
-  return { door: { x, z: z0 + d + 1.2 } };
+  for (let k = 0; k < w + 1.2; k += 0.6) for (let i = 0; i < 9; i += 2) v.box(x0 - 0.6 + k + lean * i, top + 0.38 + i * 0.42, front + 0.44 - i * 0.38, 0.6, 0.05, 0.06, 0x1e1418); // shingle lines
+  for (const dx of level === 0 ? [3] : [1.6, w - 2.6]) {                            // dormers
+    v.box(x0 + dx - 0.2, top + 0.3, front - 0.9, 1.3, 1.2, 0.9, c.wall);
+    v.box(x0 + dx, top + 0.45, front - 0.02, 0.9, 0.75, 0.12, c.glow, true);
+    for (let k = 0; k < 3; k++) v.box(x0 + dx - 0.35 + k * 0.1, top + 1.5 + k * 0.25, front - 1 + k * 0.05, 1.6 - k * 0.2, 0.18, 1.1, c.roof[k]);
+  }
+  const chimneyH = [4.4, 5.2, 5.5, 5.8][level];
+  v.box(x0 + w - 1.8, top + 0.5, z0 + 1, 0.9, chimneyH, 0.9, COL.stoneWall[1]);       // chimney
+  v.box(x0 + w - 1.9, top + 0.5 + chimneyH, z0 + 0.9, 1.1, 0.25, 1.1, COL.stoneWall[2]);
+  // The manor's turret, and the haven's second spire.
+  const tower = (tx, tz, tw, th, spire) => {
+    for (let y = 0; y < th; y += 0.5) v.box(tx, y, tz, tw, 0.5, tw, vary(y < 0.7 ? COL.stoneWall[1] : c.wall, 0.04, r));
+    for (let y = 1.6; y < th - 0.6; y += 1.8) v.box(tx + tw / 2 - 0.3, y, tz + tw - 0.02, 0.6, 0.9, 0.1, c.glow, true);
+    for (let i = 0; i * 0.3 < spire; i++) {
+      const s = Math.max(0.2, tw + 0.6 - i * ((tw + 0.6) / (spire / 0.3)));
+      v.box(tx + tw / 2 - s / 2, th + i * 0.3, tz + tw / 2 - s / 2, s, 0.3, s, c.roof[i % 3]);
+    }
+  };
+  if (level >= 2) tower(x0 - 0.8, z0 + 0.3, 2.2, top + 1.8, 3.6);
+  if (level >= 3) tower(x0 + w - 1.2, z0 - 0.4, 1.5, top + 3.2, 3);
+  // Ivy, red creeper, and in the haven, ghost lights and bats.
+  for (let i = 0; i < 22 + level * 8; i++) v.box(x0 + r() * 0.5, 0.6 + r() * (wallH - 0.2), front - 0.05, 0.25, 0.25, 0.12, vary(0x3d5a2a, 0.2, r));
+  for (let i = 0; i < 16 + level * 6; i++) v.box(x0 + w - 0.4 + r() * 0.4, 0.6 + r() * (wallH - 0.2), front - 0.02, 0.24, 0.24, 0.12, vary(CANOPY[0][2 + (i % 3)], 0.1, r));
+  if (level >= 3) {
+    for (const [gx, gy, gz] of [[x0 - 1.6, 3.4, front + 0.4], [x0 + w + 0.6, 4.6, front - 1], [x0 + 3, top + 4.2, front - 2.5]]) {
+      v.box(gx, gy, gz, 0.3, 0.3, 0.3, 0xd8c4ff, true); v.box(gx + 0.08, gy + 0.3, gz + 0.08, 0.14, 0.14, 0.14, 0xb48cff, true);
+    }
+    for (const [bx, by] of [[x0 + 1.5, top + 4.5], [x0 + 4.2, top + 5.4], [x0 + 6.5, top + 4.8]]) {
+      v.box(bx, by, front - 2, 0.3, 0.2, 0.2, 0x120c14); v.box(bx - 0.4, by + 0.1, front - 2, 0.4, 0.08, 0.15, 0x120c14); v.box(bx + 0.3, by + 0.1, front - 2, 0.4, 0.08, 0.15, 0x120c14);
+    }
+  }
+  return v.build();
 }
 
 const darker = (hex) => new THREE.Color(hex).multiplyScalar(0.82).getHex();
@@ -408,7 +456,7 @@ export function buildWorld() {
     [37.6, 27, 1.1, 1], [41.4, 24, 1.2, 0],
     [40.4, 18.6, 1.0, 2], [41, 13.2, 1.1, 0], [40.6, 8, 1.0, 1], [6.8, 1.2, 0.8, 2],
   ]) tree(v, r, x, z, s, k);
-  const home = cottage(v, r, lights);
+  const home = cottageYard(v, r, lights);
   bigPumpkinStage(v, r);
   patchBorder(v, r);
   const stall = shop(v, r, lights);

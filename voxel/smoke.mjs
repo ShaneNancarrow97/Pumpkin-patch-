@@ -43,6 +43,38 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.locator("#toggle-voxel-characters").click();
   check(voxels && await page.evaluate(() => PumpkinVoxel.scene.characterStyle) === "sprites", `${name}: voxel characters switch on and off`);
   await page.locator("#sheet-close").click();
+  // Home: the Home tab steps into the parlour, and a piece bought there is placed and picked up to arrange.
+  await page.evaluate(() => { PumpkinVoxel.state().coins = 5000; });
+  await page.locator('[data-tab="home"]').click();
+  check(await page.evaluate(() => PumpkinVoxel.scene.place?.kind === "room") && await page.locator("#place-bar").isVisible(), `${name}: home opens the parlour`);
+  await page.locator('[data-hometab="decorate"]').click();
+  await page.locator('[data-decor="d01"]').click();
+  check(await page.evaluate(() => PumpkinVoxel.state().house.placed.some((p) => p.id === "d01" && p.room === "parlour")), `${name}: a bought piece is placed in the room`);
+  await page.locator("#sheet-close").click();
+  await page.locator('[data-tool="flip"]').click();
+  await page.locator('[data-tool="done"]').click();
+  check(await page.evaluate(() => PumpkinVoxel.state().house.placed.find((p) => p.id === "d01").flip) && !(await page.locator("#piece-bar").isVisible()), `${name}: flip the piece and finish`);
+  if (shots) await page.screenshot({ path: `${shots}/${name}-parlour.png` });
+  // The shop: open it, step inside, and customers come in to browse.
+  await page.evaluate(() => { PumpkinVoxel.state().stock = [4, 4, 0, 0]; });
+  await page.locator('[data-tab="shop"]').click();
+  await page.locator('[data-shoptab="shop"]').click();
+  await page.locator('[data-shopup="open"]').click();
+  await page.locator('[data-visit="shop"]').click();
+  await page.locator("#sheet-close").click();
+  await page.evaluate(() => PumpkinVoxel.advance(6));
+  await page.waitForTimeout(1500);
+  check(await page.evaluate(() => PumpkinVoxel.scene.place?.kind === "shop" && PumpkinVoxel.state().shop.customers.length > 0), `${name}: customers come into the shop`);
+  if (shots) await page.screenshot({ path: `${shots}/${name}-shopfloor.png` });
+  await page.locator("#place-back").click();
+  check(await page.evaluate(() => !PumpkinVoxel.scene.place) && await page.locator("#actions").isVisible(), `${name}: back to the patch`);
+  // The wardrobe: buy a costume and wear it.
+  await page.locator('[data-tab="wardrobe"]').click();
+  const costume = await page.locator("[data-costume]:not([disabled])").first().getAttribute("data-costume");
+  await page.locator(`[data-costume="${costume}"]`).click();
+  if (await page.locator(`[data-wear="${costume}"]`).count()) await page.locator(`[data-wear="${costume}"]`).click();
+  check(await page.evaluate((id) => Object.values(PumpkinVoxel.state().wardrobe.equipped).includes(id), costume), `${name}: buy and wear a costume`);
+  await page.locator("#sheet-close").click();
   check(errors.length === 0, `${name}: no page errors${errors.length ? " — " + errors.join(" | ") : ""}`);
   await page.close();
 }

@@ -1,26 +1,31 @@
 import * as THREE from "three";
 import atlasUrl from "../assets/sprites.png";
+import costumesUrl from "../assets/costumes.png";
 import { SPRITES } from "./sprite-meta.js";
 
-// Shane, Natalie and Skyla are voxelised from the main game's own sprites: one
-// voxel per pixel of a 120-row frame (tools/bake_sprites.py), given rounded
-// depth so they read as 3D, with the original walk and blink frames.
+// Shane, Natalie and Skyla are voxelised from the main game's own sprites, and
+// so are the costumes: one voxel per pixel of a 120-row frame
+// (tools/bake_sprites.py), given rounded depth so they read as 3D, with the
+// original walk and blink frames.
 export const PIXEL = 2.3 / 120;                     // world units per sprite pixel: 2.3 tall
 const BOX = new THREE.BoxGeometry(1, 1, 1);
 
-export function loadSprites() {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      const c = document.createElement("canvas");
-      c.width = img.width; c.height = img.height;
-      const g = c.getContext("2d", { willReadFrequently: true });
-      g.drawImage(img, 0, 0);
-      resolve(g.getImageData(0, 0, img.width, img.height));
-    };
-    img.onerror = reject;
-    img.src = atlasUrl;
-  });
+const loadPixels = (src) => new Promise((resolve, reject) => {
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement("canvas");
+    c.width = img.width; c.height = img.height;
+    const g = c.getContext("2d", { willReadFrequently: true });
+    g.drawImage(img, 0, 0);
+    resolve(g.getImageData(0, 0, img.width, img.height));
+  };
+  img.onerror = reject;
+  img.src = src;
+});
+// Both atlases' pixels: the characters' own, and the costumes'.
+export async function loadSprites() {
+  const [sprites, costumes] = await Promise.all([loadPixels(atlasUrl), loadPixels(costumesUrl)]);
+  return { sprites, costumes };
 }
 
 const hsv = (r, g, b) => {
@@ -57,8 +62,8 @@ export function recolour(who, look, r, g, b, row) {
 
 // One frame as an instanced mesh: each opaque pixel is a front half-voxel in
 // its own colour and a back half-voxel in the back colour.
-function frameMesh(pixels, f, who, look) {
-  const { data, width } = pixels, cells = [];
+function frameMesh(atlases, f, who, look) {
+  const { data, width } = atlases[f.atlas ?? "sprites"], cells = [];
   for (let y = 0; y < f.h; y++) {
     const row = [];
     for (let x = 0; x < f.w; x++) row.push(data[((f.y + y) * width + f.x + x) * 4 + 3] > 128);
@@ -88,9 +93,12 @@ function frameMesh(pixels, f, who, look) {
   return mesh;
 }
 
-// A character: all idle and walk frames built once, one shown at a time.
-export function spriteCharacter(pixels, who, look) {
-  const group = new THREE.Group(), lean = new THREE.Group(), sheet = SPRITES[who];
+// A character: all idle and walk frames built once, one shown at a time. An
+// outfit other than the original swaps in that costume's frames.
+export function spriteCharacter(pixels, who, look, outfit) {
+  const costume = outfit && !outfit.endsWith("-base") && SPRITES[outfit];
+  const group = new THREE.Group(), lean = new THREE.Group(), sheet = costume || SPRITES[who];
+  if (costume) look = undefined;
   // Lean back towards the camera so the top-down view doesn't squash them,
   // the way sprite games tilt their characters.
   lean.rotation.x = -0.36;
@@ -111,13 +119,15 @@ function showFrame(group, next) {
   if (next !== group.userData.shown) { group.userData.show(next); group.userData.shown = next; }
 }
 
-// Shane and Natalie: walking cycles the six walk frames; standing blinks now and then.
+// Shane and Natalie: walking cycles the six walk frames; standing blinks now and
+// then. Four idle frames play 0 1 2 3; the costumes with three play 0 1 2 1, as
+// in the main game.
 export function animateSprite(group, time, moving, dx = 0, phaseOffset = 0) {
   const { idle, walk, facing } = group.userData;
   if (moving && walk.length) showFrame(group, walk[Math.floor(time * 9) % walk.length]);
   else {
-    const phase = (time + phaseOffset) % 5;
-    showFrame(group, idle[phase < 2.7 ? 0 : phase < 3.35 ? 1 : phase < 3.48 ? 2 : phase < 4.05 ? 3 : 0]);
+    const phase = (time + phaseOffset) % 5, k = phase < 2.7 ? 0 : phase < 3.35 ? 1 : phase < 3.48 ? 2 : phase < 4.05 ? 3 : 0;
+    showFrame(group, idle[k === 3 && idle.length < 4 ? 1 : Math.min(k, idle.length - 1)]);
   }
   if (facing && moving && Math.abs(dx) > 0.01) group.scale.x = Math.sign(dx) === facing ? 1 : -1;
 }
