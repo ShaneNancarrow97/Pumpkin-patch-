@@ -51,3 +51,5 @@ The standalone showroom defaults to `/workspace/Pumpkin Patch - Voxel Wall Items
 - The final native thumbnail PNGs have transparent backgrounds and nonempty, unclipped silhouettes. The final occupied-height placement metadata was regenerated after the visual render; model geometry was unchanged by that adjustment.
 
 Local review outputs: `/workspace/voxel-wall-qa/voxel-wall-collection.png`, the six individual angle screenshots, desktop/phone/landscape screenshots, and `checks.json`. The playable game build and its live-room smoke checks are handled alongside the character-costume integration; the separate showroom is an art review, not a second save file or economy.
+
+The combined playable HTML also passed real catalogue purchases and wall placement at all three viewport sizes, with no page errors, horizontal overflow or external asset requests. Screenshots and `wall-checks.json` are under `/workspace/voxel-game-qa/`. A subsequent mounting-height adjustment raises premium pieces clear of bookcases; the occupied geometry bounds are checked against the bookcase and ceiling clearances.
