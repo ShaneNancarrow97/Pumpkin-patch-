@@ -1,6 +1,7 @@
 // Small shared pieces of the menus.
 import { DECOR_ART } from "../decor-meta.js";
 import { decorThumb } from "../decor.js";
+import { PREMIUM_WALL_THUMBS } from "../premium-wall-thumbs.js";
 
 export const money = (n) => "£" + Math.floor(n).toLocaleString("en-GB");
 export const $ = (id) => document.getElementById(id);
@@ -11,6 +12,7 @@ export const segmented = (name, label, options, current) =>
 
 // A piece of the original art from the decor atlas, as crisp pixel art in a thumbnail.
 export function decorIcon(id, size = 52) {
+  if (PREMIUM_WALL_THUMBS[id]) return `<span class="thumb"><img src="${PREMIUM_WALL_THUMBS[id]}" alt="" style="width:${size}px;height:${size}px;object-fit:contain"></span>`;
   const a = DECOR_ART[id];
   if (!a) return `<span class="thumb"></span>`;
   const k = Math.min(size / a.w, size / a.h);

@@ -6,6 +6,7 @@ import { DECOR_ART } from "./decor-meta.js";
 import { decorById, footprint } from "./model.js";
 import { RECIPES } from "./decor-models/index.js";
 import { buildModel, glows, mix, scale } from "./decor-models/kit.js";
+import { PREMIUM_WALL_RECIPES, premiumWallProp, premiumWallStats } from "./premium-wall-props.js";
 
 // Decor. Pieces with a recipe in decor-models/ are modelled in voxels as real
 // 3D objects, coloured from the main game's own art (decor.png); the rest are
@@ -71,11 +72,12 @@ function model(id) {
   return entry;
 }
 // For the bench: how many faces a modelled piece has.
-export const modelStats = (id) => { const m = RECIPES[id] && decorPixels ? model(id) : null; return m && { triangles: m.geometry.reduce((n, g) => n + (g ? g.index.count / 3 : 0), 0), ...m.grid }; };
+export const modelStats = (id) => { if (PREMIUM_WALL_RECIPES[id]) return premiumWallStats(id); const m = RECIPES[id] && decorPixels ? model(id) : null; return m && { triangles: m.geometry.reduce((n, g) => n + (g ? g.index.count / 3 : 0), 0), ...m.grid }; };
 
 // The voxel prop for one catalogue piece, standing on (0, 0, 0) and centred on
 // its footprint. Rugs lie flat; wall pieces hang with their back at z = 0.
 export function decorProp(id) {
+  if (PREMIUM_WALL_RECIPES[id]) return premiumWallProp(id);
   if (RECIPES[id]) {
     try {
       const m = model(id), group = voxelGroup(m.geometry, { shared: true });

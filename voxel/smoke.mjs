@@ -7,7 +7,7 @@ import { pathToFileURL } from "node:url";
 import { chromium } from "playwright";
 
 const at = process.argv.indexOf("--shots"), shots = at >= 0 ? process.argv[at + 1] : null;
-const file = pathToFileURL(path.resolve("dist/pumpkin-patch-voxel.html")).href;
+const file = process.env.GAME_URL || pathToFileURL(path.resolve("dist/pumpkin-patch-voxel.html")).href;
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined, args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
 let failed = false;
 const check = (ok, label) => { console.log(`${ok ? "ok  " : "FAIL"} ${label}`); if (!ok) failed = true; };

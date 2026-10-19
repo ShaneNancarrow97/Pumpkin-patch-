@@ -40,10 +40,14 @@
 //     for the pieces it had to shift out of the way of new stairs and doorways.
 //   fits, findSpot, placeDecor, moveDecor and sendToRoom all use the room's layout.
 // GRID and HOOKS are the little cottage's parlour (10 x 6), kept until the renderer reads roomLayout.
-import { decorById, decorCatalog, decorCategories } from "../../../src/content/catalog.mjs";
+import { decorCatalog as baseDecorCatalog, decorCategories as baseDecorCategories } from "../../../src/content/catalog.mjs";
+import { PREMIUM_WALL_CATALOG } from "../content/premium-wall-catalog.js";
 import { findRoom, findRoomStyle, freshRoomStyles, houseRooms, parlourInteriors, roomStyles } from "../../../src/content/rooms.mjs";
 import { libraryStories } from "../../../src/content/library.mjs";
 
+const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG];
+const decorById = Object.fromEntries(decorCatalog.map(item=>[item.id,item]));
+const decorCategories = baseDecorCategories.map(([id,name])=>[id,id === "all" ? `All ${decorCatalog.length}` : name]);
 export { decorById, decorCatalog, decorCategories, houseRooms, roomStyles, libraryStories };
 
 // What each level of the house costs to move on from, and how many pieces its parlour holds.
@@ -138,7 +142,7 @@ const SIZES = {
 };
 // Where a piece goes: on the floor, under the furniture (rugs) or on the back wall.
 export function footprint(id) {
-  const item = decorById[id], [w, d] = SIZES[id] ?? [1, 1];
+  const item = decorById[id], [w, d] = SIZES[id] ?? [item.wallWidth ?? 1, 1];
   return { w, d: item.wall ? 1 : d, layer: item.wall ? "wall" : item.rug ? "rug" : "floor" };
 }
 export const shelfCapacity = (id) => decorById[id]?.capacity || 0;

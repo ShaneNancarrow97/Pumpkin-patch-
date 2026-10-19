@@ -112,7 +112,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   // How high a wall piece hangs: the chandelier from the ceiling, the rest centred on the panel.
-  const hangAt = (id, height) => (id === "d04" ? WALL_H - 0.45 - height : 2.9 - height / 2);
+  const hangAt = (id, height) => (id === "d04" ? WALL_H - 0.45 - height : (decorById[id].hangHeight ?? 2.9) - height / 2);
   function addPiece(p) {
     const fp = footprint(p.id), o = ORIGIN.room, prop = decorProp(p.id), native = prop.userData.native === true;
     const g = new THREE.Group(), standing = fp.layer === "floor", lean = new THREE.Group(), height = prop.userData.height;

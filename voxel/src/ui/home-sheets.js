@@ -127,7 +127,7 @@ export function homeSheets(ui) {
     const q = search.trim().toLowerCase();
     const items = M.decorCatalog.filter((it) => (category === "all" || it.category === category) && (!q || (it.name + " " + it.description).toLowerCase().includes(q)));
     const chips = `<div class="chips" role="group" aria-label="Catalogue sections">${M.decorCategories.map(([id, name]) => `<button class="chip" data-cat="${id}" aria-pressed="${category === id}">${name}</button>`).join("")}</div>`;
-    const find = `<label class="search"><span class="sr">Search the catalogue</span><input id="decor-search" type="search" placeholder="Search 50 treasures" value="${search.replace(/"/g, "&quot;")}"></label>`;
+    const find = `<label class="search"><span class="sr">Search the catalogue</span><input id="decor-search" type="search" placeholder="Search ${M.decorCatalog.length} treasures" value="${search.replace(/"/g, "&quot;")}"></label>`;
     return `<p>Everything here is one of a kind. Buy it once, then place it in any room. Spooky pieces make the house more haunted.</p>${find}${chips}` + items.map((it) => {
       const owned = s.house.owned.includes(it.id);
       const icon = it.category === "wallpaper" ? `<span class="thumb"><span class="paper" style="background-color:${it.color}"></span></span>` : decorIcon(it.id);
@@ -145,7 +145,7 @@ export function homeSheets(ui) {
         <button class="button gold wide" data-house ${short ? "disabled" : ""}>Grow the house · ${money(level.cost)}${short ? `<small>need ${money(level.cost - s.coins)}</small>` : ""}</button>`
       : `${plan(s, h.level, `The ${level.name}`)}<p>${level.text}</p>`;
     return `<article class="card hero">${houseIcon}<div><p class="eyebrow">Level ${h.level + 1} of 4</p><h3>${level.name}</h3><p>${byRoom}</p></div></article>
-      <div class="stats"><div><b>${M.spookyScore(s)}</b><span>haunting points</span></div><div><b>${h.owned.length}/50</b><span>treasures collected</span></div><div><b>${M.shelvedBooks(s)}</b><span>books on shelves</span></div></div>
+      <div class="stats"><div><b>${M.spookyScore(s)}</b><span>haunting points</span></div><div><b>${h.owned.length}/${M.decorCatalog.length}</b><span>treasures collected</span></div><div><b>${M.shelvedBooks(s)}</b><span>books on shelves</span></div></div>
       ${grow}
       <p class="small">Haunting points: 4 for each level of the house, plus every spooky piece, wallpaper and shelved book.</p>`;
   }
