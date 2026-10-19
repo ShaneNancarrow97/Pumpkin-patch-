@@ -80,7 +80,7 @@ function plan(s, level, label) {
 
 export function homeSheets(ui) {
   let tab = "rooms", category = "all", search = "";
-  const tabs = () => segmented("hometab", "Home sections", [["rooms", "Rooms"], ["decorate", "Decorate"], ["house", "House"]], tab);
+  const tabs = () => segmented("hometab", "Home sections", [["rooms", "Rooms"], ["decorate", "Furnish"], ["house", "Expand"]], tab);
   const here = () => ui.state.house.activeRoom;
 
   function rooms(s) {
@@ -127,8 +127,8 @@ export function homeSheets(ui) {
     const q = search.trim().toLowerCase();
     const items = M.decorCatalog.filter((it) => (category === "all" || it.category === category) && (!q || (it.name + " " + it.description).toLowerCase().includes(q)));
     const chips = `<div class="chips" role="group" aria-label="Catalogue sections">${M.decorCategories.map(([id, name]) => `<button class="chip" data-cat="${id}" aria-pressed="${category === id}">${name}</button>`).join("")}</div>`;
-    const find = `<label class="search"><span class="sr">Search the catalogue</span><input id="decor-search" type="search" placeholder="Search ${M.decorCatalog.length} treasures" value="${search.replace(/"/g, "&quot;")}"></label>`;
-    return `<p>Everything here is one of a kind. Buy it once, then place it in any room. Spooky pieces make the house more haunted.</p>${find}${chips}` + items.map((it) => {
+    const find = `<label class="search"><span class="sr">Search the catalogue</span><input id="decor-search" type="search" placeholder="Search ${M.decorCatalog.length} treasures" value="${search.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;")}"></label>`;
+    return `<div class="catalogue-heading"><span>${M.roomPieces(s, here()).length}/${M.roomCapacity(s, here())} pieces in the ${roomName(here()).toLowerCase()}</span><span>Buy once · keep forever</span></div>${find}${chips}` + items.map((it) => {
       const owned = s.house.owned.includes(it.id);
       const icon = it.category === "wallpaper" ? `<span class="thumb"><span class="paper" style="background-color:${it.color}"></span></span>` : decorIcon(it.id);
       return `<article class="card decor${owned ? " owned" : ""}">${icon}<div><h3>${it.name}</h3><p>${it.description}</p>${spooky(it.spooky)}${it.capacity ? `<p class="small">Holds ${it.capacity} books</p>` : ""}</div>${statusButton(s, it)}</article>`;
@@ -162,53 +162,96 @@ export function homeSheets(ui) {
       <h3 class="section">Waiting in the pile</h3>${pile.map((id) => row(id, "shelfbook", "Put up")).join("") || `<p>Every book you own is on a shelf. Buy more in Home › Decorate.</p>`}`;
   }
 
-  // Selecting and moving pieces inside a room.
+  // Only the selected piece gets tools. Secondary actions stay behind More.
+  let more = false, lastTools = "";
   const tools = {
     selected: null, moving: false,
     select(instance) {
-      tools.selected = instance; tools.moving = false;
-      ui.scene.selectPiece(instance); ui.scene.showGrid(!!instance);
+      tools.selected = instance; tools.moving = false; more = false; lastTools = "";
+      ui.scene.selectPiece(instance); ui.scene.showGrid(false);
+      document.body.classList.toggle("placing-piece", !!instance);
+      if (instance) ui.closeSheet();
       tools.render();
     },
     render() {
       const bar = $("piece-bar"), s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
       if (!p || ui.scene.place?.kind !== "room") { bar.hidden = true; return; }
-      const item = M.decorById[p.id], others = M.houseRooms.filter((r) => r.id !== p.room && M.roomUnlocked(s, r.id));
+      const item = M.decorById[p.id], wall = M.footprint(p.id).layer === "wall";
+      const others = M.houseRooms.filter((r) => r.id !== p.room && M.roomUnlocked(s, r.id));
+      const icon = (action, symbol, label) => `<button class="icon-button tool-icon" data-tool="${action}" aria-label="${label}" title="${label}">${symbol}</button>`;
+      const angle = Math.round(M.decorAngle(p.rotation));
+      const rotation = wall ? `<div class="wall-tools" role="group" aria-label="Hang on a wall">${["left", "back", "right"].map((side) => `<button class="button wall-tool" data-wall="${side}" aria-pressed="${(p.wall ?? "back") === side}">${side[0].toUpperCase() + side.slice(1)}</button>`).join("")}</div>`
+        : `<div class="rotation-tools" role="group" aria-label="Rotate furniture">${icon("rotate-left", "↶", "Rotate anticlockwise 15 degrees")}<button class="rotation-dial" role="slider" tabindex="0" aria-label="Furniture rotation" aria-valuemin="0" aria-valuemax="359" aria-valuenow="${angle}" style="--angle:${angle}deg"><span>${angle}°</span></button>${icon("rotate-right", "↷", "Rotate clockwise 15 degrees")}</div>`;
+      const html = `<div class="piece-heading"><div class="piece-name">${decorIcon(p.id, 40)}<span><b>${item.name}</b><small>${tools.moving ? "Tap a clear spot · arrows fine-tune" : wall ? "Choose a wall or move along it" : "Drag the dial · two fingers to rotate"}</small></span></div><button class="button gold tool-done" data-tool="done">Done</button></div>
+        <div class="piece-actions"><button class="button tool-move ${tools.moving ? "gold" : ""}" data-tool="move" aria-pressed="${tools.moving}">Move</button>${rotation}<button class="icon-button tool-icon" data-tool="more" aria-label="More furniture actions" aria-expanded="${more}">•••</button></div>
+        ${tools.moving ? `<div class="nudge-tools" role="group" aria-label="Fine-tune position">${icon("left", "←", "Move left")}${icon("back", "↑", "Move towards back wall")}${icon("front", "↓", "Move towards front")}${icon("right", "→", "Move right")}</div>` : ""}
+        ${more ? `<div class="piece-more" role="group" aria-label="More furniture actions"><button class="button" data-tool="flip">Mirror</button>${M.shelfCapacity(p.id) ? `<button class="button" data-tool="books">Books · ${p.books.length}/${M.shelfCapacity(p.id)}</button>` : ""}${others.map((r) => `<button class="button" data-room="${r.id}">To ${r.name.toLowerCase()}</button>`).join("")}<button class="button" data-tool="store">Put in storage</button></div>` : ""}`;
       bar.hidden = false;
-      bar.innerHTML = `<div class="piece-name">${decorIcon(p.id, 40)}<span><b>${item.name}</b><small>${tools.moving ? "Tap where it should go" : "Arrow keys nudge it"}</small></span></div>
-        <div class="piece-actions"><button class="button ${tools.moving ? "gold" : ""}" data-tool="move" aria-pressed="${tools.moving}">Move</button><button class="button" data-tool="flip">Flip</button>
-        ${M.shelfCapacity(p.id) ? `<button class="button" data-tool="books">Books ${p.books.length}/${M.shelfCapacity(p.id)}</button>` : ""}
-        ${others.length ? `<button class="button" data-tool="room">To the ${roomName(others[0].id)}</button>` : ""}
-        <button class="button" data-tool="store">Put away</button><button class="icon-button close" data-tool="done" aria-label="Done">×</button></div>`;
-      bar.querySelectorAll("[data-tool]").forEach((b) => (b.onclick = () => tools.act(b.dataset.tool, others[0]?.id)));
+      if (html === lastTools) return;
+      bar.innerHTML = html; lastTools = html;
+      bar.querySelectorAll("[data-tool]").forEach((b) => b.onclick = () => tools.act(b.dataset.tool));
+      bar.querySelectorAll("[data-room]").forEach((b) => b.onclick = () => tools.act("room", b.dataset.room));
+      bar.querySelectorAll("[data-wall]").forEach((b) => b.onclick = () => {
+        if (M.setDecorWall(s, p.instance, b.dataset.wall)) { ui.scene.refreshRoom(); ui.save(); tools.render(); }
+        else ui.notice("No clear space on that wall. Try moving another piece.");
+      });
+      const dial = bar.querySelector(".rotation-dial");
+      if (dial) {
+        let turning = null;
+        const at = (e) => { const r = dial.getBoundingClientRect(); return Math.atan2(e.clientY - r.top - r.height / 2, e.clientX - r.left - r.width / 2) * 180 / Math.PI; };
+        dial.onpointerdown = (e) => { e.preventDefault(); dial.setPointerCapture(e.pointerId); turning = at(e); };
+        dial.onpointermove = (e) => {
+          if (turning === null) return;
+          const next = at(e), delta = ((next - turning + 540) % 360) - 180; turning = next;
+          const ok = tools.rotate(delta, false); dial.classList.toggle("blocked", !ok);
+          const value = Math.round(M.decorAngle(p.rotation)); dial.style.setProperty("--angle", value + "deg"); dial.setAttribute("aria-valuenow", value); dial.querySelector("span").textContent = value + "°";
+        };
+        dial.onpointerup = dial.onpointercancel = () => { turning = null; lastTools = ""; tools.render(); ui.save(); };
+        dial.onkeydown = (e) => { if (["ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp", "Home"].includes(e.key)) { e.preventDefault(); e.stopPropagation(); tools.rotate(e.key === "Home" ? -M.decorAngle(p.rotation) : ["ArrowLeft", "ArrowDown"].includes(e.key) ? -15 : 15); bar.querySelector(".rotation-dial")?.focus(); } };
+      }
+    },
+    rotate(delta, redraw = true) {
+      const p = ui.state.house.placed.find((q) => q.instance === tools.selected);
+      if (!p || !M.rotateDecor(ui.state, p.instance, M.decorAngle(p.rotation) + delta)) return false;
+      ui.scene.rotatePiece(p.instance);
+      if (redraw) { tools.render(); ui.save(); }
+      return true;
     },
     act(action, otherRoom) {
       const s = ui.state, id = tools.selected;
-      if (action === "move") { tools.moving = !tools.moving; tools.render(); return; }
+      if (action === "move") { tools.moving = !tools.moving; more = false; ui.scene.showGrid(tools.moving); tools.render(); return; }
+      if (action === "more") { more = !more; tools.render(); return; }
+      const steps = { left: [-1, 0], right: [1, 0], back: [0, -1], front: [0, 1] };
+      if (steps[action]) return tools.nudge(...steps[action]);
+      if (action.startsWith("rotate-")) { if (!tools.rotate(action === "rotate-left" ? -15 : 15)) ui.notice("Leave a little more space to turn this piece."); return; }
       if (action === "flip" && M.flipDecor(s, id)) ui.scene.refreshRoom();
-      if (action === "books") { shelfInstance = id; ui.openSheet("shelf"); }
+      if (action === "books") { shelfInstance = id; tools.select(null); ui.openSheet("shelf"); }
       if (action === "room" && otherRoom) {
-        if (M.sendToRoom(s, id, otherRoom)) { ui.notice(`Carried to the ${roomName(otherRoom)}.`); tools.select(null); ui.scene.refreshRoom(); }
-        else ui.notice(`There’s no room for it in the ${roomName(otherRoom)}.`);
+        if (M.sendToRoom(s, id, otherRoom)) { ui.notice(`Carried to the ${roomName(otherRoom).toLowerCase()}.`); tools.select(null); ui.scene.refreshRoom(); ui.save(); }
+        else ui.notice(`There’s no room for it in the ${roomName(otherRoom).toLowerCase()}.`);
         return;
       }
-      if (action === "store" && M.removeDecor(s, id)) { ui.notice("Put away. Place it again from Home › Decorate."); tools.select(null); ui.scene.refreshRoom(); ui.draw(); return; }
-      if (action === "done") { tools.select(null); return; }
+      if (action === "store" && M.removeDecor(s, id)) { ui.notice("In storage. Place it again from Decorate."); tools.select(null); ui.scene.refreshRoom(); ui.save(); return; }
+      if (action === "done") { tools.select(null); ui.save(); return; }
       tools.render(); ui.draw();
     },
-    // A tap on the floor or a wall hook while a piece is chosen.
     tapCell(cell) {
       const s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
       if (!p) return;
       if (!tools.moving) { tools.select(null); return; }
-      const room = M.roomLayout(s, p.room) ?? M.GRID, fp = M.footprint(p.id);
-      const x = Math.max(0, Math.min(room.w - fp.w, cell.x - Math.floor((fp.w - 1) / 2))), z = fp.layer === "wall" ? 0 : Math.max(0, Math.min(room.d - fp.d, cell.z - Math.floor((fp.d - 1) / 2)));
-      if (M.moveDecor(s, p.instance, x, z)) { ui.tone(600); tools.moving = false; ui.scene.refreshRoom(); tools.render(); }
-      else { ui.scene.previewPiece(p.instance, x, z, false); ui.notice("It doesn’t fit there."); }
+      const room = M.roomLayout(s, p.room) ?? M.GRID, fp = M.pieceFootprint(p);
+      const wall = cell.wall ?? p.wall ?? "back";
+      const limit = fp.layer === "wall" && wall !== "back" ? room.d : room.w;
+      const x = Math.max(0, Math.min(limit - fp.w, cell.x - Math.floor((fp.w - 1) / 2))), z = fp.layer === "wall" ? 0 : Math.max(0, Math.min(room.d - fp.d, cell.z - Math.floor((fp.d - 1) / 2)));
+      if (M.fits(s, p.room, p.id, x, z, p.instance, { wall })) {
+        if (fp.layer === "wall") p.wall = wall;
+        M.moveDecor(s, p.instance, x, z); ui.tone(600); tools.select(null); ui.scene.refreshRoom(); ui.save();
+      }
+      else { ui.scene.previewPiece(p.instance, x, z, false); ui.notice("Keep this spot clear for furniture, stairs and doors."); }
     },
     nudge(dx, dz) {
       const s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
-      if (p && M.moveDecor(s, p.instance, p.x + dx, p.z + dz)) ui.scene.refreshRoom();
+      if (p && M.moveDecor(s, p.instance, p.x + dx, M.footprint(p.id).layer === "wall" ? 0 : p.z + dz)) { ui.scene.refreshRoom(); ui.save(); }
     },
   };
 
@@ -221,7 +264,7 @@ export function homeSheets(ui) {
       bind(body) {
         const s = ui.state, refresh = () => { ui.scene.refreshRoom(); ui.draw(); };
         body.querySelectorAll("[data-hometab]").forEach((b) => (b.onclick = () => { tab = b.dataset.hometab; ui.draw(); }));
-        body.querySelectorAll("[data-go]").forEach((b) => (b.onclick = () => { s.house.activeRoom = b.dataset.go; tools.select(null); ui.enterRoom(b.dataset.go); ui.draw(); }));
+        body.querySelectorAll("[data-go]").forEach((b) => (b.onclick = () => { s.house.activeRoom = b.dataset.go; tools.select(null); ui.enterRoom(b.dataset.go); ui.closeSheet(); }));
         body.querySelectorAll("[data-style]").forEach((b) => (b.onclick = () => { if (M.setRoomStyle(s, b.dataset.style)) refresh(); }));
         body.querySelectorAll("[data-buystyle]").forEach((b) => (b.onclick = () => { if (M.buyRoomStyle(s, b.dataset.buystyle)) { ui.tone(820); ui.notice("A new look for the " + roomName(here()) + "."); refresh(); } }));
         body.querySelectorAll("[data-paper]").forEach((b) => (b.onclick = () => { const id = b.dataset.paper === "none" ? null : b.dataset.paper; if (M.applyWallpaper(s, here(), id)) { ui.tone(600); refresh(); } }));

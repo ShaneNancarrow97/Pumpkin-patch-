@@ -6,4 +6,4 @@ export const PREMIUM_WALL_CATALOG = [
   { id: "recipe-teapot-shelf", name: "Pumpkin tea & recipe shelf", price: 5000, description: "Gilt recipe books beside a copper pumpkin teapot. A decorative set.", wallWidth: 3, spooky: 2 },
   { id: "crescent-mirror", name: "Crescent looking glass", price: 8000, description: "A sculpted golden moon around softly tinted glass.", wallWidth: 2, spooky: 3 },
   { id: "haunted-manor-painting", name: "The manor after midnight", price: 11000, description: "A tiny moonlit manor in a gilded frame, lit by two candles.", wallWidth: 3, spooky: 4 },
-].map(item=>Object.freeze({...item,category:"decor",wall:true,rug:false,hangHeight:3.65,collection:"premium-walls"}));
+].map(item=>Object.freeze({...item,category:"decor",wall:true,rug:false,hangHeight:4.05,collection:"premium-walls"}));

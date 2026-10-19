@@ -1,5 +1,6 @@
 // Settings: sound, a tea break, backups, graphics and starting over.
 import * as M from "../model.js";
+import { MUSIC_TRACKS } from "./audio.js";
 
 export function settingsSheet(ui) {
   let confirmReset = false, restoreText = "", restoreError = "";
@@ -10,8 +11,9 @@ export function settingsSheet(ui) {
       opened() { confirmReset = false; restoreError = ""; },
       body() {
         const p = ui.prefs, s = ui.state;
-        return toggle("toggle-music", "Music", "The Moonlit Waltz, from the original game", p.music) +
+        return toggle("toggle-music", "Music", "Eight offline MIDI tracks · four you supplied, four original", p.music) +
           `<div class="setting"><span>Music volume</span><input id="music-volume" type="range" min="0" max="1" step="0.05" value="${p.musicVolume}" aria-label="Music volume"></div>` +
+          `<label class="setting"><span>Now playing<small>${(MUSIC_TRACKS.find((t) => t.id === p.musicTrack) ?? MUSIC_TRACKS[0]).credit}</small></span><select id="music-track" aria-label="Music track">${MUSIC_TRACKS.map((t) => `<option value="${t.id}" ${t.id === (p.musicTrack ?? "lantern") ? "selected" : ""}>${t.name}</option>`).join("")}</select></label>` +
           toggle("toggle-sound", "Sound effects", "Soft tones for planting, picking and sales", p.sound) +
           toggle("toggle-pause", "Tea break", "Pause the farm. Nothing grows and nobody visits.", !!s.paused) +
           toggle("toggle-glow", "Glow", "Bloom on lanterns, windows and ripe pumpkins", p.glow) +
@@ -27,6 +29,7 @@ export function settingsSheet(ui) {
       bind(body) {
         const p = ui.prefs, s = ui.state, flip = (key, after) => () => { p[key] = !p[key]; after?.(p[key]); ui.savePrefs(); ui.draw(); };
         body.querySelector("#toggle-music").onclick = flip("music", () => ui.audio.sync());
+        body.querySelector("#music-track").onchange = (e) => { ui.audio.setTrack(e.target.value); ui.savePrefs(); ui.draw(); };
         body.querySelector("#music-volume").oninput = (e) => { ui.audio.setVolume(+e.target.value); ui.savePrefs(); };
         body.querySelector("#toggle-sound").onclick = flip("sound");
         body.querySelector("#toggle-pause").onclick = () => { s.paused = !s.paused; ui.notice(s.paused ? "Tea break. The farm will wait for you." : "Back to work!"); ui.draw(); };

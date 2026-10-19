@@ -42,10 +42,11 @@
 // GRID and HOOKS are the little cottage's parlour (10 x 6), kept until the renderer reads roomLayout.
 import { decorCatalog as baseDecorCatalog, decorCategories as baseDecorCategories } from "../../../src/content/catalog.mjs";
 import { PREMIUM_WALL_CATALOG } from "../content/premium-wall-catalog.js";
+import { PREMIUM_FURNITURE_CATALOG } from "../content/premium-furniture-catalog.js";
 import { findRoom, findRoomStyle, freshRoomStyles, houseRooms, parlourInteriors, roomStyles } from "../../../src/content/rooms.mjs";
 import { libraryStories } from "../../../src/content/library.mjs";
 
-const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG];
+const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG, ...PREMIUM_FURNITURE_CATALOG];
 const decorById = Object.fromEntries(decorCatalog.map(item=>[item.id,item]));
 const decorCategories = baseDecorCategories.map(([id,name])=>[id,id === "all" ? `All ${decorCatalog.length}` : name]);
 export { decorById, decorCatalog, decorCategories, houseRooms, roomStyles, libraryStories };
@@ -142,7 +143,7 @@ const SIZES = {
 };
 // Where a piece goes: on the floor, under the furniture (rugs) or on the back wall.
 export function footprint(id) {
-  const item = decorById[id], [w, d] = SIZES[id] ?? [item.wallWidth ?? 1, 1];
+  const item = decorById[id], [w, d] = SIZES[id] ?? item.footprint ?? [item.wallWidth ?? 1, 1];
   return { w, d: item.wall ? 1 : d, layer: item.wall ? "wall" : item.rug ? "rug" : "floor" };
 }
 export const shelfCapacity = (id) => decorById[id]?.capacity || 0;
@@ -166,24 +167,63 @@ export function roomStyle(s, id) {
   return id === "parlour" && (!chosen || chosen === "house-default") ? parlourInteriors[s.house.level] : findRoomStyle(chosen) ?? findRoomStyle(findRoom(id).baseStyle);
 }
 
+// Rotated floor pieces use their enclosing footprint; side-wall coordinates run
+// along that wall, so existing back-wall saves retain exactly their positions.
+export const decorAngle = (n) => Number.isFinite(n) ? ((n % 360) + 360) % 360 : 0;
+export function pieceFootprint(p) {
+  const fp = footprint(p.id);
+  if (fp.layer === "wall") return fp;
+  const a = decorAngle(p.rotation) * Math.PI / 180, c = Math.abs(Math.cos(a)), s = Math.abs(Math.sin(a));
+  return { ...fp, w: +(fp.w * c + fp.d * s).toFixed(6), d: +(fp.w * s + fp.d * c).toFixed(6) };
+}
+const surface = (p) => ["left", "right"].includes(p.wall) ? p.wall : "back";
 function overlaps(a, b) {
-  const fa = footprint(a.id), fb = footprint(b.id);
-  if (fa.layer !== fb.layer) return false;
-  return a.x < b.x + fb.w && b.x < a.x + fa.w && (fa.layer === "wall" || (a.z < b.z + fb.d && b.z < a.z + fa.d));
+  const fa = pieceFootprint(a), fb = pieceFootprint(b);
+  if (fa.layer !== fb.layer || (fa.layer === "wall" && surface(a) !== surface(b))) return false;
+  return a.x < b.x + fb.w - 1e-6 && b.x < a.x + fa.w - 1e-6 && (fa.layer === "wall" || (a.z < b.z + fb.d - 1e-6 && b.z < a.z + fa.d - 1e-6));
 }
-// Whether a piece fits at x, z in an open room: on its floor and off the stairs
-// and thresholds, or on the back wall's hooks, without overlapping another piece.
-export function fits(s, room, id, x, z, ignore) {
-  const L = roomLayout(s, room), f = footprint(id);
-  if (!L || !Number.isInteger(x) || !Number.isInteger(z) || x < 0 || x + f.w > L.w) return false;
-  if (f.layer === "wall" ? z !== 0 || x < L.hooks.from || x + f.w > L.hooks.to : z < 0 || z + f.d > L.d || L.blocked.some((c) => c.x >= x && c.x < x + f.w && c.z >= z && c.z < z + f.d)) return false;
-  return !roomPieces(s, room).some((p) => p.instance !== ignore && overlaps({ id, x, z }, p));
+export function fits(s, room, id, x, z, ignore, options) {
+  if (!decorById[id]) return false;
+  const existing = s.house.placed.find((p) => p.instance === ignore), candidate = { ...existing, ...options, id, x, z };
+  const L = roomLayout(s, room), f = pieceFootprint(candidate), wall = surface(candidate);
+  if (!L || !Number.isFinite(x) || !Number.isFinite(z) || x < -1e-6) return false;
+  if (f.layer === "wall") {
+    if (z !== 0) return false;
+    if (wall === "back") { if (x < L.hooks.from || x + f.w > L.hooks.to + 1e-6) return false; }
+    else {
+      if (x < 0.5 || x + f.w > L.d - 0.5 + 1e-6) return false;
+      if (L.doors.some((dr) => dr.wall === wall && x < dr.at + dr.width + 0.2 && x + f.w > dr.at - 0.2)) return false;
+      if (L.stairs.some((st) => st.wall === wall && x < st.z + st.d && x + f.w > st.z)) return false;
+      // The kitchen shell owns its two jar shelves; keep user art clear of them.
+      if (room === "kitchen" && x < 5.2 && x + f.w > 0.8) return false;
+      const style = roomStyle(s, room).id;
+      if (["parlour-crooked", "parlour-manor"].includes(style) && !L.doors.some((dr) => dr.wall === wall) && !L.stairs.some((st) => st.wall === wall) && x < 3.4 && x + f.w > 2.6) return false;
+    }
+  } else if (x + f.w > L.w + 1e-6 || z < -1e-6 || z + f.d > L.d + 1e-6 || L.blocked.some((c) => c.x < x + f.w - 1e-6 && c.x + 1 > x + 1e-6 && c.z < z + f.d - 1e-6 && c.z + 1 > z + 1e-6)) return false;
+  return !roomPieces(s, room).some((p) => p.instance !== ignore && overlaps(candidate, p));
 }
-// The first free spot, scanning from the back wall forwards.
-export function findSpot(s, room, id, ignore) {
-  const L = roomLayout(s, room);
-  if (L) for (let z = 0; z < L.d; z++) for (let x = 0; x < L.w; x++) if (fits(s, room, id, x, z, ignore)) return { x, z };
+export function findSpot(s, room, id, ignore, options) {
+  const L = roomLayout(s, room), existing = s.house.placed.find((p) => p.instance === ignore), wall = surface({ ...existing, ...options });
+  const limit = footprint(id).layer === "wall" && wall !== "back" ? L?.d : L?.w;
+  const step = footprint(id).layer === "wall" && wall !== "back" ? 0.5 : 1;
+  if (L) for (let z = 0; z < L.d; z++) for (let x = 0; x < limit; x += step) if (fits(s, room, id, x, z, ignore, options)) return { x, z };
   return null;
+}
+// Rotation keeps the centre fixed, and never commits a collision or clips stairs.
+export function rotateDecor(s, instance, degrees) {
+  const p = s.house.placed.find((q) => q.instance === instance);
+  if (!p || s.paused || !Number.isFinite(degrees) || footprint(p.id).layer === "wall") return false;
+  const before = pieceFootprint(p), rotation = decorAngle(degrees), after = pieceFootprint({ ...p, rotation });
+  const x = +(p.x + (before.w - after.w) / 2).toFixed(6), z = +(p.z + (before.d - after.d) / 2).toFixed(6);
+  if (!fits(s, p.room, p.id, x, z, instance, { rotation })) return false;
+  Object.assign(p, { x, z, rotation }); return true;
+}
+export function setDecorWall(s, instance, wall) {
+  const p = s.house.placed.find((q) => q.instance === instance);
+  if (!p || s.paused || footprint(p.id).layer !== "wall" || !["back", "left", "right"].includes(wall)) return false;
+  const spot = fits(s, p.room, p.id, p.x, 0, instance, { wall }) ? { x: p.x, z: 0 } : findSpot(s, p.room, p.id, instance, { wall });
+  if (!spot) return false;
+  Object.assign(p, spot, { wall }); return true;
 }
 
 export function buyDecor(s, id) {
@@ -234,7 +274,7 @@ export function moveDecor(s, instance, x, z) {
 export function sendToRoom(s, instance, room) {
   const p = s.house.placed.find((q) => q.instance === instance);
   if (!p || p.room === room || !roomUnlocked(s, room) || roomPieces(s, room).length >= roomCapacity(s, room)) return false;
-  const spot = findSpot(s, room, p.id);
+  const spot = findSpot(s, room, p.id, undefined, { rotation: p.rotation, wall: p.wall });
   if (!spot) return false;
   Object.assign(p, { room, x: spot.x, z: spot.z });
   return true;
@@ -322,18 +362,18 @@ export function restoreHouse(raw) {
     used.add(p.id);
     const books = (Array.isArray(p.books) ? p.books : []).filter((b) => s.house.owned.includes(b) && decorById[b]?.category === "books" && !booked.has(b)).slice(0, shelfCapacity(p.id));
     books.forEach((b) => booked.add(b));
-    s.house.placed.push({ ...placedPiece(typeof p.instance === "string" ? p.instance : "piece-r" + s.house.placed.length, p.id, p.room, x, z, books), flip: !!p.flip });
+    s.house.placed.push({ ...placedPiece(typeof p.instance === "string" ? p.instance : "piece-r" + s.house.placed.length, p.id, p.room, x, z, books), flip: !!p.flip, ...(Number.isFinite(p.rotation) ? { rotation: decorAngle(p.rotation) } : {}), ...(["left", "right"].includes(p.wall) ? { wall: p.wall } : {}) });
   };
   const roomFor = (p) => roomPieces(s, p.room).length < roomCapacity(s, p.room);
   for (const p of Array.isArray(raw.placed) ? raw.placed : []) {
     const item = decorById[p?.id];
     if (!item || !s.house.owned.includes(p.id) || used.has(p.id) || !known(p.room) || ["books", "wallpaper"].includes(item.category) || !roomFor(p)) continue;
-    if (fits(s, p.room, p.id, p.x, p.z)) keep(p, p.x, p.z);
+    if (fits(s, p.room, p.id, p.x, p.z, undefined, { rotation: p.rotation, wall: p.wall })) keep(p, p.x, p.z);
     else later.push(p);
   }
   // Out-of-place pieces go after the rest, so they never take a spot a well-placed piece holds.
   for (const p of later) {
-    const spot = !used.has(p.id) && roomFor(p) && findSpot(s, p.room, p.id);
+    const spot = !used.has(p.id) && roomFor(p) && findSpot(s, p.room, p.id, undefined, { rotation: p.rotation, wall: p.wall });
     if (spot) keep(p, spot.x, spot.z);
   }
   s.house.nextInstance = Number.isSafeInteger(raw.nextInstance) ? Math.max(raw.nextInstance, s.house.placed.length) : s.house.placed.length + 1;

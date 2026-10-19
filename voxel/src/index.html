@@ -16,8 +16,10 @@
   <div class="hud-stats" role="group" aria-label="Farm statistics">
     <div class="hud-stat"><span class="coin-icon" aria-hidden="true"></span><span><small>Coins</small><strong id="coins">£40</strong></span></div>
     <div class="hud-stat"><span class="crate-icon" aria-hidden="true"></span><span><small>Stock</small><strong id="stock">0</strong></span></div>
-    <div class="hud-stat"><span class="ghost-icon" aria-hidden="true"></span><span><small>Visitors</small><strong id="sold">0</strong></span></div>
+    <div class="hud-stat hud-visitors"><span class="ghost-icon" aria-hidden="true"></span><span><small>Visitors</small><strong id="sold">0</strong></span></div>
   </div>
+  <button class="level-chip" id="open-levels" aria-label="Level 1 · View rewards"><span class="level-orbit" aria-hidden="true">☾</span><span><small>Level</small><strong id="level-number">1</strong></span></button>
+  <button class="icon-button fullscreen-button" id="fullscreen" aria-label="Enter fullscreen" aria-pressed="false"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button>
   <button class="icon-button" id="open-settings" aria-label="Settings"><span class="gear-icon" aria-hidden="true"></span></button>
   <div class="hud-level" id="hud-level"><span class="sr">Patch level: </span><span class="sr" id="level-name">Little seed</span><i><b id="level-bar"></b></i></div>
 </header>
@@ -31,10 +33,10 @@
 
 <div class="place-bar" id="place-bar" hidden>
   <button class="button" id="place-back" aria-label="Back to the patch"><span class="ico i-patch" aria-hidden="true"></span><span class="place-back-text">Back to the patch</span></button>
-  <h2 id="place-title"></h2>
+  <button class="room-chip" id="place-rooms" aria-label="Choose a room"><span id="place-title"></span><span aria-hidden="true">⌄</span></button>
   <button class="button gold" id="place-decorate">Decorate</button>
 </div>
-<div class="piece-bar" id="piece-bar" hidden></div>
+<div class="piece-bar" id="piece-bar" role="region" aria-label="Selected furniture controls" hidden></div>
 
 <div class="actions" id="actions">
   <button class="action" id="plant-all"><span class="ico i-plant" aria-hidden="true"></span>Plant <b id="plant-count">6</b></button>
@@ -61,6 +63,7 @@
   </div>
 </section>
 
+<section id="level-celebration" class="level-celebration" role="dialog" aria-modal="true" aria-labelledby="level-celebration-title" hidden></section>
 <script>/* @build:script */</script>
 </body>
 </html>

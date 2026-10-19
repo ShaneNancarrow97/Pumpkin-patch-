@@ -50,6 +50,15 @@ export function collectionSheets(ui) {
       `<div class="stats"><div><b>${s.harvested}</b><span>pumpkins picked</span></div><div><b>${s.sold}</b><span>happy visitors</span></div><div><b>${money(s.earned)}</b><span>earned in total</span></div><div><b>${s.streak.best}</b><span>best harvest streak</span></div></div>`;
   }
 
+  function levels(s) {
+    const current = M.patchLevel(s);
+    return `<p>Earn from your patch to grow your reputation. Level bonus coins do not count towards another level. Rewards are granted automatically; already-owned treasures become bonus coins.</p>` + M.LEVELS.map((l) => {
+      const reached = l.level <= current.level, active = l.level === current.level;
+      const rewards = l.rewards.map((r) => r.kind === "coins" ? money(r.amount) + " coins" : r.kind === "decor" ? M.decorById[r.id].name : r.kind === "costume" ? M.costumeById[r.id].name : r.name + " · one tier");
+      return `<article class="level-roadmap ${active ? "current" : ""}"><h3>${reached ? "✓ " : ""}Level ${l.level} · ${l.name}</h3><p class="small">${l.at ? money(l.at) + " earned" : "Where our story begins"}${active ? " · You’re here" : ""}</p>${rewards.length ? `<p>${rewards.join(" · ")}</p>` : ""}${active && current.next ? `<div class="bar"><i style="width:${current.progress * 100}%"></i></div><p class="small">${money(current.next.at - current.xp)} to the next level</p>` : ""}</article>`;
+    }).join("");
+  }
+
   function library(s) {
     const books = M.decorCatalog.filter((it) => it.category === "books");
     return `<p>Every book you buy can be read here. We remember the page you got to.</p>` + books.map((b) => {
@@ -89,11 +98,11 @@ export function collectionSheets(ui) {
       },
     },
     journal: {
-      eyebrow: "The neighbourhood after dark", title: () => ({ favours: "Midnight favours", scrapbook: "Our little scrapbook", library: "Our haunted library" })[journalTab],
+      eyebrow: "The neighbourhood after dark", title: () => ({ favours: "Midnight favours", scrapbook: "Our little scrapbook", library: "Our haunted library", levels: "Level rewards" })[journalTab],
       setTab(t) { journalTab = t; },
       body() {
         const s = ui.state, ready = M.claimable(s).length;
-        return segmented("jtab", "Journal sections", [["favours", "Favours" + (ready ? ` · ${ready}` : "")], ["scrapbook", "Scrapbook"], ["library", "Library"]], journalTab) + ({ favours, scrapbook, library })[journalTab](s);
+        return segmented("jtab", "Journal sections", [["favours", "Favours" + (ready ? ` · ${ready}` : "")], ["scrapbook", "Scrapbook"], ["library", "Library"], ["levels", "Levels"]], journalTab) + ({ favours, scrapbook, library, levels })[journalTab](s);
       },
       bind(body) {
         const s = ui.state;

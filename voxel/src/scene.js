@@ -71,11 +71,13 @@ export function createScene(canvas, state, hooks) {
   shopSign.position.set(SHOP.x, 6.1, SHOP.z - 2.0); scene.add(shopSign);
 
   // The big pumpkin.
-  const big = bigPumpkin();
+  const big = new THREE.Group(), pumpkinTilt = new THREE.Group(), pumpkinArt = bigPumpkin();
+  pumpkinArt.position.y = -1.3; pumpkinTilt.position.y = 1.3; pumpkinTilt.rotation.x = -0.24;
+  pumpkinTilt.add(pumpkinArt); big.add(pumpkinTilt);
   big.position.set(BIG_PUMPKIN.x, 0.5, BIG_PUMPKIN.z);
   scene.add(big);
-  const bigLight = new THREE.PointLight(0xffa040, 8, 8, 1.4);
-  bigLight.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z + 2);
+  const bigLight = new THREE.PointLight(0xffb36c, 2.2, 7, 1.6);
+  bigLight.position.set(BIG_PUMPKIN.x - 1, 3.6, BIG_PUMPKIN.z + 2.6);
   scene.add(bigLight);
 
   // Plots: mound, sprout, a pumpkin per variety, a glow when ripe, a hit box.
@@ -86,6 +88,8 @@ export function createScene(canvas, state, hooks) {
   grad.addColorStop(0, "rgba(255,255,255,1)"); grad.addColorStop(1, "rgba(255,255,255,0)");
   gc.fillStyle = grad; gc.fillRect(0, 0, 64, 64);
   const glowTexture = new THREE.CanvasTexture(glowCanvas);
+  const tapHalo = new THREE.Mesh(new THREE.PlaneGeometry(5.6, 5.6), new THREE.MeshBasicMaterial({ color: 0xffac59, map: glowTexture, transparent: true, opacity: .13, toneMapped: false, depthWrite: false, blending: THREE.AdditiveBlending }));
+  tapHalo.rotation.x = -Math.PI / 2; tapHalo.position.set(BIG_PUMPKIN.x, .51, BIG_PUMPKIN.z); scene.add(tapHalo);
   const plots = PLOTS.map((p, i) => {
     const g = new THREE.Group(); g.position.set(p.x, 0.04, p.z);
     // The bed itself is part of the ground (ground.js); the plot holds what grows in it.
@@ -243,11 +247,13 @@ export function createScene(canvas, state, hooks) {
     camera.position.set(target.x, target.y + Math.sin(PITCH) * dist, target.z + Math.cos(PITCH) * dist);
     camera.lookAt(target);
   }
+  let firstResize = true;
   function resize() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     renderer.setSize(w, h, false); composer.setSize(w, h);
     bloom.resolution.set(w / 2, h / 2);
-    if (w < 700) view.x = 15.5;                                                      // portrait: frame the pumpkin and the patch
+    if (firstResize && w < 700 && !view.place) view.x = 15.5;
+    firstResize = false;                                                      // portrait: frame the pumpkin and the patch
     frame();
   }
   window.addEventListener("resize", resize);
@@ -261,12 +267,14 @@ export function createScene(canvas, state, hooks) {
     canvas.setPointerCapture(e.pointerId);
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 1) drag = { x: e.clientX, y: e.clientY, vx: view.x, vz: view.z, moved: 0 };
-    if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), zoom: view.zoom }; drag = null; }
+    if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), zoom: view.zoom, angle: Math.atan2(a.y - b.y, a.x - b.x), rotate: !!view.place && !!hooks.canRotatePiece?.() }; drag = null; }
   });
   canvas.addEventListener("pointermove", (e) => {
     if (!touches.has(e.pointerId)) return;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pinch && touches.size === 2) { const [a, b] = [...touches.values()]; view.zoom = THREE.MathUtils.clamp(pinch.zoom * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, 0.7, 2.6); clampView(); frame(); return; }
+    if (pinch && touches.size === 2) { const [a, b] = [...touches.values()];
+      if (pinch.rotate) { const angle = Math.atan2(a.y - b.y, a.x - b.x), delta = Math.atan2(Math.sin(angle - pinch.angle), Math.cos(angle - pinch.angle)); pinch.angle = angle; hooks.onRotatePiece?.(delta * 180 / Math.PI); return; }
+      view.zoom = THREE.MathUtils.clamp(pinch.zoom * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, 0.7, 2.6); clampView(); frame(); return; }
     if (!drag) return;
     const k = worldPerPixel(), dx = e.clientX - drag.x, dy = e.clientY - drag.y;
     drag.moved = Math.max(drag.moved, Math.hypot(dx, dy));
@@ -280,7 +288,7 @@ export function createScene(canvas, state, hooks) {
   const end = (e) => {
     const wasTap = drag && drag.moved < 8 && touches.size === 1;
     touches.delete(e.pointerId);
-    if (touches.size < 2) pinch = null;
+    if (touches.size < 2) { if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null; }
     if (wasTap) {
       const box = canvas.getBoundingClientRect();
       pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
@@ -291,7 +299,7 @@ export function createScene(canvas, state, hooks) {
     drag = null;
   };
   canvas.addEventListener("pointerup", end);
-  canvas.addEventListener("pointercancel", (e) => { touches.delete(e.pointerId); drag = null; pinch = null; });
+  canvas.addEventListener("pointercancel", (e) => { touches.delete(e.pointerId); drag = null; if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null; });
   canvas.addEventListener("wheel", (e) => { e.preventDefault(); view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), 0.7, 2.6); clampView(); frame(); }, { passive: false });
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.
@@ -346,7 +354,9 @@ export function createScene(canvas, state, hooks) {
     // Big pumpkin: breathing glow, squash on tap.
     tapPulse = Math.max(0, tapPulse - dt * 4);
     big.scale.set(1 + tapPulse * 0.08, 1 - tapPulse * 0.1, 1 + tapPulse * 0.08);
-    bigLight.intensity = 7 + Math.sin(time * 2.2) * 1.5 + tapPulse * 8;
+    bigLight.intensity = 2.2 + Math.sin(time * 1.8) * .2 + tapPulse * 1.6;
+    tapHalo.material.opacity = .13 + Math.sin(time * 1.8) * .025 + tapPulse * .12;
+    pumpkinTilt.rotation.x = -0.24 - tapPulse * .06;
 
     // Shane and Natalie walk to their jobs, then drift home.
     for (const [who, a] of Object.entries(actors)) {
@@ -450,7 +460,8 @@ export function createScene(canvas, state, hooks) {
     selectPiece(instance) { places.select(instance); },
     previewPiece(instance, x, z, ok) { places.preview(instance, x, z, ok); },
     showGrid(on) { places.setGrid(on); },
-    cellAt(point, type) { return places.cellAt(point, type); },
+    cellAt(point, type, wall) { return places.cellAt(point, type, wall); },
+    rotatePiece(instance) { places.rotatePiece(instance); },
     screenPoint(x, y, z) { return project(new THREE.Vector3(x, y, z)); },
     // Just above their heads: they lean back so they stand 2.3 tall on screen, which a point straight up from the feet reaches at 2.3 / cos(PITCH).
     actorPosition(who) { const p = actors[who]?.model.position ?? new THREE.Vector3(HOMES[who].x, 0, HOMES[who].z); return project(new THREE.Vector3(p.x, 2.5 / Math.cos(PITCH), p.z)); },

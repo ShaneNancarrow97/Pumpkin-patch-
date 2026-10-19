@@ -18,7 +18,7 @@ export const UPGRADES = [
   { id: "yield", name: "A little extra love", text: "One more pumpkin per harvest.", cost: 150, max: 5 },
   { id: "auto", name: "Helping hands", text: "Shane and Natalie plant and pick for you.", cost: 500, max: 1 },
   { id: "plots", name: "Room for more", text: "Make space for three more pumpkin plots.", cost: 300, max: 2 },
-  { id: "sign", name: "Spread the word", text: "Visitors arrive 10% more often, at the stall and the shop.", cost: 400, max: 3 },
+  { id: "sign", name: "Spread the word", text: "Visitors arrive 10% more often, at the stall and the shop.", cost: 400, max: 4 },
 ];
 
 export const freshUpgrades = () => ({ tools: 0, yield: 0, auto: 0, plots: 0, sign: 0 });

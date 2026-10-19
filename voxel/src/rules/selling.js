@@ -26,7 +26,7 @@ export const freshStall = () => ({ income: 0, itemsSold: 0, served: 0, missedBud
 // little: a regular's loyalty card adds a pumpkin and the money for it together.
 export const VISITOR_UPGRADES = [
   { id: "party", name: "Bring a friend", text: "Neighbours come up the path together: a friend, then a couple, then the whole family.", costs: [600, 1800, 6000], needs: null },
-  { id: "lights", name: "Fairy lights down the path", text: "Lanterns all the way to the gate. Parties set off for the stall more often.", costs: [600, 2000, 4800], needs: { id: "sign", text: "Opens after Spread the word." } },
+  { id: "lights", name: "Fairy lights down the path", text: "Lanterns all the way to the gate. Parties set off for the stall more often.", costs: [600, 2000, 4800, 10500], needs: { id: "sign", text: "Opens after Spread the word." } },
   { id: "cocoa", name: "A hot chocolate stand", text: "A bench and a warm mug. Neighbours wait longer for fresh pumpkins, and everyone buys a cup.", costs: [250, 700, 1400], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "loyalty", name: "A loyalty card", text: "Buy nine pumpkins, get a slightly larger pumpkin. Regulars take one more home, at the stall and in the shop.", costs: [6000, 12000], needs: { id: "open", text: "Opens with the shop." } },
 ];
@@ -42,7 +42,7 @@ const lv = (s, id) => (id === "sign" ? s.upgrades.sign : s.visitorUpgrades?.[id]
 export const partyMax = (s) => 1 + lv(s, "party");
 // Party sizes run through every size up to the most, so the average is (max + 1) / 2.
 export const partySize = (s, party) => 1 + ((party * 5 + 2) % partyMax(s));
-export const stallArrivalSeconds = (s) => economy.outdoorArrivalSeconds * Math.pow(economy.advertisingFactor, lv(s, "sign")) * Math.pow(LIGHTS, lv(s, "lights"));
+export const stallArrivalSeconds = (s) => (economy.outdoorArrivalSeconds - 3) * Math.pow(economy.advertisingFactor, lv(s, "sign")) * Math.pow(LIGHTS, lv(s, "lights"));
 export const shopArrivalSeconds = (s) => economy.indoorArrivalSeconds * Math.pow(economy.advertisingFactor, lv(s, "sign"));
 export const stallPatience = (s) => PATIENCE[lv(s, "cocoa")];
 export const mugPrice = (s) => MUG[lv(s, "cocoa")];

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import * as M from "./model.js";
 import { createScene } from "./scene.js";
 import { pumpkinTemplate } from "./pumpkins.js";
+import { createLevelCelebration } from "./ui/level-celebration.js";
 import { createAudio } from "./ui/audio.js";
 import { farmSheets } from "./ui/farm-sheets.js";
 import { homeSheets } from "./ui/home-sheets.js";
@@ -23,7 +24,7 @@ setInterval(save, 5000);
 document.addEventListener("visibilitychange", () => document.hidden && save());
 
 const prefs = (() => {
-  const base = { glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, sound: false };
+  const base = { glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", sound: false };
   try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; }
 })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
@@ -43,6 +44,9 @@ const scene = createScene($("world"), state, {
     if (!state.paused) for (const e of M.update(state, dt)) handle(e);
     render();
   },
+  canRotatePiece: () => !!home.tools.selected && M.footprint(state.house.placed.find((p) => p.instance === home.tools.selected)?.id ?? "f01").layer !== "wall",
+  onRotatePiece: (degrees) => home.tools.rotate(degrees, false),
+  onRotateEnd: () => { home.tools.render(); save(); },
   onPick(what) {
     if (what.type === "plot") tapPlot(what.index);
     else if (what.type === "pumpkin") boost();
@@ -51,7 +55,7 @@ const scene = createScene($("world"), state, {
     else if (what.type === "talk") talk(what.who);
     else if (what.type === "piece") home.tools.select(what.instance);
     else if (what.type === "go") goTo(what.to);
-    else if (what.type === "floor" || what.type === "wall") { if (home.tools.selected) home.tools.tapCell(scene.cellAt(what.point, what.type)); }
+    else if (what.type === "floor" || what.type === "wall") { if (home.tools.selected) home.tools.tapCell(scene.cellAt(what.point, what.type, what.wall)); }
   },
 });
 
@@ -128,7 +132,7 @@ function notice(text) {
 }
 
 // Stepping inside the cottage or the shop, and back out.
-function enterRoom(id) { state.house.activeRoom = id; scene.enter("room", id); renderPlace(); }
+function enterRoom(id) { home.tools.select(null); state.house.activeRoom = id; scene.enter("room", id); renderPlace(); }
 // Up or down the stairs, or through a doorway, to the next room.
 function goTo(id) {
   const name = M.houseRooms.find((r) => r.id === id)?.name.toLowerCase() ?? id, layout = M.roomLayout(state, scene.place?.id);
@@ -136,18 +140,22 @@ function goTo(id) {
   home.tools.select(null); enterRoom(id); notice(`${way} the ${name}.`); audio.tone(440);
   if (openTab === "home") draw();
 }
-function enterShop() { scene.enter("shop"); renderPlace(); }
+function enterShop() { home.tools.select(null); scene.enter("shop"); renderPlace(); }
 function leavePlace() { home.tools.select(null); scene.leavePlace(); renderPlace(); }
-function openHome() { if (scene.place?.kind !== "room") enterRoom(state.house.activeRoom); openSheet("home"); }
+function openHome() { if (scene.place?.kind !== "room") { enterRoom(state.house.activeRoom); closeSheet(); } else { sheets.home.setTab("rooms"); openSheet("home"); } }
 function renderPlace() {
   const p = scene.place, inside = !!p;
+  document.body.classList.toggle("inside-place", inside);
   $("place-bar").hidden = !inside; $("actions").hidden = inside; $("goal").hidden = inside;
   if (inside) $("place-title").textContent = p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
+  $("place-rooms").disabled = p?.kind === "shop";
+  $("place-rooms").setAttribute("aria-label", p?.kind === "shop" ? "The Honest Pumpkin" : "Choose a room");
   $("place-decorate").hidden = p?.kind !== "room";
   home.tools.render();
   markTab();
 }
 $("place-back").onclick = () => { leavePlace(); closeSheet(); };
+$("place-rooms").onclick = () => { sheets.home.setTab("rooms"); openSheet("home"); };
 $("place-decorate").onclick = () => { sheets.home.setTab("decorate"); openSheet("home"); };
 
 $("plant-all").onclick = plantAll;
@@ -157,10 +165,15 @@ $("boost").onclick = boost;
 // The HUD, actions, goal and streak, every frame (cheap: only text changes).
 const text = (id, value) => { const el = $(id); if (el.textContent !== String(value)) el.textContent = value; };
 function render() {
+  if (M.awardLevels(state).length) save();
   text("coins", money(state.coins));
   text("stock", M.available(state));
   text("sold", state.sold);
   const lvl = M.patchLevel(state);
+  text("level-number", lvl.level);
+  $("open-levels").setAttribute("aria-label", `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View rewards`);
+  $("open-levels").style.setProperty("--progress", (lvl.progress * 100).toFixed(1) + "%");
+  celebration.tick(!!openTab || !!home.tools.selected || state.paused);
   $("level-bar").style.width = (lvl.progress * 100).toFixed(1) + "%";
   $("hud-level").title = `Level ${lvl.level}: ${lvl.name}. ${lvl.tagline}.`;
   text("level-name", lvl.name);
@@ -209,6 +222,13 @@ const home = homeSheets(ui), collection = collectionSheets(ui);
 const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...settingsSheet(ui) };
 
 let openTab = null, lastBody = "";
+const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
+$("open-levels").onclick = () => celebration.preview();
+$("fullscreen").onclick = async () => {
+  try { if (document.fullscreenElement) await document.exitFullscreen(); else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); else notice("For fullscreen, add the game to your home screen from the browser menu."); }
+  catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
+};
+document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
 const TABS = { shop: "shop", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "journal", reader: "journal", settings: null };
 function draw() {
   const sheet = sheets[openTab]; if (!sheet) return;
@@ -222,6 +242,9 @@ function draw() {
   if (active === "decor-search") { const i = $("decor-search"); i?.focus(); i?.setSelectionRange(i.value.length, i.value.length); }
 }
 function openSheet(tab) {
+  if (home.tools.selected) home.tools.select(null);
+  document.body.classList.add("menu-open");
+  $("sheet").dataset.section = tab;
   openTab = tab; lastBody = "";
   const sheet = sheets[tab];
   sheet.opened?.();
@@ -230,7 +253,7 @@ function openSheet(tab) {
   markTab();
   $("sheet-close").focus({ preventScroll: true });
 }
-function closeSheet() { openTab = null; $("sheet").hidden = true; markTab(); }
+function closeSheet() { document.body.classList.remove("menu-open"); openTab = null; $("sheet").hidden = true; markTab(); }
 function markTab() {
   const active = openTab ? TABS[openTab] : scene.place?.kind === "room" ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
@@ -246,11 +269,13 @@ $("sheet-close").onclick = closeSheet;
 
 document.addEventListener("keydown", (e) => {
   if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
+  if (celebration.active) return;
   const tools = home.tools;
   if (e.key === "Escape") { if (tools.selected) tools.select(null); else closeSheet(); return; }
   if (tools.selected && scene.place?.kind === "room") {
     const nudge = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
     if (nudge) { e.preventDefault(); tools.nudge(...nudge); return; }
+    if (e.key === "r" || e.key === "R") { e.preventDefault(); tools.rotate(e.shiftKey ? -15 : 15); return; }
     if (e.key === "f" || e.key === "F") return tools.act("flip");
     if (e.key === "Delete" || e.key === "Backspace") return tools.act("store");
   }
@@ -265,5 +290,5 @@ render(); renderPlace();
 // For the smoke test and screenshots: `advance` runs the rules forward, since a
 // software-rendered browser only manages a few frames a second.
 const advance = (seconds) => { for (let t = 0; t < seconds; t += 0.1) for (const e of M.update(state, 0.1)) handle(e); render(); };
-window.PumpkinVoxel = { state: () => state, scene, notice, openSheet, closeSheet, enterRoom, enterShop, leavePlace, tools: home.tools, advance };
+window.PumpkinVoxel = { state: () => state, scene, notice, openSheet, closeSheet, enterRoom, enterShop, leavePlace, tools: home.tools, audio, advance };
 document.body.dataset.ready = "true";

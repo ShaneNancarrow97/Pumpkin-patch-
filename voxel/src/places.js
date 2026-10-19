@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { GRID, footprint, roomStyle, roomPieces, roomLayout, available, displayCount, decorById } from "./model.js";
+import { GRID, footprint, pieceFootprint, roomStyle, roomPieces, roomLayout, available, displayCount, decorById } from "./model.js";
 import { WALL_H, INTERIOR, buildRoom, buildShopInterior, SHOP_SPOTS } from "./interiors.js";
 import { decorProp, shelfBooks, decorReady } from "./decor.js";
 
@@ -63,6 +63,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   const clear = () => {
+    for (const guide of [selection?.box, selection?.ring, ghost, gridLines]) if (guide) { root.remove(guide); guide.geometry.dispose(); guide.material.dispose(); }
     for (const o of [...root.children]) { root.remove(o); o.traverse?.((m) => { if (m.isMesh && m.geometry && !m.geometry.userData.shared) m.geometry.dispose?.(); }); }
     pool.forEach((l) => (l.intensity = 0));
     pieces = new Map(); pickables = []; actors = []; customers = new Map(); tables = []; skyla = null; selection = null; ghost = null; gridLines = null; tableKey = "";
@@ -72,10 +73,11 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     pool[i].color.setHex(s.color ?? 0xffb060);
     pool[i].intensity = s.intensity ?? 9;
   });
-  const hitPlane = (w, h, type, at, rot) => {
+  const hitPlane = (w, h, type, at, rot, wall = "back") => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ visible: false }));
     m.position.copy(at); if (rot) m.rotation.x = rot;
-    m.userData = { type };
+    if (type === "wall" && wall !== "back") m.rotation.y = wall === "left" ? Math.PI / 2 : -Math.PI / 2;
+    m.userData = { type, wall };
     root.add(m); pickables.push(m);
   };
 
@@ -100,6 +102,8 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     lightIndoors(o);
     hitPlane(w, d, "floor", new THREE.Vector3(o.x + w / 2, 0.01, o.z + d / 2), -Math.PI / 2);
     hitPlane(w, WALL_H - 1.5, "wall", new THREE.Vector3(o.x + w / 2, 1.5 + (WALL_H - 1.5) / 2, o.z + 0.02));
+    hitPlane(d, WALL_H - 1.5, "wall", new THREE.Vector3(o.x + 0.02, 1.5 + (WALL_H - 1.5) / 2, o.z + d / 2), 0, "left");
+    hitPlane(d, WALL_H - 1.5, "wall", new THREE.Vector3(o.x + w - 0.02, 1.5 + (WALL_H - 1.5) / 2, o.z + d / 2), 0, "right");
     // Shane and Natalie are home too, at the front of the room.
     for (const [who, x] of [["natalie", 2.2], ["shane", w - 2.2]]) {
       const a = character(who);
@@ -114,7 +118,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   // How high a wall piece hangs: the chandelier from the ceiling, the rest centred on the panel.
   const hangAt = (id, height) => (id === "d04" ? WALL_H - 0.45 - height : (decorById[id].hangHeight ?? 2.9) - height / 2);
   function addPiece(p) {
-    const fp = footprint(p.id), o = ORIGIN.room, prop = decorProp(p.id), native = prop.userData.native === true;
+    const fp = pieceFootprint(p), o = ORIGIN.room, prop = decorProp(p.id), native = prop.userData.native === true;
     const g = new THREE.Group(), standing = fp.layer === "floor", lean = new THREE.Group(), height = prop.userData.height;
     lean.add(prop);
     if (p.books?.length) lean.add(shelfBooks(p.id, p.books, prop));
@@ -126,19 +130,24 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     prop.traverse((m) => { if (m.isMesh && !m.material.isMeshBasicMaterial) { m.castShadow = fp.layer !== "rug"; m.receiveShadow = true; } });
     const cx = p.x + fp.w / 2, cz = p.z + fp.d / 2, wall = fp.layer === "wall";
     // Wall pieces hang with their back against the wall; the rest sit centred on their cells.
-    if (wall) g.position.set(o.x + cx, hangAt(p.id, height), o.z + (native ? 0.005 : 0.02));
-    else g.position.set(o.x + cx, fp.layer === "rug" ? 0.005 : 0, o.z + cz);
+    if (wall) {
+      const offset = native ? 0.005 : 0.02;
+      if (p.wall === "left") { g.position.set(o.x + offset, hangAt(p.id, height), o.z + cx); g.rotation.y = Math.PI / 2; }
+      else if (p.wall === "right") { g.position.set(o.x + place.w - offset, hangAt(p.id, height), o.z + cx); g.rotation.y = -Math.PI / 2; }
+      else g.position.set(o.x + cx, hangAt(p.id, height), o.z + offset);
+    } else { g.position.set(o.x + cx, fp.layer === "rug" ? 0.005 : 0, o.z + cz); g.rotation.y = (p.rotation ?? 0) * Math.PI / 180; }
     if (p.flip) lean.scale.x = -1;
     root.add(g);
     const tall = Math.max(0.3, height), deep = wall ? Math.max(0.4, prop.userData.depth ?? 0) : fp.d * 0.95;
     const hit = new THREE.Mesh(new THREE.BoxGeometry(fp.w * 0.95, tall, deep), new THREE.MeshBasicMaterial({ visible: false }));
-    hit.position.set(g.position.x, g.position.y + tall / 2, g.position.z + (wall ? deep / 2 : 0));
+    hit.position.copy(g.position).add(new THREE.Vector3(0, tall / 2, wall ? deep / 2 : 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), wall ? g.rotation.y : 0));
+    if (wall) hit.rotation.y = g.rotation.y;
     hit.userData = { type: "piece", instance: p.instance };
     root.add(hit); pickables.push(hit);
     pieces.set(p.instance, { group: g, hit, piece: p, bottom: g.position.y, height: tall });
     // Lamps, candles and glowing jars light the room around them.
     const lamp = prop.userData.glowing || ["lights"].includes(decorById[p.id].category);
-    return lamp ? [{ x: cx, y: wall ? g.position.y + height * 0.6 : Math.max(0.8, height * 0.85), z: wall ? 0.6 : cz, intensity: 7 }] : [];
+    return lamp ? [{ x: g.position.x - o.x + (wall ? Math.sin(g.rotation.y) * 0.6 : 0), y: wall ? g.position.y + height * 0.6 : Math.max(0.8, height * 0.85), z: g.position.z - o.z + (wall ? Math.cos(g.rotation.y) * 0.6 : 0), intensity: 7 }] : [];
   }
 
   // The Honest Pumpkin's shop floor.
@@ -230,26 +239,35 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
   const outlineAt = (entry, fp, x, z) => {
     const o = ORIGIN.room, wall = fp.layer === "wall";
+    if (wall && entry.piece.wall === "left") return new THREE.Vector3(o.x + 0.05, entry.bottom + entry.height / 2, o.z + x + fp.w / 2);
+    if (wall && entry.piece.wall === "right") return new THREE.Vector3(o.x + place.w - 0.05, entry.bottom + entry.height / 2, o.z + x + fp.w / 2);
     return new THREE.Vector3(o.x + x + fp.w / 2, wall ? entry.bottom + entry.height / 2 : 0.06, o.z + (wall ? 0.05 : z + fp.d / 2));
   };
   function select(instance) {
-    if (selection) { root.remove(selection.box); selection = null; }
-    if (ghost) { root.remove(ghost); ghost = null; }
+    if (selection) { root.remove(selection.box); selection.box.geometry.dispose(); selection.box.material.dispose(); if (selection.ring) { root.remove(selection.ring); selection.ring.geometry.dispose(); selection.ring.material.dispose(); } selection = null; }
+    if (ghost) { root.remove(ghost); ghost.geometry.dispose(); ghost.material.dispose(); ghost = null; }
     const entry = pieces.get(instance);
     if (!entry) return;
-    const p = entry.piece, fp = footprint(p.id);
+    const p = entry.piece, fp = pieceFootprint(p);
     selection = { instance, box: outline(fp, outlineAt(entry, fp, p.x, p.z), 0xffd36a, entry.height) };
+    selection.box.rotation.y = fp.layer === "wall" ? entry.group.rotation.y : 0;
+    if (fp.layer !== "wall") {
+      const r = Math.max(fp.w, fp.d) * 0.55 + 0.15;
+      const ring = new THREE.Mesh(new THREE.RingGeometry(r, r + 0.025, 64), new THREE.MeshBasicMaterial({ color: 0xe7b46e, transparent: true, opacity: 0.65, side: THREE.DoubleSide, toneMapped: false, depthWrite: false }));
+      ring.rotation.x = -Math.PI / 2; ring.position.set(entry.group.position.x, 0.045, entry.group.position.z); root.add(ring); selection.ring = ring;
+    }
   }
   function preview(instance, x, z, ok) {
-    if (ghost) { root.remove(ghost); ghost = null; }
+    if (ghost) { root.remove(ghost); ghost.geometry.dispose(); ghost.material.dispose(); ghost = null; }
     const entry = pieces.get(instance);
     if (!entry || x === null) return;
-    const fp = footprint(entry.piece.id);
+    const fp = pieceFootprint(entry.piece);
     ghost = outline(fp, outlineAt(entry, fp, x, z), ok ? 0x8ae6a0 : 0xff6a5a, entry.height);
+    ghost.rotation.y = fp.layer === "wall" ? entry.group.rotation.y : 0;
   }
   function setGrid(on) {
     showGrid = on;
-    if (gridLines) { root.remove(gridLines); gridLines = null; }
+    if (gridLines) { root.remove(gridLines); gridLines.geometry.dispose(); gridLines.material.dispose(); gridLines = null; }
     if (!on || place?.kind !== "room") return;
     const pts = [], o = ORIGIN.room;
     const { w, d } = place;
@@ -268,10 +286,20 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     leave() { clear(); place = null; lightIndoors(null); },
     refresh() { if (place?.kind === "room") { const sel = selection?.instance; buildRoomPlace(place.id); if (sel) select(sel); } },
     select, preview, setGrid,
+    rotatePiece(instance) {
+      const entry = pieces.get(instance); if (!entry) return;
+      const p = entry.piece, fp = pieceFootprint(p);
+      if (fp.layer === "wall") return;
+      entry.group.position.x = ORIGIN.room.x + p.x + fp.w / 2; entry.group.position.z = ORIGIN.room.z + p.z + fp.d / 2;
+      entry.group.rotation.y = (p.rotation ?? 0) * Math.PI / 180;
+      entry.hit.geometry.dispose(); entry.hit.geometry = new THREE.BoxGeometry(fp.w * 0.95, entry.height, fp.d * 0.95);
+      entry.hit.position.x = entry.group.position.x; entry.hit.position.z = entry.group.position.z;
+      select(instance);
+    },
     // Turns a tap on the floor or the wall into a grid cell.
-    cellAt(point, type) {
+    cellAt(point, type, wall = "back") {
       const o = ORIGIN.room;
-      return type === "wall" ? { x: Math.floor(point.x - o.x), z: 0 } : { x: Math.floor(point.x - o.x), z: Math.floor(point.z - o.z) };
+      return type === "wall" ? { x: Math.floor(wall === "back" ? point.x - o.x : point.z - o.z), z: 0, wall } : { x: Math.floor(point.x - o.x), z: Math.floor(point.z - o.z) };
     },
     tick(dt, time, paying) {
       if (place?.kind === "shop") { tickShop(dt, time); if (skyla) animate(skyla, time, false, 0, 0, paying); }

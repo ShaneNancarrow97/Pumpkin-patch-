@@ -6,6 +6,7 @@ import { freshStock } from "./rules/stock.js";
 import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, updateShop, updateStall } from "./rules/selling.js";
 import { freshHouse, restoreHouse } from "./rules/house.js";
 import { freshLooks, freshWardrobe, restoreWardrobe } from "./rules/wardrobe.js";
+import { awardLevels, freshProgression, restoreProgression } from "./rules/levels.js";
 import { FAVOURS, checkMemories } from "./rules/progress.js";
 
 export * from "./rules/farm.js";
@@ -15,7 +16,8 @@ export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 
-export const STATE_VERSION = 3;
+export const STATE_VERSION = 4;
+export * from "./rules/levels.js";
 
 export function freshState() {
   return {
@@ -28,7 +30,7 @@ export function freshState() {
     shop: freshShop(),
     house: freshHouse(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
-    claimed: [], memories: [], paused: false,
+    claimed: [], memories: [], progression: freshProgression(), paused: false,
   };
 }
 
@@ -56,8 +58,8 @@ export function restoreState(raw) {
   });
   const u = raw.upgrades ?? {};
   s.upgrades = v1
-    ? { tools: Math.min(6, count(u.tools)), yield: 0, auto: Math.min(1, count(u.helper)), plots: Math.min(2, count(u.plots)), sign: Math.min(3, count(u.signs)) }
-    : { tools: Math.min(6, count(u.tools)), yield: Math.min(5, count(u.yield)), auto: Math.min(1, count(u.auto)), plots: Math.min(2, count(u.plots)), sign: Math.min(3, count(u.sign)) };
+    ? { tools: Math.min(6, count(u.tools)), yield: 0, auto: Math.min(1, count(u.helper)), plots: Math.min(2, count(u.plots)), sign: Math.min(4, count(u.signs)) }
+    : { tools: Math.min(6, count(u.tools)), yield: Math.min(5, count(u.yield)), auto: Math.min(1, count(u.auto)), plots: Math.min(2, count(u.plots)), sign: Math.min(4, count(u.sign)) };
   for (const v of VISITOR_UPGRADES) s.visitorUpgrades[v.id] = Math.min(v.costs.length, count(raw.visitorUpgrades?.[v.id]));
   if (Array.isArray(raw.stock) && v1) for (const v of raw.stock) if (VARIETIES[v]) s.stock[v]++;
   if (Array.isArray(raw.stock) && !v1 && raw.stock.length === 4) s.stock = raw.stock.map(count);
@@ -78,6 +80,7 @@ export function restoreState(raw) {
   const claimed = (Array.isArray(raw.claimed) ? raw.claimed : []).map((id) => (v1 ? OLD_GOALS[id] : id));
   s.claimed = [...new Set(claimed.filter((id) => FAVOURS.some((f) => f.id === id)))];
   s.memories = Array.isArray(raw.memories) ? [...new Set(raw.memories.filter((id) => typeof id === "string"))] : [];
+  s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4));
   closeForTheNight(s);
   return s;
 }
@@ -93,5 +96,6 @@ export function update(s, dt) {
   updateStall(s, dt, events);
   updateShop(s, dt, events);
   checkMemories(s, events);
+  for (const level of awardLevels(s)) events.push({ type: "level-up", level });
   return events;
 }

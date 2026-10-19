@@ -38,11 +38,5 @@ export function checkMemories(s, events) {
   for (const m of MEMORIES) if (!s.memories.includes(m.id) && m.met(s)) { s.memories.push(m.id); events.push({ type: "memory", id: m.id }); }
 }
 
-// The patch's level, from everything earned (the main game's HUD meter).
-export function patchLevel(s) {
-  const e = s.earned;
-  if (e >= 1000) return { level: 4, name: "Autumn empire", tagline: "Built with a lot of heart", progress: (e % 1000) / 1000 };
-  if (e >= 500) return { level: 3, name: "Local favourite", tagline: "A patch worth visiting", progress: (e - 500) / 500 };
-  if (e >= 150) return { level: 2, name: "Growing roots", tagline: "Something good is growing", progress: (e - 150) / 350 };
-  return { level: 1, name: "Little seed", tagline: "A lovely beginning", progress: e / 150 };
-}
+// Level rewards and the HUD share the same milestone definitions.
+export { patchLevel } from "./levels.js";

@@ -47,10 +47,12 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.evaluate(() => { PumpkinVoxel.state().coins = 5000; });
   await page.locator('[data-tab="home"]').click();
   check(await page.evaluate(() => PumpkinVoxel.scene.place?.kind === "room") && await page.locator("#place-bar").isVisible(), `${name}: home opens the parlour`);
+  await page.locator("#place-decorate").click();
   await page.locator('[data-hometab="decorate"]').click();
   await page.locator('[data-decor="d01"]').click();
   check(await page.evaluate(() => PumpkinVoxel.state().house.placed.some((p) => p.id === "d01" && p.room === "parlour")), `${name}: a bought piece is placed in the room`);
-  await page.locator("#sheet-close").click();
+  check(!(await page.locator("#sheet").isVisible()), `${name}: placing furniture reveals the room`);
+  await page.locator('[data-tool="more"]').click();
   await page.locator('[data-tool="flip"]').click();
   await page.locator('[data-tool="done"]').click();
   check(await page.evaluate(() => PumpkinVoxel.state().house.placed.find((p) => p.id === "d01").flip) && !(await page.locator("#piece-bar").isVisible()), `${name}: flip the piece and finish`);
