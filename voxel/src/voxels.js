@@ -9,8 +9,12 @@ export class Voxels {
   constructor() { this.solid = []; this.glow = []; }
 
   // A box by its minimum corner and size, in world units. y is up.
+  // A box flat on any axis draws nothing, but its normals divide by zero and the
+  // bloom spreads the NaN across the screen, so skip it. A negative size is the
+  // same box measured the other way; turn it round so it isn't lit inside out.
   box(x, y, z, w, h, d, color, glow = false) {
-    (glow ? this.glow : this.solid).push([x + w / 2, y + h / 2, z + d / 2, w, h, d, color]);
+    if (!(w && h && d)) return this;
+    (glow ? this.glow : this.solid).push([x + w / 2, y + h / 2, z + d / 2, Math.abs(w), Math.abs(h), Math.abs(d), color]);
     return this;
   }
 
