@@ -391,6 +391,7 @@ input[type="range"] { accent-color: var(--gold); min-height: 44px; }
 @media (prefers-reduced-motion: reduce) { .npc-reward { transition: none; } }
 .special-prices label { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--ink-soft); font-size: 12px; padding: 0 4px 8px; }
 .special-prices select { min-width: 88px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--edge-soft); border-radius: 12px; background: #302537; color: #fff0cf; font: 600 14px var(--body); }
+.special-prices select:disabled { opacity: .45; cursor: default; }
 .guest-card { position: fixed; z-index: 22; left: calc(var(--rail-w) + 12px); bottom: calc(var(--dock-h) + 90px); width: min(290px, calc(100% - var(--rail-w) - 24px)); padding: 14px; border: 1px solid #b9986a80; border-radius: 18px; background: #211b29f5; box-shadow: 0 12px 36px #0007; }
 .guest-card[hidden] { display: none; }
 .guest-card header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }

@@ -4,7 +4,8 @@ import * as THREE from "three";
 import { buildWorld, yardGround } from "../src/world.js";
 import { pathDistance } from "../src/content/festival-meadow.js";
 import { Voxels } from "../src/voxels.js";
-import { cocoaKiosk, openMeadowEdge } from "../src/festival-meadow-world.js";
+import { cocoaKiosk, createFestivalWorld, openMeadowEdge } from "../src/festival-meadow-world.js";
+import { freshState } from "../src/model.js";
 
 test("three cocoa tiers are native voxel models with finite, positive instances", () => {
   const counts = [], matrix = new THREE.Matrix4();
@@ -41,4 +42,19 @@ test("all five menu props are finite native voxel shapes with shared cached mate
     assert.ok(n>=10); counts.push(n); assert.strictEqual(cocoaProp(id).children[0].material,prop.children[0].material);
   }
   assert.ok(counts[1]>counts[0] && counts[3]>counts[2]);
+});
+
+test("steam follows every stocked drink, but not snacks or a closed stand", () => {
+  const state = freshState(), scene = new THREE.Scene(); state.festival.meadow = true; state.festival.cocoa.level = 3;
+  const stand = createFestivalWorld({ scene, state, world: buildWorld(), signBoard: () => new THREE.Group() });
+  let steam; scene.traverse(m => { if (m.isPoints) steam = m; }); assert.ok(steam);
+  const c = state.festival.cocoa;
+  stand.tick(0); assert.equal(steam.visible, false);
+  for (const id of ["flake", "deluxe", "midnight"]) {
+    c.extras[id].stock = 1; stand.tick(1); assert.equal(steam.visible, true, id);
+    c.open = false; stand.tick(2); assert.equal(steam.visible, false, "closed " + id);
+    c.open = true; c.extras[id].stock = 0;
+  }
+  c.extras.smores.stock = 1; stand.tick(3); assert.equal(steam.visible, false);
+  c.stock = 1; stand.tick(4); assert.equal(steam.visible, true);
 });

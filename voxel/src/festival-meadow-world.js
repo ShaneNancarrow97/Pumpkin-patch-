@@ -177,7 +177,7 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
         courier.userData.wings.forEach((wing, i) => wing.rotation.y = Math.sin(time * 12) * (i ? -.6 : .6));
       }
       sync(); const c = state.festival.cocoa;
-      if (sandy) { sandy.group.visible = c.level > 0; sandy.tick(time, c.level, state.visitors.some(v => v.festival?.phase === "serving") || state.time - c.lastSaleAt < 1.1); } cups.forEach((m, i) => m.visible = c.stock > i); specials.forEach(({ prop, id }) => prop.visible = c.extras[id].stock > 0); wisps.visible = !!c.level && c.open && (c.stock > 0 || c.extras.deluxe.stock > 0);
+      if (sandy) { sandy.group.visible = c.level > 0; sandy.tick(time, c.level, state.visitors.some(v => v.festival?.phase === "serving") || state.time - c.lastSaleAt < 1.1); } cups.forEach((m, i) => m.visible = c.stock > i); specials.forEach(({ prop, id }) => prop.visible = c.extras[id].stock > 0); wisps.visible = !!c.level && c.open && (c.stock > 0 || ["flake", "deluxe", "midnight"].some(id => c.extras[id].stock > 0));
       for (let i = 0; i < 8; i++) { const t = (time * .35 + i / 8) % 1; steam[i * 3] = 45.9 + Math.sin(t * 7 + i) * .14; steam[i * 3 + 1] = 2.7 + t * 1.4; steam[i * 3 + 2] = 18.6 + Math.cos(t * 6 + i) * .12; }
       steamGeo.attributes.position.needsUpdate = true;
     },

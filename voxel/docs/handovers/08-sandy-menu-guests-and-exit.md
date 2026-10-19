@@ -23,7 +23,7 @@ The user supplied four photos of Sandy and corrected the first short-bodied cart
 | Plain haunted cocoa | 1 | £4 | £3–£4 / £5 / £6 by stand tier | £2 |
 | Chocolate-flake cocoa | 2 | £6 | £4–£10 | £3 |
 | Ghost marshmallow cocoa | 2 | £7 | £5–£12 | £3 |
-| Midnight sauce sundae | 3 | £9 | £6–£14 | £4 |
+| Midnight sauce cocoa | 3 | £9 | £6–£14 | £4 |
 | Midnight s’mores | 3 | £5 | £3–£10 | £2 |
 
 Specials are stocked separately, in paid packs up to 10. Capacity is 20 per special at tier 2, 30 at tier 3. Locked products cannot be stocked or repriced. All prices are integer pounds, bounded and saved. The courier still replenishes plain cocoa only, at its normal cost; it does not silently buy premium stock.
@@ -34,7 +34,7 @@ Payment rechecks stock, posted prices, unique product lines and the guest’s pu
 
 ## Live guest inspector
 
-Tapping an outdoor visitor **or an indoor shop customer** opens `ui/guest-card.js`, a compact live card with thirst, hunger, happiness, actual money left, spent money and current destination/activity. The inspector closes when the guest leaves and hides behind menus/level celebrations. It is not a pause menu or a fake static profile.
+Tapping an outdoor visitor **or an indoor shop customer** opens `ui/guest-card.js`, a compact live card with thirst, hunger, happiness, actual money left, spent money and current destination/activity. The inspector closes when the guest leaves, when changing location or with Escape, and hides behind menus/level celebrations. It is not a pause menu or a fake static profile. See the [refinement handover](10-festival-refinement.md) for the location-clear hooks.
 
 `rules/guest-needs.js` generates stable per-guest needs/value sensitivity, advances needs slowly, applies meal/pumpkin satisfaction and supplies the human-readable destination. Outdoor and indoor pumpkin purchases now deduct the goods amount and tip from the visitor’s purse after care settlement, so money shown after checkout is accurate. The product revenue ledgers stay unchanged.
 

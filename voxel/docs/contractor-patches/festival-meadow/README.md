@@ -1,6 +1,6 @@
 # Moonbrew Meadow — contractor delivery for Claude
 
-Branch: **`contractor/festival-meadow`**. Start with [the gameplay handover](../../handovers/07-festival-meadow-and-customer-care.md), then [Sandy/menu/guests/exit](../../handovers/08-sandy-menu-guests-and-exit.md). The [20-level cooking roadmap](../../handovers/09-cooking-and-twenty-level-roadmap.md) is designed for a later implementation, not shipped as gameplay.
+Branch: **`contractor/festival-meadow`**. Start with [the gameplay handover](../../handovers/07-festival-meadow-and-customer-care.md), then [Sandy/menu/guests/exit](../../handovers/08-sandy-menu-guests-and-exit.md) and [the refinement pass](../../handovers/10-festival-refinement.md). The [20-level cooking roadmap](../../handovers/09-cooking-and-twenty-level-roadmap.md) is designed for a later implementation, not shipped as gameplay.
 
 Completed parts:
 
@@ -11,6 +11,7 @@ Completed parts:
 5. Tap outdoor or indoor guests to inspect needs, happiness, cash and destination.
 6. A real village exit route, and clearer lettering on the actual voxel signboards. No floating map labels.
 7. Cohesive expansion art: the original farm ground generator, pickets, lanterns and autumn trees continue into the new land. A single ground mesh replaces the former overlaid extension tiles.
+8. Refinement: paused controls accurately disable, guest cards clear between locations and with Escape, all stocked cocoa varieties emit steam, and stock/drink labels are clearer.
 
 This is a source delivery, not an instruction to replace your checkout. It includes the previous `contractor/house-levels-midi` work and merges your published `8176e32` lights/curios commit. Your unpublished shop, fixtures, portraits, visitor rush and placement work is not available here. Preserve it when reconciling hooks.
 
@@ -35,6 +36,7 @@ node voxel/build.mjs --out /path/to/Pumpkin-Patch-Moonbrew-Meadow.html
 CHROMIUM_PATH=/path/to/chromium node voxel/tools/qa-festival-meadow.mjs --html /path/to/Pumpkin-Patch-Moonbrew-Meadow.html --shots /path/to/meadow-qa
 CHROMIUM_PATH=/path/to/chromium node voxel/tools/qa-sandy-cocoa.mjs --html /path/to/Pumpkin-Patch-Moonbrew-Meadow.html --shots /path/to/sandy-qa
 CHROMIUM_PATH=/path/to/chromium node voxel/tools/qa-customer-care.mjs --html /path/to/Pumpkin-Patch-Moonbrew-Meadow.html --shots /path/to/care-qa
+CHROMIUM_PATH=/path/to/chromium node voxel/tools/qa-festival-refinement.mjs --html /path/to/Pumpkin-Patch-Moonbrew-Meadow.html --shots /path/to/refinement-qa
 ```
 
 The downloadable HTML is fully self-contained; generated builds remain outside Git. The runtime remains plain Three.js and JavaScript, with pure, independently testable rules. See [QA status](QA.md) for what was verified.

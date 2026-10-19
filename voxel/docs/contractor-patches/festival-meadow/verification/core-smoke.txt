@@ -1,0 +1,32 @@
+ok   desktop: characters drawn with the original sprites
+ok   desktop: plant and boost
+ok   desktop: harvest
+ok   desktop: shop opens
+ok   desktop: wardrobe opens
+ok   desktop: journal opens
+ok   desktop: menu closes
+ok   desktop: voxel characters switch on and off
+ok   desktop: home opens the parlour
+ok   desktop: a bought piece is placed in the room
+ok   desktop: placing furniture reveals the room
+ok   desktop: flip the piece and finish
+ok   desktop: customers come into the shop
+ok   desktop: back to the patch
+ok   desktop: buy and wear a costume
+ok   desktop: no page errors
+ok   phone: characters drawn with the original sprites
+ok   phone: plant and boost
+ok   phone: harvest
+ok   phone: shop opens
+ok   phone: wardrobe opens
+ok   phone: journal opens
+ok   phone: menu closes
+ok   phone: voxel characters switch on and off
+ok   phone: home opens the parlour
+ok   phone: a bought piece is placed in the room
+ok   phone: placing furniture reveals the room
+ok   phone: flip the piece and finish
+ok   phone: customers come into the shop
+ok   phone: back to the patch
+ok   phone: buy and wear a costume
+ok   phone: no page errors

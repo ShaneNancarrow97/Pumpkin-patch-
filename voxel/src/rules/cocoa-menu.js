@@ -5,7 +5,7 @@ import { VARIETIES } from "./farm.js";
 export const COCOA_SPECIALS = [
   { id: "flake", name: "Chocolate-flake cocoa", tier: 2, price: 6, minPrice: 4, maxPrice: 10, cost: 3, text: "Creamy cocoa with a generous chocolate flake." },
   { id: "deluxe", name: "Ghost marshmallow cocoa", tier: 2, price: 7, minPrice: 5, maxPrice: 12, cost: 3, text: "Whipped cream, little ghost marshmallows and chocolate drizzle." },
-  { id: "midnight", name: "Midnight sauce sundae", tier: 3, price: 9, minPrice: 6, maxPrice: 14, cost: 4, text: "Deluxe cocoa, chocolate flake and warm pumpkin-caramel sauce." },
+  { id: "midnight", name: "Midnight sauce cocoa", tier: 3, price: 9, minPrice: 6, maxPrice: 14, cost: 4, text: "Deluxe cocoa, chocolate flake and warm pumpkin-caramel sauce." },
   { id: "smores", name: "Midnight s’mores", tier: 3, price: 5, minPrice: 3, maxPrice: 10, cost: 2, text: "Toasted ghost marshmallow and chocolate between golden crackers." },
 ];
 export const freshCocoaPrices = () => Object.fromEntries(COCOA_SPECIALS.map(p => [p.id, p.price]));

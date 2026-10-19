@@ -139,7 +139,7 @@ function notice(text) {
 }
 
 // Stepping inside the cottage or the shop, and back out.
-function enterRoom(id) { home.tools.select(null); state.house.activeRoom = id; scene.enter("room", id); renderPlace(); }
+function enterRoom(id) { guestCard.clear(); home.tools.select(null); state.house.activeRoom = id; scene.enter("room", id); renderPlace(); }
 // Up or down the stairs, or through a doorway, to the next room.
 function goTo(id) {
   const name = M.houseRooms.find((r) => r.id === id)?.name.toLowerCase() ?? id, layout = M.roomLayout(state, scene.place?.id);
@@ -147,8 +147,8 @@ function goTo(id) {
   home.tools.select(null); enterRoom(id); notice(`${way} the ${name}.`); audio.tone(440);
   if (openTab === "home") draw();
 }
-function enterShop() { home.tools.select(null); scene.enter("shop"); renderPlace(); }
-function leavePlace() { home.tools.select(null); scene.leavePlace(); renderPlace(); }
+function enterShop() { guestCard.clear(); home.tools.select(null); scene.enter("shop"); renderPlace(); }
+function leavePlace() { guestCard.clear(); home.tools.select(null); scene.leavePlace(); renderPlace(); }
 function openHome() { if (scene.place?.kind !== "room") { enterRoom(state.house.activeRoom); closeSheet(); } else { sheets.home.setTab("rooms"); openSheet("home"); } }
 function renderPlace() {
   const p = scene.place, inside = !!p;
@@ -282,7 +282,7 @@ document.addEventListener("keydown", (e) => {
   if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
   if (celebration.active) return;
   const tools = home.tools;
-  if (e.key === "Escape") { if (tools.selected) tools.select(null); else closeSheet(); return; }
+  if (e.key === "Escape") { guestCard.clear(); if (tools.selected) tools.select(null); else closeSheet(); return; }
   if (tools.selected && scene.place?.kind === "room") {
     const nudge = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
     if (nudge) { e.preventDefault(); tools.nudge(...nudge); return; }
