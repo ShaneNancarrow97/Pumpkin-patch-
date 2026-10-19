@@ -1,6 +1,41 @@
-// Costumes are the main game's own (src/core/costume-model.mjs). On top of the
-// original outfits, Natalie's knit and Shane's beanie can be recoloured.
-export { buyCostume, costumeById, costumeCatalog, freshWardrobe, restoreWardrobe, wearCostume } from "../../../src/core/costume-model.mjs";
+// Adapt the main wardrobe here, so extra voxel art never changes its catalogue.
+import { buyCostume as buyOriginal, costumeCatalog as originals, freshWardrobe, restoreWardrobe as restoreOriginals, wearCostume as wearOriginal } from "../../../src/core/costume-model.mjs";
+import { EXTRA_COSTUMES } from "../costume-expansion.js";
+
+export { freshWardrobe };
+export const costumeCatalog = [...originals, ...EXTRA_COSTUMES];
+export const costumeById = Object.fromEntries(costumeCatalog.map((item) => [item.id, item]));
+const extras = Object.fromEntries(EXTRA_COSTUMES.map((item) => [item.id, item]));
+const extra = (id) => typeof id === "string" && Object.hasOwn(extras, id) ? extras[id] : null;
+
+// Preserve the same purchase and pause rules for the extra costumes.
+export function buyCostume(s, id) {
+  const item = extra(id);
+  if (!item) return buyOriginal(s, id);
+  if (!s || s.paused || !Number.isFinite(s.coins) || s.coins < item.price || !Array.isArray(s.wardrobe?.owned) || s.wardrobe.owned.includes(id)) return false;
+  s.coins -= item.price;
+  s.wardrobe.owned.push(id);
+  return true;
+}
+export function wearCostume(s, id) {
+  const item = extra(id);
+  if (!item) return wearOriginal(s, id);
+  if (!s || s.paused || !Array.isArray(s.wardrobe?.owned) || !s.wardrobe.owned.includes(id) || !s.wardrobe.equipped || typeof s.wardrobe.equipped !== "object" || s.wardrobe.equipped[item.character] === id) return false;
+  s.wardrobe.equipped[item.character] = id;
+  return true;
+}
+
+// New IDs fit the existing saved wardrobe; old and malformed saves still load.
+export function restoreWardrobe(raw) {
+  const wardrobe = restoreOriginals(raw);
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return wardrobe;
+  if (Array.isArray(raw.owned)) wardrobe.owned = [...new Set([...wardrobe.owned, ...raw.owned.filter((id) => extra(id))])];
+  for (const who of ["natalie", "shane"]) {
+    const id = raw.equipped?.[who];
+    if (extra(id)?.character === who && wardrobe.owned.includes(id)) wardrobe.equipped[who] = id;
+  }
+  return wardrobe;
+}
 
 export const LOOKS = {
   natalie: [

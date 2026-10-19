@@ -17,6 +17,8 @@ import shaneFrankenstein from "../assets/hd-shane-frankenstein.webp";
 import shaneMummy from "../assets/hd-shane-mummy.webp";
 import shaneSlasher from "../assets/hd-shane-slasher.webp";
 import { SHEETS } from "./sprite-meta-hd.js";
+import { COSTUME_SHEETS } from "./costume-sprite-meta.js";
+import { COSTUME_URLS } from "./costume-sprite-expansion.js";
 import { LEAN, STRETCH } from "./world.js";
 import { recolour } from "./sprite-voxels.js";
 
@@ -34,7 +36,9 @@ const URLS = {
   "natalie-frankenstein": natalieFrankenstein, "natalie-mummy": natalieMummy, "natalie-slasher": natalieSlasher,
   "shane-vampire": shaneVampire, "shane-skeleton": shaneSkeleton, "shane-scarecrow": shaneScarecrow,
   "shane-frankenstein": shaneFrankenstein, "shane-mummy": shaneMummy, "shane-slasher": shaneSlasher,
+  ...COSTUME_URLS,
 };
+const METADATA = { ...SHEETS, ...COSTUME_SHEETS };
 export const VISITOR_KINDS = ["ghost", "witch", "vampire", "skeleton", "scarecrow"];   // model.js visitor kinds, in order
 
 const loadImage = (src) => new Promise((resolve, reject) => {
@@ -64,7 +68,7 @@ function frameGeometry(sheet, f) {
 export async function loadSpriteSheets() {
   const sheets = {};
   await Promise.all(Object.entries(URLS).map(async ([name, url]) => {
-    const meta = SHEETS[name], image = await loadImage(url), frames = {};
+    const meta = METADATA[name], image = await loadImage(url), frames = {};
     for (const [key, list] of Object.entries(meta)) if (Array.isArray(list)) frames[key] = list.map((f) => frameGeometry(meta, f));
     sheets[name] = { meta, image, texture: sheetTexture(image), frames };
   }));
