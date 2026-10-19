@@ -7,6 +7,10 @@ import { createAudio } from "./ui/audio.js";
 import { farmSheets } from "./ui/farm-sheets.js";
 import { homeSheets } from "./ui/home-sheets.js";
 import { collectionSheets } from "./ui/collection-sheets.js";
+import { customerCareSheet } from "./ui/customer-care-sheet.js";
+import { createGuestCard } from "./ui/guest-card.js";
+import { createNpcRewards } from "./ui/npc-rewards.js";
+import { festivalMeadowSheet } from "./ui/festival-meadow-sheet.js";
 import { settingsSheet } from "./ui/settings-sheet.js";
 import { money, $ } from "./ui/kit.js";
 import { PLOTS } from "./world.js";
@@ -48,9 +52,12 @@ const scene = createScene($("world"), state, {
   onRotatePiece: (degrees) => home.tools.rotate(degrees, false),
   onRotateEnd: () => { home.tools.render(); save(); },
   onPick(what) {
-    if (what.type === "plot") tapPlot(what.index);
+    if (what.type === "visitor" || what.type === "customer") guestCard.open(what.id, what.type === "customer");
+    else if (what.type === "plot") tapPlot(what.index);
     else if (what.type === "pumpkin") boost();
+    else if (what.type === "seeds") { sheets.shop.setTab("seeds"); openSheet("shop"); }
     else if (what.type === "shop") { if (state.shop.unlocked) enterShop(); sheets.shop.setTab("shop"); openSheet("shop"); }
+    else if (what.type === "meadow-land" || what.type === "cocoa-stand") { sheets.festival.setTab(what.type === "cocoa-stand" ? "cocoa" : "estate"); openSheet("festival"); }
     else if (what.type === "home") openHome();
     else if (what.type === "talk") talk(what.who);
     else if (what.type === "piece") home.tools.select(what.instance);
@@ -174,6 +181,8 @@ function render() {
   $("open-levels").setAttribute("aria-label", `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View rewards`);
   $("open-levels").style.setProperty("--progress", (lvl.progress * 100).toFixed(1) + "%");
   celebration.tick(!!openTab || !!home.tools.selected || state.paused);
+  guestCard.tick(!!openTab || celebration.active);
+  npcRewards.tick(!!openTab || !!home.tools.selected || celebration.active || state.paused || document.hidden);
   $("level-bar").style.width = (lvl.progress * 100).toFixed(1) + "%";
   $("hud-level").title = `Level ${lvl.level}: ${lvl.name}. ${lvl.tagline}.`;
   text("level-name", lvl.name);
@@ -219,17 +228,19 @@ const ui = {
   replaceState(next) { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(next))); state = next; location.reload(); },
 };
 const home = homeSheets(ui), collection = collectionSheets(ui);
-const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...settingsSheet(ui) };
+const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...settingsSheet(ui) };
 
 let openTab = null, lastBody = "";
 const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
+const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(id === "empire" ? "natalie" : "visitor-" + ["ghost", "witch", "vampire", "skeleton", "scarecrow"][kind]), save, tone: f => audio.tone(f), notice });
+const guestCard = createGuestCard({ state: () => state, portrait: id => scene.portrait(id) });
 $("open-levels").onclick = () => celebration.preview();
 $("fullscreen").onclick = async () => {
   try { if (document.fullscreenElement) await document.exitFullscreen(); else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); else notice("For fullscreen, add the game to your home screen from the browser menu."); }
   catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
 };
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
-const TABS = { shop: "shop", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "journal", reader: "journal", settings: null };
+const TABS = { shop: "shop", festival: "shop", care: "shop", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "journal", reader: "journal", settings: null };
 function draw() {
   const sheet = sheets[openTab]; if (!sheet) return;
   const html = sheet.body();
@@ -260,7 +271,7 @@ function markTab() {
 }
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
   const tab = t.dataset.tab;
-  if (tab === "patch") { leavePlace(); closeSheet(); scene.focus(window.innerWidth < 700 ? 15.5 : 20, 13.5); }
+  if (tab === "patch") { leavePlace(); closeSheet(); scene.fitView(); }
   else if (tab === "home") openHome();
   else openSheet(tab);
 }));

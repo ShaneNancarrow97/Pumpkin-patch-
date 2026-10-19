@@ -1,0 +1,117 @@
+// The first festival extension. Pure rules; no renderer or DOM dependencies.
+import { freshCocoaPrices, restoreCocoaPrices, freshCocoaExtras, restoreCocoaExtras, standHasStock, quoteStandOrder, payStandOrder } from "./cocoa-menu.js";
+export * from "./cocoa-menu.js";
+import { patchLevel } from "./levels.js";
+import { MEADOW, COCOA_TIERS, COCOA_SUPPLY, COCOA_APPROACH, PUMPKIN_APPROACH } from "../content/festival-meadow.js";
+export { MEADOW, COCOA_TIERS, COCOA_SUPPLY, fieldWidth } from "../content/festival-meadow.js";
+export const freshFestival = () => ({ meadow: false, cocoa: { level: 0, stock: 0, price: 4, open: true, courier: false, autoSupply: false, sold: 0, gross: 0, supplies: 0, invested: 0, missed: 0, prices: freshCocoaPrices(), extras: freshCocoaExtras(), lastSaleAt: -10 } });
+const count = (n, cap = 1e12) => Number.isSafeInteger(n) ? Math.max(0, Math.min(cap, n)) : 0;
+export function restoreFestival(raw) {
+  const f = freshFestival();
+  if (!raw || typeof raw !== "object") return f;
+  f.meadow = raw.meadow === true;
+  const c = f.cocoa, saved = raw.cocoa ?? {};
+  c.level = f.meadow ? count(saved.level, 3) : 0;
+  c.stock = count(saved.stock, COCOA_TIERS[c.level - 1]?.capacity ?? 0);
+  c.price = Math.max(3, count(Number.isInteger(saved.price) ? saved.price : 4, COCOA_TIERS[c.level - 1]?.maxPrice ?? 4));
+  c.open = saved.open !== false; c.courier = c.level >= 2 && saved.courier === true; c.autoSupply = c.courier && saved.autoSupply === true;
+  for (const key of ["sold", "gross", "supplies", "invested", "missed"]) c[key] = count(saved[key]);
+  c.extras = restoreCocoaExtras(saved.extras, c.level);
+  c.prices = restoreCocoaPrices(saved.prices);
+  return f;
+}
+const spendable = (s, amount) => !s.paused && Number.isFinite(s.coins) && s.coins >= amount;
+export function buyMeadow(s) {
+  if (s.festival.meadow || patchLevel(s).level < MEADOW.level || !spendable(s, MEADOW.price)) return false;
+  s.coins -= MEADOW.price; s.festival.meadow = true; s.festival.cocoa.invested += MEADOW.price; return true;
+}
+export function upgradeCocoa(s) {
+  const c = s.festival.cocoa, tier = COCOA_TIERS[c.level];
+  if (!s.festival.meadow || !tier || patchLevel(s).level < tier.level || !spendable(s, tier.price)) return false;
+  s.coins -= tier.price; c.invested += tier.price; c.level++;
+  if (c.level === 1) c.stock = 10;
+  return true;
+}
+export const cocoaCapacity = (s) => COCOA_TIERS[s.festival.cocoa.level - 1]?.capacity ?? 0;
+export const cocoaServiceSeconds = (s) => Math.max(1, 2.8 / (1 + .2 * (s.festival.cocoa.level - 1) + .16 * (s.visitorUpgrades?.cocoa ?? 0)));
+export function setCocoaPrice(s, price) {
+  const c = s.festival.cocoa;
+  if (s.paused || !c.level || !Number.isInteger(price) || price < 3 || price > COCOA_TIERS[c.level - 1].maxPrice) return false;
+  c.price = price; return true;
+}
+export function setCocoaOpen(s, open) {
+  if (s.paused || !s.festival.cocoa.level || typeof open !== "boolean") return false;
+  s.festival.cocoa.open = open; return true;
+}
+export function restockCocoa(s) {
+  const c = s.festival.cocoa, n = Math.min(COCOA_SUPPLY.batch, cocoaCapacity(s) - c.stock), cost = n * COCOA_SUPPLY.unit;
+  if (!c.level || n < 1 || !spendable(s, cost)) return 0;
+  s.coins -= cost; c.supplies += cost; c.stock += n; return n;
+}
+export function hireCocoaCourier(s) {
+  const c = s.festival.cocoa;
+  if (c.level < 2 || c.courier || !spendable(s, COCOA_SUPPLY.courier)) return false;
+  s.coins -= COCOA_SUPPLY.courier; c.invested += COCOA_SUPPLY.courier; c.courier = true; c.autoSupply = true; return true;
+}
+export function setCocoaAutoSupply(s, on) {
+  if (s.paused || !s.festival.cocoa.courier || typeof on !== "boolean") return false;
+  s.festival.cocoa.autoSupply = on; return true;
+}
+export function updateFestival(s) {
+  const c = s.festival.cocoa;
+  if (!s.paused && c.courier && c.autoSupply && c.stock <= 5 && s.coins >= COCOA_SUPPLY.reserve + COCOA_SUPPLY.batch * COCOA_SUPPLY.unit) restockCocoa(s);
+}
+// Festival guests bring a small, explicit allowance. A higher cocoa price competes
+// with their pumpkin money; quote the intended basket before selling a drink.
+export const cocoaAllowance = s => s.festival.cocoa.level && s.festival.cocoa.open && standHasStock(s) ? [0, 4, 7, 9][s.festival.cocoa.level] : 0;
+export const wantsCocoa = (s, v) => quoteStandOrder(s, v).length > 0;
+const inQueue = (v) => v.festival && ["to-cocoa", "queue", "serving"].includes(v.festival.phase);
+export function planFestivalVisit(s, v) {
+  const c = s.festival?.cocoa;
+  if (!c?.level || !c.open || !standHasStock(s) || !wantsCocoa(s, v)) return null;
+  const rank = s.visitors.filter(inQueue).length;
+  if (rank >= MEADOW.queue) return null;
+  return { phase: "to-cocoa", route: [...COCOA_APPROACH, [47, 20.6 + rank * .8]], segment: 1, x: 33, z: 28.5, dx: 0, dz: -1, elapsed: 0, walking: true, done: false };
+}
+function walk(m, target, dt) {
+  const dx = target[0] - m.x, dz = target[1] - m.z, d = Math.hypot(dx, dz);
+  m.dx = dx; m.dz = dz; m.walking = d > .005;
+  if (d < .005) { m.x = target[0]; m.z = target[1]; return dt; }
+  const seconds = d / MEADOW.speed, step = Math.min(dt / seconds, 1);
+  m.x += dx * step; m.z += dz * step;
+  return Math.max(0, dt - seconds);
+}
+function leaveCounter(m) {
+  m.phase = "to-shop"; m.route = [[m.x, m.z], [49, m.z], ...PUMPKIN_APPROACH]; m.segment = 1; m.walking = true;
+}
+// Returns true while the guest is on the excursion. Payment occurs exactly once
+// at the counter, before the pumpkin rules see the guest's remaining budget.
+export function tickFestivalVisit(s, v, dt, events) {
+  const m = v.festival;
+  if (!m || m.done) return false;
+  if (s.paused) return true;
+  let remaining = dt;
+  for (let i = 0; i < 24 && remaining > 1e-9; i++) {
+    if (m.phase === "to-cocoa" || m.phase === "to-shop") {
+      remaining = walk(m, m.route[m.segment], remaining);
+      if (remaining <= 1e-9) break;
+      if (++m.segment < m.route.length) continue;
+      if (m.phase === "to-shop") { m.done = true; m.walking = false; m.justArrived = true; return false; }
+      m.phase = "queue";
+    } else {
+      const c = s.festival.cocoa;
+      if (!c.open || !standHasStock(s) || !wantsCocoa(s, v)) { c.missed++; leaveCounter(m); continue; }
+      const rank = s.visitors.filter((other) => other.id < v.id && inQueue(other)).length;
+      remaining = walk(m, [47, 20.6 + rank * .8], remaining);
+      if (rank || remaining <= 1e-9) break;
+      m.phase = "serving"; m.walking = false;
+      const duration = cocoaServiceSeconds(s), use = Math.min(remaining, duration - m.elapsed);
+      m.elapsed += use; remaining -= use;
+      if (m.elapsed + 1e-9 < duration) break;
+      const order = quoteStandOrder(s, v), amount = payStandOrder(s, v, order);
+      if (amount) events.push({ type: "sale", route: "festival-cocoa", visitor: v.id, amount, quantity: order.length, items: order });
+      leaveCounter(m);
+    }
+  }
+  return !m.done;
+}

@@ -64,7 +64,7 @@ const nearPath = (x, z, width) => {
   return best < width;
 };
 const inPatch = (x, z) => ((x - 20) / 7.6) ** 2 + ((z - 15.1) / 5.6) ** 2 < 1;
-const edge = (x, z) => x < 1.6 || x > 38.4 || z > 24.4 || (z < 2.8 && !nearArchPath(x, z));
+const edge = (x, z, width = MAP.w) => x < 1.6 || x > width - 1.6 || z > 24.4 || (z < 2.8 && !nearArchPath(x, z));
 
 function cobbles(v, r, x, z, T, colors, amount) {
   v.box(x, -0.5, z, T, 0.5, T, 0x2a2430);                                                // grout
@@ -75,15 +75,15 @@ function cobbles(v, r, x, z, T, colors, amount) {
 // The yard's ground, as a dense height field (ground.js): stone paths, the
 // cobbled yard, grass and leaves round the edges, and the tilled patch with a
 // raised bed under each plot.
-function yardGround() {
+export function yardGround({ width = MAP.w, extraPath = () => false } = {}) {
   const pad = (x, z) => x > 31 && x < 32.6 && z > 8.6 && z < 10.6;
-  return buildGround({ x0: 0, x1: MAP.w, z0: -1, z1: MAP.d + 3 }, (x, z) => {
-    if (nearPath(x, z, 0.95) || nearArchPath(x, z) || pad(x, z)) return grounds.cobble(x, z, COL.stone, 0.42, 1, 0x2a2430);
+  return buildGround({ x0: 0, x1: width, z0: -1, z1: MAP.d + 3 }, (x, z) => {
+    if (nearPath(x, z, 0.95) || nearArchPath(x, z) || pad(x, z) || extraPath(x, z)) return grounds.cobble(x, z, COL.stone, 0.42, 1, 0x2a2430);
     if (inPatch(x, z)) {
       for (const p of PLOTS) { const b = grounds.bed(x, z, p); if (b) return b; }
       return grounds.soil(x, z);
     }
-    if (edge(x, z)) return grounds.grass(x, z);
+    if (edge(x, z, width)) return grounds.grass(x, z);
     return grounds.cobble(x, z, COL.yard, 0.3, 2, 0x2a2430);
   });
 }
@@ -97,7 +97,7 @@ function ground(v, r) {
 
 // Autumn trees: a trunk and a hollow, lumpy canopy shaded dark underneath and
 // bright on top, so each reads as a round voxel crown from above.
-function tree(v, r, x, z, size, kind = (r() * 3) | 0) {
+export function tree(v, r, x, z, size, kind = (r() * 3) | 0) {
   const pal = CANOPY[kind], s = 0.42, R = 1.9 * size, cy = 3.6 * size;
   v.block(x, 0, z, 0.5 * size, cy, 0.5 * size, COL.trunk);
   v.block(x + 0.3 * size, cy * 0.55, z, 0.9 * size, 0.22, 0.22, COL.trunk);
@@ -117,7 +117,7 @@ function lantern(v, x, y, z, lights, light = true) {
   if (light) lights.push({ x, y: y + 0.3, z });
 }
 
-function lanternPost(v, x, z, lights, light = true) {
+export function lanternPost(v, x, z, lights, light = true) {
   v.block(x, 0, z, 0.24, 1.8, 0.24, COL.fence);
   v.block(x, 1.8, z, 0.34, 0.1, 0.34, COL.fenceLight);
   lantern(v, x, 1.9, z, lights, light);
@@ -323,18 +323,22 @@ function shop(v, r, lights) {
   return { lights: [{ x: x - 2, y: 3, z: counterZ - 1.5 }, { x: x + 2.4, y: 3, z: counterZ - 1.5 }] };
 }
 
+// Shared picket detail for the original boundary and purchased land.
+export function fenceRun(v, r, ax, az, bx, bz, skip = () => false) {
+  const len = Math.hypot(bx - ax, bz - az), n = Math.round(len / 0.4), ux = (bx - ax) / len, uz = (bz - az) / len;
+  for (let i = 0; i <= n; i++) {
+    const x = ax + ux * i * 0.4, z = az + uz * i * 0.4;
+    if (skip(x, z)) continue;
+    if (i % 4 === 0) { v.block(x, 0, z, 0.24, 1.25, 0.24, COL.fence); v.block(x, 1.25, z, 0.3, 0.08, 0.3, COL.fenceLight); }
+    else v.block(x, 0, z, ux ? 0.16 : 0.08, 0.95 + (i % 2) * 0.06, uz ? 0.16 : 0.08, vary(COL.fenceLight, 0.12, r));
+    if (i < n && !skip(x + ux * 0.4, z + uz * 0.4)) for (const y of [0.3, 0.75]) v.box(Math.min(x, x + ux * 0.4), y, Math.min(z, z + uz * 0.4), Math.abs(ux) * 0.4 + 0.08, 0.1, Math.abs(uz) * 0.4 + 0.08, COL.fence);
+  }
+}
+
+
 // Wooden picket fences: round the front and sides, and across the back to the arch.
 function fence(v, r, lights) {
-  const run = (ax, az, bx, bz, skip = () => false) => {
-    const len = Math.hypot(bx - ax, bz - az), n = Math.round(len / 0.4), ux = (bx - ax) / len, uz = (bz - az) / len;
-    for (let i = 0; i <= n; i++) {
-      const x = ax + ux * i * 0.4, z = az + uz * i * 0.4;
-      if (skip(x, z)) continue;
-      if (i % 4 === 0) { v.block(x, 0, z, 0.24, 1.25, 0.24, COL.fence); v.block(x, 1.25, z, 0.3, 0.08, 0.3, COL.fenceLight); }
-      else v.block(x, 0, z, ux ? 0.16 : 0.08, 0.95 + (i % 2) * 0.06, uz ? 0.16 : 0.08, vary(COL.fenceLight, 0.12, r));
-      if (i < n && !skip(x + ux * 0.4, z + uz * 0.4)) for (const y of [0.3, 0.75]) v.box(Math.min(x, x + ux * 0.4), y, Math.min(z, z + uz * 0.4), Math.abs(ux) * 0.4 + 0.08, 0.1, Math.abs(uz) * 0.4 + 0.08, COL.fence);
-    }
-  };
+  const run = (...args) => fenceRun(v, r, ...args);
   run(0.4, 24.6, MAP.w - 0.4, 24.6, (x) => x > 31.2 && x < 34.8);
   run(0.4, 10, 0.4, 24.6);
   run(39.6, 12.4, 39.6, 24.6, (x, z) => nearPath(x, z, 1.2));
@@ -478,21 +482,26 @@ export function buildWorld() {
   for (let x = 8; x < 32; x += 1.3) for (let k = 0; k < 7; k++)                           // low autumn hedging beyond the front fence
     v.block(x + (r() - 0.5) * 1.2, (r() * 0.5), 25.9 + r() * 1.4, 0.42, 0.42, 0.42, vary(CANOPY[(r() * 3) | 0][1 + ((r() * 3) | 0)], 0.08, r));
   const group = v.build();
-  group.add(yardGround());
-  return { group, lights: [...lights, ...stall.lights], door: home.door };
+  const terrain = yardGround(); group.add(terrain);
+  return { group, ground: terrain, lights: [...lights, ...stall.lights], door: home.door };
 }
 
 // Signs carry their lettering on a canvas texture, in the game's display font.
 export function signBoard(text, sub, width) {
   const canvas = document.createElement("canvas");
-  canvas.width = 512; canvas.height = 160;
+  canvas.width = 1024; canvas.height = 320;
   const c = canvas.getContext("2d");
-  c.fillStyle = "#4a3020"; c.fillRect(0, 0, 512, 160);
-  c.strokeStyle = "#2a1a12"; c.lineWidth = 10; c.strokeRect(5, 5, 502, 150);
-  for (let y = 40; y < 160; y += 40) { c.fillStyle = "rgba(0,0,0,0.18)"; c.fillRect(0, y, 512, 3); }
-  c.fillStyle = "#ffe0a8"; c.textAlign = "center";
-  c.font = "600 54px Fraunces, Georgia, serif"; c.fillText(text, 256, 78);
-  c.fillStyle = "#e7b46e"; c.font = "600 26px 'DM Sans', sans-serif"; c.fillText(sub.toUpperCase(), 256, 122);
+  c.fillStyle = "#32231f"; c.fillRect(0, 0, 1024, 320);
+  c.strokeStyle = "#bc8b51"; c.lineWidth = 8; c.strokeRect(13, 13, 998, 294);
+  c.strokeStyle = "#17131c"; c.lineWidth = 5; c.strokeRect(25, 25, 974, 270);
+  c.textAlign = "center"; c.textBaseline = "middle";
+  const lettering = (value, y, maxSize, colour) => {
+    let size = maxSize;
+    do { c.font = `700 ${size}px Georgia, serif`; if (c.measureText(value).width <= 920) break; size -= 2; } while (size > 28);
+    c.lineWidth = 5; c.strokeStyle = "#17101b"; c.strokeText(value, 512, y); c.fillStyle = colour; c.fillText(value, 512, y);
+  };
+  lettering(text, sub ? 122 : 160, 118, "#fff1ce");
+  if (sub) lettering(sub.toUpperCase(), 238, 52, "#f4d39e");
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   const board = new THREE.Mesh(new THREE.BoxGeometry(width, width * 160 / 512, 0.12), [

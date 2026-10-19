@@ -40,7 +40,7 @@ test("rush saves migrate from v4, keep remaining game time, and reject endless d
   const old = M.freshState(); old.version = 4; delete old.streak.visitorBoostUntil;
   assert.equal(M.restoreState(old).streak.visitorBoostUntil, 0);
   const s = M.freshState(); for (let i = 0; i < 6; i++) M.rewardHarvestStreak(s); s.time = 7;
-  const loaded = M.restoreState(M.saveData(s)); assert.equal(loaded.version, 5); assert.equal(M.visitorRushSeconds(loaded), 13);
+  const loaded = M.restoreState(M.saveData(s)); assert.equal(loaded.version, M.STATE_VERSION); assert.equal(M.visitorRushSeconds(loaded), 13);
   loaded.paused = true; M.update(loaded, 30); assert.equal(M.visitorRushSeconds(loaded), 13, "tea break pauses the countdown");
   s.streak.visitorBoostUntil = 1e9; assert.equal(M.visitorRushSeconds(M.restoreState(s)), 20);
 });

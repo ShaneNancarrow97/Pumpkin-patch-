@@ -7,6 +7,8 @@ import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitor
 import { freshHouse, restoreHouse } from "./rules/house.js";
 import { freshLooks, freshWardrobe, restoreWardrobe } from "./rules/wardrobe.js";
 import { awardLevels, freshProgression, restoreProgression } from "./rules/levels.js";
+import { freshFestival, restoreFestival, updateFestival } from "./rules/festival-meadow.js";
+import { freshCustomerCare, restoreCustomerCare } from "./rules/customer-care.js";
 import { FAVOURS, checkMemories } from "./rules/progress.js";
 
 export * from "./rules/farm.js";
@@ -16,7 +18,10 @@ export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 
-export const STATE_VERSION = 5;
+export const STATE_VERSION = 7;
+export * from "./rules/festival-meadow.js";
+export * from "./rules/customer-care.js";
+export * from "./rules/guest-needs.js";
 export * from "./rules/levels.js";
 
 export function freshState() {
@@ -27,7 +32,7 @@ export function freshState() {
     upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(),
     stock: freshStock(), holds: [],
     stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
-    shop: freshShop(),
+    shop: freshShop(), festival: freshFestival(), customerCare: freshCustomerCare(),
     house: freshHouse(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
     claimed: [], memories: [], progression: freshProgression(), paused: false,
@@ -82,6 +87,8 @@ export function restoreState(raw) {
   s.claimed = [...new Set(claimed.filter((id) => FAVOURS.some((f) => f.id === id)))];
   s.memories = Array.isArray(raw.memories) ? [...new Set(raw.memories.filter((id) => typeof id === "string"))] : [];
   s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4));
+  s.festival = restoreFestival(raw.festival);
+  s.customerCare = restoreCustomerCare(raw.customerCare);
   closeForTheNight(s);
   return s;
 }
@@ -100,6 +107,7 @@ export function update(s, dt) {
     s.shop.arrivalTimer *= HARVEST_RUSH.rate;
   }
   updateFarm(s, dt, events);
+  updateFestival(s);
   updateStall(s, dt, events);
   updateShop(s, dt, events);
   checkMemories(s, events);

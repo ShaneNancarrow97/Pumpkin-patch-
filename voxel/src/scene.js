@@ -4,16 +4,21 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { Voxels, seeded, vary } from "./voxels.js";
+import { createSandy } from "./sandy.js";
+import { cocoaProp } from "./cocoa-props.js";
+import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { pumpkinTemplate, sproutTemplate, bigPumpkin } from "./pumpkins.js";
 import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, buildCottage, signBoard } from "./world.js";
 import { buildVisitor, animateWalk } from "./characters.js";
 import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./sprite-voxels.js";
 import { loadSpriteSheets, spriteActor, spriteVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
-import { VARIETIES, VISIT, openPlots, activeLook, counterSide } from "./model.js";
+import { VARIETIES, VISIT, visitorLeaveSeconds, openPlots, activeLook, counterSide } from "./model.js";
 import { createPlaces, ORIGIN } from "./places.js";
 import { INTERIOR } from "./interiors.js";
 import { loadDecor } from "./decor.js";
 import { GRID } from "./model.js";
+import { createFestivalWorld } from "./festival-meadow-world.js";
+import { fieldWidth, MEADOW, MEADOW_EXIT } from "./content/festival-meadow.js";
 import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
 
 const WALK = 2.4;
@@ -64,12 +69,12 @@ export function createScene(canvas, state, hooks) {
   scene.add(buildBackdrop(PITCH));
 
   // Signs.
-  const patchSign = signBoard("The Pumpkin Patch", "grown with love", 3.6);
-  patchSign.position.set(13.4, 3.2, 8.4); scene.add(patchSign);
+  const patchSign = signBoard("Pumpkin Patch", "grown with love", 5);
+  patchSign.position.set(13.4, 3.2, 8.4); patchSign.userData = { type: "seeds" }; scene.add(patchSign);
   const post = new THREE.Mesh(new THREE.BoxGeometry(0.2, 4.2, 0.2), new THREE.MeshStandardMaterial({ color: 0x1c1418 }));
   post.position.set(11.4, 2.1, 8.4); post.castShadow = true; scene.add(post);
-  const shopSign = signBoard("The Honest Pumpkin", "farm shop", 4.2);
-  shopSign.position.set(SHOP.x, 6.1, SHOP.z - 2.0); scene.add(shopSign);
+  const shopSign = signBoard("Skyla’s Shop", "the honest pumpkin", 6);
+  shopSign.position.set(SHOP.x, 6.1, SHOP.z - 2.0); shopSign.userData = { type: "shop" }; scene.add(shopSign);
 
   // The big pumpkin.
   const big = new THREE.Group(), pumpkinTilt = new THREE.Group(), pumpkinArt = bigPumpkin();
@@ -82,7 +87,7 @@ export function createScene(canvas, state, hooks) {
   scene.add(bigLight);
 
   // Plots: mound, sprout, a pumpkin per variety, a glow when ripe, a hit box.
-  const pumpkins = VARIETIES.map((_, i) => pumpkinTemplate(i)), sprout = sproutTemplate(), pickables = [];
+  const pumpkins = VARIETIES.map((_, i) => pumpkinTemplate(i)), sprout = sproutTemplate(), pickables = [patchSign, shopSign];
   // Soft round glow for ripe pumpkins, drawn once.
   const glowCanvas = document.createElement("canvas"); glowCanvas.width = glowCanvas.height = 64;
   const gc = glowCanvas.getContext("2d"), grad = gc.createRadialGradient(32, 32, 2, 32, 32, 32);
@@ -105,6 +110,7 @@ export function createScene(canvas, state, hooks) {
     scene.add(g);
     return { g, sp, pk, halo, lockedVines };
   });
+  const festivalWorld = createFestivalWorld({ scene, state, world, signBoard, createCashier: createSandy });
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
@@ -151,7 +157,7 @@ export function createScene(canvas, state, hooks) {
   }
   function placeCharacters() {
     placeSkyla(); placeActor("natalie"); placeActor("shane");
-    for (const entry of visitorModels.values()) { scene.remove(entry.m); entry.m.userData.dispose?.(); }
+    for (const entry of visitorModels.values()) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); entry.m.userData.dispose?.(); }
     visitorModels.clear();                                                            // rebuilt in the new style next frame
     const inside = places.place;
     if (inside?.kind === "room") places.enterRoom(inside.id);
@@ -179,7 +185,9 @@ export function createScene(canvas, state, hooks) {
   const nearestActor = (x, z) => Object.values(actors).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
 
   // Visitors.
-  const visitorModels = new Map(), inLen = routeLength(ROUTE_IN), outLen = routeLength(ROUTE_OUT), COUNTER_GAP = 1;
+  const visitorModels = new Map(), inLen = routeLength(ROUTE_IN), outLen = routeLength(ROUTE_OUT), meadowOutLen = routeLength(MEADOW_EXIT), COUNTER_GAP = 1;
+  const guestHitGeometry = new THREE.BoxGeometry(1.15, 2.2, .9), guestHitMaterial = new THREE.MeshBasicMaterial({ visible: false });
+  const carriedCup = cocoaProp("cocoa");
   const carried = pumpkins.map((t) => { const m = t.clone(); m.scale.setScalar(0.5); return m; });
 
   // The cottage's rooms and the shop floor (places.js).
@@ -242,7 +250,7 @@ export function createScene(canvas, state, hooks) {
     if (view.place) { clampView(); frameRoom(w, h); return; }
     // Ease from a phone crop to the whole yard, with room around the edges.
     view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(w).minZoom, 2.6);
-    const span = cameraLayout(w).farmSpan / view.zoom, halfW = span / 2, halfH = halfW / aspect;
+    const span = (cameraLayout(w).farmSpan + (fieldWidth(state) - MAP.w) * cameraLayout(w).overview) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
     camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
     camera.updateProjectionMatrix();
     clampView();
@@ -294,6 +302,7 @@ export function createScene(canvas, state, hooks) {
     } else { view.x = drag.vx - dx * k; view.z = drag.vz - dy * k / Math.sin(PITCH); }
     clampView(); frame();
   });
+  let lastPick = null;
   const end = (e) => {
     const wasTap = drag && drag.moved < 8 && touches.size === 1;
     touches.delete(e.pointerId);
@@ -302,7 +311,11 @@ export function createScene(canvas, state, hooks) {
       const box = canvas.getBoundingClientRect();
       pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
       ray.setFromCamera(pointer, active());
-      const hit = ray.intersectObjects(view.place ? places.pickables : pickables, false)[0];
+      scene.updateMatrixWorld(true);
+      const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables, ...festivalWorld.pickables, ...[...visitorModels.values()].map(e => e.hit)], false);
+      // A visible guest at a counter takes priority over its large building hit box.
+      const hit = hits.find(h => ["visitor", "customer"].includes(h.object.userData.type)) ?? hits[0];
+      lastPick = hit ? { ...hit.object.userData } : null;
       if (hit) hooks.onPick({ ...hit.object.userData, point: hit.point });
     }
     drag = null;
@@ -322,9 +335,9 @@ export function createScene(canvas, state, hooks) {
       return;
     }
     const halfW = camera.right, vertical = farmVerticalLimits(camera.top, PITCH, MAP.d);
-    const maxX = MAP.w + 1 - halfW, minX = halfW - 1;
+    const maxX = fieldWidth(state) + 1 - halfW, minX = halfW - 1;
     view.z = THREE.MathUtils.clamp(view.z, vertical.min, vertical.max);
-    view.x = minX > maxX ? MAP.w / 2 : THREE.MathUtils.clamp(view.x, minX, maxX);
+    view.x = minX > maxX ? fieldWidth(state) / 2 : THREE.MathUtils.clamp(view.x, minX, maxX);
   }
 
   // Floating "+£12" and sparkle effects, as DOM labels projected from the world.
@@ -381,26 +394,33 @@ export function createScene(canvas, state, hooks) {
       a.hit.position.set(pos.x, 1.1, pos.z);
     }
 
+    festivalWorld.tick(time);
+
     // Visitors along the stone path.
     for (const v of state.visitors) {
       let entry = visitorModels.get(v.id);
-      if (!entry) { const m = visitorModel(v.kind); scene.add(m); entry = { m, sprite: m.userData.sprite, bag: null }; visitorModels.set(v.id, entry); }
+      if (!entry) { const m = visitorModel(v.kind), hit = new THREE.Mesh(guestHitGeometry, guestHitMaterial); hit.position.y = 1.1; hit.userData = { type: "visitor", id: v.id }; m.add(hit); scene.add(m); entry = { m, hit, sprite: m.userData.sprite, bag: null }; visitorModels.set(v.id, entry); }
       const leaving = v.leaveAt !== null && v.age >= v.leaveAt;
-      const t = leaving ? (v.age - v.leaveAt) / VISIT.leave : Math.min(1, v.age / VISIT.arrive);
-      const p = leaving ? along(ROUTE_OUT, t * outLen) : along(ROUTE_IN, t * inLen);
+      const t = leaving ? (v.age - v.leaveAt) / visitorLeaveSeconds(state) : Math.min(1, v.age / VISIT.arrive);
+      const excursion = v.festival && !v.festival.done;
+      const p = excursion ? v.festival : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, t * (state.festival.meadow ? meadowOutLen : outLen)) : along(ROUTE_IN, t * inLen);
       // Parties stand side by side along the counter: each fans out to its own
       // place over the last stretch of the path, and back in as it sets off home.
-      const fan = leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
+      const fan = excursion ? 0 : leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
       entry.m.position.set(p.x + counterSide(v.spot ?? 0) * COUNTER_GAP * fan, 0.04, p.z);
-      const walking = leaving || v.age < VISIT.arrive;
-      if (entry.sprite) animateVisitor(entry.m, v.age, walking, p.dx / (Math.hypot(p.dx, p.dz) || 1));
+      const walking = excursion ? v.festival.walking : leaving || v.age < VISIT.arrive;
+      if (entry.sprite) animateVisitor(entry.m, excursion ? time + v.id : v.age, walking, p.dx / (Math.hypot(p.dx, p.dz) || 1));
       else {
         entry.m.rotation.y = walking ? Math.atan2(p.dx, p.dz) : Math.PI;              // at the counter they face Skyla
         animateWalk(entry.m, time + v.id, walking);
       }
-      if (v.bought !== null && !entry.bag) { entry.bag = carried[v.bought].clone(); entry.bag.position.set(entry.sprite ? 0.36 : 0.45, entry.sprite ? 0.45 : 0.6, entry.sprite ? 0.3 : 0.2); entry.m.add(entry.bag); }
+      if (v.cocoaSpend && v.cocoaKind !== null && !entry.cup) {
+        entry.cup = v.cocoaKind === "deluxe" ? cocoaProp("deluxe") : carriedCup.clone(); entry.cup.position.set(-.4, .9, .25); entry.m.add(entry.cup);
+      }
+      if (v.snack && !entry.snack) { entry.snack = cocoaProp("smores"); entry.snack.position.set(.4, .9, .25); entry.m.add(entry.snack); }
+      if (v.bought !== null && !entry.bag) { entry.bag = state.customerCare.bags && v.quantity > 1 ? customerBag() : carried[v.bought].clone(); entry.bag.position.set(entry.sprite ? 0.36 : 0.45, entry.sprite ? 0.45 : 0.6, entry.sprite ? 0.3 : 0.2); entry.m.add(entry.bag); }
     }
-    for (const [id, entry] of visitorModels) if (!state.visitors.some((v) => v.id === id)) { scene.remove(entry.m); entry.m.userData.dispose?.(); visitorModels.delete(id); }
+    for (const [id, entry] of visitorModels) if (!state.visitors.some((v) => v.id === id)) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); entry.m.userData.dispose?.(); visitorModels.delete(id); }
 
     // Fireflies.
     const fp = flies.geometry.attributes.position;
@@ -440,6 +460,7 @@ export function createScene(canvas, state, hooks) {
     // A sale: Skyla reacts, and the takings float up from whichever counter you can see.
     sale(amount, route) {
       paying = 1.2;
+      if (route === "festival-cocoa" && !view.place) { floatText("+£" + amount, MEADOW.counter[0], 2.2, MEADOW.counter[1], "coin"); return; }
       if (route === "shop" && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
       else if (!view.place) floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin");
     },
@@ -465,12 +486,15 @@ export function createScene(canvas, state, hooks) {
       frame();
     },
     get place() { return places.place; },
+    get lastPick() { return lastPick; },
+    get festivalStatus() { return festivalWorld.status; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
     fitView() {
-      Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? 20 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
+      Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? fieldWidth(state) / 2 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
       frame();
     },
     refreshRoom() { places.refresh(); },
+    refreshEstate() { festivalWorld.sync(); frame(); },
     selectPiece(instance) { places.select(instance); },
     previewPiece(instance, x, z, ok) { places.preview(instance, x, z, ok); },
     showGrid(on) { places.setGrid(on); },

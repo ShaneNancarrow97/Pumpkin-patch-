@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { GRID, footprint, pieceFootprint, roomStyle, roomPieces, roomLayout, available, displayCount, decorById } from "./model.js";
 import { WALL_H, INTERIOR, buildRoom, buildShopInterior, SHOP_SPOTS } from "./interiors.js";
 import { decorProp, shelfBooks, decorReady } from "./decor.js";
@@ -41,6 +42,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   keyLight.shadow.camera.near = 4; keyLight.shadow.camera.far = 24;
   keyLight.shadow.autoUpdate = false;
   scene.add(keyLight, keyLight.target);
+  const guestHitGeometry = new THREE.BoxGeometry(1.1, 2.2, .8), guestHitMaterial = new THREE.MeshBasicMaterial({ visible: false }); guestHitGeometry.userData.shared = true;
   let farm = null;
   let place = null, built = null, pieces = new Map(), pickables = [], actors = [], customers = new Map(), tables = [], skyla = null;
   let selection = null, ghost = null, showGrid = false, gridLines = null, tableKey = "";
@@ -197,8 +199,10 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       if (!a) {
         a = { model: indoors(visitorModel(c.kind)), pos: { ...SHOP_SPOTS.door } };
         a.model.position.set(o.x + a.pos.x, 0, o.z + a.pos.z);
+        a.hit = new THREE.Mesh(guestHitGeometry, guestHitMaterial); a.hit.position.y = 1.1; a.hit.userData = { type: "customer", id: c.id }; a.model.add(a.hit); pickables.push(a.hit);
         root.add(a.model); customers.set(c.id, a);
       }
+      if (c.outcome === "bought" && c.quantity > 1 && state.customerCare.bags && !a.bag) { a.bag = customerBag(); a.bag.position.set(.38, .45, .3); a.model.add(a.bag); }
       // Entering, they walk in from the door; leaving, they walk back out.
       const target = c.phase === "entering" ? customerSpot({ ...c, phase: "browsing" }, 0) : customerSpot(c, queue.indexOf(c));
       const dx = target.x - a.pos.x, dz = target.z - a.pos.z, d = Math.hypot(dx, dz), step = Math.min(d, 2.4 * dt);
@@ -206,7 +210,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       a.model.position.set(o.x + a.pos.x, 0, o.z + a.pos.z);
       animate(a.model, time + c.id, d > 0.05, c.id + time, d > 0.05 ? dx / d : 0);
     }
-    for (const [id, a] of customers) if (!seen.has(id)) { root.remove(a.model); a.model.userData.dispose?.(); customers.delete(id); }
+    for (const [id, a] of customers) if (!seen.has(id)) { root.remove(a.model); pickables = pickables.filter(p => p !== a.hit); disposeCustomerBag(a.bag); a.model.userData.dispose?.(); customers.delete(id); }
   }
 
   // Shane and Natalie potter about the room, between free spots near the front.

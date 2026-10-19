@@ -15,8 +15,7 @@ export function addStock(s, v, n = 1) {
 
 // A shopper fills a basket from what is offered: their favourites first, then
 // anything else, as many as their budget and basket allow (src/core/shop.js).
-export function chooseBasket(s, shopper, offered, owner, prices) {
-  if (s.holds.some((h) => h.owner === owner)) return null;
+export function quoteBasket(s, shopper, offered, prices) {
   const order = [...new Set([...shopper.preferred, 0, 1, 2, 3])].filter((v) => offered.includes(v));
   let budget = shopper.budget, spaces = shopper.basketLimit;
   const lines = [];
@@ -28,7 +27,13 @@ export function chooseBasket(s, shopper, offered, owner, prices) {
     if (take < free || !spaces) break;
   }
   if (!lines.length) return null;
-  s.holds.push({ owner, lines });
+  return lines;
+}
+
+export function chooseBasket(s, shopper, offered, owner, prices) {
+  if (s.holds.some((h) => h.owner === owner)) return null;
+  const lines = quoteBasket(s, shopper, offered, prices);
+  if (lines) s.holds.push({ owner, lines });
   return lines;
 }
 

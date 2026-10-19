@@ -16,7 +16,7 @@ const EFFECTS = {
   sign: (s) => `a party every ${secs(M.stallArrivalSeconds(s))}, a shopper every ${secs(M.shopArrivalSeconds(s))}`,
   party: (s) => (M.partyMax(s) > 1 ? `parties of up to ${M.partyMax(s)}` : "everyone comes on their own"),
   lights: (s) => `a party every ${secs(M.stallArrivalSeconds(s))}`,
-  cocoa: (s) => `they wait ${secs(M.stallPatience(s))} for stock${M.mugPrice(s) ? `, ${money(M.mugPrice(s))} a cup` : ""}`,
+  cocoa: (s) => `they wait ${secs(M.stallPatience(s))} for stock${s.festival.cocoa.level ? `, cocoa service ${secs(M.cocoaServiceSeconds(s))}` : M.mugPrice(s) ? `, ${money(M.mugPrice(s))} a cup` : ""}`,
   loyalty: (s) => ["no regulars yet", "one in four is a regular", "one in two is a regular"][M.visitorUpgradeLevel(s, "loyalty")],
 };
 // The same farm one level on, to describe what buying it would do.
@@ -79,7 +79,7 @@ export function farmSheets(ui) {
     }
     const inside = ui.scene.place?.kind === "shop";
     const visit = `<button class="button gold wide" data-visit="${inside ? "leave" : "shop"}">${inside ? "Back to the patch" : "Step inside the shop"}</button>`;
-    const stats = `<div class="stats"><div><b>${sh.served}</b><span>served inside</span></div><div><b>${money(sh.income)}</b><span>taken at the till</span></div><div><b>${sh.customers.filter((c) => c.phase !== "leaving").length}/${M.SHOP_CAPACITY[sh.capacityLevel]}</b><span>browsing now</span></div></div>`;
+    const stats = `<div class="stats"><div><b>${sh.served}</b><span>served inside</span></div><div><b>${money(sh.income)}</b><span>pumpkin takings</span></div><div><b>${money(s.customerCare.tips.shop)}</b><span>tips at the till</span></div><div><b>${sh.customers.filter((c) => c.phase !== "leaving").length}/${M.SHOP_CAPACITY[sh.capacityLevel]}</b><span>browsing now</span></div></div>`;
     const tables = Array.from({ length: M.displayCount(sh) }, (_, i) => {
       const on = sh.displays[i];
       return `<div class="table-row"><h4>Table ${i + 1}</h4><div class="chips" role="group" aria-label="What table ${i + 1} shows">${[null, 0, 1, 2, 3].map((v) => {
@@ -98,17 +98,17 @@ export function farmSheets(ui) {
   // Who is on the path now, a party at a time.
   function guest(v) {
     const doing = v.outcome === "bought" ? `bought ${plural(v.quantity, "pumpkin")} for ${money(v.amount)}` : v.outcome === "shopping" ? "on the way" : v.outcome === "budget" ? "couldn’t afford what’s left" : "found the shelves empty";
-    return `<p class="guest${v.place ? " member" : ""}"><b>${M.STALL_PROFILES[v.profile].name}</b>${v.regular ? ` <span class="tag">regular</span>` : ""} · up to ${money(v.budget)} · ${doing}${v.mug ? " · a cup of hot chocolate" : ""}</p>`;
+    return `<p class="guest${v.place ? " member" : ""}"><b>${M.STALL_PROFILES[v.profile].name}</b>${v.regular ? ` <span class="tag">regular</span>` : ""} · ${money(v.budget)} budget${v.cocoaAllowance ? ` (includes ${money(v.cocoaAllowance)} cocoa money)` : ""} · ${doing}${v.mug ? " · a cup of hot chocolate" : ""}</p>`;
   }
   const partyLabel = (v) => (v.size > 1 ? `<p class="party-label">${["", "", "Two friends", "A party of three", "A family of four"][v.size]}</p>` : "");
 
   function stall(s) {
     const st = s.stall, held = (v) => M.held(s, v);
-    return `<div class="stats"><div><b>${st.served}</b><span>neighbours served</span></div><div><b>${money(st.income)}</b><span>taken at the stall</span></div><div><b>${st.itemsSold}</b><span>pumpkins sold</span></div><div><b>${st.missedBudget + st.missedStock}</b><span>left empty-handed</span></div>${st.cocoa ? `<div><b>${money(st.cocoa)}</b><span>in hot chocolate</span></div>` : ""}</div>
+    return `<div class="stats"><div><b>${st.served}</b><span>neighbours served</span></div><div><b>${money(st.income)}</b><span>pumpkin takings</span></div><div><b>${money(s.customerCare.tips.stall)}</b><span>stall tips</span></div><div><b>${st.itemsSold}</b><span>pumpkins sold</span></div><div><b>${st.missedBudget + st.missedStock}</b><span>left empty-handed</span></div>${st.cocoa ? `<div><b>${money(st.cocoa)}</b><span>in cocoa & treats</span></div>` : ""}</div>
       <h3 class="section">In stock</h3><div class="stock-row">${M.VARIETIES.map((v, i) => `<div class="stock">${ui.thumb(i)}<b>${M.available(s, i)}</b><span>${v.name}${held(i) ? ` · ${held(i)} in baskets` : ""}</span></div>`).join("")}</div>
       <h3 class="section">At the stall now</h3>${s.visitors.length ? s.visitors.map((v, i) => (v.place === 0 || i === 0 ? partyLabel(v) : "") + guest(v)).join("") : `<p>No one on the path just now.</p>`}
       <h3 class="section">Who comes by</h3>${M.STALL_PROFILES.map((p) => `<p class="guest"><b>${p.name}</b> · ${money(p.budget)} to spend · up to ${plural(p.basketLimit, "pumpkin")} · likes ${p.preferred.map((v) => M.VARIETIES[v].name).join(", ")}</p>`).join("")}
-      ${st.receipts.length ? `<h3 class="section">Recent sales</h3>` + st.receipts.slice(0, 6).map((r) => `<p class="guest">${M.STALL_PROFILES[r.profile].name}: ${r.lines.map((l) => `${l.quantity} ${M.VARIETIES[l.variety].name}`).join(" + ")}${r.mug ? " + a hot chocolate" : ""} · ${money(r.amount + (r.mug ?? 0))}</p>`).join("") : ""}
+      ${st.receipts.length ? `<h3 class="section">Recent sales</h3>` + st.receipts.slice(0, 6).map((r) => `<p class="guest">${M.STALL_PROFILES[r.profile].name}: ${r.lines.map((l) => `${l.quantity} ${M.VARIETIES[l.variety].name}`).join(" + ")}${r.mug ? " + a hot chocolate" : ""} · ${money(r.amount + (r.mug ?? 0))}${r.tip ? ` + ${money(r.tip)} tip` : ""}</p>`).join("") : ""}
       <p class="small">Missed: ${st.missedBudget} over budget, ${st.missedStock} sold out.</p>`;
   }
 
@@ -122,7 +122,7 @@ export function farmSheets(ui) {
       const open = sign || M.visitorUpgradeUnlocked(s, id), price = sign ? M.upgradeCost(s, id) : M.visitorUpgradeCost(s, id);
       const effect = open ? `Now: ${EFFECTS[id](s)}.${done ? "" : ` Next: ${EFFECTS[id](nextLevel(s, id))}.`}` : u.needs.text;
       const button = !open ? `<button class="button" disabled>Locked</button>` : priceButton(sign ? "buy" : "visitup", id, price, s.coins, done && "Done");
-      return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${u.name}</h3><p>${u.text}</p><p class="effect">${effect}</p><div class="pips">${Array.from({ length: most }, (_, i) => `<i class="${i < level ? "on" : ""}"></i>`).join("")}</div></div>${button}</article>`;
+      return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${id === "cocoa" && s.festival.cocoa.level ? "Cocoa hospitality" : u.name}</h3><p>${id === "cocoa" && s.festival.cocoa.level ? "A warmer welcome: quicker cocoa service and longer pumpkin patience." : u.text}</p><p class="effect">${effect}</p><div class="pips">${Array.from({ length: most }, (_, i) => `<i class="${i < level ? "on" : ""}"></i>`).join("")}</div></div>${button}</article>`;
     }).join("");
     return stats + cards;
   }
@@ -131,9 +131,11 @@ export function farmSheets(ui) {
     shop: {
       eyebrow: "Skyla’s counter", title: "The Honest Pumpkin",
       setTab(t) { tab = t; },
-      body() { const s = ui.state; return tabs() + ({ farm, seeds, shop, stall, visitors })[tab](s); },
+      body() { const s = ui.state; return tabs() + `<button class="button wide" data-festival>Moonbrew Meadow · ${s.festival.meadow ? "Manage your festival" : "Expand your farm"} →</button><button class="button wide" data-care>Carrier bags · Tips & stats →</button>` + ({ farm, seeds, shop, stall, visitors })[tab](s); },
       bind(body) {
         const s = ui.state;
+        body.querySelector("[data-care]")?.addEventListener("click", () => ui.openSheet("care"));
+        body.querySelector("[data-festival]")?.addEventListener("click", () => ui.openSheet("festival"));
         body.querySelectorAll("[data-shoptab]").forEach((b) => (b.onclick = () => { tab = b.dataset.shoptab; ui.draw(); }));
         body.querySelectorAll("[data-buy]").forEach((b) => (b.onclick = () => {
           const id = b.dataset.buy;

@@ -6,6 +6,9 @@ import { economy } from "../../../src/content/economy.js";
 import { stallProfiles } from "../../../src/content/stall.js";
 import { checkoutSeconds, customerModels, customerProfiles, shopCapacity, shopUpgradeCosts } from "../../../src/content/shop.js";
 import { VARIETIES, visitorRushFactor } from "./farm.js";
+import { freshGuestNeeds, tickGuestNeeds, enjoyPumpkin } from "./guest-needs.js";
+import { settleCustomerCare } from "./customer-care.js";
+import { cocoaAllowance, planFestivalVisit, tickFestivalVisit } from "./festival-meadow.js";
 import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
 
 const variety = (productId) => VARIETIES.findIndex((v) => "pumpkin-" + v.id === productId);
@@ -16,6 +19,7 @@ export const STALL_PROFILES = stallProfiles.map((p) => ({ ...p, preferred: p.pre
 
 // The stall: how long the walk up the path takes, and how long they wait for stock.
 export const VISIT = { arrive: 7, patience: 6, linger: 1, leave: 4 };
+export const visitorLeaveSeconds = s => s.festival?.meadow ? 9 : VISIT.leave;
 export const freshStall = () => ({ income: 0, itemsSold: 0, served: 0, missedBudget: 0, missedStock: 0, cocoa: 0, receipts: [] });
 
 // Upgrades for the visitors, beside Spread the word (farm.js): bigger parties
@@ -53,7 +57,7 @@ export const isRegular = (s, id) => lv(s, "loyalty") > 0 && (id + Math.floor(id 
 // A regular takes one more pumpkin home, and brings the money for it.
 const basketFor = (s, id, p) => {
   const extra = isRegular(s, id) ? 1 : 0;
-  return { budget: Math.round(p.budget * (1 + extra / p.basketLimit)), basketLimit: p.basketLimit + extra, regular: extra > 0 };
+  return { budget: Math.round(p.budget * (1 + extra / p.basketLimit)), basketLimit: p.basketLimit + extra + (s.customerCare?.bags ?? 0), regular: extra > 0 };
 };
 // Neighbours a minute on the path: the Visitors tab's headline number.
 export const visitorsPerMinute = (s) => (60 / stallArrivalSeconds(s)) * (partyMax(s) + 1) / 2;
@@ -87,11 +91,15 @@ function counterSpot(s) {
 // even when they come with a party. The loyalty card counts from when they set off.
 function createPasserby(s, id, party = id, place = 0, size = 1) {
   const profile = id % STALL_PROFILES.length, p = STALL_PROFILES[profile];
-  return { id, kind: id % KINDS.length, age: 0, profile, ...basketFor(s, id, p), preferred: [...p.preferred], basket: [], amount: 0, quantity: 0, bought: null, outcome: "shopping", leaveAt: null, mug: 0, party, place, size, spot: counterSpot(s) };
+  const v = { id, kind: id % KINDS.length, age: 0, profile, ...basketFor(s, id, p), preferred: [...p.preferred], basket: [], amount: 0, quantity: 0, bought: null, outcome: "shopping", leaveAt: null, mug: 0, party, place, size, spot: counterSpot(s) };
+  v.cocoaAllowance = cocoaAllowance(s); v.budget += v.cocoaAllowance;
+  v.needs = freshGuestNeeds(id); v.originalBudget = v.budget; v.festival = planFestivalVisit(s, v);
+  return v;
 }
 
 // A cup from the hot chocolate stand on the way out, whether or not they found a pumpkin.
 function buyMug(s, v) {
+  if (s.festival?.cocoa.level) return 0;
   v.mug = mugPrice(s);
   s.coins += v.mug; s.earned += v.mug; s.stall.cocoa += v.mug;
   return v.mug;
@@ -117,16 +125,21 @@ export function updateStall(s, dt, events) {
     events.push({ type: "arrival", visitor: v.id, party: a.party, place: a.place, size: a.size });
   }
   for (const v of s.visitors) {
+    tickGuestNeeds(v, dt, v.festival?.phase === "queue" || v.age > VISIT.arrive + 4 && v.leaveAt === null);
+    if (tickFestivalVisit(s, v, dt, events)) continue;
+    if (v.festival?.justArrived) { v.age = VISIT.arrive; v.festival.justArrived = false; }
     v.age += dt;
     if (v.leaveAt !== null || v.age < VISIT.arrive) continue;
     const owner = "visitor-" + v.id, lines = chooseBasket(s, v, [0, 1, 2, 3], owner, PRICES);
     if (lines) {
       const receipt = commitHold(s, owner), mug = buyMug(s, v);
       pay(s, receipt, s.stall);
+      const care = settleCustomerCare(s, receipt, v, "stall", v.age - VISIT.arrive);
+      v.tip = care.tip; v.quality = care.quality; v.budget -= receipt.amount + care.tip; enjoyPumpkin(v, care.quality, care.service);
       Object.assign(v, { basket: receipt.lines, amount: receipt.amount, quantity: receipt.quantity, bought: receipt.lines[0].variety, outcome: "bought", leaveAt: v.age + VISIT.linger });
-      s.stall.receipts.unshift({ visitor: v.id, profile: v.profile, party: v.party, size: v.size, amount: receipt.amount, quantity: receipt.quantity, lines: receipt.lines, mug });
+      s.stall.receipts.unshift({ visitor: v.id, profile: v.profile, party: v.party, size: v.size, amount: receipt.amount, quantity: receipt.quantity, lines: receipt.lines, mug, tip: care.tip, quality: care.quality });
       s.stall.receipts.length = Math.min(20, s.stall.receipts.length);
-      events.push({ type: "sale", route: "stall", amount: receipt.amount + mug, quantity: receipt.quantity, mug, visitor: v.id });
+      events.push({ type: "sale", route: "stall", amount: receipt.amount + mug + care.tip, tip: care.tip, quality: care.quality, quantity: receipt.quantity, mug, visitor: v.id });
     } else if (v.age >= VISIT.arrive + stallPatience(s)) {
       v.outcome = available(s) > 0 ? "budget" : "soldout";
       s.stall[v.outcome === "budget" ? "missedBudget" : "missedStock"]++;
@@ -135,7 +148,7 @@ export function updateStall(s, dt, events) {
       if (buyMug(s, v)) events.push({ type: "sale", route: "cocoa", amount: v.mug, quantity: 0, mug: v.mug, visitor: v.id });
     }
   }
-  s.visitors = s.visitors.filter((v) => v.leaveAt === null || v.age < v.leaveAt + VISIT.leave);
+  s.visitors = s.visitors.filter((v) => v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s));
 }
 
 // The indoor shop: open it, then add room, display tables and a faster till.
@@ -173,7 +186,8 @@ export function assignDisplay(s, slot, v) {
 
 function createCustomer(s, id, slot) {
   const p = customerProfiles[(id * 7) % customerProfiles.length];
-  return { id, slot, kind: (id * 3 + Math.floor(id / 5)) % KINDS.length, ...basketFor(s, id, p), preferred: p.preferred.map(variety), phase: "entering", remaining: 3, checkoutDuration: 0, basket: [], spent: 0, quantity: 0, outcome: "shopping" };
+  const customer = { id, slot, kind: (id * 3 + Math.floor(id / 5)) % KINDS.length, ...basketFor(s, id, p), preferred: p.preferred.map(variety), phase: "entering", remaining: 3, checkoutDuration: 0, basket: [], spent: 0, quantity: 0, outcome: "shopping" };
+  customer.originalBudget = customer.budget; customer.needs = freshGuestNeeds(id, true); return customer;
 }
 const occupied = (shop) => shop.customers.filter((c) => c.phase !== "leaving").length;
 
@@ -192,20 +206,23 @@ export function updateShop(s, dt, events) {
   }
   const offered = shop.displays.slice(0, displayCount(shop)).filter((v) => v !== null);
   for (const c of shop.customers) {
+    tickGuestNeeds(c, dt, c.phase === "queue");
     if (c.phase === "queue") continue;
     c.remaining = Math.max(0, c.remaining - dt);
     if (c.remaining > 1e-8) continue;
     if (c.phase === "entering") { c.phase = "browsing"; c.remaining = 4; }
     else if (c.phase === "browsing") {
       const lines = chooseBasket(s, c, offered, "customer-" + c.id, PRICES);
-      if (lines) { c.basket = lines; c.phase = "queue"; }
+      if (lines) { c.basket = lines; c.phase = "queue"; c.queueJoinedAt = s.time; }
       else { c.outcome = "unavailable"; c.phase = "leaving"; c.remaining = 3; events.push({ type: "missed", reason: "shop", customer: c.id }); }
     } else if (c.phase === "paying") {
       const receipt = commitHold(s, "customer-" + c.id);
       if (!receipt) { c.phase = "leaving"; c.remaining = 3; continue; }
       pay(s, receipt, shop);
+      const care = settleCustomerCare(s, receipt, c, "shop", s.time - (c.queueJoinedAt ?? s.time - c.checkoutDuration));
+      c.tip = care.tip; c.quality = care.quality; c.budget -= receipt.amount + care.tip; enjoyPumpkin(c, care.quality, care.service);
       Object.assign(c, { spent: receipt.amount, quantity: receipt.quantity, outcome: "bought", phase: "leaving", remaining: 3 });
-      events.push({ type: "sale", route: "shop", amount: receipt.amount, quantity: receipt.quantity, customer: c.id });
+      events.push({ type: "sale", route: "shop", amount: receipt.amount + care.tip, tip: care.tip, quality: care.quality, quantity: receipt.quantity, customer: c.id });
     }
   }
   shop.customers = shop.customers.filter((c) => c.phase !== "leaving" || c.remaining > 1e-8);

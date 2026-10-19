@@ -369,3 +369,41 @@ input[type="range"] { accent-color: var(--gold); min-height: 44px; }
 @media (max-width: 720px) { .inside-place .hud { left: auto; min-width: 0; width: max-content; max-width: calc(100% - var(--rail-w) - 16px); } }
 .room-chip:disabled { color: var(--ink-soft); cursor: default; }
 .room-chip:disabled > span:last-child { display: none; }
+
+/* Contractor festival and customer care controls. */
+.sheet[data-section="festival"] .chip { min-width: 44px; flex-shrink: 0; }
+.care-receipt { display: flex; justify-content: space-between; gap: 12px; padding: 12px 2px; border-bottom: 1px solid var(--edge-soft); font-size: 13px; }
+.care-receipt > span { text-align: right; flex-shrink: 0; color: var(--gold-bright); }
+.care-receipt small { display: block; color: var(--ink-soft); font-size: 12px; margin-top: 4px; }
+.npc-reward { position: fixed; z-index: 20; top: calc(var(--top) + 118px); left: calc(var(--rail-w) + 8px); width: min(320px, calc(100% - var(--rail-w) - 16px)); display: grid; grid-template-columns: 1fr 44px; gap: 8px; padding: 12px; border: 1px solid #d9a46177; border-radius: 18px; background: linear-gradient(145deg, #302538f5, #1b1622fa); box-shadow: 0 10px 32px #0006; transition: opacity .4s, transform .4s; overflow: hidden; }
+.npc-reward[hidden], .npc-reward.suspended { display: none; }
+.npc-reward.fading { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+.npc-reward-copy { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.npc-reward-copy b { display: block; font: 600 14px/1.35 var(--body); margin-top: 3px; }
+.npc-reward-copy small { font-size: 12px; color: var(--gold-bright); }
+.npc-reward-portrait { width: 40px; height: 46px; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #ffffff09; }
+.npc-reward-portrait img { max-width: 100%; height: 62px; object-fit: contain; }
+.npc-reward-symbol { color: var(--gold-bright); font-size: 28px; }
+.npc-reward > .button { grid-row: 2; grid-column: 1 / -1; min-height: 44px; }
+.npc-reward-close { grid-column: 2; grid-row: 1; width: 44px; height: 44px; border: 0; border-radius: 12px; background: #ffffff06; color: var(--ink-soft); font-size: 24px; }
+.npc-reward-time { position: absolute; left: 0; bottom: 0; width: var(--remaining, 100%); height: 2px; background: #e7b46e88; }
+@media (max-height: 480px) { .npc-reward { top: calc(var(--top) + 64px); left: auto; right: 12px; width: 280px; } }
+@media (prefers-reduced-motion: reduce) { .npc-reward { transition: none; } }
+.special-prices label { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--ink-soft); font-size: 12px; padding: 0 4px 8px; }
+.special-prices select { min-width: 88px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--edge-soft); border-radius: 12px; background: #302537; color: #fff0cf; font: 600 14px var(--body); }
+.guest-card { position: fixed; z-index: 22; left: calc(var(--rail-w) + 12px); bottom: calc(var(--dock-h) + 90px); width: min(290px, calc(100% - var(--rail-w) - 24px)); padding: 14px; border: 1px solid #b9986a80; border-radius: 18px; background: #211b29f5; box-shadow: 0 12px 36px #0007; }
+.guest-card[hidden] { display: none; }
+.guest-card header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.guest-card header > div { flex: 1; min-width: 0; }
+.guest-card header b { display: block; font-size: 14px; }
+.guest-card header small { display: block; margin-top: 5px; font-size: 12px; line-height: 1.4; color: var(--ink-soft); }
+.guest-face { width: 36px; height: 44px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+.guest-face img { height: 50px; width: auto; }
+.guest-needs label { display: grid; grid-template-columns: 68px 1fr 38px; align-items: center; gap: 8px; margin: 9px 0; font-size: 12px; }
+.guest-needs meter { width: 100%; height: 12px; accent-color: #ca9a5d; }
+.guest-needs b { font-size: 12px; font-weight: 500; text-align: right; color: var(--ink-soft); }
+.guest-card footer { display: flex; justify-content: space-between; gap: 10px; padding-top: 10px; border-top: 1px solid var(--edge-soft); font-size: 12px; color: var(--ink-soft); }
+.guest-money { color: #fff0cf; }
+@media (max-height: 480px) { .guest-card { bottom: 12px; width: 260px; padding: 10px; } .guest-card header { margin-bottom: 6px; } .guest-needs label { margin: 6px 0; } }
+
+.sandy-portrait { display: block; width: 56px; height: 56px; border-radius: 14px; background-size: 260% auto; background-position: 17% 8%; background-repeat: no-repeat; }
