@@ -5,7 +5,7 @@
 import { economy } from "../../../src/content/economy.js";
 import { stallProfiles } from "../../../src/content/stall.js";
 import { checkoutSeconds, customerModels, customerProfiles, shopCapacity, shopUpgradeCosts } from "../../../src/content/shop.js";
-import { VARIETIES } from "./farm.js";
+import { VARIETIES, visitorRushFactor } from "./farm.js";
 import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
 
 const variety = (productId) => VARIETIES.findIndex((v) => "pumpkin-" + v.id === productId);
@@ -42,8 +42,8 @@ const lv = (s, id) => (id === "sign" ? s.upgrades.sign : s.visitorUpgrades?.[id]
 export const partyMax = (s) => 1 + lv(s, "party");
 // Party sizes run through every size up to the most, so the average is (max + 1) / 2.
 export const partySize = (s, party) => 1 + ((party * 5 + 2) % partyMax(s));
-export const stallArrivalSeconds = (s) => (economy.outdoorArrivalSeconds - 3) * Math.pow(economy.advertisingFactor, lv(s, "sign")) * Math.pow(LIGHTS, lv(s, "lights"));
-export const shopArrivalSeconds = (s) => economy.indoorArrivalSeconds * Math.pow(economy.advertisingFactor, lv(s, "sign"));
+export const stallArrivalSeconds = (s) => (economy.outdoorArrivalSeconds - 3) * Math.pow(economy.advertisingFactor, lv(s, "sign")) * Math.pow(LIGHTS, lv(s, "lights")) * visitorRushFactor(s);
+export const shopArrivalSeconds = (s) => economy.indoorArrivalSeconds * Math.pow(economy.advertisingFactor, lv(s, "sign")) * visitorRushFactor(s);
 export const stallPatience = (s) => PATIENCE[lv(s, "cocoa")];
 export const mugPrice = (s) => MUG[lv(s, "cocoa")];
 // One shopper in four is a regular with a loyalty card, then one in two. The

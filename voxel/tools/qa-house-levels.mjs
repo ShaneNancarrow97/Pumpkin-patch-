@@ -49,7 +49,7 @@ try{
  await page.setViewportSize({width:1280,height:800});
  await page.locator('#fullscreen').click();check(await page.evaluate(()=>!!document.fullscreenElement),'fullscreen button enters fullscreen');await page.evaluate(()=>document.exitFullscreen());
  await page.locator('#open-settings').click();await page.locator('#toggle-music').click();
- const tracks=await page.locator('#music-track option').evaluateAll(opts=>opts.map(o=>o.value));check(tracks.length===8,'eight MIDI songs available, including all four supplied files');
+ const tracks=await page.locator('#music-track option').evaluateAll(opts=>opts.map(o=>o.value));check(tracks.length===9,'nine MIDI songs available, including all five supplied files');
  for(const id of tracks){await page.locator('#music-track').selectOption(id);await page.waitForTimeout(200);const status=await page.evaluate(()=>PumpkinVoxel.audio.status);check(status.playing&&status.track===id&&status.duration>30,`MIDI playback: ${id}`)}
  await page.locator('#toggle-music').click();check(!(await page.evaluate(()=>PumpkinVoxel.audio.status.playing)),'muting stops the MIDI scheduler');await page.locator('#sheet-close').click();
  await page.emulateMedia({reducedMotion:'reduce'});await page.evaluate(()=>{const s=PumpkinVoxel.state();s.earned=535;PumpkinVoxel.advance(.1)});await page.waitForSelector('#level-celebration:not([hidden])');

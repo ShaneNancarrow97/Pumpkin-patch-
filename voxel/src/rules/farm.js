@@ -23,7 +23,10 @@ export const UPGRADES = [
 
 export const freshUpgrades = () => ({ tools: 0, yield: 0, auto: 0, plots: 0, sign: 0 });
 export const freshPlots = () => Array.from({ length: 12 }, () => ({ phase: "empty", progress: 0, variety: 0 }));
-export const freshStreak = () => ({ count: 0, until: 0, best: 0, bonusCoins: 0, nextBonusAt: 0 });
+export const HARVEST_RUSH = { seconds: 20, rate: 1.5 };
+export const visitorRushSeconds = (s) => Math.max(0, (s.streak?.visitorBoostUntil ?? 0) - s.time);
+export const visitorRushFactor = (s) => visitorRushSeconds(s) > 0 ? 1 / HARVEST_RUSH.rate : 1;
+export const freshStreak = () => ({ count: 0, until: 0, best: 0, bonusCoins: 0, nextBonusAt: 0, visitorBoostUntil: 0 });
 
 export const openPlots = (s) => 6 + s.upgrades.plots * 3;
 export const growTime = (s, i) => VARIETIES[s.plots[i].variety].grow * Math.pow(0.82, s.upgrades.tools);
@@ -110,8 +113,12 @@ export function rewardHarvestStreak(s) {
   if (bonus) {
     s.coins += bonus; s.earned += bonus; f.bonusCoins += bonus;
     f.nextBonusAt = s.time + economy.streakCooldownSeconds;
+    f.visitorBoostUntil = s.time + HARVEST_RUSH.seconds;
+    // Preserve the current wait's progress, so the rush helps immediately.
+    s.visitorTimer /= HARVEST_RUSH.rate;
+    s.shop.arrivalTimer /= HARVEST_RUSH.rate;
   }
-  return { count: f.count, bonus };
+  return { count: f.count, bonus, visitorRush: bonus ? HARVEST_RUSH.seconds : 0 };
 }
 
 export function updateFarm(s, dt, events) {

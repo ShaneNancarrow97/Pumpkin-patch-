@@ -1,12 +1,13 @@
 // A small offline MIDI synthesiser with bounded polyphony. It pauses when the
 // page is hidden and starts only after a gesture. No network or audio library.
+import { createMusicQueue } from "./music-queue.js";
 import { decodeMidi } from "./midi.js";
 import { MUSIC_TRACKS } from "./music-tracks.js";
 export { MUSIC_TRACKS };
 
 export function createAudio(prefs) {
   let ctx = null, master = null, noise = null, touched = false, timer = null, clip = null, start = 0, cursor = 0, selected = null, duckUntil = 0;
-  const voices = new Set(), cache = new Map();
+  const voices = new Set(), cache = new Map(), queue = createMusicQueue(MUSIC_TRACKS.map((t) => t.id));
   const current = () => MUSIC_TRACKS.find((t) => t.id === prefs.musicTrack) ?? MUSIC_TRACKS[0];
   function ensure() {
     ctx ??= new (window.AudioContext || window.webkitAudioContext)();
@@ -53,7 +54,10 @@ export function createAudio(prefs) {
       const n = clip.notes[cursor++], when = start + n.time;
       if (when >= now - .035) playNote(n, Math.max(now, when));
     }
-    if (now >= start + clip.duration + .12) { start += clip.duration + .15; cursor = 0; }
+    if (now >= start + clip.duration + .12) {
+      if (prefs.musicShuffle !== false) { prefs.musicTrack = queue.next(selected); sync(); }
+      else { start += clip.duration + .15; cursor = 0; }
+    }
   }
   function sync() {
     if (!touched) return;
@@ -87,8 +91,10 @@ export function createAudio(prefs) {
         [69, 72, 76, 81, 79, 81].forEach((note, i) => blip(440 * 2 ** ((note - 69) / 12), start + i * .105, .36, Math.min(.05, prefs.musicVolume * .14 + (prefs.sound ? .015 : 0)), "triangle"));
       } catch {}
     },
-    setTrack(id) { if (!MUSIC_TRACKS.some((t) => t.id === id)) return; prefs.musicTrack = id; sync(); },
+    setTrack(id) { if (!MUSIC_TRACKS.some((t) => t.id === id)) return; prefs.musicTrack = id; queue.reset(); sync(); },
+    setShuffle(on) { prefs.musicShuffle = !!on; queue.reset(); },
+    nextTrack() { prefs.musicTrack = queue.next(prefs.musicTrack ?? current().id, prefs.musicShuffle !== false); sync(); },
     setVolume(v) { prefs.musicVolume = Math.max(0, Math.min(1, Number(v) || 0)); if (master && ctx) master.gain.setTargetAtTime(level() * (ctx.currentTime < duckUntil ? .22 : 1), ctx.currentTime, .04); },
-    get status() { return { track: selected, playing: !!timer, voices: voices.size, duration: clip?.duration ?? 0, context: ctx?.state ?? "waiting" }; },
+    get status() { return { track: selected, playing: !!timer, voices: voices.size, duration: clip?.duration ?? 0, context: ctx?.state ?? "waiting", shuffle: prefs.musicShuffle !== false }; },
   };
 }

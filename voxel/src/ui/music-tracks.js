@@ -1,4 +1,5 @@
 // Source MIDI is embedded in the offline build; no remote player or soundfont.
+import livingDeadGirl from "../../assets/music/living-dead-girl.mid";
 import ghostbusters from "../../assets/music/ghostbusters.mid";
 import nightmare from "../../assets/music/nightmare.mid";
 import thriller from "../../assets/music/thriller.mid";
@@ -13,6 +14,7 @@ export const MUSIC_TRACKS = [
   { id: "lullaby", name: "Lullaby for a Dead Man", credit: "Elena Siegman · your supplied MIDI", bytes: lullaby },
   { id: "nightmare", name: "Nightmare", credit: "Your supplied MIDI", bytes: nightmare },
   { id: "ghostbusters", name: "Ghostbusters", credit: "Your supplied MIDI", bytes: ghostbusters },
+  { id: "living-dead-girl", name: "Living Dead Girl", credit: "Rob Zombie · your supplied MIDI", bytes: livingDeadGirl },
   { id: "skyla", name: "Skyla’s Midnight Market", credit: "Original · spooky shop groove", bytes: skyla },
   { id: "moon", name: "Moonlit Mischief", credit: "Original · gentle haunted bells", bytes: moon },
   { id: "parade", name: "Pumpkin Parade", credit: "Original · retro Halloween dance", bytes: parade },

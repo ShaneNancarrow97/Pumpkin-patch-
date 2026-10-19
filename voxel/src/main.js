@@ -24,7 +24,7 @@ setInterval(save, 5000);
 document.addEventListener("visibilitychange", () => document.hidden && save());
 
 const prefs = (() => {
-  const base = { glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", sound: false };
+  const base = { glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false };
   try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; }
 })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
@@ -185,9 +185,9 @@ function render() {
   $("goal").classList.toggle("ready", ready.length > 0);
   text("goal-text", ready.length ? (ready.length > 1 ? `${ready.length} favours are ready to claim` : ready[0].guest + " has a reward for you") : next ? `${next.title} · ${M.favourProgress(state, next)}/${next.target}` : "Every favour done. The neighbours adore you.");
   $("journal-badge").hidden = !ready.length;
-  const streak = state.streak, on = streak.count >= 2 && state.time <= streak.until;
-  $("streak").hidden = !on || !!scene.place;
-  if (on) text("streak", `Harvest streak ×${streak.count}`);
+  const streak = state.streak, rush = Math.ceil(M.visitorRushSeconds(state)), on = streak.count >= 2 && state.time <= streak.until;
+  $("streak").hidden = (!on && !rush) || !!scene.place;
+  if (on || rush) text("streak", rush ? `${on ? "Streak ×" + streak.count + " · " : "Harvest rush · "}visitors +50% · ${rush}s` : `Harvest streak ×${streak.count}`);
   $("paused").hidden = !state.paused;
   if (openTab) draw();
 }
@@ -228,7 +228,7 @@ $("fullscreen").onclick = async () => {
   try { if (document.fullscreenElement) await document.exitFullscreen(); else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); else notice("For fullscreen, add the game to your home screen from the browser menu."); }
   catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
 };
-document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
+document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
 const TABS = { shop: "shop", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "journal", reader: "journal", settings: null };
 function draw() {
   const sheet = sheets[openTab]; if (!sheet) return;

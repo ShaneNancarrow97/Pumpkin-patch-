@@ -5,7 +5,11 @@ Base: `1a36b59f65f6295f3d328a8d0328be2c6deb4ef6` (`voxel-reference`)
 
 Read the [full handover](../../handovers/05-house-levels-music-contractor.md) for each completed part, integration points, save migration, controls and balance. [Verification](QA.md) records completed checks and limits.
 
-Completed: six premium voxel floor items; compact house UI; 360° floor rotation and side-wall hanging; fullscreen/Fold layout; gentler tap pumpkin; 12 levels with real one-time rewards, confetti and a jingle; 21-second base outdoor visitors and fourth frequency tiers; eight offline MIDI tracks, including all four supplied files.
+Completed: six premium voxel floor items; compact house UI; 360° floor rotation and side-wall hanging; fullscreen/Fold layout; gentler tap pumpkin; 12 levels with real one-time rewards, confetti and a jingle; 21-second base outdoor visitors and fourth frequency tiers; nine offline MIDI tracks, including all five supplied files.
+
+## Latest follow-up
+
+Read [Fold framing, shuffle and harvest rush](../../handovers/06-fold-shuffle-harvest-rush.md): wider fullscreen/unfolded camera, shuffle/Next song, Living Dead Girl, and a 20-second visitor boost from harvest streaks. Save schema is now 5.
 
 ## Pull and review
 

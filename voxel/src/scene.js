@@ -14,6 +14,7 @@ import { createPlaces, ORIGIN } from "./places.js";
 import { INTERIOR } from "./interiors.js";
 import { loadDecor } from "./decor.js";
 import { GRID } from "./model.js";
+import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
 
 const WALK = 2.4;
 
@@ -215,15 +216,16 @@ export function createScene(canvas, state, hooks) {
     // middle, floor to cornice, and drags along to see the rest.
     // Rooms grow with the house, so the room's own size comes from the place.
     const { w: rw, d: rd } = places.place ?? GRID;
-    const o = ORIGIN[view.place], aspect = w / h, p = INTERIOR.pitch, tall = aspect < 1, half = tall ? 3.5 : rw / 2 + 0.4;
-    const corners = tall ? [[-half, 5.4, 0], [half, 5.4, 0], [0, -0.1, rd + 0.3]] : [[-half, 5.4, 0], [half, 5.4, 0], [-half, -0.1, rd + 0.3], [half, -0.1, rd + 0.3]];
+    const o = ORIGIN[view.place], aspect = w / h, p = INTERIOR.pitch, layout = cameraLayout(w);
+    const half = 3.5 + (rw / 2 + 0.4 - 3.5) * layout.overview;
+    const corners = [[-half, 5.4, 0], [half, 5.4, 0], [-half, -0.1, rd + 0.3], [half, -0.1, rd + 0.3]];
     const target = new THREE.Vector3(o.x + rw / 2 + view.x, 2, o.z + rd * 0.42 + view.z), dir = new THREE.Vector3(0, Math.sin(p), Math.cos(p));
     probe.fov = INTERIOR.fov; probe.aspect = aspect; probe.near = 0.1; probe.far = 200; probe.updateProjectionMatrix();
     const fits = (dist) => {
       probe.position.copy(target).addScaledVector(dir, dist); probe.lookAt(target); probe.updateMatrixWorld();
       for (const [x, y, z] of corners) {
         corner.set(o.x + rw / 2 + x, y, o.z + z).project(probe);
-        if (Math.abs(corner.x) > 1 || Math.abs(corner.y) > 1) return false;
+        if (Math.abs(corner.x) > 0.9 || Math.abs(corner.y) > 0.8) return false;
       }
       return true;
     };
@@ -238,8 +240,9 @@ export function createScene(canvas, state, hooks) {
     const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
     renderPass.camera = active();
     if (view.place) { clampView(); frameRoom(w, h); return; }
-    // Show the whole yard, 42 units across, on wide screens; the patch on a portrait phone.
-    const span = (aspect >= 1 ? 42 : 17) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
+    // Ease from a phone crop to the whole yard, with room around the edges.
+    view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(w).minZoom, 2.6);
+    const span = cameraLayout(w).farmSpan / view.zoom, halfW = span / 2, halfH = halfW / aspect;
     camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
     camera.updateProjectionMatrix();
     clampView();
@@ -247,16 +250,22 @@ export function createScene(canvas, state, hooks) {
     camera.position.set(target.x, target.y + Math.sin(PITCH) * dist, target.z + Math.cos(PITCH) * dist);
     camera.lookAt(target);
   }
-  let firstResize = true;
+  let firstResize = true, lastOverview = false;
   function resize() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     renderer.setSize(w, h, false); composer.setSize(w, h);
     bloom.resolution.set(w / 2, h / 2);
-    if (firstResize && w < 700 && !view.place) view.x = 15.5;
-    firstResize = false;                                                      // portrait: frame the pumpkin and the patch
+    const overview = cameraLayout(w).overview >= 0.95;
+    if (!firstResize && overview && !lastOverview) {
+      view.zoom = Math.min(view.zoom, 1);
+      if (farmView) farmView.zoom = Math.min(farmView.zoom, 1);
+    }
+    if (firstResize && w < 600 && !view.place) view.x = 15.5;
+    firstResize = false; lastOverview = overview;                                                      // portrait: frame the pumpkin and the patch
     frame();
   }
   window.addEventListener("resize", resize);
+  if (typeof ResizeObserver !== "undefined") new ResizeObserver(resize).observe(canvas);
   resize();
 
   // Input: drag to pan, wheel or pinch to zoom, tap to act.
@@ -274,7 +283,7 @@ export function createScene(canvas, state, hooks) {
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pinch && touches.size === 2) { const [a, b] = [...touches.values()];
       if (pinch.rotate) { const angle = Math.atan2(a.y - b.y, a.x - b.x), delta = Math.atan2(Math.sin(angle - pinch.angle), Math.cos(angle - pinch.angle)); pinch.angle = angle; hooks.onRotatePiece?.(delta * 180 / Math.PI); return; }
-      view.zoom = THREE.MathUtils.clamp(pinch.zoom * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, 0.7, 2.6); clampView(); frame(); return; }
+      view.zoom = THREE.MathUtils.clamp(pinch.zoom * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); return; }
     if (!drag) return;
     const k = worldPerPixel(), dx = e.clientX - drag.x, dy = e.clientY - drag.y;
     drag.moved = Math.max(drag.moved, Math.hypot(dx, dy));
@@ -300,21 +309,21 @@ export function createScene(canvas, state, hooks) {
   };
   canvas.addEventListener("pointerup", end);
   canvas.addEventListener("pointercancel", (e) => { touches.delete(e.pointerId); drag = null; if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null; });
-  canvas.addEventListener("wheel", (e) => { e.preventDefault(); view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), 0.7, 2.6); clampView(); frame(); }, { passive: false });
+  canvas.addEventListener("wheel", (e) => { e.preventDefault(); view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); }, { passive: false });
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.
   function clampView() {
     if (view.place) {
       // Offsets from the room's centre: a little way along it, and in or out.
-      const rw = places.place?.w ?? GRID.w, along = canvas.clientWidth < canvas.clientHeight ? rw / 2 - 2.8 : 1.5;
+      const rw = places.place?.w ?? GRID.w, along = cameraLayout(canvas.clientWidth).overview < .95 ? rw / 2 - 2.8 : 1.5;
       view.x = THREE.MathUtils.clamp(view.x, -along, along);
       view.z = THREE.MathUtils.clamp(view.z, -1.2, 1.2);
-      view.zoom = THREE.MathUtils.clamp(view.zoom, 0.85, 1.9);
+      view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(canvas.clientWidth).roomMinZoom, 1.9);
       return;
     }
-    const halfW = camera.right, depthHalf = camera.top / Math.sin(PITCH);
-    const maxZ = MAP.d + 1 - depthHalf, maxX = MAP.w + 1 - halfW, minX = halfW - 1;
-    view.z = Math.min(maxZ, Math.max(view.z, Math.min(maxZ, 6)));
+    const halfW = camera.right, vertical = farmVerticalLimits(camera.top, PITCH, MAP.d);
+    const maxX = MAP.w + 1 - halfW, minX = halfW - 1;
+    view.z = THREE.MathUtils.clamp(view.z, vertical.min, vertical.max);
     view.x = minX > maxX ? MAP.w / 2 : THREE.MathUtils.clamp(view.x, minX, maxX);
   }
 
@@ -456,6 +465,11 @@ export function createScene(canvas, state, hooks) {
       frame();
     },
     get place() { return places.place; },
+    get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
+    fitView() {
+      Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? 20 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
+      frame();
+    },
     refreshRoom() { places.refresh(); },
     selectPiece(instance) { places.select(instance); },
     previewPiece(instance, x, z, ok) { places.preview(instance, x, z, ok); },

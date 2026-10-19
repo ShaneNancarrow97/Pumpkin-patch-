@@ -11,12 +11,15 @@ export function settingsSheet(ui) {
       opened() { confirmReset = false; restoreError = ""; },
       body() {
         const p = ui.prefs, s = ui.state;
-        return toggle("toggle-music", "Music", "Eight offline MIDI tracks · four you supplied, four original", p.music) +
+        return toggle("toggle-music", "Music", `${MUSIC_TRACKS.length} offline MIDI tracks · originals and your supplied songs`, p.music) +
           `<div class="setting"><span>Music volume</span><input id="music-volume" type="range" min="0" max="1" step="0.05" value="${p.musicVolume}" aria-label="Music volume"></div>` +
           `<label class="setting"><span>Now playing<small>${(MUSIC_TRACKS.find((t) => t.id === p.musicTrack) ?? MUSIC_TRACKS[0]).credit}</small></span><select id="music-track" aria-label="Music track">${MUSIC_TRACKS.map((t) => `<option value="${t.id}" ${t.id === (p.musicTrack ?? "lantern") ? "selected" : ""}>${t.name}</option>`).join("")}</select></label>` +
+          toggle("toggle-shuffle", "Shuffle", "Play the soundtrack in a fresh order without back-to-back repeats", p.musicShuffle !== false) +
+          `<div class="setting"><span>Try another tune</span><button class="button" id="next-song">Next song</button></div>` +
           toggle("toggle-sound", "Sound effects", "Soft tones for planting, picking and sales", p.sound) +
           toggle("toggle-pause", "Tea break", "Pause the farm. Nothing grows and nobody visits.", !!s.paused) +
           toggle("toggle-glow", "Glow", "Bloom on lanterns, windows and ripe pumpkins", p.glow) +
+          `<div class="setting"><span>Camera framing<small>See more of the scene. Pinch or scroll to inspect.</small></span><button class="button" id="fit-view">Fit view</button></div>` +
           toggle("toggle-shadows", "Moonlit shadows", "Turn off on slower phones", p.shadows) +
           toggle("toggle-voxel-characters", "Voxel characters", "Build Shane, Natalie, Skyla and the visitors from voxels instead of the original sprites", p.voxelCharacters) +
           `<h3 class="section">Backups</h3><p class="small">Your farm saves itself on this device. Copy a backup to keep it safe, or paste one to restore it.</p>
@@ -29,11 +32,14 @@ export function settingsSheet(ui) {
       bind(body) {
         const p = ui.prefs, s = ui.state, flip = (key, after) => () => { p[key] = !p[key]; after?.(p[key]); ui.savePrefs(); ui.draw(); };
         body.querySelector("#toggle-music").onclick = flip("music", () => ui.audio.sync());
+        body.querySelector("#toggle-shuffle").onclick = () => { ui.audio.setShuffle(p.musicShuffle === false); ui.savePrefs(); ui.draw(); };
+        body.querySelector("#next-song").onclick = () => { ui.audio.nextTrack(); ui.savePrefs(); ui.draw(); };
         body.querySelector("#music-track").onchange = (e) => { ui.audio.setTrack(e.target.value); ui.savePrefs(); ui.draw(); };
         body.querySelector("#music-volume").oninput = (e) => { ui.audio.setVolume(+e.target.value); ui.savePrefs(); };
         body.querySelector("#toggle-sound").onclick = flip("sound");
         body.querySelector("#toggle-pause").onclick = () => { s.paused = !s.paused; ui.notice(s.paused ? "Tea break. The farm will wait for you." : "Back to work!"); ui.draw(); };
         body.querySelector("#toggle-glow").onclick = flip("glow", (on) => ui.scene.setBloom(on));
+        body.querySelector("#fit-view").onclick = () => { ui.scene.fitView(); ui.closeSheet(); };
         body.querySelector("#toggle-shadows").onclick = flip("shadows", (on) => ui.scene.setShadows(on));
         body.querySelector("#toggle-voxel-characters").onclick = flip("voxelCharacters", (on) => ui.scene.setVoxelCharacters(on));
         body.querySelector("#copy-backup").onclick = async () => {

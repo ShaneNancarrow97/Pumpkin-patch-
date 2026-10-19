@@ -49,7 +49,7 @@ test("owned rewards become honest coin receipts, and paused patches do not award
 test("version 3 saves retain progress without replaying historical celebrations", () => {
   const old = M.freshState(); old.version = 3; old.earned = 4500; delete old.progression;
   const loaded = M.restoreState(old);
-  assert.equal(loaded.version, 4); assert.equal(M.patchLevel(loaded).level, 6);
+  assert.equal(loaded.version, 5); assert.equal(M.patchLevel(loaded).level, 6);
   assert.deepEqual(loaded.progression.pending, []); assert.deepEqual(M.awardLevels(loaded), []);
   assert.equal(loaded.coins, old.coins);
   loaded.earned = 8500; assert.deepEqual(M.awardLevels(loaded), [7]);

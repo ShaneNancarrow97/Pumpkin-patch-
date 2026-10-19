@@ -1,7 +1,7 @@
 // Game rules for the voxel build. Pure: no DOM, no three.js, so the tests run it
 // in Node. One step of update() is a slice of game time. The rules live in
 // rules/; this file puts the state together, loads old saves and runs a step.
-import { VARIETIES, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
+import { VARIETIES, freshPlots, freshStreak, freshUpgrades, updateFarm, HARVEST_RUSH } from "./rules/farm.js";
 import { freshStock } from "./rules/stock.js";
 import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, updateShop, updateStall } from "./rules/selling.js";
 import { freshHouse, restoreHouse } from "./rules/house.js";
@@ -16,7 +16,7 @@ export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 
-export const STATE_VERSION = 4;
+export const STATE_VERSION = 5;
 export * from "./rules/levels.js";
 
 export function freshState() {
@@ -64,6 +64,7 @@ export function restoreState(raw) {
   if (Array.isArray(raw.stock) && v1) for (const v of raw.stock) if (VARIETIES[v]) s.stock[v]++;
   if (Array.isArray(raw.stock) && !v1 && raw.stock.length === 4) s.stock = raw.stock.map(count);
   if (raw.streak) for (const k of Object.keys(s.streak)) s.streak[k] = money(raw.streak[k]);
+  s.streak.visitorBoostUntil = raw.version >= 5 && s.streak.visitorBoostUntil > s.time ? Math.min(s.streak.visitorBoostUntil, s.time + HARVEST_RUSH.seconds) : 0;
   if (raw.stall) for (const k of ["income", "itemsSold", "served", "missedBudget", "missedStock", "cocoa"]) s.stall[k] = count(raw.stall[k]);
   if (raw.shop && typeof raw.shop === "object") {
     const shop = raw.shop;
@@ -91,7 +92,13 @@ export const saveData = (s) => ({ ...s, visitors: [], arriving: [], holds: [], s
 // Advances the farm by dt seconds and returns what happened, for the scene to show.
 export function update(s, dt) {
   const events = [];
+  if (s.paused) return events;
+  const rushUntil = s.streak.visitorBoostUntil, previousTime = s.time;
   s.time += dt;
+  if (previousTime < rushUntil && s.time >= rushUntil) {
+    s.visitorTimer *= HARVEST_RUSH.rate;
+    s.shop.arrivalTimer *= HARVEST_RUSH.rate;
+  }
   updateFarm(s, dt, events);
   updateStall(s, dt, events);
   updateShop(s, dt, events);
