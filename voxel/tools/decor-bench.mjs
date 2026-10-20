@@ -2,6 +2,8 @@
 // room camera, a 3/4 view from each side, from behind and above, and flipped,
 // beside the original art, into one PNG contact sheet.
 //   node tools/decor-bench.mjs f06 f01 f11 --out /path/sheet.png
+//   a piece is its id, then optionally :finish (blank shelves) and @seconds (animated
+//   pieces are ticked to that moment first): shelf-etagere:plum d13@0.5 d13@2
 //   options: --views room,left,right,back,top,side,flip   --cell 300   --pitch 22 (room camera, degrees)
 // Every run builds into its own temporary folder, so several can run at once.
 import fs from "node:fs";
@@ -14,8 +16,8 @@ import { chromium } from "playwright";
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2), opt = (name, fallback) => { const i = args.indexOf("--" + name); return i >= 0 ? args.splice(i, 2)[1] : fallback; };
 const out = path.resolve(opt("out", "decor-bench.png")), views = opt("views", ""), cell = opt("cell", ""), pitch = opt("pitch", "");
-const ids = args.filter((a) => /^[fd]\d\d$/.test(a));
-if (!ids.length) { console.error("usage: node tools/decor-bench.mjs f06 [f01 ...] [--out sheet.png] [--views room,left,right,back,top,side,flip] [--cell 300] [--pitch 22]"); process.exit(1); }
+const ids = args.filter((a) => /^[a-z][\w-]*(:[\w-]+)?(@[\d.]+)?$/.test(a));
+if (!ids.length) { console.error("usage: node tools/decor-bench.mjs f06 [f01 shelf-bracket:sage d13@1.5 ...] [--out sheet.png] [--views room,left,right,back,top,side,flip] [--cell 300] [--pitch 22]"); process.exit(1); }
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "decor-bench-"));
 try {

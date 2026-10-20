@@ -61,3 +61,5 @@ import lights from "./lights.js";
 import curios from "./curios.js";
 
 export const RECIPES = { ...seating, ...tables, ...shelves, ...flat, ...lights, ...curios };
+// Blank shelves have no art: their recipes come per finish, from the catalogue.
+export { shelfRecipe, SHELF_PX } from "./shelving.js";

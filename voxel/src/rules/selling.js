@@ -5,7 +5,7 @@
 import { economy } from "../../../src/content/economy.js";
 import { stallProfiles } from "../../../src/content/stall.js";
 import { checkoutSeconds, customerModels, customerProfiles, shopCapacity, shopUpgradeCosts } from "../../../src/content/shop.js";
-import { VARIETIES, visitorRushFactor } from "./farm.js";
+import { UPGRADES, VARIETIES, tierFactor, visitorBonus } from "./farm.js";
 import { freshGuestNeeds, tickGuestNeeds, enjoyPumpkin } from "./guest-needs.js";
 import { settleCustomerCare } from "./customer-care.js";
 import { cocoaAllowance, planFestivalVisit, tickFestivalVisit } from "./festival-meadow.js";
@@ -30,12 +30,22 @@ export const freshStall = () => ({ income: 0, itemsSold: 0, served: 0, missedBud
 // little: a regular's loyalty card adds a pumpkin and the money for it together.
 export const VISITOR_UPGRADES = [
   { id: "party", name: "Bring a friend", text: "Neighbours come up the path together: a friend, then a couple, then the whole family.", costs: [600, 1800, 6000], needs: null },
-  { id: "lights", name: "Fairy lights down the path", text: "Lanterns all the way to the gate. Parties set off for the stall more often.", costs: [600, 2000, 4800, 10500], needs: { id: "sign", text: "Opens after Spread the word." } },
+  { id: "lights", name: "Fairy lights down the path", text: "A string of lights by the gate, then lanterns all the way down. Parties set off for the stall more often.", costs: [150, 600, 2400, 9000], needs: { id: "sign", text: "Opens after Spread the word." } },
   { id: "cocoa", name: "A hot chocolate stand", text: "A bench and a warm mug. Neighbours wait longer for fresh pumpkins, and everyone buys a cup.", costs: [250, 700, 1400], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "loyalty", name: "A loyalty card", text: "Buy nine pumpkins, get a slightly larger pumpkin. Regulars take one more home, at the stall and in the shop.", costs: [6000, 12000], needs: { id: "open", text: "Opens with the shop." } },
 ];
 export const freshVisitorUpgrades = () => ({ party: 0, lights: 0, cocoa: 0, loyalty: 0 });
-export const LIGHTS = 0.88, PATIENCE = [6, 12, 20, 30], MUG = [0, 2, 4, 7];
+// Fairy lights do most at first; old saves' four tiers are never slower than before.
+export const LIGHTS = [0.85, 0.87, 0.89, 0.92], PATIENCE = [6, 12, 20, 30], MUG = [0, 2, 4, 7];
+// However hot the streak, parties set off at least this far apart and shoppers
+// come through the door no faster than this: the boost multiplies the upgrades,
+// so the floor is what keeps a long late-game streak from running away.
+// The quickest the path can get. Each frequency tier bought lowers it, so tiers
+// keep paying off for a player whose streak already keeps the path full.
+export const ARRIVAL_FLOOR = { stall: 5, shop: 1.5 };
+const floorFor = (s, base, step, least) => Math.max(least, base - step * (lv(s, "sign") + lv(s, "lights")));
+// At most this many neighbours on the path at once; the next party waits at the gate.
+export const PATH_CAP = 12;
 // Party members set off this far apart, so a party walks up the path in a line.
 export const PARTY_GAP = 0.5;
 // Places along Skyla's counter; beyond these, newcomers share a place.
@@ -46,8 +56,22 @@ const lv = (s, id) => (id === "sign" ? s.upgrades.sign : s.visitorUpgrades?.[id]
 export const partyMax = (s) => 1 + lv(s, "party");
 // Party sizes run through every size up to the most, so the average is (max + 1) / 2.
 export const partySize = (s, party) => 1 + ((party * 5 + 2) % partyMax(s));
-export const stallArrivalSeconds = (s) => (economy.outdoorArrivalSeconds - 3) * Math.pow(economy.advertisingFactor, lv(s, "sign")) * Math.pow(LIGHTS, lv(s, "lights")) * visitorRushFactor(s);
-export const shopArrivalSeconds = (s) => economy.indoorArrivalSeconds * Math.pow(economy.advertisingFactor, lv(s, "sign")) * visitorRushFactor(s);
+// The gaps the upgrades give, before any streak.
+const SIGN = UPGRADES.find((u) => u.id === "sign").steps;
+export const stallArrivalSeconds = (s) => (economy.outdoorArrivalSeconds - 3) * tierFactor(SIGN, lv(s, "sign")) * tierFactor(LIGHTS, lv(s, "lights"));
+export const shopArrivalSeconds = (s) => economy.indoorArrivalSeconds * tierFactor(SIGN, lv(s, "sign"));
+// How much faster than that the wait counts down with the streak's boost, held
+// to the floor. Timers count down faster rather than being rescaled, so a
+// boost that grows or fades changes the pace smoothly.
+const pace = (seconds, floor, bonus) => Math.max(1, Math.min(1 + bonus, seconds / floor));
+export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), visitorBonus(s));
+export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1.1), visitorBonus(s));
+// The gap between parties right now, and the boost that actually reaches the path.
+export const stallGapSeconds = (s) => stallArrivalSeconds(s) / stallPace(s);
+export const pathBoost = (s) => stallPace(s) - 1;
+// Guests away in the meadow at Sandy's stand have their own path, so they don't
+// hold the next party at the gate.
+export const onThePath = (s) => s.visitors.filter((v) => !v.festival || v.festival.done).length + s.arriving.length;
 export const stallPatience = (s) => PATIENCE[lv(s, "cocoa")];
 export const mugPrice = (s) => MUG[lv(s, "cocoa")];
 // One shopper in four is a regular with a loyalty card, then one in two. The
@@ -59,8 +83,8 @@ const basketFor = (s, id, p) => {
   const extra = isRegular(s, id) ? 1 : 0;
   return { budget: Math.round(p.budget * (1 + extra / p.basketLimit)), basketLimit: p.basketLimit + extra + (s.customerCare?.bags ?? 0), regular: extra > 0 };
 };
-// Neighbours a minute on the path: the Visitors tab's headline number.
-export const visitorsPerMinute = (s) => (60 / stallArrivalSeconds(s)) * (partyMax(s) + 1) / 2;
+// Neighbours a minute on the path, with the streak's boost: the Visitors tab's headline number.
+export const visitorsPerMinute = (s) => (60 / stallGapSeconds(s)) * (partyMax(s) + 1) / 2;
 
 const visitorLevel = (s, id) => (id === "open" ? Number(s.shop.unlocked) : lv(s, id));
 export const visitorUpgradeLevel = lv;
@@ -97,9 +121,10 @@ function createPasserby(s, id, party = id, place = 0, size = 1) {
   return v;
 }
 
-// A cup from the hot chocolate stand on the way out, whether or not they found a pumpkin.
+// A cup from the hot chocolate stand on the way out, whether or not they found a
+// pumpkin, unless they already had their treat at Sandy's stand in the meadow.
 function buyMug(s, v) {
-  if (s.festival?.cocoa.level) return 0;
+  if (v.treatReceipt) return 0;
   v.mug = mugPrice(s);
   s.coins += v.mug; s.earned += v.mug; s.stall.cocoa += v.mug;
   return v.mug;
@@ -111,11 +136,16 @@ function pay(s, receipt, ledger) {
 }
 
 export function updateStall(s, dt, events) {
-  s.visitorTimer -= dt;
+  s.visitorTimer -= dt * stallPace(s);
   if (s.visitorTimer <= 0) {
-    s.visitorTimer += stallArrivalSeconds(s);
-    const party = s.nextParty++, size = partySize(s, party);
-    for (let place = 0; place < size; place++) s.arriving.push({ party, place, size, wait: place * PARTY_GAP });
+    const party = s.nextParty, size = partySize(s, party);
+    // A full path holds the next party at the gate until there is room.
+    if (onThePath(s) + size > PATH_CAP) s.visitorTimer = 0;
+    else {
+      s.visitorTimer += stallArrivalSeconds(s);
+      s.nextParty++;
+      for (let place = 0; place < size; place++) s.arriving.push({ party, place, size, wait: place * PARTY_GAP });
+    }
   }
   // Each member sets off when their beat comes round.
   for (const a of s.arriving) a.wait -= dt;
@@ -194,7 +224,7 @@ const occupied = (shop) => shop.customers.filter((c) => c.phase !== "leaving").l
 export function updateShop(s, dt, events) {
   const shop = s.shop;
   if (!shop.unlocked) return;
-  shop.arrivalTimer -= dt;
+  shop.arrivalTimer -= dt * shopPace(s);
   if (shop.arrivalTimer <= 0) {
     if (occupied(shop) < SHOP_CAPACITY[shop.capacityLevel]) {
       const used = new Set(shop.customers.filter((c) => c.phase !== "leaving").map((c) => c.slot));

@@ -447,11 +447,26 @@ export default {
   },
   // An iron cauldron, turned round: a squat round belly on three scrolled legs,
   // a rolled lip, ring handles hanging from lugs, and the gilt vine and moon
-  // cast standing proud on its front. It brims with a glowing green brew,
-  // bubbles breaking on it and wisps rising. The art looks down a little, so it
-  // is projected at 16° from the pot's middle.
+  // cast standing proud on its front. It brims with a glowing green brew, built
+  // on its own (brew below) so decor.js can swirl it, break bubbles on it and
+  // send steam off it. The art looks down a little, so it is projected at 16°
+  // from the pot's middle.
   d13: {
     depth: 56, view: 16, front: 28,
+    // The brew's surface: its centre, radius and top in art pixels, for the motion.
+    brew: {
+      centre: [30, 28], radius: 21.5, top: 40,
+      // A little below the lip: lit lime where it heaves, darker in the lip's
+      // shadow, a few pale flecks of foam.
+      build(k) {
+        const cx = 30, cz = 28, R = profile([[31, 25.8], [37, 24.4], [41, 22.6]]), r = (x, z) => Math.hypot(x - cx, z - cz);
+        const lime = 0x6a9c2a, light = 0x94cc44, pale = 0xe4ec80, deep = 0x3e5a1a;
+        k.shape(cx - 22, 35, cz - 22, cx + 22, 39.6, cz + 22, (x, y, z) => r(x, z) < R(y) - 1.6, (x, y, z) => {
+          const e = r(x, z) / 21, h = hash(x / 2, z / 2, 2);
+          return e > 0.86 ? k.mix(lime, deep, (e - 0.86) * 6) : h < 0.035 ? pale : k.mix(lime, light, hash(x / 3, z / 3, 5));
+        }, { glow: true });
+      },
+    },
     build(k) {
       const cx = 30, cz = 28, R = profile([[8, 11], [10, 16], [13, 20.5], [18, 24], [24, 25.8], [31, 25.8], [37, 24.4], [41, 22.6]]);
       const r = (x, z) => Math.hypot(x - cx, z - cz), iron = k.mottle(6, 12, 20, 26, { trim: 0.3, amount: 0.3, grain: 3 }), dark = k.shade(iron, 0.75), copper = k.vary(k.avg(0, 27, 4, 38), 0.1);
@@ -465,16 +480,6 @@ export default {
       k.shape(cx - 27, 10, cz, cx + 27, 40, cz + 27, (x, y, z) => { const d = r(x, z) - R(y); return d > 0 && d < 0.9 && z > cz + 8 && gold(art(x, y, z)); }, "art", { part: 1 });
       // The rolled lip.
       ring(k, [cx, 42.6, cz], [1, 0, 0], [0, 0, 1], 22.4, 1.9, (x, y, z) => (z > cz - 6 ? "art" : iron(x, y, z)), { part: 2 });
-      // The brew, a little below the lip: lit lime where it heaves, darker in the
-      // lip's shadow, with bubbles breaking on it and a few drops flung up.
-      const lime = 0x6a9c2a, light = 0x94cc44, pale = 0xe4ec80, deep = 0x3e5a1a;
-      const bubbles = [[22, 31, 2.8], [37, 27, 3.2], [14, 28, 1.7], [29, 17, 2], [42, 36, 1.5], [19, 40, 1.4], [44, 20, 1.6], [31, 38, 1.2], [8, 33, 1.2]];
-      k.shape(cx - 22, 35, cz - 22, cx + 22, 39.6, cz + 22, (x, y, z) => r(x, z) < R(y) - 1.6, (x, y, z) => {
-        const e = r(x, z) / 21, h = hash(x / 2, z / 2, 2), ripple = bubbles.some(([bx, bz, s]) => Math.abs(Math.hypot(x - bx, z - bz) - s - 0.9) < 0.6);
-        return e > 0.86 ? k.mix(lime, deep, (e - 0.86) * 6) : ripple ? k.mix(lime, deep, 0.5) : h < 0.08 ? pale : k.mix(lime, light, hash(x / 3, z / 3, 5));
-      }, { glow: true });
-      for (const [x, z, s] of bubbles) k.ball(x, 39.2, z, s, s * 0.8, s, (x_, y) => k.mix(light, pale, Math.min(1, Math.max(0, y - 39.4) / (s * 0.6))), { glow: true });
-      for (const [x, y, z] of [[25, 46, 26], [34, 49, 22], [18, 44, 30], [40, 45, 31]]) k.ball(x, y, z, 0.8, 0.8, 0.8, light, { glow: true });
       // Three scrolled legs, one at the back, curling out to a round toe.
       for (const a of [-1.05, 1.05, Math.PI]) {
         const at = (d, y, rr) => [cx + Math.sin(a) * d, y, cz + Math.cos(a) * d, rr];
