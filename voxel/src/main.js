@@ -1,5 +1,6 @@
 import { installPremiumIcons, premiumIcon } from "./ui/premium-icons.js";
 import * as THREE from "three";
+import { createStockPopover } from "./ui/stock-popover.js";
 import { markPurchaseSurfaces } from "./ui/purchase-surfaces.js";
 import * as M from "./model.js";
 import { createScene } from "./scene.js";
@@ -250,6 +251,7 @@ function render() {
   $("open-levels").setAttribute("aria-label", `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View rewards`);
   $("open-levels").style.setProperty("--progress", (lvl.progress * 100).toFixed(1) + "%");
   celebration.tick(!!openTab || !!home.tools.selected || state.paused);
+  stockPopover.tick(celebration.active || !!openTab || estateTools.active || foyerTools.active || !!home.tools.selected);
   guestCard.tick(!!openTab || celebration.active || estateTools.active || foyerTools.active || !!home.tools.selected);
   estateTools.tick(!!openTab || celebration.active);
   foyerTools.tick(!!openTab || celebration.active);
@@ -317,6 +319,7 @@ let openTab = null, lastBody = "";
 const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
 const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(id === "empire" ? "natalie" : "visitor-" + ["ghost", "witch", "vampire", "skeleton", "scarecrow"][kind]), save, tone: f => audio.tone(f), notice });
 const guestCard = createGuestCard({ state: () => state, portrait: id => scene.portrait(id) });
+const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); guestCard.clear(); } });
 $("open-levels").onclick = () => celebration.preview();
 $("fullscreen").onclick = async () => {
   try { if (document.fullscreenElement) await document.exitFullscreen(); else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); else notice("For fullscreen, add the game to your home screen from the browser menu."); }
@@ -336,6 +339,7 @@ function draw() {
   if (active === "decor-search") { const i = $("decor-search"); i?.focus(); i?.setSelectionRange(i.value.length, i.value.length); }
 }
 function openSheet(tab) {
+  stockPopover.close();
   if (foyerTools.active) foyerTools.cancel();
   hollowContext.close();
   if (estateTools.active) estateTools.cancel();
