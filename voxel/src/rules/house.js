@@ -171,6 +171,8 @@ export function roomStyle(s, id) {
 // Rotated floor pieces use their enclosing footprint; side-wall coordinates run
 // along that wall, so existing back-wall saves retain exactly their positions.
 export const decorAngle = (n) => Number.isFinite(n) ? ((n % 360) + 360) % 360 : 0;
+export const DECOR_STEP = 0.1;
+export const snapDecorPosition = (n, step = DECOR_STEP) => +(step > 0 ? Math.round(n / step) * step : n).toFixed(6);
 export function pieceFootprint(p) {
   const fp = footprint(p.id);
   if (fp.layer === "wall") return fp;
@@ -178,10 +180,24 @@ export function pieceFootprint(p) {
   return { ...fp, w: +(fp.w * c + fp.d * s).toFixed(6), d: +(fp.w * s + fp.d * c).toFixed(6) };
 }
 const surface = (p) => ["left", "right"].includes(p.wall) ? p.wall : "back";
+// Saved x/z remain the enclosing box's corner. Collision uses the actual
+// turned rectangle, leaving the empty corners of that box available to use.
+function floorRectangle(p, size = footprint(p.id)) {
+  const fp = pieceFootprint(p), a = decorAngle(p.rotation) * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
+  return { x: p.x + fp.w / 2, z: p.z + fp.d / 2, w: size.w / 2, d: size.d / 2, axes: [{ x: c, z: -s }, { x: s, z: c }] };
+}
+function rectanglesOverlap(a, b) {
+  for (const axis of [...a.axes, ...b.axes]) {
+    const radius = r => r.w * Math.abs(axis.x * r.axes[0].x + axis.z * r.axes[0].z) + r.d * Math.abs(axis.x * r.axes[1].x + axis.z * r.axes[1].z);
+    if (Math.abs((b.x - a.x) * axis.x + (b.z - a.z) * axis.z) >= radius(a) + radius(b) - 1e-6) return false;
+  }
+  return true;
+}
 function overlaps(a, b) {
   const fa = pieceFootprint(a), fb = pieceFootprint(b);
   if (fa.layer !== fb.layer || (fa.layer === "wall" && surface(a) !== surface(b))) return false;
-  return a.x < b.x + fb.w - 1e-6 && b.x < a.x + fa.w - 1e-6 && (fa.layer === "wall" || (a.z < b.z + fb.d - 1e-6 && b.z < a.z + fa.d - 1e-6));
+  if (fa.layer === "wall") return a.x < b.x + fb.w - 1e-6 && b.x < a.x + fa.w - 1e-6;
+  return rectanglesOverlap(floorRectangle(a), floorRectangle(b));
 }
 export function fits(s, room, id, x, z, ignore, options) {
   if (!decorById[id]) return false;
@@ -200,14 +216,18 @@ export function fits(s, room, id, x, z, ignore, options) {
       const style = roomStyle(s, room).id;
       if (["parlour-crooked", "parlour-manor"].includes(style) && !L.doors.some((dr) => dr.wall === wall) && !L.stairs.some((st) => st.wall === wall) && x < 3.4 && x + f.w > 2.6) return false;
     }
-  } else if (x + f.w > L.w + 1e-6 || z < -1e-6 || z + f.d > L.d + 1e-6 || L.blocked.some((c) => c.x < x + f.w - 1e-6 && c.x + 1 > x + 1e-6 && c.z < z + f.d - 1e-6 && c.z + 1 > z + 1e-6)) return false;
+  } else {
+    if (x + f.w > L.w + 1e-6 || z < -1e-6 || z + f.d > L.d + 1e-6) return false;
+    const rect = floorRectangle(candidate);
+    if (L.blocked.some(c => rectanglesOverlap(rect, { x: c.x + .5, z: c.z + .5, w: .5, d: .5, axes: [{ x: 1, z: 0 }, { x: 0, z: 1 }] }))) return false;
+  }
   return !roomPieces(s, room).some((p) => p.instance !== ignore && overlaps(candidate, p));
 }
 export function findSpot(s, room, id, ignore, options) {
   const L = roomLayout(s, room), existing = s.house.placed.find((p) => p.instance === ignore), wall = surface({ ...existing, ...options });
   const limit = footprint(id).layer === "wall" && wall !== "back" ? L?.d : L?.w;
-  const step = footprint(id).layer === "wall" && wall !== "back" ? 0.5 : 1;
-  if (L) for (let z = 0; z < L.d; z++) for (let x = 0; x < limit; x += step) if (fits(s, room, id, x, z, ignore, options)) return { x, z };
+  const step = DECOR_STEP;
+  if (L) for (let z = 0; z < L.d; z = snapDecorPosition(z + step)) for (let x = 0; x < limit; x = snapDecorPosition(x + step)) if (fits(s, room, id, x, z, ignore, options)) return { x, z };
   return null;
 }
 // Rotation keeps the centre fixed, and never commits a collision or clips stairs.
@@ -215,7 +235,9 @@ export function rotateDecor(s, instance, degrees) {
   const p = s.house.placed.find((q) => q.instance === instance);
   if (!p || s.paused || !Number.isFinite(degrees) || footprint(p.id).layer === "wall") return false;
   const before = pieceFootprint(p), rotation = decorAngle(degrees), after = pieceFootprint({ ...p, rotation });
-  const x = +(p.x + (before.w - after.w) / 2).toFixed(6), z = +(p.z + (before.d - after.d) / 2).toFixed(6);
+  const L = roomLayout(s, p.room);
+  if (!L || after.w > L.w || after.d > L.d) return false;
+  const x = +Math.max(0, Math.min(L.w - after.w, p.x + (before.w - after.w) / 2)).toFixed(6), z = +Math.max(0, Math.min(L.d - after.d, p.z + (before.d - after.d) / 2)).toFixed(6);
   if (!fits(s, p.room, p.id, x, z, instance, { rotation })) return false;
   Object.assign(p, { x, z, rotation }); return true;
 }
@@ -267,7 +289,7 @@ export function placeDecor(s, id, room = s.house.activeRoom) {
 
 export function moveDecor(s, instance, x, z) {
   const p = s.house.placed.find((q) => q.instance === instance);
-  if (!p || !fits(s, p.room, p.id, x, z, instance)) return false;
+  if (!p || s.paused || !fits(s, p.room, p.id, x, z, instance)) return false;
   p.x = x; p.z = z;
   return true;
 }

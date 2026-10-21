@@ -145,19 +145,21 @@ export function buildHollowFoyer(s) {
     if (/carpet/.test(floor)) for (let x = -W + .65; x < W - .65; x += .35) for (let z = -D + .65; z < D - .65; z += .35) { const edge = Math.min(x + W, W - x, z + D, D - z) < 1.08; v.block(x + .16, .065, z + .16, .34, .025, .34, edge ? GOLD : Math.abs(Math.round(x * 3) + Math.round(z * 3)) % 3 ? 0x5f354d : 0x8f5a60); }
   }
   const wallColour = /brick/.test(wall) ? 0x694750 : /stone/.test(wall) ? 0x6f6979 : /wood/.test(wall) ? 0x624535 : 0x503849;
-  const wallPanel = (face, u, y, w, hh, c) => face === "back" ? v.block(u, y, -D, w, hh, .2, c) : v.block(face === "left" ? -W : W, y, u, .2, hh, w, c);
+  // Raised panelling/trim must sit in front of masonry. Coplanar faces
+  // shimmered into gold stripes at the sharp Fold viewing angle.
+  const wallPanel = (face, u, y, w, hh, c, relief = 0) => face === "back" ? v.block(u, y, -D + relief, w, hh, .2, c) : v.block(face === "left" ? -W + relief : W - relief, y, u, .2, hh, w, c);
   for (const face of ["back", "left", "right"]) {
     const len = face === "back" ? L.w : L.d;
     for (let u = -len / 2 + .2; u < len / 2; u += .4) {
       const height = face !== "back" && u > D * .1 ? 1.1 : ceiling;
       for (let y = .12; y < height; y += .3) wallPanel(face, u, y, .39, Math.min(.285, height - y), vary(wallColour, /brick|stone/.test(wall) ? .14 : .04, r));
-      wallPanel(face, u, .1, .4, 1.1, WOOD[2]);
-      for (const y of [.25, 1.1]) wallPanel(face, u, y, .4, .07, GOLD);
-      if (/wallpaper/.test(wall) && height > 2) for (let y = 1.45; y < ceiling - .3; y += .55) wallPanel(face, u, y, .055, .17, 0x906d82);
+      wallPanel(face, u, .1, .4, 1.1, WOOD[2], .035);
+      for (const y of [.25, 1.1]) wallPanel(face, u, y, .4, .07, GOLD, .065);
+      if (/wallpaper/.test(wall) && height > 2) for (let y = 1.45; y < ceiling - .3; y += .55) wallPanel(face, u, y, .055, .17, 0x906d82, .025);
     }
-    for (let u = -len / 2; u <= len / 2; u += 1.35) wallPanel(face, u, .15, .1, face !== "back" && u > D * .1 ? .96 : ceiling - .2, WOOD[2]);
-    wallPanel(face, 0, .05, len, .12, STONE[1]);
-    if (face === "back") { wallPanel(face, 0, ceiling - .15, len + .2, .14, GOLD); wallPanel(face, 0, ceiling + .02, len + .3, .12, WOOD[1]); }
+    for (let u = -len / 2; u <= len / 2; u += 1.35) wallPanel(face, u, .15, .1, face !== "back" && u > D * .1 ? .96 : ceiling - .2, WOOD[2], .075);
+    wallPanel(face, 0, .05, len, .12, STONE[1], .085);
+    if (face === "back") { wallPanel(face, 0, ceiling - .15, len + .2, .14, GOLD, .065); wallPanel(face, 0, ceiling + .02, len + .3, .12, WOOD[1], .075); }
   }
   // Low front parapets frame a true doorway back onto the farm.
   for (const side of [-1, 1]) { v.block(side * (W + 1) / 2, .05, D, W - 1, .7, .22, wallColour); v.block(side * (W + 1) / 2, .75, D, W - 1, .08, .3, WOOD[1]); }

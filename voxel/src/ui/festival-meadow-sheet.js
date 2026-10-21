@@ -9,10 +9,10 @@ export function festivalMeadowSheet(ui) {
   const visit = () => { ui.leavePlace(); ui.closeSheet(); ui.scene.refreshEstate(); ui.scene.focus(ui.state.festival.meadow ? 45 : 36, 17, 1.65); };
   const affordable = (amount, level) => ui.state.coins >= amount && M.patchLevel(ui.state).level >= level && !ui.state.paused;
   const estate = (s) => {
-    const owned = s.festival.meadow, level = M.patchLevel(s).level;
+    const owned = s.festival.meadow, level = M.patchLevel(s).level, depth = M.fieldDepth?.(s) ?? 26;
     return `<article class="card hero"><span class="thumb"><span class="ico i-patch"></span></span><div><h3>Moonbrew Meadow</h3><p>A lantern-lit corner beyond the east fence, with a cobbled walk and space for a festival stand.</p></div></article>
       <p>${owned ? "The gate is open. Your meadow adds a cocoa pitch, planted borders and benches to the farm. Drag the map to explore." : "Grow your patch’s reputation, then open the gate and start a new little business."}</p>
-      <div class="stats"><div><b>${owned ? "54 × 26" : "40 → 54"}</b><span>${owned ? "expanded farm bounds" : "farm width"}</span></div><div><b>1</b><span>buildable stand pitch</span></div></div>
+      <div class="stats"><div><b>${owned ? "54 × " + depth : "40 → 54"}</b><span>${owned ? "expanded farm bounds" : "farm width"}</span></div><div><b>1</b><span>buildable stand pitch</span></div></div>
       ${owned ? `<button class="button gold wide" data-festival-action="visit">Visit the meadow</button><button class="button wide" data-festival-action="stand">Manage cocoa stand</button>` : `<button class="button gold wide" data-festival-action="land" ${affordable(M.MEADOW.price, M.MEADOW.level) ? "" : "disabled"}>${level < M.MEADOW.level ? `Opens at patch level ${M.MEADOW.level}` : `Open the meadow · ${money(M.MEADOW.price)}`}</button>${level < M.MEADOW.level ? `<p class="small">Current patch level: ${level}. Keep harvesting and serving the neighbours.</p>` : ""}`}
       <p class="small">Further festival pitches and kitchen-made supplies are planned for later updates.</p>`;
   };
@@ -38,8 +38,8 @@ export function festivalMeadowSheet(ui) {
   return { festival: {
     eyebrow: "A festival of our own", title: "Sandy’s Haunted Cocoa",
     setTab(value) { tab = value === "cocoa" ? "cocoa" : "estate"; },
-    body() { return segmented("festival-tab", "Festival management", [["estate", "Meadow"], ["cocoa", "Cocoa stand"]], tab) + (tab === "estate" ? estate(ui.state) : cocoa(ui.state)); },
-    bind(body) {
+    body({ embedded = false } = {}) { return embedded ? (ui.state.festival.meadow ? cocoa(ui.state) : estate(ui.state)) : segmented("festival-tab", "Festival management", [["estate", "Meadow"], ["cocoa", "Cocoa stand"]], tab) + (tab === "estate" ? estate(ui.state) : cocoa(ui.state)); },
+    bind(body, { embedded = false } = {}) {
       body.querySelectorAll("[data-festival-tab]").forEach((b) => b.onclick = () => { tab = b.dataset.festivalTab; ui.draw(); });
       body.querySelectorAll("[data-special-price]").forEach(select => select.onchange = () => { if (M.setCocoaSpecialPrice(ui.state, select.dataset.specialPrice, Number(select.value))) { ui.save(); ui.draw(); } else select.value = String(ui.state.festival.cocoa.prices[select.dataset.specialPrice]); });
       body.querySelectorAll("[data-special-stock]").forEach(b => b.onclick = () => { if (M.restockCocoaSpecial(ui.state, b.dataset.specialStock)) { ui.save(); ui.tone(760); ui.draw(); } });
@@ -57,7 +57,7 @@ export function festivalMeadowSheet(ui) {
         if (action === "auto") changed = M.setCocoaAutoSupply(s, !c.autoSupply);
         if (!changed) return;
         ui.save(); ui.tone(760); ui.scene.refreshEstate();
-        if (action === "land" || action === "upgrade") { tab = "cocoa"; visit(); ui.notice(action === "land" ? "The meadow gate is open. Tap the prepared pitch to build." : "Your cocoa stand is ready for a warm welcome."); }
+        if (action === "land" || action === "upgrade") { tab = "cocoa"; if (!embedded) visit(); else ui.draw(); ui.notice(action === "land" ? "The meadow gate is open. Tap the prepared pitch to build." : "Your cocoa stand is ready for a warm welcome."); }
         else ui.draw();
       });
     },

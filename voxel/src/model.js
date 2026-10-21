@@ -2,8 +2,9 @@
 // in Node. One step of update() is a slice of game time. The rules live in
 // rules/; this file puts the state together, loads old saves and runs a step.
 import { UPGRADES, VARIETIES, STREAK, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
+import { MAX_PLOTS } from "./content/farm-layout.js";
 import { freshStock } from "./rules/stock.js";
-import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, updateShop, updateStall } from "./rules/selling.js";
+import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, freshBigSpender, restoreBigSpender, updateShop, updateStall } from "./rules/selling.js";
 import { freshHouse, restoreHouse } from "./rules/house.js";
 import { freshLooks, freshWardrobe, restoreWardrobe } from "./rules/wardrobe.js";
 import { awardLevels, freshProgression, restoreProgression } from "./rules/levels.js";
@@ -20,7 +21,8 @@ export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 
-export const STATE_VERSION = 9;
+export const STATE_VERSION = 10;
+export * from "./content/farm-layout.js";
 export * from "./rules/house-estate.js";
 export * from "./rules/piece-colours.js";
 export * from "./rules/hollow-house.js";
@@ -33,11 +35,11 @@ export function freshState() {
   return {
     version: STATE_VERSION,
     coins: 40, earned: 0, sold: 0, harvested: 0, taps: 0, time: 0, wholesale: 0,
-    plots: freshPlots(), plotLevels: Array(12).fill(0), plotCrops: Array(12).fill(0),
+    plots: freshPlots(), plotLevels: Array(MAX_PLOTS).fill(0), plotCrops: Array(MAX_PLOTS).fill(0),
     upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(),
     stock: freshStock(), holds: [],
     stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
-    shop: freshShop(), festival: freshFestival(), customerCare: freshCustomerCare(),
+    shop: freshShop(), bigSpender: freshBigSpender(), festival: freshFestival(), customerCare: freshCustomerCare(),
     house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
     claimed: [], memories: [], progression: freshProgression(), paused: false,
@@ -54,15 +56,16 @@ const OLD_GOALS = { ghost: "basket", witch: "welcome", bram: "magic", bones: "se
 // Builds a valid state from whatever was saved, keeping everything that makes sense.
 export function restoreState(raw) {
   const s = freshState();
-  if (!raw || typeof raw !== "object" || !Array.isArray(raw.plots) || raw.plots.length !== 12) return s;
+  if (!raw || typeof raw !== "object" || !Array.isArray(raw.plots) || ![12, MAX_PLOTS].includes(raw.plots.length)) return s;
   const v1 = !(raw.version >= 2);
   for (const k of ["coins", "earned"]) s[k] = money(raw[k]);
   for (const k of ["sold", "harvested", "taps", "nextVisitor", "nextParty", "wholesale"]) s[k] = count(raw[k]);
   s.time = money(raw.time);
   s.paused = raw.paused === true;
-  s.plotLevels = raw.plotLevels?.length === 12 ? raw.plotLevels.map((l) => Math.max(0, Math.min(3, count(l)))) : s.plotLevels;
+  s.plotLevels = Array.from({ length: MAX_PLOTS }, (_, i) => Math.min(3, count(raw.plotLevels?.[i])));
   s.plotCrops = s.plotLevels.map((level, i) => (v1 ? level : Math.min(level, count(raw.plotCrops?.[i]))));
-  s.plots = raw.plots.map((p, i) => {
+  s.plots = Array.from({ length: MAX_PLOTS }, (_, i) => {
+    const p = raw.plots[i];
     const variety = Math.min(3, count(p?.variety));
     return ["growing", "ready"].includes(p?.phase) ? { phase: p.phase, progress: Math.max(0, Math.min(1, Number(p.progress) || 0)), variety } : { phase: "empty", progress: 0, variety: s.plotCrops[i] };
   });
@@ -104,6 +107,7 @@ export function restoreState(raw) {
   s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4));
   s.festival = restoreFestival(raw.festival);
   s.customerCare = restoreCustomerCare(raw.customerCare);
+  s.bigSpender = restoreBigSpender(raw.bigSpender);
   closeForTheNight(s);
   restoreHollowVisitors(raw.hollowVisitors, s);
   return s;

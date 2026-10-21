@@ -2,7 +2,7 @@
 // open, customers browsing inside the Honest Pumpkin. Profiles, prices and
 // timings are the main game's (src/core/stall.js, src/core/shop.js,
 // src/content/stall.js, src/content/shop.js).
-import { VISITOR_KINDS } from "../content/visitors.js";
+import { NORMAL_VISITOR_KINDS } from "../content/visitors.js";
 import { economy } from "../../../src/content/economy.js";
 import { stallProfiles } from "../../../src/content/stall.js";
 import { checkoutSeconds, customerProfiles, shopCapacity, shopUpgradeCosts } from "../../../src/content/shop.js";
@@ -10,13 +10,15 @@ import { UPGRADES, VARIETIES, tierFactor, visitorBonus } from "./farm.js";
 import { freshGuestNeeds, tickGuestNeeds, enjoyPumpkin } from "./guest-needs.js";
 import { settleCustomerCare } from "./customer-care.js";
 import { cocoaAllowance, planFestivalVisit, tickFestivalVisit } from "./festival-meadow.js";
-import { planHollowVisit, tickHollowVisit } from "./hollow-house.js";
+import { planHollowVisit, tickHollowVisit, mazeFootfallBonus } from "./hollow-house.js";
 import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
+import { BIG_SPENDER_KIND, advanceBigSpender, bigSpenderBasket } from "./big-spender.js";
+export { freshBigSpender, restoreBigSpender } from "./big-spender.js";
 
 const variety = (productId) => VARIETIES.findIndex((v) => "pumpkin-" + v.id === productId);
 const PRICES = VARIETIES.map((v) => v.price);
 // The voxel neighbours, in model.js's order: 0 ghost, 1 witch, 2 vampire, 3 skeleton, 4 scarecrow.
-const KINDS = VISITOR_KINDS;
+const KINDS = NORMAL_VISITOR_KINDS;
 export const STALL_PROFILES = stallProfiles.map((p) => ({ ...p, preferred: p.preferred.map(variety) }));
 
 // The stall: how long the walk up the path takes, and how long they wait for stock.
@@ -34,7 +36,7 @@ export const VISITOR_UPGRADES = [
   { id: "crowd", name: "Room for more neighbours", text: "Raise the outdoor visitor limit, with room for whole parties to enjoy the farm.", costs: [300, 1200, 4000, 10000], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "party", name: "Bring a friend", text: "Neighbours come up the path together: a friend, then a couple, then the whole family.", costs: [600, 1800, 6000], needs: null },
   { id: "lights", name: "Fairy lights down the path", text: "A string of lights by the gate, then lanterns all the way down. Parties set off for the stall more often.", costs: [150, 600, 2400, 9000], needs: { id: "sign", text: "Opens after Spread the word." } },
-  { id: "cocoa", name: "A hot chocolate stand", text: "A bench and a warm mug. Neighbours wait longer for fresh pumpkins, and everyone buys a cup.", costs: [250, 700, 1400], needs: { id: "party", text: "Opens after Bring a friend." } },
+  { id: "cocoa", name: "Cocoa hospitality", text: "A warmer welcome: neighbours wait longer for pumpkins and Sandy serves cocoa more quickly.", costs: [250, 700, 1400], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "loyalty", name: "A loyalty card", text: "Buy nine pumpkins, get a slightly larger pumpkin. Regulars take one more home, at the stall and in the shop.", costs: [6000, 12000], needs: { id: "open", text: "Opens with the shop." } },
 ];
 export const freshVisitorUpgrades = () => ({ party: 0, lights: 0, cocoa: 0, loyalty: 0, crowd: 0 });
@@ -68,14 +70,19 @@ export const shopArrivalSeconds = (s) => economy.indoorArrivalSeconds * tierFact
 // to the floor. Timers count down faster rather than being rescaled, so a
 // boost that grows or fades changes the pace smoothly.
 const pace = (seconds, floor, bonus) => Math.max(1, Math.min(1 + bonus, seconds / floor));
-export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), visitorBonus(s));
-export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1.1), visitorBonus(s));
+export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), visitorBonus(s) + mazeFootfallBonus(s));
+export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1.1), visitorBonus(s) + mazeFootfallBonus(s));
 // The gap between parties right now, and the boost that actually reaches the path.
 export const stallGapSeconds = (s) => stallArrivalSeconds(s) / stallPace(s);
 export const pathBoost = (s) => stallPace(s) - 1;
-// Guests away in the meadow at Sandy's stand have their own path, so they don't
-// hold the next party at the gate.
+// Only the extra pace attributable to the temporary harvest streak, after the
+// permanent attraction benefit and the same arrival floor have been applied.
+export const streakPathBoost = (s) => stallPace(s) - pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), mazeFootfallBonus(s));
+// The HUD can distinguish guests actually on the path from indoor excursions.
 export const onThePath = (s) => s.visitors.filter((v) => (!v.festival || v.festival.done) && (!v.hollow || v.hollow.done || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase))).length + s.arriving.length;
+// Every outdoor trip keeps a return space, including guests in the foyer or at
+// Sandy's stand. Otherwise simultaneous returns can overflow a full path.
+export const visitorReservations = (s) => s.visitors.length + s.arriving.length;
 export const stallPatience = (s) => PATIENCE[lv(s, "cocoa")];
 export const mugPrice = (s) => MUG[lv(s, "cocoa")];
 // One shopper in four is a regular with a loyalty card, then one in two. The
@@ -117,19 +124,21 @@ function counterSpot(s) {
 
 // A neighbour in their own right, with their own profile, budget and basket,
 // even when they come with a party. The loyalty card counts from when they set off.
-function createPasserby(s, id, party = id, place = 0, size = 1) {
+function createPasserby(s, id, party = id, place = 0, size = 1, vip = false) {
   const profile = id % STALL_PROFILES.length, p = STALL_PROFILES[profile];
-  const v = { id, kind: id % KINDS.length, age: 0, profile, ...basketFor(s, id, p), preferred: [...p.preferred], basket: [], amount: 0, quantity: 0, bought: null, outcome: "shopping", leaveAt: null, mug: 0, party, place, size, spot: counterSpot(s) };
+  const v = { id, kind: vip ? BIG_SPENDER_KIND : id % KINDS.length, age: 0, profile, ...basketFor(s, id, p), preferred: [...p.preferred], ...(vip ? bigSpenderBasket(s) : {}), basket: [], amount: 0, quantity: 0, bought: null, outcome: "shopping", leaveAt: null, mug: 0, party, place, size, spot: counterSpot(s) };
   v.cocoaAllowance = cocoaAllowance(s); v.budget += v.cocoaAllowance;
   v.needs = freshGuestNeeds(id); v.originalBudget = v.budget; v.festival = planFestivalVisit(s, v);
   return v;
 }
 
-// A cup from the hot chocolate stand on the way out, whether or not they found a
-// pumpkin, unless they already had their treat at Sandy's stand in the meadow.
-function buyMug(s, v) {
-  if (v.treatReceipt) return 0;
-  v.mug = mugPrice(s);
+// Hospitality keeps its patience benefit. A mug is a real optional purchase,
+// from money remaining after the basket, never extra cash created per visitor.
+// Guests who already bought at Sandy's stand do not buy a duplicate legacy mug.
+function buyMug(s, v, reserved = 0) {
+  const price = mugPrice(s);
+  if (s.festival?.cocoa.level || v.treatReceipt || !price || v.budget - reserved < price) return 0;
+  v.mug = price; v.budget -= price;
   s.coins += v.mug; s.earned += v.mug; s.stall.cocoa += v.mug;
   return v.mug;
 }
@@ -140,11 +149,17 @@ function pay(s, receipt, ledger) {
 }
 
 export function updateStall(s, dt, events) {
+  if (s.paused || !Number.isFinite(dt) || dt <= 0) return;
+  if (advanceBigSpender(s, dt, visitorReservations(s) < visitorCapacity(s))) {
+    const v = createPasserby(s, s.nextVisitor++, s.nextParty++, 0, 1, true);
+    s.visitors.push(v);
+    events.push({ type: "arrival", visitor: v.id, party: v.party, place: 0, size: 1 }, { type: "vip-arrived", visitor: v.id });
+  }
   s.visitorTimer -= dt * stallPace(s);
   if (s.visitorTimer <= 0) {
     const party = s.nextParty, size = partySize(s, party);
     // A full path holds the next party at the gate until there is room.
-    if (onThePath(s) + size > visitorCapacity(s)) s.visitorTimer = 0;
+    if (visitorReservations(s) + size > visitorCapacity(s)) s.visitorTimer = 0;
     else {
       s.visitorTimer += stallArrivalSeconds(s);
       s.nextParty++;
@@ -164,13 +179,17 @@ export function updateStall(s, dt, events) {
     if (v.festival?.justArrived) { v.age = VISIT.arrive; v.festival.justArrived = false; }
     if (!v.hollowConsidered) { v.hollowConsidered = true; v.hollow = planHollowVisit(s, v); }
     if (tickHollowVisit(s, v, dt, events)) continue;
+    // A frightened guest has already paid for their attraction visit and leaves
+    // at its visible exit. They cannot teleport back to buy another pumpkin.
+    if (v.hollow?.fledHome) continue;
     if (v.hollow?.justArrived) { v.age = VISIT.arrive; v.hollow.justArrived = false; }
     v.age += dt;
     if (v.leaveAt !== null || v.age < VISIT.arrive) continue;
     const owner = "visitor-" + v.id, lines = chooseBasket(s, v, [0, 1, 2, 3], owner, PRICES);
     if (lines) {
-      const receipt = commitHold(s, owner), mug = buyMug(s, v);
+      const receipt = commitHold(s, owner), mug = buyMug(s, v, receipt.amount);
       pay(s, receipt, s.stall);
+      if (v.vip) { s.bigSpender.spent += receipt.amount; s.bigSpender.pumpkins += receipt.quantity; }
       const care = settleCustomerCare(s, receipt, v, "stall", v.age - VISIT.arrive);
       v.tip = care.tip; v.quality = care.quality; v.budget -= receipt.amount + care.tip; enjoyPumpkin(v, care.quality, care.service);
       Object.assign(v, { basket: receipt.lines, amount: receipt.amount, quantity: receipt.quantity, bought: receipt.lines[0].variety, outcome: "bought", leaveAt: v.age + VISIT.linger });
@@ -185,7 +204,7 @@ export function updateStall(s, dt, events) {
       if (buyMug(s, v)) events.push({ type: "sale", route: "cocoa", amount: v.mug, quantity: 0, mug: v.mug, visitor: v.id });
     }
   }
-  s.visitors = s.visitors.filter((v) => v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s));
+  s.visitors = s.visitors.filter((v) => !v.hollow?.fledHome && (v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s)));
 }
 
 // The indoor shop: open it, then add room, display tables and a faster till.

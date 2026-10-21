@@ -1,6 +1,8 @@
 // The Shop menu: farm upgrades, seeds per plot, Skyla's indoor shop, the stall
 // and the visitors.
 import * as M from "../model.js";
+import { customerCareUpgrades, customerCareSummary, bindCustomerCareUpgrades } from "./customer-care-sheet.js";
+import { festivalMeadowSheet } from "./festival-meadow-sheet.js";
 import { money, segmented, plural } from "./kit.js";
 
 // Each upgrade's own icon from the main game.
@@ -20,7 +22,7 @@ const FREQUENCY = {
 const EFFECTS = {
   crowd: s => `up to ${M.visitorCapacity(s)} outdoor neighbours`,
   party: (s) => (M.partyMax(s) > 1 ? `parties of up to ${M.partyMax(s)}` : "everyone comes on their own"),
-  cocoa: (s) => `they wait ${secs(M.stallPatience(s))} for stock${s.festival.cocoa.level ? `, cocoa service ${secs(M.cocoaServiceSeconds(s))}` : M.mugPrice(s) ? `, ${money(M.mugPrice(s))} a cup` : ""}`,
+  cocoa: (s) => `they wait ${secs(M.stallPatience(s))} for stock${s.festival.cocoa.level ? `, cocoa service ${secs(M.cocoaServiceSeconds(s))}` : ""}`,
   loyalty: (s) => ["no regulars yet", "one in four is a regular", "one in two is a regular"][M.visitorUpgradeLevel(s, "loyalty")],
 };
 // The same farm one level on, to describe what buying it would do.
@@ -40,7 +42,7 @@ const tiers = (level, most) => `<div class="tiers" role="img" aria-label="Tier $
 const VISITOR_TALK = {
   party: { 2: ["shane", "They’re bringing their friends now. Word travels fast when the pumpkins are good."], 3: ["natalie", "Whole families coming up the path. Skyla’s going to need a longer counter."] },
   lights: { 1: ["natalie", "Fairy lights all the way down the path. I told you it would look magical."], 3: ["shane", "You can see our path from the castle now. The bats have started complaining."], 8: ["natalie", "Every lantern in the village is on our path now. The bats have filed a formal complaint."] },
-  cocoa: { 1: ["shane", "A hot chocolate stand, as promised. I’ve only had three cups. For quality control."], 3: ["natalie", "Marshmallows, cinnamon and a pinch of moonlight. Nobody’s in a hurry to leave."] },
+  cocoa: { 1: ["shane", "A little warmth and a little patience. Sandy says that’s the secret to happy customers."], 3: ["natalie", "Marshmallows, cinnamon and a pinch of moonlight. Nobody’s in a hurry to leave."] },
   loyalty: { 1: ["shane", "My loyalty card, at last. Buy nine pumpkins, receive a slightly larger pumpkin. Genius."], 2: ["natalie", "Half the village has a loyalty card now. The other half is thinking about it."] },
 };
 
@@ -62,32 +64,34 @@ function skylaTip(s) {
 
 export function farmSheets(ui) {
   let tab = "farm";
-  const tabs = () => segmented("shoptab", "Shop sections", [["farm", "Farm"], ["seeds", "Seeds"], ["shop", "Shop"], ["stall", "Stall"], ["visitors", "Visitors"]], tab);
+  const cocoaMenu = festivalMeadowSheet(ui).festival; cocoaMenu.setTab("cocoa");
+  const tabs = () => segmented("shoptab", "Shop sections", [["farm", "Farm"], ["seeds", "Seeds"], ["shop", "Shop"], ["cocoa", "Cocoa"], ["stall", "Stock"], ["visitors", "Visitors"]], tab).replace('class="segmented"', 'class="segmented build-sections"');
 
   // Spread the word lives in the Visitors tab with the rest of its kind.
   function farm(s) {
     return M.UPGRADES.filter((u) => u.id !== "sign").map((u) => {
       const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id);
-      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= 5 ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text}</p>${tiers(level, u.max)}</div>
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text}</p>${tiers(level, u.max)}</div>
         ${priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
     }).join("");
   }
 
   function seeds(s) {
-    return `<p>Each plot unlocks better seeds on its own, and can grow any variety it has unlocked. Better pumpkins sell for more but take longer.</p><div class="plot-grid">` + s.plots.map((p, i) => {
-      if (i >= M.openPlots(s)) return `<div class="plot-card locked"><span class="thumb"><span class="ico i-plots"></span></span><h3>Plot ${i + 1}</h3><p>Clear more ground in Farm › Room for more</p></div>`;
+    const open = M.openPlots(s), remaining = s.plots.length - open;
+    return `<p>Better seeds unlock per plot. Rarer pumpkins sell for more and grow more slowly.</p><div class="plot-grid">` + s.plots.slice(0, open).map((p, i) => {
       const level = s.plotLevels[i], next = M.VARIETIES[level + 1], crop = s.plotCrops[i];
       const chips = level ? `<div class="chips" role="group" aria-label="What plot ${i + 1} grows">${M.VARIETIES.slice(0, level + 1).map((v, k) => `<button class="chip" data-crop="${i}:${k}" aria-pressed="${crop === k}">${v.name}</button>`).join("")}</div>` : "";
       return `<div class="plot-card">${ui.thumb(crop)}<h3>Plot ${i + 1} · ${M.VARIETIES[crop].name}</h3><p>${money(M.VARIETIES[crop].price)} each</p>${chips}
         ${next ? `<button class="button" data-plot="${i}" ${s.coins < next.cost ? "disabled" : ""}>${next.name} seeds · ${money(next.cost)}</button>` : `<p class="small">Every seed unlocked</p>`}</div>`;
-    }).join("") + `</div>`;
+    }).join("") + (remaining > 0 ? `<div class="plot-card locked"><span class="thumb"><span class="ico i-plots"></span></span><h3>${remaining} more plots to discover</h3><p>Expand the farm to plant a bigger patch.</p><button class="button" data-shoptab="farm">Farm expansion</button></div>` : "") + `</div>`;
   }
 
   function shop(s) {
     const cat = ui.portrait("skyla"), sh = s.shop, tip = `<aside class="tip"><span class="tip-cat" aria-hidden="true">${cat ? `<img src="${cat}" alt="">` : ""}</span><p><b>Skyla</b>${skylaTip(s)}</p></aside>`;
+    const comforts = `<h3 class="section">Carrier bags & tips</h3>` + customerCareSummary(s) + customerCareUpgrades(s);
     if (!sh.unlocked) {
       const price = M.shopUpgradeCost(s, "open");
-      return tip + `<article class="card">${icon("open")}<div><h3>Open the shop</h3><p>Customers come inside the Honest Pumpkin, browse the display tables and queue at Skyla’s till.</p></div>${priceButton("shopup", "open", price, s.coins)}</article>`;
+      return tip + `<article class="card">${icon("open")}<div><h3>Open the shop</h3><p>Customers come inside the Honest Pumpkin, browse the display tables and queue at Skyla’s till.</p></div>${priceButton("shopup", "open", price, s.coins)}</article>` + comforts;
     }
     const inside = ui.scene.place?.kind === "shop";
     const visit = `<button class="button gold wide" data-visit="${inside ? "leave" : "shop"}">${inside ? "Back to the patch" : "Step inside the shop"}</button>`;
@@ -102,15 +106,15 @@ export function farmSheets(ui) {
     const upgrades = M.SHOP_UPGRADES.filter((u) => u.id !== "open").map((u) => {
       const level = sh[SHOP_LEVELS[u.id]], price = M.shopUpgradeCost(s, u.id), max = price === undefined;
       const now = u.id === "capacity" ? `${M.SHOP_CAPACITY[level]} browsing` : u.id === "displays" ? `${M.displayCount(sh)} tables` : `${M.CHECKOUT_SECONDS[level]}s at the till`;
-      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= 5 ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text} Now: ${now}.</p>${tiers(level, SHOP_MAX[u.id])}</div>${priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text} Now: ${now}.</p>${tiers(level, SHOP_MAX[u.id])}</div>${priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
     }).join("");
-    return tip + visit + stats + `<h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades;
+    return tip + visit + stats + `<h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades + comforts;
   }
 
   // Who is on the path now, a party at a time.
   function guest(v) {
-    const doing = v.outcome === "bought" ? `bought ${plural(v.quantity, "pumpkin")} for ${money(v.amount)}` : v.outcome === "shopping" ? "on the way" : v.outcome === "budget" ? "couldn’t afford what’s left" : "found the shelves empty";
-    return `<p class="guest${v.place ? " member" : ""}"><b>${M.STALL_PROFILES[v.profile].name}</b>${v.regular ? ` <span class="tag">regular</span>` : ""} · ${money(v.budget)} budget${v.cocoaAllowance ? ` (includes ${money(v.cocoaAllowance)} cocoa money)` : ""} · ${doing}${v.mug ? " · a cup of hot chocolate" : ""}</p>`;
+    const doing = v.hollow && !v.hollow.done ? (v.hollow.fleeing ? "running home from the maze" : `at the maze · ${Math.round(v.hollow.terror ?? 0)}% terror`) : v.outcome === "bought" ? `bought ${plural(v.quantity, "pumpkin")} for ${money(v.amount)}` : v.outcome === "shopping" ? "on the way" : v.outcome === "budget" ? "couldn’t afford what’s left" : "found the shelves empty";
+    return `<p class="guest${v.place ? " member" : ""}"><b>${v.kind === 10 ? "Baron Brassbolt" : M.STALL_PROFILES[v.profile]?.name ?? "Neighbour"}</b>${v.regular ? ` <span class="tag">regular</span>` : ""} · ${money(v.budget)} budget${v.cocoaAllowance ? ` (includes ${money(v.cocoaAllowance)} cocoa money)` : ""} · ${doing}${v.mug ? " · a cup of hot chocolate" : ""}</p>`;
   }
   const partyLabel = (v) => (v.size > 1 ? `<p class="party-label">${["", "", "Two friends", "A party of three", "A family of four"][v.size]}</p>` : "");
 
@@ -127,9 +131,11 @@ export function farmSheets(ui) {
   // The visitor upgrades: how busy the path is, then a card for each.
   function visitors(s) {
     const max = M.partyMax(s);
-    const boost = Math.round(M.pathBoost(s) * 100), busiest = M.visitorBonus(s) - M.pathBoost(s) > 0.005;
+    const boost = Math.round((M.streakPathBoost?.(s) ?? M.pathBoost(s)) * 100), busiest = M.visitorBonus(s) - M.pathBoost(s) > 0.005;
     const now = busiest ? " (as busy as the path gets)" : boost ? ` (streak +${boost}%)` : "";
     const stats = `<div class="stats"><div><b>${Math.round(M.visitorsPerMinute(s) * 10) / 10}</b><span>neighbours a minute</span></div><div><b>${max > 1 ? `1–${max}` : "1"}</b><span>in each party</span></div><div><b>${secs(M.stallGapSeconds(s))}</b><span>between parties${now}</span></div><div><b>${M.onThePath(s)}/${M.visitorCapacity(s)}</b><span>outdoor visitors</span></div></div>`;
+    const maze = M.mazeFootfallBonus?.(s) ?? 0;
+    const attraction = maze ? `<p class="commerce-inline-note">The Hollow House brings +${Math.round(maze * 100)}% footfall while open. Frightened visitors may leave early.</p>` : "";
     const streak = `<p class="small streak-note">Quick picking builds a streak, and a streak gets talked about: visitors come 10% more often for each pick up to ×6, then 5% more a pick, to +${Math.round(M.STREAK.cap * 100)}%. It fades over ${M.STREAK.fade}s once you stop. Helping hands don’t count; they’re not showing off.</p>`;
     const cards = VISITOR_IDS.map((id) => {
       const sign = id === "sign", u = sign ? M.UPGRADES.find((x) => x.id === id) : M.VISITOR_UPGRADES.find((x) => x.id === id);
@@ -137,23 +143,23 @@ export function farmSheets(ui) {
       const open = sign || M.visitorUpgradeUnlocked(s, id), price = sign ? M.upgradeCost(s, id) : M.visitorUpgradeCost(s, id);
       const effect = open ? effectLine(s, id, done) : u.needs.text;
       const button = !open ? `<button class="button" disabled>Locked</button>` : priceButton(sign ? "buy" : "visitup", id, price, s.coins, done && "Done");
-      return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${id === "cocoa" && s.festival.cocoa.level ? "Cocoa hospitality" : u.name}</h3><p>${id === "cocoa" && s.festival.cocoa.level ? "A warmer welcome: quicker cocoa service and longer pumpkin patience." : u.text}</p><p class="effect">${effect}</p>${tiers(level, most)}</div>${button}</article>`;
+      return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${id === "cocoa" ? "Cocoa hospitality" : u.name}</h3><p>${id === "cocoa" ? "Longer pumpkin patience; quicker service at Sandy’s stand." : u.text}</p><p class="effect">${effect}</p>${tiers(level, most)}</div>${button}</article>`;
     }).join("");
-    return stats + streak + cards;
+    return stats + attraction + streak + cards;
   }
 
   return {
     shop: {
-      eyebrow: "Your pumpkin patch", title: () => ({ farm: "Farm upgrades", seeds: "Crops & seeds", shop: "Skyla’s shop", stall: "Stall & stock", visitors: "Visitors & crowds" })[tab] ?? "Build & grow",
-      setTab(t) { tab = t; },
+      eyebrow: "Your pumpkin patch", title: () => ({ farm: "Farm upgrades", seeds: "Crops & seeds", shop: "Skyla’s shop", stall: "Stall & stock", visitors: "Visitors & crowds", cocoa: "Sandy’s cocoa" })[tab] ?? "Build & grow",
+      setTab(t) { tab = ["farm", "seeds", "shop", "cocoa", "stall", "visitors"].includes(t) ? t : "farm"; },
       body() {
-        // The meadow and customer care appear once they mean something: the meadow
-        // a level before it opens, as something to aim for; care once the shop is open.
-        const s = ui.state, meadow = s.festival.meadow || M.patchLevel(s).level >= M.MEADOW.level - 1, care = s.shop.unlocked;
-        return tabs() + (meadow ? `<button class="button wide" data-festival>Moonbrew Meadow · ${s.festival.meadow ? "Manage your festival" : "Expand your farm"} →</button>` : "") + (care ? `<button class="button wide" data-care>Carrier bags · Tips & stats →</button>` : "") + ({ farm, seeds, shop, stall, visitors })[tab](s);
+        const s = ui.state;
+        return tabs() + (tab === "cocoa" ? cocoaMenu.body({ embedded: true }) : ({ farm, seeds, shop, stall, visitors })[tab](s));
       },
       bind(body) {
         const s = ui.state;
+        if (tab === "cocoa") cocoaMenu.bind(body, { embedded: true });
+        if (tab === "shop") bindCustomerCareUpgrades(body, ui);
         body.querySelector("[data-care]")?.addEventListener("click", () => ui.openSheet("care"));
         body.querySelector("[data-festival]")?.addEventListener("click", () => ui.openSheet("festival"));
         body.querySelectorAll("[data-shoptab]").forEach((b) => (b.onclick = () => { tab = b.dataset.shoptab; ui.draw(); }));

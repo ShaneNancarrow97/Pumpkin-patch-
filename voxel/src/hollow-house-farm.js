@@ -15,6 +15,6 @@ export function createHollowFarm(scene, state, signBoard) {
     const h = state.hollowHouse, next = `${h.status}:${h.tier}`; if (next === key) return; key = next;
     if (building) { root.remove(building); disposeHollowObject(building); } if (sign) { root.remove(sign); sign.geometry.dispose(); for (const m of sign.material) { m.map?.dispose(); m.dispose(); } }
     building = buildHollowExterior(h.status, h.tier); root.add(building);
-    sign = signBoard("The Hollow House", h.status === "ready" ? "Mortimer’s scare maze" : h.status === "restoring" ? "a haunting in the making" : "a forgotten property", 6.2); sign.position.set(0, 4.3, 2.7); sign.userData = { type: "hollow-house" }; root.add(sign);
+    sign = signBoard("The Hollow House", h.status === "ready" ? "Axel’s scare maze" : h.status === "restoring" ? "a haunting in the making" : "a forgotten property", 6.2); sign.position.set(0, 4.3, 2.7); sign.userData = { type: "hollow-house" }; root.add(sign);
   } };
 }

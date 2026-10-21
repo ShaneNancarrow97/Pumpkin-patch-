@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { createSpecialSprite, animateSpecialSprite, specialPortrait, specialSpriteReady } from "./special-sprites.js";
 import natalieUrl from "../assets/hd-natalie.webp";
 import shaneUrl from "../assets/hd-shane.webp";
 import skylaUrl from "../assets/hd-skyla.webp";
@@ -76,6 +77,7 @@ export async function loadSpriteSheets() {
     for (const [key, list] of Object.entries(meta)) if (Array.isArray(list)) frames[key] = list.map((f) => frameGeometry(meta, f));
     sheets[name] = { meta, image, texture: sheetTexture(image), frames };
   }));
+  await specialSpriteReady;
   return sheets;
 }
 
@@ -149,6 +151,7 @@ export function spriteActor(sheets, who, look, outfit) {
 
 // A visitor: its four frames are a walk cycle; standing shows the first.
 export function spriteVisitor(sheets, kind) {
+  if (VISITOR_KINDS[kind] === "baron") return createSpecialSprite("baron");
   const id = VISITOR_KINDS[kind] ?? VISITOR_KINDS[0], sheet = VISITOR_KINDS.indexOf(id) >= 5 ? sheets.horrorVisitors : sheets.visitors;
   const model = figure(sheet, { walk: sheet.frames[id] }, sheet.texture);
   model.userData.artFacesLeft = kind >= 5; return model;
@@ -157,6 +160,7 @@ export function spriteVisitor(sheets, kind) {
 // dx is which way they're heading across the screen (-1 to 1). The art faces
 // right, so walking left mirrors them; mostly up or down keeps the last facing.
 export function animateVisitor(group, age, walking, dx = 0) {
+  if (group.userData.specialSprite) { animateSpecialSprite(group, age, walking, dx); return; }
   if (walking && Math.abs(dx) > 0.3) group.scale.x = (dx < 0 ? -1 : 1) * (group.userData.artFacesLeft ? -1 : 1);
   const { walk } = group.userData, next = walk[walking ? Math.floor(age * 5) % walk.length : 0];
   if (next !== group.userData.shown) { group.userData.show(next); group.userData.shown = next; }
@@ -171,6 +175,7 @@ export function animateVisitor(group, age, walking, dx = 0) {
 // and never narrower than half its height, so every menu frames them alike.
 const portraits = new Map();
 export function portraitURL(sheets, id) {
+  if (id === "visitor-baron" || id === "axel") return specialPortrait(id);
   if (portraits.has(id)) return portraits.get(id);
   let sheet, f;
   if (id.startsWith("visitor-")) { sheet = VISITOR_KINDS.indexOf(id.slice(8)) >= 5 ? sheets.horrorVisitors : sheets.visitors; f = sheet?.meta[id.slice(8)]?.[0]; }

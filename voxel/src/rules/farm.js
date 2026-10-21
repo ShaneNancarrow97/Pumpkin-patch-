@@ -5,6 +5,8 @@
 import { pumpkinVarieties } from "../../../src/content/products.js";
 import { economy } from "../../../src/content/economy.js";
 import { addStock, stockCount } from "./stock.js";
+import { MAX_PLOTS, PLOT_COUNTS } from "../content/farm-layout.js";
+export { MAX_PLOTS, PLOT_COUNTS, fieldDepth, farmPathEnd, farmExpansionTier } from "../content/farm-layout.js";
 
 export const VARIETIES = pumpkinVarieties.map((v, i) => ({
   ...v,
@@ -17,8 +19,8 @@ export const UPGRADES = [
   { id: "tools", name: "A better watering can", text: "Pumpkins grow 18% faster.", cost: 90, max: 6 },
   { id: "yield", name: "A little extra love", text: "One more pumpkin per harvest.", cost: 150, max: 5 },
   { id: "auto", name: "Helping hands", text: "Shane and Natalie plant and pick for you.", cost: 500, max: 1 },
-  { id: "plots", name: "Room for more", text: "Make space for three more pumpkin plots.", cost: 300, max: 2 },
-  { id: "storage", name: "A bigger pumpkin barn", text: "Store more pumpkins before the harvest pauses. Keeps ripe crops safe when full.", costs: [180, 600, 1800, 5200, 14000], max: 5 },
+  { id: "plots", name: "Room for more", text: "Open more beds, then buy the south field for eighteen and twenty-four plots.", costs: [300, 660, 2200, 5500], max: 4 },
+  { id: "storage", name: "A bigger pumpkin barn", text: "Store more pumpkins before the harvest pauses. Keeps ripe crops safe when full.", costs: [60, 180, 500, 1400, 4000, 10000], max: 6 },
   // Each tier is dearer and does a little less, so the first are a few minutes' takings and the last a late goal.
   { id: "sign", name: "Spread the word", text: "Notes through letterboxes, then the parish newsletter. Visitors come more often, at the stall and the shop.", costs: [45, 120, 350, 1000, 3000], steps: [0.88, 0.89, 0.9, 0.92, 0.94], max: 5 },
 ].map((u) => ({ ...u, max: u.costs?.length ?? u.max }));
@@ -26,7 +28,7 @@ export const UPGRADES = [
 export const tierFactor = (steps, level) => steps.slice(0, level).reduce((f, x) => f * x, 1);
 
 export const freshUpgrades = () => ({ tools: 0, yield: 0, auto: 0, plots: 0, sign: 0, storage: 0 });
-export const freshPlots = () => Array.from({ length: 12 }, () => ({ phase: "empty", progress: 0, variety: 0 }));
+export const freshPlots = () => Array.from({ length: MAX_PLOTS }, () => ({ phase: "empty", progress: 0, variety: 0 }));
 // The visitor boost. Quick picks build the streak and the streak brings
 // visitors sooner: +10% a pick up to ×6, then +5% a pick up to +150% at ×26.
 // It holds while the streak is hot and fades after, so steady picking keeps the
@@ -41,7 +43,7 @@ export const visitorBonus = (s) => (s.streak?.visitorBoost ?? 0) * Math.min(1, v
 export const freshStreak = () => ({ count: 0, until: 0, best: 0, bonusCoins: 0, nextBonusAt: 0, visitorBoost: 0, visitorBoostUntil: 0, last: -1 });
 
 export const HELPER_WAIT = 8;
-export const openPlots = (s) => 6 + s.upgrades.plots * 3;
+export const openPlots = (s) => PLOT_COUNTS[Math.max(0, Math.min(PLOT_COUNTS.length - 1, Math.trunc(s.upgrades.plots || 0)))];
 export const growTime = (s, i) => VARIETIES[s.plots[i].variety].grow * Math.pow(0.82, s.upgrades.tools);
 export const harvestSize = (s) => 1 + s.upgrades.yield;
 export const upgradeCost = (s, id) => {
@@ -59,8 +61,8 @@ export function plant(s, i) {
 
 // Existing stock is never discarded on load. New harvests need room for the
 // whole crop, so a full barn leaves ripe pumpkins on the patch for later.
-export const STORAGE_BONUS = [0, 40, 120, 280, 600, 1240];
-export const barnCapacity = s => 60 + 40 * s.upgrades.plots + 20 * s.upgrades.yield + STORAGE_BONUS[Math.min(5, s.upgrades.storage || 0)];
+export const STORAGE_BONUS = [0, 180, 500, 1200, 2600, 5400, 11000];
+export const barnCapacity = s => 180 + 40 * s.upgrades.plots + 20 * s.upgrades.yield + STORAGE_BONUS[Math.min(STORAGE_BONUS.length - 1, s.upgrades.storage || 0)];
 export const barnSpace = s => Math.max(0, barnCapacity(s) - stockCount(s));
 function store(s, v, n) { if (barnSpace(s) < n) return false; addStock(s, v, n); return true; }
 

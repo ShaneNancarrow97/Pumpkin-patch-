@@ -67,7 +67,8 @@ export function cocoaKiosk(level) {
 const clearRegions = [[38, 10.7, 57, 34], [38.4, 5.8, 43.4, 10.7], [35.3, 24.7, 40.3, 29.7], [34, 22.6, 42, 25.3]];
 export function openMeadowEdge(world) {
   const matrix = new THREE.Matrix4(), colour = new THREE.Color(); let removed = 0;
-  for (const source of world.children.filter((m) => m.isInstancedMesh)) {
+  const batches = []; world.traverse(m => { if (m.isInstancedMesh) batches.push(m); });
+  for (const source of batches) {
     let write = 0; const original = source.count;
     for (let i = 0; i < original; i++) {
       source.getMatrixAt(i, matrix); const a = matrix.elements, x = a[12], z = a[14], w = Math.abs(a[0]), d = Math.abs(a[10]), top = a[13] + Math.abs(a[5]) / 2;

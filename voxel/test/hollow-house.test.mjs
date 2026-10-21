@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
 
-function prepared() { const s=M.freshState();s.coins=100000;s.earned=200000;s.progression.claimed=Array.from({length:12},(_,i)=>i+1);s.festival.meadow=true;s.visitorTimer=s.shop.arrivalTimer=1e6;return s; }
+function prepared() { const s=M.freshState();s.coins=100000;s.earned=200000;s.progression.claimed=Array.from({length:12},(_,i)=>i+1);s.festival.meadow=true;s.visitorTimer=s.shop.arrivalTimer=s.bigSpender.timer=1e6;return s; }
 function opened() { const s=prepared();assert.ok(M.buyHollowProperty(s));assert.ok(M.beginHollowRestoration(s));M.update(s,90);assert.ok(M.setHollowOpen(s,true));s.stock=[10000,10000,10000,10000];return s; }
 function guest(s,id=0) { const v={id,kind:id%5,profile:0,age:0,budget:1000,originalBudget:1000,basketLimit:1,preferred:[0],basket:[],leaveAt:null,outcome:"shopping",spot:0,needs:M.freshGuestNeeds(id),hollowConsidered:true};v.hollow=M.planHollowVisit(s,v);return v; }
 
@@ -28,7 +28,7 @@ test("foyer stock, rotation, surfaces and wall decoration persist with collision
  const s=opened();assert.ok(M.buyFoyerDecor(s,"skull-plinth"));assert.equal(M.placeFoyerDecor(s,"skull-plinth",0,0),false);const p=M.placeFoyerDecor(s,"skull-plinth",-4,1.8,30);assert.ok(p);assert.equal(M.moveFoyerDecor(s,p.instance,0,0,30),false);assert.ok(M.moveFoyerDecor(s,p.instance,-4,1.8,75));assert.ok(M.buyFoyerFinish(s,"gothic-tiles"));assert.ok(M.equipFoyerFinish(s,"gothic-tiles"));assert.ok(M.buyFoyerDecor(s,"haunted-portrait"));const wall=M.placeFoyerDecor(s,"haunted-portrait",4.8,-2.8,0,{wall:"right",y:2});assert.ok(wall);assert.equal(wall.rotation,270);const r=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.deepEqual(r.hollowHouse.foyer,s.hollowHouse.foyer);assert.ok(M.storeFoyerDecor(r,p.instance));assert.equal(r.hollowHouse.foyer.ownedDecor[p.id],1);
 });
 test("restoring legacy saves adds a locked attraction and a free estate without changing core progress",()=>{
- const s=prepared();s.house.level=2;s.stock=[4,3,2,1];const old=M.saveData(s);delete old.estate;delete old.hollowHouse;delete old.hollowVisitors;old.version=7;const r=M.restoreState(old);assert.equal(r.version,9);assert.equal(r.house.level,2);assert.deepEqual(r.stock,s.stock);assert.equal(r.estate.placed.length,5);assert.equal(r.hollowHouse.purchased,false);assert.equal(r.hollowHouse.foyer.placed.length,3);
+ const s=prepared();s.house.level=2;s.stock=[4,3,2,1];const old=M.saveData(s);delete old.estate;delete old.hollowHouse;delete old.hollowVisitors;old.version=7;const r=M.restoreState(old);assert.equal(r.version,M.STATE_VERSION);assert.equal(r.house.level,2);assert.deepEqual(r.stock,s.stock);assert.equal(r.estate.placed.length,5);assert.equal(r.hollowHouse.purchased,false);assert.equal(r.hollowHouse.foyer.placed.length,3);
 });
 
 test("foyer expansion keeps portraits on their walls and preserves the exact saved arrangement",()=>{const s=opened();M.buyFoyerDecor(s,"haunted-portrait");const p=M.placeFoyerDecor(s,"haunted-portrait",4.87,-2.75,0,{wall:"right",y:2});assert.ok(p);for(let i=0;i<4;i++){assert.ok(M.upgradeHollowFoyer(s));assert.equal(p.x,M.foyerLayout(s).x1-.13);const r=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.deepEqual(r.hollowHouse.foyer,s.hollowHouse.foyer);for(const q of s.hollowHouse.foyer.placed)assert.ok(M.foyerFits(s,q.id,q.x,q.z,q.rotation,q.instance,q));}});

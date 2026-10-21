@@ -1,6 +1,7 @@
 // The first festival extension. Pure rules; no renderer or DOM dependencies.
 import { freshCocoaPrices, restoreCocoaPrices, freshCocoaExtras, restoreCocoaExtras, standHasStock, quoteStandOrder, payStandOrder } from "./cocoa-menu.js";
 export * from "./cocoa-menu.js";
+import { extendFarmRoute } from "../content/farm-layout.js";
 import { patchLevel } from "./levels.js";
 import { MEADOW, COCOA_TIERS, COCOA_SUPPLY, COCOA_APPROACH, PUMPKIN_APPROACH } from "../content/festival-meadow.js";
 export { MEADOW, COCOA_TIERS, COCOA_SUPPLY, fieldWidth } from "../content/festival-meadow.js";
@@ -71,7 +72,8 @@ export function planFestivalVisit(s, v) {
   if (!c?.level || !c.open || !standHasStock(s) || !wantsCocoa(s, v)) return null;
   const rank = s.visitors.filter(inQueue).length;
   if (rank >= MEADOW.queue) return null;
-  return { phase: "to-cocoa", route: [...COCOA_APPROACH, [47, 20.6 + rank * .8]], segment: 1, x: 33, z: 28.5, dx: 0, dz: -1, elapsed: 0, walking: true, done: false };
+  const route = [...extendFarmRoute(COCOA_APPROACH, s), [47, 20.6 + rank * .8]];
+  return { phase: "to-cocoa", route, segment: 1, x: route[0][0], z: route[0][1], dx: 0, dz: -1, elapsed: 0, walking: true, done: false };
 }
 function walk(m, target, dt) {
   const dx = target[0] - m.x, dz = target[1] - m.z, d = Math.hypot(dx, dz);

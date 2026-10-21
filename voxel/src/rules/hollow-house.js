@@ -4,10 +4,11 @@ import { patchLevel } from "./levels.js";
 import { available } from "./stock.js";
 import { VARIETIES } from "./farm.js";
 import { validPieceColour } from "./piece-colours.js";
-import { HOLLOW_PROPERTY, FOYER_TIERS, FOYER_DECOR, FOYER_DECOR_BY_ID, FOYER_FINISHES, FOYER_FINISH_BY_ID, FOYER_DEFAULT_FINISHES, HOLLOW_APPROACH, HOLLOW_FRONT_APPROACH, HOLLOW_RETURN, HOLLOW_SHOP_RETURN } from "../content/hollow-house.js";
+import { extendFarmRoute, farmPathEnd } from "../content/farm-layout.js";
+import { HOLLOW_PROPERTY, FOYER_TIERS, FOYER_DECOR, FOYER_DECOR_BY_ID, FOYER_FINISHES, FOYER_FINISH_BY_ID, FOYER_DEFAULT_FINISHES, HOLLOW_APPROACH, HOLLOW_FRONT_APPROACH, HOLLOW_RETURN, HOLLOW_SHOP_RETURN, MAZE_PREFABS, MAZE_PREFAB_BY_ID } from "../content/hollow-house.js";
 export * from "../content/hollow-house.js";
 
-const EPS = 1e-7, insidePhases = new Set(["entering", "queue", "serving", "admission", "returning", "exit"]), mazePhases = new Set(["to-maze", "maze"]);
+const EPS = 1e-7, insidePhases = new Set(["entering", "queue", "serving", "admission", "returning", "requeue", "exit"]), mazePhases = new Set(["to-maze", "maze"]);
 const count = (n, max = 1e12) => Number.isSafeInteger(n) ? Math.max(0, Math.min(max, n)) : 0;
 const finite = (n, fallback = 0) => Number.isFinite(n) ? n : fallback;
 const angle = n => ((n % 360) + 360) % 360;
@@ -15,7 +16,7 @@ const lookup = (map, id) => typeof id === "string" ? map[id] : null;
 const inventory = () => Object.fromEntries(FOYER_DECOR.map(d => [d.id, 0]));
 const cash = (s, price) => !s.paused && Number.isFinite(s.coins) && s.coins >= price;
 export function freshHollowHouse() {
-  return { purchased: false, status: "derelict", restoreRemaining: 0, tier: 1, open: false, ticketPrice: 6, invested: 0, ticketsSold: 0, income: 0, completed: 0, missed: 0, nextVisit: 0, receipts: [], lastEvent: null,
+  return { purchased: false, status: "derelict", restoreRemaining: 0, tier: 1, open: false, ticketPrice: 6, invested: 0, ticketsSold: 0, income: 0, completed: 0, missed: 0, runHome: 0, repeatVisits: 0, haunts: { owned: [], active: [] }, nextVisit: 0, receipts: [], lastEvent: null,
     foyer: { ownedDecor: inventory(), placed: [
       { instance: "foyer-0", id: "velvet-bench", x: -3, z: 2.7, rotation: 0 },
       { instance: "foyer-1", id: "parlour-table", x: 3.2, z: 2.9, rotation: 0 },
@@ -25,6 +26,27 @@ export function freshHollowHouse() {
 export const hollowConfig = s => FOYER_TIERS[Math.max(0, count(s?.hollowHouse?.tier, 5) - 1)];
 export const hollowReady = s => s?.hollowHouse?.purchased === true && s.hollowHouse.status === "ready";
 export const hollowUnlocked = s => patchLevel(s).level >= HOLLOW_PROPERTY.level;
+
+// A frightening attraction earns word of mouth, bounded separately from cash.
+export function mazeScareRating(s) {
+  const h = s?.hollowHouse; if (!h || !hollowReady(s)) return 0;
+  const active = new Set(h.haunts?.active ?? []), owned = new Set(h.haunts?.owned ?? []);
+  const strength = MAZE_PREFABS.reduce((n,p) => n + (active.has(p.id) && owned.has(p.id) && p.tier <= h.tier ? p.scare : 0), 0);
+  return strength ? Math.min(100, 8 + (h.tier - 1) * 2 + strength) : 0;
+}
+export const mazeFootfallBonus = s => hollowReady(s) && s.hollowHouse.open ? mazeScareRating(s) / 200 : 0;
+export function buyMazePrefab(s, id) {
+  const p = lookup(MAZE_PREFAB_BY_ID, id), h = s?.hollowHouse;
+  if (!p || !hollowReady(s) || p.tier > h.tier || !cash(s, p.cost) || h.haunts?.owned.includes(id)) return false;
+  if (!h.haunts) h.haunts = { owned: [], active: [] };
+  s.coins -= p.cost; h.invested += p.cost; h.haunts.owned.push(id); h.haunts.active.push(id); return true;
+}
+export function setMazePrefabActive(s, id, on) {
+  const p = lookup(MAZE_PREFAB_BY_ID, id), h = s?.hollowHouse;
+  if (!p || !hollowReady(s) || s.paused || typeof on !== "boolean" || p.tier > h.tier || !h.haunts?.owned.includes(id)) return false;
+  h.haunts.active = h.haunts.active.filter(value => value !== id); if (on) h.haunts.active.push(id); return true;
+}
+
 export const ticketPriceRange = s => ({ min: hollowConfig(s).minTicket, max: hollowConfig(s).maxTicket });
 export function buyHollowProperty(s) {
   if (!s.hollowHouse || s.hollowHouse.purchased || !hollowUnlocked(s) || !cash(s, HOLLOW_PROPERTY.price)) return false;
@@ -92,20 +114,20 @@ export function planHollowVisit(s, v) {
   if (!hollowReady(s) || !h.open || !Number.isFinite(v.budget) || spareCash(s, v) < h.ticketPrice || brave(v.id) > .72 || hollowOccupancy(s).outside >= config.capacity) return null;
   // Higher prices need correspondingly braver guests; the same guest never rerolls.
   if (h.ticketPrice > 6 + brave(v.id + 71) * (config.maxTicket - 4)) return null;
-  const route = v.festival?.done ? HOLLOW_APPROACH : HOLLOW_FRONT_APPROACH;
-  return { visitId: "hollow-" + h.nextVisit++, routeVersion: 2, fromFront: !v.festival?.done, phase: "approach", x: route[0][0], z: route[0][1], dx: 0, dz: -1, route: route.map(p => [...p]), segment: 1, elapsed: 0, waited: 0, walking: true, charged: false, ticket: 0, done: false };
+  const route = extendFarmRoute(v.festival?.done ? HOLLOW_APPROACH : HOLLOW_FRONT_APPROACH, s);
+  return { visitId: "hollow-" + h.nextVisit++, routeVersion: 2, fromFront: !v.festival?.done, phase: "approach", x: route[0][0], z: route[0][1], dx: 0, dz: -1, route: route.map(p => [...p]), segment: 1, elapsed: 0, waited: 0, walking: true, charged: false, ticket: 0, done: false, terror: 0, bravery: 24 + Math.floor(brave(v.id + 421) * 65), runs: 0, repeats: 0, fleeing: false };
 }
 function walk(m, target, dt) {
   const dx = target[0] - m.x, dz = target[1] - m.z, distance = Math.hypot(dx, dz); m.dx = dx; m.dz = dz; m.walking = distance > .005;
   if (distance < .005) { m.x = target[0]; m.z = target[1]; return dt; }
-  const seconds = distance / HOLLOW_PROPERTY.speed, fraction = Math.min(1, dt / seconds); m.x += dx * fraction; m.z += dz * fraction; return Math.max(0, dt - seconds);
+  const seconds = distance / (HOLLOW_PROPERTY.speed * (m.fleeing ? 1.7 : 1)), fraction = Math.min(1, dt / seconds); m.x += dx * fraction; m.z += dz * fraction; return Math.max(0, dt - seconds);
 }
-function returnToShop(m) { m.phase = "to-border"; m.route = HOLLOW_RETURN.map(p => [...p]); m.segment = 1; m.x = HOLLOW_RETURN[0][0]; m.z = HOLLOW_RETURN[0][1]; m.walking = true; m.elapsed = 0; }
+function returnToShop(s, m) { m.phase = "to-border"; m.route = extendFarmRoute(HOLLOW_RETURN, s); m.segment = 1; m.x = m.route[0][0]; m.z = m.route[0][1]; m.walking = true; m.elapsed = 0; }
 function event(s, kind, v) { s.hollowHouse.lastEvent = { kind, visitor: v.id, at: s.time }; }
 export function chargeHollowTicket(s, v) {
   const h = s.hollowHouse, m = v.hollow;
   if (s.paused || !hollowReady(s) || !h.open || !m || m.charged || h.receipts.some(r => r.visitId === m.visitId) || v.budget < h.ticketPrice || spareCash(s, v) < h.ticketPrice) return 0;
-  const amount = h.ticketPrice; v.budget -= amount; m.charged = true; m.ticket = amount; h.ticketsSold++; h.income += amount; s.coins += amount; s.earned += amount;
+  const amount = h.ticketPrice; if (m.repeats > 0) h.repeatVisits = (h.repeatVisits ?? 0) + 1; v.budget -= amount; m.charged = true; m.ticket = amount; h.ticketsSold++; h.income += amount; s.coins += amount; s.earned += amount;
   h.receipts.unshift({ visitId: m.visitId, visitor: v.id, amount, at: s.time }); h.receipts.length = Math.min(80, h.receipts.length); event(s, "ticket", v); return amount;
 }
 // True suspends the ordinary stall clock while the same guest visits the house.
@@ -118,16 +140,17 @@ export function tickHollowVisit(s, v, dt, events = []) {
       remaining = walk(m, m.route[m.segment], remaining); if (remaining <= EPS) break;
       if (++m.segment < m.route.length) continue;
       if (m.phase === "to-shop") { m.phase = "done"; m.done = true; m.walking = false; m.justArrived = true; return false; }
+      if (m.phase === "to-border" && m.fleeing) { m.phase = "done"; m.done = true; m.fledHome = true; m.walking = false; v.outcome = "frightened"; return false; }
       if (m.phase === "to-border") { m.phase = "transfer-out"; m.elapsed = 0; m.walking = false; }
       else if (m.phase === "approach" && !m.fromFront) { m.phase = "transfer-in"; m.elapsed = 0; m.walking = false; }
       else { m.phase = "door-wait"; m.elapsed = 0; m.walking = false; }
     }
-    if (!m.charged && !["exit", "to-border", "transfer-out", "to-shop"].includes(m.phase) && (!hollowReady(s) || !h.open)) { if (insidePhases.has(m.phase)) { m.phase = "exit"; m.elapsed = 0; } else returnToShop(m); continue; }
+    if (!m.charged && !["exit", "to-border", "transfer-out", "to-shop"].includes(m.phase) && (!hollowReady(s) || !h.open)) { if (insidePhases.has(m.phase)) { m.phase = "exit"; m.elapsed = 0; } else returnToShop(s, m); continue; }
     if (m.phase === "door-wait") {
       m.waited += remaining;
       // Leave one reception place for returning maze guests, avoiding a full
       // foyer waiting for maze space while a full maze waits for foyer space.
-      if (hollowOccupancy(s).foyer >= t.capacity - 1) { if (m.waited > 35) { h.missed++; returnToShop(m); continue; } break; }
+      if (hollowOccupancy(s).foyer >= t.capacity - 1) { if (m.waited > 35) { h.missed++; returnToShop(s, m); continue; } break; }
       m.phase = "entering"; m.elapsed = 0; event(s, "welcome", v);
     }
     if (m.phase === "queue") {
@@ -141,32 +164,46 @@ export function tickHollowVisit(s, v, dt, events = []) {
       if (!amount) { h.missed++; m.phase = "exit"; m.elapsed = 0; continue; }
       events.push({ type: "sale", route: "hollow-ticket", visitor: v.id, amount, quantity: 0 }); m.phase = "to-maze"; m.elapsed = 0;
     }
-    const duration = { "transfer-in": HOLLOW_PROPERTY.transferSeconds, "transfer-out": HOLLOW_PROPERTY.transferSeconds, entering: 2.2, serving: t.serviceSeconds, "to-maze": 3, maze: t.mazeSeconds, returning: 2.5, exit: 3 }[m.phase];
+    const duration = { "transfer-in": HOLLOW_PROPERTY.transferSeconds, "transfer-out": HOLLOW_PROPERTY.transferSeconds, entering: 2.2, requeue: 2, serving: t.serviceSeconds, "to-maze": 3, maze: t.mazeSeconds, returning: 2.5, exit: 3 }[m.phase];
     if (duration === undefined) break;
     if (m.phase === "maze" && m.elapsed >= duration - EPS && hollowOccupancy(s).foyer >= t.capacity) break;
     const use = Math.min(remaining, Math.max(0, duration - m.elapsed)); m.elapsed += use; remaining -= use;
+    if (m.phase === "maze") m.terror = Math.min(100, finite(m.terror) + use / duration * (10 + mazeScareRating(s) * .9) * (1 - finite(m.bravery, 55) / 200));
     if (m.elapsed < duration - EPS) break;
     m.elapsed = 0;
     if (["transfer-in", "transfer-out"].includes(m.phase)) {
-      const incoming = m.phase === "transfer-in", route = incoming ? HOLLOW_FRONT_APPROACH : HOLLOW_SHOP_RETURN;
+      const incoming = m.phase === "transfer-in", route = extendFarmRoute(incoming ? HOLLOW_FRONT_APPROACH : HOLLOW_SHOP_RETURN, s);
       m.phase = incoming ? "arriving-house" : "to-shop"; m.route = route.map(p => [...p]); m.segment = 1; m.x = route[0][0]; m.z = route[0][1]; m.walking = true;
     }
     else if (m.phase === "entering") m.phase = "queue";
     else if (m.phase === "serving") m.phase = "admission";
     else if (m.phase === "to-maze") { m.phase = "maze"; event(s, "gesture", v); }
-    else if (m.phase === "maze") { if (hollowOccupancy(s).foyer >= t.capacity) { m.elapsed = duration; break; } m.phase = "returning"; h.completed++; if (v.needs) v.needs.happiness = Math.min(100, v.needs.happiness + 12); event(s, "survivor", v); }
-    else if (m.phase === "returning") m.phase = "exit";
-    else if (m.phase === "exit") returnToShop(m);
+    else if (m.phase === "maze") {
+      if (hollowOccupancy(s).foyer >= t.capacity) { m.elapsed = duration; break; }
+      m.phase = "returning"; m.runs = (m.runs ?? 0) + 1; h.completed++;
+      m.fleeing = finite(m.terror) >= 62 + finite(m.bravery, 55) * .28;
+      if (m.fleeing) { h.runHome = (h.runHome ?? 0) + 1; if(v.needs)v.needs.happiness = Math.max(15, v.needs.happiness - 12); event(s, "frightened", v); }
+      else { if (v.needs) v.needs.happiness = Math.min(100, v.needs.happiness + 12); event(s, "survivor", v); }
+    }
+    else if (m.phase === "returning") {
+      const canRepeat = (h.haunts?.active.length ?? 0) > 0 && !m.fleeing && !m.repeats && h.open && spareCash(s,v) >= h.ticketPrice && m.terror >= 8 && brave(v.id + 211) < .36 && hollowOccupancy(s).foyer < t.capacity;
+      if (canRepeat) {
+        m.repeats = 1; m.visitId = "hollow-" + h.nextVisit++; m.charged = false; m.ticket = 0; m.waited = 0; m.terror *= .4; m.phase = "requeue"; event(s,"requeue",v);
+      } else m.phase = "exit";
+    }
+    else if (m.phase === "requeue") m.phase = "queue";
+    else if (m.phase === "exit") returnToShop(s, m);
   }
   return !m.done;
 }
 
 // The renderer reads positions; it never advances the visit or charges a ticket.
 export function foyerVisitorPosition(s, v) {
-  const m = v.hollow, l = foyerLayout(s), queue = foyerGuests(s).filter(g => ["queue", "serving", "admission"].includes(g.hollow.phase)), rank = Math.max(0, queue.findIndex(g => g.id === v.id));
+  const m = v.hollow, l = foyerLayout(s), queue = foyerGuests(s).filter(g => ["queue", "serving", "admission", "requeue"].includes(g.hollow.phase)), rank = Math.max(0, queue.findIndex(g => g.id === v.id));
   const blend = (a, b, t) => ({ x: a.x + (b.x - a.x) * t, z: a.z + (b.z - a.z) * t });
   if (!m) return null;
   if (m.phase === "entering") return blend(l.exitDoor, l.queue[Math.min(rank, l.queue.length - 1)], Math.min(1, m.elapsed / 2.2));
+  if (m.phase === "requeue") return blend({ x: .9, z: l.exitDoor.z - 1.2 }, l.queue[Math.min(rank, l.queue.length - 1)], Math.min(1,m.elapsed / 2));
   if (m.phase === "queue") return l.queue[Math.min(rank, l.queue.length - 1)];
   const servicePoint = { x: l.counter.x + .8, z: l.counter.z + 1.1 };
   if (m.phase === "serving") return blend(l.queue[0], servicePoint, Math.min(1, m.elapsed / .8));
@@ -258,7 +295,9 @@ export function restoreHollowHouse(raw) {
   h.tier = h.status === "ready" ? Math.max(1, count(raw.tier, 5)) : 1; h.open = h.status === "ready" && raw.open === true;
   h.restoreRemaining = h.status === "restoring" ? Math.max(.001, Math.min(HOLLOW_PROPERTY.restorationSeconds, finite(raw.restoreRemaining, HOLLOW_PROPERTY.restorationSeconds))) : 0;
   h.ticketPrice = Math.max(4, Math.min(FOYER_TIERS[h.tier - 1].maxTicket, Number.isInteger(raw.ticketPrice) ? raw.ticketPrice : 6));
-  for (const k of ["invested", "ticketsSold", "income", "completed", "missed", "nextVisit"]) h[k] = count(raw[k]);
+  for (const k of ["invested", "ticketsSold", "income", "completed", "missed", "runHome", "repeatVisits", "nextVisit"]) h[k] = count(raw[k]);
+  h.haunts.owned = [...new Set((Array.isArray(raw.haunts?.owned) ? raw.haunts.owned : []).filter(id => lookup(MAZE_PREFAB_BY_ID,id)))];
+  h.haunts.active = [...new Set((Array.isArray(raw.haunts?.active) ? raw.haunts.active : []).filter(id => h.haunts.owned.includes(id) && MAZE_PREFAB_BY_ID[id].tier <= h.tier))];
   const receiptIds = new Set();
   for (const r of Array.isArray(raw.receipts) ? raw.receipts.slice(0, 80) : []) if (typeof r?.visitId === "string" && /^hollow-\d+$/.test(r.visitId) && !receiptIds.has(r.visitId) && Number.isSafeInteger(r.amount) && r.amount >= 4 && r.amount <= 24) {
     receiptIds.add(r.visitId); h.receipts.push({ visitId: r.visitId, visitor: count(r.visitor), amount: r.amount, at: Math.max(0, finite(r.at)) }); h.nextVisit = Math.max(h.nextVisit, Number(r.visitId.slice(7)) + 1);
@@ -286,15 +325,19 @@ export function saveHollowVisitors(s) {
 }
 export function restoreHollowVisitors(raw, s) {
   if (!s.hollowHouse?.purchased || !Array.isArray(raw)) return;
-  const ids = new Set(s.visitors.map(v => v.id)), visits = new Set(), phases = new Set(["approach", "transfer-in", "arriving-house", "door-wait", "entering", "queue", "serving", "admission", "to-maze", "maze", "returning", "exit", "to-border", "transfer-out", "to-shop"]);
+  const ids = new Set(s.visitors.map(v => v.id)), visits = new Set(), phases = new Set(["approach", "transfer-in", "arriving-house", "door-wait", "entering", "queue", "serving", "admission", "to-maze", "maze", "returning", "requeue", "exit", "to-border", "transfer-out", "to-shop"]);
   for (const input of raw.slice(0, 50)) {
     const m = input?.hollow;
     if (!m || !phases.has(m.phase) || !Number.isSafeInteger(input.id) || ids.has(input.id) || typeof m.visitId !== "string" || !/^hollow-\d+$/.test(m.visitId) || visits.has(m.visitId) || !Number.isFinite(input.budget) || input.budget < 0) continue;
     const charged = m.charged === true && s.hollowHouse.receipts.some(r => r.visitId === m.visitId);
     if (["to-maze", "maze", "returning"].includes(m.phase) && !charged) continue;
-    const phase = phases.has(m.phase) ? m.phase : "exit", fromFront = m.fromFront === true || m.route?.[0]?.[1] === HOLLOW_FRONT_APPROACH[0][1], route = phase === "to-shop" ? HOLLOW_SHOP_RETURN : ["to-border", "transfer-out"].includes(phase) ? HOLLOW_RETURN : phase === "arriving-house" || fromFront ? HOLLOW_FRONT_APPROACH : HOLLOW_APPROACH;
-    const v = { ...input, id: input.id, budget: Math.min(10000, input.budget), originalBudget: Math.max(input.budget, finite(input.originalBudget, input.budget)), preferred: Array.isArray(input.preferred) ? input.preferred.filter(n => Number.isInteger(n) && n >= 0 && n < 4) : [0], basketLimit: Math.max(1, count(input.basketLimit, 10)), basket: [], leaveAt: null, outcome: "shopping", age: Math.max(0, finite(input.age)), festival: { done: true }, hollowConsidered: true,
-      hollow: { ...m, phase, charged, ticket: charged ? count(m.ticket, 24) : 0, done: false, route: route.map(p => [...p]), segment: Math.max(1, Math.min(route.length - 1, count(m.segment))), x: finite(m.x, HOLLOW_PROPERTY.door[0]), z: finite(m.z, HOLLOW_PROPERTY.door[1]), dx: finite(m.dx), dz: finite(m.dz, 1), elapsed: Math.max(0, Math.min(35, finite(m.elapsed))), waited: Math.max(0, Math.min(35, finite(m.waited))) } };
+    const phase = phases.has(m.phase) ? m.phase : "exit", fromFront = m.fromFront === true || (m.route?.[0]?.[0] === -3 && m.route?.[0]?.[1] >= 30), route = extendFarmRoute(phase === "to-shop" ? HOLLOW_SHOP_RETURN : ["to-border", "transfer-out"].includes(phase) ? HOLLOW_RETURN : phase === "arriving-house" || fromFront ? HOLLOW_FRONT_APPROACH : HOLLOW_APPROACH, s);
+    // A legacy visit can be parked at the old gate when purchased land grows.
+    // Shift that outer leg once, comparing the saved route to today's bounds.
+    const savedGate = Array.isArray(m.route) ? Math.max(30, ...m.route.map(p => finite(p?.[1]))) : 30;
+    const z = finite(m.z, HOLLOW_PROPERTY.door[1]) + (m.z >= 28.5 ? farmPathEnd(s) - savedGate : 0);
+    const v = { ...input, id: input.id, vip: input.kind === 10 && input.vip === true, budget: Math.min(10000, input.budget), originalBudget: Math.max(input.budget, finite(input.originalBudget, input.budget)), preferred: Array.isArray(input.preferred) ? input.preferred.filter(n => Number.isInteger(n) && n >= 0 && n < 4) : [0], basketLimit: Math.max(1, count(input.basketLimit, input.vip === true ? 20 : 10)), basket: [], leaveAt: null, outcome: "shopping", age: Math.max(0, finite(input.age)), festival: { done: true }, hollowConsidered: true,
+      hollow: { ...m, phase, charged, ticket: charged ? count(m.ticket, 24) : 0, done: false, route, segment: Math.max(1, Math.min(route.length - 1, count(m.segment))), x: finite(m.x, HOLLOW_PROPERTY.door[0]), z, dx: finite(m.dx), dz: finite(m.dz, 1), elapsed: Math.max(0, Math.min(35, finite(m.elapsed))), waited: Math.max(0, Math.min(35, finite(m.waited))), terror: Math.max(0,Math.min(100,finite(m.terror))), bravery: Math.max(0,Math.min(100,finite(m.bravery,24 + Math.floor(brave(input.id + 421) * 65)))), runs: count(m.runs,2), repeats: count(m.repeats,1), fleeing: m.fleeing === true, fledHome: false } };
     if (!v.needs || typeof v.needs !== "object") v.needs = { thirst: 50, hunger: 50, happiness: 70, value: 1 };
     ids.add(v.id); visits.add(m.visitId); s.visitors.push(v); s.nextVisitor = Math.max(s.nextVisitor, v.id + 1); s.hollowHouse.nextVisit = Math.max(s.hollowHouse.nextVisit, Number(m.visitId.slice(7)) + 1);
   }

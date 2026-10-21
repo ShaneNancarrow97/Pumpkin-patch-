@@ -26,6 +26,8 @@ import { fieldWidth, MEADOW, MEADOW_EXIT } from "./content/festival-meadow.js";
 import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
+import { createFarmExpansion } from "./farm-expansion-world.js";
+import { fieldDepth, extendFarmRoute } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createFoyerView } from "./foyer-view.js";
 
@@ -123,6 +125,7 @@ export function createScene(canvas, state, hooks) {
     return { g, sp, pk, halo, lockedVines };
   });
   const festivalWorld = createFestivalWorld({ scene, state, world, signBoard, createCashier: createSandy });
+  const farmExpansion = createFarmExpansion(scene, state, world);
   const hollowFarm = createHollowFarm(scene, state, signBoard);
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
@@ -196,7 +199,7 @@ export function createScene(canvas, state, hooks) {
   const nearestActor = (x, z) => Object.values(actors).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
 
   // Visitors.
-  const visitorModels = new Map(), inLen = routeLength(ROUTE_IN), outLen = routeLength(ROUTE_OUT), meadowOutLen = routeLength(MEADOW_EXIT), COUNTER_GAP = 1;
+  const visitorModels = new Map(), outLen = routeLength(ROUTE_OUT), meadowOutLen = routeLength(MEADOW_EXIT), COUNTER_GAP = 1;
   const guestHitGeometry = new THREE.BoxGeometry(1.15, 2.2, .9), guestHitMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const carriedCup = cocoaProp("cocoa");
   const carried = pumpkins.map((t) => { const m = t.clone(); m.scale.setScalar(0.5); return m; });
@@ -273,7 +276,7 @@ export function createScene(canvas, state, hooks) {
     if (view.place) { clampView(); frameRoom(w, h); return; }
     // Ease from a phone crop to the whole yard, with room around the edges.
     view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(w).minZoom, 2.6);
-    const span = (cameraLayout(w).farmSpan + (fieldWidth(state) - MAP.w - HOLLOW_PROPERTY.westEdge) * cameraLayout(w).overview) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
+    const span = (cameraLayout(w).farmSpan + (fieldWidth(state) - MAP.w - HOLLOW_PROPERTY.westEdge + (fieldDepth(state) - MAP.d) * .8) * cameraLayout(w).overview) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
     camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
     camera.updateProjectionMatrix();
     clampView();
@@ -304,14 +307,34 @@ export function createScene(canvas, state, hooks) {
 
   // Input: drag to pan, wheel or pinch to zoom, tap to act.
   const ray = new THREE.Raycaster(), pointer = new THREE.Vector2(), touches = new Map();
-  let drag = null, pinch = null;
+  let drag = null, pinch = null, pieceDrag = null;
+  const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), floorPoint = new THREE.Vector3();
+  function inputRay(e) {
+    const box = canvas.getBoundingClientRect();
+    pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
+    ray.setFromCamera(pointer, active());
+  }
+  const piecePoint = e => { inputRay(e); return ray.ray.intersectPlane(floorPlane, floorPoint) ? { x: floorPoint.x - ORIGIN.room.x, z: floorPoint.z - ORIGIN.room.z } : null; };
   const worldPerPixel = () => (camera.right - camera.left) / canvas.clientWidth;
   canvas.addEventListener("pointerdown", (e) => {
     if (["estate", "foyer"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
     canvas.setPointerCapture(e.pointerId);
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (touches.size === 1) drag = { x: e.clientX, y: e.clientY, vx: view.x, vz: view.z, moved: 0 };
-    if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), zoom: view.zoom, angle: Math.atan2(a.y - b.y, a.x - b.x), rotate: !!view.place && !!hooks.canRotatePiece?.() }; drag = null; }
+    if (touches.size === 1) {
+      drag = { x: e.clientX, y: e.clientY, vx: view.x, vz: view.z, moved: 0 };
+      if (view.place === "room" && hooks.canDragPiece?.()) {
+        inputRay(e); scene.updateMatrixWorld(true);
+        const selected = hooks.selectedPiece?.(), hit = ray.intersectObjects(places.pickables, false).find(h => h.object.userData.type === "piece");
+        const point = hit?.object.userData.instance === selected && piecePoint(e);
+        if (point && hooks.onPieceDragStart?.(point)) pieceDrag = e.pointerId;
+      }
+    }
+    if (touches.size === 2) {
+      // A second finger turns the selected object; it never turns its release
+      // into another pick, and one-finger dragging never moves the camera.
+      if (pieceDrag !== null) { hooks.onPieceDragEnd?.(false); pieceDrag = null; }
+      const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), zoom: view.zoom, angle: Math.atan2(a.y - b.y, a.x - b.x), rotate: !!view.place && !!hooks.canRotatePiece?.() }; drag = null;
+    }
   });
   canvas.addEventListener("pointermove", (e) => {
     if (["estate", "foyer"].includes(view.place)) return;
@@ -325,6 +348,7 @@ export function createScene(canvas, state, hooks) {
     if (!drag) return;
     const k = worldPerPixel(), dx = e.clientX - drag.x, dy = e.clientY - drag.y;
     drag.moved = Math.max(drag.moved, Math.hypot(dx, dy));
+    if (pieceDrag === e.pointerId) { if (drag.moved >= 4) { const point = piecePoint(e); if (point) hooks.onPieceDragMove?.(point); } return; }
     if (view.place) {
       // Indoors, dragging slides along the room and in and out a little.
       const kr = (2 * view.roomDist * Math.tan(THREE.MathUtils.degToRad(INTERIOR.fov) / 2)) / canvas.clientHeight;
@@ -335,7 +359,9 @@ export function createScene(canvas, state, hooks) {
   let lastPick = null;
   const end = (e) => {
     if (["estate", "foyer"].includes(view.place) || !touches.has(e.pointerId)) return;
-    const wasTap = drag && drag.moved < 8 && touches.size === 1 && (e.pointerType !== "mouse" || e.button === 0);
+    const wasPieceDrag = pieceDrag === e.pointerId;
+    const wasTap = !wasPieceDrag && drag && drag.moved < 8 && touches.size === 1 && (e.pointerType !== "mouse" || e.button === 0);
+    if (wasPieceDrag) { hooks.onPieceDragEnd?.(false); pieceDrag = null; }
     touches.delete(e.pointerId);
     if (touches.size < 2) { if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null; }
     if (wasTap) {
@@ -343,7 +369,7 @@ export function createScene(canvas, state, hooks) {
       pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
       ray.setFromCamera(pointer, active());
       scene.updateMatrixWorld(true);
-      const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables, ...festivalWorld.pickables, ...hollowFarm.pickables, ...[...visitorModels.values()].filter(e => e.m.visible).map(e => e.hit)], false);
+      const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables.filter(p => p.userData.type !== "plot" || plots[p.userData.index].g.visible), ...festivalWorld.pickables, ...hollowFarm.pickables, ...[...visitorModels.values()].filter(e => e.m.visible).map(e => e.hit)], false);
       // A visible guest at a counter takes priority over its large building hit box.
       const hit = hits.find(h => ["visitor", "customer"].includes(h.object.userData.type)) ?? hits[0];
       lastPick = hit ? { ...hit.object.userData } : null;
@@ -355,8 +381,9 @@ export function createScene(canvas, state, hooks) {
   // Browser interruptions finish a rotation once, never turn its release into a tap.
   const cancelGesture = (id) => {
     if (id !== undefined && !touches.has(id)) return;
+    if (pieceDrag !== null) { hooks.onPieceDragEnd?.(true); pieceDrag = null; }
     if (id === undefined) touches.clear(); else touches.delete(id);
-    drag = null; if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null;
+    drag = null; if (pinch?.rotate) hooks.onRotateEnd?.(true); pinch = null;
   };
   canvas.addEventListener("pointercancel", e => cancelGesture(e.pointerId));
   canvas.addEventListener("lostpointercapture", e => cancelGesture(e.pointerId));
@@ -375,7 +402,7 @@ export function createScene(canvas, state, hooks) {
       view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(canvas.clientWidth).roomMinZoom, 1.9);
       return;
     }
-    const halfW = camera.right, vertical = farmVerticalLimits(camera.top, PITCH, MAP.d);
+    const halfW = camera.right, vertical = farmVerticalLimits(camera.top, PITCH, fieldDepth(state));
     const maxX = fieldWidth(state) + 1 - halfW, minX = HOLLOW_PROPERTY.westEdge + halfW - 1;
     view.z = THREE.MathUtils.clamp(view.z, vertical.min, vertical.max);
     view.x = minX > maxX ? (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2 : THREE.MathUtils.clamp(view.x, minX, maxX);
@@ -391,7 +418,7 @@ export function createScene(canvas, state, hooks) {
   }
   const project = (p) => { const v = p.clone().project(active()); return { x: (v.x + 1) / 2 * canvas.clientWidth, y: (1 - v.y) / 2 * canvas.clientHeight }; };
 
-  let tapPulse = 0, last = performance.now(), time = 0, nextSpeechAt = 0;
+  let framedLand = "", tapPulse = 0, last = performance.now(), time = 0, nextSpeechAt = 0;
   function tick(now) {
     // The first frame's timestamp can come before the scene finished building, and
     // a negative time would pick a walk frame that doesn't exist.
@@ -401,6 +428,7 @@ export function createScene(canvas, state, hooks) {
     // Plots.
     plots.forEach((p, i) => {
       const plot = state.plots[i], open = i < openPlots(state);
+      p.g.visible = i < (state.upgrades.plots >= 4 ? 24 : state.upgrades.plots >= 3 ? 18 : 12);
       p.lockedVines.visible = !open; p.sp.visible = false; p.pk.forEach((m) => (m.visible = false)); p.halo.material.opacity = 0;
       if (!open || plot.phase === "empty") return;
       if (plot.phase === "growing" && plot.progress < 0.3) { p.sp.visible = true; p.sp.scale.setScalar(0.6 + plot.progress * 2); return; }
@@ -436,8 +464,13 @@ export function createScene(canvas, state, hooks) {
     }
 
     festivalWorld.tick(time);
+    farmExpansion.sync();
+    const land = `${fieldWidth(state)}:${fieldDepth(state)}`;
+    if (land !== framedLand) { framedLand = land; frame(); }
     hollowFarm.sync(); hollowFarm.tick(time);
 
+    // Both the ground and the incoming route end beyond the purchased gate.
+    const routeIn = extendFarmRoute(ROUTE_IN, state), inLen = routeLength(routeIn);
     // Visitors along the stone path.
     for (const v of state.visitors) {
       let entry = visitorModels.get(v.id);
@@ -449,7 +482,7 @@ export function createScene(canvas, state, hooks) {
       const t = leaving ? (v.age - v.leaveAt) / visitorLeaveSeconds(state) : Math.min(1, v.age / VISIT.arrive);
       const excursion = hollowJourney || v.festival && !v.festival.done;
       const journey = hollowJourney ? v.hollow : v.festival;
-      const p = excursion ? journey : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, t * (state.festival.meadow ? meadowOutLen : outLen)) : along(ROUTE_IN, t * inLen);
+      const p = excursion ? journey : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, t * (state.festival.meadow ? meadowOutLen : outLen)) : along(routeIn, t * inLen);
       // Parties stand side by side along the counter: each fans out to its own
       // place over the last stretch of the path, and back in as it sets off home.
       const fan = excursion ? 0 : leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
@@ -536,7 +569,8 @@ export function createScene(canvas, state, hooks) {
     },
     get place() { return view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
-    get visitorStatus() { return [...visitorModels].map(([id,e]) => ({ id, kind: state.visitors.find(v=>v.id===id)?.kind, visible: e.m.visible, sprite: e.sprite, frames: e.m.userData.walk?.length ?? 0, frame: e.m.userData.walk?.indexOf(e.m.userData.shown) ?? -1 })); },
+    get visitorStatus() { return [...visitorModels].map(([id,e]) => ({ id, kind: state.visitors.find(v=>v.id===id)?.kind, visible: e.m.visible, sprite: e.sprite, leadingLeg: e.m.userData.leadingLeg, frames: e.m.userData.walk?.length ?? 0, frame: e.m.userData.walk?.indexOf(e.m.userData.shown) ?? -1 })); },
+    get farmExpansionStatus() { return farmExpansion.status; },
     get festivalStatus() { return festivalWorld.status; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
     fitView() {
@@ -546,7 +580,7 @@ export function createScene(canvas, state, hooks) {
       frame();
     },
     refreshRoom() { places.refresh(); },
-    refreshEstate() { festivalWorld.sync(); frame(); },
+    refreshEstate() { festivalWorld.sync(); farmExpansion.sync(); frame(); },
     refreshHouseEstate() { if (view.place === "estate") estateView.sync(); },
     previewEstateDecor(data) { estateView.preview(data); },
     get estateCamera() { return estateView.cameraActions; },
@@ -562,7 +596,8 @@ export function createScene(canvas, state, hooks) {
     selectPiece(instance) { places.select(instance); },
     previewPiece(instance, x, z, ok) { places.preview(instance, x, z, ok); },
     showGrid(on) { places.setGrid(on); },
-    cellAt(point, type, wall) { return places.cellAt(point, type, wall); },
+    cellAt(point, type, wall, snap = .1) { return places.cellAt(point, type, wall, snap); },
+    movePiece(instance, pose, ok) { places.movePiece(instance, pose, ok); },
     rotatePiece(instance) { places.rotatePiece(instance); },
     screenPoint(x, y, z) { return project(new THREE.Vector3(x, y, z)); },
     // Just above their heads: they lean back so they stand 2.3 tall on screen, which a point straight up from the feet reaches at 2.3 / cos(PITCH).

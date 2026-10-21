@@ -8,6 +8,17 @@ export const FOYER_TIERS = [
   { level: 5, name: "The velvet afterlife", w: 14, d: 10, cost: 16000, patchLevel: 12, capacity: 14, mazeCapacity: 10, serviceSeconds: 1.6, mazeSeconds: 28, minTicket: 4, maxTicket: 24, decorCapacity: 36 },
 ];
 export const HOLLOW_FOYER_TIERS = FOYER_TIERS;
+
+// Paid haunt installations are reusable; active effects produce a bounded rating.
+export const MAZE_PREFABS = [
+  { id: "cobweb-canopy", name: "The cobweb canopy", tier: 1, cost: 180, scare: 12, effect: "webs", text: "Silver webs sway above the queue while tiny spiders patrol the corners." },
+  { id: "whispering-portraits", name: "Whispering portraits", tier: 2, cost: 500, scare: 15, effect: "portraits", text: "Portrait eyes wake and watch the room. A rather unsettling welcome." },
+  { id: "spectral-parade", name: "Spectral parade", tier: 3, cost: 1200, scare: 20, effect: "ghosts", text: "A procession of glowing ghosts drifts through the dark maze doorway." },
+  { id: "thunder-chamber", name: "The thunder chamber", tier: 4, cost: 2500, scare: 23, effect: "storm", text: "Electric runes and a slow storm glow turn the hall into a midnight laboratory." },
+  { id: "phantom-finale", name: "The phantom finale", tier: 5, cost: 5200, scare: 25, effect: "phantoms", text: "A grand apparition rises beyond the stairs. Brave guests may want another go." },
+];
+export const MAZE_PREFAB_BY_ID = Object.assign(Object.create(null), Object.fromEntries(MAZE_PREFABS.map(p => [p.id, p])));
+
 // No cross-farm shortcut: the house and shop use separate bottom-edge gates.
 export const HOLLOW_APPROACH = [[31.8, 10.2], [31.6, 12.6], [30.2, 15.6], [30.4, 18.6], [32.4, 21.6], [33, 24], [33, 30]];
 export const HOLLOW_FRONT_APPROACH = [[-3, 30], [-3, 10.5], [6.5, 10.5], HOLLOW_PROPERTY.door];
@@ -70,4 +81,6 @@ export const FOYER_DEFAULT_FINISHES = { floor: "wooden-boards", walls: "old-wall
 const byId = list => Object.assign(Object.create(null), Object.fromEntries(list.map(item => [item.id, item])));
 export const FOYER_DECOR_BY_ID = byId(FOYER_DECOR);
 export const FOYER_FINISH_BY_ID = byId(FOYER_FINISHES);
-export const MORTIMER_LINES = ["Welcome, welcome... do come in.", "One ticket? How delightfully brave.", "The screams are complimentary.", "Do mind the ghosts. They’re terribly rude.", "Another satisfied survivor!", "Leaving so soon? What a shame..."];
+export const AXEL_LINES = ["Axel’s the name. Frights are the game.", "One ticket? How delightfully brave.", "Mind the gills. They’re only mostly undead.", "The screams are complimentary.", "Another satisfied survivor! Fancy another go?", "Do mind the ghosts. They’re terribly rude."];
+// Keep the original export for existing menus and integrations.
+export const MORTIMER_LINES = AXEL_LINES;

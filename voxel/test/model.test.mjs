@@ -41,8 +41,10 @@ test("upgrades cost 2.2 times more each level and stop at their maximum", () => 
   assert.ok(M.buyUpgrade(s, "tools"));
   assert.equal(M.upgradeCost(s, "tools"), 198);
   assert.ok(M.buyUpgrade(s, "plots") && M.buyUpgrade(s, "plots"));
-  assert.ok(!M.buyUpgrade(s, "plots"), "max 2");
-  assert.equal(M.openPlots(s), 12);
+  assert.equal(M.openPlots(s), 12, "original two tiers retain twelve plots");
+  assert.ok(M.buyUpgrade(s, "plots") && M.buyUpgrade(s, "plots"));
+  assert.ok(!M.buyUpgrade(s, "plots"), "max 4");
+  assert.equal(M.openPlots(s), 24);
   assert.ok(M.buyUpgrade(s, "auto"));
   run(s, 2.1);
   assert.ok(s.plots.every((p) => p.phase === "growing"), "helping hands planted everything");
@@ -235,8 +237,8 @@ test("a held key or a bot can't pump the big pumpkin or the streak", () => {
 });
 
 test("a full barn leaves ripe crops safe instead of paying for harvest spam", () => {
- const s=M.freshState();s.stock=[60,0,0,0];s.plots[0]={phase:"ready",progress:1,variety:3};const coins=s.coins;
- assert.equal(M.harvest(s,0),0);assert.equal(s.plots[0].phase,"ready");assert.equal(M.stockCount(s),60);assert.equal(s.coins,coins);assert.equal(s.harvested,0);
- s.coins=1000;assert.ok(M.buyUpgrade(s,"storage"));assert.equal(M.barnCapacity(s),100);assert.equal(M.harvest(s,0),1);assert.equal(M.stockCount(s),61);
+ const s=M.freshState(),cap=M.barnCapacity(s);s.stock=[cap,0,0,0];s.plots[0]={phase:"ready",progress:1,variety:3};const coins=s.coins;
+ assert.equal(M.harvest(s,0),0);assert.equal(s.plots[0].phase,"ready");assert.equal(M.stockCount(s),cap);assert.equal(s.coins,coins);assert.equal(s.harvested,0);
+ s.coins=1000;assert.ok(M.buyUpgrade(s,"storage"));assert.equal(M.barnCapacity(s),cap+180);assert.equal(M.harvest(s,0),1);assert.equal(M.stockCount(s),cap+1);
  assert.equal(M.restoreState(M.saveData(s)).upgrades.storage,1);
 });

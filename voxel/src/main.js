@@ -69,12 +69,17 @@ const scene = createScene($("world"), state, {
     if (!state.paused) for (const e of M.update(state, dt)) handle(e);
     render();
   },
+  selectedPiece: () => home.tools.selected,
+  canDragPiece: () => !!home.tools.selected && M.footprint(state.house.placed.find((p) => p.instance === home.tools.selected)?.id ?? "f01").layer !== "wall",
+  onPieceDragStart: point => home.tools.beginDrag(point),
+  onPieceDragMove: point => home.tools.dragTo(point),
+  onPieceDragEnd: cancelled => home.tools.endDrag(cancelled),
   canRotatePiece: () => !!home.tools.selected && M.footprint(state.house.placed.find((p) => p.instance === home.tools.selected)?.id ?? "f01").layer !== "wall",
   foyerEditing: () => foyerTools.active || openTab === "foyer",
   estateEditing: () => estateTools.active,
   foyerWallEditing: () => M.FOYER_DECOR_BY_ID[foyerTools.placement?.id]?.layer === "wall",
   onRotatePiece: (degrees) => home.tools.rotate(degrees, false),
-  onRotateEnd: () => { home.tools.render(); save(); },
+  onRotateEnd: cancelled => home.tools.finishRotation(cancelled),
   onPick(what) {
     if (what.type === "visitor" || what.type === "customer") { if (!estateTools.active && !foyerTools.active && !home.tools.selected) guestCard.open(what.id, what.type === "customer"); }
     else if (what.type === "plot") tapPlot(what.index);
@@ -95,12 +100,13 @@ const scene = createScene($("world"), state, {
     else if (what.type === "talk") talk(what.who);
     else if (what.type === "piece") home.tools.select(what.instance);
     else if (what.type === "go") goTo(what.to);
-    else if (what.type === "floor" || what.type === "wall") { if (home.tools.selected) home.tools.tapCell(scene.cellAt(what.point, what.type, what.wall)); }
+    else if (what.type === "floor" || what.type === "wall") { if (home.tools.selected) home.tools.tapCell(scene.cellAt(what.point, what.type, what.wall, home.tools.snap)); }
   },
 });
 
 // What the rules report, turned into sights and sounds.
 function handle(e) {
+  if (e.type === "vip-arrived") notice("Baron Brassbolt has arrived with a generous shopping budget.");
   if (e.type === "hollow-restored") { notice("Restoration complete. The Hollow House is ready to open."); save(); audio.tone(880); }
   if (e.type === "sale") {
     scene.sale(e.amount, e.route);
@@ -134,7 +140,7 @@ function pickPlot(i) {
 // What the streak does for visitors, in plain words: the bonus that actually
 // reaches the path, or that the path is as busy as it gets.
 function streakBoostText() {
-  const boost = Math.round(M.pathBoost(state) * 100), held = M.visitorBonus(state) - M.pathBoost(state) > 0.005;
+  const boost = Math.round(M.streakPathBoost(state) * 100), held = M.visitorBonus(state) - M.streakPathBoost(state) > 0.005;
   return held ? "path at its busiest" : boost ? `visitors +${boost}%` : "";
 }
 // One float per burst (Harvest all picks every plot at once): the last pick's words, with any coins from the burst.
