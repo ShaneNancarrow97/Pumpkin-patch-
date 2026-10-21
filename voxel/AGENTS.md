@@ -32,9 +32,10 @@ CI (`.github/workflows/ci.yml`, job `voxel`) runs `npm ci`, `npm test`, `npm run
 | --- | --- |
 | `src/model.js` | Builds the state (`freshState`), loads saves (`restoreState`, with migrations from version 1), strips what isn't saved (`saveData`), and runs one step of the rules (`update(s, dt)` returns events). Re-exports everything in `rules/` |
 | `src/rules/farm.js` | Plots, the four varieties, upgrades, tapping, harvest streaks, helping hands |
-| `src/rules/stock.js` | Stock counts, basket holds, and the main game's basket algorithm (`chooseBasket`) |
+| `src/rules/stock.js` | Stock counts, basket holds, and baskets (`chooseBasket` via `quoteBasket`: favourites first, then anything cheaper; a dear favourite doesn't end the visit) |
 | `src/rules/selling.js` | The stall (passers-by, profiles, receipts) and the indoor shop (customers, display tables, queue, till, upgrades) |
-| `src/rules/house.js` | House levels, rooms, the 10 x 6 placement grid, decor placement, moving, flipping and storing, books and shelves, wallpaper, room styles, the haunting score |
+| `src/rules/house.js` | House levels, rooms, decor placement (floor pieces collide by their measured size, `pieceBody`, within `placementRange`), moving, turning, flipping and storing, pieces standing on others (`putOnTop`, `setDown`, `restorePose`), books and shelves, wallpaper, room styles, the haunting score |
+| `src/rules/surfaces.js`, `src/content/placement.js`, `src/content/shelf-catalog.js` | What can stand on what: small pieces, the measured tops of tables and the blank shelves' boards (with their finishes) |
 | `src/rules/wardrobe.js`, `src/rules/progress.js` | Costumes and recolours; favours, memories and the patch level |
 | `src/voxels.js` | `Voxels`: collects boxes and builds them as instanced meshes, lit or glowing. Also `seeded()` (deterministic random numbers) and `vary()` |
 | `src/world.js` | The farm map and its constants (`MAP`, `PLOTS`, `BIG_PUMPKIN`, `SHOP`, `HOMES`, routes, `PITCH`), the cottage in four stages, the shop, fences, trees and props, and the painted far shore |
@@ -46,6 +47,7 @@ CI (`.github/workflows/ci.yml`, job `voxel`) runs `npm ci`, `npm test`, `npm run
 | `src/sprite-voxels.js` | The optional voxel characters, voxelised from the small sprite atlas. Also the frame animation and recolours both styles share |
 | `src/characters.js` | The hand-built voxel visitors used in voxel-character mode |
 | `src/scene.js` | Renderer, lights, bloom, both cameras (orthographic for the farm, perspective for rooms), input and picking, the per-frame loop, floating text |
+| `src/ambience.js`, `src/content/ambience.js` | The mist bank's timing and shader, and the backdrop shader that ripples the lake and twinkles its lights (from the marks canvas `buildBackdrop` paints) |
 | `src/main.js` | Save and load, dialogue, the HUD and dock, keyboard, and which menu is open. Exposes `window.PumpkinVoxel` for tests |
 | `src/ui/` | The menus. Each sheet is `{ eyebrow, title, body(), bind(body) }`; `main.js` re-renders a sheet only when its HTML changes. `kit.js` holds shared bits |
 | `src/index.html`, `src/style.css` | The page shell and all styling. `build.mjs` inlines the CSS, the generated `src/icons.css` and the bundle |
@@ -137,5 +139,8 @@ Generated files: `src/sprite-meta.js`, `src/sprite-meta-hd.js`, `src/decor-meta.
 - **The rooms are lit by the farm's lights too.** They are built far from the farm, but the farm's moonlight and ambient light still reach them, so balance indoor lighting with that in mind.
 - **Flipped decor uses a negative x scale.**
 - **Book sockets:** shelves expose where their books go, and `shelfBooks` stands them there.
+- **Pieces on tables (riders):** a placed piece with `on` (its host's instance) and `top` stands on that host; its `x`, `z` are its centre in the host's own unturned frame, not room cells. `fits` checks riders against their top, never the floor. Moving, turning, mirroring, sending or storing a host takes its riders with it. In `places.js` riders are children of their host's group. Shelf ids start `shelf-`; keep `shelf` free for these.
+- **Placement positions:** a floor piece's saved `x`, `z` is still the corner of its turned cells' enclosing box, but collision and the room's edges use its measured body (`content/decor-sizes.js`, from `tools/measure-decor.mjs`), so `x` or `z` can be a little below 0. Clamp UI moves with `placementRange`, not the cells. Re-run the measuring tool when a model changes.
+- **Shelf finishes and tints are different:** `finish` (blank shelves only) picks the model's wood; `tint` (Codex's Colour) recolours on top.
 - **Portrait phones:** the room camera fits the back wall's middle, and you drag along the wall.
 - **Main-game imports:** the rules import from `../../src/content`, so the voxel build only works inside this repository layout.

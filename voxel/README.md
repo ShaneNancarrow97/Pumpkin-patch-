@@ -38,7 +38,8 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
   - a leafy arch in the back fence, with string lights, opening onto the lake
   - wooden picket fences with lantern posts, crates, barrels, hay bales, a bench and flowers
   - red, orange and plum autumn trees round every edge
-- **The far shore** is painted pixel art on a backdrop that leans back to face the camera: the night sky, a crescent moon, mountains, the castle on its hill, and a lakeside village with its lights reflected in the water.
+- **The far shore** is painted pixel art on a backdrop that leans back to face the camera: the night sky, a crescent moon, mountains, the castle on its hill, and a lakeside village with its lights reflected in the water. The lake ripples, the village lamps flicker, the reflections glint and the stars twinkle.
+- **Mist:** the slightest low mist rolls across the farm from the west, clears for a minute or so and comes round again. Mist and the moving lake each have a switch in Settings, and start off on a device set to reduce motion.
 - **Lighting:** lilac moonlight casting soft shadows, warm lantern and window light, a bloom glow on everything that's lit, and fireflies.
 - **The farm, as in the main game:**
   - Four varieties (Orange, Ruby, Moonlight and Golden), unlocked plot by plot. Each plot grows any variety it has unlocked.
@@ -46,13 +47,17 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
   - Picking quickly builds a harvest streak worth a bonus.
   - Upgrades: better tools, bigger harvests, helping hands (Shane and Natalie plant and pick by themselves), more plots, and signs that bring more visitors.
 - **Selling, both ways the main game sells:**
-  - **The stall.** Neighbours walk up the path, each one of the main game's six shoppers with a budget and favourite varieties. Each fills a basket the way the main game does: favourites first, then anything they can afford. The Stall tab keeps a ledger, receipts and who left empty-handed and why.
+  - **The stall.** Neighbours walk up the path, each one of the main game's six shoppers with a budget and favourite varieties. Each fills a basket with favourites first; a favourite they can't afford more of no longer ends the visit, they fill up with something cheaper. The Stall tab keeps a ledger, receipts and who left empty-handed and why.
+  - **Demand grows with the farm.** Baskets start at 3 pumpkins and the Bigger baskets upgrade grows them to 10, with a little more in each purse. Party size grows to 50 guests over seven tiers. When the barn is full, a market cart (Build) takes the overflow to the village market for 15 to 35% of the price, up to a set number a minute, so the picking need not stop.
   - **The indoor shop.** Open the Honest Pumpkin and step inside: a voxel shop floor with shelves of jars and up to four display tables piled with real voxel pumpkins. Customers come in at the door, browse the tables, queue, and pay Skyla at the till. Upgrades add room to browse, more tables and a faster till.
 - **The house, inside.** Tap the cottage, or the Home tab, to step in. Each room is a voxel diorama seen from the front with the front wall lifted away, like the main game's painted rooms. It is built at four times the farm's voxel density so it can carry the detail:
   - **Rooms:** the parlour, bedroom, kitchen and attic, opening as the house levels up.
   - **Ten room styles** after the main game's paintings. Each has its own palette and furniture of the room itself: round, gothic or square windows onto the night, fluted columns, a panelled wainscot, cornice and dentils, curtains, sconces, a chandelier, cobwebs, a hearth with a real fire, shelves of jars, hanging herbs, rafters, a round attic window and fairy lights.
   - **Eight wallpapers** as physical voxels, their motifs (fleurs, moths, constellations, books, vines, ghosts) standing a little proud of the wall.
   - **Fifty treasures** from the main game's catalogue. Each piece is voxelised from its original art, one voxel per pixel. Buy a piece and it is placed; then move it, flip it, send it to another room or put it away. Wall pieces hang on the central panel, lamps and candles light the room, and rugs lie flat.
+  - **Free placement.** Pieces drag on a fine grid (or freely), turn to any angle, and collide by their real measured size rather than whole cells, so they stand against the walls, tuck into corners and sit as close to each other as they look.
+  - **Things on tables and shelves.** Lamps, lanterns, plants and little curios can stand on tables, desks, bookcase tops and kitchen counters. Select one and tap On a table (Next top moves it on round the room), or tap Move and then a table. Drag or nudge it along the top; it moves, turns and mirrors with its table. Set down puts it back on the floor.
+  - **Blank shelves** under Shelves in the catalogue: a floating shelf, a long bracket shelf, a two-tier wall shelf, a corner whatnot and an open étagère, each in six finishes (More › Finish), for things to stand on.
   - **Books** sit in the shelves' own sockets, as the main game's spines, and open in a paged reader.
   - **Levels and haunting:** four house levels raise each room's capacity, and spooky pieces, wallpapers and books add to the haunting score.
 - **The cast are the main game's own sprites,** standing in the world as flat cut-outs, the way sprite-in-3D games draw their characters:
@@ -66,7 +71,7 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
 - **Voxel characters** (Settings) builds the cast from voxels instead:
   - **Shane, Natalie, Skyla and every costume** are voxelised from the same sprites, one voxel per pixel at 120 voxels tall. Depth is rounded towards the silhouette's edge, and a back is painted on.
   - **The five neighbours** are built by hand from the bible.
-- **Music and settings:** the main game's Moonlit Waltz with a volume control, its sound blips, a tea-break pause, glow and shadow switches, and backups you can copy out and restore.
+- **Music and settings:** twelve offline MIDI tracks, originals and supplied songs (among them Thriller, Ghostbusters, Disasterology, Crazy Train and Rebel Yell), on shuffle or picked by hand, with a volume control. Also sound blips, a tea-break pause, render detail, glow, mist, lake and shadow switches, and backups you can copy out and restore.
 - **Icons:** the main game's interface icons, baked as small voxel tiles with a darker extruded edge, a light bevel and an outline.
 - **Menus:**
   - **Look:** plum panels with brass edges, a crescent-moon heading, small bats on the frame, and gold price buttons. Pumpkin thumbnails are rendered from the real 3D models; decor thumbnails are the original pixel art.
@@ -83,7 +88,8 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
 | Boost growth | Tap the big pumpkin, or press the space bar |
 | Open the shop | Tap the shop, or the Shop tab |
 | Go inside | Tap the cottage, or the Home tab; Shop › Step inside for the shop floor |
-| Arrange a piece | Tap it, then Move and tap a spot, or use the arrow keys. F flips it, Delete puts it away |
+| Arrange a piece | Tap it, then drag it, or Move and tap a spot, or use the arrow keys. F flips it, Delete puts it away |
+| Stand something on a table | Select a lamp or curio and tap On a table, or Move and tap the table |
 | Chat | Tap Shane or Natalie |
 | Close a menu | Escape |
 
@@ -92,7 +98,7 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
 | File | What it holds |
 | --- | --- |
 | `src/model.js` | Puts the game state together, loads old saves and runs one step of the rules. No DOM and no three.js, so `test/` runs it in Node. |
-| `src/rules/` | The rules, one file each: `farm.js` (plots, varieties, upgrades, streaks), `stock.js` (stock and baskets), `selling.js` (the stall and the indoor shop), `house.js` (levels, rooms, decor placement, books, wallpaper, styles), `wardrobe.js` and `progress.js` (favours, memories, levels). They read the main game's content files in `../src/content/` directly. |
+| `src/rules/` | The rules, one file each: `farm.js` (plots, varieties, upgrades, streaks, the barn and market cart), `stock.js` (stock and baskets), `selling.js` (the stall and the indoor shop), `house.js` (levels, rooms, decor placement, books, wallpaper, styles, pieces on tables), `surfaces.js` (the tops things stand on), `wardrobe.js` and `progress.js` (favours, memories, levels). They read the main game's content files in `../src/content/` directly. |
 | `src/voxels.js` | Box batching: every box sharing a material becomes one instanced draw call. |
 | `src/world.js` | The map: terrain, cottage (in four stages), shop, path, fences, arch, trees, props and the painted far shore. Layout constants live here. |
 | `src/interiors.js` | The rooms and the shop floor at four times the density, the ten styles, the eight wallpapers, and decor voxelised from the original art. |
@@ -101,6 +107,7 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
 | `src/sprite-voxels.js` | The voxel characters: sprite frames turned into voxel meshes. Also the frame animation and recolours both kinds share |
 | `src/characters.js` | The visiting neighbours built by hand from voxels, with legs that swing |
 | `src/scene.js` | Renderer, lights, bloom, the farm's camera and the rooms' perspective camera, input, and the per-frame animation |
+| `src/ambience.js` | The drifting mist and the far shore's moving lake and lights, as shaders on a few uniforms. Its timing is in `src/content/ambience.js` |
 | `src/main.js` | Save and load, dialogue, the HUD, the dock, and which menu is open |
 | `src/ui/` | The menus: `farm-sheets.js` (Shop), `home-sheets.js` (Home and the piece bar), `collection-sheets.js` (Wardrobe, Journal, the reader), `settings-sheet.js`, `audio.js` and shared bits in `kit.js` |
 | `assets/`, `src/sprite-meta*.js`, `src/decor-meta.js`, `src/icons.css` | The sprite sheets (full size and small), costumes, decor art and icons, baked from the main game's art. Regenerate them all with `python3 voxel/tools/bake_sprites.py` from the repo root (about two minutes) |
