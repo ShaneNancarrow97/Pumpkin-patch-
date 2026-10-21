@@ -8,6 +8,7 @@ const SURFACES = [["floor", "Floors"], ["walls", "Walls"], ["reception", "Recept
 const hex = n => "#" + n.toString(16).padStart(6, "0");
 const config = s => FOYER_TIERS[Math.max(0, Math.min(4, s.hollowHouse.tier - 1))];
 const status = s => { const h = s.hollowHouse; return !h.purchased ? "Derelict property" : h.status === "restoring" ? "Restoration in progress" : h.status !== "ready" ? "Awaiting restoration" : h.open ? "Open" : "Restored · closed"; };
+const gateText = s => M.patchLevel(s).level < HOLLOW_PROPERTY.level ? `Purchase unlocks at patch level ${HOLLOW_PROPERTY.level}.` : "A forgotten house, waiting for a rather unusual welcome.";
 const occupancy = s => { const o = H.hollowOccupancy(s); return { foyer: o.foyer ?? o.inside ?? 0, maze: o.maze ?? 0 }; };
 const art = id => `<span class="estate-art" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="m6 22 18-15 18 15M10 19v24h28V19M20 43V29h8v14m-13-20h4m10 0h4M21 15v5h6v-5"/>${id === "ghost-orb" ? '<path d="M17 27a7 7 0 0 1 14 0v10l-4-2-3 3-3-3-4 2zm4 0h1m4 0h1"/>' : ""}</svg></span>`;
 const openManage = (ui, tab = "manage") => ui.openHollowSheet ? ui.openHollowSheet(tab) : ui.openSheet("hollow");
@@ -17,7 +18,6 @@ export function hollowSheets(ui) {
   let tab = "manage", decorTab = "catalogue", category = "all", surface = "floor";
   const changed = () => { ui.save(); ui.scene.refreshFoyer?.(); ui.scene.refreshHollow?.(); ui.tone(680); ui.draw(); };
   const editable = s => !s.paused;
-  const gateText = s => M.patchLevel(s).level < HOLLOW_PROPERTY.level ? `Purchase unlocks at patch level ${HOLLOW_PROPERTY.level}.` : "A forgotten house, waiting for a rather unusual welcome.";
   function manage(s) {
     const h = s.hollowHouse, c = config(s), o = occupancy(s);
     if (!h.purchased) return `<article class="estate-ground-card"><p class="eyebrow">Derelict attraction</p><h3>The Hollow House</h3><p>${gateText(s)}</p><button class="button gold wide" data-hollow-action="purchase" ${H.hollowUnlocked(s) && editable(s) && s.coins >= HOLLOW_PROPERTY.price ? "" : "disabled"}>Purchase property · ${money(HOLLOW_PROPERTY.price)}</button></article><p class="small">The building must be restored before it can open or sell tickets.</p>`;

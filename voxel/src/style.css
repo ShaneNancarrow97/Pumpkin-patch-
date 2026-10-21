@@ -740,3 +740,6 @@ body:has(.building-context:not([hidden])) .actions { visibility: hidden; }
 #place-decorate { display:flex; align-items:center; gap:5px; }
 #place-decorate .premium-icon { width:20px; height:20px; flex-basis:20px; }
 [data-estate-control="orbit-left"] .premium-icon, [data-estate-control="turn-left"] .premium-icon { transform:scaleX(-1); }
+
+/* Six painted cocoa products share a 3-column, 2-row atlas. */
+.cocoa-art { display: block; width: 56px; height: 56px; flex: 0 0 56px; background-size: 300% 200%; background-repeat: no-repeat; border-radius: 12px; }

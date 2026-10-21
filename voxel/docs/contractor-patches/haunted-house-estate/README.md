@@ -85,3 +85,7 @@ The estate is an orbitable building plot, not first-person movement. The Scare M
 ## Follow-up: house freeze report and mobile render cost
 
 See [handover 17](../../handovers/17-house-freeze-and-render-cost.md) for the closed-house visitor exit fix, reduced high-DPI postprocessing/shadow cost, device diagnostics, and the limit of local freeze reproduction. Existing saves are retained.
+
+## Unpurchased house menu crash and cocoa thumbnails
+
+[Handover 18](../../handovers/18-unpurchased-house-menu-and-cocoa-art.md) supersedes the earlier unreproduced-freeze note for this specific report: the unowned house context referenced an out-of-scope helper and stopped the frame loop. The fix shares that helper at module scope. Cocoa thumbnail sizing and atlas cropping are restored. The regression starts with a fresh, unpurchased house.
