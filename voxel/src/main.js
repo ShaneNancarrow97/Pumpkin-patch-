@@ -128,7 +128,7 @@ function handle(e) {
 
 function pickPlot(i) {
   const n = M.harvest(state, i);
-  if (!n) { if (state.plots[i]?.phase === "ready" && M.barnSpace(state) < M.harvestSize(state)) notice("Barn full. Ripe pumpkins are safe—sell stock or upgrade storage in Build."); return 0; }
+  if (!n) { if (state.plots[i]?.phase === "ready" && M.barnBlocked(state)) notice(state.upgrades.cart ? "Barn full and the market cart is loaded. It sets off again within the minute." : "Barn full. Ripe pumpkins are safe—sell stock, add storage or buy a market cart in Build."); return 0; }
   scene.sendTo(i); scene.harvested(i, n);
   audio.tone(650);
   if (state.harvested === n) say("natalie", "Our first pumpkin! Quick, put it in the shop before Shane gives it a name.");
@@ -270,8 +270,8 @@ function render() {
   const open = state.plots.slice(0, M.openPlots(state));
   const empty = open.filter((p) => p.phase === "empty").length, ripe = open.filter((p) => p.phase === "ready").length;
   $("plant-all").hidden = !empty; text("plant-count", empty);
-  $("harvest-all").hidden = !ripe; text("harvest-count", M.barnSpace(state) < M.harvestSize(state) ? "Barn full" : ripe);
-  $("harvest-all").setAttribute("aria-label", M.barnSpace(state) < M.harvestSize(state) ? "Barn full: sell pumpkins or upgrade storage" : `Harvest ${ripe} ready plots`);
+  $("harvest-all").hidden = !ripe; text("harvest-count", M.barnBlocked(state) ? "Barn full" : ripe);
+  $("harvest-all").setAttribute("aria-label", M.barnBlocked(state) ? "Barn full: sell pumpkins, add storage or buy a market cart" : `Harvest ${ripe} ready plots`);
   const ready = M.claimable(state), next = M.FAVOURS.find((f) => !state.claimed.includes(f.id));
   $("goal").classList.toggle("ready", ready.length > 0);
   text("goal-text", ready.length ? (ready.length > 1 ? `${ready.length} favours are ready to claim` : ready[0].guest + " has a reward for you") : next ? `${next.title} · ${M.favourProgress(state, next)}/${next.target}` : "Every favour done. The neighbours adore you.");

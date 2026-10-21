@@ -20,6 +20,7 @@ export const UPGRADES = [
   { id: "yield", name: "A little extra love", text: "One more pumpkin per harvest.", cost: 150, max: 5 },
   { id: "auto", name: "Helping hands", text: "Shane and Natalie plant and pick for you.", cost: 500, max: 1 },
   { id: "plots", name: "Room for more", text: "Open more beds, then buy the south field for eighteen and twenty-four plots.", costs: [300, 660, 2200, 5500], max: 4 },
+  { id: "cart", name: "A market cart", text: "When the barn is full, Shane drives the extra pumpkins down to the village market for a share of the price, so the picking never has to stop.", costs: [400, 2500, 9000] },
   { id: "storage", name: "A bigger pumpkin barn", text: "Store more pumpkins before the harvest pauses. Keeps ripe crops safe when full.", costs: [60, 180, 500, 1400, 4000, 10000], max: 6 },
   // Each tier is dearer and does a little less, so the first are a few minutes' takings and the last a late goal.
   { id: "sign", name: "Spread the word", text: "Notes through letterboxes, then the parish newsletter. Visitors come more often, at the stall and the shop.", costs: [45, 120, 350, 1000, 3000], steps: [0.88, 0.89, 0.9, 0.92, 0.94], max: 5 },
@@ -27,7 +28,7 @@ export const UPGRADES = [
 // How much a tiered upgrade shortens the wait, all its bought tiers together.
 export const tierFactor = (steps, level) => steps.slice(0, level).reduce((f, x) => f * x, 1);
 
-export const freshUpgrades = () => ({ tools: 0, yield: 0, auto: 0, plots: 0, sign: 0, storage: 0 });
+export const freshUpgrades = () => ({ tools: 0, yield: 0, auto: 0, plots: 0, sign: 0, storage: 0, cart: 0 });
 export const freshPlots = () => Array.from({ length: MAX_PLOTS }, () => ({ phase: "empty", progress: 0, variety: 0 }));
 // The visitor boost. Quick picks build the streak and the streak brings
 // visitors sooner: +10% a pick up to ×6, then +5% a pick up to +150% at ×26.
@@ -64,7 +65,29 @@ export function plant(s, i) {
 export const STORAGE_BONUS = [0, 180, 500, 1200, 2600, 5400, 11000];
 export const barnCapacity = s => 180 + 40 * s.upgrades.plots + 20 * s.upgrades.yield + STORAGE_BONUS[Math.min(STORAGE_BONUS.length - 1, s.upgrades.storage || 0)];
 export const barnSpace = s => Math.max(0, barnCapacity(s) - stockCount(s));
-function store(s, v, n) { if (barnSpace(s) < n) return false; addStock(s, v, n); return true; }
+// With a market cart, a crop the barn can't take goes to the village market for
+// a share of its price instead of waiting on the patch: the barn is a choice
+// about what to keep for the stall, not a wall that stops the harvest. The cart
+// carries only so many a minute; past that, crops wait on the patch as before.
+export const CART = [{ share: 0, perMinute: 0 }, { share: 0.15, perMinute: 10 }, { share: 0.25, perMinute: 20 }, { share: 0.35, perMinute: 35 }];
+export const cartTier = (s) => CART[Math.min(CART.length - 1, s.upgrades.cart || 0)];
+export const cartRoom = (s) => {
+  const c = cartTier(s), minute = Math.floor(s.time / 60);
+  return c.perMinute - (s.cartMinute === minute ? s.cartLoad || 0 : 0);
+};
+// Whether a harvest has nowhere to go: the barn is full and the cart (if any) is loaded for this minute.
+export const barnBlocked = (s) => barnSpace(s) < harvestSize(s) && cartRoom(s) < harvestSize(s);
+function store(s, v, n) {
+  if (barnSpace(s) >= n) { addStock(s, v, n); return true; }
+  const c = cartTier(s);
+  if (!c.share || cartRoom(s) < n) return false;
+  const minute = Math.floor(s.time / 60);
+  if (s.cartMinute !== minute) { s.cartMinute = minute; s.cartLoad = 0; }
+  s.cartLoad += n;
+  const pay = n * Math.max(1, Math.floor(VARIETIES[v].price * c.share));
+  s.coins += pay; s.earned += pay; s.wholesale = (s.wholesale || 0) + pay;
+  return true;
+}
 
 // Returns how many pumpkins were picked (0 if there was nothing to pick).
 export function harvest(s, i) {

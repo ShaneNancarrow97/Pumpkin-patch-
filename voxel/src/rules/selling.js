@@ -33,13 +33,14 @@ export const freshStall = () => ({ income: 0, itemsSold: 0, served: 0, missedBud
 // first favourite they can't buy all of, so a bigger budget alone changes
 // little: a regular's loyalty card adds a pumpkin and the money for it together.
 export const VISITOR_UPGRADES = [
-  { id: "crowd", name: "Room for more neighbours", text: "Raise the outdoor visitor limit, with room for whole parties to enjoy the farm.", costs: [300, 1200, 4000, 10000], needs: { id: "party", text: "Opens after Bring a friend." } },
+  { id: "appetite", name: "Bigger baskets", text: "Word of the pumpkins gets round the village, and neighbours come with bigger baskets and a little more to spend.", costs: [400, 1500, 4500, 11000, 24000, 50000], needs: null },
+  { id: "crowd", name: "Room for more neighbours", text: "Raise the outdoor visitor limit, with room for whole parties to enjoy the farm: benches, a wider gate, then the lane and the green.", costs: [300, 1200, 4000, 10000, 20000, 35000, 55000], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "party", name: "Bring a friend", text: "Neighbours come up the path together: a friend, then a couple, then the whole family.", costs: [600, 1800, 6000], needs: null },
   { id: "lights", name: "Fairy lights down the path", text: "A string of lights by the gate, then lanterns all the way down. Parties set off for the stall more often.", costs: [150, 600, 2400, 9000], needs: { id: "sign", text: "Opens after Spread the word." } },
   { id: "cocoa", name: "Cocoa hospitality", text: "A warmer welcome: neighbours wait longer for pumpkins and Sandy serves cocoa more quickly.", costs: [250, 700, 1400], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "loyalty", name: "A loyalty card", text: "Buy nine pumpkins, get a slightly larger pumpkin. Regulars take one more home, at the stall and in the shop.", costs: [6000, 12000], needs: { id: "open", text: "Opens with the shop." } },
 ];
-export const freshVisitorUpgrades = () => ({ party: 0, lights: 0, cocoa: 0, loyalty: 0, crowd: 0 });
+export const freshVisitorUpgrades = () => ({ party: 0, lights: 0, cocoa: 0, loyalty: 0, crowd: 0, appetite: 0 });
 // Fairy lights do most at first; old saves' four tiers are never slower than before.
 export const LIGHTS = [0.85, 0.87, 0.89, 0.92], PATIENCE = [6, 12, 20, 30], MUG = [0, 2, 4, 7];
 // However hot the streak, parties set off at least this far apart and shoppers
@@ -51,7 +52,9 @@ export const ARRIVAL_FLOOR = { stall: 5, shop: 1.5 };
 const floorFor = (s, base, step, least) => Math.max(least, base - step * (lv(s, "sign") + lv(s, "lights")));
 // At most this many neighbours on the path at once; the next party waits at the gate.
 export const PATH_CAP = 16;
-export const visitorCapacity = s => PATH_CAP + 4 * lv(s, "crowd");
+// Outdoor guests at once: 16, then up to 50 with every crowd tier.
+export const CROWD = [16, 20, 24, 28, 32, 38, 44, 50];
+export const visitorCapacity = s => CROWD[Math.min(CROWD.length - 1, lv(s, "crowd"))];
 // Party members set off this far apart, so a party walks up the path in a line.
 export const PARTY_GAP = 0.5;
 // Places along Skyla's counter; beyond these, newcomers share a place.
@@ -89,10 +92,18 @@ export const mugPrice = (s) => MUG[lv(s, "cocoa")];
 // count skips along every six so each profile takes its turn.
 export const REGULARS = [0, 4, 2];
 export const isRegular = (s, id) => lv(s, "loyalty") > 0 && (id + Math.floor(id / 6)) % REGULARS[lv(s, "loyalty")] === 0;
-// A regular takes one more pumpkin home, and brings the money for it.
+// How many pumpkins a guest hopes to take home: three to begin with, ten once
+// the whole village has heard. Each pumpkin past what their kind of visitor
+// came for brings half an Orange's price more: with what's left of their purse
+// they fill up on cheaper pumpkins, so bigger baskets sell more of the harvest
+// without every purse turning into a Starlight purse.
+export const APPETITE = [3, 4, 5, 6, 7, 8, 10];
+export const EXTRA_PURSE = 3;
+export const basketWant = (s) => APPETITE[Math.min(APPETITE.length - 1, lv(s, "appetite"))];
+// A regular takes two more home, and brings the money for them.
 const basketFor = (s, id, p) => {
-  const extra = isRegular(s, id) ? 1 : 0;
-  return { budget: Math.round(p.budget * (1 + extra / p.basketLimit)), basketLimit: p.basketLimit + extra + (s.customerCare?.bags ?? 0), regular: extra > 0 };
+  const regular = isRegular(s, id), want = Math.max(p.basketLimit, basketWant(s)) + (regular ? 2 : 0);
+  return { budget: Math.round(p.budget + (want - p.basketLimit) * EXTRA_PURSE + (regular ? p.budget * 0.5 : 0)), basketLimit: want + (s.customerCare?.bags ?? 0), regular };
 };
 // Neighbours a minute on the path, with the streak's boost: the Visitors tab's headline number.
 export const visitorsPerMinute = (s) => (60 / stallGapSeconds(s)) * (partyMax(s) + 1) / 2;

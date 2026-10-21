@@ -21,9 +21,15 @@ const FREQUENCY = {
 };
 const EFFECTS = {
   crowd: s => `up to ${M.visitorCapacity(s)} outdoor neighbours`,
+  appetite: (s) => `baskets of up to ${M.basketWant(s)} pumpkins`,
   party: (s) => (M.partyMax(s) > 1 ? `parties of up to ${M.partyMax(s)}` : "everyone comes on their own"),
   cocoa: (s) => `they wait ${secs(M.stallPatience(s))} for stock${s.festival.cocoa.level ? `, cocoa service ${secs(M.cocoaServiceSeconds(s))}` : ""}`,
   loyalty: (s) => ["no regulars yet", "one in four is a regular", "one in two is a regular"][M.visitorUpgradeLevel(s, "loyalty")],
+};
+// The market cart now and at its next tier, in plain numbers.
+const cartLine = (s) => {
+  const now = M.cartTier(s), next = M.CART[(s.upgrades.cart || 0) + 1], say = (c) => `${c.perMinute} a minute at ${Math.round(c.share * 100)}% of the price`;
+  return `${now.share ? `Now: ${say(now)}.` : "Now: no cart; a full barn leaves ripe crops on the patch."}${next ? ` Next: ${say(next)}.` : ""}`;
 };
 // The same farm one level on, to describe what buying it would do.
 function nextLevel(s, id) {
@@ -53,7 +59,7 @@ function priceButton(attr, value, price, coins, owned) {
 
 // Skyla's advice, for whatever would help most right now.
 function skylaTip(s) {
-  if (M.barnSpace(s) < M.harvestSize(s)) return `The barn is full (${M.stockCount(s)}/${M.barnCapacity(s)}). Sell pumpkins or buy A bigger pumpkin barn; ripe crops will wait safely.`;
+  if (M.barnBlocked(s)) return `The barn is full (${M.stockCount(s)}/${M.barnCapacity(s)}). Sell pumpkins, buy A bigger pumpkin barn, or a market cart to take the extra to the village; ripe crops will wait safely.`;
   if (!M.stockCount(s)) return "Nothing on the shelves. Harvest a few pumpkins and I’ll ring the bell.";
   if (!s.shop.unlocked && s.coins >= 600) return "We could open the shop now. Customers would come inside to browse.";
   const shown = s.shop.displays.slice(0, M.displayCount(s.shop)), best = [3, 2, 1, 0].find((v) => M.available(s, v) > 0);
@@ -71,7 +77,7 @@ export function farmSheets(ui) {
   function farm(s) {
     return M.UPGRADES.filter((u) => u.id !== "sign").map((u) => {
       const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id);
-      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text}</p>${tiers(level, u.max)}</div>
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.id === "cart" ? `${u.text} ${cartLine(s)}` : u.text}</p>${tiers(level, u.max)}</div>
         ${priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
     }).join("");
   }

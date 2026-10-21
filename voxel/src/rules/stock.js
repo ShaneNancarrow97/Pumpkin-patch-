@@ -14,17 +14,19 @@ export function addStock(s, v, n = 1) {
 }
 
 // A shopper fills a basket from what is offered: their favourites first, then
-// anything else, as many as their budget and basket allow (src/core/shop.js).
+// anything else, as many as their budget and basket allow. Unlike the 2D game
+// (src/core/shop.js), a favourite they can't afford more of doesn't end the
+// visit: they fill the rest of the basket with something cheaper.
 export function quoteBasket(s, shopper, offered, prices) {
   const order = [...new Set([...shopper.preferred, 0, 1, 2, 3])].filter((v) => offered.includes(v));
   let budget = shopper.budget, spaces = shopper.basketLimit;
   const lines = [];
   for (const v of order) {
+    if (!spaces) break;
     const free = available(s, v), price = prices[v];
     if (!free) continue;
     const take = Math.min(free, spaces, Math.floor(budget / price));
     if (take > 0) { lines.push({ variety: v, quantity: take, price }); budget -= take * price; spaces -= take; }
-    if (take < free || !spaces) break;
   }
   if (!lines.length) return null;
   return lines;

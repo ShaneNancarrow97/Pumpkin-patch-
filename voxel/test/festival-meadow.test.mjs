@@ -54,7 +54,7 @@ test("cocoa preserves planned pumpkin money; drink-only guests can still buy", (
 });
 test("new festival visitors bring an explicit finite cocoa allowance", () => {
   const s = ready(); s.stock[0] = 10; s.visitorTimer = .1; M.update(s, .1); s.visitorTimer = 1e6;
-  const v = s.visitors[0]; assert.equal(v.originalBudget, 16); assert.equal(v.cocoaAllowance, 4);
+  const v = s.visitors[0]; assert.equal(v.originalBudget, 22); assert.equal(v.cocoaAllowance, 4);
   run(s, 55); assert.equal(v.cocoaSpend, 4); assert.equal(v.amount, 12); assert.ok(v.cocoaSpend + v.amount <= v.originalBudget);
 });
 

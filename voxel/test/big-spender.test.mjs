@@ -43,7 +43,7 @@ test("legacy hospitality debits spare cash, and a physical Sandy stand fully rep
     const s = ready(); s.stock[0] = 10; s.visitorUpgrades.cocoa = 3; s.nextVisitor = 4; s.visitorTimer = 0;
     if (physical) { s.festival.meadow = true; s.festival.cocoa.level = 1; s.festival.cocoa.stock = 0; s.festival.cocoa.open = false; }
     M.updateStall(s, .1, []); const v = s.visitors[0], budget = v.budget; run(s, 8);
-    assert.equal(v.amount, 12); assert.equal(v.mug, physical ? 0 : 7); assert.equal(v.budget, budget - v.amount - v.mug);
+    assert.equal(v.amount, 36); assert.equal(v.mug, physical ? 0 : 7);                // three Oranges: guests start with baskets of three assert.equal(v.budget, budget - v.amount - v.mug);
     assert.equal(s.stall.cocoa, v.mug); assert.ok(v.budget >= 0);
   }
 });

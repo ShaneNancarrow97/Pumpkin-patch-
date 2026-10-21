@@ -12,7 +12,7 @@ test('care upgrades are gated, spend once per tier, respect pause and maximum',(
 test('bags increase actual capacity, keep budgets finite and never oversell',()=>{
  const a=ready(),b=ready();b.customerCare.bags=3;
  for(const s of[a,b]){s.shop.unlocked=false;s.nextVisitor=4;s.visitorTimer=.1;M.update(s,.1);s.visitorTimer=1e6;}
- const va=a.visitors[0],vb=b.visitors[0];assert.equal(vb.budget,va.budget);run(a,10);run(b,10);assert.equal(va.quantity,1);assert.equal(vb.quantity,4);assert.equal(vb.amount,48);assert.ok(vb.amount<=vb.originalBudget);assert.equal(b.stock[0],96);
+ const va=a.visitors[0],vb=b.visitors[0];assert.equal(vb.budget,va.budget);run(a,10);run(b,10);assert.equal(va.quantity,3);assert.equal(vb.quantity,4);assert.equal(vb.amount,48);assert.ok(vb.amount<=vb.originalBudget);assert.equal(b.stock[0],96);
  const c=ready();c.customerCare.bags=3;c.shop.arrivalTimer=.1;c.shop.capacityLevel=3;c.stock[0]=2;run(c,100);assert.ok(c.stock[0]>=0);assert.equal(c.shop.itemsSold,2);assert.equal(c.shop.income,24);
 });
 test('quality varies by sale, remains stable before payment and respects rarity minima',()=>{

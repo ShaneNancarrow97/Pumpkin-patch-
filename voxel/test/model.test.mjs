@@ -213,7 +213,7 @@ test("favours pay out once, and memories are noticed as they're made", () => {
 test("old voxel saves load into the new rules, and new saves round-trip", () => {
   const old = { coins: 500, earned: 900, sold: 30, harvested: 40, taps: 20, plots: Array.from({ length: 12 }, (_, i) => ({ phase: i ? "empty" : "ready", progress: i ? 0 : 1, variety: 1 })), plotLevels: [1, ...Array(11).fill(0)], upgrades: { tools: 2, signs: 3, plots: 1, helper: 1 }, stock: [0, 0, 1, 3], looks: { natalie: "plum", shane: "black", owned: ["olive", "black", "plum"] }, claimed: ["ghost", "bones"] };
   const s = M.restoreState(old);
-  assert.deepEqual(s.upgrades, { tools: 2, yield: 0, auto: 1, plots: 1, sign: 3, storage: 0 });
+  assert.deepEqual(s.upgrades, { tools: 2, yield: 0, auto: 1, plots: 1, sign: 3, storage: 0, cart: 0 });
   assert.deepEqual(s.stock, [2, 1, 0, 1]);
   assert.deepEqual(s.claimed, ["basket", "seeds"]);
   assert.equal(s.plotCrops[0], 1);
