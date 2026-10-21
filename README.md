@@ -1,9 +1,9 @@
-# Pumpkin Patch — haunted house menu and cocoa art fix
+# Pumpkin Patch — amber menus and house exterior refinement
 
 Download Pumpkin-Patch-HTML.zip, extract and open Pumpkin-Patch.html.
 
-Source: contractor/haunted-house-estate at 5e1e3261c70aeaab84a76bdfdad4bf43ee34c266.
+Source: contractor/haunted-house-estate at 96559346a9e09acabc47fb917fb4859c3bc49bc3.
 
-Fixes the unpurchased haunted house tap crash (a shared helper was outside its lexical scope), restores visible cocoa product art and adds plain cocoa's product thumbnail. Existing progression and saves preserved.
+Opaque amber purchase cards and yellow-orange buttons, entry glow on the actual house door, sealed brick/roof joints on all house tiers, and better framing for the fully upgraded home. Includes the previous haunted house menu crash and cocoa art fixes. Existing progression and saves preserved.
 
-Claude: read voxel/docs/handovers/18-unpurchased-house-menu-and-cocoa-art.md. Contractor ZIP includes source patch, handovers and verification. This branch contains downloads only; do not merge it into source.
+Claude: read voxel/docs/handovers/19-amber-purchases-and-sealed-house.md. Contractor ZIP includes source patch, handovers and verification. This branch contains downloads only; do not merge it into source.
