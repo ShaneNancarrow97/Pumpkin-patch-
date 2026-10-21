@@ -55,7 +55,7 @@ node voxel/tools/qa-axel-final.mjs /tmp/pumpkin-review.html /tmp/axel-sharp
 node voxel/tools/simulate-maze-demand.mjs
 ```
 
-Run software-WebGL browser tests sequentially. Flow checks use actual CDP touch input at Fold, phone and landscape sizes; the final visual check uses Sharp+bloom+shadows and DPR 2. Screenshots and machine-readable reports are under `verification/axel-haunts/`. They verify functionality and rendering, not physical Z Fold 7 frame-rate certification.
+Latest run: **195 Node rule/art tests and23 browser checks passed, with no runtime exceptions**. Run software-WebGL browser tests sequentially. Flow checks use actual CDP touch input at Fold, phone and landscape sizes; the final visual check uses Sharp+bloom+shadows and DPR 2. Screenshots and machine-readable reports are under `verification/axel-haunts/`. They verify functionality and rendering, not physical Z Fold 7 frame-rate certification.
 
 The demand report stages upgrades and unlimited stock for 30active minutes, without production or level gifts. It demonstrates stock/wallet reconciliation, capped occupancy and meaningful demand limits; it is not a new-player progression timing forecast.
 

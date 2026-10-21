@@ -1,0 +1,53 @@
+{
+  "assumption": "30 active minutes, unlimited stock, no production, upgrades staged, no level rewards. Not an income forecast.",
+  "rows": [
+    {
+      "scenario": "early",
+      "coinsPerMinute": 84.8,
+      "pumpkinsPerMinute": 7.1,
+      "vipProductPerMinute": 39.2,
+      "tipsPerMinute": 0,
+      "tickets": 0,
+      "ranHome": 0,
+      "returnVisits": 0,
+      "peak": 2,
+      "capacity": 16
+    },
+    {
+      "scenario": "middle",
+      "coinsPerMinute": 915.6,
+      "pumpkinsPerMinute": 29.4,
+      "vipProductPerMinute": 190.4,
+      "tipsPerMinute": 0,
+      "tickets": 0,
+      "ranHome": 0,
+      "returnVisits": 0,
+      "peak": 4,
+      "capacity": 20
+    },
+    {
+      "scenario": "late",
+      "coinsPerMinute": 1739,
+      "pumpkinsPerMinute": 42.2,
+      "vipProductPerMinute": 126,
+      "tipsPerMinute": 15.3,
+      "tickets": 544,
+      "ranHome": 254,
+      "returnVisits": 43,
+      "peak": 32,
+      "capacity": 32
+    },
+    {
+      "scenario": "late-streak",
+      "coinsPerMinute": 1833.7,
+      "pumpkinsPerMinute": 44,
+      "vipProductPerMinute": 168,
+      "tipsPerMinute": 16.2,
+      "tickets": 574,
+      "ranHome": 264,
+      "returnVisits": 51,
+      "peak": 32,
+      "capacity": 32
+    }
+  ]
+}
