@@ -1,0 +1,21 @@
+/* The same four materials as the native house, kept legible in a small card. */
+.estate-skin-intro { margin: 2px 0 8px; }
+.estate-skin-levels { display: grid; grid-template-columns: repeat(5, minmax(44px, 1fr)); gap: 3px; margin-bottom: 10px; }
+.estate-skin-levels .chip { min-height: 44px; min-width: 44px; justify-content: center; padding: 0 3px; font-size: 12px; }
+.sheet .estate-skin-card { grid-template-columns: 86px minmax(0, 1fr); gap: 8px 10px; align-items: center; }
+.estate-skin-preview { display: block; width: 86px; height: 88px; border-radius: 12px; background: radial-gradient(ellipse at 50% 65%, #ca92501f, transparent 75%); }
+.estate-skin-preview svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.estate-skin-preview .skin-ink { fill: none; stroke: #291c2b; stroke-width: 2; }
+.estate-skin-copy { min-width: 0; }
+.estate-skin-copy .estate-skin-tier { display: block; color: var(--ink-soft); font-size: 12px; margin-bottom: 3px; }
+.sheet .estate-skin-copy h3 { margin: 0 0 4px; font-size: 15px; line-height: 1.25; }
+.sheet .estate-skin-copy p { margin: 0; line-height: 1.4; }
+.estate-skin-card footer { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 7px; border-top: 1px solid #e4ba7d1f; }
+.estate-skin-card footer small { color: var(--ink-soft); font-size: 12px; line-height: 1.35; }
+.estate-skin-card footer .button { min-height: 44px; flex-shrink: 0; }
+.estate-skin-card.skin-applied { border-color: #b9a77d; }
+@media (max-width: 380px) {
+  .sheet .estate-skin-card { grid-template-columns: 72px minmax(0, 1fr); gap: 8px; }
+  .estate-skin-preview { width: 72px; height: 80px; }
+  .estate-skin-card footer { align-items: stretch; flex-direction: column; }
+}

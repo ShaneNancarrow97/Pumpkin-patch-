@@ -50,6 +50,33 @@ export const ESTATE_FINISHES = [
   finish("bone-fence", "fence", "Bone-white pickets", 550, 1, 0xd2c3a0, 0xefdfbe, 0x9c8e74),
   finish("rose-iron", "fence", "Briar iron", 900, 2, 0x5e3c52, 0x8b5b74, 0x3b2938),
 ];
+// Full-house collections reuse finish ownership, so old gardens need no save migration.
+const houseSkin = (id, name, text, cost, houseLevel, palettes, accent, windowGlow) => ({
+  id, name, text, cost, houseLevel, palettes, accent, windowGlow,
+  finishes: Object.fromEntries(["walls", "roof", "trim", "door"].map(part => [part, `${id}-${part}`])),
+});
+export const ESTATE_HOUSE_SKINS = [
+  houseSkin("harvest-haunt", "Harvest haunt", "Burnt-pumpkin walls, black slates and a lantern-warm welcome.", 320, 0,
+    { walls: [0x99502f, 0xc87a42, 0x603825], roof: [0x292735, 0x4b4353, 0x191a25], trim: [0xd3a55e, 0xf3ce83, 0x8e673b], door: [0x533044, 0x815064, 0x321f30] }, 0xf3a34e, 0xffb95e),
+  houseSkin("moonlit-cottage", "Moonlit cottage", "Ghost-pale stone, blue slates and silver details beneath the moon.", 380, 0,
+    { walls: [0x9b9eaa, 0xc6c7ce, 0x666b7e], roof: [0x3c4e70, 0x667c9b, 0x28364e], trim: [0xd8d8d2, 0xf1eee0, 0x9b9faa], door: [0x465675, 0x7488a6, 0x2b3852] }, 0xc7dcff, 0xc5e4ff),
+  houseSkin("witchwood", "Witchwood retreat", "Mossy timber, plum roof tiles and an eerie green glow among the ivy.", 1100, 1,
+    { walls: [0x526045, 0x7d8d5e, 0x34422f], roof: [0x503452, 0x7b5279, 0x312535], trim: [0xb79d63, 0xd9c286, 0x796c43], door: [0x39283f, 0x624468, 0x251c2c] }, 0x9ccb70, 0xc1ed94),
+  houseSkin("candy-coven", "Candy coven", "Gingerbread brickwork, berry tiles and icing-white trim for a wickedly sweet home.", 1250, 1,
+    { walls: [0x95603f, 0xc18a60, 0x613c2c], roof: [0x783c62, 0xa45b82, 0x4d2947], trim: [0xe7d5ba, 0xffecd1, 0xb49a85], door: [0x8d3e4d, 0xbd6676, 0x5b293d] }, 0xec92b2, 0xffcb94),
+  houseSkin("vampire-manor", "Vampire manor", "Charcoal masonry, oxblood joinery and antique gold. The candles never go out.", 2800, 2,
+    { walls: [0x433842, 0x665160, 0x2b252f], roof: [0x262333, 0x454052, 0x171720], trim: [0xb28b59, 0xdfbb7c, 0x78603c], door: [0x6a293c, 0x9e4658, 0x411d2c] }, 0xd35667, 0xffa779),
+  houseSkin("storm-laboratory", "Storm laboratory", "Weathered blue stone, copper-green roofing and electric windows for midnight experiments.", 3200, 2,
+    { walls: [0x5b6c7d, 0x8296a2, 0x394958], roof: [0x36756f, 0x64a49a, 0x244e4d], trim: [0xb4c4c8, 0xdeece9, 0x748c97], door: [0x344759, 0x59768b, 0x22323f] }, 0x87e0d5, 0xa5f2ed),
+  houseSkin("pumpkin-palace", "Pumpkin palace", "A grand jack-o’-lantern estate in rich pumpkin, ebony and harvest gold.", 6500, 3,
+    { walls: [0xa75b31, 0xd68c4c, 0x6c3824], roof: [0x322637, 0x584259, 0x201a28], trim: [0xd9ac58, 0xffd784, 0x92703d], door: [0x4d2d39, 0x7e4752, 0x301d28] }, 0xffbd57, 0xffce78),
+  houseSkin("midnight-crypt", "Midnight crypt", "Bone-white stone and obsidian roofs, watched over by a spectral violet light.", 7200, 3,
+    { walls: [0xb6ad9e, 0xe2d6bf, 0x817b79], roof: [0x282337, 0x4b3b5e, 0x191724], trim: [0x55405f, 0x80618c, 0x362b42], door: [0x332b43, 0x574769, 0x211e2c] }, 0xc69ee6, 0xdec2ff),
+];
+for (const skin of ESTATE_HOUSE_SKINS) for (const [part, palette] of Object.entries(skin.palettes)) {
+  ESTATE_FINISHES.push({ ...finish(skin.finishes[part], part, `${skin.name} ${part}`, 0, skin.houseLevel, ...palette), skinOnly: true, skinId: skin.id, accent: skin.accent, windowGlow: skin.windowGlow });
+}
+export const ESTATE_SKIN_BY_ID = Object.assign(Object.create(null), Object.fromEntries(ESTATE_HOUSE_SKINS.map(skin => [skin.id, skin])));
 export const ESTATE_DEFAULT_FINISHES = { walls: "warm-timber", roof: "midnight-slate", trim: "old-brass", door: "plum-door", fence: "gothic-iron" };
 export const ESTATE_DECOR_BY_ID = Object.assign(Object.create(null), Object.fromEntries(ESTATE_DECOR.map(d => [d.id, d])));
 export const ESTATE_FINISH_BY_ID = Object.assign(Object.create(null), Object.fromEntries(ESTATE_FINISHES.map(f => [f.id, f])));

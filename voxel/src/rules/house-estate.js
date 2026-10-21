@@ -1,8 +1,8 @@
 // The separate garden is a cosmetic collection, with shared-house progression.
 // Coordinates, ownership and paid transactions live here, never in the scene.
-import { ESTATE_EXPANSIONS, ESTATE_DECOR, ESTATE_DECOR_BY_ID, ESTATE_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_DEFAULT_FINISHES, ESTATE_HOUSE_RESERVE, ESTATE_PATH_HALF_WIDTH, ESTATE_BORDER } from "../content/house-estate.js";
+import { ESTATE_EXPANSIONS, ESTATE_DECOR, ESTATE_DECOR_BY_ID, ESTATE_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_DEFAULT_FINISHES, ESTATE_HOUSE_RESERVE, ESTATE_PATH_HALF_WIDTH, ESTATE_BORDER, ESTATE_HOUSE_SKINS, ESTATE_SKIN_BY_ID } from "../content/house-estate.js";
 import { validPieceColour } from "./piece-colours.js";
-export { ESTATE_EXPANSIONS, ESTATE_DECOR, ESTATE_DECOR_BY_ID, ESTATE_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_DEFAULT_FINISHES } from "../content/house-estate.js";
+export { ESTATE_EXPANSIONS, ESTATE_DECOR, ESTATE_DECOR_BY_ID, ESTATE_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_DEFAULT_FINISHES, ESTATE_HOUSE_SKINS, ESTATE_SKIN_BY_ID } from "../content/house-estate.js";
 
 const EPS = 1e-6, MAX_COPIES = 200, MAX_INSTANCE = 1000000;
 const count = (n, cap = MAX_COPIES) => Number.isSafeInteger(n) ? Math.max(0, Math.min(cap, n)) : 0;
@@ -93,13 +93,32 @@ export function storeEstateDecor(s, instance) {
 
 export function buyEstateFinish(s, id) {
   const f = typeof id === "string" ? ESTATE_FINISH_BY_ID[id] : null;
-  if (!f || (s?.house?.level ?? 0) < f.houseLevel || !spendable(s, f.cost) || s.estate.ownedFinishes.includes(id)) return false;
+  if (!f || f.skinOnly || (s?.house?.level ?? 0) < f.houseLevel || !spendable(s, f.cost) || s.estate.ownedFinishes.includes(id)) return false;
   s.coins -= f.cost; s.estate.invested += f.cost; s.estate.ownedFinishes.push(id); return true;
 }
 export function equipEstateFinish(s, id) {
   const f = typeof id === "string" ? ESTATE_FINISH_BY_ID[id] : null;
   if (s?.paused || !s?.estate || !f || !s.estate.ownedFinishes.includes(id)) return false;
   s.estate.finishes[f.category] = id; return true;
+}
+// A skin owns four ordinary finishes as one paid collection, never four charges.
+export function ownsEstateSkin(s, id) {
+  const skin = typeof id === "string" ? ESTATE_SKIN_BY_ID[id] : null;
+  return !!skin && !!s?.estate && Object.values(skin.finishes).every(part => s.estate.ownedFinishes.includes(part));
+}
+export function activeEstateSkin(s) {
+  return ESTATE_HOUSE_SKINS.find(skin => Object.entries(skin.finishes).every(([part, id]) => s?.estate?.finishes?.[part] === id)) ?? null;
+}
+export function buyEstateSkin(s, id) {
+  const skin = typeof id === "string" ? ESTATE_SKIN_BY_ID[id] : null;
+  if (!skin || (s?.house?.level ?? 0) < skin.houseLevel || !spendable(s, skin.cost) || ownsEstateSkin(s, id)) return false;
+  s.coins -= skin.cost; s.estate.invested += skin.cost;
+  for (const part of Object.values(skin.finishes)) if (!s.estate.ownedFinishes.includes(part)) s.estate.ownedFinishes.push(part);
+  return true;
+}
+export function equipEstateSkin(s, id) {
+  if (s?.paused || !ownsEstateSkin(s, id)) return false;
+  Object.assign(s.estate.finishes, ESTATE_SKIN_BY_ID[id].finishes); return true;
 }
 export const estateScore = s => (s?.estate?.placed ?? []).reduce((score, p) => score + (ESTATE_DECOR_BY_ID[p.id]?.score ?? 0), 0);
 

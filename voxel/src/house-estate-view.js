@@ -122,6 +122,6 @@ export function createHouseEstateView(canvas, state, hooks) {
       controls.target.x = THREE.MathUtils.clamp(controls.target.x, b.x0 + 2, b.x1 - 2); controls.target.z = THREE.MathUtils.clamp(controls.target.z, b.z0 + 2, b.z1 - 2); controls.target.y = THREE.MathUtils.clamp(controls.target.y, .5, 9);
       camera.position.add(controls.target.clone().sub(old)); controls.update();
     },
-    get status() { return { active, built, houseLevel: state.house.level, expansion: state.estate.expansion, placed: props.size, entrance: { visible: entrance.group.visible, position: entrance.group.position.toArray() }, azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), distance: controls.getDistance(), target: controls.target.toArray(), preview: previewData ? { ...previewData } : null }; },
+    get status() { return { active, built, houseLevel: state.house.level, skin: house?.userData.skin ?? null, skinDetailCount: house?.userData.skinDetailCount ?? 0, expansion: state.estate.expansion, placed: props.size, entrance: { visible: entrance.group.visible, position: entrance.group.position.toArray() }, azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), distance: controls.getDistance(), target: controls.target.toArray(), preview: previewData ? { ...previewData } : null }; },
   };
 }

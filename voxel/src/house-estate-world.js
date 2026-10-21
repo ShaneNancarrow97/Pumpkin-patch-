@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
-import { ESTATE_DEFAULT_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_EXPANSIONS, ESTATE_DECOR_BY_ID } from "./content/house-estate.js";
+import { ESTATE_DEFAULT_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_EXPANSIONS, ESTATE_DECOR_BY_ID, ESTATE_SKIN_BY_ID } from "./content/house-estate.js";
 
 const STONE = [0x777281, 0x99919b, 0x5a5666], WOOD = 0x392b2b, GOLD = 0xcaa269, LEAVES = [0x7b3141, 0xab4f37, 0xd5823e, 0x62404d], GREEN = [0x35483c, 0x4c6250, 0x6a7654];
 const colour = (finishes, key) => ESTATE_FINISH_BY_ID[finishes?.[key]] ?? ESTATE_FINISH_BY_ID[ESTATE_DEFAULT_FINISHES[key]];
@@ -38,13 +38,93 @@ function flower(v, x, y, z, scale = 1, shade = 0x9b5d83) {
   v.block(x, y + .4 * scale, z, .075 * scale, .05 * scale, .075 * scale, 0xe4c48d);
 }
 
+// Skin ornaments are facade-mounted voxel reliefs, finished on all four sides.
+// They join the house's existing batches and never add individual draw calls.
+function skinDetails(v, panel, skin, { w, d, h }) {
+  const accent = skin.accent, glow = skin.windowGlow, ivory = 0xe4d9bf, ink = 0x24212d;
+  const crest = (face, centre, base, scale = 1) => {
+    const p = (x, y, width, height, colour, lit = false, out = .38) => panel(face, centre + x * scale, base + y * scale, out, width * scale, height * scale, .11, colour, lit);
+    const eye = (x, y, width = .13, height = .16) => p(x, y, width, height, glow, true, .51);
+    if (skin.id === "harvest-haunt" || skin.id === "pumpkin-palace") {
+      // A ribbed jack-o'-lantern escutcheon; the palace version wears a crown.
+      for (const [x, y, width, height, colour] of [[0,.13,.78,.55,0xd97328],[0,0,.48,.83,0xe58a32],[-.38,.23,.2,.39,0xba5527],[.38,.23,.2,.39,0xba5527]]) p(x,y,width,height,colour);
+      p(0,.83,.12,.21,0x67724a); p(-.2,.2,.035,.45,0xf1a143,false,.47); p(.2,.2,.035,.45,0xf1a143,false,.47);
+      eye(-.2,.48); eye(.2,.48); eye(0,.21,.47,.1);
+      if (skin.id === "pumpkin-palace") {
+        p(0,.92,1.02,.13,accent); for (const x of [-.4,0,.4]) { p(x,1,.16,.22,accent); p(x,1.22,.11,.09,glow,true,.44); }
+      }
+    } else if (skin.id === "moonlit-cottage") {
+      p(0,.15,.77,.59,0xcddcd7); p(0,.72,.54,.14,ivory); p(0,.86,.27,.09,ivory);
+      for (const x of [-.28,0,.28]) p(x,0,.19,.23,ivory);
+      p(-.18,.52,.12,.16,ink,false,.51); p(.18,.52,.12,.16,ink,false,.51); p(0,.28,.13,.15,ink,false,.51);
+      for (const x of [-.56,.56]) { p(x,.6,.055,.22,glow,true); p(x,.68,.2,.055,glow,true); }
+    } else if (skin.id === "witchwood") {
+      // Crooked hat, a silver buckle and hanging moss.
+      p(0,.16,1.22,.12,0x292c39); p(-.04,.28,.79,.2,0x343743); p(-.09,.48,.57,.19,0x3e414e); p(-.2,.67,.39,.18,0x434653); p(-.36,.85,.35,.13,0x434653);
+      p(-.02,.3,.8,.1,accent,false,.49); p(.08,.29,.15,.15,ivory,false,.55); p(.08,.33,.065,.07,ink,false,.61);
+      for (const x of [-.48,0,.42]) p(x,-.13,.07,.23,accent);
+    } else if (skin.id === "candy-coven") {
+      // An orange-and-plum peppermint seal, with a tiny glowing centre.
+      const widths = [.38,.69,.87,.97,.87,.69,.38];
+      widths.forEach((width, i) => p(0,i*.13,width,.13,ivory));
+      for (const [x,y] of [[-.2,.13],[-.33,.39],[0,.65],[.29,.52],[.2,.13]]) p(x,y,.18,.18,accent,false,.5);
+      eye(0,.34,.17,.2);
+      p(-.56,.34,.25,.18,0x8d4778); p(.56,.34,.25,.18,0x8d4778);
+    } else if (skin.id === "vampire-manor") {
+      // Wide bat wings with pointed ears and two ivory fangs.
+      p(0,.2,.37,.55,accent); p(-.11,.73,.1,.16,ink); p(.11,.73,.1,.16,ink);
+      for (const side of [-1,1]) for (let i=0;i<4;i++) { p(side*(.27+i*.17),.45+i*.07,.22,.28-i*.035,ink); p(side*(.32+i*.17),.26+i*.1,.13,.16,ink); }
+      eye(-.09,.58,.065,.09); eye(.09,.58,.065,.09);
+      p(-.09,.13,.06,.17,ivory,false,.51); p(.09,.13,.06,.17,ivory,false,.51);
+    } else if (skin.id === "storm-laboratory") {
+      p(0,.03,1.13,.94,0x414c58); p(0,.12,.89,.73,0x26333f,false,.45);
+      for (const [x,y] of [[.19,.74],[.08,.6],[-.03,.46],[.09,.35],[-.03,.2],[-.16,.05]]) p(x,y,.27,.15,glow,true,.54);
+      for (const x of [-.45,.45]) for (const y of [.13,.79]) p(x,y,.08,.08,ivory,false,.53);
+    } else if (skin.id === "midnight-crypt") {
+      p(0,.28,.86,.58,ivory); p(0,.82,.56,.12,ivory); p(0,.08,.57,.2,ivory);
+      p(-.22,.56,.22,.2,ink,false,.51); p(.22,.56,.22,.2,ink,false,.51); p(0,.35,.12,.14,ink,false,.51);
+      for (const x of [-.18,0,.18]) p(x,.05,.035,.2,ink,false,.51);
+      for (const side of [-1,1]) { p(side*.66,.15,.13,.68,accent); p(side*.66,.37,.4,.1,accent); }
+    }
+  };
+  for (const face of ["front","back","left","right"]) {
+    const length = face === "front" || face === "back" ? w : d;
+    const palace = skin.id === "pumpkin-palace";
+    crest(face,0,h-(palace?1.47:1.2),palace ? .85 : .92);
+    if (skin.id === "harvest-haunt" || palace) {
+      // A garland of gilded leaves sits below the eaves on every facade.
+      for (let u=-length/2+.5, i=0;u<length/2-.3;u+=.48,i++) { panel(face,u,h-.38,.31,.25,.17,.1,i%2?accent:0xc06b2d); if(i%3===0)panel(face,u,h-.49,.32,.075,.13,.1,glow,true); }
+    } else if (skin.id === "moonlit-cottage") {
+      for (const u of [-length/2+.46,length/2-.46]) { panel(face,u,h-1.15,.32,.1,.62,.1,ivory); panel(face,u,h-.73,.36,.32,.1,.1,glow,true); }
+    } else if (skin.id === "witchwood") {
+      for(let u=-length/2+.3,i=0;u<length/2-.2;u+=.32,i++) panel(face,u,h-.25-(i%3)*.12,.3,.17,.2+(i%3)*.12,.12,accent);
+      for (const u of [-length/2+.57,length/2-.57]) { panel(face,u,.18,.4,.12,.39,.15,ivory); panel(face,u,.57,.4,.52,.16,.36,accent); panel(face,u,.73,.4,.29,.1,.23,glow,true); }
+    } else if (skin.id === "candy-coven") {
+      panel(face,0,h-.2,.3,length+.17,.14,.16,ivory);
+      for(const u of [-length/2+.13,length/2-.13]) for(let y=.75,i=0;y<h-.25;y+=.24,i++) panel(face,u,y,.3,.2,.22,.13,i%2?accent:ivory);
+    } else if (skin.id === "vampire-manor") {
+      for(const u of [-length/2+.38,length/2-.38]) { panel(face,u,h-.85,.28,.29,.65,.16,accent); panel(face,u,h-.98,.32,.12,.23,.11,ivory); }
+    } else if (skin.id === "storm-laboratory") {
+      for(const u of [-length/2+.4,length/2-.4]) {
+        panel(face,u,.7,.3,.095,h-1,.1,0x687b85);
+        for(const y of [1.1,2.5,h-.65]) { panel(face,u,y,.38,.4,.1,.23,accent); panel(face,u,y+.12,.39,.24,.09,.16,glow,true); }
+      }
+    } else if (skin.id === "midnight-crypt") {
+      for(let u=-length/2+.38;u<length/2;u+=.72) { panel(face,u,h-.3,.28,.32,.18,.19,ivory); panel(face,u,h-.41,.3,.11,.14,.13,ivory); }
+    }
+  }
+  // The gable faces are exposed in side/rear orbit views as well as the facade.
+  for (const face of ["left","right"]) crest(face,0,h+1.58,.5);
+}
+
 // A full 360-degree house. Sealed wall skins, individual masonry, slates and
 // exterior joinery are batched into only solid and emissive instance buffers.
 export function buildEstateHouse(level = 0, finishes = {}) {
   level = Math.max(0, Math.min(3, Math.trunc(level) || 0));
   const v = new Voxels(), r = seeded(2077 + level), wall = colour(finishes, "walls"), roof = colour(finishes, "roof"), trim = colour(finishes, "trim"), door = colour(finishes, "door");
   const w = [6, 8, 9.5, 11][level], d = [5, 6, 7, 7.6][level], h = [3.8, 6.4, 7, 7.8][level], dx = w / 2, dz = d / 2, roofRise = [2.5, 2.8, 3.1, 3.4][level];
-  const rows = level ? [1.3, 4.1] : [1.3], glass = level === 3 ? 0xe2b18e : 0xffbb69;
+  const skin = ESTATE_SKIN_BY_ID[wall.skinId] ?? null;
+  const rows = level ? [1.3, 4.1] : [1.3], glass = skin?.windowGlow ?? (level === 3 ? 0xe2b18e : 0xffbb69);
   // Transform a horizontal wall coordinate onto any of the four facades.
   const panel = (face, u, y, out, pw, ph, pd, c, glow = false) => {
     if (face === "front") v.block(u, y, dz + out, pw, ph, pd, c, glow);
@@ -218,7 +298,10 @@ export function buildEstateHouse(level = 0, finishes = {}) {
     v.block(xx, yy, zz, .16 + r() * .1, .13, .12, GREEN[(r() * 3) | 0]);
   }
   for (const side of [-1, 1]) pumpkin(v, side * 1.72, .02, dz + .75, .28, 11 + side, true);
+  const beforeSkin = v.solid.length + v.glow.length;
+  if (skin) skinDetails(v, panel, skin, { w, d, h });
   const group = v.build(); group.name = "Detailed estate house"; group.userData.level = level;
+  group.userData.skin = skin?.id ?? null; group.userData.skinDetailCount = v.solid.length + v.glow.length - beforeSkin; group.userData.windowGlow = glass;
   group.userData.door = { x: 0, y: 1.4, z: dz + .43 };
   group.userData.bounds = { x0: -8, x1: 8, z0: -6, z1: 6, height: level === 3 ? h + 5.8 : h + roofRise + 2.3 };
   group.userData.palette = { walls: wall.id, roof: roof.id, trim: trim.id, door: door.id };
