@@ -98,7 +98,7 @@ const scene = createScene($("world"), state, {
     else if (what.type === "foyer-decor") foyerTools.select(what.instance);
     else if (["foyer-ground", "foyer-wall"].includes(what.type)) { if (foyerTools.active) foyerTools.placeAt(what.point.x, what.point.z, what.wall, what.point.y); }
     else if (what.type === "talk") talk(what.who);
-    else if (what.type === "piece") home.tools.select(what.instance);
+    else if (what.type === "piece") { if (!home.tools.tapPiece(what.instance, what.point)) home.tools.select(what.instance); }
     else if (what.type === "go") goTo(what.to);
     else if (what.type === "floor" || what.type === "wall") { if (home.tools.selected) home.tools.tapCell(scene.cellAt(what.point, what.type, what.wall, home.tools.snap)); }
   },

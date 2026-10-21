@@ -34,6 +34,6 @@ export const SHELF_CATALOG = [
     description: "A tall open stand of three wide tiers, for collections that like to be seen.",
     surfaces: [S(0.05, 0.05, 1.9, 0.9, 0.15), S(0.05, 0.05, 1.9, 0.9, 1.2), S(0.05, 0.05, 1.9, 0.9, 2.25)] },
 ].map(({ footprint, surfaces, ...item }) => Object.freeze({
-  ...item, ...(footprint ? { footprint: Object.freeze(footprint), category: "furniture", wall: false } : { category: "decor", wall: true }),
+  ...item, ...(footprint ? { footprint: Object.freeze(footprint), wall: false } : { wall: true }), category: "shelves",
   rug: false, surfaces: Object.freeze(surfaces), finishes: SHELF_FINISHES, collection: "blank-shelves",
 }));

@@ -60,6 +60,11 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.locator('[data-tool="flip"]').click();
   await page.locator('[data-tool="done"]').click();
   check(await page.evaluate(() => PumpkinVoxel.state().house.placed.find((p) => p.id === "d01").flip) && !(await page.locator("#piece-bar").isVisible()), `${name}: flip the piece and finish`);
+  // A tea table, and the candelabrum stood on it from its toolbar.
+  await page.evaluate(() => { const s = PumpkinVoxel.state(); s.house.owned.push("f08"); s.house.placed.push({ instance: "smoke-tea", id: "f08", room: "parlour", x: 8, z: 4, flip: false, books: [] }); PumpkinVoxel.scene.refreshRoom(); PumpkinVoxel.tools.select(s.house.placed.find((p) => p.id === "d01").instance); });
+  await page.locator('[data-tool="ontop"]').click();
+  check(await page.evaluate(() => PumpkinVoxel.state().house.placed.find((p) => p.id === "d01").on === "smoke-tea"), `${name}: a candelabrum stands on the tea table`);
+  await page.locator('[data-tool="done"]').click();
   if (shots) await page.screenshot({ path: `${shots}/${name}-parlour.png` });
   // The shop: open it, step inside, and customers come in to browse.
   await page.evaluate(() => { PumpkinVoxel.state().stock = [4, 4, 0, 0]; });

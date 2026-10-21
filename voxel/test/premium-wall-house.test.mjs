@@ -7,7 +7,7 @@ import { premiumWallStats } from "../src/premium-wall-props.js";
 
 test("premium voxel pieces can be bought, hung, stored and restored without changing the root catalogue",()=>{
   assert.equal(original.length,50);
-  assert.equal(M.decorCatalog.length,62);
+  assert.equal(M.decorCatalog.length,67);                         // 50 + 6 premium wall + 6 premium floor + 5 blank shelves
   for(const item of PREMIUM_WALL_CATALOG) {
     const s=M.freshState();s.coins=item.price-1;
     assert.equal(M.buyDecor(s,item.id),false);

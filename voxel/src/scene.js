@@ -314,7 +314,8 @@ export function createScene(canvas, state, hooks) {
     pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
     ray.setFromCamera(pointer, active());
   }
-  const piecePoint = e => { inputRay(e); return ray.ray.intersectPlane(floorPlane, floorPoint) ? { x: floorPoint.x - ORIGIN.room.x, z: floorPoint.z - ORIGIN.room.z } : null; };
+  // Where the pointer meets the plane the selected piece stands on: the floor, or the top of a table.
+  const piecePoint = e => { inputRay(e); floorPlane.constant = -places.standHeight(hooks.selectedPiece?.()); return ray.ray.intersectPlane(floorPlane, floorPoint) ? { x: floorPoint.x - ORIGIN.room.x, y: floorPoint.y, z: floorPoint.z - ORIGIN.room.z } : null; };
   const worldPerPixel = () => (camera.right - camera.left) / canvas.clientWidth;
   canvas.addEventListener("pointerdown", (e) => {
     if (["estate", "foyer"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
@@ -324,8 +325,8 @@ export function createScene(canvas, state, hooks) {
       drag = { x: e.clientX, y: e.clientY, vx: view.x, vz: view.z, moved: 0 };
       if (view.place === "room" && hooks.canDragPiece?.()) {
         inputRay(e); scene.updateMatrixWorld(true);
-        const selected = hooks.selectedPiece?.(), hit = ray.intersectObjects(places.pickables, false).find(h => h.object.userData.type === "piece");
-        const point = hit?.object.userData.instance === selected && piecePoint(e);
+        const selected = hooks.selectedPiece?.(), hit = ray.intersectObjects(places.pickables, false).find(h => h.object.userData.type === "piece" && h.object.userData.instance === selected);
+        const point = hit && piecePoint(e);
         if (point && hooks.onPieceDragStart?.(point)) pieceDrag = e.pointerId;
       }
     }
@@ -371,7 +372,7 @@ export function createScene(canvas, state, hooks) {
       scene.updateMatrixWorld(true);
       const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables.filter(p => p.userData.type !== "plot" || plots[p.userData.index].g.visible), ...festivalWorld.pickables, ...hollowFarm.pickables, ...[...visitorModels.values()].filter(e => e.m.visible).map(e => e.hit)], false);
       // A visible guest at a counter takes priority over its large building hit box.
-      const hit = hits.find(h => ["visitor", "customer"].includes(h.object.userData.type)) ?? hits[0];
+      const hit = hits.find(h => ["visitor", "customer"].includes(h.object.userData.type)) ?? hits.find(h => h.object.userData.host && h.object.userData.host === hits[0].object.userData.instance) ?? hits[0];
       lastPick = hit ? { ...hit.object.userData } : null;
       if (hit) hooks.onPick({ ...hit.object.userData, point: hit.point });
     }
@@ -598,6 +599,7 @@ export function createScene(canvas, state, hooks) {
     showGrid(on) { places.setGrid(on); },
     cellAt(point, type, wall, snap = .1) { return places.cellAt(point, type, wall, snap); },
     movePiece(instance, pose, ok) { places.movePiece(instance, pose, ok); },
+    hostPoint(instance, point) { return places.hostPoint(instance, point); },
     rotatePiece(instance) { places.rotatePiece(instance); },
     screenPoint(x, y, z) { return project(new THREE.Vector3(x, y, z)); },
     // Just above their heads: they lean back so they stand 2.3 tall on screen, which a point straight up from the feet reaches at 2.3 / cos(PITCH).

@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { applyPieceColour } from "./piece-colours.js";
-import { GRID, footprint, pieceFootprint, roomStyle, roomPieces, roomLayout, available, displayCount, decorById } from "./model.js";
+import { GRID, footprint, pieceFootprint, roomStyle, roomPieces, roomLayout, available, displayCount, decorById, hostSurfaces } from "./model.js";
+import { riderSize } from "./rules/surfaces.js";
 import { WALL_H, INTERIOR, buildRoom, buildShopInterior, SHOP_SPOTS } from "./interiors.js";
 import { decorProp, shelfBooks, decorReady } from "./decor.js";
 
@@ -66,7 +67,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   const clear = () => {
-    for (const guide of [selection?.box, selection?.ring, ghost, gridLines]) if (guide) { root.remove(guide); guide.geometry.dispose(); guide.material.dispose(); }
+    for (const guide of [selection?.box, selection?.ring, ghost, gridLines]) if (guide) { guide.removeFromParent(); guide.geometry.dispose(); guide.material.dispose(); }
     for (const o of [...root.children]) { root.remove(o); o.traverse?.((m) => { if (m.isMesh && m.geometry && !m.geometry.userData.shared) m.geometry.dispose?.(); for (const mat of Array.isArray(m.material) ? m.material : m.material ? [m.material] : []) if(mat.userData.pieceColourOwned)mat.dispose(); }); }
     pool.forEach((l) => (l.intensity = 0));
     pieces = new Map(); pickables = []; actors = []; customers = new Map(); tables = []; skyla = null; selection = null; ghost = null; gridLines = null; tableKey = "";
@@ -100,7 +101,9 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       root.add(hit); pickables.push(hit);
     }
     const lamps = [...shell.lights];
-    if (decorReady()) for (const p of roomPieces(state, id)) lamps.push(...addPiece(p));
+    // Tables and shelves before what stands on them.
+    const list = roomPieces(state, id);
+    if (decorReady()) for (const p of [...list.filter((q) => !q.on), ...list.filter((q) => q.on)]) lamps.push(...addPiece(p));
     light(lamps, o);
     lightIndoors(o);
     hitPlane(w, d, "floor", new THREE.Vector3(o.x + w / 2, 0.01, o.z + d / 2), -Math.PI / 2);
@@ -120,8 +123,40 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
 
   // How high a wall piece hangs: the chandelier from the ceiling, the rest centred on the panel.
   const hangAt = (id, height) => (id === "d04" ? WALL_H - 0.45 - height : (decorById[id].hangHeight ?? 2.9) - height / 2);
+  // Where a piece standing on another sits in its host's group: its centre on the
+  // top, measured in the host's unturned frame (rules/surfaces.js).
+  function riderAt(host, p) {
+    const fp = footprint(host.piece.id), t = hostSurfaces(host.piece)[p.top];
+    if (!t) return null;
+    return new THREE.Vector3(p.x - fp.w / 2, t.y, fp.layer === "wall" ? p.z : p.z - fp.d / 2);
+  }
+  // A small piece on a table or a shelf: it rides in its host's group, so it
+  // moves, turns and mirrors with it; its hit box rides along too.
+  function addRider(p, prop) {
+    const host = pieces.get(p.on), at = host && riderAt(host, p);
+    if (!at) return [];
+    applyPieceColour(prop, p.tint, true);
+    prop.traverse((m) => { if (m.isMesh && !m.material.isMeshBasicMaterial) { m.castShadow = true; m.receiveShadow = true; } });
+    const g = new THREE.Group(), lean = new THREE.Group(), height = prop.userData.height, size = riderSize(p.id);
+    lean.add(prop); g.add(lean);
+    if (p.flip) lean.scale.x = -1;
+    g.position.copy(at); g.rotation.y = ((p.rotation ?? 0) * Math.PI) / 180;
+    host.group.add(g);
+    const tall = Math.max(0.3, height), hit = new THREE.Mesh(new THREE.BoxGeometry(size.w * 0.95, tall, size.d * 0.95), new THREE.MeshBasicMaterial({ visible: false }));
+    hit.position.copy(at).add(new THREE.Vector3(0, tall / 2, 0)); hit.rotation.y = g.rotation.y;
+    hit.userData = { type: "piece", instance: p.instance, host: p.on };
+    host.group.add(hit); pickables.push(hit);
+    pieces.set(p.instance, { group: g, hit, piece: p, bottom: at.y, height: tall, rider: true, host: p.on, tick: prop.userData.tick });
+    const lamp = prop.userData.glowing || ["lights"].includes(decorById[p.id].category);
+    if (!lamp) return [];
+    host.group.updateMatrixWorld(true);
+    const w = g.localToWorld(new THREE.Vector3(0, height * 0.85, 0)), o = ORIGIN.room;
+    return [{ x: w.x - o.x, y: w.y, z: w.z - o.z, intensity: 7 }];
+  }
   function addPiece(p) {
-    const fp = pieceFootprint(p), o = ORIGIN.room, prop = decorProp(p.id), native = prop.userData.native === true;
+    const prop = decorProp(p.id, { finish: p.finish });
+    if (p.on) return addRider(p, prop);
+    const fp = pieceFootprint(p), o = ORIGIN.room, native = prop.userData.native === true;
     applyPieceColour(prop,p.tint,true);
     const g = new THREE.Group(), standing = fp.layer === "floor", lean = new THREE.Group(), height = prop.userData.height;
     lean.add(prop);
@@ -148,7 +183,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     hit.rotation.y = g.rotation.y;
     hit.userData = { type: "piece", instance: p.instance };
     root.add(hit); pickables.push(hit);
-    pieces.set(p.instance, { group: g, hit, piece: p, bottom: g.position.y, height: tall, wallOffset: native ? .005 : .02, hitDepth: deep });
+    pieces.set(p.instance, { group: g, hit, piece: p, bottom: g.position.y, height: tall, wallOffset: native ? .005 : .02, hitDepth: deep, tick: prop.userData.tick });
     // Lamps, candles and glowing jars light the room around them.
     const lamp = prop.userData.glowing || ["lights"].includes(decorById[p.id].category);
     return lamp ? [{ x: g.position.x - o.x + (wall ? Math.sin(g.rotation.y) * 0.6 : 0), y: wall ? g.position.y + height * 0.6 : Math.max(0.8, height * 0.85), z: g.position.z - o.z + (wall ? Math.cos(g.rotation.y) * 0.6 : 0), intensity: 7 }] : [];
@@ -217,6 +252,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
 
   // Shane and Natalie potter about the room, between free spots near the front.
   function tickRoom(dt, time) {
+    for (const e of pieces.values()) e.tick?.(time);                  // the cauldron's brew
     for (const a of actors) {
       const pos = a.model.position, o = ORIGIN.room;
       if (!a.target && (a.wait -= dt) <= 0) {
@@ -250,10 +286,11 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     return new THREE.Vector3(o.x + x + fp.w / 2, wall ? entry.bottom + entry.height / 2 : 0.06, o.z + (wall ? 0.05 : z + fp.d / 2));
   };
   function select(instance) {
-    if (selection) { root.remove(selection.box); selection.box.geometry.dispose(); selection.box.material.dispose(); if (selection.ring) { root.remove(selection.ring); selection.ring.geometry.dispose(); selection.ring.material.dispose(); } selection = null; }
+    if (selection) { selection.box.removeFromParent(); selection.box.geometry.dispose(); selection.box.material.dispose(); if (selection.ring) { selection.ring.removeFromParent(); selection.ring.geometry.dispose(); selection.ring.material.dispose(); } selection = null; }
     if (ghost) { root.remove(ghost); ghost.geometry.dispose(); ghost.material.dispose(); ghost = null; }
     const entry = pieces.get(instance);
     if (!entry) return;
+    if (entry.rider) { selectRider(entry); return; }
     const p = entry.pose ?? entry.piece, fp = pieceFootprint(p), natural = footprint(p.id);
     selection = { instance, box: outline(natural, outlineAt(entry, fp, p.x, p.z), 0xffd36a, entry.height) };
     selection.box.rotation.y = entry.group.rotation.y;
@@ -263,10 +300,29 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       ring.rotation.x = -Math.PI / 2; ring.position.set(entry.group.position.x, 0.045, entry.group.position.z); root.add(ring); selection.ring = ring;
     }
   }
+  // A piece on a top: a frame round its base and a ring on the top, both in its
+  // host's group so they follow it, and drawn over it, as it is small and the
+  // tops are the same warm tone as the ring.
+  function selectRider(entry) {
+    const size = riderSize(entry.piece.id), host = pieces.get(entry.host);
+    const box = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(size.w, 0.12, size.d)), new THREE.LineBasicMaterial({ color: 0xffd36a, toneMapped: false, depthTest: false, transparent: true }));
+    const r = Math.max(size.w, size.d) * 0.55 + 0.1;
+    const ring = new THREE.Mesh(new THREE.RingGeometry(r, r + 0.045, 48), new THREE.MeshBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0.9, side: THREE.DoubleSide, toneMapped: false, depthWrite: false, depthTest: false }));
+    ring.rotation.x = -Math.PI / 2; box.renderOrder = ring.renderOrder = 10;
+    host.group.add(box, ring);
+    selection = { instance: entry.piece.instance, box, ring, rider: host.group };
+    placeRiderGuides(entry);
+  }
+  function placeRiderGuides(entry, ok = true) {
+    const g = entry.group;
+    selection.box.position.set(g.position.x, g.position.y + 0.04, g.position.z); selection.box.rotation.y = g.rotation.y;
+    selection.ring.position.set(g.position.x, g.position.y + 0.015, g.position.z);
+    selection.box.material.color.setHex(ok ? 0xffd36a : 0xff6a5a); selection.ring.material.color.setHex(ok ? 0xffe2a0 : 0xff6a5a);
+  }
   function preview(instance, x, z, ok) {
     if (ghost) { root.remove(ghost); ghost.geometry.dispose(); ghost.material.dispose(); ghost = null; }
     const entry = pieces.get(instance);
-    if (!entry || x === null) return;
+    if (!entry || x === null || entry.rider) return;
     const p = entry.pose ?? entry.piece, fp = pieceFootprint(p);
     ghost = outline(footprint(p.id), outlineAt(entry, fp, x, z), ok ? 0x8ae6a0 : 0xff6a5a, entry.height);
     ghost.rotation.y = entry.group.rotation.y;
@@ -275,6 +331,15 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   // every touch move discarded geometry, lights and the visitor animation.
   function movePiece(instance, pose = null, ok = true) {
     const entry = pieces.get(instance); if (!entry) return;
+    if (entry.rider) {
+      const p = { ...entry.piece, ...pose }, at = riderAt(pieces.get(entry.host), p);
+      entry.pose = pose ? p : null;
+      if (!at) return;
+      entry.group.position.copy(at); entry.group.rotation.y = ((p.rotation ?? 0) * Math.PI) / 180;
+      entry.hit.position.copy(at).add(new THREE.Vector3(0, entry.height / 2, 0)); entry.hit.rotation.y = entry.group.rotation.y;
+      if (selection?.instance === instance) placeRiderGuides(entry, ok);
+      return;
+    }
     const p = { ...entry.piece, ...pose }, fp = pieceFootprint(p), wall = fp.layer === "wall", o = ORIGIN.room;
     entry.pose = pose ? p : null;
     const cx = p.x + fp.w / 2, cz = p.z + fp.d / 2;
@@ -313,6 +378,23 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     leave() { clear(); place = null; lightIndoors(null); },
     refresh() { if (place?.kind === "room") { const sel = selection?.instance; buildRoomPlace(place.id); if (sel) select(sel); } },
     select, preview, setGrid, movePiece,
+    // A room point (x, z, and y above the floor), or a point in the world, in a host's own frame: x from its
+    // left edge, z from its back (a wall piece: out from the wall), y above its base.
+    hostPoint(instance, point) {
+      const entry = pieces.get(instance);
+      if (!entry) return null;
+      const o = ORIGIN.room, fp = footprint(entry.piece.id);
+      entry.group.updateMatrixWorld(true);
+      const l = entry.group.worldToLocal(point.isVector3 ? point.clone() : new THREE.Vector3(o.x + point.x, point.y ?? 0, o.z + point.z));
+      return { x: l.x + fp.w / 2, y: l.y, z: fp.layer === "wall" ? l.z : l.z + fp.d / 2 };
+    },
+    // How high above the floor a piece stands: the top it is on, else 0.
+    standHeight(instance) {
+      const entry = pieces.get(instance);
+      if (!entry?.rider) return 0;
+      entry.group.updateMatrixWorld(true);
+      return entry.group.getWorldPosition(new THREE.Vector3()).y;
+    },
     rotatePiece(instance) { movePiece(instance); },
     // Turns a tap on the floor or the wall into a grid cell.
     cellAt(point, type, wall = "back", snap = .1) {

@@ -46,10 +46,12 @@ import { PREMIUM_FURNITURE_CATALOG } from "../content/premium-furniture-catalog.
 import { findRoom, findRoomStyle, freshRoomStyles, houseRooms, parlourInteriors, roomStyles } from "../../../src/content/rooms.mjs";
 import { libraryStories } from "../../../src/content/library.mjs";
 import { validPieceColour } from "./piece-colours.js";
+import { SHELF_CATALOG } from "../content/shelf-catalog.js";
+import { canRide, isShelf, validFinish, surfacesOf, standsOn, ridersClash } from "./surfaces.js";
 
-const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG, ...PREMIUM_FURNITURE_CATALOG];
+const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG, ...PREMIUM_FURNITURE_CATALOG, ...SHELF_CATALOG];
 const decorById = Object.fromEntries(decorCatalog.map(item=>[item.id,item]));
-const decorCategories = baseDecorCategories.map(([id,name])=>[id,id === "all" ? `All ${decorCatalog.length}` : name]);
+const decorCategories = baseDecorCategories.map(([id,name])=>[id,id === "all" ? `All ${decorCatalog.length}` : id === "shelves" ? "Shelves" : name]);
 export { decorById, decorCatalog, decorCategories, houseRooms, roomStyles, libraryStories };
 
 // What each level of the house costs to move on from, and how many pieces its parlour holds.
@@ -194,6 +196,7 @@ function rectanglesOverlap(a, b) {
   return true;
 }
 function overlaps(a, b) {
+  if (a.on || b.on) return false;                                    // riders keep to their tops
   const fa = pieceFootprint(a), fb = pieceFootprint(b);
   if (fa.layer !== fb.layer || (fa.layer === "wall" && surface(a) !== surface(b))) return false;
   if (fa.layer === "wall") return a.x < b.x + fb.w - 1e-6 && b.x < a.x + fa.w - 1e-6;
@@ -202,6 +205,7 @@ function overlaps(a, b) {
 export function fits(s, room, id, x, z, ignore, options) {
   if (!decorById[id]) return false;
   const existing = s.house.placed.find((p) => p.instance === ignore), candidate = { ...existing, ...options, id, x, z };
+  if (candidate.on) return riderFits(s, room, candidate, ignore);
   const L = roomLayout(s, room), f = pieceFootprint(candidate), wall = surface(candidate);
   if (!L || !Number.isFinite(x) || !Number.isFinite(z) || x < -1e-6) return false;
   if (f.layer === "wall") {
@@ -234,6 +238,7 @@ export function findSpot(s, room, id, ignore, options) {
 export function rotateDecor(s, instance, degrees) {
   const p = s.house.placed.find((q) => q.instance === instance);
   if (!p || s.paused || !Number.isFinite(degrees) || footprint(p.id).layer === "wall") return false;
+  if (p.on) { const rotation = decorAngle(degrees); if (!fits(s, p.room, p.id, p.x, p.z, instance, { rotation })) return false; p.rotation = rotation; return true; }
   const before = pieceFootprint(p), rotation = decorAngle(degrees), after = pieceFootprint({ ...p, rotation });
   const L = roomLayout(s, p.room);
   if (!L || after.w > L.w || after.d > L.d) return false;
@@ -267,10 +272,10 @@ export function upgradeHouse(s) {
   h.level++;
   const moved = [], stored = [];
   for (const p of [...h.placed]) {
-    if (fits(s, p.room, p.id, p.x, p.z, p.instance)) continue;
-    const spot = findSpot(s, p.room, p.id, p.instance);
+    if (!h.placed.includes(p) || fits(s, p.room, p.id, p.x, p.z, p.instance)) continue;
+    const spot = p.on ? null : findSpot(s, p.room, p.id, p.instance);
     if (spot) { Object.assign(p, spot); moved.push({ instance: p.instance, id: p.id, room: p.room, ...spot }); }
-    else { removeDecor(s, p.instance); stored.push({ instance: p.instance, id: p.id, room: p.room }); }
+    else { for (const q of [p, ...ridersOf(s, p.instance)]) stored.push({ instance: q.instance, id: q.id, room: q.room }); removeDecor(s, p.instance); }
   }
   return { level: h.level, moved, stored };
 }
@@ -283,7 +288,7 @@ export function placeDecor(s, id, room = s.house.activeRoom) {
   const spot = findSpot(s, room, id);
   if (!spot) return null;
   const instance = "piece-" + h.nextInstance++;
-  h.placed.push(placedPiece(instance, id, room, spot.x, spot.z));
+  h.placed.push({ ...placedPiece(instance, id, room, spot.x, spot.z), ...(isShelf(id) ? { finish: item.finishes[0].id } : {}) });
   return instance;
 }
 
@@ -295,24 +300,118 @@ export function moveDecor(s, instance, x, z) {
 }
 // Carries a piece to another room, to its first free spot there.
 export function sendToRoom(s, instance, room) {
-  const p = s.house.placed.find((q) => q.instance === instance);
-  if (!p || p.room === room || !roomUnlocked(s, room) || roomPieces(s, room).length >= roomCapacity(s, room)) return false;
+  const p = s.house.placed.find((q) => q.instance === instance), riders = p ? ridersOf(s, instance) : [];
+  if (!p || p.room === room || !roomUnlocked(s, room) || roomPieces(s, room).length + 1 + riders.length > roomCapacity(s, room)) return false;
   const spot = findSpot(s, room, p.id, undefined, { rotation: p.rotation, wall: p.wall });
   if (!spot) return false;
+  offTop(p);
   Object.assign(p, { room, x: spot.x, z: spot.z });
+  for (const r of riders) r.room = room;
   return true;
 }
 export function flipDecor(s, instance) {
   const p = s.house.placed.find((q) => q.instance === instance);
   if (!p) return false;
   p.flip = !p.flip;
+  mirrorRiders(s, p);
   return true;
 }
-// Back into storage; any books on it go back on the pile.
+// What stands on a piece mirrors with it, as its tops do.
+function mirrorRiders(s, p) {
+  const w = footprint(p.id).w;
+  for (const r of ridersOf(s, p.instance)) { r.x = +(w - r.x).toFixed(6); if (r.rotation) r.rotation = decorAngle(-r.rotation); }
+}
+// Back into storage, with whatever stands on it; any books on it go back on the pile.
 export function removeDecor(s, instance) {
   const i = s.house.placed.findIndex((p) => p.instance === instance);
   if (i < 0) return false;
   s.house.placed.splice(i, 1);
+  for (let j = s.house.placed.length - 1; j >= 0; j--) if (s.house.placed[j].on === instance) s.house.placed.splice(j, 1);
+  return true;
+}
+
+// ── Small pieces on tables and shelves (rules/surfaces.js has the shapes) ──
+//   hostSurfaces(p) → its flat tops, [{ x, z, w, d, y, h? }] in its own frame
+//   ridersOf(s, instance) → the pieces standing on it
+//   putOnTop(s, instance, host?, near?) → the host it now stands on, or false. With no
+//     host, the next top with room: the nearest from the floor, then round the room.
+//   setDown(s, instance) → back on the floor, as near its host as there is room
+//   hostYaw(p) → which way a host faces, in degrees, for nudging what stands on it
+export const hostSurfaces = (p) => { const f = footprint(p.id); return surfacesOf(p.id, f.w, f.d, f.layer === "wall", p.flip); };
+export const ridersOf = (s, instance) => s.house.placed.filter((p) => p.on === instance);
+export const hostYaw = (p) => footprint(p.id).layer === "wall" ? { left: 90, right: -90 }[p.wall] ?? 0 : decorAngle(p.rotation);
+const offTop = (p) => { delete p.on; delete p.top; };
+function riderFits(s, room, c, ignore) {
+  const host = s.house.placed.find((p) => p.instance === c.on);
+  if (!host || host.on || host.instance === ignore || host.room !== room || !canRide(c.id)) return false;
+  const t = hostSurfaces(host)[c.top];
+  if (!t || !Number.isFinite(c.x) || !Number.isFinite(c.z) || !standsOn(t, c.id, c.x, c.z, c.rotation)) return false;
+  return !s.house.placed.some((p) => p.instance !== ignore && p.on === c.on && p.top === c.top && ridersClash(c, p));
+}
+// The free place on a host's tops nearest a point in its frame (a top's middle
+// if none), on the 0.1 grid; one top only when given.
+function findTopSpot(s, id, host, ignore, rotation = 0, near, only) {
+  let best = null;
+  hostSurfaces(host).forEach((t, top) => {
+    if (only !== undefined && top !== only) return;
+    const aim = near ?? { x: t.x + t.w / 2, z: t.z + t.d / 2 };
+    for (let x = snapDecorPosition(t.x); x <= t.x + t.w + 1e-6; x = snapDecorPosition(x + DECOR_STEP)) for (let z = snapDecorPosition(t.z); z <= t.z + t.d + 1e-6; z = snapDecorPosition(z + DECOR_STEP)) {
+      const far = (x - aim.x) ** 2 + (z - aim.z) ** 2 + (near?.y !== undefined ? (t.y - near.y) ** 2 : 0);
+      if ((!best || far < best.far - 1e-9) && riderFits(s, host.room, { id, on: host.instance, top, x, z, rotation }, ignore)) best = { top, x, z, far };
+    }
+  });
+  return best && { top: best.top, x: best.x, z: best.z };
+}
+// Where a piece is in its room, roughly, for "nearest".
+function roomSpot(s, p) {
+  if (p.on) { const host = s.house.placed.find((q) => q.instance === p.on); return host ? roomSpot(s, host) : { x: 0, z: 0 }; }
+  const f = pieceFootprint(p), mid = p.x + f.w / 2;
+  if (f.layer !== "wall") return { x: mid, z: p.z + f.d / 2 };
+  return p.wall === "left" ? { x: 0, z: mid } : p.wall === "right" ? { x: roomLayout(s, p.room)?.w ?? 0, z: mid } : { x: mid, z: 0 };
+}
+export function putOnTop(s, instance, hostInstance, near) {
+  const p = s.house.placed.find((q) => q.instance === instance);
+  if (!p || s.paused || !canRide(p.id)) return false;
+  const hosts = roomPieces(s, p.room).filter((h) => !h.on && h.instance !== instance && hostSurfaces(h).length);
+  let tops;
+  if (hostInstance) tops = hosts.filter((h) => h.instance === hostInstance).map((h) => [h, undefined]);
+  else {
+    const all = hosts.flatMap((h) => hostSurfaces(h).map((_, top) => [h, top]));
+    const at = roomSpot(s, p), far = ([h]) => { const q = roomSpot(s, h); return (q.x - at.x) ** 2 + (q.z - at.z) ** 2; };
+    const i = all.findIndex(([h, top]) => h.instance === p.on && top === p.top);
+    tops = p.on ? [...all.slice(i + 1), ...all.slice(0, i)] : all.sort((a, b) => far(a) - far(b));
+  }
+  for (const [h, top] of tops) {
+    const spot = findTopSpot(s, p.id, h, instance, p.rotation ?? 0, near, top);
+    if (spot) { Object.assign(p, { on: h.instance }, spot); return h.instance; }
+  }
+  return false;
+}
+// The free floor spot nearest (x, z) on a coarse grid, or null.
+function findSpotNear(s, room, id, ignore, options, x0, z0) {
+  const L = roomLayout(s, room), f = pieceFootprint({ id, ...options });
+  let best = null;
+  if (L) for (let z = 0; z + f.d <= L.d + 1e-6; z = snapDecorPosition(z + 0.25)) for (let x = 0; x + f.w <= L.w + 1e-6; x = snapDecorPosition(x + 0.25)) {
+    const far = (x + f.w / 2 - x0) ** 2 + (z + f.d / 2 - z0) ** 2;
+    if ((!best || far < best.far) && fits(s, room, id, x, z, ignore, options)) best = { x, z, far };
+  }
+  return best && { x: best.x, z: best.z };
+}
+export function setDown(s, instance) {
+  const p = s.house.placed.find((q) => q.instance === instance);
+  if (!p?.on || s.paused) return false;
+  const at = roomSpot(s, p), spot = findSpotNear(s, p.room, p.id, instance, { on: undefined, rotation: p.rotation }, at.x, at.z);
+  if (!spot) return false;
+  offTop(p); Object.assign(p, spot);
+  return true;
+}
+// Undo: back to an earlier pose, on a top or not, if it still fits.
+export function restorePose(s, instance, pose) {
+  const p = s.house.placed.find((q) => q.instance === instance);
+  if (!p || !fits(s, pose.room, pose.id, pose.x, pose.z, instance, { on: undefined, top: undefined, ...pose })) return false;
+  const flipped = !!p.flip !== !!pose.flip;
+  offTop(p); Object.assign(p, pose);
+  if (flipped) mirrorRiders(s, p);
   return true;
 }
 
@@ -381,17 +480,20 @@ export function restoreHouse(raw) {
   for (const [room, id] of Object.entries(raw.wallpapers ?? {})) if (known(room) && s.house.owned.includes(id) && decorById[id]?.category === "wallpaper") s.house.wallpapers[room] = id;
   s.house.activeRoom = known(raw.activeRoom) ? raw.activeRoom : "parlour";
   const used = new Set(), booked = new Set(), later = [];
-  const keep = (p, x, z) => {
+  const keep = (p, x, z, on) => {
     used.add(p.id);
     const books = (Array.isArray(p.books) ? p.books : []).filter((b) => s.house.owned.includes(b) && decorById[b]?.category === "books" && !booked.has(b)).slice(0, shelfCapacity(p.id));
     books.forEach((b) => booked.add(b));
-    s.house.placed.push({ ...placedPiece(typeof p.instance === "string" ? p.instance : "piece-r" + s.house.placed.length, p.id, p.room, x, z, books), flip: !!p.flip, ...(validPieceColour(p.tint) ? {tint:p.tint} : {}), ...(Number.isFinite(p.rotation) ? { rotation: decorAngle(p.rotation) } : {}), ...(["left", "right"].includes(p.wall) ? { wall: p.wall } : {}) });
+    s.house.placed.push({ ...placedPiece(typeof p.instance === "string" ? p.instance : "piece-r" + s.house.placed.length, p.id, p.room, x, z, books), flip: !!p.flip, ...(validPieceColour(p.tint) ? {tint:p.tint} : {}), ...(Number.isFinite(p.rotation) ? { rotation: decorAngle(p.rotation) } : {}), ...(["left", "right"].includes(p.wall) ? { wall: p.wall } : {}), ...(isShelf(p.id) ? { finish: validFinish(p.id, p.finish) ? p.finish : decorById[p.id].finishes[0].id } : {}), ...(on ? { on, top: p.top } : {}) });
   };
   const roomFor = (p) => roomPieces(s, p.room).length < roomCapacity(s, p.room);
-  for (const p of Array.isArray(raw.placed) ? raw.placed : []) {
+  // Hosts first, then what stands on them: a rider whose host is gone goes to the floor.
+  const list = (Array.isArray(raw.placed) ? raw.placed : []).filter((p) => p && typeof p === "object"), riding = (p) => typeof p.on === "string";
+  for (const p of [...list.filter((p) => !riding(p)), ...list.filter(riding)]) {
     const item = decorById[p?.id];
     if (!item || !s.house.owned.includes(p.id) || used.has(p.id) || !known(p.room) || ["books", "wallpaper"].includes(item.category) || !roomFor(p)) continue;
-    if (fits(s, p.room, p.id, p.x, p.z, undefined, { rotation: p.rotation, wall: p.wall })) keep(p, p.x, p.z);
+    if (riding(p) && Number.isInteger(p.top) && fits(s, p.room, p.id, p.x, p.z, undefined, { on: p.on, top: p.top, rotation: p.rotation })) keep(p, p.x, p.z, p.on);
+    else if (!riding(p) && fits(s, p.room, p.id, p.x, p.z, undefined, { rotation: p.rotation, wall: p.wall })) keep(p, p.x, p.z);
     else later.push(p);
   }
   // Out-of-place pieces go after the rest, so they never take a spot a well-placed piece holds.

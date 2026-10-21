@@ -21,8 +21,9 @@ test("blank shelves are catalogue entries with surfaces inside their footprint a
     assert.equal(item.collection, "blank-shelves");
     assert.ok(item.price > 0 && item.name && item.description, item.id);
     assert.ok(item.finishes.length >= 5, `${item.id} comes in colours`);
-    if (item.wall) assert.ok(item.wallWidth >= 1 && item.hangHeight > 0 && item.category === "decor", item.id);
-    else assert.ok(item.footprint.length === 2 && item.category === "furniture", item.id);
+    assert.equal(item.category, "shelves", item.id);
+    if (item.wall) assert.ok(item.wallWidth >= 1 && item.hangHeight > 0, item.id);
+    else assert.ok(item.footprint.length === 2, item.id);
     const [w, d] = footprint(item);
     assert.ok(item.surfaces.length >= 1, `${item.id} has somewhere to stand things`);
     for (const s of item.surfaces) {

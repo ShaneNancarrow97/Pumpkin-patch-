@@ -1,6 +1,8 @@
 // The Home menu (rooms, the decor catalogue, the house itself), the bookshelf
 // sheet, and the toolbar for moving pieces around a room.
 import { setPieceColour, nextPieceColour } from "../rules/piece-colours.js";
+import { canRide, isShelf, nextFinish, intoHostFrame } from "../rules/surfaces.js";
+import { SMALL_PIECES } from "../content/placement.js";
 import * as M from "../model.js";
 import { money, segmented, decorIcon, spooky, plural, $ } from "./kit.js";
 
@@ -124,6 +126,8 @@ export function homeSheets(ui) {
     return `<button class="button" data-place="${id}" ${full ? "disabled" : ""}>${full ? "Room is full" : "Place here"}</button>`;
   }
 
+  // What small pieces can stand on: anything with a flat top in the catalogue.
+  const HOSTS = new Set(M.decorCatalog.filter((it) => !SMALL_PIECES.includes(it.id) && M.hostSurfaces({ id: it.id }).length).map((it) => it.id));
   function decorate(s) {
     const q = search.trim().toLowerCase();
     const items = M.decorCatalog.filter((it) => (category === "all" || it.category === category) && (!q || (it.name + " " + it.description).toLowerCase().includes(q)));
@@ -132,7 +136,8 @@ export function homeSheets(ui) {
     return `<div class="catalogue-heading"><span>${M.roomPieces(s, here()).length}/${M.roomCapacity(s, here())} pieces in the ${roomName(here()).toLowerCase()}</span><span>Buy once · keep forever</span></div>${find}${chips}` + items.map((it) => {
       const owned = s.house.owned.includes(it.id);
       const icon = it.category === "wallpaper" ? `<span class="thumb"><span class="paper" style="background-color:${it.color}"></span></span>` : decorIcon(it.id);
-      return `<article class="card decor${owned ? " owned" : ""}">${icon}<div><h3>${it.name}</h3><p>${it.description}</p>${spooky(it.spooky)}${it.capacity ? `<p class="small">Holds ${it.capacity} books</p>` : ""}</div>${statusButton(s, it)}</article>`;
+      const holds = it.capacity ? `Holds ${it.capacity} books` : isShelf(it.id) ? `In ${it.finishes.length} finishes · lamps and curios stand on it` : HOSTS.has(it.id) ? "Lamps and curios can stand on it" : canRide(it.id) ? "Can stand on a table or shelf" : "";
+      return `<article class="card decor${owned ? " owned" : ""}">${icon}<div><h3>${it.name}</h3><p>${it.description}</p>${spooky(it.spooky)}${holds ? `<p class="small">${holds}</p>` : ""}</div>${statusButton(s, it)}</article>`;
     }).join("") || `<p>Nothing matches “${search}”.</p>`;
   }
 
@@ -180,16 +185,17 @@ export function homeSheets(ui) {
     render() {
       const bar = $("piece-bar"), s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
       if (!p || ui.scene.place?.kind !== "room") { bar.hidden = true; return; }
-      const item = M.decorById[p.id], wall = M.footprint(p.id).layer === "wall";
+      const item = M.decorById[p.id], wall = M.footprint(p.id).layer === "wall", host = p.on && s.house.placed.find((q) => q.instance === p.on);
+      const tops = canRide(p.id) && M.roomPieces(s, p.room).some((q) => !q.on && q.instance !== p.instance && M.hostSurfaces(q).length);
       const others = M.houseRooms.filter((r) => r.id !== p.room && M.roomUnlocked(s, r.id));
       const icon = (action, symbol, label) => `<button class="icon-button tool-icon" data-tool="${action}" aria-label="${label}" title="${label}">${symbol}</button>`;
       const angle = Math.round(M.decorAngle(p.rotation));
       const rotation = wall ? `<div class="wall-tools" role="group" aria-label="Hang on a wall">${["left", "back", "right"].map((side) => `<button class="button wall-tool" data-wall="${side}" aria-pressed="${(p.wall ?? "back") === side}">${side[0].toUpperCase() + side.slice(1)}</button>`).join("")}</div>`
         : `<div class="rotation-tools" role="group" aria-label="Rotate furniture">${icon("rotate-left", "↶", "Rotate anticlockwise 15 degrees")}<button class="rotation-dial" role="slider" tabindex="0" aria-label="Furniture rotation" aria-valuemin="0" aria-valuemax="359" aria-valuenow="${angle}" style="--angle:${angle}deg"><span>${angle}°</span></button>${icon("rotate-right", "↷", "Rotate clockwise 15 degrees")}</div>`;
-      const html = `<div class="piece-heading"><div class="piece-name">${decorIcon(p.id, 40)}<span><b>${item.name}</b><small data-placement-hint>${tools.moving ? "Tap a spot · arrows move 0.1" : wall ? "Choose a wall or move along it" : "Drag furniture · two fingers turn"}</small></span></div><button class="button gold tool-done" data-tool="done">Done</button></div>
-        <div class="piece-actions"><button class="button tool-move ${tools.moving ? "gold" : ""}" data-tool="move" aria-pressed="${tools.moving}">Move</button>${rotation}<button class="button" data-tool="undo" ${editHistory.length ? "" : "disabled"}>Undo</button><button class="icon-button tool-icon" data-tool="more" aria-label="More furniture actions" aria-expanded="${more}">•••</button></div>
+      const html = `<div class="piece-heading"><div class="piece-name">${decorIcon(p.id, 40)}<span><b>${item.name}</b><small data-placement-hint>${host ? `On the ${M.decorById[host.id].name.toLowerCase()} · drag to slide it` : tools.moving ? (canRide(p.id) ? "Tap a spot, or a table or shelf · arrows move 0.1" : "Tap a spot · arrows move 0.1") : wall ? "Choose a wall or move along it" : "Drag furniture · two fingers turn"}</small></span></div><button class="button gold tool-done" data-tool="done">Done</button></div>
+        <div class="piece-actions"><button class="button tool-move ${tools.moving ? "gold" : ""}" data-tool="move" aria-pressed="${tools.moving}">Move</button>${rotation}${host ? `<button class="button" data-tool="ontop">Next top</button>` : tops ? `<button class="button" data-tool="ontop">On a table</button>` : ""}<button class="button" data-tool="undo" ${editHistory.length ? "" : "disabled"}>Undo</button><button class="icon-button tool-icon" data-tool="more" aria-label="More furniture actions" aria-expanded="${more}">•••</button></div>
         ${tools.moving ? `<div class="nudge-tools" role="group" aria-label="Fine-tune position">${icon("left", "←", "Move left 0.1")}${icon("back", "↑", "Move towards back wall 0.1")}${icon("front", "↓", "Move towards front 0.1")}${icon("right", "→", "Move right 0.1")}<button class="button snap-choice" data-tool="snap" aria-pressed="${tools.snap > 0}" aria-label="${tools.snap > 0 ? "Fine grid on. Switch to free placement" : "Free placement on. Switch to fine grid"}">${tools.snap > 0 ? "Snap 0.1" : "Free"}</button></div>` : ""}
-        ${more ? `<div class="piece-more" role="group" aria-label="More furniture actions"><button class="button" data-tool="colour">Colour</button><button class="button" data-tool="flip">Mirror</button>${M.shelfCapacity(p.id) ? `<button class="button" data-tool="books">Books · ${p.books.length}/${M.shelfCapacity(p.id)}</button>` : ""}${others.map((r) => `<button class="button" data-room="${r.id}">To ${r.name.toLowerCase()}</button>`).join("")}<button class="button" data-tool="store">Put in storage</button></div>` : ""}`;
+        ${more ? `<div class="piece-more" role="group" aria-label="More furniture actions">${host ? `<button class="button" data-tool="setdown">Set down on the floor</button>` : ""}${isShelf(p.id) ? `<button class="button" data-tool="finish">Finish · ${item.finishes.find((f) => f.id === p.finish)?.name ?? item.finishes[0].name}</button>` : ""}<button class="button" data-tool="colour">Colour</button><button class="button" data-tool="flip">Mirror</button>${M.shelfCapacity(p.id) ? `<button class="button" data-tool="books">Books · ${p.books.length}/${M.shelfCapacity(p.id)}</button>` : ""}${others.map((r) => `<button class="button" data-room="${r.id}">To ${r.name.toLowerCase()}</button>`).join("")}<button class="button" data-tool="store">Put in storage</button></div>` : ""}`;
       bar.hidden = false;
       if (html === lastTools) return;
       bar.innerHTML = html; lastTools = html;
@@ -236,19 +242,21 @@ export function homeSheets(ui) {
       const p = ui.state.house.placed.find(q => q.instance === tools.selected);
       if (!p || ui.state.paused || M.footprint(p.id).layer === "wall") return false;
       tools.finishRotation();
-      const fp = M.pieceFootprint(p);
-      dragPose = { before: structuredClone(p), pose: { ...p }, offset: { x: point.x - p.x - fp.w / 2, z: point.z - p.z - fp.d / 2 }, valid: true };
+      const fp = M.pieceFootprint(p), q = p.on && ui.scene.hostPoint(p.on, point);
+      if (p.on && !q) return false;
+      // On a top the piece slides in its table's frame; on the floor, in the room's.
+      dragPose = { before: structuredClone(p), pose: { ...p }, offset: q ? { x: q.x - p.x, z: q.z - p.z } : { x: point.x - p.x - fp.w / 2, z: point.z - p.z - fp.d / 2 }, valid: true };
       document.body.classList.add("dragging-piece"); return true;
     },
     dragTo(point) {
       if (!dragPose) return false;
-      const p = dragPose.before, fp = M.pieceFootprint(p), L = M.roomLayout(ui.state, p.room);
-      const x = +Math.max(0, Math.min(L.w - fp.w, M.snapDecorPosition(point.x - dragPose.offset.x - fp.w / 2, tools.snap))).toFixed(6);
-      const z = +Math.max(0, Math.min(L.d - fp.d, M.snapDecorPosition(point.z - dragPose.offset.z - fp.d / 2, tools.snap))).toFixed(6);
+      const p = dragPose.before, fp = M.pieceFootprint(p), L = M.roomLayout(ui.state, p.room), q = p.on && ui.scene.hostPoint(p.on, point);
+      const x = q ? M.snapDecorPosition(q.x - dragPose.offset.x, tools.snap) : +Math.max(0, Math.min(L.w - fp.w, M.snapDecorPosition(point.x - dragPose.offset.x - fp.w / 2, tools.snap))).toFixed(6);
+      const z = q ? M.snapDecorPosition(q.z - dragPose.offset.z, tools.snap) : +Math.max(0, Math.min(L.d - fp.d, M.snapDecorPosition(point.z - dragPose.offset.z - fp.d / 2, tools.snap))).toFixed(6);
       dragPose.pose = { ...p, x, z };
       dragPose.valid = M.fits(ui.state, p.room, p.id, x, z, p.instance, p);
       ui.scene.movePiece(p.instance, dragPose.pose, dragPose.valid);
-      const hint = $("piece-bar").querySelector("[data-placement-hint]"); if (hint) hint.textContent = dragPose.valid ? "Release to place" : "Space occupied";
+      const hint = $("piece-bar").querySelector("[data-placement-hint]"); if (hint) hint.textContent = dragPose.valid ? "Release to place" : p.on ? "Keep it on the top, clear of the rest" : "Space occupied";
       return dragPose.valid;
     },
     endDrag(cancelled = false) {
@@ -264,7 +272,8 @@ export function homeSheets(ui) {
       const s = ui.state, id = tools.selected;
       if (action === "undo") {
         const previous = editHistory.pop(), p = s.house.placed.find(p => p.instance === id);
-        if (previous && p && M.fits(s, previous.room, previous.id, previous.x, previous.z, id, previous)) { Object.assign(p, previous); if(p.tint||previous.tint)p.tint=previous.tint??"original"; ui.scene.refreshRoom(); ui.save(); }
+        const tinted = p?.tint;
+        if (previous && p && M.restorePose(s, id, previous)) { if(tinted||previous.tint)p.tint=previous.tint??"original"; ui.scene.refreshRoom(); ui.save(); }
         tools.render(); return;
       }
       if (action === "move") { tools.moving = !tools.moving; more = false; ui.scene.showGrid(tools.moving); tools.render(); return; }
@@ -273,6 +282,14 @@ export function homeSheets(ui) {
       const steps = { left: [-1, 0], right: [1, 0], back: [0, -1], front: [0, 1] };
       if (steps[action]) return tools.nudge(...steps[action]);
       if (action.startsWith("rotate-")) { if (!tools.rotate(action === "rotate-left" ? -15 : 15)) ui.notice("Leave a little more space to turn this piece."); return; }
+      if (action === "ontop" || action === "setdown") {
+        const p = s.house.placed.find(q => q.instance === id), before = p && structuredClone(p);
+        const done = p && (action === "ontop" ? M.putOnTop(s, id) : M.setDown(s, id));
+        if (done) { remember(before); ui.tone(600); ui.scene.refreshRoom(); ui.save(); lastTools = ""; tools.render(); }
+        else ui.notice(action === "ontop" ? "No table or shelf in here has room for it." : "No room on the floor for it just now.");
+        return;
+      }
+      if (action === "finish") { const p = s.house.placed.find(q => q.instance === id); if (p && !s.paused) { remember(p); p.finish = nextFinish(p.id, p.finish); ui.scene.refreshRoom(); ui.save(); lastTools = ""; } }
       if (action === "colour") { const p=s.house.placed.find(p=>p.instance===id); if(p&&!s.paused){remember(p);setPieceColour(s,"home",id,nextPieceColour(p.tint));ui.scene.refreshRoom();ui.save();} }
       if (action === "flip") { const p = s.house.placed.find(p => p.instance === id); if (p && !s.paused) { remember(p); M.flipDecor(s, id); ui.scene.refreshRoom(); ui.save(); } }
       if (action === "books") { shelfInstance = id; tools.select(null); ui.openSheet("shelf"); }
@@ -290,6 +307,15 @@ export function homeSheets(ui) {
       if (!p) return;
       if (!tools.moving) { tools.select(null); return; }
       const room = M.roomLayout(s, p.room) ?? M.GRID, fp = M.pieceFootprint(p);
+      if (p.on) {
+        if (cell.wall) return;
+        const pose = { ...structuredClone(p), x: Math.max(0, Math.min(room.w - fp.w, M.snapDecorPosition(cell.x - fp.w / 2, tools.snap))), z: Math.max(0, Math.min(room.d - fp.d, M.snapDecorPosition(cell.z - fp.d / 2, tools.snap))) };
+        delete pose.on; delete pose.top;
+        const before = structuredClone(p);
+        if (!s.paused && M.restorePose(s, p.instance, pose)) { remember(before); ui.tone(600); tools.moving = false; ui.scene.showGrid(false); ui.scene.refreshRoom(); tools.render(); ui.save(); }
+        else ui.notice("Keep this spot clear for furniture, stairs and doors.");
+        return;
+      }
       const wall = cell.wall ?? p.wall ?? "back";
       const limit = fp.layer === "wall" && wall !== "back" ? room.d : room.w;
       const x = Math.max(0, Math.min(limit - fp.w, M.snapDecorPosition(cell.x - fp.w / 2, tools.snap))), z = fp.layer === "wall" ? 0 : Math.max(0, Math.min(room.d - fp.d, M.snapDecorPosition(cell.z - fp.d / 2, tools.snap)));
@@ -300,9 +326,26 @@ export function homeSheets(ui) {
       }
       else { ui.scene.previewPiece(p.instance, x, z, false); ui.notice("Keep this spot clear for furniture, stairs and doors."); }
     },
+    // While moving a small piece, a tap on a table or shelf puts it there, as near the tap as there's room.
+    tapPiece(instance, point) {
+      const s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
+      if (!tools.moving || !p || instance === p.instance || !canRide(p.id) || s.paused) return false;
+      const host = s.house.placed.find((q) => q.instance === instance);
+      if (!host || host.on || !M.hostSurfaces(host).length) return false;
+      const before = structuredClone(p);
+      if (M.putOnTop(s, p.instance, instance, ui.scene.hostPoint(instance, point))) { remember(before); ui.tone(600); tools.moving = false; ui.scene.showGrid(false); ui.scene.refreshRoom(); tools.render(); ui.save(); }
+      else ui.notice(`No room on the ${M.decorById[host.id].name.toLowerCase()} for it.`);
+      return true;
+    },
     nudge(dx, dz) {
       const s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
       const before = p && structuredClone(p);
+      // On a top the arrows still point across the room, whichever way the table faces.
+      if (p?.on) {
+        const host = s.house.placed.find((q) => q.instance === p.on), v = host && intoHostFrame(dx * M.DECOR_STEP, dz * M.DECOR_STEP, M.hostYaw(host));
+        if (v && M.moveDecor(s, p.instance, M.snapDecorPosition(p.x + v.x, 0), M.snapDecorPosition(p.z + v.z, 0))) { remember(before); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
+        return;
+      }
       if (p && M.moveDecor(s, p.instance, M.snapDecorPosition(p.x + dx * M.DECOR_STEP, 0), M.footprint(p.id).layer === "wall" ? 0 : M.snapDecorPosition(p.z + dz * M.DECOR_STEP, 0))) { remember(before); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
     },
   };
