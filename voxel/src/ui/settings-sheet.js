@@ -1,6 +1,7 @@
 // Settings: sound, a tea break, backups, graphics and starting over.
 import * as M from "../model.js";
 import { MUSIC_TRACKS } from "./audio.js";
+import { RENDER_QUALITIES, validRenderQuality } from "../render-quality.js";
 
 export function settingsSheet(ui) {
   let confirmReset = false, restoreText = "", restoreError = "";
@@ -18,6 +19,7 @@ export function settingsSheet(ui) {
           `<div class="setting"><span>Try another tune</span><button class="button" id="next-song">Next song</button></div>` +
           toggle("toggle-sound", "Sound effects", "Soft tones for planting, picking and sales", p.sound) +
           toggle("toggle-pause", "Tea break", "Pause the farm. Nothing grows and nobody visits.", !!s.paused) +
+          `<label class="setting"><span>Render detail<small>Sharp keeps fine edges. Lower settings save battery and reduce graphics load.</small></span><select id="render-quality" aria-label="Render detail">${RENDER_QUALITIES.map(q=>`<option value="${q.id}" ${q.id===validRenderQuality(p.renderQuality)?"selected":""}>${q.name}</option>`).join("")}</select></label>` +
           toggle("toggle-glow", "Glow", "Bloom on lanterns, windows and ripe pumpkins", p.glow) +
           `<div class="setting"><span>Camera framing<small>See more of the scene. Pinch or scroll to inspect.</small></span><button class="button" id="fit-view">Fit view</button></div>` +
           toggle("toggle-shadows", "Moonlit shadows", "Turn off on slower phones", p.shadows) +
@@ -38,6 +40,7 @@ export function settingsSheet(ui) {
         body.querySelector("#music-volume").oninput = (e) => { ui.audio.setVolume(+e.target.value); ui.savePrefs(); };
         body.querySelector("#toggle-sound").onclick = flip("sound");
         body.querySelector("#toggle-pause").onclick = () => { s.paused = !s.paused; ui.notice(s.paused ? "Tea break. The farm will wait for you." : "Back to work!"); ui.draw(); };
+        body.querySelector("#render-quality").onchange = e => { p.renderQuality = ui.scene.setRenderQuality(e.target.value); ui.savePrefs(); ui.draw(); };
         body.querySelector("#toggle-glow").onclick = flip("glow", (on) => ui.scene.setBloom(on));
         body.querySelector("#fit-view").onclick = () => { ui.scene.fitView(); ui.closeSheet(); };
         body.querySelector("#toggle-shadows").onclick = flip("shadows", (on) => ui.scene.setShadows(on));

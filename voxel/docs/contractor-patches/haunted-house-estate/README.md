@@ -93,3 +93,11 @@ See [handover 17](../../handovers/17-house-freeze-and-render-cost.md) for the cl
 ## Amber purchase UI and house shell
 
 [Handover 19](../../handovers/19-amber-purchases-and-sealed-house.md) covers opaque purchase surfaces, the actual-door glow, sealed exterior wall/roof joints and height-aware estate camera reset. No save or economy migration.
+
+## Spooky skins, live stock counts and sharp rendering
+
+- [Handover 20](../../handovers/20-spooky-house-skins.md): eight native voxel skins, two per house tier; buy once, reuse as the house grows.
+- [Handover 21](../../handovers/21-top-bar-stock-inspector.md): top-bar stock button, per-variety pumpkin counts, divider and Sandy’s cocoa/snack counts.
+- [Handover 22](../../handovers/22-sharp-rendering.md): restores full scene/composer detail with bloom, FXAA and explicit Sharp/Balanced/Performance choices. This supersedes the earlier CSS-resolution performance tradeoff.
+
+All 33 Node test files pass. The stock/skin browser run passes 20 checks and the high-density rendering run passes 8, with no runtime exceptions. Staged money/levels exercise unlocks and purchases; software WebGL checks functionality and image quality, not physical Fold FPS. Existing save fields and ownership are preserved.

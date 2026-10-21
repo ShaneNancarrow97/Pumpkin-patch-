@@ -3,6 +3,9 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
+import { renderSizing, validRenderQuality } from "./render-quality.js";
 import { Voxels, seeded, vary } from "./voxels.js";
 import { createSandy } from "./sandy.js";
 import { cocoaProp } from "./cocoa-props.js";
@@ -40,10 +43,11 @@ function along(route, d) {
 
 export function createScene(canvas, state, hooks) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
-  // Foldables can expose desktop-sized viewports at phone pixel densities.
-  // Keep the world sharp while bounding full-screen fill and bloom cost.
+  // Foldables get the same detail as other high-density displays. A pixel
+  // budget protects large viewports; a lower quality is an explicit choice.
   const touchDevice = window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, touchDevice ? 1.5 : 2));
+  let renderQuality = "sharp";
+  renderer.setPixelRatio(renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality).pixelRatio);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -220,13 +224,17 @@ export function createScene(canvas, state, hooks) {
   let farmView = null;
   let bloomOn = true;
   const composer = new EffectComposer(renderer);
-  // Post-processing need not render at the device’s full pixel density.
-  composer.setPixelRatio(1);
+  // The scene buffer must match the canvas. Bloom already downsamples its
+  // own blur chain; shrinking the composer makes every object look soft.
+  let postprocessRatio = renderer.getPixelRatio();
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
   const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.5, 0.45, 0.86);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
+  // Canvas MSAA does not apply to offscreen composer targets. FXAA smooths
+  // their edges after tone mapping without allocating multisample HDR buffers.
+  const antialias = new ShaderPass(FXAAShader); composer.addPass(antialias);
 
   // The room camera: the nearest distance that shows the top of the back wall and
   // the front of the floor, and the room's width (most of it on a narrow phone).
@@ -275,9 +283,12 @@ export function createScene(canvas, state, hooks) {
   }
   let firstResize = true, lastOverview = false;
   function resize() {
-    const w = canvas.clientWidth, h = canvas.clientHeight;
-    renderer.setSize(w, h, false); composer.setSize(w, h);
-    bloom.resolution.set(w / 2, h / 2);
+    const sizing = renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality), w = sizing.width, h = sizing.height;
+    if (renderer.getPixelRatio() !== sizing.pixelRatio) renderer.setPixelRatio(sizing.pixelRatio);
+    renderer.setSize(w, h, false);
+    if (postprocessRatio !== sizing.pixelRatio) { composer.setPixelRatio(sizing.pixelRatio); postprocessRatio = sizing.pixelRatio; }
+    composer.setSize(w, h);
+    antialias.uniforms.resolution.value.set(1 / sizing.bufferWidth, 1 / sizing.bufferHeight);
     const overview = cameraLayout(w).overview >= 0.95;
     if (!firstResize && overview && !lastOverview) {
       view.zoom = Math.min(view.zoom, 1);
@@ -534,7 +545,8 @@ export function createScene(canvas, state, hooks) {
     speakMortimer() { foyerView.speak(true); },
     get foyerCamera() { return foyerView.cameraActions; },
     get foyerStatus() { return foyerView.status; },
-    get renderStatus() { return { pixelRatio: renderer.getPixelRatio(), postprocessRatio: composer._pixelRatio, touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
+    get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? "FXAA" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
+    setRenderQuality(value) { renderQuality = validRenderQuality(value); resize(); return renderQuality; },
     selectPiece(instance) { places.select(instance); },
     previewPiece(instance, x, z, ok) { places.preview(instance, x, z, ok); },
     showGrid(on) { places.setGrid(on); },
