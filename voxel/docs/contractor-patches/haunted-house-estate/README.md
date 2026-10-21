@@ -89,3 +89,7 @@ See [handover 17](../../handovers/17-house-freeze-and-render-cost.md) for the cl
 ## Unpurchased house menu crash and cocoa thumbnails
 
 [Handover 18](../../handovers/18-unpurchased-house-menu-and-cocoa-art.md) supersedes the earlier unreproduced-freeze note for this specific report: the unowned house context referenced an out-of-scope helper and stopped the frame loop. The fix shares that helper at module scope. Cocoa thumbnail sizing and atlas cropping are restored. The regression starts with a fresh, unpurchased house.
+
+## Amber purchase UI and house shell
+
+[Handover 19](../../handovers/19-amber-purchases-and-sealed-house.md) covers opaque purchase surfaces, the actual-door glow, sealed exterior wall/roof joints and height-aware estate camera reset. No save or economy migration.

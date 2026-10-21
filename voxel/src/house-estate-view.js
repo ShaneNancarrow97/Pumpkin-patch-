@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { createEntranceGlow } from "./entrance-glow.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { buildEstateHouse, buildEstateGarden, buildEstateDecor, disposeEstateObject } from "./house-estate-world.js";
 import { ESTATE_DECOR_BY_ID } from "./content/house-estate.js";
@@ -18,6 +19,7 @@ export function createHouseEstateView(canvas, state, hooks) {
   // moves their positions and never changes the shader's light count.
   const porch = new THREE.PointLight(0xffb967, 22, 16, 1.7), gateLamp = new THREE.PointLight(0xffc578, 14, 13, 1.6);
   scene.add(porch, gateLamp);
+  const entrance = createEntranceGlow({ reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches }); scene.add(entrance.group);
   const camera = new THREE.PerspectiveCamera(43, 1, .15, 200);
   const controls = new OrbitControls(camera, canvas); controls.enabled = false; controls.enableDamping = true; controls.dampingFactor = .12;
   controls.minDistance = 13; controls.maxDistance = 85; controls.minPolarAngle = .22; controls.maxPolarAngle = Math.PI / 2 - .12;
@@ -41,6 +43,7 @@ export function createHouseEstateView(canvas, state, hooks) {
       house.updateMatrixWorld(true); const box = new THREE.Box3().setFromObject(house), size = box.getSize(new THREE.Vector3());
       houseHit.position.copy(box.getCenter(new THREE.Vector3())); houseHit.scale.copy(size);
       const door = house.userData.door ?? { x: 0, y: 1.4, z: 4 }; porch.position.set(door.x - 1, door.y + 1, door.z + 1.5);
+      entrance.group.position.set(door.x, 0, door.z + .1);
     }
     if (gk !== gardenKey) {
       if (garden) { scene.remove(garden); disposeEstateObject(garden); }
@@ -65,7 +68,7 @@ export function createHouseEstateView(canvas, state, hooks) {
   }
   function resize(w = canvas.clientWidth, h = canvas.clientHeight) { camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix(); }
   function reset() {
-    resize(); const b = estateBounds(state), distance = Math.max(31, b.width * .58 / Math.max(.7, camera.aspect));
+    resize(); const b = estateBounds(state), distance = Math.max(31, (house?.userData.bounds.height ?? 0) * 2.75, b.width * .58 / Math.max(.7, camera.aspect));
     controls.target.set(0, 2.3, .5); camera.position.set(distance * .54, distance * .55 + 2.3, distance * .72); controls.update();
   }
   const cameraActions = {
@@ -113,12 +116,12 @@ export function createHouseEstateView(canvas, state, hooks) {
     scene, camera, cameraActions, sync, resize, preview,
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = true; },
     leave() { active = false; controls.enabled = false; pointers.clear(); gesture = false; preview(null); },
-    tick() {
+    tick(time = 0) {
       controls.enabled = active && !hooks.blocked?.(); if (!active) return;
-      sync(); const b = estateBounds(state), old = controls.target.clone();
+      sync(); entrance.tick(time, !hooks.editing?.() && !hooks.blocked?.()); const b = estateBounds(state), old = controls.target.clone();
       controls.target.x = THREE.MathUtils.clamp(controls.target.x, b.x0 + 2, b.x1 - 2); controls.target.z = THREE.MathUtils.clamp(controls.target.z, b.z0 + 2, b.z1 - 2); controls.target.y = THREE.MathUtils.clamp(controls.target.y, .5, 9);
       camera.position.add(controls.target.clone().sub(old)); controls.update();
     },
-    get status() { return { active, built, houseLevel: state.house.level, expansion: state.estate.expansion, placed: props.size, azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), distance: controls.getDistance(), target: controls.target.toArray(), preview: previewData ? { ...previewData } : null }; },
+    get status() { return { active, built, houseLevel: state.house.level, expansion: state.estate.expansion, placed: props.size, entrance: { visible: entrance.group.visible, position: entrance.group.position.toArray() }, azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), distance: controls.getDistance(), target: controls.target.toArray(), preview: previewData ? { ...previewData } : null }; },
   };
 }

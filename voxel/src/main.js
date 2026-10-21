@@ -1,5 +1,6 @@
 import { installPremiumIcons, premiumIcon } from "./ui/premium-icons.js";
 import * as THREE from "three";
+import { markPurchaseSurfaces } from "./ui/purchase-surfaces.js";
 import * as M from "./model.js";
 import { createScene } from "./scene.js";
 import { pumpkinTemplate } from "./pumpkins.js";
@@ -329,7 +330,7 @@ function draw() {
   if (html === lastBody) return;                                                 // only redraw when something changed
   lastBody = html;
   const body = $("sheet-body"), scroll = body.scrollTop, active = document.activeElement?.id;
-  body.innerHTML = html; sheet.bind(body); body.scrollTop = scroll;
+  body.innerHTML = html; markPurchaseSurfaces(body); sheet.bind(body); body.scrollTop = scroll;
   const title = typeof sheet.title === "function" ? sheet.title() : sheet.title;
   text("sheet-title", title);
   if (active === "decor-search") { const i = $("decor-search"); i?.focus(); i?.setSelectionRange(i.value.length, i.value.length); }

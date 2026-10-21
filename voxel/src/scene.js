@@ -413,7 +413,7 @@ export function createScene(canvas, state, hooks) {
     }
 
     festivalWorld.tick(time);
-    hollowFarm.sync();
+    hollowFarm.sync(); hollowFarm.tick(time);
 
     // Visitors along the stone path.
     for (const v of state.visitors) {
@@ -457,7 +457,7 @@ export function createScene(canvas, state, hooks) {
     paying = Math.max(0, paying - dt);
     if (skyla) animateSkyla(skyla, time, paying > 0);
     places.tick(dt, time, paying > 0);
-    estateView.tick();
+    estateView.tick(time);
     foyerView.tick(dt, time);
 
     for (let i = fx.length - 1; i >= 0; i--) {

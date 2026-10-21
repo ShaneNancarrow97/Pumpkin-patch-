@@ -17,6 +17,9 @@
   --gold: #e7b46e;
   --gold-bright: #ffd894;
   --pumpkin: #e8862e;
+  --purchase-top: #ffd07c;
+  --purchase-bottom: #ed983f;
+  --purchase-ink: #301b0e;
   --moss: #9db382;
   --ember: #e07a55;
   --display: 'Fraunces', Georgia, serif;
@@ -743,3 +746,20 @@ body:has(.building-context:not([hidden])) .actions { visibility: hidden; }
 
 /* Six painted cocoa products share a 3-column, 2-row atlas. */
 .cocoa-art { display: block; width: 56px; height: 56px; flex: 0 0 56px; background-size: 300% 200%; background-repeat: no-repeat; border-radius: 12px; }
+
+/* Purchase surfaces are solid amber; navigation and already-owned items stay quiet. */
+.sheet .purchase-card, .sheet[data-section] .purchase-card {
+  background: linear-gradient(135deg, #4d3326, #34252a); border: 1px solid #9b693e;
+  border-radius: 13px; padding: 12px 10px;
+}
+.sheet .purchase-card.purchase-available { border-color: #d09a52; background: linear-gradient(135deg, #624129, #3e2c28); }
+.sheet .button.purchase-button {
+  background: linear-gradient(160deg, var(--purchase-top), var(--purchase-bottom));
+  color: var(--purchase-ink); border: 1px solid #ffdb93; opacity: 1;
+  box-shadow: inset 0 1px 0 #fff0c2, 0 2px 6px #170b0840;
+}
+.sheet .button.purchase-button small { color: #56351e; }
+.sheet .button.purchase-button:hover:not(:disabled) { background: linear-gradient(160deg, #ffdfa0, #f8ac4f); border-color: #ffe9bb; }
+.sheet .button.purchase-button:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 1px 3px #683e2733; }
+.sheet .button.purchase-button:disabled { background: #654932; color: #d6c2aa; border-color: #8e6b46; box-shadow: none; }
+.sheet .button.purchase-button:disabled small { color: #cfb69e; }

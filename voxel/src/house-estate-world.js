@@ -38,7 +38,7 @@ function flower(v, x, y, z, scale = 1, shade = 0x9b5d83) {
   v.block(x, y + .4 * scale, z, .075 * scale, .05 * scale, .075 * scale, 0xe4c48d);
 }
 
-// A full 360-degree house. Hollow walls, individual masonry, slates and
+// A full 360-degree house. Sealed wall skins, individual masonry, slates and
 // exterior joinery are batched into only solid and emissive instance buffers.
 export function buildEstateHouse(level = 0, finishes = {}) {
   level = Math.max(0, Math.min(3, Math.trunc(level) || 0));
@@ -59,7 +59,10 @@ export function buildEstateHouse(level = 0, finishes = {}) {
   };
   for (const face of ["front", "back", "left", "right"]) {
     const length = face === "front" || face === "back" ? w : d;
-    // Mortar sits behind staggered masonry; window openings really are holes.
+    // A thin closed skin stops daylight leaking through mortar and joinery.
+    // Rooms use a separate scene; exterior windows keep their inset depth.
+    panel(face, 0, .08, -.1, length, h, .14, wall.palette[2]);
+    // Staggered masonry and inset window frames sit in front of the skin.
     for (let y = .16, course = 0; y < h; y += .26, course++) for (let u = -length / 2 + .22 - (course % 2) * .2; u < length / 2; u += .44) {
       if (Math.abs(u) > length / 2 - .08 || opening(face, u, y)) continue;
       panel(face, u, y, 0, .42, .245, .25, y < .7 ? vary(STONE[(r() * 3) | 0], .07, r) : vary(wall.palette[(r() * 3) | 0], .07, r));
@@ -109,6 +112,9 @@ export function buildEstateHouse(level = 0, finishes = {}) {
   const roofDepth = dz + .48;
   for (let z = -roofDepth; z <= roofDepth; z += .29) {
     const y = h + roofRise * (1 - Math.abs(z) / roofDepth), course = Math.round((z + roofDepth) / .29);
+    // Overlapping under-courses close the vertical gaps between sloped slates.
+    const rise = roofRise / roofDepth * .29 + .18;
+    v.block(0, y - rise + .1, z, w + .78, rise, .33, roof.palette[2]);
     for (let x = -dx - .42 - (course % 2) * .19; x < dx + .42; x += .39) {
       if (x < -dx - .48) continue;
       v.block(x, y, z, .382, .16, .31, vary(roof.palette[(r() * 3) | 0], .08, r));
@@ -164,11 +170,20 @@ export function buildEstateHouse(level = 0, finishes = {}) {
   if (level >= 2) {
     const wx = -dx - .45, wz = -.35;
     v.block(wx, .1, wz, 2.2, .35, 3.6, STONE[2]);
+    for (const side of [-1, 1]) v.block(wx + side * .96, .36, wz, .16, 2.74, 3.6, wall.palette[2]);
     for (let yy = .45; yy < 3; yy += .25) for (let z = wz - 1.65; z < wz + 1.7; z += .45) v.block(wx - 1.02, yy, z, .25, .23, .43, vary(wall.palette[0], .08, r));
     for (const z of [wz - 1.75, wz + 1.75]) {
       v.block(wx, .45, z, 2.1, 2.5, .25, wall.palette[0]);
       v.block(wx, 1.3, z + Math.sign(z - wz) * .15, .9, 1.1, .08, glass, true);
       v.block(wx, 1.28, z + Math.sign(z - wz) * .22, .07, 1.18, .05, trim.palette[0]);
+    }
+    for (let x = wx - 1.2; x < wx + 1.2; x += .28) {
+      const y = 3.1 + (1.2 - Math.abs(x - wx)) * .4;
+      v.block(x, y - .18, wz, .31, .29, 3.92, roof.palette[2]);
+    }
+    for (const z of [wz - 1.75, wz + 1.75]) for (let y = 2.94; y < 3.58; y += .12) {
+      const width = Math.max(.08, 2.4 * (1 - (y - 3.1) / .48));
+      v.block(wx, y, z, Math.min(2.4, width), .14, .18, wall.palette[2]);
     }
     for (let x = wx - 1.2; x < wx + 1.2; x += .28) for (let z = wz - 1.95; z < wz + 1.95; z += .3) v.block(x, 3.1 + (1.2 - Math.abs(x - wx)) * .4, z, .27, .14, .3, vary(roof.palette[0], .08, r));
   }
@@ -176,6 +191,10 @@ export function buildEstateHouse(level = 0, finishes = {}) {
   // a stepped spire, balcony rail, and a tiny crescent finial.
   if (level === 3) {
     const tx = dx - .4, tz = -1.2, th = h + 2.1;
+    v.block(tx, .02, tz, 2.34, .31, 2.34, STONE[2]);
+    // Two merged cores back the tower’s decorative masonry courses.
+    v.block(tx, .3, tz, 2.12, th - .3, 1.77, wall.palette[2]);
+    v.block(tx, .3, tz, 1.77, th - .3, 2.12, wall.palette[2]);
     for (let y = .3; y < th; y += .28) {
       const c = vary(y < .8 ? STONE[1] : wall.palette[0], .05, r);
       v.block(tx, y, tz, 2.15, .265, 1.8, c); v.block(tx, y, tz, 1.8, .265, 2.15, c);

@@ -44,6 +44,8 @@ export function buildHollowExterior(status = "derelict", tier = 1) {
   for (const face of ["front", "back", "left", "right"]) {
     const side = face === "left" || face === "right", length = side ? d : w;
     const block = (u, y, out, ww, hh, dd, colour, glow = false) => side ? v.block(face === "left" ? -w / 2 - out : w / 2 + out, y, u, dd, hh, ww, colour, glow) : v.block(u, y, face === "front" ? d / 2 + out : -d / 2 - out, ww, hh, dd, colour, glow);
+    // Back the decorative joints; an exterior should never reveal the far side.
+    block(0, .06, -.08, length, h, .14, restored ? PLUM[2] : 0x342f38);
     for (let y = .15, row = 0; y < h; y += .24, row++) for (let x = -length / 2 + .18 + row % 2 * .19; x < length / 2; x += .4) {
       if (Math.abs(x) > length / 2 - .07 || face === "front" && Math.abs(x) < .73 && y < 2.6) continue;
       block(x, y, 0, .38, .225, .2, vary(restored ? PLUM[row % 3] : [0x4e454b, 0x62525a, 0x342f38][row % 3], .07, r));
@@ -63,6 +65,9 @@ export function buildHollowExterior(status = "derelict", tier = 1) {
   v.block(.42, 1.26, 2.36, .09, .15, .05, GOLD);
   if (!restored) for (let i = 0; i < 4; i++) v.block(0, .5 + i * .48, 2.39, 1.48, .17, .1, WOOD[i % 3]);
   for (let i = 0; i < 3; i++) v.block(0, i * .09, 2.36 + (2 - i) * .15, 1.9 - i * .15, .1, .42, STONE[1]);
+  // A sealed roof beneath the worn slates, with gables at both ends.
+  for (let z = -2.4; z < 2.5; z += .24) v.block(0, h + (2.5 - Math.abs(z)) * .8 - .23, z, 7.65, .37, .27, roof);
+  for (const side of [-1, 1]) for (let y = h; y < h + 2; y += .16) v.block(side * w / 2, y, 0, .18, .18, Math.max(.06, 5 - (y - h) * 2.5), roof);
   for (let z = -2.4; z < 2.5; z += .24) for (let x = -3.8; x < 3.9; x += .3) {
     if (!restored && ((Math.round(x * 7) + Math.round(z * 8)) % 13 === 0 || x < -2.5 && z < -1.5)) continue;
     v.block(x, h + (2.5 - Math.abs(z)) * .8, z, .295, .14, .25, vary(roof, .12, r));

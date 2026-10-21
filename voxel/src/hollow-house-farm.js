@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { createEntranceGlow } from "./entrance-glow.js";
 import { buildHollowExterior, disposeHollowObject } from "./hollow-house-world.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 
@@ -6,8 +7,10 @@ import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 export function createHollowFarm(scene, state, signBoard) {
   const root = new THREE.Group(); scene.add(root); root.position.set(HOLLOW_PROPERTY.x, 0, HOLLOW_PROPERTY.z);
   let key = "", building = null, sign = null;
+  const entrance = createEntranceGlow({ width: 1.66, top: 2.83, reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches });
+  entrance.group.position.z = 2.46; entrance.group.visible = false; root.add(entrance.group);
   const hit = new THREE.Mesh(new THREE.BoxGeometry(8, 8, 5.8), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 4; hit.userData = { type: "hollow-house" }; root.add(hit);
-  return { get pickables() { return root.visible ? [hit, sign].filter(Boolean) : []; }, sync() {
+  return { tick(time) { entrance.tick(time, state.hollowHouse.status === "ready"); }, get pickables() { return root.visible ? [hit, sign].filter(Boolean) : []; }, sync() {
     root.visible = true; if (!root.visible) return;
     const h = state.hollowHouse, next = `${h.status}:${h.tier}`; if (next === key) return; key = next;
     if (building) { root.remove(building); disposeHollowObject(building); } if (sign) { root.remove(sign); sign.geometry.dispose(); for (const m of sign.material) { m.map?.dispose(); m.dispose(); } }
