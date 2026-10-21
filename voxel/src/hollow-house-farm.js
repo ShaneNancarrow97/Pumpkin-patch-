@@ -8,7 +8,7 @@ export function createHollowFarm(scene, state, signBoard) {
   let key = "", building = null, sign = null;
   const hit = new THREE.Mesh(new THREE.BoxGeometry(8, 8, 5.8), new THREE.MeshBasicMaterial({ visible: false })); hit.position.y = 4; hit.userData = { type: "hollow-house" }; root.add(hit);
   return { get pickables() { return root.visible ? [hit, sign].filter(Boolean) : []; }, sync() {
-    root.visible = !!state.festival.meadow; if (!root.visible) return;
+    root.visible = true; if (!root.visible) return;
     const h = state.hollowHouse, next = `${h.status}:${h.tier}`; if (next === key) return; key = next;
     if (building) { root.remove(building); disposeHollowObject(building); } if (sign) { root.remove(sign); sign.geometry.dispose(); for (const m of sign.material) { m.map?.dispose(); m.dispose(); } }
     building = buildHollowExterior(h.status, h.tier); root.add(building);

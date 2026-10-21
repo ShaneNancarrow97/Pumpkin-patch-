@@ -31,7 +31,7 @@ try {
     if (!p || p.x < 0 || p.y < 0 || p.x >= b.width || p.y >= b.height) throw Error(`World point outside view: ${JSON.stringify({ x, y, z, p, b })}`);
     await page.mouse.click(b.x + p.x, b.y + p.y);
   };
-  await tapWorld(6.5, 2, 7.2);
+  await tapWorld(20, 2.5, 3);
   await page.waitForFunction(() => PumpkinVoxel.scene.place?.kind === "estate");
   check(await page.evaluate(() => PumpkinVoxel.scene.estateStatus.active && PumpkinVoxel.scene.estateStatus.placed === 5), "tapping the physical farm gate enters the separate estate");
   await page.screenshot({ path: path.join(out, "desktop-starter-garden.png") });

@@ -1,5 +1,5 @@
 // The attraction shares this plan with its farm model, foyer and visitor routes.
-export const HOLLOW_PROPERTY = { name: "The Hollow House", level: 6, price: 1750, restorationCost: 2500, restorationSeconds: 90, x: 47, z: 11.5, door: [47, 14.6], speed: 3 };
+export const HOLLOW_PROPERTY = { name: "The Hollow House", level: 6, price: 1750, restorationCost: 2500, restorationSeconds: 90, x: 6.5, z: 6.4, door: [6.5, 9.5], transferSeconds: 2.5, westEdge: -8, speed: 3 };
 export const FOYER_TIERS = [
   { level: 1, name: "A brave little welcome", w: 10, d: 8, cost: 0, patchLevel: 6, capacity: 3, mazeCapacity: 2, serviceSeconds: 3.5, mazeSeconds: 28, minTicket: 4, maxTicket: 10, decorCapacity: 10 },
   { level: 2, name: "Candlelit reception", w: 11, d: 8, cost: 1800, patchLevel: 7, capacity: 5, mazeCapacity: 3, serviceSeconds: 3, mazeSeconds: 28, minTicket: 4, maxTicket: 12, decorCapacity: 14 },
@@ -8,10 +8,12 @@ export const FOYER_TIERS = [
   { level: 5, name: "The velvet afterlife", w: 14, d: 10, cost: 16000, patchLevel: 12, capacity: 14, mazeCapacity: 10, serviceSeconds: 1.6, mazeSeconds: 28, minTicket: 4, maxTicket: 24, decorCapacity: 36 },
 ];
 export const HOLLOW_FOYER_TIERS = FOYER_TIERS;
-export const HOLLOW_APPROACH = [[31.8, 10.2], [31.6, 12.6], [35, 10.6], [38, 8.6], [42.5, 6.6], [51.5, 6.6], [51.5, 14.6], HOLLOW_PROPERTY.door];
-export const HOLLOW_FRONT_APPROACH = [[33, 28.5], [33, 24], [51.5, 24], [51.5, 14.6], HOLLOW_PROPERTY.door];
-export const HOLLOW_RETURN = [HOLLOW_PROPERTY.door, [51.5, 14.6], [51.5, 24], [33, 24], [32.4, 21.6], [30.4, 18.6], [30.2, 15.6], [31.6, 12.6], [31.8, 10.2]];
-export const HOLLOW_PATHS = [HOLLOW_APPROACH, HOLLOW_FRONT_APPROACH, HOLLOW_RETURN];
+// No cross-farm shortcut: the house and shop use separate bottom-edge gates.
+export const HOLLOW_APPROACH = [[31.8, 10.2], [31.6, 12.6], [30.2, 15.6], [30.4, 18.6], [32.4, 21.6], [33, 24], [33, 30]];
+export const HOLLOW_FRONT_APPROACH = [[-3, 30], [-3, 10.5], [6.5, 10.5], HOLLOW_PROPERTY.door];
+export const HOLLOW_RETURN = [HOLLOW_PROPERTY.door, [6.5, 10.5], [-3, 10.5], [-3, 30]];
+export const HOLLOW_SHOP_RETURN = [[33, 30], [33, 28.5], [33, 24], [32.4, 21.6], [30.4, 18.6], [30.2, 15.6], [31.6, 12.6], [31.8, 10.2]];
+export const HOLLOW_PATHS = [HOLLOW_APPROACH, HOLLOW_FRONT_APPROACH, HOLLOW_RETURN, HOLLOW_SHOP_RETURN];
 export function hollowPathDistance(x, z) {
   let best = Infinity;
   for (const route of HOLLOW_PATHS) for (let i = 1; i < route.length; i++) {

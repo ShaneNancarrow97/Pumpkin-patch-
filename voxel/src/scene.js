@@ -21,7 +21,7 @@ import { createFestivalWorld } from "./festival-meadow-world.js";
 import { fieldWidth, MEADOW, MEADOW_EXIT } from "./content/festival-meadow.js";
 import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
-import { buildFarmEstateGate } from "./house-estate-world.js";
+import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createFoyerView } from "./foyer-view.js";
 
@@ -120,12 +120,9 @@ export function createScene(canvas, state, hooks) {
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
   shopHit.position.set(SHOP.x, 2.5, SHOP.z + 0.4); shopHit.userData = { type: "shop" }; scene.add(shopHit); pickables.push(shopHit);
-  const homeHit = new THREE.Mesh(new THREE.BoxGeometry(7, 4, 3), new THREE.MeshBasicMaterial({ visible: false }));
-  homeHit.position.set(6.5, 2, 7.2); homeHit.userData = { type: "home" }; scene.add(homeHit); pickables.push(homeHit);
   const homesteadArch = new THREE.Mesh(new THREE.BoxGeometry(3.4, 5, 1), new THREE.MeshBasicMaterial({ visible: false })); homesteadArch.position.set(20, 2.5, 3); homesteadArch.userData = { type: "home" }; scene.add(homesteadArch); pickables.push(homesteadArch);
-  // The farm now shows the gate. The complete house lives on its own estate.
-  const estateGate = buildFarmEstateGate(); estateGate.position.set(6.5, 0, 6.4); scene.add(estateGate);
-  const estateSign = signBoard("Home & Garden", "through the lantern gate", 5); estateSign.position.set(6.5, 3.9, 7); estateSign.userData = { type: "home" }; scene.add(estateSign); pickables.push(estateSign);
+  const estateSign = signBoard("Shane & Natalie", "home through the hedge arch", 4.8); estateSign.position.set(20, 4.7, 3.4); estateSign.userData = { type: "home" }; scene.add(estateSign); pickables.push(estateSign);
+
 
   // Shane, Natalie, Skyla and the visitors are drawn with the main game's
   // sprites (sprite-actors.js), or, with "Voxel characters" on in Settings,
@@ -350,9 +347,9 @@ export function createScene(canvas, state, hooks) {
       return;
     }
     const halfW = camera.right, vertical = farmVerticalLimits(camera.top, PITCH, MAP.d);
-    const maxX = fieldWidth(state) + 1 - halfW, minX = halfW - 1;
+    const maxX = fieldWidth(state) + 1 - halfW, minX = HOLLOW_PROPERTY.westEdge + halfW - 1;
     view.z = THREE.MathUtils.clamp(view.z, vertical.min, vertical.max);
-    view.x = minX > maxX ? fieldWidth(state) / 2 : THREE.MathUtils.clamp(view.x, minX, maxX);
+    view.x = minX > maxX ? (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2 : THREE.MathUtils.clamp(view.x, minX, maxX);
   }
 
   // Floating "+£12" and sparkle effects, as DOM labels projected from the world.
@@ -417,7 +414,7 @@ export function createScene(canvas, state, hooks) {
       let entry = visitorModels.get(v.id);
       if (!entry) { const m = visitorModel(v.kind), hit = new THREE.Mesh(guestHitGeometry, guestHitMaterial); hit.position.y = 1.1; hit.userData = { type: "visitor", id: v.id }; m.add(hit); scene.add(m); entry = { m, hit, sprite: m.userData.sprite, bag: null }; visitorModels.set(v.id, entry); }
       const hollowJourney = v.hollow && !v.hollow.done;
-      entry.m.visible = !hollowJourney || ["approach", "door-wait", "to-shop"].includes(v.hollow.phase);
+      entry.m.visible = !hollowJourney || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase);
       if (!entry.m.visible) continue;
       const leaving = v.leaveAt !== null && v.age >= v.leaveAt;
       const t = leaving ? (v.age - v.leaveAt) / visitorLeaveSeconds(state) : Math.min(1, v.age / VISIT.arrive);
@@ -476,7 +473,7 @@ export function createScene(canvas, state, hooks) {
     // A sale: Skyla reacts, and the takings float up from whichever counter you can see.
     sale(amount, route) {
       paying = 1.2;
-      if (route === "hollow-ticket") { if (view.place === "foyer") floatText("+£" + amount, -2, 2, 0, "coin"); else if (!view.place) floatText("+£" + amount, 47, 2.8, 14.6, "coin"); return; }
+      if (route === "hollow-ticket") { if (view.place === "foyer") floatText("+£" + amount, -2, 2, 0, "coin"); else if (!view.place) floatText("+£" + amount, HOLLOW_PROPERTY.x, 2.8, HOLLOW_PROPERTY.door[1], "coin"); return; }
       if (route === "festival-cocoa" && !view.place) { floatText("+£" + amount, MEADOW.counter[0], 2.2, MEADOW.counter[1], "coin"); return; }
       if (route === "shop" && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
       else if (!view.place) floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin");

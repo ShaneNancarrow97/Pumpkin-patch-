@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
+import { hollowPathDistance } from "./content/hollow-house.js";
 import { pumpkinBlock } from "./pumpkins.js";
 import { buildGround, grounds } from "./ground.js";
 
@@ -64,7 +65,7 @@ const nearPath = (x, z, width) => {
   return best < width;
 };
 const inPatch = (x, z) => ((x - 20) / 7.6) ** 2 + ((z - 15.1) / 5.6) ** 2 < 1;
-const edge = (x, z, width = MAP.w) => x < 1.6 || x > width - 1.6 || z > 24.4 || (z < 2.8 && !nearArchPath(x, z));
+const edge = (x, z, width = MAP.w) => x < -6.4 || x > width - 1.6 || z > 24.4 || (z < 2.8 && !nearArchPath(x, z));
 
 function cobbles(v, r, x, z, T, colors, amount) {
   v.box(x, -0.5, z, T, 0.5, T, 0x2a2430);                                                // grout
@@ -77,8 +78,8 @@ function cobbles(v, r, x, z, T, colors, amount) {
 // raised bed under each plot.
 export function yardGround({ width = MAP.w, extraPath = () => false } = {}) {
   const pad = (x, z) => x > 31 && x < 32.6 && z > 8.6 && z < 10.6;
-  return buildGround({ x0: 0, x1: width, z0: -1, z1: MAP.d + 3 }, (x, z) => {
-    if (nearPath(x, z, 0.95) || nearArchPath(x, z) || pad(x, z) || extraPath(x, z)) return grounds.cobble(x, z, COL.stone, 0.42, 1, 0x2a2430);
+  return buildGround({ x0: -8, x1: width, z0: -1, z1: MAP.d + 5 }, (x, z) => {
+    if (nearPath(x, z, 0.95) || nearArchPath(x, z) || pad(x, z) || hollowPathDistance(x, z) < .85 || extraPath(x, z)) return grounds.cobble(x, z, COL.stone, 0.42, 1, 0x2a2430);
     if (inPatch(x, z)) {
       for (const p of PLOTS) { const b = grounds.bed(x, z, p); if (b) return b; }
       return grounds.soil(x, z);
@@ -90,7 +91,7 @@ export function yardGround({ width = MAP.w, extraPath = () => false } = {}) {
 // Rough grass beyond the map's edges, for when the view is zoomed out.
 function ground(v, r) {
   for (let x = -16; x < MAP.w + 16; x += 2) for (let z = -1; z < MAP.d + 12; z += 2) {
-    if (x >= 0 && x < MAP.w && z < MAP.d + 3) continue;
+    if (x >= -8 && x < MAP.w && z < MAP.d + 5) continue;
     v.box(x, -0.5, z, 2, 0.5, 2, vary(COL.grass[(r() * 4) | 0], 0.1, r));
   }
 }
@@ -339,12 +340,14 @@ export function fenceRun(v, r, ax, az, bx, bz, skip = () => false) {
 // Wooden picket fences: round the front and sides, and across the back to the arch.
 function fence(v, r, lights) {
   const run = (...args) => fenceRun(v, r, ...args);
-  run(0.4, 24.6, MAP.w - 0.4, 24.6, (x) => x > 31.2 && x < 34.8);
-  run(0.4, 10, 0.4, 24.6);
+  run(-7.6, 24.6, MAP.w - 0.4, 24.6, (x) => x > 31.2 && x < 34.8 || x > -4.4 && x < -1.6);
+  run(-7.6, 2.9, -7.6, 24.6);
+  run(-7.6, 2.9, 1, 2.9);
+  for (const x of [-4.5, -1.5]) lanternPost(v, x, 24.6, lights, false);
   run(39.6, 12.4, 39.6, 24.6, (x, z) => nearPath(x, z, 1.2));
   run(11.2, 2.9, 27.4, 2.9, (x) => x > ARCH.x - 1.6 && x < ARCH.x + 1.6);
   for (const x of [4, 10, 16, 24, 30.6, 35.4]) lanternPost(v, x, 25.1, lights, x !== 10 && x !== 24);
-  for (const z of [14, 20]) lanternPost(v, 0.9, z, lights, z === 20);
+  for (const z of [14, 20]) lanternPost(v, -6.9, z, lights, z === 20);
   for (const z of [16, 21.6]) lanternPost(v, 39.1, z, lights, false);
 }
 
@@ -457,19 +460,24 @@ export function buildWorld() {
   ground(v, r);
   // Trees crowd every edge, leaving the arch open onto the lake.
   for (const [x, z, s, k] of [
-    [-0.5, 1.2, 1.2, 0], [3.2, 0.2, 1.1, 1], [10.6, 0.8, 1.15, 0], [13.6, 1.2, 1.0, 2], [16.4, 0.6, 0.9, 1],
+    [-8.5, 1.2, 1.2, 0], [3.2, 0.2, 1.1, 1], [10.6, 0.8, 1.15, 0], [13.6, 1.2, 1.0, 2], [16.4, 0.6, 0.9, 1],
     [23.8, 0.6, 0.95, 0], [26.6, 1.0, 1.05, 2], [29.4, 0.4, 0.9, 1], [36.2, 0.2, 1.15, 0], [40, 1.6, 1.2, 1],
-    [-0.4, 6.8, 1.1, 1], [0.2, 11.5, 0.9, 0], [-0.6, 16.4, 1.1, 2], [0.4, 21.8, 0.9, 1], [-0.2, 26, 1.2, 0], [4.4, 27.2, 1.1, 2],
+    [-8.4, 6.8, 1.1, 1], [-8.2, 11.5, 0.9, 0], [-8.6, 16.4, 1.1, 2], [-8.4, 21.8, 0.9, 1], [-8.2, 26, 1.2, 0], [4.4, 27.2, 1.1, 2],
     [37.6, 27, 1.1, 1], [41.4, 24, 1.2, 0],
     [40.4, 18.6, 1.0, 2], [41, 13.2, 1.1, 0], [40.6, 8, 1.0, 1], [6.8, 1.2, 0.8, 2],
   ]) tree(v, r, x, z, s, k);
-  const home = cottageYard(v, r, lights);
+  const home = { door: { x: 6.5, y: 1.3, z: 9.5 } };
   bigPumpkinStage(v, r);
   patchBorder(v, r);
   const stall = shop(v, r, lights);
   fence(v, r, lights);
   arch(v, r, lights);
   stringLights(v);
+  // A hedge-lined private entrance, deliberately distinct from the maze gate.
+  for (const x of [18.2, 21.8]) for (let z = 4.1; z < 8.4; z += .35) {
+    v.block(x, .05, z, .7, .8 + r() * .15, .34, vary(0x394333, .14, r));
+    v.block(x, .85, z, .75, .25, .36, vary(0x515a3d, .1, r));
+  }
   for (const [x, z] of [[29.2, 18.2], [33.4, 13.2], [36.6, 11.6], [10.8, 9.4]]) lanternPost(v, x, z, lights);
   // Props round the yard: crates along the back fence, hay and a bench by the front, pumpkins everywhere.
   for (const x of [13, 15.6, 24.6]) crate(v, r, x, 3.7);
