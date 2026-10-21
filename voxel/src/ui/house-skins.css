@@ -19,3 +19,11 @@
   .estate-skin-preview { width: 72px; height: 80px; }
   .estate-skin-card footer { align-items: stretch; flex-direction: column; }
 }
+
+.estate-skin-current { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:6px 0; font:12px/1.35 var(--body); color:var(--ink-soft); }
+.estate-skin-current b { display:block; margin-top:2px; color:var(--ink); font-size:13px; }
+.estate-skin-current small { font-size:12px; white-space:nowrap; }
+.estate-skin-toolbar { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:6px; margin-bottom:8px; }
+.estate-skin-toolbar .chip, .estate-skin-toolbar .button { min-width:44px; min-height:44px; padding:0 7px; font-size:12px; }
+.estate-skin-empty { padding:12px 4px; color:var(--ink-soft); font-size:12px; line-height:1.45; }
+.estate-skin-empty p { margin:0 0 10px; }

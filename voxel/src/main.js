@@ -1,5 +1,6 @@
 import { installPremiumIcons, premiumIcon } from "./ui/premium-icons.js";
 import * as THREE from "three";
+import { createMenuMemory } from "./ui/menu-memory.js";
 import { createStockPopover } from "./ui/stock-popover.js";
 import { markPurchaseSurfaces } from "./ui/purchase-surfaces.js";
 import * as M from "./model.js";
@@ -315,11 +316,12 @@ const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...colle
 const estateTools = createEstateControls(ui);
 const foyerTools = createFoyerControls(ui), hollowContext = createHollowContext(ui);
 
-let openTab = null, lastBody = "";
+let openTab = null, lastBody = "", sheetReturnFocus = null;
+const menuMemory = createMenuMemory($("sheet-body"));
 const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
 const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(id === "empire" ? "natalie" : "visitor-" + ["ghost", "witch", "vampire", "skeleton", "scarecrow"][kind]), save, tone: f => audio.tone(f), notice });
 const guestCard = createGuestCard({ state: () => state, portrait: id => scene.portrait(id) });
-const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); guestCard.clear(); } });
+const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); guestCard.clear(); }, onManagePumpkins() { sheets.shop.setTab("farm"); openSheet("shop"); }, onManageCocoa() { sheets.festival.setTab("cocoa"); openSheet("festival"); } });
 $("open-levels").onclick = () => celebration.preview();
 $("fullscreen").onclick = async () => {
   try { if (document.fullscreenElement) await document.exitFullscreen(); else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); else notice("For fullscreen, add the game to your home screen from the browser menu."); }
@@ -328,17 +330,19 @@ $("fullscreen").onclick = async () => {
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
 const TABS = { shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "more", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions" };
 function draw() {
+  if(menuMemory.dragging)return;
   const sheet = sheets[openTab]; if (!sheet) return;
   const html = sheet.body();
   if (html === lastBody) return;                                                 // only redraw when something changed
   lastBody = html;
-  const body = $("sheet-body"), scroll = body.scrollTop, active = document.activeElement?.id;
-  body.innerHTML = html; markPurchaseSurfaces(body); sheet.bind(body); body.scrollTop = scroll;
+  const body = $("sheet-body"), restoreFocus = menuMemory.captureFocus(); menuMemory.before();
+  body.innerHTML = html; markPurchaseSurfaces(body); sheet.bind(body); menuMemory.after(openTab); restoreFocus();
   const title = typeof sheet.title === "function" ? sheet.title() : sheet.title;
   text("sheet-title", title);
-  if (active === "decor-search") { const i = $("decor-search"); i?.focus(); i?.setSelectionRange(i.value.length, i.value.length); }
 }
 function openSheet(tab) {
+  if(!openTab)sheetReturnFocus=document.activeElement instanceof HTMLElement&&document.activeElement!==document.body?document.activeElement:null;
+  menuMemory.leave();
   stockPopover.close();
   if (foyerTools.active) foyerTools.cancel();
   hollowContext.close();
@@ -354,7 +358,7 @@ function openSheet(tab) {
   markTab();
   $("sheet-close").focus({ preventScroll: true });
 }
-function closeSheet() { document.body.classList.remove("menu-open"); openTab = null; $("sheet").hidden = true; markTab(); }
+function closeSheet() { const wasOpen=!!openTab;menuMemory.leave();document.body.classList.remove("menu-open"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
 function markTab() {
   const active = openTab ? TABS[openTab] : scene.place?.kind === "foyer" ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
@@ -369,7 +373,7 @@ $("open-settings").onclick = () => openSheet("settings");
 $("sheet-close").onclick = closeSheet;
 
 document.addEventListener("keydown", (e) => {
-  if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
+  if (e.key !== "Escape" && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
   if (celebration.active) return;
   const tools = home.tools;
   if (e.key === "Escape") { guestCard.clear(); hollowContext.close(); if (foyerTools.active) foyerTools.cancel(); else if (estateTools.active) estateTools.cancel(); else if (tools.selected) tools.select(null); else closeSheet(); return; }

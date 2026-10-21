@@ -120,6 +120,15 @@ export function equipEstateSkin(s, id) {
   if (s?.paused || !ownsEstateSkin(s, id)) return false;
   Object.assign(s.estate.finishes, ESTATE_SKIN_BY_ID[id].finishes); return true;
 }
+// Reuse the free house palette without touching fencing or collected finishes.
+export function equipClassicEstateLook(s) {
+  const e = s?.estate;
+  if (s?.paused || !e?.finishes || typeof e.finishes !== "object" || Array.isArray(e.finishes) || !Array.isArray(e.ownedFinishes)) return false;
+  const parts = ["walls", "roof", "trim", "door"];
+  if (!parts.every(part => e.ownedFinishes.includes(ESTATE_DEFAULT_FINISHES[part]))) return false;
+  for (const part of parts) e.finishes[part] = ESTATE_DEFAULT_FINISHES[part];
+  return true;
+}
 export const estateScore = s => (s?.estate?.placed ?? []).reduce((score, p) => score + (ESTATE_DECOR_BY_ID[p.id]?.score ?? 0), 0);
 
 // Invalid old placements return to inventory rather than disappearing. New

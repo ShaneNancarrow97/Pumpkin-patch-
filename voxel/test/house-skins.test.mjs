@@ -61,3 +61,19 @@ test("older save data acquires no paid skins and retains its existing exterior",
  assert.deepEqual(restored.estate,s.estate);assert.equal(M.activeEstateSkin(restored),null);
  assert.ok(M.ESTATE_HOUSE_SKINS.every(skin=>!M.ownsEstateSkin(restored,skin.id)));
 });
+
+test("the free classic look preserves bought skins, garden fencing and every other saved field",()=>{
+ const s=state(3),skin=M.ESTATE_SKIN_BY_ID["midnight-crypt"];
+ assert.ok(M.buyEstateSkin(s,skin.id));assert.ok(M.equipEstateSkin(s,skin.id));
+ assert.ok(M.buyEstateFinish(s,"rose-iron"));assert.ok(M.equipEstateFinish(s,"rose-iron"));
+ const before=structuredClone(s),expected=structuredClone(s);
+ for(const part of ["walls","roof","trim","door"])expected.estate.finishes[part]=M.ESTATE_DEFAULT_FINISHES[part];
+ assert.ok(M.equipClassicEstateLook(s));assert.deepEqual(s,expected);assert.equal(s.coins,before.coins);assert.ok(M.ownsEstateSkin(s,skin.id));assert.equal(s.estate.finishes.fence,"rose-iron");
+ assert.ok(M.equipEstateSkin(s,skin.id));assert.equal(s.coins,before.coins);assert.equal(M.activeEstateSkin(s)?.id,skin.id);
+ const restored=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.ok(M.equipClassicEstateLook(restored));assert.ok(M.ownsEstateSkin(restored,skin.id));
+});
+test("classic look refuses paused or malformed states without changing their finishes",()=>{
+ const s=state();M.buyEstateSkin(s,"harvest-haunt");M.equipEstateSkin(s,"harvest-haunt");s.paused=true;const before=structuredClone(s);
+ assert.equal(M.equipClassicEstateLook(s),false);assert.deepEqual(s,before);
+ for(const invalid of [undefined,null,{}, {estate:{}}, {estate:{finishes:{},ownedFinishes:[]}}, ...["old",[],1].map(finishes=>({estate:{finishes,ownedFinishes:Object.values(M.ESTATE_DEFAULT_FINISHES)}}))])assert.equal(M.equipClassicEstateLook(invalid),false);
+});

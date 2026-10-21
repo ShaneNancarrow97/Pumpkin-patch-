@@ -49,7 +49,7 @@ function gardenIcon(id, thumbnail) {
 
 // Garden purchases, exterior finishes and the growing grounds share one sheet.
 export function estateSheet(ui) {
-  let tab = "garden", gardenView = "catalogue", finishGroup = "walls", exteriorView = "skins", skinLevel = "all";
+  let tab = "garden", gardenView = "catalogue", finishGroup = "walls", exteriorView = "skins", skinLevel = "all", ownedSkinsOnly = false;
   const change = () => { ui.save(); ui.scene.refreshHouseEstate(); ui.tone(680); ui.draw(); };
   const visit = () => { if (ui.scene.place?.kind !== "estate") ui.enterEstate(); ui.closeSheet(); };
   const editable = s => !s.paused;
@@ -75,15 +75,17 @@ export function estateSheet(ui) {
       }).join("") + `<button class="button wide" data-estate-visit>See the house</button>`;
   }
   function skins(s) {
-    const active = E.activeEstateSkin(s);
+    const active = E.activeEstateSkin(s), ownedCount = ESTATE_HOUSE_SKINS.filter(skin => E.ownsEstateSkin(s, skin.id)).length;
+    const classic = ["walls", "roof", "trim", "door"].every(part => s.estate.finishes[part] === E.ESTATE_DEFAULT_FINISHES[part]);
     const filters = [["all", "All"], ...["Little", "Crooked", "Manor", "Haven"].map((name, i) => [String(i), name])];
-    const cards = ESTATE_HOUSE_SKINS.filter(skin => skinLevel === "all" || skin.houseLevel === Number(skinLevel)).map(skin => {
+    const cards = ESTATE_HOUSE_SKINS.filter(skin => (skinLevel === "all" || skin.houseLevel === Number(skinLevel)) && (!ownedSkinsOnly || E.ownsEstateSkin(s, skin.id))).map(skin => {
       const owned = E.ownsEstateSkin(s, skin.id), applied = active?.id === skin.id, locked = s.house.level < skin.houseLevel;
       const status = applied ? "On your house" : locked ? `Needs the ${HOUSE_NAMES[skin.houseLevel]}` : owned ? "Yours · use any time" : "Walls, roof, trim and door";
       const action = applied ? `<button class="button" disabled>Applied</button>` : locked ? `<button class="button" disabled>Locked</button>` : owned ? `<button class="button" data-estate-skin="${skin.id}" ${editable(s) ? "" : "disabled"}>Use skin</button>` : `<button class="button gold" data-estate-buyskin="${skin.id}" ${editable(s) && s.coins >= skin.cost ? "" : "disabled"}>Buy & apply · ${money(skin.cost)}</button>`;
       return `<article class="estate-card estate-skin-card${applied ? " skin-applied" : ""}">${houseSkinIcon(skin)}<div class="estate-skin-copy"><small class="estate-skin-tier">${HOUSE_NAMES[skin.houseLevel]}</small><h3>${skin.name}</h3><p>${skin.text}</p></div><footer><small>${status}</small>${action}</footer></article>`;
     }).join("");
-    return `<p class="estate-skin-intro">A complete look, with spooky details on every side. Two new skins unlock with each house upgrade; bought skins grow with your home.</p><div class="estate-skin-levels" role="group" aria-label="Skins by house upgrade">${filters.map(([id,name]) => `<button class="chip" data-estate-skinlevel="${id}" aria-label="${id === "all" ? "Skins for all houses" : "Skins unlocked with the " + HOUSE_NAMES[Number(id)]}" aria-pressed="${skinLevel === id}">${name}</button>`).join("")}</div>${cards}`;
+    const empty = `<div class="estate-skin-empty"><p>${ownedCount ? "No owned skins match this house level." : "You haven’t collected a house skin yet."} Show all skins to browse the collection.</p><button class="button" data-estate-showall>Show all skins</button></div>`;
+    return `<p class="estate-skin-intro">Two skins unlock with each house upgrade. Buy once and reuse as your home grows.</p><div class="estate-skin-current"><span>Current look<b>${active?.name ?? (classic ? "Classic look" : "Mixed finishes")}</b></span><small>${ownedCount}/${ESTATE_HOUSE_SKINS.length} collected</small></div><div class="estate-skin-toolbar"><button class="chip" data-estate-owned aria-pressed="${ownedSkinsOnly}">Owned only</button><button class="button" data-estate-classic aria-label="Use the free classic house look" ${classic || !editable(s) ? "disabled" : ""}>${classic ? "Classic applied" : "Classic look · Free"}</button></div><div class="estate-skin-levels" role="group" aria-label="Skins by house upgrade">${filters.map(([id,name]) => `<button class="chip" data-estate-skinlevel="${id}" aria-label="${id === "all" ? "Skins for all houses" : "Skins unlocked with the " + HOUSE_NAMES[Number(id)]}" aria-pressed="${skinLevel === id}">${name}</button>`).join("")}</div>${cards || empty}`;
   }
   function exterior(s) {
     return segmented("estate-exterior", "Exterior customisation", [["skins", "House skins"], ["finishes", "Mix finishes"]], exteriorView)
@@ -104,6 +106,9 @@ export function estateSheet(ui) {
       body.querySelectorAll("[data-estate-inventory]").forEach(b => b.onclick = () => { gardenView = b.dataset.estateInventory; ui.draw(); });
       body.querySelectorAll("[data-estate-exterior]").forEach(b => b.onclick = () => { exteriorView = b.dataset.estateExterior; ui.draw(); });
       body.querySelectorAll("[data-estate-skinlevel]").forEach(b => b.onclick = () => { skinLevel = b.dataset.estateSkinlevel; ui.draw(); });
+      body.querySelector("[data-estate-owned]")?.addEventListener("click", () => { ownedSkinsOnly = !ownedSkinsOnly; ui.draw(); });
+      body.querySelector("[data-estate-showall]")?.addEventListener("click", () => { ownedSkinsOnly = false; skinLevel = "all"; ui.draw(); });
+      body.querySelector("[data-estate-classic]")?.addEventListener("click", () => { if (E.equipClassicEstateLook(ui.state)) change(); });
       body.querySelectorAll("[data-estate-buyskin]").forEach(b => b.onclick = () => {
         const id = b.dataset.estateBuyskin;
         if (E.buyEstateSkin(ui.state, id)) { E.equipEstateSkin(ui.state, id); change(); ui.notice("A new haunting for your home. Use skins again for free."); }

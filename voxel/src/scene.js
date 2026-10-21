@@ -307,11 +307,11 @@ export function createScene(canvas, state, hooks) {
   let drag = null, pinch = null;
   const worldPerPixel = () => (camera.right - camera.left) / canvas.clientWidth;
   canvas.addEventListener("pointerdown", (e) => {
-    if (["estate", "foyer"].includes(view.place)) return;
+    if (["estate", "foyer"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
     canvas.setPointerCapture(e.pointerId);
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 1) drag = { x: e.clientX, y: e.clientY, vx: view.x, vz: view.z, moved: 0 };
-    if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), zoom: view.zoom, angle: Math.atan2(a.y - b.y, a.x - b.x), rotate: !!view.place && !!hooks.canRotatePiece?.() }; drag = null; }
+    if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), zoom: view.zoom, angle: Math.atan2(a.y - b.y, a.x - b.x), rotate: !!view.place && !!hooks.canRotatePiece?.() }; drag = null; }
   });
   canvas.addEventListener("pointermove", (e) => {
     if (["estate", "foyer"].includes(view.place)) return;
@@ -319,7 +319,9 @@ export function createScene(canvas, state, hooks) {
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pinch && touches.size === 2) { const [a, b] = [...touches.values()];
       if (pinch.rotate) { const angle = Math.atan2(a.y - b.y, a.x - b.x), delta = Math.atan2(Math.sin(angle - pinch.angle), Math.cos(angle - pinch.angle)); pinch.angle = angle; hooks.onRotatePiece?.(delta * 180 / Math.PI); return; }
-      view.zoom = THREE.MathUtils.clamp(pinch.zoom * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); return; }
+      const distance = Math.hypot(a.x - b.x, a.y - b.y);
+      if (distance < 1) return; // Coincident touch starts are not a meaningful zoom.
+      view.zoom = THREE.MathUtils.clamp(pinch.zoom * distance / pinch.d, cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); return; }
     if (!drag) return;
     const k = worldPerPixel(), dx = e.clientX - drag.x, dy = e.clientY - drag.y;
     drag.moved = Math.max(drag.moved, Math.hypot(dx, dy));
@@ -332,8 +334,8 @@ export function createScene(canvas, state, hooks) {
   });
   let lastPick = null;
   const end = (e) => {
-    if (["estate", "foyer"].includes(view.place)) return;
-    const wasTap = drag && drag.moved < 8 && touches.size === 1;
+    if (["estate", "foyer"].includes(view.place) || !touches.has(e.pointerId)) return;
+    const wasTap = drag && drag.moved < 8 && touches.size === 1 && (e.pointerType !== "mouse" || e.button === 0);
     touches.delete(e.pointerId);
     if (touches.size < 2) { if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null; }
     if (wasTap) {
@@ -350,7 +352,17 @@ export function createScene(canvas, state, hooks) {
     drag = null;
   };
   canvas.addEventListener("pointerup", end);
-  canvas.addEventListener("pointercancel", (e) => { touches.delete(e.pointerId); drag = null; if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null; });
+  // Browser interruptions finish a rotation once, never turn its release into a tap.
+  const cancelGesture = (id) => {
+    if (id !== undefined && !touches.has(id)) return;
+    if (id === undefined) touches.clear(); else touches.delete(id);
+    drag = null; if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null;
+  };
+  canvas.addEventListener("pointercancel", e => cancelGesture(e.pointerId));
+  canvas.addEventListener("lostpointercapture", e => cancelGesture(e.pointerId));
+  canvas.addEventListener("contextmenu", e => { e.preventDefault(); cancelGesture(); });
+  window.addEventListener("blur", () => cancelGesture());
+  document.addEventListener("visibilitychange", () => { if (document.hidden) cancelGesture(); });
   canvas.addEventListener("wheel", (e) => { if (["estate", "foyer"].includes(view.place)) return; e.preventDefault(); view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); }, { passive: false });
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.

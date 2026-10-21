@@ -101,3 +101,7 @@ See [handover 17](../../handovers/17-house-freeze-and-render-cost.md) for the cl
 - [Handover 22](../../handovers/22-sharp-rendering.md): restores full scene/composer detail with bloom, FXAA and explicit Sharp/Balanced/Performance choices. This supersedes the earlier CSS-resolution performance tradeoff.
 
 All 33 Node test files pass. The stock/skin browser run passes 20 checks and the high-density rendering run passes 8, with no runtime exceptions. Staged money/levels exercise unlocks and purchases; software WebGL checks functionality and image quality, not physical Fold FPS. Existing save fields and ownership are preserved.
+
+## Small usability and input pass
+
+[Handover 23](../../handovers/23-small-usability-and-input-polish.md) adds clearer stock status/management shortcuts, owned skins and Classic look, session catalogue scroll/focus memory, continuous slider handling, and safer primary-tap/interrupted-pinch handling. All 33 unit-test files, 15 UI checks and 9 input checks pass. Saves, existing purchases and Sharp-by-default graphics remain compatible.

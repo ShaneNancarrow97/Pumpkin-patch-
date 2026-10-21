@@ -802,3 +802,11 @@ body:has(.building-context:not([hidden])) .actions { visibility: hidden; }
  .hud-balance .coin-icon { --s:22px; }
  .level-chip { min-width:44px; padding:0 3px; gap:2px; }
 }
+
+.stock-popover header > div { flex:1; min-width:0; }
+.stock-meter { height:5px; margin:6px 0 9px; border-radius:5px; overflow:hidden; background:#0e0a1266; }
+.stock-meter i { display:block; height:100%; width:var(--stock-fill,0%); background:linear-gradient(90deg,#d58c37,#ffd68a); border-radius:inherit; }
+.hud-stock.stock-full { color:var(--gold-bright); box-shadow:inset 0 0 0 1px #d69b5055; }
+.stock-warning { margin:5px 0 0; font:12px/1.4 var(--body); color:#ffd395; }
+.stock-shortcuts { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:10px; padding-top:10px; border-top:1px solid var(--edge-soft); }
+.stock-shortcuts .button { padding:0 7px; min-height:44px; min-width:0; }
