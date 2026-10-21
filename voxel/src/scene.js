@@ -140,7 +140,7 @@ export function createScene(canvas, state, hooks) {
     return m;
   };
   const visitorModel = (kind) => {
-    const sprite = !voxelCharacters && sheets !== null, m = sprite ? spriteVisitor(sheets, kind) : buildVisitor(kind);
+    const sprite = sheets !== null && (!voxelCharacters || kind >= 5), m = sprite ? spriteVisitor(sheets, kind) : buildVisitor(kind % 5);
     if (!sprite) m.traverse((o) => o.isMesh && (o.castShadow = true));
     m.userData.kind = "visitor"; m.userData.sprite = sprite;
     return m;

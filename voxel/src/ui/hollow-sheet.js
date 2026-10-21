@@ -17,7 +17,7 @@ export function hollowSheets(ui) {
   let tab = "manage", decorTab = "catalogue", category = "all", surface = "floor";
   const changed = () => { ui.save(); ui.scene.refreshFoyer?.(); ui.scene.refreshHollow?.(); ui.tone(680); ui.draw(); };
   const editable = s => !s.paused;
-  const gateText = s => !s.festival.meadow ? "Open Moonbrew Meadow to reach the property." : M.patchLevel(s).level < HOLLOW_PROPERTY.level ? `Purchase unlocks at patch level ${HOLLOW_PROPERTY.level}.` : "A forgotten house, waiting for a rather unusual welcome.";
+  const gateText = s => M.patchLevel(s).level < HOLLOW_PROPERTY.level ? `Purchase unlocks at patch level ${HOLLOW_PROPERTY.level}.` : "A forgotten house, waiting for a rather unusual welcome.";
   function manage(s) {
     const h = s.hollowHouse, c = config(s), o = occupancy(s);
     if (!h.purchased) return `<article class="estate-ground-card"><p class="eyebrow">Derelict attraction</p><h3>The Hollow House</h3><p>${gateText(s)}</p><button class="button gold wide" data-hollow-action="purchase" ${H.hollowUnlocked(s) && editable(s) && s.coins >= HOLLOW_PROPERTY.price ? "" : "disabled"}>Purchase property · ${money(HOLLOW_PROPERTY.price)}</button></article><p class="small">The building must be restored before it can open or sell tickets.</p>`;

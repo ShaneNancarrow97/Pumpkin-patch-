@@ -71,6 +71,7 @@ export function restoreState(raw) {
   s.upgrades = v1
     ? { tools: Math.min(top.tools, count(u.tools)), yield: 0, auto: Math.min(top.auto, count(u.helper)), plots: Math.min(top.plots, count(u.plots)), sign: Math.min(top.sign, count(u.signs)) }
     : { tools: Math.min(top.tools, count(u.tools)), yield: Math.min(top.yield, count(u.yield)), auto: Math.min(top.auto, count(u.auto)), plots: Math.min(top.plots, count(u.plots)), sign: Math.min(top.sign, count(u.sign)) };
+  s.upgrades.storage = Math.min(top.storage, count(u.storage));
   for (const v of VISITOR_UPGRADES) s.visitorUpgrades[v.id] = Math.min(v.costs.length, count(raw.visitorUpgrades?.[v.id]));
   if (Array.isArray(raw.stock) && v1) for (const v of raw.stock) if (VARIETIES[v]) s.stock[v]++;
   if (Array.isArray(raw.stock) && !v1 && raw.stock.length === 4) s.stock = raw.stock.map(count);

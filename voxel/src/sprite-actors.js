@@ -2,6 +2,10 @@ import * as THREE from "three";
 import natalieUrl from "../assets/hd-natalie.webp";
 import shaneUrl from "../assets/hd-shane.webp";
 import skylaUrl from "../assets/hd-skyla.webp";
+import horrorVisitorsUrl from "../assets/hd-horror-visitors.png";
+import { horrorVisitorSheetMeta } from "./visitor-sprite-meta.js";
+import { VISITOR_KINDS } from "./content/visitors.js";
+export { VISITOR_KINDS } from "./content/visitors.js";
 import visitorsUrl from "../assets/hd-visitors.webp";
 import natalieWitch from "../assets/hd-natalie-witch.webp";
 import natalieGhostbride from "../assets/hd-natalie-ghostbride.webp";
@@ -31,7 +35,7 @@ const unit = (meta) => 2.3 / meta.rows;
 // They lean back towards the camera like the voxel figures, stretched so the art
 // keeps its proportions on screen (LEAN and STRETCH in world.js).
 const URLS = {
-  natalie: natalieUrl, shane: shaneUrl, skyla: skylaUrl, visitors: visitorsUrl,
+  natalie: natalieUrl, shane: shaneUrl, skyla: skylaUrl, visitors: visitorsUrl, horrorVisitors: horrorVisitorsUrl,
   "natalie-witch": natalieWitch, "natalie-ghostbride": natalieGhostbride, "natalie-batqueen": natalieBatqueen, "natalie-vampire": natalieVampire,
   "natalie-frankenstein": natalieFrankenstein, "natalie-mummy": natalieMummy, "natalie-slasher": natalieSlasher,
   "shane-vampire": shaneVampire, "shane-skeleton": shaneSkeleton, "shane-scarecrow": shaneScarecrow,
@@ -39,7 +43,7 @@ const URLS = {
   ...COSTUME_URLS,
 };
 const METADATA = { ...SHEETS, ...COSTUME_SHEETS };
-export const VISITOR_KINDS = ["ghost", "witch", "vampire", "skeleton", "scarecrow"];   // model.js visitor kinds, in order
+// Visitor IDs come from the shared, stable voxel roster.
 
 const loadImage = (src) => new Promise((resolve, reject) => {
   const img = new Image();
@@ -57,7 +61,7 @@ function sheetTexture(image) {
 
 // One plane per frame, its origin at the feet, its UVs on the frame's rectangle.
 function frameGeometry(sheet, f) {
-  const u = unit(sheet), g = new THREE.PlaneGeometry(f.w * u, f.h * u);
+  const u = f.unit ?? unit(sheet), g = new THREE.PlaneGeometry(f.w * u, f.h * u);
   g.translate((f.w / 2 - f.ax) * u, (f.ay - f.h / 2) * u, 0);
   const uv = g.attributes.uv;
   for (let i = 0; i < uv.count; i++) uv.setXY(i, (f.x + uv.getX(i) * f.w) / sheet.w, 1 - (f.y + (1 - uv.getY(i)) * f.h) / sheet.h);
@@ -68,7 +72,7 @@ function frameGeometry(sheet, f) {
 export async function loadSpriteSheets() {
   const sheets = {};
   await Promise.all(Object.entries(URLS).map(async ([name, url]) => {
-    const meta = METADATA[name], image = await loadImage(url), frames = {};
+    const image = await loadImage(url), meta = name === "horrorVisitors" ? horrorVisitorSheetMeta(image) : METADATA[name], frames = {};
     for (const [key, list] of Object.entries(meta)) if (Array.isArray(list)) frames[key] = list.map((f) => frameGeometry(meta, f));
     sheets[name] = { meta, image, texture: sheetTexture(image), frames };
   }));
@@ -145,14 +149,15 @@ export function spriteActor(sheets, who, look, outfit) {
 
 // A visitor: its four frames are a walk cycle; standing shows the first.
 export function spriteVisitor(sheets, kind) {
-  const sheet = sheets.visitors;
-  return figure(sheet, { walk: sheet.frames[VISITOR_KINDS[kind]] }, sheet.texture);
+  const id = VISITOR_KINDS[kind] ?? VISITOR_KINDS[0], sheet = VISITOR_KINDS.indexOf(id) >= 5 ? sheets.horrorVisitors : sheets.visitors;
+  const model = figure(sheet, { walk: sheet.frames[id] }, sheet.texture);
+  model.userData.artFacesLeft = kind >= 5; return model;
 }
 
 // dx is which way they're heading across the screen (-1 to 1). The art faces
 // right, so walking left mirrors them; mostly up or down keeps the last facing.
 export function animateVisitor(group, age, walking, dx = 0) {
-  if (walking && Math.abs(dx) > 0.3) group.scale.x = dx < 0 ? -1 : 1;
+  if (walking && Math.abs(dx) > 0.3) group.scale.x = (dx < 0 ? -1 : 1) * (group.userData.artFacesLeft ? -1 : 1);
   const { walk } = group.userData, next = walk[walking ? Math.floor(age * 5) % walk.length : 0];
   if (next !== group.userData.shown) { group.userData.show(next); group.userData.shown = next; }
   group.children[0].position.y = Math.sin(age * 2.4) * 0.03;                       // the main game's gentle sway
@@ -168,7 +173,7 @@ const portraits = new Map();
 export function portraitURL(sheets, id) {
   if (portraits.has(id)) return portraits.get(id);
   let sheet, f;
-  if (id.startsWith("visitor-")) { sheet = sheets.visitors; f = sheet?.meta[id.slice(8)]?.[0]; }
+  if (id.startsWith("visitor-")) { sheet = VISITOR_KINDS.indexOf(id.slice(8)) >= 5 ? sheets.horrorVisitors : sheets.visitors; f = sheet?.meta[id.slice(8)]?.[0]; }
   else { sheet = sheets[id.replace(/-base$/, "")]; f = sheet?.meta.idle?.[0]; }
   if (!sheet || !f) return null;
   const src = document.createElement("canvas");

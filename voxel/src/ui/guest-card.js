@@ -1,3 +1,4 @@
+import { visitorIdentity } from "../content/visitors.js";
 import { guestHeading } from "../rules/guest-needs.js";
 // A live, non-modal inspector; the farm keeps running and the visitor keeps walking.
 export function createGuestCard({ state, portrait }) {
@@ -11,10 +12,10 @@ export function createGuestCard({ state, portrait }) {
     const s = state(), guest = (selected.indoor ? s.shop.customers : s.visitors).find(v => v.id === selected.id);
     if (!guest) { selected = null; host.hidden = true; return; }
     host.hidden = false;
-    host.querySelector(".guest-name").textContent = ["Pip", "Mabel", "Bram", "Bones", "Patch"][guest.kind % 5] + " · " + (guest.id + 1);
+    host.querySelector(".guest-name").textContent = visitorIdentity(guest.kind).name + " · " + (guest.id + 1);
     const mood = guest.needs?.happiness ?? 70;
     host.querySelector(".guest-heading").textContent = (mood >= 80 ? "Delighted" : mood >= 60 ? "Content" : mood >= 40 ? "Restless" : "Unhappy") + " · " + guestHeading(guest, selected.indoor);
-    const face = portrait("visitor-" + ["ghost", "witch", "vampire", "skeleton", "scarecrow"][guest.kind % 5]);
+    const face = portrait("visitor-" + visitorIdentity(guest.kind).id);
     if (face !== lastFace) { lastFace = face; host.querySelector(".guest-face").innerHTML = face ? `<img src="${face}" alt="">` : ""; }
     for (const key of ["thirst", "hunger", "happiness"]) { const n = Math.round(guest.needs?.[key] ?? 70); host.querySelector(`[data-need="${key}"]`).value = n; host.querySelector(`[data-value="${key}"]`).textContent = n + "%"; }
     host.querySelector(".guest-money").textContent = "£" + Math.floor(guest.budget);

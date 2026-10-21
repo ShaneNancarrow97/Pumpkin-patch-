@@ -4,7 +4,7 @@ import * as M from "../model.js";
 import { money, segmented, plural } from "./kit.js";
 
 // Each upgrade's own icon from the main game.
-const ICONS = { tools: "tools", yield: "yield", auto: "auto", plots: "plots", sign: "sign", open: "shop", capacity: "visitors", displays: "stock", checkout: "coins", party: "visitors", lights: "boost", cocoa: "talk", loyalty: "coins" };
+const ICONS = { storage: "stock", crowd: "visitors", tools: "tools", yield: "yield", auto: "auto", plots: "plots", sign: "sign", open: "shop", capacity: "visitors", displays: "stock", checkout: "coins", party: "visitors", lights: "boost", cocoa: "talk", loyalty: "coins" };
 const icon = (id) => `<span class="thumb"><span class="ico i-${ICONS[id]}"></span></span>`;
 const SHOP_LEVELS = { capacity: "capacityLevel", displays: "displayLevel", checkout: "checkoutLevel" };
 const SHOP_MAX = { capacity: 3, displays: 1, checkout: 2 };
@@ -18,6 +18,7 @@ const FREQUENCY = {
   lights: (s) => [["Parties every", M.stallArrivalSeconds(s)]],
 };
 const EFFECTS = {
+  crowd: s => `up to ${M.visitorCapacity(s)} outdoor neighbours`,
   party: (s) => (M.partyMax(s) > 1 ? `parties of up to ${M.partyMax(s)}` : "everyone comes on their own"),
   cocoa: (s) => `they wait ${secs(M.stallPatience(s))} for stock${s.festival.cocoa.level ? `, cocoa service ${secs(M.cocoaServiceSeconds(s))}` : M.mugPrice(s) ? `, ${money(M.mugPrice(s))} a cup` : ""}`,
   loyalty: (s) => ["no regulars yet", "one in four is a regular", "one in two is a regular"][M.visitorUpgradeLevel(s, "loyalty")],
@@ -50,6 +51,7 @@ function priceButton(attr, value, price, coins, owned) {
 
 // Skyla's advice, for whatever would help most right now.
 function skylaTip(s) {
+  if (M.barnSpace(s) < M.harvestSize(s)) return `The barn is full (${M.stockCount(s)}/${M.barnCapacity(s)}). Sell pumpkins or buy A bigger pumpkin barn; ripe crops will wait safely.`;
   if (!M.stockCount(s)) return "Nothing on the shelves. Harvest a few pumpkins and I’ll ring the bell.";
   if (!s.shop.unlocked && s.coins >= 600) return "We could open the shop now. Customers would come inside to browse.";
   const shown = s.shop.displays.slice(0, M.displayCount(s.shop)), best = [3, 2, 1, 0].find((v) => M.available(s, v) > 0);
@@ -66,7 +68,7 @@ export function farmSheets(ui) {
   function farm(s) {
     return M.UPGRADES.filter((u) => u.id !== "sign").map((u) => {
       const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id);
-      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.text}</p>${tiers(level, u.max)}</div>
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= 5 ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text}</p>${tiers(level, u.max)}</div>
         ${priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
     }).join("");
   }
@@ -100,7 +102,7 @@ export function farmSheets(ui) {
     const upgrades = M.SHOP_UPGRADES.filter((u) => u.id !== "open").map((u) => {
       const level = sh[SHOP_LEVELS[u.id]], price = M.shopUpgradeCost(s, u.id), max = price === undefined;
       const now = u.id === "capacity" ? `${M.SHOP_CAPACITY[level]} browsing` : u.id === "displays" ? `${M.displayCount(sh)} tables` : `${M.CHECKOUT_SECONDS[level]}s at the till`;
-      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.text} Now: ${now}.</p>${tiers(level, SHOP_MAX[u.id])}</div>${priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= 5 ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text} Now: ${now}.</p>${tiers(level, SHOP_MAX[u.id])}</div>${priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
     }).join("");
     return tip + visit + stats + `<h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades;
   }

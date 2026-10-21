@@ -98,16 +98,16 @@ test("the floor keeps a long streak on a fully upgraded farm from running away, 
   const t = M.freshState(); picks(t, 30); near(M.stallGapSeconds(t), 21 / 2.5);
 });
 
-test("at most twelve neighbours on the path; the next party waits at the gate", () => {
+test("the outdoor capacity holds the next whole party at the gate", () => {
   const s = M.freshState(); s.visitorUpgrades.party = 3; s.visitorTimer = 0.05;
-  s.visitors = Array.from({ length: 11 }, (_, id) => ({ id, age: 0, leaveAt: null, spot: 0, budget: 0, basketLimit: 1, preferred: [0], basket: [], outcome: "shopping" }));
+  s.visitors = Array.from({ length: M.visitorCapacity(s)-1 }, (_, id) => ({ id, age: 0, leaveAt: null, spot: 0, budget: 0, basketLimit: 1, preferred: [0], basket: [], outcome: "shopping" }));
   const size = M.partySize(s, s.nextParty);
   assert.ok(size > 1);
   M.update(s, 0.1);
   assert.equal(s.arriving.length, 0); assert.equal(s.visitorTimer, 0); assert.equal(s.nextParty, 0);
-  s.visitors.length = 12 - size;
+  s.visitors.length = M.visitorCapacity(s) - size;
   M.update(s, 0.1);
-  assert.equal(s.nextParty, 1); assert.equal(M.onThePath(s), 12);
+  assert.equal(s.nextParty, 1); assert.equal(M.onThePath(s), M.visitorCapacity(s));
 });
 
 test("helpers never build a streak, and the tea break stops the countdown", () => {

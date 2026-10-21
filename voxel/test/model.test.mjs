@@ -211,7 +211,7 @@ test("favours pay out once, and memories are noticed as they're made", () => {
 test("old voxel saves load into the new rules, and new saves round-trip", () => {
   const old = { coins: 500, earned: 900, sold: 30, harvested: 40, taps: 20, plots: Array.from({ length: 12 }, (_, i) => ({ phase: i ? "empty" : "ready", progress: i ? 0 : 1, variety: 1 })), plotLevels: [1, ...Array(11).fill(0)], upgrades: { tools: 2, signs: 3, plots: 1, helper: 1 }, stock: [0, 0, 1, 3], looks: { natalie: "plum", shane: "black", owned: ["olive", "black", "plum"] }, claimed: ["ghost", "bones"] };
   const s = M.restoreState(old);
-  assert.deepEqual(s.upgrades, { tools: 2, yield: 0, auto: 1, plots: 1, sign: 3 });
+  assert.deepEqual(s.upgrades, { tools: 2, yield: 0, auto: 1, plots: 1, sign: 3, storage: 0 });
   assert.deepEqual(s.stock, [2, 1, 0, 1]);
   assert.deepEqual(s.claimed, ["basket", "seeds"]);
   assert.equal(s.plotCrops[0], 1);
@@ -234,12 +234,9 @@ test("a held key or a bot can't pump the big pumpkin or the streak", () => {
   s.time += 0.7; M.rewardHarvestStreak(s); assert.equal(s.streak.count, 2);
 });
 
-test("the barn fills up, and the rest goes to the wholesale cart", () => {
-  const s = M.freshState(); assert.equal(M.barnCapacity(s), 60);
-  s.stock[0] = 59; s.plots[0] = { phase: "ready", progress: 1, variety: 2 }; s.upgrades.yield = 0;
-  const coins = s.coins; assert.equal(M.harvest(s, 0), 1); assert.equal(M.stockCount(s), 60);
-  s.plots[0] = { phase: "ready", progress: 1, variety: 3 }; M.harvest(s, 0);
-  assert.equal(M.stockCount(s), 60); assert.equal(s.coins, coins + 21); assert.equal(s.wholesale, 21);
-  s.upgrades.plots = 2; s.upgrades.yield = 5; assert.equal(M.barnCapacity(s), 240);
-  assert.equal(M.restoreState(M.saveData(s)).wholesale, 21);
+test("a full barn leaves ripe crops safe instead of paying for harvest spam", () => {
+ const s=M.freshState();s.stock=[60,0,0,0];s.plots[0]={phase:"ready",progress:1,variety:3};const coins=s.coins;
+ assert.equal(M.harvest(s,0),0);assert.equal(s.plots[0].phase,"ready");assert.equal(M.stockCount(s),60);assert.equal(s.coins,coins);assert.equal(s.harvested,0);
+ s.coins=1000;assert.ok(M.buyUpgrade(s,"storage"));assert.equal(M.barnCapacity(s),100);assert.equal(M.harvest(s,0),1);assert.equal(M.stockCount(s),61);
+ assert.equal(M.restoreState(M.saveData(s)).upgrades.storage,1);
 });

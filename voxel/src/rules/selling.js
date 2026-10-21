@@ -2,9 +2,10 @@
 // open, customers browsing inside the Honest Pumpkin. Profiles, prices and
 // timings are the main game's (src/core/stall.js, src/core/shop.js,
 // src/content/stall.js, src/content/shop.js).
+import { VISITOR_KINDS } from "../content/visitors.js";
 import { economy } from "../../../src/content/economy.js";
 import { stallProfiles } from "../../../src/content/stall.js";
-import { checkoutSeconds, customerModels, customerProfiles, shopCapacity, shopUpgradeCosts } from "../../../src/content/shop.js";
+import { checkoutSeconds, customerProfiles, shopCapacity, shopUpgradeCosts } from "../../../src/content/shop.js";
 import { UPGRADES, VARIETIES, tierFactor, visitorBonus } from "./farm.js";
 import { freshGuestNeeds, tickGuestNeeds, enjoyPumpkin } from "./guest-needs.js";
 import { settleCustomerCare } from "./customer-care.js";
@@ -15,7 +16,7 @@ import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
 const variety = (productId) => VARIETIES.findIndex((v) => "pumpkin-" + v.id === productId);
 const PRICES = VARIETIES.map((v) => v.price);
 // The voxel neighbours, in model.js's order: 0 ghost, 1 witch, 2 vampire, 3 skeleton, 4 scarecrow.
-const KINDS = customerModels;
+const KINDS = VISITOR_KINDS;
 export const STALL_PROFILES = stallProfiles.map((p) => ({ ...p, preferred: p.preferred.map(variety) }));
 
 // The stall: how long the walk up the path takes, and how long they wait for stock.
@@ -30,12 +31,13 @@ export const freshStall = () => ({ income: 0, itemsSold: 0, served: 0, missedBud
 // first favourite they can't buy all of, so a bigger budget alone changes
 // little: a regular's loyalty card adds a pumpkin and the money for it together.
 export const VISITOR_UPGRADES = [
+  { id: "crowd", name: "Room for more neighbours", text: "Raise the outdoor visitor limit, with room for whole parties to enjoy the farm.", costs: [300, 1200, 4000, 10000], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "party", name: "Bring a friend", text: "Neighbours come up the path together: a friend, then a couple, then the whole family.", costs: [600, 1800, 6000], needs: null },
   { id: "lights", name: "Fairy lights down the path", text: "A string of lights by the gate, then lanterns all the way down. Parties set off for the stall more often.", costs: [150, 600, 2400, 9000], needs: { id: "sign", text: "Opens after Spread the word." } },
   { id: "cocoa", name: "A hot chocolate stand", text: "A bench and a warm mug. Neighbours wait longer for fresh pumpkins, and everyone buys a cup.", costs: [250, 700, 1400], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "loyalty", name: "A loyalty card", text: "Buy nine pumpkins, get a slightly larger pumpkin. Regulars take one more home, at the stall and in the shop.", costs: [6000, 12000], needs: { id: "open", text: "Opens with the shop." } },
 ];
-export const freshVisitorUpgrades = () => ({ party: 0, lights: 0, cocoa: 0, loyalty: 0 });
+export const freshVisitorUpgrades = () => ({ party: 0, lights: 0, cocoa: 0, loyalty: 0, crowd: 0 });
 // Fairy lights do most at first; old saves' four tiers are never slower than before.
 export const LIGHTS = [0.85, 0.87, 0.89, 0.92], PATIENCE = [6, 12, 20, 30], MUG = [0, 2, 4, 7];
 // However hot the streak, parties set off at least this far apart and shoppers
@@ -46,7 +48,8 @@ export const LIGHTS = [0.85, 0.87, 0.89, 0.92], PATIENCE = [6, 12, 20, 30], MUG 
 export const ARRIVAL_FLOOR = { stall: 5, shop: 1.5 };
 const floorFor = (s, base, step, least) => Math.max(least, base - step * (lv(s, "sign") + lv(s, "lights")));
 // At most this many neighbours on the path at once; the next party waits at the gate.
-export const PATH_CAP = 12;
+export const PATH_CAP = 16;
+export const visitorCapacity = s => PATH_CAP + 4 * lv(s, "crowd");
 // Party members set off this far apart, so a party walks up the path in a line.
 export const PARTY_GAP = 0.5;
 // Places along Skyla's counter; beyond these, newcomers share a place.
@@ -72,7 +75,7 @@ export const stallGapSeconds = (s) => stallArrivalSeconds(s) / stallPace(s);
 export const pathBoost = (s) => stallPace(s) - 1;
 // Guests away in the meadow at Sandy's stand have their own path, so they don't
 // hold the next party at the gate.
-export const onThePath = (s) => s.visitors.filter((v) => !v.festival || v.festival.done).length + s.arriving.length;
+export const onThePath = (s) => s.visitors.filter((v) => (!v.festival || v.festival.done) && (!v.hollow || v.hollow.done || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase))).length + s.arriving.length;
 export const stallPatience = (s) => PATIENCE[lv(s, "cocoa")];
 export const mugPrice = (s) => MUG[lv(s, "cocoa")];
 // One shopper in four is a regular with a loyalty card, then one in two. The
@@ -141,7 +144,7 @@ export function updateStall(s, dt, events) {
   if (s.visitorTimer <= 0) {
     const party = s.nextParty, size = partySize(s, party);
     // A full path holds the next party at the gate until there is room.
-    if (onThePath(s) + size > PATH_CAP) s.visitorTimer = 0;
+    if (onThePath(s) + size > visitorCapacity(s)) s.visitorTimer = 0;
     else {
       s.visitorTimer += stallArrivalSeconds(s);
       s.nextParty++;
