@@ -1,9 +1,9 @@
-# Pumpkin Patch standalone download
+# Pumpkin Patch — house fix and mobile rendering update
 
-Download **Pumpkin-Patch-HTML.zip**, extract it, then open **Pumpkin-Patch.html** in Safari or Chrome. The HTML is self-contained and includes the generated premium icons.
+Download Pumpkin-Patch-HTML.zip, extract it and open Pumpkin-Patch.html in your browser.
 
-Game source: fa6056a on contractor/haunted-house-estate. This branch contains only download artifacts; Claude’s source branch is separate.
+Source: contractor/haunted-house-estate, commit ba2ffa459fad34aa8b47cf47cbfdc0dacb1c03e8.
 
-HTML SHA-256: 22df952009e152667d9a5c9aa6d30ef3ec3593b115e1adee8921a6a2ab0c2f55
+Fixes the unpaid guest exit reset when closing the Hollow House. Reduces high-DPI world, mobile shadow and postprocessing costs. Full device freeze was not reproduced locally; 26 attraction browser checks and 29 unit-test files pass. Existing saves preserved.
 
-For Claude: Pumpkin-Patch-Contractor-Patch.zip contains the source integration patch, handovers, verification and the same HTML. Apply it only in a clean review checkout of dd97819. Full source/handover branch: contractor/haunted-house-estate (3836c62).
+Claude: see voxel/docs/handovers/17-house-freeze-and-render-cost.md on the source branch. The contractor ZIP includes the full source patch and handovers. Do not merge this downloads-only branch into the game source.
