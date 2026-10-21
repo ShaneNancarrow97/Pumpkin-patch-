@@ -7,6 +7,8 @@ import * as M from "../model.js";
 import { money, segmented, decorIcon, spooky, plural, $ } from "./kit.js";
 
 const roomName = (id) => M.houseRooms.find((r) => r.id === id).name;
+// Into [a, b], the range a piece's corner may take: it reaches the walls by its real size, not its cells.
+const clampTo = (v, a, b) => +Math.max(a, Math.min(b, v)).toFixed(6);
 // A characteristic piece of each room's furniture, as its icon.
 const ROOM_ICONS = { parlour: "f01", bedroom: "f06", kitchen: "d13", attic: "d06" };
 const houseIcon = `<span class="thumb"><span class="ico i-home"></span></span>`;
@@ -250,9 +252,10 @@ export function homeSheets(ui) {
     },
     dragTo(point) {
       if (!dragPose) return false;
-      const p = dragPose.before, fp = M.pieceFootprint(p), L = M.roomLayout(ui.state, p.room), q = p.on && ui.scene.hostPoint(p.on, point);
-      const x = q ? M.snapDecorPosition(q.x - dragPose.offset.x, tools.snap) : +Math.max(0, Math.min(L.w - fp.w, M.snapDecorPosition(point.x - dragPose.offset.x - fp.w / 2, tools.snap))).toFixed(6);
-      const z = q ? M.snapDecorPosition(q.z - dragPose.offset.z, tools.snap) : +Math.max(0, Math.min(L.d - fp.d, M.snapDecorPosition(point.z - dragPose.offset.z - fp.d / 2, tools.snap))).toFixed(6);
+      const p = dragPose.before, fp = M.pieceFootprint(p), q = p.on && ui.scene.hostPoint(p.on, point);
+      const range = !q && M.placementRange(ui.state, p);
+      const x = q ? M.snapDecorPosition(q.x - dragPose.offset.x, tools.snap) : clampTo(M.snapDecorPosition(point.x - dragPose.offset.x - fp.w / 2, tools.snap), range.x0, range.x1);
+      const z = q ? M.snapDecorPosition(q.z - dragPose.offset.z, tools.snap) : clampTo(M.snapDecorPosition(point.z - dragPose.offset.z - fp.d / 2, tools.snap), range.z0, range.z1);
       dragPose.pose = { ...p, x, z };
       dragPose.valid = M.fits(ui.state, p.room, p.id, x, z, p.instance, p);
       ui.scene.movePiece(p.instance, dragPose.pose, dragPose.valid);
@@ -309,8 +312,10 @@ export function homeSheets(ui) {
       const room = M.roomLayout(s, p.room) ?? M.GRID, fp = M.pieceFootprint(p);
       if (p.on) {
         if (cell.wall) return;
-        const pose = { ...structuredClone(p), x: Math.max(0, Math.min(room.w - fp.w, M.snapDecorPosition(cell.x - fp.w / 2, tools.snap))), z: Math.max(0, Math.min(room.d - fp.d, M.snapDecorPosition(cell.z - fp.d / 2, tools.snap))) };
+        const pose = structuredClone(p);
         delete pose.on; delete pose.top;
+        const range = M.placementRange(s, pose);
+        Object.assign(pose, { x: clampTo(M.snapDecorPosition(cell.x - fp.w / 2, tools.snap), range.x0, range.x1), z: clampTo(M.snapDecorPosition(cell.z - fp.d / 2, tools.snap), range.z0, range.z1) });
         const before = structuredClone(p);
         if (!s.paused && M.restorePose(s, p.instance, pose)) { remember(before); ui.tone(600); tools.moving = false; ui.scene.showGrid(false); ui.scene.refreshRoom(); tools.render(); ui.save(); }
         else ui.notice("Keep this spot clear for furniture, stairs and doors.");
@@ -318,7 +323,8 @@ export function homeSheets(ui) {
       }
       const wall = cell.wall ?? p.wall ?? "back";
       const limit = fp.layer === "wall" && wall !== "back" ? room.d : room.w;
-      const x = Math.max(0, Math.min(limit - fp.w, M.snapDecorPosition(cell.x - fp.w / 2, tools.snap))), z = fp.layer === "wall" ? 0 : Math.max(0, Math.min(room.d - fp.d, M.snapDecorPosition(cell.z - fp.d / 2, tools.snap)));
+      const range = fp.layer === "wall" ? null : M.placementRange(s, p);
+      const x = range ? clampTo(M.snapDecorPosition(cell.x - fp.w / 2, tools.snap), range.x0, range.x1) : Math.max(0, Math.min(limit - fp.w, M.snapDecorPosition(cell.x - fp.w / 2, tools.snap))), z = range ? clampTo(M.snapDecorPosition(cell.z - fp.d / 2, tools.snap), range.z0, range.z1) : 0;
       if (!s.paused && M.fits(s, p.room, p.id, x, z, p.instance, { wall })) {
         remember(p);
         if (fp.layer === "wall") p.wall = wall;

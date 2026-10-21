@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { applyPieceColour } from "./piece-colours.js";
-import { GRID, footprint, pieceFootprint, roomStyle, roomPieces, roomLayout, available, displayCount, decorById, hostSurfaces } from "./model.js";
+import { GRID, footprint, pieceFootprint, pieceBody, roomStyle, roomPieces, roomLayout, available, displayCount, decorById, hostSurfaces } from "./model.js";
 import { riderSize } from "./rules/surfaces.js";
 import { WALL_H, INTERIOR, buildRoom, buildShopInterior, SHOP_SPOTS } from "./interiors.js";
 import { decorProp, shelfBooks, decorReady } from "./decor.js";
@@ -291,11 +291,11 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     const entry = pieces.get(instance);
     if (!entry) return;
     if (entry.rider) { selectRider(entry); return; }
-    const p = entry.pose ?? entry.piece, fp = pieceFootprint(p), natural = footprint(p.id);
-    selection = { instance, box: outline(natural, outlineAt(entry, fp, p.x, p.z), 0xffd36a, entry.height) };
+    const p = entry.pose ?? entry.piece, fp = pieceFootprint(p), natural = footprint(p.id), body = natural.layer === "wall" ? natural : { ...natural, ...pieceBody(p.id) };
+    selection = { instance, box: outline(body, outlineAt(entry, fp, p.x, p.z), 0xffd36a, entry.height) };
     selection.box.rotation.y = entry.group.rotation.y;
     if (fp.layer !== "wall") {
-      const r = Math.max(natural.w, natural.d) * 0.55 + 0.15;
+      const r = Math.max(body.w, body.d) * 0.55 + 0.15;
       const ring = new THREE.Mesh(new THREE.RingGeometry(r, r + 0.025, 64), new THREE.MeshBasicMaterial({ color: 0xe7b46e, transparent: true, opacity: 0.65, side: THREE.DoubleSide, toneMapped: false, depthWrite: false }));
       ring.rotation.x = -Math.PI / 2; ring.position.set(entry.group.position.x, 0.045, entry.group.position.z); root.add(ring); selection.ring = ring;
     }
@@ -324,7 +324,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     const entry = pieces.get(instance);
     if (!entry || x === null || entry.rider) return;
     const p = entry.pose ?? entry.piece, fp = pieceFootprint(p);
-    ghost = outline(footprint(p.id), outlineAt(entry, fp, x, z), ok ? 0x8ae6a0 : 0xff6a5a, entry.height);
+    ghost = outline(fp.layer === "wall" ? footprint(p.id) : { ...footprint(p.id), ...pieceBody(p.id) }, outlineAt(entry, fp, x, z), ok ? 0x8ae6a0 : 0xff6a5a, entry.height);
     ghost.rotation.y = entry.group.rotation.y;
   }
   // Dragging changes only a handful of transforms. Rebuilding the diorama on

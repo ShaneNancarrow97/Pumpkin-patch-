@@ -48,6 +48,7 @@ import { libraryStories } from "../../../src/content/library.mjs";
 import { validPieceColour } from "./piece-colours.js";
 import { SHELF_CATALOG } from "../content/shelf-catalog.js";
 import { canRide, isShelf, validFinish, surfacesOf, standsOn, ridersClash } from "./surfaces.js";
+import { DECOR_SIZES } from "../content/decor-sizes.js";
 
 const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG, ...PREMIUM_FURNITURE_CATALOG, ...SHELF_CATALOG];
 const decorById = Object.fromEntries(decorCatalog.map(item=>[item.id,item]));
@@ -182,11 +183,28 @@ export function pieceFootprint(p) {
   return { ...fp, w: +(fp.w * c + fp.d * s).toFixed(6), d: +(fp.w * s + fp.d * c).toFixed(6) };
 }
 const surface = (p) => ["left", "right"].includes(p.wall) ? p.wall : "back";
-// Saved x/z remain the enclosing box's corner. Collision uses the actual
-// turned rectangle, leaving the empty corners of that box available to use.
-function floorRectangle(p, size = footprint(p.id)) {
-  const fp = pieceFootprint(p), a = decorAngle(p.rotation) * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
-  return { x: p.x + fp.w / 2, z: p.z + fp.d / 2, w: size.w / 2, d: size.d / 2, axes: [{ x: c, z: -s }, { x: s, z: c }] };
+// What a floor piece really takes up: its measured size (content/decor-sizes.js,
+// from the models), never more than its cells, and where its art sits in them.
+// Pieces without a measurement fill their cells.
+export function pieceBody(id) {
+  const f = footprint(id), b = DECOR_SIZES[id]?.box;
+  if (!b || f.layer === "wall") return { w: f.w, d: f.d, ox: 0, oz: 0 };
+  return { w: Math.min(f.w, Math.max(0.3, b[1] - b[0])), d: Math.min(f.d, Math.max(0.3, b[3] - b[2])), ox: (b[0] + b[1]) / 2, oz: (b[2] + b[3]) / 2 };
+}
+// Saved x/z remain the corner of the turned cells' enclosing box, as before.
+// Collision uses the piece's measured rectangle, turned, so pieces stand as
+// close as they look and reach into corners and against walls.
+function floorRectangle(p) {
+  const fp = pieceFootprint(p), m = pieceBody(p.id), a = decorAngle(p.rotation) * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
+  return { x: p.x + fp.w / 2 + m.ox * c + m.oz * s, z: p.z + fp.d / 2 - m.ox * s + m.oz * c, w: m.w / 2, d: m.d / 2, axes: [{ x: c, z: -s }, { x: s, z: c }] };
+}
+// Half the turned rectangle's width along the room's x and z.
+const reach = (r) => ({ x: r.w * Math.abs(r.axes[0].x) + r.d * Math.abs(r.axes[1].x), z: r.w * Math.abs(r.axes[0].z) + r.d * Math.abs(r.axes[1].z) });
+// The x and z a floor piece's corner may take in its room, at its turn: for
+// clamping drags, taps and turns to the walls.
+export function placementRange(s, p) {
+  const L = roomLayout(s, p.room) ?? GRID, r = floorRectangle({ ...p, x: 0, z: 0 }), h = reach(r);
+  return { x0: h.x - r.x, x1: L.w - h.x - r.x, z0: h.z - r.z, z1: L.d - h.z - r.z };
 }
 function rectanglesOverlap(a, b) {
   for (const axis of [...a.axes, ...b.axes]) {
@@ -207,9 +225,9 @@ export function fits(s, room, id, x, z, ignore, options) {
   const existing = s.house.placed.find((p) => p.instance === ignore), candidate = { ...existing, ...options, id, x, z };
   if (candidate.on) return riderFits(s, room, candidate, ignore);
   const L = roomLayout(s, room), f = pieceFootprint(candidate), wall = surface(candidate);
-  if (!L || !Number.isFinite(x) || !Number.isFinite(z) || x < -1e-6) return false;
+  if (!L || !Number.isFinite(x) || !Number.isFinite(z)) return false;
   if (f.layer === "wall") {
-    if (z !== 0) return false;
+    if (z !== 0 || x < -1e-6) return false;
     if (wall === "back") { if (x < L.hooks.from || x + f.w > L.hooks.to + 1e-6) return false; }
     else {
       if (x < 0.5 || x + f.w > L.d - 0.5 + 1e-6) return false;
@@ -221,8 +239,8 @@ export function fits(s, room, id, x, z, ignore, options) {
       if (["parlour-crooked", "parlour-manor"].includes(style) && !L.doors.some((dr) => dr.wall === wall) && !L.stairs.some((st) => st.wall === wall) && x < 3.4 && x + f.w > 2.6) return false;
     }
   } else {
-    if (x + f.w > L.w + 1e-6 || z < -1e-6 || z + f.d > L.d + 1e-6) return false;
-    const rect = floorRectangle(candidate);
+    const rect = floorRectangle(candidate), h = reach(rect);
+    if (rect.x - h.x < -1e-6 || rect.x + h.x > L.w + 1e-6 || rect.z - h.z < -1e-6 || rect.z + h.z > L.d + 1e-6) return false;
     if (L.blocked.some(c => rectanglesOverlap(rect, { x: c.x + .5, z: c.z + .5, w: .5, d: .5, axes: [{ x: 1, z: 0 }, { x: 0, z: 1 }] }))) return false;
   }
   return !roomPieces(s, room).some((p) => p.instance !== ignore && overlaps(candidate, p));
@@ -240,9 +258,9 @@ export function rotateDecor(s, instance, degrees) {
   if (!p || s.paused || !Number.isFinite(degrees) || footprint(p.id).layer === "wall") return false;
   if (p.on) { const rotation = decorAngle(degrees); if (!fits(s, p.room, p.id, p.x, p.z, instance, { rotation })) return false; p.rotation = rotation; return true; }
   const before = pieceFootprint(p), rotation = decorAngle(degrees), after = pieceFootprint({ ...p, rotation });
-  const L = roomLayout(s, p.room);
-  if (!L || after.w > L.w || after.d > L.d) return false;
-  const x = +Math.max(0, Math.min(L.w - after.w, p.x + (before.w - after.w) / 2)).toFixed(6), z = +Math.max(0, Math.min(L.d - after.d, p.z + (before.d - after.d) / 2)).toFixed(6);
+  const L = roomLayout(s, p.room), range = placementRange(s, { ...p, rotation });
+  if (!L || range.x0 > range.x1 + 1e-6 || range.z0 > range.z1 + 1e-6) return false;
+  const x = +Math.max(range.x0, Math.min(range.x1, p.x + (before.w - after.w) / 2)).toFixed(6), z = +Math.max(range.z0, Math.min(range.z1, p.z + (before.d - after.d) / 2)).toFixed(6);
   if (!fits(s, p.room, p.id, x, z, instance, { rotation })) return false;
   Object.assign(p, { x, z, rotation }); return true;
 }

@@ -81,10 +81,12 @@ test("stairs, doorways and the space in front of them block placement", () => {
   // Wall pieces hang on more hooks in a wider room, and never past them.
   assert.ok(!M.fits(at(0), "parlour", "d10", 7, 0));
   assert.ok(M.fits(s, "parlour", "d10", 10, 0) && !M.fits(s, "parlour", "d10", 11, 0));
-  // findSpot steps over the landing to the next free row.
+  // findSpot steps over the landing and the pieces along the back to a free place.
   const b = at(1);
   SMALL.slice(0, 8).forEach((id, x) => put(b, "bedroom", id, x, 0));
-  assert.deepEqual(M.findSpot(b, "bedroom", "f04"), { x: 0, z: 1 });
+  const spot = M.findSpot(b, "bedroom", "f04");
+  assert.ok(spot && M.fits(b, "bedroom", "f04", spot.x, spot.z));
+  assert.ok(!M.roomLayout(b, "bedroom").blocked.some((c) => spot.x < c.x + 1 && spot.x + 1 > c.x && spot.z < c.z + 1 && spot.z + 1 > c.z), "not on the landing");
 });
 
 test("placement follows each room's size, capacity and blocked cells", () => {
@@ -119,8 +121,8 @@ test("upgrading never leaves a piece on new stairs or in a doorway", () => {
   const chair = s.house.placed.find((p) => p.id === "f01");
   assert.ok(M.moveDecor(s, chair.instance, 0, 2));
   const grown = M.upgradeHouse(s);
-  assert.deepEqual(grown.moved, [{ instance: chair.instance, id: "f01", room: "parlour", x: 4, z: 0 }]);
-  assert.deepEqual([chair.x, chair.z], [4, 0], "to the first free spot");
+  assert.deepEqual(grown.moved, [{ instance: chair.instance, id: "f01", room: "parlour", x: 3.5, z: 0 }]);
+  assert.deepEqual([chair.x, chair.z], [3.5, 0], "to the first free spot");
   assert.deepEqual(grown.stored, []);
   assert.ok(s.house.placed.every((p) => clear(s, p)), "everything has a proper place");
   assert.deepEqual(M.upgradeHouse(s), { level: 3, moved: [], stored: [] });
