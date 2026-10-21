@@ -17,6 +17,7 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+  if(process.env.SMOKE_LITE)await page.addInitScript(()=>localStorage.setItem("pumpkin-patch-voxel-reference-v1-prefs",JSON.stringify({glow:false,shadows:false,music:false})));
   await page.goto(file);
   await page.waitForSelector("body[data-ready]", { timeout: 120000 });
   check(await page.waitForFunction(() => PumpkinVoxel.scene.characterStyle === "sprites", null, { timeout: 120000 }).then(() => true, () => false), `${name}: characters drawn with the original sprites`);
