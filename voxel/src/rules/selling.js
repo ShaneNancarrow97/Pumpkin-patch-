@@ -9,6 +9,7 @@ import { VARIETIES, visitorRushFactor } from "./farm.js";
 import { freshGuestNeeds, tickGuestNeeds, enjoyPumpkin } from "./guest-needs.js";
 import { settleCustomerCare } from "./customer-care.js";
 import { cocoaAllowance, planFestivalVisit, tickFestivalVisit } from "./festival-meadow.js";
+import { planHollowVisit, tickHollowVisit } from "./hollow-house.js";
 import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
 
 const variety = (productId) => VARIETIES.findIndex((v) => "pumpkin-" + v.id === productId);
@@ -128,6 +129,9 @@ export function updateStall(s, dt, events) {
     tickGuestNeeds(v, dt, v.festival?.phase === "queue" || v.age > VISIT.arrive + 4 && v.leaveAt === null);
     if (tickFestivalVisit(s, v, dt, events)) continue;
     if (v.festival?.justArrived) { v.age = VISIT.arrive; v.festival.justArrived = false; }
+    if (!v.hollowConsidered) { v.hollowConsidered = true; v.hollow = planHollowVisit(s, v); }
+    if (tickHollowVisit(s, v, dt, events)) continue;
+    if (v.hollow?.justArrived) { v.age = VISIT.arrive; v.hollow.justArrived = false; }
     v.age += dt;
     if (v.leaveAt !== null || v.age < VISIT.arrive) continue;
     const owner = "visitor-" + v.id, lines = chooseBasket(s, v, [0, 1, 2, 3], owner, PRICES);

@@ -4,6 +4,7 @@ import { buildGround, grounds } from "./ground.js";
 import { cocoaProp } from "./cocoa-props.js";
 import { yardGround, fenceRun, tree, lanternPost } from "./world.js";
 import { MEADOW, MEADOW_PATHS, pathDistance } from "./content/festival-meadow.js";
+import { hollowPathDistance } from "./content/hollow-house.js";
 
 // A proper little timber kiosk, grown into a lantern pavilion at later tiers.
 // Everything uses the existing voxel palette and two material batches.
@@ -108,7 +109,7 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
     pickables.forEach((h) => { root.remove(h); h.geometry.dispose(); h.material.dispose(); }); pickables = [];
     // Rebuild once from the original farm generator: one palette, height and
     // cobble seed across the old boundary. No overlaid connector or seam.
-    const ground = yardGround({ width: MEADOW.width, extraPath: (x, z) => pathDistance(x, z) < .95 });
+    const ground = yardGround({ width: MEADOW.width, extraPath: (x, z) => pathDistance(x, z) < .95 || hollowPathDistance(x, z) < .8 });
     world.group.remove(world.ground); world.ground.geometry.dispose(); world.ground.material.dispose();
     world.ground = ground; world.group.add(ground);
     const v = new Voxels(), r = seeded(819);
@@ -125,11 +126,11 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
       const z = 25.5 + r() * 1.2;
       v.block(x + r() * .4, r() * .18, z, .32, .22 + r() * .2, .32, [0x8a2f1e, 0xc2552a, 0x6a2a3a][Math.floor(r() * 3)]);
     }
-    for (const [x, z] of [[43, 8], [51, 9], [43, 13], [51, 13], [52, 25]]) {
+    for (const [x, z] of [[43, 8], [52, 25]]) {
       v.block(x, 0, z, 1.05, .4, .75, 0x6b4330); v.block(x, .4, z, 1.15, .1, .85, 0xa0784b);
       for (let i = 0; i < 9; i++) { const xx = x + (r() - .5) * .9, zz = z + (r() - .5) * .6; v.block(xx, .5, zz, .07, .3 + r() * .3, .07, 0x476545); v.block(xx, .9, zz, .2, .12, .2, i % 2 ? 0xb58ac9 : 0xc67636); }
     }
-    for (const x of [42, 52]) { for (const dx of [-.6, .6]) v.block(x + dx, 0, 21.6, .13, .55, .5, 0x392b27); v.block(x, .55, 21.6, 1.8, .12, .6, 0x795039); v.block(x, .85, 21.35, 1.8, .38, .1, 0x795039); }
+    for (const x of [42, 44]) { for (const dx of [-.6, .6]) v.block(x + dx, 0, 21.6, .13, .55, .5, 0x392b27); v.block(x, .55, 21.6, 1.8, .12, .6, 0x795039); v.block(x, .85, 21.35, 1.8, .38, .1, 0x795039); }
     root.add(v.build());
     const exitPath = buildGround({ x0: 54, x1: 58, z0: 5.5, z1: 7.7 }, (x, z) => grounds.cobble(x, z, [0x8c8094, 0x7a6f84, 0x9a8d9e, 0x6c6276], .42, 1, 0x2a2430)); root.add(exitPath);
     const exitSign = signBoard("Village →", "homeward path", 3.6); exitSign.position.set(53, 3.4, 6.5); root.add(exitSign);

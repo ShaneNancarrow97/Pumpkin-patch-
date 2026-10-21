@@ -16,6 +16,7 @@ export function enjoyPumpkin(guest, quality, service) {
   guest.needs.happiness = clamp(guest.needs.happiness + quality * 1.5 - Math.max(0, service - 8) * .2);
 }
 export function guestHeading(guest, indoor = false) {
+  if (guest.hollow && !guest.hollow.done) return { approach: "The Hollow House", "door-wait": "Waiting outside reception", entering: "Entering the foyer", queue: "Queuing for Mortimer", serving: "Buying a maze ticket", admission: "Waiting for maze admission", "to-maze": "Entering the Scare Maze", maze: "Exploring the Scare Maze", returning: "A delighted survivor", exit: "Leaving reception", "to-shop": "Back to the pumpkin stall" }[guest.hollow.phase] ?? "Visiting The Hollow House";
   if (indoor) return { entering: "Entering Skyla’s shop", browsing: "Browsing pumpkin displays", queue: "Queuing at Skyla’s till", paying: "Paying Skyla", leaving: "Leaving the shop" }[guest.phase] ?? "Exploring";
   if (guest.leaveAt !== null) return "Heading through the village gate";
   if (guest.festival && !guest.festival.done) return { "to-cocoa": "Sandy’s cocoa stand", queue: "Waiting for Sandy", serving: "Ordering cocoa & treats", "to-shop": "Skyla’s pumpkin stall" }[guest.festival.phase];

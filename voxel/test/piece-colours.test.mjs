@@ -1,0 +1,7 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import * as M from "../src/model.js";
+import * as THREE from "three";
+import {applyPieceColour} from "../src/piece-colours.js";
+test("piece finishes are independent, reject invalid IDs and survive saves in all three places",()=>{const s=M.freshState();const home=s.house.placed[0],garden=s.estate.placed[0],foyer=s.hollowHouse.foyer.placed[0];for(const[domain,p]of[["home",home],["garden",garden],["foyer",foyer]])assert.ok(M.setPieceColour(s,domain,p.instance,"moon"));assert.equal(M.setPieceColour(s,"home",home.instance,"invented"),false);s.paused=true;assert.equal(M.setPieceColour(s,"garden",garden.instance,"sage"),false);const r=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.equal(r.house.placed[0].tint,"moon");assert.equal(r.estate.placed[0].tint,"moon");assert.equal(r.hollowHouse.foyer.placed[0].tint,"moon");});
+test("painting a cached furniture clone leaves every other instance and glow material unchanged",()=>{const original=new THREE.MeshStandardMaterial(),glow=new THREE.MeshBasicMaterial({color:0xffaabb}),a=new THREE.Group();a.add(new THREE.Mesh(new THREE.BoxGeometry(),original),new THREE.Mesh(new THREE.BoxGeometry(),glow));const b=a.clone(true);applyPieceColour(a,"moon",true);assert.notStrictEqual(a.children[0].material,original);assert.equal(original.color.getHex(),0xffffff);assert.equal(b.children[0].material.color.getHex(),0xffffff);assert.equal(glow.color.getHex(),0xffaabb);});

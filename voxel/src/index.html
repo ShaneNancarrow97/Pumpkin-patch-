@@ -12,16 +12,16 @@
 <canvas id="world" aria-label="A voxel pumpkin farm at night, with Shane, Natalie, Skyla the cat and visiting monsters"></canvas>
 <div id="fx" aria-hidden="true"></div>
 
-<header class="hud" id="hud">
+<header class="hud" id="hud" aria-label="Patch overview">
   <div class="hud-stats" role="group" aria-label="Farm statistics">
-    <div class="hud-stat"><span class="coin-icon" aria-hidden="true"></span><span><small>Coins</small><strong id="coins">£40</strong></span></div>
-    <div class="hud-stat"><span class="crate-icon" aria-hidden="true"></span><span><small>Stock</small><strong id="stock">0</strong></span></div>
-    <div class="hud-stat hud-visitors"><span class="ghost-icon" aria-hidden="true"></span><span><small>Visitors</small><strong id="sold">0</strong></span></div>
+    <div class="hud-stat hud-balance"><span class="coin-icon" aria-hidden="true"></span><span><small>Coins</small><strong id="coins">£40</strong></span></div>
+    <div class="hud-stat hud-visitors" title="Visitors here now"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 20V10a7 7 0 0 1 14 0v10l-3-2-4 2-4-2-3 2Z"/><path d="M9 10v2m6-2v2"/></svg><span><small>Visitors here</small><strong id="visitor-now">0</strong></span></div>
   </div>
   <button class="level-chip" id="open-levels" aria-label="Level 1 · View rewards"><span class="level-orbit" aria-hidden="true">☾</span><span><small>Level</small><strong id="level-number">1</strong></span></button>
-  <button class="icon-button fullscreen-button" id="fullscreen" aria-label="Enter fullscreen" aria-pressed="false"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button>
-  <button class="icon-button" id="open-settings" aria-label="Settings"><span class="gear-icon" aria-hidden="true"></span></button>
+  <button class="icon-button fullscreen-button" id="fullscreen" aria-label="Enter fullscreen" aria-pressed="false"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button>
+  <button class="icon-button" id="open-settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m9 3-.6 2.1-2 .9-2-.5-2 3.5 1.5 1.6-.2 2.2L2 14l2 3.5 2.1-.5 1.8 1.3.6 2.1h4l.6-2.1 2-1 2 .5 2-3.5-1.5-1.6.2-2.2 1.2-1.8-2-3.5-2.1.5-1.8-1.3L13 3Z"/><circle cx="10.5" cy="12" r="3"/></svg></button>
   <div class="hud-level" id="hud-level"><span class="sr">Patch level: </span><span class="sr" id="level-name">Little seed</span><i><b id="level-bar"></b></i></div>
+  <span hidden aria-hidden="true"><span id="stock">0</span><span id="sold">0</span></span>
 </header>
 
 <button class="goal-chip" id="goal"><span class="goal-star" aria-hidden="true">✦</span><span id="goal-text">A basket for a ghost</span></button>
@@ -32,7 +32,7 @@
 <button class="dialogue" id="dialogue" hidden aria-live="polite"><span class="dialogue-portrait" aria-hidden="true"></span><span class="dialogue-words"><span class="dialogue-name"></span><span class="dialogue-text"></span></span></button>
 
 <div class="place-bar" id="place-bar" hidden>
-  <button class="button" id="place-back" aria-label="Back to the patch"><span class="ico i-patch" aria-hidden="true"></span><span class="place-back-text">Back to the patch</span></button>
+  <button class="button" id="place-back" aria-label="Back to the patch"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m14 5-7 7 7 7M7 12h14"/></svg><span class="place-back-text">Back to the patch</span></button>
   <button class="room-chip" id="place-rooms" aria-label="Choose a room"><span id="place-title"></span><span aria-hidden="true">⌄</span></button>
   <button class="button gold" id="place-decorate">Decorate</button>
 </div>
@@ -45,16 +45,15 @@
 </div>
 
 <nav class="dock" id="dock" aria-label="Main navigation">
-  <button class="tab active" data-tab="patch" aria-pressed="true"><span class="tab-icon patch" aria-hidden="true"></span>Patch</button>
-  <button class="tab" data-tab="shop" aria-pressed="false"><span class="tab-icon shop" aria-hidden="true"></span>Shop</button>
-  <button class="tab" data-tab="home" aria-pressed="false"><span class="tab-icon home" aria-hidden="true"></span>Home</button>
-  <button class="tab" data-tab="wardrobe" aria-pressed="false"><span class="tab-icon wardrobe" aria-hidden="true"></span>Wardrobe</button>
-  <button class="tab" data-tab="journal" aria-pressed="false"><span class="tab-icon journal" aria-hidden="true"></span>Journal<i class="badge" id="journal-badge" hidden></i></button>
+  <button class="tab active" data-tab="patch" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 8c-9-5-13 9-6 12 2 1 4 0 6 0s4 1 6 0c7-3 3-17-6-12Z"/><path d="M12 8c-4 3-4 9 0 12m0-12c4 3 4 9 0 12m0-12V4l3-2"/></svg><span>Farm</span></button>
+  <button class="tab" data-tab="shop" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m4 20 9-9m-4-7 4-2 7 7-2 4-3-3-2 1-4-4 1-2Zm-4 9 4 4"/></svg><span>Build</span></button>
+  <button class="tab" data-tab="attractions" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 21V10l4-3V4l4-2 4 2v3l4 3v11Zm4 0v-7l4-3 4 3v7M9 7h.1M15 7h.1m-3 9v3"/></svg><span>Attractions</span></button>
+  <button class="tab" data-tab="home" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-7h6v7m-2-13h2"/></svg><span>Home</span></button>
+  <button class="tab" data-tab="more" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg><span>More</span><i class="badge" id="journal-badge" hidden></i></button>
 </nav>
 
 <section class="sheet" id="sheet" role="dialog" aria-modal="false" aria-labelledby="sheet-title" hidden>
   <div class="sheet-frame">
-    <span class="bat bat-left" aria-hidden="true"></span><span class="bat bat-right" aria-hidden="true"></span>
     <header class="sheet-head">
       <div><p class="eyebrow" id="sheet-eyebrow"></p><h2 id="sheet-title"></h2></div>
       <button class="icon-button close" id="sheet-close" aria-label="Close">×</button>

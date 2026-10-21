@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
+import { applyPieceColour } from "./piece-colours.js";
 import { GRID, footprint, pieceFootprint, roomStyle, roomPieces, roomLayout, available, displayCount, decorById } from "./model.js";
 import { WALL_H, INTERIOR, buildRoom, buildShopInterior, SHOP_SPOTS } from "./interiors.js";
 import { decorProp, shelfBooks, decorReady } from "./decor.js";
@@ -66,7 +67,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
 
   const clear = () => {
     for (const guide of [selection?.box, selection?.ring, ghost, gridLines]) if (guide) { root.remove(guide); guide.geometry.dispose(); guide.material.dispose(); }
-    for (const o of [...root.children]) { root.remove(o); o.traverse?.((m) => { if (m.isMesh && m.geometry && !m.geometry.userData.shared) m.geometry.dispose?.(); }); }
+    for (const o of [...root.children]) { root.remove(o); o.traverse?.((m) => { if (m.isMesh && m.geometry && !m.geometry.userData.shared) m.geometry.dispose?.(); for (const mat of Array.isArray(m.material) ? m.material : m.material ? [m.material] : []) if(mat.userData.pieceColourOwned)mat.dispose(); }); }
     pool.forEach((l) => (l.intensity = 0));
     pieces = new Map(); pickables = []; actors = []; customers = new Map(); tables = []; skyla = null; selection = null; ghost = null; gridLines = null; tableKey = "";
   };
@@ -121,6 +122,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   const hangAt = (id, height) => (id === "d04" ? WALL_H - 0.45 - height : (decorById[id].hangHeight ?? 2.9) - height / 2);
   function addPiece(p) {
     const fp = pieceFootprint(p), o = ORIGIN.room, prop = decorProp(p.id), native = prop.userData.native === true;
+    applyPieceColour(prop,p.tint,true);
     const g = new THREE.Group(), standing = fp.layer === "floor", lean = new THREE.Group(), height = prop.userData.height;
     lean.add(prop);
     if (p.books?.length) lean.add(shelfBooks(p.id, p.books, prop));

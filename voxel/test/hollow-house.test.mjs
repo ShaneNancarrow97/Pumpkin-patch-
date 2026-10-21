@@ -1,0 +1,32 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import * as M from "../src/model.js";
+
+function prepared() { const s=M.freshState();s.coins=100000;s.earned=200000;s.progression.claimed=Array.from({length:12},(_,i)=>i+1);s.festival.meadow=true;s.visitorTimer=s.shop.arrivalTimer=1e6;return s; }
+function opened() { const s=prepared();assert.ok(M.buyHollowProperty(s));assert.ok(M.beginHollowRestoration(s));M.update(s,90);assert.ok(M.setHollowOpen(s,true));s.stock=[10000,10000,10000,10000];return s; }
+function guest(s,id=0) { const v={id,kind:id%5,profile:0,age:0,budget:1000,originalBudget:1000,basketLimit:1,preferred:[0],basket:[],leaveAt:null,outcome:"shopping",spot:0,needs:M.freshGuestNeeds(id),hollowConsidered:true};v.hollow=M.planHollowVisit(s,v);return v; }
+
+test("the property requires level and land, then paid restoration before opening",()=>{
+ const s=prepared();s.earned=0;assert.equal(M.buyHollowProperty(s),false);s.earned=5000;s.festival.meadow=false;assert.equal(M.buyHollowProperty(s),false);s.festival.meadow=true;const cash=s.coins;assert.ok(M.buyHollowProperty(s));assert.equal(s.coins,cash-1750);assert.equal(M.setHollowOpen(s,true),false);assert.ok(M.beginHollowRestoration(s));s.paused=true;M.update(s,100);assert.equal(s.hollowHouse.restoreRemaining,90);s.paused=false;M.update(s,89);assert.equal(s.hollowHouse.status,"restoring");M.update(s,1);assert.ok(M.hollowReady(s));assert.equal(s.hollowHouse.open,false);assert.equal(M.beginHollowRestoration(s),false);
+});
+test("all five foyer tiers have level gates and paid capacity/space progression",()=>{
+ const s=opened();for(let i=1;i<5;i++){const next=M.FOYER_TIERS[i],before=s.coins;s.earned=0;assert.equal(M.upgradeHollowFoyer(s),false);s.earned=200000;assert.ok(M.upgradeHollowFoyer(s));assert.equal(s.coins,before-next.cost);assert.equal(s.hollowHouse.tier,i+1);assert.equal(M.foyerLayout(s).capacity,next.capacity);}assert.equal(M.upgradeHollowFoyer(s),false);assert.equal(M.setHollowTicketPrice(s,25),false);assert.ok(M.setHollowTicketPrice(s,24));
+});
+test("a visit charges once from the same purse and completes while offscreen",()=>{
+ const s=opened(),v=guest(s,0);assert.ok(v.hollow);s.visitors=[v];const coins=s.coins,earned=s.earned;for(let i=0;i<10000&&!v.hollow.done;i++)M.update(s,.1);assert.ok(v.hollow.done);assert.equal(s.hollowHouse.ticketsSold,1);assert.equal(s.hollowHouse.completed,1);assert.equal(s.hollowHouse.income,6);assert.equal(M.chargeHollowTicket(s,v),0);assert.equal(s.earned-earned,(s.coins-coins));assert.ok(v.budget<=994);assert.equal(s.hollowHouse.receipts[0].visitId,v.hollow.visitId);
+});
+test("bounded reception and maze continue draining under a crowd without return deadlock",()=>{
+ const s=opened();for(let id=0;id<40;id++){const v=guest(s,id);if(v.hollow)s.visitors.push(v);}let peak=0;for(let i=0;i<18000;i++){M.update(s,.1);const o=M.hollowOccupancy(s);peak=Math.max(peak,o.foyer);assert.ok(o.foyer<=o.capacity);assert.ok(o.maze<=o.mazeCapacity);}assert.ok(peak>0);assert.ok(s.hollowHouse.completed>0);assert.equal(M.hollowOccupancy(s).total,0);assert.equal(s.hollowHouse.ticketsSold,s.hollowHouse.completed);
+});
+test("paid maze visits survive save/load without charging again or creating a second visitor",()=>{
+ const s=opened(),v=guest(s,0);s.visitors=[v];for(let i=0;i<3000&&v.hollow.phase!=="maze";i++)M.update(s,.1);assert.equal(v.hollow.phase,"maze");const saved=M.saveData(s),income=s.hollowHouse.income;const loaded=M.restoreState(JSON.parse(JSON.stringify(saved)));assert.equal(loaded.visitors.length,1);loaded.visitorTimer=loaded.shop.arrivalTimer=1e6;assert.equal(loaded.visitors[0].hollow.charged,true);for(let i=0;i<1200;i++)M.update(loaded,.1);assert.equal(loaded.hollowHouse.income,income);assert.equal(loaded.hollowHouse.ticketsSold,1);assert.equal(loaded.hollowHouse.completed,1);
+});
+test("an approach reload keeps its original route and closing does not charge waiting guests",()=>{
+ const s=opened(),v=guest(s,0);s.visitors=[v];M.update(s,2);const loaded=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.deepEqual(loaded.visitors[0].hollow.route,v.hollow.route);assert.ok(M.setHollowOpen(loaded,false));for(let i=0;i<1000;i++)M.update(loaded,.1);assert.equal(loaded.hollowHouse.ticketsSold,0);assert.equal(M.hollowOccupancy(loaded).total,0);
+});
+test("foyer stock, rotation, surfaces and wall decoration persist with collision-safe placement",()=>{
+ const s=opened();assert.ok(M.buyFoyerDecor(s,"skull-plinth"));assert.equal(M.placeFoyerDecor(s,"skull-plinth",0,0),false);const p=M.placeFoyerDecor(s,"skull-plinth",-4,1.8,30);assert.ok(p);assert.equal(M.moveFoyerDecor(s,p.instance,0,0,30),false);assert.ok(M.moveFoyerDecor(s,p.instance,-4,1.8,75));assert.ok(M.buyFoyerFinish(s,"gothic-tiles"));assert.ok(M.equipFoyerFinish(s,"gothic-tiles"));assert.ok(M.buyFoyerDecor(s,"haunted-portrait"));const wall=M.placeFoyerDecor(s,"haunted-portrait",4.8,-2.8,0,{wall:"right",y:2});assert.ok(wall);assert.equal(wall.rotation,270);const r=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.deepEqual(r.hollowHouse.foyer,s.hollowHouse.foyer);assert.ok(M.storeFoyerDecor(r,p.instance));assert.equal(r.hollowHouse.foyer.ownedDecor[p.id],1);
+});
+test("restoring legacy saves adds a locked attraction and a free estate without changing core progress",()=>{
+ const s=prepared();s.house.level=2;s.stock=[4,3,2,1];const old=M.saveData(s);delete old.estate;delete old.hollowHouse;delete old.hollowVisitors;old.version=7;const r=M.restoreState(old);assert.equal(r.version,9);assert.equal(r.house.level,2);assert.deepEqual(r.stock,s.stock);assert.equal(r.estate.placed.length,5);assert.equal(r.hollowHouse.purchased,false);assert.equal(r.hollowHouse.foyer.placed.length,3);
+});

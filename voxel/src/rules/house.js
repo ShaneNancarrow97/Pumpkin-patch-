@@ -45,6 +45,7 @@ import { PREMIUM_WALL_CATALOG } from "../content/premium-wall-catalog.js";
 import { PREMIUM_FURNITURE_CATALOG } from "../content/premium-furniture-catalog.js";
 import { findRoom, findRoomStyle, freshRoomStyles, houseRooms, parlourInteriors, roomStyles } from "../../../src/content/rooms.mjs";
 import { libraryStories } from "../../../src/content/library.mjs";
+import { validPieceColour } from "./piece-colours.js";
 
 const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG, ...PREMIUM_FURNITURE_CATALOG];
 const decorById = Object.fromEntries(decorCatalog.map(item=>[item.id,item]));
@@ -362,7 +363,7 @@ export function restoreHouse(raw) {
     used.add(p.id);
     const books = (Array.isArray(p.books) ? p.books : []).filter((b) => s.house.owned.includes(b) && decorById[b]?.category === "books" && !booked.has(b)).slice(0, shelfCapacity(p.id));
     books.forEach((b) => booked.add(b));
-    s.house.placed.push({ ...placedPiece(typeof p.instance === "string" ? p.instance : "piece-r" + s.house.placed.length, p.id, p.room, x, z, books), flip: !!p.flip, ...(Number.isFinite(p.rotation) ? { rotation: decorAngle(p.rotation) } : {}), ...(["left", "right"].includes(p.wall) ? { wall: p.wall } : {}) });
+    s.house.placed.push({ ...placedPiece(typeof p.instance === "string" ? p.instance : "piece-r" + s.house.placed.length, p.id, p.room, x, z, books), flip: !!p.flip, ...(validPieceColour(p.tint) ? {tint:p.tint} : {}), ...(Number.isFinite(p.rotation) ? { rotation: decorAngle(p.rotation) } : {}), ...(["left", "right"].includes(p.wall) ? { wall: p.wall } : {}) });
   };
   const roomFor = (p) => roomPieces(s, p.room).length < roomCapacity(s, p.room);
   for (const p of Array.isArray(raw.placed) ? raw.placed : []) {

@@ -11,6 +11,11 @@ import { customerCareSheet } from "./ui/customer-care-sheet.js";
 import { createGuestCard } from "./ui/guest-card.js";
 import { createNpcRewards } from "./ui/npc-rewards.js";
 import { festivalMeadowSheet } from "./ui/festival-meadow-sheet.js";
+import { estateSheet } from "./ui/estate-sheet.js";
+import { createEstateControls } from "./ui/estate-controls.js";
+import { moreSheet } from "./ui/more-sheet.js";
+import { hollowSheets, createHollowContext } from "./ui/hollow-sheet.js";
+import { createFoyerControls } from "./ui/foyer-controls.js";
 import { settingsSheet } from "./ui/settings-sheet.js";
 import { money, $ } from "./ui/kit.js";
 import { PLOTS } from "./world.js";
@@ -49,16 +54,28 @@ const scene = createScene($("world"), state, {
     render();
   },
   canRotatePiece: () => !!home.tools.selected && M.footprint(state.house.placed.find((p) => p.instance === home.tools.selected)?.id ?? "f01").layer !== "wall",
+  foyerEditing: () => foyerTools.active || openTab === "foyer",
+  estateEditing: () => estateTools.active,
+  foyerWallEditing: () => M.FOYER_DECOR_BY_ID[foyerTools.placement?.id]?.layer === "wall",
   onRotatePiece: (degrees) => home.tools.rotate(degrees, false),
   onRotateEnd: () => { home.tools.render(); save(); },
   onPick(what) {
-    if (what.type === "visitor" || what.type === "customer") guestCard.open(what.id, what.type === "customer");
+    if (what.type === "visitor" || what.type === "customer") { if (!estateTools.active && !foyerTools.active && !home.tools.selected) guestCard.open(what.id, what.type === "customer"); }
     else if (what.type === "plot") tapPlot(what.index);
     else if (what.type === "pumpkin") boost();
     else if (what.type === "seeds") { sheets.shop.setTab("seeds"); openSheet("shop"); }
     else if (what.type === "shop") { if (state.shop.unlocked) enterShop(); sheets.shop.setTab("shop"); openSheet("shop"); }
     else if (what.type === "meadow-land" || what.type === "cocoa-stand") { sheets.festival.setTab(what.type === "cocoa-stand" ? "cocoa" : "estate"); openSheet("festival"); }
     else if (what.type === "home") openHome();
+    else if (what.type === "estate-house") { if (!estateTools.active) { enterRoom(state.house.activeRoom); closeSheet(); } else notice("Keep the house and its entrance clear. Tap an open part of the garden."); }
+    else if (what.type === "estate-exit") { if (!estateTools.active) { leavePlace(); closeSheet(); } else notice("The entrance path stays clear for coming and going."); }
+    else if (what.type === "estate-decor") estateTools.select(what.instance);
+    else if (what.type === "estate-ground") { if (estateTools.active) estateTools.placeAt(what.point.x, what.point.z); }
+    else if (what.type === "hollow-house") { closeSheet(); hollowContext.open(); }
+    else if (what.type === "foyer-exit") { if (!foyerTools.active) leavePlace(); }
+    else if (what.type === "mortimer") { if (!foyerTools.active) scene.speakMortimer(); }
+    else if (what.type === "foyer-decor") foyerTools.select(what.instance);
+    else if (["foyer-ground", "foyer-wall"].includes(what.type)) { if (foyerTools.active) foyerTools.placeAt(what.point.x, what.point.z, what.wall, what.point.y); }
     else if (what.type === "talk") talk(what.who);
     else if (what.type === "piece") home.tools.select(what.instance);
     else if (what.type === "go") goTo(what.to);
@@ -68,6 +85,7 @@ const scene = createScene($("world"), state, {
 
 // What the rules report, turned into sights and sounds.
 function handle(e) {
+  if (e.type === "hollow-restored") { notice("Restoration complete. The Hollow House is ready to open."); save(); audio.tone(880); }
   if (e.type === "sale") {
     scene.sale(e.amount, e.route);
     audio.tone(700);
@@ -120,7 +138,7 @@ function talk(who) {
   const lines = BANTER[who], line = lines[banterIndex[who]++ % lines.length], at = scene.actorPosition(who), b = $("bubble");
   b.innerHTML = "<b>" + PEOPLE[who][0] + "</b>" + line;
   b.style.left = at.x + "px"; b.style.top = at.y + "px"; b.hidden = false;
-  clearTimeout(bubbleTimer); bubbleTimer = setTimeout(() => (b.hidden = true), 4200);
+  clearTimeout(bubbleTimer); bubbleTimer = setTimeout(() => (b.hidden = true), 2000);
 }
 function say(who, text) {
   const d = $("dialogue"), url = scene.portrait(state.wardrobe.equipped[who]);
@@ -128,18 +146,27 @@ function say(who, text) {
   d.querySelector(".dialogue-name").innerHTML = `${PEOPLE[who][0]} <span>${PEOPLE[who][1]}</span>`;
   d.querySelector(".dialogue-text").textContent = "“" + text + "”";
   d.hidden = false;
-  clearTimeout(sayTimer); sayTimer = setTimeout(() => (d.hidden = true), 6500);
+  clearTimeout(sayTimer); sayTimer = setTimeout(() => (d.hidden = true), 3200);
 }
 $("dialogue").onclick = () => ($("dialogue").hidden = true);
 
 let noticeTimer;
 function notice(text) {
   $("notice").textContent = text; $("notice").classList.add("show");
-  clearTimeout(noticeTimer); noticeTimer = setTimeout(() => $("notice").classList.remove("show"), 2800);
+  clearTimeout(noticeTimer); noticeTimer = setTimeout(() => $("notice").classList.remove("show"), 2000);
 }
 
 // Stepping inside the cottage or the shop, and back out.
-function enterRoom(id) { guestCard.clear(); home.tools.select(null); state.house.activeRoom = id; scene.enter("room", id); renderPlace(); }
+let interiorFromEstate = false;
+function enterRoom(id) {
+  if (!M.roomUnlocked(state, id)) id = "parlour";
+  if (scene.place?.kind === "estate") interiorFromEstate = true; else if (scene.place?.kind !== "room") interiorFromEstate = false;
+  foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); state.house.activeRoom = id; scene.enter("room", id); renderPlace();
+}
+function enterEstate() { foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); scene.enter("estate"); closeSheet(); renderPlace(); }
+function enterFoyer() { if (!M.hollowReady(state)) { openHollowSheet(); return false; } foyerTools.cancel(); estateTools.cancel(); hollowContext.close(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("foyer"); closeSheet(); renderPlace(); return true; }
+function openHollowSheet(tab = "manage") { sheets.hollow.setTab(tab); openSheet("hollow"); }
+function openFoyerSheet(tab = "catalogue") { sheets.foyer.setTab(tab); openSheet("foyer"); }
 // Up or down the stairs, or through a doorway, to the next room.
 function goTo(id) {
   const name = M.houseRooms.find((r) => r.id === id)?.name.toLowerCase() ?? id, layout = M.roomLayout(state, scene.place?.id);
@@ -147,23 +174,34 @@ function goTo(id) {
   home.tools.select(null); enterRoom(id); notice(`${way} the ${name}.`); audio.tone(440);
   if (openTab === "home") draw();
 }
-function enterShop() { guestCard.clear(); home.tools.select(null); scene.enter("shop"); renderPlace(); }
-function leavePlace() { guestCard.clear(); home.tools.select(null); scene.leavePlace(); renderPlace(); }
-function openHome() { if (scene.place?.kind !== "room") { enterRoom(state.house.activeRoom); closeSheet(); } else { sheets.home.setTab("rooms"); openSheet("home"); } }
+function enterShop() { foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("shop"); renderPlace(); }
+function leavePlace() { foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.leavePlace(); renderPlace(); }
+function openHome() { if (scene.place?.kind === "room") { sheets.home.setTab("rooms"); openSheet("home"); } else if (scene.place?.kind === "estate") openEstateSheet("grounds"); else enterEstate(); }
+function openEstateSheet(tab = "garden") { sheets.estate.setTab(tab); openSheet("estate"); }
+function upgradeEstateHouse() {
+  if (state.paused) return false;
+  const grown = M.upgradeHouse(state); if (!grown) return false;
+  scene.refreshHouseEstate(); scene.refreshRoom(); save(); audio.tone(880);
+  notice(`${M.HOUSE_LEVELS[state.house.level].name} is ready.${grown.moved.length || grown.stored.length ? " Interior pieces were safely moved or stored to clear the new stairs." : " Your garden stays just as you placed it."}`);
+  return true;
+}
 function renderPlace() {
   const p = scene.place, inside = !!p;
   document.body.classList.toggle("inside-place", inside);
+  document.body.classList.toggle("house-estate", p?.kind === "estate");
   $("place-bar").hidden = !inside; $("actions").hidden = inside; $("goal").hidden = inside;
-  if (inside) $("place-title").textContent = p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
+  if (inside) $("place-title").textContent = p.kind === "estate" ? "Home & Garden" : p.kind === "foyer" ? "The Hollow House · Foyer" : p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
+  $("place-back").setAttribute("aria-label", p?.kind === "room" && interiorFromEstate ? "Back to the garden" : "Back to the patch");
+  $("place-back").querySelector(".place-back-text").textContent = p?.kind === "room" && interiorFromEstate ? "Back to garden" : "Back to farm";
   $("place-rooms").disabled = p?.kind === "shop";
-  $("place-rooms").setAttribute("aria-label", p?.kind === "shop" ? "The Honest Pumpkin" : "Choose a room");
-  $("place-decorate").hidden = p?.kind !== "room";
+  $("place-rooms").setAttribute("aria-label", p?.kind === "estate" ? "Manage the grounds" : p?.kind === "shop" ? "The Honest Pumpkin" : "Choose a room");
+  $("place-decorate").hidden = !["room", "foyer"].includes(p?.kind);
   home.tools.render();
   markTab();
 }
-$("place-back").onclick = () => { leavePlace(); closeSheet(); };
-$("place-rooms").onclick = () => { sheets.home.setTab("rooms"); openSheet("home"); };
-$("place-decorate").onclick = () => { sheets.home.setTab("decorate"); openSheet("home"); };
+$("place-back").onclick = () => { if (scene.place?.kind === "room" && interiorFromEstate) enterEstate(); else leavePlace(); closeSheet(); };
+$("place-rooms").onclick = () => { if (scene.place?.kind === "foyer") openHollowSheet(); else if (scene.place?.kind === "estate") openEstateSheet("grounds"); else { sheets.home.setTab("rooms"); openSheet("home"); } };
+$("place-decorate").onclick = () => { if (scene.place?.kind === "foyer") openFoyerSheet(); else { sheets.home.setTab("decorate"); openSheet("home"); } };
 
 $("plant-all").onclick = plantAll;
 $("harvest-all").onclick = harvestAll;
@@ -176,13 +214,17 @@ function render() {
   text("coins", money(state.coins));
   text("stock", M.available(state));
   text("sold", state.sold);
+  text("visitor-now", state.visitors.length + state.shop.customers.length);
   const lvl = M.patchLevel(state);
   text("level-number", lvl.level);
   $("open-levels").setAttribute("aria-label", `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View rewards`);
   $("open-levels").style.setProperty("--progress", (lvl.progress * 100).toFixed(1) + "%");
   celebration.tick(!!openTab || !!home.tools.selected || state.paused);
-  guestCard.tick(!!openTab || celebration.active);
-  npcRewards.tick(!!openTab || !!home.tools.selected || celebration.active || state.paused || document.hidden);
+  guestCard.tick(!!openTab || celebration.active || estateTools.active || foyerTools.active || !!home.tools.selected);
+  estateTools.tick(!!openTab || celebration.active);
+  foyerTools.tick(!!openTab || celebration.active);
+  hollowContext.tick(!!openTab || celebration.active);
+  npcRewards.tick(!!scene.place || !!openTab || !!home.tools.selected || celebration.active || state.paused || document.hidden);
   $("level-bar").style.width = (lvl.progress * 100).toFixed(1) + "%";
   $("hud-level").title = `Level ${lvl.level}: ${lvl.name}. ${lvl.tagline}.`;
   text("level-name", lvl.name);
@@ -223,12 +265,16 @@ const ui = {
   draw: () => draw(), openSheet: (tab) => openSheet(tab), closeSheet: () => closeSheet(),
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
   portrait: (id) => scene.portrait(id),
-  enterRoom, enterShop, leavePlace,
+  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet,
+  get estateTools() { return estateTools; },
+  get foyerTools() { return foyerTools; }, get hollowContext() { return hollowContext; },
   read: (id) => collection.read(id),
   replaceState(next) { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(next))); state = next; location.reload(); },
 };
 const home = homeSheets(ui), collection = collectionSheets(ui);
-const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...settingsSheet(ui) };
+const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...moreSheet(ui), ...settingsSheet(ui) };
+const estateTools = createEstateControls(ui);
+const foyerTools = createFoyerControls(ui), hollowContext = createHollowContext(ui);
 
 let openTab = null, lastBody = "";
 const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
@@ -240,7 +286,7 @@ $("fullscreen").onclick = async () => {
   catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
 };
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
-const TABS = { shop: "shop", festival: "shop", care: "shop", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "journal", reader: "journal", settings: null };
+const TABS = { shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "more", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions" };
 function draw() {
   const sheet = sheets[openTab]; if (!sheet) return;
   const html = sheet.body();
@@ -253,6 +299,9 @@ function draw() {
   if (active === "decor-search") { const i = $("decor-search"); i?.focus(); i?.setSelectionRange(i.value.length, i.value.length); }
 }
 function openSheet(tab) {
+  if (foyerTools.active) foyerTools.cancel();
+  hollowContext.close();
+  if (estateTools.active) estateTools.cancel();
   if (home.tools.selected) home.tools.select(null);
   document.body.classList.add("menu-open");
   $("sheet").dataset.section = tab;
@@ -266,7 +315,7 @@ function openSheet(tab) {
 }
 function closeSheet() { document.body.classList.remove("menu-open"); openTab = null; $("sheet").hidden = true; markTab(); }
 function markTab() {
-  const active = openTab ? TABS[openTab] : scene.place?.kind === "room" ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
+  const active = openTab ? TABS[openTab] : scene.place?.kind === "foyer" ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
 }
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
@@ -282,7 +331,16 @@ document.addEventListener("keydown", (e) => {
   if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
   if (celebration.active) return;
   const tools = home.tools;
-  if (e.key === "Escape") { guestCard.clear(); if (tools.selected) tools.select(null); else closeSheet(); return; }
+  if (e.key === "Escape") { guestCard.clear(); hollowContext.close(); if (foyerTools.active) foyerTools.cancel(); else if (estateTools.active) estateTools.cancel(); else if (tools.selected) tools.select(null); else closeSheet(); return; }
+  if (foyerTools.active && scene.place?.kind === "foyer") {
+    if (e.key.toLowerCase() === "r") { e.preventDefault(); foyerTools.rotate(e.shiftKey ? -15 : 15); return; }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); foyerTools.undo(); return; }
+  }
+  if (estateTools.active && scene.place?.kind === "estate") {
+    const nudge = { ArrowLeft: [-.5, 0], ArrowRight: [.5, 0], ArrowUp: [0, -.5], ArrowDown: [0, .5] }[e.key];
+    if (nudge) { e.preventDefault(); estateTools.nudge(...nudge); return; }
+    if (e.key.toLowerCase() === "r") { e.preventDefault(); estateTools.rotate(e.shiftKey ? -15 : 15); return; }
+  }
   if (tools.selected && scene.place?.kind === "room") {
     const nudge = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
     if (nudge) { e.preventDefault(); tools.nudge(...nudge); return; }
@@ -301,5 +359,5 @@ render(); renderPlace();
 // For the smoke test and screenshots: `advance` runs the rules forward, since a
 // software-rendered browser only manages a few frames a second.
 const advance = (seconds) => { for (let t = 0; t < seconds; t += 0.1) for (const e of M.update(state, 0.1)) handle(e); render(); };
-window.PumpkinVoxel = { state: () => state, scene, notice, openSheet, closeSheet, enterRoom, enterShop, leavePlace, tools: home.tools, audio, advance };
+window.PumpkinVoxel = { state: () => state, scene, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, estateTools, foyerTools, tools: home.tools, audio, advance };
 document.body.dataset.ready = "true";

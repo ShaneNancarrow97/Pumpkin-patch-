@@ -8,7 +8,7 @@ import { createSandy } from "./sandy.js";
 import { cocoaProp } from "./cocoa-props.js";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { pumpkinTemplate, sproutTemplate, bigPumpkin } from "./pumpkins.js";
-import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, buildCottage, signBoard } from "./world.js";
+import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, signBoard } from "./world.js";
 import { buildVisitor, animateWalk } from "./characters.js";
 import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./sprite-voxels.js";
 import { loadSpriteSheets, spriteActor, spriteVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
@@ -20,6 +20,10 @@ import { GRID } from "./model.js";
 import { createFestivalWorld } from "./festival-meadow-world.js";
 import { fieldWidth, MEADOW, MEADOW_EXIT } from "./content/festival-meadow.js";
 import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
+import { createHouseEstateView } from "./house-estate-view.js";
+import { buildFarmEstateGate } from "./house-estate-world.js";
+import { createHollowFarm } from "./hollow-house-farm.js";
+import { createFoyerView } from "./foyer-view.js";
 
 const WALK = 2.4;
 
@@ -111,15 +115,17 @@ export function createScene(canvas, state, hooks) {
     return { g, sp, pk, halo, lockedVines };
   });
   const festivalWorld = createFestivalWorld({ scene, state, world, signBoard, createCashier: createSandy });
+  const hollowFarm = createHollowFarm(scene, state, signBoard);
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
   shopHit.position.set(SHOP.x, 2.5, SHOP.z + 0.4); shopHit.userData = { type: "shop" }; scene.add(shopHit); pickables.push(shopHit);
-  const homeHit = new THREE.Mesh(new THREE.BoxGeometry(10, 9, 6), new THREE.MeshBasicMaterial({ visible: false }));
-  homeHit.position.set(6.5, 4.5, 6.4); homeHit.userData = { type: "home" }; scene.add(homeHit); pickables.push(homeHit);
-  // The cottage, rebuilt whenever the house moves up a level.
-  let cottage = buildCottage(state.house.level), cottageLevel = state.house.level;
-  scene.add(cottage);
+  const homeHit = new THREE.Mesh(new THREE.BoxGeometry(7, 4, 3), new THREE.MeshBasicMaterial({ visible: false }));
+  homeHit.position.set(6.5, 2, 7.2); homeHit.userData = { type: "home" }; scene.add(homeHit); pickables.push(homeHit);
+  const homesteadArch = new THREE.Mesh(new THREE.BoxGeometry(3.4, 5, 1), new THREE.MeshBasicMaterial({ visible: false })); homesteadArch.position.set(20, 2.5, 3); homesteadArch.userData = { type: "home" }; scene.add(homesteadArch); pickables.push(homesteadArch);
+  // The farm now shows the gate. The complete house lives on its own estate.
+  const estateGate = buildFarmEstateGate(); estateGate.position.set(6.5, 0, 6.4); scene.add(estateGate);
+  const estateSign = signBoard("Home & Garden", "through the lantern gate", 5); estateSign.position.set(6.5, 3.9, 7); estateSign.userData = { type: "home" }; scene.add(estateSign); pickables.push(estateSign);
 
   // Shane, Natalie, Skyla and the visitors are drawn with the main game's
   // sprites (sprite-actors.js), or, with "Voxel characters" on in Settings,
@@ -205,7 +211,10 @@ export function createScene(canvas, state, hooks) {
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 400);
   // Indoors: a perspective camera in front of the room, like the main game's room view.
   const roomCam = new THREE.PerspectiveCamera(INTERIOR.fov, 1, 0.1, 200);
-  const active = () => (view.place ? roomCam : camera);
+  const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
+  const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.() });
+  const active = () => view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
+  const activeScene = () => view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
   const view = { x: 20, z: 8.4, zoom: 1, place: null };
   let farmView = null;
   let bloomOn = true;
@@ -247,6 +256,9 @@ export function createScene(canvas, state, hooks) {
   function frame() {
     const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
     renderPass.camera = active();
+    renderPass.scene = activeScene();
+    if (view.place === "estate") { estateView.resize(w, h); return; }
+    if (view.place === "foyer") { foyerView.resize(); return; }
     if (view.place) { clampView(); frameRoom(w, h); return; }
     // Ease from a phone crop to the whole yard, with room around the edges.
     view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(w).minZoom, 2.6);
@@ -281,12 +293,14 @@ export function createScene(canvas, state, hooks) {
   let drag = null, pinch = null;
   const worldPerPixel = () => (camera.right - camera.left) / canvas.clientWidth;
   canvas.addEventListener("pointerdown", (e) => {
+    if (["estate", "foyer"].includes(view.place)) return;
     canvas.setPointerCapture(e.pointerId);
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 1) drag = { x: e.clientX, y: e.clientY, vx: view.x, vz: view.z, moved: 0 };
     if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), zoom: view.zoom, angle: Math.atan2(a.y - b.y, a.x - b.x), rotate: !!view.place && !!hooks.canRotatePiece?.() }; drag = null; }
   });
   canvas.addEventListener("pointermove", (e) => {
+    if (["estate", "foyer"].includes(view.place)) return;
     if (!touches.has(e.pointerId)) return;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pinch && touches.size === 2) { const [a, b] = [...touches.values()];
@@ -304,6 +318,7 @@ export function createScene(canvas, state, hooks) {
   });
   let lastPick = null;
   const end = (e) => {
+    if (["estate", "foyer"].includes(view.place)) return;
     const wasTap = drag && drag.moved < 8 && touches.size === 1;
     touches.delete(e.pointerId);
     if (touches.size < 2) { if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null; }
@@ -312,7 +327,7 @@ export function createScene(canvas, state, hooks) {
       pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
       ray.setFromCamera(pointer, active());
       scene.updateMatrixWorld(true);
-      const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables, ...festivalWorld.pickables, ...[...visitorModels.values()].map(e => e.hit)], false);
+      const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables, ...festivalWorld.pickables, ...hollowFarm.pickables, ...[...visitorModels.values()].filter(e => e.m.visible).map(e => e.hit)], false);
       // A visible guest at a counter takes priority over its large building hit box.
       const hit = hits.find(h => ["visitor", "customer"].includes(h.object.userData.type)) ?? hits[0];
       lastPick = hit ? { ...hit.object.userData } : null;
@@ -322,7 +337,7 @@ export function createScene(canvas, state, hooks) {
   };
   canvas.addEventListener("pointerup", end);
   canvas.addEventListener("pointercancel", (e) => { touches.delete(e.pointerId); drag = null; if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null; });
-  canvas.addEventListener("wheel", (e) => { e.preventDefault(); view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); }, { passive: false });
+  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer"].includes(view.place)) return; e.preventDefault(); view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); }, { passive: false });
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.
   function clampView() {
@@ -346,11 +361,11 @@ export function createScene(canvas, state, hooks) {
     const el = document.createElement("div");
     el.className = "float-text " + cls; el.textContent = text;
     document.getElementById("fx").append(el);
-    fx.push({ el, pos: new THREE.Vector3(x, y, z), t: 0, life: cls === "speech" ? 2.8 : 1.4 });
+    fx.push({ el, scene: view.place, pos: new THREE.Vector3(x, y, z), t: 0, life: cls === "speech" ? 1.8 : 1.2 });
   }
   const project = (p) => { const v = p.clone().project(active()); return { x: (v.x + 1) / 2 * canvas.clientWidth, y: (1 - v.y) / 2 * canvas.clientHeight }; };
 
-  let tapPulse = 0, last = performance.now(), time = 0;
+  let tapPulse = 0, last = performance.now(), time = 0, nextSpeechAt = 0;
   function tick(now) {
     // The first frame's timestamp can come before the scene finished building, and
     // a negative time would pick a walk frame that doesn't exist.
@@ -395,20 +410,25 @@ export function createScene(canvas, state, hooks) {
     }
 
     festivalWorld.tick(time);
+    hollowFarm.sync();
 
     // Visitors along the stone path.
     for (const v of state.visitors) {
       let entry = visitorModels.get(v.id);
       if (!entry) { const m = visitorModel(v.kind), hit = new THREE.Mesh(guestHitGeometry, guestHitMaterial); hit.position.y = 1.1; hit.userData = { type: "visitor", id: v.id }; m.add(hit); scene.add(m); entry = { m, hit, sprite: m.userData.sprite, bag: null }; visitorModels.set(v.id, entry); }
+      const hollowJourney = v.hollow && !v.hollow.done;
+      entry.m.visible = !hollowJourney || ["approach", "door-wait", "to-shop"].includes(v.hollow.phase);
+      if (!entry.m.visible) continue;
       const leaving = v.leaveAt !== null && v.age >= v.leaveAt;
       const t = leaving ? (v.age - v.leaveAt) / visitorLeaveSeconds(state) : Math.min(1, v.age / VISIT.arrive);
-      const excursion = v.festival && !v.festival.done;
-      const p = excursion ? v.festival : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, t * (state.festival.meadow ? meadowOutLen : outLen)) : along(ROUTE_IN, t * inLen);
+      const excursion = hollowJourney || v.festival && !v.festival.done;
+      const journey = hollowJourney ? v.hollow : v.festival;
+      const p = excursion ? journey : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, t * (state.festival.meadow ? meadowOutLen : outLen)) : along(ROUTE_IN, t * inLen);
       // Parties stand side by side along the counter: each fans out to its own
       // place over the last stretch of the path, and back in as it sets off home.
       const fan = excursion ? 0 : leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
       entry.m.position.set(p.x + counterSide(v.spot ?? 0) * COUNTER_GAP * fan, 0.04, p.z);
-      const walking = excursion ? v.festival.walking : leaving || v.age < VISIT.arrive;
+      const walking = excursion ? journey.walking : leaving || v.age < VISIT.arrive;
       if (entry.sprite) animateVisitor(entry.m, excursion ? time + v.id : v.age, walking, p.dx / (Math.hypot(p.dx, p.dz) || 1));
       else {
         entry.m.rotation.y = walking ? Math.atan2(p.dx, p.dz) : Math.PI;              // at the counter they face Skyla
@@ -434,22 +454,18 @@ export function createScene(canvas, state, hooks) {
     paying = Math.max(0, paying - dt);
     if (skyla) animateSkyla(skyla, time, paying > 0);
     places.tick(dt, time, paying > 0);
-    if (state.house.level !== cottageLevel) {
-      scene.remove(cottage);
-      cottage.traverse((o) => o.geometry?.dispose?.());
-      cottage = buildCottage((cottageLevel = state.house.level));
-      scene.add(cottage);
-    }
+    estateView.tick();
+    foyerView.tick(dt, time);
 
     for (let i = fx.length - 1; i >= 0; i--) {
-      const f = fx[i]; f.t += dt;
+      const f = fx[i]; f.t += dt; f.el.hidden = f.scene !== view.place;
       const s = project(f.pos.clone().setY(f.pos.y + f.t * (f.life > 2 ? 0.4 : 1.2)));
       f.el.style.transform = `translate(${s.x}px, ${s.y}px) translate(-50%, -50%)`;
       f.el.style.opacity = String(Math.max(0, 1 - f.t / f.life));
       if (f.t > f.life) { f.el.remove(); fx.splice(i, 1); }
     }
 
-    if (bloomOn) composer.render(); else renderer.render(scene, active());
+    if (bloomOn) composer.render(); else renderer.render(activeScene(), active());
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
@@ -460,41 +476,60 @@ export function createScene(canvas, state, hooks) {
     // A sale: Skyla reacts, and the takings float up from whichever counter you can see.
     sale(amount, route) {
       paying = 1.2;
+      if (route === "hollow-ticket") { if (view.place === "foyer") floatText("+£" + amount, -2, 2, 0, "coin"); else if (!view.place) floatText("+£" + amount, 47, 2.8, 14.6, "coin"); return; }
       if (route === "festival-cocoa" && !view.place) { floatText("+£" + amount, MEADOW.counter[0], 2.2, MEADOW.counter[1], "coin"); return; }
       if (route === "shop" && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
       else if (!view.place) floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin");
     },
-    harvested(i, n = 1) { const p = PLOTS[i]; floatText("+" + n, p.x, 1.4, p.z, "crop"); },
+    harvested(i, n = 1) { if (!view.place) { const p = PLOTS[i]; floatText("+" + n, p.x, 1.4, p.z, "crop"); } },
     // A visitor's remark at the stall, and other words floating up from the farm.
-    say(text) { if (!view.place) floatText(text, SHOP.x - 2.4, 3.6, SHOP.counterZ + 1.8, "speech"); },
+    say(text) { if (!view.place && time >= nextSpeechAt && !document.body.classList.contains("menu-open") && !fx.some(f => f.el.classList.contains("speech"))) { nextSpeechAt = time + 9; floatText(text, SHOP.x - 2.4, 3.6, SHOP.counterZ + 1.8, "speech"); } },
     float(text, at, cls = "") { if (!view.place) floatText(text, at.x, 2, at.z, cls); },
     portrait(id) { return sheets && id ? portraitURL(sheets, id) : null; },
     refreshLooks() { placeActor("natalie"); placeActor("shane"); places.refresh(); },
     // Stepping inside: a room of the cottage, or the shop floor. leavePlace() comes back out.
     enter(kind, id) {
       if (!view.place) farmView = { x: view.x, z: view.z, zoom: view.zoom };
+      if (view.place === "estate") estateView.leave();
+      if (view.place === "foyer") foyerView.leave();
       view.place = kind;
-      if (kind === "room") places.enterRoom(id); else places.enterShop();
+      if (kind === "estate") { places.leave(); estateView.enter(); }
+      else if (kind === "foyer") { places.leave(); foyerView.enter(); }
+      else if (kind === "room") places.enterRoom(id); else places.enterShop();
       Object.assign(view, { x: 0, z: 0, zoom: 1 });
       frame();
     },
     leavePlace() {
       if (!view.place) return;
+      if (view.place === "estate") estateView.leave();
+      if (view.place === "foyer") foyerView.leave();
       places.leave();
       view.place = null;
       Object.assign(view, farmView ?? { x: 20, z: 8.4, zoom: 1 });
       frame();
     },
-    get place() { return places.place; },
+    get place() { return view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
     get festivalStatus() { return festivalWorld.status; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
     fitView() {
+      if (view.place === "estate") { estateView.cameraActions.reset(); return; }
+      if (view.place === "foyer") { foyerView.cameraActions.reset(); return; }
       Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? fieldWidth(state) / 2 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
       frame();
     },
     refreshRoom() { places.refresh(); },
     refreshEstate() { festivalWorld.sync(); frame(); },
+    refreshHouseEstate() { if (view.place === "estate") estateView.sync(); },
+    previewEstateDecor(data) { estateView.preview(data); },
+    get estateCamera() { return estateView.cameraActions; },
+    get estateStatus() { return estateView.status; },
+    refreshHollow() { hollowFarm.sync(); },
+    refreshFoyer() { if (view.place === "foyer") foyerView.sync(); },
+    previewFoyerDecor(data) { foyerView.preview(data); },
+    speakMortimer() { foyerView.speak(true); },
+    get foyerCamera() { return foyerView.cameraActions; },
+    get foyerStatus() { return foyerView.status; },
     selectPiece(instance) { places.select(instance); },
     previewPiece(instance, x, z, ok) { places.preview(instance, x, z, ok); },
     showGrid(on) { places.setGrid(on); },
@@ -507,7 +542,7 @@ export function createScene(canvas, state, hooks) {
     setBloom(on) { bloomOn = on; },
     setVoxelCharacters(on) { if (on !== voxelCharacters) { voxelCharacters = on; placeCharacters(); } },
     get characterStyle() { return skyla ? (voxelCharacters ? "voxels" : "sprites") : "loading"; },
-    setShadows(on) { renderer.shadowMap.enabled = on; scene.traverse((o) => { if (o.material) o.material.needsUpdate = true; }); },
+    setShadows(on) { renderer.shadowMap.enabled = on; for (const viewScene of [scene, estateView.scene, foyerView.scene]) viewScene.traverse((o) => { if (o.material) o.material.needsUpdate = true; }); },
     renderer,
   };
 }

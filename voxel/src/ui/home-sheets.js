@@ -1,5 +1,6 @@
 // The Home menu (rooms, the decor catalogue, the house itself), the bookshelf
 // sheet, and the toolbar for moving pieces around a room.
+import { setPieceColour, nextPieceColour } from "../rules/piece-colours.js";
 import * as M from "../model.js";
 import { money, segmented, decorIcon, spooky, plural, $ } from "./kit.js";
 
@@ -163,10 +164,12 @@ export function homeSheets(ui) {
   }
 
   // Only the selected piece gets tools. Secondary actions stay behind More.
-  let more = false, lastTools = "";
+  let more = false, lastTools = "", editHistory = [];
+  const remember = p => { editHistory.push(structuredClone(p)); if (editHistory.length > 30) editHistory.shift(); };
   const tools = {
     selected: null, moving: false,
     select(instance) {
+      editHistory = [];
       tools.selected = instance; tools.moving = false; more = false; lastTools = "";
       ui.scene.selectPiece(instance); ui.scene.showGrid(false);
       document.body.classList.toggle("placing-piece", !!instance);
@@ -183,16 +186,17 @@ export function homeSheets(ui) {
       const rotation = wall ? `<div class="wall-tools" role="group" aria-label="Hang on a wall">${["left", "back", "right"].map((side) => `<button class="button wall-tool" data-wall="${side}" aria-pressed="${(p.wall ?? "back") === side}">${side[0].toUpperCase() + side.slice(1)}</button>`).join("")}</div>`
         : `<div class="rotation-tools" role="group" aria-label="Rotate furniture">${icon("rotate-left", "↶", "Rotate anticlockwise 15 degrees")}<button class="rotation-dial" role="slider" tabindex="0" aria-label="Furniture rotation" aria-valuemin="0" aria-valuemax="359" aria-valuenow="${angle}" style="--angle:${angle}deg"><span>${angle}°</span></button>${icon("rotate-right", "↷", "Rotate clockwise 15 degrees")}</div>`;
       const html = `<div class="piece-heading"><div class="piece-name">${decorIcon(p.id, 40)}<span><b>${item.name}</b><small>${tools.moving ? "Tap a clear spot · arrows fine-tune" : wall ? "Choose a wall or move along it" : "Drag the dial · two fingers to rotate"}</small></span></div><button class="button gold tool-done" data-tool="done">Done</button></div>
-        <div class="piece-actions"><button class="button tool-move ${tools.moving ? "gold" : ""}" data-tool="move" aria-pressed="${tools.moving}">Move</button>${rotation}<button class="icon-button tool-icon" data-tool="more" aria-label="More furniture actions" aria-expanded="${more}">•••</button></div>
+        <div class="piece-actions"><button class="button tool-move ${tools.moving ? "gold" : ""}" data-tool="move" aria-pressed="${tools.moving}">Move</button>${rotation}<button class="button" data-tool="undo" ${editHistory.length ? "" : "disabled"}>Undo</button><button class="icon-button tool-icon" data-tool="more" aria-label="More furniture actions" aria-expanded="${more}">•••</button></div>
         ${tools.moving ? `<div class="nudge-tools" role="group" aria-label="Fine-tune position">${icon("left", "←", "Move left")}${icon("back", "↑", "Move towards back wall")}${icon("front", "↓", "Move towards front")}${icon("right", "→", "Move right")}</div>` : ""}
-        ${more ? `<div class="piece-more" role="group" aria-label="More furniture actions"><button class="button" data-tool="flip">Mirror</button>${M.shelfCapacity(p.id) ? `<button class="button" data-tool="books">Books · ${p.books.length}/${M.shelfCapacity(p.id)}</button>` : ""}${others.map((r) => `<button class="button" data-room="${r.id}">To ${r.name.toLowerCase()}</button>`).join("")}<button class="button" data-tool="store">Put in storage</button></div>` : ""}`;
+        ${more ? `<div class="piece-more" role="group" aria-label="More furniture actions"><button class="button" data-tool="colour">Colour</button><button class="button" data-tool="flip">Mirror</button>${M.shelfCapacity(p.id) ? `<button class="button" data-tool="books">Books · ${p.books.length}/${M.shelfCapacity(p.id)}</button>` : ""}${others.map((r) => `<button class="button" data-room="${r.id}">To ${r.name.toLowerCase()}</button>`).join("")}<button class="button" data-tool="store">Put in storage</button></div>` : ""}`;
       bar.hidden = false;
       if (html === lastTools) return;
       bar.innerHTML = html; lastTools = html;
       bar.querySelectorAll("[data-tool]").forEach((b) => b.onclick = () => tools.act(b.dataset.tool));
       bar.querySelectorAll("[data-room]").forEach((b) => b.onclick = () => tools.act("room", b.dataset.room));
       bar.querySelectorAll("[data-wall]").forEach((b) => b.onclick = () => {
-        if (M.setDecorWall(s, p.instance, b.dataset.wall)) { ui.scene.refreshRoom(); ui.save(); tools.render(); }
+        const before = structuredClone(p);
+        if (M.setDecorWall(s, p.instance, b.dataset.wall)) { remember(before); ui.scene.refreshRoom(); ui.save(); tools.render(); }
         else ui.notice("No clear space on that wall. Try moving another piece.");
       });
       const dial = bar.querySelector(".rotation-dial");
@@ -212,18 +216,26 @@ export function homeSheets(ui) {
     },
     rotate(delta, redraw = true) {
       const p = ui.state.house.placed.find((q) => q.instance === tools.selected);
+      const before = p && structuredClone(p);
       if (!p || !M.rotateDecor(ui.state, p.instance, M.decorAngle(p.rotation) + delta)) return false;
+      remember(before);
       ui.scene.rotatePiece(p.instance);
       if (redraw) { tools.render(); ui.save(); }
       return true;
     },
     act(action, otherRoom) {
       const s = ui.state, id = tools.selected;
+      if (action === "undo") {
+        const previous = editHistory.pop(), p = s.house.placed.find(p => p.instance === id);
+        if (previous && p && M.fits(s, previous.room, previous.id, previous.x, previous.z, id, previous)) { Object.assign(p, previous); if(p.tint||previous.tint)p.tint=previous.tint??"original"; ui.scene.refreshRoom(); ui.save(); }
+        tools.render(); return;
+      }
       if (action === "move") { tools.moving = !tools.moving; more = false; ui.scene.showGrid(tools.moving); tools.render(); return; }
       if (action === "more") { more = !more; tools.render(); return; }
       const steps = { left: [-1, 0], right: [1, 0], back: [0, -1], front: [0, 1] };
       if (steps[action]) return tools.nudge(...steps[action]);
       if (action.startsWith("rotate-")) { if (!tools.rotate(action === "rotate-left" ? -15 : 15)) ui.notice("Leave a little more space to turn this piece."); return; }
+      if (action === "colour") { const p=s.house.placed.find(p=>p.instance===id); if(p&&!s.paused){remember(p);setPieceColour(s,"home",id,nextPieceColour(p.tint));ui.scene.refreshRoom();ui.save();} }
       if (action === "flip" && M.flipDecor(s, id)) ui.scene.refreshRoom();
       if (action === "books") { shelfInstance = id; tools.select(null); ui.openSheet("shelf"); }
       if (action === "room" && otherRoom) {
@@ -244,14 +256,16 @@ export function homeSheets(ui) {
       const limit = fp.layer === "wall" && wall !== "back" ? room.d : room.w;
       const x = Math.max(0, Math.min(limit - fp.w, cell.x - Math.floor((fp.w - 1) / 2))), z = fp.layer === "wall" ? 0 : Math.max(0, Math.min(room.d - fp.d, cell.z - Math.floor((fp.d - 1) / 2)));
       if (M.fits(s, p.room, p.id, x, z, p.instance, { wall })) {
+        remember(p);
         if (fp.layer === "wall") p.wall = wall;
-        M.moveDecor(s, p.instance, x, z); ui.tone(600); tools.select(null); ui.scene.refreshRoom(); ui.save();
+        M.moveDecor(s, p.instance, x, z); ui.tone(600); tools.moving = false; ui.scene.showGrid(false); ui.scene.refreshRoom(); tools.render(); ui.save();
       }
       else { ui.scene.previewPiece(p.instance, x, z, false); ui.notice("Keep this spot clear for furniture, stairs and doors."); }
     },
     nudge(dx, dz) {
       const s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
-      if (p && M.moveDecor(s, p.instance, p.x + dx, M.footprint(p.id).layer === "wall" ? 0 : p.z + dz)) { ui.scene.refreshRoom(); ui.save(); }
+      const before = p && structuredClone(p);
+      if (p && M.moveDecor(s, p.instance, p.x + dx, M.footprint(p.id).layer === "wall" ? 0 : p.z + dz)) { remember(before); ui.scene.refreshRoom(); tools.render(); ui.save(); }
     },
   };
 
