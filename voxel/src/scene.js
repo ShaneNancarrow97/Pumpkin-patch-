@@ -213,7 +213,7 @@ export function createScene(canvas, state, hooks) {
   const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.() });
   const active = () => view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
   const activeScene = () => view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
-  const view = { x: 20, z: 8.4, zoom: 1, place: null };
+  const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null };
   let farmView = null;
   let bloomOn = true;
   const composer = new EffectComposer(renderer);
@@ -260,7 +260,7 @@ export function createScene(canvas, state, hooks) {
     if (view.place) { clampView(); frameRoom(w, h); return; }
     // Ease from a phone crop to the whole yard, with room around the edges.
     view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(w).minZoom, 2.6);
-    const span = (cameraLayout(w).farmSpan + (fieldWidth(state) - MAP.w) * cameraLayout(w).overview) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
+    const span = (cameraLayout(w).farmSpan + (fieldWidth(state) - MAP.w - HOLLOW_PROPERTY.westEdge) * cameraLayout(w).overview) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
     camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
     camera.updateProjectionMatrix();
     clampView();
@@ -503,7 +503,7 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "foyer") foyerView.leave();
       places.leave();
       view.place = null;
-      Object.assign(view, farmView ?? { x: 20, z: 8.4, zoom: 1 });
+      Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
       frame();
     },
     get place() { return view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
@@ -514,7 +514,7 @@ export function createScene(canvas, state, hooks) {
     fitView() {
       if (view.place === "estate") { estateView.cameraActions.reset(); return; }
       if (view.place === "foyer") { foyerView.cameraActions.reset(); return; }
-      Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? fieldWidth(state) / 2 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
+      Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
       frame();
     },
     refreshRoom() { places.refresh(); },
