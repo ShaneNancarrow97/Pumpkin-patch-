@@ -122,7 +122,7 @@ export function tickHollowVisit(s, v, dt, events = []) {
       else if (m.phase === "approach" && !m.fromFront) { m.phase = "transfer-in"; m.elapsed = 0; m.walking = false; }
       else { m.phase = "door-wait"; m.elapsed = 0; m.walking = false; }
     }
-    if (!m.charged && !["to-border", "transfer-out", "to-shop"].includes(m.phase) && (!hollowReady(s) || !h.open)) { if (insidePhases.has(m.phase)) { m.phase = "exit"; m.elapsed = 0; } else returnToShop(m); continue; }
+    if (!m.charged && !["exit", "to-border", "transfer-out", "to-shop"].includes(m.phase) && (!hollowReady(s) || !h.open)) { if (insidePhases.has(m.phase)) { m.phase = "exit"; m.elapsed = 0; } else returnToShop(m); continue; }
     if (m.phase === "door-wait") {
       m.waited += remaining;
       // Leave one reception place for returning maze guests, avoiding a full

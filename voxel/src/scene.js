@@ -40,7 +40,10 @@ function along(route, d) {
 
 export function createScene(canvas, state, hooks) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  // Foldables can expose desktop-sized viewports at phone pixel densities.
+  // Keep the world sharp while bounding full-screen fill and bloom cost.
+  const touchDevice = window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, touchDevice ? 1.5 : 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -54,7 +57,7 @@ export function createScene(canvas, state, hooks) {
   const moon = new THREE.DirectionalLight(0xd2c6ff, 2.6);
   moon.position.set(34, 32, -14); moon.target.position.set(20, 0, 13);
   moon.castShadow = true;
-  moon.shadow.mapSize.set(2048, 2048);
+  moon.shadow.mapSize.set(touchDevice ? 1024 : 2048, touchDevice ? 1024 : 2048);
   Object.assign(moon.shadow.camera, { left: -30, right: 30, top: 24, bottom: -24, near: 1, far: 90 });
   moon.shadow.bias = -0.0008; moon.shadow.normalBias = 0.03;
   scene.add(moon, moon.target);
@@ -217,6 +220,8 @@ export function createScene(canvas, state, hooks) {
   let farmView = null;
   let bloomOn = true;
   const composer = new EffectComposer(renderer);
+  // Post-processing need not render at the device’s full pixel density.
+  composer.setPixelRatio(1);
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
   const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.5, 0.45, 0.86);
@@ -529,6 +534,7 @@ export function createScene(canvas, state, hooks) {
     speakMortimer() { foyerView.speak(true); },
     get foyerCamera() { return foyerView.cameraActions; },
     get foyerStatus() { return foyerView.status; },
+    get renderStatus() { return { pixelRatio: renderer.getPixelRatio(), postprocessRatio: composer._pixelRatio, touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
     selectPiece(instance) { places.select(instance); },
     previewPiece(instance, x, z, ok) { places.preview(instance, x, z, ok); },
     showGrid(on) { places.setGrid(on); },

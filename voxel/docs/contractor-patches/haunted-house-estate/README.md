@@ -81,3 +81,7 @@ See [handover 15](../../handovers/15-west-gates-visitors-and-storage.md) for the
 5. Add more room/garden content and rendered catalogue thumbnails; current new thumbnails are simple icons, while the placed items are native voxels.
 
 The estate is an orbitable building plot, not first-person movement. The Scare Maze is a timed background visit, not a walk-through maze editor. The ticket desk is fixed to a protected service lane with selectable finishes. Cooking and 20 live levels remain roadmap items. See handovers for exact prices, limits, APIs and known integration risks.
+
+## Follow-up: house freeze report and mobile render cost
+
+See [handover 17](../../handovers/17-house-freeze-and-render-cost.md) for the closed-house visitor exit fix, reduced high-DPI postprocessing/shadow cost, device diagnostics, and the limit of local freeze reproduction. Existing saves are retained.
