@@ -8,6 +8,9 @@ import lantern from "../../assets/music/lantern-march.mid";
 import skyla from "../../assets/music/skylas-midnight-market.mid";
 import moon from "../../assets/music/moonlit-mischief.mid";
 import parade from "../../assets/music/pumpkin-parade.mid";
+import disasterology from "../../assets/music/disasterology.mid";
+import crazyTrain from "../../assets/music/crazy-train.mid";
+import rebelYell from "../../assets/music/rebel-yell.mid";
 export const MUSIC_TRACKS = [
   { id: "lantern", name: "Lantern March", credit: "Original · playful music-box march", bytes: lantern },
   { id: "thriller", name: "Thriller", credit: "Michael Jackson · your supplied MIDI", bytes: thriller },
@@ -18,4 +21,7 @@ export const MUSIC_TRACKS = [
   { id: "skyla", name: "Skyla’s Midnight Market", credit: "Original · spooky shop groove", bytes: skyla },
   { id: "moon", name: "Moonlit Mischief", credit: "Original · gentle haunted bells", bytes: moon },
   { id: "parade", name: "Pumpkin Parade", credit: "Original · retro Halloween dance", bytes: parade },
+  { id: "disasterology", name: "Disasterology", credit: "Pierce the Veil · your supplied MIDI", bytes: disasterology },
+  { id: "crazy-train", name: "Crazy Train", credit: "Ozzy Osbourne · your supplied MIDI", bytes: crazyTrain },
+  { id: "rebel-yell", name: "Rebel Yell", credit: "Billy Idol · your supplied MIDI", bytes: rebelYell },
 ];
