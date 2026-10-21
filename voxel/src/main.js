@@ -37,7 +37,9 @@ setInterval(save, 5000);
 document.addEventListener("visibilitychange", () => document.hidden && save());
 
 const prefs = (() => {
-  const base = { renderQuality: "sharp", glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false };
+  // Mist and the moving lake start off for anyone who has asked for less motion.
+  const still = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const base = { renderQuality: "sharp", glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false, mist: !still, lakeLights: !still };
   try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; }
 })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
@@ -405,7 +407,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "h" || e.key === "H") harvestAll();
 });
 
-scene.setRenderQuality(prefs.renderQuality); scene.setBloom(prefs.glow); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
+scene.setRenderQuality(prefs.renderQuality); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
 render(); renderPlace();
 // For the smoke test and screenshots: `advance` runs the rules forward, since a
 // software-rendered browser only manages a few frames a second.

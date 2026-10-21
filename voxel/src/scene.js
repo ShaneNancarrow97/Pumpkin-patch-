@@ -30,6 +30,7 @@ import { createFarmExpansion } from "./farm-expansion-world.js";
 import { fieldDepth, extendFarmRoute } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createFoyerView } from "./foyer-view.js";
+import { createAmbience } from "./ambience.js";
 
 const WALK = 2.4;
 
@@ -79,8 +80,10 @@ export function createScene(canvas, state, hooks) {
     lamp.position.set(l.x, l.y, l.z);
     scene.add(lamp);
   }
-  // The far shore: sky, moon, castle, village and lake.
-  scene.add(buildBackdrop(PITCH));
+  // The far shore: sky, moon, castle, village and lake, with the mist drifting
+  // over the farm and the lake and its lights alive (ambience.js).
+  const backdrop = buildBackdrop(PITCH), ambience = createAmbience(scene, backdrop);
+  scene.add(backdrop);
 
   // Signs.
   const patchSign = signBoard("Pumpkin Patch", "grown with love", 5);
@@ -425,6 +428,7 @@ export function createScene(canvas, state, hooks) {
     // a negative time would pick a walk frame that doesn't exist.
     const dt = THREE.MathUtils.clamp((now - last) / 1000, 0, 0.1); last = now; time += dt;
     hooks.onTick(dt);
+    ambience.tick(time);
 
     // Plots.
     plots.forEach((p, i) => {
@@ -606,6 +610,8 @@ export function createScene(canvas, state, hooks) {
     actorPosition(who) { const p = actors[who]?.model.position ?? new THREE.Vector3(HOMES[who].x, 0, HOMES[who].z); return project(new THREE.Vector3(p.x, 2.5 / Math.cos(PITCH), p.z)); },
     focus(x, z, zoom = view.zoom) { view.x = x; view.z = z; view.zoom = zoom; frame(); },          // frame() clamps once the new zoom is in
     setBloom(on) { bloomOn = on; },
+    setAmbience(on) { ambience.set(on); },
+    ambience,
     setVoxelCharacters(on) { if (on !== voxelCharacters) { voxelCharacters = on; placeCharacters(); } },
     get characterStyle() { return skyla ? (voxelCharacters ? "voxels" : "sprites") : "loading"; },
     setShadows(on) { renderer.shadowMap.enabled = on; for (const viewScene of [scene, estateView.scene, foyerView.scene]) viewScene.traverse((o) => { if (o.material) o.material.needsUpdate = true; }); },

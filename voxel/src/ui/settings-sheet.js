@@ -21,6 +21,8 @@ export function settingsSheet(ui) {
           toggle("toggle-pause", "Tea break", "Pause the farm. Nothing grows and nobody visits.", !!s.paused) +
           `<label class="setting"><span>Render detail<small>Sharp keeps fine edges. Lower settings save battery and reduce graphics load.</small></span><select id="render-quality" aria-label="Render detail">${RENDER_QUALITIES.map(q=>`<option value="${q.id}" ${q.id===validRenderQuality(p.renderQuality)?"selected":""}>${q.name}</option>`).join("")}</select></label>` +
           toggle("toggle-glow", "Glow", "Bloom on lanterns, windows and ripe pumpkins", p.glow) +
+          toggle("toggle-mist", "Drifting mist", "A thin mist that rolls across the farm, clears and comes back", p.mist) +
+          toggle("toggle-lake", "Lake and twinkling lights", "Ripples on the far lake, flickering village lamps and twinkling stars", p.lakeLights) +
           `<div class="setting"><span>Camera framing<small>See more of the scene. Pinch or scroll to inspect.</small></span><button class="button" id="fit-view">Fit view</button></div>` +
           toggle("toggle-shadows", "Moonlit shadows", "Turn off on slower phones", p.shadows) +
           toggle("toggle-voxel-characters", "Voxel characters", "Build Shane, Natalie, Skyla and the visitors from voxels instead of the original sprites", p.voxelCharacters) +
@@ -42,6 +44,9 @@ export function settingsSheet(ui) {
         body.querySelector("#toggle-pause").onclick = () => { s.paused = !s.paused; ui.notice(s.paused ? "Tea break. The farm will wait for you." : "Back to work!"); ui.draw(); };
         body.querySelector("#render-quality").onchange = e => { p.renderQuality = ui.scene.setRenderQuality(e.target.value); ui.savePrefs(); ui.draw(); };
         body.querySelector("#toggle-glow").onclick = flip("glow", (on) => ui.scene.setBloom(on));
+        const ambience = () => ui.scene.setAmbience({ mist: p.mist, lake: p.lakeLights });
+        body.querySelector("#toggle-mist").onclick = flip("mist", ambience);
+        body.querySelector("#toggle-lake").onclick = flip("lakeLights", ambience);
         body.querySelector("#fit-view").onclick = () => { ui.scene.fitView(); ui.closeSheet(); };
         body.querySelector("#toggle-shadows").onclick = flip("shadows", (on) => ui.scene.setShadows(on));
         body.querySelector("#toggle-voxel-characters").onclick = flip("voxelCharacters", (on) => ui.scene.setVoxelCharacters(on));

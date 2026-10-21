@@ -648,14 +648,19 @@ export function buildBackdrop(pitch) {
   const U = 8, X0 = -18, W = 76 * U, H = 42 * U, horizon = H - Math.round(shore * U), top = horizon - 27.5 * U;
   const canvas = document.createElement("canvas"); canvas.width = W; canvas.height = H;
   const g = canvas.getContext("2d"), r = seeded(77), high = seeded(78);
+  // A second canvas marks what twinkles, texel by texel, for the shader below:
+  // lamps and lit windows, their reflections in the lake, and stars. Every paint
+  // marks its texels, so whatever is painted over a light stops twinkling.
+  const marks = document.createElement("canvas"); marks.width = W; marks.height = H;
+  const mg = marks.getContext("2d"), LAMP = 255, GLINT = 160, STAR = 80;
   const hex = (c) => "#" + c.toString(16).padStart(6, "0");
-  const px = (x, y, c, w = 1, h = 1) => { g.fillStyle = hex(c); g.fillRect(x, y, w, h); };
+  const px = (x, y, c, w = 1, h = 1, k = 0) => { g.fillStyle = hex(c); g.fillRect(x, y, w, h); mg.fillStyle = `rgb(${k},0,0)`; mg.fillRect(x, y, w, h); };
   const X = (wx) => Math.round((wx - X0) * U);
   const mix = (a, b, t) => { const ca = new THREE.Color(a), cb = new THREE.Color(b); return ca.lerp(cb, t).getHex(); };
   // Sky in pixel bands, lighter towards the horizon, with stars and clouds.
   for (let y = 0; y < horizon; y += 3) { const t = Math.max(0, (y - top) / (horizon - top)); px(0, y, t < 0.5 ? mix(0x120a28, 0x2a1858, t * 2) : mix(0x2a1858, 0x5a3a8c, t * 2 - 1), W, 3); }
-  for (let i = 0; i < 500; i++) px((r() * W) | 0, top + ((r() * (horizon - top) * 0.95) | 0), r() < 0.7 ? 0xfff2c8 : 0xc8b8ff);
-  for (let i = 0; i < top * 2.3; i++) px((high() * W) | 0, (high() * top) | 0, high() < 0.7 ? 0xfff2c8 : 0xc8b8ff);
+  for (let i = 0; i < 500; i++) px((r() * W) | 0, top + ((r() * (horizon - top) * 0.95) | 0), r() < 0.7 ? 0xfff2c8 : 0xc8b8ff, 1, 1, STAR);
+  for (let i = 0; i < top * 2.3; i++) px((high() * W) | 0, (high() * top) | 0, high() < 0.7 ? 0xfff2c8 : 0xc8b8ff, 1, 1, STAR);
   for (const [cx, up, len] of [[80, 34, 70], [300, 40, 50], [460, 28, 80], [180, 22, 56], [540, 20, 40], [20, 24, 48], [380, 58, 60], [120, 70, 44]]) {
     const cy = horizon - up;
     for (let k = 0; k < 4; k++) px(cx + k * 5, cy - k * 2, 0x4a3484, len - k * 10, 2);
@@ -684,10 +689,10 @@ export function buildBackdrop(pitch) {
   for (const [dx, h, w] of towers) {
     px(cx + dx, horizon - 16 - h, castle, w, h);
     for (let k = 0; k < w; k++) px(cx + dx + k, horizon - 16 - h - Math.min(k, w - 1 - k) - 2, castle, 1, 2 + Math.min(k, w - 1 - k));
-    px(cx + dx + 1, horizon - 16 - h + 3, 0xffc46a); if (h > 11) px(cx + dx + 1, horizon - 16 - h + 8, 0xffb85a);
+    px(cx + dx + 1, horizon - 16 - h + 3, 0xffc46a, 1, 1, LAMP); if (h > 11) px(cx + dx + 1, horizon - 16 - h + 8, 0xffb85a, 1, 1, LAMP);
   }
-  for (let i = 0; i < 6; i++) px(cx - 10 + i * 4, horizon - 19, 0xffb85a);
-  for (let i = 0; i < 14; i++) px(cx - 26 + ((r() * 52) | 0), horizon - 2 - ((r() * 11) | 0), 0xffb85a);
+  for (let i = 0; i < 6; i++) px(cx - 10 + i * 4, horizon - 19, 0xffb85a, 1, 1, LAMP);
+  for (let i = 0; i < 14; i++) px(cx - 26 + ((r() * 52) | 0), horizon - 2 - ((r() * 11) | 0), 0xffb85a, 1, 1, LAMP);
   // The village on the far shore, with lit windows, and dark pines between.
   const lit = [];
   for (let x = 2; x < W; x += 3 + ((r() * 5) | 0)) {
@@ -697,14 +702,14 @@ export function buildBackdrop(pitch) {
       const w = 4 + ((r() * 3) | 0), hh = 3 + ((r() * 2) | 0);
       px(x, horizon - hh, 0x2a1c34, w, hh);
       for (let k = 0; k < 3; k++) px(x - 1 + k, horizon - hh - 1 - k, 0x3a2030, w + 2 - k * 2, 1);
-      for (let k = 1; k < w - 1; k += 2) { px(x + k, horizon - hh + 1, 0xffb85a, 1, 1); lit.push(x + k); }
+      for (let k = 1; k < w - 1; k += 2) { px(x + k, horizon - hh + 1, 0xffb85a, 1, 1, LAMP); lit.push(x + k); }
     }
   }
   // The lake: still water with shimmer lines and the lights reflected in it.
   for (let y = horizon; y < H - U; y++) px(0, y, mix(0x3a2c7a, 0x1e1848, (y - horizon) / (H - U - horizon)), W, 1);
   for (let i = 0; i < 50; i++) px((r() * W) | 0, horizon + 2 + ((r() * (H - U - horizon - 3)) | 0), 0x5a48a0, 2 + ((r() * 6) | 0), 1);
-  for (const x of lit) for (let y = horizon + 1; y < H - U - 1; y += 2) if (r() > (y - horizon) / (H - U - horizon)) px(x + (((y >> 1) % 2) ? 1 : 0), y, 0xd88a3e, 1 + (r() < 0.4), 1);   // fading towards us
-  for (let y = horizon + 1; y < H - U - 1; y += 2) px(mx - 3 + ((r() * 3) | 0), y, 0xe8c890, 3 + ((r() * 4) | 0), 1);
+  for (const x of lit) for (let y = horizon + 1; y < H - U - 1; y += 2) if (r() > (y - horizon) / (H - U - horizon)) px(x + (((y >> 1) % 2) ? 1 : 0), y, 0xd88a3e, 1 + (r() < 0.4), 1, GLINT);   // fading towards us
+  for (let y = horizon + 1; y < H - U - 1; y += 2) px(mx - 3 + ((r() * 3) | 0), y, 0xe8c890, 3 + ((r() * 4) | 0), 1, GLINT);
   px(0, H - U, 0x1c1626, W, U);                                                       // near shore
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -713,6 +718,11 @@ export function buildBackdrop(pitch) {
   plane.geometry.translate(X0 + W / U / 2, H / U / 2, 0);
   plane.position.set(0, 0, -0.6);
   plane.rotation.x = -pitch;                                                          // lean back to face the camera
+  // For ambience.js: which texels twinkle, and the lake's rows (top to bottom of the canvas).
+  const lights = new THREE.CanvasTexture(marks);
+  lights.colorSpace = THREE.NoColorSpace;
+  lights.magFilter = THREE.NearestFilter; lights.minFilter = THREE.NearestFilter; lights.generateMipmaps = false;
+  plane.userData = { marks: lights, size: [W, H], lake: [horizon, H - U] };
   return plane;
 }
 
