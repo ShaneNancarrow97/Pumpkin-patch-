@@ -160,6 +160,10 @@ export function animateVisitor(group, age, walking, dx = 0) {
 
 // A portrait for the menus: the first standing frame of an outfit, Skyla or a
 // visitor ("visitor-ghost"), as an image URL. Cached; null until sheets load.
+// Frames sit off-centre in their cells (a costume's torso can be well right of
+// the middle) and sheets differ in height, so each portrait is cut to the
+// figure: from just above the head to the feet, centred on the frame's anchor,
+// and never narrower than half its height, so every menu frames them alike.
 const portraits = new Map();
 export function portraitURL(sheets, id) {
   if (portraits.has(id)) return portraits.get(id);
@@ -167,9 +171,19 @@ export function portraitURL(sheets, id) {
   if (id.startsWith("visitor-")) { sheet = sheets.visitors; f = sheet?.meta[id.slice(8)]?.[0]; }
   else { sheet = sheets[id.replace(/-base$/, "")]; f = sheet?.meta.idle?.[0]; }
   if (!sheet || !f) return null;
+  const src = document.createElement("canvas");
+  src.width = f.w; src.height = f.h;
+  const g = src.getContext("2d", { willReadFrequently: true });
+  g.drawImage(sheet.image, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+  const { data } = g.getImageData(0, 0, f.w, f.h);
+  let left = f.w, right = -1, top = f.h;
+  for (let y = 0; y < f.h; y++) for (let x = 0; x < f.w; x++) if (data[(y * f.w + x) * 4 + 3] > 24) { left = Math.min(left, x); right = Math.max(right, x); top = Math.min(top, y); }
+  if (right < 0) return null;
+  const ax = f.ax ?? f.w / 2, foot = Math.min(f.h, Math.ceil((f.ay ?? f.h) + 2)), y0 = Math.max(0, top - 3), h = foot - y0;
+  const w = Math.ceil(Math.max(2 * Math.max(ax - left, right + 1 - ax) + 6, h * 0.5));
   const c = document.createElement("canvas");
-  c.width = f.w; c.height = f.h;
-  c.getContext("2d").drawImage(sheet.image, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+  c.width = w; c.height = h;
+  c.getContext("2d").drawImage(src, 0, y0, f.w, h, Math.round(w / 2 - ax), 0, f.w, h);
   const url = c.toDataURL("image/png");
   portraits.set(id, url);
   return url;

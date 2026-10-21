@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
 import { GRID } from "./model.js";
 import { Face as Panel } from "./face.js";
+import * as FX from "./fixtures.js";
 class Face extends Panel { constructor(cols, rows = ROWS) { super(cols, rows, V); } }
 
 // Inside the cottage and the shop: voxel dioramas seen from the front, like
@@ -18,6 +19,10 @@ export const V = 0.0625;
 // The room being built: the little cottage's 10 x 6 parlour unless the house
 // layout says otherwise (rooms grow with the house). The shop is always GRID.
 let R = GRID;
+// The fixtures (fixtures.js) of the room being built, and a helper that stands
+// one in the room and adds its lights to the room's.
+let fixed = [];
+const fit = (lights, g, x, y, z, turn = 0) => { fixed.push(g); lights.push(...FX.place(g, x, y, z, turn)); return g; };
 export const WALL_H = 5.2;
 const T = 0.25;                                                     // wall thickness
 const ROWS = Math.ceil(WALL_H / V);                                 // the top row tucks under the cap
@@ -395,33 +400,6 @@ function windowFace(face, look, w) {
   });
   if (kind !== "square") face.rect(c - 2, apex + 1, c + 2, apex + 4, [tint(look.trim, 0.12), 0.1]);
 }
-// Drapes either side of a window, in folds, gathered by a gold cord with a
-// tassel, under a scalloped pelmet.
-function curtains(face, look, w) {
-  const c = cell(w.cx), half = cell(WIN.w / 2), outer = half + 7, tie = 37, top = 63;
-  const folds = [[tint(look.curtains, 0.12), 0.18], [look.curtains, 0.16], [shade(look.curtains, 0.35), 0.12], [shade(look.curtains, 0.12), 0.15]];
-  const gold = [0xc9a050, 0.21], dull = [0x9a7a3a, 0.2], at = (s, k) => (s < 0 ? c - 1 - k : c + k);
-  for (const s of [-1, 1]) {
-    for (let j = ROW.field; j < top; j++) {
-      const inner = j >= tie ? half + 4 - Math.round(5 * Math.min(1, (j - tie) / 12) ** 0.7) : half + 4 - Math.round(2 * Math.min(1, (tie - j) / 14));
-      for (let k = inner; k < outer; k++) face.set(at(s, k), j, j === tie || j === tie - 1 ? gold : folds[(outer - k) % 4]);
-    }
-    for (let j = tie - 6; j < tie - 1; j++) for (const k of [half + 4, half + 5]) face.set(at(s, k), j, j === tie - 6 ? dull : gold);
-  }
-  for (let i = c - outer; i < c + outer; i++) for (let j = top - 2; j < ROW.cornice; j++) {
-    const x = ((i - c + outer) % 6 + 6) % 6, scallop = j >= top || (j === top - 1 && x > 0 && x < 5) || (j === top - 2 && x > 1 && x < 4);
-    if (scallop) face.set(i, j, j === top - 2 || (j === top - 1 && (x === 1 || x === 4)) ? gold : [shade(look.curtains, 0.2), 0.19]);
-  }
-}
-// The sill under a window, with candles on the haunted and grand rooms' sills.
-function sill(v, look, w, lights) {
-  v.box(w.cx - WIN.w / 2 - 0.1875, WIN.bottom - 0.1875, 0, WIN.w + 0.375, 0.125, 0.3, look.trim);
-  v.box(w.cx - WIN.w / 2 - 0.125, WIN.bottom - 0.25, 0, WIN.w + 0.25, 0.0625, 0.22, mix(look.trim, look.dark, 0.4));
-  v.box(w.cx - WIN.w / 2 - 0.1875, WIN.bottom - 0.0625, 0.28, WIN.w + 0.375, 0.0025, 0.02, tint(look.trim, 0.15));
-  if (!look.candles && !look.chandelier) return;
-  for (const dx of [-0.56, 0.56]) candle(v, w.cx + dx, WIN.bottom - 0.0625, 0.15, 0.28 + (dx > 0 ? 0.06 : 0));
-  lights.push({ x: w.cx, y: WIN.bottom + 0.6, z: 0.6, intensity: 5 });
-}
 // A candle in a brass dish: wax with a drip, a wick, and a flame with a bright tip.
 function candle(v, x, y, z, h = 0.3) {
   v.box(x - 0.08, y, z - 0.08, 0.16, 0.03, 0.16, 0xb08a3a);
@@ -510,114 +488,19 @@ function roundWindow(face, look, lights) {
   });
   lights.push({ x: cx, y: cy, z: 1.2, color: 0xb8a8ff, intensity: 4 });
 }
-// Cobwebs in a top corner of the field: spokes from the corner and sagging threads.
-function cobweb(face, i0, dir, look) {
-  const j0 = ROW.cornice - 1, silk = [mix(0xc8c0d0, look.wall, 0.25), 0.03];
-  face.paint(Math.min(i0, i0 + dir * 18), j0 - 18, Math.max(i0, i0 + dir * 18) + 1, j0 + 1, (i, j) => {
-    const x = (i - i0) * dir, y = j0 - j, d = Math.hypot(x, y), a = Math.atan2(y, x);
-    if (x < 0 || y < 0 || d > 17) return null;
-    const spoke = [0.15, 0.55, 0.95, 1.35].some((s) => Math.abs(Math.sin(a - s)) * d < 0.5);
-    const thread = [4.5, 9, 13.5].some((r) => Math.abs(d - r * (0.86 + 0.14 * Math.abs(Math.cos((a - 0.15) * Math.PI / 0.4)))) < 0.5);
-    return spoke || thread ? silk : null;
-  });
-}
 
 function backWall(v, r, look, paper, lights, feature) {
   const face = new Face(cell(R.w));
   wallFace(face, look, paper ? papered(paper) : plain(look, 0), [[0.5625, 2.6875], [3.3125, R.w - 3.3125], [R.w - 2.6875, R.w - 0.5625]]);
   if (feature === "panel") panelFrame(face, look);
   if (feature === "round") roundWindow(face, look, lights);
-  if (feature === "hearth") { centreHearth(); hearthFace(face, look); }
-  for (const w of windows()) { windowFace(face, look, w); if (look.curtains) curtains(face, look, w); }
-  if (look.cobwebs) { cobweb(face, 11, 1, look); cobweb(face, face.cols - 12, -1, look); }
+  for (const w of windows()) windowFace(face, look, w);
   for (const u of [0.25, 3, R.w - 3, R.w - 0.25]) column(face, u, look);
   face.shade((i, j) => soft(Math.min(i, face.cols - 1 - i), j));
   face.build(wall(v, "back"));
-  for (const w of windows()) sill(v, look, w, lights);
-  if (feature === "hearth") hearth(v, r, look, lights);
-}
-
-// A glass jar: its contents, glass above, shoulder, neck, cork, and sometimes a paper label round it.
-const JARS = [0xc8641e, 0x9d55e6, 0xd8b04a, 0x6aa04a, 0xe8dcc8];
-function jar(v, x, y, z, h, colour, glow, label) {
-  const glass = mix(colour, 0xf4ecff, 0.6), w = 0.1875, body = h * 0.95;
-  v.box(x, y, z, w, body * 0.7, w, colour, glow);
-  v.box(x, y + body * 0.7, z, w, body * 0.3, w, glass);
-  v.box(x + 0.03, y + body, z + 0.03, w - 0.06, 0.03, w - 0.06, glass);
-  v.box(x + 0.045, y + body + 0.03, z + 0.045, w - 0.09, 0.05, w - 0.09, 0x9a6a3e);
-  if (label) v.box(x - 0.006, y + body * 0.2, z - 0.006, w + 0.012, body * 0.28, w + 0.012, 0xe8dcc0);
-}
-
-// The kitchen hearth in the back wall's face: courses of brick (stone, or dark
-// under the copper hood) with a voussoired arch over a sooty firebox.
-// The hearth stands in the middle of the back wall, however wide the room.
-const HEARTH = { i0: 56, i1: 104, top: 38, c: 80, half: 12, spring: 24 };
-const centreHearth = () => { const k = cell(R.w / 2) - 80; Object.assign(HEARTH, { i0: 56 + k, i1: 104 + k, c: 80 + k }); return R.w / 2 - 5; };
-const hearthOpen = (i, j) => { const dx = i + 0.5 - HEARTH.c; return Math.abs(dx) < HEARTH.half && (j < HEARTH.spring || j + 0.5 - HEARTH.spring < 4 * (1 - (dx / HEARTH.half) ** 2)); };
-function hearthFace(face, look) {
-  const stone = look.hearth === "copper" ? 0x5a4a44 : 0x8a8090, mortar = [mix(stone, look.hearth === "copper" ? 0x000000 : 0xffffff, 0.3), 0.47], { i0, i1, top, c } = HEARTH;
-  face.paint(i0, 0, i1, top, (i, j) => {
-    if (hearthOpen(i, j)) {
-      const brick = j % 4 !== 3 && (i + (Math.floor(j / 4) % 2) * 3) % 7 !== 6;
-      return [j > HEARTH.spring - 3 ? 0x140e10 : brick ? 0x2a1c1c : 0x1a1214, 0.02];
-    }
-    const a = Math.atan2(j - HEARTH.spring + 8, i + 0.5 - c);
-    if (j >= HEARTH.spring - 2 && ring(hearthOpen, i, j, 3, true)) {                // the arch's wedge bricks
-      const s = a / 0.17, k = Math.round(s);
-      return Math.abs(s - k) < 0.14 ? mortar : [mix(stone, hash(k, 3) < 0.5 ? 0x000000 : 0xffffff, hash(k, 5) * 0.12), 0.52];
-    }
-    const course = Math.floor(j / 4), x = i + (course % 2) * 3, id = Math.floor(x / 7);
-    if (j % 4 === 3 || x % 7 === 6) return mortar;
-    return [mix(stone, hash(id, course) < 0.5 ? 0x000000 : 0xffffff, hash(course, id) * 0.14), 0.5];
-  });
-  face.rect(c - 2, HEARTH.spring + 4, c + 2, HEARTH.spring + 8, [tint(stone, 0.15), 0.55]);    // the keystone
-}
-// The hearth in the round: hearthstones, mantel, firedogs, logs and a fire,
-// a cauldron on a crane, and the copper hood or a row of jars above.
-function hearth(room, r, look, lights) {
-  // Built for a 10-wide wall, then moved along to the middle of this one.
-  const dx = R.w / 2 - 5, v = { box: (x, ...a) => room.box(x + dx, ...a), block: (x, ...a) => room.block(x + dx, ...a) };
-  const copper = look.hearth === "copper", stone = copper ? 0x5a4a44 : 0x8a8090, iron = 0x2a2226;
-  for (let k = 0; k < 3; k++) v.box(3.4 + k * 1.07, 0, 0, 1.06, 0.08, 1.15, vary(shade(stone, 0.25), 0.1, r));
-  v.box(3.3, 2.375, 0, 3.4, 0.125, 0.72, look.wood);
-  v.box(3.35, 2.3125, 0, 3.3, 0.0625, 0.62, mix(look.wood, look.dark, 0.35));
-  for (const x of [3.42, 6.43]) v.box(x, 1.9, 0.5, 0.15, 0.42, 0.16, mix(look.wood, look.dark, 0.2));
-  for (const x of [4.42, 5.5]) { v.box(x, 0.08, 0.12, 0.08, 0.34, 0.08, iron); v.box(x - 0.015, 0.42, 0.105, 0.11, 0.07, 0.11, 0x4a3a3e); v.box(x, 0.08, 0.12, 0.08, 0.05, 0.42, iron); }
-  for (const [x, y, z, len] of [[4.38, 0.12, 0.16, 1.24], [4.46, 0.12, 0.33, 1.06], [4.62, 0.25, 0.24, 0.8]]) {
-    v.box(x, y, z, len, 0.13, 0.12, 0x4a2a18);
-    for (const e of [x - 0.01, x + len - 0.005]) v.box(e, y + 0.015, z + 0.015, 0.015, 0.1, 0.09, 0x9a7048);
-    for (let k = 0; k < 3; k++) v.box(x + 0.2 + k * 0.3 + r() * 0.1, y + 0.13, z + 0.03, 0.06, 0.012, 0.06, 0xff7020, true);
-  }
-  // The fire: columns of flame, hottest at the root, licking up unevenly.
-  for (let x = 4.5; x < 5.5 - 1e-6; x += V) for (const z of [0.12, 0.2, 0.28]) {
-    const dx = Math.abs(x + V / 2 - 5) / 0.5, h = (1 - dx * dx) * (0.7 + r() * 0.45) * (z > 0.25 ? 0.7 : z > 0.15 ? 0.88 : 1);
-    if (h < 0.08) continue;
-    v.box(x, 0.24, z, V, h * 0.35, V, 0xffe08a, true);
-    v.box(x, 0.24 + h * 0.35, z, V, h * 0.3, V, 0xffa030, true);
-    v.box(x, 0.24 + h * 0.65, z, V, h * 0.35, V, 0xff5a1a, true);
-  }
-  if (copper) {
-    // A riveted copper hood stepping in to the chimney breast, pans hung from its rail.
-    for (let k = 0; k < 8; k++) {
-      const x = 3.55 + k * 0.09, w = 2.9 - k * 0.18, d = 0.62 - k * 0.055, y = 2.5 + k * 0.25, c = vary(look.trim, 0.05, r);
-      v.box(x, y, 0, w, 0.25, d, c);
-      v.box(x, y + 0.22, d - 0.01, w, 0.03, 0.02, tint(c, 0.22));
-      if (k === 0) for (let p = x + 0.1; p < x + w - 0.05; p += 0.2) v.box(p, y + 0.08, d, 0.03, 0.03, 0.01, shade(c, 0.45));
-    }
-    for (const [x, s] of [[3.75, 0.36], [6.0, 0.3], [6.35, 0.24]]) {
-      v.box(x + s / 2 - 0.015, 2.08, 0.66, 0.03, 0.42 - s / 2, 0.03, 0x3a2a24);
-      v.box(x, 1.72 - s / 2 + 0.2, 0.62, s, s, 0.06, vary(look.trim, 0.08, r));
-      v.box(x + s * 0.2, 1.72 - s / 2 + 0.2 + s * 0.2, 0.68, s * 0.6, s * 0.6, 0.01, tint(look.trim, 0.25));
-    }
-  } else {
-    // An iron crane over the fire with a cauldron of stew.
-    v.box(4.3, 1.3, 0.34, 0.06, 0.06, 0.06, iron); v.box(4.36, 1.31, 0.35, 0.7, 0.04, 0.04, iron); v.box(4.99, 0.98, 0.355, 0.03, 0.33, 0.03, iron);
-    for (const [y, w, h] of [[0.56, 0.3, 0.05], [0.61, 0.46, 0.08], [0.69, 0.52, 0.14], [0.83, 0.48, 0.06], [0.89, 0.42, 0.04]]) { v.block(5, y, 0.37, w, h, w * 0.8, 0x1e1a1e); v.block(5, y, 0.37, w * 0.8, h, w, 0x1e1a1e); }
-    v.block(5, 0.92, 0.37, 0.36, 0.02, 0.3, 0xc87838, true);
-    v.block(5, 0.93, 0.37, 0.5, 0.03, 0.5, 0x2a262a);
-    for (let i = 0; i < 6; i++) jar(v, 3.68 + i * 0.47, 2.5, 0.25, 0.24 + (i % 2) * 0.08, JARS[i % 4], i % 3 === 0, i % 2 === 1);
-  }
-  lights.push({ x: R.w / 2, y: 0.8, z: 1.2, color: 0xff8a3a, intensity: 12 });
+  for (const w of windows()) fit(lights, FX.windowDressing({ width: WIN.w, kind: look.window, candles: !!(look.candles || look.chandelier), curtains: look.curtains ?? null, bottom: WIN.bottom, top: WIN.top }, look), w.cx, 0, 0);
+  if (look.cobwebs) for (const [x, flip] of [[0.5, false], [R.w - 0.5, true]]) fit(lights, FX.cobweb({ size: 1.1, flip }, look), x, ROW.cornice * V - 1.12, 0);
+  if (feature === "hearth") fit(lights, FX.hearth({ style: look.hearth, width: 3.4, top: WALL_H }, look), R.w / 2, 0, 0);
 }
 
 function sideWall(v, r, look, paper, side, lights, door = false, arches = [], stair = false) {
@@ -625,7 +508,6 @@ function sideWall(v, r, look, paper, side, lights, door = false, arches = [], st
   wallFace(face, look, paper ? papered(paper) : plain(look, side === "left" ? 1 : 2), [[0.3125, R.d - 0.5625]]);
   const sconces = look.sconces && !stair && !arches.length;
   if (sconces) face.paint(44, 44, 52, 54, (i, j) => (Math.abs(i - 47.5) + Math.max(0, j - 50) <= 3.5 ? [j === 44 || i === 44 ? tint(look.trim, 0.1) : look.trim, 0.06] : null));
-  if (look.jars) for (let k = 0; k < 2; k++) for (const u of [1.4, 4.6]) face.paint(cell(u) - 1, cell(2.6 + k * 0.8) - 5, cell(u) + 1, cell(2.6 + k * 0.8), (i, j) => [look.wood, 0.06 + (j - cell(2.6 + k * 0.8) + 5) * 0.05]);
   if (door) doorway(face, look);
   for (const a of arches) archway(v, face, look, side, a, lights);
   column(face, R.d - 0.25, look);
@@ -636,12 +518,7 @@ function sideWall(v, r, look, paper, side, lights, door = false, arches = [], st
     candle(v, x + sx * 0.24, 3.0, 3, 0.22);
     lights.push({ x: x + sx * 0.6, y: 3.4, z: 3, intensity: 5 });
   }
-  if (look.jars) for (let k = 0; k < 2; k++) {
-    const y = 2.6 + k * 0.8;
-    v.box(sx > 0 ? 0 : R.w - 0.36, y, 1, 0.36, 0.0625, 4, look.wood);
-    v.box(sx > 0 ? 0.33 : R.w - 0.36, y - 0.03, 1, 0.03, 0.03, 4, mix(look.wood, look.dark, 0.3));
-    for (let i = 0; i < 9; i++) jar(v, sx > 0 ? 0.07 : R.w - 0.26, y + 0.0625, 1.1 + i * 0.42, 0.24 + (i % 3) * 0.06, JARS[(i + k) % 5], i % 4 === 0, (i + k) % 3 === 1);
-  }
+  if (look.jars && !arches.length && !door) fit(lights, FX.jarShelf({ length: Math.min(4, R.d - 2), rows: 2, seed: sx > 0 ? 2 : 5, gap: 0.8 }, look), x, 2.6 - 0.22, R.d / 2 - 0.25, sx * Math.PI / 2);
 }
 
 // An archway through a side wall to the next room: an arched opening with a
@@ -652,12 +529,6 @@ function archway(v, face, look, side, a, lights) {
   const u0 = a.at + 0.1875, u1 = a.at + a.width - 0.1875, mid = (u0 + u1) / 2, rad = (u1 - u0) / 2;
   const open = (i, j) => { const u = (i + 0.5) * V, y = (j + 0.5) * V; return u > u0 && u < u1 && (y < ARCH.spring || (u - mid) ** 2 + (y - ARCH.spring) ** 2 < rad * rad); };
   const i0 = cell(u0) - 4, i1 = cell(u1) + 4, top = cell(ARCH.spring + rad) + 5;
-  face.paint(i0, 0, i1, top, (i, j) => {
-    if (open(i, j)) return null;
-    const d = ring(open, i, j, 3, true);
-    return d === 1 ? [mix(look.trim, look.dark, 0.4), 0.06] : d === 2 ? [look.trim, 0.1] : d === 3 ? [tint(look.trim, 0.1), 0.12] : null;
-  });
-  face.rect(cell(mid) - 2, cell(ARCH.spring + rad) - 1, cell(mid) + 2, cell(ARCH.spring + rad) + 4, [tint(look.trim, 0.18), 0.15]);  // keystone
   face.cut(i0, 0, i1, top, open);
   // Beyond the wall: a short passage, its floor, a far wall with a lamp, all a little darker.
   const out = side === "left" ? -1 : 1, edge = side === "left" ? 0 : R.w, far = 2.2, x0 = side === "left" ? edge - far : edge;
@@ -667,7 +538,7 @@ function archway(v, face, look, side, a, lights) {
   for (const z of [z0 - 0.1, z0 + w]) v.box(x0, 0, z, far, 3.6, 0.1, shade(look.wall, 0.55));
   v.box(x0, 3.5, z0 - 0.1, far, 0.1, w + 0.2, look.dark);
   v.box(side === "left" ? x0 : edge + far - 0.05, 1.5, z0 + w / 2 - 0.12, 0.05, 0.3, 0.24, 0xffc46a, true);
-  v.box(edge - (side === "left" ? T : 0), 0, z0 + 0.1875, T, 0.04, w - 0.375, 0x8a8090);           // the threshold
+  fit(lights, FX.doorway({ width: u1 - u0, height: ARCH.spring + rad, depth: T }, look), edge + out * T, 0, mid, -out * Math.PI / 2);
   lights.push({ x: edge + out * 1.3, y: 2, z: z0 + w / 2, color: 0xffb070, intensity: 4 });
 }
 
@@ -675,68 +546,36 @@ function archway(v, face, look, side, a, lights) {
 // climbing to the room above, the open stairwell it arrives through, a ladder
 // up to the attic and the hatch it comes up through. Each returns the box a tap
 // on it should catch, to go to the room it leads to.
-const LANDING = WALL_H - 0.15, STEPS = 10;
+const LANDING = WALL_H - 0.15;
 function staircase(v, look, st) {
-  const x0 = st.x, w = st.w, zb = st.z, front = st.z + st.d, dz = (st.d - 1) / STEPS, rise = LANDING / (STEPS + 1);
-  const body = mix(look.wood, look.dark, 0.3), tread = tint(look.floor, 0.08), riser = shade(look.wood, 0.25), rail = look.trim;
-  for (let k = 0; k < STEPS; k++) {
-    const zf = front - k * dz, z = zf - dz, top = (k + 1) * rise;
-    v.box(x0 + 0.06, 0, z, w - 0.06, top - 0.0625, dz, body);
-    v.box(x0, top - 0.0625, z - 0.0625, w, 0.0625, dz + 0.0625, tread);
-    v.box(x0 + 0.03, top - rise, zf - 0.03, w - 0.03, rise - 0.0625, 0.03, riser);
-    for (const t of [0.25, 0.75]) v.box(x0 + 0.03, top, z + dz * t - 0.025, 0.05, 0.9, 0.05, look.dark);   // spindles
-    v.box(x0 + 0.005, top + 0.9, z - 0.03, 0.1, 0.07, dz + 0.06, rail);                                      // the handrail, stepping up
-  }
-  v.box(x0 + 0.06, 0, zb, w - 0.06, LANDING - 0.0625, 1, body);                                            // the landing, and the cupboard under it
-  v.box(x0, LANDING - 0.0625, zb, w, 0.0625, 1, tread);
-  v.box(x0 + 0.03, 0.12, zb + 0.15, 0.03, 2.1, 0.7, shade(look.wood, 0.4));
-  v.box(x0 + 0.01, 0.2, zb + 0.22, 0.03, 1.94, 0.56, mix(look.wood, look.dark, 0.15));
-  v.box(x0 - 0.01, 1.1, zb + 0.72, 0.03, 0.06, 0.05, rail);
-  v.box(x0, 0, front - 0.14, 0.14, 1.3, 0.14, look.wood);                                                 // the newel post, capped
-  v.box(x0 - 0.02, 1.3, front - 0.16, 0.18, 0.06, 0.18, rail);
-  v.block(x0 + 0.07, 1.36, front - 0.07, 0.1, 0.1, 0.1, tint(rail, 0.15));
-  return { x: x0, y: 0, z: zb, w, h: LANDING, d: st.d };
+  fit([], FX.staircase({ rise: LANDING, run: st.d - 1, width: st.w, rail: "left", landing: 1, clip: WALL_H }, look), st.x, 0, st.z + st.d, Math.PI / 2);
+  return { x: st.x, y: 0, z: st.z, w: st.w, h: LANDING, d: st.d };
 }
 function stairwell(v, look, st) {
-  const x0 = st.x, w = st.w, z0 = st.z + 1, z1 = st.z + st.d, dz = (st.d - 1) / STEPS, rise = LANDING / (STEPS + 1), dark = shade(look.wall, 0.6);
-  for (let k = 0; k < 6; k++) {
-    const z = z0 + k * dz, top = -(k + 1) * rise;
-    v.box(x0 + 0.03, top - 0.0625, z, w - 0.03, 0.0625, dz + 0.0625, shade(tint(look.floor, 0.08), 0.12 + k * 0.1));
-    v.box(x0 + 0.03, top, z - 0.03, w - 0.03, rise, 0.03, shade(look.wood, 0.3 + k * 0.08));
-  }
+  const x0 = st.x, w = st.w, z0 = st.z + 1, z1 = st.z + st.d, dark = shade(look.wall, 0.6);
+  fit([], FX.staircase({ rise: LANDING, run: st.d - 1, width: st.w, rail: "none", base: LANDING - 2.8 }, look), x0, -LANDING, z1, Math.PI / 2);
   v.box(x0, -2.8, z0, w, 0.1, z1 - z0, 0x120c10);                                                        // the dark below
   v.box(x0 - 0.06, -2.8, z0, 0.06, 2.8, z1 - z0, dark);
   v.box(x0, -2.8, z1, w, 2.8, 0.06, dark);
-  // A balustrade round the well: posts, spindles and a rail.
-  for (let z = z0 + 0.25; z < z1; z += 0.5) v.box(x0 - 0.04, 0, z - 0.025, 0.05, 0.9, 0.05, look.dark);
-  for (let x = x0 + 0.25; x < x0 + w; x += 0.5) v.box(x - 0.025, 0, z1 - 0.02, 0.05, 0.9, 0.05, look.dark);
-  v.box(x0 - 0.06, 0.9, z0, 0.1, 0.07, z1 - z0 + 0.06, look.trim);
-  v.box(x0 - 0.06, 0.9, z1 - 0.04, w + 0.06, 0.07, 0.1, look.trim);
-  v.box(x0 - 0.08, 0, z1 - 0.08, 0.14, 1.1, 0.14, look.wood);
-  v.block(x0 - 0.01, 1.1, z1 - 0.01, 0.12, 0.08, 0.12, look.trim);
+  // A balustrade round the well, the two runs sharing the corner's newel.
+  fit([], FX.balustrade({ length: z1 - z0 + 0.075, newels: "both" }, look), x0 + 0.08, 0, (z0 + z1 + 0.075) / 2, -Math.PI / 2);
+  fit([], FX.balustrade({ length: w + 0.075, newels: "end" }, look), x0 + w / 2 - 0.0375, 0, z1 + 0.08, Math.PI);
   return { x: x0, y: -0.6, z: z0, w, h: 1.6, d: z1 - z0 };
 }
 function ladderUp(v, look, st) {
-  const x0 = st.x, w = st.w, z = st.z, top = WALL_H + 0.25, wood = shade(look.wood, 0.1);
-  for (let y = 0; y < top; y += 0.25) {
-    const lean = 0.55 - (y / top) * 0.4;                                                                    // its feet out from the wall
-    for (const x of [x0 + 0.18, x0 + w - 0.26]) v.box(x, y, z + lean, 0.08, 0.26, 0.08, wood);
-    if (y > 0.1) v.box(x0 + 0.2, y, z + lean + 0.01, w - 0.42, 0.04, 0.06, tint(wood, 0.1));
-  }
+  const x0 = st.x, w = st.w, z = st.z;
+  fit([], FX.staircase({ rise: WALL_H + 0.2, run: 0.6, width: 0.75, kind: "ladder", rail: "both", clip: WALL_H }, look), x0 + (w - 0.75) / 2, 0, z + 0.85, Math.PI / 2);
   v.box(x0 - 0.04, WALL_H - 0.02, z - 0.04, w + 0.08, 0.1, 0.9, look.dark);                                // the hatch's frame overhead
   v.box(x0 + 0.08, WALL_H + 0.06, z + 0.06, w - 0.16, 0.02, 0.7, 0x120c10);
   return { x: x0, y: 0, z, w, h: WALL_H, d: 1 };
 }
 function hatch(v, look, st) {
-  const x0 = st.x, w = st.w, z = st.z, wood = shade(look.wood, 0.1);
+  const x0 = st.x, w = st.w, z = st.z;
   v.box(x0, -1.6, z, w, 0.1, 1, 0x120c10);
   v.box(x0 - 0.06, -1.6, z + 1, w + 0.06, 1.6, 0.06, shade(look.wall, 0.6));
   v.box(x0 - 0.06, -1.6, z, 0.06, 1.6, 1, shade(look.wall, 0.6));
-  for (const x of [x0 + 0.18, x0 + w - 0.26]) v.box(x, -1.4, z + 0.3, 0.08, 2.2, 0.08, wood);              // the ladder's top, through the hatch
-  for (let y = -1.2; y < 0.7; y += 0.3) v.box(x0 + 0.2, y, z + 0.31, w - 0.42, 0.04, 0.06, tint(wood, 0.1));
-  v.box(x0 + 0.05, 0, z + 0.02, w - 0.1, 0.95, 0.06, look.wood);                                           // the trapdoor, propped open
-  for (const y of [0.2, 0.7]) v.box(x0 + 0.08, y, z + 0.08, w - 0.16, 0.05, 0.02, 0x2a2226);
-  for (const [a, b] of [[0, 0], [w - 0.08, 0], [0, 0.92], [w - 0.08, 0.92]]) v.box(x0 + a, 0, z + b, 0.08, 0.06, 0.08, look.dark);
+  fit([], FX.staircase({ rise: WALL_H + 0.2, run: 0.6, width: 0.75, kind: "ladder", rail: "both", base: WALL_H - 1.5 }, look), x0 + (w - 0.75) / 2, -WALL_H, z + 0.85, Math.PI / 2);
+  fit([], FX.hatch({ width: w - 0.2, depth: 0.9 }, look), x0 + w / 2, 0, z);
   return { x: x0, y: -0.4, z, w, h: 1.4, d: 1 };
 }
 
@@ -783,40 +622,10 @@ function floor(v, r, look, holes = []) {
 }
 
 function extras(v, r, look, lights) {
-  if (look.chandelier) {
-    const cx = R.w / 2, cz = 2.6, y = 4.1, brass = look.trim;
-    v.box(cx - 0.025, y + 0.45, cz - 0.025, 0.05, WALL_H - y - 0.45, 0.05, 0x2a1a14);
-    v.block(cx, y + 0.3, cz, 0.16, 0.16, 0.16, brass);
-    v.block(cx, y - 0.22, cz, 0.08, 0.52, 0.08, brass);
-    v.block(cx, y - 0.32, cz, 0.13, 0.1, 0.13, tint(brass, 0.15));
-    for (let a = 0; a < Math.PI * 2 - 1e-6; a += Math.PI / 12) v.block(cx + Math.cos(a) * 0.55, y - 0.05, cz + Math.sin(a) * 0.4, 0.09, 0.05, 0.09, brass);
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * Math.PI * 2, x = cx + Math.cos(a) * 0.55, z = cz + Math.sin(a) * 0.4;
-      v.block(cx + Math.cos(a) * 0.28, y - 0.12, cz + Math.sin(a) * 0.2, 0.05, 0.05, 0.05, brass);
-      candle(v, x, y, z, 0.18);
-      if (look.stars) v.block(cx + Math.cos(a + 0.4) * 0.5, y - 0.2, cz + Math.sin(a + 0.4) * 0.36, 0.04, 0.12, 0.04, 0xc8b8f0);
-    }
-    lights.push({ x: cx, y: y, z: cz, intensity: 10 });
-  }
-  if (look.herbs) for (let i = 0; i < 12; i++) {
-    const x = 0.8 + i * 0.75, top = 4.25 - (i % 3) * 0.12, c = [0x5a7a3a, 0x7a6a9a, 0x8a7a3a][i % 3];
-    v.box(x + 0.06, top, 0.31, 0.015, WALL_H - 0.05 - top, 0.015, 0x3a2a1a);
-    for (let k = 0; k < 4; k++) v.box(x + k * 0.035, top - 0.5 + (k % 2) * 0.06, 0.25 + (k % 2) * 0.04, 0.04, 0.44, 0.06, vary(c, 0.18, r));
-    v.box(x - 0.01, top - 0.08, 0.24, 0.17, 0.04, 0.1, 0xc9a050);
-  }
-  if (look.rafters) for (const z of [1.5, 3, 4.5]) {
-    v.box(-T, WALL_H - 0.1, z, R.w + 2 * T, 0.3, 0.3, look.dark);
-    v.box(-T, WALL_H - 0.1, z + 0.28, R.w + 2 * T, 0.04, 0.03, tint(look.dark, 0.12));
-    for (const [x, d] of [[0, 1], [R.w, -1]]) for (let k = 0; k < 16; k++) v.box(x + d * k * 0.125 - (d < 0 ? 0.125 : 0), WALL_H - 0.95 + k * 0.05, z, 0.125, 0.2, 0.3, look.dark);
-  }
-  if (look.fairyLights) for (let s = 0; s < 8; s++) {
-    const x0 = 0.2 + s * 1.2, sag = (t) => WALL_H - 0.4 - Math.sin(Math.PI * t) * 0.22;
-    for (let k = 0; k < 4; k++) {
-      const t0 = k / 4, t1 = (k + 1) / 4, x = x0 + t0 * 1.2;
-      v.box(x, Math.min(sag(t0), sag(t1)), 0.42, 0.3, 0.015, 0.015, 0x2a3a24);
-      if (k) { v.box(x - 0.03, sag(t0) - 0.09, 0.4, 0.06, 0.07, 0.06, [0xffd894, 0xc89cff, 0xffc46a][(s + k) % 3], true); v.box(x - 0.02, sag(t0) - 0.03, 0.41, 0.04, 0.03, 0.04, 0x2a3a24); }
-    }
-  }
+  if (look.chandelier) fit(lights, FX.chandelier({ style: look.stars ? "celestial" : "manor", chain: 0.55 }, look), R.w / 2, WALL_H, 2.6);
+  if (look.herbs) fit(lights, FX.hangingHerbs({ length: R.w - 1, seed: 1 }, look), R.w / 2, WALL_H - 1.05, 1.1);
+  if (look.rafters) for (const z of [1.5, 3, 4.5]) fit(lights, FX.rafter({ span: R.w, drop: 1 }, look), R.w / 2, WALL_H - 1.1, z - 0.02);
+  if (look.fairyLights) { const g = FX.fairyLights({ length: R.w - 0.4, seed: 2, sag: 0.22 }); fit(lights, g, R.w / 2, ROW.cornice * V - 0.06 - g.userData.height, 0.3); }
   lights.push({ x: R.w / 2, y: 3.4, z: R.d + 1, color: 0xffd0a0, intensity: 2.5 });   // the room's warm fill
 }
 
@@ -826,6 +635,7 @@ function extras(v, r, look, lights) {
 // doorways, and the room each leads to.
 export function buildRoom(style, wallpaper, layout) {
   R = layout ? { w: layout.w, d: layout.d } : GRID;
+  fixed = [];
   const look = STYLES[style] ?? STYLES["parlour-warm"], v = new Voxels(), r = seeded(style.length * 31 + (wallpaper ? 7 : 0) + R.w), lights = [], links = [];
   const paper = wallpaper ? { id: wallpaper.id, base: parseInt(wallpaper.color.slice(1), 16) } : null;
   const doors = layout?.doors ?? [], stairs = layout?.stairs ?? [];
@@ -840,7 +650,9 @@ export function buildRoom(style, wallpaper, layout) {
     links.push({ to: st.up ?? st.down, ...build(v, look, st) });
   }
   extras(v, r, look, lights);
-  return { group: v.build(), lights, links };
+  const group = v.build();
+  for (const g of fixed) group.add(g);
+  return { group, lights, links };
 }
 
 // The shop: shelves of glowing jars, the display tables, Skyla's counter and the door.
@@ -872,56 +684,21 @@ export function buildShopInterior() {
   floor(v, r, look);
   const back = new Face(cell(R.w));
   wallFace(back, look, plain(look, 0), [[0.5625, 9.4375]]);
-  for (const y of [1.9, 2.75, 3.6]) for (let x = 1; x < R.w - 0.5; x += 2) back.paint(cell(x) - 1, cell(y) - 4, cell(x) + 1, cell(y), (i, j) => [look.wood, 0.08 + (j - cell(y) + 4) * 0.08]);
   for (const u of [0.25, R.w - 0.25]) column(back, u, look);
   back.shade((i, j) => soft(Math.min(i, back.cols - 1 - i), j));
   back.build(wall(v, "back"));
-  // Shelves along the back wall: jars, and a little pumpkin every so often.
-  for (const y of [1.9, 2.75, 3.6]) {
-    v.box(0.5, y, 0, R.w - 1, 0.0625, 0.45, look.trim);
-    v.box(0.5, y - 0.03, 0.42, R.w - 1, 0.05, 0.04, shade(look.trim, 0.25));
-    for (let i = 0; i < 26; i++) {
-      const x = 0.6 + i * 0.34;
-      if ((i + y * 2) % 7 < 1) { v.block(x + 0.1, y + 0.0625, 0.2, 0.22, 0.16, 0.2, 0xe8761e); v.block(x + 0.1, y + 0.0625, 0.2, 0.16, 0.18, 0.24, 0xf0821e); v.block(x + 0.1, y + 0.24, 0.2, 0.03, 0.06, 0.03, 0x4a6a2a); continue; }
-      jar(v, x, y + 0.0625, 0.1, 0.24 + (i % 3) * 0.06, [0xffb85a, 0xf0821e, 0xb774ff, 0xd9d2ff, 0xf5c84a][(i + y * 3) % 5 | 0], i % 3 === 0, i % 4 === 2);
-    }
-  }
+  fixed = [];
+  fit(lights, FX.jarShelving({ length: R.w - 1, rows: 3, seed: 1 }, look), R.w / 2, 0, 0);
   // The side walls: the door on the left, open onto the lantern-lit path.
   sideWall(v, r, look, null, "left", lights, true);
   sideWall(v, r, look, null, "right", lights);
-  // Display tables on legs, with a runner, a shelf beneath and a crate on it.
-  for (const t of SHOP_SPOTS.tables) {
-    v.box(t.x - 0.85, 0.8, t.z - 0.55, 1.7, 0.1, 1.1, 0x8a5a36);
-    v.box(t.x - 0.85, 0.86, t.z + 0.55, 1.7, 0.04, 0.005, tint(0x8a5a36, 0.15));
-    v.box(t.x - 0.3, 0.9, t.z - 0.56, 0.6, 0.008, 1.12, 0x7a2a3a);
-    v.box(t.x - 0.75, 0.66, t.z - 0.45, 1.5, 0.14, 0.9, look.wood);
-    for (const [a, b] of [[-0.72, -0.42], [0.62, -0.42], [-0.72, 0.32], [0.62, 0.32]]) v.box(t.x + a, 0, t.z + b, 0.1, 0.66, 0.1, look.dark);
-    v.box(t.x - 0.7, 0.16, t.z - 0.4, 1.4, 0.05, 0.8, mix(look.wood, look.dark, 0.25));
-    v.box(t.x - 0.5, 0.21, t.z - 0.28, 0.5, 0.24, 0.5, 0x9a6a3e);
-    for (let k = 0; k < 3; k++) v.box(t.x - 0.51, 0.25 + k * 0.08, t.z + 0.215, 0.52, 0.04, 0.01, 0x7a4e2c);
-  }
-  // Skyla's counter: panelled, with the till, the bell, a lantern and the ledger.
+  for (const t of SHOP_SPOTS.tables) fit(lights, FX.displayTable({}, look), t.x, 0, t.z);
   const c = SHOP_SPOTS.counter;
-  v.box(c.x - 0.5, 0, c.z - 1.6, 1.4, 1.15, 3.2, look.wood);
-  v.box(c.x - 0.6, 1.15, c.z - 1.7, 1.6, 0.12, 3.4, 0x8a5a36);
-  v.box(c.x - 0.54, 0, c.z - 1.6, 0.04, 0.12, 3.2, look.dark);
-  for (let z = -1.45; z < 1.5; z += 0.75) { v.box(c.x - 0.53, 0.22, c.z + z, 0.03, 0.78, 0.6, mix(look.wood, look.dark, 0.3)); v.box(c.x - 0.55, 0.32, c.z + z + 0.1, 0.03, 0.58, 0.4, tint(look.wood, 0.06)); }
-  v.box(c.x - 0.3, 0.22, c.z + 1.6, 1.0, 0.78, 0.03, mix(look.wood, look.dark, 0.3));
-  v.box(c.x, 1.27, c.z + 0.7, 0.6, 0.3, 0.4, 0xd9a35a);
-  v.box(c.x + 0.05, 1.57, c.z + 0.72, 0.5, 0.12, 0.2, 0xc8923a);
-  for (let k = 0; k < 4; k++) v.box(c.x + 0.08 + k * 0.12, 1.57, c.z + 0.95, 0.08, 0.03, 0.08, 0xe8dcc0);
-  v.box(c.x + 0.15, 1.69, c.z + 0.75, 0.3, 0.14, 0.03, 0xf0e4c8);
-  v.box(c.x + 0.12, 1.27, c.z - 1.22, 0.2, 0.03, 0.2, 0xb08a3a);
-  v.block(c.x + 0.22, 1.3, c.z - 1.12, 0.14, 0.08, 0.14, 0xd9a35a);
-  v.block(c.x + 0.22, 1.38, c.z - 1.12, 0.04, 0.04, 0.04, 0xd9a35a);
-  v.box(c.x - 0.25, 1.27, c.z - 0.75, 0.32, 0.05, 0.24, 0x6a1f2a);
-  v.box(c.x - 0.24, 1.32, c.z - 0.74, 0.3, 0.012, 0.22, 0xf0e4c8);
-  v.box(c.x + 0.58, 1.27, c.z - 0.92, 0.34, 0.04, 0.34, 0x2a2226);
-  for (const [a, b] of [[0, 0], [0.29, 0], [0, 0.29], [0.29, 0.29]]) v.box(c.x + 0.6 + a, 1.31, c.z - 0.9 + b, 0.03, 0.36, 0.03, 0x2a2226);
-  v.box(c.x + 0.64, 1.31, c.z - 0.86, 0.22, 0.32, 0.22, 0xffc46a, true);
-  v.box(c.x + 0.58, 1.67, c.z - 0.92, 0.34, 0.05, 0.34, 0x2a2226);
-  v.block(c.x + 0.75, 1.72, c.z - 0.75, 0.06, 0.08, 0.06, 0x2a2226);
+  fit(lights, FX.shopCounter({ length: 3.2 }, look), c.x + 1.0, 0, c.z, -Math.PI / 2);
+  fit(lights, FX.shopDoor({ width: 1.5, height: 41 * V, depth: T }, look), -T, 0, (70 + 94) / 2 * V, Math.PI / 2);
   // The till's lamp hangs to Skyla's left and low, so it lights the counter, not her (she's cream and white).
-  lights.push({ x: c.x - 0.6, y: 2.4, z: c.z + 1.2, intensity: 4 }, { x: 3.2, y: 3.6, z: 2.6 }, { x: 3.2, y: 3.4, z: 5, color: 0xffc890, intensity: 6 }, { x: 0.4, y: 1.5, z: 5.2, color: 0xb8a8ff, intensity: 4 });
-  return { group: v.build(), lights };
+  lights.push({ x: 3.2, y: 3.6, z: 2.6 }, { x: 3.2, y: 3.4, z: 5, color: 0xffc890, intensity: 6 }, { x: 0.4, y: 1.5, z: 5.2, color: 0xb8a8ff, intensity: 4 });
+  const group = v.build();
+  for (const g of fixed) group.add(g);
+  return { group, lights };
 }

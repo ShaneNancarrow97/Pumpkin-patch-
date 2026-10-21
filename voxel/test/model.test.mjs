@@ -28,7 +28,7 @@ test("the big pumpkin hurries growing plots, and shakes a pumpkin loose every ei
   assert.ok(s.plots[0].progress > 0.05);
   s.plots[0] = { phase: "empty", progress: 0, variety: 0 };
   let rewards = 0;
-  for (let i = 0; i < 15; i++) rewards += M.tap(s).reward;
+  for (let i = 0; i < 15; i++) { s.time += 0.2; rewards += M.tap(s).reward; }
   assert.equal(s.taps, 16);
   assert.equal(rewards, 2);
   assert.equal(M.available(s), 2);
@@ -222,4 +222,24 @@ test("old voxel saves load into the new rules, and new saves round-trip", () => 
   assert.deepEqual(again.house, s.house);
   assert.equal(again.shop.unlocked, true);
   assert.deepEqual(M.restoreState(null), M.freshState());
+});
+
+test("a held key or a bot can't pump the big pumpkin or the streak", () => {
+  const s = M.freshState(); M.plant(s, 0);
+  M.tap(s); const after = s.plots[0].progress;
+  for (let i = 0; i < 30; i++) M.tap(s);                                       // thirty taps in the same instant
+  assert.equal(s.plots[0].progress, after); assert.equal(s.taps, 1);
+  for (let i = 0; i < 12; i++) M.rewardHarvestStreak(s);                       // Harvest all: twelve picks at once
+  assert.equal(s.streak.count, 1, "a burst of picks is one pick");
+  s.time += 0.7; M.rewardHarvestStreak(s); assert.equal(s.streak.count, 2);
+});
+
+test("the barn fills up, and the rest goes to the wholesale cart", () => {
+  const s = M.freshState(); assert.equal(M.barnCapacity(s), 60);
+  s.stock[0] = 59; s.plots[0] = { phase: "ready", progress: 1, variety: 2 }; s.upgrades.yield = 0;
+  const coins = s.coins; assert.equal(M.harvest(s, 0), 1); assert.equal(M.stockCount(s), 60);
+  s.plots[0] = { phase: "ready", progress: 1, variety: 3 }; M.harvest(s, 0);
+  assert.equal(M.stockCount(s), 60); assert.equal(s.coins, coins + 21); assert.equal(s.wholesale, 21);
+  s.upgrades.plots = 2; s.upgrades.yield = 5; assert.equal(M.barnCapacity(s), 240);
+  assert.equal(M.restoreState(M.saveData(s)).wholesale, 21);
 });

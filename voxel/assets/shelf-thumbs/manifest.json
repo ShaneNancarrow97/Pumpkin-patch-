@@ -1,0 +1,261 @@
+{
+  "generatedBy": "voxel/tools/render-shelf-thumbs.mjs",
+  "cell": 112,
+  "rows": [
+    "shelf-floating",
+    "shelf-bracket",
+    "shelf-two-tier",
+    "shelf-whatnot",
+    "shelf-etagere"
+  ],
+  "cols": [
+    "walnut",
+    "ebony",
+    "bone",
+    "plum",
+    "sage",
+    "pumpkin"
+  ],
+  "models": {
+    "shelf-floating:walnut": {
+      "triangles": 1146,
+      "voxels": [
+        40,
+        6,
+        30
+      ]
+    },
+    "shelf-floating:ebony": {
+      "triangles": 1134,
+      "voxels": [
+        40,
+        6,
+        30
+      ]
+    },
+    "shelf-floating:bone": {
+      "triangles": 768,
+      "voxels": [
+        40,
+        6,
+        30
+      ]
+    },
+    "shelf-floating:plum": {
+      "triangles": 740,
+      "voxels": [
+        40,
+        6,
+        30
+      ]
+    },
+    "shelf-floating:sage": {
+      "triangles": 762,
+      "voxels": [
+        40,
+        6,
+        30
+      ]
+    },
+    "shelf-floating:pumpkin": {
+      "triangles": 758,
+      "voxels": [
+        40,
+        6,
+        30
+      ]
+    },
+    "shelf-bracket:walnut": {
+      "triangles": 7348,
+      "voxels": [
+        120,
+        22,
+        30
+      ]
+    },
+    "shelf-bracket:ebony": {
+      "triangles": 7310,
+      "voxels": [
+        120,
+        22,
+        30
+      ]
+    },
+    "shelf-bracket:bone": {
+      "triangles": 6098,
+      "voxels": [
+        120,
+        22,
+        30
+      ]
+    },
+    "shelf-bracket:plum": {
+      "triangles": 6026,
+      "voxels": [
+        120,
+        22,
+        30
+      ]
+    },
+    "shelf-bracket:sage": {
+      "triangles": 6080,
+      "voxels": [
+        120,
+        22,
+        30
+      ]
+    },
+    "shelf-bracket:pumpkin": {
+      "triangles": 6096,
+      "voxels": [
+        120,
+        22,
+        30
+      ]
+    },
+    "shelf-two-tier:walnut": {
+      "triangles": 11374,
+      "voxels": [
+        80,
+        80,
+        30
+      ]
+    },
+    "shelf-two-tier:ebony": {
+      "triangles": 11216,
+      "voxels": [
+        80,
+        80,
+        30
+      ]
+    },
+    "shelf-two-tier:bone": {
+      "triangles": 8958,
+      "voxels": [
+        80,
+        80,
+        30
+      ]
+    },
+    "shelf-two-tier:plum": {
+      "triangles": 8706,
+      "voxels": [
+        80,
+        80,
+        30
+      ]
+    },
+    "shelf-two-tier:sage": {
+      "triangles": 8926,
+      "voxels": [
+        80,
+        80,
+        30
+      ]
+    },
+    "shelf-two-tier:pumpkin": {
+      "triangles": 8902,
+      "voxels": [
+        80,
+        80,
+        30
+      ]
+    },
+    "shelf-whatnot:walnut": {
+      "triangles": 14318,
+      "voxels": [
+        40,
+        100,
+        40
+      ]
+    },
+    "shelf-whatnot:ebony": {
+      "triangles": 14116,
+      "voxels": [
+        40,
+        100,
+        40
+      ]
+    },
+    "shelf-whatnot:bone": {
+      "triangles": 12706,
+      "voxels": [
+        40,
+        100,
+        40
+      ]
+    },
+    "shelf-whatnot:plum": {
+      "triangles": 12514,
+      "voxels": [
+        40,
+        100,
+        40
+      ]
+    },
+    "shelf-whatnot:sage": {
+      "triangles": 12628,
+      "voxels": [
+        40,
+        100,
+        40
+      ]
+    },
+    "shelf-whatnot:pumpkin": {
+      "triangles": 12656,
+      "voxels": [
+        40,
+        100,
+        40
+      ]
+    },
+    "shelf-etagere:walnut": {
+      "triangles": 21626,
+      "voxels": [
+        80,
+        112,
+        40
+      ]
+    },
+    "shelf-etagere:ebony": {
+      "triangles": 21324,
+      "voxels": [
+        80,
+        112,
+        40
+      ]
+    },
+    "shelf-etagere:bone": {
+      "triangles": 18222,
+      "voxels": [
+        80,
+        112,
+        40
+      ]
+    },
+    "shelf-etagere:plum": {
+      "triangles": 17950,
+      "voxels": [
+        80,
+        112,
+        40
+      ]
+    },
+    "shelf-etagere:sage": {
+      "triangles": 18114,
+      "voxels": [
+        80,
+        112,
+        40
+      ]
+    },
+    "shelf-etagere:pumpkin": {
+      "triangles": 18170,
+      "voxels": [
+        80,
+        112,
+        40
+      ]
+    }
+  }
+}

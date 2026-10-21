@@ -12,10 +12,13 @@ const SHOP_MAX = { capacity: 3, displays: 1, checkout: 2 };
 // The visitor upgrades, Spread the word first. Each says what it does now and at the next level.
 const VISITOR_IDS = ["sign", ...M.VISITOR_UPGRADES.map((u) => u.id)];
 const secs = (n) => `${Math.round(n * 10) / 10}s`;
+// The frequency upgrades give the wait now and what the next tier makes it.
+const FREQUENCY = {
+  sign: (s) => [["Parties every", M.stallArrivalSeconds(s)], ["shoppers every", M.shopArrivalSeconds(s)]],
+  lights: (s) => [["Parties every", M.stallArrivalSeconds(s)]],
+};
 const EFFECTS = {
-  sign: (s) => `a party every ${secs(M.stallArrivalSeconds(s))}, a shopper every ${secs(M.shopArrivalSeconds(s))}`,
   party: (s) => (M.partyMax(s) > 1 ? `parties of up to ${M.partyMax(s)}` : "everyone comes on their own"),
-  lights: (s) => `a party every ${secs(M.stallArrivalSeconds(s))}`,
   cocoa: (s) => `they wait ${secs(M.stallPatience(s))} for stock${s.festival.cocoa.level ? `, cocoa service ${secs(M.cocoaServiceSeconds(s))}` : M.mugPrice(s) ? `, ${money(M.mugPrice(s))} a cup` : ""}`,
   loyalty: (s) => ["no regulars yet", "one in four is a regular", "one in two is a regular"][M.visitorUpgradeLevel(s, "loyalty")],
 };
@@ -25,10 +28,17 @@ function nextLevel(s, id) {
   (id === "sign" ? t.upgrades : t.visitorUpgrades)[id]++;
   return t;
 }
+function effectLine(s, id, done) {
+  const next = !done && nextLevel(s, id);
+  if (FREQUENCY[id]) return FREQUENCY[id](s).map(([what, now], i) => `${what} ${secs(now)}${next ? `, next ${secs(FREQUENCY[id](next)[i][1])}` : ""}`).join("; ") + ".";
+  return `Now: ${EFFECTS[id](s)}.${next ? ` Next: ${EFFECTS[id](next)}.` : ""}`;
+}
+// Tiers as pips and a count, so eight of them stay tidy on a phone.
+const tiers = (level, most) => `<div class="tiers" role="img" aria-label="Tier ${level} of ${most}"><div class="pips">${Array.from({ length: most }, (_, i) => `<i class="${i < level ? "on" : ""}"></i>`).join("")}</div>${most > 1 ? `<span>${level} of ${most}</span>` : ""}</div>`;
 // What Shane and Natalie say when a bigger visitor upgrade arrives, by level.
 const VISITOR_TALK = {
   party: { 2: ["shane", "They’re bringing their friends now. Word travels fast when the pumpkins are good."], 3: ["natalie", "Whole families coming up the path. Skyla’s going to need a longer counter."] },
-  lights: { 1: ["natalie", "Fairy lights all the way down the path. I told you it would look magical."], 3: ["shane", "You can see our path from the castle now. The bats have started complaining."] },
+  lights: { 1: ["natalie", "Fairy lights all the way down the path. I told you it would look magical."], 3: ["shane", "You can see our path from the castle now. The bats have started complaining."], 8: ["natalie", "Every lantern in the village is on our path now. The bats have filed a formal complaint."] },
   cocoa: { 1: ["shane", "A hot chocolate stand, as promised. I’ve only had three cups. For quality control."], 3: ["natalie", "Marshmallows, cinnamon and a pinch of moonlight. Nobody’s in a hurry to leave."] },
   loyalty: { 1: ["shane", "My loyalty card, at last. Buy nine pumpkins, receive a slightly larger pumpkin. Genius."], 2: ["natalie", "Half the village has a loyalty card now. The other half is thinking about it."] },
 };
@@ -56,7 +66,7 @@ export function farmSheets(ui) {
   function farm(s) {
     return M.UPGRADES.filter((u) => u.id !== "sign").map((u) => {
       const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id);
-      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.text}</p><div class="pips">${Array.from({ length: u.max }, (_, i) => `<i class="${i < level ? "on" : ""}"></i>`).join("")}</div></div>
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.text}</p>${tiers(level, u.max)}</div>
         ${priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
     }).join("");
   }
@@ -90,7 +100,7 @@ export function farmSheets(ui) {
     const upgrades = M.SHOP_UPGRADES.filter((u) => u.id !== "open").map((u) => {
       const level = sh[SHOP_LEVELS[u.id]], price = M.shopUpgradeCost(s, u.id), max = price === undefined;
       const now = u.id === "capacity" ? `${M.SHOP_CAPACITY[level]} browsing` : u.id === "displays" ? `${M.displayCount(sh)} tables` : `${M.CHECKOUT_SECONDS[level]}s at the till`;
-      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.text} Now: ${now}.</p><div class="pips">${Array.from({ length: SHOP_MAX[u.id] }, (_, k) => `<i class="${k < level ? "on" : ""}"></i>`).join("")}</div></div>${priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.text} Now: ${now}.</p>${tiers(level, SHOP_MAX[u.id])}</div>${priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
     }).join("");
     return tip + visit + stats + `<h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades;
   }
@@ -115,23 +125,31 @@ export function farmSheets(ui) {
   // The visitor upgrades: how busy the path is, then a card for each.
   function visitors(s) {
     const max = M.partyMax(s);
-    const stats = `<div class="stats"><div><b>${Math.round(M.visitorsPerMinute(s) * 10) / 10}</b><span>neighbours a minute</span></div><div><b>${max > 1 ? `1–${max}` : "1"}</b><span>in each party</span></div><div><b>${secs(M.stallArrivalSeconds(s))}</b><span>between parties</span></div><div><b>${secs(M.stallPatience(s))}</b><span>they’ll wait for stock</span></div></div>`;
+    const boost = Math.round(M.pathBoost(s) * 100), busiest = M.visitorBonus(s) - M.pathBoost(s) > 0.005;
+    const now = busiest ? " (as busy as the path gets)" : boost ? ` (streak +${boost}%)` : "";
+    const stats = `<div class="stats"><div><b>${Math.round(M.visitorsPerMinute(s) * 10) / 10}</b><span>neighbours a minute</span></div><div><b>${max > 1 ? `1–${max}` : "1"}</b><span>in each party</span></div><div><b>${secs(M.stallGapSeconds(s))}</b><span>between parties${now}</span></div><div><b>${secs(M.stallPatience(s))}</b><span>they’ll wait for stock</span></div></div>`;
+    const streak = `<p class="small streak-note">Quick picking builds a streak, and a streak gets talked about: visitors come 10% more often for each pick up to ×6, then 5% more a pick, to +${Math.round(M.STREAK.cap * 100)}%. It fades over ${M.STREAK.fade}s once you stop. Helping hands don’t count; they’re not showing off.</p>`;
     const cards = VISITOR_IDS.map((id) => {
       const sign = id === "sign", u = sign ? M.UPGRADES.find((x) => x.id === id) : M.VISITOR_UPGRADES.find((x) => x.id === id);
       const level = M.visitorUpgradeLevel(s, id), most = sign ? u.max : u.costs.length, done = level >= most;
       const open = sign || M.visitorUpgradeUnlocked(s, id), price = sign ? M.upgradeCost(s, id) : M.visitorUpgradeCost(s, id);
-      const effect = open ? `Now: ${EFFECTS[id](s)}.${done ? "" : ` Next: ${EFFECTS[id](nextLevel(s, id))}.`}` : u.needs.text;
+      const effect = open ? effectLine(s, id, done) : u.needs.text;
       const button = !open ? `<button class="button" disabled>Locked</button>` : priceButton(sign ? "buy" : "visitup", id, price, s.coins, done && "Done");
-      return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${id === "cocoa" && s.festival.cocoa.level ? "Cocoa hospitality" : u.name}</h3><p>${id === "cocoa" && s.festival.cocoa.level ? "A warmer welcome: quicker cocoa service and longer pumpkin patience." : u.text}</p><p class="effect">${effect}</p><div class="pips">${Array.from({ length: most }, (_, i) => `<i class="${i < level ? "on" : ""}"></i>`).join("")}</div></div>${button}</article>`;
+      return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${id === "cocoa" && s.festival.cocoa.level ? "Cocoa hospitality" : u.name}</h3><p>${id === "cocoa" && s.festival.cocoa.level ? "A warmer welcome: quicker cocoa service and longer pumpkin patience." : u.text}</p><p class="effect">${effect}</p>${tiers(level, most)}</div>${button}</article>`;
     }).join("");
-    return stats + cards;
+    return stats + streak + cards;
   }
 
   return {
     shop: {
       eyebrow: "Skyla’s counter", title: "The Honest Pumpkin",
       setTab(t) { tab = t; },
-      body() { const s = ui.state; return tabs() + `<button class="button wide" data-festival>Moonbrew Meadow · ${s.festival.meadow ? "Manage your festival" : "Expand your farm"} →</button><button class="button wide" data-care>Carrier bags · Tips & stats →</button>` + ({ farm, seeds, shop, stall, visitors })[tab](s); },
+      body() {
+        // The meadow and customer care appear once they mean something: the meadow
+        // a level before it opens, as something to aim for; care once the shop is open.
+        const s = ui.state, meadow = s.festival.meadow || M.patchLevel(s).level >= M.MEADOW.level - 1, care = s.shop.unlocked;
+        return tabs() + (meadow ? `<button class="button wide" data-festival>Moonbrew Meadow · ${s.festival.meadow ? "Manage your festival" : "Expand your farm"} →</button>` : "") + (care ? `<button class="button wide" data-care>Carrier bags · Tips & stats →</button>` : "") + ({ farm, seeds, shop, stall, visitors })[tab](s);
+      },
       bind(body) {
         const s = ui.state;
         body.querySelector("[data-care]")?.addEventListener("click", () => ui.openSheet("care"));

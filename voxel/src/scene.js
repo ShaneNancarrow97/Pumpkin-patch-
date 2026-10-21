@@ -9,6 +9,7 @@ import { cocoaProp } from "./cocoa-props.js";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { pumpkinTemplate, sproutTemplate, bigPumpkin } from "./pumpkins.js";
 import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, signBoard } from "./world.js";
+
 import { buildVisitor, animateWalk } from "./characters.js";
 import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./sprite-voxels.js";
 import { loadSpriteSheets, spriteActor, spriteVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
@@ -77,7 +78,7 @@ export function createScene(canvas, state, hooks) {
   patchSign.position.set(13.4, 3.2, 8.4); patchSign.userData = { type: "seeds" }; scene.add(patchSign);
   const post = new THREE.Mesh(new THREE.BoxGeometry(0.2, 4.2, 0.2), new THREE.MeshStandardMaterial({ color: 0x1c1418 }));
   post.position.set(11.4, 2.1, 8.4); post.castShadow = true; scene.add(post);
-  const shopSign = signBoard("Skyla’s Shop", "the honest pumpkin", 6);
+  const shopSign = signBoard("Skyla’s Shop", "the honest pumpkin", 4.4);   // between the gable's moon windows
   shopSign.position.set(SHOP.x, 6.1, SHOP.z - 2.0); shopSign.userData = { type: "shop" }; scene.add(shopSign);
 
   // The big pumpkin.

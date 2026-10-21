@@ -48,8 +48,20 @@ const BANTER = {
 const VISITOR_LINES = ["Lovely glow!", "Perfect for tonight.", "Freshly picked!", "Spooky choice!", "Taking this home!"];
 let banterIndex = { natalie: 0, shane: 0 };
 
+// Left alone for ten minutes, Shane and Natalie put the kettle on: the farm takes
+// a tea break until you're back, so a window left open overnight doesn't play
+// the whole game without you. Any tap, click or key counts as being here.
+const IDLE_TEA = 600;
+let idle = 0, idleTea = false;
+for (const type of ["pointerdown", "keydown", "wheel"]) addEventListener(type, () => {
+  idle = 0;
+  if (idleTea) { idleTea = false; state.paused = false; notice("Welcome back! Tea's finished, back to the patch."); }
+}, { capture: true, passive: true });
+
 const scene = createScene($("world"), state, {
   onTick(dt) {
+    idle += dt;
+    if (idle > IDLE_TEA && !state.paused) { idleTea = true; state.paused = true; notice("You've been away a while, so Shane and Natalie have put the kettle on. Tap to carry on."); }
     if (!state.paused) for (const e of M.update(state, dt)) handle(e);
     render();
   },
@@ -111,8 +123,24 @@ function pickPlot(i) {
   audio.tone(650);
   if (state.harvested === n) say("natalie", "Our first pumpkin! Quick, put it in the shop before Shane gives it a name.");
   const streak = M.rewardHarvestStreak(state);
-  if (streak.bonus) { scene.float(`Streak ×${streak.count} · +${money(streak.bonus)}`, PLOTS[i], "coin"); audio.tone(880); }
+  if (streak.count >= 2) floatStreak(streak, PLOTS[i]);
+  if (streak.bonus) audio.tone(880);
   return n;
+}
+// What the streak does for visitors, in plain words: the bonus that actually
+// reaches the path, or that the path is as busy as it gets.
+function streakBoostText() {
+  const boost = Math.round(M.pathBoost(state) * 100), held = M.visitorBonus(state) - M.pathBoost(state) > 0.005;
+  return held ? "path at its busiest" : boost ? `visitors +${boost}%` : "";
+}
+// One float per burst (Harvest all picks every plot at once): the last pick's words, with any coins from the burst.
+let streakBurst = null;
+function floatStreak(streak, at) {
+  if (!streakBurst) {
+    streakBurst = { coins: 0 };
+    queueMicrotask(() => { const b = streakBurst; streakBurst = null; scene.float(b.text + (b.coins ? ` · +${money(b.coins)}` : ""), b.at, b.coins ? "coin" : "streak"); });
+  }
+  Object.assign(streakBurst, { text: [`Streak ×${streak.count}`, streakBoostText()].filter(Boolean).join(" · "), at, coins: streakBurst.coins + streak.bonus });
 }
 function tapPlot(i) {
   if (state.paused) return notice("Tea break. Turn it off in Settings to get back to work.");
@@ -212,7 +240,7 @@ const text = (id, value) => { const el = $(id); if (el.textContent !== String(va
 function render() {
   if (M.awardLevels(state).length) save();
   text("coins", money(state.coins));
-  text("stock", M.available(state));
+  text("stock", `${M.available(state)}/${M.barnCapacity(state)}`);
   text("sold", state.sold);
   text("visitor-now", state.visitors.length + state.shop.customers.length);
   const lvl = M.patchLevel(state);
@@ -236,9 +264,15 @@ function render() {
   $("goal").classList.toggle("ready", ready.length > 0);
   text("goal-text", ready.length ? (ready.length > 1 ? `${ready.length} favours are ready to claim` : ready[0].guest + " has a reward for you") : next ? `${next.title} · ${M.favourProgress(state, next)}/${next.target}` : "Every favour done. The neighbours adore you.");
   $("journal-badge").hidden = !ready.length;
-  const streak = state.streak, rush = Math.ceil(M.visitorRushSeconds(state)), on = streak.count >= 2 && state.time <= streak.until;
-  $("streak").hidden = (!on && !rush) || !!scene.place;
-  if (on || rush) text("streak", rush ? `${on ? "Streak ×" + streak.count + " · " : "Harvest rush · "}visitors +50% · ${rush}s` : `Harvest streak ×${streak.count}`);
+  // The streak chip: the streak and its visitor bonus while it's hot, then the bonus fading once it ends.
+  const streak = state.streak, on = streak.count >= 2 && state.time <= streak.until, boost = streakBoostText(), chip = $("streak");
+  chip.hidden = (!on && !boost) || !!scene.place;
+  chip.classList.toggle("fading", !on);
+  if (!chip.hidden) {
+    const words = on ? [`Streak ×${streak.count}`, boost] : [boost[0].toUpperCase() + boost.slice(1)];
+    text("streak", [...words, `${Math.ceil(M.visitorBoostSeconds(state))}s`].filter(Boolean).join(" · "));
+    chip.style.setProperty("--fade", on ? 1 : Math.min(1, M.visitorBoostSeconds(state) / M.STREAK.fade).toFixed(2));
+  }
   $("paused").hidden = !state.paused;
   if (openTab) draw();
 }
@@ -348,7 +382,7 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "f" || e.key === "F") return tools.act("flip");
     if (e.key === "Delete" || e.key === "Backspace") return tools.act("store");
   }
-  if (scene.place || openTab) return;
+  if (scene.place || openTab || e.repeat) return;                                 // a held key is one press
   if (e.key === " ") { e.preventDefault(); boost(); }
   if (e.key === "p" || e.key === "P") plantAll();
   if (e.key === "h" || e.key === "H") harvestAll();

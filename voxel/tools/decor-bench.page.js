@@ -11,8 +11,15 @@ import { loadDecor, decorProp, shelfBooks, decorThumb, modelStats } from "../src
 import { DECOR_ART } from "../src/decor-meta.js";
 import { INTERIOR } from "../src/interiors.js";
 import { decorById, footprint, shelfCapacity, GRID } from "../src/model.js";
+import { SHELF_CATALOG } from "../src/content/shelf-catalog.js";
 
-const q = new URLSearchParams(location.search), ids = q.get("ids").split(","), CELL = +q.get("cell") || 300;
+// Each entry: id[:finish][@seconds].
+const q = new URLSearchParams(location.search), CELL = +q.get("cell") || 300;
+const ids = q.get("ids").split(",").map((a) => { const [, id, finish, time] = a.match(/^([^:@]+)(?::([^@]+))?(?:@(.+))?$/); return { id, finish, time: time === undefined ? null : +time }; });
+// Blank shelves may not be in the rules' catalogue yet: read them from their own.
+const shelves = Object.fromEntries(SHELF_CATALOG.map((s) => [s.id, s]));
+const itemOf = (id) => decorById[id] ?? shelves[id];
+const footprintOf = (id) => decorById[id] ? footprint(id) : { w: shelves[id].wallWidth ?? shelves[id].footprint[0], d: shelves[id].wall ? 1 : shelves[id].footprint[1], layer: shelves[id].wall ? "wall" : "floor" };
 
 // Where the game's room camera sits on a desktop screen (as scene.js frames it:
 // the back wall's top and the floor's front in view), room origin at (0, 0, 0).
@@ -82,8 +89,8 @@ function drawArt(atlas, id, x0, y0) {
   }
 }
 
-function piece(id) {
-  const fp = footprint(id), prop = decorProp(id), group = new THREE.Group(), lean = new THREE.Group();
+function piece(id, finish) {
+  const fp = footprintOf(id), prop = decorProp(id, { finish }), group = new THREE.Group(), lean = new THREE.Group();
   lean.add(prop);
   if (decorById[id]?.category === "shelves") lean.add(shelfBooks(id, Array.from({ length: shelfCapacity(id) }, (_, i) => "b" + String((i % 10) + 1).padStart(2, "0")), prop));
   group.add(lean);
@@ -97,14 +104,21 @@ async function run() {
   const atlas = await new Promise((resolve) => { const i = new Image(); i.onload = () => resolve(i); i.src = decorThumb(); });
   await loadDecor();
   const stats = {};
-  ids.forEach((id, row) => {
-    const y0 = row * (CELL + HEAD), { group, lean, prop, fp } = piece(id), s = modelStats(id);
-    stats[id] = s ? { triangles: s.triangles, voxels: [s.nx, s.ny, s.nz], unitsPerPixel: +s.size.toFixed(4) } : { standee: true };
+  ids.forEach(({ id, finish, time }, row) => {
+    const y0 = row * (CELL + HEAD), { group, lean, prop, fp } = piece(id, finish), s = modelStats(id, finish), key = id + (finish ? ":" + finish : "") + (time !== null ? "@" + time : "");
+    stats[key] = s ? { triangles: s.triangles, voxels: [s.nx, s.ny, s.nz], unitsPerPixel: +s.size.toFixed(4) } : { standee: true };
+    // Animated pieces are run to the moment asked for, in small steps as a room would.
+    if (prop.userData.tick && time !== null) for (let t = 0; t <= time + 1e-6; t += 1 / 30) prop.userData.tick(Math.min(t, time), 1 / 30);
     g.fillStyle = "#ffe0a8"; g.font = "bold 15px sans-serif"; g.textBaseline = "middle";
-    const ud = prop.userData;
-    g.fillText(`${id}  ${decorById[id]?.name ?? ""}  ·  ${s ? `${s.triangles.toLocaleString("en-GB")} triangles, ${s.nx}×${s.ny}×${s.nz} voxels` : "standee (no recipe)"}  ·  ${ud.width.toFixed(2)} × ${ud.height.toFixed(2)} × ${ud.depth.toFixed(2)} units in a ${fp.w}×${fp.d} ${fp.layer} footprint`, 8, y0 + HEAD / 2);
-    drawArt(atlas, id, 0, y0 + HEAD);
-    g.fillStyle = "#cbb8e0"; g.font = "12px sans-serif"; g.fillText("art (x →, y ↑)", 6, y0 + HEAD + 10);
+    const ud = prop.userData, item = itemOf(id), f = item?.finishes?.find((x) => x.id === ud.finish);
+    g.fillText(`${id}  ${item?.name ?? ""}${f ? ` (${f.name})` : ""}${time !== null ? ` at ${time}s` : ""}  ·  ${s ? `${s.triangles.toLocaleString("en-GB")} triangles, ${s.nx}×${s.ny}×${s.nz} voxels` : "standee (no recipe)"}  ·  ${ud.width.toFixed(2)} × ${ud.height.toFixed(2)} × ${ud.depth.toFixed(2)} units in a ${fp.w}×${fp.d} ${fp.layer} footprint`, 8, y0 + HEAD / 2);
+    if (DECOR_ART[id]) { drawArt(atlas, id, 0, y0 + HEAD); g.fillStyle = "#cbb8e0"; g.font = "12px sans-serif"; g.fillText("art (x →, y ↑)", 6, y0 + HEAD + 10); }
+    else if (f) {
+      // No art: the finish's swatch, and where things stand (the catalogue's surfaces).
+      g.fillStyle = "#" + f.color.toString(16).padStart(6, "0"); g.fillRect(20, y0 + HEAD + 30, CELL - 40, 60);
+      g.fillStyle = "#cbb8e0"; g.font = "12px sans-serif"; g.fillText(`finish: ${f.name}`, 20, y0 + HEAD + 14);
+      (ud.surfaces ?? []).forEach((t, i) => g.fillText(`surface ${i}: x ${t.x} z ${t.z} w ${t.w} d ${t.d} y ${t.y}`, 20, y0 + HEAD + 110 + i * 18));
+    }
     scene.add(group);
     group.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(group), centre = box.getCenter(new THREE.Vector3()), radius = box.getSize(new THREE.Vector3()).length() / 2;

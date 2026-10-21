@@ -1,7 +1,7 @@
 // Game rules for the voxel build. Pure: no DOM, no three.js, so the tests run it
 // in Node. One step of update() is a slice of game time. The rules live in
 // rules/; this file puts the state together, loads old saves and runs a step.
-import { VARIETIES, freshPlots, freshStreak, freshUpgrades, updateFarm, HARVEST_RUSH } from "./rules/farm.js";
+import { UPGRADES, VARIETIES, STREAK, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
 import { freshStock } from "./rules/stock.js";
 import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, updateShop, updateStall } from "./rules/selling.js";
 import { freshHouse, restoreHouse } from "./rules/house.js";
@@ -32,7 +32,7 @@ export * from "./rules/levels.js";
 export function freshState() {
   return {
     version: STATE_VERSION,
-    coins: 40, earned: 0, sold: 0, harvested: 0, taps: 0, time: 0,
+    coins: 40, earned: 0, sold: 0, harvested: 0, taps: 0, time: 0, wholesale: 0,
     plots: freshPlots(), plotLevels: Array(12).fill(0), plotCrops: Array(12).fill(0),
     upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(),
     stock: freshStock(), holds: [],
@@ -57,7 +57,7 @@ export function restoreState(raw) {
   if (!raw || typeof raw !== "object" || !Array.isArray(raw.plots) || raw.plots.length !== 12) return s;
   const v1 = !(raw.version >= 2);
   for (const k of ["coins", "earned"]) s[k] = money(raw[k]);
-  for (const k of ["sold", "harvested", "taps", "nextVisitor", "nextParty"]) s[k] = count(raw[k]);
+  for (const k of ["sold", "harvested", "taps", "nextVisitor", "nextParty", "wholesale"]) s[k] = count(raw[k]);
   s.time = money(raw.time);
   s.paused = raw.paused === true;
   s.plotLevels = raw.plotLevels?.length === 12 ? raw.plotLevels.map((l) => Math.max(0, Math.min(3, count(l)))) : s.plotLevels;
@@ -66,15 +66,22 @@ export function restoreState(raw) {
     const variety = Math.min(3, count(p?.variety));
     return ["growing", "ready"].includes(p?.phase) ? { phase: p.phase, progress: Math.max(0, Math.min(1, Number(p.progress) || 0)), variety } : { phase: "empty", progress: 0, variety: s.plotCrops[i] };
   });
-  const u = raw.upgrades ?? {};
+  // Tiers are kept and held to today's maxima (a save at an old maximum is a tier partway up now).
+  const u = raw.upgrades ?? {}, top = Object.fromEntries(UPGRADES.map((x) => [x.id, x.max]));
   s.upgrades = v1
-    ? { tools: Math.min(6, count(u.tools)), yield: 0, auto: Math.min(1, count(u.helper)), plots: Math.min(2, count(u.plots)), sign: Math.min(4, count(u.signs)) }
-    : { tools: Math.min(6, count(u.tools)), yield: Math.min(5, count(u.yield)), auto: Math.min(1, count(u.auto)), plots: Math.min(2, count(u.plots)), sign: Math.min(4, count(u.sign)) };
+    ? { tools: Math.min(top.tools, count(u.tools)), yield: 0, auto: Math.min(top.auto, count(u.helper)), plots: Math.min(top.plots, count(u.plots)), sign: Math.min(top.sign, count(u.signs)) }
+    : { tools: Math.min(top.tools, count(u.tools)), yield: Math.min(top.yield, count(u.yield)), auto: Math.min(top.auto, count(u.auto)), plots: Math.min(top.plots, count(u.plots)), sign: Math.min(top.sign, count(u.sign)) };
   for (const v of VISITOR_UPGRADES) s.visitorUpgrades[v.id] = Math.min(v.costs.length, count(raw.visitorUpgrades?.[v.id]));
   if (Array.isArray(raw.stock) && v1) for (const v of raw.stock) if (VARIETIES[v]) s.stock[v]++;
   if (Array.isArray(raw.stock) && !v1 && raw.stock.length === 4) s.stock = raw.stock.map(count);
   if (raw.streak) for (const k of Object.keys(s.streak)) s.streak[k] = money(raw.streak[k]);
-  s.streak.visitorBoostUntil = raw.version >= 5 && s.streak.visitorBoostUntil > s.time ? Math.min(s.streak.visitorBoostUntil, s.time + HARVEST_RUSH.seconds) : 0;
+  // A boost can't outlast one pick's hold and fade. Version 5's harvest rush had no level of its own: it comes back as its +50%.
+  const st = s.streak;
+  st.until = Math.min(st.until, s.time + STREAK.window);
+  if (raw.version >= 5 && st.visitorBoostUntil > s.time) {
+    st.visitorBoostUntil = Math.min(st.visitorBoostUntil, s.time + STREAK.window + STREAK.fade);
+    st.visitorBoost = Math.min(STREAK.cap, typeof raw.streak?.visitorBoost === "number" ? st.visitorBoost : 0.5);
+  } else st.visitorBoost = st.visitorBoostUntil = 0;
   if (raw.stall) for (const k of ["income", "itemsSold", "served", "missedBudget", "missedStock", "cocoa"]) s.stall[k] = count(raw.stall[k]);
   if (raw.shop && typeof raw.shop === "object") {
     const shop = raw.shop;
@@ -108,12 +115,8 @@ export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), v
 export function update(s, dt) {
   const events = [];
   if (s.paused) return events;
-  const rushUntil = s.streak.visitorBoostUntil, previousTime = s.time;
+  // The streak's boost is read from the clock, so the arrival timers just count down faster while it lasts.
   s.time += dt;
-  if (previousTime < rushUntil && s.time >= rushUntil) {
-    s.visitorTimer *= HARVEST_RUSH.rate;
-    s.shop.arrivalTimer *= HARVEST_RUSH.rate;
-  }
   updateFarm(s, dt, events);
   updateFestival(s);
   updateHollowHouse(s, dt, events);

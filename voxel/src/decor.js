@@ -4,7 +4,8 @@ import { VoxelGrid, meshGrid, voxelGroup } from "./voxel-mesh.js";
 import decorUrl from "../assets/decor.png";
 import { DECOR_ART } from "./decor-meta.js";
 import { decorById, footprint } from "./model.js";
-import { RECIPES } from "./decor-models/index.js";
+import { RECIPES, shelfRecipe, SHELF_PX } from "./decor-models/index.js";
+import { SHELF_CATALOG } from "./content/shelf-catalog.js";
 import { buildModel, glows, mix, scale } from "./decor-models/kit.js";
 import { PREMIUM_WALL_RECIPES, premiumWallProp, premiumWallStats } from "./premium-wall-props.js";
 import { PREMIUM_FURNITURE_RECIPES, premiumFurnitureProp, premiumFurnitureStats } from "./premium-furniture-props.js";
@@ -64,26 +65,55 @@ function model(id) {
   const res = recipe.res ?? 1, offset = [(-W / 2) * size, 0, wall ? 0 : (-D / 2) * size];
   let top = 0, glowing = 0;
   for (let i = 0; i < grid.kind.length; i++) if (grid.kind[i]) { top = Math.max(top, Math.floor(i / grid.nx) % grid.ny); glowing += grid.kind[i] === 2; }
+  // A brew (the cauldron's) is built on its own and moved in its shaders.
+  const brew = recipe.brew && buildModel({ ...recipe, build: recipe.brew.build }, art, artPixels(art)).grid;
+  if (brew) for (let i = 0; i < brew.kind.length; i++) glowing += brew.kind[i] === 2;
   const entry = {
     geometry: meshGrid(grid, { scale: size / res, offset }), grid: { nx: grid.nx, ny: grid.ny, nz: grid.nz, res, offset, size },
     data: { native: true, size, width: W * size, height: ((top + 1) / res) * size, depth: D * size, glowing: glowing > 6,
       sockets: sockets.map((s) => ({ x: offset[0] + s.x * size, y: s.y * size, z: offset[2] + s.z * size, w: s.w * size, h: s.h * size, d: s.d * size })) },
   };
+  if (brew) entry.brew = brewFx(meshGrid(brew, { scale: size / res, offset })[1], recipe.brew, offset, size, size / res);
   models.set(id, entry);
   return entry;
 }
+// A blank shelf in one finish: built from the catalogue's own surfaces, meshed
+// once per finish and shared by every copy. Unknown finishes take the first.
+const SHELVES = Object.fromEntries(SHELF_CATALOG.map((item) => [item.id, item]));
+const shelfModels = new Map();
+function shelfModel(id, finish) {
+  const item = SHELVES[id], f = item.finishes.find((x) => x.id === finish) ?? item.finishes[0], key = id + ":" + f.id;
+  if (shelfModels.has(key)) return shelfModels.get(key);
+  const recipe = shelfRecipe(item, f), art = { w: recipe.width, h: recipe.height }, size = 1 / SHELF_PX;
+  const { grid } = buildModel(recipe, art, Array.from({ length: art.h }, () => new Int32Array(art.w).fill(-1)));
+  const offset = [(-recipe.width * size) / 2, 0, item.wall ? 0 : (-recipe.depth * size) / 2], geometry = meshGrid(grid, { scale: size / recipe.res, offset });
+  let top = 0;
+  for (let i = 0; i < grid.kind.length; i++) if (grid.kind[i]) top = Math.max(top, Math.floor(i / grid.nx) % grid.ny + 1);
+  const entry = { geometry, data: { native: true, mount: item.wall ? "wall" : "floor", finish: f.id, width: recipe.width * size, height: (top * size) / recipe.res,
+    depth: recipe.depth * size, glowing: false, surfaces: item.surfaces, triangles: geometry.reduce((n, g) => n + (g ? g.index.count / 3 : 0), 0), nx: grid.nx, ny: grid.ny, nz: grid.nz, size } };
+  shelfModels.set(key, entry);
+  return entry;
+}
+
 // For the bench: how many faces a modelled piece has.
-export const modelStats = (id) => { if (PREMIUM_WALL_RECIPES[id]) return premiumWallStats(id); if (PREMIUM_FURNITURE_RECIPES[id]) return premiumFurnitureStats(id); const m = RECIPES[id] && decorPixels ? model(id) : null; return m && { triangles: m.geometry.reduce((n, g) => n + (g ? g.index.count / 3 : 0), 0), ...m.grid }; };
+export const modelStats = (id, finish) => { if (SHELVES[id]) return shelfModel(id, finish).data; if (PREMIUM_WALL_RECIPES[id]) return premiumWallStats(id); if (PREMIUM_FURNITURE_RECIPES[id]) return premiumFurnitureStats(id); const m = RECIPES[id] && decorPixels ? model(id) : null; return m && { triangles: m.geometry.reduce((n, g) => n + (g ? g.index.count / 3 : 0), 0), ...m.grid }; };
 
 // The voxel prop for one catalogue piece, standing on (0, 0, 0) and centred on
 // its footprint. Rugs lie flat; wall pieces hang with their back at z = 0.
-export function decorProp(id) {
+// finish: one of the piece's finishes (blank shelves), else ignored.
+export function decorProp(id, { finish } = {}) {
+  if (SHELVES[id]) {
+    const m = shelfModel(id, finish), group = voxelGroup(m.geometry, { shared: true });
+    group.name = id; group.userData = { ...m.data, sockets: [] };
+    return group;
+  }
   if (PREMIUM_WALL_RECIPES[id]) return premiumWallProp(id);
   if (PREMIUM_FURNITURE_RECIPES[id]) return premiumFurnitureProp(id);
   if (RECIPES[id]) {
     try {
       const m = model(id), group = voxelGroup(m.geometry, { shared: true });
       group.userData = { ...m.data, sockets: m.data.sockets.map((s) => ({ ...s })) };
+      if (m.brew) { for (const mesh of m.brew.meshes()) group.add(mesh); group.userData.tick = m.brew.tick; }
       return group;
     } catch (e) {
       console.error(`decor model ${id}:`, e);                       // a broken recipe falls back to the standee
@@ -91,6 +121,110 @@ export function decorProp(id) {
     }
   }
   return standee(id);
+}
+
+// ── The cauldron's brew, alive ──
+// The surface swirls, bubbles swell in voxel steps and burst (flinging a drop),
+// and a few faint wisps of steam rise and fade. All of it runs in the shaders off
+// one shared clock, so tick() only sets a number and nothing is made per frame;
+// each cauldron takes its phase from where it stands, so no two keep in step.
+const BREW_TIME = { value: 0 };
+const BREW_GLSL = `uniform float uBrewTime, uVoxel, uRadius, uTop; uniform vec2 uCentre;
+float brewHash(float n) { return fract(sin(n) * 43758.5453); }
+float brewPhase() { return fract(dot(modelMatrix[3].xz, vec2(0.137, 0.291))) * 50.0; }`;
+// A basic (unlit, so places.js leaves its shadows off) material with shader edits:
+// vertex code after the vertex is placed, fragment code after its colour is set.
+function brewMaterial(key, uniforms, opts, { head = "", vertex = "", fragHead = "", fragment = "" }) {
+  const m = new THREE.MeshBasicMaterial(opts);
+  m.onBeforeCompile = (sh) => {
+    Object.assign(sh.uniforms, uniforms, { uBrewTime: BREW_TIME });
+    sh.vertexShader = sh.vertexShader.replace("#include <common>", `#include <common>\n${BREW_GLSL}\n${head}`).replace("#include <begin_vertex>", `#include <begin_vertex>\n${vertex}`);
+    sh.fragmentShader = sh.fragmentShader.replace("#include <common>", `#include <common>\n${fragHead}`).replace("#include <color_fragment>", `#include <color_fragment>\n${fragment}`);
+  };
+  m.customProgramCacheKey = () => key;
+  return m;
+}
+// Copies of geometries merged into one: [[geometry, tags], ...], each copy's
+// vertices carrying its tag (a vec4) for the shader.
+function copies(sets) {
+  const pos = [], col = [], tag = [], idx = [];
+  for (const [geo, tags] of sets) {
+    const p = geo.attributes.position, c = geo.attributes.color, n = p.count;
+    for (const t of tags) {
+      const base = pos.length / 3;
+      for (let i = 0; i < n; i++) { pos.push(p.getX(i), p.getY(i), p.getZ(i)); col.push(c ? c.getX(i) : 1, c ? c.getY(i) : 1, c ? c.getZ(i) : 1); tag.push(...t); }
+      for (const i of geo.index.array) idx.push(i + base);
+    }
+  }
+  const out = new THREE.BufferGeometry();
+  out.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  out.setAttribute("color", new THREE.Float32BufferAttribute(col, 3));
+  out.setAttribute("aTag", new THREE.Float32BufferAttribute(tag, 4));
+  out.setIndex(idx);
+  return out;
+}
+function brewFx(surface, spec, offset, size, voxel) {
+  const centre = new THREE.Vector2(offset[0] + spec.centre[0] * size, offset[2] + spec.centre[1] * size), radius = spec.radius * size, top = spec.top * size, rise = 0.55;
+  const uniforms = { uCentre: { value: centre }, uRadius: { value: radius }, uTop: { value: top }, uVoxel: { value: voxel } };
+  // The surface: two slow spiral currents, sampled per voxel so it stays blocky,
+  // lighten and darken the lime, with foam on the crests and a soft breathing glow.
+  const surf = brewMaterial("brew-surface", uniforms, { vertexColors: true, toneMapped: false }, {
+    head: "varying vec3 vBrew; varying float vPhase;", vertex: "vBrew = position; vPhase = brewPhase();",
+    fragHead: "uniform float uBrewTime, uVoxel, uRadius; uniform vec2 uCentre; varying vec3 vBrew; varying float vPhase;",
+    fragment: `vec2 p = (floor(vBrew.xz / uVoxel) + 0.5) * uVoxel - uCentre; float r = length(p) / uRadius, a = atan(p.y, p.x), t = uBrewTime + vPhase;
+      float s = 0.6 * (0.5 + 0.5 * sin(a * 3.0 - r * 7.0 + t * 1.2)) + 0.4 * (0.5 + 0.5 * sin(a * 2.0 + r * 4.5 - t * 0.7 + 1.7));
+      diffuseColor.rgb *= mix(0.62, 1.12, s) * (0.92 + 0.08 * sin(t * 1.1) + 0.03 * sin(t * 2.7));
+      diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.62, 0.8, 0.2), smoothstep(0.86, 0.98, s) * (1.0 - r) * 0.5);` });
+  // Bubbles: a little voxel dome, six copies, each swelling in three steps at a new
+  // spot each time round and bursting. A darker ripple rings it and spreads from
+  // the burst, and a single voxel drop leaps out.
+  const dome = new VoxelGrid(7, 4, 7), ripple = new VoxelGrid(11, 1, 11), single = new VoxelGrid(1, 1, 1);
+  for (let x = 0; x < 7; x++) for (let y = 0; y < 4; y++) for (let z = 0; z < 7; z++) {
+    const d = (x - 3) ** 2 + (z - 3) ** 2;
+    if (d + (y * 1.25) ** 2 <= 10.5) dome.set(x, y, z, y >= 2 && d < 3 ? 0xf0f6a8 : y >= 1 && d < 6 ? 0xc2e466 : 0x9acc48, true);
+  }
+  for (let x = 0; x < 11; x++) for (let z = 0; z < 11; z++) { const d = Math.hypot(x - 5, z - 5); if (d > 3.6 && d < 5.2) ripple.set(x, 0, z, 0x46701c, true); }
+  single.set(0, 0, 0, 0xd8f080, true);
+  const bubbles = [0, 1, 2, 3, 4, 5].map((i) => [i * 3.71 + 0.3, 0.32 + ((i * 0.37) % 0.3), 0.6 + ((i * 0.53) % 0.5), 0]);
+  const mesh1 = (g, c) => meshGrid(g, { offset: [-c, 0, -c], ao: false })[1];
+  const bubbleGeo = copies([[mesh1(dome, 3.5), bubbles], [mesh1(ripple, 5.5), bubbles.map((b) => [b[0], b[1], b[2], 2])], [mesh1(single, 0.5), bubbles.map((b) => [b[0], b[1], 1, 1])]]);
+  const bub = brewMaterial("brew-bubbles", uniforms, { vertexColors: true, toneMapped: false }, {
+    head: "attribute vec4 aTag; varying float vLife;",
+    vertex: `float t = uBrewTime * aTag.y + aTag.x + brewPhase(), n = floor(t), k = fract(t), burst = clamp((k - 0.84) / 0.16, 0.0, 1.0);
+      float ang = aTag.x * 2.4 + brewHash(n * 1.7 + aTag.x * 13.1) * 2.2, rad = sqrt(brewHash(n * 3.1 + aTag.x * 7.3)) * uRadius * 0.68;
+      vec2 at = (floor((uCentre + vec2(cos(ang), sin(ang)) * rad) / uVoxel) + 0.5) * uVoxel;
+      float grow = (floor(min(k / 0.78, 0.999) * 3.0) + 1.0) / 3.0;
+      if (aTag.w > 1.5) transformed = position * uVoxel * aTag.z * (k < 0.84 ? grow : 1.0 + burst * 0.8) * step(burst, 0.95) + vec3(at.x, uTop - 0.85 * uVoxel, at.y);
+      else if (aTag.w > 0.5) transformed = position * uVoxel * step(0.84, k) * step(burst, 0.95) + vec3(at.x + burst * 3.0 * uVoxel, uTop + sin(burst * 3.1416) * 7.0 * uVoxel, at.y);
+      else transformed = position * uVoxel * aTag.z * grow * step(k, 0.84) + vec3(at.x, uTop - 0.6 * uVoxel, at.y);
+      vLife = k;`,
+    fragHead: "varying float vLife;", fragment: "diffuseColor.rgb *= 0.85 + 0.35 * vLife;" });
+  // Steam: six faint wisps of three soft cubes each, rising from spots spread round
+  // the pot (each wisp keeps to its own side, by the golden angle),
+  // swaying, swelling and fading out: tinted by the brew low down, moonlit higher.
+  const puffs = [];
+  for (let i = 0; i < 6; i++) for (const w of [0, 1, 2]) puffs.push([i * 2.13 + 0.7, 0.15 + ((i * 0.23) % 0.1), 3.2 + ((i * 0.61) % 1.6), w]);
+  const steamGeo = copies([[new THREE.BoxGeometry(1, 1, 1), puffs]]);
+  const steam = brewMaterial("brew-steam", { ...uniforms, uRise: { value: rise } }, { transparent: true, depthWrite: false, opacity: 0.11 }, {
+    head: "attribute vec4 aTag; uniform float uRise; varying float vLife;",
+    vertex: `float t = uBrewTime * aTag.y + aTag.x + brewPhase(), n = floor(t), k = fract(t);
+      float ang = aTag.x * 2.4 + brewHash(n * 2.3 + aTag.x * 5.1) * 1.2, rad = sqrt(brewHash(n * 4.7 + aTag.x * 3.9)) * uRadius * 0.62, sway = sin(k * 4.0 + aTag.x * 9.0) * 0.09 * k;
+      vec2 at = uCentre + vec2(cos(ang), sin(ang)) * rad; float grow = (0.8 + 1.6 * k) * aTag.z * uVoxel;
+      vec3 off = aTag.w > 1.5 ? vec3(-0.6, 0.5, 0.3) : aTag.w > 0.5 ? vec3(0.55, 0.3, -0.45) : vec3(0.0);
+      transformed = position * grow * (aTag.w > 0.5 ? 0.7 : 1.0) + vec3(at.x + sway, uTop + 2.0 * uVoxel + k * uRise, at.y + sway * 0.5) + off * grow;
+      vLife = k;`,
+    fragHead: "varying float vLife;",
+    fragment: "diffuseColor.rgb = mix(vec3(0.7, 0.88, 0.52), vec3(0.68, 0.64, 0.8), smoothstep(0.1, 0.7, vLife)); diffuseColor.a *= smoothstep(0.0, 0.18, vLife) * (1.0 - smoothstep(0.4, 1.0, vLife));" });
+  // The shaders move the bubbles and steam about the brew: bound them there, so
+  // they are neither culled nor counted at the size they are drawn in the buffers.
+  const box = new THREE.Box3(new THREE.Vector3(centre.x - radius, top - 0.05, centre.y - radius), new THREE.Vector3(centre.x + radius, top + rise + 0.15, centre.y + radius));
+  for (const g of [bubbleGeo, steamGeo]) { g.boundingBox = box; g.boundingSphere = box.getBoundingSphere(new THREE.Sphere()); }
+  for (const g of [surface, bubbleGeo, steamGeo]) g.userData.shared = true;
+  const parts = [[surface, surf], [bubbleGeo, bub], [steamGeo, steam]];
+  return {
+    meshes: () => parts.map(([g, m]) => { const mesh = new THREE.Mesh(g, m); mesh.castShadow = false; mesh.renderOrder = m.transparent ? 1 : 0; return mesh; }),
+    tick: (time) => { BREW_TIME.value = time % 600; },
+  };
 }
 
 function standee(id) {
