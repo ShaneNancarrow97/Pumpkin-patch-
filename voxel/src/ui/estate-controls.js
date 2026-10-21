@@ -1,3 +1,4 @@
+import { premiumIcon } from "./premium-icon-markup.js";
 import { setPieceColour, nextPieceColour } from "../rules/piece-colours.js";
 import * as E from "../rules/house-estate.js";
 import { ESTATE_DECOR_BY_ID } from "../content/house-estate.js";
@@ -5,6 +6,8 @@ import { ESTATE_DECOR_BY_ID } from "../content/house-estate.js";
 const round = n => Math.round(n * 4) / 4;
 const normalAngle = n => ((n % 360) + 360) % 360;
 const icon = (name) => {
+  const art={garden:"garden",exterior:"exterior",inside:"enter",reset:"fullscreen",left:"rotate",right:"rotate"}[name];
+  if(art)return premiumIcon(art);
   const paths = {
     left: '<path d="M8 7H3V2M3 7a9 9 0 1 1 0 10"/>',
     right: '<path d="M16 7h5V2m0 5a9 9 0 1 0 0 10"/>',

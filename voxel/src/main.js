@@ -1,3 +1,4 @@
+import { installPremiumIcons, premiumIcon } from "./ui/premium-icons.js";
 import * as THREE from "three";
 import * as M from "./model.js";
 import { createScene } from "./scene.js";
@@ -395,4 +396,6 @@ render(); renderPlace();
 // software-rendered browser only manages a few frames a second.
 const advance = (seconds) => { for (let t = 0; t < seconds; t += 0.1) for (const e of M.update(state, 0.1)) handle(e); render(); };
 window.PumpkinVoxel = { state: () => state, scene, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, estateTools, foyerTools, tools: home.tools, audio, advance };
+installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
+$("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";

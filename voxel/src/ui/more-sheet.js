@@ -1,3 +1,4 @@
+import { premiumIcon } from "./premium-icon-markup.js";
 import { claimable, stockCount } from "../model.js";
 
 const icon = paths => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
@@ -20,7 +21,7 @@ export function moreSheet(ui) {
         ["settings", "Settings", "Sound, graphics, fullscreen & backups"],
         ["patch", "Back to the farm", "Return to the pumpkin patch"],
       ];
-      return `<div class="more-summary"><span><b>${stockCount(s).toLocaleString("en-GB")}</b> in stock</span><span><b>${s.sold.toLocaleString("en-GB")}</b> visitors served</span></div><div class="more-links">${links.map(([id, title, detail]) => `<button class="more-link" data-more="${id}"><span class="more-icon">${icons[id]}</span><span><b>${title}${id === "journal" && ready ? '<i class="more-dot" aria-label="Rewards ready"></i>' : ""}</b><small>${detail}</small></span><span class="more-chevron" aria-hidden="true">›</span></button>`).join("")}</div><details class="more-help"><summary>Controls & little tips</summary><p>Tap a plot to plant or pick. Tap the glowing pumpkin to help your crops along. Buildings open their own controls.</p><p>Drag to pan the farm. At home, drag to orbit and use two fingers to zoom or pan. Keys: P plant, H harvest, Space boost, Esc close.</p></details>`;
+      return `<div class="more-summary"><span><b>${stockCount(s).toLocaleString("en-GB")}</b> in stock</span><span><b>${s.sold.toLocaleString("en-GB")}</b> visitors served</span></div><div class="more-links">${links.map(([id, title, detail]) => `<button class="more-link" data-more="${id}"><span class="more-icon">${premiumIcon(id === "patch" ? "farm" : id)}</span><span><b>${title}${id === "journal" && ready ? '<i class="more-dot" aria-label="Rewards ready"></i>' : ""}</b><small>${detail}</small></span><span class="more-chevron" aria-hidden="true">›</span></button>`).join("")}</div><details class="more-help"><summary>Controls & little tips</summary><p>Tap a plot to plant or pick. Tap the glowing pumpkin to help your crops along. Buildings open their own controls.</p><p>Drag to pan the farm. At home, drag to orbit and use two fingers to zoom or pan. Keys: P plant, H harvest, Space boost, Esc close.</p></details>`;
     },
     bind(body) {
       body.querySelectorAll("[data-more]").forEach(button => button.onclick = () => {
