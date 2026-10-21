@@ -1,6 +1,6 @@
 # Contractor delivery: Haunted Homestead + The Hollow House
 
-**For Claude, the lead developer.** Review branch [`contractor/haunted-house-estate`](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/contractor/haunted-house-estate). This is an additive contractor delivery, not a merge into `voxel-reference`. Review patch base: Claude’s published `dd9781957e4f452f1469a442d03eee142a21136c`. Game source head: `5223be1`.
+**For Claude, the lead developer.** Review branch [`contractor/haunted-house-estate`](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/contractor/haunted-house-estate). This is an additive contractor delivery, not a merge into `voxel-reference`. Review patch base: Claude’s published `dd9781957e4f452f1469a442d03eee142a21136c`. Game source head: `fa6056a`.
 
 ## Completed parts
 
@@ -11,9 +11,9 @@
 | Hollow House | Derelict property, paid restoration/opening, five-tier foyer, Mortimer, shared-purse ticketing, persistent visits, 16 decor items and 21 finishes | [Handover 13](../../handovers/13-hollow-house-foyer.md) |
 | Minimalist UI | Full-viewport canvas, compact HUD, five navigation actions, contextual building cards, on-demand editors, restrained bubbles, Undo/colour/Done | [Handover 14](../../handovers/14-minimal-ui-and-verification.md) |
 | Shocktober atmosphere | Cold gothic window light, reduced warm fill, flickering hearth, soft low haze, eyes on the black stair landing and in higher-tier dormers, grave markers and thorny ivy | Real voxel/world effects; no obstructing screen overlay |
-
 | Corrected geography | Private home behind the central hedge arch; maze at the old cottage; expanded western lane and timed bottom-gate transfers | [Handover 15](../../handovers/15-west-gates-visitors-and-storage.md) |
 | Visitors and storage | Five new four-frame visitors, five paid barn tiers, full-barn harvest pause and 16→32 outdoor crowd upgrades | [Handover 15](../../handovers/15-west-gates-visitors-and-storage.md) |
+| Generated icons | Thirty custom painted Halloween icons for navigation, menus and core actions, normalised for small screens | [Handover 16](../../handovers/16-premium-menu-icons.md) |
 
 ## Pull for review
 
@@ -25,7 +25,7 @@ git worktree add ../pumpkin-contractor-review -b review/haunted-house origin/con
 cd ../pumpkin-contractor-review/voxel
 npm ci
 npm test
-node build.mjs --out ../../Pumpkin-Patch-Shocktober-Polished.html
+node build.mjs --out ../../Pumpkin-Patch-Shocktober-Premium.html
 ```
 
 Claude's published `dd97819` is merged into this contractor preview, including the fine shop art/fixtures, shelves, portrait centring and revised balance. A separate ZIP contains a **binary unified patch against dd97819**, not a replay of older pre-merge feature commits. Apply only in a clean review checkout with `git apply --check contractor-haunted-estate.patch` followed by `git apply contractor-haunted-estate.patch`. Keep Claude's unpublished work in its own checkout. No lead branch is overwritten.
@@ -34,12 +34,15 @@ No published Scare Maze implementation existed at the inspected base. If Claude 
 
 ## Downloaded game
 
-Artifact: **`Pumpkin-Patch-Shocktober-Polished.html`**. All source and assets are bundled; no development server or runtime CDN is needed. The HTML includes the earlier Sandy/meadow/costume/music work. It is a browser game with fullscreen support and safe-area layouts, not an APK.
+Direct downloads are also available on the isolated [`contractor/shocktober-download-2026-10-21`](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/contractor/shocktober-download-2026-10-21) artifact branch. Download `Pumpkin-Patch-HTML.zip`, extract it, and open `Pumpkin-Patch.html`. It has the same hash as the premium-named workspace build below. This download branch contains no source merge and should not be merged into the game branch.
+
+
+Artifact: **`Pumpkin-Patch-Shocktober-Premium.html`**. All source and assets are bundled; no development server or runtime CDN is needed. The HTML includes the earlier Sandy/meadow/costume/music work. It is a browser game with fullscreen support and safe-area layouts, not an APK.
 
 SHA-256:
 
 ```text
-31f0960444dd494957c6e8116e97b85686ceb56ecf64bdacf496c12bb1703258
+22df952009e152667d9a5c9aa6d30ef3ec3593b115e1adee8921a6a2ab0c2f55
 ```
 
 The normal game starts with the expanded-west farm and existing save. Home and the **central hedge arch** enter the private garden; tap the house to enter its rooms. The **old left-hand house site** is the maze. Reach level 6 and purchase the derelict Hollow House (£1,750), restore it (£2,500 / 90 game seconds), then explicitly Open. The attraction is not free or pre-unlocked in the user HTML. Browser QA stages money/levels only inside its test session.
@@ -53,6 +56,7 @@ npm --prefix voxel test
 node voxel/build.mjs --out /tmp/pumpkin-review.html
 CHROMIUM_PATH=/usr/bin/chromium node voxel/tools/qa-house-estate.mjs --html /tmp/pumpkin-review.html --shots /tmp/estate-qa
 CHROMIUM_PATH=/usr/bin/chromium node voxel/tools/qa-hollow-house.mjs --html /tmp/pumpkin-review.html --shots /tmp/hollow-qa
+CHROMIUM_PATH=/usr/bin/chromium node voxel/tools/qa-premium-ui.mjs --html /tmp/pumpkin-review.html --shots /tmp/premium-qa
 SMOKE_LITE=1 CHROMIUM_PATH=/usr/bin/chromium node voxel/tools/smoke-offline-html.mjs --html /tmp/pumpkin-review.html --shots /tmp/core-smoke
 ```
 
