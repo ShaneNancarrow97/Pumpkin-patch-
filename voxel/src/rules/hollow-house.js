@@ -43,7 +43,13 @@ export function setHollowTicketPrice(s, price) {
 export function upgradeHollowFoyer(s) {
   const h = s.hollowHouse, next = FOYER_TIERS[h?.tier];
   if (!hollowReady(s) || !next || patchLevel(s).level < next.patchLevel || !cash(s, next.cost)) return false;
-  s.coins -= next.cost; h.invested += next.cost; h.tier++; return true;
+  s.coins -= next.cost; h.invested += next.cost; h.tier++;
+  // Walls expand immediately, not only when a save is restored. Keep art
+  // mounted on the actual new surface and protect the larger service lanes.
+  for (const p of h.foyer.placed) if (FOYER_DECOR_BY_ID[p.id]?.layer === "wall") Object.assign(p, candidate(s, p.id, p.x, p.z, p.rotation, p));
+  let stored = 0;
+  for (const p of [...h.foyer.placed]) if (!foyerFits(s, p.id, p.x, p.z, p.rotation, p.instance, p)) { storeFoyerDecor(s, p.instance); stored++; }
+  h.lastEvent = { kind: "expanded", stored, at: s.time }; return true;
 }
 export function updateHollowHouse(s, dt, events = []) {
   const h = s.hollowHouse; if (!h || s.paused || !Number.isFinite(dt) || dt <= 0) return;

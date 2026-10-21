@@ -72,7 +72,7 @@ export function hollowSheets(ui) {
         if (action === "decorate") { ui.enterFoyer(); ui.openFoyerSheet?.("catalogue"); return; }
         const s = ui.state, h = s.hollowHouse;
         const ok = action === "purchase" ? H.buyHollowProperty(s) : action === "restore" ? H.beginHollowRestoration(s) : action === "open" ? H.setHollowOpen(s, !h.open) : action === "upgrade" ? H.upgradeHollowFoyer(s) : false;
-        if (ok) { changed(); if (action === "purchase") ui.notice("The old house is yours. Restoration comes next."); else if (action === "restore") ui.notice("The restoration team has arrived."); else if (action === "upgrade") ui.notice("A little more room for brave souls."); }
+        if (ok) { changed(); if (action === "purchase") ui.notice("The old house is yours. Restoration comes next."); else if (action === "restore") ui.notice("The restoration team has arrived."); else if (action === "upgrade") ui.notice(h.lastEvent?.stored ? `Foyer expanded. ${h.lastEvent.stored} decoration${h.lastEvent.stored === 1 ? "" : "s"} returned to storage to clear the new lanes.` : "A little more room for brave souls."); }
       });
     } },
     foyer: { eyebrow: "Reception decoration", title: "Make an entrance", setTab(value) { decorTab = ["catalogue", "storage", "placed", "surfaces"].includes(value) ? value : "catalogue"; }, body() { if (!H.hollowReady(ui.state)) return `<p>Restore The Hollow House to decorate its reception.</p>`; return segmented("foyer-tab", "Foyer decoration", [["catalogue", "Items"], ["storage", "Storage"], ["placed", "In room"], ["surfaces", "Surfaces"]], decorTab) + (decorTab === "surfaces" ? surfaces(ui.state) : catalogue(ui.state)); }, bind(body) {
