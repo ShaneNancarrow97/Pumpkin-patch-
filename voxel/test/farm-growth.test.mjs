@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import * as M from "../src/model.js";
-import { MAX_PLOTS, PLOT_POSITIONS, inFarmPatch, fieldDepth, farmPathEnd, extendFarmRoute } from "../src/content/farm-layout.js";
+import { MAX_PLOTS, PLOT_POSITIONS, inFarmPatch, fieldDepth, farmPathEnd, extendFarmRoute, DROP, GATE_Z, PATCH } from "../src/content/farm-layout.js";
 import { buildFarmAnnex, createFarmExpansion } from "../src/farm-expansion-world.js";
 
 test("south-field purchases preserve the old tiers and open eighteen then twenty-four beds", () => {
@@ -46,8 +46,10 @@ test("legacy purchased storage retains every pumpkin and at least its previous c
 });
 
 test("field growth keeps plot IDs stable, clear of paths and inside the purchased soil", () => {
-  const original = [11.2, 13.8, 16.4, 19].flatMap(z => [16.5, 20, 23.5].map(x => ({ x, z })));
+  // The first twelve keep their order and spacing; the whole lower yard sits DROP further south.
+  const original = [11.2, 13.8, 16.4, 19].flatMap(z => [16.5, 20, 23.5].map(x => ({ x, z: z + DROP })));
   assert.deepEqual(PLOT_POSITIONS.slice(0, 12), original);
+  assert.ok(PATCH.back - PATCH.rz > 11.6 + 0.6, "the patch's top clears the lantern walk");
   assert.equal(new Set(PLOT_POSITIONS.map(p => `${p.x}:${p.z}`)).size, MAX_PLOTS);
   for (const tier of [0, 1, 2, 3, 4]) {
     const s = M.freshState(); s.upgrades.plots = tier;
@@ -59,8 +61,8 @@ test("field growth keeps plot IDs stable, clear of paths and inside the purchase
 });
 
 test("expanded routes clone points and only move the gate leg to the visible exit", () => {
-  const route = [[-3, 30], [-3, 24], [7.1, 11.6]], copy = structuredClone(route);
-  for (const [tier, end, depth] of [[0, 30, 26], [3, 34, 31], [4, 39, 36]]) {
+  const route = [[-3, GATE_Z], [-3, 24], [7.1, 11.6]], copy = structuredClone(route);
+  for (const [tier, end, depth] of [[0, 30, 26], [3, 34, 31], [4, 39, 36]].map(([t, e, d]) => [t, e + DROP, d + DROP])) {
     const s = M.freshState(); s.upgrades.plots = tier;
     assert.deepEqual(extendFarmRoute(route, s), [[-3, end], ...route.slice(1)]);
     assert.equal(fieldDepth(s), depth); assert.equal(farmPathEnd(s), end);
@@ -78,7 +80,7 @@ test("native annex geometry has positive finite instances and keeps both exit la
       for (let i = 0; i < mesh.count; i++) {
         mesh.getMatrixAt(i, matrix); assert.ok(matrix.elements.every(Number.isFinite)); assert.ok(matrix.determinant() > 0);
         const a = matrix.elements, x = a[12], z = a[14];
-        if (z > 24.7 && z < farmPathEnd(s)) for (const lane of [-3, 33]) assert.ok(Math.abs(x - lane) > .85, `blocked exit at ${x},${z}`);
+        if (z > 24.7 + DROP && z < farmPathEnd(s)) for (const lane of [-3, 33]) assert.ok(Math.abs(x - lane) > .85, `blocked exit at ${x},${z}`);
       }
     });
     assert.equal(batches, 2); assert.ok(boxes > 500 && boxes < 20000);
@@ -92,14 +94,14 @@ test("expansion controller replaces terrain once, preserves meadow width and reu
   const frontBoundary = new THREE.Group(), patchBoundary = new THREE.Group();
   group.add(original, frontBoundary, patchBoundary); scene.add(group);
   const world = { group, ground: original, frontBoundary, patchBoundary };
-  const lamp = new THREE.PointLight(); lamp.position.set(4, 2.2, 25.1); scene.add(lamp);
+  const lamp = new THREE.PointLight(); lamp.position.set(4, 2.2, 25.1 + DROP); scene.add(lamp);
   const controller = createFarmExpansion(scene, s, world); assert.equal(world.ground, original);
   s.upgrades.plots = 3; s.festival.meadow = true; controller.sync();
   const ground = world.ground; ground.geometry.computeBoundingBox();
-  assert.equal(ground.geometry.boundingBox.max.x, 54); assert.equal(ground.geometry.boundingBox.max.z, 36);
+  assert.equal(ground.geometry.boundingBox.max.x, 54); assert.equal(ground.geometry.boundingBox.max.z, fieldDepth(s) + 5);
   assert.ok(ground.geometry.getAttribute("position").array.every(Number.isFinite));
   assert.equal(frontBoundary.visible, false); assert.equal(patchBoundary.visible, false);
-  assert.equal(lamp.position.z, 30.1); assert.equal(scene.children.filter(c => c.isPointLight).length, 1);
+  assert.equal(lamp.position.z, fieldDepth(s) - .9); assert.equal(scene.children.filter(c => c.isPointLight).length, 1);
   controller.sync(); assert.equal(world.ground, ground); assert.equal(group.children.filter(c => c.name === "Purchased south field").length, 1);
   assert.equal(controller.status.plots, 18);
 });

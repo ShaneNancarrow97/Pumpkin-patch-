@@ -27,12 +27,11 @@ import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
-import { fieldDepth, extendFarmRoute } from "./content/farm-layout.js";
+import { fieldDepth, extendFarmRoute, DROP, patchShape } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createFoyerView } from "./foyer-view.js";
 import { createAmbience } from "./ambience.js";
 import { mistClearings } from "./content/ambience.js";
-import { patchShape } from "./content/farm-layout.js";
 
 const WALK = 2.4;
 
@@ -218,7 +217,7 @@ export function createScene(canvas, state, hooks) {
 
   // Fireflies drifting over the field.
   const flyCount = 70, flyGeo = new THREE.BufferGeometry(), flySeed = seeded(5), flyBase = new Float32Array(flyCount * 3);
-  for (let i = 0; i < flyCount; i++) flyBase.set([2 + flySeed() * 36, 0.6 + flySeed() * 2.6, 3 + flySeed() * 21], i * 3);
+  for (let i = 0; i < flyCount; i++) flyBase.set([2 + flySeed() * 36, 0.6 + flySeed() * 2.6, 3 + flySeed() * (21 + DROP)], i * 3);
   flyGeo.setAttribute("position", new THREE.BufferAttribute(flyBase.slice(), 3));
   const flies = new THREE.Points(flyGeo, new THREE.PointsMaterial({ color: 0xffe08a, size: 0.12, transparent: true, opacity: 0.9, toneMapped: false }));
   scene.add(flies);

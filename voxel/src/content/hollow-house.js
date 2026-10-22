@@ -1,3 +1,4 @@
+import { GATE_Z } from "./farm-layout.js";
 // The attraction shares this plan with its farm model, foyer and visitor routes.
 export const HOLLOW_PROPERTY = { name: "The Hollow House", level: 6, price: 1750, restorationCost: 2500, restorationSeconds: 90, x: 6.5, z: 6.4, door: [6.5, 9.5], transferSeconds: 2.5, westEdge: -8, speed: 3 };
 export const FOYER_TIERS = [
@@ -19,12 +20,16 @@ export const MAZE_PREFABS = [
 ];
 export const MAZE_PREFAB_BY_ID = Object.assign(Object.create(null), Object.fromEntries(MAZE_PREFABS.map(p => [p.id, p])));
 
-// No cross-farm shortcut: the house and shop use separate bottom-edge gates.
-export const HOLLOW_APPROACH = [[31.8, 10.2], [31.6, 12.6], [30.2, 15.6], [30.4, 18.6], [32.4, 21.6], [33, 24], [33, 30]];
-export const HOLLOW_FRONT_APPROACH = [[-3, 30], [-3, 10.5], [6.5, 10.5], HOLLOW_PROPERTY.door];
-export const HOLLOW_RETURN = [HOLLOW_PROPERTY.door, [6.5, 10.5], [-3, 10.5], [-3, 30]];
-export const HOLLOW_SHOP_RETURN = [[33, 30], [33, 28.5], [33, 24], [32.4, 21.6], [30.4, 18.6], [30.2, 15.6], [31.6, 12.6], [31.8, 10.2]];
-export const HOLLOW_PATHS = [HOLLOW_APPROACH, HOLLOW_FRONT_APPROACH, HOLLOW_RETURN, HOLLOW_SHOP_RETURN];
+// The lantern walk joins the two halves of the farm above the patch: from
+// Skyla's counter west to the Hollow House door, where the west lane comes up
+// from its own gate. Guests walk it both ways, in view: a shopper with a
+// pumpkin walks over to the maze, and a maze guest walks over to the stall.
+// Nobody leaves the map to get from one side to the other.
+export const HOLLOW_LINK = [[31.8, 10.2], [31.6, 11.1], [20, 11.1], [8.6, 11], [6.5, 10.5], HOLLOW_PROPERTY.door];
+export const HOLLOW_LINK_BACK = [...HOLLOW_LINK].reverse();
+export const HOLLOW_FRONT_APPROACH = [[-3, GATE_Z], [-3, 10.5], [6.5, 10.5], HOLLOW_PROPERTY.door];
+export const HOLLOW_RETURN = [HOLLOW_PROPERTY.door, [6.5, 10.5], [-3, 10.5], [-3, GATE_Z]];
+export const HOLLOW_PATHS = [HOLLOW_LINK, HOLLOW_FRONT_APPROACH];
 export function hollowPathDistance(x, z) {
   let best = Infinity;
   for (const route of HOLLOW_PATHS) for (let i = 1; i < route.length; i++) {

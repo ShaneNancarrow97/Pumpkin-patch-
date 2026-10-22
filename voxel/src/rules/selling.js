@@ -181,6 +181,7 @@ export function updateStall(s, dt, events) {
   for (const a of s.arriving) a.wait -= dt;
   while (s.arriving.length && s.arriving[0].wait <= 1e-8) {
     const a = s.arriving.shift(), v = createPasserby(s, s.nextVisitor++, a.party, a.place, a.size);
+    if (a.forMaze) { v.forMaze = true; v.festival = null; }                     // sent by the maze opening: straight there
     s.visitors.push(v);
     events.push({ type: "arrival", visitor: v.id, party: a.party, place: a.place, size: a.size });
   }
@@ -188,12 +189,18 @@ export function updateStall(s, dt, events) {
     tickGuestNeeds(v, dt, v.festival?.phase === "queue" || v.age > VISIT.arrive + 4 && v.leaveAt === null);
     if (tickFestivalVisit(s, v, dt, events)) continue;
     if (v.festival?.justArrived) { v.age = VISIT.arrive; v.festival.justArrived = false; }
-    if (!v.hollowConsidered) { v.hollowConsidered = true; v.hollow = planHollowVisit(s, v); }
+    // The maze first (up the west lane), unless they've come round from Sandy's;
+    // or, once they've shopped, over the lantern walk to it (below).
+    if (!v.hollowConsidered) { v.hollowConsidered = true; v.hollow = v.festival?.done ? null : planHollowVisit(s, v, "arrival"); }
     if (tickHollowVisit(s, v, dt, events)) continue;
     // A frightened guest has already paid for their attraction visit and leaves
     // at its visible exit. They cannot teleport back to buy another pumpkin.
     if (v.hollow?.fledHome) continue;
     if (v.hollow?.justArrived) { v.age = VISIT.arrive; v.hollow.justArrived = false; }
+    if (v.leaveAt !== null && v.age >= v.leaveAt && !v.hollow && !v.mazeAfterConsidered) {
+      v.mazeAfterConsidered = true; v.hollow = planHollowVisit(s, v, "after");
+      if (v.hollow) continue;
+    }
     v.age += dt;
     if (v.leaveAt !== null || v.age < VISIT.arrive) continue;
     const owner = "visitor-" + v.id, lines = chooseBasket(s, v, [0, 1, 2, 3], owner, PRICES);
@@ -215,7 +222,7 @@ export function updateStall(s, dt, events) {
       if (buyMug(s, v)) events.push({ type: "sale", route: "cocoa", amount: v.mug, quantity: 0, mug: v.mug, visitor: v.id });
     }
   }
-  s.visitors = s.visitors.filter((v) => !v.hollow?.fledHome && (v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s)));
+  s.visitors = s.visitors.filter((v) => !v.hollow?.fledHome && !v.hollow?.wentHome && (v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s)));
 }
 
 // The indoor shop: open it, then add room, display tables and a faster till.

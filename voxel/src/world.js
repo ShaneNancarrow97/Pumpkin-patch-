@@ -4,14 +4,16 @@ import { hollowPathDistance } from "./content/hollow-house.js";
 import { pumpkinBlock } from "./pumpkins.js";
 import { buildGround, grounds } from "./ground.js";
 import { Face } from "./face.js";
-import { PLOT_POSITIONS, inFarmPatch } from "./content/farm-layout.js";
+import { PLOT_POSITIONS, inFarmPatch, DROP, GATE_Z, patchShape } from "./content/farm-layout.js";
 
 // World units: 1 = one ground tile. x runs west to east (0-40), z north to
-// south (0-26, the camera sits to the south), y is up. Layout follows
+// south (0-29, the camera sits to the south), y is up. Everything from the
+// patch forward sits DROP (content/farm-layout.js) further south than the first
+// farm, leaving the lantern walk between the buildings and the patch. Layout follows
 // docs/GAME-BIBLE.md §3: cottage top left, big pumpkin left, the patch in the
 // centre, Skyla's shop top right, the stone path up the right, fence along the
 // bottom, and an arch at the back opening onto the lake.
-export const MAP = { w: 40, d: 26 };
+export const MAP = { w: 40, d: 26 + DROP };
 // Camera tilt: low enough to show the sides of the cottage, the shop, fences and
 // trees, and the far shore over the back fence; steep enough to see over the
 // patch's front rows and under the shop awning to Skyla on the counter.
@@ -23,15 +25,15 @@ export const PITCH = THREE.MathUtils.degToRad(36);
 export const LEAN = PITCH - THREE.MathUtils.degToRad(27.4), STRETCH = 1 / Math.cos(PITCH - LEAN);
 // The first twelve IDs retain their positions; purchased south-field rows follow.
 export const PLOTS = PLOT_POSITIONS;
-export const BIG_PUMPKIN = { x: 7, z: 15.5 };
+export const BIG_PUMPKIN = { x: 7, z: 15.5 + DROP };
 export const COTTAGE = { x: 7, z: 6.4 };
 export const SHOP = { x: 32, z: 5.6, counterZ: 8.6 };
-export const HOMES = { natalie: { x: 13.2, z: 13.6 }, shane: { x: 27, z: 13.6 } };
+export const HOMES = { natalie: { x: 13.2, z: 13.6 + DROP }, shane: { x: 27, z: 13.6 + DROP } };
 // Visitors walk in from the south edge, up the path to the fork, along the
 // spur to Skyla's counter, then back to the fork and out to the north-east.
-export const ROUTE_IN = [[33, 28.5], [33, 24], [32.4, 21.6], [30.4, 18.6], [30.2, 15.6], [31.6, 12.6], [31.8, 10.2]];
+export const ROUTE_IN = [[33, 28.5], [33, 24], [32.4, 21.6], [30.4, 18.6], [30.2, 15.6], [31.6, 12.6]].map(([x, z]) => [x, z + DROP]).concat([[31.8, 10.2]]);
 export const ROUTE_OUT = [[31.8, 10.2], [31.6, 12.6], [35, 10.6], [38, 8.6], [42.5, 6.6]];
-const PATH = [[33, 27], ...ROUTE_IN.slice(1, 6), [35, 10.6], [38, 8.6], [41, 7]];
+const PATH = [[33, 27 + DROP], ...ROUTE_IN.slice(1, 6), [31.7, 11.4], [35, 10.6], [38, 8.6], [41, 7]];
 
 export const COL = {
   grass: [0x2e3020, 0x36321f, 0x2a2a1e, 0x3a3222],
@@ -55,7 +57,7 @@ const CANOPY = [
 
 // The stone path out through the arch at the back, down to the lake.
 const ARCH = { x: 20, z: 3 };
-const nearArchPath = (x, z) => Math.abs(x - ARCH.x) < 1.15 && z < 9.1;
+const nearArchPath = (x, z) => Math.abs(x - ARCH.x) < 1.15 && z < 10.4;
 
 const nearPath = (x, z, width) => {
   let best = Infinity;
@@ -77,11 +79,11 @@ function cobbles(v, r, x, z, T, colors, amount) {
 // The yard's ground, as a dense height field (ground.js): stone paths, the
 // cobbled yard, grass and leaves round the edges, and the tilled patch with a
 // raised bed under each plot.
-export function yardGround({ width = MAP.w, depth = MAP.d, plotsTier = 0, pathEnd = 30, extraPath = () => false } = {}) {
+export function yardGround({ width = MAP.w, depth = MAP.d, plotsTier = 0, pathEnd = GATE_Z, extraPath = () => false } = {}) {
   const pad = (x, z) => x > 31 && x < 32.6 && z > 8.6 && z < 10.6;
   const beds = PLOTS.slice(0, plotsTier >= 4 ? 24 : plotsTier >= 3 ? 18 : 12);
   return buildGround({ x0: -8, x1: width, z0: -1, z1: depth + 5 }, (x, z) => {
-    if (nearPath(x, z, 0.95) || nearArchPath(x, z) || pad(x, z) || hollowPathDistance(x, z) < .85 || plotsTier >= 3 && z >= 24 && z <= pathEnd + .8 && (Math.abs(x - 33) < .95 || Math.abs(x + 3) < .85) || extraPath(x, z)) return grounds.cobble(x, z, COL.stone, 0.42, 1, 0x2a2430);
+    if (nearPath(x, z, 0.95) || nearArchPath(x, z) || pad(x, z) || hollowPathDistance(x, z) < .85 || plotsTier >= 3 && z >= 24 + DROP && z <= pathEnd + .8 && (Math.abs(x - 33) < .95 || Math.abs(x + 3) < .85) || extraPath(x, z)) return grounds.cobble(x, z, COL.stone, 0.42, 1, 0x2a2430);
     if (inFarmPatch(x, z, plotsTier)) {
       for (const p of beds) { const b = grounds.bed(x, z, p); if (b) return b; }
       return grounds.soil(x, z);
@@ -301,8 +303,9 @@ function bigPumpkinStage(v, r) {
 
 // Pale stones edging the patch, each a little rounded and set at its own height.
 function patchBorder(v, r) {
+  const p = patchShape(0);
   for (let a = 0; a < Math.PI * 2; a += 0.05) {
-    const x = 20 + Math.cos(a) * 7.9, z = 15.1 + Math.sin(a) * 5.9, h = 0.14 + r() * 0.08, c = vary(0xa89cb0, 0.12, r);
+    const x = p.x + Math.cos(a) * (p.rx + 0.3), z = p.back + Math.sin(a) * (p.rz + 0.3), h = 0.14 + r() * 0.08, c = vary(0xa89cb0, 0.12, r);
     if (nearPath(x, z, 1.2)) continue;
     v.block(x, 0, z, 0.26, h, 0.26, c);
     v.block(x, h, z, 0.18, 0.05, 0.18, vary(c, 0.06, r));
@@ -603,15 +606,16 @@ export function fenceRun(v, r, ax, az, bx, bz, skip = () => false) {
 // Wooden picket fences: round the front and sides, and across the back to the arch.
 function fence(v, r, lights, front = v) {
   const run = (...args) => fenceRun(v, r, ...args);
-  fenceRun(front, r, -7.6, 24.6, MAP.w - 0.4, 24.6, (x) => x > 31.2 && x < 34.8 || x > -4.4 && x < -1.6);
-  run(-7.6, 2.9, -7.6, 24.6);
+  const f = 24.6 + DROP;
+  fenceRun(front, r, -7.6, f, MAP.w - 0.4, f, (x) => x > 31.2 && x < 34.8 || x > -4.4 && x < -1.6);
+  run(-7.6, 2.9, -7.6, f);
   run(-7.6, 2.9, 1, 2.9);
-  for (const x of [-4.5, -1.5]) lanternPost(front, x, 24.6, lights, false);
-  run(39.6, 12.4, 39.6, 24.6, (x, z) => nearPath(x, z, 1.2));
+  for (const x of [-4.5, -1.5]) lanternPost(front, x, f, lights, false);
+  run(39.6, 12.4, 39.6, f, (x, z) => nearPath(x, z, 1.2));
   run(11.2, 2.9, 27.4, 2.9, (x) => x > ARCH.x - 1.6 && x < ARCH.x + 1.6);
-  for (const x of [4, 10, 16, 24, 30.6, 35.4]) lanternPost(front, x, 25.1, lights, x !== 10 && x !== 24);
-  for (const z of [14, 20]) lanternPost(v, -6.9, z, lights, z === 20);
-  for (const z of [16, 21.6]) lanternPost(v, 39.1, z, lights, false);
+  for (const x of [4, 10, 16, 24, 30.6, 35.4]) lanternPost(front, x, f + 0.5, lights, x !== 10 && x !== 24);
+  for (const z of [14, 20]) lanternPost(v, -6.9, z + DROP, lights, z === 20);
+  for (const z of [16, 21.6]) lanternPost(v, 39.1, z + DROP, lights, false);
 }
 
 // The leafy arch over the back gate, with lanterns on its posts.
@@ -735,9 +739,10 @@ export function buildWorld() {
   for (const [x, z, s, k] of [
     [-8.5, 1.2, 1.2, 0], [3.2, 0.2, 1.1, 1], [10.6, 0.8, 1.15, 0], [13.6, 1.2, 1.0, 2], [16.4, 0.6, 0.9, 1],
     [23.8, 0.6, 0.95, 0], [26.6, 1.0, 1.05, 2], [29.4, 0.4, 0.9, 1], [36.2, 0.2, 1.15, 0], [40, 1.6, 1.2, 1],
-    [-8.4, 6.8, 1.1, 1], [-8.2, 11.5, 0.9, 0], [-8.6, 16.4, 1.1, 2], [-8.4, 21.8, 0.9, 1], [-8.2, 26, 1.2, 0], [4.4, 27.2, 1.1, 2],
-    [37.6, 27, 1.1, 1], [41.4, 24, 1.2, 0],
-    [40.4, 18.6, 1.0, 2], [41, 13.2, 1.1, 0], [40.6, 8, 1.0, 1], [6.8, 1.2, 0.8, 2],
+    [-8.4, 6.8, 1.1, 1], [-8.2, 11.5 + DROP, 0.9, 0], [-8.6, 16.4 + DROP, 1.1, 2], [-8.4, 21.8 + DROP, 0.9, 1], [-8.2, 26 + DROP, 1.2, 0], [4.4, 27.2 + DROP, 1.1, 2],
+    [37.6, 27 + DROP, 1.1, 1], [41.4, 24 + DROP, 1.2, 0],
+    [40.4, 18.6 + DROP, 1.0, 2], [41, 13.2 + DROP, 1.1, 0], [40.6, 8, 1.0, 1], [6.8, 1.2, 0.8, 2],
+    [-8.3, 9.4, 0.8, 2],                                                                   // filling the west edge the yard grew into
   ]) tree(v, r, x, z, s, k);
   const home = { door: { x: 6.5, y: 1.3, z: 9.5 } };
   bigPumpkinStage(v, r);
@@ -751,17 +756,19 @@ export function buildWorld() {
     v.block(x, .05, z, .7, .8 + r() * .15, .34, vary(0x394333, .14, r));
     v.block(x, .85, z, .75, .25, .36, vary(0x515a3d, .1, r));
   }
-  for (const [x, z] of [[29.2, 18.2], [33.4, 13.2], [36.6, 11.6], [10.8, 9.4]]) lanternPost(v, x, z, lights);
+  for (const [x, z] of [[29.2, 18.2 + DROP], [33.4, 13.2 + DROP], [36.6, 11.6], [10.8, 9.4]]) lanternPost(v, x, z, lights);
+  // Lamps along the lantern walk, between the buildings and the patch.
+  for (const x of [16, 25]) lanternPost(v, x, 9.7, lights, x === 16);
   // Props round the yard: crates along the back fence, hay and a bench by the front, pumpkins everywhere.
   for (const x of [13, 15.6, 24.6]) crate(v, r, x, 3.7);
   barrel(v, r, 17.2, 3.7); barrel(v, r, 26.2, 3.8);
-  hay(v, r, 5, 22.6); hay(v, r, 36.4, 23.2); hay(v, r, 36.6, 22.4, 1.0);
-  bench(front, 26.6, 23.6); crate(v, r, 37.2, 18.8); crate(v, r, 2.6, 23.2, 0.9);
-  for (const [x, z] of [[2.4, 17.6], [37.6, 14.8], [11.6, 23.4], [21.2, 23.6]]) jackOLantern(z > 23 ? front : v, r, x, z, 0.6, null);
-  for (const [x, z, c] of [[3.4, 18.4, 0xd9d2ff], [27.8, 22.5, 0x9d55e6], [36.8, 21.4, 0xf0821e], [26.8, 5.5, 0xf0821e], [8.6, 21.8, 0xf0821e]]) pumpkinBlock(v, x, 0, z, 0.55, c, r);
-  for (const [x, z] of [[2.2, 12.4], [12.4, 23.8], [19, 23.8], [30, 21], [38, 16.6], [11.8, 4.2], [28, 4.4], [3.2, 9.6]]) flowers(z > 23 ? front : v, r, x, z);
+  hay(v, r, 5, 22.6 + DROP); hay(v, r, 36.4, 23.2 + DROP); hay(v, r, 36.6, 22.4 + DROP, 1.0);
+  bench(front, 26.6, 23.6 + DROP); crate(v, r, 37.2, 18.8 + DROP); crate(v, r, 2.6, 23.2 + DROP, 0.9);
+  for (const [x, z] of [[2.4, 17.6], [37.6, 14.8], [11.6, 23.4], [21.2, 23.6]].map(([x, z]) => [x, z + DROP])) jackOLantern(z > 23 + DROP ? front : v, r, x, z, 0.6, null);
+  for (const [x, z, c] of [[3.4, 18.4 + DROP, 0xd9d2ff], [27.8, 22.5 + DROP, 0x9d55e6], [36.8, 21.4 + DROP, 0xf0821e], [26.8, 5.5, 0xf0821e], [8.6, 21.8 + DROP, 0xf0821e]]) pumpkinBlock(v, x, 0, z, 0.55, c, r);
+  for (const [x, z] of [[2.2, 12.4 + DROP], [12.4, 23.8 + DROP], [19, 23.8 + DROP], [30, 21 + DROP], [38, 16.6 + DROP], [11.8, 4.2], [28, 4.4], [3.2, 9.4]]) flowers(z > 23 + DROP ? front : v, r, x, z);
   for (let x = 8; x < 32; x += 1.3) for (let k = 0; k < 7; k++)                           // low autumn hedging beyond the front fence
-    front.block(x + (r() - 0.5) * 1.2, (r() * 0.5), 25.9 + r() * 1.4, 0.42, 0.42, 0.42, vary(CANOPY[(r() * 3) | 0][1 + ((r() * 3) | 0)], 0.08, r));
+    front.block(x + (r() - 0.5) * 1.2, (r() * 0.5), 25.9 + DROP + r() * 1.4, 0.42, 0.42, 0.42, vary(CANOPY[(r() * 3) | 0][1 + ((r() * 3) | 0)], 0.08, r));
   const group = v.build(), frontBoundary = front.build(), patchBoundary = patch.build(); frontBoundary.name = "Original farm front"; patchBoundary.name = "Original patch rim"; group.add(frontBoundary, patchBoundary);
   const terrain = yardGround(); group.add(terrain);
   return { group, ground: terrain, frontBoundary, patchBoundary, lights: [...lights, ...stall.lights], door: home.door };

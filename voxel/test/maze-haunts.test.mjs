@@ -7,7 +7,7 @@ function opened(tier=1) {
  const s=M.freshState();s.coins=100000;s.earned=200000;s.progression.claimed=Array.from({length:12},(_,i)=>i+1);s.progression.pending=[];s.visitorTimer=s.shop.arrivalTimer=1e6;s.hollowHouse.purchased=true;s.hollowHouse.status="ready";s.hollowHouse.open=true;s.hollowHouse.tier=tier;s.stock=[1000,1000,1000,1000];return s;
 }
 function guest(s,id=0) {
- const v={id,kind:id%10,age:0,budget:500,originalBudget:500,preferred:[0],basketLimit:1,basket:[],leaveAt:null,outcome:"shopping",needs:M.freshGuestNeeds(id),festival:{done:true},hollowConsidered:true};v.hollow=M.planHollowVisit(s,v);assert.ok(v.hollow);s.visitors.push(v);return v;
+ const v={id,kind:id%10,age:0,budget:500,originalBudget:500,preferred:[0],basketLimit:1,basket:[],leaveAt:null,outcome:"shopping",needs:M.freshGuestNeeds(id),festival:{done:true},hollowConsidered:true,forMaze:true};v.hollow=M.planHollowVisit(s,v,"after");assert.ok(v.hollow);s.visitors.push(v);return v;
 }
 function tick(s,v,until=()=>v.hollow.done,limit=7000) {for(let n=0;n<limit&&!until();n++){s.time+=.1;M.tickHollowVisit(s,v,.1);}assert.ok(until(),"visit reaches the requested state");}
 function allHaunts(s){for(const p of M.MAZE_PREFABS)assert.ok(M.buyMazePrefab(s,p.id));}
@@ -54,9 +54,14 @@ test("old and malformed haunt saves retain decorations and sanitize ownership an
 });
 test("purchased land moves both maze gates and restores old visits to the current exit",()=>{
  for(const tier of [3,4]){
+  // A guest who walks over from the stall leaves down the west lane, to today's gate.
   const s=opened(5);s.upgrades.plots=tier;allHaunts(s);const v=guest(s,0);
-  assert.equal(v.hollow.route.at(-1)[1],farmPathEnd(s));tick(s,v);assert.equal(v.hollow.z,farmPathEnd(s));
-  const old=opened(5),waiter=guest(old,26);waiter.hollow.phase="transfer-out";waiter.hollow.route=M.HOLLOW_RETURN.map(p=>[...p]);waiter.hollow.segment=3;waiter.hollow.x=-3;waiter.hollow.z=30;
+  assert.deepEqual(v.hollow.route.at(-1),M.HOLLOW_PROPERTY.door);tick(s,v);assert.equal(v.hollow.z,farmPathEnd(s));
+  // So does one bound for the maze first, who comes up from it.
+  const front=opened(5);front.upgrades.plots=tier;const f={id:9,kind:0,age:0,budget:500,originalBudget:500,preferred:[0],basketLimit:1,basket:[],leaveAt:null,needs:M.freshGuestNeeds(9),forMaze:true};
+  f.hollow=M.planHollowVisit(front,f);assert.equal(f.hollow.route[0][1],farmPathEnd(front));
+  // An old visit parked by the old gate (z 30, before the yard moved south) restores at today's gate, once.
+  const old=opened(5),waiter=guest(old,26);Object.assign(waiter.hollow,{phase:"to-border",route:[[6.5,9.5],[6.5,10.5],[-3,10.5],[-3,30]],segment:3,x:-3,z:30});
   const raw=M.saveHollowVisitors(old),r=opened(5);r.upgrades.plots=tier;M.restoreHollowVisitors(raw,r);
   const restored=r.visitors[0];assert.equal(restored.hollow.z,farmPathEnd(r));assert.equal(restored.hollow.route.at(-1)[1],farmPathEnd(r));
   const twice=opened(5);twice.upgrades.plots=tier;M.restoreHollowVisitors(M.saveHollowVisitors(r),twice);assert.equal(twice.visitors[0].hollow.z,farmPathEnd(r));

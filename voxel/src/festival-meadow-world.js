@@ -6,6 +6,7 @@ import { yardGround, fenceRun, tree, lanternPost } from "./world.js";
 import { MEADOW, MEADOW_PATHS, pathDistance } from "./content/festival-meadow.js";
 import { hollowPathDistance } from "./content/hollow-house.js";
 import { createMoth } from "./moth.js";
+import { DROP } from "./content/farm-layout.js";
 
 // A proper little timber kiosk, grown into a lantern pavilion at later tiers.
 // Everything uses the existing voxel palette and two material batches.
@@ -115,20 +116,21 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
     world.group.remove(world.ground); world.ground.geometry.dispose(); world.ground.material.dispose();
     world.ground = ground; world.group.add(ground);
     const v = new Voxels(), r = seeded(819);
-    fenceRun(v, r, 35.6, 24.6, 53.6, 24.6);
-    fenceRun(v, r, 53.6, 2.9, 53.6, 24.6, (x, z) => z > 5.1 && z < 8.1);
+    const f = 24.6 + DROP;                                                       // the farm's front fence line
+    fenceRun(v, r, 35.6, f, 53.6, f);
+    fenceRun(v, r, 53.6, 2.9, 53.6, f, (x, z) => z > 5.1 && z < 8.1);
     fenceRun(v, r, 40, 2.9, 53.6, 2.9);
     // Same pickets, post caps, lanterns, tree crowns and leaf colours as the farm.
-    for (const [x, z] of [[41, 25.1], [47, 25.1], [53.4, 25.1], [53.1, 16], [53.1, 9], [43, 3.2], [49, 3.2]]) lanternPost(v, x, z, [], false);
-    for (const [x, z, size, kind] of [[44.4, .6, 1, 2], [49, .8, 1.1, 0], [53.8, 1, 1.1, 1], [55.6, 8, 1, 2], [55.6, 14, 1.05, 0], [55.6, 21.8, 1, 1]]) tree(v, r, x, z, size, kind);
+    for (const [x, z] of [[41, f + .5], [47, f + .5], [53.4, f + .5], [53.1, 16], [53.1, 9], [43, 3.2], [49, 3.2]]) lanternPost(v, x, z, [], false);
+    for (const [x, z, size, kind] of [[44.4, .6, 1, 2], [49, .8, 1.1, 0], [53.8, 1, 1.1, 1], [55.6, 8, 1, 2], [55.6, 14, 1.05, 0], [55.6, 21.8 + DROP, 1, 1]]) tree(v, r, x, z, size, kind);
     for (const z of [5.1, 8.1]) { v.block(53.6, 0, z, .3, 2.8, .3, 0x4a2e1c); v.block(53.6, 2.8, z, .45, .12, .45, 0x6a4428); lanternPost(v, 54.1, z, [], false); }
     v.block(53.6, 2.9, 6.6, .35, .16, 3.4, 0x6a4428);
     // Planted drifts soften the border instead of outlining a new rectangle.
     for (let x = 36; x < 54; x += .55) for (let k = 0; k < 3; k++) {
-      const z = 25.5 + r() * 1.2;
+      const z = f + .9 + r() * 1.2;
       v.block(x + r() * .4, r() * .18, z, .32, .22 + r() * .2, .32, [0x8a2f1e, 0xc2552a, 0x6a2a3a][Math.floor(r() * 3)]);
     }
-    for (const [x, z] of [[43, 8], [52, 25]]) {
+    for (const [x, z] of [[43, 8], [52, 25 + DROP]]) {
       v.block(x, 0, z, 1.05, .4, .75, 0x6b4330); v.block(x, .4, z, 1.15, .1, .85, 0xa0784b);
       for (let i = 0; i < 9; i++) { const xx = x + (r() - .5) * .9, zz = z + (r() - .5) * .6; v.block(xx, .5, zz, .07, .3 + r() * .3, .07, 0x476545); v.block(xx, .9, zz, .2, .12, .2, i % 2 ? 0xb58ac9 : 0xc67636); }
     }

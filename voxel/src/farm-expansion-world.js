@@ -1,7 +1,7 @@
 import { Voxels, seeded, vary } from "./voxels.js";
 import { COL, MAP, yardGround, fenceRun, lanternPost, tree } from "./world.js";
 import { MEADOW, pathDistance } from "./content/festival-meadow.js";
-import { farmExpansionTier, fieldDepth, farmPathEnd } from "./content/farm-layout.js";
+import { farmExpansionTier, fieldDepth, farmPathEnd, DROP, patchShape } from "./content/farm-layout.js";
 import { pumpkinBlock } from "./pumpkins.js";
 
 // Purchased rows grow the existing field into a long, rounded patch. Two voxel
@@ -12,7 +12,7 @@ export function buildFarmAnnex(state) {
   if (!tier) return v.build();
   const gate = x => x > 31.2 && x < 34.8 || x > -4.4 && x < -1.6;
   fenceRun(v, r, -7.6, front, 39.6, front, gate);
-  for (const x of [-7.6, 39.6]) fenceRun(v, r, x, 24.6, x, front);
+  for (const x of [-7.6, 39.6]) fenceRun(v, r, x, 24.6 + DROP, x, front);
   for (const x of [-4.5, -1.5]) lanternPost(v, x, front, [], false);
   for (const x of [4, 10, 16, 24, 30.6, 35.4]) lanternPost(v, x, front + .5, [], false);
   // The ends of both lanes reach the new visible farm boundary. Pickets and
@@ -21,16 +21,16 @@ export function buildFarmAnnex(state) {
     v.block(x, 0, z, .22, .7, .22, COL.woodDark);
     v.block(x, .7, z, .34, .1, .34, COL.woodLight);
   }
-  const bottom = tier === 2 ? 25 : 19.8;
+  const p = patchShape(state.upgrades.plots), bottom = p.front;
   const stone = (x, z) => {
     const h = .14 + r() * .08, c = vary(0xa89cb0, .12, r);
     v.block(x, 0, z, .26, h, .26, c); v.block(x, h, z, .18, .05, .18, vary(c, .06, r));
   };
   for (let a = 0; a < Math.PI; a += .05) {
-    stone(20 + Math.cos(a) * 7.9, bottom + Math.sin(a) * 5.9);
-    stone(20 + Math.cos(a + Math.PI) * 7.9, 15.1 + Math.sin(a + Math.PI) * 5.9);
+    stone(p.x + Math.cos(a) * (p.rx + .3), bottom + Math.sin(a) * (p.rz + .3));
+    stone(p.x + Math.cos(a + Math.PI) * (p.rx + .3), p.back + Math.sin(a + Math.PI) * (p.rz + .3));
   }
-  for (const x of [12.1, 27.9]) for (let z = 15.45; z < bottom - .1; z += .35) stone(x, z);
+  for (const x of [p.x - p.rx - .3, p.x + p.rx + .3]) for (let z = p.back + .35; z < bottom - .1; z += .35) stone(x, z);
   // Familiar autumn materials continue beyond the old hedge; no boxed annex
   // texture, overlapping ground plane or extra point lights.
   for (let x = 1; x < 31; x += .65) {
@@ -66,7 +66,7 @@ export function createFarmExpansion(scene, state, world) {
   let key = "", ground = null, annex = null;
   const lamps = [];
   scene.traverse(object => {
-    if (object.isPointLight && Math.abs(object.position.z - 25.1) < .02 && Math.abs(object.position.y - 2.2) < .02 && [4, 16, 30.6, 35.4].some(x => Math.abs(x - object.position.x) < .02)) lamps.push(object);
+    if (object.isPointLight && Math.abs(object.position.z - (25.1 + DROP)) < .02 && Math.abs(object.position.y - 2.2) < .02 && [4, 16, 30.6, 35.4].some(x => Math.abs(x - object.position.x) < .02)) lamps.push(object);
   });
   function sync() {
     const tier = farmExpansionTier(state), width = state.festival?.meadow ? MEADOW.width : MAP.w;
@@ -82,7 +82,7 @@ export function createFarmExpansion(scene, state, world) {
       world.ground = terrain; world.group.add(terrain);
     }
     if (tier) { annex = buildFarmAnnex(state); world.group.add(annex); }
-    lamps.forEach(light => light.position.z = tier ? fieldDepth(state) - .9 : 25.1);
+    lamps.forEach(light => light.position.z = tier ? fieldDepth(state) - .9 : 25.1 + DROP);
     ground = world.ground;
   }
   sync();
