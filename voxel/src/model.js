@@ -13,6 +13,7 @@ import { freshCustomerCare, restoreCustomerCare } from "./rules/customer-care.js
 import { FAVOURS, checkMemories } from "./rules/progress.js";
 import { freshEstate, restoreEstate } from "./rules/house-estate.js";
 import { freshHollowHouse, restoreHollowHouse, updateHollowHouse, saveHollowVisitors, restoreHollowVisitors } from "./rules/hollow-house.js";
+import { restoreIntroSeen } from "./rules/intro.js";
 
 export * from "./rules/farm.js";
 export * from "./rules/stock.js";
@@ -30,6 +31,7 @@ export * from "./rules/festival-meadow.js";
 export * from "./rules/customer-care.js";
 export * from "./rules/guest-needs.js";
 export * from "./rules/levels.js";
+export * from "./rules/intro.js";
 
 export function freshState() {
   return {
@@ -42,7 +44,7 @@ export function freshState() {
     shop: freshShop(), bigSpender: freshBigSpender(), festival: freshFestival(), customerCare: freshCustomerCare(),
     house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
-    claimed: [], memories: [], progression: freshProgression(), paused: false,
+    claimed: [], memories: [], progression: freshProgression(), paused: false, introSeen: false,
   };
 }
 
@@ -109,6 +111,7 @@ export function restoreState(raw) {
   s.festival = restoreFestival(raw.festival);
   s.customerCare = restoreCustomerCare(raw.customerCare);
   s.bigSpender = restoreBigSpender(raw.bigSpender);
+  s.introSeen = restoreIntroSeen(raw, s);
   closeForTheNight(s);
   restoreHollowVisitors(raw.hollowVisitors, s);
   return s;

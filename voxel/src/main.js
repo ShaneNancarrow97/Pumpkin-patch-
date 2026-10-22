@@ -21,6 +21,7 @@ import { moreSheet } from "./ui/more-sheet.js";
 import { hollowSheets, createHollowContext } from "./ui/hollow-sheet.js";
 import { createFoyerControls } from "./ui/foyer-controls.js";
 import { settingsSheet } from "./ui/settings-sheet.js";
+import { createIntro } from "./ui/intro.js";
 import { money, $ } from "./ui/kit.js";
 import { PLOTS } from "./world.js";
 
@@ -307,6 +308,18 @@ const thumbs = (() => {
   } catch { return M.VARIETIES.map(() => ""); }
 })();
 
+// The new-game introduction, which Settings can play again. The farm holds
+// still while it plays, and the patch counts it as seen once it ends.
+let pausedBeforeIntro = false;
+const intro = createIntro({
+  people: PEOPLE,
+  portrait: (who) => scene.portrait(who === "skyla" ? "skyla" : state.wardrobe.equipped[who]),
+  pumpkin: (v) => thumbs[v],
+  hold: () => { pausedBeforeIntro = state.paused; state.paused = true; },
+  release: () => { state.paused = pausedBeforeIntro; state.introSeen = true; save(); render(); },
+  onOpen: () => { closeSheet(); home.tools.select(null); $("dialogue").hidden = true; $("bubble").hidden = true; },
+});
+
 // The menus. Each sheet module gets this small toolkit.
 const ui = {
   get state() { return state; }, scene, prefs, savePrefs, audio, save,
@@ -314,6 +327,7 @@ const ui = {
   draw: () => draw(), openSheet: (tab) => openSheet(tab), closeSheet: () => closeSheet(),
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
   portrait: (id) => scene.portrait(id),
+  intro,
   enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet,
   get estateTools() { return estateTools; },
   get foyerTools() { return foyerTools; }, get hollowContext() { return hollowContext; },
@@ -382,6 +396,7 @@ $("open-settings").onclick = () => openSheet("settings");
 $("sheet-close").onclick = closeSheet;
 
 document.addEventListener("keydown", (e) => {
+  if (intro.active) return;                                                       // the introduction has the keys while it plays
   if (e.key !== "Escape" && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
   if (celebration.active) return;
   const tools = home.tools;
@@ -413,7 +428,8 @@ render(); renderPlace();
 // For the smoke test and screenshots: `advance` runs the rules forward, since a
 // software-rendered browser only manages a few frames a second.
 const advance = (seconds) => { for (let t = 0; t < seconds; t += 0.1) for (const e of M.update(state, 0.1)) handle(e); render(); };
-window.PumpkinVoxel = { state: () => state, scene, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, estateTools, foyerTools, tools: home.tools, audio, advance };
+window.PumpkinVoxel = { state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, estateTools, foyerTools, tools: home.tools, audio, advance };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";
+if (M.shouldShowIntro(state)) intro.play();

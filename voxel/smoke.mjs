@@ -20,6 +20,12 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   if(process.env.SMOKE_LITE)await page.addInitScript(()=>localStorage.setItem("pumpkin-patch-voxel-reference-v1-prefs",JSON.stringify({glow:false,shadows:false,music:false})));
   await page.goto(file);
   await page.waitForSelector("body[data-ready]", { timeout: 120000 });
+  // A new patch opens on the introduction, with the farm held still; Skip hands it back.
+  check(await page.locator("#intro").isVisible() && await page.evaluate(() => PumpkinVoxel.intro.active && PumpkinVoxel.state().paused), `${name}: a new patch opens on the introduction`);
+  await page.locator("[data-intro-next]").click();
+  check((await page.locator(".intro-talk .intro-name").textContent()).includes("Natalie"), `${name}: Natalie speaks first`);
+  await page.locator("[data-intro-skip]").click();
+  check(!(await page.locator("#intro").isVisible()) && await page.evaluate(() => !PumpkinVoxel.intro.active && !PumpkinVoxel.state().paused && PumpkinVoxel.state().introSeen), `${name}: Skip hands the farm back`);
   check(await page.waitForFunction(() => PumpkinVoxel.scene.characterStyle === "sprites", null, { timeout: 120000 }).then(() => true, () => false), `${name}: characters drawn with the original sprites`);
   await page.locator("#plant-all").click();
   await page.locator("#boost").click();

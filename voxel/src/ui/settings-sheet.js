@@ -23,6 +23,7 @@ export function settingsSheet(ui) {
           toggle("toggle-glow", "Glow", "Bloom on lanterns, windows and ripe pumpkins", p.glow) +
           toggle("toggle-mist", "Drifting mist", "A thin mist that rolls across the farm, clears and comes back", p.mist) +
           toggle("toggle-lake", "Lake and twinkling lights", "Ripples on the far lake, flickering village lamps and twinkling stars", p.lakeLights) +
+          `<div class="setting"><span>Introduction<small>Shane and Natalie explain the patch again</small></span><button class="button" id="watch-intro">Watch again</button></div>` +
           `<div class="setting"><span>Camera framing<small>See more of the scene. Pinch or scroll to inspect.</small></span><button class="button" id="fit-view">Fit view</button></div>` +
           toggle("toggle-shadows", "Moonlit shadows", "Turn off on slower phones", p.shadows) +
           toggle("toggle-voxel-characters", "Voxel characters", "Build Shane, Natalie, Skyla and the visitors from voxels instead of the original sprites", p.voxelCharacters) +
@@ -48,6 +49,7 @@ export function settingsSheet(ui) {
         body.querySelector("#toggle-mist").onclick = flip("mist", ambience);
         body.querySelector("#toggle-lake").onclick = flip("lakeLights", ambience);
         body.querySelector("#fit-view").onclick = () => { ui.scene.fitView(); ui.closeSheet(); };
+        body.querySelector("#watch-intro").onclick = () => { ui.closeSheet(); ui.intro.play(); };
         body.querySelector("#toggle-shadows").onclick = flip("shadows", (on) => ui.scene.setShadows(on));
         body.querySelector("#toggle-voxel-characters").onclick = flip("voxelCharacters", (on) => ui.scene.setVoxelCharacters(on));
         body.querySelector("#copy-backup").onclick = async () => {
