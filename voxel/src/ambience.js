@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { seeded } from "./voxels.js";
-import { MIST, mistBank } from "./content/ambience.js";
+import { MIST, mistBank, MAX_CLEARINGS } from "./content/ambience.js";
 
 // The overworld's ambience, each part switchable in Settings:
 //   mist: a thin bank that drifts across the farm, clears and returns (content/ambience.js)
@@ -22,6 +22,8 @@ export function createAmbience(scene, backdrop) {
       for (const m of mist.meshes) m.visible = mistOn;
       lake.value = lakeOn ? 1 : 0;
     },
+    // Where the mist thins and clears (content/ambience.js mistClearings), when the farm's layout changes.
+    setClearings(c) { mist.clear(c); },
   };
 }
 
@@ -82,17 +84,31 @@ function noiseTexture(n = 128) {
 // drifting its own way through the noise inside the moving bank.
 function mistLayers(time) {
   const noise = noiseTexture(), bank = { centre: { value: 0 }, half: { value: MIST.halfWidth }, strength: { value: 0 } };
+  const clearing = {
+    uPatch: { value: new THREE.Vector4(0, 0, 0, 1) }, uPatchR: { value: new THREE.Vector2(1, 1) },
+    uSpots: { value: Array.from({ length: MAX_CLEARINGS }, () => new THREE.Vector4(0, 0, 1, 1)) }, uSpotKeep: { value: new Array(MAX_CLEARINGS).fill(1) }, uSpotCount: { value: 0 },
+  };
   const sheet = (y, alpha, scale, drift) => {
     const material = new THREE.MeshBasicMaterial({ color: MIST.colour, transparent: true, opacity: alpha, depthWrite: false, fog: false, toneMapped: false });
     material.onBeforeCompile = (sh) => {
-      Object.assign(sh.uniforms, { uTime: time, uNoise: { value: noise }, uCentre: bank.centre, uHalf: bank.half, uStrength: bank.strength, uScale: { value: scale }, uDrift: { value: new THREE.Vector2(...drift) } });
+      Object.assign(sh.uniforms, clearing, { uTime: time, uNoise: { value: noise }, uCentre: bank.centre, uHalf: bank.half, uStrength: bank.strength, uScale: { value: scale }, uDrift: { value: new THREE.Vector2(...drift) } });
       sh.vertexShader = sh.vertexShader.replace("#include <common>", "#include <common>\nvarying vec3 vMist;").replace("#include <begin_vertex>", "#include <begin_vertex>\nvMist = (modelMatrix * vec4(transformed, 1.0)).xyz;");
-      sh.fragmentShader = sh.fragmentShader.replace("#include <common>", "#include <common>\nvarying vec3 vMist; uniform float uTime, uCentre, uHalf, uStrength, uScale; uniform sampler2D uNoise; uniform vec2 uDrift;")
+      sh.fragmentShader = sh.fragmentShader.replace("#include <common>", `#include <common>
+varying vec3 vMist; uniform float uTime, uCentre, uHalf, uStrength, uScale; uniform sampler2D uNoise; uniform vec2 uDrift;
+uniform vec4 uPatch; uniform vec2 uPatchR; uniform vec4 uSpots[${MAX_CLEARINGS}]; uniform float uSpotKeep[${MAX_CLEARINGS}]; uniform int uSpotCount;`)
         .replace("#include <alphatest_fragment>", `{
   float d = abs(vMist.x - uCentre) / uHalf, cover = d >= 1.0 ? 0.0 : uStrength * pow(1.0 - d * d, 2.0);
   vec2 p = vMist.xz * uScale;
   float n = texture2D(uNoise, p + uDrift * uTime).r * 0.65 + texture2D(uNoise, p * 2.3 - uDrift.yx * uTime * 1.4).r * 0.35;
-  diffuseColor.a *= cover * smoothstep(0.3, 0.8, n);
+  // Thinner over the pumpkins, gone round the buildings (content/ambience.js mistLeft does the same sum).
+  vec2 q = vec2((vMist.x - uPatch.x) / uPatchR.x, (vMist.z - clamp(vMist.z, uPatch.y, uPatch.z)) / uPatchR.y);
+  float left = mix(uPatch.w, 1.0, smoothstep(0.75, 1.25, dot(q, q)));
+  for (int i = 0; i < ${MAX_CLEARINGS}; i++) {
+    if (i >= uSpotCount) break;
+    vec4 s = uSpots[i];
+    left *= mix(uSpotKeep[i], 1.0, smoothstep(0.85, 1.7, length((vMist.xz - s.xy) / s.zw)));
+  }
+  diffuseColor.a *= cover * left * smoothstep(0.3, 0.8, n);
 }
 #include <alphatest_fragment>`);
     };
@@ -107,5 +123,10 @@ function mistLayers(time) {
   return {
     meshes,
     tick(t) { const b = mistBank(t); bank.centre.value = b.centre; bank.strength.value = b.strength; },
+    clear({ patch, spots }) {
+      clearing.uPatch.value.set(patch.x, patch.back, patch.front, patch.keep); clearing.uPatchR.value.set(patch.rx, patch.rz);
+      spots.forEach((s, i) => { clearing.uSpots.value[i].set(s.x, s.z, s.rx, s.rz); clearing.uSpotKeep.value[i] = s.keep; });
+      clearing.uSpotCount.value = spots.length;
+    },
   };
 }

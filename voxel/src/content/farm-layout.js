@@ -10,8 +10,12 @@ export const extendFarmRoute = (route, s) => {
   const offset = farmPathEnd(s) - 30;
   return route.map(([x,z]) => [x, z >= 28.5 ? z + offset : z]);
 };
+// The patch is an oval drawn out towards the front as the field grows: its
+// ends' centres run from back to front, and every point within rx, rz of that
+// line is in it. The mist thins over the same shape (content/ambience.js).
+export const PATCH = Object.freeze({ x: 20, rx: 7.6, rz: 5.6, back: 15.1, fronts: Object.freeze([15.1, 19.8, 25]) });
+export const patchShape = (plotsTier = 0) => ({ ...PATCH, front: PATCH.fronts[plotsTier >= 4 ? 2 : plotsTier >= 3 ? 1 : 0] });
 export function inFarmPatch(x, z, plotsTier = 0) {
-  const tier = plotsTier >= 4 ? 2 : plotsTier >= 3 ? 1 : 0;
-  const back = 15.1, front = [15.1, 19.8, 25][tier], nearest = Math.max(back, Math.min(front, z));
-  return ((x - 20) / 7.6) ** 2 + ((z - nearest) / 5.6) ** 2 < 1;
+  const p = patchShape(plotsTier), nearest = Math.max(p.back, Math.min(p.front, z));
+  return ((x - p.x) / p.rx) ** 2 + ((z - nearest) / p.rz) ** 2 < 1;
 }

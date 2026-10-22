@@ -31,6 +31,8 @@ import { fieldDepth, extendFarmRoute } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createFoyerView } from "./foyer-view.js";
 import { createAmbience } from "./ambience.js";
+import { mistClearings } from "./content/ambience.js";
+import { patchShape } from "./content/farm-layout.js";
 
 const WALK = 2.4;
 
@@ -83,6 +85,9 @@ export function createScene(canvas, state, hooks) {
   // The far shore: sky, moon, castle, village and lake, with the mist drifting
   // over the farm and the lake and its lights alive (ambience.js).
   const backdrop = buildBackdrop(PITCH), ambience = createAmbience(scene, backdrop);
+  // The mist thins over the pumpkins and clears round the buildings, wherever the field has grown to.
+  const clearMist = () => ambience.setClearings(mistClearings({ patch: patchShape(state.upgrades.plots), shop: SHOP, bigPumpkin: BIG_PUMPKIN, hollow: HOLLOW_PROPERTY, meadow: state.festival?.meadow ? MEADOW : null }));
+  clearMist();
   scene.add(backdrop);
 
   // Signs.
@@ -471,7 +476,7 @@ export function createScene(canvas, state, hooks) {
     festivalWorld.tick(time);
     farmExpansion.sync();
     const land = `${fieldWidth(state)}:${fieldDepth(state)}`;
-    if (land !== framedLand) { framedLand = land; frame(); }
+    if (land !== framedLand) { framedLand = land; frame(); clearMist(); }
     hollowFarm.sync(); hollowFarm.tick(time);
 
     // Both the ground and the incoming route end beyond the purchased gate.
