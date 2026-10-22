@@ -27,7 +27,7 @@ import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
-import { fieldDepth, extendFarmRoute, DROP, patchShape } from "./content/farm-layout.js";
+import { fieldDepth, extendFarmRoute, DROP, patchShape, COUNTER_GAP } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createFoyerView } from "./foyer-view.js";
 import { createAmbience } from "./ambience.js";
@@ -206,7 +206,7 @@ export function createScene(canvas, state, hooks) {
   const nearestActor = (x, z) => Object.values(actors).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
 
   // Visitors.
-  const visitorModels = new Map(), outLen = routeLength(ROUTE_OUT), meadowOutLen = routeLength(MEADOW_EXIT), COUNTER_GAP = 1;
+  const visitorModels = new Map(), outLen = routeLength(ROUTE_OUT), meadowOutLen = routeLength(MEADOW_EXIT);
   const guestHitGeometry = new THREE.BoxGeometry(1.15, 2.2, .9), guestHitMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const carriedCup = cocoaProp("cocoa");
   const carried = pumpkins.map((t) => { const m = t.clone(); m.scale.setScalar(0.5); return m; });
@@ -646,7 +646,7 @@ export function createScene(canvas, state, hooks) {
     },
     get place() { return view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
-    get visitorStatus() { return [...visitorModels].map(([id,e]) => ({ id, kind: state.visitors.find(v=>v.id===id)?.kind, visible: e.m.visible, sprite: e.sprite, leadingLeg: e.m.userData.leadingLeg, frames: e.m.userData.walk?.length ?? 0, frame: e.m.userData.walk?.indexOf(e.m.userData.shown) ?? -1 })); },
+    get visitorStatus() { return [...visitorModels].map(([id,e]) => ({ id, kind: state.visitors.find(v=>v.id===id)?.kind, visible: e.m.visible, sprite: e.sprite, leadingLeg: e.m.userData.leadingLeg, frames: e.m.userData.walk?.length ?? 0, frame: e.m.userData.walk?.indexOf(e.m.userData.shown) ?? -1, x: e.m.position.x, z: e.m.position.z })); },
     get farmExpansionStatus() { return farmExpansion.status; },
     get festivalStatus() { return festivalWorld.status; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },

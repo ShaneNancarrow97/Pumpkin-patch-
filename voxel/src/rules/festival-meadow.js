@@ -1,7 +1,7 @@
 // The first festival extension. Pure rules; no renderer or DOM dependencies.
 import { freshCocoaPrices, restoreCocoaPrices, freshCocoaExtras, restoreCocoaExtras, standHasStock, quoteStandOrder, payStandOrder } from "./cocoa-menu.js";
 export * from "./cocoa-menu.js";
-import { extendFarmRoute } from "../content/farm-layout.js";
+import { extendFarmRoute, counterPlace } from "../content/farm-layout.js";
 import { patchLevel } from "./levels.js";
 import { MEADOW, COCOA_TIERS, COCOA_SUPPLY, COCOA_APPROACH, PUMPKIN_APPROACH } from "../content/festival-meadow.js";
 export { MEADOW, COCOA_TIERS, COCOA_SUPPLY, fieldWidth } from "../content/festival-meadow.js";
@@ -83,8 +83,9 @@ function walk(m, target, dt) {
   m.x += dx * step; m.z += dz * step;
   return Math.max(0, dt - seconds);
 }
-function leaveCounter(m) {
-  m.phase = "to-shop"; m.route = [[m.x, m.z], [49, m.z], ...PUMPKIN_APPROACH]; m.segment = 1; m.walking = true;
+// Back down the lane and up the main path to their own place at Skyla's counter.
+function leaveCounter(m, spot) {
+  m.phase = "to-shop"; m.route = [[m.x, m.z], [49, m.z], ...PUMPKIN_APPROACH.slice(0, -1), counterPlace(spot)]; m.segment = 1; m.walking = true;
 }
 // Returns true while the guest is on the excursion. Payment occurs exactly once
 // at the counter, before the pumpkin rules see the guest's remaining budget.
@@ -102,7 +103,7 @@ export function tickFestivalVisit(s, v, dt, events) {
       m.phase = "queue";
     } else {
       const c = s.festival.cocoa;
-      if (!c.open || !standHasStock(s) || !wantsCocoa(s, v)) { c.missed++; leaveCounter(m); continue; }
+      if (!c.open || !standHasStock(s) || !wantsCocoa(s, v)) { c.missed++; leaveCounter(m, v.spot); continue; }
       const rank = s.visitors.filter((other) => other.id < v.id && inQueue(other)).length;
       remaining = walk(m, [47, 20.6 + rank * .8], remaining);
       if (rank || remaining <= 1e-9) break;
@@ -112,7 +113,7 @@ export function tickFestivalVisit(s, v, dt, events) {
       if (m.elapsed + 1e-9 < duration) break;
       const order = quoteStandOrder(s, v), amount = payStandOrder(s, v, order);
       if (amount) events.push({ type: "sale", route: "festival-cocoa", visitor: v.id, amount, quantity: order.length, items: order });
-      leaveCounter(m);
+      leaveCounter(m, v.spot);
     }
   }
   return !m.done;

@@ -1,12 +1,12 @@
 // Pure attraction and foyer rules. The same visitors own their money and visit
 // phase indoors and outdoors; changing the camera never creates a new guest.
-import { visitorCapacity, visitorReservations } from "./selling.js";
+import { visitorCapacity, visitorReservations, COUNTER_SPOTS } from "./selling.js";
 import { patchLevel } from "./levels.js";
 import { available } from "./stock.js";
 import { VARIETIES } from "./farm.js";
 import { validPieceColour } from "./piece-colours.js";
-import { extendFarmRoute, farmPathEnd, GATE_Z } from "../content/farm-layout.js";
-import { HOLLOW_PROPERTY, FOYER_TIERS, FOYER_DECOR, FOYER_DECOR_BY_ID, FOYER_FINISHES, FOYER_FINISH_BY_ID, FOYER_DEFAULT_FINISHES, HOLLOW_LINK, HOLLOW_LINK_BACK, HOLLOW_FRONT_APPROACH, HOLLOW_RETURN, MAZE_PREFABS, MAZE_PREFAB_BY_ID } from "../content/hollow-house.js";
+import { extendFarmRoute, farmPathEnd, GATE_Z, counterPlace } from "../content/farm-layout.js";
+import { HOLLOW_PROPERTY, FOYER_TIERS, FOYER_DECOR, FOYER_DECOR_BY_ID, FOYER_FINISHES, FOYER_FINISH_BY_ID, FOYER_DEFAULT_FINISHES, HOLLOW_LINK, hollowLinkFrom, HOLLOW_FRONT_APPROACH, HOLLOW_RETURN, MAZE_PREFABS, MAZE_PREFAB_BY_ID } from "../content/hollow-house.js";
 export * from "../content/hollow-house.js";
 
 const EPS = 1e-7, insidePhases = new Set(["entering", "queue", "serving", "admission", "returning", "requeue", "exit"]), mazePhases = new Set(["to-maze", "maze"]);
@@ -134,7 +134,10 @@ const brave = id => ((Math.imul(id + 19, 1103515245) >>> 8) % 100) / 100;
 //     the lantern walk over to the stall for a pumpkin. About a third do, and
 //     everyone in the party that opening the maze sends.
 //   "after": a guest who has shopped at the stall walks the lantern walk over
-//     to the maze, then goes home down the west lane. About half of the rest.
+//     to the maze from their place at the counter, then goes home down the
+//     west lane. About half of the rest.
+// Walks from or to the counter are routeVersion 4; version 3 began and ended
+// them at its middle, and saves on it keep those routes (restoreHollowVisitors).
 export const MAZE_FIRST = .35, MAZE_AFTER = .5;
 export function planHollowVisit(s, v, when = "arrival") {
   const h = s.hollowHouse, config = hollowConfig(s), after = when === "after";
@@ -142,20 +145,20 @@ export function planHollowVisit(s, v, when = "arrival") {
   if (!v.forMaze && brave(after ? v.id + 7 : v.id) >= (after ? MAZE_AFTER : MAZE_FIRST)) return null;
   // Higher prices need correspondingly braver guests.
   if (!v.forMaze && h.ticketPrice > 6 + brave(v.id + 71) * (config.maxTicket - 4)) return null;
-  const route = extendFarmRoute(after ? HOLLOW_LINK : HOLLOW_FRONT_APPROACH, s);
-  return { visitId: "hollow-" + h.nextVisit++, routeVersion: 3, fromFront: !after, fromStall: after, phase: "approach", x: route[0][0], z: route[0][1], dx: 0, dz: -1, route: route.map(p => [...p]), segment: 1, elapsed: 0, waited: 0, walking: true, charged: false, ticket: 0, done: false, terror: 0, bravery: 24 + Math.floor(brave(v.id + 421) * 65), runs: 0, repeats: 0, fleeing: false };
+  const route = extendFarmRoute(after ? hollowLinkFrom(counterPlace(v.spot)) : HOLLOW_FRONT_APPROACH, s);
+  return { visitId: "hollow-" + h.nextVisit++, routeVersion: 4, fromFront: !after, fromStall: after, phase: "approach", x: route[0][0], z: route[0][1], dx: 0, dz: -1, route: route.map(p => [...p]), segment: 1, elapsed: 0, waited: 0, walking: true, charged: false, ticket: 0, done: false, terror: 0, bravery: 24 + Math.floor(brave(v.id + 421) * 65), runs: 0, repeats: 0, fleeing: false };
 }
 function walk(m, target, dt) {
   const dx = target[0] - m.x, dz = target[1] - m.z, distance = Math.hypot(dx, dz); m.dx = dx; m.dz = dz; m.walking = distance > .005;
   if (distance < .005) { m.x = target[0]; m.z = target[1]; return dt; }
   const seconds = distance / (HOLLOW_PROPERTY.speed * (m.fleeing ? 1.7 : 1)), fraction = Math.min(1, dt / seconds); m.x += dx * fraction; m.z += dz * fraction; return Math.max(0, dt - seconds);
 }
-// Out of the house: a maze-first guest walks the lantern walk to the stall for
-// a pumpkin; a guest who has already shopped, or who ran from a fright, goes
-// home down the west lane.
-function returnToShop(s, m) {
-  const home = m.fromStall || m.fleeing;
-  m.phase = home ? "to-border" : "to-shop"; m.route = extendFarmRoute(home ? HOLLOW_RETURN : HOLLOW_LINK_BACK, s).map(p => [...p]);
+// Out of the house (always from its door): a maze-first guest walks the lantern
+// walk back to their place at the stall for a pumpkin; a guest who has already
+// shopped, or who ran from a fright, goes home down the west lane.
+function returnToShop(s, v) {
+  const m = v.hollow, home = m.fromStall || m.fleeing;
+  m.phase = home ? "to-border" : "to-shop"; m.routeVersion = 4; m.route = extendFarmRoute(home ? HOLLOW_RETURN : hollowLinkFrom(counterPlace(v.spot)).reverse(), s).map(p => [...p]);
   m.segment = 1; m.x = m.route[0][0]; m.z = m.route[0][1]; m.walking = true; m.elapsed = 0;
 }
 function event(s, kind, v) { s.hollowHouse.lastEvent = { kind, visitor: v.id, at: s.time }; }
@@ -179,12 +182,12 @@ export function tickHollowVisit(s, v, dt, events = []) {
       if (m.phase === "to-border") { m.phase = "done"; m.done = true; m.wentHome = true; m.walking = false; return false; }
       m.phase = "door-wait"; m.elapsed = 0; m.walking = false;
     }
-    if (!m.charged && !["exit", "to-border", "to-shop"].includes(m.phase) && (!hollowReady(s) || !h.open)) { if (insidePhases.has(m.phase)) { m.phase = "exit"; m.elapsed = 0; } else returnToShop(s, m); continue; }
+    if (!m.charged && !["exit", "to-border", "to-shop"].includes(m.phase) && (!hollowReady(s) || !h.open)) { if (insidePhases.has(m.phase)) { m.phase = "exit"; m.elapsed = 0; } else returnToShop(s, v); continue; }
     if (m.phase === "door-wait") {
       m.waited += remaining;
       // Leave one reception place for returning maze guests, avoiding a full
       // foyer waiting for maze space while a full maze waits for foyer space.
-      if (hollowOccupancy(s).foyer >= t.capacity - 1) { if (m.waited > 35) { h.missed++; returnToShop(s, m); continue; } break; }
+      if (hollowOccupancy(s).foyer >= t.capacity - 1) { if (m.waited > 35) { h.missed++; returnToShop(s, v); continue; } break; }
       m.phase = "entering"; m.elapsed = 0; event(s, "welcome", v);
     }
     if (m.phase === "queue") {
@@ -222,7 +225,7 @@ export function tickHollowVisit(s, v, dt, events = []) {
       } else m.phase = "exit";
     }
     else if (m.phase === "requeue") m.phase = "queue";
-    else if (m.phase === "exit") returnToShop(s, m);
+    else if (m.phase === "exit") returnToShop(s, v);
   }
   return !m.done;
 }
@@ -366,18 +369,20 @@ export function restoreHollowVisitors(raw, s) {
     // west gate, one bound back for the stall arrives at the counter.
     const legacy = m.phase === "transfer-in" ? "approach" : m.phase === "transfer-out" ? "to-shop" : null;
     const phase = legacy ?? m.phase, fromFront = legacy === "approach" || m.fromFront === true || (m.route?.[0]?.[0] === -3 && m.route?.[0]?.[1] >= 30);
-    const fromStall = !fromFront && m.fromStall === true;
-    const route = extendFarmRoute(phase === "to-shop" ? HOLLOW_LINK_BACK : phase === "to-border" ? HOLLOW_RETURN : ["approach", "arriving-house"].includes(phase) ? (fromFront ? HOLLOW_FRONT_APPROACH : HOLLOW_LINK) : HOLLOW_FRONT_APPROACH, s);
+    const fromStall = !fromFront && m.fromStall === true, spot = Number.isSafeInteger(input.spot) && input.spot >= 0 && input.spot < COUNTER_SPOTS ? input.spot : 0;
+    // A guest saved mid-walk on an older layout starts that walk afresh: the old
+    // routes and their segment numbers do not fit the new ones. Version 3 walks
+    // to and from the counter's middle still fit, so they carry on along them.
+    const walking = ["approach", "arriving-house", "to-shop", "to-border"].includes(phase), restart = !legacy && walking && m.routeVersion !== 3 && m.routeVersion !== 4;
+    const middle = m.routeVersion === 3 && !legacy, link = middle ? HOLLOW_LINK : hollowLinkFrom(counterPlace(spot));
+    const route = extendFarmRoute(phase === "to-shop" ? [...link].reverse() : phase === "to-border" ? HOLLOW_RETURN : ["approach", "arriving-house"].includes(phase) ? (fromFront ? HOLLOW_FRONT_APPROACH : link) : HOLLOW_FRONT_APPROACH, s);
     // A guest near a gate keeps their place on the lane as the land (or the farm's
     // layout) moves the gate: shift that outer leg once, saved gate to today's.
     const savedGate = Array.isArray(m.route) ? Math.max(30, ...m.route.map(p => finite(p?.[1]))) : GATE_Z;
-    // A guest saved mid-walk on an older layout starts that walk afresh: the old
-    // routes and their segment numbers do not fit the new ones.
-    const restart = !legacy && m.routeVersion !== 3 && ["approach", "arriving-house", "to-shop", "to-border"].includes(phase);
     const at = legacy === "approach" || restart ? route[0] : legacy === "to-shop" ? route.at(-2) : [finite(m.x, HOLLOW_PROPERTY.door[0]), finite(m.z, HOLLOW_PROPERTY.door[1])];
     const z = at[1] + (!legacy && !restart && at[1] >= savedGate - 1.5 ? farmPathEnd(s) - savedGate : 0);
-    const v = { ...input, id: input.id, vip: input.kind === 10 && input.vip === true, budget: Math.min(10000, input.budget), originalBudget: Math.max(input.budget, finite(input.originalBudget, input.budget)), preferred: Array.isArray(input.preferred) ? input.preferred.filter(n => Number.isInteger(n) && n >= 0 && n < 4) : [0], basketLimit: Math.max(1, count(input.basketLimit, input.vip === true ? 20 : 10)), basket: [], leaveAt: null, outcome: "shopping", age: Math.max(0, finite(input.age)), festival: { done: true }, hollowConsidered: true,
-      hollow: { ...m, phase, charged, ticket: charged ? count(m.ticket, 24) : 0, done: false, fromFront, fromStall, route, segment: legacy === "to-shop" ? route.length - 1 : legacy || restart ? 1 : Math.max(1, Math.min(route.length - 1, count(m.segment))), x: at[0], z, dx: finite(m.dx), dz: finite(m.dz, 1), elapsed: Math.max(0, Math.min(35, finite(m.elapsed))), waited: Math.max(0, Math.min(35, finite(m.waited))), terror: Math.max(0,Math.min(100,finite(m.terror))), bravery: Math.max(0,Math.min(100,finite(m.bravery,24 + Math.floor(brave(input.id + 421) * 65)))), runs: count(m.runs,2), repeats: count(m.repeats,1), fleeing: m.fleeing === true, fledHome: false } };
+    const v = { ...input, id: input.id, spot, vip: input.kind === 10 && input.vip === true, budget: Math.min(10000, input.budget), originalBudget: Math.max(input.budget, finite(input.originalBudget, input.budget)), preferred: Array.isArray(input.preferred) ? input.preferred.filter(n => Number.isInteger(n) && n >= 0 && n < 4) : [0], basketLimit: Math.max(1, count(input.basketLimit, input.vip === true ? 20 : 10)), basket: [], leaveAt: null, outcome: "shopping", age: Math.max(0, finite(input.age)), festival: { done: true }, hollowConsidered: true,
+      hollow: { ...m, routeVersion: middle ? 3 : 4, phase, charged, ticket: charged ? count(m.ticket, 24) : 0, done: false, fromFront, fromStall, route, segment: legacy === "to-shop" ? route.length - 1 : legacy || restart ? 1 : Math.max(1, Math.min(route.length - 1, count(m.segment))), x: at[0], z, dx: finite(m.dx), dz: finite(m.dz, 1), elapsed: Math.max(0, Math.min(35, finite(m.elapsed))), waited: Math.max(0, Math.min(35, finite(m.waited))), terror: Math.max(0,Math.min(100,finite(m.terror))), bravery: Math.max(0,Math.min(100,finite(m.bravery,24 + Math.floor(brave(input.id + 421) * 65)))), runs: count(m.runs,2), repeats: count(m.repeats,1), fleeing: m.fleeing === true, fledHome: false } };
     if (!v.needs || typeof v.needs !== "object") v.needs = { thirst: 50, hunger: 50, happiness: 70, value: 1 };
     ids.add(v.id); visits.add(m.visitId); s.visitors.push(v); s.nextVisitor = Math.max(s.nextVisitor, v.id + 1); s.hollowHouse.nextVisit = Math.max(s.hollowHouse.nextVisit, Number(m.visitId.slice(7)) + 1);
   }

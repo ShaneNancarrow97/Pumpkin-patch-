@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
+import { ROUTE_IN } from "../src/world.js";
 
 function prepared() { const s=M.freshState();s.coins=100000;s.earned=200000;s.progression.claimed=Array.from({length:12},(_,i)=>i+1);s.festival.meadow=true;s.visitorTimer=s.shop.arrivalTimer=s.bigSpender.timer=1e6;return s; }
 // Opening sends a small party for the maze (tested below); the other tests start without it.
@@ -46,7 +47,7 @@ test("a maze-first guest comes up the west lane, then walks the lantern walk to 
 test("a shopper buys a pumpkin, walks over to the maze and goes home down the west lane",()=>{
  const s=opened();s.visitorTimer=0.1;let shopper=null;
  for(let i=0;i<20000&&!shopper;i++){M.update(s,.1);shopper=s.visitors.find(v=>v.hollow?.fromStall&&v.bought!==null);}
- assert.ok(shopper,"someone walked over after shopping");assert.deepEqual(shopper.hollow.route[0],[31.8,10.2]);assert.deepEqual(shopper.hollow.route.at(-1),M.HOLLOW_PROPERTY.door);
+ assert.ok(shopper,"someone walked over after shopping");assert.deepEqual(shopper.hollow.route[0],M.counterPlace(shopper.spot));assert.deepEqual(shopper.hollow.route.at(-1),M.HOLLOW_PROPERTY.door);
  const id=shopper.id;let wentHome=false;
  for(let i=0;i<6000;i++){M.update(s,.1);const v=s.visitors.find(q=>q.id===id);if(!v){wentHome=true;break;}if(v.hollow.phase==="to-border")assert.ok(Math.abs(v.hollow.x+3)<.01||Math.abs(v.hollow.z-10.5)<.01||v.hollow.x>=-3&&v.hollow.x<=6.5,"down the west lane");}
  assert.ok(wentHome,"left the farm after the maze");assert.ok(s.hollowHouse.ticketsSold>=1);
@@ -80,3 +81,52 @@ test("an old save caught mid-transfer restores onto the new walks",()=>{
  for(let i=0;i<1200&&!v.hollow.done;i++) M.tickHollowVisit(s,v,.1);
  assert.equal(v.hollow.done,true);assert.equal(v.budget,cash);assert.equal(s.hollowHouse.ticketsSold,0);
  });
+
+// Walks to and from Skyla's counter start and end at the guest's own place there,
+// where the scene draws them standing (the end of the path in, fanned out by
+// counterSide and COUNTER_GAP), never at its middle.
+const near=(m,p)=>Math.hypot(m.x-p[0],m.z-p[1])<1e-9;
+// A shopper who has bought at the stall and is still standing at their place.
+function shopper(s,spot){const v=guest(s,100+spot);Object.assign(v,{hollow:null,spot,age:M.VISIT.arrive+.5,bought:0,quantity:1,outcome:"bought",leaveAt:M.VISIT.arrive+1});return v;}
+test("each guest at the counter has their own place, where the scene draws them",()=>{
+ assert.deepEqual(ROUTE_IN.at(-1),M.COUNTER_FRONT);
+ const xs=Array.from({length:M.COUNTER_SPOTS},(_,i)=>M.counterPlace(i)[0]).sort((a,b)=>a-b);
+ for(let i=1;i<xs.length;i++)assert.ok(Math.abs(xs[i]-xs[i-1]-M.COUNTER_GAP)<1e-9,"a place apart");
+ assert.deepEqual(M.counterPlace(0),M.COUNTER_FRONT);assert.deepEqual(M.counterPlace("junk"),M.COUNTER_FRONT);
+});
+test("a shopper sets off for the maze from their own place at the counter, then along the walk",()=>{
+ for(let spot=0;spot<M.COUNTER_SPOTS;spot++){
+  const s=opened(),v=shopper(s,spot),place=M.counterPlace(spot);s.visitors=[v];
+  for(let i=0;i<50&&!v.hollow;i++){M.update(s,.1);assert.ok(v.hollow||v.age<v.leaveAt,"never a step down the way home first");}
+  const m=v.hollow,r=m.route;assert.equal(m.routeVersion,4);assert.deepEqual(r[0],place);assert.ok(near(m,place),`spot ${spot} sets off from where they stand`);
+  assert.deepEqual(r[1],[place[0],11.1],"a step straight back from the counter");
+  for(let i=2;i<r.length;i++)assert.ok(r[i][0]<=r[i-1][0],"then west along the walk, never back across the counter");
+  assert.deepEqual(r.at(-1),M.HOLLOW_PROPERTY.door);
+  let last=place;for(let i=0;i<400&&m.phase==="approach";i++){M.update(s,.1);assert.ok(Math.hypot(m.x-last[0],m.z-last[1])<.5,"no jumps");last=[m.x,m.z];}
+  assert.notEqual(m.phase,"approach","reached the door");
+ }
+});
+test("a maze-first guest walks the lantern walk back to their own place at the counter",()=>{
+ for(const spot of [0,5,6]){
+  const s=opened(),v=guest(s,spot);v.spot=spot;s.visitors=[v];let last=null;
+  for(let i=0;i<4000&&!v.hollow.done;i++){M.update(s,.1);const m=v.hollow;if(m.phase==="to-shop"||m.done&&last){if(last)assert.ok(Math.hypot(m.x-last[0],m.z-last[1])<.5,"no jumps");last=[m.x,m.z];}}
+  const place=M.counterPlace(spot),r=v.hollow.route;assert.ok(v.hollow.done);assert.ok(near(v.hollow,place),`spot ${spot} ends at their place`);
+  assert.deepEqual(r[0],M.HOLLOW_PROPERTY.door);assert.deepEqual(r.at(-2),[place[0],11.1],"up to the counter from the walk, not across it");
+ }
+});
+test("walks from the counter survive a reload, and version 3 saves carry on from its middle",()=>{
+ const s=opened(),v=shopper(s,5);s.visitors=[v];for(let i=0;i<50&&!v.hollow;i++)M.update(s,.1);M.update(s,2);
+ const raw=JSON.parse(JSON.stringify(M.saveData(s))),calm=r=>{r.visitorTimer=r.shop.arrivalTimer=r.bigSpender.timer=1e6;return r;};
+ const r=M.restoreState(raw).visitors[0].hollow;assert.deepEqual(r.route,v.hollow.route);assert.equal(r.segment,v.hollow.segment);assert.ok(near(r,[v.hollow.x,v.hollow.z]));assert.equal(r.routeVersion,4);
+ const m=raw.hollowVisitors[0].hollow;
+ for(const [phase,route,segment,end] of [["approach",M.HOLLOW_LINK,2,M.HOLLOW_PROPERTY.door],["to-shop",M.HOLLOW_LINK_BACK,4,M.COUNTER_FRONT]]){
+  Object.assign(m,{routeVersion:3,phase,fromStall:phase==="approach",route,segment,x:25,z:11.1});
+  const old=calm(M.restoreState(raw)),h=old.visitors[0].hollow;assert.deepEqual(h.route,route);assert.equal(h.segment,segment);assert.deepEqual([h.x,h.z],[25,11.1]);assert.equal(h.routeVersion,3);
+  let last=[25,11.1];for(let i=0;i<200&&h.phase===phase;i++){M.update(old,.1);if(h.phase===phase||h.done)assert.ok(Math.hypot(h.x-last[0],h.z-last[1])<.5,"no jumps");last=[h.x,h.z];}
+  assert.ok(near(h,end),`${phase} carries on to the end of its old walk`);
+ }
+ // An older walk starts afresh once, then keeps its place on later reloads.
+ Object.assign(m,{routeVersion:undefined,phase:"approach",fromStall:true,route:M.HOLLOW_LINK,segment:3,x:15,z:11});
+ const fresh=calm(M.restoreState(raw));assert.ok(near(fresh.visitors[0].hollow,M.counterPlace(5)));assert.equal(fresh.visitors[0].hollow.routeVersion,4);
+ M.update(fresh,1);const moved=fresh.visitors[0].hollow,again=M.restoreState(JSON.parse(JSON.stringify(M.saveData(fresh)))).visitors[0].hollow;assert.ok(near(again,[moved.x,moved.z]));
+});

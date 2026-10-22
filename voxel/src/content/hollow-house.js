@@ -27,6 +27,14 @@ export const MAZE_PREFAB_BY_ID = Object.assign(Object.create(null), Object.fromE
 // Nobody leaves the map to get from one side to the other.
 export const HOLLOW_LINK = [[31.8, 10.2], [31.6, 11.1], [20, 11.1], [8.6, 11], [6.5, 10.5], HOLLOW_PROPERTY.door];
 export const HOLLOW_LINK_BACK = [...HOLLOW_LINK].reverse();
+// A guest's own way between their place at the counter (farm-layout.js
+// counterPlace) and the door: a step back from the counter onto the walk, then
+// along it from its first point to their west, so nobody cuts back across the
+// counter or the guests beside them. Reversed, it brings them back to it.
+export function hollowLinkFrom(place) {
+  const join = HOLLOW_LINK.findIndex((p, i) => i > 0 && p[0] < place[0]);
+  return [[...place], [place[0], HOLLOW_LINK[1][1]], ...HOLLOW_LINK.slice(join).map(p => [...p])];
+}
 export const HOLLOW_FRONT_APPROACH = [[-3, GATE_Z], [-3, 10.5], [6.5, 10.5], HOLLOW_PROPERTY.door];
 export const HOLLOW_RETURN = [HOLLOW_PROPERTY.door, [6.5, 10.5], [-3, 10.5], [-3, GATE_Z]];
 export const HOLLOW_PATHS = [HOLLOW_LINK, HOLLOW_FRONT_APPROACH];

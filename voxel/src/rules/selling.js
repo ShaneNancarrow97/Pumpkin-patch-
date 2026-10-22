@@ -124,8 +124,6 @@ export function buyVisitorUpgrade(s, id) {
   return true;
 }
 
-// Which side of the centre a counter place stands: 0, then 1, -1, 2, -2 ...
-export const counterSide = (spot) => (spot % 2 ? 1 : -1) * Math.ceil(spot / 2);
 // The nearest free place at the counter, among visitors still heading for it or standing there.
 function counterSpot(s) {
   const used = new Set(s.visitors.filter((v) => v.leaveAt === null || v.age < v.leaveAt).map((v) => v.spot));
@@ -197,11 +195,13 @@ export function updateStall(s, dt, events) {
     // at its visible exit. They cannot teleport back to buy another pumpkin.
     if (v.hollow?.fledHome) continue;
     if (v.hollow?.justArrived) { v.age = VISIT.arrive; v.hollow.justArrived = false; }
+    v.age += dt;
+    // Decided as their linger ends, so they set off from their place at the
+    // counter without being drawn a step down the way home first.
     if (v.leaveAt !== null && v.age >= v.leaveAt && !v.hollow && !v.mazeAfterConsidered) {
       v.mazeAfterConsidered = true; v.hollow = planHollowVisit(s, v, "after");
       if (v.hollow) continue;
     }
-    v.age += dt;
     if (v.leaveAt !== null || v.age < VISIT.arrive) continue;
     const owner = "visitor-" + v.id, lines = chooseBasket(s, v, [0, 1, 2, 3], owner, PRICES);
     if (lines) {

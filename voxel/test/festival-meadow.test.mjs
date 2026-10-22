@@ -58,6 +58,14 @@ test("new festival visitors bring an explicit finite cocoa allowance", () => {
   run(s, 55); assert.equal(v.cocoaSpend, 4); assert.equal(v.amount, 12); assert.ok(v.cocoaSpend + v.amount <= v.originalBudget);
 });
 
+test("a cocoa guest walks back to their own place at Skyla's counter, not its middle", () => {
+  for (const spot of [0, 3, 6]) {
+    const s = ready(); s.stock[0] = 10; const v = guest(s, spot, 100); assert.ok(v.festival); let last = null;
+    for (let i = 0; i < 600 && !v.festival.done; i++) { M.update(s, .1); const m = v.festival; if (last) assert.ok(Math.hypot(m.x - last[0], m.z - last[1]) < .5, "no jumps"); last = [m.x, m.z]; }
+    const place = M.counterPlace(spot); assert.ok(v.festival.done); assert.ok(Math.hypot(v.festival.x - place[0], v.festival.z - place[1]) < 1e-9, `spot ${spot} ends at their place`);
+  }
+});
+
 test("the bounded queue serves FIFO and full queues keep other guests on the normal path", () => {
   const s = ready(); s.stock[0] = 20;
   const visitors = Array.from({ length: 5 }, (_, i) => guest(s, i, 100));

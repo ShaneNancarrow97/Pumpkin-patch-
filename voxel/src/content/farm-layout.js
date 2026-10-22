@@ -17,6 +17,13 @@ export const extendFarmRoute = (route, s) => {
   const offset = farmPathEnd(s) - GATE_Z;
   return route.map(([x,z]) => [x, z >= LANE_BEND_Z ? z + offset : z]);
 };
+// Skyla's counter, where the path ends. Guests stand along it a place apart, the
+// first in the middle, then one either side in turn (0, 1, -1, 2, -2 ...). The
+// scene draws a guest at the counter at their place, so every walk to or from
+// the counter starts or ends there too, never at the middle.
+export const COUNTER_FRONT = [31.8, 10.2], COUNTER_GAP = 1;
+export const counterSide = (spot) => (spot % 2 ? 1 : -1) * Math.ceil(spot / 2);
+export const counterPlace = (spot) => [COUNTER_FRONT[0] + counterSide(Number.isSafeInteger(spot) && spot > 0 ? spot : 0) * COUNTER_GAP, COUNTER_FRONT[1]];
 // The patch is an oval drawn out towards the front as the field grows: its
 // ends' centres run from back to front, and every point within rx, rz of that
 // line is in it. The mist thins over the same shape (content/ambience.js).
