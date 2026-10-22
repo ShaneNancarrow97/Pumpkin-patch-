@@ -1,5 +1,7 @@
 # Pumpkin Patch Voxel: context for coding agents
 
+**Latest handover: [`docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md`](docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md)** (what changed since your `cc9dd6c`, what to keep, what's next). The numbered handovers in `docs/handovers/` are the running record between Claude and Codex.
+
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
 ## What this is
@@ -47,6 +49,8 @@ CI (`.github/workflows/ci.yml`, job `voxel`) runs `npm ci`, `npm test`, `npm run
 | `src/sprite-voxels.js` | The optional voxel characters, voxelised from the small sprite atlas. Also the frame animation and recolours both styles share |
 | `src/characters.js` | The hand-built voxel visitors used in voxel-character mode |
 | `src/scene.js` | Renderer, lights, bloom, both cameras (orthographic for the farm, perspective for rooms), input and picking, the per-frame loop, floating text |
+| `src/rules/intro.js`, `src/content/intro.js`, `src/ui/intro.js`, `src/ui/intro.css` | The new-game introduction: whether it shows (`shouldShowIntro`, the saved `introSeen`), Shane and Natalie's lines, and the overlay |
+| `src/moth.js` | Sandy's moth courier (used by `festival-meadow-world.js`) |
 | `src/ambience.js`, `src/content/ambience.js` | The mist bank's timing and shader, and the backdrop shader that ripples the lake and twinkles its lights (from the marks canvas `buildBackdrop` paints) |
 | `src/main.js` | Save and load, dialogue, the HUD and dock, keyboard, and which menu is open. Exposes `window.PumpkinVoxel` for tests |
 | `src/ui/` | The menus. Each sheet is `{ eyebrow, title, body(), bind(body) }`; `main.js` re-renders a sheet only when its HTML changes. `kit.js` holds shared bits |
@@ -140,6 +144,8 @@ Generated files: `src/sprite-meta.js`, `src/sprite-meta-hd.js`, `src/decor-meta.
 - **Flipped decor uses a negative x scale.**
 - **Book sockets:** shelves expose where their books go, and `shelfBooks` stands them there.
 - **Pieces on tables (riders):** a placed piece with `on` (its host's instance) and `top` stands on that host; its `x`, `z` are its centre in the host's own unturned frame, not room cells. `fits` checks riders against their top, never the floor. Moving, turning, mirroring, sending or storing a host takes its riders with it. In `places.js` riders are children of their host's group. Shelf ids start `shelf-`; keep `shelf` free for these.
+- **The lower yard sits `DROP` south** (`content/farm-layout.js`): the patch, big pumpkin, homes, the lanes' lower bends, the gates, the front fence and the props in front. Add `DROP` to any new lower-yard position (or derive it from `PATCH`, `PLOT_POSITIONS`, `GATE_Z`, `fieldDepth`); the back row (buildings, arch, back fence) does not move. The lantern walk (`HOLLOW_LINK`) runs in the gap.
+- **Maze guests never leave the map:** maze-first guests come up the west lane and walk `HOLLOW_LINK_BACK` to the stall; shoppers walk `HOLLOW_LINK` over and go home by `HOLLOW_RETURN`. There are no transfer phases; old saves in them are mapped in `restoreHollowVisitors`.
 - **Placement positions:** a floor piece's saved `x`, `z` is still the corner of its turned cells' enclosing box, but collision and the room's edges use its measured body (`content/decor-sizes.js`, from `tools/measure-decor.mjs`), so `x` or `z` can be a little below 0. Clamp UI moves with `placementRange`, not the cells. Re-run the measuring tool when a model changes.
 - **Shelf finishes and tints are different:** `finish` (blank shelves only) picks the model's wood; `tint` (Codex's Colour) recolours on top.
 - **Portrait phones:** the room camera fits the back wall's middle, and you drag along the wall.

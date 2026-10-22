@@ -32,14 +32,15 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
 - **The world, laid out as in the bible.** The whole yard fits in one wide shot, framed like the art target:
   - the crooked cottage top left, with lanterns, window boxes and red creeper. It grows with the house: a crooked roof, a second storey, a manor turret, then a haunted haven with a second spire, violet windows, ghost lights and bats.
   - the giant jack-o'-lantern on its candlelit wine-red stage
-  - the 12-plot patch in a pale stone oval, in the middle of a cobbled yard
+  - the 12-plot patch in a pale stone oval, in the middle of a cobbled yard (up to 24 plots as the field grows)
+  - the lantern walk above the patch, from Skyla's counter to the Hollow House door, where guests cross between the stall and the maze
   - the Honest Pumpkin shop top right: a gable sign, a striped awning, shelves of glowing jars, a row of lit pumpkins, a chalkboard and a banner
   - the lilac stone path the visitors walk, out at the bottom right
   - a leafy arch in the back fence, with string lights, opening onto the lake
   - wooden picket fences with lantern posts, crates, barrels, hay bales, a bench and flowers
   - red, orange and plum autumn trees round every edge
 - **The far shore** is painted pixel art on a backdrop that leans back to face the camera: the night sky, a crescent moon, mountains, the castle on its hill, and a lakeside village with its lights reflected in the water. The lake ripples, the village lamps flicker, the reflections glint and the stars twinkle.
-- **Mist:** the slightest low mist rolls across the farm from the west, clears for a minute or so and comes round again. Mist and the moving lake each have a switch in Settings, and start off on a device set to reduce motion.
+- **Mist:** the slightest low mist rolls across the farm from the west, clears for a minute or so and comes round again. It thins over the pumpkins and fades out round the buildings. Mist and the moving lake each have a switch in Settings, and start off on a device set to reduce motion.
 - **Lighting:** lilac moonlight casting soft shadows, warm lantern and window light, a bloom glow on everything that's lit, and fireflies.
 - **The farm, as in the main game:**
   - Four varieties (Orange, Ruby, Moonlight and Golden), unlocked plot by plot. Each plot grows any variety it has unlocked.
@@ -71,6 +72,9 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
 - **Voxel characters** (Settings) builds the cast from voxels instead:
   - **Shane, Natalie, Skyla and every costume** are voxelised from the same sprites, one voxel per pixel at 120 voxels tall. Depth is rounded towards the silhouette's edge, and a back is painted on.
   - **The five neighbours** are built by hand from the bible.
+- **The introduction:** a new patch opens on a moonlit title card, then Shane and Natalie take turns explaining the farm and the goal over the farm itself (Skip at any time; Settings › Watch again).
+- **The Boost button** stays in one place, in the middle of the action bar with a gold ring, whatever Plant and Harvest are doing.
+- **The Hollow House maze:** opening it sends a small party up the west lane for it. Some guests visit the maze first and then walk the lantern walk to the stall; others buy a pumpkin and walk over to the maze, then go home down the west lane. Sandy's moth courier flutters about her cocoa booth.
 - **Music and settings:** twelve offline MIDI tracks, originals and supplied songs (among them Thriller, Ghostbusters, Disasterology, Crazy Train and Rebel Yell), on shuffle or picked by hand, with a volume control. Also sound blips, a tea-break pause, render detail, glow, mist, lake and shadow switches, and backups you can copy out and restore.
 - **Icons:** the main game's interface icons, baked as small voxel tiles with a darker extruded edge, a light bevel and an outline.
 - **Menus:**
