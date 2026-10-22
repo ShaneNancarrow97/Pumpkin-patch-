@@ -66,7 +66,7 @@ export function cocoaKiosk(level) {
 
 // Open a connection through the old fence/trees without changing world.js.
 // Compact positive, nonzero instances in place; keep the shared geometry alive.
-const clearRegions = [[38, 10.7, 57, 34], [38.4, 5.8, 43.4, 10.7], [35.3, 24.7, 40.3, 29.7], [34, 22.6, 42, 25.3]];
+const clearRegions = [[38, 10.7, 57, 34 + DROP], [38.4, 5.8, 43.4, 10.7], [35.3, 24.7 + DROP, 40.3, 29.7 + DROP], [34, 22.6 + DROP, 42, 25.3 + DROP]];
 export function openMeadowEdge(world) {
   const matrix = new THREE.Matrix4(), colour = new THREE.Color(); let removed = 0;
   const batches = []; world.traverse(m => { if (m.isInstancedMesh) batches.push(m); });

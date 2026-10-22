@@ -113,8 +113,8 @@ uniform vec4 uPatch; uniform vec2 uPatchR; uniform vec4 uSpots[${MAX_CLEARINGS}]
 #include <alphatest_fragment>`);
     };
     material.customProgramCacheKey = () => "overworld-mist";
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(200, 36), material);
-    mesh.rotation.x = -Math.PI / 2; mesh.position.set(25, y, 16.5);
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(200, 42), material);
+    mesh.rotation.x = -Math.PI / 2; mesh.position.set(25, y, 19.5);
     mesh.renderOrder = 2; mesh.name = "Overworld mist";
     mesh.raycast = () => {};                                                       // never in the way of a tap
     return mesh;

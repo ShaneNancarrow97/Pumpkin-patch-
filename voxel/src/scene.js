@@ -66,7 +66,7 @@ export function createScene(canvas, state, hooks) {
   moon.position.set(34, 32, -14); moon.target.position.set(20, 0, 13);
   moon.castShadow = true;
   moon.shadow.mapSize.set(touchDevice ? 1024 : 2048, touchDevice ? 1024 : 2048);
-  Object.assign(moon.shadow.camera, { left: -30, right: 30, top: 24, bottom: -24, near: 1, far: 90 });
+  Object.assign(moon.shadow.camera, { left: -30, right: 30, top: 27, bottom: -27, near: 1, far: 90 });
   moon.shadow.bias = -0.0008; moon.shadow.normalBias = 0.03;
   scene.add(moon, moon.target);
   // A soft warm fill from the viewer's side, like lantern light, so faces read.

@@ -82,7 +82,7 @@ Generated files: `src/sprite-meta.js`, `src/sprite-meta-hd.js`, `src/decor-meta.
 ## Space, scale and cameras
 
 - **Farm:**
-  - Orthographic camera looking down at `PITCH` (in `world.js`). The yard is `MAP` 40 x 26 units, and one wide shot shows it all on desktop.
+  - Orthographic camera looking down at `PITCH` (in `world.js`). The yard is `MAP` 40 x 29 units, and one wide shot shows it all on desktop.
   - On a portrait phone the camera frames the patch and the big pumpkin, and you drag to pan.
   - The far shore is a painted backdrop that leans back by `PITCH` to face the camera.
 - **Rooms:**
