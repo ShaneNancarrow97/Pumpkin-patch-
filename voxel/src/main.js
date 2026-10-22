@@ -270,10 +270,11 @@ function render() {
   $("hud-level").title = `Level ${lvl.level}: ${lvl.name}. ${lvl.tagline}.`;
   text("level-name", lvl.name);
   const open = state.plots.slice(0, M.openPlots(state));
-  const empty = open.filter((p) => p.phase === "empty").length, ripe = open.filter((p) => p.phase === "ready").length;
+  const empty = open.filter((p) => p.phase === "empty").length, ripe = open.filter((p) => p.phase === "ready").length, full = M.barnBlocked(state);
   $("plant-all").hidden = !empty; text("plant-count", empty);
-  $("harvest-all").hidden = !ripe; text("harvest-count", M.barnBlocked(state) ? "Barn full" : ripe);
-  $("harvest-all").setAttribute("aria-label", M.barnBlocked(state) ? "Barn full: sell pumpkins, add storage or buy a market cart" : `Harvest ${ripe} ready plots`);
+  // A full barn stacks its note under the label (style.css), so Harvest still fits beside Boost on a phone.
+  $("harvest-all").hidden = !ripe; text("harvest-count", full ? "Barn full" : ripe); $("harvest-all").classList.toggle("barn-full", full);
+  $("harvest-all").setAttribute("aria-label", full ? "Barn full: sell pumpkins, add storage or buy a market cart" : `Harvest ${ripe} ready plots`);
   const ready = M.claimable(state), next = M.FAVOURS.find((f) => !state.claimed.includes(f.id));
   $("goal").classList.toggle("ready", ready.length > 0);
   text("goal-text", ready.length ? (ready.length > 1 ? `${ready.length} favours are ready to claim` : ready[0].guest + " has a reward for you") : next ? `${next.title} · ${M.favourProgress(state, next)}/${next.target}` : "Every favour done. The neighbours adore you.");
