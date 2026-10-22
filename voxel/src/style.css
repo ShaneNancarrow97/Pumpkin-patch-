@@ -323,7 +323,7 @@ input[type="range"] { accent-color: var(--gold); min-height: 44px; }
 .sheet[data-section="home"] .sheet-frame, .sheet[data-section="shelf"] .sheet-frame { border-color: var(--house-edge); outline: none; background: linear-gradient(155deg, #2b2332f7, #19151ffb); border-radius: 22px; padding: 14px; }
 .sheet[data-section="home"] .bat, .sheet[data-section="shelf"] .bat { display: none; }
 .sheet[data-section="home"] .sheet-head h2 { font-size: 24px; }
-.sheet[data-section="home"] .segmented { position: sticky; top: -1px; z-index: 2; flex-shrink: 0; background: #211b29; border-color: var(--house-edge); }
+.sheet[data-section="home"] .segmented { position: sticky; top: 0; z-index: 2; flex-shrink: 0; background: #211b29; border-color: var(--house-edge); }
 .sheet[data-section="home"] .card, .sheet[data-section="shelf"] .card { padding: 10px; border-color: var(--house-edge); background: #ffffff04; gap: 8px; }
 .sheet[data-section="home"] .card h3 { font: 600 14px/1.35 var(--body); }
 .sheet[data-section="home"] .card p { font-size: 12px; }
@@ -419,7 +419,14 @@ input[type="range"] { accent-color: var(--gold); min-height: 44px; }
 .sheet[data-section="estate"] .sheet-frame { padding: 14px; border-color: #9a7e68; outline: none; background: linear-gradient(155deg, #2b2333f8, #19151ffb); }
 .sheet[data-section="estate"] .bat { display: none; }
 .sheet[data-section="estate"] .sheet-head h2 { font-size: 24px; }
-.sheet[data-section="estate"] .sheet-body > .segmented:first-child { position: sticky; top: -1px; z-index: 2; flex-shrink: 0; background: #251d2d; }
+.sheet[data-section="estate"] .sheet-body > .segmented:first-child { position: sticky; top: 0; z-index: 2; flex-shrink: 0; background: #251d2d; }
+/* The home and estate tabs stick where they rest, below the body's 10px top padding, so they never jump.
+   A square skirt in the frame's colour (10px above and below: the padding and the row gap) fills their
+   rounded corners, with the pill drawn back over it, so cards scroll cleanly under an opaque strip.
+   Focus scrolling clears that 70px strip and a tall card's text above its button. */
+:is(.sheet[data-section="home"] .segmented, .sheet[data-section="estate"] .sheet-body > .segmented:first-child)::before { content: ""; position: absolute; z-index: -1; inset: -10px 0; background: #27212d; }
+:is(.sheet[data-section="home"] .segmented, .sheet[data-section="estate"] .sheet-body > .segmented:first-child)::after { content: ""; position: absolute; z-index: -1; inset: 0; border-radius: inherit; background: inherit; }
+.sheet:is([data-section="home"], [data-section="estate"]) .sheet-body { scroll-padding-top: 140px; }
 .sheet[data-section="estate"] .chips { display: flex; flex-wrap: wrap; gap: 5px; }
 .sheet[data-section="estate"] .chip { min-width: 44px; min-height: 44px; font-size: 12px; padding: 0 10px; }
 .estate-summary { display: flex; justify-content: space-between; gap: 8px; padding: 10px 4px; color: var(--ink-soft); font-size: 12px; }
