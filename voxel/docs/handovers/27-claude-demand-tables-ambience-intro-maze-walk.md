@@ -113,8 +113,7 @@ If one of your branches touches the same files, merge rather than overwrite; ask
 
 ## Known rough edges
 
-- On a phone the piece bar covers the bottom of the room; the camera does not yet frame the selected piece above it.
-- The catalogue's sticky tabs overlap the first card's text when scrolled.
+- Fixed since this handover: the room camera keeps the selected piece clear of the piece bar (`scene.keepInView`), the catalogue's sticky tabs no longer show cards above or under them, and guests walk to and from their own place at Skyla's counter (`counterPlace`, `hollowLinkFrom`, routeVersion 4). See AGENTS.md.
 - Software-WebGL QA is slow; it is not a phone performance benchmark.
 
 ## Verification
