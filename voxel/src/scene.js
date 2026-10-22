@@ -230,7 +230,7 @@ export function createScene(canvas, state, hooks) {
   const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.() });
   const active = () => view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
   const activeScene = () => view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
-  const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null };
+  const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null, reach: { x: 0, z: 0 } };
   let farmView = null;
   let bloomOn = true;
   const composer = new EffectComposer(renderer);
@@ -273,6 +273,55 @@ export function createScene(canvas, state, hooks) {
     roomCam.position.copy(target).addScaledVector(dir, dist / view.zoom);
     roomCam.lookAt(target);
     view.roomDist = dist / view.zoom;
+  }
+
+  // The selected piece stays clear of the piece bar (home-sheets.js). When the bar or
+  // the canvas's edge hides it, the room camera eases along and in or out just far
+  // enough to show it, once nothing is pressing on the canvas. A piece already in
+  // view leaves the camera where the player put it.
+  let kept = null, aimNext = false, glide = null;
+  // How far the room camera may slide along the room either way: a phone drags along the wall.
+  const roomAlong = () => cameraLayout(canvas.clientWidth).overview < .95 ? (places.place?.w ?? GRID.w) / 2 - 2.8 : 1.5;
+  const seen = new THREE.Vector3();
+  // Where a box lands on the canvas, in pixels, with the room camera at (x, z).
+  function boxOnCanvas(box, x, z) {
+    view.x = x; view.z = z; frameRoom(canvas.clientWidth, canvas.clientHeight); roomCam.updateMatrixWorld();
+    const r = { l: Infinity, r: -Infinity, t: Infinity, b: -Infinity };
+    for (let i = 0; i < 8; i++) {
+      seen.set(i & 1 ? box.max.x : box.min.x, i & 2 ? box.max.y : box.min.y, i & 4 ? box.max.z : box.min.z).project(roomCam);
+      const sx = (seen.x + 1) / 2 * canvas.clientWidth, sy = (1 - seen.y) / 2 * canvas.clientHeight;
+      r.l = Math.min(r.l, sx); r.r = Math.max(r.r, sx); r.t = Math.min(r.t, sy); r.b = Math.max(r.b, sy);
+    }
+    return r;
+  }
+  // Where the camera should go to show the kept piece, or null when it already shows.
+  function aimAtPiece() {
+    const box = places.pieceBox(kept.instance), c = canvas.getBoundingClientRect(), u = kept.bar.getBoundingClientRect();
+    if (!box || !u.height) return null;
+    const W = c.width, H = c.height, x0 = view.x, z0 = view.z, along = roomAlong(), GAP = 32;
+    // The bar on the canvas. The room clears it upwards when the most free canvas is
+    // above it (a phone, the Fold), or sideways when that is beside it (a landscape phone).
+    const bar = { l: u.left - c.left, r: u.right - c.left, t: u.top - c.top, b: u.bottom - c.top }, low = bar.t * W >= bar.l * H;
+    const under = (r, m) => r.r > bar.l - m && r.l < bar.r + m && r.b > bar.t - m && r.t < bar.b + m;
+    let r = boxOnCanvas(box, x0, z0), x = x0, z = z0;
+    // Clear by a little already (its ring reaches past its box): leave the camera be.
+    if (!under(r, 8) && r.l >= 8 && r.r <= W - 8 && r.t >= 8 && r.b <= H - 8) { boxOnCanvas(box, x0, z0); return null; }
+    // Each edge rises or slides left as the camera moves out or along: find where it meets its line.
+    const meet = (at, edge, line, a, b) => { for (let i = 0; i < 12; i++) { const v = (a + b) / 2; if (at(v)[edge] > line) a = v; else b = v; } return (a + b) / 2; };
+    const atZ = v => boxOnCanvas(box, x0, v), atX = v => boxOnCanvas(box, v, z);
+    // Up clear of a low bar, backing out past the usual limit (by up to the room's depth)
+    // so the front row can; or down from the top, keeping the base in view.
+    const bottom = (low && r.r > bar.l && r.l < bar.r ? bar.t : H) - GAP;
+    if (r.b > bottom) z = meet(atZ, "b", bottom, z0, Math.max(z0, low ? 1.2 + places.place.d : 1.2));
+    else if (r.t < GAP) z = Math.max(meet(atZ, "t", GAP, -1.2, z0), meet(atZ, "b", bottom, -1.2, z0));
+    // Then along, clear of the canvas's sides and a bar down the side (sliding past
+    // the usual limit, by up to half the room, so the far side can).
+    r = boxOnCanvas(box, x0, z);
+    const right = (low ? W : bar.l) - GAP, far = low ? along : along + places.place.w / 2;
+    if (r.l < GAP) x = meet(atX, "l", GAP, Math.min(x0, -far), x0);
+    else if (r.r > right) x = meet(atX, "r", right, x0, Math.max(x0, far));
+    boxOnCanvas(box, x0, z0);
+    return Math.abs(x - x0) + Math.abs(z - z0) > 0.01 ? { x, z } : null;
   }
   function frame() {
     const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
@@ -326,7 +375,7 @@ export function createScene(canvas, state, hooks) {
   const worldPerPixel = () => (camera.right - camera.left) / canvas.clientWidth;
   canvas.addEventListener("pointerdown", (e) => {
     if (["estate", "foyer"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
-    canvas.setPointerCapture(e.pointerId);
+    canvas.setPointerCapture(e.pointerId); glide = null;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 1) {
       drag = { x: e.clientX, y: e.clientY, vx: view.x, vz: view.z, moved: 0 };
@@ -398,15 +447,18 @@ export function createScene(canvas, state, hooks) {
   canvas.addEventListener("contextmenu", e => { e.preventDefault(); cancelGesture(); });
   window.addEventListener("blur", () => cancelGesture());
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelGesture(); });
-  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer"].includes(view.place)) return; e.preventDefault(); view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); }, { passive: false });
+  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); }, { passive: false });
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.
   function clampView() {
     if (view.place) {
-      // Offsets from the room's centre: a little way along it, and in or out.
-      const rw = places.place?.w ?? GRID.w, along = cameraLayout(canvas.clientWidth).overview < .95 ? rw / 2 - 2.8 : 1.5;
-      view.x = THREE.MathUtils.clamp(view.x, -along, along);
-      view.z = THREE.MathUtils.clamp(view.z, -1.2, 1.2);
+      // Offsets from the room's centre: a little way along it, and in or out. Past
+      // that only as far as the piece bar needed, and once it closes, no further
+      // than the camera already is.
+      const along = roomAlong(), reach = view.reach;
+      if (!kept) { reach.x = Math.min(reach.x, Math.max(0, Math.abs(view.x) - along)); reach.z = Math.min(reach.z, Math.max(0, view.z - 1.2)); }
+      view.x = THREE.MathUtils.clamp(view.x, -along - reach.x, along + reach.x);
+      view.z = THREE.MathUtils.clamp(view.z, -1.2, 1.2 + reach.z);
       view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(canvas.clientWidth).roomMinZoom, 1.9);
       return;
     }
@@ -433,6 +485,22 @@ export function createScene(canvas, state, hooks) {
     const dt = THREE.MathUtils.clamp((now - last) / 1000, 0, 0.1); last = now; time += dt;
     hooks.onTick(dt);
     ambience.tick(time);
+    // The camera shows the kept piece after any press on the canvas is over; a short
+    // ease, or a cut for anyone who has asked for less motion.
+    if (aimNext && !touches.size && view.place === "room") {
+      aimNext = false;
+      const to = aimAtPiece();
+      if (to) {
+        view.reach.x = Math.max(view.reach.x, Math.abs(to.x) - roomAlong()); view.reach.z = Math.max(view.reach.z, to.z - 1.2);
+        glide = { x: view.x, z: view.z, to, t: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 0 };
+      }
+    }
+    if (glide) {
+      glide.t = Math.min(1, glide.t + dt / 0.35);
+      const k = 1 - (1 - glide.t) ** 3;
+      view.x = glide.x + (glide.to.x - glide.x) * k; view.z = glide.z + (glide.to.z - glide.z) * k; frame();
+      if (glide.t === 1) glide = null;
+    }
 
     // Plots.
     plots.forEach((p, i) => {
@@ -564,7 +632,7 @@ export function createScene(canvas, state, hooks) {
       if (kind === "estate") { places.leave(); estateView.enter(); }
       else if (kind === "foyer") { places.leave(); foyerView.enter(); }
       else if (kind === "room") places.enterRoom(id); else places.enterShop();
-      Object.assign(view, { x: 0, z: 0, zoom: 1 });
+      Object.assign(view, { x: 0, z: 0, zoom: 1, reach: { x: 0, z: 0 } }); glide = null;
       frame();
     },
     leavePlace() {
@@ -572,7 +640,7 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
       places.leave();
-      view.place = null;
+      view.place = null; glide = null;
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
       frame();
     },
@@ -609,6 +677,8 @@ export function createScene(canvas, state, hooks) {
     movePiece(instance, pose, ok) { places.movePiece(instance, pose, ok); },
     hostPoint(instance, point) { return places.hostPoint(instance, point); },
     rotatePiece(instance) { places.rotatePiece(instance); },
+    // Keeps a selected piece clear of its toolbar (an element), or stops, leaving the camera be.
+    keepInView(instance, bar) { kept = instance ? { instance, bar } : null; aimNext = !!instance; if (!instance) glide = null; },
     screenPoint(x, y, z) { return project(new THREE.Vector3(x, y, z)); },
     // Just above their heads: they lean back so they stand 2.3 tall on screen, which a point straight up from the feet reaches at 2.3 / cos(PITCH).
     actorPosition(who) { const p = actors[who]?.model.position ?? new THREE.Vector3(HOMES[who].x, 0, HOMES[who].z); return project(new THREE.Vector3(p.x, 2.5 / Math.cos(PITCH), p.z)); },

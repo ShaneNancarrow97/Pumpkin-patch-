@@ -396,6 +396,13 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       return entry.group.getWorldPosition(new THREE.Vector3()).y;
     },
     rotatePiece(instance) { movePiece(instance); },
+    // A piece's box in the world (its hit box), for the camera to keep in view.
+    pieceBox(instance) {
+      const hit = pieces.get(instance)?.hit;
+      if (!hit) return null;
+      hit.updateWorldMatrix(true, false);
+      return new THREE.Box3().setFromObject(hit);
+    },
     // Turns a tap on the floor or the wall into a grid cell.
     cellAt(point, type, wall = "back", snap = .1) {
       const o = ORIGIN.room;

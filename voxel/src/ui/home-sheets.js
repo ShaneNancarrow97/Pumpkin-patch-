@@ -186,7 +186,7 @@ export function homeSheets(ui) {
     },
     render() {
       const bar = $("piece-bar"), s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
-      if (!p || ui.scene.place?.kind !== "room") { bar.hidden = true; return; }
+      if (!p || ui.scene.place?.kind !== "room") { bar.hidden = true; ui.scene.keepInView(null); return; }
       const item = M.decorById[p.id], wall = M.footprint(p.id).layer === "wall", host = p.on && s.house.placed.find((q) => q.instance === p.on);
       const tops = canRide(p.id) && M.roomPieces(s, p.room).some((q) => !q.on && q.instance !== p.instance && M.hostSurfaces(q).length);
       const others = M.houseRooms.filter((r) => r.id !== p.room && M.roomUnlocked(s, r.id));
@@ -198,7 +198,7 @@ export function homeSheets(ui) {
         <div class="piece-actions"><button class="button tool-move ${tools.moving ? "gold" : ""}" data-tool="move" aria-pressed="${tools.moving}">Move</button>${rotation}${host ? `<button class="button" data-tool="ontop">Next top</button>` : tops ? `<button class="button" data-tool="ontop">On a table</button>` : ""}<button class="button" data-tool="undo" ${editHistory.length ? "" : "disabled"}>Undo</button><button class="icon-button tool-icon" data-tool="more" aria-label="More furniture actions" aria-expanded="${more}">•••</button></div>
         ${tools.moving ? `<div class="nudge-tools" role="group" aria-label="Fine-tune position">${icon("left", "←", "Move left 0.1")}${icon("back", "↑", "Move towards back wall 0.1")}${icon("front", "↓", "Move towards front 0.1")}${icon("right", "→", "Move right 0.1")}<button class="button snap-choice" data-tool="snap" aria-pressed="${tools.snap > 0}" aria-label="${tools.snap > 0 ? "Fine grid on. Switch to free placement" : "Free placement on. Switch to fine grid"}">${tools.snap > 0 ? "Snap 0.1" : "Free"}</button></div>` : ""}
         ${more ? `<div class="piece-more" role="group" aria-label="More furniture actions">${host ? `<button class="button" data-tool="setdown">Set down on the floor</button>` : ""}${isShelf(p.id) ? `<button class="button" data-tool="finish">Finish · ${item.finishes.find((f) => f.id === p.finish)?.name ?? item.finishes[0].name}</button>` : ""}<button class="button" data-tool="colour">Colour</button><button class="button" data-tool="flip">Mirror</button>${M.shelfCapacity(p.id) ? `<button class="button" data-tool="books">Books · ${p.books.length}/${M.shelfCapacity(p.id)}</button>` : ""}${others.map((r) => `<button class="button" data-room="${r.id}">To ${r.name.toLowerCase()}</button>`).join("")}<button class="button" data-tool="store">Put in storage</button></div>` : ""}`;
-      bar.hidden = false;
+      bar.hidden = false; ui.scene.keepInView(p.instance, bar);
       if (html === lastTools) return;
       bar.innerHTML = html; lastTools = html;
       bar.querySelectorAll("[data-tool]").forEach((b) => b.onclick = () => tools.act(b.dataset.tool));
