@@ -5,6 +5,7 @@ import { cocoaProp } from "./cocoa-props.js";
 import { yardGround, fenceRun, tree, lanternPost } from "./world.js";
 import { MEADOW, MEADOW_PATHS, pathDistance } from "./content/festival-meadow.js";
 import { hollowPathDistance } from "./content/hollow-house.js";
+import { createMoth } from "./moth.js";
 
 // A proper little timber kiosk, grown into a lantern pavilion at later tiers.
 // Everything uses the existing voxel palette and two material batches.
@@ -165,19 +166,12 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
   sync();
   return { get pickables() { return pickables; }, get status() { return { cashier: !!sandy, ready: sandy?.ready ?? false, frame: sandy?.group.userData.frame ?? null, tier, displayed: specials.filter(p => p.prop.visible).map(p => p.id) }; }, sync,
     tick(time) {
+      // The courier is a moth (moth.js): it flutters about the booth and rests on the free end of Sandy's counter.
       if (state.festival.cocoa.courier && !courier) {
-        courier = new THREE.Group(); const body = new Voxels(); body.block(0, 0, 0, .1, .25, .13, 0x513a39); body.block(0, .2, 0, .13, .12, .13, 0xd9b982); courier.add(body.build());
-        const wings = [];
-        for (const side of [-1, 1]) {
-          const wing = new Voxels(); wing.box(side < 0 ? -.48 : .03, .02, -.045, .45, .27, .09, 0xc89f78); wing.block(side * .28, .12, .012, .11, .1, .06, 0x5d3a55); wing.block(side * .15, .22, .012, .08, .055, .06, 0xecd4a5);
-          const g = wing.build(); courier.add(g); wings.push(g);
-        }
-        courier.userData.wings = wings; root.add(courier);
+        const [x, z] = MEADOW.stand;
+        courier = createMoth({ home: [x, 3.4, z + 2.1], perch: [x + 2.25, 1.65, z + 1.15] }); root.add(courier.group);
       }
-      if (courier) {
-        courier.position.set(47 + Math.sin(time * .6) * 1.5, 3.4 + Math.sin(time * 1.2) * .15, 20 + Math.cos(time * .6) * .5);
-        courier.userData.wings.forEach((wing, i) => wing.rotation.y = Math.sin(time * 12) * (i ? -.6 : .6));
-      }
+      courier?.tick(time);
       sync(); const c = state.festival.cocoa;
       if (sandy) { sandy.group.visible = c.level > 0; sandy.tick(time, c.level, state.visitors.some(v => v.festival?.phase === "serving") || state.time - c.lastSaleAt < 1.1); } cups.forEach((m, i) => m.visible = c.stock > i); specials.forEach(({ prop, id }) => prop.visible = c.extras[id].stock > 0); wisps.visible = !!c.level && c.open && (c.stock > 0 || ["flake", "deluxe", "midnight"].some(id => c.extras[id].stock > 0));
       for (let i = 0; i < 8; i++) { const t = (time * .35 + i / 8) % 1; steam[i * 3] = 45.9 + Math.sin(t * 7 + i) * .14; steam[i * 3 + 1] = 2.7 + t * 1.4; steam[i * 3 + 2] = 18.6 + Math.cos(t * 6 + i) * .12; }
