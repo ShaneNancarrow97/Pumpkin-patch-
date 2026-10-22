@@ -78,7 +78,7 @@ export const cartRoom = (s) => {
 // Whether a harvest has nowhere to go: the barn is full and the cart (if any) is loaded for this minute.
 export const barnBlocked = (s) => barnSpace(s) < harvestSize(s) && cartRoom(s) < harvestSize(s);
 function store(s, v, n) {
-  if (barnSpace(s) >= n) { addStock(s, v, n); return true; }
+  if (barnSpace(s) >= n) { addStock(s, v, n, true); return true; }
   const c = cartTier(s);
   if (!c.share || cartRoom(s) < n) return false;
   const minute = Math.floor(s.time / 60);

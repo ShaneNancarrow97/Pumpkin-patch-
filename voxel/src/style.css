@@ -847,3 +847,7 @@ body:has(.building-context:not([hidden])) .actions { visibility: hidden; }
 .stock-warning { margin:5px 0 0; font:12px/1.4 var(--body); color:#ffd395; }
 .stock-shortcuts { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:10px; padding-top:10px; border-top:1px solid var(--edge-soft); }
 .stock-shortcuts .button { padding:0 7px; min-height:44px; min-width:0; }
+/* Fresh and wanted pumpkins (rules/market.js): the stock panel's wanted line and the plot chips' star. */
+.stock-wanted { margin:2px 0 6px; padding:7px 9px; border:1px solid #e9b85b55; border-radius:10px; background:#e9b85b14; color:var(--gold-bright); font:600 12px/1.35 var(--body); }
+.chip.wanted { border-color:#e9b85b88; }
+.chip .wanted-mark { color:var(--gold-bright); }

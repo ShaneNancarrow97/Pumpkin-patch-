@@ -116,6 +116,11 @@ function handle(e) {
     audio.tone(700);
     if (e.route === "stall") scene.say(VISITOR_LINES[e.visitor % VISITOR_LINES.length]);
   }
+  if (e.type === "wanted") {
+    const name = M.VARIETIES[e.variety].name, more = Math.round(M.WANTED.bonus * 100);
+    notice(`Wanted now: ${name} pumpkins · up to ${more}% more for ${Math.round(M.WANTED.seconds / 60)} minutes`);
+    if (state.wanted.serial === 1) say("natalie", `The village has gone mad for ${name} pumpkins! Keep some in the barn and they’ll pay up to ${more}% more for them.`);
+  }
   if (e.type === "missed" && e.reason !== "shop") scene.say(e.reason === "budget" ? "A smaller pumpkin next time." : "Back after harvest!");
   if (e.type === "harvest") { scene.harvested(e.plot, e.count); scene.sendTo(e.plot); }
   if (e.type === "plant") scene.sendTo(e.plot);

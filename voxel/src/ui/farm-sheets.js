@@ -57,6 +57,13 @@ function priceButton(attr, value, price, coins, owned) {
   return `<button class="button gold" data-${attr}="${value}" ${coins < price ? "disabled" : ""}>${money(price)}${coins < price ? `<small>need ${money(price - coins)}</small>` : ""}</button>`;
 }
 
+// A receipt's basket, one entry per variety: "3 Orange (2 fresh) + 1 Moonlight".
+function basketText(lines) {
+  const by = new Map();
+  for (const l of lines) { const b = by.get(l.variety) ?? { n: 0, fresh: 0 }; b.n += l.quantity; if (l.fresh) b.fresh += l.quantity; by.set(l.variety, b); }
+  return [...by].map(([v, b]) => `${b.n} ${M.VARIETIES[v].name}${b.fresh ? ` (${b.fresh === b.n ? "fresh" : `${b.fresh} fresh`})` : ""}`).join(" + ");
+}
+
 // Skyla's advice, for whatever would help most right now.
 function skylaTip(s) {
   if (M.barnBlocked(s)) return `The barn is full (${M.stockCount(s)}/${M.barnCapacity(s)}). Sell pumpkins, buy A bigger pumpkin barn, or a market cart to take the extra to the village; ripe crops will wait safely.`;
@@ -64,8 +71,10 @@ function skylaTip(s) {
   if (!s.shop.unlocked && s.coins >= 600) return "We could open the shop now. Customers would come inside to browse.";
   const shown = s.shop.displays.slice(0, M.displayCount(s.shop)), best = [3, 2, 1, 0].find((v) => M.available(s, v) > 0);
   if (s.shop.unlocked && best !== undefined && !shown.includes(best)) return `Put the ${M.VARIETIES[best].name} pumpkins on a table. They sell for ${money(M.VARIETIES[best].price)}.`;
+  const wanted = M.wantedVariety(s);
+  if (wanted !== null && !M.available(s, wanted)) return `Everyone’s asking for ${M.VARIETIES[wanted].name} and we’ve none left. Plant some: they’ll pay up to ${Math.round(M.WANTED.bonus * 100)}% more.`;
   if (s.stall.missedBudget > s.stall.served / 3) return "Some neighbours can’t afford what’s left. A few Orange pumpkins keep everyone happy.";
-  return "Every basket helps. Favourites first, then anything they can afford.";
+  return "Pick little and often: fresh pumpkins sell first, and guests pay a bit more for them from their change.";
 }
 
 export function farmSheets(ui) {
@@ -83,10 +92,10 @@ export function farmSheets(ui) {
   }
 
   function seeds(s) {
-    const open = M.openPlots(s), remaining = s.plots.length - open;
-    return `<p>Better seeds unlock per plot. Rarer pumpkins sell for more and grow more slowly.</p><div class="plot-grid">` + s.plots.slice(0, open).map((p, i) => {
+    const open = M.openPlots(s), remaining = s.plots.length - open, wanted = M.wantedVariety(s);
+    return `<p>Better seeds unlock per plot. Rarer pumpkins sell for more and grow more slowly.${wanted !== null ? ` <b>${M.VARIETIES[wanted].name}</b> is wanted now (★): up to ${Math.round(M.WANTED.bonus * 100)}% more.` : ""}</p><div class="plot-grid">` + s.plots.slice(0, open).map((p, i) => {
       const level = s.plotLevels[i], next = M.VARIETIES[level + 1], crop = s.plotCrops[i];
-      const chips = level ? `<div class="chips" role="group" aria-label="What plot ${i + 1} grows">${M.VARIETIES.slice(0, level + 1).map((v, k) => `<button class="chip" data-crop="${i}:${k}" aria-pressed="${crop === k}">${v.name}</button>`).join("")}</div>` : "";
+      const chips = level ? `<div class="chips" role="group" aria-label="What plot ${i + 1} grows">${M.VARIETIES.slice(0, level + 1).map((v, k) => `<button class="chip${wanted === k ? " wanted" : ""}" data-crop="${i}:${k}" aria-pressed="${crop === k}"${wanted === k ? ` aria-label="${v.name}, wanted now"` : ""}>${v.name}${wanted === k ? ` <span class="wanted-mark" aria-hidden="true">★</span>` : ""}</button>`).join("")}</div>` : "";
       return `<div class="plot-card">${ui.thumb(crop)}<h3>Plot ${i + 1} · ${M.VARIETIES[crop].name}</h3><p>${money(M.VARIETIES[crop].price)} each</p>${chips}
         ${next ? `<button class="button" data-plot="${i}" ${s.coins < next.cost ? "disabled" : ""}>${next.name} seeds · ${money(next.cost)}</button>` : `<p class="small">Every seed unlocked</p>`}</div>`;
     }).join("") + (remaining > 0 ? `<div class="plot-card locked"><span class="thumb"><span class="ico i-plots"></span></span><h3>${remaining} more plots to discover</h3><p>Expand the farm to plant a bigger patch.</p><button class="button" data-shoptab="farm">Farm expansion</button></div>` : "") + `</div>`;
@@ -130,7 +139,7 @@ export function farmSheets(ui) {
       <h3 class="section">In stock</h3><div class="stock-row">${M.VARIETIES.map((v, i) => `<div class="stock">${ui.thumb(i)}<b>${M.available(s, i)}</b><span>${v.name}${held(i) ? ` · ${held(i)} in baskets` : ""}</span></div>`).join("")}</div>
       <h3 class="section">At the stall now</h3>${s.visitors.length ? s.visitors.map((v, i) => (v.place === 0 || i === 0 ? partyLabel(v) : "") + guest(v)).join("") : `<p>No one on the path just now.</p>`}
       <h3 class="section">Who comes by</h3>${M.STALL_PROFILES.map((p) => `<p class="guest"><b>${p.name}</b> · ${money(p.budget)} to spend · up to ${plural(p.basketLimit, "pumpkin")} · likes ${p.preferred.map((v) => M.VARIETIES[v].name).join(", ")}</p>`).join("")}
-      ${st.receipts.length ? `<h3 class="section">Recent sales</h3>` + st.receipts.slice(0, 6).map((r) => `<p class="guest">${M.STALL_PROFILES[r.profile].name}: ${r.lines.map((l) => `${l.quantity} ${M.VARIETIES[l.variety].name}`).join(" + ")}${r.mug ? " + a hot chocolate" : ""} · ${money(r.amount + (r.mug ?? 0))}${r.tip ? ` + ${money(r.tip)} tip` : ""}</p>`).join("") : ""}
+      ${st.receipts.length ? `<h3 class="section">Recent sales</h3>` + st.receipts.slice(0, 6).map((r) => `<p class="guest">${M.STALL_PROFILES[r.profile].name}: ${basketText(r.lines)}${r.mug ? " + a hot chocolate" : ""} · ${money(r.amount + (r.mug ?? 0))}${r.tip ? ` + ${money(r.tip)} tip` : ""}</p>`).join("") : ""}
       <p class="small">Missed: ${st.missedBudget} over budget, ${st.missedStock} sold out.</p>`;
   }
 

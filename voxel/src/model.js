@@ -3,7 +3,8 @@
 // rules/; this file puts the state together, loads old saves and runs a step.
 import { UPGRADES, VARIETIES, STREAK, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
 import { MAX_PLOTS } from "./content/farm-layout.js";
-import { freshStock } from "./rules/stock.js";
+import { freshStock, freshBatches, restoreFresh, settleFresh } from "./rules/stock.js";
+import { freshWanted, restoreWanted, updateWanted } from "./rules/market.js";
 import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, freshBigSpender, restoreBigSpender, updateShop, updateStall } from "./rules/selling.js";
 import { freshHouse, restoreHouse } from "./rules/house.js";
 import { freshLooks, freshWardrobe, restoreWardrobe } from "./rules/wardrobe.js";
@@ -17,6 +18,7 @@ import { restoreIntroSeen } from "./rules/intro.js";
 
 export * from "./rules/farm.js";
 export * from "./rules/stock.js";
+export * from "./rules/market.js";
 export * from "./rules/selling.js";
 export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
@@ -39,7 +41,7 @@ export function freshState() {
     coins: 40, earned: 0, sold: 0, harvested: 0, taps: 0, time: 0, wholesale: 0,
     plots: freshPlots(), plotLevels: Array(MAX_PLOTS).fill(0), plotCrops: Array(MAX_PLOTS).fill(0),
     upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(),
-    stock: freshStock(), holds: [],
+    stock: freshStock(), fresh: freshBatches(), wanted: freshWanted(), holds: [],
     stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
     shop: freshShop(), bigSpender: freshBigSpender(), festival: freshFestival(), customerCare: freshCustomerCare(),
     house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(),
@@ -81,6 +83,8 @@ export function restoreState(raw) {
   for (const v of VISITOR_UPGRADES) s.visitorUpgrades[v.id] = Math.min(v.costs.length, count(raw.visitorUpgrades?.[v.id]));
   if (Array.isArray(raw.stock) && v1) for (const v of raw.stock) if (VARIETIES[v]) s.stock[v]++;
   if (Array.isArray(raw.stock) && !v1 && raw.stock.length === 4) s.stock = raw.stock.map(count);
+  s.fresh = restoreFresh(raw.fresh, s);
+  s.wanted = restoreWanted(raw.wanted, s);
   if (raw.streak) for (const k of Object.keys(s.streak)) s.streak[k] = money(raw.streak[k]);
   // A boost can't outlast one pick's hold and fade. Version 5's harvest rush had no level of its own: it comes back as its +50%.
   const st = s.streak;
@@ -127,6 +131,7 @@ export function update(s, dt) {
   // The streak's boost is read from the clock, so the arrival timers just count down faster while it lasts.
   s.time += dt;
   updateFarm(s, dt, events);
+  settleFresh(s); updateWanted(s, events);
   updateFestival(s);
   updateHollowHouse(s, dt, events);
   updateStall(s, dt, events);

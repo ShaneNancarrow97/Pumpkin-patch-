@@ -12,6 +12,7 @@ import { settleCustomerCare } from "./customer-care.js";
 import { cocoaAllowance, planFestivalVisit, tickFestivalVisit } from "./festival-meadow.js";
 import { planHollowVisit, tickHollowVisit, mazeFootfallBonus } from "./hollow-house.js";
 import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
+import { wishFor } from "./market.js";
 import { BIG_SPENDER_KIND, advanceBigSpender, bigSpenderBasket } from "./big-spender.js";
 export { freshBigSpender, restoreBigSpender } from "./big-spender.js";
 
@@ -100,10 +101,11 @@ export const isRegular = (s, id) => lv(s, "loyalty") > 0 && (id + Math.floor(id 
 export const APPETITE = [3, 4, 5, 6, 7, 8, 10];
 export const EXTRA_PURSE = 3;
 export const basketWant = (s) => APPETITE[Math.min(APPETITE.length - 1, lv(s, "appetite"))];
-// A regular takes two more home, and brings the money for them.
+// A regular takes two more home, and brings the money for them. A guest who has
+// heard what's wanted brings the money and room for one of those too (market.js).
 const basketFor = (s, id, p) => {
-  const regular = isRegular(s, id), want = Math.max(p.basketLimit, basketWant(s)) + (regular ? 2 : 0);
-  return { budget: Math.round(p.budget + (want - p.basketLimit) * EXTRA_PURSE + (regular ? p.budget * 0.5 : 0)), basketLimit: want + (s.customerCare?.bags ?? 0), regular };
+  const regular = isRegular(s, id), want = Math.max(p.basketLimit, basketWant(s)) + (regular ? 2 : 0), wish = wishFor(s, id, (v) => PRICES[v]);
+  return { budget: Math.round(p.budget + (want - p.basketLimit) * EXTRA_PURSE + (regular ? p.budget * 0.5 : 0)) + (wish?.purse ?? 0), basketLimit: want + (s.customerCare?.bags ?? 0) + (wish ? 1 : 0), regular, wish };
 };
 // Neighbours a minute on the path, with the streak's boost: the Visitors tab's headline number.
 export const visitorsPerMinute = (s) => (60 / stallGapSeconds(s)) * (partyMax(s) + 1) / 2;
@@ -135,7 +137,7 @@ function counterSpot(s) {
 // even when they come with a party. The loyalty card counts from when they set off.
 function createPasserby(s, id, party = id, place = 0, size = 1, vip = false) {
   const profile = id % STALL_PROFILES.length, p = STALL_PROFILES[profile];
-  const v = { id, kind: vip ? BIG_SPENDER_KIND : id % KINDS.length, age: 0, profile, ...basketFor(s, id, p), preferred: [...p.preferred], ...(vip ? bigSpenderBasket(s) : {}), basket: [], amount: 0, quantity: 0, bought: null, outcome: "shopping", leaveAt: null, mug: 0, party, place, size, spot: counterSpot(s) };
+  const v = { id, kind: vip ? BIG_SPENDER_KIND : id % KINDS.length, age: 0, profile, ...basketFor(s, id, p), preferred: [...p.preferred], ...(vip ? { ...bigSpenderBasket(s), wish: null } : {}), basket: [], amount: 0, quantity: 0, bought: null, outcome: "shopping", leaveAt: null, mug: 0, party, place, size, spot: counterSpot(s) };
   v.cocoaAllowance = cocoaAllowance(s); v.budget += v.cocoaAllowance;
   v.needs = freshGuestNeeds(id); v.originalBudget = v.budget; v.festival = planFestivalVisit(s, v);
   return v;
