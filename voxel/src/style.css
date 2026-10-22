@@ -851,3 +851,14 @@ body:has(.building-context:not([hidden])) .actions { visibility: hidden; }
 .stock-wanted { margin:2px 0 6px; padding:7px 9px; border:1px solid #e9b85b55; border-radius:10px; background:#e9b85b14; color:var(--gold-bright); font:600 12px/1.35 var(--body); }
 .chip.wanted { border-color:#e9b85b88; }
 .chip .wanted-mark { color:var(--gold-bright); }
+/* Neighbours' orders (rules/orders.js): a section at the top of the stock panel, and a badge on the stock button while one waits. */
+.stock-orders { display:grid; gap:6px; margin:2px 0 8px; }
+.stock-order { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 9px; border:1px solid var(--edge-soft); border-radius:11px; background:#ffffff06; }
+.stock-order > div { display:grid; gap:1px; min-width:0; font:12px/1.35 var(--body); }
+.stock-order b { font-weight:600; }
+.stock-order small { color:var(--ink-soft); }
+.stock-order span { color:var(--ink-soft); }
+.stock-order .button { flex:0 0 auto; min-width:76px; min-height:44px; padding:0 12px; font-size:12px; }
+.hud-stock { position:relative; }
+.hud-stock.has-order::after { content:""; position:absolute; top:6px; right:4px; width:8px; height:8px; border-radius:50%; background:var(--ink-soft); box-shadow:0 0 0 2px #1d1822; }
+.hud-stock.order-ready::after { background:var(--gold-bright); }

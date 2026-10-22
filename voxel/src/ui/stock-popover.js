@@ -1,24 +1,36 @@
-import { VARIETIES, stockCount, barnCapacity, held, COCOA_SPECIALS, freshCount, wantedVariety, wantedSecondsLeft, FRESH, WANTED } from "../model.js";
+import { VARIETIES, stockCount, barnCapacity, held, COCOA_SPECIALS, freshCount, wantedVariety, wantedSecondsLeft, FRESH, WANTED, orderFrom, orderTrust, orderSecondsLeft, canFillOrder, available } from "../model.js";
+import { money } from "./kit.js";
 
 // A live count inspector, anchored beneath the HUD; the world keeps running.
-export function createStockPopover({ state, onOpen, onManagePumpkins, onManageCocoa }) {
+export function createStockPopover({ state, onOpen, onManagePumpkins, onManageCocoa, onSendOrder }) {
   const trigger = document.getElementById("open-stock"), total = document.getElementById("stock-total");
   const panel = document.createElement("section"); panel.id = "stock-popover"; panel.className = "stock-popover"; panel.hidden = true;
   panel.setAttribute("role", "dialog"); panel.setAttribute("aria-modal", "false"); panel.setAttribute("aria-labelledby", "stock-popover-title");
   const row = (id, name, colour) => `<div class="stock-row"><span>${colour ? `<i style="--stock-colour:${colour}" aria-hidden="true"></i>` : ""}${name}</span><b data-stock-count="${id}">0</b></div>`;
-  panel.innerHTML = `<header><div><h2 id="stock-popover-title">Pumpkin stock</h2><p id="stock-capacity"></p><div id="stock-meter" class="stock-meter" role="progressbar" aria-label="Barn storage" aria-valuemin="0"><i></i></div></div><button class="icon-button" aria-label="Close stock counts">×</button></header><div class="stock-popover-body"><p id="stock-wanted" class="stock-wanted" hidden></p>${VARIETIES.map((v,i)=>row('pumpkin-'+i,v.name,'#'+v.color.toString(16).padStart(6,'0'))).join('')}<p class="stock-note">Fresh: picked in the last ${FRESH.seconds} seconds. Guests take them first and pay up to ${Math.round(FRESH.bonus * 100)}% more from their change.</p><p id="stock-reserved" class="stock-note" hidden></p><p id="stock-warning" class="stock-warning" hidden>Barn full. Sell pumpkins or add storage.</p><hr><h3>Cocoa & treats</h3><p id="stock-cocoa-status" class="stock-note"></p>${row('cocoa','Plain hot chocolate')}${COCOA_SPECIALS.map(p=>row(p.id,p.name)).join('')}</div><footer class="stock-shortcuts"><button class="button" data-stock-manage="pumpkins">Barn upgrades</button><button class="button" data-stock-manage="cocoa">Cocoa stand</button></footer>`;
+  panel.innerHTML = `<header><div><h2 id="stock-popover-title">Pumpkin stock</h2><p id="stock-capacity"></p><div id="stock-meter" class="stock-meter" role="progressbar" aria-label="Barn storage" aria-valuemin="0"><i></i></div></div><button class="icon-button" aria-label="Close stock counts">×</button></header><div class="stock-popover-body"><div id="stock-orders" class="stock-orders" hidden></div><p id="stock-wanted" class="stock-wanted" hidden></p>${VARIETIES.map((v,i)=>row('pumpkin-'+i,v.name,'#'+v.color.toString(16).padStart(6,'0'))).join('')}<p class="stock-note">Fresh: picked in the last ${FRESH.seconds} seconds. Guests take them first and pay up to ${Math.round(FRESH.bonus * 100)}% more from their change.</p><p id="stock-reserved" class="stock-note" hidden></p><p id="stock-warning" class="stock-warning" hidden>Barn full. Sell pumpkins or add storage.</p><hr><h3>Cocoa & treats</h3><p id="stock-cocoa-status" class="stock-note"></p>${row('cocoa','Plain hot chocolate')}${COCOA_SPECIALS.map(p=>row(p.id,p.name)).join('')}</div><footer class="stock-shortcuts"><button class="button" data-stock-manage="pumpkins">Barn upgrades</button><button class="button" data-stock-manage="cocoa">Cocoa stand</button></footer>`;
   document.body.append(panel);
   const number = new Intl.NumberFormat("en-GB"), compact = new Intl.NumberFormat("en-GB", {notation:"compact",maximumFractionDigits:1});
-  let open = false, signature = "";
+  let open = false, signature = "", orderSignature = "";
+  const clock = (t) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
+  // Neighbours' orders: who, what, how much and how long, and a Send button once the barn can.
+  function renderOrders(s) {
+    const box = panel.querySelector("#stock-orders"), list = s.orders.list;
+    const key = JSON.stringify(list.map((o) => [o.id, Math.ceil(orderSecondsLeft(s, o)), available(s, o.variety) >= o.count, available(s, o.variety)]));
+    if (key === orderSignature) return; orderSignature = key;
+    box.hidden = !list.length;
+    box.innerHTML = list.length ? `<h3>Neighbours’ orders</h3>` + list.map((o) => { const short = o.count - available(s, o.variety), ok = canFillOrder(s, o); return `<div class="stock-order"><div><b>${orderFrom(o)}</b> <small>${orderTrust(s, o.kind).name}</small><span>${o.count} ${VARIETIES[o.variety].name} · ${money(o.pay)} · ${clock(orderSecondsLeft(s, o))} left</span></div><button class="button${ok ? " gold" : ""}" data-order="${o.id}" ${ok ? "" : "disabled"} aria-label="${ok ? `Send ${o.count} ${VARIETIES[o.variety].name} to ${orderFrom(o)} for ${money(o.pay)}` : `Need ${short} more ${VARIETIES[o.variety].name}`}">${ok ? "Send" : `Need ${short}`}</button></div>`; }).join("") : "";
+  }
   const put = (selector, text) => { const e = panel.querySelector(selector); if(e.textContent!==text)e.textContent=text; };
   function close(focus = false) { open = false; panel.hidden = true; trigger.setAttribute("aria-expanded", "false"); if(focus)trigger.focus({preventScroll:true}); }
   function refresh() {
     const s = state(), n = stockCount(s), capacity = barnCapacity(s);
     trigger.classList.toggle("stock-full",n>=capacity);
+    trigger.classList.toggle("has-order",s.orders.list.length>0);trigger.classList.toggle("order-ready",s.orders.list.some(o=>canFillOrder(s,o)));
     const label = compact.format(n); if(total.textContent!==label)total.textContent=label;
     const description=`Pumpkin stock: ${number.format(n)} of ${number.format(capacity)}. Show pumpkin and cocoa counts`;
     if(trigger.getAttribute("aria-label")!==description)trigger.setAttribute("aria-label",description);
     if(!open)return;
+    renderOrders(s);
     const c = s.festival.cocoa, reserved = VARIETIES.reduce((n,_,i)=>n+held(s,i),0), fresh = VARIETIES.map((_,i)=>freshCount(s,i)), wanted = wantedVariety(s), left = Math.ceil(wantedSecondsLeft(s)), key = JSON.stringify([s.stock,fresh,wanted,left,capacity,reserved,c.level,c.open,c.stock,COCOA_SPECIALS.map(p=>c.extras[p.id].stock)]);
     if(key===signature)return;signature=key;
     put('#stock-capacity',`${number.format(n)} / ${number.format(capacity)} · ${number.format(Math.max(0,capacity-n))} free`);
@@ -31,8 +43,9 @@ export function createStockPopover({ state, onOpen, onManagePumpkins, onManageCo
     put('[data-stock-count="cocoa"]',number.format(c.stock));
     for(const p of COCOA_SPECIALS)put(`[data-stock-count="${p.id}"]`,number.format(c.extras[p.id].stock));
   }
-  trigger.addEventListener('click',()=>{if(open){close();return;}onOpen?.();trigger.focus({preventScroll:true});open=true;panel.hidden=false;signature='';trigger.setAttribute('aria-expanded','true');refresh();});
+  trigger.addEventListener('click',()=>{if(open){close();return;}onOpen?.();trigger.focus({preventScroll:true});open=true;panel.hidden=false;signature='';orderSignature='';trigger.setAttribute('aria-expanded','true');refresh();});
   panel.querySelector('button').addEventListener('click',()=>close(true));
+  panel.querySelector('#stock-orders').addEventListener('click',e=>{const b=e.target.closest('[data-order]');if(b&&!b.disabled){onSendOrder?.(Number(b.dataset.order));orderSignature='';signature='';refresh();}});
   panel.querySelectorAll('[data-stock-manage]').forEach(button=>button.addEventListener('click',()=>{close();if(button.dataset.stockManage==='cocoa')onManageCocoa?.();else onManagePumpkins?.();}));
   document.addEventListener('pointerdown',e=>{if(open&&!panel.contains(e.target)&&!trigger.contains(e.target))close();},true);
   document.addEventListener('keydown',e=>{if(open&&e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();close(true);}},true);

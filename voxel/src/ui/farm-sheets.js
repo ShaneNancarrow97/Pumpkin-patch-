@@ -71,6 +71,8 @@ function skylaTip(s) {
   if (!s.shop.unlocked && s.coins >= 600) return "We could open the shop now. Customers would come inside to browse.";
   const shown = s.shop.displays.slice(0, M.displayCount(s.shop)), best = [3, 2, 1, 0].find((v) => M.available(s, v) > 0);
   if (s.shop.unlocked && best !== undefined && !shown.includes(best)) return `Put the ${M.VARIETIES[best].name} pumpkins on a table. They sell for ${money(M.VARIETIES[best].price)}.`;
+  const ready = s.orders.list.find((o) => M.canFillOrder(s, o));
+  if (ready) return `${M.orderFrom(ready)}’s order is ready to go: tap the crate at the top and send it. It pays better than the stall.`;
   const wanted = M.wantedVariety(s);
   if (wanted !== null && !M.available(s, wanted)) return `Everyone’s asking for ${M.VARIETIES[wanted].name} and we’ve none left. Plant some: they’ll pay up to ${Math.round(M.WANTED.bonus * 100)}% more.`;
   if (s.stall.missedBudget > s.stall.served / 3) return "Some neighbours can’t afford what’s left. A few Orange pumpkins keep everyone happy.";

@@ -19,7 +19,7 @@ const draw = (n) => ((Math.imul(n + 0x9e37, 2654435761) >>> 8) % 1000) / 1000;
 // The best variety any open plot can grow.
 export const bestGrowable = (s) => Math.max(0, ...s.plotLevels.slice(0, PLOT_COUNTS[Math.max(0, Math.min(PLOT_COUNTS.length - 1, Math.trunc(s.upgrades.plots || 0)))]));
 export const wantedVariety = (s) => (s.wanted && s.time < s.wanted.until ? s.wanted.variety : null);
-export const wantedSecondsLeft = (s) => (wantedVariety(s) === null ? 0 : Math.max(0, s.wanted.until - s.time));
+export const wantedSecondsLeft = (s) => (wantedVariety(s) === null ? 0 : Math.max(0, Math.min(WANTED.seconds, s.wanted.until - s.time)));
 
 // A new wanted variety when the last runs out. With only Orange to grow there is
 // nothing to choose between, so nothing is wanted until a second variety is.

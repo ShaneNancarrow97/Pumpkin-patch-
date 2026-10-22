@@ -42,6 +42,8 @@ function shoppingList(M, s) {
 // tapping a ripe plot or Harvest all does in the game.
 function tend(M, s, byHand) {
   for (let i = 0; i < M.openPlots(s); i++) { if (M.harvest(s, i) && byHand) M.rewardHarvestStreak(s); M.plant(s, i); }
+  // Neighbours' orders, under rules that have them: send each as soon as the barn can.
+  for (const o of s.orders?.list ?? []) M.fillOrder?.(s, o.id);
   if (!s.shop.unlocked) return;
   const best = [3, 2, 1, 0].filter((v) => M.available(s, v) > 0).slice(0, M.displayCount(s.shop));
   for (let i = 0; i < M.displayCount(s.shop); i++) M.assignDisplay(s, i, null);

@@ -1,6 +1,6 @@
 # Pumpkin Patch Voxel: context for coding agents
 
-**Latest handovers: [`docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md`](docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md)** (what changed since your `cc9dd6c`, what to keep, what's next) **and [`28-claude-fresh-and-wanted-pumpkins.md`](docs/handovers/28-claude-fresh-and-wanted-pumpkins.md)** (the economy step after it). The numbered handovers in `docs/handovers/` are the running record between Claude and Codex.
+**Latest handovers: [`docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md`](docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md)** (what changed since your `cc9dd6c`, what to keep, what's next) **and [`28-claude-fresh-wanted-and-orders.md`](docs/handovers/28-claude-fresh-wanted-and-orders.md)** (the economy steps after it). The numbered handovers in `docs/handovers/` are the running record between Claude and Codex.
 
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
@@ -36,6 +36,7 @@ CI (`.github/workflows/ci.yml`, job `voxel`) runs `npm ci`, `npm test`, `npm run
 | `src/rules/farm.js` | Plots, the four varieties, upgrades, tapping, harvest streaks, helping hands |
 | `src/rules/stock.js` | Stock counts, basket holds, and baskets (`chooseBasket` via `quoteBasket`: favourites first, then anything cheaper; a dear favourite doesn't end the visit), and which pumpkins are fresh (`s.fresh` batches) |
 | `src/rules/market.js` | Fresh pumpkins and the wanted variety: `FRESH`, `WANTED`, `updateWanted`, `wishFor` (a keen guest's purse for one), `dearPrice` |
+| `src/rules/orders.js` | Neighbours' orders: `ORDERS`, `ORDER_TRUST`, `updateOrders`, `fillOrder` (oldest pumpkins first), trust per regular |
 | `src/rules/selling.js` | The stall (passers-by, profiles, receipts) and the indoor shop (customers, display tables, queue, till, upgrades) |
 | `src/rules/house.js` | House levels, rooms, decor placement (floor pieces collide by their measured size, `pieceBody`, within `placementRange`), moving, turning, flipping and storing, pieces standing on others (`putOnTop`, `setDown`, `restorePose`), books and shelves, wallpaper, room styles, the haunting score |
 | `src/rules/surfaces.js`, `src/content/placement.js`, `src/content/shelf-catalog.js` | What can stand on what: small pieces, the measured tops of tables and the blank shelves' boards (with their finishes) |

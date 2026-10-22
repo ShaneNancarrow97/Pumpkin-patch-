@@ -116,6 +116,12 @@ function handle(e) {
     audio.tone(700);
     if (e.route === "stall") scene.say(VISITOR_LINES[e.visitor % VISITOR_LINES.length]);
   }
+  if (e.type === "order") {
+    const o = e.order;
+    notice(`${M.orderFrom(o)} would like ${o.count} ${M.VARIETIES[o.variety].name} within ${Math.round(M.ORDERS.time / 60)} minutes · ${money(o.pay)}. Send them from the stock panel.`);
+    if (state.orders.serial === 1) say("shane", `${M.orderFrom(o)} has sent an order up! Tap the crate at the top, and send the pumpkins before the time runs out. They pay better than the stall.`);
+  }
+  if (e.type === "order-missed") notice(`${M.orderFrom(e.order)}’s order ran out of time. They’ll ask for a little less next time.`);
   if (e.type === "wanted") {
     const name = M.VARIETIES[e.variety].name, more = Math.round(M.WANTED.bonus * 100);
     notice(`Wanted now: ${name} pumpkins · up to ${more}% more for ${Math.round(M.WANTED.seconds / 60)} minutes`);
@@ -349,7 +355,11 @@ const menuMemory = createMenuMemory($("sheet-body"));
 const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
 const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(id === "empire" ? "natalie" : "visitor-" + ["ghost", "witch", "vampire", "skeleton", "scarecrow"][kind]), save, tone: f => audio.tone(f), notice });
 const guestCard = createGuestCard({ state: () => state, portrait: id => scene.portrait(id) });
-const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); guestCard.clear(); }, onManagePumpkins() { sheets.shop.setTab("farm"); openSheet("shop"); }, onManageCocoa() { sheets.festival.setTab("cocoa"); openSheet("festival"); } });
+const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); guestCard.clear(); }, onManagePumpkins() { sheets.shop.setTab("farm"); openSheet("shop"); }, onManageCocoa() { sheets.festival.setTab("cocoa"); openSheet("festival"); }, onSendOrder(id) {
+  const o = state.orders.list.find((x) => x.id === id), pay = o && M.fillOrder(state, id);
+  if (!pay) return;
+  audio.tone(880); notice(`Sent ${o.count} ${M.VARIETIES[o.variety].name} to ${M.orderFrom(o)} · ${money(pay)}`); scene.sale(pay, "order"); save(); draw();
+} });
 $("open-levels").onclick = () => celebration.preview();
 $("fullscreen").onclick = async () => {
   try { if (document.fullscreenElement) await document.exitFullscreen(); else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); else notice("For fullscreen, add the game to your home screen from the browser menu."); }
