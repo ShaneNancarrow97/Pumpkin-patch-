@@ -1,5 +1,6 @@
 // Pure attraction and foyer rules. The same visitors own their money and visit
 // phase indoors and outdoors; changing the camera never creates a new guest.
+import { visitorCapacity, visitorReservations } from "./selling.js";
 import { patchLevel } from "./levels.js";
 import { available } from "./stock.js";
 import { VARIETIES } from "./farm.js";
@@ -59,12 +60,17 @@ export function beginHollowRestoration(s) {
 }
 // Opening the maze sends a small party straight up the west lane for it, so the
 // first scares come within moments rather than waiting on the next stroller.
-export const OPENING_PARTY = 2;
+export const OPENING_PARTY = 2, PARTY_GAP = 120;
 export function setHollowOpen(s, open) {
   if (s.paused || !hollowReady(s) || typeof open !== "boolean") return false;
-  const opening = open && !s.hollowHouse.open;
-  s.hollowHouse.open = open;
-  if (opening && Array.isArray(s.arriving)) {
+  const h = s.hollowHouse, opening = open && !h.open;
+  h.open = open;
+  // Closing turns back a party still on its way; reopening sends another only
+  // once a party's worth of time has passed and the lane has room for it.
+  if (!open && Array.isArray(s.arriving)) s.arriving = s.arriving.filter(a => !a.forMaze);
+  const t = Number.isFinite(s.time) ? s.time : 0;
+  if (opening && Array.isArray(s.arriving) && Array.isArray(s.visitors) && visitorReservations(s) + OPENING_PARTY <= visitorCapacity(s) && !(t - (h.partyAt ?? -Infinity) < PARTY_GAP)) {
+    h.partyAt = t;
     const party = s.nextParty++;
     for (let place = 0; place < OPENING_PARTY; place++) s.arriving.push({ party, place, size: OPENING_PARTY, wait: 0.6 + place * 0.9, forMaze: true });
   }
@@ -360,7 +366,7 @@ export function restoreHollowVisitors(raw, s) {
     // west gate, one bound back for the stall arrives at the counter.
     const legacy = m.phase === "transfer-in" ? "approach" : m.phase === "transfer-out" ? "to-shop" : null;
     const phase = legacy ?? m.phase, fromFront = legacy === "approach" || m.fromFront === true || (m.route?.[0]?.[0] === -3 && m.route?.[0]?.[1] >= 30);
-    const fromStall = !fromFront && (m.fromStall === true || phase === "approach");
+    const fromStall = !fromFront && m.fromStall === true;
     const route = extendFarmRoute(phase === "to-shop" ? HOLLOW_LINK_BACK : phase === "to-border" ? HOLLOW_RETURN : ["approach", "arriving-house"].includes(phase) ? (fromFront ? HOLLOW_FRONT_APPROACH : HOLLOW_LINK) : HOLLOW_FRONT_APPROACH, s);
     // A guest near a gate keeps their place on the lane as the land (or the farm's
     // layout) moves the gate: shift that outer leg once, saved gate to today's.

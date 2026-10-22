@@ -57,6 +57,13 @@ test("opening the maze sends a little party straight up the west lane for it",()
  M.update(s,3);const party=s.visitors.filter(v=>v.forMaze);assert.equal(party.length,M.OPENING_PARTY);for(const v of party)assert.equal(v.hollow?.fromFront,true);
  assert.ok(M.setHollowOpen(s,true));assert.equal(s.arriving.filter(a=>a.forMaze).length,0,"only when it opens, not again while open");
 });
+test("switching the maze off and on again cannot conjure extra guests",()=>{
+ const s=prepared();assert.ok(M.buyHollowProperty(s));assert.ok(M.beginHollowRestoration(s));M.update(s,90);s.visitorTimer=1e6;
+ for(let i=0;i<30;i++){M.setHollowOpen(s,true);M.setHollowOpen(s,false);}
+ assert.equal(s.arriving.filter(a=>a.forMaze).length,0,"closing turns the party back");
+ M.setHollowOpen(s,true);assert.equal(s.arriving.filter(a=>a.forMaze).length,0,"no second party within the gap");
+ assert.ok(s.visitors.length+s.arriving.length<=M.visitorCapacity(s));
+});
 test("an old save caught mid-transfer restores onto the new walks",()=>{
  const s=opened(),v=guest(s,0);s.visitors=[v];for(let i=0;i<3000&&v.hollow.phase!=="maze";i++)M.update(s,.1);
  const raw=JSON.parse(JSON.stringify(M.saveData(s))),m=raw.hollowVisitors[0].hollow;
