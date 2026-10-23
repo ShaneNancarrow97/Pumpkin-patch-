@@ -1,6 +1,6 @@
 # Pumpkin Patch Voxel: context for coding agents
 
-**Latest handovers: [`docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md`](docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md)** (what changed since your `cc9dd6c`, what to keep, what's next) **and [`28-claude-fresh-wanted-and-orders.md`](docs/handovers/28-claude-fresh-wanted-and-orders.md)** (the economy steps after it). The numbered handovers in `docs/handovers/` are the running record between Claude and Codex.
+**Latest handovers: [`docs/handovers/33-claude-integration-maze-ride.md`](docs/handovers/33-claude-integration-maze-ride.md)** (Codex's first-person maze integrated; runtime art sizes; Claude now leads production of the Hollow House), after [`27`](docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md), [`28`](docs/handovers/28-claude-fresh-wanted-and-orders.md) and Codex's [`29`–`32`](docs/handovers/29-first-person-maze.md). The numbered handovers in `docs/handovers/` are the running record between Claude and Codex.
 
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
