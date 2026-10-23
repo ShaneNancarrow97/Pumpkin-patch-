@@ -93,6 +93,8 @@ const scene = createScene($("world"), state, {
   foyerEditing: () => foyerTools.active || openTab === "foyer",
   estateEditing: () => estateTools.active,
   foyerWallEditing: () => M.FOYER_DECOR_BY_ID[foyerTools.placement?.id]?.layer === "wall",
+  // Dragging and two-finger turning of the selected foyer piece, as in the house.
+  foyerGesture: { pose: () => foyerTools.placement, begin: () => foyerTools.beginGesture(), drag: (x, z) => foyerTools.dragTo(x, z), turn: degrees => foyerTools.turn(degrees), end: cancelled => foyerTools.endGesture(cancelled) },
   onRotatePiece: (degrees) => home.tools.rotate(degrees, false),
   onRotateEnd: cancelled => home.tools.finishRotation(cancelled),
   onPick(what) {

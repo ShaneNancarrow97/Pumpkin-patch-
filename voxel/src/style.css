@@ -862,3 +862,8 @@ body:has(.building-context:not([hidden])) .actions { visibility: hidden; }
 .hud-stock { position:relative; }
 .hud-stock.has-order::after { content:""; position:absolute; top:6px; right:4px; width:8px; height:8px; border-radius:50%; background:var(--ink-soft); box-shadow:0 0 0 2px #1d1822; }
 .hud-stock.order-ready::after { background:var(--gold-bright); }
+
+/* The foyer's placement card: the house's dial and fine nudges. */
+.foyer-piece-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; }
+.foyer-piece-actions .nudge-tools { width: auto; gap: 2px; border-top: 0; }
+.foyer-piece-actions .icon-button { min-width: 44px; min-height: 44px; }

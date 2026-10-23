@@ -228,7 +228,7 @@ export function createScene(canvas, state, hooks) {
   // Indoors: a perspective camera in front of the room, like the main game's room view.
   const roomCam = new THREE.PerspectiveCamera(INTERIOR.fov, 1, 0.1, 200);
   const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
-  const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.() });
+  const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.(), gesture: hooks.foyerGesture });
   const mazeView = createMazeRideView(canvas, state, { onCue: cue => hooks.onMazeCue?.(cue), onComplete: status => hooks.onMazeComplete?.(status), onState: status => hooks.onMazeState?.(status), blocked: () => document.body.classList.contains("menu-open") });
   const active = () => view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
   const activeScene = () => view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
@@ -680,6 +680,8 @@ export function createScene(canvas, state, hooks) {
     refreshHollow() { hollowFarm.sync(); },
     refreshFoyer() { if (view.place === "foyer") foyerView.sync(); },
     previewFoyerDecor(data) { foyerView.preview(data); },
+    // For tests: where a world point lands on the canvas, in CSS pixels.
+    project(x, y, z) { const v = new THREE.Vector3(x, y, z).project(active()), box = canvas.getBoundingClientRect(); return { x: box.left + (v.x + 1) / 2 * box.width, y: box.top + (1 - v.y) / 2 * box.height }; },
     speakMortimer() { foyerView.speak(true); },
     get foyerCamera() { return foyerView.cameraActions; },
     get mazeStatus() { return mazeView.status; },
