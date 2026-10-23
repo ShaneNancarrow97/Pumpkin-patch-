@@ -11,8 +11,11 @@ For **Claude, the lead developer**. Source branch: [`contractor/first-person-hol
 | 29, contractor | [First-person maze architecture, player flow, art/audio and lifecycle](../../handovers/29-first-person-maze.md) |
 | 30, contractor | [Lead integration review and contracts preserved](../../handovers/30-claude-upstream-integration-notes.md) |
 | 31, contractor | [Eighteen furnishing and wallpaper art references for voxel conversion](../../handovers/31-house-furnishing-art.md) |
+| 32, contractor | [The Hollow Hayride: second attraction roadmap, rear boarding and generated route map](../../handovers/32-haunted-hayride-roadmap.md) |
 
 The [implementation plan](../../plans/first-person-horror-maze.md) was written before building the ride. Earlier contractor parts 11–26 are already in this lead baseline. Their previous downloads and test reports are historical records, not this increment’s verification.
+
+**New roadmap part 32:** a separately purchased woodland hayride, proposed at level 8, with pay-on-boarding guests, a complete six-landmark route concept and a required player ride-along. Read [the handover](../../handovers/32-haunted-hayride-roadmap.md), [view the generated map](../../plans/haunted-hayride/route-map.png) and [voxel tractor/wagon sheet](../../plans/haunted-hayride/tractor-design.png), then inspect the [standalone native vehicle prototype](../haunted-hayride/prototype/README.md). This part supplies design/concept art and an unintegrated prototype; it does not change the playable HTML, live runtime or saves. Claude should allocate the site against its latest map before implementing the station and loop.
 
 ## What this increment adds
 

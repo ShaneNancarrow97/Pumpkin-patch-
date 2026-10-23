@@ -2,6 +2,12 @@
 
 Status: **designed, not implemented**. This is the next contractor programme, after the playable meadow/Sandy/customer-care delivery. The current HTML still has the existing 12-level progression. Do not advertise cooking or levels 13–20 as playable until their source, save migration and end-to-end tests land.
 
+## Additional attraction programme — The Hollow Hayride
+
+The user’s second scare attraction is now specified in [handover 32: The Hollow Hayride](32-haunted-hayride-roadmap.md), with a [generated woodland route map](../plans/haunted-hayride/route-map.png). It is a design proposal, not a playable addition. Proposed purchase unlock: level 8, after restoring The Hollow House. Preserve the separate cocoa/food-truck level-5 purchase gates and all existing rewards.
+
+Guests queue behind a tractor and rear-loading hay wagon, pay **on boarding**, then travel a continuous forest loop through a haunted pumpkin/scarecrow patch, spider tunnel, decrepit mansion and emerging bride, paranormal investigators chasing a purple gas ghost, and a zombie prison bus. A separate unloading exit rejoins the visible farm paths. All scenes and a **player ride-along from the wagon** belong to the complete starter ride; later tiers improve capacity and theatrical detail. The handover includes a [voxel tractor/wagon design sheet](../plans/haunted-hayride/tractor-design.png), native vehicle prototype, site allocation, shared-wallet restrictions, exactly-once receipts, background dispatch, persistence and testable delivery stages. A proposed level-15 premium tier depends on this roadmap’s future twenty-level release.
+
 ## Player loop and level-5 access
 
 At **level 5**, the player earns permission to **purchase** a small food truck. Levelling up does not spend coins or spawn it. Proposed introductory price: £900, to tune alongside the separate £650 cocoa purchase. After buying it, tapping the truck opens Cooking, with tabs for Recipes, Deliveries, Pantry and Finished food.
