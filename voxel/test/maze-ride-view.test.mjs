@@ -7,7 +7,7 @@ import { MAZE_PREFABS } from "../src/content/hollow-house.js";
 
 // Bundle the browser adapter without a renderer; unavailable images use its
 // real native fallback, while the public camera and lifecycle remain intact.
-const bundle = await build({ entryPoints: [new URL("../src/maze-ride-view.js", import.meta.url).pathname], bundle: true, platform: "node", format: "cjs", loader: { ".png": "dataurl" }, write: false });
+const bundle = await build({ entryPoints: [new URL("../src/maze-ride-view.js", import.meta.url).pathname], bundle: true, platform: "node", format: "cjs", loader: { ".png": "dataurl", ".webp": "dataurl" }, write: false });
 const sandbox = { module: { exports: {} }, console };
 vm.runInNewContext(bundle.outputFiles[0].text, sandbox);
 const { createMazeRideView } = sandbox.module.exports;

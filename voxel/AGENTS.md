@@ -53,6 +53,7 @@ CI (`.github/workflows/ci.yml`, job `voxel`) runs `npm ci`, `npm test`, `npm run
 | `src/scene.js` | Renderer, lights, bloom, both cameras (orthographic for the farm, perspective for rooms), input and picking, the per-frame loop, floating text |
 | `src/rules/intro.js`, `src/content/intro.js`, `src/ui/intro.js`, `src/ui/intro.css` | The new-game introduction: whether it shows (`shouldShowIntro`, the saved `introSeen`), Shane and Natalie's lines, and the overlay |
 | `src/moth.js` | Sandy's moth courier (used by `festival-meadow-world.js`) |
+| `src/content/maze-ride.js`, `src/rules/maze-ride.js`, `src/maze-ride-*.js`, `src/ui/maze-ride-ui.js`, `src/ui/maze-audio.js`, `src/ui/maze-ride.css` | Codex's first-person Hollow House walkthrough (handover 29): chambers by foyer tier, the rail and cues (pure rules), the sealed voxel rooms, the ride camera and actors, the briefing/pause/result UI and its own synthesised sound. The owner's tour never touches tickets, visitors or the save |
 | `src/ambience.js`, `src/content/ambience.js` | The mist bank's timing and shader, and the backdrop shader that ripples the lake and twinkles its lights (from the marks canvas `buildBackdrop` paints) |
 | `src/main.js` | Save and load, dialogue, the HUD and dock, keyboard, and which menu is open. Exposes `window.PumpkinVoxel` for tests |
 | `src/ui/` | The menus. Each sheet is `{ eyebrow, title, body(), bind(body) }`; `main.js` re-renders a sheet only when its HTML changes. `kit.js` holds shared bits |
@@ -140,6 +141,7 @@ Generated files: `src/sprite-meta.js`, `src/sprite-meta-hd.js`, `src/decor-meta.
 
 ## Gotchas
 
+- **Runtime art is WebP at the size it is shown.** The maze's scare actors and haunted girl ship as `.webp` (lossy colour, exact alpha, so `maze-ride-actor-meta.js` measures the same bounds), and its icon sheet is 384×256, since icons show at 26px. Three full-size PNGs had added 10 MB to the HTML. Add new runtime art the same way; keep full-size PNG concepts under `assets/*-concepts-*` or `docs/`, which the build doesn't bundle.
 - **Fresh and wanted extras come from change, never the basket.** `quoteBasket` fills the basket at base prices first, then pays the fresh or wanted extra from what is left; a keen guest's `wish` purse buys only the wanted pumpkin and stays unspent without one. Keep it that way, or extras start costing sales. Receipt lines now carry `fresh` and can split one variety in two (different prices): sum by variety when showing them.
 - **`bake_sprites.py` is one long script with shared names.** A variable reused further down once overwrote the voxel character atlas. After a bake, check that `git diff --stat` touches only what you meant to change.
 - **Skyla's sheet has four frames:** idle 0, 1 and 2, and 3 for the paying reaction. `animateSkyla` picks them.

@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import atlasUrl from "../assets/maze-scare-actors.png";
-import girlAtlasUrl from "../assets/maze-haunted-girl.png";
+import atlasUrl from "../assets/maze-scare-actors.webp";
+import girlAtlasUrl from "../assets/maze-haunted-girl.webp";
 import { MAZE_RIDE_ACTORS, mazeScareActorMetadata, mazeHauntedGirlMetadata } from "./maze-ride-actor-meta.js";
 
 // The atlas and frame geometry belong to the module, while instances own only
