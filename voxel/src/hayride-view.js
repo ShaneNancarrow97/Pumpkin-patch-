@@ -36,6 +36,9 @@ export function createHayrideView(canvas, state, hooks = {}) {
     const site = world(); site?.setPreview?.(run.progress);
     const frame = site?.getPreviewFrame?.(run.progress); if (!frame) return;
     point.copy(frame.position); target.copy(frame.target);
+    // Let each roadside set read before it passes. A deliberate look overrides
+    // the director, and gentle mode keeps the forward-facing camera steady.
+    if (!options.gentle && Math.abs(targetYaw) < .06 && Math.abs(targetPitch) < .06 && frame.focusTarget && run.elapsed >= INTRO) target.lerp(frame.focusTarget, frame.focusWeight ?? 0);
     const board = 1 - smooth(run.elapsed / INTRO), heading = finite(frame.yaw);
     point.x += Math.sin(heading) * 3.2 * board; point.z += Math.cos(heading) * 3.2 * board; point.y += .7 * board;
     if (!options.gentle && run.elapsed >= INTRO && !run.paused) point.y += Math.sin(run.elapsed * 4.1) * .008;

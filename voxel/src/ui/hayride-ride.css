@@ -5,6 +5,7 @@ body.hayride-ride-active :is(#hud,#goal,#streak,#paused,#notice,#bubble,#dialogu
 .hayride-ride-ui[hidden] { display:none; }
 .hayride-ride-ui button { min-height:44px; min-width:44px; border:1px solid transparent; border-radius:11px; background:transparent; color:inherit; font:inherit; cursor:pointer; pointer-events:auto; }
 .hayride-ride-ui button:hover { background:#513749; }
+.hayride-ride-ui button svg { width:18px; height:18px; flex:none; }
 .hayride-ride-ui button:focus-visible { outline:2px solid #e3b771; outline-offset:2px; }
 .hayride-ride-hud { position:absolute; top:max(10px,env(safe-area-inset-top)); left:max(8px,env(safe-area-inset-left)); right:max(8px,env(safe-area-inset-right)); margin:auto; width:max-content; max-width:calc(100% - 16px); display:flex; gap:4px; align-items:center; padding:4px; border:1px solid #ae865b38; border-radius:17px; background:#201824e8; box-shadow:0 4px 20px #08040c65; transition:opacity .5s ease; }
 .hayride-ride-hud button { display:flex; align-items:center; justify-content:center; gap:5px; padding:6px 10px; font-size:13px; }

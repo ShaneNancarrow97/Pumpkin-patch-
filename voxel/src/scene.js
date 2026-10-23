@@ -334,6 +334,8 @@ export function createScene(canvas, state, hooks) {
   }
   function frame() {
     const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
+    // The painted farm panorama has finite edges at the woodland's low camera.
+    backdrop.visible = view.place !== "hayride";
     renderPass.camera = active();
     renderPass.scene = activeScene();
     renderer.toneMappingExposure = view.place === "maze" ? 1.3 : 1.45;

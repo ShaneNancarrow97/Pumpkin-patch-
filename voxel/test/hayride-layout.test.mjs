@@ -42,6 +42,13 @@ test("native site retains the legacy ground, allocates a fixed light pool and pr
   const state={hayride:{...freshHayride(),purchased:true},visitors:[],upgrades:{plots:0},coins:1234};
   const signBoard=()=>new THREE.Group(),controller=createHayrideWorld({scene,state,world:{group:legacy},signBoard});
   assert.equal(controller.status.cleared,1);let remaining=0;legacy.traverse(m=>{if(m.isInstancedMesh)remaining+=m.count;});assert.equal(remaining,2);
+  // The rendered rails must not clip any waiting position or its centre exit.
+  controller.root.updateMatrixWorld(true);
+  const obstacles=[],instance=new THREE.Matrix4(),combined=new THREE.Matrix4();
+  controller.root.traverse(m=>{if(!m.isInstancedMesh)return;for(let i=0;i<m.count;i++){m.getMatrixAt(i,instance);combined.multiplyMatrices(m.matrixWorld,instance);const box=new THREE.Box3(new THREE.Vector3(-.5,-.5,-.5),new THREE.Vector3(.5,.5,.5)).applyMatrix4(combined);if(box.max.y>.3&&box.min.y<1.7&&box.max.x>-13.5&&box.min.x<-10.5&&box.max.z>25&&box.min.z<33)obstacles.push(box);}});
+  const clearAt=(x,z)=>assert.equal(obstacles.some(box=>box.max.x>x-.2&&box.min.x<x+.2&&box.max.z>z-.2&&box.min.z<z+.2),false,`Queue blocked at ${x},${z}`);
+  for(let i=0;i<16;i++){const p=hayrideQueueSlot(i);clearAt(p.x,p.z);}
+  for(let z=25.2;z<32.7;z+=.25)clearAt(-12,z);
   const countLights=()=>scene.children.filter(x=>x.isPointLight).length;assert.equal(countLights(),2);state.hayride.tier=2;controller.sync();assert.equal(countLights(),2);
   const before=JSON.stringify(state);controller.setPreview(.54);const frame=controller.getPreviewFrame(.54);assert.ok(frame.position.toArray().every(Number.isFinite));controller.tick(12);controller.setPreview(null);assert.equal(JSON.stringify(state),before);
   let boxes=0;const matrix=new THREE.Matrix4();controller.root.traverse(m=>{if(!m.isInstancedMesh)return;for(let i=0;i<m.count;i++){m.getMatrixAt(i,matrix);assert.ok(matrix.elements.every(Number.isFinite));assert.ok(Math.abs(matrix.determinant())>0);}boxes+=m.count;});assert.ok(boxes<35000,`too many boxes: ${boxes}`);controller.dispose();

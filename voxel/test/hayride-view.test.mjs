@@ -65,3 +65,16 @@ test("visibility interruption pauses until explicit resume and rejects unowned r
     assert.equal(reject.enter(), false); assert.equal(reject.active, false); assert.equal(locked.preview.length, 0); reject.dispose();
   } finally { if (old === undefined) delete globalThis.document; else globalThis.document = old; }
 });
+
+test("the director frames roadside scenery while touch look and gentle mode stay in control", () => {
+  const f = fixture();
+  f.world.getPreviewFrame = () => ({ position: new THREE.Vector3(0, 2, 18), target: new THREE.Vector3(0, 2, 10), yaw: 0, focusTarget: new THREE.Vector3(-8, 2, 18), focusWeight: 1 });
+  const view = createHayrideView(f.canvas, f.state, { world: f.world }), direction = new THREE.Vector3();
+  view.enter({ gentle: false }); view.advanceForTest(3); view.camera.getWorldDirection(direction);
+  assert.ok(direction.x < -.99, "the nearby set is framed during its encounter");
+  view.setLook(.5, 0); view.camera.getWorldDirection(direction);
+  assert.ok(direction.z < -.8, "a deliberate look overrides the guided glance");
+  view.setOptions({ gentle: true }); view.setLook(0, 0); view.camera.getWorldDirection(direction);
+  assert.ok(direction.z < -.99, "gentle mode keeps the unturned forward view");
+  view.dispose();
+});
