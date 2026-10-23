@@ -111,29 +111,50 @@ export function buildMazePrefab(id, layout) {
       for (let i = 0; i <= 14; i++) { const x = -gap + .2 + i * (2 * gap - .4) / 14, next = i === 14 ? 0 : Math.sin(i * 2.7) * .1 + Math.cos(i * 1.3) * .05; v.block(x, Math.min(y, next) - .01, 0, .11, Math.abs(next - y) + .05, .04, 0xeaffff, true); v.block(x, Math.min(y, next) - .03, -.02, .15, Math.abs(next - y) + .09, .03, TEAL, true); y = next; }
     }, "electric");
   } else if(id === "phantom-finale") {
-    // A hooded phantom rises from the dark landing at the top of the stairs,
-    // skeletal hands raised, under a violet arch.
+    // A hooded phantom rises from the dark landing at the top of the stairs
+    // under a violet arch. It is jointed: the robe sways as it rises and
+    // sinks, the skull looks about, each bony arm reaches on its own rhythm,
+    // the ragged hem flutters, and its eyes and chest glow pulse.
     piece("Finale arch", stairs.x, 2.55, -D + .3, v => {
       const half = stairs.w / 2 + .22;
-      for (const side of [-1, 1]) { v.block(side * half, 0, 0, .07, 1.62, .05, 0xb48ae8, true); v.block(side * half, 0, .04, .16, .1, .1, IRON); }
+      for (const side of [-1, 1]) v.block(side * half, 0, 0, .07, 1.62, .05, 0xb48ae8, true);
       for (let i = 0; i < 9; i++) { const x = half * (1 - i / 9); for (const side of [-1, 1]) v.block(side * x, 1.62 + .5 * (1 - (x / half) ** 1.5), 0, .1, .08, .05, 0xb48ae8, true); }
-      for (const [x, y] of [[-.7, 1.2], [.75, .9], [-.4, .35], [.5, 1.45]]) v.block(x, y, .35, .06, .1, .06, 0xd9a8ff, true);
+      for (const [x, y] of [[-.7, 1.2], [.75, .9], [-.4, .35], [.5, 1.45], [-.85, .6], [.2, 1.75]]) v.block(x, y, .35, .06, .1, .06, 0xd9a8ff, true);
     });
-    piece("The final phantom", stairs.x, 2.72, -D + .78, v => {
-      [[1.48, .26, .3], [1.38, .44, .44], [1.24, .56, .5], [1.08, .62, .5], [.92, .8, .48], [.76, .86, .46], [.6, .9, .46], [.44, .96, .44], [.28, 1.02, .42], [.14, 1.06, .4]].forEach(([y, w, d], i) => v.block(0, y, 0, w, .16, d, ROBE[i % 2]));
-      [[-.45, .16], [-.27, .1], [-.09, .17], [.09, .08], [.27, .15], [.45, .11]].forEach(([x, h]) => v.block(x, .14 - h, .02, .15, h, .36, ROBE[2]));
-      v.block(0, 1.1, .2, .38, .36, .12, 0x07050a);
-      v.block(0, 1.14, .25, .24, .24, .06, BONE); v.block(0, 1.1, .25, .16, .06, .07, 0xb9ae9c); for (let i = -2; i <= 2; i++) v.block(i * .03, 1.11, .285, .02, .03, .02, 0x2a2230);
-      for (const side of [-1, 1]) { v.block(side * .06, 1.25, .28, .07, .06, .03, 0x120c18); v.block(side * .06, 1.26, .295, .04, .035, .02, 0xd9a8ff, true); }
-      [[1.38, .44], [1.08, .62], [.76, .86], [.44, .96], [.14, 1.06]].forEach(([y, w]) => { for (const side of [-1, 1]) v.block(side * (w / 2 + .01), y, .1, .03, .16, .2, 0x9d6fd8, true); });
-      for (const side of [-1, 1]) {
-        v.block(side * .52, 1.06, 0, .26, .2, .34, ROBE[1]); v.block(side * .7, 1.2, .04, .24, .2, .3, ROBE[0]); v.block(side * .86, 1.34, .08, .22, .2, .26, ROBE[1]);
-        v.block(side * .95, 1.5, .1, .12, .1, .1, BONE);
-        for (const f of [-.04, 0, .04]) v.block(side * .95 + f, 1.6, .1, .025, .1, .025, BONE);
-        v.block(side * .92, 1.5, .16, .04, .08, .025, BONE);
-      }
-      for (let i = 0; i < 5; i++) v.block(Math.sin(i * 2.1) * .5, .3 + i * .22, .3, .05, .05, .05, 0xb48ae8, true);
-    }, "finale");
+    const robe = (v, x, y, z, w, h, d, i) => v.block(x, y, z, w, h, d, ROBE[i % 2]);
+    const body = piece("The final phantom", stairs.x, 2.72, -D + .78, v => {
+      [[.14, 1.02, .42], [.28, .96, .42], [.42, .9, .44], [.56, .84, .44], [.7, .8, .46], [.84, .82, .46]].forEach(([y, w, d], i) => robe(v, 0, y, 0, w, .15, d, i));
+      v.block(0, .97, 0, .92, .12, .5, ROBE[2]); for (const side of [-1, 1]) v.block(side * .4, .93, .05, .14, .1, .3, ROBE[2]);
+      for (const [x, h] of [[-.34, .62], [-.17, .7], [.17, .66], [.34, .58]]) v.block(x, .15, .22, .045, h, .02, ROBE[2]);
+      v.block(0, .6, .23, .84, .05, .03, 0x8a6a3e); v.block(.12, .44, .24, .04, .16, .03, 0x8a6a3e); v.block(.12, .41, .24, .07, .05, .04, 0x8a6a3e);
+      v.block(0, .74, .23, .14, .16, .03, 0x120c18); v.block(0, .78, .245, .07, .08, .02, 0xd9a8ff, true);
+      [[.84, .82], [.56, .84], [.28, .96]].forEach(([y, w]) => { for (const side of [-1, 1]) v.block(side * (w / 2 + .01), y, .1, .03, .15, .2, 0x9d6fd8, true); });
+    }, "phantom-body");
+    const head = piece("Phantom hood", 0, 1.08, 0, v => {
+      [[.02, .52, .5], [.14, .6, .54], [.28, .62, .56], [.42, .56, .52], [.54, .44, .46], [.64, .26, .34]].forEach(([y, w, d], i) => robe(v, 0, y, -.02, w, .13, d, i));
+      v.block(0, .72, -.08, .12, .1, .18, ROBE[1]);
+      v.block(0, .05, .2, .42, .46, .1, 0x07050a);
+      v.block(0, .12, .25, .26, .3, .06, BONE); for (const side of [-1, 1]) v.block(side * .12, .22, .26, .06, .07, .05, 0xc9bda6);
+      v.block(0, .06, .26, .18, .08, .06, 0xb9ae9c); for (let i = -2; i <= 2; i++) v.block(i * .03, .07, .295, .018, .04, .02, 0x2a2230);
+      v.block(0, .17, .29, .04, .05, .02, 0x2a2230);
+      for (const side of [-1, 1]) { v.block(side * .065, .27, .28, .08, .07, .03, 0x120c18); v.block(side * .065, .28, .295, .045, .04, .02, 0xd9a8ff, true); v.block(side * .065, .29, .305, .018, .018, .01, 0xffffff, true); }
+      v.block(0, .4, .25, .46, .05, .06, ROBE[2]);
+    }, "phantom-head");
+    body.add(head);
+    for (const side of [-1, 1]) {
+      const arm = piece("Phantom arm", side * .4, .96, 0, v => {
+        [[.08, .05, .26, .24, .3], [.2, .18, .26, .24, .3], [.3, .32, .24, .22, .28], [.38, .46, .24, .22, .26]].forEach(([x, y, w, h, d], i) => robe(v, side * x, y, 0, w, h, d, i));
+        v.block(side * .44, .56, 0, .3, .2, .3, ROBE[2]); for (const [x, h] of [[.36, .12], [.46, .18], [.54, .1]]) v.block(side * x, .56 - h, .1, .06, h, .06, ROBE[2]);
+        v.block(side * .48, .7, .02, .08, .12, .08, BONE); v.block(side * .5, .8, .03, .13, .1, .1, BONE);
+        for (let i = 0; i < 4; i++) { const x = side * (.455 + i * .03); v.block(x, .89, .04, .022, .1, .022, BONE); v.block(x + side * .006, .98, .055, .02, .06, .02, 0xc9bda6); }
+        v.block(side * .43, .82, .06, .022, .08, .022, BONE);
+      }, "phantom-arm");
+      arm.userData.side = side; movers.at(-1).side = side; body.add(arm);
+    }
+    const hem = piece("Phantom hem", 0, .14, 0, v => {
+      [[-.45, .17], [-.33, .1], [-.21, .2], [-.09, .12], [.03, .22], [.15, .09], [.27, .18], [.39, .11], [.48, .15]].forEach(([x, h], i) => v.block(x, -h, .02 * (i % 3), .12, h, .38, ROBE[i % 3]));
+    }, "phantom-hem");
+    body.add(hem);
   }
   group.userData.movers=movers;group.userData.knownPrefab=ID_LIST.includes(id);return group;
 }
@@ -147,5 +168,11 @@ export function animateMazePrefab(group, time, reducedMotion=false) {
     if(p.motion==="ghost") {p.object.position.set(p.x+Math.sin(t*.47+i*1.8)*.26,p.y+Math.sin(t*.78+i)*.16,p.z);p.object.rotation.y=Math.sin(t*.36+i)*.2;}
     if(p.motion==="electric") {p.object.scale.y=.78+Math.sin(t*.65)*.14;p.object.position.y=p.y+Math.sin(t*.45)*.04;}
     if(p.motion==="finale") {p.object.position.y=p.y+Math.sin(t*.46)*.16;p.object.rotation.y=Math.sin(t*.33)*.12;}
+    // The phantom: the robe rises, sinks and sways and carries its parts.
+    if(p.motion==="phantom-body") {p.object.position.y=p.y+Math.sin(t*.46)*.16;p.object.rotation.y=Math.sin(t*.33)*.12;p.object.rotation.z=Math.sin(t*.7)*.03;}
+    if(p.motion==="phantom-head") {p.object.rotation.y=Math.sin(t*.52)*.38;p.object.rotation.x=Math.sin(t*.81)*.07-.04;}
+    if(p.motion==="phantom-arm") {p.object.rotation.z=p.side*(Math.sin(t*.9+(p.side>0?0:1.7))*.26-.06);p.object.rotation.x=Math.sin(t*.6+p.side)*.12;}
+    if(p.motion==="phantom-hem") {p.object.rotation.y=Math.sin(t*1.3)*.07;p.object.scale.x=1+Math.sin(t*2.1)*.05;}
+    if(p.motion?.startsWith("phantom-")&&p.motion!=="phantom-arm"&&p.motion!=="phantom-hem") p.object.traverse(m=>{if(m.material?.isMeshBasicMaterial){m.userData.base??=m.material.color.clone();m.material.color.copy(m.userData.base).multiplyScalar(.72+.28*Math.sin(t*2.3+(p.motion==="phantom-head"?0:1)));}});
   }
 }
