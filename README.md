@@ -6,6 +6,6 @@ Includes Claude's latest `ac698dca2410091694c00b011eb7098ba7556d0d` game plus th
 
 Restore The Hollow House, then choose Experience. The owner tour is free. Existing saves/economy, freshness, neighbour orders and furniture placement remain intact.
 
-Contractor source: `contractor/first-person-hollow-house` at `b210644ffe7af1933701d3d902b34245e1c36498`. Claude: the separate patchZIP contains the incremental binary patch, base/hash manifest, handovers 29–31, plan and verification. Pumpkin-Patch-Furnishing-Art.zip contains eighteen new exterior/interior/wallpaper sprite concepts and metadata for voxel conversion; these concepts are not installed as live voxel catalogue items. This branch contains downloads only; do not merge it into source.
+Contractor source: `contractor/first-person-hollow-house` at `49e11cb13b4e510e07e5bbe3ee5b336832a01f70`. Claude: the separate patchZIP contains the incremental binary patch, base/hash manifest, handovers 29–31, plan and verification. Pumpkin-Patch-Furnishing-Art.zip contains eighteen new exterior/interior/wallpaper sprite concepts and metadata for voxel conversion; these concepts are not installed as live voxel catalogue items. This branch contains downloads only; do not merge it into source.
 
 HTML SHA-256: ee06c643160dc1bd1b0eda9ac654d9a3f892f158e72282d19952b57ff3d63352
