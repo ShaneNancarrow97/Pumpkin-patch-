@@ -73,6 +73,7 @@ test("every tier finishes on a finite rail pose and frames its authored reveals"
       assert.ok(actor.visible); const dx = actor.x - camera.x, dz = actor.z - camera.z, distance = Math.hypot(dx, dz);
       const dot = (dx * -Math.sin(camera.yaw) + dz * -Math.cos(camera.yaw)) / distance;
       assert.ok(dot > Math.cos(.31), `portrait reveal is ahead at tier ${tier}`);
+      assert.ok(distance > .8 && distance < 2.6, `tier ${tier} reveal comes close without crossing the camera`);
       assert.equal(status.lightCount, 6); assert.equal(status.batches, 3);
     }
     view.advanceForTest(1e6); const complete = view.status;

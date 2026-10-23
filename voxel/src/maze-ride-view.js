@@ -10,9 +10,9 @@ const angleDelta = (from, to) => Math.atan2(Math.sin(to - from), Math.cos(to - f
 
 // A presentation scene shares the game's renderer; it owns no economy or canvas.
 export function createMazeRideView(canvas, state, hooks = {}) {
-  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x161021); scene.fog = new THREE.FogExp2(0x191326, .057);
-  scene.add(new THREE.HemisphereLight(0xa095c3, 0x302232, .72));
-  const moon = new THREE.DirectionalLight(0xb4a7cf, .48); moon.position.set(-3, 7, 5); scene.add(moon);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x07060b); scene.fog = new THREE.FogExp2(0x0b0912, .155);
+  scene.add(new THREE.HemisphereLight(0x79748b, 0x18111c, .065));
+  const moon = new THREE.DirectionalLight(0x8f92b5, .055); moon.position.set(-3, 7, 5); scene.add(moon);
   // The pool stays fixed for the lifetime of the view, including every scare.
   const pool = Array.from({ length: 4 }, () => new THREE.PointLight(0xffbd80, 0, 11, 1.6)); pool.forEach(light => scene.add(light));
   const camera = new THREE.PerspectiveCamera(67, 1, .055, 75); camera.rotation.order = "YXZ";
@@ -69,11 +69,12 @@ export function createMazeRideView(canvas, state, hooks = {}) {
       const { encounter, object, stage } = actor, age = run.elapsed - encounter.at, duration = encounter.duration;
       object.visible = age >= -.7 && age <= duration;
       if (!object.visible) continue;
-      const reveal = smooth((age + .7) / .85), retreat = 1 - smooth((age - duration * .63) / (duration * .37));
+      const reveal = smooth((age + .7) / .85), retreat = 1 - smooth((age - duration * .42) / (duration * .44));
       const lunge = smooth(age / (options.gentle ? .8 : .42)) * retreat;
-      const near = Math.min(stage.distance * (options.gentle ? .8 : .6), options.gentle ? 1.35 : 1.05, stage.forwardDistance * (options.gentle ? .3 : .22));
+      const approach = Math.min(1.25, Math.max(0, stage.forwardDistance - .9));
+      const near = Math.min(stage.distance * .5, (stage.forwardDistance - approach) * (options.gentle ? .2 : .11));
       const distance = (stage.distance + .45) + (near - stage.distance - .45) * lunge;
-      object.position.set(stage.rail.x + stage.nx * distance, .04, stage.rail.z + stage.nz * distance);
+      object.position.set(stage.rail.x + stage.nx * distance - stage.rail.dx * approach * lunge, .04, stage.rail.z + stage.nz * distance - stage.rail.dz * approach * lunge);
       actor.pose = age >= 0 && age < duration * .72 ? "scare" : "lurking";
       animateMazeScareActor(object, { pose: actor.pose, reveal: reveal * retreat, lunging: options.gentle ? lunge * .35 : lunge, time: options.gentle ? 0 : run.elapsed, camera });
     }
@@ -81,13 +82,21 @@ export function createMazeRideView(canvas, state, hooks = {}) {
   function poseLights() {
     if (!run || !world) return;
     const p = sampleMazeRail(config, run.progress), ahead = sampleMazeRail(config, Math.min(1, run.progress + .025));
-    pool[0].position.set(p.x - .35, 1.8, p.z + .25); pool[0].color.setHex(0xffc48d); pool[0].intensity = 4.4; pool[0].distance = 8;
+    // A dim lantern shows the next step; distant walls disappear into the fog.
+    pool[0].position.set(p.x - .2, 1.35, p.z + .15); pool[0].color.setHex(0xffc48d); pool[0].intensity = .65; pool[0].distance = 3.8;
     const nearest = [...world.lamps].sort((a, b) => Math.hypot(a.x - p.x, a.z - p.z) - Math.hypot(b.x - p.x, b.z - p.z));
+    const zone = Math.max(0, config.zones.findIndex(z => z.id === run.zone));
+    const colours = [0xffb16e, 0x8baecc, 0xb299c8, 0x7fb9bc, 0xd99b8b];
     for (let i = 1; i <= 2; i++) {
       const lamp = nearest[i - 1] ?? { x: ahead.x, y: 2.4, z: ahead.z, colour: 0xb3a2d3 };
-      pool[i].position.set(lamp.x, lamp.y, lamp.z); pool[i].color.setHex(lamp.colour); pool[i].intensity = i === 1 ? 16 : 11; pool[i].distance = 11;
+      pool[i].position.set(lamp.x, lamp.y, lamp.z); pool[i].color.setHex(i === 1 ? colours[zone] : 0xffbf83); pool[i].intensity = i === 1 ? 8.5 : 4.5; pool[i].distance = i === 1 ? 5.6 : 4.4;
     }
-    pool[3].position.set(ahead.x, 2.75, ahead.z); pool[3].color.setHex(run.zone === "storm-laboratory" ? 0x81bcb7 : 0x9686b9); pool[3].intensity = 7; pool[3].distance = 10;
+    // Broad, slow colour pools breathe without flashing; a reveal gets a brief rim.
+    const current = actors.find(a => run.elapsed >= a.encounter.at && run.elapsed < a.encounter.at + a.encounter.duration * .72);
+    const breathing = options.gentle ? .6 : .4 + .3 * Math.sin(run.elapsed * .45 + zone);
+    if (current) pool[3].position.set(current.object.position.x, 2.1, current.object.position.z + .4);
+    else pool[3].position.set(ahead.x, 2.55, ahead.z);
+    pool[3].color.setHex(colours[(zone + 1) % colours.length]); pool[3].intensity = current ? 2.2 : breathing; pool[3].distance = current ? 3 : 4;
   }
   function renderPose(dt = 0, snap = false) { poseCamera(dt, snap); poseActors(); poseLights(); world?.tick(run?.elapsed ?? 0, options.gentle); }
   function advance(seconds, snap = false) {

@@ -92,7 +92,7 @@ function roomDetails(v, zone, config, lamps) {
     }
     for (const u of [-2.75, 2.75]) {
       sideBlock(side, u, 1.1, .1, 1.24, 1.62, .22, IRON);
-      sideBlock(side, u, 1.22, .24, 1.02, 1.4, .055, kind >= 3 ? 0x3d797e : 0x4d536e, true);
+      sideBlock(side, u, 1.22, .24, 1.02, 1.4, .055, kind >= 3 ? 0x102329 : 0x141424, true);
       sideBlock(side, u, 1.2, .28, .055, 1.45, .06, WOOD);
       sideBlock(side, u, 1.86, .28, 1.08, .07, .06, WOOD);
       for (let i = 0; i < 4; i++) sideBlock(side, u, 2.75 + i * .12, .13, 1.34 - i * .28, .13, .25, STONE[kind]);
