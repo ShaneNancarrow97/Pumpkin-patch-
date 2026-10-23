@@ -10,6 +10,7 @@ import { createLevelCelebration } from "./ui/level-celebration.js";
 import { createAudio } from "./ui/audio.js";
 import { createMazeRideUI } from "./ui/maze-ride-ui.js";
 import { createMazeAudio } from "./ui/maze-audio.js";
+import { createHayrideRideUI } from "./ui/hayride-ride-ui.js";
 import { buildMazeRideConfig } from "./rules/maze-ride.js";
 import { farmSheets } from "./ui/farm-sheets.js";
 import { homeSheets } from "./ui/home-sheets.js";
@@ -22,6 +23,7 @@ import { estateSheet } from "./ui/estate-sheet.js";
 import { createEstateControls } from "./ui/estate-controls.js";
 import { moreSheet } from "./ui/more-sheet.js";
 import { hollowSheets, createHollowContext } from "./ui/hollow-sheet.js";
+import { hayrideSheets, createHayrideContext } from "./ui/hayride-sheet.js";
 import { createFoyerControls } from "./ui/foyer-controls.js";
 import { settingsSheet } from "./ui/settings-sheet.js";
 import { createIntro } from "./ui/intro.js";
@@ -52,6 +54,12 @@ const mazeUI = createMazeRideUI({ prefs, savePrefs,
   onStart: startMazeRide, onPause: pauseMazeRide, onExit: exitMazeRide, onReplay: replayMazeRide,
   onSound: on => mazeAudio.setMuted(!on), onVolume: value => mazeAudio.setVolume(value),
   onGentle: on => { mazeAudio.setGentle(on); scene.setMazeOptions({ gentle: on }); },
+  onFullscreen: () => $("fullscreen").click(),
+});
+const hayrideUI = createHayrideRideUI({ prefs, savePrefs,
+  onStart: startHayrideRide, onPause: pauseHayrideRide, onExit: exitHayrideRide, onReplay: replayHayrideRide,
+  onSound: on => mazeAudio.setMuted(!on),
+  onGentle: on => { mazeAudio.setGentle(on); scene.setHayrideOptions({ gentle: on }); },
   onFullscreen: () => $("fullscreen").click(),
 });
 
@@ -89,6 +97,9 @@ const scene = createScene($("world"), state, {
   onMazeCue: cue => mazeAudio.cue(cue),
   onMazeState: status => mazeUI.update(status),
   onMazeComplete: status => { mazeAudio.pause(true); mazeUI.update(status); },
+  onHayrideCue: cue => mazeAudio.cue(cue),
+  onHayrideState: status => hayrideUI.update(status),
+  onHayrideComplete: status => { mazeAudio.pause(true); hayrideUI.update(status); },
   canRotatePiece: () => !!home.tools.selected && M.footprint(state.house.placed.find((p) => p.instance === home.tools.selected)?.id ?? "f01").layer !== "wall",
   foyerEditing: () => foyerTools.active || openTab === "foyer",
   estateEditing: () => estateTools.active,
@@ -111,6 +122,7 @@ const scene = createScene($("world"), state, {
     else if (what.type === "estate-decor") estateTools.select(what.instance);
     else if (what.type === "estate-ground") { if (estateTools.active) estateTools.placeAt(what.point.x, what.point.z); }
     else if (what.type === "hollow-house") { closeSheet(); hollowContext.open(); }
+    else if (what.type === "hayride" || what.type === "hayride-station") { closeSheet(); hollowContext.close(); hayrideContext.close(); hayrideContext.open(); }
     else if (what.type === "foyer-exit") { if (!foyerTools.active) leavePlace(); }
     else if (what.type === "maze-door") { if (!foyerTools.active) openMazeRide(); }
     else if (what.type === "mortimer") { if (!foyerTools.active) scene.speakMortimer(); }
@@ -227,19 +239,20 @@ function notice(text) {
 // Stepping inside the cottage or the shop, and back out.
 let interiorFromEstate = false;
 function enterRoom(id) {
-  if (mazeUI.active) stopMazePresentation();
+  if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation();
   if (!M.roomUnlocked(state, id)) id = "parlour";
   if (scene.place?.kind === "estate") interiorFromEstate = true; else if (scene.place?.kind !== "room") interiorFromEstate = false;
-  foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); state.house.activeRoom = id; scene.enter("room", id); renderPlace();
+  foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); state.house.activeRoom = id; scene.enter("room", id); renderPlace();
 }
-function enterEstate() { if (mazeUI.active) stopMazePresentation(); foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); scene.enter("estate"); closeSheet(); renderPlace(); }
-function enterFoyer() { if (mazeUI.active) stopMazePresentation(); if (!M.hollowReady(state)) { openHollowSheet(); return false; } foyerTools.cancel(); estateTools.cancel(); hollowContext.close(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("foyer"); closeSheet(); renderPlace(); return true; }
+function enterEstate() { if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); scene.enter("estate"); closeSheet(); renderPlace(); }
+function enterFoyer() { if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); if (!M.hollowReady(state)) { openHollowSheet(); return false; } foyerTools.cancel(); estateTools.cancel(); hollowContext.close(); hayrideContext.close(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("foyer"); closeSheet(); renderPlace(); return true; }
 // The owner’s walkthrough is a transient camera experience, never a paid visit.
 function openMazeRide() {
   if (mazeUI.active) return true;
+  if (hayrideUI.active) exitHayrideRide();
   const config = buildMazeRideConfig(state);
   if (!config) { openHollowSheet(); return false; }
-  foyerTools.cancel(); estateTools.cancel(); home.tools.select(null); hollowContext.close(); guestCard.clear(); closeSheet();
+  foyerTools.cancel(); estateTools.cancel(); home.tools.select(null); hollowContext.close(); hayrideContext.close(); guestCard.clear(); closeSheet();
   document.body.classList.add("maze-experience");
   scene.enter("maze", { config, options: { ...mazeUI.options, paused: true } });
   mazeUI.open(config); audio.setSceneGain(.08); renderPlace(); return true;
@@ -263,6 +276,22 @@ function exitMazeRide() {
 }
 function openHollowSheet(tab = "manage") { sheets.hollow.setTab(tab); openSheet("hollow"); }
 function openFoyerSheet(tab = "catalogue") { sheets.foyer.setTab(tab); openSheet("foyer"); }
+function openHayrideSheet() { openSheet("hayride"); }
+function focusHayride() { if (scene.place) leavePlace(); closeSheet(); scene.focusHayride(); }
+// The free owner camera has no seat, receipt or visitor in the live convoy.
+function openHayrideRide() {
+  if (hayrideUI.active) return true;
+  if (!M.hayrideReady(state)) { openHayrideSheet(); return false; }
+  if (mazeUI.active) exitMazeRide();
+  foyerTools.cancel(); estateTools.cancel(); home.tools.select(null); hollowContext.close(); hayrideContext.close(); guestCard.clear(); closeSheet();
+  scene.enter("hayride", { ...hayrideUI.options, paused: true });
+  hayrideUI.open(M.hayrideConfig(state)); audio.setSceneGain(.12); renderPlace(); return true;
+}
+function startHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride" || !hayrideUI.active) return false; scene.setHayrideOptions(options); mazeAudio.start(options); scene.pauseHayrideRide(false); hayrideUI.update(scene.hayrideRideStatus); return true; }
+function pauseHayrideRide(on = true) { if (scene.place?.kind !== "hayride") return false; scene.pauseHayrideRide(on); mazeAudio.pause(on); hayrideUI.update(scene.hayrideRideStatus); return true; }
+function replayHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride") return false; mazeAudio.start(options); scene.restartHayrideRide(options); hayrideUI.update(scene.hayrideRideStatus); return true; }
+function stopHayridePresentation() { hayrideUI.close(); mazeAudio.stop(); audio.setSceneGain(1); }
+function exitHayrideRide() { if (!hayrideUI.active && scene.place?.kind !== "hayride") return false; stopHayridePresentation(); scene.leavePlace(); renderPlace(); return true; }
 // Up or down the stairs, or through a doorway, to the next room.
 function goTo(id) {
   const name = M.houseRooms.find((r) => r.id === id)?.name.toLowerCase() ?? id, layout = M.roomLayout(state, scene.place?.id);
@@ -270,8 +299,8 @@ function goTo(id) {
   home.tools.select(null); enterRoom(id); notice(`${way} the ${name}.`); audio.tone(440);
   if (openTab === "home") draw();
 }
-function enterShop() { if (mazeUI.active) stopMazePresentation(); foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("shop"); renderPlace(); }
-function leavePlace() { if (mazeUI.active) stopMazePresentation(); foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.leavePlace(); renderPlace(); }
+function enterShop() { if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("shop"); renderPlace(); }
+function leavePlace() { if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.leavePlace(); renderPlace(); }
 function openHome() { if (scene.place?.kind === "room") { sheets.home.setTab("rooms"); openSheet("home"); } else if (scene.place?.kind === "estate") openEstateSheet("grounds"); else enterEstate(); }
 function openEstateSheet(tab = "garden") { sheets.estate.setTab(tab); openSheet("estate"); }
 function upgradeEstateHouse() {
@@ -286,7 +315,7 @@ function renderPlace() {
   document.body.classList.toggle("inside-place", inside);
   document.body.classList.toggle("house-estate", p?.kind === "estate");
   $("place-bar").hidden = !inside; $("actions").hidden = inside; $("goal").hidden = inside;
-  if (inside) $("place-title").textContent = p.kind === "estate" ? "Home & Garden" : p.kind === "maze" ? "The Hollow House · Walkthrough" : p.kind === "foyer" ? "The Hollow House · Foyer" : p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
+  if (inside) $("place-title").textContent = p.kind === "hayride" ? "The Hollow Hayride" : p.kind === "estate" ? "Home & Garden" : p.kind === "maze" ? "The Hollow House · Walkthrough" : p.kind === "foyer" ? "The Hollow House · Foyer" : p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
   $("place-back").setAttribute("aria-label", p?.kind === "room" && interiorFromEstate ? "Back to the garden" : "Back to the patch");
   $("place-back").querySelector(".place-back-text").textContent = p?.kind === "room" && interiorFromEstate ? "Back to garden" : "Back to farm";
   $("place-rooms").disabled = p?.kind === "shop";
@@ -307,6 +336,7 @@ $("boost").onclick = boost;
 const text = (id, value) => { const el = $(id); if (el.textContent !== String(value)) el.textContent = value; };
 function render() {
   if (mazeUI.active) mazeUI.update(scene.mazeStatus);
+  if (hayrideUI.active) hayrideUI.update(scene.hayrideRideStatus);
   if (M.awardLevels(state).length) save();
   text("coins", money(state.coins));
   text("stock", `${M.available(state)}/${M.barnCapacity(state)}`);
@@ -316,13 +346,14 @@ function render() {
   text("level-number", lvl.level);
   $("open-levels").setAttribute("aria-label", `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View rewards`);
   $("open-levels").style.setProperty("--progress", (lvl.progress * 100).toFixed(1) + "%");
-  celebration.tick(mazeUI.active || !!openTab || !!home.tools.selected || state.paused);
-  stockPopover.tick(mazeUI.active || celebration.active || !!openTab || estateTools.active || foyerTools.active || !!home.tools.selected);
-  guestCard.tick(mazeUI.active || !!openTab || celebration.active || estateTools.active || foyerTools.active || !!home.tools.selected);
+  celebration.tick(mazeUI.active || hayrideUI.active || !!openTab || !!home.tools.selected || state.paused);
+  stockPopover.tick(mazeUI.active || hayrideUI.active || celebration.active || !!openTab || estateTools.active || foyerTools.active || !!home.tools.selected);
+  guestCard.tick(mazeUI.active || hayrideUI.active || !!openTab || celebration.active || estateTools.active || foyerTools.active || !!home.tools.selected);
   estateTools.tick(!!openTab || celebration.active);
   foyerTools.tick(!!openTab || celebration.active);
-  hollowContext.tick(mazeUI.active || !!openTab || celebration.active);
-  npcRewards.tick(mazeUI.active || !!scene.place || !!openTab || !!home.tools.selected || celebration.active || state.paused || document.hidden);
+  hollowContext.tick(mazeUI.active || hayrideUI.active || !!openTab || celebration.active);
+  hayrideContext.tick(mazeUI.active || hayrideUI.active || !!scene.place || !!openTab || celebration.active);
+  npcRewards.tick(mazeUI.active || hayrideUI.active || !!scene.place || !!openTab || !!home.tools.selected || celebration.active || state.paused || document.hidden);
   $("level-bar").style.width = (lvl.progress * 100).toFixed(1) + "%";
   $("hud-level").title = `Level ${lvl.level}: ${lvl.name}. ${lvl.tagline}.`;
   text("level-name", lvl.name);
@@ -384,23 +415,24 @@ const ui = {
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
   portrait: (id) => scene.portrait(id),
   intro,
-  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide,
+  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide, openHayrideSheet, focusHayride, openHayrideRide,
   get estateTools() { return estateTools; },
   get foyerTools() { return foyerTools; }, get hollowContext() { return hollowContext; },
   read: (id) => collection.read(id),
   replaceState(next) { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(next))); state = next; location.reload(); },
 };
 const home = homeSheets(ui), collection = collectionSheets(ui);
-const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...moreSheet(ui), ...settingsSheet(ui) };
+const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...moreSheet(ui), ...settingsSheet(ui) };
 const estateTools = createEstateControls(ui);
 const foyerTools = createFoyerControls(ui), hollowContext = createHollowContext(ui);
+const hayrideContext = createHayrideContext(ui);
 
 let openTab = null, lastBody = "", sheetReturnFocus = null;
 const menuMemory = createMenuMemory($("sheet-body"));
 const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
 const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(id === "empire" ? "natalie" : "visitor-" + ["ghost", "witch", "vampire", "skeleton", "scarecrow"][kind]), save, tone: f => audio.tone(f), notice });
 const guestCard = createGuestCard({ state: () => state, portrait: id => scene.portrait(id) });
-const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); guestCard.clear(); }, onManagePumpkins() { sheets.shop.setTab("farm"); openSheet("shop"); }, onManageCocoa() { sheets.festival.setTab("cocoa"); openSheet("festival"); }, onSendOrder(id) {
+const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); hayrideContext.close(); guestCard.clear(); }, onManagePumpkins() { sheets.shop.setTab("farm"); openSheet("shop"); }, onManageCocoa() { sheets.festival.setTab("cocoa"); openSheet("festival"); }, onSendOrder(id) {
   const o = state.orders.list.find((x) => x.id === id), pay = o && M.fillOrder(state, id);
   if (!pay) return;
   audio.tone(880); notice(`Sent ${o.count} ${M.VARIETIES[o.variety].name} to ${M.orderFrom(o)} · ${money(pay)}`); scene.sale(pay, "order"); save(); draw();
@@ -411,7 +443,7 @@ $("fullscreen").onclick = async () => {
   catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
 };
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
-const TABS = { shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "more", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions" };
+const TABS = { shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "more", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
 function draw() {
   if(menuMemory.dragging)return;
   const sheet = sheets[openTab]; if (!sheet) return;
@@ -424,12 +456,13 @@ function draw() {
   text("sheet-title", title);
 }
 function openSheet(tab) {
+  if (hayrideUI.active) exitHayrideRide();
   if (mazeUI.active) exitMazeRide();
   if(!openTab)sheetReturnFocus=document.activeElement instanceof HTMLElement&&document.activeElement!==document.body?document.activeElement:null;
   menuMemory.leave();
   stockPopover.close();
   if (foyerTools.active) foyerTools.cancel();
-  hollowContext.close();
+  hollowContext.close(); hayrideContext.close();
   if (estateTools.active) estateTools.cancel();
   if (home.tools.selected) home.tools.select(null);
   document.body.classList.add("menu-open");
@@ -444,7 +477,7 @@ function openSheet(tab) {
 }
 function closeSheet() { const wasOpen=!!openTab;menuMemory.leave();document.body.classList.remove("menu-open"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
 function markTab() {
-  const active = openTab ? TABS[openTab] : ["foyer", "maze"].includes(scene.place?.kind) ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
+  const active = openTab ? TABS[openTab] : ["foyer", "maze", "hayride"].includes(scene.place?.kind) ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
 }
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
@@ -457,11 +490,11 @@ $("open-settings").onclick = () => openSheet("settings");
 $("sheet-close").onclick = closeSheet;
 
 document.addEventListener("keydown", (e) => {
-  if (intro.active || mazeUI.active) return;
+  if (intro.active || mazeUI.active || hayrideUI.active) return;
   if (e.key !== "Escape" && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
   if (celebration.active) return;
   const tools = home.tools;
-  if (e.key === "Escape") { guestCard.clear(); hollowContext.close(); if (foyerTools.active) foyerTools.cancel(); else if (estateTools.active) estateTools.cancel(); else if (tools.selected) tools.select(null); else closeSheet(); return; }
+  if (e.key === "Escape") { guestCard.clear(); hollowContext.close(); hayrideContext.close(); if (foyerTools.active) foyerTools.cancel(); else if (estateTools.active) estateTools.cancel(); else if (tools.selected) tools.select(null); else closeSheet(); return; }
   if (foyerTools.active && scene.place?.kind === "foyer") {
     if (e.key.toLowerCase() === "r") { e.preventDefault(); foyerTools.rotate(e.shiftKey ? -15 : 15); return; }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); foyerTools.undo(); return; }
@@ -494,7 +527,8 @@ const mazeDiagnostics = {
   advance(seconds) { const status = scene.advanceMazeRide(seconds); mazeUI.update(status); return { ...status, audio: mazeAudio.status }; },
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
-window.PumpkinVoxel = { maze: mazeDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, estateTools, foyerTools, tools: home.tools, audio, advance };
+const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), get status() { return scene.hayrideRideStatus; } };
+window.PumpkinVoxel = { maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";

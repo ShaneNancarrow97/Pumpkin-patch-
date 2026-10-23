@@ -18,12 +18,13 @@ export function createGuestCard({ state, portrait }) {
     const face = portrait("visitor-" + visitorIdentity(guest.kind).id);
     if (face !== lastFace) { lastFace = face; host.querySelector(".guest-face").innerHTML = face ? `<img src="${face}" alt="">` : ""; }
     for (const key of ["thirst", "hunger", "happiness"]) { const n = Math.round(guest.needs?.[key] ?? 70); host.querySelector(`[data-need="${key}"]`).value = n; host.querySelector(`[data-value="${key}"]`).textContent = n + "%"; }
-    const terror = Math.round(guest.hollow?.terror ?? 0);
-    host.querySelector('[data-row="terror"]').hidden = !guest.hollow;
+    const attraction = guest.hayride && !guest.hayride.done ? guest.hayride : guest.hollow ?? guest.hayride;
+    const terror = Math.round(attraction?.terror ?? 0);
+    host.querySelector('[data-row="terror"]').hidden = !attraction;
     host.querySelector('[data-need="terror"]').value = terror;
     host.querySelector('[data-value="terror"]').textContent = terror + "%";
-    const bravery = host.querySelector(".guest-bravery"); bravery.hidden = !guest.hollow;
-    bravery.textContent = guest.hollow ? "Bravery " + Math.round(guest.hollow.bravery ?? 0) + "%" : "";
+    const bravery = host.querySelector(".guest-bravery"); bravery.hidden = !attraction;
+    bravery.textContent = attraction ? "Bravery " + Math.round(attraction.bravery ?? 0) + "%" : "";
     host.querySelector(".guest-money").textContent = "£" + Math.floor(guest.budget);
     const spent = (guest.originalBudget ?? guest.budget) - guest.budget;
     host.querySelector(".guest-spent").textContent = spent > 0 ? "Spent £" + Math.floor(spent) : "Just arrived";

@@ -1,5 +1,6 @@
 import * as M from "../model.js";
 import * as H from "../rules/hollow-house.js";
+import { premiumIcon } from "./premium-icon-markup.js";
 import { HOLLOW_PROPERTY, FOYER_TIERS, FOYER_DECOR, FOYER_DECOR_BY_ID, FOYER_FINISHES, MAZE_PREFABS } from "../content/hollow-house.js";
 import prefabIcons from "../../assets/maze-prefab-icons.png";
 import { money, segmented } from "./kit.js";
@@ -83,7 +84,7 @@ export function hollowSheets(ui) {
   }
   const enterForDecor = () => { if (ui.scene.place?.kind !== "foyer") ui.enterFoyer(); ui.closeSheet(); };
   return {
-    attractions: { eyebrow: "A little more fright", title: "Attractions", body() { const s = ui.state; return `<article class="estate-card">${prefabArt(5)}<div><h3>The Hollow House</h3><p>${status(s)}</p><small>${s.hollowHouse.purchased ? `Foyer level ${s.hollowHouse.tier} · Scare Maze` : `Purchase opens at patch level ${HOLLOW_PROPERTY.level}`}</small></div><button class="button gold" data-attraction="hollow">Manage</button></article>`; }, bind(body) { body.querySelector('[data-attraction="hollow"]').onclick = () => openManage(ui); } },
+    attractions: { eyebrow: "A little more fright", title: "Attractions", body() { const s = ui.state; return `<article class="estate-card">${prefabArt(5)}<div><h3>The Hollow House</h3><p>${status(s)}</p><small>${s.hollowHouse.purchased ? `Foyer level ${s.hollowHouse.tier} · Scare Maze` : `Purchase opens at patch level ${HOLLOW_PROPERTY.level}`}</small></div><button class="button gold" data-attraction="hollow">Manage</button></article><article class="estate-card"><span class="estate-art" aria-hidden="true">${premiumIcon("attractions")}</span><div><h3>The Hollow Hayride</h3><p>${s.hayride.purchased ? `${s.hayride.open ? "Open" : "Closed"} · ${M.hayrideConfig(s).seats}-seat wagon` : "A trail into the haunted woods"}</p><small>${s.hayride.purchased ? "Tickets on boarding · scare appeal" : "Purchase opens at patch level 8"}</small></div><button class="button gold" data-attraction="hayride">Manage</button></article>`; }, bind(body) { body.querySelector('[data-attraction="hollow"]').onclick = () => openManage(ui); body.querySelector('[data-attraction="hayride"]').onclick = () => ui.openHayrideSheet(); } },
     hollow: { eyebrow: "Axel’s haunted reception", title: "The Hollow House", setTab(value) { tab = ["manage", "haunts", "upgrades", "stats"].includes(value) ? value : "manage"; }, body() { return segmented("hollow-tab", "Attraction management", [["manage", "Manage"], ["haunts", "Haunts"], ["upgrades", "Upgrade"], ["stats", "Stats"]], tab) + ({ manage, haunts, upgrades, stats })[tab](ui.state); }, bind(body) {
       body.querySelectorAll("[data-hollow-tab]").forEach(b => b.onclick = () => { tab = b.dataset.hollowTab; ui.draw(); });
       body.querySelectorAll("[data-maze-buy]").forEach(b => b.onclick = () => { if (H.buyMazePrefab(ui.state, b.dataset.mazeBuy)) changed(); });

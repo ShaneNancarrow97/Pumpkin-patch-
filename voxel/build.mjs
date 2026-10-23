@@ -18,7 +18,7 @@ const writeHtml = {
     build.onEnd((result) => {
       if (result.errors.length) return;
       const js = result.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
-      const css = inline(["src/style.css", "src/icons.css", "src/ui/house-skins.css", "src/ui/maze-commerce.css", "src/ui/house-placement.css", "src/ui/intro.css", "src/ui/maze-ride.css"].map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n"));
+      const css = inline(["src/style.css", "src/icons.css", "src/ui/house-skins.css", "src/ui/maze-commerce.css", "src/ui/house-placement.css", "src/ui/intro.css", "src/ui/maze-ride.css", "src/ui/hayride.css", "src/ui/hayride-ride.css"].map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n"));
       const html = fs.readFileSync(path.join(root, "src/index.html"), "utf8")
         .replace("/* @build:style */", () => css).replace("/* @build:script */", () => js);
       const out = outFile ?? path.join(root, "dist", dev ? "index.html" : "pumpkin-patch-voxel.html");
