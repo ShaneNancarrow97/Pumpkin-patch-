@@ -15,6 +15,9 @@ export function createFoyerView(canvas, state, hooks) {
   const fill = new THREE.DirectionalLight(0xf0cfb3, 1.05); fill.position.set(5, 12, 10); scene.add(fill);
   const moon = new THREE.DirectionalLight(0x9caee6, 1.65); moon.position.set(-7, 10, -4); scene.add(moon);
   const fire = new THREE.PointLight(0xff9e54, 7.5, 12, 1.4), deskLamp = new THREE.PointLight(0xffc476, 6, 10, 1.5); scene.add(fire, deskLamp);
+  // The chandelier's pool over the medallion, and the corridor's violet light
+  // spilling from behind the maze door's curtain.
+  const chandelier = new THREE.PointLight(0xffb766, 5, 9, 1.5), portal = new THREE.PointLight(0x8c5ad6, 3, 5.5, 1.6); scene.add(chandelier, portal);
   const camera = new THREE.PerspectiveCamera(42, 1, .1, 90), controls = new OrbitControls(camera, canvas);
   controls.enabled = false; controls.enableDamping = true; controls.dampingFactor = .12; controls.minDistance = 8; controls.maxDistance = 35; controls.minPolarAngle = .35; controls.maxPolarAngle = 1.35; controls.minAzimuthAngle = -.85; controls.maxAzimuthAngle = .85;
   controls.mouseButtons.LEFT = THREE.MOUSE.PAN; controls.mouseButtons.RIGHT = THREE.MOUSE.ROTATE; controls.touches.ONE = THREE.TOUCH.PAN; controls.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
@@ -31,7 +34,7 @@ export function createFoyerView(canvas, state, hooks) {
   let active = false, built = false, room = null, signature = "", first = true, time = 0, nextSpeech = 0, speechUntil = 0, speechIndex = 0, lastEvent = "";
   const bubble = document.createElement("div"); bubble.className = "mortimer-bubble"; bubble.hidden = true; document.body.append(bubble);
   const selection = new THREE.Group(); selection.visible = false; scene.add(selection); let ring = null, ghost = null, previewKey = "";
-  let atmosphere = new THREE.Group(), floating = [], watchingEyes = null; scene.add(atmosphere);
+  let atmosphere = new THREE.Group(), floating = [], watchingEyes = null, doorMist = null; scene.add(atmosphere);
   const resize = () => { camera.aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight); camera.updateProjectionMatrix(); };
   function reset() { resize(); const l = foyerLayout(state), distance = Math.max(16, l.w * .95 / Math.max(.65, camera.aspect)); controls.target.set(0, 1.8, .1); camera.position.set(distance * .23, distance * .56 + 1.8, distance * .86); controls.update(); }
   function sync() {
@@ -40,7 +43,7 @@ export function createFoyerView(canvas, state, hooks) {
       if (room) { scene.remove(room); disposeHollowObject(room); } room = buildHollowFoyer(state); scene.add(room); signature = key;
       mazeEntrance.position.set(l.mazeDoor.x, 1.45, l.mazeDoor.z + .24); mazeOutline.position.copy(mazeEntrance.position);
       floor.scale.set(l.w, l.d, 1); exit.position.set(0, 1.4, l.z1); host.position.set(l.attendant.x, .06, l.attendant.z); hostHit.position.set(l.attendant.x, 1.2, l.attendant.z);
-      fire.position.set(0, 1, l.z0 + .9); deskLamp.position.set(l.counter.x, 2, l.counter.z + .5);
+      fire.position.set(0, 1, l.z0 + .9); chandelier.position.set(room.userData.hub.x, room.userData.chandelierY - .35, room.userData.hub.z); chandelier.color.setHex(room.userData.lightTone); portal.position.set(l.mazeDoor.x, .9, l.mazeDoor.z + .75); deskLamp.position.set(l.counter.x, 2, l.counter.z + .5);
       deskLamp.color.setHex(FOYER_FINISH_BY_ID[h.foyer.finishes.lighting]?.color ?? 0xffc476);
       scene.remove(atmosphere); disposeHollowObject(atmosphere); atmosphere = new THREE.Group(); scene.add(atmosphere); floating = [];
       const effect = h.foyer.finishes.effects;
@@ -57,6 +60,11 @@ export function createFoyerView(canvas, state, hooks) {
       const map = new THREE.DataTexture(pixels, 32, 32); map.needsUpdate = true;
       const geo = new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.BufferAttribute(coords, 3));
       atmosphere.add(new THREE.Points(geo, new THREE.PointsMaterial({ map, color: effect === "purple-mist" ? 0x9970b8 : 0x8799b4, size: effect === "purple-mist" ? 1.7 : 1.25, transparent: true, opacity: effect === "purple-mist" ? .23 : .1, depthWrite: false, toneMapped: false })));
+      // Mist curling out under the maze door's curtain.
+      const wisps = new Float32Array(7 * 3);
+      for (let i = 0; i < 7; i++) wisps.set([l.mazeDoor.x + Math.sin(i * 2.3) * .7, .12 + (i % 3) * .07, l.mazeDoor.z + .45 + (i % 4) * .22], i * 3);
+      const wispGeo = new THREE.BufferGeometry(); wispGeo.setAttribute("position", new THREE.BufferAttribute(wisps, 3));
+      doorMist = new THREE.Points(wispGeo, new THREE.PointsMaterial({ map, color: 0x9a74d4, size: 1.15, transparent: true, opacity: .2, depthWrite: false, toneMapped: false })); atmosphere.add(doorMist);
       // A presence on the unreachable landing, rather than a screen overlay.
       const eyes = new Voxels();
       for (const dx of [-.13, .13]) eyes.block(dx, 0, 0, .085, .055, .04, 0xcba3d5, true);
@@ -115,6 +123,8 @@ export function createFoyerView(canvas, state, hooks) {
       mazeOutline.visible = !hooks.decorating?.(); mazeOutline.material.opacity = reducedMotion ? .3 : .28 + Math.sin(now * 1.4) * .05;
       const motionTime=reducedMotion?0:now;
       fire.intensity = 7.1 + Math.sin(motionTime * 2.1) * .35 + Math.sin(motionTime * 5.3) * .12;
+      chandelier.intensity = 5 + Math.sin(motionTime * 3.7) * .18 + Math.sin(motionTime * 7.9) * .08; portal.intensity = 3 + Math.sin(motionTime * 1.3) * .6;
+      if (doorMist) { doorMist.material.opacity = .19 + Math.sin(motionTime * .9) * .05; doorMist.position.set(Math.sin(motionTime * .35) * .12, Math.sin(motionTime * .6) * .04, Math.sin(motionTime * .25) * .1 + .05); }
       if (watchingEyes) watchingEyes.visible = Math.sin(motionTime * .19) > -.7;
       const l=foyerLayout(state),previousX=host.position.x,patrolling=activity==="idle"&&state.hollowHouse.open&&!state.paused&&!reducedMotion;
       host.position.x=l.attendant.x+(patrolling?Math.sin(now*.52)*.34:0);hostHit.position.x=host.position.x;host.userData.activity=activity;

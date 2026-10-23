@@ -33,6 +33,11 @@ function book(v, x, y, z, w = .44, d = .3, colour = WINE) {
   v.block(x, y, z, w, .055, d, colour); v.block(x + .02, y + .055, z, w - .055, .12, d - .04, 0xd1bd96); v.block(x, y + .175, z, w, .045, d, colour); v.block(x - w / 2 + .025, y + .04, z, .05, .16, d, colour);
 }
 const WINE = 0x6f3346;
+// Candle and lantern flames: the only glows a lighting finish recolours, so
+// moonlit windows, the fire and the maze door keep their own light.
+const FLAME = new Set([0xffb75c, 0xffc56c, 0xffe1a0]);
+// Pixel letters for the maze door's sign, five rows each.
+const LETTERS = { M: ["10001", "11011", "10101", "10001", "10001"], A: ["0110", "1001", "1111", "1001", "1001"], Z: ["1111", "0001", "0110", "1000", "1111"], E: ["1111", "1000", "1110", "1000", "1111"] };
 
 // The actual farm attraction starts boarded up. Its footprint stays within the
 // prepared meadow pitch throughout restoration and all five reception tiers.
@@ -112,6 +117,11 @@ export function buildHollowExterior(status = "derelict", tier = 1) {
   const group = v.build(); group.userData = { status, tier, door: { x: 0, y: 1.3, z: 2.4 }, sign: { x: 0, y: 4.25, z: 2.33 }, footprint: { w: 8, d: 5 } }; return group;
 }
 
+// A gothic arch as a smooth band of stones, from each springing to a pointed
+// apex; `put` lays one stone and its gold underside.
+function archBand(put, cx, y0, span, rise, n = 7) {
+  for (const side of [-1, 1]) for (let i = 0; i < n; i++) { const x = span * (1 - i / n); put(cx + side * x, y0 + rise * (1 - (x / span) ** 1.5), i); }
+}
 function gothicWindow(v, x, y, z, width, height, side = false) {
   const block = (u, yy, out, w, h, d, c, glow = false) => side ? v.block(x + out, yy, z + u, d, h, w, c, glow) : v.block(x + u, yy, z + out, w, h, d, c, glow);
   block(0, y - .12, .06, width + .26, height + .2, .17, IRON);
@@ -144,6 +154,27 @@ export function buildHollowFoyer(s) {
     for (let z = -D; z < D; z += .24) for (let x = -W; x < W; x += .9) { v.block(x + .45, 0, z + .12, .884, .055, .226, vary(WOOD[(Math.floor(x * 5 + z * 7) + 1000) % 3], .12, r)); for (const dx of [-.35, .35]) v.block(x + .45 + dx, .058, z + .12, .02, .008, .02, IRON); }
     if (/carpet/.test(floor)) for (let x = -W + .65; x < W - .65; x += .35) for (let z = -D + .65; z < D - .65; z += .35) { const edge = Math.min(x + W, W - x, z + D, D - z) < 1.08; v.block(x + .16, .065, z + .16, .34, .025, .34, edge ? GOLD : Math.abs(Math.round(x * 3) + Math.round(z * 3)) % 3 ? 0x5f354d : 0x8f5a60); }
   }
+  // A runner carries guests from the front door to a medallion under the
+  // chandelier, then on to the maze door. It lies in the reserved routes, so
+  // placed pieces never sit on it.
+  const hub = { x: .15, z: .3 }, maze = L.mazeDoor;
+  if (!/carpet/.test(floor)) {
+    const wide = .9, runner = (x0, z0, x1, z1) => {
+      const alongZ = x0 === x1, len = Math.abs(alongZ ? z1 - z0 : x1 - x0), cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
+      const slab = (u, w, h, c) => alongZ ? v.block(cx + u, .056, cz, w, h, len, c) : v.block(cx, .056, cz + u, len, h, w, c);
+      slab(0, wide, .016, 0x5c2435); for (const u of [-wide / 2 + .05, wide / 2 - .05]) slab(u, .06, .02, GOLD);
+      for (let t = -len / 2 + .4; t < len / 2 - .25; t += .75) { const x = alongZ ? cx : cx + t, z = alongZ ? cz + t : cz; v.block(x, .056, z, .2, .019, .06, 0xb98a5c); v.block(x, .056, z, .06, .019, .2, 0xb98a5c); }
+    };
+    runner(hub.x, D - .05, hub.x, hub.z + .78);
+    runner(hub.x + .78, hub.z, maze.x - wide / 2, hub.z);
+    runner(maze.x, hub.z - wide / 2, maze.x, -D + .62);
+    v.block(maze.x, .056, hub.z, wide, .016, wide, 0x5c2435); v.block(maze.x + wide / 2 - .05, .056, hub.z, .06, .02, wide, GOLD); v.block(maze.x, .056, hub.z + wide / 2 - .05, wide, .02, .06, GOLD);
+    for (let x = -.84; x <= .84; x += .12) for (let z = -.84; z <= .84; z += .12) {
+      const d = Math.hypot(x, z); if (d > .86) continue;
+      const star = Math.abs(Math.cos(Math.atan2(z, x) * 4)) * .46 + .1 > d;
+      v.block(hub.x + x, .056, hub.z + z, .12, d > .72 ? .021 : .017, .12, d > .72 ? GOLD : star ? 0xb98a5c : d > .6 ? PLUM[2] : WINE);
+    }
+  }
   const wallColour = /brick/.test(wall) ? 0x694750 : /stone/.test(wall) ? 0x6f6979 : /wood/.test(wall) ? 0x624535 : 0x503849;
   // Raised panelling/trim must sit in front of masonry. Coplanar faces
   // shimmered into gold stripes at the sharp Fold viewing angle.
@@ -163,8 +194,17 @@ export function buildHollowFoyer(s) {
   }
   // Low front parapets frame a true doorway back onto the farm.
   for (const side of [-1, 1]) { v.block(side * (W + 1) / 2, .05, D, W - 1, .7, .22, wallColour); v.block(side * (W + 1) / 2, .75, D, W - 1, .08, .3, WOOD[1]); }
-  for (const side of [-1, 1]) v.block(side * 1.04, .05, D, .18, 2.8, .3, GOLD);
-  for (let i = 0; i < 4; i++) v.block(0, 2.8 + i * .13, D, 2.25 - i * .44, .14, .3, GOLD);
+  // The front doorway: dark oak posts on stone plinths under a low pointed
+  // arch, with a lit pumpkin for a keystone. It stays low so it frames the
+  // hall without hiding it, even from a phone's closer camera.
+  for (const side of [-1, 1]) {
+    masonry(v, r, side * 1.1, .05, D, .42, .42, .44);
+    v.block(side * 1.1, .47, D, .26, 1.5, .3, WOOD[2]); v.block(side * .96, .5, D, .04, 1.45, .33, GOLD);
+    v.block(side * 1.1, 1.97, D, .38, .1, .38, GOLD);
+  }
+  archBand((x, y) => { v.block(x, y, D, .27, .22, .32, vary(WOOD[2], .06, r)); v.block(x, y - .03, D, .22, .04, .34, GOLD); }, 0, 2.07, 1.1, .5);
+  v.block(0, 2.5, D, .3, .26, .36, WOOD[2]); pumpkin(v, 0, 2.76, D + .02, .15, 21);
+  v.block(0, .05, D + .14, 2.6, .05, .5, STONE[2]);
   // Windows, fireplace and portraits are architecturally mounted; movable
   // portraits, candles and webs are separate catalogue props.
   gothicWindow(v, -1.4, 1.65, -D + .1, 1.2, 1.6);
@@ -193,26 +233,49 @@ export function buildHollowFoyer(s) {
   for (let i = 0; i < 4; i++) v.block(counter.x + .52 + i * .07, 1.42, counter.z + .35, .045, .045, .035, CREAM);
   book(v, counter.x - .35, 1.41, counter.z + .1, .55, .43, WINE); candle(v, counter.x - 1.13, 1.41, counter.z, .7);
   for (let i = 0; i < 4; i++) v.block(counter.x - .7, 1.4 + i * .015, counter.z + .36, .3, .013, .18, CREAM);
-  // Maze entrance carries a real arch and a dark corridor behind its curtain.
-  const maze = L.mazeDoor, gateTone = /curtain/.test(entrance) ? WINE : /grand|gold/.test(entrance) ? GOLD : STONE[1];
+  // The maze door: a pointed arch over a parted curtain, light leaking from
+  // the corridor behind, a lit sign and a pumpkin either side.
+  const gateTone = /curtain/.test(entrance) ? WINE : /grand|gold/.test(entrance) ? GOLD : STONE[1], gate = (x, y, z, w, h, d) => gateTone === STONE[1] ? masonry(v, r, x, y, z, w, h, d) : v.block(x, y, z, w, h, d, vary(gateTone, .06, r));
   v.block(maze.x, .05, -D + .09, 1.55, 3.05, .21, 0x15131d);
-  for (const side of [-1, 1]) { v.block(maze.x + side * .9, .08, -D + .34, .22, 2.7, .32, gateTone); for (let i = 0; i < 3; i++) v.block(maze.x + side * (.34 + i * .17), 2.78 - i * .18, -D + .36, .3, .22, .34, gateTone); }
-  v.block(maze.x, 3.02, -D + .36, .45, .22, .36, gateTone);
-  for (let x = -.6; x <= .6; x += .16) v.block(maze.x + x, .12, -D + .26, .155, 2.6 - Math.abs(x) * .35, .05, x < 0 ? WINE : PLUM[0]);
-  skull(v, maze.x, 3.22, -D + .37, .65); lantern(v, maze.x - 1.15, 1.85, -D + .4, .72); lantern(v, maze.x + 1.15, 1.85, -D + .4, .72);
+  for (const side of [-1, 1]) {
+    for (let y = .08; y < 2.5; y += .4) gate(maze.x + side * .9, y, -D + .34, .3, .4, .32);
+    for (const y of [.5, 1.4, 2.3]) v.block(maze.x + side * .9, y, -D + .51, .32, .06, .03, GOLD);
+  }
+  archBand((x, y) => { gate(x, y, -D + .36, .28, .26, .34); v.block(x, y - .03, -D + .37, .22, .04, .34, GOLD); }, maze.x, 2.48, .9, .72);
+  gate(maze.x, 3.12, -D + .36, .32, .34, .36);
+  // The corridor's light: brightest at the floor, fading up the gap.
+  for (const [y, h, c] of [[.08, .7, 0x9a6ad8], [.78, .8, 0x5e3d94], [1.58, .9, 0x302048]]) v.block(maze.x, y, -D + .2, .3, h, .03, c, true);
+  v.block(maze.x, .056, -D + .33, 1.2, .02, .1, 0x7a52b8, true);
+  for (const side of [-1, 1]) for (let k = 0; k < 4; k++) { const x = side * (.17 + k * .15); v.block(maze.x + x, .12 + k * .05, -D + .26, .15, 2.55 - k * .12, .05, k % 2 ? PLUM[0] : WINE); }
+  v.block(maze.x, 2.62, -D + .27, 1.3, .14, .08, GOLD);
+  // The sign, hung above the arch.
+  v.block(maze.x, 3.58, -D + .3, 1.42, .5, .08, 0x1c1620); v.block(maze.x, 3.55, -D + .28, 1.52, .56, .05, GOLD);
+  let col = -10;
+  for (const ch of "MAZE") { const rows = LETTERS[ch]; rows.forEach((row, y) => [...row].forEach((bit, x) => bit === "1" && v.block(maze.x + (col + x + .5) * .055, 3.94 - y * .062, -D + .35, .05, .056, .03, 0xf0c27a, true))); col += rows[0].length + 1; }
+  skull(v, maze.x, 4.1, -D + .32, .5);
+  lantern(v, maze.x - 1.15, 1.85, -D + .4, .72); lantern(v, maze.x + 1.15, 1.85, -D + .4, .72);
+  pumpkin(v, maze.x - 1.12, .06, -D + .66, .24, 30); pumpkin(v, maze.x + 1.12, .06, -D + .66, .2, 31);
   if (entrance === "briar-arch") for (const side of [-1, 1]) for (let i = 0; i < 9; i++) { const x = maze.x + side * (.87 + Math.sin(i * 1.8) * .1), y = .35 + i * .28; v.block(x, y, -D + .56, .13, .26, .1, i % 2 ? 0x536d43 : 0x82915d); if (i % 3 === 0) v.block(x + side * .1, y + .1, -D + .6, .17, .14, .13, WINE); }
-  // Overhead beams and a baseline chandelier leave the ceiling open to view.
+  // Beams run along the walls only, so nothing crosses the view of the back
+  // wall and the maze door's sign.
   for (const x of [-W + .2, W - .2]) v.block(x, ceiling, -D * .3, .17, .18, L.d * .65, WOOD[2]);
-  for (const z of [-D + .2, -D * .1]) v.block(0, ceiling, z, L.w, .18, .17, WOOD[2]);
-  const chandY = ceiling - .55; v.block(0, chandY, .3, .045, .7, .045, GOLD);
-  v.block(0, chandY - .08, .3, 1.55, .08, .1, IRON); v.block(0, chandY - .08, .3, .1, .08, 1.35, IRON);
-  for (const [x, z] of [[-.65, .3], [.65, .3], [0, -.25], [0, .85]]) candle(v, x, chandY - .1, z, .6);
+  v.block(0, ceiling, -D + .2, L.w, .18, .17, WOOD[2]);
+  // The chandelier hangs over the medallion; the lighting finish decides how
+  // grand it is: an iron ring, a silver one with crystals, or two brass tiers.
+  const lighting = String(f.lighting ?? "candle-glow"), grand = /amber/.test(lighting), moon = /moon/.test(lighting), metal = moon ? 0x9d97ad : grand ? GOLD : 0x8a6a3e, ringY = ceiling - 1.4;
+  v.block(hub.x, ringY + .9, hub.z, .05, ceiling - ringY - .9, .05, metal); v.block(hub.x, ceiling, hub.z, .34, .07, .34, WOOD[1]); v.block(hub.x, ringY - .14, hub.z, .18, .2, .18, metal);
+  for (const [R, lift, n] of grand ? [[1.05, 0, 12], [.58, .42, 7]] : [[.92, 0, 8]]) {
+    for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2; v.block(hub.x + Math.cos(a) * R, ringY + lift, hub.z + Math.sin(a) * R, .21, .06, .21, metal); }
+    for (let i = 0; i < 3; i++) { const a = i / 3 * Math.PI * 2 + .5; for (let k = 1; k < 6; k++) { const t = k / 6; v.block(hub.x + Math.cos(a) * R * (1 - t), ringY + lift + t * (.9 - lift), hub.z + Math.sin(a) * R * (1 - t), .03, .18, .03, metal); } }
+    for (let i = 0; i < n; i++) { const a = (i + .5) / n * Math.PI * 2, x = hub.x + Math.cos(a) * R, z = hub.z + Math.sin(a) * R; candle(v, x, ringY + lift + .05, z, .62); if (moon || grand) v.block(x, ringY + lift - .2, z, .06, .14, .06, moon ? 0xd9c8f2 : 0xffd9a0, true); }
+  }
   pumpkin(v, W - 1.1, .06, D - 1, .33, 18); pumpkin(v, W - 1.7, .06, D - .85, .23, 19);
   for (const [x, z] of [[-W + .55, D - .65], [W - .55, D - .65]]) { v.block(x, .06, z, .34, 1.3, .34, STONE[2]); lantern(v, x, 1.36, z, .72); }
   // Fine cobweb spokes in a rear corner, never across a visitor route.
   for (let i = 0; i < 6; i++) { const len = 1.2 - i * .18; v.block(-W + len / 2, ceiling - 1.1 + i * .18, -D + .15, len, .022, .025, 0xaea7bd); v.block(-W + .12 + i * .18, ceiling - 1.15 + len / 2, -D + .16, .022, len, .025, 0xaea7bd); }
-  if (f.lighting && f.lighting !== "candle-glow") { const tone = FOYER_FINISH_BY_ID[f.lighting]?.color; if (tone) for (const box of v.glow) box[6] = tone; }
-  const group = v.build(); group.userData = { ...L, ceiling, attendant: { ...L.attendant, y: .06 }, effects, animation: "foyer" }; return group;
+  const tone = lighting !== "candle-glow" ? FOYER_FINISH_BY_ID[lighting]?.color : null;
+  if (tone) for (const box of v.glow) if (FLAME.has(box[6])) box[6] = tone;
+  const group = v.build(); group.userData = { ...L, ceiling, hub, chandelierY: ringY, lightTone: tone ?? 0xffb766, attendant: { ...L.attendant, y: .06 }, effects, animation: "foyer" }; return group;
 }
 
 // All catalogue pieces are actual voxel objects with their own silhouettes,
