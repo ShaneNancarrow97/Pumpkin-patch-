@@ -3,7 +3,7 @@ import { setPieceColour, nextPieceColour } from "../rules/piece-colours.js";
 import * as E from "../rules/house-estate.js";
 import { ESTATE_DECOR_BY_ID } from "../content/house-estate.js";
 
-const round = n => Math.round(n * 4) / 4;
+const round = n => Math.round(n * 10) / 10;
 const normalAngle = n => ((n % 360) + 360) % 360;
 const icon = (name) => {
   const art={garden:"garden",exterior:"exterior",inside:"enter",reset:"fullscreen",left:"rotate",right:"rotate"}[name];
@@ -27,16 +27,18 @@ const control = (action, label, content, disabled = false, extra = "") => `<butt
 // Camera controls stay on the edge of the scene; placement uses its own small card.
 export function createEstateControls(ui) {
   const host = document.createElement("aside"); host.className = "estate-controls"; host.hidden = true; host.setAttribute("aria-label", "House estate controls"); document.body.append(host);
-  let selected = null, pending = null, original = null, newlyPlaced = false, preview = null, lastHTML = "", blocked = false, history = [];
+  let selected = null, pending = null, original = null, newlyPlaced = false, preview = null, lastHTML = "", blocked = false, history = [], live = null;
   const piece = () => ui.state.estate.placed.find(p => p.instance === selected);
-  const pose = () => preview ?? pending ?? piece();
+  // `live` is a pose under a finger or the dial: shown at once, saved on release.
+  const pose = () => live ?? preview ?? pending ?? piece();
+  const fits = p => E.estateFits(ui.state, p.id, p.x, p.z, p.rotation, selected);
   const active = () => !!selected || !!pending;
   const refresh = () => { ui.scene.refreshHouseEstate(); ui.save(); };
   const displayPreview = () => {
     const p = pose();
     ui.scene.previewEstateDecor(p ? { ...p, pending: !!pending, valid: E.estateFits(ui.state, p.id, p.x, p.z, p.rotation, selected) && (!pending || ui.state.estate.placed.length < E.estateBounds(ui.state).capacity) } : null);
   };
-  const clear = () => { history = []; selected = pending = original = preview = null; newlyPlaced = false; ui.scene.previewEstateDecor(null); lastHTML = ""; render(); };
+  const clear = () => { history = []; selected = pending = original = preview = live = null; newlyPlaced = false; ui.scene.previewEstateDecor(null); lastHTML = ""; render(); };
   const failure = () => ui.notice(ui.state.paused ? "Tea break. Resume before moving garden pieces." : "Leave space for the house, front path and other garden pieces.");
   const move = (x, z, rotation) => {
     if (ui.state.paused || !active()) { failure(); return false; }
@@ -59,21 +61,36 @@ export function createEstateControls(ui) {
     host.hidden = !inside || blocked;
     if (!inside) return;
     const disabled = !!ui.state.paused, p = pose(), d = p && ESTATE_DECOR_BY_ID[p.id];
+    // Mid-gesture, only the dial changes; rebuilding would drop its pointer.
+    const liveDial = live && host.querySelector?.(".rotation-dial");
+    if (liveDial) { const value = Math.round(p.rotation); liveDial.style.setProperty("--angle", value + "deg"); liveDial.setAttribute("aria-valuenow", value); liveDial.querySelector("span").textContent = value + "°"; return; }
     const orbit = `<div class="estate-camera-tools" role="group" aria-label="Orbit the house">${control("orbit-left", "Orbit house left", icon("left"))}${control("view-reset", "Reset estate view", icon("reset"))}${control("orbit-right", "Orbit house right", icon("right"))}</div>`;
     const invalid = p && (!E.estateFits(ui.state, p.id, p.x, p.z, p.rotation, selected) || pending && ui.state.estate.placed.length >= E.estateBounds(ui.state).capacity);
-    const placement = p ? `<section class="estate-placement" aria-label="Selected garden piece"><header><div><b>${d.name}</b><small>${pending ? "Tap a garden spot to place" : invalid ? "Blocked spot · last valid position is kept" : "Tap the ground to move"} · ${Math.round(p.rotation)}°</small></div><span class="estate-placement-state ${invalid ? "invalid" : ""}">${invalid ? "No space" : "✓"}</span></header><div class="estate-placement-tools"><div class="estate-turn-tools" role="group" aria-label="Rotate garden piece">${control("turn-left", "Rotate garden piece 15 degrees left", icon("left") + "<span>15°</span>", disabled)}${control("turn-right", "Rotate garden piece 15 degrees right", icon("right") + "<span>15°</span>", disabled)}</div><div class="estate-nudge-tools" role="group" aria-label="Move garden piece">${control("north", "Move garden piece towards the back", icon("up"), disabled)}${control("west", "Move garden piece left", icon("west"), disabled)}${control("east", "Move garden piece right", icon("east"), disabled)}${control("south", "Move garden piece towards the gate", icon("down"), disabled)}</div></div><footer>${!pending ? control("store", "Store garden piece", "Store", disabled) : ""}${control("undo", "Undo garden placement", "Undo", disabled || !history.length)}${!pending ? control("colour", "Recolour garden piece", "Colour", disabled) : ""}${control("cancel", "Cancel garden placement", "Cancel")}${control("done", pending ? "Place garden piece here" : "Finish moving garden piece", pending ? "Place here" : invalid ? "Keep last spot" : "Done", disabled || !!pending && !!invalid, "estate-primary")}</footer></section>` : "";
+    const placement = p ? `<section class="estate-placement" aria-label="Selected garden piece"><header><div><b>${d.name}</b><small>${invalid ? "Blocked spot · last valid position is kept" : pending ? "Drag it, or tap a spot · two fingers turn" : "Drag to move · two fingers turn"}</small></div><span class="estate-placement-state ${invalid ? "invalid" : ""}">${invalid ? "No space" : "✓"}</span></header><div class="estate-placement-tools"><div class="estate-turn-tools rotation-tools" role="group" aria-label="Rotate garden piece">${control("turn-left", "Rotate garden piece 15 degrees left", icon("left"), disabled)}<button type="button" class="rotation-dial" role="slider" tabindex="0" aria-label="Garden piece rotation" aria-valuemin="0" aria-valuemax="359" aria-valuenow="${Math.round(p.rotation)}" style="--angle:${Math.round(p.rotation)}deg" ${disabled ? "disabled" : ""}><span>${Math.round(p.rotation)}°</span></button>${control("turn-right", "Rotate garden piece 15 degrees right", icon("right"), disabled)}</div><div class="estate-nudge-tools" role="group" aria-label="Move garden piece">${control("north", "Move garden piece towards the back", icon("up"), disabled)}${control("west", "Move garden piece left", icon("west"), disabled)}${control("east", "Move garden piece right", icon("east"), disabled)}${control("south", "Move garden piece towards the gate", icon("down"), disabled)}</div></div><footer>${!pending ? control("store", "Store garden piece", "Store", disabled) : ""}${control("undo", "Undo garden placement", "Undo", disabled || !history.length)}${!pending ? control("colour", "Recolour garden piece", "Colour", disabled) : ""}${control("cancel", "Cancel garden placement", "Cancel")}${control("done", pending ? "Place garden piece here" : "Finish moving garden piece", pending ? "Place here" : invalid ? "Keep last spot" : "Done", disabled || !!pending && !!invalid, "estate-primary")}</footer></section>` : "";
     const navigation = !p ? `<div class="estate-place-tools" role="group" aria-label="Customise your estate">${control("garden", "Open garden catalogue", icon("garden") + "<span>Garden</span>")}${control("exterior", "Customise house exterior", icon("exterior") + "<span>Exterior</span>")}${control("inside", "Enter the house", icon("inside") + "<span>Enter house</span>", false, "estate-primary")}</div>` : "";
     const html = `${placement}<div class="estate-bottom-tools">${orbit}${navigation}</div>`;
     if (html === lastHTML) return;
     const focus = document.activeElement?.dataset?.estateControl;
-    host.innerHTML = html; lastHTML = html;
+    host.innerHTML = html; lastHTML = html; bindDial();
     if (focus) host.querySelector(`[data-estate-control="${focus}"]`)?.focus({ preventScroll: true });
+  }
+  // The dial turns the piece to any angle, as in the house.
+  function bindDial() {
+    const dial = host.querySelector?.(".rotation-dial"); if (!dial) return;
+    let turning = null;
+    const at = e => { const r = dial.getBoundingClientRect(); return Math.atan2(e.clientY - r.top - r.height / 2, e.clientX - r.left - r.width / 2) * 180 / Math.PI; };
+    dial.onpointerdown = e => { if (!tools.beginGesture()) return; e.preventDefault(); dial.setPointerCapture(e.pointerId); turning = at(e); };
+    dial.onpointermove = e => { if (turning === null) return; const next = at(e), delta = ((next - turning + 540) % 360) - 180; turning = next; dial.classList.toggle("blocked", !tools.turn(delta)); };
+    dial.onpointerup = () => { if (turning === null) return; turning = null; tools.endGesture(); };
+    dial.onpointercancel = () => { if (turning === null) return; turning = null; tools.endGesture(true); };
   }
   const tools = {
     get selected() { return selected ?? (pending ? "pending:" + pending.id : null); },
+    get placement() { return pose(); },
     get active() { return active(); },
     select(instance) {
       if (!instance) { clear(); return; }
+      if (instance === selected && !pending) return true;
       tools.cancel();
       const p = ui.state.estate.placed.find(q => q.instance === instance); if (!p || ui.state.paused) return false;
       selected = instance; original = { ...p }; preview = null; newlyPlaced = false;
@@ -98,6 +115,16 @@ export function createEstateControls(ui) {
         refresh(); displayPreview(); render(); ui.tone(620); return true;
       }
       const p = pose(), moved = move(x, z, p.rotation); if (!moved) failure(); return moved;
+    },
+    // Dragging and turning: begin, then drag/turn as often as the pointer
+    // moves (each step only if the piece still fits), then end to save.
+    beginGesture() { const p = pending ?? piece(); if (!p || ui.state.paused) return false; live = { ...p }; preview = null; return true; },
+    dragTo(x, z) { if (!live) return false; const next = { ...live, x: round(x), z: round(z) }; if (!fits(next)) return false; live = next; displayPreview(); render(); return true; },
+    turn(delta) { if (!live || !Number.isFinite(delta)) return false; const next = { ...live, rotation: normalAngle(live.rotation + delta) }; if (!fits(next)) return false; live = next; displayPreview(); render(); return true; },
+    endGesture(cancelled = false) {
+      const p = live; live = null; if (!p || cancelled) { displayPreview(); render(); return false; }
+      const before = pending ?? piece(); if (before && p.x === before.x && p.z === before.z && p.rotation === before.rotation) { displayPreview(); render(); return true; }
+      return move(p.x, p.z, p.rotation);
     },
     rotate(degrees) { const p = pose(); if (!p || !Number.isFinite(degrees)) return false; const moved = move(p.x, p.z, p.rotation + degrees); if (!moved) failure(); return moved; },
     nudge(dx, dz) { const p = pose(); if (!p) return false; const moved = move(p.x + dx, p.z + dz, p.rotation); if (!moved) failure(); return moved; },

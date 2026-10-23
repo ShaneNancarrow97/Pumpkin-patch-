@@ -7,7 +7,7 @@ import { buildMazePrefab, animateMazePrefab } from "./maze-effects.js";
 import { foyerLayout, foyerGuests, foyerVisitorPosition, hollowReady, mazeScareRating } from "./rules/hollow-house.js";
 import { FOYER_DECOR_BY_ID, FOYER_FINISH_BY_ID, AXEL_LINES, MAZE_PREFABS } from "./content/hollow-house.js";
 import { applyPieceColour } from "./piece-colours.js";
-import { attachPieceGestures } from "./piece-gestures.js";
+import { attachPieceGestures, createFraming } from "./piece-gestures.js";
 
 // One room and one guest list, with a camera-independent ticket simulation.
 export function createFoyerView(canvas, state, hooks) {
@@ -103,24 +103,12 @@ export function createFoyerView(canvas, state, hooks) {
     }
     built = true;
   }
-  // When a piece is picked, the camera eases so it sits clear of the
-  // placement card, as the house does with its piece bar.
-  let framed = "", frameGoal = null;
-  function keepInView() {
-    if (!frameGoal || gestures.busy) return;
-    const card = document.querySelector(".foyer-controls:not([hidden]) .estate-placement")?.getBoundingClientRect(), box = canvas.getBoundingClientRect();
-    const bottom = Math.min(box.bottom, card?.top ?? box.bottom) - box.top, v = new THREE.Vector3(frameGoal.x, .6, frameGoal.z).project(camera);
-    const sx = (v.x + 1) / 2 * box.width, sy = (1 - v.y) / 2 * box.height, wantX = box.width / 2, wantY = Math.min(bottom * .62, bottom - 70);
-    if (Math.abs(sx - wantX) < 8 && Math.abs(sy - wantY) < 8 || ++frameGoal.steps > 90) { frameGoal = null; return; }
-    const perPx = 2 * camera.position.distanceTo(controls.target) * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) / box.height;
-    const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0).setY(0).normalize(), ahead = new THREE.Vector3().subVectors(controls.target, camera.position).setY(0).normalize();
-    const pitch = Math.max(.35, Math.asin(Math.min(1, (camera.position.y - controls.target.y) / camera.position.distanceTo(controls.target))));
-    const shift = right.multiplyScalar((sx - wantX) * perPx * .25).add(ahead.multiplyScalar(-(sy - wantY) * perPx * .25 / Math.sin(pitch)));
-    controls.target.add(shift); camera.position.add(shift);
-  }
+  // When a piece is picked, the camera eases so it sits clear of the card.
+  let framed = "";
+  const framing = createFraming({ canvas, camera, controls, card: () => document.querySelector(".foyer-controls:not([hidden]) .estate-placement") });
   function preview(p) {
     override = p && !p.pending && p.instance ? p : null;
-    const who = p ? p.instance ?? "pending:" + p.id : ""; if (who !== framed) { framed = who; frameGoal = p && FOYER_DECOR_BY_ID[p.id]?.layer !== "wall" ? { x: p.x, z: p.z, steps: 0 } : null; }
+    const who = p ? p.instance ?? "pending:" + p.id : ""; if (who !== framed) { framed = who; if (p && FOYER_DECOR_BY_ID[p.id]?.layer !== "wall") framing.aim(p.x, p.z); else framing.stop(); }
     const key = JSON.stringify(p); if (key === previewKey) return; previewKey = key; selection.visible = !!p;
     if (ring) { selection.remove(ring); ring.geometry.dispose(); ring.material.dispose(); ring = null; } if (ghost) { selection.remove(ghost); disposeHollowObject(ghost); ghost = null; }
     if (!p) return; const d = FOYER_DECOR_BY_ID[p.id]; if (!d) return;
@@ -146,7 +134,7 @@ export function createFoyerView(canvas, state, hooks) {
     cameraActions: { reset, rotate(delta) { const off = camera.position.clone().sub(controls.target); off.applyAxisAngle(new THREE.Vector3(0,1,0),THREE.MathUtils.degToRad(delta)); camera.position.copy(controls.target).add(off); controls.update(); }, zoom(f) { camera.position.sub(controls.target).multiplyScalar(1/f).add(controls.target); controls.update(); } },
     enter() { active = true; sync(); resize(); if (first) { reset(); first = false; } controls.enabled = true; }, leave() { active = false; controls.enabled = false; bubble.hidden = true; pointers.clear(); multi = false; preview(null); },
     tick(dt, now) {
-      time = now; controls.enabled = active && !hooks.blocked?.() && !gestures.busy; if (!active) return; sync(); keepInView(); controls.update();
+      time = now; controls.enabled = active && !hooks.blocked?.() && !gestures.busy; if (!active) return; sync(); if (!gestures.busy) framing.step(); controls.update();
       const list = foyerGuests(state), ids = new Set(list.map(v => v.id));
       for (const [id,e] of guests) if (!ids.has(id)) { scene.remove(e.model,e.hit); e.model.userData.dispose?.(); e.hit.geometry.dispose(); hits.splice(hits.indexOf(e.hit),1); guests.delete(id); }
       for (const v of list) { let e = guests.get(v.id); if (!e) { const model = hooks.visitorModel(v.kind), pick = hit(new THREE.BoxGeometry(.9,2.2,.8),"visitor",{id:v.id}); scene.add(model); e={model,hit:pick}; guests.set(v.id,e); } const p=foyerVisitorPosition(state,v); if (!p) continue; e.model.position.set(p.x,.08,p.z); e.hit.position.set(p.x,1.2,p.z); hooks.animate(e.model,now+v.id,["entering","to-maze","returning","requeue","exit"].includes(v.hollow.phase)||v.hollow.phase==="serving"&&v.hollow.elapsed<.8); }

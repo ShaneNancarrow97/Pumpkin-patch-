@@ -5,6 +5,7 @@ import { buildEstateHouse, buildEstateGarden, buildEstateDecor, disposeEstateObj
 import { ESTATE_DECOR_BY_ID } from "./content/house-estate.js";
 import { estateBounds } from "./rules/house-estate.js";
 import { applyPieceColour } from "./piece-colours.js";
+import { attachPieceGestures, createFraming } from "./piece-gestures.js";
 
 // A separate render scene: the farm keeps running while the camera explores
 // a complete house, rather than exposing the backs of the farm's diorama.
@@ -33,7 +34,20 @@ export function createHouseEstateView(canvas, state, hooks) {
   const gateHit = new THREE.Mesh(new THREE.BoxGeometry(3.4, 3, 1), pickMaterial); gateHit.userData = { type: "estate-exit" };
   scene.add(groundHit, houseHit, gateHit); pickables.push(groundHit, houseHit, gateHit);
   const selection = new THREE.Group(); scene.add(selection); selection.visible = false;
-  let outline = null, ghost = null, ghostId = null, previewData = null;
+  let outline = null, ghost = null, ghostId = null, previewData = null, override = null, framed = "";
+  const framing = createFraming({ canvas, camera, controls, card: () => document.querySelector(".estate-controls:not([hidden]) .estate-placement"), height: .4 });
+  // The selected piece follows a finger and turns with two, as in the house.
+  // `override` is its live pose until the editor saves it.
+  const gestures = attachPieceGestures(canvas, {
+    enabled: () => active && !hooks.blocked?.() && !!hooks.gesture?.pose(), camera: () => camera, controls, floorY: () => .04,
+    grabs(e, at, ray) {
+      const p = hooks.gesture.pose(), d = p && ESTATE_DECOR_BY_ID[p.id]; if (!d) return null;
+      const own = p.instance && props.get(p.instance)?.hit; if (own) { scene.updateMatrixWorld(true); if (ray.intersectObject(own, false).length) return p; }
+      const a = THREE.MathUtils.degToRad(p.rotation), dx = at.x - p.x, dz = at.z - p.z, u = dx * Math.cos(a) - dz * Math.sin(a), w = dx * Math.sin(a) + dz * Math.cos(a);
+      return Math.abs(u) < d.w / 2 + .4 && Math.abs(w) < d.d / 2 + .4 ? p : null;
+    },
+    begin: () => hooks.gesture.begin(), drag: (x, z) => hooks.gesture.drag(x, z), turn: degrees => hooks.gesture.turn(degrees), end: cancelled => hooks.gesture.end(cancelled),
+  });
 
   function sync() {
     const e = state.estate, bounds = estateBounds(state), hk = JSON.stringify([state.house.level, e.finishes.walls, e.finishes.roof, e.finishes.trim, e.finishes.door]), gk = JSON.stringify([e.expansion, e.finishes.fence]);
@@ -60,9 +74,10 @@ export function createHouseEstateView(canvas, state, hooks) {
         const def = ESTATE_DECOR_BY_ID[p.id], group = buildEstateDecor(p.id), hit = new THREE.Mesh(new THREE.BoxGeometry(def.w, def.height, def.d), pickMaterial);
         hit.userData = { type: "estate-decor", instance: p.instance }; scene.add(group, hit); pickables.push(hit); item = { group, hit }; props.set(p.instance, item);
       }
-      item.group.position.set(p.x, .04, p.z); item.group.rotation.y = THREE.MathUtils.degToRad(p.rotation);
+      const q = override?.instance === p.instance ? override : p;
+      item.group.position.set(q.x, .04, q.z); item.group.rotation.y = THREE.MathUtils.degToRad(q.rotation);
       if(item.tint!==p.tint){applyPieceColour(item.group,p.tint);item.tint=p.tint;}
-      item.hit.position.set(p.x, ESTATE_DECOR_BY_ID[p.id].height / 2 + .04, p.z); item.hit.rotation.y = item.group.rotation.y;
+      item.hit.position.set(q.x, ESTATE_DECOR_BY_ID[p.id].height / 2 + .04, q.z); item.hit.rotation.y = item.group.rotation.y;
     }
     built = true;
   }
@@ -79,7 +94,8 @@ export function createHouseEstateView(canvas, state, hooks) {
   };
 
   function preview(data) {
-    previewData = data; selection.visible = !!data;
+    previewData = data; selection.visible = !!data; override = data && !data.pending && data.instance ? data : null;
+    const who = data ? data.instance ?? "pending:" + data.id : ""; if (who !== framed) { framed = who; if (data) framing.aim(data.x, data.z); else framing.stop(); }
     if (!data) { if (ghost) { selection.remove(ghost); disposeEstateObject(ghost); ghost = null; ghostId = null; } return; }
     const def = ESTATE_DECOR_BY_ID[data.id]; if (!def) { selection.visible = false; return; }
     if (outline) { selection.remove(outline); outline.geometry.dispose(); outline.material.dispose(); }
@@ -117,10 +133,10 @@ export function createHouseEstateView(canvas, state, hooks) {
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = true; },
     leave() { active = false; controls.enabled = false; pointers.clear(); gesture = false; preview(null); },
     tick(time = 0) {
-      controls.enabled = active && !hooks.blocked?.(); if (!active) return;
+      controls.enabled = active && !hooks.blocked?.() && !gestures.busy; if (!active) return;
       sync(); entrance.tick(time, !hooks.editing?.() && !hooks.blocked?.()); const b = estateBounds(state), old = controls.target.clone();
       controls.target.x = THREE.MathUtils.clamp(controls.target.x, b.x0 + 2, b.x1 - 2); controls.target.z = THREE.MathUtils.clamp(controls.target.z, b.z0 + 2, b.z1 - 2); controls.target.y = THREE.MathUtils.clamp(controls.target.y, .5, 9);
-      camera.position.add(controls.target.clone().sub(old)); controls.update();
+      camera.position.add(controls.target.clone().sub(old)); if (!gestures.busy) framing.step(); controls.update();
     },
     get status() { return { active, built, houseLevel: state.house.level, skin: house?.userData.skin ?? null, skinDetailCount: house?.userData.skinDetailCount ?? 0, expansion: state.estate.expansion, placed: props.size, entrance: { visible: entrance.group.visible, position: entrance.group.position.toArray() }, azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), distance: controls.getDistance(), target: controls.target.toArray(), preview: previewData ? { ...previewData } : null }; },
   };

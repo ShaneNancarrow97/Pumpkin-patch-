@@ -40,3 +40,25 @@ export function attachPieceGestures(canvas, { enabled, camera, controls, floorY 
   for (const type of ["pointerup", "pointercancel", "lostpointercapture"]) canvas.addEventListener(type, lift, { capture: true });
   return { get busy() { return !!mode || touches.size > 1 && enabled(); }, get mode() { return mode; } };
 }
+
+// When a piece is picked, ease the camera so it sits clear of the placement
+// card (`card()` returns its element), as the house does with its piece bar.
+// Call aim(x, z) on a new selection and step() every frame.
+export function createFraming({ canvas, camera, controls, card, height = .6 }) {
+  let goal = null;
+  return {
+    aim(x, z) { goal = { x, z, steps: 0 }; },
+    stop() { goal = null; },
+    step() {
+      if (!goal) return;
+      const box = canvas.getBoundingClientRect(), top = card()?.getBoundingClientRect().top ?? box.bottom, bottom = Math.min(box.bottom, top) - box.top;
+      const v = new THREE.Vector3(goal.x, height, goal.z).project(camera), sx = (v.x + 1) / 2 * box.width, sy = (1 - v.y) / 2 * box.height, wantX = box.width / 2, wantY = Math.min(bottom * .62, bottom - 70);
+      if (Math.abs(sx - wantX) < 8 && Math.abs(sy - wantY) < 8 || ++goal.steps > 90) { goal = null; return; }
+      const distance = camera.position.distanceTo(controls.target), perPx = 2 * distance * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) / box.height;
+      const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0).setY(0).normalize(), ahead = new THREE.Vector3().subVectors(controls.target, camera.position).setY(0).normalize();
+      const pitch = Math.max(.35, Math.asin(Math.min(1, (camera.position.y - controls.target.y) / distance)));
+      const shift = right.multiplyScalar((sx - wantX) * perPx * .25).add(ahead.multiplyScalar(-(sy - wantY) * perPx * .25 / Math.sin(pitch)));
+      controls.target.add(shift); camera.position.add(shift);
+    },
+  };
+}

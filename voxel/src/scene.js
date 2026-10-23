@@ -227,7 +227,7 @@ export function createScene(canvas, state, hooks) {
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 400);
   // Indoors: a perspective camera in front of the room, like the main game's room view.
   const roomCam = new THREE.PerspectiveCamera(INTERIOR.fov, 1, 0.1, 200);
-  const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
+  const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), gesture: hooks.estateGesture, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
   const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.(), gesture: hooks.foyerGesture });
   const mazeView = createMazeRideView(canvas, state, { onCue: cue => hooks.onMazeCue?.(cue), onComplete: status => hooks.onMazeComplete?.(status), onState: status => hooks.onMazeState?.(status), blocked: () => document.body.classList.contains("menu-open") });
   const active = () => view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
