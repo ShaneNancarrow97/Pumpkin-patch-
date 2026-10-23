@@ -245,8 +245,10 @@ export function createScene(canvas, state, hooks) {
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
   // Canvas MSAA does not apply to offscreen composer targets. FXAA smooths
-  // their edges after tone mapping without allocating multisample HDR buffers.
-  const antialias = new ShaderPass(FXAAShader); composer.addPass(antialias);
+  // their edges after tone mapping without allocating multisample HDR buffers,
+  // but it also softens the sprites' painted detail. At FXAA_BELOW device
+  // pixels per CSS pixel and above, the buffer is dense enough without it.
+  const antialias = new ShaderPass(FXAAShader), FXAA_BELOW = 1.75; composer.addPass(antialias);
 
   // The room camera: the nearest distance that shows the top of the back wall and
   // the front of the floor, and the room's width (most of it on a narrow phone).
@@ -335,7 +337,7 @@ export function createScene(canvas, state, hooks) {
     if (view.place === "foyer") { foyerView.resize(); return; }
     if (view.place) { clampView(); frameRoom(w, h); return; }
     // Ease from a phone crop to the whole yard, with room around the edges.
-    view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(w).minZoom, 2.6);
+    view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(w).minZoom, cameraLayout(w).maxZoom);
     const span = (cameraLayout(w).farmSpan + (fieldWidth(state) - MAP.w - HOLLOW_PROPERTY.westEdge + (fieldDepth(state) - MAP.d) * .8) * cameraLayout(w).overview) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
     camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
     camera.updateProjectionMatrix();
@@ -351,7 +353,7 @@ export function createScene(canvas, state, hooks) {
     renderer.setSize(w, h, false);
     if (postprocessRatio !== sizing.pixelRatio) { composer.setPixelRatio(sizing.pixelRatio); postprocessRatio = sizing.pixelRatio; }
     composer.setSize(w, h);
-    antialias.uniforms.resolution.value.set(1 / sizing.bufferWidth, 1 / sizing.bufferHeight);
+    antialias.uniforms.resolution.value.set(1 / sizing.bufferWidth, 1 / sizing.bufferHeight); antialias.enabled = sizing.pixelRatio < FXAA_BELOW;
     const overview = cameraLayout(w).overview >= 0.95;
     if (!firstResize && overview && !lastOverview) {
       view.zoom = Math.min(view.zoom, 1);
@@ -405,7 +407,7 @@ export function createScene(canvas, state, hooks) {
       if (pinch.rotate) { const angle = Math.atan2(a.y - b.y, a.x - b.x), delta = Math.atan2(Math.sin(angle - pinch.angle), Math.cos(angle - pinch.angle)); pinch.angle = angle; hooks.onRotatePiece?.(delta * 180 / Math.PI); return; }
       const distance = Math.hypot(a.x - b.x, a.y - b.y);
       if (distance < 1) return; // Coincident touch starts are not a meaningful zoom.
-      view.zoom = THREE.MathUtils.clamp(pinch.zoom * distance / pinch.d, cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); return; }
+      view.zoom = THREE.MathUtils.clamp(pinch.zoom * distance / pinch.d, cameraLayout(canvas.clientWidth).minZoom, cameraLayout(canvas.clientWidth).maxZoom); clampView(); frame(); return; }
     if (!drag) return;
     const k = worldPerPixel(), dx = e.clientX - drag.x, dy = e.clientY - drag.y;
     drag.moved = Math.max(drag.moved, Math.hypot(dx, dy));
@@ -451,7 +453,7 @@ export function createScene(canvas, state, hooks) {
   canvas.addEventListener("contextmenu", e => { e.preventDefault(); cancelGesture(); });
   window.addEventListener("blur", () => cancelGesture());
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelGesture(); });
-  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer", "maze"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); }, { passive: false });
+  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer", "maze"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, cameraLayout(canvas.clientWidth).maxZoom); clampView(); frame(); }, { passive: false });
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.
   function clampView() {
@@ -687,7 +689,7 @@ export function createScene(canvas, state, hooks) {
     setMazeOptions(options) { mazeView.setOptions(options); },
     advanceMazeRide(seconds) { return mazeView.advanceForTest(seconds); },
     get foyerStatus() { return foyerView.status; },
-    get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? "FXAA" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
+    get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? antialias.enabled ? "FXAA" : "density" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
     setRenderQuality(value) { renderQuality = validRenderQuality(value); resize(); return renderQuality; },
     selectPiece(instance) { places.select(instance); },
     previewPiece(instance, x, z, ok) { places.preview(instance, x, z, ok); },

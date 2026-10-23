@@ -10,8 +10,8 @@ try{
  await page.goto('http://127.0.0.1:'+server.address().port);await page.waitForSelector('body[data-ready]');
  const status=()=>page.evaluate(()=>PumpkinVoxel.scene.renderStatus);
  let s=await status();check(s.quality==='sharp'&&s.pixelRatio===2&&s.postprocessRatio===2&&s.bufferWidth===1748&&s.bufferHeight===1574&&s.postprocessWidth===1748&&s.postprocessHeight===1574,'Sharp keeps Fold full scene and composer at 1748 × 1574',s);
- await page.evaluate(()=>PumpkinVoxel.scene.setBloom(true));s=await status();check(s.antialias==='FXAA'&&s.pixelRatio===s.postprocessRatio&&s.bufferWidth===s.postprocessWidth&&s.bufferHeight===s.postprocessHeight,'enabling glow preserves full scene resolution and smooths offscreen edges',s);
- check(Math.abs(s.antialiasResolution[0]-1/1748)<1e-12&&Math.abs(s.antialiasResolution[1]-1/1574)<1e-12,'FXAA samples the physical render buffer rather than CSS pixels',s.antialiasResolution);
+ await page.evaluate(()=>PumpkinVoxel.scene.setBloom(true));s=await status();check(s.antialias==='density'&&s.pixelRatio===s.postprocessRatio&&s.bufferWidth===s.postprocessWidth&&s.bufferHeight===s.postprocessHeight,'enabling glow preserves full scene resolution, and a 2x buffer skips FXAA so sprites stay crisp',s);
+ check(Math.abs(s.antialiasResolution[0]-1/1748)<1e-12&&Math.abs(s.antialiasResolution[1]-1/1574)<1e-12,'FXAA (used below 1.75x) samples the physical render buffer rather than CSS pixels',s.antialiasResolution);
  await page.evaluate(()=>{PumpkinVoxel.scene.setBloom(false);PumpkinVoxel.openSheet('settings');});await page.locator('#render-quality').selectOption('balanced');s=await status();check(s.quality==='balanced'&&s.pixelRatio===1.5&&s.postprocessRatio===1.5,'Balanced is an explicit 1.5× scene choice',s);
  await page.locator('#render-quality').selectOption('performance');s=await status();check(s.quality==='performance'&&s.pixelRatio===1&&s.postprocessRatio===1,'Performance is an explicit 1× scene choice',s);
  await page.reload();await page.waitForSelector('body[data-ready]');s=await status();check(s.quality==='performance'&&s.pixelRatio===1,'render detail preference survives reload',s);

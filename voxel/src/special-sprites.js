@@ -2,6 +2,7 @@ import * as THREE from "three";
 import atlasUrl from "../assets/maze-cast.png";
 import { LEAN, STRETCH } from "./world.js";
 import { specialSpriteMetadata } from "./special-sprite-meta.js";
+import { crispen, crispTexture } from "./crisp-sprites.js";
 
 // The two generated animation rows share one atlas and cached frame geometry.
 // A synchronous factory keeps the foyer/visitor simulation independent of load.
@@ -24,7 +25,7 @@ export const specialSpriteReady = new Promise(resolve => {
       const canvas = document.createElement("canvas"); canvas.width = image.width; canvas.height = image.height;
       const ctx = canvas.getContext("2d", { willReadFrequently: true }); ctx.drawImage(image, 0, 0);
       const meta = specialSpriteMetadata(image.width, image.height, ctx.getImageData(0, 0, image.width, image.height).data);
-      const texture = new THREE.Texture(image); texture.colorSpace = THREE.SRGBColorSpace; texture.needsUpdate = true;
+      const texture = crispTexture(new THREE.Texture(image)); texture.colorSpace = THREE.SRGBColorSpace; texture.needsUpdate = true;
       atlas = { image, meta, texture, frames: Object.fromEntries(Object.entries(meta.rows).map(([id, row]) => [id, row.frames.map(f => frameGeometry(meta, f))])) };
       atlas.baronWalk = meta.rows.baron.frames.map(f => ({ body: frameGeometry(meta, f, "body"), legs: frameGeometry(meta, f, "legs") }));
       for (const entry of pending) entry.attach(); pending.clear(); resolve(true);
@@ -50,8 +51,8 @@ export function createSpecialSprite(id = "axel") {
   const release = () => { fallback?.dispose(); fallback = null; for (const m of owned) m.dispose(); owned = []; lean.clear(); };
   const entry = { attach() {
     if (gone || !atlas) return; release();
-    const frames = atlas.frames[id], material = new THREE.MeshStandardMaterial({ map: atlas.texture, alphaTest: .45, color: 0xffffff, roughness: 1, emissive: 0xffffff, emissiveMap: atlas.texture, emissiveIntensity: .26 });
-    const edge = new THREE.MeshStandardMaterial({ map: atlas.texture, alphaTest: .45, color: 0x74606d, roughness: 1, emissive: 0xffffff, emissiveMap: atlas.texture, emissiveIntensity: .08 });
+    const frames = atlas.frames[id], material = crispen(new THREE.MeshStandardMaterial({ map: atlas.texture, alphaTest: .45, color: 0xffffff, roughness: 1, emissive: 0xffffff, emissiveMap: atlas.texture, emissiveIntensity: .26 }));
+    const edge = crispen(new THREE.MeshStandardMaterial({ map: atlas.texture, alphaTest: .45, color: 0x74606d, roughness: 1, emissive: 0xffffff, emissiveMap: atlas.texture, emissiveIntensity: .08 }));
     const depth = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: atlas.texture, alphaTest: .45 }); owned = [material, edge, depth];
     front = new THREE.Mesh(frames[0], material); front.castShadow = true; front.customDepthMaterial = depth; lean.add(front);
     if (id === "baron") {

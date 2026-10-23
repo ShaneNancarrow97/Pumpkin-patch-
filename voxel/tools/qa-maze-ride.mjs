@@ -103,7 +103,7 @@ try {
     const distance = actor && Math.hypot(actor.x - reveal.camera.x, actor.z - reveal.camera.z);
     check(actor?.pose === 'scare' && distance > .8 && distance < 2.6, 'haunted girl reveals close to the viewer without crossing the camera', { distance, actor });
     const rendering = await page.evaluate(() => ({ ...PumpkinVoxel.scene.renderStatus, shadows: PumpkinVoxel.scene.renderer.shadowMap.enabled }));
-    check(rendering.quality === 'sharp' && rendering.pixelRatio === 2 && rendering.postprocessRatio === 2 && rendering.antialias === 'FXAA' && rendering.shadows, 'final Fold image uses Sharp with full DPR2 postprocessing', rendering);
+    check(rendering.quality === 'sharp' && rendering.pixelRatio === 2 && rendering.postprocessRatio === 2 && rendering.antialias === 'density' && rendering.shadows, 'final Fold image uses Sharp with full DPR2 postprocessing and no FXAA softening', rendering);
     await page.evaluate(() => PumpkinVoxel.maze.close()); await frame();
   };
   if (process.env.MAZE_QA_VISUAL_ONLY) {

@@ -3,7 +3,9 @@
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 export function cameraLayout(width) {
   const t = clamp((width - 420) / 320, 0, 1), overview = t * t * (3 - 2 * t);
-  return { overview, farmSpan: 20 + 26 * overview, minZoom: 0.5, roomMinZoom: 0.6 };
+  // maxZoom lets the farm come close enough to read a face: about the sprites'
+  // own resolution on a phone.
+  return { overview, farmSpan: 20 + 26 * overview, minZoom: 0.5, maxZoom: 4.5, roomMinZoom: 0.6 };
 }
 
 // Keep roofs and the front fence visible when they fit. When zoomed in, allow

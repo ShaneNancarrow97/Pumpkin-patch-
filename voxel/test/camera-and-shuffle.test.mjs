@@ -18,7 +18,7 @@ test("an almost-square unfolded Fold uses the whole farm, not the phone crop", (
 });
 
 test("camera pan limits stay finite and ordered at every zoom and aspect", () => {
-  for (const width of [390, 786, 1192]) for (const height of [390, 787, 844]) for (const zoom of [.5, 1, 2.6]) {
+  for (const width of [390, 786, 1192]) for (const height of [390, 787, 844]) for (const zoom of [.5, 1, 2.6, cameraLayout(width).maxZoom]) {
     const halfHeight = cameraLayout(width).farmSpan / zoom / 2 / (width / height);
     const limits = farmVerticalLimits(halfHeight, Math.PI / 5, 26);
     assert.ok(Number.isFinite(limits.min) && limits.min <= limits.max);

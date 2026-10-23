@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { crispen, crispTexture } from "./crisp-sprites.js";
 import { createSpecialSprite, animateSpecialSprite, specialPortrait, specialSpriteReady } from "./special-sprites.js";
 import natalieUrl from "../assets/hd-natalie.webp";
 import shaneUrl from "../assets/hd-shane.webp";
@@ -57,7 +58,7 @@ function sheetTexture(image) {
   const texture = image instanceof HTMLCanvasElement ? new THREE.CanvasTexture(image) : new THREE.Texture(image);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.needsUpdate = true;
-  return texture;
+  return crispTexture(texture);
 }
 
 // One plane per frame, its origin at the feet, its UVs on the frame's rectangle.
@@ -114,12 +115,12 @@ function figure(sheet, frames, texture, glow = 0.3, tone = 0xffffff, depth = 0) 
   lean.rotation.x = -LEAN;
   lean.scale.y = STRETCH;
   group.add(lean);
-  const material = new THREE.MeshStandardMaterial({ map: texture, color: tone, alphaTest: 0.5, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: glow });
+  const material = crispen(new THREE.MeshStandardMaterial({ map: texture, color: tone, alphaTest: 0.5, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: glow }));
   const first = frames.idle?.[0] ?? frames.walk[0], mesh = new THREE.Mesh(first, material);
   mesh.castShadow = true;
   mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: texture, alphaTest: 0.5 });
   lean.add(mesh);
-  const edge = depth ? new THREE.MeshStandardMaterial({ map: texture, color: 0x5a4c4a, alphaTest: 0.5, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: glow * 0.25 }) : null;
+  const edge = depth ? crispen(new THREE.MeshStandardMaterial({ map: texture, color: 0x5a4c4a, alphaTest: 0.5, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: glow * 0.25 })) : null;
   const layers = Array.from({ length: depth }, (_, k) => {
     const m = new THREE.Mesh(first, edge);
     m.position.z = -(k + 1) * LAYER;
