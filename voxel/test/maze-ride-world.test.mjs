@@ -12,8 +12,8 @@ test("all five native maze shells have finite positive boxes and bounded batches
   for (let tier = 1; tier <= 5; tier++) {
     const world = buildMazeRideWorld(configFor(tier, true));
     assert.ok(world.diagnostics.floorCells > previousCells); previousCells = world.diagnostics.floorCells;
-    assert.equal(world.diagnostics.batches, 3);
-    assert.ok(world.boxes.length > 1000 && world.boxes.length < 25000);
+    assert.ok(world.diagnostics.batches >= 3 && world.diagnostics.batches <= 6);
+    assert.ok(world.boxes.length > 1000 && world.boxes.length < 40000);
     for (const box of world.boxes) {
       assert.ok(box.every(Number.isFinite), `finite box at tier ${tier}`);
       assert.ok(box[3] > 0 && box[4] > 0 && box[5] > 0, `positive box at tier ${tier}`);

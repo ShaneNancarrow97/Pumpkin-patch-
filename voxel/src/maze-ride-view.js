@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { buildMazeRideWorld } from "./maze-ride-world.js";
+import { buildMazeRideWorld, MAZE_RIDE_FINISH } from "./maze-ride-world.js";
 import { createMazeRide, advanceMazeRide, pauseMazeRide, sampleMazeRail } from "./rules/maze-ride.js";
 import { createMazeScareActor, animateMazeScareActor, disposeMazeScareActor } from "./maze-ride-actors.js";
 
@@ -10,14 +10,17 @@ const angleDelta = (from, to) => Math.atan2(Math.sin(to - from), Math.cos(to - f
 
 // A presentation scene shares the game's renderer; it owns no economy or canvas.
 export function createMazeRideView(canvas, state, hooks = {}) {
-  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x07060b); scene.fog = new THREE.FogExp2(0x0b0912, .155);
-  scene.add(new THREE.HemisphereLight(0x79748b, 0x18111c, .065));
-  const moon = new THREE.DirectionalLight(0x8f92b5, .055); moon.position.set(-3, 7, 5); scene.add(moon);
-  // The pool stays fixed for the lifetime of the view, including every scare.
-  const pool = Array.from({ length: 4 }, () => new THREE.PointLight(0xffbd80, 0, 11, 1.6)); pool.forEach(light => scene.add(light));
+  // Each chamber tints the fog and the faint fill light; the nearest lamps light the room.
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0b0912); scene.fog = new THREE.FogExp2(0x0b0912, .075);
+  const fill = new THREE.HemisphereLight(0x8a6f86, 0x3a2a30, 1.3); scene.add(fill);
+  const moon = new THREE.DirectionalLight(0x8f92b5, .08); moon.position.set(-3, 7, 5); scene.add(moon);
+  // The pool stays fixed for the lifetime of the view, including every scare:
+  // a carried glow, four for the nearest lamps, and one for a reveal or the exit.
+  const pool = Array.from({ length: 6 }, () => new THREE.PointLight(0xffbd80, 0, 7, 1.35)); pool.forEach(light => scene.add(light));
+  const fogTarget = new THREE.Color(0x0b0912), fillTarget = new THREE.Color(0x8a6f86), focus = new THREE.Vector3();
   const camera = new THREE.PerspectiveCamera(67, 1, .055, 75); camera.rotation.order = "YXZ";
   let active = false, run = null, config = null, world = null, actors = [], lastCue = null, completeSent = false, notifiedZone = "";
-  let yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0, railYaw = 0, firstFrame = true, pointer = null, disposed = false;
+  let yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0, railYaw = 0, firstFrame = true, pointer = null, disposed = false, glance = 0, glanceDown = 0;
   let options = { gentle: typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches };
   const inputActive = () => active && run && !run.paused && !run.completed && !hooks.blocked?.();
   const resize = () => {
@@ -59,9 +62,22 @@ export function createMazeRideView(canvas, state, hooks = {}) {
     railYaw += angleDelta(railYaw, heading) * blend;
     yaw = clamp(yaw + (targetYaw - yaw) * blend, -YAW_LIMIT, YAW_LIMIT);
     pitch = clamp(pitch + (targetPitch - pitch) * blend, -PITCH_LIMIT, PITCH_LIMIT);
+    // Like a guide's hand on your shoulder, the house turns you a little towards
+    // each chamber's centrepiece as you pass it, but never while a scare is near.
+    let want = 0, down = 0;
+    for (const zone of config.zones) {
+      const { x, z } = zone.center, inside = Math.abs(p.x - x) < 4 && Math.abs(p.z - z) < 5;
+      if (!inside) continue;
+      const sx = x - zone.side, sz = z - 1.4, toward = Math.atan2(-(sx - p.x), -(sz - p.z)), delta = angleDelta(heading, toward);
+      const weight = smooth((1.75 - Math.abs(delta)) / .45) * smooth((p.z - (z - 4.5)) / 1.5);
+      want = clamp(delta, -.7, .7) * weight; down = -.12 * weight;
+    }
+    const scare = Math.max(0, ...config.encounters.map(e => smooth((run.elapsed - (e.at - 1.6)) / .6) * (1 - smooth((run.elapsed - (e.at + e.duration)) / .8))));
+    want *= 1 - scare; down *= 1 - scare;
+    glance += (want - glance) * blend * .6; glanceDown += (down - glanceDown) * blend * .6;
     // Position follows the validated rail exactly, so smoothing cannot cut a bend.
     camera.position.set(p.x, p.y + (!options.gentle ? Math.sin(run.elapsed * 6.8) * .008 : 0), p.z);
-    camera.rotation.set(pitch, railYaw + yaw, 0, "YXZ"); camera.updateMatrixWorld(); firstFrame = false;
+    camera.rotation.set(pitch + glanceDown, railYaw + yaw + glance, 0, "YXZ"); camera.updateMatrixWorld(); firstFrame = false;
   }
   function poseActors() {
     if (!run) return;
@@ -79,26 +95,37 @@ export function createMazeRideView(canvas, state, hooks = {}) {
       animateMazeScareActor(object, { pose: actor.pose, reveal: reveal * retreat, lunging: options.gentle ? lunge * .35 : lunge, time: options.gentle ? 0 : run.elapsed, camera });
     }
   }
+  // A flame flickers, glass glows steadily with a slow pulse, an arc crackles.
+  function lampLevel(lamp, i, time) {
+    if (lamp.kind === "flame") return lamp.power * (options.gentle ? .95 : .82 + .12 * Math.sin(time * 11 + i * 1.7) * Math.sin(time * 6.3 + i));
+    if (lamp.kind === "arc") return lamp.power * (Math.sin(time * 3.1 + i) + Math.sin(time * 7.7 + i * 2) > (options.gentle ? 1.6 : .9) ? 1.6 : .5);
+    return lamp.power * (.9 + .1 * Math.sin(time * 1.4 + i));
+  }
   function poseLights() {
     if (!run || !world) return;
-    const p = sampleMazeRail(config, run.progress), ahead = sampleMazeRail(config, Math.min(1, run.progress + .025));
-    // A dim lantern shows the next step; distant walls disappear into the fog.
-    pool[0].position.set(p.x - .2, 1.35, p.z + .15); pool[0].color.setHex(0xffc48d); pool[0].intensity = .65; pool[0].distance = 3.8;
-    const nearest = [...world.lamps].sort((a, b) => Math.hypot(a.x - p.x, a.z - p.z) - Math.hypot(b.x - p.x, b.z - p.z));
-    const zone = Math.max(0, config.zones.findIndex(z => z.id === run.zone));
-    const colours = [0xffb16e, 0x8baecc, 0xb299c8, 0x7fb9bc, 0xd99b8b];
-    for (let i = 1; i <= 2; i++) {
-      const lamp = nearest[i - 1] ?? { x: ahead.x, y: 2.4, z: ahead.z, colour: 0xb3a2d3 };
-      pool[i].position.set(lamp.x, lamp.y, lamp.z); pool[i].color.setHex(i === 1 ? colours[zone] : 0xffbf83); pool[i].intensity = i === 1 ? 8.5 : 4.5; pool[i].distance = i === 1 ? 5.6 : 4.4;
+    const time = run.elapsed, p = sampleMazeRail(config, run.progress), ahead = sampleMazeRail(config, Math.min(1, run.progress + .02));
+    const zone = Math.max(0, config.zones.findIndex(z => z.id === run.zone)), finish = MAZE_RIDE_FINISH[zone] ?? MAZE_RIDE_FINISH[0];
+    fogTarget.setHex(finish.fog); fillTarget.setHex(finish.tint);
+    scene.fog.color.lerp(fogTarget, .04); scene.background.copy(scene.fog.color); fill.color.lerp(fillTarget, .04);
+    // A small glow carried with you, so the floor ahead never goes black.
+    pool[0].position.set(p.x + p.dx * .4, 1.2, p.z + p.dz * .4); pool[0].color.setHex(0xffc48d); pool[0].intensity = .7; pool[0].distance = 4.2;
+    // The four lamps nearest a point just ahead of you.
+    focus.set(p.x * .4 + ahead.x * .6, 0, p.z * .4 + ahead.z * .6);
+    const near = world.lamps.map((lamp, i) => ({ lamp, i, d: Math.hypot(lamp.x - focus.x, lamp.z - focus.z) })).filter(e => e.lamp.kind !== "door").sort((a, b) => a.d - b.d);
+    for (let k = 1; k <= 4; k++) {
+      const e = near[k - 1], light = pool[k];
+      if (!e) { light.intensity = 0; continue; }
+      light.position.set(e.lamp.x, e.lamp.y, e.lamp.z); light.color.setHex(e.lamp.colour);
+      light.intensity = 4.6 * lampLevel(e.lamp, e.i, time) * Math.max(0, 1 - Math.max(0, e.d - 6) / 3); light.distance = 7.5;
     }
-    // Broad, slow colour pools breathe without flashing; a reveal gets a brief rim.
-    const current = actors.find(a => run.elapsed >= a.encounter.at && run.elapsed < a.encounter.at + a.encounter.duration * .72);
-    const breathing = options.gentle ? .6 : .4 + .3 * Math.sin(run.elapsed * .45 + zone);
-    if (current) pool[3].position.set(current.object.position.x, 2.1, current.object.position.z + .4);
-    else pool[3].position.set(ahead.x, 2.55, ahead.z);
-    pool[3].color.setHex(colours[(zone + 1) % colours.length]); pool[3].intensity = current ? 2.2 : breathing; pool[3].distance = current ? 3 : 4;
+    // A reveal gets a brief rim; near the end, the foyer's light spills through the opening doors.
+    const current = actors.find(a => run.elapsed >= a.encounter.at - .2 && run.elapsed < a.encounter.at + a.encounter.duration * .72);
+    const exit = world.lamps.find(l => l.kind === "door"), opening = smooth((run.elapsed - (config.duration - 1.3)) / 1.1);
+    if (current) { pool[5].position.set(current.object.position.x, 2.2, current.object.position.z); pool[5].color.setHex(0xc8b3ff); pool[5].intensity = 4; pool[5].distance = 3.2; }
+    else if (exit && opening > 0) { pool[5].position.set(exit.x, exit.y, exit.z + .6); pool[5].color.setHex(exit.colour); pool[5].intensity = 14 * opening; pool[5].distance = 9; }
+    else { pool[5].position.set(ahead.x, 2.5, ahead.z); pool[5].color.setHex(finish.tint); pool[5].intensity = options.gentle ? .6 : .45 + .25 * Math.sin(time * .45 + zone); pool[5].distance = 5; }
   }
-  function renderPose(dt = 0, snap = false) { poseCamera(dt, snap); poseActors(); poseLights(); world?.tick(run?.elapsed ?? 0, options.gentle); }
+  function renderPose(dt = 0, snap = false) { poseCamera(dt, snap); poseActors(); poseLights(); world?.tick(run?.elapsed ?? 0, options.gentle, { elapsed: run?.elapsed ?? 0, duration: config?.duration ?? Infinity }); }
   function advance(seconds, snap = false) {
     if (!active || !run) return [];
     const before = run.elapsed;
@@ -132,7 +159,7 @@ export function createMazeRideView(canvas, state, hooks = {}) {
       clearGestures(); const rebuild = !world || config?.key !== nextConfig.key;
       if (rebuild) { clearActors(); world?.dispose(); world = buildMazeRideWorld(nextConfig); scene.add(world.group); }
       config = nextConfig; run = nextRun; active = true; options = { ...options, ...nextOptions }; completeSent = false; lastCue = null; notifiedZone = run.zone;
-      yaw = pitch = targetYaw = targetPitch = 0; firstFrame = true;
+      yaw = pitch = targetYaw = targetPitch = glance = glanceDown = 0; firstFrame = true;
       if (nextOptions.paused) pauseMazeRide(run, true);
       buildActors(); resize(); renderPose(0, true); notify(); return true;
     },

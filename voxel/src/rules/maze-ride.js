@@ -1,7 +1,7 @@
 // A temporary owner walkthrough cannot charge tickets or change the farm save.
 import { MAZE_PREFABS } from "../content/hollow-house.js";
-import { buildMazeRideRoute, MAZE_RIDE_BASE_ENCOUNTERS, MAZE_RIDE_PREFAB_ENCOUNTERS } from "../content/maze-ride.js";
-export { sampleMazeRail } from "../content/maze-ride.js";
+import { buildMazeRideRoute, buildMazeRideTimeline, mazeProgressAt, mazeTimeAtDistance, MAZE_RIDE_BASE_ENCOUNTERS, MAZE_RIDE_PREFAB_ENCOUNTERS } from "../content/maze-ride.js";
+export { sampleMazeRail, mazeProgressAt } from "../content/maze-ride.js";
 
 let nextRun = 1;
 const clamp = (n, low, high) => Math.max(low, Math.min(high, n));
@@ -22,19 +22,21 @@ export function buildMazeRideConfig(state) {
   const house = state.hollowHouse, tier = Number.isInteger(house.tier) ? clamp(house.tier, 1, 5) : 1;
   const owned = ids(house.haunts?.owned), active = ids(house.haunts?.active);
   const prefabs = MAZE_PREFABS.filter(prefab => prefab.tier <= tier && owned.has(prefab.id) && active.has(prefab.id));
-  const { rail, zones } = buildMazeRideRoute(tier), duration = 28 + 7 * (tier - 1), encounters = [];
+  // Scares wait at set places in each chamber: the baseline early on, an
+  // installed haunt further round. The walk slows as each comes up, so their
+  // times follow from the timeline rather than fixing it.
+  const route = buildMazeRideRoute(tier), { rail, zones } = route, planned = [];
   for (const zone of zones) {
-    const baseline = MAZE_RIDE_BASE_ENCOUNTERS[zone.index], prefab = prefabs.find(item => item.tier === zone.index + 1);
-    const count = prefab ? 2 : 1, centre = (zone.start + zone.end) * duration / 2;
-    const first = clamp(centre - (count - 1) * 2.5, 2, duration - 3 - (count - 1) * 5);
-    encounters.push({ id: zone.id + ":baseline", at: first, duration: 3, ...baseline, zone: zone.id, prefab: null });
-    if (prefab) encounters.push({ id: zone.id + ":" + prefab.id, at: first + 5, duration: 3, ...MAZE_RIDE_PREFAB_ENCOUNTERS[prefab.id], side: -baseline.side, zone: zone.id, prefab: prefab.id });
+    const prefab = prefabs.find(item => item.tier === zone.index + 1), at = route.scarePoints[zone.index];
+    planned.push({ id: zone.id + ":baseline", distance: at.baseline, ...MAZE_RIDE_BASE_ENCOUNTERS[zone.index], side: zone.side, zone: zone.id, prefab: null });
+    if (prefab) planned.push({ id: zone.id + ":" + prefab.id, distance: at.prefab, ...MAZE_RIDE_PREFAB_ENCOUNTERS[prefab.id], side: zone.side, zone: zone.id, prefab: prefab.id });
   }
+  const timeline = buildMazeRideTimeline(route, planned.map(e => e.distance)), duration = timeline.duration;
+  // A scare starts a moment before the walk reaches its point, so the reveal peaks beside you.
+  const encounters = planned.map(({ distance, ...e }) => ({ ...e, at: Math.round((mazeTimeAtDistance(timeline, distance) - 1) * 100) / 100, duration: 3 }));
   encounters.sort((a, b) => a.at - b.at);
-  // The finale keeps its full envelope even when every installation is enabled.
-  for (let i = encounters.length - 2; i >= 0; i--) encounters[i].at = Math.min(encounters[i].at, encounters[i + 1].at - 5);
   const activePrefabs = prefabs.map(prefab => prefab.id);
-  return freezeSnapshot({ key: "maze-ride-v1:" + tier + ":" + (activePrefabs.join(",") || "baseline"), tier, title: "The Hollow House", duration, zones, rail, encounters, activePrefabs });
+  return freezeSnapshot({ key: "maze-ride-v2:" + tier + ":" + (activePrefabs.join(",") || "baseline"), tier, title: "The Hollow House", duration, zones, rail, timeline, encounters, activePrefabs });
 }
 
 // Fresh replay state supplies new cue ids without storing anything in the farm.
@@ -48,7 +50,7 @@ export function advanceMazeRide(run, dt) {
   if (!run || run.paused || run.completed || !Number.isFinite(dt) || dt <= 0) return [];
   const config = run.config, cues = [];
   run.elapsed = Math.min(config.duration, run.elapsed + dt);
-  run.progress = run.elapsed / config.duration;
+  run.progress = run.elapsed >= config.duration ? 1 : mazeProgressAt(config, run.elapsed);
   const zone = config.zones.find(item => run.progress < item.end) ?? config.zones.at(-1);
   run.zone = zone.id; run.zoneName = zone.name;
   for (const encounter of config.encounters) {

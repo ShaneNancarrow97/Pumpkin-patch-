@@ -329,7 +329,7 @@ export function createScene(canvas, state, hooks) {
     const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
     renderPass.camera = active();
     renderPass.scene = activeScene();
-    renderer.toneMappingExposure = view.place === "maze" ? 1.05 : 1.45;
+    renderer.toneMappingExposure = view.place === "maze" ? 1.3 : 1.45;
     if (view.place === "maze") { mazeView.resize(); return; }
     if (view.place === "estate") { estateView.resize(w, h); return; }
     if (view.place === "foyer") { foyerView.resize(); return; }

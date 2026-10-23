@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { freshState, saveData } from "../src/model.js";
 import { MAZE_PREFABS, FOYER_TIERS } from "../src/content/hollow-house.js";
-import { MAZE_RIDE_EYE_HEIGHT, MAZE_RIDE_ROOM, sampleMazeRail } from "../src/content/maze-ride.js";
+import { MAZE_RIDE_EYE_HEIGHT, MAZE_RIDE_ROOM, MAZE_RIDE_PACE, sampleMazeRail, mazeProgressAt } from "../src/content/maze-ride.js";
 import { mazeRideAvailable, buildMazeRideConfig, createMazeRide, advanceMazeRide, pauseMazeRide } from "../src/rules/maze-ride.js";
 
 const prefabIds = MAZE_PREFABS.map(prefab => prefab.id);
@@ -16,7 +16,8 @@ function ready(tier = 1, owned = [], active = owned) {
 function insideFloor(config, x, z) {
   const within = (x0, x1, z0, z1) => x >= x0 - 1e-9 && x <= x1 + 1e-9 && z >= z0 - 1e-9 && z <= z1 + 1e-9;
   if (config.zones.some(zone => within(zone.bounds.x0, zone.bounds.x1, zone.bounds.z0, zone.bounds.z1))) return true;
-  const half = MAZE_RIDE_ROOM.corridorWidth / 2;
+  const half = MAZE_RIDE_ROOM.corridorWidth / 2, first = config.zones[0].center, last = config.zones.at(-1).center, hall = MAZE_RIDE_ROOM.hall;
+  if (within(first.x - half, first.x + half, first.z, first.z + 5 + hall) || within(last.x - half, last.x + half, last.z - 5 - hall, last.z)) return true;
   for (let i = 1; i < config.zones.length; i++) {
     const a = config.zones[i - 1].center, b = config.zones[i].center, middle = (a.z + b.z) / 2;
     if (within(a.x - half, a.x + half, middle, a.z)) return true;
@@ -36,10 +37,11 @@ test("only a purchased, restored house admits an owner, including closed preview
   state.hollowHouse.open = true; assert.equal(mazeRideAvailable(state), true);
 });
 
-test("each tier adds a baseline chamber and preserves the separate guest duration", () => {
+test("each tier adds a baseline chamber, a longer walk, and keeps the separate guest duration", () => {
+  let previous = 0;
   for (let tier = 1; tier <= 5; tier++) {
     const config = buildMazeRideConfig(ready(tier));
-    assert.equal(config.tier, tier); assert.equal(config.duration, 28 + 7 * (tier - 1));
+    assert.equal(config.tier, tier); assert.ok(config.duration > previous + 10 && config.duration < 100, `tier ${tier} lasts ${config.duration}s`); previous = config.duration;
     assert.equal(config.zones.length, tier); assert.equal(config.encounters.length, tier);
     assert.equal(config.zones[0].start, 0); assert.equal(config.zones.at(-1).end, 1);
     assert.ok(config.encounters.every(event => !event.prefab));
@@ -71,7 +73,8 @@ test("every installation combination has spaced, finite encounters in its own ch
     for (let i = 0; i < config.encounters.length; i++) {
       const event = config.encounters[i], zone = config.zones.find(zone => zone.id === event.zone);
       assert.ok(event.at >= 2); assert.ok(event.at + event.duration <= config.duration + 1e-9);
-      assert.ok(event.at / config.duration >= zone.start && event.at / config.duration <= zone.end);
+      const reached = mazeProgressAt(config, event.at + 1);
+      assert.ok(reached >= zone.start && reached <= zone.end, `scare ${event.id} waits in its own chamber`);
       assert.ok(event.intensity > 0 && event.intensity <= 1); assert.ok([-1, 1].includes(event.side));
       assert.ok(["ghoul", "clown", "scarecrow", "wraith", "haunted-girl"].includes(event.actor));
       if (i) assert.ok(event.at - config.encounters[i - 1].at >= 5 - 1e-9);
@@ -159,4 +162,19 @@ test("snapshots survive later upgrades and walkthroughs never change the save or
   state.hollowHouse.tier = 5; state.hollowHouse.haunts.owned.push("phantom-finale"); state.hollowHouse.haunts.active = ["phantom-finale"];
   assert.equal(config.tier, 1); assert.deepEqual(config.activePrefabs, ["cobweb-canopy"]);
   const next = buildMazeRideConfig(state); assert.equal(next.tier, 5); assert.deepEqual(next.activePrefabs, ["phantom-finale"]); assert.notEqual(next.key, config.key);
+});
+
+test("the walk holds while the doors open, keeps a steady pace and slows as each scare comes up", () => {
+  for (let tier = 1; tier <= 5; tier++) {
+    const config = buildMazeRideConfig(ready(tier, prefabIds)), { distances, step } = config.timeline, total = distances.at(-1);
+    assert.equal(mazeProgressAt(config, 0), 0); assert.equal(mazeProgressAt(config, MAZE_RIDE_PACE.door - .05), 0, "still while the entrance opens");
+    assert.equal(mazeProgressAt(config, config.duration), 1); assert.equal(mazeProgressAt(config, config.duration - MAZE_RIDE_PACE.door + .05), 1, "still while the exit opens");
+    let fastest = 0;
+    for (let i = 1; i < distances.length; i++) { const speed = (distances[i] - distances[i - 1]) / step; assert.ok(speed >= 0); fastest = Math.max(fastest, speed); }
+    assert.ok(fastest <= MAZE_RIDE_PACE.cruise + 1e-6);
+    for (const event of config.encounters) {
+      const at = event.at + 1, d = mazeProgressAt(config, at) * total, before = mazeProgressAt(config, at - .5) * total;
+      assert.ok((d - before) / .5 <= MAZE_RIDE_PACE.creep + .15, `tier ${tier}: creeping up on ${event.id}`);
+    }
+  }
 });
