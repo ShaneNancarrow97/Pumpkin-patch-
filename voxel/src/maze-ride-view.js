@@ -20,12 +20,12 @@ export function createMazeRideView(canvas, state, hooks = {}) {
   const fogTarget = new THREE.Color(0x0b0912), fillTarget = new THREE.Color(0x8a6f86), focus = new THREE.Vector3();
   const camera = new THREE.PerspectiveCamera(67, 1, .055, 75); camera.rotation.order = "YXZ";
   let active = false, run = null, config = null, world = null, actors = [], lastCue = null, completeSent = false, notifiedZone = "";
-  let yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0, railYaw = 0, firstFrame = true, pointer = null, disposed = false, glance = 0, glanceDown = 0;
+  let yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0, railYaw = 0, firstFrame = true, pointer = null, disposed = false, glance = 0, glanceDown = 0, jolt = 0, baseFov = 67;
   let options = { gentle: typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches };
   const inputActive = () => active && run && !run.paused && !run.completed && !hooks.blocked?.();
   const resize = () => {
     camera.aspect = Math.max(1, canvas.clientWidth || canvas.width || 1) / Math.max(1, canvas.clientHeight || canvas.height || 1);
-    camera.fov = camera.aspect < .75 ? 74 : 67; camera.updateProjectionMatrix();
+    baseFov = camera.aspect < .75 ? 74 : 67; camera.fov = baseFov + jolt * 5; camera.updateProjectionMatrix();
   };
   function snapshot() {
     let geometries = 0, textures = 0; const seenGeometry = new Set(), seenTexture = new Set();
@@ -76,8 +76,12 @@ export function createMazeRideView(canvas, state, hooks = {}) {
     want *= 1 - scare; down *= 1 - scare;
     glance += (want - glance) * blend * .6; glanceDown += (down - glanceDown) * blend * .6;
     // Position follows the validated rail exactly, so smoothing cannot cut a bend.
-    camera.position.set(p.x, p.y + (!options.gentle ? Math.sin(run.elapsed * 6.8) * .008 : 0), p.z);
-    camera.rotation.set(pitch + glanceDown, railYaw + yaw + glance, 0, "YXZ"); camera.updateMatrixWorld(); firstFrame = false;
+    if (!run.paused) jolt = Math.max(0, jolt - Math.max(0, dt) * 2.4);
+    const shake = options.gentle ? 0 : jolt * jolt * .03, wobble = run.elapsed * 47;
+    camera.position.set(p.x + Math.sin(wobble) * shake, p.y + (!options.gentle ? Math.sin(run.elapsed * 6.8) * .008 : 0) + Math.cos(wobble * 1.3) * shake, p.z);
+    camera.rotation.set(pitch + glanceDown, railYaw + yaw + glance, Math.sin(wobble * .7) * shake * .4, "YXZ");
+    const fov = baseFov + (options.gentle ? 0 : jolt * 5); if (Math.abs(camera.fov - fov) > .01) { camera.fov = fov; camera.updateProjectionMatrix(); }
+    camera.updateMatrixWorld(); firstFrame = false;
   }
   function poseActors() {
     if (!run) return;
@@ -130,7 +134,7 @@ export function createMazeRideView(canvas, state, hooks = {}) {
     if (!active || !run) return [];
     const before = run.elapsed;
     const cues = advanceMazeRide(run, seconds);
-    for (const cue of cues) if (cue.type === "encounter") { lastCue = cue; hooks.onCue?.(cue); }
+    for (const cue of cues) if (cue.type === "encounter") { lastCue = cue; jolt = 1; hooks.onCue?.(cue); }
     const advanced = run.elapsed !== before;
     renderPose(advanced ? seconds : 0, advanced && (snap || run.completed && !completeSent));
     if (run.zone !== notifiedZone) { notifiedZone = run.zone; notify(); }
@@ -159,7 +163,7 @@ export function createMazeRideView(canvas, state, hooks = {}) {
       clearGestures(); const rebuild = !world || config?.key !== nextConfig.key;
       if (rebuild) { clearActors(); world?.dispose(); world = buildMazeRideWorld(nextConfig); scene.add(world.group); }
       config = nextConfig; run = nextRun; active = true; options = { ...options, ...nextOptions }; completeSent = false; lastCue = null; notifiedZone = run.zone;
-      yaw = pitch = targetYaw = targetPitch = glance = glanceDown = 0; firstFrame = true;
+      yaw = pitch = targetYaw = targetPitch = glance = glanceDown = jolt = 0; firstFrame = true;
       if (nextOptions.paused) pauseMazeRide(run, true);
       buildActors(); resize(); renderPose(0, true); notify(); return true;
     },
