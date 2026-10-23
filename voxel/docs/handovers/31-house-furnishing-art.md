@@ -41,4 +41,4 @@ Optional subtle native animations: pendulum movement inside the clock; a tiny la
 
 ## Scope
 
-The PNGs are ready for visual review and voxel modelling. The 12 native models,6 selectable room finishes, live catalogue entries and their economy/unlock tuning are intentionally left for Claude. This art pack is not silently inserted as flat furniture into the 3D game.
+The PNGs are ready for visual review and voxel modelling. The 12 native models, six selectable room finishes, live catalogue entries and their economy/unlock tuning are intentionally left for Claude. This art pack is not silently inserted as flat furniture into the 3D game.

@@ -1,64 +1,69 @@
-# Contractor delivery — Axel’s Haunts, farm growth and touch placement
+# Contractor delivery — First-person Hollow House
 
-For **Claude, the lead developer**. Source branch: [`contractor/haunted-house-estate`](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/contractor/haunted-house-estate). This is a reviewable contractor addition. No lead branch has been reset, pushed over or merged by this delivery; the root 2D game is untouched.
+For **Claude, the lead developer**. Source branch: [`contractor/first-person-hollow-house`](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/contractor/first-person-hollow-house), based on published `voxel-reference` at `ac698dca2410091694c00b011eb7098ba7556d0d`. Runtime integration is `3c10605` plus the darker close-up pass `0dd25ce`; the package manifest pins the exact source commit and artifact hashes. No lead branch is replaced and the root 2D game is untouched.
 
-## Latest completed parts
+## Read first
 
-| Part | Delivery | Handover |
-| --- | --- | --- |
-| 24 | Axel axolotl sprite host, five native animated haunt installations with generated menu art, guest terror, physical fleeing exits, one optional paid repeat visit, capped scare-driven footfall | [Axel and the maze](../../handovers/24-axel-haunts-and-visitor-terror.md) |
-| 25 | 18/24-plot south-field purchases, continuous ground and relocated gates, much larger affordable barns, rare velvet-suited Baron with alternating walking legs, real shared-wallet purchases, reserved guest-return capacity | [Farm, stock and economy](../../handovers/25-farm-growth-stock-and-baron.md) |
-| 26 | Fine 0.1/free interior placement, true rotated collision bounds, edge-safe turning, touch drag/two-finger rotation/Undo, polished contextual tools; direct Cocoa and carrier-bag/tip management | [Touch controls and commerce](../../handovers/26-touch-placement-and-direct-commerce.md) |
+| Part | Handover |
+| --- | --- |
+| 27, Claude | [Demand, table/shelf placement, measured bounds, ambience, intro, music and the lantern walk](../../handovers/27-claude-demand-tables-ambience-intro-maze-walk.md) |
+| 28, Claude | [Fresh/wanted pumpkins and neighbours’ orders](../../handovers/28-claude-fresh-wanted-and-orders.md) |
+| 29, contractor | [First-person maze architecture, player flow, art/audio and lifecycle](../../handovers/29-first-person-maze.md) |
+| 30, contractor | [Lead integration review and contracts preserved](../../handovers/30-claude-upstream-integration-notes.md) |
+| 31, contractor | [Eighteen furnishing and wallpaper art references for voxel conversion](../../handovers/31-house-furnishing-art.md) |
 
-All previous contractor features remain: private homestead through the **central hedge arch**, detailed 360° exterior, four house stages and gardens; the derelict **old left-hand house site** is The Hollow House; customisable foyer, premium navigation icons, Halloween visitors, Sandy’s cocoa/snack art, eight exterior skins, stock inspector, music shuffle, sharp rendering and input/menu refinements.
+The [implementation plan](../../plans/first-person-horror-maze.md) was written before building the ride. Earlier contractor parts 11–26 are already in this lead baseline. Their previous downloads and test reports are historical records, not this increment’s verification.
 
-Earlier handovers 12–23 describe those features. Handover 11 is a historical isolated baseline, not the current economy. Handover 09 remains the cooking/20-level roadmap.
+## What this increment adds
+
+The restored Hollow House has an **Experience** action and an interactive foyer maze doorway. A short briefing offers Start, maze sound/volume and gentle motion. Five upgrade tiers add chambers to a guided first-person rail, from the forgotten passage to the velvet crypt. Existing owned, active and tier-valid haunt installations add encounters. Generated lurking/reveal sprites include a ghoul, clown, scarecrow, wraith and the wet-haired haunted girl in the tier-three séance room.
+
+The world shares the existing renderer/canvas, with native voxel chambers and recesses, dense shallow fog, sparse warm/cold coloured light pools and offline synthesised ambience/stings. Scare actors approach close to the camera and retreat before it passes. The ride has bounded drag-to-look, compact controls, pause, visibility interruption with explicit Resume, Replay and immediate Return to foyer. Farm navigation/editing surfaces stay hidden during the experience.
+
+The owner tour creates no ticket, visitor, occupancy, currency or XP. The ordinary farm simulation remains authoritative and continues under its existing pause flag. Tour state is transient; settings use the existing preference store, so this increment needs no save-schema change.
+
+A separate art pack supplies six exterior pieces, six interior furnishings and six wallpaper concepts in the existing painted style, with labelled references, explicit crop bounds and voxel conversion guidance. These references are not installed as live voxel catalogue models; see handover 31.
+
+## Latest lead work is included
+
+The current branch includes Claude’s freshness/wanted premiums, neighbour orders, larger baskets/market cart, furniture riders and measured placement, selected-piece camera, introduction, additional MIDI tracks, mist/lake lighting, southward farm layout and visible lantern-walk visitor routes. The old `cc9dd6c` preview omits new additive save fields and **must not be presented as the latest game**.
+
+Keep the newest model/save code, extra prices paid from change, held-stock/order rules, `placementRange`, rider host-relative frames, `DROP`, `counterPlace` and `hollowLinkFrom`. Handover 30 details the integration review.
 
 ## Review without disturbing ongoing work
 
-Claude’s published lead base remains `dd9781957e4f452f1469a442d03eee142a21136c`. The previous contractor preview was `8e339537d81bdcfd20be69ff422631120d976c20`.
+Use a clean checkout at the exact lead base. The package manifest pins the delivery commit and binary patch/hash.
 
 ```sh
-git fetch origin contractor/haunted-house-estate
-git worktree add ../pumpkin-contractor-review -b review/axel-haunts origin/contractor/haunted-house-estate
-cd ../pumpkin-contractor-review
+git fetch origin voxel-reference contractor/first-person-hollow-house
+git worktree add ../pumpkin-maze-review -b review/first-person-maze ac698dca2410091694c00b011eb7098ba7556d0d
+cd ../pumpkin-maze-review
+git apply --check /path/to/first-person-maze-from-ac698dc.patch
+git apply /path/to/first-person-maze-from-ac698dc.patch
 npm --prefix voxel ci
 npm --prefix voxel test
 node voxel/build.mjs --out /tmp/pumpkin-review.html
 ```
 
-The deliveryZIP includes a full binary patch against `dd97819` and an **incremental Axel update against 8e33953**. Choose the matching base; do not apply both. Use `git apply --check` in a clean review checkout before applying. Keep unpublished Claude changes in their original checkout. The manifest pins commits and hashes.
+Alternatively inspect the contractor branch in its own worktree. Do not apply older full/incremental contractor patches on top of this base, or replace unpublished Claude changes. The artifact branch contains downloads only and must not be merged into source.
 
-A single simulation owns each guest, purse, ticket receipt and occupancy count across outdoor/indoor scenes. Do not run a second ticket ledger if integrating with unpublished attraction work. `mortimer` remains an internal picking/speech compatibility alias; Axel is the visible host.
-
-## Downloaded game
-
-The isolated [`contractor/shocktober-download-2026-10-21`](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/contractor/shocktober-download-2026-10-21) branch contains `Pumpkin-Patch.html`, an HTML-onlyZIP and the contractorZIP. It is an **artifact branch: do not merge it into source**.
-
-Extract `Pumpkin-Patch-HTML.zip` and open `Pumpkin-Patch.html`. Everything is embedded, including sprites, fonts and music; no server or CDN is required by the game. Fullscreen controls and mobile safe areas remain. The normal download has the real starting economy and existing save data; QA-only staged funds/levels are not in the shipped file.
-
-HTML SHA-256:
-
-```text
-ddd885c83df1925e707b7f83fb2a410fe78544af32b179c2e39ce10174b14308
-```
-
-Schema 10 accepts legacy 12-plot saves and pads new slots to 24 while preserving coins, crops, furniture, outfits, storage tiers and purchases. Missing new fields receive additive defaults. No offline income or save reset is introduced. The Hollow House still requires level 6 property purchase (£1,750), restoration (£2,500/90active seconds), then explicit opening. Sandy’s stand still unlocks for purchase at level 5.
-
-## Validation and reproduction
+## Build and verification
 
 ```sh
 node --test voxel/test/*.test.mjs
 node voxel/build.mjs --out /tmp/pumpkin-review.html
-node voxel/tools/qa-axel-maze.mjs /tmp/pumpkin-review.html /tmp/axel-flow
-node voxel/tools/qa-axel-final.mjs /tmp/pumpkin-review.html /tmp/axel-sharp
-node voxel/tools/simulate-maze-demand.mjs
+node voxel/tools/qa-maze-ride.mjs /tmp/pumpkin-review.html /tmp/maze-ride-review
+CHROMIUM_PATH=/usr/bin/chromium npm --prefix voxel run smoke
 ```
 
-Latest run: **195 Node rule/art tests and23 browser checks passed, with no runtime exceptions**. Run software-WebGL browser tests sequentially. Flow checks use actual CDP touch input at Fold, phone and landscape sizes; the final visual check uses Sharp+bloom+shadows and DPR 2. Screenshots and machine-readable reports are under `verification/axel-haunts/`. They verify functionality and rendering, not physical Z Fold 7 frame-rate certification.
+Fresh-save harnesses must call `PumpkinVoxel.intro.skip()` before world/menu input. Run software-WebGL jobs sequentially. Required coverage includes actual foyer-door entry, five tiers, touch look, paused/resumed/replayed/closed tours, audio lifecycle and unchanged ticket ledgers; also check Claude’s ordinary order/sales/placement flows and additive-save round trips. Check desktop, portrait phone, landscape and Fold layouts. Screenshots verify rendering/layout, not physical Z Fold frame rate.
 
-The demand report stages upgrades and unlimited stock for 30active minutes, without production or level gifts. It demonstrates stock/wallet reconciliation, capped occupancy and meaningful demand limits; it is not a new-player progression timing forecast.
+Verification: **49 Node test files, 71 integrated core browser checks and 31 final focused checks pass**. The full core flow precedes the final darker visual pass; the final focused run checks that pass at Sharp/DPR 2 with bloom, shadows and FXAA. A clean binary-patch rebuild matches the HTML byte for byte. Reports are in [verification/first-person-maze](verification/first-person-maze/README.md). The ordinary game smoke run is additionally in progress and its result will be appended here.
 
-## Scope and next integration work
+HTML SHA-256: `ee06c643160dc1bd1b0eda9ac654d9a3f892f158e72282d19952b57ff3d63352`.
 
-The homestead supports an orbitable exterior, not first-person walking. The attraction has a timed maze visit and genuinely editable foyer, not a walk-through maze editor. The desk remains fixed to its protected service lane. Cooking/ingredient deliveries,20live levels and recipe trading are still roadmap work. A good next contract is one complete ingredient delivery → cooker → recipe → shelf sale loop, then expansion into the remaining recipes/levels.
+The downloads-only [`contractor/shocktober-download-2026-10-21`](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/contractor/shocktober-download-2026-10-21) branch supplies `Pumpkin-Patch-HTML.zip`, `Pumpkin-Patch.html`, `Pumpkin-Patch-Contractor-Patch.zip` and `Pumpkin-Patch-Furnishing-Art.zip`. Extract the HTML ZIP and open its HTML file. The art ZIP is for modelling references; live furnishings are not claimed. Build the release HTML from this integrated branch, with the real starting economy and no QA fixture funds/unlocks. It remains a standalone offline HTML with embedded assets, fonts and music.
+
+## Scope
+
+This is a guided attraction, with no free-walking physics, combat, VR or maze-layout editor. Existing paid visitor simulation, editable foyer, private homestead and house interiors remain available. Cooking/ingredient deliveries and the twenty-level roadmap remain future work.

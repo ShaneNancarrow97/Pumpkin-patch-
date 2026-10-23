@@ -42,12 +42,13 @@ try {
   await page.addInitScript(({ quality, visual }) => localStorage.setItem('pumpkin-patch-voxel-reference-v1-prefs', JSON.stringify({ renderQuality: quality, glow: visual, shadows: visual, music: true, musicVolume: .2, sound: false, mazeSound: true, mazeVolume: .35 })), { quality: process.env.MAZE_QA_QUALITY || 'performance', visual: !!process.env.MAZE_QA_VISUAL });
   await page.goto(base);
   await page.waitForSelector('body[data-ready]');
+  await page.evaluate(() => PumpkinVoxel.intro?.skip());
   const frame = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   const status = () => page.evaluate(() => PumpkinVoxel.maze.status);
   const farm = () => page.evaluate(() => JSON.stringify(PumpkinVoxel.state()));
   const stage = () => page.locator('#maze-ride-ui').getAttribute('data-stage');
   const action = name => page.locator(`#maze-ride-ui [data-maze-action="${name}"]:visible`).last();
-  const snapshot = async name => { await frame(); await page.screenshot({ path: path.join(out, name + '.png') }); samples.push({ name, status: await status() }); };
+  const snapshot = async (name, capture) => { await frame(); await page.screenshot({ path: path.join(out, name + '.png') }); samples.push({ name, status: await status(), ...(capture ? { capture } : {}) }); };
   const advanceTo = async elapsed => { const s = await status(); if (elapsed > s.elapsed) await page.evaluate(seconds => PumpkinVoxel.maze.advance(seconds), elapsed - s.elapsed); await frame(); return status(); };
   const layout = async label => {
     const result = await page.locator('#maze-ride-ui').evaluate(host => {
@@ -82,6 +83,34 @@ try {
     await action('exit').click(); await frame();
     await page.evaluate(() => { PumpkinVoxel.state().hollowHouse.open = false; });
   };
+  const visualCheck = async () => {
+    await page.setViewportSize({ width: 874, height: 787 });
+    await page.evaluate(() => { const h = PumpkinVoxel.state().hollowHouse; h.tier = 3; h.haunts = { owned: ['cobweb-canopy', 'whispering-portraits', 'spectral-parade'], active: ['cobweb-canopy', 'whispering-portraits', 'spectral-parade'] }; PumpkinVoxel.maze.open(); });
+    if (await action('gentle').getAttribute('aria-pressed') === 'true') await action('gentle').click();
+    await action('start').click(); await frame();
+    await layout('final Sharp Fold running');
+    const girl = await page.evaluate(() => PumpkinVoxel.maze.config.encounters.find(event => event.actor === 'haunted-girl'));
+    check(!!girl, 'final visual tour includes the haunted girl encounter');
+    // Freeze an exact reveal pose: software rendering can otherwise advance past
+    // it while screenshot() waits. Only the pause shade is hidden for this image.
+    await page.evaluate(at => {
+      PumpkinVoxel.maze.advance(Math.max(0, at + 1.35 - PumpkinVoxel.maze.status.elapsed));
+      PumpkinVoxel.scene.pauseMazeRide(true);
+      document.querySelector('.maze-ride-shade').style.display = 'none';
+    }, girl.at);
+    await snapshot('final-sharp-fold-haunted-girl', 'Deterministic reveal paused at cue+1.35s; pause shade hidden only for art inspection.');
+    const reveal = await status(), actor = reveal.actors.find(a => a.actor === 'haunted-girl' && a.visible);
+    const distance = actor && Math.hypot(actor.x - reveal.camera.x, actor.z - reveal.camera.z);
+    check(actor?.pose === 'scare' && distance > .8 && distance < 2.6, 'haunted girl reveals close to the viewer without crossing the camera', { distance, actor });
+    const rendering = await page.evaluate(() => ({ ...PumpkinVoxel.scene.renderStatus, shadows: PumpkinVoxel.scene.renderer.shadowMap.enabled }));
+    check(rendering.quality === 'sharp' && rendering.pixelRatio === 2 && rendering.postprocessRatio === 2 && rendering.antialias === 'FXAA' && rendering.shadows, 'final Fold image uses Sharp with full DPR2 postprocessing', rendering);
+    await page.evaluate(() => PumpkinVoxel.maze.close()); await frame();
+  };
+  if (process.env.MAZE_QA_VISUAL_ONLY) {
+    await visualCheck();
+    check(externalRequests.length === 0 && errors.length === 0, 'final visual pass has no external requests or browser errors', { externalRequests, errors });
+    return;
+  }
   if (process.env.MAZE_QA_FOCUSED_ONLY) {
     await liveFarmCheck();
     await page.evaluate(() => PumpkinVoxel.maze.open());
@@ -94,17 +123,7 @@ try {
     await action('resume').click(); await page.evaluate(() => PumpkinVoxel.maze.advance(1000)); await frame(); await layout('final desktop result');
     for (let i = 0; i < 5; i++) { await page.keyboard.press('Tab'); check(await page.evaluate(() => !!document.activeElement?.closest('.maze-ride-panel') && !document.activeElement?.closest('[inert]')), `result Tab ${i + 1} stays inside the modal panel`); }
     await action('exit').click(); await frame();
-    if (process.env.MAZE_QA_VISUAL) {
-      await page.setViewportSize({ width: 874, height: 787 });
-      await page.evaluate(() => { const h = PumpkinVoxel.state().hollowHouse; h.tier = 3; h.haunts = { owned: ['cobweb-canopy', 'whispering-portraits', 'spectral-parade'], active: ['cobweb-canopy', 'whispering-portraits', 'spectral-parade'] }; PumpkinVoxel.maze.open(); });
-      await action('start').click(); await frame();
-      const girl = await page.evaluate(() => PumpkinVoxel.maze.config.encounters.find(event => event.actor === 'haunted-girl'));
-      check(!!girl, 'final visual tour includes the haunted girl encounter');
-      await advanceTo(girl.at + 1.35); await snapshot('final-sharp-fold-haunted-girl');
-      const rendering = await page.evaluate(() => ({ ...PumpkinVoxel.scene.renderStatus, shadows: PumpkinVoxel.scene.renderer.shadowMap.enabled }));
-      check(rendering.quality === 'sharp' && rendering.pixelRatio === 2 && rendering.postprocessRatio === 2 && rendering.antialias === 'FXAA' && rendering.shadows, 'final Fold image uses Sharp with full DPR2 postprocessing', rendering);
-      await layout('final Sharp Fold running'); await action('exit').click(); await frame();
-    }
+    if (process.env.MAZE_QA_VISUAL) await visualCheck();
     check(externalRequests.length === 0 && errors.length === 0, 'final focused pass has no external requests or browser errors', { externalRequests, errors });
     return;
   }
@@ -219,6 +238,6 @@ try {
   if (page) { try { await page.screenshot({ path: path.join(out, 'failure.png') }); } catch {} }
   throw error;
 } finally {
-  fs.writeFileSync(path.join(out, 'checks.json'), JSON.stringify({ file, sha256: createHash('sha256').update(fs.readFileSync(file)).digest('hex'), dpr: Number(process.env.MAZE_QA_DPR) || 1, bloomAndShadows: !!process.env.MAZE_QA_VISUAL, checks, errors, externalRequests, samples, mode: process.env.MAZE_QA_FOCUSED_ONLY ? 'focused-only' : process.env.MAZE_QA_EXTENDED_ONLY ? 'extended-only' : 'full', rendering: `${process.env.MAZE_QA_QUALITY || 'performance'} profile; Chromium SwiftShader; real Start/Resume clicks, real CDP touch; synthetic visibilitychange using document.hidden; ordinary-rules paid-guest fixture` }, null, 2));
+  fs.writeFileSync(path.join(out, 'checks.json'), JSON.stringify({ file, sha256: createHash('sha256').update(fs.readFileSync(file)).digest('hex'), dpr: Number(process.env.MAZE_QA_DPR) || 1, bloomAndShadows: !!process.env.MAZE_QA_VISUAL, checks, errors, externalRequests, samples, mode: process.env.MAZE_QA_VISUAL_ONLY ? 'visual-only' : process.env.MAZE_QA_FOCUSED_ONLY ? 'focused-only' : process.env.MAZE_QA_EXTENDED_ONLY ? 'extended-only' : 'full', rendering: `${process.env.MAZE_QA_QUALITY || 'performance'} profile; Chromium SwiftShader; real Start/Resume clicks, real CDP touch; synthetic visibilitychange using document.hidden; ordinary-rules paid-guest fixture` }, null, 2));
   await browser.close(); await new Promise(resolve => server.close(resolve));
 }
