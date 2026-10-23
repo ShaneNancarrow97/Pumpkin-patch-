@@ -5,7 +5,7 @@ import { decodeMidi } from "../src/ui/midi.js";
 
 test("every bundled original and supplied MIDI decodes into finite timed notes", () => {
   const dir = new URL("../assets/music/", import.meta.url), files = fs.readdirSync(dir).filter((f) => f.endsWith(".mid"));
-  assert.equal(files.length, 15);
+  assert.equal(files.length, 16);
   for (const file of files) {
     const bytes = fs.readFileSync(new URL(file, dir)), clip = decodeMidi(bytes);
     assert.ok(clip.notes.length > 100, file); assert.ok(clip.duration > 30 && clip.duration < 600, file);

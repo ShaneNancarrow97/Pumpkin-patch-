@@ -14,6 +14,7 @@ import rebelYell from "../../assets/music/rebel-yell.mid";
 import nothingElseMatters from "../../assets/music/nothing-else-matters.mid";
 import dontFearTheReaper from "../../assets/music/dont-fear-the-reaper.mid";
 import gypsys from "../../assets/music/gypsys-tramps-and-thieves.mid";
+import everybody from "../../assets/music/everybody-backstreets-back.mid";
 export const MUSIC_TRACKS = [
   { id: "lantern", name: "Lantern March", credit: "Original · playful music-box march", bytes: lantern },
   { id: "thriller", name: "Thriller", credit: "Michael Jackson · your supplied MIDI", bytes: thriller },
@@ -30,4 +31,5 @@ export const MUSIC_TRACKS = [
   { id: "nothing-else-matters", name: "Nothing Else Matters", credit: "Metallica · your supplied MIDI", bytes: nothingElseMatters },
   { id: "dont-fear-the-reaper", name: "(Don’t Fear) The Reaper", credit: "Blue Öyster Cult · your supplied MIDI", bytes: dontFearTheReaper },
   { id: "gypsys-tramps-and-thieves", name: "Gypsys, Tramps & Thieves", credit: "Cher · your supplied MIDI", bytes: gypsys },
+  { id: "everybody", name: "Everybody (Backstreet’s Back)", credit: "Backstreet Boys · your supplied MIDI", bytes: everybody },
 ];
