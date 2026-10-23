@@ -1,11 +1,11 @@
-# Pumpkin Patch — Axel’s Haunts
+# Pumpkin Patch — the Hollow House experience
 
-Download Pumpkin-Patch-HTML.zip, extract and open Pumpkin-Patch.html. Fullscreen/mobile/Fold support. Existing saves retained.
+Download Pumpkin-Patch-HTML.zip, extract and open Pumpkin-Patch.html. One offline HTML with fullscreen and mobile/Fold support.
 
-Source: contractor/haunted-house-estate at cc9dd6c31c5c4771fc313f86076866a4a2a05f7b.
+Includes Claude's latest `ac698dca2410091694c00b011eb7098ba7556d0d` game plus the guided first-person maze: five upgrade-linked chambers, fog and lighting, five two-pose scare actors including the wet-haired haunted girl, original offline scare audio, generated menu icons, pause, replay, gentle motion and direct foyer-door entry.
 
-Includes Axel the undead axolotl, five animated voxel haunt upgrades with generated icons, guest terror/fleeing/paid repeats,18/24-plot farm purchases and matching gates, bigger affordable barns, rare Baron Brassbolt with alternating walking legs, shared-wallet economy safeguards, direct Cocoa/carrier-bag menus and polished touch furniture dragging/rotation/Undo.
+Restore The Hollow House, then choose Experience. The owner tour is free. Existing saves/economy, freshness, neighbour orders and furniture placement remain intact.
 
-Claude: handovers24–26 and the integration README are in source and the contractorZIP. Both full and incremental source patches are included, with explicit bases. This branch contains downloads only; do not merge into source.
+Contractor source: `contractor/first-person-hollow-house` at `b210644ffe7af1933701d3d902b34245e1c36498`. Claude: the separate patchZIP contains the incremental binary patch, base/hash manifest, handovers 29–31, plan and verification. Pumpkin-Patch-Furnishing-Art.zip contains eighteen new exterior/interior/wallpaper sprite concepts and metadata for voxel conversion; these concepts are not installed as live voxel catalogue items. This branch contains downloads only; do not merge it into source.
 
-HTML SHA256: ddd885c83df1925e707b7f83fb2a410fe78544af32b179c2e39ce10174b14308
+HTML SHA-256: ee06c643160dc1bd1b0eda9ac654d9a3f892f158e72282d19952b57ff3d63352
