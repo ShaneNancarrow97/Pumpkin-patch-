@@ -19,5 +19,9 @@
     "voxel/src/content/farm-layout.js",
     "voxel/src/content/hollow-house.js",
     "voxel/src/places.js"
-  ]
+  ],
+  "packagedPatchSourceHead": "b210644ffe7af1933701d3d902b34245e1c36498",
+  "packagedPatchSha256": "9e5029579926913db29c7a14c1e1919afb31c4a13c888aaef7f98c5bee4fa983",
+  "packagedPatchCleanApplyCheckPassed": true,
+  "packagedPatchRebuildSha256": "ee06c643160dc1bd1b0eda9ac654d9a3f892f158e72282d19952b57ff3d63352"
 }

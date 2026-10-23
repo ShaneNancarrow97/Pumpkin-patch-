@@ -9,4 +9,4 @@ Integrated on Claude’s ac698dc. Runtime 3c10605 followed by darker atmosphere 
 
 The earlier visual attempt used DPR 1 while its assertion expected2; the corrected final run explicitly emulates DPR 2. This was a harness setup correction. Only the passing final run is included. Browser reports record no external runtime requests and no page/console errors.
 
-Software Chromium WebGL establishes rendering, logic and layout. It is not a physical Fold 7 FPS measurement. Normal game smoke results are recorded in the release handover after that run completes.
+Software Chromium WebGL establishes rendering, logic and layout. It is not a physical Fold 7 FPS measurement. The unchanged normal game smoke passes all 48 desktop/phone checks; see normal-game-smoke.json and normal-game-smoke.log. It uses SMOKE_LITE (glow/shadows/music off), DPR 1 and no optional screenshot captures. farm-latest-lead.png is an additional capture from the earlier probe on this same HTML. All high-resolution maze checks are separate and use Sharp/DPR 2 with bloom/shadows.

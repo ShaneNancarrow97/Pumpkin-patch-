@@ -33,10 +33,10 @@ Preserve these lead contracts:
 
 ## Integration review and remaining verification
 
-Independent source review of `3c10605` against `ac698dc` found the overlapping contracts retained in `main.js`, `scene.js` and `build.mjs`: both stylesheets, intro flow/API and keyboard guard, mist/lake settings, order handlers/sending, ambience, table-top picking, camera reach/glide and the maze input exclusions. The existing rules/model remain upstream versions. The integrated build and ride checks are now recorded in handover 29 and the verification directory. The ordinary game smoke run is in progress.
+Independent source review of `3c10605` against `ac698dc` found the overlapping contracts retained in `main.js`, `scene.js` and `build.mjs`: both stylesheets, intro flow/API and keyboard guard, mist/lake settings, order handlers/sending, ambience, table-top picking, camera reach/glide and the maze input exclusions. The existing rules/model remain upstream versions. The integrated build and ride checks are now recorded in handover 29 and the verification directory. The ordinary game smoke passes all 48 desktop/phone checks with no page errors; the complete report is in the verification directory.
 
 Use an isolated review worktree based on the exact lead hash, preserving unpublished lead work. Build the downloadable HTML from the integrated source, then run the complete rule/art suite, ordinary smoke flow and maze QA. Any fresh-save browser harness must call `PumpkinVoxel.intro.skip()` before attempting world/menu input; Claude’s updated smoke script already does this.
 
 Check round trips of the new save fields, ordinary pumpkin/order sales, table/shelf placement, the selected-piece camera, real foyer-door entry, free-tour ledger isolation, pause/replay/Exit, touch look and phone/Fold layouts. Software WebGL screenshots establish layout/rendering, not physical-device frame rate.
 
-This note records inspected source and integration requirements. Final integrated commit, build hash, test results and download links belong in the delivery manifest and verification report; none are asserted here before those checks finish. The contractor does not push or replace `voxel-reference`.
+The delivery manifest pins the final source commit, patch base and artifact hashes. Handover 29 and the verification directory record completed integrated tests and the final build hash. The contractor does not push or replace `voxel-reference`.

@@ -58,7 +58,7 @@ CHROMIUM_PATH=/usr/bin/chromium npm --prefix voxel run smoke
 
 Fresh-save harnesses must call `PumpkinVoxel.intro.skip()` before world/menu input. Run software-WebGL jobs sequentially. Required coverage includes actual foyer-door entry, five tiers, touch look, paused/resumed/replayed/closed tours, audio lifecycle and unchanged ticket ledgers; also check Claude’s ordinary order/sales/placement flows and additive-save round trips. Check desktop, portrait phone, landscape and Fold layouts. Screenshots verify rendering/layout, not physical Z Fold frame rate.
 
-Verification: **49 Node test files, 71 integrated core browser checks and 31 final focused checks pass**. The full core flow precedes the final darker visual pass; the final focused run checks that pass at Sharp/DPR 2 with bloom, shadows and FXAA. A clean binary-patch rebuild matches the HTML byte for byte. Reports are in [verification/first-person-maze](verification/first-person-maze/README.md). The ordinary game smoke run is additionally in progress and its result will be appended here.
+Verification: **49 Node test files, 71 integrated core browser checks and 31 final focused checks pass**. The full core flow precedes the final darker visual pass; the final focused run checks that pass at Sharp/DPR 2 with bloom, shadows and FXAA. A clean binary-patch rebuild matches the HTML byte for byte. Reports are in [verification/first-person-maze](verification/first-person-maze/README.md). The ordinary game smoke also passes all 48 desktop/phone checks with no page errors, using SMOKE_LITE and no optional captures. The final maze image is checked separately at Sharp/DPR 2 with bloom and shadows.
 
 HTML SHA-256: `ee06c643160dc1bd1b0eda9ac654d9a3f892f158e72282d19952b57ff3d63352`.
 
