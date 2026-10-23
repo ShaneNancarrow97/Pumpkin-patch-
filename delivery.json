@@ -1,0 +1,27 @@
+{
+  "sourceCommit": "4fccd9da673b9af9a6ac0ef6e3ec96b5b92d959b",
+  "artifactBranch": "contractor/hayride-design-downloads-2026-10-23",
+  "scope": "Roadmap, generated concept art and native voxel vehicle prototype; not a full playable attraction",
+  "files": [
+    {
+      "name": "Hollow-Hayride-Tractor-Preview.html",
+      "bytes": 710273,
+      "sha256": "c082df31eded172228de73468d38eca1363e842868fe8e2a5a7350ed1f96f078"
+    },
+    {
+      "name": "Hollow-Hayride-Tractor-Preview.zip",
+      "bytes": 183288,
+      "sha256": "d612700b5102af4249338170cd6a3987f520f3cb2aa64496c9748b42366bf6d2"
+    },
+    {
+      "name": "Hollow-Hayride-Design-Pack.zip",
+      "bytes": 5615865,
+      "sha256": "47c7f6bf27f848405d8ec796e6e9dcdcf06208b31ac0886b16d8673be1772323"
+    },
+    {
+      "name": "README.md",
+      "bytes": 1497,
+      "sha256": "9b0cd9cc345c806e0be3725e7254b6d8e80c00398503bbac5446ac97bb0b7015"
+    }
+  ]
+}
