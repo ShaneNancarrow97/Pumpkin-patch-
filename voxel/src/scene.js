@@ -29,6 +29,7 @@ import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
 import { fieldDepth, extendFarmRoute, DROP, patchShape, COUNTER_GAP } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
+import { createMazeRideView } from "./maze-ride-view.js";
 import { createFoyerView } from "./foyer-view.js";
 import { createAmbience } from "./ambience.js";
 import { mistClearings } from "./content/ambience.js";
@@ -228,8 +229,9 @@ export function createScene(canvas, state, hooks) {
   const roomCam = new THREE.PerspectiveCamera(INTERIOR.fov, 1, 0.1, 200);
   const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
   const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.() });
-  const active = () => view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
-  const activeScene = () => view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
+  const mazeView = createMazeRideView(canvas, state, { onCue: cue => hooks.onMazeCue?.(cue), onComplete: status => hooks.onMazeComplete?.(status), onState: status => hooks.onMazeState?.(status), blocked: () => document.body.classList.contains("menu-open") });
+  const active = () => view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
+  const activeScene = () => view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
   const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null, reach: { x: 0, z: 0 } };
   let farmView = null;
   let bloomOn = true;
@@ -327,6 +329,8 @@ export function createScene(canvas, state, hooks) {
     const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
     renderPass.camera = active();
     renderPass.scene = activeScene();
+    renderer.toneMappingExposure = view.place === "maze" ? 1.05 : 1.45;
+    if (view.place === "maze") { mazeView.resize(); return; }
     if (view.place === "estate") { estateView.resize(w, h); return; }
     if (view.place === "foyer") { foyerView.resize(); return; }
     if (view.place) { clampView(); frameRoom(w, h); return; }
@@ -374,7 +378,7 @@ export function createScene(canvas, state, hooks) {
   const piecePoint = e => { inputRay(e); floorPlane.constant = -places.standHeight(hooks.selectedPiece?.()); return ray.ray.intersectPlane(floorPlane, floorPoint) ? { x: floorPoint.x - ORIGIN.room.x, y: floorPoint.y, z: floorPoint.z - ORIGIN.room.z } : null; };
   const worldPerPixel = () => (camera.right - camera.left) / canvas.clientWidth;
   canvas.addEventListener("pointerdown", (e) => {
-    if (["estate", "foyer"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
+    if (["estate", "foyer", "maze"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
     canvas.setPointerCapture(e.pointerId); glide = null;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 1) {
@@ -394,7 +398,7 @@ export function createScene(canvas, state, hooks) {
     }
   });
   canvas.addEventListener("pointermove", (e) => {
-    if (["estate", "foyer"].includes(view.place)) return;
+    if (["estate", "foyer", "maze"].includes(view.place)) return;
     if (!touches.has(e.pointerId)) return;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pinch && touches.size === 2) { const [a, b] = [...touches.values()];
@@ -415,7 +419,7 @@ export function createScene(canvas, state, hooks) {
   });
   let lastPick = null;
   const end = (e) => {
-    if (["estate", "foyer"].includes(view.place) || !touches.has(e.pointerId)) return;
+    if (["estate", "foyer", "maze"].includes(view.place) || !touches.has(e.pointerId)) return;
     const wasPieceDrag = pieceDrag === e.pointerId;
     const wasTap = !wasPieceDrag && drag && drag.moved < 8 && touches.size === 1 && (e.pointerType !== "mouse" || e.button === 0);
     if (wasPieceDrag) { hooks.onPieceDragEnd?.(false); pieceDrag = null; }
@@ -447,7 +451,7 @@ export function createScene(canvas, state, hooks) {
   canvas.addEventListener("contextmenu", e => { e.preventDefault(); cancelGesture(); });
   window.addEventListener("blur", () => cancelGesture());
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelGesture(); });
-  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); }, { passive: false });
+  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer", "maze"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, 2.6); clampView(); frame(); }, { passive: false });
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.
   function clampView() {
@@ -502,6 +506,8 @@ export function createScene(canvas, state, hooks) {
       if (glide.t === 1) glide = null;
     }
 
+    // Hidden farm rendering rests during the ride; the pure simulation still runs.
+    if (view.place !== "maze") {
     // Plots.
     plots.forEach((p, i) => {
       const plot = state.plots[i], open = i < openPlots(state);
@@ -592,6 +598,8 @@ export function createScene(canvas, state, hooks) {
     places.tick(dt, time, paying > 0);
     estateView.tick(time);
     foyerView.tick(dt, time);
+    }
+    mazeView.tick(dt, time);
 
     for (let i = fx.length - 1; i >= 0; i--) {
       const f = fx[i]; f.t += dt; f.el.hidden = f.scene !== view.place;
@@ -625,18 +633,22 @@ export function createScene(canvas, state, hooks) {
     refreshLooks() { placeActor("natalie"); placeActor("shane"); places.refresh(); },
     // Stepping inside: a room of the cottage, or the shop floor. leavePlace() comes back out.
     enter(kind, id) {
+      cancelGesture();
+      if (view.place === "maze") mazeView.leave();
       if (!view.place) farmView = { x: view.x, z: view.z, zoom: view.zoom };
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
       view.place = kind;
       if (kind === "estate") { places.leave(); estateView.enter(); }
       else if (kind === "foyer") { places.leave(); foyerView.enter(); }
+      else if (kind === "maze") { places.leave(); mazeView.enter(id.config, id.options); }
       else if (kind === "room") places.enterRoom(id); else places.enterShop();
       Object.assign(view, { x: 0, z: 0, zoom: 1, reach: { x: 0, z: 0 } }); glide = null;
       frame();
     },
     leavePlace() {
       if (!view.place) return;
+      cancelGesture(); if (view.place === "maze") mazeView.leave();
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
       places.leave();
@@ -644,13 +656,14 @@ export function createScene(canvas, state, hooks) {
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
       frame();
     },
-    get place() { return view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
+    get place() { return view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
     get visitorStatus() { return [...visitorModels].map(([id,e]) => ({ id, kind: state.visitors.find(v=>v.id===id)?.kind, visible: e.m.visible, sprite: e.sprite, leadingLeg: e.m.userData.leadingLeg, frames: e.m.userData.walk?.length ?? 0, frame: e.m.userData.walk?.indexOf(e.m.userData.shown) ?? -1, x: e.m.position.x, z: e.m.position.z })); },
     get farmExpansionStatus() { return farmExpansion.status; },
     get festivalStatus() { return festivalWorld.status; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
     fitView() {
+      if (view.place === "maze") { mazeView.setLook(0, 0); mazeView.resize(); return; }
       if (view.place === "estate") { estateView.cameraActions.reset(); return; }
       if (view.place === "foyer") { foyerView.cameraActions.reset(); return; }
       Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
@@ -667,6 +680,12 @@ export function createScene(canvas, state, hooks) {
     previewFoyerDecor(data) { foyerView.preview(data); },
     speakMortimer() { foyerView.speak(true); },
     get foyerCamera() { return foyerView.cameraActions; },
+    get mazeStatus() { return mazeView.status; },
+    get mazeConfig() { return mazeView.config; },
+    pauseMazeRide(on) { return mazeView.setPaused(on); },
+    restartMazeRide(options) { return mazeView.restart(options); },
+    setMazeOptions(options) { mazeView.setOptions(options); },
+    advanceMazeRide(seconds) { return mazeView.advanceForTest(seconds); },
     get foyerStatus() { return foyerView.status; },
     get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? "FXAA" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
     setRenderQuality(value) { renderQuality = validRenderQuality(value); resize(); return renderQuality; },
@@ -688,7 +707,7 @@ export function createScene(canvas, state, hooks) {
     ambience,
     setVoxelCharacters(on) { if (on !== voxelCharacters) { voxelCharacters = on; placeCharacters(); } },
     get characterStyle() { return skyla ? (voxelCharacters ? "voxels" : "sprites") : "loading"; },
-    setShadows(on) { renderer.shadowMap.enabled = on; for (const viewScene of [scene, estateView.scene, foyerView.scene]) viewScene.traverse((o) => { if (o.material) o.material.needsUpdate = true; }); },
+    setShadows(on) { renderer.shadowMap.enabled = on; for (const viewScene of [scene, estateView.scene, foyerView.scene, mazeView.scene]) viewScene.traverse((o) => { if (o.material) o.material.needsUpdate = true; }); },
     renderer,
   };
 }

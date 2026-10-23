@@ -8,6 +8,9 @@ import { createScene } from "./scene.js";
 import { pumpkinTemplate } from "./pumpkins.js";
 import { createLevelCelebration } from "./ui/level-celebration.js";
 import { createAudio } from "./ui/audio.js";
+import { createMazeRideUI } from "./ui/maze-ride-ui.js";
+import { createMazeAudio } from "./ui/maze-audio.js";
+import { buildMazeRideConfig } from "./rules/maze-ride.js";
 import { farmSheets } from "./ui/farm-sheets.js";
 import { homeSheets } from "./ui/home-sheets.js";
 import { collectionSheets } from "./ui/collection-sheets.js";
@@ -40,11 +43,17 @@ document.addEventListener("visibilitychange", () => document.hidden && save());
 const prefs = (() => {
   // Mist and the moving lake start off for anyone who has asked for less motion.
   const still = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const base = { renderQuality: "sharp", glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false, mist: !still, lakeLights: !still };
+  const base = { renderQuality: "sharp", glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false, mist: !still, lakeLights: !still, mazeSound: true, mazeVolume: .45 };
   try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; }
 })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
-const audio = createAudio(prefs);
+const audio = createAudio(prefs), mazeAudio = createMazeAudio(prefs);
+const mazeUI = createMazeRideUI({ prefs, savePrefs,
+  onStart: startMazeRide, onPause: pauseMazeRide, onExit: exitMazeRide, onReplay: replayMazeRide,
+  onSound: on => mazeAudio.setMuted(!on), onVolume: value => mazeAudio.setVolume(value),
+  onGentle: on => { mazeAudio.setGentle(on); scene.setMazeOptions({ gentle: on }); },
+  onFullscreen: () => $("fullscreen").click(),
+});
 
 // Shane and Natalie's own words from the main game.
 const PEOPLE = { natalie: ["Natalie", "Co-owner & pumpkin whisperer"], shane: ["Shane", "Co-owner & chief pumpkin lifter"] };
@@ -77,6 +86,9 @@ const scene = createScene($("world"), state, {
   onPieceDragStart: point => home.tools.beginDrag(point),
   onPieceDragMove: point => home.tools.dragTo(point),
   onPieceDragEnd: cancelled => home.tools.endDrag(cancelled),
+  onMazeCue: cue => mazeAudio.cue(cue),
+  onMazeState: status => mazeUI.update(status),
+  onMazeComplete: status => { mazeAudio.pause(true); mazeUI.update(status); },
   canRotatePiece: () => !!home.tools.selected && M.footprint(state.house.placed.find((p) => p.instance === home.tools.selected)?.id ?? "f01").layer !== "wall",
   foyerEditing: () => foyerTools.active || openTab === "foyer",
   estateEditing: () => estateTools.active,
@@ -97,6 +109,7 @@ const scene = createScene($("world"), state, {
     else if (what.type === "estate-ground") { if (estateTools.active) estateTools.placeAt(what.point.x, what.point.z); }
     else if (what.type === "hollow-house") { closeSheet(); hollowContext.open(); }
     else if (what.type === "foyer-exit") { if (!foyerTools.active) leavePlace(); }
+    else if (what.type === "maze-door") { if (!foyerTools.active) openMazeRide(); }
     else if (what.type === "mortimer") { if (!foyerTools.active) scene.speakMortimer(); }
     else if (what.type === "foyer-decor") foyerTools.select(what.instance);
     else if (["foyer-ground", "foyer-wall"].includes(what.type)) { if (foyerTools.active) foyerTools.placeAt(what.point.x, what.point.z, what.wall, what.point.y); }
@@ -211,12 +224,40 @@ function notice(text) {
 // Stepping inside the cottage or the shop, and back out.
 let interiorFromEstate = false;
 function enterRoom(id) {
+  if (mazeUI.active) stopMazePresentation();
   if (!M.roomUnlocked(state, id)) id = "parlour";
   if (scene.place?.kind === "estate") interiorFromEstate = true; else if (scene.place?.kind !== "room") interiorFromEstate = false;
   foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); state.house.activeRoom = id; scene.enter("room", id); renderPlace();
 }
-function enterEstate() { foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); scene.enter("estate"); closeSheet(); renderPlace(); }
-function enterFoyer() { if (!M.hollowReady(state)) { openHollowSheet(); return false; } foyerTools.cancel(); estateTools.cancel(); hollowContext.close(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("foyer"); closeSheet(); renderPlace(); return true; }
+function enterEstate() { if (mazeUI.active) stopMazePresentation(); foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); scene.enter("estate"); closeSheet(); renderPlace(); }
+function enterFoyer() { if (mazeUI.active) stopMazePresentation(); if (!M.hollowReady(state)) { openHollowSheet(); return false; } foyerTools.cancel(); estateTools.cancel(); hollowContext.close(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("foyer"); closeSheet(); renderPlace(); return true; }
+// The owner’s walkthrough is a transient camera experience, never a paid visit.
+function openMazeRide() {
+  if (mazeUI.active) return true;
+  const config = buildMazeRideConfig(state);
+  if (!config) { openHollowSheet(); return false; }
+  foyerTools.cancel(); estateTools.cancel(); home.tools.select(null); hollowContext.close(); guestCard.clear(); closeSheet();
+  document.body.classList.add("maze-experience");
+  scene.enter("maze", { config, options: { ...mazeUI.options, paused: true } });
+  mazeUI.open(config); audio.setSceneGain(.08); renderPlace(); return true;
+}
+function startMazeRide(options = mazeUI.options) {
+  if (scene.place?.kind !== "maze" || !mazeUI.active) return false;
+  scene.setMazeOptions(options); mazeAudio.start(options); scene.pauseMazeRide(false); mazeUI.update(scene.mazeStatus); return true;
+}
+function pauseMazeRide(on = true) {
+  if (scene.place?.kind !== "maze") return false;
+  scene.pauseMazeRide(on); mazeAudio.pause(on); mazeUI.update(scene.mazeStatus); return true;
+}
+function replayMazeRide(options = mazeUI.options) {
+  if (scene.place?.kind !== "maze") return false;
+  mazeAudio.start(options); scene.restartMazeRide(options); mazeUI.update(scene.mazeStatus); return true;
+}
+function stopMazePresentation() { mazeUI.close(); mazeAudio.stop(); audio.setSceneGain(1); document.body.classList.remove("maze-experience"); }
+function exitMazeRide() {
+  if (!mazeUI.active && scene.place?.kind !== "maze") return false;
+  stopMazePresentation(); scene.enter("foyer"); renderPlace(); return true;
+}
 function openHollowSheet(tab = "manage") { sheets.hollow.setTab(tab); openSheet("hollow"); }
 function openFoyerSheet(tab = "catalogue") { sheets.foyer.setTab(tab); openSheet("foyer"); }
 // Up or down the stairs, or through a doorway, to the next room.
@@ -226,8 +267,8 @@ function goTo(id) {
   home.tools.select(null); enterRoom(id); notice(`${way} the ${name}.`); audio.tone(440);
   if (openTab === "home") draw();
 }
-function enterShop() { foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("shop"); renderPlace(); }
-function leavePlace() { foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.leavePlace(); renderPlace(); }
+function enterShop() { if (mazeUI.active) stopMazePresentation(); foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("shop"); renderPlace(); }
+function leavePlace() { if (mazeUI.active) stopMazePresentation(); foyerTools.cancel(); hollowContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.leavePlace(); renderPlace(); }
 function openHome() { if (scene.place?.kind === "room") { sheets.home.setTab("rooms"); openSheet("home"); } else if (scene.place?.kind === "estate") openEstateSheet("grounds"); else enterEstate(); }
 function openEstateSheet(tab = "garden") { sheets.estate.setTab(tab); openSheet("estate"); }
 function upgradeEstateHouse() {
@@ -242,7 +283,7 @@ function renderPlace() {
   document.body.classList.toggle("inside-place", inside);
   document.body.classList.toggle("house-estate", p?.kind === "estate");
   $("place-bar").hidden = !inside; $("actions").hidden = inside; $("goal").hidden = inside;
-  if (inside) $("place-title").textContent = p.kind === "estate" ? "Home & Garden" : p.kind === "foyer" ? "The Hollow House · Foyer" : p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
+  if (inside) $("place-title").textContent = p.kind === "estate" ? "Home & Garden" : p.kind === "maze" ? "The Hollow House · Walkthrough" : p.kind === "foyer" ? "The Hollow House · Foyer" : p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
   $("place-back").setAttribute("aria-label", p?.kind === "room" && interiorFromEstate ? "Back to the garden" : "Back to the patch");
   $("place-back").querySelector(".place-back-text").textContent = p?.kind === "room" && interiorFromEstate ? "Back to garden" : "Back to farm";
   $("place-rooms").disabled = p?.kind === "shop";
@@ -262,6 +303,7 @@ $("boost").onclick = boost;
 // The HUD, actions, goal and streak, every frame (cheap: only text changes).
 const text = (id, value) => { const el = $(id); if (el.textContent !== String(value)) el.textContent = value; };
 function render() {
+  if (mazeUI.active) mazeUI.update(scene.mazeStatus);
   if (M.awardLevels(state).length) save();
   text("coins", money(state.coins));
   text("stock", `${M.available(state)}/${M.barnCapacity(state)}`);
@@ -271,13 +313,13 @@ function render() {
   text("level-number", lvl.level);
   $("open-levels").setAttribute("aria-label", `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View rewards`);
   $("open-levels").style.setProperty("--progress", (lvl.progress * 100).toFixed(1) + "%");
-  celebration.tick(!!openTab || !!home.tools.selected || state.paused);
-  stockPopover.tick(celebration.active || !!openTab || estateTools.active || foyerTools.active || !!home.tools.selected);
-  guestCard.tick(!!openTab || celebration.active || estateTools.active || foyerTools.active || !!home.tools.selected);
+  celebration.tick(mazeUI.active || !!openTab || !!home.tools.selected || state.paused);
+  stockPopover.tick(mazeUI.active || celebration.active || !!openTab || estateTools.active || foyerTools.active || !!home.tools.selected);
+  guestCard.tick(mazeUI.active || !!openTab || celebration.active || estateTools.active || foyerTools.active || !!home.tools.selected);
   estateTools.tick(!!openTab || celebration.active);
   foyerTools.tick(!!openTab || celebration.active);
-  hollowContext.tick(!!openTab || celebration.active);
-  npcRewards.tick(!!scene.place || !!openTab || !!home.tools.selected || celebration.active || state.paused || document.hidden);
+  hollowContext.tick(mazeUI.active || !!openTab || celebration.active);
+  npcRewards.tick(mazeUI.active || !!scene.place || !!openTab || !!home.tools.selected || celebration.active || state.paused || document.hidden);
   $("level-bar").style.width = (lvl.progress * 100).toFixed(1) + "%";
   $("hud-level").title = `Level ${lvl.level}: ${lvl.name}. ${lvl.tagline}.`;
   text("level-name", lvl.name);
@@ -339,7 +381,7 @@ const ui = {
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
   portrait: (id) => scene.portrait(id),
   intro,
-  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet,
+  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide,
   get estateTools() { return estateTools; },
   get foyerTools() { return foyerTools; }, get hollowContext() { return hollowContext; },
   read: (id) => collection.read(id),
@@ -379,6 +421,7 @@ function draw() {
   text("sheet-title", title);
 }
 function openSheet(tab) {
+  if (mazeUI.active) exitMazeRide();
   if(!openTab)sheetReturnFocus=document.activeElement instanceof HTMLElement&&document.activeElement!==document.body?document.activeElement:null;
   menuMemory.leave();
   stockPopover.close();
@@ -398,7 +441,7 @@ function openSheet(tab) {
 }
 function closeSheet() { const wasOpen=!!openTab;menuMemory.leave();document.body.classList.remove("menu-open"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
 function markTab() {
-  const active = openTab ? TABS[openTab] : scene.place?.kind === "foyer" ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
+  const active = openTab ? TABS[openTab] : ["foyer", "maze"].includes(scene.place?.kind) ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
 }
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
@@ -411,7 +454,7 @@ $("open-settings").onclick = () => openSheet("settings");
 $("sheet-close").onclick = closeSheet;
 
 document.addEventListener("keydown", (e) => {
-  if (intro.active) return;                                                       // the introduction has the keys while it plays
+  if (intro.active || mazeUI.active) return;
   if (e.key !== "Escape" && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
   if (celebration.active) return;
   const tools = home.tools;
@@ -443,7 +486,12 @@ render(); renderPlace();
 // For the smoke test and screenshots: `advance` runs the rules forward, since a
 // software-rendered browser only manages a few frames a second.
 const advance = (seconds) => { for (let t = 0; t < seconds; t += 0.1) for (const e of M.update(state, 0.1)) handle(e); render(); };
-window.PumpkinVoxel = { state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, estateTools, foyerTools, tools: home.tools, audio, advance };
+const mazeDiagnostics = {
+  open: openMazeRide, start: startMazeRide, close: exitMazeRide, pause: pauseMazeRide, restart: replayMazeRide,
+  advance(seconds) { const status = scene.advanceMazeRide(seconds); mazeUI.update(status); return { ...status, audio: mazeAudio.status }; },
+  get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
+};
+window.PumpkinVoxel = { maze: mazeDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, estateTools, foyerTools, tools: home.tools, audio, advance };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";

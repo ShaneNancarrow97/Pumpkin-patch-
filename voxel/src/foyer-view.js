@@ -25,6 +25,8 @@ export function createFoyerView(canvas, state, hooks) {
   const hit = (geometry, type, extra = {}) => { const m = new THREE.Mesh(geometry, material); m.userData = { type, ...extra }; scene.add(m); hits.push(m); return m; };
   const floor = hit(new THREE.PlaneGeometry(1, 1), "foyer-ground"); floor.rotation.x = -Math.PI / 2; floor.position.y = .09;
   const exit = hit(new THREE.BoxGeometry(2, 2.8, .4), "foyer-exit"), hostHit = hit(new THREE.BoxGeometry(1.2, 2.3, .9), "mortimer");
+  const mazeEntrance = hit(new THREE.BoxGeometry(2.3, 2.9, .5), "maze-door");
+  const mazeOutline = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2.35, 2.92, .06)), new THREE.LineBasicMaterial({ color: 0xc3a0e1, transparent: true, opacity: .3, toneMapped: false })); scene.add(mazeOutline);
   const walls = ["back", "left", "right"].map(wall => hit(new THREE.PlaneGeometry(1, 1), "foyer-wall", { wall }));
   let active = false, built = false, room = null, signature = "", first = true, time = 0, nextSpeech = 0, speechUntil = 0, speechIndex = 0, lastEvent = "";
   const bubble = document.createElement("div"); bubble.className = "mortimer-bubble"; bubble.hidden = true; document.body.append(bubble);
@@ -36,6 +38,7 @@ export function createFoyerView(canvas, state, hooks) {
     const h = state.hollowHouse, l = foyerLayout(state), key = JSON.stringify([h.tier, h.foyer.finishes]);
     if (key !== signature) {
       if (room) { scene.remove(room); disposeHollowObject(room); } room = buildHollowFoyer(state); scene.add(room); signature = key;
+      mazeEntrance.position.set(l.mazeDoor.x, 1.45, l.mazeDoor.z + .24); mazeOutline.position.copy(mazeEntrance.position);
       floor.scale.set(l.w, l.d, 1); exit.position.set(0, 1.4, l.z1); host.position.set(l.attendant.x, .06, l.attendant.z); hostHit.position.set(l.attendant.x, 1.2, l.attendant.z);
       fire.position.set(0, 1, l.z0 + .9); deskLamp.position.set(l.counter.x, 2, l.counter.z + .5);
       deskLamp.color.setHex(FOYER_FINISH_BY_ID[h.foyer.finishes.lighting]?.color ?? 0xffc476);
@@ -109,6 +112,7 @@ export function createFoyerView(canvas, state, hooks) {
       for (const v of list) { let e = guests.get(v.id); if (!e) { const model = hooks.visitorModel(v.kind), pick = hit(new THREE.BoxGeometry(.9,2.2,.8),"visitor",{id:v.id}); scene.add(model); e={model,hit:pick}; guests.set(v.id,e); } const p=foyerVisitorPosition(state,v); if (!p) continue; e.model.position.set(p.x,.08,p.z); e.hit.position.set(p.x,1.2,p.z); hooks.animate(e.model,now+v.id,["entering","to-maze","returning","requeue","exit"].includes(v.hollow.phase)||v.hollow.phase==="serving"&&v.hollow.elapsed<.8); }
       let activity = list.some(v=>v.hollow.phase==="serving") ? "selling" : "idle"; const event=state.hollowHouse.lastEvent;
       if (event && state.time-event.at<2) activity={ticket:"counting",welcome:"welcome",gesture:"gesture",survivor:"frightened"}[event.kind]??activity;
+      mazeOutline.visible = !hooks.decorating?.(); mazeOutline.material.opacity = reducedMotion ? .3 : .28 + Math.sin(now * 1.4) * .05;
       const motionTime=reducedMotion?0:now;
       fire.intensity = 7.1 + Math.sin(motionTime * 2.1) * .35 + Math.sin(motionTime * 5.3) * .12;
       if (watchingEyes) watchingEyes.visible = Math.sin(motionTime * .19) > -.7;

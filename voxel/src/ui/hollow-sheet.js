@@ -38,7 +38,7 @@ export function hollowSheets(ui) {
       <div class="special-prices"><label>Ticket price<select data-hollow-price aria-label="Hollow House ticket price" ${editable(s) ? "" : "disabled"}>${Array.from({ length: max - min + 1 }, (_, i) => min + i).map(price => `<option value="${price}" ${price === h.ticketPrice ? "selected" : ""}>${money(price)}</option>`).join("")}</select></label></div>
       <p class="small">Guests consider bravery, value and their remaining money. A higher ticket price can mean fewer sales.</p>
       ${scareSummary(s)}
-      <div class="maze-visit-actions"><button class="button gold" data-hollow-action="enter">Enter foyer</button><button class="button" data-hollow-action="decorate">Decorate</button></div>
+      <div class="maze-visit-actions"><button class="button gold" data-hollow-action="experience">Experience</button><button class="button" data-hollow-action="enter">Enter foyer</button><button class="button" data-hollow-action="decorate">Decorate</button></div>
       <p class="small">Axel takes ${c.serviceSeconds}s per ticket. Your attraction keeps running while you explore elsewhere.</p>`;
   }
   function haunts(s) {
@@ -91,6 +91,7 @@ export function hollowSheets(ui) {
       body.querySelector("[data-hollow-price]")?.addEventListener("change", e => { if (H.setHollowTicketPrice(ui.state, Number(e.target.value))) changed(); else e.target.value = String(ui.state.hollowHouse.ticketPrice); });
       body.querySelectorAll("[data-hollow-action]").forEach(b => b.onclick = () => {
         const action = b.dataset.hollowAction;
+        if (action === "experience") { ui.openMazeRide?.(); return; }
         if (action === "enter") { ui.enterFoyer(); ui.closeSheet(); return; }
         if (action === "decorate") { ui.enterFoyer(); ui.openFoyerSheet?.("catalogue"); return; }
         const s = ui.state, h = s.hollowHouse;
@@ -113,19 +114,19 @@ export function hollowSheets(ui) {
 
 // A building selection is a small invitation, with deeper management on demand.
 export function createHollowContext(ui) {
-  const host = document.createElement("aside"); host.className = "building-context"; host.hidden = true; host.setAttribute("aria-label", "The Hollow House"); document.body.append(host);
+  const host = document.createElement("aside"); host.className = "building-context hollow-context"; host.hidden = true; host.setAttribute("aria-label", "The Hollow House"); document.body.append(host);
   let selected = false, lastHTML = "";
   const view = { open() { selected = true; lastHTML = ""; view.tick(false); }, close() { selected = false; host.hidden = true; }, tick(blocked = false) {
     host.hidden = !selected || blocked || !!ui.scene.place; if (host.hidden) return;
     const s = ui.state, h = s.hollowHouse, c = config(s), o = occupancy(s), ready = H.hollowReady(s);
-    const html = `<header><div><h3>The Hollow House</h3><p>${h.purchased ? `Level ${h.tier} · ` : ""}${status(s)}</p></div><button class="icon-button" data-hollow-context="close" aria-label="Close attraction details">×</button></header>${ready ? `<p class="building-context-summary">${o.maze}/${c.mazeCapacity} in maze · ${o.foyer}/${c.capacity} waiting · ${money(h.ticketPrice)} ticket</p>` : `<p class="building-context-summary">${h.status === "restoring" ? `${Math.max(0, Math.ceil(h.restoreRemaining))}s until restoration completes` : !h.purchased ? gateText(s) : "Restore the house before admitting visitors."}</p>`}<div class="building-context-actions"><button class="button gold" data-hollow-context="enter" ${ready ? "" : "disabled"}>Enter</button><button class="button" data-hollow-context="manage">Manage</button><button class="button" data-hollow-context="upgrade" ${ready ? "" : "disabled"}>Upgrade</button></div>`;
+    const html = `<header><div><h3>The Hollow House</h3><p>${h.purchased ? `Level ${h.tier} · ` : ""}${status(s)}</p></div><button class="icon-button" data-hollow-context="close" aria-label="Close attraction details">×</button></header>${ready ? `<p class="building-context-summary">${o.maze}/${c.mazeCapacity} in maze · ${o.foyer}/${c.capacity} waiting · ${money(h.ticketPrice)} ticket</p>` : `<p class="building-context-summary">${h.status === "restoring" ? `${Math.max(0, Math.ceil(h.restoreRemaining))}s until restoration completes` : !h.purchased ? gateText(s) : "Restore the house before admitting visitors."}</p>`}<div class="building-context-actions"><button class="button gold" data-hollow-context="experience" ${ready ? "" : "disabled"}>Experience</button><button class="button" data-hollow-context="enter" ${ready ? "" : "disabled"}>Enter</button><button class="button" data-hollow-context="manage">Manage</button><button class="button" data-hollow-context="upgrade" ${ready ? "" : "disabled"}>Upgrade</button></div>`;
     if (html !== lastHTML) { host.innerHTML = html; lastHTML = html; }
   } };
   host.addEventListener("click", e => {
     const action = e.target.closest("[data-hollow-context]")?.dataset.hollowContext; if (!action) return;
     if (action === "close") { view.close(); return; }
     view.close();
-    if (action === "enter") ui.enterFoyer(); else openManage(ui, action === "upgrade" ? "upgrades" : "manage");
+    if (action === "experience") ui.openMazeRide?.(); else if (action === "enter") ui.enterFoyer(); else openManage(ui, action === "upgrade" ? "upgrades" : "manage");
   });
   return view;
 }

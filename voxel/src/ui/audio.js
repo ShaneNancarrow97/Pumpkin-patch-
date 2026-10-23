@@ -6,7 +6,7 @@ import { MUSIC_TRACKS } from "./music-tracks.js";
 export { MUSIC_TRACKS };
 
 export function createAudio(prefs) {
-  let ctx = null, master = null, noise = null, touched = false, timer = null, clip = null, start = 0, cursor = 0, selected = null, duckUntil = 0;
+  let ctx = null, master = null, noise = null, touched = false, timer = null, clip = null, start = 0, cursor = 0, selected = null, duckUntil = 0, sceneGain = 1;
   const voices = new Set(), cache = new Map(), queue = createMusicQueue(MUSIC_TRACKS.map((t) => t.id));
   const current = () => MUSIC_TRACKS.find((t) => t.id === prefs.musicTrack) ?? MUSIC_TRACKS[0];
   function ensure() {
@@ -20,7 +20,15 @@ export function createAudio(prefs) {
     }
     if (ctx.state === "suspended") ctx.resume().catch(() => {});
   }
-  const level = () => Math.max(0, Math.min(1, Number(prefs.musicVolume) || 0)) * .22;
+  const level = () => Math.max(0, Math.min(1, Number(prefs.musicVolume) || 0)) * .22 * sceneGain;
+  // Scene attenuation shares the music gain without restarting the MIDI queue.
+  function applyMusicGain() {
+    if (!master || !ctx) return;
+    const now = ctx.currentTime;
+    master.gain.cancelScheduledValues(now);
+    master.gain.setTargetAtTime(level() * (now < duckUntil ? .22 : 1), now, .04);
+    if (now < duckUntil) master.gain.setTargetAtTime(level(), duckUntil, .16);
+  }
   function stop() {
     clearInterval(timer); timer = null;
     for (const voice of [...voices]) { try { voice.stop(); } catch {} }
@@ -64,11 +72,11 @@ export function createAudio(prefs) {
     if (!prefs.music || document.hidden) { stop(); return; }
     try {
       ensure(); const track = current();
-      if (timer && selected === track.id) { master.gain.setTargetAtTime(level(), ctx.currentTime, .04); return; }
+      if (timer && selected === track.id) { applyMusicGain(); return; }
       stop(); selected = track.id;
       if (!cache.has(track.id)) cache.set(track.id, decodeMidi(track.bytes));
       clip = cache.get(track.id); cursor = 0; start = ctx.currentTime + .06;
-      master.gain.setTargetAtTime(level(), ctx.currentTime, .05);
+      applyMusicGain();
       timer = setInterval(schedule, 50); schedule();
     } catch { stop(); }
   }
@@ -82,19 +90,20 @@ export function createAudio(prefs) {
   }
   return {
     sync,
-    tone(freq = 520) { if (!prefs.sound || !touched) return; try { ensure(); blip(freq, ctx.currentTime, .18, .035); } catch {} },
+    tone(freq = 520) { if (!prefs.sound || !touched || sceneGain < 1) return; try { ensure(); blip(freq, ctx.currentTime, .18, .035); } catch {} },
     levelUp() {
-      if ((!prefs.sound && !prefs.music) || !touched) return;
+      if ((!prefs.sound && !prefs.music) || !touched || sceneGain < 1) return;
       try {
         ensure(); const start = ctx.currentTime;
-        if (timer) { master.gain.cancelScheduledValues(start); master.gain.setTargetAtTime(level() * .22, start, .03); master.gain.setTargetAtTime(level(), start + 1, .16); duckUntil = start + 1; }
-        [69, 72, 76, 81, 79, 81].forEach((note, i) => blip(440 * 2 ** ((note - 69) / 12), start + i * .105, .36, Math.min(.05, prefs.musicVolume * .14 + (prefs.sound ? .015 : 0)), "triangle"));
+        if (timer) { duckUntil = start + 1; applyMusicGain(); }
+        [69, 72, 76, 81, 79, 81].forEach((note, i) => blip(440 * 2 ** ((note - 69) / 12), start + i * .105, .36, Math.min(.05, prefs.musicVolume * .14 + (prefs.sound ? .015 : 0)) * sceneGain, "triangle"));
       } catch {}
     },
     setTrack(id) { if (!MUSIC_TRACKS.some((t) => t.id === id)) return; prefs.musicTrack = id; queue.reset(); sync(); },
     setShuffle(on) { prefs.musicShuffle = !!on; queue.reset(); },
     nextTrack() { prefs.musicTrack = queue.next(prefs.musicTrack ?? current().id, prefs.musicShuffle !== false); sync(); },
-    setVolume(v) { prefs.musicVolume = Math.max(0, Math.min(1, Number(v) || 0)); if (master && ctx) master.gain.setTargetAtTime(level() * (ctx.currentTime < duckUntil ? .22 : 1), ctx.currentTime, .04); },
-    get status() { return { track: selected, playing: !!timer, voices: voices.size, duration: clip?.duration ?? 0, context: ctx?.state ?? "waiting", shuffle: prefs.musicShuffle !== false }; },
+    setVolume(v) { prefs.musicVolume = Math.max(0, Math.min(1, Number(v) || 0)); applyMusicGain(); },
+    setSceneGain(value) { sceneGain = Math.max(0, Math.min(1, Number(value) || 0)); applyMusicGain(); },
+    get status() { return { track: selected, playing: !!timer, voices: voices.size, duration: clip?.duration ?? 0, context: ctx?.state ?? "waiting", shuffle: prefs.musicShuffle !== false, sceneGain }; },
   };
 }
