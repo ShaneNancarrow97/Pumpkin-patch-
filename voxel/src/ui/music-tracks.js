@@ -12,6 +12,7 @@ import disasterology from "../../assets/music/disasterology.mid";
 import crazyTrain from "../../assets/music/crazy-train.mid";
 import rebelYell from "../../assets/music/rebel-yell.mid";
 import nothingElseMatters from "../../assets/music/nothing-else-matters.mid";
+import dontFearTheReaper from "../../assets/music/dont-fear-the-reaper.mid";
 export const MUSIC_TRACKS = [
   { id: "lantern", name: "Lantern March", credit: "Original · playful music-box march", bytes: lantern },
   { id: "thriller", name: "Thriller", credit: "Michael Jackson · your supplied MIDI", bytes: thriller },
@@ -26,4 +27,5 @@ export const MUSIC_TRACKS = [
   { id: "crazy-train", name: "Crazy Train", credit: "Ozzy Osbourne · your supplied MIDI", bytes: crazyTrain },
   { id: "rebel-yell", name: "Rebel Yell", credit: "Billy Idol · your supplied MIDI", bytes: rebelYell },
   { id: "nothing-else-matters", name: "Nothing Else Matters", credit: "Metallica · your supplied MIDI", bytes: nothingElseMatters },
+  { id: "dont-fear-the-reaper", name: "(Don’t Fear) The Reaper", credit: "Blue Öyster Cult · your supplied MIDI", bytes: dontFearTheReaper },
 ];
