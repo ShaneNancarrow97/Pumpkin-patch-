@@ -59,7 +59,8 @@ export function takeawayCup(kind = "cocoa") {
     // The lid: a thin rim flush with the lip, a low dome, and the spout with its sip hole.
     v.block(0, .42, 0, .29, .02, .29, 0x1c1a1e); v.block(0, .44, 0, .25, .014, .25, 0x232026);
     v.block(0, .454, .08, .056, .016, .046, 0x1c1a1e); v.block(0, .47, .09, .026, .004, .013, 0x070607);
-    const model = v.build(); model.traverse(m => { if (m.material) m.material.userData.sharedCocoa = true; });
+    // Half the size it's modelled at: a small cup in a guest's hand.
+    const model = v.build(); model.scale.setScalar(.5); model.traverse(m => { if (m.material) m.material.userData.sharedCocoa = true; });
     templates.set(id, model);
   }
   return templates.get(id).clone();

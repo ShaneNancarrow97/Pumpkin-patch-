@@ -10,13 +10,13 @@ const icons = {
 };
 
 // Less-used systems stay a tap away while the farm remains the main screen.
+// The wardrobe has its own place in the dock.
 export function moreSheet(ui) {
   return { more: {
     eyebrow: "Make yourself at home", title: "Your patch",
     body() {
       const s = ui.state, ready = claimable(s).length;
       const links = [
-        ["wardrobe", "Wardrobe", "Outfits for Shane & Natalie"],
         ["journal", "Journal", ready ? `${ready} favour${ready === 1 ? "" : "s"} ready to collect` : "Favours, memories, books & level rewards"],
         ["settings", "Settings", "Sound, graphics, fullscreen & backups"],
         ["patch", "Back to the farm", "Return to the pumpkin patch"],

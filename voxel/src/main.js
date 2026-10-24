@@ -17,6 +17,7 @@ import { collectionSheets } from "./ui/collection-sheets.js";
 import { customerCareSheet } from "./ui/customer-care-sheet.js";
 import { createGuestCard } from "./ui/guest-card.js";
 import { createChatCard } from "./ui/chat-card.js";
+import { createUpgradeMenu } from "./ui/upgrade-menu.js";
 import { createNpcRewards } from "./ui/npc-rewards.js";
 import { festivalMeadowSheet } from "./ui/festival-meadow-sheet.js";
 import { estateSheet } from "./ui/estate-sheet.js";
@@ -424,7 +425,7 @@ $("fullscreen").onclick = async () => {
   catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
 };
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
-const TABS = { shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "more", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions" };
+const TABS = { shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions" };
 function draw() {
   if(menuMemory.dragging)return;
   const sheet = sheets[openTab]; if (!sheet) return;
@@ -460,8 +461,12 @@ function markTab() {
   const active = openTab ? TABS[openTab] : ["foyer", "maze"].includes(scene.place?.kind) ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
 }
+// Upgrades opens its menu; a choice opens the upgrades sheet at that section.
+const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { sheets.shop.setTab(section); openSheet("shop"); } });
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
   const tab = t.dataset.tab;
+  if (tab === "shop") { upgradeMenu.toggle(); return; }
+  upgradeMenu.close();
   if (tab === "patch") { leavePlace(); closeSheet(); scene.fitView(); }
   else if (tab === "home") openHome();
   else openSheet(tab);

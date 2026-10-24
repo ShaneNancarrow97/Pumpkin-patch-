@@ -33,7 +33,7 @@ export function installPremiumIcons() {
       });
       for(const [old,name]of Object.entries(legacy))rules.push(`.premium-icons-ready .ico.i-${old}{background-image:var(--menu-${name})!important;background-size:contain!important;background-position:center!important;image-rendering:auto!important;}`);
       rules.push('.premium-icons-ready .coin-icon{background-image:var(--menu-coins)!important;background-size:contain!important;background-position:center!important;image-rendering:auto!important;}');style.textContent=rules.join("\n");document.head.append(style);
-      const targets = {'[data-tab="patch"] > svg':"farm",'[data-tab="shop"] > svg':"build",'[data-tab="attractions"] > svg':"attractions",'[data-tab="home"] > svg':"home",'[data-tab="more"] > svg':"more",'#fullscreen > svg':"fullscreen",'#open-settings > svg':"settings",'.hud-visitors > svg':"visitors",'#place-back > svg':"back"};
+      const targets = {'[data-tab="patch"] > svg':"farm",'[data-tab="shop"] > svg':"build",'[data-tab="attractions"] > svg':"attractions",'[data-tab="home"] > svg':"home",'[data-tab="wardrobe"] > svg':"wardrobe",'[data-tab="more"] > svg':"more",'#fullscreen > svg':"fullscreen",'#open-settings > svg':"settings",'.hud-visitors > svg':"visitors",'#place-back > svg':"back"};
       for(const [selector,name]of Object.entries(targets))for(const old of document.querySelectorAll(selector)){const span=document.createElement("span");span.className="premium-icon";span.setAttribute("aria-hidden","true");span.style.backgroundImage=`var(--menu-${name})`;old.replaceWith(span);}
       document.body.classList.add("premium-icons-ready");document.body.dataset.premiumIconCount=String(loaded);resolve(loaded===MENU_ICON_NAMES.length);
     };

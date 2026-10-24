@@ -10,7 +10,7 @@ try{
  check(await page.locator('.dock button .premium-icon').count()===5,"all five navigation shortcuts use the generated artwork and retain labels");
  await page.screenshot({path:path.join(out,"desktop-premium-farm.png")});
  await page.locator('[data-tab="more"]').click();check(await page.locator('.more-icon .premium-icon').count()===4,"More destinations use one consistent icon family");await page.screenshot({path:path.join(out,"desktop-premium-more.png")});await page.locator('#sheet-close').click();
- await page.locator('[data-tab="shop"]').click();check(await page.locator('#sheet-title').textContent()==="Farm upgrades","Build opens a clearly titled management menu");await page.screenshot({path:path.join(out,"desktop-premium-build.png")});await page.locator('#sheet-close').click();
+ await page.locator('[data-tab="shop"]').click();await page.locator('[data-upgrade-section="farm"]').click();check(await page.locator('#sheet-title').textContent()==="Farm upgrades","Upgrades opens a clearly titled management menu");await page.screenshot({path:path.join(out,"desktop-premium-build.png")});await page.locator('#sheet-close').click();
  await page.evaluate(()=>{const s=PumpkinVoxel.state();s.paused=true;s.visitors=Array.from({length:5},(_,i)=>({id:500+i,kind:5+i,age:1.6+i*.8,budget:40,basketLimit:1,preferred:[0],basket:[],amount:0,quantity:0,bought:null,outcome:"shopping",leaveAt:null,spot:0,needs:{thirst:50,hunger:40,happiness:80},festival:{done:true},hollowConsidered:true}));PumpkinVoxel.scene.focus(31,17,1.9);});
  await page.waitForFunction(()=>PumpkinVoxel.scene.visitorStatus.filter(v=>v.id>=500&&v.sprite&&v.visible&&v.frames===4).length===5);
  check(true,"mummy, zombie, werewolf, undead pirate and clown each render four walking frames");

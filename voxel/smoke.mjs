@@ -38,7 +38,7 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.waitForTimeout(2500);
   if (shots) await page.screenshot({ path: `${shots}/${name}.png` });
   for (const tab of ["shop", "wardrobe", "journal"]) {
-    if (["wardrobe", "journal"].includes(tab)) { await page.locator('[data-tab="more"]').click(); await page.locator(`[data-more="${tab}"]`).click(); } else await page.locator(`[data-tab="${tab}"]`).click();
+    if (tab === "journal") { await page.locator('[data-tab="more"]').click(); await page.locator(`[data-more="${tab}"]`).click(); } else if (tab === "wardrobe") await page.locator('[data-tab="wardrobe"]').click(); else { await page.locator(`[data-tab="${tab}"]`).click(); await page.locator('[data-upgrade-section="farm"]').click(); }
     check(await page.locator("#sheet").isVisible() && (await page.locator("#sheet-body").textContent()).length > 40, `${name}: ${tab} opens`);
     if (shots && name === "desktop") await page.screenshot({ path: `${shots}/${name}-${tab}.png` });
   }
@@ -75,7 +75,7 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   // The shop: open it, step inside, and customers come in to browse.
   await page.evaluate(() => { PumpkinVoxel.state().stock = [4, 4, 0, 0]; });
   await page.locator('[data-tab="shop"]').click();
-  await page.locator('[data-shoptab="shop"]').click();
+  await page.locator('[data-upgrade-section="shop"]').click();
   await page.locator('[data-shopup="open"]').click();
   await page.locator('[data-visit="shop"]').click();
   await page.locator("#sheet-close").click();
@@ -86,8 +86,7 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.locator("#place-back").click();
   check(await page.evaluate(() => !PumpkinVoxel.scene.place) && await page.locator("#actions").isVisible(), `${name}: back to the patch`);
   // The wardrobe: buy a costume and wear it.
-  await page.locator('[data-tab="more"]').click();
-  await page.locator('[data-more="wardrobe"]').click();
+  await page.locator('[data-tab="wardrobe"]').click();
   const costume = await page.locator("[data-costume]:not([disabled])").first().getAttribute("data-costume");
   await page.locator(`[data-costume="${costume}"]`).click();
   if (await page.locator(`[data-wear="${costume}"]`).count()) await page.locator(`[data-wear="${costume}"]`).click();
