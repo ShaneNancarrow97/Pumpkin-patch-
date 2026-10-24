@@ -48,7 +48,9 @@ export function createHayrideScares({ state } = {}) {
     for (const entry of entries) {
       const pose = hayrideScarePose(entry, progress, upgraded(entry.effect), !!gentle), { actor, frame } = entry;
       entry.pose = pose; actor.visible = pose.visible;
-      actor.position.set(frame.x + frame.dz * pose.offset, .06, frame.z - frame.dx * pose.offset);
+      // The spectral figure floats above its native investigators, keeping the
+      // detailed face clear of their heads when seen from the wagon bench.
+      actor.position.set(frame.x + frame.dz * pose.offset, entry.stop === "pursuit" ? .68 : .06, frame.z - frame.dx * pose.offset);
       // Native branches/sets hide each entrance; the whole art never crosses the lane.
       actor.scale.setScalar(1 + (upgraded(entry.effect) ? .06 : 0));
       if (!pose.visible) continue;

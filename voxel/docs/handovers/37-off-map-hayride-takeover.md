@@ -4,13 +4,13 @@ For **Claude, the lead developer**. Branch: **`contractor/hollow-hayride`**, exa
 
 ## Final player experience
 
-Only the **boarding station, queue and departure/return portals** belong to the farm map. The tractor departs north into a dark portal, disappears for the whole woodland circuit and returns forward from the south. Paid seated guest models use the same farm pose and visibility. Their identities, purses, receipts and capacity reservations remain alive in the lightweight simulation while off-map.
+Only the **boarding station, queue and departure/return portals** belong to the farm map. The tractor departs north into a dark portal, disappears for the whole woodland circuit and returns forward from the south. Paid seated guest models use the same farm pose and visibility. Their identities, purses, receipts and capacity reservations remain alive in the lightweight simulation while off-map. The forecourt uses detailed cobbles, low planted borders and smaller curtained gateways; pedestrian connectors now have continuous ground beneath them.
 
 **Owner ride-along** opens a separate three.js scene using the existing renderer/canvas. It is a free first-person seated trip through the five woodland scenes. It does not move or rewind the paying farm convoy. Exit immediately restores farm camera/input/music. Existing Hollow House and maze are preserved.
 
 The POV scene is intentionally very dark: shallow blue-black fog, dim warm tractor light, local encounter lighting, 120 tall detailed trees, rough bark, overhead foliage, ferns, moss and fallen logs. Four detailed original generated actors are reused from the existing maze art: scarecrow, wet-haired haunted girl, wraith and ghoul. They emerge near roadside scenes, approach without crossing the wagon lane and react more strongly to purchased scare upgrades. This preserves the game's voxel/sprite style rather than introducing unrelated photoreal assets.
 
-Three **widely spaced single lightning flashes** occur at 13.2, 40.4 and 69.1 seconds, with delayed offline synthesised thunder. No new audio file or remote request. Lightning can be disabled independently; gentle mode disables flashes and lunges and keeps the camera steady. Pausing clears the flash; Exit resets it.
+Three **widely spaced single lightning flashes** occur at 13.2, 40.4 and 69.1 seconds, with delayed offline synthesised thunder. The ride has its own quiet engine, wheel-rattle and timber-creak ambience, while the maze retains its original footsteps. No new audio file or remote request. Lightning can be disabled independently; gentle mode disables flashes and lunges and keeps the camera steady. Pausing clears the flash; Exit resets it.
 
 ## Files to inspect first
 
@@ -37,7 +37,7 @@ The full standalone HTML has the normal starting save, not the QA funds. Downloa
 
 ## Verification and recommended next work
 
-All **59 Node test files pass**. This includes off-map scene isolation, independent vehicles, same paid riders during hidden travel, visible seat/hitch continuity on departure and arrival, save/return continuity, payments, closure, malformed saves, bounded geometry, forest clearance, scare disposal and lightning controls. The single-file HTML builds at about **28.2 MB**.
+All **60 Node test files pass**. This includes off-map scene isolation, independent vehicles, same paid riders during hidden travel, visible seat/hitch continuity on departure and arrival, save/return continuity, payments, closure, malformed saves, bounded geometry, forest clearance, scare disposal and lightning controls. The single-file HTML builds at about **28.2 MB**.
 
 Historical browser checks confirmed the queue, exactly-once boarding payments, price controls, background travel, save/reload, upgrades and owner controls before the off-map split. That run was interrupted by a host restart and is explicitly marked historical. It is **not** full browser approval for this final presentation. Read [the exact verification record](../contractor-patches/haunted-hayride/verification/README.md) for current smoke status.
 
@@ -48,5 +48,7 @@ Prioritise these takeover checks:
 3. Reconcile the provisional station gate/terrain with any unpublished lead woodland/site work. `world.js`, the Hollow House exterior and foyer/maze modules are unchanged.
 4. Profile dense foliage on mobile and reduce distant tree detail if necessary. Normal farm view does not draw it; the owner scene currently constructs on attraction purchase.
 5. Continue economy tuning from real sessions. `tools/simulate-hayride.mjs` is a deterministic finite-stock demand comparison, not a payback forecast.
+
+The first focused off-map smoke completed 20 assertions through station/scene isolation, owner controls, lightning, gentle mode, Exit and unchanged saves, with no runtime errors or external asset requests. Its managed fullscreen tail timed out, so it is not labelled an all-pass run. A subsequent refinement adds an explicit disabled-fullscreen guard, improves the gateways/ground and raises the wraith above its native scene actors. The final `release/` report records the broader replay when complete.
 
 The source is ready for your review and continuation. No claim is made that physical-device performance or final five-scene lighting is signed off.

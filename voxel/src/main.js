@@ -288,9 +288,9 @@ function openHayrideRide() {
   scene.enter("hayride", { ...hayrideUI.options, paused: true });
   hayrideUI.open(M.hayrideConfig(state)); audio.setSceneGain(.12); renderPlace(); return true;
 }
-function startHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride" || !hayrideUI.active) return false; scene.setHayrideOptions(options); mazeAudio.start(options); scene.pauseHayrideRide(false); hayrideUI.update(scene.hayrideRideStatus); return true; }
+function startHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride" || !hayrideUI.active) return false; scene.setHayrideOptions(options); mazeAudio.start({ ...options, profile: "hayride" }); scene.pauseHayrideRide(false); hayrideUI.update(scene.hayrideRideStatus); return true; }
 function pauseHayrideRide(on = true) { if (scene.place?.kind !== "hayride") return false; scene.pauseHayrideRide(on); mazeAudio.pause(on); hayrideUI.update(scene.hayrideRideStatus); return true; }
-function replayHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride") return false; mazeAudio.start(options); scene.restartHayrideRide(options); hayrideUI.update(scene.hayrideRideStatus); return true; }
+function replayHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride") return false; mazeAudio.start({ ...options, profile: "hayride" }); scene.restartHayrideRide(options); hayrideUI.update(scene.hayrideRideStatus); return true; }
 function stopHayridePresentation() { hayrideUI.close(); mazeAudio.stop(); audio.setSceneGain(1); }
 function exitHayrideRide() { if (!hayrideUI.active && scene.place?.kind !== "hayride") return false; stopHayridePresentation(); scene.leavePlace(); renderPlace(); return true; }
 // Up or down the stairs, or through a doorway, to the next room.
@@ -440,7 +440,7 @@ const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSh
 } });
 $("open-levels").onclick = () => celebration.preview();
 $("fullscreen").onclick = async () => {
-  try { if (document.fullscreenElement) await document.exitFullscreen(); else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); else notice("For fullscreen, add the game to your home screen from the browser menu."); }
+  try { if (document.fullscreenElement) await document.exitFullscreen(); else if (document.fullscreenEnabled === false) notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); else notice("For fullscreen, add the game to your home screen from the browser menu."); }
   catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
 };
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });

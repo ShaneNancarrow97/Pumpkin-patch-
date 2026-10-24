@@ -53,16 +53,34 @@ function openWestGate(world){
 function dispose(group){group.traverse(m=>{if(m.isInstancedMesh)m.dispose();else m.geometry?.dispose();for(const material of Array.isArray(m.material)?m.material:m.material?[m.material]:[]){material.map?.dispose();material.dispose();}});}
 function buildStation(signBoard){
   const v=new Voxels(),r=seeded(8813),b=SITE.bounds,root=new THREE.Group();
-  // A compact public station and narrow portal lanes replace the farm-wide loop.
-  for(let x=b.x0;x<b.x1;x+=.5)for(let z=b.z0;z<b.z1;z+=.5){if((z<24||z>39)&&Math.abs(x+.25-SITE.station.x)>2.7)continue;const lane=Math.abs(x+.25-SITE.station.x)<2.2,c=lane?0x6a5140:0x343326;v.box(x,-.45,z,.5,.49,.5,c);}
+  const yard=[0x5c4b48,0x524245,0x67544f,0x584749,0x4c3e40],stone=[0x8c8094,0x7a6f84,0x9a8d9e,0x6c6276],leaves=[0x8a2f1e,0xc2552a,0xe08a2e,0x6a2a3a,0xa8402a];
+  // The whole public forecourt is supported. Fine, uneven stones share the
+  // farm's palette and grout rather than leaving a flat, floating mauve strip.
+  for(let x=b.x0;x<b.x1;x+=.5)for(let z=b.z0;z<b.z1;z+=.5){
+    if((x<b.x0+1||x>b.x1-1)&&(z<b.z0+1||z>b.z1-1))continue;
+    v.box(x,-.45,z,.5,.46,.5,0x2a2430);
+    const centre=x+.25,lane=Math.abs(centre-SITE.station.x)<2.2,path=centre>-10.15||z>36.9&&z<38.8||centre<-18.8&&z>34.5;
+    const palette=path?stone:yard;
+    for(const [ox,oz]of [[0,0],[.25,0],[0,.25],[.25,.25]]){
+      const h=.035+r()*.035,c=vary(palette[Math.floor(r()*palette.length)],lane?.1:.16,r);
+      v.box(x+ox+.025,.01,z+oz+.025,.20,h,.20,c);
+      if(!path&&!lane&&r()<.075)v.box(x+ox+.06,.01+h,z+oz+.05,.10,.025,.13,leaves[Math.floor(r()*leaves.length)]);
+    }
+  }
+  // Low planted borders soften the terrain edge without hiding the station or
+  // intruding on the pedestrian return, queue or vehicle corridor.
+  for(let z=13;z<42;z+=.7)for(const x of [b.x0+.35,b.x1-.35]){
+    if(x>b.x1-1&&z>15.4&&z<18.6)continue;
+    const h=.25+r()*.33;block(v,x,.02,z,.5,h,.6,vary(0x303a29,.16,r));
+    for(let j=0;j<3;j++)block(v,x+(r()-.5)*.48,h*.6,z+(r()-.5)*.5,.16,.12,.18,leaves[Math.floor(r()*leaves.length)]);
+  }
   // Warm timber boardwalk makes the deliberate transition across the farm seam.
   for(let x=-9.25;x<-2.8;x+=.35){v.box(x,.1,15.95,.33,.13,2.1,C.wood);for(const z of [16,18])block(v,x+.16,.05,z,.08,.08,.08,C.brass);}
   for(const z of [15.6,18.4]){block(v,-7.6,0,z,.22,2.7,.22,C.dark);block(v,-7.6,2.7,z,.42,.13,.42,C.brass);block(v,-7.6,2.15,z,.25,.32,.25,C.amber,true);}
   block(v,-7.6,2.85,17,.25,.18,3.2,C.wood);
-  // Pedestrian paths remain to the east/south of the moving convoy.
-  for(let z=17;z<38.5;z+=.5)v.box(-9.8,.045,z,1.5,.035,.5,0x746274);
-  for(let x=-19.7;x<-9.0;x+=.5)v.box(x,.045,37.5,.5,.035,1.25,0x746274);
-  for(let z=34.7;z<38.1;z+=.5)v.box(-19.7,.045,z,1.4,.035,.5,0x746274);
+  // Small pale kerbstones make the walk legible while its fine cobbles remain
+  // continuous with the forecourt. Keep all walking surfaces below the feet.
+  for(let z=18.3;z<24.5;z+=.5)for(const x of [-9.95,-8.25])block(v,x,.04,z,.13,.09,.36,vary(0x7a6f84,.12,r));
   // Passenger platform, queue and separate return apron.
   for(let x=-19.0;x<-13.7;x+=.3)v.box(x,.05,31.9,.28,.13,3.65,C.wood);
   for(let z=25;z<33.8;z+=.3)v.box(-13.7,.045,z,3.65,.07,.28,0x564333);
@@ -73,9 +91,23 @@ function buildStation(signBoard){
   block(v,-20.5,.1,32,2.1,.18,2.0,C.wood);for(const x of [-21.35,-19.65])block(v,x,.25,31.3,.14,2.7,.14,C.dark);
   block(v,-20.5,.3,31.25,2.0,2.35,.16,C.wood);block(v,-20.5,.3,32.7,2.0,1.1,.17,C.wood);block(v,-20.5,1.4,32.7,2.2,.14,.55,C.brass);
   for(let z=30.9;z<33.1;z+=.3)block(v,-20.5,3.0+(.9-Math.abs(z-32))*.25,z,2.7,.15,.3,0x412839);
-  for(const [x,z] of [[-22,32.3],[-13.5,34.2],[-10,24],[-10,18]])lanternPost(v,x,z,[],false);
-  // Tall dark gateways hide the join with the off-map ride in both directions.
-  for(const portal of [SITE.departurePortal,SITE.returnPortal]){for(const side of [-1,1]){block(v,portal.x+side*3.1,0,portal.z,.75,5.7,1.2,0x211c22);for(let j=0;j<4;j++)block(v,portal.x+side*(3.0+j*.25),3.3+j*.35,portal.z,2.0,1.8,2.2,0x18221d);}block(v,portal.x,5.1,portal.z,6.8,1.5,1.9,0x17201c);block(v,portal.x,0,portal.z,5.5,5.5,.3,0x07080d);}
+  for(const [x,z]of [[-22,32.3],[-13.5,34.2],[-10,24],[-10,18]])lanternPost(v,x,z,[],false);
+  // Slender timber entrances replace the huge black canopy slabs. The dark
+  // curtains sit at the map join; side foliage leaves the platform in view.
+  for(const [index,portal]of [SITE.departurePortal,SITE.returnPortal].entries()){
+    const h=index?3.15:3.55,depth=index?.32:.6;
+    for(const side of [-1,1]){
+      const x=portal.x+side*2.75;block(v,x,.02,portal.z,.28,h,.34,C.wood);
+      block(v,x,.08,portal.z,.47,.28,.5,0x5e5662);block(v,x,h-.18,portal.z,.38,.12,.44,C.brass);
+      block(v,x+side*.75,.02,portal.z,.9,1.35,.95,0x293529);
+      for(let j=0;j<5;j++)block(v,x+side*(.55+r()*.7),.7+r()*.9,portal.z+(r()-.5)*.65,.45,.42,.5,vary(0x35402d,.14,r));
+      block(v,x,h-.72,portal.z+.22,.16,.25,.14,C.amber,true);
+      for(let j=0;j<3;j++)block(v,x-side*(.2+j*.19),h-.55+j*.14,portal.z,.26,.15,.22,C.wood);
+    }
+    block(v,portal.x,h-.03,portal.z,5.8,.18,.38,C.wood);
+    // Muted vertical folds read as a covered woodland entrance, not a void.
+    for(let x=-2.45;x<2.45;x+=.35)block(v,portal.x+x+.17,.02,portal.z+(index?-.1:.1),.35,h-.1,depth,[0x11171a,0x141c1e,0x0e1417][Math.round((x+2.45)/.35)%3]);
+  }
   root.add(v.build());root.name="The Hollow Hayride farm station";
   const sign=signBoard("The Hollow Hayride","rear boarding · woodland scares",5.8);sign.position.set(-20.3,4.1,33);sign.userData={type:"hayride",hayrideLabel:true};root.add(sign);
   const exit=signBoard("Farm →","unloading exit",2.8);exit.position.set(-12,1.8,37.2);exit.userData.hayrideLabel=true;root.add(exit);

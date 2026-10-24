@@ -139,7 +139,7 @@ try {
     if (await rideAction("gentle").getAttribute("aria-pressed") === "true") await click(rideAction("gentle"));
     await click(rideAction("start")); await frame(); await rideLayout("final Fold running ride");
     check(!(await rideStatus()).gentle, "final encounter captures use normal motion and the default guided view");
-    if (handoverOnly) {
+    {
       const flash = await page.evaluate(() => { const p = PumpkinVoxel; p.hayride.advance(Math.max(0, 13.2 - p.hayride.status.elapsed)); return p.hayride.status.lightningIntensity; });
       check(flash > .95, "the off-map ride produces its scheduled single lightning flash", flash);
     }
@@ -228,6 +228,9 @@ try {
   check(s.visitors.filter(v => v.id >= 700 && v.id < 704).every(v => v.budget === 92 && v.hayride.charged), "each passenger spends one ticket from their original purse");
   check(await page.evaluate(() => PumpkinVoxel.state().visitors.filter(v => v.hayride?.charged).every(v => PumpkinVoxel.rules.boardHayrideGuest(PumpkinVoxel.state(), v) === 0)), "replaying the boarding action cannot charge again");
   check(["departing", "circuit"].includes(s.h.convoy.phase) && s.h.departures === 1, "a full wagon departs once", s.h.convoy);
+  if (s.h.convoy.phase !== "circuit") s = await advance(3);
+  await frame();
+  check(s.h.convoy.phase === "circuit" && !(await page.evaluate(() => PumpkinVoxel.scene.hayrideStatus.farmVisible)), "the paid convoy leaves the farm map during its woodland circuit");
   await snapshot("desktop-tractor-departure");
 
   // A genuine world pick opens the small context card instead of a full sheet.
@@ -350,13 +353,20 @@ try {
   await page.setViewportSize({ width: 874, height: 787 }); await frame();
   const fullButton = page.locator("#fullscreen");
   check(await fullButton.isVisible(), "fullscreen control remains available for the unfolded game");
-  if (!managedFullscreenBlocked && await page.evaluate(() => document.fullscreenEnabled && !!document.documentElement.requestFullscreen)) {
+  if (managedFullscreenBlocked) {
+    limitations.push("Managed Chromium disables fullscreen (FullscreenAllowed: false). Successful native OS fullscreen is unverified; the game button remains available.");
+    if (await page.evaluate(() => document.fullscreenEnabled === false)) {
+      await fullButton.click({ force: true });
+      check((await page.locator("#notice").textContent()).includes("Fullscreen is unavailable"), "the game detects disabled fullscreen and explains the fallback without a native request");
+    }
+    check(await page.evaluate(() => !document.fullscreenElement && !PumpkinVoxel.scene.place && !PumpkinVoxel.hayride.status.active), "managed fullscreen policy leaves the returned farm usable");
+  } else if (await page.evaluate(() => document.fullscreenEnabled && !!document.documentElement.requestFullscreen)) {
     await fullButton.click({ force: true });
     await page.waitForFunction(() => !!document.fullscreenElement);
     check(await page.evaluate(() => !!document.fullscreenElement), "fullscreen opens through a genuine button gesture");
     await page.evaluate(() => document.exitFullscreen());
   } else {
-    limitations.push("Managed Chromium disables fullscreen (FullscreenAllowed: false). Successful OS fullscreen entry is unverified.");
+    limitations.push("This browser does not expose enabled fullscreen. Successful OS fullscreen entry is unverified.");
     await fullButton.click({ force: true });
     await page.waitForFunction(() => [...document.querySelectorAll("[role=status],.notice")].some(node => node.textContent.includes("Fullscreen is unavailable")));
     check(!(await page.evaluate(() => !!document.fullscreenElement)), "fullscreen policy refusal leaves the game usable");
