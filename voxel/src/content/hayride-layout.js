@@ -103,7 +103,11 @@ export function hayrideFarmConvoyPose(s) {
   const c=s?.hayride?.convoy??{},phase=c.phase??"loading",elapsed=Math.max(0,Number.isFinite(c.elapsed)?c.elapsed:0),f=Math.min(1,elapsed/3);
   const travel=phase==="departing"?-22*f:phase==="arriving"?24*(1-f):0,station=HAYRIDE_SITE.station;
   const tractor={x:station.x,y:0,z:station.z+travel,yaw:0,dx:0,dz:-1},wagon={x:tractor.x,y:0,z:tractor.z+3.8,yaw:0};
-  return{tractor,wagon,distance:phase==="departing"?22*f:phase==="arriving"?22+24*f:0,progress:f,visible:phase!=="circuit"};
+  // Keep the complete returning wagon behind its portal until it is supported
+  // by farm ground; never spawn it floating beyond the map's southern edge.
+  const rear=wagon.z+2,bounds=HAYRIDE_SITE.bounds;
+  const visible=phase!=="circuit"&&(phase!=="arriving"||rear<=bounds.z1)&&(phase!=="departing"||rear>=bounds.z0);
+  return{tractor,wagon,distance:phase==="departing"?22*f:phase==="arriving"?22+24*f:0,progress:f,visible};
 }
 const seatAnchor=(capacity,index)=>{const zs=capacity>=8?[-1.17,-.39,.39,1.17]:capacity>=6?[-1.08,0,1.08]:[-.75,.75],i=Math.max(0,Math.min(capacity-1,index??0));return{x:i%2?.87:-.87,y:1.2,z:zs[Math.floor(i/2)],yaw:i%2?Math.PI/2:-Math.PI/2};};
 const transform=(p,root)=>({x:root.x+p.x*Math.cos(root.yaw)+p.z*Math.sin(root.yaw),y:p.y??0,z:root.z-p.x*Math.sin(root.yaw)+p.z*Math.cos(root.yaw),dx:-Math.sin(root.yaw+(p.yaw??0)),dz:-Math.cos(root.yaw+(p.yaw??0))});

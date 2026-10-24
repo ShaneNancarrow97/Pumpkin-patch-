@@ -58,12 +58,12 @@ function buildStation(signBoard){
   // farm's palette and grout rather than leaving a flat, floating mauve strip.
   for(let x=b.x0;x<b.x1;x+=.5)for(let z=b.z0;z<b.z1;z+=.5){
     if((x<b.x0+1||x>b.x1-1)&&(z<b.z0+1||z>b.z1-1))continue;
-    v.box(x,-.45,z,.5,.46,.5,0x2a2430);
+    v.box(x,-.45,z,.5,.46,.5,0x53484c);
     const centre=x+.25,lane=Math.abs(centre-SITE.station.x)<2.2,path=centre>-10.15||z>36.9&&z<38.8||centre<-18.8&&z>34.5;
     const palette=path?stone:yard;
     for(const [ox,oz]of [[0,0],[.25,0],[0,.25],[.25,.25]]){
-      const h=.035+r()*.035,c=vary(palette[Math.floor(r()*palette.length)],lane?.1:.16,r);
-      v.box(x+ox+.025,.01,z+oz+.025,.20,h,.20,c);
+      const h=.025+r()*.009,c=vary(palette[Math.floor(r()*palette.length)],lane?.1:.16,r);
+      v.box(x+ox+.003,.01,z+oz+.003,.244,h,.244,c);
       if(!path&&!lane&&r()<.075)v.box(x+ox+.06,.01+h,z+oz+.05,.10,.025,.13,leaves[Math.floor(r()*leaves.length)]);
     }
   }

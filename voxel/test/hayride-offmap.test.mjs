@@ -82,8 +82,9 @@ test("farm departures and arrivals keep riders seated in the coupled wagon", () 
     for (const phase of ["departing", "arriving"]) for (const elapsed of [0, .75, 1.5, 2.25, 3]) {
       Object.assign(state.hayride.convoy, { phase, elapsed }); controller.sync();
       const pose = hayrideFarmConvoyPose(state), guest = hayrideGuestPose(state, rider), expectedSeat = transform(seat, pose.wagon);
-      assert.equal(pose.visible, true); assert.equal(controller.vehicle.group.visible, true);
-      assert.equal(guest.visible, true); assert.equal(guest.seated, true); assertCoupled(pose);
+      const visible=phase==="arriving"?elapsed>=2.25:elapsed<3;
+      assert.equal(pose.visible, visible); assert.equal(controller.vehicle.group.visible, visible);
+      assert.equal(guest.visible, visible); assert.equal(guest.seated, true); assertCoupled(pose);
       close(guest.x, expectedSeat.x); close(guest.y, expectedSeat.y); close(guest.z, expectedSeat.z);
       close(controller.vehicle.tractor.position.x, pose.tractor.x); close(controller.vehicle.tractor.position.z, pose.tractor.z);
       close(controller.vehicle.wagon.position.x, pose.wagon.x); close(controller.vehicle.wagon.position.z, pose.wagon.z);
