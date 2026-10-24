@@ -39,3 +39,28 @@ export function cocoaProp(id = "cocoa") {
   }
   return templates.get(id).clone();
 }
+
+// A takeaway cup, as guests carry it and Sandy stacks it: a white paper cup
+// narrower at the base, a sleeve in the drink's colour with Sandy's pumpkin
+// badge, and a black lid with a sip spout at the front.
+const SLEEVES = { cocoa: 0xa8794a, flake: 0x7a4a32, deluxe: 0x6a3a7a, midnight: 0x2e2238 };
+export function takeawayCup(kind = "cocoa") {
+  const id = "takeaway:" + (SLEEVES[kind] ? kind : "cocoa");
+  if (!templates.has(id)) {
+    // Taller than life, since the farm's camera looks down on it.
+    const v = new Voxels(), sleeve = SLEEVES[id.slice(9)], paper = [0xe6dfd2, 0xebe5d9, 0xf0ebe1, 0xf4efe6, 0xf7f3eb, 0xf9f6f0, 0xfbf9f4];
+    for (let i = 0; i < 7; i++) v.block(0, i * .06, 0, .15 + i * .022, .06, .15 + i * .022, paper[i]);
+    v.block(0, 0, 0, .13, .008, .13, 0xd6cdbf);
+    // The sleeve round the middle, tapering with the cup, with a badge and a seam.
+    v.block(0, .15, 0, .222, .07, .222, sleeve); v.block(0, .22, 0, .262, .08, .262, sleeve);
+    if (id.endsWith("midnight")) v.block(0, .295, 0, .266, .01, .266, 0xd8a94a);
+    v.block(0, .19, .122, .07, .075, .008, 0xf08a28); v.block(0, .21, .127, .032, .034, .006, 0x2a1a22);
+    v.block(-.114, .16, .096, .012, .13, .012, sleeve === 0xa8794a ? 0x8e6238 : 0x1e1820);
+    // The lid: a thin rim flush with the lip, a low dome, and the spout with its sip hole.
+    v.block(0, .42, 0, .29, .02, .29, 0x1c1a1e); v.block(0, .44, 0, .25, .014, .25, 0x232026);
+    v.block(0, .454, .08, .056, .016, .046, 0x1c1a1e); v.block(0, .47, .09, .026, .004, .013, 0x070607);
+    const model = v.build(); model.traverse(m => { if (m.material) m.material.userData.sharedCocoa = true; });
+    templates.set(id, model);
+  }
+  return templates.get(id).clone();
+}

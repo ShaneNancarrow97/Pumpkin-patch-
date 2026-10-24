@@ -8,7 +8,7 @@ import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import { renderSizing, validRenderQuality } from "./render-quality.js";
 import { Voxels, seeded, vary } from "./voxels.js";
 import { createSandy } from "./sandy.js";
-import { cocoaProp } from "./cocoa-props.js";
+import { cocoaProp, takeawayCup } from "./cocoa-props.js";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { pumpkinTemplate, sproutTemplate, bigPumpkin } from "./pumpkins.js";
 import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, signBoard } from "./world.js";
@@ -209,7 +209,6 @@ export function createScene(canvas, state, hooks) {
   // Visitors.
   const visitorModels = new Map(), outLen = routeLength(ROUTE_OUT), meadowOutLen = routeLength(MEADOW_EXIT);
   const guestHitGeometry = new THREE.BoxGeometry(1.15, 2.2, .9), guestHitMaterial = new THREE.MeshBasicMaterial({ visible: false });
-  const carriedCup = cocoaProp("cocoa");
   const carried = pumpkins.map((t) => { const m = t.clone(); m.scale.setScalar(0.5); return m; });
 
   // The cottage's rooms and the shop floor (places.js).
@@ -616,7 +615,7 @@ export function createScene(canvas, state, hooks) {
       // A chatter speaking bobs as they talk.
       if (entry.sprite && chat && entry.speakUntil > time) entry.m.children[0].position.y += Math.abs(Math.sin(time * 13)) * .06;
       if (v.cocoaSpend && v.cocoaKind !== null && !entry.cup) {
-        entry.cup = v.cocoaKind === "deluxe" ? cocoaProp("deluxe") : carriedCup.clone(); entry.cup.position.set(-.4, .9, .25); entry.m.add(entry.cup);
+        entry.cup = takeawayCup(v.cocoaKind); entry.cup.position.set(-.4, .9, .25); entry.m.add(entry.cup);
       }
       if (v.snack && !entry.snack) { entry.snack = cocoaProp("smores"); entry.snack.position.set(.4, .9, .25); entry.m.add(entry.snack); }
       if (v.bought !== null && !entry.bag) { entry.bag = state.customerCare.bags && v.quantity > 1 ? customerBag() : carried[v.bought].clone(); entry.bag.position.set(entry.sprite ? 0.36 : 0.45, entry.sprite ? 0.45 : 0.6, entry.sprite ? 0.3 : 0.2); entry.m.add(entry.bag); }

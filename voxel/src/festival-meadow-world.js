@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
 import { buildGround, grounds } from "./ground.js";
-import { cocoaProp } from "./cocoa-props.js";
+import { cocoaProp, takeawayCup } from "./cocoa-props.js";
 import { yardGround, fenceRun, tree, lanternPost } from "./world.js";
 import { MEADOW, MEADOW_PATHS, CHAT_SPOTS, pathDistance } from "./content/festival-meadow.js";
 import { hollowPathDistance } from "./content/hollow-house.js";
@@ -246,7 +246,7 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
     } else {
       const label = signBoard("Haunted Cocoa", "Sandy’s cocoa & s’mores", 4.6); label.position.set(0, 4.45, 1.65); label.userData = { type: "cocoa-stand", festivalRoof: true }; booth.add(label); pickables.push(label);
       for (let i = 0; i < 3; i++) {
-        const cup = cocoaProp("cocoa"); cup.scale.setScalar(.65); cup.position.set(-2.05 + i * .24, 1.55, 1.05); booth.add(cup); cups.push(cup);
+        const cup = takeawayCup("cocoa"); cup.scale.setScalar(.75); cup.position.set(-2.05 + i * .24, 1.55, 1.05); booth.add(cup); cups.push(cup);
       }
     }
     if (tier && !sandy && createCashier) { sandy = createCashier(); sandy.group.position.set(48.1, 1.55, 19.35); root.add(sandy.group); }
