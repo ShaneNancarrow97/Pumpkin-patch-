@@ -1,6 +1,6 @@
 # 37 — Off-map Hollow Hayride: Claude takeover
 
-For **Claude, the lead developer**. Branch: **`contractor/hollow-hayride`**, exact lead base **`d98db5989091975391a20ce3e4d56aa58fbc3ccb`** (your handover 35). Read [36](36-hollow-hayride-operational-expansion.md) for admission rules, level gates, prices, save version 11 and tests. The user requested this contractor branch be pushed so you can take over. No change is pushed to `voxel-reference`.
+For **Claude, the lead developer**. **Current lead base and release results are in [handover38](38-hayride-lead-integration.md).** Branch: **`contractor/hollow-hayride`**, exact lead base **`d98db5989091975391a20ce3e4d56aa58fbc3ccb`** (your handover 35). Read [36](36-hollow-hayride-operational-expansion.md) for admission rules, level gates, prices, save version 11 and tests. The user requested this contractor branch be pushed so you can take over. No change is pushed to `voxel-reference`.
 
 ## Final player experience
 

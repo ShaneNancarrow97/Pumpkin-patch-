@@ -3,6 +3,7 @@
 // node voxel/tools/qa-hayride.mjs /tmp/pumpkin-hayride.html /tmp/hayride-qa
 // HAYRIDE_QA_SKIP_SHOTS=1 HAYRIDE_QA_VISUAL_AFTER_CORE=1 runs core then visuals.
 // HAYRIDE_QA_FOCUS=handover runs only the short station/owner handover smoke.
+// HAYRIDE_QA_FOCUS=station verifies a station-only geometry refinement.
 import fs from "node:fs";
 import path from "node:path";
 import http from "node:http";
@@ -29,7 +30,8 @@ const check = (ok, label, data) => {
   if (!ok) throw Error(`${label}: ${JSON.stringify(data)}`);
 };
 const handoverOnly = process.env.HAYRIDE_QA_FOCUS === "handover";
-const visualOnly = handoverOnly || process.env.HAYRIDE_QA_FOCUS === "visual";
+const stationOnly = process.env.HAYRIDE_QA_FOCUS === "station";
+const visualOnly = stationOnly || handoverOnly || process.env.HAYRIDE_QA_FOCUS === "visual";
 const fixture = M.freshState();
 Object.assign(fixture, { coins: 100000, earned: 14999, introSeen: true });
 fixture.progression.claimed = Array.from({ length: 7 }, (_, i) => i + 1);
@@ -129,10 +131,26 @@ try {
     captureEnabled = true;
     await page.setViewportSize({ width: 874, height: 787 });
     await page.evaluate(() => { PumpkinVoxel.state().paused = true; PumpkinVoxel.scene.focusHayride(); });
-    await snapshot("fold-station");
+    if (!stationOnly) await snapshot("fold-station");
     check(await page.evaluate(() => PumpkinVoxel.scene.hayrideStatus.purchased && PumpkinVoxel.scene.hayrideStatus.tier === 3), "final visual build renders the upgraded physical station");
     const offMap = await page.evaluate(() => { const h = PumpkinVoxel.scene.hayrideStatus; return { separate: h.rideScene, farm: h.farmBounds, ride: h.rideBounds }; });
     check(offMap.separate && offMap.farm.x1 - offMap.farm.x0 < offMap.ride.x1 - offMap.ride.x0, "the compact farm station and full woodland use separate scenes", offMap);
+    if (stationOnly) {
+      const edge = await page.evaluate(() => {
+        const p = PumpkinVoxel, c = p.state().hayride.convoy, saved = { ...c }, result = {};
+        for (const [name, phase, elapsed] of [["outsideReturn", "arriving", 0], ["insideReturn", "arriving", 2.25], ["departed", "departing", 3], ["platform", "loading", 0]]) {
+          Object.assign(c, { phase, elapsed }); p.scene.refreshHayride(); result[name] = p.scene.hayrideStatus.farmVisible;
+        }
+        Object.assign(c, saved); p.scene.refreshHayride(); return result;
+      });
+      check(!edge.outsideReturn && edge.insideReturn && !edge.departed && edge.platform, "farm convoy hides beyond the portals and returns visibly to the platform", edge);
+      await snapshot("fold-station");
+      await page.evaluate(() => PumpkinVoxel.openSheet("hayride"));
+      await layout("station-only Fold management"); await snapshot("fold-station-management");
+      await page.evaluate(() => PumpkinVoxel.closeSheet());
+      limitations.push("Station-only verification covers the final tile geometry refinement, Fold management, one canvas and runtime errors/dependencies. It supplements the preceding full core/POV report; those flows are not replayed here.");
+      return;
+    }
     await page.evaluate(() => PumpkinVoxel.openSheet("hayride"));
     const beforeVisualOwner = await page.evaluate(() => JSON.stringify(PumpkinVoxel.rules.saveData(PumpkinVoxel.state())));
     await click(action("experience")); await rideLayout("final Fold briefing");
