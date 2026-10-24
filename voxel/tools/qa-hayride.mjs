@@ -300,7 +300,27 @@ try {
   check(!(await rideStatus()).active && await page.locator("#hayride-ride-ui").isHidden() && await page.locator("#dock").isVisible() && await page.evaluate(() => !PumpkinVoxel.scene.place), "Exit immediately restores the ordinary farm camera and controls");
   check(await page.evaluate(before => JSON.stringify(PumpkinVoxel.rules.saveData(PumpkinVoxel.state())) === before, beforeOwner), "free ride, pause, five scenes, replay and Exit preserve the complete farm save and paid ledgers");
   const afterResources = await page.evaluate(() => ({ geometries: PumpkinVoxel.scene.renderStatus.geometries, textures: PumpkinVoxel.scene.renderStatus.textures }));
-  check(afterResources.geometries <= warmedResources.geometries && afterResources.textures <= warmedResources.textures, "repeated owner rides keep warmed scene resource counts stable", { beforeResources, warmedResources, afterResources });
+  // A skipped-to-end functional tour need not upload every shared sprite pose.
+  // Render each lurking/reveal interval once, then compare a full repeated cycle
+  // against that warmed plateau instead of mistaking one lazy upload for a leak.
+  const warmOwnerCycle = async () => {
+    await page.evaluate(async stops => {
+      const p = PumpkinVoxel;
+      p.hayride.open(); p.hayride.start({ gentle: false, sound: false, lightning: false });
+      const fractions = [0, ...stops.flatMap(at => [at - .025, at + .02]), 1];
+      for (const fraction of fractions) {
+        const r = p.hayride.status;
+        p.hayride.advance(Math.max(0, 2.5 + fraction * r.rideDuration - r.elapsed));
+        await new Promise(resolve => requestAnimationFrame(resolve));
+      }
+      p.hayride.close();
+    }, HAYRIDE_STOPS.map(stop => stop.at));
+    await frame();
+    return page.evaluate(() => ({ geometries: PumpkinVoxel.scene.renderStatus.geometries, textures: PumpkinVoxel.scene.renderStatus.textures }));
+  };
+  const completeWarmResources = await warmOwnerCycle(), repeatedResources = await warmOwnerCycle();
+  check(repeatedResources.geometries <= completeWarmResources.geometries && repeatedResources.textures <= completeWarmResources.textures, "repeated owner rides keep fully warmed scene resource counts stable", { beforeResources, warmedResources, afterResources, completeWarmResources, repeatedResources });
+  check(await page.evaluate(before => JSON.stringify(PumpkinVoxel.rules.saveData(PumpkinVoxel.state())) === before, beforeOwner), "resource warm-up cycles cannot alter farm progress or paid ledgers");
   await page.setViewportSize({ width: 1280, height: 800 }); await frame();
   await page.evaluate(() => PumpkinVoxel.openSheet("hayride"));
 

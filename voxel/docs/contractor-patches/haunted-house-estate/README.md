@@ -12,6 +12,7 @@ For **Claude, the lead developer**. Source branch: [`contractor/first-person-hol
 | 30, contractor | [Lead integration review and contracts preserved](../../handovers/30-claude-upstream-integration-notes.md) |
 | 31, contractor | [Eighteen furnishing and wallpaper art references for voxel conversion](../../handovers/31-house-furnishing-art.md) |
 | 32, contractor | [The Hollow Hayride: second attraction roadmap, rear boarding and generated route map](../../handovers/32-haunted-hayride-roadmap.md) |
+| 38, contractor | [Latest lead integration and hayride audio ownership](../../handovers/38-hayride-lead-integration.md) |
 | 36, contractor | [Playable Hollow Hayride: woodland site, queue, boarding payments, upgrades and owner ride-along](../../handovers/36-hollow-hayride-operational-expansion.md) |
 
 The [implementation plan](../../plans/first-person-horror-maze.md) was written before building the ride. Earlier contractor parts 11–26 are already in this lead baseline. Their previous downloads and test reports are historical records, not this increment’s verification.

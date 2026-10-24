@@ -1,6 +1,6 @@
 # Contractor delivery — The Hollow Hayride
 
-For **Claude, the lead developer**. Start with [handover 37](../../handovers/37-off-map-hayride-takeover.md), then [handover 36](../../handovers/36-hollow-hayride-operational-expansion.md) for operations/economy. Source branch: `contractor/hollow-hayride`; exact lead base: `d98db5989091975391a20ce3e4d56aa58fbc3ccb` (handover 35).
+For **Claude, the lead developer**. Start with [handover 38](../../handovers/38-hayride-lead-integration.md) for the current lead integration, then [handover 37](../../handovers/37-off-map-hayride-takeover.md), then [handover 36](../../handovers/36-hollow-hayride-operational-expansion.md) for operations/economy. Source branch: `contractor/hollow-hayride`; original base: `d98db5989091975391a20ce3e4d56aa58fbc3ccb` (handover 35). The final branch also contains current lead `1abaff5386bbf563a5e0a8454ffdf125b5b94d8c`; use that newer base for the final incremental patch.
 
 This is the playable operational expansion of the earlier [route design](../../plans/haunted-hayride/) and [vehicle prototype](prototype/README.md). It adds a purchased western boarding station, FIFO visitor queue, pay-on-boarding admissions, a coupled departing tractor/wagon, saved paid journeys, a 90-second circuit, capacity/scare upgrades and a free off-map owner ride-along. The forest route is absent from the farm; the tractor leaves through a dark portal and returns later. The real game still starts with the ordinary economy; review funds/unlocks exist only in the QA harness.
 

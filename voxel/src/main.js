@@ -289,9 +289,9 @@ function openHayrideRide() {
   scene.enter("hayride", { ...hayrideUI.options, paused: true });
   hayrideUI.open(M.hayrideConfig(state)); audio.setSceneGain(.12); renderPlace(); return true;
 }
-function startHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride" || !hayrideUI.active) return false; scene.setHayrideOptions(options); hayrideAudio.start({ ...options, profile: "hayride" }); scene.pauseHayrideRide(false); hayrideUI.update(scene.hayrideRideStatus); return true; }
+function startHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride" || !hayrideUI.active) return false; scene.setHayrideOptions(options); hayrideAudio.start(options); scene.pauseHayrideRide(false); hayrideUI.update(scene.hayrideRideStatus); return true; }
 function pauseHayrideRide(on = true) { if (scene.place?.kind !== "hayride") return false; scene.pauseHayrideRide(on); hayrideAudio.pause(on); hayrideUI.update(scene.hayrideRideStatus); return true; }
-function replayHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride") return false; hayrideAudio.start({ ...options, profile: "hayride" }); scene.restartHayrideRide(options); hayrideUI.update(scene.hayrideRideStatus); return true; }
+function replayHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride") return false; hayrideAudio.start(options); scene.restartHayrideRide(options); hayrideUI.update(scene.hayrideRideStatus); return true; }
 function stopHayridePresentation() { hayrideUI.close(); hayrideAudio.stop(); audio.setSceneGain(1); }
 function exitHayrideRide() { if (!hayrideUI.active && scene.place?.kind !== "hayride") return false; stopHayridePresentation(); scene.leavePlace(); renderPlace(); return true; }
 // Up or down the stairs, or through a doorway, to the next room.
