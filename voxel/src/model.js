@@ -17,6 +17,7 @@ import { freshEstate, restoreEstate } from "./rules/house-estate.js";
 import { freshHollowHouse, restoreHollowHouse, updateHollowHouse, saveHollowVisitors, restoreHollowVisitors } from "./rules/hollow-house.js";
 import { restoreIntroSeen } from "./rules/intro.js";
 import { freshSocial, recordNews } from "./rules/meadow-talk.js";
+import { freshHayride, restoreHayride, updateHayride, saveHayrideVisitors, restoreHayrideVisitors } from "./rules/hayride.js";
 
 export * from "./rules/farm.js";
 export * from "./rules/stock.js";
@@ -27,7 +28,7 @@ export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 
-export const STATE_VERSION = 10;
+export const STATE_VERSION = 11;
 export * from "./content/farm-layout.js";
 export * from "./rules/house-estate.js";
 export * from "./rules/piece-colours.js";
@@ -39,6 +40,7 @@ export * from "./rules/levels.js";
 export * from "./rules/intro.js";
 export * from "./rules/meadow-chat.js";
 export { recordNews, topicsFor } from "./rules/meadow-talk.js";
+export * from "./rules/hayride.js";
 
 export function freshState() {
   return {
@@ -49,7 +51,7 @@ export function freshState() {
     stock: freshStock(), fresh: freshBatches(), wanted: freshWanted(), orders: freshOrders(), holds: [],
     stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
     shop: freshShop(), bigSpender: freshBigSpender(), festival: freshFestival(), customerCare: freshCustomerCare(),
-    house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(),
+    house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(), hayride: freshHayride(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
     claimed: [], memories: [], progression: freshProgression(), paused: false, introSeen: false,
     social: freshSocial(),                                                     // meadow news and chats: never saved
@@ -113,6 +115,7 @@ export function restoreState(raw) {
   s.house = restoreHouse(raw.house);
   s.estate = restoreEstate(raw.estate);
   s.hollowHouse = restoreHollowHouse(raw.hollowHouse);
+  s.hayride = restoreHayride(raw.hayride);
   s.wardrobe = restoreWardrobe(raw.wardrobe);
   if (raw.looks && Array.isArray(raw.looks.owned)) s.looks = { natalie: raw.looks.natalie ?? "olive", shane: raw.looks.shane ?? "black", owned: [...new Set(["olive", "black", ...raw.looks.owned])] };
   const claimed = (Array.isArray(raw.claimed) ? raw.claimed : []).map((id) => (v1 ? OLD_GOALS[id] : id));
@@ -125,11 +128,12 @@ export function restoreState(raw) {
   s.introSeen = restoreIntroSeen(raw, s);
   closeForTheNight(s);
   restoreHollowVisitors(raw.hollowVisitors, s);
+  restoreHayrideVisitors(raw.hayrideVisitors, s);
   return s;
 }
 
 // What is worth saving: everything except who is out walking or shopping.
-export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, social: undefined });
+export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), hayrideVisitors: saveHayrideVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, social: undefined });
 
 // Advances the farm by dt seconds and returns what happened, for the scene to show.
 export function update(s, dt) {
@@ -141,6 +145,7 @@ export function update(s, dt) {
   settleFresh(s); updateWanted(s, events); updateOrders(s, events);
   updateFestival(s);
   updateHollowHouse(s, dt, events);
+  updateHayride(s, dt, events);
   updateStall(s, dt, events);
   updateShop(s, dt, events);
   checkMemories(s, events);

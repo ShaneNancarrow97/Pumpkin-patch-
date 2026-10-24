@@ -49,7 +49,7 @@ function freeSeat(s, spot, from) {
 // a second guest usually joins the first, so a pair grows into a group.
 export function planChat(s, v) {
   const c = s.festival?.cocoa, open = openChatSpots(s);
-  if (!open.length || !c.open || v.vip || v.hollow && !v.hollow.done) return null;
+  if (!open.length || !c.open || v.vip || v.hollow && !v.hollow.done || v.hayride && !v.hayride.done) return null;
   if (s.visitors.filter(chatting).length >= chatCap(s)) return null;
   const mood = .6 + .6 * Math.max(0, Math.min(1, ((v.needs?.happiness ?? 70) - 30) / 70));
   if (hash(v.id, 71) >= CHAT.chance[c.level] * mood * (comfortOwned(s, "bunting") ? CHAT.bunting : 1)) return null;

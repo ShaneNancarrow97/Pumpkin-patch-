@@ -75,7 +75,7 @@ test("version9 twelve-plot saves migrate without losing progress or cosmetics", 
  const s=M.freshState();s.version=9;s.plots.length=s.plotLevels.length=s.plotCrops.length=12;
  s.coins=1234;s.plots[11]={phase:"growing",progress:.47,variety:2};s.plotLevels[11]=2;s.plotCrops[11]=2;
  const r=M.restoreState(M.saveData(s));
- assert.equal(r.version,10);assert.equal(r.plots.length,24);assert.equal(r.plotLevels.length,24);assert.equal(r.plotCrops.length,24);
+ assert.equal(r.version,M.STATE_VERSION);assert.equal(r.plots.length,24);assert.equal(r.plotLevels.length,24);assert.equal(r.plotCrops.length,24);
  assert.equal(r.coins,1234);assert.deepEqual(r.plots[11],s.plots[11]);assert.deepEqual(r.house,s.house);
  assert.ok(r.plots.slice(12).every(p=>p.phase==="empty"));
 });

@@ -76,6 +76,13 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
   - **The five neighbours** are built by hand from the bible.
 - **The introduction:** a new patch opens on a moonlit title card, then Shane and Natalie take turns explaining the farm and the goal over the farm itself (Skip at any time; Settings › Watch again).
 - **The Boost button** stays in one place, in the middle of the action bar with a gold ring, whatever Plant and Harvest are doing.
+- **The menus:** the dock has Farm, Upgrades, Attractions, Home, Wardrobe and More.
+  - **Upgrades** raises a small menu of the upgrade sections: Farm, Seeds, Shop, Cocoa, Stock and Visitors. Each opens the upgrades sheet at that section.
+  - **Wardrobe** opens the outfits directly.
+- **The Hollow House** can be bought from patch level 9. Its foyer tiers open at levels 9, 10, 11 and 12, and the fifth also at 12.
+- **The Hollow Hayride** (Codex) opens from patch level 11, once the Hollow House is restored; its larger wagons arrive at level 12.
+  - Guests queue at a small station by the woodland edge and pay as they board. The tractor then pulls them away off the map on a dark woodland circuit and brings them back.
+  - You can ride along for free, in first person, through five woodland scenes with lightning and thunder. Gentle mode keeps the camera steady.
 - **Walk through the Hollow House yourself:** once it's restored, Experience (or the maze door in the foyer) takes you on a first-person tour of the maze, with a new chamber per foyer tier. It's free and never touches tickets (Codex, rebuilt by Claude).
   - The doors swing open and you walk at a steady pace, slowing as each scare comes up.
   - The chambers: a passage with a ticking clock, a cobweb cellar, a séance parlour, a storm laboratory and a velvet crypt, each with its own light and fog.

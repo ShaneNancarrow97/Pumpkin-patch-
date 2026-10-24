@@ -12,6 +12,8 @@ import { settleCustomerCare } from "./customer-care.js";
 import { cocoaAllowance, planFestivalVisit, tickFestivalVisit, meadowFootfallBonus } from "./festival-meadow.js";
 import { planHollowVisit, tickHollowVisit, mazeFootfallBonus } from "./hollow-house.js";
 import { planChat, tickChat, updateChats, chatting } from "./meadow-chat.js";
+import { planHayrideVisit, tickHayrideVisit, hayrideFootfallBonus } from "./hayride.js";
+import { hayrideJourneyTiming } from "../content/hayride-layout.js";
 import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
 import { wishFor } from "./market.js";
 import { BIG_SPENDER_KIND, advanceBigSpender, bigSpenderBasket } from "./big-spender.js";
@@ -75,18 +77,19 @@ export const shopArrivalSeconds = (s) => economy.indoorArrivalSeconds * tierFact
 // to the floor. Timers count down faster rather than being rescaled, so a
 // boost that grows or fades changes the pace smoothly.
 const pace = (seconds, floor, bonus) => Math.max(1, Math.min(1 + bonus, seconds / floor));
-// Lasting attractions (the maze, the meadow's comforts) add to the streak's boost.
-const attractions = (s) => mazeFootfallBonus(s) + meadowFootfallBonus(s);
-export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), visitorBonus(s) + attractions(s));
-export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1.1), visitorBonus(s) + attractions(s));
+// Lasting attractions (the maze, the hayride, the meadow's comforts) add to the
+// streak's boost, together capped at 75%.
+export const attractionFootfallBonus = s => Math.min(.75, mazeFootfallBonus(s) + hayrideFootfallBonus(s) + meadowFootfallBonus(s));
+export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), visitorBonus(s) + attractionFootfallBonus(s));
+export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1.1), visitorBonus(s) + attractionFootfallBonus(s));
 // The gap between parties right now, and the boost that actually reaches the path.
 export const stallGapSeconds = (s) => stallArrivalSeconds(s) / stallPace(s);
 export const pathBoost = (s) => stallPace(s) - 1;
 // Only the extra pace attributable to the temporary harvest streak, after the
 // permanent attraction benefit and the same arrival floor have been applied.
-export const streakPathBoost = (s) => stallPace(s) - pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), attractions(s));
+export const streakPathBoost = (s) => stallPace(s) - pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), attractionFootfallBonus(s));
 // The HUD can distinguish guests actually on the path from indoor excursions.
-export const onThePath = (s) => s.visitors.filter((v) => !chatting(v) && (!v.festival || v.festival.done) && (!v.hollow || v.hollow.done || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase))).length + s.arriving.length;
+export const onThePath = (s) => s.visitors.filter((v) => !chatting(v) && (!v.festival || v.festival.done) && (!v.hayride || v.hayride.done || ["approach", "return"].includes(v.hayride.phase)) && (!v.hollow || v.hollow.done || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase))).length + s.arriving.length;
 // Every outdoor trip keeps a return space, including guests in the foyer or at
 // Sandy's stand. Otherwise simultaneous returns can overflow a full path.
 // Guests chatting in the meadow have finished their visit and never come back
@@ -187,6 +190,7 @@ export function updateStall(s, dt, events) {
   while (s.arriving.length && s.arriving[0].wait <= 1e-8) {
     const a = s.arriving.shift(), v = createPasserby(s, s.nextVisitor++, a.party, a.place, a.size);
     if (a.forMaze) { v.forMaze = true; v.festival = null; }                     // sent by the maze opening: straight there
+    if (a.forHayride) { v.forHayride = true; v.festival = null; }
     s.visitors.push(v);
     events.push({ type: "arrival", visitor: v.id, party: a.party, place: a.place, size: a.size });
   }
@@ -195,6 +199,16 @@ export function updateStall(s, dt, events) {
     if (v.social) { tickChat(s, v, dt, events); continue; }                      // chatting in the meadow, then home
     if (tickFestivalVisit(s, v, dt, events)) continue;
     if (v.festival?.justArrived) { v.age = VISIT.arrive; v.festival.justArrived = false; }
+    // A woodland visit owns the same guest and wallet, suspending the stall
+    // clock until their visible walk back reaches the counter.
+    if (!v.hayrideConsidered && !v.forMaze) {
+      v.hayrideConsidered = true;
+      v.hayride = v.festival?.done ? null : planHayrideVisit(s, v, "arrival", hayrideJourneyTiming(v, "arrival", s));
+      if (v.hayride) v.hollowConsidered = true;
+    }
+    if (tickHayrideVisit(s, v)) continue;
+    if (v.hayride?.wentHome) continue;
+    if (v.hayride?.justArrived) { v.age = VISIT.arrive; v.hayride.justArrived = false; }
     // The maze first (up the west lane), unless they've come round from Sandy's;
     // or, once they've shopped, over the lantern walk to it (below).
     if (!v.hollowConsidered) { v.hollowConsidered = true; v.hollow = v.festival?.done ? null : planHollowVisit(s, v, "arrival"); }
@@ -204,6 +218,11 @@ export function updateStall(s, dt, events) {
     if (v.hollow?.fledHome) continue;
     if (v.hollow?.justArrived) { v.age = VISIT.arrive; v.hollow.justArrived = false; }
     v.age += dt;
+    if (v.leaveAt !== null && v.age >= v.leaveAt && !v.hayride && !v.hayrideAfterConsidered && !v.hollow) {
+      v.hayrideAfterConsidered = true;
+      v.hayride = planHayrideVisit(s, v, "after", hayrideJourneyTiming(v, "after", s));
+      if (v.hayride) continue;
+    }
     // Decided as their linger ends, so they set off from their place at the
     // counter without being drawn a step down the way home first.
     if (v.leaveAt !== null && v.age >= v.leaveAt && !v.hollow && !v.mazeAfterConsidered) {
@@ -211,7 +230,7 @@ export function updateStall(s, dt, events) {
       if (v.hollow) continue;
     }
     // Then perhaps a chat in the meadow, once everything else is settled.
-    if (v.leaveAt !== null && v.age >= v.leaveAt && !v.socialConsidered && (!v.hollow || v.hollow.done && !v.hollow.wentHome)) {
+    if (v.leaveAt !== null && v.age >= v.leaveAt && !v.socialConsidered && (!v.hollow || v.hollow.done && !v.hollow.wentHome) && (!v.hayride || v.hayride.done && !v.hayride.wentHome)) {
       v.socialConsidered = true; v.social = planChat(s, v);
       if (v.social) continue;
     }
@@ -236,7 +255,7 @@ export function updateStall(s, dt, events) {
     }
   }
   updateChats(s, events);
-  s.visitors = s.visitors.filter((v) => v.social ? !v.social.gone : !v.hollow?.fledHome && !v.hollow?.wentHome && (v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s)));
+  s.visitors = s.visitors.filter((v) => v.social ? !v.social.gone : !v.hayride?.wentHome && !v.hollow?.fledHome && !v.hollow?.wentHome && (v.hayride && !v.hayride.done || v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s)));
 }
 
 // The indoor shop: open it, then add room, display tables and a faster till.

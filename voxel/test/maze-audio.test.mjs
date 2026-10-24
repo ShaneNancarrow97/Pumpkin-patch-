@@ -94,6 +94,21 @@ test("maze mute drops old cues and simultaneous voices stay bounded", async () =
   h.advance(.05); assert.ok(h.sources.every(source => source.ended), "Exit stops ambience and delayed encounter sources");
 });
 
+test("hayride ambience keeps wheel sounds separate from the maze and stops on pause", async () => {
+  const h = await audioHarness("hayride-audio"), prefs = { mazeSound: true, hayrideSound: true }, audio = h.exports.createHayrideAudio(prefs);
+  audio.start({ sound: true, profile: "hayride" });
+  assert.equal(audio.status.profile, "hayride");
+  assert.equal(h.sources[0].frequency.value, 39);
+  h.advance(1); const rolling = h.sources.length;
+  assert.ok(rolling > 2);
+  audio.pause(true); h.advance(1);
+  assert.equal(h.sources.length, rolling); assert.equal(audio.status.voices, 0);
+  audio.pause(false); assert.equal(audio.status.profile, "hayride");
+  audio.stop(); h.advance(1); assert.ok(h.sources.every(source => source.ended));
+  audio.setMuted(true); assert.equal(prefs.hayrideSound, false); assert.equal(prefs.mazeSound, true, "hayride controls must not change maze preferences");
+  audio.stop();
+});
+
 test("farm music keeps the ride mix across volume, sync and level-up ducking", async () => {
   const h = await audioHarness("audio"), prefs = { music: true, musicTrack: "parade", musicShuffle: false, musicVolume: .5, sound: true }, audio = h.exports.createAudio(prefs);
   audio.setSceneGain(.08); assert.equal(h.contexts.length, 0);

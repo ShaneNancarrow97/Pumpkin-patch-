@@ -22,6 +22,9 @@ import { INTERIOR } from "./interiors.js";
 import { loadDecor } from "./decor.js";
 import { GRID } from "./model.js";
 import { createFestivalWorld } from "./festival-meadow-world.js";
+import { createHayrideWorld } from "./hayride-world.js";
+import { createHayrideScares } from "./hayride-scares.js";
+import { HAYRIDE_SITE, hayrideGuestPose } from "./content/hayride-layout.js";
 import { fieldWidth, MEADOW, MEADOW_EXIT, CHAT_SPOTS } from "./content/festival-meadow.js";
 import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
@@ -30,6 +33,7 @@ import { createFarmExpansion } from "./farm-expansion-world.js";
 import { fieldDepth, extendFarmRoute, DROP, patchShape, COUNTER_GAP } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createMazeRideView } from "./maze-ride-view.js";
+import { createHayrideView } from "./hayride-view.js";
 import { createFoyerView } from "./foyer-view.js";
 import { createAmbience } from "./ambience.js";
 import { mistClearings } from "./content/ambience.js";
@@ -135,6 +139,7 @@ export function createScene(canvas, state, hooks) {
   const festivalWorld = createFestivalWorld({ scene, state, world, signBoard, createCashier: createSandy });
   const farmExpansion = createFarmExpansion(scene, state, world);
   const hollowFarm = createHollowFarm(scene, state, signBoard);
+  const hayrideWorld = createHayrideWorld({ scene, state, world, signBoard, createScares: createHayrideScares });
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
@@ -229,8 +234,9 @@ export function createScene(canvas, state, hooks) {
   const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), gesture: hooks.estateGesture, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
   const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.(), gesture: hooks.foyerGesture });
   const mazeView = createMazeRideView(canvas, state, { onCue: cue => hooks.onMazeCue?.(cue), onComplete: status => hooks.onMazeComplete?.(status), onState: status => hooks.onMazeState?.(status), blocked: () => document.body.classList.contains("menu-open") });
-  const active = () => view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
-  const activeScene = () => view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
+  const hayrideView = createHayrideView(canvas, state, { world: hayrideWorld, onCue: cue => hooks.onHayrideCue?.(cue), onComplete: status => hooks.onHayrideComplete?.(status), onState: status => hooks.onHayrideState?.(status), blocked: () => document.body.classList.contains("menu-open") });
+  const active = () => view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
+  const activeScene = () => view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
   const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null, reach: { x: 0, z: 0 } };
   let farmView = null;
   let bloomOn = true;
@@ -328,10 +334,13 @@ export function createScene(canvas, state, hooks) {
   }
   function frame() {
     const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
+    // The painted farm panorama has finite edges at the woodland's low camera.
+    backdrop.visible = view.place !== "hayride";
     renderPass.camera = active();
     renderPass.scene = activeScene();
     renderer.toneMappingExposure = view.place === "maze" ? 1.3 : 1.45;
     if (view.place === "maze") { mazeView.resize(); return; }
+    if (view.place === "hayride") { hayrideView.resize(); return; }
     if (view.place === "estate") { estateView.resize(w, h); return; }
     if (view.place === "foyer") { foyerView.resize(); return; }
     if (view.place) { clampView(); frameRoom(w, h); return; }
@@ -379,7 +388,7 @@ export function createScene(canvas, state, hooks) {
   const piecePoint = e => { inputRay(e); floorPlane.constant = -places.standHeight(hooks.selectedPiece?.()); return ray.ray.intersectPlane(floorPlane, floorPoint) ? { x: floorPoint.x - ORIGIN.room.x, y: floorPoint.y, z: floorPoint.z - ORIGIN.room.z } : null; };
   const worldPerPixel = () => (camera.right - camera.left) / canvas.clientWidth;
   canvas.addEventListener("pointerdown", (e) => {
-    if (["estate", "foyer", "maze"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
+    if (["estate", "foyer", "maze", "hayride"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
     canvas.setPointerCapture(e.pointerId); glide = null;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 1) {
@@ -399,7 +408,7 @@ export function createScene(canvas, state, hooks) {
     }
   });
   canvas.addEventListener("pointermove", (e) => {
-    if (["estate", "foyer", "maze"].includes(view.place)) return;
+    if (["estate", "foyer", "maze", "hayride"].includes(view.place)) return;
     if (!touches.has(e.pointerId)) return;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pinch && touches.size === 2) { const [a, b] = [...touches.values()];
@@ -420,7 +429,7 @@ export function createScene(canvas, state, hooks) {
   });
   let lastPick = null;
   const end = (e) => {
-    if (["estate", "foyer", "maze"].includes(view.place) || !touches.has(e.pointerId)) return;
+    if (["estate", "foyer", "maze", "hayride"].includes(view.place) || !touches.has(e.pointerId)) return;
     const wasPieceDrag = pieceDrag === e.pointerId;
     const wasTap = !wasPieceDrag && drag && drag.moved < 8 && touches.size === 1 && (e.pointerType !== "mouse" || e.button === 0);
     if (wasPieceDrag) { hooks.onPieceDragEnd?.(false); pieceDrag = null; }
@@ -431,7 +440,7 @@ export function createScene(canvas, state, hooks) {
       pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
       ray.setFromCamera(pointer, active());
       scene.updateMatrixWorld(true);
-      const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables.filter(p => p.userData.type !== "plot" || plots[p.userData.index].g.visible), ...festivalWorld.pickables, ...hollowFarm.pickables, ...[...visitorModels.values()].filter(e => e.m.visible).map(e => e.hit)], false);
+      const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables.filter(p => p.userData.type !== "plot" || plots[p.userData.index].g.visible), ...festivalWorld.pickables, ...hollowFarm.pickables, ...hayrideWorld.pickables, ...[...visitorModels.values()].filter(e => e.m.visible).map(e => e.hit)], false);
       // A visible guest at a counter takes priority over its large building hit box.
       const hit = hits.find(h => ["visitor", "customer"].includes(h.object.userData.type)) ?? hits.find(h => h.object.userData.host && h.object.userData.host === hits[0].object.userData.instance) ?? hits[0];
       lastPick = hit ? { ...hit.object.userData } : null;
@@ -452,7 +461,7 @@ export function createScene(canvas, state, hooks) {
   canvas.addEventListener("contextmenu", e => { e.preventDefault(); cancelGesture(); });
   window.addEventListener("blur", () => cancelGesture());
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelGesture(); });
-  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer", "maze"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, cameraLayout(canvas.clientWidth).maxZoom); clampView(); frame(); }, { passive: false });
+  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer", "maze", "hayride"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, cameraLayout(canvas.clientWidth).maxZoom); clampView(); frame(); }, { passive: false });
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.
   function clampView() {
@@ -467,10 +476,12 @@ export function createScene(canvas, state, hooks) {
       view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(canvas.clientWidth).roomMinZoom, 1.9);
       return;
     }
-    const halfW = camera.right, vertical = farmVerticalLimits(camera.top, PITCH, fieldDepth(state));
-    const maxX = fieldWidth(state) + 1 - halfW, minX = HOLLOW_PROPERTY.westEdge + halfW - 1;
+    const west = state.hayride.purchased ? HAYRIDE_SITE.bounds.x0 : HOLLOW_PROPERTY.westEdge;
+    const depth = state.hayride.purchased ? Math.max(fieldDepth(state), HAYRIDE_SITE.bounds.z1) : fieldDepth(state);
+    const halfW = camera.right, vertical = farmVerticalLimits(camera.top, PITCH, depth);
+    const maxX = fieldWidth(state) + (state.hayride.purchased ? 3 : 1) - halfW, minX = west + halfW - (state.hayride.purchased ? 3 : 1);
     view.z = THREE.MathUtils.clamp(view.z, vertical.min, vertical.max);
-    view.x = minX > maxX ? (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2 : THREE.MathUtils.clamp(view.x, minX, maxX);
+    view.x = minX > maxX ? (fieldWidth(state) + west) / 2 : THREE.MathUtils.clamp(view.x, minX, maxX);
   }
 
   // Floating "+£12" and sparkle effects, as DOM labels projected from the world.
@@ -587,6 +598,7 @@ export function createScene(canvas, state, hooks) {
     const land = `${fieldWidth(state)}:${fieldDepth(state)}`;
     if (land !== framedLand) { framedLand = land; frame(); clearMist(); }
     hollowFarm.sync(); hollowFarm.tick(time);
+    hayrideWorld.tick(time);
 
     // Both the ground and the incoming route end beyond the purchased gate.
     const routeIn = extendFarmRoute(ROUTE_IN, state), inLen = routeLength(routeIn);
@@ -594,18 +606,22 @@ export function createScene(canvas, state, hooks) {
     for (const v of state.visitors) {
       let entry = visitorModels.get(v.id);
       if (!entry) { const m = visitorModel(v.kind), hit = new THREE.Mesh(guestHitGeometry, guestHitMaterial); hit.position.y = 1.1; hit.userData = { type: "visitor", id: v.id }; m.add(hit); scene.add(m); entry = { m, hit, sprite: m.userData.sprite, bag: null }; visitorModels.set(v.id, entry); }
-      const hollowJourney = v.hollow && !v.hollow.done, chat = v.social && !v.social.gone ? v.social : null;
-      entry.m.visible = !!chat || !hollowJourney || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase);
+      const hayrideJourney = v.hayride && !v.hayride.done, chat = v.social && !v.social.gone ? v.social : null;
+      const hayridePose = hayrideJourney ? hayrideGuestPose(state, v) : null;
+      const hollowJourney = !hayrideJourney && v.hollow && !v.hollow.done;
+      entry.m.visible = view.place !== "hayride" && (!!chat || hayridePose?.visible !== false && (!hollowJourney || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase)));
       if (!entry.m.visible) continue;
       const leaving = !chat && v.leaveAt !== null && v.age >= v.leaveAt;
       const t = leaving ? (v.age - v.leaveAt) / visitorLeaveSeconds(state) : Math.min(1, v.age / VISIT.arrive);
-      const excursion = chat || hollowJourney || v.festival && !v.festival.done;
-      const journey = chat ?? (hollowJourney ? v.hollow : v.festival);
+      const excursion = chat || hayrideJourney || hollowJourney || v.festival && !v.festival.done;
+      const journey = chat ?? (hayrideJourney ? hayridePose : hollowJourney ? v.hollow : v.festival);
       const p = excursion ? journey : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, t * (state.festival.meadow ? meadowOutLen : outLen)) : along(routeIn, t * inLen);
       // Parties stand side by side along the counter: each fans out to its own
       // place over the last stretch of the path, and back in as it sets off home.
       const fan = excursion ? 0 : leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
-      entry.m.position.set(p.x + counterSide(v.spot ?? 0) * COUNTER_GAP * fan, 0.04, p.z);
+      entry.m.position.set(p.x + counterSide(v.spot ?? 0) * COUNTER_GAP * fan, p.y ?? .04, p.z);
+      // The wagon rail masks the lower body; riders keep a quiet idle frame.
+      entry.m.scale.y = hayridePose?.seated ? .66 : 1;
       const walking = excursion ? journey.walking : leaving || v.age < VISIT.arrive;
       if (entry.sprite) animateVisitor(entry.m, excursion ? time + v.id : v.age, walking, p.dx / (Math.hypot(p.dx, p.dz) || 1), walking || chat?.phase === "chatting");
       else {
@@ -639,6 +655,7 @@ export function createScene(canvas, state, hooks) {
     foyerView.tick(dt, time);
     }
     mazeView.tick(dt, time);
+    if (view.place === "hayride") hayrideView.tick(dt);
 
     for (let i = fx.length - 1; i >= 0; i--) {
       const f = fx[i]; f.t += dt; f.el.hidden = f.scene !== view.place;
@@ -660,6 +677,7 @@ export function createScene(canvas, state, hooks) {
     sale(amount, route) {
       paying = 1.2;
       if (route === "hollow-ticket") { if (view.place === "foyer") floatText("+£" + amount, -2, 2, 0, "coin"); else if (!view.place) floatText("+£" + amount, HOLLOW_PROPERTY.x, 2.8, HOLLOW_PROPERTY.door[1], "coin"); return; }
+      if (route === "hayride-ticket") { if (!view.place) floatText("+£" + amount, HAYRIDE_SITE.rearEntry.x, 2.5, HAYRIDE_SITE.rearEntry.z, "coin"); return; }
       if (route === "festival-cocoa" && !view.place) { floatText("+£" + amount, MEADOW.counter[0], 2.2, MEADOW.counter[1], "coin"); return; }
       if (route === "shop" && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
       else if (!view.place) floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin");
@@ -682,6 +700,7 @@ export function createScene(canvas, state, hooks) {
     enter(kind, id) {
       cancelGesture();
       if (view.place === "maze") mazeView.leave();
+      if (view.place === "hayride") hayrideView.leave();
       if (!view.place) farmView = { x: view.x, z: view.z, zoom: view.zoom };
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
@@ -689,6 +708,7 @@ export function createScene(canvas, state, hooks) {
       if (kind === "estate") { places.leave(); estateView.enter(); }
       else if (kind === "foyer") { places.leave(); foyerView.enter(); }
       else if (kind === "maze") { places.leave(); mazeView.enter(id.config, id.options); }
+      else if (kind === "hayride") { places.leave(); hayrideWorld.sync(); hayrideView.enter(id ?? {}); }
       else if (kind === "room") places.enterRoom(id); else places.enterShop();
       Object.assign(view, { x: 0, z: 0, zoom: 1, reach: { x: 0, z: 0 } }); glide = null;
       frame();
@@ -696,6 +716,7 @@ export function createScene(canvas, state, hooks) {
     leavePlace() {
       if (!view.place) return;
       cancelGesture(); if (view.place === "maze") mazeView.leave();
+      if (view.place === "hayride") hayrideView.leave();
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
       places.leave();
@@ -703,14 +724,16 @@ export function createScene(canvas, state, hooks) {
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
       frame();
     },
-    get place() { return view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
+    get place() { return view.place === "hayride" ? { kind: "hayride", id: "woodland" } : view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
     get visitorStatus() { return [...visitorModels].map(([id,e]) => ({ id, kind: state.visitors.find(v=>v.id===id)?.kind, visible: e.m.visible, sprite: e.sprite, leadingLeg: e.m.userData.leadingLeg, frames: e.m.userData.walk?.length ?? 0, frame: e.m.userData.walk?.indexOf(e.m.userData.shown) ?? -1, x: e.m.position.x, z: e.m.position.z })); },
     get farmExpansionStatus() { return farmExpansion.status; },
     get festivalStatus() { return festivalWorld.status; },
+    get hayrideStatus() { return hayrideWorld.status; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
     fitView() {
       if (view.place === "maze") { mazeView.setLook(0, 0); mazeView.resize(); return; }
+      if (view.place === "hayride") { hayrideView.setLook(0, 0); hayrideView.resize(); return; }
       if (view.place === "estate") { estateView.cameraActions.reset(); return; }
       if (view.place === "foyer") { foyerView.cameraActions.reset(); return; }
       Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
@@ -723,6 +746,8 @@ export function createScene(canvas, state, hooks) {
     get estateCamera() { return estateView.cameraActions; },
     get estateStatus() { return estateView.status; },
     refreshHollow() { hollowFarm.sync(); },
+    refreshHayride() { hayrideWorld.sync(); frame(); },
+    focusHayride() { const p = state.hayride.purchased ? HAYRIDE_SITE.focus : { x: -4, z: 13, zoom: 2 }; view.x = p.x; view.z = p.z; view.zoom = p.zoom; frame(); },
     refreshFoyer() { if (view.place === "foyer") foyerView.sync(); },
     previewFoyerDecor(data) { foyerView.preview(data); },
     // For tests: where a world point lands on the canvas, in CSS pixels.
@@ -735,6 +760,11 @@ export function createScene(canvas, state, hooks) {
     restartMazeRide(options) { return mazeView.restart(options); },
     setMazeOptions(options) { mazeView.setOptions(options); },
     advanceMazeRide(seconds) { return mazeView.advanceForTest(seconds); },
+    get hayrideRideStatus() { return hayrideView.status; },
+    pauseHayrideRide(on) { return hayrideView.setPaused(on); },
+    restartHayrideRide(options) { return hayrideView.restart(options); },
+    setHayrideOptions(options) { hayrideView.setOptions(options); },
+    advanceHayrideRide(seconds) { return hayrideView.advanceForTest(seconds); },
     get foyerStatus() { return foyerView.status; },
     get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? antialias.enabled ? "FXAA" : "density" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
     setRenderQuality(value) { renderQuality = validRenderQuality(value); resize(); return renderQuality; },

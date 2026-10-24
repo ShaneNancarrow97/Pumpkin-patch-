@@ -130,7 +130,7 @@ export function farmSheets(ui) {
 
   // Who is on the path now, a party at a time.
   function guest(v) {
-    const doing = v.hollow && !v.hollow.done ? (v.hollow.fleeing ? "running home from the maze" : `at the maze · ${Math.round(v.hollow.terror ?? 0)}% terror`) : v.outcome === "bought" ? `bought ${plural(v.quantity, "pumpkin")} for ${money(v.amount)}` : v.outcome === "shopping" ? "on the way" : v.outcome === "budget" ? "couldn’t afford what’s left" : "found the shelves empty";
+    const doing = v.hayride && !v.hayride.done ? `at the hayride · ${Math.round(v.hayride.terror ?? 0)}% terror` : v.hollow && !v.hollow.done ? (v.hollow.fleeing ? "running home from the maze" : `at the maze · ${Math.round(v.hollow.terror ?? 0)}% terror`) : v.outcome === "bought" ? `bought ${plural(v.quantity, "pumpkin")} for ${money(v.amount)}` : v.outcome === "shopping" ? "on the way" : v.outcome === "budget" ? "couldn’t afford what’s left" : "found the shelves empty";
     return `<p class="guest${v.place ? " member" : ""}"><b>${v.kind === 10 ? "Baron Brassbolt" : M.STALL_PROFILES[v.profile]?.name ?? "Neighbour"}</b>${v.regular ? ` <span class="tag">regular</span>` : ""} · ${money(v.budget)} budget${v.cocoaAllowance ? ` (includes ${money(v.cocoaAllowance)} cocoa money)` : ""} · ${doing}${v.mug ? " · a cup of hot chocolate" : ""}</p>`;
   }
   const partyLabel = (v) => (v.size > 1 ? `<p class="party-label">${["", "", "Two friends", "A party of three", "A family of four"][v.size]}</p>` : "");
@@ -152,8 +152,8 @@ export function farmSheets(ui) {
     const now = busiest ? " (as busy as the path gets)" : boost ? ` (streak +${boost}%)` : "";
     const stats = `<div class="stats"><div><b>${Math.round(M.visitorsPerMinute(s) * 10) / 10}</b><span>neighbours a minute</span></div><div><b>${max > 1 ? `1–${max}` : "1"}</b><span>in each party</span></div><div><b>${secs(M.stallGapSeconds(s))}</b><span>between parties${now}</span></div><div><b>${M.onThePath(s)}/${M.visitorCapacity(s)}</b><span>outdoor visitors</span></div></div>`;
     const maze = M.mazeFootfallBonus?.(s) ?? 0;
-    const meadow = M.meadowFootfallBonus?.(s) ?? 0;
-    const attraction = (maze ? `<p class="commerce-inline-note">The Hollow House brings +${Math.round(maze * 100)}% footfall while open. Frightened visitors may leave early.</p>` : "") + (meadow ? `<p class="commerce-inline-note">The meadow’s comforts are the talk of the village: +${Math.round(meadow * 100)}% footfall.</p>` : "");
+    const hayride = M.hayrideFootfallBonus?.(s) ?? 0, meadow = M.meadowFootfallBonus?.(s) ?? 0, total = M.attractionFootfallBonus?.(s) ?? maze;
+    const attraction = maze || hayride || meadow ? `<p class="commerce-inline-note">Attractions bring +${Math.round(total * 100)}% footfall${maze ? ` · Hollow House +${Math.round(maze * 100)}%` : ""}${hayride ? ` · Hayride +${Math.round(hayride * 100)}%` : ""}${meadow ? ` · the meadow’s comforts +${Math.round(meadow * 100)}%` : ""}. Combined appeal is capped at 75%${maze ? "; frightened guests may leave early" : ""}.</p>` : "";
     const streak = `<p class="small streak-note">Quick picking builds a streak, and a streak gets talked about: visitors come 10% more often for each pick up to ×6, then 5% more a pick, to +${Math.round(M.STREAK.cap * 100)}%. It fades over ${M.STREAK.fade}s once you stop. Helping hands don’t count; they’re not showing off.</p>`;
     const cards = VISITOR_IDS.map((id) => {
       const sign = id === "sign", u = sign ? M.UPGRADES.find((x) => x.id === id) : M.VISITOR_UPGRADES.find((x) => x.id === id);
