@@ -1,0 +1,48 @@
+{
+  "format": 1,
+  "createdUtc": "2026-10-24T08:01:18.434688+00:00",
+  "sourceBranch": "contractor/hollow-hayride",
+  "sourceCommit": "34b50b3ea274b7e8d2b8e78fb23ad6f736384ba1",
+  "leadBase": "d98db5989091975391a20ce3e4d56aa58fbc3ccb",
+  "artifactBranch": "contractor/hollow-hayride-download-2026-10-24",
+  "htmlSha256": "3173d8f1d54b32ec3468729967f0c7315c265092e071f018b2aaee178d13e49b",
+  "verification": {
+    "nodeTestFiles": 59,
+    "binaryPatchRebuildIdentical": true,
+    "handoverChecksAtPackaging": 0,
+    "handoverSmokeCompletedAtPackaging": false,
+    "handoverReport": "voxel/docs/contractor-patches/haunted-hayride/verification/handover/checks.json",
+    "limitations": [
+      "Core functional run interrupted by host restart after passing most assertions; historical build hash unavailable",
+      "Final off-map focused smoke is separate and may be pending at packaging; not a full final functional replay",
+      "No physical Z Fold or hardware frame-rate measurement",
+      "Managed Chromium blocks file:// navigation and OS fullscreen"
+    ]
+  },
+  "files": {
+    "hollow-hayride-from-d98db59.patch": {
+      "bytes": 3136335,
+      "sha256": "52d85c03a8c54107dcbf59dcf24f9cff7768b2dbd6a461afb86b7e379e6638cd"
+    },
+    "Hollow-Hayride-Contractor-Patch.zip": {
+      "bytes": 2379437,
+      "sha256": "a26d1341513fb08dcdcc4a69b698b6c03187066c430bf672d0c778443c858977"
+    },
+    "Pumpkin-Patch.html": {
+      "bytes": 28849049,
+      "sha256": "3173d8f1d54b32ec3468729967f0c7315c265092e071f018b2aaee178d13e49b"
+    },
+    "Pumpkin-Patch-HTML.zip": {
+      "bytes": 20832697,
+      "sha256": "767d667e2d57f9ede2ef1d04ae5b6ecce4897ab3aa13d162e2b3b084b029c021"
+    },
+    "README.md": {
+      "bytes": 3085,
+      "sha256": "9ac108a90c101cc2801a0c4ad40aec5088cac88a2ec446fc890be609f8b8d789"
+    },
+    "37-off-map-hayride-takeover.md": {
+      "bytes": 5736,
+      "sha256": "0c4aa5d020385114f54c8f59373230f029389de1ef4f6037e01da76f32c4ad10"
+    }
+  }
+}
