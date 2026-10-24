@@ -1,11 +1,14 @@
 import * as THREE from "three";
-import { Voxels, seeded, vary } from "./voxels.js";
+import { Voxels, seeded, vary, chunkedVoxels } from "./voxels.js";
 import { tree, fenceRun, lanternPost, gourd } from "./world.js";
 import { buildHayrideVehicle } from "./hayride-vehicle.js";
 import { createHayrideForest } from "./hayride-forest.js";
 import { HAYRIDE_PROPERTY, HAYRIDE_TIERS, HAYRIDE_SCARES } from "./content/hayride.js";
-import { HAYRIDE_SITE as SITE, HAYRIDE_RIDE_BOUNDS, HAYRIDE_STOPS, HAYRIDE_GATE_CLEAR, hayrideRouteSample, hayrideRouteDistance, HAYRIDE_ROUTE_LENGTH, hayrideConvoyPose, hayrideFarmConvoyPose, hayrideGuestPose } from "./content/hayride-layout.js";
+import { HAYRIDE_SITE as SITE, HAYRIDE_RIDE_BOUNDS, HAYRIDE_STOPS, HAYRIDE_GATE_CLEAR, hayrideRouteSample, hayrideRouteDistance, HAYRIDE_ROUTE_LENGTH, hayrideSpan, hayrideConvoyPose, hayrideFarmConvoyPose, hayrideGuestPose } from "./content/hayride-layout.js";
 
+// Each set's own light: the scarecrows' bonfire orange, the spiders' sickly
+// green, the bride's cold moon, the spectre's violet and the bus's red alarm.
+const SET_LIGHT={scarecrows:0xff8a3a,spiders:0x9dff70,bride:0xa9bcff,pursuit:0xc07cff,bus:0xff4a3a};
 const C={soil:0x34282a,wood:0x68432d,dark:0x30222b,brass:0xb78a52,amber:0xffbc69,purple:0x8f51bb,stone:0x645469};
 // Each local set is built once, then placed beside the route's inner shoulder.
 const block=(v,x,y,z,w,h,d,c,glow=false)=>v.block(x,y,z,w,h,d,c,glow);
@@ -113,28 +116,57 @@ function buildStation(signBoard){
   const exit=signBoard("Farm →","unloading exit",2.8);exit.position.set(-12,1.8,37.2);exit.userData.hayrideLabel=true;root.add(exit);
   return{root,sign};
 }
+// Lanterns on posts every 12.5 units of lane, on alternate sides, clear of the
+// sets and the station. The four nearest ahead light their stretch (createHayrideWorld).
+export const HAYRIDE_LANTERN_GAP=12.5;
 function buildRideLand(){
-  const v=new Voxels(),r=seeded(8813),b=HAYRIDE_RIDE_BOUNDS,root=new THREE.Group(),sets=[];
-  for(let x=b.x0;x<b.x1;x+=.5)for(let z=b.z0;z<b.z1;z+=.5){const lane=hayrideRouteDistance(x+.25,z+.25)<SITE.laneWidth/2,c=lane?[0x514331,0x574734,0x4b3c2e][Math.floor(r()*3)]:[0x24291e,0x292b1d,0x22251d][Math.floor(r()*3)];v.box(x,-.45,z,.5,.49,.5,c);}
+  const land=chunkedVoxels(),r=seeded(8813),b=HAYRIDE_RIDE_BOUNDS,root=new THREE.Group(),sets=[],lanterns=[];
+  for(let x=b.x0;x<b.x1;x+=.5)for(let z=b.z0;z<b.z1;z+=.5){const lane=hayrideRouteDistance(x+.25,z+.25)<SITE.laneWidth/2,c=lane?[0x514331,0x574734,0x4b3c2e][Math.floor(r()*3)]:[0x24291e,0x292b1d,0x22251d][Math.floor(r()*3)];land.at(x,z).box(x,-.45,z,.5,.49,.5,c);}
   for(const stop of HAYRIDE_STOPS){const frame=hayrideRouteSample(stop.at*HAYRIDE_ROUTE_LENGTH),set=makeScenicSet(stop),offset=stop.id==="spiders"?0:stop.id==="bride"?6.1:stop.id==="bus"?5.4:4.1;set.group.position.set(frame.x+frame.dz*offset,0,frame.z-frame.dx*offset);set.group.rotation.y=frame.yaw+(stop.id==="spiders"?0:Math.PI/2);root.add(set.group);sets.push({...stop,...set});}
-  root.add(v.build());root.name="The Hollow Hayride off-map woodland";return{root,sets};
+  for(let along=10,side=1;along<HAYRIDE_ROUTE_LENGTH-8;along+=HAYRIDE_LANTERN_GAP,side=-side){
+    const p=hayrideRouteSample(along),x=p.x+p.dz*3.05*side,z=p.z-p.dx*3.05*side;
+    if(sets.some(set=>Math.hypot(set.group.position.x-x,set.group.position.z-z)<7)||(x>-23.5&&x<-8.5&&z>23&&z<39.5))continue;
+    lanternPost(land.at(x,z),x,z,[],false);lanterns.push({x,y:2.2,z,along});
+  }
+  land.build(root);root.name="The Hollow Hayride off-map woodland";return{root,sets,lanterns};
 }
 function makeVehicle(capacity){
   const vehicle=buildHayrideVehicle({capacity}),driver=new Voxels();block(driver,0,1.43,-.3,.55,.56,.36,0x4a354b);block(driver,0,2.0,-.36,.43,.4,.38,0x929b70);block(driver,0,2.4,-.36,.7,.08,.58,C.dark);block(driver,0,2.48,-.36,.44,.18,.4,C.dark);for(const x of [-.2,.2])block(driver,x,1.6,-.62,.15,.14,.42,0x4a354b);vehicle.tractor.add(driver.build());return vehicle;
 }
 // View-only controller: clocks, spending and dispatch are owned by the rules.
 export function createHayrideWorld({scene: farmScene,state,world,signBoard,createScares}){
-  const root=new THREE.Group();farmScene.add(root);const rideScene=new THREE.Scene();rideScene.name="The Hollow Hayride owner scene";rideScene.background=new THREE.Color(0x07090f);rideScene.fog=new THREE.FogExp2(0x0b0e16,.065);
+  const root=new THREE.Group();farmScene.add(root);const rideScene=new THREE.Scene();rideScene.name="The Hollow Hayride owner scene";rideScene.background=new THREE.Color(0x0b0f19);rideScene.fog=new THREE.FogExp2(0x121828,.052);
   let built=false,station=null,land=null,forest=null,scares=null,vehicle=null,rideVehicle=null,tier=0,preview=null,cleared=0,previewCamera=null,previewTime=0;
   const reducedDefault=typeof window!=="undefined"&&window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;let gentle=!!reducedDefault;
   const stationLamp=new THREE.PointLight(0xffbd77,0,11,1.6),convoyLamp=new THREE.PointLight(0xdfb4ff,0,9,1.6);stationLamp.position.set(-19.3,2.7,32.2);farmScene.add(stationLamp,convoyLamp);
-  const sky=new THREE.HemisphereLight(0x858fb6,0x10120d,.22),moon=new THREE.DirectionalLight(0x8c9cc4,.28),lightning=new THREE.DirectionalLight(0xe4e9ff,0);
-  moon.position.set(-32,35,12);lightning.position.set(-15,30,-20);rideScene.add(sky,moon,lightning);
-  const headlamp=new THREE.SpotLight(0xffc58d,5,18,Math.PI/5,.65,1.6),encounterLamp=new THREE.PointLight(0xbba4ee,0,12,1.8);rideScene.add(headlamp,headlamp.target,encounterLamp);
+  // Moonlight through thin fog, so the trees read as shapes; the tractor's lamps
+  // light the lane ahead; a lantern hangs over the wagon; the lane's lanterns
+  // light their stretch; and each set has its own coloured light as you near it.
+  const sky=new THREE.HemisphereLight(0x9eaadc,0x2a241c,1.0),moon=new THREE.DirectionalLight(0xb3c1ee,1.25),lightning=new THREE.DirectionalLight(0xe4e9ff,0);
+  moon.position.set(-60,40,-14);lightning.position.set(-15,30,-20);rideScene.add(sky,moon,lightning);
+  const headlamp=new THREE.SpotLight(0xffd29a,60,34,Math.PI/3.6,.45,1.2),encounterLamp=new THREE.PointLight(0xbba4ee,0,13,1.6);rideScene.add(headlamp,headlamp.target,encounterLamp);
+  const wagonLamp=new THREE.PointLight(0xffb15c,0,8,1.5),setLamp=new THREE.PointLight(0xffffff,0,15,1.4),lanternPool=Array.from({length:4},()=>new THREE.PointLight(0xffa04a,0,12,1.4));rideScene.add(wagonLamp,setLamp,...lanternPool);
   const marker=signBoard("The Hollow Hayride",`woodland clearing · level ${HAYRIDE_PROPERTY.level}`,4.0);marker.position.set(SITE.marker.x,2.15,SITE.marker.z);marker.userData={type:"hayride"};root.add(marker);
   const hit=new THREE.Mesh(new THREE.BoxGeometry(SITE.hit.w,SITE.hit.h,SITE.hit.d),new THREE.MeshBasicMaterial({visible:false}));hit.position.set(SITE.hit.x,SITE.hit.y,SITE.hit.z);hit.userData={type:"hayride"};root.add(hit);hit.visible=false;
+  // The ride's moving lights, each frame of the preview (see the comment above).
+  const wrap=d=>((d+HAYRIDE_ROUTE_LENGTH/2)%HAYRIDE_ROUTE_LENGTH+HAYRIDE_ROUTE_LENGTH)%HAYRIDE_ROUTE_LENGTH-HAYRIDE_ROUTE_LENGTH/2,lamp=new THREE.Vector3();
+  const fade=(d,a,b,c,e)=>d<=a||d>=e?0:d<b?(d-a)/(b-a):d<=c?1:(e-d)/(e-c);
+  function lightRide(time){
+    if(!land)return;
+    const along=(preview??0)*HAYRIDE_ROUTE_LENGTH;
+    if(rideVehicle){lamp.set(rideVehicle.cameraAnchor[0],rideVehicle.cameraAnchor[1]+1.05,rideVehicle.cameraAnchor[2]+.5).applyMatrix4(rideVehicle.wagon.matrixWorld);wagonLamp.position.copy(lamp);wagonLamp.intensity=5*(.93+.07*Math.sin(time*9.3)*Math.sin(time*3.1));}
+    // Lanterns from 10 units behind to 36 ahead: at most four at a time, each
+    // fading in from the far edge, a few of them guttering.
+    const near=land.lanterns.map((l,i)=>({l,i,d:wrap(l.along-along)})).filter(n=>n.d>-10&&n.d<36);
+    lanternPool.forEach((light,k)=>{const n=near[k];if(!n){light.intensity=0;return;}light.position.set(n.l.x,n.l.y,n.l.z);
+      const gutter=n.i%5===2?Math.max(.15,Math.sin(time*2.3+n.i)*Math.sin(time*7.7)*1.4):1;light.intensity=15*fade(n.d,-10,-4,24,36)*(.88+.12*Math.sin(time*11+n.i*7))*Math.min(1,gutter);});
+    // The set ahead glows in its own colour from 18 units out until just past it.
+    const set=land.sets.reduce((best,s)=>Math.abs(wrap(s.at*HAYRIDE_ROUTE_LENGTH-along))<Math.abs(wrap(best.at*HAYRIDE_ROUTE_LENGTH-along))?s:best,land.sets[0]);
+    if(set){const d=wrap(set.at*HAYRIDE_ROUTE_LENGTH-along),frame=hayrideRouteSample(set.at*HAYRIDE_ROUTE_LENGTH);setLamp.color.setHex(SET_LIGHT[set.id]??0xffffff);
+      setLamp.position.set(frame.x+frame.dz*1.8,3.4,frame.z-frame.dx*1.8);setLamp.intensity=(gentle?5:7)*fade(-d,-18,-8,3,9)*(.9+.1*Math.sin(time*5+set.at*40));}
+  }
   function poseFarm(){if(!vehicle)return;const p=hayrideFarmConvoyPose(state);vehicle.group.visible=p.visible;vehicle.setPose(p);vehicle.setRollDistance(p.distance);vehicle.setSteering(0);vehicle.setBoarding(["loading","unloading"].includes(state.hayride?.convoy?.phase));}
-  function poseRide(){if(!rideVehicle)return;const p=hayrideConvoyPose(state,preview??0);rideVehicle.setPose(p);rideVehicle.setRollDistance(p.distance);rideVehicle.setSteering(p.tractor.yaw-p.wagon.yaw);rideVehicle.setBoarding(preview===0||preview===1);headlamp.position.set(p.tractor.x,1.8,p.tractor.z-1.3);headlamp.target.position.set(p.tractor.x+p.tractor.dx*10,.4,p.tractor.z+p.tractor.dz*10);}
+  function poseRide(){if(!rideVehicle)return;const p=hayrideConvoyPose(state,preview??0);rideVehicle.setPose(p);rideVehicle.setRollDistance(p.distance);rideVehicle.setSteering(p.tractor.yaw-p.wagon.yaw);rideVehicle.setBoarding(preview===0||preview===1);headlamp.position.set(p.tractor.x+p.tractor.dx*1.3,1.7,p.tractor.z+p.tractor.dz*1.3);headlamp.target.position.set(p.tractor.x+p.tractor.dx*12,0,p.tractor.z+p.tractor.dz*12);}
   function sync(){
     const h=state.hayride;if(!h?.purchased){marker.visible=true;hit.visible=false;return;}
     marker.visible=false;hit.visible=true;
@@ -143,11 +175,11 @@ export function createHayrideWorld({scene: farmScene,state,world,signBoard,creat
     poseFarm();poseRide();
   }
   function tick(time){previewTime=time;sync();stationLamp.intensity=vehicle?4:0;if(!vehicle){convoyLamp.intensity=0;return;}convoyLamp.position.set(vehicle.tractor.position.x,2.5,vehicle.tractor.position.z);convoyLamp.intensity=vehicle.group.visible&&["departing","arriving"].includes(state.hayride?.convoy?.phase)?2.4:0;
-    if(preview===null)return;forest?.tick(time,{gentle});scares?.tick({progress:preview,time,gentle,camera:previewCamera});
+    if(preview===null)return;forest?.tick(time,{gentle});lightRide(time);scares?.tick({progress:preview,time,gentle,camera:previewCamera});
     const h=state.hayride,owned=new Set(h.haunts?.owned??[]),active=new Set((h.haunts?.active??[]).filter(id=>owned.has(id)&&HAYRIDE_SCARES.some(p=>p.id===id&&p.tier<=h.tier)));
-    for(const set of land.sets)for(const actor of set.actors){actor.object.position.copy(actor.base);actor.object.rotation.y=0;actor.object.scale.setScalar(1);if(gentle||!active.has(actor.id))continue;const near=Math.abs(preview-set.at)<.055,wave=near?(Math.sin(time*2)+1)/2:0;
+    for(const set of land.sets)for(const actor of set.actors){actor.object.position.copy(actor.base);actor.object.rotation.y=0;actor.object.scale.setScalar(1);if(gentle||!active.has(actor.id))continue;const near=Math.abs(preview-set.at)<hayrideSpan(5.7),wave=near?(Math.sin(time*2)+1)/2:0;
       if(actor.id==="turning-scarecrows")actor.object.rotation.y=wave*.55;else if(actor.id==="spider-drop")actor.object.position.y-=wave*1.2;else if(actor.id==="bride-procession")actor.object.position.z+=wave*1.1;else if(actor.id==="bus-breakout")actor.object.position.z+=wave*.8;else{actor.object.position.y+=Math.sin(time*1.5)*.16;actor.object.scale.setScalar(1+wave*.17);}}
   }
   sync();
-  return{scene:rideScene,rideScene,root,sync,tick,focus:SITE.focus,setLightning(value){lightning.intensity=Math.max(0,Math.min(1,Number.isFinite(value)?value:0))*5;},setGentleMotion(value){gentle=value===null?!!reducedDefault:!!value;},get vehicle(){return vehicle;},get rideVehicle(){return rideVehicle;},setPreview(value){preview=value===null?null:Math.max(0,Math.min(1,value));if(preview===null){previewCamera=null;lightning.intensity=0;encounterLamp.intensity=0;}poseRide();},getPreviewFrame(progress){preview=Math.max(0,Math.min(1,progress));poseRide();if(!rideVehicle)return null;const position=new THREE.Vector3(...rideVehicle.cameraAnchor).applyMatrix4(rideVehicle.wagon.matrixWorld),target=new THREE.Vector3(0,rideVehicle.cameraAnchor[1],-8).applyMatrix4(rideVehicle.wagon.matrixWorld);previewCamera=position.clone();const nearest=land.sets.reduce((best,set)=>Math.abs(progress-set.at)<Math.abs(progress-best.at)?set:best,land.sets[0]),delta=Math.abs(progress-nearest.at),focusWeight=delta<.075?Math.max(0,1-(Math.max(0,delta-.02)/.055)**2):0;nearest.group.updateWorldMatrix(true,false);scares?.tick({progress:preview,time:previewTime,gentle,camera:previewCamera});const focusTarget=scares?.focusTarget?.(progress)??new THREE.Vector3(0,nearest.id==="scarecrows"?2.3:nearest.id==="spiders"?3.1:1.6,nearest.id==="spiders"?0:1).applyMatrix4(nearest.group.matrixWorld);encounterLamp.position.copy(focusTarget).add(new THREE.Vector3(0,2,1));encounterLamp.intensity=focusWeight*2.5;return{position,target,yaw:rideVehicle.wagon.rotation.y,focusTarget,focusWeight};},guestPose:v=>hayrideGuestPose(state,v),get pickables(){return state.hayride?.purchased?[hit,station?.sign].filter(Boolean):[marker];},get status(){return{purchased:!!state.hayride?.purchased,tier,phase:state.hayride?.convoy?.phase??"loading",queue:(state.visitors??[]).filter(v=>v.hayride&&!v.hayride.done&&v.hayride.phase==="queue").length,aboard:state.hayride?.convoy?.manifest?.length??0,bounds:SITE.bounds,farmBounds:SITE.bounds,rideBounds:HAYRIDE_RIDE_BOUNDS,farmVisible:vehicle?.group.visible??false,rideScene:true,forest:forest?.diagnostics??null,cleared,preview};},dispose(){vehicle?.dispose();rideVehicle?.dispose();if(station)dispose(station.root);if(land)dispose(land.root);forest?.dispose();scares?.dispose();root.removeFromParent();stationLamp.removeFromParent();convoyLamp.removeFromParent();dispose(marker);hit.geometry.dispose();hit.material.dispose();rideScene.clear();}};
+  return{scene:rideScene,rideScene,root,sync,tick,focus:SITE.focus,setLightning(value){lightning.intensity=Math.max(0,Math.min(1,Number.isFinite(value)?value:0))*5;},setGentleMotion(value){gentle=value===null?!!reducedDefault:!!value;},get vehicle(){return vehicle;},get rideVehicle(){return rideVehicle;},setPreview(value){preview=value===null?null:Math.max(0,Math.min(1,value));if(preview===null){previewCamera=null;lightning.intensity=0;encounterLamp.intensity=0;wagonLamp.intensity=setLamp.intensity=0;for(const light of lanternPool)light.intensity=0;}poseRide();},getPreviewFrame(progress){preview=Math.max(0,Math.min(1,progress));poseRide();if(!rideVehicle)return null;const position=new THREE.Vector3(...rideVehicle.cameraAnchor).applyMatrix4(rideVehicle.wagon.matrixWorld),target=new THREE.Vector3(0,rideVehicle.cameraAnchor[1],-8).applyMatrix4(rideVehicle.wagon.matrixWorld);previewCamera=position.clone();const nearest=land.sets.reduce((best,set)=>Math.abs(progress-set.at)<Math.abs(progress-best.at)?set:best,land.sets[0]),delta=Math.abs(progress-nearest.at)*HAYRIDE_ROUTE_LENGTH,focusWeight=delta<7.8?Math.max(0,1-(Math.max(0,delta-2.1)/5.7)**2):0;nearest.group.updateWorldMatrix(true,false);scares?.tick({progress:preview,time:previewTime,gentle,camera:previewCamera});const focusTarget=scares?.focusTarget?.(progress)??new THREE.Vector3(0,nearest.id==="scarecrows"?2.3:nearest.id==="spiders"?3.1:1.6,nearest.id==="spiders"?0:1).applyMatrix4(nearest.group.matrixWorld);encounterLamp.position.copy(focusTarget).add(new THREE.Vector3(0,2,1));encounterLamp.color.setHex(SET_LIGHT[nearest.id]??0xbba4ee);encounterLamp.intensity=focusWeight*(gentle?4:7);return{position,target,yaw:rideVehicle.wagon.rotation.y,focusTarget,focusWeight};},guestPose:v=>hayrideGuestPose(state,v),get pickables(){return state.hayride?.purchased?[hit,station?.sign].filter(Boolean):[marker];},get status(){return{purchased:!!state.hayride?.purchased,tier,phase:state.hayride?.convoy?.phase??"loading",queue:(state.visitors??[]).filter(v=>v.hayride&&!v.hayride.done&&v.hayride.phase==="queue").length,aboard:state.hayride?.convoy?.manifest?.length??0,bounds:SITE.bounds,farmBounds:SITE.bounds,rideBounds:HAYRIDE_RIDE_BOUNDS,farmVisible:vehicle?.group.visible??false,rideScene:true,forest:forest?.diagnostics??null,lanterns:land?.lanterns.length??0,cleared,preview};},dispose(){vehicle?.dispose();rideVehicle?.dispose();if(station)dispose(station.root);if(land)dispose(land.root);forest?.dispose();scares?.dispose();root.removeFromParent();stationLamp.removeFromParent();convoyLamp.removeFromParent();dispose(marker);hit.geometry.dispose();hit.material.dispose();rideScene.clear();}};
 }

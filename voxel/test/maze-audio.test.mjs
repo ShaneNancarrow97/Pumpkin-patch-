@@ -109,6 +109,27 @@ test("hayride ambience keeps wheel sounds separate from the maze and stops on pa
   audio.stop();
 });
 
+test("a hayride scare screams twice, and the woods have their own sounds between sets", async () => {
+  const h = await audioHarness("hayride-audio"), audio = h.exports.createHayrideAudio({ hayrideSound: true });
+  audio.start({ sound: true }); h.advance(.1);
+  const started = (hz) => h.sources.some(source => source.frequency.changes?.some(change => change.value === hz));
+  let before = h.sources.length;
+  assert.equal(audio.cue({ type: "encounter", id: "hayride-scarecrows", stop: "scarecrows", sound: "knock", intensity: .45 }), true);
+  assert.ok(h.sources.length - before > 12, "the hit and two screams, each built from several sources");
+  assert.ok(started(420) && started(600), "the scarecrow, then someone on the wagon");
+  assert.ok(!started(395) && !started(720) && !started(330), "the woods have not spoken yet");
+  for (let i = 0; i < 60; i++) h.advance(.9);
+  assert.ok(started(395), "an owl"); assert.ok(started(720), "crows"); assert.ok(started(330), "a far-off wolf");
+  // Gentle mode keeps the screams but drops the hit.
+  audio.stop(); audio.start({ sound: true, gentle: true }); h.advance(.1); before = h.sources.length;
+  audio.cue({ type: "encounter", id: "hayride-bus", stop: "bus", sound: "chains", intensity: .25 });
+  const gentle = h.sources.length - before;
+  audio.stop(); audio.start({ sound: true }); h.advance(.1); before = h.sources.length;
+  audio.cue({ type: "encounter", id: "hayride-bus", stop: "bus", sound: "chains", intensity: .25 });
+  assert.ok(h.sources.length - before > gentle, "the full ride adds the hit");
+  audio.stop(); h.advance(1); assert.ok(h.sources.every(source => source.ended));
+});
+
 test("farm music keeps the ride mix across volume, sync and level-up ducking", async () => {
   const h = await audioHarness("audio"), prefs = { music: true, musicTrack: "parade", musicShuffle: false, musicVolume: .5, sound: true }, audio = h.exports.createAudio(prefs);
   audio.setSceneGain(.08); assert.equal(h.contexts.length, 0);

@@ -1,5 +1,8 @@
 // The woodland attraction's economy and timing; its measured site lives elsewhere.
-export const HAYRIDE_PROPERTY = Object.freeze({ name: "The Hollow Hayride", level: 11, price: 7500, approachSeconds: 12, returnSeconds: 10, queuePatience: 220, maxWait: 15, departureSeconds: 3, arrivalSeconds: 3, unloadSeconds: 6, routeVersion: 1 });
+// rideAlongSeconds: the owner's ride-along runs the whole woodland route at a
+// walking pace. Paying guests' circuits stay circuitSeconds, so their visits and
+// the farm's economy are unchanged.
+export const HAYRIDE_PROPERTY = Object.freeze({ name: "The Hollow Hayride", rideAlongSeconds: 150, level: 11, price: 7500, approachSeconds: 12, returnSeconds: 10, queuePatience: 220, maxWait: 15, departureSeconds: 3, arrivalSeconds: 3, unloadSeconds: 6, routeVersion: 1 });
 export const HAYRIDE_TIERS = [
   { level: 1, name: "The first fearful circuit", patchLevel: 11, cost: 0, seats: 4, queueCapacity: 8, minTicket: 4, maxTicket: 12, circuitSeconds: 90, boardingSeconds: 1.5, scare: 20 },
   { level: 2, name: "Lantern convoy", patchLevel: 12, cost: 6500, seats: 6, queueCapacity: 12, minTicket: 4, maxTicket: 16, circuitSeconds: 90, boardingSeconds: 1.25, scare: 28 },

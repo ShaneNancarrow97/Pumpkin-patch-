@@ -11,8 +11,12 @@ export const HAYRIDE_SITE = Object.freeze({
   queueEntry: { x: -11.1, z: 25.2 }, speed: 3, laneWidth: 4.4,
   departurePortal: { x: -17, z: 12 }, returnPortal: { x: -17, z: 43 },
 });
-export const HAYRIDE_RIDE_BOUNDS = Object.freeze({ x0: -51, x1: -8, z0: 1, z1: 40 });
-const points = [[-17,26.5],[-17,17],[-19,8],[-26,5],[-39,6],[-46,11],[-47,22],[-44,30],[-37,34],[-28,35],[-21,35],[-17,34],[-17,31]];
+export const HAYRIDE_RIDE_BOUNDS = Object.freeze({ x0: -76, x1: -8, z0: -20, z1: 42 });
+// A long loop round the edge of the woods, about 187 units: out north, across
+// to the far west, down the west side and back along the south. Its bends wander
+// outwards, so the middle stays one deep wood with room for every set, and no
+// two stretches of the lane come within 11 units of each other.
+const points = [[-17,26.5],[-17,17],[-18,8],[-21,-1],[-28,-8],[-38,-12],[-48,-11],[-57,-16],[-66,-13],[-71,-4],[-68,6],[-71,16],[-69,26],[-63,34],[-54,37],[-45,34],[-36,37],[-28,36],[-21,35],[-17,34],[-17,31]];
 export const HAYRIDE_ROUTE = Object.freeze(points.map(p => Object.freeze(p)));
 const curve = (a,b,c,d,t) => .5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t);
 // Dense deterministic arc samples keep speed independent of curve parameter.
@@ -28,10 +32,13 @@ length+=Math.hypot(samples[0].x-samples.at(-1).x,samples[0].z-samples.at(-1).z);
 samples.push({...samples[0],distance:length});
 export const HAYRIDE_ROUTE_LENGTH = length;
 export const HAYRIDE_STOPS = Object.freeze([
-  {id:"scarecrows",name:"Scarecrow patch",at:.18}, {id:"spiders",name:"Spider tunnel",at:.36},
-  {id:"bride",name:"The bride’s manor",at:.54}, {id:"pursuit",name:"Spectral pursuit",at:.71},
-  {id:"bus",name:"Zombie prison bus",at:.87},
+  {id:"scarecrows",name:"Scarecrow patch",at:.1}, {id:"spiders",name:"Spider tunnel",at:.28},
+  {id:"bride",name:"The bride’s manor",at:.46}, {id:"pursuit",name:"Spectral pursuit",at:.64},
+  {id:"bus",name:"Zombie prison bus",at:.8},
 ]);
+// The share of the circuit that covers this many units of lane. Timings near a
+// set are written in units, so they keep their pace if the route changes length.
+export const hayrideSpan = units => units / HAYRIDE_ROUTE_LENGTH;
 export function hayrideRouteSample(distance=0) {
   const d=((Number.isFinite(distance)?distance:0)%length+length)%length;
   let i=1;while(i<samples.length-1&&samples[i].distance<d)i++;

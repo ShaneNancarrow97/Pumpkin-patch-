@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH, hayrideRouteSample } from "./content/hayride-layout.js";
+import { HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH, hayrideRouteSample, hayrideSpan as u } from "./content/hayride-layout.js";
 import { HAYRIDE_SCARE_BY_ID } from "./content/hayride.js";
 import { createMazeScareActor, animateMazeScareActor, disposeMazeScareActor } from "./maze-ride-actors.js";
 
@@ -15,11 +15,12 @@ const clamp = n => Math.max(0, Math.min(1, Number.isFinite(n) ? n : 0));
 const smooth = n => { const t = clamp(n); return t * t * (3 - 2 * t); };
 
 // A gradual glimpse precedes the quick approach. The seated lane stays clear.
+// Windows are in units of lane (hayrideSpan), so the pace holds on any route.
 export function hayrideScarePose(spec, progress, upgraded = false, gentle = false) {
   const delta = (Number.isFinite(progress) ? progress : 0) - spec.at;
-  const width = upgraded ? .065 : .052;
-  const reveal = smooth((delta + .043) / .022) * (1 - smooth((delta - .025) / (width - .025)));
-  const lunge = gentle ? 0 : smooth((delta + .005) / .016) * (1 - smooth((delta - .024) / .024));
+  const width = u(upgraded ? 6.8 : 5.4);
+  const reveal = smooth((delta + u(4.5)) / u(2.3)) * (1 - smooth((delta - u(2.6)) / (width - u(2.6))));
+  const lunge = gentle ? 0 : smooth((delta + u(.5)) / u(1.7)) * (1 - smooth((delta - u(2.5)) / u(2.5)));
   const near = upgraded ? 2.6 : 3.15;
   const offset = spec.offset - (spec.offset - near) * lunge;
   return { visible: reveal > .008, reveal, lunge, offset, delta };

@@ -155,7 +155,10 @@ export function updateHayride(s, dt, events = []) {
   if (s.paused || !hayrideReady(s) || !Number.isFinite(dt) || dt <= 0) return;
   let remaining = dt;
   for (let step = 0; step < 2048; step++) {
-    settle(s, events); if (remaining <= EPS) break;
+    // A wagon that has just unloaded is replaced by an empty one; settle again
+    // at once so the next guest boards now, not at the next deadline.
+    const run = s.hayride.convoy.runId; settle(s, events); if (s.hayride.convoy.runId !== run) settle(s, events);
+    if (remaining <= EPS) break;
     const c = s.hayride.convoy, t = hayrideConfig(s), guests = live(s); let until = Infinity;
     const duration = { departing: HAYRIDE_PROPERTY.departureSeconds, circuit: t.circuitSeconds, arriving: HAYRIDE_PROPERTY.arrivalSeconds, unloading: HAYRIDE_PROPERTY.unloadSeconds }[c.phase];
     if (duration) until = Math.min(until, Math.max(EPS, duration - c.elapsed));

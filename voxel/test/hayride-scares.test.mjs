@@ -24,18 +24,19 @@ test("foreground scares remain outside the lane and gentle mode removes the lung
 
 test("off-map cast reads ownership without changing state and disposes only its instances", () => {
   const state = { coins: 34, hayride: { tier: 3, income: 16, ticketsSold: 2, haunts: { owned: ["bride-procession"], active: ["bride-procession"] } } };
+  // .47 is just past the bride's set (at .46), where she lunges.
   const before = JSON.stringify(state), cast = createHayrideScares({ state });
-  cast.tick({ progress: .558, time: 30, camera: { x: -32, y: 2, z: 15 } });
+  cast.tick({ progress: .47, time: 30, camera: { x: -32, y: 2, z: 15 } });
   assert.equal(cast.diagnostics.actors, 4); assert.equal(cast.diagnostics.visible, 1);
   const bride = cast.diagnostics.cast.find(entry => entry.stop === "bride");
   assert.equal(bride.actor, "haunted-girl"); assert.ok(bride.lunge > .9); assert.ok(bride.offset < 3);
-  assert.ok(cast.focusTarget(.558).toArray().every(Number.isFinite));
+  assert.ok(cast.focusTarget(.47).toArray().every(Number.isFinite));
   cast.group.traverse(node => assert.ok(node.matrixWorld.elements.every(Number.isFinite)));
-  cast.tick({ progress: .558, gentle: true });
+  cast.tick({ progress: .47, gentle: true });
   assert.equal(cast.diagnostics.cast.find(entry => entry.stop === "bride").lunge, 0);
   cast.tick({ progress: 0 }); assert.equal(cast.diagnostics.visible, 0); assert.equal(cast.focusTarget(0), null);
   assert.equal(JSON.stringify(state), before);
   cast.dispose(); cast.dispose(); assert.equal(cast.group.children.length, 0); assert.equal(cast.diagnostics.disposed, true);
-  const replay = createHayrideScares({ state }); replay.tick({ progress: .558 });
+  const replay = createHayrideScares({ state }); replay.tick({ progress: .47 });
   assert.equal(replay.diagnostics.visible, 1); replay.dispose();
 });

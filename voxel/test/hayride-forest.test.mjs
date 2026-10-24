@@ -25,8 +25,10 @@ test("the dense off-map forest has a clear low corridor and bounded native geome
   assert.ok(forest.diagnostics.trees >= 80, "the route is enclosed by a substantial tree line");
   assert.ok(forest.diagnostics.treeBases.every(p => p.height > 7));
   assert.ok(high > 1000, "tall canopy frames the sky above the seated camera");
-  assert.equal(boxes, forest.diagnostics.boxes); assert.ok(boxes < 45000);
-  assert.ok(meshes <= 2); assert.equal(lights, 0);
+  // Built in squares so only those in view are drawn: at most two meshes each.
+  assert.equal(boxes, forest.diagnostics.boxes); assert.ok(boxes < 72000);
+  assert.ok(forest.diagnostics.chunks >= 20 && meshes <= forest.diagnostics.chunks * 2); assert.equal(lights, 0);
+  assert.ok(forest.diagnostics.eyes >= 8, "eyes watch from the dark");
   assert.equal(forest.group.userData.hayrideForest.offMap, true);
   forest.dispose();
 });

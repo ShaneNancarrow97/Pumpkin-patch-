@@ -9,7 +9,7 @@ import { freshHayride } from "../src/rules/hayride.js";
 const close=(a,b,e=1e-6)=>assert.ok(Math.abs(a-b)<e,`${a} != ${b}`);
 
 test("hayride route is a finite closed arc with consistent distance and all five ordered sets",()=>{
-  assert.equal(HAYRIDE_STOPS.length,5);assert.ok(HAYRIDE_ROUTE_LENGTH>90&&HAYRIDE_ROUTE_LENGTH<130);
+  assert.equal(HAYRIDE_STOPS.length,5);assert.ok(HAYRIDE_ROUTE_LENGTH>170&&HAYRIDE_ROUTE_LENGTH<210);
   const p=hayrideRouteSample(0),q=hayrideRouteSample(HAYRIDE_ROUTE_LENGTH);close(p.x,q.x);close(p.z,q.z);close(p.x,HAYRIDE_SITE.station.x);close(p.z,HAYRIDE_SITE.station.z);close(p.yaw,0);
   for(let i=0;i<1000;i++) {const a=hayrideRouteSample(HAYRIDE_ROUTE_LENGTH*i/1000);for(const n of Object.values(a))assert.ok(Number.isFinite(n));close(Math.hypot(a.dx,a.dz),1);assert.ok(a.x>HAYRIDE_RIDE_BOUNDS.x0+2&&a.x<HAYRIDE_RIDE_BOUNDS.x1-4);assert.ok(a.z>HAYRIDE_RIDE_BOUNDS.z0+2&&a.z<HAYRIDE_RIDE_BOUNDS.z1-3);}
   assert.deepEqual(HAYRIDE_STOPS.map(s=>s.id),["scarecrows","spiders","bride","pursuit","bus"]);
@@ -50,6 +50,13 @@ test("native site retains the legacy ground, allocates a fixed light pool and pr
   for(let i=0;i<16;i++){const p=hayrideQueueSlot(i);clearAt(p.x,p.z);}
   for(let z=25.2;z<32.7;z+=.25)clearAt(-12,z);
   const countLights=()=>scene.children.filter(x=>x.isPointLight).length;assert.equal(countLights(),2);state.hayride.tier=2;controller.sync();assert.equal(countLights(),2);
+  // The ride is lit by a fixed set of lights: the wagon's lantern, the set ahead,
+  // the focus light and four that follow the lane's lanterns.
+  const rideLights=()=>controller.scene.children.filter(x=>x.isPointLight);assert.equal(rideLights().length,7);
+  assert.ok(controller.status.lanterns>=10);controller.setPreview(.3);controller.getPreviewFrame(.3);controller.tick(5);
+  assert.ok(rideLights().filter(l=>l.intensity>0).length>=3,"the wagon lantern and the nearest lane lanterns are lit");
+  for(const l of rideLights())if(l.intensity>0)assert.ok(hayrideRouteDistance(l.position.x,l.position.z)<5,"every lit light stands by the lane");
+  controller.setPreview(null);assert.equal(rideLights().filter(l=>l.intensity>0).length,0);assert.equal(rideLights().length,7);
   const before=JSON.stringify(state);controller.setPreview(.54);const frame=controller.getPreviewFrame(.54);assert.ok(frame.position.toArray().every(Number.isFinite));controller.tick(12);controller.setPreview(null);assert.equal(JSON.stringify(state),before);
   let boxes=0;const matrix=new THREE.Matrix4();controller.root.traverse(m=>{if(!m.isInstancedMesh)return;for(let i=0;i<m.count;i++){m.getMatrixAt(i,matrix);assert.ok(matrix.elements.every(Number.isFinite));assert.ok(Math.abs(matrix.determinant())>0);}boxes+=m.count;});assert.ok(boxes<35000,`too many boxes: ${boxes}`);controller.dispose();
 });

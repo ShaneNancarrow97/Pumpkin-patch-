@@ -5,7 +5,7 @@ import * as M from "../src/model.js";
 
 function run(label, price, scares = false) {
   const s = M.freshState();
-  Object.assign(s, { coins: 50000, earned: 15000, introSeen: true });
+  Object.assign(s, { coins: 50000, earned: 70000, introSeen: true });                   // level 11, where the hayride opens
   s.progression.claimed = Array.from({ length: 8 }, (_, i) => i + 1); s.progression.pending = [];
   Object.assign(s.hollowHouse, { purchased: true, status: "ready", open: false });
   Object.assign(s.upgrades, { sign: 2, storage: 6 });
@@ -32,7 +32,7 @@ function run(label, price, scares = false) {
 }
 
 const report = {
-  scope: "Deterministic level-8 demand check, not a profit forecast. Same 1,500 finite starting pumpkins, sign2/lights1/party1/crowd1/appetite1, indoor shop and closed Hollow House. No stock refill. Fixed 0.25-second steps for 20 game minutes. Earned change includes normal once-only level rewards; ticket and retail ledgers are separate.",
+  scope: "Deterministic level-11 demand check, not a profit forecast. Same 1,500 finite starting pumpkins, sign2/lights1/party1/crowd1/appetite1, indoor shop and closed Hollow House. No stock refill. Fixed 0.25-second steps for 20 game minutes. Earned change includes normal once-only level rewards; ticket and retail ledgers are separate.",
   results: [run("Closed attraction", null), run("Basic £4", 4), run("Basic £8", 8), run("Basic £12", 12), run("Two scare upgrades £8", 8, true)],
 };
 const text = JSON.stringify(report, null, 2) + "\n";

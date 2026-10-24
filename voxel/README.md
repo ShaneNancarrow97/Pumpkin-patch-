@@ -81,6 +81,8 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
   - **Wardrobe** opens the outfits directly.
 - **The Hollow House** can be bought from patch level 9. Its foyer tiers open at levels 9, 10, 11 and 12, and the fifth also at 12.
 - **The Hollow Hayride** (Codex) opens from patch level 11, once the Hollow House is restored; its larger wagons arrive at level 12.
+  - **The ride-along** runs about 2½ minutes round a long loop through the woods. Lanterns line the lane, each scare scene is lit in its own colour, and the tractor's headlamp lights the way.
+  - **Sound:** at every scene something screams, then someone on the wagon does. Between scenes there is wind in the trees, owls, crows, snapping twigs, a far-off wolf and the odd distant scream.
   - Guests queue at a small station by the woodland edge and pay as they board. The tractor then pulls them away off the map on a dark woodland circuit and brings them back.
   - You can ride along for free, in first person, through five woodland scenes with lightning and thunder. Gentle mode keeps the camera steady.
 - **Walk through the Hollow House yourself:** once it's restored, Experience (or the maze door in the foyer) takes you on a first-person tour of the maze, with a new chamber per foyer tier. It's free and never touches tickets (Codex, rebuilt by Claude).

@@ -57,3 +57,15 @@ export function vary(hex, amount, r) {
   const c = new THREE.Color(hex), k = 1 + (r() - 0.5) * 2 * amount;
   return c.setRGB(Math.min(1, c.r * k), Math.min(1, c.g * k), Math.min(1, c.b * k)).getHex();
 }
+
+// Voxels split into squares of the ground, each built as its own meshes, so the
+// renderer skips the squares out of view (the hayride's long woodland uses it).
+export function chunkedVoxels(size = 16) {
+  const chunks = new Map();
+  return {
+    at(x, z) { const key = `${Math.floor(x / size)},${Math.floor(z / size)}`; let v = chunks.get(key); if (!v) chunks.set(key, v = new Voxels()); return v; },
+    build(root) { for (const v of chunks.values()) root.add(v.build()); return root; },
+    get boxes() { let n = 0; for (const v of chunks.values()) n += v.solid.length + v.glow.length; return n; },
+    get count() { return chunks.size; },
+  };
+}

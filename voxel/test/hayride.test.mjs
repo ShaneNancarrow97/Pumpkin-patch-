@@ -67,6 +67,16 @@ test("large slices and small slices produce the same departures, receipts and te
   for (const key of ["ticketsSold", "income", "completed", "missed", "departures"]) assert.equal(a.hayride[key], b.hayride[key], key);
   assert.equal(a.coins, b.coins); for (let i = 0; i < a.visitors.length; i++) assert.ok(Math.abs(a.visitors[i].hayride.terror - b.visitors[i].hayride.terror) < 1e-6);
 });
+test("one long step boards the next wagon as soon as the last one is back, as short steps do", () => {
+  // The first wagon returns at about 108 s. One step that spans its return once
+  // waited for the queue's next deadline before calling anyone to board.
+  for (const span of [115, 120, 140]) {
+    const a = opened(), b = opened(); for (let i = 0; i < 8; i++) { guest(a, i); guest(b, i); }
+    advance(a, span); for (let i = 0; i < span * 10; i++) advance(b, .1);
+    for (const key of ["ticketsSold", "income", "departures"]) assert.equal(a.hayride[key], b.hayride[key], `${key} after ${span}s`);
+    assert.equal(a.hayride.convoy.phase, b.hayride.convoy.phase);
+  }
+});
 test("closing rejects unpaid guests but completes and unloads the already-paid wagon", () => {
   const s = opened(), paid = guest(s), waiting = guest(s, 1); advance(s, 1.6); assert.equal(paid.hayride.charged, true);
   H.setHayrideOpen(s, false); advance(s, 130); assert.equal(s.hayride.ticketsSold, 1); assert.equal(s.hayride.completed, 1); assert.equal(s.hayride.missed, 1);

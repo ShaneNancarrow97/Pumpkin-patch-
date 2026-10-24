@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Voxels, seeded, vary } from "./voxels.js";
+import { chunkedVoxels, seeded, vary } from "./voxels.js";
 import { HAYRIDE_RIDE_BOUNDS, HAYRIDE_ROUTE_LENGTH, HAYRIDE_STOPS, hayrideRouteSample, hayrideRouteDistance } from "./content/hayride-layout.js";
 
 // The woodland belongs only to the off-map POV scene. All its trunks and low
@@ -19,13 +19,13 @@ export function hayrideForestClearance(x, z, w = 0, d = 0) {
 }
 
 export function createHayrideForest() {
-  const r = seeded(260823), v = new Voxels(), group = new THREE.Group(), bases = [];
+  const r = seeded(260823), v = chunkedVoxels(16), group = new THREE.Group(), bases = [];
   group.name = "Hollow Hayride — off-map old-growth forest";
-  let foliage = 0, branches = 0, logs = 0;
-  const box = (x, y, z, w, h, d, colour, { clearance = true, set = true } = {}) => {
+  let foliage = 0, branches = 0, logs = 0, eyes = 0;
+  const box = (x, y, z, w, h, d, colour, { clearance = true, set = true, glow = false } = {}) => {
     if (y < OVERHEAD && clearance && hayrideForestClearance(x, z, w, d) < LANE) return false;
     if (y < 6.4 && set && !clearSet(x, z, Math.min(.35, Math.hypot(w, d) / 2))) return false;
-    v.block(x, y, z, w, h, d, colour); return true;
+    v.at(x, z).block(x, y, z, w, h, d, colour, glow); return true;
   };
   const limb = (a, b, width, colour, skipSet = false) => {
     const n = Math.max(1, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z) / .26));
@@ -85,14 +85,15 @@ export function createHayrideForest() {
   const bounds = HAYRIDE_RIDE_BOUNDS;
   for (let x = bounds.x0 - 5; x < bounds.x1 + 4; x += 3.6) for (let z = bounds.z0 - 5; z < bounds.z1 + 4; z += 3.6) {
     const px = x + (r() - .5) * 2.0, pz = z + (r() - .5) * 2.0;
-    if (r() > .23 && hayrideRouteDistance(px, pz) > 4.0) tree(px, pz, .9 + r() * .19);
+    // Beyond 14 units of lane the fog hides them, so the wood stops there.
+    if (r() > .23 && hayrideRouteDistance(px, pz) > 4.0 && hayrideRouteDistance(px, pz) < 14) tree(px, pz, .9 + r() * .19);
   }
 
   // Ferns have stepped fronds, not single green blocks. Sparse dry grasses,
   // moss and leaf litter give a close camera a readable, untidy forest floor.
-  for (let i = 0; i < 1100; i++) {
+  for (let i = 0; i < 2600; i++) {
     const x = bounds.x0 - 2 + r() * (bounds.x1 - bounds.x0 + 4), z = bounds.z0 - 2 + r() * (bounds.z1 - bounds.z0 + 4);
-    if (station(x, z) || !clearSet(x, z, .35) || hayrideForestClearance(x, z, 1, 1) < LANE) continue;
+    if (station(x, z) || !clearSet(x, z, .35) || hayrideForestClearance(x, z, 1, 1) < LANE || hayrideRouteDistance(x, z) > 16) continue;
     const h = .2 + r() * .7;
     if (i % 3 === 0) {
       box(x, .03, z, .045, h, .045, C.fern);
@@ -116,10 +117,21 @@ export function createHayrideForest() {
       box(px, .42, pz, .29, .07, .32, C.moss);
     }
   }
-  const mesh = v.build(); group.add(mesh);
-  const diagnostics = Object.freeze({ trees: bases.length, boxes: v.solid.length, foliage, branches, logs,
+  // Eyes in the dark between the trees: a pair now and then, well back from the
+  // lane, yellow, red or green, at a height that could be anything.
+  for (let distance = 14; distance < HAYRIDE_ROUTE_LENGTH - 10; distance += 6.5) {
+    if (r() < .45) continue;
+    const p = hayrideRouteSample(distance), side = r() < .5 ? -1 : 1, back = 7 + r() * 5, x = p.x + p.dz * side * back, z = p.z - p.dx * side * back, y = .9 + r() * 1.5;
+    if (station(x, z) || !clearSet(x, z, 1)) continue;
+    const colour = [0xffe25a, 0xff4a30, 0xb6ff6a][Math.floor(r() * 3)], across = .08;
+    // Set across the lane's direction, so the pair faces the wagon.
+    for (const k of [-1, 1]) box(x + p.dx * k * across, y, z + p.dz * k * across, .07, .05, .07, colour, { glow: true });
+    eyes++;
+  }
+  v.build(group);
+  const diagnostics = Object.freeze({ trees: bases.length, boxes: v.boxes, chunks: v.count, foliage, branches, logs, eyes,
     minLowClearance: LANE, overheadHeight: OVERHEAD, treeBases: Object.freeze(bases.map(p => Object.freeze(p))) });
-  group.userData.hayrideForest = { trees: bases.length, boxes: v.solid.length, offMap: true };
+  group.userData.hayrideForest = { trees: bases.length, boxes: v.boxes, offMap: true };
   return { group, diagnostics,
     tick() {},
     dispose() {
