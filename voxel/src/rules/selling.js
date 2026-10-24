@@ -9,7 +9,7 @@ import { checkoutSeconds, customerProfiles, shopCapacity, shopUpgradeCosts } fro
 import { UPGRADES, VARIETIES, tierFactor, visitorBonus } from "./farm.js";
 import { freshGuestNeeds, tickGuestNeeds, enjoyPumpkin } from "./guest-needs.js";
 import { settleCustomerCare } from "./customer-care.js";
-import { cocoaAllowance, planFestivalVisit, tickFestivalVisit } from "./festival-meadow.js";
+import { cocoaAllowance, planFestivalVisit, tickFestivalVisit, meadowFootfallBonus } from "./festival-meadow.js";
 import { planHollowVisit, tickHollowVisit, mazeFootfallBonus } from "./hollow-house.js";
 import { planChat, tickChat, updateChats, chatting } from "./meadow-chat.js";
 import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
@@ -75,14 +75,16 @@ export const shopArrivalSeconds = (s) => economy.indoorArrivalSeconds * tierFact
 // to the floor. Timers count down faster rather than being rescaled, so a
 // boost that grows or fades changes the pace smoothly.
 const pace = (seconds, floor, bonus) => Math.max(1, Math.min(1 + bonus, seconds / floor));
-export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), visitorBonus(s) + mazeFootfallBonus(s));
-export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1.1), visitorBonus(s) + mazeFootfallBonus(s));
+// Lasting attractions (the maze, the meadow's comforts) add to the streak's boost.
+const attractions = (s) => mazeFootfallBonus(s) + meadowFootfallBonus(s);
+export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), visitorBonus(s) + attractions(s));
+export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1.1), visitorBonus(s) + attractions(s));
 // The gap between parties right now, and the boost that actually reaches the path.
 export const stallGapSeconds = (s) => stallArrivalSeconds(s) / stallPace(s);
 export const pathBoost = (s) => stallPace(s) - 1;
 // Only the extra pace attributable to the temporary harvest streak, after the
 // permanent attraction benefit and the same arrival floor have been applied.
-export const streakPathBoost = (s) => stallPace(s) - pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), mazeFootfallBonus(s));
+export const streakPathBoost = (s) => stallPace(s) - pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), attractions(s));
 // The HUD can distinguish guests actually on the path from indoor excursions.
 export const onThePath = (s) => s.visitors.filter((v) => !chatting(v) && (!v.festival || v.festival.done) && (!v.hollow || v.hollow.done || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase))).length + s.arriving.length;
 // Every outdoor trip keeps a return space, including guests in the foyer or at

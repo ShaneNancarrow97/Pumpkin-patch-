@@ -16,6 +16,16 @@ export function festivalMeadowSheet(ui) {
       ${owned ? `<button class="button gold wide" data-festival-action="visit">Visit the meadow</button><button class="button wide" data-festival-action="stand">Manage cocoa stand</button>` : `<button class="button gold wide" data-festival-action="land" ${affordable(M.MEADOW.price, M.MEADOW.level) ? "" : "disabled"}>${level < M.MEADOW.level ? `Opens at patch level ${M.MEADOW.level}` : `Open the meadow · ${money(M.MEADOW.price)}`}</button>${level < M.MEADOW.level ? `<p class="small">Current patch level: ${level}. Keep harvesting and serving the neighbours.</p>` : ""}`}
       <p class="small">Further festival pitches and kitchen-made supplies are planned for later updates.</p>`;
   };
+  // Comforts that make the meadow popular: guests chat more, and more visitors come.
+  const comforts = (s) => {
+    const c = s.festival.cocoa, bonus = Math.round(M.meadowFootfallBonus(s) * 100), chatting = s.visitors.filter(M.chatting).length;
+    return `<h3 class="section">Make the meadow popular</h3><p class="small">Each comfort brings ${Math.round(M.COMFORT_FOOTFALL * 100)}% more visitors as word gets round${bonus ? `: +${bonus}% so far` : ""}. ${chatting ? `${chatting} ${chatting === 1 ? "guest is" : "guests are"} chatting in the meadow now.` : "Guests chat in the meadow on their way home."}</p>`
+      + M.MEADOW_COMFORTS.map((x) => {
+        const owned = M.comfortOwned(s, x.id), ready = c.level >= x.stand;
+        const art = { bunting: `<span class="thumb"><span class="ico i-boost"></span></span>`, blankets: `<span class="thumb"><span class="ico i-home"></span></span>`, mugs: cocoaArt("cocoa"), dancefloor: `<span class="thumb"><span class="ico i-music"></span></span>`, trolley: cocoaArt("deluxe") }[x.id] ?? cup;
+        return `<article class="card${owned ? " done" : ""}${ready ? "" : " waiting"}">${art}<div><h3>${x.name}</h3><p>${x.text}</p><p class="effect">${x.effect}</p></div><button class="button${owned ? "" : " gold"}" data-comfort="${x.id}" ${owned || !ready || !affordable(x.price, 1) ? "disabled" : ""}>${owned ? "In place" : ready ? money(x.price) : `Stand tier ${x.stand}`}</button></article>`;
+      }).join("");
+  };
   const cocoa = (s) => {
     const c = s.festival.cocoa, next = M.COCOA_TIERS[c.level], current = M.COCOA_TIERS[c.level - 1];
     if (!s.festival.meadow) return `${cup}<p>Open Moonbrew Meadow to prepare a cocoa pitch.</p><button class="button gold wide" data-festival-action="estate">See the meadow</button>`;
@@ -32,6 +42,7 @@ export function festivalMeadowSheet(ui) {
         return `<article class="card">${cocoaArt(p.id)}<div><h3>${p.name}</h3><p>${p.text}</p><p class="small">${unlocked ? `${e.stock} ready · sells for ${money(c.prices[p.id])} · ${e.sold} sold` : `Unlocks with stand tier ${p.tier}`}</p></div><button class="button ${unlocked ? "gold" : ""}" data-special-stock="${p.id}" ${!unlocked || !batch || !affordable(cost, 1) ? "disabled" : ""}>${!unlocked ? "Locked" : !batch ? "Full" : `${batch} · ${money(cost)}`}</button></article>${unlocked ? `<div class="special-prices"><label>${p.name} price <select data-special-price="${p.id}" ${s.paused ? "disabled" : ""} aria-label="${p.name} selling price">${Array.from({length:p.maxPrice-p.minPrice+1},(_,i)=>i+p.minPrice).map(price=>`<option value="${price}" ${c.prices[p.id] === price ? "selected" : ""}>${money(price)}</option>`).join("")}</select></label></div>` : ""}`;
       }).join("")}
       ${next ? `<h3 class="section">Grow the stand</h3><article class="card hero">${cup}<div><h3>${next.name}</h3><p>Room for ${next.capacity} cups, faster service and prices up to ${money(next.maxPrice)}.</p></div></article><button class="button wide" data-festival-action="upgrade" ${affordable(next.price, next.level) ? "" : "disabled"}>${M.patchLevel(s).level < next.level ? `Opens at patch level ${next.level}` : `Upgrade · ${money(next.price)}`}</button>` : `<p class="small">Your midnight pavilion is fully upgraded.</p>`}
+      ${comforts(s)}
       <h3 class="section">Moth courier</h3>${c.courier ? `<div class="setting"><span>Automatic supplies<small>Restocks at 5 cups; keeps £100 safely in your purse.</small></span><button class="button" data-festival-action="auto" ${s.paused ? "disabled" : ""} aria-pressed="${c.autoSupply}">${c.autoSupply ? "On" : "Off"}</button></div>` : `<p>A fluttery little helper buys replacement supplies at the normal price. Available from stand tier 2.</p><button class="button wide" data-festival-action="courier" ${c.level >= 2 && affordable(M.COCOA_SUPPLY.courier, 1) ? "" : "disabled"}>Hire courier · ${money(M.COCOA_SUPPLY.courier)}</button>`}
       <button class="button wide" data-festival-action="visit">Visit the stand</button><p class="small">Cocoa takings ${money(c.gross)} · supplies ${money(c.supplies)} · setup and upgrades ${money(c.invested)}. Existing cocoa hospitality upgrades improve service and patience; the physical stand sells from stock.</p>`;
   };
@@ -44,6 +55,11 @@ export function festivalMeadowSheet(ui) {
       body.querySelectorAll("[data-special-price]").forEach(select => select.onchange = () => { if (M.setCocoaSpecialPrice(ui.state, select.dataset.specialPrice, Number(select.value))) { ui.save(); ui.draw(); } else select.value = String(ui.state.festival.cocoa.prices[select.dataset.specialPrice]); });
       body.querySelectorAll("[data-special-stock]").forEach(b => b.onclick = () => { if (M.restockCocoaSpecial(ui.state, b.dataset.specialStock)) { ui.save(); ui.tone(760); ui.draw(); } });
       body.querySelectorAll("[data-cocoa-price]").forEach((b) => b.onclick = () => { if (M.setCocoaPrice(ui.state, Number(b.dataset.cocoaPrice))) { ui.save(); ui.draw(); } });
+      body.querySelectorAll("[data-comfort]").forEach((b) => b.onclick = () => {
+        const comfort = M.MEADOW_COMFORTS.find((x) => x.id === b.dataset.comfort);
+        if (!M.buyComfort(ui.state, comfort.id)) return;
+        ui.save(); ui.tone(820); ui.notice(`${comfort.name} for the meadow. ${comfort.effect}.`); ui.draw();
+      });
       body.querySelectorAll("[data-festival-action]").forEach((b) => b.onclick = () => {
         const s = ui.state, c = s.festival.cocoa, action = b.dataset.festivalAction;
         if (action === "visit") return visit();

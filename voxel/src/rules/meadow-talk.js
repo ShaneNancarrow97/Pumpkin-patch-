@@ -31,7 +31,7 @@ function snapshot(s) {
     maze: !!(h?.purchased && h.status === "ready" && h.open), tier: h?.tier ?? 1,
     haunts: (h?.haunts?.active ?? []).filter(id => h.haunts.owned.includes(id)),
     cocoa: c?.level ?? 0, specials: c ? COCOA_SPECIALS.filter(p => c.level >= p.tier && c.extras[p.id]?.stock > 0).map(p => p.id) : [],
-    prices: c ? { cocoa: c.price, ...c.prices } : {}, house: s.house?.level ?? 0, shop: !!s.shop?.unlocked, filled: s.orders?.filled ?? 0, fled: h?.runHome ?? 0,
+    prices: c ? { cocoa: c.price, ...c.prices } : {}, comforts: [...(s.festival?.comforts ?? [])], house: s.house?.level ?? 0, shop: !!s.shop?.unlocked, filled: s.orders?.filled ?? 0, fled: h?.runHome ?? 0,
   };
 }
 // Call once a step with that step's events. The first call after a load only
@@ -54,6 +54,7 @@ export function recordNews(s, events = []) {
     if (now.cocoa > was.cocoa) push("cocoa-tier", { subject: now.cocoa });
     for (const id of now.specials) if (!was.specials.includes(id)) push("cocoa-special", { subject: id });
     for (const [id, price] of Object.entries(now.prices)) if (was.prices[id] !== undefined && price !== was.prices[id]) push("cocoa-price", { subject: id, price, up: price > was.prices[id] });
+    for (const id of now.comforts) if (!was.comforts.includes(id)) push("comfort", { subject: id });
     if (now.house > was.house) push("house-level", { subject: now.house });
     if (now.shop && !was.shop) push("shop-open");
     if (now.filled > was.filled) push("order-filled");
@@ -104,6 +105,13 @@ const NEWS = {
   "cocoa-price": n => ({ chip: "Cocoa prices", slots: { special: treat(n.subject), price: n.price }, mine: v => !!v.cocoaSpend,
     open: n.up ? ["The {special} has gone up to £{price}.", "£{price} for a {special} now!"] : ["The {special} is down to £{price}. Bargain.", "Sandy's dropped the {special} to £{price}."],
     reply: n.up ? ["Still cheaper than the village.", "Worth every penny.", "Daylight robbery!", "Marshmallows don't grow on trees."] : ["I'll have two, then.", "Treat yourself!", "Lovely, that."] }),
+  comfort: n => ({ chip: "The meadow", mine: () => true, ...({
+    bunting: { open: ["They've strung fairy lights right round the meadow!", "Have you seen the bunting? Like a village fête."], reply: ["Makes it feel like a party.", "I could sit under those all night.", "Ever so pretty."] },
+    blankets: { open: ["Sandy's put blankets out on the benches. Lovely and snug.", "Grab a blanket, they're tartan!"], reply: ["I'm not moving now.", "Cosy as anything.", "Smells of cinnamon, oddly."] },
+    mugs: { open: ["You can keep the mugs now! Little ghost ones.", "Sandy's doing souvenir mugs. I'm going back for a refill."], reply: ["I'll have two.", "Mine's got a bat on it.", "My mantelpiece is ready."] },
+    dancefloor: { open: ["Someone's put a dance floor in the meadow!", "There's a gramophone by the fence now. Fancy a dance?"], reply: ["Only if it plays the Monster Mash.", "My bones are too old for dancing.", "Go on then, one waltz."] },
+    trolley: { open: ["Sandy's trolley comes right round to you now.", "No more queuing, the cocoa comes to us!"], reply: ["Best idea she's had.", "Service with a smile.", "I'll have another, then."] },
+  }[n.subject] ?? { open: ["The meadow gets cosier every week."], reply: ["Doesn't it just."] }) }),
   "big-spender": () => ({ chip: "Baron Brassbolt",
     open: ["Baron Brassbolt's here again, buying up half the stall.", "Did you see the Baron? Top hat and all."],
     reply: ["He paid in gold, I heard.", "Leave some for the rest of us!", "Lovely manners, though.", "Does he ever carry his own pumpkins?"] }),

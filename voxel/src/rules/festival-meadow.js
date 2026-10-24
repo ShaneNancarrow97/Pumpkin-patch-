@@ -3,14 +3,15 @@ import { freshCocoaPrices, restoreCocoaPrices, freshCocoaExtras, restoreCocoaExt
 export * from "./cocoa-menu.js";
 import { extendFarmRoute, counterPlace } from "../content/farm-layout.js";
 import { patchLevel } from "./levels.js";
-import { MEADOW, COCOA_TIERS, COCOA_SUPPLY, COCOA_APPROACH, PUMPKIN_APPROACH } from "../content/festival-meadow.js";
-export { MEADOW, COCOA_TIERS, COCOA_SUPPLY, fieldWidth } from "../content/festival-meadow.js";
-export const freshFestival = () => ({ meadow: false, cocoa: { level: 0, stock: 0, price: 4, open: true, courier: false, autoSupply: false, sold: 0, gross: 0, supplies: 0, invested: 0, missed: 0, prices: freshCocoaPrices(), extras: freshCocoaExtras(), lastSaleAt: -10 } });
+import { MEADOW, COCOA_TIERS, COCOA_SUPPLY, COCOA_APPROACH, PUMPKIN_APPROACH, MEADOW_COMFORTS, COMFORT_FOOTFALL } from "../content/festival-meadow.js";
+export { MEADOW, COCOA_TIERS, COCOA_SUPPLY, MEADOW_COMFORTS, COMFORT_FOOTFALL, fieldWidth } from "../content/festival-meadow.js";
+export const freshFestival = () => ({ meadow: false, comforts: [], cocoa: { level: 0, stock: 0, price: 4, open: true, courier: false, autoSupply: false, sold: 0, gross: 0, supplies: 0, invested: 0, missed: 0, prices: freshCocoaPrices(), extras: freshCocoaExtras(), lastSaleAt: -10 } });
 const count = (n, cap = 1e12) => Number.isSafeInteger(n) ? Math.max(0, Math.min(cap, n)) : 0;
 export function restoreFestival(raw) {
   const f = freshFestival();
   if (!raw || typeof raw !== "object") return f;
   f.meadow = raw.meadow === true;
+  f.comforts = f.meadow && Array.isArray(raw.comforts) ? MEADOW_COMFORTS.map((x) => x.id).filter((id) => raw.comforts.includes(id)) : [];
   const c = f.cocoa, saved = raw.cocoa ?? {};
   c.level = f.meadow ? count(saved.level, 3) : 0;
   c.stock = count(saved.stock, COCOA_TIERS[c.level - 1]?.capacity ?? 0);
@@ -33,6 +34,16 @@ export function upgradeCocoa(s) {
   if (c.level === 1) c.stock = 10;
   return true;
 }
+// Comforts for the meadow: each bought once, from the cocoa menu.
+export const comfortOwned = (s, id) => !!s.festival?.comforts?.includes(id);
+export function buyComfort(s, id) {
+  const comfort = MEADOW_COMFORTS.find((x) => x.id === id);
+  if (!comfort || !s.festival.meadow || comfortOwned(s, id) || s.festival.cocoa.level < comfort.stand || !spendable(s, comfort.price)) return false;
+  s.coins -= comfort.price; s.festival.cocoa.invested += comfort.price; s.festival.comforts.push(id);
+  return true;
+}
+// A lively meadow is the talk of the village: a few more visitors for each comfort.
+export const meadowFootfallBonus = (s) => s.festival?.meadow ? (s.festival.comforts?.length ?? 0) * COMFORT_FOOTFALL : 0;
 export const cocoaCapacity = (s) => COCOA_TIERS[s.festival.cocoa.level - 1]?.capacity ?? 0;
 export const cocoaServiceSeconds = (s) => Math.max(1, 2.8 / (1 + .2 * (s.festival.cocoa.level - 1) + .16 * (s.visitorUpgrades?.cocoa ?? 0)));
 export function setCocoaPrice(s, price) {

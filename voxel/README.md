@@ -88,6 +88,12 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
   - **How groups grow:** a second guest usually joins the first, and someone may pop over to Sandy for a cocoa and come back with a mug.
   - **Listening in:** tap the speech marker over a group, or any of them, to read what they're saying. They talk about whatever's new on the farm: fresh stock, what the village wants, a new haunt or foyer, someone fleeing the maze, Sandy's treats and prices, and their own evening. Zoom in and each line shows over whoever said it.
   - **What it changes:** chatting never changes what anyone buys, and never holds up new arrivals.
+  - **Comforts** from Sandy's menu make the meadow the talk of the village. Each brings 3% more visitors, and does something of its own:
+    - fairy-light bunting: more guests stop for a chat;
+    - blankets and cushions: chats last longer;
+    - souvenir mugs: a refill;
+    - a dance floor with a gramophone: a fourth place to chat, for five;
+    - Sandy's cocoa trolley: chatters are served where they stand.
 - **The Hollow House maze:** opening it sends a small party up the west lane for it. Some guests visit the maze first and then walk the lantern walk to the stall; others buy a pumpkin and walk over to the maze, then go home down the west lane. Sandy's moth courier flutters about her cocoa booth.
 - **Music and settings:** sixteen offline MIDI tracks, originals and supplied songs (among them Thriller, Ghostbusters, Disasterology, Crazy Train, Rebel Yell, Nothing Else Matters, (Don’t Fear) The Reaper, Gypsys, Tramps & Thieves and Everybody (Backstreet’s Back)), on shuffle or picked by hand, with a volume control. Also sound blips, a tea-break pause, render detail, glow, mist, lake and shadow switches, and backups you can copy out and restore.
 - **Icons:** the main game's interface icons, baked as small voxel tiles with a darker extruded edge, a light bevel and an outline.

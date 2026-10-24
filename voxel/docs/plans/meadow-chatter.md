@@ -13,6 +13,7 @@
   - level 2: a lantern post with two hay bales;
   - level 3: an iron brazier whose flames flicker.
 - **A new conversation** opens on the freshest news under two minutes old, so new news comes up first.
+- **Comforts (added later at the owner's request).** Five comforts from Sandy's menu each add 3% visitors and change the chats: bunting, blankets, souvenir mugs, a dance floor and a cocoa trolley. Handover 37 has the table.
 - **Tapping a chatter** opens the Overheard card. Tapping a face in the card opens that guest's card, which has a "Listen in" button back to the chat.
 
 ## Why

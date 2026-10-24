@@ -32,12 +32,27 @@ export function pathDistance(x, z) {
 // spot's walks avoid the benches, the booth and the planters:
 //   to: from the stall's lane to the spot
 //   cocoa: from the spot towards Sandy's queue (and back, reversed)
-//   exit: on to the homeward path, which it joins at MEADOW_EXIT[join]
+//   exit: on to the homeward path, which it joins at MEADOW_EXIT[join]; without
+//         a join, home is through the farm gate (rules extend it with the farm)
+// A spot with a `comfort` opens when that comfort is bought (MEADOW_COMFORTS).
 export const CHAT_SPOTS = [
   { id: "benches", name: "by the benches", x: 43, z: 23.3, seats: 4, level: 1, to: [[35, 10.6], [39, 16], [40.4, 22.6]], cocoa: [[45.5, 23.4]], exit: [[40.4, 22.6], [40.2, 16], [41, 9.6]], join: 4 },
   { id: "lantern", name: "under the lantern", x: 51.5, z: 15, seats: 3, level: 2, to: [[35, 10.6], [38, 8.6], [42.5, 6.6], [49.5, 7.5], [51.5, 10]], cocoa: [[50.8, 21.2]], exit: [[51.5, 9]], join: 6 },
   { id: "brazier", name: "round the brazier", x: 40.5, z: 13.5, seats: 4, level: 3, to: [[35, 10.6], [38.5, 11.5]], cocoa: [[42.8, 15.5], [43.4, 20.4]], exit: [[41, 9.6]], join: 4 },
+  { id: "dancefloor", name: "on the dance floor", x: 52, z: 23.2, seats: 5, ring: 1.05, level: 1, comfort: "dancefloor", to: [[31.6, 15.6], [30.2, 18.6], [30.4, 21.6], [32.4, 24.6], [33, 27], [49, 27], [50.3, 25.4]], cocoa: [[50.4, 21.6]], exit: [[50.3, 25.4], [49, 27], [33, 27], [33, 28.5 + DROP]] },
 ];
 export const CHAT_RING = .85;
-// A guest's place in a spot's ring: four stand on the diagonals, three round a point.
-export const chatPlace = (spot, seat) => { const a = (seat / spot.seats) * Math.PI * 2 + (spot.seats === 3 ? -Math.PI / 2 : Math.PI / 4); return [spot.x + Math.cos(a) * CHAT_RING, spot.z + Math.sin(a) * CHAT_RING]; };
+// A guest's place in a spot's ring: four or five stand round it, three round a point.
+export const chatPlace = (spot, seat) => { const a = (seat / spot.seats) * Math.PI * 2 + (spot.seats === 3 ? -Math.PI / 2 : Math.PI / 4), r = spot.ring ?? CHAT_RING; return [spot.x + Math.cos(a) * r, spot.z + Math.sin(a) * r]; };
+
+// Comforts that make the meadow the talk of the village, each bought once from
+// Sandy's menu once the stand reaches `stand`. Every one brings a few more
+// visitors (COMFORT_FOOTFALL each), and does something of its own for the chats.
+export const MEADOW_COMFORTS = [
+  { id: "bunting", name: "Fairy-light bunting", price: 450, stand: 1, text: "Strings of little lights round the meadow.", effect: "More guests stop for a chat" },
+  { id: "blankets", name: "Blankets and cushions", price: 900, stand: 1, text: "Tartan blankets on every bench and bale.", effect: "Chats last longer, and guests wait longer for company" },
+  { id: "mugs", name: "Souvenir mugs", price: 1500, stand: 2, text: "Sandy’s own ghost mugs, to take home.", effect: "Chatters go back for a refill" },
+  { id: "dancefloor", name: "A dance floor", price: 2600, stand: 2, text: "Boards down in the corner and a gramophone by the fence.", effect: "A fourth place to chat, with room for five" },
+  { id: "trolley", name: "Sandy’s cocoa trolley", price: 4200, stand: 3, text: "Sandy wheels hot cocoa round to the groups.", effect: "Chatters are served where they stand, no queue" },
+];
+export const COMFORT_FOOTFALL = .03;

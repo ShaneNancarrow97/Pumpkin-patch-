@@ -66,10 +66,19 @@ export function cocoaKiosk(level) {
 
 // Where guests stop to chat (rules/meadow-chat.js), dressed as each cocoa tier
 // opens it: a standing table by the benches, a lantern with hay bales to perch
-// on, and an iron brazier. The brazier's flames are returned to flicker.
-export function chatDressing(level) {
-  const v = new Voxels(), r = seeded(733), iron = 0x2b2630, oak = 0x6a442e;
-  const [benches, lantern, brazier] = CHAT_SPOTS.map((p) => [p.x, p.z]);
+// on, and an iron brazier. Then the comforts bought for the meadow
+// (MEADOW_COMFORTS): bunting round the edge, blankets on the benches and bales,
+// souvenir mugs under the awning, a dance floor with a gramophone, and Sandy's
+// trolley. The brazier's flames and the gramophone's notes are returned to animate.
+const TARTAN = [0x7a2a3a, 0x3a5a4a, 0xc9a24e], BRASS_RAIL = 0xc39b61;
+function blanket(v, x, y, z, w, d, hang = 0) {
+  v.block(x, y, z, w, .03, d, TARTAN[0]);
+  for (const k of [-.3, .3]) { v.block(x + k * w, y + .005, z, .05, .03, d + .01, TARTAN[1]); v.block(x, y + .006, z + k * d, w + .01, .03, .04, TARTAN[2]); }
+  if (hang) v.block(x, y - hang, z + d / 2, w, hang, .03, TARTAN[0]);
+}
+export function chatDressing(level, comforts = []) {
+  const v = new Voxels(), r = seeded(733), iron = 0x2b2630, oak = 0x6a442e, has = (id) => comforts.includes(id);
+  const [benches, lantern, brazier, floor] = CHAT_SPOTS.map((p) => [p.x, p.z]);
   if (level >= 1) {
     const [x, z] = benches;
     for (const [dx, dz] of [[-.22, 0], [.22, 0], [0, -.22], [0, .22]]) v.block(x + dx, 0, z + dz, dx ? .34 : .08, .05, dz ? .34 : .08, iron);
@@ -77,11 +86,11 @@ export function chatDressing(level) {
     v.block(x - .12, 1.08, z + .06, .12, .14, .12, 0xd8c6a0); v.block(x - .12, 1.22, z + .06, .04, .05, .04, 0xffc56e, true);
     v.block(x + .14, 1.08, z - .08, .11, .12, .11, 0x7a3a2c); v.block(x + .14, 1.2, z - .08, .09, .015, .09, 0x4a2a1e);
   }
+  const bales = level >= 2 ? [[lantern[0] + 1.4, lantern[1], .45, .8], [lantern[0] - 1.6, lantern[1] - 2, .8, .45]] : [];
   if (level >= 2) {
-    const [x, z] = lantern;
-    lanternPost(v, x, z, [], false);
+    lanternPost(v, ...lantern, [], false);
     // Hay bales to perch on, clear of every walk to and from the ring.
-    for (const [bx, bz, w, d] of [[x + 1.4, z, .45, .8], [x - 1.6, z - 2, .8, .45]]) { v.block(bx, 0, bz, w, .38, d, vary(0xc9a24e, .08, r)); for (let i = -1; i <= 1; i++) v.block(bx + (w > d ? i * .26 : 0), .38, bz + (w > d ? 0 : i * .26), w > d ? .06 : w + .02, .02, w > d ? d + .02 : .06, 0x8a6a2a); }
+    for (const [bx, bz, w, d] of bales) { v.block(bx, 0, bz, w, .38, d, vary(0xc9a24e, .08, r)); for (let i = -1; i <= 1; i++) v.block(bx + (w > d ? i * .26 : 0), .38, bz + (w > d ? 0 : i * .26), w > d ? .06 : w + .02, .02, w > d ? d + .02 : .06, 0x8a6a2a); }
   }
   const flames = new Voxels();
   if (level >= 3) {
@@ -91,11 +100,56 @@ export function chatDressing(level) {
     for (let i = 0; i < 7; i++) v.block(x + (r() - .5) * .38, .9, z + (r() - .5) * .38, .1, .06, .1, [0xff7a2a, 0xffb84a, 0xc8401e][i % 3], true);
     for (const [dx, dz, h, c] of [[0, 0, .42, 0xffb44a], [-.1, .06, .3, 0xff8a2e], [.1, -.05, .34, 0xff9a3a], [.02, -.1, .24, 0xffe08a]]) flames.block(dx, 0, dz, .12, h, .12, c, true);
   }
+  if (has("bunting")) {
+    // Strung between the lantern posts round the meadow's edge (see buildLand), sagging a little.
+    const f = 24.6 + DROP + .5;
+    for (const [a, b] of [[[41, f], [47, f]], [[47, f], [53.4, f]], [[43, 3.2], [49, 3.2]], [[49, 3.2], [53.1, 9]], [[53.1, 9], [53.1, 16]]]) {
+      const len = Math.hypot(b[0] - a[0], b[1] - a[1]), steps = Math.round(len / .14);
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps, x = a[0] + (b[0] - a[0]) * t, z = a[1] + (b[1] - a[1]) * t, y = 2.2 - Math.sin(Math.PI * t) * .45;
+        v.block(x, y, z, .03, .03, .03, 0x2a2228);
+        if (i % 4 === 2) v.block(x, y - .1, z, .09, .1, .09, [0xffd28b, 0xcba2ed, 0xff9a5a, 0x9fe0c0][(i / 4 | 0) % 4], true);
+      }
+    }
+  }
+  if (has("blankets")) {
+    for (const x of [42, 44]) { blanket(v, x + .15, .67, 21.62, .8, .56, .32); v.block(x - .55, .67, 21.65, .3, .12, .3, 0xd8b46a); }
+    for (const [bx, bz, w, d] of bales) blanket(v, bx, .4, bz, w - .05, d - .1);
+  }
+  if (has("mugs") && level >= 1) {
+    // Hung under the front of the awning, at the end of the counter away from Sandy.
+    const front = MEADOW.stand[1] + 1.95, x0 = MEADOW.stand[0] - (level === 3 ? 2.6 : 2.1);
+    for (let i = 0; i < 5; i++) {
+      const x = x0 + i * .26, y = 2.78 - (i % 2) * .08;
+      v.block(x, y + .14, front, .012, 3.22 - y - .14, .012, 0x3a3030);
+      v.block(x, y, front, .13, .14, .13, [0xe8dcc4, 0x7a3a5a, 0x3a5a6a, 0xd88a3a, 0x5a3a7a][i]); v.block(x + .085, y + .03, front, .04, .08, .03, [0xe8dcc4, 0x7a3a5a, 0x3a5a6a, 0xd88a3a, 0x5a3a7a][i]);
+      for (const d of [-.025, .025]) v.block(x + d, y + .08, front + .066, .02, .02, .005, 0x1e1a22);
+    }
+  }
+  const notes = [];
+  if (has("dancefloor")) {
+    const [x, z] = floor;
+    for (let dz = -1.45; dz <= 1.45; dz += .29) { const half = Math.sqrt(Math.max(0, 1.5 ** 2 - dz ** 2)); v.block(x, .015, z + dz, half * 2, .025, .27, vary(0x8a5e3c, .1, r)); }
+    // The gramophone on its stand by the fence, its horn turned to the floor.
+    const gx = x + .8, gz = z - 1.39;
+    for (const [dx, dz] of [[-.16, -.16], [.16, -.16], [-.16, .16], [.16, .16]]) v.block(gx + dx, 0, gz + dz, .05, .7, .05, 0x3b2620);
+    v.block(gx, .7, gz, .44, .05, .44, 0x553829); v.block(gx, .75, gz, .28, .14, .28, 0x4a2e1c); v.block(gx, .89, gz, .24, .02, .24, 0x141014);
+    for (let i = 0; i < 6; i++) { const size = .05 + i * .05; v.block(gx - .03 - i * .07, .92 + i * .08, gz, size * .6, size, size, i === 5 ? 0xd8b06a : 0xc39b61); }
+    for (let i = 0; i < 3; i++) { const n = new Voxels(); n.block(0, 0, 0, .1, .08, .03, 0xffe0a0, true); n.block(.04, .04, 0, .02, .16, .02, 0xffe0a0, true); const g = n.build(); g.userData.base = [gx - .45, 1.35, gz]; g.userData.phase = i / 3; notes.push(g); }
+  }
+  if (has("trolley")) {
+    const x = 45.3, z = 24.4;
+    for (const dx of [-.32, .32]) for (const dz of [-.26, .26]) v.block(x + dx, 0, z + dz, .2, .2, .05, 0x1e1a22);
+    v.block(x, .14, z, .9, .1, .5, oak); v.block(x, .24, z, .86, .3, .46, 0x553829); v.block(x, .54, z, .92, .05, .52, 0x8a5e3c);
+    v.block(x + .5, .5, z, .06, .4, .4, BRASS_RAIL);
+    v.block(x - .15, .59, z, .3, .38, .3, 0xb67745); v.block(x - .15, .97, z, .22, .05, .22, 0xc39b61); v.block(x - .15, .64, z + .16, .05, .05, .05, 0xc39b61);
+    for (let i = 0; i < 3; i++) v.block(x + .15 + i * .09 - .09, .59, z + .1 - (i % 2) * .16, .08, .1, .08, 0xe8dcc4);
+  }
   const group = v.build(), fire = flames.build();
   if (level >= 3) { fire.position.set(brazier[0], .92, brazier[1]); group.add(fire); }
-  return { group, flames: level >= 3 ? fire : null };
+  for (const n of notes) group.add(n);
+  return { group, flames: level >= 3 ? fire : null, notes };
 }
-
 // Open a connection through the old fence/trees without changing world.js.
 // Compact positive, nonzero instances in place; keep the shared geometry alive.
 const clearRegions = [[38, 10.7, 57, 34 + DROP], [38.4, 5.8, 43.4, 10.7], [35.3, 24.7 + DROP, 40.3, 29.7 + DROP], [34, 22.6 + DROP, 42, 25.3 + DROP]];
@@ -133,7 +187,7 @@ function disposeObject(object) {
 
 export function createFestivalWorld({ scene, state, world, signBoard, createCashier }) {
   const root = new THREE.Group(); scene.add(root);
-  let builtLand = false, tier = -1, booth = null, cups = [], specials = [], pickables = [], marker = null, courier = null, sandy = null, chatProps = null;
+  let builtLand = false, tier = -1, booth = null, cups = [], specials = [], pickables = [], marker = null, courier = null, sandy = null, chatProps = null, dressed = "";
   const makeHit = (x, y, z, w, h, d, type) => { const hit = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(x, y, z); hit.userData = { type }; root.add(hit); pickables.push(hit); };
   const preview = new Voxels();
   preview.block(37, 0, 20, .14, 1.8, .14, 0x423020); preview.block(37, 1.1, 20, 1.4, .75, .12, 0x68452f);
@@ -175,7 +229,14 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
   }
   function sync() {
     if (state.festival.meadow && !builtLand) buildLand();
-    if (!builtLand || tier === state.festival.cocoa.level) return;
+    if (!builtLand) return;
+    const comforts = state.festival.comforts ?? [], key = state.festival.cocoa.level + ":" + comforts.join(",");
+    if (key !== dressed) {
+      dressed = key;
+      if (chatProps) { root.remove(chatProps.group); disposeObject(chatProps.group); }
+      chatProps = chatDressing(state.festival.cocoa.level, comforts); root.add(chatProps.group);
+    }
+    if (tier === state.festival.cocoa.level) return;
     tier = state.festival.cocoa.level;
     if (booth) { pickables = pickables.filter(p => !p.userData.festivalRoof); root.remove(booth); disposeObject(booth); }
     booth = tier ? cocoaKiosk(tier) : new THREE.Group(); cups = []; specials = [];
@@ -193,8 +254,6 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
       const prop = cocoaProp(id); prop.position.set(x, 1.55, 1.16); booth.add(prop); specials.push({ prop, id });
     }
     booth.position.set(...[MEADOW.stand[0], 0, MEADOW.stand[1]]); root.add(booth);
-    if (chatProps) { root.remove(chatProps.group); disposeObject(chatProps.group); }
-    chatProps = chatDressing(tier); root.add(chatProps.group);
   }
   const steamGeo = new THREE.BufferGeometry(), steam = new Float32Array(8 * 3);
   steamGeo.setAttribute("position", new THREE.BufferAttribute(steam, 3));
@@ -210,6 +269,7 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
       courier?.tick(time);
       sync(); const c = state.festival.cocoa;
       if (sandy) { sandy.group.visible = c.level > 0; sandy.tick(time, c.level, state.visitors.some(v => v.festival?.phase === "serving" || v.social?.phase === "cocoa-serving") || state.time - c.lastSaleAt < 1.1); }
+      for (const n of chatProps?.notes ?? []) { const t = (time * .45 + n.userData.phase) % 1, [x, y, z] = n.userData.base; n.position.set(x - t * .5 + Math.sin(t * 9) * .08, y + t * 1.1, z); n.scale.setScalar(Math.sin(t * Math.PI) * 1.2 + .01); }
       if (chatProps?.flames) { const f = chatProps.flames; f.scale.set(1 + Math.sin(time * 9) * .08, .85 + Math.abs(Math.sin(time * 7.3)) * .35 + Math.sin(time * 13) * .05, 1 + Math.cos(time * 8) * .08); f.rotation.y = time * .7; } cups.forEach((m, i) => m.visible = c.stock > i); specials.forEach(({ prop, id }) => prop.visible = c.extras[id].stock > 0); wisps.visible = !!c.level && c.open && (c.stock > 0 || ["flake", "deluxe", "midnight"].some(id => c.extras[id].stock > 0));
       for (let i = 0; i < 8; i++) { const t = (time * .35 + i / 8) % 1; steam[i * 3] = 45.9 + Math.sin(t * 7 + i) * .14; steam[i * 3 + 1] = 2.7 + t * 1.4; steam[i * 3 + 2] = 18.6 + Math.cos(t * 6 + i) * .12; }
       steamGeo.attributes.position.needsUpdate = true;

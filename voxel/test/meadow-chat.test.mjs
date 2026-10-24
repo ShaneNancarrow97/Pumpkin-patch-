@@ -27,8 +27,8 @@ function withoutChat(fn) {
 }
 
 test("chat spots and their walks stay off the paths and clear of the benches, booth and planters", () => {
-  // Benches, the booth, the planters and the lantern spot's hay bales (festival-meadow-world.js).
-  const solid = [[41.1, 21.3, 44.9, 21.9], [43.7, 16.2, 50.3, 19.8], [42.4, 7.6, 43.6, 8.4], [51.4, 27.6, 52.6, 28.4], [52.68, 14.6, 53.13, 15.4], [49.5, 12.78, 50.3, 13.23]];
+  // Benches, the booth, the planters, the lantern spot's hay bales, Sandy's trolley and the gramophone (festival-meadow-world.js).
+  const solid = [[41.1, 21.3, 44.9, 21.9], [43.7, 16.2, 50.3, 19.8], [42.4, 7.6, 43.6, 8.4], [51.4, 27.6, 52.6, 28.4], [52.68, 14.6, 53.13, 15.4], [49.5, 12.78, 50.3, 13.23], [44.85, 24.15, 45.75, 24.65], [52.58, 21.59, 53.02, 22.03]];
   const inside = ([x, z], m = .25) => solid.some(([x0, z0, x1, z1]) => x > x0 - m && x < x1 + m && z > z0 - m && z < z1 + m);
   for (const spot of CHAT_SPOTS) {
     for (let seat = 0; seat < spot.seats; seat++) {
@@ -36,7 +36,7 @@ test("chat spots and their walks stay off the paths and clear of the benches, bo
       assert.ok(pathDistance(...place) >= 1.2, `${spot.id} place ${seat} is off the meadow paths`);
       assert.ok(hollowPathDistance(...place) >= 1.2, `${spot.id} place ${seat} is off the lantern walk`);
       assert.ok(!inside(place, .35), `${spot.id} place ${seat} is clear of props`);
-      for (const route of [[counterPlace(0), ...spot.to, place], [place, ...spot.cocoa, [47, 20.6]], [place, ...spot.exit, ...MEADOW_EXIT.slice(spot.join)]])
+      for (const route of [[counterPlace(0), ...spot.to, place], [place, ...spot.cocoa, [47, 20.6]], [place, ...spot.exit, ...(spot.join === undefined ? [] : MEADOW_EXIT.slice(spot.join))]])
         for (let i = 1; i < route.length; i++) for (let k = 0; k <= 20; k++) {
           const a = route[i - 1], b = route[i], p = [a[0] + (b[0] - a[0]) * k / 20, a[1] + (b[1] - a[1]) * k / 20];
           assert.ok(!inside(p), `${spot.id}'s walk from ${a} to ${b} misses the props`);
@@ -155,4 +155,70 @@ test("chatters fetch from Sandy in their turn, behind guests already queuing", (
     for (const v of serving) if (order.at(-1) !== v.id) order.push(v.id);
   });
   assert.ok(order.length > 20);
+});
+
+// ---- The meadow's comforts ----------------------------------------------------
+const comfy = (level, ids) => { const s = evening(level); s.festival.comforts = [...ids]; return s; };
+const chatsIn = (s, seconds) => { const seen = new Set(), sales = []; play(s, seconds, (state, step) => { for (const v of state.visitors) if (v.social) seen.add(v.id); sales.push(...step.filter((e) => e.chat)); }); return { chatters: seen.size, sales }; };
+
+test("comforts are bought once, from the right stand tier, and kept in the save", () => {
+  const s = M.freshState(); s.coins = 1e5;
+  assert.equal(M.buyComfort(s, "bunting"), false, "no meadow yet");
+  s.festival.meadow = true; s.festival.cocoa.level = 1;
+  assert.equal(M.buyComfort(s, "mugs"), false, "mugs need stand tier 2");
+  assert.equal(M.buyComfort(s, "nonsense"), false);
+  assert.ok(M.buyComfort(s, "bunting")); assert.equal(s.coins, 1e5 - 450); assert.equal(s.festival.cocoa.invested, 450);
+  assert.equal(M.buyComfort(s, "bunting"), false, "once only");
+  s.paused = true; assert.equal(M.buyComfort(s, "blankets"), false); s.paused = false;
+  const loaded = M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));
+  assert.deepEqual(loaded.festival.comforts, ["bunting"]);
+  assert.deepEqual(M.restoreFestival({ meadow: true, comforts: ["trolley", "nope", "bunting", "bunting"] }).comforts, ["bunting", "trolley"]);
+  assert.deepEqual(M.restoreFestival({ meadow: false, comforts: ["bunting"] }).comforts, []);
+  assert.deepEqual(M.restoreFestival({ meadow: true }).comforts, []);
+});
+
+test("each comfort brings 3% more visitors, kept apart from the streak's boost", () => {
+  const s = evening(3), base = M.stallPace(s);
+  for (const [n, id] of M.MEADOW_COMFORTS.map((c, i) => [i + 1, c.id])) {
+    s.festival.comforts.push(id);
+    assert.ok(Math.abs(M.stallPace(s) - (base + n * M.COMFORT_FOOTFALL)) < 1e-9, `${n} comforts`);
+    assert.ok(Math.abs(M.streakPathBoost(s)) < 1e-9, "not counted as streak");
+  }
+  const all = M.MEADOW_COMFORTS.map((c) => c.id), busy = comfy(3, all), quiet = evening(3);
+  const count = (state) => play(state, 600).filter((e) => e.type === "arrival").length;
+  assert.ok(count(busy) > count(quiet), "more visitors come");
+});
+
+test("bunting draws more guests to chat, and blankets keep them longer and more patient", () => {
+  assert.ok(chatsIn(comfy(1, ["bunting"]), 600).chatters > chatsIn(evening(1), 600).chatters);
+  const snug = comfy(1, ["blankets"]), v = { id: 5, kind: 1, budget: 0, needs: { thirst: 0, hunger: 0, happiness: 100, value: 1 }, preferred: [0], basket: [], outcome: "bought", leaveAt: 9, age: 9, spot: 0, festival: { done: true } };
+  snug.visitorTimer = 1e9;
+  for (let id = 0; id < 40 && !v.social; id++) v.social = planChat(snug, { ...v, id });
+  snug.visitors.push(v);
+  let from = null, left = null;
+  for (let t = 0; t < 90 && left === null; t += .1) { M.update(snug, .1); if (v.social.phase === "chatting" && from === null) from = snug.time; if (v.social.phase === "leaving") left = snug.time; }
+  assert.ok(left - from >= CHAT.blankets.lonely - .2 && left - from < CHAT.blankets.lonely + .5, `waited ${(left - from).toFixed(1)}s alone`);
+});
+
+test("souvenir mugs allow one refill, and the trolley serves chatters where they stand", () => {
+  const drinks = new Map(), mugs = comfy(2, ["mugs"]);
+  play(mugs, 900, (state, step) => { for (const e of step) if (e.route === "festival-cocoa") drinks.set(e.visitor, (drinks.get(e.visitor) ?? 0) + 1); });
+  assert.ok([...drinks.values()].some((n) => n === 2), "someone has a refill");
+  assert.ok([...drinks.values()].every((n) => n <= 2), "never a third");
+  const plain = chatsIn(evening(3), 900), trolley = comfy(3, ["trolley"]);
+  let queued = false;
+  const served = chatsIn(trolley, 900);
+  play(trolley, 300, (state) => { if (state.visitors.some((v) => v.social?.phase?.startsWith("cocoa-"))) queued = true; });
+  assert.ok(!queued, "chatters never walk to the queue");
+  assert.ok(served.sales.length > plain.sales.length, `${served.sales.length} served at the trolley v ${plain.sales.length} at the counter`);
+});
+
+test("the dance floor opens a fourth place to chat, for five", () => {
+  const s = comfy(2, []);
+  assert.ok(!M.openChatSpots(s).some((p) => p.id === "dancefloor"));
+  s.festival.comforts.push("dancefloor");
+  assert.ok(M.openChatSpots(s).some((p) => p.id === "dancefloor")); assert.equal(M.chatCap(s), 4 + 3 + 5);
+  let danced = false, most = 0;
+  play(s, 900, (state) => { const here = chatMembers(state, "dancefloor"); if (here.some((v) => v.social.phase === "chatting")) danced = true; most = Math.max(most, here.length); });
+  assert.ok(danced); assert.ok(most <= 5);
 });

@@ -152,7 +152,8 @@ export function farmSheets(ui) {
     const now = busiest ? " (as busy as the path gets)" : boost ? ` (streak +${boost}%)` : "";
     const stats = `<div class="stats"><div><b>${Math.round(M.visitorsPerMinute(s) * 10) / 10}</b><span>neighbours a minute</span></div><div><b>${max > 1 ? `1–${max}` : "1"}</b><span>in each party</span></div><div><b>${secs(M.stallGapSeconds(s))}</b><span>between parties${now}</span></div><div><b>${M.onThePath(s)}/${M.visitorCapacity(s)}</b><span>outdoor visitors</span></div></div>`;
     const maze = M.mazeFootfallBonus?.(s) ?? 0;
-    const attraction = maze ? `<p class="commerce-inline-note">The Hollow House brings +${Math.round(maze * 100)}% footfall while open. Frightened visitors may leave early.</p>` : "";
+    const meadow = M.meadowFootfallBonus?.(s) ?? 0;
+    const attraction = (maze ? `<p class="commerce-inline-note">The Hollow House brings +${Math.round(maze * 100)}% footfall while open. Frightened visitors may leave early.</p>` : "") + (meadow ? `<p class="commerce-inline-note">The meadow’s comforts are the talk of the village: +${Math.round(meadow * 100)}% footfall.</p>` : "");
     const streak = `<p class="small streak-note">Quick picking builds a streak, and a streak gets talked about: visitors come 10% more often for each pick up to ×6, then 5% more a pick, to +${Math.round(M.STREAK.cap * 100)}%. It fades over ${M.STREAK.fade}s once you stop. Helping hands don’t count; they’re not showing off.</p>`;
     const cards = VISITOR_IDS.map((id) => {
       const sign = id === "sign", u = sign ? M.UPGRADES.find((x) => x.id === id) : M.VISITOR_UPGRADES.find((x) => x.id === id);
