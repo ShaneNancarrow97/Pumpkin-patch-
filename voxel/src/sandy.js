@@ -6,6 +6,8 @@ import serve from "../assets/sandy/sandy-serve.webp";
 import icons from "../assets/sandy/cocoa-menu-icons.webp";
 import { LEAN, STRETCH } from "./world.js";
 const textures = [base, blink, serve].map(url => { const t = new THREE.TextureLoader().load(url); t.colorSpace = THREE.SRGBColorSpace; return t; });
+// Sent to the graphics card ahead of her first blink (scene.js warm-up).
+export const sandyTextures = textures;
 const geometry = new THREE.PlaneGeometry(2.6, 2.6 * 1024 / 1536); geometry.translate(0, (.97 - .5) * 2.6 * 1024 / 1536, 0);
 export function createSandy() {
   const group = new THREE.Group(), lean = new THREE.Group(); lean.rotation.x = -LEAN + .35; lean.scale.y = STRETCH; group.add(lean);

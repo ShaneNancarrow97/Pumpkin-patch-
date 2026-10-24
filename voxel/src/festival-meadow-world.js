@@ -222,7 +222,7 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
     }
     for (const x of [42, 44]) { for (const dx of [-.6, .6]) v.block(x + dx, 0, 21.6, .13, .55, .5, 0x392b27); v.block(x, .55, 21.6, 1.8, .12, .6, 0x795039); v.block(x, .85, 21.35, 1.8, .38, .1, 0x795039); }
     root.add(v.build());
-    const exitPath = buildGround({ x0: 54, x1: 58, z0: 5.5, z1: 7.7 }, (x, z) => grounds.cobble(x, z, [0x8c8094, 0x7a6f84, 0x9a8d9e, 0x6c6276], .42, 1, 0x2a2430)); root.add(exitPath);
+    const exitPath = buildGround({ x0: 54, x1: 58, z0: 5.5, z1: 7.7 }, (x, z) => grounds.cobble(x, z, [0x8c8094, 0x7a6f84, 0x9a8d9e, 0x6c6276], .42, 1, 0x2a2430), { farmView: true }); root.add(exitPath);
     const exitSign = signBoard("Village →", "homeward path", 3.6); exitSign.position.set(53, 3.4, 6.5); root.add(exitSign);
     const welcome = signBoard("Moonbrew Meadow", "cocoa & treats", 5); welcome.position.set(46.8, 1.6, 7); welcome.userData = { type: "meadow-land" }; root.add(welcome); pickables.push(welcome);
     makeHit(47, 1.4, 17.9, 5.5, 3, 4, "cocoa-stand");

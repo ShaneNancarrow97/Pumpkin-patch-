@@ -37,7 +37,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   const pool = Array.from({ length: LIGHTS }, () => { const l = new THREE.PointLight(0xffb060, 0, 9, 1.4); scene.add(l); return l; });
   // Added once and kept: only its place, brightness and shadow updates change.
   const keyLight = new THREE.SpotLight(KEY.colour, 0, 0, 0.9, 0.5, 0);
-  keyLight.castShadow = true;
+  keyLight.castShadow = true; keyLight.visible = false;              // switched on indoors only, so the farm never pays for it
   keyLight.shadow.mapSize.set(2048, 2048);
   keyLight.shadow.focus = 0.85;                                       // the room, not the whole soft cone
   keyLight.shadow.bias = -0.0002; keyLight.shadow.normalBias = 0.012;
@@ -59,6 +59,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       if (f.l.shadow) f.l.shadow.autoUpdate = false;                 // the farm's shadows can wait until we're back out
     }
     keyLight.intensity = origin ? KEY.intensity : 0;
+    keyLight.visible = !!origin;                                       // each shader variant compiles once, then switches
     keyLight.shadow.autoUpdate = !!origin;
     if (!origin) return;
     keyLight.position.set(origin.x + KEY.at.x, KEY.at.y, origin.z + KEY.at.z);
@@ -75,7 +76,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   const light = (spots, origin) => spots.slice(0, LIGHTS).forEach((s, i) => {
     pool[i].position.set(origin.x + s.x, s.y, origin.z + s.z);
     pool[i].color.setHex(s.color ?? 0xffb060);
-    pool[i].intensity = s.intensity ?? 9;
+    pool[i].intensity = s.intensity ?? 9; pool[i].distance = 9; pool[i].decay = 1.4;
   });
   const hitPlane = (w, h, type, at, rot, wall = "back") => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ visible: false }));
@@ -372,6 +373,11 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
 
   return {
     get place() { return place; },
+    // Out on the farm the lamps borrow this pool (scene.js lightLamps).
+    get lightPool() { return pool; },
+    // Runs fn with the indoor key light on, so the indoor shader variants can
+    // be compiled ahead while the farm is showing (scene.js warmShaders).
+    withKeyLight(fn) { const was = keyLight.visible; keyLight.visible = true; try { return fn(); } finally { keyLight.visible = was; } },
     get pickables() { return pickables; },
     enterRoom(id) { buildRoomPlace(id); },
     enterShop() { buildShopPlace(); },

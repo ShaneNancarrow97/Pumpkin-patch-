@@ -89,7 +89,10 @@ function bed(x, z, plot) {
 }
 
 // Builds the ground mesh over [x0, x1) x [z0, z1): cell(x, z) → [height, colour].
-export function buildGround(bounds, cell) {
+// `farmView`: only ever seen by the farm's camera, which looks north and down
+// and never turns, so the sides facing east, west and north are left out (two
+// fifths of the cobbles' triangles).
+export function buildGround(bounds, cell, { farmView = false } = {}) {
   const { x0, x1, z0, z1 } = bounds, nx = Math.round((x1 - x0) / G), nz = Math.round((z1 - z0) / G);
   const hgt = new Float32Array(nx * nz), col = new Uint32Array(nx * nz);
   for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
@@ -119,6 +122,7 @@ export function buildGround(bounds, cell) {
     for (let i = 0; i < nx; i++) {
       const k = j * nx + i, h = hgt[k], c = shade(col[k], 0.22), xa = x0 + i * G, xb = xa + G;
       const east = at(i + 1, j), west = at(i - 1, j), south = at(i, j + 1), north = at(i, j - 1);
+      if (farmView) { if (south < h) quad([[xa, south, zb], [xb, south, zb], [xb, h, zb], [xa, h, zb]], [0, 0, 1], shade(col[k], 0.1)); continue; }
       if (east < h) quad([[xb, east, za], [xb, h, za], [xb, h, zb], [xb, east, zb]], [1, 0, 0], c);
       if (west < h) quad([[xa, west, zb], [xa, h, zb], [xa, h, za], [xa, west, za]], [-1, 0, 0], c);
       if (south < h) quad([[xa, south, zb], [xb, south, zb], [xb, h, zb], [xa, h, zb]], [0, 0, 1], shade(col[k], 0.1));

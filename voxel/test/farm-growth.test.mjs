@@ -94,14 +94,14 @@ test("expansion controller replaces terrain once, preserves meadow width and reu
   const frontBoundary = new THREE.Group(), patchBoundary = new THREE.Group();
   group.add(original, frontBoundary, patchBoundary); scene.add(group);
   const world = { group, ground: original, frontBoundary, patchBoundary };
-  const lamp = new THREE.PointLight(); lamp.position.set(4, 2.2, 25.1 + DROP); scene.add(lamp);
-  const controller = createFarmExpansion(scene, s, world); assert.equal(world.ground, original);
+  const lamp = { x: 4, y: 2.2, z: 25.1 + DROP }, porch = { x: 6, y: 3.6, z: 21.1 };
+  const controller = createFarmExpansion(s, world, [lamp, porch]); assert.equal(world.ground, original);
   s.upgrades.plots = 3; s.festival.meadow = true; controller.sync();
   const ground = world.ground; ground.geometry.computeBoundingBox();
   assert.equal(ground.geometry.boundingBox.max.x, 54); assert.equal(ground.geometry.boundingBox.max.z, fieldDepth(s) + 5);
   assert.ok(ground.geometry.getAttribute("position").array.every(Number.isFinite));
   assert.equal(frontBoundary.visible, false); assert.equal(patchBoundary.visible, false);
-  assert.equal(lamp.position.z, fieldDepth(s) - .9); assert.equal(scene.children.filter(c => c.isPointLight).length, 1);
+  assert.equal(lamp.z, fieldDepth(s) - .9); assert.equal(porch.z, 21.1); assert.equal(scene.children.filter(c => c.isLight).length, 0);
   controller.sync(); assert.equal(world.ground, ground); assert.equal(group.children.filter(c => c.name === "Purchased south field").length, 1);
   assert.equal(controller.status.plots, 18);
 });

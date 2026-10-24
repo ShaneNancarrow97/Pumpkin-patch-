@@ -17,6 +17,8 @@ function frameGeometry(meta, frame, part = null) {
   for (let i = 0; i < uv.count; i++) uv.setXY(i, (frame.x + uv.getX(i) * frame.w) / meta.w, 1 - (frame.y + top + (1 - uv.getY(i)) * h) / meta.h);
   return geometry;
 }
+// The atlas, once loaded, so it can be sent to the graphics card ahead (scene.js).
+export const specialSpriteTexture = () => atlas?.texture ?? null;
 export const specialSpriteReady = new Promise(resolve => {
   if (typeof Image === "undefined") { resolve(false); return; }
   const image = new Image();

@@ -8,7 +8,8 @@ import { fileURLToPath } from "node:url";
 import * as esbuild from "esbuild";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
-const dev = process.argv.includes("--dev"), at = process.argv.indexOf("--out"), outFile = at > 0 ? path.resolve(process.argv[at + 1]) : null;
+// --readable leaves the code unminified, for profiling.
+const dev = process.argv.includes("--dev"), readable = process.argv.includes("--readable"), at = process.argv.indexOf("--out"), outFile = at > 0 ? path.resolve(process.argv[at + 1]) : null;
 const MIME = { ".woff": "font/woff", ".woff2": "font/woff2", ".png": "image/png" };
 const inline = (css) => css.replace(/url\('(assets\/[^']+)'\)/g, (m, rel) => `url('data:${MIME[path.extname(rel)]};base64,${fs.readFileSync(path.join(root, rel)).toString("base64")}')`);
 
@@ -28,7 +29,7 @@ const writeHtml = {
     });
   },
 };
-const options = { entryPoints: [path.join(root, "src/main.js")], bundle: true, loader: { ".png": "dataurl", ".webp": "dataurl", ".mp3": "dataurl", ".mid": "binary" }, format: "iife", minify: !dev, target: ["es2020"], write: false, outfile: "game.js", logLevel: "warning", plugins: [writeHtml] };
+const options = { entryPoints: [path.join(root, "src/main.js")], bundle: true, loader: { ".png": "dataurl", ".webp": "dataurl", ".mp3": "dataurl", ".mid": "binary" }, format: "iife", minify: !dev && !readable, target: ["es2020"], write: false, outfile: "game.js", logLevel: "warning", plugins: [writeHtml] };
 if (dev) {
   const ctx = await esbuild.context(options);
   await ctx.watch();

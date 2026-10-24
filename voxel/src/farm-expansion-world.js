@@ -62,12 +62,11 @@ function disposeAnnex(group) {
 
 // Call sync after the meadow controller, which can also replace world.ground.
 // This preserves both purchases in either order without layering terrain.
-export function createFarmExpansion(scene, state, world) {
+// `farmLamps` are the scene's lamp positions (scene.js lightLamps); the four on
+// the front fence move down to the new field's edge.
+export function createFarmExpansion(state, world, farmLamps) {
   let key = "", ground = null, annex = null;
-  const lamps = [];
-  scene.traverse(object => {
-    if (object.isPointLight && Math.abs(object.position.z - (25.1 + DROP)) < .02 && Math.abs(object.position.y - 2.2) < .02 && [4, 16, 30.6, 35.4].some(x => Math.abs(x - object.position.x) < .02)) lamps.push(object);
-  });
+  const lamps = farmLamps.filter(lamp => Math.abs(lamp.z - (25.1 + DROP)) < .02 && Math.abs(lamp.y - 2.2) < .02 && [4, 16, 30.6, 35.4].some(x => Math.abs(x - lamp.x) < .02));
   function sync() {
     const tier = farmExpansionTier(state), width = state.festival?.meadow ? MEADOW.width : MAP.w;
     const next = `${tier}:${width}`;
@@ -82,7 +81,7 @@ export function createFarmExpansion(scene, state, world) {
       world.ground = terrain; world.group.add(terrain);
     }
     if (tier) { annex = buildFarmAnnex(state); world.group.add(annex); }
-    lamps.forEach(light => light.position.z = tier ? fieldDepth(state) - .9 : 25.1 + DROP);
+    lamps.forEach(lamp => lamp.z = tier ? fieldDepth(state) - .9 : 25.1 + DROP);
     ground = world.ground;
   }
   sync();

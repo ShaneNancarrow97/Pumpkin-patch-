@@ -7,7 +7,8 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import { renderSizing, validRenderQuality } from "./render-quality.js";
 import { Voxels, seeded, vary } from "./voxels.js";
-import { createSandy } from "./sandy.js";
+import { createSandy, sandyTextures } from "./sandy.js";
+import { specialSpriteReady, specialSpriteTexture } from "./special-sprites.js";
 import { cocoaProp, takeawayCup } from "./cocoa-props.js";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { pumpkinTemplate, sproutTemplate, bigPumpkin } from "./pumpkins.js";
@@ -73,6 +74,7 @@ export function createScene(canvas, state, hooks) {
   moon.shadow.mapSize.set(touchDevice ? 1024 : 2048, touchDevice ? 1024 : 2048);
   Object.assign(moon.shadow.camera, { left: -30, right: 30, top: 27, bottom: -27, near: 1, far: 90 });
   moon.shadow.bias = -0.0008; moon.shadow.normalBias = 0.03;
+  moon.shadow.autoUpdate = false;                                       // redrawn every other frame (tick)
   scene.add(moon, moon.target);
   // A soft warm fill from the viewer's side, like lantern light, so faces read.
   const fill = new THREE.DirectionalLight(0xffcf9a, 1.2);
@@ -81,11 +83,11 @@ export function createScene(canvas, state, hooks) {
 
   const world = buildWorld();
   scene.add(world.group);
-  for (const l of world.lights) {
-    const lamp = new THREE.PointLight(0xffa04a, 9, 7.5, 1.5);
-    lamp.position.set(l.x, l.y, l.z);
-    scene.add(lamp);
-  }
+  // The farm's lamps light their surroundings through the same small pool of
+  // lights the rooms use (places.js), given to the lamps nearest the view
+  // each frame (lightLamps below). Every lamp still glows. Fewer lights in the
+  // shader is the biggest saving on a phone.
+  const lamps = world.lights.map((l) => ({ x: l.x, y: l.y, z: l.z }));
   // The far shore: sky, moon, castle, village and lake, with the mist drifting
   // over the farm and the lake and its lights alive (ambience.js).
   const backdrop = buildBackdrop(PITCH), ambience = createAmbience(scene, backdrop);
@@ -137,7 +139,7 @@ export function createScene(canvas, state, hooks) {
     return { g, sp, pk, halo, lockedVines };
   });
   const festivalWorld = createFestivalWorld({ scene, state, world, signBoard, createCashier: createSandy });
-  const farmExpansion = createFarmExpansion(scene, state, world);
+  const farmExpansion = createFarmExpansion(state, world, lamps);
   const hollowFarm = createHollowFarm(scene, state, signBoard);
   const hayrideWorld = createHayrideWorld({ scene, state, world, signBoard, createScares: createHayrideScares });
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
@@ -192,7 +194,11 @@ export function createScene(canvas, state, hooks) {
   }
   loadSprites().then((data) => { pixels = data; if (voxelCharacters) placeCharacters(); }).catch(() => hooks.onSpriteError?.());
   // The voxel figures are built from these sheets too, in more detail, once they arrive.
-  loadSpriteSheets().then((data) => { sheets = data; if (!voxelCharacters || pixels) placeCharacters(); }).catch(() => hooks.onSpriteError?.());
+  loadSpriteSheets().then((data) => {
+    sheets = data; if (!voxelCharacters || pixels) placeCharacters();
+    warm(...["visitors", "horrorVisitors", "skyla", "natalie", "shane"].map((name) => data[name]?.texture)); warmShaders();
+  }).catch(() => hooks.onSpriteError?.());
+  specialSpriteReady.then(() => warm(specialSpriteTexture()));
 
   // Shane and Natalie.
   const actors = {};
@@ -218,6 +224,41 @@ export function createScene(canvas, state, hooks) {
 
   // The cottage's rooms and the shop floor (places.js).
   const places = createPlaces({ scene, state, character, visitorModel, pumpkinTemplate, animate: animateFigure });
+  // Out on the farm, the pool's lights go to the lamps nearest the middle of
+  // the view. A lamp joining or leaving fades over a third of a second, and
+  // each keeps its light while it stays among the nearest.
+  const lampSlots = [];
+  function lightLamps(dt) {
+    const pool = places.lightPool;
+    if (view.place) { lampSlots.length = 0; return; }
+    const fresh = !lampSlots.length, want = new Set(lamps.map((l, i) => [i, (l.x - view.x) ** 2 + (l.z - view.z) ** 2]).sort((a, b) => a[1] - b[1]).slice(0, pool.length).map(([i]) => i));
+    for (let k = 0; k < pool.length; k++) lampSlots[k] ??= { lamp: -1, level: 0 };
+    for (const slot of lampSlots) slot.target = want.has(slot.lamp) ? 1 : 0;
+    for (const i of want) if (!lampSlots.some((slot) => slot.lamp === i)) { const free = lampSlots.find((slot) => slot.lamp < 0); if (free) Object.assign(free, { lamp: i, level: 0, target: 1 }); }
+    lampSlots.forEach((slot, k) => {
+      slot.level = fresh ? slot.target : THREE.MathUtils.clamp(slot.level + Math.sign(slot.target - slot.level) * dt * 3, 0, 1);
+      if (!slot.level && !slot.target) slot.lamp = -1;
+      const light = pool[k], lamp = lamps[slot.lamp];
+      if (!lamp) { light.intensity = 0; return; }
+      light.position.set(lamp.x, lamp.y, lamp.z); light.color.setHex(0xffa04a); light.distance = 7.5; light.decay = 1.5; light.intensity = 9 * slot.level;
+    });
+  }
+  // A picture goes to the graphics card the first time it's drawn, and a shader
+  // compiles the first time something needs it; either holds up that frame.
+  // Sandy's blink and serving poses, the horror guests' sheet and the Baron's
+  // were the worst, at 30 to 60 ms each. Each loaded picture is sent ahead
+  // instead, one a frame, and the farm's shaders, with their indoor variants,
+  // compile in the background once the characters are in.
+  const warming = new Set();
+  const warm = (...textures) => textures.forEach((t) => t?.isTexture && warming.add(t));
+  function warmNext() { for (const t of warming) if (t.version > 0 && t.image) { renderer.initTexture(t); warming.delete(t); return; } }
+  function warmShaders() {
+    // Compiled for where the farm is drawn (the glow pass's buffer, or the
+    // screen), or none of them would match.
+    const compile = () => { const target = renderer.getRenderTarget(); renderer.setRenderTarget(bloomOn ? composer.readBuffer : null); const done = renderer.compileAsync(scene, camera); renderer.setRenderTarget(target); return done; };
+    compile().then(() => places.withKeyLight(compile)).catch(() => {});
+  }
+  warm(...sandyTextures);
   loadDecor().then(() => places.refresh()).catch(() => hooks.onSpriteError?.());
 
   // Fireflies drifting over the field.
@@ -529,7 +570,7 @@ export function createScene(canvas, state, hooks) {
     }
   }
 
-  let framedLand = "", tapPulse = 0, last = performance.now(), time = 0, nextSpeechAt = 0;
+  let framedLand = "", tapPulse = 0, last = performance.now(), time = 0, nextSpeechAt = 0, shadowFrame = 0;
   function tick(now) {
     // The first frame's timestamp can come before the scene finished building, and
     // a negative time would pick a walk frame that doesn't exist.
@@ -637,6 +678,8 @@ export function createScene(canvas, state, hooks) {
       if (v.bought !== null && !entry.bag) { entry.bag = state.customerCare.bags && v.quantity > 1 ? customerBag() : carried[v.bought].clone(); entry.bag.position.set(entry.sprite ? 0.36 : 0.45, entry.sprite ? 0.45 : 0.6, entry.sprite ? 0.3 : 0.2); entry.m.add(entry.bag); }
     }
     syncChats();
+    lightLamps(dt);
+    if (!view.place && (shadowFrame++ & 1) === 0) moon.shadow.needsUpdate = true;
     for (const [id, entry] of visitorModels) if (!state.visitors.some((v) => v.id === id)) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); entry.m.userData.dispose?.(); visitorModels.delete(id); }
 
     // Fireflies.
@@ -666,6 +709,7 @@ export function createScene(canvas, state, hooks) {
     }
 
     if (bloomOn) composer.render(); else renderer.render(activeScene(), active());
+    if (warming.size) warmNext();
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
@@ -766,6 +810,8 @@ export function createScene(canvas, state, hooks) {
     setHayrideOptions(options) { hayrideView.setOptions(options); },
     advanceHayrideRide(seconds) { return hayrideView.advanceForTest(seconds); },
     get foyerStatus() { return foyerView.status; },
+    // For profiling tools: the farm's three.js objects (tools/perf).
+    get debug() { return { scene, renderer, camera, composer, active, activeScene }; },
     get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? antialias.enabled ? "FXAA" : "density" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
     setRenderQuality(value) { renderQuality = validRenderQuality(value); resize(); return renderQuality; },
     selectPiece(instance) { places.select(instance); },
