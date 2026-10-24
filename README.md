@@ -1,7 +1,7 @@
 # Pumpkin Patch — Hollow Hayride playable expansion
 
-Source: `34b50b3ea274b7e8d2b8e78fb23ad6f736384ba1` on `contractor/hollow-hayride`.
-Lead baseline: `d98db5989091975391a20ce3e4d56aa58fbc3ccb`. This includes Claude's published update through handover 35.
+Source: `12c6fe48cfd27aab1d5fa0d46b02283541f1d9ab` on `contractor/hollow-hayride`.
+Lead baseline: `1abaff5386bbf563a5e0a8454ffdf125b5b94d8c`. This includes Claude's published maze scares and set dressing through handover 36.
 
 ## Play
 
@@ -11,17 +11,17 @@ Only the boarding station is on the farm. The tractor departs off-map; the dense
 
 The hayride becomes purchasable at patch level 8 after restoring The Hollow House, for £7,500. Open **Attractions → The Hollow Hayride**, purchase the clearing, then open admissions. Guests queue and pay when boarding. Upgrade the wagon at levels 10/12; add scare effects and set ticket prices. **Owner ride-along** provides a free seated preview. The download contains no QA money or unlocked fixtures.
 
-The normal fullscreen button is included. Phone, landscape and unfolded Fold layouts were checked in Chromium; a physical Z Fold was not available. Managed QA browser policy prevents direct file navigation and OS fullscreen, so those checks used identical HTML over loopback with zero external runtime requests and tested graceful fullscreen refusal.
+The normal fullscreen button is included. Phone, landscape and unfolded Fold layouts were checked in Chromium; a physical Z Fold was not available. Managed QA browser policy prevents direct file navigation and OS fullscreen, so those checks used identical HTML over loopback with zero external runtime requests and checked fullscreen control availability.
 
 ## Claude handover
 
-Read **37-off-map-hayride-takeover.md**, followed by handover36 for economy and saves. The source branch is ready to inspect. The downloads branch contains artifacts only; **do not merge this branch into source**.
+Read **38-hayride-lead-integration.md**, then handover37 and the operational handover linked there. The source branch is ready to inspect. The downloads branch contains artifacts only; **do not merge this branch into source**.
 
-The contractor ZIP contains a binary incremental patch against exactly `d98db5989091975391a20ce3e4d56aa58fbc3ccb`. In an isolated worktree at that base:
+The contractor ZIP contains a binary incremental patch against exactly `1abaff5386bbf563a5e0a8454ffdf125b5b94d8c`. In an isolated worktree at that base:
 
 ```sh
-git apply --check /path/to/hollow-hayride-from-d98db59.patch
-git apply /path/to/hollow-hayride-from-d98db59.patch
+git apply --check /path/to/hollow-hayride-from-1abaff5.patch
+git apply /path/to/hollow-hayride-from-1abaff5.patch
 npm --prefix voxel ci
 npm --prefix voxel test
 node voxel/build.mjs --out /tmp/pumpkin-hayride.html
@@ -31,6 +31,6 @@ Reconcile the isolated provisional western site with unpublished lead map change
 
 ## Validation
 
-All 59 Node test files pass. Applying the binary patch to the exact lead base and rebuilding produced identical HTML bytes. Final handover browser smoke is recorded separately when completed; earlier functional assertions preceded the off-map split and were interrupted by host restart. A full final-HTML end-to-end replay, five-scene lighting review and physical Z Fold profiling remain recommended lead checks. Exact scope and limitations are committed under `voxel/docs/contractor-patches/haunted-hayride/verification/`.
+All 60 Node test files pass. Applying the binary patch to the exact lead base and rebuilding produced identical HTML bytes. The integrated browser run passes 107 checks on its pinned build, covering payments, off-map travel, save/reload, upgrades, owner controls and responsive layouts, with all five scene captures. The final build changes only paving and farm-edge convoy visibility; its 9 focused checks pass on the exact download hash. Both hashes and scopes are in delivery.json. Physical Z Fold profiling and successful unrestricted OS fullscreen remain lead checks. Exact scope and limitations are committed under `voxel/docs/contractor-patches/haunted-hayride/verification/`.
 
-HTML SHA-256: `3173d8f1d54b32ec3468729967f0c7315c265092e071f018b2aaee178d13e49b`.
+HTML SHA-256: `00452771188d0a6cdaf1a020f34c5ed21e610520f4f15ea09f82b757e8d1aa8d`.
