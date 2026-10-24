@@ -4,7 +4,7 @@ const MAX_VOICES = 14;
 const clamp = (value, fallback = 0) => Number.isFinite(Number(value)) ? Math.max(0, Math.min(1, Number(value))) : fallback;
 
 export function createMazeAudio(prefs = {}) {
-  let ctx = null, master = null, noise = null, active = false, paused = false, muted = prefs.mazeSound === false, volume = clamp(prefs.mazeVolume, .45), gentle = false, timer = null, beat = 0, profile = "maze";
+  let ctx = null, master = null, noise = null, active = false, paused = false, muted = prefs.mazeSound === false, volume = clamp(prefs.mazeVolume, .45), gentle = false, timer = null, beat = 0;
   const voices = new Set(), cues = new Set();
   const level = () => active && !paused && !muted ? volume * (gentle ? .65 : 1) * .42 : 0;
   // One short seeded noise buffer is shared by whispers, breath and creaks.
@@ -48,23 +48,14 @@ export function createMazeAudio(prefs = {}) {
   function ambience() {
     if (!active || paused || muted || document.hidden || !ensure()) return;
     mix(); beat = 0;
-    voice({ frequency: profile === "hayride" ? 39 : 48, endFrequency: profile === "hayride" ? 39 : 48, amp: profile === "hayride" ? .035 : .028, cutoff: 140, loop: true, duration: 2 });
+    voice({ frequency: 48, endFrequency: 48, amp: .028, cutoff: 140, loop: true, duration: 2 });
     voice({ noise: true, amp: .018, cutoff: 260, loop: true, duration: 2 });
-    timer = setInterval(() => {
-      if (!active || paused || muted || document.hidden) return;
-      if (profile === "hayride") {
-        // Quiet wheel rattle and timber creak sit below the encounter sounds.
-        voice({ noise: true, cutoff: 180, duration: .24, amp: .022 });
-        voice({ frequency: 43, endFrequency: 36, duration: .27, amp: .026 });
-        if (++beat % 5 === 0) voice({ frequency: 143, endFrequency: 98, type: "triangle", duration: .7, amp: .022, cutoff: 320 });
-      } else { footstep(); if (++beat % 7 === 0) voice({ frequency: 120, endFrequency: 67, type: "triangle", duration: .9, amp: .045, cutoff: 600 }); }
-    }, profile === "hayride" ? 900 : 680);
+    timer = setInterval(() => { if (!active || paused || muted || document.hidden) return; footstep(); if (++beat % 7 === 0) voice({ frequency: 120, endFrequency: 67, type: "triangle", duration: .9, amp: .045, cutoff: 600 }); }, 680);
   }
   const view = {
     start(options = {}) {
       clearVoices(); cues.clear(); active = true; paused = false;
       muted = options.sound === undefined ? prefs.mazeSound === false : !options.sound; volume = clamp(options.volume ?? prefs.mazeVolume, .45); gentle = !!options.gentle;
-      profile = options.profile === "hayride" ? "hayride" : "maze";
       if (document.hidden) paused = true;
       ambience(); mix(); return view.status;
     },
@@ -98,7 +89,7 @@ export function createMazeAudio(prefs = {}) {
     setVolume(value) { volume = clamp(value, .45); prefs.mazeVolume = volume; mix(); },
     setGentle(on) { gentle = !!on; mix(); },
     stop() { active = false; paused = false; clearVoices(); mix(); },
-    get status() { return { active, paused, muted, volume, profile, voices: voices.size, context: ctx?.state ?? "waiting", cues: cues.size }; },
+    get status() { return { active, paused, muted, volume, voices: voices.size, context: ctx?.state ?? "waiting", cues: cues.size }; },
   };
   document.addEventListener("visibilitychange", () => { if (active && document.hidden) view.pause(true); });
   return view;

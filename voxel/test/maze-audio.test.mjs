@@ -95,7 +95,7 @@ test("maze mute drops old cues and simultaneous voices stay bounded", async () =
 });
 
 test("hayride ambience keeps wheel sounds separate from the maze and stops on pause", async () => {
-  const h = await audioHarness("maze-audio"), audio = h.exports.createMazeAudio({});
+  const h = await audioHarness("hayride-audio"), prefs = { mazeSound: true, hayrideSound: true }, audio = h.exports.createHayrideAudio(prefs);
   audio.start({ sound: true, profile: "hayride" });
   assert.equal(audio.status.profile, "hayride");
   assert.equal(h.sources[0].frequency.value, 39);
@@ -105,8 +105,7 @@ test("hayride ambience keeps wheel sounds separate from the maze and stops on pa
   assert.equal(h.sources.length, rolling); assert.equal(audio.status.voices, 0);
   audio.pause(false); assert.equal(audio.status.profile, "hayride");
   audio.stop(); h.advance(1); assert.ok(h.sources.every(source => source.ended));
-  audio.start({ sound: true }); assert.equal(audio.status.profile, "maze");
-  assert.equal(h.sources.at(-2).frequency.value, 48);
+  audio.setMuted(true); assert.equal(prefs.hayrideSound, false); assert.equal(prefs.mazeSound, true, "hayride controls must not change maze preferences");
   audio.stop();
 });
 

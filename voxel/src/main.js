@@ -10,6 +10,7 @@ import { createLevelCelebration } from "./ui/level-celebration.js";
 import { createAudio } from "./ui/audio.js";
 import { createMazeRideUI } from "./ui/maze-ride-ui.js";
 import { createMazeAudio } from "./ui/maze-audio.js";
+import { createHayrideAudio } from "./ui/hayride-audio.js";
 import { createHayrideRideUI } from "./ui/hayride-ride-ui.js";
 import { buildMazeRideConfig } from "./rules/maze-ride.js";
 import { farmSheets } from "./ui/farm-sheets.js";
@@ -49,7 +50,7 @@ const prefs = (() => {
   try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; }
 })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
-const audio = createAudio(prefs), mazeAudio = createMazeAudio(prefs);
+const audio = createAudio(prefs), mazeAudio = createMazeAudio(prefs), hayrideAudio = createHayrideAudio(prefs);
 const mazeUI = createMazeRideUI({ prefs, savePrefs,
   onStart: startMazeRide, onPause: pauseMazeRide, onExit: exitMazeRide, onReplay: replayMazeRide,
   onSound: on => mazeAudio.setMuted(!on), onVolume: value => mazeAudio.setVolume(value),
@@ -58,8 +59,8 @@ const mazeUI = createMazeRideUI({ prefs, savePrefs,
 });
 const hayrideUI = createHayrideRideUI({ prefs, savePrefs,
   onStart: startHayrideRide, onPause: pauseHayrideRide, onExit: exitHayrideRide, onReplay: replayHayrideRide,
-  onSound: on => mazeAudio.setMuted(!on),
-  onGentle: on => { mazeAudio.setGentle(on); scene.setHayrideOptions({ gentle: on }); },
+  onSound: on => hayrideAudio.setMuted(!on),
+  onGentle: on => { hayrideAudio.setGentle(on); scene.setHayrideOptions({ gentle: on }); },
   onLightning: on => scene.setHayrideOptions({ lightning: on }),
   onFullscreen: () => $("fullscreen").click(),
 });
@@ -98,9 +99,9 @@ const scene = createScene($("world"), state, {
   onMazeCue: cue => mazeAudio.cue(cue),
   onMazeState: status => mazeUI.update(status),
   onMazeComplete: status => { mazeAudio.pause(true); mazeUI.update(status); },
-  onHayrideCue: cue => mazeAudio.cue(cue),
+  onHayrideCue: cue => hayrideAudio.cue(cue),
   onHayrideState: status => hayrideUI.update(status),
-  onHayrideComplete: status => { mazeAudio.pause(true); hayrideUI.update(status); },
+  onHayrideComplete: status => { hayrideAudio.pause(true); hayrideUI.update(status); },
   canRotatePiece: () => !!home.tools.selected && M.footprint(state.house.placed.find((p) => p.instance === home.tools.selected)?.id ?? "f01").layer !== "wall",
   foyerEditing: () => foyerTools.active || openTab === "foyer",
   estateEditing: () => estateTools.active,
@@ -288,10 +289,10 @@ function openHayrideRide() {
   scene.enter("hayride", { ...hayrideUI.options, paused: true });
   hayrideUI.open(M.hayrideConfig(state)); audio.setSceneGain(.12); renderPlace(); return true;
 }
-function startHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride" || !hayrideUI.active) return false; scene.setHayrideOptions(options); mazeAudio.start({ ...options, profile: "hayride" }); scene.pauseHayrideRide(false); hayrideUI.update(scene.hayrideRideStatus); return true; }
-function pauseHayrideRide(on = true) { if (scene.place?.kind !== "hayride") return false; scene.pauseHayrideRide(on); mazeAudio.pause(on); hayrideUI.update(scene.hayrideRideStatus); return true; }
-function replayHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride") return false; mazeAudio.start({ ...options, profile: "hayride" }); scene.restartHayrideRide(options); hayrideUI.update(scene.hayrideRideStatus); return true; }
-function stopHayridePresentation() { hayrideUI.close(); mazeAudio.stop(); audio.setSceneGain(1); }
+function startHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride" || !hayrideUI.active) return false; scene.setHayrideOptions(options); hayrideAudio.start({ ...options, profile: "hayride" }); scene.pauseHayrideRide(false); hayrideUI.update(scene.hayrideRideStatus); return true; }
+function pauseHayrideRide(on = true) { if (scene.place?.kind !== "hayride") return false; scene.pauseHayrideRide(on); hayrideAudio.pause(on); hayrideUI.update(scene.hayrideRideStatus); return true; }
+function replayHayrideRide(options = hayrideUI.options) { if (scene.place?.kind !== "hayride") return false; hayrideAudio.start({ ...options, profile: "hayride" }); scene.restartHayrideRide(options); hayrideUI.update(scene.hayrideRideStatus); return true; }
+function stopHayridePresentation() { hayrideUI.close(); hayrideAudio.stop(); audio.setSceneGain(1); }
 function exitHayrideRide() { if (!hayrideUI.active && scene.place?.kind !== "hayride") return false; stopHayridePresentation(); scene.leavePlace(); renderPlace(); return true; }
 // Up or down the stairs, or through a doorway, to the next room.
 function goTo(id) {
