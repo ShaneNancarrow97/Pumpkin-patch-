@@ -40,27 +40,39 @@ export function cocoaProp(id = "cocoa") {
   return templates.get(id).clone();
 }
 
-// A takeaway cup, as guests carry it and Sandy stacks it: a white paper cup
-// narrower at the base, a sleeve in the drink's colour with Sandy's pumpkin
-// badge, and a black lid with a sip spout at the front.
+// A takeaway cup, as guests carry it and Sandy stacks it, built from fine
+// voxels a little over a centimetre across so it stays detailed at its small
+// size: round layers of white paper narrowing to the base, a sleeve in the
+// drink's colour with Sandy's orange badge and a seam, and a black lid with a
+// stepped rim, a low dome and a sip spout at the front.
 const SLEEVES = { cocoa: 0xa8794a, flake: 0x7a4a32, deluxe: 0x6a3a7a, midnight: 0x2e2238 };
+const U = .0125;
+// A round layer as rows of boxes, `r` units across the middle.
+function disc(v, y, r, h, colour) {
+  for (let dz = -Math.floor(r); dz <= Math.floor(r); dz++) {
+    const half = Math.round(Math.sqrt(Math.max(0, r * r - dz * dz)));
+    if (half > 0) v.block(0, y, dz * U, half * 2 * U, h, U, colour);
+  }
+}
 export function takeawayCup(kind = "cocoa") {
   const id = "takeaway:" + (SLEEVES[kind] ? kind : "cocoa");
   if (!templates.has(id)) {
-    // Taller than life, since the farm's camera looks down on it.
-    const v = new Voxels(), sleeve = SLEEVES[id.slice(9)], paper = [0xe6dfd2, 0xebe5d9, 0xf0ebe1, 0xf4efe6, 0xf7f3eb, 0xf9f6f0, 0xfbf9f4];
-    for (let i = 0; i < 7; i++) v.block(0, i * .06, 0, .15 + i * .022, .06, .15 + i * .022, paper[i]);
-    v.block(0, 0, 0, .13, .008, .13, 0xd6cdbf);
-    // The sleeve round the middle, tapering with the cup, with a badge and a seam.
-    v.block(0, .15, 0, .222, .07, .222, sleeve); v.block(0, .22, 0, .262, .08, .262, sleeve);
-    if (id.endsWith("midnight")) v.block(0, .295, 0, .266, .01, .266, 0xd8a94a);
-    v.block(0, .19, .122, .07, .075, .008, 0xf08a28); v.block(0, .21, .127, .032, .034, .006, 0x2a1a22);
-    v.block(-.114, .16, .096, .012, .13, .012, sleeve === 0xa8794a ? 0x8e6238 : 0x1e1820);
-    // The lid: a thin rim flush with the lip, a low dome, and the spout with its sip hole.
-    v.block(0, .42, 0, .29, .02, .29, 0x1c1a1e); v.block(0, .44, 0, .25, .014, .25, 0x232026);
-    v.block(0, .454, .08, .056, .016, .046, 0x1c1a1e); v.block(0, .47, .09, .026, .004, .013, 0x070607);
-    // Half the size it's modelled at: a small cup in a guest's hand.
-    const model = v.build(); model.scale.setScalar(.5); model.traverse(m => { if (m.material) m.material.userData.sharedCocoa = true; });
+    const v = new Voxels(), sleeve = SLEEVES[id.slice(9)], dark = sleeve === 0xa8794a ? 0x8e6238 : 0x1e1820, layers = 15;
+    for (let i = 0; i < layers; i++) {
+      const r = 4.4 + 1.7 * i / (layers - 1), y = i * U, band = i >= 5 && i <= 10;
+      disc(v, y, band ? r + .55 : r, U, band ? sleeve : [0xe4ddd0, 0xebe5da, 0xf1ece3, 0xf6f2ea, 0xfaf7f1][Math.min(4, i >> 2)]);
+      if (i === 0) disc(v, y - U * .4, r - .6, U * .4, 0xd2c9bb);
+    }
+    // The sleeve's seam, and Sandy's badge on the front: an orange roundel with a dark pumpkin face.
+    for (let i = 5; i <= 10; i++) v.block(-(4.4 + 1.7 * i / 14 + .3) * U * .72, i * U, -(4.4 + 1.7 * i / 14 + .3) * U * .72, U, U, U, dark);
+    const front = 5.8 * U;                                                       // on the sleeve's front row
+    for (const [x, y, c] of [[-1, 6, 0xf08a28], [0, 6, 0xf08a28], [1, 6, 0xf08a28], [-1, 7, 0xf08a28], [0, 7, 0x2a1a22], [1, 7, 0xf08a28], [-1, 8, 0x2a1a22], [0, 8, 0xf08a28], [1, 8, 0x2a1a22], [-1, 9, 0xf08a28], [0, 9, 0xf08a28], [1, 9, 0xf08a28], [0, 10, 0x4f7a3a]]) v.block(x * U, y * U, front, U, U, U * .6, c);
+    if (id.endsWith("midnight")) disc(v, 10.6 * U, 6.1 + .2, U * .4, 0xd8a94a);
+    // The lid.
+    const top = layers * U;
+    disc(v, top, 6.6, U, 0x1c1a1e); disc(v, top + U, 6.1, U * .6, 0x2a272e); disc(v, top + U * 1.6, 5.2, U * .8, 0x232026);
+    for (const [x, z, h, c] of [[0, 4, 1.4, 0x1c1a1e], [-1, 4, 1.2, 0x1c1a1e], [1, 4, 1.2, 0x1c1a1e], [0, 3, 1.2, 0x1c1a1e], [0, 4, .2, 0x070607]]) v.block(x * U, top + U * (h === .2 ? 3.8 : 2.4), z * U, U, U * h, U, c);
+    const model = v.build(); model.traverse(m => { if (m.material) m.material.userData.sharedCocoa = true; });
     templates.set(id, model);
   }
   return templates.get(id).clone();
