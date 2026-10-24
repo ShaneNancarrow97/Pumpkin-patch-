@@ -49,7 +49,7 @@ export const COL = {
   hay: 0xd9b45a, produce: [0xf0821e, 0xc2352a, 0x9d55e6, 0xe8b23a, 0xd9d2ff],
 };
 // Canopy palettes, dark (underside) to light (sunlit top): red, orange and plum trees.
-const CANOPY = [
+export const CANOPY = [
   [0x5a1820, 0x8a2422, 0xb8361e, 0xdc5a22, 0xf28a34],
   [0x7a2c16, 0xb0461a, 0xd8701e, 0xf29a30, 0xffc252],
   [0x3e1634, 0x60204a, 0x88305a, 0xb24862, 0xdc7458],
@@ -649,7 +649,8 @@ export function buildBackdrop(pitch) {
   // front of it) as the camera sees them, so the lake and the village lights show
   // over them at any tilt. The sky runs on up, darkest, for a zoomed-out tall phone.
   const shore = 6 * Math.cos(pitch) - 1.6 * Math.sin(pitch) + 0.4;
-  const U = 8, X0 = -18, W = 76 * U, H = 42 * U, horizon = H - Math.round(shore * U), top = horizon - 27.5 * U;
+  // Wide enough to sit behind the wilds' hills on both sides (wilds.js).
+  const U = 8, X0 = -70, W = 170 * U, H = 42 * U, horizon = H - Math.round(shore * U), top = horizon - 27.5 * U;
   const canvas = document.createElement("canvas"); canvas.width = W; canvas.height = H;
   const g = canvas.getContext("2d"), r = seeded(77), high = seeded(78);
   // A second canvas marks what twinkles, texel by texel, for the shader below:

@@ -108,8 +108,11 @@ function buildStation(signBoard){
       for(let j=0;j<3;j++)block(v,x-side*(.2+j*.19),h-.55+j*.14,portal.z,.26,.15,.22,C.wood);
     }
     block(v,portal.x,h-.03,portal.z,5.8,.18,.38,C.wood);
-    // Muted vertical folds read as a covered woodland entrance, not a void.
-    for(let x=-2.45;x<2.45;x+=.35)block(v,portal.x+x+.17,.02,portal.z+(index?-.1:.1),.35,h-.1,depth,[0x11171a,0x141c1e,0x0e1417][Math.round((x+2.45)/.35)%3]);
+    // A curtain of hanging leaves, darkest in the middle, where the track goes
+    // on into the wood (wilds.js), with leaves spilling over the beam.
+    for(let x=-2.45;x<2.45;x+=.35){const mid=1-Math.abs(x+.17)/2.6;block(v,portal.x+x+.17,.02,portal.z+(index?-.1:.1),.35,h-.1,depth,vary([0x1b2a20,0x17231c,0x1e2d22][Math.round((x+2.45)/.35)%3],.08,r)&0xffffff);
+      if(r()<.6)block(v,portal.x+x+.17,.02+r()*.5,portal.z+(index?-.1:.1)+(index?-1:1)*depth*.5,.3,.25+r()*.4,.08,mid>.6?0x0f1612:0x243426);}
+    for(let k=0;k<9;k++)block(v,portal.x-2.6+k*.65+(r()-.5)*.2,h-.4-r()*.2,portal.z+(r()-.5)*.6,.55+r()*.3,.25+r()*.3,.6,vary([0x5a1820,0x8a2422,0x2a3a2c,0x7a2c16][k%4],.1,r));
   }
   root.add(v.build());root.name="The Hollow Hayride farm station";
   const sign=signBoard("The Hollow Hayride","rear boarding · woodland scares",5.8);sign.position.set(-20.3,4.1,33);sign.userData={type:"hayride",hayrideLabel:true};root.add(sign);

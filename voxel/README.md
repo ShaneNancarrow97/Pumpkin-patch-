@@ -39,6 +39,7 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
   - a leafy arch in the back fence, with string lights, opening onto the lake
   - wooden picket fences with lantern posts, crates, barrels, hay bales, a bench and flowers
   - red, orange and plum autumn trees round every edge
+- **The wilds:** the farm sits in an autumn wood of round trees and dark pines on terraced hills. The roads and the hayride's track run on into the trees, and everything fades into the night, so the map never ends at an edge.
 - **The far shore** is painted pixel art on a backdrop that leans back to face the camera: the night sky, a crescent moon, mountains, the castle on its hill, and a lakeside village with its lights reflected in the water. The lake ripples, the village lamps flicker, the reflections glint and the stars twinkle.
 - **Mist:** the slightest low mist rolls across the farm from the west, clears for a minute or so and comes round again. It thins over the pumpkins and fades out round the buildings. Mist and the moving lake each have a switch in Settings, and start off on a device set to reduce motion.
 - **Lighting:** lilac moonlight casting soft shadows, warm lantern and window light, a bloom glow on everything that's lit, and fireflies.
@@ -134,6 +135,7 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
 | `src/rules/` | The rules, one file each: `farm.js` (plots, varieties, upgrades, streaks, the barn and market cart), `stock.js` (stock, fresh pumpkins and baskets), `market.js` (fresh and wanted pumpkins), `orders.js` (neighbours' orders), `selling.js` (the stall and the indoor shop), `house.js` (levels, rooms, decor placement, books, wallpaper, styles, pieces on tables), `surfaces.js` (the tops things stand on), `wardrobe.js` and `progress.js` (favours, memories, levels). They read the main game's content files in `../src/content/` directly. |
 | `src/voxels.js` | Box batching: every box sharing a material becomes one instanced draw call. |
 | `src/world.js` | The map: terrain, cottage (in four stages), shop, path, fences, arch, trees, props and the painted far shore. Layout constants live here. |
+| `src/wilds.js` | The hills, treeline and roads beyond the farm, fading into the night; rebuilt as the farm grows, never hiding it. |
 | `src/interiors.js` | The rooms and the shop floor at four times the density, the ten styles, the eight wallpapers, and decor voxelised from the original art. |
 | `src/places.js` | Inside places: builds the room or shop floor, places decor, walks customers from the door to the till, and highlights pieces while decorating. |
 | `src/sprite-actors.js` | Shane, Natalie, Skyla, the costumes and the visitors drawn with the original sprites, and their portraits for the menus |

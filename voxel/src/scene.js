@@ -31,6 +31,7 @@ import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
+import { createWilds } from "./wilds.js";
 import { fieldDepth, extendFarmRoute, DROP, patchShape, COUNTER_GAP } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createMazeRideView } from "./maze-ride-view.js";
@@ -140,6 +141,8 @@ export function createScene(canvas, state, hooks) {
   });
   const festivalWorld = createFestivalWorld({ scene, state, world, signBoard, createCashier: createSandy });
   const farmExpansion = createFarmExpansion(state, world, lamps);
+  // Hills, a treeline and the roads beyond, fading into the night (wilds.js).
+  const wilds = createWilds(scene, state);
   const hollowFarm = createHollowFarm(scene, state, signBoard);
   const hayrideWorld = createHayrideWorld({ scene, state, world, signBoard, createScares: createHayrideScares });
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
@@ -635,7 +638,7 @@ export function createScene(canvas, state, hooks) {
     }
 
     festivalWorld.tick(time);
-    farmExpansion.sync();
+    farmExpansion.sync(); wilds.sync();
     const land = `${fieldWidth(state)}:${fieldDepth(state)}`;
     if (land !== framedLand) { framedLand = land; frame(); clearMist(); }
     hollowFarm.sync(); hollowFarm.tick(time);
