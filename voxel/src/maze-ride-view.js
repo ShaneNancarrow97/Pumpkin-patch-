@@ -7,6 +7,10 @@ const YAW_LIMIT = Math.PI / 4, PITCH_LIMIT = Math.PI / 9;
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const smooth = x => { const t = clamp(x, 0, 1); return t * t * (3 - 2 * t); };
 const angleDelta = (from, to) => Math.atan2(Math.sin(to - from), Math.cos(to - from));
+// A jump scare (full motion only): the figure rushes at you, holds right in
+// your face, shaking and lit from the front, then is gone.
+export const MAZE_JUMP = Object.freeze({ rush: .18, hold: .55, distance: .74, face: .74 });
+const lens = new THREE.Vector3();
 
 // A presentation scene shares the game's renderer; it owns no economy or canvas.
 export function createMazeRideView(canvas, state, hooks = {}) {
@@ -77,7 +81,7 @@ export function createMazeRideView(canvas, state, hooks = {}) {
     glance += (want - glance) * blend * .6; glanceDown += (down - glanceDown) * blend * .6;
     // Position follows the validated rail exactly, so smoothing cannot cut a bend.
     if (!run.paused) jolt = Math.max(0, jolt - Math.max(0, dt) * 2.4);
-    const shake = options.gentle ? 0 : jolt * jolt * .03, wobble = run.elapsed * 47;
+    const shake = options.gentle ? 0 : Math.min(1.4, jolt) ** 2 * .03, wobble = run.elapsed * 47;
     camera.position.set(p.x + Math.sin(wobble) * shake, p.y + (!options.gentle ? Math.sin(run.elapsed * 6.8) * .008 : 0) + Math.cos(wobble * 1.3) * shake, p.z);
     camera.rotation.set(pitch + glanceDown, railYaw + yaw + glance, Math.sin(wobble * .7) * shake * .4, "YXZ");
     const fov = baseFov + (options.gentle ? 0 : jolt * 5); if (Math.abs(camera.fov - fov) > .01) { camera.fov = fov; camera.updateProjectionMatrix(); }
@@ -87,6 +91,22 @@ export function createMazeRideView(canvas, state, hooks = {}) {
     if (!run) return;
     for (const actor of actors) {
       const { encounter, object, stage } = actor, age = run.elapsed - encounter.at, duration = encounter.duration;
+      if (!options.gentle && age >= 0) {
+        // The leap: from where it waited to just in front of the lens, its face at eye level.
+        const end = MAZE_JUMP.rush + MAZE_JUMP.hold; object.visible = age < end; actor.pose = "scare";
+        if (!object.visible) continue;
+        const start = actor.from ??= { x: object.position.x, z: object.position.z };
+        camera.getWorldDirection(lens); lens.y = 0; lens.normalize();
+        const t = Math.min(1, age / MAZE_JUMP.rush), rush = t * t * t, face = (object.userData.height ?? 2.1) * MAZE_JUMP.face;
+        const shake = age > MAZE_JUMP.rush ? Math.sin(age * 63) * .035 : 0, sx = -lens.z, sz = lens.x;
+        const tx = camera.position.x + lens.x * MAZE_JUMP.distance + sx * shake, tz = camera.position.z + lens.z * MAZE_JUMP.distance + sz * shake;
+        object.position.set(start.x + (tx - start.x) * rush, .04 + (camera.position.y - face - .04) * rush, start.z + (tz - start.z) * rush);
+        object.scale.setScalar(1 + (age > MAZE_JUMP.rush ? Math.sin(age * 31) * .035 : 0));
+        if (age >= MAZE_JUMP.rush && !actor.hit) { actor.hit = true; jolt = 1.4; }
+        animateMazeScareActor(object, { pose: "scare", reveal: 1, lunging: 1, glare: rush, time: run.elapsed, camera });
+        continue;
+      }
+      actor.from = null; actor.hit = false; object.scale.setScalar(1);
       object.visible = age >= -.7 && age <= duration;
       if (!object.visible) continue;
       const reveal = smooth((age + .7) / .85), retreat = 1 - smooth((age - duration * .42) / (duration * .44));
@@ -124,6 +144,8 @@ export function createMazeRideView(canvas, state, hooks = {}) {
     }
     // A reveal gets a brief rim; near the end, the foyer's light spills through the opening doors.
     const current = actors.find(a => run.elapsed >= a.encounter.at - .2 && run.elapsed < a.encounter.at + a.encounter.duration * .72);
+    const leaping = !options.gentle && actors.find(a => a.object.visible && run.elapsed >= a.encounter.at && run.elapsed < a.encounter.at + MAZE_JUMP.rush + MAZE_JUMP.hold);
+    if (leaping) { camera.getWorldDirection(lens); pool[5].position.copy(camera.position).addScaledVector(lens, .25); pool[5].color.setHex(0xd8c4ff); pool[5].intensity = 1.6; pool[5].distance = 2; return; }
     const exit = world.lamps.find(l => l.kind === "door"), opening = smooth((run.elapsed - (config.duration - 1.3)) / 1.1);
     if (current) { pool[5].position.set(current.object.position.x, 2.2, current.object.position.z); pool[5].color.setHex(0xc8b3ff); pool[5].intensity = 4; pool[5].distance = 3.2; }
     else if (exit && opening > 0) { pool[5].position.set(exit.x, exit.y, exit.z + .6); pool[5].color.setHex(exit.colour); pool[5].intensity = 14 * opening; pool[5].distance = 9; }
@@ -134,7 +156,7 @@ export function createMazeRideView(canvas, state, hooks = {}) {
     if (!active || !run) return [];
     const before = run.elapsed;
     const cues = advanceMazeRide(run, seconds);
-    for (const cue of cues) if (cue.type === "encounter") { lastCue = cue; jolt = 1; hooks.onCue?.(cue); }
+    for (const cue of cues) if (cue.type === "encounter") { lastCue = cue; jolt = options.gentle ? 1 : .45; hooks.onCue?.(cue); }
     const advanced = run.elapsed !== before;
     renderPose(advanced ? seconds : 0, advanced && (snap || run.completed && !completeSent));
     if (run.zone !== notifiedZone) { notifiedZone = run.zone; notify(); }

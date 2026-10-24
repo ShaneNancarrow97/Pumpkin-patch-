@@ -149,7 +149,8 @@ export function animateMazeScareActor(group, options = {}, camera = null) {
   data.setPose(options.pose ?? (lunging > .05 ? "scare" : data.pose));
   data.visual.scale.y = 1 + Math.sin(time * 1.8) * .002 * reveal;
   const material = data.visual.children[0]?.material;
-  if (data.ready && material) material.emissiveIntensity = .24 + reveal * .14 + lunging * .08;
+  const glare = THREE.MathUtils.clamp(Number.isFinite(options.glare) ? options.glare : 0, 0, 1);
+  if (data.ready && material) material.emissiveIntensity = .24 + reveal * .14 + lunging * .08 + glare * .06 - glare * (.24 + reveal * .14) * .35;
   camera = options.camera ?? camera;
   if (camera?.getWorldPosition) {
     camera.getWorldPosition(cameraPoint); group.getWorldPosition(actorPoint);

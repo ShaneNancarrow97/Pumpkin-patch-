@@ -64,7 +64,11 @@ body:is(.maze-ride-active, .maze-experience) :is(#hud, #goal, #streak, #paused, 
 .maze-ride-veil::before { background: radial-gradient(ellipse at 50% 50%, #ffe7b8, #f4b25e 55%, #8a4a22); opacity: var(--dawn); }
 .maze-ride-veil::after { background: #050208; opacity: var(--dusk); }
 .maze-ride-ui[data-stage="brief"] .maze-ride-veil::after { opacity: 0; }
-.maze-ride-veil.jolt { animation: maze-jolt .7s ease-out; }
+.maze-ride-veil.jolt { animation: maze-jolt .9s ease-out; }
+/* The impact: a white flash as the figure reaches the lens, just after the cue. */
+.maze-ride-flash { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, #fff, #f3e6ff 45%, #c9b2e8); opacity: 0; pointer-events: none; mix-blend-mode: screen; }
+.maze-ride-veil.jolt .maze-ride-flash { animation: maze-flash .6s ease-out; }
+@keyframes maze-flash { 0%, 26% { opacity: 0; } 32% { opacity: .82; } 100% { opacity: 0; } }
 @keyframes maze-jolt { 0% { box-shadow: inset 0 0 160px 60px #4a0812d9; } 100% { box-shadow: inset 0 0 0 0 #4a081200; } }
 /* Chapter cards: the chamber's number and name, centred, rising and fading. */
 .maze-ride-chapter { position: absolute; left: 0; right: 0; top: 32%; margin: 0; padding: 22px 16px; text-align: center; background: radial-gradient(ellipse 46% 50% at 50% 50%, #0a0610b3, #0a061000); color: #f3dcb1; font: 600 clamp(26px, 5vw, 44px)/1.1 var(--display); text-shadow: 0 2px 18px #000, 0 0 30px #00000099; opacity: 0; transform: translateY(10px); transition: opacity .8s ease, transform 1.2s ease; pointer-events: none; }

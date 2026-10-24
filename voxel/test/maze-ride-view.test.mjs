@@ -85,3 +85,18 @@ test("every tier finishes on a finite rail pose and frames its authored reveals"
   }
   view.dispose();
 });
+
+test("in full motion a scare leaps into the lens, fills the view, then is gone", () => {
+  const canvas = canvasDouble(), view = createMazeRideView(canvas, {}), config = configFor(3);
+  view.enter(config, { gentle: false });
+  for (const encounter of config.encounters) {
+    view.restart({ gentle: false }); view.advanceForTest(encounter.at + .4);
+    const status = view.status, actor = status.actors.find(a => a.id === encounter.id), camera = status.camera;
+    assert.ok(actor.visible && actor.pose === "scare");
+    const dx = actor.x - camera.x, dz = actor.z - camera.z, distance = Math.hypot(dx, dz);
+    assert.ok(distance < .8, "the figure is right in front of you");
+    assert.ok((dx * -Math.sin(camera.yaw) + dz * -Math.cos(camera.yaw)) / distance > .9, "and dead ahead");
+    view.advanceForTest(1); assert.equal(view.status.actors.find(a => a.id === encounter.id).visible, false, "then it vanishes");
+  }
+  view.leave();
+});

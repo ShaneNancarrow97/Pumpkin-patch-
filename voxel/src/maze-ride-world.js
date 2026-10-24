@@ -102,13 +102,335 @@ function frame(v, zone, recesses) {
     const x0 = Math.min(X(u - hu), X(u + hu)), x1 = Math.max(X(u - hu), X(u + hu)), z0 = Z(w - hw), z1 = Z(w + hw);
     return !recesses.some(r => x1 > r.x0 - .3 && x0 < r.x1 + .3 && z1 > r.z0 - .3 && z0 < r.z1 + .3);
   };
+  // Clear of a recess, the walls, and the walking line with room to pass.
+  const free = (u, w, hu, hw, gap = .55) => clear(u, w, hu, hw) && Math.abs(u) + hu < 3.9 && Math.abs(w) + hw < 4.95 && railGap(u, w) > Math.hypot(hu, hw) + gap;
   return {
-    v, s, X, Z, clear,
+    v, s, X, Z, clear, free,
     // A box centred on (u, w), standing on y; su is its size across the room.
     b(u, y, w, su, sy, sw, colour, glow = false) { v.block(X(u), y, Z(w), su, sy, sw, colour, glow); },
     // On a side wall (u = ±4) facing into the room: depth out from the wall, width along it.
     wall(side, w, y, out, width, h, depth, colour, glow = false) { v.block(X(side * (4 - out - depth / 2)), y, Z(w), depth, h, width, colour, glow); },
   };
+}
+
+// The walk through a room in its local frame: in at w = 5 on the centre line,
+// round the near side at u = 2, and out at w = -5.
+const RAIL_LOCAL = [[0, 6], [0, 5], [2, 2.4], [2, -2.4], [0, -5], [0, -6]];
+function railGap(u, w) {
+  let best = Infinity;
+  for (let i = 1; i < RAIL_LOCAL.length; i++) {
+    const [au, aw] = RAIL_LOCAL[i - 1], [bu, bw] = RAIL_LOCAL[i], du = bu - au, dw = bw - aw, t = Math.max(0, Math.min(1, ((u - au) * du + (w - aw) * dw) / (du * du + dw * dw)));
+    best = Math.min(best, Math.hypot(u - au - du * t, w - aw - dw * t));
+  }
+  return best;
+}
+
+// ---- Set dressing kits (cobwebs, clutter, furniture) -------------------------
+const SILK = 0xa8a2b4, DUST = 0x8d8794;
+// A line of small blocks: silk strands, drapes, chains.
+function strand(v, a, b, colour = SILK, size = .02, step = .075) {
+  // Each piece stretches to meet the next, so a diagonal reads as one thread.
+  const n = Math.max(1, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]) / step)), sx = (b[0] - a[0]) / n, sy = (b[1] - a[1]) / n, sz = (b[2] - a[2]) / n;
+  for (let i = 0; i < n; i++) v.block(a[0] + sx * (i + .5), a[1] + sy * i + Math.min(0, sy), a[2] + sz * (i + .5), Math.abs(sx) + size, Math.abs(sy) + size, Math.abs(sz) + size, colour);
+}
+// A web strung across a corner: spokes from the corner point and sagging rings,
+// in the plane that cuts the corner diagonally. (ix, iz) step into the room.
+function cornerWeb(v, x, y, z, ix, iz, size = 1.2) {
+  const hx = ix * Math.SQRT1_2, hz = iz * Math.SQRT1_2, at = (a, rho) => [x + hx * rho * Math.cos(a), y - rho * Math.sin(a), z + hz * rho * Math.cos(a)];
+  const spokes = [0, .32, .64, .96, 1.28, Math.PI / 2];
+  for (const a of spokes) strand(v, at(a, .06), at(a, size));
+  for (const k of [.28, .48, .68, .86, 1]) for (let i = 1; i < spokes.length; i++) strand(v, at(spokes[i - 1], size * k * (i % 2 ? 1 : .93)), at(spokes[i], size * k * (i % 2 ? .93 : 1)), SILK, .024, .085);
+  const [dx, dy, dz] = at(.8, size * .7); strand(v, [dx, dy, dz], [dx, dy - .5 - size * .3, dz], SILK, .02);
+}
+// Silk draped from a piece of furniture to the floor or a wall.
+function drape(v, from, to, sag = .25) {
+  const mid = [(from[0] + to[0]) / 2, (from[1] + to[1]) / 2 - sag, (from[2] + to[2]) / 2];
+  strand(v, from, mid, SILK, .022); strand(v, mid, to, SILK, .022);
+}
+function books(F, u, y, w, n, seed, flat = true) {
+  const r = seeded(seed), colours = [0x5a2a2e, 0x2e3a4a, 0x3d4a2e, 0x6a4a2a, 0x4a2e4a, 0x7a6a4a];
+  for (let i = 0; i < n; i++) {
+    const c = colours[Math.floor(r() * colours.length)], h = .06 + r() * .04;
+    if (flat) { F.b(u + (r() - .5) * .06, y + i * .075, w + (r() - .5) * .06, .34 - r() * .08, h, .26 - r() * .05, c); F.b(u + .01, y + i * .075 + .01, w, .3, h * .7, .22, 0xd6ccb0); }
+    else F.b(u, y, w - n * .045 + i * .09, .22, .26 + r() * .1, .07, c);
+  }
+}
+function bottles(F, u, y, w, n, seed) {
+  const r = seeded(seed), glass = [0x2f5a3a, 0x5a3a1e, 0x6f8a86, 0x3a2a4a];
+  for (let i = 0; i < n; i++) { const du = (r() - .5) * .34, dw = (r() - .5) * .34, h = .18 + r() * .2, c = glass[i % glass.length]; F.b(u + du, y, w + dw, .085, h, .085, c); F.b(u + du, y + h, w + dw, .04, .07, .04, c); F.b(u + du, y + h + .07, w + dw, .045, .03, .045, 0x8a6a4a); }
+}
+function crate(F, u, w, size = .6, y = 0, colour = 0x6b5238) {
+  F.b(u, y, w, size, size, size, colour);
+  for (const k of [-.36, 0, .36]) F.b(u, y + size / 2 + k * size, w, size + .02, .05, size + .02, vary(colour, .12, seeded(Math.round(u * 13 + w * 7 + k * 10))));
+  for (const du of [-1, 1]) for (const dw of [-1, 1]) F.b(u + du * size / 2, y, w + dw * size / 2, .06, size, .06, 0x4c3a28);
+}
+function chair(F, u, w, facing = 1, colour = 0x3a2620, tipped = false) {
+  if (tipped) { F.b(u, 0, w, .5, .08, .5, colour); F.b(u + facing * .3, .05, w, .1, .5, .5, colour); for (const dw of [-.2, .2]) F.b(u - facing * .05, .08, w + dw, .45, .06, .06, colour); return; }
+  for (const du of [-.2, .2]) for (const dw of [-.2, .2]) F.b(u + du, 0, w + dw, .06, .45, .06, colour);
+  F.b(u, .45, w, .5, .07, .5, colour); F.b(u - facing * .22, .52, w, .07, .7, .5, colour); F.b(u - facing * .22, 1.1, w, .09, .08, .54, colour);
+}
+function sheeted(F, u, w, su, sw, h, seed) {
+  const r = seeded(seed);
+  F.b(u, 0, w, su, h * .8, sw, 0x8d8892); F.b(u, h * .8, w, su * .92, h * .2, sw * .92, 0x9a959e);
+  for (let i = 0; i < 4; i++) F.b(u + (r() - .5) * su * .5, h * (.85 + r() * .25), w + (r() - .5) * sw * .5, .3 + r() * .25, .16, .3 + r() * .25, 0xa29da6);
+  for (const k of [-1, 1]) F.b(u + k * (su / 2 + .02), 0, w, .04, h * .78, sw * .96, 0x7f7a85);
+}
+function trunk(F, u, w, along = true) {
+  const su = along ? .55 : 1, sw = along ? 1 : .55;
+  F.b(u, 0, w, su, .45, sw, 0x4a2f22); F.b(u, .45, w, su + .04, .14, sw + .04, 0x5a3a28);
+  for (const k of [-.4, .4]) F.b(u + (along ? 0 : k * su), .02, w + (along ? k * sw : 0), along ? su + .05 : .06, .56, along ? .06 : sw + .05, BRASS);
+  F.b(u + (along ? su / 2 + .02 : 0), .36, w + (along ? 0 : sw / 2 + .02), .04, .12, .1, BRASS);
+}
+// Frames leaning against a wall on the floor, faces turned to the room.
+function leaningFrames(F, side, w, seed) {
+  const r = seeded(seed);
+  for (let i = 0; i < 3; i++) { const h = .6 + r() * .5, wide = .45 + r() * .3, ww = w + (i - 1) * .32; F.wall(side, ww, 0, .08 + i * .07, wide, h, .06, GOLD); F.wall(side, ww, .06, .14 + i * .07, wide - .1, h - .12, .02, [0x2a2232, 0x3a2a24, 0x24303a][i]); }
+}
+function doll(F, u, y, w, facing = 1) {
+  F.b(u, y, w, .2, .26, .16, 0x6a3a4a); F.b(u, y + .26, w, .15, .15, .14, 0xd9cbb8); F.b(u, y + .4, w, .17, .05, .15, 0x2a1a14);
+  for (const k of [-1, 1]) { F.b(u + k * .03, y + .33, w + facing * .075, .025, .025, .01, 0x0e0b10); F.b(u + k * .13, y + .1, w, .05, .14, .05, 0xd9cbb8); F.b(u + k * .05, y - .08, w + facing * .08, .06, .06, .16, 0x6a3a4a); }
+}
+function dustAndPapers(F, seed, n = 18) {
+  const r = seeded(seed);
+  for (let i = 0; i < n; i++) { const u = -3.6 + r() * 2.4, w = -4.6 + r() * 9.2; if (!F.free(u, w, .15, .15, .2)) continue; F.b(u, .038, w, .12 + r() * .14, .008, .1 + r() * .12, r() < .5 ? 0xcfc4a8 : DUST); }
+}
+// Webs in all four ceiling corners, strands from the beams, and webs over pieces.
+function webs(F, seed, drapes = []) {
+  const v = F.v, r = seeded(seed), y = HEIGHT - .02;
+  for (const cu of [-1, 1]) for (const cw of [-1, 1]) { const ix = -cu * F.s, iz = -cw; cornerWeb(v, F.X(cu * 3.98), y, F.Z(cw * 4.97), ix, iz, 1 + r() * .7); }
+  for (let i = 0; i < 9; i++) { const u = -3.6 + r() * 2.2, w = -4.3 + r() * 8.6, len = .4 + r() * .9; F.b(u, y - len, w, .016, len, .016, SILK); if (r() < .4) F.b(u, y - len - .05, w, .07, .06, .07, 0x1e1a22); }
+  for (const [a, b] of drapes) drape(v, a, b);
+}
+function clutterPassage(F, v, zone, active) {
+  const X = F.X, Z = F.Z;
+  if (F.free(-3.3, 4.1, .5, .3)) { trunk(F, -3.3, 4.1, false); books(F, -3.3, .6, 4.1, 3, 31); }
+  if (F.free(-3.55, 1.6, .3, .6)) { F.b(-3.55, 0, 1.6, .5, .85, 1.1, 0x3b2620); F.b(-3.55, .85, 1.6, .56, .05, 1.16, 0x553829); bottles(F, -3.5, .9, 1.35, 4, 32); books(F, -3.55, .9, 1.95, 4, 33, false); candle(v, X(-3.5), .9, Z(2.15), .7); }
+  if (F.free(-2.4, -3.9, .4, .4)) chair(F, -2.4, -3.9, 1, 0x3a2620, true);
+  if (F.free(3.62, .4, .3, .5)) leaningFrames(F, 1, .4, 34);
+  if (F.free(3.45, 2.9, .2, .2)) { F.b(3.45, 0, 2.9, .28, .6, .28, 0x2c2633); for (const d of [-.06, .06]) F.b(3.45 + d, .6, 2.9 + d, .04, .5, .04, 0x1e1a24); }
+  if (F.free(-2.6, -4.4, .3, .3)) { chair(F, -2.6, -4.4, 1, 0x4a2f2a); doll(F, -2.55, .52, -4.4, 1); }
+  dustAndPapers(F, 35);
+  webs(F, 36, [[[X(-1), .9, Z(-2.8)], [X(-1.5), 0, Z(-3.4)]], [[X(-3.6), 2.5, Z(-2.9)], [X(-3.9), 3.3, Z(-3.6)]], [[X(-3.55), .9, Z(1.05)], [X(-3.9), 1.6, Z(.6)]]]);
+}
+function clutterCellar(F, v, zone, active) {
+  const X = F.X, Z = F.Z;
+  if (F.free(-2.7, .1, .6, .6)) for (const [du, dw, y] of [[0, 0, 0], [.35, .3, 0], [-.3, .35, 0], [.05, .15, .38]]) { F.b(-2.7 + du, y, .1 + dw, .5, .42, .42, 0xa08a62); F.b(-2.7 + du, y + .42, .1 + dw, .3, .08, .26, 0x8a7452); }
+  if (F.free(3.65, .1, .25, .7)) { for (const y of [.5, 1.1, 1.7]) { F.wall(1, .1, y, 0, 1.3, .05, .3, 0x4a3a2a); for (let i = 0; i < 5; i++) F.wall(1, -.4 + i * .25, y + .05, .05, .13, .2, .13, [0x8a3a2a, 0x6a7a3a, 0xb08a3a][i % 3]); } F.wall(1, -.55, 0, 0, .06, 1.95, .06, 0x3a2a1e); F.wall(1, .75, 0, 0, .06, 1.95, .06, 0x3a2a1e); }
+  if (F.free(-3.1, 4.25, .6, .5)) for (let i = 0; i < 14; i++) F.b(-3.1 + Math.sin(i * 2.1) * .4, Math.floor(i / 5) * .14, 4.25 + Math.cos(i * 1.7) * .3, .2, .14, .18, 0x1a1a1d);
+  if (F.free(-3.2, -4.35, .6, .35)) { F.b(-3.2, 0, -4.35, 1.2, .8, .6, 0x4a3a2a); F.b(-3.2, .8, -4.35, 1.3, .06, .66, 0x5a4632); for (const [du, c] of [[-.4, 0x8a8a8a], [-.1, 0x6a4a2a], [.3, 0x9a9a92]]) F.b(-3.2 + du, .86, -4.35, .08, .05, .4, c); bottles(F, -2.85, .86, -4.3, 3, 41); }
+  if (F.free(-1.9, .9, .2, .2)) { F.b(-1.9, 0, .9, .12, .08, .22, 0x55505a); F.b(-1.9, .02, 1.05, .02, .02, .16, 0x7a6a6e); F.b(-1.9, .06, .78, .03, .02, .02, 0xff5a5a, true); }
+  if (F.free(-2.1, 3.5, .3, .3)) { F.b(-2.1, 2.1, 3.5, .5, .04, .5, IRON); for (const du of [-.24, -.08, .08, .24]) F.b(-2.1 + du, 2.14, 3.5, .02, .7, .5, IRON); F.b(-2.1, 2.84, 3.5, .5, .04, .5, IRON); F.b(-2.1, 2.88, 3.5, .03, HEIGHT - 2.88, .03, IRON); skull(v, X(-2.1), 2.15, Z(3.5), .5); }
+  dustAndPapers(F, 42, 12);
+  webs(F, 43, [[[X(-1.1), 2.5, Z(-1.4)], [X(-1.8), 3.4, Z(-2.3)]], [[X(-3.6), 2.2, Z(-2.3)], [X(-3.95), 3.2, Z(-3.2)]], [[X(-2.7), .8, Z(.1)], [X(-3.2), 0, Z(.6)]]]);
+}
+function clutterParlour(F, v, zone, active) {
+  const X = F.X, Z = F.Z;
+  if (F.free(-2.95, 2.3, .4, .8)) sheeted(F, -2.95, 2.3, .75, 1.6, .85, 51);
+  if (F.free(-1.25, 3.7, .45, .45)) sheeted(F, -1.25, 3.7, .8, .8, 1, 52);
+  if (F.free(3.4, .6, .3, .3)) { F.b(3.4, 0, .6, .5, .7, .5, 0x3a1a20); F.b(3.4, .7, .6, .3, .14, .3, 0x2a1a14); F.b(3.4, .84, .6, .04, .3, .04, BRASS); for (let i = 0; i < 4; i++) F.b(3.4 - i * .07, 1.12 + i * .07, .6, .14 + i * .1, .1 + i * .08, .14 + i * .1, BRASS); }
+  if (F.free(3.65, 4.05, .25, .6)) { F.wall(1, 4.05, 0, 0, 1.2, 2.4, .4, 0x3a1a20); for (const y of [.15, .7, 1.25, 1.8]) { F.wall(1, 4.05, y, .05, 1.1, .04, .32, 0x2a1214); for (let i = 0; i < 9; i++) F.wall(1, 3.6 + i * .11, y + .04, .08, .09, .32 + (i % 3) * .06, .22, [0x5a2a2e, 0x2e3a4a, 0x6a4a2a][i % 3]); } }
+  if (F.free(-2.55, -3.8, .35, .35)) { F.b(-2.55, 0, -3.8, .6, .62, .6, 0x3a1a20); F.b(-2.55, .62, -3.8, .66, .04, .66, 0x6a2c3a); for (const [du, dw] of [[-.15, -.1], [.12, .14]]) { F.b(-2.55 + du, .66, -3.8 + dw, .12, .09, .12, 0xe2dacb); F.b(-2.55 + du + .07, .7, -3.8 + dw, .04, .04, .03, 0xe2dacb); } F.b(-2.55, .66, -3.8, .16, .16, .16, 0xe2dacb); F.b(-2.55, .82, -3.8, .06, .04, .06, 0xe2dacb); }
+  for (const [u, w] of [[-3.6, -1.75], [-3.6, -1.05]]) { F.b(u, 1.41, w, .12, .2, .12, 0x2a3a3a); for (let i = 0; i < 3; i++) F.b(u + (i - 1) * .05, 1.61, w, .015, .25 + i * .05, .015, 0x4a3a2a); }
+  dustAndPapers(F, 53, 14);
+  webs(F, 54, [[[X(-1), 2.9, Z(-1.4)], [X(-1.6), 3.6, Z(-2)]], [[X(-1), 2.9, Z(-1.4)], [X(-.4), 3.6, Z(-.8)]], [[X(-2.95), .85, Z(1.5)], [X(-3.6), 1.3, Z(1.1)]]]);
+}
+function clutterLaboratory(F, v, zone, active) {
+  const X = F.X, Z = F.Z;
+  if (F.free(-2.3, 1.9, .3, .3)) {
+    F.b(-2.3, 0, 1.9, .3, .05, .3, IRON); F.b(-2.3, .05, 1.9, .04, 1.95, .04, IRON);
+    F.b(-2.3, 1.62, 1.9, .2, .22, .18, BONE); for (const k of [-1, 1]) F.b(-2.3 + k * .04, 1.7, 1.9 + .09, .05, .05, .02, IRON);
+    for (let i = 0; i < 6; i++) { F.b(-2.3, 1.2 - i * .08, 1.9, .36 - Math.abs(i - 2) * .03, .03, .2, BONE); } F.b(-2.3, .62, 1.9, .05, .95, .05, BONE);
+    F.b(-2.3, .55, 1.9, .3, .1, .16, BONE); for (const k of [-1, 1]) { F.b(-2.3 + k * .1, .02, 1.9, .05, .55, .05, BONE); F.b(-2.3 + k * .22, .9, 1.9, .04, .5, .04, BONE); }
+  }
+  if (F.free(-1.1, 3.6, .4, .4)) { F.b(-1.1, 0, 3.6, .75, .05, .75, IRON); F.b(-1.1, .85, 3.6, .75, .05, .75, IRON); for (const du of [-.36, -.12, .12, .36]) for (const dw of [-.36, .36]) F.b(-1.1 + du, .05, 3.6 + dw, .025, .8, .025, IRON); for (const dw of [-.12, .12]) F.b(-1.1 + dw, .05, 3.6 - .36, .025, .8, .025, IRON); for (const k of [-1, 1]) F.b(-1.1 + k * .06, .45, 3.6, .04, .03, .02, 0xff4a3a, true); }
+  if (F.free(-3.2, -4.3, .55, .35)) for (let i = 0; i < 5; i++) { const du = -.4 + i * .2, c = [0x6cf0b0, 0xc3f06a, 0x8fd0ff, 0xe07ad0, 0x6cf0b0][i]; F.b(-3.2 + du, 0, -4.3 + (i % 2) * .2, .16, .34, .16, 0x8aa0a0); F.b(-3.2 + du, .03, -4.3 + (i % 2) * .2, .12, .24, .12, c, true); F.b(-3.2 + du, .34, -4.3 + (i % 2) * .2, .1, .04, .1, 0x5a5a52); }
+  if (F.free(3.72, -3.5, .2, .7)) { F.wall(1, -3.5, 1.1, 0, 1.4, 1, .06, 0x3a2a1e); F.wall(1, -3.5, 1.16, .06, 1.28, .88, .02, 0x1f2a26); for (let i = 0; i < 5; i++) F.wall(1, -3.95 + i * .2, 1.4 + (i % 3) * .2, .08, .14 + (i % 2) * .1, .025, .01, 0xc8e8d8); }
+  for (const [du, dw] of [[.35, -.6], [.38, -.2]]) { F.b(-1 + du, 1.15, -1.4 + dw, .08, .14, .08, 0x9fc8c0); F.b(-1 + du, 1.17, -1.4 + dw, .06, .07, .06, 0x6cf0b0, true); }
+  dustAndPapers(F, 61, 22);
+  webs(F, 62, [[[X(-2.8), 2.1, Z(3.2)], [X(-3.6), 3.25, Z(3.8)]], [[X(-1), 2.62, Z(-1.4)], [X(-1.5), 3.6, Z(-.9)]]]);
+}
+function clutterCrypt(F, v, zone, active) {
+  const X = F.X, Z = F.Z, r = seeded(71);
+  for (let i = 0; i < 26; i++) { const u = -3.3 + r() * 1.8, w = -4.4 + r() * 8.8; if (!F.free(u, w, .2, .2, .35)) continue; const long = r() < .5; F.b(u, .04, w, long ? .32 : .06, .05, long ? .06 : .32, BONE); if (r() < .3) F.b(u + .1, .04, w, .08, .07, .08, BONE); }
+  for (const w of [3.3, -3.0]) if (F.free(-3.0, w, .25, .25)) { F.b(-3.0, 0, w, .3, .1, .3, 0x4a4052); F.b(-3.0, .1, w, .4, .45, .4, 0x5a5262); F.b(-3.0, .55, w, .26, .1, .26, 0x4a4052); F.b(-3.0, .65, w, .34, .05, .34, 0x5a5262); }
+  if (F.free(-2.6, -3.9, .2, .6)) { F.b(-2.6, 0, -3.9, .12, 1.9, .7, 0x3d2a24); F.b(-2.55, .1, -3.9, .02, 1.7, .55, 0x2a1d1a); F.b(-2.52, .8, -3.9, .02, .12, .4, BRASS); F.b(-2.52, .62, -3.9, .02, .5, .1, BRASS); }
+  if (F.free(-2.8, 1.4, .35, .35)) for (const [du, dw, h] of [[0, 0, .5], [.15, .12, .3], [-.12, .1, .38], [.1, -.15, .22], [-.15, -.12, .44]]) candle(v, X(-2.8 + du), 0, Z(1.4 + dw), h * 1.6);
+  for (let i = 0; i < 4; i++) { const w = -3.45 + i * 2.3; strand(v, [X(-3.7), 3.3, Z(w)], [X(-3.7), 2.6, Z(w + .6)], SILK, .022); strand(v, [X(-3.7), 2.6, Z(w + .6)], [X(-3.7), 3.3, Z(w + 1.15)], SILK, .022); }
+  dustAndPapers(F, 72, 10);
+  webs(F, 73, [[[X(-1.1), .9, Z(.1)], [X(-1.6), 0, Z(.6)]], [[X(-1.1), .9, Z(-2.3)], [X(-.6), 0, Z(-2.8)]]]);
+}
+const CLUTTER = [clutterPassage, clutterCellar, clutterParlour, clutterLaboratory, clutterCrypt];
+
+// The set you walk past: a run of cases and shelves along the near wall, at
+// eye level beside the walking line, filled per chamber.
+function shelfUnit(F, w, width, height, colour, fill, seed) {
+  const r = seeded(seed);
+  // Open shelves: a back, two sides and boards, so what stands on them shows.
+  F.wall(1, w, 0, 0, width, height, .05, vary(colour, .15, r)); for (const k of [-1, 1]) F.wall(1, w + k * (width / 2 - .025), 0, 0, .05, height, .42, colour);
+  F.wall(1, w, 0, 0, width, .06, .42, colour); F.wall(1, w, height, 0, width + .08, .07, .48, vary(colour, .1, r));
+  const rows = Math.max(2, Math.floor(height / .5));
+  for (let i = 1; i < rows; i++) { const y = i * height / rows; F.wall(1, w, y, .02, width - .06, .04, .4, vary(colour, .12, r)); }
+  for (let i = 0; i < rows; i++) { const y = i * height / rows + .04; let at = w - width / 2 + .12; while (at < w + width / 2 - .12) { const item = fill(r, y, at); at += item; } }
+}
+function nearRun(F, v, zone, seed, fills) {
+  const r = seeded(seed);
+  for (let w = -4.3; w <= 4.3; w += .1) {
+    const width = .9 + r() * .7, centre = w + width / 2, height = 1.6 + r() * .8;
+    if (centre + width / 2 > 4.6) break;
+    if (!F.free(3.62, centre, .24, width / 2, .45) || r() < .18) continue;
+    fills[Math.floor(r() * fills.length)](F, centre, width, height, seed + Math.round(w * 10));
+    w += width + .15;
+  }
+}
+const jarFill = colours => (F, w, width, height, seed) => shelfUnit(F, w, width, height, 0x3a2a20, (r, y, at) => { const h = .14 + r() * .18; F.wall(1, at, y, .1, .1, h, .12, colours[Math.floor(r() * colours.length)]); if (r() < .3) F.wall(1, at, y + h, .12, .06, .03, .06, 0x8a6a4a); return .13 + r() * .1; }, seed);
+const bookFill = (F, w, width, height, seed) => shelfUnit(F, w, width, height, 0x2e1c18, (r, y, at) => { const h = .2 + r() * .14, t = .05 + r() * .05; if (r() < .12) { skullOn(F, at + .05, y); return .26; } F.wall(1, at, y, .06, t, h, .28, [0x5a2a2e, 0x2e3a4a, 0x3d4a2e, 0x6a4a2a, 0x4a2e4a][Math.floor(r() * 5)]); return t + .01; }, seed);
+const crateFill = (F, w, width, height, seed) => { const r = seeded(seed); for (let y = 0, s = .55; y + s < height + .2; y += s, s *= .9) { const ww = w + (r() - .5) * .2; F.wall(1, ww, y, .05, s, s, s, vary(0x6b5238, .1, r)); F.wall(1, ww, y + s / 2, .04, s + .02, .05, s + .02, 0x4c3a28); } };
+function skullOn(F, w, y) { F.wall(1, w, y, .1, .2, .17, .18, 0xc5bba8); for (const d of [-.05, .05]) F.wall(1, w + d, y + .07, .19, .05, .05, .02, IRON); }
+// Hanging over the walk, always above head height.
+function overhead(F, v, seed, hang) {
+  const r = seeded(seed);
+  for (let w = -4; w <= 4; w += 1.6 + r() * .6) { const u = 2 + (r() < .5 ? -1 : 1) * (.8 + r() * .4); if (!F.clear(u, w, .3, .3)) continue; const drop = .5 + r() * .6, y = HEIGHT - drop; F.b(u, y, w, .02, drop, .02, 0x2a2622); hang(F, v, u, y, w, r); }
+}
+const cage = (F, v, u, y, w, r) => { F.b(u, y - .5, w, .42, .03, .42, IRON); for (const [a, c] of [[-.2, -.2], [-.2, .2], [.2, -.2], [.2, .2], [0, -.2], [0, .2], [-.2, 0], [.2, 0]]) F.b(u + a, y - .5, w + c, .025, .5, .025, IRON); F.b(u, y - .03, w, .34, .04, .34, IRON); if (r() < .6) skull(v, F.X(u), y - .47, F.Z(w), .55); };
+const herbs = (F, v, u, y, w, r) => { for (let i = 0; i < 5; i++) { const du = (i - 2) * .07; F.b(u + du, y - .45 - (i % 2) * .06, w, .06, .45 + (i % 2) * .06, .06, [0x4a5a2a, 0x6a5a2a, 0x5a3a2a][i % 3]); } F.b(u, y - .04, w, .4, .05, .06, 0x5a4a3a); };
+const sack = (F, v, u, y, w, r) => { F.b(u, y - .65, w, .36, .55, .3, 0x8a7452); F.b(u, y - .12, w, .18, .1, .16, 0x7a6442); F.b(u, y - .78, w, .26, .14, .22, 0x6a5a3a); };
+const chains = (F, v, u, y, w, r) => { for (let i = 0; i < 6; i++) F.b(u, y - .12 - i * .12, w, i % 2 ? .04 : .1, .12, i % 2 ? .1 : .04, IRON); F.b(u, y - .86, w, .14, .05, .05, IRON); F.b(u + .05, y - .92, w, .04, .1, .04, IRON); };
+const puppet = (F, v, u, y, w, r) => { F.b(u, y - .7, w, .16, .32, .1, [0x6a2a3a, 0x2a3a5a][Math.floor(r() * 2)]); F.b(u, y - .36, w, .13, .13, .12, 0xdccbb6); for (const k of [-1, 1]) { F.b(u + k * .03, y - .3, w + .065, .025, .025, .01, 0x0e0b10); F.b(u + k * .11, y - .62, w, .04, .26, .04, 0xdccbb6); F.b(u + k * .05, y - .98, w, .05, .28, .05, 0x2a2026); F.b(u + k * .15, y - .1, w, .01, .6, .01, 0xcfc8d8); } };
+const bulb = (F, v, u, y, w, r) => { F.b(u, y - .16, w, .2, .12, .2, 0x3a4644); F.b(u, y - .26, w, .1, .1, .1, 0xcff5ea, true); };
+const censer = (F, v, u, y, w, r) => { F.b(u, y - .5, w, .24, .2, .24, BRASS); F.b(u, y - .3, w, .16, .08, .16, GOLD); F.b(u, y - .44, w, .12, .06, .12, 0xb497ff, true); for (const k of [-1, 1]) F.b(u + k * .1, y - .3, w, .01, .3, .01, BRASS); };
+const bats = (F, v, u, y, w, r) => { for (let i = 0; i < 2; i++) { const du = (i - .5) * .3; F.b(u + du, y - .12, w, .08, .12, .06, 0x15111a); for (const k of [-1, 1]) F.b(u + du + k * .1, y - .08, w, .12, .03, .05, 0x15111a); } };
+const SETS = [
+  { fills: [bookFill, jarFill([0x3a5a3a, 0x6a4a2a, 0x8aa0a0])], hang: [herbs, cage, bats] },
+  { fills: [crateFill, jarFill([0x8a3a2a, 0x6a7a3a, 0xb08a3a, 0x5a3a2a])], hang: [sack, chains, herbs] },
+  { fills: [bookFill, jarFill([0x7a2a3a, 0xc9b28a, 0x5a2a4a])], hang: [puppet, bats, cage] },
+  { fills: [jarFill([0x6cf0b0, 0x8fd0ff, 0xc3f06a, 0x8aa0a0]), crateFill], hang: [bulb, chains, cage] },
+  { fills: [jarFill([0x5a5262, 0x4a4052, 0xb6a98e]), bookFill], hang: [censer, chains, bats] },
+];
+// ---- House furniture for walls: paintings, tables, clocks, busts, mirrors ----
+// `put(a, y, o, along, h, depth, colour, glow)` lays a box centred a along a
+// wall and o out from it, so the same pieces dress rooms and corridors.
+const FRAMES = [GOLD, 0x3b2620, 0x8a6a3a, 0x2a1d1a];
+// An oil painting in mid-tones, so it reads in the gloom: a portrait, a
+// moonlit house, a still life with a skull, or a storm at sea. `lamp` adds a
+// brass picture light along the top.
+function painting(put, a, y, wide, high, motif, frame = GOLD, eyes = false, lamp = false) {
+  put(a, y, .04, wide + .14, high + .14, .08, frame); put(a, y + .05, .09, wide + .02, high + .04, .02, vary(frame, .15, seeded(Math.round(a * 17 + y * 5))));
+  const b = y + .07, at = (u, v, w, h, colour, o = .11, glow = false) => put(a + u * wide, b + v * high, o, w * wide, h * high, .02, colour, glow);
+  if (motif === 0) {
+    at(0, 0, 1, 1, 0x5a4a34, .1); at(0, .6, 1, .4, 0x6a5a3e, .105);
+    at(0, 0, .74, .36, 0x2c2230); at(0, .3, .5, .08, 0xd8ccb4, .115);
+    at(0, .36, .3, .3, 0xcbb497); at(0, .64, .36, .12, 0x3a2418, .115); at(-.16, .44, .06, .26, 0x3a2418, .115); at(.16, .44, .06, .26, 0x3a2418, .115);
+    for (const d of [-.07, .07]) at(d, .52, .06, .035, eyes ? 0xffd9a6 : 0x2a2230, .12, eyes);
+    at(0, .43, .1, .03, 0x8a4a40, .12);
+  } else if (motif === 1) {
+    at(0, 0, 1, 1, 0x34405e, .1); at(0, 0, 1, .55, 0x4a5876, .105); at(0, .2, 1, .2, 0x5e6a84, .107);
+    at(.26, .72, .16, .16 * wide / high, 0xeae2c2, .115, true);
+    at(0, 0, 1, .26, 0x1c2620, .112); at(-.18, .26, .3, .2, 0x1a1c22, .114); at(-.24, .46, .1, .1, 0x1a1c22, .114); at(-.18, .3, .06, .06, 0xffc070, .118, true);
+    at(.3, .26, .04, .22, 0x14181a, .114); at(.3, .42, .16, .12, 0x161c1a, .116);
+  } else if (motif === 2) {
+    at(0, 0, 1, 1, 0x4a3a2c, .1); at(0, .7, 1, .3, 0x3a2e24, .105);
+    at(0, 0, 1, .22, 0x6a4428, .11); at(0, .22, 1, .03, 0x8a5e36, .112);
+    at(-.18, .25, .24, .2, 0xd6cbb2, .115); for (const d of [-.05, .05]) at(-.18 + d, .34, .05, .04, 0x2a2230, .12);
+    at(.2, .25, .12, .34, 0x6a2a2a, .115); at(.2, .59, .06, .05, 0x6a2a2a, .115);
+    at(-.38, .25, .05, .26, 0xd5c6a8, .115); at(-.38, .51, .03, .05, 0xffc070, .118, true);
+  } else {
+    at(0, 0, 1, 1, 0x4a5262, .1); at(0, .6, 1, .4, 0x3a4050, .105); at(-.2, .82, .5, .1, 0x5a6272, .107);
+    at(0, 0, 1, .36, 0x2a4a58, .11); for (let i = 0; i < 4; i++) at((i - 1.5) * .24, .3 + (i % 2) * .05, .16, .05, 0x8aa4ae, .113);
+    at(.1, .34, .24, .08, 0x241a16, .115); at(.1, .42, .02, .3, 0x241a16, .115); at(.14, .5, .14, .16, 0xc8c0aa, .117);
+  }
+  if (lamp) { put(a, y + high + .14, .14, wide * .5, .04, .05, BRASS); put(a, y + high + .1, .19, wide * .44, .02, .03, 0xffd59a, true); for (const k of [-1, 1]) put(a + k * wide * .2, y + high + .12, .1, .02, .06, .08, BRASS); }
+}
+function consoleTable(put, a, r, lit) {
+  for (const k of [-1, 1]) for (const o of [.08, .42]) put(a + k * .5, 0, o, .06, .82, .06, 0x2a1a17);
+  put(a, .72, .25, 1.12, .1, .44, 0x3b2620); put(a, .82, .25, 1.2, .06, .5, 0x553829);
+  const item = Math.floor(r() * 4);
+  if (item === 0) { put(a - .3, .88, .25, .16, .3, .16, 0x5b4a6d); for (let i = 0; i < 4; i++) put(a - .33 + (i % 2) * .06, 1.18 + i * .05, .25 + (i % 3 - 1) * .04, .04, .18, .04, [0x4a2b32, 0x3a3227][i % 2]); }
+  else if (item === 1) { put(a - .2, .88, .22, .36, .08, .26, 0x5a2a2e); put(a - .2, .96, .22, .32, .07, .24, 0x2e3a4a); put(a - .18, 1.03, .22, .3, .06, .22, 0x6a4a2a); }
+  else if (item === 2) { put(a - .25, .88, .25, .26, .22, .24, 0xc5bba8); for (const d of [-.07, .07]) put(a - .25 + d, .97, .38, .06, .06, .02, 0x15111a); }
+  else { put(a - .25, .88, .22, .3, .38, .2, 0x3a2a20); put(a - .25, 1.06, .33, .2, .2, .02, 0xd8cfb4); }
+  put(a + .3, .88, .25, .14, .04, .14, BRASS); put(a + .3, .92, .25, .06, .2, .06, 0xd5c6a8); put(a + .3, 1.12, .25, .04, .07, .04, 0xffb45e, lit);
+}
+function sideChair(put, a, colour = 0x3a2620) {
+  for (const k of [-1, 1]) for (const o of [.12, .5]) put(a + k * .2, 0, o, .05, .45, .05, colour);
+  put(a, .45, .31, .5, .07, .5, colour); put(a, .52, .1, .5, .75, .07, colour); put(a, .5, .31, .44, .05, .44, 0x5a2030);
+}
+function grandClock(put, a) {
+  put(a, 0, .25, .6, 2.3, .45, 0x3d2620); put(a, 2.3, .25, .68, .28, .5, 0x2c1b17); put(a, 1.6, .49, .42, .42, .03, 0xd8cfb4);
+  put(a, 1.8, .51, .025, .14, .01, IRON); put(a + .04, 1.8, .51, .1, .025, .01, IRON); put(a, .35, .48, .3, 1, .02, 0x15111a); put(a, .55, .5, .1, .1, .02, BRASS);
+}
+function bust(put, a) {
+  const STONE = 0xc2b9aa, SHADE = 0x8c8476;
+  put(a, 0, .25, .42, .1, .42, 0x4a4052); put(a, .1, .25, .3, 1.0, .3, 0x5a5262); put(a, 1.1, .25, .42, .08, .42, 0x4a4052);
+  put(a, 1.18, .25, .38, .14, .22, 0xb6ad9e); put(a, 1.3, .25, .24, .06, .16, 0xb6ad9e); put(a, 1.36, .25, .1, .1, .1, 0xb6ad9e);
+  put(a, 1.46, .25, .2, .3, .22, STONE); put(a, 1.7, .23, .24, .1, .26, 0xa89f90); put(a, 1.56, .14, .24, .2, .06, 0xa89f90);
+  for (const d of [-.05, .05]) put(a + d, 1.62, .36, .05, .03, .01, SHADE); put(a, 1.54, .37, .04, .08, .03, STONE); put(a, 1.5, .365, .08, .015, .01, SHADE);
+}
+function mirror(put, a, r) {
+  put(a, .4, .04, .8, 2, .08, GOLD); put(a, .48, .09, .64, 1.84, .02, 0x52606e); put(a, .9, .1, .36, 1, .01, 0x7e92a0, true);
+  for (let i = 0; i < 5; i++) put(a - .2 + i * .09, 1.4 - i * .12, .105, .08, .02, .005, 0x2a3036);
+}
+function shallowCase(put, a, r) {
+  put(a, 0, .18, 1, 2.2, .04, 0x2e1c18); for (const k of [-1, 1]) put(a + k * .48, 0, .18, .05, 2.2, .36, 0x2e1c18);
+  for (const y of [0, .55, 1.1, 1.65, 2.2]) put(a, y, .18, 1, .05, .36, 0x3a2420);
+  for (const y of [.05, .6, 1.15, 1.7]) { let at = a - .42; while (at < a + .4) { const t = .05 + r() * .05; put(at, y, .2, t, .3 + r() * .14, .26, [0x5a2a2e, 0x2e3a4a, 0x3d4a2e, 0x6a4a2a][Math.floor(r() * 4)]); at += t + .012; } }
+}
+function coatRack(put, a) { put(a, 0, .3, .34, .05, .34, 0x2a1a17); put(a, .05, .3, .06, 1.8, .06, 0x3b2620); put(a, 1.2, .3, .38, .75, .24, 0x2c2633); put(a, 1.85, .3, .3, .12, .3, 0x1e1a24); }
+function deadPlant(put, a) { put(a, 0, .25, .3, .9, .3, 0x2a1a17); put(a, .9, .25, .32, .26, .32, 0x6a4a3a); for (let i = 0; i < 5; i++) put(a + (i - 2) * .06, 1.16, .25 + (i % 2) * .06, .025, .3 + (i % 3) * .2, .025, 0x3a2a1e); }
+function fallenFrames(put, a, r) { for (let i = 0; i < 2; i++) { const h = .7 + r() * .4; put(a + (i - .5) * .45, 0, .1 + i * .08, .6, h, .05, FRAMES[i]); put(a + (i - .5) * .45, .06, .14 + i * .08, .5, h - .12, .02, 0x241b2c); } }
+// A corridor wall: `long` says whether the corridor runs along x.
+function wallPut(v, long, at, normal) {
+  return (a, y, o, along, h, depth, colour, glow = false) => long ? v.block(a, y, at + normal * o, along, h, depth, colour, glow) : v.block(at + normal * o, y, a, depth, h, along, colour, glow);
+}
+function dressCorridors(v, config, regions, allRegions, stages, lamps) {
+  const rooms = regions.filter(q => q.kind === "room"), inside = (q, x, z, m = 0) => x >= q.x0 - m && x <= q.x1 + m && z >= q.z0 - m && z <= q.z1 + m;
+  const near = (x, z, d) => config.rail.some(p => Math.hypot(p.x - x, p.z - z) < d);
+  let n = 0;
+  for (const [k, region] of regions.entries()) {
+    if (region.kind === "room") continue;
+    const long = region.x1 - region.x0 > region.z1 - region.z0, r = seeded(700 + k);
+    const a0 = long ? region.x0 : region.z0, a1 = long ? region.x1 : region.z1;
+    for (const [at, normal] of long ? [[region.z0, 1], [region.z1, -1]] : [[region.x0, 1], [region.x1, -1]]) {
+      const put = wallPut(v, long, at, normal);
+      for (let a = a0 + .9; a < a1 - .9; a += 1.3 + r() * .5) {
+        const xIn = long ? a : at + normal * .35, zIn = long ? at + normal * .35 : a, xOut = long ? a : at - normal * .3, zOut = long ? at - normal * .3 : a;
+        if (rooms.some(q => inside(q, xIn, zIn, .6)) || allRegions.some(q => inside(q, xOut, zOut)) || stages.some(s => Math.hypot(s.home.x - xIn, s.home.z - zIn) < 1.7)) continue;
+        if (lamps.some(l => Math.hypot(l.x - xIn, l.z - zIn) < .8)) continue;
+        const kind = n++ % 9, roomy = !near(xIn, zIn, 1.35);
+        // A painting above almost every spot, and furniture below where there's room.
+        if (kind !== 3 && kind !== 6) painting(put, a, 1.35 + r() * .35, .55 + r() * .4, .7 + r() * .4, Math.floor(r() * 4), FRAMES[Math.floor(r() * FRAMES.length)], r() < .2, r() < .45);
+        if (!roomy) continue;
+        if (kind === 0) consoleTable(put, a, r, true);
+        else if (kind === 5) coatRack(put, a);
+        else if (kind === 1) sideChair(put, a);
+        else if (kind === 2) bust(put, a);
+        else if (kind === 3) grandClock(put, a);
+        else if (kind === 4) deadPlant(put, a);
+        else if (kind === 6) mirror(put, a, r);
+        else if (kind === 7) fallenFrames(put, a, r);
+        else shallowCase(put, a, r);
+      }
+    }
+    // A worn runner down the middle, clear of the rooms.
+    const mid = long ? (region.z0 + region.z1) / 2 : (region.x0 + region.x1) / 2;
+    for (let a = a0 + .25; a < a1; a += .5) { const x = long ? a : mid, z = long ? mid : a; if (rooms.some(q => inside(q, x, z, .2))) continue; v.block(x, .036, z, long ? .5 : 1.3, .014, long ? 1.3 : .5, (Math.round(a * 2) % 3 ? 0x4a2430 : 0x5a2c38)); v.block(x, .037, z, long ? .5 : 1.42, .012, long ? 1.42 : .5, 0x8a6a3a); }
+  }
+}
+// Paintings and side tables on a room's end walls (either side of each door),
+// the walls you face as you walk.
+function endWalls(F, v, zone, seed) {
+  const r = seeded(seed);
+  for (const end of [-1, 1]) for (const k of [-1, 1]) {
+    const u = k * 2.95; if (!F.clear(u, end * 4.6, .7, .4)) continue;
+    const put = (a, y, o, along, h, depth, colour, glow = false) => v.block(F.X(u + a), y, F.Z(end * (5 - o)), along, h, depth, colour, glow);
+    painting(put, 0, 1.45 + r() * .3, .7 + r() * .3, .85 + r() * .3, Math.floor(r() * 4), FRAMES[Math.floor(r() * FRAMES.length)], r() < .25, true);
+    if (F.free(u, end * 4.65, .6, .3, .45)) (r() < .5 ? consoleTable : (p, a, rr) => sideChair(p, a))(put, 0, r, true);
+  }
+}
+function setPiece(F, v, zone) {
+  endWalls(F, v, zone, 980 + zone.index * 13);
+  const set = SETS[zone.index] ?? SETS[0];
+  nearRun(F, v, zone, 900 + zone.index * 37, set.fills);
+  overhead(F, v, 950 + zone.index * 41, (F2, v2, u, y, w, r) => set.hang[Math.floor(r() * set.hang.length)](F2, v2, u, y, w, r));
 }
 
 // ---- The five chambers ------------------------------------------------------
@@ -330,7 +652,10 @@ export function buildMazeRideWorld(config) {
   for (const zone of config.zones) {
     const F = FINISH[zone.index], { x, z } = zone.center;
     for (const dz of [-4, -1.3, 1.3, 4]) v.block(x, HEIGHT - .24, z + dz, 8, .24, .26, F.crown);
-    DRESS[zone.index](frame(v, zone, recesses), v, zone, config, lamps, active, moving);
+    const room = frame(v, zone, recesses);
+    DRESS[zone.index](room, v, zone, config, lamps, active, moving);
+    CLUTTER[zone.index](room, v, zone, active);
+    setPiece(room, v, zone);
   }
   for (const region of regions) if (region.kind !== "room") {
     const cx = (region.x0 + region.x1) / 2, cz = (region.z0 + region.z1) / 2, long = region.x1 - region.x0 > region.z1 - region.z0;
@@ -340,6 +665,23 @@ export function buildMazeRideWorld(config) {
       if (stages.some(s => Math.hypot(s.home.x - x, s.home.z - z) < 1.6) || config.rail.some(p => Math.hypot(p.x - x, p.z - z) < 1.1) || regions.some(q => q.kind === "room" && within({ x0: q.x0 - .6, x1: q.x1 + .6, z0: q.z0 - .6, z1: q.z1 + .6 }, x, z))) continue;
       v.block(x, 2.42, z, .16, .16, .16, IRON); lantern(v, long ? x : x + .2, 2.45, long ? z + .2 : z);
       lamps.push({ x: long ? x : x + .25, y: 2.7, z: long ? z + .25 : z, colour: 0xffae64, kind: "flame", power: .6 });
+    }
+  }
+  dressCorridors(v, config, regions, allRegions, stages, lamps);
+  // In the passages and halls: webs along the ceiling edges and the odd crate,
+  // candle stub or bones against the walls, never near the walking line.
+  for (const [k, region] of regions.entries()) if (region.kind !== "room") {
+    const long = region.x1 - region.x0 > region.z1 - region.z0, span = long ? region.x1 - region.x0 : region.z1 - region.z0, rr = seeded(500 + k);
+    for (let t = .8; t < span - .8; t += 1.4) for (const edge of [0, 1]) {
+      const x = long ? region.x0 + t : edge ? region.x1 - .08 : region.x0 + .08, z = long ? (edge ? region.z1 - .08 : region.z0 + .08) : region.z0 + t;
+      if (config.rail.some(p => Math.hypot(p.x - x, p.z - z) < 1.05) || stages.some(s => Math.hypot(s.home.x - x, s.home.z - z) < 1.4)) continue;
+      const ix = long ? 0 : edge ? -1 : 1, iz = long ? (edge ? -1 : 1) : 0, along = long ? [1, 0] : [0, 1];
+      if (rr() < .6) cornerWeb(v, x, HEIGHT - .02, z, ix, iz, .55 + rr() * .45);
+      const kind = rr(), px = x + ix * .25, pz = z + iz * .25;
+      if (config.rail.some(p => Math.hypot(p.x - px, p.z - pz) < 1.2)) continue;
+      if (kind < .22) { v.block(px, 0, pz, .4, .4, .4, 0x6b5238); v.block(px, .38, pz, .44, .05, .44, 0x7c6142); }
+      else if (kind < .38) { candle(v, px, 0, pz, .9); candle(v, px + along[0] * .18, 0, pz + along[1] * .18, .6); }
+      else if (kind < .5) { skull(v, px, 0, pz, .7, iz || 1); v.block(px + along[0] * .2, .03, pz + along[1] * .2, along[0] ? .3 : .06, .05, along[1] ? .3 : .06, BONE); }
     }
   }
   for (const stage of stages) {
