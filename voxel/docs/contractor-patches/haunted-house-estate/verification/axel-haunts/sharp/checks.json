@@ -1,0 +1,96 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Axel-Maze-Final.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "Sharp Fold scene and bloom use matching high-density buffers",
+      "data": {
+        "quality": "sharp",
+        "pixelRatio": 2,
+        "postprocessRatio": 2,
+        "bufferWidth": 1748,
+        "bufferHeight": 1574,
+        "postprocessWidth": 1748,
+        "postprocessHeight": 1574,
+        "antialias": "FXAA",
+        "antialiasResolution": [
+          0.0005720823798627002,
+          0.0006353240152477764
+        ],
+        "touchDevice": true,
+        "calls": 1,
+        "triangles": 1,
+        "geometries": 70,
+        "textures": 24
+      }
+    },
+    {
+      "ok": true,
+      "label": "Baron changes the actual leading leg on alternating half-strides",
+      "data": {
+        "left": {
+          "id": 500,
+          "kind": 10,
+          "visible": true,
+          "sprite": true,
+          "leadingLeg": "right",
+          "frames": 4,
+          "frame": 2
+        },
+        "right": {
+          "id": 500,
+          "kind": 10,
+          "visible": true,
+          "sprite": true,
+          "leadingLeg": "left",
+          "frames": 4,
+          "frame": 0
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "final foyer renders a real guest and host with native active haunts",
+      "data": {
+        "active": true,
+        "built": true,
+        "tier": 5,
+        "decor": 3,
+        "visitors": 1,
+        "guests": [
+          {
+            "id": 500,
+            "x": -0.09090909090909091,
+            "z": 3.2272727272727275,
+            "terror": 32,
+            "phase": "entering"
+          }
+        ],
+        "host": "Axel",
+        "hostSprite": "axel",
+        "hostFrame": 0,
+        "haunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade",
+          "thunder-chamber",
+          "phantom-finale"
+        ],
+        "scareRating": 100,
+        "mortimer": "idle"
+      }
+    },
+    {
+      "ok": true,
+      "label": "standalone HTML needs no external assets or CDNs",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "no final-build browser errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium SwiftShader, Fold874x787 atDPR2, Sharp+bloom+shadows; staged progression. Not hardware FPS certification."
+}

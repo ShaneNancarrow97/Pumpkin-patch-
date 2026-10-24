@@ -1,0 +1,27 @@
+{
+  "leadBase": "ac698dca2410091694c00b011eb7098ba7556d0d",
+  "runtimeCommit": "0dd25ce",
+  "sourceBranch": "contractor/first-person-hollow-house",
+  "htmlSha256": "ee06c643160dc1bd1b0eda9ac654d9a3f892f158e72282d19952b57ff3d63352",
+  "rebuiltHtmlSha256": "ee06c643160dc1bd1b0eda9ac654d9a3f892f158e72282d19952b57ff3d63352",
+  "byteIdentical": true,
+  "patch": "runtime3c10605 + dark delta0dd25ce, binary, applied to ac698dc",
+  "cleanPatchBase": "ac698dca2410091694c00b011eb7098ba7556d0d",
+  "patchApplyCheckPassed": true,
+  "latestLeadModelRulesRetained": true,
+  "unmodifiedLeadFiles": [
+    "voxel/src/model.js",
+    "voxel/src/rules/stock.js",
+    "voxel/src/rules/market.js",
+    "voxel/src/rules/orders.js",
+    "voxel/src/rules/selling.js",
+    "voxel/src/rules/house.js",
+    "voxel/src/content/farm-layout.js",
+    "voxel/src/content/hollow-house.js",
+    "voxel/src/places.js"
+  ],
+  "packagedPatchSourceHead": "b210644ffe7af1933701d3d902b34245e1c36498",
+  "packagedPatchSha256": "9e5029579926913db29c7a14c1e1919afb31c4a13c888aaef7f98c5bee4fa983",
+  "packagedPatchCleanApplyCheckPassed": true,
+  "packagedPatchRebuildSha256": "ee06c643160dc1bd1b0eda9ac654d9a3f892f158e72282d19952b57ff3d63352"
+}

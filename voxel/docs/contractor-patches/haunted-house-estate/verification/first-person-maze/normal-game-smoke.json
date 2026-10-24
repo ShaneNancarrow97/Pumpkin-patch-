@@ -1,0 +1,21 @@
+{
+  "htmlSha256": "ee06c643160dc1bd1b0eda9ac654d9a3f892f158e72282d19952b57ff3d63352",
+  "checks": 48,
+  "passed": 48,
+  "failed": 0,
+  "profiles": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "rendering": "Chromium SwiftShader, SMOKE_LITE=1 (glow/shadows/music off), DPR1, no extra screenshots in completed run",
+  "runtimeTree": "ecb49f5a1aab64086f64f4783e15976801016923",
+  "notes": "All actions/assertions from the unchanged upstream smoke.mjs. An earlier screenshot-heavy probe was stopped and rerun without optional captures. The separate final maze visual check uses Sharp/DPR2/bloom/shadows. Software WebGL is not a physical phone FPS measurement."
+}

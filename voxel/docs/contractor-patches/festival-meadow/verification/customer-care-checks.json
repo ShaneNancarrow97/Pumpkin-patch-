@@ -1,0 +1,86 @@
+{
+  "file": "Pumpkin Patch - Moonbrew Meadow.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "completed NPC favour appears in the game"
+    },
+    {
+      "ok": true,
+      "label": "Collect credits the reward exactly once"
+    },
+    {
+      "ok": true,
+      "label": "uncollected NPC card fades without spending or losing the reward"
+    },
+    {
+      "ok": true,
+      "label": "faded reward can still be collected in Journal"
+    },
+    {
+      "ok": true,
+      "label": "three bag and generosity tiers are buyable from the shop"
+    },
+    {
+      "ok": true,
+      "label": "tips reconcile separately from goods revenue in live gameplay",
+      "data": {
+        "coins": 4117,
+        "products": 4104,
+        "cocoa": 0,
+        "tips": 13,
+        "graded": 207
+      }
+    },
+    {
+      "ok": true,
+      "label": "stats show stall tips, shop tips and total tips separately"
+    },
+    {
+      "ok": true,
+      "label": "desktop: customer stats fit with touch-sized controls",
+      "data": {
+        "scroll": 1280,
+        "width": 1280,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: customer stats fit with touch-sized controls",
+      "data": {
+        "scroll": 390,
+        "width": 390,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: customer stats fit with touch-sized controls",
+      "data": {
+        "scroll": 874,
+        "width": 874,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: customer stats fit with touch-sized controls",
+      "data": {
+        "scroll": 844,
+        "width": 844,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "save/reload preserves upgrades, separate tips and collected rewards"
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors"
+    }
+  ],
+  "errors": [],
+  "rendering": "SwiftShader, bloom/shadows off for content QA"
+}

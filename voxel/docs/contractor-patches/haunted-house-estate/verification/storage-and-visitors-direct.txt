@@ -1,0 +1,12 @@
+✔ dedicated barn upgrades are paid, increase space, and survive a save without erasing existing stock (5.978571ms)
+✔ a full barn stops helpers and tap bonuses without losing a ripe crop or minting money (1.00842ms)
+✔ outdoor crowd capacity grows from sixteen to thirty-two, with saved tiers (1.078786ms)
+✔ ten stable visitor kinds include the new five without changing the original identities (1.769116ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14.677011

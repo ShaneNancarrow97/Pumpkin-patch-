@@ -1,0 +1,18 @@
+ok unowned haunted house opens without freezing
+ok purchase, restoration and deliberate opening preserve attraction gating
+ok five generated-icon haunts can be purchased and enabled directly
+ok scare rating displays capped footfall bonus
+ok owned prefab toggles off without repurchase
+ok Axel and native haunt installations render in the foyer
+ok Skyla carrier bags available directly in Shop
+ok Cocoa land and stand purchase available directly in Build Cocoa
+ok 24-plot land updates map terrain, boundary and gate
+ok rare Baron loads all four walking frames
+ok one-finger touch drag commits furniture without a menu
+ok drag has one-step Undo
+ok two-finger turn rotates selected furniture
+ok two-finger turn has one-step Undo
+ok placement toolbar fits 390×844
+ok placement toolbar fits 844×390
+ok Done closes placement tools and selection
+ok no browser errors

@@ -1,0 +1,176 @@
+# Pumpkin Patch Voxel: context for coding agents
+
+**Latest handovers: [`docs/handovers/42-claude-wilds-round-the-farm.md`](docs/handovers/42-claude-wilds-round-the-farm.md)** (hills, a treeline and fog round the farm; roads run on into them), after [`41`](docs/handovers/41-claude-hayride-ride-along.md) (a longer, lit ride-along with screams and woodland sounds; guests' circuit unchanged), after [`40`](docs/handovers/40-claude-performance.md) (where the lag came from: lamps share a light pool, one shadowed light, a lighter ground, pictures and shaders warmed ahead), after [`39`](docs/handovers/39-claude-hayride-merged-levels-and-dock.md) (the hayride merged, unlocks moved later, the Upgrades menu and Wardrobe tab), after [`37`](docs/handovers/37-claude-meadow-chats.md) (guests who stop for a cocoa and a chat in the meadow, and the comforts that make it popular) and [`36`](docs/handovers/36-claude-maze-scares-screams-and-set-dressing.md) (scares that leap at the screen, screams, the dressed maze; the farm exterior moves to Codex), after [`35`](docs/handovers/35-claude-controls-phantom-music-and-split.md) (decorating controls, the animated phantom, zoom and music; what Codex can pick up), after [`34`](docs/handovers/34-claude-hollow-house-rebuild.md) (the maze, walkthrough, foyer and haunts rebuilt), after [`33`](docs/handovers/33-claude-integration-maze-ride.md) (Codex's first-person maze integrated; runtime art sizes), [`27`](docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md), [`28`](docs/handovers/28-claude-fresh-wanted-and-orders.md) and Codex's [`29`–`32`](docs/handovers/29-first-person-maze.md). The numbered handovers in `docs/handovers/` are the running record between Claude and Codex.
+
+Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
+
+**Codex's hayride (merged in 39):** [`docs/handovers/38-hayride-lead-integration.md`](docs/handovers/38-hayride-lead-integration.md) preserves Claude’s `1abaff5` maze update and isolates hayride audio from lead-owned runtime files.
+
+**Latest contractor takeover:** [`docs/handovers/37-off-map-hayride-takeover.md`](docs/handovers/37-off-map-hayride-takeover.md) records the final off-map route, dark forest, scare cast, lightning, exact review scope and remaining checks.
+
+**Contractor hayride increment:** [`docs/handovers/36-hollow-hayride-operational-expansion.md`](docs/handovers/36-hollow-hayride-operational-expansion.md) adds the operational woodland attraction on `contractor/hollow-hayride`, based on handover 35's `d98db59`. It records the provisional site's overlap with Claude's reserved layout, version-11 saves, queue/boarding/dispatch rules, upgrades and the free owner ride-along. Read it before changing those new modules.
+
+## What this is
+
+- **A voxel version of Shane & Natalie's Pumpkin Patch.** It is a cosy Halloween farm and shop game. Shane and Natalie grow pumpkins, neighbours buy them at the stall and inside Skyla's shop, and the takings go on upgrades, a four-room house, decor, books and costumes.
+- **The main game lives at the repository root** (`src/`, a 2D canvas game). This build lives in `voxel/` on the `voxel-reference` branch, draft PR #2. It is a reference for art direction, staging and menu design, not a replacement. Nothing here should change the main game.
+- **It ships as one offline HTML file,** `dist/pumpkin-patch-voxel.html`, about 5.6 MB, with every asset inlined. It runs from `file://` on a phone or a desktop.
+- **The world is three.js 0.169** (pinned), drawn as voxels: boxes batched into instanced meshes. The cast are the main game's own sprites standing in the 3D world. Menus are HTML over the canvas.
+- **It shares the main game's content.** The rules import the main game's data modules directly: `../../src/content/*.mjs` (catalogue, rooms, library, shop and stall profiles, art metadata) and `../../src/core/costume-model.mjs`. Those modules have no imports of their own. Don't change them for this build's sake; adapt here instead.
+
+## Commands
+
+Run these from `voxel/` unless noted. You need Node 20 or newer.
+
+| Command | What it does |
+| --- | --- |
+| `npm install` | Installs three.js, esbuild and Playwright |
+| `npm run dev` | Serves http://localhost:8001 and rebuilds on change |
+| `npm test` | Runs the rule tests (`test/model.test.mjs`, node:test). Fast; run them after any rules change |
+| `npm run build` | Writes `dist/pumpkin-patch-voxel.html` |
+| `node build.mjs --out <file>` | Builds to another path. Use this when several agents or terminals build at once, since `dist/` is shared |
+| `npm run smoke` | Plays the built file in headless Chromium at desktop and phone sizes and fails on any page error. Set `CHROMIUM_PATH` to a Chromium binary, or run `npx playwright install chromium` once. `--shots <dir>` saves screenshots |
+| `node tools/perf.mjs [file.html]` | Plays a busy late-game farm and reports what it draws (lights, shadow passes, draw calls, triangles), its frame times, and every shader compile or large picture upload mid-play with where it came from. Same `CHROMIUM_PATH` as the smoke test. Build with `--readable` for function names |
+| `python3 voxel/tools/bake_sprites.py` | Run from the **repo root**. Regenerates every baked asset from the main game's art. Needs Pillow and numpy and takes about 2.5 minutes. The output is deterministic |
+
+CI (`.github/workflows/ci.yml`, job `voxel`) runs `npm ci`, `npm test`, `npm run build`, installs Chromium and runs `npm run smoke`, then uploads the HTML file as an artifact.
+
+## Code map
+
+| Path | What it holds |
+| --- | --- |
+| `src/model.js` | Builds the state (`freshState`), loads saves (`restoreState`, with migrations from version 1), strips what isn't saved (`saveData`), and runs one step of the rules (`update(s, dt)` returns events). Re-exports everything in `rules/` |
+| `src/rules/farm.js` | Plots, the four varieties, upgrades, tapping, harvest streaks, helping hands |
+| `src/rules/stock.js` | Stock counts, basket holds, and baskets (`chooseBasket` via `quoteBasket`: favourites first, then anything cheaper; a dear favourite doesn't end the visit), and which pumpkins are fresh (`s.fresh` batches) |
+| `src/rules/market.js` | Fresh pumpkins and the wanted variety: `FRESH`, `WANTED`, `updateWanted`, `wishFor` (a keen guest's purse for one), `dearPrice` |
+| `src/rules/orders.js` | Neighbours' orders: `ORDERS`, `ORDER_TRUST`, `updateOrders`, `fillOrder` (oldest pumpkins first), trust per regular |
+| `src/rules/selling.js` | The stall (passers-by, profiles, receipts) and the indoor shop (customers, display tables, queue, till, upgrades) |
+| `src/rules/house.js` | House levels, rooms, decor placement (floor pieces collide by their measured size, `pieceBody`, within `placementRange`), moving, turning, flipping and storing, pieces standing on others (`putOnTop`, `setDown`, `restorePose`), books and shelves, wallpaper, room styles, the haunting score |
+| `src/rules/surfaces.js`, `src/content/placement.js`, `src/content/shelf-catalog.js` | What can stand on what: small pieces, the measured tops of tables and the blank shelves' boards (with their finishes) |
+| `src/rules/wardrobe.js`, `src/rules/progress.js` | Costumes and recolours; favours, memories and the patch level |
+| `src/voxels.js` | `Voxels`: collects boxes and builds them as instanced meshes, lit or glowing. Also `seeded()` (deterministic random numbers) and `vary()` |
+| `src/world.js` | The farm map and its constants (`MAP`, `PLOTS`, `BIG_PUMPKIN`, `SHOP`, `HOMES`, routes, `PITCH`), the cottage in four stages, the shop, fences, trees and props, and the painted far shore |
+| `src/pumpkins.js` | The plot pumpkins (one template per variety), sprouts, the giant jack-o'-lantern, and the small yard pumpkins |
+| `src/interiors.js` | The rooms and the shop floor as high-density voxel dioramas, the ten room styles, the eight wallpapers, and `INTERIOR` (the room camera's angle) |
+| `src/decor.js` | Catalogue pieces as props: loads `assets/decor.png` and builds each piece; books on shelves |
+| `src/places.js` | Inside places, built far from the farm at `ORIGIN` (room x 200, shop x 260). Places decor and lights it from a fixed pool of point lights, walks customers from the door to the till, and draws decorating outlines |
+| `src/sprite-actors.js` | The cast drawn with the original sprites (full-size sheets), the costumes, the visitors, and portraits for the menus |
+| `src/sprite-voxels.js` | The optional voxel characters, voxelised from the small sprite atlas. Also the frame animation and recolours both styles share |
+| `src/characters.js` | The hand-built voxel visitors used in voxel-character mode |
+| `src/scene.js` | Renderer, lights, bloom, both cameras (orthographic for the farm, perspective for rooms), input and picking, the per-frame loop, floating text |
+| `src/rules/intro.js`, `src/content/intro.js`, `src/ui/intro.js`, `src/ui/intro.css` | The new-game introduction: whether it shows (`shouldShowIntro`, the saved `introSeen`), Shane and Natalie's lines, and the overlay |
+| `src/moth.js` | Sandy's moth courier (used by `festival-meadow-world.js`) |
+| `src/content/maze-ride.js`, `src/rules/maze-ride.js`, `src/maze-ride-*.js`, `src/ui/maze-ride-ui.js`, `src/ui/maze-audio.js`, `src/ui/maze-ride.css` | The first-person Hollow House walkthrough (Codex's handover 29, rebuilt by Claude in 34). The route is built from rooms, and a distance-based timeline walks it (`buildMazeRideRoute`, `buildMazeRideTimeline`, `mazeProgressAt`). The rules hold the cues; the world builds the dressed chambers and their moving parts; the view handles the ride camera, pool lights, jolt and actors. The UI covers the briefing, pause and finish card plus the veil, chapter cards and idle bar, and there is its own synthesised sound. The owner's tour never touches tickets, visitors or the save |
+| `src/rules/hollow-house.js`, `src/content/hollow-house.js`, `src/hollow-house-world.js`, `src/foyer-view.js`, `src/maze-effects.js`, `src/ui/hollow-sheet.js` | The Hollow House: restoration, foyer tiers and `foyerLayout` (with its `reserved` routes), tickets and maze guests, decor and finishes. The exterior and the foyer's fixed hall (runner, medallion, chandelier, maze door and sign); the foyer view with its lights, mist, host and guests; the five haunt installations |
+| `src/ambience.js`, `src/content/ambience.js` | The mist bank's timing and shader, and the backdrop shader that ripples the lake and twinkles its lights (from the marks canvas `buildBackdrop` paints) |
+| `src/main.js` | Save and load, dialogue, the HUD and dock, keyboard, and which menu is open. Exposes `window.PumpkinVoxel` for tests |
+| `src/ui/` | The menus. Each sheet is `{ eyebrow, title, body(), bind(body) }`; `main.js` re-renders a sheet only when its HTML changes. `kit.js` holds shared bits |
+| `src/index.html`, `src/style.css` | The page shell and all styling. `build.mjs` inlines the CSS, the generated `src/icons.css` and the bundle |
+| `tools/bake_sprites.py` | Bakes the sprite sheets, costumes, decor atlas and icons from the main game's art in `../assets/` |
+| `test/model.test.mjs`, `smoke.mjs` | Rule tests; the browser smoke test |
+
+Generated files: `src/sprite-meta.js`, `src/sprite-meta-hd.js`, `src/decor-meta.js`, `src/icons.css` and everything in `assets/` except `moonlit-waltz.mp3`. Never edit them by hand; change `tools/bake_sprites.py` and re-run it.
+
+## How the game runs
+
+- **State and rules:**
+  - `main.js` owns one state object.
+  - Every frame, `scene.js` calls `hooks.onTick(dt)` and `main.js` runs `M.update(state, dt)`. It skips this while `state.paused` (the tea break) is on.
+  - `update` returns events: `sale`, `missed`, `harvest`, `plant`, `ripe`, `arrival`, `memory`. `main.js` turns them into notices, speech and sounds; the scene reads the state to animate.
+- **Rules are pure.** No DOM and no three.js; time comes in only as `dt`. Keep it that way so `npm test` can run them in Node. When a rule changes, add or update a test.
+- **Saves:**
+  - The key is `pumpkin-patch-voxel-reference-v1`, separate from the main game's, plus `-prefs` for settings.
+  - `STATE_VERSION` is 2. `restoreState` must accept anything, including junk, older versions and missing fields, and return a valid state.
+  - If you change the shape of saved state, bump the version, migrate in `restoreState`, and test the round trip.
+  - Customers and baskets are never saved (`closeForTheNight`).
+- **Picking:**
+  - `scene.js` raycasts the active camera against invisible hit boxes whose `userData` says what they are (`{ type: "plot", index }`, `{ type: "piece", instance }`, and so on).
+  - `main.js` `onPick` routes plots, the big pumpkin, the shop, the cottage, a person, a decor piece, or a floor or wall cell while decorating.
+- **Places:**
+  - `scene.enter("room", id)` or `scene.enter("shop")` builds the place at its `ORIGIN` and switches to the perspective room camera; `leavePlace()` returns to the farm.
+  - Room geometry is rebuilt when the style, wallpaper or pieces change (`scene.refreshRoom()`).
+
+## Space, scale and cameras
+
+- **Farm:**
+  - Orthographic camera looking down at `PITCH` (in `world.js`). The yard is `MAP` 40 x 29 units, and one wide shot shows it all on desktop.
+  - On a portrait phone the camera frames the patch and the big pumpkin, and you drag to pan.
+  - The far shore is a painted backdrop that leans back by `PITCH` to face the camera.
+- **Rooms:**
+  - Perspective camera (`INTERIOR` in `interiors.js`: pitch, fov, lean), framed by `frameRoom` in `scene.js`.
+  - A room is `GRID` 10 x 6 cells. One cell is one unit, measured from the back-left corner. The back wall stands at z = 0, the side walls at x = 0 and x = 10, and the front is open.
+  - Wall pieces hang on the central panel (`HOOKS` x 3 to 7).
+  - Rooms are built at a much finer voxel size (`V`) than the farm.
+- **Sprites:**
+  - The cast are textured planes, a fixed number of world units tall per sheet row (`unit()` in `sprite-actors.js`).
+  - They lean back towards the camera by `LEAN` and stretch by `1 / cos(pitch - lean)`, so the art keeps its drawn proportions on screen.
+  - They cast shadows the shape of the art through a custom depth material.
+  - If you change a camera angle, recompute the lean and stretch.
+- **Lights:**
+  - Indoors, `places.js` keeps a fixed pool of point lights and moves them about. Never add or remove lights at runtime: three.js recompiles every shader when the light count changes.
+  - Glowing things use an unlit material (`MeshBasicMaterial`, `toneMapped: false`), so the bloom pass picks them up.
+
+## Checking your work
+
+1. `npm test`.
+2. `npm run build`, or `node build.mjs --out <file>`.
+3. `CHROMIUM_PATH=<chromium> npm run smoke`.
+4. **Look at it.** Most changes here are visual, so take screenshots and judge them.
+   - Use Playwright with Chromium. Headless runs need software WebGL: launch with `--use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist`.
+   - Software WebGL manages only a few frames a second, so wait a second or more after a change before you screenshot.
+   - Check desktop (1280 x 800) and phone (390 x 844), and landscape phone (844 x 390) for layout changes.
+   - `window.PumpkinVoxel` gives you `state()`, `scene`, `enterRoom(id)`, `enterShop()`, `leavePlace()`, `advance(seconds)` (runs the rules forward, since real time crawls in software WebGL), `openSheet(id)`, `closeSheet()`, `notice(text)` and `tools`.
+   - To stage a scene, edit `state()` directly before entering a place: coins, `house.level = 3` for all four rooms, `house.placed`, `house.roomStyles`, `house.wallpapers`, `stock`, `shop.unlocked`.
+5. Watch for page errors (`page.on("pageerror")`). The smoke test fails on any.
+
+## Conventions
+
+- **Code:**
+  - Plain modern JavaScript ES modules; no TypeScript, no frameworks, no new runtime dependencies.
+  - Keep it compact and match the file you are in.
+  - Comments are short, in British English, and say why rather than what. A comment above each function or block says what it is for.
+- **Words:** British English in the UI and docs (colour, favourite, neighbour), plain and short. The dialogue and item names come from the main game; keep them.
+- **Art:**
+  - Everything should look like it belongs in the voxel world: the plum night, lilac moonlight, and warm candle and lantern light.
+  - Use the main game's art wherever it exists (sprites, decor, icons) rather than inventing replacements. Match its colours and proportions.
+- **Interface:**
+  - The farm stays visible behind menus. No text under 12 px, and no touch target under 44 px.
+  - Sheets slide up on a portrait phone and in from the side elsewhere.
+  - Interface colours are tokens at the top of `style.css`.
+- **Performance:**
+  - The target is a mid-range phone.
+  - Batch voxels: `Voxels` per material, or meshes that emit only exposed faces. Don't create a mesh per voxel.
+  - Hollow out solids, merge flat runs, and cache what rebuilds often.
+- **Determinism:** world generation uses `seeded()`, so the world looks the same on every load. Use it rather than `Math.random()` for anything built.
+- **Git:**
+  - Work on `voxel-reference`. Commit messages are imperative and explain why.
+  - Don't commit `dist/` or `node_modules/` (both ignored).
+  - Regenerate baked assets with the bake script rather than hand-editing them.
+
+## Gotchas
+
+- **The farm has no point lights of its own.** Its lamps are positions (`lamps` in `scene.js`), lit by the rooms' pool of seven lights (`places.lightPool`), which go to the lamps nearest the view. Add a lamp position, not a `PointLight`. Changing how many lights or shadowed lights are visible recompiles every drawn material, so keep a light visible at zero brightness, or warm its variant as `warmShaders` does for the indoor key light (handover 40).
+- **Hayride timings near a set are in units of lane.** Use `hayrideSpan(units)`, not a bare share of the loop, so they hold if the route changes length. The owner's ride-along lasts `HAYRIDE_PROPERTY.rideAlongSeconds`; paying guests' circuits last `circuitSeconds`, and a longer guest circuit costs the farm retail (handover 41).
+- **Warm large pictures that appear later.** A texture uploads the first time it's drawn, stalling that frame by tens of milliseconds for a 1536×1024 picture. Pass it to `warm(texture)` in `scene.js` so it's sent ahead.
+- **The wilds round the farm (`wilds.js`) must never hide it.** Anything h tall covers the ground `h * REACH_BACK` north of it on screen, so hills and trees near the farm stay low. Give any new ground the farm grows into a rect in `wildsFootprint`, and any new path off the map a road in `wildsRoads`, or trees grow on it.
+- **The farm ground is built for one view.** `buildGround(..., { farmView: true })` drops the east, west and north faces, which the farm camera never sees. Don't use it for ground a turning camera shows.
+- **Runtime art is WebP at the size it is shown.** The maze's scare actors and haunted girl ship as `.webp` (lossy colour, exact alpha, so `maze-ride-actor-meta.js` measures the same bounds), and its icon sheet is 384×256, since icons show at 26px. Three full-size PNGs had added 10 MB to the HTML. Add new runtime art the same way; keep full-size PNG concepts under `assets/*-concepts-*` or `docs/`, which the build doesn't bundle.
+- **The walkthrough is timed by distance.** Read progress with `mazeProgressAt(config, elapsed)` and cue times with `mazeTimeAtDistance`, never `elapsed / duration`: the walk slows for scares and holds at the doors.
+- **Chatters are excluded from arrival capacity.** A guest chatting in the meadow (`v.social`, `rules/meadow-chat.js`) has finished their visit: `visitorReservations` and `onThePath` skip them, and the stall loop hands them straight to `tickChat`. A chat starts only at `leaveAt`, after the maze-after roll, so add any new end-of-visit choice before that point. The meadow's news (`s.social`, `rules/meadow-talk.js`) is never saved; `recordNews` runs at the end of every `update`.
+- **Dress the maze where the eye lands.** The walk looks forward, so a room's far side is rarely seen: put props on the near wall, overhead, on the end walls and in the corridors. Place them with `F.free`, which keeps them clear of the rail, and keep tier 5 under the world test's 40,000 boxes (about 33k now).
+- **Foyer fixtures stay out of the player's way.** The runner and medallion lie inside `foyerLayout().reserved`. Haunts mount between y 2.4 and 4.85 and keep clear of the maze sign, the stair landing, the windows, the painting and the chandelier (`maze-effects.test.mjs` checks the bounds). A lighting finish recolours only `FLAME` glows.
+- **Fresh and wanted extras come from change, never the basket.** `quoteBasket` fills the basket at base prices first, then pays the fresh or wanted extra from what is left; a keen guest's `wish` purse buys only the wanted pumpkin and stays unspent without one. Keep it that way, or extras start costing sales. Receipt lines now carry `fresh` and can split one variety in two (different prices): sum by variety when showing them.
+- **`bake_sprites.py` is one long script with shared names.** A variable reused further down once overwrote the voxel character atlas. After a bake, check that `git diff --stat` touches only what you meant to change.
+- **Skyla's sheet has four frames:** idle 0, 1 and 2, and 3 for the paying reaction. `animateSkyla` picks them.
+- **The rooms are lit by the farm's lights too.** They are built far from the farm, but the farm's moonlight and ambient light still reach them, so balance indoor lighting with that in mind.
+- **Flipped decor uses a negative x scale.**
+- **Book sockets:** shelves expose where their books go, and `shelfBooks` stands them there.
+- **Pieces on tables (riders):** a placed piece with `on` (its host's instance) and `top` stands on that host; its `x`, `z` are its centre in the host's own unturned frame, not room cells. `fits` checks riders against their top, never the floor. Moving, turning, mirroring, sending or storing a host takes its riders with it. In `places.js` riders are children of their host's group. Shelf ids start `shelf-`; keep `shelf` free for these.
+- **The lower yard sits `DROP` south** (`content/farm-layout.js`): the patch, big pumpkin, homes, the lanes' lower bends, the gates, the front fence and the props in front. Add `DROP` to any new lower-yard position (or derive it from `PATCH`, `PLOT_POSITIONS`, `GATE_Z`, `fieldDepth`); the back row (buildings, arch, back fence) does not move. The lantern walk (`HOLLOW_LINK`) runs in the gap.
+- **Maze guests never leave the map:** maze-first guests come up the west lane and walk the lantern walk back to the stall; shoppers walk it over and go home by `HOLLOW_RETURN`. There are no transfer phases; old saves in them are mapped in `restoreHollowVisitors`.
+- **Walks to and from Skyla's counter use the guest's own place** (`counterPlace(spot)` in `content/farm-layout.js`, where `scene.js` draws them standing), never `COUNTER_FRONT`, its middle: the lantern walk via `hollowLinkFrom(place)` (routeVersion 4; version 3 saves keep the middle), and cocoa guests coming back from the meadow. A new walk that starts or ends at the counter should too, or the guest jumps sideways.
+- **Placement positions:** a floor piece's saved `x`, `z` is still the corner of its turned cells' enclosing box, but collision and the room's edges use its measured body (`content/decor-sizes.js`, from `tools/measure-decor.mjs`), so `x` or `z` can be a little below 0. Clamp UI moves with `placementRange`, not the cells. Re-run the measuring tool when a model changes.
+- **Shelf finishes and tints are different:** `finish` (blank shelves only) picks the model's wood; `tint` (Codex's Colour) recolours on top.
+- **Portrait phones:** the room camera fits the back wall's middle, and you drag along the wall.
+- **The selected piece and the piece bar:** `keepInView` (scene.js, called from the bar's `render`) eases the room camera so the selected piece clears the bar and the canvas's edges, after any finger lifts. To lift the front row above a phone's bar, or slide the far side clear of a bar down the side, the camera may go past its usual limits (`view.reach`); once the bar closes it stays put and the limits tighten as the player drags back. A piece already in view never moves the camera.
+- **Main-game imports:** the rules import from `../../src/content`, so the voxel build only works inside this repository layout.

@@ -1,0 +1,75 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Amber-House.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "starter house has a depth-tested entry glow at its real door"
+    },
+    {
+      "ok": true,
+      "label": "upgraded house 1 keeps the entrance aligned"
+    },
+    {
+      "ok": true,
+      "label": "upgraded house 2 keeps the entrance aligned"
+    },
+    {
+      "ok": true,
+      "label": "upgraded house 3 keeps the entrance aligned"
+    },
+    {
+      "ok": true,
+      "label": "affordable purchase cards and buttons use solid warm amber",
+      "data": {
+        "marked": true,
+        "opacity": "1",
+        "background": "linear-gradient(160deg, rgb(255, 208, 124), rgb(237, 152, 63))",
+        "color": "rgb(48, 27, 14)",
+        "card": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "highlighted garden purchase still charges exactly its listed price"
+    },
+    {
+      "ok": true,
+      "label": "placing owned decor is visually distinct from purchasing"
+    },
+    {
+      "ok": true,
+      "label": "fold: catalogue keeps touch targets and fits without overflow",
+      "data": {
+        "overflow": false,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: catalogue keeps touch targets and fits without overflow",
+      "data": {
+        "overflow": false,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: catalogue keeps touch targets and fits without overflow",
+      "data": {
+        "overflow": false,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "tapping the glowing physical door enters the existing house interior"
+    },
+    {
+      "ok": true,
+      "label": "no browser runtime errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium SwiftShader; core orbit/UI checks bloom/shadows off, final Fold entry capture on; staged money and levels"
+}
