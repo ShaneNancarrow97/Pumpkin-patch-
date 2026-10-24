@@ -30,9 +30,11 @@ export function restockCocoaSpecial(s, id) {
   s.coins -= cost; e.stock += n; e.supplies += cost; c.supplies += cost; return n;
 }
 export const standHasStock = s => s.festival.cocoa.stock > 0 || COCOA_SPECIALS.some(p => specialCapacity(s, p.id) && s.festival.cocoa.extras[p.id].stock > 0);
-export function quoteStandOrder(s, visitor) {
+// `reserve` keeps back the pumpkins the guest still means to buy; a guest who
+// has finished at the stall (a chatter, meadow-chat.js) spends from what's left.
+export function quoteStandOrder(s, visitor, reserve = true) {
   const c = s.festival.cocoa;
-  const basket = quoteBasket(s, visitor, [0, 1, 2, 3], VARIETIES.map(p => p.price));
+  const basket = reserve ? quoteBasket(s, visitor, [0, 1, 2, 3], VARIETIES.map(p => p.price)) : null;
   let spare = visitor.budget - (basket ?? []).reduce((sum, l) => sum + l.price * l.quantity, 0);
   const needs = visitor.needs ?? { thirst: 75, hunger: 65, value: 1 }, order = [];
   const willing = (p, need) => p.price * (.75 + .7 * need / 100) * needs.value;

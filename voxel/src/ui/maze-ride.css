@@ -1,7 +1,7 @@
 /* The house owns the screen while its walkthrough is open. Edge controls leave
    the centre clear for the route, including on portrait phones. */
 body:is(.maze-ride-active, .maze-experience) { --dock-h: 0px; --rail-w: 0px; }
-body:is(.maze-ride-active, .maze-experience) :is(#hud, #goal, #streak, #paused, #notice, #bubble, #dialogue, #place-bar, #piece-bar, #actions, #dock, #sheet, #level-celebration, #stock-popover, #fx, .building-context, .foyer-build-tools, .foyer-controls, .npc-reward, .guest-card, .float-text, .paused) { display: none !important; }
+body:is(.maze-ride-active, .maze-experience) :is(#hud, #goal, #streak, #paused, #notice, #bubble, #dialogue, #place-bar, #piece-bar, #actions, #dock, #sheet, #level-celebration, #stock-popover, #fx, .building-context, .foyer-build-tools, .foyer-controls, .npc-reward, .guest-card, .float-text, .paused, #chat-layer, .chat-card) { display: none !important; }
 .maze-ride-ui { position: fixed; z-index: 90; inset: 0; pointer-events: none; color: var(--ink); font-size: 14px; }
 .maze-ride-ui button, .maze-ride-ui input { pointer-events: auto; }
 .maze-ride-hud { position: absolute; top: max(8px, env(safe-area-inset-top)); left: max(8px, env(safe-area-inset-left)); right: max(8px, env(safe-area-inset-right)); display: flex; align-items: center; gap: 6px; width: max-content; max-width: calc(100% - 16px); margin: 0 auto; padding: 4px; border: 1px solid #6b5262; border-radius: 14px; background: rgba(23, 17, 28, .87); box-shadow: 0 3px 16px #09060a80; }

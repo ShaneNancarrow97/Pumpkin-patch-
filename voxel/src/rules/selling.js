@@ -11,6 +11,7 @@ import { freshGuestNeeds, tickGuestNeeds, enjoyPumpkin } from "./guest-needs.js"
 import { settleCustomerCare } from "./customer-care.js";
 import { cocoaAllowance, planFestivalVisit, tickFestivalVisit } from "./festival-meadow.js";
 import { planHollowVisit, tickHollowVisit, mazeFootfallBonus } from "./hollow-house.js";
+import { planChat, tickChat, updateChats, chatting } from "./meadow-chat.js";
 import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
 import { wishFor } from "./market.js";
 import { BIG_SPENDER_KIND, advanceBigSpender, bigSpenderBasket } from "./big-spender.js";
@@ -83,10 +84,12 @@ export const pathBoost = (s) => stallPace(s) - 1;
 // permanent attraction benefit and the same arrival floor have been applied.
 export const streakPathBoost = (s) => stallPace(s) - pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), mazeFootfallBonus(s));
 // The HUD can distinguish guests actually on the path from indoor excursions.
-export const onThePath = (s) => s.visitors.filter((v) => (!v.festival || v.festival.done) && (!v.hollow || v.hollow.done || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase))).length + s.arriving.length;
+export const onThePath = (s) => s.visitors.filter((v) => !chatting(v) && (!v.festival || v.festival.done) && (!v.hollow || v.hollow.done || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase))).length + s.arriving.length;
 // Every outdoor trip keeps a return space, including guests in the foyer or at
 // Sandy's stand. Otherwise simultaneous returns can overflow a full path.
-export const visitorReservations = (s) => s.visitors.length + s.arriving.length;
+// Guests chatting in the meadow have finished their visit and never come back
+// to the path, so they leave room for new arrivals (meadow-chat.js caps them).
+export const visitorReservations = (s) => s.visitors.filter((v) => !chatting(v)).length + s.arriving.length;
 export const stallPatience = (s) => PATIENCE[lv(s, "cocoa")];
 export const mugPrice = (s) => MUG[lv(s, "cocoa")];
 // One shopper in four is a regular with a loyalty card, then one in two. The
@@ -187,6 +190,7 @@ export function updateStall(s, dt, events) {
   }
   for (const v of s.visitors) {
     tickGuestNeeds(v, dt, v.festival?.phase === "queue" || v.age > VISIT.arrive + 4 && v.leaveAt === null);
+    if (v.social) { tickChat(s, v, dt, events); continue; }                      // chatting in the meadow, then home
     if (tickFestivalVisit(s, v, dt, events)) continue;
     if (v.festival?.justArrived) { v.age = VISIT.arrive; v.festival.justArrived = false; }
     // The maze first (up the west lane), unless they've come round from Sandy's;
@@ -203,6 +207,11 @@ export function updateStall(s, dt, events) {
     if (v.leaveAt !== null && v.age >= v.leaveAt && !v.hollow && !v.mazeAfterConsidered) {
       v.mazeAfterConsidered = true; v.hollow = planHollowVisit(s, v, "after");
       if (v.hollow) continue;
+    }
+    // Then perhaps a chat in the meadow, once everything else is settled.
+    if (v.leaveAt !== null && v.age >= v.leaveAt && !v.socialConsidered && (!v.hollow || v.hollow.done && !v.hollow.wentHome)) {
+      v.socialConsidered = true; v.social = planChat(s, v);
+      if (v.social) continue;
     }
     if (v.leaveAt !== null || v.age < VISIT.arrive) continue;
     const owner = "visitor-" + v.id, lines = chooseBasket(s, v, [0, 1, 2, 3], owner, PRICES);
@@ -224,7 +233,8 @@ export function updateStall(s, dt, events) {
       if (buyMug(s, v)) events.push({ type: "sale", route: "cocoa", amount: v.mug, quantity: 0, mug: v.mug, visitor: v.id });
     }
   }
-  s.visitors = s.visitors.filter((v) => !v.hollow?.fledHome && !v.hollow?.wentHome && (v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s)));
+  updateChats(s, events);
+  s.visitors = s.visitors.filter((v) => v.social ? !v.social.gone : !v.hollow?.fledHome && !v.hollow?.wentHome && (v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s)));
 }
 
 // The indoor shop: open it, then add room, display tables and a faster till.
@@ -315,4 +325,5 @@ export function closeForTheNight(s) {
   s.holds = [];
   s.visitors = [];
   s.arriving = [];
+  if (s.social) s.social.groups = {};
 }

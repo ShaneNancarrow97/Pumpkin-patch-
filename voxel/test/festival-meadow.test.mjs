@@ -48,7 +48,8 @@ test("a guest physically visits cocoa before pumpkins, paying both from one budg
 test("cocoa preserves planned pumpkin money; drink-only guests can still buy", () => {
   const s = ready(); s.stock[0] = 10;
   const cautious = guest(s, 1, 12); assert.equal(cautious.festival, null);
-  run(s, 55); assert.equal(cautious.amount, 12); assert.equal(cautious.cocoaSpend, undefined);
+  // Any cocoa they have later, chatting in the meadow, comes from pocket money (meadow-chat.js).
+  run(s, 55); assert.equal(cautious.amount, 12); assert.equal(cautious.cocoaSpend ?? 0, cautious.pocketMoney ?? 0);
   const t = ready(); t.stock[1] = 10; const drink = guest(t, 0, 12); assert.ok(drink.festival);
   run(t, 55); assert.equal(drink.cocoaSpend, 4); assert.equal(drink.amount, 0); assert.equal(drink.budget, 8);
 });

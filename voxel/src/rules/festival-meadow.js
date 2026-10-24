@@ -66,7 +66,14 @@ export function updateFestival(s) {
 // with their pumpkin money; quote the intended basket before selling a drink.
 export const cocoaAllowance = s => s.festival.cocoa.level && s.festival.cocoa.open && standHasStock(s) ? [0, 4, 7, 9][s.festival.cocoa.level] : 0;
 export const wantsCocoa = (s, v) => quoteStandOrder(s, v).length > 0;
-const inQueue = (v) => v.festival && ["to-cocoa", "queue", "serving"].includes(v.festival.phase);
+// Guests on their way to Sandy, waiting or being served, including chatters
+// fetching a drink (meadow-chat.js). Places in the queue go by arrival order;
+// a chatter takes the order of the moment they set off for it, behind everyone
+// already there and ahead of anyone who arrives later.
+export const inCocoaQueue = (v) => v.festival && ["to-cocoa", "queue", "serving"].includes(v.festival.phase) || ["cocoa-run", "cocoa-queue", "cocoa-serving"].includes(v.social?.phase);
+const inQueue = inCocoaQueue;
+export const cocoaQueueOrder = (v) => v.social?.queueOrder ?? v.id;
+export const cocoaQueueRank = (s, v) => s.visitors.filter((other) => other !== v && cocoaQueueOrder(other) < cocoaQueueOrder(v) && inQueue(other)).length;
 export function planFestivalVisit(s, v) {
   const c = s.festival?.cocoa;
   if (!c?.level || !c.open || !standHasStock(s) || !wantsCocoa(s, v)) return null;
@@ -75,7 +82,7 @@ export function planFestivalVisit(s, v) {
   const route = [...extendFarmRoute(COCOA_APPROACH, s), [47, 20.6 + rank * .8]];
   return { phase: "to-cocoa", route, segment: 1, x: route[0][0], z: route[0][1], dx: 0, dz: -1, elapsed: 0, walking: true, done: false };
 }
-function walk(m, target, dt) {
+export function meadowWalk(m, target, dt) {
   const dx = target[0] - m.x, dz = target[1] - m.z, d = Math.hypot(dx, dz);
   m.dx = dx; m.dz = dz; m.walking = d > .005;
   if (d < .005) { m.x = target[0]; m.z = target[1]; return dt; }
@@ -96,7 +103,7 @@ export function tickFestivalVisit(s, v, dt, events) {
   let remaining = dt;
   for (let i = 0; i < 24 && remaining > 1e-9; i++) {
     if (m.phase === "to-cocoa" || m.phase === "to-shop") {
-      remaining = walk(m, m.route[m.segment], remaining);
+      remaining = meadowWalk(m, m.route[m.segment], remaining);
       if (remaining <= 1e-9) break;
       if (++m.segment < m.route.length) continue;
       if (m.phase === "to-shop") { m.done = true; m.walking = false; m.justArrived = true; return false; }
@@ -104,8 +111,8 @@ export function tickFestivalVisit(s, v, dt, events) {
     } else {
       const c = s.festival.cocoa;
       if (!c.open || !standHasStock(s) || !wantsCocoa(s, v)) { c.missed++; leaveCounter(m, v.spot); continue; }
-      const rank = s.visitors.filter((other) => other.id < v.id && inQueue(other)).length;
-      remaining = walk(m, [47, 20.6 + rank * .8], remaining);
+      const rank = cocoaQueueRank(s, v);
+      remaining = meadowWalk(m, [47, 20.6 + rank * .8], remaining);
       if (rank || remaining <= 1e-9) break;
       m.phase = "serving"; m.walking = false;
       const duration = cocoaServiceSeconds(s), use = Math.min(remaining, duration - m.elapsed);

@@ -27,3 +27,17 @@ export function pathDistance(x, z) {
   }
   return best;
 }
+// Places to stand and talk, off every path, opened by the cocoa stand's level
+// (rules/meadow-chat.js). Guests take places in a ring round each one. Each
+// spot's walks avoid the benches, the booth and the planters:
+//   to: from the stall's lane to the spot
+//   cocoa: from the spot towards Sandy's queue (and back, reversed)
+//   exit: on to the homeward path, which it joins at MEADOW_EXIT[join]
+export const CHAT_SPOTS = [
+  { id: "benches", name: "by the benches", x: 43, z: 23.3, seats: 4, level: 1, to: [[35, 10.6], [39, 16], [40.4, 22.6]], cocoa: [[45.5, 23.4]], exit: [[40.4, 22.6], [40.2, 16], [41, 9.6]], join: 4 },
+  { id: "lantern", name: "under the lantern", x: 51.5, z: 15, seats: 3, level: 2, to: [[35, 10.6], [38, 8.6], [42.5, 6.6], [49.5, 7.5], [51.5, 10]], cocoa: [[50.8, 21.2]], exit: [[51.5, 9]], join: 6 },
+  { id: "brazier", name: "round the brazier", x: 40.5, z: 13.5, seats: 4, level: 3, to: [[35, 10.6], [38.5, 11.5]], cocoa: [[42.8, 15.5], [43.4, 20.4]], exit: [[41, 9.6]], join: 4 },
+];
+export const CHAT_RING = .85;
+// A guest's place in a spot's ring: four stand on the diagonals, three round a point.
+export const chatPlace = (spot, seat) => { const a = (seat / spot.seats) * Math.PI * 2 + (spot.seats === 3 ? -Math.PI / 2 : Math.PI / 4); return [spot.x + Math.cos(a) * CHAT_RING, spot.z + Math.sin(a) * CHAT_RING]; };

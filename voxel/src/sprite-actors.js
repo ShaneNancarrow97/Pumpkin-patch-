@@ -160,9 +160,10 @@ export function spriteVisitor(sheets, kind) {
 
 // dx is which way they're heading across the screen (-1 to 1). The art faces
 // right, so walking left mirrors them; mostly up or down keeps the last facing.
-export function animateVisitor(group, age, walking, dx = 0) {
+// `turn` lets a guest standing still face someone (a chat in the meadow).
+export function animateVisitor(group, age, walking, dx = 0, turn = walking) {
   if (group.userData.specialSprite) { animateSpecialSprite(group, age, walking, dx); return; }
-  if (walking && Math.abs(dx) > 0.3) group.scale.x = (dx < 0 ? -1 : 1) * (group.userData.artFacesLeft ? -1 : 1);
+  if (turn && Math.abs(dx) > 0.3) group.scale.x = (dx < 0 ? -1 : 1) * (group.userData.artFacesLeft ? -1 : 1);
   const { walk } = group.userData, next = walk[walking ? Math.floor(age * 5) % walk.length : 0];
   if (next !== group.userData.shown) { group.userData.show(next); group.userData.shown = next; }
   group.children[0].position.y = Math.sin(age * 2.4) * 0.03;                       // the main game's gentle sway

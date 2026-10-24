@@ -16,6 +16,7 @@ import { homeSheets } from "./ui/home-sheets.js";
 import { collectionSheets } from "./ui/collection-sheets.js";
 import { customerCareSheet } from "./ui/customer-care-sheet.js";
 import { createGuestCard } from "./ui/guest-card.js";
+import { createChatCard } from "./ui/chat-card.js";
 import { createNpcRewards } from "./ui/npc-rewards.js";
 import { festivalMeadowSheet } from "./ui/festival-meadow-sheet.js";
 import { estateSheet } from "./ui/estate-sheet.js";
@@ -98,8 +99,16 @@ const scene = createScene($("world"), state, {
   foyerGesture: { pose: () => foyerTools.placement, begin: () => foyerTools.beginGesture(), drag: (x, z) => foyerTools.dragTo(x, z), turn: degrees => foyerTools.turn(degrees), end: cancelled => foyerTools.endGesture(cancelled) },
   onRotatePiece: (degrees) => home.tools.rotate(degrees, false),
   onRotateEnd: cancelled => home.tools.finishRotation(cancelled),
+  // A chat marker over a group in the meadow (scene.js syncChats).
+  onChat(spot) { guestCard.clear(); chatCard.open(spot); },
   onPick(what) {
-    if (what.type === "visitor" || what.type === "customer") { if (!estateTools.active && !foyerTools.active && !home.tools.selected) guestCard.open(what.id, what.type === "customer"); }
+    if (what.type === "visitor" || what.type === "customer") {
+      if (estateTools.active || foyerTools.active || home.tools.selected) return;
+      // A guest chatting in the meadow opens what their group is saying.
+      const chat = what.type === "visitor" && state.visitors.find((v) => v.id === what.id)?.social;
+      if (chat && !chat.gone && chat.phase !== "leaving") { guestCard.clear(); chatCard.open(chat.spot); }
+      else { chatCard.clear(); guestCard.open(what.id, what.type === "customer"); }
+    }
     else if (what.type === "plot") tapPlot(what.index);
     else if (what.type === "pumpkin") boost();
     else if (what.type === "seeds") { sheets.shop.setTab("seeds"); openSheet("shop"); }
@@ -143,6 +152,7 @@ function handle(e) {
     notice(`Wanted now: ${name} pumpkins · up to ${more}% more for ${Math.round(M.WANTED.seconds / 60)} minutes`);
     if (state.wanted.serial === 1) say("natalie", `The village has gone mad for ${name} pumpkins! Keep some in the barn and they’ll pay up to ${more}% more for them.`);
   }
+  if (e.type === "chat-line") scene.chatLine(e);
   if (e.type === "missed" && e.reason !== "shop") scene.say(e.reason === "budget" ? "A smaller pumpkin next time." : "Back after harvest!");
   if (e.type === "harvest") { scene.harvested(e.plot, e.count); scene.sendTo(e.plot); }
   if (e.type === "plant") scene.sendTo(e.plot);
@@ -319,6 +329,8 @@ function render() {
   celebration.tick(mazeUI.active || !!openTab || !!home.tools.selected || state.paused);
   stockPopover.tick(mazeUI.active || celebration.active || !!openTab || estateTools.active || foyerTools.active || !!home.tools.selected);
   guestCard.tick(mazeUI.active || !!openTab || celebration.active || estateTools.active || foyerTools.active || !!home.tools.selected);
+  if (scene.place) chatCard.clear();
+  chatCard.tick(mazeUI.active || !!openTab || celebration.active || estateTools.active || foyerTools.active || !!home.tools.selected);
   estateTools.tick(!!openTab || celebration.active);
   foyerTools.tick(!!openTab || celebration.active);
   hollowContext.tick(mazeUI.active || !!openTab || celebration.active);
@@ -399,7 +411,8 @@ let openTab = null, lastBody = "", sheetReturnFocus = null;
 const menuMemory = createMenuMemory($("sheet-body"));
 const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
 const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(id === "empire" ? "natalie" : "visitor-" + ["ghost", "witch", "vampire", "skeleton", "scarecrow"][kind]), save, tone: f => audio.tone(f), notice });
-const guestCard = createGuestCard({ state: () => state, portrait: id => scene.portrait(id) });
+const guestCard = createGuestCard({ state: () => state, portrait: id => scene.portrait(id), onListen: spot => chatCard.open(spot) });
+const chatCard = createChatCard({ state: () => state, portrait: id => scene.portrait(id), onGuest: id => { chatCard.clear(); guestCard.open(id); } });
 const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); guestCard.clear(); }, onManagePumpkins() { sheets.shop.setTab("farm"); openSheet("shop"); }, onManageCocoa() { sheets.festival.setTab("cocoa"); openSheet("festival"); }, onSendOrder(id) {
   const o = state.orders.list.find((x) => x.id === id), pay = o && M.fillOrder(state, id);
   if (!pay) return;

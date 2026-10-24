@@ -22,7 +22,7 @@ import { INTERIOR } from "./interiors.js";
 import { loadDecor } from "./decor.js";
 import { GRID } from "./model.js";
 import { createFestivalWorld } from "./festival-meadow-world.js";
-import { fieldWidth, MEADOW, MEADOW_EXIT } from "./content/festival-meadow.js";
+import { fieldWidth, MEADOW, MEADOW_EXIT, CHAT_SPOTS } from "./content/festival-meadow.js";
 import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
@@ -484,6 +484,41 @@ export function createScene(canvas, state, hooks) {
   }
   const project = (p) => { const v = p.clone().project(active()); return { x: (v.x + 1) / 2 * canvas.clientWidth, y: (1 - v.y) / 2 * canvas.clientHeight }; };
 
+  // Chats in the meadow (rules/meadow-chat.js): a speech marker over each group
+  // that's talking, which opens what they're saying, and, zoomed in, the
+  // latest line in a bubble over whoever said it.
+  const chatLayer = document.getElementById("chat-layer"), chatMarks = new Map(), chatPoint = new THREE.Vector3();
+  function chatMark(spot) {
+    let mark = chatMarks.get(spot.id);
+    if (mark) return mark;
+    const button = document.createElement("button"), bubble = document.createElement("p");
+    button.className = "chat-marker"; button.type = "button"; button.hidden = true;
+    button.setAttribute("aria-label", `Listen in on the chat ${spot.name}`); button.innerHTML = "<i></i><i></i><i></i>";
+    button.onclick = () => hooks.onChat?.(spot.id);
+    bubble.className = "chat-bubble"; bubble.hidden = true; bubble.setAttribute("aria-hidden", "true");
+    chatLayer?.append(button, bubble);
+    mark = { button, bubble, line: null, pulse: -9 }; chatMarks.set(spot.id, mark);
+    return mark;
+  }
+  function syncChats() {
+    const farm = !view.place && !document.body.classList.contains("menu-open");
+    for (const spot of CHAT_SPOTS) {
+      const mark = chatMark(spot), group = state.social?.groups?.[spot.id];
+      const talking = farm && !!group && state.visitors.filter((v) => v.social?.spot === spot.id && v.social.phase === "chatting").length >= 2;
+      mark.button.hidden = !talking;
+      if (talking) {
+        const p = project(chatPoint.set(spot.x, 3.3, spot.z));
+        mark.button.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -100%)`;
+        mark.button.classList.toggle("new", time - mark.pulse < 1.4);
+      }
+      const speaker = mark.line && time < mark.line.until && view.zoom >= 2 && farm ? visitorModels.get(mark.line.visitor) : null;
+      // Just over the speaker's head, below the marker; not under the top bar.
+      const at = speaker?.m.visible ? project(chatPoint.copy(speaker.m.position).setY(2.4)) : null;
+      mark.bubble.hidden = !at || at.y < 96;
+      if (!mark.bubble.hidden) mark.bubble.style.transform = `translate(${at.x}px, ${at.y}px) translate(-50%, -100%)`;
+    }
+  }
+
   let framedLand = "", tapPulse = 0, last = performance.now(), time = 0, nextSpeechAt = 0;
   function tick(now) {
     // The first frame's timestamp can come before the scene finished building, and
@@ -560,30 +595,33 @@ export function createScene(canvas, state, hooks) {
     for (const v of state.visitors) {
       let entry = visitorModels.get(v.id);
       if (!entry) { const m = visitorModel(v.kind), hit = new THREE.Mesh(guestHitGeometry, guestHitMaterial); hit.position.y = 1.1; hit.userData = { type: "visitor", id: v.id }; m.add(hit); scene.add(m); entry = { m, hit, sprite: m.userData.sprite, bag: null }; visitorModels.set(v.id, entry); }
-      const hollowJourney = v.hollow && !v.hollow.done;
-      entry.m.visible = !hollowJourney || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase);
+      const hollowJourney = v.hollow && !v.hollow.done, chat = v.social && !v.social.gone ? v.social : null;
+      entry.m.visible = !!chat || !hollowJourney || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase);
       if (!entry.m.visible) continue;
-      const leaving = v.leaveAt !== null && v.age >= v.leaveAt;
+      const leaving = !chat && v.leaveAt !== null && v.age >= v.leaveAt;
       const t = leaving ? (v.age - v.leaveAt) / visitorLeaveSeconds(state) : Math.min(1, v.age / VISIT.arrive);
-      const excursion = hollowJourney || v.festival && !v.festival.done;
-      const journey = hollowJourney ? v.hollow : v.festival;
+      const excursion = chat || hollowJourney || v.festival && !v.festival.done;
+      const journey = chat ?? (hollowJourney ? v.hollow : v.festival);
       const p = excursion ? journey : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, t * (state.festival.meadow ? meadowOutLen : outLen)) : along(routeIn, t * inLen);
       // Parties stand side by side along the counter: each fans out to its own
       // place over the last stretch of the path, and back in as it sets off home.
       const fan = excursion ? 0 : leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
       entry.m.position.set(p.x + counterSide(v.spot ?? 0) * COUNTER_GAP * fan, 0.04, p.z);
       const walking = excursion ? journey.walking : leaving || v.age < VISIT.arrive;
-      if (entry.sprite) animateVisitor(entry.m, excursion ? time + v.id : v.age, walking, p.dx / (Math.hypot(p.dx, p.dz) || 1));
+      if (entry.sprite) animateVisitor(entry.m, excursion ? time + v.id : v.age, walking, p.dx / (Math.hypot(p.dx, p.dz) || 1), walking || chat?.phase === "chatting");
       else {
         entry.m.rotation.y = walking ? Math.atan2(p.dx, p.dz) : Math.PI;              // at the counter they face Skyla
         animateWalk(entry.m, time + v.id, walking);
       }
+      // A chatter speaking bobs as they talk.
+      if (entry.sprite && chat && entry.speakUntil > time) entry.m.children[0].position.y += Math.abs(Math.sin(time * 13)) * .06;
       if (v.cocoaSpend && v.cocoaKind !== null && !entry.cup) {
         entry.cup = v.cocoaKind === "deluxe" ? cocoaProp("deluxe") : carriedCup.clone(); entry.cup.position.set(-.4, .9, .25); entry.m.add(entry.cup);
       }
       if (v.snack && !entry.snack) { entry.snack = cocoaProp("smores"); entry.snack.position.set(.4, .9, .25); entry.m.add(entry.snack); }
       if (v.bought !== null && !entry.bag) { entry.bag = state.customerCare.bags && v.quantity > 1 ? customerBag() : carried[v.bought].clone(); entry.bag.position.set(entry.sprite ? 0.36 : 0.45, entry.sprite ? 0.45 : 0.6, entry.sprite ? 0.3 : 0.2); entry.m.add(entry.bag); }
     }
+    syncChats();
     for (const [id, entry] of visitorModels) if (!state.visitors.some((v) => v.id === id)) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); entry.m.userData.dispose?.(); visitorModels.delete(id); }
 
     // Fireflies.
@@ -627,6 +665,14 @@ export function createScene(canvas, state, hooks) {
       if (route === "shop" && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
       else if (!view.place) floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin");
     },
+    // A line said in a meadow chat: the marker pulses, and the speaker bobs.
+    chatLine(e) {
+      const spot = CHAT_SPOTS.find((p) => p.id === e.spot); if (!spot) return;
+      const mark = chatMark(spot), entry = visitorModels.get(e.visitor);
+      mark.pulse = time; mark.line = { visitor: e.visitor, until: time + 3.4 }; mark.bubble.textContent = e.text;
+      if (entry) entry.speakUntil = time + 1.1;
+    },
+    get chatMarkers() { return [...chatMarks].filter(([, m]) => !m.button.hidden).map(([id, m]) => ({ id, rect: m.button.getBoundingClientRect().toJSON(), bubble: !m.bubble.hidden })); },
     harvested(i, n = 1) { if (!view.place) { const p = PLOTS[i]; floatText("+" + n, p.x, 1.4, p.z, "crop"); } },
     // A visitor's remark at the stall, and other words floating up from the farm.
     say(text) { if (!view.place && time >= nextSpeechAt && !document.body.classList.contains("menu-open") && !fx.some(f => f.el.classList.contains("speech"))) { nextSpeechAt = time + 9; floatText(text, SHOP.x - 2.4, 3.6, SHOP.counterZ + 1.8, "speech"); } },

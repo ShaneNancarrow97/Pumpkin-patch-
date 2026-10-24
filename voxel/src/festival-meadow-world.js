@@ -3,7 +3,7 @@ import { Voxels, seeded, vary } from "./voxels.js";
 import { buildGround, grounds } from "./ground.js";
 import { cocoaProp } from "./cocoa-props.js";
 import { yardGround, fenceRun, tree, lanternPost } from "./world.js";
-import { MEADOW, MEADOW_PATHS, pathDistance } from "./content/festival-meadow.js";
+import { MEADOW, MEADOW_PATHS, CHAT_SPOTS, pathDistance } from "./content/festival-meadow.js";
 import { hollowPathDistance } from "./content/hollow-house.js";
 import { createMoth } from "./moth.js";
 import { DROP } from "./content/farm-layout.js";
@@ -64,6 +64,38 @@ export function cocoaKiosk(level) {
   return v.build();
 }
 
+// Where guests stop to chat (rules/meadow-chat.js), dressed as each cocoa tier
+// opens it: a standing table by the benches, a lantern with hay bales to perch
+// on, and an iron brazier. The brazier's flames are returned to flicker.
+export function chatDressing(level) {
+  const v = new Voxels(), r = seeded(733), iron = 0x2b2630, oak = 0x6a442e;
+  const [benches, lantern, brazier] = CHAT_SPOTS.map((p) => [p.x, p.z]);
+  if (level >= 1) {
+    const [x, z] = benches;
+    for (const [dx, dz] of [[-.22, 0], [.22, 0], [0, -.22], [0, .22]]) v.block(x + dx, 0, z + dz, dx ? .34 : .08, .05, dz ? .34 : .08, iron);
+    v.block(x, .05, z, .1, .95, .1, iron); v.block(x, 1, z, .62, .06, .5, oak); v.block(x, 1, z, .5, .06, .62, oak); v.block(x, 1.06, z, .56, .02, .56, 0x8a5e3c);
+    v.block(x - .12, 1.08, z + .06, .12, .14, .12, 0xd8c6a0); v.block(x - .12, 1.22, z + .06, .04, .05, .04, 0xffc56e, true);
+    v.block(x + .14, 1.08, z - .08, .11, .12, .11, 0x7a3a2c); v.block(x + .14, 1.2, z - .08, .09, .015, .09, 0x4a2a1e);
+  }
+  if (level >= 2) {
+    const [x, z] = lantern;
+    lanternPost(v, x, z, [], false);
+    // Hay bales to perch on, clear of every walk to and from the ring.
+    for (const [bx, bz, w, d] of [[x + 1.4, z, .45, .8], [x - 1.6, z - 2, .8, .45]]) { v.block(bx, 0, bz, w, .38, d, vary(0xc9a24e, .08, r)); for (let i = -1; i <= 1; i++) v.block(bx + (w > d ? i * .26 : 0), .38, bz + (w > d ? 0 : i * .26), w > d ? .06 : w + .02, .02, w > d ? d + .02 : .06, 0x8a6a2a); }
+  }
+  const flames = new Voxels();
+  if (level >= 3) {
+    const [x, z] = brazier;
+    for (const a of [0, 2.1, 4.2]) v.block(x + Math.cos(a) * .26, 0, z + Math.sin(a) * .26, .07, .62, .07, iron);
+    v.block(x, .6, z, .5, .12, .5, iron); v.block(x, .72, z, .62, .2, .62, iron); v.block(x, .74, z, .5, .2, .5, 0x1a1418);
+    for (let i = 0; i < 7; i++) v.block(x + (r() - .5) * .38, .9, z + (r() - .5) * .38, .1, .06, .1, [0xff7a2a, 0xffb84a, 0xc8401e][i % 3], true);
+    for (const [dx, dz, h, c] of [[0, 0, .42, 0xffb44a], [-.1, .06, .3, 0xff8a2e], [.1, -.05, .34, 0xff9a3a], [.02, -.1, .24, 0xffe08a]]) flames.block(dx, 0, dz, .12, h, .12, c, true);
+  }
+  const group = v.build(), fire = flames.build();
+  if (level >= 3) { fire.position.set(brazier[0], .92, brazier[1]); group.add(fire); }
+  return { group, flames: level >= 3 ? fire : null };
+}
+
 // Open a connection through the old fence/trees without changing world.js.
 // Compact positive, nonzero instances in place; keep the shared geometry alive.
 const clearRegions = [[38, 10.7, 57, 34 + DROP], [38.4, 5.8, 43.4, 10.7], [35.3, 24.7 + DROP, 40.3, 29.7 + DROP], [34, 22.6 + DROP, 42, 25.3 + DROP]];
@@ -101,7 +133,7 @@ function disposeObject(object) {
 
 export function createFestivalWorld({ scene, state, world, signBoard, createCashier }) {
   const root = new THREE.Group(); scene.add(root);
-  let builtLand = false, tier = -1, booth = null, cups = [], specials = [], pickables = [], marker = null, courier = null, sandy = null;
+  let builtLand = false, tier = -1, booth = null, cups = [], specials = [], pickables = [], marker = null, courier = null, sandy = null, chatProps = null;
   const makeHit = (x, y, z, w, h, d, type) => { const hit = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(x, y, z); hit.userData = { type }; root.add(hit); pickables.push(hit); };
   const preview = new Voxels();
   preview.block(37, 0, 20, .14, 1.8, .14, 0x423020); preview.block(37, 1.1, 20, 1.4, .75, .12, 0x68452f);
@@ -161,6 +193,8 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
       const prop = cocoaProp(id); prop.position.set(x, 1.55, 1.16); booth.add(prop); specials.push({ prop, id });
     }
     booth.position.set(...[MEADOW.stand[0], 0, MEADOW.stand[1]]); root.add(booth);
+    if (chatProps) { root.remove(chatProps.group); disposeObject(chatProps.group); }
+    chatProps = chatDressing(tier); root.add(chatProps.group);
   }
   const steamGeo = new THREE.BufferGeometry(), steam = new Float32Array(8 * 3);
   steamGeo.setAttribute("position", new THREE.BufferAttribute(steam, 3));
@@ -175,7 +209,8 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
       }
       courier?.tick(time);
       sync(); const c = state.festival.cocoa;
-      if (sandy) { sandy.group.visible = c.level > 0; sandy.tick(time, c.level, state.visitors.some(v => v.festival?.phase === "serving") || state.time - c.lastSaleAt < 1.1); } cups.forEach((m, i) => m.visible = c.stock > i); specials.forEach(({ prop, id }) => prop.visible = c.extras[id].stock > 0); wisps.visible = !!c.level && c.open && (c.stock > 0 || ["flake", "deluxe", "midnight"].some(id => c.extras[id].stock > 0));
+      if (sandy) { sandy.group.visible = c.level > 0; sandy.tick(time, c.level, state.visitors.some(v => v.festival?.phase === "serving" || v.social?.phase === "cocoa-serving") || state.time - c.lastSaleAt < 1.1); }
+      if (chatProps?.flames) { const f = chatProps.flames; f.scale.set(1 + Math.sin(time * 9) * .08, .85 + Math.abs(Math.sin(time * 7.3)) * .35 + Math.sin(time * 13) * .05, 1 + Math.cos(time * 8) * .08); f.rotation.y = time * .7; } cups.forEach((m, i) => m.visible = c.stock > i); specials.forEach(({ prop, id }) => prop.visible = c.extras[id].stock > 0); wisps.visible = !!c.level && c.open && (c.stock > 0 || ["flake", "deluxe", "midnight"].some(id => c.extras[id].stock > 0));
       for (let i = 0; i < 8; i++) { const t = (time * .35 + i / 8) % 1; steam[i * 3] = 45.9 + Math.sin(t * 7 + i) * .14; steam[i * 3 + 1] = 2.7 + t * 1.4; steam[i * 3 + 2] = 18.6 + Math.cos(t * 6 + i) * .12; }
       steamGeo.attributes.position.needsUpdate = true;
     },

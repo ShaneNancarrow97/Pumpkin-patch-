@@ -1,6 +1,19 @@
 # Plan: guests who stop for a cocoa and a chat
 
-**Status:** a plan for review. Nothing here is built yet.
+**Status:** built. The code is in `rules/meadow-chat.js` (who chats, and how they move), `rules/meadow-talk.js` (the news and what they say), `ui/chat-card.js` (the Overheard card), `scene.js` (markers and speech bubbles) and `festival-meadow-world.js` (dressing each spot). The tests are in `test/meadow-chat.test.mjs`.
+
+## What changed from the plan
+
+- **Pocket money for a cocoa.** By the time guests chat, the stall has nearly emptied their purses: £1 to £3 is usual, so almost nobody could afford a drink. A chatter without a drink now keeps enough pocket money for Sandy's plain cocoa, and never more. Pumpkin sales and arrivals come out identical with chat on and off (tested). Cocoa takings rise by about 8% at level 1 and about 70% at level 3, which still comes to under 1% of the farm's income.
+- **The queue.** A chatter joins only while the queue leaves room for two arrivals. Their place goes by when they set off, so it is behind everyone already queuing and ahead of later arrivals (`cocoaQueueRank`). Nobody steps back.
+- **Thirst** is on the needs' 0–100 scale: a chatter goes for a drink at 55 or more.
+- **The spots moved.** The brazier is at (40.5, 13.5): at (44, 12), the booth's roof hid it. The benches spot sits just in front of the benches.
+- **The dressing:**
+  - level 1: a standing table with a candle and a mug;
+  - level 2: a lantern post with two hay bales;
+  - level 3: an iron brazier whose flames flicker.
+- **A new conversation** opens on the freshest news under two minutes old, so new news comes up first.
+- **Tapping a chatter** opens the Overheard card. Tapping a face in the card opens that guest's card, which has a "Listen in" button back to the chat.
 
 ## Why
 

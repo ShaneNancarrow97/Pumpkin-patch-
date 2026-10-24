@@ -16,6 +16,7 @@ import { FAVOURS, checkMemories } from "./rules/progress.js";
 import { freshEstate, restoreEstate } from "./rules/house-estate.js";
 import { freshHollowHouse, restoreHollowHouse, updateHollowHouse, saveHollowVisitors, restoreHollowVisitors } from "./rules/hollow-house.js";
 import { restoreIntroSeen } from "./rules/intro.js";
+import { freshSocial, recordNews } from "./rules/meadow-talk.js";
 
 export * from "./rules/farm.js";
 export * from "./rules/stock.js";
@@ -36,6 +37,8 @@ export * from "./rules/customer-care.js";
 export * from "./rules/guest-needs.js";
 export * from "./rules/levels.js";
 export * from "./rules/intro.js";
+export * from "./rules/meadow-chat.js";
+export { recordNews, topicsFor } from "./rules/meadow-talk.js";
 
 export function freshState() {
   return {
@@ -49,6 +52,7 @@ export function freshState() {
     house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
     claimed: [], memories: [], progression: freshProgression(), paused: false, introSeen: false,
+    social: freshSocial(),                                                     // meadow news and chats: never saved
   };
 }
 
@@ -125,7 +129,7 @@ export function restoreState(raw) {
 }
 
 // What is worth saving: everything except who is out walking or shopping.
-export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] } });
+export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, social: undefined });
 
 // Advances the farm by dt seconds and returns what happened, for the scene to show.
 export function update(s, dt) {
@@ -141,5 +145,6 @@ export function update(s, dt) {
   updateShop(s, dt, events);
   checkMemories(s, events);
   for (const level of awardLevels(s)) events.push({ type: "level-up", level });
+  recordNews(s, events);
   return events;
 }
