@@ -60,6 +60,7 @@ const hayrideUI = createHayrideRideUI({ prefs, savePrefs,
   onStart: startHayrideRide, onPause: pauseHayrideRide, onExit: exitHayrideRide, onReplay: replayHayrideRide,
   onSound: on => mazeAudio.setMuted(!on),
   onGentle: on => { mazeAudio.setGentle(on); scene.setHayrideOptions({ gentle: on }); },
+  onLightning: on => scene.setHayrideOptions({ lightning: on }),
   onFullscreen: () => $("fullscreen").click(),
 });
 

@@ -16,9 +16,11 @@ Every base scenic set is present: pumpkin scarecrows, a spider tunnel, a ruined 
 
 ## Site ownership and your reserved layout work
 
+**Read [handover 37](37-off-map-hayride-takeover.md) for the final off-map presentation.** Only the station is on the farm. The forest circuit now belongs to a dedicated POV scene; the older full-clearing captures are historical.
+
 Handover 35 reserved the woodland site for you; no site handover had been published when this contractor work began. The user's new instruction authorised building the expansion now. To keep that overlap explicit, the provisional site is isolated in **`content/hayride-layout.js` and `hayride-world.js`**. Your `world.js`, Hollow House exterior, foyer and rebuilt maze modules are unchanged.
 
-The clearing occupies **X −51…−8, Z 1…40**, west of the existing public farm. A raised boardwalk joins the existing west pedestrian lane at **(−3,17)** through a bounded gate near **(−7.6,17)**. Only fence/tree boxes above 0.3 in that gate strip are removed from the existing static mesh; terrain is retained. The new controller never replaces `world.ground`, avoiding the meadow/farm expansion identity conflict. Camera pan limits extend west when the clearing is owned; default farm framing stays familiar and View station focuses the new area.
+The final farm station occupies **X −23.5…−8, Z 11…44**, west of the existing public farm. The **X −51…−8, Z 1…40** woodland route exists in a separate off-map scene. A raised boardwalk joins the existing west pedestrian lane at **(−3,17)** through a bounded gate near **(−7.6,17)**. Only fence/tree boxes above 0.3 in that gate strip are removed from the existing static mesh; terrain is retained. The new controller never replaces `world.ground`, avoiding the meadow/farm expansion identity conflict. Camera pan limits extend west when the clearing is owned; default farm framing stays familiar and View station focuses the new area.
 
 The shared layout owns station/queue/unload positions, clockwise route samples, encounter distances, pedestrian routes, poses and clearance data. Counter walks use each guest's `counterPlace(spot)` and the visible lantern walk. Only actual farm-gate waypoints move with farm expansion; the woodland platform and apron stay fixed. If your next site uses different coordinates, reconcile this one module and its gate attachment rather than layering two ground controllers. Preserve the operations and saved route-version repair contract.
 
@@ -46,14 +48,14 @@ Guest phases are `approach → queue → boarding → riding → unloading → r
 | --- | --- |
 | `content/hayride.js`, `rules/hayride.js` | Purchase, tiers/scares, willingness, FIFO queue, boarding receipts, authoritative convoy clock, outcomes and restore validation. |
 | `content/hayride-layout.js` | Pure site, route, pedestrian poses/return plans, stable queue places and convoy articulation samples. |
-| `hayride-world.js`, `hayride-vehicle.js` | Cached native scene, tractor/wagon, wheels, gate, driver, scenic sets/effects and two fixed local lights. No renderer callback spends money. |
+| `hayride-world.js`, `hayride-vehicle.js`, `hayride-forest.js`, `hayride-scares.js` | Compact farm station and separate off-map scene, two independent visual convoys, dense forest, original detailed scare art and fixed local lights. No renderer callback spends money. |
 | `hayride-view.js`, `ui/hayride-ride-ui.js/css` | Transient owner clock/camera, bounded look, shallow fog, briefing, pause, completion and Exit. Uses the existing renderer/canvas and audio lifecycle. |
 | `ui/hayride-sheet.js/css` | Compact context card, one management page, price controls, upgrade path, collapsed scares/accounts. |
 | `model.js`, `rules/selling.js` | Fresh/restore/save version 11, once-per-update attraction clocks, same-guest shopping suspension, opening-party flags and combined footfall. |
 | `scene.js`, `main.js`, `build.mjs` | World picking, rider rendering, farm pan extension, owner camera/input/audio ownership, menus and inline CSS. |
 | `ui/guest-card.js`, `rules/guest-needs.js`, `ui/farm-sheets.js`, `ui/hollow-sheet.js` | Intent/terror inspection, visitor/appeal text and the second attraction in the existing list. |
 
-The owner clock caps a long visual frame so a whole encounter cannot vanish in a jump. Autonomous rules advance separately and continue in other rooms under the existing tea-break policy. Owner view temporarily overrides only the visual convoy, hides ordinary guest models, then restores the live pose, fog, camera/input and music gain on Exit. Gentle motion suppresses the new optional scene motions. No second WebGL context or external asset fetch is introduced.
+The owner clock caps a long visual frame so a whole encounter cannot vanish in a jump. Autonomous rules advance separately and continue in other rooms under the existing tea-break policy. Owner view uses its own visual convoy and scene, hides ordinary guest models, then restores the live farm view, fog, camera/input and music gain on Exit. Gentle motion suppresses the new optional scene motions. No second WebGL context or external asset fetch is introduced. Widely spaced lightning flashes and delayed thunder are owner-only; gentle mode disables flashes and lunging.
 
 ## Saves and migration
 
@@ -75,4 +77,4 @@ CHROMIUM_PATH=/usr/bin/chromium node voxel/tools/qa-hayride.mjs /tmp/pumpkin-hay
 
 Use a clean worktree and preserve unpublished lead changes. Review source against `d98db59`; do not reapply previous contractor deliveries on top of this branch. Downloads are published separately and their artifact branch must not be merged into source.
 
-**Current validation:** all **55 Node test files pass**, including transactions, closure, quotes/wish money, capacity, large/small time steps, save corruption/repair, return continuity on expanded farms, finite voxel geometry, articulation and owner-ledger isolation. The offline HTML builds at roughly **28 MB**, keeping Claude's compressed art and music. Integrated browser/mobile screenshot checks are in progress; the final verification README and release manifest will record their exact build hash and results before delivery.
+**Current validation:** all **59 Node test files pass**, including transactions, closure, quotes/wish money, capacity, large/small time steps, save corruption/repair, return continuity on expanded farms, finite voxel geometry, articulation and owner-ledger isolation. The offline HTML builds at roughly **28 MB**, keeping Claude's compressed art and music. The earlier browser run covers operational flows but predates the final off-map split. Final handover smoke status and exact scope are in [handover 37](37-off-map-hayride-takeover.md) and [verification](../contractor-patches/haunted-hayride/verification/README.md); do not infer a full final-browser replay from the earlier captures.

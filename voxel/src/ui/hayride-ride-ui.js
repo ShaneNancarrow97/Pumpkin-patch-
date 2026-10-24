@@ -6,12 +6,13 @@ const rideIcon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentCo
 
 // The free owner's ride only: callbacks own camera/audio; this surface never
 // calls a purchase action or touches the simulation's guests and tickets.
-export function createHayrideRideUI({ prefs = {}, savePrefs = () => {}, onStart, onPause, onExit, onReplay, onSound, onGentle, onFullscreen } = {}) {
+export function createHayrideRideUI({ prefs = {}, savePrefs = () => {}, onStart, onPause, onExit, onReplay, onSound, onGentle, onLightning, onFullscreen } = {}) {
   const host = document.createElement("section"); host.id = "hayride-ride-ui"; host.className = "hayride-ride-ui";
   host.hidden = true; host.setAttribute("aria-label", "The Hollow Hayride owner experience"); document.body.append(host);
   let active = false, stage = "brief", config = {}, status = {}, returnFocus = null, idleTimer = 0, cueTimer = 0, lastCue = "", hiddenPause = false;
   const options = () => ({
     gentle: prefs.hayrideGentle ?? prefs.mazeGentle ?? !!globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+    lightning: prefs.hayrideLightning !== false,
     sound: prefs.hayrideSound !== false, volume: Number.isFinite(Number(prefs.mazeVolume)) ? clamp(prefs.mazeVolume) : .45,
   });
   const scope = () => host.querySelector(".hayride-ride-panel") ?? host.querySelector(".hayride-ride-hud") ?? host;
@@ -19,8 +20,8 @@ export function createHayrideRideUI({ prefs = {}, savePrefs = () => {}, onStart,
   function render(focus = false) {
     const o = options(), brief = stage === "brief", paused = stage === "pause", result = stage === "result";
     let panel = "";
-    const settings = `<div class="hayride-ride-settings"><button data-hayride-ride="gentle" aria-pressed="${o.gentle}">Gentle motion <b>${o.gentle ? "On" : "Off"}</b></button><button data-hayride-ride="sound" aria-pressed="${o.sound}">Ride sound <b>${o.sound ? "On" : "Off"}</b></button></div>`;
-    if (brief) panel = `<p class="hayride-ride-eyebrow">Free owner preview · No ticket charged</p><h2 id="hayride-ride-title">The Hollow Hayride</h2><p>Climb into the wagon. The tractor takes you through the scarecrow patch, spider tunnel, bride’s manor, spectral pursuit and zombie bus.</p><p class="hayride-ride-muted">About ${Math.round(config.circuitSeconds ?? config.rideDuration ?? 90)} seconds. Drag to look around; leave whenever you like.</p>${settings}<div class="hayride-ride-buttons"><button class="is-primary" data-hayride-ride="start">Ride along</button><button data-hayride-ride="exit">Return to farm</button></div>`;
+    const settings = `<div class="hayride-ride-settings"><button data-hayride-ride="gentle" aria-pressed="${o.gentle}">Gentle mode <b>${o.gentle ? "On" : "Off"}</b></button><button data-hayride-ride="sound" aria-pressed="${o.sound}">Ride sound <b>${o.sound ? "On" : "Off"}</b></button><button data-hayride-ride="lightning" aria-pressed="${o.lightning && !o.gentle}" ${o.gentle ? "disabled" : ""}>Lightning <b>${o.gentle ? "Off in gentle mode" : o.lightning ? "On" : "Off"}</b></button></div>`;
+    if (brief) panel = `<p class="hayride-ride-eyebrow">Free owner ride · No ticket charged</p><h2 id="hayride-ride-title">Beyond the farm gate</h2><p>Board the wagon for a journey deep into the haunted woods. Tall trees hide five scare scenes beyond the edge of the farm.</p><p class="hayride-ride-muted">About ${Math.round(config.circuitSeconds ?? config.rideDuration ?? 90)} seconds. Drag to look around; leave whenever you like. Gentle mode keeps the camera steady and disables lightning.</p>${settings}<div class="hayride-ride-buttons"><button class="is-primary" data-hayride-ride="start">Ride along</button><button data-hayride-ride="exit">Return to farm</button></div>`;
     else if (paused) panel = `<p class="hayride-ride-eyebrow">Owner ride paused</p><h2 id="hayride-ride-title">The woods can wait</h2><p>${hiddenPause ? "Your wagon waited while this page was out of view." : "Take a moment. Your place on the route is kept."}</p>${settings}<div class="hayride-ride-buttons"><button class="is-primary" data-hayride-ride="resume">Resume ride</button><button data-hayride-ride="exit">Return to farm</button></div>`;
     else if (result) panel = `<p class="hayride-ride-eyebrow">Back at the station</p><h2 id="hayride-ride-title">All aboard… again?</h2><p>You made it through the woods.</p><div class="hayride-ride-summary"><span><b>${status.eventsFired?.length ?? HAYRIDE_STOPS.length}</b>scare scenes</span><span><b>${Math.round(status.rideDuration ?? 90)}s</b>woodland circuit</span></div><div class="hayride-ride-buttons"><button class="is-primary" data-hayride-ride="replay">Ride again</button><button data-hayride-ride="exit">Return to farm</button></div>`;
     host.dataset.stage = stage;
@@ -48,6 +49,7 @@ export function createHayrideRideUI({ prefs = {}, savePrefs = () => {}, onStart,
     else if (action === "pause" || action === "resume") pause(stage !== "pause");
     else if (action === "sound") { prefs.hayrideSound = !options().sound; savePrefs(); onSound?.(prefs.hayrideSound); render(); wake(); }
     else if (action === "gentle") { prefs.hayrideGentle = !options().gentle; savePrefs(); onGentle?.(prefs.hayrideGentle); render(); }
+    else if (action === "lightning") { prefs.hayrideLightning = !options().lightning; savePrefs(); onLightning?.(prefs.hayrideLightning); render(); }
     else if (action === "fullscreen") onFullscreen?.();
   };
   const key = event => {

@@ -4,6 +4,8 @@
 
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
+**Latest contractor takeover:** [`docs/handovers/37-off-map-hayride-takeover.md`](docs/handovers/37-off-map-hayride-takeover.md) records the final off-map route, dark forest, scare cast, lightning, exact review scope and remaining checks.
+
 **Contractor hayride increment:** [`docs/handovers/36-hollow-hayride-operational-expansion.md`](docs/handovers/36-hollow-hayride-operational-expansion.md) adds the operational woodland attraction on `contractor/hollow-hayride`, based on handover 35's `d98db59`. It records the provisional site's overlap with Claude's reserved layout, version-11 saves, queue/boarding/dispatch rules, upgrades and the free owner ride-along. Read it before changing those new modules.
 
 ## What this is

@@ -23,6 +23,7 @@ import { loadDecor } from "./decor.js";
 import { GRID } from "./model.js";
 import { createFestivalWorld } from "./festival-meadow-world.js";
 import { createHayrideWorld } from "./hayride-world.js";
+import { createHayrideScares } from "./hayride-scares.js";
 import { HAYRIDE_SITE, hayrideGuestPose } from "./content/hayride-layout.js";
 import { fieldWidth, MEADOW, MEADOW_EXIT } from "./content/festival-meadow.js";
 import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
@@ -138,7 +139,7 @@ export function createScene(canvas, state, hooks) {
   const festivalWorld = createFestivalWorld({ scene, state, world, signBoard, createCashier: createSandy });
   const farmExpansion = createFarmExpansion(scene, state, world);
   const hollowFarm = createHollowFarm(scene, state, signBoard);
-  const hayrideWorld = createHayrideWorld({ scene, state, world, signBoard });
+  const hayrideWorld = createHayrideWorld({ scene, state, world, signBoard, createScares: createHayrideScares });
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
@@ -236,7 +237,7 @@ export function createScene(canvas, state, hooks) {
   const mazeView = createMazeRideView(canvas, state, { onCue: cue => hooks.onMazeCue?.(cue), onComplete: status => hooks.onMazeComplete?.(status), onState: status => hooks.onMazeState?.(status), blocked: () => document.body.classList.contains("menu-open") });
   const hayrideView = createHayrideView(canvas, state, { world: hayrideWorld, onCue: cue => hooks.onHayrideCue?.(cue), onComplete: status => hooks.onHayrideComplete?.(status), onState: status => hooks.onHayrideState?.(status), blocked: () => document.body.classList.contains("menu-open") });
   const active = () => view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
-  const activeScene = () => view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
+  const activeScene = () => view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
   const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null, reach: { x: 0, z: 0 } };
   let farmView = null;
   let bloomOn = true;
@@ -574,7 +575,7 @@ export function createScene(canvas, state, hooks) {
       const hayrideJourney = v.hayride && !v.hayride.done;
       const hayridePose = hayrideJourney ? hayrideGuestPose(state, v) : null;
       const hollowJourney = !hayrideJourney && v.hollow && !v.hollow.done;
-      entry.m.visible = view.place !== "hayride" && (!hollowJourney || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase));
+      entry.m.visible = view.place !== "hayride" && hayridePose?.visible !== false && (!hollowJourney || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase));
       if (!entry.m.visible) continue;
       const leaving = v.leaveAt !== null && v.age >= v.leaveAt;
       const t = leaving ? (v.age - v.leaveAt) / visitorLeaveSeconds(state) : Math.min(1, v.age / VISIT.arrive);

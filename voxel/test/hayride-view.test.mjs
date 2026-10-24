@@ -78,3 +78,19 @@ test("the director frames roadside scenery while touch look and gentle mode stay
   assert.ok(direction.z < -.99, "gentle mode keeps the unturned forward view");
   view.dispose();
 });
+
+test("off-map lightning and delayed thunder obey controls and reset on exit", () => {
+  const f = fixture(), flashes = [], cues = [];
+  f.world.setLightning = value => flashes.push(value);
+  const before = JSON.stringify(f.state), view = createHayrideView(f.canvas, f.state, { world: f.world, onCue: cue => cues.push(cue) });
+  view.enter({ gentle: false, lightning: true }); view.advanceForTest(13.2);
+  assert.equal(view.status.lightningIntensity, 1); assert.equal(flashes.at(-1), 1);
+  view.setPaused(true); assert.equal(flashes.at(-1), 0);
+  view.setPaused(false); view.advanceForTest(1);
+  assert.equal(cues.filter(cue => cue.type === "weather").length, 1);
+  view.advanceForTest(.1); assert.equal(cues.filter(cue => cue.type === "weather").length, 1);
+  view.setOptions({ gentle: true }); view.advanceForTest(26.1);
+  assert.equal(flashes.at(-1), 0); assert.equal(cues.filter(cue => cue.type === "weather").length, 1);
+  view.leave(); assert.equal(flashes.at(-1), 0); assert.equal(JSON.stringify(f.state), before);
+  view.dispose();
+});

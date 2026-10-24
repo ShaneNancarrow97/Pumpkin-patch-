@@ -1,16 +1,17 @@
-// Provisional contractor site: isolated from Claude's pending woodland layout.
-// One continuous vehicle circuit and distinct pedestrian approaches.
+// The farm owns a station; the complete woodland circuit is a separate place.
 import { COUNTER_FRONT, counterPlace, GATE_Z, extendFarmRoute } from "./farm-layout.js";
 import { hollowLinkFrom } from "./hollow-house.js";
 
 export const HAYRIDE_SITE = Object.freeze({
-  version: 1, bounds: { x0: -51, x1: -8, z0: 1, z1: 40 },
-  focus: { x: -28, z: 21, zoom: 1.3 }, station: { x: -17, z: 26.5, yaw: 0 },
+  version: 1, bounds: { x0: -23.5, x1: -8, z0: 11, z1: 44 },
+  focus: { x: -15.5, z: 28, zoom: 1.8 }, station: { x: -17, z: 26.5, yaw: 0 },
   hit: { x: -15.5, y: 1.5, z: 30, w: 7, h: 3, d: 10 },
   marker: { x: -4.8, z: 17 }, gate: { x: -7.6, z: 17 },
   rearEntry: { x: -17, z: 33.5 }, unload: { x: -19, z: 35.6 },
   queueEntry: { x: -11.1, z: 25.2 }, speed: 3, laneWidth: 4.4,
+  departurePortal: { x: -17, z: 12 }, returnPortal: { x: -17, z: 43 },
 });
+export const HAYRIDE_RIDE_BOUNDS = Object.freeze({ x0: -51, x1: -8, z0: 1, z1: 40 });
 const points = [[-17,26.5],[-17,17],[-19,8],[-26,5],[-39,6],[-46,11],[-47,22],[-44,30],[-37,34],[-28,35],[-21,35],[-17,34],[-17,31]];
 export const HAYRIDE_ROUTE = Object.freeze(points.map(p => Object.freeze(p)));
 const curve = (a,b,c,d,t) => .5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t);
@@ -96,6 +97,14 @@ export function hayrideConvoyPose(s,preview=null) {
   const wagon={x:hitch.x+Math.sin(trail.yaw)*2.92,z:hitch.z+Math.cos(trail.yaw)*2.92,yaw:trail.yaw};
   return{tractor:{...tractor,y:0},wagon:{...wagon,y:0},distance,progress};
 }
+// Only arrivals and departures occupy the farm lane. Both travel forwards;
+// hidden portals join the separately rendered ninety-second woodland circuit.
+export function hayrideFarmConvoyPose(s) {
+  const c=s?.hayride?.convoy??{},phase=c.phase??"loading",elapsed=Math.max(0,Number.isFinite(c.elapsed)?c.elapsed:0),f=Math.min(1,elapsed/3);
+  const travel=phase==="departing"?-22*f:phase==="arriving"?24*(1-f):0,station=HAYRIDE_SITE.station;
+  const tractor={x:station.x,y:0,z:station.z+travel,yaw:0,dx:0,dz:-1},wagon={x:tractor.x,y:0,z:tractor.z+3.8,yaw:0};
+  return{tractor,wagon,distance:phase==="departing"?22*f:phase==="arriving"?22+24*f:0,progress:f,visible:phase!=="circuit"};
+}
 const seatAnchor=(capacity,index)=>{const zs=capacity>=8?[-1.17,-.39,.39,1.17]:capacity>=6?[-1.08,0,1.08]:[-.75,.75],i=Math.max(0,Math.min(capacity-1,index??0));return{x:i%2?.87:-.87,y:1.2,z:zs[Math.floor(i/2)],yaw:i%2?Math.PI/2:-Math.PI/2};};
 const transform=(p,root)=>({x:root.x+p.x*Math.cos(root.yaw)+p.z*Math.sin(root.yaw),y:p.y??0,z:root.z-p.x*Math.sin(root.yaw)+p.z*Math.cos(root.yaw),dx:-Math.sin(root.yaw+(p.yaw??0)),dz:-Math.cos(root.yaw+(p.yaw??0))});
 function rawGuestPose(s,v) {
@@ -106,8 +115,8 @@ function rawGuestPose(s,v) {
   const waiting=(s.visitors??[]).filter(q=>q.hayride&&!q.hayride.done&&["queue","boarding"].includes(q.hayride.phase)).sort((a,b)=>(a.hayride.order??0)-(b.hayride.order??0)||a.id-b.id),slot=hayrideQueueSlot(Math.max(0,waiting.findIndex(q=>q.id===v.id)));
   if(m.phase==="queue")return{...slot,moving:false,walking:false,visible:true};
   if(m.phase==="boarding")return{...hayrideAlong([[slot.x,slot.z],[-14.6,33.5],[-17,33.5]],Math.min(1,f/1.5)),moving:true,walking:true,visible:true};
-  const capacity=[4,6,8][Math.max(0,Math.min(2,(s.hayride?.tier??1)-1))],pose=hayrideConvoyPose(s),anchor=seatAnchor(capacity,m.seat),seat=transform(anchor,pose.wagon);
-  if(m.phase==="riding")return{...seat,seated:true,moving:false,walking:false,visible:true};
+  const capacity=[4,6,8][Math.max(0,Math.min(2,(s.hayride?.tier??1)-1))],pose=hayrideFarmConvoyPose(s),anchor=seatAnchor(capacity,m.seat),seat=transform(anchor,pose.wagon);
+  if(m.phase==="riding")return{...seat,seated:true,moving:false,walking:false,visible:pose.visible};
   if(m.phase==="unloading")return{...hayrideAlong([[seat.x,seat.z],[-17,33.5],[-19,35.6]],f/6),moving:true,walking:true,visible:true};
   return{...slot,moving:false,walking:false,visible:true};
 }

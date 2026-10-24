@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { HAYRIDE_TIERS } from "./content/hayride.js";
 import { HAYRIDE_STOPS } from "./content/hayride-layout.js";
+import { HAYRIDE_LIGHTNING_TIMES, hayrideLightning } from "./content/hayride-weather.js";
 
 const INTRO = 2.5, YAW_LIMIT = Math.PI * .48, PITCH_LIMIT = Math.PI / 7;
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
@@ -8,12 +9,12 @@ const smooth = n => { const t = clamp(n, 0, 1); return t * t * (3 - 2 * t); };
 const sounds = { scarecrows: "knock", spiders: "skitter", bride: "whisper", pursuit: "whoosh", bus: "chains" };
 const finite = n => Number.isFinite(n) ? n : 0;
 
-// A free owner camera over the existing farm scene. The world only overrides
-// its visual convoy; autonomous guests, wallets and receipts keep their rules.
+// A free owner camera in a separate off-map scene, using the existing renderer.
+// Autonomous guests, wallets and receipts keep their authoritative farm rules.
 export function createHayrideView(canvas, state, hooks = {}) {
   const camera = new THREE.PerspectiveCamera(68, 1, .045, 120); camera.rotation.order = "YXZ";
   let active = false, run = null, pointer = null, disposed = false, yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0;
-  let options = { gentle: !!globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches }, fogSave = null, backgroundSave = null;
+  let options = { gentle: !!globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches, lightning: true }, fogSave = null, backgroundSave = null;
   const point = new THREE.Vector3(), target = new THREE.Vector3(), base = new THREE.Euler(0, 0, 0, "YXZ");
   const world = () => typeof hooks.world === "function" ? hooks.world() : hooks.world;
   const inputActive = () => active && run && !run.paused && !run.completed && !hooks.blocked?.();
@@ -22,7 +23,8 @@ export function createHayrideView(canvas, state, hooks = {}) {
     rideDuration: run?.rideDuration ?? 90, progress: run?.progress ?? 0, paused: !!run?.paused, completed: !!run?.completed,
     zoneName: !run ? "The Hollow Hayride" : run.elapsed < INTRO ? "Rear boarding" : [...HAYRIDE_STOPS].reverse().find(stop => run.progress >= stop.at - .06)?.name ?? "Into the woods",
     eventsFired: [...(run?.fired ?? [])], currentCue: run?.cue && run.elapsed - run.cue.at < 2.7 ? { ...run.cue } : null,
-    gentle: !!options.gentle, lookYaw: yaw, lookPitch: pitch, lookBounds: { yaw: YAW_LIMIT, pitch: PITCH_LIMIT }, inputActive: !!inputActive(),
+    gentle: !!options.gentle, lightning: options.lightning !== false, lightningIntensity: run ? hayrideLightning(run.elapsed, { ...options, paused: run.paused || run.completed }) : 0,
+    lookYaw: yaw, lookPitch: pitch, lookBounds: { yaw: YAW_LIMIT, pitch: PITCH_LIMIT }, inputActive: !!inputActive(),
     camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z, yaw: camera.rotation.y, pitch: camera.rotation.x },
   });
   const notify = () => hooks.onState?.(status());
@@ -34,6 +36,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
   function pose(dt = 0, snap = false) {
     if (!run) return;
     const site = world(); site?.setPreview?.(run.progress);
+    site?.setLightning?.(hayrideLightning(run.elapsed, { ...options, paused: run.paused || run.completed }));
     const frame = site?.getPreviewFrame?.(run.progress); if (!frame) return;
     point.copy(frame.position); target.copy(frame.target);
     // Let each roadside set read before it passes. A deliberate look overrides
@@ -57,6 +60,11 @@ export function createHayrideView(canvas, state, hooks = {}) {
       run.fired.add(stop.id);
       const cue = { type: "encounter", id: `hayride-${stop.id}`, stop: stop.id, name: stop.name, sound: sounds[stop.id], at: INTRO + stop.at * run.rideDuration, intensity: options.gentle ? .25 : .45 };
       run.cue = cue; cues.push(cue); hooks.onCue?.(cue);
+    }
+    for (let i = 0; i < HAYRIDE_LIGHTNING_TIMES.length; i++) {
+      if (run.elapsed < HAYRIDE_LIGHTNING_TIMES[i] + .8 || run.thunder.has(i)) continue;
+      run.thunder.add(i);
+      if (!options.gentle && options.lightning !== false) hooks.onCue?.({ type: "weather", id: `hayride-thunder-${i}`, sound: "thunder", intensity: .38 });
     }
     pose(seconds);
     if (run.elapsed >= run.duration) { run.completed = true; clearPointer(); notify(); hooks.onComplete?.(status()); }
@@ -87,16 +95,17 @@ export function createHayrideView(canvas, state, hooks = {}) {
       if (active) api.leave();
       const tier = HAYRIDE_TIERS.find(t => t.level === state.hayride.tier) ?? HAYRIDE_TIERS[0];
       options = { ...options, ...nextOptions };
-      run = { tier: tier.level, elapsed: 0, duration: INTRO + tier.circuitSeconds, rideDuration: tier.circuitSeconds, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), cue: null };
+      run = { tier: tier.level, elapsed: 0, duration: INTRO + tier.circuitSeconds, rideDuration: tier.circuitSeconds, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), thunder: new Set(), cue: null };
       active = true; yaw = pitch = targetYaw = targetPitch = 0; clearPointer();
       world().setGentleMotion?.(!!options.gentle);
       const scene = world().scene;
-      if (scene) { fogSave = scene.fog; backgroundSave = scene.background; scene.fog = new THREE.FogExp2(0x181125, .05); scene.background = new THREE.Color(0x181125); }
+      if (scene) { fogSave = scene.fog; backgroundSave = scene.background; scene.fog = new THREE.FogExp2(0x070b10, .085); scene.background = new THREE.Color(0x05070c); }
       resize(); pose(0, true); notify(); return true;
     },
     leave() {
       if (!active) return;
       clearPointer(); const site = world(); site?.setPreview?.(null);
+      site?.setLightning?.(0);
       site?.setGentleMotion?.(null);
       if (site?.scene) { site.scene.fog = fogSave; site.scene.background = backgroundSave; }
       active = false; run = null; fogSave = backgroundSave = null; notify();
@@ -104,7 +113,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
     // Real playback deliberately caps a long frame so the owner sees each set.
     // This clock never limits the authoritative farm's separate background dt.
     tick(dt) { return advance(Math.min(.1, Math.max(0, finite(dt)))); },
-    setPaused(on = true) { if (!active || !run || run.completed) return false; const changed = run.paused !== !!on; run.paused = !!on; clearPointer(); if (changed) notify(); return changed; },
+    setPaused(on = true) { if (!active || !run || run.completed) return false; const changed = run.paused !== !!on; run.paused = !!on; clearPointer(); pose(0, true); if (changed) notify(); return changed; },
     pause(on = true) { return api.setPaused(on); },
     start(nextOptions = {}) { return active && !run.completed ? api.setPaused(false) : api.enter(nextOptions); },
     restart(nextOptions = {}) { return api.enter({ ...options, paused: false, ...nextOptions }); },

@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import { Voxels } from "../src/voxels.js";
-import { HAYRIDE_SITE, HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH, hayrideRouteSample, hayrideRouteDistance, hayrideConvoyPose, hayrideQueueSlot, hayrideApproach, hayrideReturn, hayrideJourneyTiming, hayrideGuestPose, hayrideAlong } from "../src/content/hayride-layout.js";
+import { HAYRIDE_SITE, HAYRIDE_RIDE_BOUNDS, HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH, hayrideRouteSample, hayrideRouteDistance, hayrideConvoyPose, hayrideQueueSlot, hayrideApproach, hayrideReturn, hayrideJourneyTiming, hayrideGuestPose, hayrideAlong } from "../src/content/hayride-layout.js";
 import { inFarmPatch, counterPlace } from "../src/content/farm-layout.js";
 import { createHayrideWorld } from "../src/hayride-world.js";
 import { freshHayride } from "../src/rules/hayride.js";
@@ -11,7 +11,7 @@ const close=(a,b,e=1e-6)=>assert.ok(Math.abs(a-b)<e,`${a} != ${b}`);
 test("hayride route is a finite closed arc with consistent distance and all five ordered sets",()=>{
   assert.equal(HAYRIDE_STOPS.length,5);assert.ok(HAYRIDE_ROUTE_LENGTH>90&&HAYRIDE_ROUTE_LENGTH<130);
   const p=hayrideRouteSample(0),q=hayrideRouteSample(HAYRIDE_ROUTE_LENGTH);close(p.x,q.x);close(p.z,q.z);close(p.x,HAYRIDE_SITE.station.x);close(p.z,HAYRIDE_SITE.station.z);close(p.yaw,0);
-  for(let i=0;i<1000;i++) {const a=hayrideRouteSample(HAYRIDE_ROUTE_LENGTH*i/1000);for(const n of Object.values(a))assert.ok(Number.isFinite(n));close(Math.hypot(a.dx,a.dz),1);assert.ok(a.x>HAYRIDE_SITE.bounds.x0+2&&a.x<HAYRIDE_SITE.bounds.x1-4);assert.ok(a.z>HAYRIDE_SITE.bounds.z0+2&&a.z<HAYRIDE_SITE.bounds.z1-3);}
+  for(let i=0;i<1000;i++) {const a=hayrideRouteSample(HAYRIDE_ROUTE_LENGTH*i/1000);for(const n of Object.values(a))assert.ok(Number.isFinite(n));close(Math.hypot(a.dx,a.dz),1);assert.ok(a.x>HAYRIDE_RIDE_BOUNDS.x0+2&&a.x<HAYRIDE_RIDE_BOUNDS.x1-4);assert.ok(a.z>HAYRIDE_RIDE_BOUNDS.z0+2&&a.z<HAYRIDE_RIDE_BOUNDS.z1-3);}
   assert.deepEqual(HAYRIDE_STOPS.map(s=>s.id),["scarecrows","spiders","bride","pursuit","bus"]);
   for(let i=1;i<HAYRIDE_STOPS.length;i++)assert.ok(HAYRIDE_STOPS[i].at>HAYRIDE_STOPS[i-1].at);
 });

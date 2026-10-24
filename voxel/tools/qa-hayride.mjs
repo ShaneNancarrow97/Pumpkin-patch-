@@ -1,6 +1,8 @@
 // Operational hayride QA against a real isolated offline build. No fixture is
 // baked into the HTML. One SwiftShader browser runs at a time.
 // node voxel/tools/qa-hayride.mjs /tmp/pumpkin-hayride.html /tmp/hayride-qa
+// HAYRIDE_QA_SKIP_SHOTS=1 HAYRIDE_QA_VISUAL_AFTER_CORE=1 runs core then visuals.
+// HAYRIDE_QA_FOCUS=handover runs only the short station/owner handover smoke.
 import fs from "node:fs";
 import path from "node:path";
 import http from "node:http";
@@ -8,23 +10,36 @@ import { createHash } from "node:crypto";
 import { chromium } from "playwright";
 import * as M from "../src/model.js";
 import { HAYRIDE_PROPERTY, HAYRIDE_SCARES } from "../src/content/hayride.js";
-import { HAYRIDE_SITE } from "../src/content/hayride-layout.js";
+import { HAYRIDE_SITE, HAYRIDE_STOPS } from "../src/content/hayride-layout.js";
 
 if (!process.argv[2]) throw Error("Pass a built offline HTML path.");
 const file = path.resolve(process.argv[2]), out = path.resolve(process.argv[3] || "/tmp/hayride-qa");
 fs.mkdirSync(out, { recursive: true });
 const html = fs.readFileSync(file), checks = [], errors = [], externalRequests = [], samples = [], limitations = [];
+const sha256 = createHash("sha256").update(html).digest("hex");
+const visualAfterCore = process.env.HAYRIDE_QA_VISUAL_AFTER_CORE === "1";
+let captureEnabled = process.env.HAYRIDE_QA_SKIP_SHOTS !== "1";
+let managedFullscreenBlocked = false;
+try { managedFullscreenBlocked = JSON.parse(fs.readFileSync("/etc/chromium/policies/managed/misc.json", "utf8")).FullscreenAllowed === false; } catch {}
+fs.writeFileSync(path.join(out, "run.json"), JSON.stringify({ file, sha256, started: new Date().toISOString(), focus: visualAfterCore ? "core-plus-visual" : process.env.HAYRIDE_QA_FOCUS || "complete" }, null, 2));
 const check = (ok, label, data) => {
   checks.push({ ok: !!ok, label, ...(data === undefined ? {} : { data }) });
+  fs.writeFileSync(path.join(out, "progress.json"), JSON.stringify({ file, sha256, checks, errors, externalRequests, limitations }, null, 2));
   console.log(`${ok ? "ok  " : "FAIL"} ${label}`);
   if (!ok) throw Error(`${label}: ${JSON.stringify(data)}`);
 };
+const handoverOnly = process.env.HAYRIDE_QA_FOCUS === "handover";
+const visualOnly = handoverOnly || process.env.HAYRIDE_QA_FOCUS === "visual";
 const fixture = M.freshState();
 Object.assign(fixture, { coins: 100000, earned: 14999, introSeen: true });
 fixture.progression.claimed = Array.from({ length: 7 }, (_, i) => i + 1);
 fixture.progression.pending = [];
 Object.assign(fixture.hollowHouse, { purchased: true, status: "ready", open: false });
 fixture.visitorTimer = fixture.shop.arrivalTimer = fixture.bigSpender.timer = 1e6;
+if (visualOnly) {
+  fixture.earned = 200000; fixture.progression.claimed = Array.from({ length: 12 }, (_, i) => i + 1);
+  M.buyHayride(fixture); M.upgradeHayride(fixture); M.upgradeHayride(fixture); fixture.paused = true;
+}
 const server = http.createServer((req, res) => {
   if (req.url === "/favicon.ico") { res.writeHead(204); res.end(); return; }
   res.setHeader("Content-Type", "text/html; charset=utf-8"); res.end(html);
@@ -48,8 +63,9 @@ try {
     const key = "pumpkin-patch-voxel-reference-v1";
     if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(seed));
     localStorage.setItem(key + "-prefs", JSON.stringify({ renderQuality: "performance", glow: false,
-      shadows: false, mist: false, lakeLights: false, music: false, sound: false, mazeSound: false }));
-  }, M.saveData(fixture));
+      shadows: false, mist: false, lakeLights: false, music: false, sound: false, mazeSound: false,
+      hayrideGentle: seed.__visualOnly ? false : true, hayrideSound: false }));
+  }, { ...M.saveData(fixture), __visualOnly: visualOnly });
   await page.goto(base);
   await page.waitForSelector("body[data-ready]");
   await page.evaluate(() => PumpkinVoxel.intro?.skip());
@@ -76,6 +92,7 @@ try {
   };
   const resume = () => page.evaluate(() => { PumpkinVoxel.state().paused = false; PumpkinVoxel.advance(0); });
   const snapshot = async name => {
+    if (!captureEnabled) return;
     await frame(); await page.screenshot({ path: path.join(out, name + ".png") });
     samples.push({ name, state: await state(), rendering: await page.evaluate(() => PumpkinVoxel.scene.renderStatus) });
   };
@@ -108,6 +125,60 @@ try {
     check(!data.overflow && !data.clipped.length && !data.small.length, `${label}: ride controls fit with 44px targets`, data);
   };
 
+  const runVisualPass = async () => {
+    captureEnabled = true;
+    await page.setViewportSize({ width: 874, height: 787 });
+    await page.evaluate(() => { PumpkinVoxel.state().paused = true; PumpkinVoxel.scene.focusHayride(); });
+    await snapshot("fold-station");
+    check(await page.evaluate(() => PumpkinVoxel.scene.hayrideStatus.purchased && PumpkinVoxel.scene.hayrideStatus.tier === 3), "final visual build renders the upgraded physical station");
+    const offMap = await page.evaluate(() => { const h = PumpkinVoxel.scene.hayrideStatus; return { separate: h.rideScene, farm: h.farmBounds, ride: h.rideBounds }; });
+    check(offMap.separate && offMap.farm.x1 - offMap.farm.x0 < offMap.ride.x1 - offMap.ride.x0, "the compact farm station and full woodland use separate scenes", offMap);
+    await page.evaluate(() => PumpkinVoxel.openSheet("hayride"));
+    const beforeVisualOwner = await page.evaluate(() => JSON.stringify(PumpkinVoxel.rules.saveData(PumpkinVoxel.state())));
+    await click(action("experience")); await rideLayout("final Fold briefing");
+    if (await rideAction("gentle").getAttribute("aria-pressed") === "true") await click(rideAction("gentle"));
+    await click(rideAction("start")); await frame(); await rideLayout("final Fold running ride");
+    check(!(await rideStatus()).gentle, "final encounter captures use normal motion and the default guided view");
+    if (handoverOnly) {
+      const flash = await page.evaluate(() => { const p = PumpkinVoxel; p.hayride.advance(Math.max(0, 13.2 - p.hayride.status.elapsed)); return p.hayride.status.lightningIntensity; });
+      check(flash > .95, "the off-map ride produces its scheduled single lightning flash", flash);
+    }
+    if (!handoverOnly) await snapshot("fold-owner-boarding");
+    const encounters = handoverOnly ? HAYRIDE_STOPS.filter(stop => stop.id === "pursuit") : HAYRIDE_STOPS;
+    for (const stop of encounters) {
+      await page.evaluate(at => { const p = PumpkinVoxel, r = p.hayride.status; p.scene.fitView(); p.hayride.advance(Math.max(0, 2.5 + (at + .005) * r.rideDuration - r.elapsed)); }, stop.at);
+      await frame();
+      const r = await rideStatus();
+      check(r.eventsFired.includes(stop.id) && ["x","y","z"].every(k => Number.isFinite(r.camera[k])), `final visual ride reaches ${stop.name}`, r);
+      await snapshot("fold-ride-" + stop.id);
+    }
+    await click(rideAction("pause"));
+    if (handoverOnly) {
+      await rideLayout("handover Fold pause");
+      if (await rideAction("gentle").getAttribute("aria-pressed") !== "true") await click(rideAction("gentle"));
+      await click(rideAction("resume"));
+      check((await rideStatus()).gentle, "gentle motion can be enabled during the off-map ride");
+      check((await rideStatus()).lightningIntensity === 0, "gentle mode suppresses lightning flashes");
+      await page.evaluate(() => PumpkinVoxel.hayride.advance(1));
+      await click(rideAction("pause"));
+    } else for (const [label, width, height] of [["phone",390,844],["phone-landscape",844,390]]) {
+      await page.setViewportSize({ width, height }); await frame(); await rideLayout("final " + label + " pause"); await snapshot(label + "-ride-paused");
+    }
+    await click(rideAction("exit")); await frame();
+    check(await page.evaluate(() => !PumpkinVoxel.scene.place && !PumpkinVoxel.hayride.status.active), "final visual ride restores the farm on exit");
+    check(await page.evaluate(before => JSON.stringify(PumpkinVoxel.rules.saveData(PumpkinVoxel.state())) === before, beforeVisualOwner), "off-map owner smoke preserves the farm save and paid ledger");
+    if (!handoverOnly) {
+    await page.evaluate(() => { PumpkinVoxel.state().paused = true; PumpkinVoxel.openSheet("hayride"); });
+    for (const [label, width, height] of [["phone",390,844],["phone-landscape",844,390],["fold-unfolded",874,787]]) {
+      await page.setViewportSize({ width, height }); await frame(); await layout("final " + label); await snapshot(label + "-management");
+    }
+    await page.evaluate(() => PumpkinVoxel.closeSheet());
+    }
+    if (handoverOnly) limitations.push("Handover smoke covers the station, owner entry, one dark encounter, gentle motion and Exit. Full final-build economics/save-reload, all five visual encounters and phone layouts remain pending.");
+    else if (visualOnly) limitations.push("Focused visual verification supplements the functional evidence; see its separate report for financial and save-boundary checks.");
+  };
+  if (visualOnly) await runVisualPass();
+  else {
   check(await page.evaluate(() => !!PumpkinVoxel.rules?.planHayrideVisit && typeof PumpkinVoxel.scene.focusHayride === "function"), "model and scene QA hooks are available");
   check((await state()).version >= 11, "the published game migrates into the hayride save version");
   await click(page.locator('[data-tab="attractions"]'));
@@ -274,10 +345,12 @@ try {
   await page.evaluate(() => PumpkinVoxel.scene.focusHayride());
   await snapshot("fold-unfolded-station");
 
+  }
+  if (!visualOnly && visualAfterCore) await runVisualPass();
   await page.setViewportSize({ width: 874, height: 787 }); await frame();
   const fullButton = page.locator("#fullscreen");
   check(await fullButton.isVisible(), "fullscreen control remains available for the unfolded game");
-  if (await page.evaluate(() => document.fullscreenEnabled && !!document.documentElement.requestFullscreen)) {
+  if (!managedFullscreenBlocked && await page.evaluate(() => document.fullscreenEnabled && !!document.documentElement.requestFullscreen)) {
     await fullButton.click({ force: true });
     await page.waitForFunction(() => !!document.fullscreenElement);
     check(await page.evaluate(() => !!document.fullscreenElement), "fullscreen opens through a genuine button gesture");
@@ -297,7 +370,7 @@ try {
   throw error;
 } finally {
   fs.writeFileSync(path.join(out, "checks.json"), JSON.stringify({ file,
-    sha256: createHash("sha256").update(html).digest("hex"), passed, checks, errors, externalRequests, samples, limitations,
+    sha256, passed, checks, errors, externalRequests, samples, limitations,
     rendering: "Chromium SwiftShader, performance profile, bloom/shadows/mist/lake lights off; desktop and phone/Fold layouts; real UI clicks with stability polling bypassed; game-time advancement uses ordinary rules" }, null, 2));
   await browser.close(); await new Promise(resolve => server.close(resolve));
 }
