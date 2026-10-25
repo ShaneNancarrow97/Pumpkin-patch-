@@ -1,0 +1,47 @@
+{
+  "createdUtc": "2026-10-25T14:54:30.421274+00:00",
+  "sourceCommit": "5083446e1ffcc94f370feff0e533150899c771f3",
+  "sourceBranch": "contractor/hollow-house-exterior",
+  "leadBase": "3f92ca8df92e07b09445ce092101e9309c00288c",
+  "artifactBranch": "contractor/hollow-exterior-download-2026-10-25",
+  "htmlSha256": "4e84fd080a749e129020da081afdc064cdc29328678c208210e72a4111cccbf5",
+  "nodeTestFiles": 64,
+  "coreBrowser": {
+    "checks": 46,
+    "htmlSha256": "151fc00dcd375c1e5ee3547874cfbff7c52f1dc4b2f57d29256afdeb7c373ff0",
+    "passed": true
+  },
+  "finalVisual": {
+    "checks": 10,
+    "htmlSha256": "4e84fd080a749e129020da081afdc064cdc29328678c208210e72a4111cccbf5",
+    "passed": true
+  },
+  "standardSmokeChecks": 48,
+  "binaryPatchRebuildIdentical": true,
+  "files": {
+    "Hollow-Exterior-Contractor-Patch.zip": {
+      "bytes": 10430335,
+      "sha256": "50caac810584cabe69bdc485fdb30d2d708b004f3ccde8218beab1a64655f590"
+    },
+    "Pumpkin-Patch.html": {
+      "bytes": 29070466,
+      "sha256": "4e84fd080a749e129020da081afdc064cdc29328678c208210e72a4111cccbf5"
+    },
+    "Pumpkin-Patch-HTML.zip": {
+      "bytes": 20964731,
+      "sha256": "0421a0af6d883a724997af86741e64ed644e70c119a3a1ad7dc356b9bcfab3a0"
+    },
+    "README.md": {
+      "bytes": 2546,
+      "sha256": "1a9721344ef88e3a269bdbe2c530b81cd6135da17feb94034662d363a960d0af"
+    },
+    "43-hollow-house-exterior.md": {
+      "bytes": 5513,
+      "sha256": "3a329031a03ee51485f8d8c51c92428bd1474affe77c0b775305caa492d80dd5"
+    },
+    "hollow-exterior-from-3f92ca8.patch": {
+      "bytes": 12945398,
+      "sha256": "2152250094a37d4c7eacfd75a6c4626b4ff606c39999107c293e9fcf32dc696b"
+    }
+  }
+}
