@@ -1,0 +1,68 @@
+{
+  "sourceRuntimeCommit": "0fdeffa",
+  "jobUrl": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/40203486005/job/121199404722",
+  "conclusion": "success",
+  "smokeChecks": 48,
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-node@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npm ci",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npm test",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npm run build",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npx playwright install --with-deps chromium",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npm run smoke",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-node@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "checks": [
+    {
+      "name": "check",
+      "conclusion": "success",
+      "url": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/40203486005/job/121199404872"
+    },
+    {
+      "name": "voxel",
+      "conclusion": "success",
+      "url": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/40203486005/job/121199404722"
+    }
+  ]
+}

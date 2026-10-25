@@ -45,6 +45,10 @@ CHROMIUM_PATH=/usr/bin/chromium node voxel/tools/smoke-exterior-release.mjs /tmp
 
 The legacy tracked `voxel/node_modules` machine symlink is unchanged in source; recreate dependencies locally. Download branches contain artifacts only and must not be merged. Apply the binary patch only against the exact base above in a clean review worktree.
 
-## Verification
+## Verification and delivery
 
-The final implementation passes **64 Node test files**, covering geometry closure, all stages/bounds/determinism, visible dormer glass, cached refresh/disposal, zero added lights, animation save parity and live reduced motion, alongside existing rules. Browser/core, final visual and standard smoke results are recorded in [verification](../contractor-patches/hollow-exterior/verification/README.md) before delivery. No physical Fold frame-rate or successful managed-browser fullscreen claim is made.
+**64 Node test files pass.** Custom browser QA passes 46 functional checks on its pinned build, followed by 10 final visual/door/save checks on the exact download. Both report zero runtime errors/external requests and one canvas. Standard desktop/phone smoke also passes in GitHub CI on runtime commit `0fdeffa`, alongside the build and Node tests. The local duplicate was stopped after CI succeeded; its partial log is labelled in the [verification record](../contractor-patches/hollow-exterior/verification/README.md).
+
+Final HTML SHA-256: **`4e84fd080a749e129020da081afdc064cdc29328678c208210e72a4111cccbf5`**. A clean patch rebuild matches byte for byte. The last visual change only lifts dormer panes above the roof; no economy/save/ticket logic changes. Full images and generated icon sources are committed. Physical Fold performance and successful native fullscreen remain device checks.
+
+Useful follow-on work: review the exterior at the lead's preferred final lighting on a physical Fold, then recover and reconcile the unpushed progression work before building cooking unlocks. This branch is complete and ready for lead review.

@@ -1,0 +1,63 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-Exterior.html",
+  "sha256": "4e84fd080a749e129020da081afdc064cdc29328678c208210e72a4111cccbf5",
+  "focus": "final-visual",
+  "started": "2026-10-25T14:41:05.183Z",
+  "fixture": "QA-only funds; gate derived from current content",
+  "checks": [
+    {
+      "ok": true,
+      "label": "the final sign refinement renders derelict"
+    },
+    {
+      "ok": true,
+      "label": "the final sign refinement renders tier-3"
+    },
+    {
+      "ok": true,
+      "label": "the final sign refinement renders tier-5"
+    },
+    {
+      "ok": true,
+      "label": "world target is visible",
+      "data": {
+        "x": 639.9999999999999,
+        "y": 464.04985915003516
+      }
+    },
+    {
+      "ok": true,
+      "label": "the final visible entrance still enters the foyer"
+    },
+    {
+      "ok": true,
+      "label": "the final entrance and sign refinement cannot change farm or ticket state"
+    },
+    {
+      "ok": true,
+      "label": "final phone: upgrade menu fits with 44px targets",
+      "data": {
+        "width": 390,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "the exterior retains one main WebGL canvas"
+    },
+    {
+      "ok": true,
+      "label": "the standalone HTML fetches no external runtime assets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "the exterior reports no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": []
+}
