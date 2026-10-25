@@ -133,6 +133,7 @@ const scene = createScene($("world"), state, {
     else if (what.type === "estate-exit") { if (!estateTools.active) { leavePlace(); closeSheet(); } else notice("The entrance path stays clear for coming and going."); }
     else if (what.type === "estate-decor") estateTools.select(what.instance);
     else if (what.type === "estate-ground") { if (estateTools.active) estateTools.placeAt(what.point.x, what.point.z); }
+    else if (what.type === "hollow-door") { closeSheet(); if (M.hollowReady(state)) enterFoyer(); else hollowContext.open(); }
     else if (what.type === "hollow-house") { closeSheet(); hollowContext.open(); }
     else if (what.type === "hayride" || what.type === "hayride-station") { closeSheet(); hollowContext.close(); hayrideContext.close(); hayrideContext.open(); }
     else if (what.type === "foyer-exit") { if (!foyerTools.active) leavePlace(); }

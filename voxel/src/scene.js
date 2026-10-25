@@ -143,7 +143,7 @@ export function createScene(canvas, state, hooks) {
   const farmExpansion = createFarmExpansion(state, world, lamps);
   // Hills, a treeline and the roads beyond, fading into the night (wilds.js).
   const wilds = createWilds(scene, state);
-  const hollowFarm = createHollowFarm(scene, state, signBoard);
+  const hollowFarm = createHollowFarm(scene, state, signBoard, lamps);
   const hayrideWorld = createHayrideWorld({ scene, state, world, signBoard, createScares: createHayrideScares });
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
@@ -234,7 +234,7 @@ export function createScene(canvas, state, hooks) {
   function lightLamps(dt) {
     const pool = places.lightPool;
     if (view.place) { lampSlots.length = 0; return; }
-    const fresh = !lampSlots.length, want = new Set(lamps.map((l, i) => [i, (l.x - view.x) ** 2 + (l.z - view.z) ** 2]).sort((a, b) => a[1] - b[1]).slice(0, pool.length).map(([i]) => i));
+    const fresh = !lampSlots.length, want = new Set(lamps.flatMap((l, i) => l.active === false ? [] : [[i, (l.x - view.x) ** 2 + (l.z - view.z) ** 2]]).sort((a, b) => a[1] - b[1]).slice(0, pool.length).map(([i]) => i));
     for (let k = 0; k < pool.length; k++) lampSlots[k] ??= { lamp: -1, level: 0 };
     for (const slot of lampSlots) slot.target = want.has(slot.lamp) ? 1 : 0;
     for (const i of want) if (!lampSlots.some((slot) => slot.lamp === i)) { const free = lampSlots.find((slot) => slot.lamp < 0); if (free) Object.assign(free, { lamp: i, level: 0, target: 1 }); }
@@ -776,6 +776,7 @@ export function createScene(canvas, state, hooks) {
     get visitorStatus() { return [...visitorModels].map(([id,e]) => ({ id, kind: state.visitors.find(v=>v.id===id)?.kind, visible: e.m.visible, sprite: e.sprite, leadingLeg: e.m.userData.leadingLeg, frames: e.m.userData.walk?.length ?? 0, frame: e.m.userData.walk?.indexOf(e.m.userData.shown) ?? -1, x: e.m.position.x, z: e.m.position.z })); },
     get farmExpansionStatus() { return farmExpansion.status; },
     get festivalStatus() { return festivalWorld.status; },
+    get hollowExteriorStatus() { return hollowFarm.status; },
     get hayrideStatus() { return hayrideWorld.status; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
     fitView() {
