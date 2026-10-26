@@ -1,3 +1,5 @@
+import { SERVICE_OUT, SERVICE_BACK, SERVICE_RIGHT, serviceNav, serviceHeading, serviceMetrics, serviceNotice } from "./service-kit.js";
+import { recipeShoppingList, kitchenNextStep } from "./kitchen-guide.js";
 import { maisieIcon } from "../maisie.js";
 import { patchLevel } from "../rules/levels.js";
 import { VARIETIES } from "../rules/farm.js";
@@ -16,12 +18,13 @@ const count = n => Math.max(0, Math.floor(Number(n) || 0));
 const disabled = ok => ok ? "" : "disabled";
 const seconds = n => `${Math.max(0, Math.ceil(Number(n) || 0))}s`;
 const phaseNames = { ordered: "Packing your order", travelling: "Cart on its way", unloading: "At the receiving bay" };
-const tabs = [["recipes", "Recipes"], ["mix", "Mix"], ["equipment", "Equipment"], ["deliveries", "Deliveries"], ["pantry", "Pantry"], ["food", "Food shelves"]];
+const tabs = [["cook", "Cook"], ["supplies", "Supplies"], ["food", "Sell"], ["improve", "Upgrade"]];
+const groupFor = tab => ({recipes:"cook",mix:"cook",deliveries:"supplies",pantry:"supplies",equipment:"improve",upgrades:"improve"})[tab]??tab;
 
 // One management surface for the truck, home cooker and shop shelves. Quantities,
 // tabs and confirmations belong to this view; money and timers belong to rules.
 export function cookingSheets(ui) {
-  let tab = "recipes", station = "truck", cart = {}, cancelStation = null, batches = "1";
+  let tab = "recipes", selectedRecipe = undefined, discoverOpen = false, station = "truck", cart = {}, cancelStation = null, batches = "1";
   let mixIngredients = {}, mixPumpkins = {}, mixMethod = "pan", mixAdd = "vegetables";
   const disclosures = { upgrades: false, accounts: false };
   const changed = (message = "") => {
@@ -62,16 +65,17 @@ export function cookingSheets(ui) {
   function stations(s) {
     const home = E.homeCookingAvailable(s), open = E.homeKitchenOpen(s), showHome = open || !!s.kitchen.jobs.home;
     if (station === "home" && !open) station = "truck";
-    const stationMarkup = ["truck", ...(showHome ? ["home"] : [])].map(id => {
+    const stationMarkup = [station].map(id => {
       const job = s.kitchen.jobs[id], title = id === "home" ? "Home cooker" : "Truck hob";
-      if (!job) return `<article class="cooking-station"><div class="cooking-station-head"><div><h4>${title}</h4><p>${id === "home" && !home ? "Place a hob or oven in the kitchen to begin." : "Ready for a recipe"}</p></div><span class="cooking-state${id === "home" && !home ? "" : " is-ready"}">${id === "home" && !home ? "Needs equipment" : "Ready"}</span></div></article>`;
+      if (!job) return ``; // Idle cookers need no card.
+
       const waiting = job.remaining <= 0, recipe = C.RECIPES.find(r => r.id === job.recipe);
       const runBatches = Math.max(1, count(job.batches || 1)), completed = Math.min(runBatches, count(job.completed));
       const duration = Math.max(1, job.duration ?? recipe?.seconds ?? 1), progress = Math.max(0, Math.min(1, (completed + 1 - job.remaining / duration) / runBatches));
       const runRemaining = Math.max(0, runBatches - completed - 1) * duration + job.remaining;
       return `<article class="cooking-station is-busy" data-cooking-job="${id}"><div class="cooking-station-head"><div><h4>${title} · ${recipeName(job.recipe)}</h4><p class="${waiting ? "cooking-note is-warning" : ""}">${waiting ? "Ready — make space in food storage to finish." : `${completed}/${runBatches} batches ready · ${seconds(runRemaining)} left${job.automatic ? " · Chef" : ""}`}</p></div>${cancelStation !== id ? `<button class="button" data-cooking-cancel="${id}" ${disabled(editable())}>Stop</button>` : ""}</div><progress max="1" value="${progress}" aria-label="${title} cooking progress"></progress>${id === "home" && !home ? '<p class="cooking-note">This paid run will finish safely. Replace the kitchen equipment to start another.</p>' : ""}${cancelStation === id ? `<p class="cooking-note is-warning">Stopping discards every unfinished batch. Ingredients and pumpkins for the full run were used when it started and are not refunded.</p><div class="cooking-cancel-confirm"><button class="button" data-cooking-cancel-dismiss>Keep cooking</button><button class="button is-destructive" data-cooking-cancel-confirm="${id}" ${disabled(editable())}>Discard run</button></div>` : ""}</article>`;
     }).join("");
-    return `<section class="cooking-section" aria-label="Cooking stations"><div class="cooking-title-row"><h3>${station === "home" ? "Your kitchen" : "Cooking stations"}</h3>${open && ui.enterKitchen ? '<button class="cooking-text-button" data-cooking-action="home">Visit kitchen</button>' : ""}</div><div class="cooking-stations">${stationMarkup}</div><div class="cooking-run-controls"><label class="cooking-field">Cook at<select data-cooking-station aria-label="Cooking station" ${disabled(editable())}><option value="truck" ${station === "truck" ? "selected" : ""}>Food truck</option><option value="home" ${station === "home" ? "selected" : ""} ${disabled(open)}>Home kitchen${open ? "" : " · Expand the house"}</option></select></label>${batchControl()}</div><p class="cooking-note">${station === "home" ? "Only equipment placed in this kitchen counts. Each dish needs its own cookware and ingredients." : "The truck starts with a hob, pot and pan. Baking needs an oven kit."} ${pendingOutput(s)} portions reserved for unfinished batches.</p></section>`;
+    return `<section class="cooking-section cooking-worktop" aria-label="Cooking station"><div class="cooking-run-controls"><label class="cooking-field">Cook at<select data-cooking-station aria-label="Cooking station" ${disabled(editable())}><option value="truck" ${station === "truck" ? "selected" : ""}>Maisie’s truck</option><option value="home" ${station === "home" ? "selected" : ""} ${disabled(open)}>Home kitchen${open ? "" : " · House level 2"}</option></select></label>${batchControl()}</div>${stationMarkup}${pendingOutput(s)?`<p class="cooking-note">${pendingOutput(s)} portions reserved for batches in progress.</p>`:""}</section>`;
   }
 
   function inputs(s, recipe, run = 1) {
@@ -85,14 +89,28 @@ export function cookingSheets(ui) {
     return supplies.join(" · ");
   }
 
+  function recipeCard(s,recipe,expanded=false) {
+    const run=batchCount(s,recipe.id), learned=known(s,recipe.id), gated=patchLevel(s).level<recipe.level;
+    const ready=learned?K.cookingReadiness(s,recipe.id,station,run):null, price=recipe.research??0;
+    return `<article class="recipe-entry${expanded?' is-selected':''}" data-cooking-recipe="${recipe.id}"><button class="recipe-choice" data-recipe-select="${recipe.id}" aria-expanded="${expanded}" aria-controls="recipe-${recipe.id}">${cookingIcon(recipe.id)}<span><b>${recipe.name}</b><small>${recipe.yield} portions · ${seconds(recipe.seconds)}${recipe.homeOnly?' · Home kitchen':''}</small><em class="${learned?'recipe-learned':''}">${learned?(ready.ok?'Ready to cook':ready.reason):gated?`Level ${recipe.level}`:'Discover or study'}</em></span><i aria-hidden="true">${expanded?'−':'+'}</i></button>${expanded?`<div class="recipe-detail" id="recipe-${recipe.id}">${learned?`<button class="button purchase-button wide" data-cooking-start="${recipe.id}" data-cooking-at="${station}" ${disabled(editable()&&ready.ok)}>Cook ${recipe.yield*run} portions</button>`:`<button class="button purchase-button wide" data-cooking-research="${recipe.id}" ${disabled(editable()&&!gated&&s.coins>=price)}>Study recipe · ${money(price)}</button>`}<p>${recipe.text}</p><div class="cooking-inputs">${inputs(s,recipe,run)}</div>${requirements(s,recipe)}<div class="recipe-yield"><span>${recipe.yield*run} portions</span><span>${seconds(recipe.seconds*Math.pow(.85,s.kitchen.upgrades.speed)*run)} total</span><span>${money(s.kitchen.prices[recipe.id])} each</span></div><div class="recipe-help-actions">${recipe.homeOnly&&station!=='home'?`<button class="button" data-cooking-action="home">Go to home kitchen</button>`:`<button class="button" data-recipe-order="${recipe.id}">Order missing ingredients</button>`}<button class="button" data-cooking-fill-mix="${recipe.id}" ${disabled(!gated)}>Mix these ingredients</button></div></div>`:''}</article>`;
+  }
   function recipes(s) {
-    const level = patchLevel(s).level;
-    return `${stations(s)}<section class="cooking-section"><div class="cooking-title-row"><h3>Your recipe book</h3><span class="cooking-state">${s.kitchen.recipes.length}/${C.RECIPES.length} learned</span></div><p class="cooking-note">Discover dishes in Mix, or study their recipe here. A production run uses all ingredients up front and finishes one batch at a time. Stopping does not refund the unfinished batches.</p><div class="cooking-list">${C.RECIPES.map(recipe => {
-      const run = batchCount(s, recipe.id), learned = known(s, recipe.id), gated = level < recipe.level, readiness = learned ? K.cookingReadiness(s, recipe.id, station, run) : null;
-      const researchPrice = recipe.research ?? 0, ready = learned && editable() && readiness.ok;
-      const state = gated ? `Patch level ${recipe.level}` : !learned ? `Research · ${money(researchPrice)}` : readiness.ok ? "Ready to cook" : readiness.reason;
-      return `<article class="cooking-recipe" data-cooking-recipe="${recipe.id}">${cookingIcon(recipe.id)}<div class="cooking-recipe-body"><h4>${recipe.name}${recipe.homeOnly ? ' <small class="cooking-home-tag">Kitchen only</small>' : ""}</h4><p>${recipe.text}</p><p class="cooking-inputs">${inputs(s, recipe, run)}</p>${requirements(s, recipe)}<div class="cooking-recipe-meta"><span>${recipe.yield * run} portions · ${run} ${run === 1 ? "batch" : "batches"}</span><span>${seconds(recipe.seconds * Math.pow(.85, s.kitchen.upgrades.speed) * run)} total</span><span>${money(s.kitchen.prices[recipe.id] ?? recipe.price)} each</span></div><span class="cooking-state${ready ? " is-ready" : ""}">${state}</span></div><div class="cooking-recipe-actions">${learned ? `<button class="button purchase-button" data-cooking-start="${recipe.id}" data-cooking-at="${station}" ${disabled(ready)}>Cook ${recipe.yield * run} · ${station === "home" ? "Kitchen" : "Truck"}</button><button class="button" data-cooking-fill-mix="${recipe.id}">Use in Mix</button>` : `<button class="button${!gated ? " purchase-button" : ""}" data-cooking-research="${recipe.id}" ${disabled(!gated && editable() && s.coins >= researchPrice)}>${gated ? `Level ${recipe.level}` : `Study · ${money(researchPrice)}`}</button><button class="button" data-cooking-fill-mix="${recipe.id}" ${disabled(!gated)}>Try the ingredients</button>`}${recipe.homeOnly && station !== "home" && homeOpen() ? '<button class="button" data-cooking-action="home">Go to kitchen</button>' : ""}</div></article>`;
-    }).join("")}</div><button class="button wide" data-cooking-go="deliveries">Order ingredients</button></section>`;
+    const level=patchLevel(s).level, learned=C.RECIPES.filter(r=>known(s,r.id)), discover=C.RECIPES.filter(r=>!known(s,r.id)&&r.level<=level), future=C.RECIPES.filter(r=>r.level>level&&!known(s,r.id));
+    if(selectedRecipe===undefined&&learned.length)selectedRecipe=learned[0].id;
+    return `${stations(s)}${nextStep(s)}<section class="cooking-section"><div class="service-section-heading"><h3>Recipe book</h3><button class="service-inline-link" data-cooking-go="mix">Mix ingredients ${SERVICE_OUT}</button></div><div class="recipe-book">${learned.map(r=>recipeCard(s,r,selectedRecipe===r.id)).join('')}</div>${discover.length?`<details class="service-disclosure" data-recipe-discovery ${discoverOpen?'open':''}><summary>Discover more dishes <span>${discover.length} recipes</span></summary><p class="cooking-note">Try the ingredients in your pot, or study a recipe to learn it.</p><div class="recipe-book">${discover.map(r=>recipeCard(s,r,selectedRecipe===r.id)).join('')}</div></details>`:''}${future.length?`<details class="service-disclosure"><summary>Coming next <span>${future.length} recipes</span></summary><div class="recipe-future">${future.map(r=>`<div>${cookingIcon(r.id)}<span><b>${r.name}</b><small>Unlocks at level ${r.level}</small></span></div>`).join('')}</div></details>`:''}</section>`;
+  }
+
+  function nextStep(s){
+    if(selectedRecipe&&!known(s,selectedRecipe))return "";
+    const step=kitchenNextStep(s,station,selectedRecipe),recipe=C.RECIPE_BY_ID[step.recipe];
+    const action=(text,attrs)=>`<button class="service-inline-link" ${attrs}>${text} <span aria-hidden="true">${SERVICE_RIGHT}</span></button>`;
+    if(step.kind==='supplies')return serviceNotice('Ingredients needed',recipe.name,action('Order supplies',`data-recipe-order="${recipe.id}"`));
+    if(step.kind==='delivery')return serviceNotice('Delivery on its way','Supplies for your next dish',action('View delivery','data-cooking-go="deliveries"'));
+    if(step.kind==='equipment')return serviceNotice('Cookware needed','Place tools in your home kitchen',action('Choose equipment','data-cooking-go="equipment"'));
+    if(step.kind==='harvest')return serviceNotice('Fresh from the patch',`Harvest ${step.quantity} ${VARIETIES[step.variety].name} pumpkin${step.quantity===1?'':'s'} to cook your next dish.`,action('Go to the patch','data-cooking-action="farm"'));
+    if(step.kind==='sell')return serviceNotice('Food ready to sell','Put your fresh dishes on Skyla’s shelves and choose a price.',action('Stock the shelves','data-cooking-go="food"'));
+    if(step.kind==='shop')return serviceNotice('Food ready for your shop','Open Skyla’s indoor shop when you’re ready to sell dishes.',action('Manage Skyla’s shop','data-cooking-action="shop"'));
+    return '';
   }
 
   function equipment(s) {
@@ -128,7 +146,7 @@ export function cookingSheets(ui) {
     return `<section class="cooking-section"><div class="cooking-title-row"><h3>Ingredient deliveries</h3>${cookingIcon("cart")}</div><p class="cooking-note">Ingredients arrive at the receiving bay after ${seconds(C.COOKING.deliverySeconds)} of game time. A second order waits for the first. Pausing the farm pauses deliveries.</p>${k.orders.length ? k.orders.map((order, index) => {
       const waiting = order.phase === "unloading" && order.remaining <= 0;
       return `<article class="cooking-delivery" data-cooking-order="${order.id}"><div class="cooking-title-row"><div><h4>${index > 0 && order.phase === "ordered" ? "Queued for packing" : phaseNames[order.phase] ?? "Delivery"}</h4><small>${waiting ? "Pantry full — your paid parcel is safe at the bay." : `${seconds(order.remaining)} ${order.phase === "ordered" ? "until departure" : order.phase === "travelling" ? "until arrival" : "to unload"}`}</small></div>${order.phase === "ordered" ? `<button class="button" data-cooking-order-cancel="${order.id}" ${disabled(editable())}>Cancel</button>` : ""}</div><p>${Object.entries(order.items).map(([id, n]) => `${n} ${C.INGREDIENTS.find(i => i.id === id)?.name.toLowerCase() ?? id}`).join(" · ")}</p>${order.phase === "ordered" ? '<small>Cancel before departure to refund the ingredients. Delivery fee is retained.</small>' : ""}</article>`;
-    }).join("") : '<p class="cooking-empty">No deliveries are on the road. Build an order below.</p>'}${capacity("Pantry", K.pantryCount(s), K.pantryCapacity(s))}<div class="cooking-list">${C.INGREDIENTS.map(item => `<div class="cooking-order-item"><div><h4 class="cooking-ingredient-name">${ingredientIcon(item.id, 28)}<span>${item.name}</span></h4><small>${money(item.price)} each · ${count(k.pantry[item.id])} in pantry</small></div><div class="cooking-stepper"><button class="button" data-cooking-quantity-step="${item.id}" data-step="-1" aria-label="Remove one ${item.name.toLowerCase()}" ${disabled(editable() && qty(item.id) > 0)}>−</button><input type="number" inputmode="numeric" min="0" max="${C.COOKING.orderLimit}" value="${qty(item.id)}" data-cooking-order-quantity="${item.id}" aria-label="${item.name} order quantity" ${disabled(editable())}><button class="button" data-cooking-quantity-step="${item.id}" data-step="1" aria-label="Add one ${item.name.toLowerCase()}" ${disabled(editable() && countOrdered < C.COOKING.orderLimit)}>+</button></div></div>`).join("")}</div><div class="cooking-quote"><dl><div><dt>${countOrdered} ingredients</dt><dd>${money(quote.subtotal ?? 0)}</dd></div><div><dt>Delivery fee</dt><dd>${money(quote.fee ?? C.COOKING.deliveryFee)}</dd></div><div class="cooking-total"><dt>Pay now</dt><dd>${money(quote.total ?? 0)}</dd></div></dl><button class="button purchase-button wide" data-cooking-action="order" ${disabled(editable() && quote.ok)}>Place order · ${money(quote.total ?? 0)}</button>${!quote.ok ? `<p class="cooking-note" data-cooking-quote-reason>${quote.reason}</p>` : '<p class="cooking-note">Paid parcels wait safely if the pantry fills up. Delivery never discards your ingredients.</p>'}</div></section>`;
+    }).join("") : '<p class="cooking-empty">No deliveries are on the road. Build an order below.</p>'}${capacity("Pantry", K.pantryCount(s), K.pantryCapacity(s))}<div class="cooking-list">${C.INGREDIENTS.map(item => `<div class="cooking-order-item"><div><h4 class="cooking-ingredient-name">${ingredientIcon(item.id, 28)}<span>${item.name}</span></h4><small>${money(item.price)} each · ${count(k.pantry[item.id])} in pantry</small></div><div class="cooking-stepper"><button class="button" data-cooking-quantity-step="${item.id}" data-step="-1" aria-label="Remove one ${item.name.toLowerCase()}" ${disabled(editable() && qty(item.id) > 0)}>−</button><input type="number" inputmode="numeric" min="0" max="${C.COOKING.orderLimit}" value="${qty(item.id)}" data-cooking-order-quantity="${item.id}" aria-label="${item.name} order quantity" ${disabled(editable())}><button class="button" data-cooking-quantity-step="${item.id}" data-step="1" aria-label="Add one ${item.name.toLowerCase()}" ${disabled(editable() && countOrdered < C.COOKING.orderLimit)}>+</button></div></div>`).join("")}</div><div class="cooking-quote service-checkout"><dl><div><dt>${countOrdered} ingredients</dt><dd>${money(quote.subtotal ?? 0)}</dd></div><div><dt>Delivery fee</dt><dd>${money(quote.fee ?? C.COOKING.deliveryFee)}</dd></div><div class="cooking-total"><dt>Pay now</dt><dd>${money(quote.total ?? 0)}</dd></div></dl><button class="button purchase-button wide" data-cooking-action="order" ${disabled(editable() && quote.ok)}>Place order · ${money(quote.total ?? 0)}</button>${!quote.ok ? `<p class="cooking-note" data-cooking-quote-reason>${quote.reason}</p>` : '<p class="cooking-note">Paid parcels wait safely if the pantry fills up. Delivery never discards your ingredients.</p>'}</div></section>`;
   }
 
   function pantry(s) {
@@ -145,7 +163,7 @@ export function cookingSheets(ui) {
 
   function upgrades(s) {
     const k = s.kitchen, level = patchLevel(s).level, chef = count(k.upgrades.chef) > 0;
-    return `<details class="cooking-disclosure" data-cooking-disclosure="upgrades" ${disclosures.upgrades ? "open" : ""}><summary><span>Kitchen improvements<small>Storage, faster cooking and a spooky chef</small></span></summary><div class="cooking-disclosure-body">${C.KITCHEN_UPGRADES.map(item => {
+    return `<details class="cooking-disclosure" data-cooking-disclosure="upgrades" ${disclosures.upgrades ? "open" : ""}><summary><span>Truck improvements<small>Storage, speed & your spooky chef</small></span></summary><div class="cooking-disclosure-body">${C.KITCHEN_UPGRADES.map(item => {
       const tier = count(k.upgrades[item.id]), cost = K.kitchenUpgradeCost(s, item.id), maxed = cost === undefined || cost === null;
       const gate = level < item.level;
       return `<article class="cooking-upgrade"><div><h4>${item.name}</h4><p>${item.text}</p><small>${maxed ? "Fully upgraded" : gate ? `Opens at patch level ${item.level}` : `Tier ${tier}/${item.costs.length}`}</small></div><button class="button${!gate && !maxed ? " purchase-button" : ""}" data-cooking-upgrade="${item.id}" ${disabled(editable() && !gate && !maxed && s.coins >= cost)}>${maxed ? "Complete" : gate ? `Level ${item.level}` : money(cost)}</button></article>`;
@@ -158,13 +176,17 @@ export function cookingSheets(ui) {
   }
 
   function body() {
-    const s = ui.state;
-    if (!s.kitchen.purchased) return locked(s);
-    const pages = { recipes, mix, equipment, deliveries, pantry, food };
-    return `<div class="cooking-sheet" data-cooking-state="owned"><div class="cooking-intro"><div><p class="cooking-kicker">${station === "home" ? "Shane & Natalie’s kitchen" : "Maisie’s Midnight Kitchen"}</p><span class="cooking-status">${C.RECIPES.reduce((n, recipe) => n + availableFood(s, recipe.id), 0)} portions available · ${s.kitchen.orders.length} deliveries</span></div><button class="cooking-text-button" data-cooking-action="${station === "home" ? "home" : "visit"}">${station === "home" ? "View kitchen" : "View truck"}</button></div><div class="cooking-tabs">${segmented("cooking-tab", "Kitchen management", tabs, tab)}</div>${s.paused ? '<p class="cooking-paused" role="status">Farm paused. Resume to cook, buy or change prices. Deliveries and batches wait safely.</p>' : ""}${pages[tab](s)}${upgrades(s)}${accounts(s)}</div>`;
+    const s=ui.state;if(!s.kitchen.purchased)return locked(s);
+    const group=groupFor(tab), identity=tab==="food"?"Skyla’s food shelves":tab==="equipment"?"Home kitchen":station==="home"?"Home kitchen":"Maisie’s kitchen", pages={recipes,mix,equipment,deliveries,pantry,food,upgrades:s=>upgrades(s).replace(/<details[^>]*><summary>[\s\S]*?<\/summary>/,'').replace(/<\/details>$/,'')};
+    const sub=group==='supplies'?serviceNav('cooking-tab','Ingredient supplies',[['deliveries','Order supplies'],['pantry','In your pantry']],tab):group==='improve'?serviceNav('cooking-tab','Kitchen upgrades',[['upgrades','Truck & chef'],['equipment','Home equipment']],tab):tab==='mix'?`<button class="service-inline-link" data-cooking-go="recipes">${SERVICE_BACK} Back to recipes</button>`:'';
+    return `<div class="cooking-sheet service-sheet" data-cooking-state="owned" data-menu-view="cooking:${tab}"><header class="service-identity"><div>${station==='home'?cookingIcon('hob'):maisieIcon()}<span><b>${identity}</b><small>${K.foodCount(s)} portions · ${s.kitchen.orders.length} deliveries</small></span></div><button class="service-location" data-cooking-action="${tab==='food'?'viewshop':station==='home'?'home':'visit'}">${tab==='food'?'View shop':station==='home'?'View room':'View truck'} <span aria-hidden="true">${SERVICE_OUT}</span></button></header>${serviceNav('cooking-section','Kitchen management',tabs,group)}${s.paused?'<div class="service-paused"><span>Farm paused · deliveries and cooking wait.</span><button class="service-inline-link" data-cooking-action="resume">Resume</button></div>':''}${sub}${pages[tab](s)}${tab==='food'?accounts(s):''}</div>`;
   }
 
   function bind(host) {
+    host.querySelectorAll('[data-cooking-section]').forEach(b=>b.onclick=()=>{tab=({cook:'recipes',supplies:'deliveries',food:'food',improve:station==='home'?'equipment':'upgrades'})[b.dataset.cookingSection];ui.draw();});
+    host.querySelectorAll('[data-recipe-select]').forEach(b=>b.onclick=()=>{selectedRecipe=selectedRecipe===b.dataset.recipeSelect?null:b.dataset.recipeSelect;ui.draw();});
+    host.querySelector('[data-recipe-discovery]')?.addEventListener('toggle',e=>{discoverOpen=e.currentTarget.open;});
+    host.querySelectorAll('[data-recipe-order]').forEach(b=>b.onclick=()=>{const r=C.RECIPE_BY_ID[b.dataset.recipeOrder],list=recipeShoppingList(ui.state,r,batchCount(ui.state,r.id));cart={...list.items};tab='deliveries';ui.draw();if(list.partial)ui.notice?.('This cart holds 40 ingredients. Order the remaining supplies afterwards.');});
     const tabStrip = host.querySelector(".cooking-tabs"), currentTab = tabStrip?.querySelector("[aria-pressed=true]");
     if (tabStrip && currentTab) tabStrip.scrollLeft = Math.max(0, currentTab.offsetLeft - (tabStrip.clientWidth - currentTab.offsetWidth) / 2);
     host.querySelectorAll("[data-cooking-tab], [data-cooking-go]").forEach(button => button.onclick = () => { tab = button.dataset.cookingTab ?? button.dataset.cookingGo; cancelStation = null; ui.draw(); });
@@ -194,6 +216,10 @@ export function cookingSheets(ui) {
     host.querySelector("[data-cooking-chef]")?.addEventListener("change", event => { if (K.setChefRecipe(ui.state, event.target.value || null)) changed(); else ui.draw(); });
     host.querySelectorAll("[data-cooking-action]").forEach(button => button.onclick = () => {
       const action = button.dataset.cookingAction;
+      if(action==='resume'){ui.state.paused=false;ui.save();ui.draw();return;}
+      if(action==='farm'){ui.leavePlace?.();ui.closeSheet();return;}
+      if(action==='shop')return ui.openShopSheet?.('shop');
+      if(action==='viewshop'){ui.closeSheet();if(ui.state.shop.unlocked)ui.enterShop?.();else ui.openShopSheet?.('shop');return;}
       if (action === "visit") return visit();
       if (action === "home" || action === "home-equipment") return ui.enterKitchen?.({ tab: action === "home-equipment" ? "equipment" : tab });
       if (action === "furnish") { if (!ui.enterKitchen?.({ tab: "equipment", noOpen: true })) return; ui.closeSheet(); ui.openKitchenDecorate?.(); return; }
@@ -202,5 +228,5 @@ export function cookingSheets(ui) {
     });
   }
 
-  return { cooking: { eyebrow: "From pumpkin patch to kitchen", title: () => station === "home" ? "Home kitchen" : "The Midnight Kitchen", setTab(value) { tab = tabs.some(([id]) => id === value) ? value : "recipes"; }, setStation(value) { station = value === "home" && homeOpen() ? "home" : "truck"; }, body, bind } };
+  return { cooking: { eyebrow: "From pumpkin patch to kitchen", title: () => "Kitchen & cooking", setTab(value) { tab = ["recipes","mix","equipment","deliveries","pantry","food","upgrades"].includes(value) ? value : "recipes"; }, setStation(value) { station = value === "home" && homeOpen() ? "home" : "truck"; }, body, bind } };
 }

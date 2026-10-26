@@ -18,7 +18,7 @@ export function moreSheet(ui) {
     body() {
       const s = ui.state, ready = claimable(s).length;
       const links = [
-        ["cooking", "Cooking", s.kitchen?.purchased ? "Pantry, recipes, deliveries & food shelves" : "Food truck · available to purchase at level 5"],
+        ["cooking", "Kitchen & food", s.kitchen?.purchased ? "Cook, order ingredients & stock Skyla’s shelves" : "Food truck · available to purchase at level 5"],
         ["journal", "Journal", ready ? `${ready} favour${ready === 1 ? "" : "s"} ready to collect` : "Favours, memories, books & level rewards"],
         ["settings", "Settings", "Sound, graphics, fullscreen & backups"],
         ["patch", "Back to the farm", "Return to the pumpkin patch"],
