@@ -220,7 +220,7 @@ export function createScene(canvas, state, hooks) {
     hit.userData = { type: "talk", who };
     if (!old) { scene.add(hit); pickables.push(hit); }
     scene.add(model);
-    actors[who] = { model, hit, queue: old?.queue ?? [], moving: false, work: 0, dx: 0 };
+    actors[who] = { model, hit, queue: old?.queue ?? [], delivery: old?.delivery ?? null, moving: false, work: 0, dx: 0 };
   }
   const nearestActor = (x, z) => Object.values(actors).filter(a => !a.delivery || !a.queue.length).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
 
@@ -233,7 +233,7 @@ export function createScene(canvas, state, hooks) {
     if (!order || !a || receivedOrders.has(order.id) || a.queue.length) return;
     if (!(order.phase === "travelling" || order.phase === "unloading" || order.phase === "ordered" && order.remaining <= 15)) return;
     if (Math.hypot(a.model.position.x - HOMES.shane.x, a.model.position.z - HOMES.shane.z) > 1) return;
-    const way = [{ x: 28.7, z: 16.6 }, { x: 30.2, z: 15.6 }, { x: 31.6, z: 12.6 }, { x: 35, z: 10.6 }, { x: 38, z: 8.6 }, { x: 39.65, z: 6 }, { x: 39.65, z: 4.45, wait: 6 }];
+    const way = [{ x: 28.7, z: 16.6 }, { x: 30.2, z: 15.6 }, { x: 31.6, z: 12.6 }, { x: 35, z: 10.6 }, { x: 38, z: 8.6 }, { x: 39.65, z: 6 }, { x: 39.65, z: 4.45, receive: order.id }];
     a.delivery = order.id;
     a.queue.push(...way, ...way.slice(0, -1).reverse(), { ...HOMES.shane });
     receivedOrders.add(order.id);
@@ -649,8 +649,12 @@ export function createScene(canvas, state, hooks) {
       const pos = a.model.position;
       let target = a.queue[0] ?? HOMES[who];
       const dx = target.x - pos.x, dz = target.z - pos.z, d = Math.hypot(dx, dz);
-      a.moving = d > 0.12 && a.work <= 0;
-      if (a.work > 0) a.work -= dt;
+      // Wait beside the actual parcel until it is credited (or cancelled),
+      // including a full-pantry hold. A fixed idle delay can end before arrival.
+      const receiving = d <= .12 && target.receive && state.kitchen.orders.some(o => o.id === target.receive);
+      a.moving = !receiving && d > 0.12 && a.work <= 0;
+      if (receiving) a.work = 0;
+      else if (a.work > 0) a.work -= dt;
       else if (d > 0.12) { const step = Math.min(d, WALK * dt); pos.x += dx / d * step; pos.z += dz / d * step; }
       else if (a.queue.length) { const stop = a.queue.shift(); a.work = stop.wait ?? (a.delivery ? 0 : 0.5); if (!a.queue.length) a.delivery = null; }
       // Like the sprites they come from, they always face the viewer (the voxel figures mirror to walk the other way).
@@ -800,7 +804,7 @@ export function createScene(canvas, state, hooks) {
     get festivalStatus() { return festivalWorld.status; },
     get hollowExteriorStatus() { return hollowFarm.status; },
     get hayrideStatus() { return hayrideWorld.status; },
-    get cookingStatus() { return { ...cookingWorld.status, displays: places.foodDisplayStatus, receiver: actors.shane?.delivery ?? null }; },
+    get cookingStatus() { return { ...cookingWorld.status, displays: places.foodDisplayStatus, receiver: actors.shane?.delivery ?? null, receiverStatus: actors.shane?.delivery ? { order: actors.shane.delivery, x: actors.shane.model.position.x, z: actors.shane.model.position.z, waiting: !!actors.shane.queue[0]?.receive && Math.hypot(actors.shane.model.position.x - 39.65, actors.shane.model.position.z - 4.45) <= .12 } : null }; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
     fitView() {
       if (view.place === "maze") { mazeView.setLook(0, 0); mazeView.resize(); return; }

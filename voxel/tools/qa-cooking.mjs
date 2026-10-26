@@ -14,8 +14,9 @@ const out = path.resolve(process.argv[3] || "/tmp/cooking-qa");
 fs.mkdirSync(out, { recursive: true });
 const html = fs.readFileSync(file), sha256 = createHash("sha256").update(html).digest("hex");
 const checks = [], errors = [], externalRequests = [], samples = [];
-const visualOnly = process.env.COOKING_QA_FOCUS === "visual";
-const meta = { file, sha256, focus: visualOnly ? "visual-regression" : "complete-flow", started: new Date().toISOString(),
+const focus = process.env.COOKING_QA_FOCUS || "complete-flow";
+const visualOnly = ["visual", "final"].includes(focus), lightFinal = focus === "final";
+const meta = { file, sha256, focus: lightFinal ? "final-artifact-smoke" : visualOnly ? "visual-regression" : "complete-flow", started: new Date().toISOString(),
   fixture: "QA-only funds and level gates; game rules, UI handlers and HTML are unmodified" };
 const write = name => fs.writeFileSync(path.join(out, name), JSON.stringify({ ...meta, checks, errors, externalRequests, samples }, null, 2));
 write("run.json");
@@ -210,13 +211,13 @@ try {
     await snapshot("desktop-truck-service-pad");
     const target=await page.evaluate(()=>PumpkinVoxel.scene.project(42.75,1.9,4.1));await page.mouse.click(target.x,target.y);await frame();
     check(await page.locator('[data-cooking-state="owned"]').isVisible(),"final terrain refinement retains the physical truck interaction");
-    for(const[label,width,height]of[["phone",390,844],["fold",874,787]]){
-      await page.setViewportSize({width,height});await open("deliveries");await layout(label);await snapshot(label+"-delivery-menu");
-      await page.evaluate(()=>{PumpkinVoxel.closeSheet();PumpkinVoxel.scene.focusCooking();});await snapshot(label+"-truck-service-pad");
+    for(const[label,width,height]of(lightFinal?[["phone",390,844]]:[["phone",390,844],["fold",874,787]])){
+      await page.setViewportSize({width,height});await open("deliveries");await layout(label);if(!lightFinal)await snapshot(label+"-delivery-menu");
+      await page.evaluate(()=>{PumpkinVoxel.closeSheet();PumpkinVoxel.scene.focusCooking();});if(!lightFinal)await snapshot(label+"-truck-service-pad");
     }
     await page.setViewportSize({width:1280,height:800});await page.evaluate(()=>{PumpkinVoxel.enterShop();PumpkinVoxel.closeSheet();});await frame();
     check(await page.evaluate(()=>PumpkinVoxel.scene.cookingStatus.displays.length===2),"both native food wall displays remain installed");
-    await snapshot("desktop-food-wall-displays");await page.evaluate(()=>PumpkinVoxel.leavePlace());
+    if(!lightFinal)await snapshot("desktop-food-wall-displays");await page.evaluate(()=>PumpkinVoxel.leavePlace());
     check(await page.evaluate(()=>JSON.stringify(PumpkinVoxel.rules.saveData(PumpkinVoxel.state())))===stateBefore,"visual scene changes and terrain focus cannot alter saved stock, cash or delivery progress");
   }
 
