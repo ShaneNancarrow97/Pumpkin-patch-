@@ -1,0 +1,23 @@
+# Cooking verification
+
+`tools/qa-cooking.mjs` runs against an immutable standalone HTML, served unchanged over loopback because this managed Chromium blocks direct `file://` navigation. The runner hashes the HTML before opening the browser and writes each assertion immediately to `progress.json`; `checks.json` records final completion separately.
+
+The browser fixture supplies funds and current published level thresholds, suppresses unrelated arrivals, and skips the introduction. These are localStorage fixtures inside the QA browser, not modifications to the downloadable game. Purchasing the truck, ordering/cancelling ingredients, cooking, setting shelf products/prices and hiring the chef use actual UI handlers. The hungry-shopper fixture still runs through the existing browsing, queue and checkout simulation with one finite wallet. The later home-station test purchases the actual house tiers and copper range through the normal rules, places the range and clicks its contextual Cook control.
+
+Screenshots cover the physical truck/cart, shop food displays, phone menu and unfolded Fold menu. The responsive assertions check horizontal fit and 44px touch targets in portrait, landscape and Fold viewports. They do not establish frame rate on a physical Samsung device. Rendering uses Chromium SwiftShader at DPR1 with performance settings and optional bloom/shadows/mist/lake lights disabled; native fullscreen and direct file access are restricted by browser policy.
+
+Read the pinned run's `checks.json` for the actual result. A runner file or partial `progress.json` is not evidence of a completed pass. If later source changes require a new HTML build, its new hash must receive a separate verification directory.
+
+## Recorded runs
+
+- `browser-candidate`: preliminary HTML `f6561033ec2562bc244ba6acf4ab7ee6c4fea4fec652f04a4f0645a0cdf6393e`; 22 assertions passed, then the phone touch-target assertion found 42px-wide ingredient quantity inputs. This run intentionally records a failed candidate. The inputs were widened to 44px. Its world screenshot also exposed a tree obscuring the truck and excessively broad truck framing; both were corrected before the next run.
+- `browser-final`: complete gameplay flow, **44/44 assertions passed**, HTML `4f4c95522325f9dc699388508d184cd7376098f81345ada1503bac28d9ad4f57`. Covers level-gated purchase, exact delivery/cancellation accounting, paused timers, physical cart and truck selection, cooking input consumption/yield, price setting, separate accounts, phone/landscape/Fold layouts, real finite-wallet food checkout with locked quoted price, home cooker purchase/placement/contextual interaction, chef automation and full save/reload. Four screenshots were reviewed. No page/console errors, no external runtime requests and one WebGL canvas.
+
+The service-pad-only art refinement is verified separately below; the complete gameplay result above remains attributed to its own pinned HTML hash.
+
+- `browser-visual`: **9/9 assertions passed**, final service-pad HTML `4d47c0003b9325fb16e65eac13ee9e33acee71c524785f70d9b9fee2a4b81659`. The fine cobbles and approach apron were reviewed at desktop, phone and Fold sizes, with the unloading cart visible. Physical truck selection, both native shop food cabinets, touch targets and saved-state invariance passed. Six screenshots; no page/console errors or external requests.
+- `browser-release`: **8/8 lightweight final-artifact assertions passed**, release HTML `e8601b62048df0df52e035fc332c4b080d612ea6fb52d6a986d9c362b49c5ecf`. This exact artifact boots, shows the truck and unloading cart, opens Cooking by tapping the truck, retains phone touch targets and both shop food cabinets, and preserves saved state across scene changes. One desktop screenshot reviewed. One WebGL canvas, no external runtime requests, no page/console errors. The only runtime delta after the service-pad run is Shane's receiving waypoint: code review confirms it waits while the corresponding order exists and releases after delivery or cancellation. Physical end-to-end actor walk timing was not measured in the browser; `advance()` fast-forwards simulation rules rather than actor render movement.
+
+## Build and standard checks
+
+`node-tests.txt` records the local 67-file passing integration run. Final runtime `ba99b87a5a6d7a94e8ba584d32fca42970828c30` also passes all Node tests, build and unchanged48-check standard smoke in GitHub CI; see `standard-smoke-ci.json` for job URL and steps. `clean-patch-rebuild.json` records the byte-identical final HTML rebuild and incremental base. The full 44-check flow remains attributed to its pinned pre-ground-polish build; the exact release has the separate 8-check scope described above.
