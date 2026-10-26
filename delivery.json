@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "2da0f293cc6c4b4b2506a4a27c717099d1226695",
+  "runtimeCommit": "74c55a23e96c725214f5b99638b28b48c2b28606",
+  "incrementalBase": "6138ecae1f670ad49550547cefd5f6f32bee4366",
+  "alternateBase": "121f4cdbb85770de38c3860c2e51647f8bd2c921",
+  "htmlSha256": "01212e3ea69b9641edef42c9faa5d0e2b9cfc585eaafca23a3fbf074e580e56f",
+  "nodeTestFiles": 76,
+  "fullBrowser": {
+    "checks": 28,
+    "sha256": "fb8c0e0e7fd1a5358f6b3719f5388b1fb09f0cb47f1973e47164da8397f0095b"
+  },
+  "finalBrowser": {
+    "checks": 8,
+    "sha256": "01212e3ea69b9641edef42c9faa5d0e2b9cfc585eaafca23a3fbf074e580e56f"
+  },
+  "cleanRebuildIdentical": true,
+  "patchesChecked": true
+}
