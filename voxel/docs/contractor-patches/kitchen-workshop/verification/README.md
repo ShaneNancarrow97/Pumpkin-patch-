@@ -6,3 +6,6 @@
 - Final clean committed-source build is byte-identical to the download. CI is recorded separately when complete; do not infer a final CI pass from a prior commit.
 
 Fixtures grant funds/levels only in QA browser localStorage. None are embedded in the downloadable HTML. Physical Android/Fold performance, file handling and OS fullscreen remain unverified.
+
+- Final runtime CI is green: run 40391839738, runtime 74c55a2, both root and voxel jobs. See ci-final.json.
+- The lightweight runtime patch applied to its clean base also builds byte-identically; see runtime-patch-rebuild.json.
