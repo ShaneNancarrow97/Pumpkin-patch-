@@ -1,0 +1,10 @@
+{
+  "sourceCommit": "6138ecae1f670ad49550547cefd5f6f32bee4366",
+  "runtimeCommit": "ab0fe12e0d0554f1903affdb91bfd3f43452dc27",
+  "base": "121f4cdbb85770de38c3860c2e51647f8bd2c921",
+  "htmlSha256": "9c8da2415dad4141114479233ea32f6b4c201c715c3195bc3fd9721757d1c4c5",
+  "nodeTestFiles": 68,
+  "browserChecks": 6,
+  "cleanBuildIdentical": true,
+  "patchCheck": true
+}
