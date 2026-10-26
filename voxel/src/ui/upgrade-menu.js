@@ -1,5 +1,5 @@
 import { cookingIcon } from "./cooking-icons.js";
-// The dock's Upgrades button: a small menu that rises above it, one choice
+// The dock's Manage button: a small menu that rises above it, one choice
 // for each part of the upgrades sheet. Arrow keys move through it, Escape or
 // a tap elsewhere closes it, and choosing opens the sheet at that section.
 export const UPGRADE_SECTIONS = [

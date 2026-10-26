@@ -219,7 +219,7 @@ function floatStreak(streak, at) {
 }
 function tapPlot(i) {
   if (state.paused) return notice("Tea break. Turn it off in Settings to get back to work.");
-  if (i >= M.openPlots(state)) return notice("Buy Room for more in Shop › Farm to clear this plot.");
+  if (i >= M.openPlots(state)) return notice("Choose Manage, then Farm upgrades, to clear more plots.");
   const p = state.plots[i];
   if (p.phase === "empty" && M.plant(state, i)) { scene.sendTo(i); audio.tone(340); }
   else if (p.phase === "ready") pickPlot(i);
@@ -517,7 +517,7 @@ function markTab() {
   const active = openTab ? TABS[openTab] : ["foyer", "maze", "hayride"].includes(scene.place?.kind) ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
 }
-// Upgrades opens its menu; a choice opens the upgrades sheet at that section.
+// Manage opens the farm and business directory.
 const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if (section === "cooking") openCookingSheet(); else if(section === "cocoa") openCocoaSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
   const tab = t.dataset.tab;
