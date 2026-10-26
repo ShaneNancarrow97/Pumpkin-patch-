@@ -1,0 +1,279 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Kitchen-Workshop.html",
+  "sha256": "01212e3ea69b9641edef42c9faa5d0e2b9cfc585eaafca23a3fbf074e580e56f",
+  "started": "2026-10-26T20:01:05.125Z",
+  "fixture": "QA-only funds, published levels and suppressed unrelated arrivals; runtime and UI unmodified",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "Maisie is present at the truck"
+    },
+    {
+      "ok": true,
+      "label": "original and VIP seated art renders at two benches"
+    },
+    {
+      "ok": true,
+      "label": "four-frame courtier walking models are installed"
+    },
+    {
+      "ok": true,
+      "label": "VIP walk cycle advances between opposite-leg frames"
+    },
+    {
+      "ok": true,
+      "label": "phone: menus fit and controls meet 44px touch targets",
+      "data": {
+        "width": 390,
+        "pageOverflow": false,
+        "small": [],
+        "clipped": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: menus fit and controls meet 44px touch targets",
+      "data": {
+        "width": 874,
+        "pageOverflow": false,
+        "small": [],
+        "clipped": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "final artifact has no browser errors",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "all final assets are embedded",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    {
+      "name": "final-maisie-truck-and-diners",
+      "kitchen": {
+        "active": false,
+        "recipe": null,
+        "method": null,
+        "steam": 0,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 45,
+        "triangles": 541448,
+        "geometries": 59,
+        "textures": 24
+      }
+    },
+    {
+      "name": "final-vip-walk",
+      "kitchen": {
+        "active": false,
+        "recipe": null,
+        "method": null,
+        "steam": 0,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 37,
+        "triangles": 596298,
+        "geometries": 70,
+        "textures": 24
+      }
+    },
+    {
+      "name": "final-purple-wheelchair-kitchen",
+      "kitchen": {
+        "active": false,
+        "recipe": null,
+        "method": null,
+        "steam": 0,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 25,
+        "triangles": 250306,
+        "geometries": 99,
+        "textures": 24
+      }
+    },
+    {
+      "name": "final-phone-mix",
+      "kitchen": {
+        "active": false,
+        "recipe": null,
+        "method": null,
+        "steam": 0,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 390,
+        "bufferHeight": 844,
+        "postprocessWidth": 390,
+        "postprocessHeight": 844,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.002564102564102564,
+          0.001184834123222749
+        ],
+        "touchDevice": true,
+        "calls": 24,
+        "triangles": 250148,
+        "geometries": 99,
+        "textures": 24
+      }
+    },
+    {
+      "name": "final-fold-mix",
+      "kitchen": {
+        "active": false,
+        "recipe": null,
+        "method": null,
+        "steam": 0,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 25,
+        "triangles": 250306,
+        "geometries": 99,
+        "textures": 24
+      }
+    }
+  ]
+}

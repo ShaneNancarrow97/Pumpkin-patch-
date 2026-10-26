@@ -8,6 +8,8 @@
 
 **New contractor crop:** [`docs/handovers/45-midnight-moon-pumpkin.md`](docs/handovers/45-midnight-moon-pumpkin.md) adds the fifth navy-and-gold variety and legacy four-bin save migration. Larger kitchen/VIP integration is explicitly unfinished and separate.
 
+**Contractor workshop:** [`docs/handovers/46-kitchen-hospitality-workshop.md`](docs/handovers/46-kitchen-hospitality-workshop.md) completes physical kitchen equipment/mixing/batches, Maisie and dining, Renaissance VIPs/rushes, Sandy deluxe automation, Natalie’s wheelchair and longer two-tractor hayrides. It includes handover 45; use the correct patch base and preserve unpublished lead work.
+
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
 **Codex's hayride (merged in 39):** [`docs/handovers/38-hayride-lead-integration.md`](docs/handovers/38-hayride-lead-integration.md) preserves Claude’s `1abaff5` maze update and isolates hayride audio from lead-owned runtime files.
