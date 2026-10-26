@@ -1,7 +1,7 @@
 // The stand's premium menu uses paid stock and the same finite visitor purse.
 import { quoteBasket } from "./stock.js";
 import { enjoyTreat } from "./guest-needs.js";
-import { VARIETIES } from "./farm.js";
+import { VARIETIES, VARIETY_INDICES } from "./farm.js";
 export const COCOA_SPECIALS = [
   { id: "flake", name: "Chocolate-flake cocoa", tier: 2, price: 6, minPrice: 4, maxPrice: 10, cost: 3, text: "Creamy cocoa with a generous chocolate flake." },
   { id: "deluxe", name: "Ghost marshmallow cocoa", tier: 2, price: 7, minPrice: 5, maxPrice: 12, cost: 3, text: "Whipped cream, little ghost marshmallows and chocolate drizzle." },
@@ -34,7 +34,7 @@ export const standHasStock = s => s.festival.cocoa.stock > 0 || COCOA_SPECIALS.s
 // has finished at the stall (a chatter, meadow-chat.js) spends from what's left.
 export function quoteStandOrder(s, visitor, reserve = true) {
   const c = s.festival.cocoa;
-  const basket = reserve ? quoteBasket(s, visitor, [0, 1, 2, 3], VARIETIES.map(p => p.price)) : null;
+  const basket = reserve ? quoteBasket(s, visitor, VARIETY_INDICES, VARIETIES.map(p => p.price)) : null;
   let spare = visitor.budget - (basket ?? []).reduce((sum, l) => sum + l.price * l.quantity, 0);
   const needs = visitor.needs ?? { thirst: 75, hunger: 65, value: 1 }, order = [];
   const willing = (p, need) => p.price * (.75 + .7 * need / 100) * needs.value;

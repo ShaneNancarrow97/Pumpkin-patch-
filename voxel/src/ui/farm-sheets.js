@@ -115,7 +115,7 @@ export function farmSheets(ui) {
     const stats = `<div class="stats"><div><b>${sh.served}</b><span>served inside</span></div><div><b>${money(sh.income)}</b><span>pumpkin takings</span></div><div><b>${money(s.customerCare.tips.shop)}</b><span>tips at the till</span></div><div><b>${sh.customers.filter((c) => c.phase !== "leaving").length}/${M.SHOP_CAPACITY[sh.capacityLevel]}</b><span>browsing now</span></div></div>`;
     const tables = Array.from({ length: M.displayCount(sh) }, (_, i) => {
       const on = sh.displays[i];
-      return `<div class="table-row"><h4>Table ${i + 1}</h4><div class="chips" role="group" aria-label="What table ${i + 1} shows">${[null, 0, 1, 2, 3].map((v) => {
+      return `<div class="table-row"><h4>Table ${i + 1}</h4><div class="chips" role="group" aria-label="What table ${i + 1} shows">${[null, ...M.VARIETIES.map((_, i) => i)].map((v) => {
         const taken = v !== null && sh.displays.some((d, k) => k !== i && k < M.displayCount(sh) && d === v);
         return `<button class="chip" data-display="${i}:${v}" aria-pressed="${on === v}" ${taken ? "disabled" : ""}>${v === null ? "Empty" : M.VARIETIES[v].name}${v !== null ? ` <small>${M.available(s, v)}</small>` : ""}</button>`;
       }).join("")}</div></div>`;

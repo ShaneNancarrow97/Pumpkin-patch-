@@ -2,6 +2,7 @@
 // with the patch; every pumpkin still comes from available stock at normal prices.
 import { patchLevel } from "./levels.js";
 import { VARIETIES } from "./farm.js";
+import { VARIETY_INDICES } from "../content/pumpkin-varieties.js";
 
 export const BIG_SPENDER_KIND = 10;
 export const BIG_SPENDER_FIRST = 110;
@@ -32,5 +33,5 @@ export function bigSpenderBasket(s) {
   const highest = Math.max(0, ...(s.plotLevels ?? [0]));
   const price = VARIETIES[Math.min(VARIETIES.length - 1, highest)].price;
   const budget = Math.min(800, Math.max(350 + level * 25, Math.ceil(price * basketLimit * .65)));
-  return { vip: true, regular: false, budget, basketLimit, preferred: [3, 2, 1, 0] };
+  return { vip: true, regular: false, budget, basketLimit, preferred: [...VARIETY_INDICES].reverse() };
 }

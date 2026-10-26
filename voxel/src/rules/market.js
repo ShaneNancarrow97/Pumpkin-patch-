@@ -10,6 +10,7 @@
 // The extra for fresh and wanted pumpkins only comes from what a shopper has
 // left once their basket is full, so it never costs a sale.
 import { PLOT_COUNTS } from "../content/farm-layout.js";
+import { MAX_VARIETY_INDEX } from "../content/pumpkin-varieties.js";
 
 export const FRESH = Object.freeze({ seconds: 90, bonus: 0.2 });
 export const WANTED = Object.freeze({ seconds: 300, bonus: 0.25, keen: 0.15 });
@@ -17,7 +18,7 @@ export const WANTED = Object.freeze({ seconds: 300, bonus: 0.25, keen: 0.15 });
 export const freshWanted = () => ({ variety: null, until: 0, serial: 0 });
 const draw = (n) => ((Math.imul(n + 0x9e37, 2654435761) >>> 8) % 1000) / 1000;
 // The best variety any open plot can grow.
-export const bestGrowable = (s) => Math.max(0, ...s.plotLevels.slice(0, PLOT_COUNTS[Math.max(0, Math.min(PLOT_COUNTS.length - 1, Math.trunc(s.upgrades.plots || 0)))]));
+export const bestGrowable = (s) => Math.min(MAX_VARIETY_INDEX, Math.max(0, ...s.plotLevels.slice(0, PLOT_COUNTS[Math.max(0, Math.min(PLOT_COUNTS.length - 1, Math.trunc(s.upgrades.plots || 0)))])));
 export const wantedVariety = (s) => (s.wanted && s.time < s.wanted.until ? s.wanted.variety : null);
 export const wantedSecondsLeft = (s) => (wantedVariety(s) === null ? 0 : Math.max(0, Math.min(WANTED.seconds, s.wanted.until - s.time)));
 

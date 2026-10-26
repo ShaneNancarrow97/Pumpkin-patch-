@@ -1,7 +1,7 @@
 // Game rules for the voxel build. Pure: no DOM, no three.js, so the tests run it
 // in Node. One step of update() is a slice of game time. The rules live in
 // rules/; this file puts the state together, loads old saves and runs a step.
-import { UPGRADES, VARIETIES, STREAK, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
+import { UPGRADES, VARIETIES, MAX_VARIETY_INDEX, VARIETY_COUNT, STREAK, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
 import { MAX_PLOTS } from "./content/farm-layout.js";
 import { freshStock, freshBatches, restoreFresh, settleFresh } from "./rules/stock.js";
 import { freshWanted, restoreWanted, updateWanted } from "./rules/market.js";
@@ -78,11 +78,11 @@ export function restoreState(raw) {
   for (const k of ["sold", "harvested", "taps", "nextVisitor", "nextParty", "wholesale"]) s[k] = count(raw[k]);
   s.time = money(raw.time);
   s.paused = raw.paused === true;
-  s.plotLevels = Array.from({ length: MAX_PLOTS }, (_, i) => Math.min(3, count(raw.plotLevels?.[i])));
+  s.plotLevels = Array.from({ length: MAX_PLOTS }, (_, i) => Math.min(MAX_VARIETY_INDEX, count(raw.plotLevels?.[i])));
   s.plotCrops = s.plotLevels.map((level, i) => (v1 ? level : Math.min(level, count(raw.plotCrops?.[i]))));
   s.plots = Array.from({ length: MAX_PLOTS }, (_, i) => {
     const p = raw.plots[i];
-    const variety = Math.min(3, count(p?.variety));
+    const variety = Math.min(MAX_VARIETY_INDEX, count(p?.variety));
     return ["growing", "ready"].includes(p?.phase) ? { phase: p.phase, progress: Math.max(0, Math.min(1, Number(p.progress) || 0)), variety } : { phase: "empty", progress: 0, variety: s.plotCrops[i] };
   });
   // Tiers are kept and held to today's maxima (a save at an old maximum is a tier partway up now).
@@ -94,7 +94,7 @@ export function restoreState(raw) {
   s.upgrades.cart = Math.min(top.cart, count(u.cart));
   for (const v of VISITOR_UPGRADES) s.visitorUpgrades[v.id] = Math.min(v.costs.length, count(raw.visitorUpgrades?.[v.id]));
   if (Array.isArray(raw.stock) && v1) for (const v of raw.stock) if (VARIETIES[v]) s.stock[v]++;
-  if (Array.isArray(raw.stock) && !v1 && raw.stock.length === 4) s.stock = raw.stock.map(count);
+  if (Array.isArray(raw.stock) && !v1 && [4, VARIETY_COUNT].includes(raw.stock.length)) s.stock = Array.from({ length: VARIETY_COUNT }, (_, i) => count(raw.stock[i]));
   s.fresh = restoreFresh(raw.fresh, s);
   s.wanted = restoreWanted(raw.wanted, s);
   s.orders = restoreOrders(raw.orders, s);

@@ -15,6 +15,7 @@ import { planHollowVisit, tickHollowVisit, mazeFootfallBonus } from "./hollow-ho
 import { planChat, tickChat, updateChats, chatting } from "./meadow-chat.js";
 import { planHayrideVisit, tickHayrideVisit, hayrideFootfallBonus } from "./hayride.js";
 import { hayrideJourneyTiming } from "../content/hayride-layout.js";
+import { VARIETY_INDICES } from "../content/pumpkin-varieties.js";
 import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
 import { wishFor } from "./market.js";
 import { BIG_SPENDER_KIND, advanceBigSpender, bigSpenderBasket } from "./big-spender.js";
@@ -236,7 +237,7 @@ export function updateStall(s, dt, events) {
       if (v.social) continue;
     }
     if (v.leaveAt !== null || v.age < VISIT.arrive) continue;
-    const owner = "visitor-" + v.id, lines = chooseBasket(s, v, [0, 1, 2, 3], owner, PRICES);
+    const owner = "visitor-" + v.id, lines = chooseBasket(s, v, VARIETY_INDICES, owner, PRICES);
     if (lines) {
       const receipt = commitHold(s, owner), mug = buyMug(s, v, receipt.amount);
       pay(s, receipt, s.stall);

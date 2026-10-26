@@ -1,0 +1,28 @@
+import fs from 'node:fs';
+import http from 'node:http';
+import {createHash} from 'node:crypto';
+import {chromium} from 'playwright';
+import * as M from '../src/model.js';
+const file=process.argv[2]||'dist/pumpkin-patch-voxel.html',out=process.argv[3]||'/tmp/moon-qa';fs.mkdirSync(out,{recursive:true});
+const html=fs.readFileSync(file),sha256=createHash('sha256').update(html).digest('hex'),checks=[],errors=[];
+const server=http.createServer((req,res)=>{res.setHeader('Content-Type','text/html');res.end(html)});await new Promise(r=>server.listen(0,'127.0.0.1',r));
+const seed=M.freshState();Object.assign(seed,{coins:50000,earned:110000,introSeen:true,paused:true});seed.progression.claimed=M.LEVELS.map(l=>l.level);seed.progression.pending=[];seed.plotLevels[0]=seed.plotCrops[0]=3;seed.stock=[1,2,3,4,5];
+const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
+const check=(ok,label)=>{checks.push({ok:!!ok,label});console.log(ok?'ok':'FAIL',label);if(!ok)throw Error(label)};
+try{const page=await browser.newPage({viewport:{width:1280,height:800},hasTouch:true});page.setDefaultTimeout(120000);page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(seed=>{localStorage.setItem('pumpkin-patch-voxel-reference-v1',JSON.stringify(seed));localStorage.setItem('pumpkin-patch-voxel-reference-v1-prefs',JSON.stringify({renderQuality:'performance',glow:false,shadows:false,mist:false,music:false,sound:false}));},M.saveData(seed));
+ await page.goto('http://127.0.0.1:'+server.address().port);await page.waitForSelector('body[data-ready]');await page.evaluate(()=>{PumpkinVoxel.intro?.skip();PumpkinVoxel.openSheet('shop')});
+ await page.locator('[data-shoptab="seeds"]').click({force:true});
+ check((await page.locator('[data-plot="0"]').textContent()).includes('Midnight Moon'),'seed menu exposes fifth tier');
+ await page.locator('[data-plot="0"]').click({force:true});
+ check(await page.evaluate(()=>PumpkinVoxel.state().plotLevels[0]===4&&PumpkinVoxel.state().coins===42200),'actual purchase charges 7800 for one plot');
+ await page.evaluate(()=>{const p=PumpkinVoxel,s=p.state();p.closeSheet();p.rules.plant(s,0);p.rules.updateFarm(s,48,[]);p.save();});
+ await page.screenshot({path:out+'/desktop-moon.png'});
+ await page.reload();await page.waitForSelector('body[data-ready]');
+ check(await page.evaluate(()=>{const s=PumpkinVoxel.state();return s.plotLevels[0]===4&&s.plots[0].variety===4&&s.plots[0].phase==='ready'&&s.stock[4]===5}),'reload preserves fifth crop and five stock bins');
+ await page.setViewportSize({width:853,height:690});await page.evaluate(()=>PumpkinVoxel.openSheet('shop'));await page.locator('[data-shoptab="seeds"]').click({force:true});
+ check(await page.locator('[data-crop="0:4"]').isVisible(),'unfolded Fold layout exposes Midnight Moon selection');
+ check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no horizontal page overflow on unfolded Fold');
+ await page.screenshot({path:out+'/fold-seeds.png'});
+ check(errors.length===0,'no browser runtime errors');
+}finally{await browser.close();server.close();fs.writeFileSync(out+'/report.json',JSON.stringify({sha256,checks,errors},null,2))}
