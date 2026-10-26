@@ -11,7 +11,7 @@ import { converse, freshSocial, recordNews } from "../src/rules/meadow-talk.js";
 function evening(level = 3, stock = 400) {
   const s = M.freshState(); s.coins = 1e6; s.earned = 2e5;
   s.festival.meadow = true; s.festival.cocoa.level = level; s.festival.cocoa.stock = 100;
-  for (const id of Object.keys(s.festival.cocoa.extras)) s.festival.cocoa.extras[id].stock = 30;
+  for (const id of Object.keys(s.festival.cocoa.extras)) s.festival.cocoa.extras[id].stock = M.COCOA_SPECIALS.find(p=>p.id===id).tier<=level?30:0;
   s.stock = [stock, stock, stock, stock]; s.visitorUpgrades.party = 3; s.visitorUpgrades.crowd = 4; s.upgrades.sign = 4;
   return s;
 }

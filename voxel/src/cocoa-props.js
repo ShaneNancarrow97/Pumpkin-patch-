@@ -4,7 +4,16 @@ const templates = new Map();
 export function cocoaProp(id = "cocoa") {
   if (!templates.has(id)) {
     const v = new Voxels();
-    if (id === "smores") {
+    if (id === "smores-platter") {
+      v.block(0, 0, 0, .94, .035, .72, 0x8c633e);v.block(0, .035, 0, .86, .02, .65, 0xe6d2aa);
+      for(const [x,z]of [[-.28,-.11],[0,-.13],[.28,-.1]]){
+        v.block(x,.055,z,.24,.045,.27,0xc38f53);v.block(x,.1,z,.22,.045,.25,0x4c2923);
+        v.block(x,.145,z,.2,.1,.23,0xf2ddbb);v.block(x,.245,z,.24,.045,.27,0xdba966);
+        for(const dx of [-.055,.055])v.block(x+dx,.29,z,.025,.01,.035,0xa1703b);
+      }
+      v.block(.1,.055,.2,.23,.11,.18,0xa87c45);v.block(.1,.165,.2,.18,.015,.13,0x8b482b);
+      for(const x of [-.32,-.23,-.13])v.block(x,.06,.2,.045,.03,.09,0x5f3627);
+    } else if (id === "smores") {
       v.block(0, 0, 0, .55, .035, .44, 0xb47b45);
       v.block(0, .035, 0, .44, .09, .34, 0xdca563);
       v.block(0, .125, 0, .46, .06, .36, 0x4b2921);
@@ -14,7 +23,7 @@ export function cocoaProp(id = "cocoa") {
       for (const x of [-.075, .075]) v.block(x, .255, .16, .03, .04, .012, 0x48302a);
       v.block(0, .205, .16, .03, .04, .012, 0x48302a);
     } else {
-      const deluxe = id === "deluxe" || id === "midnight", purple = id === "midnight" ? 0x30203d : id === "flake" ? 0x986148 : 0x583345;
+      const deluxe = ["deluxe", "midnight", "ghost-wafer", "caramel-flake"].includes(id), purple = id === "midnight" ? 0x30203d : id === "ghost-wafer" ? 0x74608e : id === "caramel-flake" ? 0x8b4e32 : id === "flake" ? 0x986148 : 0x583345;
       v.block(0, 0, 0, .29, .035, .29, 0x352736);
       v.block(0, .035, 0, .33, .31, .33, purple);
       v.block(0, .34, 0, .36, .035, .36, 0xc29568);
@@ -33,6 +42,18 @@ export function cocoaProp(id = "cocoa") {
         v.block(-.1,.6,-.06,.05,.23,.06,0x5a3024);
         for (const y of [.43,.51,.59]) v.block(.025,y,.12,.1,.02,.015,0xc07836);
       }
+      if(id === "ghost-wafer"){
+        v.block(.095,.51,-.07,.14,.41,.045,0xcda265);
+        for(let i=0;i<5;i++)v.block(.095,.54+i*.073,-.044,.11,.012,.008,0x9f7547);
+        v.block(.095,.54,-.043,.012,.33,.01,0x9f7547);
+        v.block(-.04,.65,.02,.1,.13,.1,0xf6e6c7);v.block(-.04,.78,.02,.065,.035,.09,0xf6e6c7);
+        for(const x of [-.062,-.02])v.block(x,.72,.075,.016,.023,.009,0x40302d);
+      }
+      if(id === "caramel-flake"){
+        for(const x of [-.09,.04])for(let i=0;i<3;i++)v.block(x+i*.018,.62,-.06,.016,.29,.045,0x5d3026);
+        for(const y of [.45,.52,.59]){v.block(.06,y,.14,.13,.018,.015,0xcd8b3f);v.block(-.13,y,-.01,.018,.04,.13,0xcd8b3f);}
+        v.block(0,.045,0,.41,.035,.4,0xc49153);
+      }
     }
     const model = v.build(); model.traverse(m => { if (m.material) m.material.userData.sharedCocoa = true; });
     templates.set(id, model);
@@ -45,7 +66,7 @@ export function cocoaProp(id = "cocoa") {
 // size: round layers of white paper narrowing to the base, a sleeve in the
 // drink's colour with Sandy's orange badge and a seam, and a black lid with a
 // stepped rim, a low dome and a sip spout at the front.
-const SLEEVES = { cocoa: 0xa8794a, flake: 0x7a4a32, deluxe: 0x6a3a7a, midnight: 0x2e2238 };
+const SLEEVES = { cocoa: 0xa8794a, flake: 0x7a4a32, deluxe: 0x6a3a7a, midnight: 0x2e2238, "ghost-wafer": 0x74608e, "caramel-flake": 0x8b4e32 };
 const U = .0125;
 // A round layer as rows of boxes, `r` units across the middle.
 function disc(v, y, r, h, colour) {

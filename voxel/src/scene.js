@@ -1,3 +1,4 @@
+import { createMaisie, maisieTextures } from "./maisie.js";
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
@@ -16,7 +17,7 @@ import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, build
 
 import { buildVisitor, animateWalk } from "./characters.js";
 import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./sprite-voxels.js";
-import { loadSpriteSheets, spriteActor, spriteVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
+import { loadSpriteSheets, spriteActor, spriteVisitor, seatedVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
 import { VARIETIES, VISIT, visitorLeaveSeconds, openPlots, activeLook, counterSide } from "./model.js";
 import { createPlaces, ORIGIN } from "./places.js";
 import { INTERIOR } from "./interiors.js";
@@ -147,7 +148,7 @@ export function createScene(canvas, state, hooks) {
   const wilds = createWilds(scene, state);
   const hollowFarm = createHollowFarm(scene, state, signBoard, lamps);
   const hayrideWorld = createHayrideWorld({ scene, state, world, signBoard, createScares: createHayrideScares });
-  const cookingWorld = createCookingWorld({ scene, state, world, signBoard, lamps });
+  const cookingWorld = createCookingWorld({ scene, state, world, signBoard, lamps, createMaisie, visitorModel: kind => visitorModel(kind), seatedVisitor: kind => seatedVisitor(sheets,kind), animate: (...args) => animateFigure(...args) });
   const farmViewWidth = () => Math.max(fieldWidth(state), state.kitchen?.purchased ? COOKING_SITE.bounds.x1 : 0);
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
@@ -167,7 +168,7 @@ export function createScene(canvas, state, hooks) {
   const character = (who) => {
     if (!ready()) return null;
     const look = who === "skyla" ? undefined : activeLook(state, who), outfit = who === "skyla" ? undefined : state.wardrobe.equipped[who];
-    const m = voxelCharacters ? spriteCharacter(pixels, who, look, outfit, sheets) : spriteActor(sheets, who, look, outfit);
+    const m = voxelCharacters && outfit !== "natalie-wheelchair" ? spriteCharacter(pixels, who, look, outfit, sheets) : spriteActor(sheets, who, look, outfit);
     m.userData.kind = who === "skyla" ? "skyla" : "person";
     return m;
   };
@@ -203,7 +204,7 @@ export function createScene(canvas, state, hooks) {
   // The voxel figures are built from these sheets too, in more detail, once they arrive.
   loadSpriteSheets().then((data) => {
     sheets = data; if (!voxelCharacters || pixels) placeCharacters();
-    warm(...["visitors", "horrorVisitors", "skyla", "natalie", "shane"].map((name) => data[name]?.texture)); warmShaders();
+    warm(...["visitors", "horrorVisitors", "court", "seated", "natalie-wheelchair", "skyla", "natalie", "shane"].map((name) => data[name]?.texture)); warmShaders();
   }).catch(() => hooks.onSpriteError?.());
   specialSpriteReady.then(() => warm(specialSpriteTexture()));
 
@@ -281,7 +282,7 @@ export function createScene(canvas, state, hooks) {
     const compile = () => { const target = renderer.getRenderTarget(); renderer.setRenderTarget(bloomOn ? composer.readBuffer : null); const done = renderer.compileAsync(scene, camera); renderer.setRenderTarget(target); return done; };
     compile().then(() => places.withKeyLight(compile)).catch(() => {});
   }
-  warm(...sandyTextures);
+  warm(...sandyTextures, ...maisieTextures);
   loadDecor().then(() => places.refresh()).catch(() => hooks.onSpriteError?.());
 
   // Fireflies drifting over the field.
@@ -703,7 +704,7 @@ export function createScene(canvas, state, hooks) {
       if (v.cocoaSpend && v.cocoaKind !== null && !entry.cup) {
         entry.cup = takeawayCup(v.cocoaKind); entry.cup.position.set(-.4, .9, .25); entry.m.add(entry.cup);
       }
-      if (v.snack && !entry.snack) { entry.snack = cocoaProp("smores"); entry.snack.position.set(.4, .9, .25); entry.m.add(entry.snack); }
+      if (v.snack && !entry.snack) { entry.snack = cocoaProp(v.snackKind ?? "smores"); entry.snack.position.set(.4, .9, .25); entry.m.add(entry.snack); }
       if (v.bought !== null && !entry.bag) { entry.bag = state.customerCare.bags && v.quantity > 1 ? customerBag() : carried[v.bought].clone(); entry.bag.position.set(entry.sprite ? 0.36 : 0.45, entry.sprite ? 0.45 : 0.6, entry.sprite ? 0.3 : 0.2); entry.m.add(entry.bag); }
     }
     syncChats();
@@ -804,6 +805,7 @@ export function createScene(canvas, state, hooks) {
     get festivalStatus() { return festivalWorld.status; },
     get hollowExteriorStatus() { return hollowFarm.status; },
     get hayrideStatus() { return hayrideWorld.status; },
+    get kitchenStatus() { return places.kitchenStatus; },
     get cookingStatus() { return { ...cookingWorld.status, displays: places.foodDisplayStatus, receiver: actors.shane?.delivery ?? null, receiverStatus: actors.shane?.delivery ? { order: actors.shane.delivery, x: actors.shane.model.position.x, z: actors.shane.model.position.z, waiting: !!actors.shane.queue[0]?.receive && Math.hypot(actors.shane.model.position.x - 39.65, actors.shane.model.position.z - 4.45) <= .12 } : null }; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
     fitView() {

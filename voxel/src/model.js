@@ -1,7 +1,8 @@
+import { updateDining } from "./rules/cooking-dining.js";
 // Game rules for the voxel build. Pure: no DOM, no three.js, so the tests run it
 // in Node. One step of update() is a slice of game time. The rules live in
 // rules/; this file puts the state together, loads old saves and runs a step.
-import { UPGRADES, VARIETIES, STREAK, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
+import { UPGRADES, VARIETIES, MAX_VARIETY_INDEX, VARIETY_COUNT, STREAK, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
 import { MAX_PLOTS } from "./content/farm-layout.js";
 import { freshStock, freshBatches, restoreFresh, settleFresh } from "./rules/stock.js";
 import { freshWanted, restoreWanted, updateWanted } from "./rules/market.js";
@@ -18,6 +19,7 @@ import { freshHollowHouse, restoreHollowHouse, updateHollowHouse, saveHollowVisi
 import { restoreIntroSeen } from "./rules/intro.js";
 import { freshSocial, recordNews } from "./rules/meadow-talk.js";
 import { freshHayride, restoreHayride, updateHayride, saveHayrideVisitors, restoreHayrideVisitors } from "./rules/hayride.js";
+import { freshVisitorEvents, restoreVisitorEvents, updateVisitorEvents } from "./rules/visitor-events.js";
 import { freshKitchen, restoreKitchen, updateKitchen } from "./rules/cooking.js";
 
 export * from "./rules/farm.js";
@@ -29,7 +31,9 @@ export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 
-export const STATE_VERSION = 12;
+export const STATE_VERSION = 13;
+export * from "./rules/visitor-events.js";
+export * from "./content/visitor-events.js";
 export * from "./content/farm-layout.js";
 export * from "./rules/house-estate.js";
 export * from "./rules/piece-colours.js";
@@ -45,6 +49,9 @@ export * from "./rules/hayride.js";
 export * from "./content/cooking.js";
 export * from "./rules/cooking.js";
 export * from "./rules/cooking-sales.js";
+export * from "./content/kitchen-equipment.js";
+export * from "./rules/kitchen-equipment.js";
+export * from "./rules/cooking-mix.js";
 
 export function freshState() {
   return {
@@ -53,7 +60,7 @@ export function freshState() {
     plots: freshPlots(), plotLevels: Array(MAX_PLOTS).fill(0), plotCrops: Array(MAX_PLOTS).fill(0),
     upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(),
     stock: freshStock(), fresh: freshBatches(), wanted: freshWanted(), orders: freshOrders(), holds: [],
-    stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
+    visitorEvents: freshVisitorEvents(), stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
     shop: freshShop(), bigSpender: freshBigSpender(), festival: freshFestival(), customerCare: freshCustomerCare(),
     house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(), hayride: freshHayride(), kitchen: freshKitchen(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
@@ -78,11 +85,11 @@ export function restoreState(raw) {
   for (const k of ["sold", "harvested", "taps", "nextVisitor", "nextParty", "wholesale"]) s[k] = count(raw[k]);
   s.time = money(raw.time);
   s.paused = raw.paused === true;
-  s.plotLevels = Array.from({ length: MAX_PLOTS }, (_, i) => Math.min(3, count(raw.plotLevels?.[i])));
+  s.plotLevels = Array.from({ length: MAX_PLOTS }, (_, i) => Math.min(MAX_VARIETY_INDEX, count(raw.plotLevels?.[i])));
   s.plotCrops = s.plotLevels.map((level, i) => (v1 ? level : Math.min(level, count(raw.plotCrops?.[i]))));
   s.plots = Array.from({ length: MAX_PLOTS }, (_, i) => {
     const p = raw.plots[i];
-    const variety = Math.min(3, count(p?.variety));
+    const variety = Math.min(MAX_VARIETY_INDEX, count(p?.variety));
     return ["growing", "ready"].includes(p?.phase) ? { phase: p.phase, progress: Math.max(0, Math.min(1, Number(p.progress) || 0)), variety } : { phase: "empty", progress: 0, variety: s.plotCrops[i] };
   });
   // Tiers are kept and held to today's maxima (a save at an old maximum is a tier partway up now).
@@ -94,7 +101,7 @@ export function restoreState(raw) {
   s.upgrades.cart = Math.min(top.cart, count(u.cart));
   for (const v of VISITOR_UPGRADES) s.visitorUpgrades[v.id] = Math.min(v.costs.length, count(raw.visitorUpgrades?.[v.id]));
   if (Array.isArray(raw.stock) && v1) for (const v of raw.stock) if (VARIETIES[v]) s.stock[v]++;
-  if (Array.isArray(raw.stock) && !v1 && raw.stock.length === 4) s.stock = raw.stock.map(count);
+  if (Array.isArray(raw.stock) && !v1 && [4, VARIETY_COUNT].includes(raw.stock.length)) s.stock = Array.from({ length: VARIETY_COUNT }, (_, i) => count(raw.stock[i]));
   s.fresh = restoreFresh(raw.fresh, s);
   s.wanted = restoreWanted(raw.wanted, s);
   s.orders = restoreOrders(raw.orders, s);
@@ -126,7 +133,8 @@ export function restoreState(raw) {
   s.claimed = [...new Set(claimed.filter((id) => FAVOURS.some((f) => f.id === id)))];
   s.memories = Array.isArray(raw.memories) ? [...new Set(raw.memories.filter((id) => typeof id === "string"))] : [];
   s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4));
-  s.kitchen = restoreKitchen(raw.kitchen, s);
+  s.kitchen = restoreKitchen(raw.kitchen, s, raw.version);
+  s.visitorEvents = restoreVisitorEvents(raw.visitorEvents, s);
   s.festival = restoreFestival(raw.festival);
   s.customerCare = restoreCustomerCare(raw.customerCare);
   s.bigSpender = restoreBigSpender(raw.bigSpender);
@@ -138,7 +146,7 @@ export function restoreState(raw) {
 }
 
 // What is worth saving: everything except who is out walking or shopping.
-export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), hayrideVisitors: saveHayrideVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, kitchen: { ...s.kitchen, foodHolds: [] }, social: undefined });
+export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), hayrideVisitors: saveHayrideVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, kitchen: { ...s.kitchen, foodHolds: [], diners: [] }, social: undefined });
 
 // Advances the farm by dt seconds and returns what happened, for the scene to show.
 export function update(s, dt) {
@@ -152,8 +160,10 @@ export function update(s, dt) {
   updateHollowHouse(s, dt, events);
   updateHayride(s, dt, events);
   updateKitchen(s, dt, events);
+  updateVisitorEvents(s, dt, events);
   updateStall(s, dt, events);
   updateShop(s, dt, events);
+  updateDining(s, dt);
   checkMemories(s, events);
   for (const level of awardLevels(s)) events.push({ type: "level-up", level });
   recordNews(s, events);

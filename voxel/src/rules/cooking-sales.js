@@ -2,6 +2,7 @@
 // inventory, with its price fixed until payment; the renderer never sells it.
 import { RECIPE_BY_ID } from '../content/cooking.js';
 import { enjoyTreat } from './guest-needs.js';
+import { BIG_SPENDER_KIND } from './big-spender.js';
 
 const ownerOf = customer => 'customer-' + customer.id;
 const amountOf = lines => (lines ?? []).reduce((total, line) => total + line.price * line.quantity, 0);
@@ -9,6 +10,18 @@ const purse = value => Number.isFinite(value) ? Math.max(0, value) : 0;
 const holds = s => s.kitchen?.foodHolds ?? [];
 const heldBy = (s, c) => holds(s).find(h => h.owner === ownerOf(c));
 export const availableFood = (s, recipe) => Math.max(0, (s.kitchen?.food?.[recipe] ?? 0) - holds(s).reduce((n, h) => n + (h.recipe === recipe ? h.quantity : 0), 0));
+
+// Bags let hungry guests take a little food home. They still choose against
+// the change in their own purse, never against a second food-only budget.
+export function foodBasketLimit(s, customer) {
+  const bags = Number.isFinite(s.customerCare?.bags) ? Math.max(0, Math.min(3, Math.floor(s.customerCare.bags))) : 0;
+  const hunger = purse(customer.needs?.hunger);
+  if (!bags) return 1;
+  if (customer.starving) return 8;
+  if (customer.vip || customer.kind === BIG_SPENDER_KIND) return 6;
+  if (bags >= 2 && hunger >= 85) return 3;
+  return hunger >= 70 ? 2 : 1;
+}
 
 // A guest who brought a separate purse for the currently wanted pumpkin keeps
 // that money if this shop could not offer one. Food and tips cannot spend it.
@@ -38,12 +51,13 @@ export function quoteFoodForCustomer(s, customer, pumpkinLines = customer.basket
     if (price > fair) return null;
     // Stable tastes vary the two shelves without rerolling on each render.
     const preference = 1 + ((customer.id * 7 + index * 11) % 13) / 65;
-    return { recipe: id, price, score: recipe.basePrice * preference / price };
+    const quantity = Math.min(foodBasketLimit(s, customer), availableFood(s, id), Math.floor(change / price));
+    return { recipe: id, price, quantity, score: recipe.basePrice * preference / price };
   }).filter(Boolean).sort((a, b) => b.score - a.score);
   if (!options.length) return null;
-  const selected = options[0], hold = { owner: ownerOf(customer), recipe: selected.recipe, price: selected.price, quantity: 1 };
+  const selected = options[0], hold = { owner: ownerOf(customer), recipe: selected.recipe, price: selected.price, quantity: selected.quantity };
   k.foodHolds.push(hold);
-  customer.food = { recipe: hold.recipe, price: hold.price, quantity: 1, status: 'held' };
+  customer.food = { recipe: hold.recipe, price: hold.price, quantity: hold.quantity, status: 'held' };
   return hold;
 }
 
@@ -60,7 +74,7 @@ export function commitFoodForCustomer(s, customer, { reserved = 0, protectedPurs
   const k = s.kitchen, h = heldBy(s, customer);
   if (!h) return null;
   const amount = h.quantity * h.price;
-  if (!RECIPE_BY_ID[h.recipe] || k.food[h.recipe] < h.quantity || purse(customer.budget) - purse(reserved) - purse(protectedPurse) < amount) {
+  if (!RECIPE_BY_ID[h.recipe] || !Number.isSafeInteger(h.quantity) || h.quantity < 1 || h.quantity > 8 || !Number.isSafeInteger(h.price) || h.price < 1 || k.food[h.recipe] < h.quantity || purse(customer.budget) - purse(reserved) - purse(protectedPurse) < amount) {
     releaseFoodForCustomer(s, customer); return null;
   }
   k.foodHolds = holds(s).filter(other => other !== h);

@@ -1,3 +1,5 @@
+import { dishIcon } from "./kitchen-food-art.js";
+import { kitchenWorkshopIcon } from "./kitchen-workshop-icons.js";
 import atlas from "../../assets/cooking-menu-icons.webp";
 
 // A single compressed atlas is embedded by the standalone build. Reuse one
@@ -17,6 +19,8 @@ export const COOKING_ICON_IDS = Object.freeze([
 ]);
 
 export function cookingIcon(id = "truck") {
+  const dish=dishIcon(id,56);if(dish)return dish;
+  const workshop = kitchenWorkshopIcon(id); if (workshop) return workshop;
   const aliases = { chef: "ghost-chef", delivery: "cart", storage: "pantry" };
   const cell = Math.max(0, COOKING_ICON_IDS.indexOf(aliases[id] || id));
   return `<span class="cooking-art" aria-hidden="true" style="background-image:url(${atlasURL});background-size:400% 300%;background-position:${cell % 4 * 100 / 3}% ${Math.floor(cell / 4) * 50}%"></span>`;

@@ -1,3 +1,4 @@
+import { offerDiningSeat } from "./cooking-dining.js";
 // Selling: neighbours walking up the path to Skyla's stall, and, once it is
 // open, customers browsing inside the Honest Pumpkin. Profiles, prices and
 // timings are the main game's (src/core/stall.js, src/core/shop.js,
@@ -19,6 +20,9 @@ import { available, chooseBasket, commitHold, releaseHold } from "./stock.js";
 import { wishFor } from "./market.js";
 import { BIG_SPENDER_KIND, advanceBigSpender, bigSpenderBasket } from "./big-spender.js";
 export { freshBigSpender, restoreBigSpender } from "./big-spender.js";
+import { VARIETY_INDICES } from "../content/pumpkin-varieties.js";
+import { VISITOR_EVENT_WORLD_CAP, VISITOR_EVENT_BURST } from "../content/visitor-events.js";
+import { queueVisitorEventArrivals, finishVisitorEventArrival, visitorWorldCount, foodMealAllowance, starvingGuest, mealPurseReserve, pumpkinShoppingProfile } from "./visitor-events.js";
 
 const variety = (productId) => VARIETIES.findIndex((v) => "pumpkin-" + v.id === productId);
 const PRICES = VARIETIES.map((v) => v.price);
@@ -40,7 +44,7 @@ export const freshStall = () => ({ income: 0, itemsSold: 0, served: 0, missedBud
 export const VISITOR_UPGRADES = [
   { id: "appetite", name: "Bigger baskets", text: "Word of the pumpkins gets round the village, and neighbours come with bigger baskets and a little more to spend.", costs: [400, 1500, 4500, 11000, 24000, 50000], needs: null },
   { id: "crowd", name: "Room for more neighbours", text: "Raise the outdoor visitor limit, with room for whole parties to enjoy the farm: benches, a wider gate, then the lane and the green.", costs: [300, 1200, 4000, 10000, 20000, 35000, 55000], needs: { id: "party", text: "Opens after Bring a friend." } },
-  { id: "party", name: "Bring a friend", text: "Neighbours come up the path together: a friend, then a couple, then the whole family.", costs: [600, 1800, 6000], needs: null },
+  { id: "party", name: "Bring a friend", text: "Neighbours come together: friends, family, then parties of up to six or eight.", costs: [600, 1800, 6000, 12000, 24000], needs: null },
   { id: "lights", name: "Fairy lights down the path", text: "A string of lights by the gate, then lanterns all the way down. Parties set off for the stall more often.", costs: [150, 600, 2400, 9000], needs: { id: "sign", text: "Opens after Spread the word." } },
   { id: "cocoa", name: "Cocoa hospitality", text: "A warmer welcome: neighbours wait longer for pumpkins and Sandy serves cocoa more quickly.", costs: [250, 700, 1400], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "loyalty", name: "A loyalty card", text: "Buy nine pumpkins, get a slightly larger pumpkin. Regulars take one more home, at the stall and in the shop.", costs: [6000, 12000], needs: { id: "open", text: "Opens with the shop." } },
@@ -67,7 +71,8 @@ export const COUNTER_SPOTS = 8;
 
 // Spread the word lives with the farm's upgrades; the rest have their own record.
 const lv = (s, id) => (id === "sign" ? s.upgrades.sign : s.visitorUpgrades?.[id]) || 0;
-export const partyMax = (s) => 1 + lv(s, "party");
+export const PARTY_SIZES = [1, 2, 3, 4, 6, 8];
+export const partyMax = s => PARTY_SIZES[Math.min(PARTY_SIZES.length - 1, Math.max(0, lv(s, "party")))];
 // Party sizes run through every size up to the most, so the average is (max + 1) / 2.
 export const partySize = (s, party) => 1 + ((party * 5 + 2) % partyMax(s));
 // The gaps the upgrades give, before any streak.
@@ -144,11 +149,17 @@ function counterSpot(s) {
 
 // A neighbour in their own right, with their own profile, budget and basket,
 // even when they come with a party. The loyalty card counts from when they set off.
-function createPasserby(s, id, party = id, place = 0, size = 1, vip = false) {
+function createPasserby(s, id, party = id, place = 0, size = 1, vip = false, occasion = null) {
   const profile = id % STALL_PROFILES.length, p = STALL_PROFILES[profile];
   const v = { id, kind: vip ? BIG_SPENDER_KIND : id % KINDS.length, age: 0, profile, ...basketFor(s, id, p), preferred: [...p.preferred], ...(vip ? { ...bigSpenderBasket(s), wish: null } : {}), basket: [], amount: 0, quantity: 0, bought: null, outcome: "shopping", leaveAt: null, mug: 0, party, place, size, spot: counterSpot(s) };
-  v.cocoaAllowance = cocoaAllowance(s); v.budget += v.cocoaAllowance;
-  v.needs = freshGuestNeeds(id); v.originalBudget = v.budget; v.festival = planFestivalVisit(s, v);
+  if (occasion?.courtier) Object.assign(v, occasion.offer, { courtier: true, vip: true, regular: false, wish: null });
+  if (occasion?.eventType) { v.eventType = occasion.eventType; v.eventSerial = occasion.eventSerial; }
+  v.cocoaAllowance = cocoaAllowance(s);
+  v.needs = freshGuestNeeds(id); v.starving = !v.vip && starvingGuest(s, id);
+  v.mealPurse = occasion?.courtier ? (s.kitchen?.purchased ? 40 : 0) : v.vip ? (s.kitchen?.purchased ? 40 : 0) : foodMealAllowance(s, id);
+  if (!occasion?.courtier) v.budget += v.cocoaAllowance + v.mealPurse;
+  if (v.starving) v.needs.hunger = 100;
+  v.originalBudget = v.budget; v.festival = planFestivalVisit(s, v);
   return v;
 }
 
@@ -170,16 +181,20 @@ function pay(s, receipt, ledger) {
 
 export function updateStall(s, dt, events) {
   if (s.paused || !Number.isFinite(dt) || dt <= 0) return;
-  if (advanceBigSpender(s, dt, visitorReservations(s) < visitorCapacity(s))) {
+  if (advanceBigSpender(s, dt, visitorReservations(s) < visitorCapacity(s) && visitorWorldCount(s) < VISITOR_EVENT_WORLD_CAP)) {
     const v = createPasserby(s, s.nextVisitor++, s.nextParty++, 0, 1, true);
     s.visitors.push(v);
     events.push({ type: "arrival", visitor: v.id, party: v.party, place: 0, size: 1 }, { type: "vip-arrived", visitor: v.id });
   }
+  // Occasions borrow at most twenty extra return spaces. Chatters still count
+  // towards the absolute world limit even though they do not return to stall.
+  const eventSlots = Math.max(0, Math.min(visitorCapacity(s) + VISITOR_EVENT_BURST - visitorReservations(s), VISITOR_EVENT_WORLD_CAP - visitorWorldCount(s)));
+  s.arriving.push(...queueVisitorEventArrivals(s, eventSlots));
   s.visitorTimer -= dt * stallPace(s);
   if (s.visitorTimer <= 0) {
     const party = s.nextParty, size = partySize(s, party);
     // A full path holds the next party at the gate until there is room.
-    if (visitorReservations(s) + size > visitorCapacity(s)) s.visitorTimer = 0;
+    if (visitorReservations(s) + size > visitorCapacity(s) || visitorWorldCount(s) + size > VISITOR_EVENT_WORLD_CAP) s.visitorTimer = 0;
     else {
       s.visitorTimer += stallArrivalSeconds(s);
       s.nextParty++;
@@ -188,8 +203,10 @@ export function updateStall(s, dt, events) {
   }
   // Each member sets off when their beat comes round.
   for (const a of s.arriving) a.wait -= dt;
+  s.arriving.sort((a, b) => a.wait - b.wait);
   while (s.arriving.length && s.arriving[0].wait <= 1e-8) {
-    const a = s.arriving.shift(), v = createPasserby(s, s.nextVisitor++, a.party, a.place, a.size);
+    const a = s.arriving.shift(), v = createPasserby(s, s.nextVisitor++, a.party, a.place, a.size, false, a);
+    if (a.eventType) finishVisitorEventArrival(s, a);
     if (a.forMaze) { v.forMaze = true; v.festival = null; }                     // sent by the maze opening: straight there
     if (a.forHayride) { v.forHayride = true; v.festival = null; }
     s.visitors.push(v);
@@ -236,12 +253,12 @@ export function updateStall(s, dt, events) {
       if (v.social) continue;
     }
     if (v.leaveAt !== null || v.age < VISIT.arrive) continue;
-    const owner = "visitor-" + v.id, lines = chooseBasket(s, v, [0, 1, 2, 3], owner, PRICES);
+    const owner = "visitor-" + v.id, lines = chooseBasket(s, pumpkinShoppingProfile(s, v), VARIETY_INDICES, owner, PRICES);
     if (lines) {
-      const receipt = commitHold(s, owner), mug = buyMug(s, v, receipt.amount);
+      const receipt = commitHold(s, owner), mealReserve = mealPurseReserve(s, v), mug = buyMug(s, v, receipt.amount + mealReserve);
       pay(s, receipt, s.stall);
-      if (v.vip) { s.bigSpender.spent += receipt.amount; s.bigSpender.pumpkins += receipt.quantity; }
-      const care = settleCustomerCare(s, receipt, v, "stall", v.age - VISIT.arrive);
+      if (v.kind === BIG_SPENDER_KIND) { s.bigSpender.spent += receipt.amount; s.bigSpender.pumpkins += receipt.quantity; }
+      const care = settleCustomerCare(s, receipt, { ...v, budget: Math.max(0, v.budget - mealReserve) }, "stall", v.age - VISIT.arrive);
       v.tip = care.tip; v.quality = care.quality; v.budget -= receipt.amount + care.tip; enjoyPumpkin(v, care.quality, care.service);
       Object.assign(v, { basket: receipt.lines, amount: receipt.amount, quantity: receipt.quantity, bought: receipt.lines[0].variety, outcome: "bought", leaveAt: v.age + VISIT.linger });
       s.stall.receipts.unshift({ visitor: v.id, profile: v.profile, party: v.party, size: v.size, amount: receipt.amount, quantity: receipt.quantity, lines: receipt.lines, mug, tip: care.tip, quality: care.quality });
@@ -252,7 +269,7 @@ export function updateStall(s, dt, events) {
       s.stall[v.outcome === "budget" ? "missedBudget" : "missedStock"]++;
       v.leaveAt = v.age + VISIT.linger;
       events.push({ type: "missed", reason: v.outcome, visitor: v.id });
-      if (buyMug(s, v)) events.push({ type: "sale", route: "cocoa", amount: v.mug, quantity: 0, mug: v.mug, visitor: v.id });
+      if (buyMug(s, v, mealPurseReserve(s, v))) events.push({ type: "sale", route: "cocoa", amount: v.mug, quantity: 0, mug: v.mug, visitor: v.id });
     }
   }
   updateChats(s, events);
@@ -295,7 +312,11 @@ export function assignDisplay(s, slot, v) {
 function createCustomer(s, id, slot) {
   const p = customerProfiles[(id * 7) % customerProfiles.length];
   const customer = { id, slot, kind: (id * 3 + Math.floor(id / 5)) % KINDS.length, ...basketFor(s, id, p), preferred: p.preferred.map(variety), phase: "entering", remaining: 3, checkoutDuration: 0, basket: [], spent: 0, quantity: 0, outcome: "shopping" };
-  customer.originalBudget = customer.budget; customer.needs = freshGuestNeeds(id, true); return customer;
+  customer.needs = freshGuestNeeds(id, true); customer.starving = starvingGuest(s, id);
+  customer.mealPurse = foodMealAllowance(s, id); customer.budget += customer.mealPurse;
+  if (customer.starving) customer.needs.hunger = 100;
+  if(s.visitorEvents?.vip?.level && id%7===0){customer.kind=11+id%4;customer.vip=true;customer.courtier=true;customer.budget=160+id%91;customer.basketLimit=10+id%5;customer.mealPurse=40;customer.needs.hunger=85;}
+  customer.originalBudget = customer.budget; return customer;
 }
 const occupied = (shop) => shop.customers.filter((c) => c.phase !== "leaving").length;
 
@@ -320,7 +341,7 @@ export function updateShop(s, dt, events) {
     if (c.remaining > 1e-8) continue;
     if (c.phase === "entering") { c.phase = "browsing"; c.remaining = 4; }
     else if (c.phase === "browsing") {
-      const lines = chooseBasket(s, c, offered, "customer-" + c.id, PRICES);
+      const lines = chooseBasket(s, pumpkinShoppingProfile(s, c), offered, "customer-" + c.id, PRICES);
       c.basket = lines ?? [];
       const food = quoteFoodForCustomer(s, c, c.basket);
       if (lines || food) { c.phase = "queue"; c.queueJoinedAt = s.time; }
@@ -344,6 +365,7 @@ export function updateShop(s, dt, events) {
       if (food) events.push({ type: "sale", route: "food", amount: food.amount, quantity: food.quantity, recipe: food.recipe, customer: c.id });
     }
   }
+  for(const c of shop.customers)if(c.phase === "leaving" && c.remaining <= 1e-8)offerDiningSeat(s,c);
   shop.customers = shop.customers.filter((c) => c.phase !== "leaving" || c.remaining > 1e-8);
   if (!shop.customers.some((c) => c.phase === "paying")) {
     const next = shop.customers.find((c) => c.phase === "queue");
@@ -354,7 +376,7 @@ export function updateShop(s, dt, events) {
 // Customers and baskets are not saved: on load, everyone has gone home.
 export function closeForTheNight(s) {
   for (const c of s.shop.customers) { releaseHold(s, "customer-" + c.id); releaseFoodForCustomer(s, c); }
-  if (s.kitchen) s.kitchen.foodHolds = [];
+  if (s.kitchen) { s.kitchen.foodHolds = []; s.kitchen.diners = []; }
   s.shop.customers = [];
   s.holds = [];
   s.visitors = [];

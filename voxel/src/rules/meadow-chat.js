@@ -52,7 +52,7 @@ export function planChat(s, v) {
   if (!open.length || !c.open || v.vip || v.hollow && !v.hollow.done || v.hayride && !v.hayride.done) return null;
   if (s.visitors.filter(chatting).length >= chatCap(s)) return null;
   const mood = .6 + .6 * Math.max(0, Math.min(1, ((v.needs?.happiness ?? 70) - 30) / 70));
-  if (hash(v.id, 71) >= CHAT.chance[c.level] * mood * (comfortOwned(s, "bunting") ? CHAT.bunting : 1)) return null;
+  if (hash(v.id, 71) >= CHAT.chance[Math.min(CHAT.chance.length - 1, c.level)] * mood * (comfortOwned(s, "bunting") ? CHAT.bunting : 1)) return null;
   const weights = open.map((p) => { const n = chatMembers(s, p.id).length; return n >= p.seats ? 0 : n ? 2.5 + n : 1; });
   let pick = hash(v.id, 72) * weights.reduce((a, b) => a + b, 0), spot = null;
   for (let i = 0; i < open.length && !spot; i++) if (weights[i] && (pick -= weights[i]) < 0) spot = open[i];

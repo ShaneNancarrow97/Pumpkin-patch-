@@ -1,12 +1,12 @@
 import * as THREE from "three";
 import { HAYRIDE_PROPERTY, HAYRIDE_TIERS } from "./content/hayride.js";
-import { HAYRIDE_STOPS } from "./content/hayride-layout.js";
+import { HAYRIDE_STOPS, hayrideStops, hayrideRouteLength, HAYRIDE_ROUTE_LENGTH } from "./content/hayride-layout.js";
 import { HAYRIDE_LIGHTNING_TIMES, hayrideLightning } from "./content/hayride-weather.js";
 
 const INTRO = 2.5, YAW_LIMIT = Math.PI * .48, PITCH_LIMIT = Math.PI / 7;
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const smooth = n => { const t = clamp(n, 0, 1); return t * t * (3 - 2 * t); };
-const sounds = { scarecrows: "knock", spiders: "skitter", bride: "whisper", pursuit: "whoosh", bus: "chains" };
+const sounds = { scarecrows: "knock", spiders: "skitter", bride: "whisper", pursuit: "whoosh", bus: "chains", graveyard: "whisper", thicket: "knock" };
 const finite = n => Number.isFinite(n) ? n : 0;
 
 // A free owner camera in a separate off-map scene, using the existing renderer.
@@ -21,7 +21,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
   const status = () => ({
     active, title: "The Hollow Hayride", tier: run?.tier ?? 0, elapsed: run?.elapsed ?? 0, duration: run?.duration ?? 0,
     rideDuration: run?.rideDuration ?? HAYRIDE_PROPERTY.rideAlongSeconds, progress: run?.progress ?? 0, paused: !!run?.paused, completed: !!run?.completed,
-    zoneName: !run ? "The Hollow Hayride" : run.elapsed < INTRO ? "Rear boarding" : [...HAYRIDE_STOPS].reverse().find(stop => run.progress >= stop.at - .06)?.name ?? "Into the woods",
+    zoneName: !run ? "The Hollow Hayride" : run.elapsed < INTRO ? "Rear boarding" : [...(run.stops??HAYRIDE_STOPS)].reverse().find(stop => run.progress >= stop.at - .06)?.name ?? "Into the woods",
     eventsFired: [...(run?.fired ?? [])], currentCue: run?.cue && run.elapsed - run.cue.at < 2.7 ? { ...run.cue } : null,
     gentle: !!options.gentle, lightning: options.lightning !== false, lightningIntensity: run ? hayrideLightning(run.elapsed, { ...options, paused: run.paused || run.completed }) : 0,
     lookYaw: yaw, lookPitch: pitch, lookBounds: { yaw: YAW_LIMIT, pitch: PITCH_LIMIT }, inputActive: !!inputActive(),
@@ -55,7 +55,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
     run.elapsed = Math.min(run.duration, run.elapsed + Math.max(0, finite(seconds)));
     run.progress = clamp((run.elapsed - INTRO) / run.rideDuration, 0, 1);
     const cues = [];
-    for (const stop of HAYRIDE_STOPS) {
+    for (const stop of run.stops??HAYRIDE_STOPS) {
       if (run.progress < stop.at || run.fired.has(stop.id)) continue;
       run.fired.add(stop.id);
       const cue = { type: "encounter", id: `hayride-${stop.id}`, stop: stop.id, name: stop.name, sound: sounds[stop.id], at: INTRO + stop.at * run.rideDuration, intensity: options.gentle ? .25 : .45 };
@@ -95,7 +95,8 @@ export function createHayrideView(canvas, state, hooks = {}) {
       if (active) api.leave();
       const tier = HAYRIDE_TIERS.find(t => t.level === state.hayride.tier) ?? HAYRIDE_TIERS[0];
       options = { ...options, ...nextOptions };
-      run = { tier: tier.level, elapsed: 0, duration: INTRO + HAYRIDE_PROPERTY.rideAlongSeconds, rideDuration: HAYRIDE_PROPERTY.rideAlongSeconds, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), thunder: new Set(), cue: null };
+      const rideDuration=HAYRIDE_PROPERTY.rideAlongSeconds*hayrideRouteLength(state)/HAYRIDE_ROUTE_LENGTH;
+      run = { stops:hayrideStops(state), tier: tier.level, elapsed: 0, duration: INTRO + rideDuration, rideDuration, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), thunder: new Set(), cue: null };
       active = true; yaw = pitch = targetYaw = targetPitch = 0; clearPointer();
       world().setGentleMotion?.(!!options.gentle);
       const scene = world().scene;

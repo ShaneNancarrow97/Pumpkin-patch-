@@ -1,3 +1,4 @@
+import { showFirstCooking } from "./ui/cooking-reveal.js";
 import { installPremiumIcons, premiumIcon } from "./ui/premium-icons.js";
 import * as THREE from "three";
 import { createMenuMemory } from "./ui/menu-memory.js";
@@ -153,8 +154,11 @@ const scene = createScene($("world"), state, {
 
 // What the rules report, turned into sights and sounds.
 function handle(e) {
+  if (e.type === "cooking-started") showFirstCooking(state,e.recipe,e.station,save);
+  if (e.type === "visitor-event") notice(`${e.event === "vip" ? "The midnight court" : "Harvest rush"}: ${e.count} guests are on their way.`);
   if (e.type === "vip-arrived") notice("Baron Brassbolt has arrived with a generous shopping budget.");
   if (e.type === "hollow-restored") { notice("Restoration complete. The Hollow House is ready to open."); save(); audio.tone(880); }
+  if (e.type === "recipe-discovered") { notice(`Recipe discovered: ${M.RECIPE_BY_ID[e.recipe]?.name ?? "a new dish"}.`); save(); audio.tone(880); }
   if (e.type === "ingredient-delivery") { notice("Ingredients delivered to your pantry."); save(); audio.tone(660); }
   if (e.type === "cooking-complete") { notice("A fresh batch is ready for the shop."); save(); }
   if (e.type === "sale") {
@@ -297,7 +301,12 @@ function openHollowSheet(tab = "manage") { sheets.hollow.setTab(tab); openSheet(
 function openFoyerSheet(tab = "catalogue") { sheets.foyer.setTab(tab); openSheet("foyer"); }
 function openHayrideSheet() { openSheet("hayride"); }
 function openCookingSheet(tab = "recipes", station = null) { sheets.cooking.setTab(tab); if (station) sheets.cooking.setStation?.(station); openSheet("cooking"); }
-function enterKitchen() { if (!M.homeCookingAvailable(state)) { notice("Place a copper range in the kitchen to cook at home."); return false; } enterRoom("kitchen"); openCookingSheet("recipes", "home"); return true; }
+function enterKitchen({ tab = "recipes", noOpen = false } = {}) {
+  if (!M.homeKitchenOpen(state)) { notice("Expand the house to unlock its kitchen."); sheets.home.setTab("house"); openSheet("home"); return false; }
+  if (scene.place?.kind !== "room" || scene.place.id !== "kitchen") enterRoom("kitchen");
+  if (!noOpen) openCookingSheet(tab, "home");
+  return true;
+}
 function focusHayride() { if (scene.place) leavePlace(); closeSheet(); scene.focusHayride(); }
 // The free owner camera has no seat, receipt or visitor in the live convoy.
 function openHayrideRide() {
@@ -341,12 +350,14 @@ function renderPlace() {
   $("place-back").querySelector(".place-back-text").textContent = p?.kind === "room" && interiorFromEstate ? "Back to garden" : "Back to farm";
   $("place-rooms").disabled = p?.kind === "shop";
   $("place-rooms").setAttribute("aria-label", p?.kind === "estate" ? "Manage the grounds" : p?.kind === "shop" ? "The Honest Pumpkin" : "Choose a room");
+  $("place-cook").hidden = !(p?.kind === "room" && p.id === "kitchen");
   $("place-decorate").hidden = !["room", "foyer"].includes(p?.kind);
   home.tools.render();
   markTab();
 }
 $("place-back").onclick = () => { if (scene.place?.kind === "room" && interiorFromEstate) enterEstate(); else leavePlace(); closeSheet(); };
 $("place-rooms").onclick = () => { if (scene.place?.kind === "foyer") openHollowSheet(); else if (scene.place?.kind === "estate") openEstateSheet("grounds"); else { sheets.home.setTab("rooms"); openSheet("home"); } };
+$("place-cook").onclick = () => openCookingSheet(M.homeCookingAvailable(state) ? "recipes" : "equipment", "home");
 $("place-decorate").onclick = () => { if (scene.place?.kind === "foyer") openFoyerSheet(); else { sheets.home.setTab("decorate"); openSheet("home"); } };
 
 $("plant-all").onclick = plantAll;
@@ -438,7 +449,7 @@ const ui = {
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
   portrait: (id) => scene.portrait(id),
   intro,
-  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide, openHayrideSheet, focusHayride, openHayrideRide, openCookingSheet, enterKitchen,
+  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide, openHayrideSheet, focusHayride, openHayrideRide, openCookingSheet, enterKitchen, showCookingAnimation(job,station) { showFirstCooking(state,job.recipe,station,save); }, openKitchenDecorate() { sheets.home.setTab("decorate"); openSheet("home"); },
   get estateTools() { return estateTools; },
   get foyerTools() { return foyerTools; }, get hollowContext() { return hollowContext; },
   read: (id) => collection.read(id),

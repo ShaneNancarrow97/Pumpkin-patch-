@@ -9,7 +9,7 @@ const ids = ["shane-chucky", "natalie-tiffany", "natalie-freddy", "shane-jason"]
 
 test("four voxel costumes extend the wardrobe without mutating the main game", () => {
   assert.deepEqual(EXTRA_COSTUMES.map((item) => item.id), ids);
-  assert.equal(M.costumeCatalog.length, originalCatalogue.length + 4);
+  assert.equal(M.costumeCatalog.length, originalCatalogue.length + 5);
   assert.notEqual(M.costumeCatalog, originalCatalogue);
   for (const id of ids) {
     assert.ok(!originalCatalogue.some((item) => item.id === id));

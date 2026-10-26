@@ -17,3 +17,12 @@ export const HAYRIDE_SCARES = [
   { id: "bus-breakout", name: "Prison bus breakout", tier: 3, cost: 4500, scare: 20, text: "Zombie passengers lurch from the prison bus at the final bend." },
 ];
 export const HAYRIDE_SCARE_BY_ID = Object.fromEntries(HAYRIDE_SCARES.map(p => [p.id, p]));
+// Extra vehicles run their own paid circuit; quicker loading never skips it.
+export const HAYRIDE_OPERATIONS = Object.freeze([
+  Object.freeze({ id: "fleet", name: "A second tractor", level: 12, tier: 2, costs: Object.freeze([12000]), text: "A second tractor and hay wagon use their own bay while the first is in the woods." }),
+  Object.freeze({ id: "dispatch", name: "Station crew", level: 11, tier: 1, costs: Object.freeze([1800, 4200]), text: "Two paid crew tiers cut boarding time and the wait before a part-filled wagon leaves." }),
+]);
+export const HAYRIDE_ROUTE_UPGRADES = Object.freeze([
+  Object.freeze({ level: 1, name: "The forgotten graveyard", patchLevel: 12, tier: 2, cost: 8500, seconds: 20, scare: 8, text: "A new woodland detour passes leaning graves, iron gates and restless mourners." }),
+  Object.freeze({ level: 2, name: "The crooked thicket", patchLevel: 12, tier: 3, cost: 16000, seconds: 20, scare: 12, text: "Extend the lane through webbed old-growth trees and a haunted scarecrow clearing." }),
+]);

@@ -14,7 +14,7 @@ test("plant, grow and harvest, with A little extra love adding pumpkins", () => 
   run(s, M.growTime(s, 0) + 0.2);
   assert.equal(s.plots[0].phase, "ready");
   assert.equal(M.harvest(s, 0), 1);
-  assert.deepEqual(s.stock, [1, 0, 0, 0]);
+  assert.deepEqual(s.stock, [1, 0, 0, 0, 0]);
   s.upgrades.yield = 2;
   M.plant(s, 1); s.plots[1] = { ...s.plots[1], phase: "ready", progress: 1 };
   assert.equal(M.harvest(s, 1), 3);
@@ -214,7 +214,7 @@ test("old voxel saves load into the new rules, and new saves round-trip", () => 
   const old = { coins: 500, earned: 900, sold: 30, harvested: 40, taps: 20, plots: Array.from({ length: 12 }, (_, i) => ({ phase: i ? "empty" : "ready", progress: i ? 0 : 1, variety: 1 })), plotLevels: [1, ...Array(11).fill(0)], upgrades: { tools: 2, signs: 3, plots: 1, helper: 1 }, stock: [0, 0, 1, 3], looks: { natalie: "plum", shane: "black", owned: ["olive", "black", "plum"] }, claimed: ["ghost", "bones"] };
   const s = M.restoreState(old);
   assert.deepEqual(s.upgrades, { tools: 2, yield: 0, auto: 1, plots: 1, sign: 3, storage: 0, cart: 0 });
-  assert.deepEqual(s.stock, [2, 1, 0, 1]);
+  assert.deepEqual(s.stock, [2, 1, 0, 1, 0]);
   assert.deepEqual(s.claimed, ["basket", "seeds"]);
   assert.equal(s.plotCrops[0], 1);
   assert.equal(s.looks.natalie, "plum");

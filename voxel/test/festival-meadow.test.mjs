@@ -112,5 +112,5 @@ test("malformed saves cannot create stock or a stand on unowned land", () => {
   const loaded = M.restoreState(raw); assert.equal(loaded.festival.cocoa.level, 0); assert.equal(loaded.festival.cocoa.stock, 0);
   raw.festival = { meadow: true, cocoa: { level: 9, stock: 1e9, price: -5, gross: Infinity } };
   const c = M.restoreState(raw).festival.cocoa;
-  assert.equal(c.level, 3); assert.equal(c.stock, 100); assert.equal(c.price, 3); assert.equal(c.gross, 0);
+  assert.equal(c.level, 5); assert.equal(c.stock, 240); assert.equal(c.price, 3); assert.equal(c.gross, 0);
 });

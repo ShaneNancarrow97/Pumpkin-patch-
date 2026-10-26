@@ -1,3 +1,8 @@
+import courtURL from "../assets/hospitality-court.webp";
+import seatedURL from "../assets/hospitality-seated.webp";
+import wheelsURL from "../assets/natalie-wheelchair.webp";
+import { WHEELCHAIR_META } from "./natalie-wheelchair-meta.js";
+import { HOSPITALITY_META } from "./hospitality-cast-meta.js";
 import * as THREE from "three";
 import { crispen, crispTexture } from "./crisp-sprites.js";
 import { createSpecialSprite, animateSpecialSprite, specialPortrait, specialSpriteReady } from "./special-sprites.js";
@@ -42,9 +47,9 @@ const URLS = {
   "natalie-frankenstein": natalieFrankenstein, "natalie-mummy": natalieMummy, "natalie-slasher": natalieSlasher,
   "shane-vampire": shaneVampire, "shane-skeleton": shaneSkeleton, "shane-scarecrow": shaneScarecrow,
   "shane-frankenstein": shaneFrankenstein, "shane-mummy": shaneMummy, "shane-slasher": shaneSlasher,
-  ...COSTUME_URLS,
+  ...COSTUME_URLS, court: courtURL, seated: seatedURL, "natalie-wheelchair": wheelsURL,
 };
-const METADATA = { ...SHEETS, ...COSTUME_SHEETS };
+const METADATA = { ...SHEETS, ...COSTUME_SHEETS, ...WHEELCHAIR_META, court: HOSPITALITY_META.court, seated: HOSPITALITY_META.seated };
 // Visitor IDs come from the shared, stable voxel roster.
 
 const loadImage = (src) => new Promise((resolve, reject) => {
@@ -151,7 +156,14 @@ export function spriteActor(sheets, who, look, outfit) {
 }
 
 // A visitor: its four frames are a walk cycle; standing shows the first.
+export function seatedVisitor(sheets, kind) {
+  if (!sheets) return null;
+  const id=VISITOR_KINDS[kind]??VISITOR_KINDS[0], sheet=kind>=11?sheets.court:sheets.seated;
+  const f=kind>=11?sheet.frames[id]?.[6]:sheet.frames[id]?.[0];
+  const m=figure(sheet,{idle:[f],walk:[f]},sheet.texture);m.userData.kind="visitor";m.userData.sprite=true;m.userData.seated=true;return m;
+}
 export function spriteVisitor(sheets, kind) {
+  if (kind >= 11) { const sheet=sheets.court, list=sheet.frames[VISITOR_KINDS[kind]]??sheet.frames.duke; const model=figure(sheet,{idle:list.slice(0,2),walk:list.slice(2,6)},sheet.texture);model.userData.artFacesLeft=true;return model; }
   if (VISITOR_KINDS[kind] === "baron") return createSpecialSprite("baron");
   const id = VISITOR_KINDS[kind] ?? VISITOR_KINDS[0], sheet = VISITOR_KINDS.indexOf(id) >= 5 ? sheets.horrorVisitors : sheets.visitors;
   const model = figure(sheet, { walk: sheet.frames[id] }, sheet.texture);
@@ -164,7 +176,7 @@ export function spriteVisitor(sheets, kind) {
 export function animateVisitor(group, age, walking, dx = 0, turn = walking) {
   if (group.userData.specialSprite) { animateSpecialSprite(group, age, walking, dx); return; }
   if (turn && Math.abs(dx) > 0.3) group.scale.x = (dx < 0 ? -1 : 1) * (group.userData.artFacesLeft ? -1 : 1);
-  const { walk } = group.userData, next = walk[walking ? Math.floor(age * 5) % walk.length : 0];
+  const { walk, idle } = group.userData, next = walking ? walk[Math.floor(age * 5) % walk.length] : idle?.length ? idle[Math.floor(age*1.4)%idle.length] : walk[0];
   if (next !== group.userData.shown) { group.userData.show(next); group.userData.shown = next; }
   group.children[0].position.y = Math.sin(age * 2.4) * 0.03;                       // the main game's gentle sway
 }
@@ -180,7 +192,7 @@ export function portraitURL(sheets, id) {
   if (id === "visitor-baron" || id === "axel") return specialPortrait(id);
   if (portraits.has(id)) return portraits.get(id);
   let sheet, f;
-  if (id.startsWith("visitor-")) { sheet = VISITOR_KINDS.indexOf(id.slice(8)) >= 5 ? sheets.horrorVisitors : sheets.visitors; f = sheet?.meta[id.slice(8)]?.[0]; }
+  if (id.startsWith("visitor-")) { sheet = VISITOR_KINDS.indexOf(id.slice(8)) >= 11 ? sheets.court : VISITOR_KINDS.indexOf(id.slice(8)) >= 5 ? sheets.horrorVisitors : sheets.visitors; f = sheet?.meta[id.slice(8)]?.[0]; }
   else { sheet = sheets[id.replace(/-base$/, "")]; f = sheet?.meta.idle?.[0]; }
   if (!sheet || !f) return null;
   const src = document.createElement("canvas");

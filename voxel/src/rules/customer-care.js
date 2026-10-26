@@ -33,7 +33,7 @@ export function quoteCustomerCare(s, receipt, visitor, route, serviceSeconds) {
   const seed = (s.customerCare.serial + 1) * 104729 + visitor.id * 7919 + (route === "shop" ? 31337 : 0);
   let grades = 0, n = 0;
   for (const line of receipt.lines) for (let i = 0; i < line.quantity; i++) {
-    const minimum = [1, 2, 2, 3][line.variety];
+    const minimum = ([1, 2, 2, 3, 4][line.variety] ?? 1);
     grades += minimum + Math.floor(draw(seed + n * 43) * (6 - minimum)); n++;
   }
   const quality = n ? grades / n : 1, service = Number.isFinite(serviceSeconds) ? Math.max(0, serviceSeconds) : 0, target = route === "shop" ? 8 : 4;

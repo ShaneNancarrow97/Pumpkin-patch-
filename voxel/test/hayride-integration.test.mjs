@@ -39,7 +39,7 @@ test("legacy saves gain a locked hayride while retaining Claude's stock, market 
   const restored = M.restoreState(raw);
   assert.equal(restored.version, M.STATE_VERSION); assert.ok(restored.version >= 11);
   assert.equal(restored.hayride.purchased, false); assert.equal(restored.hayride.open, false);
-  assert.deepEqual(restored.stock, s.stock); assert.deepEqual(restored.fresh, s.fresh);
+  assert.deepEqual(restored.stock, [...s.stock, ...Array(Math.max(0, M.VARIETIES.length-s.stock.length)).fill(0)]); assert.deepEqual(restored.fresh, [...s.fresh, ...Array.from({length: Math.max(0,M.VARIETIES.length-s.fresh.length)},()=>[])]);
   assert.deepEqual(restored.wanted, s.wanted); assert.deepEqual(restored.orders, s.orders);
   assert.equal(restored.introSeen, true); assert.equal(restored.coins, s.coins);
   assert.deepEqual(restored.progression.claimed, s.progression.claimed);

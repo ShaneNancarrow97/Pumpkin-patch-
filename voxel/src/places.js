@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { buildFoodWallDisplay, buildFoodProp, disposeFoodProp } from "./food-props.js";
 import { availableFood } from "./rules/cooking-sales.js";
+import { kitchenEquipment } from "./rules/kitchen-equipment.js";
+import { RECIPE_BY_ID } from "./content/cooking.js";
 import { applyPieceColour } from "./piece-colours.js";
 import { GRID, footprint, pieceFootprint, pieceBody, roomStyle, roomPieces, roomLayout, available, displayCount, decorById, hostSurfaces } from "./model.js";
 import { riderSize } from "./rules/surfaces.js";
@@ -51,6 +53,27 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   let place = null, built = null, pieces = new Map(), pickables = [], actors = [], customers = new Map(), tables = [], skyla = null;
   let selection = null, ghost = null, showGrid = false, gridLines = null, tableKey = "";
   let foodDisplays = [], foodDisplayKey = "";
+  // A tiny reused steam rig follows the physical appliance, including turning
+  // or moving it. No lights or inventory mutations are added by the effect.
+  const cookingFX = new THREE.Group(); cookingFX.name = "Working kitchen appliance"; cookingFX.visible = false; scene.add(cookingFX);
+  const puffGeo = new THREE.SphereGeometry(.065, 6, 4), steam = [];
+  for (let i = 0; i < 4; i++) { const m = new THREE.Mesh(puffGeo, new THREE.MeshBasicMaterial({ color: 0xeee0cd, transparent: true, opacity: .16, depthWrite: false })); cookingFX.add(m); steam.push(m); }
+  const warmth = new THREE.Mesh(new THREE.PlaneGeometry(.36, .12), new THREE.MeshBasicMaterial({ color: 0xffac51, transparent: true, opacity: .35, depthWrite: false, toneMapped: false, side: THREE.DoubleSide })); cookingFX.add(warmth);
+  let kitchenFXStatus = { active: false, recipe: null, method: null, steam: 0 };
+  function tickKitchen(time) {
+    const job = place?.kind === "room" && place.id === "kitchen" && state.kitchen?.jobs.home, recipe = RECIPE_BY_ID[job?.recipe];
+    const appliance = recipe && [...pieces.values()].find(e => e.piece.room === "kitchen" && (recipe.method === "bake" ? ["kitchen-oven", "copper-range"] : ["kitchen-hob", "copper-range"]).includes(e.piece.id));
+    cookingFX.visible = !!appliance;
+    kitchenFXStatus = { active: !!appliance, recipe: job?.recipe ?? null, method: recipe?.method ?? null, steam: appliance ? 4 : 0 };
+    if (!appliance) return;
+    const socket = appliance.piece.id === "copper-range" ? 1.235 : recipe.method === "bake" ? 1.56 : 1.19;
+    appliance.group.updateWorldMatrix(true, false);
+    cookingFX.position.copy(appliance.group.localToWorld(new THREE.Vector3(0, socket, .04)));
+    cookingFX.rotation.y = appliance.group.rotation.y;
+    for (let i = 0; i < steam.length; i++) { const t = ((state.time * .65 + i / 4) % 1); steam[i].position.set(Math.sin(t * 6 + i) * .055, .08 + t * .46, 0); steam[i].scale.setScalar(.55 + t); steam[i].material.opacity = .19 * (1 - t); }
+    warmth.position.set(0, recipe.method === "bake" ? -.72 : -.04, recipe.method === "bake" ? .42 : .05); warmth.rotation.x = recipe.method === "bake" ? 0 : -Math.PI / 2;
+    warmth.material.opacity = .24 + Math.sin(state.time * 5) * .05;
+  }
 
   // Light for inside (the key over this place, the farm turned down) or for the farm again.
   function lightIndoors(origin) {
@@ -71,6 +94,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   const clear = () => {
+    cookingFX.visible = false; kitchenFXStatus = { active: false, recipe: null, method: null, steam: 0 };
     for (const f of foodDisplays) disposeFoodProp(f); foodDisplays = []; foodDisplayKey = "";
     for (const a of customers.values()) if (a.food) { disposeFoodProp(a.food); a.food = null; }
     for (const guide of [selection?.box, selection?.ring, ghost, gridLines]) if (guide) { guide.removeFromParent(); guide.geometry.dispose(); guide.material.dispose(); }
@@ -266,7 +290,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
         a.hit = new THREE.Mesh(guestHitGeometry, guestHitMaterial); a.hit.position.y = 1.1; a.hit.userData = { type: "customer", id: c.id }; a.model.add(a.hit); pickables.push(a.hit);
         root.add(a.model); customers.set(c.id, a);
       }
-      if (c.outcome === "bought" && c.quantity > 1 && state.customerCare.bags && !a.bag) { a.bag = customerBag(); a.bag.position.set(.38, .45, .3); a.model.add(a.bag); }
+      if (c.outcome === "bought" && (c.quantity > 1 || c.food?.quantity > 1) && state.customerCare.bags && !a.bag) { a.bag = customerBag(); a.bag.position.set(.38, .45, .3); a.model.add(a.bag); }
       if (c.food?.status === "paid" && !a.food) { a.food = buildFoodProp(c.food.recipe, { scale: .45 }); a.food.position.set(-.37, .82, .28); a.model.add(a.food); }
       // Entering, they walk in from the door; leaving, they walk back out.
       const target = c.phase === "entering" ? customerSpot({ ...c, phase: "browsing" }, 0) : customerSpot(c, queue.indexOf(c));
@@ -280,6 +304,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
 
   // Shane and Natalie potter about the room, between free spots near the front.
   function tickRoom(dt, time) {
+    tickKitchen(time);
     for (const e of pieces.values()) e.tick?.(time);                  // the cauldron's brew
     for (const a of actors) {
       const pos = a.model.position, o = ORIGIN.room;
@@ -411,6 +436,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     leave() { clear(); place = null; lightIndoors(null); },
     refresh() { if (place?.kind === "room") { const sel = selection?.instance; buildRoomPlace(place.id); if (sel) select(sel); } },
     select, preview, setGrid, movePiece, refreshFood,
+    get kitchenStatus() { return { ...kitchenFXStatus, pieces: state.house.placed.filter(p => p.room === "kitchen" && ["kitchen-hob", "kitchen-oven", "kitchen-pot-rail", "kitchen-pan-rail", "kitchen-baking-rack", "kitchen-spice-shelf", "copper-range", "copper-pan-rail", "iron-utensil-rack", "gothic-spice-cabinet"].includes(p.id)).map(p => p.id), capabilities: kitchenEquipment(state) }; },
     get foodDisplayStatus() { return foodDisplays.map(g => ({ slot: g.userData.foodDisplay, x: g.position.x - ORIGIN.shop.x, y: g.position.y, z: g.position.z - ORIGIN.shop.z, yaw: g.rotation.y })); },
     // A room point (x, z, and y above the floor), or a point in the world, in a host's own frame: x from its
     // left edge, z from its back (a wall piece: out from the wall), y above its base.

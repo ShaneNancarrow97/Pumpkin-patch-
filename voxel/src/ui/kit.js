@@ -1,3 +1,4 @@
+import { kitchenWorkshopIcon } from "./kitchen-workshop-icons.js";
 // Small shared pieces of the menus.
 import { DECOR_ART } from "../decor-meta.js";
 import { decorThumb } from "../decor.js";
@@ -25,6 +26,7 @@ function shelfIcon(id, size, finish) {
 // A piece of the original art from the decor atlas, as crisp pixel art in a
 // thumbnail; finish picks a blank shelf's colour (the first if left out).
 export function decorIcon(id, size = 52, finish) {
+  const kitchen = kitchenWorkshopIcon(id); if (kitchen) return `<span class="thumb" style="--thumb:${size}px">${kitchen}</span>`;
   if (SHELF_ROW[id] !== undefined) return shelfIcon(id, size, finish);
   const thumb=PREMIUM_WALL_THUMBS[id]??PREMIUM_FURNITURE_THUMBS[id];
   if (thumb) return `<span class="thumb"><img src="${thumb}" alt="" style="width:${size}px;height:${size}px;object-fit:contain"></span>`;

@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import * as M from '../src/model.js';
 import { MEADOW_EXIT, pathDistance } from '../src/content/festival-meadow.js';
-const setup=()=>{const s=M.freshState();s.festival.meadow=true;s.festival.cocoa.level=3;s.festival.cocoa.stock=10;s.coins=1000;for(const p of M.COCOA_SPECIALS)s.festival.cocoa.extras[p.id].stock=10;return s;};
+const setup=()=>{const s=M.freshState();s.festival.meadow=true;s.festival.cocoa.level=3;s.festival.cocoa.stock=10;s.coins=1000;for(const p of M.COCOA_SPECIALS)s.festival.cocoa.extras[p.id].stock=p.tier<=3?10:0;return s;};
 const guest=(id=0)=>({id,budget:100,basketLimit:1,preferred:[0],needs:{thirst:90,hunger:90,happiness:60,value:1},originalBudget:100});
 test('premium menu is tier-gated, stock costs money, and each price can be set within bounds',()=>{
  const s=M.freshState();s.coins=1000;assert.equal(M.restockCocoaSpecial(s,'flake'),0);assert.equal(M.setCocoaSpecialPrice(s,'flake',7),false);s.festival.meadow=true;s.festival.cocoa.level=2;

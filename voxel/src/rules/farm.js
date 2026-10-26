@@ -2,18 +2,14 @@
 // and upgrade effects follow the main game (src/core/model.mjs, plot-model.mjs,
 // festival-model.mjs); the one change is that better pumpkins take a little
 // longer to grow, so choosing a crop is a real choice.
-import { pumpkinVarieties } from "../../../src/content/products.js";
+import { PUMPKIN_VARIETIES } from "../content/pumpkin-varieties.js";
+export { VARIETY_COUNT, MAX_VARIETY_INDEX, VARIETY_INDICES } from "../content/pumpkin-varieties.js";
 import { economy } from "../../../src/content/economy.js";
 import { addStock, stockCount } from "./stock.js";
 import { MAX_PLOTS, PLOT_COUNTS } from "../content/farm-layout.js";
 export { MAX_PLOTS, PLOT_COUNTS, fieldDepth, farmPathEnd, farmExpansionTier } from "../content/farm-layout.js";
 
-export const VARIETIES = pumpkinVarieties.map((v, i) => ({
-  ...v,
-  grow: [18, 24, 30, 36][i],                                                  // seconds, before the watering can
-  color: [0xf0821e, 0xd9d2ff, 0x9d55e6, 0xf5c84a][i],
-  glow: [0xffb04a, 0xbeb7ff, 0xb774ff, 0xffdf64][i],
-}));
+export const VARIETIES = PUMPKIN_VARIETIES;
 
 export const UPGRADES = [
   { id: "tools", name: "A better watering can", text: "Pumpkins grow 18% faster.", cost: 90, max: 6 },
@@ -143,7 +139,7 @@ export function upgradePlot(s, i) {
 
 // Any variety up to the plot's level can be grown there.
 export function choosePlotCrop(s, i, variety) {
-  if (!Number.isInteger(i) || i < 0 || i >= openPlots(s) || !Number.isInteger(variety) || variety < 0 || variety > s.plotLevels[i]) return false;
+  if (!Number.isInteger(i) || i < 0 || i >= openPlots(s) || !Number.isInteger(variety) || !VARIETIES[variety] || variety > s.plotLevels[i]) return false;
   s.plotCrops[i] = variety;
   if (s.plots[i].phase === "empty") s.plots[i].variety = variety;
   return true;

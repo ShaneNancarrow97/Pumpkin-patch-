@@ -1,3 +1,4 @@
+import { hospitalityIcon } from "./hospitality-icons.js";
 // The Shop menu: farm upgrades, seeds per plot, Skyla's indoor shop, the stall
 // and the visitors.
 import * as M from "../model.js";
@@ -115,7 +116,7 @@ export function farmSheets(ui) {
     const stats = `<div class="stats"><div><b>${sh.served}</b><span>served inside</span></div><div><b>${money(sh.income)}</b><span>pumpkin takings</span></div><div><b>${money(s.customerCare.tips.shop)}</b><span>tips at the till</span></div><div><b>${sh.customers.filter((c) => c.phase !== "leaving").length}/${M.SHOP_CAPACITY[sh.capacityLevel]}</b><span>browsing now</span></div></div>`;
     const tables = Array.from({ length: M.displayCount(sh) }, (_, i) => {
       const on = sh.displays[i];
-      return `<div class="table-row"><h4>Table ${i + 1}</h4><div class="chips" role="group" aria-label="What table ${i + 1} shows">${[null, 0, 1, 2, 3].map((v) => {
+      return `<div class="table-row"><h4>Table ${i + 1}</h4><div class="chips" role="group" aria-label="What table ${i + 1} shows">${[null, ...M.VARIETIES.map((_, i) => i)].map((v) => {
         const taken = v !== null && sh.displays.some((d, k) => k !== i && k < M.displayCount(sh) && d === v);
         return `<button class="chip" data-display="${i}:${v}" aria-pressed="${on === v}" ${taken ? "disabled" : ""}>${v === null ? "Empty" : M.VARIETIES[v].name}${v !== null ? ` <small>${M.available(s, v)}</small>` : ""}</button>`;
       }).join("")}</div></div>`;
@@ -133,7 +134,7 @@ export function farmSheets(ui) {
     const doing = v.hayride && !v.hayride.done ? `at the hayride · ${Math.round(v.hayride.terror ?? 0)}% terror` : v.hollow && !v.hollow.done ? (v.hollow.fleeing ? "running home from the maze" : `at the maze · ${Math.round(v.hollow.terror ?? 0)}% terror`) : v.outcome === "bought" ? `bought ${plural(v.quantity, "pumpkin")} for ${money(v.amount)}` : v.outcome === "shopping" ? "on the way" : v.outcome === "budget" ? "couldn’t afford what’s left" : "found the shelves empty";
     return `<p class="guest${v.place ? " member" : ""}"><b>${v.kind === 10 ? "Baron Brassbolt" : M.STALL_PROFILES[v.profile]?.name ?? "Neighbour"}</b>${v.regular ? ` <span class="tag">regular</span>` : ""} · ${money(v.budget)} budget${v.cocoaAllowance ? ` (includes ${money(v.cocoaAllowance)} cocoa money)` : ""} · ${doing}${v.mug ? " · a cup of hot chocolate" : ""}</p>`;
   }
-  const partyLabel = (v) => (v.size > 1 ? `<p class="party-label">${["", "", "Two friends", "A party of three", "A family of four"][v.size]}</p>` : "");
+  const partyLabel = (v) => (v.size > 1 ? `<p class="party-label">${(["", "", "Two friends", "A party of three", "A family of four"][v.size]??`A group of ${v.size}`)}</p>` : "");
 
   function stall(s) {
     const st = s.stall, held = (v) => M.held(s, v);
@@ -163,7 +164,8 @@ export function farmSheets(ui) {
       const button = !open ? `<button class="button" disabled>Locked</button>` : priceButton(sign ? "buy" : "visitup", id, price, s.coins, done && "Done");
       return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${id === "cocoa" ? "Cocoa hospitality" : u.name}</h3><p>${id === "cocoa" ? "Longer pumpkin patience; quicker service at Sandy’s stand." : u.text}</p><p class="effect">${effect}</p>${tiers(level, most)}</div>${button}</article>`;
     }).join("");
-    return stats + attraction + streak + cards;
+    const occasions=M.VISITOR_EVENT_UPGRADES.map(u=>{const e=s.visitorEvents[u.id],price=M.visitorEventUpgradeCost(s,u.id),locked=M.patchLevel(s).level<u.level;return `<article class="card">${hospitalityIcon(u.id)}<div><h3>${u.name}</h3><p>${u.text}</p><p class="small">${e.level?`Next in ${Math.ceil(e.remaining/60)} min · ${e.enabled?'Enabled':'Paused'}`:`Available at level ${u.level}`}</p></div>${e.level?`<button class="button" data-occasion-toggle="${u.id}">${e.enabled?'Pause':'Enable'}</button>`:`<button class="button gold" data-occasion="${u.id}" ${locked||s.coins<price||s.paused?'disabled':''}>${locked?`Level ${u.level}`:money(price)}</button>`}</article>`}).join('');
+    return stats + attraction + occasions + streak + cards;
   }
 
   return {
@@ -176,6 +178,8 @@ export function farmSheets(ui) {
       },
       bind(body) {
         const s = ui.state;
+        body.querySelectorAll('[data-occasion]').forEach(b=>b.onclick=()=>{if(M.buyVisitorEventUpgrade(s,b.dataset.occasion)){ui.save();ui.draw();}});
+        body.querySelectorAll('[data-occasion-toggle]').forEach(b=>b.onclick=()=>{const id=b.dataset.occasionToggle;if(M.setVisitorEventEnabled(s,id,!s.visitorEvents[id].enabled)){ui.save();ui.draw();}});
         if (tab === "cocoa") cocoaMenu.bind(body, { embedded: true });
         if (tab === "shop") bindCustomerCareUpgrades(body, ui);
         body.querySelector("[data-food-shelves]")?.addEventListener("click", () => ui.openCookingSheet("food"));
