@@ -1,0 +1,888 @@
+diff --git a/voxel/AGENTS.md b/voxel/AGENTS.md
+index 7c58c82..6d5f229 100644
+--- a/voxel/AGENTS.md
++++ b/voxel/AGENTS.md
+@@ -10,6 +10,8 @@
+ 
+ **Contractor workshop:** [`docs/handovers/46-kitchen-hospitality-workshop.md`](docs/handovers/46-kitchen-hospitality-workshop.md) completes physical kitchen equipment/mixing/batches, Maisie and dining, Renaissance VIPs/rushes, Sandy deluxe automation, Natalie’s wheelchair and longer two-tractor hayrides. It includes handover 45; use the correct patch base and preserve unpublished lead work.
+ 
++**Contractor menu refinement:** [`docs/handovers/47-business-menu-refinement.md`](docs/handovers/47-business-menu-refinement.md) groups business management, adds guided cooking shortcuts and keeps live menus stable. It layers on completed handover 46 with no rule/save changes.
++
+ Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
+ 
+ **Codex's hayride (merged in 39):** [`docs/handovers/38-hayride-lead-integration.md`](docs/handovers/38-hayride-lead-integration.md) preserves Claude’s `1abaff5` maze update and isolates hayride audio from lead-owned runtime files.
+diff --git a/voxel/build.mjs b/voxel/build.mjs
+index 026c30e..e7a47ef 100644
+--- a/voxel/build.mjs
++++ b/voxel/build.mjs
+@@ -19,7 +19,7 @@ const writeHtml = {
+     build.onEnd((result) => {
+       if (result.errors.length) return;
+       const js = result.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
+-      const css = inline(["src/style.css", "src/icons.css", "src/ui/house-skins.css", "src/ui/maze-commerce.css", "src/ui/house-placement.css", "src/ui/intro.css", "src/ui/maze-ride.css", "src/ui/meadow-chat.css", "src/ui/upgrade-menu.css", "src/ui/hayride.css", "src/ui/hayride-ride.css", "src/ui/hollow-exterior.css", "src/ui/cooking.css", "src/ui/workshop-polish.css"].map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n"));
++      const css = inline(["src/style.css", "src/icons.css", "src/ui/house-skins.css", "src/ui/maze-commerce.css", "src/ui/house-placement.css", "src/ui/intro.css", "src/ui/maze-ride.css", "src/ui/meadow-chat.css", "src/ui/upgrade-menu.css", "src/ui/hayride.css", "src/ui/hayride-ride.css", "src/ui/hollow-exterior.css", "src/ui/cooking.css", "src/ui/workshop-polish.css", "src/ui/service-menus.css"].map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n"));
+       const html = fs.readFileSync(path.join(root, "src/index.html"), "utf8")
+         .replace("/* @build:style */", () => css).replace("/* @build:script */", () => js);
+       const out = outFile ?? path.join(root, "dist", dev ? "index.html" : "pumpkin-patch-voxel.html");
+diff --git a/voxel/docs/handovers/47-business-menu-refinement.md b/voxel/docs/handovers/47-business-menu-refinement.md
+new file mode 100644
+index 0000000..81dce43
+--- /dev/null
++++ b/voxel/docs/handovers/47-business-menu-refinement.md
+@@ -0,0 +1,68 @@
++# 47 — Clearer, quieter business menus
++
++Branch: `contractor/menu-refinement`.
++Base: `2da0f293cc6c4b4b2506a4a27c717099d1226695` — completed workshop handover 46.
++Runtime: `002df4b31bdd06588e621391355690f74525df2a`.
++Download HTML SHA-256: `2e75700848ce22833468521af835fb786583337add68745a8177b29bafabc747`.
++
++This is a UI contractor increment. It preserves the rules, economy, art, world, progression and v13 saves delivered in 46. There is no reset or save migration. Claude's lead branch and unpublished work were left alone.
++
++## What the review found and changed
++
++The previous Cooking page put two idle cooker cards, six horizontally scrolling destinations and repeated improvements/accounts ahead of the actual food. Sandy's prices, seven specials, comforts and helpers formed one long page. Rushes and VIP entry sat among unrelated visitor upgrades; tractor and route improvements shared the operational page. Live redraws could also collapse disclosures or replace an open native selector.
++
++The new surfaces use restrained plum/charcoal, warm amber purchase actions, Fraunces headings, DM Sans labels and existing generated dish/character art. Text is at least 12px and controls at least 44px. The world and persistent HUD remain the focus; these are deliberate, closable management surfaces.
++
++## Where players find things
++
++| Entry | Sections and purpose |
++| --- | --- |
++| **Manage** in the dock | A grouped directory: Grow your patch, then Your businesses. Skyla, Sandy and Maisie are named explicitly. Visitors & VIPs has its own entry. Internal `data-tab="shop"` is retained. |
++| **Maisie's kitchen** | **Cook · Supplies · Sell · Upgrade**. Four destinations fit on a phone without horizontal scrolling. |
++| Cook | Choose the truck or home cooker and batch size. One recipe expands at a time. Ready actions come first; new discoveries and future unlocks unfold below. Mix ingredients is a visible alternative. Idle cooker cards are gone; a paid run still shows progress and safe cancellation. |
++| Supplies | Order supplies or inspect the shared pantry. Recipe shortcuts prepare a missing-ingredient list; they never spend money. Incoming paid deliveries are subtracted, and a list over the 40-item order limit is explicitly partial. The quote must still be purchased with the real Order button. |
++| Sell | Skyla's two food shelves, stock counts and selling prices. Dish art and price fields have their own measured columns. Accounts live here rather than repeating on every page. |
++| Upgrade | Truck & chef, or Home equipment. Existing ownership, room placement, pricing and unlock checks are unchanged. Missing cookware points here; fully supplied recipes point to the pantry rather than creating an empty shopping cart. |
++| **Sandy's cocoa** | **Menu & stock · Helpers · Upgrade**. Each product keeps stock, supply cost, selling price and restock button together. Future specials unfold separately. Helpers contain courier/barista/automatic supplies. Upgrade contains the next stand and meadow comforts. |
++| New cocoa business | Explicit two-step setup: buy meadow land (existing level-4 gate), then build the stand (existing level-5 gate). Purchases leave the management page open; viewing the plot is a separate action. |
++| **Visitors & VIPs** | **Arrivals · Spending · Rushes & VIPs**. Events show their own purchase gate, interval and pause control together. Spending links directly to existing carrier bags/tip management. The redundant farm section strip is omitted on this page. |
++| **Hollow Hayride** | **Overview · Scares · Upgrade**. Overview retains admissions, boarding, ticket stepper, free ride-along and accounts. Scares opens the installations directly. Upgrade groups wagon capacity, tractors/crew and longer route/scenery. No ticket/fleet/route rule was changed. |
++| **More** | Kitchen & food remains an alternative shortcut with a clear cook/order/sell description. |
++
++The locked-plot hint now points to Manage → Farm upgrades. Business titles and view-in-world links are consistent. Small SVG direction marks avoid missing glyphs in the embedded font; all character, dish and product art is reused from the existing atlases.
++
++## Stability and integration
++
++`ui/service-kit.js` provides shared navigation, section headings, metrics and next-action markup. `ui/service-menus.css` is loaded after the earlier styles and uses theme variables. It refines the shared sheet frame, then styles the new business pages. Existing phone bottom sheets, landscape side sheets, safe areas and camera blocking remain.
++
++`ui/kitchen-guide.js` is read-only. It calculates shopping lists and the next useful step with existing recipe/equipment/stock rules; the purchase functions remain authoritative. It has no DOM or Three.js dependency and is covered by meaningful guide/list tests.
++
++`ui/menu-memory.js` keeps separate scroll/disclosure state per business page, restores disclosure height before scroll position, and defers redraw while a native select is being used. Focus and range dragging remain supported. The Manage popup keeps its arrow-key/Escape support; farm shortcuts are gated while it is open so selecting a menu item cannot also boost the pumpkin.
++
++Legacy `openCookingSheet()` view IDs still work: `recipes`, `mix`, `deliveries`, `pantry`, `food`, `equipment`, plus `upgrades`. `openHayrideSheet()` now accepts optional `overview`, `scares` or `upgrade`; no argument opens Overview. New `openShopSheet`/`openCocoaSheet` convenience functions are used inside the shared UI context. The public test controller still exposes the original entry points.
++
++A recipe's start/research button exists when its card is expanded. Automation targeting those actions should first click `[data-recipe-select="recipe-id"]`. Current menu QA lives in `tools/qa-service-menus*.mjs`; older handover-46 browser reports and their scripts are pinned to their original builds.
++
++## Claude pickup
++
++Apply `menus-from-2da0f29.patch` only after handover 46 is present, or merge/review `contractor/menu-refinement` on a clean review branch. Do not reset the lead checkout or overwrite unpublished work. Inspect shared integration edits in `main.js`, the sheet modules, `menu-memory.js`, `index.html` and `build.mjs`. Model/rules/content assets are unchanged.
++
++```sh
++git apply --check /path/to/menus-from-2da0f29.patch
++git apply /path/to/menus-from-2da0f29.patch
++npm --prefix voxel ci
++npm --prefix voxel test
++node voxel/build.mjs --out /tmp/refined-menus.html
++```
++
++The artifact branch `contractor/menu-refinement-download` contains the standalone HTML, HTML ZIP and lightweight patch ZIP only; do not merge it into game source. Large screenshot evidence remains on the source branch and is omitted from the runtime patch.
++
++## Verification
++
++77 Node test files pass, including five guide/list scenarios. A 54-check browser flow exercises guided ordering, exact payment, first cooking, shelf pricing, cocoa pricing/restocking, VIP purchase/pause, second-tractor purchase, menu keyboard behaviour, save/reload and desktop/phone/landscape/Fold layouts. It also checks disclosure retention and native selector stability during live progress.
++
++The later focused review passes 32 checks covering the two-step unlock screens, compact helper controls and final layouts. After a final navigation-hint wording change, the exact shipped HTML passes a separate 8-check release smoke check. Reports identify each immutable HTML hash; do not combine evidence from different builds without reading their scope. The clean committed-source rebuild matches the download byte for byte. The downloadable patch manifest records its separate apply/rebuild verification.
++
++[CI run 40406614499](https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/40406614499) passes both the root check and voxel jobs on the exact runtime commit, including tests, build and desktop/phone smoke checks. Subsequent commits contain only this handover, QA tools and verification evidence.
++
++See `docs/contractor-patches/menu-refinement/verification/` for the final reports, screenshots and CI record. Fixtures grant funds/unlocks only in QA browser storage; normal starting conditions are unchanged in the download. The tests serve the identical offline HTML over loopback because managed Chromium blocks direct file navigation. Physical Fold 7 frame rate, Android file handling and successful native OS fullscreen remain unverified; existing fullscreen controls are retained.
+diff --git a/voxel/src/index.html b/voxel/src/index.html
+index b5230ff..12fc6b9 100644
+--- a/voxel/src/index.html
++++ b/voxel/src/index.html
+@@ -49,7 +49,7 @@
+ 
+ <nav class="dock" id="dock" aria-label="Main navigation">
+   <button class="tab active" data-tab="patch" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 8c-9-5-13 9-6 12 2 1 4 0 6 0s4 1 6 0c7-3 3-17-6-12Z"/><path d="M12 8c-4 3-4 9 0 12m0-12c4 3 4 9 0 12m0-12V4l3-2"/></svg><span>Farm</span></button>
+-  <button class="tab" data-tab="shop" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m4 20 9-9m-4-7 4-2 7 7-2 4-3-3-2 1-4-4 1-2Zm-4 9 4 4"/></svg><span>Upgrades</span></button>
++  <button class="tab" data-tab="shop" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m4 20 9-9m-4-7 4-2 7 7-2 4-3-3-2 1-4-4 1-2Zm-4 9 4 4"/></svg><span>Manage</span></button>
+   <button class="tab" data-tab="attractions" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 21V10l4-3V4l4-2 4 2v3l4 3v11Zm4 0v-7l4-3 4 3v7M9 7h.1M15 7h.1m-3 9v3"/></svg><span>Attractions</span></button>
+   <button class="tab" data-tab="home" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-7h6v7m-2-13h2"/></svg><span>Home</span></button>
+   <button class="tab" data-tab="wardrobe" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7a2 2 0 1 1 4 0c0 2-2 2-2 4m0 0L3 17v2h18v-2l-9-6Z"/></svg><span>Wardrobe</span></button>
+diff --git a/voxel/src/main.js b/voxel/src/main.js
+index eb9ca36..c3ec5c1 100644
+--- a/voxel/src/main.js
++++ b/voxel/src/main.js
+@@ -219,7 +219,7 @@ function floatStreak(streak, at) {
+ }
+ function tapPlot(i) {
+   if (state.paused) return notice("Tea break. Turn it off in Settings to get back to work.");
+-  if (i >= M.openPlots(state)) return notice("Buy Room for more in Shop › Farm to clear this plot.");
++  if (i >= M.openPlots(state)) return notice("Choose Manage, then Farm upgrades, to clear more plots.");
+   const p = state.plots[i];
+   if (p.phase === "empty" && M.plant(state, i)) { scene.sendTo(i); audio.tone(340); }
+   else if (p.phase === "ready") pickPlot(i);
+@@ -299,7 +299,9 @@ function exitMazeRide() {
+ }
+ function openHollowSheet(tab = "manage") { sheets.hollow.setTab(tab); openSheet("hollow"); }
+ function openFoyerSheet(tab = "catalogue") { sheets.foyer.setTab(tab); openSheet("foyer"); }
+-function openHayrideSheet() { openSheet("hayride"); }
++function openHayrideSheet(tab = "overview") { sheets.hayride.setTab?.(tab); openSheet("hayride"); }
++function openShopSheet(tab = "shop") { sheets.shop.setTab(tab); openSheet("shop"); }
++function openCocoaSheet() { sheets.festival.setTab("cocoa"); openSheet("festival"); }
+ function openCookingSheet(tab = "recipes", station = null) { sheets.cooking.setTab(tab); if (station) sheets.cooking.setStation?.(station); openSheet("cooking"); }
+ function enterKitchen({ tab = "recipes", noOpen = false } = {}) {
+   if (!M.homeKitchenOpen(state)) { notice("Expand the house to unlock its kitchen."); sheets.home.setTab("house"); openSheet("home"); return false; }
+@@ -449,7 +451,7 @@ const ui = {
+   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
+   portrait: (id) => scene.portrait(id),
+   intro,
+-  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide, openHayrideSheet, focusHayride, openHayrideRide, openCookingSheet, enterKitchen, showCookingAnimation(job,station) { showFirstCooking(state,job.recipe,station,save); }, openKitchenDecorate() { sheets.home.setTab("decorate"); openSheet("home"); },
++  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide, openHayrideSheet, focusHayride, openHayrideRide, openCookingSheet, openShopSheet, openCocoaSheet, enterKitchen, showCookingAnimation(job,station) { showFirstCooking(state,job.recipe,station,save); }, openKitchenDecorate() { sheets.home.setTab("decorate"); openSheet("home"); },
+   get estateTools() { return estateTools; },
+   get foyerTools() { return foyerTools; }, get hollowContext() { return hollowContext; },
+   read: (id) => collection.read(id),
+@@ -515,8 +517,8 @@ function markTab() {
+   const active = openTab ? TABS[openTab] : ["foyer", "maze", "hayride"].includes(scene.place?.kind) ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
+   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
+ }
+-// Upgrades opens its menu; a choice opens the upgrades sheet at that section.
+-const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if (section === "cooking") openCookingSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
++// Manage opens the farm and business directory.
++const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if (section === "cooking") openCookingSheet(); else if(section === "cocoa") openCocoaSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
+ document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
+   const tab = t.dataset.tab;
+   if (tab === "shop") { upgradeMenu.toggle(); return; }
+@@ -534,6 +536,7 @@ document.addEventListener("keydown", (e) => {
+   if (celebration.active) return;
+   const tools = home.tools;
+   if (e.key === "Escape") { guestCard.clear(); hollowContext.close(); hayrideContext.close(); if (foyerTools.active) foyerTools.cancel(); else if (estateTools.active) estateTools.cancel(); else if (tools.selected) tools.select(null); else closeSheet(); return; }
++  if (upgradeMenu.open) return;
+   if (foyerTools.active && scene.place?.kind === "foyer") {
+     if (e.key.toLowerCase() === "r") { e.preventDefault(); foyerTools.rotate(e.shiftKey ? -15 : 15); return; }
+     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); foyerTools.undo(); return; }
+diff --git a/voxel/src/ui/cooking-sheet.js b/voxel/src/ui/cooking-sheet.js
+index 411dcb9..68d05a0 100644
+--- a/voxel/src/ui/cooking-sheet.js
++++ b/voxel/src/ui/cooking-sheet.js
+@@ -1,3 +1,5 @@
++import { SERVICE_OUT, SERVICE_BACK, SERVICE_RIGHT, serviceNav, serviceHeading, serviceMetrics, serviceNotice } from "./service-kit.js";
++import { recipeShoppingList, kitchenNextStep } from "./kitchen-guide.js";
+ import { maisieIcon } from "../maisie.js";
+ import { patchLevel } from "../rules/levels.js";
+ import { VARIETIES } from "../rules/farm.js";
+@@ -16,12 +18,13 @@ const count = n => Math.max(0, Math.floor(Number(n) || 0));
+ const disabled = ok => ok ? "" : "disabled";
+ const seconds = n => `${Math.max(0, Math.ceil(Number(n) || 0))}s`;
+ const phaseNames = { ordered: "Packing your order", travelling: "Cart on its way", unloading: "At the receiving bay" };
+-const tabs = [["recipes", "Recipes"], ["mix", "Mix"], ["equipment", "Equipment"], ["deliveries", "Deliveries"], ["pantry", "Pantry"], ["food", "Food shelves"]];
++const tabs = [["cook", "Cook"], ["supplies", "Supplies"], ["food", "Sell"], ["improve", "Upgrade"]];
++const groupFor = tab => ({recipes:"cook",mix:"cook",deliveries:"supplies",pantry:"supplies",equipment:"improve",upgrades:"improve"})[tab]??tab;
+ 
+ // One management surface for the truck, home cooker and shop shelves. Quantities,
+ // tabs and confirmations belong to this view; money and timers belong to rules.
+ export function cookingSheets(ui) {
+-  let tab = "recipes", station = "truck", cart = {}, cancelStation = null, batches = "1";
++  let tab = "recipes", selectedRecipe = undefined, discoverOpen = false, station = "truck", cart = {}, cancelStation = null, batches = "1";
+   let mixIngredients = {}, mixPumpkins = {}, mixMethod = "pan", mixAdd = "vegetables";
+   const disclosures = { upgrades: false, accounts: false };
+   const changed = (message = "") => {
+@@ -62,16 +65,17 @@ export function cookingSheets(ui) {
+   function stations(s) {
+     const home = E.homeCookingAvailable(s), open = E.homeKitchenOpen(s), showHome = open || !!s.kitchen.jobs.home;
+     if (station === "home" && !open) station = "truck";
+-    const stationMarkup = ["truck", ...(showHome ? ["home"] : [])].map(id => {
++    const stationMarkup = [station].map(id => {
+       const job = s.kitchen.jobs[id], title = id === "home" ? "Home cooker" : "Truck hob";
+-      if (!job) return `<article class="cooking-station"><div class="cooking-station-head"><div><h4>${title}</h4><p>${id === "home" && !home ? "Place a hob or oven in the kitchen to begin." : "Ready for a recipe"}</p></div><span class="cooking-state${id === "home" && !home ? "" : " is-ready"}">${id === "home" && !home ? "Needs equipment" : "Ready"}</span></div></article>`;
++      if (!job) return ``; // Idle cookers need no card.
++
+       const waiting = job.remaining <= 0, recipe = C.RECIPES.find(r => r.id === job.recipe);
+       const runBatches = Math.max(1, count(job.batches || 1)), completed = Math.min(runBatches, count(job.completed));
+       const duration = Math.max(1, job.duration ?? recipe?.seconds ?? 1), progress = Math.max(0, Math.min(1, (completed + 1 - job.remaining / duration) / runBatches));
+       const runRemaining = Math.max(0, runBatches - completed - 1) * duration + job.remaining;
+       return `<article class="cooking-station is-busy" data-cooking-job="${id}"><div class="cooking-station-head"><div><h4>${title} · ${recipeName(job.recipe)}</h4><p class="${waiting ? "cooking-note is-warning" : ""}">${waiting ? "Ready — make space in food storage to finish." : `${completed}/${runBatches} batches ready · ${seconds(runRemaining)} left${job.automatic ? " · Chef" : ""}`}</p></div>${cancelStation !== id ? `<button class="button" data-cooking-cancel="${id}" ${disabled(editable())}>Stop</button>` : ""}</div><progress max="1" value="${progress}" aria-label="${title} cooking progress"></progress>${id === "home" && !home ? '<p class="cooking-note">This paid run will finish safely. Replace the kitchen equipment to start another.</p>' : ""}${cancelStation === id ? `<p class="cooking-note is-warning">Stopping discards every unfinished batch. Ingredients and pumpkins for the full run were used when it started and are not refunded.</p><div class="cooking-cancel-confirm"><button class="button" data-cooking-cancel-dismiss>Keep cooking</button><button class="button is-destructive" data-cooking-cancel-confirm="${id}" ${disabled(editable())}>Discard run</button></div>` : ""}</article>`;
+     }).join("");
+-    return `<section class="cooking-section" aria-label="Cooking stations"><div class="cooking-title-row"><h3>${station === "home" ? "Your kitchen" : "Cooking stations"}</h3>${open && ui.enterKitchen ? '<button class="cooking-text-button" data-cooking-action="home">Visit kitchen</button>' : ""}</div><div class="cooking-stations">${stationMarkup}</div><div class="cooking-run-controls"><label class="cooking-field">Cook at<select data-cooking-station aria-label="Cooking station" ${disabled(editable())}><option value="truck" ${station === "truck" ? "selected" : ""}>Food truck</option><option value="home" ${station === "home" ? "selected" : ""} ${disabled(open)}>Home kitchen${open ? "" : " · Expand the house"}</option></select></label>${batchControl()}</div><p class="cooking-note">${station === "home" ? "Only equipment placed in this kitchen counts. Each dish needs its own cookware and ingredients." : "The truck starts with a hob, pot and pan. Baking needs an oven kit."} ${pendingOutput(s)} portions reserved for unfinished batches.</p></section>`;
++    return `<section class="cooking-section cooking-worktop" aria-label="Cooking station"><div class="cooking-run-controls"><label class="cooking-field">Cook at<select data-cooking-station aria-label="Cooking station" ${disabled(editable())}><option value="truck" ${station === "truck" ? "selected" : ""}>Maisie’s truck</option><option value="home" ${station === "home" ? "selected" : ""} ${disabled(open)}>Home kitchen${open ? "" : " · House level 2"}</option></select></label>${batchControl()}</div>${stationMarkup}${pendingOutput(s)?`<p class="cooking-note">${pendingOutput(s)} portions reserved for batches in progress.</p>`:""}</section>`;
+   }
+ 
+   function inputs(s, recipe, run = 1) {
+@@ -85,14 +89,30 @@ export function cookingSheets(ui) {
+     return supplies.join(" · ");
+   }
+ 
++  function recipeCard(s,recipe,expanded=false) {
++    const run=batchCount(s,recipe.id), learned=known(s,recipe.id), gated=patchLevel(s).level<recipe.level;
++    const ready=learned?K.cookingReadiness(s,recipe.id,station,run):null, price=recipe.research??0;
++    const shopping=recipeShoppingList(s,recipe,run), incoming=Object.entries(recipe.ingredients).some(([id,n])=>count(s.kitchen.pantry[id])<n*run);
++    const supplyAction=ready?.missingEquipment.length?`<button class="button" data-cooking-go="${station==='home'?'equipment':'upgrades'}">Get cookware</button>`:shopping.quantity?`<button class="button" data-recipe-order="${recipe.id}">Order missing ingredients</button>`:`<button class="button" data-cooking-go="${incoming?'deliveries':'pantry'}">${incoming?'View deliveries':'View pantry'}</button>`;
++    return `<article class="recipe-entry${expanded?' is-selected':''}" data-cooking-recipe="${recipe.id}"><button class="recipe-choice" data-recipe-select="${recipe.id}" aria-expanded="${expanded}" aria-controls="recipe-${recipe.id}">${cookingIcon(recipe.id)}<span><b>${recipe.name}</b><small>${recipe.yield} portions · ${seconds(recipe.seconds)}${recipe.homeOnly?' · Home kitchen':''}</small><em class="${learned?'recipe-learned':''}">${learned?(ready.ok?'Ready to cook':ready.reason):gated?`Level ${recipe.level}`:'Discover or study'}</em></span><i aria-hidden="true">${expanded?'−':'+'}</i></button>${expanded?`<div class="recipe-detail" id="recipe-${recipe.id}">${learned?`<button class="button purchase-button wide" data-cooking-start="${recipe.id}" data-cooking-at="${station}" ${disabled(editable()&&ready.ok)}>Cook ${recipe.yield*run} portions</button>`:`<button class="button purchase-button wide" data-cooking-research="${recipe.id}" ${disabled(editable()&&!gated&&s.coins>=price)}>Study recipe · ${money(price)}</button>`}<p>${recipe.text}</p><div class="cooking-inputs">${inputs(s,recipe,run)}</div>${requirements(s,recipe)}<div class="recipe-yield"><span>${recipe.yield*run} portions</span><span>${seconds(recipe.seconds*Math.pow(.85,s.kitchen.upgrades.speed)*run)} total</span><span>${money(s.kitchen.prices[recipe.id])} each</span></div><div class="recipe-help-actions">${recipe.homeOnly&&station!=='home'?`<button class="button" data-cooking-action="home">Go to home kitchen</button>`:supplyAction}<button class="button" data-cooking-fill-mix="${recipe.id}" ${disabled(!gated)}>Mix these ingredients</button></div></div>`:''}</article>`;
++  }
+   function recipes(s) {
+-    const level = patchLevel(s).level;
+-    return `${stations(s)}<section class="cooking-section"><div class="cooking-title-row"><h3>Your recipe book</h3><span class="cooking-state">${s.kitchen.recipes.length}/${C.RECIPES.length} learned</span></div><p class="cooking-note">Discover dishes in Mix, or study their recipe here. A production run uses all ingredients up front and finishes one batch at a time. Stopping does not refund the unfinished batches.</p><div class="cooking-list">${C.RECIPES.map(recipe => {
+-      const run = batchCount(s, recipe.id), learned = known(s, recipe.id), gated = level < recipe.level, readiness = learned ? K.cookingReadiness(s, recipe.id, station, run) : null;
+-      const researchPrice = recipe.research ?? 0, ready = learned && editable() && readiness.ok;
+-      const state = gated ? `Patch level ${recipe.level}` : !learned ? `Research · ${money(researchPrice)}` : readiness.ok ? "Ready to cook" : readiness.reason;
+-      return `<article class="cooking-recipe" data-cooking-recipe="${recipe.id}">${cookingIcon(recipe.id)}<div class="cooking-recipe-body"><h4>${recipe.name}${recipe.homeOnly ? ' <small class="cooking-home-tag">Kitchen only</small>' : ""}</h4><p>${recipe.text}</p><p class="cooking-inputs">${inputs(s, recipe, run)}</p>${requirements(s, recipe)}<div class="cooking-recipe-meta"><span>${recipe.yield * run} portions · ${run} ${run === 1 ? "batch" : "batches"}</span><span>${seconds(recipe.seconds * Math.pow(.85, s.kitchen.upgrades.speed) * run)} total</span><span>${money(s.kitchen.prices[recipe.id] ?? recipe.price)} each</span></div><span class="cooking-state${ready ? " is-ready" : ""}">${state}</span></div><div class="cooking-recipe-actions">${learned ? `<button class="button purchase-button" data-cooking-start="${recipe.id}" data-cooking-at="${station}" ${disabled(ready)}>Cook ${recipe.yield * run} · ${station === "home" ? "Kitchen" : "Truck"}</button><button class="button" data-cooking-fill-mix="${recipe.id}">Use in Mix</button>` : `<button class="button${!gated ? " purchase-button" : ""}" data-cooking-research="${recipe.id}" ${disabled(!gated && editable() && s.coins >= researchPrice)}>${gated ? `Level ${recipe.level}` : `Study · ${money(researchPrice)}`}</button><button class="button" data-cooking-fill-mix="${recipe.id}" ${disabled(!gated)}>Try the ingredients</button>`}${recipe.homeOnly && station !== "home" && homeOpen() ? '<button class="button" data-cooking-action="home">Go to kitchen</button>' : ""}</div></article>`;
+-    }).join("")}</div><button class="button wide" data-cooking-go="deliveries">Order ingredients</button></section>`;
++    const level=patchLevel(s).level, learned=C.RECIPES.filter(r=>known(s,r.id)), discover=C.RECIPES.filter(r=>!known(s,r.id)&&r.level<=level), future=C.RECIPES.filter(r=>r.level>level&&!known(s,r.id));
++    if(selectedRecipe===undefined&&learned.length)selectedRecipe=learned[0].id;
++    return `${stations(s)}${nextStep(s)}<section class="cooking-section"><div class="service-section-heading"><h3>Recipe book</h3><button class="service-inline-link" data-cooking-go="mix">Mix ingredients ${SERVICE_OUT}</button></div><div class="recipe-book">${learned.map(r=>recipeCard(s,r,selectedRecipe===r.id)).join('')}</div>${discover.length?`<details class="service-disclosure" data-recipe-discovery ${discoverOpen?'open':''}><summary>Discover more dishes <span>${discover.length} recipes</span></summary><p class="cooking-note">Try the ingredients in your pot, or study a recipe to learn it.</p><div class="recipe-book">${discover.map(r=>recipeCard(s,r,selectedRecipe===r.id)).join('')}</div></details>`:''}${future.length?`<details class="service-disclosure"><summary>Coming next <span>${future.length} recipes</span></summary><div class="recipe-future">${future.map(r=>`<div>${cookingIcon(r.id)}<span><b>${r.name}</b><small>Unlocks at level ${r.level}</small></span></div>`).join('')}</div></details>`:''}</section>`;
++  }
++
++  function nextStep(s){
++    if(selectedRecipe&&!known(s,selectedRecipe))return "";
++    const step=kitchenNextStep(s,station,selectedRecipe),recipe=C.RECIPE_BY_ID[step.recipe];
++    const action=(text,attrs)=>`<button class="service-inline-link" ${attrs}>${text} <span aria-hidden="true">${SERVICE_RIGHT}</span></button>`;
++    if(step.kind==='supplies')return serviceNotice('Ingredients needed',recipe.name,action('Order supplies',`data-recipe-order="${recipe.id}"`));
++    if(step.kind==='delivery')return serviceNotice('Delivery on its way','Supplies for your next dish',action('View delivery','data-cooking-go="deliveries"'));
++    if(step.kind==='equipment')return serviceNotice('Cookware needed','Place tools in your home kitchen',action('Choose equipment','data-cooking-go="equipment"'));
++    if(step.kind==='harvest')return serviceNotice('Fresh from the patch',`Harvest ${step.quantity} ${VARIETIES[step.variety].name} pumpkin${step.quantity===1?'':'s'} to cook your next dish.`,action('Go to the patch','data-cooking-action="farm"'));
++    if(step.kind==='sell')return serviceNotice('Food ready to sell','Put your fresh dishes on Skyla’s shelves and choose a price.',action('Stock the shelves','data-cooking-go="food"'));
++    if(step.kind==='shop')return serviceNotice('Food ready for your shop','Open Skyla’s indoor shop when you’re ready to sell dishes.',action('Manage Skyla’s shop','data-cooking-action="shop"'));
++    return '';
+   }
+ 
+   function equipment(s) {
+@@ -128,7 +148,7 @@ export function cookingSheets(ui) {
+     return `<section class="cooking-section"><div class="cooking-title-row"><h3>Ingredient deliveries</h3>${cookingIcon("cart")}</div><p class="cooking-note">Ingredients arrive at the receiving bay after ${seconds(C.COOKING.deliverySeconds)} of game time. A second order waits for the first. Pausing the farm pauses deliveries.</p>${k.orders.length ? k.orders.map((order, index) => {
+       const waiting = order.phase === "unloading" && order.remaining <= 0;
+       return `<article class="cooking-delivery" data-cooking-order="${order.id}"><div class="cooking-title-row"><div><h4>${index > 0 && order.phase === "ordered" ? "Queued for packing" : phaseNames[order.phase] ?? "Delivery"}</h4><small>${waiting ? "Pantry full — your paid parcel is safe at the bay." : `${seconds(order.remaining)} ${order.phase === "ordered" ? "until departure" : order.phase === "travelling" ? "until arrival" : "to unload"}`}</small></div>${order.phase === "ordered" ? `<button class="button" data-cooking-order-cancel="${order.id}" ${disabled(editable())}>Cancel</button>` : ""}</div><p>${Object.entries(order.items).map(([id, n]) => `${n} ${C.INGREDIENTS.find(i => i.id === id)?.name.toLowerCase() ?? id}`).join(" · ")}</p>${order.phase === "ordered" ? '<small>Cancel before departure to refund the ingredients. Delivery fee is retained.</small>' : ""}</article>`;
+-    }).join("") : '<p class="cooking-empty">No deliveries are on the road. Build an order below.</p>'}${capacity("Pantry", K.pantryCount(s), K.pantryCapacity(s))}<div class="cooking-list">${C.INGREDIENTS.map(item => `<div class="cooking-order-item"><div><h4 class="cooking-ingredient-name">${ingredientIcon(item.id, 28)}<span>${item.name}</span></h4><small>${money(item.price)} each · ${count(k.pantry[item.id])} in pantry</small></div><div class="cooking-stepper"><button class="button" data-cooking-quantity-step="${item.id}" data-step="-1" aria-label="Remove one ${item.name.toLowerCase()}" ${disabled(editable() && qty(item.id) > 0)}>−</button><input type="number" inputmode="numeric" min="0" max="${C.COOKING.orderLimit}" value="${qty(item.id)}" data-cooking-order-quantity="${item.id}" aria-label="${item.name} order quantity" ${disabled(editable())}><button class="button" data-cooking-quantity-step="${item.id}" data-step="1" aria-label="Add one ${item.name.toLowerCase()}" ${disabled(editable() && countOrdered < C.COOKING.orderLimit)}>+</button></div></div>`).join("")}</div><div class="cooking-quote"><dl><div><dt>${countOrdered} ingredients</dt><dd>${money(quote.subtotal ?? 0)}</dd></div><div><dt>Delivery fee</dt><dd>${money(quote.fee ?? C.COOKING.deliveryFee)}</dd></div><div class="cooking-total"><dt>Pay now</dt><dd>${money(quote.total ?? 0)}</dd></div></dl><button class="button purchase-button wide" data-cooking-action="order" ${disabled(editable() && quote.ok)}>Place order · ${money(quote.total ?? 0)}</button>${!quote.ok ? `<p class="cooking-note" data-cooking-quote-reason>${quote.reason}</p>` : '<p class="cooking-note">Paid parcels wait safely if the pantry fills up. Delivery never discards your ingredients.</p>'}</div></section>`;
++    }).join("") : '<p class="cooking-empty">No deliveries are on the road. Build an order below.</p>'}${capacity("Pantry", K.pantryCount(s), K.pantryCapacity(s))}<div class="cooking-list">${C.INGREDIENTS.map(item => `<div class="cooking-order-item"><div><h4 class="cooking-ingredient-name">${ingredientIcon(item.id, 28)}<span>${item.name}</span></h4><small>${money(item.price)} each · ${count(k.pantry[item.id])} in pantry</small></div><div class="cooking-stepper"><button class="button" data-cooking-quantity-step="${item.id}" data-step="-1" aria-label="Remove one ${item.name.toLowerCase()}" ${disabled(editable() && qty(item.id) > 0)}>−</button><input type="number" inputmode="numeric" min="0" max="${C.COOKING.orderLimit}" value="${qty(item.id)}" data-cooking-order-quantity="${item.id}" aria-label="${item.name} order quantity" ${disabled(editable())}><button class="button" data-cooking-quantity-step="${item.id}" data-step="1" aria-label="Add one ${item.name.toLowerCase()}" ${disabled(editable() && countOrdered < C.COOKING.orderLimit)}>+</button></div></div>`).join("")}</div><div class="cooking-quote service-checkout"><dl><div><dt>${countOrdered} ingredients</dt><dd>${money(quote.subtotal ?? 0)}</dd></div><div><dt>Delivery fee</dt><dd>${money(quote.fee ?? C.COOKING.deliveryFee)}</dd></div><div class="cooking-total"><dt>Pay now</dt><dd>${money(quote.total ?? 0)}</dd></div></dl><button class="button purchase-button wide" data-cooking-action="order" ${disabled(editable() && quote.ok)}>Place order · ${money(quote.total ?? 0)}</button>${!quote.ok ? `<p class="cooking-note" data-cooking-quote-reason>${quote.reason}</p>` : '<p class="cooking-note">Paid parcels wait safely if the pantry fills up. Delivery never discards your ingredients.</p>'}</div></section>`;
+   }
+ 
+   function pantry(s) {
+@@ -145,7 +165,7 @@ export function cookingSheets(ui) {
+ 
+   function upgrades(s) {
+     const k = s.kitchen, level = patchLevel(s).level, chef = count(k.upgrades.chef) > 0;
+-    return `<details class="cooking-disclosure" data-cooking-disclosure="upgrades" ${disclosures.upgrades ? "open" : ""}><summary><span>Kitchen improvements<small>Storage, faster cooking and a spooky chef</small></span></summary><div class="cooking-disclosure-body">${C.KITCHEN_UPGRADES.map(item => {
++    return `<details class="cooking-disclosure" data-cooking-disclosure="upgrades" ${disclosures.upgrades ? "open" : ""}><summary><span>Truck improvements<small>Storage, speed & your spooky chef</small></span></summary><div class="cooking-disclosure-body">${C.KITCHEN_UPGRADES.map(item => {
+       const tier = count(k.upgrades[item.id]), cost = K.kitchenUpgradeCost(s, item.id), maxed = cost === undefined || cost === null;
+       const gate = level < item.level;
+       return `<article class="cooking-upgrade"><div><h4>${item.name}</h4><p>${item.text}</p><small>${maxed ? "Fully upgraded" : gate ? `Opens at patch level ${item.level}` : `Tier ${tier}/${item.costs.length}`}</small></div><button class="button${!gate && !maxed ? " purchase-button" : ""}" data-cooking-upgrade="${item.id}" ${disabled(editable() && !gate && !maxed && s.coins >= cost)}>${maxed ? "Complete" : gate ? `Level ${item.level}` : money(cost)}</button></article>`;
+@@ -158,13 +178,17 @@ export function cookingSheets(ui) {
+   }
+ 
+   function body() {
+-    const s = ui.state;
+-    if (!s.kitchen.purchased) return locked(s);
+-    const pages = { recipes, mix, equipment, deliveries, pantry, food };
+-    return `<div class="cooking-sheet" data-cooking-state="owned"><div class="cooking-intro"><div><p class="cooking-kicker">${station === "home" ? "Shane & Natalie’s kitchen" : "Maisie’s Midnight Kitchen"}</p><span class="cooking-status">${C.RECIPES.reduce((n, recipe) => n + availableFood(s, recipe.id), 0)} portions available · ${s.kitchen.orders.length} deliveries</span></div><button class="cooking-text-button" data-cooking-action="${station === "home" ? "home" : "visit"}">${station === "home" ? "View kitchen" : "View truck"}</button></div><div class="cooking-tabs">${segmented("cooking-tab", "Kitchen management", tabs, tab)}</div>${s.paused ? '<p class="cooking-paused" role="status">Farm paused. Resume to cook, buy or change prices. Deliveries and batches wait safely.</p>' : ""}${pages[tab](s)}${upgrades(s)}${accounts(s)}</div>`;
++    const s=ui.state;if(!s.kitchen.purchased)return locked(s);
++    const group=groupFor(tab), identity=tab==="food"?"Skyla’s food shelves":tab==="equipment"?"Home kitchen":station==="home"?"Home kitchen":"Maisie’s kitchen", pages={recipes,mix,equipment,deliveries,pantry,food,upgrades:s=>upgrades(s).replace(/<details[^>]*><summary>[\s\S]*?<\/summary>/,'').replace(/<\/details>$/,'')};
++    const sub=group==='supplies'?serviceNav('cooking-tab','Ingredient supplies',[['deliveries','Order supplies'],['pantry','In your pantry']],tab):group==='improve'?serviceNav('cooking-tab','Kitchen upgrades',[['upgrades','Truck & chef'],['equipment','Home equipment']],tab):tab==='mix'?`<button class="service-inline-link" data-cooking-go="recipes">${SERVICE_BACK} Back to recipes</button>`:'';
++    return `<div class="cooking-sheet service-sheet" data-cooking-state="owned" data-menu-view="cooking:${tab}"><header class="service-identity"><div>${station==='home'?cookingIcon('hob'):maisieIcon()}<span><b>${identity}</b><small>${K.foodCount(s)} portions · ${s.kitchen.orders.length} deliveries</small></span></div><button class="service-location" data-cooking-action="${tab==='food'?'viewshop':station==='home'?'home':'visit'}">${tab==='food'?'View shop':station==='home'?'View room':'View truck'} <span aria-hidden="true">${SERVICE_OUT}</span></button></header>${serviceNav('cooking-section','Kitchen management',tabs,group)}${s.paused?'<div class="service-paused"><span>Farm paused · deliveries and cooking wait.</span><button class="service-inline-link" data-cooking-action="resume">Resume</button></div>':''}${sub}${pages[tab](s)}${tab==='food'?accounts(s):''}</div>`;
+   }
+ 
+   function bind(host) {
++    host.querySelectorAll('[data-cooking-section]').forEach(b=>b.onclick=()=>{tab=({cook:'recipes',supplies:'deliveries',food:'food',improve:station==='home'?'equipment':'upgrades'})[b.dataset.cookingSection];ui.draw();});
++    host.querySelectorAll('[data-recipe-select]').forEach(b=>b.onclick=()=>{selectedRecipe=selectedRecipe===b.dataset.recipeSelect?null:b.dataset.recipeSelect;ui.draw();});
++    host.querySelector('[data-recipe-discovery]')?.addEventListener('toggle',e=>{discoverOpen=e.currentTarget.open;});
++    host.querySelectorAll('[data-recipe-order]').forEach(b=>b.onclick=()=>{const r=C.RECIPE_BY_ID[b.dataset.recipeOrder],list=recipeShoppingList(ui.state,r,batchCount(ui.state,r.id));cart={...list.items};tab='deliveries';ui.draw();if(list.partial)ui.notice?.('This cart holds 40 ingredients. Order the remaining supplies afterwards.');});
+     const tabStrip = host.querySelector(".cooking-tabs"), currentTab = tabStrip?.querySelector("[aria-pressed=true]");
+     if (tabStrip && currentTab) tabStrip.scrollLeft = Math.max(0, currentTab.offsetLeft - (tabStrip.clientWidth - currentTab.offsetWidth) / 2);
+     host.querySelectorAll("[data-cooking-tab], [data-cooking-go]").forEach(button => button.onclick = () => { tab = button.dataset.cookingTab ?? button.dataset.cookingGo; cancelStation = null; ui.draw(); });
+@@ -194,6 +218,10 @@ export function cookingSheets(ui) {
+     host.querySelector("[data-cooking-chef]")?.addEventListener("change", event => { if (K.setChefRecipe(ui.state, event.target.value || null)) changed(); else ui.draw(); });
+     host.querySelectorAll("[data-cooking-action]").forEach(button => button.onclick = () => {
+       const action = button.dataset.cookingAction;
++      if(action==='resume'){ui.state.paused=false;ui.save();ui.draw();return;}
++      if(action==='farm'){ui.leavePlace?.();ui.closeSheet();return;}
++      if(action==='shop')return ui.openShopSheet?.('shop');
++      if(action==='viewshop'){ui.closeSheet();if(ui.state.shop.unlocked)ui.enterShop?.();else ui.openShopSheet?.('shop');return;}
+       if (action === "visit") return visit();
+       if (action === "home" || action === "home-equipment") return ui.enterKitchen?.({ tab: action === "home-equipment" ? "equipment" : tab });
+       if (action === "furnish") { if (!ui.enterKitchen?.({ tab: "equipment", noOpen: true })) return; ui.closeSheet(); ui.openKitchenDecorate?.(); return; }
+@@ -202,5 +230,5 @@ export function cookingSheets(ui) {
+     });
+   }
+ 
+-  return { cooking: { eyebrow: "From pumpkin patch to kitchen", title: () => station === "home" ? "Home kitchen" : "The Midnight Kitchen", setTab(value) { tab = tabs.some(([id]) => id === value) ? value : "recipes"; }, setStation(value) { station = value === "home" && homeOpen() ? "home" : "truck"; }, body, bind } };
++  return { cooking: { eyebrow: "From pumpkin patch to kitchen", title: () => "Kitchen & cooking", setTab(value) { tab = ["recipes","mix","equipment","deliveries","pantry","food","upgrades"].includes(value) ? value : "recipes"; }, setStation(value) { station = value === "home" && homeOpen() ? "home" : "truck"; }, body, bind } };
+ }
+diff --git a/voxel/src/ui/farm-sheets.js b/voxel/src/ui/farm-sheets.js
+index 84574c3..526ffb9 100644
+--- a/voxel/src/ui/farm-sheets.js
++++ b/voxel/src/ui/farm-sheets.js
+@@ -1,3 +1,4 @@
++import { SERVICE_OUT, SERVICE_BACK, SERVICE_RIGHT, serviceNav, serviceMetrics, serviceHeading } from "./service-kit.js";
+ import { hospitalityIcon } from "./hospitality-icons.js";
+ // The Shop menu: farm upgrades, seeds per plot, Skyla's indoor shop, the stall
+ // and the visitors.
+@@ -70,7 +71,7 @@ function skylaTip(s) {
+   if (M.barnBlocked(s)) return `The barn is full (${M.stockCount(s)}/${M.barnCapacity(s)}). Sell pumpkins, buy A bigger pumpkin barn, or a market cart to take the extra to the village; ripe crops will wait safely.`;
+   if (!M.stockCount(s)) return "Nothing on the shelves. Harvest a few pumpkins and I’ll ring the bell.";
+   if (!s.shop.unlocked && s.coins >= 600) return "We could open the shop now. Customers would come inside to browse.";
+-  const shown = s.shop.displays.slice(0, M.displayCount(s.shop)), best = [3, 2, 1, 0].find((v) => M.available(s, v) > 0);
++  const shown = s.shop.displays.slice(0, M.displayCount(s.shop)), best = M.VARIETIES.map((_,i)=>i).reverse().find((v) => M.available(s, v) > 0);
+   if (s.shop.unlocked && best !== undefined && !shown.includes(best)) return `Put the ${M.VARIETIES[best].name} pumpkins on a table. They sell for ${money(M.VARIETIES[best].price)}.`;
+   const ready = s.orders.list.find((o) => M.canFillOrder(s, o));
+   if (ready) return `${M.orderFrom(ready)}’s order is ready to go: tap the crate at the top and send it. It pays better than the stall.`;
+@@ -83,6 +84,7 @@ function skylaTip(s) {
+ export function farmSheets(ui) {
+   let tab = "farm";
+   const cocoaMenu = festivalMeadowSheet(ui).festival; cocoaMenu.setTab("cocoa");
++  let visitorSection="arrivals";
+   const tabs = () => segmented("shoptab", "Shop sections", [["farm", "Farm"], ["seeds", "Seeds"], ["shop", "Shop"], ["cocoa", "Cocoa"], ["stall", "Stock"], ["visitors", "Visitors"]], tab).replace('class="segmented"', 'class="segmented build-sections"');
+ 
+   // Spread the word lives in the Visitors tab with the rest of its kind.
+@@ -156,7 +158,8 @@ export function farmSheets(ui) {
+     const hayride = M.hayrideFootfallBonus?.(s) ?? 0, meadow = M.meadowFootfallBonus?.(s) ?? 0, total = M.attractionFootfallBonus?.(s) ?? maze;
+     const attraction = maze || hayride || meadow ? `<p class="commerce-inline-note">Attractions bring +${Math.round(total * 100)}% footfall${maze ? ` · Hollow House +${Math.round(maze * 100)}%` : ""}${hayride ? ` · Hayride +${Math.round(hayride * 100)}%` : ""}${meadow ? ` · the meadow’s comforts +${Math.round(meadow * 100)}%` : ""}. Combined appeal is capped at 75%${maze ? "; frightened guests may leave early" : ""}.</p>` : "";
+     const streak = `<p class="small streak-note">Quick picking builds a streak, and a streak gets talked about: visitors come 10% more often for each pick up to ×6, then 5% more a pick, to +${Math.round(M.STREAK.cap * 100)}%. It fades over ${M.STREAK.fade}s once you stop. Helping hands don’t count; they’re not showing off.</p>`;
+-    const cards = VISITOR_IDS.map((id) => {
++    const selectedIds=visitorSection==="arrivals"?["sign","lights","party","crowd"]:["appetite","cocoa","loyalty"];
++    const cards = selectedIds.map((id) => {
+       const sign = id === "sign", u = sign ? M.UPGRADES.find((x) => x.id === id) : M.VISITOR_UPGRADES.find((x) => x.id === id);
+       const level = M.visitorUpgradeLevel(s, id), most = sign ? u.max : u.costs.length, done = level >= most;
+       const open = sign || M.visitorUpgradeUnlocked(s, id), price = sign ? M.upgradeCost(s, id) : M.visitorUpgradeCost(s, id);
+@@ -165,7 +168,8 @@ export function farmSheets(ui) {
+       return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${id === "cocoa" ? "Cocoa hospitality" : u.name}</h3><p>${id === "cocoa" ? "Longer pumpkin patience; quicker service at Sandy’s stand." : u.text}</p><p class="effect">${effect}</p>${tiers(level, most)}</div>${button}</article>`;
+     }).join("");
+     const occasions=M.VISITOR_EVENT_UPGRADES.map(u=>{const e=s.visitorEvents[u.id],price=M.visitorEventUpgradeCost(s,u.id),locked=M.patchLevel(s).level<u.level;return `<article class="card">${hospitalityIcon(u.id)}<div><h3>${u.name}</h3><p>${u.text}</p><p class="small">${e.level?`Next in ${Math.ceil(e.remaining/60)} min · ${e.enabled?'Enabled':'Paused'}`:`Available at level ${u.level}`}</p></div>${e.level?`<button class="button" data-occasion-toggle="${u.id}">${e.enabled?'Pause':'Enable'}</button>`:`<button class="button gold" data-occasion="${u.id}" ${locked||s.coins<price||s.paused?'disabled':''}>${locked?`Level ${u.level}`:money(price)}</button>`}</article>`}).join('');
+-    return stats + attraction + occasions + streak + cards;
++    const summary=serviceMetrics([[Math.round(M.visitorsPerMinute(s)*10)/10,'per minute'],[max,'max party'],[`${M.onThePath(s)}/${M.visitorCapacity(s)}`,'on the path']]);
++    return `<div class="service-sheet" data-menu-view="visitors:${visitorSection}">${serviceNav('visitor-section','Visitor management',[['arrivals','Arrivals'],['spending','Spending'],['events','Rushes & VIPs']],visitorSection)}${visitorSection==='events'?`${serviceHeading('Give them a reason to visit')}<p>One-off purchases invite special groups at regular intervals. Each guest brings their own money.</p>${occasions}`:`${summary}${serviceHeading(visitorSection==='arrivals'?'A livelier pumpkin patch':'Make every visit count')}${cards}${visitorSection==='spending'?'<button class="service-inline-link" data-care>Carrier bags & customer tips →</button>':`<details class="service-disclosure"><summary>What brings a crowd?</summary>${attraction}${streak}</details>`}`}</div>`;
+   }
+ 
+   return {
+@@ -174,10 +178,11 @@ export function farmSheets(ui) {
+       setTab(t) { tab = ["farm", "seeds", "shop", "cocoa", "stall", "visitors"].includes(t) ? t : "farm"; },
+       body() {
+         const s = ui.state;
+-        return tabs() + (tab === "cocoa" ? cocoaMenu.body({ embedded: true }) : ({ farm, seeds, shop, stall, visitors })[tab](s));
++        return (tab === "visitors" ? "" : tabs()) + (tab === "cocoa" ? cocoaMenu.body({ embedded: true }) : ({ farm, seeds, shop, stall, visitors })[tab](s));
+       },
+       bind(body) {
+         const s = ui.state;
++        body.querySelectorAll("[data-visitor-section]").forEach(b=>b.onclick=()=>{visitorSection=b.dataset.visitorSection;ui.draw();});
+         body.querySelectorAll('[data-occasion]').forEach(b=>b.onclick=()=>{if(M.buyVisitorEventUpgrade(s,b.dataset.occasion)){ui.save();ui.draw();}});
+         body.querySelectorAll('[data-occasion-toggle]').forEach(b=>b.onclick=()=>{const id=b.dataset.occasionToggle;if(M.setVisitorEventEnabled(s,id,!s.visitorEvents[id].enabled)){ui.save();ui.draw();}});
+         if (tab === "cocoa") cocoaMenu.bind(body, { embedded: true });
+@@ -185,7 +190,7 @@ export function farmSheets(ui) {
+         body.querySelector("[data-food-shelves]")?.addEventListener("click", () => ui.openCookingSheet("food"));
+         body.querySelector("[data-care]")?.addEventListener("click", () => ui.openSheet("care"));
+         body.querySelector("[data-festival]")?.addEventListener("click", () => ui.openSheet("festival"));
+-        body.querySelectorAll("[data-shoptab]").forEach((b) => (b.onclick = () => { tab = b.dataset.shoptab; ui.draw(); }));
++        body.querySelectorAll("[data-shoptab]").forEach((b) => (b.onclick = () => { if(b.dataset.shoptab==="cocoa"&&ui.openCocoaSheet){ui.openCocoaSheet();return;}tab = b.dataset.shoptab; ui.draw(); }));
+         body.querySelectorAll("[data-buy]").forEach((b) => (b.onclick = () => {
+           const id = b.dataset.buy;
+           if (!M.buyUpgrade(s, id)) return;
+diff --git a/voxel/src/ui/festival-meadow-sheet.js b/voxel/src/ui/festival-meadow-sheet.js
+index 6016d93..d7ce9c6 100644
+--- a/voxel/src/ui/festival-meadow-sheet.js
++++ b/voxel/src/ui/festival-meadow-sheet.js
+@@ -1,3 +1,4 @@
++import { SERVICE_OUT, SERVICE_BACK, SERVICE_RIGHT, serviceNav, serviceHeading, serviceMetrics, serviceNotice } from "./service-kit.js";
+ import * as M from "../model.js";
+ import { cocoaArt } from "../sandy.js";
+ import { money, segmented } from "./kit.js";
+@@ -5,55 +6,52 @@ import { money, segmented } from "./kit.js";
+ const cup = cocoaArt("shop");
+ 
+ export function festivalMeadowSheet(ui) {
+-  let tab = "estate", automationOpen = false;
++  let tab = "cocoa", section = "menu", automationOpen = false;
+   const visit = () => { ui.leavePlace(); ui.closeSheet(); ui.scene.refreshEstate(); ui.scene.focus(ui.state.festival.meadow ? 45 : 36, 17, 1.65); };
+   const affordable = (amount, level) => ui.state.coins >= amount && M.patchLevel(ui.state).level >= level && !ui.state.paused;
+   const estate = (s) => {
+     const owned = s.festival.meadow, level = M.patchLevel(s).level, depth = M.fieldDepth?.(s) ?? 26;
+     return `<article class="card hero"><span class="thumb"><span class="ico i-patch"></span></span><div><h3>Moonbrew Meadow</h3><p>A lantern-lit corner beyond the east fence, with a cobbled walk and space for a festival stand.</p></div></article>
+       <p>${owned ? "The gate is open. Your meadow adds a cocoa pitch, planted borders and benches to the farm. Drag the map to explore." : "Grow your patch’s reputation, then open the gate and start a new little business."}</p>
+-      <div class="stats"><div><b>${owned ? "54 × " + depth : "40 → 54"}</b><span>${owned ? "expanded farm bounds" : "farm width"}</span></div><div><b>1</b><span>buildable stand pitch</span></div></div>
++      ${serviceMetrics([[owned?'Open':'For sale','Meadow gate'],['Cocoa & seating','Visitor area']])}
+       ${owned ? `<button class="button gold wide" data-festival-action="visit">Visit the meadow</button><button class="button wide" data-festival-action="stand">Manage cocoa stand</button>` : `<button class="button gold wide" data-festival-action="land" ${affordable(M.MEADOW.price, M.MEADOW.level) ? "" : "disabled"}>${level < M.MEADOW.level ? `Opens at patch level ${M.MEADOW.level}` : `Open the meadow · ${money(M.MEADOW.price)}`}</button>${level < M.MEADOW.level ? `<p class="small">Current patch level: ${level}. Keep harvesting and serving the neighbours.</p>` : ""}`}
+-      <p class="small">Further festival pitches and kitchen-made supplies are planned for later updates.</p>`;
++      <p class="small">Visitors can stop here for cocoa and a chat before returning to the pumpkins.</p>`;
+   };
+   // Comforts that make the meadow popular: guests chat more, and more visitors come.
+   const comforts = (s) => {
+     const c = s.festival.cocoa, bonus = Math.round(M.meadowFootfallBonus(s) * 100), chatting = s.visitors.filter(M.chatting).length;
+-    return `<h3 class="section">Make the meadow popular</h3><p class="small">Each comfort brings ${Math.round(M.COMFORT_FOOTFALL * 100)}% more visitors as word gets round${bonus ? `: +${bonus}% so far` : ""}. ${chatting ? `${chatting} ${chatting === 1 ? "guest is" : "guests are"} chatting in the meadow now.` : "Guests chat in the meadow on their way home."}</p>`
++    return `<p class="small">Each comfort brings ${Math.round(M.COMFORT_FOOTFALL * 100)}% more visitors as word gets round${bonus ? `: +${bonus}% so far` : ""}. ${chatting ? `${chatting} ${chatting === 1 ? "guest is" : "guests are"} chatting in the meadow now.` : "Guests chat in the meadow on their way home."}</p>`
+       + M.MEADOW_COMFORTS.map((x) => {
+         const owned = M.comfortOwned(s, x.id), ready = c.level >= x.stand;
+         const art = { bunting: `<span class="thumb"><span class="ico i-boost"></span></span>`, blankets: `<span class="thumb"><span class="ico i-home"></span></span>`, mugs: cocoaArt("cocoa"), dancefloor: `<span class="thumb"><span class="ico i-music"></span></span>`, trolley: cocoaArt("deluxe") }[x.id] ?? cup;
+         return `<article class="card${owned ? " done" : ""}${ready ? "" : " waiting"}">${art}<div><h3>${x.name}</h3><p>${x.text}</p><p class="effect">${x.effect}</p></div><button class="button${owned ? "" : " gold"}" data-comfort="${x.id}" ${owned || !ready || !affordable(x.price, 1) ? "disabled" : ""}>${owned ? "In place" : ready ? money(x.price) : `Stand tier ${x.stand}`}</button></article>`;
+       }).join("");
+   };
+-  const cocoa = (s) => {
+-    const c = s.festival.cocoa, next = M.COCOA_TIERS[c.level], current = M.COCOA_TIERS[c.level - 1];
+-    if (!s.festival.meadow) return `${cup}<p>Open Moonbrew Meadow to prepare a cocoa pitch.</p><button class="button gold wide" data-festival-action="estate">See the meadow</button>`;
+-    if (!current) return `<article class="card hero">${cup}<div><h3>${next.name}</h3><p>A copper urn, warm cups and a cosy first stop before pumpkin shopping.</p></div></article><p>Includes 10 starter cups. Buy premixed supplies for £2 a cup; choose your selling price and keep the stand stocked.</p><button class="button gold wide" data-festival-action="upgrade" ${affordable(next.price, next.level) ? "" : "disabled"}>${M.patchLevel(s).level < next.level ? `Unlocks at level ${next.level}` : `Build the stand · ${money(next.price)}`}</button><button class="button wide" data-festival-action="visit">See the pitch</button>`;
+-    const batch = Math.min(M.COCOA_SUPPLY.batch, current.capacity - c.stock), supplyCost = batch * M.COCOA_SUPPLY.unit;
+-    return `<article class="card hero">${cocoaArt("sandy")}<div><p class="eyebrow">Tier ${c.level} of ${M.COCOA_TIERS.length} · ${c.open ? "Open" : "Closed"}</p><h3>${current.name}</h3><p>Sandy’s haunted hot chocolate. Visitors pay from their own budget, then continue to Skyla’s pumpkin counter.</p></div></article>
+-      <div class="stats"><div><b>${c.stock}/${current.capacity}</b><span>plain cups in stock</span></div><div><b>${c.sold}</b><span>cups sold</span></div><div><b>${money(c.gross - c.supplies)}</b><span>takings less supplies</span></div></div>
+-      <div class="setting"><span>Open for a warm welcome<small>Closing sends waiting visitors on to the pumpkins.</small></span><button class="button" data-festival-action="open" ${s.paused ? "disabled" : ""} aria-pressed="${c.open}">${c.open ? "Open" : "Closed"}</button></div>
+-      <button class="button gold wide" data-festival-action="restock" ${batch > 0 && affordable(supplyCost, 1) ? "" : "disabled"}>${batch ? `Stock ${batch} cups · ${money(supplyCost)}` : "Cupboard is full"}</button>
+-      <article class="card">${cocoaArt("cocoa")}<div><h3>Plain cocoa</h3><p>A warm ghost mug. Choose the selling price below.</p></div></article><div class="chips" role="group" aria-label="Cocoa selling price">${Array.from({ length: current.maxPrice - 2 }, (_, i) => i + 3).map((price) => `<button class="chip" data-cocoa-price="${price}" ${s.paused ? "disabled" : ""} aria-pressed="${c.price === price}">${money(price)}</button>`).join("")}</div>
+-      <p class="small">Festival guests bring £${M.COCOA_ALLOWANCE[c.level]} extra for drinks and treats and keep money for their planned pumpkin basket. Visitors compare price with thirst, hunger, value and their budget. Higher prices can mean fewer sales. A cup costs £2 to restock.</p>
+-      <h3 class="section">Sandy’s specials</h3>${M.COCOA_SPECIALS.map(p => {
+-        const unlocked = c.level >= p.tier, e = c.extras[p.id], batch = Math.min(10, M.specialCapacity(s, p.id) - e.stock), cost = batch * p.cost;
+-        return `<article class="card">${cocoaArt(p.id)}<div><h3>${p.name}</h3><p>${p.text}</p><p class="small">${unlocked ? `${e.stock}/${M.specialCapacity(s, p.id)} ready · ${money(p.cost)} supply cost each · sells for ${money(c.prices[p.id])} · ${e.sold} sold` : `Unlocks with stand tier ${p.tier}`}</p></div><button class="button ${unlocked ? "gold" : ""}" data-special-stock="${p.id}" ${!unlocked || !batch || !affordable(cost, 1) ? "disabled" : ""}>${!unlocked ? "Locked" : !batch ? "Full" : `${batch} · ${money(cost)}`}</button></article>${unlocked ? `<div class="special-prices"><label>${p.name} price <select data-special-price="${p.id}" ${s.paused ? "disabled" : ""} aria-label="${p.name} selling price">${Array.from({length:p.maxPrice-p.minPrice+1},(_,i)=>i+p.minPrice).map(price=>`<option value="${price}" ${c.prices[p.id] === price ? "selected" : ""}>${money(price)}</option>`).join("")}</select></label></div>` : ""}`;
+-      }).join("")}
+-      ${next ? `<h3 class="section">Grow the stand</h3><article class="card hero">${cup}<div><h3>${next.name}</h3><p>Room for ${next.capacity} cups, faster service and prices up to ${money(next.maxPrice)}.</p></div></article><button class="button wide" data-festival-action="upgrade" ${affordable(next.price, next.level) ? "" : "disabled"}>${M.patchLevel(s).level < next.level ? `Opens at patch level ${next.level}` : `Upgrade · ${money(next.price)}`}</button>` : `<p class="small">Sandy’s grand midnight lounge is fully upgraded.</p>`}
+-      ${comforts(s)}
+-      <details class="more-help" data-sandy-automation ${automationOpen ? "open" : ""}><summary>Helpers & automatic supplies</summary><h3 class="section">Moth courier</h3>${c.courier ? `<div class="setting"><span>Automatic supplies<small>Buys ${c.bulkCourier ? 20 : 10} cups at 5 remaining; keeps £100 in your purse. Selected specials use the same paid supply budget.</small></span><button class="button" data-festival-action="auto" ${s.paused ? "disabled" : ""} aria-pressed="${c.autoSupply}">${c.autoSupply ? "On" : "Off"}</button></div>` : `<p>A fluttery little helper buys replacement supplies at the normal price. Available from stand tier 2.</p><button class="button wide" data-festival-action="courier" ${c.level >= 2 && affordable(M.COCOA_SUPPLY.courier, 1) ? "" : "disabled"}>Hire courier · ${money(M.COCOA_SUPPLY.courier)}</button>`}
+-      <article class="card">${cocoaArt("barista")}<div><h3>Ghost barista</h3><p>A floating helper serves each order 35% faster. Available from stand tier 3.</p></div><button class="button ${c.barista ? "" : "gold"}" data-festival-action="barista" ${c.barista || c.level < 3 || !affordable(M.COCOA_SUPPLY.barista,1) ? "disabled" : ""}>${c.barista ? "Hired" : money(M.COCOA_SUPPLY.barista)}</button></article>
+-      <article class="card">${cocoaArt("courier-crate")}<div><h3>Courier’s large supply crate</h3><p>Automatic orders carry 20 portions at the normal per-item price. Enable individual specials below; every order keeps £100 in reserve.</p></div><button class="button ${c.bulkCourier ? "" : "gold"}" data-festival-action="bulk-courier" ${c.bulkCourier || !c.courier || !affordable(M.COCOA_SUPPLY.bulkCourier,1) ? "disabled" : ""}>${c.bulkCourier ? "In place" : !c.courier ? "Hire courier first" : money(M.COCOA_SUPPLY.bulkCourier)}</button></article>
+-      ${c.bulkCourier ? M.COCOA_SPECIALS.filter(p=>c.level>=p.tier).map(p=>`<div class="setting"><span>${p.name}<small>Order up to 20 at 5 left · ${money(p.cost)} per portion</small></span><button class="button" data-special-auto="${p.id}" aria-pressed="${c.autoSpecials.includes(p.id)}" ${s.paused ? "disabled" : ""}>${c.autoSpecials.includes(p.id) ? "Auto on" : "Auto off"}</button></div>`).join("") : ""}</details>
+-      <button class="button wide" data-festival-action="visit">Visit the stand</button><p class="small">Cocoa takings ${money(c.gross)} · supplies ${money(c.supplies)} · setup and upgrades ${money(c.invested)}. Existing cocoa hospitality upgrades improve service and patience; the physical stand sells from stock.</p>`;
+-  };
++  function priceChoice(s,id,price,min,max){return `<label>Selling price<select ${id==='plain'?'data-plain-cocoa-price':`data-special-price="${id}"`} aria-label="${id==='plain'?'Plain cocoa':M.COCOA_SPECIALS.find(p=>p.id===id).name} selling price" ${s.paused?'disabled':''}>${Array.from({length:max-min+1},(_,i)=>i+min).map(n=>`<option value="${n}" ${n===price?'selected':''}>${money(n)}</option>`).join('')}</select></label>`;}
++  function product(s,p){
++    const c=s.festival.cocoa,plain=!p,current=M.COCOA_TIERS[c.level-1],e=plain?{stock:c.stock,sold:c.sold}:c.extras[p.id];
++    const capacity=plain?current.capacity:M.specialCapacity(s,p.id),batch=Math.min(10,capacity-e.stock),cost=batch*(plain?M.COCOA_SUPPLY.unit:p.cost);
++    const price=plain?c.price:c.prices[p.id];
++    return `<article class="service-product">${cocoaArt(plain?'cocoa':p.id)}<div><h3>${plain?'Classic haunted cocoa':p.name}</h3><p>${plain?'A warm ghost mug for chilly visitors.':p.text}</p><small><b>${e.stock}/${capacity}</b> ready · ${e.sold} sold · ${money(plain?M.COCOA_SUPPLY.unit:p.cost)} supply cost</small></div><div class="service-product-controls">${priceChoice(s,plain?'plain':p.id,price,plain?3:p.minPrice,plain?current.maxPrice:p.maxPrice)}<button class="button purchase-button" ${plain?'data-festival-action="restock"':`data-special-stock="${p.id}"`} ${!batch||!affordable(cost,1)?'disabled':''}>${batch?`Stock ${batch} · ${money(cost)}`:'Fully stocked'}</button></div></article>`;
++  }
++  function helpers(s){const c=s.festival.cocoa;return `${serviceHeading('A little help behind the counter')}<p>Helpers keep Sandy serving while you look after the patch.</p><article class="service-upgrade-block">${cocoaArt('shop')}<h3>Moth courier</h3><p>Buys ${c.bulkCourier?20:10} plain cups when five remain. Supplies cost their normal price, with £100 kept in your purse.</p>${c.courier?`<div class="service-status-row"><span>Automatic plain cocoa</span><button class="button" data-festival-action="auto" aria-pressed="${c.autoSupply}" ${s.paused?'disabled':''}>${c.autoSupply?'On':'Off'}</button></div>`:`<button class="button purchase-button" data-festival-action="courier" ${c.level<2||!affordable(M.COCOA_SUPPLY.courier,1)?'disabled':''}>${c.level<2?'Stand tier 2 required':`Hire courier · ${money(M.COCOA_SUPPLY.courier)}`}</button>`}</article><article class="service-upgrade-block">${cocoaArt('barista')}<h3>Ghost barista</h3><p>Serves each order 35% faster.</p><button class="button${c.barista?'':' purchase-button'}" data-festival-action="barista" ${c.barista||c.level<3||!affordable(M.COCOA_SUPPLY.barista,1)?'disabled':''}>${c.barista?'Hired':c.level<3?'Stand tier 3 required':`Hire barista · ${money(M.COCOA_SUPPLY.barista)}`}</button></article><article class="service-upgrade-block">${cocoaArt('courier-crate')}<h3>Courier’s supply crate</h3><p>Order up to 20 portions at a time. Choose which specials to restock automatically.</p><button class="button${c.bulkCourier?'':' purchase-button'}" data-festival-action="bulk-courier" ${c.bulkCourier||!c.courier||!affordable(M.COCOA_SUPPLY.bulkCourier,1)?'disabled':''}>${c.bulkCourier?'Installed':!c.courier?'Hire the courier first':money(M.COCOA_SUPPLY.bulkCourier)}</button>${c.bulkCourier?M.COCOA_SPECIALS.filter(p=>c.level>=p.tier).map(p=>`<div class="setting"><span>${p.name}<small>${money(p.cost)} per portion · buys at five left</small></span><button class="button" data-special-auto="${p.id}" aria-pressed="${c.autoSpecials.includes(p.id)}" ${s.paused?'disabled':''}>${c.autoSpecials.includes(p.id)?'Auto on':'Auto off'}</button></div>`).join(''):''}</article>`;}
++  function standUpgrades(s){const c=s.festival.cocoa,next=M.COCOA_TIERS[c.level],current=M.COCOA_TIERS[c.level-1];return `${serviceHeading('Grow Sandy’s stand',`Tier ${c.level}/${M.COCOA_TIERS.length}`)}<article class="service-upgrade-block">${cup}<h3>${next?next.name:'The grand midnight lounge'}</h3><p>${next?`${current.capacity} ${SERVICE_RIGHT} ${next.capacity} cups · faster service · more deluxe recipes`:'Sandy’s stand is fully upgraded.'}</p>${next?`<button class="button purchase-button" data-festival-action="upgrade" ${affordable(next.price,next.level)?'':'disabled'}>${M.patchLevel(s).level<next.level?`Unlocks at level ${next.level}`:`Upgrade stand · ${money(next.price)}`}</button>`:''}</article>${serviceHeading('Make the meadow welcoming')}${comforts(s)}<button class="service-inline-link" data-festival-action="estate">Meadow land & visitor area ${SERVICE_RIGHT}</button>`;}
++  function cocoa(s){
++    const c=s.festival.cocoa,next=M.COCOA_TIERS[c.level],current=M.COCOA_TIERS[c.level-1];
++    if(!s.festival.meadow)return `<div class="service-sheet"><article class="service-upgrade-block">${cocoaArt('sandy')}<p class="eyebrow">Step 1 of 2</p><h3>A cosy corner for cocoa</h3><p>Open Moonbrew Meadow, then build Sandy’s first stand. The new visitor area includes paths, benches and planted borders.</p><button class="button purchase-button" data-festival-action="land" ${affordable(M.MEADOW.price,M.MEADOW.level)?'':'disabled'}>${M.patchLevel(s).level<M.MEADOW.level?`Unlocks at level ${M.MEADOW.level}`:`Open meadow · ${money(M.MEADOW.price)}`}</button></article><button class="service-inline-link" data-festival-action="visit">View the meadow plot ${SERVICE_OUT}</button></div>`;
++    if(!current)return `<div class="service-sheet"><article class="service-upgrade-block">${cocoaArt('sandy')}<p class="eyebrow">Step 2 of 2</p><h3>Open Sandy’s haunted cocoa</h3><p>A warm first stop before pumpkin shopping. Includes ten starter cups.</p><button class="button purchase-button" data-festival-action="upgrade" ${affordable(next.price,next.level)?'':'disabled'}>${M.patchLevel(s).level<next.level?`Unlocks at level ${next.level}`:`Build the stand · ${money(next.price)}`}</button></article><button class="service-inline-link" data-festival-action="visit">View the pitch ${SERVICE_OUT}</button></div>`;
++    const future=M.COCOA_SPECIALS.filter(p=>p.tier>c.level);
++    const menu=`${serviceMetrics([[c.stock,'plain cups ready'],[c.sold,'cups sold'],[money(c.gross),'takings']])}<div class="service-status-row"><span><b>Open for visitors</b><small>Closing keeps your stock safe.</small></span><button class="button" data-festival-action="open" aria-pressed="${c.open}" ${s.paused?'disabled':''}>${c.open?'Open':'Closed'}</button></div>${!c.stock?serviceNotice('A warm welcome needs cocoa','Restock classic cups below, or hire a courier from Helpers.'):''}<div class="service-product-list">${product(s,null)}${M.COCOA_SPECIALS.filter(p=>p.tier<=c.level).map(p=>product(s,p)).join('')}</div>${future.length?`<details class="service-disclosure"><summary>Future specials <span>${future.length} to unlock</span></summary><div class="recipe-future">${future.map(p=>`<div>${cocoaArt(p.id)}<span><b>${p.name}</b><small>Stand tier ${p.tier}</small></span></div>`).join('')}</div></details>`:''}<details class="service-disclosure"><summary>Prices & accounts</summary><p class="small">Guests compare prices with thirst, hunger and their money. Expensive drinks can sell less often.</p><div class="service-info-list"><div><span>Cocoa takings</span><b>${money(c.gross)}</b></div><div><span>Supplies spent</span><b>${money(c.supplies)}</b></div><div><span>Stand & improvements</span><b>${money(c.invested)}</b></div></div></details>`;
++    return `<div class="service-sheet" data-menu-view="sandy:${section}"><header class="service-identity"><div>${cocoaArt('sandy')}<span><b>Sandy at the counter</b><small>Stand tier ${c.level} · <span class="service-status${c.open?' is-open':''}">${c.open?'Open':'Closed'}</span></small></span></div><button class="service-location" data-festival-action="visit">View stand ${SERVICE_OUT}</button></header>${serviceNav('sandy-section','Cocoa management',[['menu','Menu & stock'],['helpers','Helpers'],['upgrade','Upgrade']],section)}${s.paused?'<p class="service-paused">Farm paused. Resume to buy or change prices.</p>':''}${section==='helpers'?helpers(s):section==='upgrade'?standUpgrades(s):menu}</div>`;
++  }
++
+   return { festival: {
+-    eyebrow: "A festival of our own", title: "Sandy’s Haunted Cocoa",
++    eyebrow: "A festival of our own", title: () => tab === "estate" ? "Moonbrew Meadow" : "Sandy’s haunted cocoa",
+     setTab(value) { tab = value === "cocoa" ? "cocoa" : "estate"; },
+-    body({ embedded = false } = {}) { return embedded ? (ui.state.festival.meadow ? cocoa(ui.state) : estate(ui.state)) : segmented("festival-tab", "Festival management", [["estate", "Meadow"], ["cocoa", "Cocoa stand"]], tab) + (tab === "estate" ? estate(ui.state) : cocoa(ui.state)); },
++    body({embedded=false}={}){return tab==='estate'?`<div class="service-sheet"><button class="service-inline-link" data-festival-action="stand">${SERVICE_BACK} Sandy’s cocoa</button>${estate(ui.state)}</div>`:cocoa(ui.state);},
+     bind(body, { embedded = false } = {}) {
++      body.querySelectorAll('[data-sandy-section]').forEach(b=>b.onclick=()=>{section=b.dataset.sandySection;ui.draw();});
++      body.querySelector('[data-plain-cocoa-price]')?.addEventListener('change',e=>{if(M.setCocoaPrice(ui.state,+e.target.value)){ui.save();ui.draw();}});
+       body.querySelector("[data-sandy-automation]")?.addEventListener("toggle", e => { automationOpen = e.currentTarget.open; });
+       body.querySelectorAll("[data-special-auto]").forEach(b => b.onclick = () => { if(M.setCocoaAutoSpecial(ui.state,b.dataset.specialAuto,!ui.state.festival.cocoa.autoSpecials.includes(b.dataset.specialAuto))){ui.save();ui.draw();} });
+       body.querySelectorAll("[data-festival-tab]").forEach((b) => b.onclick = () => { tab = b.dataset.festivalTab; ui.draw(); });
+@@ -80,7 +78,7 @@ export function festivalMeadowSheet(ui) {
+         if (action === "auto") changed = M.setCocoaAutoSupply(s, !c.autoSupply);
+         if (!changed) return;
+         ui.save(); ui.tone(760); ui.scene.refreshEstate();
+-        if (action === "land" || action === "upgrade") { tab = "cocoa"; if (!embedded) visit(); else ui.draw(); ui.notice(action === "land" ? "The meadow gate is open. Tap the prepared pitch to build." : "Your cocoa stand is ready for a warm welcome."); }
++        if (action === "land" || action === "upgrade") { tab = "cocoa"; ui.draw(); ui.notice(action === "land" ? "The meadow gate is open. Tap the prepared pitch to build." : "Your cocoa stand is ready for a warm welcome."); }
+         else ui.draw();
+       });
+     },
+diff --git a/voxel/src/ui/hayride-sheet.js b/voxel/src/ui/hayride-sheet.js
+index dd2e293..9d1c99d 100644
+--- a/voxel/src/ui/hayride-sheet.js
++++ b/voxel/src/ui/hayride-sheet.js
+@@ -1,3 +1,5 @@
++import { SERVICE_OUT, SERVICE_BACK, SERVICE_RIGHT, serviceNav, serviceHeading } from "./service-kit.js";
++import { hospitalityIcon } from "./hospitality-icons.js";
+ import * as M from "../model.js";
+ import * as H from "../rules/hayride.js";
+ import { HAYRIDE_PROPERTY, HAYRIDE_TIERS, HAYRIDE_SCARES } from "../content/hayride.js";
+@@ -33,7 +35,7 @@ function purchaseReason(s) {
+ 
+ // One page holds the operational controls; optional scenery and accounts unfold below.
+ export function hayrideSheets(ui) {
+-  let accountsOpen = false, scaresOpen = false;
++  let accountsOpen = false, scaresOpen = false, section = "overview";
+   const changed = (message = "", rebuild = false) => {
+     ui.save(); if (rebuild) ui.scene.refreshHayride?.(); ui.tone?.(680); ui.draw();
+     if (message) ui.notice?.(message);
+@@ -53,7 +55,7 @@ export function hayrideSheets(ui) {
+   function nextUpgrade(s) {
+     const h = ride(s), c = config(s), next = HAYRIDE_TIERS[h.tier], level = M.patchLevel(s).level;
+     const canBuy = next && editable(s) && level >= next.patchLevel && s.coins >= next.cost;
+-    return `<section class="hayride-upgrade" aria-label="Hayride progression"><div class="hayride-section-title"><h3>Grow the attraction</h3><span>Tier ${h.tier} of ${HAYRIDE_TIERS.length}</span></div><ol class="hayride-tier-track">${HAYRIDE_TIERS.map((tier, i) => `<li class="${i + 1 < h.tier ? "is-owned" : i + 1 === h.tier ? "is-current" : ""}" ${i + 1 === h.tier ? 'aria-current="step"' : ""}><b>${tier.seats}</b><span>seats</span></li>`).join("")}</ol>${next ? `<div class="hayride-next"><div><h4>${next.name}</h4><p>${c.seats} → ${next.seats} seats · ${next.queueCapacity} queue places</p><small>${level < next.patchLevel ? `Patch level ${next.patchLevel} required` : !editable(s) ? "Resume the farm to upgrade" : s.coins < next.cost ? `${money(next.cost - s.coins)} more needed` : "More seats and a better welcome"}</small></div><button class="button purchase-button" data-hayride-action="upgrade" ${disabled(canBuy)}>Upgrade<br><span>${money(next.cost)}</span></button></div>` : '<p class="hayride-note">Your midnight convoy is fully upgraded.</p>'}</section>`;
++    return `<section class="hayride-upgrade service-upgrade-block" aria-label="Hayride progression"><div class="hayride-section-title"><h3>Grow the attraction</h3><span>Tier ${h.tier} of ${HAYRIDE_TIERS.length}</span></div><ol class="hayride-tier-track">${HAYRIDE_TIERS.map((tier, i) => `<li class="${i + 1 < h.tier ? "is-owned" : i + 1 === h.tier ? "is-current" : ""}" ${i + 1 === h.tier ? 'aria-current="step"' : ""}><b>${tier.seats}</b><span>seats</span></li>`).join("")}</ol>${next ? `<div class="hayride-next"><div><h4>${next.name}</h4><p>${c.seats} → ${next.seats} seats · ${next.queueCapacity} queue places</p><small>${level < next.patchLevel ? `Patch level ${next.patchLevel} required` : !editable(s) ? "Resume the farm to upgrade" : s.coins < next.cost ? `${money(next.cost - s.coins)} more needed` : "More seats and a better welcome"}</small></div><button class="button purchase-button" data-hayride-action="upgrade" ${disabled(canBuy)}>Upgrade<br><span>${money(next.cost)}</span></button></div>` : '<p class="hayride-note">Your midnight convoy is fully upgraded.</p>'}</section>`;
+   }
+ 
+   function scenery(s) {
+@@ -67,12 +69,12 @@ export function hayrideSheets(ui) {
+ 
+   function routeUpgrades(s){
+     const h=ride(s),level=M.patchLevel(s).level,next=H.HAYRIDE_ROUTE_UPGRADES[h.routeLevel??0],locked=next&&(level<next.patchLevel||h.tier<next.tier);
+-    return `<section class="hayride-upgrade" aria-label="Route length and scenery"><div class="hayride-section-title"><h3>Route & scenery</h3><span>${Math.round(hayrideRouteLength(s))}m · ${hayrideStops(s).length} scenes</span></div><p class="hayride-note">${config(s).circuitSeconds}s paid circuit. Each extension adds a new physical woodland lane and scene; a ride-along follows the complete route.</p>${next?`<div class="hayride-next"><div><h4>${next.name}</h4><p>${next.text}</p><small>+${next.seconds}s · +${next.scare} scare${level<next.patchLevel?` · Patch level ${next.patchLevel}`:h.tier<next.tier?` · Attraction tier ${next.tier}`:""}</small></div><button class="button${!locked?" purchase-button":""}" data-hayride-route ${disabled(editable(s)&&!locked&&s.coins>=next.cost)}>${locked?level<next.patchLevel?`Level ${next.patchLevel}`:`Tier ${next.tier}`:money(next.cost)}</button></div>`:'<p class="hayride-note">The graveyard and crooked thicket are part of your complete woodland circuit.</p>'}</section>`;
++    return `<section class="hayride-upgrade service-upgrade-block" aria-label="Route length and scenery"><div class="hayride-section-title"><h3>Route & scenery</h3><span>${Math.round(hayrideRouteLength(s))}m · ${hayrideStops(s).length} scenes</span></div><p class="hayride-note">${config(s).circuitSeconds}s paid circuit. Each extension adds a new physical woodland lane and scene; a ride-along follows the complete route.</p>${next?`<div class="hayride-next"><div><h4>${next.name}</h4><p>${next.text}</p><small>+${next.seconds}s · +${next.scare} scare${level<next.patchLevel?` · Patch level ${next.patchLevel}`:h.tier<next.tier?` · Attraction tier ${next.tier}`:""}</small></div><button class="button${!locked?" purchase-button":""}" data-hayride-route ${disabled(editable(s)&&!locked&&s.coins>=next.cost)}>${locked?level<next.patchLevel?`Level ${next.patchLevel}`:`Tier ${next.tier}`:money(next.cost)}</button></div>`:'<p class="hayride-note">The graveyard and crooked thicket are part of your complete woodland circuit.</p>'}</section>`;
+   }
+ 
+   function operations(s) {
+     const h=ride(s),level=M.patchLevel(s).level;
+-    return `<section class="hayride-upgrade" aria-label="Tractors and station crew"><div class="hayride-section-title"><h3>Tractors & station crew</h3><span>${H.hayrideFleetSize(s)} tractor${H.hayrideFleetSize(s)>1?"s":""}</span></div>${H.HAYRIDE_OPERATIONS.map(u=>{
++    return `<section class="hayride-upgrade service-upgrade-block" aria-label="Tractors and station crew"><div class="hayride-section-title"><h3>Tractors & station crew</h3><span>${H.hayrideFleetSize(s)} tractor${H.hayrideFleetSize(s)>1?"s":""}</span></div>${H.HAYRIDE_OPERATIONS.map(u=>{
+       const owned=h[u.id]??0,price=u.costs[owned],done=price===undefined,gate=level<u.level||h.tier<u.tier;
+       const note=done?"Fully upgraded":level<u.level?`Patch level ${u.level}`:h.tier<u.tier?`Attraction tier ${u.tier}`:u.id==="dispatch"?`${owned+1}/${u.costs.length} · boarding ${H.hayrideBoardingSeconds(s).toFixed(1)}s now`:`${config(s).seats*2} total seats across two independent wagons`;
+       return `<div class="hayride-next"><div><h4>${u.name}</h4><p>${u.text}</p><small>${note}</small></div><button class="button${!done&&!gate?" purchase-button":""}" data-hayride-operation="${u.id}" ${disabled(!done&&!gate&&editable(s)&&s.coins>=price)}>${done?"Owned":gate?level<u.level?`Level ${u.level}`:`Tier ${u.tier}`:money(price)}</button></div>`;
+@@ -91,14 +93,16 @@ export function hayrideSheets(ui) {
+   function body(s) {
+     const h = ride(s); if (!h.purchased) return locked(s);
+     const c = config(s), o = H.hayrideOccupancy(s), status = convoyStatus(s), range = H.hayrideTicketRange(s);
+-    return `<div class="hayride-sheet" data-hayride-state="owned"><div class="hayride-heading"><div><p class="hayride-kicker">${c.name}</p><span class="hayride-status${h.open ? " is-open" : ""}"><i aria-hidden="true"></i>${h.open ? "Open" : "Closed"}</span></div><button class="button hayride-open" data-hayride-action="open" aria-pressed="${h.open}" ${disabled(editable(s))}>${h.open ? "Close admissions" : "Open admissions"}</button></div>
+-      <section class="hayride-platform" aria-label="Station status"><div class="hayride-platform-title"><h3>${status.title}</h3><span>${number(o.aboard)}/${number(o.seats)} aboard</span></div><p>${status.text}</p><progress max="1" value="${status.progress}" aria-label="Ride circuit progress"></progress><div class="hayride-platform-foot"><span>${number(o.queue)}/${number(o.queueCapacity)} queuing</span><button class="hayride-text-button" data-hayride-action="visit">View station ${visitArrow}</button></div></section>
++    const overview=`      <section class="hayride-platform" aria-label="Station status"><div class="hayride-platform-title"><h3>${status.title}</h3><span>${number(o.aboard)}/${number(o.seats)} aboard</span></div><p>${status.text}</p><progress max="1" value="${status.progress}" aria-label="Ride circuit progress"></progress><div class="hayride-platform-foot"><span>${number(o.queue)}/${number(o.queueCapacity)} queuing</span><button class="hayride-text-button" data-hayride-action="visit">View station ${visitArrow}</button></div></section>
+       <section class="hayride-price-row"><div><h3>Ticket price</h3><p>Charged when a guest boards</p></div><div class="hayride-price-stepper" role="group" aria-label="Hayride ticket price"><button class="button" data-hayride-price-step="-1" aria-label="Reduce ticket price" ${disabled(editable(s) && h.ticketPrice > range.min)}>−</button><output aria-label="Current ticket price">${money(h.ticketPrice)}</output><button class="button" data-hayride-price-step="1" aria-label="Increase ticket price" ${disabled(editable(s) && h.ticketPrice < range.max)}>+</button></div></section>
+       <p class="hayride-note">Guests weigh the scares, ticket value and their remaining money. Queued guests keep their quoted price.</p>
+-      ${fleetStatus(s)}${reputation(s)}${ui.openHayrideRide ? '<button class="button gold wide" data-hayride-action="experience">Ride along</button>' : ""}${nextUpgrade(s)}${routeUpgrades(s)}${operations(s)}${scenery(s)}${accounts(s)}${s.paused ? '<p class="hayride-note" role="status">Farm paused. Resume to change admissions, prices or upgrades.</p>' : ""}</div>`;
++      ${fleetStatus(s)}${reputation(s)}${ui.openHayrideRide ? '<button class="button gold wide" data-hayride-action="experience">Ride along</button>' : ""}${accounts(s)}`;
++    const content=section==='upgrade'?`${serviceHeading('Make your next great scare')}${nextUpgrade(s)}${operations(s)}${routeUpgrades(s)}`:section==='scares'?`${reputation(s)}${scenery(s)}`:overview;
++    return `<div class="hayride-sheet service-sheet" data-hayride-state="owned" data-menu-view="hayride:${section}"><header class="service-identity"><div>${hospitalityIcon('fleet',48)}<span><b>Station & woodland</b><small>${H.hayrideFleetSize(s)} tractor${H.hayrideFleetSize(s)>1?'s':''} · Tier ${h.tier}</small></span></div><button class="service-location" data-hayride-action="visit">View station ${SERVICE_OUT}</button></header>${serviceNav('hayride-section','Hayride management',[['overview','Overview'],['scares','Scares'],['upgrade','Upgrade']],section)}${section==='overview'?`<div class="service-status-row"><span><b>Admissions</b><small>${h.open?'Welcoming brave visitors':'Closed to new passengers'}</small></span><button class="button" data-hayride-action="open" aria-pressed="${h.open}" ${disabled(editable(s))}>${h.open?'Open':'Closed'}</button></div>`:''}${s.paused?'<p class="service-paused">Farm paused. Resume to change tickets or upgrades.</p>':''}${content}</div>`;
+   }
+ 
+-  return { hayride: { eyebrow: "A woodland full of unwelcome surprises", title: HAYRIDE_PROPERTY.name ?? "The Hollow Hayride", body() { return body(ui.state); }, bind(host) {
++  return { hayride: { eyebrow: "A woodland full of unwelcome surprises", title: HAYRIDE_PROPERTY.name ?? "The Hollow Hayride", setTab(value) { section=["overview","scares","upgrade"].includes(value)?value:"overview";scaresOpen=section==="scares"; }, body() { return body(ui.state); }, bind(host) {
++    host.querySelectorAll("[data-hayride-section]").forEach(b=>b.onclick=()=>{section=b.dataset.hayrideSection;scaresOpen=section==="scares";ui.draw();});
+     host.querySelectorAll("[data-hayride-disclosure]").forEach(detail => detail.addEventListener("toggle", () => { if (detail.dataset.hayrideDisclosure === "accounts") accountsOpen = detail.open; else scaresOpen = detail.open; }));
+     host.querySelectorAll("[data-hayride-price-step]").forEach(button => button.onclick = () => { if (H.setHayrideTicketPrice(ui.state, ride(ui.state).ticketPrice + Number(button.dataset.hayridePriceStep))) changed(); });
+     host.querySelector("[data-hayride-route]")?.addEventListener("click",()=>{if(H.buyHayrideRoute(ui.state))changed("A new woodland detour is ready for the next departure.",true);});
+diff --git a/voxel/src/ui/kitchen-guide.js b/voxel/src/ui/kitchen-guide.js
+new file mode 100644
+index 0000000..dbc013d
+--- /dev/null
++++ b/voxel/src/ui/kitchen-guide.js
+@@ -0,0 +1,23 @@
++// Read-only guidance. Quotes never buy supplies or consume ingredients.
++import { RECIPES, COOKING } from '../content/cooking.js';
++import { available } from '../rules/stock.js';
++import { kitchenEquipment } from '../rules/kitchen-equipment.js';
++import { patchLevel } from '../rules/levels.js';
++export function recipeShoppingList(s,recipe,batches=1){
++ const incoming={};for(const o of s.kitchen.orders)for(const [id,n] of Object.entries(o.items))incoming[id]=(incoming[id]??0)+n;
++ const items={};let remaining=COOKING.orderLimit, missing=0;
++ for(const [id,n] of Object.entries(recipe.ingredients)){const need=Math.max(0,n*batches-(s.kitchen.pantry[id]??0)-(incoming[id]??0));missing+=need;const take=Math.min(need,remaining);if(take)items[id]=take;remaining-=take;}
++ return {items,quantity:Object.values(items).reduce((a,b)=>a+b,0),partial:missing>COOKING.orderLimit};
++}
++export function kitchenNextStep(s,station='truck',preferred=null){
++ const k=s.kitchen;if(!k?.purchased)return {kind:'purchase'};
++ const job=k.jobs[station];if(job)return {kind:'cooking',recipe:job.recipe};
++ if(Object.values(k.food).some(n=>n>0)&&!k.displays.some(id=>id&&(k.food[id]??0)>0))return {kind:s.shop.unlocked?'sell':'shop'};
++ const equipment=kitchenEquipment(s,station),candidates=RECIPES.filter(r=>k.recipes.includes(r.id)&&r.level<=patchLevel(s).level&&(!r.homeOnly||station==='home')&&(r.equipment??[]).every(id=>equipment.includes(id)));
++ const r=candidates.find(r=>r.id===preferred)??candidates[0];
++ if(!r)return {kind:'equipment'};
++ const list=recipeShoppingList(s,r);if(list.quantity)return {kind:'supplies',recipe:r.id,items:list.items};
++ if(Object.entries(r.ingredients).some(([id,n])=>(k.pantry[id]??0)<n))return {kind:'delivery',recipe:r.id};
++ const pumpkin=Object.entries(r.pumpkins).find(([v,n])=>available(s,+v)<n);if(pumpkin)return {kind:'harvest',variety:+pumpkin[0],quantity:pumpkin[1]};
++ return {kind:'ready',recipe:r.id};
++}
+diff --git a/voxel/src/ui/menu-memory.js b/voxel/src/ui/menu-memory.js
+index a5a249c..b084124 100644
+--- a/voxel/src/ui/menu-memory.js
++++ b/voxel/src/ui/menu-memory.js
+@@ -1,19 +1,23 @@
+ // Keep each catalogue's position and native input focus through live updates.
+ export function createMenuMemory(body) {
+-  const positions = new Map(); let current = null, rangePointer = null;
+-  const remember = () => { if(current)positions.set(current,body.scrollTop); };
+-  body.addEventListener('pointerdown',e=>{if(e.target.matches('input[type="range"]'))rangePointer=e.pointerId;},true);
++  const positions = new Map(), disclosures = new Map();
++  const detailKey=(d,i)=>d.id||Object.entries(d.dataset).map(([k,v])=>k+'='+v).join('&')||i+':'+d.querySelector('summary')?.textContent.trim().replace(/\d+/g,'#'); let current = null, rangePointer = null, selectOpen = null;
++  const remember = () => { if(current){positions.set(current,body.scrollTop);disclosures.set(current,new Map([...body.querySelectorAll('details')].map((d,i)=>[detailKey(d,i),d.open])));} };
++  body.addEventListener('pointerdown',e=>{if(e.target.matches('input[type="range"]'))rangePointer=e.pointerId;selectOpen=e.target.matches('select')?e.target:null;},true);
++  body.addEventListener('change',e=>{if(e.target===selectOpen)selectOpen=null;},true);
++  body.addEventListener('focusout',e=>{if(e.target===selectOpen)selectOpen=null;},true);
++  body.addEventListener('keydown',e=>{if(e.target.matches('select')&&['ArrowDown','ArrowUp',' '].includes(e.key))selectOpen=e.target;if(e.key==='Escape')selectOpen=null;},true);
+   const release=e=>{if(e.pointerId===rangePointer)rangePointer=null;};
+   document.addEventListener('pointerup',release,true);document.addEventListener('pointercancel',release,true);
+   window.addEventListener('blur',()=>{rangePointer=null;});
+   return {
+-    get dragging(){return rangePointer!==null;},
++    get dragging(){return rangePointer!==null||selectOpen!==null;},
+     before(){remember();},
+     after(section){
+       const selection=[...body.querySelectorAll('.segmented button[aria-pressed="true"],.estate-finish-tabs button[aria-pressed="true"],.estate-skin-levels button[aria-pressed="true"]')].map(b=>Object.entries(b.dataset).map(([k,v])=>k+'='+v).join('&')).join('|');
+-      current=section+'|'+selection;body.scrollTop=positions.get(current)??0;
++      current=section+'|'+(body.querySelector('[data-menu-view]')?.dataset.menuView??'')+'|'+selection;const saved=disclosures.get(current);if(saved)body.querySelectorAll('details').forEach((d,i)=>{const key=detailKey(d,i);if(saved.has(key))d.open=saved.get(key);});body.scrollTop=positions.get(current)??0;
+     },
+-    leave(){remember();current=null;rangePointer=null;},
++    leave(){remember();current=null;rangePointer=null;selectOpen=null;},
+     captureFocus(){
+       const old=document.activeElement;if(!body.contains(old))return()=>{};
+       const id=old.id,tag=old.tagName,data=[...old.attributes].filter(a=>a.name.startsWith('data-')).map(a=>[a.name,a.value]);
+diff --git a/voxel/src/ui/more-sheet.js b/voxel/src/ui/more-sheet.js
+index 2c50dce..5184e29 100644
+--- a/voxel/src/ui/more-sheet.js
++++ b/voxel/src/ui/more-sheet.js
+@@ -18,7 +18,7 @@ export function moreSheet(ui) {
+     body() {
+       const s = ui.state, ready = claimable(s).length;
+       const links = [
+-        ["cooking", "Cooking", s.kitchen?.purchased ? "Pantry, recipes, deliveries & food shelves" : "Food truck · available to purchase at level 5"],
++        ["cooking", "Kitchen & food", s.kitchen?.purchased ? "Cook, order ingredients & stock Skyla’s shelves" : "Food truck · available to purchase at level 5"],
+         ["journal", "Journal", ready ? `${ready} favour${ready === 1 ? "" : "s"} ready to collect` : "Favours, memories, books & level rewards"],
+         ["settings", "Settings", "Sound, graphics, fullscreen & backups"],
+         ["patch", "Back to the farm", "Return to the pumpkin patch"],
+diff --git a/voxel/src/ui/service-kit.js b/voxel/src/ui/service-kit.js
+new file mode 100644
+index 0000000..d58d490
+--- /dev/null
++++ b/voxel/src/ui/service-kit.js
+@@ -0,0 +1,8 @@
++// Shared management surfaces keep the farm visible and the next action clear.
++export const serviceNav = (name, label, items, current) => `<nav class="service-nav segmented" role="group" aria-label="${label}">${items.map(([id,title])=>`<button type="button" data-${name}="${id}" aria-pressed="${id===current}">${title}</button>`).join('')}</nav>`;
++export const serviceHeading = (title, detail='') => `<div class="service-section-heading"><h3>${title}</h3>${detail?`<span>${detail}</span>`:''}</div>`;
++export const serviceMetrics = items => `<div class="service-metrics">${items.map(([value,label])=>`<div><b>${value}</b><span>${label}</span></div>`).join('')}</div>`;
++export const serviceNotice = (title, detail, action='') => `<aside class="service-next"><div><b>${title}</b><p>${detail}</p></div>${action}</aside>`;
++export const SERVICE_OUT='<svg class="service-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 12 8-8M4 4h8v8"/></svg>';
++export const SERVICE_BACK='<svg class="service-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3m4-4L3 8l4 4"/></svg>';
++export const SERVICE_RIGHT='<svg class="service-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+diff --git a/voxel/src/ui/service-menus.css b/voxel/src/ui/service-menus.css
+new file mode 100644
+index 0000000..730e643
+--- /dev/null
++++ b/voxel/src/ui/service-menus.css
+@@ -0,0 +1,55 @@
++/* A quiet, candlelit management layer. The world remains the permanent screen. */
++:root{--service-surface:#251f2d;--service-raised:#302734;--service-line:#b5a08b24;--service-muted:#c5b9af;--service-ready:#b9cba2}
++.sheet .sheet-frame{padding:14px 16px 16px;border-color:#d8b47a30;border-radius:22px;background:linear-gradient(150deg,#2d2532fa,#1b1822fc);box-shadow:0 18px 64px #06040b75}
++.sheet-head{padding-bottom:12px}.sheet .sheet-head h2,.sheet[data-section] .sheet-head h2{font:500 23px/1.18 var(--display);letter-spacing:-.025em}.sheet-head .eyebrow{font-size:12px;color:var(--service-muted)}
++.sheet .close{flex:0 0 44px;width:44px;height:44px;min-height:44px;border:1px solid var(--service-line);border-radius:50%;background:#ffffff04;font-size:22px}
++.sheet-body{padding-top:14px;gap:14px;scroll-padding-top:62px}.service-sheet{display:flex;flex-direction:column;gap:16px;min-width:0;color:var(--ink)}
++.service-identity{display:flex;justify-content:space-between;align-items:center;gap:12px;min-width:0}.service-identity>div{display:flex;gap:10px;align-items:center;min-width:0}.service-identity b{display:block;font:600 15px/1.3 var(--body)}.service-identity small{display:block;font-size:12px;color:var(--service-muted);margin-top:3px}.service-identity .maisie-art{width:48px;height:48px}.service-identity .cooking-art{width:48px;height:48px;flex-basis:48px}.service-identity>.thumb{flex-shrink:0}
++.service-location,.service-inline-link{min-height:44px;min-width:44px;border:0;background:none;color:var(--gold-bright);font:500 12px/1.4 var(--body);padding:8px 0;text-align:left;cursor:pointer}.service-location{white-space:nowrap;flex-shrink:0}.service-inline-link span,.service-location span{margin-left:4px;opacity:.8}
++.service-nav.segmented{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);min-width:0;width:100%;gap:3px;padding:4px;background:#100d163f;border:1px solid #fff2d608;border-radius:14px}
++.service-nav.segmented button{border:0;background:none;min-height:44px;min-width:0;padding:7px 4px;border-radius:10px;color:var(--service-muted);font:500 12px/1.2 var(--body);transition:background .16s,color .16s;white-space:normal}
++.service-nav.segmented button[aria-pressed=true]{color:#ffe0aa;background:linear-gradient(150deg,#b883492f,#a16b331b);box-shadow:inset 0 0 0 1px #c79c5740,0 2px 7px #0002}
++.service-nav.segmented button:hover:not([aria-pressed=true]){background:#ffffff07;color:var(--ink)}
++.service-sheet>.service-nav:first-of-type{position:sticky;top:0;z-index:4;background:#211b29f7;box-shadow:0 -8px 0 #241e2c,0 8px 12px #211b2944}
++.service-section-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:4px}.service-section-heading h3{margin:0;font:500 19px/1.3 var(--display);color:var(--ink)}.service-section-heading>span{font-size:12px;color:var(--service-muted);text-align:right}
++.service-next{border-left:2px solid #d1a565;border-radius:0 12px 12px 0;background:linear-gradient(90deg,#d6a05d12,transparent);padding:11px 13px;display:flex;flex-direction:column;gap:2px}.service-next b{font-size:13px;font-weight:600}.service-next p{font-size:12px;line-height:1.5;margin:4px 0 0;color:var(--service-muted)}.service-next .service-inline-link{align-self:flex-start;padding:6px 0;min-height:44px}
++.service-metrics{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border:1px solid var(--service-line);border-radius:14px;padding:12px 0;background:#ffffff02}.service-metrics>div{padding:0 12px;border-left:1px solid var(--service-line)}.service-metrics>div:first-child{border-left:0}.service-metrics b{display:block;font:500 20px/1.2 var(--display);font-variant-numeric:tabular-nums}.service-metrics span{display:block;font-size:12px;color:var(--service-muted);margin-top:5px}
++.service-paused{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:3px 11px;background:#d8ae6510;border-radius:11px;color:#e3c69f;font-size:12px}.service-empty{padding:14px;border:1px dashed var(--service-line);border-radius:12px;font-size:13px;color:var(--service-muted)}
++.service-disclosure{border-top:1px solid var(--service-line);padding-top:4px}.service-disclosure>summary{display:flex;gap:10px;align-items:center;justify-content:space-between;font-size:13px}.service-disclosure>summary>span{font-size:12px;color:var(--service-muted);padding-right:8px}
++.recipe-book-tools{display:flex;flex-direction:column;gap:0}.recipe-book-tools .service-inline-link{align-self:flex-end}.recipe-book{display:flex;flex-direction:column;gap:9px}
++.recipe-entry{border:1px solid var(--service-line);border-radius:17px;background:#ffffff02;overflow:hidden}.recipe-entry.is-selected{border-color:#cb9e5b69;background:linear-gradient(140deg,#6b4a2a1f,#3b2a3a28)}
++.recipe-choice{display:grid;grid-template-columns:72px minmax(0,1fr) 18px;align-items:center;gap:10px;width:100%;padding:12px 11px;min-height:100px;text-align:left;border:0;background:transparent}.recipe-choice>.dish-art{width:72px!important;height:72px!important;filter:drop-shadow(0 5px 7px #0a070c55)}.recipe-choice>span{min-width:0}.recipe-choice b{display:block;font:600 15px/1.3 var(--body);color:var(--ink)}.recipe-choice small{display:block;margin-top:5px;font-size:12px;color:var(--service-muted)}.recipe-choice em{display:block;font-style:normal;font-size:12px;line-height:1.4;color:#ccbba9;margin-top:5px}.recipe-choice .recipe-learned{color:var(--service-ready)}.recipe-choice>i{font-style:normal;color:var(--gold);font-size:19px;text-align:center}
++.recipe-detail{display:flex;flex-direction:column;gap:12px;padding:0 13px 13px}.recipe-detail>p{font-size:13px;line-height:1.5;color:var(--service-muted)}.recipe-yield{display:flex;justify-content:space-between;gap:6px;padding:9px 0;border-block:1px solid var(--service-line);font-size:12px;color:var(--ink-soft)}.recipe-help-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.recipe-help-actions>.button{min-width:0;font-size:12px;background:#ffffff04;border-color:var(--service-line);color:var(--ink-soft)}
++.recipe-future{display:flex;flex-direction:column;gap:10px;padding-top:8px}.recipe-future>div{display:flex;gap:10px;align-items:center}.recipe-future .dish-art{width:48px!important;height:48px!important;opacity:.65}.recipe-future b{font-size:13px;font-weight:500}.recipe-future small{display:block;color:var(--service-muted);font-size:12px;margin-top:2px}
++.cooking-sheet .cooking-worktop{gap:9px}.cooking-sheet .cooking-run-controls{gap:10px}.cooking-sheet .cooking-note{color:var(--service-muted)!important}.cooking-sheet .cooking-station{padding:11px;border-color:var(--service-line);background:#ffffff03}.cooking-sheet .cooking-station-head h4{font-size:14px}.cooking-sheet .cooking-field{font-size:12px;gap:6px}.cooking-sheet .cooking-ingredient-name{font-size:14px}.cooking-sheet .cooking-inputs{font-size:12px;line-height:1.5;gap:7px}.cooking-sheet .cooking-requirement{border-radius:6px;font-size:12px;padding:3px 6px}.cooking-sheet .cooking-mix-preview{grid-template-columns:76px minmax(0,1fr)}.cooking-sheet .cooking-mix-preview>.dish-art{width:76px!important;height:76px!important}.cooking-sheet .cooking-order-item{padding:12px 0}.cooking-sheet .cooking-equipment{grid-template-columns:56px minmax(0,1fr);border-color:var(--service-line)}.cooking-sheet .cooking-equipment h4{font-size:15px}
++.service-checkout{position:sticky;bottom:0;z-index:3;background:linear-gradient(140deg,#352a34fa,#24202afc);border-color:#c89d5966;box-shadow:0 -8px 22px #1b15212a;padding:12px!important}.service-checkout dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 12px}.service-checkout dl>div{display:flex;gap:4px;flex-wrap:wrap;justify-content:space-between}.service-checkout .cooking-total{grid-column:1/-1;padding-top:6px}.service-checkout>.button{margin-top:8px}.service-checkout>p{margin-top:6px;font-size:12px}
++.service-sheet .cooking-disclosure{border-color:var(--service-line)}.service-sheet .cooking-disclosure>summary{font-size:14px}.service-sheet .cooking-disclosure-body{padding-top:6px}.service-sheet .cooking-upgrade{padding:13px 0;border-color:var(--service-line);grid-template-columns:minmax(0,1fr) auto}.service-sheet .cooking-upgrade h4{font-size:15px}
++.service-product{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;border:1px solid var(--service-line);border-radius:16px;padding:13px;background:#ffffff02}.service-product .thumb{width:58px;height:58px;--thumb:58px;background:transparent}.service-product h3,.service-product h4{margin:0;font:600 15px/1.3 var(--body)}.service-product p{font-size:12px;line-height:1.5;color:var(--service-muted);margin-top:5px}.service-product small{display:block;font-size:12px;color:var(--service-muted);margin-top:5px}.service-product-controls{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:9px;align-items:end}.service-product-controls label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--ink-soft)}.service-product-controls .button{min-width:0;min-height:44px;padding:8px;font-size:12px}
++.service-status-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0}.service-status-row>b{font-size:14px}.service-status-row small{display:block;font-size:12px;color:var(--service-muted);margin-top:3px}.service-status-row .button{min-width:76px}.service-status{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--service-muted)}.service-status:before{content:'';width:6px;height:6px;border-radius:50%;background:#9b8581}.service-status.is-open{color:var(--service-ready)}.service-status.is-open:before{background:var(--service-ready)}
++.service-product-list{display:flex;flex-direction:column;gap:10px}.service-sheet .stats{margin:0}.service-sheet .card{padding:13px 0;border-color:var(--service-line)}.service-sheet .card h3{font:600 15px/1.3 var(--body)}.service-sheet .card p{font-size:13px;line-height:1.5}.service-sheet .card .small,.service-sheet .card .effect{font-size:12px}.service-sheet .card .button{font-size:12px;min-width:80px}.service-sheet>.small,.service-sheet>p{font-size:13px;color:var(--service-muted);line-height:1.5}
++.service-upgrade-block{display:flex;flex-direction:column;gap:12px;padding:15px;border:1px solid var(--service-line);border-radius:16px;background:#ffffff02}.service-upgrade-block h3{font:500 19px/1.3 var(--display);margin:0}.service-upgrade-block>p{font-size:13px;line-height:1.5;color:var(--service-muted)}.service-upgrade-block>.button{align-self:stretch}.service-info-list{display:flex;flex-direction:column;gap:0}.service-info-list>div{display:flex;gap:10px;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--service-line);font-size:13px}.service-info-list b{font-weight:500}.service-sheet .setting{padding:10px 0;border-color:var(--service-line)}
++@media(min-width:720px) and (min-height:481px){.sheet[data-section="cooking"],.sheet[data-section="festival"],.sheet[data-section="hayride"],.sheet[data-section="shop"]{width:390px;max-width:calc(100vw - 24px)}}
++@media(max-width:430px){.sheet .sheet-frame{padding:12px}.sheet .sheet-head h2,.sheet[data-section] .sheet-head h2{font-size:21px}.recipe-choice{grid-template-columns:62px minmax(0,1fr) 16px;gap:9px;padding:11px 9px}.recipe-choice>.dish-art{width:62px!important;height:62px!important}.service-identity .maisie-art{width:44px;height:44px}.service-identity b{font-size:14px}.service-metrics>div{padding:0 9px}.service-metrics b{font-size:19px}}
++@media(prefers-reduced-motion:reduce){.service-nav button{transition:none}}
++/* A single recognisable directory for everything in the new farm economy. */
++.upgrade-menu{padding:12px;border-color:#d8b47a30;background:linear-gradient(145deg,#302632fc,#1c1825fc);border-radius:20px;gap:10px}
++.manage-menu-heading{padding:3px 7px 6px}.manage-menu-heading>b{font:500 20px/1.3 var(--display);display:block}.manage-menu-heading>span{display:block;margin-top:4px;font-size:12px;color:var(--service-muted)}.manage-menu-group>p{margin:0;padding:5px 8px;color:#c6a974;font-size:12px}.upgrade-menu .manage-menu-group button{display:grid;grid-template-columns:32px minmax(0,1fr) 12px;gap:10px;width:100%;min-height:58px;padding:9px 8px;animation:none}.upgrade-menu b{font:600 14px/1.3 var(--body)}.upgrade-menu small{font-size:12px;line-height:1.4;color:var(--service-muted);margin-top:3px}.upgrade-menu .manage-menu-heading>b{font:500 20px/1.3 var(--display)}.upgrade-menu i{font-style:normal;font-size:21px;color:var(--gold)}.upgrade-menu .cooking-art{width:32px;height:32px;flex-basis:32px}.upgrade-menu .manage-menu-group button:hover,.upgrade-menu .manage-menu-group button:focus-visible{background:#d1a16712}
++.hayride-sheet.service-sheet{gap:16px}.service-sheet .hayride-platform{border-color:var(--service-line);background:#ffffff03;border-radius:15px}.service-sheet .hayride-price-row{border-color:var(--service-line)}.service-sheet .hayride-upgrade{padding:14px;gap:13px}.service-sheet .hayride-next{flex-wrap:wrap;gap:11px}.service-sheet .hayride-next>div{flex:1 1 190px}.service-sheet .hayride-next>.button{min-width:96px}.service-sheet .hayride-section-title h3{font:500 18px/1.3 var(--display)}.service-sheet .hayride-scare{padding:13px 0;border-color:var(--service-line)}.service-sheet .hayride-scare h4{font:600 15px/1.3 var(--body)}.service-sheet .hayride-disclosure{border-color:var(--service-line)}.service-sheet .hayride-note{font-size:12px;color:var(--service-muted)}.service-sheet .hayride-reputation{background:#ffffff02;border-radius:14px;border-color:var(--service-line)}.service-sheet .hayride-price-stepper>.button{min-width:44px}
++.service-sheet .service-product>.thumb .cocoa-art{width:58px;height:58px}.service-sheet .card.hero{background:transparent;border:0;padding:8px 0}.service-product-controls select{width:100%;min-width:0}.service-product p b{color:var(--ink)}
++@media(max-height:480px){.manage-menu-heading{display:none}.upgrade-menu .manage-menu-group button{min-height:44px;padding-block:4px}.upgrade-menu .manage-menu-group small{display:none}}
++.cooking-sheet>.service-next{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:9px 12px}
++.cooking-sheet>.service-next p{font-size:12px;margin-top:3px}.cooking-sheet>.service-next .service-inline-link{align-self:center;white-space:nowrap}
++.service-sheet .service-disclosure .recipe-book{padding-top:10px}
++.service-arrow{width:13px;height:13px;flex-shrink:0;display:inline-block;vertical-align:-2px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
++.cooking-sheet .cooking-food-row{grid-template-columns:54px minmax(0,1fr) 88px;gap:10px}
++.cooking-sheet .cooking-food-row>.dish-art{width:52px!important;height:52px!important}
++.cooking-sheet .cooking-food-row .cooking-field{min-width:0}
++/* Put each helper's art beside its name, leaving its control in immediate reach. */
++.service-upgrade-block:has(>span:first-child){display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px 12px;align-items:center}
++.service-upgrade-block:has(>span:first-child)>span:first-child{grid-column:1;grid-row:1;width:48px!important;height:48px!important;--thumb:48px}
++.service-upgrade-block:has(>span:first-child)>h3{grid-column:2;grid-row:1}
++.service-upgrade-block:has(>span:first-child)>p,.service-upgrade-block:has(>span:first-child)>.button,.service-upgrade-block:has(>span:first-child)>.setting,.service-upgrade-block:has(>span:first-child)>.service-status-row{grid-column:1/-1}
++.service-upgrade-block:has(>.eyebrow)>span:first-child{grid-row:1/3}
++.service-upgrade-block:has(>.eyebrow)>.eyebrow{grid-column:2;grid-row:1}
++.service-upgrade-block:has(>.eyebrow)>h3{grid-row:2}
++.service-upgrade-block .service-status-row{padding-bottom:0}
+diff --git a/voxel/src/ui/upgrade-menu.js b/voxel/src/ui/upgrade-menu.js
+index 0ecfe8d..454af8e 100644
+--- a/voxel/src/ui/upgrade-menu.js
++++ b/voxel/src/ui/upgrade-menu.js
+@@ -1,25 +1,26 @@
+ import { cookingIcon } from "./cooking-icons.js";
+-// The dock's Upgrades button: a small menu that rises above it, one choice
++// The dock's Manage button: a small menu that rises above it, one choice
+ // for each part of the upgrades sheet. Arrow keys move through it, Escape or
+ // a tap elsewhere closes it, and choosing opens the sheet at that section.
+ export const UPGRADE_SECTIONS = [
+-  ["farm", "Farm", "tools", "Tools, yield, helpers, plots and the barn"],
++  ["farm", "Farm upgrades", "tools", "Tools, yield, helpers, plots and the barn"],
+   ["seeds", "Seeds", "seeds", "New pumpkin varieties"],
+-  ["shop", "Shop", "shop", "Skyla’s shop and customer care"],
+-  ["cocoa", "Cocoa", "talk", "Sandy’s stand and the meadow"],
+-  ["cooking", "Cooking", "shop", "Food truck, pantry, recipes and food shelves"],
++  ["shop", "Skyla’s shop", "shop", "Skyla’s shop and customer care"],
++  ["cocoa", "Sandy’s cocoa", "talk", "Sandy’s stand and the meadow"],
++  ["cooking", "Maisie’s kitchen", "shop", "Food truck, pantry, recipes and food shelves"],
+   ["stall", "Stock", "stock", "The stall, stock and the market cart"],
+-  ["visitors", "Visitors", "visitors", "More neighbours, more often"],
++  ["visitors", "Visitors & VIPs", "visitors", "Crowds, spending, harvest rushes & the midnight court"],
+ ];
+ export function createUpgradeMenu({ button, choose }) {
+   const menu = document.createElement("div"); menu.className = "upgrade-menu"; menu.id = "upgrade-menu"; menu.hidden = true;
+-  menu.setAttribute("role", "menu"); menu.setAttribute("aria-label", "Upgrades");
+-  menu.innerHTML = UPGRADE_SECTIONS.map(([id, name, icon, text], i) => `<button type="button" role="menuitem" data-upgrade-section="${id}" style="--i:${UPGRADE_SECTIONS.length - 1 - i}">${id === "cooking" ? cookingIcon("truck") : `<span class="ico i-${icon}" aria-hidden="true"></span>`}<span><b>${name}</b><small>${text}</small></span></button>`).join("");
++  menu.setAttribute("role", "menu"); menu.setAttribute("aria-label", "Manage farm and businesses");
++  const groups=[['Grow your patch',['farm','seeds','stall','visitors']],['Your businesses',['shop','cocoa','cooking']]];
++  menu.innerHTML=`<header class="manage-menu-heading"><b>Manage your patch</b><span>Choose where to make a difference</span></header>`+groups.map(([label,ids])=>`<div class="manage-menu-group" role="group" aria-label="${label}"><p>${label}</p>${ids.map(id=>{const [,name,icon,text]=UPGRADE_SECTIONS.find(s=>s[0]===id);return `<button type="button" role="menuitem" data-upgrade-section="${id}">${id==='cooking'?cookingIcon('truck'):`<span class="ico i-${icon}" aria-hidden="true"></span>`}<span><b>${name}</b><small>${text}</small></span><i aria-hidden="true">›</i></button>`}).join('')}</div>`).join('');
+   document.body.append(menu);
+   button.setAttribute("aria-haspopup", "menu"); button.setAttribute("aria-controls", menu.id); button.setAttribute("aria-expanded", "false");
+   const items = () => [...menu.querySelectorAll("[role=menuitem]")];
+   const place = () => {
+-    const at = button.getBoundingClientRect(), width = Math.min(280, innerWidth - 16);
++    const at = button.getBoundingClientRect(), width = Math.min(320, innerWidth - 16);
+     menu.style.width = width + "px";
+     menu.style.left = Math.max(8, Math.min(innerWidth - width - 8, at.left + at.width / 2 - width / 2)) + "px";
+     menu.style.bottom = Math.max(8, innerHeight - at.top + 8) + "px";
+diff --git a/voxel/test/kitchen-guide.test.mjs b/voxel/test/kitchen-guide.test.mjs
+new file mode 100644
+index 0000000..ecd2783
+--- /dev/null
++++ b/voxel/test/kitchen-guide.test.mjs
+@@ -0,0 +1,19 @@
++import test from 'node:test';import assert from 'node:assert/strict';
++import * as M from '../src/model.js';import {recipeShoppingList,kitchenNextStep} from '../src/ui/kitchen-guide.js';
++const setup=()=>{const s=M.freshState();s.earned=110000;s.coins=50000;M.buyFoodTruck(s);return s;};
++test('shopping list subtracts both pantry and already-paid deliveries without spending',()=>{
++ const s=setup();s.kitchen.pantry.butter=1;s.kitchen.orders=[{items:{butter:2},remaining:60,phase:'ordered'}];
++ const before=JSON.stringify(s),list=recipeShoppingList(s,M.RECIPE_BY_ID.wedges,5);assert.deepEqual(list.items,{butter:2});assert.equal(list.quantity,2);assert.equal(JSON.stringify(s),before);
++});
++test('a large recipe order is capped and explicitly marked partial',()=>{
++ const s=setup(),list=recipeShoppingList(s,M.RECIPE_BY_ID['haunted-pie'],10);assert.equal(list.quantity,40);assert.ok(list.partial);assert.ok(Object.values(list.items).every(n=>n>0));
++});
++test('first dish guidance moves through supplies, delivery, harvest and ready',()=>{
++ const s=setup();assert.equal(kitchenNextStep(s).kind,'supplies');s.kitchen.orders=[{items:{butter:1}}];assert.equal(kitchenNextStep(s).kind,'delivery');s.kitchen.orders=[];s.kitchen.pantry.butter=1;assert.equal(kitchenNextStep(s).kind,'harvest');s.stock[0]=1;assert.equal(kitchenNextStep(s).kind,'ready');
++});
++test('finished food points to opening the shop then stocking shelves, never charges',()=>{
++ const s=setup();s.kitchen.food.wedges=2;assert.equal(kitchenNextStep(s).kind,'shop');s.shop.unlocked=true;assert.equal(kitchenNextStep(s).kind,'sell');s.kitchen.displays[0]='wedges';assert.equal(kitchenNextStep(s).kind,'supplies');assert.equal(s.coins,49100);
++});
++test('a paid job takes priority over guidance and empty home kitchen points to equipment',()=>{
++ const s=setup();s.kitchen.jobs.truck={recipe:'wedges'};assert.equal(kitchenNextStep(s).kind,'cooking');assert.equal(kitchenNextStep(s,'home').kind,'equipment');
++});
+diff --git a/voxel/tools/qa-service-menus-final.mjs b/voxel/tools/qa-service-menus-final.mjs
+new file mode 100644
+index 0000000..4d1af3a
+--- /dev/null
++++ b/voxel/tools/qa-service-menus-final.mjs
+@@ -0,0 +1,40 @@
++// Exercise the real standalone HTML; funds and unlocks exist only in this QA browser.
++import fs from 'node:fs';import path from 'node:path';import http from 'node:http';import {createHash} from 'node:crypto';import {chromium} from 'playwright';import * as M from '../src/model.js';
++const file=path.resolve(process.argv[2]||'dist/pumpkin-patch-voxel.html'),out=path.resolve(process.argv[3]||'/tmp/service-menus-qa');fs.mkdirSync(out,{recursive:true});
++const html=fs.readFileSync(file),checks=[],errors=[],requests=[],shots=[];const meta={file,sha256:createHash('sha256').update(html).digest('hex'),started:new Date().toISOString(),fixture:'Only browser localStorage receives QA funds/unlocks. The downloadable HTML is unmodified.'};
++const report=()=>fs.writeFileSync(path.join(out,'progress.json'),JSON.stringify({...meta,checks,errors,requests,shots},null,2));
++const check=(ok,label,data)=>{checks.push({ok:!!ok,label,...data===undefined?{}:{data}});report();console.log(ok?'ok  ':'FAIL',label);if(!ok)throw Error(label+': '+JSON.stringify(data));};
++const quiet=s=>{s.introSeen=true;s.visitorTimer=s.bigSpender.timer=s.shop.arrivalTimer=1e6;s.orders.next=1e6;s.progression.claimed=M.LEVELS.filter(l=>l.at<=s.earned).map(l=>l.level);s.progression.pending=[];return s;};
++const seed=quiet(M.freshState());seed.coins=5000;seed.earned=M.LEVELS[4].at;seed.progression.claimed=M.LEVELS.slice(0,5).map(l=>l.level);M.buyFoodTruck(seed);seed.stock[0]=1;seed.paused=true;
++const late=quiet(M.freshState());late.coins=100000;late.earned=M.LEVELS.at(-1).at;late.progression.claimed=M.LEVELS.map(l=>l.level);M.buyFoodTruck(late);M.upgradeHouse(late);M.upgradeHouse(late);for(const id of ['kitchen-hob','kitchen-oven','kitchen-pot-rail','kitchen-pan-rail','kitchen-baking-rack','kitchen-spice-shelf'])M.buyCookingEquipment(late,id);
++late.kitchen.recipes=M.RECIPES.map(r=>r.id);for(const i of M.INGREDIENTS)late.kitchen.pantry[i.id]=2;late.kitchen.food.wedges=6;late.kitchen.food.soup=2;late.stock=[30,10,0,0,0];late.shop.unlocked=true;late.festival.meadow=true;late.festival.cocoa.level=4;late.festival.cocoa.stock=20;late.festival.cocoa.courier=true;for(const p of M.COCOA_SPECIALS)if(p.tier<=4)late.festival.cocoa.extras[p.id].stock=5;
++late.hollowHouse.purchased=true;late.hollowHouse.status='ready';M.buyHayride(late);late.hayride.tier=2;late.paused=false;
++const server=http.createServer((req,res)=>{if(req.url==='/favicon.ico'){res.writeHead(204);res.end();return;}res.setHeader('Content-Type','text/html');res.end(html);});await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
++const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});let page,passed=false;
++try{
++page=await browser.newPage({viewport:{width:1280,height:800},hasTouch:true,reducedMotion:'reduce'});page.setDefaultTimeout(120000);page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(!r.url().startsWith(base)&&!r.url().startsWith('blob:')&&!r.url().startsWith('data:'))requests.push(r.url());});
++await page.addInitScript(seed=>{const key='pumpkin-patch-voxel-reference-v1';if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(seed));localStorage.setItem(key+'-prefs',JSON.stringify({renderQuality:'performance',shadows:false,glow:false,mist:false,lakeLights:false,music:false,sound:false,mazeSound:false,hayrideSound:false}));},M.saveData(seed));
++await page.goto(base);await page.waitForSelector('body[data-ready]');await page.evaluate(()=>{PumpkinVoxel.intro?.skip();const s=PumpkinVoxel.state();s.visitorTimer=s.shop.arrivalTimer=s.bigSpender.timer=1e6;s.paused=false;});
++const frame=async()=>{const t=await page.evaluate(()=>{const n=(window.menuQAFrame??0)+1;window.menuQAFrame=n;requestAnimationFrame(()=>window.menuQAFrameDone=n);return n;});await page.waitForFunction(n=>window.menuQAFrameDone>=n,t);};
++const click=async locator=>{await locator.click({force:true});};
++const shot=async name=>{await frame();await page.screenshot({path:path.join(out,name+'.png')});shots.push(name);report();};
++const open=async tab=>{await page.evaluate(t=>PumpkinVoxel.openCookingSheet(t),tab);await frame();};
++const layout=async label=>{const data=await page.locator('#sheet').evaluate(host=>{const controls=[...host.querySelectorAll('button,select,input,summary')].filter(n=>n.getClientRects().length).map(n=>{const r=n.getBoundingClientRect();return {label:n.getAttribute('aria-label')||n.textContent.trim().slice(0,45),x:r.x,right:r.right,w:r.width,h:r.height};});return {overflow:document.documentElement.scrollWidth>innerWidth+1,clipped:controls.filter(c=>c.x<-.5||c.right>innerWidth+.5),small:controls.filter(c=>c.w<43.5||c.h<43.5)};});check(!data.overflow&&!data.clipped.length&&!data.small.length,label+': no horizontal clipping, all controls at least 44px',data);};
++const manage=async id=>{await click(page.locator('.tab[data-tab="shop"]'));await click(page.locator('[data-upgrade-section="'+id+'"]'));await frame();};
++await page.evaluate(()=>{const p=PumpkinVoxel,s=p.state(),r=p.rules.freshState();r.coins=5000;r.earned=p.rules.LEVELS[3].at;r.introSeen=true;r.progression.claimed=p.rules.LEVELS.slice(0,4).map(l=>l.level);Object.assign(s,r);s.visitorTimer=s.bigSpender.timer=s.shop.arrivalTimer=1e6;p.scene.refreshCooking();p.closeSheet();});
++await manage('cooking');check(await page.locator('[data-cooking-action="purchase"]').isDisabled(),'level four clearly previews the locked kitchen purchase');await layout('locked kitchen');
++await page.evaluate(()=>{const p=PumpkinVoxel,s=p.state(),level=Math.max(1,p.rules.MEADOW.level-1);s.earned=p.rules.LEVELS[level-1].at;s.progression.claimed=p.rules.LEVELS.slice(0,level).map(l=>l.level);});await manage('cocoa');check(await page.locator('[data-festival-action="land"]').isDisabled(),'cocoa land stays gated until its level unlock');check((await page.locator('#sheet-body').textContent()).includes('Step 1 of 2'),'new cocoa business explains the meadow step first');await layout('locked meadow');
++await page.evaluate(()=>{const p=PumpkinVoxel,s=p.state();s.earned=p.rules.LEVELS[4].at;s.progression.claimed=p.rules.LEVELS.slice(0,5).map(l=>l.level);});await manage('cocoa');const meadowCash=await page.evaluate(()=>PumpkinVoxel.state().coins);await click(page.locator('[data-festival-action="land"]'));check(await page.evaluate(c=>PumpkinVoxel.state().coins===c-PumpkinVoxel.rules.MEADOW.price&&PumpkinVoxel.state().festival.meadow,meadowCash),'meadow action charges once and reveals the stand step');check((await page.locator('#sheet-body').textContent()).includes('Step 2 of 2'),'cocoa setup leads directly to building the stand');await click(page.locator('[data-festival-action="upgrade"]'));check(await page.evaluate(()=>PumpkinVoxel.state().festival.cocoa.level===1)&&await page.locator('[data-sandy-section="menu"]').isVisible(),'building the stand keeps the player in its management menu');
++await page.evaluate(raw=>{const p=PumpkinVoxel,s=p.state();Object.assign(s,p.rules.restoreState(raw));s.paused=false;s.visitorTimer=s.bigSpender.timer=s.shop.arrivalTimer=1e6;p.closeSheet();p.scene.refreshCooking();p.scene.refreshHayride();p.scene.refreshEstate();},M.saveData(late));
++for(const [name,w,h] of [['desktop',1280,800],['phone',390,844],['fold',874,787]]){
++ await page.setViewportSize({width:w,height:h});await open('recipes');await layout(name+' final cooking');if(name!=='desktop')await shot(name+'-final-cooking');
++ await open('food');await layout(name+' final food pricing');
++ await manage('cocoa');await click(page.locator('[data-sandy-section="menu"]'));await layout(name+' final cocoa stock');if(name!=='desktop')await shot(name+'-final-cocoa');
++ await click(page.locator('[data-sandy-section="helpers"]'));await layout(name+' final helpers');
++ if(name==='phone'){const visible=await page.locator('[data-festival-action="auto"]').evaluate(el=>{const r=el.getBoundingClientRect(),p=document.getElementById('sheet-body').getBoundingClientRect();return r.top>=p.top&&r.bottom<=p.bottom});check(visible,'phone courier toggle is visible in its first helper card');await shot('phone-final-helpers');}
++ await manage('visitors');await click(page.locator('[data-visitor-section="events"]'));await layout(name+' final VIP entry');
++ await page.evaluate(()=>PumpkinVoxel.openHayrideSheet('upgrade'));await frame();await layout(name+' final tractor upgrades');if(name==='fold')await shot('fold-final-tractors');
++ await page.evaluate(()=>PumpkinVoxel.closeSheet());await click(page.locator('.tab[data-tab="shop"]'));const bounds=await page.locator('#upgrade-menu').boundingBox();check(bounds.x>=0&&bounds.y>=0&&bounds.x+bounds.width<=w&&bounds.y+bounds.height<=h,name+' management directory fits the screen',bounds);if(name==='phone')await shot('phone-final-directory');await page.keyboard.press('Escape');
++}
++check(!errors.length,'final HTML has no browser errors',errors);check(!requests.length,'final HTML is self-contained',requests);passed=true;
++}catch(e){meta.failure=String(e);console.error(e.stack||e);if(page)try{await page.screenshot({path:path.join(out,'failure.png')});}catch{}}finally{fs.writeFileSync(path.join(out,'checks.json'),JSON.stringify({...meta,passed,checks,errors,requests,shots},null,2));await browser.close();await new Promise(r=>server.close(r));}if(!passed)process.exitCode=1;
+diff --git a/voxel/tools/qa-service-menus-release.mjs b/voxel/tools/qa-service-menus-release.mjs
+new file mode 100644
+index 0000000..a3943d1
+--- /dev/null
++++ b/voxel/tools/qa-service-menus-release.mjs
+@@ -0,0 +1,27 @@
++// Exercise the real standalone HTML; funds and unlocks exist only in this QA browser.
++import fs from 'node:fs';import path from 'node:path';import http from 'node:http';import {createHash} from 'node:crypto';import {chromium} from 'playwright';import * as M from '../src/model.js';
++const file=path.resolve(process.argv[2]||'dist/pumpkin-patch-voxel.html'),out=path.resolve(process.argv[3]||'/tmp/service-menus-qa');fs.mkdirSync(out,{recursive:true});
++const html=fs.readFileSync(file),checks=[],errors=[],requests=[],shots=[];const meta={file,sha256:createHash('sha256').update(html).digest('hex'),started:new Date().toISOString(),fixture:'Only browser localStorage receives QA funds/unlocks. The downloadable HTML is unmodified.'};
++const report=()=>fs.writeFileSync(path.join(out,'progress.json'),JSON.stringify({...meta,checks,errors,requests,shots},null,2));
++const check=(ok,label,data)=>{checks.push({ok:!!ok,label,...data===undefined?{}:{data}});report();console.log(ok?'ok  ':'FAIL',label);if(!ok)throw Error(label+': '+JSON.stringify(data));};
++const quiet=s=>{s.introSeen=true;s.visitorTimer=s.bigSpender.timer=s.shop.arrivalTimer=1e6;s.orders.next=1e6;s.progression.claimed=M.LEVELS.filter(l=>l.at<=s.earned).map(l=>l.level);s.progression.pending=[];return s;};
++const seed=quiet(M.freshState());seed.coins=5000;seed.earned=M.LEVELS[4].at;seed.progression.claimed=M.LEVELS.slice(0,5).map(l=>l.level);M.buyFoodTruck(seed);seed.stock[0]=1;seed.paused=true;
++const late=quiet(M.freshState());late.coins=100000;late.earned=M.LEVELS.at(-1).at;late.progression.claimed=M.LEVELS.map(l=>l.level);M.buyFoodTruck(late);M.upgradeHouse(late);M.upgradeHouse(late);for(const id of ['kitchen-hob','kitchen-oven','kitchen-pot-rail','kitchen-pan-rail','kitchen-baking-rack','kitchen-spice-shelf'])M.buyCookingEquipment(late,id);
++late.kitchen.recipes=M.RECIPES.map(r=>r.id);for(const i of M.INGREDIENTS)late.kitchen.pantry[i.id]=2;late.kitchen.food.wedges=6;late.kitchen.food.soup=2;late.stock=[30,10,0,0,0];late.shop.unlocked=true;late.festival.meadow=true;late.festival.cocoa.level=4;late.festival.cocoa.stock=20;late.festival.cocoa.courier=true;for(const p of M.COCOA_SPECIALS)if(p.tier<=4)late.festival.cocoa.extras[p.id].stock=5;
++late.hollowHouse.purchased=true;late.hollowHouse.status='ready';M.buyHayride(late);late.hayride.tier=2;late.paused=false;
++const server=http.createServer((req,res)=>{if(req.url==='/favicon.ico'){res.writeHead(204);res.end();return;}res.setHeader('Content-Type','text/html');res.end(html);});await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
++const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});let page,passed=false;
++try{
++page=await browser.newPage({viewport:{width:1280,height:800},hasTouch:true,reducedMotion:'reduce'});page.setDefaultTimeout(120000);page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(!r.url().startsWith(base)&&!r.url().startsWith('blob:')&&!r.url().startsWith('data:'))requests.push(r.url());});
++await page.addInitScript(seed=>{const key='pumpkin-patch-voxel-reference-v1';if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(seed));localStorage.setItem(key+'-prefs',JSON.stringify({renderQuality:'performance',shadows:false,glow:false,mist:false,lakeLights:false,music:false,sound:false,mazeSound:false,hayrideSound:false}));},M.saveData(seed));
++await page.goto(base);await page.waitForSelector('body[data-ready]');await page.evaluate(()=>{PumpkinVoxel.intro?.skip();const s=PumpkinVoxel.state();s.visitorTimer=s.shop.arrivalTimer=s.bigSpender.timer=1e6;s.paused=false;});
++const frame=async()=>{const t=await page.evaluate(()=>{const n=(window.menuQAFrame??0)+1;window.menuQAFrame=n;requestAnimationFrame(()=>window.menuQAFrameDone=n);return n;});await page.waitForFunction(n=>window.menuQAFrameDone>=n,t);};
++const click=async locator=>{await locator.click({force:true});};
++const shot=async name=>{await frame();await page.screenshot({path:path.join(out,name+'.png')});shots.push(name);report();};
++const open=async tab=>{await page.evaluate(t=>PumpkinVoxel.openCookingSheet(t),tab);await frame();};
++const layout=async label=>{const data=await page.locator('#sheet').evaluate(host=>{const controls=[...host.querySelectorAll('button,select,input,summary')].filter(n=>n.getClientRects().length).map(n=>{const r=n.getBoundingClientRect();return {label:n.getAttribute('aria-label')||n.textContent.trim().slice(0,45),x:r.x,right:r.right,w:r.width,h:r.height};});return {overflow:document.documentElement.scrollWidth>innerWidth+1,clipped:controls.filter(c=>c.x<-.5||c.right>innerWidth+.5),small:controls.filter(c=>c.w<43.5||c.h<43.5)};});check(!data.overflow&&!data.clipped.length&&!data.small.length,label+': no horizontal clipping, all controls at least 44px',data);};
++const manage=async id=>{await click(page.locator('.tab[data-tab="shop"]'));await click(page.locator('[data-upgrade-section="'+id+'"]'));await frame();};
++check(html.includes(Buffer.from('Choose Manage, then Farm upgrades, to clear more plots.')),'shipping copy points plot expansion to Manage');
++await page.setViewportSize({width:874,height:787});await click(page.locator('.tab[data-tab="shop"]'));check((await page.locator('#upgrade-menu').innerText()).includes('Maisie’s kitchen')&&(await page.locator('#upgrade-menu').innerText()).includes('Sandy’s cocoa'),'business directory names each shopkeeper');await shot('release-fold-directory');await click(page.locator('[data-upgrade-section="cooking"]'));await frame();check(await page.locator('[data-cooking-section]').count()===4,'exact release exposes the four kitchen destinations');await layout('exact release unfolded Fold');await shot('release-fold-cooking');
++const before=await page.evaluate(()=>PumpkinVoxel.state().coins);await click(page.locator('[data-recipe-order="wedges"]').first());check(await page.evaluate(n=>PumpkinVoxel.state().coins===n,before),'exact release shopping shortcut spends nothing');check(await page.locator('[data-cooking-order-quantity="butter"]').inputValue()==='1','exact release quote contains the missing ingredient');check(!errors.length,'exact release has no browser errors',errors);check(!requests.length,'exact release requests no external assets',requests);passed=true;
++}catch(e){meta.failure=String(e);console.error(e.stack||e);}finally{fs.writeFileSync(path.join(out,'checks.json'),JSON.stringify({...meta,passed,checks,errors,requests,shots},null,2));await browser.close();await new Promise(r=>server.close(r));}if(!passed)process.exitCode=1;
+diff --git a/voxel/tools/qa-service-menus.mjs b/voxel/tools/qa-service-menus.mjs
+new file mode 100644
+index 0000000..c5bf437
+--- /dev/null
++++ b/voxel/tools/qa-service-menus.mjs
+@@ -0,0 +1,47 @@
++// Exercise the real standalone HTML; funds and unlocks exist only in this QA browser.
++import fs from 'node:fs';import path from 'node:path';import http from 'node:http';import {createHash} from 'node:crypto';import {chromium} from 'playwright';import * as M from '../src/model.js';
++const file=path.resolve(process.argv[2]||'dist/pumpkin-patch-voxel.html'),out=path.resolve(process.argv[3]||'/tmp/service-menus-qa');fs.mkdirSync(out,{recursive:true});
++const html=fs.readFileSync(file),checks=[],errors=[],requests=[],shots=[];const meta={file,sha256:createHash('sha256').update(html).digest('hex'),started:new Date().toISOString(),fixture:'Only browser localStorage receives QA funds/unlocks. The downloadable HTML is unmodified.'};
++const report=()=>fs.writeFileSync(path.join(out,'progress.json'),JSON.stringify({...meta,checks,errors,requests,shots},null,2));
++const check=(ok,label,data)=>{checks.push({ok:!!ok,label,...data===undefined?{}:{data}});report();console.log(ok?'ok  ':'FAIL',label);if(!ok)throw Error(label+': '+JSON.stringify(data));};
++const quiet=s=>{s.introSeen=true;s.visitorTimer=s.bigSpender.timer=s.shop.arrivalTimer=1e6;s.orders.next=1e6;s.progression.claimed=M.LEVELS.filter(l=>l.at<=s.earned).map(l=>l.level);s.progression.pending=[];return s;};
++const seed=quiet(M.freshState());seed.coins=5000;seed.earned=M.LEVELS[4].at;seed.progression.claimed=M.LEVELS.slice(0,5).map(l=>l.level);M.buyFoodTruck(seed);seed.stock[0]=1;seed.paused=true;
++const late=quiet(M.freshState());late.coins=100000;late.earned=M.LEVELS.at(-1).at;late.progression.claimed=M.LEVELS.map(l=>l.level);M.buyFoodTruck(late);M.upgradeHouse(late);M.upgradeHouse(late);for(const id of ['kitchen-hob','kitchen-oven','kitchen-pot-rail','kitchen-pan-rail','kitchen-baking-rack','kitchen-spice-shelf'])M.buyCookingEquipment(late,id);
++late.kitchen.recipes=M.RECIPES.map(r=>r.id);for(const i of M.INGREDIENTS)late.kitchen.pantry[i.id]=2;late.kitchen.food.wedges=6;late.kitchen.food.soup=2;late.stock=[30,10,0,0,0];late.shop.unlocked=true;late.festival.meadow=true;late.festival.cocoa.level=4;late.festival.cocoa.stock=20;late.festival.cocoa.courier=true;for(const p of M.COCOA_SPECIALS)if(p.tier<=4)late.festival.cocoa.extras[p.id].stock=5;
++late.hollowHouse.purchased=true;late.hollowHouse.status='ready';M.buyHayride(late);late.hayride.tier=2;late.paused=false;
++const server=http.createServer((req,res)=>{if(req.url==='/favicon.ico'){res.writeHead(204);res.end();return;}res.setHeader('Content-Type','text/html');res.end(html);});await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port;
++const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});let page,passed=false;
++try{
++page=await browser.newPage({viewport:{width:1280,height:800},hasTouch:true,reducedMotion:'reduce'});page.setDefaultTimeout(120000);page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(!r.url().startsWith(base)&&!r.url().startsWith('blob:')&&!r.url().startsWith('data:'))requests.push(r.url());});
++await page.addInitScript(seed=>{const key='pumpkin-patch-voxel-reference-v1';if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify(seed));localStorage.setItem(key+'-prefs',JSON.stringify({renderQuality:'performance',shadows:false,glow:false,mist:false,lakeLights:false,music:false,sound:false,mazeSound:false,hayrideSound:false}));},M.saveData(seed));
++await page.goto(base);await page.waitForSelector('body[data-ready]');await page.evaluate(()=>{PumpkinVoxel.intro?.skip();const s=PumpkinVoxel.state();s.visitorTimer=s.shop.arrivalTimer=s.bigSpender.timer=1e6;s.paused=false;});
++const frame=async()=>{const t=await page.evaluate(()=>{const n=(window.menuQAFrame??0)+1;window.menuQAFrame=n;requestAnimationFrame(()=>window.menuQAFrameDone=n);return n;});await page.waitForFunction(n=>window.menuQAFrameDone>=n,t);};
++const click=async locator=>{await locator.click({force:true});};
++const shot=async name=>{await frame();await page.screenshot({path:path.join(out,name+'.png')});shots.push(name);report();};
++const open=async tab=>{await page.evaluate(t=>PumpkinVoxel.openCookingSheet(t),tab);await frame();};
++const layout=async label=>{const data=await page.locator('#sheet').evaluate(host=>{const controls=[...host.querySelectorAll('button,select,input,summary')].filter(n=>n.getClientRects().length).map(n=>{const r=n.getBoundingClientRect();return {label:n.getAttribute('aria-label')||n.textContent.trim().slice(0,45),x:r.x,right:r.right,w:r.width,h:r.height};});return {overflow:document.documentElement.scrollWidth>innerWidth+1,clipped:controls.filter(c=>c.x<-.5||c.right>innerWidth+.5),small:controls.filter(c=>c.w<43.5||c.h<43.5)};});check(!data.overflow&&!data.clipped.length&&!data.small.length,label+': no horizontal clipping, all controls at least 44px',data);};
++const manage=async id=>{await click(page.locator('.tab[data-tab="shop"]'));await click(page.locator('[data-upgrade-section="'+id+'"]'));await frame();};
++await manage('cooking');check(await page.locator('[data-cooking-section]').count()===4,'four kitchen destinations replace the scrolling six-tab strip');check(await page.locator('.cooking-station').count()===0,'idle cooker cards do not push recipes down the page');check(await page.locator('.recipe-detail').count()===1,'only one recipe is expanded');
++await layout('desktop kitchen');await shot('desktop-first-dish');
++await click(page.locator('details').filter({hasText:'Coming next'}).locator('summary'));await page.locator('[data-cooking-batches]').selectOption('5');check(await page.locator('details').filter({hasText:'Coming next'}).getAttribute('open')!==null,'recipe disclosure survives a control redraw');await page.locator('[data-cooking-batches]').selectOption('1');
++
++const cash=await page.evaluate(()=>PumpkinVoxel.state().coins);await click(page.locator('[data-recipe-order="wedges"]').first());check(await page.locator('[data-cooking-order-quantity="butter"]').inputValue()==='1','guided action builds a one-butter shopping list');check(await page.evaluate(n=>PumpkinVoxel.state().coins===n,cash),'opening the shopping list spends nothing');
++const orderPrice=await page.evaluate(()=>PumpkinVoxel.rules.quoteIngredientOrder(PumpkinVoxel.state(),{butter:1}).total);await click(page.locator('[data-cooking-action="order"]'));check(await page.evaluate(([n,p])=>PumpkinVoxel.state().coins===n-p&&PumpkinVoxel.state().kitchen.orders.length===1,[cash,orderPrice]),'reviewed delivery charges its exact quote once');
++await page.evaluate(()=>{PumpkinVoxel.advance(61)});await open('recipes');await click(page.locator('[data-cooking-start="wedges"]'));check(await page.evaluate(()=>PumpkinVoxel.state().kitchen.jobs.truck?.recipe==='wedges'&&PumpkinVoxel.state().stock[0]===0),'expanded recipe starts the real paid-input cooking job');await page.locator('#cooking-reveal button').evaluateAll(bs=>bs[0]?.click());
++const stable=await page.evaluate(()=>{const el=document.querySelector('[data-cooking-batches]');window.menuQASelect=el;el.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}));PumpkinVoxel.advance(1);return document.querySelector('[data-cooking-batches]')===window.menuQASelect;});check(stable,'live progress keeps an opened native selector attached');await page.evaluate(()=>window.menuQASelect.dispatchEvent(new Event('change',{bubbles:true})));
++await page.evaluate(()=>PumpkinVoxel.advance(31));await open('recipes');await click(page.locator('[data-cooking-action="shop"]'));check(await page.locator('#sheet').getAttribute('data-section')==='shop'&&await page.locator('[data-shopup="open"]').count()===1,'ready food points directly to opening Skyla’s shop');
++await page.evaluate(raw=>{const p=PumpkinVoxel,s=p.state();Object.assign(s,p.rules.restoreState(raw));s.paused=false;s.visitorTimer=s.shop.arrivalTimer=s.bigSpender.timer=1e6;p.closeSheet();p.scene.refreshCooking();p.scene.refreshHayride();p.scene.refreshEstate();},M.saveData(late));
++await manage('cooking');await click(page.locator('[data-recipe-select="garden-skillet"]'));check(await page.locator('.recipe-detail').count()===1&&await page.locator('#recipe-garden-skillet').isVisible(),'choosing a recipe replaces the previous detail');await shot('desktop-recipe-book');
++await open('food');await page.locator('[data-cooking-display="0"]').selectOption('wedges');await page.locator('[data-cooking-price="wedges"]').selectOption('12');check(await page.evaluate(()=>PumpkinVoxel.state().kitchen.displays[0]==='wedges'&&PumpkinVoxel.state().kitchen.prices.wedges===12),'Sell keeps shelf selection and real food prices connected');await layout('desktop food shelves');await shot('desktop-sell');
++await open('upgrades');check(await page.locator('[data-cooking-upgrade="chef"]').isVisible(),'truck and chef upgrades have a direct visible section');await layout('desktop truck upgrades');
++await manage('cocoa');check(await page.locator('#sheet').getAttribute('data-section')==='festival','Sandy opens her dedicated business menu');check(await page.locator('[data-sandy-section]').count()===3,'Sandy has three clear destinations');await page.locator('[data-plain-cocoa-price]').selectOption('5');check(await page.evaluate(()=>PumpkinVoxel.state().festival.cocoa.price===5),'plain cocoa uses a labelled real price selector');
++const supply=await page.evaluate(()=>({cash:PumpkinVoxel.state().coins,stock:PumpkinVoxel.state().festival.cocoa.extras['ghost-wafer'].stock}));await click(page.locator('[data-special-stock="ghost-wafer"]'));check(await page.evaluate(v=>PumpkinVoxel.state().festival.cocoa.extras['ghost-wafer'].stock===v.stock+10&&PumpkinVoxel.state().coins===v.cash-50,supply),'deluxe cocoa card restocks ten portions at the real supply cost');await layout('desktop cocoa');await shot('desktop-sandy-menu');await click(page.locator('[data-sandy-section="helpers"]'));check(await page.locator('[data-festival-action="barista"]').isVisible(),'Sandy’s helpers have one obvious home');
++await manage('visitors');await click(page.locator('[data-visitor-section="events"]'));check(await page.locator('[data-occasion]').count()===2,'rush and VIP upgrades are together');const vipCash=await page.evaluate(()=>PumpkinVoxel.state().coins);await click(page.locator('[data-occasion="vip"]'));check(await page.evaluate(n=>PumpkinVoxel.state().coins===n-6000&&PumpkinVoxel.state().visitorEvents.vip.level===1,vipCash),'VIP entry still costs 6000 and is purchased once');await click(page.locator('[data-occasion-toggle="vip"]'));check(await page.evaluate(()=>!PumpkinVoxel.state().visitorEvents.vip.enabled),'VIP event pause is reachable beside its countdown');await layout('desktop special events');await shot('desktop-visitors-events');
++await page.evaluate(()=>PumpkinVoxel.openHayrideSheet());await frame();check(await page.locator('[data-hayride-section]').count()===3,'hayride has overview, scares and upgrades');await click(page.locator('[data-hayride-price-step="1"]'));check(await page.evaluate(()=>PumpkinVoxel.state().hayride.ticketPrice===9),'overview ticket control still uses the real price rule');await click(page.locator('[data-hayride-section="upgrade"]'));const fleetCash=await page.evaluate(()=>PumpkinVoxel.state().coins);await click(page.locator('[data-hayride-operation="fleet"]'));check(await page.evaluate(n=>PumpkinVoxel.state().coins===n-12000&&PumpkinVoxel.state().hayride.fleet===1,fleetCash),'second tractor is discoverable and charges once');await layout('desktop hayride upgrades');await shot('desktop-tractor-upgrades');await click(page.locator('[data-hayride-section="scares"]'));check(await page.locator('[data-hayride-disclosure="scares"]').getAttribute('open')!==null,'Scares opens the installations rather than hiding the catalogue');
++for(const [name,w,h] of [['phone',390,844],['landscape',844,390],['fold',874,787]]){
++ await page.setViewportSize({width:w,height:h});await open('recipes');await layout(name+' recipes');await shot(name+'-recipes');await open('mix');await layout(name+' mixing');await open('deliveries');await layout(name+' supplies');
++ await manage('cocoa');await layout(name+' Sandy');if(name!=='landscape')await shot(name+'-sandy');await manage('visitors');await layout(name+' visitor events');await page.evaluate(()=>PumpkinVoxel.openHayrideSheet('upgrade'));await frame();await layout(name+' tractors');if(name==='fold')await shot('fold-tractor-upgrades');
++}
++await page.setViewportSize({width:1280,height:800});await page.evaluate(()=>PumpkinVoxel.closeSheet());await click(page.locator('.tab[data-tab="shop"]'));await page.keyboard.press('ArrowDown');check(await page.locator('#upgrade-menu [role=menuitem]:focus').count()===1,'management directory supports keyboard navigation');await page.keyboard.press('Escape');check(await page.locator('#upgrade-menu').isHidden(),'Escape closes the directory');
++const saved=await page.evaluate(()=>{const p=PumpkinVoxel;p.state().paused=true;p.save();return {coins:p.state().coins,kitchen:p.state().kitchen.prices,displays:p.state().kitchen.displays,vip:p.state().visitorEvents.vip.level,fleet:p.state().hayride.fleet}});await page.reload();await page.waitForSelector('body[data-ready]');check(await page.evaluate(x=>{const s=PumpkinVoxel.state();return s.coins===x.coins&&JSON.stringify(s.kitchen.prices)===JSON.stringify(x.kitchen)&&JSON.stringify(s.kitchen.displays)===JSON.stringify(x.displays)&&s.visitorEvents.vip.level===x.vip&&s.hayride.fleet===x.fleet},saved),'menu changes preserve stock choices, prices and purchases across reload');check(errors.length===0,'no browser runtime errors',errors);check(requests.length===0,'all runtime art and fonts remain embedded',requests);passed=true;
++}catch(e){meta.failure=String(e);console.error(e.stack||e);if(page)try{await page.screenshot({path:path.join(out,'failure.png')});}catch{}}finally{fs.writeFileSync(path.join(out,'checks.json'),JSON.stringify({...meta,passed,checks,errors,requests,shots},null,2));await browser.close();await new Promise(r=>server.close(r));}if(!passed)process.exitCode=1;

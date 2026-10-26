@@ -1,0 +1,47 @@
+{
+  "sourceCommit": "e2cba9965ff852a5d844fe7ccb9912ae6fc303eb",
+  "runtimeCommit": "002df4b31bdd06588e621391355690f74525df2a",
+  "patchBase": "2da0f293cc6c4b4b2506a4a27c717099d1226695",
+  "htmlSha256": "2e75700848ce22833468521af835fb786583337add68745a8177b29bafabc747",
+  "nodeTestFiles": 77,
+  "browserReports": {
+    "fullFlow": {
+      "checks": 54,
+      "sha256": "f1cd2c276177f31652daa376a4cb9fab71fec5f07fd603e614479c8524e39ce1"
+    },
+    "layoutReview": {
+      "checks": 32,
+      "sha256": "373a99d814ca5dcf90393d852fd5600806f6a2d1160cadeb768a6eaa1185f235"
+    },
+    "release": {
+      "checks": 8,
+      "sha256": "2e75700848ce22833468521af835fb786583337add68745a8177b29bafabc747"
+    }
+  },
+  "ci": {
+    "url": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/40406614499",
+    "conclusion": "success",
+    "headSha": "002df4b31bdd06588e621391355690f74525df2a"
+  },
+  "cleanRebuildIdentical": true,
+  "patchApplyChecked": true,
+  "appliedPatchRebuildIdentical": true,
+  "artifacts": {
+    "Pumpkin-Patch-Refined-Menus.html": {
+      "bytes": 32106676,
+      "sha256": "2e75700848ce22833468521af835fb786583337add68745a8177b29bafabc747"
+    },
+    "Pumpkin-Patch-HTML.zip": {
+      "bytes": 23192561,
+      "sha256": "02a0aa7be6b56e2cd58b2d5a5dd4f75b4f5fef9b8d30e2eaa647dc145be7560c"
+    },
+    "Menu-Refinement-Claude-Patch.zip": {
+      "bytes": 44594,
+      "sha256": "277656b81d6be7dc998e84d2a2178050142444429569f31cd9a0116d47b8b7d4"
+    },
+    "menus-from-2da0f29.patch": {
+      "bytes": 147939,
+      "sha256": "73dd0a5f863399110c28cb73f1bf610b471d700a79cd4f9a45ea520d7c415c10"
+    }
+  }
+}
