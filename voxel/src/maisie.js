@@ -16,7 +16,7 @@ const geometry = META.frames.map(f => {
 });
 export function createMaisie() {
   const group = new THREE.Group(), lean = new THREE.Group();
-  lean.rotation.x = -LEAN; lean.scale.y = STRETCH; group.add(lean);
+  lean.rotation.x = -LEAN + .35; lean.scale.y = STRETCH; group.add(lean);
   const mat = new THREE.MeshStandardMaterial({ map: texture, alphaTest: .35, roughness: 1, color: 0xe1d6c7, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: .07, side: THREE.DoubleSide });
   const dog = new THREE.Mesh(geometry[0], mat); dog.castShadow = true;
   dog.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: texture, alphaTest: .35 });
