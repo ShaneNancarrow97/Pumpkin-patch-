@@ -10,7 +10,7 @@ const seed=M.freshState();Object.assign(seed,{coins:50000,earned:110000,introSee
 const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
 const check=(ok,label)=>{checks.push({ok:!!ok,label});console.log(ok?'ok':'FAIL',label);if(!ok)throw Error(label)};
 try{const page=await browser.newPage({viewport:{width:1280,height:800},hasTouch:true});page.setDefaultTimeout(120000);page.on('pageerror',e=>errors.push(e.message));
- await page.addInitScript(seed=>{localStorage.setItem('pumpkin-patch-voxel-reference-v1',JSON.stringify(seed));localStorage.setItem('pumpkin-patch-voxel-reference-v1-prefs',JSON.stringify({renderQuality:'performance',glow:false,shadows:false,mist:false,music:false,sound:false}));},M.saveData(seed));
+ await page.addInitScript(seed=>{if(!localStorage.getItem('pumpkin-patch-voxel-reference-v1'))localStorage.setItem('pumpkin-patch-voxel-reference-v1',JSON.stringify(seed));localStorage.setItem('pumpkin-patch-voxel-reference-v1-prefs',JSON.stringify({renderQuality:'performance',glow:false,shadows:false,mist:false,music:false,sound:false}));},M.saveData(seed));
  await page.goto('http://127.0.0.1:'+server.address().port);await page.waitForSelector('body[data-ready]');await page.evaluate(()=>{PumpkinVoxel.intro?.skip();PumpkinVoxel.openSheet('shop')});
  await page.locator('[data-shoptab="seeds"]').click({force:true});
  check((await page.locator('[data-plot="0"]').textContent()).includes('Midnight Moon'),'seed menu exposes fifth tier');

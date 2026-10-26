@@ -6,6 +6,8 @@
 
 **New contractor cooking:** [`docs/handovers/44-cooking-and-deliveries.md`](docs/handovers/44-cooking-and-deliveries.md) adds a level-5 paid food truck, timed ingredient deliveries, shared pantry, eight recipes, home cooking, finite-wallet indoor food sales and a later supplied chef. It is stacked on handover 43; use its incremental/combined patch instructions and preserve Claude's unpublished progression work.
 
+**New contractor crop:** [`docs/handovers/45-midnight-moon-pumpkin.md`](docs/handovers/45-midnight-moon-pumpkin.md) adds the fifth navy-and-gold variety and legacy four-bin save migration. Larger kitchen/VIP integration is explicitly unfinished and separate.
+
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
 **Codex's hayride (merged in 39):** [`docs/handovers/38-hayride-lead-integration.md`](docs/handovers/38-hayride-lead-integration.md) preserves Claude’s `1abaff5` maze update and isolates hayride audio from lead-owned runtime files.
