@@ -24,8 +24,10 @@ test('purchased world is native, read-only, bounded, and leaves pedestrian exit 
   const scene=new THREE.Scene(),s=state(),lamps=[];
   const c=createCookingWorld({scene,state:s,signBoard,lamps});assert.equal(c.status.built,false);assert.equal(c.pickables.length,1);assert.equal(lamps[0].active,false);
   s.kitchen.purchased=true;s.kitchen.orders=[{id:3,phase:'unloading',remaining:0}];const before=JSON.stringify(s);c.sync();c.tick(60);assert.equal(JSON.stringify(s),before);assert.equal(c.status.built,true);assert.equal(c.status.cart.visible,true);assert.equal(c.status.lights,0);assert.equal(lamps.length,1);assert.equal(lamps[0].active,true);
-  const all=boxes(c.root);assert.ok(all.length>500&&all.length<8000,`bounded native budget ${all.length}`);
-  assert.ok(all.every(b=>b.max.z<5.5),'all construction stays north of public visitor exit z6.6');
+  const all=boxes(c.root);assert.ok(all.length>150&&all.length<8000,`bounded native budget ${all.length}`);
+  assert.ok(all.every(b=>b.max.z<5.5),'all raised construction stays north of public visitor exit z6.6');
+  let terrainTriangles=0;c.root.traverse(m=>{if(m.isMesh&&!m.isInstancedMesh&&m.name.includes('Kitchen ')){terrainTriangles+=m.geometry.index.count/3;assert.ok([...m.geometry.attributes.position.array].every(Number.isFinite));}});assert.ok(terrainTriangles>5000&&terrainTriangles<15000,`farm-matching ground remains light: ${terrainTriangles} triangles`);
+  assert.deepEqual(SITE.pavingBounds,{x0:40,x1:46.7,z0:.8,z1:7.5});
   // Every protrusion of the visible cart, including tiller and wheel hubs,
   // stays within the declared swept route. Static truck never intersects it.
   const cart=c.root.getObjectByName('Timed ingredient delivery cart');assert.ok(cart);

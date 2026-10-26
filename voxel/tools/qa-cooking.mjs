@@ -14,7 +14,8 @@ const out = path.resolve(process.argv[3] || "/tmp/cooking-qa");
 fs.mkdirSync(out, { recursive: true });
 const html = fs.readFileSync(file), sha256 = createHash("sha256").update(html).digest("hex");
 const checks = [], errors = [], externalRequests = [], samples = [];
-const meta = { file, sha256, started: new Date().toISOString(),
+const visualOnly = process.env.COOKING_QA_FOCUS === "visual";
+const meta = { file, sha256, focus: visualOnly ? "visual-regression" : "complete-flow", started: new Date().toISOString(),
   fixture: "QA-only funds and level gates; game rules, UI handlers and HTML are unmodified" };
 const write = name => fs.writeFileSync(path.join(out, name), JSON.stringify({ ...meta, checks, errors, externalRequests, samples }, null, 2));
 write("run.json");
@@ -28,6 +29,12 @@ Object.assign(fixture, { coins: 50000, earned: M.LEVELS[3].at, introSeen: true, 
 fixture.progression.claimed = M.LEVELS.slice(0, 4).map(l => l.level);
 fixture.progression.pending = [];
 fixture.visitorTimer = fixture.shop.arrivalTimer = fixture.bigSpender.timer = 1e6;
+if (visualOnly) {
+  fixture.earned = M.LEVELS.at(-1).at; fixture.progression.claimed = M.LEVELS.map(l => l.level);
+  fixture.paused = false; M.buyFoodTruck(fixture); M.placeIngredientOrder(fixture, {butter:4});
+  M.updateKitchen(fixture,56,[]); fixture.kitchen.food.wedges=3; fixture.kitchen.displays=["wedges",null];
+  fixture.shop.unlocked=true; fixture.paused=true;
+}
 const server = http.createServer((req, res) => {
   if (req.url === "/favicon.ico") { res.writeHead(204); res.end(); return; }
   res.setHeader("Content-Type", "text/html; charset=utf-8"); res.end(html);
@@ -73,6 +80,7 @@ try {
     check(!result.overflow && !result.clipped.length && !result.small.length, `${label}: menu fits with 44px touch targets`, result);
   };
 
+  if (!visualOnly) {
   check(await page.evaluate(() => PumpkinVoxel.state().version === PumpkinVoxel.rules.STATE_VERSION && PumpkinVoxel.rules.STATE_VERSION === 12), "legacy-compatible state exposes additive cooking schema 12");
   await page.evaluate(() => { PumpkinVoxel.state().paused = false; });
   await open("recipes");
@@ -193,6 +201,24 @@ try {
   const beforeReload=await page.evaluate(()=>{const p=PumpkinVoxel;p.state().paused=true;p.save();return JSON.stringify(p.rules.saveData(p.rules.restoreState(JSON.parse(JSON.stringify(p.rules.saveData(p.state()))))));});
   await page.reload();await page.waitForSelector("body[data-ready]");await page.evaluate(()=>PumpkinVoxel.intro?.skip());await frame();
   check(await page.evaluate(()=>JSON.stringify(PumpkinVoxel.rules.saveData(PumpkinVoxel.state())))===beforeReload,"save/reload preserves cooking inventories, recipe prices, chef and separate accounts without ghost holds");
+
+  } else {
+    const stateBefore=await page.evaluate(()=>JSON.stringify(PumpkinVoxel.rules.saveData(PumpkinVoxel.state())));
+    await page.evaluate(()=>{PumpkinVoxel.closeSheet();PumpkinVoxel.scene.focusCooking();PumpkinVoxel.scene.refreshCooking();});await frame();
+    const world=await page.evaluate(()=>PumpkinVoxel.scene.cookingStatus);
+    check(world.purchased&&world.cart?.visible&&world.cart?.unloading,"final service area shows the purchased truck and unloading cart",world);
+    await snapshot("desktop-truck-service-pad");
+    const target=await page.evaluate(()=>PumpkinVoxel.scene.project(42.75,1.9,4.1));await page.mouse.click(target.x,target.y);await frame();
+    check(await page.locator('[data-cooking-state="owned"]').isVisible(),"final terrain refinement retains the physical truck interaction");
+    for(const[label,width,height]of[["phone",390,844],["fold",874,787]]){
+      await page.setViewportSize({width,height});await open("deliveries");await layout(label);await snapshot(label+"-delivery-menu");
+      await page.evaluate(()=>{PumpkinVoxel.closeSheet();PumpkinVoxel.scene.focusCooking();});await snapshot(label+"-truck-service-pad");
+    }
+    await page.setViewportSize({width:1280,height:800});await page.evaluate(()=>{PumpkinVoxel.enterShop();PumpkinVoxel.closeSheet();});await frame();
+    check(await page.evaluate(()=>PumpkinVoxel.scene.cookingStatus.displays.length===2),"both native food wall displays remain installed");
+    await snapshot("desktop-food-wall-displays");await page.evaluate(()=>PumpkinVoxel.leavePlace());
+    check(await page.evaluate(()=>JSON.stringify(PumpkinVoxel.rules.saveData(PumpkinVoxel.state())))===stateBefore,"visual scene changes and terrain focus cannot alter saved stock, cash or delivery progress");
+  }
 
   check(await page.locator("canvas").count() === 1, "one main WebGL canvas remains");
   check(externalRequests.length === 0, "standalone HTML fetches no external runtime assets", externalRequests);

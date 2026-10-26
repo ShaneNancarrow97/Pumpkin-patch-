@@ -28,7 +28,7 @@ const smooth = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a
 export function wildsFootprint(state) {
   const rects = [{ x0: -16, x1: MAP.w + 16, z0: -1, z1: MAP.d + 12 }, { x0: -8, x1: fieldWidth(state), z0: -1, z1: fieldDepth(state) + 5 }];
   if (state.hayride?.purchased) { const b = HAYRIDE_SITE.bounds; rects.push({ x0: b.x0, x1: b.x1, z0: b.z0, z1: b.z1 }); }
-  if (state.kitchen?.purchased) { rects.push({ ...COOKING_SITE.bounds }, { x0: 37.8, x1: 39.8, z0: -6.8, z1: 5.4 }); }
+  if (state.kitchen?.purchased) { rects.push({ ...COOKING_SITE.bounds }, { ...COOKING_SITE.pavingBounds }, { x0: 37.8, x1: 39.8, z0: -6.8, z1: 5.4 }); }
   return rects;
 }
 // The roads that carry on into the wilds: the visitors' lane and the west lane

@@ -2,6 +2,7 @@
 // include wheels, crates and the whole swept cart, rather than just its centre.
 export const COOKING_SITE = Object.freeze({
   bounds: Object.freeze({ x0: 37.8, x1: 46.1, z0: .8, z1: 5.4 }),
+  pavingBounds: Object.freeze({ x0: 40, x1: 46.7, z0: .8, z1: 7.5 }),
   truck: Object.freeze({ x: 42.75, z: 2.8, w: 4.5, d: 2.6 }),
   marker: Object.freeze({ x: 42.3, z: 4.7 }),
   focus: Object.freeze({ x: 41.8, z: 3.2, zoom: 3.2 }),

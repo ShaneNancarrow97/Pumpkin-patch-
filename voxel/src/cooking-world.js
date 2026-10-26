@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { Voxels,seeded,vary } from './voxels.js';
+import { Voxels,seeded } from './voxels.js';
+import { buildGround,grounds } from './ground.js';
+import { COL } from './world.js';
 import { buildFoodProp,disposeFoodProp } from './food-props.js';
 import { COOKING_SITE as SITE,COOKING_SERVICE_ROUTE as ROUTE,cookingDeliveryPose } from './content/cooking-layout.js';
 export { COOKING_SITE,COOKING_SERVICE_ROUTE,cookingDeliveryPose } from './content/cooking-layout.js';
@@ -7,17 +9,28 @@ const C={body:0x51334b,panel:0x684156,wood:0x6c4937,trim:0xc58e50,dark:0x241e29,
 const b=(v,x,y,z,w,h,d,c,glow=false)=>v.block(x,y,z,w,h,d,c,glow);
 function pumpkin(v,x,y,z,s=.2){for(const [dx,dz]of [[0,0],[-.06,0],[.06,0],[0,-.05],[0,.05]])b(v,x+dx,y,z+dz,s,.19,s,0xc97431);b(v,x,y+.19,z,.045,.08,.04,0x79694a);}
 function buildPad(){
-  const v=new Voxels(),r=seeded(447),land=SITE.bounds;
-  // Small supported paving matches the shop's cobbles. No flat raised field.
-  for(let x=land.x0;x<land.x1;x+=.3)for(let z=land.z0;z<land.z1;z+=.3){
-    const w=Math.min(.285,land.x1-x),d=Math.min(.285,land.z1-z);if(w<=0||d<=0)continue;
-    v.box(x,-.16,z,w,.18,d,vary([0x6b606b,0x766875,0x625966][Math.floor(r()*3)],.09,r));
-  }
-  for(let z=ROUTE.startZ-1.0;z<land.z0;z+=.3)for(let x=ROUTE.x-.67;x<ROUTE.x+.67;x+=.33)v.box(x,-.15,z,.315,.17,.285,vary(C.stone,.1,r));
-  // Low shoulders sit outside the full wheel envelope, not in the lane.
-  for(let z=-5.7;z<4.6;z+=.6)for(const x of [ROUTE.x-.88,ROUTE.x+.88])b(v,x,.015,z,.13,.065,.4,0x8f7e83);
+  const root=new THREE.Group(),v=new Voxels(),r=seeded(447),land=SITE.pavingBounds;
+  root.name='Midnight Kitchen continuous farm cobbles';
+  // The original height-field ends at x40. Continue its exact palette, stone
+  // scale and world-coordinate seed, without laying a second surface over it.
+  const apron=buildGround(land,(x,z)=>{
+    const right=land.x1-.48+Math.sin(z*3.7)*.13;
+    const front=land.z1-.36+Math.sin(x*4.1)*.14;
+    const back=land.z0+.23+Math.sin(x*3.3)*.12;
+    const feather=x>right||z>front||z<back&&x>41;
+    return feather?grounds.grass(x,z):grounds.cobble(x,z,COL.yard,.3,2,0x2a2430);
+  },{farmView:true});
+  apron.name='Kitchen apron · matching farm ground';root.add(apron);
+  // Only the part outside the old yard needs a new receiving road. Its cobbles
+  // use the same recipe as all public paths, with leaf-strewn soft shoulders.
+  const lane=buildGround({x0:38.1,x1:39.5,z0:-7,z1:-1},(x,z)=>{
+    const edge=Math.abs(x-ROUTE.x)>.59+Math.sin(z*3)*.04;
+    return edge?grounds.grass(x,z):grounds.cobble(x,z,COL.stone,.42,1,0x2a2430);
+  },{farmView:true});lane.name='Kitchen north receiving road';root.add(lane);
+  // The walking apron reaches z7.5 and the existing public route at z6.6.
+  // Keep all planting beside it; no kerbs or chunky platform edges.
   for(const x of [40.1,45.8]){b(v,x,.02,5.0,.5,.3,.55,0x453b35);b(v,x,.32,5.0,.58,.08,.6,C.trim);for(let j=0;j<4;j++)b(v,x+(r()-.5)*.4,.4+r()*.2,5+(r()-.5)*.3,.17,.14,.18,[0x85422d,0xb2702e,0x53445a][j%3]);}
-  return v.build();
+  root.add(v.build());return root;
 }
 function wheel(v,x,y,z){b(v,x,y,z,.25,.56,.56,C.dark);b(v,x,y+.07,z,.28,.4,.4,0x49424a);b(v,x,y+.17,z,.3,.2,.2,C.metal);}
 function buildTruck(signBoard){
