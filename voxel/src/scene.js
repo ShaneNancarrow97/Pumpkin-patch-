@@ -166,7 +166,7 @@ export function createScene(canvas, state, hooks) {
   const ready = () => (voxelCharacters ? pixels : sheets);
   // Shane and Natalie wear whatever is on in the wardrobe.
   const character = (who) => {
-    if (!ready()) return null;
+    if (!ready() || who === "natalie" && state.wardrobe.equipped.natalie === "natalie-wheelchair" && !sheets) return null;
     const look = who === "skyla" ? undefined : activeLook(state, who), outfit = who === "skyla" ? undefined : state.wardrobe.equipped[who];
     const m = voxelCharacters && outfit !== "natalie-wheelchair" ? spriteCharacter(pixels, who, look, outfit, sheets) : spriteActor(sheets, who, look, outfit);
     m.userData.kind = who === "skyla" ? "skyla" : "person";

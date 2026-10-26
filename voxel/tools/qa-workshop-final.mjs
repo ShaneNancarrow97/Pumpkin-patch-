@@ -23,6 +23,7 @@ const check = (ok, label, data) => {
 const seed = M.freshState();
 Object.assign(seed, { coins: 60000, earned: M.LEVELS.at(-1).at, paused: true, introSeen: true });
 seed.progression.claimed = M.LEVELS.map(l => l.level); seed.progression.pending = [];
+seed.wardrobe.equipped.natalie="natalie-wheelchair";
 seed.visitorTimer = seed.shop.arrivalTimer = seed.bigSpender.timer = 1e6;
 const server = http.createServer((req, res) => {
   if (req.url === "/favicon.ico") { res.writeHead(204); res.end(); return; }
@@ -42,7 +43,7 @@ try {
   await page.addInitScript(seed => {
     const key = "pumpkin-patch-voxel-reference-v1";
     if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify(seed));
-    localStorage.setItem(key + "-prefs", JSON.stringify({ renderQuality: "performance", glow: false, shadows: false, mist: false, lakeLights: false, music: false, sound: false, mazeSound: false, hayrideSound: false }));
+    localStorage.setItem(key + "-prefs", JSON.stringify({ renderQuality: "performance", voxelCharacters: true, glow: false, shadows: false, mist: false, lakeLights: false, music: false, sound: false, mazeSound: false, hayrideSound: false }));
   }, M.saveData(seed));
   const boot = async () => { await page.waitForSelector("body[data-ready]"); await page.evaluate(() => PumpkinVoxel.intro?.skip()); };
   await page.goto(base); await boot();
