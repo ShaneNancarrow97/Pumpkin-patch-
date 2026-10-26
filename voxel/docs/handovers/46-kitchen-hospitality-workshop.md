@@ -33,6 +33,8 @@ Choose ONE patch supplied in the package:
 - `workshop-from-6138eca.patch`: against completed Midnight Moon handover 45.
 - `workshop-and-midnight-from-121f4cd.patch`: against completed cooking handover 44, if Midnight Moon is not already integrated.
 
+The patches omit the large high-resolution art source folders and screenshot evidence; these remain on the source branch. Runtime art and game code are included. Fetch `docs/plans/kitchen-workshop/art/` and `seating-art/` from the branch before rerunning preparation tools.
+
 The source branch contains both increments in history. Do not apply both patches. Do not cherry-pick the initial combined runtime commit over Midnight Moon without reviewing duplicate changes; merge the branch or use the appropriate incremental patch instead.
 
 ```sh
