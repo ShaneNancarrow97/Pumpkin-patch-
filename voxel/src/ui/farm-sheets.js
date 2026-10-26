@@ -125,7 +125,7 @@ export function farmSheets(ui) {
       const now = u.id === "capacity" ? `${M.SHOP_CAPACITY[level]} browsing` : u.id === "displays" ? `${M.displayCount(sh)} tables` : `${M.CHECKOUT_SECONDS[level]}s at the till`;
       return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text} Now: ${now}.</p>${tiers(level, SHOP_MAX[u.id])}</div>${priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
     }).join("");
-    return tip + visit + stats + `<h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades + comforts;
+    return tip + visit + stats + `<button class="button wide" data-food-shelves>Food shelves · ${s.kitchen?.purchased ? money(s.kitchen.ledger.foodIncome) + " food takings" : "Start cooking from level 5"}</button><h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades + comforts;
   }
 
   // Who is on the path now, a party at a time.
@@ -178,6 +178,7 @@ export function farmSheets(ui) {
         const s = ui.state;
         if (tab === "cocoa") cocoaMenu.bind(body, { embedded: true });
         if (tab === "shop") bindCustomerCareUpgrades(body, ui);
+        body.querySelector("[data-food-shelves]")?.addEventListener("click", () => ui.openCookingSheet("food"));
         body.querySelector("[data-care]")?.addEventListener("click", () => ui.openSheet("care"));
         body.querySelector("[data-festival]")?.addEventListener("click", () => ui.openSheet("festival"));
         body.querySelectorAll("[data-shoptab]").forEach((b) => (b.onclick = () => { tab = b.dataset.shoptab; ui.draw(); }));

@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
+import { buildFoodWallDisplay, buildFoodProp, disposeFoodProp } from "./food-props.js";
+import { availableFood } from "./rules/cooking-sales.js";
 import { applyPieceColour } from "./piece-colours.js";
 import { GRID, footprint, pieceFootprint, pieceBody, roomStyle, roomPieces, roomLayout, available, displayCount, decorById, hostSurfaces } from "./model.js";
 import { riderSize } from "./rules/surfaces.js";
@@ -48,6 +50,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   let farm = null;
   let place = null, built = null, pieces = new Map(), pickables = [], actors = [], customers = new Map(), tables = [], skyla = null;
   let selection = null, ghost = null, showGrid = false, gridLines = null, tableKey = "";
+  let foodDisplays = [], foodDisplayKey = "";
 
   // Light for inside (the key over this place, the farm turned down) or for the farm again.
   function lightIndoors(origin) {
@@ -68,6 +71,8 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   const clear = () => {
+    for (const f of foodDisplays) disposeFoodProp(f); foodDisplays = []; foodDisplayKey = "";
+    for (const a of customers.values()) if (a.food) { disposeFoodProp(a.food); a.food = null; }
     for (const guide of [selection?.box, selection?.ring, ghost, gridLines]) if (guide) { guide.removeFromParent(); guide.geometry.dispose(); guide.material.dispose(); }
     for (const o of [...root.children]) { root.remove(o); o.traverse?.((m) => { if (m.isMesh && m.geometry && !m.geometry.userData.shared) m.geometry.dispose?.(); for (const mat of Array.isArray(m.material) ? m.material : m.material ? [m.material] : []) if(mat.userData.pieceColourOwned)mat.dispose(); }); }
     pool.forEach((l) => (l.intensity = 0));
@@ -219,6 +224,27 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     });
   }
 
+  // Dedicated shallow side-wall cabinets, clear of the door, till and floor
+  // tables. Only their stock changes; rebuilding them never rebuilds the room.
+  function refreshFood() {
+    if (place?.kind !== "shop") return;
+    const k = state.kitchen;
+    const key = k?.purchased ? k.displays.map(id => `${id ?? "-"}:${id ? Math.min(3, availableFood(state, id)) : 0}`).join("|") : "off";
+    if (key === foodDisplayKey) return;
+    foodDisplayKey = key;
+    for (const f of foodDisplays) disposeFoodProp(f); foodDisplays = [];
+    pickables = pickables.filter(p => p.userData.type !== "food-display");
+    if (!k?.purchased) return;
+    const spots = [{ x: .08, z: 1.45, y: 1.55, yaw: Math.PI / 2 }, { x: GRID.w - .08, z: 4.7, y: 1.75, yaw: -Math.PI / 2 }];
+    spots.forEach((p, slot) => {
+      const id = k.displays[slot], g = buildFoodWallDisplay({ recipeId: id, count: id ? availableFood(state, id) : 0, slot });
+      g.position.set(ORIGIN.shop.x + p.x, p.y, ORIGIN.shop.z + p.z); g.rotation.y = p.yaw;
+      const hit = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.3, .4), new THREE.MeshBasicMaterial({ visible: false }));
+      hit.position.set(0, .65, .17); hit.userData = { type: "food-display", slot }; g.add(hit);
+      root.add(g); foodDisplays.push(g); pickables.push(hit);
+    });
+  }
+
   // Where a customer stands in each phase of their visit.
   function customerSpot(c, queueIndex) {
     if (c.phase === "entering" || c.phase === "leaving") return SHOP_SPOTS.door;
@@ -228,7 +254,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   function tickShop(dt, time) {
-    refreshTables();
+    refreshTables(); refreshFood();
     const o = ORIGIN.shop, seen = new Set();
     const queue = state.shop.customers.filter((c) => c.phase === "queue");
     for (const c of state.shop.customers) {
@@ -241,6 +267,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
         root.add(a.model); customers.set(c.id, a);
       }
       if (c.outcome === "bought" && c.quantity > 1 && state.customerCare.bags && !a.bag) { a.bag = customerBag(); a.bag.position.set(.38, .45, .3); a.model.add(a.bag); }
+      if (c.food?.status === "paid" && !a.food) { a.food = buildFoodProp(c.food.recipe, { scale: .45 }); a.food.position.set(-.37, .82, .28); a.model.add(a.food); }
       // Entering, they walk in from the door; leaving, they walk back out.
       const target = c.phase === "entering" ? customerSpot({ ...c, phase: "browsing" }, 0) : customerSpot(c, queue.indexOf(c));
       const dx = target.x - a.pos.x, dz = target.z - a.pos.z, d = Math.hypot(dx, dz), step = Math.min(d, 2.4 * dt);
@@ -248,7 +275,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       a.model.position.set(o.x + a.pos.x, 0, o.z + a.pos.z);
       animate(a.model, time + c.id, d > 0.05, c.id + time, d > 0.05 ? dx / d : 0);
     }
-    for (const [id, a] of customers) if (!seen.has(id)) { root.remove(a.model); pickables = pickables.filter(p => p !== a.hit); disposeCustomerBag(a.bag); a.model.userData.dispose?.(); customers.delete(id); }
+    for (const [id, a] of customers) if (!seen.has(id)) { root.remove(a.model); pickables = pickables.filter(p => p !== a.hit); disposeCustomerBag(a.bag); if (a.food) disposeFoodProp(a.food); a.model.userData.dispose?.(); customers.delete(id); }
   }
 
   // Shane and Natalie potter about the room, between free spots near the front.
@@ -383,7 +410,8 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     enterShop() { buildShopPlace(); },
     leave() { clear(); place = null; lightIndoors(null); },
     refresh() { if (place?.kind === "room") { const sel = selection?.instance; buildRoomPlace(place.id); if (sel) select(sel); } },
-    select, preview, setGrid, movePiece,
+    select, preview, setGrid, movePiece, refreshFood,
+    get foodDisplayStatus() { return foodDisplays.map(g => ({ slot: g.userData.foodDisplay, x: g.position.x - ORIGIN.shop.x, y: g.position.y, z: g.position.z - ORIGIN.shop.z, yaw: g.rotation.y })); },
     // A room point (x, z, and y above the floor), or a point in the world, in a host's own frame: x from its
     // left edge, z from its back (a wall piece: out from the wall), y above its base.
     hostPoint(instance, point) {

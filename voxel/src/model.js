@@ -18,6 +18,7 @@ import { freshHollowHouse, restoreHollowHouse, updateHollowHouse, saveHollowVisi
 import { restoreIntroSeen } from "./rules/intro.js";
 import { freshSocial, recordNews } from "./rules/meadow-talk.js";
 import { freshHayride, restoreHayride, updateHayride, saveHayrideVisitors, restoreHayrideVisitors } from "./rules/hayride.js";
+import { freshKitchen, restoreKitchen, updateKitchen } from "./rules/cooking.js";
 
 export * from "./rules/farm.js";
 export * from "./rules/stock.js";
@@ -28,7 +29,7 @@ export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 
-export const STATE_VERSION = 11;
+export const STATE_VERSION = 12;
 export * from "./content/farm-layout.js";
 export * from "./rules/house-estate.js";
 export * from "./rules/piece-colours.js";
@@ -41,6 +42,9 @@ export * from "./rules/intro.js";
 export * from "./rules/meadow-chat.js";
 export { recordNews, topicsFor } from "./rules/meadow-talk.js";
 export * from "./rules/hayride.js";
+export * from "./content/cooking.js";
+export * from "./rules/cooking.js";
+export * from "./rules/cooking-sales.js";
 
 export function freshState() {
   return {
@@ -51,7 +55,7 @@ export function freshState() {
     stock: freshStock(), fresh: freshBatches(), wanted: freshWanted(), orders: freshOrders(), holds: [],
     stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
     shop: freshShop(), bigSpender: freshBigSpender(), festival: freshFestival(), customerCare: freshCustomerCare(),
-    house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(), hayride: freshHayride(),
+    house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(), hayride: freshHayride(), kitchen: freshKitchen(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
     claimed: [], memories: [], progression: freshProgression(), paused: false, introSeen: false,
     social: freshSocial(),                                                     // meadow news and chats: never saved
@@ -122,6 +126,7 @@ export function restoreState(raw) {
   s.claimed = [...new Set(claimed.filter((id) => FAVOURS.some((f) => f.id === id)))];
   s.memories = Array.isArray(raw.memories) ? [...new Set(raw.memories.filter((id) => typeof id === "string"))] : [];
   s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4));
+  s.kitchen = restoreKitchen(raw.kitchen, s);
   s.festival = restoreFestival(raw.festival);
   s.customerCare = restoreCustomerCare(raw.customerCare);
   s.bigSpender = restoreBigSpender(raw.bigSpender);
@@ -133,7 +138,7 @@ export function restoreState(raw) {
 }
 
 // What is worth saving: everything except who is out walking or shopping.
-export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), hayrideVisitors: saveHayrideVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, social: undefined });
+export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), hayrideVisitors: saveHayrideVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, kitchen: { ...s.kitchen, foodHolds: [] }, social: undefined });
 
 // Advances the farm by dt seconds and returns what happened, for the scene to show.
 export function update(s, dt) {
@@ -146,6 +151,7 @@ export function update(s, dt) {
   updateFestival(s);
   updateHollowHouse(s, dt, events);
   updateHayride(s, dt, events);
+  updateKitchen(s, dt, events);
   updateStall(s, dt, events);
   updateShop(s, dt, events);
   checkMemories(s, events);

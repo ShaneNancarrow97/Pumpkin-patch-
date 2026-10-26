@@ -32,6 +32,8 @@ import { createHouseEstateView } from "./house-estate-view.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
 import { createWilds } from "./wilds.js";
+import { createCookingWorld } from "./cooking-world.js";
+import { COOKING_SITE } from "./content/cooking-layout.js";
 import { fieldDepth, extendFarmRoute, DROP, patchShape, COUNTER_GAP } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createMazeRideView } from "./maze-ride-view.js";
@@ -145,6 +147,8 @@ export function createScene(canvas, state, hooks) {
   const wilds = createWilds(scene, state);
   const hollowFarm = createHollowFarm(scene, state, signBoard, lamps);
   const hayrideWorld = createHayrideWorld({ scene, state, world, signBoard, createScares: createHayrideScares });
+  const cookingWorld = createCookingWorld({ scene, state, world, signBoard, lamps });
+  const farmViewWidth = () => Math.max(fieldWidth(state), state.kitchen?.purchased ? COOKING_SITE.bounds.x1 : 0);
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
@@ -218,7 +222,23 @@ export function createScene(canvas, state, hooks) {
     scene.add(model);
     actors[who] = { model, hit, queue: old?.queue ?? [], moving: false, work: 0, dx: 0 };
   }
-  const nearestActor = (x, z) => Object.values(actors).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
+  const nearestActor = (x, z) => Object.values(actors).filter(a => !a.delivery || !a.queue.length).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
+
+  // The existing Shane figure receives a parcel along the east path. Never
+  // spawn a second copy or interrupt a crop task; Natalie keeps helping.
+  const receivedOrders = new Set();
+  function receiveDelivery() {
+    if (state.paused) return;
+    const order = state.kitchen?.orders?.[0], a = actors.shane;
+    if (!order || !a || receivedOrders.has(order.id) || a.queue.length) return;
+    if (!(order.phase === "travelling" || order.phase === "unloading" || order.phase === "ordered" && order.remaining <= 15)) return;
+    if (Math.hypot(a.model.position.x - HOMES.shane.x, a.model.position.z - HOMES.shane.z) > 1) return;
+    const way = [{ x: 28.7, z: 16.6 }, { x: 30.2, z: 15.6 }, { x: 31.6, z: 12.6 }, { x: 35, z: 10.6 }, { x: 38, z: 8.6 }, { x: 39.65, z: 6 }, { x: 39.65, z: 4.45, wait: 6 }];
+    a.delivery = order.id;
+    a.queue.push(...way, ...way.slice(0, -1).reverse(), { ...HOMES.shane });
+    receivedOrders.add(order.id);
+    if (receivedOrders.size > 64) receivedOrders.delete(receivedOrders.values().next().value);
+  }
 
   // Visitors.
   const visitorModels = new Map(), outLen = routeLength(ROUTE_OUT), meadowOutLen = routeLength(MEADOW_EXIT);
@@ -390,7 +410,7 @@ export function createScene(canvas, state, hooks) {
     if (view.place) { clampView(); frameRoom(w, h); return; }
     // Ease from a phone crop to the whole yard, with room around the edges.
     view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(w).minZoom, cameraLayout(w).maxZoom);
-    const span = (cameraLayout(w).farmSpan + (fieldWidth(state) - MAP.w - HOLLOW_PROPERTY.westEdge + (fieldDepth(state) - MAP.d) * .8) * cameraLayout(w).overview) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
+    const span = (cameraLayout(w).farmSpan + (farmViewWidth() - MAP.w - HOLLOW_PROPERTY.westEdge + (fieldDepth(state) - MAP.d) * .8) * cameraLayout(w).overview) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
     camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
     camera.updateProjectionMatrix();
     clampView();
@@ -484,7 +504,7 @@ export function createScene(canvas, state, hooks) {
       pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
       ray.setFromCamera(pointer, active());
       scene.updateMatrixWorld(true);
-      const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables.filter(p => p.userData.type !== "plot" || plots[p.userData.index].g.visible), ...festivalWorld.pickables, ...hollowFarm.pickables, ...hayrideWorld.pickables, ...[...visitorModels.values()].filter(e => e.m.visible).map(e => e.hit)], false);
+      const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables.filter(p => p.userData.type !== "plot" || plots[p.userData.index].g.visible), ...festivalWorld.pickables, ...hollowFarm.pickables, ...hayrideWorld.pickables, ...cookingWorld.pickables, ...[...visitorModels.values()].filter(e => e.m.visible).map(e => e.hit)], false);
       // A visible guest at a counter takes priority over its large building hit box.
       const hit = hits.find(h => ["visitor", "customer"].includes(h.object.userData.type)) ?? hits.find(h => h.object.userData.host && h.object.userData.host === hits[0].object.userData.instance) ?? hits[0];
       lastPick = hit ? { ...hit.object.userData } : null;
@@ -523,9 +543,9 @@ export function createScene(canvas, state, hooks) {
     const west = state.hayride.purchased ? HAYRIDE_SITE.bounds.x0 : HOLLOW_PROPERTY.westEdge;
     const depth = state.hayride.purchased ? Math.max(fieldDepth(state), HAYRIDE_SITE.bounds.z1) : fieldDepth(state);
     const halfW = camera.right, vertical = farmVerticalLimits(camera.top, PITCH, depth);
-    const maxX = fieldWidth(state) + (state.hayride.purchased ? 3 : 1) - halfW, minX = west + halfW - (state.hayride.purchased ? 3 : 1);
+    const maxX = farmViewWidth() + (state.kitchen?.purchased ? 8 : state.hayride.purchased ? 3 : 1) - halfW, minX = west + halfW - (state.hayride.purchased ? 3 : 1);
     view.z = THREE.MathUtils.clamp(view.z, vertical.min, vertical.max);
-    view.x = minX > maxX ? (fieldWidth(state) + west) / 2 : THREE.MathUtils.clamp(view.x, minX, maxX);
+    view.x = minX > maxX ? (farmViewWidth() + west) / 2 : THREE.MathUtils.clamp(view.x, minX, maxX);
   }
 
   // Floating "+£12" and sparkle effects, as DOM labels projected from the world.
@@ -623,6 +643,7 @@ export function createScene(canvas, state, hooks) {
     tapHalo.material.opacity = .13 + Math.sin(time * 1.8) * .025 + tapPulse * .12;
     pumpkinTilt.rotation.x = -0.24 - tapPulse * .06;
 
+    receiveDelivery();
     // Shane and Natalie walk to their jobs, then drift home.
     for (const [who, a] of Object.entries(actors)) {
       const pos = a.model.position;
@@ -631,7 +652,7 @@ export function createScene(canvas, state, hooks) {
       a.moving = d > 0.12 && a.work <= 0;
       if (a.work > 0) a.work -= dt;
       else if (d > 0.12) { const step = Math.min(d, WALK * dt); pos.x += dx / d * step; pos.z += dz / d * step; }
-      else if (a.queue.length) { a.queue.shift(); a.work = 0.5; }
+      else if (a.queue.length) { const stop = a.queue.shift(); a.work = stop.wait ?? (a.delivery ? 0 : 0.5); if (!a.queue.length) a.delivery = null; }
       // Like the sprites they come from, they always face the viewer (the voxel figures mirror to walk the other way).
       animateSprite(a.model, time, a.moving, dx, who === "shane" ? 1.7 : 0);
       a.hit.position.set(pos.x, 1.1, pos.z);
@@ -639,10 +660,11 @@ export function createScene(canvas, state, hooks) {
 
     festivalWorld.tick(time);
     farmExpansion.sync(); wilds.sync();
-    const land = `${fieldWidth(state)}:${fieldDepth(state)}`;
+    const land = `${farmViewWidth()}:${fieldDepth(state)}`;
     if (land !== framedLand) { framedLand = land; frame(); clearMist(); }
     hollowFarm.sync(); hollowFarm.tick(time);
     hayrideWorld.tick(time);
+    cookingWorld.tick(time);
 
     // Both the ground and the incoming route end beyond the purchased gate.
     const routeIn = extendFarmRoute(ROUTE_IN, state), inLen = routeLength(routeIn);
@@ -726,7 +748,7 @@ export function createScene(canvas, state, hooks) {
       if (route === "hollow-ticket") { if (view.place === "foyer") floatText("+£" + amount, -2, 2, 0, "coin"); else if (!view.place) floatText("+£" + amount, HOLLOW_PROPERTY.x, 2.8, HOLLOW_PROPERTY.door[1], "coin"); return; }
       if (route === "hayride-ticket") { if (!view.place) floatText("+£" + amount, HAYRIDE_SITE.rearEntry.x, 2.5, HAYRIDE_SITE.rearEntry.z, "coin"); return; }
       if (route === "festival-cocoa" && !view.place) { floatText("+£" + amount, MEADOW.counter[0], 2.2, MEADOW.counter[1], "coin"); return; }
-      if (route === "shop" && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
+      if ((route === "shop" || route === "food") && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
       else if (!view.place) floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin");
     },
     // A line said in a meadow chat: the marker pulses, and the speaker bobs.
@@ -778,13 +800,14 @@ export function createScene(canvas, state, hooks) {
     get festivalStatus() { return festivalWorld.status; },
     get hollowExteriorStatus() { return hollowFarm.status; },
     get hayrideStatus() { return hayrideWorld.status; },
+    get cookingStatus() { return { ...cookingWorld.status, displays: places.foodDisplayStatus, receiver: actors.shane?.delivery ?? null }; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
     fitView() {
       if (view.place === "maze") { mazeView.setLook(0, 0); mazeView.resize(); return; }
       if (view.place === "hayride") { hayrideView.setLook(0, 0); hayrideView.resize(); return; }
       if (view.place === "estate") { estateView.cameraActions.reset(); return; }
       if (view.place === "foyer") { foyerView.cameraActions.reset(); return; }
-      Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
+      Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? (farmViewWidth() + HOLLOW_PROPERTY.westEdge) / 2 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
       frame();
     },
     refreshRoom() { places.refresh(); },
@@ -795,6 +818,8 @@ export function createScene(canvas, state, hooks) {
     get estateStatus() { return estateView.status; },
     refreshHollow() { hollowFarm.sync(); },
     refreshHayride() { hayrideWorld.sync(); frame(); },
+    refreshCooking() { cookingWorld.sync(); places.refreshFood?.(); wilds.sync(); frame(); },
+    focusCooking() { if (view.place) return; const p = COOKING_SITE.focus; view.x = p.x; view.z = p.z; view.zoom = canvas.clientWidth < 740 ? 2 : p.zoom ?? 3.2; frame(); },
     focusHayride() { const p = state.hayride.purchased ? HAYRIDE_SITE.focus : { x: -4, z: 13, zoom: 2 }; view.x = p.x; view.z = p.z; view.zoom = p.zoom; frame(); },
     refreshFoyer() { if (view.place === "foyer") foyerView.sync(); },
     previewFoyerDecor(data) { foyerView.preview(data); },

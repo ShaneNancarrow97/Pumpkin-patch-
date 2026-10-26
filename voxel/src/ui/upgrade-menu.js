@@ -1,3 +1,4 @@
+import { cookingIcon } from "./cooking-icons.js";
 // The dock's Upgrades button: a small menu that rises above it, one choice
 // for each part of the upgrades sheet. Arrow keys move through it, Escape or
 // a tap elsewhere closes it, and choosing opens the sheet at that section.
@@ -6,13 +7,14 @@ export const UPGRADE_SECTIONS = [
   ["seeds", "Seeds", "seeds", "New pumpkin varieties"],
   ["shop", "Shop", "shop", "Skyla’s shop and customer care"],
   ["cocoa", "Cocoa", "talk", "Sandy’s stand and the meadow"],
+  ["cooking", "Cooking", "shop", "Food truck, pantry, recipes and food shelves"],
   ["stall", "Stock", "stock", "The stall, stock and the market cart"],
   ["visitors", "Visitors", "visitors", "More neighbours, more often"],
 ];
 export function createUpgradeMenu({ button, choose }) {
   const menu = document.createElement("div"); menu.className = "upgrade-menu"; menu.id = "upgrade-menu"; menu.hidden = true;
   menu.setAttribute("role", "menu"); menu.setAttribute("aria-label", "Upgrades");
-  menu.innerHTML = UPGRADE_SECTIONS.map(([id, name, icon, text], i) => `<button type="button" role="menuitem" data-upgrade-section="${id}" style="--i:${UPGRADE_SECTIONS.length - 1 - i}"><span class="ico i-${icon}" aria-hidden="true"></span><span><b>${name}</b><small>${text}</small></span></button>`).join("");
+  menu.innerHTML = UPGRADE_SECTIONS.map(([id, name, icon, text], i) => `<button type="button" role="menuitem" data-upgrade-section="${id}" style="--i:${UPGRADE_SECTIONS.length - 1 - i}">${id === "cooking" ? cookingIcon("truck") : `<span class="ico i-${icon}" aria-hidden="true"></span>`}<span><b>${name}</b><small>${text}</small></span></button>`).join("");
   document.body.append(menu);
   button.setAttribute("aria-haspopup", "menu"); button.setAttribute("aria-controls", menu.id); button.setAttribute("aria-expanded", "false");
   const items = () => [...menu.querySelectorAll("[role=menuitem]")];

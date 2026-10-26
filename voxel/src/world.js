@@ -734,7 +734,7 @@ export function buildBackdrop(pitch) {
 // Builds every static voxel and returns the scene group plus the light points
 // the renderer turns into warm lamps.
 export function buildWorld() {
-  const r = seeded(20261017), v = new Voxels(), front = new Voxels(), patch = new Voxels(), lights = [];
+  const r = seeded(20261017), v = new Voxels(), front = new Voxels(), patch = new Voxels(), lights = [], serviceTrees = [];
   ground(v, r);
   // Trees crowd every edge, leaving the arch open onto the lake.
   for (const [x, z, s, k] of [
@@ -744,7 +744,13 @@ export function buildWorld() {
     [37.6, 27 + DROP, 1.1, 1], [41.4, 24 + DROP, 1.2, 0],
     [40.4, 18.6 + DROP, 1.0, 2], [41, 13.2 + DROP, 1.1, 0], [40.6, 8, 1.0, 1], [6.8, 1.2, 0.8, 2],
     [-8.3, 9.4, 0.8, 2],                                                                   // filling the west edge the yard grew into
-  ]) tree(v, r, x, z, s, k);
+  ]) {
+    const from = v.solid.length;
+    tree(v, r, x, z, s, k);
+    // Exact source ranges let a purchased service plot replace its two trees
+    // without heuristically clipping nearby buildings, paths or foliage.
+    if ((x === 40 && z === 1.6) || (x === 40.6 && z === 8)) serviceTrees.push({ from, to: v.solid.length, x, z, boxes: v.solid.slice(from) });
+  }
   const home = { door: { x: 6.5, y: 1.3, z: 9.5 } };
   bigPumpkinStage(v, r);
   patchBorder(patch, r);
@@ -772,7 +778,7 @@ export function buildWorld() {
     front.block(x + (r() - 0.5) * 1.2, (r() * 0.5), 25.9 + DROP + r() * 1.4, 0.42, 0.42, 0.42, vary(CANOPY[(r() * 3) | 0][1 + ((r() * 3) | 0)], 0.08, r));
   const group = v.build(), frontBoundary = front.build(), patchBoundary = patch.build(); frontBoundary.name = "Original farm front"; patchBoundary.name = "Original patch rim"; group.add(frontBoundary, patchBoundary);
   const terrain = yardGround(); group.add(terrain);
-  return { group, ground: terrain, frontBoundary, patchBoundary, lights: [...lights, ...stall.lights], door: home.door };
+  return { group, serviceTrees, serviceTreeMesh: group.children.find(m => m.isInstancedMesh), ground: terrain, frontBoundary, patchBoundary, lights: [...lights, ...stall.lights], door: home.door };
 }
 
 // Signs carry their lettering on a canvas texture, in the game's display font.

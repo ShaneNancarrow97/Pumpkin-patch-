@@ -27,6 +27,7 @@ import { createEstateControls } from "./ui/estate-controls.js";
 import { moreSheet } from "./ui/more-sheet.js";
 import { hollowSheets, createHollowContext } from "./ui/hollow-sheet.js";
 import { hayrideSheets, createHayrideContext } from "./ui/hayride-sheet.js";
+import { cookingSheets } from "./ui/cooking-sheet.js";
 import { createFoyerControls } from "./ui/foyer-controls.js";
 import { settingsSheet } from "./ui/settings-sheet.js";
 import { createIntro } from "./ui/intro.js";
@@ -127,6 +128,8 @@ const scene = createScene($("world"), state, {
     else if (what.type === "pumpkin") boost();
     else if (what.type === "seeds") { sheets.shop.setTab("seeds"); openSheet("shop"); }
     else if (what.type === "shop") { if (state.shop.unlocked) enterShop(); sheets.shop.setTab("shop"); openSheet("shop"); }
+    else if (what.type === "food-truck") openCookingSheet("recipes", "truck");
+    else if (what.type === "food-display") openCookingSheet("food");
     else if (what.type === "meadow-land" || what.type === "cocoa-stand") { sheets.festival.setTab(what.type === "cocoa-stand" ? "cocoa" : "estate"); openSheet("festival"); }
     else if (what.type === "home") openHome();
     else if (what.type === "estate-house") { if (!estateTools.active) { enterRoom(state.house.activeRoom); closeSheet(); } else notice("Keep the house and its entrance clear. Tap an open part of the garden."); }
@@ -152,6 +155,8 @@ const scene = createScene($("world"), state, {
 function handle(e) {
   if (e.type === "vip-arrived") notice("Baron Brassbolt has arrived with a generous shopping budget.");
   if (e.type === "hollow-restored") { notice("Restoration complete. The Hollow House is ready to open."); save(); audio.tone(880); }
+  if (e.type === "ingredient-delivery") { notice("Ingredients delivered to your pantry."); save(); audio.tone(660); }
+  if (e.type === "cooking-complete") { notice("A fresh batch is ready for the shop."); save(); }
   if (e.type === "sale") {
     scene.sale(e.amount, e.route);
     audio.tone(700);
@@ -291,6 +296,8 @@ function exitMazeRide() {
 function openHollowSheet(tab = "manage") { sheets.hollow.setTab(tab); openSheet("hollow"); }
 function openFoyerSheet(tab = "catalogue") { sheets.foyer.setTab(tab); openSheet("foyer"); }
 function openHayrideSheet() { openSheet("hayride"); }
+function openCookingSheet(tab = "recipes", station = null) { sheets.cooking.setTab(tab); if (station) sheets.cooking.setStation?.(station); openSheet("cooking"); }
+function enterKitchen() { if (!M.homeCookingAvailable(state)) { notice("Place a copper range in the kitchen to cook at home."); return false; } enterRoom("kitchen"); openCookingSheet("recipes", "home"); return true; }
 function focusHayride() { if (scene.place) leavePlace(); closeSheet(); scene.focusHayride(); }
 // The free owner camera has no seat, receipt or visitor in the live convoy.
 function openHayrideRide() {
@@ -431,14 +438,14 @@ const ui = {
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
   portrait: (id) => scene.portrait(id),
   intro,
-  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide, openHayrideSheet, focusHayride, openHayrideRide,
+  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide, openHayrideSheet, focusHayride, openHayrideRide, openCookingSheet, enterKitchen,
   get estateTools() { return estateTools; },
   get foyerTools() { return foyerTools; }, get hollowContext() { return hollowContext; },
   read: (id) => collection.read(id),
   replaceState(next) { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(next))); state = next; location.reload(); },
 };
 const home = homeSheets(ui), collection = collectionSheets(ui);
-const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...moreSheet(ui), ...settingsSheet(ui) };
+const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...cookingSheets(ui), ...moreSheet(ui), ...settingsSheet(ui) };
 const estateTools = createEstateControls(ui);
 const foyerTools = createFoyerControls(ui), hollowContext = createHollowContext(ui);
 const hayrideContext = createHayrideContext(ui);
@@ -460,7 +467,7 @@ $("fullscreen").onclick = async () => {
   catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
 };
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
-const TABS = { shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
+const TABS = { cooking: "shop", shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
 function draw() {
   if(menuMemory.dragging)return;
   const sheet = sheets[openTab]; if (!sheet) return;
@@ -498,7 +505,7 @@ function markTab() {
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
 }
 // Upgrades opens its menu; a choice opens the upgrades sheet at that section.
-const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { sheets.shop.setTab(section); openSheet("shop"); } });
+const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if (section === "cooking") openCookingSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
   const tab = t.dataset.tab;
   if (tab === "shop") { upgradeMenu.toggle(); return; }
@@ -549,7 +556,7 @@ const mazeDiagnostics = {
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
 const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), get status() { return scene.hayrideRideStatus; } };
-window.PumpkinVoxel = { maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
+window.PumpkinVoxel = { maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";

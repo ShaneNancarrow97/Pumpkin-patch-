@@ -9,6 +9,7 @@ import { checkoutSeconds, customerProfiles, shopCapacity, shopUpgradeCosts } fro
 import { UPGRADES, VARIETIES, tierFactor, visitorBonus } from "./farm.js";
 import { freshGuestNeeds, tickGuestNeeds, enjoyPumpkin } from "./guest-needs.js";
 import { settleCustomerCare } from "./customer-care.js";
+import { quoteFoodForCustomer, commitFoodForCustomer, releaseFoodForCustomer, protectedFoodPurse } from "./cooking-sales.js";
 import { cocoaAllowance, planFestivalVisit, tickFestivalVisit, meadowFootfallBonus } from "./festival-meadow.js";
 import { planHollowVisit, tickHollowVisit, mazeFootfallBonus } from "./hollow-house.js";
 import { planChat, tickChat, updateChats, chatting } from "./meadow-chat.js";
@@ -300,7 +301,7 @@ const occupied = (shop) => shop.customers.filter((c) => c.phase !== "leaving").l
 
 export function updateShop(s, dt, events) {
   const shop = s.shop;
-  if (!shop.unlocked) return;
+  if (s.paused || !Number.isFinite(dt) || dt <= 0 || !shop.unlocked) return;
   shop.arrivalTimer -= dt * shopPace(s);
   if (shop.arrivalTimer <= 0) {
     if (occupied(shop) < SHOP_CAPACITY[shop.capacityLevel]) {
@@ -320,16 +321,27 @@ export function updateShop(s, dt, events) {
     if (c.phase === "entering") { c.phase = "browsing"; c.remaining = 4; }
     else if (c.phase === "browsing") {
       const lines = chooseBasket(s, c, offered, "customer-" + c.id, PRICES);
-      if (lines) { c.basket = lines; c.phase = "queue"; c.queueJoinedAt = s.time; }
+      c.basket = lines ?? [];
+      const food = quoteFoodForCustomer(s, c, c.basket);
+      if (lines || food) { c.phase = "queue"; c.queueJoinedAt = s.time; }
       else { c.outcome = "unavailable"; c.phase = "leaving"; c.remaining = 3; events.push({ type: "missed", reason: "shop", customer: c.id }); }
     } else if (c.phase === "paying") {
       const receipt = commitHold(s, "customer-" + c.id);
-      if (!receipt) { c.phase = "leaving"; c.remaining = 3; continue; }
-      pay(s, receipt, shop);
-      const care = settleCustomerCare(s, receipt, c, "shop", s.time - (c.queueJoinedAt ?? s.time - c.checkoutDuration));
-      c.tip = care.tip; c.quality = care.quality; c.budget -= receipt.amount + care.tip; enjoyPumpkin(c, care.quality, care.service);
-      Object.assign(c, { spent: receipt.amount, quantity: receipt.quantity, outcome: "bought", phase: "leaving", remaining: 3 });
-      events.push({ type: "sale", route: "shop", amount: receipt.amount + care.tip, tip: care.tip, quality: care.quality, quantity: receipt.quantity, customer: c.id });
+      const pumpkinAmount = receipt?.amount ?? 0, protectedPurse = protectedFoodPurse(s, c, receipt?.lines ?? []);
+      const food = commitFoodForCustomer(s, c, { reserved: pumpkinAmount, protectedPurse });
+      if (!receipt && !food) { releaseFoodForCustomer(s, c); c.phase = "leaving"; c.remaining = 3; continue; }
+      let tip = 0, quality;
+      if (receipt) {
+        pay(s, receipt, shop);
+        // Food has already been paid from this wallet. The unspent wanted
+        // purse stays protected when Skyla calculates a voluntary tip.
+        const care = settleCustomerCare(s, receipt, { ...c, budget: Math.max(0, c.budget - protectedPurse) }, "shop", s.time - (c.queueJoinedAt ?? s.time - c.checkoutDuration));
+        tip = care.tip; quality = care.quality; c.tip = tip; c.quality = quality;
+        c.budget -= receipt.amount + tip; enjoyPumpkin(c, quality, care.service);
+        events.push({ type: "sale", route: "shop", amount: receipt.amount + tip, tip, quality, quantity: receipt.quantity, customer: c.id });
+      }
+      Object.assign(c, { spent: pumpkinAmount + (food?.amount ?? 0), quantity: receipt?.quantity ?? 0, outcome: "bought", phase: "leaving", remaining: 3 });
+      if (food) events.push({ type: "sale", route: "food", amount: food.amount, quantity: food.quantity, recipe: food.recipe, customer: c.id });
     }
   }
   shop.customers = shop.customers.filter((c) => c.phase !== "leaving" || c.remaining > 1e-8);
@@ -341,7 +353,8 @@ export function updateShop(s, dt, events) {
 
 // Customers and baskets are not saved: on load, everyone has gone home.
 export function closeForTheNight(s) {
-  for (const c of s.shop.customers) releaseHold(s, "customer-" + c.id);
+  for (const c of s.shop.customers) { releaseHold(s, "customer-" + c.id); releaseFoodForCustomer(s, c); }
+  if (s.kitchen) s.kitchen.foodHolds = [];
   s.shop.customers = [];
   s.holds = [];
   s.visitors = [];
