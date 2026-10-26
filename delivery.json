@@ -1,0 +1,53 @@
+{
+  "createdUtc": "2026-10-26T01:54:10.860488+00:00",
+  "sourceCommit": "121f4cdbb85770de38c3860c2e51647f8bd2c921",
+  "sourceBranch": "contractor/cooking-foundation",
+  "runtimeCommit": "ba99b87a5a6d7a94e8ba584d32fca42970828c30",
+  "incrementalBase": "5083446e1ffcc94f370feff0e533150899c771f3",
+  "leadBase": "3f92ca8df92e07b09445ce092101e9309c00288c",
+  "artifactBranch": "contractor/cooking-download-2026-10-26",
+  "htmlSha256": "e8601b62048df0df52e035fc332c4b080d612ea6fb52d6a986d9c362b49c5ecf",
+  "nodeTestFiles": 67,
+  "coreBrowser": {
+    "checks": 44,
+    "htmlSha256": "4f4c95522325f9dc699388508d184cd7376098f81345ada1503bac28d9ad4f57",
+    "passed": true
+  },
+  "finalVisual": {
+    "checks": 8,
+    "htmlSha256": "e8601b62048df0df52e035fc332c4b080d612ea6fb52d6a986d9c362b49c5ecf",
+    "passed": true
+  },
+  "standardSmokeChecks": 48,
+  "binaryPatchRebuildIdentical": true,
+  "files": {
+    "Cooking-Contractor-Patch.zip": {
+      "bytes": 24873831,
+      "sha256": "7f7e912cf7afe273c2ea9202d74410102d50c80e4d109fbcd6d506c3b19e532c"
+    },
+    "Pumpkin-Patch.html": {
+      "bytes": 29355528,
+      "sha256": "e8601b62048df0df52e035fc332c4b080d612ea6fb52d6a986d9c362b49c5ecf"
+    },
+    "cooking-from-5083446.patch": {
+      "bytes": 9086903,
+      "sha256": "b016080d7e08971b8d5c8135cd7a241ac7429f7bd4ff2ebfd978b4e60a4dc107"
+    },
+    "Pumpkin-Patch-HTML.zip": {
+      "bytes": 21153368,
+      "sha256": "b3b5899a64a6ba85ac0f7494a8dc7c8c2ccf20fc4e4a5355905b3a2389afda4f"
+    },
+    "README.md": {
+      "bytes": 3347,
+      "sha256": "026122fd9f031210f7223eb67272df0045498e4a1ada6996b9947d3cd3c03699"
+    },
+    "exterior-and-cooking-from-3f92ca8.patch": {
+      "bytes": 22028611,
+      "sha256": "13530843d08b286d29fe53f45d820251ac24dbc24f88154fdd217e54f2f31a03"
+    },
+    "44-cooking-and-deliveries.md": {
+      "bytes": 16382,
+      "sha256": "0a82972326679ef0bcaa23ce0905f39e933697104613975e69c994ffc633c45a"
+    }
+  }
+}
