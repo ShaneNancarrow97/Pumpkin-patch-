@@ -1,3 +1,6 @@
+import { createPlayControls } from './ui/play-controls.js';
+import { homeLifeSheet, createHomeJourney } from './ui/home-life-sheet.js';
+import { waterPlot, wateringStatus } from './rules/hands-on.js';
 import { showFirstCooking } from "./ui/cooking-reveal.js";
 import { installPremiumIcons, premiumIcon } from "./ui/premium-icons.js";
 import * as THREE from "three";
@@ -43,6 +46,7 @@ function load() {
   try { return M.restoreState(JSON.parse(localStorage.getItem(SAVE_KEY) || "null")); } catch { return M.freshState(); }
 }
 let state = load();
+let playControls, homeJourney;
 const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(state))); } catch {} };
 setInterval(save, 5000);
 document.addEventListener("visibilitychange", () => document.hidden && save());
@@ -118,6 +122,12 @@ const scene = createScene($("world"), state, {
   // A chat marker over a group in the meadow (scene.js syncChats).
   onChat(spot) { guestCard.clear(); chatCard.open(spot); },
   onPick(what) {
+    if (playControls?.active && !home.tools.selected && !openTab && ["plot", "piece"].includes(what.type)) {
+      const t=scene.player.state().target;
+      if(t && (what.type === "plot" ? t.type === "plot" && t.index === what.index : t.instance === what.instance)) interactAsPlayer();
+      else notice("Move closer until the object glows, then press X.");
+      return;
+    }
     if (what.type === "visitor" || what.type === "customer") {
       if (estateTools.active || foyerTools.active || home.tools.selected) return;
       // A guest chatting in the meadow opens what their group is saying.
@@ -265,7 +275,7 @@ function enterRoom(id) {
   if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation();
   if (!M.roomUnlocked(state, id)) id = "parlour";
   if (scene.place?.kind === "estate") interiorFromEstate = true; else if (scene.place?.kind !== "room") interiorFromEstate = false;
-  foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); state.house.activeRoom = id; scene.enter("room", id); renderPlace();
+  foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); state.house.activeRoom = id; scene.enter("room", id); M.recordHomeActivity?.(state,"visit"); save(); renderPlace();
 }
 function enterEstate() { if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); scene.enter("estate"); closeSheet(); renderPlace(); }
 function enterFoyer() { if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); if (!M.hollowReady(state)) { openHollowSheet(); return false; } foyerTools.cancel(); estateTools.cancel(); hollowContext.close(); hayrideContext.close(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("foyer"); closeSheet(); renderPlace(); return true; }
@@ -369,6 +379,8 @@ $("boost").onclick = boost;
 // The HUD, actions, goal and streak, every frame (cheap: only text changes).
 const text = (id, value) => { const el = $(id); if (el.textContent !== String(value)) el.textContent = value; };
 function render() {
+  const controlsBlocked=!!openTab || celebration.active || intro.active || upgradeMenu?.open || mazeUI.active || hayrideUI.active || state.paused || !!homeJourney?.active;
+  playControls?.tick(controlsBlocked); homeJourney?.tick();
   if (mazeUI.active) mazeUI.update(scene.mazeStatus);
   if (hayrideUI.active) hayrideUI.update(scene.hayrideRideStatus);
   if (M.awardLevels(state).length) save();
@@ -389,7 +401,7 @@ function render() {
   foyerTools.tick(!!openTab || celebration.active);
   hollowContext.tick(mazeUI.active || hayrideUI.active || !!openTab || celebration.active);
   hayrideContext.tick(mazeUI.active || hayrideUI.active || !!scene.place || !!openTab || celebration.active);
-  npcRewards.tick(mazeUI.active || hayrideUI.active || !!scene.place || !!openTab || !!home.tools.selected || celebration.active || state.paused || document.hidden);
+  npcRewards.tick(!!playControls?.active || mazeUI.active || hayrideUI.active || !!scene.place || !!openTab || !!home.tools.selected || celebration.active || state.paused || document.hidden);
   $("level-bar").style.width = (lvl.progress * 100).toFixed(1) + "%";
   $("hud-level").title = `Level ${lvl.level}: ${lvl.name}. ${lvl.tagline}.`;
   text("level-name", lvl.name);
@@ -446,6 +458,7 @@ const intro = createIntro({
 // The menus. Each sheet module gets this small toolkit.
 const ui = {
   get state() { return state; }, scene, prefs, savePrefs, audio, save,
+  get playControls(){return playControls;}, followHomeGoal, homeTab:t=>sheets.home.setTab(t),
   notice, say, tone: (f) => audio.tone(f),
   draw: () => draw(), openSheet: (tab) => openSheet(tab), closeSheet: () => closeSheet(),
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
@@ -458,7 +471,7 @@ const ui = {
   replaceState(next) { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(next))); state = next; location.reload(); },
 };
 const home = homeSheets(ui), collection = collectionSheets(ui);
-const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...cookingSheets(ui), ...moreSheet(ui), ...settingsSheet(ui) };
+const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...cookingSheets(ui), ...moreSheet(ui), ...homeLifeSheet(ui), ...settingsSheet(ui) };
 const estateTools = createEstateControls(ui);
 const foyerTools = createFoyerControls(ui), hollowContext = createHollowContext(ui);
 const hayrideContext = createHayrideContext(ui);
@@ -480,7 +493,7 @@ $("fullscreen").onclick = async () => {
   catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
 };
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
-const TABS = { cooking: "shop", shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
+const TABS = { homelife:"more", cooking: "shop", shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
 function draw() {
   if(menuMemory.dragging)return;
   const sheet = sheets[openTab]; if (!sheet) return;
@@ -506,6 +519,7 @@ function openSheet(tab) {
   $("sheet").dataset.section = tab;
   openTab = tab; lastBody = "";
   const sheet = sheets[tab];
+  if(tab === "wardrobe" && scene.place?.kind === "room") { M.recordHomeActivity?.(state,"wardrobe"); save(); }
   sheet.opened?.();
   $("sheet-eyebrow").textContent = sheet.eyebrow;
   $("sheet").hidden = false; $("sheet-body").scrollTop = 0; draw();
@@ -518,7 +532,7 @@ function markTab() {
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
 }
 // Manage opens the farm and business directory.
-const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if (section === "cooking") openCookingSheet(); else if(section === "cocoa") openCocoaSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
+const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if(section === "homelife") openSheet("homelife"); else if (section === "cooking") openCookingSheet(); else if(section === "cocoa") openCocoaSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
   const tab = t.dataset.tab;
   if (tab === "shop") { upgradeMenu.toggle(); return; }
@@ -531,7 +545,8 @@ $("open-settings").onclick = () => openSheet("settings");
 $("sheet-close").onclick = closeSheet;
 
 document.addEventListener("keydown", (e) => {
-  if (intro.active || mazeUI.active || hayrideUI.active) return;
+  if (intro.active || mazeUI.active || hayrideUI.active || homeJourney?.active) return;
+  if(playControls?.handleKey(e))return;
   if (e.key !== "Escape" && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
   if (celebration.active) return;
   const tools = home.tools;
@@ -559,6 +574,41 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "h" || e.key === "H") harvestAll();
 });
 
+// The controller layer uses the same purchases and farming rules as taps.
+function interactAsPlayer(tool='hand') {
+  const p=scene.player?.state(),t=p?.target;if(!p?.enabled||p.action||state.paused||openTab)return false;
+  if(p.available===false){if(p.place==='estate')enterRoom(state.house.activeRoom);else leavePlace();return true;}
+  if(!t)return false;
+  if(t.type==='plot'){
+    const plot=state.plots[t.index],kind=tool==='hand'?(plot.phase==='empty'?'plant':plot.phase==='ready'?'harvest':'water'):tool;
+    let ok=false;if(kind==='plant')ok=M.plant(state,t.index);else if(kind==='harvest')ok=!!pickPlot(t.index);else if(kind==='water'){ok=waterPlot(state,t.index);if(!ok&&wateringStatus(state,t.index).seconds)notice('This crop is watered. Give it a moment to drink.');}
+    if(ok){scene.player.act(kind,1.2);M.recordHomeActivity?.(state,kind);audio.tone(kind==='water'?520:360);save();}else if(kind==='harvest'&&M.barnBlocked(state))notice('Barn full. Sell stock or expand storage.');
+    return ok;
+  }
+  if(t.type==='litter'){if(M.cleanLitter?.(state,t.id)){scene.player.act('clean',1.25);audio.tone(550);save();return true;}return false;}
+  if(tool!=='hand'){notice('Choose Interact for doors, cooking and furniture.');return false;}
+  if(t.type==='pumpkin'){boost();scene.player.act('harvest',.7);}
+  else if(t.type==='home'){enterEstate();}
+  else if(t.type==='shop'){if(state.shop.unlocked)enterShop();else openShopSheet('shop');}
+  else if(t.type==='cooking')openCookingSheet('recipes',t.station??'truck');
+  else if(t.type==='wardrobe'){M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');}
+  else if(t.type==='go')goTo(t.to);
+  else if(t.type==='exit'){if(scene.place?.kind==='room'&&interiorFromEstate)enterEstate();else leavePlace();}
+  else if(t.type==='piece'){home.tools.select(t.instance);}
+  return true;
+}
+function followHomeGoal(){
+  const g=M.homeGoal?.(state);if(!g){openSheet('homelife');return;}
+  const a=g.action;if(a==='upgrade-house'){enterRoom('parlour');sheets.home.setTab('house');openSheet('home');}
+  else if(a==='wardrobe'){enterRoom('parlour');M.recordHomeActivity?.(state,'wardrobe');openSheet('wardrobe');}
+  else if(a==='cook'||a==='equipment'){enterKitchen({tab:a==='equipment'?'equipment':'recipes'});}
+  else if(a==='recipes'){openCookingSheet('recipes');}
+  else if(a==='home'){enterRoom('parlour');closeSheet();}
+  else {enterRoom(g.room??state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');}
+  save();
+}
+playControls=createPlayControls({scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice});
+homeJourney=createHomeJourney({state:()=>state,blocked:()=>!!openTab||celebration.active||intro.active||mazeUI.active||hayrideUI.active||!!home.tools.selected||!!playControls.radial||state.paused,follow:followHomeGoal,open:()=>openSheet('homelife')});
 scene.setRenderQuality(prefs.renderQuality); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
 render(); renderPlace();
 // For the smoke test and screenshots: `advance` runs the rules forward, since a
@@ -570,7 +620,7 @@ const mazeDiagnostics = {
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
 const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), get status() { return scene.hayrideRideStatus; } };
-window.PumpkinVoxel = { maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
+window.PumpkinVoxel = { playControls, interactAsPlayer, followHomeGoal, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";

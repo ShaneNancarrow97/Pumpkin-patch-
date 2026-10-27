@@ -52,10 +52,10 @@ export function collectionSheets(ui) {
 
   function levels(s) {
     const current = M.patchLevel(s);
-    return `<p>Earn from your patch to grow your reputation. Level bonus coins do not count towards another level. Rewards are granted automatically; already-owned treasures become bonus coins.</p>` + M.LEVELS.map((l) => {
+    return `<p>Grow your reputation through 20 levels. Earnings and home milestones work together: expand rooms, cook and make the house your own. Bonus coins do not count towards another level. Rewards are granted automatically; already-owned treasures become bonus coins.</p>` + M.LEVELS.map((l) => {
       const reached = l.level <= current.level, active = l.level === current.level;
       const rewards = l.rewards.map((r) => r.kind === "coins" ? money(r.amount) + " coins" : r.kind === "decor" ? M.decorById[r.id].name : r.kind === "costume" ? M.costumeById[r.id].name : r.name + " · one tier");
-      return `<article class="level-roadmap ${active ? "current" : ""}"><h3>${reached ? "✓ " : ""}Level ${l.level} · ${l.name}</h3><p class="small">${l.at ? money(l.at) + " earned" : "Where our story begins"}${active ? " · You’re here" : ""}</p>${rewards.length ? `<p>${rewards.join(" · ")}</p>` : ""}${active && current.next ? `<div class="bar"><i style="width:${current.progress * 100}%"></i></div><p class="small">${money(current.next.at - current.xp)} to the next level</p>` : ""}</article>`;
+      return `<article class="level-roadmap ${active ? "current" : ""}"><h3>${reached ? "✓ " : ""}Level ${l.level} · ${l.name}</h3><p class="small">${l.at ? money(l.at) + " earned" : "Where our story begins"}${active ? " · You’re here" : ""}</p>${M.homeRequirements(s,l.level).length ? `<p class="small">Home: ${M.homeRequirements(s,l.level).map(r=>(r.met?"✓ ":"◇ ")+r.text).join(" · ")}</p>` : ""}${rewards.length ? `<p>${rewards.join(" · ")}</p>` : ""}${active && current.next ? `<div class="bar"><i style="width:${current.progress * 100}%"></i></div><p class="small">${current.blocked ? "Earnings ready · finish the home milestone above" : money(Math.max(0,current.next.at - current.xp)) + " to the next level"}</p>` : ""}</article>`;
     }).join("");
   }
 

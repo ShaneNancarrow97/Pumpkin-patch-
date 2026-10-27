@@ -9,18 +9,19 @@ export const UPGRADE_SECTIONS = [
   ["cocoa", "Sandy’s cocoa", "talk", "Sandy’s stand and the meadow"],
   ["cooking", "Maisie’s kitchen", "shop", "Food truck, pantry, recipes and food shelves"],
   ["stall", "Stock", "stock", "The stall, stock and the market cart"],
+  ["homelife", "Home & care", "home", "Home goals, hands-on play and the janitor"],
   ["visitors", "Visitors & VIPs", "visitors", "Crowds, spending, harvest rushes & the midnight court"],
 ];
 export function createUpgradeMenu({ button, choose }) {
   const menu = document.createElement("div"); menu.className = "upgrade-menu"; menu.id = "upgrade-menu"; menu.hidden = true;
   menu.setAttribute("role", "menu"); menu.setAttribute("aria-label", "Manage farm and businesses");
-  const groups=[['Grow your patch',['farm','seeds','stall','visitors']],['Your businesses',['shop','cocoa','cooking']]];
+  const groups=[['Grow your patch',['farm','seeds','stall','visitors','homelife']],['Your businesses',['shop','cocoa','cooking']]];
   menu.innerHTML=`<header class="manage-menu-heading"><b>Manage your patch</b><span>Choose where to make a difference</span></header>`+groups.map(([label,ids])=>`<div class="manage-menu-group" role="group" aria-label="${label}"><p>${label}</p>${ids.map(id=>{const [,name,icon,text]=UPGRADE_SECTIONS.find(s=>s[0]===id);return `<button type="button" role="menuitem" data-upgrade-section="${id}">${id==='cooking'?cookingIcon('truck'):`<span class="ico i-${icon}" aria-hidden="true"></span>`}<span><b>${name}</b><small>${text}</small></span><i aria-hidden="true">›</i></button>`}).join('')}</div>`).join('');
   document.body.append(menu);
   button.setAttribute("aria-haspopup", "menu"); button.setAttribute("aria-controls", menu.id); button.setAttribute("aria-expanded", "false");
   const items = () => [...menu.querySelectorAll("[role=menuitem]")];
   const place = () => {
-    const at = button.getBoundingClientRect(), width = Math.min(320, innerWidth - 16);
+    const at = button.getClientRects().length ? button.getBoundingClientRect() : {left:innerWidth/2,width:0,top:innerHeight-20}, width = Math.min(320, innerWidth - 16);
     menu.style.width = width + "px";
     menu.style.left = Math.max(8, Math.min(innerWidth - width - 8, at.left + at.width / 2 - width / 2)) + "px";
     menu.style.bottom = Math.max(8, innerHeight - at.top + 8) + "px";

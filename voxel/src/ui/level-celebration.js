@@ -1,6 +1,6 @@
 // A finite celebration above the playfield. Awards are already committed by
 // the pure rules; closing, reloading or skipping the animation cannot lose one.
-import { LEVELS, dismissLevel, patchLevel } from "../rules/levels.js";
+import { LEVELS, dismissLevel, patchLevel, homeRequirements } from "../rules/levels.js";
 import { decorById, costumeById } from "../model.js";
 import { decorIcon, money } from "./kit.js";
 
@@ -39,7 +39,7 @@ export function createLevelCelebration({ state, audio, save, openRewards }) {
       <p class="eyebrow">${preview ? "Your next chapter" : "A little more spooktacular"}</p>
       <h2 id="level-celebration-title">${level.name}</h2>
       <p class="level-subtitle">${preview ? `${money(Math.max(0, level.at - current.xp))} more earned to reach level ${level.level}.` : "Your patch has levelled up. These treats are yours!"}</p>
-      ${preview ? `<div class="bar"><i style="width:${current.progress * 100}%"></i></div>` : ""}
+      ${preview ? `<div class="bar"><i style="width:${current.progress * 100}%"></i></div><ul class="home-goals">${homeRequirements(s,level.level).map(r=>`<li><span>${r.met?"✓":"◇"}</span><span>${r.text}</span></li>`).join("")}</ul>` : ""}
       <ul class="level-rewards">${rewards.map((r) => rewardRow(r, preview)).join("")}</ul>
       <button class="button gold wide level-continue">${preview ? "Back to the patch" : "Lovely! Keep growing"}</button>
       ${!preview ? `<button class="level-details" data-level-details>View all level rewards</button>` : ""}

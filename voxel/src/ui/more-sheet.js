@@ -18,12 +18,13 @@ export function moreSheet(ui) {
     body() {
       const s = ui.state, ready = claimable(s).length;
       const links = [
+        ["homelife", "Home & hands-on play", "Play as Shane or Natalie · home milestones · clean-up"],
         ["cooking", "Kitchen & food", s.kitchen?.purchased ? "Cook, order ingredients & stock Skyla’s shelves" : "Food truck · available to purchase at level 5"],
         ["journal", "Journal", ready ? `${ready} favour${ready === 1 ? "" : "s"} ready to collect` : "Favours, memories, books & level rewards"],
         ["settings", "Settings", "Sound, graphics, fullscreen & backups"],
         ["patch", "Back to the farm", "Return to the pumpkin patch"],
       ];
-      return `<div class="more-summary"><span><b>${stockCount(s).toLocaleString("en-GB")}</b> in stock</span><span><b>${s.sold.toLocaleString("en-GB")}</b> visitors served</span></div><div class="more-links">${links.map(([id, title, detail]) => `<button class="more-link" data-more="${id}"><span class="more-icon">${id === "cooking" ? cookingIcon("truck") : premiumIcon(id === "patch" ? "farm" : id)}</span><span><b>${title}${id === "journal" && ready ? '<i class="more-dot" aria-label="Rewards ready"></i>' : ""}</b><small>${detail}</small></span><span class="more-chevron" aria-hidden="true">›</span></button>`).join("")}</div><details class="more-help"><summary>Controls & little tips</summary><p>Tap a plot to plant or pick. Tap the glowing pumpkin to help your crops along. Buildings open their own controls.</p><p>Drag to pan the farm. At home, drag to orbit and use two fingers to zoom or pan. Keys: P plant, H harvest, Space boost, Esc close.</p></details>`;
+      return `<div class="more-summary"><span><b>${stockCount(s).toLocaleString("en-GB")}</b> in stock</span><span><b>${s.sold.toLocaleString("en-GB")}</b> visitors served</span></div><div class="more-links">${links.map(([id, title, detail]) => `<button class="more-link" data-more="${id}"><span class="more-icon">${id === "cooking" ? cookingIcon("truck") : premiumIcon(id === "patch" ? "farm" : id === "homelife" ? "home" : id)}</span><span><b>${title}${id === "journal" && ready ? '<i class="more-dot" aria-label="Rewards ready"></i>' : ""}</b><small>${detail}</small></span><span class="more-chevron" aria-hidden="true">›</span></button>`).join("")}</div><details class="more-help"><summary>Controls & little tips</summary><p>Tap a plot to plant or pick. Tap the glowing pumpkin to help your crops along. Buildings open their own controls.</p><p>Drag to pan the farm. At home, drag to orbit and use two fingers to zoom or pan. Keys: P plant, H harvest, Space boost, Esc close.</p></details>`;
     },
     bind(body) {
       body.querySelectorAll("[data-more]").forEach(button => button.onclick = () => {
