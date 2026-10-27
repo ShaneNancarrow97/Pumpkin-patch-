@@ -16,7 +16,7 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   page.setDefaultTimeout(120000);
   // Selection now opens the compact pad; the wheel reveals the retained advanced tools.
   const revealAdvancedFurniture = async () => {
-    await page.locator("#furniture-pad").waitFor({ state: "visible" });
+    await page.locator("#furniture-pad [data-nudge]").first().waitFor({ state: "visible" });
     await page.locator("#furniture-wheel").click();
     await page.locator("#play-radial").waitFor({ state: "visible" });
     check(await page.locator('#play-radial [data-choice="details"]').isVisible(), `${name}: furniture wheel offers More controls`);
