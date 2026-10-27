@@ -32,6 +32,7 @@ import { COSTUME_SHEETS } from "./costume-sprite-meta.js";
 import { COSTUME_URLS } from "./costume-sprite-expansion.js";
 import { LEAN, STRETCH } from "./world.js";
 import { recolour } from "./sprite-voxels.js";
+import { loadPlayerDirections, applyPlayerDirection } from "./player-sprite-directions.js";
 
 // Shane, Natalie, Skyla, the visitors and every costume drawn with the main
 // game's own sprites: flat cut-outs standing in the voxel world, lit by the moon
@@ -78,6 +79,7 @@ function frameGeometry(sheet, f) {
 // Loads every sheet and builds its frame planes once; characters share them.
 export async function loadSpriteSheets() {
   const sheets = {};
+  await loadPlayerDirections();
   await Promise.all(Object.entries(URLS).map(async ([name, url]) => {
     const image = await loadImage(url), meta = name === "horrorVisitors" ? horrorVisitorSheetMeta(image) : METADATA[name], frames = {};
     for (const [key, list] of Object.entries(meta)) if (Array.isArray(list)) frames[key] = list.map((f) => frameGeometry(meta, f));
@@ -152,7 +154,9 @@ export function spriteActor(sheets, who, look, outfit) {
   // the bloom caught her, so she glows less and takes the light a shade darker.
   const [glow, tone] = who === "skyla" ? [0.06, 0xd6cdc2] : [0.3, 0xffffff];
   // Shane and Natalie stand four layers deep: a pixel or two of thickness.
-  return figure(sheet, sheet.frames, tinted ? recolouredTexture(sheet, who, look) : sheet.texture, glow, tone, who === "skyla" ? 0 : 4);
+  const actor=figure(sheet, sheet.frames, tinted ? recolouredTexture(sheet, who, look) : sheet.texture, glow, tone, who === "skyla" ? 0 : 4);
+  if(who==="shane"||who==="natalie")actor.userData.playerAnimate=(options)=>applyPlayerDirection(actor,{who,outfit:outfit||who+"-base",look,...options});
+  return actor;
 }
 
 // A visitor: its four frames are a walk cycle; standing shows the first.
