@@ -1,11 +1,14 @@
 // Litter is a small, reversible drag on appeal; a clean farm has no penalty.
 import { patchLevel } from "./levels.js";
+import { fieldDepth } from "../content/farm-layout.js";
 
 export const CLEANLINESS = Object.freeze({ everySales: 4, maximum: 24, grace: 3, floor: .65, janitorCost: 450, janitorLevel: 3, speed: 2.4, sweepSeconds: 1.4 });
 // Keep rubbish on the guests' paved lane, never in the growing beds.
 export const LITTER_SPOTS = Object.freeze([[31.8,10.8],[31.7,12],[31.5,14.8],[31.6,15.6],[30.5,18.5],[30.5,20.5],[30.8,22.1],[32.2,24.1],[32.9,26.4],[33,29],[33,31.8],[35.2,10.5]].map(([x,z])=>Object.freeze({x,z})));
 export const freshCleanliness = () => ({ litter: [], nextId: 0, seenSales: 0, janitor: false, cleaned: 0, janitorPosition: {x:31.4,z:10.8}, sweep: 0 });
 const finite = n => Number.isFinite(n), count = n => Number.isSafeInteger(n)&&n>=0?n:0;
+// The lower part of the lane exists only after buying the larger field.
+const litterEnd = s => fieldDepth(s)-1.2;
 export function restoreCleanliness(raw,s) {
   const c=freshCleanliness();c.seenSales=count(s?.sold);
   if (!raw || typeof raw!=="object") return c;
@@ -14,9 +17,10 @@ export function restoreCleanliness(raw,s) {
   for(const p of Array.isArray(raw.litter)?raw.litter:[]) {
     if(c.litter.length>=CLEANLINESS.maximum)break;
     if(typeof p?.id!=="string"||!/^litter-\d+$/.test(p.id)||ids.has(p.id)||!finite(p.x)||!finite(p.z)||p.x<28||p.x>36||p.z<10||p.z>34)continue;
-    ids.add(p.id);c.litter.push({id:p.id,x:p.x,z:p.z,kind:count(p.kind)%3});c.nextId=Math.max(c.nextId,Number(p.id.slice(7))+1);
+    const end=litterEnd(s),beyond=p.z>end;
+    ids.add(p.id);c.litter.push({id:p.id,x:beyond?Math.max(31,Math.min(33,p.x)):p.x,z:Math.min(end,p.z),kind:count(p.kind)%3});c.nextId=Math.max(c.nextId,Number(p.id.slice(7))+1);
   }
-  if(finite(raw.janitorPosition?.x)&&finite(raw.janitorPosition?.z))c.janitorPosition={x:Math.max(28,Math.min(36,raw.janitorPosition.x)),z:Math.max(10,Math.min(34,raw.janitorPosition.z))};
+  if(finite(raw.janitorPosition?.x)&&finite(raw.janitorPosition?.z)){const beyond=raw.janitorPosition.z>litterEnd(s);c.janitorPosition={x:Math.max(beyond?31:28,Math.min(beyond?33:36,raw.janitorPosition.x)),z:Math.max(10,Math.min(litterEnd(s),raw.janitorPosition.z))};}
   c.sweep=finite(raw.sweep)?Math.max(0,Math.min(CLEANLINESS.sweepSeconds,raw.sweep)):0;return c;
 }
 export const cleanlinessFootfall = s => Math.max(CLEANLINESS.floor,1-Math.max(0,(s.cleanliness?.litter.length??0)-CLEANLINESS.grace)*.025);
@@ -39,9 +43,10 @@ export function updateCleanliness(s,dt,events=[]) {
   if(s.paused||!finite(dt)||dt<=0)return;
   const c=s.cleanliness??=(freshCleanliness()),sold=count(s.sold),previous=Math.min(sold,c.seenSales);
   const drops=Math.min(CLEANLINESS.maximum,Math.floor(sold/CLEANLINESS.everySales)-Math.floor(previous/CLEANLINESS.everySales));c.seenSales=sold;
+  const end=litterEnd(s),spots=LITTER_SPOTS.filter(p=>p.z<=end);
   for(let i=0;i<drops&&c.litter.length<CLEANLINESS.maximum;i++) {
-    const id=c.nextId++,p=LITTER_SPOTS[(id*7)%LITTER_SPOTS.length],j=(id%3-1)*.17;
-    c.litter.push({id:"litter-"+id,x:p.x+j,z:p.z-j,kind:id%3});
+    const id=c.nextId++,p=spots[(id*7)%spots.length],j=(id%3-1)*.17;
+    c.litter.push({id:"litter-"+id,x:p.x+j,z:Math.min(end,p.z-j),kind:id%3});
   }
   if(!c.janitor)return;
   let left=Math.min(60,dt);
