@@ -121,7 +121,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     }
     moving = Math.hypot(pos.x - old.x, pos.z - old.z) > .0001;
     a.position.x = o.x + pos.x; a.position.z = o.z + pos.z; positions.set(key, { ...pos });
-    const dx = pos.x - old.x;
+    const delta = Math.hypot(pos.x - old.x, pos.z - old.z), dx = delta > .00001 ? (pos.x - old.x) / delta : 0;
     animate(a, time, moving, dx, who === "shane" ? 1.7 : 0);
     if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing, walking: moving, time, age: time, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0 });
     const hit = !room() && actors()[who]?.hit; if (hit) hit.position.set(a.position.x, 1.1, a.position.z);
