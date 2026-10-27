@@ -9,7 +9,7 @@ export const LIFE_ACTIONS = Object.freeze({
   harvest: Object.freeze({ seconds: .75, label: 'Picking' }),
   clean: Object.freeze({ seconds: 1, label: 'Cleaning' }),
 });
-export const ACTION_REACH = 1.9;
+export const ACTION_REACH = 2.05;
 const finite = n => Number.isFinite(n);
 
 // Shared availability prevents held tools repeatedly acting on the wrong phase.

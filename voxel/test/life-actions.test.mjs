@@ -37,7 +37,7 @@ test('full storage, closed plots, remote targets and mismatched tools reject saf
   const s = freshState(); s.plots[0].phase = 'ready'; s.stock = [barnCapacity(s), 0, 0, 0, 0];
   assert.equal(beginAction(s, { type: 'plot', index: 0 }, 'harvest'), null);
   assert.equal(beginAction(s, { type: 'plot', index: 23 }, 'plant'), null);
-  assert.equal(beginAction(s, { type: 'plot', index: 1, distance: 2 }, 'plant'), null);
+  assert.equal(beginAction(s, { type: 'plot', index: 1, distance: 2.2 }, 'plant'), null);
   assert.equal(beginAction(s, { type: 'plot', index: 1 }, 'clean'), null);
   assert.equal(beginAction(s, { type: 'piece', instance: 'piece-0' }, 'hand'), null);
 });
@@ -64,4 +64,13 @@ test('large and invalid frame times cannot duplicate completion or corrupt progr
   for (const dt of [NaN, Infinity, -1, 0]) assert.equal(tickAction(s, job, dt), null);
   assert.equal(job.elapsed, 0); assert.ok(tickAction(s, job, 999)); assert.equal(actionProgress(job), 1);
   assert.equal(tickAction(s, job, 999), null); assert.equal(cancelAction(job), false);
+});
+
+// Natural growth mutates a plot in place; it must cancel stale water work too.
+test('a crop ripening during watering invalidates without another growth or money change', () => {
+  const s = freshState(); plant(s, 0); const job = beginAction(s, { type: 'plot', index: 0 }, 'water');
+  tickAction(s, job, .5); Object.assign(s.plots[0], { phase: 'ready', progress: 1, ripe: s.time });
+  const before = JSON.stringify(saveData(s));
+  assert.equal(tickAction(s, job, 1), null); assert.equal(job.status, 'invalid');
+  assert.equal(JSON.stringify(saveData(s)), before); assert.equal(tickAction(s, job, 1), null);
 });
