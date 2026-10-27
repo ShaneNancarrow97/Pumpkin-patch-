@@ -12,6 +12,8 @@
 
 **Contractor menu refinement:** [`docs/handovers/47-business-menu-refinement.md`](docs/handovers/47-business-menu-refinement.md) groups business management, adds guided cooking shortcuts and keeps live menus stable. It layers on completed handover 46 with no rule/save changes.
 
+**Contractor home and hands-on play:** [`docs/handovers/48-home-and-hands-on-play.md`](docs/handovers/48-home-and-hands-on-play.md) adds optional Shane/Natalie control on the farm and in home rooms, twenty home-driven levels, v14 migration, usable furniture, home pets and cleanliness. The private estate retains its orbit/edit controls with an Enter home bridge; read the handover and [roadmap delta](docs/plans/home-play/ROADMAP.md) for art/control limits and final verification status.
+
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
 **Codex's hayride (merged in 39):** [`docs/handovers/38-hayride-lead-integration.md`](docs/handovers/38-hayride-lead-integration.md) preserves Claude’s `1abaff5` maze update and isolates hayride audio from lead-owned runtime files.
