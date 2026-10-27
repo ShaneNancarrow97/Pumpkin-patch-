@@ -1,4 +1,5 @@
 import { offerDiningSeat } from "./cooking-dining.js";
+import { cleanlinessFootfall } from "./cleanliness.js";
 // Selling: neighbours walking up the path to Skyla's stall, and, once it is
 // open, customers browsing inside the Honest Pumpkin. Profiles, prices and
 // timings are the main game's (src/core/stall.js, src/core/shop.js,
@@ -63,7 +64,7 @@ const floorFor = (s, base, step, least) => Math.max(least, base - step * (lv(s, 
 export const PATH_CAP = 16;
 // Outdoor guests at once: 16, then up to 50 with every crowd tier.
 export const CROWD = [16, 20, 24, 28, 32, 38, 44, 50];
-export const visitorCapacity = s => CROWD[Math.min(CROWD.length - 1, lv(s, "crowd"))];
+export const visitorCapacity = s => Math.max(8,Math.floor(CROWD[Math.min(CROWD.length - 1, lv(s, "crowd"))]*cleanlinessFootfall(s)));
 // Party members set off this far apart, so a party walks up the path in a line.
 export const PARTY_GAP = 0.5;
 // Places along Skyla's counter; beyond these, newcomers share a place.
@@ -86,8 +87,8 @@ const pace = (seconds, floor, bonus) => Math.max(1, Math.min(1 + bonus, seconds 
 // Lasting attractions (the maze, the hayride, the meadow's comforts) add to the
 // streak's boost, together capped at 75%.
 export const attractionFootfallBonus = s => Math.min(.75, mazeFootfallBonus(s) + hayrideFootfallBonus(s) + meadowFootfallBonus(s));
-export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), visitorBonus(s) + attractionFootfallBonus(s));
-export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1.1), visitorBonus(s) + attractionFootfallBonus(s));
+export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), visitorBonus(s) + attractionFootfallBonus(s))*cleanlinessFootfall(s);
+export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1.1), visitorBonus(s) + attractionFootfallBonus(s))*cleanlinessFootfall(s);
 // The gap between parties right now, and the boost that actually reaches the path.
 export const stallGapSeconds = (s) => stallArrivalSeconds(s) / stallPace(s);
 export const pathBoost = (s) => stallPace(s) - 1;
