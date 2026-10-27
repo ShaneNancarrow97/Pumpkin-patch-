@@ -9,6 +9,7 @@ import { GRID, footprint, pieceFootprint, pieceBody, roomStyle, roomPieces, room
 import { riderSize } from "./rules/surfaces.js";
 import { WALL_H, INTERIOR, buildRoom, buildShopInterior, SHOP_SPOTS } from "./interiors.js";
 import { decorProp, shelfBooks, decorReady } from "./decor.js";
+import { createHomePets, homePetTextures } from "./home-pets.js";
 
 // The places you can step into: the cottage's rooms and the Honest Pumpkin.
 // They are built away from the farm (ORIGIN), one at a time, from the save.
@@ -51,6 +52,8 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   const guestHitGeometry = new THREE.BoxGeometry(1.1, 2.2, .8), guestHitMaterial = new THREE.MeshBasicMaterial({ visible: false }); guestHitGeometry.userData.shared = true;
   let farm = null;
   let place = null, built = null, pieces = new Map(), pickables = [], actors = [], customers = new Map(), tables = [], skyla = null;
+  let controlled = null;
+  let pets = null;
   let selection = null, ghost = null, showGrid = false, gridLines = null, tableKey = "";
   let foodDisplays = [], foodDisplayKey = "";
   // A tiny reused steam rig follows the physical appliance, including turning
@@ -94,6 +97,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   const clear = () => {
+    pets?.clear(); pets = null;
     cookingFX.visible = false; kitchenFXStatus = { active: false, recipe: null, method: null, steam: 0 };
     for (const f of foodDisplays) disposeFoodProp(f); foodDisplays = []; foodDisplayKey = "";
     for (const a of customers.values()) if (a.food) { disposeFoodProp(a.food); a.food = null; }
@@ -148,6 +152,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       root.add(indoors(a));
       actors.push({ who, model: a, home: { x, z: d - 0.6 }, target: null, wait: 2 + Math.random() * 4 });
     }
+    pets = createHomePets({ group: root, state, room: id, layout, origin: o });
     setGrid(showGrid);
   }
 
@@ -304,9 +309,11 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
 
   // Shane and Natalie potter about the room, between free spots near the front.
   function tickRoom(dt, time) {
+    pets?.tick(state.paused ? 0 : dt, time);
     tickKitchen(time);
     for (const e of pieces.values()) e.tick?.(time);                  // the cauldron's brew
     for (const a of actors) {
+      if (a.who === controlled) { a.target = null; continue; }
       const pos = a.model.position, o = ORIGIN.room;
       if (!a.target && (a.wait -= dt) <= 0) {
         // Short of the right wall, where the stairs come down.
@@ -424,7 +431,35 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   return {
+    get petTextures() { return homePetTextures; },
+    get petsStatus() { return pets?.status() ?? []; },
     get place() { return place; },
+    // The optional direct-control adapter uses the same cast and measured furniture as this room.
+    setControlled(who) { controlled = who; },
+    playerActor(who) { return actors.find(a => a.who === who)?.model ?? null; },
+    playerGeometry() {
+      if (place?.kind !== "room") return { bounds: { x0: 0, x1: 10, z0: 0, z1: 6 }, obstacles: [] };
+      const layout = roomLayout(state, place.id), obstacles = [];
+      for (const p of roomPieces(state, place.id)) {
+        const fp = pieceFootprint(p); if (p.on || fp.layer !== "floor") continue;
+        const body = pieceBody(p.id);
+        obstacles.push({ x: p.x + fp.w / 2, z: p.z + fp.d / 2, w: body.w, d: body.d, angle: (p.rotation ?? 0) * Math.PI / 180 });
+      }
+      for (const st of layout?.stairs ?? []) obstacles.push({ x: st.x + st.w / 2, z: st.z + st.d / 2, w: st.w, d: st.d });
+      return { bounds: { x0: 0, x1: place.w, z0: 0, z1: place.d }, obstacles };
+    },
+    playerTargets() {
+      if (place?.kind !== "room") return [];
+      const layout = roomLayout(state, place.id), list = [{ type: "exit", label: "Leave the house", x: place.w / 2, z: place.d - .25 }];
+      for (const p of roomPieces(state, place.id)) {
+        const fp = pieceFootprint(p), item = decorById[p.id]; if (!item || p.on || fp.layer === "rug") continue;
+        const cooking = ["kitchen-hob", "kitchen-oven", "copper-range"].includes(p.id), wardrobe = /wardrobe|costume.*rack|dressing/.test(p.id) || item.interaction === "wardrobe";
+        list.push({ type: cooking ? "cooking" : wardrobe ? "wardrobe" : "piece", instance: p.instance, item: p.id, station: cooking ? "home" : undefined, label: cooking ? "Cook in the kitchen" : wardrobe ? "Change costume" : item.name, x: p.x + fp.w / 2, z: p.z + fp.d / 2 });
+      }
+      for (const st of layout?.stairs ?? []) { const to = st.up ?? st.down; if (to) list.push({ type: "go", to, label: "Go to " + to, x: st.exit.x + .5, z: st.exit.z + .5 }); }
+      for (const dr of layout?.doors ?? []) list.push({ type: "go", to: dr.to, label: "Go to " + dr.to, x: dr.wall === "left" ? .35 : place.w - .35, z: dr.at + dr.width / 2 });
+      return list;
+    },
     // Out on the farm the lamps borrow this pool (scene.js lightLamps).
     get lightPool() { return pool; },
     // Runs fn with the indoor key light on, so the indoor shader variants can

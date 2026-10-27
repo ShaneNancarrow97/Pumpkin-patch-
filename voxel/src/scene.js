@@ -42,6 +42,8 @@ import { createHayrideView } from "./hayride-view.js";
 import { createFoyerView } from "./foyer-view.js";
 import { createAmbience } from "./ambience.js";
 import { mistClearings } from "./content/ambience.js";
+import { createPlayerControl } from "./player-control.js";
+import { createCleanlinessView } from "./cleanliness-view.js";
 
 const WALK = 2.4;
 
@@ -223,7 +225,7 @@ export function createScene(canvas, state, hooks) {
     scene.add(model);
     actors[who] = { model, hit, queue: old?.queue ?? [], delivery: old?.delivery ?? null, moving: false, work: 0, dx: 0 };
   }
-  const nearestActor = (x, z) => Object.values(actors).filter(a => !a.delivery || !a.queue.length).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
+  const nearestActor = (x, z) => Object.entries(actors).filter(([who,a]) => (!player.state().enabled || who !== player.state().who) && (!a.delivery || !a.queue.length)).map(([,a])=>a).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
 
   // The existing Shane figure receives a parcel along the east path. Never
   // spawn a second copy or interrupt a crop task; Natalie keeps helping.
@@ -231,6 +233,7 @@ export function createScene(canvas, state, hooks) {
   function receiveDelivery() {
     if (state.paused) return;
     const order = state.kitchen?.orders?.[0], a = actors.shane;
+    if (player.state().enabled && player.state().who === "shane") return;
     if (!order || !a || receivedOrders.has(order.id) || a.queue.length) return;
     if (!(order.phase === "travelling" || order.phase === "unloading" || order.phase === "ordered" && order.remaining <= 15)) return;
     if (Math.hypot(a.model.position.x - HOMES.shane.x, a.model.position.z - HOMES.shane.z) > 1) return;
@@ -283,6 +286,8 @@ export function createScene(canvas, state, hooks) {
     compile().then(() => places.withKeyLight(compile)).catch(() => {});
   }
   warm(...sandyTextures, ...maisieTextures);
+  warm(...places.petTextures);
+  const cleanlinessView = createCleanlinessView({ scene, state, warm });
   loadDecor().then(() => places.refresh()).catch(() => hooks.onSpriteError?.());
 
   // Fireflies drifting over the field.
@@ -303,6 +308,15 @@ export function createScene(canvas, state, hooks) {
   const active = () => view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
   const activeScene = () => view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
   const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null, reach: { x: 0, z: 0 } };
+  // Direct control borrows the existing cast, cameras and collision measurements.
+  const player = createPlayerControl({ scene, state, actors: () => actors, places, getPlace: () => view.place, getCamera: active, animate: animateSprite,
+    follow(pos, dt, inside) {
+      if (touches.size || kept) return;
+      const k = 1 - Math.exp(-dt * 3), tx = inside ? pos.x - ORIGIN.room.x - places.place.w / 2 : pos.x;
+      const tz = inside ? (pos.z - ORIGIN.room.z - places.place.d * .6) * .3 : pos.z - 2.5;
+      view.x += (tx - view.x) * k; view.z += (tz - view.z) * k; frame();
+    },
+  });
   let farmView = null;
   let bloomOn = true;
   const composer = new EffectComposer(renderer);
@@ -647,6 +661,7 @@ export function createScene(canvas, state, hooks) {
     receiveDelivery();
     // Shane and Natalie walk to their jobs, then drift home.
     for (const [who, a] of Object.entries(actors)) {
+      if (player.state().enabled && player.state().who === who) { a.queue.length = 0; a.delivery = null; a.work = 0; continue; }
       const pos = a.model.position;
       let target = a.queue[0] ?? HOMES[who];
       const dx = target.x - pos.x, dz = target.z - pos.z, d = Math.hypot(dx, dz);
@@ -729,6 +744,8 @@ export function createScene(canvas, state, hooks) {
     }
     mazeView.tick(dt, time);
     if (view.place === "hayride") hayrideView.tick(dt);
+    player.update(dt, time);
+    cleanlinessView.update(state.paused ? 0 : dt, !view.place);
 
     for (let i = fx.length - 1; i >= 0; i--) {
       const f = fx[i]; f.t += dt; f.el.hidden = f.scene !== view.place;
@@ -745,6 +762,10 @@ export function createScene(canvas, state, hooks) {
   requestAnimationFrame(tick);
 
   return {
+    player: {
+      ...player,
+      setEnabled(on, who) { const result = player.setEnabled(on, who); if (!view.place) { view.zoom = on ? Math.max(view.zoom, canvas.clientWidth >= 740 ? 2.3 : 1.35) : 1; frame(); } return result; },
+    },
     sendTo(plotIndex) { const p = PLOTS[plotIndex], a = nearestActor(p.x, p.z); a?.queue.push({ x: p.x - 0.9, z: p.z + 0.4 }); },
     tapPumpkin() { tapPulse = 1; floatText("✦", BIG_PUMPKIN.x, 3.6, BIG_PUMPKIN.z, "spark"); },
     // A sale: Skyla reacts, and the takings float up from whichever counter you can see.
@@ -806,6 +827,7 @@ export function createScene(canvas, state, hooks) {
     get hollowExteriorStatus() { return hollowFarm.status; },
     get hayrideStatus() { return hayrideWorld.status; },
     get kitchenStatus() { return places.kitchenStatus; },
+    get petsStatus() { return places.petsStatus; },
     get cookingStatus() { return { ...cookingWorld.status, displays: places.foodDisplayStatus, receiver: actors.shane?.delivery ?? null, receiverStatus: actors.shane?.delivery ? { order: actors.shane.delivery, x: actors.shane.model.position.x, z: actors.shane.model.position.z, waiting: !!actors.shane.queue[0]?.receive && Math.hypot(actors.shane.model.position.x - 39.65, actors.shane.model.position.z - 4.45) <= .12 } : null }; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
     fitView() {
