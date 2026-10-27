@@ -1,10 +1,11 @@
+// Late-game economy fixtures represent a household completed before home milestones.
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
 import { advanceBigSpender, bigSpenderBasket, freshBigSpender, restoreBigSpender } from "../src/rules/big-spender.js";
 import { NORMAL_VISITOR_KINDS, VISITOR_KINDS, visitorIdentity } from "../src/content/visitors.js";
 
-const ready = () => { const s = M.freshState(); s.bigSpender = freshBigSpender(); s.visitorTimer = 1e6; return s; };
+const ready = () => { const s = M.freshState(); s.progression.homeLegacyThrough = 12; s.bigSpender = freshBigSpender(); s.visitorTimer = 1e6; return s; };
 const run = (s, seconds) => { const events = []; for (let i = 0; i < seconds * 10; i++) { s.time += .1; M.updateStall(s, .1, events); } return events; };
 
 test("the Baron is a stable rare identity, excluded from normal visitor rotations", () => {

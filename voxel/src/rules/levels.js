@@ -1,4 +1,6 @@
 // Earned milestones, with once-only rewards. Bonus coins never earn more levels.
+import { freshHomeActivities, homeRequirements, restoreHomeActivities } from "./home-goals.js";
+export { HOME_MILESTONES, HOME_ACTIVITY_KINDS, homeGoal, homeRequirements, recordHomeActivity } from "./home-goals.js";
 export const LEVELS = [
   { level: 1, at: 0, name: "Little seed", rewards: [] },
   { level: 2, at: 150, name: "Growing roots", rewards: [{ kind: "coins", amount: 35 }, { kind: "decor", id: "d03" }] },
@@ -12,18 +14,38 @@ export const LEVELS = [
   { level: 10, at: 42000, name: "Spooktacular", rewards: [{ kind: "coins", amount: 900 }, { kind: "costume", id: "shane-chucky" }] },
   { level: 11, at: 70000, name: "Harvest legend", rewards: [{ kind: "coins", amount: 1250 }, { kind: "decor", id: "moon-vanity" }] },
   { level: 12, at: 110000, name: "Forever Halloween", rewards: [{ kind: "coins", amount: 1800 }, { kind: "costume", id: "natalie-freddy" }, { kind: "costume", id: "shane-jason" }] },
+  { level: 13, at: 170000, name: "Candlelit cookbook", rewards: [{ kind: "coins", amount: 2400 }, { kind: "decor", id: "f14" }] },
+  { level: 14, at: 250000, name: "The midnight kitchen", rewards: [{ kind: "coins", amount: 3200 }, { kind: "decor", id: "w08" }] },
+  { level: 15, at: 360000, name: "Keys to the attic", rewards: [{ kind: "coins", amount: 4200 }, { kind: "decor", id: "d06" }] },
+  { level: 16, at: 500000, name: "Every room a story", rewards: [{ kind: "coins", amount: 5400 }, { kind: "decor", id: "f06" }] },
+  { level: 17, at: 680000, name: "A witching-hour feast", rewards: [{ kind: "coins", amount: 6800 }, { kind: "decor", id: "d04" }] },
+  { level: 18, at: 900000, name: "The haunting heart", rewards: [{ kind: "coins", amount: 8500 }, { kind: "decor", id: "moon-canopy-bed" }] },
+  { level: 19, at: 1200000, name: "Keeper of stories", rewards: [{ kind: "coins", amount: 10500 }, { kind: "decor", id: "moon-wardrobe" }] },
+  { level: 20, at: 1600000, name: "Our forever haunted home", rewards: [{ kind: "coins", amount: 15000 }, { kind: "decor", id: "moon-vanity" }] },
 ];
-export const freshProgression = () => ({ claimed: [1], pending: [], receipts: {}, bonusEarned: 0 });
+export const freshProgression = () => ({ claimed: [1], pending: [], receipts: {}, bonusEarned: 0, homeVersion: 1, homeLegacyThrough: 1, homeActivities: freshHomeActivities() });
 export const levelEarnings = (s) => Math.max(0, s.earned - (s.progression?.bonusEarned ?? 0));
 export function patchLevel(s) {
-  const xp = levelEarnings(s), current = LEVELS.filter((l) => l.at <= xp).at(-1), next = LEVELS[current.level];
-  return { ...current, xp, next: next ?? null, progress: next ? (xp - current.at) / (next.at - current.at) : 1, tagline: next ? `Next: ${next.name}` : "Every night is Halloween" };
+  const xp = levelEarnings(s), earned = LEVELS.filter(l => l.at <= xp).at(-1);
+  let current = LEVELS[0];
+  for (const l of LEVELS.slice(1)) {
+    if (l.level > earned.level || (l.level > 12 || s.progression?.homeVersion === 1) && homeRequirements(s, l.level).some(r => !r.met)) break;
+    current = l;
+  }
+  const next = LEVELS[current.level], requirements = next ? homeRequirements(s, next.level) : [], blocked = !!next && xp >= next.at && requirements.some(r => !r.met);
+  return { ...current, xp, earnedLevel: earned.level, next: next ?? null, requirements, blocked, progress: next ? Math.max(0, Math.min(1, (xp - current.at) / (next.at - current.at))) : 1, tagline: blocked ? `Home goal: ${requirements.find(r => !r.met).text}` : next ? `Next: ${next.name}` : "Every night is Halloween" };
 }
 // Existing saves keep their level without a backlog of gifts or popups.
-export function restoreProgression(raw, s, legacy = false) {
+export function restoreProgression(raw, s, legacy = false, legacyHome = false) {
   const p = freshProgression();
-  if (legacy || !raw || typeof raw !== "object") { p.claimed = LEVELS.filter((l) => l.at <= s.earned).map((l) => l.level); return p; }
+  if (legacy || !raw || typeof raw !== "object") {
+    if (legacyHome || legacy) { p.claimed = LEVELS.slice(0, 12).filter(l => l.at <= s.earned).map(l => l.level); p.homeLegacyThrough = p.claimed.at(-1) ?? 1; }
+    return p;
+  }
   p.bonusEarned = Number.isFinite(raw.bonusEarned) ? Math.max(0, Math.min(s.earned, raw.bonusEarned)) : 0;
+  const earned = LEVELS.filter(l => l.at <= s.earned - p.bonusEarned).at(-1).level;
+  p.homeLegacyThrough = legacyHome ? Math.min(12, earned) : Number.isInteger(raw.homeLegacyThrough) ? Math.max(1, Math.min(12, earned, raw.homeLegacyThrough)) : 1;
+  p.homeActivities = restoreHomeActivities(raw.homeActivities);
   const valid = (n) => Number.isInteger(n) && n >= 1 && n <= LEVELS.length && LEVELS[n - 1].at <= s.earned - p.bonusEarned;
   p.claimed = [...new Set([1, ...(Array.isArray(raw.claimed) ? raw.claimed.filter(valid) : [])])].sort((a, b) => a - b);
   p.pending = [...new Set((Array.isArray(raw.pending) ? raw.pending : []).filter((n) => n > 1 && p.claimed.includes(n)))].sort((a, b) => a - b);

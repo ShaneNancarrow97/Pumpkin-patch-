@@ -1,3 +1,4 @@
+// Late-game economy fixtures represent a household completed before home milestones.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
@@ -7,7 +8,7 @@ import { buildWorld } from '../src/world.js';
 import { cocoaProp, takeawayCup } from '../src/cocoa-props.js';
 
 const setup = (level = 5) => {
-  const s = M.freshState(); s.festival.meadow = true; s.festival.cocoa.level = level; s.coins = 100000;
+  const s = M.freshState(); s.progression.homeLegacyThrough = 12; s.festival.meadow = true; s.festival.cocoa.level = level; s.coins = 100000;
   return s;
 };
 const guest = (budget = 100) => ({ id: 1, kind: 0, budget, originalBudget: budget, basketLimit: 1, preferred: [0], needs: { thirst: 100, hunger: 100, happiness: 60, value: 1 } });

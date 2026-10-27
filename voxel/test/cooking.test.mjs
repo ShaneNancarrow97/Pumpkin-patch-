@@ -1,3 +1,4 @@
+// Late-game economy fixtures represent a household completed before home milestones.
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as C from "../src/rules/cooking.js";
@@ -169,7 +170,7 @@ test("corrupt restored inventories cannot exceed total capacity and invalid stat
 });
 
 test("model migration persists paid cooking progress and clears only transient customer food holds", async () => {
-  const M = await import("../src/model.js"), s = M.freshState();
+  const M = await import("../src/model.js"), s = M.freshState(); s.progression.homeLegacyThrough = 12;
   assert.equal(s.version, M.STATE_VERSION); assert.deepEqual(s.kitchen, C.freshKitchen());
   s.earned = 2200; s.coins = 2000; assert.equal(M.buyFoodTruck(s), true);
   M.placeIngredientOrder(s, { butter: 2 }); M.update(s, 48);

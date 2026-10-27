@@ -1,3 +1,4 @@
+// Late-game economy fixtures represent a household completed before home milestones.
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as V from "../src/rules/visitor-events.js";
@@ -102,7 +103,7 @@ test("turning off an occasion does not delete a group which was already invited"
 });
 
 const farm = () => {
-  const s = M.freshState(); s.coins = 50000; s.earned = 110000;
+  const s = M.freshState(); s.progression.homeLegacyThrough = 12; s.coins = 50000; s.earned = 110000;
   s.visitorEvents = V.freshVisitorEvents(); s.bigSpender.timer = 1e6;
   s.visitorTimer = 1e6; s.shop.arrivalTimer = 1e6;
   return s;

@@ -11,6 +11,7 @@ import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitor
 import { freshHouse, restoreHouse } from "./rules/house.js";
 import { freshLooks, freshWardrobe, restoreWardrobe } from "./rules/wardrobe.js";
 import { awardLevels, freshProgression, restoreProgression } from "./rules/levels.js";
+import { recordHomeActivity } from "./rules/home-goals.js";
 import { freshFestival, restoreFestival, updateFestival } from "./rules/festival-meadow.js";
 import { freshCustomerCare, restoreCustomerCare } from "./rules/customer-care.js";
 import { FAVOURS, checkMemories } from "./rules/progress.js";
@@ -21,6 +22,7 @@ import { freshSocial, recordNews } from "./rules/meadow-talk.js";
 import { freshHayride, restoreHayride, updateHayride, saveHayrideVisitors, restoreHayrideVisitors } from "./rules/hayride.js";
 import { freshVisitorEvents, restoreVisitorEvents, updateVisitorEvents } from "./rules/visitor-events.js";
 import { freshKitchen, restoreKitchen, updateKitchen } from "./rules/cooking.js";
+import { freshCleanliness, restoreCleanliness, updateCleanliness } from "./rules/cleanliness.js";
 
 export * from "./rules/farm.js";
 export * from "./rules/stock.js";
@@ -31,7 +33,7 @@ export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 
-export const STATE_VERSION = 13;
+export const STATE_VERSION = 14;
 export * from "./rules/visitor-events.js";
 export * from "./content/visitor-events.js";
 export * from "./content/farm-layout.js";
@@ -52,6 +54,7 @@ export * from "./rules/cooking-sales.js";
 export * from "./content/kitchen-equipment.js";
 export * from "./rules/kitchen-equipment.js";
 export * from "./rules/cooking-mix.js";
+export * from "./rules/cleanliness.js";
 
 export function freshState() {
   return {
@@ -65,6 +68,7 @@ export function freshState() {
     house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(), hayride: freshHayride(), kitchen: freshKitchen(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
     claimed: [], memories: [], progression: freshProgression(), paused: false, introSeen: false,
+    cleanliness: freshCleanliness(),
     social: freshSocial(),                                                     // meadow news and chats: never saved
   };
 }
@@ -132,12 +136,13 @@ export function restoreState(raw) {
   const claimed = (Array.isArray(raw.claimed) ? raw.claimed : []).map((id) => (v1 ? OLD_GOALS[id] : id));
   s.claimed = [...new Set(claimed.filter((id) => FAVOURS.some((f) => f.id === id)))];
   s.memories = Array.isArray(raw.memories) ? [...new Set(raw.memories.filter((id) => typeof id === "string"))] : [];
-  s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4));
+  s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4), !(raw.version >= 14));
   s.kitchen = restoreKitchen(raw.kitchen, s, raw.version);
   s.visitorEvents = restoreVisitorEvents(raw.visitorEvents, s);
   s.festival = restoreFestival(raw.festival);
   s.customerCare = restoreCustomerCare(raw.customerCare);
   s.bigSpender = restoreBigSpender(raw.bigSpender);
+  s.cleanliness = restoreCleanliness(raw.cleanliness, s);
   s.introSeen = restoreIntroSeen(raw, s);
   closeForTheNight(s);
   restoreHollowVisitors(raw.hollowVisitors, s);
@@ -160,9 +165,11 @@ export function update(s, dt) {
   updateHollowHouse(s, dt, events);
   updateHayride(s, dt, events);
   updateKitchen(s, dt, events);
+  for (const e of events) if (e.type === "cooking-complete" && e.station === "home") recordHomeActivity(s, "cook");
   updateVisitorEvents(s, dt, events);
   updateStall(s, dt, events);
   updateShop(s, dt, events);
+  updateCleanliness(s, dt, events);
   updateDining(s, dt);
   checkMemories(s, events);
   for (const level of awardLevels(s)) events.push({ type: "level-up", level });

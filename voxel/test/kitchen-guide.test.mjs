@@ -1,6 +1,7 @@
+// Late-game economy fixtures represent a household completed before home milestones.
 import test from 'node:test';import assert from 'node:assert/strict';
 import * as M from '../src/model.js';import {recipeShoppingList,kitchenNextStep} from '../src/ui/kitchen-guide.js';
-const setup=()=>{const s=M.freshState();s.earned=110000;s.coins=50000;M.buyFoodTruck(s);return s;};
+const setup=()=>{const s=M.freshState();s.progression.homeLegacyThrough=12;s.earned=110000;s.coins=50000;M.buyFoodTruck(s);return s;};
 test('shopping list subtracts both pantry and already-paid deliveries without spending',()=>{
  const s=setup();s.kitchen.pantry.butter=1;s.kitchen.orders=[{items:{butter:2},remaining:60,phase:'ordered'}];
  const before=JSON.stringify(s),list=recipeShoppingList(s,M.RECIPE_BY_ID.wedges,5);assert.deepEqual(list.items,{butter:2});assert.equal(list.quantity,2);assert.equal(JSON.stringify(s),before);

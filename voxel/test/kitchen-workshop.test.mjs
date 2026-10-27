@@ -1,3 +1,4 @@
+// Late-game economy fixtures represent a household completed before home milestones.
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
@@ -7,7 +8,7 @@ import * as X from "../src/rules/cooking-mix.js";
 import { RECIPE_BY_ID, INGREDIENTS } from "../src/content/cooking.js";
 
 const state = () => {
-  const s = M.freshState(); s.coins = 50000; s.earned = 110000; s.house.level = 2;
+  const s = M.freshState(); s.progression.homeLegacyThrough = 12; s.coins = 50000; s.earned = 110000; s.house.level = 2;
   s.stock = [100, 10, 0, 0]; s.fresh = [[], [], [], []]; s.holds = [];
   assert.equal(C.buyFoodTruck(s), true); return s;
 };

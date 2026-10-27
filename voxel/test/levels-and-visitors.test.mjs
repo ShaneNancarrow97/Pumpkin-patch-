@@ -4,6 +4,9 @@ import * as M from "../src/model.js";
 
 test("level boundaries, rewards and maximum progress share one source", () => {
   const s = M.freshState();
+  s.progression.homeActivities = { visit: 1, wardrobe: 1, cook: 10 }; s.house.level = 3;
+  s.house.wallpapers.parlour = "w01"; s.kitchen.recipes = M.RECIPES.map(r => r.id);
+  s.house.placed = Array.from({ length: 12 }, (_, i) => ({ id: i === 0 ? "copper-range" : i === 1 ? "gothic-spice-cabinet" : "d03", room: ["kitchen", "kitchen", "parlour", "bedroom", "attic"][i % 5], books: i === 2 ? ["b01", "b02", "b03", "b04", "b05", "b06"] : [] }));
   for (const milestone of M.LEVELS.slice(1)) {
     s.earned = milestone.at - 1; assert.equal(M.patchLevel(s).level, milestone.level - 1);
     s.earned++; assert.equal(M.patchLevel(s).level, milestone.level);
@@ -30,6 +33,7 @@ test("a level grants real items once, without reward coins earning another level
 
 test("skipping levels queues every reward, including usable costumes and upgrades", () => {
   const s = M.freshState(); s.earned = 110000;
+  s.progression.homeLegacyThrough = 12;
   assert.equal(M.awardLevels(s).length, 11);
   assert.equal(s.upgrades.tools, 1); assert.equal(s.upgrades.yield, 1);
   assert.ok(M.wearCostume(s, "natalie-freddy")); assert.ok(M.wearCostume(s, "shane-jason"));
@@ -52,7 +56,9 @@ test("version 3 saves retain progress without replaying historical celebrations"
   assert.equal(loaded.version, M.STATE_VERSION); assert.equal(M.patchLevel(loaded).level, 6);
   assert.deepEqual(loaded.progression.pending, []); assert.deepEqual(M.awardLevels(loaded), []);
   assert.equal(loaded.coins, old.coins);
-  loaded.earned = 8500; assert.deepEqual(M.awardLevels(loaded), [7]);
+  loaded.earned = 8500; assert.deepEqual(M.awardLevels(loaded), []);
+  loaded.house.owned.push("d01", "d03"); M.placeDecor(loaded, "d01", "parlour"); M.placeDecor(loaded, "d03", "parlour");
+  assert.deepEqual(M.awardLevels(loaded), [7]);
 });
 
 test("outdoor base frequency is 21 seconds; Spread the word has five tiers and Fairy lights four", () => {

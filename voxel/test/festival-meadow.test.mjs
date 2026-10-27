@@ -1,3 +1,4 @@
+// Late-game economy fixtures represent a household completed before home milestones.
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
@@ -11,7 +12,7 @@ function guest(s, id, budget = 24) {
 }
 
 test("land and stand purchases are gated, one-time and save-compatible", () => {
-  const s = M.freshState(); s.coins = 1e6;
+  const s = M.freshState(); s.progression.homeLegacyThrough = 12; s.coins = 1e6;
   assert.equal(M.buyMeadow(s), false); s.earned = 1000; s.paused = true;
   assert.equal(M.buyMeadow(s), false); s.paused = false;
   assert.ok(M.buyMeadow(s)); const after = s.coins; assert.equal(M.buyMeadow(s), false); assert.equal(s.coins, after);
