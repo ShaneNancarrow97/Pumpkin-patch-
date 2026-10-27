@@ -4,9 +4,10 @@ import { HOME_PETS_META as META } from "./home-pets-meta.js";
 import { homePetRooms, petRoute } from "./rules/home-pets.js";
 import { pieceFootprint, roomPieces } from "./rules/house.js";
 import { INTERIOR } from "./interiors.js";
+import { crispen, crispTexture } from "./crisp-sprites.js";
 
 // A single shared atlas holds every pose, keeping later stretches upload-free.
-const texture=new THREE.TextureLoader().load(url);texture.colorSpace=THREE.SRGBColorSpace;
+const texture=crispTexture(new THREE.TextureLoader().load(url));texture.colorSpace=THREE.SRGBColorSpace;
 export const homePetTextures=[texture];
 const geometries={};
 for(const [who,meta] of Object.entries(META.pets))geometries[who]=meta.frames.map(f=>{
@@ -18,7 +19,7 @@ for(const [who,meta] of Object.entries(META.pets))geometries[who]=meta.frames.ma
 function petFigure(who) {
   const group=new THREE.Group(),lean=new THREE.Group();group.add(lean);
   lean.rotation.x=-INTERIOR.lean;lean.scale.y=1/Math.cos(INTERIOR.pitch-INTERIOR.lean);
-  const material=new THREE.MeshStandardMaterial({map:texture,alphaTest:.48,roughness:1,emissive:0xffffff,emissiveMap:texture,emissiveIntensity:.06,color:0xe3d5c5,side:THREE.DoubleSide});
+  const material=crispen(new THREE.MeshStandardMaterial({map:texture,alphaTest:.48,roughness:1,emissive:0xffffff,emissiveMap:texture,emissiveIntensity:.06,color:0xe3d5c5,side:THREE.DoubleSide}));
   const mesh=new THREE.Mesh(geometries[who][0],material);mesh.castShadow=true;
   mesh.customDepthMaterial=new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking,map:texture,alphaTest:.48});
   lean.add(mesh);group.name=who+" at home";
