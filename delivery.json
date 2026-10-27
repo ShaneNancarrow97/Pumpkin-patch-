@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "cb7515092474c41893e3f0c918df7e49ec23c0a0",
+  "runtimeCommit": "6a6fe2bf1bb226489eebb882c2d535614b8165cd",
+  "patchBase": "e2cba9965ff852a5d844fe7ccb9912ae6fc303eb",
+  "htmlSha256": "e21570c0f1ce2741d960c5cc0aa608d62622053ba2e1fd751f3c7d68823ff97a",
+  "nodeTestFiles": 84,
+  "browserReports": {
+    "flow": {
+      "checks": 44,
+      "sha256": "6fe0cdfbf7124154abe50e16cc4aeb079c8df9eda28d3835c880b584fce909ae"
+    },
+    "exactRelease": {
+      "checks": 18,
+      "sha256": "e21570c0f1ce2741d960c5cc0aa608d62622053ba2e1fd751f3c7d68823ff97a"
+    }
+  },
+  "browserPassed": true,
+  "ci": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/40588800114",
+  "cleanSourceRebuildIdentical": true,
+  "appliedPatchRebuildIdentical": true,
+  "patchApplyChecked": true,
+  "artifacts": {
+    "Pumpkin-Patch-Home-Play.html": {
+      "bytes": 34926864,
+      "sha256": "e21570c0f1ce2741d960c5cc0aa608d62622053ba2e1fd751f3c7d68823ff97a"
+    },
+    "home-play-from-e2cba99.patch": {
+      "bytes": 3284671,
+      "sha256": "88adc031bb9e943b251b1575d19eaa20e5e2e6022ad9a4896be566634125758b"
+    },
+    "Pumpkin-Patch-HTML.zip": {
+      "bytes": 25299516,
+      "sha256": "64c8e9b53fbafdd3162189f28e09f2b76095b7cd475e63121dc0a11e840d5a6b"
+    },
+    "Home-Play-Claude-Patch.zip": {
+      "bytes": 2542315,
+      "sha256": "b97548d38fbceb3c81fdea4f2893b0250bd18b1cc13ff0709717dda57a13e0ff"
+    }
+  }
+}
