@@ -1,0 +1,294 @@
+{
+  "sha256": "6fe0cdfbf7124154abe50e16cc4aeb079c8df9eda28d3835c880b584fce909ae",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "earned level prompts a real home visit"
+    },
+    {
+      "ok": true,
+      "label": "Show me enters home and records the visit"
+    },
+    {
+      "ok": true,
+      "label": "radial character choice is discoverable"
+    },
+    {
+      "ok": true,
+      "label": "selecting Natalie starts direct mode"
+    },
+    {
+      "ok": true,
+      "label": "desktop controls fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual D key moves Natalie",
+      "data": {
+        "before": {
+          "x": 13.2,
+          "z": 16.6
+        },
+        "after": {
+          "x": 14.629890000000007,
+          "z": 16.6
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "context X plants the nearby plot"
+    },
+    {
+      "ok": true,
+      "label": "context X waters this crop faster"
+    },
+    {
+      "ok": true,
+      "label": "context X picks using real harvest rules"
+    },
+    {
+      "ok": true,
+      "label": "nearby litter can be cleaned by the selected character"
+    },
+    {
+      "ok": true,
+      "label": "home goals sheet fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "Hettie hire button buys the actual upgrade"
+    },
+    {
+      "ok": true,
+      "label": "home has an animated companion"
+    },
+    {
+      "ok": true,
+      "label": "physical costume rack opens the wardrobe"
+    },
+    {
+      "ok": true,
+      "label": "furniture opens contextual d-pad"
+    },
+    {
+      "ok": true,
+      "label": "rotation and keyboard d-pad alter actual furniture placement"
+    },
+    {
+      "ok": true,
+      "label": "advanced furniture actions retain the original complete controls"
+    },
+    {
+      "ok": true,
+      "label": "phone control layout fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone radial layout fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone home menu fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape control layout fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape radial layout fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape home menu fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold control layout fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold radial layout fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold home menu fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "on-screen thumbstick moves Natalie",
+      "data": {
+        "before": {
+          "x": 31.7,
+          "z": 12
+        },
+        "after": {
+          "x": 33.26750000000002,
+          "z": 12
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "DualSense changes contextual prompt to Square"
+    },
+    {
+      "ok": true,
+      "label": "DualSense Square plants using real rules"
+    },
+    {
+      "ok": true,
+      "label": "Triangle opens radial tools"
+    },
+    {
+      "ok": true,
+      "label": "left stick selects a radial sector"
+    },
+    {
+      "ok": true,
+      "label": "Circle closes the radial"
+    },
+    {
+      "ok": true,
+      "label": "Options, d-pad and Cross select Shane"
+    },
+    {
+      "ok": true,
+      "label": "DualSense d-pad navigates the actual menu"
+    },
+    {
+      "ok": true,
+      "label": "Circle backs out of a management menu"
+    },
+    {
+      "ok": true,
+      "label": "phone exact release controls fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone exact release radial fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape exact release controls fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape exact release radial fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold exact release controls fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold exact release radial fits and touch targets are 44px",
+      "data": {
+        "overflow": false,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "Skyla renders in the home with shared crisp sprite sampling"
+    },
+    {
+      "ok": true,
+      "label": "no page errors",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "all runtime assets embedded",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "home-milestone",
+    "natalie-planting",
+    "natalie-watering",
+    "home-life-menu",
+    "furniture-controller",
+    "phone-controls",
+    "phone-radial",
+    "landscape-controls",
+    "landscape-radial",
+    "fold-controls",
+    "fold-radial",
+    "phone-dualsense",
+    "phone-dualsense-radial",
+    "landscape-dualsense",
+    "landscape-dualsense-radial",
+    "fold-dualsense",
+    "fold-dualsense-radial",
+    "skyla-sharp-home"
+  ]
+}

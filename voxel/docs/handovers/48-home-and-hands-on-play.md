@@ -130,19 +130,21 @@ node voxel/build.mjs --out /tmp/home-play.html
 
 Public test controller additions include `playControls`, `interactAsPlayer` and `followHomeGoal`. `scene.player` offers `setEnabled`, `select`, `input`, `setBlocked`, `act`, `targets`, `teleport` and `state`. Teleport is diagnostic; normal play uses collision-aware walking. Tests exercising paid recipe buttons still need to expand the relevant recipe first, as documented in 47.
 
-## Verification — release results to be completed
+## Verification
 
-Component reports so far: four relevant furniture/house test files pass, including real geometry bounds, cached mesh safety, ordinary buying/storage/restoration, 45° placement and a side-wall plant shelf. The ten-item model thumbnail atlas was rendered and visually inspected. Other component rule/navigation/pet/cleanliness tests are present; their final combined results must be taken from root's verification run, not assumed here.
+Runtime: `6a6fe2bf1bb226489eebb882c2d535614b8165cd`.
+HTML SHA-256: `e21570c0f1ce2741d960c5cc0aa608d62622053ba2e1fd751f3c7d68823ff97a`.
 
-Root to record before shipping:
+All 84 Node test files pass; nine cleanliness scenarios also verify the final starter/expanded-farm litter bounds. [CI run 40588800114](https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/40588800114) passes both jobs on the runtime above, including all tests, build and desktop/phone smoke. The smoke exercises the visible radial route to the advanced furniture controls.
 
-- Exact final runtime/source commits and HTML SHA-256.
-- Complete Node test-file count and final CI run/steps.
-- Browser checks for fresh/legacy progression; goal prompt and Show me routing; house upgrade; wardrobe-at-home; home/truck cooking distinction; manual crop verbs and cooldown; actual movement/collision; costume facing; furniture d-pad/rotation/More parity; pets/litter/Hettie; pause, modal and gamepad boundaries.
-- Screenshots at desktop, phone, phone landscape and unfolded Fold dimensions. New radial/placement controls must stay on-screen, provide 44px targets and leave the world readable.
-- No browser errors or external runtime dependencies; standalone single-file game contains normal starting state, not QA grants.
-- Clean committed-source build and actual patch-application rebuild comparison with the download; public ZIP extraction/checksum verification.
+The full browser flow passes 44 checks on its pinned HTML: the real home-goal prompt and visit, keyboard movement, planting/watering/harvesting, manual cleanup and paid Hettie hire, physical costume-rack access, pets, furniture nudge/turn/advanced controls, real thumbstick movement and emulated DualSense inputs. It checks desktop, phone, landscape and Fold-sized layouts, 44px control targets, absence of browser errors and embedded assets. The final viewport-dialog box adjustment then receives a separate 18-check exact-download release pass; reports retain their individual immutable hashes and scope.
+
+The final verification folder contains the successful flow and exact-release reports, screenshots, Node log and CI record. The artifact manifest records independent clean-source and actually applied patch rebuild comparisons. Test funds/unlocks are injected only into browser storage; the downloaded HTML retains normal starting conditions. Earlier harness attempts were corrected to wait for visible child controls and asynchronous redraws; their failed intermediate reports are not release evidence.
 
 Managed Chromium serves the unchanged offline HTML over loopback. Physical Z Fold 7 performance, Android file handling, real controller hardware and native OS fullscreen are not hardware-tested by that process. Preserve the existing fullscreen button and save export/import. State exact test scope rather than claiming hardware parity.
 
 The companion [roadmap delta](../plans/home-play/ROADMAP.md) separates this iteration from the remaining controller/action-art work.
+
+## Final input and clarity refinements
+
+DualSense/standard Gamepad API input supports left-stick movement, Cross/Square interaction, Triangle tools, Circle back, Options management, radial selection with stick/d-pad, d-pad menu focus/choice changes and bumper furniture rotation. Pair Bluetooth in the device OS; the web game does not perform pairing. Skyla and both dogs at home now use the same mip-bias and anisotropic sampling as the existing shop sprites. Litter creation and restore are bounded to the purchased farm so manual cleanup cannot be stranded past the starter boundary.

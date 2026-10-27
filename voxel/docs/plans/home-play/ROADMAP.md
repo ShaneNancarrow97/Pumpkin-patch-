@@ -14,12 +14,9 @@ This follows completed handover 47 on `e2cba99`. The integration details, prices
 - Bounded lane litter and reversible visitor footfall effect; manual cleanup and Hettie's paid level-3 caretaker service.
 - Side/back walking for the existing twenty owner looks; original front sprites preserved, base drawn crop poses and costume-safe scene action animation.
 
-## Before the release is called verified
+## Release verification record
 
-1. Complete the all-outfit anchor/fragment review and in-engine facing checks.
-2. Run the complete rule suite and CI against the final runtime, then test browser progression, real interactions and save/reload.
-3. Check touch and keyboard focus in wheels and advanced furniture controls across phone, landscape and unfolded Fold-sized screens.
-4. Rebuild from committed source and from the delivered patch; compare the exact standalone HTML and verify the public ZIP.
+The full rule suite and final CI pass. The 44-check browser flow covers actual farming/home controls and emulated DualSense input across responsive layouts. Exact-release reports and clean-source/patch rebuild checks are recorded in handover 48 and the download manifest. Physical controller, Bluetooth and Fold hardware checks remain on the roadmap.
 
 ## Next contractor increment: deepen the physical loop
 
