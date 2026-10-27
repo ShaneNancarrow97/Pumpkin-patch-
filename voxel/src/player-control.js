@@ -35,7 +35,7 @@ export function slidePlayer(position, dx, dz, bounds, obstacles, radius = .25) {
 
 // This adapter owns only movement and presentation. Purchases and farming stay in the rules.
 export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow }) {
-  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null;
+  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0;
   const input = { x: 0, y: 0 }, positions = new Map(), right = new THREE.Vector3(), forward = new THREE.Vector3();
   const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd18a, transparent: true, opacity: .75, side: THREE.DoubleSide, depthWrite: false, toneMapped: false });
   const ring = new THREE.Mesh(new THREE.RingGeometry(.42, .465, 40), ringMat); ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);
@@ -107,6 +107,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     return true;
   }
   function update(dt, time) {
+    renderedTime = time;
     if (!sync()) return;
     const a = model(), pos = localPosition(), o = origin(), asleep = blocked || state.paused || document.body.classList.contains("menu-open");
     const old = { ...pos };
@@ -162,6 +163,14 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     targets,
     teleport(x, z) { if (!sync()) return false; const a = model(), o = origin(), p = safeSpot({ x, z }); a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z); positions.set(key, p); target = nearest(); return true; },
     state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", room: room() ? places.place?.id : null, position: localPosition(), facing, moving, blocked: blocked || !!state.paused, action: action?.kind ?? null, target: enabled && available() ? nearest() : null }; },
+    // QA can finish a presentation without advancing harvests, deliveries or any other rule.
+    advance(seconds) {
+      input.x = input.y = 0;
+      const duration = clamp(Number(seconds) || 0, 0, 30), start = renderedTime;
+      for (let t = 0; t < duration && action; t += .05) update(Math.min(.05, duration - t), start + Math.min(duration, t + .05));
+      update(0, renderedTime);
+      return api.state();
+    },
     update,
   };
   return api;
