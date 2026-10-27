@@ -3,3 +3,5 @@
 .control-mode .home-journey-chip{display:none}
 
 .radial-close{width:54px;height:54px}
+/* The wheel is a real viewport dialog; its fixed children do not size a wrapper. */
+#play-radial{position:fixed;inset:0}
