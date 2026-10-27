@@ -131,6 +131,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     if (target) { marker.position.set(o.x + target.x, .09, o.z + target.z); marker.scale.setScalar(target.type === "plot" ? 1.25 : .8); }
     tool.visible = drops.visible = !!action && action.kind === "water" && !asleep;
     const lean = a.children[0];
+    if (lean) lean.position.y = 0;
     if (action && !asleep) {
       action.elapsed += dt;
       const t = Math.min(1, action.elapsed / action.duration), bend = Math.sin(t * Math.PI);
@@ -148,7 +149,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   // Generated side/back textures must give way to the original autonomous sheet on release.
   function releaseFigure(person) {
     for (const a of [actors()[person]?.model, places.playerActor(person)]) if (a) {
-      if (a.children[0]) a.children[0].rotation.z = 0;
+      if (a.children[0]) { a.children[0].rotation.z = 0; a.children[0].position.y = 0; }
       a.userData.playerAnimate?.({ who: person, outfit: state.wardrobe.equipped[person], facing: "front", walking: false, time: 0, dx: 0, action: null });
     }
   }
