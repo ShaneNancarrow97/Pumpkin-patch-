@@ -44,6 +44,8 @@ import { decorCatalog as baseDecorCatalog, decorCategories as baseDecorCategorie
 import { PREMIUM_WALL_CATALOG } from "../content/premium-wall-catalog.js";
 import { PREMIUM_FURNITURE_CATALOG } from "../content/premium-furniture-catalog.js";
 import { KITCHEN_EQUIPMENT } from "../content/kitchen-equipment.js";
+import { HOME_FURNISHINGS } from "../content/home-furnishings.js";
+import { PET_FURNISHINGS, PET_FURNISHING_SIZES } from "../content/pet-furnishings.js";
 import { findRoom, findRoomStyle, freshRoomStyles, houseRooms, parlourInteriors, roomStyles } from "../../../src/content/rooms.mjs";
 import { libraryStories } from "../../../src/content/library.mjs";
 import { validPieceColour } from "./piece-colours.js";
@@ -51,10 +53,11 @@ import { SHELF_CATALOG } from "../content/shelf-catalog.js";
 import { canRide, isShelf, validFinish, surfacesOf, standsOn, ridersClash } from "./surfaces.js";
 import { DECOR_SIZES as BASE_DECOR_SIZES } from "../content/decor-sizes.js";
 import { KITCHEN_EQUIPMENT_SIZES } from "../content/kitchen-equipment-sizes.js";
+import { HOME_FURNISHING_SIZES } from "../content/home-furnishing-sizes.js";
 
-const DECOR_SIZES = { ...BASE_DECOR_SIZES, ...KITCHEN_EQUIPMENT_SIZES };
+const DECOR_SIZES = { ...BASE_DECOR_SIZES, ...KITCHEN_EQUIPMENT_SIZES, ...HOME_FURNISHING_SIZES, ...PET_FURNISHING_SIZES };
 
-const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG, ...PREMIUM_FURNITURE_CATALOG, ...SHELF_CATALOG, ...KITCHEN_EQUIPMENT];
+const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG, ...PREMIUM_FURNITURE_CATALOG, ...SHELF_CATALOG, ...KITCHEN_EQUIPMENT, ...HOME_FURNISHINGS, ...PET_FURNISHINGS];
 const decorById = Object.fromEntries(decorCatalog.map(item=>[item.id,item]));
 const decorCategories = baseDecorCategories.map(([id,name])=>[id,id === "all" ? `All ${decorCatalog.length}` : id === "shelves" ? "Shelves" : name]);
 export { decorById, decorCatalog, decorCategories, houseRooms, roomStyles, libraryStories };

@@ -9,7 +9,7 @@ import { premiumWallStats } from "../src/premium-wall-props.js";
 
 test("the six premium floor pieces use existing buying, moving and restoration",()=>{
   assert.equal(originals.length,50);
-  assert.equal(M.decorCatalog.length,73);                         // 50 + 6 premium wall + 6 premium floor + 5 blank shelves
+  assert.equal(M.decorCatalog.filter(item=>PREMIUM_FURNITURE_CATALOG.some(p=>p.id===item.id)).length,PREMIUM_FURNITURE_CATALOG.length,"each premium floor piece appears once alongside later collections");
   for(const item of PREMIUM_FURNITURE_CATALOG) {
     const s=M.freshState();s.house.level=3;s.coins=item.price-1;
     const model=PREMIUM_FURNITURE_ITEMS.find(p=>p.id===item.id),room=model.room;
