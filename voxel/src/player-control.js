@@ -181,7 +181,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     if (!pose) positions.set(key, { ...pos });
     const delta = Math.hypot(pos.x - old.x, pos.z - old.z), dx = delta > .00001 || action || pose ? screenHeading : 0;
     animate(a, time * (gait === "jog" && moving ? 1.35 : 1), moving, dx, who === "shane" ? 1.7 : 0);
-    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing, walking: moving, time, age: time * (gait === "jog" && moving ? 1.35 : 1), dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0 });
+    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing, walking: moving, time, age: time * (gait === "jog" && moving ? 1.35 : 1), dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
     const hit = !room() && actors()[who]?.hit; if (hit) hit.position.set(a.position.x, 1.1, a.position.z);
     target = nearest();
     ring.visible = !asleep; ring.position.set(a.position.x, .075, a.position.z); ringMat.opacity = .6 + Math.sin(time * 2) * .1;
@@ -214,7 +214,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   function releaseFigure(person) {
     for (const a of [actors()[person]?.model, places.playerActor(person)]) if (a) {
       if (a.children[0]) { a.children[0].rotation.z = 0; a.children[0].position.y = 0; }
-      a.userData.playerAnimate?.({ who: person, outfit: state.wardrobe.equipped[person], facing: "front", walking: false, time: 0, dx: 0, action: null });
+      a.userData.playerAnimate?.({ who: person, outfit: state.wardrobe.equipped[person], facing: "front", walking: false, time: 0, dx: 0, action: null, release: true });
     }
   }
   const api = {
