@@ -1,3 +1,4 @@
+import { createLifeActivity } from './life-activity.js';
 import { createPlayControls } from './ui/play-controls.js';
 import { homeLifeSheet, createHomeJourney } from './ui/home-life-sheet.js';
 import { waterPlot, wateringStatus } from './rules/hands-on.js';
@@ -46,7 +47,7 @@ function load() {
   try { return M.restoreState(JSON.parse(localStorage.getItem(SAVE_KEY) || "null")); } catch { return M.freshState(); }
 }
 let state = load();
-let playControls, homeJourney;
+let playControls, homeJourney, lifeActivity;
 const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(state))); } catch {} };
 setInterval(save, 5000);
 document.addEventListener("visibilitychange", () => document.hidden && save());
@@ -97,6 +98,7 @@ const scene = createScene($("world"), state, {
     idle += dt;
     if (idle > IDLE_TEA && !state.paused) { idleTea = true; state.paused = true; notice("You've been away a while, so Shane and Natalie have put the kettle on. Tap to carry on."); }
     if (!state.paused) for (const e of M.update(state, dt)) handle(e);
+    lifeActivity?.tick(dt);
     render();
   },
   selectedPiece: () => home.tools.selected,
@@ -272,6 +274,7 @@ function notice(text) {
 // Stepping inside the cottage or the shop, and back out.
 let interiorFromEstate = false;
 function enterRoom(id) {
+  lifeActivity?.cancel();
   if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation();
   if (!M.roomUnlocked(state, id)) id = "parlour";
   if (scene.place?.kind === "estate") interiorFromEstate = true; else if (scene.place?.kind !== "room") interiorFromEstate = false;
@@ -342,7 +345,7 @@ function goTo(id) {
   if (openTab === "home") draw();
 }
 function enterShop() { if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("shop"); renderPlace(); }
-function leavePlace() { if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.leavePlace(); renderPlace(); }
+function leavePlace() { lifeActivity?.cancel(); if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.leavePlace(); renderPlace(); }
 function openHome() { if (scene.place?.kind === "room") { sheets.home.setTab("rooms"); openSheet("home"); } else if (scene.place?.kind === "estate") openEstateSheet("grounds"); else enterEstate(); }
 function openEstateSheet(tab = "garden") { sheets.estate.setTab(tab); openSheet("estate"); }
 function upgradeEstateHouse() {
@@ -506,6 +509,7 @@ function draw() {
   text("sheet-title", title);
 }
 function openSheet(tab) {
+  lifeActivity?.cancel();
   if (hayrideUI.active) exitHayrideRide();
   if (mazeUI.active) exitMazeRide();
   if(!openTab)sheetReturnFocus=document.activeElement instanceof HTMLElement&&document.activeElement!==document.body?document.activeElement:null;
@@ -575,26 +579,37 @@ document.addEventListener("keydown", (e) => {
 });
 
 // The controller layer uses the same purchases and farming rules as taps.
-function interactAsPlayer(tool='hand') {
-  const p=scene.player?.state(),t=p?.target;if(!p?.enabled||p.action||state.paused||openTab)return false;
+// Timed crop work commits here once, using the same stock and streak rules as taps.
+function commitPlayerWork(kind,t){
+  let ok=false;if(kind==='plant')ok=M.plant(state,t.index);else if(kind==='harvest')ok=!!pickPlot(t.index);else if(kind==='water')ok=waterPlot(state,t.index);else if(kind==='clean')ok=M.cleanLitter(state,t.id);
+  if(ok){M.recordHomeActivity?.(state,kind);audio.tone(kind==='water'?520:kind==='clean'?600:360);save();}
+  return !!ok;
+}
+function interactAsPlayer(tool='hand',options={}) {
+  if(['release','cancel'].includes(options.phase))return lifeActivity?.handle(tool,options);
+  const p=scene.player?.state(),t=p?.target;if(!p?.enabled||state.paused||openTab)return false;
+  if(p.pose){scene.player.stand();return true;}
   if(p.available===false){if(p.place==='estate')enterRoom(state.house.activeRoom);else leavePlace();return true;}
   if(!t)return false;
-  if(t.type==='plot'){
-    const plot=state.plots[t.index],kind=tool==='hand'?(plot.phase==='empty'?'plant':plot.phase==='ready'?'harvest':'water'):tool;
-    let ok=false;if(kind==='plant')ok=M.plant(state,t.index);else if(kind==='harvest')ok=!!pickPlot(t.index);else if(kind==='water'){ok=waterPlot(state,t.index);if(!ok&&wateringStatus(state,t.index).seconds)notice('This crop is watered. Give it a moment to drink.');}
-    if(ok){scene.player.act(kind,1.2);M.recordHomeActivity?.(state,kind);audio.tone(kind==='water'?520:360);save();}else if(kind==='harvest'&&M.barnBlocked(state))notice('Barn full. Sell stock or expand storage.');
+  if(['plot','litter'].includes(t.type)){
+    const ok=lifeActivity.handle(tool,options);
+    if(!ok&&t.type==='plot'&&tool==='water'&&wateringStatus(state,t.index).seconds)notice('This crop has had a drink. Try the next one.');
+    else if(!ok&&t.type==='plot'&&state.plots[t.index].phase==='ready'&&M.barnBlocked(state))notice('Barn full. Sell stock or expand storage.');
     return ok;
   }
-  if(t.type==='litter'){if(M.cleanLitter?.(state,t.id)){scene.player.act('clean',1.25);audio.tone(550);save();return true;}return false;}
+  if(options.phase && !['tap','start'].includes(options.phase))return false;
   if(tool!=='hand'){notice('Choose Interact for doors, cooking and furniture.');return false;}
   if(t.type==='pumpkin'){boost();scene.player.act('harvest',.7);}
-  else if(t.type==='home'){enterEstate();}
+  else if(t.type==='home')enterEstate();
   else if(t.type==='shop'){if(state.shop.unlocked)enterShop();else openShopSheet('shop');}
   else if(t.type==='cooking')openCookingSheet('recipes',t.station??'truck');
-  else if(t.type==='wardrobe'){M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');}
+  else if(t.type==='wardrobe'){M.recordHomeActivity(state,'wardrobe');save();openSheet('wardrobe');}
+  else if(t.type==='sit')scene.player.rest('sit',t);
+  else if(t.type==='read'){scene.player.rest('read',t);if(t.book)collection.read(t.book);else {sheets.journal.setTab('library');openSheet('journal');}}
+  else if(t.type==='pet')scene.player.rest('pet',t);
   else if(t.type==='go')goTo(t.to);
   else if(t.type==='exit'){if(scene.place?.kind==='room'&&interiorFromEstate)enterEstate();else leavePlace();}
-  else if(t.type==='piece'){home.tools.select(t.instance);}
+  else if(t.type==='piece')home.tools.select(t.instance);
   return true;
 }
 function followHomeGoal(){
@@ -607,7 +622,8 @@ function followHomeGoal(){
   else {enterRoom(g.room??state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');}
   save();
 }
-playControls=createPlayControls({scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
+lifeActivity=createLifeActivity({state:()=>state,player:scene.player,commit:commitPlayerWork,notice,blocked:()=>!!openTab||intro.active||celebration.active||!!homeJourney?.active||!!playControls?.radial||!!home.tools.selected||upgradeMenu.open});
+playControls=createPlayControls({getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
 homeJourney=createHomeJourney({state:()=>state,blocked:()=>!!openTab||celebration.active||intro.active||mazeUI.active||hayrideUI.active||!!home.tools.selected||!!playControls.radial||state.paused,follow:followHomeGoal,open:()=>openSheet('homelife')});
 scene.setRenderQuality(prefs.renderQuality); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
 render(); renderPlace();
@@ -620,7 +636,7 @@ const mazeDiagnostics = {
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
 const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), get status() { return scene.hayrideRideStatus; } };
-window.PumpkinVoxel = { playControls, interactAsPlayer, followHomeGoal, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
+window.PumpkinVoxel = { lifeActivity, playControls, interactAsPlayer, followHomeGoal, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";
