@@ -10,6 +10,9 @@ import { riderSize } from "./rules/surfaces.js";
 import { WALL_H, INTERIOR, buildRoom, buildShopInterior, SHOP_SPOTS } from "./interiors.js";
 import { decorProp, shelfBooks, decorReady } from "./decor.js";
 import { createHomePets, homePetTextures } from "./home-pets.js";
+import { homePieceTargets, petInteractionTargets } from "./rules/home-interactions.js";
+import { ownerHomeTextures, applyHomePose, clearHomePose } from "./player-home-poses.js";
+import { activeLook } from "./rules/wardrobe.js";
 
 // The places you can step into: the cottage's rooms and the Honest Pumpkin.
 // They are built away from the farm (ORIGIN), one at a time, from the save.
@@ -54,6 +57,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   let place = null, built = null, pieces = new Map(), pickables = [], actors = [], customers = new Map(), tables = [], skyla = null;
   let controlled = null;
   let pets = null;
+  const resting = new Map();
   let selection = null, ghost = null, showGrid = false, gridLines = null, tableKey = "";
   let foodDisplays = [], foodDisplayKey = "";
   // A tiny reused steam rig follows the physical appliance, including turning
@@ -97,6 +101,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   const clear = () => {
+    for (const a of actors) clearHomePose(a.model); resting.clear();
     pets?.clear(); pets = null;
     cookingFX.visible = false; kitchenFXStatus = { active: false, recipe: null, method: null, steam: 0 };
     for (const f of foodDisplays) disposeFoodProp(f); foodDisplays = []; foodDisplayKey = "";
@@ -431,7 +436,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   return {
-    get petTextures() { return homePetTextures; },
+    get petTextures() { return [...homePetTextures, ...ownerHomeTextures]; },
     get petsStatus() { return pets?.status() ?? []; },
     get place() { return place; },
     // The optional direct-control adapter uses the same cast and measured furniture as this room.
@@ -451,14 +456,25 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     playerTargets() {
       if (place?.kind !== "room") return [];
       const layout = roomLayout(state, place.id), list = [{ type: "exit", label: "Leave the house", x: place.w / 2, z: place.d - .25 }];
-      for (const p of roomPieces(state, place.id)) {
-        const fp = pieceFootprint(p), item = decorById[p.id]; if (!item || p.on || fp.layer === "rug") continue;
-        const cooking = ["kitchen-hob", "kitchen-oven", "copper-range"].includes(p.id), wardrobe = /wardrobe|costume.*rack|dressing/.test(p.id) || item.interaction === "wardrobe";
-        list.push({ type: cooking ? "cooking" : wardrobe ? "wardrobe" : "piece", instance: p.instance, item: p.id, station: cooking ? "home" : undefined, label: cooking ? "Cook in the kitchen" : wardrobe ? "Change costume" : item.name, x: p.x + fp.w / 2, z: p.z + fp.d / 2 });
-      }
+      list.push(...homePieceTargets(state,place.id),...petInteractionTargets(pets?.status()??[]));
       for (const st of layout?.stairs ?? []) { const to = st.up ?? st.down; if (to) list.push({ type: "go", to, label: "Go to " + to, x: st.exit.x + .5, z: st.exit.z + .5 }); }
       for (const dr of layout?.doors ?? []) list.push({ type: "go", to: dr.to, label: "Go to " + dr.to, x: dr.wall === "left" ? .35 : place.w - .35, z: dr.at + dr.width / 2 });
       return list;
+    },
+    playerRest(who,kind,target,time=0) {
+      const actor=actors.find(a=>a.who===who)?.model;if(!actor||place?.kind!=="room")return false;
+      const key=kind+":"+(target.instance??target.pet??target.book??"");
+      if(resting.get(who)!==key){clearHomePose(actor);resting.set(who,key);if(kind==="pet")pets?.react(target.pet,{x:actor.position.x-ORIGIN.room.x,z:actor.position.z});}
+      return applyHomePose(actor,{who,outfit:state.wardrobe.equipped[who],look:activeLook(state,who),kind,target,time});
+    },
+    clearPlayerRest(who) {
+      const actor=actors.find(a=>a.who===who)?.model;if(actor)clearHomePose(actor);resting.delete(who);
+    },
+    faceCamera(yaw=0) {
+      for(const a of actors)a.model.rotation.y=yaw;
+      for(const a of customers.values())if(a.model.userData.sprite)a.model.rotation.y=yaw;
+      if(skyla)skyla.rotation.y=yaw;
+      pets?.faceCamera(yaw);
     },
     // Out on the farm the lamps borrow this pool (scene.js lightLamps).
     get lightPool() { return pool; },

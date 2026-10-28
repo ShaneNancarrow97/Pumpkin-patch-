@@ -44,7 +44,7 @@ export function createHomePets({group,state,room,layout,origin}) {
     const preferred=bed?centre(bed):{x:1.2+i*1.4,z:Math.max(.8,layout.d-1.4)};
     const start=petRoute(preferred,preferred,layout,obstacles)[0];if(!start){figure.dispose();continue;}
     figure.group.position.set(start.x,0,start.z);root.add(figure.group);
-    roster.push({who,...figure,bed,position:{...start},home:{...start},phase:"wag",timer:2+i*1.8,cycle:i,path:[],after:null,face:1,frame:0});
+    roster.push({who,...figure,bed,position:{...start},home:{...start},phase:"wag",timer:2+i*1.8,cycle:i,path:[],after:null,face:1,frame:0,pleasedUntil:0,reactions:0});
   }
   function travel(p,to,after) {
     const path=petRoute(p.position,to,layout,obstacles,p.who==="skyla"?.18:.22);
@@ -65,6 +65,13 @@ export function createHomePets({group,state,room,layout,origin}) {
       travel(p,{x:Math.max(.4,Math.min(layout.w-.4,p.home.x+Math.cos(angle)*2)),z:Math.max(.4,Math.min(layout.d-.4,p.home.z+Math.sin(angle)*1.2))},"wag");
     }
   }
+  // A greeting briefly interrupts wandering, without hunger or currency costs.
+  function react(who,at) {
+    const p=roster.find(p=>p.who===who);if(!p)return false;
+    p.path=[];p.after=null;p.phase="wag";p.timer=4.5;p.pleasedUntil=clock+4.5;p.reactions++;
+    if(Number.isFinite(at?.x))p.face=at.x<p.position.x?-1:1;
+    return true;
+  }
   function tick(dt,time) {
     clock+=Math.max(0,Math.min(.2,dt));
     for(const p of roster){
@@ -79,10 +86,10 @@ export function createHomePets({group,state,room,layout,origin}) {
       p.frame=moving?META.states.walk[Math.floor(clock*6)%2]:wag?META.states.wag[Math.floor(clock*3)%2]:p.phase==="sleep"?META.states.sleep:p.phase==="stretch"?META.states.stretch:["eat","drink"].includes(p.phase)?META.states.feed:META.states.idle;
       p.mesh.geometry=geometries[p.who][p.frame];p.lean.scale.x=p.face;
       const bedLift=p.phase==="sleep"&&p.bed?.room===room ? .13 : 0;
-      p.group.position.set(p.position.x,bedLift+(moving?Math.sin(clock*12)*.016:0),p.position.z);
+      p.group.position.set(p.position.x,bedLift+(moving?Math.sin(clock*12)*.016:p.pleasedUntil>clock?Math.max(0,Math.sin(clock*7))*.028:0),p.position.z);
       p.lean.scale.y=(1/Math.cos(INTERIOR.pitch-INTERIOR.lean))*(1+Math.sin(clock*(p.phase==="sleep"?1.8:2.6))*(p.phase==="sleep"?.009:.003));
       p.lean.rotation.z=["eat","drink"].includes(p.phase)?Math.sin(clock*5)*.018:0;
     }
   }
-  return {tick,clear(){for(const p of roster)p.dispose();roster.length=0;root.removeFromParent();},status(){return roster.map(p=>({who:p.who,phase:p.phase,frame:p.frame,position:{...p.position},hasBed:!!p.bed,bowls:bowls.length}));}};
+  return {tick,react,faceCamera(yaw=0){for(const p of roster)p.group.rotation.y=yaw;},clear(){for(const p of roster)p.dispose();roster.length=0;root.removeFromParent();},status(){return roster.map(p=>({who:p.who,phase:p.phase,frame:p.frame,position:{...p.position},hasBed:!!p.bed,bowls:bowls.length,reacting:p.pleasedUntil>clock,reactions:p.reactions}));}};
 }
