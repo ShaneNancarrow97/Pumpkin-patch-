@@ -14,6 +14,8 @@
 
 **Contractor home and hands-on play:** [`docs/handovers/48-home-and-hands-on-play.md`](docs/handovers/48-home-and-hands-on-play.md) adds optional Shane/Natalie control on the farm and in home rooms, twenty home-driven levels, v14 migration, usable furniture, home pets and cleanliness. The private estate retains its orbit/edit controls with an Enter home bridge; read the handover and [roadmap delta](docs/plans/home-play/ROADMAP.md) for art/control limits and final verification status.
 
+**Contractor life-play:** [`docs/handovers/49-life-sim-control.md`](docs/handovers/49-life-sim-control.md) follows 48 with timed tool gestures, two-stick camera controls, home interactions and corrected owner walks. Read its integration and verification scope before changing these systems.
+
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
 **Codex's hayride (merged in 39):** [`docs/handovers/38-hayride-lead-integration.md`](docs/handovers/38-hayride-lead-integration.md) preserves Claude’s `1abaff5` maze update and isolates hayride audio from lead-owned runtime files.
@@ -26,7 +28,7 @@ Read this before changing anything in `voxel/`. It covers what the game is, how 
 
 - **A voxel version of Shane & Natalie's Pumpkin Patch.** It is a cosy Halloween farm and shop game. Shane and Natalie grow pumpkins, neighbours buy them at the stall and inside Skyla's shop, and the takings go on upgrades, a four-room house, decor, books and costumes.
 - **The main game lives at the repository root** (`src/`, a 2D canvas game). This build lives in `voxel/` on the `voxel-reference` branch, draft PR #2. It is a reference for art direction, staging and menu design, not a replacement. Nothing here should change the main game.
-- **It ships as one offline HTML file,** `dist/pumpkin-patch-voxel.html`, about 5.6 MB, with every asset inlined. It runs from `file://` on a phone or a desktop.
+- **It ships as one offline HTML file,** `dist/pumpkin-patch-voxel.html`, with every asset inlined; see the latest delivery manifest for its current byte size. It runs from `file://` on a phone or a desktop.
 - **The world is three.js 0.169** (pinned), drawn as voxels: boxes batched into instanced meshes. The cast are the main game's own sprites standing in the 3D world. Menus are HTML over the canvas.
 - **It shares the main game's content.** The rules import the main game's data modules directly: `../../src/content/*.mjs` (catalogue, rooms, library, shop and stall profiles, art metadata) and `../../src/core/costume-model.mjs`. Those modules have no imports of their own. Don't change them for this build's sake; adapt here instead.
 
@@ -92,7 +94,7 @@ Generated files: `src/sprite-meta.js`, `src/sprite-meta-hd.js`, `src/decor-meta.
 - **Rules are pure.** No DOM and no three.js; time comes in only as `dt`. Keep it that way so `npm test` can run them in Node. When a rule changes, add or update a test.
 - **Saves:**
   - The key is `pumpkin-patch-voxel-reference-v1`, separate from the main game's, plus `-prefs` for settings.
-  - `STATE_VERSION` is 12 (additive cooking state; legacy saves migrate). `restoreState` must accept anything, including junk, older versions and missing fields, and return a valid state.
+  - `STATE_VERSION` is 14 (additive cooking, home-life and progression state; legacy saves migrate). `restoreState` must accept anything, including junk, older versions and missing fields, and return a valid state.
   - If you change the shape of saved state, bump the version, migrate in `restoreState`, and test the round trip.
   - Customers and baskets are never saved (`closeForTheNight`).
 - **Picking:**

@@ -102,7 +102,8 @@ try {
   const changed = await status();
   check(travelled(both.p.position, changed.p.position) > .05 && Math.abs(wrapped(changed.camera.playerOrbit.yaw, both.camera.playerOrbit.yaw)) > .02,
     'Moving one thumb does not steal the other thumb’s camera capture', { both, changed });
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [rightMoved] });
+  // Chromium partial touchEnd selects the lifted point, not the remaining one.
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [leftChanged] });
   await frame(5);
   const moveReleased = await status(); await frame(3); const lookingOnly = await status();
   check(travelled(moveReleased.p.position, lookingOnly.p.position) < .05 && Math.abs(wrapped(lookingOnly.camera.playerOrbit.yaw, moveReleased.camera.playerOrbit.yaw)) > .02,
