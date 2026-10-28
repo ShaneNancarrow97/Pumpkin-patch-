@@ -42,7 +42,7 @@ import { createHayrideView } from "./hayride-view.js";
 import { createFoyerView } from "./foyer-view.js";
 import { createAmbience } from "./ambience.js";
 import { mistClearings } from "./content/ambience.js";
-import { createPlayerControl } from "./player-control.js";
+import { playerOrbitStep, createPlayerControl } from "./player-control.js";
 import { createCleanlinessView } from "./cleanliness-view.js";
 
 const WALK = 2.4;
@@ -308,14 +308,26 @@ export function createScene(canvas, state, hooks) {
   const active = () => view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
   const activeScene = () => view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
   const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null, reach: { x: 0, z: 0 } };
-  // Direct control borrows the existing cast, cameras and collision measurements.
+  // The optional orbit follows the owner; the management view stays canonical.
+  const playerOrbit = { yaw: 0, pitch: PITCH }, playerLook = { x: 0, z: 0 };
+  const orbitTarget = new THREE.Vector3(), orbitForward = new THREE.Vector3(), orbitUp = new THREE.Vector3();
+  const orbitGround = new THREE.Mesh(new THREE.PlaneGeometry(260,260), new THREE.MeshStandardMaterial({color:0x25291d,roughness:1}));
+  orbitGround.rotation.x=-Math.PI/2; orbitGround.position.set(20,-.55,15); orbitGround.visible=false; orbitGround.receiveShadow=true; scene.add(orbitGround);
+  const orbitBackdrop = new THREE.Mesh(new THREE.PlaneGeometry(1,1), backdrop.material); orbitBackdrop.visible=false; orbitBackdrop.frustumCulled=false; scene.add(orbitBackdrop);
+  const billboards = new Map(); let nextBillboardScan = -1, hadOrbit = false;
+  function orbiting(){return player.state().enabled && (!view.place || view.place==='room');}
+  // Register flat cast as they arrive, then rotate only that small set per frame.
+  function faceCast(yaw,pitch,inside,now){
+    if(now>=nextBillboardScan){nextBillboardScan=now+1;scene.traverse(o=>{const lean=o.children[0];if(o.isGroup&&lean?.isGroup&&lean.children.some(m=>m.isMesh&&m.geometry?.type==='PlaneGeometry'&&m.customDepthMaterial)&&!billboards.has(o))billboards.set(o,{yaw:o.rotation.y,lean:lean.rotation.x,stretch:lean.scale.y});});}
+    for(const [o,base]of billboards){if(!o.parent){billboards.delete(o);continue;}const lean=o.children[0];if(!lean)continue;o.rotation.y=yaw;const angle=inside?INTERIOR.lean:Math.abs(base.lean);lean.rotation.x=-angle;lean.scale.y=1/Math.cos(pitch-angle);}
+    places.faceCamera?.(yaw,pitch);
+  }
+  function restoreCast(){for(const[o,base]of billboards){o.rotation.y=base.yaw;if(o.children[0]){o.children[0].rotation.x=base.lean;o.children[0].scale.y=base.stretch;}}places.faceCamera?.(0,INTERIOR.pitch);}
   const player = createPlayerControl({ scene, state, actors: () => actors, places, getPlace: () => view.place, getCamera: active, animate: animateSprite,
-    follow(pos, dt, inside) {
-      if (touches.size || kept) return;
-      const k = 1 - Math.exp(-dt * 3), tx = inside ? pos.x - ORIGIN.room.x - places.place.w / 2 : pos.x;
-      const tz = inside ? (pos.z - ORIGIN.room.z - places.place.d * .6) * .3 : pos.z - 2.5;
-      view.x += (tx - view.x) * k; view.z += (tz - view.z) * k; frame();
-    },
+    cameraLook(x,y,dt){Object.assign(playerOrbit,playerOrbitStep(playerOrbit,x,y,dt,view.place==='room'));playerLook.x=playerOrbit.yaw;playerLook.z=playerOrbit.pitch-PITCH;},
+    cameraZoom(direction){if(touches.size||kept||!direction)return;const l=cameraLayout(canvas.clientWidth),inside=view.place==='room';view.zoom=THREE.MathUtils.clamp(view.zoom*Math.exp(direction*.13),inside?l.roomMinZoom:l.minZoom,inside?1.9:l.maxZoom);frame();},
+    cameraReset(pos,inside){playerOrbit.yaw=0;playerOrbit.pitch=inside?INTERIOR.pitch:PITCH;playerLook.x=playerLook.z=0;view.x=inside?pos.x-places.place.w/2:pos.x;view.z=inside?pos.z-places.place.d*.42:pos.z;view.zoom=inside?1:canvas.clientWidth>=740?2.3:1.35;frame();},
+    follow(pos,dt,inside){if(touches.size||kept)return;const k=1-Math.exp(-dt*9);const tx=inside?pos.x-ORIGIN.room.x-places.place.w/2:pos.x,tz=inside?pos.z-ORIGIN.room.z-places.place.d*.42:pos.z;view.x+=(tx-view.x)*k;view.z+=(tz-view.z)*k;frame();},
   });
   let farmView = null;
   let bloomOn = true;
@@ -342,10 +354,12 @@ export function createScene(canvas, state, hooks) {
     // middle, floor to cornice, and drags along to see the rest.
     // Rooms grow with the house, so the room's own size comes from the place.
     const { w: rw, d: rd } = places.place ?? GRID;
-    const o = ORIGIN[view.place], aspect = w / h, p = INTERIOR.pitch, layout = cameraLayout(w);
+    const controlled = orbiting() && view.place === "room";
+    const o = ORIGIN[view.place], aspect = w / h, p = controlled ? playerOrbit.pitch : INTERIOR.pitch, layout = cameraLayout(w);
     const half = 3.5 + (rw / 2 + 0.4 - 3.5) * layout.overview;
     const corners = [[-half, 5.4, 0], [half, 5.4, 0], [-half, -0.1, rd + 0.3], [half, -0.1, rd + 0.3]];
-    const target = new THREE.Vector3(o.x + rw / 2 + view.x, 2, o.z + rd * 0.42 + view.z), dir = new THREE.Vector3(0, Math.sin(p), Math.cos(p));
+    const yaw=controlled?playerOrbit.yaw:0;
+    const target = new THREE.Vector3(o.x + rw / 2 + view.x, controlled ? 1.1 : 2, o.z + rd * 0.42 + view.z), dir = new THREE.Vector3(Math.sin(yaw)*Math.cos(p), Math.sin(p), Math.cos(yaw)*Math.cos(p));
     probe.fov = INTERIOR.fov; probe.aspect = aspect; probe.near = 0.1; probe.far = 200; probe.updateProjectionMatrix();
     const fits = (dist) => {
       probe.position.copy(target).addScaledVector(dir, dist); probe.lookAt(target); probe.updateMatrixWorld();
@@ -355,8 +369,8 @@ export function createScene(canvas, state, hooks) {
       }
       return true;
     };
-    let dist = 6;
-    while (dist < 80 && !fits(dist)) dist += 0.25;
+    let dist = controlled ? (layout.overview < .95 ? 11 : 13) : 6;
+    if(!controlled)while (dist < 80 && !fits(dist)) dist += 0.25;
     roomCam.fov = INTERIOR.fov; roomCam.aspect = aspect; roomCam.updateProjectionMatrix();
     roomCam.position.copy(target).addScaledVector(dir, dist / view.zoom);
     roomCam.lookAt(target);
@@ -414,7 +428,9 @@ export function createScene(canvas, state, hooks) {
   function frame() {
     const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
     // The painted farm panorama has finite edges at the woodland's low camera.
-    backdrop.visible = view.place !== "hayride";
+    const control = orbiting();
+    backdrop.visible = view.place !== "hayride" && !(control && !view.place);
+    orbitGround.visible=orbitBackdrop.visible=control&&!view.place;
     renderPass.camera = active();
     renderPass.scene = activeScene();
     renderer.toneMappingExposure = view.place === "maze" ? 1.3 : 1.45;
@@ -422,16 +438,20 @@ export function createScene(canvas, state, hooks) {
     if (view.place === "hayride") { hayrideView.resize(); return; }
     if (view.place === "estate") { estateView.resize(w, h); return; }
     if (view.place === "foyer") { foyerView.resize(); return; }
-    if (view.place) { clampView(); frameRoom(w, h); return; }
+    if (view.place) { if(!control)clampView(); frameRoom(w, h); return; }
     // Ease from a phone crop to the whole yard, with room around the edges.
     view.zoom = THREE.MathUtils.clamp(view.zoom, cameraLayout(w).minZoom, cameraLayout(w).maxZoom);
     const span = (cameraLayout(w).farmSpan + (farmViewWidth() - MAP.w - HOLLOW_PROPERTY.westEdge + (fieldDepth(state) - MAP.d) * .8) * cameraLayout(w).overview) / view.zoom, halfW = span / 2, halfH = halfW / aspect;
     camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
     camera.updateProjectionMatrix();
-    clampView();
-    const target = new THREE.Vector3(view.x, 0, view.z), dist = 60;
-    camera.position.set(target.x, target.y + Math.sin(PITCH) * dist, target.z + Math.cos(PITCH) * dist);
-    camera.lookAt(target);
+    if(!control)clampView();
+    const target = new THREE.Vector3(view.x, control?1.05:0, view.z), dist = 60, pitch=control?playerOrbit.pitch:PITCH,yaw=control?playerOrbit.yaw:0;
+    camera.position.set(target.x+Math.sin(yaw)*Math.cos(pitch)*dist, target.y+Math.sin(pitch)*dist, target.z+Math.cos(yaw)*Math.cos(pitch)*dist);
+    camera.lookAt(target);camera.updateMatrixWorld();
+    if(control){
+      camera.getWorldDirection(orbitForward);orbitUp.set(0,1,0).applyQuaternion(camera.quaternion);
+      orbitBackdrop.position.copy(target).addScaledVector(orbitForward,85).addScaledVector(orbitUp,halfH*.4);orbitBackdrop.quaternion.copy(camera.quaternion);orbitBackdrop.scale.set(halfW*2.8,halfH*2.5,1);
+    }
   }
   let firstResize = true, lastOverview = false;
   function resize() {
@@ -745,6 +765,7 @@ export function createScene(canvas, state, hooks) {
     mazeView.tick(dt, time);
     if (view.place === "hayride") hayrideView.tick(dt);
     player.update(dt, time);
+    const orbit=orbiting();if(orbit){faceCast(playerOrbit.yaw,playerOrbit.pitch,!!view.place,time);hadOrbit=true;}else if(hadOrbit){restoreCast();hadOrbit=false;}
     cleanlinessView.update(state.paused ? 0 : dt, !view.place);
 
     for (let i = fx.length - 1; i >= 0; i--) {
@@ -764,7 +785,7 @@ export function createScene(canvas, state, hooks) {
   return {
     player: {
       ...player,
-      setEnabled(on, who) { const result = player.setEnabled(on, who); if (!view.place) { view.zoom = on ? Math.max(view.zoom, canvas.clientWidth >= 740 ? 2.3 : 1.35) : 1; frame(); } return result; },
+      setEnabled(on,who){playerLook.x=playerLook.z=0;playerOrbit.yaw=0;playerOrbit.pitch=view.place==='room'?INTERIOR.pitch:PITCH;const result=player.setEnabled(on,who);if(on){const p=player.state().position;view.x=view.place==='room'?p.x-places.place.w/2:p.x;view.z=view.place==='room'?p.z-places.place.d*.42:p.z;}if(!view.place)view.zoom=on?Math.max(view.zoom,canvas.clientWidth>=740?2.3:1.35):1;if(!on)restoreCast();frame();return result;},
     },
     sendTo(plotIndex) { const p = PLOTS[plotIndex], a = nearestActor(p.x, p.z); a?.queue.push({ x: p.x - 0.9, z: p.z + 0.4 }); },
     tapPumpkin() { tapPulse = 1; floatText("✦", BIG_PUMPKIN.x, 3.6, BIG_PUMPKIN.z, "spark"); },
@@ -799,7 +820,7 @@ export function createScene(canvas, state, hooks) {
       if (!view.place) farmView = { x: view.x, z: view.z, zoom: view.zoom };
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
-      view.place = kind;
+      view.place = kind; playerOrbit.yaw=0;playerOrbit.pitch=kind==="room"?INTERIOR.pitch:PITCH;
       if (kind === "estate") { places.leave(); estateView.enter(); }
       else if (kind === "foyer") { places.leave(); foyerView.enter(); }
       else if (kind === "maze") { places.leave(); mazeView.enter(id.config, id.options); }
@@ -815,7 +836,7 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
       places.leave();
-      view.place = null; glide = null;
+      view.place = null; glide = null; playerOrbit.yaw=0;playerOrbit.pitch=PITCH;
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
       frame();
     },
@@ -829,7 +850,7 @@ export function createScene(canvas, state, hooks) {
     get kitchenStatus() { return places.kitchenStatus; },
     get petsStatus() { return places.petsStatus; },
     get cookingStatus() { return { ...cookingWorld.status, displays: places.foodDisplayStatus, receiver: actors.shane?.delivery ?? null, receiverStatus: actors.shane?.delivery ? { order: actors.shane.delivery, x: actors.shane.model.position.x, z: actors.shane.model.position.z, waiting: !!actors.shane.queue[0]?.receive && Math.hypot(actors.shane.model.position.x - 39.65, actors.shane.model.position.z - 4.45) <= .12 } : null }; },
-    get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight }; },
+    get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight, playerLook: { ...playerLook }, playerOrbit: {...playerOrbit,active:orbiting()} }; },
     fitView() {
       if (view.place === "maze") { mazeView.setLook(0, 0); mazeView.resize(); return; }
       if (view.place === "hayride") { hayrideView.setLook(0, 0); hayrideView.resize(); return; }

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Voxels } from "./voxels.js";
-import { PLOTS, BIG_PUMPKIN, SHOP, HOMES } from "./world.js";
+import { PLOTS, BIG_PUMPKIN, SHOP, HOMES, PITCH } from "./world.js";
 import { fieldDepth } from "./content/farm-layout.js";
 import { COOKING_SITE } from "./content/cooking-layout.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
@@ -33,10 +33,33 @@ export function slidePlayer(position, dx, dz, bounds, obstacles, radius = .25) {
   return { x, z };
 }
 
+// Exact exponential integration gives the same stride at 30, 60 or 120 Hz.
+export function playerVelocityStep(current, desired, dt) {
+  const seconds = clamp(Number(dt) || 0, 0, .25), rate = Math.hypot(desired.x, desired.z) < .001 ? 23 : 16;
+  const fade = Math.exp(-rate * seconds), integral = (1 - fade) / rate;
+  return { x: desired.x + (current.x - desired.x) * fade, z: desired.z + (current.z - desired.z) * fade,
+    dx: desired.x * seconds + (current.x - desired.x) * integral, dz: desired.z * seconds + (current.z - desired.z) * integral };
+}
+// Angles are bounded by the cutaway indoors, and wrap smoothly outdoors.
+export function playerOrbitStep(current, x, y, dt, inside = false) {
+  const t = clamp(Number(dt) || 0, 0, .25), yaw = (Number(current.yaw) || 0) + clamp(Number(x) || 0, -1, 1) * t * 1.65;
+  return { yaw: inside ? clamp(yaw, -.9, .9) : Math.atan2(Math.sin(yaw), Math.cos(yaw)), pitch: clamp((Number(current.pitch) || PITCH) + clamp(Number(y) || 0, -1, 1) * t * .85, Math.PI * 22 / 180, Math.PI * 66 / 180) };
+}
+export const playerTargetKey = t => t ? [t.type, t.id ?? t.instance ?? t.index ?? t.to ?? t.pet ?? ""].join(":") : null;
+// Aim matters, but a target underfoot still wins. A small latch prevents flicker between beds.
+export function choosePlayerTarget(list, position, heading, previous, reach = 2.05) {
+  const candidates = list.map(t => {
+    const dx = t.x - position.x, dz = t.z - position.z, distance = Math.hypot(dx, dz), dot = distance > .001 ? (dx * heading.x + dz * heading.z) / distance : 1;
+    return { ...t, distance, score: distance + (1 - dot) * .22 - (Number(t.priority) || 0) * .1 };
+  }).filter(t => Number.isFinite(t.distance) && t.distance <= reach).sort((a, b) => a.score - b.score);
+  const best = candidates[0], held = candidates.find(t => playerTargetKey(t) === playerTargetKey(previous));
+  return held && best && held.score <= best.score + .24 ? held : best ?? null;
+}
+
 // This adapter owns only movement and presentation. Purchases and farming stay in the rules.
-export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow }) {
-  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0;
-  const input = { x: 0, y: 0 }, positions = new Map(), right = new THREE.Vector3(), forward = new THREE.Vector3();
+export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow, cameraLook, cameraZoom, cameraReset }) {
+  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0;
+  const input = { x: 0, y: 0 }, lookInput = { x: 0, y: 0 }, velocity = { x: 0, z: 0 }, heading = { x: 0, z: 1 }, positions = new Map(), right = new THREE.Vector3(), forward = new THREE.Vector3();
   const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd18a, transparent: true, opacity: .75, side: THREE.DoubleSide, depthWrite: false, toneMapped: false });
   const ring = new THREE.Mesh(new THREE.RingGeometry(.42, .465, 40), ringMat); ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);
   const targetMat = ringMat.clone(); targetMat.color.setHex(0xf7bb64); targetMat.opacity = .6;
@@ -46,7 +69,8 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   v.box(-.18, -.13, -.18, .36, .28, .36, 0x5c8c7a); v.box(-.12, .15, -.12, .24, .04, .24, 0xc0c99c);
   v.box(.15, -.03, -.06, .32, .09, .12, 0x638f7c); v.box(.39, .01, -.10, .08, .08, .2, 0xa9bda0);
   v.box(-.30, -.02, -.13, .06, .25, .06, 0x385e59); v.box(-.3, .18, -.13, .18, .05, .06, 0x385e59);
-  const can = v.build(); tool.add(can);
+  const can = v.build(); can.scale.setScalar(1.65); tool.add(can);
+  const spout = new THREE.Object3D(), nozzle = new THREE.Vector3(); spout.position.set(.47,.05,0); can.add(spout);
   const dropGeo = new THREE.BoxGeometry(.035, .07, .035), dropMat = new THREE.MeshBasicMaterial({ color: 0xb9e6ed, transparent: true, opacity: .75, toneMapped: false });
   const drops = new THREE.InstancedMesh(dropGeo, dropMat, 12); drops.visible = false; scene.add(drops);
   const dropMatrix = new THREE.Matrix4();
@@ -88,17 +112,32 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
       ...(state.cleanliness?.litter ?? []).map((p, index) => ({ type: "litter", id: p.id, index, label: "Clean up", x: p.x, z: p.z })),
     ];
   }
-  function nearest() {
-    const p = localPosition();
-    const list = targets().map(t => ({ ...t, distance: Math.hypot(t.x - p.x, t.z - p.z) }));
-    list.sort((a, b) => a.distance - b.distance);
-    return list[0]?.distance <= 1.9 ? list[0] : null;
+  function nearest() { return choosePlayerTarget(targets(), localPosition(), heading, target); }
+  function viewFacing() {
+    const camera = getCamera(); right.set(1, 0, 0).applyQuaternion(camera.quaternion); right.y = 0; right.normalize();
+    camera.getWorldDirection(forward); forward.y = 0; forward.normalize();
+    const sx = heading.x * right.x + heading.z * right.z, away = heading.x * forward.x + heading.z * forward.z;
+    facing = Math.abs(sx) > Math.abs(away) * .75 ? "side" : away > 0 ? "back" : "front";
+    return sx;
+  }
+  function face(t) {
+    if (!t || !Number.isFinite(t.x) || !Number.isFinite(t.z)) return false;
+    const p = localPosition(), dx = t.x - p.x, dz = t.z - p.z, n = Math.hypot(dx, dz);
+    if (n > .02) { heading.x = dx / n; heading.z = dz / n; viewFacing(); }
+    return true;
+  }
+  function stand() {
+    if (!pose) return false;
+    const former = pose; pose = null; places.clearPlayerRest?.(who);
+    if (model()) { const p = safeSpot(former.standing), o = origin(); model().position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z); positions.set(key, p); }
+    velocity.x = velocity.z = 0; return true;
   }
   function sync() {
     places.setControlled(enabled && room() ? who : null);
     if (!enabled || !available() || !model()) { ring.visible = marker.visible = tool.visible = drops.visible = false; target = null; return false; }
     const nextKey = (room() ? "room:" + places.place.id : "farm") + ":" + who;
     if (nextKey !== key || model() !== lastModel) {
+      places.clearPlayerRest?.(who); pose = null; walkTarget = null; velocity.x = velocity.z = 0;
       key = nextKey; action = null; moving = false;
       const a = model(), o = origin(), p = safeSpot(positions.get(key) ?? localPosition());
       a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z);
@@ -111,20 +150,38 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     if (!sync()) return;
     const a = model(), pos = localPosition(), o = origin(), asleep = blocked || state.paused || document.body.classList.contains("menu-open");
     const old = { ...pos };
+    let intent = { x: 0, z: 0 };
     if (!asleep && !action) {
       const camera = getCamera(); right.set(1, 0, 0).applyQuaternion(camera.quaternion); right.y = 0; right.normalize();
       camera.getWorldDirection(forward); forward.y = 0; forward.normalize();
-      let dx = right.x * input.x - forward.x * input.y, dz = right.z * input.x - forward.z * input.y;
-      const size = Math.hypot(dx, dz); if (size > 1) { dx /= size; dz /= size; }
-      const speed = room() ? 2.3 : 3.3, g = geometry(), next = slidePlayer(pos, dx * speed * dt, dz * speed * dt, g.bounds, g.obstacles);
-      pos.x = next.x; pos.z = next.z;
-      if (size > .08) facing = Math.abs(dx) > Math.abs(dz) * .75 ? "side" : dz < 0 ? "back" : "front";
-    }
-    moving = Math.hypot(pos.x - old.x, pos.z - old.z) > .0001;
-    a.position.x = o.x + pos.x; a.position.z = o.z + pos.z; positions.set(key, { ...pos });
-    const delta = Math.hypot(pos.x - old.x, pos.z - old.z), dx = delta > .00001 ? (pos.x - old.x) / delta : 0;
-    animate(a, time, moving, dx, who === "shane" ? 1.7 : 0);
-    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing, walking: moving, time, age: time, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0 });
+      intent = { x: right.x * input.x - forward.x * input.y, z: right.z * input.x - forward.z * input.y };
+      let magnitude = Math.hypot(intent.x, intent.z);
+      if (magnitude < .08) intent.x = intent.z = 0;
+      else if (magnitude > 1) { intent.x /= magnitude; intent.z /= magnitude; }
+      if (magnitude > .15) { walkTarget = null; if (pose) { stand(); Object.assign(pos, localPosition()); } }
+      if (walkTarget) {
+        const dx = walkTarget.x - pos.x, dz = walkTarget.z - pos.z, distance = Math.hypot(dx, dz);
+        if (distance <= 1.1) { face(walkTarget); walkTarget = null; intent.x = intent.z = 0; }
+        else { intent.x = dx / distance; intent.z = dz / distance; }
+      }
+      if (!pose) {
+        const speed = (room() ? 2.3 : 3.3) * (gait === "jog" ? 1.55 : 1), step = playerVelocityStep(velocity, { x: intent.x * speed, z: intent.z * speed }, dt), g = geometry();
+        velocity.x = step.x; velocity.z = step.z;
+        const next = slidePlayer(pos, step.dx, step.dz, g.bounds, g.obstacles);
+        pos.x = next.x; pos.z = next.z;
+        if (Math.hypot(intent.x, intent.z) > .08) { const n = Math.hypot(intent.x, intent.z); heading.x = intent.x / n; heading.z = intent.z / n; viewFacing(); }
+        if (walkTarget) { stuck = Math.hypot(pos.x - old.x, pos.z - old.z) < .002 ? stuck + dt : 0; if (stuck > 1.5) walkTarget = null; }
+      }
+
+    } else velocity.x = velocity.z = 0;
+    if (!asleep) cameraLook?.(lookInput.x, lookInput.y, dt);
+    const screenHeading = viewFacing();
+    moving = !pose && Math.hypot(pos.x - old.x, pos.z - old.z) > .0005;
+    a.position.x = o.x + pos.x; a.position.z = o.z + pos.z;
+    if (!pose) positions.set(key, { ...pos });
+    const delta = Math.hypot(pos.x - old.x, pos.z - old.z), dx = delta > .00001 || action || pose ? screenHeading : 0;
+    animate(a, time * (gait === "jog" && moving ? 1.35 : 1), moving, dx, who === "shane" ? 1.7 : 0);
+    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing, walking: moving, time, age: time * (gait === "jog" && moving ? 1.35 : 1), dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0 });
     const hit = !room() && actors()[who]?.hit; if (hit) hit.position.set(a.position.x, 1.1, a.position.z);
     target = nearest();
     ring.visible = !asleep; ring.position.set(a.position.x, .075, a.position.z); ringMat.opacity = .6 + Math.sin(time * 2) * .1;
@@ -138,14 +195,20 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
       const t = Math.min(1, action.elapsed / action.duration), bend = Math.sin(t * Math.PI);
       if (lean) { lean.rotation.z = (action.kind === "water" ? -.08 : .16) * bend; lean.position.y -= (action.kind === "water" ? .03 : .14) * bend; }
       if (action.kind === "water") {
-        const tpos = target ?? { x: pos.x + 1, z: pos.z + .3 }, ox = tpos.x - pos.x, oz = tpos.z - pos.z, angle = Math.atan2(-oz, ox);
-        tool.position.set(a.position.x + Math.cos(angle) * .38, .9 - bend * .1, a.position.z - Math.sin(angle) * .38); tool.rotation.y = angle; tool.rotation.z = -.22 * bend;
-        for (let i = 0; i < 12; i++) { const d = (time * 1.7 + i / 12) % 1; dropMatrix.makeTranslation(tool.position.x + Math.cos(angle) * (.48 + d * .28), tool.position.y - d * .8, tool.position.z - Math.sin(angle) * (.48 + d * .28) + Math.sin(i * 3) * .04); drops.setMatrixAt(i, dropMatrix); }
+        const tpos = action.target ?? target ?? { x: pos.x + 1, z: pos.z + .3 }, ox = tpos.x - pos.x, oz = tpos.z - pos.z, angle = Math.atan2(-oz, ox);
+        tool.position.set(a.position.x + Math.cos(angle) * .5, 1.12 - bend * .08, a.position.z - Math.sin(angle) * .5); tool.rotation.y = angle; tool.rotation.z = -.22 * bend;
+        tool.updateMatrixWorld(true); spout.getWorldPosition(nozzle);
+        for (let i = 0; i < 12; i++) { const d = (time * 1.7 + i / 12) % 1; dropMatrix.makeTranslation(nozzle.x + Math.cos(angle) * d * .35, nozzle.y - Math.pow(d,1.35) * Math.max(.1,nozzle.y-.12), nozzle.z - Math.sin(angle) * d * .35 + Math.sin(i * 3) * .035); drops.setMatrixAt(i, dropMatrix); }
         drops.instanceMatrix.needsUpdate = true;
       }
       if (t >= 1) { if (lean) lean.rotation.z = 0; action = null; }
     } else if (lean) lean.rotation.z = 0;
-    if (moving && !asleep) follow?.(a.position, dt, room());
+    if (pose) {
+      const anchor = pose.target.pose;
+      if (anchor && Number.isFinite(anchor.x) && Number.isFinite(anchor.z)) a.position.set(o.x + anchor.x, Number(anchor.y) || 0, o.z + anchor.z);
+      places.playerRest?.(who, pose.kind, pose.target, time);
+    }
+    if (!asleep) follow?.(a.position, dt, room(), { x: velocity.x, z: velocity.z, moving });
   }
   // Generated side/back textures must give way to the original autonomous sheet on release.
   function releaseFigure(person) {
@@ -155,20 +218,39 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     }
   }
   const api = {
-    setEnabled(on, next = who) { releaseFigure(who); enabled = !!on; who = next === "shane" ? "shane" : "natalie"; input.x = input.y = 0; key = null; action = null; sync(); return api.state(); },
-    select(next) { releaseFigure(who); who = next === "shane" ? "shane" : "natalie"; input.x = input.y = 0; key = null; action = null; sync(); return api.state(); },
+    setEnabled(on, next = who) { stand(); releaseFigure(who); velocity.x = velocity.z = 0; walkTarget = null; enabled = !!on; who = next === "shane" ? "shane" : "natalie"; input.x = input.y = 0; key = null; action = null; sync(); return api.state(); },
+    select(next) { stand(); releaseFigure(who); velocity.x = velocity.z = 0; walkTarget = null; who = next === "shane" ? "shane" : "natalie"; input.x = input.y = 0; key = null; action = null; sync(); return api.state(); },
     input(x, y) { input.x = clamp(Number(x) || 0, -1, 1); input.y = clamp(Number(y) || 0, -1, 1); },
-    setBlocked(on) { blocked = !!on; if (blocked) input.x = input.y = 0; },
-    act(kind, seconds = 1.1) { if (!enabled || !available() || blocked || state.paused || action) return false; action = { kind, duration: Math.max(.3, Number(seconds) || 1.1), elapsed: 0 }; return true; },
+    setBlocked(on) { blocked = !!on; if (blocked) { input.x = input.y = lookInput.x = lookInput.y = 0; velocity.x = velocity.z = 0; walkTarget = null; } },
+    act(kind, seconds = 1.1, selected = null) { if (!enabled || !available() || blocked || state.paused || action) return false; stand(); walkTarget = null; velocity.x = velocity.z = 0; const chosen = selected ?? nearest(); face(chosen); action = { kind, target: chosen ? {...chosen} : null, duration: Math.max(.3, Number(seconds) || 1.1), elapsed: 0 }; return true; },
+    setGait(next) { gait = next === "jog" ? "jog" : "walk"; return gait; },
+    cameraInput(x, y) { lookInput.x = clamp(Number(x) || 0, -1, 1); lookInput.y = clamp(Number(y) || 0, -1, 1); },
+    lookBy(x, y) { if (enabled && !blocked && available()) cameraLook?.(clamp(Number(x) || 0, -1, 1), clamp(Number(y) || 0, -1, 1), .16); },
+    zoom(direction) { if (enabled && !blocked && available()) cameraZoom?.(Math.sign(Number(direction) || 0)); },
+    recenter() { lookInput.x = lookInput.y = 0; cameraReset?.(localPosition(), room()); },
+    faceTarget: face,
+    rest(kind, t) {
+      if (!enabled || blocked || state.paused || !available() || action || !["sit", "read", "pet"].includes(kind) || !t) return false;
+      if (Math.hypot(t.x - localPosition().x, t.z - localPosition().z) > 2.15) return false;
+      stand(); face(t); walkTarget = null; velocity.x = velocity.z = 0;
+      pose = { kind, target: { ...t }, standing: localPosition() }; return true;
+    },
+    stand,
+    cancelAction() { action = null; if (model()?.children[0]) { model().children[0].rotation.z = 0; model().children[0].position.y = 0; } tool.visible = drops.visible = false; },
+    walkTo(t) {
+      if (!enabled || blocked || state.paused || !available() || action || !t || !Number.isFinite(t.x) || !Number.isFinite(t.z)) return false;
+      stand(); walkTarget = { ...t }; stuck = 0; return true;
+    },
+    cancelWalk() { walkTarget = null; velocity.x = velocity.z = 0; },
     targets,
     teleport(x, z) { if (!sync()) return false; const a = model(), o = origin(), p = safeSpot({ x, z }); a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z); positions.set(key, p); target = nearest(); return true; },
-    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", room: room() ? places.place?.id : null, position: localPosition(), facing, moving, blocked: blocked || !!state.paused, action: action?.kind ?? null, target: enabled && available() ? nearest() : null }; },
+    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: can.scale.x, waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
     // QA can finish a presentation without advancing harvests, deliveries or any other rule.
     advance(seconds) {
       input.x = input.y = 0;
-      const duration = clamp(Number(seconds) || 0, 0, 30), start = renderedTime;
+      const duration = clamp(Number(seconds) || 0, 0, 30), start = renderedTime, travel = walkTarget; walkTarget = null;
       for (let t = 0; t < duration && action; t += .05) update(Math.min(.05, duration - t), start + Math.min(duration, t + .05));
-      update(0, renderedTime);
+      update(0, renderedTime); walkTarget = travel;
       return api.state();
     },
     update,

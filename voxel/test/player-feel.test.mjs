@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { playerVelocityStep, choosePlayerTarget, playerOrbitStep } from '../src/player-control.js';
+const integrate=(hz)=>{let v={x:0,z:0},x=0,z=0;for(let n=0;n<hz;n++){const s=playerVelocityStep(v,{x:3.3,z:0},1/hz);v=s;x+=s.dx;z+=s.dz;}return{x,z,v};};
+test('smooth acceleration has the same travelled distance at30,60and120Hz',()=>{const a=integrate(30),b=integrate(60),c=integrate(120);assert.ok(Math.abs(a.x-b.x)<1e-9);assert.ok(Math.abs(c.x-b.x)<1e-9);assert.ok(a.x>3&&a.x<3.3);});
+test('release eases to rest without crossing or reversing the desired direction',()=>{let v={x:3.3,z:0},distance=0;for(let i=0;i<120;i++){const step=playerVelocityStep(v,{x:0,z:0},1/60);assert.ok(step.x>=0);distance+=step.dx;v=step;}assert.ok(distance>.1&&distance<.2);assert.ok(v.x<1e-12);});
+test('facing and small hysteresis keep one nearby target stable',()=>{const a={type:'plot',index:0,x:0,z:1},b={type:'plot',index:1,x:0,z:-1};assert.equal(choosePlayerTarget([a,b],{x:0,z:0},{x:0,z:1},null).index,0);assert.equal(choosePlayerTarget([a,b],{x:0,z:0},{x:0,z:-1},null).index,1);const next=choosePlayerTarget([{...a,z:1.12},b],{x:0,z:0},{x:1,z:0},a);assert.equal(next.index,0);});
+test('targeting refuses distant items rather than selecting through the world',()=>{assert.equal(choosePlayerTarget([{type:'plot',index:0,x:8,z:8}],{x:0,z:0},{x:1,z:0},null),null);});
+test('farm camera wraps a genuine full yaw and bounds its usable pitch',()=>{let p={yaw:0,pitch:.6};for(let i=0;i<300;i++)p=playerOrbitStep(p,1,1,.1);assert.ok(p.yaw>=-Math.PI&&p.yaw<=Math.PI);assert.ok(Math.abs(p.yaw)>.1);assert.equal(p.pitch,Math.PI*66/180);for(let i=0;i<50;i++)p=playerOrbitStep(p,0,-1,.1);assert.equal(p.pitch,Math.PI*22/180);});
+test('room orbit remains inside the cutaway viewing angles',()=>{let p={yaw:0,pitch:.6};for(let i=0;i<30;i++)p=playerOrbitStep(p,1,0,.1,true);assert.equal(p.yaw,.9);for(let i=0;i<60;i++)p=playerOrbitStep(p,-1,0,.1,true);assert.equal(p.yaw,-.9);});

@@ -90,7 +90,7 @@ export function yardGround({ width = MAP.w, depth = MAP.d, plotsTier = 0, pathEn
     }
     if (edge(x, z, z > MAP.d ? MAP.w : width, x > MAP.w ? MAP.d : depth)) return grounds.grass(x, z);
     return grounds.cobble(x, z, COL.yard, 0.3, 2, 0x2a2430);
-  }, { farmView: true });
+  }, { farmView: false });
 }
 // Rough grass beyond the map's edges, for when the view is zoomed out.
 function ground(v, r) {
