@@ -16,6 +16,8 @@
 
 **Contractor life-play:** [`docs/handovers/49-life-sim-control.md`](docs/handovers/49-life-sim-control.md) follows 48 with timed tool gestures, two-stick camera controls, home interactions and corrected owner walks. Read its integration and verification scope before changing these systems.
 
+**Contractor control refinement:** [`docs/handovers/50-control-fit-and-sprite-can.md`](docs/handovers/50-control-fit-and-sprite-can.md) corrects the close indoor camera, oversized notification, right-thumb button placement and hold feedback. It switches watering to an illustrated can and makes release finish one use; this supersedes 49’s release-to-cancel behaviour.
+
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
 **Codex's hayride (merged in 39):** [`docs/handovers/38-hayride-lead-integration.md`](docs/handovers/38-hayride-lead-integration.md) preserves Claude’s `1abaff5` maze update and isolates hayride audio from lead-owned runtime files.
