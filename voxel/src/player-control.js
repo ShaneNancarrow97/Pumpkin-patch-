@@ -51,7 +51,7 @@ export function choosePlayerTarget(list, position, heading, previous, reach = 2.
   const candidates = list.map(t => {
     const dx = t.x - position.x, dz = t.z - position.z, distance = Math.hypot(dx, dz), dot = distance > .001 ? (dx * heading.x + dz * heading.z) / distance : 1;
     return { ...t, distance, score: distance + (1 - dot) * .22 - (Number(t.priority) || 0) * .1 };
-  }).filter(t => Number.isFinite(t.distance) && t.distance <= reach).sort((a, b) => a.score - b.score);
+  }).filter(t => Number.isFinite(t.distance) && t.distance <= Math.min(reach,Number.isFinite(t.range)?Math.max(0,t.range):reach)).sort((a, b) => a.score - b.score);
   const best = candidates[0], held = candidates.find(t => playerTargetKey(t) === playerTargetKey(previous));
   return held && best && held.score <= best.score + .24 ? held : best ?? null;
 }

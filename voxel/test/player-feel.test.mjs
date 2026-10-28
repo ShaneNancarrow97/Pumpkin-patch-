@@ -23,3 +23,5 @@ test('watering presents a real enlarged can and its live nozzle on the captured 
   player.cancelAction();assert.equal(player.state().canVisible,false);assert.equal(player.state().dropsVisible,false);
  } finally {if(original===undefined)delete globalThis.document;else globalThis.document=original;}
 });
+
+test("seating and pet prompts honour their shorter local interaction sockets",()=>{const target={type:"pet",id:"skyla",x:0,z:1.6,range:1.35};assert.equal(choosePlayerTarget([target],{x:0,z:0},{x:0,z:1},null),null);assert.equal(choosePlayerTarget([target],{x:0,z:.4},{x:0,z:1},null).id,"skyla");});
