@@ -1,0 +1,1126 @@
+diff --git a/voxel/AGENTS.md b/voxel/AGENTS.md
+index b02088a..0ee4e77 100644
+--- a/voxel/AGENTS.md
++++ b/voxel/AGENTS.md
+@@ -16,6 +16,8 @@
+ 
+ **Contractor life-play:** [`docs/handovers/49-life-sim-control.md`](docs/handovers/49-life-sim-control.md) follows 48 with timed tool gestures, two-stick camera controls, home interactions and corrected owner walks. Read its integration and verification scope before changing these systems.
+ 
++**Contractor control refinement:** [`docs/handovers/50-control-fit-and-sprite-can.md`](docs/handovers/50-control-fit-and-sprite-can.md) corrects the close indoor camera, oversized notification, right-thumb button placement and hold feedback. It switches watering to an illustrated can and makes release finish one use; this supersedes 49’s release-to-cancel behaviour.
++
+ Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
+ 
+ **Codex's hayride (merged in 39):** [`docs/handovers/38-hayride-lead-integration.md`](docs/handovers/38-hayride-lead-integration.md) preserves Claude’s `1abaff5` maze update and isolates hayride audio from lead-owned runtime files.
+diff --git a/voxel/assets/sprite-watering-can.webp b/voxel/assets/sprite-watering-can.webp
+new file mode 100644
+index 0000000000000000000000000000000000000000..796089e9b763e4791188d719a29db36b1c3eb920
+GIT binary patch
+literal 14330
+zcmV<WHwDO2Nk&HUHvj-vMM6+kP&il$0000G00030006fD06|PpNL3I3009gKjU+`-
+zmw(y7!aV{aVgmZx@DX~CsN&9WNyaa_G2WQ<V!F6YPCCwpurtqLOSx@tn}@UNg>}>R
+z?nt4!ahTrpcF>3Q9{Q*L`2RCBx&FWBt6nv;iq;$3wr$(V*&M|i+qRt?+qUf!+s<a+
+zaq`}ouBun{^N&II^jv+-f9Dnv6ClgB-MVeo>ZCgV`Mm!m^ISNINDu_Ud`H9t;D5^$
+zr+#pCGUgKXg5j%oGInxa0ATX!yBu=#>1UnsiT$=+)&qcdV<J%ju-INV{Q1qyq5Gcr
+z&KVo_0#0SDBMM-p)BpG`N#+zo2qDH;lH`*&t`9)RG@`%)vwz!1GKOfDhfXmRiA+D;
+zuNUIRE(%OJ`#G`<Az7|yW)=%0A3OliF^VYsu`iP`TDDx>EN8PA$)BwWm9dBdyZrn8
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/voxel/docs/handovers/50-control-fit-and-sprite-can.md b/voxel/docs/handovers/50-control-fit-and-sprite-can.md
+new file mode 100644
+index 0000000..4eef153
+--- /dev/null
++++ b/voxel/docs/handovers/50-control-fit-and-sprite-can.md
+@@ -0,0 +1,51 @@
++# 50 — Smaller house framing, right-thumb controls and an illustrated can
++
++Branch: `contractor/life-play`. Incremental base: completed handover 49, `0d55eedb662cf14e988603547592c5c5f97e7c9a`.
++Runtime: `ec54f5a36a93edb70eddc58fc87a06274e3c544a`.
++HTML SHA-256: `51ba1b6676e8d9ec8540c7ef19b5c38a6c496b1e2a8a6b2b272c7ae01beebd8a`.
++
++This follow-up addresses the player's screenshots and supersedes handover 49's voxel-can and release-to-cancel presentation. Claude remains the lead. No save migration, prices, yields, progression or root 2D code is changed.
++
++## House proportions
++
++The direct-room camera was only 11 units away on phones and 13 on wide screens. It now uses 15 to 16.5 units. A shared framing limit caps direct-room zoom at 1.15 regardless of wheel, pinch or controller input. Recentring returns zoom to 1.
++
++The sprite's indoor lean/stretch now stays at the authored interior values. Tilting the camera previously nearly doubled sprite world height at steep angles while furniture stayed unchanged. Characters now foreshorten with the room instead. Root character scale and furniture sockets are preserved. The conservative projected frame takes about 22% of a phone's height and 20% on Fold/landscape in the reviewed default view.
++
++Switching from a narrow screen to the unfolded view no longer resets the direct-play farm zoom. The normal management-view unfold behaviour remains intact.
++
++## Right-thumb interface
++
++The smaller MOVE/LOOK pads occupy 86–90 pixels. The primary action is a 120 × 68 amber button above LOOK on the right; Tools sits beside it and Centre alongside LOOK. All other touch targets remain at least 44 pixels. The middle of the playfield stays clear.
++
++The large dark block in the screenshot was a real CSS bug: the fixed notification had both top and bottom offsets. It now has one vertical anchor and intrinsic height, capped at 66 pixels and 300 pixels wide. It still disappears after two seconds. Repeated crop notices no longer create a stretched panel.
++
++Controls suppress native text selection, selection callouts and context menus. Short action labels and one outline icon replace duplicated text/floating target pills. The button has immediate pressed feedback, a progress ring and rail, a brief success border pulse, and a clear Finishing state.
++
++## Forgiving hold behaviour
++
++Tap for one use; hold to keep tending suitable nearby crops. Releasing finishes the current use and then stops. Releasing during a walk to the next crop stops that walk. Progress is not thrown away merely because a press lasted longer than the old 220 ms tap threshold. Movement, Back/Circle, menus, pause, character changes and explicit cancellation still cancel unfinished work without a crop transaction. The existing delayed, once-only completion and live crop/barn checks remain authoritative.
++
++## Painted watering can
++
++The brass can is a transparent sprite edited from the established art reference, not a voxel model. Its runtime image is 256 × 184 and 14,330 bytes; preparation source/notes are in [the art folder](../plans/life-play-fit/art/README.md). It is about .82 world units wide, follows the hand, mirrors with the owner and stays camera-facing. The particle socket is at the illustrated nozzle. Base empty-handed water poses and every selected costume keep their own artwork; no costume is exchanged for the base owner.
++
++`createPlayerControl` receives `wateringTexture` from the scene, keeping native rules/control tests free of asset imports. Presentation diagnostics add `waterCanStyle: 'sprite'` and `waterCanWidth`; compatible visibility fields remain. The QA tools now assert the illustrated plane rather than the old 1.65-scale voxel prop.
++
++## Claude integration
++
++Main overlap: `scene.js`, `camera-layout.js`, `player-control.js`, `life-activity.js`, `ui/play-controls.js`/CSS and the home-life help text. Review those against unpublished lead work. The incremental patch is based only on completed handover 49; the source branch includes earlier increments. Do not merge the artifact-only download branch into source.
++
++```sh
++git apply --check /path/to/life-play-fit-from-0d55eed.patch
++git apply /path/to/life-play-fit-from-0d55eed.patch
++npm --prefix voxel ci
++npm --prefix voxel test
++node voxel/build.mjs --out /tmp/life-play-fit.html
++```
++
++## Verification
++
++89 native test files pass, and final runtime CI is green for both root and voxel jobs, including their builds and smoke runs: [run 40775581716](https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/40775581716). Eighteen browser checks cover the room projection, zoom/pitch, compact controls/notices, real held-button release, painted can, costume preservation and movement cancellation. Five isolated actual-DOM layouts also pass, including two independent captured touches. These initial browser checks precede only the final one-line unfold-zoom correction; their recorded hash is deliberately separate from the exact release report.
++
++Five checks also pass on the exact final HTML, including phone-to-Fold zoom preservation and the final painted can/house screenshots. Final CI and exact-download verification are recorded in [verification](../contractor-patches/life-play-fit/verification/README.md). The artifact manifest pins the final source commit and HTML/ZIP/patch hashes and the clean-source/applied-patch rebuild results. Physical Fold 7/Bluetooth/controller pairing and device-local HTML opening remain hardware checks; the managed browser's direct file navigation was blocked in handover 49, and no policy bypass is attempted here.
+diff --git a/voxel/docs/plans/life-play-fit/art/README.md b/voxel/docs/plans/life-play-fit/art/README.md
+new file mode 100644
+index 0000000..df0f065
+--- /dev/null
++++ b/voxel/docs/plans/life-play-fit/art/README.md
+@@ -0,0 +1,16 @@
++# Illustrated watering can
++
++`watering-can-source.png` was generated as a standalone item edit using the approved `assets/player-directions-base.webp` character sheet as reference. It keeps the round brass can, warm golden highlights and dark cartoon outlines. It contains no hands, character, water stream or background; the runtime can keep each selected outfit and animate its own pour.
++
++Runtime: `assets/sprite-watering-can.webp`, 256 × 184 pixels, 14,330 bytes. The handle opening and surrounding canvas are transparent. The original generation remains preserved; preparation only crops, trims negligible outer haze and downsamples.
++
++Preparation: crop source bounds `(215, 116, 1329, 894)`, clear alpha values below 24, resize with Lanczos to 240 × 168, then place at `(8, 8)` in a transparent 256 × 184 canvas. Save WebP at quality 91, method 6, exact alpha/RGB. Pillow is only a preparation dependency; the game gains no runtime dependency.
++
++Suggested image-space sockets (origin at top-left):
++
++| Socket | Pixels | Normalised |
++| --- | --- | --- |
++| Hand / upper handle grip | (215, 52) | (0.840, 0.283) |
++| Pour point on rose | (32, 116) | (0.125, 0.630) |
++
++The unmirrored spout faces left. Mirror the item with the character's screen-facing direction. A rendered width near 0.75–0.85 world units suits the existing 2.3-unit owner stature; inspect the hand alignment in the game before fixing the final prop transform.
+diff --git a/voxel/src/camera-layout.js b/voxel/src/camera-layout.js
+index 35632cb..75b807e 100644
+--- a/voxel/src/camera-layout.js
++++ b/voxel/src/camera-layout.js
+@@ -8,6 +8,12 @@ export function cameraLayout(width) {
+   return { overview, farmSpan: 20 + 26 * overview, minZoom: 0.5, maxZoom: 4.5, roomMinZoom: 0.6 };
+ }
+ 
++// Direct play needs room around the owner; every zoom path shares this limit.
++export function controlledRoomFraming(width, zoom = 1) {
++  const safeZoom = Number.isFinite(zoom) ? zoom : 1;
++  return { distance: 15 + cameraLayout(width).overview * 1.5, zoom: clamp(safeZoom, .6, 1.15) };
++}
++
+ // Keep roofs and the front fence visible when they fit. When zoomed in, allow
+ // panning between them instead of pinning a tall viewport to the front fence.
+ export function farmVerticalLimits(halfHeight, pitch, depth) {
+diff --git a/voxel/src/life-activity.js b/voxel/src/life-activity.js
+index 1548a29..cb2a049 100644
+--- a/voxel/src/life-activity.js
++++ b/voxel/src/life-activity.js
+@@ -19,7 +19,8 @@ export function createLifeActivity({state,player,commit,blocked,notice}){
+     if(phase==='release'){
+       holding=false;
+       if(pending){pending=null;player.cancelWalk?.();return true;}
+-      if(job){if(options.assist){assisted=true;return true;}return cancel();}
++      // Let go to finish this use; only continued holding starts another crop.
++      if(job){assisted=true;return true;}
+       return false;
+     }
+     if(job){if(phase==='start'){holding=true;assisted=false;}return true;}
+diff --git a/voxel/src/player-control.js b/voxel/src/player-control.js
+index 5d036a8..ce8b781 100644
+--- a/voxel/src/player-control.js
++++ b/voxel/src/player-control.js
+@@ -1,5 +1,4 @@
+ import * as THREE from "three";
+-import { Voxels } from "./voxels.js";
+ import { PLOTS, BIG_PUMPKIN, SHOP, HOMES, PITCH } from "./world.js";
+ import { fieldDepth } from "./content/farm-layout.js";
+ import { COOKING_SITE } from "./content/cooking-layout.js";
+@@ -57,7 +56,7 @@ export function choosePlayerTarget(list, position, heading, previous, reach = 2.
+ }
+ 
+ // This adapter owns only movement and presentation. Purchases and farming stay in the rules.
+-export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow, cameraLook, cameraZoom, cameraReset }) {
++export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow, cameraLook, cameraZoom, cameraReset, wateringTexture }) {
+   let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, strideAge = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0;
+   const input = { x: 0, y: 0 }, lookInput = { x: 0, y: 0 }, velocity = { x: 0, z: 0 }, heading = { x: 0, z: 1 }, positions = new Map(), right = new THREE.Vector3(), forward = new THREE.Vector3();
+   const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd18a, transparent: true, opacity: .75, side: THREE.DoubleSide, depthWrite: false, toneMapped: false });
+@@ -65,12 +64,13 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
+   const targetMat = ringMat.clone(); targetMat.color.setHex(0xf7bb64); targetMat.opacity = .6;
+   const marker = new THREE.Mesh(new THREE.RingGeometry(.55, .60, 40), targetMat); marker.rotation.x = -Math.PI / 2; marker.visible = false; scene.add(marker);
+   const tool = new THREE.Group(); tool.visible = false; scene.add(tool);
+-  const v = new Voxels();
+-  v.box(-.18, -.13, -.18, .36, .28, .36, 0x5c8c7a); v.box(-.12, .15, -.12, .24, .04, .24, 0xc0c99c);
+-  v.box(.15, -.03, -.06, .32, .09, .12, 0x638f7c); v.box(.39, .01, -.10, .08, .08, .2, 0xa9bda0);
+-  v.box(-.30, -.02, -.13, .06, .25, .06, 0x385e59); v.box(-.3, .18, -.13, .18, .05, .06, 0x385e59);
+-  const can = v.build(); can.scale.setScalar(1.65); tool.add(can);
+-  const spout = new THREE.Object3D(), nozzle = new THREE.Vector3(); spout.position.set(.47,.05,0); can.add(spout);
++  // The painted handle stays in the hand; its nozzle is the particle socket.
++  const canWidth=.82,canHeight=canWidth*184/256,grip={x:215/256,y:52/184};
++  const canGeometry=new THREE.PlaneGeometry(canWidth,canHeight);
++  canGeometry.translate((.5-grip.x)*canWidth,(grip.y-.5)*canHeight,0);
++  const can=new THREE.Mesh(canGeometry,new THREE.MeshBasicMaterial({map:wateringTexture??null,transparent:true,alphaTest:.04,depthWrite:false,toneMapped:false,side:THREE.DoubleSide}));
++  can.name='Illustrated watering can';tool.add(can);
++  const spout=new THREE.Object3D(),nozzle=new THREE.Vector3();spout.position.set((32/256-grip.x)*canWidth,(grip.y-116/184)*canHeight,0);can.add(spout);
+   const dropGeo = new THREE.BoxGeometry(.035, .07, .035), dropMat = new THREE.MeshBasicMaterial({ color: 0xb9e6ed, transparent: true, opacity: .75, toneMapped: false });
+   const drops = new THREE.InstancedMesh(dropGeo, dropMat, 12); drops.visible = false; scene.add(drops);
+   const dropMatrix = new THREE.Matrix4();
+@@ -198,7 +198,10 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
+       if (lean) { lean.rotation.z = (action.kind === "water" ? -.08 : .16) * bend; lean.position.y -= (action.kind === "water" ? .03 : .14) * bend; }
+       if (action.kind === "water") {
+         const tpos = action.target ?? target ?? { x: pos.x + 1, z: pos.z + .3 }, ox = tpos.x - pos.x, oz = tpos.z - pos.z, angle = Math.atan2(-oz, ox);
+-        tool.position.set(a.position.x + Math.cos(angle) * .5, 1.12 - bend * .08, a.position.z - Math.sin(angle) * .5); tool.rotation.y = angle; tool.rotation.z = -.22 * bend;
++        const side=Math.abs(screenHeading)>.1?(screenHeading<0?-1:1):(a.userData.playerSideSign??1),camera=getCamera();
++        tool.quaternion.copy(camera.quaternion);can.scale.x=-side;
++        tool.position.set(a.position.x+right.x*.38*side-forward.x*.14,1.1-bend*.06,a.position.z+right.z*.38*side-forward.z*.14);
++        can.rotation.z=side*.10*bend;
+         tool.updateMatrixWorld(true); spout.getWorldPosition(nozzle);
+         for (let i = 0; i < 12; i++) { const d = (time * 1.7 + i / 12) % 1; dropMatrix.makeTranslation(nozzle.x + Math.cos(angle) * d * .35, nozzle.y - Math.pow(d,1.35) * Math.max(.1,nozzle.y-.12), nozzle.z - Math.sin(angle) * d * .35 + Math.sin(i * 3) * .035); drops.setMatrixAt(i, dropMatrix); }
+         drops.instanceMatrix.needsUpdate = true;
+@@ -246,7 +249,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
+     cancelWalk() { walkTarget = null; velocity.x = velocity.z = 0; },
+     targets,
+     teleport(x, z) { if (!sync()) return false; const a = model(), o = origin(), p = safeSpot({ x, z }); a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z); positions.set(key, p); target = nearest(); return true; },
+-    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: can.scale.x, waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
++    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, waterCanStyle:'sprite', waterCanWidth:canWidth, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: Math.abs(can.scale.x), waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
+     // QA can finish a presentation without advancing harvests, deliveries or any other rule.
+     advance(seconds) {
+       input.x = input.y = 0;
+diff --git a/voxel/src/scene.js b/voxel/src/scene.js
+index bbaf2b4..faa20ae 100644
+--- a/voxel/src/scene.js
++++ b/voxel/src/scene.js
+@@ -28,7 +28,7 @@ import { createHayrideWorld } from "./hayride-world.js";
+ import { createHayrideScares } from "./hayride-scares.js";
+ import { HAYRIDE_SITE, hayrideGuestPose } from "./content/hayride-layout.js";
+ import { fieldWidth, MEADOW, MEADOW_EXIT, CHAT_SPOTS } from "./content/festival-meadow.js";
+-import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
++import { cameraLayout, controlledRoomFraming, farmVerticalLimits } from "./camera-layout.js";
+ import { createHouseEstateView } from "./house-estate-view.js";
+ import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
+ import { createFarmExpansion } from "./farm-expansion-world.js";
+@@ -44,6 +44,7 @@ import { createAmbience } from "./ambience.js";
+ import { mistClearings } from "./content/ambience.js";
+ import { playerOrbitStep, createPlayerControl } from "./player-control.js";
+ import { playerDirectionTextures } from "./player-sprite-directions.js";
++import wateringCanURL from "../assets/sprite-watering-can.webp";
+ import { createCleanlinessView } from "./cleanliness-view.js";
+ 
+ const WALK = 2.4;
+@@ -289,6 +290,7 @@ export function createScene(canvas, state, hooks) {
+   }
+   warm(...sandyTextures, ...maisieTextures);
+   warm(...places.petTextures);
++  const wateringTexture=new THREE.TextureLoader().load(wateringCanURL);wateringTexture.colorSpace=THREE.SRGBColorSpace;warm(wateringTexture);
+   const cleanlinessView = createCleanlinessView({ scene, state, warm });
+   loadDecor().then(() => places.refresh()).catch(() => hooks.onSpriteError?.());
+ 
+@@ -321,11 +323,12 @@ export function createScene(canvas, state, hooks) {
+   // Register flat cast as they arrive, then rotate only that small set per frame.
+   function faceCast(yaw,pitch,inside,now){
+     if(now>=nextBillboardScan){nextBillboardScan=now+1;scene.traverse(o=>{const lean=o.children[0];if(o.isGroup&&lean?.isGroup&&lean.children.some(m=>m.isMesh&&m.geometry?.type==='PlaneGeometry'&&m.customDepthMaterial)&&!billboards.has(o))billboards.set(o,{yaw:o.rotation.y,lean:lean.rotation.x,stretch:lean.scale.y});});}
+-    for(const [o,base]of billboards){if(!o.parent){billboards.delete(o);continue;}const lean=o.children[0];if(!lean)continue;o.rotation.y=yaw;const angle=inside?INTERIOR.lean:Math.abs(base.lean);lean.rotation.x=-angle;lean.scale.y=1/Math.cos(pitch-angle);}
++    for(const [o,base]of billboards){if(!o.parent){billboards.delete(o);continue;}const lean=o.children[0];if(!lean)continue;o.rotation.y=yaw;const angle=inside?INTERIOR.lean:Math.abs(base.lean);lean.rotation.x=-angle;lean.scale.y=1/Math.cos((inside?INTERIOR.pitch:pitch)-angle);}
+     places.faceCamera?.(yaw,pitch);
+   }
+   function restoreCast(){for(const[o,base]of billboards){o.rotation.y=base.yaw;if(o.children[0]){o.children[0].rotation.x=base.lean;o.children[0].scale.y=base.stretch;}}places.faceCamera?.(0,INTERIOR.pitch);}
+   const player = createPlayerControl({ scene, state, actors: () => actors, places, getPlace: () => view.place, getCamera: active, animate: animateSprite,
++    wateringTexture,
+     cameraLook(x,y,dt){Object.assign(playerOrbit,playerOrbitStep(playerOrbit,x,y,dt,view.place==='room'));playerLook.x=playerOrbit.yaw;playerLook.z=playerOrbit.pitch-PITCH;},
+     cameraZoom(direction){if(touches.size||kept||!direction)return;const l=cameraLayout(canvas.clientWidth),inside=view.place==='room';view.zoom=THREE.MathUtils.clamp(view.zoom*Math.exp(direction*.13),inside?l.roomMinZoom:l.minZoom,inside?1.9:l.maxZoom);frame();},
+     cameraReset(pos,inside){playerOrbit.yaw=0;playerOrbit.pitch=inside?INTERIOR.pitch:PITCH;playerLook.x=playerLook.z=0;view.x=inside?pos.x-places.place.w/2:pos.x;view.z=inside?pos.z-places.place.d*.42:pos.z;view.zoom=inside?1:canvas.clientWidth>=740?2.3:1.35;frame();},
+@@ -371,7 +374,9 @@ export function createScene(canvas, state, hooks) {
+       }
+       return true;
+     };
+-    let dist = controlled ? (layout.overview < .95 ? 11 : 13) : 6;
++    const controlFrame = controlledRoomFraming(w, view.zoom);
++    if (controlled) view.zoom = controlFrame.zoom;
++    let dist = controlled ? controlFrame.distance : 6;
+     if(!controlled)while (dist < 80 && !fits(dist)) dist += 0.25;
+     roomCam.fov = INTERIOR.fov; roomCam.aspect = aspect; roomCam.updateProjectionMatrix();
+     roomCam.position.copy(target).addScaledVector(dir, dist / view.zoom);
+@@ -464,7 +469,7 @@ export function createScene(canvas, state, hooks) {
+     composer.setSize(w, h);
+     antialias.uniforms.resolution.value.set(1 / sizing.bufferWidth, 1 / sizing.bufferHeight); antialias.enabled = sizing.pixelRatio < FXAA_BELOW;
+     const overview = cameraLayout(w).overview >= 0.95;
+-    if (!firstResize && overview && !lastOverview) {
++    if (!firstResize && overview && !lastOverview && !player.state().enabled) {
+       view.zoom = Math.min(view.zoom, 1);
+       if (farmView) farmView.zoom = Math.min(farmView.zoom, 1);
+     }
+diff --git a/voxel/src/ui/home-life-sheet.js b/voxel/src/ui/home-life-sheet.js
+index 2e1bb1f..967610b 100644
+--- a/voxel/src/ui/home-life-sheet.js
++++ b/voxel/src/ui/home-life-sheet.js
+@@ -4,7 +4,7 @@ import * as M from '../model.js';
+ import {money,decorIcon} from './kit.js';
+ export function homeLifeSheet(ui){return {homelife:{eyebrow:'A home worth coming back to',title:'Home & hands-on play',body(){
+   const s=ui.state,g=M.homeGoal?.(s),c=M.cleanlinessStatus?.(s),lvl=M.patchLevel(s);
+-  return `<article class="home-journey-card"><p class="eyebrow">Level ${lvl.level} of 20${g?' · Next home milestone '+g.level:''}</p><h3>${g?.title??'Our haunted forever home'}</h3><p>${g?.text??'Your rooms, recipes and memories are part of the patch you built together.'}</p>${g?`<ul class="home-goals">${g.requirements.map(r=>`<li><span>${r.met?'✓':'◇'}</span><span>${r.text}<small style="display:block;color:var(--ink-soft)">${r.current} / ${r.target}</small></span></li>`).join('')}</ul><button class="button gold wide" data-life="goal">${g.action==='upgrade-house'?'Plan house expansion':'Visit this home goal'}</button>`:''}</article><div class="home-life-links"><button class="button gold" data-life="play">◈ Play as Shane / Natalie</button><button class="button" data-life="rooms">⌂ Choose a room</button><button class="button" data-life="decorate">✥ Furniture & pet beds</button><button class="button" data-life="wardrobe">♧ Costumes & rack</button></div><p>In control mode, walk close to a crop, cooker, costume rack or doorway. Tap once for one assisted use, or hold to keep tending nearby crops. MOVE walks; LOOK turns the camera; the target icon centres your character. Open Tools to choose your tool. Keyboard: WASD move, IJKL look, X use, Q tools, Shift walk/jog, C centre. PS5 / standard gamepad: left stick move, right stick look, L3 walk/jog, R3 centre, Cross or Square use, Triangle tools, Circle back. Use the d-pad to browse menus and adjust choices. Pair in your device’s Bluetooth settings, then press Cross or Options in game.</p>${c?`<article class="card"><span class="thumb"><img src="${janitorArt}" alt="Hettie the janitor"></span><div><h3>${c.label??'Keep the patch lovely'}</h3><p>${c.count} pieces of litter · visitor footfall ${Math.round(c.footfall*100)}%. Clean by hand, or hire a janitor to keep it tidy.</p><p>Cleaned: ${c.cleaned??0} · Hettie unlocks at level ${c.hireLevel??3}</p></div>${c.janitor?'<span class="pill">Janitor hired</span>':`<button class="button gold" data-life="janitor" ${c.canHire&&!s.paused?'':'disabled'}>Hire · ${money(c.hireCost??450)}</button>`}</article>`:''}`;
++  return `<article class="home-journey-card"><p class="eyebrow">Level ${lvl.level} of 20${g?' · Next home milestone '+g.level:''}</p><h3>${g?.title??'Our haunted forever home'}</h3><p>${g?.text??'Your rooms, recipes and memories are part of the patch you built together.'}</p>${g?`<ul class="home-goals">${g.requirements.map(r=>`<li><span>${r.met?'✓':'◇'}</span><span>${r.text}<small style="display:block;color:var(--ink-soft)">${r.current} / ${r.target}</small></span></li>`).join('')}</ul><button class="button gold wide" data-life="goal">${g.action==='upgrade-house'?'Plan house expansion':'Visit this home goal'}</button>`:''}</article><div class="home-life-links"><button class="button gold" data-life="play">◈ Play as Shane / Natalie</button><button class="button" data-life="rooms">⌂ Choose a room</button><button class="button" data-life="decorate">✥ Furniture & pet beds</button><button class="button" data-life="wardrobe">♧ Costumes & rack</button></div><p>In control mode, walk close to a crop, cooker, costume rack or doorway. Tap once for one use, or hold to keep tending nearby crops. Release to finish the current use and stop; movement or Circle cancels. MOVE walks; LOOK turns the camera; the target icon centres your character. Open Tools to choose your tool. Keyboard: WASD move, IJKL look, X use, Q tools, Shift walk/jog, C centre. PS5 / standard gamepad: left stick move, right stick look, L3 walk/jog, R3 centre, Cross or Square use, Triangle tools, Circle back. Use the d-pad to browse menus and adjust choices. Pair in your device’s Bluetooth settings, then press Cross or Options in game.</p>${c?`<article class="card"><span class="thumb"><img src="${janitorArt}" alt="Hettie the janitor"></span><div><h3>${c.label??'Keep the patch lovely'}</h3><p>${c.count} pieces of litter · visitor footfall ${Math.round(c.footfall*100)}%. Clean by hand, or hire a janitor to keep it tidy.</p><p>Cleaned: ${c.cleaned??0} · Hettie unlocks at level ${c.hireLevel??3}</p></div>${c.janitor?'<span class="pill">Janitor hired</span>':`<button class="button gold" data-life="janitor" ${c.canHire&&!s.paused?'':'disabled'}>Hire · ${money(c.hireCost??450)}</button>`}</article>`:''}`;
+ },bind(body){body.querySelectorAll('[data-life]').forEach(b=>b.onclick=()=>{const id=b.dataset.life;if(id==='play'){ui.closeSheet();ui.playControls.open();}else if(id==='goal')ui.followHomeGoal();else if(id==='rooms'){ui.homeTab('rooms');ui.openSheet('home');}else if(id==='decorate'){ui.enterRoom(ui.state.house.activeRoom);ui.homeTab('decorate');ui.openSheet('home');}else if(id==='wardrobe'){ui.enterRoom('parlour');M.recordHomeActivity?.(ui.state,'wardrobe');ui.openSheet('wardrobe');ui.save();}else if(id==='janitor'&&M.hireJanitor(ui.state)){ui.save();ui.draw();ui.notice('The janitor will clear litter while you look after the patch.');}});}}};}
+ export function createHomeJourney({state,blocked,follow,open}){
+   let shown=new Set(),previousFocus;const chip=document.createElement('button');chip.className='home-journey-chip';chip.hidden=true;chip.onclick=open;document.body.append(chip);
+diff --git a/voxel/src/ui/play-controls.css b/voxel/src/ui/play-controls.css
+index 9ee93df..36021b9 100644
+--- a/voxel/src/ui/play-controls.css
++++ b/voxel/src/ui/play-controls.css
+@@ -1,4 +1,4 @@
+-#play-controls{--play-surface:rgba(31,25,39,.95);--play-edge:rgba(226,183,119,.28);--play-gold:#edc88f;position:relative;z-index:45;font-family:var(--body)}#play-controls button{font:inherit;color:var(--ink);cursor:pointer;min-width:44px;min-height:44px;touch-action:manipulation}#play-controls button:focus-visible{outline:2px solid var(--play-gold);outline-offset:3px}#play-controls button:disabled{opacity:.55;cursor:default}.play-chip,.play-owner,.play-piece-label{position:fixed;right:max(16px,env(safe-area-inset-right));top:calc(78px + env(safe-area-inset-top));padding:4px 14px;border:1px solid var(--play-edge);border-radius:28px;background:var(--play-surface);box-shadow:0 6px 24px #0005}.play-chip{color:var(--play-gold)!important}.inside-place .play-chip,.inside-place .play-owner{top:auto;bottom:calc(98px + env(safe-area-inset-bottom))}.play-owner{display:flex;align-items:center;gap:8px;padding:2px 4px 2px 16px;font-weight:600}.play-owner button{border:0;background:transparent;border-radius:50%;font-size:21px!important}.control-mode #dock,.control-mode #actions,.control-mode #goal,.control-mode #streak{display:none!important}.control-mode.menu-open #dock{display:none!important}.control-mode .notice{bottom:210px}.control-mode .play-owner{top:calc(78px + env(safe-area-inset-top));bottom:auto}#play-stick{position:fixed;left:max(22px,env(safe-area-inset-left));bottom:calc(26px + env(safe-area-inset-bottom));width:112px;height:112px;border-radius:50%;background:radial-gradient(circle,#2b2337c9,#231d2c90);border:1px solid var(--play-edge);box-shadow:inset 0 0 0 13px #fff02,0 8px 28px #0003;touch-action:none;user-select:none}#play-stick:before,#play-stick:after{content:'';position:absolute;inset:24px 55px;background:#efce9633}#play-stick:after{transform:rotate(90deg)}#play-stick i{display:block;position:absolute;left:32px;top:32px;width:46px;height:46px;border-radius:50%;background:linear-gradient(140deg,#b9956599,#45364c);border:1px solid #d4b0828a;box-shadow:0 5px 12px #0007;transform:translate(var(--x,0px),var(--y,0px));z-index:1}#play-stick span{position:absolute;bottom:9px;left:0;right:0;text-align:center;font-size:12px;letter-spacing:.15em;color:#ebd8bb88}.play-actions{position:fixed;right:max(22px,env(safe-area-inset-right));bottom:calc(26px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:end}.play-interact{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:114px;height:90px;border:1px solid #d7ae6f80;border-radius:28px;background:linear-gradient(150deg,#805b34ed,#3c2c35f2);box-shadow:0 5px 22px #0006}.play-interact kbd{border-radius:50%;border:1px solid #f4d59d80;display:grid;place-items:center;width:28px;height:28px;font:600 15px var(--body)}.play-interact span{font-size:12px;max-width:105px;text-align:center}.play-wheel{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:56px;height:66px;border-radius:22px;border:1px solid var(--play-edge);background:var(--play-surface);font-size:25px!important}.play-wheel small{font-size:12px}.radial-dismiss{position:fixed;inset:0;border:0;background:#100d1b99;backdrop-filter:blur(5px)}.radial-disc{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(356px,calc(100vw - 24px));height:356px;border-radius:50%;background:radial-gradient(circle,#3e3045,#1c1824 69%);border:1px solid var(--play-edge);box-shadow:0 25px 100px #0009;text-align:center}.radial-disc>.eyebrow{position:absolute;top:136px;left:96px;right:96px;font-size:12px;line-height:1.4}.radial-disc h2{font:500 20px/1.15 var(--display,var(--body));position:absolute;top:172px;left:93px;right:93px;margin:0}.radial-options>button{position:absolute;left:50%;top:50%;width:76px;height:66px;margin:-33px -38px;border:1px solid #d6b38630;border-radius:20px;background:linear-gradient(150deg,#594251f7,#302637);transform:rotate(var(--angle)) translateY(-128px) rotate(calc(-1*var(--angle)));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 5px 12px #0005}.radial-options>button:hover,.radial-options>button:focus-visible{background:#735334;border-color:#eac791}.radial-options b{font-size:24px;font-weight:400}.radial-options span{font-size:12px}.radial-options img{width:42px;height:45px;object-fit:contain}.radial-options[data-count="2"]>button{width:106px;height:115px;margin:-58px -53px;transform:rotate(calc(var(--angle) + 90deg)) translateY(-109px) rotate(calc(-1*var(--angle) - 90deg))}.radial-options[data-count="2"] img{height:77px;width:65px}.radial-close{position:absolute;top:-18px;right:18px;background:#352936;border:1px solid var(--play-edge);border-radius:50%;font-size:24px!important}.furniture-radial #piece-bar{display:none!important}.play-piece-label{left:50%;right:auto;transform:translateX(-50%);top:auto;bottom:calc(145px + env(safe-area-inset-bottom));font-size:12px;max-width:65vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:capitalize}.play-dpad{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:calc(18px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:2px}.play-dpad button,.play-furniture-actions button{border:1px solid var(--play-edge);border-radius:16px;background:var(--play-surface);font-size:20px!important}.play-dpad button:nth-child(1){grid-area:1/2}.play-dpad button:nth-child(2){grid-area:2/1}.play-dpad button:nth-child(3){grid-area:2/3}.play-dpad button:nth-child(4){grid-area:3/2}.play-furniture-actions{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(30px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,48px);gap:6px}.play-furniture-actions [data-finish]{grid-column:1/4;font-size:14px!important}.furniture-radial #dock,.furniture-radial #actions{display:none!important}.home-journey-chip{position:fixed;z-index:30;left:max(16px,env(safe-area-inset-left));top:calc(78px + env(safe-area-inset-top));border:1px solid #cda36755;border-radius:24px;background:#28202fe8;color:var(--ink);font:13px var(--body);padding:10px 14px;min-height:44px;max-width:calc(100vw - 125px);text-align:left}.home-journey-chip b{color:var(--gold-bright)}.home-journey-card{border:1px solid var(--play-edge,#b8956855);border-radius:20px;padding:18px;background:#382a35;box-shadow:inset 0 1px 0 #ffe3b811}.home-journey-card h3{font:500 25px var(--display,var(--body));margin:7px 0}.home-goals{list-style:none;padding:0;display:grid;gap:12px}.home-goals li{display:flex;gap:10px;align-items:start;font-size:14px;line-height:1.5}.home-goals li>span:first-child{color:var(--gold-bright)}.home-life-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:15px 0}.home-life-links button{min-height:60px!important;white-space:normal;min-width:0;padding:8px}.house-goal-modal{position:fixed;inset:0;background:#100c1caa;z-index:170;display:grid;place-items:center;padding:20px;backdrop-filter:blur(6px)}.house-goal-modal>article{width:min(390px,100%);max-height:80dvh;overflow:auto;background:#29212f;border:1px solid #c7a27070;border-radius:28px;padding:24px;box-shadow:0 28px 90px #0009}.house-goal-modal h2{font:500 30px var(--display,var(--body));margin:7px 0}.house-goal-modal .button{min-height:44px}.house-goal-modal [data-later]{display:block;margin:10px auto 0;background:none;border:0;color:var(--ink-soft);font:14px var(--body)}@media(max-width:600px){.play-chip,.play-owner{right:12px}.radial-disc{scale:.92}.play-actions{right:14px;gap:7px}.play-interact{width:104px}.home-journey-chip{font-size:12px;max-width:calc(100vw - 115px)}}@media(max-height:500px){#play-stick{width:94px;height:94px;bottom:16px}#play-stick i{top:23px;left:23px}.play-actions{bottom:16px}.radial-disc{scale:.84}.play-owner{top:70px!important}.home-journey-chip{top:70px}.play-piece-label{bottom:10px}.play-dpad{bottom:4px}.play-furniture-actions{bottom:18px}}
++#play-controls{--play-surface:rgba(31,25,39,.95);--play-edge:rgba(226,183,119,.28);--play-gold:#edc88f;position:relative;z-index:45;font-family:var(--body)}#play-controls button{font:inherit;color:var(--ink);cursor:pointer;min-width:44px;min-height:44px;touch-action:manipulation}#play-controls button:focus-visible{outline:2px solid var(--play-gold);outline-offset:3px}#play-controls button:disabled{opacity:.55;cursor:default}.play-chip,.play-owner,.play-piece-label{position:fixed;right:max(16px,env(safe-area-inset-right));top:calc(78px + env(safe-area-inset-top));padding:4px 14px;border:1px solid var(--play-edge);border-radius:28px;background:var(--play-surface);box-shadow:0 6px 24px #0005}.play-chip{color:var(--play-gold)!important}.inside-place .play-chip,.inside-place .play-owner{top:auto;bottom:calc(98px + env(safe-area-inset-bottom))}.play-owner{display:flex;align-items:center;gap:8px;padding:2px 4px 2px 16px;font-weight:600}.play-owner button{border:0;background:transparent;border-radius:50%;font-size:21px!important}.control-mode #dock,.control-mode #actions,.control-mode #goal,.control-mode #streak{display:none!important}.control-mode.menu-open #dock{display:none!important}.control-mode .play-owner{top:calc(78px + env(safe-area-inset-top));bottom:auto}#play-stick{position:fixed;left:max(22px,env(safe-area-inset-left));bottom:calc(26px + env(safe-area-inset-bottom));width:112px;height:112px;border-radius:50%;background:radial-gradient(circle,#2b2337c9,#231d2c90);border:1px solid var(--play-edge);box-shadow:inset 0 0 0 13px #fff02,0 8px 28px #0003;touch-action:none;user-select:none}#play-stick:before,#play-stick:after{content:'';position:absolute;inset:24px 55px;background:#efce9633}#play-stick:after{transform:rotate(90deg)}#play-stick i{display:block;position:absolute;left:32px;top:32px;width:46px;height:46px;border-radius:50%;background:linear-gradient(140deg,#b9956599,#45364c);border:1px solid #d4b0828a;box-shadow:0 5px 12px #0007;transform:translate(var(--x,0px),var(--y,0px));z-index:1}#play-stick span{position:absolute;bottom:9px;left:0;right:0;text-align:center;font-size:12px;letter-spacing:.15em;color:#ebd8bb88}.play-actions{position:fixed;right:max(22px,env(safe-area-inset-right));bottom:calc(26px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:end}.play-interact{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:114px;height:90px;border:1px solid #d7ae6f80;border-radius:28px;background:linear-gradient(150deg,#805b34ed,#3c2c35f2);box-shadow:0 5px 22px #0006}.play-interact kbd{border-radius:50%;border:1px solid #f4d59d80;display:grid;place-items:center;width:28px;height:28px;font:600 15px var(--body)}.play-interact span{font-size:12px;max-width:105px;text-align:center}.play-wheel{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:56px;height:66px;border-radius:22px;border:1px solid var(--play-edge);background:var(--play-surface);font-size:25px!important}.play-wheel small{font-size:12px}.radial-dismiss{position:fixed;inset:0;border:0;background:#100d1b99;backdrop-filter:blur(5px)}.radial-disc{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(356px,calc(100vw - 24px));height:356px;border-radius:50%;background:radial-gradient(circle,#3e3045,#1c1824 69%);border:1px solid var(--play-edge);box-shadow:0 25px 100px #0009;text-align:center}.radial-disc>.eyebrow{position:absolute;top:136px;left:96px;right:96px;font-size:12px;line-height:1.4}.radial-disc h2{font:500 20px/1.15 var(--display,var(--body));position:absolute;top:172px;left:93px;right:93px;margin:0}.radial-options>button{position:absolute;left:50%;top:50%;width:76px;height:66px;margin:-33px -38px;border:1px solid #d6b38630;border-radius:20px;background:linear-gradient(150deg,#594251f7,#302637);transform:rotate(var(--angle)) translateY(-128px) rotate(calc(-1*var(--angle)));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 5px 12px #0005}.radial-options>button:hover,.radial-options>button:focus-visible{background:#735334;border-color:#eac791}.radial-options b{font-size:24px;font-weight:400}.radial-options span{font-size:12px}.radial-options img{width:42px;height:45px;object-fit:contain}.radial-options[data-count="2"]>button{width:106px;height:115px;margin:-58px -53px;transform:rotate(calc(var(--angle) + 90deg)) translateY(-109px) rotate(calc(-1*var(--angle) - 90deg))}.radial-options[data-count="2"] img{height:77px;width:65px}.radial-close{position:absolute;top:-18px;right:18px;background:#352936;border:1px solid var(--play-edge);border-radius:50%;font-size:24px!important}.furniture-radial #piece-bar{display:none!important}.play-piece-label{left:50%;right:auto;transform:translateX(-50%);top:auto;bottom:calc(145px + env(safe-area-inset-bottom));font-size:12px;max-width:65vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:capitalize}.play-dpad{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:calc(18px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:2px}.play-dpad button,.play-furniture-actions button{border:1px solid var(--play-edge);border-radius:16px;background:var(--play-surface);font-size:20px!important}.play-dpad button:nth-child(1){grid-area:1/2}.play-dpad button:nth-child(2){grid-area:2/1}.play-dpad button:nth-child(3){grid-area:2/3}.play-dpad button:nth-child(4){grid-area:3/2}.play-furniture-actions{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(30px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,48px);gap:6px}.play-furniture-actions [data-finish]{grid-column:1/4;font-size:14px!important}.furniture-radial #dock,.furniture-radial #actions{display:none!important}.home-journey-chip{position:fixed;z-index:30;left:max(16px,env(safe-area-inset-left));top:calc(78px + env(safe-area-inset-top));border:1px solid #cda36755;border-radius:24px;background:#28202fe8;color:var(--ink);font:13px var(--body);padding:10px 14px;min-height:44px;max-width:calc(100vw - 125px);text-align:left}.home-journey-chip b{color:var(--gold-bright)}.home-journey-card{border:1px solid var(--play-edge,#b8956855);border-radius:20px;padding:18px;background:#382a35;box-shadow:inset 0 1px 0 #ffe3b811}.home-journey-card h3{font:500 25px var(--display,var(--body));margin:7px 0}.home-goals{list-style:none;padding:0;display:grid;gap:12px}.home-goals li{display:flex;gap:10px;align-items:start;font-size:14px;line-height:1.5}.home-goals li>span:first-child{color:var(--gold-bright)}.home-life-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:15px 0}.home-life-links button{min-height:60px!important;white-space:normal;min-width:0;padding:8px}.house-goal-modal{position:fixed;inset:0;background:#100c1caa;z-index:170;display:grid;place-items:center;padding:20px;backdrop-filter:blur(6px)}.house-goal-modal>article{width:min(390px,100%);max-height:80dvh;overflow:auto;background:#29212f;border:1px solid #c7a27070;border-radius:28px;padding:24px;box-shadow:0 28px 90px #0009}.house-goal-modal h2{font:500 30px var(--display,var(--body));margin:7px 0}.house-goal-modal .button{min-height:44px}.house-goal-modal [data-later]{display:block;margin:10px auto 0;background:none;border:0;color:var(--ink-soft);font:14px var(--body)}@media(max-width:600px){.play-chip,.play-owner{right:12px}.radial-disc{scale:.92}.play-actions{right:14px;gap:7px}.play-interact{width:104px}.home-journey-chip{font-size:12px;max-width:calc(100vw - 115px)}}@media(max-height:500px){#play-stick{width:94px;height:94px;bottom:16px}#play-stick i{top:23px;left:23px}.play-actions{bottom:16px}.radial-disc{scale:.84}.play-owner{top:70px!important}.home-journey-chip{top:70px}.play-piece-label{bottom:10px}.play-dpad{bottom:4px}.play-furniture-actions{bottom:18px}}
+ 
+ .control-mode .home-journey-chip{display:none}
+ 
+@@ -6,45 +6,71 @@
+ /* The wheel is a real viewport dialog; its fixed children do not size a wrapper. */
+ #play-radial{position:fixed;inset:0}
+ 
+-/* Independent movement and camera sticks leave the action within either thumb's reach. */
+-#play-stick,#play-look{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));width:108px;height:108px;border:1px solid var(--play-edge);border-radius:50%;background:radial-gradient(circle at 45% 35%,#50414c99,#211c2cbe);box-shadow:inset 0 0 0 11px #f4d2a406,0 8px 28px #0003;touch-action:none;user-select:none}
+-#play-stick{left:max(18px,env(safe-area-inset-left));right:auto}
+-#play-look{right:max(18px,env(safe-area-inset-right));left:auto}
+-#play-stick:before,#play-stick:after,#play-look:before,#play-look:after{content:'';position:absolute;inset:24px calc(50% - 1px);background:#efce9630}
++/* Compact thumb zones: primary action stays above the right camera stick. */
++#play-controls,#play-controls *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
++#play-controls button{touch-action:none}
++#play-controls{--stick:86px;--control-edge:14px;--control-bottom:18px}
++#play-stick,#play-look{position:fixed;bottom:calc(var(--control-bottom) + env(safe-area-inset-bottom));width:var(--stick);height:var(--stick);border:1px solid #e6c79b29;border-radius:50%;background:radial-gradient(circle at 45% 35%,#55455045,#211c2c70);box-shadow:inset 0 0 0 8px #f4d2a405,0 5px 18px #0002;touch-action:none}
++#play-stick{left:max(var(--control-edge),env(safe-area-inset-left));right:auto}
++#play-look{right:max(var(--control-edge),env(safe-area-inset-right));left:auto}
++#play-stick:before,#play-stick:after,#play-look:before,#play-look:after{content:'';position:absolute;inset:18px calc(50% - .5px);background:#efce9624}
+ #play-stick:after,#play-look:after{transform:rotate(90deg)}
+-#play-stick i,#play-look i{position:absolute;left:calc(50% - 22px);top:calc(50% - 22px);width:44px;height:44px;display:block;border-radius:50%;background:linear-gradient(140deg,#b9956599,#45364c);border:1px solid #d4b0828a;box-shadow:0 5px 12px #0007;transform:translate(var(--x,0px),var(--y,0px));z-index:1}
+-#play-stick span,#play-look span{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;letter-spacing:.12em;color:#ebd8bbb8}
+-.play-gait,.play-recenter,.play-arrange{position:fixed;min-height:44px;border:1px solid var(--play-edge);border-radius:18px;background:var(--play-surface);box-shadow:0 5px 16px #0004}
+-.play-gait{left:max(42px,calc(env(safe-area-inset-left) + 22px));bottom:calc(144px + env(safe-area-inset-bottom));padding:0 13px;font-size:12px!important;min-width:60px!important}
+-.play-gait[aria-pressed=true]{background:#775735d9;color:var(--play-gold)!important}
+-.play-recenter{right:max(48px,calc(env(safe-area-inset-right) + 28px));bottom:calc(144px + env(safe-area-inset-bottom));width:44px;padding:10px}
+-.play-recenter svg{width:22px;height:22px;display:block}
+-.play-arrange{right:max(16px,env(safe-area-inset-right));top:calc(136px + env(safe-area-inset-top));padding:0 16px;font-size:12px!important}
+-.play-actions{left:50%;right:auto;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);display:grid;grid-template-columns:96px;gap:7px;justify-items:center;align-items:center;width:96px}
+-#play-interact{grid-row:2;width:96px;height:88px;border-radius:27px;padding:7px 5px;gap:3px;position:relative;overflow:visible}
+-#play-interact .play-action-key{position:relative;display:flex;align-items:center;gap:6px;min-height:28px}
+-#play-interact kbd{width:25px;height:25px;font-size:14px}
+-#play-interact [data-action-hint]{font-size:12px;color:#f3d8b4;white-space:nowrap}
+-#play-interact [data-action-label]{font-size:12px;font-weight:600;line-height:1.25;max-width:86px}
+-#play-focus-label{display:none}
+-#play-interact[aria-busy=true]{border-color:#ffd794b0;box-shadow:0 4px 24px #e2a25227,inset 0 1px #ffe7b333}
+-#play-activity-progress{position:absolute;left:-5px;top:-5px;width:35px;height:35px;border-radius:50%;background:conic-gradient(#f1cb8f var(--activity,0deg),#ffffff18 0);mask:radial-gradient(circle,transparent 56%,#000 59%);pointer-events:none}
+-#play-wheel{grid-row:1;display:flex;flex-direction:row;width:82px;height:44px;min-height:44px;border-radius:17px;gap:5px;padding:2px 7px}
+-#play-active-tool{display:flex;align-items:center;gap:5px}
+-#play-active-tool b{font-size:20px;font-weight:400}
+-#play-active-tool small{font-size:12px}
+-#play-wheel>i{font-size:12px;font-style:normal;color:var(--play-gold);letter-spacing:-1px;display:none}
++#play-stick i,#play-look i{position:absolute;left:calc(50% - 18px);top:calc(50% - 18px);width:36px;height:36px;display:block;border-radius:50%;background:linear-gradient(145deg,#c0a07977,#5a465780);border:1px solid #e4c39970;box-shadow:0 3px 10px #0005;transform:translate(var(--x,0px),var(--y,0px));z-index:1}
++#play-stick span,#play-look span{position:absolute;bottom:7px;left:0;right:0;text-align:center;font-size:12px;line-height:1;letter-spacing:.08em;color:#ebd8bb9e}
++.play-gait,.play-recenter,.play-arrange{position:fixed;min-height:44px;border:1px solid var(--play-edge);border-radius:16px;background:#251f2de8;box-shadow:0 3px 12px #0003}
++.play-gait{left:max(34px,calc(env(safe-area-inset-left) + 20px));bottom:calc(118px + env(safe-area-inset-bottom));padding:0 12px;font-size:12px!important;min-width:44px!important}
++.play-gait[aria-pressed=true]{background:#745338d9;color:var(--play-gold)!important}
++.play-recenter{right:max(114px,calc(env(safe-area-inset-right) + 100px));bottom:calc(38px + env(safe-area-inset-bottom));width:44px;padding:11px}
++.play-recenter svg{width:20px;height:20px;display:block}
++.play-arrange{right:max(14px,env(safe-area-inset-right));top:calc(132px + env(safe-area-inset-top));padding:0 14px;font-size:12px!important}
++.play-actions{position:fixed;left:auto;right:max(var(--control-edge),env(safe-area-inset-right));bottom:calc(118px + env(safe-area-inset-bottom));transform:none;display:flex;flex-direction:row-reverse;gap:10px;align-items:center;width:auto}
++#play-interact{display:flex;flex-direction:row;justify-content:center;align-items:center;gap:9px;width:120px;height:68px;min-height:68px;border:1px solid #f5d5a18c;border-radius:23px;padding:9px 10px;color:#fff0d6;background:linear-gradient(145deg,#b47b3df5,#795030f5 68%,#59402feb);box-shadow:inset 0 1px 0 #fff1cc50,inset 0 -2px 0 #28181535,0 5px 18px #130b1880;position:relative;overflow:hidden;isolation:isolate}
++#play-interact:before{content:'';position:absolute;inset:1px;border:1px solid #ffe9bc22;border-radius:21px;pointer-events:none}
++#play-interact:not(:disabled):active,#play-interact[data-pressed=true]{transform:translateY(1px);filter:brightness(1.12);box-shadow:inset 0 2px 6px #301c2940,0 2px 9px #130b1840}
++#play-interact:after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;transform:scaleX(var(--action-progress,0));transform-origin:left;background:#ffe3a6;opacity:0;pointer-events:none}
++#play-interact[aria-busy=true]:after{opacity:1}
++#play-interact.play-complete{border-color:#ffe3aa;box-shadow:inset 0 0 0 1px #ffdfac55,0 0 20px #edbd6630}
++#play-interact:disabled{background:linear-gradient(145deg,#51443eeb,#332b36ef);border-color:#d5b88a3d;opacity:.66}
++#play-interact .play-action-key{position:relative;display:grid;place-items:center;flex:0 0 28px;width:28px;height:32px;min-height:0}
++#play-interact [data-action-icon]{display:block;width:28px;height:28px;max-width:none;color:#ffe5b6;filter:drop-shadow(0 1px 1px #3a241b60)}
++#play-interact [data-action-icon] svg{display:block;width:28px;height:28px}
++#play-interact kbd{display:none;width:28px;height:28px;font-size:17px;border-color:#ffe0a75c;background:#3c29372e}
++#play-interact[data-input=gamepad] [data-action-icon]{display:none}
++#play-interact[data-input=gamepad] kbd{display:grid}
++#play-interact .play-action-copy{display:flex;flex:1;min-width:0;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;max-width:73px}
++#play-interact [data-action-label]{font-size:13px;font-weight:600;line-height:1.2;max-width:73px;text-align:left;overflow-wrap:normal}
++#play-interact [data-action-hint]{font-size:12px;line-height:1.1;color:#f4d4ad;white-space:nowrap}
++#play-focus-label{display:none!important}
++#play-interact[aria-busy=true]{border-color:#ffe0a9;box-shadow:inset 0 1px #ffe7b355,0 4px 20px #d49b422f}
++#play-activity-progress{position:absolute;left:-4px;top:-2px;width:36px;height:36px;border-radius:50%;background:conic-gradient(#ffe2a4 var(--activity,0deg),#fff3 0);mask:radial-gradient(circle,transparent 61%,#000 64%);pointer-events:none}
++#play-wheel{display:flex;flex-direction:row;width:44px;height:44px;min-height:44px;border-radius:15px;gap:0;padding:0;border-color:#d6b3863b;background:#27202fdf;box-shadow:inset 0 1px #ffe4b311,0 3px 10px #0003}
++#play-active-tool{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
++#play-active-tool b{font-size:20px;line-height:1;font-weight:400}
++#play-active-tool small{display:block;font-size:12px;line-height:1}
++#play-wheel>i{display:none}
++.play-owner{gap:0;padding:0 2px 0 11px;font-size:12px;border-radius:24px;background:#231d2ae3;box-shadow:0 3px 12px #0003}
++.play-owner button{font-size:19px!important}
+ .radial-options span{font-size:14.5px;line-height:1.12}
+ .radial-disc>.eyebrow{font-size:14.5px;top:137px;left:85px;right:85px;line-height:1.15;letter-spacing:.05em}
+ .radial-disc h2{top:170px;left:90px;right:90px}
++/* top plus bottom stretched the toast across the farm; choose one intrinsic edge. */
++.control-mode .notice{top:auto;bottom:calc(202px + env(safe-area-inset-bottom));height:max-content;min-height:0;max-height:66px;width:max-content;max-width:min(300px,calc(100% - 32px));padding:8px 12px;overflow:hidden;font-size:12px;line-height:1.35;border-radius:14px;background:#211b2bed;box-shadow:0 4px 16px #08060d40}
+ @media(min-width:1000px){
+- #play-stick,#play-look{width:116px;height:116px;bottom:calc(27px + env(safe-area-inset-bottom))}
+- #play-stick{left:28px}#play-look{right:28px}
+- .play-gait{left:55px;bottom:calc(154px + env(safe-area-inset-bottom))}.play-recenter{right:64px;bottom:calc(154px + env(safe-area-inset-bottom))}
+- .play-actions{bottom:calc(29px + env(safe-area-inset-bottom));width:110px;grid-template-columns:110px}#play-interact{width:110px;height:90px}#play-interact[data-action-label]{max-width:100px}
+- #play-focus-label:not(:empty){display:block;position:absolute;bottom:calc(100% + 62px);left:50%;transform:translateX(-50%);max-width:240px;width:max-content;padding:5px 10px;border:1px solid var(--play-edge);border-radius:15px;background:var(--play-surface);font-size:12px;color:var(--ink-soft)}
++ #play-controls{--stick:90px;--control-edge:22px;--control-bottom:22px}
++ .play-gait{left:45px;bottom:calc(126px + env(safe-area-inset-bottom))}.play-actions{bottom:calc(126px + env(safe-area-inset-bottom))}
++ .play-recenter{right:126px;bottom:calc(45px + env(safe-area-inset-bottom))}
++}
++@media(max-width:370px){
++ #play-controls{--stick:80px;--control-edge:10px;--control-bottom:14px}
++ .play-gait{left:28px;bottom:calc(108px + env(safe-area-inset-bottom))}.play-actions{bottom:calc(108px + env(safe-area-inset-bottom));gap:8px}
++ #play-interact{width:112px;gap:7px;padding:9px 8px}.play-recenter{right:104px;bottom:calc(32px + env(safe-area-inset-bottom))}
++}
++@media(max-height:500px){
++ #play-controls{--stick:80px;--control-edge:14px;--control-bottom:12px}
++ .play-gait{left:max(31px,calc(env(safe-area-inset-left) + 17px));bottom:calc(106px + env(safe-area-inset-bottom))}
++ .play-actions{bottom:calc(106px + env(safe-area-inset-bottom))}
++ .play-recenter{right:max(108px,calc(env(safe-area-inset-right) + 94px));bottom:calc(30px + env(safe-area-inset-bottom))}
++ .play-arrange{top:calc(120px + env(safe-area-inset-top))}.control-mode .notice{bottom:calc(186px + env(safe-area-inset-bottom))}
+ }
+-@media(max-width:370px){#play-stick,#play-look{width:94px;height:94px}#play-stick{left:10px}#play-look{right:10px}.play-gait{left:28px;bottom:calc(130px + env(safe-area-inset-bottom))}.play-recenter{right:35px;bottom:calc(130px + env(safe-area-inset-bottom))}.play-actions{width:88px;grid-template-columns:88px}#play-interact{width:88px}}
+-@media(max-height:500px){#play-stick,#play-look{width:94px;height:94px;bottom:calc(12px + env(safe-area-inset-bottom))}#play-stick{left:max(18px,env(safe-area-inset-left))}#play-look{right:max(18px,env(safe-area-inset-right))}.play-gait{left:max(35px,calc(env(safe-area-inset-left) + 18px));bottom:calc(116px + env(safe-area-inset-bottom))}.play-recenter{right:max(43px,calc(env(safe-area-inset-right) + 25px));bottom:calc(116px + env(safe-area-inset-bottom))}.play-actions{bottom:calc(12px + env(safe-area-inset-bottom))}#play-interact{height:78px}.play-arrange{top:calc(120px + env(safe-area-inset-top))}}
+ /* A phone's room chooser uses the first row beneath the HUD. */
+ @media(max-width:600px) and (min-height:501px){.control-mode.inside-place .play-owner{top:calc(126px + env(safe-area-inset-top))}.control-mode.inside-place .play-arrange{top:calc(181px + env(safe-area-inset-top))}}
+diff --git a/voxel/src/ui/play-controls.js b/voxel/src/ui/play-controls.js
+index af316b8..45fdd37 100644
+--- a/voxel/src/ui/play-controls.js
++++ b/voxel/src/ui/play-controls.js
+@@ -3,6 +3,28 @@ const glyph={hand:'✋',plant:'🌱',water:'💧',harvest:'✂',clean:'✦',home
+ const toolNames={hand:'Interact',plant:'Plant',water:'Water',harvest:'Pick',clean:'Clean'};
+ const inputField=()=>['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
+ const dead=v=>Math.abs(v)>.18?v:0;
++const actionPaths={
++ hand:'M8 12V7a1.5 1.5 0 0 1 3 0v4-6a1.5 1.5 0 0 1 3 0v6-4a1.5 1.5 0 0 1 3 0v5-2a1.5 1.5 0 0 1 3 0v5c0 5-3 7-6 7h-2c-2 0-3-1-4-3l-3-5a1.5 1.5 0 0 1 2-2l1 1Z',
++ water:'M12 3c-2 4-7 7-7 12a7 7 0 0 0 14 0c0-5-5-8-7-12ZM9 16c0 2 1 3 3 3',
++ plant:'M5 4c9-1 15 3 14 10-8 3-14-1-14-10ZM7 7l10 12M12 13v8',
++ harvest:'M9 7c-6-2-8 3-7 7s4 6 10 6 9-2 10-6-1-9-7-7M12 6c-4 2-4 12 0 14 4-2 4-12 0-14ZM12 7V3l3-1',
++ clean:'m5 20 6-6m-4-4 7 7 6-8-5-5-8 6ZM18 2v3m3 1h-3M5 6v4M3 8h4',
++ sit:'M6 3v10h12v-5a3 3 0 0 0-3-3H9M6 13v8m12-8v8M4 13h16',
++ read:'M12 5C8 2 4 3 2 4v15c3-2 7-1 10 1 3-2 7-3 10-1V4c-2-1-6-2-10 1Zm0 0v15',
++ pet:'M20 5c-3-3-6-1-8 1-2-2-5-4-8-1-5 5 3 11 8 15 5-4 13-10 8-15Z',
++ home:'m3 11 9-8 9 8M5 10v11h14V10m-10 11v-7h6v7',
++ wardrobe:'M10 5a2 2 0 1 1 3 2l-1 1v2L2 16v3h20v-3l-10-6',
++ go:'M4 12h16m-6-6 6 6-6 6',
++ stand:'M12 3v14m-5-9 5-5 5 5M4 21h16',
++};
++const actionIcon=kind=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${actionPaths[kind]??actionPaths.hand}"/></svg>`;
++const shortAction=(label,p,job,tool)=>{
++ if(job.travelling)return 'Next crop';if(job.active)return label;
++ if(p.pose)return 'Stand up';if(p.available===false)return label;
++ const type=p.target?.type;
++ if(tool!=='hand'||type==='plot')return /water/i.test(label)?'Water':/pick/i.test(label)?'Pick':/plant/i.test(label)?'Plant':/clean/i.test(label)?'Clean':label;
++ return ({pumpkin:'Tap pumpkin',shop:'Shop',home:'Go home',cooking:'Cook',wardrobe:'Dress up',sit:'Sit',read:'Read',exit:'Leave',piece:'Arrange',go:'Go through'})[type]??label;
++};
+ 
+ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction}) {
+   let padName='',menuRepeat=0,details=false,previousPiece=null,previousFocus=null,radial=false,tool='hand',keys=new Set(),cameraKeys=new Set(),move={x:0,y:0},look={x:0,y:0},padPrevious=[],selectedIndex=0,repeatAt=0,held=null,suppressClickUntil=0;
+@@ -15,7 +37,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
+       <div id="play-look" class="play-thumbstick" role="group" aria-label="Camera thumbstick"><i></i><span>LOOK</span></div>
+       <button id="play-recenter" class="play-recenter" aria-label="Centre the camera on your character" title="Centre camera · C / R3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/><circle cx="12" cy="12" r="3"/></svg></button>
+       <div class="play-actions">
+-        <button id="play-interact" class="play-interact"><span class="play-action-key"><span id="play-activity-progress" role="progressbar" aria-label="Action progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden></span><kbd data-action-key>X</kbd><small data-action-hint>Tap</small></span><span data-action-label>Explore</span><small id="play-focus-label"></small></button>
++        <button id="play-interact" class="play-interact"><span class="play-action-key"><span data-action-icon aria-hidden="true"></span><span id="play-activity-progress" role="progressbar" aria-label="Action progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden></span><kbd data-action-key>X</kbd></span><span class="play-action-copy"><span data-action-label>Explore</span><small data-action-hint>Tap</small></span><small id="play-focus-label"></small></button>
+         <button id="play-wheel" class="play-wheel" aria-label="Open radial tools"><span id="play-active-tool"><b data-tool-icon>✥</b><small data-tool-name>Tools</small></span><i aria-hidden="true">· · ·</i></button>
+         <button id="play-arrange" class="play-arrange" aria-label="Arrange the nearby furniture" hidden>Arrange</button>
+       </div>
+@@ -23,26 +45,28 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
+     <div id="furniture-pad" hidden><div class="play-piece-label"></div><div class="play-dpad" role="group" aria-label="Move selected furniture"><button data-nudge="0,-1" aria-label="Move back">↑</button><button data-nudge="-1,0" aria-label="Move left">←</button><button data-nudge="1,0" aria-label="Move right">→</button><button data-nudge="0,1" aria-label="Move forward">↓</button></div><div class="play-furniture-actions"><button data-turn="-15" aria-label="Rotate left 15 degrees">↶</button><button id="furniture-wheel" aria-label="Furniture radial menu">✥</button><button data-turn="15" aria-label="Rotate right 15 degrees">↷</button><button data-finish>✓ Done</button></div></div>
+     <div id="play-radial" hidden role="dialog" aria-modal="true" aria-label="Choose an action"><button class="radial-dismiss" aria-label="Close action wheel"></button><div class="radial-disc"><p class="eyebrow">Your tools</p><h2>Interact</h2><div class="radial-options"></div><button class="radial-close" aria-label="Close action wheel">×</button></div></div>`;
+   document.body.append(root);
++  // Holding a game button is an input gesture, never Android text selection.
++  root.oncontextmenu=e=>e.preventDefault();root.onselectstart=e=>e.preventDefault();root.ondragstart=e=>e.preventDefault();
+   const $=s=>root.querySelector(s),wheel=$('#play-radial'),opts=$('.radial-options'),stickEl=$('#play-stick'),lookEl=$('#play-look'),interact=$('#play-interact');
+   const setText=(el,text)=>{if(el.textContent!==String(text))el.textContent=text;};
+   const activity=()=>getActivity()??{};
+   // Arrange is contextual, outside the transformed action cluster.
+   root.append($('#play-arrange'));
+-  let releaseMove=()=>{},releaseLook=()=>{};
++  let releaseMove=()=>{},releaseLook=()=>{},shownActionIcon='',shownCompletion=null,completeTimer;
+ 
+   // A pointer capture may outlive a sheet opening; end it explicitly on every boundary.
+   function cancelInteraction(reason='cancel') {
+     if(held||activity().active)action(tool,{phase:'cancel',source:held?.source??'controls',reason});
+-    held=null;
++    held=null;interact.dataset.pressed='false';
+   }
+   function beginInteraction(source,id=null) {
+     if(held)return;
+-    held={source,id,at:performance.now()};
++    held={source,id,at:performance.now()};interact.dataset.pressed='true';
+     action(tool,{phase:'start',source,chain:true});
+   }
+   function endInteraction(source,id=null) {
+     if(!held||held.source!==source||(id!==null&&held.id!==id))return;
+-    const durationMs=Math.max(0,performance.now()-held.at);held=null;
++    const durationMs=Math.max(0,performance.now()-held.at);held=null;interact.dataset.pressed='false';
+     action(tool,{phase:'release',source,durationMs,assist:durationMs<220});
+   }
+   function close() {
+@@ -137,7 +161,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
+     $('#play-toggle').hidden=!!p.enabled||blocked||!!piece;$('#play-live').hidden=!p.enabled||blocked||radial||!!piece;
+     stickEl.hidden=lookEl.hidden=$('#play-gait').hidden=$('#play-recenter').hidden=p.available===false;
+     $('#furniture-pad').hidden=!piece||blocked||radial||details;
+-    $('#play-arrange').hidden=!p.target?.instance||p.available===false||!!p.pose;
++    $('#play-arrange').hidden=!p.enabled||blocked||radial||!!piece||!p.target?.instance||p.available===false||!!p.pose;
+     if(piece)setText($('.play-piece-label'),(piece.id??'Furniture').replaceAll('-',' ')+' · '+Math.round(piece.rotation??0)+'°');
+     setText($('[data-owner]'),p.who==='shane'?'Shane':'Natalie');setText($('#play-toggle span'),padName?'Play · '+padName:'Play');
+     setText($('#play-gait'),p.gait==='jog'?'Jog':'Walk');$('#play-gait').setAttribute('aria-pressed',String(p.gait==='jog'));
+@@ -145,8 +169,11 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
+     const pose=p.pose&&(typeof p.pose==='string'?p.pose:p.pose.kind),holdable=['plot','litter'].includes(p.target?.type);
+     const label=p.available===false?(p.place==='estate'?'Enter home':'Back to farm'):job.active?job.label:pose?'Stand up':tool==='hand'?p.target?.label:({plant:'Plant seed',water:'Water crop',harvest:'Pick pumpkin',clean:'Clean litter'})[tool];
+     const object=p.target?.objectLabel??p.target?.name??p.target?.item?.replaceAll('-',' ')??'';
+-    setText($('[data-action-key]'),padName==='DualSense'?'□':padName?'A':'X');setText($('[data-action-hint]'),job.travelling?'Go to':job.active?(job.holding?'Hold':'Using'):holdable?'Tap / hold':'Tap');setText($('[data-action-label]'),label||'Explore');setText($('#play-focus-label'),object===label?'':object);
+-    const progress=Math.max(0,Math.min(1,Number(job.progress)||0));$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep using':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
++    setText($('[data-action-key]'),padName==='DualSense'?'□':padName?'A':'X');setText($('[data-action-hint]'),job.travelling?'Walking':job.active?(job.holding?'Hold':'Finishing'):holdable?'Tap / hold':'Tap');setText($('[data-action-label]'),shortAction(label||'Explore',p,job,tool));setText($('#play-focus-label'),'');
++    const icon=pose?'stand':job.kind??(tool==='hand'?({plot:/water/i.test(label)?'water':/pick/i.test(label)?'harvest':'plant',litter:'clean',pumpkin:'harvest',shop:'home',home:'home',cooking:'hand',wardrobe:'wardrobe',sit:'sit',read:'read',pet:'pet',exit:'go',go:'go',piece:'hand'})[p.target?.type]??'hand':tool);
++    if(shownActionIcon!==icon){$('[data-action-icon]').innerHTML=actionIcon(icon);shownActionIcon=icon;}interact.dataset.input=padName?'gamepad':'touch';
++    if(job.last&&job.last!==shownCompletion){shownCompletion=job.last;if(job.last.success){clearTimeout(completeTimer);interact.classList.add('play-complete');completeTimer=setTimeout(()=>interact.classList.remove('play-complete'),360);}}
++    const progress=Math.max(0,Math.min(1,Number(job.progress)||0));interact.style.setProperty('--action-progress',progress);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep using':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
+     scene.player?.setBlocked(blocked||radial||!!piece);
+     if(blocked){cancelInteraction('menu');keys.clear();cameraKeys.clear();releaseMove();releaseLook();}
+     if(pad&&blocked)menuInput(down,pressed);
+diff --git a/voxel/test/camera-and-shuffle.test.mjs b/voxel/test/camera-and-shuffle.test.mjs
+index 74569b7..08741ed 100644
+--- a/voxel/test/camera-and-shuffle.test.mjs
++++ b/voxel/test/camera-and-shuffle.test.mjs
+@@ -1,6 +1,6 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+-import { cameraLayout, farmVerticalLimits } from "../src/camera-layout.js";
++import { cameraLayout, controlledRoomFraming, farmVerticalLimits } from "../src/camera-layout.js";
+ import { createMusicQueue } from "../src/ui/music-queue.js";
+ 
+ test("an almost-square unfolded Fold uses the whole farm, not the phone crop", () => {
+@@ -37,3 +37,14 @@ test("shuffle plays every song per round and never repeats at round boundaries",
+   assert.equal(createMusicQueue([]).next("a"), null);
+   assert.equal(createMusicQueue(["a"]).next("a"), "a");
+ });
++
++// The same cap is applied when wheel, pinch or controller input reaches framing.
++test("indoor direct play leaves space around the owner and cannot zoom into a giant", () => {
++  assert.equal(controlledRoomFraming(390).distance,15);
++  assert.equal(controlledRoomFraming(874).distance,16.5);
++  for(const width of [320,390,600,874,1280])for(const requested of [.1,.6,1,1.9,4.5,NaN,Infinity]){
++    const view=controlledRoomFraming(width,requested);
++    assert.ok(view.zoom>=.6&&view.zoom<=1.15);
++    assert.ok(view.distance/view.zoom>=13);
++  }
++});
+diff --git a/voxel/test/life-actions.test.mjs b/voxel/test/life-actions.test.mjs
+index 6db608c..5f81b7b 100644
+--- a/voxel/test/life-actions.test.mjs
++++ b/voxel/test/life-actions.test.mjs
+@@ -13,7 +13,7 @@ test('tool progress has no farm effects before the caller commits one completion
+   assert.equal(plant(s, event.target.index), true); assert.equal(s.plots[0].phase, 'growing');
+ });
+ 
+-test('early release cancels without planting, watering or selling anything', () => {
++test('explicit cancellation has no planting, watering or sales effects', () => {
+   const s = freshState(), before = JSON.stringify(saveData(s)), job = beginAction(s, { type: 'plot', index: 0 }, 'plant');
+   tickAction(s, job, .79); assert.equal(cancelAction(job), true); assert.equal(cancelAction(job), false);
+   assert.equal(tickAction(s, job, 100), null); assert.equal(actionProgress(job), 0); assert.equal(JSON.stringify(saveData(s)), before);
+diff --git a/voxel/test/life-activity.test.mjs b/voxel/test/life-activity.test.mjs
+index 775a5b4..cc4db33 100644
+--- a/voxel/test/life-activity.test.mjs
++++ b/voxel/test/life-activity.test.mjs
+@@ -2,6 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
+ import * as M from '../src/model.js';import {PLOTS} from '../src/world.js';import {createLifeActivity} from '../src/life-activity.js';
+ function setup(){const s=M.freshState(),position={...PLOTS[0]},calls=[];let travelling=false,closed=false;const target={type:'plot',index:0,...PLOTS[0]},player={state:()=>({enabled:true,available:true,position,target,travelling}),act:()=>true,faceTarget:()=>{},cancelAction:()=>{},cancelWalk:()=>{travelling=false;},walkTo:()=>{travelling=true;return true;}};const life=createLifeActivity({state:()=>s,player,blocked:()=>closed,commit:(kind,t)=>{calls.push({kind,index:t.index});return M.plant(s,t.index);}});return{s,life,calls,position,close:()=>{closed=true;}};}
+ test('a short tap assists one job, commits after its duration and never repeats',()=>{const {s,life,calls}=setup();assert.equal(life.handle('plant',{phase:'start'}),true);life.handle('plant',{phase:'release',assist:true});life.advance(.35);assert.equal(s.plots[0].phase,'empty');life.advance(1);assert.equal(s.plots[0].phase,'growing');life.advance(5);assert.equal(calls.length,1);assert.equal(life.state().active,false);});
+-test('a released deliberate hold leaves the crop and stock untouched',()=>{const {s,life,calls}=setup(),coins=s.coins;life.handle('plant',{phase:'start'});life.advance(.35);life.handle('plant',{phase:'release',assist:false});life.advance(2);assert.equal(calls.length,0);assert.equal(s.plots[0].phase,'empty');assert.equal(s.coins,coins);});
++test('releasing a longer press completes just the current crop without discarding progress',()=>{const {s,life,calls}=setup();life.handle('plant',{phase:'start'});life.advance(.35);life.handle('plant',{phase:'release',assist:false});assert.equal(life.state().active,true);assert.equal(s.plots[0].phase,'empty');life.advance(2);assert.equal(calls.length,1);assert.equal(s.plots[0].phase,'growing');assert.equal(s.plots[1].phase,'empty');assert.equal(life.state().active,false);});
++test('explicit cancel still stops an unfinished assisted use without a transaction',()=>{const {s,life,calls}=setup();life.handle('plant',{phase:'start'});life.advance(.35);life.handle('plant',{phase:'release'});life.handle('plant',{phase:'cancel'});life.advance(2);assert.equal(calls.length,0);assert.equal(s.plots[0].phase,'empty');});
+ test('holding plans a nearby walk without teleporting or planting a remote neighbour',()=>{const {s,life,calls,position}=setup(),start={...position};life.handle('plant',{phase:'start'});life.advance(1);assert.equal(calls.length,1);assert.equal(life.state().travelling,true);assert.deepEqual(position,start);assert.equal(s.plots[1].phase,'empty');life.handle('plant',{phase:'release',assist:false});assert.equal(life.state().travelling,false);life.advance(5);assert.equal(calls.length,1);});
+ test('menu boundaries and helper replacement cancel before a transaction',()=>{for(const mode of ['menu','helper']){const {s,life,calls,close}=setup();life.handle('plant',{phase:'tap'});life.advance(.2);if(mode==='menu')close();else M.plant(s,0);life.advance(2);assert.equal(calls.length,0);assert.equal(life.state().active,false);}});
+diff --git a/voxel/test/player-feel.test.mjs b/voxel/test/player-feel.test.mjs
+index 5f0d64b..9d8c654 100644
+--- a/voxel/test/player-feel.test.mjs
++++ b/voxel/test/player-feel.test.mjs
+@@ -9,7 +9,7 @@ test('targeting refuses distant items rather than selecting through the world',(
+ test('farm camera wraps a genuine full yaw and bounds its usable pitch',()=>{let p={yaw:0,pitch:.6};for(let i=0;i<300;i++)p=playerOrbitStep(p,1,1,.1);assert.ok(p.yaw>=-Math.PI&&p.yaw<=Math.PI);assert.ok(Math.abs(p.yaw)>.1);assert.equal(p.pitch,Math.PI*66/180);for(let i=0;i<50;i++)p=playerOrbitStep(p,0,-1,.1);assert.equal(p.pitch,Math.PI*22/180);});
+ test('room orbit remains inside the cutaway viewing angles',()=>{let p={yaw:0,pitch:.6};for(let i=0;i<30;i++)p=playerOrbitStep(p,1,0,.1,true);assert.equal(p.yaw,.9);for(let i=0;i<60;i++)p=playerOrbitStep(p,-1,0,.1,true);assert.equal(p.yaw,-.9);});
+ 
+-test('watering presents a real enlarged can and its live nozzle on the captured target',async()=>{
++test('watering presents an illustrated can and its live nozzle on the captured target',async()=>{
+  const THREE=await import('three'),{createPlayerControl}=await import('../src/player-control.js'),{freshState}=await import('../src/model.js');
+  const original=globalThis.document;globalThis.document={body:{classList:{contains:()=>false}}};
+  try {
+@@ -19,7 +19,7 @@ test('watering presents a real enlarged can and its live nozzle on the captured
+   const player=createPlayerControl({scene,state:s,actors:()=>({natalie:{model:actor}}),places,getPlace:()=>null,getCamera:()=>camera,animate(){}});
+   player.setEnabled(true,'natalie');const target={type:'plot',index:1,x:16.2,z:16.3};
+   assert.equal(player.act('water',1.1,target),true);player.update(.2,.2);
+-  const p=player.state();assert.equal(p.canVisible,true);assert.equal(p.dropsVisible,true);assert.equal(p.canScale,1.65);assert.deepEqual(p.actionTarget,target);assert.ok(Number.isFinite(p.waterNozzle.x)&&p.waterNozzle.y>.5);assert.ok(Math.hypot(p.waterNozzle.x-p.position.x,p.waterNozzle.z-p.position.z)>.7);
++  const p=player.state();assert.equal(p.canVisible,true);assert.equal(p.dropsVisible,true);assert.equal(p.canScale,1);assert.equal(p.waterCanStyle,"sprite");assert.ok(p.waterCanWidth<.9);assert.deepEqual(p.actionTarget,target);assert.ok(Number.isFinite(p.waterNozzle.x)&&p.waterNozzle.y>.5);assert.ok(Math.hypot(p.waterNozzle.x-p.position.x,p.waterNozzle.z-p.position.z)>.7);
+   player.cancelAction();assert.equal(player.state().canVisible,false);assert.equal(player.state().dropsVisible,false);
+  } finally {if(original===undefined)delete globalThis.document;else globalThis.document=original;}
+ });
+diff --git a/voxel/tools/qa-life-play-fit-final.mjs b/voxel/tools/qa-life-play-fit-final.mjs
+new file mode 100644
+index 0000000..484b235
+--- /dev/null
++++ b/voxel/tools/qa-life-play-fit-final.mjs
+@@ -0,0 +1,101 @@
++// Focused release checks against the exact, unmodified offline HTML.
++import fs from 'node:fs';
++import path from 'node:path';
++import http from 'node:http';
++import { createHash } from 'node:crypto';
++import { chromium } from 'playwright';
++import * as M from '../src/model.js';
++import { PLAYER_SIDE_WALK_META } from '../src/player-side-walk-meta.js';
++
++const file = path.resolve(process.argv[2] ?? '/workspace/Pumpkin-Patch-Life-Play-Fit.html');
++const out = path.resolve(process.argv[3] ?? '/tmp/life-play-fit-final');
++fs.mkdirSync(out, { recursive: true });
++const html = fs.readFileSync(file), checks = [], errors = [], requests = [], shots = [];
++let passed = false;
++const meta = {
++  file, sha256: createHash('sha256').update(html).digest('hex'), started: new Date().toISOString(),
++  scope: 'Exact final HTML; phone-to-Fold framing, final illustrated-can screenshot, compact notice and actual right-thumb release. Diagnostic action time only; no HTML edits. Hardware tests remain separate.',
++};
++const report = () => fs.writeFileSync(path.join(out, 'checks.json'), JSON.stringify({ ...meta, passed, checks, errors, requests, shots }, null, 2));
++const check = (ok, label, data) => {
++  checks.push({ ok: !!ok, label, ...(data === undefined ? {} : { data }) }); report();
++  console.log(ok ? 'ok  ' : 'FAIL', label);
++  if (!ok) throw Error(label + ': ' + JSON.stringify(data));
++};
++const seed = M.freshState();
++seed.introSeen = true; seed.coins = 25000; seed.earned = 100000; seed.house.level = 3;
++seed.progression.homeLegacyThrough = 12;
++seed.progression.claimed = M.LEVELS.slice(0, 12).map(l => l.level); seed.progression.pending = [];
++seed.visitorTimer = seed.shop.arrivalTimer = seed.bigSpender.timer = 1e6; seed.orders.next = 1e6;
++const server = http.createServer((request, response) => {
++  if (request.url === '/favicon.ico') { response.writeHead(204); response.end(); return; }
++  response.setHeader('Content-Type', 'text/html'); response.end(html);
++});
++await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
++const base = 'http://127.0.0.1:' + server.address().port;
++const browser = await chromium.launch({
++  executablePath: process.env.CHROMIUM_PATH ?? '/usr/bin/chromium',
++  args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
++});
++const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, hasTouch: true, reducedMotion: 'reduce' });
++page.setDefaultTimeout(120000);
++page.on('pageerror', error => errors.push(error.message));
++page.on('request', request => {
++  if (!request.url().startsWith(base) && !request.url().startsWith('blob:') && !request.url().startsWith('data:')) requests.push(request.url());
++});
++await page.addInitScript(s => {
++  const key = 'pumpkin-patch-voxel-reference-v1';
++  localStorage.setItem(key, JSON.stringify(s));
++  localStorage.setItem(key + '-prefs', JSON.stringify({ renderQuality: 'performance', shadows: false, glow: false, mist: false, lakeLights: false, music: false, sound: false }));
++}, M.saveData(seed));
++const frame = async (count = 2) => {
++  const token = await page.evaluate(count => {
++    const token = (window.lifeReleaseFrame ?? 0) + 1; window.lifeReleaseFrame = token;
++    let seen = 0;
++    const step = () => { if (++seen >= count) window.lifeReleaseFrameDone = token; else requestAnimationFrame(step); };
++    requestAnimationFrame(step); return token;
++  }, count);
++  await page.waitForFunction(token => window.lifeReleaseFrameDone >= token, token);
++};
++const shot = async name => { await page.screenshot({ path: path.join(out, name + '.png') }); shots.push(name); report(); };
++const status = () => page.evaluate(() => ({ p: PumpkinVoxel.scene.player.state(), camera: PumpkinVoxel.scene.cameraFraming }));
++const wrapped = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
++const travelled = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
++const touch = (id, x, y) => ({ id, x, y, radiusX: 5, radiusY: 5, force: 1 });
++const fit = async () => page.evaluate(() => {
++  const visible = [...document.querySelectorAll('#play-controls button:not(:disabled)')].filter(n => n.getClientRects().length && !n.closest('[hidden]'));
++  const boxes = visible.map(n => ({ label: n.getAttribute('aria-label') ?? n.textContent.trim(), ...n.getBoundingClientRect().toJSON() }));
++  return {
++    overflow: document.documentElement.scrollWidth > innerWidth + 1,
++    small: boxes.filter(r => r.width < 43.5 || r.height < 43.5),
++    clipped: boxes.filter(r => r.x < -.5 || r.right > innerWidth + .5 || r.top < -.5 || r.bottom > innerHeight + .5),
++  };
++});
++
++
++try{
++ await page.setViewportSize({width:390,height:844});await page.goto(base);await page.waitForSelector('body[data-ready]');
++ await page.waitForFunction(()=>PumpkinVoxel.scene.characterStyle==='sprites');
++ await page.evaluate(()=>{PumpkinVoxel.intro?.skip();PumpkinVoxel.state().progression.pending=[];});
++ await page.locator('.house-goal-modal [data-later]').evaluateAll(ns=>ns.forEach(n=>n.click()));
++ await page.locator('.level-continue').evaluateAll(ns=>ns.forEach(n=>n.click()));
++ await page.evaluate(()=>{PumpkinVoxel.playControls.start('natalie');const p=PumpkinVoxel.scene.player;p.teleport(15.3,14.2);p.recenter();});await frame();
++ const before=await page.evaluate(()=>PumpkinVoxel.scene.cameraFraming.zoom);
++ await page.setViewportSize({width:874,height:787});await frame(3);
++ const after=await page.evaluate(()=>PumpkinVoxel.scene.cameraFraming.zoom);
++ check(Math.abs(before-after)<.001,'Unfolding the phone preserves the direct-play camera distance',{before,after});
++ await page.evaluate(()=>{const a=PumpkinVoxel,p=a.scene.player,s=a.state();s.plots[0]={phase:'growing',progress:.1,variety:0};const t=p.targets().find(t=>t.type==='plot'&&t.index===0);p.teleport(t.x-1.2,t.z);p.faceTarget(t);p.recenter();});await frame();
++ const r=await page.locator('#play-interact').boundingBox();await page.mouse.move(r.x+r.width/2,r.y+r.height/2);await page.mouse.down();
++ await page.evaluate(()=>PumpkinVoxel.lifeActivity.advance(.2));await page.waitForTimeout(260);await page.mouse.up();
++ const active=await page.evaluate(()=>PumpkinVoxel.lifeActivity.state());
++ check(active.active&&!active.holding&&active.assisted,'The final right-thumb release finishes one current use',active);await frame(1);
++ const can=await page.evaluate(()=>{let mesh;PumpkinVoxel.scene.debug.scene.traverse(o=>{if(o.name==='Illustrated watering can')mesh=o;});return {state:PumpkinVoxel.scene.player.state(),geometry:mesh?.geometry.type,width:mesh?.material.map?.image?.width};});
++ check(can.state.canVisible&&can.state.waterCanStyle==='sprite'&&can.geometry==='PlaneGeometry'&&can.width===256,'The exact release displays the painted watering can',can);
++ await shot('final-fold-watering');await page.evaluate(()=>PumpkinVoxel.lifeActivity.advance(2));
++ const notice=await page.evaluate(()=>{PumpkinVoxel.notice('This crop has had a drink. Try the next one.');return document.getElementById('notice').getBoundingClientRect().toJSON();});
++ check(notice.height<80&&notice.width<=320,'The final notice remains compact',notice);
++ await page.evaluate(()=>{const a=PumpkinVoxel;a.enterRoom('parlour');a.closeSheet();a.scene.player.teleport(5,4);a.scene.player.recenter();});await frame(2);await shot('final-fold-house');
++ check(errors.length===0&&requests.length===0,'The exact release has no browser errors or external runtime assets',{errors,requests});passed=true;
++}catch(error){meta.failure=String(error);console.error(error.stack??error);await page.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});}
++finally{report();await browser.close();await new Promise(resolve=>server.close(resolve));}
++if(!passed)process.exitCode=1;
+diff --git a/voxel/tools/qa-life-play-fit.mjs b/voxel/tools/qa-life-play-fit.mjs
+new file mode 100644
+index 0000000..afa3399
+--- /dev/null
++++ b/voxel/tools/qa-life-play-fit.mjs
+@@ -0,0 +1,132 @@
++// Focused release checks against the exact, unmodified offline HTML.
++import fs from 'node:fs';
++import path from 'node:path';
++import http from 'node:http';
++import { createHash } from 'node:crypto';
++import { chromium } from 'playwright';
++import * as M from '../src/model.js';
++import { PLAYER_SIDE_WALK_META } from '../src/player-side-walk-meta.js';
++
++const file = path.resolve(process.argv[2] ?? '/workspace/Pumpkin-Patch-Life-Play-Fit.html');
++const out = path.resolve(process.argv[3] ?? '/tmp/life-play-fit');
++fs.mkdirSync(out, { recursive: true });
++const html = fs.readFileSync(file), checks = [], errors = [], requests = [], shots = [];
++let passed = false;
++const meta = {
++  file, sha256: createHash('sha256').update(html).digest('hex'), started: new Date().toISOString(),
++  scope: 'Exact HTML; indoor projected sprite size and pitch/zoom limits, compact right-thumb UI and notices, forgiving real pointer holds, illustrated can rendering and cancellation. QA state/time only, HTML untouched. No physical Fold/Bluetooth test.',
++};
++const report = () => fs.writeFileSync(path.join(out, 'checks.json'), JSON.stringify({ ...meta, passed, checks, errors, requests, shots }, null, 2));
++const check = (ok, label, data) => {
++  checks.push({ ok: !!ok, label, ...(data === undefined ? {} : { data }) }); report();
++  console.log(ok ? 'ok  ' : 'FAIL', label);
++  if (!ok) throw Error(label + ': ' + JSON.stringify(data));
++};
++const seed = M.freshState();
++seed.introSeen = true; seed.coins = 25000; seed.earned = 100000; seed.house.level = 3;
++seed.progression.homeLegacyThrough = 12;
++seed.progression.claimed = M.LEVELS.slice(0, 12).map(l => l.level); seed.progression.pending = [];
++seed.visitorTimer = seed.shop.arrivalTimer = seed.bigSpender.timer = 1e6; seed.orders.next = 1e6;
++const server = http.createServer((request, response) => {
++  if (request.url === '/favicon.ico') { response.writeHead(204); response.end(); return; }
++  response.setHeader('Content-Type', 'text/html'); response.end(html);
++});
++await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
++const base = 'http://127.0.0.1:' + server.address().port;
++const browser = await chromium.launch({
++  executablePath: process.env.CHROMIUM_PATH ?? '/usr/bin/chromium',
++  args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
++});
++const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, hasTouch: true, reducedMotion: 'reduce' });
++page.setDefaultTimeout(120000);
++page.on('pageerror', error => errors.push(error.message));
++page.on('request', request => {
++  if (!request.url().startsWith(base) && !request.url().startsWith('blob:') && !request.url().startsWith('data:')) requests.push(request.url());
++});
++await page.addInitScript(s => {
++  const key = 'pumpkin-patch-voxel-reference-v1';
++  localStorage.setItem(key, JSON.stringify(s));
++  localStorage.setItem(key + '-prefs', JSON.stringify({ renderQuality: 'performance', shadows: false, glow: false, mist: false, lakeLights: false, music: false, sound: false }));
++}, M.saveData(seed));
++const frame = async (count = 2) => {
++  const token = await page.evaluate(count => {
++    const token = (window.lifeReleaseFrame ?? 0) + 1; window.lifeReleaseFrame = token;
++    let seen = 0;
++    const step = () => { if (++seen >= count) window.lifeReleaseFrameDone = token; else requestAnimationFrame(step); };
++    requestAnimationFrame(step); return token;
++  }, count);
++  await page.waitForFunction(token => window.lifeReleaseFrameDone >= token, token);
++};
++const shot = async name => { await page.screenshot({ path: path.join(out, name + '.png') }); shots.push(name); report(); };
++const status = () => page.evaluate(() => ({ p: PumpkinVoxel.scene.player.state(), camera: PumpkinVoxel.scene.cameraFraming }));
++const wrapped = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
++const travelled = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
++const touch = (id, x, y) => ({ id, x, y, radiusX: 5, radiusY: 5, force: 1 });
++const fit = async () => page.evaluate(() => {
++  const visible = [...document.querySelectorAll('#play-controls button:not(:disabled)')].filter(n => n.getClientRects().length && !n.closest('[hidden]'));
++  const boxes = visible.map(n => ({ label: n.getAttribute('aria-label') ?? n.textContent.trim(), ...n.getBoundingClientRect().toJSON() }));
++  return {
++    overflow: document.documentElement.scrollWidth > innerWidth + 1,
++    small: boxes.filter(r => r.width < 43.5 || r.height < 43.5),
++    clipped: boxes.filter(r => r.x < -.5 || r.right > innerWidth + .5 || r.top < -.5 || r.bottom > innerHeight + .5),
++  };
++});
++
++// Bound the visible frame conservatively, including transparent atlas gutters.
++const measureOwner=()=>page.evaluate(()=>{
++ const api=PumpkinVoxel,p=api.scene.player.state(),camera=api.scene.debug.active(),scene=api.scene.debug.scene;
++ scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);
++ let actor;scene.traverse(o=>{if(o.userData.playerAnimate&&Math.abs(o.position.x-(200+p.position.x))<.01&&Math.abs(o.position.z-p.position.z)<.01)actor=o;});
++ if(!actor)throw Error('Missing controlled home actor');
++ const mesh=actor.children[0].children.find(m=>m.isMesh),g=mesh.geometry;g.computeBoundingBox();let lo=Infinity,hi=-Infinity;
++ for(const x of [g.boundingBox.min.x,g.boundingBox.max.x])for(const y of [g.boundingBox.min.y,g.boundingBox.max.y]){
++  const v=camera.position.clone().set(x,y,0).applyMatrix4(mesh.matrixWorld).project(camera);lo=Math.min(lo,v.y);hi=Math.max(hi,v.y);
++ }
++ return {fraction:(hi-lo)/2,leanStretch:actor.children[0].scale.y,worldScale:actor.scale.y,framing:api.scene.cameraFraming};
++});
++try{
++ await page.goto(base);await page.waitForSelector('body[data-ready]');
++ await page.waitForFunction(()=>PumpkinVoxel.scene.characterStyle==='sprites');
++ await page.evaluate(()=>{PumpkinVoxel.intro?.skip();PumpkinVoxel.state().progression.pending=[];});
++ await page.locator('.house-goal-modal [data-later]').evaluateAll(ns=>ns.forEach(n=>n.click()));
++ await page.locator('.level-continue').evaluateAll(ns=>ns.forEach(n=>n.click()));
++ await page.evaluate(()=>{PumpkinVoxel.playControls.start('natalie');PumpkinVoxel.enterRoom('parlour');PumpkinVoxel.closeSheet();PumpkinVoxel.scene.player.teleport(5,4);PumpkinVoxel.scene.player.recenter();});
++ for(const [name,width,height]of [['phone',390,844],['fold',874,787],['landscape',844,390]]){
++  await page.setViewportSize({width,height});await page.evaluate(()=>PumpkinVoxel.scene.player.recenter());await frame(2);
++  const body=await measureOwner();check(body.fraction<.28&&body.framing.roomDistance>=15,`${name}: the owner fits naturally with room around them`,body);
++  const layout=await page.evaluate(()=>{
++   const r=s=>document.querySelector(s).getBoundingClientRect().toJSON(),action=r('#play-interact'),move=r('#play-stick'),look=r('#play-look');
++   const overlap=(a,b)=>Math.min(a.right,b.right)-Math.max(a.left,b.left)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1;
++   return {action,move,look,select:getComputedStyle(document.querySelector('#play-interact')).userSelect,overflow:document.documentElement.scrollWidth>innerWidth+1,right:action.x+action.width/2>innerWidth*.72,overlap:overlap(action,move)||overlap(action,look)};
++  });
++  const touchFit=await fit();
++  check(layout.right&&!layout.overlap&&!layout.overflow&&layout.move.width<=92&&layout.look.width<=92&&!touchFit.small.length&&!touchFit.clipped.length&&layout.select==='none',`${name}: compact controls put Interact within the right thumb's reach`,{layout,touchFit});
++  await shot(name+'-room-controls');
++  const toast=await page.evaluate(()=>{PumpkinVoxel.notice('This crop has had a drink. Try the next one.');const n=document.getElementById('notice');return {...n.getBoundingClientRect().toJSON(),text:n.textContent};});
++  check(toast.height<=80&&toast.width<=Math.min(width-20,320)&&toast.top>=0&&toast.bottom<=height,`${name}: the notification stays a small intrinsic-height toast`,toast);
++ }
++ await page.setViewportSize({width:390,height:844});await page.evaluate(()=>PumpkinVoxel.scene.player.recenter());await frame();
++ const normal=await measureOwner();await page.evaluate(()=>{for(let i=0;i<35;i++)PumpkinVoxel.scene.player.lookBy(0,1);});await frame();
++ const steep=await measureOwner();check(Math.abs(normal.leanStretch-steep.leanStretch)<.001,'Looking down no longer doubles indoor sprite world height',{normal,steep});
++ await page.evaluate(()=>{PumpkinVoxel.scene.player.recenter();for(let i=0;i<30;i++)PumpkinVoxel.scene.player.zoom(1);});await frame();
++ const zoomed=await measureOwner();check(zoomed.framing.zoom<=1.15&&zoomed.framing.roomDistance>=13&&zoomed.fraction<.33,'Indoor zoom cannot turn the owner into a screen-filling giant',zoomed);
++ await page.evaluate(()=>PumpkinVoxel.leavePlace());await page.setViewportSize({width:874,height:787});
++ await page.evaluate(()=>{const a=PumpkinVoxel,p=a.scene.player,s=a.state();a.lifeActivity.cancel();p.cancelAction();s.plots[0]={phase:'growing',progress:.1,variety:0};const t=p.targets().find(t=>t.type==='plot'&&t.index===0);p.teleport(t.x-1.2,t.z);p.faceTarget(t);p.recenter();});await frame();
++ const button=await page.locator('#play-interact').boundingBox();await page.mouse.move(button.x+button.width/2,button.y+button.height/2);await page.mouse.down();
++ check(await page.evaluate(()=>PumpkinVoxel.lifeActivity.state().active&&PumpkinVoxel.lifeActivity.state().holding),'Pressing the right-hand button begins a visible held action');
++ await page.evaluate(()=>PumpkinVoxel.lifeActivity.advance(.2));await page.waitForTimeout(260);await page.mouse.up();
++ check(await page.evaluate(()=>{const j=PumpkinVoxel.lifeActivity.state();return j.active&&!j.holding&&j.assisted;}),'Releasing a longer press finishes the current use instead of losing it');
++ await frame(1);
++ const can=await page.evaluate(()=>{let m;PumpkinVoxel.scene.debug.scene.traverse(o=>{if(o.name==='Illustrated watering can')m=o;});return {state:PumpkinVoxel.scene.player.state(),geometry:m?.geometry.type,width:m?.material.map?.image?.width,height:m?.material.map?.image?.height};});
++ check(can.state.canVisible&&can.state.dropsVisible&&can.state.waterCanStyle==='sprite'&&can.geometry==='PlaneGeometry'&&can.width===256&&can.height===184,'Watering draws the illustrated can and an animated pour',can);
++ await shot('illustrated-can-hold');await page.evaluate(()=>PumpkinVoxel.lifeActivity.advance(2));
++ check(await page.evaluate(()=>{const a=PumpkinVoxel,j=a.lifeActivity.state();return !j.active&&!j.travelling&&a.state().plots[0].progress>=.22&&j.last?.target.index===0;}),'Release commits one watering use and stops the chain');
++ await page.evaluate(()=>{const a=PumpkinVoxel,p=a.scene.player,s=a.state();s.wardrobe.equipped.natalie='natalie-tiffany';a.scene.refreshLooks();s.plots[0]={phase:'growing',progress:.1,variety:0};const t=p.targets().find(t=>t.type==='plot'&&t.index===0);p.teleport(t.x-1.2,t.z);p.faceTarget(t);a.interactAsPlayer('water',{phase:'tap'});});await frame(1);await shot('costume-illustrated-can');
++ check(await page.evaluate(()=>PumpkinVoxel.state().wardrobe.equipped.natalie==='natalie-tiffany'&&PumpkinVoxel.scene.player.state().waterCanStyle==='sprite'&&PumpkinVoxel.scene.player.state().canVisible),'Costume watering keeps the selected outfit and uses the same painted can');
++ await page.evaluate(()=>{const a=PumpkinVoxel,p=a.scene.player,s=a.state();a.lifeActivity.cancel();s.plots[0]={phase:'empty',progress:0,variety:0};a.interactAsPlayer('plant',{phase:'tap'});a.lifeActivity.advance(.2);});
++ await page.keyboard.down('d');await frame(2);await page.keyboard.up('d');
++ check(await page.evaluate(()=>!PumpkinVoxel.lifeActivity.state().active&&PumpkinVoxel.state().plots[0].phase==='empty'),'Movement still cancels unfinished work without planting');
++ check(errors.length===0&&requests.length===0,'The refinement flow has no browser errors or external runtime assets',{errors,requests});passed=true;
++}catch(error){meta.failure=String(error);console.error(error.stack??error);await page.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});}
++finally{report();await browser.close();await new Promise(resolve=>server.close(resolve));}
++if(!passed)process.exitCode=1;
+diff --git a/voxel/tools/qa-life-play-release.mjs b/voxel/tools/qa-life-play-release.mjs
+index a67fe87..56cb684 100644
+--- a/voxel/tools/qa-life-play-release.mjs
++++ b/voxel/tools/qa-life-play-release.mjs
+@@ -142,8 +142,8 @@ try {
+     p.teleport(t.x, t.z); p.faceTarget(t); p.recenter(); api.interactAsPlayer('water', { phase: 'tap' });
+   });
+   await frame(1); const water = await status();
+-  check(water.p.canVisible && water.p.dropsVisible && water.p.canScale >= 1.4 && water.p.spriteDirection === 'water',
+-    'Base watering uses the empty-handed stance plus the physical can and stream', water.p);
++  check(water.p.canVisible && water.p.dropsVisible && water.p.waterCanStyle === 'sprite' && water.p.spriteDirection === 'water',
++    'Base watering uses the empty-handed stance plus the illustrated can and stream', water.p);
+   await shot('single-can-watering');
+   await page.evaluate(() => { PumpkinVoxel.lifeActivity.cancel(); PumpkinVoxel.scene.player.recenter(); });
+ 
+diff --git a/voxel/tools/qa-life-play.mjs b/voxel/tools/qa-life-play.mjs
+index 7bfd7c4..d6a2aad 100644
+--- a/voxel/tools/qa-life-play.mjs
++++ b/voxel/tools/qa-life-play.mjs
+@@ -141,14 +141,16 @@ try {
+   await page.locator('#play-gait').click();
+   check(await page.evaluate(() => PumpkinVoxel.scene.player.state().gait === 'jog'), 'The on-screen gait button switches to jogging');
+ 
+-  // A deliberately released hold must not secretly plant anything.
++  // A released hold finishes its current action without starting another one.
+   await stagePlot('empty');
+   const interact = await page.locator('#play-interact').boundingBox();
+   await page.mouse.move(interact.x + interact.width / 2, interact.y + interact.height / 2); await page.mouse.down();
+   check((await activity()).active, 'Pointer down begins a tool action before committing its rule');
+   await advance(.25); await page.waitForTimeout(260); await page.mouse.up();
+-  check(await page.evaluate(() => PumpkinVoxel.state().plots[0].phase === 'empty'), 'Releasing an unfinished hold leaves the plot empty');
+-  check(!(await activity()).active, 'Releasing the unfinished hold clears the action');
++  check(await page.evaluate(() => PumpkinVoxel.state().plots[0].phase === 'empty'), 'Releasing an unfinished hold does not commit it early');
++  check((await activity()).active, 'Releasing keeps the current action until its animation finishes');
++  await advance(1.5);
++  check(await page.evaluate(() => PumpkinVoxel.state().plots[0].phase === 'growing' && PumpkinVoxel.state().plots[1].phase === 'empty'), 'Release completes one use without chaining');
+ 
+   await stagePlot('empty'); await assistedUse();
+   check((await activity()).active, 'The accessible one-use button path enables an assisted action');
+@@ -161,7 +163,7 @@ try {
+   const growth = await page.evaluate(() => PumpkinVoxel.state().plots[0].progress);
+   await assistedUse(); await frame(1);
+   const waterVisual = await page.evaluate(() => PumpkinVoxel.scene.player.state());
+-  check(waterVisual.canVisible === true && waterVisual.dropsVisible === true && waterVisual.canScale >= 1.4, 'A physical watering can and pour are visible during the action', waterVisual);
++  check(waterVisual.canVisible === true && waterVisual.dropsVisible === true && waterVisual.waterCanStyle === 'sprite', 'An illustrated watering can and animated pour are visible during the action', waterVisual);
+   await shot('watering-progress'); await advance(1.5);
+   check(await page.evaluate(growth => PumpkinVoxel.state().plots[0].progress > growth + .10, growth), 'Completed watering increases the nearby crop growth');
+ 
