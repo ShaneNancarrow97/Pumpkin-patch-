@@ -75,3 +75,7 @@ export function applyPlayerDirection(group,{who,outfit,facing='front',walking=fa
  return true;
 }
 export const playerDirectionCoverage=()=>Object.keys(PLAYER_SIDE_WALK_META);
+// Warm only the equipped atlases, rather than uploading every costume on phones.
+export function playerDirectionTextures(ids){
+ return [...new Set((ids??[]).flatMap(id=>[sheets[PLAYER_DIRECTION_META[id]?.sheet]?.texture,walkSheets[PLAYER_SIDE_WALK_META[id]?.sheet]?.texture,PLAYER_EMPTY_WATER_META[id]?walkSheets.water?.texture:null]).filter(Boolean))];
+}

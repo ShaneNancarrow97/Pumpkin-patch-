@@ -43,6 +43,7 @@ import { createFoyerView } from "./foyer-view.js";
 import { createAmbience } from "./ambience.js";
 import { mistClearings } from "./content/ambience.js";
 import { playerOrbitStep, createPlayerControl } from "./player-control.js";
+import { playerDirectionTextures } from "./player-sprite-directions.js";
 import { createCleanlinessView } from "./cleanliness-view.js";
 
 const WALK = 2.4;
@@ -196,6 +197,7 @@ export function createScene(canvas, state, hooks) {
   }
   function placeCharacters() {
     placeSkyla(); placeActor("natalie"); placeActor("shane");
+    warm(...playerDirectionTextures([state.wardrobe.equipped.shane,state.wardrobe.equipped.natalie]));
     for (const entry of visitorModels.values()) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); entry.m.userData.dispose?.(); }
     visitorModels.clear();                                                            // rebuilt in the new style next frame
     const inside = places.place;
