@@ -4,6 +4,7 @@
 // longer to grow, so choosing a crop is a real choice.
 import { PUMPKIN_VARIETIES } from "../content/pumpkin-varieties.js";
 export { VARIETY_COUNT, MAX_VARIETY_INDEX, VARIETY_INDICES } from "../content/pumpkin-varieties.js";
+import { tierOpen } from "./unlocks.js";
 import { economy } from "../../../src/content/economy.js";
 import { addStock, stockCount } from "./stock.js";
 import { MAX_PLOTS, PLOT_COUNTS } from "../content/farm-layout.js";
@@ -118,7 +119,7 @@ export function tap(s) {
 
 export function buyUpgrade(s, id) {
   const u = UPGRADES.find((x) => x.id === id);
-  if (!u || s.upgrades[id] >= u.max) return false;
+  if (!u || s.upgrades[id] >= u.max || !tierOpen(s, "farm", id, s.upgrades[id])) return false;
   const c = upgradeCost(s, id);
   if (s.coins < c) return false;
   s.coins -= c;

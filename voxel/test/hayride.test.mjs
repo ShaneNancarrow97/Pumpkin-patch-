@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as H from "../src/rules/hayride.js";
+import { LEVELS } from "../src/rules/levels.js";
+const atLevel = (s, n) => { s.earned = LEVELS[n - 1].at; s.progression = { ...s.progression, claimed: LEVELS.slice(0, n).map((l) => l.level) }; };
 
 function prepared() { return { hayride: H.freshHayride(), hollowHouse: { purchased: true, status: "ready" }, coins: 100000, earned: 200000, progression: { bonusEarned: 0 }, visitors: [], holds: [], time: 0, nextVisitor: 0, paused: false }; }
 function opened() { const s = prepared(); assert.ok(H.buyHayride(s)); assert.ok(H.setHayrideOpen(s, true)); return s; }
@@ -25,9 +27,9 @@ test("the woodland purchase needs level eleven and a restored first attraction",
 test("capacity upgrades and stronger owned scares have paid progression and bounded appeal", () => {
   const s = opened(); assert.equal(H.hayrideScareRating(s), 20); const base = H.hayrideFootfallBonus(s);
   assert.ok(H.buyHayrideScare(s, "turning-scarecrows")); assert.equal(H.buyHayrideScare(s, "turning-scarecrows"), false); assert.ok(H.hayrideFootfallBonus(s) > base);
-  assert.equal(H.buyHayrideScare(s, "bus-breakout"), false); s.earned = 109999; assert.equal(H.upgradeHayride(s), false); s.earned = 110000;
+  assert.equal(H.buyHayrideScare(s, "bus-breakout"), false); atLevel(s, H.HAYRIDE_TIERS[1].patchLevel - 1); assert.equal(H.upgradeHayride(s), false); atLevel(s, H.HAYRIDE_TIERS[1].patchLevel);
   assert.ok(H.upgradeHayride(s)); assert.equal(H.hayrideConfig(s).seats, 6); assert.equal(H.setHayrideTicketPrice(s, 16), true);
-  s.earned = 110000; assert.ok(H.upgradeHayride(s)); for (const p of H.HAYRIDE_SCARES) if (!s.hayride.haunts.owned.includes(p.id)) assert.ok(H.buyHayrideScare(s, p.id));
+  atLevel(s, H.HAYRIDE_TIERS[2].patchLevel - 1); assert.equal(H.upgradeHayride(s), false); atLevel(s, H.HAYRIDE_TIERS[2].patchLevel); assert.ok(H.upgradeHayride(s)); for (const p of H.HAYRIDE_SCARES) if (!s.hayride.haunts.owned.includes(p.id)) assert.ok(H.buyHayrideScare(s, p.id));
   assert.equal(H.hayrideScareRating(s), 100); assert.equal(H.hayrideFootfallBonus(s), .3); assert.equal(H.upgradeHayride(s), false);
   assert.ok(H.setHayrideScareActive(s, "bus-breakout", false)); assert.ok(H.hayrideScareRating(s) < 100); H.setHayrideOpen(s, false); assert.equal(H.hayrideFootfallBonus(s), 0);
 });

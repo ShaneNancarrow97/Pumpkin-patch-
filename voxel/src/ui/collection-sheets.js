@@ -50,12 +50,36 @@ export function collectionSheets(ui) {
       `<div class="stats"><div><b>${s.harvested}</b><span>pumpkins picked</span></div><div><b>${s.sold}</b><span>happy visitors</span></div><div><b>${money(s.earned)}</b><span>earned in total</span></div><div><b>${s.streak.best}</b><span>best harvest streak</span></div></div>`;
   }
 
+  // What a level opens: the later upgrade tiers (rules/unlocks.js), the
+  // attractions and their tiers, and the house's next storeys.
+  const ORDINAL = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh"];
+  const UPGRADE_NAMES = { farm: M.UPGRADES, visitor: M.VISITOR_UPGRADES, shop: M.SHOP_UPGRADES };
+  function opens(level) {
+    const out = [];
+    for (const [kind, table] of Object.entries(UPGRADE_NAMES)) for (const [id, gates] of Object.entries(M.UNLOCKS[kind])) gates.forEach((at, tier) => {
+      if (at === level && at > 1) out.push(`${table.find((u) => u.id === id)?.name ?? id}, ${ORDINAL[tier] ?? tier + 1 + "th"} tier`);
+    });
+    M.UNLOCKS.house.forEach((at, i) => { if (at === level) out.push(`Grow the house into the ${M.HOUSE_LEVELS[i + 1].name}`); });
+    if (M.MEADOW.level === level) out.push("Moonbrew Meadow");
+    M.COCOA_TIERS.forEach((t) => { if (t.level === level) out.push(`Sandy’s ${t.name}`); });
+    if (M.HOLLOW_PROPERTY.level === level) out.push("The Hollow House");
+    M.FOYER_TIERS.forEach((t, i) => { if (i && t.patchLevel === level) out.push(`The Hollow House’s ${t.name}`); });
+    if (M.HAYRIDE_PROPERTY.level === level) out.push("The Hollow Hayride");
+    M.HAYRIDE_TIERS.forEach((t, i) => { if (i && t.patchLevel === level) out.push(`The hayride’s ${t.name}`); });
+    M.HAYRIDE_OPERATIONS.forEach((u) => { if (u.level === level && u.level > M.HAYRIDE_PROPERTY.level) out.push(`The hayride’s ${u.name.toLowerCase()}`); });
+    M.HAYRIDE_ROUTE_UPGRADES.forEach((r) => { if (r.patchLevel === level) out.push(`The hayride through ${r.name.replace(/^The /, "the ")}`); });
+    if (M.COOKING.level === level) out.push("Maisie’s Midnight Kitchen");
+    M.KITCHEN_UPGRADES.forEach((u) => { if (u.level === level && u.level > M.COOKING.level) out.push(u.name); });
+    M.VISITOR_EVENT_UPGRADES.forEach((u) => { if (u.level === level) out.push(u.name); });
+    if (M.CLEANLINESS.janitorLevel === level) out.push("Hettie the caretaker");
+    return out;
+  }
   function levels(s) {
     const current = M.patchLevel(s);
     return `<p>Grow your reputation through 20 levels. Earnings and home milestones work together: expand rooms, cook and make the house your own. Bonus coins do not count towards another level. Rewards are granted automatically; already-owned treasures become bonus coins.</p>` + M.LEVELS.map((l) => {
       const reached = l.level <= current.level, active = l.level === current.level;
       const rewards = l.rewards.map((r) => r.kind === "coins" ? money(r.amount) + " coins" : r.kind === "decor" ? M.decorById[r.id].name : r.kind === "costume" ? M.costumeById[r.id].name : r.name + " · one tier");
-      return `<article class="level-roadmap ${active ? "current" : ""}"><h3>${reached ? "✓ " : ""}Level ${l.level} · ${l.name}</h3><p class="small">${l.at ? money(l.at) + " earned" : "Where our story begins"}${active ? " · You’re here" : ""}</p>${M.homeRequirements(s,l.level).length ? `<p class="small">Home: ${M.homeRequirements(s,l.level).map(r=>(r.met?"✓ ":"◇ ")+r.text).join(" · ")}</p>` : ""}${rewards.length ? `<p>${rewards.join(" · ")}</p>` : ""}${active && current.next ? `<div class="bar"><i style="width:${current.progress * 100}%"></i></div><p class="small">${current.blocked ? "Earnings ready · finish the home milestone above" : money(Math.max(0,current.next.at - current.xp)) + " to the next level"}</p>` : ""}</article>`;
+      return `<article class="level-roadmap ${active ? "current" : ""}"><h3>${reached ? "✓ " : ""}Level ${l.level} · ${l.name}</h3><p class="small">${l.at ? money(l.at) + " earned" : "Where our story begins"}${active ? " · You’re here" : ""}</p>${M.homeRequirements(s,l.level).length ? `<p class="small">Home: ${M.homeRequirements(s,l.level).map(r=>(r.met?"✓ ":"◇ ")+r.text).join(" · ")}</p>` : ""}${rewards.length ? `<p>${rewards.join(" · ")}</p>` : ""}${opens(l.level).length ? `<p class="small">Opens: ${opens(l.level).join(" · ")}</p>` : ""}${active && current.next ? `<div class="bar"><i style="width:${current.progress * 100}%"></i></div><p class="small">${current.blocked ? "Earnings ready · finish the home milestone above" : money(Math.max(0,current.next.at - current.xp)) + " to the next level"}</p>` : ""}</article>`;
     }).join("");
   }
 

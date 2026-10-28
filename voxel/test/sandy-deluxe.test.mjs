@@ -14,12 +14,14 @@ const setup = (level = 5) => {
 const guest = (budget = 100) => ({ id: 1, kind: 0, budget, originalBudget: budget, basketLimit: 1, preferred: [0], needs: { thirst: 100, hunger: 100, happiness: 60, value: 1 } });
 const stockMenu = s => { s.festival.cocoa.stock = 20; for (const p of M.COCOA_SPECIALS) s.festival.cocoa.extras[p.id].stock = s.festival.cocoa.level >= p.tier ? 10 : 0; };
 
-test('Sandy’s last two upgrades require levels10/12, cost real coins and increase capacity', () => {
-  const s = setup(3); s.earned = 26000; const before = s.coins;
-  assert.equal(M.upgradeCocoa(s), false); s.earned = 42000; assert.equal(M.upgradeCocoa(s), true);
+test('Sandy’s last two upgrades open at their late levels, cost real coins and increase capacity', () => {
+  const [fourth, fifth] = [M.COCOA_TIERS[3].level, M.COCOA_TIERS[4].level];
+  const atLevel = (s, n) => { s.earned = M.LEVELS[n - 1].at; s.progression.claimed = M.LEVELS.slice(0, n).map((l) => l.level); };
+  const s = setup(3); atLevel(s, fourth - 1); const before = s.coins;
+  assert.equal(M.upgradeCocoa(s), false); atLevel(s, fourth); assert.equal(M.upgradeCocoa(s), true);
   assert.equal(s.festival.cocoa.level, 4); assert.equal(M.cocoaCapacity(s), 160); assert.equal(s.coins, before - 9000);
   assert.equal(M.setCocoaPrice(s, 9), true); assert.equal(M.setCocoaPrice(s, 10), false);
-  s.earned = 70000; assert.equal(M.upgradeCocoa(s), false); s.earned = 110000;
+  atLevel(s, fifth - 1); assert.equal(M.upgradeCocoa(s), false); atLevel(s, fifth);
   assert.equal(M.upgradeCocoa(s), true); assert.equal(M.cocoaCapacity(s), 240); assert.equal(M.setCocoaPrice(s, 12), true);
   assert.equal(s.coins, before - 25000); assert.equal(s.festival.cocoa.stock, 0); assert.equal(M.upgradeCocoa(s), false);
 });

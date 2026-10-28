@@ -54,6 +54,10 @@ const VISITOR_TALK = {
   loyalty: { 1: ["shane", "My loyalty card, at last. Buy nine pumpkins, receive a slightly larger pumpkin. Genius."], 2: ["natalie", "Half the village has a loyalty card now. The other half is thinking about it."] },
 };
 
+// A tier that opens at a later patch level (rules/unlocks.js): its level, or 0 when open.
+const opensAt = (s, kind, id, tier) => (M.tierOpen(s, kind, id, tier) ? 0 : M.unlockLevel(kind, id, tier));
+const levelButton = (at) => `<button class="button" disabled>Level ${at}</button>`;
+const levelNote = (at) => at ? `<p class="effect">The next tier opens at patch level ${at}.</p>` : "";
 function priceButton(attr, value, price, coins, owned) {
   if (owned) return `<button class="button" disabled>${owned}</button>`;
   return `<button class="button gold" data-${attr}="${value}" ${coins < price ? "disabled" : ""}>${money(price)}${coins < price ? `<small>need ${money(price - coins)}</small>` : ""}</button>`;
@@ -90,9 +94,9 @@ export function farmSheets(ui) {
   // Spread the word lives in the Visitors tab with the rest of its kind.
   function farm(s) {
     return M.UPGRADES.filter((u) => u.id !== "sign").map((u) => {
-      const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id);
-      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.id === "cart" ? `${u.text} ${cartLine(s)}` : u.text}</p>${tiers(level, u.max)}</div>
-        ${priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
+      const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id), at = max ? 0 : opensAt(s, "farm", u.id, level);
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.id === "cart" ? `${u.text} ${cartLine(s)}` : u.text}</p>${levelNote(at)}${tiers(level, u.max)}</div>
+        ${at ? levelButton(at) : priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
     }).join("");
   }
 
@@ -124,9 +128,9 @@ export function farmSheets(ui) {
       }).join("")}</div></div>`;
     }).join("");
     const upgrades = M.SHOP_UPGRADES.filter((u) => u.id !== "open").map((u) => {
-      const level = sh[SHOP_LEVELS[u.id]], price = M.shopUpgradeCost(s, u.id), max = price === undefined;
+      const level = sh[SHOP_LEVELS[u.id]], price = M.shopUpgradeCost(s, u.id), max = price === undefined, at = max ? 0 : opensAt(s, "shop", u.id, level);
       const now = u.id === "capacity" ? `${M.SHOP_CAPACITY[level]} browsing` : u.id === "displays" ? `${M.displayCount(sh)} tables` : `${M.CHECKOUT_SECONDS[level]}s at the till`;
-      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text} Now: ${now}.</p>${tiers(level, SHOP_MAX[u.id])}</div>${priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text} Now: ${now}.</p>${levelNote(at)}${tiers(level, SHOP_MAX[u.id])}</div>${at ? levelButton(at) : priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
     }).join("");
     return tip + visit + stats + `<button class="button wide" data-food-shelves>Food shelves · ${s.kitchen?.purchased ? money(s.kitchen.ledger.foodIncome) + " food takings" : "Start cooking from level 5"}</button><h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades + comforts;
   }
@@ -163,8 +167,9 @@ export function farmSheets(ui) {
       const sign = id === "sign", u = sign ? M.UPGRADES.find((x) => x.id === id) : M.VISITOR_UPGRADES.find((x) => x.id === id);
       const level = M.visitorUpgradeLevel(s, id), most = sign ? u.max : u.costs.length, done = level >= most;
       const open = sign || M.visitorUpgradeUnlocked(s, id), price = sign ? M.upgradeCost(s, id) : M.visitorUpgradeCost(s, id);
-      const effect = open ? effectLine(s, id, done) : u.needs.text;
-      const button = !open ? `<button class="button" disabled>Locked</button>` : priceButton(sign ? "buy" : "visitup", id, price, s.coins, done && "Done");
+      const at = done || !open ? 0 : opensAt(s, sign ? "farm" : "visitor", id, level);
+      const effect = (open ? effectLine(s, id, done) : u.needs.text) + (at ? ` The next tier opens at patch level ${at}.` : "");
+      const button = !open ? `<button class="button" disabled>Locked</button>` : at ? levelButton(at) : priceButton(sign ? "buy" : "visitup", id, price, s.coins, done && "Done");
       return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${id === "cocoa" ? "Cocoa hospitality" : u.name}</h3><p>${id === "cocoa" ? "Longer pumpkin patience; quicker service at Sandy’s stand." : u.text}</p><p class="effect">${effect}</p>${tiers(level, most)}</div>${button}</article>`;
     }).join("");
     const occasions=M.VISITOR_EVENT_UPGRADES.map(u=>{const e=s.visitorEvents[u.id],price=M.visitorEventUpgradeCost(s,u.id),locked=M.patchLevel(s).level<u.level;return `<article class="card">${hospitalityIcon(u.id)}<div><h3>${u.name}</h3><p>${u.text}</p><p class="small">${e.level?`Next in ${Math.ceil(e.remaining/60)} min · ${e.enabled?'Enabled':'Paused'}`:`Available at level ${u.level}`}</p></div>${e.level?`<button class="button" data-occasion-toggle="${u.id}">${e.enabled?'Pause':'Enable'}</button>`:`<button class="button gold" data-occasion="${u.id}" ${locked||s.coins<price||s.paused?'disabled':''}>${locked?`Level ${u.level}`:money(price)}</button>`}</article>`}).join('');

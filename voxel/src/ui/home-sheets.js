@@ -146,11 +146,14 @@ export function homeSheets(ui) {
   // The house now, then what the next level adds, drawn and in words.
   function house(s) {
     const h = s.house, level = M.HOUSE_LEVELS[h.level], next = M.nextLevel(s), short = s.coins < level.cost;
+    // Each move opens at a patch level (rules/unlocks.js).
+    const opensAt = next && !M.tierOpen(s, "house", null, h.level) ? M.unlockLevel("house", null, h.level) : 0;
     const byRoom = M.houseRooms.map((r) => M.roomLayout(s, r.id)).filter(Boolean).map((L) => `${roomName(L.id)} ${size(L)}`).join(" · ");
     const grow = next
       ? `<h3 class="section">Grow into the ${next.name}</h3>${plan(s, next.level, `The ${next.name}, with what it adds in gold`)}
         <article class="card hero">${houseIcon}<div><h3>What it adds</h3>${additions(next).map((line) => `<p>${line}</p>`).join("")}</div></article>
-        <button class="button gold wide" data-house ${short ? "disabled" : ""}>Grow the house · ${money(level.cost)}${short ? `<small>need ${money(level.cost - s.coins)}</small>` : ""}</button>`
+        ${opensAt ? `<button class="button wide" disabled>Opens at patch level ${opensAt} · ${money(level.cost)}</button>`
+          : `<button class="button gold wide" data-house ${short ? "disabled" : ""}>Grow the house · ${money(level.cost)}${short ? `<small>need ${money(level.cost - s.coins)}</small>` : ""}</button>`}`
       : `${plan(s, h.level, `The ${level.name}`)}<p>${level.text}</p>`;
     return `<article class="card hero">${houseIcon}<div><p class="eyebrow">Level ${h.level + 1} of 4</p><h3>${level.name}</h3><p>${byRoom}</p></div></article>
       <div class="stats"><div><b>${M.spookyScore(s)}</b><span>haunting points</span></div><div><b>${h.owned.length}/${M.decorCatalog.length}</b><span>treasures collected</span></div><div><b>${M.shelvedBooks(s)}</b><span>books on shelves</span></div></div>

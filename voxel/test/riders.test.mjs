@@ -114,7 +114,8 @@ test("growing the house keeps riders on their tables, or stores them with a tabl
   const { s, at, piece } = room("f10", "d05");
   s.house.level = 0;
   M.putOnTop(s, at.d05, at.f10);
-  const grown = M.upgradeHouse(Object.assign(s, { coins: 1e6 }));
+  s.progression.claimed = M.LEVELS.map((l) => l.level);
+  const grown = M.upgradeHouse(Object.assign(s, { coins: 1e6, earned: 2e6 }));
   assert.ok(grown);
   if (piece("f10")) assert.equal(piece("d05").on, at.f10);
   else assert.ok(grown.stored.some((p) => p.id === "d05"));

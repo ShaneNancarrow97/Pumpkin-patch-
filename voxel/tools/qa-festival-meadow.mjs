@@ -30,9 +30,9 @@ try{
   await page.screenshot({path:path.join(out,`${label}-management.png`)});await page.locator('[data-festival-action="visit"]').click();await page.screenshot({path:path.join(out,`${label}-meadow.png`)});
  }
  await page.setViewportSize({width:1280,height:800});
- await page.evaluate(()=>{const s=PumpkinVoxel.state();s.earned=4500;s.progression.claimed=[1,2,3,4,5,6];s.coins=20000;PumpkinVoxel.openSheet('festival')});await page.locator('[data-festival-action="upgrade"]').click();check(await page.evaluate(()=>PumpkinVoxel.state().festival.cocoa.level===2),'tier 2 rebuilds the kiosk');
+ await page.evaluate(()=>{const s=PumpkinVoxel.state();s.earned=8500;s.progression.claimed=[1,2,3,4,5,6,7];s.coins=20000;PumpkinVoxel.openSheet('festival')});await page.locator('[data-festival-action="upgrade"]').click();check(await page.evaluate(()=>PumpkinVoxel.state().festival.cocoa.level===2),'tier 2 rebuilds the kiosk');
  await page.evaluate(()=>PumpkinVoxel.openSheet('festival'));await page.locator('[data-festival-action="courier"]').click();check(await page.evaluate(()=>PumpkinVoxel.state().festival.cocoa.courier),'moth courier can be hired');
- await page.evaluate(()=>{const s=PumpkinVoxel.state();s.earned=15000;s.progression.claimed=[1,2,3,4,5,6,7,8];PumpkinVoxel.openSheet('festival')});await page.locator('[data-festival-action="upgrade"]').click();await page.screenshot({path:path.join(out,'desktop-midnight-pavilion.png')});
+ await page.evaluate(()=>{const s=PumpkinVoxel.state();s.earned=42000;s.progression.claimed=[1,2,3,4,5,6,7,8,9,10];PumpkinVoxel.openSheet('festival')});await page.locator('[data-festival-action="upgrade"]').click();await page.screenshot({path:path.join(out,'desktop-midnight-pavilion.png')});
  check(await page.evaluate(()=>PumpkinVoxel.state().festival.cocoa.level===3),'tier 3 grows into the pavilion');
  await page.locator('#open-settings').click();await page.locator('#copy-backup').click();await page.locator('#sheet-close').click();await page.waitForTimeout(5500);await page.reload();await page.waitForSelector('body[data-ready]');
  check(await page.evaluate(()=>{const f=PumpkinVoxel.state().festival;return f.meadow&&f.cocoa.level===3&&f.cocoa.courier&&f.cocoa.sold>0}),'save/reload keeps land, stand, courier and sales');

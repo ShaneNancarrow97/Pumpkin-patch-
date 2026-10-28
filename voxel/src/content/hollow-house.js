@@ -3,10 +3,10 @@ import { GATE_Z } from "./farm-layout.js";
 export const HOLLOW_PROPERTY = { name: "The Hollow House", level: 9, price: 1750, restorationCost: 2500, restorationSeconds: 90, x: 6.5, z: 6.4, door: [6.5, 9.5], transferSeconds: 2.5, westEdge: -8, speed: 3 };
 export const FOYER_TIERS = [
   { level: 1, name: "A brave little welcome", w: 10, d: 8, cost: 0, patchLevel: 9, capacity: 3, mazeCapacity: 2, serviceSeconds: 3.5, mazeSeconds: 28, minTicket: 4, maxTicket: 10, decorCapacity: 10 },
-  { level: 2, name: "Candlelit reception", w: 11, d: 8, cost: 1800, patchLevel: 10, capacity: 5, mazeCapacity: 3, serviceSeconds: 3, mazeSeconds: 28, minTicket: 4, maxTicket: 12, decorCapacity: 14 },
-  { level: 3, name: "The shadow staircase", w: 12, d: 9, cost: 4200, patchLevel: 11, capacity: 7, mazeCapacity: 5, serviceSeconds: 2.5, mazeSeconds: 28, minTicket: 4, maxTicket: 15, decorCapacity: 20 },
-  { level: 4, name: "Grand gothic hall", w: 13, d: 10, cost: 8500, patchLevel: 12, capacity: 10, mazeCapacity: 7, serviceSeconds: 2, mazeSeconds: 28, minTicket: 4, maxTicket: 18, decorCapacity: 28 },
-  { level: 5, name: "The velvet afterlife", w: 14, d: 10, cost: 16000, patchLevel: 12, capacity: 14, mazeCapacity: 10, serviceSeconds: 1.6, mazeSeconds: 28, minTicket: 4, maxTicket: 24, decorCapacity: 36 },
+  { level: 2, name: "Candlelit reception", w: 11, d: 8, cost: 1800, patchLevel: 11, capacity: 5, mazeCapacity: 3, serviceSeconds: 3, mazeSeconds: 28, minTicket: 4, maxTicket: 12, decorCapacity: 14 },
+  { level: 3, name: "The shadow staircase", w: 12, d: 9, cost: 4200, patchLevel: 13, capacity: 7, mazeCapacity: 5, serviceSeconds: 2.5, mazeSeconds: 28, minTicket: 4, maxTicket: 15, decorCapacity: 20 },
+  { level: 4, name: "Grand gothic hall", w: 13, d: 10, cost: 8500, patchLevel: 15, capacity: 10, mazeCapacity: 7, serviceSeconds: 2, mazeSeconds: 28, minTicket: 4, maxTicket: 18, decorCapacity: 28 },
+  { level: 5, name: "The velvet afterlife", w: 14, d: 10, cost: 16000, patchLevel: 17, capacity: 14, mazeCapacity: 10, serviceSeconds: 1.6, mazeSeconds: 28, minTicket: 4, maxTicket: 24, decorCapacity: 36 },
 ];
 export const HOLLOW_FOYER_TIERS = FOYER_TIERS;
 

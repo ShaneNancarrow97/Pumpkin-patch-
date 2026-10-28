@@ -2,12 +2,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import * as H from "../src/rules/hayride.js";
+import { LEVELS } from "../src/rules/levels.js";
+import { HAYRIDE_ROUTE_UPGRADES } from "../src/content/hayride.js";
+const atLevel = (s, n) => { s.earned = LEVELS[n - 1].at; s.progression = { ...s.progression, claimed: LEVELS.slice(0, n).map((l) => l.level) }; };
 import { HAYRIDE_ROUTE_LENGTH, HAYRIDE_SITE, hayrideRouteProfile, hayrideRouteSample, hayrideRouteLength, hayrideStops } from "../src/content/hayride-layout.js";
 import { createHayrideWorld } from "../src/hayride-world.js";
 import { createHayrideView } from "../src/hayride-view.js";
 
 function prepared(){
-  const s={hayride:H.freshHayride(),hollowHouse:{purchased:true,status:"ready"},coins:200000,earned:200000,progression:{bonusEarned:0},visitors:[],arriving:[],holds:[],time:0,paused:false};
+  const s={hayride:H.freshHayride(),hollowHouse:{purchased:true,status:"ready"},coins:200000,earned:2e6,progression:{bonusEarned:0,claimed:Array.from({ length: 20 }, (_, i) => i + 1)},visitors:[],arriving:[],holds:[],time:0,paused:false};
   H.buyHayride(s);H.upgradeHayride(s);H.setHayrideOpen(s,true);s.arriving=[];return s;
 }
 function guest(s,id=0){
@@ -18,11 +21,12 @@ function advance(s,t){s.time+=t;H.updateHayride(s,t);}
 
 test("paid route upgrades add physical distance and scenes while retaining the original cast locations",()=>{
   const s=prepared(),base=hayrideRouteProfile(0),score=H.hayrideScareRating(s),cash=s.coins;
-  s.earned=109999;assert.equal(H.buyHayrideRoute(s),false);assert.equal(s.coins,cash);s.earned=110000;
+  const [first,second]=HAYRIDE_ROUTE_UPGRADES.map((r)=>r.patchLevel);
+  atLevel(s,first-1);assert.equal(H.buyHayrideRoute(s),false);assert.equal(s.coins,cash);atLevel(s,first);
   assert.ok(H.buyHayrideRoute(s));assert.equal(s.coins,cash-8500);assert.equal(H.hayrideConfig(s).circuitSeconds,110);
   assert.equal(H.hayrideScareRating(s),score+8);assert.equal(hayrideStops(s).length,6);assert.ok(hayrideRouteLength(s)>base.length+60);
   assert.equal(H.buyHayrideRoute(s),false,"the deeper detour requires the third attraction tier");
-  H.upgradeHayride(s);assert.ok(H.buyHayrideRoute(s));assert.equal(H.hayrideConfig(s).circuitSeconds,130);
+  atLevel(s,20);H.upgradeHayride(s);atLevel(s,second-1);assert.equal(H.buyHayrideRoute(s),false);atLevel(s,second);assert.ok(H.buyHayrideRoute(s));assert.equal(H.hayrideConfig(s).circuitSeconds,130);
   assert.equal(hayrideStops(s).length,7);assert.ok(hayrideRouteLength(s)>300);assert.equal(H.buyHayrideRoute(s),false);
   for(const profile of [hayrideRouteProfile(1),hayrideRouteProfile(2)]){
     for(const old of base.stops){

@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import * as M from "../src/model.js";
 
 // A house at a given level with money to spend, and a way to stage a piece directly.
-const at = (level) => { const s = M.freshState(); s.house.level = level; s.coins = 1e6; return s; };
+// A farm at the top patch level, so every house level is open to buy (rules/unlocks.js).
+const at = (level) => { const s = M.freshState(); s.house.level = level; s.coins = 1e6; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); return s; };
 const put = (s, room, id, x, z) => {
   if (!s.house.owned.includes(id)) s.house.owned.push(id);
   const instance = "t-" + s.house.placed.length + "-" + id;
@@ -112,7 +113,7 @@ test("placement follows each room's size, capacity and blocked cells", () => {
 
 test("upgrading never leaves a piece on new stairs or in a doorway", () => {
   const s = M.freshState();
-  s.coins = 1e6;
+  s.coins = 1e6; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
   for (const id of ["f04", "f08", "d01", "d02"]) { M.buyDecor(s, id); M.placeDecor(s, id); }
   const before = JSON.stringify(s.house.placed);
   assert.deepEqual(M.upgradeHouse(s), { level: 1, moved: [], stored: [] }, "the stairs go up on new floor");

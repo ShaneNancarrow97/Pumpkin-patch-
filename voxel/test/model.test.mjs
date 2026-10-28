@@ -36,7 +36,7 @@ test("the big pumpkin hurries growing plots, and shakes a pumpkin loose every ei
 
 test("upgrades cost 2.2 times more each level and stop at their maximum", () => {
   const s = M.freshState();
-  s.coins = 1e6;
+  s.coins = 1e6; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
   assert.equal(M.upgradeCost(s, "tools"), 90);
   assert.ok(M.buyUpgrade(s, "tools"));
   assert.equal(M.upgradeCost(s, "tools"), 198);
@@ -153,7 +153,7 @@ test("the house: buy, place, move and store decor, within each room's grid and c
 
 test("a bigger house opens rooms; styles and wallpaper make it more haunted", () => {
   const s = M.freshState();
-  s.coins = 1e5;
+  s.coins = 1e5; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
   assert.ok(!M.roomUnlocked(s, "bedroom"));
   assert.equal(M.roomStyle(s, "parlour").id, "parlour-warm");
   assert.ok(M.upgradeHouse(s));

@@ -1,10 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as H from "../src/rules/hayride.js";
+import { LEVELS } from "../src/rules/levels.js";
+import { HAYRIDE_OPERATIONS } from "../src/content/hayride.js";
+const atLevel = (s, n) => { s.earned = LEVELS[n - 1].at; s.progression = { ...s.progression, claimed: LEVELS.slice(0, n).map((l) => l.level) }; };
 import { HAYRIDE_SITE, hayrideFarmConvoyPose, hayrideGuestPose } from "../src/content/hayride-layout.js";
 
 function prepared(fleet=false){
-  const s={hayride:H.freshHayride(),hollowHouse:{purchased:true,status:"ready"},coins:100000,earned:200000,progression:{bonusEarned:0},visitors:[],arriving:[],holds:[],time:0,nextVisitor:0,nextParty:0,paused:false};
+  const s={hayride:H.freshHayride(),hollowHouse:{purchased:true,status:"ready"},coins:100000,earned:2e6,progression:{bonusEarned:0,claimed:Array.from({ length: 20 }, (_, i) => i + 1)},visitors:[],arriving:[],holds:[],time:0,nextVisitor:0,nextParty:0,paused:false};
   assert.ok(H.buyHayride(s));assert.ok(H.upgradeHayride(s));
   if(fleet)assert.ok(H.buyHayrideOperation(s,"fleet"));
   assert.ok(H.setHayrideOpen(s,true));s.arriving=[];return s;
@@ -19,8 +22,8 @@ function restored(s){
   H.restoreHayrideVisitors(JSON.parse(JSON.stringify(H.saveHayrideVisitors(s))),r);return r;
 }
 test("the second tractor is a paid late-game upgrade with no automatic legacy grant",()=>{
-  const s=prepared();s.earned=109999;const cash=s.coins;assert.equal(H.buyHayrideOperation(s,"fleet"),false);assert.equal(s.coins,cash);
-  s.earned=110000;s.paused=true;assert.equal(H.buyHayrideOperation(s,"fleet"),false);s.paused=false;
+  const s=prepared(),fleetLevel=HAYRIDE_OPERATIONS.find((u)=>u.id==="fleet").level;atLevel(s,fleetLevel-1);const cash=s.coins;assert.equal(H.buyHayrideOperation(s,"fleet"),false);assert.equal(s.coins,cash);
+  atLevel(s,fleetLevel);s.paused=true;assert.equal(H.buyHayrideOperation(s,"fleet"),false);s.paused=false;
   assert.ok(H.buyHayrideOperation(s,"fleet"));assert.equal(s.coins,cash-12000);assert.equal(H.buyHayrideOperation(s,"fleet"),false);
   assert.equal(H.hayrideFleetSize(s),2);assert.notEqual(s.hayride.convoy.runId,s.hayride.secondConvoy.runId);
   const old=H.restoreHayride({...s.hayride,fleet:undefined,secondConvoy:undefined,dispatch:undefined});

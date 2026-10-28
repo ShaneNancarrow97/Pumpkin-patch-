@@ -109,7 +109,7 @@ const farm = () => {
   return s;
 };
 test("the two new party tiers each add two places and keep old tiers valid on reload", () => {
-  const s = farm(); s.visitorUpgrades.party = 3; assert.equal(S.partyMax(s), 4);
+  const s = farm(); s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); s.visitorUpgrades.party = 3; assert.equal(S.partyMax(s), 4);
   assert.equal(S.buyVisitorUpgrade(s, "party"), true); assert.equal(S.partyMax(s), 6);
   assert.equal(S.buyVisitorUpgrade(s, "party"), true); assert.equal(S.partyMax(s), 8); assert.equal(S.buyVisitorUpgrade(s, "party"), false);
   assert.deepEqual(Array.from({ length: 8 }, (_, n) => S.partySize(s, n)).sort((a, b) => a - b), [1, 2, 3, 4, 5, 6, 7, 8]);

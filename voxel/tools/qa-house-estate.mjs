@@ -54,8 +54,8 @@ try {
   check(true, "Home navigation reaches the estate from the farm");
 
   await page.evaluate(() => {
-    const s = PumpkinVoxel.state(); s.coins = 100000; s.earned = 200000;
-    s.progression.claimed = Array.from({ length: 12 }, (_, i) => i + 1); s.progression.pending = [];
+    const s = PumpkinVoxel.state(); s.coins = 100000; s.earned = 2000000;
+    s.progression.claimed = Array.from({ length: 20 }, (_, i) => i + 1); s.progression.pending = [];
     s.claimed = ["basket", "welcome", "magic", "library", "walls", "costumes", "seeds", "haunt", "market", "empire"];
     PumpkinVoxel.openEstateSheet("grounds");
   });

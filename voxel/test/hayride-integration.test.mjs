@@ -5,8 +5,8 @@ import * as M from "../src/model.js";
 
 function prepared() {
   const s = M.freshState();
-  Object.assign(s, { coins: 100000, earned: 200000, introSeen: true });
-  s.progression.claimed = Array.from({ length: 12 }, (_, i) => i + 1);
+  Object.assign(s, { coins: 100000, earned: 2e6, introSeen: true });                 // the top level, with every level claimed
+  s.progression.claimed = M.LEVELS.map((l) => l.level);
   s.progression.pending = [];
   Object.assign(s.hollowHouse, { purchased: true, status: "ready", open: false });
   s.visitorTimer = s.shop.arrivalTimer = s.bigSpender.timer = 1e6;

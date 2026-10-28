@@ -14,7 +14,7 @@ test("Spread the word and Fairy lights start at tens of pounds and get dearer ev
   assert.ok(LIGHTS.costs[0] <= 200);
   assert.equal(SIGN.costs.length, 5); assert.equal(LIGHTS.costs.length, 4);
   assert.equal(SIGN.max, 5);
-  const s = M.freshState(); s.coins = 1e7;
+  const s = M.freshState(); s.coins = 1e7; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
   SIGN.costs.forEach((price, level) => { assert.equal(M.upgradeCost(s, "sign"), price); const c = s.coins; M.buyUpgrade(s, "sign"); assert.equal(c - s.coins, price); assert.equal(s.upgrades.sign, level + 1); });
   assert.equal(M.upgradeCost(s, "sign"), undefined);
 });
@@ -48,7 +48,7 @@ test("old saves keep their tiers, and are never slower than before", () => {
     assert.ok(M.shopArrivalSeconds(loaded) <= 3 * 0.9 ** n + 1e-9);
   }
   // A save at the old maximum has one more Spread the word to buy, and the lights are done.
-  const old = M.freshState(); old.upgrades.sign = 4; old.visitorUpgrades.lights = 4; old.coins = 1e6;
+  const old = M.freshState(); old.upgrades.sign = 4; old.visitorUpgrades.lights = 4; old.coins = 1e6; old.earned = 2e6; old.progression.claimed = M.LEVELS.map((l) => l.level);
   const loaded = M.restoreState(old);
   assert.equal(M.upgradeCost(loaded, "sign"), SIGN.costs[4]); assert.ok(M.buyUpgrade(loaded, "sign"));
   assert.equal(M.buyVisitorUpgrade(loaded, "lights"), false);
@@ -76,6 +76,6 @@ test("level gifts still give a real tier, and coins when that upgrade is already
   assert.equal(full.upgrades.tools, 6); assert.equal(full.coins, coins + 100 + 100);
   assert.equal(full.progression.receipts[4][1].duplicate, true);
   // Buying the frequency tiers doesn't disturb a gift.
-  const both = M.freshState(); both.coins = 1e6; while (M.buyUpgrade(both, "sign")); both.earned = 1000; both.progression.claimed = [1, 2, 3];
+  const both = M.freshState(); both.coins = 1e6; both.earned = 2e6; both.progression.claimed = M.LEVELS.map((l) => l.level); while (M.buyUpgrade(both, "sign")); both.earned = 1000; both.progression.claimed = [1, 2, 3];
   M.awardLevels(both); assert.equal(both.upgrades.sign, 5); assert.equal(both.upgrades.tools, 1);
 });

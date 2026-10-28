@@ -13,7 +13,7 @@ test("a guest who can't afford more of a favourite fills the basket with somethi
 });
 
 test("guests start with baskets of three, and Bigger baskets grows them to ten", () => {
-  const s = M.freshState(); s.coins = 1e7;
+  const s = M.freshState(); s.coins = 1e7; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
   assert.equal(M.basketWant(s), 3);
   const wants = [];
   while (M.buyVisitorUpgrade(s, "appetite")) wants.push(M.basketWant(s));

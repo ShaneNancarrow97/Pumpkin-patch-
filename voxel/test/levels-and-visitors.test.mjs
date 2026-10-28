@@ -62,7 +62,7 @@ test("version 3 saves retain progress without replaying historical celebrations"
 });
 
 test("outdoor base frequency is 21 seconds; Spread the word has five tiers and Fairy lights four", () => {
-  const s = M.freshState(); s.coins = 1e7;
+  const s = M.freshState(); s.coins = 1e7; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
   assert.equal(M.stallArrivalSeconds(s), 21); assert.equal(M.shopArrivalSeconds(s), 3);
   for (let i = 0; i < 5; i++) assert.ok(M.buyUpgrade(s, "sign"));
   assert.equal(M.buyUpgrade(s, "sign"), false);

@@ -18,7 +18,7 @@ test("land and stand purchases are gated, one-time and save-compatible", () => {
   assert.ok(M.buyMeadow(s)); const after = s.coins; assert.equal(M.buyMeadow(s), false); assert.equal(s.coins, after);
   assert.equal(M.fieldWidth(s), 54); assert.equal(M.upgradeCocoa(s), false);
   s.earned = 2200; assert.equal(s.festival.cocoa.level, 0); const beforeBuild = s.coins; assert.ok(M.upgradeCocoa(s)); assert.equal(s.coins, beforeBuild - 650); assert.equal(s.festival.cocoa.stock, 10);
-  assert.equal(M.upgradeCocoa(s), false); s.earned = 4500; assert.ok(M.upgradeCocoa(s));
+  assert.equal(M.upgradeCocoa(s), false); s.earned = 8500; assert.ok(M.upgradeCocoa(s));
   const loaded = M.restoreState(JSON.parse(JSON.stringify(M.saveData(s)))); assert.deepEqual(loaded.festival, s.festival);
   const old = M.freshState(); old.version = 5; delete old.festival;
   assert.deepEqual(M.restoreState(old).festival, M.freshState().festival);

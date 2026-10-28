@@ -41,6 +41,7 @@
 //   fits, findSpot, placeDecor, moveDecor and sendToRoom all use the room's layout.
 // GRID and HOOKS are the little cottage's parlour (10 x 6), kept until the renderer reads roomLayout.
 import { decorCatalog as baseDecorCatalog, decorCategories as baseDecorCategories } from "../../../src/content/catalog.mjs";
+import { tierOpen } from "./unlocks.js";
 import { PREMIUM_WALL_CATALOG } from "../content/premium-wall-catalog.js";
 import { PREMIUM_FURNITURE_CATALOG } from "../content/premium-furniture-catalog.js";
 import { KITCHEN_EQUIPMENT } from "../content/kitchen-equipment.js";
@@ -292,7 +293,7 @@ export function buyDecor(s, id) {
 // into storage if there's none. Returns what moved, for the notice.
 export function upgradeHouse(s) {
   const h = s.house;
-  if (h.level >= 3 || s.coins < HOUSE_LEVELS[h.level].cost) return false;
+  if (h.level >= 3 || s.coins < HOUSE_LEVELS[h.level].cost || !tierOpen(s, "house", null, h.level)) return false;
   s.coins -= HOUSE_LEVELS[h.level].cost;
   h.level++;
   const moved = [], stored = [];

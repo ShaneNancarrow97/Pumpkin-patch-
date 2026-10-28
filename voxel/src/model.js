@@ -32,6 +32,7 @@ export * from "./rules/selling.js";
 export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
+export * from "./rules/unlocks.js";
 
 export const STATE_VERSION = 14;
 export * from "./rules/visitor-events.js";

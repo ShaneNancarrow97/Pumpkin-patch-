@@ -5,8 +5,8 @@
 export const HAYRIDE_PROPERTY = Object.freeze({ name: "The Hollow Hayride", rideAlongSeconds: 150, level: 11, price: 7500, approachSeconds: 12, returnSeconds: 10, queuePatience: 220, maxWait: 15, departureSeconds: 3, arrivalSeconds: 3, unloadSeconds: 6, routeVersion: 1 });
 export const HAYRIDE_TIERS = [
   { level: 1, name: "The first fearful circuit", patchLevel: 11, cost: 0, seats: 4, queueCapacity: 8, minTicket: 4, maxTicket: 12, circuitSeconds: 90, boardingSeconds: 1.5, scare: 20 },
-  { level: 2, name: "Lantern convoy", patchLevel: 12, cost: 6500, seats: 6, queueCapacity: 12, minTicket: 4, maxTicket: 16, circuitSeconds: 90, boardingSeconds: 1.25, scare: 28 },
-  { level: 3, name: "Midnight procession", patchLevel: 12, cost: 14000, seats: 8, queueCapacity: 16, minTicket: 4, maxTicket: 20, circuitSeconds: 90, boardingSeconds: 1, scare: 36 },
+  { level: 2, name: "Lantern convoy", patchLevel: 13, cost: 6500, seats: 6, queueCapacity: 12, minTicket: 4, maxTicket: 16, circuitSeconds: 90, boardingSeconds: 1.25, scare: 28 },
+  { level: 3, name: "Midnight procession", patchLevel: 16, cost: 14000, seats: 8, queueCapacity: 16, minTicket: 4, maxTicket: 20, circuitSeconds: 90, boardingSeconds: 1, scare: 36 },
 ];
 // Every landmark exists in the basic circuit; these purchases strengthen its show.
 export const HAYRIDE_SCARES = [
@@ -19,10 +19,10 @@ export const HAYRIDE_SCARES = [
 export const HAYRIDE_SCARE_BY_ID = Object.fromEntries(HAYRIDE_SCARES.map(p => [p.id, p]));
 // Extra vehicles run their own paid circuit; quicker loading never skips it.
 export const HAYRIDE_OPERATIONS = Object.freeze([
-  Object.freeze({ id: "fleet", name: "A second tractor", level: 12, tier: 2, costs: Object.freeze([12000]), text: "A second tractor and hay wagon use their own bay while the first is in the woods." }),
+  Object.freeze({ id: "fleet", name: "A second tractor", level: 15, tier: 2, costs: Object.freeze([12000]), text: "A second tractor and hay wagon use their own bay while the first is in the woods." }),
   Object.freeze({ id: "dispatch", name: "Station crew", level: 11, tier: 1, costs: Object.freeze([1800, 4200]), text: "Two paid crew tiers cut boarding time and the wait before a part-filled wagon leaves." }),
 ]);
 export const HAYRIDE_ROUTE_UPGRADES = Object.freeze([
-  Object.freeze({ level: 1, name: "The forgotten graveyard", patchLevel: 12, tier: 2, cost: 8500, seconds: 20, scare: 8, text: "A new woodland detour passes leaning graves, iron gates and restless mourners." }),
-  Object.freeze({ level: 2, name: "The crooked thicket", patchLevel: 12, tier: 3, cost: 16000, seconds: 20, scare: 12, text: "Extend the lane through webbed old-growth trees and a haunted scarecrow clearing." }),
+  Object.freeze({ level: 1, name: "The forgotten graveyard", patchLevel: 14, tier: 2, cost: 8500, seconds: 20, scare: 8, text: "A new woodland detour passes leaning graves, iron gates and restless mourners." }),
+  Object.freeze({ level: 2, name: "The crooked thicket", patchLevel: 18, tier: 3, cost: 16000, seconds: 20, scare: 12, text: "Extend the lane through webbed old-growth trees and a haunted scarecrow clearing." }),
 ]);

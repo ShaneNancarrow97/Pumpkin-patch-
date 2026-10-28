@@ -7,7 +7,7 @@ try{
  page=await browser.newPage({viewport:{width:1280,height:800},hasTouch:true});page.setDefaultTimeout(120000);page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>localStorage.setItem('pumpkin-patch-voxel-reference-v1-prefs',JSON.stringify({glow:false,shadows:false,music:false})));await page.goto('http://127.0.0.1:'+server.address().port);await page.waitForSelector('body[data-ready]');
  const settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
- await page.evaluate(()=>{const s=PumpkinVoxel.state();s.coins=100000;s.earned=200000;s.progression.claimed=Array.from({length:12},(_,i)=>i+1);s.progression.pending=[];s.visitorTimer=s.shop.arrivalTimer=1e6;PumpkinVoxel.enterEstate();});await settle();
+ await page.evaluate(()=>{const s=PumpkinVoxel.state();s.coins=100000;s.earned=2000000;s.progression.claimed=Array.from({length:20},(_,i)=>i+1);s.progression.pending=[];s.visitorTimer=s.shop.arrivalTimer=1e6;PumpkinVoxel.enterEstate();});await settle();
  check(await page.evaluate(()=>{const e=PumpkinVoxel.scene.estateStatus.entrance;return e.visible&&Math.abs(e.position[2]-3.03)<.01;}),'starter house has a depth-tested entry glow at its real door');
  await page.screenshot({path:path.join(out,'house-0-front.png')});
  await page.evaluate(()=>PumpkinVoxel.scene.estateCamera.rotate(180));await settle();await page.screenshot({path:path.join(out,'house-0-rear.png')});

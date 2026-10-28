@@ -14,14 +14,16 @@ export const LEVELS = [
   { level: 10, at: 42000, name: "Spooktacular", rewards: [{ kind: "coins", amount: 900 }, { kind: "costume", id: "shane-chucky" }] },
   { level: 11, at: 70000, name: "Harvest legend", rewards: [{ kind: "coins", amount: 1250 }, { kind: "decor", id: "moon-vanity" }] },
   { level: 12, at: 110000, name: "Forever Halloween", rewards: [{ kind: "coins", amount: 1800 }, { kind: "costume", id: "natalie-freddy" }, { kind: "costume", id: "shane-jason" }] },
-  { level: 13, at: 170000, name: "Candlelit cookbook", rewards: [{ kind: "coins", amount: 2400 }, { kind: "decor", id: "f14" }] },
+  // Levels 13–20 lead back home (home-goals.js), and the late upgrade tiers
+  // open along the way (unlocks.js).
+  { level: 13, at: 170000, name: "Candlelit cookbook", rewards: [{ kind: "coins", amount: 2400 }, { kind: "decor", id: "f14" }, { kind: "costume", id: "natalie-frankenstein" }] },
   { level: 14, at: 250000, name: "The midnight kitchen", rewards: [{ kind: "coins", amount: 3200 }, { kind: "decor", id: "w08" }] },
-  { level: 15, at: 360000, name: "Keys to the attic", rewards: [{ kind: "coins", amount: 4200 }, { kind: "decor", id: "d06" }] },
+  { level: 15, at: 360000, name: "Keys to the attic", rewards: [{ kind: "coins", amount: 4200 }, { kind: "decor", id: "d06" }, { kind: "costume", id: "shane-frankenstein" }] },
   { level: 16, at: 500000, name: "Every room a story", rewards: [{ kind: "coins", amount: 5400 }, { kind: "decor", id: "f06" }] },
-  { level: 17, at: 680000, name: "A witching-hour feast", rewards: [{ kind: "coins", amount: 6800 }, { kind: "decor", id: "d04" }] },
+  { level: 17, at: 680000, name: "A witching-hour feast", rewards: [{ kind: "coins", amount: 6800 }, { kind: "decor", id: "d04" }, { kind: "costume", id: "natalie-mummy" }] },
   { level: 18, at: 900000, name: "The haunting heart", rewards: [{ kind: "coins", amount: 8500 }, { kind: "decor", id: "moon-canopy-bed" }] },
-  { level: 19, at: 1200000, name: "Keeper of stories", rewards: [{ kind: "coins", amount: 10500 }, { kind: "decor", id: "moon-wardrobe" }] },
-  { level: 20, at: 1600000, name: "Our forever haunted home", rewards: [{ kind: "coins", amount: 15000 }, { kind: "decor", id: "moon-vanity" }] },
+  { level: 19, at: 1200000, name: "Keeper of stories", rewards: [{ kind: "coins", amount: 10500 }, { kind: "decor", id: "moon-wardrobe" }, { kind: "costume", id: "shane-mummy" }] },
+  { level: 20, at: 1600000, name: "Our forever haunted home", rewards: [{ kind: "coins", amount: 15000 }, { kind: "costume", id: "natalie-slasher" }, { kind: "costume", id: "shane-slasher" }] },
 ];
 export const freshProgression = () => ({ claimed: [1], pending: [], receipts: {}, bonusEarned: 0, homeVersion: 1, homeLegacyThrough: 1, homeActivities: freshHomeActivities() });
 export const levelEarnings = (s) => Math.max(0, s.earned - (s.progression?.bonusEarned ?? 0));

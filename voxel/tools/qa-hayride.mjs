@@ -39,7 +39,7 @@ fixture.progression.pending = [];
 Object.assign(fixture.hollowHouse, { purchased: true, status: "ready", open: false });
 fixture.visitorTimer = fixture.shop.arrivalTimer = fixture.bigSpender.timer = 1e6;
 if (visualOnly) {
-  fixture.earned = 200000; fixture.progression.claimed = Array.from({ length: 12 }, (_, i) => i + 1);
+  fixture.earned = 2000000; fixture.progression.claimed = Array.from({ length: 20 }, (_, i) => i + 1);
   M.buyHayride(fixture); M.upgradeHayride(fixture); M.upgradeHayride(fixture); fixture.paused = true;
 }
 const server = http.createServer((req, res) => {
@@ -362,7 +362,7 @@ try {
   check(s.h.completed === 4 && s.h.ticketsSold === paid.tickets && s.h.income === paid.income && !s.h.convoy.manifest.length, "background completion unloads everybody without another ticket", s.h);
 
   await resume();
-  await page.evaluate(() => { const s = PumpkinVoxel.state(); s.earned = 200000; s.progression.claimed = Array.from({ length: 12 }, (_, i) => i + 1); PumpkinVoxel.openSheet("hayride"); });
+  await page.evaluate(() => { const s = PumpkinVoxel.state(); s.earned = 2000000; s.progression.claimed = Array.from({ length: 20 }, (_, i) => i + 1); PumpkinVoxel.openSheet("hayride"); });
   await click(action("upgrade"));
   check((await state()).h.tier === 2 && await page.evaluate(() => PumpkinVoxel.rules.hayrideConfig(PumpkinVoxel.state()).seats) === 6, "first paid tier adds six seats");
   await click(action("upgrade"));

@@ -5,6 +5,7 @@ import { cleanlinessFootfall } from "./cleanliness.js";
 // timings are the main game's (src/core/stall.js, src/core/shop.js,
 // src/content/stall.js, src/content/shop.js).
 import { NORMAL_VISITOR_KINDS } from "../content/visitors.js";
+import { tierOpen } from "./unlocks.js";
 import { economy } from "../../../src/content/economy.js";
 import { stallProfiles } from "../../../src/content/stall.js";
 import { checkoutSeconds, customerProfiles, shopCapacity, shopUpgradeCosts } from "../../../src/content/shop.js";
@@ -135,7 +136,7 @@ export const visitorUpgradeCost = (s, id) => VISITOR_UPGRADES.find((x) => x.id =
 
 export function buyVisitorUpgrade(s, id) {
   const price = visitorUpgradeCost(s, id);
-  if (price === undefined || !visitorUpgradeUnlocked(s, id) || s.coins < price) return false;
+  if (price === undefined || !visitorUpgradeUnlocked(s, id) || !tierOpen(s, "visitor", id, lv(s, id)) || s.coins < price) return false;
   s.coins -= price;
   s.visitorUpgrades[id] = lv(s, id) + 1;
   return true;
@@ -290,11 +291,12 @@ export const freshShop = () => ({ unlocked: false, capacityLevel: 0, displayLeve
 
 const shopLevel = (shop, id) => (id === "open" ? Number(shop.unlocked) : id === "capacity" ? shop.capacityLevel : id === "displays" ? shop.displayLevel : shop.checkoutLevel);
 export const shopUpgradeCost = (s, id) => shopUpgradeCosts[id]?.[shopLevel(s.shop, id)];
+export const shopLevelOf = (s, id) => shopLevel(s.shop, id);
 export const displayCount = (shop) => (shop.displayLevel ? 4 : 2);
 
 export function upgradeShop(s, id) {
   const price = shopUpgradeCost(s, id);
-  if (price === undefined || s.coins < price || (id !== "open" && !s.shop.unlocked)) return false;
+  if (price === undefined || s.coins < price || (id !== "open" && !s.shop.unlocked) || !tierOpen(s, "shop", id, shopLevel(s.shop, id))) return false;
   s.coins -= price; s.shop.invested += price;
   if (id === "open") s.shop.unlocked = true;
   else s.shop[id === "capacity" ? "capacityLevel" : id === "displays" ? "displayLevel" : "checkoutLevel"]++;

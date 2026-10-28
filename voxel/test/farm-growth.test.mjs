@@ -6,7 +6,7 @@ import { MAX_PLOTS, PLOT_POSITIONS, inFarmPatch, fieldDepth, farmPathEnd, extend
 import { buildFarmAnnex, createFarmExpansion } from "../src/farm-expansion-world.js";
 
 test("south-field purchases preserve the old tiers and open eighteen then twenty-four beds", () => {
-  const s = M.freshState(); s.coins = 10000;
+  const s = M.freshState(); s.coins = 10000; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
   assert.equal(M.openPlots(s), 6); assert.equal(s.plots.length, MAX_PLOTS);
   for (const [cost, count] of [[300, 9], [660, 12], [2200, 18], [5500, 24]]) {
     assert.equal(M.upgradeCost(s, "plots"), cost);
@@ -19,7 +19,7 @@ test("south-field purchases preserve the old tiers and open eighteen then twenty
 });
 
 test("cheap barn tiers expand capacity substantially and require room for the whole harvest", () => {
-  const s = M.freshState(); assert.equal(M.barnCapacity(s), 180);
+  const s = M.freshState(); s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); assert.equal(M.barnCapacity(s), 180);
   s.upgrades.yield = 2; const cap = M.barnCapacity(s);
   s.stock = [cap - 2, 0, 0, 0]; s.plots[0] = { phase: "ready", progress: 1, variety: 3 };
   assert.equal(M.harvest(s, 0), 0); assert.equal(s.plots[0].phase, "ready");

@@ -23,16 +23,18 @@ const FIRSTS = ["sign 1", "sign 2", "lights 1", "sign 3", "lights 2", "tools 1",
 // Everything the player might buy, as [label, price, buy, visitor id]. Decor
 // and the house are left out: they don't earn.
 function shoppingList(M, s) {
-  const list = M.UPGRADES.filter((u) => s.upgrades[u.id] < u.max).map((u) => [`${u.id} ${s.upgrades[u.id] + 1}`, M.upgradeCost(s, u.id), () => M.buyUpgrade(s, u.id)]);
+  // Rules with level gates (rules/unlocks.js) leave out tiers not open yet.
+  const open = (kind, id, tier) => M.tierOpen?.(s, kind, id, tier) ?? true;
+  const list = M.UPGRADES.filter((u) => s.upgrades[u.id] < u.max && open("farm", u.id, s.upgrades[u.id])).map((u) => [`${u.id} ${s.upgrades[u.id] + 1}`, M.upgradeCost(s, u.id), () => M.buyUpgrade(s, u.id)]);
   const plot = s.plotLevels.slice(0, M.openPlots(s)).reduce((best, l, i) => (l < 3 && (best < 0 || l < s.plotLevels[best]) ? i : best), -1);
   if (plot >= 0) list.push(["seeds " + M.VARIETIES[s.plotLevels[plot] + 1].name, M.VARIETIES[s.plotLevels[plot] + 1].cost, () => M.upgradePlot(s, plot)]);
   for (const u of M.SHOP_UPGRADES) {
     const price = M.shopUpgradeCost(s, u.id);
-    if (price !== undefined && (u.id === "open" || s.shop.unlocked)) list.push(["shop " + u.id, price, () => M.upgradeShop(s, u.id)]);
+    if (price !== undefined && (u.id === "open" || s.shop.unlocked) && open("shop", u.id, M.shopLevelOf?.(s, u.id) ?? 0)) list.push(["shop " + u.id, price, () => M.upgradeShop(s, u.id)]);
   }
   for (const u of M.VISITOR_UPGRADES) {
     const price = M.visitorUpgradeCost(s, u.id);
-    if (price !== undefined && M.visitorUpgradeUnlocked(s, u.id)) list.push([`${u.id} ${s.visitorUpgrades[u.id] + 1}`, price, () => M.buyVisitorUpgrade(s, u.id), u.id]);
+    if (price !== undefined && M.visitorUpgradeUnlocked(s, u.id) && open("visitor", u.id, s.visitorUpgrades[u.id] ?? 0)) list.push([`${u.id} ${s.visitorUpgrades[u.id] + 1}`, price, () => M.buyVisitorUpgrade(s, u.id), u.id]);
   }
   return list.sort((a, b) => a[1] - b[1]);
 }

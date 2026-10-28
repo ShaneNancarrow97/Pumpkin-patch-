@@ -16,7 +16,7 @@ try{
  check((await page.locator('.building-context').textContent()).includes('Purchase unlocks at patch level 6'),'fresh unpurchased house opens its level-gated card on touch');
  const time=await page.evaluate(()=>PumpkinVoxel.state().time);await page.waitForFunction(t=>PumpkinVoxel.state().time>t,time,{timeout:120000});check(await page.evaluate(t=>PumpkinVoxel.state().time>t,time),'simulation continues after selecting the unpurchased house');
  await page.locator('[data-hollow-context="manage"]').click();check(await page.locator('[data-hollow-action="purchase"]').isDisabled(),'Manage opens the locked purchase menu');
- await page.evaluate(()=>{PumpkinVoxel.closeSheet();const s=PumpkinVoxel.state();s.earned=200000;s.progression.claimed=Array.from({length:12},(_,i)=>i+1);s.progression.pending=[];s.coins=100000;});
+ await page.evaluate(()=>{PumpkinVoxel.closeSheet();const s=PumpkinVoxel.state();s.earned=2000000;s.progression.claimed=Array.from({length:20},(_,i)=>i+1);s.progression.pending=[];s.coins=100000;});
  await tapHouse();check((await page.locator('.building-context').textContent()).includes('A forgotten house'),'unowned eligible house opens without a scope error');
  await page.locator('[data-hollow-context="manage"]').click();check(await page.locator('[data-hollow-action="purchase"]').isEnabled(),'eligible player can purchase from the map menu');
  await page.evaluate(()=>{PumpkinVoxel.closeSheet();const s=PumpkinVoxel.state();s.festival.meadow=true;s.festival.cocoa.level=3;PumpkinVoxel.openSheet('festival');});
