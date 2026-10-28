@@ -13,7 +13,7 @@ test('tool progress has no farm effects before the caller commits one completion
   assert.equal(plant(s, event.target.index), true); assert.equal(s.plots[0].phase, 'growing');
 });
 
-test('early release cancels without planting, watering or selling anything', () => {
+test('explicit cancellation has no planting, watering or sales effects', () => {
   const s = freshState(), before = JSON.stringify(saveData(s)), job = beginAction(s, { type: 'plot', index: 0 }, 'plant');
   tickAction(s, job, .79); assert.equal(cancelAction(job), true); assert.equal(cancelAction(job), false);
   assert.equal(tickAction(s, job, 100), null); assert.equal(actionProgress(job), 0); assert.equal(JSON.stringify(saveData(s)), before);

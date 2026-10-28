@@ -141,14 +141,16 @@ try {
   await page.locator('#play-gait').click();
   check(await page.evaluate(() => PumpkinVoxel.scene.player.state().gait === 'jog'), 'The on-screen gait button switches to jogging');
 
-  // A deliberately released hold must not secretly plant anything.
+  // A released hold finishes its current action without starting another one.
   await stagePlot('empty');
   const interact = await page.locator('#play-interact').boundingBox();
   await page.mouse.move(interact.x + interact.width / 2, interact.y + interact.height / 2); await page.mouse.down();
   check((await activity()).active, 'Pointer down begins a tool action before committing its rule');
   await advance(.25); await page.waitForTimeout(260); await page.mouse.up();
-  check(await page.evaluate(() => PumpkinVoxel.state().plots[0].phase === 'empty'), 'Releasing an unfinished hold leaves the plot empty');
-  check(!(await activity()).active, 'Releasing the unfinished hold clears the action');
+  check(await page.evaluate(() => PumpkinVoxel.state().plots[0].phase === 'empty'), 'Releasing an unfinished hold does not commit it early');
+  check((await activity()).active, 'Releasing keeps the current action until its animation finishes');
+  await advance(1.5);
+  check(await page.evaluate(() => PumpkinVoxel.state().plots[0].phase === 'growing' && PumpkinVoxel.state().plots[1].phase === 'empty'), 'Release completes one use without chaining');
 
   await stagePlot('empty'); await assistedUse();
   check((await activity()).active, 'The accessible one-use button path enables an assisted action');
@@ -161,7 +163,7 @@ try {
   const growth = await page.evaluate(() => PumpkinVoxel.state().plots[0].progress);
   await assistedUse(); await frame(1);
   const waterVisual = await page.evaluate(() => PumpkinVoxel.scene.player.state());
-  check(waterVisual.canVisible === true && waterVisual.dropsVisible === true && waterVisual.canScale >= 1.4, 'A physical watering can and pour are visible during the action', waterVisual);
+  check(waterVisual.canVisible === true && waterVisual.dropsVisible === true && waterVisual.waterCanStyle === 'sprite', 'An illustrated watering can and animated pour are visible during the action', waterVisual);
   await shot('watering-progress'); await advance(1.5);
   check(await page.evaluate(growth => PumpkinVoxel.state().plots[0].progress > growth + .10, growth), 'Completed watering increases the nearby crop growth');
 

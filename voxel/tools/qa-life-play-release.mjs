@@ -142,8 +142,8 @@ try {
     p.teleport(t.x, t.z); p.faceTarget(t); p.recenter(); api.interactAsPlayer('water', { phase: 'tap' });
   });
   await frame(1); const water = await status();
-  check(water.p.canVisible && water.p.dropsVisible && water.p.canScale >= 1.4 && water.p.spriteDirection === 'water',
-    'Base watering uses the empty-handed stance plus the physical can and stream', water.p);
+  check(water.p.canVisible && water.p.dropsVisible && water.p.waterCanStyle === 'sprite' && water.p.spriteDirection === 'water',
+    'Base watering uses the empty-handed stance plus the illustrated can and stream', water.p);
   await shot('single-can-watering');
   await page.evaluate(() => { PumpkinVoxel.lifeActivity.cancel(); PumpkinVoxel.scene.player.recenter(); });
 

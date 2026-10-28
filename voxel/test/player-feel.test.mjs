@@ -9,7 +9,7 @@ test('targeting refuses distant items rather than selecting through the world',(
 test('farm camera wraps a genuine full yaw and bounds its usable pitch',()=>{let p={yaw:0,pitch:.6};for(let i=0;i<300;i++)p=playerOrbitStep(p,1,1,.1);assert.ok(p.yaw>=-Math.PI&&p.yaw<=Math.PI);assert.ok(Math.abs(p.yaw)>.1);assert.equal(p.pitch,Math.PI*66/180);for(let i=0;i<50;i++)p=playerOrbitStep(p,0,-1,.1);assert.equal(p.pitch,Math.PI*22/180);});
 test('room orbit remains inside the cutaway viewing angles',()=>{let p={yaw:0,pitch:.6};for(let i=0;i<30;i++)p=playerOrbitStep(p,1,0,.1,true);assert.equal(p.yaw,.9);for(let i=0;i<60;i++)p=playerOrbitStep(p,-1,0,.1,true);assert.equal(p.yaw,-.9);});
 
-test('watering presents a real enlarged can and its live nozzle on the captured target',async()=>{
+test('watering presents an illustrated can and its live nozzle on the captured target',async()=>{
  const THREE=await import('three'),{createPlayerControl}=await import('../src/player-control.js'),{freshState}=await import('../src/model.js');
  const original=globalThis.document;globalThis.document={body:{classList:{contains:()=>false}}};
  try {
@@ -19,7 +19,7 @@ test('watering presents a real enlarged can and its live nozzle on the captured 
   const player=createPlayerControl({scene,state:s,actors:()=>({natalie:{model:actor}}),places,getPlace:()=>null,getCamera:()=>camera,animate(){}});
   player.setEnabled(true,'natalie');const target={type:'plot',index:1,x:16.2,z:16.3};
   assert.equal(player.act('water',1.1,target),true);player.update(.2,.2);
-  const p=player.state();assert.equal(p.canVisible,true);assert.equal(p.dropsVisible,true);assert.equal(p.canScale,1.65);assert.deepEqual(p.actionTarget,target);assert.ok(Number.isFinite(p.waterNozzle.x)&&p.waterNozzle.y>.5);assert.ok(Math.hypot(p.waterNozzle.x-p.position.x,p.waterNozzle.z-p.position.z)>.7);
+  const p=player.state();assert.equal(p.canVisible,true);assert.equal(p.dropsVisible,true);assert.equal(p.canScale,1);assert.equal(p.waterCanStyle,"sprite");assert.ok(p.waterCanWidth<.9);assert.deepEqual(p.actionTarget,target);assert.ok(Number.isFinite(p.waterNozzle.x)&&p.waterNozzle.y>.5);assert.ok(Math.hypot(p.waterNozzle.x-p.position.x,p.waterNozzle.z-p.position.z)>.7);
   player.cancelAction();assert.equal(player.state().canVisible,false);assert.equal(player.state().dropsVisible,false);
  } finally {if(original===undefined)delete globalThis.document;else globalThis.document=original;}
 });

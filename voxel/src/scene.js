@@ -28,7 +28,7 @@ import { createHayrideWorld } from "./hayride-world.js";
 import { createHayrideScares } from "./hayride-scares.js";
 import { HAYRIDE_SITE, hayrideGuestPose } from "./content/hayride-layout.js";
 import { fieldWidth, MEADOW, MEADOW_EXIT, CHAT_SPOTS } from "./content/festival-meadow.js";
-import { cameraLayout, farmVerticalLimits } from "./camera-layout.js";
+import { cameraLayout, controlledRoomFraming, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
@@ -44,6 +44,7 @@ import { createAmbience } from "./ambience.js";
 import { mistClearings } from "./content/ambience.js";
 import { playerOrbitStep, createPlayerControl } from "./player-control.js";
 import { playerDirectionTextures } from "./player-sprite-directions.js";
+import wateringCanURL from "../assets/sprite-watering-can.webp";
 import { createCleanlinessView } from "./cleanliness-view.js";
 
 const WALK = 2.4;
@@ -289,6 +290,7 @@ export function createScene(canvas, state, hooks) {
   }
   warm(...sandyTextures, ...maisieTextures);
   warm(...places.petTextures);
+  const wateringTexture=new THREE.TextureLoader().load(wateringCanURL);wateringTexture.colorSpace=THREE.SRGBColorSpace;warm(wateringTexture);
   const cleanlinessView = createCleanlinessView({ scene, state, warm });
   loadDecor().then(() => places.refresh()).catch(() => hooks.onSpriteError?.());
 
@@ -321,11 +323,12 @@ export function createScene(canvas, state, hooks) {
   // Register flat cast as they arrive, then rotate only that small set per frame.
   function faceCast(yaw,pitch,inside,now){
     if(now>=nextBillboardScan){nextBillboardScan=now+1;scene.traverse(o=>{const lean=o.children[0];if(o.isGroup&&lean?.isGroup&&lean.children.some(m=>m.isMesh&&m.geometry?.type==='PlaneGeometry'&&m.customDepthMaterial)&&!billboards.has(o))billboards.set(o,{yaw:o.rotation.y,lean:lean.rotation.x,stretch:lean.scale.y});});}
-    for(const [o,base]of billboards){if(!o.parent){billboards.delete(o);continue;}const lean=o.children[0];if(!lean)continue;o.rotation.y=yaw;const angle=inside?INTERIOR.lean:Math.abs(base.lean);lean.rotation.x=-angle;lean.scale.y=1/Math.cos(pitch-angle);}
+    for(const [o,base]of billboards){if(!o.parent){billboards.delete(o);continue;}const lean=o.children[0];if(!lean)continue;o.rotation.y=yaw;const angle=inside?INTERIOR.lean:Math.abs(base.lean);lean.rotation.x=-angle;lean.scale.y=1/Math.cos((inside?INTERIOR.pitch:pitch)-angle);}
     places.faceCamera?.(yaw,pitch);
   }
   function restoreCast(){for(const[o,base]of billboards){o.rotation.y=base.yaw;if(o.children[0]){o.children[0].rotation.x=base.lean;o.children[0].scale.y=base.stretch;}}places.faceCamera?.(0,INTERIOR.pitch);}
   const player = createPlayerControl({ scene, state, actors: () => actors, places, getPlace: () => view.place, getCamera: active, animate: animateSprite,
+    wateringTexture,
     cameraLook(x,y,dt){Object.assign(playerOrbit,playerOrbitStep(playerOrbit,x,y,dt,view.place==='room'));playerLook.x=playerOrbit.yaw;playerLook.z=playerOrbit.pitch-PITCH;},
     cameraZoom(direction){if(touches.size||kept||!direction)return;const l=cameraLayout(canvas.clientWidth),inside=view.place==='room';view.zoom=THREE.MathUtils.clamp(view.zoom*Math.exp(direction*.13),inside?l.roomMinZoom:l.minZoom,inside?1.9:l.maxZoom);frame();},
     cameraReset(pos,inside){playerOrbit.yaw=0;playerOrbit.pitch=inside?INTERIOR.pitch:PITCH;playerLook.x=playerLook.z=0;view.x=inside?pos.x-places.place.w/2:pos.x;view.z=inside?pos.z-places.place.d*.42:pos.z;view.zoom=inside?1:canvas.clientWidth>=740?2.3:1.35;frame();},
@@ -371,7 +374,9 @@ export function createScene(canvas, state, hooks) {
       }
       return true;
     };
-    let dist = controlled ? (layout.overview < .95 ? 11 : 13) : 6;
+    const controlFrame = controlledRoomFraming(w, view.zoom);
+    if (controlled) view.zoom = controlFrame.zoom;
+    let dist = controlled ? controlFrame.distance : 6;
     if(!controlled)while (dist < 80 && !fits(dist)) dist += 0.25;
     roomCam.fov = INTERIOR.fov; roomCam.aspect = aspect; roomCam.updateProjectionMatrix();
     roomCam.position.copy(target).addScaledVector(dir, dist / view.zoom);

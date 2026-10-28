@@ -8,6 +8,12 @@ export function cameraLayout(width) {
   return { overview, farmSpan: 20 + 26 * overview, minZoom: 0.5, maxZoom: 4.5, roomMinZoom: 0.6 };
 }
 
+// Direct play needs room around the owner; every zoom path shares this limit.
+export function controlledRoomFraming(width, zoom = 1) {
+  const safeZoom = Number.isFinite(zoom) ? zoom : 1;
+  return { distance: 15 + cameraLayout(width).overview * 1.5, zoom: clamp(safeZoom, .6, 1.15) };
+}
+
 // Keep roofs and the front fence visible when they fit. When zoomed in, allow
 // panning between them instead of pinning a tall viewport to the front fence.
 export function farmVerticalLimits(halfHeight, pitch, depth) {

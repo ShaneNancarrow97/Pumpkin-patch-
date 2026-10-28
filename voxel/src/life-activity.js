@@ -19,7 +19,8 @@ export function createLifeActivity({state,player,commit,blocked,notice}){
     if(phase==='release'){
       holding=false;
       if(pending){pending=null;player.cancelWalk?.();return true;}
-      if(job){if(options.assist){assisted=true;return true;}return cancel();}
+      // Let go to finish this use; only continued holding starts another crop.
+      if(job){assisted=true;return true;}
       return false;
     }
     if(job){if(phase==='start'){holding=true;assisted=false;}return true;}

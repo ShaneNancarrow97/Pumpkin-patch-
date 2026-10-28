@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { Voxels } from "./voxels.js";
 import { PLOTS, BIG_PUMPKIN, SHOP, HOMES, PITCH } from "./world.js";
 import { fieldDepth } from "./content/farm-layout.js";
 import { COOKING_SITE } from "./content/cooking-layout.js";
@@ -57,7 +56,7 @@ export function choosePlayerTarget(list, position, heading, previous, reach = 2.
 }
 
 // This adapter owns only movement and presentation. Purchases and farming stay in the rules.
-export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow, cameraLook, cameraZoom, cameraReset }) {
+export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow, cameraLook, cameraZoom, cameraReset, wateringTexture }) {
   let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, strideAge = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0;
   const input = { x: 0, y: 0 }, lookInput = { x: 0, y: 0 }, velocity = { x: 0, z: 0 }, heading = { x: 0, z: 1 }, positions = new Map(), right = new THREE.Vector3(), forward = new THREE.Vector3();
   const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd18a, transparent: true, opacity: .75, side: THREE.DoubleSide, depthWrite: false, toneMapped: false });
@@ -65,12 +64,13 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   const targetMat = ringMat.clone(); targetMat.color.setHex(0xf7bb64); targetMat.opacity = .6;
   const marker = new THREE.Mesh(new THREE.RingGeometry(.55, .60, 40), targetMat); marker.rotation.x = -Math.PI / 2; marker.visible = false; scene.add(marker);
   const tool = new THREE.Group(); tool.visible = false; scene.add(tool);
-  const v = new Voxels();
-  v.box(-.18, -.13, -.18, .36, .28, .36, 0x5c8c7a); v.box(-.12, .15, -.12, .24, .04, .24, 0xc0c99c);
-  v.box(.15, -.03, -.06, .32, .09, .12, 0x638f7c); v.box(.39, .01, -.10, .08, .08, .2, 0xa9bda0);
-  v.box(-.30, -.02, -.13, .06, .25, .06, 0x385e59); v.box(-.3, .18, -.13, .18, .05, .06, 0x385e59);
-  const can = v.build(); can.scale.setScalar(1.65); tool.add(can);
-  const spout = new THREE.Object3D(), nozzle = new THREE.Vector3(); spout.position.set(.47,.05,0); can.add(spout);
+  // The painted handle stays in the hand; its nozzle is the particle socket.
+  const canWidth=.82,canHeight=canWidth*184/256,grip={x:215/256,y:52/184};
+  const canGeometry=new THREE.PlaneGeometry(canWidth,canHeight);
+  canGeometry.translate((.5-grip.x)*canWidth,(grip.y-.5)*canHeight,0);
+  const can=new THREE.Mesh(canGeometry,new THREE.MeshBasicMaterial({map:wateringTexture??null,transparent:true,alphaTest:.04,depthWrite:false,toneMapped:false,side:THREE.DoubleSide}));
+  can.name='Illustrated watering can';tool.add(can);
+  const spout=new THREE.Object3D(),nozzle=new THREE.Vector3();spout.position.set((32/256-grip.x)*canWidth,(grip.y-116/184)*canHeight,0);can.add(spout);
   const dropGeo = new THREE.BoxGeometry(.035, .07, .035), dropMat = new THREE.MeshBasicMaterial({ color: 0xb9e6ed, transparent: true, opacity: .75, toneMapped: false });
   const drops = new THREE.InstancedMesh(dropGeo, dropMat, 12); drops.visible = false; scene.add(drops);
   const dropMatrix = new THREE.Matrix4();
@@ -198,7 +198,10 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
       if (lean) { lean.rotation.z = (action.kind === "water" ? -.08 : .16) * bend; lean.position.y -= (action.kind === "water" ? .03 : .14) * bend; }
       if (action.kind === "water") {
         const tpos = action.target ?? target ?? { x: pos.x + 1, z: pos.z + .3 }, ox = tpos.x - pos.x, oz = tpos.z - pos.z, angle = Math.atan2(-oz, ox);
-        tool.position.set(a.position.x + Math.cos(angle) * .5, 1.12 - bend * .08, a.position.z - Math.sin(angle) * .5); tool.rotation.y = angle; tool.rotation.z = -.22 * bend;
+        const side=Math.abs(screenHeading)>.1?(screenHeading<0?-1:1):(a.userData.playerSideSign??1),camera=getCamera();
+        tool.quaternion.copy(camera.quaternion);can.scale.x=-side;
+        tool.position.set(a.position.x+right.x*.38*side-forward.x*.14,1.1-bend*.06,a.position.z+right.z*.38*side-forward.z*.14);
+        can.rotation.z=side*.10*bend;
         tool.updateMatrixWorld(true); spout.getWorldPosition(nozzle);
         for (let i = 0; i < 12; i++) { const d = (time * 1.7 + i / 12) % 1; dropMatrix.makeTranslation(nozzle.x + Math.cos(angle) * d * .35, nozzle.y - Math.pow(d,1.35) * Math.max(.1,nozzle.y-.12), nozzle.z - Math.sin(angle) * d * .35 + Math.sin(i * 3) * .035); drops.setMatrixAt(i, dropMatrix); }
         drops.instanceMatrix.needsUpdate = true;
@@ -246,7 +249,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     cancelWalk() { walkTarget = null; velocity.x = velocity.z = 0; },
     targets,
     teleport(x, z) { if (!sync()) return false; const a = model(), o = origin(), p = safeSpot({ x, z }); a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z); positions.set(key, p); target = nearest(); return true; },
-    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: can.scale.x, waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
+    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, waterCanStyle:'sprite', waterCanWidth:canWidth, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: Math.abs(can.scale.x), waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
     // QA can finish a presentation without advancing harvests, deliveries or any other rule.
     advance(seconds) {
       input.x = input.y = 0;
