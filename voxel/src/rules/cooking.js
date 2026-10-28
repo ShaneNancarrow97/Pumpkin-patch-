@@ -82,7 +82,7 @@ function readiness(s, id, station, batches, experiment = false) {
   if (k.jobs[station]) return no("This cooker is busy.");
   if (foodCount(s) + info.reservedOutput + r.yield * batches > foodCapacity(s)) return no("Make room in the food cupboard for the whole run first.");
   for (const [ingredient, n] of Object.entries(r.ingredients)) if ((k.pantry[ingredient] ?? 0) < n * batches) return no(`Need ${n * batches} ${INGREDIENT_BY_ID[ingredient].name.toLowerCase()}.`);
-  for (const [v, n] of Object.entries(r.pumpkins)) if (available(s, +v) < n * batches) return no(`Need ${n * batches} unreserved ${+v === 1 ? "Moonlight" : "Orange"} pumpkin${n * batches === 1 ? "" : "s"}.`);
+  for (const [v, n] of Object.entries(r.pumpkins)) if (available(s, +v) < n * batches) return no(`Grow ${+v === 1 ? "Moonlight" : "Orange"} in a bed, or cook a dish without pumpkins. Need ${n * batches} unreserved ${+v === 1 ? "Moonlight" : "Orange"} pumpkin${n * batches === 1 ? "" : "s"}.`);
   return { ...info, ok: true, reason: "" };
 }
 export const cookingReadiness = (s, id, station = "truck", batches = 1) => readiness(s, id, station, batches);

@@ -13,6 +13,15 @@ import { UPGRADES, VARIETIES, tierFactor, visitorBonus } from "./farm.js";
 import { freshGuestNeeds, tickGuestNeeds, enjoyPumpkin } from "./guest-needs.js";
 import { settleCustomerCare } from "./customer-care.js";
 import { quoteFoodForCustomer, commitFoodForCustomer, releaseFoodForCustomer, protectedFoodPurse } from "./cooking-sales.js";
+
+// Maisie's hatch: an outdoor guest who's peckish spends their meal money on a
+// takeaway as they leave the stall. Before, that money went home unspent.
+function buyTakeaway(s, v) {
+  if (!s.kitchen?.purchased || v.food?.status === "paid") return null;
+  v.foodOwner = "visitor-" + v.id;
+  if (!quoteFoodForCustomer(s, v, [])) return null;
+  return commitFoodForCustomer(s, v, { protectedPurse: protectedFoodPurse(s, v, v.basket) });
+}
 import { cocoaAllowance, planFestivalVisit, tickFestivalVisit, meadowFootfallBonus } from "./festival-meadow.js";
 import { planHollowVisit, tickHollowVisit, mazeFootfallBonus } from "./hollow-house.js";
 import { planChat, tickChat, updateChats, chatting } from "./meadow-chat.js";
@@ -271,12 +280,16 @@ export function updateStall(s, dt, events) {
       s.stall.receipts.unshift({ visitor: v.id, profile: v.profile, party: v.party, size: v.size, amount: receipt.amount, quantity: receipt.quantity, lines: receipt.lines, mug, tip: care.tip, quality: care.quality });
       s.stall.receipts.length = Math.min(20, s.stall.receipts.length);
       events.push({ type: "sale", route: "stall", amount: receipt.amount + mug + care.tip, tip: care.tip, quality: care.quality, quantity: receipt.quantity, mug, visitor: v.id });
+      const food = buyTakeaway(s, v);
+      if (food) events.push({ type: "sale", route: "takeaway", amount: food.amount, quantity: 0, recipe: food.recipe, visitor: v.id });
     } else if (v.age >= VISIT.arrive + stallPatience(s)) {
       v.outcome = available(s) > 0 ? "budget" : "soldout";
       s.stall[v.outcome === "budget" ? "missedBudget" : "missedStock"]++;
       v.leaveAt = v.age + VISIT.linger;
       events.push({ type: "missed", reason: v.outcome, visitor: v.id });
       if (buyMug(s, v, mealPurseReserve(s, v))) events.push({ type: "sale", route: "cocoa", amount: v.mug, quantity: 0, mug: v.mug, visitor: v.id });
+      const food = buyTakeaway(s, v);
+      if (food) events.push({ type: "sale", route: "takeaway", amount: food.amount, quantity: 0, recipe: food.recipe, visitor: v.id });
     }
   }
   updateChats(s, events);

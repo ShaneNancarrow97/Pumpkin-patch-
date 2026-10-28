@@ -802,6 +802,7 @@ export function createScene(canvas, state, hooks) {
       if (route === "hollow-ticket") { if (view.place === "foyer") floatText("+£" + amount, -2, 2, 0, "coin"); else if (!view.place) floatText("+£" + amount, HOLLOW_PROPERTY.x, 2.8, HOLLOW_PROPERTY.door[1], "coin"); return; }
       if (route === "hayride-ticket") { if (!view.place) floatText("+£" + amount, HAYRIDE_SITE.rearEntry.x, 2.5, HAYRIDE_SITE.rearEntry.z, "coin"); return; }
       if (route === "festival-cocoa" && !view.place) { floatText("+£" + amount, MEADOW.counter[0], 2.2, MEADOW.counter[1], "coin"); return; }
+      if (route === "takeaway") { if (!view.place) floatText("+£" + amount, COOKING_SITE.marker.x, 2.6, COOKING_SITE.marker.z, "coin"); return; }
       if ((route === "shop" || route === "food") && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
       else if (!view.place) floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin");
     },

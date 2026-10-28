@@ -154,7 +154,8 @@ function settle(s, events) {
     if(c.phase==="unloading"&&c.elapsed+EPS>=HAYRIDE_PROPERTY.unloadSeconds){
       for(const v of guests)if(c.manifest.some(r=>r.visitId===v.hayride.visitId)){
         const m=v.hayride;h.completed++;m.fleeing=m.terror>=62+m.bravery*.28;if(m.fleeing)h.runHome++;
-        if(v.needs)v.needs.happiness=bounded(v.needs.happiness+(m.fleeing?-12:10),15,100,70);
+        // The night air on the wagon leaves everyone peckish for Maisie's food.
+        if(v.needs){v.needs.happiness=bounded(v.needs.happiness+(m.fleeing?-12:10),15,100,70);v.needs.hunger=bounded(finite(v.needs.hunger,50)+25,0,100,50);}
         sendBack(s,v);mark(s,m.fleeing?"frightened":"survivor",v);
       }
       events.push({type:"hayride-returned",runId:c.runId,berth:index,visitors:c.manifest.length});replaceConvoy(s,index);return;

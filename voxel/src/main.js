@@ -266,9 +266,18 @@ function say(who, text) {
 $("dialogue").onclick = () => ($("dialogue").hidden = true);
 
 let noticeTimer;
+// Once a session, when litter first starts keeping guests away: who can help.
+let litterHinted = false;
+function litterHint() {
+  if (litterHinted || state.paused || openTab || intro.active) return;
+  const c = M.cleanlinessStatus(state);
+  if (c.janitor || c.penalty < 5) return;
+  litterHinted = true;
+  notice(M.patchLevel(state).level >= c.hireLevel ? `Litter is putting guests off. Hettie the caretaker sweeps for £${c.hireCost}: More, then Home & hands-on play.` : "Litter is putting guests off. Pick it up in Play, or hire Hettie from level " + c.hireLevel + ".");
+}
 function notice(text) {
   $("notice").textContent = text; $("notice").classList.add("show");
-  clearTimeout(noticeTimer); noticeTimer = setTimeout(() => $("notice").classList.remove("show"), 2000);
+  clearTimeout(noticeTimer); noticeTimer = setTimeout(() => $("notice").classList.remove("show"), Math.max(2, text.length / 18) * 1000);
 }
 
 // Stepping inside the cottage or the shop, and back out.
@@ -391,6 +400,7 @@ function render() {
   text("stock", `${M.available(state)}/${M.barnCapacity(state)}`);
   text("sold", state.sold);
   text("visitor-now", state.visitors.length + state.shop.customers.length);
+  litterHint();
   const lvl = M.patchLevel(state);
   text("level-number", lvl.level);
   $("open-levels").setAttribute("aria-label", `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View rewards`);

@@ -4,7 +4,9 @@ import { RECIPE_BY_ID } from '../content/cooking.js';
 import { enjoyTreat } from './guest-needs.js';
 import { BIG_SPENDER_KIND } from './big-spender.js';
 
-const ownerOf = customer => 'customer-' + customer.id;
+// Shop customers and outdoor guests count from separate numbers; an outdoor
+// guest's hold is marked as theirs (foodOwner) so the two never meet.
+const ownerOf = customer => customer.foodOwner ?? 'customer-' + customer.id;
 const amountOf = lines => (lines ?? []).reduce((total, line) => total + line.price * line.quantity, 0);
 const purse = value => Number.isFinite(value) ? Math.max(0, value) : 0;
 const holds = s => s.kitchen?.foodHolds ?? [];
