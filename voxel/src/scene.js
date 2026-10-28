@@ -469,7 +469,7 @@ export function createScene(canvas, state, hooks) {
     composer.setSize(w, h);
     antialias.uniforms.resolution.value.set(1 / sizing.bufferWidth, 1 / sizing.bufferHeight); antialias.enabled = sizing.pixelRatio < FXAA_BELOW;
     const overview = cameraLayout(w).overview >= 0.95;
-    if (!firstResize && overview && !lastOverview) {
+    if (!firstResize && overview && !lastOverview && !player.state().enabled) {
       view.zoom = Math.min(view.zoom, 1);
       if (farmView) farmView.zoom = Math.min(farmView.zoom, 1);
     }
