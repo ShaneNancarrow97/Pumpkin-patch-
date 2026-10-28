@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "0d55eedb662cf14e988603547592c5c5f97e7c9a",
+  "runtimeCommit": "145a44a226cef1856082ddfc97125565c4288e77",
+  "patchBase": "cb7515092474c41893e3f0c918df7e49ec23c0a0",
+  "htmlSha256": "51a39600e0032f7bd775f5088b70fb15af7862b645146e30522c9002ec4499c3",
+  "nodeTestFiles": 89,
+  "browserReports": {
+    "flow": {
+      "checks": 31,
+      "sha256": "67718dcf305aa723d53444cc0a614dee128322c372ed72031abb181c67cc03a2"
+    },
+    "exactRelease": {
+      "checks": 12,
+      "sha256": "51a39600e0032f7bd775f5088b70fb15af7862b645146e30522c9002ec4499c3"
+    }
+  },
+  "browserPassed": true,
+  "ci": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/40767306119",
+  "cleanSourceRebuildIdentical": true,
+  "appliedPatchRebuildIdentical": true,
+  "patchApplyChecked": true,
+  "artifacts": {
+    "Pumpkin-Patch-Life-Play.html": {
+      "bytes": 37274183,
+      "sha256": "51a39600e0032f7bd775f5088b70fb15af7862b645146e30522c9002ec4499c3"
+    },
+    "life-play-from-cb75150.patch": {
+      "bytes": 4008320,
+      "sha256": "ddeb9d384fd8b89d9f5087adf17219bc370c0f6134204aa8e64e0b47c34e8d06"
+    },
+    "Pumpkin-Patch-HTML.zip": {
+      "bytes": 27048027,
+      "sha256": "26062fec7d739abc366112c50576004e93a31fac74304b1602e5bc7a92fac6a4"
+    },
+    "Life-Play-Claude-Patch.zip": {
+      "bytes": 3146389,
+      "sha256": "b8ad9fc28c4c355535f72314ac183bd0f1179b5fe9d1ea0da891401f5f0a82d6"
+    }
+  }
+}
