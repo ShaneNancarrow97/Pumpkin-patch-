@@ -58,7 +58,7 @@ export function choosePlayerTarget(list, position, heading, previous, reach = 2.
 
 // This adapter owns only movement and presentation. Purchases and farming stay in the rules.
 export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow, cameraLook, cameraZoom, cameraReset }) {
-  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0;
+  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, strideAge = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0;
   const input = { x: 0, y: 0 }, lookInput = { x: 0, y: 0 }, velocity = { x: 0, z: 0 }, heading = { x: 0, z: 1 }, positions = new Map(), right = new THREE.Vector3(), forward = new THREE.Vector3();
   const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd18a, transparent: true, opacity: .75, side: THREE.DoubleSide, depthWrite: false, toneMapped: false });
   const ring = new THREE.Mesh(new THREE.RingGeometry(.42, .465, 40), ringMat); ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);
@@ -138,7 +138,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     const nextKey = (room() ? "room:" + places.place.id : "farm") + ":" + who;
     if (nextKey !== key || model() !== lastModel) {
       places.clearPlayerRest?.(who); pose = null; walkTarget = null; velocity.x = velocity.z = 0;
-      key = nextKey; action = null; moving = false;
+      key = nextKey; action = null; moving = false; strideAge = 0;
       const a = model(), o = origin(), p = safeSpot(positions.get(key) ?? localPosition());
       a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z);
       lastModel = a;
@@ -180,8 +180,10 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     a.position.x = o.x + pos.x; a.position.z = o.z + pos.z;
     if (!pose) positions.set(key, { ...pos });
     const delta = Math.hypot(pos.x - old.x, pos.z - old.z), dx = delta > .00001 || action || pose ? screenHeading : 0;
-    animate(a, time * (gait === "jog" && moving ? 1.35 : 1), moving, dx, who === "shane" ? 1.7 : 0);
-    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing, walking: moving, time, age: time * (gait === "jog" && moving ? 1.35 : 1), dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
+    strideAge += delta / 2.3;
+    const motionAge = moving ? strideAge : time;
+    animate(a, motionAge, moving, dx, who === "shane" ? 1.7 : 0);
+    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing, walking: moving, time, age: motionAge, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
     const hit = !room() && actors()[who]?.hit; if (hit) hit.position.set(a.position.x, 1.1, a.position.z);
     target = nearest();
     ring.visible = !asleep; ring.position.set(a.position.x, .075, a.position.z); ringMat.opacity = .6 + Math.sin(time * 2) * .1;

@@ -593,7 +593,7 @@ function interactAsPlayer(tool='hand',options={}) {
   if(!t)return false;
   if(['plot','litter'].includes(t.type)){
     const ok=lifeActivity.handle(tool,options);
-    if(!ok&&t.type==='plot'&&tool==='water'&&wateringStatus(state,t.index).seconds)notice('This crop has had a drink. Try the next one.');
+    if(!ok&&t.type==='plot'&&['hand','water'].includes(tool)&&wateringStatus(state,t.index).seconds)notice('This crop has had a drink. Try the next one.');
     else if(!ok&&t.type==='plot'&&state.plots[t.index].phase==='ready'&&M.barnBlocked(state))notice('Barn full. Sell stock or expand storage.');
     return ok;
   }
