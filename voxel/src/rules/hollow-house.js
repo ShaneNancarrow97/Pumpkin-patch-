@@ -1,4 +1,5 @@
-import { visitorWorldCount } from "./visitor-events.js";
+import { visitorTotalCount } from "./visitor-events.js";
+import { VISITOR_TOTAL_CAP } from "../content/visitor-events.js";
 import { VARIETY_COUNT } from "../content/pumpkin-varieties.js";
 // Pure attraction and foyer rules. The same visitors own their money and visit
 // phase indoors and outdoors; changing the camera never creates a new guest.
@@ -71,10 +72,10 @@ export function setHollowOpen(s, open) {
   // once a party's worth of time has passed and the lane has room for it.
   if (!open && Array.isArray(s.arriving)) s.arriving = s.arriving.filter(a => !a.forMaze);
   const t = Number.isFinite(s.time) ? s.time : 0;
-  if (opening && Array.isArray(s.arriving) && Array.isArray(s.visitors) && visitorReservations(s) + OPENING_PARTY <= visitorCapacity(s) && visitorWorldCount(s)+OPENING_PARTY<=70 && !(t - (h.partyAt ?? -Infinity) < PARTY_GAP)) {
+  if (opening && Array.isArray(s.arriving) && Array.isArray(s.visitors) && visitorTotalCount(s)+OPENING_PARTY<=VISITOR_TOTAL_CAP && !(t - (h.partyAt ?? -Infinity) < PARTY_GAP)) {
     h.partyAt = t;
     const party = s.nextParty++;
-    for (let place = 0; place < OPENING_PARTY; place++) s.arriving.push({ party, place, size: OPENING_PARTY, wait: 0.6 + place * 0.9, forMaze: true });
+    for (let place = 0; place < OPENING_PARTY; place++) s.arriving.push({ party, place, size: OPENING_PARTY, wait: 0.6 + place * 0.9, forMaze: true, bonus: true });
   }
   return true;
 }

@@ -80,6 +80,6 @@ test("two farm vehicle corridors have physical clearance and passengers remain o
 test("closing completes both already-paid rides while actual world capacity blocks bonus arrivals",()=>{
   const s=prepared(true);for(let i=0;i<12;i++)guest(s,i);advance(s,9);H.setHayrideOpen(s,false);advance(s,200);
   assert.equal(s.hayride.completed,12);assert.equal(s.hayride.ticketsSold,12);
-  const crowded=prepared(true);H.setHayrideOpen(crowded,false);crowded.time=200;crowded.visitors=Array.from({length:69},(_,id)=>({id,social:{phase:"chatting"}}));crowded.arriving=[];
+  const crowded=prepared(true);H.setHayrideOpen(crowded,false);crowded.time=200;crowded.visitors=Array.from({length:109},(_,id)=>({id,social:{phase:"chatting"}}));crowded.arriving=[];
   H.setHayrideOpen(crowded,true);assert.equal(crowded.arriving.length,0);
 });

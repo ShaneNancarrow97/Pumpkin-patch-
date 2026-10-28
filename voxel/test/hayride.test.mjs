@@ -127,10 +127,11 @@ test("opening advertises one bounded party, and closing/reopening cannot conjure
   H.setHayrideOpen(s, true); assert.equal(s.arriving.length, 1); H.setHayrideOpen(s, false); s.time = 120; H.setHayrideOpen(s, true);
   assert.equal(s.arriving.filter(a => a.forHayride).length, 2); assert.equal(s.nextParty, 102);
 });
-test("an opening party respects the global guest limit instead of stealing return spaces", () => {
+test("an opening party comes on top of the farm's guests, within the absolute world limit", () => {
   const s = prepared(); s.arriving = []; s.nextParty = 0; H.buyHayride(s);
-  s.visitors = Array.from({ length: 15 }, (_, id) => ({ id })); H.setHayrideOpen(s, true); assert.equal(s.arriving.length, 0);
-  H.setHayrideOpen(s, false); s.visitors.pop(); H.setHayrideOpen(s, true); assert.equal(s.arriving.length, 2);
+  s.visitors = Array.from({ length: 109 }, (_, id) => ({ id })); H.setHayrideOpen(s, true); assert.equal(s.arriving.length, 0);
+  H.setHayrideOpen(s, false); s.visitors.length = 15; H.setHayrideOpen(s, true); assert.equal(s.arriving.length, 2);
+  assert.ok(s.arriving.every((a) => a.forHayride && a.bonus), "the ride's own guests, on top of the farm's");
   assert.equal(H.restoreHayride({ ...s.hayride, partyAt: NaN }).partyAt, null);
 });
 

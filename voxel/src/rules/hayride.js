@@ -2,10 +2,10 @@ import { VARIETY_COUNT } from "../content/pumpkin-varieties.js";
 // Each paid convoy owns its manifest and clock; guests retain one finite purse.
 // The renderer reads phases and progress; it never takes money or dispatches.
 import { patchLevel } from "./levels.js";
-import { visitorWorldCount } from "./visitor-events.js";
-import { VISITOR_EVENT_WORLD_CAP } from "../content/visitor-events.js";
+import { visitorTotalCount } from "./visitor-events.js";
+import { VISITOR_TOTAL_CAP } from "../content/visitor-events.js";
 import { visitorCapacity, visitorReservations } from "./selling.js";
-import { HAYRIDE_PROPERTY, HAYRIDE_TIERS, HAYRIDE_SCARES, HAYRIDE_SCARE_BY_ID, HAYRIDE_OPERATIONS, HAYRIDE_ROUTE_UPGRADES } from "../content/hayride.js";
+import { HAYRIDE_PROPERTY, HAYRIDE_TIERS, HAYRIDE_SCARES, HAYRIDE_SCARE_BY_ID, HAYRIDE_OPERATIONS, HAYRIDE_ROUTE_UPGRADES, HAYRIDE_GUESTS } from "../content/hayride.js";
 import { hayrideGuestPose, hayrideReturnPlan } from "../content/hayride-layout.js";
 export * from "../content/hayride.js";
 const EPS = 1e-7, phases = new Set(["approach", "queue", "boarding", "riding", "unloading", "return"]);
@@ -67,9 +67,10 @@ export function setHayrideOpen(s, open) {
   const h = s.hayride, opening = open && !h.open; h.open = open;
   if (!open && Array.isArray(s.arriving)) s.arriving = s.arriving.filter(a => !a.forHayride);
   const now = Math.max(0, finite(s.time));
-  if (opening && Array.isArray(s.arriving) && Array.isArray(s.visitors) && visitorReservations(s) + HAYRIDE_OPENING_PARTY <= visitorCapacity(s) && visitorWorldCount(s) + HAYRIDE_OPENING_PARTY <= VISITOR_EVENT_WORLD_CAP && now - (h.partyAt ?? -Infinity) >= HAYRIDE_PARTY_GAP) {
+  if (opening && Array.isArray(s.arriving) && Array.isArray(s.visitors) && visitorTotalCount(s) + HAYRIDE_OPENING_PARTY <= VISITOR_TOTAL_CAP && now - (h.partyAt ?? -Infinity) >= HAYRIDE_PARTY_GAP) {
     h.partyAt = now; const party = count(s.nextParty); s.nextParty = party + 1;
-    for (let place = 0; place < HAYRIDE_OPENING_PARTY; place++) s.arriving.push({ party, place, size: HAYRIDE_OPENING_PARTY, wait: .6 + place * .9, forHayride: true });
+    for (let place = 0; place < HAYRIDE_OPENING_PARTY; place++) s.arriving.push({ party, place, size: HAYRIDE_OPENING_PARTY, wait: .6 + place * .9, forHayride: true, bonus: true });
+    h.guestTimer = hayrideGuestGap(s);
   }
   return true;
 }
@@ -141,7 +142,7 @@ function settle(s, events) {
     if(m.phase==="approach"&&m.elapsed+EPS>=m.approachSeconds){m.phase="queue";m.elapsed=0;}
     if(m.phase==="queue"&&m.waited+EPS>=HAYRIDE_PROPERTY.queuePatience){sendBack(s,v,true,waitingPoses.get(v.id));continue;}
     if(m.phase==="boarding"&&m.elapsed+EPS>=hayrideBoardingSeconds(s)&&!boardHayrideGuest(s,v,events))sendBack(s,v,true,waitingPoses.get(v.id));
-    if(m.phase==="return"&&m.elapsed+EPS>=m.returnSeconds){m.done=true;m.elapsed=m.returnSeconds;m.wentHome=m.fromStall||m.fleeing;m.fledHome=m.fleeing;m.justArrived=!m.wentHome;}
+    if(m.phase==="return"&&m.elapsed+EPS>=m.returnSeconds){m.done=true;m.elapsed=m.returnSeconds;m.wentHome=m.fromStall;m.fledHome=m.fromStall&&m.fleeing;m.justArrived=!m.wentHome;}
   }
   hayrideConvoys(s).forEach((c,index)=>{
     if(c.phase==="departing"&&c.elapsed+EPS>=HAYRIDE_PROPERTY.departureSeconds){c.phase="circuit";c.elapsed=0;}
@@ -171,8 +172,26 @@ function settle(s, events) {
 }
 // The next event of either convoy bounds the slice; clocks stay deterministic
 // across frame sizes and neither vehicle can charge another's passengers.
+// The ride's own parties, on top of the farm's visitors (HAYRIDE_GUESTS).
+export const hayrideGuestGap = s => Math.max(HAYRIDE_GUESTS.quickest, HAYRIDE_GUESTS.seconds / (1 + hayrideScareRating(s) / 50) / hayrideFleetSize(s));
+export const hayridePartySize = s => HAYRIDE_GUESTS.sizes[Math.max(0, Math.min(HAYRIDE_GUESTS.sizes.length, count(s?.hayride?.tier, 3)) - 1)];
+function inviteRiders(s, dt, events) {
+  const h = s.hayride;
+  if (!h.open || !Array.isArray(s.arriving) || !Array.isArray(s.visitors)) return;
+  h.guestTimer = finite(h.guestTimer) - dt;
+  for (let n = 0; n < 4 && h.guestTimer <= EPS; n++) {
+    const size = hayridePartySize(s), o = hayrideOccupancy(s), coming = s.arriving.filter(a => a.forHayride).length;
+    // A full queue, or a farm at its absolute limit, holds the next party back.
+    if (o.queue + o.approach + coming + size > hayrideConfig(s).queueCapacity || visitorTotalCount(s) + size > VISITOR_TOTAL_CAP) { h.guestTimer = 0; return; }
+    h.guestTimer += hayrideGuestGap(s);
+    const party = count(s.nextParty); s.nextParty = party + 1; h.guestsInvited = count(h.guestsInvited) + size;
+    for (let place = 0; place < size; place++) s.arriving.push({ party, place, size, wait: .6 + place * .9, forHayride: true, bonus: true });
+    events.push({ type: "hayride-party", party, size });
+  }
+}
 export function updateHayride(s,dt,events=[]){
   if(s.paused||!hayrideReady(s)||!Number.isFinite(dt)||dt<=0)return;
+  inviteRiders(s,dt,events);
   let remaining=dt;
   for(let step=0;step<2048;step++){
     const runs=hayrideConvoys(s).map(c=>c.runId).join("|");settle(s,events);if(hayrideConvoys(s).map(c=>c.runId).join("|")!==runs)settle(s,events);
@@ -203,7 +222,7 @@ export function restoreHayride(raw) {
   h.tier = Math.max(1, count(raw.tier, HAYRIDE_TIERS.length)); h.open = raw.open === true; h.fleet=count(raw.fleet,1);h.dispatch=count(raw.dispatch,2);h.routeLevel=count(raw.routeLevel,2);
   const baseTier=HAYRIDE_TIERS[h.tier-1],t={...baseTier,circuitSeconds:baseTier.circuitSeconds+h.routeLevel*20}; h.ticketPrice = Math.round(bounded(raw.ticketPrice, t.minTicket, t.maxTicket, 8));
   for (const k of ["invested", "ticketsSold", "completed", "missed", "runHome", "departures", "nextVisit", "nextRun"]) h[k] = count(raw[k]);
-  h.nextRun = Math.max(1, h.nextRun); h.income = bounded(raw.income, 0, 1e12); h.partyAt = Number.isFinite(raw.partyAt) && raw.partyAt >= 0 ? Math.min(1e12, raw.partyAt) : null;
+  h.nextRun = Math.max(1, h.nextRun); h.income = bounded(raw.income, 0, 1e12); h.guestTimer = bounded(raw.guestTimer, 0, 600, 0); h.guestsInvited = count(raw.guestsInvited); h.partyAt = Number.isFinite(raw.partyAt) && raw.partyAt >= 0 ? Math.min(1e12, raw.partyAt) : null;
   h.haunts.owned = [...new Set((Array.isArray(raw.haunts?.owned) ? raw.haunts.owned : []).filter(id => HAYRIDE_SCARE_BY_ID[id]?.tier <= h.tier))];
   h.haunts.active = [...new Set((Array.isArray(raw.haunts?.active) ? raw.haunts.active : []).filter(id => h.haunts.owned.includes(id)))];
   const receipts = new Set();

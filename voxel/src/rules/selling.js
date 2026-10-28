@@ -102,7 +102,11 @@ export const onThePath = (s) => s.visitors.filter((v) => !chatting(v) && (!v.fes
 // Sandy's stand. Otherwise simultaneous returns can overflow a full path.
 // Guests chatting in the meadow have finished their visit and never come back
 // to the path, so they leave room for new arrivals (meadow-chat.js caps them).
-export const visitorReservations = (s) => s.visitors.filter((v) => !chatting(v)).length + s.arriving.length;
+// Guests out on the hayride or in the Hollow House leave their place on the
+// farm free while they're away, and the attractions' own guests (bonus) never
+// take one: rides add visitors rather than borrowing them from the stall.
+const awayOnRide = (v) => v.bonus || (v.hayride && !v.hayride.done) || (v.hollow && !v.hollow.done && !v.hollow.fledHome);
+export const visitorReservations = (s) => s.visitors.filter((v) => !chatting(v) && !awayOnRide(v)).length + s.arriving.filter((a) => !a.bonus).length;
 export const stallPatience = (s) => PATIENCE[lv(s, "cocoa")];
 export const mugPrice = (s) => MUG[lv(s, "cocoa")];
 // One shopper in four is a regular with a loyalty card, then one in two. The
@@ -211,6 +215,7 @@ export function updateStall(s, dt, events) {
     if (a.eventType) finishVisitorEventArrival(s, a);
     if (a.forMaze) { v.forMaze = true; v.festival = null; }                     // sent by the maze opening: straight there
     if (a.forHayride) { v.forHayride = true; v.festival = null; }
+    if (a.bonus) v.bonus = true;                                               // an attraction's own guest: never takes a farm place
     s.visitors.push(v);
     events.push({ type: "arrival", visitor: v.id, party: a.party, place: a.place, size: a.size });
   }

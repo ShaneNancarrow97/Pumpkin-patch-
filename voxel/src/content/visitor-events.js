@@ -5,6 +5,8 @@ export const VISITOR_EVENT_UPGRADES = Object.freeze([
 ]);
 export const VISITOR_EVENT_BY_ID = Object.freeze(Object.assign(Object.create(null), Object.fromEntries(VISITOR_EVENT_UPGRADES.map(u => [u.id, u]))));
 export const VISITOR_EVENT_WORLD_CAP = 70;
+// Everyone at once, the attractions' own guests included: the hard ceiling.
+export const VISITOR_TOTAL_CAP = 110;
 export const VISITOR_EVENT_BURST = 20;
 export const VISITOR_EVENT_GAP = .1;
 export const COURTIER_KINDS = Object.freeze([11, 12, 13, 14]);

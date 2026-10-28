@@ -15,7 +15,7 @@ function prepared() {
 function opened() {
   const s = prepared();
   assert.ok(M.buyHayride(s)); assert.ok(M.setHayrideOpen(s, true));
-  s.arriving = [];
+  s.arriving = []; s.hayride.guestTimer = 1e6;                                    // no parties of its own unless a test asks
   return s;
 }
 function guest(s, id = 700, options = {}) {
@@ -90,15 +90,16 @@ test("a rider returns to the stall with the same purse and can buy a real pumpki
   assert.equal(s.stock[0], 99); assert.equal(s.hayride.receipts[0].visitor, receipt.visitor);
 });
 
-test("riders keep their reserved outdoor slots, so a full farm cannot spawn over its capacity", () => {
-  const s = opened(); [730, 731, 732, 733].forEach(id => guest(s, id)); advance(s, 12);
+test("riders leave their place on the farm free while they're out, so the stall keeps its visitors coming", () => {
+  const s = opened(); s.visitorUpgrades.party = 0; [730, 731, 732, 733].forEach(id => guest(s, id)); advance(s, 12);
   const cap = M.visitorCapacity(s);
   for (let i = s.visitors.length; i < cap; i++) s.visitors.push({ id: 800 + i, kind: 0, profile: 0, age: 0,
     budget: 40, originalBudget: 40, basketLimit: 1, preferred: [0], basket: [], bought: null,
     outcome: "shopping", leaveAt: null, spot: i % 8, needs: M.freshGuestNeeds(800 + i),
     festival: { done: true }, hollowConsidered: true, hayrideConsidered: true, mazeAfterConsidered: true, hayrideAfterConsidered: true });
-  s.visitorTimer = 0; M.update(s, .1);
-  assert.equal(M.visitorReservations(s), cap); assert.equal(s.arriving.length, 0);
+  assert.equal(M.visitorReservations(s), cap - 4, "the four riders take no place while they're away");
+  const before = s.visitors.length; s.visitorTimer = 0; M.update(s, .1);
+  assert.equal(s.visitors.length + s.arriving.length, before + 1, "a new neighbour sets off for the stall");
   assert.equal(s.hayride.convoy.manifest.length, 4);
 });
 
@@ -111,4 +112,30 @@ test("opening sends real guests through the ordinary selling pipeline without in
     const v = s.visitors.find(v => v.id === receipt.visitor);
     assert.ok(v?.forHayride); assert.equal(v.budget, v.originalBudget - receipt.amount);
   }
+});
+
+test("the hayride brings its own parties while its queue has room, and they shop after their ride", () => {
+  const s = opened(); s.stock = [500, 0, 0, 0]; s.hayride.guestTimer = 0;
+  const farmPlaces = M.visitorReservations(s);
+  M.update(s, .1);
+  const invited = s.arriving.filter((a) => a.forHayride);
+  assert.ok(invited.length >= 2 && invited.every((a) => a.bonus), "a party of the ride's own guests sets off");
+  assert.equal(M.visitorReservations(s), farmPlaces, "they never take a place on the farm");
+  for (let i = 0; i < 3000; i++) {
+    M.update(s, .1);
+    const o = M.hayrideOccupancy(s), coming = s.arriving.filter((a) => a.forHayride).length;
+    assert.ok(o.queue + o.approach + coming <= M.hayrideConfig(s).queueCapacity, "never more than the queue can hold");
+  }
+  assert.ok(s.hayride.ticketsSold >= 4, "the ride sells its own tickets");
+  const riders = new Set(s.hayride.receipts.map((r) => r.visitor));
+  assert.ok(s.stall.receipts.some((r) => riders.has(r.visitor)), "riders go on to buy pumpkins at the stall");
+});
+
+test("a rider who came for the ride goes on to the stall even after a fright", () => {
+  const s = opened(), v = guest(s, 740, { budget: 60, originalBudget: 60 });
+  s.stock = [100, 0, 0, 0]; v.hayride.bravery = 0; s.hayride.tier = 3; s.hayride.haunts = { owned: M.HAYRIDE_SCARES.map((p) => p.id), active: M.HAYRIDE_SCARES.map((p) => p.id) };
+  advance(s, 160);
+  assert.equal(v.hayride.fleeing, true, "the ride frightened them");
+  assert.ok(!v.hayride.wentHome, "they don't run straight home");
+  assert.ok(s.stall.receipts.some((r) => r.visitor === v.id), "they buy a pumpkin on the way out");
 });

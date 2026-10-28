@@ -49,7 +49,7 @@ export function hayrideSheets(ui) {
 
   function reputation(s) {
     const rating = number(H.hayrideScareRating(s)), appeal = number(H.hayrideFootfallBonus(s) * 100);
-    return `<section class="hayride-reputation" aria-label="Hayride appeal"><div><span>Scare factor <b>${rating}<small>/100</small></b></span><span class="hayride-appeal">${appeal ? `+${appeal}% footfall` : ride(s).open ? "Build a reputation" : "Open to attract guests"}</span></div><meter min="0" max="100" value="${rating}" aria-label="Scare factor ${rating} out of 100"></meter><p>Stronger scares draw a crowd. Frightened guests may head home after their ride.</p></section>`;
+    return `<section class="hayride-reputation" aria-label="Hayride appeal"><div><span>Scare factor <b>${rating}<small>/100</small></b></span><span class="hayride-appeal">${appeal ? `+${appeal}% footfall` : ride(s).open ? "Build a reputation" : "Open to attract guests"}</span></div><meter min="0" max="100" value="${rating}" aria-label="Scare factor ${rating} out of 100"></meter><p>The hayride brings its own guests up the lane, on top of the farm’s. After the ride they shop at the stall, however frightened. Stronger scares draw a bigger crowd.</p></section>`;
   }
 
   function nextUpgrade(s) {

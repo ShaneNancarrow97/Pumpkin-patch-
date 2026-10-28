@@ -3,7 +3,10 @@ import { VISITOR_EVENT_UPGRADES, VISITOR_EVENT_BY_ID, VISITOR_EVENT_GAP, COURTIE
 import { patchLevel } from "./levels.js";
 
 const whole = n => Number.isSafeInteger(n) && n >= 0 ? Math.min(1e9, n) : 0;
-export const visitorWorldCount = s => (s.visitors?.length ?? 0) + (s.arriving?.length ?? 0);
+// The farm's own guests. Guests out on the hayride, and the attractions' own
+// guests (bonus), are bounded by their attraction instead, and by the total.
+export const visitorWorldCount = s => (s.visitors ?? []).filter(v => !v.bonus && !(v.hayride && !v.hayride.done)).length + (s.arriving ?? []).filter(a => !a.bonus).length;
+export const visitorTotalCount = s => (s.visitors?.length ?? 0) + (s.arriving?.length ?? 0);
 const count = n => Number.isFinite(n) && n >= 0 ? Math.min(1e9, n) : 0;
 const channel = id => ({ level: 0, enabled: true, remaining: VISITOR_EVENT_BY_ID[id].seconds, event: 0, pending: null });
 export const freshVisitorEvents = () => ({ seed: 0x4d69646e, rush: channel("rush"), vip: channel("vip"), ledger: { rushGroups: 0, rushGuests: 0, vipGroups: 0, vipGuests: 0 } });

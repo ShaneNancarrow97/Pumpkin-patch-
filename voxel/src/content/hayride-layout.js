@@ -89,7 +89,8 @@ export function hayrideReturn(place=COUNTER_FRONT) { return [...HAYRIDE_UNLOAD_P
 // Only the farm gate moves with new plots; woodland platforms stay where built.
 const farmRoute=(route,s)=>route.map(p=>p[0]===-3&&p[1]===GATE_Z?extendFarmRoute([p],s)[0]:[...p]);
 const returnRoute=(s,v)=>{
-  const route=v.hayride.fromStall||v.hayride.fleeing?HAYRIDE_HOME_RETURN:hayrideReturn(counterPlace(v.spot));
+  // A rider who came for the ride goes on to the stall, however frightened.
+  const route=v.hayride.fromStall?HAYRIDE_HOME_RETURN:hayrideReturn(counterPlace(v.spot));
   const bay=HAYRIDE_FLEET_BAY;
   return farmRoute(v.hayride.berth===1?[[bay.rearEntry.x,bay.rearEntry.z],[bay.unload.x,bay.unload.z],[bay.unload.x,38],...route.slice(3)]:route,s);
 };
