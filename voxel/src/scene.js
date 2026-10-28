@@ -877,6 +877,8 @@ export function createScene(canvas, state, hooks) {
     refreshHayride() { hayrideWorld.sync(); frame(); },
     refreshCooking() { cookingWorld.sync(); places.refreshFood?.(); wilds.sync(); frame(); },
     focusCooking() { if (view.place) return; const p = COOKING_SITE.focus; view.x = p.x; view.z = p.z; view.zoom = canvas.clientWidth < 740 ? 2 : p.zoom ?? 3.2; frame(); },
+    // For screenshots and QA: put the farm camera anywhere.
+    setView(x, z, zoom = view.zoom) { view.x = x; view.z = z; view.zoom = zoom; frame(); },
     focusHayride() { const p = state.hayride.purchased ? HAYRIDE_SITE.focus : { x: -4, z: 13, zoom: 2 }; view.x = p.x; view.z = p.z; view.zoom = p.zoom; frame(); },
     refreshFoyer() { if (view.place === "foyer") foyerView.sync(); },
     previewFoyerDecor(data) { foyerView.preview(data); },

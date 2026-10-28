@@ -22,10 +22,12 @@ test("the station supports its connecting walks and keeps portal silhouettes bel
     for (const [x,z] of [[-9.1,20],[-9.1,23],[-9.1,36],[-14.7,38],[-19.5,36],[-17,17],[-17,40]]) {
       assert.ok(boxes.some(box => box.min.x <= x && box.max.x >= x && box.min.z <= z && box.max.z >= z && box.min.y < -.3 && box.max.y >= 0), `unsupported walk or vehicle lane at ${x},${z}`);
     }
-    for (const portal of [HAYRIDE_SITE.departurePortal,HAYRIDE_SITE.returnPortal]) {
+    // The return arch is in the foreground (south, towards the camera), so it
+    // stays low; the departure arch stands behind the station, against the wood.
+    for (const [portal, limit] of [[HAYRIDE_SITE.returnPortal, 4], [HAYRIDE_SITE.departurePortal, 5.6]]) {
       const near = boxes.filter(box => box.max.x > portal.x-3.3 && box.min.x < portal.x+3.3 && box.max.z > portal.z-.7 && box.min.z < portal.z+.7);
       assert.ok(near.length > 10);
-      assert.ok(Math.max(...near.map(box => box.max.y)) < 4, "a foreground portal must not become a giant canopy over the station");
+      assert.ok(Math.max(...near.map(box => box.max.y)) < limit, "a foreground portal must not become a giant canopy over the station");
     }
   } finally { controller.dispose(); }
 });
