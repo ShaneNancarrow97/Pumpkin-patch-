@@ -96,5 +96,5 @@ test("fresh pumpkins and the wanted variety survive a reload; nonsense does not"
   assert.deepEqual(odd.wanted, M.freshWanted());
   raw.fresh = [[], [[100, 3]], [], []]; assert.equal(M.freshCount(M.restoreState(raw), 1), 0, "long since picked");
   delete raw.fresh; delete raw.wanted; const old = M.restoreState(raw);
-  assert.deepEqual(old.fresh, [[], [], [], []]); assert.deepEqual(old.wanted, M.freshWanted());
+  assert.deepEqual(old.fresh, [[], [], [], [], []]); assert.deepEqual(old.wanted, M.freshWanted());
 });

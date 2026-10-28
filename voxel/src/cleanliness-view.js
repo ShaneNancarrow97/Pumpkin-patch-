@@ -1,0 +1,46 @@
+// One painted caretaker and a bounded pool of small voxel litter props.
+import * as THREE from "three";
+import { Voxels } from "./voxels.js";
+import { LEAN, STRETCH } from "./world.js";
+import { crispen, crispTexture } from "./crisp-sprites.js";
+import { JANITOR_META } from "./janitor-meta.js";
+import janitorURL from "../assets/hettie-janitor.webp";
+import iconURL from "../assets/hettie-janitor-icon.webp";
+export const janitorIconURL=iconURL;
+
+function litterModel(kind) {
+  const v=new Voxels();
+  if(kind===0) { // A discarded cocoa cup, in Sandy's plum and cream.
+    v.box(-.11,0,-.10,.22,.19,.2,0x6f3f58);v.box(-.125,.19,-.115,.25,.04,.23,0xe8d6b0);v.box(-.075,.04,-.103,.15,.07,.01,0xdba85e);
+  } else if(kind===1) { // A folded paper napkin and its crumpled corners.
+    v.box(-.16,0,-.12,.32,.025,.24,0xd2c1a0);v.box(-.12,.025,-.05,.15,.035,.12,0xe9d9bc);v.box(.06,.025,.02,.09,.055,.07,0xbba682);
+  } else { // A striped snack wrapper, rather than an unrecognisable cube.
+    v.box(-.2,0,-.09,.4,.035,.18,0xa85531);v.box(-.12,.035,-.08,.06,.025,.16,0xe3bc73);v.box(.02,.035,-.08,.06,.025,.16,0xe3bc73);v.box(-.23,0,-.06,.07,.05,.12,0x74402d);v.box(.17,0,-.06,.07,.05,.12,0x74402d);
+  }
+  return v.build();
+}
+function frameGeometry(f) {
+  const u=2.3/JANITOR_META.height,g=new THREE.PlaneGeometry(f.w*u,f.h*u);g.translate((f.w/2-f.ax)*u,(f.ay-f.h/2)*u,0);
+  const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setXY(i,(f.x+uv.getX(i)*f.w)/JANITOR_META.w,1-(f.y+(1-uv.getY(i))*f.h)/JANITOR_META.h);return g;
+}
+export function createCleanlinessView({scene,state,warm=()=>{}}) {
+  const group=new THREE.Group();group.name="Farm cleanliness";scene.add(group);
+  const templates=[0,1,2].map(litterModel),pieces=new Map(),frames={walk:JANITOR_META.walk.map(frameGeometry),sweep:JANITOR_META.sweep.map(frameGeometry)};
+  const texture=crispTexture(new THREE.TextureLoader().load(janitorURL,t=>warm(t)));texture.colorSpace=THREE.SRGBColorSpace;
+  const material=crispen(new THREE.MeshStandardMaterial({map:texture,alphaTest:.5,roughness:1,metalness:0,emissive:0xffffff,emissiveMap:texture,emissiveIntensity:.22}));
+  const janitor=new THREE.Group(),lean=new THREE.Group(),mesh=new THREE.Mesh(frames.walk[0],material);lean.rotation.x=-LEAN;lean.scale.y=STRETCH;lean.add(mesh);janitor.add(lean);group.add(janitor);
+  mesh.castShadow=true;mesh.customDepthMaterial=new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking,map:texture,alphaTest:.5});
+  let age=0,last={x:31.4,z:10.8},facing=1;
+  function update(dt,visible=true) {
+    group.visible=visible;if(!visible)return;age+=Math.max(0,dt);const c=state.cleanliness,litter=c?.litter??[],ids=new Set(litter.map(p=>p.id));
+    for(const [id,m]of pieces)if(!ids.has(id)){group.remove(m);pieces.delete(id);}
+    for(const p of litter){let m=pieces.get(p.id);if(!m){m=templates[p.kind%3].clone(true);m.userData.litterId=p.id;m.rotation.y=Number(p.id.slice(7))*1.7;pieces.set(p.id,m);group.add(m);}m.position.set(p.x,.085,p.z);}
+    janitor.visible=!!c?.janitor;if(!janitor.visible)return;
+    const p=c.janitorPosition??last,dx=p.x-last.x,dz=p.z-last.z,moving=Math.hypot(dx,dz)>.0001;
+    if(Math.abs(dx)>.0001)facing=dx<0?-1:1;
+    janitor.position.set(p.x,.08,p.z);janitor.scale.x=facing;
+    const list=c.sweep>0?frames.sweep:frames.walk;mesh.geometry=list[c.sweep>0||moving?Math.floor(age*(c.sweep>0?5:6))%list.length:1];last={...p};
+  }
+  function dispose(){scene.remove(group);const geometries=new Set(),materials=new Set();for(const t of templates)t.traverse(n=>{if(n.isMesh){geometries.add(n.geometry);for(const m of Array.isArray(n.material)?n.material:[n.material])materials.add(m);}});for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const list of Object.values(frames))for(const g of list)g.dispose();material.dispose();mesh.customDepthMaterial.dispose();texture.dispose();}
+  return {group,update,dispose};
+}

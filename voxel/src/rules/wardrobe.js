@@ -1,11 +1,12 @@
 // Adapt the main wardrobe here, so extra voxel art never changes its catalogue.
-import { buyCostume as buyOriginal, costumeCatalog as originals, freshWardrobe, restoreWardrobe as restoreOriginals, wearCostume as wearOriginal } from "../../../src/core/costume-model.mjs";
+import { buyCostume as buyOriginal, costumeCatalog as originals, freshWardrobe as freshOriginal, restoreWardrobe as restoreOriginals, wearCostume as wearOriginal } from "../../../src/core/costume-model.mjs";
 import { EXTRA_COSTUMES } from "../costume-expansion.js";
 
-export { freshWardrobe };
-export const costumeCatalog = [...originals, ...EXTRA_COSTUMES];
+const WHEELS = { id: "natalie-wheelchair", character: "natalie", name: "Purple wheels & dungarees", description: "Purple wheelchair, plaits and stylish dungarees.", price: 0, collection: "everyday" };
+export const freshWardrobe = () => { const w = freshOriginal(); w.owned.push(WHEELS.id); return w; };
+export const costumeCatalog = [...originals, ...EXTRA_COSTUMES, WHEELS];
 export const costumeById = Object.fromEntries(costumeCatalog.map((item) => [item.id, item]));
-const extras = Object.fromEntries(EXTRA_COSTUMES.map((item) => [item.id, item]));
+const extras = Object.fromEntries([...EXTRA_COSTUMES, WHEELS].map((item) => [item.id, item]));
 const extra = (id) => typeof id === "string" && Object.hasOwn(extras, id) ? extras[id] : null;
 
 // Preserve the same purchase and pause rules for the extra costumes.
@@ -28,6 +29,7 @@ export function wearCostume(s, id) {
 // New IDs fit the existing saved wardrobe; old and malformed saves still load.
 export function restoreWardrobe(raw) {
   const wardrobe = restoreOriginals(raw);
+  if (!wardrobe.owned.includes(WHEELS.id)) wardrobe.owned.push(WHEELS.id);
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return wardrobe;
   if (Array.isArray(raw.owned)) wardrobe.owned = [...new Set([...wardrobe.owned, ...raw.owned.filter((id) => extra(id))])];
   for (const who of ["natalie", "shane"]) {

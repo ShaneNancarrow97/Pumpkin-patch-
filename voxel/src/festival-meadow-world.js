@@ -12,7 +12,7 @@ import { DROP } from "./content/farm-layout.js";
 // Everything uses the existing voxel palette and two material batches.
 export function cocoaKiosk(level) {
   const v = new Voxels(), r = seeded(716 + level), wood = 0x68402b, dark = 0x30212b, brass = 0xc39b61;
-  const w = level === 3 ? 5.8 : 4.8, left = -w / 2, right = w / 2;
+  const w = level >= 5 ? 7.2 : level >= 4 ? 6.6 : level >= 3 ? 5.8 : 4.8, left = -w / 2, right = w / 2;
   v.box(left - .2, 0, -1.5, w + .4, .18, 3.4, 0x625161);
   for (let x = left; x < right; x += .24) v.box(x, .18, -1.45, .22, .1, 3.25, vary(wood, .08, r));
   // Rear cupboard, raised panels and glass-fronted cocoa jars.
@@ -60,7 +60,38 @@ export function cocoaKiosk(level) {
     v.box(-1.9, 3.9, -1.1, .5, .95, .5, 0x564451); v.box(-2, 4.8, -1.2, .7, .14, .7, brass);
     for (let i = 0; i < 9; i++) v.block(left + i * w / 8, 3.19 - Math.sin(i / 8 * Math.PI) * .14, 1.98, .08, .11, .08, i % 2 ? 0xcba2ed : 0xffd28b, true);
   }
-  if (level === 3) for (const x of [left - .1, right + .1]) { v.block(x, .2, -1.2, .34, 4.2, .34, dark); v.block(x, 4.4, -1.2, .6, .14, .6, brass); }
+  if (level >= 3) for (const x of [left - .1, right + .1]) { v.block(x, .2, -1.2, .34, 4.2, .34, dark); v.block(x, 4.4, -1.2, .6, .14, .6, brass); }
+  if (level >= 4) {
+    for (const x of [left + .45, right - .45]) {
+      v.block(x, 2.86, -.25, .48, .6, .1, 0x413246);v.block(x, 2.94, -.18, .33, .4, .035, 0xd3aa63);
+      v.block(x, 3.05, -.155, .18, .18, .02, 0x8e6a9f);v.block(x, 3.12, -.14, .1, .045, .015, 0xf5d5a1, true);
+    }
+    for (let i = 0; i < 5; i++) v.block(-.6+i*.3, 3.64+(.6-Math.abs(-.6+i*.3))*.3, 1.98, .13, .18, .09, i%2 ? 0xd7ba78 : 0x6a4974);
+  }
+  if (level >= 5) {
+    for (let x=left+.2;x<right;x+=.32) {v.block(x,.85,1.515,.13,.36,.025,0xc79b56);v.block(x,1.18,1.53,.09,.06,.015,0x6d4f37);}
+    for (const x of [left+.38,right-.38]) {v.block(x,2.0,-.78,.38,.64,.36,0x443147);v.block(x,2.1,-.57,.27,.36,.025,0xf0cd85,true);v.block(x,2.64,-.78,.48,.1,.46,brass);}
+  }
+  return v.build();
+}
+
+// A hired helper floats behind the counter, with no extra point light.
+function ghostBarista() {
+  const v = new Voxels();
+  for (let i=0;i<4;i++) v.block(0,.08+i*.16,0,.23+i*.075,.18,.29,0xa3b5aa);
+  v.block(0,.74,0,.38,.38,.32,0xc2d0ba);v.block(0,1.12,0,.46,.1,.39,0x583e68);
+  v.block(0,1.22,0,.32,.19,.31,0x7f6691);v.block(0,1.22,.17,.32,.04,.015,0xc59a5f);
+  for(const x of [-.09,.09])v.block(x,.95,.17,.045,.055,.025,0xe3c78b,true);
+  for(const x of [-.34,.34])v.block(x,.59,.04,.19,.13,.32,0xa3b5aa);
+  v.block(0,.38,.17,.3,.34,.035,0xe3d9b9);v.block(0,.7,.18,.29,.07,.035,0x67506b);
+  return v.build();
+}
+function courierCrate() {
+  const v=new Voxels();v.block(0,0,0,.68,.46,.56,0x755435);
+  for(const y of [.08,.34])v.block(0,y,.29,.72,.055,.045,0xa27b4b);
+  for(const x of [-.28,.28])v.block(x,.02,.3,.055,.42,.045,0x4c3627);
+  v.block(0,.46,0,.72,.07,.6,0x967144);v.block(0,.16,.315,.27,.19,.018,0xe1d1ae);
+  for(const x of [-.055,.055])v.block(x,.26,.329,.035,.035,.012,0x58436a);
   return v.build();
 }
 
@@ -118,7 +149,7 @@ export function chatDressing(level, comforts = []) {
   }
   if (has("mugs") && level >= 1) {
     // Hung under the front of the awning, at the end of the counter away from Sandy.
-    const front = MEADOW.stand[1] + 1.95, x0 = MEADOW.stand[0] - (level === 3 ? 2.6 : 2.1);
+    const front = MEADOW.stand[1] + 1.95, x0 = MEADOW.stand[0] - (level >= 3 ? 2.6 : 2.1);
     for (let i = 0; i < 5; i++) {
       const x = x0 + i * .26, y = 2.78 - (i % 2) * .08;
       v.block(x, y + .14, front, .012, 3.22 - y - .14, .012, 0x3a3030);
@@ -187,7 +218,7 @@ function disposeObject(object) {
 
 export function createFestivalWorld({ scene, state, world, signBoard, createCashier }) {
   const root = new THREE.Group(); scene.add(root);
-  let builtLand = false, tier = -1, booth = null, cups = [], specials = [], pickables = [], marker = null, courier = null, sandy = null, chatProps = null, dressed = "";
+  let builtLand = false, tier = -1, booth = null, cups = [], specials = [], pickables = [], marker = null, courier = null, sandy = null, barista = null, crate = null, chatProps = null, dressed = "";
   const makeHit = (x, y, z, w, h, d, type) => { const hit = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(x, y, z); hit.userData = { type }; root.add(hit); pickables.push(hit); };
   const preview = new Voxels();
   preview.block(37, 0, 20, .14, 1.8, .14, 0x423020); preview.block(37, 1.1, 20, 1.4, .75, .12, 0x68452f);
@@ -230,6 +261,10 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
   function sync() {
     if (state.festival.meadow && !builtLand) buildLand();
     if (!builtLand) return;
+    if (state.festival.cocoa.barista && !barista) { barista=ghostBarista();barista.position.set(46.8,1.55,17.45);root.add(barista); }
+    if (state.festival.cocoa.bulkCourier && !crate) { crate=courierCrate();crate.position.set(43.7,0,20.1);root.add(crate); }
+    if(barista)barista.visible=!!state.festival.cocoa.barista;
+    if(crate)crate.visible=!!state.festival.cocoa.bulkCourier;
     const comforts = state.festival.comforts ?? [], key = state.festival.cocoa.level + ":" + comforts.join(",");
     if (key !== dressed) {
       dressed = key;
@@ -250,8 +285,8 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
       }
     }
     if (tier && !sandy && createCashier) { sandy = createCashier(); sandy.group.position.set(48.1, 1.55, 19.35); root.add(sandy.group); }
-    for (const [id, needed, x] of [["flake", 2, -.65], ["deluxe", 2, -1.15], ["midnight", 3, -.15], ["smores", 3, .45]]) if (tier >= needed) {
-      const prop = cocoaProp(id); prop.position.set(x, 1.55, 1.16); booth.add(prop); specials.push({ prop, id });
+    for (const [id, needed, x, z=1.16] of [["flake", 2, -.65], ["deluxe", 2, -1.15], ["midnight", 3, -.15], ["smores", 3, .45], ["ghost-wafer", 4, -2.7], ["caramel-flake", 4, 2.75], ["smores-platter", 5, 2.6,.45]]) if (tier >= needed) {
+      const prop = cocoaProp(id); prop.position.set(x, 1.55, z); booth.add(prop); specials.push({ prop, id });
     }
     booth.position.set(...[MEADOW.stand[0], 0, MEADOW.stand[1]]); root.add(booth);
   }
@@ -259,7 +294,7 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
   steamGeo.setAttribute("position", new THREE.BufferAttribute(steam, 3));
   const wisps = new THREE.Points(steamGeo, new THREE.PointsMaterial({ color: 0xe9d8c7, size: .1, transparent: true, opacity: .38, depthWrite: false, toneMapped: false })); root.add(wisps);
   sync();
-  return { get pickables() { return pickables; }, get status() { return { cashier: !!sandy, ready: sandy?.ready ?? false, frame: sandy?.group.userData.frame ?? null, tier, displayed: specials.filter(p => p.prop.visible).map(p => p.id) }; }, sync,
+  return { get pickables() { return pickables; }, get status() { return { cashier: !!sandy, ready: sandy?.ready ?? false, frame: sandy?.group.userData.frame ?? null, tier, barista: !!barista?.visible, bulkCrate: !!crate?.visible, displayed: specials.filter(p => p.prop.visible).map(p => p.id) }; }, sync,
     tick(time) {
       // The courier is a moth (moth.js): it flutters about the booth and rests on the free end of Sandy's counter.
       if (state.festival.cocoa.courier && !courier) {
@@ -270,7 +305,8 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
       sync(); const c = state.festival.cocoa;
       if (sandy) { sandy.group.visible = c.level > 0; sandy.tick(time, c.level, state.visitors.some(v => v.festival?.phase === "serving" || v.social?.phase === "cocoa-serving") || state.time - c.lastSaleAt < 1.1); }
       for (const n of chatProps?.notes ?? []) { const t = (time * .45 + n.userData.phase) % 1, [x, y, z] = n.userData.base; n.position.set(x - t * .5 + Math.sin(t * 9) * .08, y + t * 1.1, z); n.scale.setScalar(Math.sin(t * Math.PI) * 1.2 + .01); }
-      if (chatProps?.flames) { const f = chatProps.flames; f.scale.set(1 + Math.sin(time * 9) * .08, .85 + Math.abs(Math.sin(time * 7.3)) * .35 + Math.sin(time * 13) * .05, 1 + Math.cos(time * 8) * .08); f.rotation.y = time * .7; } cups.forEach((m, i) => m.visible = c.stock > i); specials.forEach(({ prop, id }) => prop.visible = c.extras[id].stock > 0); wisps.visible = !!c.level && c.open && (c.stock > 0 || ["flake", "deluxe", "midnight"].some(id => c.extras[id].stock > 0));
+      if (barista) {barista.position.y=1.55+Math.sin(time*2)*.05;barista.rotation.y=Math.sin(time*.8)*.1;}
+      if (chatProps?.flames) { const f = chatProps.flames; f.scale.set(1 + Math.sin(time * 9) * .08, .85 + Math.abs(Math.sin(time * 7.3)) * .35 + Math.sin(time * 13) * .05, 1 + Math.cos(time * 8) * .08); f.rotation.y = time * .7; } cups.forEach((m, i) => m.visible = c.stock > i); specials.forEach(({ prop, id }) => prop.visible = c.extras[id].stock > 0); wisps.visible = !!c.level && c.open && (c.stock > 0 || ["flake", "deluxe", "midnight", "ghost-wafer", "caramel-flake"].some(id => c.extras[id].stock > 0));
       for (let i = 0; i < 8; i++) { const t = (time * .35 + i / 8) % 1; steam[i * 3] = 45.9 + Math.sin(t * 7 + i) * .14; steam[i * 3 + 1] = 2.7 + t * 1.4; steam[i * 3 + 2] = 18.6 + Math.cos(t * 6 + i) * .12; }
       steamGeo.attributes.position.needsUpdate = true;
     },

@@ -1,29 +1,32 @@
-// Pumpkins waiting to be sold, counted per variety (0 Orange ... 3 Starlight).
+// Pumpkins waiting to be sold, counted per variety (0 Orange ... 4 Midnight Moon).
 // A shopper's basket is held while they queue, so two shoppers never pick the
 // same pumpkin; the hold is paid for or released. Mirrors src/core/inventory.js.
 import { FRESH, dearPrice } from "./market.js";
-export const freshStock = () => [0, 0, 0, 0];
+import { VARIETY_COUNT, VARIETY_INDICES } from "../content/pumpkin-varieties.js";
+export const freshStock = () => Array(VARIETY_COUNT).fill(0);
 // Of each variety, the pumpkins picked in the last FRESH.seconds, as batches of
 // [picked at, count], oldest first (market.js). Never more than are in stock.
-export const freshBatches = () => [[], [], [], []];
+export const freshBatches = () => Array.from({ length: VARIETY_COUNT }, () => []);
 
 export const held = (s, v) => s.holds.reduce((n, h) => n + h.lines.reduce((m, l) => m + (l.variety === v ? l.quantity : 0), 0), 0);
-export const available = (s, v) => (v === undefined ? s.stock.reduce((n, _, i) => n + available(s, i), 0) : s.stock[v] - held(s, v));
+export const available = (s, v) => (v === undefined ? s.stock.reduce((n, _, i) => n + available(s, i), 0) : (s.stock[v] ?? 0) - held(s, v));
 export const stockCount = (s) => s.stock.reduce((n, c) => n + c, 0);
 
 export function addStock(s, v, n = 1, fresh = false) {
-  if (!Number.isInteger(v) || v < 0 || v >= s.stock.length || !Number.isInteger(n) || n < 1) return false;
+  if (!Number.isInteger(v) || v < 0 || v >= VARIETY_COUNT || !Number.isInteger(n) || n < 1) return false;
+  while (s.stock.length <= v) s.stock.push(0);
+  while (s.fresh.length <= v) s.fresh.push([]);
   s.stock[v] += n;
   if (fresh) { const b = s.fresh[v], last = b.at(-1); if (last && last[0] === s.time) last[1] += n; else b.push([s.time, n]); }
   return true;
 }
 
-export const freshCount = (s, v) => s.fresh[v].reduce((n, b) => n + b[1], 0);
+export const freshCount = (s, v) => (s.fresh[v] ?? []).reduce((n, b) => n + b[1], 0);
 const heldFresh = (s, v) => s.holds.reduce((n, h) => n + h.lines.reduce((m, l) => m + (l.variety === v && l.fresh ? l.quantity : 0), 0), 0);
 export const availableFresh = (s, v) => Math.max(0, Math.min(freshCount(s, v) - heldFresh(s, v), available(s, v)));
 // Takes n of the oldest fresh pumpkins of variety v (they would turn first).
 function takeFresh(s, v, n) {
-  const b = s.fresh[v];
+  const b = s.fresh[v] ?? [];
   while (n > 0 && b.length) { const k = Math.min(n, b[0][1]); b[0][1] -= k; n -= k; if (!b[0][1]) b.shift(); }
 }
 // Pumpkins stop being fresh FRESH.seconds after they are picked; never more fresh than in stock.
@@ -31,13 +34,13 @@ export function settleFresh(s) {
   for (let v = 0; v < s.fresh.length; v++) {
     const b = s.fresh[v];
     while (b.length && s.time - b[0][0] >= FRESH.seconds) b.shift();
-    const over = freshCount(s, v) - s.stock[v];
+    const over = freshCount(s, v) - (s.stock[v] ?? 0);
     if (over > 0) takeFresh(s, v, over);
   }
 }
 export function restoreFresh(raw, s) {
   const f = freshBatches();
-  if (Array.isArray(raw) && raw.length === 4) raw.forEach((list, v) => {
+  if (Array.isArray(raw) && [4, VARIETY_COUNT].includes(raw.length)) raw.forEach((list, v) => {
     if (Array.isArray(list)) for (const b of list) if (Array.isArray(b) && Number.isFinite(b[0]) && b[0] <= s.time && Number.isSafeInteger(b[1]) && b[1] > 0) f[v].push([b[0], b[1]]);
     f[v].sort((a, b) => a[0] - b[0]);
   });
@@ -50,7 +53,7 @@ export function restoreFresh(raw, s) {
 // (src/core/shop.js), a favourite they can't afford more of doesn't end the
 // visit: they fill the rest of the basket with something cheaper.
 export function quoteBasket(s, shopper, offered, prices) {
-  const order = [...new Set([...shopper.preferred, 0, 1, 2, 3])].filter((v) => offered.includes(v));
+  const order = [...new Set([...(shopper.preferred ?? []), ...VARIETY_INDICES])].filter((v) => Number.isInteger(v) && v >= 0 && v < VARIETY_COUNT && offered.includes(v));
   let budget = shopper.budget, spaces = shopper.basketLimit;
   const picks = new Map();
   // A guest who came for the wanted variety buys one with the money and room

@@ -1,0 +1,256 @@
+{
+  "source": "cooking-menu-source.png",
+  "sourceSha256": "be21bf2a876b12e9c97d60a940c44fa23dff397bb27c8391663ba23d57e30b09",
+  "runtime": "assets/cooking-menu-icons.webp",
+  "runtimeSha256": "a48bc4df398d3adde879ff658930ad90a012977d80344c9a597fd3afeecc2714",
+  "width": 768,
+  "height": 576,
+  "bytes": 166668,
+  "columns": 4,
+  "rows": 3,
+  "cellSize": 192,
+  "minimumTransparentGutter": 16,
+  "cssDisplaySize": 52,
+  "cells": [
+    {
+      "index": 0,
+      "id": "truck",
+      "sourceCrop": [
+        0,
+        0,
+        389,
+        389
+      ],
+      "alphaBounds": [
+        35,
+        53,
+        377,
+        363
+      ],
+      "packedSize": [
+        160,
+        145
+      ]
+    },
+    {
+      "index": 1,
+      "id": "cart",
+      "sourceCrop": [
+        389,
+        0,
+        752,
+        389
+      ],
+      "alphaBounds": [
+        27,
+        74,
+        337,
+        367
+      ],
+      "packedSize": [
+        160,
+        151
+      ]
+    },
+    {
+      "index": 2,
+      "id": "pantry",
+      "sourceCrop": [
+        752,
+        0,
+        1093,
+        389
+      ],
+      "alphaBounds": [
+        20,
+        42,
+        323,
+        372
+      ],
+      "packedSize": [
+        147,
+        160
+      ]
+    },
+    {
+      "index": 3,
+      "id": "ghost-chef",
+      "sourceCrop": [
+        1093,
+        0,
+        1448,
+        389
+      ],
+      "alphaBounds": [
+        37,
+        55,
+        322,
+        374
+      ],
+      "packedSize": [
+        143,
+        160
+      ]
+    },
+    {
+      "index": 4,
+      "id": "wedges",
+      "sourceCrop": [
+        0,
+        389,
+        389,
+        718
+      ],
+      "alphaBounds": [
+        27,
+        51,
+        385,
+        298
+      ],
+      "packedSize": [
+        160,
+        110
+      ]
+    },
+    {
+      "index": 5,
+      "id": "soup",
+      "sourceCrop": [
+        389,
+        389,
+        752,
+        718
+      ],
+      "alphaBounds": [
+        4,
+        56,
+        356,
+        299
+      ],
+      "packedSize": [
+        160,
+        110
+      ]
+    },
+    {
+      "index": 6,
+      "id": "toffee-apples",
+      "sourceCrop": [
+        752,
+        389,
+        1093,
+        718
+      ],
+      "alphaBounds": [
+        22,
+        10,
+        334,
+        323
+      ],
+      "packedSize": [
+        159,
+        160
+      ]
+    },
+    {
+      "index": 7,
+      "id": "pumpkin-jam",
+      "sourceCrop": [
+        1093,
+        389,
+        1448,
+        718
+      ],
+      "alphaBounds": [
+        37,
+        36,
+        316,
+        304
+      ],
+      "packedSize": [
+        160,
+        154
+      ]
+    },
+    {
+      "index": 8,
+      "id": "ghost-cookies",
+      "sourceCrop": [
+        0,
+        718,
+        389,
+        1086
+      ],
+      "alphaBounds": [
+        32,
+        37,
+        364,
+        301
+      ],
+      "packedSize": [
+        160,
+        127
+      ]
+    },
+    {
+      "index": 9,
+      "id": "pumpkin-pie",
+      "sourceCrop": [
+        389,
+        718,
+        752,
+        1086
+      ],
+      "alphaBounds": [
+        2,
+        15,
+        344,
+        305
+      ],
+      "packedSize": [
+        160,
+        136
+      ]
+    },
+    {
+      "index": 10,
+      "id": "cocoa-brownies",
+      "sourceCrop": [
+        752,
+        718,
+        1093,
+        1086
+      ],
+      "alphaBounds": [
+        3,
+        5,
+        328,
+        297
+      ],
+      "packedSize": [
+        160,
+        144
+      ]
+    },
+    {
+      "index": 11,
+      "id": "moonlight-tart",
+      "sourceCrop": [
+        1093,
+        718,
+        1448,
+        1086
+      ],
+      "alphaBounds": [
+        8,
+        25,
+        343,
+        298
+      ],
+      "packedSize": [
+        160,
+        130
+      ]
+    }
+  ]
+}

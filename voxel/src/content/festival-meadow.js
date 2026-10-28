@@ -8,8 +8,11 @@ export const COCOA_TIERS = [
   { name: "Moonbrew cocoa cart", price: 650, level: 5, capacity: 30, maxPrice: 4 },
   { name: "Lantern cocoa kiosk", price: 1800, level: 6, capacity: 60, maxPrice: 5 },
   { name: "Midnight cocoa pavilion", price: 4800, level: 8, capacity: 100, maxPrice: 6 },
+  { name: "Ghostlight cocoa salon", price: 9000, level: 10, capacity: 160, maxPrice: 9 },
+  { name: "Sandy’s grand midnight lounge", price: 16000, level: 12, capacity: 240, maxPrice: 12 },
 ];
-export const COCOA_SUPPLY = { unit: 2, batch: 10, courier: 1200, reserve: 100 };
+export const COCOA_SUPPLY = { unit: 2, batch: 10, courier: 1200, reserve: 100, bulkBatch: 20, bulkCourier: 1200, barista: 1600 };
+export const COCOA_ALLOWANCE = [0, 4, 7, 9, 14, 20];
 export const MEADOW_EXIT = [[31.8, 10.2], [31.6, 12.6], [35, 10.6], [38, 8.6], [42.5, 6.6], [49, 6.6], [53.6, 6.6], [57, 6.6]];
 export const MEADOW_PATHS = [
   MEADOW_EXIT,

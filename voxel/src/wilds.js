@@ -10,6 +10,7 @@ import { seeded, vary } from "./voxels.js";
 import { fieldWidth } from "./content/festival-meadow.js";
 import { fieldDepth } from "./content/farm-layout.js";
 import { HAYRIDE_SITE } from "./content/hayride-layout.js";
+import { COOKING_SITE } from "./content/cooking-layout.js";
 
 // How far the wilds reach past the farm's edge, and where they fade: fully
 // into the night by FADE[1] units out, so their far edge never shows.
@@ -27,6 +28,7 @@ const smooth = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a
 export function wildsFootprint(state) {
   const rects = [{ x0: -16, x1: MAP.w + 16, z0: -1, z1: MAP.d + 12 }, { x0: -8, x1: fieldWidth(state), z0: -1, z1: fieldDepth(state) + 5 }];
   if (state.hayride?.purchased) { const b = HAYRIDE_SITE.bounds; rects.push({ x0: b.x0, x1: b.x1, z0: b.z0, z1: b.z1 }); }
+  if (state.kitchen?.purchased) { rects.push({ ...COOKING_SITE.bounds }, { ...COOKING_SITE.pavingBounds }, { x0: 37.8, x1: 39.8, z0: -6.8, z1: 5.4 }); }
   return rects;
 }
 // The roads that carry on into the wilds: the visitors' lane and the west lane
@@ -34,6 +36,7 @@ export function wildsFootprint(state) {
 export function wildsRoads(state) {
   const roads = [{ x: 33, from: 30, axis: "z" }, { x: -3, from: 30, axis: "z" }, { z: 6.6, from: 50, axis: "x" }];
   if (state.hayride?.purchased) roads.push({ x: HAYRIDE_SITE.departurePortal.x, to: HAYRIDE_SITE.bounds.z0, axis: "z" }, { x: HAYRIDE_SITE.returnPortal.x, from: HAYRIDE_SITE.bounds.z1, axis: "z" });
+  if (state.kitchen?.purchased) roads.push({ x: 38.8, to: 5.4, axis: "z" });
   return roads;
 }
 const outside = (rects, x, z) => {

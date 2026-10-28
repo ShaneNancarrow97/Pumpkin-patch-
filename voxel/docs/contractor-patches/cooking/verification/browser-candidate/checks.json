@@ -1,0 +1,226 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Cooking-Candidate.html",
+  "sha256": "f6561033ec2562bc244ba6acf4ab7ee6c4fea4fec652f04a4f0645a0cdf6393e",
+  "started": "2026-10-26T01:28:16.776Z",
+  "fixture": "QA-only funds and level gates; game rules, UI handlers and HTML are unmodified",
+  "passed": false,
+  "checks": [
+    {
+      "ok": true,
+      "label": "legacy-compatible state exposes additive cooking schema 12"
+    },
+    {
+      "ok": true,
+      "label": "level four previews the truck without permitting purchase"
+    },
+    {
+      "ok": true,
+      "label": "reaching level five unlocks purchase without buying automatically"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "purchase"
+    },
+    {
+      "ok": true,
+      "label": "paid truck includes starter recipe and works without a home kitchen"
+    },
+    {
+      "ok": true,
+      "label": "later recipes retain their own level gates"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "order"
+    },
+    {
+      "ok": true,
+      "label": "delivery payment includes ingredients and fee but credits no ingredients early"
+    },
+    {
+      "ok": true,
+      "label": "tea break freezes the paid delivery timer"
+    },
+    {
+      "ok": true,
+      "label": "paid order puts a visible cart on the north receiving road"
+    },
+    {
+      "ok": true,
+      "label": "cart arrives before ingredients enter the pantry"
+    },
+    {
+      "ok": true,
+      "label": "unloading credits the complete paid parcel once"
+    },
+    {
+      "ok": true,
+      "label": "completed delivery cannot credit again on subsequent ticks"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "order"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Cancel"
+    },
+    {
+      "ok": true,
+      "label": "cancelling before departure refunds ingredients and retains only the stated fee"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Cook 2 · Truck"
+    },
+    {
+      "ok": true,
+      "label": "starting a real batch consumes butter and an unreserved pumpkin immediately"
+    },
+    {
+      "ok": true,
+      "label": "tea break also freezes cooking"
+    },
+    {
+      "ok": true,
+      "label": "completed batch produces its declared yield once"
+    },
+    {
+      "ok": true,
+      "label": "food display and selling price are controlled through the player menu"
+    },
+    {
+      "ok": true,
+      "label": "kitchen accounts include ingredient cost and both delivery fees"
+    },
+    {
+      "ok": false,
+      "label": "phone: menu fits with 44px touch targets",
+      "data": {
+        "width": 390,
+        "overflow": false,
+        "clipped": [],
+        "small": [
+          {
+            "label": "Flour order quantity",
+            "x": 279,
+            "right": 321,
+            "w": 42,
+            "h": 44
+          },
+          {
+            "label": "Sugar order quantity",
+            "x": 279,
+            "right": 321,
+            "w": 42,
+            "h": 44
+          },
+          {
+            "label": "Milk order quantity",
+            "x": 279,
+            "right": 321,
+            "w": 42,
+            "h": 44
+          },
+          {
+            "label": "Butter order quantity",
+            "x": 279,
+            "right": 321,
+            "w": 42,
+            "h": 44
+          },
+          {
+            "label": "Cocoa order quantity",
+            "x": 279,
+            "right": 321,
+            "w": 42,
+            "h": 44
+          },
+          {
+            "label": "Apples order quantity",
+            "x": 279,
+            "right": 321,
+            "w": 42,
+            "h": 44
+          },
+          {
+            "label": "Marshmallows order quantity",
+            "x": 279,
+            "right": 321,
+            "w": 42,
+            "h": 44
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [
+    {
+      "name": "desktop-truck-delivery",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": -5.149999999999723,
+          "yaw": 0,
+          "progress": 0.08333333333336046,
+          "distance": 0.8500000000002766,
+          "unloading": false,
+          "unloadProgress": 0,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 843,
+        "cleared": 49,
+        "lights": 0,
+        "displays": [],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 99,
+        "triangles": 611570,
+        "geometries": 63,
+        "textures": 20
+      }
+    }
+  ],
+  "rendering": "Single Chromium/SwiftShader process; performance/DPR1, bloom/shadows/mist/lake lights off. Viewport checks do not prove physical Fold frame rate. Managed policy prevents direct file:// and native fullscreen."
+}

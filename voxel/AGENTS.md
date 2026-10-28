@@ -2,6 +2,22 @@
 
 **Latest handovers: [`docs/handovers/42-claude-wilds-round-the-farm.md`](docs/handovers/42-claude-wilds-round-the-farm.md)** (hills, a treeline and fog round the farm; roads run on into them), after [`41`](docs/handovers/41-claude-hayride-ride-along.md) (a longer, lit ride-along with screams and woodland sounds; guests' circuit unchanged), after [`40`](docs/handovers/40-claude-performance.md) (where the lag came from: lamps share a light pool, one shadowed light, a lighter ground, pictures and shaders warmed ahead), after [`39`](docs/handovers/39-claude-hayride-merged-levels-and-dock.md) (the hayride merged, unlocks moved later, the Upgrades menu and Wardrobe tab), after [`37`](docs/handovers/37-claude-meadow-chats.md) (guests who stop for a cocoa and a chat in the meadow, and the comforts that make it popular) and [`36`](docs/handovers/36-claude-maze-scares-screams-and-set-dressing.md) (scares that leap at the screen, screams, the dressed maze; the farm exterior moves to Codex), after [`35`](docs/handovers/35-claude-controls-phantom-music-and-split.md) (decorating controls, the animated phantom, zoom and music; what Codex can pick up), after [`34`](docs/handovers/34-claude-hollow-house-rebuild.md) (the maze, walkthrough, foyer and haunts rebuilt), after [`33`](docs/handovers/33-claude-integration-maze-ride.md) (Codex's first-person maze integrated; runtime art sizes), [`27`](docs/handovers/27-claude-demand-tables-ambience-intro-maze-walk.md), [`28`](docs/handovers/28-claude-fresh-wanted-and-orders.md) and Codex's [`29`–`32`](docs/handovers/29-first-person-maze.md). The numbered handovers in `docs/handovers/` are the running record between Claude and Codex.
 
+**New contractor exterior:** [`docs/handovers/43-hollow-house-exterior.md`](docs/handovers/43-hollow-house-exterior.md) isolates the farm attraction’s staged models, animations, icons and direct door entry from the unchanged foyer/maze rules.
+
+**New contractor cooking:** [`docs/handovers/44-cooking-and-deliveries.md`](docs/handovers/44-cooking-and-deliveries.md) adds a level-5 paid food truck, timed ingredient deliveries, shared pantry, eight recipes, home cooking, finite-wallet indoor food sales and a later supplied chef. It is stacked on handover 43; use its incremental/combined patch instructions and preserve Claude's unpublished progression work.
+
+**New contractor crop:** [`docs/handovers/45-midnight-moon-pumpkin.md`](docs/handovers/45-midnight-moon-pumpkin.md) adds the fifth navy-and-gold variety and legacy four-bin save migration. Larger kitchen/VIP integration is explicitly unfinished and separate.
+
+**Contractor workshop:** [`docs/handovers/46-kitchen-hospitality-workshop.md`](docs/handovers/46-kitchen-hospitality-workshop.md) completes physical kitchen equipment/mixing/batches, Maisie and dining, Renaissance VIPs/rushes, Sandy deluxe automation, Natalie’s wheelchair and longer two-tractor hayrides. It includes handover 45; use the correct patch base and preserve unpublished lead work.
+
+**Contractor menu refinement:** [`docs/handovers/47-business-menu-refinement.md`](docs/handovers/47-business-menu-refinement.md) groups business management, adds guided cooking shortcuts and keeps live menus stable. It layers on completed handover 46 with no rule/save changes.
+
+**Contractor home and hands-on play:** [`docs/handovers/48-home-and-hands-on-play.md`](docs/handovers/48-home-and-hands-on-play.md) adds optional Shane/Natalie control on the farm and in home rooms, twenty home-driven levels, v14 migration, usable furniture, home pets and cleanliness. The private estate retains its orbit/edit controls with an Enter home bridge; read the handover and [roadmap delta](docs/plans/home-play/ROADMAP.md) for art/control limits and final verification status.
+
+**Contractor life-play:** [`docs/handovers/49-life-sim-control.md`](docs/handovers/49-life-sim-control.md) follows 48 with timed tool gestures, two-stick camera controls, home interactions and corrected owner walks. Read its integration and verification scope before changing these systems.
+
+**Contractor control refinement:** [`docs/handovers/50-control-fit-and-sprite-can.md`](docs/handovers/50-control-fit-and-sprite-can.md) corrects the close indoor camera, oversized notification, right-thumb button placement and hold feedback. It switches watering to an illustrated can and makes release finish one use; this supersedes 49’s release-to-cancel behaviour.
+
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
 **Codex's hayride (merged in 39):** [`docs/handovers/38-hayride-lead-integration.md`](docs/handovers/38-hayride-lead-integration.md) preserves Claude’s `1abaff5` maze update and isolates hayride audio from lead-owned runtime files.
@@ -14,7 +30,7 @@ Read this before changing anything in `voxel/`. It covers what the game is, how 
 
 - **A voxel version of Shane & Natalie's Pumpkin Patch.** It is a cosy Halloween farm and shop game. Shane and Natalie grow pumpkins, neighbours buy them at the stall and inside Skyla's shop, and the takings go on upgrades, a four-room house, decor, books and costumes.
 - **The main game lives at the repository root** (`src/`, a 2D canvas game). This build lives in `voxel/` on the `voxel-reference` branch, draft PR #2. It is a reference for art direction, staging and menu design, not a replacement. Nothing here should change the main game.
-- **It ships as one offline HTML file,** `dist/pumpkin-patch-voxel.html`, about 5.6 MB, with every asset inlined. It runs from `file://` on a phone or a desktop.
+- **It ships as one offline HTML file,** `dist/pumpkin-patch-voxel.html`, with every asset inlined; see the latest delivery manifest for its current byte size. It runs from `file://` on a phone or a desktop.
 - **The world is three.js 0.169** (pinned), drawn as voxels: boxes batched into instanced meshes. The cast are the main game's own sprites standing in the 3D world. Menus are HTML over the canvas.
 - **It shares the main game's content.** The rules import the main game's data modules directly: `../../src/content/*.mjs` (catalogue, rooms, library, shop and stall profiles, art metadata) and `../../src/core/costume-model.mjs`. Those modules have no imports of their own. Don't change them for this build's sake; adapt here instead.
 
@@ -80,7 +96,7 @@ Generated files: `src/sprite-meta.js`, `src/sprite-meta-hd.js`, `src/decor-meta.
 - **Rules are pure.** No DOM and no three.js; time comes in only as `dt`. Keep it that way so `npm test` can run them in Node. When a rule changes, add or update a test.
 - **Saves:**
   - The key is `pumpkin-patch-voxel-reference-v1`, separate from the main game's, plus `-prefs` for settings.
-  - `STATE_VERSION` is 2. `restoreState` must accept anything, including junk, older versions and missing fields, and return a valid state.
+  - `STATE_VERSION` is 14 (additive cooking, home-life and progression state; legacy saves migrate). `restoreState` must accept anything, including junk, older versions and missing fields, and return a valid state.
   - If you change the shape of saved state, bump the version, migrate in `restoreState`, and test the round trip.
   - Customers and baskets are never saved (`closeForTheNight`).
 - **Picking:**

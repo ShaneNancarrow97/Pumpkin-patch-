@@ -1,11 +1,11 @@
 // The first festival extension. Pure rules; no renderer or DOM dependencies.
-import { freshCocoaPrices, restoreCocoaPrices, freshCocoaExtras, restoreCocoaExtras, standHasStock, quoteStandOrder, payStandOrder } from "./cocoa-menu.js";
+import { freshCocoaPrices, restoreCocoaPrices, freshCocoaExtras, restoreCocoaExtras, standHasStock, quoteStandOrder, payStandOrder, COCOA_SPECIALS, restockCocoaSpecial } from "./cocoa-menu.js";
 export * from "./cocoa-menu.js";
 import { extendFarmRoute, counterPlace } from "../content/farm-layout.js";
 import { patchLevel } from "./levels.js";
-import { MEADOW, COCOA_TIERS, COCOA_SUPPLY, COCOA_APPROACH, PUMPKIN_APPROACH, MEADOW_COMFORTS, COMFORT_FOOTFALL } from "../content/festival-meadow.js";
-export { MEADOW, COCOA_TIERS, COCOA_SUPPLY, MEADOW_COMFORTS, COMFORT_FOOTFALL, fieldWidth } from "../content/festival-meadow.js";
-export const freshFestival = () => ({ meadow: false, comforts: [], cocoa: { level: 0, stock: 0, price: 4, open: true, courier: false, autoSupply: false, sold: 0, gross: 0, supplies: 0, invested: 0, missed: 0, prices: freshCocoaPrices(), extras: freshCocoaExtras(), lastSaleAt: -10 } });
+import { MEADOW, COCOA_TIERS, COCOA_SUPPLY, COCOA_ALLOWANCE, COCOA_APPROACH, PUMPKIN_APPROACH, MEADOW_COMFORTS, COMFORT_FOOTFALL } from "../content/festival-meadow.js";
+export { MEADOW, COCOA_TIERS, COCOA_SUPPLY, COCOA_ALLOWANCE, MEADOW_COMFORTS, COMFORT_FOOTFALL, fieldWidth } from "../content/festival-meadow.js";
+export const freshFestival = () => ({ meadow: false, comforts: [], cocoa: { level: 0, stock: 0, price: 4, open: true, courier: false, autoSupply: false, barista: false, bulkCourier: false, autoSpecials: [], sold: 0, gross: 0, supplies: 0, invested: 0, missed: 0, prices: freshCocoaPrices(), extras: freshCocoaExtras(), lastSaleAt: -10 } });
 const count = (n, cap = 1e12) => Number.isSafeInteger(n) ? Math.max(0, Math.min(cap, n)) : 0;
 export function restoreFestival(raw) {
   const f = freshFestival();
@@ -13,10 +13,12 @@ export function restoreFestival(raw) {
   f.meadow = raw.meadow === true;
   f.comforts = f.meadow && Array.isArray(raw.comforts) ? MEADOW_COMFORTS.map((x) => x.id).filter((id) => raw.comforts.includes(id)) : [];
   const c = f.cocoa, saved = raw.cocoa ?? {};
-  c.level = f.meadow ? count(saved.level, 3) : 0;
+  c.level = f.meadow ? count(saved.level, COCOA_TIERS.length) : 0;
   c.stock = count(saved.stock, COCOA_TIERS[c.level - 1]?.capacity ?? 0);
   c.price = Math.max(3, count(Number.isInteger(saved.price) ? saved.price : 4, COCOA_TIERS[c.level - 1]?.maxPrice ?? 4));
   c.open = saved.open !== false; c.courier = c.level >= 2 && saved.courier === true; c.autoSupply = c.courier && saved.autoSupply === true;
+  c.barista = c.level >= 3 && saved.barista === true; c.bulkCourier = c.courier && saved.bulkCourier === true;
+  c.autoSpecials = c.bulkCourier && Array.isArray(saved.autoSpecials) ? COCOA_SPECIALS.filter(p => p.tier <= c.level && saved.autoSpecials.includes(p.id)).map(p => p.id) : [];
   for (const key of ["sold", "gross", "supplies", "invested", "missed"]) c[key] = count(saved[key]);
   c.extras = restoreCocoaExtras(saved.extras, c.level);
   c.prices = restoreCocoaPrices(saved.prices);
@@ -45,7 +47,7 @@ export function buyComfort(s, id) {
 // A lively meadow is the talk of the village: a few more visitors for each comfort.
 export const meadowFootfallBonus = (s) => s.festival?.meadow ? (s.festival.comforts?.length ?? 0) * COMFORT_FOOTFALL : 0;
 export const cocoaCapacity = (s) => COCOA_TIERS[s.festival.cocoa.level - 1]?.capacity ?? 0;
-export const cocoaServiceSeconds = (s) => Math.max(1, 2.8 / (1 + .2 * (s.festival.cocoa.level - 1) + .16 * (s.visitorUpgrades?.cocoa ?? 0)));
+export const cocoaServiceSeconds = (s) => Math.max(.65, (2.8 / (1 + .2 * (s.festival.cocoa.level - 1) + .16 * (s.visitorUpgrades?.cocoa ?? 0))) * (s.festival.cocoa.barista ? .65 : 1));
 export function setCocoaPrice(s, price) {
   const c = s.festival.cocoa;
   if (s.paused || !c.level || !Number.isInteger(price) || price < 3 || price > COCOA_TIERS[c.level - 1].maxPrice) return false;
@@ -55,9 +57,9 @@ export function setCocoaOpen(s, open) {
   if (s.paused || !s.festival.cocoa.level || typeof open !== "boolean") return false;
   s.festival.cocoa.open = open; return true;
 }
-export function restockCocoa(s) {
-  const c = s.festival.cocoa, n = Math.min(COCOA_SUPPLY.batch, cocoaCapacity(s) - c.stock), cost = n * COCOA_SUPPLY.unit;
-  if (!c.level || n < 1 || !spendable(s, cost)) return 0;
+export function restockCocoa(s, automatic = false) {
+  const c = s.festival.cocoa, n = Math.min(automatic && c.bulkCourier ? COCOA_SUPPLY.bulkBatch : COCOA_SUPPLY.batch, cocoaCapacity(s) - c.stock), cost = n * COCOA_SUPPLY.unit;
+  if (!c.level || n < 1 || !spendable(s, cost + (automatic ? COCOA_SUPPLY.reserve : 0))) return 0;
   s.coins -= cost; c.supplies += cost; c.stock += n; return n;
 }
 export function hireCocoaCourier(s) {
@@ -69,13 +71,27 @@ export function setCocoaAutoSupply(s, on) {
   if (s.paused || !s.festival.cocoa.courier || typeof on !== "boolean") return false;
   s.festival.cocoa.autoSupply = on; return true;
 }
+// These helpers are paid once. The crate buys larger parcels at the same
+// per-item cost; the barista shortens service without changing guest wallets.
+export function buyCocoaAutomation(s, id) {
+  const c = s.festival.cocoa, price = COCOA_SUPPLY[id];
+  if (!["barista", "bulkCourier"].includes(id) || c[id] || c.level < (id === "barista" ? 3 : 2) || id === "bulkCourier" && !c.courier || !spendable(s, price)) return false;
+  s.coins -= price; c.invested += price; c[id] = true; return true;
+}
+export function setCocoaAutoSpecial(s, id, on) {
+  const c = s.festival.cocoa, p = COCOA_SPECIALS.find(p => p.id === id);
+  if (s.paused || !p || !c.courier || !c.bulkCourier || c.level < p.tier || typeof on !== "boolean") return false;
+  c.autoSpecials = c.autoSpecials.filter(x => x !== id); if (on) c.autoSpecials.push(id); return true;
+}
 export function updateFestival(s) {
   const c = s.festival.cocoa;
-  if (!s.paused && c.courier && c.autoSupply && c.stock <= 5 && s.coins >= COCOA_SUPPLY.reserve + COCOA_SUPPLY.batch * COCOA_SUPPLY.unit) restockCocoa(s);
+  if (s.paused || !c.courier || !c.autoSupply) return;
+  if (c.stock <= 5) restockCocoa(s, true);
+  if (c.bulkCourier) for (const id of c.autoSpecials) if (c.extras[id]?.stock <= 5) restockCocoaSpecial(s, id, true);
 }
 // Festival guests bring a small, explicit allowance. A higher cocoa price competes
 // with their pumpkin money; quote the intended basket before selling a drink.
-export const cocoaAllowance = s => s.festival.cocoa.level && s.festival.cocoa.open && standHasStock(s) ? [0, 4, 7, 9][s.festival.cocoa.level] : 0;
+export const cocoaAllowance = s => s.festival.cocoa.level && s.festival.cocoa.open && standHasStock(s) ? COCOA_ALLOWANCE[s.festival.cocoa.level] ?? 0 : 0;
 export const wantsCocoa = (s, v) => quoteStandOrder(s, v).length > 0;
 // Guests on their way to Sandy, waiting or being served, including chatters
 // fetching a drink (meadow-chat.js). Places in the queue go by arrival order;
@@ -126,7 +142,7 @@ export function tickFestivalVisit(s, v, dt, events) {
       remaining = meadowWalk(m, [47, 20.6 + rank * .8], remaining);
       if (rank || remaining <= 1e-9) break;
       m.phase = "serving"; m.walking = false;
-      const duration = cocoaServiceSeconds(s), use = Math.min(remaining, duration - m.elapsed);
+      const duration = cocoaServiceSeconds(s), use = Math.min(remaining, Math.max(0, duration - m.elapsed));
       m.elapsed += use; remaining -= use;
       if (m.elapsed + 1e-9 < duration) break;
       const order = quoteStandOrder(s, v), amount = payStandOrder(s, v, order);

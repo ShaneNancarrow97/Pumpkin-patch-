@@ -1,0 +1,363 @@
+{
+  "file": "/workspace/menu-refinement/voxel/dist/pumpkin-patch-voxel.html",
+  "sha256": "f1cd2c276177f31652daa376a4cb9fab71fec5f07fd603e614479c8524e39ce1",
+  "started": "2026-10-26T21:22:52.186Z",
+  "fixture": "Only browser localStorage receives QA funds/unlocks. The downloadable HTML is unmodified.",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "four kitchen destinations replace the scrolling six-tab strip"
+    },
+    {
+      "ok": true,
+      "label": "idle cooker cards do not push recipes down the page"
+    },
+    {
+      "ok": true,
+      "label": "only one recipe is expanded"
+    },
+    {
+      "ok": true,
+      "label": "desktop kitchen: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "recipe disclosure survives a control redraw"
+    },
+    {
+      "ok": true,
+      "label": "guided action builds a one-butter shopping list"
+    },
+    {
+      "ok": true,
+      "label": "opening the shopping list spends nothing"
+    },
+    {
+      "ok": true,
+      "label": "reviewed delivery charges its exact quote once"
+    },
+    {
+      "ok": true,
+      "label": "expanded recipe starts the real paid-input cooking job"
+    },
+    {
+      "ok": true,
+      "label": "live progress keeps an opened native selector attached"
+    },
+    {
+      "ok": true,
+      "label": "ready food points directly to opening Skyla’s shop"
+    },
+    {
+      "ok": true,
+      "label": "choosing a recipe replaces the previous detail"
+    },
+    {
+      "ok": true,
+      "label": "Sell keeps shelf selection and real food prices connected"
+    },
+    {
+      "ok": true,
+      "label": "desktop food shelves: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "truck and chef upgrades have a direct visible section"
+    },
+    {
+      "ok": true,
+      "label": "desktop truck upgrades: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "Sandy opens her dedicated business menu"
+    },
+    {
+      "ok": true,
+      "label": "Sandy has three clear destinations"
+    },
+    {
+      "ok": true,
+      "label": "plain cocoa uses a labelled real price selector"
+    },
+    {
+      "ok": true,
+      "label": "deluxe cocoa card restocks ten portions at the real supply cost"
+    },
+    {
+      "ok": true,
+      "label": "desktop cocoa: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "Sandy’s helpers have one obvious home"
+    },
+    {
+      "ok": true,
+      "label": "rush and VIP upgrades are together"
+    },
+    {
+      "ok": true,
+      "label": "VIP entry still costs 6000 and is purchased once"
+    },
+    {
+      "ok": true,
+      "label": "VIP event pause is reachable beside its countdown"
+    },
+    {
+      "ok": true,
+      "label": "desktop special events: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "hayride has overview, scares and upgrades"
+    },
+    {
+      "ok": true,
+      "label": "overview ticket control still uses the real price rule"
+    },
+    {
+      "ok": true,
+      "label": "second tractor is discoverable and charges once"
+    },
+    {
+      "ok": true,
+      "label": "desktop hayride upgrades: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "Scares opens the installations rather than hiding the catalogue"
+    },
+    {
+      "ok": true,
+      "label": "phone recipes: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone mixing: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone supplies: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Sandy: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone visitor events: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone tractors: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape recipes: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape mixing: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape supplies: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape Sandy: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape visitor events: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape tractors: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold recipes: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold mixing: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold supplies: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Sandy: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold visitor events: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold tractors: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "management directory supports keyboard navigation"
+    },
+    {
+      "ok": true,
+      "label": "Escape closes the directory"
+    },
+    {
+      "ok": true,
+      "label": "menu changes preserve stock choices, prices and purchases across reload"
+    },
+    {
+      "ok": true,
+      "label": "no browser runtime errors",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "all runtime art and fonts remain embedded",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "desktop-first-dish",
+    "desktop-recipe-book",
+    "desktop-sell",
+    "desktop-sandy-menu",
+    "desktop-visitors-events",
+    "desktop-tractor-upgrades",
+    "phone-recipes",
+    "phone-sandy",
+    "landscape-recipes",
+    "fold-recipes",
+    "fold-sandy",
+    "fold-tractor-upgrades"
+  ]
+}

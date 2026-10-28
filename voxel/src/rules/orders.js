@@ -22,7 +22,7 @@ export const ORDER_TRUST = Object.freeze([
   { filled: 10, name: "Dearest neighbour", pay: 1.5, size: 2 },
 ]);
 // A first order's size per variety, before trust and the farm's crowd tier.
-const BASE = [8, 6, 5, 4];
+const BASE = [8, 6, 5, 4, 3];
 
 export const freshOrders = () => ({ list: [], next: 0, serial: 0, filled: 0, missed: 0, income: 0, trust: {} });
 const draw = (n) => ((Math.imul(n + 0x5bd1, 2246822519) >>> 8) % 1000) / 1000;

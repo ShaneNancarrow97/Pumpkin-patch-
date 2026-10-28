@@ -38,7 +38,7 @@ export function createStockPopover({ state, onOpen, onManagePumpkins, onManageCo
     s.stock.forEach((n,i)=>put(`[data-stock-count="pumpkin-${i}"]`,fresh[i]?`${number.format(n)} · ${number.format(fresh[i])} fresh`:number.format(n)));
     const want=panel.querySelector('#stock-wanted');want.hidden=wanted===null;if(wanted!==null)put('#stock-wanted',`Wanted now: ${VARIETIES[wanted].name} · up to ${Math.round(WANTED.bonus*100)}% more · ${Math.floor(left/60)}:${String(left%60).padStart(2,'0')} left`);
     const note=panel.querySelector('#stock-reserved');note.hidden=!reserved;note.textContent=`${number.format(reserved)} reserved in customers’ baskets`;
-    const drinks=c.stock+COCOA_SPECIALS.filter(p=>p.id!=='smores').reduce((n,p)=>n+c.extras[p.id].stock,0);
+    const drinks=c.stock+COCOA_SPECIALS.filter(p=>!p.snack).reduce((n,p)=>n+c.extras[p.id].stock,0);
     put('#stock-cocoa-status',!c.level ? 'Build Sandy’s cocoa stand to stock drinks' : !c.open ? 'Stand closed · Stock is kept for later' : drinks ? 'Open · Drinks ready to serve' : 'No drinks left · Restock Sandy’s stand');
     put('[data-stock-count="cocoa"]',number.format(c.stock));
     for(const p of COCOA_SPECIALS)put(`[data-stock-count="${p.id}"]`,number.format(c.extras[p.id].stock));

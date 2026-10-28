@@ -14,6 +14,16 @@ const check = (ok, label) => { console.log(`${ok ? "ok  " : "FAIL"} ${label}`); 
 for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]]) {
   const page = await browser.newPage({ viewport: { width, height }, hasTouch: name !== "desktop" });
   page.setDefaultTimeout(120000);
+  // Selection now opens the compact pad; the wheel reveals the retained advanced tools.
+  const revealAdvancedFurniture = async () => {
+    await page.locator("#furniture-pad [data-nudge]").first().waitFor({ state: "visible" });
+    await page.locator("#furniture-wheel").click();
+    await page.locator("#play-radial").waitFor({ state: "visible" });
+    check(await page.locator('#play-radial [data-choice="details"]').isVisible(), `${name}: furniture wheel offers More controls`);
+    await page.locator('#play-radial [data-choice="details"]').click();
+    await page.locator("#play-radial").waitFor({ state: "hidden" });
+    await page.locator("#piece-bar").waitFor({ state: "visible" });
+  };
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
@@ -62,12 +72,16 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.locator('[data-decor="d01"]').click();
   check(await page.evaluate(() => PumpkinVoxel.state().house.placed.some((p) => p.id === "d01" && p.room === "parlour")), `${name}: a bought piece is placed in the room`);
   check(!(await page.locator("#sheet").isVisible()), `${name}: placing furniture reveals the room`);
+  await revealAdvancedFurniture();
   await page.locator('[data-tool="more"]').click();
   await page.locator('[data-tool="flip"]').click();
   await page.locator('[data-tool="done"]').click();
   check(await page.evaluate(() => PumpkinVoxel.state().house.placed.find((p) => p.id === "d01").flip) && !(await page.locator("#piece-bar").isVisible()), `${name}: flip the piece and finish`);
+  // Let the control adapter observe deselection before selecting this same instance again.
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   // A tea table, and the candelabrum stood on it from its toolbar.
   await page.evaluate(() => { const s = PumpkinVoxel.state(); s.house.owned.push("f08"); s.house.placed.push({ instance: "smoke-tea", id: "f08", room: "parlour", x: 8, z: 4, flip: false, books: [] }); PumpkinVoxel.scene.refreshRoom(); PumpkinVoxel.tools.select(s.house.placed.find((p) => p.id === "d01").instance); });
+  await revealAdvancedFurniture();
   await page.locator('[data-tool="ontop"]').click();
   check(await page.evaluate(() => PumpkinVoxel.state().house.placed.find((p) => p.id === "d01").on === "smoke-tea"), `${name}: a candelabrum stands on the tea table`);
   await page.locator('[data-tool="done"]').click();

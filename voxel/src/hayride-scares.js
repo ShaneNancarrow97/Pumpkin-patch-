@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH, hayrideRouteSample, hayrideSpan as u } from "./content/hayride-layout.js";
+import { HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH, hayrideRouteSample, hayrideSpan as u, hayrideRouteProfile } from "./content/hayride-layout.js";
 import { HAYRIDE_SCARE_BY_ID } from "./content/hayride.js";
 import { createMazeScareActor, animateMazeScareActor, disposeMazeScareActor } from "./maze-ride-actors.js";
 
@@ -10,6 +10,8 @@ const CAST = [
   { stop: "bride", actor: "haunted-girl", effect: "bride-procession", offset: 6.1 },
   { stop: "pursuit", actor: "wraith", effect: "spectral-burst", offset: 4.1 },
   { stop: "bus", actor: "ghoul", effect: "bus-breakout", offset: 5.4 },
+  { stop: "graveyard", actor: "wraith", effect: null, offset: 4.8, routeLevel: 1 },
+  { stop: "thicket", actor: "scarecrow", effect: null, offset: 4.5, routeLevel: 2 },
 ];
 const clamp = n => Math.max(0, Math.min(1, Number.isFinite(n) ? n : 0));
 const smooth = n => { const t = clamp(n); return t * t * (3 - 2 * t); };
@@ -17,6 +19,7 @@ const smooth = n => { const t = clamp(n); return t * t * (3 - 2 * t); };
 // A gradual glimpse precedes the quick approach. The seated lane stays clear.
 // Windows are in units of lane (hayrideSpan), so the pace holds on any route.
 export function hayrideScarePose(spec, progress, upgraded = false, gentle = false) {
+  const u=units=>units/(spec.routeLength??HAYRIDE_ROUTE_LENGTH);
   const delta = (Number.isFinite(progress) ? progress : 0) - spec.at;
   const width = u(upgraded ? 6.8 : 5.4);
   const reveal = smooth((delta + u(4.5)) / u(2.3)) * (1 - smooth((delta - u(2.6)) / (width - u(2.6))));
@@ -28,11 +31,12 @@ export function hayrideScarePose(spec, progress, upgraded = false, gentle = fals
 
 export function createHayrideScares({ state } = {}) {
   const group = new THREE.Group(); group.name = "Hollow Hayride detailed scare cast";
-  const entries = CAST.map(spec => {
-    const stop = HAYRIDE_STOPS.find(stop => stop.id === spec.stop), frame = hayrideRouteSample(stop.at * HAYRIDE_ROUTE_LENGTH);
+  const profile=hayrideRouteProfile(state),routeLength=profile.length;
+  const entries = CAST.filter(spec=>(spec.routeLevel??0)<=profile.level).map(spec => {
+    const stop = profile.stops.find(stop => stop.id === spec.stop), frame = hayrideRouteSample(stop.at * routeLength,profile.level);
     const actor = createMazeScareActor(spec.actor); actor.name = `Hayride scare: ${spec.stop}`; actor.visible = false;
     group.add(actor);
-    return { ...spec, at: stop.at, frame, actor, pose: null };
+    return { ...spec, at: stop.at, routeLength, frame, actor, pose: null };
   });
   let disposed = false;
   const cameraPoint = new THREE.Vector3(), actorHead = new THREE.Vector3();
@@ -45,7 +49,7 @@ export function createHayrideScares({ state } = {}) {
     if (disposed) return;
     if (camera?.getWorldPosition) camera.getWorldPosition(cameraPoint);
     else if (camera && Number.isFinite(camera.x) && Number.isFinite(camera.z)) cameraPoint.set(camera.x, camera.y ?? 2, camera.z);
-    else { const frame = hayrideRouteSample(clamp(progress) * HAYRIDE_ROUTE_LENGTH); cameraPoint.set(frame.x, 2, frame.z); }
+    else { const frame = hayrideRouteSample(clamp(progress) * routeLength,profile.level); cameraPoint.set(frame.x, 2, frame.z); }
     for (const entry of entries) {
       const pose = hayrideScarePose(entry, progress, upgraded(entry.effect), !!gentle), { actor, frame } = entry;
       entry.pose = pose; actor.visible = pose.visible;

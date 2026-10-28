@@ -1,0 +1,130 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Life-Play-Fit.html",
+  "sha256": "51ba1b6676e8d9ec8540c7ef19b5c38a6c496b1e2a8a6b2b272c7ae01beebd8a",
+  "started": "2026-10-28T21:53:40.446Z",
+  "scope": "Exact final HTML; phone-to-Fold framing, final illustrated-can screenshot, compact notice and actual right-thumb release. Diagnostic action time only; no HTML edits. Hardware tests remain separate.",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "Unfolding the phone preserves the direct-play camera distance",
+      "data": {
+        "before": 1.35,
+        "after": 1.35
+      }
+    },
+    {
+      "ok": true,
+      "label": "The final right-thumb release finishes one current use",
+      "data": {
+        "active": true,
+        "progress": 0.4090909090909091,
+        "kind": "water",
+        "label": "Watering",
+        "holding": false,
+        "assisted": true,
+        "travelling": false,
+        "target": {
+          "type": "plot",
+          "index": 0,
+          "x": 16.5,
+          "z": 14.2
+        },
+        "serial": 1,
+        "last": null
+      }
+    },
+    {
+      "ok": true,
+      "label": "The exact release displays the painted watering can",
+      "data": {
+        "state": {
+          "enabled": true,
+          "who": "natalie",
+          "available": true,
+          "place": "farm",
+          "room": null,
+          "position": {
+            "x": 15.3,
+            "z": 14.2
+          },
+          "facing": "side",
+          "moving": false,
+          "gait": "walk",
+          "speed": 0,
+          "pose": null,
+          "travelling": false,
+          "actionProgress": 0.3043478260869565,
+          "blocked": false,
+          "action": "water",
+          "actionTarget": {
+            "type": "plot",
+            "index": 0,
+            "x": 16.5,
+            "z": 14.2,
+            "label": "Water pumpkin",
+            "distance": 1.1999999999999993,
+            "score": 1.1999999999999993
+          },
+          "waterCanVisible": true,
+          "wateringVisible": true,
+          "canVisible": true,
+          "waterCanStyle": "sprite",
+          "waterCanWidth": 0.82,
+          "streamVisible": true,
+          "dropsVisible": true,
+          "canScale": 1,
+          "waterNozzle": {
+            "x": 16.28094604925134,
+            "y": 0.9243859933858402,
+            "z": 14.431977242036277
+          },
+          "visualYaw": 0,
+          "spriteFrame": 0,
+          "spriteDirection": "water",
+          "spriteStature": 2.3,
+          "sideFrameCount": 4,
+          "target": {
+            "type": "plot",
+            "index": 0,
+            "x": 16.5,
+            "z": 14.2,
+            "label": "Water pumpkin",
+            "distance": 1.1999999999999993,
+            "score": 1.1999999999999993
+          }
+        },
+        "geometry": "PlaneGeometry",
+        "width": 256
+      }
+    },
+    {
+      "ok": true,
+      "label": "The final notice remains compact",
+      "data": {
+        "x": 303.453125,
+        "y": 550.8125,
+        "width": 267.09375,
+        "height": 34.1875,
+        "top": 550.8125,
+        "right": 570.546875,
+        "bottom": 585,
+        "left": 303.453125
+      }
+    },
+    {
+      "ok": true,
+      "label": "The exact release has no browser errors or external runtime assets",
+      "data": {
+        "errors": [],
+        "requests": []
+      }
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "final-fold-watering",
+    "final-fold-house"
+  ]
+}

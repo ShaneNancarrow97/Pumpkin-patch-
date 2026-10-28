@@ -1,3 +1,5 @@
+import { visitorWorldCount } from "./visitor-events.js";
+import { VARIETY_COUNT } from "../content/pumpkin-varieties.js";
 // Pure attraction and foyer rules. The same visitors own their money and visit
 // phase indoors and outdoors; changing the camera never creates a new guest.
 import { visitorCapacity, visitorReservations, COUNTER_SPOTS } from "./selling.js";
@@ -69,7 +71,7 @@ export function setHollowOpen(s, open) {
   // once a party's worth of time has passed and the lane has room for it.
   if (!open && Array.isArray(s.arriving)) s.arriving = s.arriving.filter(a => !a.forMaze);
   const t = Number.isFinite(s.time) ? s.time : 0;
-  if (opening && Array.isArray(s.arriving) && Array.isArray(s.visitors) && visitorReservations(s) + OPENING_PARTY <= visitorCapacity(s) && !(t - (h.partyAt ?? -Infinity) < PARTY_GAP)) {
+  if (opening && Array.isArray(s.arriving) && Array.isArray(s.visitors) && visitorReservations(s) + OPENING_PARTY <= visitorCapacity(s) && visitorWorldCount(s)+OPENING_PARTY<=70 && !(t - (h.partyAt ?? -Infinity) < PARTY_GAP)) {
     h.partyAt = t;
     const party = s.nextParty++;
     for (let place = 0; place < OPENING_PARTY; place++) s.arriving.push({ party, place, size: OPENING_PARTY, wait: 0.6 + place * 0.9, forMaze: true });
@@ -381,7 +383,7 @@ export function restoreHollowVisitors(raw, s) {
     const savedGate = Array.isArray(m.route) ? Math.max(30, ...m.route.map(p => finite(p?.[1]))) : GATE_Z;
     const at = legacy === "approach" || restart ? route[0] : legacy === "to-shop" ? route.at(-2) : [finite(m.x, HOLLOW_PROPERTY.door[0]), finite(m.z, HOLLOW_PROPERTY.door[1])];
     const z = at[1] + (!legacy && !restart && at[1] >= savedGate - 1.5 ? farmPathEnd(s) - savedGate : 0);
-    const v = { ...input, id: input.id, spot, vip: input.kind === 10 && input.vip === true, budget: Math.min(10000, input.budget), originalBudget: Math.max(input.budget, finite(input.originalBudget, input.budget)), preferred: Array.isArray(input.preferred) ? input.preferred.filter(n => Number.isInteger(n) && n >= 0 && n < 4) : [0], basketLimit: Math.max(1, count(input.basketLimit, input.vip === true ? 20 : 10)), basket: [], leaveAt: null, outcome: "shopping", age: Math.max(0, finite(input.age)), festival: { done: true }, hollowConsidered: true,
+    const v = { ...input, id: input.id, spot, vip: input.kind >= 10 && input.vip === true, budget: Math.min(10000, input.budget), originalBudget: Math.max(input.budget, finite(input.originalBudget, input.budget)), preferred: Array.isArray(input.preferred) ? input.preferred.filter(n => Number.isInteger(n) && n >= 0 && n < VARIETY_COUNT) : [0], basketLimit: Math.max(1, count(input.basketLimit, input.vip === true ? 20 : 10)), basket: [], leaveAt: null, outcome: "shopping", age: Math.max(0, finite(input.age)), festival: { done: true }, hollowConsidered: true,
       hollow: { ...m, routeVersion: middle ? 3 : 4, phase, charged, ticket: charged ? count(m.ticket, 24) : 0, done: false, fromFront, fromStall, route, segment: legacy === "to-shop" ? route.length - 1 : legacy || restart ? 1 : Math.max(1, Math.min(route.length - 1, count(m.segment))), x: at[0], z, dx: finite(m.dx), dz: finite(m.dz, 1), elapsed: Math.max(0, Math.min(35, finite(m.elapsed))), waited: Math.max(0, Math.min(35, finite(m.waited))), terror: Math.max(0,Math.min(100,finite(m.terror))), bravery: Math.max(0,Math.min(100,finite(m.bravery,24 + Math.floor(brave(input.id + 421) * 65)))), runs: count(m.runs,2), repeats: count(m.repeats,1), fleeing: m.fleeing === true, fledHome: false } };
     if (!v.needs || typeof v.needs !== "object") v.needs = { thirst: 50, hunger: 50, happiness: 70, value: 1 };
     ids.add(v.id); visits.add(m.visitId); s.visitors.push(v); s.nextVisitor = Math.max(s.nextVisitor, v.id + 1); s.hollowHouse.nextVisit = Math.max(s.hollowHouse.nextVisit, Number(m.visitId.slice(7)) + 1);

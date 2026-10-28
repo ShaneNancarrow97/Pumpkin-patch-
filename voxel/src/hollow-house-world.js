@@ -39,83 +39,8 @@ const FLAME = new Set([0xffb75c, 0xffc56c, 0xffe1a0]);
 // Pixel letters for the maze door's sign, five rows each.
 const LETTERS = { M: ["10001", "11011", "10101", "10001", "10001"], A: ["0110", "1001", "1111", "1001", "1001"], Z: ["1111", "0001", "0110", "1000", "1111"], E: ["1111", "1000", "1110", "1000", "1111"] };
 
-// The actual farm attraction starts boarded up. Its footprint stays within the
-// prepared meadow pitch throughout restoration and all five reception tiers.
-export function buildHollowExterior(status = "derelict", tier = 1) {
-  status = typeof status === "object" ? status.status ?? "derelict" : status;
-  tier = Math.max(1, Math.min(5, Math.trunc(tier) || 1));
-  const restored = ["ready", "open", "closed", "restored"].includes(status), working = status === "restoring", v = new Voxels(), r = seeded(918 + tier), w = 7.1, d = 4.1, h = 4.35 + (tier > 2 ? .35 : 0), roof = restored ? 0x3b2948 : 0x302a36;
-  v.block(0, -.04, 0, 7.8, .18, 4.9, STONE[2]);
-  for (const face of ["front", "back", "left", "right"]) {
-    const side = face === "left" || face === "right", length = side ? d : w;
-    const block = (u, y, out, ww, hh, dd, colour, glow = false) => side ? v.block(face === "left" ? -w / 2 - out : w / 2 + out, y, u, dd, hh, ww, colour, glow) : v.block(u, y, face === "front" ? d / 2 + out : -d / 2 - out, ww, hh, dd, colour, glow);
-    // Back the decorative joints; an exterior should never reveal the far side.
-    block(0, .06, -.08, length, h, .14, restored ? PLUM[2] : 0x342f38);
-    for (let y = .15, row = 0; y < h; y += .24, row++) for (let x = -length / 2 + .18 + row % 2 * .19; x < length / 2; x += .4) {
-      if (Math.abs(x) > length / 2 - .07 || face === "front" && Math.abs(x) < .73 && y < 2.6) continue;
-      block(x, y, 0, .38, .225, .2, vary(restored ? PLUM[row % 3] : [0x4e454b, 0x62525a, 0x342f38][row % 3], .07, r));
-    }
-    for (const y of [.55, 3.07, h - .13]) block(0, y, .1, length + .1, .12, .17, restored ? GOLD : WOOD[2]);
-    for (const x of [-length / 2 + .08, length / 2 - .08]) block(x, .15, .12, .18, h - .15, .25, WOOD[2]);
-    const windows = side ? [0] : [-2.28, 2.28];
-    for (const x of windows) {
-      block(x, 1.35, .12, 1.24, 1.65, .16, IRON); block(x, 1.49, .23, .94, 1.32, .06, restored ? 0xffad68 : 0x302f3d, restored);
-      for (const edge of [-.57, .57]) block(x + edge, 1.38, .3, .11, 1.56, .14, restored ? GOLD : WOOD[1]);
-      block(x, 1.43, .31, .07, 1.45, .08, WOOD[2]); block(x, 2.04, .32, 1.05, .07, .08, WOOD[2]);
-      for (let step = 0; step < 4; step++) block(x, 2.93 + step * .12, .18, 1.25 - step * .26, .12, .2, restored ? STONE[1] : STONE[2]);
-      if (!restored) for (let plank = 0; plank < 3; plank++) block(x, 1.5 + plank * .4, .39, 1.28, .16, .09, vary(WOOD[1], .14, r));
-    }
-  }
-  v.block(0, .15, 2.16, 1.48, 2.5, .15, IRON); v.block(0, .2, 2.27, 1.22, 2.32, .12, restored ? WINE : WOOD[2]);
-  v.block(.42, 1.26, 2.36, .09, .15, .05, GOLD);
-  if (!restored) for (let i = 0; i < 4; i++) v.block(0, .5 + i * .48, 2.39, 1.48, .17, .1, WOOD[i % 3]);
-  for (let i = 0; i < 3; i++) v.block(0, i * .09, 2.36 + (2 - i) * .15, 1.9 - i * .15, .1, .42, STONE[1]);
-  // A sealed roof beneath the worn slates, with gables at both ends.
-  for (let z = -2.4; z < 2.5; z += .24) v.block(0, h + (2.5 - Math.abs(z)) * .8 - .23, z, 7.65, .37, .27, roof);
-  for (const side of [-1, 1]) for (let y = h; y < h + 2; y += .16) v.block(side * w / 2, y, 0, .18, .18, Math.max(.06, 5 - (y - h) * 2.5), roof);
-  for (let z = -2.4; z < 2.5; z += .24) for (let x = -3.8; x < 3.9; x += .3) {
-    if (!restored && ((Math.round(x * 7) + Math.round(z * 8)) % 13 === 0 || x < -2.5 && z < -1.5)) continue;
-    v.block(x, h + (2.5 - Math.abs(z)) * .8, z, .295, .14, .25, vary(roof, .12, r));
-  }
-  for (let x = -3.8; x <= 3.8; x += .26) v.block(x, h + 2.12, 0, .25, .14, .3, restored ? GOLD : WOOD[2]);
-  // Two pointed turrets give the restored property a recognisable silhouette.
-  for (const side of [-1, 1]) {
-    for (let y = .1; y < h + .6; y += .3) v.block(side * 3.15, y, -1.44, .87, .28, .95, vary(STONE[(Math.floor(y * 10) + tier) % 3], .05, r));
-    for (let i = 0; i < 8; i++) v.block(side * 3.15, h + .6 + i * .19, -1.44, 1.19 - i * .135, .2, 1.24 - i * .14, roof);
-    v.block(side * 3.15, h + 2.16, -1.44, .06, .42, .06, GOLD);
-    if (restored) lantern(v, side * .98, 1.92, 2.25, .72);
-  }
-  if (working) {
-    for (const x of [-3.7, 0, 3.7]) { v.block(x, 0, 2.4, .08, 4.7, .08, WOOD[1]); v.block(x, 0, -2.3, .08, 4.7, .08, WOOD[1]); }
-    for (const y of [1.5, 3, 4.5]) { v.block(0, y, 2.4, 7.6, .1, .08, WOOD[1]); for (let x = -3.6; x < 3.6; x += .32) v.block(x, y, 2.24, .3, .07, .5, WOOD[2]); }
-  }
-  if (restored) {
-    for (const side of [-1, 1]) {
-      v.block(side * 1.2, 3.25, 2.22, .54, 1.1 + tier * .06, .09, tier > 3 ? 0x9b6c42 : WINE); v.block(side * 1.2, 3.2, 2.29, .13, .5, .025, GOLD);
-      pumpkin(v, side * 2.4, .1, 2.12, .26 + tier * .014, side + 98);
-    }
-    if (tier >= 3) for (const side of [-1, 1]) { v.block(side * 1.75, h + .23, .8, 1.05, 1.02, .75, PLUM[1]); v.block(side * 1.75, h + .4, 1.2, .58, .55, .045, 0xffb26e, true); }
-    // Crooked grave markers and thorny ivy remain inside the building pitch.
-    for (const side of [-1, 1]) {
-      v.block(side * 3.28, .08, 2.06, .43, .63, .2, STONE[2]);
-      v.block(side * 3.28, .71, 2.06, .29, .12, .2, STONE[1]);
-      v.block(side * 3.28, .3, 2.18, .035, .25, .025, STONE[0]);
-      v.block(side * 3.28, .46, 2.18, .18, .035, .025, STONE[0]);
-      for (let i = 0; i < 11; i++) {
-        const x = side * (3.48 + Math.sin(i * 1.4) * .12), y = .3 + i * .31;
-        v.block(x, y, 2.19, .075, .34, .07, 0x282c34);
-        if (i % 2) v.block(x - side * .11, y + .1, 2.22, .18, .08, .06, 0x4a404d);
-      }
-      if (tier >= 3) {
-        v.block(side * 1.75, h + .46, 1.24, .46, .42, .035, 0x211c2b);
-        for (const dx of [-.1, .1]) v.block(side * 1.75 + dx, h + .68, 1.27, .065, .055, .025, 0xcab4e0, true);
-      }
-    }
-    if (tier >= 4) { v.block(0, 2.96, 2.27, 1.75, .12, .34, GOLD); skull(v, 0, 3.08, 2.27, .64); }
-    if (tier >= 5) for (const side of [-1, 1]) v.block(side * 3.7, .1, 1.58, .24, 2.2, .24, GOLD);
-  }
-  const group = v.build(); group.userData = { status, tier, door: { x: 0, y: 1.3, z: 2.4 }, sign: { x: 0, y: 4.25, z: 2.33 }, footprint: { w: 8, d: 5 } }; return group;
-}
+// Exterior ownership is separate from Claude’s foyer and maze work.
+export { buildHollowExterior } from "./hollow-exterior.js";
 
 // A gothic arch as a smooth band of stones, from each springing to a pointed
 // apex; `put` lays one stone and its gold underside.

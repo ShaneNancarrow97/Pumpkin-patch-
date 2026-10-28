@@ -1,0 +1,1172 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Life-Play.html",
+  "sha256": "51a39600e0032f7bd775f5088b70fb15af7862b645146e30522c9002ec4499c3",
+  "started": "2026-10-28T21:02:43.615Z",
+  "scope": "Exact HTML; simultaneous CDP touch pointers, all twenty owner looks through the live animation adapter, orbit, water/pet presentation and phone/Fold radial layouts. Diagnostic animation updates stage frame coverage without editing the HTML. Screenshots require human visual review for art duplication. Emulation does not verify physical Fold hardware, Bluetooth or mobile GPU performance.",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "Two simultaneous captured touches move the owner and turn the camera",
+      "data": {
+        "initial": {
+          "p": {
+            "enabled": true,
+            "who": "natalie",
+            "available": true,
+            "place": "farm",
+            "room": null,
+            "position": {
+              "x": 20,
+              "z": 16
+            },
+            "facing": "front",
+            "moving": false,
+            "gait": "walk",
+            "speed": 0,
+            "pose": null,
+            "travelling": false,
+            "actionProgress": 0,
+            "blocked": false,
+            "action": null,
+            "actionTarget": null,
+            "waterCanVisible": false,
+            "wateringVisible": false,
+            "canVisible": false,
+            "streamVisible": false,
+            "dropsVisible": false,
+            "canScale": 1.65,
+            "waterNozzle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "visualYaw": 0,
+            "spriteFrame": 1,
+            "spriteDirection": "front",
+            "spriteStature": 2.3,
+            "sideFrameCount": 4,
+            "target": {
+              "type": "plot",
+              "index": 4,
+              "x": 20,
+              "z": 16.8,
+              "label": "Plant pumpkin",
+              "distance": 0.8000000000000007,
+              "score": 0.8000000000000007
+            }
+          },
+          "camera": {
+            "zoom": 2.3,
+            "x": 20,
+            "z": 16,
+            "span": 23.47826086956522,
+            "overview": 1,
+            "width": 1280,
+            "height": 800,
+            "playerLook": {
+              "x": 0,
+              "z": 0
+            },
+            "playerOrbit": {
+              "yaw": 0,
+              "pitch": 0.6283185307179586,
+              "active": true
+            }
+          }
+        },
+        "both": {
+          "p": {
+            "enabled": true,
+            "who": "natalie",
+            "available": true,
+            "place": "farm",
+            "room": null,
+            "position": {
+              "x": 20.941053397157,
+              "z": 15.822692795630138
+            },
+            "facing": "side",
+            "moving": true,
+            "gait": "walk",
+            "speed": 2.7234955889062666,
+            "pose": null,
+            "travelling": false,
+            "actionProgress": 0,
+            "blocked": false,
+            "action": null,
+            "actionTarget": null,
+            "waterCanVisible": false,
+            "wateringVisible": false,
+            "canVisible": false,
+            "streamVisible": false,
+            "dropsVisible": false,
+            "canScale": 1.65,
+            "waterNozzle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "visualYaw": 0.569688676640549,
+            "spriteFrame": 2,
+            "spriteDirection": "side",
+            "spriteStature": 2.3,
+            "sideFrameCount": 4,
+            "target": {
+              "type": "plot",
+              "index": 4,
+              "x": 20,
+              "z": 16.8,
+              "label": "Plant pumpkin",
+              "distance": 1.3567280007481106,
+              "score": 1.7817348321559852
+            }
+          },
+          "camera": {
+            "zoom": 2.3,
+            "x": 20.767919206780547,
+            "z": 15.873897272868422,
+            "span": 23.47826086956522,
+            "overview": 1,
+            "width": 1280,
+            "height": 800,
+            "playerLook": {
+              "x": 0.569688676640549,
+              "z": 0
+            },
+            "playerOrbit": {
+              "yaw": 0.569688676640549,
+              "pitch": 0.6283185307179586,
+              "active": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "Moving one thumb does not steal the other thumb’s camera capture",
+      "data": {
+        "both": {
+          "p": {
+            "enabled": true,
+            "who": "natalie",
+            "available": true,
+            "place": "farm",
+            "room": null,
+            "position": {
+              "x": 20.941053397157,
+              "z": 15.822692795630138
+            },
+            "facing": "side",
+            "moving": true,
+            "gait": "walk",
+            "speed": 2.7234955889062666,
+            "pose": null,
+            "travelling": false,
+            "actionProgress": 0,
+            "blocked": false,
+            "action": null,
+            "actionTarget": null,
+            "waterCanVisible": false,
+            "wateringVisible": false,
+            "canVisible": false,
+            "streamVisible": false,
+            "dropsVisible": false,
+            "canScale": 1.65,
+            "waterNozzle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "visualYaw": 0.569688676640549,
+            "spriteFrame": 2,
+            "spriteDirection": "side",
+            "spriteStature": 2.3,
+            "sideFrameCount": 4,
+            "target": {
+              "type": "plot",
+              "index": 4,
+              "x": 20,
+              "z": 16.8,
+              "label": "Plant pumpkin",
+              "distance": 1.3567280007481106,
+              "score": 1.7817348321559852
+            }
+          },
+          "camera": {
+            "zoom": 2.3,
+            "x": 20.767919206780547,
+            "z": 15.873897272868422,
+            "span": 23.47826086956522,
+            "overview": 1,
+            "width": 1280,
+            "height": 800,
+            "playerLook": {
+              "x": 0.569688676640549,
+              "z": 0
+            },
+            "playerOrbit": {
+              "yaw": 0.569688676640549,
+              "pitch": 0.6283185307179586,
+              "active": true
+            }
+          }
+        },
+        "changed": {
+          "p": {
+            "enabled": true,
+            "who": "natalie",
+            "available": true,
+            "place": "farm",
+            "room": null,
+            "position": {
+              "x": 21.546330057174806,
+              "z": 14.650781229092457
+            },
+            "facing": "side",
+            "moving": true,
+            "gait": "walk",
+            "speed": 3.2773234338433,
+            "pose": null,
+            "travelling": false,
+            "actionProgress": 0,
+            "blocked": false,
+            "action": null,
+            "actionTarget": null,
+            "waterCanVisible": false,
+            "wateringVisible": false,
+            "canVisible": false,
+            "streamVisible": false,
+            "dropsVisible": false,
+            "canScale": 1.65,
+            "waterNozzle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "visualYaw": 1.2532604028711143,
+            "spriteFrame": 2,
+            "spriteDirection": "side",
+            "spriteStature": 2.3,
+            "sideFrameCount": 4,
+            "target": {
+              "type": "plot",
+              "index": 1,
+              "x": 20,
+              "z": 14.2,
+              "label": "Plant pumpkin",
+              "distance": 1.610695614392846,
+              "score": 1.7383535166444923
+            }
+          },
+          "camera": {
+            "zoom": 2.3,
+            "x": 21.528884797560693,
+            "z": 14.857530946677127,
+            "span": 23.47826086956522,
+            "overview": 1,
+            "width": 1280,
+            "height": 800,
+            "playerLook": {
+              "x": 1.2532604028711143,
+              "z": 0
+            },
+            "playerOrbit": {
+              "yaw": 1.2532604028711143,
+              "pitch": 0.6283185307179586,
+              "active": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "Releasing MOVE stops travel while the held LOOK thumb keeps turning",
+      "data": {
+        "moveReleased": {
+          "p": {
+            "enabled": true,
+            "who": "natalie",
+            "available": true,
+            "place": "farm",
+            "room": null,
+            "position": {
+              "x": 21.403437812030834,
+              "z": 14.08954931699686
+            },
+            "facing": "side",
+            "moving": false,
+            "gait": "walk",
+            "speed": 0.00003331958713995107,
+            "pose": null,
+            "travelling": false,
+            "actionProgress": 0,
+            "blocked": false,
+            "action": null,
+            "actionTarget": null,
+            "waterCanVisible": false,
+            "wateringVisible": false,
+            "canVisible": false,
+            "streamVisible": false,
+            "dropsVisible": false,
+            "canScale": 1.65,
+            "waterNozzle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "visualYaw": 2.119072351314752,
+            "spriteFrame": 0,
+            "spriteDirection": "side",
+            "spriteStature": 2.3,
+            "sideFrameCount": 4,
+            "target": {
+              "type": "plot",
+              "index": 1,
+              "x": 20,
+              "z": 14.2,
+              "label": "Plant pumpkin",
+              "distance": 1.4077773423427988,
+              "score": 1.5726663533743515
+            }
+          },
+          "camera": {
+            "zoom": 2.3,
+            "x": 21.4043775152522,
+            "z": 14.093843076935139,
+            "span": 23.47826086956522,
+            "overview": 1,
+            "width": 1280,
+            "height": 800,
+            "playerLook": {
+              "x": 2.119072351314752,
+              "z": 0
+            },
+            "playerOrbit": {
+              "yaw": 2.119072351314752,
+              "pitch": 0.6283185307179586,
+              "active": true
+            }
+          }
+        },
+        "lookingOnly": {
+          "p": {
+            "enabled": true,
+            "who": "natalie",
+            "available": true,
+            "place": "farm",
+            "room": null,
+            "position": {
+              "x": 21.403437381227032,
+              "z": 14.089547935386465
+            },
+            "facing": "side",
+            "moving": false,
+            "gait": "walk",
+            "speed": 3.35789944215548e-8,
+            "pose": null,
+            "travelling": false,
+            "actionProgress": 0,
+            "blocked": false,
+            "action": null,
+            "actionTarget": null,
+            "waterCanVisible": false,
+            "wateringVisible": false,
+            "canVisible": false,
+            "streamVisible": false,
+            "dropsVisible": false,
+            "canScale": 1.65,
+            "waterNozzle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "visualYaw": 2.529215387053091,
+            "spriteFrame": 0,
+            "spriteDirection": "side",
+            "spriteStature": 2.3,
+            "sideFrameCount": 4,
+            "target": {
+              "type": "plot",
+              "index": 1,
+              "x": 20,
+              "z": 14.2,
+              "label": "Plant pumpkin",
+              "distance": 1.4077770212653649,
+              "score": 1.5726662457928444
+            }
+          },
+          "camera": {
+            "zoom": 2.3,
+            "x": 21.40350056855571,
+            "z": 14.08983660905909,
+            "span": 23.47826086956522,
+            "overview": 1,
+            "width": 1280,
+            "height": 800,
+            "playerLook": {
+              "x": 2.529215387053091,
+              "z": 0
+            },
+            "playerOrbit": {
+              "yaw": 2.529215387053091,
+              "pitch": 0.6283185307179586,
+              "active": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "Releasing both touches clears movement and camera input",
+      "data": {
+        "released": {
+          "p": {
+            "enabled": true,
+            "who": "natalie",
+            "available": true,
+            "place": "farm",
+            "room": null,
+            "position": {
+              "x": 21.40343738079244,
+              "z": 14.089547933992696
+            },
+            "facing": "side",
+            "moving": false,
+            "gait": "walk",
+            "speed": 3.4103883499148086e-14,
+            "pose": null,
+            "travelling": false,
+            "actionProgress": 0,
+            "blocked": false,
+            "action": null,
+            "actionTarget": null,
+            "waterCanVisible": false,
+            "wateringVisible": false,
+            "canVisible": false,
+            "streamVisible": false,
+            "dropsVisible": false,
+            "canScale": 1.65,
+            "waterNozzle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "visualYaw": 2.802644077545317,
+            "spriteFrame": 0,
+            "spriteDirection": "side",
+            "spriteStature": 2.3,
+            "sideFrameCount": 4,
+            "target": {
+              "type": "plot",
+              "index": 1,
+              "x": 20,
+              "z": 14.2,
+              "label": "Plant pumpkin",
+              "distance": 1.4077770209414648,
+              "score": 1.5726662456843192
+            }
+          },
+          "camera": {
+            "zoom": 2.3,
+            "x": 21.403437666185468,
+            "z": 14.08954923781822,
+            "span": 23.47826086956522,
+            "overview": 1,
+            "width": 1280,
+            "height": 800,
+            "playerLook": {
+              "x": 2.802644077545317,
+              "z": 0
+            },
+            "playerOrbit": {
+              "yaw": 2.802644077545317,
+              "pitch": 0.6283185307179586,
+              "active": true
+            }
+          }
+        },
+        "settled": {
+          "p": {
+            "enabled": true,
+            "who": "natalie",
+            "available": true,
+            "place": "farm",
+            "room": null,
+            "position": {
+              "x": 21.40343738079244,
+              "z": 14.089547933992694
+            },
+            "facing": "side",
+            "moving": false,
+            "gait": "walk",
+            "speed": 3.4369396864409353e-17,
+            "pose": null,
+            "travelling": false,
+            "actionProgress": 0,
+            "blocked": false,
+            "action": null,
+            "actionTarget": null,
+            "waterCanVisible": false,
+            "wateringVisible": false,
+            "canVisible": false,
+            "streamVisible": false,
+            "dropsVisible": false,
+            "canScale": 1.65,
+            "waterNozzle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "visualYaw": 2.802644077545317,
+            "spriteFrame": 0,
+            "spriteDirection": "side",
+            "spriteStature": 2.3,
+            "sideFrameCount": 4,
+            "target": {
+              "type": "plot",
+              "index": 1,
+              "x": 20,
+              "z": 14.2,
+              "label": "Plant pumpkin",
+              "distance": 1.4077770209414648,
+              "score": 1.5726662456843195
+            }
+          },
+          "camera": {
+            "zoom": 2.3,
+            "x": 21.403437399972425,
+            "z": 14.089548021616958,
+            "span": 23.47826086956522,
+            "overview": 1,
+            "width": 1280,
+            "height": 800,
+            "playerLook": {
+              "x": 2.802644077545317,
+              "z": 0
+            },
+            "playerOrbit": {
+              "yaw": 2.802644077545317,
+              "pitch": 0.6283185307179586,
+              "active": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "All twenty equipped looks use multiple distance-driven side-walk frames",
+      "data": [
+        {
+          "id": "shane-base",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3718749999999997
+          ],
+          "expectedHeight": 2.3718749999999997,
+          "count": 4
+        },
+        {
+          "id": "natalie-base",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3,
+          "count": 4
+        },
+        {
+          "id": "shane-vampire",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3718749999999997
+          ],
+          "expectedHeight": 2.3718749999999997,
+          "count": 4
+        },
+        {
+          "id": "shane-skeleton",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3718749999999997
+          ],
+          "expectedHeight": 2.3718749999999997,
+          "count": 4
+        },
+        {
+          "id": "shane-scarecrow",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.4796875
+          ],
+          "expectedHeight": 2.4796875,
+          "count": 4
+        },
+        {
+          "id": "shane-frankenstein",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3,
+          "count": 4
+        },
+        {
+          "id": "shane-mummy",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3,
+          "count": 4
+        },
+        {
+          "id": "shane-slasher",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3,
+          "count": 4
+        },
+        {
+          "id": "shane-chucky",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3,
+          "count": 4
+        },
+        {
+          "id": "shane-jason",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3718749999999997
+          ],
+          "expectedHeight": 2.3718749999999997,
+          "count": 4
+        },
+        {
+          "id": "natalie-witch",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.6737499999999996
+          ],
+          "expectedHeight": 2.6737499999999996,
+          "count": 4
+        },
+        {
+          "id": "natalie-ghostbride",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3718749999999997
+          ],
+          "expectedHeight": 2.3718749999999997,
+          "count": 4
+        },
+        {
+          "id": "natalie-batqueen",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.5156249999999996
+          ],
+          "expectedHeight": 2.5156249999999996,
+          "count": 4
+        },
+        {
+          "id": "natalie-vampire",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3,
+          "count": 4
+        },
+        {
+          "id": "natalie-frankenstein",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3,
+          "count": 4
+        },
+        {
+          "id": "natalie-mummy",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3,
+          "count": 4
+        },
+        {
+          "id": "natalie-slasher",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3,
+          "count": 4
+        },
+        {
+          "id": "natalie-tiffany",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3,
+          "count": 4
+        },
+        {
+          "id": "natalie-freddy",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            2.4437499999999996
+          ],
+          "expectedHeight": 2.4437499999999996,
+          "count": 4
+        },
+        {
+          "id": "natalie-wheelchair",
+          "frames": [
+            0,
+            2,
+            3,
+            1
+          ],
+          "directions": [
+            "side"
+          ],
+          "heights": [
+            1.940625
+          ],
+          "expectedHeight": 1.940625,
+          "count": 4
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "label": "Every look retains its declared foot-anchored stature through its walk",
+      "data": [
+        {
+          "id": "shane-base",
+          "heights": [
+            2.3718749999999997
+          ],
+          "expectedHeight": 2.3718749999999997
+        },
+        {
+          "id": "natalie-base",
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3
+        },
+        {
+          "id": "shane-vampire",
+          "heights": [
+            2.3718749999999997
+          ],
+          "expectedHeight": 2.3718749999999997
+        },
+        {
+          "id": "shane-skeleton",
+          "heights": [
+            2.3718749999999997
+          ],
+          "expectedHeight": 2.3718749999999997
+        },
+        {
+          "id": "shane-scarecrow",
+          "heights": [
+            2.4796875
+          ],
+          "expectedHeight": 2.4796875
+        },
+        {
+          "id": "shane-frankenstein",
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3
+        },
+        {
+          "id": "shane-mummy",
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3
+        },
+        {
+          "id": "shane-slasher",
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3
+        },
+        {
+          "id": "shane-chucky",
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3
+        },
+        {
+          "id": "shane-jason",
+          "heights": [
+            2.3718749999999997
+          ],
+          "expectedHeight": 2.3718749999999997
+        },
+        {
+          "id": "natalie-witch",
+          "heights": [
+            2.6737499999999996
+          ],
+          "expectedHeight": 2.6737499999999996
+        },
+        {
+          "id": "natalie-ghostbride",
+          "heights": [
+            2.3718749999999997
+          ],
+          "expectedHeight": 2.3718749999999997
+        },
+        {
+          "id": "natalie-batqueen",
+          "heights": [
+            2.5156249999999996
+          ],
+          "expectedHeight": 2.5156249999999996
+        },
+        {
+          "id": "natalie-vampire",
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3
+        },
+        {
+          "id": "natalie-frankenstein",
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3
+        },
+        {
+          "id": "natalie-mummy",
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3
+        },
+        {
+          "id": "natalie-slasher",
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3
+        },
+        {
+          "id": "natalie-tiffany",
+          "heights": [
+            2.3
+          ],
+          "expectedHeight": 2.3
+        },
+        {
+          "id": "natalie-freddy",
+          "heights": [
+            2.4437499999999996
+          ],
+          "expectedHeight": 2.4437499999999996
+        },
+        {
+          "id": "natalie-wheelchair",
+          "heights": [
+            1.940625
+          ],
+          "expectedHeight": 1.940625
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "label": "Base watering uses the empty-handed stance plus the physical can and stream",
+      "data": {
+        "enabled": true,
+        "who": "natalie",
+        "available": true,
+        "place": "farm",
+        "room": null,
+        "position": {
+          "x": 16.5,
+          "z": 14.2
+        },
+        "facing": "side",
+        "moving": false,
+        "gait": "walk",
+        "speed": 0,
+        "pose": null,
+        "travelling": false,
+        "actionProgress": 0.17391304347826086,
+        "blocked": false,
+        "action": "water",
+        "actionTarget": {
+          "type": "plot",
+          "index": 0,
+          "x": 16.5,
+          "z": 14.2,
+          "label": "Water pumpkin",
+          "distance": 0,
+          "score": 0
+        },
+        "waterCanVisible": true,
+        "wateringVisible": true,
+        "canVisible": true,
+        "streamVisible": true,
+        "dropsVisible": true,
+        "canScale": 1.65,
+        "waterNozzle": {
+          "x": 17.77984893270663,
+          "y": 1.0719415849648093,
+          "z": 14.2
+        },
+        "visualYaw": 0,
+        "spriteFrame": 0,
+        "spriteDirection": "water",
+        "spriteStature": 2.3,
+        "sideFrameCount": 4,
+        "target": {
+          "type": "plot",
+          "index": 0,
+          "x": 16.5,
+          "z": 14.2,
+          "label": "Water pumpkin",
+          "distance": 0,
+          "score": 0
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "The orbit also reaches the farm’s 270-degree side",
+      "data": {
+        "yaw": -1.5839999999999992
+      }
+    },
+    {
+      "ok": true,
+      "label": "The live home companion reacts to petting; screenshot records the pose for visual review",
+      "data": [
+        {
+          "who": "skyla",
+          "phase": "wag",
+          "frame": 4,
+          "position": {
+            "x": 1.25,
+            "z": 5.75
+          },
+          "hasBed": false,
+          "bowls": 0,
+          "reacting": true,
+          "reactions": 1
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "label": "phone: radial choices fit with 44px targets and no horizontal overflow",
+      "data": {
+        "overflow": false,
+        "small": [],
+        "clipped": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: radial choices fit with 44px targets and no horizontal overflow",
+      "data": {
+        "overflow": false,
+        "small": [],
+        "clipped": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "The release flow has no browser errors or external runtime asset requests",
+      "data": {
+        "errors": [],
+        "requests": []
+      }
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "single-can-watering",
+    "farm-three-quarter-orbit",
+    "single-companion-petting",
+    "phone-release-radial",
+    "fold-release-radial"
+  ]
+}

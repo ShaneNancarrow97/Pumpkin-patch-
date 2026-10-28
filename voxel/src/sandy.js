@@ -1,3 +1,4 @@
+import { hospitalityIcon } from "./ui/hospitality-icons.js";
 // Sandy's dedicated cut-outs preserve the same long adult body in every state.
 import * as THREE from "three";
 import base from "../assets/sandy/sandy-base.webp";
@@ -29,6 +30,7 @@ export function createSandy() {
   } };
 }
 export function cocoaArt(id = "sandy") {
+  const extra= hospitalityIcon(id); if(extra)return extra;
   if (id === "sandy") return `<span class="thumb"><span class="sandy-portrait" style="background-image:url('${base}')" aria-hidden="true"></span></span>`;
   const [col, row] = { cocoa: [0, 0], flake: [1, 0], deluxe: [2, 0], midnight: [0, 1], smores: [1, 1], shop: [2, 1] }[id] ?? [0, 0];
   return `<span class="thumb"><span class="cocoa-art" style="background-image:url('${icons}');background-position:${col * 50}% ${row * 100}%" aria-hidden="true"></span></span>`;

@@ -1,0 +1,442 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Life-Play.html",
+  "sha256": "67718dcf305aa723d53444cc0a614dee128322c372ed72031abb181c67cc03a2",
+  "started": "2026-10-28T20:47:08.395Z",
+  "scope": "Actual keyboard, pointer and emulated Gamepad API gestures. Diagnostic action time completes jobs without mutating the HTML. No physical controller, Bluetooth or Fold hardware verification.",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "Natalie enters the direct-control mode"
+    },
+    {
+      "ok": true,
+      "label": "Desktop: controls fit, remain 44px and do not overlap",
+      "data": {
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "boxes": [
+          {
+            "selector": "#play-stick",
+            "x": 28,
+            "y": 657,
+            "width": 116,
+            "height": 116,
+            "top": 657,
+            "right": 144,
+            "bottom": 773,
+            "left": 28
+          },
+          {
+            "selector": "#play-look",
+            "x": 1136,
+            "y": 657,
+            "width": 116,
+            "height": 116,
+            "top": 657,
+            "right": 1252,
+            "bottom": 773,
+            "left": 1136
+          },
+          {
+            "selector": "#play-interact",
+            "x": 585,
+            "y": 681,
+            "width": 110,
+            "height": 90,
+            "top": 681,
+            "right": 695,
+            "bottom": 771,
+            "left": 585
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "The movement thumbstick moves the selected owner",
+      "data": {
+        "beforeMove": {
+          "x": 13.2,
+          "z": 16.6
+        },
+        "afterMove": {
+          "x": 14.397003728233326,
+          "z": 16.6
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "The on-screen gait button switches to jogging"
+    },
+    {
+      "ok": true,
+      "label": "Pointer down begins a tool action before committing its rule"
+    },
+    {
+      "ok": true,
+      "label": "Releasing an unfinished hold leaves the plot empty"
+    },
+    {
+      "ok": true,
+      "label": "Releasing the unfinished hold clears the action"
+    },
+    {
+      "ok": true,
+      "label": "The accessible one-use button path enables an assisted action"
+    },
+    {
+      "ok": true,
+      "label": "The assisted action plants only when its timer completes"
+    },
+    {
+      "ok": true,
+      "label": "Finishing the same action again does not replace its crop"
+    },
+    {
+      "ok": true,
+      "label": "A physical watering can and pour are visible during the action",
+      "data": {
+        "enabled": true,
+        "who": "natalie",
+        "available": true,
+        "place": "farm",
+        "room": null,
+        "position": {
+          "x": 16.5,
+          "z": 14.2
+        },
+        "facing": "side",
+        "moving": false,
+        "gait": "jog",
+        "speed": 0,
+        "pose": null,
+        "travelling": false,
+        "actionProgress": 0.17391304347826086,
+        "blocked": false,
+        "action": "water",
+        "actionTarget": {
+          "type": "plot",
+          "index": 0,
+          "x": 16.5,
+          "z": 14.2,
+          "label": "Water pumpkin",
+          "distance": 0,
+          "score": 0
+        },
+        "waterCanVisible": true,
+        "wateringVisible": true,
+        "canVisible": true,
+        "streamVisible": true,
+        "dropsVisible": true,
+        "canScale": 1.65,
+        "waterNozzle": {
+          "x": 17.77984893270663,
+          "y": 1.0719415849648093,
+          "z": 14.2
+        },
+        "visualYaw": 0,
+        "spriteFrame": 0,
+        "spriteDirection": "water",
+        "spriteStature": 2.3,
+        "sideFrameCount": 4,
+        "target": {
+          "type": "plot",
+          "index": 0,
+          "x": 16.5,
+          "z": 14.2,
+          "label": "Water pumpkin",
+          "distance": 0,
+          "score": 0
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "Completed watering increases the nearby crop growth"
+    },
+    {
+      "ok": true,
+      "label": "A completed pick awards exactly one normal crop"
+    },
+    {
+      "ok": true,
+      "label": "Manual movement cancels a tool action without planting"
+    },
+    {
+      "ok": true,
+      "label": "The second thumbstick rotates camera yaw rather than panning the farm",
+      "data": {
+        "cameraBefore": {
+          "zoom": 2.3,
+          "x": 21.4002608969492,
+          "z": 14.2,
+          "span": 23.47826086956522,
+          "overview": 1,
+          "width": 1280,
+          "height": 800,
+          "playerLook": {
+            "x": 0,
+            "z": 0
+          },
+          "playerOrbit": {
+            "yaw": 0,
+            "pitch": 0.6283185307179586,
+            "active": true
+          }
+        },
+        "cameraAfter": {
+          "zoom": 2.3,
+          "x": 21.437832727861544,
+          "z": 14.2,
+          "span": 23.47826086956522,
+          "overview": 1,
+          "width": 1280,
+          "height": 800,
+          "playerLook": {
+            "x": 0.6502463054187193,
+            "z": 0
+          },
+          "playerOrbit": {
+            "yaw": 0.6502463054187193,
+            "pitch": 0.6283185307179586,
+            "active": true
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "Recenter returns camera yaw and keeps the character near the view centre",
+      "data": {
+        "yaw": 0,
+        "x": 2.160839408639327e-13,
+        "y": 0.0055133009987027816
+      }
+    },
+    {
+      "ok": true,
+      "label": "Farm orbit reaches quarter and opposite views with finite camera values",
+      "data": {
+        "quarterYaw": 1.5180000000000007,
+        "oppositeYaw": 3.1019999999999985
+      }
+    },
+    {
+      "ok": true,
+      "label": "DualSense L3 changes walk/jog gait"
+    },
+    {
+      "ok": true,
+      "label": "A held DualSense Square completes a real planting action"
+    },
+    {
+      "ok": true,
+      "label": "The owner can sit in an existing chair"
+    },
+    {
+      "ok": true,
+      "label": "Moving stands the owner up safely"
+    },
+    {
+      "ok": true,
+      "label": "A stocked bookshelf offers an actual reading interaction"
+    },
+    {
+      "ok": true,
+      "label": "Petting gives the home companion a visible happy reaction"
+    },
+    {
+      "ok": true,
+      "label": "phone: controls fit, remain 44px and do not overlap",
+      "data": {
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "boxes": [
+          {
+            "selector": "#play-stick",
+            "x": 18,
+            "y": 712,
+            "width": 108,
+            "height": 108,
+            "top": 712,
+            "right": 126,
+            "bottom": 820,
+            "left": 18
+          },
+          {
+            "selector": "#play-look",
+            "x": 264,
+            "y": 712,
+            "width": 108,
+            "height": 108,
+            "top": 712,
+            "right": 372,
+            "bottom": 820,
+            "left": 264
+          },
+          {
+            "selector": "#play-interact",
+            "x": 147,
+            "y": 732,
+            "width": 96,
+            "height": 88,
+            "top": 732,
+            "right": 243,
+            "bottom": 820,
+            "left": 147
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone radial: controls fit, remain 44px and do not overlap",
+      "data": {
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "boxes": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: controls fit, remain 44px and do not overlap",
+      "data": {
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "boxes": [
+          {
+            "selector": "#play-stick",
+            "x": 18,
+            "y": 284,
+            "width": 94,
+            "height": 94,
+            "top": 284,
+            "right": 112,
+            "bottom": 378,
+            "left": 18
+          },
+          {
+            "selector": "#play-look",
+            "x": 732,
+            "y": 284,
+            "width": 94,
+            "height": 94,
+            "top": 284,
+            "right": 826,
+            "bottom": 378,
+            "left": 732
+          },
+          {
+            "selector": "#play-interact",
+            "x": 374,
+            "y": 300,
+            "width": 96,
+            "height": 78,
+            "top": 300,
+            "right": 470,
+            "bottom": 378,
+            "left": 374
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape radial: controls fit, remain 44px and do not overlap",
+      "data": {
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "boxes": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: controls fit, remain 44px and do not overlap",
+      "data": {
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "boxes": [
+          {
+            "selector": "#play-stick",
+            "x": 18,
+            "y": 655,
+            "width": 108,
+            "height": 108,
+            "top": 655,
+            "right": 126,
+            "bottom": 763,
+            "left": 18
+          },
+          {
+            "selector": "#play-look",
+            "x": 748,
+            "y": 655,
+            "width": 108,
+            "height": 108,
+            "top": 655,
+            "right": 856,
+            "bottom": 763,
+            "left": 748
+          },
+          {
+            "selector": "#play-interact",
+            "x": 389,
+            "y": 675,
+            "width": 96,
+            "height": 88,
+            "top": 675,
+            "right": 485,
+            "bottom": 763,
+            "left": 389
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold radial: controls fit, remain 44px and do not overlap",
+      "data": {
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "boxes": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "The complete flow has no browser errors",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "The game requests no external runtime assets",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "watering-progress",
+    "farm-quarter-orbit",
+    "farm-opposite-orbit",
+    "sitting-at-home",
+    "phone-controls",
+    "fold-controls",
+    "fold-tool-wheel"
+  ]
+}

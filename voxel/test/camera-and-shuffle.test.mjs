@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { cameraLayout, farmVerticalLimits } from "../src/camera-layout.js";
+import { cameraLayout, controlledRoomFraming, farmVerticalLimits } from "../src/camera-layout.js";
 import { createMusicQueue } from "../src/ui/music-queue.js";
 
 test("an almost-square unfolded Fold uses the whole farm, not the phone crop", () => {
@@ -36,4 +36,15 @@ test("shuffle plays every song per round and never repeats at round boundaries",
   assert.equal(queue.next("i", false), "a");
   assert.equal(createMusicQueue([]).next("a"), null);
   assert.equal(createMusicQueue(["a"]).next("a"), "a");
+});
+
+// The same cap is applied when wheel, pinch or controller input reaches framing.
+test("indoor direct play leaves space around the owner and cannot zoom into a giant", () => {
+  assert.equal(controlledRoomFraming(390).distance,15);
+  assert.equal(controlledRoomFraming(874).distance,16.5);
+  for(const width of [320,390,600,874,1280])for(const requested of [.1,.6,1,1.9,4.5,NaN,Infinity]){
+    const view=controlledRoomFraming(width,requested);
+    assert.ok(view.zoom>=.6&&view.zoom<=1.15);
+    assert.ok(view.distance/view.zoom>=13);
+  }
 });

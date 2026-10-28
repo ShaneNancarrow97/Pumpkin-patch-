@@ -40,7 +40,7 @@ test("legacy purchased storage retains every pumpkin and at least its previous c
     const oldCap = 60 + [0, 40, 120, 280, 600, 1240][level];
     s.stock = [oldCap + 100, 10, 5, 2];
     const restored = M.restoreState(JSON.parse(JSON.stringify(s)));
-    assert.ok(M.barnCapacity(restored) >= oldCap); assert.deepEqual(restored.stock, s.stock);
+    assert.ok(M.barnCapacity(restored) >= oldCap); assert.deepEqual(restored.stock, [...s.stock, ...Array(Math.max(0, M.VARIETIES.length-s.stock.length)).fill(0)]);
     assert.equal(restored.upgrades.storage, level);
   }
 });

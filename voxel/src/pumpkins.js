@@ -14,7 +14,7 @@ const scale = (hex, k) => new THREE.Color(hex).multiplyScalar(k).getHex();
 // Only voxels open to the side or the sky are kept: nothing ever sees the
 // inside or the underside. `carve(x, y)` cuts a face, in -1..1 across and up,
 // two voxels deep onto a candlelit back.
-function lobed(v, { R, H, s, lobes, groove, crease = 0.2, squash = 2.3, dimple = 0.3, color, r, carve = null, x0 = 0, y0 = 0, z0 = 0 }) {
+function lobed(v, { R, H, s, lobes, groove, crease = 0.2, squash = 2.3, dimple = 0.3, color, r, markings = false, carve = null, x0 = 0, y0 = 0, z0 = 0 }) {
   const N = 2 * R + 2, id = (x, y, z) => ((y + 1) * N + x + R + 1) * N + z + R + 1, at = (x, y, z) => solid[id(x, y, z)] === 1;
   const solid = new Uint8Array(N * N * (H + 2)), top = new Int8Array(N * N);
   const lobe = (x, z) => { const u = Math.atan2(x, z) * lobes / (2 * Math.PI), i = Math.round(u); return [Math.cos(Math.PI * (u - i)) ** 0.5, (i + lobes) % lobes]; };
@@ -47,7 +47,11 @@ function lobed(v, { R, H, s, lobes, groove, crease = 0.2, squash = 2.3, dimple =
     if (bulge > 0.85) c = mix(c, light, (bulge - 0.85) * 4 * (0.4 + up));
     if (up > 0.6 && Math.hypot(px, pz) < R * 0.3) c = mix(c, groovy, 0.3);
     if (r() < 0.015) c = mix(c, light, 0.5);
-    put(x, y, z, vary(scale(c, tint[i] * (0.84 + 0.18 * up)), 0.02, r));
+    // Paint follows the curved rind rather than a floating front-facing card.
+    const a = Math.atan2(px, pz), my = up;
+    const moon = markings && Math.hypot((a + .33) / .23, (my - .6) / .23) < 1 && Math.hypot((a + .23) / .23, (my - .66) / .23) > .9;
+    const star = markings && [[.35,.68,.11],[-.77,.4,.085],[.7,.38,.09],[2.5,.65,.1],[-2,.53,.09]].some(([sx,sy,sz]) => Math.abs(a-sx)/sz + Math.abs(my-sy)/(sz*.6) < 1);
+    put(x, y, z, moon || star ? 0xffd875 : vary(scale(c, tint[i] * (0.84 + 0.18 * up)), 0.02, r), moon || star);
   }
   // Where the stem goes: the bottom of the dimple, and the surface height anywhere.
   return { base: top[(R + 1) * N + R + 1], top: (x, z) => (Math.abs(x) <= R && Math.abs(z) <= R ? top[(x + R + 1) * N + z + R + 1] : 0) };
@@ -104,6 +108,7 @@ const FORMS = [
   { lobes: 10, tall: 0.73, groove: 0.15, squash: 2.1, wood: 0x6a7c44, bend: [[0, 0], [0, 0], [0, 0], [1, 0], [1, 0], [2, 0], [3, 0]] },
   { lobes: 8, tall: 0.68, groove: 0.14, squash: 2.1, wood: 0xa4803c, bend: [[0, 0], [0, 0], [0, 0], [0, -1], [-1, -1], [-1, -1]] },
 ];
+FORMS.push({ lobes: 10, tall: .71, groove: .15, squash: 2.3, wood: 0x8b954e, bend: [[0,0],[0,0],[1,0],[1,0],[2,0],[2,0]] });
 const LEAF = ["...##....", "..####...", ".######..", "vvvvvvvv.", ".#######.", "..#####..", "...##...."];
 
 // Pumpkins for the plots, one template per variety: `size` is the half-width,
@@ -117,9 +122,9 @@ export function pumpkinTemplate(variety, size = 0.62) {
 }
 function buildPumpkin(variety, size) {
   const v = new Voxels(), r = seeded(variety + 3), f = FORMS[variety], R = 13, at = { s: size / R, r };
-  const form = lobed(v, { ...at, R, H: Math.round(f.tall * 2 * R), lobes: f.lobes, groove: f.groove, squash: f.squash, color: VARIETIES[variety].color });
+  const form = lobed(v, { ...at, R, H: Math.round(f.tall * 2 * R), lobes: f.lobes, groove: f.groove, squash: f.squash, color: VARIETIES[variety].color, markings: variety === 4 });
   stem(v, at, 0, form.base, 0, 3, f.bend, f.wood);
-  leafAndTendril(v, at, form, LEAF, [-0.5, -2.4, -0.9, -2.0][variety], { dir: [0.5, -0.4, 2.6, 0.9][variety], turns: 1.6, radius: 1.6, length: 6 });
+  leafAndTendril(v, at, form, LEAF, [-0.5, -2.4, -0.9, -2.0, -.6][variety], { dir: [0.5, -0.4, 2.6, 0.9, .7][variety], turns: 1.6, radius: 1.6, length: 6 });
   return v.build();
 }
 export function sproutTemplate() {
