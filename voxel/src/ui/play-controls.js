@@ -3,6 +3,28 @@ const glyph={hand:'✋',plant:'🌱',water:'💧',harvest:'✂',clean:'✦',home
 const toolNames={hand:'Interact',plant:'Plant',water:'Water',harvest:'Pick',clean:'Clean'};
 const inputField=()=>['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
 const dead=v=>Math.abs(v)>.18?v:0;
+const actionPaths={
+ hand:'M8 12V7a1.5 1.5 0 0 1 3 0v4-6a1.5 1.5 0 0 1 3 0v6-4a1.5 1.5 0 0 1 3 0v5-2a1.5 1.5 0 0 1 3 0v5c0 5-3 7-6 7h-2c-2 0-3-1-4-3l-3-5a1.5 1.5 0 0 1 2-2l1 1Z',
+ water:'M12 3c-2 4-7 7-7 12a7 7 0 0 0 14 0c0-5-5-8-7-12ZM9 16c0 2 1 3 3 3',
+ plant:'M5 4c9-1 15 3 14 10-8 3-14-1-14-10ZM7 7l10 12M12 13v8',
+ harvest:'M9 7c-6-2-8 3-7 7s4 6 10 6 9-2 10-6-1-9-7-7M12 6c-4 2-4 12 0 14 4-2 4-12 0-14ZM12 7V3l3-1',
+ clean:'m5 20 6-6m-4-4 7 7 6-8-5-5-8 6ZM18 2v3m3 1h-3M5 6v4M3 8h4',
+ sit:'M6 3v10h12v-5a3 3 0 0 0-3-3H9M6 13v8m12-8v8M4 13h16',
+ read:'M12 5C8 2 4 3 2 4v15c3-2 7-1 10 1 3-2 7-3 10-1V4c-2-1-6-2-10 1Zm0 0v15',
+ pet:'M20 5c-3-3-6-1-8 1-2-2-5-4-8-1-5 5 3 11 8 15 5-4 13-10 8-15Z',
+ home:'m3 11 9-8 9 8M5 10v11h14V10m-10 11v-7h6v7',
+ wardrobe:'M10 5a2 2 0 1 1 3 2l-1 1v2L2 16v3h20v-3l-10-6',
+ go:'M4 12h16m-6-6 6 6-6 6',
+ stand:'M12 3v14m-5-9 5-5 5 5M4 21h16',
+};
+const actionIcon=kind=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${actionPaths[kind]??actionPaths.hand}"/></svg>`;
+const shortAction=(label,p,job,tool)=>{
+ if(job.travelling)return 'Next crop';if(job.active)return label;
+ if(p.pose)return 'Stand up';if(p.available===false)return label;
+ const type=p.target?.type;
+ if(tool!=='hand'||type==='plot')return /water/i.test(label)?'Water':/pick/i.test(label)?'Pick':/plant/i.test(label)?'Plant':/clean/i.test(label)?'Clean':label;
+ return ({pumpkin:'Tap pumpkin',shop:'Shop',home:'Go home',cooking:'Cook',wardrobe:'Dress up',sit:'Sit',read:'Read',exit:'Leave',piece:'Arrange',go:'Go through'})[type]??label;
+};
 
 export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction}) {
   let padName='',menuRepeat=0,details=false,previousPiece=null,previousFocus=null,radial=false,tool='hand',keys=new Set(),cameraKeys=new Set(),move={x:0,y:0},look={x:0,y:0},padPrevious=[],selectedIndex=0,repeatAt=0,held=null,suppressClickUntil=0;
@@ -15,7 +37,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
       <div id="play-look" class="play-thumbstick" role="group" aria-label="Camera thumbstick"><i></i><span>LOOK</span></div>
       <button id="play-recenter" class="play-recenter" aria-label="Centre the camera on your character" title="Centre camera · C / R3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/><circle cx="12" cy="12" r="3"/></svg></button>
       <div class="play-actions">
-        <button id="play-interact" class="play-interact"><span class="play-action-key"><span id="play-activity-progress" role="progressbar" aria-label="Action progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden></span><kbd data-action-key>X</kbd><small data-action-hint>Tap</small></span><span data-action-label>Explore</span><small id="play-focus-label"></small></button>
+        <button id="play-interact" class="play-interact"><span class="play-action-key"><span data-action-icon aria-hidden="true"></span><span id="play-activity-progress" role="progressbar" aria-label="Action progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden></span><kbd data-action-key>X</kbd></span><span class="play-action-copy"><span data-action-label>Explore</span><small data-action-hint>Tap</small></span><small id="play-focus-label"></small></button>
         <button id="play-wheel" class="play-wheel" aria-label="Open radial tools"><span id="play-active-tool"><b data-tool-icon>✥</b><small data-tool-name>Tools</small></span><i aria-hidden="true">· · ·</i></button>
         <button id="play-arrange" class="play-arrange" aria-label="Arrange the nearby furniture" hidden>Arrange</button>
       </div>
@@ -23,26 +45,28 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     <div id="furniture-pad" hidden><div class="play-piece-label"></div><div class="play-dpad" role="group" aria-label="Move selected furniture"><button data-nudge="0,-1" aria-label="Move back">↑</button><button data-nudge="-1,0" aria-label="Move left">←</button><button data-nudge="1,0" aria-label="Move right">→</button><button data-nudge="0,1" aria-label="Move forward">↓</button></div><div class="play-furniture-actions"><button data-turn="-15" aria-label="Rotate left 15 degrees">↶</button><button id="furniture-wheel" aria-label="Furniture radial menu">✥</button><button data-turn="15" aria-label="Rotate right 15 degrees">↷</button><button data-finish>✓ Done</button></div></div>
     <div id="play-radial" hidden role="dialog" aria-modal="true" aria-label="Choose an action"><button class="radial-dismiss" aria-label="Close action wheel"></button><div class="radial-disc"><p class="eyebrow">Your tools</p><h2>Interact</h2><div class="radial-options"></div><button class="radial-close" aria-label="Close action wheel">×</button></div></div>`;
   document.body.append(root);
+  // Holding a game button is an input gesture, never Android text selection.
+  root.oncontextmenu=e=>e.preventDefault();root.onselectstart=e=>e.preventDefault();root.ondragstart=e=>e.preventDefault();
   const $=s=>root.querySelector(s),wheel=$('#play-radial'),opts=$('.radial-options'),stickEl=$('#play-stick'),lookEl=$('#play-look'),interact=$('#play-interact');
   const setText=(el,text)=>{if(el.textContent!==String(text))el.textContent=text;};
   const activity=()=>getActivity()??{};
   // Arrange is contextual, outside the transformed action cluster.
   root.append($('#play-arrange'));
-  let releaseMove=()=>{},releaseLook=()=>{};
+  let releaseMove=()=>{},releaseLook=()=>{},shownActionIcon='',shownCompletion=null,completeTimer;
 
   // A pointer capture may outlive a sheet opening; end it explicitly on every boundary.
   function cancelInteraction(reason='cancel') {
     if(held||activity().active)action(tool,{phase:'cancel',source:held?.source??'controls',reason});
-    held=null;
+    held=null;interact.dataset.pressed='false';
   }
   function beginInteraction(source,id=null) {
     if(held)return;
-    held={source,id,at:performance.now()};
+    held={source,id,at:performance.now()};interact.dataset.pressed='true';
     action(tool,{phase:'start',source,chain:true});
   }
   function endInteraction(source,id=null) {
     if(!held||held.source!==source||(id!==null&&held.id!==id))return;
-    const durationMs=Math.max(0,performance.now()-held.at);held=null;
+    const durationMs=Math.max(0,performance.now()-held.at);held=null;interact.dataset.pressed='false';
     action(tool,{phase:'release',source,durationMs,assist:durationMs<220});
   }
   function close() {
@@ -137,7 +161,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     $('#play-toggle').hidden=!!p.enabled||blocked||!!piece;$('#play-live').hidden=!p.enabled||blocked||radial||!!piece;
     stickEl.hidden=lookEl.hidden=$('#play-gait').hidden=$('#play-recenter').hidden=p.available===false;
     $('#furniture-pad').hidden=!piece||blocked||radial||details;
-    $('#play-arrange').hidden=!p.target?.instance||p.available===false||!!p.pose;
+    $('#play-arrange').hidden=!p.enabled||blocked||radial||!!piece||!p.target?.instance||p.available===false||!!p.pose;
     if(piece)setText($('.play-piece-label'),(piece.id??'Furniture').replaceAll('-',' ')+' · '+Math.round(piece.rotation??0)+'°');
     setText($('[data-owner]'),p.who==='shane'?'Shane':'Natalie');setText($('#play-toggle span'),padName?'Play · '+padName:'Play');
     setText($('#play-gait'),p.gait==='jog'?'Jog':'Walk');$('#play-gait').setAttribute('aria-pressed',String(p.gait==='jog'));
@@ -145,8 +169,11 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     const pose=p.pose&&(typeof p.pose==='string'?p.pose:p.pose.kind),holdable=['plot','litter'].includes(p.target?.type);
     const label=p.available===false?(p.place==='estate'?'Enter home':'Back to farm'):job.active?job.label:pose?'Stand up':tool==='hand'?p.target?.label:({plant:'Plant seed',water:'Water crop',harvest:'Pick pumpkin',clean:'Clean litter'})[tool];
     const object=p.target?.objectLabel??p.target?.name??p.target?.item?.replaceAll('-',' ')??'';
-    setText($('[data-action-key]'),padName==='DualSense'?'□':padName?'A':'X');setText($('[data-action-hint]'),job.travelling?'Go to':job.active?(job.holding?'Hold':'Using'):holdable?'Tap / hold':'Tap');setText($('[data-action-label]'),label||'Explore');setText($('#play-focus-label'),object===label?'':object);
-    const progress=Math.max(0,Math.min(1,Number(job.progress)||0));$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep using':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
+    setText($('[data-action-key]'),padName==='DualSense'?'□':padName?'A':'X');setText($('[data-action-hint]'),job.travelling?'Walking':job.active?(job.holding?'Hold':'Finishing'):holdable?'Tap / hold':'Tap');setText($('[data-action-label]'),shortAction(label||'Explore',p,job,tool));setText($('#play-focus-label'),'');
+    const icon=pose?'stand':job.kind??(tool==='hand'?({plot:/water/i.test(label)?'water':/pick/i.test(label)?'harvest':'plant',litter:'clean',pumpkin:'harvest',shop:'home',home:'home',cooking:'hand',wardrobe:'wardrobe',sit:'sit',read:'read',pet:'pet',exit:'go',go:'go',piece:'hand'})[p.target?.type]??'hand':tool);
+    if(shownActionIcon!==icon){$('[data-action-icon]').innerHTML=actionIcon(icon);shownActionIcon=icon;}interact.dataset.input=padName?'gamepad':'touch';
+    if(job.last&&job.last!==shownCompletion){shownCompletion=job.last;if(job.last.success){clearTimeout(completeTimer);interact.classList.add('play-complete');completeTimer=setTimeout(()=>interact.classList.remove('play-complete'),360);}}
+    const progress=Math.max(0,Math.min(1,Number(job.progress)||0));interact.style.setProperty('--action-progress',progress);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep using':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
     scene.player?.setBlocked(blocked||radial||!!piece);
     if(blocked){cancelInteraction('menu');keys.clear();cameraKeys.clear();releaseMove();releaseLook();}
     if(pad&&blocked)menuInput(down,pressed);
