@@ -43,8 +43,9 @@ export function clearHomePose(actor){
 export function applyHomePose(actor,{who,outfit,look,kind,target,time=0}){
  const d=actor?.userData;if(!d?.show||!d.idle?.[0])return false;
  let old=originals.get(actor);if(!old){const mesh=actor.children[0].children.find(m=>m.isMesh);old={texture:d.playerFrontTexture??mesh?.material.map,geometry:d.idle[0],book:null};originals.set(actor,old);}
- const base=!outfit||outfit.endsWith('-base'),drawn=base&&texture.image&&poses[who]?.[kind]&&(kind!=='read'||target?.pose);
- if(drawn){paint(actor,tint(who,look));d.show(poses[who][kind]);d.shown=poses[who][kind];}
+ const base=!outfit||outfit.endsWith('-base'),petting=base&&kind==='pet'&&!!d.playerAnimate,drawn=base&&kind!=='pet'&&texture.image&&poses[who]?.[kind]&&(kind!=='read'||target?.pose);
+ if(petting){d.playerAnimate({who,outfit,look,action:'plant',facing:'front',walking:false,time,controlled:true});}
+ else if(drawn){paint(actor,tint(who,look));d.show(poses[who][kind]);d.shown=poses[who][kind];}
  else {paint(actor,old.texture);const geometry=kind==='sit'&&!outfit?.includes('wheelchair')?bentLegs(old.geometry):old.geometry;d.show(geometry);d.shown=geometry;}
  // A wheelchair remains seated in its own chair; it is never folded into a second seat.
  const lean=actor.children[0];lean.rotation.z=kind==='pet'&&!drawn?-.10+Math.sin(time*2)*.015:Math.sin(time*1.6)*.006;

@@ -230,6 +230,7 @@ try {
     p.teleport(target.x, target.z); p.faceTarget(target);
     return PumpkinVoxel.scene.petsStatus.find(x => x.who === (target.pet ?? target.who));
   }); await frame(); await page.locator('#play-interact').click();
+  await page.waitForFunction(before=>PumpkinVoxel.scene.petsStatus.some(p=>p.who===before.who&&p.reactions>(before.reactions??0)),petBefore);
   check(await page.evaluate(before => PumpkinVoxel.scene.petsStatus.some(p => p.who === before.who && (p.reactions > (before.reactions ?? 0) || p.reacting === true || p.phase === 'happy')), petBefore), 'Petting gives the home companion a visible happy reaction');
   await page.evaluate(() => PumpkinVoxel.scene.player.stand());
 
