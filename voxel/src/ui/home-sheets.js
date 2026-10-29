@@ -18,6 +18,58 @@ const WAYS = { stair: { up: "Stairs up to the", down: "Stairs down to the" }, la
 const REACHED = { stair: (from) => `up new stairs from the ${roomName(from)}`, door: (from) => `through a new doorway from the ${roomName(from)}`, ladder: (from) => `up a ladder from the ${roomName(from)}` };
 const BUILDS = { stair: "Stairs up from the", door: "A doorway from the", ladder: "A ladder up from the" };
 
+// The build catalogue sorts every piece by what it's for, and by the rooms it
+// suits, like a build-and-buy panel: a rail of modes, a row of kinds, a grid.
+const KINDS = [["all", "Everything"], ["seating", "Seating"], ["tables", "Tables & desks"], ["beds", "Beds & dressing"], ["storage", "Shelves & storage"], ["lighting", "Lighting"], ["rugs", "Rugs"], ["wall", "On the walls"], ["curios", "Curios & plants"], ["kitchen", "Kitchen"], ["pets", "Pets"], ["books", "Books"], ["wallpaper", "Wallpaper"]];
+export function kindOf(it) {
+  const n = (it.name + " " + it.id).toLowerCase();
+  if (it.category === "wallpaper") return "wallpaper";
+  if (it.category === "books") return "books";
+  if (it.petUse || /\b(hound|bowls|basket)\b|pet-|-pet/.test(n)) return "pets";
+  if (it.grants || /kitchen|range|sink|preserves|spice|pan rail|pan-rail|utensil|oven|hob/.test(n)) return "kitchen";
+  if (it.rug || /\brug\b/.test(n)) return "rugs";
+  if (it.category === "lights" || /lamp|lantern|candle|chandelier|candelabr|sconce/.test(n)) return "lighting";
+  if (/\bbed\b|canopy|wardrobe|costume|vanity|dressing/.test(n)) return "beds";
+  if (/chair|sofa|pouffe|bench|stool|settee/.test(n)) return "seating";
+  if (/table|desk|console|island/.test(n)) return "tables";
+  if (it.category === "shelves" || /shelf|bookcase|cabinet|dresser|chest|trunk|etagere|whatnot/.test(n)) return "storage";
+  if (it.wall || it.wallWidth) return "wall";
+  return "curios";
+}
+const ROOM_KINDS = {
+  parlour: ["seating", "tables", "storage", "lighting", "rugs", "wall", "curios", "books", "pets", "wallpaper"],
+  bedroom: ["beds", "seating", "storage", "lighting", "rugs", "wall", "curios", "books", "pets", "wallpaper"],
+  kitchen: ["kitchen", "tables", "storage", "lighting", "wall", "curios", "pets", "wallpaper"],
+  attic: ["storage", "books", "curios", "lighting", "seating", "tables", "rugs", "wall", "beds", "wallpaper"],
+};
+const OWNED = [["all", "Everything you own"], ["stored", "In storage"], ["here", "In this room"], ["elsewhere", "In other rooms"]];
+const BUILD_ICONS = {
+  all: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z",
+  seating: "M6 11V7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v4M4 11h3v4h10v-4h3v7H4zM6 18v2M18 18v2",
+  tables: "M3 8h18M5 8v11M19 8v11M8 8v6h8V8",
+  beds: "M3 18V6M3 13h18v5M21 18v-6a3 3 0 0 0-3-3h-8v4M6 12a2 2 0 1 0 0-.1",
+  storage: "M5 3h14v18H5zM5 9h14M5 15h14M9 6h1M9 12h1M9 18h1",
+  lighting: "M9 21h6M12 17v4M8 3h8l2 7H6zM12 10v7",
+  rugs: "M5 5h14v14H5zM8 8h8v8H8zM5 3v2M9 3v2M13 3v2M17 3v2M5 19v2M9 19v2M13 19v2M17 19v2",
+  wall: "M4 5h16v14H4zM7 15l3-4 3 3 2-2 2 3M12 2v3",
+  curios: "M9 3h6M10 3v3c-3 2-4 4-4 7a6 6 0 0 0 12 0c0-3-1-5-4-7V3",
+  kitchen: "M4 11h16v3a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6zM2 11h2M20 11h2M9 7c0-1 1-1 1-2s-1-1-1-2M14 7c0-1 1-1 1-2s-1-1-1-2",
+  pets: "M7 10a2 2 0 1 0 0-.1M17 10a2 2 0 1 0 0-.1M10 6a2 2 0 1 0 0-.1M14 6a2 2 0 1 0 0-.1M8 18c0-3 2-5 4-5s4 2 4 5c0 2-2 2-4 1-2 1-4 1-4-1Z",
+  books: "M4 5c3-1 6 0 8 1 2-1 5-2 8-1v14c-3-1-6 0-8 1-2-1-5-2-8-1zM12 6v14",
+  wallpaper: "M5 4h10a2 2 0 0 1 2 2v12H7a2 2 0 0 1-2-2zM17 8h2v12H7M8 8h6M8 12h6",
+  function: "M6 11V7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v4M4 11h3v4h10v-4h3v7H4z",
+  room: "M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6",
+  owned: "M3 8l9-5 9 5v9l-9 5-9-5zM3 8l9 5 9-5M12 13v9",
+  parlour: "M6 11V7a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v4M4 11h3v4h10v-4h3v7H4z",
+  bedroom: "M3 18V6M3 13h18v5M21 18v-6a3 3 0 0 0-3-3h-8v4",
+  attic: "M2 12 12 3l10 9M5 10v10h14V10M10 14h4v6h-4z",
+  stored: "M3 8l9-5 9 5v9l-9 5-9-5zM3 8l9 5 9-5M12 13v9",
+  here: "M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11ZM12 8a2 2 0 1 0 0 .1",
+  elsewhere: "M4 12h16m-6-6 6 6-6 6",
+  search: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14ZM21 21l-5-5",
+};
+const buildIcon = (k) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${BUILD_ICONS[k] ?? BUILD_ICONS.all}"/></svg>`;
+
 // What the next level adds, one line each, in the game's voice.
 function additions(next) {
   const lines = [];
@@ -84,7 +136,7 @@ function plan(s, level, label) {
 }
 
 export function homeSheets(ui) {
-  let tab = "rooms", category = "all", search = "";
+  let tab = "rooms", category = "all", search = "", mode = "function", sub = "all", picked = null, ownedOnly = false, affordable = false;
   const tabs = () => segmented("hometab", "Home sections", [["rooms", "Rooms"], ["decorate", "Furnish"], ["house", "Expand"]], tab);
   const here = () => ui.state.house.activeRoom;
 
@@ -130,17 +182,67 @@ export function homeSheets(ui) {
 
   // What small pieces can stand on: anything with a flat top in the catalogue.
   const HOSTS = new Set(M.decorCatalog.filter((it) => !SMALL_PIECES.includes(it.id) && M.hostSurfaces({ id: it.id }).length).map((it) => it.id));
+  const holdsLine = (it) => it.capacity ? `Holds ${it.capacity} books` : isShelf(it.id) ? `In ${it.finishes.length} finishes · lamps and curios stand on it` : HOSTS.has(it.id) ? "Lamps and curios can stand on it" : canRide(it.id) ? "Can stand on a table or shelf" : "";
+  const thumbOf = (it, px) => it.category === "wallpaper" ? `<span class="thumb"><span class="paper" style="background-color:${it.color}"></span></span>` : decorIcon(it.id, px);
+  // The tile's own button: the price to buy and place it, or what to do with one you own.
+  function tileAction(s, it) {
+    const id = it.id, owned = s.house.owned.includes(id);
+    if (!owned) return `<button class="build-chip buy" data-decor="${id}" ${s.coins < it.price ? "disabled" : ""}>${money(it.price)}</button>`;
+    if (it.category === "wallpaper") return s.house.wallpapers[here()] === id ? `<button class="build-chip" disabled>On the walls</button>` : `<button class="build-chip" data-paper="${id}">Hang</button>`;
+    if (it.category === "books") {
+      if (!M.availableBook(s, id)) return `<button class="build-chip" data-read="${id}">Read</button>`;
+      const shelf = M.roomPieces(s, here()).find((p) => M.shelfCapacity(p.id) > p.books.length);
+      return `<button class="build-chip" data-shelve="${id}" ${shelf ? "" : "disabled"}>${shelf ? "Shelve" : "No shelf"}</button>`;
+    }
+    const placed = s.house.placed.find((p) => p.id === id);
+    if (placed) return `<button class="build-chip" data-show="${placed.instance}">${placed.room === here() ? "Show me" : roomName(placed.room)}</button>`;
+    const full = M.roomPieces(s, here()).length >= M.roomCapacity(s, here());
+    return `<button class="build-chip place" data-place="${id}" ${full ? "disabled" : ""}>${full ? "Room full" : "Place"}</button>`;
+  }
+  function buildItems(s) {
+    const q = search.trim().toLowerCase(), owns = (it) => s.house.owned.includes(it.id), where = (it) => s.house.placed.find((p) => p.id === it.id);
+    return M.decorCatalog.filter((it) => {
+      if (mode === "function" && sub !== "all" && kindOf(it) !== sub) return false;
+      if (mode === "room" && !ROOM_KINDS[sub]?.includes(kindOf(it))) return false;
+      if (mode === "owned") {
+        if (!owns(it)) return false;
+        const p = where(it);
+        if (sub === "stored" && (p || it.category === "wallpaper" || (it.category === "books" && !M.availableBook(s, it.id)))) return false;
+        if (sub === "here" && p?.room !== here()) return false;
+        if (sub === "elsewhere" && (!p || p.room === here())) return false;
+      }
+      if (ownedOnly && !owns(it)) return false;
+      if (affordable && !owns(it) && s.coins < it.price) return false;
+      return !q || (it.name + " " + it.description + " " + kindOf(it)).toLowerCase().includes(q);
+    });
+  }
+  function detail(s, id) {
+    const it = M.decorById[id];
+    if (!it) return `<p class="build-empty">Pick a piece to see it here.</p>`;
+    const owned = s.house.owned.includes(id), placed = s.house.placed.find((p) => p.id === id), holds = holdsLine(it);
+    const status = !owned ? money(it.price) : placed ? (placed.room === here() ? "In this room" : "In the " + roomName(placed.room)) : "Yours, in storage";
+    return `${thumbOf(it, 72)}<div class="build-detail-copy"><p class="eyebrow">${KINDS.find(([k]) => k === kindOf(it))?.[1] ?? ""}</p><h3>${it.name}</h3><p>${it.description}</p><div class="build-detail-meta">${spooky(it.spooky)}${holds ? `<span>${holds}</span>` : ""}</div></div><div class="build-detail-act"><b>${status}</b>${tileAction(s, it).replace(/data-(decor|place|show|paper|shelve|read)="/, 'data-act="$1" data-id="')}</div>`;
+  }
   function decorate(s) {
-    const q = search.trim().toLowerCase();
-    const items = M.decorCatalog.filter((it) => (category === "all" || it.category === category) && (!q || (it.name + " " + it.description).toLowerCase().includes(q)));
-    const chips = `<div class="chips" role="group" aria-label="Catalogue sections">${M.decorCategories.map(([id, name]) => `<button class="chip" data-cat="${id}" aria-pressed="${category === id}">${name}</button>`).join("")}</div>`;
-    const find = `<label class="search"><span class="sr">Search the catalogue</span><input id="decor-search" type="search" placeholder="Search ${M.decorCatalog.length} treasures" value="${search.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;")}"></label>`;
-    return `<div class="catalogue-heading"><span>${M.roomPieces(s, here()).length}/${M.roomCapacity(s, here())} pieces in the ${roomName(here()).toLowerCase()}</span><span>Buy once · keep forever</span></div>${find}${chips}` + items.map((it) => {
-      const owned = s.house.owned.includes(it.id);
-      const icon = it.category === "wallpaper" ? `<span class="thumb"><span class="paper" style="background-color:${it.color}"></span></span>` : decorIcon(it.id);
-      const holds = it.capacity ? `Holds ${it.capacity} books` : isShelf(it.id) ? `In ${it.finishes.length} finishes · lamps and curios stand on it` : HOSTS.has(it.id) ? "Lamps and curios can stand on it" : canRide(it.id) ? "Can stand on a table or shelf" : "";
-      return `<article class="card decor${owned ? " owned" : ""}">${icon}<div><h3>${it.name}</h3><p>${it.description}</p>${spooky(it.spooky)}${holds ? `<p class="small">${holds}</p>` : ""}</div>${statusButton(s, it)}</article>`;
-    }).join("") || `<p>Nothing matches “${search}”.</p>`;
+    const items = buildItems(s);
+    if (!items.some((it) => it.id === picked)) picked = items[0]?.id ?? null;
+    const subs = mode === "room" ? M.houseRooms.map((r) => [r.id, r.name, !M.roomUnlocked(s, r.id)]) : (mode === "owned" ? OWNED : KINDS).map(([k, n]) => [k, n, false]);
+    const label = subs.find(([k]) => k === sub)?.[1] ?? "";
+    const rail = [["function", "By kind"], ["room", "By room"], ["owned", "Yours"]].map(([k, n]) => `<button class="build-rail-tab" data-mode="${k}" aria-pressed="${mode === k}">${buildIcon(k)}<span>${n}</span></button>`).join("");
+    const row = subs.map(([k, n, locked]) => `<button class="build-sub" data-sub="${k}" aria-pressed="${sub === k}" aria-label="${n}${locked ? " (locked)" : ""}" title="${n}" ${locked ? "disabled" : ""}>${buildIcon(k)}</button>`).join("");
+    const tiles = items.map((it) => {
+      const owned = s.house.owned.includes(it.id), placed = s.house.placed.some((p) => p.id === it.id);
+      return `<div class="build-tile${owned ? " owned" : ""}${placed ? " placed" : ""}${picked === it.id ? " picked" : ""}"><button class="build-pick" data-pick="${it.id}" aria-label="${it.name}">${thumbOf(it, 64)}${placed ? `<i class="build-badge" aria-hidden="true">✓</i>` : ""}</button><span class="build-name">${it.name}</span>${tileAction(s, it)}</div>`;
+    }).join("");
+    const find = `<label class="build-search">${buildIcon("search")}<span class="sr">Search the catalogue</span><input id="decor-search" type="search" placeholder="Search ${M.decorCatalog.length} pieces" value="${search.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;")}"></label>`;
+    return `<section class="build-cat" aria-label="Build catalogue">
+      <div class="build-top">${find}<span class="build-room"><b>${M.roomPieces(s, here()).length}/${M.roomCapacity(s, here())}</b> in the ${roomName(here()).toLowerCase()}</span></div>
+      <nav class="build-rail" aria-label="Browse by">${rail}</nav>
+      <div class="build-subs" role="group" aria-label="${mode === "room" ? "Rooms" : "Kinds"}">${row}<span class="build-sub-name">${label}</span></div>
+      <div class="build-grid" role="list">${tiles || `<p class="build-empty">Nothing here${search ? ` matches “${search}”` : " yet"}.</p>`}</div>
+      <div class="build-detail" aria-live="polite">${detail(s, picked)}</div>
+      <div class="build-foot"><button class="build-toggle" data-toggle="owned" aria-pressed="${ownedOnly}"><i></i>Owned only</button><button class="build-toggle" data-toggle="afford" aria-pressed="${affordable}"><i></i>Can afford</button><span>Buy once · keep forever</span></div>
+    </section>`;
   }
 
   // The house now, then what the next level adds, drawn and in words.
@@ -375,17 +477,36 @@ export function homeSheets(ui) {
         body.querySelectorAll("[data-buystyle]").forEach((b) => (b.onclick = () => { if (M.buyRoomStyle(s, b.dataset.buystyle)) { ui.tone(820); ui.notice("A new look for the " + roomName(here()) + "."); refresh(); } }));
         body.querySelectorAll("[data-paper]").forEach((b) => (b.onclick = () => { const id = b.dataset.paper === "none" ? null : b.dataset.paper; if (M.applyWallpaper(s, here(), id)) { ui.tone(600); refresh(); } }));
         body.querySelectorAll("[data-cat]").forEach((b) => (b.onclick = () => { category = b.dataset.cat; ui.draw(); }));
+        body.querySelectorAll("[data-mode]").forEach((b) => (b.onclick = () => { mode = b.dataset.mode; sub = mode === "room" ? here() : "all"; ui.draw(); }));
+        body.querySelectorAll("[data-sub]").forEach((b) => (b.onclick = () => { sub = b.dataset.sub; ui.draw(); }));
+        body.querySelectorAll("[data-toggle]").forEach((b) => (b.onclick = () => { if (b.dataset.toggle === "owned") ownedOnly = !ownedOnly; else affordable = !affordable; ui.draw(); }));
+        // Picking a tile shows it in the strip below, without redrawing the grid.
+        const pick = (id) => {
+          picked = id; body.querySelectorAll(".build-tile").forEach((tile) => tile.classList.toggle("picked", tile.querySelector("[data-pick]")?.dataset.pick === id));
+          const strip = body.querySelector(".build-detail"); if (strip) { strip.innerHTML = detail(s, id); bindActs(strip); }
+        };
+        body.querySelectorAll("[data-pick]").forEach((b) => { b.onclick = () => pick(b.dataset.pick); b.onpointerenter = (e) => { if (e.pointerType === "mouse") pick(b.dataset.pick); }; });
         const input = body.querySelector("#decor-search");
         if (input) input.oninput = () => { search = input.value; ui.draw(); body.querySelector("#decor-search")?.focus(); };
-        body.querySelectorAll("[data-decor]").forEach((b) => (b.onclick = () => {
-          const id = b.dataset.decor;
+        const acts = {
+          decor: (id) => buy(id),
+          place: (id) => { const inst = M.placeDecor(s, id, here()); if (inst) { M.recordHomeActivity?.(s,"decorate"); ui.tone(600); ui.scene.refreshRoom(); tools.select(inst); ui.draw(); } else ui.notice("No free spot for it in here. Make some room, or try another room."); },
+          show: (instance) => { const p = s.house.placed.find((q) => q.instance === instance); if (!p) return; s.house.activeRoom = p.room; ui.enterRoom(p.room); tools.select(p.instance); ui.draw(); },
+          paper: (id) => { if (M.applyWallpaper(s, here(), id)) { ui.tone(600); refresh(); } },
+          shelve: (id) => { const shelfP = M.roomPieces(s, here()).find((p) => M.shelfCapacity(p.id) > p.books.length); if (shelfP && M.shelfBook(s, shelfP.instance, id)) { ui.tone(600); refresh(); } },
+          read: (id) => ui.read(id),
+        };
+        const bindActs = (root) => root.querySelectorAll("[data-act]").forEach((b) => (b.onclick = () => acts[b.dataset.act]?.(b.dataset.id)));
+        bindActs(body);
+        function buy(id) {
           if (!M.buyDecor(s, id)) return;
           ui.tone(820); ui.notice(M.decorById[id].name + " is yours.");
           const item = M.decorById[id];
           if (!["books", "wallpaper"].includes(item.category)) { const inst = M.placeDecor(s, id, here()); if (inst) { M.recordHomeActivity?.(s,"decorate"); ui.scene.refreshRoom(); tools.select(inst); } }
           else if (item.category === "books") { const shelfP = M.roomPieces(s, here()).find((p) => M.shelfCapacity(p.id) > p.books.length); if (shelfP && M.shelfBook(s, shelfP.instance, id)) ui.scene.refreshRoom(); }
           ui.draw();
-        }));
+        }
+        body.querySelectorAll("[data-decor]").forEach((b) => (b.onclick = () => buy(b.dataset.decor)));
         body.querySelectorAll("[data-place]").forEach((b) => (b.onclick = () => { const inst = M.placeDecor(s, b.dataset.place, here()); if (inst) { M.recordHomeActivity?.(s,"decorate"); ui.tone(600); ui.scene.refreshRoom(); tools.select(inst); ui.draw(); } else ui.notice("No free spot for it in here."); }));
         body.querySelectorAll("[data-show]").forEach((b) => (b.onclick = () => { const p = s.house.placed.find((q) => q.instance === b.dataset.show); if (!p) return; s.house.activeRoom = p.room; ui.enterRoom(p.room); tools.select(p.instance); ui.draw(); }));
         body.querySelectorAll("[data-shelve]").forEach((b) => (b.onclick = () => { const shelfP = M.roomPieces(s, here()).find((p) => M.shelfCapacity(p.id) > p.books.length); if (shelfP && M.shelfBook(s, shelfP.instance, b.dataset.shelve)) { ui.tone(600); refresh(); } }));
