@@ -193,4 +193,9 @@ Generated files: `src/sprite-meta.js`, `src/sprite-meta-hd.js`, `src/decor-meta.
 - **Foreground portals stay low.** The hayride's return arch is in front of the camera: keep it under 4 units (the departure arch under 5.6), as `hayride-station.test.mjs` checks, or it becomes a canopy over the farm.
 - **The smoke test does not build.** It loads `dist/pumpkin-patch-voxel.html` as it is; run `npm run build` first or it tests stale code.
 - **The finish layer loads last.** `src/ui/polish.css` and `build-catalogue.css` come after every other sheet in `build.mjs`; restyle buttons and cards there rather than in an earlier layer it would override.
+- **Helping hands rest in play mode.** `s.handsOn` (never saved) is set each frame from `scene.player.enabled`; `updateFarm` skips the helpers while it is true.
+- **Spiders are rigs, drawn as one brood.** `hayride-spiders.js` poses plain Object3D joints, then `createBrood().sync()` copies their world matrices into two InstancedMeshes (bodies and eyes). Add a spider to the brood rather than building meshes per leg, and call `sync()` after posing.
+- **The hayride's tunnels hide the convoy.** Its bores (`hayride-station.js`) are deep enough that the wagon is inside the hill before `hayrideFarmConvoyPose` hides it. If the departure or arrival distances change, keep the bores at least that deep. The hills' rects (`HAYRIDE_HILLS`) keep wild trees out.
+- **Two `.stock-meter`s once collided.** The service menus' bar is `.supply-meter`; style.css's `.stock-meter` is the cart's. Check for an existing class name before adding one.
+- **Favour portraits come from `favourFace(f)`.** It handles every guest kind, plus the couple's own favours. Money favours carry `money: true`, so their counts show as pounds.
 - **Main-game imports:** the rules import from `../../src/content`, so the voxel build only works inside this repository layout.
