@@ -81,7 +81,7 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
   - **Upgrades** raises a small menu of the upgrade sections: Farm, Seeds, Shop, Cocoa, Stock and Visitors. Each opens the upgrades sheet at that section.
   - **Wardrobe** opens the outfits directly.
 - **The Hollow House** can be bought from patch level 9. Its foyer tiers open at levels 9, 10, 11 and 12, and the fifth also at 12.
-- **The Hollow Hayride** (Codex) opens from patch level 11, once the Hollow House is restored; its larger wagons arrive at level 12.
+- **The Hollow Hayride** (Codex) opens from patch level 11, once the Hollow House is restored; its larger wagons arrive at level 13. Riders are bonus guests: the ride invites its own small parties on top of the farm's visitors, and after the woods they walk on to the stall and the food hatch to spend. The farm station is a woodland depot: a lantern-lit boardwalk, ticket barn, queue pen and a two-rut track into the trees.
   - **The ride-along** runs about 2½ minutes round a long loop through the woods. Lanterns line the lane, each scare scene is lit in its own colour, and the tractor's headlamp lights the way.
   - **Sound:** at every scene something screams, then someone on the wagon does. Between scenes there is wind in the trees, owls, crows, snapping twigs, a far-off wolf and the odd distant scream.
   - Guests queue at a small station by the woodland edge and pay as they board. The tractor then pulls them away off the map on a dark woodland circuit and brings them back.
@@ -111,6 +111,9 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
   - **Look:** plum panels with brass edges, a crescent-moon heading, small bats on the frame, and gold price buttons. Pumpkin thumbnails are rendered from the real 3D models; decor thumbnails are the original pixel art.
   - **Placement:** sheets slide up on a portrait phone, or in from the side on landscape, the Fold's inner screen and desktop.
   - **Layout rules:** the same as the main game's interface overhaul: the farm stays visible, nothing under 12px or 44px, and a dock or rail for navigation.
+  - **Finish:** amber keys for the thing to press, plum glass for everything else, and rows as soft tiles (`src/ui/polish.css`).
+  - **Furnishing catalogue:** Home › Furnish is a build-and-buy panel: search, a rail of modes (by kind, by room, yours), a row of kinds, a grid of tiles, the picked piece in a strip, and Owned only and Can afford toggles.
+- **Play mode:** controller-style buttons with keyboard, DualSense and Xbox glyphs. Hold the tools button (or Y, Triangle, Q or Tab) and steer with a stick or finger to pick from the wheel; let go to choose. Planting, watering and picking burst with particles, a float word, a chime and a little rumble, and a streak counter keeps count.
 
 ## Controls
 
