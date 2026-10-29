@@ -2,7 +2,7 @@
 import * as M from "../model.js";
 import { money, segmented, decorIcon } from "./kit.js";
 
-const MEMORY_ICONS = { seed: "plant", heart: "visitors", moon: "moonlight", hands: "auto", crown: "coins", spark: "boost" };
+const MEMORY_ICONS = { seed: "plant", heart: "visitors", moon: "moonlight", hands: "auto", crown: "coins", spark: "boost", house: "home", cup: "shop", chef: "stock", ride: "sign", broom: "tools", court: "visitors", book: "journal", outfit: "outfits", star: "upgrades" };
 
 export function collectionSheets(ui) {
   let who = "natalie", collection = "all", journalTab = "favours", reading = null;
@@ -34,8 +34,8 @@ export function collectionSheets(ui) {
   function favours(s) {
     return M.FAVOURS.map((f) => {
       const done = s.claimed.includes(f.id), have = M.favourProgress(s, f), can = !done && have >= f.target;
-      return `<article class="card${done ? " done" : ""}">${portrait("visitor-" + ["ghost", "witch", "vampire", "skeleton", "scarecrow"][f.kind])}<div><p class="eyebrow small-eyebrow">${f.guest}</p><h3>${f.title}</h3><p>${f.text}</p><div class="bar"><i style="width:${(have / f.target) * 100}%"></i></div></div>
-        <button class="button ${can ? "gold" : ""}" data-claim="${f.id}" ${can ? "" : "disabled"}>${done ? "Thanked" : can ? "Claim " + money(f.reward) : `${f.target >= 100 ? money(have) : have}/${f.target >= 100 ? money(f.target) : f.target}`}</button></article>`;
+      return `<article class="card${done ? " done" : ""}">${portrait(M.favourFace(f))}<div><p class="eyebrow small-eyebrow">${f.guest}</p><h3>${f.title}</h3><p>${f.text}</p><div class="bar"><i style="width:${(have / f.target) * 100}%"></i></div></div>
+        <button class="button ${can ? "gold" : ""}" data-claim="${f.id}" ${can ? "" : "disabled"}>${done ? "Thanked" : can ? "Claim " + money(f.reward) : `${f.money ? money(have) : have.toLocaleString("en-GB")}/${f.money ? money(f.target) : f.target.toLocaleString("en-GB")}`}</button></article>`;
     }).join("");
   }
 

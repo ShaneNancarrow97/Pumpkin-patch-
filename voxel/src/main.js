@@ -87,7 +87,7 @@ let banterIndex = { natalie: 0, shane: 0 };
 // a tea break until you're back, so a window left open overnight doesn't play
 // the whole game without you. Any tap, click or key counts as being here.
 const IDLE_TEA = 600;
-let idle = 0, idleTea = false;
+let idle = 0, idleTea = false, memoryChimeAt = -1e9;
 for (const type of ["pointerdown", "keydown", "wheel"]) addEventListener(type, () => {
   idle = 0;
   if (idleTea) { idleTea = false; state.paused = false; notice("Welcome back! Tea's finished, back to the patch."); }
@@ -199,7 +199,8 @@ function handle(e) {
   if (e.type === "memory") {
     const m = M.MEMORIES.find((x) => x.id === e.id);
     notice("New scrapbook memory: " + m.title);
-    audio.tone(880);
+    // An older save can meet several new memories at once: chime only once.
+    if (performance.now() - memoryChimeAt > 800) { audio.tone(880); memoryChimeAt = performance.now(); }
     if (e.id === "first") say("shane", "Five pumpkins in! Told you this spade was a solid investment.");
     if (e.id === "moon") say("natalie", "Our first Moonlight plot! Its next pumpkins will glow pale and pretty, and sell for £24 each.");
     if (e.id === "empire") say("shane", "A thousand coins. From a handful of seeds. Look at what we made together.");
@@ -495,7 +496,7 @@ const hayrideContext = createHayrideContext(ui);
 let openTab = null, lastBody = "", sheetReturnFocus = null;
 const menuMemory = createMenuMemory($("sheet-body"));
 const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
-const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(id === "empire" ? "natalie" : "visitor-" + ["ghost", "witch", "vampire", "skeleton", "scarecrow"][kind]), save, tone: f => audio.tone(f), notice });
+const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(M.favourFace(M.FAVOURS.find((f) => f.id === id) ?? { kind })), save, tone: f => audio.tone(f), notice });
 const guestCard = createGuestCard({ state: () => state, portrait: id => scene.portrait(id), onListen: spot => chatCard.open(spot) });
 const chatCard = createChatCard({ state: () => state, portrait: id => scene.portrait(id), onGuest: id => { chatCard.clear(); guestCard.open(id); } });
 const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); hayrideContext.close(); guestCard.clear(); chatCard.clear(); }, onManagePumpkins() { sheets.shop.setTab("farm"); openSheet("shop"); }, onManageCocoa() { sheets.festival.setTab("cocoa"); openSheet("festival"); }, onSendOrder(id) {
