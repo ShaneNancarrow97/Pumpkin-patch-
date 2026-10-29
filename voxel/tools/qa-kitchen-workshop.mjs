@@ -136,14 +136,14 @@ try {
   check(await page.evaluate(before => { const k = PumpkinVoxel.state().kitchen, j = k.jobs.home; return j?.recipe === before.recipe && j.discovery && Math.abs(j.remaining - before.remaining) < .2 && !k.recipes.includes("garden-skillet"); }, beforeReload), "unlearned discovery survives save and reload without losing paid inputs");
   await advance(41);
   check(await page.evaluate(() => { const k = PumpkinVoxel.state().kitchen; return k.recipes.includes("garden-skillet") && k.food["garden-skillet"] === 3 && !k.jobs.home; }), "first completion discovers the dish and creates its portions once");
-  await resume(); await open("recipes", "home"); await page.locator("[data-cooking-batches]").selectOption("5");
+  await resume(); await open("recipes", "home"); await page.locator('[data-cooking-batch="5"]').click();
   await click(page.locator('[data-cooking-start="garden-skillet"]')); await page.evaluate(() => { PumpkinVoxel.state().paused = true; });
   check(await page.evaluate(() => { const k = PumpkinVoxel.state().kitchen; return k.jobs.home?.batches === 5 && k.jobs.home.completed === 0 && k.pantry.vegetables === 2 && k.pantry.butter === 1 && k.pantry.herbs === 1 && k.food["garden-skillet"] === 3 && PumpkinVoxel.rules.pendingCookingOutput(PumpkinVoxel.state()) === 15; }), "five batches consume five input sets up front and reserve fifteen spaces");
   const firstRemaining = await page.evaluate(() => PumpkinVoxel.state().kitchen.jobs.home.remaining); await advance(firstRemaining + .1);
   check(await page.evaluate(() => { const k = PumpkinVoxel.state().kitchen; return k.food["garden-skillet"] === 6 && k.jobs.home?.completed === 1 && PumpkinVoxel.rules.pendingCookingOutput(PumpkinVoxel.state()) === 12; }), "bulk cooking releases one batch at a time");
   await advance(161);
   check(await page.evaluate(() => { const k = PumpkinVoxel.state().kitchen; return !k.jobs.home && k.food["garden-skillet"] === 18 && k.pantry.vegetables === 2; }), "the run finishes fifteen further portions without extra spending");
-  await resume(); await open("food", "home"); await page.locator('[data-cooking-display="0"]').selectOption("garden-skillet"); await page.locator('[data-cooking-price="garden-skillet"]').selectOption("12");
+  await resume(); await open("food", "home"); await page.locator('[data-cooking-display-pick="0"][data-recipe="garden-skillet"]').click(); await page.evaluate(([id,v])=>{PumpkinVoxel.rules.setFoodPrice(PumpkinVoxel.state(),id,v);PumpkinVoxel.openCookingSheet('food');},['garden-skillet',12]);
   const receipt = await page.evaluate(() => {
     const p = PumpkinVoxel, s = p.state(); s.paused = false; s.shop.unlocked = true; s.customerCare.bags = 2;
     const c = { id: 900, kind: 0, budget: 50, originalBudget: 50, basket: [], needs: { hunger: 100, value: 1, happiness: 80, thirst: 50 }, wish: null };

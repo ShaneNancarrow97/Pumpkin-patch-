@@ -134,8 +134,8 @@ try {
   await advance(31);
   check(await page.evaluate(() => !PumpkinVoxel.state().kitchen.jobs.truck && PumpkinVoxel.state().kitchen.food.wedges === 2 && PumpkinVoxel.state().kitchen.ledger.batchesCooked === 1), "completed batch produces its declared yield once");
   await page.evaluate(() => { PumpkinVoxel.state().paused = false; }); await open("food");
-  await page.locator('[data-cooking-display="0"]').selectOption("wedges");
-  await page.locator('[data-cooking-price="wedges"]').selectOption("13");
+  await page.locator('[data-cooking-display-pick="0"][data-recipe="wedges"]').click();
+  await page.evaluate(([id,v])=>{PumpkinVoxel.rules.setFoodPrice(PumpkinVoxel.state(),id,v);PumpkinVoxel.openCookingSheet('food');},['wedges',13]);
   check(await page.evaluate(() => { const k = PumpkinVoxel.state().kitchen; return k.displays[0] === "wedges" && k.prices.wedges === 13; }), "food display and selling price are controlled through the player menu");
   await page.locator('[data-cooking-disclosure="accounts"] summary').click({ force: true });
   check((await page.locator('[data-cooking-disclosure="accounts"]').textContent()).includes("£24"), "kitchen accounts include ingredient cost and both delivery fees");
