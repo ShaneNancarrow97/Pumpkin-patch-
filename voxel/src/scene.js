@@ -35,6 +35,7 @@ import { createFarmExpansion } from "./farm-expansion-world.js";
 import { createWilds } from "./wilds.js";
 import { createCookingWorld } from "./cooking-world.js";
 import { COOKING_SITE } from "./content/cooking-layout.js";
+import { createActionFx } from "./action-fx.js";
 import { fieldDepth, extendFarmRoute, DROP, patchShape, COUNTER_GAP } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createMazeRideView } from "./maze-ride-view.js";
@@ -592,6 +593,7 @@ export function createScene(canvas, state, hooks) {
 
   // Floating "+£12" and sparkle effects, as DOM labels projected from the world.
   const fx = [];
+  const actionFx = createActionFx(scene);
   function floatText(text, x, y, z, cls = "") {
     const el = document.createElement("div");
     el.className = "float-text " + cls; el.textContent = text;
@@ -775,6 +777,7 @@ export function createScene(canvas, state, hooks) {
     const orbit=orbiting();if(orbit){faceCast(playerOrbit.yaw,playerOrbit.pitch,!!view.place,time);hadOrbit=true;}else if(hadOrbit){restoreCast();hadOrbit=false;}
     cleanlinessView.update(state.paused ? 0 : dt, !view.place);
 
+    actionFx.tick(dt);
     for (let i = fx.length - 1; i >= 0; i--) {
       const f = fx[i]; f.t += dt; f.el.hidden = f.scene !== view.place;
       const s = project(f.pos.clone().setY(f.pos.y + f.t * (f.life > 2 ? 0.4 : 1.2)));
@@ -814,6 +817,12 @@ export function createScene(canvas, state, hooks) {
       if (entry) entry.speakUntil = time + 1.1;
     },
     get chatMarkers() { return [...chatMarks].filter(([, m]) => !m.button.hidden).map(([id, m]) => ({ id, rect: m.button.getBoundingClientRect().toJSON(), bubble: !m.bubble.hidden })); },
+    // A finished hands-on job (play mode): a burst at the spot, and a word.
+    actionBurst(kind, x, z) {
+      if (view.place) return; actionFx.burst(kind, x, z);
+      const word = { plant: "Planted", water: "+12% growth", clean: "Tidy!" }[kind];
+      if (word) floatText(word, x, 1.25, z, kind === "water" ? "water" : "crop");
+    },
     harvested(i, n = 1) { if (!view.place) { const p = PLOTS[i]; floatText("+" + n, p.x, 1.4, p.z, "crop"); } },
     // A visitor's remark at the stall, and other words floating up from the farm.
     say(text) { if (!view.place && time >= nextSpeechAt && !document.body.classList.contains("menu-open") && !fx.some(f => f.el.classList.contains("speech"))) { nextSpeechAt = time + 9; floatText(text, SHOP.x - 2.4, 3.6, SHOP.counterZ + 1.8, "speech"); } },

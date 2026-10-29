@@ -591,9 +591,20 @@ document.addEventListener("keydown", (e) => {
 // The controller layer uses the same purchases and farming rules as taps.
 // Timed crop work commits here once, using the same stock and streak rules as taps.
 function commitPlayerWork(kind,t){
+  const at=t.type==='plot'?PLOTS[t.index]:t;
   let ok=false;if(kind==='plant')ok=M.plant(state,t.index);else if(kind==='harvest')ok=!!pickPlot(t.index);else if(kind==='water')ok=waterPlot(state,t.index);else if(kind==='clean')ok=M.cleanLitter(state,t.id);
-  if(ok){M.recordHomeActivity?.(state,kind);audio.tone(kind==='water'?520:kind==='clean'?600:360);save();}
+  if(ok){M.recordHomeActivity?.(state,kind);if(at)scene.actionBurst(kind,at.x,at.z);if(kind!=='harvest')chime(...({plant:[330,494],water:[587,784],clean:[784,1047]})[kind]);save();}
   return !!ok;
+}
+// Two quick notes, rising: the sound of a job done.
+function chime(a,b){audio.tone(a);setTimeout(()=>audio.tone(b),75);}
+// Play mode's feel: a buzz on touch, a rumble on a pad, a note for choices.
+function playFeel(kind,info={}){
+  if(kind==='select')audio.tone(700);
+  if(prefs.haptics===false)return;
+  const strength={done:14,open:8,select:6,tick:3}[kind]??0;if(!strength)return;
+  const pad=info.pad??Array.from(navigator.getGamepads?.()??[]).find(g=>g?.connected);
+  try{if(pad?.vibrationActuator)pad.vibrationActuator.playEffect?.('dual-rumble',{duration:strength*4,strongMagnitude:kind==='done'?.25:.05,weakMagnitude:kind==='done'?.5:.2});else navigator.vibrate?.(strength);}catch{}
 }
 function interactAsPlayer(tool='hand',options={}) {
   if(['release','cancel'].includes(options.phase))return lifeActivity?.handle(tool,options);
@@ -633,7 +644,7 @@ function followHomeGoal(){
   save();
 }
 lifeActivity=createLifeActivity({state:()=>state,player:scene.player,commit:commitPlayerWork,notice,blocked:()=>!!openTab||intro.active||celebration.active||!!homeJourney?.active||!!playControls?.radial||!!home.tools.selected||upgradeMenu.open});
-playControls=createPlayControls({getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
+playControls=createPlayControls({feel:playFeel,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
 homeJourney=createHomeJourney({state:()=>state,blocked:()=>!!openTab||celebration.active||intro.active||mazeUI.active||hayrideUI.active||!!home.tools.selected||!!playControls.radial||state.paused,follow:followHomeGoal,open:()=>openSheet('homelife')});
 scene.setRenderQuality(prefs.renderQuality); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
 render(); renderPlace();

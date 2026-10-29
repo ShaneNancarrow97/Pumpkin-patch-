@@ -76,6 +76,7 @@ button:focus-visible { outline: 3px solid var(--gold-bright); outline-offset: 2p
 .float-text { position: absolute; left: 0; top: 0; font: 600 18px var(--display); text-shadow: 0 2px 6px #000; white-space: nowrap; }
 .float-text.coin { color: var(--gold-bright); }
 .float-text.crop { color: #ffd0a0; }
+.float-text.water { color: #a9dcff; }
 .float-text.spark { color: #ffe08a; font-size: 26px; }
 
 /* Floating actions: shown only when they can be used */
