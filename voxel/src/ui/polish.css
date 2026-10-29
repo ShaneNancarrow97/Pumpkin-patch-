@@ -1,0 +1,41 @@
+/* One finish across the menus, matching the play controls and the build
+   catalogue: amber for the thing to press, plum glass for everything else,
+   and rows lifted into soft tiles. Loaded last so it settles the older layers. */
+
+/* Primary actions: a warm amber key with dark lettering. */
+.button.gold, .sheet .button.gold, .action.gold { background: linear-gradient(180deg, #f6cf8d, #d4914a 62%, #a9632f); border-color: #ffe2b2; color: #2a170b; box-shadow: inset 0 1px #fff3d488, 0 3px 10px #0006; text-shadow: 0 1px #ffe9c455; }
+.button.gold:hover:not(:disabled), .sheet .button.gold:hover:not(:disabled) { background: linear-gradient(180deg, #ffdca0, #dd9c55 62%, #b16b34); border-color: #fff0d0; }
+.button.gold:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 1px #fff3d466, 0 1px 4px #0006; }
+.button.gold:disabled, .sheet .button.gold:disabled { background: #ffffff0a; border-color: #f0d2a224; color: #bba58a; box-shadow: none; text-shadow: none; opacity: 1; }
+.button.gold small { color: #4a2c14; }
+/* Secondary actions: glass with a hairline. */
+.sheet .button:not(.gold), .npc-reward .button:not(.gold) { background: linear-gradient(180deg, #ffffff0d, #ffffff05); border-color: #f0d2a22b; box-shadow: inset 0 1px #ffe6c00d; }
+.sheet .button[aria-pressed="true"]:not(.gold) { background: #f2c27a24; border-color: #f2c27a73; color: #ffdca0; }
+
+/* Sheets: a glass frame with a lit top edge. */
+.sheet-frame { box-shadow: inset 0 1px #ffe6c014, 0 18px 60px #000a; }
+.sheet .sheet-head .eyebrow { font-size: 10.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #cfae7c; }
+.sheet .sheet-head h2, .sheet[data-section] .sheet-head h2 { font: 500 22px/1.15 var(--display); letter-spacing: 0; color: #fff0d8; }
+.segmented button[aria-pressed="true"] { color: #ffdca0; background: linear-gradient(180deg, #f2c27a2e, #f2c27a14); box-shadow: inset 0 -2px #f2c27a, inset 0 1px #ffe6c014; }
+
+/* Rows become tiles. Special cards keep their own look. */
+.sheet[data-section] .card:not(.hero):not(.purchase-card):not(.intro-card):not(.home-journey-card), .estate-card { margin: 0; padding: 10px 10px; border: 1px solid #f0d2a21a; border-radius: 14px; background: linear-gradient(180deg, #2e2437cc, #211a28cc); box-shadow: 0 2px 8px #0004, inset 0 1px #ffe6c00a; }
+.sheet[data-section] .card.current, .sheet[data-section] .card.owned { border-color: #f2c27a4d; }
+.sheet[data-section] .card.done, .sheet[data-section] .card.max { opacity: .82; }
+.estate-card h3 { color: #f6e3c4; }
+.estate-ground-card { border: 1px solid #f0d2a21f; background: linear-gradient(180deg, #33283ccc, #221b29cc); box-shadow: inset 0 1px #ffe6c00d; }
+
+/* Chips. */
+.chip[aria-pressed="true"], .sheet[data-section] .chip[aria-pressed="true"] { border-color: #f2c27a73; background: #f2c27a24; color: #ffdca0; }
+
+/* The dock: glass, with the open tab underlined in amber. */
+.dock { background: linear-gradient(180deg, #241c2cf2, #16111cf7); border-top-color: #f0d2a224; box-shadow: 0 -8px 28px #0006, inset 0 1px #ffe6c00f; }
+.tab.active { color: #ffdca0; background: linear-gradient(180deg, #f2c27a1f, #f2c27a08) no-repeat, linear-gradient(90deg, transparent, #f2c27a, transparent) no-repeat 50% 100% / 46% 2px; }
+
+/* Floating panels share the glass. */
+.hud, .notice, .npc-reward { border-color: #f0d2a22b; box-shadow: 0 8px 26px #0007, inset 0 1px #ffe6c012; }
+.npc-reward .button.gold { min-height: 40px; }
+
+/* On a phone the home tool bar fills the foot of the screen, so Play waits up
+   by the top bar instead of covering "Enter home". */
+@media (max-width: 600px) { .inside-place .play-chip { top: calc(78px + env(safe-area-inset-top)); bottom: auto; } }
