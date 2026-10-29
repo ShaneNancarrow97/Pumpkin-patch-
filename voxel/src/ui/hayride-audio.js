@@ -5,7 +5,7 @@ const MAX_VOICES = 22;
 const clamp = (value, fallback = 0) => Number.isFinite(Number(value)) ? Math.max(0, Math.min(1, Number(value))) : fallback;
 // Who screams at each set: the thing in the woods first, then someone on the
 // wagon. The voices are the maze's (scare-voices.js).
-const SCREAMERS = { scarecrows: ["scarecrow", "victim"], spiders: ["victim", "haunted-girl"], bride: ["haunted-girl", "victim"], pursuit: ["wraith", "victim"], bus: ["ghoul", "victim"] };
+const SCREAMERS = { scarecrows: ["scarecrow", "victim"], spiders: ["victim", "haunted-girl"], bride: ["haunted-girl", "victim"], pursuit: ["wraith", "victim"], bus: ["ghoul", "victim"], graveyard: ["wraith", "haunted-girl"], thicket: ["scarecrow", "victim"] };
 // The woods between the sets: seconds between each sound, as [shortest, longest].
 const WOODS = { owl: [11, 19], crow: [14, 24], twig: [3.5, 7], creak: [8, 14], wolf: [38, 60], scream: [26, 42] };
 
@@ -140,6 +140,22 @@ export function createHayrideAudio(prefs = {}) {
         voice({ frequency: 185, endFrequency: 59, type: "triangle", duration: .8, amp: amp * .65 });
         voice({ frequency: 197, endFrequency: 72, type: "sine", duration: .75, amp: amp * .4 });
         voice({ noise: true, filter: "bandpass", cutoff: 1800, duration: .35, amp: amp * .33 });
+      } else if (name === "bump") {
+        // A wheel over a root: a dull thud through the boards, a knock, a creak.
+        voice({ frequency: 74, endFrequency: 38, duration: .2, amp: amp * .9, cutoff: 260 });
+        voice({ noise: true, cutoff: 420, duration: .1, amp: amp * .55 });
+        voice({ frequency: 158, endFrequency: 112, type: "triangle", duration: .5, delay: .08, amp: amp * .28, cutoff: 480, vibrato: 7, pan: rand() * 1.2 - .6 });
+      } else if (name === "tunnel") {
+        // Into the hill: the rumble of the wheels closes in, a low drone, and
+        // water dripping somewhere in the dark.
+        for (let i = 0; i < 3; i++) voice({ noise: true, cutoff: 150 + i * 40, duration: 2.6 - i * .3, delay: i * .45, amp: amp * (.5 + i * .12) });
+        voice({ frequency: 44, endFrequency: 36, duration: 3.2, amp: amp * .45, cutoff: 160 });
+        for (let i = 0; i < 4; i++) voice({ frequency: 1300 + rand() * 700, endFrequency: 820, duration: .14, delay: 1 + i * .75 + rand() * .3, amp: amp * .14, cutoff: 3000, pan: rand() * 1.6 - .8 });
+      } else if (name === "sputter") {
+        // The tractor's lamps failing: the engine coughs, the bulb fizzes, then a clunk.
+        for (let i = 0; i < 4; i++) voice({ frequency: 62 - i * 4, endFrequency: 44, type: "sawtooth", duration: .16, delay: i * .27 + rand() * .06, amp: amp * .32, filter: "bandpass", cutoff: 220 });
+        for (let i = 0; i < 6; i++) voice({ noise: true, filter: "highpass", cutoff: 3200, duration: .05, delay: .1 + i * .19 + rand() * .05, amp: amp * .16 });
+        voice({ frequency: 120, endFrequency: 48, duration: .14, delay: 1.25, amp: amp * .5, cutoff: 400 });
       } else if (name === "whoosh") voice({ noise: true, filter: "bandpass", cutoff: 650, duration: .85, amp: amp * .65 });
       else if (name === "chains" || name === "skitter") {
         for (let i = 0; i < 4; i++) voice({ noise: true, filter: "highpass", cutoff: name === "chains" ? 2400 : 1400, duration: .11, delay: i * .12, amp: amp * .24 });

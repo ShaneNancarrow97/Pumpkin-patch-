@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import { Voxels, vary } from "./voxels.js";
 import { gourd } from "./world.js";
-import { shape, joint, createBrood } from "./hayride-spiders.js";
+import { shape, joint, createBrood, orbWeb, silkLines, strand } from "./hayride-spiders.js";
 
 // The ride-along's roadside sets in detail: the scarecrow patch, the bride's
-// manor, the spectral pursuit and the crashed prison bus. Each is built in its
+// manor, the spectral pursuit, the crashed prison bus, and on the longer
+// routes the forgotten graveyard and the crooked thicket. Each is built in its
 // own frame (x along the lane, +z towards it, the ground at y 0) and returns its
 // static voxels plus actors. Actors are jointed rigs drawn as one brood per set;
 // each has animate(ctx), called every frame of the ride with
@@ -12,7 +13,8 @@ import { shape, joint, createBrood } from "./hayride-spiders.js";
 // the wagon reaches the set and falls as it leaves; on means the haunt is bought,
 // switched on and gentle mode is off. Everything stays clear of the lane: the set's
 // distance from it minus the wagon's corridor (z stays below about 1.6 for a set
-// 4.1 from the lane, 3.0 for the bus and 3.6 for the manor).
+// 4.1 from the lane, 3.0 for the bus and 3.6 for the manor, 2.4 for the
+// graveyard and 2.1 for the thicket). The wagon travels towards +x.
 
 const block = (v, x, y, z, w, h, d, c, glow = false) => v.block(x, y, z, w, h, d, c, glow);
 const pick = (list, r) => list[Math.floor(r() * list.length)];
@@ -246,6 +248,199 @@ function zombieActor(brood, r) {
   return { root, hips, torso, head, legs, arms };
 }
 
+
+// ---- The forgotten graveyard ----
+const GRAVE = [0x6e6878, 0x77708a, 0x635d6c, 0x5a5462], LICHEN = [0x5a6a4a, 0x6a7a52, 0x4a5a3e], EARTH = [0x3a2a22, 0x2f2219, 0x45332a], IRONS = 0x17121a;
+// A grave at x, z: a sunken mound towards the lane and a stone at its head,
+// leaning by lean (its upper courses step sideways), lichen low on its face.
+function grave(v, r, x, z, kind, lean = 0) {
+  const c = vary(pick(GRAVE, r), 0.06, r), h = 0.62 + r() * 0.36, w = 0.48 + r() * 0.12, face = z - 0.43;
+  v.box(x - 0.32, -0.02, z - 0.38, 0.64, 0.1, 1.1, vary(pick(EARTH, r), 0.1, r));
+  if (kind === "cross") { block(v, x, 0, z - 0.5, 0.12, h + 0.35, 0.12, c); block(v, x + lean * 0.3, h * 0.7, z - 0.5, 0.5, 0.11, 0.12, c); }
+  else if (kind === "broken") { block(v, x, 0, z - 0.5, w, h * 0.45, 0.14, c); block(v, x + 0.35, 0, z - 0.1, w * 0.9, 0.12, h * 0.5, c); }
+  else {
+    for (let k = 0; k < 4; k++) block(v, x + lean * k * 0.04, k * h / 4, z - 0.5 - k * 0.012, w, h / 4 + 0.01, 0.14, c);
+    const steps = kind === "peak" ? [0.7, 0.4, 0.15] : [0.82, 0.55];
+    steps.forEach((f, k) => block(v, x + lean * (0.16 + k * 0.04), h + k * 0.07, z - 0.55, w * f, 0.07, 0.14, c));
+    block(v, x + lean * 0.06, h * 0.45, face, w * 0.55, h * 0.3, 0.01, 0x3f3a46);                                                    // a worn inscription
+  }
+  for (let k = 0; k < 3; k++) block(v, x + (r() - 0.5) * w * 0.8, 0.02 + r() * h * 0.3, face - 0.005, 0.1 + r() * 0.08, 0.06 + r() * 0.1, 0.02, pick(LICHEN, r));
+}
+// A hand clawing up out of a grave: a forearm and a hand of jointed fingers.
+function graveHand(brood, skin) {
+  const root = new THREE.Object3D(), shapes = [], arm = joint(root, 0, -0.75, 0);
+  shape(arm, shapes, 0, 0.3, 0, 0.13, 0.6, 0.13, skin); shape(arm, shapes, 0, 0.12, 0, 0.17, 0.2, 0.17, 0x3a3440);                    // a rotted sleeve
+  const hand = joint(arm, 0, 0.62, 0); shape(hand, shapes, 0, 0.06, 0, 0.17, 0.14, 0.07, skin);
+  const fingers = [-1.5, -0.5, 0.5, 1.5].map((k) => { const f = joint(hand, k * 0.04, 0.13, 0); shape(f, shapes, 0, 0.06, 0, 0.032, 0.12, 0.04, skin); const tip = joint(f, 0, 0.12, 0); shape(tip, shapes, 0, 0.04, 0, 0.028, 0.09, 0.035, skin); shape(tip, shapes, 0, 0.085, 0.012, 0.03, 0.02, 0.02, 0x1a1418); return { f, tip }; });
+  const thumb = joint(hand, 0.1, 0.05, 0.02); shape(thumb, shapes, 0.03, 0.04, 0, 0.04, 0.1, 0.04, skin);
+  brood.push({ root, shapes });
+  return { root, arm, hand, fingers, thumb };
+}
+// The shade of the open grave: a pale, ragged figure with hollow eyes.
+function shadeActor(brood) {
+  const root = new THREE.Object3D(), shapes = [], body = joint(root), PALE = [0xb8c8bc, 0xa8b8ae, 0xc8d6cc];
+  for (let k = 0; k < 7; k++) shape(body, shapes, Math.sin(k * 1.1) * 0.06, k * 0.26, 0, 0.62 - Math.abs(k - 3.5) * 0.05, 0.27, 0.42 - Math.abs(k - 4) * 0.03, PALE[k % 3]);
+  for (let k = 0; k < 6; k++) shape(body, shapes, -0.3 + k * 0.12, -0.12 - (k % 2) * 0.12, 0.05, 0.09, 0.24, 0.36, 0x93a69a);           // a torn shroud
+  const head = joint(body, 0, 1.9, 0.02); shape(head, shapes, 0, 0.18, 0, 0.36, 0.42, 0.34, 0xc8d6cc); shape(head, shapes, 0, 0.42, -0.04, 0.4, 0.12, 0.38, 0x8a9a90);
+  for (const s of [-1, 1]) { shape(head, shapes, s * 0.085, 0.24, 0.172, 0.1, 0.12, 0.01, 0x0c0e10); shape(head, shapes, s * 0.085, 0.23, 0.176, 0.04, 0.04, 0.01, 0xb6ffd8, true); }
+  const jaw = joint(head, 0, 0.08, 0.17); shape(jaw, shapes, 0, -0.03, 0, 0.14, 0.1, 0.01, 0x0c0e10);
+  const arms = [-1, 1].map((s) => { const sh = joint(body, s * 0.34, 1.62, 0); shape(sh, shapes, 0, -0.28, 0.02, 0.13, 0.58, 0.13, PALE[1]); const el = joint(sh, 0, -0.56, 0); shape(el, shapes, 0, -0.24, 0, 0.11, 0.5, 0.11, PALE[2]); for (let k = 0; k < 3; k++) shape(el, shapes, (k - 1) * 0.035, -0.56, 0, 0.025, 0.14, 0.03, 0xd8e4dc); return { sh, el, s }; });
+  brood.push({ root, shapes });
+  return { root, body, head, jaw, arms };
+}
+// A weeping angel on a plinth: wings folded, hands over its face. Its head and
+// hands are jointed: as the wagon passes they come down and it watches.
+function angelActor(brood) {
+  const root = new THREE.Object3D(), shapes = [], STONE = [0x8a8794, 0x7d7a88, 0x94919e], body = joint(root, 0, 0.62, 0);
+  for (let k = 0; k < 6; k++) shape(body, shapes, 0, 0.13 + k * 0.24, 0, 0.62 - k * 0.05 + (k === 0 ? 0.12 : 0), 0.25, 0.44 - k * 0.02, STONE[k % 3]);   // the robe
+  for (const s of [-1, 1]) for (let k = 0; k < 5; k++) shape(body, shapes, s * (0.26 + k * 0.05), 0.55 + k * 0.28, -0.3 - k * 0.03, 0.14, 0.42, 0.08, STONE[(k + 1) % 3]);   // folded wings
+  const head = joint(body, 0, 1.52, 0.02); shape(head, shapes, 0, 0.15, 0, 0.28, 0.32, 0.28, STONE[2]); shape(head, shapes, 0, 0.3, -0.03, 0.3, 0.08, 0.3, STONE[1]);
+  const eyes = [-1, 1].map((s) => shape(head, shapes, s * 0.065, 0.17, 0.142, 0.05, 0.02, 0.01, 0xff3a2a, true));
+  const hands = [-1, 1].map((s) => { const sh = joint(body, s * 0.28, 1.38, 0.02); shape(sh, shapes, 0, -0.18, 0.04, 0.12, 0.42, 0.12, STONE[0]); const fore = joint(sh, 0, -0.38, 0.04); shape(fore, shapes, 0, -0.17, 0, 0.1, 0.36, 0.1, STONE[1]); shape(fore, shapes, 0, -0.38, 0, 0.12, 0.12, 0.06, STONE[2]); return { sh, fore, s }; });
+  brood.push({ root, shapes });
+  return { root, head, eyes, hands };
+}
+// The crypt door: iron on a hinge, and two eyes that open in the dark behind it.
+function cryptDoor(brood) {
+  const root = new THREE.Object3D(), shapes = [], hinge = joint(root, -0.45, 0, 0);
+  shape(hinge, shapes, 0.44, 0.85, 0, 0.86, 1.7, 0.08, 0x2a2630); for (const y of [0.4, 1.3]) shape(hinge, shapes, 0.44, y, 0.05, 0.8, 0.06, 0.02, 0x4a4450);
+  for (let k = 0; k < 3; k++) shape(hinge, shapes, 0.2 + k * 0.24, 1.0, 0.05, 0.05, 0.5, 0.02, 0x4a4450); shape(hinge, shapes, 0.8, 0.85, 0.06, 0.06, 0.12, 0.03, 0x8a7a50);
+  const eyes = joint(root, 0.05, 1.32, -0.7); for (const s of [-1, 1]) shape(eyes, shapes, s * 0.1, 0, 0, 0.08, 0.05, 0.02, 0xb6ff6a, true);
+  brood.push({ root, shapes });
+  return { root, hinge, eyes };
+}
+function graveyard(v, r) {
+  // Rough grass and bare earth, a crumbling wall behind, an iron fence in front.
+  for (let x = -4.5; x < 4.5; x += 0.5) for (let z = -3.6; z < 2.0; z += 0.5) v.box(x, -0.03, z, 0.5, 0.07 + r() * 0.03, 0.5, vary(r() < 0.6 ? pick([0x2f3a26, 0x34402a, 0x2a3322], r) : pick(EARTH, r), 0.1, r));
+  for (let x = -4.4; x < 4.4; x += 0.45) { if (r() < 0.12) continue; const h = 0.5 + r() * 0.5; for (let y = 0; y < h; y += 0.3) block(v, x + 0.22, y, -3.75, 0.44, Math.min(0.3, h - y), 0.36, vary(pick([0x4f4855, 0x5a5260, 0x46404c], r), 0.08, r)); if (r() < 0.3) block(v, x + 0.22, h, -3.6, 0.3, 0.2, 0.06, pick(LICHEN, r)); }
+  for (let x = -4.3; x <= 4.3; x += 0.25) { if (x > -1.0 && x < 0.1) continue; block(v, x, 0, 2.0, 0.05, 1.0, 0.05, IRONS); block(v, x, 1.0, 2.0, 0.09, 0.09, 0.09, IRONS); }
+  for (const y of [0.25, 0.85]) { block(v, -2.65, y, 2.0, 3.3, 0.05, 0.05, IRONS); block(v, 2.2, y, 2.0, 4.2, 0.05, 0.05, IRONS); }
+  for (const x of [-1.1, 0.2]) { block(v, x, 0, 2.0, 0.14, 1.3, 0.14, IRONS); block(v, x, 1.3, 2.0, 0.2, 0.2, 0.2, 0x2a2430); }
+  for (let k = 0; k < 6; k++) block(v, -0.95 - k * 0.02, 0.12 + k * 0.17, 1.85 - k * 0.12, 0.04, 0.16, 0.04, IRONS);                // the gate, swung in
+  // The graves, in rough rows; candles on a few, and ravens.
+  [[-3.6, -1.9, "round", 0.6], [-2.4, -2.1, "cross", 0], [-1.2, -1.8, "peak", -0.5], [0.2, -2.0, "round", 0.3], [-3.0, -0.3, "broken", 0], [-1.8, 0.1, "round", -0.7], [1.0, -0.6, "peak", 0.4], [3.6, -0.4, "round", 0.8], [3.9, 1.3, "cross", -0.3]].forEach(([x, z, kind, lean]) => grave(v, r, x, z, kind, lean));
+  for (const [x, z] of [[-1.85, -0.55], [0.15, -2.45], [3.55, -0.85]]) { block(v, x, 0.08, z, 0.06, 0.16, 0.06, 0xe8e0c8); block(v, x, 0.24, z, 0.035, 0.06, 0.035, pick(FLAME, r), true); }
+  for (const [x, z] of [[-2.9, 0.0], [1.3, 0.3], [-1.0, -1.4]]) for (let k = 0; k < 3; k++) block(v, x + (k - 1) * 0.09, 0.04, z, 0.05, 0.22 + k * 0.04, 0.05, 0x3a2420), block(v, x + (k - 1) * 0.09, 0.26 + k * 0.04, z, 0.09, 0.07, 0.09, 0x5a1a22);   // dead flowers
+  crow(v, -2.4, 1.2, -2.1, 1); crow(v, 3.6, 0.95, -0.95, -1);
+  // The open grave, to one side of the centre where the painted reaper
+  // (hayride-scares.js) lunges: a pit, the spoil heaped by it, a shovel.
+  v.box(1.55, 0.0, 0.3, 0.8, 0.06, 1.35, 0x0b080d);
+  for (let k = 0; k < 4; k++) block(v, 2.75 + k * 0.05, 0, 0.95, 0.7 - k * 0.15, 0.18 + k * 0.1 - k * k * 0.03, 1.2 - k * 0.2, vary(pick(EARTH, r), 0.08, r));
+  block(v, 2.87, 0.35, 0.85, 0.05, 1.0, 0.05, 0x5a3e2a); block(v, 2.87, 1.32, 0.85, 0.22, 0.05, 0.05, 0x5a3e2a); block(v, 2.87, 0.12, 0.85, 0.2, 0.28, 0.04, 0x6a6470);
+  // The family crypt at the back: steps, two columns, a pediment and an urn.
+  const MX = 2.6, MZ = -2.75, CRYPT = [0x8a8794, 0x7d7a88, 0x74717f, 0x6a6876];
+  for (let x = MX - 1.4; x < MX + 1.4; x += 0.35) for (let z = MZ - 1.0; z < MZ + 1.05; z += 0.35) v.box(x, 0, z, 0.35, 0.22, 0.35, vary(pick(CRYPT, r), 0.05, r));
+  for (let k = 0; k < 2; k++) block(v, MX, 0, MZ + 1.2 + k * 0.28, 2.0 - k * 0.3, 0.16 - k * 0.07, 0.3, vary(pick(CRYPT, r), 0.05, r));
+  for (let y = 0.22; y < 2.4; y += 0.32) for (let x = MX - 1.2; x < MX + 1.2; x += 0.4) {
+    const door = Math.abs(x + 0.2 - MX) < 0.5 && y < 1.95;
+    if (!door) v.box(x, y, MZ + 0.55, 0.4, 0.32, 0.22, vary(pick(CRYPT, r), 0.06, r));
+    v.box(x, y, MZ - 0.9, 0.4, 0.32, 0.22, vary(pick(CRYPT, r), 0.06, r));
+  }
+  for (const s of [-1, 1]) for (let y = 0.22; y < 2.4; y += 0.32) v.box(MX + s * 1.2 - (s > 0 ? 0.22 : 0), y, MZ - 0.9, 0.22, 0.32, 1.45, vary(pick(CRYPT, r), 0.06, r));
+  v.box(MX - 0.5, 0.22, MZ - 0.68, 1.0, 1.73, 1.2, 0x0b0a0e); block(v, MX, 0.5, MZ - 0.45, 0.3, 0.3, 0.3, 0x6aff9a, true);              // the dark inside, and a cold glow
+  for (const s of [-1, 1]) { block(v, MX + s * 0.85, 0.22, MZ + 0.95, 0.26, 2.15, 0.26, CRYPT[0]); block(v, MX + s * 0.85, 2.3, MZ + 0.95, 0.36, 0.1, 0.36, CRYPT[2]); }
+  block(v, MX, 2.38, MZ + 0.3, 2.7, 0.2, 1.6, CRYPT[1]); block(v, MX, 2.15, MZ + 0.67, 1.1, 0.16, 0.02, 0x3f3a46);
+  for (let k = 0; k < 5; k++) block(v, MX, 2.58 + k * 0.13, MZ + 0.55, 2.5 - k * 0.5, 0.14, 0.5, vary(CRYPT[k % 4], 0.04, r));
+  block(v, MX, 3.23, MZ + 0.55, 0.22, 0.22, 0.22, CRYPT[2]); block(v, MX, 3.45, MZ + 0.55, 0.06, 0.4, 0.06, CRYPT[1]); block(v, MX, 3.62, MZ + 0.55, 0.26, 0.06, 0.06, CRYPT[1]);
+  for (const s of [-1, 1]) { block(v, MX + s * 1.15, 2.58, MZ + 0.65, 0.2, 0.3, 0.2, CRYPT[3]); block(v, MX + s * 1.15, 2.88, MZ + 0.65, 0.12, 0.08, 0.12, CRYPT[2]); }   // urns
+  for (let k = 0; k < 6; k++) block(v, MX - 1.2 + r() * 2.4, 0.22 + r() * 2.0, MZ + 0.67, 0.12 + r() * 0.2, 0.08 + r() * 0.2, 0.02, pick(LICHEN, r));
+  // A bare tree over the wall, and the angel's plinth.
+  let tx = -4.1, ty = 0; for (let k = 0; k < 12; k++) { block(v, tx, ty, -3.1, 0.3 - k * 0.012, 0.36, 0.3 - k * 0.012, pick(BARK, r)); ty += 0.34; tx += Math.sin(k * 0.8) * 0.07; }
+  for (let b = 0; b < 4; b++) { let bx = tx, by = ty - b * 0.55, bz = -3.1; const a = b * 1.9 + 0.3; for (let k = 0; k < 6; k++) { bx += Math.cos(a) * 0.17; bz += Math.sin(a) * 0.1; by += 0.1; block(v, bx, by, bz, 0.1, 0.1, 0.1, 0x2e221d); } }
+  for (let k = 0; k < 3; k++) block(v, -3.3, k * 0.2, -2.45, 0.8 - k * 0.08, 0.2, 0.8 - k * 0.08, vary(pick(CRYPT, r), 0.05, r));
+}
+
+// ---- The crooked thicket ----
+const THORN = [0x2e2228, 0x3a2a2e, 0x281e24, 0x43303a], TWIG = [0x4a3a2e, 0x5a4636, 0x3e3026];
+// A bramble cane from a towards b, wandering, with thorns along it.
+function cane(v, r, a, b, thick = 0.14) {
+  const n = Math.max(2, Math.ceil(a.distanceTo(b) / 0.13)), p = new THREE.Vector3();
+  for (let i = 0; i <= n; i++) {
+    const t = i / n; p.lerpVectors(a, b, t); p.x += Math.sin(t * 7 + a.x) * 0.12; p.z += Math.cos(t * 5 + a.z) * 0.1;
+    const s = thick * (1 - t * 0.45); block(v, p.x, p.y, p.z, s, s, s, pick(THORN, r));
+    if (i % 3 === 1) { const side = r() < 0.5 ? -1 : 1; block(v, p.x + side * s * 0.6, p.y + s * 0.3, p.z + (r() - 0.5) * s, 0.05, 0.035, 0.035, 0x8a7a6a); }
+  }
+}
+// A thorn arch over the lane, from z0 on this side to z1 beyond it, as high as top.
+function thornArch(v, r, x, z0, z1, top) {
+  const mid = (z0 + z1) / 2, half = (z1 - z0) / 2, at = (z) => new THREE.Vector3(x + Math.sin(z) * 0.15, top * (1 - ((z - mid) / half) ** 2), z);
+  for (let z = z0; z < z1 - 0.01; z += 0.5) cane(v, r, at(z), at(Math.min(z1, z + 0.5)), 0.2);
+  for (let k = 0; k < 2; k++) { const dz = (k ? 0.18 : -0.15); for (let z = z0 + 0.6; z < z1 - 0.6; z += 0.9) cane(v, r, at(z).add(new THREE.Vector3(0.12, 0.1, dz)), at(z + 0.9).add(new THREE.Vector3(-0.1, 0.18, dz)), 0.1); }
+  // Thin tendrils hanging from the arch, never low enough to touch the wagon.
+  for (let z = z0 + 0.8; z < z1 - 0.8; z += 0.55 + r() * 0.4) { const p = at(z), len = Math.min(0.9, Math.max(0, p.y - 4.2)) * (0.5 + r() * 0.5); for (let k = 0; k < len / 0.1; k++) block(v, p.x + Math.sin(k) * 0.03, p.y - 0.1 - k * 0.1, p.z, 0.035, 0.1, 0.035, pick(THORN, r)); }
+}
+// A twig figure bound with twine, a tiny skull for a head, hung on a cord.
+function twigFigure(brood, r) {
+  const root = new THREE.Object3D(), shapes = [], spin = joint(root);
+  shape(spin, shapes, 0, -0.35, 0, 0.012, 0.7, 0.012, 0x8a7a5a);
+  const fig = joint(spin, 0, -0.7, 0);
+  shape(fig, shapes, 0, -0.3, 0, 0.05, 0.6, 0.05, pick(TWIG, r)); shape(fig, shapes, 0, -0.12, 0, 0.42, 0.045, 0.045, pick(TWIG, r));
+  for (const s of [-1, 1]) shape(fig, shapes, s * 0.1, -0.68, 0, 0.04, 0.36, 0.04, pick(TWIG, r));
+  shape(fig, shapes, 0, -0.14, 0, 0.09, 0.09, 0.07, 0xa83a2a); shape(fig, shapes, 0, 0.06, 0, 0.13, 0.13, 0.12, 0xd6cbb4);
+  for (const s of [-1, 1]) shape(fig, shapes, s * 0.03, 0.07, 0.062, 0.03, 0.03, 0.01, 0x140e10);
+  brood.push({ root, shapes });
+  return { root, spin, fig };
+}
+// A gibbet cage on a chain: bars, a floor, and a skeleton reaching through.
+function cageActor(brood) {
+  const root = new THREE.Object3D(), shapes = [], IRON = 0x2a2428, BONE = 0xd8cfbe, swing = joint(root);
+  shape(swing, shapes, 0, -0.6, 0, 0.05, 1.2, 0.05, 0x4a4450);
+  const cage = joint(swing, 0, -1.2, 0);
+  for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2; shape(cage, shapes, Math.cos(a) * 0.42, -0.75, Math.sin(a) * 0.42, 0.04, 1.4, 0.04, IRON); }
+  for (const y of [-0.05, -0.75, -1.45]) for (const [w, d] of [[0.9, 0.05], [0.05, 0.9]]) shape(cage, shapes, 0, y, 0, w, 0.05, d, IRON);
+  shape(cage, shapes, 0, -1.45, 0, 0.8, 0.05, 0.8, IRON); shape(cage, shapes, 0, 0.02, 0, 0.3, 0.1, 0.3, IRON);
+  const body = joint(cage, 0, -1.4, -0.05);
+  shape(body, shapes, 0, 0.1, 0, 0.36, 0.14, 0.2, BONE); for (let k = 0; k < 4; k++) shape(body, shapes, 0, 0.36 + k * 0.1, 0, 0.32 - k * 0.03, 0.035, 0.2, BONE); shape(body, shapes, 0, 0.5, -0.06, 0.05, 0.6, 0.05, BONE);
+  for (const s of [-1, 1]) shape(body, shapes, s * 0.12, 0.06, 0.2, 0.06, 0.06, 0.4, BONE);
+  const head = joint(body, 0, 0.86, 0); shape(head, shapes, 0, 0.12, 0, 0.24, 0.26, 0.24, BONE); for (const s of [-1, 1]) shape(head, shapes, s * 0.055, 0.14, 0.122, 0.07, 0.07, 0.01, 0x140e10); shape(head, shapes, 0, 0.03, 0.122, 0.12, 0.04, 0.01, 0x140e10);
+  const reach = joint(body, 0.17, 0.78, 0.04); shape(reach, shapes, 0, -0.22, 0, 0.05, 0.44, 0.05, BONE); const fore = joint(reach, 0, -0.44, 0); shape(fore, shapes, 0, -0.2, 0, 0.045, 0.4, 0.045, BONE); for (let k = 0; k < 3; k++) shape(fore, shapes, (k - 1) * 0.025, -0.45, 0, 0.018, 0.1, 0.018, BONE);
+  shape(body, shapes, -0.17, 0.5, 0.02, 0.05, 0.44, 0.05, BONE);
+  brood.push({ root, shapes });
+  return { root, swing, cage, head, reach, fore };
+}
+// A thorny tendril rising from the briar: a chain of jointed segments.
+function tendril(brood, r, length = 8) {
+  const root = new THREE.Object3D(), shapes = [], links = [];
+  let parent = root;
+  for (let k = 0; k < length; k++) {
+    const link = joint(parent, 0, k ? 0.26 : 0, 0), s = 0.13 - k * 0.011;
+    shape(link, shapes, 0, 0.13, 0, s, 0.28, s, pick(THORN, r));
+    if (k % 2) shape(link, shapes, (k % 4 === 1 ? 1 : -1) * s * 0.8, 0.14, 0.02, 0.07, 0.03, 0.03, 0x8a7a6a);
+    links.push(link); parent = link;
+  }
+  brood.push({ root, shapes });
+  return { root, links };
+}
+// Pairs of eyes deep in the briar that blink and narrow as the wagon passes.
+function briarEyes(brood, spots) {
+  const root = new THREE.Object3D(), shapes = [], pairs = spots.map(([x, y, z, colour]) => { const p = joint(root, x, y, z); for (const s of [-1, 1]) shape(p, shapes, s * 0.07, 0, 0, 0.07, 0.05, 0.02, colour, true); return p; });
+  brood.push({ root, shapes });
+  return { root, pairs };
+}
+function thicket(v, r, group) {
+  // Leaf litter and roots underfoot.
+  for (let x = -4.5; x < 4.5; x += 0.5) for (let z = -4.0; z < 1.8; z += 0.5) v.box(x, -0.03, z, 0.5, 0.06 + r() * 0.03, 0.5, vary(pick([0x2a2220, 0x332822, 0x2d2a22, 0x3a2a26], r), 0.1, r));
+  // Bramble banks: a wall at the back, banks along the sides, low briars in front.
+  for (let k = 0; k < 34; k++) { const x = -4.4 + r() * 8.8, z = -3.8 + r() * 1.4; cane(v, r, new THREE.Vector3(x, 0, z), new THREE.Vector3(x + (r() - 0.5) * 2, 1.4 + r() * 2.2, z + (r() - 0.5) * 0.8), 0.16); }
+  for (const sx of [-1, 1]) for (let k = 0; k < 10; k++) { const x = sx * (3.6 + r() * 0.8), z = -2.5 + r() * 3.6; cane(v, r, new THREE.Vector3(x, 0, z), new THREE.Vector3(x - sx * r() * 0.8, 1.0 + r() * 1.6, z + (r() - 0.5)), 0.14); }
+  for (let k = 0; k < 14; k++) { const x = -3.8 + r() * 7.6, z = 0.6 + r() * 1.1; cane(v, r, new THREE.Vector3(x, 0, z), new THREE.Vector3(x + (r() - 0.5) * 1.2, 0.4 + r() * 0.5, z + (r() - 0.5) * 0.6), 0.1); }
+  // Three thorn arches over the lane, so the wagon runs under the briar.
+  for (const [x, top] of [[-2.8, 5.8], [0.2, 6.3], [3.0, 5.7]]) thornArch(v, r, x, 0.9, 8.1, top);
+  // Bones and a skull caught in the briar, and a ring of stones with a totem.
+  for (const [x, y, z] of [[-2.1, 0.9, -2.6], [1.7, 1.4, -2.9], [-0.6, 0.05, 0.9], [2.6, 0.05, 1.1]]) { block(v, x, y, z, 0.24, 0.22, 0.22, 0xd6cbb4); for (const s of [-1, 1]) block(v, x + s * 0.055, y + 0.1, z + 0.11, 0.06, 0.06, 0.01, 0x140e10); block(v, x + 0.3, y, z, 0.4, 0.05, 0.05, 0xc8bea6); }
+  for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2; block(v, -2.6 + Math.cos(a) * 0.5, 0, 0.1 + Math.sin(a) * 0.4, 0.2, 0.14, 0.18, vary(0x5a5260, 0.1, r)); }
+  for (let k = 0; k < 9; k++) block(v, -2.6, k * 0.2, 0.1, 0.1, 0.2, 0.1, pick(TWIG, r));
+  block(v, -2.6, 1.0, 0.1, 0.8, 0.07, 0.07, pick(TWIG, r)); block(v, -2.6, 1.85, 0.1, 0.32, 0.3, 0.28, 0xd6cbb4); for (const s of [-1, 1]) block(v, -2.6 + s * 0.07, 1.95, 0.25, 0.07, 0.07, 0.01, 0xff3a2a, true);
+  for (const s of [-1, 1]) for (let k = 0; k < 4; k++) block(v, -2.6 + s * (0.18 + k * 0.08), 2.1 + k * 0.1, 0.1, 0.05, 0.12, 0.05, pick(TWIG, r));   // antlers
+  // A web strung across a gap in the back wall, for the thicket's spider.
+  const centre = new THREE.Vector3(0.6, 2.4, -2.3), silk = { position: [], colour: [] };
+  orbWeb(silk, centre, new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), 1.5, r, 0.12);
+  for (const [dx, dy] of [[-1.6, 1.0], [1.7, 0.9], [-1.4, -1.3], [1.5, -1.2], [0.2, 1.7]]) strand(silk, centre.clone().add(new THREE.Vector3(dx * 0.85, dy * 0.85, 0)), centre.clone().add(new THREE.Vector3(dx * 1.25, dy * 1.25, 0.1)));
+  for (const s of [-1, 1]) cane(v, r, new THREE.Vector3(0.6 + s * 1.9, 0, -2.4), new THREE.Vector3(0.6 + s * 1.7, 4.0, -2.3), 0.2);
+  group.add(silkLines(silk));
+  return centre;
+}
+
 // Builds a set by id into v (static voxels) and group (actors). Returns the
 // actors and a brood to sync each frame (or null when the set has no rigs).
 export function buildRoadsideSet(id, v, group, r) {
@@ -293,6 +488,76 @@ export function buildRoadsideSet(id, v, group, r) {
         for (const [k, arm] of zb.arms.entries()) { arm.rotation.x = -1.35 - Math.sin(t * 0.7 + k) * 0.2 * (go + 0.3); arm.rotation.z = (k ? -1 : 1) * 0.1; }
       } });
     });
+  } else if (id === "graveyard") {
+    graveyard(v, r);
+    // Hands claw up out of three graves, one after another.
+    [[-1.8, 0.75, 0], [-3.2, 1.2, 0.5], [3.7, 1.95, 1.1]].forEach(([x, z, delay], i) => {
+      const h = graveHand(rigs, pick([0x7a8a6a, 0x8a9478, 0x6f7f62], r)), base = new THREE.Vector3(x, 0, z); h.root.position.copy(base); group.add(h.root);
+      v.box(x - 0.22, -0.02, z - 0.2, 0.44, 0.12, 0.4, vary(pick(EARTH, r), 0.1, r));
+      actors.push({ id: "route-graveyard", object: h.root, base, animate({ time, on, near, ramp }) {
+        const up = on && near ? Math.max(0, Math.min(1, ramp * 1.8 - delay * 0.5)) : 0, claw = up * (0.5 + 0.5 * Math.sin(time * 5 + i * 2));
+        h.arm.position.y = -0.75 + up * 0.62; h.arm.rotation.set(0.25 * up + Math.sin(time * 1.3 + i) * 0.12 * up, 0, Math.sin(time * 0.9 + i) * 0.18 * up);
+        for (const [k, f] of h.fingers.entries()) { f.f.rotation.x = 0.2 + claw * 0.9 + Math.sin(time * 7 + k) * 0.06 * up; f.tip.rotation.x = 0.2 + claw * 1.1; }
+        h.thumb.rotation.z = -0.4 + claw * 0.5;
+      } });
+    });
+    // The shade rises from the open grave and reaches for the wagon.
+    const sh = shadeActor(rigs), sbase = new THREE.Vector3(1.95, -2.4, 0.95); sh.root.position.copy(sbase); group.add(sh.root);
+    actors.push({ id: "route-graveyard", object: sh.root, base: sbase, animate({ time, on, near, ramp, camera, set }) {
+      const rise = on && near ? Math.min(1, ramp * 1.6) : 0;
+      sh.root.position.set(sbase.x, sbase.y + rise * 2.55 + Math.sin(time * 1.2) * 0.08 * rise, sbase.z + rise * 0.35);
+      sh.body.rotation.set(-0.12 * rise, 0, Math.sin(time * 0.8) * 0.08);
+      for (const a of sh.arms) { a.sh.rotation.set(-1.25 * rise - Math.sin(time * 2 + a.s) * 0.12 * rise, 0, a.s * (0.15 + 0.25 * rise)); a.el.rotation.x = -0.3 * rise; }
+      sh.jaw.position.y = 0.08 - 0.06 * rise * (0.6 + 0.4 * Math.sin(time * 9));
+      if (camera && rise > 0) { const look = set.group.worldToLocal(camera.clone()); sh.root.rotation.y = THREE.MathUtils.clamp(Math.atan2(look.x - sh.root.position.x, look.z - sh.root.position.z), -1.2, 1.2) * rise; } else sh.root.rotation.y = 0;
+    } });
+    // The angel lowers its hands and turns to watch the wagon go.
+    const an = angelActor(rigs), abase = new THREE.Vector3(-3.3, 0, -2.45); an.root.position.copy(abase); group.add(an.root);
+    actors.push({ id: "route-graveyard", object: an.root, base: abase, animate({ on, near, ramp, camera, set, time }) {
+      const turn = on && near ? Math.min(1, Math.max(0, ramp * 2 - 0.4)) : 0;
+      for (const hnd of an.hands) { hnd.sh.rotation.set(-2.5 * (1 - turn) - 0.2 * turn, 0, hnd.s * (0.35 * (1 - turn) + 0.1)); hnd.fore.rotation.x = -1.4 * (1 - turn) - 0.2 * turn; }
+      let yaw = 0; if (camera && turn > 0) { const look = set.group.worldToLocal(camera.clone()); yaw = THREE.MathUtils.clamp(Math.atan2(look.x - abase.x, look.z - abase.z), -1.1, 1.1) * turn; }
+      an.head.rotation.set(0.5 * (1 - turn), yaw, Math.sin(time * 0.4) * 0.03 * turn);
+      for (const e of an.eyes) e.scale.x = 0.05 * turn + 1e-4;
+    } });
+    // The crypt door swings open; something looks out.
+    const cd = cryptDoor(rigs), cbase = new THREE.Vector3(2.6, 0.22, -2.07); cd.root.position.copy(cbase); group.add(cd.root);
+    actors.push({ id: "route-graveyard", object: cd.root, base: cbase, animate({ on, near, ramp, time }) {
+      const open = on && near ? Math.min(1, ramp * 1.4) : 0;
+      cd.hinge.rotation.y = -1.25 * open + Math.sin(time * 1.7) * 0.04 * open;
+      cd.eyes.scale.set(1, Math.max(1e-3, open * (Math.sin(time * 0.9) > 0.92 ? 0.1 : 1)), 1);
+    } });
+  } else if (id === "thicket") {
+    const centre = thicket(v, r, group);
+    const web = new THREE.Object3D(); web.position.copy(centre); group.add(web); actors.push({ id: "route-thicket", web });   // buildRideLand hangs the spider here
+    // The gibbet cage hangs from the middle arch at the lane's edge and swings.
+    const cg = cageActor(rigs), gbase = new THREE.Vector3(0.2, 5.75, 2.35); cg.root.position.copy(gbase); group.add(cg.root);
+    actors.push({ id: "route-thicket", object: cg.root, base: gbase, animate({ time, on, near, ramp }) {
+      const go = on ? 0.35 + (near ? ramp * 0.65 : 0) : 0.15;
+      cg.swing.rotation.set(Math.sin(time * 1.3) * 0.16 * go, 0, Math.sin(time * 1.3 + 1.2) * 0.1 * go);
+      cg.cage.rotation.y = Math.sin(time * 0.5) * 0.4 * go;
+      const grab = on && near ? ramp : 0; cg.reach.rotation.set(-1.0 * grab - 0.2, 0, -0.4 * grab); cg.fore.rotation.x = -0.6 * grab + Math.sin(time * 4) * 0.15 * grab;
+      cg.head.rotation.set(0.2 - 0.3 * grab, Math.sin(time * 0.7) * 0.4, 0);
+    } });
+    // Twig figures twisting on their cords under the arches.
+    [[-2.8, 4.75, 1.6], [-2.8, 4.55, 6.9], [3.0, 4.6, 1.8], [3.0, 4.5, 7.2], [0.2, 5.1, 6.6]].forEach(([x, y, z], i) => {
+      const tw = twigFigure(rigs, r), base = new THREE.Vector3(x, y, z); tw.root.position.copy(base); group.add(tw.root);
+      actors.push({ id: "route-thicket", object: tw.root, base, animate({ time, on }) { tw.spin.rotation.set(Math.sin(time * 0.9 + i) * 0.08, time * (on ? 0.7 : 0.15) + i, Math.sin(time * 1.1 + i) * 0.06); } });
+    });
+    // Tendrils rise from the low briars and reach for the wagon as it passes.
+    [[-3.4, 0.9], [-1.2, 1.1], [1.4, 0.9], [3.6, 1.1]].forEach(([x, z], i) => {
+      const td = tendril(rigs, r), base = new THREE.Vector3(x, 0, z); td.root.position.copy(base); group.add(td.root);
+      actors.push({ id: "route-thicket", object: td.root, base, animate({ time, on, near, ramp }) {
+        const reach = on && near ? Math.min(1, ramp * 1.5) : 0;
+        td.links.forEach((link, k) => { link.rotation.x = (1 - reach) * (k ? -0.42 : -0.2) + reach * (0.16 + Math.sin(time * 2.2 + k * 0.6 + i) * 0.1); link.rotation.z = Math.sin(time * 1.1 + k * 0.4 + i * 2) * (0.05 + 0.08 * reach); });
+      } });
+    });
+    // Eyes in the briar that blink, out of step with each other.
+    const ey = briarEyes(rigs, [[-3.2, 1.3, -2.2, 0xffe25a], [-1.4, 0.8, -2.0, 0xff4a30], [2.4, 1.6, -2.4, 0xb6ff6a], [3.4, 0.7, -1.4, 0xffe25a], [-0.4, 2.9, -3.0, 0xff4a30]]);
+    group.add(ey.root);
+    actors.push({ id: "route-thicket", object: ey.root, base: ey.root.position.clone(), animate({ time, on, near }) {
+      ey.pairs.forEach((p, i) => { const blink = ((time * 0.7 + i * 0.37) % 1) < 0.06, show = on && near ? 1 : 0.6; p.scale.set(1, blink ? 0.1 : show, 1); });
+    } });
   } else return null;
   return { actors, brood: rigs.length ? createBrood(rigs) : null };
 }

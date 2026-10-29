@@ -1,11 +1,50 @@
 import * as THREE from "three";
 import { HAYRIDE_PROPERTY, HAYRIDE_TIERS } from "./content/hayride.js";
-import { HAYRIDE_STOPS, hayrideStops, hayrideRouteLength, HAYRIDE_ROUTE_LENGTH } from "./content/hayride-layout.js";
+import { HAYRIDE_STOPS, hayrideStops, hayrideRouteLength, HAYRIDE_ROUTE_LENGTH, HAYRIDE_RIDE_HILL } from "./content/hayride-layout.js";
 import { HAYRIDE_LIGHTNING_TIMES, hayrideLightning } from "./content/hayride-weather.js";
 
 const INTRO = 2.5, YAW_LIMIT = Math.PI * .48, PITCH_LIMIT = Math.PI / 7;
 // Roots cross the lane this far apart (buildRideLand lays them; the camera jolts over them).
 export const RUT_GAP = 13.3;
+// The wagon's axles run this far behind the tractor's place on the route
+// (hayrideConvoyPose); each jolts as it crosses a root, the rear one, under
+// the rider, the harder. rootJolt(d, length) is that jolt, 0 to about 1,
+// with the tractor at d on a route of that length: the camera and the other
+// passengers ride it. Roots lie at each RUT_GAP from the first to 4 units
+// short of the end, as hayrideRoots says.
+export const AXLES = Object.freeze([{ behind: 2.68, weight: .55 }, { behind: 4.92, weight: 1 }]);
+export const hayrideRoots = (length) => Math.max(0, Math.ceil((length - 4) / RUT_GAP) - 1);
+export function rootJolt(d, length = Infinity) {
+  let jolt = 0;
+  for (const axle of AXLES) {
+    const a = d - axle.behind, k = Math.floor(a / RUT_GAP), x = a - k * RUT_GAP;
+    if (k >= 1 && k <= hayrideRoots(length) && x < .45) jolt += axle.weight * Math.sin(x / .45 * Math.PI);
+  }
+  return jolt;
+}
+// The lamps sputter as the wagon nears these scenes, from this many units
+// before the scene until LIGHTS_OUT.after units past it (hayride-world.js).
+export const LIGHTS_OUT = Object.freeze({ stops: ["pursuit", "bus"], before: 6, after: 1.5 });
+
+// The wagon's pace along the route. It pulls away gently, creeps up to each
+// scene (slowest just as it comes level) and picks up speed between them, then
+// eases into the station; the whole ride takes the same time as before.
+// Returns a function from the share of ride time gone to the share of route.
+export function hayridePace(stops, length) {
+  const N = 1600, speed = p => {
+    let v = 1;
+    for (const s of stops) { const d = (p - s.at) * length; v -= .58 * Math.exp(-((d < 0 ? d / 8 : d / 3.2) ** 2)); }
+    return Math.max(.3, v) * (.3 + .7 * smooth(p / .035)) * (.4 + .6 * smooth((1 - p) / .03));
+  };
+  const time = new Float64Array(N + 1);
+  for (let i = 1; i <= N; i++) time[i] = time[i - 1] + 1 / speed((i - .5) / N);
+  for (let i = 1; i <= N; i++) time[i] /= time[N];
+  return f => {
+    if (!(f > 0)) return 0; if (f >= 1) return 1;
+    let lo = 0, hi = N; while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (time[mid] < f) lo = mid; else hi = mid; }
+    return (lo + (f - time[lo]) / Math.max(1e-12, time[hi] - time[lo])) / N;
+  };
+}
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const smooth = n => { const t = clamp(n, 0, 1); return t * t * (3 - 2 * t); };
 const sounds = { scarecrows: "knock", spiders: "skitter", bride: "whisper", pursuit: "whoosh", bus: "chains", graveyard: "whisper", thicket: "knock" };
@@ -54,7 +93,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
     const moving = !options.gentle && run.elapsed >= INTRO && !run.paused, d = run.progress * (run.length ?? HAYRIDE_ROUTE_LENGTH);
     let nod = 0, drift = 0, sx = 0, sy = 0;
     if (moving) {
-      const root = ((d % RUT_GAP) + RUT_GAP) % RUT_GAP, jolt = root < .45 ? Math.sin(root / .45 * Math.PI) : 0;
+      const jolt = rootJolt(d, run.length ?? HAYRIDE_ROUTE_LENGTH);
       point.y += Math.sin(d * 2.3) * .014 + Math.sin(d * 5.7 + 1) * .007 + jolt * .06;
       nod = Math.sin(d * 2.3 + .6) * .006 - jolt * .02;
       if (dt > 0 && lastHeading !== null) { const turn = Math.atan2(Math.sin(heading - lastHeading), Math.cos(heading - lastHeading)) / Math.max(1e-3, dt); roll += (clamp(-turn * .05, -.06, .06) + Math.sin(d * 1.7) * .006 - roll) * (1 - Math.exp(-dt * 3)); }
@@ -74,12 +113,30 @@ export function createHayrideView(canvas, state, hooks = {}) {
   function advance(seconds) {
     if (!active || !run || run.paused || run.completed) return [];
     run.elapsed = Math.min(run.duration, run.elapsed + Math.max(0, finite(seconds)));
-    run.progress = clamp((run.elapsed - INTRO) / run.rideDuration, 0, 1);
+    const was = run.progress;
+    run.progress = run.pace(clamp((run.elapsed - INTRO) / run.rideDuration, 0, 1));
     const cues = [];
+    // A thud as each axle goes over a root, and a fizz as the lamps begin to
+    // fail before the pursuit and the bus. Gentle mode rides smooth and steady.
+    if (!options.gentle) {
+      for (const [i, axle] of AXLES.entries()) {
+        const from = was * run.length - axle.behind, to = run.progress * run.length - axle.behind;
+        for (let k = Math.max(1, Math.floor(from / RUT_GAP) + 1); k * RUT_GAP <= to && k <= hayrideRoots(run.length); k++) { const cue = { type: "bump", id: `hayride-root-${k}-${i}`, sound: "bump", intensity: .25 + .15 * axle.weight }; cues.push(cue); hooks.onCue?.(cue); }
+      }
+      for (const stop of run.stops ?? HAYRIDE_STOPS) {
+        if (!LIGHTS_OUT.stops.includes(stop.id)) continue;
+        const at = stop.at - LIGHTS_OUT.before / run.length;
+        if (was < at && run.progress >= at) { const cue = { type: "lights", id: `hayride-lights-${stop.id}`, sound: "sputter", scene: stop.id, intensity: .5 }; cues.push(cue); hooks.onCue?.(cue); }
+      }
+    }
+    // The wagon goes into the hill: the wheels' rumble closes round it and
+    // water drips in the dark. It is not motion, so gentle mode hears it too.
+    const into = (HAYRIDE_RIDE_HILL.from + AXLES[0].behind) / run.length;
+    if (was < into && run.progress >= into) { const cue = { type: "tunnel", id: "hayride-tunnel", sound: "tunnel", intensity: options.gentle ? .25 : .4 }; cues.push(cue); hooks.onCue?.(cue); }
     for (const stop of run.stops??HAYRIDE_STOPS) {
       if (run.progress < stop.at || run.fired.has(stop.id)) continue;
       run.fired.add(stop.id);
-      const cue = { type: "encounter", id: `hayride-${stop.id}`, stop: stop.id, name: stop.name, sound: sounds[stop.id], at: INTRO + stop.at * run.rideDuration, intensity: options.gentle ? .25 : .45 };
+      const cue = { type: "encounter", id: `hayride-${stop.id}`, stop: stop.id, name: stop.name, sound: sounds[stop.id], at: run.elapsed, intensity: options.gentle ? .25 : .45 };
       run.cue = cue; cues.push(cue); hooks.onCue?.(cue);
       if (!options.gentle) { shake = 1; kick = 1; }
     }
@@ -119,7 +176,8 @@ export function createHayrideView(canvas, state, hooks = {}) {
       options = { ...options, ...nextOptions };
       const rideDuration=HAYRIDE_PROPERTY.rideAlongSeconds*hayrideRouteLength(state)/HAYRIDE_ROUTE_LENGTH;
       shake = kick = roll = 0; lastHeading = null;
-      run = { length: hayrideRouteLength(state), stops:hayrideStops(state), tier: tier.level, elapsed: 0, duration: INTRO + rideDuration, rideDuration, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), thunder: new Set(), cue: null };
+      const stops = hayrideStops(state), length = hayrideRouteLength(state);
+      run = { length, pace: hayridePace(stops, length), stops, tier: tier.level, elapsed: 0, duration: INTRO + rideDuration, rideDuration, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), thunder: new Set(), cue: null };
       active = true; yaw = pitch = targetYaw = targetPitch = 0; clearPointer();
       world().setGentleMotion?.(!!options.gentle);
       const scene = world().scene;

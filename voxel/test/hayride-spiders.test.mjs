@@ -52,12 +52,14 @@ test("the ride's spider cave carries its brood and silk without touching the lan
 
 test("the detailed roadside sets each build their actors and a brood", async () => {
   const { buildRoadsideSet } = await import("../src/hayride-sets.js"), { Voxels, seeded } = await import("../src/voxels.js");
-  for (const [id, n] of [["scarecrows", 4], ["bride", 1], ["pursuit", 1], ["bus", 3]]) {
+  for (const [id, n] of [["scarecrows", 4], ["bride", 1], ["pursuit", 1], ["bus", 3], ["graveyard", 6], ["thicket", 12]]) {
     const v = new Voxels(), group = new THREE.Group(), set = buildRoadsideSet(id, v, group, seeded(5));
     assert.equal(set.actors.length, n, id);
     assert.ok(v.solid.length + v.glow.length > 100, `${id} is dressed`);
-    for (const a of set.actors) a.animate({ time: 1, near: true, ramp: 1, wave: 1, on: true, camera: new THREE.Vector3(0, 2.7, 6), forward: new THREE.Vector3(1, 0, 0), set: { group } });
+    for (const a of set.actors) a.animate?.({ time: 1, near: true, ramp: 1, wave: 1, on: true, camera: new THREE.Vector3(0, 2.7, 6), forward: new THREE.Vector3(1, 0, 0), set: { group } });
     set.brood?.sync(); set.brood?.dispose();
   }
-  assert.equal(buildRoadsideSet("graveyard", new Voxels(), new THREE.Group(), seeded(5)), null);
+  // The thicket's web is where buildRideLand hangs its spider; the cave is built along the lane instead.
+  assert.ok(buildRoadsideSet("thicket", new Voxels(), new THREE.Group(), seeded(5)).actors.some((a) => a.web));
+  assert.equal(buildRoadsideSet("spiders", new Voxels(), new THREE.Group(), seeded(5)), null);
 });

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
 import { fenceRun, lanternPost, gourd, wallLantern, COL } from "./world.js";
-import { HAYRIDE_SITE as SITE, HAYRIDE_FLEET_BAY } from "./content/hayride-layout.js";
+import { HAYRIDE_SITE as SITE, HAYRIDE_FLEET_BAY, HAYRIDE_RIDE_HILL } from "./content/hayride-layout.js";
 
 // The hayride's depot on the farm: a lantern-lit yard of packed earth at the
 // edge of the woods. A rutted track runs through it between two tree arches,
@@ -118,22 +118,29 @@ const ROCK = [0x4f4250, 0x5a4b57, 0x463a45, 0x625363], SOIL = [0x4a3527, 0x553d2
 const LITTER = [0x5a2a26, 0x6a3a24, 0x4a3a2a, 0x3d3324, 0x6e3020, 0x553a2a];
 const BORE = { half: 1.6, height: 3.0 }, INK = 0x0b080d;
 const inBore = (x, lanes) => lanes.some((l) => Math.abs(x + 0.25 - l) < BORE.half);
+// A bore's round-topped arch: its half width, the height its curve springs
+// from and how far the curve rises. The ride's own tunnel is taller and wider,
+// so the tractor's canopy clears its vault (hayride-world.js rides through it).
+const ARCH = Object.freeze({ half: BORE.half, spring: BORE.height - BORE.half * 0.55, rise: BORE.half * 0.62 });
+const RIDE_ARCH = Object.freeze({ half: 1.75, spring: 2.6, rise: 1.15 });
 // A stone arch round a bore's mouth on the face at z, facing +z (dir 1) or -z.
-function tunnelMouth(v, r, x, z, dir, crown = true) {
-  const half = BORE.half, H = BORE.height, out = dir * 0.18;
+function tunnelMouth(v, r, x, z, dir, crown = true, arch = ARCH) {
+  const { half, spring, rise } = arch, out = dir * 0.18;
   for (let i = 0; i <= 12; i++) {                                                    // voussoirs on a round-topped arch
-    const a = Math.PI * i / 12, ax = x - Math.cos(a) * (half + 0.12), ay = H - half * 0.55 + Math.sin(a) * half * 0.62;
+    const a = Math.PI * i / 12, ax = x - Math.cos(a) * (half + 0.12), ay = spring + Math.sin(a) * rise;
     block(v, ax, ay - 0.2, z + out, 0.46, 0.46, 0.34, vary(i === 6 ? 0x8a7d8c : ROCK[i % 4], 0.08, r));
   }
-  for (const side of [-1, 1]) for (let y = 0; y < H - half * 0.6; y += 0.42) block(v, x + side * (half + 0.12), y, z + out, 0.46, 0.4, 0.34, vary(ROCK[Math.floor(r() * 4)], 0.08, r));
+  for (const side of [-1, 1]) for (let y = 0; y < spring - 0.08; y += 0.42) block(v, x + side * (half + 0.12), y, z + out, 0.46, 0.4, 0.34, vary(ROCK[Math.floor(r() * 4)], 0.08, r));
   if (crown) {                                                                       // a carved skull for a keystone, and lanterns either side
-    const ky = H + half * 0.1;
+    const ky = spring + rise + 0.05;
     block(v, x, ky, z + out + dir * 0.18, 0.34, 0.3, 0.06, 0xd9cdb8); for (const dx of [-0.08, 0.08]) block(v, x + dx, ky + 0.15, z + out + dir * 0.22, 0.07, 0.07, 0.03, INK);
     for (const side of [-1, 1]) { const lx = x + side * (half + 0.55); block(v, lx, 1.7, z + out, 0.08, 0.5, 0.08, IRON); block(v, lx, 1.42, z + out + dir * 0.06, 0.26, 0.3, 0.26, LANTERN, true); block(v, lx, 1.36, z + out + dir * 0.06, 0.32, 0.06, 0.32, IRON); }
   }
-  // Roots and moss trailing over the lip, and cobwebs in the corners.
-  for (let k = 0; k < 9; k++) { const rx = x - half + 0.2 + k * (half * 2 - 0.4) / 8, len = 0.2 + r() * 0.6; block(v, rx, H + 0.2 - len, z + out + dir * 0.05, 0.05, len, 0.05, r() < 0.5 ? 0x2a1d17 : MOSS[k % 4]); }
-  for (const side of [-1, 1]) for (let k = 0; k < 4; k++) block(v, x + side * (half - 0.25 - k * 0.12), H - 0.55 - k * 0.12 + 0.3, z + dir * 0.08, 0.3 - k * 0.05, 0.015, 0.015, 0xcfc8d6);
+  // Roots and moss trailing over the lip, and cobwebs in the corners. The
+  // ride's wagon passes right under its arch, so those roots stay short.
+  for (let k = 0; k < 9; k++) { const rx = x - half + 0.2 + k * (half * 2 - 0.4) / 8, len = (0.2 + r() * 0.6) * (arch === ARCH ? 1 : 0.45); block(v, rx, spring + rise + 0.09 - len, z + out + dir * 0.05, 0.05, len, 0.05, r() < 0.5 ? 0x2a1d17 : MOSS[k % 4]); }
+  // Seen up close from the ride, these read as stray dashes, so only the farm's mouths have them.
+  if (arch === ARCH) for (const side of [-1, 1]) for (let k = 0; k < 4; k++) block(v, x + side * (half - 0.25 - k * 0.12), spring + rise - 0.36 - k * 0.12, z + dir * 0.08, 0.3 - k * 0.05, 0.015, 0.015, 0xcfc8d6);
 }
 // A dark lined passage running from the face at z back by depth (dir is the
 // way the mouth faces): walls, a ceiling, a damp floor and an inky end.
@@ -170,6 +177,83 @@ function deadTree(v, r, x, y, z, s) {
   let px = x, pz = z, py = y;
   for (let k = 0; k < 9; k++) { block(v, px, py, pz, 0.32 * s - k * 0.02, 0.4 * s, 0.32 * s - k * 0.02, BARK[k % 3]); py += 0.38 * s; px += (r() - 0.5) * 0.12; }
   for (let b = 0; b < 4; b++) { const a = r() * Math.PI * 2, len = 3 + Math.floor(r() * 3); let bx = px, by = py - b * 0.5 * s, bz = pz; for (let k = 0; k < len; k++) { bx += Math.cos(a) * 0.22 * s; bz += Math.sin(a) * 0.12 * s; by += 0.14 * s; block(v, bx, by, bz, 0.12, 0.12, 0.12, 0x2e221d); } }
+}
+
+// The ride's own way in (HAYRIDE_RIDE_HILL): the lane runs right through a
+// wooded hill just after boarding, so every ride starts in the dark. The bore
+// is lined in coursed stone under a round vault, with lanterns on the walls,
+// roots through the joints, cobwebs, and niches of old bones. The mouth with
+// the skull keystone faces the boarding wagon; a plainer one lets it out.
+// v takes world boxes (box and block) and laneX(z) gives the lane's centre.
+// Only the hill's exposed faces are drawn. Returns where the lanterns and the
+// jack-o'-lanterns glow (the ride draws a halo round each) and the sign's place.
+const DAMP = [0x3a3340, 0x433a48, 0x352e3a, 0x4b4150, 0x3e3644], BONE = 0xd6cbb4;
+export function buildRideHill(v, r, laneX) {
+  const { x0, x1, z0, z1 } = HAYRIDE_RIDE_HILL, { half, spring, rise } = RIDE_ARCH, roof = spring + rise + 0.26, peak = 5.6;
+  const cols = Math.round((x1 - x0) / 0.5), rows = Math.round((z1 - z0) / 0.5), top = new Float32Array(cols * rows), cut = new Uint8Array(cols * rows);
+  // A ridge, high over the lane and falling away to each side, with steep
+  // faces where the lane goes in and comes out.
+  for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) {
+    const x = x0 + i * 0.5, z = z0 + j * 0.5, off = Math.abs(x + 0.25 - laneX(z + 0.25));
+    const side = Math.min(x - x0, x1 - 0.5 - x), end = Math.min(z - z0, z1 - 0.5 - z);
+    let h = peak * Math.min(1, 0.28 + side / 3.8) * Math.min(1, 0.7 + end / 2.4) + Math.sin(x * 1.3 + z * 0.7) * 0.3 + (r() - 0.5) * 0.2;
+    if (off < half + 1.4) h = Math.max(h, roof + 0.6 + r() * 0.2);                      // a lip over the bore
+    top[i * rows + j] = Math.max(0.6, Math.round(h * 4) / 4); cut[i * rows + j] = off < half + 0.25 ? 1 : 0;
+  }
+  const at = (i, j) => (i < 0 || j < 0 || i >= cols || j >= rows ? -1 : i * rows + j);
+  for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) {
+    const k = i * rows + j, x = x0 + i * 0.5, z = z0 + j * 0.5, h = top[k], bottom = cut[k] ? roof : 0;
+    const strata = (y) => (Math.floor(y * 2.2 + x * 0.15) % 3 === 0 ? ROCK : SOIL);
+    // Draw a layer only where a neighbour falls below it or the hill ends.
+    const open = (y) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => { const n = at(i + a, j + b); return n < 0 || (!cut[n] && top[n] - 0.3 < y + 0.5); });
+    for (let y = bottom; y < h - 0.3; y += 0.5) if (open(y)) v.box(x, y, z, 0.5, Math.min(0.5, h - 0.3 - y), 0.5, vary(strata(y)[Math.floor(r() * 3)], 0.08, r));
+    v.box(x, h - 0.3, z, 0.5, 0.3 + r() * 0.05, 0.5, vary(r() < 0.55 ? MOSS[Math.floor(r() * 4)] : LITTER[Math.floor(r() * LITTER.length)], 0.1, r));
+    const fleck = r();
+    if (fleck < 0.18) block(v, x + 0.25, h + 0.04, z + 0.25, 0.22, 0.04, 0.22, LEAVES[Math.floor(r() * LEAVES.length)]);
+    else if (fleck < 0.26) { const sz = 0.3 + r() * 0.25; block(v, x + 0.25, h, z + 0.25, sz, sz * 0.8, sz, vary(0x3a3324, 0.16, r)); for (let n = 0; n < 3; n++) block(v, x + 0.25 + (r() - 0.5) * sz, h + sz * 0.6, z + 0.25 + (r() - 0.5) * sz, 0.16, 0.14, 0.16, LEAVES[Math.floor(r() * LEAVES.length)]); }
+    else if (fleck < 0.3) block(v, x + 0.25, h, z + 0.25, 0.22 + r() * 0.2, 0.14, 0.2, vary(ROCK[Math.floor(r() * 4)], 0.1, r));
+    // Ivy and roots trailing down the faces.
+    if ((j === 0 || j === rows - 1) && !cut[k] && r() < 0.35) { const len = 0.4 + r() * 1.4; v.box(x + 0.1 + r() * 0.3, h - 0.3 - len, j === 0 ? z - 0.04 : z + 0.49, 0.06, len, 0.05, r() < 0.5 ? 0x2a1d17 : MOSS[k % 4]); }
+  }
+  // The bore's walls in courses that break joint, then the vault over them.
+  for (let c = 0, y = 0; y < spring - 0.1; c++, y += 0.42) for (let z = z0 - (c % 2) * 0.25; z < z1; z += 0.5) {
+    const a = Math.max(z0, z), b = Math.min(z1, z + 0.48), lane = laneX((a + b) / 2);
+    if (b - a > 0.05) for (const s of [-1, 1]) v.box(s < 0 ? lane - half - 0.3 : lane + half, y, a, 0.3, Math.min(0.4, spring - 0.1 - y), b - a, vary(DAMP[Math.floor(r() * DAMP.length)], 0.07, r));
+  }
+  for (let z = z0; z < z1; z += 0.5) {
+    const lane = laneX(z + 0.25), row = Math.round((z - z0) * 2);
+    for (let i = 0; i <= 12; i++) { const a = Math.PI * i / 12; block(v, lane - Math.cos(a) * (half + 0.12), spring - 0.2 + Math.sin(a) * rise, z + 0.25, 0.46, 0.46, 0.52, vary(DAMP[(i + row) % DAMP.length], 0.06, r)); }
+    for (const s of [-1, 1]) if (r() < 0.3) v.box(s < 0 ? lane - half - 0.01 : lane + half - 0.03, 0.05, z + r() * 0.3, 0.04, 0.4 + r() * 0.9, 0.12, MOSS[Math.floor(r() * 4)]);   // damp moss
+    // Roots through the joints of the haunches, hanging beside the riders'
+    // heads, never over them or down to the canopy.
+    for (let n = 0; n < 2; n++) if (r() < 0.6) { const a = Math.PI * (r() < 0.5 ? 0.15 + r() * 0.12 : 0.73 + r() * 0.12), top = spring - 0.1 + Math.sin(a) * rise, len = Math.min(0.3 + r() * 0.6, top - 2.85); block(v, lane - Math.cos(a) * (half - 0.08), top - len, z + r() * 0.5, 0.045, len, 0.045, r() < 0.6 ? 0x2a1d17 : 0x3b2b22); }
+  }
+  // Lanterns on iron brackets down alternate walls, and niches of bones.
+  const glows = [];
+  for (let z = z1 - 1.4, s = -1; z > z0 + 0.6; z -= 2.3, s = -s) {
+    // Hung close to the wall: the wagon's rails pass within 0.32 of it.
+    const x = laneX(z) + s * half;
+    block(v, x - s * 0.1, 2.0, z, 0.2, 0.06, 0.06, IRON); block(v, x - s * 0.15, 1.74, z, 0.17, 0.24, 0.17, LANTERN, true); block(v, x - s * 0.15, 1.69, z, 0.2, 0.05, 0.2, IRON); block(v, x - s * 0.15, 1.98, z, 0.1, 0.05, 0.1, IRON);
+    glows.push({ x: x - s * 0.15, y: 1.86, z, colour: 0xffa04a });
+  }
+  for (const [dz, s] of [[2.2, 1], [4.0, -1], [5.6, 1]]) {
+    const z = z1 - dz, x = laneX(z) + s * half;
+    block(v, x - s * 0.03, 0.9, z, 0.08, 0.55, 0.7, INK);
+    block(v, x - s * 0.1, 0.92, z - 0.12, 0.2, 0.18, 0.2, BONE); for (const e of [-0.05, 0.05]) block(v, x - s * 0.2, 1.0, z - 0.12 + e, 0.02, 0.05, 0.04, INK);
+    block(v, x - s * 0.08, 0.92, z + 0.16, 0.12, 0.05, 0.3, BONE); block(v, x - s * 0.08, 0.98, z + 0.14, 0.1, 0.05, 0.26, vary(BONE, 0.08, r));
+  }
+  tunnelMouth(v, r, laneX(z1), z1, 1, true, RIDE_ARCH); tunnelMouth(v, r, laneX(z0), z0, -1, false, RIDE_ARCH);
+  for (const s of [-1, 1]) glows.push({ x: laneX(z1) + s * (half + 0.55), y: 1.57, z: z1 + 0.24, colour: 0xffa04a });
+  // On the ridge: crooked dead trees and an old burial ground.
+  const ridge = (x, z) => top[at(Math.max(0, Math.min(cols - 1, Math.floor((x - x0) / 0.5))), Math.max(0, Math.min(rows - 1, Math.floor((z - z0) / 0.5))))];
+  for (const [x, z, sz] of [[x0 + 4, z0 + 3.6, 1.1], [x1 - 3.4, z0 + 2.4, 0.95], [laneX(z0 + 4) + 3.2, z0 + 4.4, 1.25], [laneX(z0 + 3) - 4.6, z0 + 2, 0.85]]) deadTree(v, r, x, ridge(x, z), z, sz);
+  for (const [dx, dz, tilt] of [[-2.6, 5.6, 0.08], [-1.7, 5.2, -0.06], [2.4, 5.8, 0.1]]) {
+    const x = laneX(z0 + dz) + dx, z = z0 + dz, y = ridge(x, z);
+    block(v, x, y, z, 0.5, 0.62, 0.14, vary(0x6e6878, 0.08, r)); block(v, x + tilt, y + 0.55, z, 0.36, 0.16, 0.14, vary(0x77708a, 0.08, r)); block(v, x, y, z + 0.35, 0.5, 0.06, 0.5, vary(0x2e3a26, 0.1, r));
+  }
+  // Lit jack-o'-lanterns either side of the way in.
+  for (const s of [-1, 1]) { const x = laneX(z1) + s * (half + 1.3); jack(v, x, 0.02, z1 + 0.75, 0.5); jack(v, x + s * 0.55, 0.02, z1 + 0.5, 0.38); glows.push({ x: x + s * 0.25, y: 0.3, z: z1 + 0.9, colour: 0xff8a2a }); }
+  return { glows, sign: { x: laneX(z1), y: spring + rise + 0.75, z: z1 + 0.42 } };
 }
 
 export function buildHayrideStation(signBoard, fleet = false) {

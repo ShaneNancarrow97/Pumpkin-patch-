@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { chunkedVoxels, seeded, vary } from "./voxels.js";
-import { HAYRIDE_RIDE_BOUNDS, HAYRIDE_ROUTE_LENGTH, HAYRIDE_STOPS, hayrideRouteSample, hayrideRouteDistance, hayrideRouteProfile } from "./content/hayride-layout.js";
+import { HAYRIDE_RIDE_BOUNDS, HAYRIDE_ROUTE_LENGTH, HAYRIDE_STOPS, HAYRIDE_RIDE_HILL, hayrideRouteSample, hayrideRouteDistance, hayrideRouteProfile } from "./content/hayride-layout.js";
 
 // The woodland belongs only to the off-map POV scene. All its trunks and low
 // plants leave a real vehicle corridor; the high canopy encloses the sky.
@@ -13,7 +13,7 @@ const stops = HAYRIDE_STOPS.map(stop => {
   return { x: p.x + p.dz * offset, z: p.z - p.dx * offset, radius: stop.id === "bride" ? 5.25 : stop.id === "bus" ? 5.6 : stop.id === "spiders" ? 7.4 : 4.45 };
 });
 const clearSet = (x, z, margin = 0) => !stops.some(p => Math.hypot(x - p.x, z - p.z) < p.radius + margin);
-const station = (x, z, margin = 0) => x > -23.1 - margin && x < -8.8 + margin && z > 23.5 - margin && z < 39 + margin;
+const station = (x, z, margin = 0) => (x > -23.1 - margin && x < -8.8 + margin && z > 23.5 - margin && z < 39 + margin) || (x > HAYRIDE_RIDE_HILL.x0 - margin && x < HAYRIDE_RIDE_HILL.x1 + margin && z > HAYRIDE_RIDE_HILL.z0 - margin && z < HAYRIDE_RIDE_HILL.z1 + margin);   // the depot and the hill the ride starts through
 export function hayrideForestClearance(x, z, w = 0, d = 0, routeLevel = 0) {
   return hayrideRouteDistance(x, z, routeLevel) - Math.hypot(w, d) / 2;
 }

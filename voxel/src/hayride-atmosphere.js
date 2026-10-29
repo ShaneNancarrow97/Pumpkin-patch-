@@ -12,8 +12,8 @@ const LEAF = { count: 150, box: 13, top: 7.5 }, MIST = { count: 64, box: 19 }, W
 const LEAF_COLOURS = [0x8a2f1e, 0xc2552a, 0xe08a2e, 0xa8402a, 0x6a2a3a, 0xd9a03a];
 const wrapTo = (v, c, half) => c + ((((v - c + half) % (half * 2)) + half * 2) % (half * 2)) - half;
 
-// A soft round puff for the mist, drawn once.
-function puff() {
+// A soft round puff for the mist and the lamps' halos, drawn once per use.
+export function puff() {
   if (typeof document === "undefined") return null;                                 // headless tests
   const c = document.createElement("canvas"); c.width = c.height = 64;
   const g = c.getContext("2d"), grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
@@ -43,7 +43,7 @@ export function createRideAtmosphere(scene) {
   const r = seeded(4471), group = new THREE.Group(); group.name = "Hollow Hayride air"; scene.add(group);
   // Leaves: tumbling flakes that catch the lamps.
   const leafGeo = new THREE.BoxGeometry(0.13, 0.016, 0.09), leafMat = new THREE.MeshStandardMaterial({ roughness: 0.9 });
-  const leaves = new THREE.InstancedMesh(leafGeo, leafMat, LEAF.count), colour = new THREE.Color(), m = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), one = new THREE.Vector3(1, 1, 1), p = new THREE.Vector3();
+  const leaves = new THREE.InstancedMesh(leafGeo, leafMat, LEAF.count), colour = new THREE.Color(), m = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), one = new THREE.Vector3(1, 1, 1), zero = new THREE.Vector3(0, 0, 0), p = new THREE.Vector3();
   leaves.instanceMatrix.setUsage(THREE.DynamicDrawUsage); leaves.frustumCulled = false;
   const leaf = Array.from({ length: LEAF.count }, (_, i) => { leaves.setColorAt(i, colour.setHex(LEAF_COLOURS[i % LEAF_COLOURS.length])); return { x: (r() - 0.5) * 2 * LEAF.box, y: r() * LEAF.top, z: (r() - 0.5) * 2 * LEAF.box, fall: 0.35 + r() * 0.5, sway: 0.6 + r() * 1.2, phase: r() * 6.3, spin: 1 + r() * 3 }; });
   // Mist: big soft puffs low on the ground, drifting slowly.
@@ -65,8 +65,9 @@ export function createRideAtmosphere(scene) {
   return {
     group,
     // camera: the rider's eye; forward: the lane's heading (x, z); clear(x, z)
-    // says whether a point is off the lane, for the wisps.
-    tick(time, dt, camera, forward, { gentle = false, clear = () => true } = {}) {
+    // says whether a point is off the lane, for the wisps; covered(x, z) says
+    // whether it is under a roof, where no leaves fall.
+    tick(time, dt, camera, forward, { gentle = false, clear = () => true, covered = () => false } = {}) {
       if (!camera) { group.visible = false; return; }
       group.visible = true; const step = Math.min(0.1, Math.max(0, dt)), slow = gentle ? 0.4 : 1;
       leaf.forEach((l, i) => {
@@ -75,7 +76,7 @@ export function createRideAtmosphere(scene) {
         const s = Math.sin(time * l.sway + l.phase);
         p.set(l.x + s * 0.35, l.y, l.z + Math.cos(time * l.sway * 0.7 + l.phase) * 0.25);
         q.setFromEuler(e.set(s * 1.2, time * l.spin * slow + l.phase, Math.cos(time * l.spin + l.phase) * 0.9));
-        leaves.setMatrixAt(i, m.compose(p, q, one));
+        leaves.setMatrixAt(i, m.compose(p, q, covered(l.x, l.z) ? zero : one));
       });
       leaves.instanceMatrix.needsUpdate = true;
       mist.forEach((n, i) => {

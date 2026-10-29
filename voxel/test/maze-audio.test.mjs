@@ -130,6 +130,23 @@ test("a hayride scare screams twice, and the woods have their own sounds between
   audio.stop(); h.advance(1); assert.ok(h.sources.every(source => source.ended));
 });
 
+test("the ride's own noises: a thud at each root, the lamps' fizz, the hill's rumble, and screams at every scene", async () => {
+  const h = await audioHarness("hayride-audio"), audio = h.exports.createHayrideAudio({ hayrideSound: true });
+  audio.start({ sound: true }); h.advance(.1);
+  const started = (hz) => h.sources.some(source => source.frequency.changes?.some(change => change.value === hz));
+  for (const [cue, hz] of [[{ type: "bump", id: "hayride-root-1-0", sound: "bump", intensity: .3 }, 74], [{ type: "lights", id: "hayride-lights-bus", sound: "sputter", scene: "bus", intensity: .5 }, 62], [{ type: "tunnel", id: "hayride-tunnel", sound: "tunnel", intensity: .4 }, 44]]) {
+    const before = h.sources.length;
+    assert.equal(audio.cue(cue), true, cue.sound); assert.ok(h.sources.length > before && started(hz), `${cue.sound} plays`);
+    assert.equal(audio.cue(cue), false, `${cue.sound} plays once`);
+  }
+  for (const stop of ["graveyard", "thicket"]) {
+    h.advance(4); const before = h.sources.length;                                  // let the last sounds finish first
+    audio.cue({ type: "encounter", id: `hayride-${stop}`, stop, sound: "whisper", intensity: .45 });
+    assert.ok(h.sources.length - before > 12, `${stop} screams`);
+  }
+  audio.stop(); h.advance(4); assert.ok(h.sources.every(source => source.ended));
+});
+
 test("farm music keeps the ride mix across volume, sync and level-up ducking", async () => {
   const h = await audioHarness("audio"), prefs = { music: true, musicTrack: "parade", musicShuffle: false, musicVolume: .5, sound: true }, audio = h.exports.createAudio(prefs);
   audio.setSceneGain(.08); assert.equal(h.contexts.length, 0);

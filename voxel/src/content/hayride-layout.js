@@ -13,6 +13,16 @@ export const HAYRIDE_SITE = Object.freeze({
 });
 // Raised ground the track tunnels through (hayride-station.js): no wild trees grow in it.
 export const HAYRIDE_HILLS = Object.freeze([{ x0: -26.5, x1: -11, z0: 3, z1: 11 }, { x0: -26, x1: -11.5, z0: 44, z1: 49.5 }]);
+// The ride's own way in (hayride-station.js buildRideHill): just after boarding
+// the lane runs straight through a wooded hill, entering at z1 and leaving at
+// z0, from and to units along the route. The scarecrows wait beyond it.
+export const HAYRIDE_RIDE_HILL = Object.freeze({ x0: -27, x1: -7, z0: 16.5, z1: 23.8, from: 2.7, to: 10 });
+// How far under the ride's hill a point is: 1 inside, easing to 0 within 2.5
+// units of either face. The ride's director keeps its gaze ahead in there.
+export function hayrideUnderHill(x, z) {
+  const h = HAYRIDE_RIDE_HILL; if (!(x > h.x0 && x < h.x1)) return 0;
+  return Math.max(0, 1 - Math.max(h.z0 - z, z - h.z1, 0) / 2.5);
+}
 // The paid second wagon has its own parallel lane and rear boarding point.
 export const HAYRIDE_FLEET_BAY=Object.freeze({station:{x:-21,z:26.5,yaw:0},rearEntry:{x:-21,z:33.5},unload:{x:-22.7,z:35.6}});
 export const HAYRIDE_RIDE_BOUNDS = Object.freeze({ x0: -76, x1: -8, z0: -20, z1: 42 });

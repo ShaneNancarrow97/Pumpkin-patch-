@@ -20,8 +20,11 @@ test("owner ride uses the existing scene without changing wallets, seats or tick
   assert.notEqual(f.scene.fog, f.originalFog); assert.equal(view.status.tier, 2);
   const end = view.advanceForTest(1000);
   assert.equal(end.completed, true); assert.equal(end.progress, 1); assert.equal(end.eventsFired.length, 5);
-  assert.equal(cues.length, 5); assert.equal(new Set(cues.map(cue => cue.id)).size, 5); assert.equal(finished.length, 1);
-  view.advanceForTest(1000); assert.equal(cues.length, 5); assert.equal(finished.length, 1);
+  // Gentle mode keeps the scenes and the tunnel's rumble, but no jolts or failing lamps.
+  assert.equal(cues.filter(cue => cue.type === "encounter").length, 5);
+  assert.deepEqual(cues.filter(cue => cue.type !== "encounter").map(cue => cue.id), ["hayride-tunnel"]);
+  assert.equal(new Set(cues.map(cue => cue.id)).size, cues.length); assert.equal(finished.length, 1);
+  view.advanceForTest(1000); assert.equal(cues.length, 6); assert.equal(finished.length, 1);
   assert.equal(JSON.stringify(f.state), before);
   view.leave(); assert.equal(f.preview.at(-1), null); assert.equal(f.gentle.at(-1), null);
   assert.equal(f.scene.fog, f.originalFog); assert.equal(f.scene.background, f.originalBackground); assert.equal(view.active, false);

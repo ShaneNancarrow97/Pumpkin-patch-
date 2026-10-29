@@ -113,13 +113,13 @@ export function strand(silk, a, b, colour = SILK) {
   silk.position.push(a.x, a.y, a.z, b.x, b.y, b.z);
   silkColour.setHex(colour); silk.colour.push(silkColour.r, silkColour.g, silkColour.b, silkColour.r, silkColour.g, silkColour.b);
 }
-function silkLines(silk) {
+export function silkLines(silk) {
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(silk.position, 3)); g.setAttribute("color", new THREE.Float32BufferAttribute(silk.colour, 3));
   const lines = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.75 })); lines.name = "Spider silk"; return lines;
 }
 // An orb web in the plane spanned by u and v (unit vectors), centred at c.
-function orbWeb(silk, c, u, v, radius, r, torn = 0) {
+export function orbWeb(silk, c, u, v, radius, r, torn = 0) {
   const p = (ang, rad) => c.clone().addScaledVector(u, Math.cos(ang) * rad).addScaledVector(v, Math.sin(ang) * rad);
   const spokes = 10;
   for (let k = 0; k < spokes; k++) if (r() > torn) strand(silk, c, p((k / spokes) * Math.PI * 2, radius * (0.85 + r() * 0.15)), SILK);
