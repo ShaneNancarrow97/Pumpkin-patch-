@@ -4,6 +4,8 @@ import { HAYRIDE_STOPS, hayrideStops, hayrideRouteLength, HAYRIDE_ROUTE_LENGTH }
 import { HAYRIDE_LIGHTNING_TIMES, hayrideLightning } from "./content/hayride-weather.js";
 
 const INTRO = 2.5, YAW_LIMIT = Math.PI * .48, PITCH_LIMIT = Math.PI / 7;
+// Roots cross the lane this far apart (buildRideLand lays them; the camera jolts over them).
+export const RUT_GAP = 13.3;
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const smooth = n => { const t = clamp(n, 0, 1); return t * t * (3 - 2 * t); };
 const sounds = { scarecrows: "knock", spiders: "skitter", bride: "whisper", pursuit: "whoosh", bus: "chains", graveyard: "whisper", thicket: "knock" };
@@ -15,6 +17,8 @@ export function createHayrideView(canvas, state, hooks = {}) {
   const camera = new THREE.PerspectiveCamera(68, 1, .045, 48); camera.rotation.order = "YXZ";   // the fog hides all beyond 40 units, so nothing further is drawn
   let active = false, run = null, pointer = null, disposed = false, yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0;
   let options = { gentle: !!globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches, lightning: true }, fogSave = null, backgroundSave = null;
+  // The ride's motion: a jolt and a punch-in when a scare fires, a lean into bends.
+  let shake = 0, kick = 0, roll = 0, lastHeading = null, baseFov = 68;
   const point = new THREE.Vector3(), target = new THREE.Vector3(), base = new THREE.Euler(0, 0, 0, "YXZ");
   const world = () => typeof hooks.world === "function" ? hooks.world() : hooks.world;
   const inputActive = () => active && run && !run.paused && !run.completed && !hooks.blocked?.();
@@ -31,7 +35,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
   const clearPointer = () => { const old = pointer; pointer = null; if (old) try { canvas.releasePointerCapture?.(old.id); } catch {} };
   const resize = () => {
     camera.aspect = Math.max(1, canvas.clientWidth || canvas.width || 1) / Math.max(1, canvas.clientHeight || canvas.height || 1);
-    camera.fov = camera.aspect < .8 ? 76 : 68; camera.updateProjectionMatrix();
+    baseFov = camera.aspect < .8 ? 76 : 68; camera.fov = baseFov; camera.updateProjectionMatrix();
   };
   function pose(dt = 0, snap = false) {
     if (!run) return;
@@ -44,11 +48,28 @@ export function createHayrideView(canvas, state, hooks = {}) {
     if (!options.gentle && Math.abs(targetYaw) < .06 && Math.abs(targetPitch) < .06 && frame.focusTarget && run.elapsed >= INTRO) target.lerp(frame.focusTarget, frame.focusWeight ?? 0);
     const board = 1 - smooth(run.elapsed / INTRO), heading = finite(frame.yaw);
     point.x += Math.sin(heading) * 3.2 * board; point.z += Math.cos(heading) * 3.2 * board; point.y += .7 * board;
-    if (!options.gentle && run.elapsed >= INTRO && !run.paused) point.y += Math.sin(run.elapsed * 4.1) * .008;
+    // A wagon on a forest track: the wheels find ruts and roots (a jolt every
+    // 13.3 units, where buildRideLand lays a root across the lane), the bench
+    // rocks, and the whole wagon leans into each bend. Gentle mode rides smooth.
+    const moving = !options.gentle && run.elapsed >= INTRO && !run.paused, d = run.progress * (run.length ?? HAYRIDE_ROUTE_LENGTH);
+    let nod = 0, drift = 0, sx = 0, sy = 0;
+    if (moving) {
+      const root = ((d % RUT_GAP) + RUT_GAP) % RUT_GAP, jolt = root < .45 ? Math.sin(root / .45 * Math.PI) : 0;
+      point.y += Math.sin(d * 2.3) * .014 + Math.sin(d * 5.7 + 1) * .007 + jolt * .06;
+      nod = Math.sin(d * 2.3 + .6) * .006 - jolt * .02;
+      if (dt > 0 && lastHeading !== null) { const turn = Math.atan2(Math.sin(heading - lastHeading), Math.cos(heading - lastHeading)) / Math.max(1e-3, dt); roll += (clamp(-turn * .05, -.06, .06) + Math.sin(d * 1.7) * .006 - roll) * (1 - Math.exp(-dt * 3)); }
+      // Nobody stares dead ahead in a dark wood: the eyes wander a little.
+      if (Math.abs(targetYaw) < .06 && Math.abs(targetPitch) < .06) drift = Math.sin(run.elapsed * .23) * .02 + Math.sin(run.elapsed * .11 + 1) * .012;
+      shake *= Math.exp(-Math.max(0, dt) * 2.6); kick *= Math.exp(-Math.max(0, dt) * 3.2);
+      sx = (Math.sin(run.elapsed * 37) + Math.sin(run.elapsed * 23 + 2)) * .012 * shake; sy = (Math.sin(run.elapsed * 31 + 1) + Math.sin(run.elapsed * 19)) * .014 * shake;
+    } else { roll *= .8; shake = kick = 0; }
+    lastHeading = heading;
+    const fov = baseFov - kick * 7;
+    if (Math.abs(camera.fov - fov) > 1e-3) { camera.fov = fov; camera.updateProjectionMatrix(); }
     const blend = snap ? 1 : 1 - Math.exp(-Math.max(0, dt) * 9);
     yaw += (targetYaw - yaw) * blend; pitch += (targetPitch - pitch) * blend;
     camera.position.copy(point); camera.lookAt(target); base.setFromQuaternion(camera.quaternion, "YXZ");
-    camera.rotation.set(base.x + pitch, base.y + yaw, 0, "YXZ"); camera.updateMatrixWorld(true);
+    camera.rotation.set(base.x + pitch + nod + sx, base.y + yaw + drift + sy, roll, "YXZ"); camera.updateMatrixWorld(true);
   }
   function advance(seconds) {
     if (!active || !run || run.paused || run.completed) return [];
@@ -60,6 +81,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
       run.fired.add(stop.id);
       const cue = { type: "encounter", id: `hayride-${stop.id}`, stop: stop.id, name: stop.name, sound: sounds[stop.id], at: INTRO + stop.at * run.rideDuration, intensity: options.gentle ? .25 : .45 };
       run.cue = cue; cues.push(cue); hooks.onCue?.(cue);
+      if (!options.gentle) { shake = 1; kick = 1; }
     }
     for (let i = 0; i < HAYRIDE_LIGHTNING_TIMES.length; i++) {
       if (run.elapsed < HAYRIDE_LIGHTNING_TIMES[i] + .8 || run.thunder.has(i)) continue;
@@ -96,7 +118,8 @@ export function createHayrideView(canvas, state, hooks = {}) {
       const tier = HAYRIDE_TIERS.find(t => t.level === state.hayride.tier) ?? HAYRIDE_TIERS[0];
       options = { ...options, ...nextOptions };
       const rideDuration=HAYRIDE_PROPERTY.rideAlongSeconds*hayrideRouteLength(state)/HAYRIDE_ROUTE_LENGTH;
-      run = { stops:hayrideStops(state), tier: tier.level, elapsed: 0, duration: INTRO + rideDuration, rideDuration, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), thunder: new Set(), cue: null };
+      shake = kick = roll = 0; lastHeading = null;
+      run = { length: hayrideRouteLength(state), stops:hayrideStops(state), tier: tier.level, elapsed: 0, duration: INTRO + rideDuration, rideDuration, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), thunder: new Set(), cue: null };
       active = true; yaw = pitch = targetYaw = targetPitch = 0; clearPointer();
       world().setGentleMotion?.(!!options.gentle);
       const scene = world().scene;

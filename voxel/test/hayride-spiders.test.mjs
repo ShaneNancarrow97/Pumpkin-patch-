@@ -40,7 +40,7 @@ test("the ride's spider cave carries its brood and silk without touching the lan
       for (let i = 0; i < m.count; i++) {
         m.getMatrixAt(i, local); matrix.multiplyMatrices(m.matrixWorld, local);
         box.set(new THREE.Vector3(-.5, -.5, -.5), new THREE.Vector3(.5, .5, .5)).applyMatrix4(matrix);
-        if (box.max.y < 0.15 || box.min.y > 2.9) continue;
+        if (box.max.y < 0.25 || box.min.y > 2.9) continue;                              // ground clutter and roots the wheels ride over
         const c = box.getCenter(new THREE.Vector3());
         if (Math.hypot(c.x - cave.x, c.z - cave.z) > 7.5) continue;
         const half = Math.hypot(box.max.x - box.min.x, box.max.z - box.min.z) / 2;
@@ -48,4 +48,16 @@ test("the ride's spider cave carries its brood and silk without touching the lan
       }
     });
   } finally { controller.dispose(); }
+});
+
+test("the detailed roadside sets each build their actors and a brood", async () => {
+  const { buildRoadsideSet } = await import("../src/hayride-sets.js"), { Voxels, seeded } = await import("../src/voxels.js");
+  for (const [id, n] of [["scarecrows", 4], ["bride", 1], ["pursuit", 1], ["bus", 3]]) {
+    const v = new Voxels(), group = new THREE.Group(), set = buildRoadsideSet(id, v, group, seeded(5));
+    assert.equal(set.actors.length, n, id);
+    assert.ok(v.solid.length + v.glow.length > 100, `${id} is dressed`);
+    for (const a of set.actors) a.animate({ time: 1, near: true, ramp: 1, wave: 1, on: true, camera: new THREE.Vector3(0, 2.7, 6), forward: new THREE.Vector3(1, 0, 0), set: { group } });
+    set.brood?.sync(); set.brood?.dispose();
+  }
+  assert.equal(buildRoadsideSet("graveyard", new Voxels(), new THREE.Group(), seeded(5)), null);
 });

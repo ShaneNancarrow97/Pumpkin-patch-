@@ -12,11 +12,11 @@ const UNIT = new THREE.BoxGeometry(1, 1, 1);
 const LEG_ANGLES = [0.95, 0.35, -0.2, -0.75], LEG_PHASE = [0, Math.PI, 0, Math.PI];
 
 // One shape: a box of the given size at an offset inside a joint.
-function shape(parent, list, x, y, z, w, h, d, colour, glow = false) {
+export function shape(parent, list, x, y, z, w, h, d, colour, glow = false) {
   const o = new THREE.Object3D(); o.position.set(x, y, z); o.scale.set(w, h, d); parent.add(o);
   list.push({ o, colour, glow }); return o;
 }
-const joint = (parent, x = 0, y = 0, z = 0) => { const o = new THREE.Object3D(); o.position.set(x, y, z); parent.add(o); return o; };
+export const joint = (parent, x = 0, y = 0, z = 0) => { const o = new THREE.Object3D(); o.position.set(x, y, z); parent.add(o); return o; };
 
 // A spider of size s (a giant is about 1.4, a house spider about 0.35).
 // look: { body, leg, band, mark, eye } colours.

@@ -9,7 +9,7 @@ export const HAYRIDE_VEHICLE = Object.freeze({
   tractorEnvelope: { x: [-1.35, 1.35], y: [0, 3.22], z: [-3.22, .94] },
   wagonEnvelope: { x: [-1.47, 1.47], y: [0, 2.05], z: [-2.96, 3.18] },
   // The four passengers face into the central aisle; Y is the seat cushion.
-  rearEntry: [0, 1.0, 2.03], rearCamera: [0, 2.13, 1.65],
+  rearEntry: [0, 1.0, 2.03], rearCamera: [0, 2.72, 1.75],  // standing at the back rail, eyes over the benches and side rails
 });
 
 const C = { green: 0x244937, greenHi: 0x3e6345, greenDark: 0x193528,
