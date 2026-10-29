@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
-import { ESTATE_DEFAULT_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_EXPANSIONS, ESTATE_DECOR_BY_ID, ESTATE_SKIN_BY_ID } from "./content/house-estate.js";
+import { ESTATE_DEFAULT_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_EXPANSIONS, ESTATE_DECOR_BY_ID, ESTATE_SKIN_BY_ID, ESTATE_HOUSE_SIZES, ESTATE_KITCHEN_WING } from "./content/house-estate.js";
 
 const STONE = [0x777281, 0x99919b, 0x5a5666], WOOD = 0x392b2b, GOLD = 0xcaa269, LEAVES = [0x7b3141, 0xab4f37, 0xd5823e, 0x62404d], GREEN = [0x35483c, 0x4c6250, 0x6a7654];
 const colour = (finishes, key) => ESTATE_FINISH_BY_ID[finishes?.[key]] ?? ESTATE_FINISH_BY_ID[ESTATE_DEFAULT_FINISHES[key]];
@@ -122,7 +122,7 @@ function skinDetails(v, panel, skin, { w, d, h }) {
 export function buildEstateHouse(level = 0, finishes = {}) {
   level = Math.max(0, Math.min(3, Math.trunc(level) || 0));
   const v = new Voxels(), r = seeded(2077 + level), wall = colour(finishes, "walls"), roof = colour(finishes, "roof"), trim = colour(finishes, "trim"), door = colour(finishes, "door");
-  const w = [6, 8, 9.5, 11][level], d = [5, 6, 7, 7.6][level], h = [3.8, 6.4, 7, 7.8][level], dx = w / 2, dz = d / 2, roofRise = [2.5, 2.8, 3.1, 3.4][level];
+  const { w, d, h } = ESTATE_HOUSE_SIZES[level], dx = w / 2, dz = d / 2, roofRise = [2.5, 2.8, 3.1, 3.4][level];
   const skin = ESTATE_SKIN_BY_ID[wall.skinId] ?? null;
   const rows = level ? [1.3, 4.1] : [1.3], glass = skin?.windowGlow ?? (level === 3 ? 0xe2b18e : 0xffbb69);
   // Transform a horizontal wall coordinate onto any of the four facades.
@@ -247,8 +247,8 @@ export function buildEstateHouse(level = 0, finishes = {}) {
   v.block(-dx + .6, h + roofRise + .9, 0, .75, .07, .07, trim.palette[0]);
   v.block(-dx + .9, h + roofRise + .93, 0, .22, .19, .07, trim.palette[1]);
   // A separate kitchen wing gives the manor a visibly new footprint.
-  if (level >= 2) {
-    const wx = -dx - .45, wz = -.35;
+  if (level >= ESTATE_KITCHEN_WING.level) {
+    const wx = -dx - ESTATE_KITCHEN_WING.out, wz = ESTATE_KITCHEN_WING.z;
     v.block(wx, .1, wz, 2.2, .35, 3.6, STONE[2]);
     for (const side of [-1, 1]) v.block(wx + side * .96, .36, wz, .16, 2.74, 3.6, wall.palette[2]);
     for (let yy = .45; yy < 3; yy += .25) for (let z = wz - 1.65; z < wz + 1.7; z += .45) v.block(wx - 1.02, yy, z, .25, .23, .43, vary(wall.palette[0], .08, r));

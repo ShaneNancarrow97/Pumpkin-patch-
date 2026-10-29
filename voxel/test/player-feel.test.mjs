@@ -44,3 +44,22 @@ test("a turned owner settles back to the front sprite after standing still, but 
   player.teleport(38,16);run(1,40);assert.equal(shown.at(-1),'side','pushing against the fence keeps facing it');assert.ok(player.state().position.x<=38.75+1e-9,'and stops at it');
  } finally {if(original===undefined)delete globalThis.document;else globalThis.document=original;}
 });
+
+test("walking into the hedge arch goes through once; arriving in a doorway's strip, the owner must step out before it opens", async () => {
+ const THREE=await import('three'),{createPlayerControl}=await import('../src/player-control.js'),{freshState}=await import('../src/model.js');
+ const original=globalThis.document;globalThis.document={body:{classList:{contains:()=>false}}};
+ try {
+  const s=freshState(),scene=new THREE.Scene(),actor=new THREE.Group();actor.add(new THREE.Group());actor.position.set(20,0,6);
+  const camera=new THREE.OrthographicCamera(-10,10,10,-10,.1,100);camera.position.set(20,25,30);camera.lookAt(20,0,6);camera.updateMatrixWorld();
+  const places={setControlled(){},playerActor(){return null;},clearPlayerRest(){}},seen=[];
+  let accept=false;
+  const player=createPlayerControl({scene,state:s,actors:()=>({natalie:{model:actor}}),places,getPlace:()=>null,getCamera:()=>camera,animate(){},onWay:(w)=>{seen.push(w.id);return accept;}});
+  player.setEnabled(true,'natalie');let t=0;const run=(y,n)=>{for(let i=0;i<n;i++){player.input(0,y);player.update(.05,t+=.05);}return player.state();};
+  let st=run(-1,60);assert.ok(seen.length>0&&seen.every((id)=>id==='arch'),'the arch is offered');assert.equal(st.passing,null,'refused, so no passing');
+  accept=true;seen.length=0;st=run(-1,10);assert.deepEqual(seen,['arch'],'taken once');assert.equal(st.passing,'arch');
+  const held=st.position;st=run(-1,20);assert.deepEqual(st.position,held,'holds still while passing');assert.deepEqual(seen,['arch']);
+  player.arrive({place:'farm',x:20,z:4.3,face:{x:0,z:-1}});assert.equal(player.state().passing,null);
+  run(-1,20);assert.deepEqual(seen,['arch'],'arrived in the strip, so it stays shut');
+  run(1,12);run(-1,40);assert.deepEqual(seen,['arch','arch'],'stepping out opens it again');
+ } finally {if(original===undefined)delete globalThis.document;else globalThis.document=original;}
+});

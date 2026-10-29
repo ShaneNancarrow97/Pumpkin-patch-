@@ -11,6 +11,8 @@ export const farmExpansionTier = s => (s?.upgrades?.plots ?? 0) >= 4 ? 2 : (s?.u
 export const fieldDepth = s => [26, 31, 36][farmExpansionTier(s)] + DROP;
 // Where the gates at the bottom of the lanes are, and the bend above them.
 export const GATE_Z = 30 + DROP, LANE_BEND_Z = 28.5 + DROP;
+// The hedge arch in the back fence: the way home to Shane and Natalie's garden.
+export const HEDGE_ARCH = Object.freeze({ x: 20, z: 3 });
 export const farmPathEnd = s => [30, 34, 39][farmExpansionTier(s)] + DROP;
 // Only the outer leg moves; counter positions and established path bends stay put.
 export const extendFarmRoute = (route, s) => {

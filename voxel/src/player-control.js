@@ -5,6 +5,7 @@ import { COOKING_SITE } from "./content/cooking-layout.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { MEADOW, cocoaKioskWidth } from "./content/festival-meadow.js";
 import { openPlots } from "./model.js";
+import { playWays, wayThrough, inZone, gardenGeometry, gardenTargets } from "./play-ways.js";
 
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const SETTLE_SECONDS = 0.8;
@@ -81,8 +82,13 @@ export function choosePlayerTarget(list, position, heading, previous, reach = 2.
 }
 
 // This adapter owns only movement and presentation. Purchases and farming stay in the rules.
-export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow, cameraLook, cameraZoom, cameraReset, wateringTexture }) {
-  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, strideAge = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0, still = 0;
+// garden: the garden's own scene and the figure the owner walks it as.
+// onWay(way): the owner has walked into a way through (play-ways.js); return
+// false to refuse it. Whoever takes it calls arrive() once the place has changed.
+export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow, cameraLook, cameraZoom, cameraReset, wateringTexture, garden = null, onWay = null }) {
+  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, strideAge = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0, still = 0, passing = null, ways = null, waysKey = "";
+  // Ways the owner arrived inside stay shut until they step out of them.
+  const shut = new Set();
   const input = { x: 0, y: 0 }, lookInput = { x: 0, y: 0 }, velocity = { x: 0, z: 0 }, heading = { x: 0, z: 1 }, positions = new Map(), right = new THREE.Vector3(), forward = new THREE.Vector3();
   const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd18a, transparent: true, opacity: .75, side: THREE.DoubleSide, depthWrite: false, toneMapped: false });
   const ring = new THREE.Mesh(new THREE.RingGeometry(.42, .465, 40), ringMat); ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);
@@ -99,13 +105,20 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   const dropGeo = new THREE.BoxGeometry(.035, .07, .035), dropMat = new THREE.MeshBasicMaterial({ color: 0xb9e6ed, transparent: true, opacity: .75, toneMapped: false });
   const drops = new THREE.InstancedMesh(dropGeo, dropMat, 12); drops.visible = false; scene.add(drops);
   const dropMatrix = new THREE.Matrix4();
-  const available = () => !getPlace() || getPlace() === "room";
+  const available = () => !getPlace() || getPlace() === "room" || getPlace() === "estate" && !!garden;
   const room = () => getPlace() === "room";
-  const model = () => room() ? places.playerActor(who) : actors()[who]?.model;
+  const inGarden = () => getPlace() === "estate";
+  const model = () => room() ? places.playerActor(who) : inGarden() ? (enabled && garden ? garden.actor(who) : null) : actors()[who]?.model;
+  const placeId = () => room() ? "room:" + places.place?.id : inGarden() ? "estate" : "farm";
   const origin = () => room() ? { x: 200, z: 0 } : { x: 0, z: 0 };
   const localPosition = () => { const a = model(), o = origin(); return a ? { x: a.position.x - o.x, z: a.position.z - o.z } : { ...(positions.get(key) ?? HOMES[who]) }; };
   function geometry() {
-    return room() ? places.playerGeometry() : farmPlayerGeometry(state);
+    return room() ? places.playerGeometry() : inGarden() ? gardenGeometry(state) : farmPlayerGeometry(state);
+  }
+  function currentWays() {
+    const k = placeId() + "@" + state.house?.level + "/" + state.estate?.expansion;
+    if (k !== waysKey) { waysKey = k; ways = playWays(state, placeId()); }
+    return ways;
   }
   function safeSpot(wanted) {
     const { bounds, obstacles } = geometry();
@@ -120,6 +133,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   function targets() {
     if (!available()) return [];
     if (room()) return places.playerTargets();
+    if (inGarden()) return gardenTargets(state);
     return [
       ...PLOTS.slice(0, openPlots(state)).map((p, index) => ({ type: "plot", index, x: p.x, z: p.z, label: state.plots[index].phase === "ready" ? "Pick pumpkin" : state.plots[index].phase === "growing" ? "Water pumpkin" : "Plant pumpkin" })),
       { type: "pumpkin", label: "Encourage the patch", x: BIG_PUMPKIN.x + 2, z: BIG_PUMPKIN.z },
@@ -152,20 +166,24 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   function sync() {
     places.setControlled(enabled && room() ? who : null);
     if (!enabled || !available() || !model()) { ring.visible = marker.visible = tool.visible = drops.visible = false; target = null; return false; }
-    const nextKey = (room() ? "room:" + places.place.id : "farm") + ":" + who;
+    // The ring, target marker and can live in whichever scene the owner is in.
+    const host = inGarden() ? garden.scene : scene;
+    if (ring.parent !== host) host.add(ring, marker, tool, drops);
+    const nextKey = placeId() + ":" + who;
     if (nextKey !== key || model() !== lastModel) {
       places.clearPlayerRest?.(who); pose = null; walkTarget = null; velocity.x = velocity.z = 0;
       key = nextKey; action = null; moving = false; strideAge = 0;
       const a = model(), o = origin(), p = safeSpot(positions.get(key) ?? localPosition());
       a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z);
       lastModel = a;
+      shut.clear(); for (const w of currentWays()) if (inZone(w.zone, p)) shut.add(w.id);
     }
     return true;
   }
   function update(dt, time) {
     renderedTime = time;
     if (!sync()) return;
-    const a = model(), pos = localPosition(), o = origin(), asleep = blocked || state.paused || document.body.classList.contains("menu-open");
+    const a = model(), pos = localPosition(), o = origin(), asleep = blocked || !!passing || state.paused || document.body.classList.contains("menu-open");
     const old = { ...pos };
     let intent = { x: 0, z: 0 };
     if (!asleep && !action) {
@@ -196,6 +214,13 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     moving = !pose && Math.hypot(pos.x - old.x, pos.z - old.z) > .0005;
     a.position.x = o.x + pos.x; a.position.z = o.z + pos.z;
     if (!pose) positions.set(key, { ...pos });
+    // Walking into a doorway, a gate, the stairs or a ladder takes the owner through.
+    if (!asleep && !action && !pose && onWay) {
+      const list = currentWays();
+      for (const id of shut) if (!inZone(list.find((w) => w.id === id)?.zone, pos)) shut.delete(id);
+      const way = wayThrough(list, pos, intent, (w) => !shut.has(w.id));
+      if (way && onWay(way) !== false) { passing = way; walkTarget = null; velocity.x = velocity.z = 0; }
+    }
     const delta = Math.hypot(pos.x - old.x, pos.z - old.z), dx = delta > .00001 || action || pose ? screenHeading : 0;
     strideAge += delta / 2.3;
     const motionAge = moving ? strideAge : time;
@@ -206,7 +231,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     const shown = still > SETTLE_SECONDS ? "front" : facing;
     animate(a, motionAge, moving, dx, who === "shane" ? 1.7 : 0);
     if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing: shown, walking: moving, time, age: motionAge, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
-    const hit = !room() && actors()[who]?.hit; if (hit) hit.position.set(a.position.x, 1.1, a.position.z);
+    const hit = !room() && !inGarden() && actors()[who]?.hit; if (hit) hit.position.set(a.position.x, 1.1, a.position.z);
     target = nearest();
     ring.visible = !asleep; ring.position.set(a.position.x, .075, a.position.z); ringMat.opacity = .6 + Math.sin(time * 2) * .1;
     marker.visible = !!target && !asleep;
@@ -239,6 +264,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   }
   // Generated side/back textures must give way to the original autonomous sheet on release.
   function releaseFigure(person) {
+    garden?.release(person);
     for (const a of [actors()[person]?.model, places.playerActor(person)]) if (a) {
       if (a.children[0]) { a.children[0].rotation.z = 0; a.children[0].position.y = 0; }
       a.userData.playerAnimate?.({ who: person, outfit: state.wardrobe.equipped[person], facing: "front", walking: false, time: 0, dx: 0, action: null, release: true });
@@ -246,8 +272,8 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   }
   const api = {
     get enabled() { return enabled; },
-    setEnabled(on, next = who) { stand(); releaseFigure(who); velocity.x = velocity.z = 0; walkTarget = null; enabled = !!on; who = next === "shane" ? "shane" : "natalie"; input.x = input.y = 0; key = null; action = null; sync(); return api.state(); },
-    select(next) { stand(); releaseFigure(who); velocity.x = velocity.z = 0; walkTarget = null; who = next === "shane" ? "shane" : "natalie"; input.x = input.y = 0; key = null; action = null; sync(); return api.state(); },
+    setEnabled(on, next = who) { stand(); releaseFigure(who); velocity.x = velocity.z = 0; walkTarget = null; passing = null; enabled = !!on; who = next === "shane" ? "shane" : "natalie"; input.x = input.y = 0; key = null; action = null; sync(); return api.state(); },
+    select(next) { stand(); const swap = inGarden() ? garden?.figure?.() : null; releaseFigure(who); velocity.x = velocity.z = 0; walkTarget = null; passing = null; if (swap) positions.set("estate:" + (next === "shane" ? "shane" : "natalie"), { x: swap.position.x, z: swap.position.z }); who = next === "shane" ? "shane" : "natalie"; input.x = input.y = 0; key = null; action = null; sync(); return api.state(); },
     input(x, y) { input.x = clamp(Number(x) || 0, -1, 1); input.y = clamp(Number(y) || 0, -1, 1); },
     setBlocked(on) { blocked = !!on; if (blocked) { input.x = input.y = lookInput.x = lookInput.y = 0; velocity.x = velocity.z = 0; walkTarget = null; } },
     act(kind, seconds = 1.1, selected = null) { if (!enabled || !available() || blocked || state.paused || action) return false; stand(); walkTarget = null; velocity.x = velocity.z = 0; const chosen = selected ?? nearest(); face(chosen); action = { kind, target: chosen ? {...chosen} : null, duration: Math.max(.3, Number(seconds) || 1.1), elapsed: 0 }; return true; },
@@ -271,10 +297,28 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     },
     cancelWalk() { walkTarget = null; velocity.x = velocity.z = 0; },
     targets,
+    // After a way through: the place has changed, so stand the owner where the
+    // way comes out, heading on, with the camera on them. Called with no spot,
+    // it only ends the passing (the way was refused after all).
+    arrive(spot) {
+      const way = passing; passing = null;
+      if (!spot || !enabled) return api.state();
+      if (spot.place !== placeId()) return api.state();
+      positions.set(spot.place + ":" + who, { x: spot.x, z: spot.z }); key = null; walkTarget = null; velocity.x = velocity.z = 0;
+      if (spot.face) { heading.x = spot.face.x; heading.z = spot.face.z; }
+      if (!sync()) return api.state();
+      viewFacing(); still = 0; target = nearest(); cameraReset?.(localPosition(), room());
+      return { ...api.state(), from: way?.id ?? null };
+    },
+    // A way taken by the button rather than on foot: hold still until arrive().
+    hold(way) { if (!enabled || !way) return false; stand(); passing = way; walkTarget = null; velocity.x = velocity.z = 0; return true; },
+    get passing() { return passing; },
+    // QA: the ways through from where the owner is.
+    ways: () => (enabled && available() ? currentWays() : []),
     // QA: the figure being controlled (its group), for measuring how it is drawn.
     figure: () => (enabled && available() ? model() ?? null : null),
     teleport(x, z) { if (!sync()) return false; const a = model(), o = origin(), p = safeSpot({ x, z }); a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z); positions.set(key, p); target = nearest(); return true; },
-    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, waterCanStyle:'sprite', waterCanWidth:canWidth, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: Math.abs(can.scale.x), waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
+    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", passing: passing?.id ?? null, room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, waterCanStyle:'sprite', waterCanWidth:canWidth, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: Math.abs(can.scale.x), waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
     // QA can finish a presentation without advancing harvests, deliveries or any other rule.
     advance(seconds) {
       input.x = input.y = 0;

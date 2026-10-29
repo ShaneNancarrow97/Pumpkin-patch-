@@ -30,6 +30,7 @@ import { HAYRIDE_SITE, hayrideGuestPose } from "./content/hayride-layout.js";
 import { fieldWidth, MEADOW, MEADOW_EXIT, CHAT_SPOTS } from "./content/festival-meadow.js";
 import { cameraLayout, controlledRoomFraming, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
+import { createGardenPlay } from "./garden-play.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
 import { createWilds } from "./wilds.js";
@@ -307,6 +308,7 @@ export function createScene(canvas, state, hooks) {
   // Indoors: a perspective camera in front of the room, like the main game's room view.
   const roomCam = new THREE.PerspectiveCamera(INTERIOR.fov, 1, 0.1, 200);
   const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), gesture: hooks.estateGesture, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
+  const gardenPlay = createGardenPlay({ view: estateView, state, character });
   const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.(), gesture: hooks.foyerGesture });
   const mazeView = createMazeRideView(canvas, state, { onCue: cue => hooks.onMazeCue?.(cue), onComplete: status => hooks.onMazeComplete?.(status), onState: status => hooks.onMazeState?.(status), blocked: () => document.body.classList.contains("menu-open") });
   const hayrideView = createHayrideView(canvas, state, { world: hayrideWorld, onCue: cue => hooks.onHayrideCue?.(cue), onComplete: status => hooks.onHayrideComplete?.(status), onState: status => hooks.onHayrideState?.(status), blocked: () => document.body.classList.contains("menu-open") });
@@ -329,11 +331,11 @@ export function createScene(canvas, state, hooks) {
   }
   function restoreCast(){for(const[o,base]of billboards){o.rotation.y=base.yaw;if(o.children[0]){o.children[0].rotation.x=base.lean;o.children[0].scale.y=base.stretch;}}places.faceCamera?.(0,INTERIOR.pitch);}
   const player = createPlayerControl({ scene, state, actors: () => actors, places, getPlace: () => view.place, getCamera: active, animate: animateSprite,
-    wateringTexture,
-    cameraLook(x,y,dt){Object.assign(playerOrbit,playerOrbitStep(playerOrbit,x,y,dt,view.place==='room'));playerLook.x=playerOrbit.yaw;playerLook.z=playerOrbit.pitch-PITCH;},
-    cameraZoom(direction){if(touches.size||kept||!direction)return;const l=cameraLayout(canvas.clientWidth),inside=view.place==='room';view.zoom=THREE.MathUtils.clamp(view.zoom*Math.exp(direction*.13),inside?l.roomMinZoom:l.minZoom,inside?1.9:l.maxZoom);frame();},
-    cameraReset(pos,inside){playerOrbit.yaw=0;playerOrbit.pitch=inside?INTERIOR.pitch:PITCH;playerLook.x=playerLook.z=0;view.x=inside?pos.x-places.place.w/2:pos.x;view.z=inside?pos.z-places.place.d*.42:pos.z;view.zoom=inside?1:canvas.clientWidth>=740?2.3:1.35;frame();},
-    follow(pos,dt,inside){if(touches.size||kept)return;const k=1-Math.exp(-dt*9);const tx=inside?pos.x-ORIGIN.room.x-places.place.w/2:pos.x,tz=inside?pos.z-ORIGIN.room.z-places.place.d*.42:pos.z;view.x+=(tx-view.x)*k;view.z+=(tz-view.z)*k;frame();},
+    wateringTexture, garden: gardenPlay, onWay: (way) => hooks.onWay?.(way) ?? false,
+    cameraLook(x,y,dt){if(view.place==='estate'){estateView.play.look(x,y,dt);return;}Object.assign(playerOrbit,playerOrbitStep(playerOrbit,x,y,dt,view.place==='room'));playerLook.x=playerOrbit.yaw;playerLook.z=playerOrbit.pitch-PITCH;},
+    cameraZoom(direction){if(view.place==='estate'){estateView.play.zoom(direction);return;}if(touches.size||kept||!direction)return;const l=cameraLayout(canvas.clientWidth),inside=view.place==='room';view.zoom=THREE.MathUtils.clamp(view.zoom*Math.exp(direction*.13),inside?l.roomMinZoom:l.minZoom,inside?1.9:l.maxZoom);frame();},
+    cameraReset(pos,inside){if(view.place==='estate'){estateView.play.reset(pos);return;}playerOrbit.yaw=0;playerOrbit.pitch=inside?INTERIOR.pitch:PITCH;playerLook.x=playerLook.z=0;view.x=inside?pos.x-places.place.w/2:pos.x;view.z=inside?pos.z-places.place.d*.42:pos.z;view.zoom=inside?1:canvas.clientWidth>=740?2.3:1.35;frame();},
+    follow(pos,dt,inside){if(view.place==='estate'){estateView.play.follow(pos,dt);return;}if(touches.size||kept)return;const k=1-Math.exp(-dt*9);const tx=inside?pos.x-ORIGIN.room.x-places.place.w/2:pos.x,tz=inside?pos.z-ORIGIN.room.z-places.place.d*.42:pos.z;view.x+=(tx-view.x)*k;view.z+=(tz-view.z)*k;frame();},
   });
   let farmView = null;
   let bloomOn = true;
@@ -781,6 +783,7 @@ export function createScene(canvas, state, hooks) {
     mazeView.tick(dt, time);
     if (view.place === "hayride") hayrideView.tick(dt);
     player.update(dt, time);
+    if (view.place === "estate") gardenPlay.tick();
     const orbit=orbiting();if(orbit){faceCast(playerOrbit.yaw,playerOrbit.pitch,!!view.place,time);hadOrbit=true;}else if(hadOrbit){restoreCast();hadOrbit=false;}
     cleanlinessView.update(state.paused ? 0 : dt, !view.place);
 
@@ -802,6 +805,9 @@ export function createScene(canvas, state, hooks) {
   return {
     player: {
       ...player,
+      // A spread copies a getter's value once; these must stay live.
+      get enabled() { return player.enabled; },
+      get passing() { return player.passing; },
       setEnabled(on,who){playerLook.x=playerLook.z=0;playerOrbit.yaw=0;playerOrbit.pitch=view.place==='room'?INTERIOR.pitch:PITCH;const result=player.setEnabled(on,who);if(on){const p=player.state().position;view.x=view.place==='room'?p.x-places.place.w/2:p.x;view.z=view.place==='room'?p.z-places.place.d*.42:p.z;}if(!view.place)view.zoom=on?Math.max(view.zoom,canvas.clientWidth>=740?2.3:1.35):1;if(!on)restoreCast();frame();return result;},
     },
     sendTo(plotIndex) { const p = PLOTS[plotIndex], a = nearestActor(p.x, p.z); a?.queue.push({ x: p.x - 0.9, z: p.z + 0.4 }); },
@@ -835,7 +841,7 @@ export function createScene(canvas, state, hooks) {
     say(text) { if (!view.place && time >= nextSpeechAt && !document.body.classList.contains("menu-open") && !fx.some(f => f.el.classList.contains("speech"))) { nextSpeechAt = time + 9; floatText(text, SHOP.x - 2.4, 3.6, SHOP.counterZ + 1.8, "speech"); } },
     float(text, at, cls = "") { if (!view.place) floatText(text, at.x, 2, at.z, cls); },
     portrait(id) { return sheets && id ? portraitURL(sheets, id) : null; },
-    refreshLooks() { placeActor("natalie"); placeActor("shane"); places.refresh(); },
+    refreshLooks() { placeActor("natalie"); placeActor("shane"); places.refresh(); gardenPlay.release(); },
     // Stepping inside: a room of the cottage, or the shop floor. leavePlace() comes back out.
     enter(kind, id) {
       cancelGesture();

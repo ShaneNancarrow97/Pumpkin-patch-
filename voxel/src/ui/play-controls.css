@@ -17,7 +17,7 @@
 .play-owner button{position:relative;display:grid;place-items:center;border:0;background:#ffffff0d;border-radius:50%;width:38px;height:38px;min-width:38px!important;min-height:38px!important;color:#f4dcb6!important}
 .play-owner button svg{width:19px;height:19px}
 .play-owner [data-glyph]{position:absolute;right:-5px;bottom:-5px}
-.control-mode #dock,.control-mode #actions,.control-mode #goal,.control-mode #streak{display:none!important}
+.control-mode #dock,.control-mode #actions,.control-mode #goal,.control-mode #streak,.control-mode .estate-controls{display:none!important}
 .control-mode.menu-open #dock{display:none!important}
 .control-mode .play-owner{top:calc(78px + env(safe-area-inset-top));bottom:auto}
 .control-mode .home-journey-chip{display:none}
@@ -157,3 +157,7 @@
 /* A phone's room chooser uses the first row beneath the HUD. */
 @media(max-width:600px) and (min-height:501px){.control-mode.inside-place .play-owner{top:calc(126px + env(safe-area-inset-top))}.control-mode.inside-place .play-arrange{top:calc(181px + env(safe-area-inset-top))}}
 @media(prefers-reduced-motion:reduce){#play-interact.play-complete,.radial-disc,.play-chain{animation:none}}
+/* Through a doorway: the world blurs and dims while the next place comes in (ui/place-veil.js). */
+#world{transition:filter .32s ease-out}
+#world.place-veil{filter:blur(14px) brightness(.55) saturate(.85);transition:filter .22s ease-in}
+@media(prefers-reduced-motion:reduce){#world.place-veil{filter:brightness(.4)}}

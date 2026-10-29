@@ -38,6 +38,8 @@ import { settingsSheet } from "./ui/settings-sheet.js";
 import { createIntro } from "./ui/intro.js";
 import { money, $ } from "./ui/kit.js";
 import { PLOTS } from "./world.js";
+import { leaveHouse } from "./play-ways.js";
+import { createPlaceVeil } from "./ui/place-veil.js";
 
 const SAVE_KEY = "pumpkin-patch-voxel-reference-v1";
 
@@ -109,6 +111,7 @@ const scene = createScene($("world"), state, {
   onPieceDragStart: point => home.tools.beginDrag(point),
   onPieceDragMove: point => home.tools.dragTo(point),
   onPieceDragEnd: cancelled => home.tools.endDrag(cancelled),
+  onWay: way => passThrough(way),
   onMazeCue: cue => mazeAudio.cue(cue),
   onMazeState: status => mazeUI.update(status),
   onMazeComplete: status => { mazeAudio.pause(true); mazeUI.update(status); },
@@ -283,6 +286,22 @@ function notice(text) {
   $("notice").textContent = text; $("notice").classList.add("show");
   clearTimeout(noticeTimer); noticeTimer = setTimeout(() => $("notice").classList.remove("show"), Math.max(2, text.length / 18) * 1000);
 }
+
+// Walking through a doorway, the garden gate, the hedge arch, the stairs or a
+// ladder in play mode (play-ways.js): the world blurs, the next place comes in
+// behind the blur, and the owner walks out of the far side. False if refused.
+const placeVeil = createPlaceVeil($("world"));
+function passThrough(way) {
+  if (!way || !scene.player?.enabled || openTab || celebration.active || intro.active || placeVeil.busy) return false;
+  if (way.to.startsWith("room:") && !M.roomUnlocked(state, way.to.slice(5))) return false;
+  scene.player.hold(way);
+  // arrive() always runs: if the place could not change, it only lets go.
+  return placeVeil.pass(() => {
+    try { if (way.to === "farm") leavePlace(); else if (way.to === "estate") enterEstate(); else enterRoom(way.to.slice(5)); }
+    finally { scene.player.arrive(way.arrive); }
+  });
+}
+const wayOut = (test) => scene.player.ways().find(test);
 
 // Stepping inside the cottage or the shop, and back out.
 let interiorFromEstate = false;
@@ -625,15 +644,15 @@ function interactAsPlayer(tool='hand',options={}) {
   if(options.phase && !['tap','start'].includes(options.phase))return false;
   if(tool!=='hand'){notice('Choose Interact for doors, cooking and furniture.');return false;}
   if(t.type==='pumpkin'){boost();scene.player.act('harvest',.7);}
-  else if(t.type==='home')enterEstate();
+  else if(t.type==='home'){const way=wayOut(w=>w.id==='arch');if(way)passThrough(way);else enterEstate();}
   else if(t.type==='shop'){if(state.shop.unlocked)enterShop();else openShopSheet('shop');}
   else if(t.type==='cooking')openCookingSheet('recipes',t.station??'truck');
   else if(t.type==='wardrobe'){M.recordHomeActivity(state,'wardrobe');save();openSheet('wardrobe');}
   else if(t.type==='sit')scene.player.rest('sit',t);
   else if(t.type==='read'){scene.player.rest('read',t);if(t.book)collection.read(t.book);else {sheets.journal.setTab('library');openSheet('journal');}}
   else if(t.type==='pet')scene.player.rest('pet',t);
-  else if(t.type==='go')goTo(t.to);
-  else if(t.type==='exit'){if(scene.place?.kind==='room'&&interiorFromEstate)enterEstate();else leavePlace();}
+  else if(t.type==='go'){const way=wayOut(w=>t.way?w.id===t.way:w.to==='room:'+t.to);if(way)passThrough(way);else goTo(t.to);}
+  else if(t.type==='exit')passThrough(wayOut(w=>w.id==='out')??leaveHouse(state));
   else if(t.type==='piece')home.tools.select(t.instance);
   return true;
 }

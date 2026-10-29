@@ -93,6 +93,33 @@ export function createHouseEstateView(canvas, state, hooks) {
     reset,
   };
 
+  // Play mode: the camera follows the owner about the garden, keeping whatever
+  // angle the stick or a drag has turned it to. It starts behind them at the
+  // farm's own pitch, close enough to see them, and may come in closer.
+  const PLAY_PITCH = THREE.MathUtils.degToRad(36), PLAY_DISTANCE = 15, sphere = new THREE.Spherical(), offset = new THREE.Vector3();
+  let following = false;
+  const play = {
+    reset(pos) {
+      following = true; controls.minDistance = 8; resize();
+      controls.target.set(pos.x, 1.3, pos.z); sphere.set(PLAY_DISTANCE, Math.PI / 2 - PLAY_PITCH, 0);
+      camera.position.copy(controls.target).add(offset.setFromSpherical(sphere)); controls.update();
+    },
+    follow(pos, dt) {
+      if (!following) { play.reset(pos); return; }
+      const k = 1 - Math.exp(-Math.max(0, dt) * 7), dx = (pos.x - controls.target.x) * k, dz = (pos.z - controls.target.z) * k;
+      controls.target.x += dx; controls.target.z += dz; camera.position.x += dx; camera.position.z += dz;
+    },
+    // The right stick turns round the owner and tilts, as on the farm.
+    look(x, y, dt) {
+      if (!x && !y) return;
+      const t = Math.min(.25, Math.max(0, dt));
+      sphere.setFromVector3(offset.copy(camera.position).sub(controls.target));
+      sphere.theta += x * t * 1.65; sphere.phi = THREE.MathUtils.clamp(sphere.phi - y * t * .85, Math.PI / 2 - THREE.MathUtils.degToRad(66), Math.PI / 2 - THREE.MathUtils.degToRad(22));
+      camera.position.copy(controls.target).add(offset.setFromSpherical(sphere)); controls.update();
+    },
+    zoom(direction) { if (direction) cameraActions.zoom(Math.exp(Math.sign(direction) * .13)); },
+    get following() { return following; },
+  };
   function preview(data) {
     previewData = data; selection.visible = !!data; override = data && !data.pending && data.instance ? data : null;
     const who = data ? data.instance ?? "pending:" + data.id : ""; if (who !== framed) { framed = who; if (data) framing.aim(data.x, data.z); else framing.stop(); }
@@ -129,9 +156,9 @@ export function createHouseEstateView(canvas, state, hooks) {
   canvas.addEventListener("pointercancel", e => { pointers.delete(e.pointerId); if (!pointers.size) gesture = false; });
   canvas.addEventListener("contextmenu", e => { if (active) e.preventDefault(); });
   return {
-    scene, camera, cameraActions, sync, resize, preview,
+    scene, camera, cameraActions, sync, resize, preview, play,
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = true; },
-    leave() { active = false; controls.enabled = false; pointers.clear(); gesture = false; preview(null); },
+    leave() { active = false; controls.enabled = false; pointers.clear(); gesture = false; preview(null); following = false; controls.minDistance = 13; },
     tick(time = 0) {
       controls.enabled = active && !hooks.blocked?.() && !gestures.busy; if (!active) return;
       sync(); entrance.tick(time, !hooks.editing?.() && !hooks.blocked?.()); const b = estateBounds(state), old = controls.target.clone();

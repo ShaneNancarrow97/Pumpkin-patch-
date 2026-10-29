@@ -6,6 +6,11 @@ export const ESTATE_EXPANSIONS = [
   { name: "Haunted estate", width: 44, depth: 36, cost: 6500, houseLevel: 3, capacity: 48 },
 ];
 export const ESTATE_HOUSE_RESERVE = { x0: -8, x1: 8, z0: -6, z1: 6 };
+// The house's walls by level, centred on the garden's origin with the front
+// door in the middle of the front wall (house-estate-world.js builds them).
+// From level 2 a kitchen wing stands off the left side.
+export const ESTATE_HOUSE_SIZES = [{ w: 6, d: 5, h: 3.8 }, { w: 8, d: 6, h: 6.4 }, { w: 9.5, d: 7, h: 7 }, { w: 11, d: 7.6, h: 7.8 }];
+export const ESTATE_KITCHEN_WING = { level: 2, out: .45, z: -.35, w: 2.2, d: 3.6 };
 export const ESTATE_PATH_HALF_WIDTH = 1.5;
 export const ESTATE_BORDER = .5;
 

@@ -4,7 +4,7 @@ import { hollowPathDistance } from "./content/hollow-house.js";
 import { pumpkinBlock } from "./pumpkins.js";
 import { buildGround, grounds } from "./ground.js";
 import { Face } from "./face.js";
-import { PLOT_POSITIONS, inFarmPatch, DROP, GATE_Z, patchShape } from "./content/farm-layout.js";
+import { PLOT_POSITIONS, inFarmPatch, DROP, GATE_Z, patchShape, HEDGE_ARCH } from "./content/farm-layout.js";
 
 // World units: 1 = one ground tile. x runs west to east (0-40), z north to
 // south (0-29, the camera sits to the south), y is up. Everything from the
@@ -56,7 +56,7 @@ export const CANOPY = [
 ];
 
 // The stone path out through the arch at the back, down to the lake.
-const ARCH = { x: 20, z: 3 };
+const ARCH = HEDGE_ARCH;
 const nearArchPath = (x, z) => Math.abs(x - ARCH.x) < 1.15 && z < 10.4;
 
 const nearPath = (x, z, width) => {
