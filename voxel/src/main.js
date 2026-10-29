@@ -97,6 +97,9 @@ const scene = createScene($("world"), state, {
   onTick(dt) {
     idle += dt;
     if (idle > IDLE_TEA && !state.paused) { idleTea = true; state.paused = true; notice("You've been away a while, so Shane and Natalie have put the kettle on. Tap to carry on."); }
+    const handsOn = !!scene.player?.enabled;
+    if (handsOn && !state.handsOn && state.upgrades.auto) notice("Helping hands are resting while you're in charge.");
+    state.handsOn = handsOn;
     if (!state.paused) for (const e of M.update(state, dt)) handle(e);
     lifeActivity?.tick(dt);
     render();

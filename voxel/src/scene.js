@@ -618,8 +618,15 @@ export function createScene(canvas, state, hooks) {
     mark = { button, bubble, line: null, pulse: -9 }; chatMarks.set(spot.id, mark);
     return mark;
   }
+  // Only the newest line shows, and none while the Overheard card already lists
+  // them, so several chats never paper over the farm at once.
+  let chatCard = null;
   function syncChats() {
     const farm = !view.place && !document.body.classList.contains("menu-open");
+    chatCard ??= document.querySelector(".chat-card");
+    const reading = chatCard && !chatCard.hidden;
+    let newest = null;
+    for (const m of chatMarks.values()) if (m.line && time < m.line.until && (!newest || m.pulse > newest.pulse)) newest = m;
     for (const spot of CHAT_SPOTS) {
       const mark = chatMark(spot), group = state.social?.groups?.[spot.id];
       const talking = farm && !!group && state.visitors.filter((v) => v.social?.spot === spot.id && v.social.phase === "chatting").length >= 2;
@@ -629,7 +636,7 @@ export function createScene(canvas, state, hooks) {
         mark.button.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -100%)`;
         mark.button.classList.toggle("new", time - mark.pulse < 1.4);
       }
-      const speaker = mark.line && time < mark.line.until && view.zoom >= 2 && farm ? visitorModels.get(mark.line.visitor) : null;
+      const speaker = mark === newest && !reading && view.zoom >= 2.4 && farm ? visitorModels.get(mark.line.visitor) : null;
       // Just over the speaker's head, below the marker; not under the top bar.
       const at = speaker?.m.visible ? project(chatPoint.copy(speaker.m.position).setY(2.4)) : null;
       mark.bubble.hidden = !at || at.y < 96;
@@ -813,7 +820,7 @@ export function createScene(canvas, state, hooks) {
     chatLine(e) {
       const spot = CHAT_SPOTS.find((p) => p.id === e.spot); if (!spot) return;
       const mark = chatMark(spot), entry = visitorModels.get(e.visitor);
-      mark.pulse = time; mark.line = { visitor: e.visitor, until: time + 3.4 }; mark.bubble.textContent = e.text;
+      mark.pulse = time; mark.line = { visitor: e.visitor, until: time + 2.6 }; mark.bubble.textContent = e.text;
       if (entry) entry.speakUntil = time + 1.1;
     },
     get chatMarkers() { return [...chatMarks].filter(([, m]) => !m.button.hidden).map(([id, m]) => ({ id, rect: m.button.getBoundingClientRect().toJSON(), bubble: !m.bubble.hidden })); },

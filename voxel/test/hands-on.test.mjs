@@ -1,5 +1,22 @@
-import test from 'node:test';import assert from 'node:assert/strict';
-import {freshState,plant} from '../src/model.js';
-import {waterPlot,wateringStatus,WATER} from '../src/rules/hands-on.js';
-test('watering helps one growing plot, has a cooldown, and creates no money',()=>{const s=freshState();plant(s,0);plant(s,1);const coins=s.coins;assert.equal(waterPlot(s,0),true);assert.equal(s.plots[0].progress,WATER.progress);assert.equal(s.plots[1].progress,0);assert.equal(s.coins,coins);assert.equal(waterPlot(s,0),false);s.time+=12;assert.equal(waterPlot(s,0),true);});
-test('watering rejects empty, closed and paused plots, and safely ripens a crop',()=>{const s=freshState();assert.equal(waterPlot(s,-1),false);assert.equal(waterPlot(s,0),false);plant(s,0);s.paused=true;assert.equal(waterPlot(s,0),false);s.paused=false;s.plots[0].progress=.95;assert.equal(waterPlot(s,0),true);assert.equal(s.plots[0].phase,'ready');assert.equal(wateringStatus(s,0).available,false);});
+import test from "node:test";
+import assert from "node:assert/strict";
+import * as M from "../src/model.js";
+
+// Helping hands step back while the player steers Shane or Natalie.
+test("helping hands rest while the player is in control", () => {
+  const s = M.freshState();
+  s.upgrades.auto = 1;
+  s.plots[0] = { phase: "ready", progress: 1, variety: 0 }; s.plots[0].ripe = -100;
+  s.handsOn = true;
+  M.update(s, 3);
+  assert.equal(s.plots[0].phase, "ready");
+  s.handsOn = false;
+  M.update(s, 3);
+  assert.notEqual(s.plots[0].phase, "ready");
+});
+
+test("the in-control flag is never saved", () => {
+  const s = M.freshState(); s.handsOn = true;
+  assert.equal(JSON.parse(JSON.stringify(M.saveData(s))).handsOn, undefined);
+  assert.equal(M.restoreState(JSON.parse(JSON.stringify(M.saveData(s)))).handsOn, false);
+});

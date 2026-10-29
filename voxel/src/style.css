@@ -178,7 +178,7 @@ button:focus-visible { outline: 3px solid var(--gold-bright); outline-offset: 2p
 .dialogue-name { color: var(--gold); font: 600 13px var(--body); letter-spacing: .08em; text-transform: uppercase; }
 .dialogue-name span { color: var(--ink-soft); font-weight: 400; letter-spacing: 0; text-transform: none; }
 .dialogue-text { font: 16px/1.35 var(--display); }
-.float-text.speech { padding: 6px 10px; border: 1px solid var(--brass); border-radius: 12px 12px 12px 3px; background: #2d2033; font: 15px var(--display); color: var(--ink); }
+.float-text.speech { padding: 4px 9px; border: 1px solid #f0d2a240; border-radius: 10px 10px 10px 3px; background: #241a2bd9; font: 500 13px var(--body); color: var(--ink); }
 
 /* Inside the cottage and the shop */
 .place-bar { position: fixed; z-index: 16; top: calc(var(--top) + 64px); left: calc(var(--rail-w) + 8px); right: 8px; display: flex; align-items: center; gap: 10px; pointer-events: none; }

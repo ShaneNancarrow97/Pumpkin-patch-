@@ -223,6 +223,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     }
   }
   const api = {
+    get enabled() { return enabled; },
     setEnabled(on, next = who) { stand(); releaseFigure(who); velocity.x = velocity.z = 0; walkTarget = null; enabled = !!on; who = next === "shane" ? "shane" : "natalie"; input.x = input.y = 0; key = null; action = null; sync(); return api.state(); },
     select(next) { stand(); releaseFigure(who); velocity.x = velocity.z = 0; walkTarget = null; who = next === "shane" ? "shane" : "natalie"; input.x = input.y = 0; key = null; action = null; sync(); return api.state(); },
     input(x, y) { input.x = clamp(Number(x) || 0, -1, 1); input.y = clamp(Number(y) || 0, -1, 1); },

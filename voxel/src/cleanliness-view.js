@@ -19,8 +19,9 @@ function litterModel(kind) {
   }
   return v.build();
 }
+// Hettie stands as tall as the guests she tidies up after (about 1.6 units).
 function frameGeometry(f) {
-  const u=2.3/JANITOR_META.height,g=new THREE.PlaneGeometry(f.w*u,f.h*u);g.translate((f.w/2-f.ax)*u,(f.ay-f.h/2)*u,0);
+  const u=1.6/JANITOR_META.height,g=new THREE.PlaneGeometry(f.w*u,f.h*u);g.translate((f.w/2-f.ax)*u,(f.ay-f.h/2)*u,0);
   const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setXY(i,(f.x+uv.getX(i)*f.w)/JANITOR_META.w,1-(f.y+(1-uv.getY(i))*f.h)/JANITOR_META.h);return g;
 }
 export function createCleanlinessView({scene,state,warm=()=>{}}) {

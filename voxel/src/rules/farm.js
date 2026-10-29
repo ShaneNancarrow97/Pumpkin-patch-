@@ -15,7 +15,7 @@ export const VARIETIES = PUMPKIN_VARIETIES;
 export const UPGRADES = [
   { id: "tools", name: "A better watering can", text: "Pumpkins grow 18% faster.", cost: 90, max: 6 },
   { id: "yield", name: "A little extra love", text: "One more pumpkin per harvest.", cost: 150, max: 5 },
-  { id: "auto", name: "Helping hands", text: "Shane and Natalie plant and pick for you.", cost: 500, max: 1 },
+  { id: "auto", name: "Helping hands", text: "Shane and Natalie plant and pick for you, and rest while you play as them.", cost: 500, max: 1 },
   { id: "plots", name: "Room for more", text: "Open more beds, then buy the south field for eighteen and twenty-four plots.", costs: [300, 660, 2200, 5500], max: 4 },
   { id: "cart", name: "A market cart", text: "When the barn is full, Shane drives the extra pumpkins down to the village market for a share of the price, so the picking never has to stop.", costs: [400, 2500, 9000] },
   { id: "storage", name: "A bigger pumpkin barn", text: "Store more pumpkins before the harvest pauses. Keeps ripe crops safe when full.", costs: [60, 180, 500, 1400, 4000, 10000], max: 6 },
@@ -175,7 +175,9 @@ export function updateFarm(s, dt, events) {
     p.progress = Math.min(1, p.progress + dt / growTime(s, i));
     if (p.progress >= 1) { p.phase = "ready"; p.ripe = s.time; events.push({ type: "ripe", plot: i }); }
   }
-  if (!s.upgrades.auto) return;
+  // Helping hands step back while the player is steering Shane or Natalie:
+  // the farm is theirs to work by hand.
+  if (!s.upgrades.auto || s.handsOn) return;
   s.helperTimer += dt;
   if (s.helperTimer < 2) return;
   s.helperTimer %= 2;

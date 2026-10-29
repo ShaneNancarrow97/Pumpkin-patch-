@@ -38,8 +38,9 @@ import { loadPlayerDirections, applyPlayerDirection } from "./player-sprite-dire
 // game's own sprites: flat cut-outs standing in the voxel world, lit by the moon
 // and the lanterns, and casting shadows the shape of the art. Sheets come from
 // tools/bake_sprites.py; each records how many rows a person is, so the
-// smaller costume sheets stand just as tall (2.3 units).
-const unit = (meta) => 2.3 / meta.rows;
+// smaller costume sheets stand just as tall (2.3 units). A sheet whose people
+// should stand at another height says so in person.
+const unit = (meta) => (meta.person ?? 2.3) / meta.rows;
 // They lean back towards the camera like the voxel figures, stretched so the art
 // keeps its proportions on screen (LEAN and STRETCH in world.js).
 const URLS = {
@@ -50,7 +51,10 @@ const URLS = {
   "shane-frankenstein": shaneFrankenstein, "shane-mummy": shaneMummy, "shane-slasher": shaneSlasher,
   ...COSTUME_URLS, court: courtURL, seated: seatedURL, "natalie-wheelchair": wheelsURL,
 };
-const METADATA = { ...SHEETS, ...COSTUME_SHEETS, ...WHEELCHAIR_META, court: HOSPITALITY_META.court, seated: HOSPITALITY_META.seated };
+// The court and the diners were drawn a person to the frame, which made them
+// tower over the other guests (about 1.6 units): bring them down to match.
+const METADATA = { ...SHEETS, ...COSTUME_SHEETS, ...WHEELCHAIR_META,
+  court: { ...HOSPITALITY_META.court, person: 1.72 }, seated: { ...HOSPITALITY_META.seated, person: 1.6 } };
 // Visitor IDs come from the shared, stable voxel roster.
 
 const loadImage = (src) => new Promise((resolve, reject) => {

@@ -71,6 +71,7 @@ export function freshState() {
     claimed: [], memories: [], progression: freshProgression(), paused: false, introSeen: false,
     cleanliness: freshCleanliness(),
     social: freshSocial(),                                                     // meadow news and chats: never saved
+    handsOn: false,                                                            // the player is steering Shane or Natalie: never saved
   };
 }
 
@@ -152,7 +153,7 @@ export function restoreState(raw) {
 }
 
 // What is worth saving: everything except who is out walking or shopping.
-export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), hayrideVisitors: saveHayrideVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, kitchen: { ...s.kitchen, foodHolds: [], diners: [] }, social: undefined });
+export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), hayrideVisitors: saveHayrideVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, kitchen: { ...s.kitchen, foodHolds: [], diners: [] }, social: undefined, handsOn: undefined });
 
 // Advances the farm by dt seconds and returns what happened, for the scene to show.
 export function update(s, dt) {
