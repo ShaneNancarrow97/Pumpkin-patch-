@@ -4,6 +4,8 @@ import { DROP } from "./farm-layout.js";
 // further south with it (content/farm-layout.js); the booth stays put.
 const LANE = 24 + DROP;
 export const MEADOW = { price: 1200, level: 4, width: 54, bounds: { x0: 40, x1: 54, z0: 5, z1: 29 + DROP }, counter: [47, 20.6], stand: [47, 17.9], speed: 3, queue: 4 };
+// The cocoa kiosk's frontage at each stand level (festival-meadow-world.js).
+export const cocoaKioskWidth = (level) => level >= 5 ? 7.2 : level >= 4 ? 6.6 : level >= 3 ? 5.8 : 4.8;
 export const COCOA_TIERS = [
   { name: "Moonbrew cocoa cart", price: 650, level: 5, capacity: 30, maxPrice: 4 },
   { name: "Lantern cocoa kiosk", price: 1800, level: 7, capacity: 60, maxPrice: 5 },

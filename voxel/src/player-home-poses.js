@@ -37,7 +37,7 @@ function bentLegs(g){
 function disposeBook(group){group?.traverse(m=>{if(m.isMesh){m.material?.dispose();m.dispose?.();}});group?.removeFromParent();}
 function book(){const v=new Voxels();v.box(-.18,-.02,-.02,.18,.035,.25,0x652d43);v.box(.01,-.02,-.02,.18,.035,.25,0x652d43);v.box(-.16,.017,0,.15,.012,.21,0xe7d8b5);v.box(.025,.017,0,.15,.012,.21,0xe7d8b5);for(let i=0;i<4;i++){v.box(-.14,.031,.035+i*.04,.10,.004,.005,0xb29b7c);v.box(.04,.031,.035+i*.04,.10,.004,.005,0xb29b7c);}const g=v.build();g.name='A story in hand';return g;}
 export function clearHomePose(actor){
- const old=originals.get(actor);if(!old)return;paint(actor,old.texture);actor.userData.show?.(old.geometry);actor.userData.shown=old.geometry;actor.userData.playerDirectionActive=false;actor.scale.x=1;
+ const old=originals.get(actor);if(!old)return;paint(actor,old.texture);actor.userData.show?.(old.geometry);actor.userData.shown=old.geometry;actor.userData.playerDirectionActive=false;actor.scale.set(1,1,1);
  if(actor.children[0]){actor.children[0].rotation.z=0;actor.children[0].position.y=0;}disposeBook(old.book);originals.delete(actor);
 }
 export function applyHomePose(actor,{who,outfit,look,kind,target,time=0}){
@@ -50,5 +50,9 @@ export function applyHomePose(actor,{who,outfit,look,kind,target,time=0}){
  // A wheelchair remains seated in its own chair; it is never folded into a second seat.
  const lean=actor.children[0];lean.rotation.z=kind==='pet'&&!drawn?-.10+Math.sin(time*2)*.015:Math.sin(time*1.6)*.006;
  if(kind==='read'&&!drawn){if(!old.book){old.book=book();actor.add(old.book);}old.book.visible=true;old.book.position.set(.12,1.1,.28);old.book.rotation.x=.5;}else if(old.book)old.book.visible=false;
- actor.scale.x=target?.pose?(Math.sin(target.pose.rotation*Math.PI/180)<-.2?-1:1):kind==='pet'?(actor.userData.playerSideSign??1):1;return true;
+ // Set the whole scale: a turnaround drawn a moment before leaves its own size
+ // behind. The pose art is drawn at the front sprite's size; a pet's crouch
+ // keeps the size its turnaround gave it, only facing the pet.
+ const sign=target?.pose?(Math.sin(target.pose.rotation*Math.PI/180)<-.2?-1:1):kind==='pet'?(actor.userData.playerSideSign??1):1,size=petting?Math.abs(actor.scale.y)||1:1;
+ actor.scale.set(sign*size,size,size);return true;
 }

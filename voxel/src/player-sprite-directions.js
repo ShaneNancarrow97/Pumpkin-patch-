@@ -14,6 +14,7 @@ import walkWheelchair from '../assets/player-walk-wheelchair.webp';
 import waterEmpty from '../assets/player-water-empty.webp';
 import { PLAYER_DIRECTION_META } from './player-direction-meta.js';
 import { PLAYER_SIDE_WALK_META, PLAYER_EMPTY_WATER_META } from './player-side-walk-meta.js';
+import { playerViewScale, playerStandFrame } from './player-view-size.js';
 import { crispTexture } from './crisp-sprites.js';
 import { recolour } from './sprite-voxels.js';
 
@@ -62,19 +63,22 @@ export function applyPlayerDirection(group,{who,outfit,facing='front',walking=fa
  const actionFrames=available[kind],direction=actionFrames?kind:facing;
  if(release||direction==='front'||!available[direction]){
   if(d.playerDirectionActive){paint(group,d.playerFrontTexture);const list=moving?d.walk:d.idle;const f=list?.[Math.floor(age*(moving?5:1.4))%list.length];if(f){d.show(f);d.shown=f;}d.playerDirectionActive=false;}
-  setScale(group,release?1:m.frontScale[moving?'walk':'idle']);
-  d.playerDirection='front';d.playerDirectionFrame=Math.floor(age*(moving?5:1.4))%(moving?d.walk:d.idle).length;d.playerSideFrameCount=4;d.playerStature=release?null:m.targetHeight*2.3/320;
+  setScale(group,playerViewScale(id,'front'));
+  d.playerDirection='front';d.playerDirectionFrame=Math.floor(age*(moving?5:1.4))%(moving?d.walk:d.idle).length;d.playerSideFrameCount=4;d.playerStature=release?null:m.targetHeight*2.3/320/(m.frontScale?.idle??1);
   return false;
  }
  if(!d.playerFrontTexture)d.playerFrontTexture=group.children[0].children.find(n=>n.isMesh)?.material.map;
  const map=mapFor(id,direction,who,look);if(d.playerDirectionTexture!==map||!d.playerDirectionActive){paint(group,map);d.playerDirectionTexture=map;}
- d.playerDirectionActive=true;const list=available[direction],index=actionFrames?Math.min(list.length-1,Math.floor(Math.max(0,actionProgress)*list.length)):moving?Math.floor(age*6)%list.length:0,f=list[index];d.show(f);d.shown=f;
+ // Standing still side-on or from behind shows the walk's most compact frame.
+ const stand=playerStandFrame(id,direction);
+ d.playerDirectionActive=true;const list=available[direction],index=actionFrames?Math.min(list.length-1,Math.floor(Math.max(0,actionProgress)*list.length)):moving?Math.floor(age*6)%list.length:Math.min(stand,list.length-1),f=list[index];d.show(f);d.shown=f;
  let sign=1;if(direction==='side'||direction==='water'){if(Math.abs(dx)>.1)d.playerSideSign=dx<0?-1:1;sign=d.playerSideSign??1;}
- const amount=direction==='back'?m.backScale:['plant','harvest'].includes(direction)?m.targetHeight/320:1;setScale(group,amount,sign);
- d.playerDirection=direction;d.playerDirectionFrame=index;d.playerSideFrameCount=4;d.playerStature=m.targetHeight*2.3/320;
+ setScale(group,playerViewScale(id,direction),sign);
+ d.playerDirection=direction;d.playerDirectionFrame=index;d.playerSideFrameCount=4;d.playerStature=m.targetHeight*2.3/320/(m.frontScale?.idle??1);
  return true;
 }
 export const playerDirectionCoverage=()=>Object.keys(PLAYER_SIDE_WALK_META);
+
 // Warm only the equipped atlases, rather than uploading every costume on phones.
 export function playerDirectionTextures(ids){
  return [...new Set((ids??[]).flatMap(id=>[sheets[PLAYER_DIRECTION_META[id]?.sheet]?.texture,walkSheets[PLAYER_SIDE_WALK_META[id]?.sheet]?.texture,PLAYER_EMPTY_WATER_META[id]?walkSheets.water?.texture:null]).filter(Boolean))];

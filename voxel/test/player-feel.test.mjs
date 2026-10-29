@@ -25,3 +25,22 @@ test('watering presents an illustrated can and its live nozzle on the captured t
 });
 
 test("seating and pet prompts honour their shorter local interaction sockets",()=>{const target={type:"pet",id:"skyla",x:0,z:1.6,range:1.35};assert.equal(choosePlayerTarget([target],{x:0,z:0},{x:0,z:1},null),null);assert.equal(choosePlayerTarget([target],{x:0,z:.4},{x:0,z:1},null).id,"skyla");});
+
+test("a turned owner settles back to the front sprite after standing still, but not while paused", async () => {
+ const THREE=await import('three'),{createPlayerControl}=await import('../src/player-control.js'),{freshState}=await import('../src/model.js');
+ const original=globalThis.document;globalThis.document={body:{classList:{contains:()=>false}}};
+ try {
+  const s=freshState(),scene=new THREE.Scene(),actor=new THREE.Group(),lean=new THREE.Group(),shown=[];actor.add(lean);actor.position.set(15,0,16);
+  actor.userData.playerAnimate=o=>shown.push(o.facing);
+  const camera=new THREE.OrthographicCamera(-10,10,10,-10,.1,100);camera.position.set(15,25,40);camera.lookAt(15,0,16);camera.updateMatrixWorld();
+  const places={setControlled(){},playerActor(){return null;},clearPlayerRest(){}};
+  const player=createPlayerControl({scene,state:s,actors:()=>({natalie:{model:actor}}),places,getPlace:()=>null,getCamera:()=>camera,animate(){}});
+  player.setEnabled(true,'natalie');let t=0;const run=(x,n)=>{for(let i=0;i<n;i++){player.input(x,0);player.update(.05,t+=.05);}};
+  run(1,8);assert.equal(shown.at(-1),'side','walking across the screen shows the side turnaround');
+  run(0,6);assert.equal(shown.at(-1),'side','a short stop keeps the side');assert.equal(player.state().facing,'side');
+  run(0,20);assert.equal(shown.at(-1),'front','standing still settles to the front idle');assert.equal(player.state().facing,'side','the aim keeps its heading');
+  run(1,8);s.paused=true;run(0,30);assert.equal(shown.at(-1),'side','a paused owner does not turn');
+  s.paused=false;run(0,20);assert.equal(shown.at(-1),'front');
+  player.teleport(38,16);run(1,40);assert.equal(shown.at(-1),'side','pushing against the fence keeps facing it');assert.ok(player.state().position.x<=38.75+1e-9,'and stops at it');
+ } finally {if(original===undefined)delete globalThis.document;else globalThis.document=original;}
+});

@@ -3,9 +3,11 @@ import { PLOTS, BIG_PUMPKIN, SHOP, HOMES, PITCH } from "./world.js";
 import { fieldDepth } from "./content/farm-layout.js";
 import { COOKING_SITE } from "./content/cooking-layout.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
+import { MEADOW, cocoaKioskWidth } from "./content/festival-meadow.js";
 import { openPlots } from "./model.js";
 
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+const SETTLE_SECONDS = 0.8;
 // A circular foot collider slides along a turned piece rather than snagging on its cells.
 export function playerPointFree(x, z, bounds, obstacles, radius = .25) {
   if (x < bounds.x0 + radius || x > bounds.x1 - radius || z < bounds.z0 + radius || z > bounds.z1 - radius) return false;
@@ -16,6 +18,29 @@ export function playerPointFree(x, z, bounds, obstacles, radius = .25) {
     if (qx * qx + qz * qz < radius * radius - 1e-7) return false;
   }
   return true;
+}
+// Where the owner can walk on the farm: the yard inside its fences and, once
+// bought, the food truck's paving and the meadow. The edges sit a quarter inside
+// each fence, so the feet (radius .25) stop half a unit short of the pickets.
+// The truck's paving and the meadow's east fence end together, at x 53.2.
+const FRONT_FENCE = 1.4, MEADOW_FRONT = 27.6, EAST_FENCE = 39;
+export function farmPlayerGeometry(state) {
+  const front = fieldDepth(state) - FRONT_FENCE - .25, kitchen = !!state.kitchen?.purchased, meadow = !!state.festival?.meadow;
+  const obstacles = [
+    { x: SHOP.x, z: 5.6, w: 9.7, d: 6.7 },
+    { x: HOLLOW_PROPERTY.x, z: 5.2, w: 8.8, d: 7.3 },
+    { x: BIG_PUMPKIN.x, z: BIG_PUMPKIN.z, w: 3.4, d: 3.2 },
+  ];
+  if (kitchen) obstacles.push({ x: COOKING_SITE.truck.x, z: COOKING_SITE.truck.z, w: COOKING_SITE.truck.w, d: COOKING_SITE.truck.d });
+  const level = meadow ? state.festival.cocoa?.level ?? 0 : 0;
+  if (level) obstacles.push({ x: MEADOW.stand[0], z: MEADOW.stand[1] + .2, w: cocoaKioskWidth(level) + .4, d: 3.4 });
+  // East of the yard's fence line only the paving or the meadow is open: the
+  // rest is one block, from where they end to past the deepest front fence.
+  const open = meadow ? MEADOW_FRONT - .25 : kitchen ? COOKING_SITE.pavingBounds.z1 : null;
+  if (open !== null && open < front) obstacles.push({ x: EAST_FENCE + 10, z: (open + front + 2) / 2, w: 20, d: front + 2 - open });
+  // The meadow's front fence starts at the lane (x 35.6); a grown field runs on past it.
+  if (meadow && open < front) obstacles.push({ x: (35.6 + EAST_FENCE) / 2, z: MEADOW_FRONT, w: EAST_FENCE - 35.6, d: .5 });
+  return { bounds: { x0: -5, x1: meadow || kitchen ? COOKING_SITE.bounds.x1 : EAST_FENCE, z0: 3.9, z1: front }, obstacles };
 }
 // Substeps stop a slow frame tunnelling through a narrow chair or wall.
 export function slidePlayer(position, dx, dz, bounds, obstacles, radius = .25) {
@@ -57,7 +82,7 @@ export function choosePlayerTarget(list, position, heading, previous, reach = 2.
 
 // This adapter owns only movement and presentation. Purchases and farming stay in the rules.
 export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow, cameraLook, cameraZoom, cameraReset, wateringTexture }) {
-  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, strideAge = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0;
+  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, strideAge = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0, still = 0;
   const input = { x: 0, y: 0 }, lookInput = { x: 0, y: 0 }, velocity = { x: 0, z: 0 }, heading = { x: 0, z: 1 }, positions = new Map(), right = new THREE.Vector3(), forward = new THREE.Vector3();
   const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd18a, transparent: true, opacity: .75, side: THREE.DoubleSide, depthWrite: false, toneMapped: false });
   const ring = new THREE.Mesh(new THREE.RingGeometry(.42, .465, 40), ringMat); ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);
@@ -80,15 +105,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   const origin = () => room() ? { x: 200, z: 0 } : { x: 0, z: 0 };
   const localPosition = () => { const a = model(), o = origin(); return a ? { x: a.position.x - o.x, z: a.position.z - o.z } : { ...(positions.get(key) ?? HOMES[who]) }; };
   function geometry() {
-    if (room()) return places.playerGeometry();
-    const maxX = state.kitchen?.purchased ? COOKING_SITE.bounds.x1 : 39;
-    const obstacles = [
-      { x: SHOP.x, z: 5.6, w: 9.7, d: 6.7 },
-      { x: HOLLOW_PROPERTY.x, z: 5.2, w: 8.8, d: 7.3 },
-      { x: BIG_PUMPKIN.x, z: BIG_PUMPKIN.z, w: 3.4, d: 3.2 },
-      ...(state.kitchen?.purchased ? [{ x: COOKING_SITE.truck.x, z: COOKING_SITE.truck.z, w: COOKING_SITE.truck.w, d: COOKING_SITE.truck.d }] : []),
-    ];
-    return { bounds: { x0: -5, x1: maxX, z0: 3.9, z1: fieldDepth(state) - .4 }, obstacles };
+    return room() ? places.playerGeometry() : farmPlayerGeometry(state);
   }
   function safeSpot(wanted) {
     const { bounds, obstacles } = geometry();
@@ -182,8 +199,13 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     const delta = Math.hypot(pos.x - old.x, pos.z - old.z), dx = delta > .00001 || action || pose ? screenHeading : 0;
     strideAge += delta / 2.3;
     const motionAge = moving ? strideAge : time;
+    // The side and back turnarounds are walks with no standing frame: after a
+    // moment standing still, the owner settles back to the front sprite's idle.
+    // Pushing against a fence is not standing still: they keep facing it.
+    if (moving || action || pose || intent.x || intent.z) still = 0; else if (!asleep) still += Math.max(0, Number(dt) || 0);
+    const shown = still > SETTLE_SECONDS ? "front" : facing;
     animate(a, motionAge, moving, dx, who === "shane" ? 1.7 : 0);
-    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing, walking: moving, time, age: motionAge, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
+    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing: shown, walking: moving, time, age: motionAge, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
     const hit = !room() && actors()[who]?.hit; if (hit) hit.position.set(a.position.x, 1.1, a.position.z);
     target = nearest();
     ring.visible = !asleep; ring.position.set(a.position.x, .075, a.position.z); ringMat.opacity = .6 + Math.sin(time * 2) * .1;
@@ -249,6 +271,8 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     },
     cancelWalk() { walkTarget = null; velocity.x = velocity.z = 0; },
     targets,
+    // QA: the figure being controlled (its group), for measuring how it is drawn.
+    figure: () => (enabled && available() ? model() ?? null : null),
     teleport(x, z) { if (!sync()) return false; const a = model(), o = origin(), p = safeSpot({ x, z }); a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z); positions.set(key, p); target = nearest(); return true; },
     state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, waterCanStyle:'sprite', waterCanWidth:canWidth, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: Math.abs(can.scale.x), waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
     // QA can finish a presentation without advancing harvests, deliveries or any other rule.

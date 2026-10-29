@@ -3,7 +3,7 @@ import { Voxels, seeded, vary } from "./voxels.js";
 import { buildGround, grounds } from "./ground.js";
 import { cocoaProp, takeawayCup } from "./cocoa-props.js";
 import { yardGround, fenceRun, tree, lanternPost } from "./world.js";
-import { MEADOW, MEADOW_PATHS, CHAT_SPOTS, pathDistance } from "./content/festival-meadow.js";
+import { MEADOW, MEADOW_PATHS, CHAT_SPOTS, pathDistance, cocoaKioskWidth } from "./content/festival-meadow.js";
 import { hollowPathDistance } from "./content/hollow-house.js";
 import { createMoth } from "./moth.js";
 import { DROP } from "./content/farm-layout.js";
@@ -12,7 +12,7 @@ import { DROP } from "./content/farm-layout.js";
 // Everything uses the existing voxel palette and two material batches.
 export function cocoaKiosk(level) {
   const v = new Voxels(), r = seeded(716 + level), wood = 0x68402b, dark = 0x30212b, brass = 0xc39b61;
-  const w = level >= 5 ? 7.2 : level >= 4 ? 6.6 : level >= 3 ? 5.8 : 4.8, left = -w / 2, right = w / 2;
+  const w = cocoaKioskWidth(level), left = -w / 2, right = w / 2;
   v.box(left - .2, 0, -1.5, w + .4, .18, 3.4, 0x625161);
   for (let x = left; x < right; x += .24) v.box(x, .18, -1.45, .22, .1, 3.25, vary(wood, .08, r));
   // Rear cupboard, raised panels and glass-fronted cocoa jars.
