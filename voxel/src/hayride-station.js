@@ -10,7 +10,7 @@ import { HAYRIDE_SITE as SITE, HAYRIDE_FLEET_BAY } from "./content/hayride-layou
 // feet (hayrideGuestPose), and nothing stands in the lanes, the queue or the
 // walkway along x = -9.1.
 const block = (v, x, y, z, w, h, d, c, glow = false) => v.block(x, y, z, w, h, d, c, glow);
-const EARTH = [0x5e4733, 0x67503a, 0x56432f, 0x6e563d], RUT = [0x3b2b20, 0x433024, 0x34261c], CROWN = [0x4a5a32, 0x3f4f2c, 0x55653a];
+const EARTH = [0x5e4733, 0x67503a, 0x56432f, 0x6e563d, 0x625041], RUT = [0x3b2b20, 0x433024, 0x34261c], CROWN = [0x4a5a32, 0x3f4f2c, 0x55653a], PUDDLE = [0x2b3140, 0x323a4c, 0x283040];
 const GRASS = [0x3d4a2b, 0x46552f, 0x36432a], STRAW = [0xc9a44f, 0xb88f3c, 0xd8b862], LEAVES = COL.leaves, STONE = COL.stone;
 const BARN = [0x6e2420, 0x7a2a24, 0x652024], TRIM = 0xd6c6a2, SHINGLE = [0x3f2229, 0x4a2730, 0x56303a], BARK = [0x3b2b26, 0x33251f, 0x45332b];
 const IRON = COL.iron, WOOD = COL.wood, LANTERN = COL.lantern;
@@ -110,59 +110,93 @@ function ticketBarn(v, r) {
   for (let i = 0; i < 4; i++) gourd(v, x1 - 0.2 - (i % 2) * 0.42, 0.02 + Math.floor(i / 2) * 0.3, z1 + 0.75 + (i % 2) * 0.1, 0.42 + r() * 0.1, [0xd8701e, 0xe08a2e, 0xc2552a, 0xf0821e][i]);
 }
 
-// Two old trees lean together over the track, a canopy of autumn leaves between
-// them, and a veil of hanging moss and leaves where the lane goes on into the
-// wood: the wagon passes out of sight behind it. The arch nearest the camera is
-// kept low (under four units), so it never hides the station behind it.
-function treeArch(v, r, z, west, east, sign, low = false) {
-  const mid = (west + east) / 2, half = (east - west) / 2, H = low ? 2.4 : 3.3, y0 = low ? 1.95 : 2.5, y1 = low ? 3.5 : 5.2;
-  const cy = (y0 + y1) / 2, ry = (y1 - y0) / 2, step = 0.42;
-  for (const [x, lean] of [[west, 1], [east, -1]]) {
-    for (let i = 0; i < 4; i++) block(v, x + (r() - 0.5) * 0.8 - lean * 0.2, 0, z + (r() - 0.5) * 0.9, 0.5 + r() * 0.3, 0.22, 0.4, BARK[i % 3]);
-    const n = Math.round(H / 0.3);
-    for (let k = 0; k < n; k++) block(v, x + lean * k * 0.045, k * 0.3, z, 0.78 - k * 0.022, 0.32, 0.72 - k * 0.02, vary(BARK[k % 3], 0.05, r));
-    for (let k = 0; k < 8; k++) block(v, x + lean * (0.5 + k * half / 8), H + Math.sin(k / 8 * Math.PI) * (low ? 0.2 : 0.35), z + (r() - 0.5) * 0.3, half / 8 + 0.12, 0.24, 0.3, BARK[k % 3]);
+// The track leaves and returns through raised ground: a wooded hill with stone
+// tunnel mouths behind the station, and a low grassy bank with an underpass at
+// the foreground edge. Each bore is a dark lined passage deep enough that the
+// tractor and wagon are inside the hill before the farm stops drawing them.
+const ROCK = [0x4f4250, 0x5a4b57, 0x463a45, 0x625363], SOIL = [0x4a3527, 0x553d2c, 0x3f2d22], MOSS = [0x34452a, 0x3d4f2e, 0x2e3d26, 0x46552f];
+const LITTER = [0x5a2a26, 0x6a3a24, 0x4a3a2a, 0x3d3324, 0x6e3020, 0x553a2a];
+const BORE = { half: 1.6, height: 3.0 }, INK = 0x0b080d;
+const inBore = (x, lanes) => lanes.some((l) => Math.abs(x + 0.25 - l) < BORE.half);
+// A stone arch round a bore's mouth on the face at z, facing +z (dir 1) or -z.
+function tunnelMouth(v, r, x, z, dir, crown = true) {
+  const half = BORE.half, H = BORE.height, out = dir * 0.18;
+  for (let i = 0; i <= 12; i++) {                                                    // voussoirs on a round-topped arch
+    const a = Math.PI * i / 12, ax = x - Math.cos(a) * (half + 0.12), ay = H - half * 0.55 + Math.sin(a) * half * 0.62;
+    block(v, ax, ay - 0.2, z + out, 0.46, 0.46, 0.34, vary(i === 6 ? 0x8a7d8c : ROCK[i % 4], 0.08, r));
   }
-  for (let i = west - 1.2; i <= east + 1.2; i += step) for (let y = y0; y <= y1 - step; y += step) for (let dz = -1.2; dz <= 1.2; dz += step) {
-    const d = Math.hypot((i - mid) / (half + 1.4), (y + step / 2 - cy) / ry, dz / 1.25);
-    if (d > 1 - r() * 0.12 || d < 0.6 || (y < H && Math.abs(i - mid) < half - 0.8)) continue;
-    const top = (y - y0) / (y1 - y0);
-    v.box(i, y, z + dz, step, step, step, vary(LEAVES[Math.min(LEAVES.length - 1, Math.floor(r() * 3 + top * 3))], 0.07, r));
+  for (const side of [-1, 1]) for (let y = 0; y < H - half * 0.6; y += 0.42) block(v, x + side * (half + 0.12), y, z + out, 0.46, 0.4, 0.34, vary(ROCK[Math.floor(r() * 4)], 0.08, r));
+  if (crown) {                                                                       // a carved skull for a keystone, and lanterns either side
+    const ky = H + half * 0.1;
+    block(v, x, ky, z + out + dir * 0.18, 0.34, 0.3, 0.06, 0xd9cdb8); for (const dx of [-0.08, 0.08]) block(v, x + dx, ky + 0.15, z + out + dir * 0.22, 0.07, 0.07, 0.03, INK);
+    for (const side of [-1, 1]) { const lx = x + side * (half + 0.55); block(v, lx, 1.7, z + out, 0.08, 0.5, 0.08, IRON); block(v, lx, 1.42, z + out + dir * 0.06, 0.26, 0.3, 0.26, LANTERN, true); block(v, lx, 1.36, z + out + dir * 0.06, 0.32, 0.06, 0.32, IRON); }
   }
-  // The veil: strands of moss and leaves, ragged at the hem, darkest in the middle.
-  for (let x = west + 0.35; x < east - 0.3; x += 0.24) for (const dz of [-0.12, 0.12]) {
-    const centre = 1 - Math.abs(x - mid) / half, hem = Math.max(0, 0.15 + (1 - centre) * 0.9 * r());
-    for (let y = hem; y < H; y += 0.3) {
-      const leaf = r() < 0.16, c = leaf ? LEAVES[Math.floor(r() * LEAVES.length)] : vary(centre > 0.55 ? 0x141a14 : [0x1f2a1e, 0x26321f, 0x2e3a26][Math.floor(r() * 3)], 0.06, r);
-      block(v, x + (r() - 0.5) * 0.06, y, z + dz, 0.2, Math.min(0.32, H - y), 0.12, c);
-    }
+  // Roots and moss trailing over the lip, and cobwebs in the corners.
+  for (let k = 0; k < 9; k++) { const rx = x - half + 0.2 + k * (half * 2 - 0.4) / 8, len = 0.2 + r() * 0.6; block(v, rx, H + 0.2 - len, z + out + dir * 0.05, 0.05, len, 0.05, r() < 0.5 ? 0x2a1d17 : MOSS[k % 4]); }
+  for (const side of [-1, 1]) for (let k = 0; k < 4; k++) block(v, x + side * (half - 0.25 - k * 0.12), H - 0.55 - k * 0.12 + 0.3, z + dir * 0.08, 0.3 - k * 0.05, 0.015, 0.015, 0xcfc8d6);
+}
+// A dark lined passage running from the face at z back by depth (dir is the
+// way the mouth faces): walls, a ceiling, a damp floor and an inky end.
+function bore(v, r, x, z, dir, depth) {
+  const half = BORE.half, H = BORE.height, z0 = dir > 0 ? z - depth : z;
+  v.box(x - half, 0.01, z0, half * 2, 0.012, depth, 0x231a18);
+  for (const side of [-1, 1]) v.box(side < 0 ? x - half - 0.3 : x + half, 0, z0, 0.3, H, depth, 0x17111a);
+  v.box(x - half - 0.3, H - 0.25, z0, half * 2 + 0.6, 0.3, depth, 0x120d14);
+  v.box(x - half, 0, dir > 0 ? z0 : z0 + depth - 0.2, half * 2, H, 0.2, INK);
+  for (let k = 0; k < depth; k += 1.6) v.box(x - half + 0.15, 0.02, z0 + k, half * 2 - 0.3, 0.02, 0.18, 0x3a2c24);  // old sleepers
+}
+// A heightfield hill of soil, rock strata and mossy top, with bores cut for the lanes.
+function hill(v, r, { x0, x1, z0, z1, peak, face, dir, lanes }) {
+  for (let x = x0; x < x1; x += 0.5) for (let z = z0; z < z1; z += 0.5) {
+    const sx = Math.min(x - x0, x1 - 0.5 - x), back = dir > 0 ? z - z0 : z1 - 0.5 - z, front = dir > 0 ? z1 - 0.5 - z : z - z0;
+    let h = peak * Math.min(1, 0.35 + sx / 3.2) * Math.min(1, 0.5 + back / 2.5) + Math.sin(x * 1.3 + z * 0.7) * 0.25 + (r() - 0.5) * 0.2;
+    h = Math.max(0.6, Math.round(h * 4) / 4);
+    if (front < 0.5) h = Math.min(h, face);                                            // the face steps down to the mouth
+    const lane = inBore(x, lanes) && front < 7.5, near = front < 7.5 && lanes.some((l) => Math.abs(x + 0.25 - l) < BORE.half + 0.8);
+    const bottom = lane ? BORE.height + 0.05 : 0;
+    if (near) h = Math.max(h, BORE.height + 0.45);                                     // the bore's lining never shows through the top
+    const strata = (y) => (Math.floor(y * 2.2 + x * 0.15) % 3 === 0 ? ROCK : SOIL);
+    for (let y = bottom; y < h - 0.3; y += 0.5) v.box(x, y, z, 0.5, Math.min(0.5, h - 0.3 - y), 0.5, vary(strata(y)[Math.floor(r() * 3)], 0.08, r));
+    // A top of moss and leaf litter, quartered so it reads as ground, not a slab.
+    for (const [ox, oz] of [[0, 0], [0.25, 0], [0, 0.25], [0.25, 0.25]]) v.box(x + ox, h - 0.3, z + oz, 0.25, 0.3 + r() * 0.05, 0.25, vary(r() < 0.5 ? MOSS[Math.floor(r() * 4)] : LITTER[Math.floor(r() * LITTER.length)], 0.1, r));
+    const fleck = r();
+    if (fleck < 0.22) block(v, x + 0.25, h + 0.04, z + 0.25, 0.2, 0.04, 0.22, LEAVES[Math.floor(r() * LEAVES.length)]);
+    else if (fleck < 0.3) { const s = 0.3 + r() * 0.25; block(v, x + 0.25, h, z + 0.25, s, s * 0.8, s, vary(0x3a3324, 0.16, r)); for (let k = 0; k < 3; k++) block(v, x + 0.25 + (r() - 0.5) * s, h + s * 0.6, z + 0.25 + (r() - 0.5) * s, 0.16, 0.14, 0.16, LEAVES[Math.floor(r() * LEAVES.length)]); }
+    else if (fleck < 0.34) block(v, x + 0.25, h, z + 0.25, 0.22 + r() * 0.2, 0.14, 0.2, vary(ROCK[Math.floor(r() * 4)], 0.1, r));
   }
-  const lamp = H - 0.6;                                                                 // a lantern hung from the boughs
-  block(v, mid, lamp + 0.38, z + 0.5, 0.06, H - lamp - 0.38, 0.06, IRON);
-  block(v, mid, lamp, z + 0.5, 0.3, 0.06, 0.3, IRON); block(v, mid, lamp + 0.06, z + 0.5, 0.22, 0.3, 0.22, LANTERN, true); block(v, mid, lamp + 0.36, z + 0.5, 0.3, 0.05, 0.3, IRON);
-  if (sign) { sign.position.set(mid, H - 0.25, z + 1.55); for (const dx of [-0.75, 0.75]) block(v, mid + dx, H, z + 1.5, 0.04, 0.75, 0.04, IRON); }
+}
+// A bare, crooked dead tree for the hilltop.
+function deadTree(v, r, x, y, z, s) {
+  let px = x, pz = z, py = y;
+  for (let k = 0; k < 9; k++) { block(v, px, py, pz, 0.32 * s - k * 0.02, 0.4 * s, 0.32 * s - k * 0.02, BARK[k % 3]); py += 0.38 * s; px += (r() - 0.5) * 0.12; }
+  for (let b = 0; b < 4; b++) { const a = r() * Math.PI * 2, len = 3 + Math.floor(r() * 3); let bx = px, by = py - b * 0.5 * s, bz = pz; for (let k = 0; k < len; k++) { bx += Math.cos(a) * 0.22 * s; bz += Math.sin(a) * 0.12 * s; by += 0.14 * s; block(v, bx, by, bz, 0.12, 0.12, 0.12, 0x2e221d); } }
 }
 
 export function buildHayrideStation(signBoard, fleet = false) {
   const v = new Voxels(), r = seeded(8813), b = SITE.bounds, root = new THREE.Group();
   const lanes = fleet ? [SITE.station.x, HAYRIDE_FLEET_BAY.station.x] : [SITE.station.x], west = fleet ? -23.9 : -19.9, east = -14.1;
-  // Packed earth, straw and fallen leaves; a two-rut track with a grassy crown
-  // down each lane; the farm's lilac cobbles where guests walk.
+  // Packed earth, straw and fallen leaves; a two-rut track with a raised grassy
+  // crown down each lane; the farm's lilac cobbles where guests walk. Tiles meet
+  // edge to edge (gaps showed the dark base as a grid of lines), and their
+  // heights vary: wet ruts sit low, the crown and the verges stand proud.
   for (let x = b.x0; x < b.x1; x += 0.5) for (let z = b.z0; z < b.z1; z += 0.5) {
     if ((x < b.x0 + 1 || x > b.x1 - 1) && (z < b.z0 + 1 || z > b.z1 - 1)) continue;
     v.box(x, -0.45, z, 0.5, 0.46, 0.5, 0x3f3027);
     for (const [ox, oz] of [[0, 0], [0.25, 0], [0, 0.25], [0.25, 0.25]]) {
       const cx = x + ox + 0.125, cz = z + oz + 0.125, lane = Math.min(...lanes.map((l) => Math.abs(cx - l)));
       const crossing = cz > 36.9 && cz < 38.8 && cx > -20.2, path = cx > -10.15 || crossing || (cx < -18.8 && cz > 34.5 && lane > 1.55);
-      const edge = Math.min(cx - b.x0, cz - b.z0, b.z1 - cz) < 1.4 && !path;
-      const palette = path ? STONE : lane < 0.42 ? CROWN : lane < 1.0 ? RUT : edge ? GRASS : EARTH;
-      const h = 0.025 + r() * 0.009;
-      v.box(x + ox + 0.003, 0.01, z + oz + 0.003, 0.244, h, 0.244, vary(palette[Math.floor(r() * palette.length)], path ? 0.12 : 0.1, r));
-      if (path || (lane < 1.0 && lane >= 0.42)) continue;
-      const fleck = r();
-      if (fleck < 0.16) v.box(x + ox + 0.04, 0.01 + h, z + oz + 0.06, 0.16, 0.02, 0.05, STRAW[Math.floor(r() * 3)]);
-      else if (fleck < 0.18 && lane > 1.6) v.box(x + ox + 0.06, 0.01 + h, z + oz + 0.05, 0.1, 0.025, 0.13, LEAVES[Math.floor(r() * LEAVES.length)]);
-      else if (edge && fleck < 0.3) v.box(x + ox + 0.08, 0.01 + h, z + oz + 0.08, 0.06, 0.09, 0.06, 0x56683a);
+      const edge = Math.min(cx - b.x0, cz - b.z0, b.z1 - cz) < 1.4 && !path, rut = !path && lane >= 0.42 && lane < 1.0, crown = !path && lane < 0.42;
+      const puddle = rut && Math.sin(cz * 0.9 + cx) > 0.82;
+      const palette = path ? STONE : crown ? CROWN : rut ? (puddle ? PUDDLE : RUT) : edge ? GRASS : EARTH;
+      const h = path ? 0.03 + r() * 0.012 : rut ? 0.012 + r() * 0.006 : crown ? 0.05 + r() * 0.02 : 0.026 + r() * 0.02;
+      v.box(x + ox, 0.01, z + oz, 0.25, h, 0.25, vary(palette[Math.floor(r() * palette.length)], path ? 0.12 : 0.1, r));
+      if (path) continue;
+      if (rut) { if (!puddle && Math.abs((cz * 4) % 2 - 1) < 0.25) v.box(x + ox, 0.01 + h, z + oz + 0.1, 0.25, 0.006, 0.05, 0x2c2018); continue; }  // tread marks
+      const fleck = r(), top = 0.01 + h;
+      if (fleck < 0.14) v.box(x + ox + 0.04, top, z + oz + 0.06, 0.16, 0.02, 0.05, STRAW[Math.floor(r() * 3)]);
+      else if (fleck < 0.22 && lane > 1.6) v.box(x + ox + 0.05 + r() * 0.08, top, z + oz + 0.05, 0.1, 0.022, 0.13, LEAVES[Math.floor(r() * LEAVES.length)]);
+      else if (fleck < 0.27 && !crown) v.box(x + ox + 0.06 + r() * 0.1, top, z + oz + 0.07, 0.07 + r() * 0.05, 0.05, 0.07, vary(0x7d7468, 0.12, r));   // a pebble
+      else if ((edge || crown) && fleck < 0.42) for (let k = 0; k < 3; k++) v.box(x + ox + 0.04 + k * 0.07, top, z + oz + 0.06 + r() * 0.1, 0.035, 0.08 + r() * 0.12, 0.035, vary(k ? 0x5a6e3c : 0x7c8a48, 0.1, r));  // a tuft
     }
   }
   // Autumn shrubs along the outer edges, clear of the gate.
@@ -201,9 +235,21 @@ export function buildHayrideStation(signBoard, fleet = false) {
     for (let i = 0; i < 5; i++) gourd(v, -22.6 + i * 0.5, 0.02, 35.2 + (i % 2) * 0.3, 0.42 + r() * 0.12, [0xd8701e, 0x9d55e6, 0xe08a2e][i % 3]);
   } else for (let i = 0; i < 4; i++) jack(v, -24.1, 0.02, 30.2 + i * 0.9, 0.36);
   // The tree arches where the track meets the woods.
-  const into = signBoard("Into the Hollow", "", 2.1);
-  treeArch(v, r, SITE.departurePortal.z, west, east, into);
-  treeArch(v, r, SITE.returnPortal.z, west, east, null, true);
+  // The way out: a wooded hill behind the station, the track running into it.
+  const into = signBoard("Into the Hollow", "", 2.1), dz = SITE.departurePortal.z, rz = SITE.returnPortal.z;
+  hill(v, r, { x0: west - 2.2, x1: east + 2.6, z0: dz - 8.5, z1: dz + 0.5, peak: 4.8, face: 4.2, dir: 1, lanes });
+  for (const l of lanes) { bore(v, r, l, dz + 0.5, 1, 7.5); tunnelMouth(v, r, l, dz + 0.5, 1); }
+  into.position.set(lanes[0], 4.0, dz + 0.95);
+  for (const [x, s] of [[west - 0.6, 1.1], [east + 1.2, 0.9], [(west + east) / 2 + 1.5, 1.2]]) deadTree(v, r, x, 4.4, dz - 5.5 - r() * 1.5, s);
+  for (const [x, z, tilt] of [[west + 0.6, dz - 2.2, 0.08], [west + 1.5, dz - 2.6, -0.06], [east + 0.4, dz - 2.4, 0.1]]) {   // an old burial ground on the hill
+    block(v, x, 4.45, z, 0.5, 0.62, 0.14, vary(0x6e6878, 0.08, r)); block(v, x + tilt, 5.0, z, 0.36, 0.16, 0.14, vary(0x77708a, 0.08, r)); block(v, x, 4.45, z + 0.35, 0.5, 0.06, 0.5, vary(0x2e3a26, 0.1, r));
+  }
+  block(v, west + 0.6, 5.2, dz - 2.2, 0.16, 0.12, 0.26, 0x111014);
+  // The way home: a low grassy bank across the foreground, the track passing under it.
+  hill(v, r, { x0: west - 1.6, x1: east + 2.0, z0: rz + 0.2, z1: rz + 5, peak: 3.1, face: 3.4, dir: -1, lanes });
+  for (const l of lanes) { bore(v, r, l, rz + 0.2, -1, 4.8); tunnelMouth(v, r, l, rz + 0.2, -1, false); }
+  for (let x = west - 1.2; x < east + 1.6; x += 0.5) if (!inBore(x, lanes)) block(v, x + 0.25, 3.35, rz + 0.45, 0.5, 0.3 + (Math.floor(x * 2) % 2) * 0.1, 0.3, vary(ROCK[Math.floor(r() * 4)], 0.08, r));  // a parapet along the lip
+  for (const l of lanes) for (const side of [-1, 1]) { const px = l + side * (BORE.half + 0.4); block(v, px, 3.35, rz + 0.45, 0.12, 0.3, 0.12, IRON); block(v, px, 3.62, rz + 0.45, 0.22, 0.26, 0.22, LANTERN, true); }
   root.add(v.build(), into); root.name = "The Hollow Hayride farm station";
   // The hayride's sign across the ticket barn's gable, facing the camera.
   const sign = signBoard("The Hollow Hayride", "tickets · woodland scares", 2.8);

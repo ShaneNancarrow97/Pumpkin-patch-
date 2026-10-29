@@ -11,6 +11,8 @@ export const HAYRIDE_SITE = Object.freeze({
   queueEntry: { x: -11.1, z: 25.2 }, speed: 3, laneWidth: 4.4,
   departurePortal: { x: -17, z: 12 }, returnPortal: { x: -17, z: 43 },
 });
+// Raised ground the track tunnels through (hayride-station.js): no wild trees grow in it.
+export const HAYRIDE_HILLS = Object.freeze([{ x0: -26.5, x1: -11, z0: 3, z1: 11 }, { x0: -26, x1: -11.5, z0: 44, z1: 49.5 }]);
 // The paid second wagon has its own parallel lane and rear boarding point.
 export const HAYRIDE_FLEET_BAY=Object.freeze({station:{x:-21,z:26.5,yaw:0},rearEntry:{x:-21,z:33.5},unload:{x:-22.7,z:35.6}});
 export const HAYRIDE_RIDE_BOUNDS = Object.freeze({ x0: -76, x1: -8, z0: -20, z1: 42 });
