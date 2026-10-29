@@ -114,7 +114,7 @@ Saves use their own key, `pumpkin-patch-voxel-reference-v1`, so trying this neve
   - **Finish:** amber keys for the thing to press, plum glass for everything else, and rows as soft tiles (`src/ui/polish.css`).
   - **Service menus:** Maisie's kitchen and Sandy's cocoa open on the owner and their status, with icon tabs, pill toggles for cooker and batch size, recipe tiles with a readiness badge, a food wall you fill with a tap, and price steppers.
   - **Furnishing catalogue:** Home › Furnish is a build-and-buy panel: search, a rail of modes (by kind, by room, yours), a row of kinds, a grid of tiles, the picked piece in a strip, and Owned only and Can afford toggles.
-- **Play mode:** controller-style buttons with keyboard, DualSense and Xbox glyphs. Hold the tools button (or Y, Triangle, Q or Tab) and steer with a stick or finger to pick from the wheel; let go to choose. Planting, watering and picking burst with particles, a float word, a chime and a little rumble, and a streak counter keeps count.
+- **Play mode:** controller-style buttons with keyboard, DualSense and Xbox glyphs. Hold the tools button (or Y, Triangle, Q or Tab) and steer with a stick or finger to pick from the wheel; let go to choose. Planting, watering and picking burst with particles, a float word, a chime and a little rumble, and a streak counter keeps count. Shane and Natalie read as one size whichever way they face, turn to face you when they stop, and stay inside the fences.
 
 ## Controls
 
