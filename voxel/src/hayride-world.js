@@ -4,6 +4,7 @@ import { lanternPost, gourd } from "./world.js";
 import { buildHayrideVehicle } from "./hayride-vehicle.js";
 import { createHayrideForest } from "./hayride-forest.js";
 import { buildHayrideStation, HAYRIDE_STATION_LAMP } from "./hayride-station.js";
+import { createSpider, poseSpider, createBrood, mount, buildSpiderCave } from "./hayride-spiders.js";
 import { HAYRIDE_PROPERTY, HAYRIDE_TIERS, HAYRIDE_SCARES } from "./content/hayride.js";
 import { HAYRIDE_SITE as SITE, HAYRIDE_FLEET_BAY, HAYRIDE_RIDE_BOUNDS, HAYRIDE_STOPS, HAYRIDE_GATE_CLEAR, hayrideRouteSample, hayrideRouteDistance, hayrideRouteProfile, HAYRIDE_ROUTE_LENGTH, hayrideSpan, hayrideConvoyPose, hayrideFarmConvoyPose, hayrideGuestPose } from "./content/hayride-layout.js";
 
@@ -36,10 +37,7 @@ function makeScenicSet(stop){
     for(let i=0;i<14;i++){const x=(r()-.5)*6,z=(r()-.5)*2;v.block(x,0,z,.04,.6+r()*.6,.04,0x78603b);pumpkin(v,x,.03,z,.45+r()*.22);}
     for(const x of [-2,0,2]){block(v,x,0,-.3,.16,2.7,.16,C.wood);block(v,x,1.7,-.3,1.5,.12,.12,C.wood);block(v,x,1.15,-.3,.7,.75,.4,0x5a3146);const head=new Voxels();pumpkin(head,0,0,0,.7);block(head,0,.75,0,1.0,.12,.7,C.dark);const actor=head.build();actor.position.set(x,2.15,-.3);group.add(actor);actors.push({id:"turning-scarecrows",object:actor,base:actor.position.clone()});}
   }else if(stop.id==="spiders"){
-    for(const x of [-2.6,2.6])for(let z=-2.5;z<2.5;z+=.5)for(let y=0;y<4.1;y+=.5)block(v,x,y,z,.7,.5,.5,vary(C.stone,.1,r));
-    for(let x=-2.7;x<2.8;x+=.5)for(let z=-2.5;z<2.6;z+=.5)block(v,x,4.1,z,.5,.5,.5,vary(C.stone,.12,r));
-    for(const side of [-1,1])for(let i=0;i<14;i++){block(v,side*(2.5-i*.035),2.9+i*.07,-2.5,.05,.06,.07,0xab9aad);block(v,side*(1.0+i*.11),4.0-i*.035,-2.5,.05,.06,.06,0xab9aad);}
-    const a=new Voxels();block(a,0,0,0,.7,.3,.8,0x3a2049);for(const side of [-1,1])for(let i=0;i<4;i++){block(a,side*(.5+i*.08),-.1,-.35+i*.23,.7,.07,.07,0x60426f);block(a,side*.23,.12,.43,.075,.075,.025,0xd79eff,true);}const spider=a.build();spider.position.set(1.4,3.55,.2);group.add(spider);actors.push({id:"spider-drop",object:spider,base:spider.position.clone()});
+    // The cave follows the lane, so buildRideLand builds it (hayride-spiders.js).
   }else if(stop.id==="bride"){
     manor(v);const a=new Voxels();for(let i=0;i<6;i++)block(a,0,i*.22,0,1.12-i*.105,.23,.75-i*.06,0xc7c2d2);block(a,0,1.32,0,.5,.55,.4,0xe2d5d5);block(a,0,1.83,0,.52,.36,.44,0xb4aaa6);block(a,0,1.88,-.14,.65,.65,.1,0xc8c3d3);for(const x of [-.13,.13])block(a,x,1.95,.23,.07,.04,.02,0x453646);const bride=a.build();bride.position.set(0,.28,1.0);group.add(bride);actors.push({id:"bride-procession",object:bride,base:bride.position.clone()});
   }else if(stop.id==="pursuit"){
@@ -53,7 +51,7 @@ function makeScenicSet(stop){
     for(const x of [-3.2,3.2]){for(let i=0;i<16;i++)block(v,x+Math.sin(i*.3)*.25,i*.4,-.5,.55-i*.017,.43,.5-i*.014,0x352e35);for(let i=0;i<9;i++)block(v,x+(x<0?1:-1)*i*.28,4.7+i*.13,-.5,.35,.25,.3,0x51414a);}
     for(let i=0;i<18;i++){block(v,-2.7+i*.31,4.7+Math.sin(i*.35)*.55,-.3,.07,.06,.06,0xa79dab);block(v,-2.2+i*.2,3.8+i*.07,-.3,.065,.06,.06,0x8c8392);}
     for(const x of [-2,0,2]){pumpkin(v,x,.05,1,.45);block(v,x,0,-.1,.13,2.3,.13,C.wood);block(v,x,1.55,-.1,1.4,.13,.13,C.wood);block(v,x,1.0,-.1,.65,.7,.36,0x4c354b);pumpkin(v,x,1.78,-.1,.65);}
-    const a=new Voxels();block(a,0,0,0,.65,.35,.8,0x312535);for(const side of [-1,1])for(let i=0;i<4;i++)block(a,side*.65,-.07,-.3+i*.2,.85,.06,.06,0x65506b);const spider=a.build();spider.position.set(.8,3.6,0);group.add(spider);actors.push({id:"route-thicket",object:spider,base:spider.position.clone()});
+    const web=new THREE.Object3D();web.position.set(.7,4.25,-.22);group.add(web);actors.push({id:"route-thicket",web});
   }else {bus(v);const a=new Voxels();corpse(a,0,0,0,0x71816a,0x564c3b);const zombie=a.build();zombie.position.set(2.0,0,1.65);group.add(zombie);actors.push({id:"bus-breakout",object:zombie,base:zombie.position.clone()});}
   group.add(v.build());return{group,actors};
 }
@@ -67,17 +65,37 @@ function dispose(group){group.traverse(m=>{if(m.isInstancedMesh)m.dispose();else
 // Lanterns on posts every 12.5 units of lane, on alternate sides, clear of the
 // sets and the station. The four nearest ahead light their stretch (createHayrideWorld).
 export const HAYRIDE_LANTERN_GAP=12.5;
+// The spider cave's brood: a giant on the vault over the lane, a dropper on a
+// thread, and smaller ones crawling the walls and floor among the cocoons.
+function broodFor(anchors,root,stop){
+  const rigs=[],place=(a,sp)=>{const m=mount(a.position,a.normal,a.forward);root.add(m);m.add(sp.root);return m;};
+  const giant=createSpider(1.25,{body:0x1d161f,leg:0x2a1f29,band:0x4d2f3e,mark:0xb8322a,eye:0xff3a2a});place(anchors.ceiling[0],giant);rigs.push({sp:giant,kind:"giant",at:stop.at});
+  anchors.walls.forEach((a,i)=>{const sp=createSpider(.42+(i%2)*.1,{eye:i%2?0xb6ff6a:0xff4a3a});place(a,sp);rigs.push({sp,kind:"crawl",at:stop.at,radius:.5+i*.1,speed:.5+i*.12,offset:i*1.7});});
+  anchors.floor.forEach((a,i)=>{const sp=createSpider(.5,{body:0x2b2026,band:0x6b4a3a});place(a,sp);rigs.push({sp,kind:"crawl",at:stop.at,radius:.7,speed:.35+i*.1,offset:i*2.3});});
+  // The dropper hangs head down from a silk line it pays out as the wagon nears.
+  const d=anchors.drop,hang=mount(d.position.clone().setY(d.top),new THREE.Vector3(0,-1,0),new THREE.Vector3(1,0,0));root.add(hang);
+  const sp=createSpider(.55,{body:0x30202c,band:0x8a3a5a,mark:0xd04a3a,eye:0xb6ff6a});sp.root.rotation.x=-Math.PI/2;const body=new THREE.Object3D();hang.add(body);body.add(sp.root);
+  const line={root:new THREE.Object3D(),shapes:[]};hang.add(line.root);const thread=new THREE.Object3D();thread.scale.set(.025,1,.025);line.root.add(thread);line.shapes.push({o:thread,colour:0xd8d2e0});
+  rigs.push({sp,kind:"drop",at:stop.at,id:"spider-drop",body,thread,top:d.top});rigs.push({sp:line,kind:"line"});
+  return rigs;
+}
 function buildRideLand(state){
   const profile=hayrideRouteProfile(state),routeLength=profile.length,routeSample=d=>hayrideRouteSample(d,profile.level);
   const land=chunkedVoxels(),r=seeded(8813),b=profile.bounds,root=new THREE.Group(),sets=[],lanterns=[];
   for(let x=b.x0;x<b.x1;x+=.5)for(let z=b.z0;z<b.z1;z+=.5){const lane=hayrideRouteDistance(x+.25,z+.25,profile.level)<SITE.laneWidth/2,c=lane?[0x514331,0x574734,0x4b3c2e][Math.floor(r()*3)]:[0x24291e,0x292b1d,0x22251d][Math.floor(r()*3)];land.at(x,z).box(x,-.45,z,.5,.49,.5,c);}
-  for(const stop of profile.stops){const frame=routeSample(stop.at*routeLength),set=makeScenicSet(stop),offset=stop.offset??(stop.id==="spiders"?0:stop.id==="bride"?6.1:stop.id==="bus"?5.4:4.1);set.group.position.set(frame.x+frame.dz*offset,0,frame.z-frame.dx*offset);set.group.rotation.y=frame.yaw+(stop.id==="spiders"?0:Math.PI/2);root.add(set.group);sets.push({...stop,...set});}
+  const rigs=[];
+  for(const stop of profile.stops){const frame=routeSample(stop.at*routeLength),set=makeScenicSet(stop),offset=stop.offset??(stop.id==="spiders"?0:stop.id==="bride"?6.1:stop.id==="bus"?5.4:4.1);set.group.position.set(frame.x+frame.dz*offset,0,frame.z-frame.dx*offset);set.group.rotation.y=frame.yaw+(stop.id==="spiders"?0:Math.PI/2);root.add(set.group);sets.push({...stop,...set});
+    if(stop.id==="spiders"){const cave=buildSpiderCave(land,routeSample,stop.at*routeLength);root.add(cave.silk);rigs.push(...broodFor(cave,root,stop));}
+    for(const actor of set.actors)if(actor.web){const m=new THREE.Object3D();actor.web.add(m);const sp=createSpider(.62,{body:0x2a2030,band:0x6a3d58,mark:0xc0392b});sp.root.rotation.x=Math.PI/2;m.add(sp.root);rigs.push({sp,kind:"web",at:stop.at,id:"route-thicket"});}}
   for(let along=10,side=1;along<routeLength-8;along+=HAYRIDE_LANTERN_GAP,side=-side){
     const p=routeSample(along),x=p.x+p.dz*3.05*side,z=p.z-p.dx*3.05*side;
     if(sets.some(set=>Math.hypot(set.group.position.x-x,set.group.position.z-z)<7)||(x>-23.5&&x<-8.5&&z>23&&z<39.5))continue;
     lanternPost(land.at(x,z),x,z,[],false);lanterns.push({x,y:2.2,z,along});
+    // Every third lantern has a spider working up and down its post.
+    if(lanterns.length%3===1){const toLane=new THREE.Vector3(p.x-x,0,p.z-z).normalize(),m=mount(new THREE.Vector3(x+toLane.x*.09,1.1,z+toLane.z*.09),toLane,new THREE.Vector3(0,1,0));root.add(m);const sp=createSpider(.26,{eye:0xff5a3a});m.add(sp.root);rigs.push({sp,kind:"post",at:along/routeLength,offset:along});}
   }
-  land.build(root);root.name="The Hollow Hayride off-map woodland";return{root,sets,lanterns};
+  const brood=createBrood(rigs.map(g=>g.sp));root.add(brood.group);
+  land.build(root);root.name="The Hollow Hayride off-map woodland";return{root,sets,lanterns,rigs,brood};
 }
 function makeVehicle(capacity){
   const vehicle=buildHayrideVehicle({capacity}),driver=new Voxels();block(driver,0,1.43,-.3,.55,.56,.36,0x4a354b);block(driver,0,2.0,-.36,.43,.4,.38,0x929b70);block(driver,0,2.4,-.36,.7,.08,.58,C.dark);block(driver,0,2.48,-.36,.44,.18,.4,C.dark);for(const x of [-.2,.2])block(driver,x,1.6,-.62,.15,.14,.42,0x4a354b);vehicle.tractor.add(driver.build());return vehicle;
@@ -140,8 +158,24 @@ export function createHayrideWorld({scene: farmScene,state,world,signBoard,creat
     if(preview===null)return;forest?.tick(time,{gentle});lightRide(time);scares?.tick({progress:preview,time,gentle,camera:previewCamera});
     const h=state.hayride,owned=new Set(h.haunts?.owned??[]),active=new Set((h.haunts?.active??[]).filter(id=>owned.has(id)&&HAYRIDE_SCARES.some(p=>p.id===id&&p.tier<=h.tier)));
     if((h.routeLevel??0)>0)active.add("route-graveyard");if((h.routeLevel??0)>1)active.add("route-thicket");
-    for(const set of land.sets)for(const actor of set.actors){actor.object.position.copy(actor.base);actor.object.rotation.y=0;actor.object.scale.setScalar(1);if(gentle||!active.has(actor.id))continue;const near=Math.abs(preview-set.at)<hayrideSpan(5.7,routeProfile.level),wave=near?(Math.sin(time*2)+1)/2:0;
-      if(actor.id==="turning-scarecrows")actor.object.rotation.y=wave*.55;else if(actor.id==="spider-drop")actor.object.position.y-=wave*1.2;else if(actor.id==="bride-procession")actor.object.position.z+=wave*1.1;else if(actor.id==="bus-breakout")actor.object.position.z+=wave*.8;else{actor.object.position.y+=Math.sin(time*1.5)*.16;actor.object.scale.setScalar(1+wave*.17);}}
+    for(const set of land.sets)for(const actor of set.actors){if(!actor.object)continue;actor.object.position.copy(actor.base);actor.object.rotation.y=0;actor.object.scale.setScalar(1);if(gentle||!active.has(actor.id))continue;const near=Math.abs(preview-set.at)<hayrideSpan(5.7,routeProfile.level),wave=near?(Math.sin(time*2)+1)/2:0;
+      if(actor.id==="turning-scarecrows")actor.object.rotation.y=wave*.55;else if(actor.id==="bride-procession")actor.object.position.z+=wave*1.1;else if(actor.id==="bus-breakout")actor.object.position.z+=wave*.8;else{actor.object.position.y+=Math.sin(time*1.5)*.16;actor.object.scale.setScalar(1+wave*.17);}}
+    animateSpiders(time,active);
+  }
+  // The spiders crawl all the time; near the wagon the giant rears with its fangs
+  // open and the dropper falls on its line, legs thrashing. Gentle mode stills them.
+  function animateSpiders(time,active){
+    if(!land?.rigs?.length)return;
+    for(const g of land.rigs){
+      if(g.kind==="line")continue;
+      const near=Math.abs(preview-g.at)<hayrideSpan(6.5,routeProfile.level),wave=near&&!gentle?(Math.sin(time*2.2)+1)/2:0,sp=g.sp;
+      if(g.kind==="post"){const k=gentle?0:Math.sin(time*.45+g.offset),dir=Math.cos(time*.45+g.offset);sp.root.position.set(0,0,k*.7);sp.root.rotation.y=dir<0?Math.PI:0;poseSpider(sp,time,{gait:gentle?0:.8});continue;}
+      if(g.kind==="crawl"){const a=gentle?g.offset:time*g.speed+g.offset;sp.root.position.set(Math.cos(a)*g.radius,0,Math.sin(a)*g.radius);sp.root.rotation.y=-a;poseSpider(sp,time,{gait:gentle?0:1});}
+      else if(g.kind==="giant")poseSpider(sp,time,{gait:0,rear:near&&!gentle?.35+wave*.55:0,fangs:near?.4+wave*.6:.15});
+      else if(g.kind==="web"){const on=active.has(g.id)&&near&&!gentle;poseSpider(sp,time,{gait:on?.6:0,rear:on?wave*.5:0,fangs:on?.3+wave*.6:.1});}
+      else if(g.kind==="drop"){const on=active.has(g.id)&&!gentle,fall=on&&near?Math.min(1,wave*1.4):0,len=.25+fall*1.35;g.body.position.y=len;g.thread.position.y=len/2;g.thread.scale.y=len;poseSpider(sp,time,{flail:on&&near?.5+wave*.5:0,fangs:fall});}
+    }
+    land.brood.sync();
   }
   sync();
   return{scene:rideScene,rideScene,root,sync,tick,focus:SITE.focus,setLightning(value){lightning.intensity=Math.max(0,Math.min(1,Number.isFinite(value)?value:0))*5;},setGentleMotion(value){gentle=value===null?!!reducedDefault:!!value;},get vehicle(){return vehicle;},get rideVehicle(){return rideVehicle;},get fleetVehicle(){return fleetVehicle;},setPreview(value){preview=value===null?null:Math.max(0,Math.min(1,value));if(preview!==null&&builtRoute!==(state.hayride?.routeLevel??0))rebuildRide();if(preview===null){previewCamera=null;lightning.intensity=0;encounterLamp.intensity=0;wagonLamp.intensity=setLamp.intensity=0;for(const light of lanternPool)light.intensity=0;}poseRide();},getPreviewFrame(progress){preview=Math.max(0,Math.min(1,progress));poseRide();if(!rideVehicle)return null;const position=new THREE.Vector3(...rideVehicle.cameraAnchor).applyMatrix4(rideVehicle.wagon.matrixWorld),target=new THREE.Vector3(0,rideVehicle.cameraAnchor[1],-8).applyMatrix4(rideVehicle.wagon.matrixWorld);previewCamera=position.clone();const nearest=land.sets.reduce((best,set)=>Math.abs(progress-set.at)<Math.abs(progress-best.at)?set:best,land.sets[0]),delta=Math.abs(progress-nearest.at)*routeProfile.length,focusWeight=delta<7.8?Math.max(0,1-(Math.max(0,delta-2.1)/5.7)**2):0;nearest.group.updateWorldMatrix(true,false);scares?.tick({progress:preview,time:previewTime,gentle,camera:previewCamera});const focusTarget=scares?.focusTarget?.(progress)??new THREE.Vector3(0,nearest.id==="scarecrows"?2.3:nearest.id==="spiders"?3.1:1.6,nearest.id==="spiders"?0:1).applyMatrix4(nearest.group.matrixWorld);encounterLamp.position.copy(focusTarget).add(new THREE.Vector3(0,2,1));encounterLamp.color.setHex(SET_LIGHT[nearest.id]??0xbba4ee);encounterLamp.intensity=focusWeight*(gentle?4:7);return{position,target,yaw:rideVehicle.wagon.rotation.y,focusTarget,focusWeight};},guestPose:v=>hayrideGuestPose(state,v),get pickables(){return state.hayride?.purchased?[hit,...(fleet===1?[fleetHit]:[]),station?.sign].filter(Boolean):[marker];},get status(){return{purchased:!!state.hayride?.purchased,tier,phase:state.hayride?.convoy?.phase??"loading",queue:(state.visitors??[]).filter(v=>v.hayride&&!v.hayride.done&&v.hayride.phase==="queue").length,aboard:(state.hayride?.convoy?.manifest?.length??0)+(state.hayride?.secondConvoy?.manifest?.length??0),fleet:state.hayride?.fleet===1?2:1,vehicles:[vehicle,fleetVehicle].filter(Boolean).map((v,berth)=>({berth,visible:v.group.visible,x:v.tractor.position.x,z:v.tractor.position.z,phase:(berth?state.hayride.secondConvoy:state.hayride.convoy)?.phase})),bounds:SITE.bounds,farmBounds:SITE.bounds,rideBounds:hayrideRouteProfile(state).bounds,routeLevel:state.hayride?.routeLevel??0,routeLength:hayrideRouteProfile(state).length,scenes:hayrideRouteProfile(state).stops.map(p=>p.id),farmVisible:vehicle?.group.visible??false,rideScene:true,forest:forest?.diagnostics??null,lanterns:land?.lanterns.length??0,cleared,preview};},dispose(){vehicle?.dispose();fleetVehicle?.dispose();rideVehicle?.dispose();if(station)dispose(station.root);if(land)dispose(land.root);forest?.dispose();scares?.dispose();root.removeFromParent();stationLamp.removeFromParent();convoyLamp.removeFromParent();dispose(marker);hit.geometry.dispose();hit.material.dispose();fleetHit.geometry.dispose();fleetHit.material.dispose();rideScene.clear();}};
