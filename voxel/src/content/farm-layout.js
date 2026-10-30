@@ -14,6 +14,10 @@ export const GATE_Z = 30 + DROP, LANE_BEND_Z = 28.5 + DROP;
 // The hedge arch in the back fence: the way home to Shane and Natalie's garden.
 export const HEDGE_ARCH = Object.freeze({ x: 20, z: 3 });
 export const farmPathEnd = s => [30, 34, 39][farmExpansionTier(s)] + DROP;
+// The guests' path from the lane's gate up to Skyla's counter, and from the
+// counter out to the road (world.js lays them; rules/cleanliness.js walks them).
+export const ROUTE_IN = [[33, 28.5], [33, 24], [32.4, 21.6], [30.4, 18.6], [30.2, 15.6], [31.6, 12.6]].map(([x, z]) => [x, z + DROP]).concat([[31.8, 10.2]]);
+export const ROUTE_OUT = [[31.8, 10.2], [31.6, 12.6], [35, 10.6], [38, 8.6], [42.5, 6.6]];
 // Only the outer leg moves; counter positions and established path bends stay put.
 export const extendFarmRoute = (route, s) => {
   const offset = farmPathEnd(s) - GATE_Z;

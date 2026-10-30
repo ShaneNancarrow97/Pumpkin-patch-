@@ -10,8 +10,8 @@ export const UPGRADE_SECTIONS = [
   ["cocoa", "Sandy’s cocoa", "talk", "Sandy’s stand and the meadow"],
   ["cooking", "Maisie’s kitchen", "shop", "Food truck, pantry, recipes and food shelves"],
   ["stall", "Stock", "stock", "The stall, stock and the market cart"],
-  ["homelife", "Home & care", "home", "Home goals, hands-on play and the janitor"],
-  ["visitors", "Visitors & VIPs", "visitors", "Crowds, spending, harvest rushes & the midnight court"],
+  ["homelife", "Home & care", "home", "Home goals and hands-on play"],
+  ["visitors", "Visitors & VIPs", "visitors", "Crowds, caretakers, spending, harvest rushes & the midnight court"],
 ];
 export function createUpgradeMenu({ button, choose }) {
   const menu = document.createElement("div"); menu.className = "upgrade-menu"; menu.id = "upgrade-menu"; menu.hidden = true;

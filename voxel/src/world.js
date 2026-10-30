@@ -4,7 +4,7 @@ import { hollowPathDistance } from "./content/hollow-house.js";
 import { pumpkinBlock } from "./pumpkins.js";
 import { buildGround, grounds } from "./ground.js";
 import { Face } from "./face.js";
-import { PLOT_POSITIONS, inFarmPatch, DROP, GATE_Z, patchShape, HEDGE_ARCH } from "./content/farm-layout.js";
+import { PLOT_POSITIONS, inFarmPatch, DROP, GATE_Z, patchShape, HEDGE_ARCH, ROUTE_IN, ROUTE_OUT } from "./content/farm-layout.js";
 
 // World units: 1 = one ground tile. x runs west to east (0-40), z north to
 // south (0-29, the camera sits to the south), y is up. Everything from the
@@ -31,8 +31,7 @@ export const SHOP = { x: 32, z: 5.6, counterZ: 8.6 };
 export const HOMES = { natalie: { x: 13.2, z: 13.6 + DROP }, shane: { x: 27, z: 13.6 + DROP } };
 // Visitors walk in from the south edge, up the path to the fork, along the
 // spur to Skyla's counter, then back to the fork and out to the north-east.
-export const ROUTE_IN = [[33, 28.5], [33, 24], [32.4, 21.6], [30.4, 18.6], [30.2, 15.6], [31.6, 12.6]].map(([x, z]) => [x, z + DROP]).concat([[31.8, 10.2]]);
-export const ROUTE_OUT = [[31.8, 10.2], [31.6, 12.6], [35, 10.6], [38, 8.6], [42.5, 6.6]];
+export { ROUTE_IN, ROUTE_OUT };
 const PATH = [[33, 27 + DROP], ...ROUTE_IN.slice(1, 6), [31.7, 11.4], [35, 10.6], [38, 8.6], [41, 7]];
 
 export const COL = {

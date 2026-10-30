@@ -56,7 +56,7 @@ export const MEMORIES = [
   { id: "cocoa", icon: "cup", title: "Something warm", text: "Build Sandy’s cocoa stand.", memory: "The first mug went to a very cold ghost.", met: (s) => (s.festival?.cocoa?.level ?? 0) > 0 },
   { id: "kitchen", icon: "chef", title: "The midnight kitchen", text: "Buy Maisie’s food truck.", memory: "Maisie named the hob before she lit it.", met: (s) => !!s.kitchen?.purchased },
   { id: "hayride", icon: "ride", title: "Into the woods", text: "Open the Hollow Hayride.", memory: "Somewhere out there, something screamed back.", met: (s) => !!s.hayride?.purchased },
-  { id: "tidy", icon: "broom", title: "A helping broom", text: "Hire Hettie the caretaker.", memory: "She hums while she sweeps. Nobody knows the tune.", met: (s) => !!s.cleanliness?.janitor },
+  { id: "tidy", icon: "broom", title: "A helping broom", text: "Hire Hettie the caretaker.", memory: "She hums while she sweeps. Nobody knows the tune.", met: (s) => (s.visitorUpgrades?.janitor ?? 0) > 0 },
   { id: "court", icon: "court", title: "Their royal frights", text: "Welcome the midnight court.", memory: "The Countess tipped in coins older than the farm.", met: (s) => (s.visitorEvents?.ledger?.vipGroups ?? 0) > 0 },
   { id: "storyteller", icon: "book", title: "A house full of stories", text: "Shelve 20 books.", memory: "Every room has a story now. Some tell themselves.", met: (s) => shelvedBooks(s) >= 20 },
   { id: "dressed", icon: "outfit", title: "Dressed for every fright", text: "Collect every costume.", memory: "Natalie’s favourite is the one she’s wearing.", met: (s) => costumeCatalog.every((c) => s.wardrobe?.owned?.includes(c.id)) },

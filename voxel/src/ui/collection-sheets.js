@@ -71,7 +71,6 @@ export function collectionSheets(ui) {
     if (M.COOKING.level === level) out.push("Maisie’s Midnight Kitchen");
     M.KITCHEN_UPGRADES.forEach((u) => { if (u.level === level && u.level > M.COOKING.level) out.push(u.name); });
     M.VISITOR_EVENT_UPGRADES.forEach((u) => { if (u.level === level) out.push(u.name); });
-    if (M.CLEANLINESS.janitorLevel === level) out.push("Hettie the caretaker");
     return out;
   }
   function levels(s) {

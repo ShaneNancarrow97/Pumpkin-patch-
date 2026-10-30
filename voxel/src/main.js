@@ -312,9 +312,9 @@ let litterHinted = false;
 function litterHint() {
   if (litterHinted || state.paused || openTab || intro.active) return;
   const c = M.cleanlinessStatus(state);
-  if (c.janitor || c.penalty < 5) return;
+  if (c.janitors >= M.CLEANLINESS.janitors || c.penalty < 5) return;
   litterHinted = true;
-  notice(M.patchLevel(state).level >= c.hireLevel ? `Litter is putting guests off. Hettie the caretaker sweeps for £${c.hireCost}: More, then Home & hands-on play.` : "Litter is putting guests off. Pick it up in Play, or hire Hettie from level " + c.hireLevel + ".");
+  notice(c.janitor ? "Litter is putting guests off. Hettie’s twin Hattie can help: Manage, then Visitors & VIPs." : "Litter is putting guests off. Hire Hettie the caretaker in Manage, then Visitors & VIPs, or pick it up in Play.");
 }
 function notice(text) {
   $("notice").textContent = text; $("notice").classList.add("show");
@@ -574,6 +574,7 @@ const ui = {
   get playControls(){return playControls;}, followHomeGoal, homeTab:t=>sheets.home.setTab(t),
   notice, say, tone: (f) => audio.tone(f),
   draw: () => draw(), openSheet: (tab) => openSheet(tab), closeSheet: () => closeSheet(),
+  openVisitors: () => { sheets.shop.setTab("visitors"); openSheet("shop"); },
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
   portrait: (id) => scene.portrait(id),
   intro,

@@ -6,10 +6,13 @@ import * as M from "../model.js";
 import { customerCareUpgrades, customerCareSummary, bindCustomerCareUpgrades } from "./customer-care-sheet.js";
 import { festivalMeadowSheet } from "./festival-meadow-sheet.js";
 import { money, segmented, plural } from "./kit.js";
+import hettieArt from "../../assets/hettie-janitor-icon.webp";
+import hattieArt from "../../assets/hattie-janitor-icon.webp";
 
 // Each upgrade's own icon from the main game.
 const ICONS = { storage: "stock", crowd: "visitors", tools: "tools", yield: "yield", auto: "auto", plots: "plots", sign: "sign", open: "shop", capacity: "visitors", displays: "stock", checkout: "coins", party: "visitors", lights: "boost", cocoa: "talk", loyalty: "coins" };
-const icon = (id) => `<span class="thumb"><span class="ico i-${ICONS[id]}"></span></span>`;
+// The caretakers' card shows the next one to hire: Hettie, then her twin.
+const icon = (id, s) => id === "janitor" ? `<span class="thumb"><img src="${M.visitorUpgradeLevel(s, "janitor") ? hattieArt : hettieArt}" alt=""></span>` : `<span class="thumb"><span class="ico i-${ICONS[id]}"></span></span>`;
 const SHOP_LEVELS = { capacity: "capacityLevel", displays: "displayLevel", checkout: "checkoutLevel" };
 const SHOP_MAX = { capacity: 3, displays: 1, checkout: 2 };
 
@@ -27,6 +30,7 @@ const EFFECTS = {
   party: (s) => (M.partyMax(s) > 1 ? `parties of up to ${M.partyMax(s)}` : "everyone comes on their own"),
   cocoa: (s) => `they wait ${secs(M.stallPatience(s))} for stock${s.festival.cocoa.level ? `, cocoa service ${secs(M.cocoaServiceSeconds(s))}` : ""}`,
   loyalty: (s) => ["no regulars yet", "one in four is a regular", "one in two is a regular"][M.visitorUpgradeLevel(s, "loyalty")],
+  janitor: (s) => { const c = M.cleanlinessStatus(s); return `${["no caretaker; litter stays where it’s dropped", "Hettie sweeps the whole farm", "Hettie and Hattie share the sweeping"][c.janitors]} (${plural(c.count, "piece")} of litter, footfall ${Math.round(c.footfall * 100)}%)`; },
 };
 // The market cart now and at its next tier, in plain numbers.
 const cartLine = (s) => {
@@ -52,6 +56,7 @@ const VISITOR_TALK = {
   lights: { 1: ["natalie", "Fairy lights all the way down the path. I told you it would look magical."], 3: ["shane", "You can see our path from the castle now. The bats have started complaining."], 8: ["natalie", "Every lantern in the village is on our path now. The bats have filed a formal complaint."] },
   cocoa: { 1: ["shane", "A little warmth and a little patience. Sandy says that’s the secret to happy customers."], 3: ["natalie", "Marshmallows, cinnamon and a pinch of moonlight. Nobody’s in a hurry to leave."] },
   loyalty: { 1: ["shane", "My loyalty card, at last. Buy nine pumpkins, receive a slightly larger pumpkin. Genius."], 2: ["natalie", "Half the village has a loyalty card now. The other half is thinking about it."] },
+  janitor: { 1: ["natalie", "Hettie’s here with her broom. She says she used to sweep the graveyard, and nobody there complained."], 2: ["shane", "Hettie brought her twin, Hattie. I still can’t tell which one I’m thanking."] },
 };
 
 // A tier that opens at a later patch level (rules/unlocks.js): its level, or 0 when open.
@@ -162,7 +167,7 @@ export function farmSheets(ui) {
     const hayride = M.hayrideFootfallBonus?.(s) ?? 0, meadow = M.meadowFootfallBonus?.(s) ?? 0, total = M.attractionFootfallBonus?.(s) ?? maze;
     const attraction = maze || hayride || meadow ? `<p class="commerce-inline-note">Attractions bring +${Math.round(total * 100)}% footfall${maze ? ` · Hollow House +${Math.round(maze * 100)}%` : ""}${hayride ? ` · Hayride +${Math.round(hayride * 100)}%` : ""}${meadow ? ` · the meadow’s comforts +${Math.round(meadow * 100)}%` : ""}. Combined appeal is capped at 75%${maze ? "; frightened guests may leave early" : ""}.</p>` : "";
     const streak = `<p class="small streak-note">Quick picking builds a streak, and a streak gets talked about: visitors come 10% more often for each pick up to ×6, then 5% more a pick, to +${Math.round(M.STREAK.cap * 100)}%. It fades over ${M.STREAK.fade}s once you stop. Helping hands don’t count; they’re not showing off.</p>`;
-    const selectedIds=visitorSection==="arrivals"?["sign","lights","party","crowd"]:["appetite","cocoa","loyalty"];
+    const selectedIds=visitorSection==="arrivals"?["sign","lights","party","crowd","janitor"]:["appetite","cocoa","loyalty"];
     const cards = selectedIds.map((id) => {
       const sign = id === "sign", u = sign ? M.UPGRADES.find((x) => x.id === id) : M.VISITOR_UPGRADES.find((x) => x.id === id);
       const level = M.visitorUpgradeLevel(s, id), most = sign ? u.max : u.costs.length, done = level >= most;
@@ -170,7 +175,7 @@ export function farmSheets(ui) {
       const at = done || !open ? 0 : opensAt(s, sign ? "farm" : "visitor", id, level);
       const effect = (open ? effectLine(s, id, done) : u.needs.text) + (at ? ` The next tier opens at patch level ${at}.` : "");
       const button = !open ? `<button class="button" disabled>Locked</button>` : at ? levelButton(at) : priceButton(sign ? "buy" : "visitup", id, price, s.coins, done && "Done");
-      return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id)}<div><h3>${id === "cocoa" ? "Cocoa hospitality" : u.name}</h3><p>${id === "cocoa" ? "Longer pumpkin patience; quicker service at Sandy’s stand." : u.text}</p><p class="effect">${effect}</p>${tiers(level, most)}</div>${button}</article>`;
+      return `<article class="card${done ? " done" : ""}${open ? "" : " waiting"}">${icon(id, s)}<div><h3>${id === "cocoa" ? "Cocoa hospitality" : u.name}</h3><p>${id === "cocoa" ? "Longer pumpkin patience; quicker service at Sandy’s stand." : u.text}</p><p class="effect">${effect}</p>${tiers(level, most)}</div>${button}</article>`;
     }).join("");
     const occasions=M.VISITOR_EVENT_UPGRADES.map(u=>{const e=s.visitorEvents[u.id],price=M.visitorEventUpgradeCost(s,u.id),locked=M.patchLevel(s).level<u.level;return `<article class="card">${hospitalityIcon(u.id)}<div><h3>${u.name}</h3><p>${u.text}</p><p class="small">${e.level?`Next in ${Math.ceil(e.remaining/60)} min · ${e.enabled?'Enabled':'Paused'}`:`Available at level ${u.level}`}</p></div>${e.level?`<button class="button" data-occasion-toggle="${u.id}">${e.enabled?'Pause':'Enable'}</button>`:`<button class="button gold" data-occasion="${u.id}" ${locked||s.coins<price||s.paused?'disabled':''}>${locked?`Level ${u.level}`:money(price)}</button>`}</article>`}).join('');
     const summary=serviceMetrics([[Math.round(M.visitorsPerMinute(s)*10)/10,'per minute'],[max,'max party'],[`${M.onThePath(s)}/${M.visitorCapacity(s)}`,'on the path']]);

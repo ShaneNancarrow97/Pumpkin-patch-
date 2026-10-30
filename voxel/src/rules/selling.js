@@ -59,8 +59,10 @@ export const VISITOR_UPGRADES = [
   { id: "lights", name: "Fairy lights down the path", text: "A string of lights by the gate, then lanterns all the way down. Parties set off for the stall more often.", costs: [150, 600, 2400, 9000], needs: { id: "sign", text: "Opens after Spread the word." } },
   { id: "cocoa", name: "Cocoa hospitality", text: "A warmer welcome: neighbours wait longer for pumpkins and Sandy serves cocoa more quickly.", costs: [250, 700, 1400], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "loyalty", name: "A loyalty card", text: "Buy nine pumpkins, get a slightly larger pumpkin. Regulars take one more home, at the stall and in the shop.", costs: [6000, 12000], needs: { id: "open", text: "Opens with the shop." } },
+  // Caretakers sweep up the litter guests drop anywhere on the farm (rules/cleanliness.js): Hettie, then her twin.
+  { id: "janitor", name: "A caretaker", text: "Hettie sweeps up the litter guests drop wherever they wander, from the lane to the meadow; her twin Hattie can join her.", costs: [450, 1800], needs: { id: "litter", text: "Opens once a guest drops the first litter." } },
 ];
-export const freshVisitorUpgrades = () => ({ party: 0, lights: 0, cocoa: 0, loyalty: 0, crowd: 0, appetite: 0 });
+export const freshVisitorUpgrades = () => ({ party: 0, lights: 0, cocoa: 0, loyalty: 0, crowd: 0, appetite: 0, janitor: 0 });
 // Fairy lights do most at first; old saves' four tiers are never slower than before.
 export const LIGHTS = [0.85, 0.87, 0.89, 0.92], PATIENCE = [6, 12, 20, 30], MUG = [0, 2, 4, 7];
 // However hot the streak, parties set off at least this far apart and shoppers
@@ -139,11 +141,12 @@ const basketFor = (s, id, p) => {
 // Neighbours a minute on the path, with the streak's boost: the Visitors tab's headline number.
 export const visitorsPerMinute = (s) => (60 / stallGapSeconds(s)) * (partyMax(s) + 1) / 2;
 
-const visitorLevel = (s, id) => (id === "open" ? Number(s.shop.unlocked) : lv(s, id));
+// "litter": once a guest has dropped the first piece.
+const visitorLevel = (s, id) => (id === "open" ? Number(s.shop.unlocked) : id === "litter" ? Number((s.cleanliness?.nextId ?? 0) > 0) : lv(s, id));
 export const visitorUpgradeLevel = lv;
 export const visitorUpgradeUnlocked = (s, id) => {
   const u = VISITOR_UPGRADES.find((x) => x.id === id);
-  return !!u && (!u.needs || visitorLevel(s, u.needs.id) > 0);
+  return !!u && (!u.needs || visitorLevel(s, u.needs.id) > 0 || lv(s, id) > 0);
 };
 export const visitorUpgradeCost = (s, id) => VISITOR_UPGRADES.find((x) => x.id === id)?.costs[lv(s, id)];
 
