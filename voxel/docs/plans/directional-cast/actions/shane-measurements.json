@@ -1,0 +1,248 @@
+[
+  {
+    "index": 0,
+    "action": "plant",
+    "sourceBounds": [
+      120,
+      13,
+      294,
+      391
+    ],
+    "sharedScale": 0.8533333333333334,
+    "bodyHeight": 319,
+    "sourceFoot": {
+      "x": 203.0,
+      "y": 389
+    },
+    "socket": null,
+    "rgbaSha256": "9bf47d2b28d465b718716b00755359644db117ec4b59de770fd8e1a47fe413a1"
+  },
+  {
+    "index": 1,
+    "action": "plant",
+    "sourceBounds": [
+      434,
+      45,
+      597,
+      385
+    ],
+    "sharedScale": 0.8533333333333334,
+    "bodyHeight": 286,
+    "sourceFoot": {
+      "x": 516.0,
+      "y": 383
+    },
+    "socket": null,
+    "rgbaSha256": "612d336b2014d0fcf8b3374856039183ade420979ca7103fdf775da0e7c8da83"
+  },
+  {
+    "index": 2,
+    "action": "plant",
+    "sourceBounds": [
+      731,
+      106,
+      916,
+      384
+    ],
+    "sharedScale": 0.8533333333333334,
+    "bodyHeight": 233,
+    "sourceFoot": {
+      "x": 825.0,
+      "y": 382
+    },
+    "socket": null,
+    "rgbaSha256": "3c51b0e6b8debc7d0bf75ba5edb83276faa303ef7e9b7936967d7af70cdf59b3"
+  },
+  {
+    "index": 3,
+    "action": "plant",
+    "sourceBounds": [
+      117,
+      537,
+      304,
+      773
+    ],
+    "sharedScale": 0.8533333333333334,
+    "bodyHeight": 198,
+    "sourceFoot": {
+      "x": 209.5,
+      "y": 763
+    },
+    "socket": null,
+    "rgbaSha256": "b3989bf233f71ed05e0fc3d9e1df2aa0034f67439055a3738222418fbdcf5347"
+  },
+  {
+    "index": 4,
+    "action": "plant",
+    "sourceBounds": [
+      429,
+      409,
+      597,
+      764
+    ],
+    "sharedScale": 0.8533333333333334,
+    "bodyHeight": 300,
+    "sourceFoot": {
+      "x": 517.0,
+      "y": 762
+    },
+    "socket": null,
+    "rgbaSha256": "1e46ce67d48e8d29992fef88804f0b30ac7330b50733ee8c1742815f250449f5"
+  },
+  {
+    "index": 5,
+    "action": "plant",
+    "sourceBounds": [
+      744,
+      392,
+      918,
+      768
+    ],
+    "sharedScale": 0.8533333333333334,
+    "bodyHeight": 318,
+    "sourceFoot": {
+      "x": 827.0,
+      "y": 766
+    },
+    "socket": null,
+    "rgbaSha256": "aea7e9ead265eac3c402a48380ce9caffa24e996aaf113f4ea041c2c70f556f7"
+  },
+  {
+    "index": 6,
+    "action": "water",
+    "sourceBounds": [
+      155,
+      776,
+      264,
+      1138
+    ],
+    "sharedScale": 0.8951048951048951,
+    "bodyHeight": 322,
+    "sourceFoot": {
+      "x": 207.0,
+      "y": 1136
+    },
+    "socket": {
+      "hand": {
+        "x": 130.23,
+        "y": 273.87
+      }
+    },
+    "rgbaSha256": "d15818b70782fa4bd883dd076f5c630b76c7c8f841f4bd56f2deb651201fe310"
+  },
+  {
+    "index": 7,
+    "action": "water",
+    "sourceBounds": [
+      452,
+      780,
+      618,
+      1139
+    ],
+    "sharedScale": 0.8951048951048951,
+    "bodyHeight": 317,
+    "sourceFoot": {
+      "x": 506.0,
+      "y": 1137
+    },
+    "socket": {
+      "hand": {
+        "x": 195.47,
+        "y": 235.59
+      }
+    },
+    "rgbaSha256": "5ac6a7611363cbf3ad55caccf391901bbee86454cf8bac04f5e1a6a583658756"
+  },
+  {
+    "index": 8,
+    "action": "water",
+    "sourceBounds": [
+      762,
+      780,
+      935,
+      1139
+    ],
+    "sharedScale": 0.8951048951048951,
+    "bodyHeight": 318,
+    "sourceFoot": {
+      "x": 816.0,
+      "y": 1137
+    },
+    "socket": {
+      "hand": {
+        "x": 204.42,
+        "y": 234.7
+      }
+    },
+    "rgbaSha256": "45b19ba0f289b6a27e6c6f610ed4c450716f311a797158cd2117114edc2424c1"
+  },
+  {
+    "index": 9,
+    "action": "water",
+    "sourceBounds": [
+      135,
+      1152,
+      310,
+      1505
+    ],
+    "sharedScale": 0.8951048951048951,
+    "bodyHeight": 313,
+    "sourceFoot": {
+      "x": 189.5,
+      "y": 1503
+    },
+    "socket": {
+      "hand": {
+        "x": 207.0,
+        "y": 238.91
+      }
+    },
+    "rgbaSha256": "44839f8e3c58f2db22de6f0169cc08ff042e17cbd2496298b711f6285c947614"
+  },
+  {
+    "index": 10,
+    "action": "water",
+    "sourceBounds": [
+      451,
+      1149,
+      617,
+      1505
+    ],
+    "sharedScale": 0.8951048951048951,
+    "bodyHeight": 316,
+    "sourceFoot": {
+      "x": 506.0,
+      "y": 1503
+    },
+    "socket": {
+      "hand": {
+        "x": 196.26,
+        "y": 218.9
+      }
+    },
+    "rgbaSha256": "76b6d3dd11b983e91d98a6325ede0faa5fd42acc22d77ec636b868fe0979b88e"
+  },
+  {
+    "index": 11,
+    "action": "water",
+    "sourceBounds": [
+      772,
+      1149,
+      883,
+      1506
+    ],
+    "sharedScale": 0.8951048951048951,
+    "bodyHeight": 316,
+    "sourceFoot": {
+      "x": 827.5,
+      "y": 1504
+    },
+    "socket": {
+      "hand": {
+        "x": 127.23,
+        "y": 269.82
+      }
+    },
+    "rgbaSha256": "b833e06971eda0d8662fe835c210d40dec76ac23a01e9e4e608a3233755a58dd"
+  }
+]

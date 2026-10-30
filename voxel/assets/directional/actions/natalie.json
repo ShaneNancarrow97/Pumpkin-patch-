@@ -1,0 +1,167 @@
+{
+  "owner": "natalie",
+  "look": "natalie-base",
+  "rows": 300,
+  "worldHeight": 2.3,
+  "pages": {
+    "natalie-actions": {
+      "file": "natalie-actions.webp",
+      "width": 768,
+      "height": 1600,
+      "bytes": 195464
+    }
+  },
+  "actions": {
+    "plant": {
+      "0": {
+        "page": "natalie-actions",
+        "frames": [
+          {
+            "x": 0,
+            "y": 0,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390
+          },
+          {
+            "x": 256,
+            "y": 0,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390
+          },
+          {
+            "x": 512,
+            "y": 0,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390
+          },
+          {
+            "x": 0,
+            "y": 400,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390
+          },
+          {
+            "x": 256,
+            "y": 400,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390
+          },
+          {
+            "x": 512,
+            "y": 400,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390
+          }
+        ]
+      }
+    },
+    "water": {
+      "90": {
+        "page": "natalie-actions",
+        "frames": [
+          {
+            "x": 0,
+            "y": 800,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390,
+            "sockets": {
+              "hand": {
+                "x": 117.1,
+                "y": 283.4
+              }
+            }
+          },
+          {
+            "x": 256,
+            "y": 800,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390,
+            "sockets": {
+              "hand": {
+                "x": 196.33,
+                "y": 238.97
+              }
+            }
+          },
+          {
+            "x": 512,
+            "y": 800,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390,
+            "sockets": {
+              "hand": {
+                "x": 210.81,
+                "y": 234.81
+              }
+            }
+          },
+          {
+            "x": 0,
+            "y": 1200,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390,
+            "sockets": {
+              "hand": {
+                "x": 207.32,
+                "y": 249.78
+              }
+            }
+          },
+          {
+            "x": 256,
+            "y": 1200,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390,
+            "sockets": {
+              "hand": {
+                "x": 189.84,
+                "y": 232.97
+              }
+            }
+          },
+          {
+            "x": 512,
+            "y": 1200,
+            "w": 256,
+            "h": 400,
+            "ax": 128,
+            "ay": 390,
+            "sockets": {
+              "hand": {
+                "x": 104.45,
+                "y": 271.91
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "coverage": "Base costume only: front plant six poses and right-profile water six poses. Other angles/actions are not supplied.",
+  "scales": {
+    "plant": 0.7926023778071334,
+    "water": 0.8321775312066574
+  }
+}
