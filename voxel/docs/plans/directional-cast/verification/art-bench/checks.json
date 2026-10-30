@@ -1,0 +1,3554 @@
+{
+  "html": "Pumpkin-Patch-Directional-Art-Review.html",
+  "sha256": "9815079452c219b25a3ec1cc4b59c66479800226a0086ddff9ba66f066b33422",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "both owner looks are present in the actual offline bench",
+      "details": {
+        "looks": [
+          "shane-base",
+          "natalie-base"
+        ],
+        "owners": [
+          "shane",
+          "natalie"
+        ],
+        "pageCount": 16
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: all24 neutral bearings have authored clips",
+      "details": {
+        "count": 24
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 0°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 0°",
+      "details": {
+        "alpha": 102847,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 15°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 15°",
+      "details": {
+        "alpha": 94621,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 30°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 30°",
+      "details": {
+        "alpha": 90116,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 45°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 45°",
+      "details": {
+        "alpha": 89167,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 60°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 60°",
+      "details": {
+        "alpha": 85055,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 75°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 75°",
+      "details": {
+        "alpha": 77513,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 90°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 90°",
+      "details": {
+        "alpha": 76893,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 105°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 105°",
+      "details": {
+        "alpha": 82052,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 120°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 120°",
+      "details": {
+        "alpha": 93674,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 135°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 135°",
+      "details": {
+        "alpha": 98107,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 150°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 150°",
+      "details": {
+        "alpha": 101839,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 165°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 165°",
+      "details": {
+        "alpha": 105805,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 180°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 180°",
+      "details": {
+        "alpha": 105125,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 195°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 195°",
+      "details": {
+        "alpha": 105354,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 210°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 210°",
+      "details": {
+        "alpha": 101315,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 225°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 225°",
+      "details": {
+        "alpha": 98343,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 240°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 240°",
+      "details": {
+        "alpha": 90645,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 255°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 255°",
+      "details": {
+        "alpha": 80155,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 270°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 270°",
+      "details": {
+        "alpha": 85506,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 285°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 285°",
+      "details": {
+        "alpha": 96603,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 300°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 300°",
+      "details": {
+        "alpha": 99015,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 315°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 315°",
+      "details": {
+        "alpha": 99016,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 330°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 330°",
+      "details": {
+        "alpha": 102819,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: exact nominal idle 345°"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: visible decoded idle pixels 345°",
+      "details": {
+        "alpha": 105777,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: at least one authored walking bearing exists"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 0° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 0° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 0° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 0° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 0° phase 4 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 0° phase 5 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 0° phase 6 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 0° phase 7 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 0° has distinct rendered frames",
+      "details": {
+        "distinct": 8,
+        "frames": 8,
+        "phases": [
+          "contact-left",
+          "down-left",
+          "passing-left",
+          "up-left",
+          "contact-right",
+          "down-right",
+          "passing-right",
+          "up-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: declared walking phase count is honest",
+      "details": {
+        "mode": "animation",
+        "frames": 8
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 45° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 45° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 45° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 45° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 45° has distinct rendered frames",
+      "details": {
+        "distinct": 4,
+        "frames": 4,
+        "phases": [
+          "contact-left",
+          "passing-left",
+          "contact-right",
+          "passing-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: declared walking phase count is honest",
+      "details": {
+        "mode": "reduced",
+        "frames": 4
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 90° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 90° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 90° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 90° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 90° phase 4 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 90° phase 5 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 90° phase 6 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 90° phase 7 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 90° has distinct rendered frames",
+      "details": {
+        "distinct": 8,
+        "frames": 8,
+        "phases": [
+          "contact-left",
+          "down-left",
+          "passing-left",
+          "up-left",
+          "contact-right",
+          "down-right",
+          "passing-right",
+          "up-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: declared walking phase count is honest",
+      "details": {
+        "mode": "animation",
+        "frames": 8
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 180° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 180° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 180° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 180° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 180° phase 4 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 180° phase 5 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 180° phase 6 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 180° phase 7 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 180° has distinct rendered frames",
+      "details": {
+        "distinct": 8,
+        "frames": 8,
+        "phases": [
+          "contact-left",
+          "down-left",
+          "passing-left",
+          "up-left",
+          "contact-right",
+          "down-right",
+          "passing-right",
+          "up-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: declared walking phase count is honest",
+      "details": {
+        "mode": "animation",
+        "frames": 8
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 270° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 270° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 270° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 270° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 270° has distinct rendered frames",
+      "details": {
+        "distinct": 4,
+        "frames": 4,
+        "phases": [
+          "contact-left",
+          "passing-left",
+          "contact-right",
+          "passing-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: declared walking phase count is honest",
+      "details": {
+        "mode": "reduced",
+        "frames": 4
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 315° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 315° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 315° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 315° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: walk 315° has distinct rendered frames",
+      "details": {
+        "distinct": 4,
+        "frames": 4,
+        "phases": [
+          "contact-left",
+          "passing-left",
+          "contact-right",
+          "passing-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: declared walking phase count is honest",
+      "details": {
+        "mode": "reduced",
+        "frames": 4
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: plant gesture frame 0 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: plant gesture frame 1 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: plant gesture frame 2 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: plant gesture frame 3 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: plant gesture frame 4 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: plant gesture frame 5 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: plant gesture frames have distinct rendered pixels",
+      "details": {
+        "distinct": 6,
+        "frames": 6
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: water gesture frame 0 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: water gesture frame 1 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: water gesture frame 2 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: water gesture frame 3 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: water gesture frame 4 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: water gesture frame 5 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: water gesture frames have distinct rendered pixels",
+      "details": {
+        "distinct": 6,
+        "frames": 6
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: watering frames record finite hand sockets"
+    },
+    {
+      "ok": true,
+      "label": "shane-base: strict missing bearing stays a production gap",
+      "details": {
+        "action": "walk",
+        "degree": 15
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: explicit nearest checkbox labels fallback",
+      "details": {
+        "coverage": "fallback",
+        "requested": 15,
+        "actual": 0
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane-base: incomplete full production matrix is never labelled complete"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: all24 neutral bearings have authored clips",
+      "details": {
+        "count": 24
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 0°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 0°",
+      "details": {
+        "alpha": 104283,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 15°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 15°",
+      "details": {
+        "alpha": 99917,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 30°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 30°",
+      "details": {
+        "alpha": 95814,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 45°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 45°",
+      "details": {
+        "alpha": 92708,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 60°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 60°",
+      "details": {
+        "alpha": 87956,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 75°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 75°",
+      "details": {
+        "alpha": 82602,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 90°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 90°",
+      "details": {
+        "alpha": 77710,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 105°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 105°",
+      "details": {
+        "alpha": 82373,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 120°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 120°",
+      "details": {
+        "alpha": 86538,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 135°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 135°",
+      "details": {
+        "alpha": 88103,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 150°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 150°",
+      "details": {
+        "alpha": 89432,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 165°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 165°",
+      "details": {
+        "alpha": 89159,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 180°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 180°",
+      "details": {
+        "alpha": 107553,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 195°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 195°",
+      "details": {
+        "alpha": 97257,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 210°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 210°",
+      "details": {
+        "alpha": 94092,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 225°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 225°",
+      "details": {
+        "alpha": 92249,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 240°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 240°",
+      "details": {
+        "alpha": 90000,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 255°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 255°",
+      "details": {
+        "alpha": 88262,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 270°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 270°",
+      "details": {
+        "alpha": 78466,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 285°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 285°",
+      "details": {
+        "alpha": 84496,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 300°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 300°",
+      "details": {
+        "alpha": 91434,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 315°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 315°",
+      "details": {
+        "alpha": 97069,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 330°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 330°",
+      "details": {
+        "alpha": 101355,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: exact nominal idle 345°"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: visible decoded idle pixels 345°",
+      "details": {
+        "alpha": 105633,
+        "count": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: at least one authored walking bearing exists"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 0° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 0° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 0° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 0° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 0° phase 4 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 0° phase 5 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 0° phase 6 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 0° phase 7 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 0° has distinct rendered frames",
+      "details": {
+        "distinct": 8,
+        "frames": 8,
+        "phases": [
+          "contact-left",
+          "down-left",
+          "passing-left",
+          "up-left",
+          "contact-right",
+          "down-right",
+          "passing-right",
+          "up-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: declared walking phase count is honest",
+      "details": {
+        "mode": "animation",
+        "frames": 8
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 45° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 45° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 45° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 45° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 45° has distinct rendered frames",
+      "details": {
+        "distinct": 4,
+        "frames": 4,
+        "phases": [
+          "contact-left",
+          "passing-left",
+          "contact-right",
+          "passing-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: declared walking phase count is honest",
+      "details": {
+        "mode": "reduced",
+        "frames": 4
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 90° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 90° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 90° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 90° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 90° has distinct rendered frames",
+      "details": {
+        "distinct": 4,
+        "frames": 4,
+        "phases": [
+          "contact-left",
+          "passing-left",
+          "contact-right",
+          "passing-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: declared walking phase count is honest",
+      "details": {
+        "mode": "reduced",
+        "frames": 4
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 180° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 180° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 180° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 180° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 180° phase 4 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 180° phase 5 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 180° phase 6 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 180° phase 7 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 180° has distinct rendered frames",
+      "details": {
+        "distinct": 8,
+        "frames": 8,
+        "phases": [
+          "contact-left",
+          "down-left",
+          "passing-left",
+          "up-left",
+          "contact-right",
+          "down-right",
+          "passing-right",
+          "up-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: declared walking phase count is honest",
+      "details": {
+        "mode": "animation",
+        "frames": 8
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 270° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 270° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 270° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 270° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 270° has distinct rendered frames",
+      "details": {
+        "distinct": 4,
+        "frames": 4,
+        "phases": [
+          "contact-left",
+          "passing-left",
+          "contact-right",
+          "passing-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: declared walking phase count is honest",
+      "details": {
+        "mode": "reduced",
+        "frames": 4
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 315° phase 0 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 315° phase 1 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 315° phase 2 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 315° phase 3 draws authored pixels"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: walk 315° has distinct rendered frames",
+      "details": {
+        "distinct": 4,
+        "frames": 4,
+        "phases": [
+          "contact-left",
+          "passing-left",
+          "contact-right",
+          "passing-right"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: declared walking phase count is honest",
+      "details": {
+        "mode": "reduced",
+        "frames": 4
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: plant gesture frame 0 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: plant gesture frame 1 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: plant gesture frame 2 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: plant gesture frame 3 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: plant gesture frame 4 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: plant gesture frame 5 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: plant gesture frames have distinct rendered pixels",
+      "details": {
+        "distinct": 6,
+        "frames": 6
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: water gesture frame 0 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: water gesture frame 1 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: water gesture frame 2 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: water gesture frame 3 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: water gesture frame 4 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: water gesture frame 5 renders at its authored bearing"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: water gesture frames have distinct rendered pixels",
+      "details": {
+        "distinct": 6,
+        "frames": 6
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: watering frames record finite hand sockets"
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: strict missing bearing stays a production gap",
+      "details": {
+        "action": "walk",
+        "degree": 15
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: explicit nearest checkbox labels fallback",
+      "details": {
+        "coverage": "fallback",
+        "requested": 15,
+        "actual": 0
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie-base: incomplete full production matrix is never labelled complete"
+    },
+    {
+      "ok": true,
+      "label": "phone: no page overflow and all controls retain44px hit areas",
+      "details": {
+        "width": 390,
+        "scroll": 390,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: no page overflow and all controls retain44px hit areas",
+      "details": {
+        "width": 874,
+        "scroll": 874,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: no page overflow and all controls retain44px hit areas",
+      "details": {
+        "width": 844,
+        "scroll": 844,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "all embedded atlas pages decode without errors"
+    },
+    {
+      "ok": true,
+      "label": "standalone file makes no external network requests",
+      "details": []
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors",
+      "details": []
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "screenshots": [
+    "shane-base-24-bearings.png",
+    "shane-base-side-walk-onion.png",
+    "shane-base-plant-gesture.png",
+    "shane-base-water-gesture.png",
+    "shane-base-water-hand-socket.png",
+    "shane-base-desktop-art-bench.png",
+    "natalie-base-24-bearings.png",
+    "natalie-base-side-walk-onion.png",
+    "natalie-base-plant-gesture.png",
+    "natalie-base-water-gesture.png",
+    "natalie-base-water-hand-socket.png",
+    "natalie-base-desktop-art-bench.png",
+    "phone-art-bench.png",
+    "fold-art-bench.png",
+    "landscape-art-bench.png"
+  ],
+  "records": [
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 0,
+      "requested": 0,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 102847,
+      "hash": 1944589243,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 15,
+      "requested": 15,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 94621,
+      "hash": 3586554384,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 30,
+      "requested": 30,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 90116,
+      "hash": 4058307868,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 45,
+      "requested": 45,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 89167,
+      "hash": 4094654309,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 60,
+      "requested": 60,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 85055,
+      "hash": 838644186,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 75,
+      "requested": 75,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 77513,
+      "hash": 1169389063,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 90,
+      "requested": 90,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 76893,
+      "hash": 3665911239,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 105,
+      "requested": 105,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 82052,
+      "hash": 821237156,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 120,
+      "requested": 120,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 93674,
+      "hash": 430934013,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 135,
+      "requested": 135,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 98107,
+      "hash": 2100010448,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 150,
+      "requested": 150,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 101839,
+      "hash": 3481990989,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 165,
+      "requested": 165,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 105805,
+      "hash": 2357229686,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 180,
+      "requested": 180,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 105125,
+      "hash": 2146232955,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 195,
+      "requested": 195,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 105354,
+      "hash": 3641069272,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 210,
+      "requested": 210,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 101315,
+      "hash": 3341061425,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 225,
+      "requested": 225,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 98343,
+      "hash": 4213301725,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 240,
+      "requested": 240,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 90645,
+      "hash": 2739420637,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 255,
+      "requested": 255,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 80155,
+      "hash": 4124433342,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 270,
+      "requested": 270,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 85506,
+      "hash": 4200200379,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 285,
+      "requested": 285,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 96603,
+      "hash": 974493947,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 300,
+      "requested": 300,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 99015,
+      "hash": 1940431609,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 315,
+      "requested": 315,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 99016,
+      "hash": 2142926814,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 330,
+      "requested": 330,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 102819,
+      "hash": 837820616,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "idle",
+      "direction": 345,
+      "requested": 345,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 105777,
+      "hash": 4218423598,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 0,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 89697,
+      "hash": 817559299,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 1,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "down-left",
+      "alpha": 89931,
+      "hash": 2957428598,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 2,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 91373,
+      "hash": 808891851,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 3,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "up-left",
+      "alpha": 89788,
+      "hash": 3592414912,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 4,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 89528,
+      "hash": 2438549750,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 5,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "down-right",
+      "alpha": 92102,
+      "hash": 300740564,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 6,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 90347,
+      "hash": 1241639241,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 7,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "up-right",
+      "alpha": 89669,
+      "hash": 550153075,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 45,
+      "requested": 45,
+      "index": 0,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 101933,
+      "hash": 2051943313,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 45,
+      "requested": 45,
+      "index": 1,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 93885,
+      "hash": 878505206,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 45,
+      "requested": 45,
+      "index": 2,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 106238,
+      "hash": 4164268765,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 45,
+      "requested": 45,
+      "index": 3,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 95610,
+      "hash": 2094869065,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 0,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 104293,
+      "hash": 546974556,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 1,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "down-left",
+      "alpha": 94349,
+      "hash": 605264991,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 2,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 97442,
+      "hash": 796747780,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 3,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "up-left",
+      "alpha": 100462,
+      "hash": 2690000885,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 4,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 105877,
+      "hash": 1104027562,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 5,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "down-right",
+      "alpha": 94540,
+      "hash": 4046976128,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 6,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 95554,
+      "hash": 64944045,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 7,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "up-right",
+      "alpha": 99979,
+      "hash": 897329803,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 0,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 88986,
+      "hash": 3476525998,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 1,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "down-left",
+      "alpha": 91970,
+      "hash": 231004425,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 2,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 89470,
+      "hash": 316043179,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 3,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "up-left",
+      "alpha": 86910,
+      "hash": 1022838682,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 4,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 83305,
+      "hash": 2121068440,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 5,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "down-right",
+      "alpha": 91962,
+      "hash": 1987915217,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 6,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 89488,
+      "hash": 3762265338,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 7,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "up-right",
+      "alpha": 90123,
+      "hash": 2870873573,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 270,
+      "requested": 270,
+      "index": 0,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 107401,
+      "hash": 3575899583,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 270,
+      "requested": 270,
+      "index": 1,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 103088,
+      "hash": 1076956828,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 270,
+      "requested": 270,
+      "index": 2,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 108226,
+      "hash": 3786622879,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 270,
+      "requested": 270,
+      "index": 3,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 98714,
+      "hash": 566509436,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 315,
+      "requested": 315,
+      "index": 0,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 108656,
+      "hash": 3816552017,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 315,
+      "requested": 315,
+      "index": 1,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 104367,
+      "hash": 171326015,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 315,
+      "requested": 315,
+      "index": 2,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 108349,
+      "hash": 2543630412,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "walk",
+      "direction": 315,
+      "requested": 315,
+      "index": 3,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 102317,
+      "hash": 957779467,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 0,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 106680,
+      "hash": 661597439,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 1,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 92351,
+      "hash": 3641270782,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 2,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 82055,
+      "hash": 3351962303,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 3,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 69107,
+      "hash": 325285687,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 4,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 95635,
+      "hash": 130608765,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 5,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 107010,
+      "hash": 3562906078,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "shane-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 0,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 75473,
+      "hash": 2349051655,
+      "scrubMax": 5,
+      "hand": {
+        "x": 130.23,
+        "y": 273.87
+      }
+    },
+    {
+      "look": "shane-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 1,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 81158,
+      "hash": 1012477706,
+      "scrubMax": 5,
+      "hand": {
+        "x": 195.47,
+        "y": 235.59
+      }
+    },
+    {
+      "look": "shane-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 2,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 83064,
+      "hash": 532340614,
+      "scrubMax": 5,
+      "hand": {
+        "x": 204.42,
+        "y": 234.7
+      }
+    },
+    {
+      "look": "shane-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 3,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 87373,
+      "hash": 1087330924,
+      "scrubMax": 5,
+      "hand": {
+        "x": 207,
+        "y": 238.91
+      }
+    },
+    {
+      "look": "shane-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 4,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 81031,
+      "hash": 1232720852,
+      "scrubMax": 5,
+      "hand": {
+        "x": 196.26,
+        "y": 218.9
+      }
+    },
+    {
+      "look": "shane-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 5,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 74341,
+      "hash": 3916489516,
+      "scrubMax": 5,
+      "hand": {
+        "x": 127.23,
+        "y": 269.82
+      }
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 0,
+      "requested": 0,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 104283,
+      "hash": 2162048656,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 15,
+      "requested": 15,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 99917,
+      "hash": 2361532996,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 30,
+      "requested": 30,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 95814,
+      "hash": 4189643888,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 45,
+      "requested": 45,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 92708,
+      "hash": 613159585,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 60,
+      "requested": 60,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 87956,
+      "hash": 984651067,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 75,
+      "requested": 75,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 82602,
+      "hash": 601529946,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 90,
+      "requested": 90,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 77710,
+      "hash": 2075602006,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 105,
+      "requested": 105,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 82373,
+      "hash": 2421885223,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 120,
+      "requested": 120,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 86538,
+      "hash": 1298251850,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 135,
+      "requested": 135,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 88103,
+      "hash": 1863243941,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 150,
+      "requested": 150,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 89432,
+      "hash": 2778774600,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 165,
+      "requested": 165,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 89159,
+      "hash": 3859300172,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 180,
+      "requested": 180,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 107553,
+      "hash": 3496956984,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 195,
+      "requested": 195,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 97257,
+      "hash": 3741722580,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 210,
+      "requested": 210,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 94092,
+      "hash": 3219812084,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 225,
+      "requested": 225,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 92249,
+      "hash": 2123973058,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 240,
+      "requested": 240,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 90000,
+      "hash": 391660196,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 255,
+      "requested": 255,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 88262,
+      "hash": 1039581451,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 270,
+      "requested": 270,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 78466,
+      "hash": 2045501588,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 285,
+      "requested": 285,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 84496,
+      "hash": 1480957182,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 300,
+      "requested": 300,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 91434,
+      "hash": 1953575645,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 315,
+      "requested": 315,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 97069,
+      "hash": 2634482501,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 330,
+      "requested": 330,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 101355,
+      "hash": 4282256055,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "idle",
+      "direction": 345,
+      "requested": 345,
+      "index": 0,
+      "mode": "pose",
+      "count": 1,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 105633,
+      "hash": 523660786,
+      "scrubMax": 0,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 0,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 106486,
+      "hash": 1031839891,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 1,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "down-left",
+      "alpha": 108038,
+      "hash": 2490304177,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 2,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 107781,
+      "hash": 2157415613,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 3,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "up-left",
+      "alpha": 103237,
+      "hash": 1115600876,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 4,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 104975,
+      "hash": 3158257974,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 5,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "down-right",
+      "alpha": 105184,
+      "hash": 1109541441,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 6,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 101746,
+      "hash": 3395708753,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 0,
+      "requested": 0,
+      "index": 7,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "up-right",
+      "alpha": 103359,
+      "hash": 630084162,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 45,
+      "requested": 45,
+      "index": 0,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 103607,
+      "hash": 2951527632,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 45,
+      "requested": 45,
+      "index": 1,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 91106,
+      "hash": 344591758,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 45,
+      "requested": 45,
+      "index": 2,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 97438,
+      "hash": 2478831936,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 45,
+      "requested": 45,
+      "index": 3,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 87865,
+      "hash": 3993454904,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 0,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 112099,
+      "hash": 328303076,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 1,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 106590,
+      "hash": 2447598112,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 2,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 110248,
+      "hash": 1080429316,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 90,
+      "requested": 90,
+      "index": 3,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 101300,
+      "hash": 1146939123,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 0,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 108468,
+      "hash": 4133454798,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 1,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "down-left",
+      "alpha": 106791,
+      "hash": 3955359784,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 2,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 106155,
+      "hash": 2898843044,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 3,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "up-left",
+      "alpha": 108423,
+      "hash": 2518780259,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 4,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 107314,
+      "hash": 3975654877,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 5,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "down-right",
+      "alpha": 106032,
+      "hash": 569920293,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 6,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 105579,
+      "hash": 3623668981,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 180,
+      "requested": 180,
+      "index": 7,
+      "mode": "animation",
+      "count": 8,
+      "coverage": "authored",
+      "phase": "up-right",
+      "alpha": 106667,
+      "hash": 397784308,
+      "scrubMax": 7,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 270,
+      "requested": 270,
+      "index": 0,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 104000,
+      "hash": 1896844886,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 270,
+      "requested": 270,
+      "index": 1,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 97570,
+      "hash": 1091250747,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 270,
+      "requested": 270,
+      "index": 2,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 103719,
+      "hash": 2407320117,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 270,
+      "requested": 270,
+      "index": 3,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 94746,
+      "hash": 1465412969,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 315,
+      "requested": 315,
+      "index": 0,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-left",
+      "alpha": 106111,
+      "hash": 4081689113,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 315,
+      "requested": 315,
+      "index": 1,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-left",
+      "alpha": 95257,
+      "hash": 546773770,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 315,
+      "requested": 315,
+      "index": 2,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "contact-right",
+      "alpha": 100838,
+      "hash": 2152203835,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "walk",
+      "direction": 315,
+      "requested": 315,
+      "index": 3,
+      "mode": "reduced",
+      "count": 4,
+      "coverage": "authored",
+      "phase": "passing-right",
+      "alpha": 96152,
+      "hash": 1293023413,
+      "scrubMax": 3,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 0,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 117519,
+      "hash": 2092564933,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 1,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 112538,
+      "hash": 2783790161,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 2,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 95508,
+      "hash": 3234028033,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 3,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 92296,
+      "hash": 2196661085,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 4,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 107232,
+      "hash": 883585410,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "plant",
+      "direction": 0,
+      "requested": 0,
+      "index": 5,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 107326,
+      "hash": 320727897,
+      "scrubMax": 5,
+      "hand": null
+    },
+    {
+      "look": "natalie-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 0,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 87420,
+      "hash": 1442720618,
+      "scrubMax": 5,
+      "hand": {
+        "x": 117.1,
+        "y": 283.4
+      }
+    },
+    {
+      "look": "natalie-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 1,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 91782,
+      "hash": 190872259,
+      "scrubMax": 5,
+      "hand": {
+        "x": 196.33,
+        "y": 238.97
+      }
+    },
+    {
+      "look": "natalie-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 2,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 97015,
+      "hash": 17759025,
+      "scrubMax": 5,
+      "hand": {
+        "x": 210.81,
+        "y": 234.81
+      }
+    },
+    {
+      "look": "natalie-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 3,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 104199,
+      "hash": 1911247132,
+      "scrubMax": 5,
+      "hand": {
+        "x": 207.32,
+        "y": 249.78
+      }
+    },
+    {
+      "look": "natalie-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 4,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 94196,
+      "hash": 3189188548,
+      "scrubMax": 5,
+      "hand": {
+        "x": 189.84,
+        "y": 232.97
+      }
+    },
+    {
+      "look": "natalie-base",
+      "action": "water",
+      "direction": 90,
+      "requested": 90,
+      "index": 5,
+      "mode": "animation",
+      "count": 6,
+      "coverage": "authored",
+      "phase": null,
+      "alpha": 91673,
+      "hash": 1838528950,
+      "scrubMax": 5,
+      "hand": {
+        "x": 104.45,
+        "y": 271.91
+      }
+    }
+  ],
+  "transport": "Exact standalone HTML bytes on localhost; managed Chromium blocks file URLs. All external network requests aborted.",
+  "scope": "Canvas2D bench only. Distinct pixel hashes do not prove correct anatomy or exact geometric15degree bearings."
+}
