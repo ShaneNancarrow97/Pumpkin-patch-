@@ -57,9 +57,12 @@ that visible near/far swap. The left-facing reduced strips start on anatomical
 right contact in the raw source; the baker rotates their phase order by two
 frames to start on canonical left contact. This never mirrors the person.
 
-Early `*-candidate.png` walking sheets repeated the same leading leg or changed
-stride length without swapping limbs; those are under `rejected/` and are never
-read by the baker. `rejected/idle-24*.png` also failed direction-order review and
+The early noncardinal `*-candidate.png` walking sheets repeated the same leading
+leg or changed stride length without swapping limbs; those are under `rejected/`
+and are never read by the baker. That archive also retains the original 000/180
+candidate copies for provenance; their accepted copies are the explicitly named
+`walk-000-source.png` and `walk-180-source.png` runtime inputs.
+`rejected/idle-24*.png` also failed direction-order review and
 are superseded by the quarter sources. Later nonaccepted attempts remain in the
 workspace image-generation originals; they are not runtime inputs. Missing back
 diagonal gaits are real gaps and must not be renamed as authored coverage.
