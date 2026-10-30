@@ -42,6 +42,7 @@ export function buildDirectionalProductionReport(bank = { looks: {} }) {
     };
   });
   const sum = key => looks.reduce((n, look) => n + look[key], 0);
+  const uniquePages = new Map(looks.flatMap(look => (bank.looks?.[look.id]?.pages ?? []).map(p => [p.url, p])));
   return {
     schema: 1,
     convention: '0 front, 90 screen-right, 180 back, 270 screen-left; manually assigned nominal painted bearings, not a measured 3D rig',
@@ -57,7 +58,9 @@ export function buildDirectionalProductionReport(bank = { looks: {} }) {
       authoredFrames: sum('authoredFrames'),
       incompleteClips: looks.reduce((n, l) => n + l.missing.length, 0),
       completeLooks: looks.filter(l => l.complete).length,
-      encodedBytes: sum('encodedBytes'), pageRGBABytes: sum('pageRGBABytes'),
+      pageCount: uniquePages.size,
+      encodedBytes: [...uniquePages.values()].reduce((n, p) => n + (Number(p.encodedBytes) || 0), 0),
+      pageRGBABytes: [...uniquePages.values()].reduce((n, p) => n + p.width * p.height * 4, 0),
       unknownManifestLooks: Object.keys(bank.looks ?? {}).filter(id => !costumeCatalog.some(c => c.id === id)),
     },
     looks,
