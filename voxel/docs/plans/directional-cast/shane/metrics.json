@@ -1,0 +1,496 @@
+{
+  "idle": [
+    {
+      "angle": 0,
+      "height": 321,
+      "upperSilhouetteWidth": 65,
+      "upperWidthToHeight": 0.2025,
+      "scale": 0.662526,
+      "sha256": "306ee944b41e99d40248c02ad17913fa626eaaf355fe57d7d62cdbde7b0cb70c"
+    },
+    {
+      "angle": 15,
+      "height": 321,
+      "upperSilhouetteWidth": 68,
+      "upperWidthToHeight": 0.2118,
+      "scale": 0.661157,
+      "sha256": "0b8045ed04f7f7489e8b98d70387d60972a4265822efe3b9de1ebfe3ada79350"
+    },
+    {
+      "angle": 30,
+      "height": 321,
+      "upperSilhouetteWidth": 71,
+      "upperWidthToHeight": 0.2212,
+      "scale": 0.661157,
+      "sha256": "f6de1f620d9e8b046112aeaf16e9eab502f448f64ff1a9c3771bdc229828795b"
+    },
+    {
+      "angle": 45,
+      "height": 321,
+      "upperSilhouetteWidth": 72,
+      "upperWidthToHeight": 0.2243,
+      "scale": 0.6639,
+      "sha256": "d966b9d847a8e859c96b3173b755dff56f2c2fbfc87fb5e1e5ce7e4a7208a65b"
+    },
+    {
+      "angle": 60,
+      "height": 320,
+      "upperSilhouetteWidth": 75,
+      "upperWidthToHeight": 0.2344,
+      "scale": 0.661157,
+      "sha256": "47fc6ade46d2f1d319b63d2dc848dc714b10c2a7e22ccd5cb077afc0082be9cc"
+    },
+    {
+      "angle": 75,
+      "height": 321,
+      "upperSilhouetteWidth": 78,
+      "upperWidthToHeight": 0.243,
+      "scale": 0.665281,
+      "sha256": "91e39fe5a908c46bf69be638c4926d4308535ea6e837f021a316b53cc508f190"
+    },
+    {
+      "angle": 90,
+      "height": 321,
+      "upperSilhouetteWidth": 77,
+      "upperWidthToHeight": 0.2399,
+      "scale": 0.647773,
+      "sha256": "6eca887bc57e698ab06f1a3bf64318999eb391b07e788a56fceb3fc06ccd31de"
+    },
+    {
+      "angle": 105,
+      "height": 321,
+      "upperSilhouetteWidth": 79,
+      "upperWidthToHeight": 0.2461,
+      "scale": 0.650407,
+      "sha256": "10eda973a90072ef166467061d6e4489f9198bae038b12da077736304dee3c0c"
+    },
+    {
+      "angle": 120,
+      "height": 320,
+      "upperSilhouetteWidth": 82,
+      "upperWidthToHeight": 0.2562,
+      "scale": 0.650407,
+      "sha256": "ff8b2e8c8d683bd439e0b1ab60e9d85b5366ad49ef15efb8fa50b2231f62bd4b"
+    },
+    {
+      "angle": 135,
+      "height": 321,
+      "upperSilhouetteWidth": 83,
+      "upperWidthToHeight": 0.2586,
+      "scale": 0.654397,
+      "sha256": "64aea6748320a916c59466838ec00ee44fb054af5580c3e93bc23f673da7f9a7"
+    },
+    {
+      "angle": 150,
+      "height": 321,
+      "upperSilhouetteWidth": 81,
+      "upperWidthToHeight": 0.2523,
+      "scale": 0.654397,
+      "sha256": "f62f1495c1474f2c1e14938873ea1b8e48dfa7c1226167a526c2c68d242e1141"
+    },
+    {
+      "angle": 165,
+      "height": 321,
+      "upperSilhouetteWidth": 77,
+      "upperWidthToHeight": 0.2399,
+      "scale": 0.654397,
+      "sha256": "c8ffa06db518a6bc91656245d38b5b2773a4e845569375771db41de965cbc473"
+    },
+    {
+      "angle": 180,
+      "height": 320,
+      "upperSilhouetteWidth": 69,
+      "upperWidthToHeight": 0.2156,
+      "scale": 0.649087,
+      "sha256": "a9c852d51610568fd362ea212a0537bfe25bb592f0907c3e1fab310f34807deb"
+    },
+    {
+      "angle": 195,
+      "height": 321,
+      "upperSilhouetteWidth": 79,
+      "upperWidthToHeight": 0.2461,
+      "scale": 0.650407,
+      "sha256": "5e5c339b9c6a8e47986aaeaee958661d1456305140a31838e1799a6ba3d86550"
+    },
+    {
+      "angle": 210,
+      "height": 320,
+      "upperSilhouetteWidth": 77,
+      "upperWidthToHeight": 0.2406,
+      "scale": 0.651731,
+      "sha256": "9608ecd356e283b6e4e8faba92628c503c6ad6048c2d4bef5443bb7ff1e3793f"
+    },
+    {
+      "angle": 225,
+      "height": 320,
+      "upperSilhouetteWidth": 80,
+      "upperWidthToHeight": 0.25,
+      "scale": 0.650407,
+      "sha256": "965d8b5bf95c6b9db34ac0025214a42b322598d952dcf1d2cdbf63a551173105"
+    },
+    {
+      "angle": 240,
+      "height": 320,
+      "upperSilhouetteWidth": 84,
+      "upperWidthToHeight": 0.2625,
+      "scale": 0.651731,
+      "sha256": "ce181a036ca977d7ed451dec8bf6d7b3c25aa3c457e4bbfc94683097258750a8"
+    },
+    {
+      "angle": 255,
+      "height": 321,
+      "upperSilhouetteWidth": 85,
+      "upperWidthToHeight": 0.2648,
+      "scale": 0.649087,
+      "sha256": "65b0180ffd11be6bc5c8863d072390c8a0f389b1e05bc9a2c7a1cf85d42dd8f2"
+    },
+    {
+      "angle": 270,
+      "height": 320,
+      "upperSilhouetteWidth": 86,
+      "upperWidthToHeight": 0.2688,
+      "scale": 0.628684,
+      "sha256": "5adfa732d3b6c53607d2a8ad9b8e5f9994bf30ed52ed7875d483959625bf0505"
+    },
+    {
+      "angle": 285,
+      "height": 320,
+      "upperSilhouetteWidth": 83,
+      "upperWidthToHeight": 0.2594,
+      "scale": 0.632411,
+      "sha256": "78380e586bb78d37de769519fd7f51d9bd964f62c1f19ecc1672bec2c5f658fe"
+    },
+    {
+      "angle": 300,
+      "height": 321,
+      "upperSilhouetteWidth": 78,
+      "upperWidthToHeight": 0.243,
+      "scale": 0.633663,
+      "sha256": "27938644aa14c07843e31f219b9a71da7eb5b1dfba1e4bb5c7ab523cddbe2efb"
+    },
+    {
+      "angle": 315,
+      "height": 321,
+      "upperSilhouetteWidth": 79,
+      "upperWidthToHeight": 0.2461,
+      "scale": 0.649087,
+      "sha256": "00f2c6c0d7bd056378068d1741156c25ae911555d01a884239191dcc547a8d28"
+    },
+    {
+      "angle": 330,
+      "height": 320,
+      "upperSilhouetteWidth": 75,
+      "upperWidthToHeight": 0.2344,
+      "scale": 0.647773,
+      "sha256": "d5105b7528fd8ba5810e4309458b1a98c3bcc9533ca8fec8bf864e35ddf80691"
+    },
+    {
+      "angle": 345,
+      "height": 321,
+      "upperSilhouetteWidth": 69,
+      "upperWidthToHeight": 0.215,
+      "scale": 0.641283,
+      "sha256": "5814519709f58e9ba04621d1474ba196f81ecd7b9370fdfa1c7ba800d8545696"
+    }
+  ],
+  "walk-000": [
+    {
+      "angle": 0,
+      "height": 319,
+      "upperSilhouetteWidth": 62,
+      "upperWidthToHeight": 0.1944,
+      "scale": 0.665281,
+      "sha256": "433cf6a563ba9a410a5eda33bbc06dbe9cfd7a1ec6df3738d5bb1007402b4eba"
+    },
+    {
+      "angle": 0,
+      "height": 320,
+      "upperSilhouetteWidth": 62,
+      "upperWidthToHeight": 0.1938,
+      "scale": 0.665281,
+      "sha256": "fbcc02748b81fec68e8e5d3288047184c4b3c44d4fd42c38ab734874fd224e58"
+    },
+    {
+      "angle": 0,
+      "height": 320,
+      "upperSilhouetteWidth": 63,
+      "upperWidthToHeight": 0.1969,
+      "scale": 0.665281,
+      "sha256": "545d865db63cae0c6f125fcb8591baf2bf109e2503cf97eda718ecdf423e81b3"
+    },
+    {
+      "angle": 0,
+      "height": 320,
+      "upperSilhouetteWidth": 64,
+      "upperWidthToHeight": 0.2,
+      "scale": 0.665281,
+      "sha256": "58105fa61060e67d0d1db6f369324e0636e3bb7b466a4f3501cc293c14fb515d"
+    },
+    {
+      "angle": 0,
+      "height": 322,
+      "upperSilhouetteWidth": 63,
+      "upperWidthToHeight": 0.1957,
+      "scale": 0.665281,
+      "sha256": "5adcae746dbb6e10f9528d59fea93acb6dbb88df087203656577f23fd3283684"
+    },
+    {
+      "angle": 0,
+      "height": 323,
+      "upperSilhouetteWidth": 64,
+      "upperWidthToHeight": 0.1981,
+      "scale": 0.665281,
+      "sha256": "02e7d66180c9d2eb5d5ba9d0459c3498988933c8ad3fca22c3df25fd8f8c28bd"
+    },
+    {
+      "angle": 0,
+      "height": 320,
+      "upperSilhouetteWidth": 63,
+      "upperWidthToHeight": 0.1969,
+      "scale": 0.665281,
+      "sha256": "7a25ca3bab91eef03b9cc230d5ede1d3ed02c2f5b833eb8a8bb12c602739b37d"
+    },
+    {
+      "angle": 0,
+      "height": 321,
+      "upperSilhouetteWidth": 63,
+      "upperWidthToHeight": 0.1963,
+      "scale": 0.665281,
+      "sha256": "0fdf52e7ceb4e2fdc318578fe7bd5f3abd91801232790721f2cdb9051120c1b2"
+    }
+  ],
+  "walk-045": [
+    {
+      "angle": 45,
+      "height": 321,
+      "upperSilhouetteWidth": 76,
+      "upperWidthToHeight": 0.2368,
+      "scale": 0.472674,
+      "sha256": "fa9db4314991c96d774bdcc20f1c6dcfda0e010cd7087757a0556b5674595918"
+    },
+    {
+      "angle": 45,
+      "height": 321,
+      "upperSilhouetteWidth": 76,
+      "upperWidthToHeight": 0.2368,
+      "scale": 0.472674,
+      "sha256": "8e379197ffd89ddbf763fed0cee89475258d633d08b2c025f866c876347774fd"
+    },
+    {
+      "angle": 45,
+      "height": 318,
+      "upperSilhouetteWidth": 77,
+      "upperWidthToHeight": 0.2421,
+      "scale": 0.472674,
+      "sha256": "136b37492aa2e153a5ae8c54de18a63df7032a3881488cf9886fd5dc9d417a04"
+    },
+    {
+      "angle": 45,
+      "height": 320,
+      "upperSilhouetteWidth": 76,
+      "upperWidthToHeight": 0.2375,
+      "scale": 0.472674,
+      "sha256": "bc4c2b601be362e4db214d4bafa383870934203dbf7fc8a85a4c34595e8a5c4d"
+    }
+  ],
+  "walk-090": [
+    {
+      "angle": 90,
+      "height": 324,
+      "upperSilhouetteWidth": 79,
+      "upperWidthToHeight": 0.2438,
+      "scale": 0.679406,
+      "sha256": "d3781204802dbb570768e28b2ecdda54d84483a8e22c1bc3f6aeaae5cf3e3b42"
+    },
+    {
+      "angle": 90,
+      "height": 325,
+      "upperSilhouetteWidth": 81,
+      "upperWidthToHeight": 0.2492,
+      "scale": 0.679406,
+      "sha256": "79ca5b048fcbef073da7aa28745af24079f4178d7597049dc9f44160014ac167"
+    },
+    {
+      "angle": 90,
+      "height": 326,
+      "upperSilhouetteWidth": 79,
+      "upperWidthToHeight": 0.2423,
+      "scale": 0.679406,
+      "sha256": "0d9fce4bf0eefdc45e2fa7ea8c52447a2d4efd425ffcae8ab4a44ca1586a17c8"
+    },
+    {
+      "angle": 90,
+      "height": 325,
+      "upperSilhouetteWidth": 79,
+      "upperWidthToHeight": 0.2431,
+      "scale": 0.679406,
+      "sha256": "b0b023e29b6b3e09f9d49155253170dd9b3ce254071f6525982ea53444c5215f"
+    },
+    {
+      "angle": 90,
+      "height": 316,
+      "upperSilhouetteWidth": 78,
+      "upperWidthToHeight": 0.2468,
+      "scale": 0.679406,
+      "sha256": "81716c7dbe559d1e1254629d400b23195345d95e1293d04fd2a7a28b03bab865"
+    },
+    {
+      "angle": 90,
+      "height": 314,
+      "upperSilhouetteWidth": 81,
+      "upperWidthToHeight": 0.258,
+      "scale": 0.679406,
+      "sha256": "7e4c39aaf43ed4e3262babc84d86c72afd35baa1e055f470f00c25be5802e903"
+    },
+    {
+      "angle": 90,
+      "height": 315,
+      "upperSilhouetteWidth": 78,
+      "upperWidthToHeight": 0.2476,
+      "scale": 0.679406,
+      "sha256": "24674977de0f606e90cdc7192d65144e4f09018273e3c8e722043498fe51ae3a"
+    },
+    {
+      "angle": 90,
+      "height": 317,
+      "upperSilhouetteWidth": 79,
+      "upperWidthToHeight": 0.2492,
+      "scale": 0.679406,
+      "sha256": "dbe46c19fb69f3b323e0c08f52440367e4ee5859912c7683b41782711a232374"
+    }
+  ],
+  "walk-180": [
+    {
+      "angle": 180,
+      "height": 320,
+      "upperSilhouetteWidth": 70,
+      "upperWidthToHeight": 0.2188,
+      "scale": 0.655738,
+      "sha256": "c224d3fed3b4113a706e73284fdd22d35cb5bc4eca3169477db2eb4a061097d6"
+    },
+    {
+      "angle": 180,
+      "height": 321,
+      "upperSilhouetteWidth": 67,
+      "upperWidthToHeight": 0.2087,
+      "scale": 0.655738,
+      "sha256": "51d959643968f428cb41b4d1b0122d35e7875b6053aeffc4082fa4b5989748e0"
+    },
+    {
+      "angle": 180,
+      "height": 312,
+      "upperSilhouetteWidth": 64,
+      "upperWidthToHeight": 0.2051,
+      "scale": 0.655738,
+      "sha256": "e5a7fd318ed1ad7b1d02d916ea270e5c0b86414190c51d7ea64f8e4f4557293b"
+    },
+    {
+      "angle": 180,
+      "height": 321,
+      "upperSilhouetteWidth": 66,
+      "upperWidthToHeight": 0.2056,
+      "scale": 0.655738,
+      "sha256": "c3bc5a7263b76179d59434dadea1535c2b6343396ddbeffe74efc5f2eb4e31a5"
+    },
+    {
+      "angle": 180,
+      "height": 320,
+      "upperSilhouetteWidth": 69,
+      "upperWidthToHeight": 0.2156,
+      "scale": 0.655738,
+      "sha256": "58c3d18ed2186a6a7b117a669922c386cd8a3243ba4995d398da016dd4e5a30b"
+    },
+    {
+      "angle": 180,
+      "height": 320,
+      "upperSilhouetteWidth": 69,
+      "upperWidthToHeight": 0.2156,
+      "scale": 0.655738,
+      "sha256": "0d5e1c8b7d004393b3de11448769321d73f97ed14a6697825e476bcbf4ea366d"
+    },
+    {
+      "angle": 180,
+      "height": 311,
+      "upperSilhouetteWidth": 65,
+      "upperWidthToHeight": 0.209,
+      "scale": 0.655738,
+      "sha256": "3ae21a6082203eaa6b631e2bb4546ca40f7b67d3d5ebe8f2aea686432ae7800e"
+    },
+    {
+      "angle": 180,
+      "height": 320,
+      "upperSilhouetteWidth": 68,
+      "upperWidthToHeight": 0.2125,
+      "scale": 0.655738,
+      "sha256": "297eb07805e939431c706002ea0ecb9896f8cdaef3afae480d7b17599928b877"
+    }
+  ],
+  "walk-270": [
+    {
+      "angle": 270,
+      "height": 320,
+      "upperSilhouetteWidth": 88,
+      "upperWidthToHeight": 0.275,
+      "scale": 0.486322,
+      "sha256": "ea8f1d8c7ee1815ea93dc1f4c42dd877683d3fe66bc72adb5476ad09032e91a9"
+    },
+    {
+      "angle": 270,
+      "height": 320,
+      "upperSilhouetteWidth": 85,
+      "upperWidthToHeight": 0.2656,
+      "scale": 0.486322,
+      "sha256": "b589959c98e6368def28d761bb30989f91473423e1f04b09cc3d14663ac18994"
+    },
+    {
+      "angle": 270,
+      "height": 320,
+      "upperSilhouetteWidth": 84,
+      "upperWidthToHeight": 0.2625,
+      "scale": 0.486322,
+      "sha256": "7ee99432f8aa79631ffa3588c230bf58cbfc33ac2655669b1b2f8188d3984bcc"
+    },
+    {
+      "angle": 270,
+      "height": 320,
+      "upperSilhouetteWidth": 86,
+      "upperWidthToHeight": 0.2688,
+      "scale": 0.486322,
+      "sha256": "82246e12b1f78b30813e0a3d4d1ce772e3e2009e0b1a92dcf46017814a19d1c3"
+    }
+  ],
+  "walk-315": [
+    {
+      "angle": 315,
+      "height": 324,
+      "upperSilhouetteWidth": 81,
+      "upperWidthToHeight": 0.25,
+      "scale": 0.468178,
+      "sha256": "79e9b54728eb450ffa98bf0d6ae30409cf906d3464ba7507c660975cad68370e"
+    },
+    {
+      "angle": 315,
+      "height": 320,
+      "upperSilhouetteWidth": 82,
+      "upperWidthToHeight": 0.2562,
+      "scale": 0.468178,
+      "sha256": "95f9b891e8781653c6330d6b3167795815f417a4ae77f2bf7579b296c5351a47"
+    },
+    {
+      "angle": 315,
+      "height": 321,
+      "upperSilhouetteWidth": 82,
+      "upperWidthToHeight": 0.2555,
+      "scale": 0.468178,
+      "sha256": "f223cc6cb2674ec7d60fe5ce257c8149f6f4e5f00fb07106bf961cdc0f835cb7"
+    },
+    {
+      "angle": 315,
+      "height": 320,
+      "upperSilhouetteWidth": 82,
+      "upperWidthToHeight": 0.2562,
+      "scale": 0.468178,
+      "sha256": "fe1467b17f5b88f9e4848eb5f441b95a46ca64dbcf6c78f79731310885d84c18"
+    }
+  ]
+}
