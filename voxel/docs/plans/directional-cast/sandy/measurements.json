@@ -1,0 +1,105 @@
+{
+  "homeWidth": 1.45,
+  "cashierWidth": 1.8,
+  "homeSourceScale": 0.650137741046832,
+  "walkSourceScale": 0.4820603272448457,
+  "frames": [
+    {
+      "frame": 0,
+      "bounds": [
+        18,
+        34,
+        237,
+        184
+      ],
+      "hash": "d4f5695a41b37e612388a8e6782e99de0b8147e92217a47eb15309584c51d1fe"
+    },
+    {
+      "frame": 1,
+      "bounds": [
+        16,
+        29,
+        240,
+        184
+      ],
+      "hash": "ffd2c9346c4eb69e4daa3c9c02bd83a07a11bcb68c0c7b73566bc064d642b2cf"
+    },
+    {
+      "frame": 2,
+      "bounds": [
+        20,
+        28,
+        237,
+        184
+      ],
+      "hash": "10138546c08a6814db654f124e03310e00f33a39d7c61c3c2bec62d33cfe54cb"
+    },
+    {
+      "frame": 3,
+      "bounds": [
+        29,
+        34,
+        227,
+        184
+      ],
+      "hash": "0977f306bc78bd1611be435900e0e6accf06e8846bb586d62d83a05285831f6f"
+    },
+    {
+      "frame": 4,
+      "bounds": [
+        19,
+        38,
+        237,
+        184
+      ],
+      "hash": "58f3ce61c996af04c37639349d384b64b73772451263f106d1dd2cc1c3f74484"
+    },
+    {
+      "frame": 5,
+      "bounds": [
+        32,
+        111,
+        225,
+        184
+      ],
+      "hash": "9e5ad3aa9b84d4d1106fc2d2add0327a1d85b0e606d9c006e7aba347399276d8"
+    },
+    {
+      "frame": 6,
+      "bounds": [
+        26,
+        26,
+        230,
+        184
+      ],
+      "hash": "7758647d43e76e9723e451a9da66d630d4bca6d478b209997dd99fb34f7963ef"
+    },
+    {
+      "frame": 7,
+      "bounds": [
+        26,
+        32,
+        229,
+        184
+      ],
+      "hash": "7a89b3977aeee33467841eb58661db70eaa9ba9bbbd6d9dda1ff135404332a3d"
+    }
+  ],
+  "runtimeBytes": {
+    "home-pets.webp": 938584,
+    "lean-idle.webp": 27362,
+    "lean-blink.webp": 27552,
+    "lean-serve.webp": 30216,
+    "lean-portrait.webp": 6326,
+    "service-bell.webp": 33740
+  },
+  "approvedTopPixelHash": "3778024c07fde0a1d9919e6ba5ef5319606b6c447c1b4f72688c12c7d1fdba1b",
+  "runtimeHashes": {
+    "home-pets.webp": "660f75309c81048a3e6c4051d0180bc4be761dd4eec56012150bef968a65959f",
+    "lean-idle.webp": "aa5610a1757a3a794a85ee1d2c382c2fbf36092393f76b91cddad0cb4ddec666",
+    "lean-blink.webp": "83bf432ea0185f5115d0ee8cc8aa1b037075fceade7d6a243221bc8c6c0a4170",
+    "lean-serve.webp": "12d044d4ca90a166599470bd09a57838face7461d58f620c9768d7aef8830302",
+    "lean-portrait.webp": "a9e899ffe164074f5facee76e44a45e0591d8976e203f5fb38350160485256e8",
+    "service-bell.webp": "6a04742629aeabccd3cedea416b03f976ec680e233949708ef4215464db8044c"
+  }
+}
