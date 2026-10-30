@@ -53,7 +53,8 @@ test("native site retains the legacy ground, allocates a fixed light pool and pr
   // The ride is lit by a fixed set of lights: the wagon's lantern, the set ahead,
   // the focus light and four that follow the lane's lanterns.
   const rideLights=()=>controller.scene.children.filter(x=>x.isPointLight);assert.equal(rideLights().length,7);
-  assert.ok(controller.status.lanterns>=10);controller.setPreview(.3);controller.getPreviewFrame(.3);controller.tick(5);
+  // One stretch is left unlit, where the tractor breaks down (hayride-stall.js).
+  assert.ok(controller.status.lanterns>=9);controller.setPreview(.3);controller.getPreviewFrame(.3);controller.tick(5);
   assert.ok(rideLights().filter(l=>l.intensity>0).length>=3,"the wagon lantern and the nearest lane lanterns are lit");
   for(const l of rideLights())if(l.intensity>0)assert.ok(hayrideRouteDistance(l.position.x,l.position.z)<5,"every lit light stands by the lane");
   controller.setPreview(null);assert.equal(rideLights().filter(l=>l.intensity>0).length,0);assert.equal(rideLights().length,7);

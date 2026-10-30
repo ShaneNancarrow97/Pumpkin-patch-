@@ -182,3 +182,14 @@ export function hayrideGuestPose(s,v) {
   if(!p.seated)p.y=p.x>=-9.25&&p.x<=-2.8&&p.z>=15.95&&p.z<=18.05?.24:p.x>=(s.hayride?.fleet?-23.15:-19)&&p.x<=-13.7&&p.z>=31.9&&p.z<=35.55?.2:p.x>=-13.7&&p.x<=-10.05&&p.z>=25&&p.z<=33.8?.12:.08;
   return p;
 }
+// The sprite jump scares (hayride-scares.js) wait across the lane from their
+// scene's set and a little further on, so they never step into its
+// animatronics: the set plays as the wagon comes level, then the figure
+// springs from the other side. ahead is in units past the set's middle; the
+// forest and the lanterns keep clear round each spot.
+export const HAYRIDE_JUMP = Object.freeze({ ahead: 3.5, clear: 2.4, stops: Object.freeze(["scarecrows", "bride", "pursuit", "bus", "graveyard", "thicket"]) });
+export function hayrideJumpSpot(stop, value = 0) {
+  const length = hayrideRouteProfile(value).length, offset = stop.offset ?? (stop.id === "bride" ? 6.1 : stop.id === "bus" ? 5.4 : 4.1);
+  const along = stop.at * length + HAYRIDE_JUMP.ahead, frame = hayrideRouteSample(along, value);
+  return { along, at: along / length, offset, frame, x: frame.x - frame.dz * offset, z: frame.z + frame.dx * offset };
+}

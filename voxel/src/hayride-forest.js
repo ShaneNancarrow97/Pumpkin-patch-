@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { chunkedVoxels, seeded, vary } from "./voxels.js";
-import { HAYRIDE_RIDE_BOUNDS, HAYRIDE_ROUTE_LENGTH, HAYRIDE_STOPS, HAYRIDE_RIDE_HILL, hayrideRouteSample, hayrideRouteDistance, hayrideRouteProfile } from "./content/hayride-layout.js";
+import { HAYRIDE_RIDE_BOUNDS, HAYRIDE_ROUTE_LENGTH, HAYRIDE_STOPS, HAYRIDE_RIDE_HILL, HAYRIDE_JUMP, hayrideRouteSample, hayrideRouteDistance, hayrideRouteProfile, hayrideJumpSpot } from "./content/hayride-layout.js";
 
 // The woodland belongs only to the off-map POV scene. All its trunks and low
 // plants leave a real vehicle corridor; the high canopy encloses the sky.
@@ -22,6 +22,8 @@ export function createHayrideForest({routeLevel=0}={}) {
   const profile=hayrideRouteProfile(routeLevel),HAYRIDE_ROUTE_LENGTH=profile.length,HAYRIDE_RIDE_BOUNDS=profile.bounds;
   const routeSample=distance=>hayrideRouteSample(distance,routeLevel),routeDistance=(x,z)=>hayrideRouteDistance(x,z,routeLevel);
   const localStops=profile.stops.map(stop=>{const p=routeSample(stop.at*profile.length),offset=stop.offset??(stop.id==="spiders"?0:stop.id==="bride"?6.1:stop.id==="bus"?5.4:4.1);return{x:p.x+p.dz*offset,z:p.z-p.dx*offset,radius:stop.id==="bride"?5.25:stop.id==="bus"?5.6:stop.id==="spiders"?7.4:["graveyard","thicket"].includes(stop.id)?4.8:4.45};});
+  // ...and where each sprite jump scare waits across the lane.
+  for(const stop of profile.stops)if(HAYRIDE_JUMP.stops.includes(stop.id)){const spot=hayrideJumpSpot(stop,routeLevel);localStops.push({x:spot.x,z:spot.z,radius:HAYRIDE_JUMP.clear});}
   const clearSet=(x,z,margin=0)=>!localStops.some(p=>Math.hypot(x-p.x,z-p.z)<p.radius+margin);
   const routeClearance=(x,z,w=0,d=0)=>hayrideForestClearance(x,z,w,d,routeLevel);
   const r = seeded(260823), v = chunkedVoxels(16), group = new THREE.Group(), bases = [];

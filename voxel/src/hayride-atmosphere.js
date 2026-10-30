@@ -66,9 +66,11 @@ export function createRideAtmosphere(scene) {
     group,
     // camera: the rider's eye; forward: the lane's heading (x, z); clear(x, z)
     // says whether a point is off the lane, for the wisps; covered(x, z) says
-    // whether it is under a roof, where no leaves fall.
-    tick(time, dt, camera, forward, { gentle = false, clear = () => true, covered = () => false } = {}) {
+    // whether it is under a roof, where no leaves fall; dim (0 to 1) fades the
+    // mist and the wisps, which light themselves, in the breakdown's dark.
+    tick(time, dt, camera, forward, { gentle = false, clear = () => true, covered = () => false, dim = 1 } = {}) {
       if (!camera) { group.visible = false; return; }
+      mistMat.opacity = 0.16 * dim;
       group.visible = true; const step = Math.min(0.1, Math.max(0, dt)), slow = gentle ? 0.4 : 1;
       leaf.forEach((l, i) => {
         l.y -= l.fall * step * slow; if (l.y < 0) { l.y += LEAF.top; l.x += (r() - 0.5) * 4; }
@@ -86,7 +88,7 @@ export function createRideAtmosphere(scene) {
       mistGeo.attributes.position.needsUpdate = true;
       wisp.forEach((w, i) => {
         w.x = wrapTo(w.x, camera.x, 18); w.z = wrapTo(w.z, camera.z, 18);
-        const on = clear(w.x, w.z), glow = on ? Math.max(0, 0.55 + 0.45 * Math.sin(time * (1.3 + w.hue * 0.4) + w.phase)) : 0;
+        const on = clear(w.x, w.z), glow = on ? dim * Math.max(0, 0.55 + 0.45 * Math.sin(time * (1.3 + w.hue * 0.4) + w.phase)) : 0;
         wispPos.set([w.x + Math.sin(time * 0.4 + w.phase) * 0.6, w.y + Math.sin(time * 0.9 + w.phase) * 0.35, w.z + Math.cos(time * 0.33 + w.phase) * 0.6], i * 3);
         wispCol.set(w.hue === 0 ? [0.35 * glow, 0.9 * glow, 0.8 * glow] : w.hue === 1 ? [0.5 * glow, 0.75 * glow, 1 * glow] : [0.7 * glow, 1 * glow, 0.45 * glow], i * 3);
       });

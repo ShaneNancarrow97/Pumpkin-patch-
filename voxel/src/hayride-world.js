@@ -10,8 +10,9 @@ import { buildRoadsideSet } from "./hayride-sets.js";
 import { createRiders } from "./hayride-riders.js";
 import { createMoonShafts } from "./hayride-moonlight.js";
 import { RUT_GAP, LIGHTS_OUT, rootJolt, hayrideRoots } from "./hayride-view.js";
+import { STALL, stallAlong, stallLamps, hollowManPlace, createHollowMan, poseHollowMan } from "./hayride-stall.js";
 import { HAYRIDE_PROPERTY, HAYRIDE_TIERS, HAYRIDE_SCARES } from "./content/hayride.js";
-import { HAYRIDE_SITE as SITE, HAYRIDE_FLEET_BAY, HAYRIDE_RIDE_BOUNDS, HAYRIDE_STOPS, HAYRIDE_GATE_CLEAR, hayrideRouteSample, hayrideRouteDistance, hayrideRouteProfile, HAYRIDE_ROUTE_LENGTH, hayrideSpan, hayrideConvoyPose, hayrideFarmConvoyPose, hayrideGuestPose, HAYRIDE_RIDE_HILL, hayrideUnderHill } from "./content/hayride-layout.js";
+import { HAYRIDE_SITE as SITE, HAYRIDE_FLEET_BAY, HAYRIDE_RIDE_BOUNDS, HAYRIDE_STOPS, HAYRIDE_GATE_CLEAR, hayrideRouteSample, hayrideRouteDistance, hayrideRouteProfile, HAYRIDE_ROUTE_LENGTH, hayrideSpan, hayrideConvoyPose, hayrideFarmConvoyPose, hayrideGuestPose, HAYRIDE_RIDE_HILL, hayrideUnderHill, HAYRIDE_JUMP, hayrideJumpSpot } from "./content/hayride-layout.js";
 
 // Each set's own light: the scarecrows' bonfire orange, the spiders' sickly
 // green, the bride's cold moon, the spectre's violet and the bus's red alarm.
@@ -82,17 +83,24 @@ function buildRideLand(state){
   for(const stop of profile.stops){const frame=routeSample(stop.at*routeLength),set=makeScenicSet(stop),offset=stop.offset??(stop.id==="spiders"?0:stop.id==="bride"?6.1:stop.id==="bus"?5.4:4.1);set.group.position.set(frame.x+frame.dz*offset,0,frame.z-frame.dx*offset);set.group.rotation.y=frame.yaw+(stop.id==="spiders"?0:Math.PI/2);root.add(set.group);if(set.brood)root.add(set.brood.group);sets.push({...stop,...set});
     if(stop.id==="spiders"){const cave=buildSpiderCave(land,routeSample,stop.at*routeLength);root.add(cave.silk);rigs.push(...broodFor(cave,root,stop));}
     for(const actor of set.actors)if(actor.web){const m=new THREE.Object3D();actor.web.add(m);const sp=createSpider(.62,{body:0x2a2030,band:0x6a3d58,mark:0xc0392b});sp.root.rotation.x=Math.PI/2;m.add(sp.root);rigs.push({sp,kind:"web",at:stop.at,id:"route-thicket"});}}
+  const darkStretch=stallAlong(profile.stops,routeLength),jumps=profile.stops.filter(stop=>HAYRIDE_JUMP.stops.includes(stop.id)).map(stop=>hayrideJumpSpot(stop,profile.level));   // the breakdown's stretch stays unlit (hayride-stall.js)
   for(let along=10,side=1;along<routeLength-8;along+=HAYRIDE_LANTERN_GAP,side=-side){
-    const p=routeSample(along),x=p.x+p.dz*3.05*side,z=p.z-p.dx*3.05*side;
-    if(sets.some(set=>Math.hypot(set.group.position.x-x,set.group.position.z-z)<7)||(x>-23.5&&x<-8.5&&z>23&&z<39.5)||underHill(x,z,1.5))continue;
-    lanternPost(land.at(x,z),x,z,[],false);lanterns.push({x,y:2.2,z,along});
+    if(Math.abs(along-darkStretch)<6.3)continue;
+    // A lantern where a sprite jump scare waits steps on past it.
+    const blocked=(x,z)=>jumps.some(j=>Math.hypot(j.x-x,j.z-z)<HAYRIDE_JUMP.clear+.6),place=a=>{const p=routeSample(a);return{a,p,x:p.x+p.dz*3.05*side,z:p.z-p.dx*3.05*side};};
+    let spot=place(along);if(blocked(spot.x,spot.z))spot=place(along+4.5);const{x,z,p}=spot;
+    if(sets.some(set=>Math.hypot(set.group.position.x-x,set.group.position.z-z)<7)||blocked(x,z)||(x>-23.5&&x<-8.5&&z>23&&z<39.5)||underHill(x,z,1.5))continue;
+    lanternPost(land.at(x,z),x,z,[],false);lanterns.push({x,y:2.2,z,along:spot.a});
     // Every third lantern has a spider working up and down its post.
     if(lanterns.length%3===1){const toLane=new THREE.Vector3(p.x-x,0,p.z-z).normalize(),m=mount(new THREE.Vector3(x+toLane.x*.09,1.1,z+toLane.z*.09),toLane,new THREE.Vector3(0,1,0));root.add(m);const sp=createSpider(.26,{eye:0xff5a3a});m.add(sp.root);rigs.push({sp,kind:"post",at:along/routeLength,offset:along});}
   }
   const brood=createBrood(rigs.map(g=>g.sp));root.add(brood.group);
   // Moonlight through the canopy, clear of the scenes, the depot and the hill.
   const moon=createMoonShafts({sample:routeSample,length:routeLength,r:seeded(7213),lane:(x,z)=>hayrideRouteDistance(x,z,profile.level),clear:(x,z)=>!underHill(x,z,2)&&!(x>-23.5&&x<-8.5&&z>23&&z<39.5)&&sets.every(set=>Math.hypot(set.group.position.x-x,set.group.position.z-z)>8)});root.add(moon.group);
-  land.build(root);root.name="The Hollow Hayride off-map woodland";return{root,sets,lanterns,rigs,brood,halos,moon,sign:tunnel.sign};
+  land.build(root);root.name="The Hollow Hayride off-map woodland";
+  // Blocks that light themselves (the lanterns' glass, the sets' glows), dimmed in the breakdown's dark.
+  const glows=[];root.traverse(m=>{if(m.isInstancedMesh&&m.material?.isMeshBasicMaterial)glows.push(m.material);});
+  return{root,sets,lanterns,rigs,brood,halos,moon,glows,glowLevel:1,sign:tunnel.sign};
 }
 function makeVehicle(capacity){
   const vehicle=buildHayrideVehicle({capacity}),driver=new Voxels();block(driver,0,1.43,-.3,.55,.56,.36,0x4a354b);block(driver,0,2.0,-.36,.43,.4,.38,0x929b70);block(driver,0,2.4,-.36,.7,.08,.58,C.dark);block(driver,0,2.48,-.36,.44,.18,.4,C.dark);for(const x of [-.2,.2])block(driver,x,1.6,-.62,.15,.14,.42,0x4a354b);vehicle.tractor.add(driver.build());return vehicle;
@@ -102,6 +110,10 @@ export function createHayrideWorld({scene: farmScene,state,world,signBoard,creat
   const root=new THREE.Group();farmScene.add(root);const rideScene=new THREE.Scene();rideScene.name="The Hollow Hayride owner scene";rideScene.background=new THREE.Color(0x0b0f19);rideScene.fog=new THREE.FogExp2(0x121828,.052);
   let built=false,station=null,land=null,forest=null,scares=null,vehicle=null,fleetVehicle=null,rideVehicle=null,tier=0,fleet=-1,preview=null,cleared=0,previewCamera=null,previewTime=0;
   let riders=null,riderPreview=null;const riderLook=new THREE.Vector3();
+  // The breakdown (hayride-stall.js): the view sets its clock, stall seconds since the tractor stopped.
+  let hollow=null,hollowPlace=null,stallT=null,stallAt=0,hollowAlong=null,lastStallT=null,lastJump=0,fogRef=null,fogBase=null,backBase=null,rideGlows=[];const hollowHead=new THREE.Vector3();
+  // The rider stands this far behind the tractor's place on the route (the wagon's rear camera).
+  const RIDER_BEHIND=5.5;
   let routeProfile=hayrideRouteProfile(state),builtRoute=-1;
   const atmosphere=createRideAtmosphere(rideScene);let airTime=null;const airForward=new THREE.Vector3();
   const reducedDefault=typeof window!=="undefined"&&window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;let gentle=!!reducedDefault;
@@ -135,18 +147,24 @@ export function createHayrideWorld({scene: farmScene,state,world,signBoard,creat
   }
   function lightRide(time){
     if(!land)return;
-    const along=(preview??0)*routeProfile.length,failing=lampFailure(time,along);
-    headlamp.intensity=60*failing;
-    if(rideVehicle){lamp.set(rideVehicle.cameraAnchor[0],rideVehicle.cameraAnchor[1]+1.05,rideVehicle.cameraAnchor[2]+.5).applyMatrix4(rideVehicle.wagon.matrixWorld);wagonLamp.position.copy(lamp);wagonLamp.intensity=5*(.93+.07*Math.sin(time*9.3)*Math.sin(time*3.1))*failing;}
+    const along=(preview??0)*routeProfile.length,stalled=gentle?null:stallLamps(stallT),failing=stalled?stalled.head:lampFailure(time,along),carried=stalled?stalled.wagon:failing;
+    headlamp.intensity=60*failing;sky.intensity=1*(stalled?stalled.sky:1);moon.intensity=1.25*(stalled?stalled.sky:1);
+    // In the breakdown the fog and the sky behind it go near black too (the view sets them on entering).
+    if(rideScene.fog!==fogRef){fogRef=rideScene.fog;fogBase=fogRef?.color?.clone()??null;backBase=rideScene.background?.isColor?rideScene.background.clone():null;}
+    const night=1-.82*(stalled?stalled.dark:0);if(fogBase)fogRef.color.copy(fogBase).multiplyScalar(night);if(backBase&&rideScene.background?.isColor)rideScene.background.copy(backBase).multiplyScalar(night);
+    // Glass that lights itself goes dark with its lamps: the lane's with the dark, the tractor's and the wagon's with their own.
+    const glass=1-.92*(stalled?stalled.dark:0);if(land.glowLevel!==glass){land.glowLevel=glass;for(const m of land.glows)m.color.setScalar(glass);}
+    const own=Math.min(1,.12+Math.max(failing,carried));for(const m of rideGlows)m.color.setScalar(own);
+    if(rideVehicle){lamp.set(rideVehicle.cameraAnchor[0],rideVehicle.cameraAnchor[1]+1.05,rideVehicle.cameraAnchor[2]+.5).applyMatrix4(rideVehicle.wagon.matrixWorld);wagonLamp.position.copy(lamp);wagonLamp.intensity=5*(.93+.07*Math.sin(time*9.3)*Math.sin(time*3.1))*carried;}
     // Lanterns from 10 units behind to 36 ahead: at most four at a time, each
     // fading in from the far edge, a few of them guttering.
     const near=land.lanterns.map((l,i)=>({l,i,d:wrap(l.along-along)})).filter(n=>n.d>-10&&n.d<36);
     lanternPool.forEach((light,k)=>{const n=near[k];if(!n){light.intensity=0;return;}light.position.set(n.l.x,n.l.y,n.l.z);
-      const gutter=n.i%5===2?Math.max(.15,Math.sin(time*2.3+n.i)*Math.sin(time*7.7)*1.4):1;light.intensity=15*fade(n.d,-10,-4,24,36)*(.88+.12*Math.sin(time*11+n.i*7))*Math.min(1,gutter)*(.25+.75*Math.min(1,failing));});
+      const gutter=n.i%5===2?Math.max(.15,Math.sin(time*2.3+n.i)*Math.sin(time*7.7)*1.4):1;light.intensity=15*fade(n.d,-10,-4,24,36)*(.88+.12*Math.sin(time*11+n.i*7))*Math.min(1,gutter)*(stalled?stalled.lanterns:.25+.75*Math.min(1,failing));});
     // The set ahead glows in its own colour from 18 units out until just past it.
     const set=land.sets.reduce((best,s)=>Math.abs(wrap(s.at*routeProfile.length-along))<Math.abs(wrap(best.at*routeProfile.length-along))?s:best,land.sets[0]);
     if(set){const d=wrap(set.at*routeProfile.length-along),frame=hayrideRouteSample(set.at*routeProfile.length,routeProfile.level);setLamp.color.setHex(SET_LIGHT[set.id]??0xffffff);
-      setLamp.position.set(frame.x+frame.dz*1.8,3.4,frame.z-frame.dx*1.8);setLamp.intensity=(gentle?5:7)*fade(-d,-18,-8,3,9)*(.9+.1*Math.sin(time*5+set.at*40));}
+      setLamp.position.set(frame.x+frame.dz*1.8,3.4,frame.z-frame.dx*1.8);setLamp.intensity=(gentle?5:7)*fade(-d,-18,-8,3,9)*(.9+.1*Math.sin(time*5+set.at*40))*(stalled?stalled.glow:1);}
   }
   function poseFarm(){
     [vehicle,fleetVehicle].forEach((v,berth)=>{if(!v)return;const p=hayrideFarmConvoyPose(state,berth),c=berth?state.hayride.secondConvoy:state.hayride.convoy;v.group.visible=p.visible;v.setPose(p);v.setRollDistance(p.distance);v.setSteering(0);v.setBoarding(["loading","unloading"].includes(c?.phase));});
@@ -156,7 +174,8 @@ export function createHayrideWorld({scene: farmScene,state,world,signBoard,creat
     if(land){land.root.removeFromParent();land.moon.dispose();dispose(land.root);}forest?.dispose();scares?.dispose();
     routeProfile=hayrideRouteProfile(state);builtRoute=routeProfile.level;land=buildRideLand(state);rideScene.add(land.root);
     const into=signBoard("Into the Hollow","",2.1);into.position.set(land.sign.x,land.sign.y,land.sign.z);land.root.add(into);
-    forest=createHayrideForest({routeLevel:routeProfile.level});rideScene.add(forest.group);scares=createScares?.({state})??null;if(scares)rideScene.add(scares.group);
+    forest=createHayrideForest({routeLevel:routeProfile.level});rideScene.add(forest.group);
+    hollow?.group.removeFromParent();hollow?.dispose();hollow=createHollowMan();rideScene.add(hollow.group);stallAt=stallAlong(routeProfile.stops,routeProfile.length);hollowAlong=null;scares=createScares?.({state})??null;if(scares)rideScene.add(scares.group);
   }
   function sync(){
     const h=state.hayride;if(!h?.purchased){marker.visible=true;hit.visible=false;return;}
@@ -164,14 +183,14 @@ export function createHayrideWorld({scene: farmScene,state,world,signBoard,creat
     if(!built){built=true;cleared=openWestGate(world.group??world);station=buildHayrideStation(signBoard,h.fleet===1);fleet=h.fleet??0;root.add(station.root);rebuildRide();}
     if(fleet!==(h.fleet??0)){fleet=h.fleet??0;station.root.removeFromParent();dispose(station.root);station=buildHayrideStation(signBoard,fleet===1);root.add(station.root);}
     fleetHit.visible=fleet===1;
-    if(tier!==h.tier){tier=h.tier;vehicle?.dispose();fleetVehicle?.dispose();fleetVehicle=null;rideVehicle?.dispose();const capacity=HAYRIDE_TIERS[Math.max(0,tier-1)].seats;vehicle=makeVehicle(capacity);rideVehicle=makeVehicle(capacity);root.add(vehicle.group);rideScene.add(rideVehicle.group);riders?.dispose();riders=createRiders({wagon:rideVehicle.wagon,seats:rideVehicle.seatAnchors,eye:rideVehicle.cameraAnchor,scene:rideScene});}
+    if(tier!==h.tier){tier=h.tier;vehicle?.dispose();fleetVehicle?.dispose();fleetVehicle=null;rideVehicle?.dispose();const capacity=HAYRIDE_TIERS[Math.max(0,tier-1)].seats;vehicle=makeVehicle(capacity);rideVehicle=makeVehicle(capacity);rideGlows=[];rideVehicle.group.traverse(m=>{if(m.isInstancedMesh&&m.material?.isMeshBasicMaterial)rideGlows.push(m.material);});root.add(vehicle.group);rideScene.add(rideVehicle.group);riders?.dispose();riders=createRiders({wagon:rideVehicle.wagon,seats:rideVehicle.seatAnchors,eye:rideVehicle.cameraAnchor,scene:rideScene});}
     if(fleet===1&&!fleetVehicle){fleetVehicle=makeVehicle(HAYRIDE_TIERS[Math.max(0,tier-1)].seats);fleetVehicle.group.userData.berth=1;root.add(fleetVehicle.group);}
     if(preview!==null&&builtRoute!==(h.routeLevel??0))rebuildRide();
     poseFarm();poseRide();
   }
   function tick(time){previewTime=time;sync();stationLamp.intensity=vehicle?4:0;if(!vehicle){convoyLamp.intensity=0;return;}const moving=vehicle.group.visible&&["departing","arriving"].includes(state.hayride?.convoy?.phase)?vehicle:fleetVehicle?.group.visible&&["departing","arriving"].includes(state.hayride?.secondConvoy?.phase)?fleetVehicle:null;convoyLamp.position.set((moving??vehicle).tractor.position.x,2.5,(moving??vehicle).tractor.position.z);convoyLamp.intensity=moving?2.4:0;
-    if(preview===null){riderPreview=null;if(airTime!==null){atmosphere.tick(time,0,null);airTime=null;}return;}forest?.tick(time,{gentle});lightRide(time);land.halos.tick(time);land.moon.tick(time);
-    {const f=hayrideRouteSample(preview*routeProfile.length,routeProfile.level);airForward.set(f.dx,0,f.dz);atmosphere.tick(time,airTime===null?0:time-airTime,previewCamera,airForward,{gentle,clear:(x,z)=>hayrideRouteDistance(x,z,routeProfile.level)>3.4,covered:(x,z)=>hayrideUnderHill(x,z)>=1});airTime=time;}scares?.tick({progress:preview,time,gentle,camera:previewCamera});
+    if(preview===null){riderPreview=null;if(airTime!==null){atmosphere.tick(time,0,null);airTime=null;}return;}forest?.tick(time,{gentle});lightRide(time);land.halos.tick(time);const dark=gentle?0:stallLamps(stallT)?.dark??0;land.moon.tick(time,1-.95*dark);
+    {const f=hayrideRouteSample(preview*routeProfile.length,routeProfile.level);airForward.set(f.dx,0,f.dz);atmosphere.tick(time,airTime===null?0:time-airTime,previewCamera,airForward,{gentle,dim:1-.9*dark,clear:(x,z)=>hayrideRouteDistance(x,z,routeProfile.level)>3.4,covered:(x,z)=>hayrideUnderHill(x,z)>=1});airTime=time;}scares?.tick({progress:preview,time,gentle,camera:previewCamera});
     const h=state.hayride,owned=new Set(h.haunts?.owned??[]),active=new Set((h.haunts?.active??[]).filter(id=>owned.has(id)&&HAYRIDE_SCARES.some(p=>p.id===id&&p.tier<=h.tier)));
     if((h.routeLevel??0)>0)active.add("route-graveyard");if((h.routeLevel??0)>1)active.add("route-thicket");
     for(const set of land.sets)for(const actor of set.actors){if(!actor.animate)continue;const gap=Math.abs(preview-set.at)/hayrideSpan(7,routeProfile.level),near=gap<1,ramp=Math.max(0,1-gap)**.7;actor.animate({time,near,ramp,wave:near?(Math.sin(time*2)+1)/2:0,on:!gentle&&active.has(actor.id),camera:previewCamera,forward:airForward,set});}
@@ -179,11 +198,33 @@ export function createHayrideWorld({scene: farmScene,state,world,signBoard,creat
     animateSpiders(time,active);
     // The other passengers jog over the same roots as the rider, turn to each
     // scene as it comes level and jump when it springs.
+    const hollowShown=poseHollow(time);
     if(riders){const d=preview*routeProfile.length,jolt=gentle?0:rootJolt(d,routeProfile.length);
       const set=land.sets.reduce((best,s)=>Math.abs(preview-s.at)<Math.abs(preview-best.at)?s:best,land.sets[0]),delta=set?Math.abs(preview-set.at)*routeProfile.length:Infinity,weight=(delta<10?Math.max(0,1-(Math.max(0,delta-2)/8)**2):0)*(previewCamera?1-hayrideUnderHill(previewCamera.x,previewCamera.z):1);
       if(set){set.group.updateWorldMatrix(true,false);riderLook.set(0,1.4,0).applyMatrix4(set.group.matrixWorld);}
       if(!gentle&&riderPreview!==null)for(const s of land.sets)if(riderPreview<s.at&&preview>=s.at)riders.fright(time);
-      riderPreview=preview;riders.tick({time,d,jolt,look:set?riderLook:null,weight,gentle});}
+      const jump=scares?.lunge?.()??null,springing=jump?.weight??0;if(!gentle&&lastJump<.5&&springing>=.5)riders.fright(time);lastJump=springing;
+      // In the breakdown they turn to him in the dark, and jump as the headlamp catches him.
+      if(!gentle&&lastStallT!==null&&stallT!==null&&lastStallT<STALL.reveal&&stallT>=STALL.reveal)riders.fright(time);
+      riderPreview=preview;riders.tick({time,d,jolt,look:hollowShown?hollowHead:springing>.3?jump.point:set?riderLook:null,weight:hollowShown?(stallT<STALL.reveal?.55:1):springing>.3?springing:weight,gentle});}
+    lastStallT=stallT;
+  }
+  // The Hollow Man, where the breakdown's clock puts him (hayride-stall.js),
+  // facing the rider or the way he runs. Returns whether he's out.
+  function poseHollow(time){
+    if(!hollow)return false;
+    const place=hollowPlace=!gentle&&stallT!==null?hollowManPlace(stallT,stallAt,(preview??0)*routeProfile.length-RIDER_BEHIND):null;
+    hollow.group.visible=!!place;if(!place){hollowAlong=null;return false;}
+    const along=place.along??hollowAlong??stallAt;hollowAlong=along;
+    const f=hayrideRouteSample(along,routeProfile.level),x=f.x+f.dz*place.side,z=f.z-f.dx*place.side,root=hollow.rig.root;
+    root.position.set(x,.02,z);
+    root.rotation.y=place.face==="forward"?Math.atan2(f.dx,f.dz):previewCamera?Math.atan2(previewCamera.x-x,previewCamera.z-z):Math.atan2(-f.dx,-f.dz);
+    poseHollowMan(hollow.rig,time,place.mode,place.k);hollow.sync(place.glow*(place.light>0?.88+.12*Math.sin(time*17)*Math.sin(time*6.1):1));hollow.rig.head.getWorldPosition(hollowHead);hollowHead.y+=.3;
+    // An ember-red light in front of his chest, toward the rider, so he looms out of the dark: the
+    // scenes' own lamp, free here, as no scene is near the breakdown (the ride keeps its fixed pool of lights).
+    if(place.light>0){const lx=previewCamera?previewCamera.x-x:0,lz=previewCamera?previewCamera.z-z:0,ln=Math.hypot(lx,lz)||1;
+      encounterLamp.color.setHex(0xff7a34);encounterLamp.position.set(x+lx/ln*1.1,2.3,z+lz/ln*1.1);encounterLamp.intensity=9*place.light*(.85+.15*Math.sin(time*13)*Math.sin(time*5.3));}
+    return true;
   }
   // The spiders crawl all the time; near the wagon the giant rears with its fangs
   // open and the dropper falls on its line, legs thrashing. Gentle mode stills them.
@@ -201,5 +242,10 @@ export function createHayrideWorld({scene: farmScene,state,world,signBoard,creat
     land.brood.sync();
   }
   sync();
-  return{scene:rideScene,rideScene,root,sync,tick,focus:SITE.focus,setLightning(value){lightning.intensity=Math.max(0,Math.min(1,Number.isFinite(value)?value:0))*5;},setGentleMotion(value){gentle=value===null?!!reducedDefault:!!value;},get vehicle(){return vehicle;},get rideVehicle(){return rideVehicle;},get fleetVehicle(){return fleetVehicle;},setPreview(value){preview=value===null?null:Math.max(0,Math.min(1,value));if(preview!==null&&builtRoute!==(state.hayride?.routeLevel??0))rebuildRide();if(preview===null){previewCamera=null;lightning.intensity=0;encounterLamp.intensity=0;wagonLamp.intensity=setLamp.intensity=0;for(const light of lanternPool)light.intensity=0;}poseRide();},getPreviewFrame(progress){preview=Math.max(0,Math.min(1,progress));poseRide();if(!rideVehicle)return null;const position=new THREE.Vector3(...rideVehicle.cameraAnchor).applyMatrix4(rideVehicle.wagon.matrixWorld),target=new THREE.Vector3(0,rideVehicle.cameraAnchor[1]-.6,-9).applyMatrix4(rideVehicle.wagon.matrixWorld);previewCamera=position.clone();const nearest=land.sets.reduce((best,set)=>Math.abs(progress-set.at)<Math.abs(progress-best.at)?set:best,land.sets[0]),delta=Math.abs(progress-nearest.at)*routeProfile.length,focusWeight=(delta<7.8?Math.max(0,1-(Math.max(0,delta-2.1)/5.7)**2):0)*(1-hayrideUnderHill(position.x,position.z));nearest.group.updateWorldMatrix(true,false);scares?.tick({progress:preview,time:previewTime,gentle,camera:previewCamera});const focusTarget=scares?.focusTarget?.(progress)??new THREE.Vector3(0,nearest.id==="scarecrows"?2.3:nearest.id==="spiders"?3.1:1.6,nearest.id==="spiders"?0:1).applyMatrix4(nearest.group.matrixWorld);encounterLamp.position.copy(focusTarget).add(new THREE.Vector3(0,2,1));encounterLamp.color.setHex(SET_LIGHT[nearest.id]??0xbba4ee);encounterLamp.intensity=focusWeight*(gentle?4:7);return{position,target,yaw:rideVehicle.wagon.rotation.y,focusTarget,focusWeight};},guestPose:v=>hayrideGuestPose(state,v),get pickables(){return state.hayride?.purchased?[hit,...(fleet===1?[fleetHit]:[]),station?.sign].filter(Boolean):[marker];},get status(){return{purchased:!!state.hayride?.purchased,tier,phase:state.hayride?.convoy?.phase??"loading",queue:(state.visitors??[]).filter(v=>v.hayride&&!v.hayride.done&&v.hayride.phase==="queue").length,aboard:(state.hayride?.convoy?.manifest?.length??0)+(state.hayride?.secondConvoy?.manifest?.length??0),fleet:state.hayride?.fleet===1?2:1,vehicles:[vehicle,fleetVehicle].filter(Boolean).map((v,berth)=>({berth,visible:v.group.visible,x:v.tractor.position.x,z:v.tractor.position.z,phase:(berth?state.hayride.secondConvoy:state.hayride.convoy)?.phase})),bounds:SITE.bounds,farmBounds:SITE.bounds,rideBounds:hayrideRouteProfile(state).bounds,routeLevel:state.hayride?.routeLevel??0,routeLength:hayrideRouteProfile(state).length,scenes:hayrideRouteProfile(state).stops.map(p=>p.id),farmVisible:vehicle?.group.visible??false,rideScene:true,forest:forest?.diagnostics??null,lanterns:land?.lanterns.length??0,cleared,preview};},dispose(){vehicle?.dispose();fleetVehicle?.dispose();rideVehicle?.dispose();riders?.dispose();if(station)dispose(station.root);if(land){land.moon.dispose();dispose(land.root);}forest?.dispose();scares?.dispose();atmosphere.dispose();root.removeFromParent();stationLamp.removeFromParent();convoyLamp.removeFromParent();dispose(marker);hit.geometry.dispose();hit.material.dispose();fleetHit.geometry.dispose();fleetHit.material.dispose();rideScene.clear();}};
+  return{scene:rideScene,rideScene,root,sync,tick,focus:SITE.focus,setLightning(value){lightning.intensity=Math.max(0,Math.min(1,Number.isFinite(value)?value:0))*5;},setGentleMotion(value){gentle=value===null?!!reducedDefault:!!value;},get vehicle(){return vehicle;},get rideVehicle(){return rideVehicle;},get fleetVehicle(){return fleetVehicle;},setPreview(value){preview=value===null?null:Math.max(0,Math.min(1,value));if(preview!==null&&builtRoute!==(state.hayride?.routeLevel??0))rebuildRide();if(preview===null){previewCamera=null;lightning.intensity=0;encounterLamp.intensity=0;wagonLamp.intensity=setLamp.intensity=0;for(const light of lanternPool)light.intensity=0;}poseRide();},getPreviewFrame(progress){preview=Math.max(0,Math.min(1,progress));poseRide();if(!rideVehicle)return null;const position=new THREE.Vector3(...rideVehicle.cameraAnchor).applyMatrix4(rideVehicle.wagon.matrixWorld),target=new THREE.Vector3(0,rideVehicle.cameraAnchor[1]-.6,-9).applyMatrix4(rideVehicle.wagon.matrixWorld);previewCamera=position.clone();const nearest=land.sets.reduce((best,set)=>Math.abs(progress-set.at)<Math.abs(progress-best.at)?set:best,land.sets[0]),delta=Math.abs(progress-nearest.at)*routeProfile.length,focusWeight=(delta<7.8?Math.max(0,1-(Math.max(0,delta-2.1)/5.7)**2):0)*(1-hayrideUnderHill(position.x,position.z));nearest.group.updateWorldMatrix(true,false);scares?.tick({progress:preview,time:previewTime,gentle,camera:previewCamera});const focusTarget=new THREE.Vector3(0,nearest.id==="scarecrows"?2.3:nearest.id==="spiders"?3.1:1.6,nearest.id==="spiders"?0:1).applyMatrix4(nearest.group.matrixWorld);
+    // The set plays first; then, as a sprite springs from across the lane (hayride-scares.js), the camera and its light turn to it.
+    const jump=scares?.lunge?.()??null,weight=Math.max(focusWeight,jump?.weight??0);if(jump)focusTarget.lerp(jump.point,jump.weight);
+    encounterLamp.position.copy(focusTarget).add(new THREE.Vector3(0,2,1));encounterLamp.color.setHex(SET_LIGHT[nearest.id]??0xbba4ee);encounterLamp.intensity=weight*(gentle?4:7)*(gentle?1:stallLamps(stallT)?.glow??1);const shown=poseHollow(previewTime);return{position,target,yaw:rideVehicle.wagon.rotation.y,focusTarget,focusWeight:weight,hollow:shown?{position:hollowHead.clone(),weight:hollowPlace.gaze}:null};},
+    // The breakdown's clock (hayride-view.js): seconds since the tractor stopped, or null.
+    setStall(value){stallT=Number.isFinite(value)?value:null;},guestPose:v=>hayrideGuestPose(state,v),get pickables(){return state.hayride?.purchased?[hit,...(fleet===1?[fleetHit]:[]),station?.sign].filter(Boolean):[marker];},get status(){return{purchased:!!state.hayride?.purchased,tier,phase:state.hayride?.convoy?.phase??"loading",queue:(state.visitors??[]).filter(v=>v.hayride&&!v.hayride.done&&v.hayride.phase==="queue").length,aboard:(state.hayride?.convoy?.manifest?.length??0)+(state.hayride?.secondConvoy?.manifest?.length??0),fleet:state.hayride?.fleet===1?2:1,vehicles:[vehicle,fleetVehicle].filter(Boolean).map((v,berth)=>({berth,visible:v.group.visible,x:v.tractor.position.x,z:v.tractor.position.z,phase:(berth?state.hayride.secondConvoy:state.hayride.convoy)?.phase})),bounds:SITE.bounds,farmBounds:SITE.bounds,rideBounds:hayrideRouteProfile(state).bounds,routeLevel:state.hayride?.routeLevel??0,routeLength:hayrideRouteProfile(state).length,scenes:hayrideRouteProfile(state).stops.map(p=>p.id),farmVisible:vehicle?.group.visible??false,rideScene:true,forest:forest?.diagnostics??null,lanterns:land?.lanterns.length??0,cleared,preview};},dispose(){vehicle?.dispose();fleetVehicle?.dispose();rideVehicle?.dispose();riders?.dispose();if(station)dispose(station.root);if(land){land.moon.dispose();dispose(land.root);}forest?.dispose();scares?.dispose();atmosphere.dispose();root.removeFromParent();stationLamp.removeFromParent();convoyLamp.removeFromParent();dispose(marker);hit.geometry.dispose();hit.material.dispose();fleetHit.geometry.dispose();fleetHit.material.dispose();rideScene.clear();}};
 }

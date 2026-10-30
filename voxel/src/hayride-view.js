@@ -1,6 +1,7 @@
 import * as THREE from "three";
-import { HAYRIDE_PROPERTY, HAYRIDE_TIERS } from "./content/hayride.js";
-import { HAYRIDE_STOPS, hayrideStops, hayrideRouteLength, HAYRIDE_ROUTE_LENGTH, HAYRIDE_RIDE_HILL } from "./content/hayride-layout.js";
+import { HAYRIDE_PROPERTY, HAYRIDE_TIERS, HAYRIDE_SCARE_BY_ID } from "./content/hayride.js";
+import { STALL, STALL_CUES, stallAlong, engineAt } from "./hayride-stall.js";
+import { HAYRIDE_STOPS, hayrideStops, hayrideRouteLength, HAYRIDE_ROUTE_LENGTH, HAYRIDE_RIDE_HILL, HAYRIDE_JUMP } from "./content/hayride-layout.js";
 import { HAYRIDE_LIGHTNING_TIMES, hayrideLightning } from "./content/hayride-weather.js";
 
 const INTRO = 2.5, YAW_LIMIT = Math.PI * .48, PITCH_LIMIT = Math.PI / 7;
@@ -33,7 +34,12 @@ export const LIGHTS_OUT = Object.freeze({ stops: ["pursuit", "bus"], before: 6, 
 export function hayridePace(stops, length) {
   const N = 1600, speed = p => {
     let v = 1;
-    for (const s of stops) { const d = (p - s.at) * length; v -= .58 * Math.exp(-((d < 0 ? d / 8 : d / 3.2) ** 2)); }
+    for (const s of stops) {
+      const d = (p - s.at) * length;
+      // The breakdown: the engine coughs the wagon to a crawl, and after the stop (held by the view) it lurches away fast.
+      if (s.kind === "stall") v += d < 0 ? -.66 * Math.exp(-((d / 7) ** 2)) : .7 * Math.exp(-(((d - 6) / 7) ** 2)) - .6 * Math.exp(-((d / 1.4) ** 2));
+      else v -= .58 * Math.exp(-((d < 0 ? d / 8 : d / 3.2) ** 2));
+    }
     return Math.max(.3, v) * (.3 + .7 * smooth(p / .035)) * (.4 + .6 * smooth((1 - p) / .03));
   };
   const time = new Float64Array(N + 1);
@@ -48,6 +54,10 @@ export function hayridePace(stops, length) {
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const smooth = n => { const t = clamp(n, 0, 1); return t * t * (3 - 2 * t); };
 const sounds = { scarecrows: "knock", spiders: "skitter", bride: "whisper", pursuit: "whoosh", bus: "chains", graveyard: "whisper", thicket: "knock" };
+// A bought scare that's switched on and allowed at the ride's tier.
+const scareOn = (state, id) => { const h = state.hayride, p = HAYRIDE_SCARE_BY_ID[id]; return !!p && p.tier <= (h?.tier ?? 0) && !!h?.haunts?.owned?.includes(id) && !!h?.haunts?.active?.includes(id); };
+// The share of ride time at which a pace reaches a share of the route (a pace only ever grows).
+function paceAt(pace, share) { let lo = 0, hi = 1; for (let i = 0; i < 40; i++) { const mid = (lo + hi) / 2; if (pace(mid) < share) lo = mid; else hi = mid; } return hi; }
 const finite = n => Number.isFinite(n) ? n : 0;
 
 // A free owner camera in a separate off-map scene, using the existing renderer.
@@ -58,6 +68,8 @@ export function createHayrideView(canvas, state, hooks = {}) {
   let options = { gentle: !!globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches, lightning: true }, fogSave = null, backgroundSave = null;
   // The ride's motion: a jolt and a punch-in when a scare fires, a lean into bends.
   let shake = 0, kick = 0, roll = 0, lastHeading = null, baseFov = 68;
+  // The director's turn toward the Hollow Man, and a pad's stick looking round (held: look; let go: ahead again).
+  let gazeYaw = 0, gazePitch = 0, padSteering = false; const padLook = { x: 0, y: 0 };
   const point = new THREE.Vector3(), target = new THREE.Vector3(), base = new THREE.Euler(0, 0, 0, "YXZ");
   const world = () => typeof hooks.world === "function" ? hooks.world() : hooks.world;
   const inputActive = () => active && run && !run.paused && !run.completed && !hooks.blocked?.();
@@ -68,9 +80,22 @@ export function createHayrideView(canvas, state, hooks = {}) {
     eventsFired: [...(run?.fired ?? [])], currentCue: run?.cue && run.elapsed - run.cue.at < 2.7 ? { ...run.cue } : null,
     gentle: !!options.gentle, lightning: options.lightning !== false, lightningIntensity: run ? hayrideLightning(run.elapsed, { ...options, paused: run.paused || run.completed }) : 0,
     lookYaw: yaw, lookPitch: pitch, lookBounds: { yaw: YAW_LIMIT, pitch: PITCH_LIMIT }, inputActive: !!inputActive(),
+    stall: run?.stallT ?? null, tension: tension(), photo: run?.photo ?? null, photoCaption: run?.photoCaption ?? "",
+    // The wagon's pace (1 its usual speed, 0 standing) and what the tractor's engine is doing (hayride-stall.js).
+    pace: run?.pace ?? 0, engine: run ? engineAt(run.pace, run.stallT) : null,
     camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z, yaw: camera.rotation.y, pitch: camera.rotation.x },
   });
   const notify = () => hooks.onState?.(status());
+  // How near the next fright is, 0 to 1, for the heartbeat and the vignette:
+  // rising as a scene nears, held through the breakdown's dark, easing after.
+  function tension() {
+    if (!run || run.completed || run.paused) return 0;
+    const t = run.stallT;
+    if (Number.isFinite(t) && t > -4 && t < STALL.calm) return t < STALL.reveal ? .45 + .55 * Math.min(1, (t + 4) / 6) : Math.max(0, 1 - (t - STALL.reveal) / (STALL.calm - STALL.reveal));
+    const d = run.progress * run.length; let next = Infinity;
+    for (const s of run.stops) if (!run.fired.has(s.id)) next = Math.min(next, s.at * run.length - d);
+    return !Number.isFinite(next) || next < 0 ? 0 : Math.max(0, 1 - next / 24) ** 1.6;
+  }
   const clearPointer = () => { const old = pointer; pointer = null; if (old) try { canvas.releasePointerCapture?.(old.id); } catch {} };
   const resize = () => {
     camera.aspect = Math.max(1, canvas.clientWidth || canvas.width || 1) / Math.max(1, canvas.clientHeight || canvas.height || 1);
@@ -78,7 +103,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
   };
   function pose(dt = 0, snap = false) {
     if (!run) return;
-    const site = world(); site?.setPreview?.(run.progress);
+    const site = world(); site?.setPreview?.(run.progress); site?.setStall?.(run.stallT ?? null);
     site?.setLightning?.(hayrideLightning(run.elapsed, { ...options, paused: run.paused || run.completed }));
     const frame = site?.getPreviewFrame?.(run.progress); if (!frame) return;
     point.copy(frame.position); target.copy(frame.target);
@@ -105,16 +130,33 @@ export function createHayrideView(canvas, state, hooks = {}) {
     lastHeading = heading;
     const fov = baseFov - kick * 7;
     if (Math.abs(camera.fov - fov) > 1e-3) { camera.fov = fov; camera.updateProjectionMatrix(); }
+    if (inputActive() && Math.hypot(padLook.x, padLook.y) > .15) { padSteering = true; targetYaw = clamp(-padLook.x * YAW_LIMIT, -YAW_LIMIT, YAW_LIMIT); targetPitch = clamp(-padLook.y * PITCH_LIMIT, -PITCH_LIMIT, PITCH_LIMIT); }
+    else if (padSteering) { padSteering = false; targetYaw = targetPitch = 0; }
     const blend = snap ? 1 : 1 - Math.exp(-Math.max(0, dt) * 9);
     yaw += (targetYaw - yaw) * blend; pitch += (targetPitch - pitch) * blend;
     camera.position.copy(point); camera.lookAt(target); base.setFromQuaternion(camera.quaternion, "YXZ");
-    camera.rotation.set(base.x + pitch + nod + sx, base.y + yaw + drift + sy, roll, "YXZ"); camera.updateMatrixWorld(true);
+    // The director turns you to the Hollow Man: into the beam, round as the
+    // wagon passes him, back over your shoulder as he gives chase. A look of
+    // your own, or gentle mode, overrides it.
+    let wantYaw = 0, wantPitch = 0;
+    if (frame.hollow && frame.hollow.weight > 0 && !options.gentle && Math.abs(targetYaw) < .06 && Math.abs(targetPitch) < .06) {
+      const v = frame.hollow.position, dx = v.x - point.x, dy = v.y - point.y, dz = v.z - point.z;
+      let turn = Math.atan2(-dx, -dz) - base.y; turn = Math.atan2(Math.sin(turn), Math.cos(turn));
+      if (turn - gazeYaw > Math.PI) turn -= Math.PI * 2; else if (turn - gazeYaw < -Math.PI) turn += Math.PI * 2;
+      wantYaw = clamp(turn, -2.7, 2.7) * frame.hollow.weight; wantPitch = clamp(Math.atan2(dy, Math.hypot(dx, dz)) - base.x, -.5, .5) * frame.hollow.weight * .8;
+    }
+    const ease = snap ? 1 : 1 - Math.exp(-Math.max(0, dt) * 3.4); gazeYaw += (wantYaw - gazeYaw) * ease; gazePitch += (wantPitch - gazePitch) * ease;
+    camera.rotation.set(base.x + pitch + gazePitch + nod + sx, base.y + yaw + gazeYaw + drift + sy, roll, "YXZ"); camera.updateMatrixWorld(true);
   }
   function advance(seconds) {
     if (!active || !run || run.paused || run.completed) return [];
     run.elapsed = Math.min(run.duration, run.elapsed + Math.max(0, finite(seconds)));
-    const was = run.progress;
-    run.progress = run.pace(clamp((run.elapsed - INTRO) / run.rideDuration, 0, 1));
+    const was = run.progress, rideT = Math.max(0, run.elapsed - INTRO);
+    // The breakdown holds the wagon still for STALL.hold seconds where the tractor dies.
+    const moving = run.stall && rideT > run.stall.start ? rideT - Math.min(STALL.hold, rideT - run.stall.start) : rideT;
+    run.progress = run.paceCurve(clamp(moving / run.rideDuration, 0, 1));
+    if (seconds > 0) run.pace = (run.progress - was) * run.rideDuration / seconds;
+    run.stallT = run.stall && run.elapsed >= INTRO ? rideT - run.stall.start : null;
     const cues = [];
     // A thud as each axle goes over a root, and a fizz as the lamps begin to
     // fail before the pursuit and the bus. Gentle mode rides smooth and steady.
@@ -139,6 +181,27 @@ export function createHayrideView(canvas, state, hooks = {}) {
       const cue = { type: "encounter", id: `hayride-${stop.id}`, stop: stop.id, name: stop.name, sound: sounds[stop.id], at: run.elapsed, intensity: options.gentle ? .25 : .45 };
       run.cue = cue; cues.push(cue); hooks.onCue?.(cue);
       if (!options.gentle) { shake = 1; kick = 1; }
+      // Without the Hollow Man, the ride's photo is taken at the bus.
+      if (!run.stall && stop.id === "bus") { run.photoAt = run.elapsed + .3; run.photoCaption = "Zombie prison bus"; }
+    }
+    // Once each set has played, a figure springs at the wagon from across the lane (hayride-scares.js). Not in gentle mode.
+    if (!options.gentle) for (const stop of run.stops) {
+      if (!HAYRIDE_JUMP.stops.includes(stop.id) || run.jumped.has(stop.id) || run.progress < stop.at + (HAYRIDE_JUMP.ahead + .2) / run.length) continue;
+      run.jumped.add(stop.id);
+      const cue = { type: "jump", id: `hayride-jump-${stop.id}`, stop: stop.id, sound: "jump", intensity: .5 };
+      cues.push(cue); hooks.onCue?.(cue); shake = Math.max(shake, .8); kick = Math.max(kick, .7);
+    }
+    // The breakdown's beats, each once, as its clock passes them.
+    if (run.stall && Number.isFinite(run.stallT)) for (const beat of STALL_CUES) {
+      if (run.stallFired.has(beat.id) || run.stallT < beat.t) continue;
+      run.stallFired.add(beat.id);
+      if (beat.encounter) {
+        run.fired.add("hollow");
+        const cue = { type: "encounter", id: "hayride-hollow", stop: "hollow", name: "The Hollow Man", sound: beat.sound, at: run.elapsed, intensity: .5 };
+        run.cue = cue; cues.push(cue); hooks.onCue?.(cue); shake = 1.35; kick = 1.25;
+        // The ride's photo waits for the wagon to pass him, at arm's length.
+        run.photoAt = run.elapsed + 2.5; run.photoCaption = "The Hollow Man, reaching for the wagon";
+      } else { const cue = { type: "stall", id: `hayride-${beat.id}`, sound: beat.sound, intensity: .5 }; cues.push(cue); hooks.onCue?.(cue); if (beat.sound === "roar") kick = Math.max(kick, .45); }
     }
     for (let i = 0; i < HAYRIDE_LIGHTNING_TIMES.length; i++) {
       if (run.elapsed < HAYRIDE_LIGHTNING_TIMES[i] + .8 || run.thunder.has(i)) continue;
@@ -175,9 +238,14 @@ export function createHayrideView(canvas, state, hooks = {}) {
       const tier = HAYRIDE_TIERS.find(t => t.level === state.hayride.tier) ?? HAYRIDE_TIERS[0];
       options = { ...options, ...nextOptions };
       const rideDuration=HAYRIDE_PROPERTY.rideAlongSeconds*hayrideRouteLength(state)/HAYRIDE_ROUTE_LENGTH;
-      shake = kick = roll = 0; lastHeading = null;
+      shake = kick = roll = gazeYaw = gazePitch = 0; lastHeading = null; padLook.x = padLook.y = 0; padSteering = false;
       const stops = hayrideStops(state), length = hayrideRouteLength(state);
-      run = { length, pace: hayridePace(stops, length), stops, tier: tier.level, elapsed: 0, duration: INTRO + rideDuration, rideDuration, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), thunder: new Set(), cue: null };
+      // The Hollow Man (a bought scare, hayride-stall.js): the tractor dies halfway
+      // between the manor and the pursuit, and the ride runs that much longer.
+      const stallOn = !options.gentle && scareOn(state, STALL.id), along = stallOn ? stallAlong(stops, length) : null;
+      const pace = hayridePace(stallOn ? [...stops, { id: "stall", at: along / length, kind: "stall" }] : stops, length);
+      run = { length, paceCurve: pace, pace: 0, stops, tier: tier.level, elapsed: 0, duration: INTRO + rideDuration + (stallOn ? STALL.hold : 0), rideDuration, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), jumped: new Set(), thunder: new Set(), cue: null,
+        stall: stallOn ? { along, start: paceAt(pace, along / length) * rideDuration } : null, stallT: null, stallFired: new Set(), photo: null, photoAt: null, photoCaption: "" };
       active = true; yaw = pitch = targetYaw = targetPitch = 0; clearPointer();
       world().setGentleMotion?.(!!options.gentle);
       const scene = world().scene;
@@ -200,6 +268,17 @@ export function createHayrideView(canvas, state, hooks = {}) {
     start(nextOptions = {}) { return active && !run.completed ? api.setPaused(false) : api.enter(nextOptions); },
     restart(nextOptions = {}) { return api.enter({ ...options, paused: false, ...nextOptions }); },
     setOptions(next = {}) { options = { ...options, ...next }; if (active) world()?.setGentleMotion?.(!!options.gentle); pose(0, true); notify(); },
+    // A pad's stick, -1 to 1 each way, every frame: held, it looks round; let go, the view comes back ahead.
+    setPadLook(x = 0, y = 0) { padLook.x = clamp(finite(x), -1, 1); padLook.y = clamp(finite(y), -1, 1); },
+    // The ride's photo: taken from the next frame drawn after its moment (scene.js calls this after drawing).
+    afterRender(canvas) {
+      if (!run || run.photo !== null || run.photoAt === null || run.elapsed < run.photoAt || !canvas?.width) return;
+      try {
+        const w = 480, h = Math.round(w * canvas.height / canvas.width), shot = globalThis.document.createElement("canvas"); shot.width = w; shot.height = h;
+        shot.getContext("2d").drawImage(canvas, 0, 0, w, h); run.photo = shot.toDataURL("image/jpeg", .82);
+      } catch { run.photo = ""; }
+      notify();
+    },
     setLook(nextYaw = 0, nextPitch = 0) { if (!inputActive()) return false; targetYaw = clamp(finite(nextYaw), -YAW_LIMIT, YAW_LIMIT); targetPitch = clamp(finite(nextPitch), -PITCH_LIMIT, PITCH_LIMIT); pose(0, true); return true; },
     advanceForTest(seconds) { const cues = advance(seconds); return { ...status(), cues }; },
     dispose() {

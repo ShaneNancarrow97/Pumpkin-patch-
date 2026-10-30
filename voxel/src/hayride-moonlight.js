@@ -82,9 +82,10 @@ export function createMoonShafts({ sample, length, lane, clear = () => true, r }
   shafts.count = pools.count = spots.length;
   for (const mesh of [shafts, pools]) { mesh.frustumCulled = false; mesh.renderOrder = 3; }
   const group = new THREE.Group(); group.name = "Hollow Hayride moonlight"; group.add(shafts, pools);
-  const tick = (time) => {
+  // light dims them all (the breakdown's dark, hayride-stall.js).
+  const tick = (time, light = 1) => {
     spots.forEach((s, i) => {
-      const f = s.strength * (0.8 + 0.2 * Math.sin(time * 0.6 + s.phase) * Math.sin(time * 0.23 + s.phase * 2));
+      const f = s.strength * light * (0.8 + 0.2 * Math.sin(time * 0.6 + s.phase) * Math.sin(time * 0.23 + s.phase * 2));
       shafts.setColorAt(i, c.copy(tint).multiplyScalar(f)); pools.setColorAt(i, c.copy(tint).multiplyScalar(f * 1.6));
     });
     if (shafts.instanceColor) shafts.instanceColor.needsUpdate = true; if (pools.instanceColor) pools.instanceColor.needsUpdate = true;

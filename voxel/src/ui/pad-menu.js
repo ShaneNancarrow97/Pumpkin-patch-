@@ -11,7 +11,7 @@ const FOCUSABLE = 'button:not(:disabled),a[href],input:not(:disabled):not([type=
 // Menus that sit over everything else, then the hub while Options has the
 // ring there, then the panels.
 const MODALS = [".house-goal-modal:not([hidden])", "#level-celebration:not([hidden])", "#intro:not([hidden])"];
-const PANELS = ["#stock-popover:not([hidden])", "#upgrade-menu:not([hidden])", "#sheet:not([hidden])"];
+const PANELS = ["#hayride-ride-ui:not([hidden]) .hayride-ride-panel", "#stock-popover:not([hidden])", "#upgrade-menu:not([hidden])", "#sheet:not([hidden])"];
 const HUB = ["#dock", "#actions", "#hud", "#place-bar", ".home-journey-chip"];
 const FIRST_REPEAT = 380, REPEAT = 140, STICK = .5;
 
@@ -199,7 +199,7 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
       if (crossHeld && !down[0] && !down[2]) { crossHeld = false; hold?.release("pad"); }
       const sf = surface(), menuPress = pressed(9) || pressed(17);
       if (!sf) {
-        quiet();
+        quiet(); lastSurface = "";
         // Options (or the DualSense's touchpad) brings the ring to the hub.
         if (menuPress && hubAllowed()) { using = true; toggleHub(true); return true; }
         // Something else has the screen (the carving bench, a ride): ○ still means back.

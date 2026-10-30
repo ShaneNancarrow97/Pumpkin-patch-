@@ -806,6 +806,7 @@ export function createScene(canvas, state, hooks) {
 
     if (bloomOn) composer.render(); else renderer.render(activeScene(), active());
     if (view.place === "carving") carvingView.afterRender(canvas);
+    else if (view.place === "hayride") hayrideView.afterRender(canvas);
     if (warming.size) warmNext();
     requestAnimationFrame(tick);
   }
@@ -935,6 +936,7 @@ export function createScene(canvas, state, hooks) {
     pauseHayrideRide(on) { return hayrideView.setPaused(on); },
     restartHayrideRide(options) { return hayrideView.restart(options); },
     setHayrideOptions(options) { hayrideView.setOptions(options); },
+    setHayrideLook(x, y) { hayrideView.setPadLook(x, y); },
     advanceHayrideRide(seconds) { return hayrideView.advanceForTest(seconds); },
     get foyerStatus() { return foyerView.status; },
     // For profiling tools: the farm's three.js objects (tools/perf).

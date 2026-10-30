@@ -16,6 +16,7 @@ export const HAYRIDE_TIERS = [
 export const HAYRIDE_SCARES = [
   { id: "turning-scarecrows", name: "Watching scarecrows", tier: 1, cost: 900, scare: 12, text: "Pumpkin heads turn to watch the wagon pass through the patch." },
   { id: "spider-drop", name: "The spider descent", tier: 1, cost: 1400, scare: 14, text: "A tunnel spider drops beside the wagon, then rises into the web." },
+  { id: "hollow-man", name: "The Hollow Man", tier: 1, cost: 3600, scare: 20, text: "Deep in the woods the tractor dies and the lamps go out. Something circles the wagon in the dark, until the headlamp catches it." },
   { id: "bride-procession", name: "The bride's procession", tier: 2, cost: 2200, scare: 17, text: "The manor's bride approaches through a veil of cold mist." },
   { id: "spectral-burst", name: "Spectral pursuit", tier: 2, cost: 3200, scare: 18, text: "The purple gas ghost surges towards the lane before the investigators repel it." },
   { id: "bus-breakout", name: "Prison bus breakout", tier: 3, cost: 4500, scare: 20, text: "Zombie passengers lurch from the prison bus at the final bend." },

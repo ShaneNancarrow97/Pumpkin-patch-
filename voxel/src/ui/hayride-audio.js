@@ -1,17 +1,24 @@
 // Offline sounds for the off-map hayride: no speech synthesis, samples or network. Each
 // run consumes encounter ids once, including cues skipped while muted/paused.
 import { distortionCurve, screamRig, stingerRig } from "./scare-voices.js";
+import { createTractorEngine } from "./tractor-engine.js";
 const MAX_VOICES = 22;
 const clamp = (value, fallback = 0) => Number.isFinite(Number(value)) ? Math.max(0, Math.min(1, Number(value))) : fallback;
 // Who screams at each set: the thing in the woods first, then someone on the
 // wagon. The voices are the maze's (scare-voices.js).
-const SCREAMERS = { scarecrows: ["scarecrow", "victim"], spiders: ["victim", "haunted-girl"], bride: ["haunted-girl", "victim"], pursuit: ["wraith", "victim"], bus: ["ghoul", "victim"], graveyard: ["wraith", "haunted-girl"], thicket: ["scarecrow", "victim"] };
+const SCREAMERS = { hollow: ["ghoul", "victim"], scarecrows: ["scarecrow", "victim"], spiders: ["victim", "haunted-girl"], bride: ["haunted-girl", "victim"], pursuit: ["wraith", "victim"], bus: ["ghoul", "victim"], graveyard: ["wraith", "haunted-girl"], thicket: ["scarecrow", "victim"] };
 // The woods between the sets: seconds between each sound, as [shortest, longest].
 const WOODS = { owl: [11, 19], crow: [14, 24], twig: [3.5, 7], creak: [8, 14], wolf: [38, 60], scream: [26, 42] };
 
 export function createHayrideAudio(prefs = {}) {
   let ctx = null, master = null, scareBus = null, curve = null, noise = null, active = false, paused = false, muted = prefs.hayrideSound === false, volume = clamp((prefs.hayrideVolume ?? prefs.mazeVolume), .45), gentle = false, timer = null, beat = 0, seed = 4711;
   const voices = new Set(), cues = new Set(), next = {};
+  // The heartbeat follows the ride's tension.
+  let tension = 0, nextBeat = 0;
+  // The tractor (tractor-engine.js) runs as one long voice while the ride plays, and the wheels' rumble with it;
+  // the ride says every frame what the engine's doing and how fast the wagon's going (setEngine), and the lamps'
+  // sputter makes it cough for a moment. The wheels rattle only while the wagon rolls.
+  let engine = null, wheels = null, running = null, pace = 1, coughUntil = 0;
   const level = () => active && !paused && !muted ? volume * (gentle ? .65 : 1) * .42 : 0;
   // Screams go through their own louder bus with a hard limiter, as in the
   // maze, so a scream can be loud without lifting the woods.
@@ -42,7 +49,7 @@ export function createHayrideAudio(prefs = {}) {
   }
   // Remove each stopped voice immediately; its tiny release still prevents clicks.
   function clearVoices() {
-    clearInterval(timer); timer = null;
+    clearInterval(timer); timer = null; engine = wheels = null;
     for (const voice of voices) {
       try { const now = ctx.currentTime; voice.gain.gain.cancelScheduledValues(now); voice.gain.gain.setTargetAtTime(.0001, now, .008); for (const source of voice.sources ?? [voice.source]) source.stop(now + .035); } catch {}
     }
@@ -100,26 +107,41 @@ export function createHayrideAudio(prefs = {}) {
     wolf() { const pan = rand() < .5 ? -.7 : .7; voice({ frequency: 330, endFrequency: 590, duration: 1.1, amp: .03, cutoff: 1500, pan, vibrato: 7 }); voice({ frequency: 590, endFrequency: 430, duration: 2.2, delay: 1.05, amp: .03, cutoff: 1500, pan, vibrato: 9 }); },
     scream() { if (!gentle) scream("victim", { amp: .14, out: master, muffle: 800 }); },
   };
+  function startEngine() {
+    let motor = null;
+    const entry = rig(3600, 0, (when, gain, sources, parts) => { motor = createTractorEngine(ctx, noise, gain); sources.push(...motor.sources); parts.push(...motor.nodes); }, master);
+    engine = entry && { entry, drive: motor.drive };
+    engine?.drive(running ?? { fire: 27, level: .75 });
+    let roll = null;
+    const road = rig(3600, 0, (when, gain, sources, parts) => {
+      const air = ctx.createBufferSource(), tone = ctx.createBiquadFilter(); roll = ctx.createGain(); air.buffer = noise; air.loop = true;
+      tone.type = "lowpass"; tone.frequency.value = 260; roll.gain.value = rumble();
+      air.connect(tone).connect(roll).connect(gain); sources.push(air); parts.push(tone, roll);
+    }, master);
+    wheels = road && { entry: road, roll };
+  }
+  const rumble = () => .018 * Math.min(1.3, pace);
   // Resume begins ambience only. Encounter cues never live in a deferred queue.
   function ambience() {
     if (!active || paused || muted || document.hidden || !ensure()) return;
     mix(); beat = 0;
-    voice({ frequency: 39, endFrequency: 39, amp: .035, cutoff: 140, loop: true, duration: 2 });
-    voice({ noise: true, amp: .018, cutoff: 260, loop: true, duration: 2 });
+    startEngine();
     wind();
     for (const kind of Object.keys(WOODS)) next[kind] ??= between(WOODS[kind]) * .6;
     timer = setInterval(() => {
       if (!active || paused || muted || document.hidden) return;
-      // Quiet wheel rattle and timber creak sit below the encounter sounds.
-      voice({ noise: true, cutoff: 180, duration: .24, amp: .022 });
-      voice({ frequency: 43, endFrequency: 36, duration: .27, amp: .026 });
-      if (++beat % 5 === 0) voice({ frequency: 143, endFrequency: 98, type: "triangle", duration: .7, amp: .022, cutoff: 320 });
+      // Quiet wheel rattle and timber creak sit below the encounter sounds, while the wagon rolls.
+      if (pace > .15) {
+        voice({ noise: true, cutoff: 180, duration: .24, amp: .022 });
+        voice({ frequency: 43, endFrequency: 36, duration: .27, amp: .026 });
+        if (++beat % 5 === 0) voice({ frequency: 143, endFrequency: 98, type: "triangle", duration: .7, amp: .022, cutoff: 320 });
+      }
       for (const [kind, range] of Object.entries(WOODS)) if ((next[kind] -= .9) <= 0) { next[kind] = between(range); woods[kind](); }
     }, 900);
   }
   const view = {
     start(options = {}) {
-      clearVoices(); cues.clear(); active = true; paused = false; seed = 4711; for (const kind of Object.keys(next)) delete next[kind];
+      clearVoices(); cues.clear(); active = true; paused = false; seed = 4711; tension = 0; nextBeat = 0; running = null; pace = 1; coughUntil = 0; for (const kind of Object.keys(next)) delete next[kind];
       muted = options.sound === undefined ? prefs.hayrideSound === false : !options.sound; volume = clamp(options.volume ?? (prefs.hayrideVolume ?? prefs.mazeVolume), .45); gentle = !!options.gentle;
       if (document.hidden) paused = true;
       ambience(); mix(); return view.status;
@@ -152,10 +174,53 @@ export function createHayrideAudio(prefs = {}) {
         voice({ frequency: 44, endFrequency: 36, duration: 3.2, amp: amp * .45, cutoff: 160 });
         for (let i = 0; i < 4; i++) voice({ frequency: 1300 + rand() * 700, endFrequency: 820, duration: .14, delay: 1 + i * .75 + rand() * .3, amp: amp * .14, cutoff: 3000, pan: rand() * 1.6 - .8 });
       } else if (name === "sputter") {
-        // The tractor's lamps failing: the engine coughs, the bulb fizzes, then a clunk.
-        for (let i = 0; i < 4; i++) voice({ frequency: 62 - i * 4, endFrequency: 44, type: "sawtooth", duration: .16, delay: i * .27 + rand() * .06, amp: amp * .32, filter: "bandpass", cutoff: 220 });
+        // The tractor's lamps failing: the engine coughs (setEngine), the bulb fizzes, then a clunk.
+        coughUntil = ctx.currentTime + 1.6;
         for (let i = 0; i < 6; i++) voice({ noise: true, filter: "highpass", cutoff: 3200, duration: .05, delay: .1 + i * .19 + rand() * .05, amp: amp * .16 });
         voice({ frequency: 120, endFrequency: 48, duration: .14, delay: 1.25, amp: amp * .5, cutoff: 400 });
+      } else if (name === "stall") {
+        // The breakdown (hayride-stall.js): the engine chugs down and dies (setEngine), with a hiss and a clunk.
+        voice({ noise: true, cutoff: 900, duration: .6, delay: 2, amp: amp * .12 });
+        voice({ frequency: 90, endFrequency: 40, duration: .2, delay: 2.1, amp: amp * .45, cutoff: 300 });
+      } else if (name === "steps") {
+        // Footsteps in the leaves, circling the wagon from behind on one side to ahead on the other, and a twig snapping.
+        for (let i = 0; i < 9; i++) { const pan = -.9 + i * .225, at = i * .47 + (i % 2) * .05; voice({ noise: true, filter: "bandpass", cutoff: 1100 + (i % 3) * 200, duration: .16, delay: at, amp: amp * .34, pan }); voice({ frequency: 70, endFrequency: 48, duration: .12, delay: at, amp: amp * .24, cutoff: 200, pan }); }
+        voice({ noise: true, filter: "highpass", cutoff: 2800, duration: .05, delay: 2.6, amp: amp * .42, pan: .6 });
+      } else if (name === "breath") {
+        // Slow, heavy breathing, close behind you.
+        for (let i = 0; i < 3; i++) { const at = i * 1.15; voice({ noise: true, filter: "bandpass", cutoff: 520, duration: .55, delay: at, amp: amp * .28, pan: -.2 }); voice({ noise: true, filter: "bandpass", cutoff: 360, duration: .7, delay: at + .55, amp: amp * .34, pan: -.15 }); voice({ frequency: 82, endFrequency: 70, type: "sawtooth", duration: .6, delay: at + .55, amp: amp * .07, cutoff: 260 }); }
+      } else if (name === "ignition" || name === "crank") {
+        // The starter: the solenoid's clack, then its motor whining and labouring with each compression as it
+        // turns the engine over (setEngine), and won't catch; the last time it turns until the engine roars.
+        const length = name === "crank" ? 1 : .7, from = name === "crank" ? .2 : .25;
+        for (let i = 0; i < 2; i++) voice({ noise: true, filter: "highpass", cutoff: 2600, duration: .035, delay: i * .1, amp: amp * .4 });
+        voice({ frequency: 92, endFrequency: 70, duration: .1, amp: amp * .4, cutoff: 300 });
+        voice({ frequency: 150, endFrequency: 134, type: "sawtooth", duration: length, delay: from, amp: amp * .2, filter: "bandpass", cutoff: 640, vibrato: 16 });
+        voice({ noise: true, filter: "bandpass", cutoff: 2300, duration: length, delay: from, amp: amp * .07 });
+      } else if (name === "hollow") {
+        // His face catches light: the whump of the flame taking inside the pumpkin and its crackle, and a deep,
+        // torn roar under the screams.
+        voice({ noise: true, filter: "lowpass", cutoff: 380, duration: .75, amp: amp * 1.2 });
+        for (let i = 0; i < 6; i++) voice({ noise: true, filter: "highpass", cutoff: 2600, duration: .03, delay: .12 + i * .16 + rand() * .07, amp: amp * .3 });
+        voice({ frequency: 96, endFrequency: 52, type: "sawtooth", duration: 1.3, delay: .1, amp: amp * 1.1, cutoff: 900, vibrato: 11 });
+        voice({ noise: true, filter: "bandpass", cutoff: 620, duration: 1.1, delay: .1, amp: amp * .6 });
+      } else if (name === "roar") {
+        // The engine catches and roars (setEngine) with a bang from the exhaust.
+        voice({ noise: true, cutoff: 900, duration: .22, amp: amp * .7 });
+        voice({ frequency: 84, endFrequency: 34, duration: .34, amp: amp * .8, cutoff: 300 });
+        for (let i = 0; i < 3; i++) voice({ noise: true, filter: "bandpass", cutoff: 1500, duration: .05, delay: .25 + i * .13 + rand() * .05, amp: amp * .25 });
+      } else if (name === "chase") {
+        // Heavy, quickening footfalls behind the wagon, and a snarl.
+        for (let i = 0; i < 12; i++) voice({ frequency: 64, endFrequency: 40, duration: .13, delay: i * (.3 - i * .008), amp: amp * (.5 - i * .02), cutoff: 220, pan: -.1 });
+        voice({ frequency: 120, endFrequency: 70, type: "sawtooth", duration: .9, delay: .8, amp: amp * .3, cutoff: 800, vibrato: 14 });
+      } else if (name === "howl") {
+        // Left behind in the dark, he howls after you.
+        voice({ frequency: 230, endFrequency: 118, type: "sawtooth", duration: 2.4, amp: amp * .42, cutoff: 1100, vibrato: 8 });
+        voice({ noise: true, filter: "bandpass", cutoff: 700, duration: 2, amp: amp * .2 });
+      } else if (name === "jump") {
+        // A figure springs at the wagon from across the lane (hayride-scares.js): a hit and its shriek.
+        if (!gentle) stinger(.5, .02);
+        scream(SCREAMERS[event.stop]?.[0] ?? "ghoul", { delay: .05, amp: .72 });
       } else if (name === "whoosh") voice({ noise: true, filter: "bandpass", cutoff: 650, duration: .85, amp: amp * .65 });
       else if (name === "chains" || name === "skitter") {
         for (let i = 0; i < 4; i++) voice({ noise: true, filter: "highpass", cutoff: name === "chains" ? 2400 : 1400, duration: .11, delay: i * .12, amp: amp * .24 });
@@ -164,7 +229,7 @@ export function createHayrideAudio(prefs = {}) {
       } else voice({ frequency: 150, endFrequency: 57, type: "triangle", duration: .95, amp: amp * .6, cutoff: 560 });
       // A set's scare: the hit, the thing in the woods screaming, then someone
       // on the wagon. Gentle mode keeps the screams, softer, without the hit.
-      const screamers = typeof event === "object" && SCREAMERS[event.stop];
+      const screamers = typeof event === "object" && event.type !== "jump" && SCREAMERS[event.stop];
       if (screamers) {
         const force = .55 + intensity * .35;
         if (!gentle) stinger(force * .7, .05);
@@ -172,6 +237,26 @@ export function createHayrideAudio(prefs = {}) {
         scream(screamers[1], { delay: .55, amp: force * .8 });
       }
       return true;
+    },
+    // What the tractor's engine is doing and the wagon's pace (hayride-view.js's status.engine and .pace), every frame.
+    setEngine(state, wagonPace = pace) {
+      running = state && typeof state === "object" ? state : null; pace = Math.max(0, Number(wagonPace) || 0);
+      if (wheels && voices.has(wheels.entry)) wheels.roll.gain.setTargetAtTime(rumble(), ctx.currentTime, .25);
+      if (!engine || !voices.has(engine.entry) || !running) return;
+      const cough = Math.max(0, Math.min(1, (coughUntil - ctx.currentTime) / 1.6)) * .5;
+      engine.drive({ ...running, rough: Math.max(running.rough ?? 0, cough) });
+    },
+    // The ride's tension (hayride-view.js), 0 to 1, every frame: from a third up, a heartbeat that quickens with it.
+    setTension(value) {
+      tension = clamp(value, 0);
+      if (!ctx || !active || paused || muted || gentle || document.hidden || tension < .33) { nextBeat = 0; return; }
+      const now = ctx.currentTime; if (nextBeat < now) nextBeat = now + .05;
+      while (nextBeat < now + .25) {
+        const delay = nextBeat - now, a = .05 + .1 * tension;
+        voice({ frequency: 58, endFrequency: 40, duration: .14, delay, amp: a, cutoff: 140 });
+        voice({ frequency: 54, endFrequency: 38, duration: .16, delay: delay + .17, amp: a * .7, cutoff: 130 });
+        nextBeat += 60 / (56 + 72 * tension);
+      }
     },
     pause(on = true) { if (!active) return; const next = !!on || !!document.hidden; if (next === paused) return; paused = next; clearVoices(); mix(); if (!paused) ambience(); },
     setMuted(on) { muted = !!on; prefs.hayrideSound = !muted; clearVoices(); mix(); if (!muted && active && !paused) ambience(); },

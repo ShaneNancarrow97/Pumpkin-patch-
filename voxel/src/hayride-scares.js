@@ -1,10 +1,13 @@
 import * as THREE from "three";
-import { HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH, hayrideRouteSample, hayrideSpan as u, hayrideRouteProfile } from "./content/hayride-layout.js";
+import { HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH, hayrideRouteSample, hayrideSpan as u, hayrideRouteProfile, hayrideJumpSpot } from "./content/hayride-layout.js";
 import { HAYRIDE_SCARE_BY_ID } from "./content/hayride.js";
 import { createMazeScareActor, animateMazeScareActor, disposeMazeScareActor } from "./maze-ride-actors.js";
 
 // These are the original, detailed generated cast sheets already used indoors.
 // Only this off-map scene owns the instances; atlas geometry/textures stay shared.
+// Each waits across the lane from its scene's set and a little further on
+// (hayrideJumpSpot), so it springs once the set's animatronics have played and
+// never steps into them.
 const CAST = [
   { stop: "scarecrows", actor: "scarecrow", effect: "turning-scarecrows", offset: 4.1 },
   { stop: "bride", actor: "haunted-girl", effect: "bride-procession", offset: 6.1 },
@@ -33,10 +36,10 @@ export function createHayrideScares({ state } = {}) {
   const group = new THREE.Group(); group.name = "Hollow Hayride detailed scare cast";
   const profile=hayrideRouteProfile(state),routeLength=profile.length;
   const entries = CAST.filter(spec=>(spec.routeLevel??0)<=profile.level).map(spec => {
-    const stop = profile.stops.find(stop => stop.id === spec.stop), frame = hayrideRouteSample(stop.at * routeLength,profile.level);
+    const stop = profile.stops.find(stop => stop.id === spec.stop), spot = hayrideJumpSpot({ ...stop, offset: spec.offset }, profile.level);
     const actor = createMazeScareActor(spec.actor); actor.name = `Hayride scare: ${spec.stop}`; actor.visible = false;
     group.add(actor);
-    return { ...spec, at: stop.at, routeLength, frame, actor, pose: null };
+    return { ...spec, at: spot.at, routeLength, frame: spot.frame, actor, pose: null };
   });
   let disposed = false;
   const cameraPoint = new THREE.Vector3(), actorHead = new THREE.Vector3();
@@ -53,10 +56,8 @@ export function createHayrideScares({ state } = {}) {
     for (const entry of entries) {
       const pose = hayrideScarePose(entry, progress, upgraded(entry.effect), !!gentle), { actor, frame } = entry;
       entry.pose = pose; actor.visible = pose.visible;
-      // The spectral figure floats above its native investigators, keeping the
-      // detailed face clear of their heads when seen from the wagon bench.
-      actor.position.set(frame.x + frame.dz * pose.offset, entry.stop === "pursuit" ? .68 : .06, frame.z - frame.dx * pose.offset);
-      // Native branches/sets hide each entrance; the whole art never crosses the lane.
+      // Across the lane from the set (the wraith floats); the whole art never crosses the lane.
+      actor.position.set(frame.x - frame.dz * pose.offset, entry.stop === "pursuit" ? .68 : .06, frame.z + frame.dx * pose.offset);
       actor.scale.setScalar(1 + (upgraded(entry.effect) ? .06 : 0));
       if (!pose.visible) continue;
       animateMazeScareActor(actor, { pose: pose.lunge > .1 ? "scare" : "lurking", reveal: pose.reveal,
@@ -68,16 +69,18 @@ export function createHayrideScares({ state } = {}) {
   }
   return {
     group, tick,
-    focusTarget(progress) {
+    // The figure springing at the wagon, if one is: its face, and how far it has sprung (0 to 1), for the camera and the riders to turn to.
+    lunge() {
       if (disposed) return null;
-      const entry = entries.filter(entry => entry.pose?.visible).sort((a, b) => Math.abs(progress - a.at) - Math.abs(progress - b.at))[0];
+      const entry = entries.filter(entry => entry.pose?.visible && entry.pose.lunge > .02).sort((a, b) => b.pose.lunge - a.pose.lunge)[0];
       if (!entry) return null;
       entry.actor.getWorldPosition(actorHead); actorHead.y += 1.72;
-      return actorHead.clone();
+      return { point: actorHead.clone(), weight: entry.pose.lunge, stop: entry.stop };
     },
     get diagnostics() { return { actors: entries.length, visible: entries.filter(entry => entry.actor.visible).length,
       disposed, cast: entries.map(entry => ({ stop: entry.stop, actor: entry.actor.userData.mazeScareActor,
-        ready: !!entry.actor.userData.ready, visible: entry.actor.visible, lunge: entry.pose?.lunge ?? 0, offset: entry.pose?.offset ?? entry.offset })) }; },
+        ready: !!entry.actor.userData.ready, visible: entry.actor.visible, lunge: entry.pose?.lunge ?? 0, offset: entry.pose?.offset ?? entry.offset,
+        x: entry.actor.position.x, z: entry.actor.position.z })) }; },
     dispose() {
       if (disposed) return; disposed = true;
       for (const entry of entries) disposeMazeScareActor(entry.actor);

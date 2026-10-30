@@ -9,10 +9,10 @@ const rideIcon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentCo
 
 // The free owner's ride only: callbacks own camera/audio; this surface never
 // calls a purchase action or touches the simulation's guests and tickets.
-export function createHayrideRideUI({ prefs = {}, savePrefs = () => {}, onStart, onPause, onExit, onReplay, onSound, onGentle, onLightning, onFullscreen } = {}) {
+export function createHayrideRideUI({ prefs = {}, savePrefs = () => {}, onStart, onPause, onExit, onReplay, onSound, onGentle, onLightning, onFullscreen, onLook } = {}) {
   const host = document.createElement("section"); host.id = "hayride-ride-ui"; host.className = "hayride-ride-ui";
   host.hidden = true; host.setAttribute("aria-label", "The Hollow Hayride owner experience"); document.body.append(host);
-  let active = false, stage = "brief", config = {}, status = {}, returnFocus = null, idleTimer = 0, cueTimer = 0, lastCue = "", hiddenPause = false;
+  let active = false, stage = "brief", config = {}, status = {}, returnFocus = null, idleTimer = 0, cueTimer = 0, lastCue = "", hiddenPause = false, padMenu = false, looking = false, flashTimer = 0;
   const options = () => ({
     gentle: prefs.hayrideGentle ?? prefs.mazeGentle ?? !!globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
     lightning: prefs.hayrideLightning !== false,
@@ -24,12 +24,12 @@ export function createHayrideRideUI({ prefs = {}, savePrefs = () => {}, onStart,
     const o = options(), brief = stage === "brief", paused = stage === "pause", result = stage === "result";
     let panel = "";
     const settings = `<div class="hayride-ride-settings"><button data-hayride-ride="gentle" aria-pressed="${o.gentle}">Gentle mode <b>${o.gentle ? "On" : "Off"}</b></button><button data-hayride-ride="sound" aria-pressed="${o.sound}">Ride sound <b>${o.sound ? "On" : "Off"}</b></button><button data-hayride-ride="lightning" aria-pressed="${o.lightning && !o.gentle}" ${o.gentle ? "disabled" : ""}>Lightning <b>${o.gentle ? "Off in gentle mode" : o.lightning ? "On" : "Off"}</b></button></div>`;
-    if (brief) panel = `<p class="hayride-ride-eyebrow">Free owner ride · No ticket charged</p><h2 id="hayride-ride-title">Beyond the farm gate</h2><p>Board the wagon for a journey deep into the haunted woods. Tall trees hide five scare scenes beyond the edge of the farm.</p><p class="hayride-ride-muted">${lasting(HAYRIDE_PROPERTY.rideAlongSeconds)}. Drag to look around; leave whenever you like. Gentle mode keeps the camera steady and disables lightning.</p>${settings}<div class="hayride-ride-buttons"><button class="is-primary" data-hayride-ride="start">Ride along</button><button data-hayride-ride="exit">Return to farm</button></div>`;
+    if (brief) panel = `<p class="hayride-ride-eyebrow">Free owner ride · No ticket charged</p><h2 id="hayride-ride-title">Beyond the farm gate</h2><p>Board the wagon for a journey deep into the haunted woods. Tall trees hide five scare scenes beyond the edge of the farm.</p><p class="hayride-ride-muted">${lasting(HAYRIDE_PROPERTY.rideAlongSeconds)}. Drag or use a stick to look around; leave whenever you like. Gentle mode keeps the camera steady and disables lightning.</p>${settings}<div class="hayride-ride-buttons"><button class="is-primary" data-hayride-ride="start">Ride along</button><button data-hayride-ride="exit">Return to farm</button></div>`;
     else if (paused) panel = `<p class="hayride-ride-eyebrow">Owner ride paused</p><h2 id="hayride-ride-title">The woods can wait</h2><p>${hiddenPause ? "Your wagon waited while this page was out of view." : "Take a moment. Your place on the route is kept."}</p>${settings}<div class="hayride-ride-buttons"><button class="is-primary" data-hayride-ride="resume">Resume ride</button><button data-hayride-ride="exit">Return to farm</button></div>`;
-    else if (result) panel = `<p class="hayride-ride-eyebrow">Back at the station</p><h2 id="hayride-ride-title">All aboard… again?</h2><p>You made it through the woods.</p><div class="hayride-ride-summary"><span><b>${status.eventsFired?.length ?? HAYRIDE_STOPS.length}</b>scare scenes</span><span><b>${Math.round(status.rideDuration ?? 90)}s</b>woodland circuit</span></div><div class="hayride-ride-buttons"><button class="is-primary" data-hayride-ride="replay">Ride again</button><button data-hayride-ride="exit">Return to farm</button></div>`;
+    else if (result) panel = `<p class="hayride-ride-eyebrow">Back at the station</p><h2 id="hayride-ride-title">All aboard… again?</h2><p>You made it through the woods.</p>${status.photo ? `<figure class="hayride-ride-photo"><img src="${status.photo}" alt="Your ride photo: ${escape(status.photoCaption)}"><figcaption>Your ride photo · ${escape(status.photoCaption)}</figcaption></figure>` : ""}<div class="hayride-ride-summary"><span><b>${status.eventsFired?.length ?? HAYRIDE_STOPS.length}</b>scare scenes</span><span><b>${Math.round(status.rideDuration ?? 90)}s</b>woodland circuit</span></div><div class="hayride-ride-buttons"><button class="is-primary" data-hayride-ride="replay">Ride again</button><button data-hayride-ride="exit">Return to farm</button></div>`;
     host.dataset.stage = stage;
-    host.innerHTML = `<div class="hayride-ride-vignette" aria-hidden="true"></div><div class="hayride-ride-progress" role="progressbar" aria-label="Hayride progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(clamp(status.progress) * 100)}"><i style="transform:scaleX(${clamp(status.progress)})"></i></div><nav class="hayride-ride-hud" aria-label="Ride controls" ${panel ? 'inert aria-hidden="true"' : ""}><button data-hayride-ride="exit" aria-label="Exit hayride">${rideIcon("exit")} <span>Exit</span></button><span class="hayride-ride-place">${escape(status.zoneName ?? "The Hollow Hayride")}</span><button data-hayride-ride="pause" aria-label="Pause hayride">${rideIcon("pause")} <span>Pause</span></button><button data-hayride-ride="sound" aria-label="Ride sound ${o.sound ? "on" : "off"}" aria-pressed="${o.sound}">${rideIcon(o.sound ? "sound" : "muted")}<span>Sound</span></button>${onFullscreen ? '<button class="hayride-ride-fullscreen" data-hayride-ride="fullscreen" aria-label="Toggle fullscreen">' + rideIcon("fullscreen") + '</button>' : ""}</nav><p class="hayride-ride-hint" ${stage !== "running" ? "hidden" : ""}>Drag to look around</p><p class="hayride-ride-cue" aria-live="polite"></p>${panel ? `<div class="hayride-ride-shade"><section class="hayride-ride-panel" role="dialog" aria-modal="true" aria-labelledby="hayride-ride-title">${panel}</section></div>` : ""}`;
-    if (focus) scope().querySelector(".is-primary, button")?.focus({ preventScroll: true });
+    host.innerHTML = `<div class="hayride-ride-vignette" aria-hidden="true"></div><div class="hayride-ride-grain" aria-hidden="true"></div><div class="hayride-ride-flash" aria-hidden="true"></div><div class="hayride-ride-progress" role="progressbar" aria-label="Hayride progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(clamp(status.progress) * 100)}"><i style="transform:scaleX(${clamp(status.progress)})"></i></div><nav class="hayride-ride-hud" aria-label="Ride controls" ${panel ? 'inert aria-hidden="true"' : ""}><button data-hayride-ride="exit" aria-label="Exit hayride">${rideIcon("exit")} <span>Exit</span></button><span class="hayride-ride-place">${escape(status.zoneName ?? "The Hollow Hayride")}</span><button data-hayride-ride="pause" aria-label="Pause hayride">${rideIcon("pause")} <span>Pause</span></button><button data-hayride-ride="sound" aria-label="Ride sound ${o.sound ? "on" : "off"}" aria-pressed="${o.sound}">${rideIcon(o.sound ? "sound" : "muted")}<span>Sound</span></button>${onFullscreen ? '<button class="hayride-ride-fullscreen" data-hayride-ride="fullscreen" aria-label="Toggle fullscreen">' + rideIcon("fullscreen") + '</button>' : ""}</nav><p class="hayride-ride-hint" ${stage !== "running" ? "hidden" : ""}>Drag to look around</p><p class="hayride-ride-cue" aria-live="polite"></p>${panel ? `<div class="hayride-ride-shade"><section class="hayride-ride-panel" role="dialog" aria-modal="true" aria-labelledby="hayride-ride-title">${panel}</section></div>` : ""}`;
+    if (focus) (scope().querySelector(".is-primary") ?? scope().querySelector("button"))?.focus({ preventScroll: true });
   }
   function pause(on) {
     if (!active || !["running", "pause"].includes(stage)) return;
@@ -80,12 +80,27 @@ export function createHayrideRideUI({ prefs = {}, savePrefs = () => {}, onStart,
       const place = host.querySelector(".hayride-ride-place"); if (place) place.textContent = next.zoneName ?? "The Hollow Hayride";
       const bar = host.querySelector(".hayride-ride-progress");
       if (bar) { bar.setAttribute("aria-valuenow", String(Math.round(clamp(next.progress) * 100))); bar.firstElementChild.style.transform = `scaleX(${clamp(next.progress)})`; }
+      // The cinema: the vignette closes in and a heartbeat pulses as a fright nears, and each scare flashes.
+      const tension = clamp(next.tension); host.style.setProperty("--tension", tension.toFixed(3)); host.classList.toggle("pulse", tension > .6 && !options().gentle);
+      // A pad on the ride: either stick looks round (let go, and the view comes back ahead); Options or the touchpad pauses.
+      const pad = Array.from(globalThis.navigator?.getGamepads?.() ?? []).find((g) => g?.connected);
+      if (pad && stage === "running") {
+        const [ax, ay, bx, by] = [0, 1, 2, 3].map((i) => pad.axes[i] ?? 0), [x, y] = Math.hypot(bx, by) > Math.hypot(ax, ay) ? [bx, by] : [ax, ay];
+        const lx = Math.abs(x) > .15 ? x : 0, ly = Math.abs(y) > .15 ? y : 0; if (lx || ly || looking) { onLook?.(lx, ly); looking = !!(lx || ly); }
+      } else if (looking) { onLook?.(0, 0); looking = false; }
+      // Note the press before pausing: pausing calls back into update(), which must see it as held.
+      const menu = !!(pad?.buttons[9]?.pressed || pad?.buttons[17]?.pressed), fresh = menu && !padMenu;
+      padMenu = menu;
+      if (fresh && ["running", "pause"].includes(stage)) pause(stage !== "pause");
       if (next.currentCue && next.currentCue.id !== lastCue) {
+        if (!options().gentle) { const flash = host.querySelector(".hayride-ride-flash"); if (flash) { flash.classList.remove("go"); flash.classList.toggle("ember", next.currentCue.stop === "hollow"); void flash.offsetWidth; flash.classList.add("go"); clearTimeout(flashTimer); flashTimer = setTimeout(() => flash.classList.remove("go"), 600); } }
         lastCue = next.currentCue.id; const cue = host.querySelector(".hayride-ride-cue");
         if (cue) { cue.textContent = next.currentCue.name ?? ""; cue.classList.add("show"); clearTimeout(cueTimer); cueTimer = setTimeout(() => cue.classList.remove("show"), 2400); }
       }
     },
     close, get active() { return active; }, get options() { return options(); }, get stage() { return stage; },
+    // Pause or resume a running ride (○ on a pad comes through main.js's back()).
+    pause(on) { pause(on); },
     dispose() { close(); host.remove(); document.removeEventListener("keydown", key, true); document.removeEventListener("visibilitychange", visibility); for (const name of ["pointerdown", "pointermove", "keydown"]) document.removeEventListener(name, wake, true); },
   };
 }

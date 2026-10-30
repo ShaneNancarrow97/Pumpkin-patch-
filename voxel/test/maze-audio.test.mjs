@@ -9,10 +9,10 @@ async function audioHarness(moduleName) {
   let time = 0, nextTimer = 1;
   const contexts = [], sources = [], gains = [], handlers = new Map(), intervals = new Map(), timeouts = new Map();
   const param = () => ({ value: 0, changes: [], scheduled: [], setValueAtTime(value, at) { this.value = value; this.changes.push({ value, at }); this.scheduled.push({ value, at }); }, linearRampToValueAtTime(value, at) { this.setValueAtTime(value, at); }, exponentialRampToValueAtTime(value, at) { this.setValueAtTime(value, at); }, setTargetAtTime(value, at) { this.setValueAtTime(value, at); }, cancelScheduledValues(at) { this.scheduled = this.scheduled.filter(change => change.at < at); }, cancelAndHoldAtTime(at) { this.cancelScheduledValues(at); } });
-  const node = () => ({ connect() { return this; }, disconnect() {}, gain: param(), frequency: param(), detune: param(), Q: param(), pan: param() });
+  const node = () => ({ connect() { return this; }, disconnect() {}, gain: param(), frequency: param(), detune: param(), Q: param(), pan: param(), playbackRate: param() });
   const listen = (type, fn) => { if (!handlers.has(type)) handlers.set(type, new Set()); handlers.get(type).add(fn); };
   const source = () => {
-    const item = { ...node(), started: false, ended: false, stopAt: Infinity, start() { this.started = true; }, stop(at = time) { this.stopAt = at; if (at <= time) this.finish(); }, finish() { if (!this.ended) { this.ended = true; this.onended?.(); } } };
+    const item = { ...node(), started: false, ended: false, stopAt: Infinity, start() { this.started = true; }, setPeriodicWave(wave) { this.wave = wave; }, stop(at = time) { this.stopAt = at; if (at <= time) this.finish(); }, finish() { if (!this.ended) { this.ended = true; this.onended?.(); } } };
     sources.push(item); return item;
   };
   class AudioContext {
@@ -25,6 +25,7 @@ async function audioHarness(moduleName) {
     createDynamicsCompressor() { return { ...node(), threshold: param(), knee: param(), ratio: param(), attack: param(), release: param() }; }
     createBuffer(_channels, length) { return { getChannelData: () => new Float32Array(length), duration: length / this.sampleRate }; }
     createOscillator() { return source(); }
+    createPeriodicWave(real, imag) { return { real, imag }; }
     createBufferSource() { const item = source(); item.buffer = null; return item; }
     resume() { this.state = "running"; return Promise.resolve(); }
     suspend() { this.state = "suspended"; return Promise.resolve(); }
@@ -98,7 +99,7 @@ test("hayride ambience keeps wheel sounds separate from the maze and stops on pa
   const h = await audioHarness("hayride-audio"), prefs = { mazeSound: true, hayrideSound: true }, audio = h.exports.createHayrideAudio(prefs);
   audio.start({ sound: true, profile: "hayride" });
   assert.equal(audio.status.profile, "hayride");
-  assert.equal(h.sources[0].frequency.value, 39);
+  assert.ok(h.sources[0].wave && h.sources[0].frequency.value === 27 / 4, "the tractor idles: one engine cycle to every four firings");
   h.advance(1); const rolling = h.sources.length;
   assert.ok(rolling > 2);
   audio.pause(true); h.advance(1);
@@ -134,7 +135,7 @@ test("the ride's own noises: a thud at each root, the lamps' fizz, the hill's ru
   const h = await audioHarness("hayride-audio"), audio = h.exports.createHayrideAudio({ hayrideSound: true });
   audio.start({ sound: true }); h.advance(.1);
   const started = (hz) => h.sources.some(source => source.frequency.changes?.some(change => change.value === hz));
-  for (const [cue, hz] of [[{ type: "bump", id: "hayride-root-1-0", sound: "bump", intensity: .3 }, 74], [{ type: "lights", id: "hayride-lights-bus", sound: "sputter", scene: "bus", intensity: .5 }, 62], [{ type: "tunnel", id: "hayride-tunnel", sound: "tunnel", intensity: .4 }, 44]]) {
+  for (const [cue, hz] of [[{ type: "bump", id: "hayride-root-1-0", sound: "bump", intensity: .3 }, 74], [{ type: "lights", id: "hayride-lights-bus", sound: "sputter", scene: "bus", intensity: .5 }, 120], [{ type: "tunnel", id: "hayride-tunnel", sound: "tunnel", intensity: .4 }, 44]]) {
     const before = h.sources.length;
     assert.equal(audio.cue(cue), true, cue.sound); assert.ok(h.sources.length > before && started(hz), `${cue.sound} plays`);
     assert.equal(audio.cue(cue), false, `${cue.sound} plays once`);
@@ -145,6 +146,28 @@ test("the ride's own noises: a thud at each root, the lamps' fizz, the hill's ru
     assert.ok(h.sources.length - before > 12, `${stop} screams`);
   }
   audio.stop(); h.advance(4); assert.ok(h.sources.every(source => source.ended));
+});
+
+test("the tractor follows the ride: it idles, revs, misses when the lamps sputter, and the wheels go quiet when the wagon stops", async () => {
+  const h = await audioHarness("hayride-audio"), audio = h.exports.createHayrideAudio({ hayrideSound: true });
+  audio.start({ sound: true }); const body = h.sources[0], started = (hz) => h.sources.some(source => source.frequency.changes?.some(change => change.value === hz));
+  const misses = () => h.gains.reduce((n, g) => n + g.gain.changes.filter(change => change.value === .12).length, 0);
+  audio.setEngine({ fire: 27, level: .75, rough: 0 }, 0);
+  assert.equal(body.frequency.value, 27 / 4, "standing, it idles");
+  for (let i = 0; i < 30; i++) { h.advance(.1); audio.setEngine({ fire: 27, level: .75, rough: 0 }, 0); }
+  assert.equal(started(43), false, "a wagon standing still doesn't rattle");
+  for (let i = 0; i < 30; i++) { h.advance(.1); audio.setEngine({ fire: 36, level: .95, rough: 0 }, 1.3); }
+  assert.equal(body.frequency.value, 9, "it revs as the wagon picks up speed"); assert.ok(started(43), "and the wheels rattle");
+  assert.equal(misses(), 0, "a sound engine never misses");
+  audio.cue({ type: "lights", id: "hayride-lights-pursuit", sound: "sputter", intensity: .5 });
+  for (let i = 0; i < 12; i++) { h.advance(.1); audio.setEngine({ fire: 33, level: .9, rough: 0 }, 1); }
+  assert.ok(misses() > 3, "as the lamps sputter, it coughs");
+  const coughs = misses(); for (let i = 0; i < 30; i++) { h.advance(.1); audio.setEngine({ fire: 33, level: .9, rough: 0 }, 1); }
+  assert.ok(misses() - coughs < 3, "and then runs clean again");
+  audio.pause(true); h.advance(.1); assert.ok(body.ended, "pausing stops it");
+  audio.pause(false); const again = h.sources.find(source => source.wave && !source.ended);
+  assert.ok(again && again !== body && again.frequency.value === 33 / 4, "resuming starts it as it was");
+  audio.stop(); h.advance(1); assert.ok(h.sources.every(source => source.ended));
 });
 
 test("farm music keeps the ride mix across volume, sync and level-up ducking", async () => {

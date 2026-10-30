@@ -77,6 +77,7 @@ const hayrideUI = createHayrideRideUI({ prefs, savePrefs,
   onGentle: on => { hayrideAudio.setGentle(on); scene.setHayrideOptions({ gentle: on }); },
   onLightning: on => scene.setHayrideOptions({ lightning: on }),
   onFullscreen: () => $("fullscreen").click(),
+  onLook: (x, y) => scene.setHayrideLook(x, y),
 });
 
 // Shane and Natalie's own words from the main game.
@@ -137,7 +138,7 @@ const scene = createScene($("world"), state, {
   onMazeCue: cue => mazeAudio.cue(cue),
   onMazeState: status => mazeUI.update(status),
   onMazeComplete: status => { mazeAudio.pause(true); mazeUI.update(status); },
-  onHayrideCue: cue => hayrideAudio.cue(cue),
+  onHayrideCue: cue => { hayrideAudio.cue(cue); rideRumble(cue); },
   onHayrideState: status => hayrideUI.update(status),
   onHayrideComplete: status => { hayrideAudio.pause(true); hayrideUI.update(status); },
   canRotatePiece: () => !!home.tools.selected && M.footprint(state.house.placed.find((p) => p.instance === home.tools.selected)?.id ?? "f01").layer !== "wall",
@@ -493,7 +494,7 @@ function render() {
   const controlsBlocked=!!openTab || celebration.active || intro.active || upgradeMenu?.open || mazeUI.active || hayrideUI.active || state.paused || !!homeJourney?.active || !!carvingUI?.isOpen;
   playControls?.tick(controlsBlocked); homeJourney?.tick();
   if (mazeUI.active) mazeUI.update(scene.mazeStatus);
-  if (hayrideUI.active) hayrideUI.update(scene.hayrideRideStatus);
+  if (hayrideUI.active) { const ride = scene.hayrideRideStatus; hayrideUI.update(ride); hayrideAudio.setTension(ride.tension ?? 0); hayrideAudio.setEngine(ride.engine, ride.pace); }
   if (M.awardLevels(state).length) save();
   text("coins", money(state.coins));
   text("stock", `${M.available(state)}/${M.barnCapacity(state)}`);
@@ -704,6 +705,15 @@ function commitPlayerWork(kind,t){
 }
 // Two quick notes, rising: the sound of a job done.
 function chime(a,b){audio.tone(a);setTimeout(()=>audio.tone(b),75);}
+// The ride on a pad: a knock at each root, a jolt at each scene, the breakdown's
+// cough, roar and chase, and the Hollow Man hardest of all. Phones buzz at the scenes only.
+function rideRumble(cue){
+  if(prefs.haptics===false||hayrideUI.options.gentle)return;
+  const fx={bump:[70,.12,.32],stall:[260,.35,.12],ignition:[620,.12,.3],crank:[900,.12,.3],jump:[320,.95,.8],roar:[700,.55,.35],chase:[1300,.3,.55],thunder:[520,.4,.25],sputter:[320,.14,.38],tunnel:[1400,.18,.12]}[cue.sound];
+  const [duration,strong,weak]=cue.type==="encounter"?(cue.stop==="hollow"?[850,1,1]:[420,.85,1]):fx??[];if(!duration)return;
+  const pad=Array.from(navigator.getGamepads?.()??[]).find(g=>g?.connected);
+  try{if(pad?.vibrationActuator)pad.vibrationActuator.playEffect?.("dual-rumble",{duration,strongMagnitude:strong,weakMagnitude:weak});else if(cue.type==="encounter")navigator.vibrate?.(cue.stop==="hollow"?[90,40,180]:60);}catch{}
+}
 // Play mode's feel: a buzz on touch, a rumble on a pad, a note for choices.
 function playFeel(kind,info={}){
   if(kind==='select')audio.tone(700);
@@ -764,7 +774,7 @@ carvingUI=createCarvingUI({ state:()=>state, view:scene.carving, feel:playFeel, 
   close:closeCarving,
 }});
 // B shuts the carving bench through back(), after this tick has noted B as held: closing renders, and a render ticks the pad again.
-playControls=createPlayControls({feel:playFeel,holdToBuy,hubAllowed:()=>!carvingUI?.isOpen&&!mazeUI.active&&!hayrideUI.active&&!homeJourney?.active,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(carvingUI?.isOpen){queueMicrotask(closeCarving);return;}if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(stockPopover.open)stockPopover.close(true);else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
+playControls=createPlayControls({feel:playFeel,holdToBuy,hubAllowed:()=>!carvingUI?.isOpen&&!mazeUI.active&&!hayrideUI.active&&!homeJourney?.active,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(carvingUI?.isOpen){queueMicrotask(closeCarving);return;}if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(hayrideUI.active){if(hayrideUI.stage==="running")hayrideUI.pause(true);else if(hayrideUI.stage==="pause")hayrideUI.pause(false);else exitHayrideRide();}else if(stockPopover.open)stockPopover.close(true);else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
 homeJourney=createHomeJourney({state:()=>state,blocked:()=>!!openTab||celebration.active||intro.active||mazeUI.active||hayrideUI.active||!!home.tools.selected||!!playControls.radial||state.paused,follow:followHomeGoal,open:()=>openSheet('homelife')});
 scene.setRenderQuality(prefs.renderQuality); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
 render(); renderPlace();
