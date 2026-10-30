@@ -2,6 +2,10 @@
 export const DIRECTION_DEGREES = Object.freeze(Array.from({ length: 24 }, (_, i) => i * 15));
 export const LOCOMOTION_PHASES = Object.freeze(['contact-left', 'down-left', 'passing-left', 'up-left', 'contact-right', 'down-right', 'passing-right', 'up-right']);
 export const PUSH_PHASES = Object.freeze(['reach', 'grip', 'push-start', 'push', 'release', 'recover-low', 'recover-high', 'reach-return']);
+// A reviewed four-pose cycle is useful, but it is not the complete eight-phase
+// gait. Keep these phase names explicit instead of padding the strip with copies.
+export const REDUCED_LOCOMOTION_PHASES = Object.freeze([0, 2, 4, 6].map(i => LOCOMOTION_PHASES[i]));
+export const REDUCED_PUSH_PHASES = Object.freeze([0, 2, 4, 6].map(i => PUSH_PHASES[i]));
 export const DIRECTIONAL_ACTIONS = Object.freeze(Object.fromEntries([
   ['idle', 4, true], ['walk', 8, true], ['jog', 8, true],
   ['plant', 6, false], ['water', 6, true], ['harvest', 6, false],
@@ -44,12 +48,15 @@ function clipErrors(manifest, clip, pages) {
   if (!spec || !validDegree(clip?.degree)) return ['unknown action or noncanonical direction'];
   if (!authored.has(clip.authoring)) errors.push('derived art does not establish authored coverage');
   if (clip.review?.approved !== true || typeof clip.review?.preview !== 'string' || !clip.review.preview) errors.push('visual review is missing');
-  const pose = clip.mode === 'pose';
+  const pose = clip.mode === 'pose', reduced = clip.mode === 'reduced';
+  const locomotion = ['walk', 'jog'].includes(clip.action);
+  if (clip.mode !== undefined && !['pose', 'reduced', 'animation'].includes(clip.mode)) errors.push('unknown animation mode');
   if (pose && clip.action !== 'idle') errors.push('single-frame pose mode is reserved for neutral idle');
-  const expected = pose ? 1 : spec.frames;
+  if (reduced && !locomotion) errors.push('reduced mode is reserved for four-phase locomotion');
+  const expected = pose ? 1 : reduced ? 4 : spec.frames;
   if (!Array.isArray(clip.frames) || clip.frames.length !== expected) errors.push(`expected ${expected} frames`);
-  const fingerprints = new Set(), locomotion = ['walk', 'jog'].includes(clip.action);
-  const phases = manifest.mobility === 'wheelchair' ? PUSH_PHASES : LOCOMOTION_PHASES;
+  const fingerprints = new Set();
+  const phases = manifest.mobility === 'wheelchair' ? (reduced ? REDUCED_PUSH_PHASES : PUSH_PHASES) : (reduced ? REDUCED_LOCOMOTION_PHASES : LOCOMOTION_PHASES);
   for (const [i, frame] of (Array.isArray(clip.frames) ? clip.frames : []).entries()) {
     const page = pages.get(frame?.page), r = frame?.rect, a = frame?.anchor;
     if (!page || !r || ![r.x, r.y, r.w, r.h].every(finite) || r.x < 0 || r.y < 0 || r.w <= 0 || r.h <= 0 || r.x + r.w > page.width || r.y + r.h > page.height) errors.push(`frame ${i}: atlas rectangle is outside its page`);
@@ -96,12 +103,14 @@ function approvedClips(manifest, validation = validateDirectionalManifest(manife
 }
 
 function coverageForClips(accepted, actions = Object.keys(DIRECTIONAL_ACTIONS)) {
-  const required = [...new Set((Array.isArray(actions) ? actions : []).filter(a => actionSpec(a)))], animated = accepted.filter(c => c.mode !== 'pose'), keys = new Set(animated.map(c => c.action + ':' + c.degree));
+  const required = [...new Set((Array.isArray(actions) ? actions : []).filter(a => actionSpec(a)))], animated = accepted.filter(c => c.mode !== 'pose' && c.mode !== 'reduced'), keys = new Set(animated.map(c => c.action + ':' + c.degree));
   const missing = [];
   for (const action of required) for (const degree of DIRECTION_DEGREES) if (!keys.has(action + ':' + degree)) missing.push({ action, degree });
   const completed = animated.filter(c => required.includes(c.action));
   const poses = accepted.filter(c => c.mode === 'pose' && required.includes(c.action));
-  return { expectedClips: required.length * 24, expectedFrames: required.reduce((sum, a) => sum + DIRECTIONAL_ACTIONS[a].frames * 24, 0), authoredClips: completed.length, authoredPoses: poses.length, authoredFrames: completed.reduce((sum, c) => sum + c.frames.length, 0) + poses.length, complete: missing.length === 0, missing };
+  const reduced = accepted.filter(c => c.mode === 'reduced' && required.includes(c.action));
+  const authoredReducedFrames = reduced.reduce((sum, c) => sum + c.frames.length, 0);
+  return { expectedClips: required.length * 24, expectedFrames: required.reduce((sum, a) => sum + DIRECTIONAL_ACTIONS[a].frames * 24, 0), authoredClips: completed.length, authoredPoses: poses.length, authoredReducedCycles: reduced.length, authoredReducedFrames, authoredFrames: completed.reduce((sum, c) => sum + c.frames.length, 0) + poses.length + authoredReducedFrames, complete: missing.length === 0, missing };
 }
 
 export function directionalCoverage(manifest, actions = Object.keys(DIRECTIONAL_ACTIONS)) {
@@ -111,7 +120,7 @@ export function directionalCoverage(manifest, actions = Object.keys(DIRECTIONAL_
 // Fallback never silently changes action/outfit and never counts as new art.
 export function selectDirectionalFrame(manifest, { action = 'idle', yaw = 0, progress = 0, allowNearest = false } = {}) {
   const requestedDegree = directionalBin(yaw), spec = actionSpec(action);
-  const absent = { frame: null, coverage: 'missing', requestedDegree, direction: null, action };
+  const absent = { frame: null, frameCount: 0, coverage: 'missing', requestedDegree, direction: null, action };
   if (requestedDegree === null || !spec) return absent;
   const clips = approvedClips(manifest).filter(c => c.action === action);
   let clip = clips.find(c => c.degree === requestedDegree);
@@ -124,7 +133,7 @@ function selectedFrame(clip, action, requestedDegree, progress) {
   const spec = actionSpec(action), value = finite(progress) ? progress : 0;
   const phase = spec.loop ? modulo(value, 1) : Math.max(0, Math.min(1, value));
   const count = clip.frames.length, index = Math.min(count - 1, Math.floor(phase * count));
-  return { frame: clip.frames[index], index, direction: clip.degree, requestedDegree, action, mode: clip.mode === 'pose' ? 'pose' : 'animation', coverage: clip.degree === requestedDegree ? 'authored' : 'fallback' };
+  return { frame: clip.frames[index], index, frameCount: count, direction: clip.degree, requestedDegree, action, mode: clip.mode === 'pose' ? 'pose' : clip.mode === 'reduced' ? 'reduced' : 'animation', coverage: clip.degree === requestedDegree ? 'authored' : 'fallback' };
 }
 
 function frozenCopy(value) {
@@ -159,7 +168,7 @@ export function compileDirectionalManifest(manifest) {
     select({ action = 'idle', yaw = 0, progress = 0, allowNearest = false } = {}) {
       const requestedDegree = directionalBin(yaw), table = actions[action];
       const clip = requestedDegree === null || !table ? null : table.directions[requestedDegree] ?? (allowNearest ? table.nearest[requestedDegree] : null);
-      return clip ? selectedFrame(clip, action, requestedDegree, progress) : { frame: null, coverage: 'missing', requestedDegree, direction: null, action };
+      return clip ? selectedFrame(clip, action, requestedDegree, progress) : { frame: null, frameCount: 0, coverage: 'missing', requestedDegree, direction: null, action };
     },
   });
 }

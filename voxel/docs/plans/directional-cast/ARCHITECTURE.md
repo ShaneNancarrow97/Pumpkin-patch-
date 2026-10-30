@@ -52,6 +52,8 @@ Left/right views are authored separately. Mirroring is a rendering convenience a
 
 A single neutral direction is useful before four breathing frames are finished. An idle clip can declare `mode: 'pose'` and contain one approved frame. Selection can show it, but coverage reports it as an authored pose rather than a completed breathing animation. No other action accepts this shortcut.
 
+A genuine four-phase walk or jog can declare `mode: 'reduced'`. Its four distinct reviewed frames must be ordered **contact-left, passing-left, contact-right, passing-right** (indices 0, 2, 4 and 6 of the full locomotion cycle). It is selectable without inserting repeated frames. Merely taking the first four phases of an eight-phase gait is invalid because it omits the opposite contact. Wheelchair reduced locomotion uses the corresponding push-cycle subset **reach, push-start, release, recover-high**. No other action accepts reduced mode. This is an explicit intermediate animation quality, not a completed eight-phase gait.
+
 The page is only storage. Each clip states its actual action, degree, provenance, visual review and ordered frames. A costume can use several pages without changing its identity or gameplay inventory ID. `createDirectionalManifest()` intentionally creates empty page/clip lists; it does not populate pretend assets.
 
 ## Required production inventory
@@ -78,13 +80,15 @@ Wheelchair walk/jog are locomotion APIs, not claims of walking legs. Their eight
 
 ## Honest coverage and selection
 
-`validateDirectionalManifest` checks structural validity. Incomplete/unreviewed clip warnings do not make a partly populated manifest unusable; `directionalCoverage` separately reports completed clips, authored static poses and every missing action/direction. It rejects missing review, bad page rectangles/anchors, scale drift, missing fingerprints, repeated phase pixels and copied complete sequences.
+`validateDirectionalManifest` checks structural validity. Incomplete/unreviewed clip warnings do not make a partly populated manifest unusable; `directionalCoverage` separately reports completed clips, authored static poses, reduced cycles and every missing full action/direction. It rejects missing review, bad page rectangles/anchors, scale drift, missing fingerprints, repeated phase pixels and copied complete sequences. `authoredClips` counts only completed animations. `authoredReducedCycles` and `authoredReducedFrames` count reviewed four-frame locomotion separately. `authoredFrames` totals all accepted full/reduced/pose frames, while `expectedFrames`, `complete` and `missing` retain the complete production target. A reduced cycle therefore remains a missing full eight-phase cell even while it can be played.
 
 `selectDirectionalFrame(manifest, { action, yaw, progress, allowNearest })` returns one of:
 
-- `coverage: 'authored'`: the requested 15-degree bin has accepted art; `mode` says pose or animation.
+- `coverage: 'authored'`: the requested 15-degree bin has accepted art; `mode` says `pose`, `reduced` or `animation`.
 - `coverage: 'fallback'`: an explicitly permitted nearest authored direction of the **same action and look** was used; both requested and actual direction remain visible to diagnostics.
 - `coverage: 'missing'`: no usable clip. The integrating renderer may retain the proven legacy path, with that gap reported honestly.
+
+Every selected result includes `frameCount` from the actual clip (1 for a pose, 4 for reduced locomotion, the action's full count otherwise; 0 when missing). Playback, stepping and scrubbing should use this field rather than the target action's frame count.
 
 For a live renderer, call `compileDirectionalManifest(manifest)` **once** after metadata loads. It returns a deep-frozen snapshot with `look`, `owner`, `mobility`, `pixelsPerUnit`, `validation`, `coverage`, `actions`, `pageMap` and `select(options)`. `pageMap` and `actions` are frozen property dictionaries (not mutable JavaScript Maps); access a page as `compiled.pageMap[frame.page]`. Exact and nearest clips for each of the 24 bins are precomputed. `compiled.select` does table lookups and phase arithmetic only: no validation, sorting, fingerprint scans or source metadata reads in the frame loop. Accepted clips, frames, rectangles, anchors and pages are copied and frozen, so subsequent mutation of the source cannot silently change accepted art. Recompile explicitly when replacing a manifest. The direct `selectDirectionalFrame` API remains useful for tools/tests but revalidates source data and should not be used every rendered frame.
 
@@ -118,4 +122,4 @@ The offline HTML can embed encoded sources without decoding all of them. It stil
 5. Integrate camera-relative bearing and explicit fallback beside the existing `playerAnimate` adapter. Preserve lead 55's legacy sizing/settle behaviour until a requested new state has valid art, and lead 56–58's garden/doorway/carving paths.
 6. Test farm, garden and all rooms, costume changes mid-action, camera rotation while stationary/moving, pose entry/exit, wheelchair, controller input and page eviction. The root 2D game and saves remain untouched.
 
-This module has native tests for bins, exact/fallback selection, incomplete assets, unique phases, copied directions, physical scale/anchor errors, static idle versus breathing, wheelchair phases and budget calculations. No browser or hardware performance result is implied by these contract tests.
+This module has native tests for bins, exact/fallback selection, incomplete assets, unique phases, copied directions, physical scale/anchor errors, static idle versus breathing, four-phase versus full locomotion, wheelchair phases and budget calculations. No browser or hardware performance result is implied by these contract tests.

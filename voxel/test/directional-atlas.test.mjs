@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DIRECTION_DEGREES, DIRECTIONAL_ACTIONS, LOCOMOTION_PHASES, PUSH_PHASES, directionalBin, directionFromView, createDirectionalManifest, validateDirectionalManifest, directionalCoverage, selectDirectionalFrame, directionalAtlasBudget, compileDirectionalManifest } from '../src/content/directional-atlas.js';
+import { DIRECTION_DEGREES, DIRECTIONAL_ACTIONS, LOCOMOTION_PHASES, PUSH_PHASES, REDUCED_LOCOMOTION_PHASES, REDUCED_PUSH_PHASES, directionalBin, directionFromView, createDirectionalManifest, validateDirectionalManifest, directionalCoverage, selectDirectionalFrame, directionalAtlasBudget, compileDirectionalManifest } from '../src/content/directional-atlas.js';
 
 function fixture(action = 'walk', degree = 0, mobility = 'walking') {
   const m = createDirectionalManifest({ look: 'natalie-base', owner: 'natalie', mobility, sourceSeed: 'approved/natalie-front.png' });
@@ -98,4 +98,72 @@ test('compiled metadata is a deep frozen snapshot and admits no later source cha
   assert.throws(()=>{compiled.actions.walk.directions[0].frames[0].anchor.x=10;},TypeError);
   assert.throws(()=>{compiled.pageMap.a.url='no.webp';},TypeError);
   assert.equal(compileDirectionalManifest(null).select({action:'walk'}).coverage,'missing');
+});
+
+function reducedFixture(action = 'walk', degree = 90, mobility = 'walking') {
+  const m = fixture(action, degree, mobility), c = m.clips[0];
+  c.mode = 'reduced'; c.frames = [0, 2, 4, 6].map(i => c.frames[i]);
+  return m;
+}
+
+test('a reviewed four-phase cycle exposes both contact legs without claiming full eight-phase coverage', () => {
+  assert.deepEqual(REDUCED_LOCOMOTION_PHASES, ['contact-left', 'passing-left', 'contact-right', 'passing-right']);
+  for (const action of ['walk', 'jog']) {
+    const m = reducedFixture(action), compiled = compileDirectionalManifest(m);
+    assert.deepEqual(validateDirectionalManifest(m).warnings, []);
+    for (let i = 0; i < 4; i++) {
+      const args = { action, yaw: 90, progress: i / 4 };
+      const selected = compiled.select(args);
+      assert.equal(selected.mode, 'reduced'); assert.equal(selected.frameCount, 4);
+      assert.equal(selected.index, i); assert.equal(selected.frame.phase, REDUCED_LOCOMOTION_PHASES[i]);
+      assert.deepEqual(JSON.parse(JSON.stringify(selected)), JSON.parse(JSON.stringify(selectDirectionalFrame(m, args))));
+    }
+    assert.equal(compiled.select({ action, yaw: 90, progress: 1 }).index, 0);
+    assert.equal(compiled.select({ action, yaw: 75, allowNearest: true }).coverage, 'fallback');
+    const c = directionalCoverage(m, [action]);
+    assert.equal(c.authoredClips, 0); assert.equal(c.authoredReducedCycles, 1);
+    assert.equal(c.authoredReducedFrames, 4); assert.equal(c.authoredFrames, 4);
+    assert.equal(c.complete, false); assert.equal(c.missing.length, 24);
+    assert.ok(c.missing.some(x => x.action === action && x.degree === 90));
+    assert.equal(compiled.coverage.authoredReducedCycles, 1);
+  }
+});
+
+test('reduced cycles reject the first four full-gait phases, padding, duplicate pixels and non-locomotion shortcuts', () => {
+  for (const alter of [
+    m => { m.clips[0].frames = fixture().clips[0].frames.slice(0, 4); },
+    m => { m.clips[0].frames.push(...structuredClone(m.clips[0].frames)); },
+    m => { m.clips[0].frames[2].fingerprint = m.clips[0].frames[0].fingerprint; },
+    m => { delete m.clips[0].mode; },
+    m => { m.clips[0].action = 'water'; },
+    m => { m.clips[0].mode = 'nearly-eight'; },
+  ]) {
+    const m = reducedFixture(); alter(m);
+    assert.equal(directionalCoverage(m).authoredFrames, 0);
+    assert.equal(compileDirectionalManifest(m).select({ action: m.clips[0].action, yaw: 90 }).frame, null);
+    assert.ok(validateDirectionalManifest(m).warnings.length);
+  }
+});
+
+test('reduced wheelchair cycles use reviewed alternating push/recovery states instead of leg contacts', () => {
+  assert.deepEqual(REDUCED_PUSH_PHASES, ['reach', 'push-start', 'release', 'recover-high']);
+  const m = reducedFixture('walk', 180, 'wheelchair'), args = { action: 'walk', yaw: 180, progress: .5 };
+  assert.equal(selectDirectionalFrame(m, args).frame.phase, 'release');
+  assert.equal(selectDirectionalFrame(m, args).frameCount, 4);
+  assert.equal(directionalCoverage(m, ['walk']).authoredReducedCycles, 1);
+  m.clips[0].frames[0].phase = 'contact-left';
+  assert.equal(directionalCoverage(m, ['walk']).authoredReducedCycles, 0);
+});
+
+test('mixed full, reduced and neutral-pose coverage keeps total frame counts and missing cells honest', () => {
+  const m = fixture('walk', 0);
+  m.clips.push(reducedFixture('walk', 90).clips[0]);
+  const pose = fixture('idle', 180).clips[0]; pose.mode = 'pose'; pose.frames = pose.frames.slice(0, 1); m.clips.push(pose);
+  const c = directionalCoverage(m, ['walk', 'idle']);
+  assert.equal(c.expectedFrames, 288); assert.equal(c.authoredClips, 1);
+  assert.equal(c.authoredReducedCycles, 1); assert.equal(c.authoredPoses, 1); assert.equal(c.authoredFrames, 13);
+  assert.equal(c.missing.length, 47);
+  assert.equal(selectDirectionalFrame(m, { action: 'walk', yaw: 0 }).frameCount, 8);
+  assert.equal(selectDirectionalFrame(m, { action: 'idle', yaw: 180 }).frameCount, 1);
+  assert.equal(selectDirectionalFrame(m, { action: 'water' }).frameCount, 0);
 });
