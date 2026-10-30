@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DIRECTION_DEGREES, DIRECTIONAL_ACTIONS, LOCOMOTION_PHASES, PUSH_PHASES, directionalBin, directionFromView, createDirectionalManifest, validateDirectionalManifest, directionalCoverage, selectDirectionalFrame, directionalAtlasBudget } from '../src/content/directional-atlas.js';
+import { DIRECTION_DEGREES, DIRECTIONAL_ACTIONS, LOCOMOTION_PHASES, PUSH_PHASES, directionalBin, directionFromView, createDirectionalManifest, validateDirectionalManifest, directionalCoverage, selectDirectionalFrame, directionalAtlasBudget, compileDirectionalManifest } from '../src/content/directional-atlas.js';
 
 function fixture(action = 'walk', degree = 0, mobility = 'walking') {
   const m = createDirectionalManifest({ look: 'natalie-base', owner: 'natalie', mobility, sourceSeed: 'approved/natalie-front.png' });
@@ -77,4 +77,25 @@ test('single authored neutral poses are usable without claiming a complete breat
   const c=directionalCoverage(m,['idle']);assert.equal(c.authoredPoses,1);assert.equal(c.authoredClips,0);assert.equal(c.authoredFrames,1);assert.equal(c.complete,false);
   for(const [x,z,want]of [[0,-1,0],[1,0,90],[0,1,180],[-1,0,270]])assert.equal(directionFromView(x,z),want);
   assert.equal(directionFromView(0,0),null);
+});
+
+test('compiled selection matches direct selection without re-reading source metadata per frame', () => {
+  const m=fixture(), clips=m.clips;let sealed=false;
+  Object.defineProperty(m,'clips',{get(){if(sealed)throw Error('source was re-read');return clips;}});
+  const compiled=compileDirectionalManifest(m);
+  const expected=[];for(const yaw of [0,15,90,345,NaN])for(const progress of [-.25,0,.5,1])expected.push({args:{action:'walk',yaw,progress,allowNearest:true},value:selectDirectionalFrame(m,{action:'walk',yaw,progress,allowNearest:true})});
+  sealed=true;for(const {args,value}of expected)assert.deepEqual(JSON.parse(JSON.stringify(compiled.select(args))),JSON.parse(JSON.stringify(value)));
+  assert.equal(compiled.look,'natalie-base');assert.equal(compiled.pageMap.a.width,2048);
+});
+
+test('compiled metadata is a deep frozen snapshot and admits no later source changes', () => {
+  const m=fixture(), compiled=compileDirectionalManifest(m);
+  m.pages[0].url='changed.webp';m.clips[0].review.approved=false;m.clips[0].frames[0].rect.w=50000;
+  const extra=fixture('walk',15).clips[0];m.clips.push(extra);
+  assert.equal(compiled.select({action:'walk',yaw:0}).frame.rect.w,256);
+  assert.equal(compiled.select({action:'walk',yaw:15}).coverage,'missing');
+  assert.equal(compiled.pageMap.a.url,'assets/cast/natalie-base/walk-000.webp');
+  assert.throws(()=>{compiled.actions.walk.directions[0].frames[0].anchor.x=10;},TypeError);
+  assert.throws(()=>{compiled.pageMap.a.url='no.webp';},TypeError);
+  assert.equal(compileDirectionalManifest(null).select({action:'walk'}).coverage,'missing');
 });

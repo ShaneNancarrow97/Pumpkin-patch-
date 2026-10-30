@@ -10,6 +10,7 @@ export const DIRECTIONAL_ACTIONS = Object.freeze(Object.fromEntries([
 ].map(([id, frames, loop]) => [id, Object.freeze({ frames, loop })])));
 const authored = new Set(['drawn', 'rig-rendered']);
 const finite = Number.isFinite;
+const actionSpec = id => Object.hasOwn(DIRECTIONAL_ACTIONS, id) ? DIRECTIONAL_ACTIONS[id] : null;
 const positive = n => finite(n) && n > 0;
 const validDegree = n => DIRECTION_DEGREES.includes(n);
 const modulo = (n, size) => ((n % size) + size) % size;
@@ -39,7 +40,7 @@ function duplicateSequences(clips) {
 }
 
 function clipErrors(manifest, clip, pages) {
-  const errors = [], spec = DIRECTIONAL_ACTIONS[clip?.action];
+  const errors = [], spec = actionSpec(clip?.action);
   if (!spec || !validDegree(clip?.degree)) return ['unknown action or noncanonical direction'];
   if (!authored.has(clip.authoring)) errors.push('derived art does not establish authored coverage');
   if (clip.review?.approved !== true || typeof clip.review?.preview !== 'string' || !clip.review.preview) errors.push('visual review is missing');
@@ -86,16 +87,16 @@ export function validateDirectionalManifest(manifest) {
   return { ok: errors.length === 0, errors, warnings };
 }
 
-function approvedClips(manifest) {
-  if (!validateDirectionalManifest(manifest).ok) return [];
+function approvedClips(manifest, validation = validateDirectionalManifest(manifest)) {
+  if (!validation.ok) return [];
   const pages = new Map(manifest.pages.map(p => [p.id, p])), duplicate = new Set(), seen = new Set();
   for (const c of manifest.clips) { const key = c?.action + ':' + c?.degree; if (seen.has(key)) duplicate.add(key); seen.add(key); }
   const repeated = duplicateSequences(manifest.clips);
   return manifest.clips.filter(c => !repeated.has(c) && !duplicate.has(c?.action + ':' + c?.degree) && clipErrors(manifest, c, pages).length === 0);
 }
 
-export function directionalCoverage(manifest, actions = Object.keys(DIRECTIONAL_ACTIONS)) {
-  const required = [...new Set((Array.isArray(actions) ? actions : []).filter(a => DIRECTIONAL_ACTIONS[a]))], accepted = approvedClips(manifest), animated = accepted.filter(c => c.mode !== 'pose'), keys = new Set(animated.map(c => c.action + ':' + c.degree));
+function coverageForClips(accepted, actions = Object.keys(DIRECTIONAL_ACTIONS)) {
+  const required = [...new Set((Array.isArray(actions) ? actions : []).filter(a => actionSpec(a)))], animated = accepted.filter(c => c.mode !== 'pose'), keys = new Set(animated.map(c => c.action + ':' + c.degree));
   const missing = [];
   for (const action of required) for (const degree of DIRECTION_DEGREES) if (!keys.has(action + ':' + degree)) missing.push({ action, degree });
   const completed = animated.filter(c => required.includes(c.action));
@@ -103,19 +104,64 @@ export function directionalCoverage(manifest, actions = Object.keys(DIRECTIONAL_
   return { expectedClips: required.length * 24, expectedFrames: required.reduce((sum, a) => sum + DIRECTIONAL_ACTIONS[a].frames * 24, 0), authoredClips: completed.length, authoredPoses: poses.length, authoredFrames: completed.reduce((sum, c) => sum + c.frames.length, 0) + poses.length, complete: missing.length === 0, missing };
 }
 
+export function directionalCoverage(manifest, actions = Object.keys(DIRECTIONAL_ACTIONS)) {
+  return coverageForClips(approvedClips(manifest), actions);
+}
+
 // Fallback never silently changes action/outfit and never counts as new art.
 export function selectDirectionalFrame(manifest, { action = 'idle', yaw = 0, progress = 0, allowNearest = false } = {}) {
-  const requestedDegree = directionalBin(yaw), spec = DIRECTIONAL_ACTIONS[action];
+  const requestedDegree = directionalBin(yaw), spec = actionSpec(action);
   const absent = { frame: null, coverage: 'missing', requestedDegree, direction: null, action };
   if (requestedDegree === null || !spec) return absent;
   const clips = approvedClips(manifest).filter(c => c.action === action);
   let clip = clips.find(c => c.degree === requestedDegree);
   if (!clip && allowNearest) clip = clips.sort((a, b) => Math.abs(modulo(a.degree - requestedDegree + 180, 360) - 180) - Math.abs(modulo(b.degree - requestedDegree + 180, 360) - 180) || a.degree - b.degree)[0];
   if (!clip) return absent;
-  const value = finite(progress) ? progress : 0;
+  return selectedFrame(clip, action, requestedDegree, progress);
+}
+
+function selectedFrame(clip, action, requestedDegree, progress) {
+  const spec = actionSpec(action), value = finite(progress) ? progress : 0;
   const phase = spec.loop ? modulo(value, 1) : Math.max(0, Math.min(1, value));
   const count = clip.frames.length, index = Math.min(count - 1, Math.floor(phase * count));
   return { frame: clip.frames[index], index, direction: clip.degree, requestedDegree, action, mode: clip.mode === 'pose' ? 'pose' : 'animation', coverage: clip.degree === requestedDegree ? 'authored' : 'fallback' };
+}
+
+function frozenCopy(value) {
+  if (Array.isArray(value)) return Object.freeze(value.map(frozenCopy));
+  if (value && typeof value === 'object') {
+    const out = Object.create(null);
+    for (const [key, v] of Object.entries(value)) out[key] = frozenCopy(v);
+    return Object.freeze(out);
+  }
+  return value;
+}
+
+// Compile once when metadata is loaded. Selection thereafter does two table
+// lookups and phase arithmetic; it never revisits mutable source metadata.
+export function compileDirectionalManifest(manifest) {
+  const validation = validateDirectionalManifest(manifest), accepted = approvedClips(manifest, validation), actions = Object.create(null), pageMap = Object.create(null);
+  if (validation.ok) for (const p of manifest.pages) pageMap[p.id] = frozenCopy(p);
+  for (const action of Object.keys(DIRECTIONAL_ACTIONS)) {
+    const directions = Object.create(null), nearest = Object.create(null);
+    for (const c of accepted) if (c.action === action) directions[c.degree] = frozenCopy(c);
+    const clips = Object.values(directions);
+    for (const degree of DIRECTION_DEGREES) nearest[degree] = [...clips].sort((a, b) => Math.abs(modulo(a.degree - degree + 180, 360) - 180) - Math.abs(modulo(b.degree - degree + 180, 360) - 180) || a.degree - b.degree)[0] ?? null;
+    actions[action] = Object.freeze({ directions: Object.freeze(directions), nearest: Object.freeze(nearest) });
+  }
+  Object.freeze(actions); Object.freeze(pageMap);
+  return Object.freeze({
+    look: typeof manifest?.look === 'string' ? manifest.look : null,
+    owner: manifest?.owner ?? null, mobility: manifest?.mobility ?? null,
+    pixelsPerUnit: manifest?.pixelsPerUnit ?? null, valid: validation.ok,
+    validation: frozenCopy(validation), coverage: frozenCopy(coverageForClips(accepted)),
+    actions, pageMap,
+    select({ action = 'idle', yaw = 0, progress = 0, allowNearest = false } = {}) {
+      const requestedDegree = directionalBin(yaw), table = actions[action];
+      const clip = requestedDegree === null || !table ? null : table.directions[requestedDegree] ?? (allowNearest ? table.nearest[requestedDegree] : null);
+      return clip ? selectedFrame(clip, action, requestedDegree, progress) : { frame: null, coverage: 'missing', requestedDegree, direction: null, action };
+    },
+  });
 }
 
 // Compression is content-dependent; report GPU bytes separately from file bytes.
