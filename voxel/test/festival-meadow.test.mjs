@@ -3,6 +3,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
 import { planFestivalVisit, tickFestivalVisit } from "../src/rules/festival-meadow.js";
+import { LEVELS as LEVEL_TABLE } from "../src/rules/levels.js";
+// Earnings that reach a level, wherever the thresholds are set.
+const at = (n) => LEVEL_TABLE[n - 1].at;
 
 const run = (s, seconds) => { const events = []; for (let i = 0; i < seconds * 10; i++) events.push(...M.update(s, .1)); return events; };
 const ready = () => { const s = M.freshState(); s.festival.meadow = true; s.festival.cocoa.level = 1; s.festival.cocoa.stock = 10; s.visitorTimer = 1e6; return s; };
@@ -13,12 +16,12 @@ function guest(s, id, budget = 24) {
 
 test("land and stand purchases are gated, one-time and save-compatible", () => {
   const s = M.freshState(); s.progression.homeLegacyThrough = 12; s.coins = 1e6;
-  assert.equal(M.buyMeadow(s), false); s.earned = 1000; s.paused = true;
+  assert.equal(M.buyMeadow(s), false); s.earned = at(4); s.paused = true;
   assert.equal(M.buyMeadow(s), false); s.paused = false;
   assert.ok(M.buyMeadow(s)); const after = s.coins; assert.equal(M.buyMeadow(s), false); assert.equal(s.coins, after);
   assert.equal(M.fieldWidth(s), 54); assert.equal(M.upgradeCocoa(s), false);
-  s.earned = 2200; assert.equal(s.festival.cocoa.level, 0); const beforeBuild = s.coins; assert.ok(M.upgradeCocoa(s)); assert.equal(s.coins, beforeBuild - 650); assert.equal(s.festival.cocoa.stock, 10);
-  assert.equal(M.upgradeCocoa(s), false); s.earned = 8500; assert.ok(M.upgradeCocoa(s));
+  s.earned = at(5); assert.equal(s.festival.cocoa.level, 0); const beforeBuild = s.coins; assert.ok(M.upgradeCocoa(s)); assert.equal(s.coins, beforeBuild - 650); assert.equal(s.festival.cocoa.stock, 10);
+  assert.equal(M.upgradeCocoa(s), false); s.earned = at(7); assert.ok(M.upgradeCocoa(s));
   const loaded = M.restoreState(JSON.parse(JSON.stringify(M.saveData(s)))); assert.deepEqual(loaded.festival, s.festival);
   const old = M.freshState(); old.version = 5; delete old.festival;
   assert.deepEqual(M.restoreState(old).festival, M.freshState().festival);

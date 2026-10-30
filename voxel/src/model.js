@@ -17,6 +17,8 @@ import { freshCustomerCare, restoreCustomerCare } from "./rules/customer-care.js
 import { FAVOURS, checkMemories } from "./rules/progress.js";
 import { freshEstate, restoreEstate } from "./rules/house-estate.js";
 import { freshHollowHouse, restoreHollowHouse, updateHollowHouse, saveHollowVisitors, restoreHollowVisitors } from "./rules/hollow-house.js";
+import { updateGardenCrops } from "./rules/garden-crops.js";
+import { freshCarving, restoreCarving } from "./rules/carving.js";
 import { restoreIntroSeen } from "./rules/intro.js";
 import { freshSocial, recordNews } from "./rules/meadow-talk.js";
 import { freshHayride, restoreHayride, updateHayride, saveHayrideVisitors, restoreHayrideVisitors } from "./rules/hayride.js";
@@ -56,6 +58,9 @@ export * from "./content/kitchen-equipment.js";
 export * from "./rules/kitchen-equipment.js";
 export * from "./rules/cooking-mix.js";
 export * from "./rules/cleanliness.js";
+export * from "./rules/garden-crops.js";
+export * from "./rules/carving.js";
+export * from "./content/carving.js";
 
 export function freshState() {
   return {
@@ -69,7 +74,7 @@ export function freshState() {
     house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(), hayride: freshHayride(), kitchen: freshKitchen(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
     claimed: [], memories: [], progression: freshProgression(), paused: false, introSeen: false,
-    cleanliness: freshCleanliness(),
+    cleanliness: freshCleanliness(), carving: freshCarving(),
     social: freshSocial(),                                                     // meadow news and chats: never saved
     handsOn: false,                                                            // the player is steering Shane or Natalie: never saved
   };
@@ -145,6 +150,7 @@ export function restoreState(raw) {
   s.customerCare = restoreCustomerCare(raw.customerCare);
   s.bigSpender = restoreBigSpender(raw.bigSpender);
   s.cleanliness = restoreCleanliness(raw.cleanliness, s);
+  s.carving = restoreCarving(raw.carving);
   s.introSeen = restoreIntroSeen(raw, s);
   closeForTheNight(s);
   restoreHollowVisitors(raw.hollowVisitors, s);
@@ -172,6 +178,7 @@ export function update(s, dt) {
   updateStall(s, dt, events);
   updateShop(s, dt, events);
   updateCleanliness(s, dt, events);
+  updateGardenCrops(s, dt);
   updateDining(s, dt);
   checkMemories(s, events);
   for (const level of awardLevels(s)) events.push({ type: "level-up", level });

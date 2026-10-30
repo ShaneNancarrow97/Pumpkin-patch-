@@ -14,15 +14,25 @@ const scale = (hex, k) => new THREE.Color(hex).multiplyScalar(k).getHex();
 // Only voxels open to the side or the sky are kept: nothing ever sees the
 // inside or the underside. `carve(x, y)` cuts a face, in -1..1 across and up,
 // two voxels deep onto a candlelit back.
-function lobed(v, { R, H, s, lobes, groove, crease = 0.2, squash = 2.3, dimple = 0.3, color, r, markings = false, carve = null, x0 = 0, y0 = 0, z0 = 0 }) {
-  const N = 2 * R + 2, id = (x, y, z) => ((y + 1) * N + x + R + 1) * N + z + R + 1, at = (x, y, z) => solid[id(x, y, z)] === 1;
-  const solid = new Uint8Array(N * N * (H + 2)), top = new Int8Array(N * N);
+// Whether the voxel at (x, y, z) is inside a lobed pumpkin's shape.
+function lobeShape({ R, H, lobes, groove, crease = 0.2, squash = 2.3, dimple = 0.3 }) {
   const lobe = (x, z) => { const u = Math.atan2(x, z) * lobes / (2 * Math.PI), i = Math.round(u); return [Math.cos(Math.PI * (u - i)) ** 0.5, (i + lobes) % lobes]; };
-  for (let y = 0; y < H; y++) for (let x = -R; x < R; x++) for (let z = -R; z < R; z++) {
+  const inside = (x, y, z) => {
     const px = x + 0.5, pz = z + 0.5, rho = Math.hypot(px, pz), bulge = lobe(px, pz)[0];
     let t = (y + 0.5 - H / 2) / (H / 2);
     if (t > 0) t += dimple * Math.exp(-((rho / (R * 0.3)) ** 2)) + crease * (1 - bulge) * Math.min(1, rho / (R * 0.45));
-    if (Math.abs(t) >= 1 || rho > R * (1 - groove * (1 - bulge)) * (1 - Math.abs(t) ** squash) ** (1 / squash)) continue;
+    return !(Math.abs(t) >= 1 || rho > R * (1 - groove * (1 - bulge)) * (1 - Math.abs(t) ** squash) ** (1 / squash));
+  };
+  return { lobe, inside };
+}
+// `glow` recolours the candlelit flesh ([bright, deep]); `chunk(x, y)` builds
+// only the rind a cut piece takes with it, for the carving bench.
+function lobed(v, { R, H, s, lobes, groove, crease = 0.2, squash = 2.3, dimple = 0.3, color, r, markings = false, carve = null, glow = null, chunk = null, x0 = 0, y0 = 0, z0 = 0 }) {
+  const N = 2 * R + 2, id = (x, y, z) => ((y + 1) * N + x + R + 1) * N + z + R + 1, at = (x, y, z) => solid[id(x, y, z)] === 1;
+  const solid = new Uint8Array(N * N * (H + 2)), top = new Int8Array(N * N);
+  const { lobe, inside } = lobeShape({ R, H, lobes, groove, crease, squash, dimple });
+  for (let y = 0; y < H; y++) for (let x = -R; x < R; x++) for (let z = -R; z < R; z++) {
+    if (!inside(x, y, z)) continue;
     solid[id(x, y, z)] = 1; top[(x + R + 1) * N + z + R + 1] = y + 1;
   }
   const depth = (x, y, z) => { let d = 1; while (at(x, y, z + d)) d++; return d; };     // voxels to the front surface
@@ -31,15 +41,26 @@ function lobed(v, { R, H, s, lobes, groove, crease = 0.2, squash = 2.3, dimple =
   const groovy = tone(scale(color, 0.55), -0.02, 0.12, 0), light = tone(color, 0.012, 0, 0.08);
   const tint = Array.from({ length: lobes }, () => 1 + (r() - 0.5) * 0.09);
   const put = (x, y, z, c, glow) => v.box(x0 + x * s, y0 + y * s, z0 + z * s, s, s, s, c, glow);
+  const [bright, deep] = glow ?? [0xffd86c, 0xffa23c];
+  const lit = glow ? { floor: mix(bright, deep, .25), roof: scale(deep, .55), side: mix(bright, deep, .6) } : { floor: 0xffc458, roof: 0x9a4416, side: 0xe08a30 };
+  if (chunk) {
+    // Only the shell a piece takes away: rind outside, pale flesh behind.
+    for (let y = 0; y < H; y++) for (let x = -R; x < R; x++) for (let z = 1; z < R; z++) {
+      if (!at(x, y, z) || !chunk((x + 0.5) / R, (y + 0.5 - H / 2) / (H / 2))) continue;
+      const d = depth(x, y, z); if (d > 2) continue;
+      put(x, y, z, d === 1 ? vary(color, 0.04, r) : vary(0xf3c06a, 0.05, r), false);
+    }
+    return { base: 0, top: () => 0 };
+  }
   for (let y = 0; y < H; y++) for (let x = -R; x < R; x++) for (let z = -R; z < R; z++) {
     if (!at(x, y, z) || hole(x, y, z)) continue;
     const open = !at(x + 1, y, z) || !at(x - 1, y, z) || !at(x, y, z + 1) || !at(x, y, z - 1) || !at(x, y + 1, z);
-    if (z > 0 && face(x, y) && depth(x, y, z) === 3) { put(x, y, z, mix(0xffd86c, 0xffa23c, r() * 0.6), true); continue; }
+    if (z > 0 && face(x, y) && depth(x, y, z) === 3) { put(x, y, z, mix(bright, deep, r() * 0.6), true); continue; }
     const below = hole(x, y + 1, z), above = hole(x, y - 1, z), cut = below || above || hole(x + 1, y, z) || hole(x - 1, y, z);
     if (!open && !cut) continue;
     // The cut is drawn unlit, so the lantern on the stage can't wash it out: a
     // dark rim round each shape, then candlelit flesh, brightest on the floor.
-    if (cut) { put(x, y, z, vary(open ? 0x5c2410 : below ? 0xffc458 : above ? 0x9a4416 : 0xe08a30, 0.05, r), true); continue; }
+    if (cut) { put(x, y, z, vary(open ? 0x5c2410 : below ? lit.floor : above ? lit.roof : lit.side, 0.05, r), true); continue; }
     const px = x + 0.5, pz = z + 0.5, [bulge, i] = lobe(px, pz), up = (y + 0.5) / H;
     // Dark in the grooves, lightest on the crown of each lobe, darker underneath
     // and round the stem; each lobe a shade apart, with the odd pale fleck.
@@ -126,6 +147,35 @@ function buildPumpkin(variety, size) {
   stem(v, at, 0, form.base, 0, 3, f.bend, f.wood);
   leafAndTendril(v, at, form, LEAF, [-0.5, -2.4, -0.9, -2.0, -.6][variety], { dir: [0.5, -0.4, 2.6, 0.9, .7][variety], turns: 1.6, radius: 1.6, length: 6 });
   return v.build();
+}
+// The carving bench's pumpkin: the variety's own shape at carving density,
+// standing on y = 0 and `size` across, cut wherever `cut(u, v)` says (u across
+// and v up the front, -1 to 1). `glow` lights the flesh, `paint` recolours the
+// rind, and `chunk(u, v)` builds only the rind a piece takes when it pops out.
+export function carvingPumpkin(variety, { R = 22, size = 1.8, cut = null, chunk = null, glow = null, paint = null, stem: withStem = true } = {}) {
+  const f = FORMS[variety] ?? FORMS[0], v = new Voxels(), r = seeded(variety * 7 + 11), at = { s: size / (2 * R), r };
+  const H = Math.round(f.tall * 2 * R);
+  const form = lobed(v, { ...at, R, H, lobes: f.lobes, groove: f.groove, squash: f.squash, color: paint ?? VARIETIES[variety].color, markings: variety === 4 && !paint, carve: cut, glow, chunk });
+  if (!chunk && withStem) {
+    stem(v, at, 0, form.base, 0, R >= 16 ? 5 : 3, f.bend.map(([x, z]) => [x * (R >= 16 ? 2 : 1), z]), f.wood);
+    leafAndTendril(v, at, form, LEAF, [-0.5, -2.4, -0.9, -2.0, -.6][variety] ?? -.5, { dir: [0.5, -0.4, 2.6, 0.9, .7][variety] ?? .5, turns: 1.6, radius: R / 8, length: R / 2.2 });
+  }
+  const group = v.build(); group.userData.carving = { R, H, s: at.s, stemTop: (form.base + f.bend.length + 1) * at.s };
+  return group;
+}
+// Where the carving pumpkin's front surface is, for laying the stencil and the
+// knife on it: frontZ(u, v) in world units (null off the pumpkin), and the
+// world point for (u, v).
+export function carvingSurface(variety, { R = 22, size = 1.8 } = {}) {
+  const f = FORMS[variety] ?? FORMS[0], H = Math.round(f.tall * 2 * R), s = size / (2 * R);
+  const { inside } = lobeShape({ R, H, lobes: f.lobes, groove: f.groove, squash: f.squash });
+  const frontZ = (u, v) => {
+    const x = Math.floor(u * R), y = Math.floor(v * H / 2 + H / 2);
+    if (x < -R || x >= R || y < 0 || y >= H) return null;
+    for (let z = R - 1; z >= 0; z--) if (inside(x, y, z)) return (z + 1) * s;
+    return null;
+  };
+  return { R, H, s, height: H * s, frontZ, point: (u, v) => { const z = frontZ(u, v); return z === null ? null : [u * R * s, (v * H / 2 + H / 2) * s, z]; } };
 }
 export function sproutTemplate() {
   const v = new Voxels();

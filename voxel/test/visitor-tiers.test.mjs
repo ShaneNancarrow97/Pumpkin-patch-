@@ -3,6 +3,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
+import { LEVELS as LEVEL_TABLE } from "../src/rules/levels.js";
+// Earnings that reach a level, wherever the thresholds are set.
+const at = (n) => LEVEL_TABLE[n - 1].at;
 
 const SIGN = M.UPGRADES.find((u) => u.id === "sign"), LIGHTS = M.VISITOR_UPGRADES.find((u) => u.id === "lights");
 
@@ -69,13 +72,13 @@ test("level gifts still give a real tier, and coins when that upgrade is already
   for (const level of M.LEVELS) for (const r of level.rewards.filter((x) => x.kind === "upgrade")) {
     assert.equal(M.UPGRADES.find((u) => u.id === r.id).max, r.max, `${r.id}'s gift knows its maximum`);
   }
-  const gift = M.freshState(); gift.earned = 1000; gift.progression.claimed = [1, 2, 3];
+  const gift = M.freshState(); gift.earned = at(4); gift.progression.claimed = [1, 2, 3];
   M.awardLevels(gift); assert.equal(gift.upgrades.tools, 1);
-  const full = M.freshState(); full.earned = 1000; full.progression.claimed = [1, 2, 3]; full.upgrades.tools = 6;
+  const full = M.freshState(); full.earned = at(4); full.progression.claimed = [1, 2, 3]; full.upgrades.tools = 6;
   const coins = full.coins; M.awardLevels(full);
   assert.equal(full.upgrades.tools, 6); assert.equal(full.coins, coins + 100 + 100);
   assert.equal(full.progression.receipts[4][1].duplicate, true);
   // Buying the frequency tiers doesn't disturb a gift.
-  const both = M.freshState(); both.coins = 1e6; both.earned = 2e6; both.progression.claimed = M.LEVELS.map((l) => l.level); while (M.buyUpgrade(both, "sign")); both.earned = 1000; both.progression.claimed = [1, 2, 3];
+  const both = M.freshState(); both.coins = 1e6; both.earned = 2e6; both.progression.claimed = M.LEVELS.map((l) => l.level); while (M.buyUpgrade(both, "sign")); both.earned = at(4); both.progression.claimed = [1, 2, 3];
   M.awardLevels(both); assert.equal(both.upgrades.sign, 5); assert.equal(both.upgrades.tools, 1);
 });

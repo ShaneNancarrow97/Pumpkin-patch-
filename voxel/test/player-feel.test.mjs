@@ -63,3 +63,22 @@ test("walking into the hedge arch goes through once; arriving in a doorway's str
   run(1,12);run(-1,40);assert.deepEqual(seen,['arch','arch'],'stepping out opens it again');
  } finally {if(original===undefined)delete globalThis.document;else globalThis.document=original;}
 });
+
+test("a walk to something solid ends beside it and does what it was for", async () => {
+ const THREE=await import('three'),{createPlayerControl}=await import('../src/player-control.js'),{freshState}=await import('../src/model.js');
+ const original=globalThis.document;globalThis.document={body:{classList:{contains:()=>false}}};
+ try {
+  const s=freshState(),scene=new THREE.Scene(),actor=new THREE.Group();actor.add(new THREE.Group());actor.position.set(12,0,23);
+  const camera=new THREE.OrthographicCamera(-10,10,10,-10,.1,100);camera.position.set(10,25,40);camera.lookAt(10,0,18);camera.updateMatrixWorld();
+  const places={setControlled(){},playerActor(){return null;},clearPlayerRest(){}};
+  const player=createPlayerControl({scene,state:s,actors:()=>({natalie:{model:actor}}),places,getPlace:()=>null,getCamera:()=>camera,animate(){}});
+  player.setEnabled(true,'natalie');let t=0,done=0;
+  // The big pumpkin is solid: the owner stops against it, then the walk's job runs.
+  const {BIG_PUMPKIN}=await import('../src/world.js');
+  assert.ok(player.walkTo({x:BIG_PUMPKIN.x,z:BIG_PUMPKIN.z,reach:Math.hypot(3.4,3.2)/2+.7,then:()=>{done++;}}));
+  for(let i=0;i<200&&player.state().travelling;i++){player.update(.05,t+=.05);await Promise.resolve();}
+  await Promise.resolve();
+  assert.equal(player.state().travelling,false);assert.equal(done,1,'arrived and acted once');
+  assert.ok(Math.hypot(player.state().position.x-BIG_PUMPKIN.x,player.state().position.z-BIG_PUMPKIN.z)<=Math.hypot(3.4,3.2)/2+.7,'beside it');
+ } finally {if(original===undefined)delete globalThis.document;else globalThis.document=original;}
+});

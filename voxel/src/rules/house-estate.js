@@ -2,6 +2,7 @@
 // Coordinates, ownership and paid transactions live here, never in the scene.
 import { ESTATE_EXPANSIONS, ESTATE_DECOR, ESTATE_DECOR_BY_ID, ESTATE_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_DEFAULT_FINISHES, ESTATE_HOUSE_RESERVE, ESTATE_PATH_HALF_WIDTH, ESTATE_BORDER, ESTATE_HOUSE_SKINS, ESTATE_SKIN_BY_ID } from "../content/house-estate.js";
 import { validPieceColour } from "./piece-colours.js";
+import { restoreGardenCrop } from "./garden-crops.js";
 export { ESTATE_EXPANSIONS, ESTATE_DECOR, ESTATE_DECOR_BY_ID, ESTATE_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_DEFAULT_FINISHES, ESTATE_HOUSE_SKINS, ESTATE_SKIN_BY_ID } from "../content/house-estate.js";
 
 const EPS = 1e-6, MAX_COPIES = 200, MAX_INSTANCE = 1000000;
@@ -150,7 +151,8 @@ export function restoreEstate(raw) {
     let instance = typeof p.instance === "string" && /^garden-\d{1,7}$/.test(p.instance) && !used.has(p.instance) ? p.instance : null;
     if (!instance) instance = newInstance(e);
     used.add(instance);
-    e.placed.push({ instance, id: p.id, x: p.x, z: p.z, rotation: angle(p.rotation ?? 0), ...(validPieceColour(p.tint)?{tint:p.tint}:{}) });
+    const crop = restoreGardenCrop(p.crop, p.id);
+    e.placed.push({ instance, id: p.id, x: p.x, z: p.z, rotation: angle(p.rotation ?? 0), ...(validPieceColour(p.tint)?{tint:p.tint}:{}), ...(crop ? { crop } : {}) });
     e.nextInstance = Math.max(e.nextInstance, Number(instance.slice(7)) + 1);
   }
   return e;

@@ -3,15 +3,18 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as C from "../src/rules/cooking.js";
 import { COOKING, RECIPES, RECIPE_BY_ID } from "../src/content/cooking.js";
+import { LEVELS as LEVEL_TABLE } from "../src/rules/levels.js";
+// Earnings that reach a level, wherever the thresholds are set.
+const at = (n) => LEVEL_TABLE[n - 1].at;
 
-const state = (earned = 110000) => ({ time: 0, coins: 50000, earned, progression: { bonusEarned: 0 }, paused: false, stock: [10, 4, 0, 0], fresh: [[], [], [], []], holds: [], house: { level: 0, placed: [] }, kitchen: C.freshKitchen() });
+const state = (earned = at(12)) => ({ time: 0, coins: 50000, earned, progression: { bonusEarned: 0 }, paused: false, stock: [10, 4, 0, 0], fresh: [[], [], [], []], holds: [], house: { level: 0, placed: [] }, kitchen: C.freshKitchen() });
 const purchased = () => { const s = state(); assert.equal(C.buyFoodTruck(s), true); return s; };
 const tick = (s, dt) => { const events = []; s.time += s.paused ? 0 : dt; C.updateKitchen(s, dt, events); return events; };
 
 test("level five unlocks permission to buy; levelling does not give a free truck", () => {
   const s = state(2199), before = s.coins;
   assert.equal(C.kitchenUnlocked(s), false); assert.equal(C.buyFoodTruck(s), false);
-  s.earned = 2200; assert.equal(C.kitchenUnlocked(s), true); tick(s, 600);
+  s.earned = at(5); assert.equal(C.kitchenUnlocked(s), true); tick(s, 600);
   assert.equal(s.kitchen.purchased, false); assert.equal(s.coins, before);
   assert.equal(C.buyFoodTruck(s), true); assert.equal(s.coins, before - COOKING.price);
   assert.deepEqual(s.kitchen.recipes, ["wedges"]); assert.equal(C.buyFoodTruck(s), false);
@@ -101,9 +104,9 @@ test("the truck avoids a level-five dead end; the second station needs a real ra
 });
 
 test("research, food shelf selection and price boundaries honour ownership and level gates", () => {
-  const s = purchased(); s.earned = 2200;
+  const s = purchased(); s.earned = at(5);
   assert.equal(C.researchRecipe(s, "soup"), false); assert.equal(C.assignFoodDisplay(s, 0, "soup"), false);
-  s.earned = 4500; const before = s.coins; assert.equal(C.researchRecipe(s, "soup"), true); assert.equal(s.coins, before - RECIPE_BY_ID.soup.research);
+  s.earned = at(6); const before = s.coins; assert.equal(C.researchRecipe(s, "soup"), true); assert.equal(s.coins, before - RECIPE_BY_ID.soup.research);
   assert.equal(C.researchRecipe(s, "soup"), false); assert.equal(C.assignFoodDisplay(s, 0, "soup"), true);
   assert.equal(C.assignFoodDisplay(s, 2, "soup"), false); assert.equal(C.setFoodPrice(s, "soup", 0), false);
   assert.equal(C.setFoodPrice(s, "soup", 27), false); assert.equal(C.setFoodPrice(s, "soup", 26), true);
@@ -121,9 +124,9 @@ test("capacity upgrades cost coins and stop at their final tier; speed affects o
 });
 
 test("the hired chef uses real inputs, respects pause and storage, and never orders for free", () => {
-  const s = purchased(); s.earned = 26000;
+  const s = purchased(); s.earned = at(9);
   assert.equal(C.buyKitchenUpgrade(s, "chef"), false); assert.equal(C.setChefRecipe(s, "wedges"), false);
-  s.earned = 42000; assert.equal(C.buyKitchenUpgrade(s, "chef"), true); assert.equal(C.setChefRecipe(s, "wedges"), true);
+  s.earned = at(10); assert.equal(C.buyKitchenUpgrade(s, "chef"), true); assert.equal(C.setChefRecipe(s, "wedges"), true);
   const before = s.coins; tick(s, 100); assert.equal(s.kitchen.jobs.truck, null); assert.equal(s.kitchen.orders.length, 0); assert.equal(s.coins, before);
   s.kitchen.pantry.butter = 2; tick(s, 1); assert.equal(s.kitchen.pantry.butter, 1); assert.equal(s.kitchen.jobs.truck.automatic, true);
   s.paused = true; tick(s, 100); assert.equal(s.kitchen.food.wedges, 0); s.paused = false;
@@ -156,7 +159,7 @@ test("in-flight deliveries and paid jobs survive reload; new/default saves get n
 });
 
 test("all eight recipes use positive finite costs/times/yields and remain within the published level range", () => {
-  assert.equal(RECIPES.length, 14);
+  assert.equal(RECIPES.length, 16);
   assert.deepEqual(RECIPES.slice(0,8).map(r => r.level), [5, 6, 7, 8, 9, 10, 11, 12]);
   for (const r of RECIPES) { assert.ok(r.price > 0 && r.yield > 0 && r.seconds > 0); assert.ok(Object.keys(r.ingredients).length > 0); }
 });
@@ -172,7 +175,7 @@ test("corrupt restored inventories cannot exceed total capacity and invalid stat
 test("model migration persists paid cooking progress and clears only transient customer food holds", async () => {
   const M = await import("../src/model.js"), s = M.freshState(); s.progression.homeLegacyThrough = 12;
   assert.equal(s.version, M.STATE_VERSION); assert.deepEqual(s.kitchen, C.freshKitchen());
-  s.earned = 2200; s.coins = 2000; assert.equal(M.buyFoodTruck(s), true);
+  s.earned = at(5); s.coins = 2000; assert.equal(M.buyFoodTruck(s), true);
   M.placeIngredientOrder(s, { butter: 2 }); M.update(s, 48);
   s.kitchen.food.wedges = 2; s.kitchen.foodHolds.push({ owner: "customer-9", recipe: "wedges", quantity: 1, price: 11 });
   const saved = M.saveData(s); assert.deepEqual(saved.kitchen.foodHolds, []); assert.equal(s.kitchen.foodHolds.length, 1, "saving does not change the live reservation");

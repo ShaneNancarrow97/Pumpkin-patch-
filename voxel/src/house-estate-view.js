@@ -4,7 +4,11 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { buildEstateHouse, buildEstateGarden, buildEstateDecor, disposeEstateObject } from "./house-estate-world.js";
 import { ESTATE_DECOR_BY_ID } from "./content/house-estate.js";
 import { estateBounds } from "./rules/house-estate.js";
+import { gardenBedStage, gardenCropOf } from "./rules/garden-crops.js";
 import { applyPieceColour } from "./piece-colours.js";
+import { carvingPumpkin } from "./pumpkins.js";
+import { STENCIL_BY_ID, CARVING_DECOR, inPiece } from "./content/carving.js";
+import { lanternSpots } from "./play-ways.js";
 import { attachPieceGestures, createFraming } from "./piece-gestures.js";
 
 // A separate render scene: the farm keeps running while the camera explores
@@ -27,7 +31,7 @@ export function createHouseEstateView(canvas, state, hooks) {
   controls.enablePan = true; controls.screenSpacePanning = false; controls.zoomSpeed = .75; controls.rotateSpeed = .65;
   controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
   controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
-  let active = false, built = false, house = null, garden = null, houseKey = "", gardenKey = "", firstView = true;
+  let active = false, built = false, house = null, garden = null, houseKey = "", gardenKey = "", firstView = true, lanterns = null, lanternKey = "";
   const props = new Map(), pickables = [], pickMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const groundHit = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), pickMaterial); groundHit.rotation.x = -Math.PI / 2; groundHit.position.y = .025; groundHit.userData = { type: "estate-ground" };
   const houseHit = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), pickMaterial); houseHit.userData = { type: "estate-house" };
@@ -64,15 +68,32 @@ export function createHouseEstateView(canvas, state, hooks) {
       garden = buildEstateGarden(state); scene.add(garden); gardenKey = gk;
       groundHit.scale.set(bounds.width, bounds.depth, 1); gateHit.position.set(0, 1.5, bounds.z1 - .15); gateLamp.position.set(-2, 2.3, bounds.z1 - .4);
     }
+    // Carved lanterns kept from the carving bench glow on the doorstep.
+    const lk = JSON.stringify(state.carving?.lanterns ?? []) + "@" + state.house.level;
+    if (lk !== lanternKey) {
+      if (lanterns) { scene.remove(lanterns); disposeEstateObject(lanterns); }
+      lanterns = new THREE.Group(); lanterns.name = "Doorstep lanterns"; lanternKey = lk;
+      const spots = lanternSpots(state);
+      (state.carving?.lanterns ?? []).forEach((l, i) => {
+        const st = STENCIL_BY_ID[l.stencil]; if (!st) return;
+        const glow = CARVING_DECOR.candle.find(c => c.id === l.decor?.candle)?.colour, paint = CARVING_DECOR.paint.find(c => c.id === l.decor?.paint)?.colour;
+        const g = carvingPumpkin(l.variety, { R: 11, size: .62, cut: (u, v) => st.pieces.some(p => inPiece(p, u, v)), glow, paint });
+        g.position.set(spots[i].x, .06, spots[i].z); lanterns.add(g);
+      });
+      scene.add(lanterns);
+    }
     const existing = new Set(e.placed.map(p => p.instance));
     for (const [id, item] of props) if (!existing.has(id)) {
       scene.remove(item.group, item.hit); disposeEstateObject(item.group); item.hit.geometry.dispose(); pickables.splice(pickables.indexOf(item.hit), 1); props.delete(id);
     }
     for (const p of e.placed) {
       let item = props.get(p.instance);
+      // A crop bed is redrawn as it sprouts, grows, ripens and is picked.
+      const stage = gardenCropOf(p.id) ? gardenBedStage(p) : "ready";
+      if (item && item.stage !== stage) { scene.remove(item.group); disposeEstateObject(item.group); item.group = buildEstateDecor(p.id, stage); item.stage = stage; item.tint = undefined; scene.add(item.group); }
       if (!item) {
-        const def = ESTATE_DECOR_BY_ID[p.id], group = buildEstateDecor(p.id), hit = new THREE.Mesh(new THREE.BoxGeometry(def.w, def.height, def.d), pickMaterial);
-        hit.userData = { type: "estate-decor", instance: p.instance }; scene.add(group, hit); pickables.push(hit); item = { group, hit }; props.set(p.instance, item);
+        const def = ESTATE_DECOR_BY_ID[p.id], group = buildEstateDecor(p.id, stage), hit = new THREE.Mesh(new THREE.BoxGeometry(def.w, def.height, def.d), pickMaterial);
+        hit.userData = { type: "estate-decor", instance: p.instance }; scene.add(group, hit); pickables.push(hit); item = { group, hit, stage }; props.set(p.instance, item);
       }
       const q = override?.instance === p.instance ? override : p;
       item.group.position.set(q.x, .04, q.z); item.group.rotation.y = THREE.MathUtils.degToRad(q.rotation);

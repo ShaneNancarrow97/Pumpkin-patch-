@@ -31,6 +31,7 @@ import { fieldWidth, MEADOW, MEADOW_EXIT, CHAT_SPOTS } from "./content/festival-
 import { cameraLayout, controlledRoomFraming, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
 import { createGardenPlay } from "./garden-play.js";
+import { createCarvingView } from "./carving-view.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
 import { createWilds } from "./wilds.js";
@@ -309,11 +310,12 @@ export function createScene(canvas, state, hooks) {
   const roomCam = new THREE.PerspectiveCamera(INTERIOR.fov, 1, 0.1, 200);
   const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), gesture: hooks.estateGesture, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
   const gardenPlay = createGardenPlay({ view: estateView, state, character });
+  const carvingView = createCarvingView(canvas, state, { onCut: (id) => hooks.onCarveCut?.(id) ?? false, onProgress: (status) => hooks.onCarveProgress?.(status), blocked: () => document.body.classList.contains("menu-open") });
   const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.(), gesture: hooks.foyerGesture });
   const mazeView = createMazeRideView(canvas, state, { onCue: cue => hooks.onMazeCue?.(cue), onComplete: status => hooks.onMazeComplete?.(status), onState: status => hooks.onMazeState?.(status), blocked: () => document.body.classList.contains("menu-open") });
   const hayrideView = createHayrideView(canvas, state, { world: hayrideWorld, onCue: cue => hooks.onHayrideCue?.(cue), onComplete: status => hooks.onHayrideComplete?.(status), onState: status => hooks.onHayrideState?.(status), blocked: () => document.body.classList.contains("menu-open") });
-  const active = () => view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
-  const activeScene = () => view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
+  const active = () => view.place === "carving" ? carvingView.camera : view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
+  const activeScene = () => view.place === "carving" ? carvingView.scene : view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
   const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null, reach: { x: 0, z: 0 } };
   // The optional orbit follows the owner; the management view stays canonical.
   const playerOrbit = { yaw: 0, pitch: PITCH }, playerLook = { x: 0, z: 0 };
@@ -447,6 +449,7 @@ export function createScene(canvas, state, hooks) {
     if (view.place === "maze") { mazeView.resize(); return; }
     if (view.place === "hayride") { hayrideView.resize(); return; }
     if (view.place === "estate") { estateView.resize(w, h); return; }
+    if (view.place === "carving") { carvingView.resize(w, h); return; }
     if (view.place === "foyer") { foyerView.resize(); return; }
     if (view.place) { if(!control)clampView(); frameRoom(w, h); return; }
     // Ease from a phone crop to the whole yard, with room around the edges.
@@ -497,7 +500,7 @@ export function createScene(canvas, state, hooks) {
   const piecePoint = e => { inputRay(e); floorPlane.constant = -places.standHeight(hooks.selectedPiece?.()); return ray.ray.intersectPlane(floorPlane, floorPoint) ? { x: floorPoint.x - ORIGIN.room.x, y: floorPoint.y, z: floorPoint.z - ORIGIN.room.z } : null; };
   const worldPerPixel = () => (camera.right - camera.left) / canvas.clientWidth;
   canvas.addEventListener("pointerdown", (e) => {
-    if (["estate", "foyer", "maze", "hayride"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
+    if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
     canvas.setPointerCapture(e.pointerId); glide = null;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 1) {
@@ -517,7 +520,7 @@ export function createScene(canvas, state, hooks) {
     }
   });
   canvas.addEventListener("pointermove", (e) => {
-    if (["estate", "foyer", "maze", "hayride"].includes(view.place)) return;
+    if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place)) return;
     if (!touches.has(e.pointerId)) return;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pinch && touches.size === 2) { const [a, b] = [...touches.values()];
@@ -538,7 +541,7 @@ export function createScene(canvas, state, hooks) {
   });
   let lastPick = null;
   const end = (e) => {
-    if (["estate", "foyer", "maze", "hayride"].includes(view.place) || !touches.has(e.pointerId)) return;
+    if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place) || !touches.has(e.pointerId)) return;
     const wasPieceDrag = pieceDrag === e.pointerId;
     const wasTap = !wasPieceDrag && drag && drag.moved < 8 && touches.size === 1 && (e.pointerType !== "mouse" || e.button === 0);
     if (wasPieceDrag) { hooks.onPieceDragEnd?.(false); pieceDrag = null; }
@@ -570,7 +573,7 @@ export function createScene(canvas, state, hooks) {
   canvas.addEventListener("contextmenu", e => { e.preventDefault(); cancelGesture(); });
   window.addEventListener("blur", () => cancelGesture());
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelGesture(); });
-  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer", "maze", "hayride"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, cameraLayout(canvas.clientWidth).maxZoom); clampView(); frame(); }, { passive: false });
+  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, cameraLayout(canvas.clientWidth).maxZoom); clampView(); frame(); }, { passive: false });
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.
   function clampView() {
@@ -778,6 +781,7 @@ export function createScene(canvas, state, hooks) {
     if (skyla) animateSkyla(skyla, time, paying > 0);
     places.tick(dt, time, paying > 0);
     estateView.tick(time);
+    carvingView.tick(dt, time);
     foyerView.tick(dt, time);
     }
     mazeView.tick(dt, time);
@@ -840,6 +844,8 @@ export function createScene(canvas, state, hooks) {
     // A visitor's remark at the stall, and other words floating up from the farm.
     say(text) { if (!view.place && time >= nextSpeechAt && !document.body.classList.contains("menu-open") && !fx.some(f => f.el.classList.contains("speech"))) { nextSpeechAt = time + 9; floatText(text, SHOP.x - 2.4, 3.6, SHOP.counterZ + 1.8, "speech"); } },
     float(text, at, cls = "") { if (!view.place) floatText(text, at.x, 2, at.z, cls); },
+    // Floats a word over a point in whichever place is showing (the garden's beds).
+    floatHere(text, x, y, z, cls = "") { floatText(text, x, y, z, cls); },
     portrait(id) { return sheets && id ? portraitURL(sheets, id) : null; },
     refreshLooks() { placeActor("natalie"); placeActor("shane"); places.refresh(); gardenPlay.release(); },
     // Stepping inside: a room of the cottage, or the shop floor. leavePlace() comes back out.
@@ -850,8 +856,10 @@ export function createScene(canvas, state, hooks) {
       if (!view.place) farmView = { x: view.x, z: view.z, zoom: view.zoom };
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
+      if (view.place === "carving") carvingView.leave();
       view.place = kind; playerOrbit.yaw=0;playerOrbit.pitch=kind==="room"?INTERIOR.pitch:PITCH;
       if (kind === "estate") { places.leave(); estateView.enter(); }
+      else if (kind === "carving") { places.leave(); carvingView.enter(); }
       else if (kind === "foyer") { places.leave(); foyerView.enter(); }
       else if (kind === "maze") { places.leave(); mazeView.enter(id.config, id.options); }
       else if (kind === "hayride") { places.leave(); hayrideWorld.sync(); hayrideView.enter(id ?? {}); }
@@ -865,12 +873,13 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "hayride") hayrideView.leave();
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
+      if (view.place === "carving") carvingView.leave();
       places.leave();
       view.place = null; glide = null; playerOrbit.yaw=0;playerOrbit.pitch=PITCH;
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
       frame();
     },
-    get place() { return view.place === "hayride" ? { kind: "hayride", id: "woodland" } : view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
+    get place() { return view.place === "carving" ? { kind: "carving", id: "bench" } : view.place === "hayride" ? { kind: "hayride", id: "woodland" } : view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
     get visitorStatus() { return [...visitorModels].map(([id,e]) => ({ id, kind: state.visitors.find(v=>v.id===id)?.kind, visible: e.m.visible, sprite: e.sprite, leadingLeg: e.m.userData.leadingLeg, frames: e.m.userData.walk?.length ?? 0, frame: e.m.userData.walk?.indexOf(e.m.userData.shown) ?? -1, x: e.m.position.x, z: e.m.position.z })); },
     get farmExpansionStatus() { return farmExpansion.status; },
@@ -892,6 +901,8 @@ export function createScene(canvas, state, hooks) {
     refreshRoom() { places.refresh(); },
     refreshEstate() { festivalWorld.sync(); farmExpansion.sync(); frame(); },
     refreshHouseEstate() { if (view.place === "estate") estateView.sync(); },
+    // The carving bench's close-up (carving-view.js), for its controls and QA.
+    get carving() { return carvingView; },
     previewEstateDecor(data) { estateView.preview(data); },
     get estateCamera() { return estateView.cameraActions; },
     get estateStatus() { return estateView.status; },

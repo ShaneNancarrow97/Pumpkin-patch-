@@ -15,6 +15,7 @@ export const INGREDIENTS = Object.freeze([
   { id: "stock", name: "Vegetable stock", price: 2 },
   { id: "herbs", name: "Garden herbs", price: 2 },
   { id: "spices", name: "Autumn spices", price: 3 },
+  { id: "berries", name: "Bramble berries", price: 3 },
 ].map(Object.freeze));
 export const INGREDIENT_BY_ID = Object.freeze(Object.assign(Object.create(null), Object.fromEntries(INGREDIENTS.map(i => [i.id, i]))));
 export const INGREDIENTS_BY_ID = INGREDIENT_BY_ID;
@@ -33,6 +34,9 @@ export const RECIPES = Object.freeze([
   { id: "moonfire-chicken", name: "Moonfire herb chicken", level: 8, price: 18, yield: 3, seconds: 60, research: 750, ingredients: { chicken: 2, butter: 1, herbs: 1, vegetables: 1 }, pumpkins: {}, method: "pan", equipment: ["hob", "pan"], homeOnly: true, text: "Pan-cook chicken with butter, herbs and vegetables for a warming supper." },
   { id: "haunted-pie", name: "Haunted harvest pie", level: 9, price: 26, yield: 4, seconds: 80, research: 1200, ingredients: { meat: 2, vegetables: 2, flour: 2, butter: 1 }, pumpkins: {}, method: "bake", equipment: ["oven", "tray"], homeOnly: true, text: "Fold a rich meat-and-vegetable filling into a buttery pastry crust." },
   { id: "pumpkin-spice-biscuits", name: "Pumpkin spice biscuits", level: 10, price: 8, yield: 6, seconds: 60, research: 1800, ingredients: { flour: 2, butter: 1, sugar: 1, spices: 1 }, pumpkins: { 0: 1 }, method: "bake", equipment: ["oven", "tray", "spice"], text: "Bake pumpkin, flour, butter, sugar and autumn spices into six fragrant biscuits." },
+  // Berries come from the garden's bramble patches (or a delivery).
+  { id: "bramble-crumble", name: "Bramble crumble", level: 6, price: 15, yield: 3, seconds: 55, research: 420, ingredients: { berries: 2, flour: 1, butter: 1, sugar: 1 }, pumpkins: {}, method: "bake", equipment: ["oven", "tray"], text: "Dark garden berries under a buttery, golden crumble." },
+  { id: "bramble-apple-pie", name: "Bramble and apple pie", level: 9, price: 27, yield: 3, seconds: 80, research: 1250, ingredients: { berries: 2, apples: 2, flour: 2, butter: 1 }, pumpkins: {}, method: "bake", equipment: ["oven", "tray"], text: "Garden apples and berries under a lattice of crisp pastry." },
 ].map(r => Object.freeze({ ...r,
   method: r.method ?? (r.id === "wedges" ? "pan" : ["soup", "toffee-apples", "pumpkin-jam"].includes(r.id) ? "simmer" : "bake"),
   equipment: Object.freeze(r.equipment ?? (r.id === "wedges" ? ["hob", "pan"] : ["soup", "toffee-apples", "pumpkin-jam"].includes(r.id) ? ["hob", "pot"] : ["oven", "tray"])),

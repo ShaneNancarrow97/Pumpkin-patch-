@@ -40,6 +40,7 @@ import { money, $ } from "./ui/kit.js";
 import { PLOTS } from "./world.js";
 import { leaveHouse } from "./play-ways.js";
 import { createPlaceVeil } from "./ui/place-veil.js";
+import { createCarvingUI } from "./ui/carving-ui.js";
 
 const SAVE_KEY = "pumpkin-patch-voxel-reference-v1";
 
@@ -104,6 +105,7 @@ const scene = createScene($("world"), state, {
     state.handsOn = handsOn;
     if (!state.paused) for (const e of M.update(state, dt)) handle(e);
     lifeActivity?.tick(dt);
+    carvingUI?.tick(dt);
     render();
   },
   selectedPiece: () => home.tools.selected,
@@ -112,6 +114,9 @@ const scene = createScene($("world"), state, {
   onPieceDragMove: point => home.tools.dragTo(point),
   onPieceDragEnd: cancelled => home.tools.endDrag(cancelled),
   onWay: way => passThrough(way),
+  // The carving bench: a piece cut out of the pumpkin (carving-view.js).
+  onCarveCut: id => { const ok = M.cutPiece(state, id); if (ok) { audio.tone(392); setTimeout(() => audio.tone(262), 90); playFeel("done"); save(); carvingUI?.render(); } return ok; },
+  onCarveProgress: status => carvingUI?.progress(status),
   onMazeCue: cue => mazeAudio.cue(cue),
   onMazeState: status => mazeUI.update(status),
   onMazeComplete: status => { mazeAudio.pause(true); mazeUI.update(status); },
@@ -130,10 +135,14 @@ const scene = createScene($("world"), state, {
   // A chat marker over a group in the meadow (scene.js syncChats).
   onChat(spot) { guestCard.clear(); chatCard.open(spot); },
   onPick(what) {
-    if (playControls?.active && !home.tools.selected && !openTab && ["plot", "piece"].includes(what.type)) {
-      const t=scene.player.state().target;
-      if(t && (what.type === "plot" ? t.type === "plot" && t.index === what.index : t.instance === what.instance)) interactAsPlayer();
-      else notice("Move closer until the object glows, then press X.");
+    // Playing: a tap on a plot, a piece of furniture, or a garden bed or bench
+    // walks the owner over and does it there.
+    if (playControls?.active && !home.tools.selected && !openTab && ["plot", "piece", "estate-decor"].includes(what.type)) {
+      const match = (t) => what.type === "plot" ? t?.type === "plot" && t.index === what.index : !!t && t.instance === what.instance;
+      if (match(scene.player.state().target)) { interactAsPlayer(); return; }
+      const goal = scene.player.targets().find(match);
+      if (goal && scene.player.walkTo({ x: goal.x, z: goal.z, near: what.type === "plot" ? 1.1 : 1.8, reach: goal.reach, then: () => { if (match(scene.player.state().target)) interactAsPlayer(); } })) playFeel("select");
+      else if (!goal && what.type !== "estate-decor") notice("Walk a little closer to that, then press the action button.");
       return;
     }
     if (what.type === "visitor" || what.type === "customer") {
@@ -153,7 +162,14 @@ const scene = createScene($("world"), state, {
     else if (what.type === "home") openHome();
     else if (what.type === "estate-house") { if (!estateTools.active) { enterRoom(state.house.activeRoom); closeSheet(); } else notice("Keep the house and its entrance clear. Tap an open part of the garden."); }
     else if (what.type === "estate-exit") { if (!estateTools.active) { leavePlace(); closeSheet(); } else notice("The entrance path stays clear for coming and going."); }
-    else if (what.type === "estate-decor") estateTools.select(what.instance);
+    else if (what.type === "estate-decor") {
+      // A crop bed is tended and the carving bench opens with a tap; other
+      // pieces (and beds while moving pieces) are picked up to move.
+      const def = M.ESTATE_DECOR_BY_ID[state.estate.placed.find((p) => p.instance === what.instance)?.id];
+      if (!estateTools.active && def?.crop) tendGardenBed(what.instance);
+      else if (!estateTools.active && def?.carving) openCarving();
+      else estateTools.select(what.instance);
+    }
     else if (what.type === "estate-ground") { if (estateTools.active) estateTools.placeAt(what.point.x, what.point.z); }
     else if (what.type === "hollow-door") { closeSheet(); if (M.hollowReady(state)) enterFoyer(); else hollowContext.open(); }
     else if (what.type === "hollow-house") { closeSheet(); hollowContext.open(); }
@@ -303,6 +319,49 @@ function passThrough(way) {
 }
 const wayOut = (test) => scene.player.ways().find(test);
 
+// A garden bed (rules/garden-crops.js): plant it, water it or pick it,
+// whichever it needs. Playing, the owner does it with the same gestures as
+// at the patch.
+function tendGardenBed(instance, playing = false) {
+  const act = M.gardenBedAction(state, instance), p = state.estate.placed.find((q) => q.instance === instance);
+  if (!act || !p || state.paused) return false;
+  const crop = M.gardenCropOf(p.id), at = [p.x, 1.6, p.z];
+  if (act.kind === "wait") { const left = Math.ceil(p.crop.remaining); notice(`The ${crop.name} need ${left < 90 ? left + " more seconds" : Math.ceil(left / 60) + " more minutes"}.`); return false; }
+  if (playing) scene.player.act(act.kind, .8, { x: p.x, z: p.z });
+  let ok = false;
+  if (act.kind === "plant") { ok = M.plantGardenBed(state, instance); if (ok) { scene.floatHere("Planted", ...at); chime(330, 494); } }
+  else if (act.kind === "water") { ok = M.waterGardenBed(state, instance); if (ok) { scene.floatHere("Watered", ...at); chime(587, 784); } }
+  else {
+    const r = M.pickGardenBed(state, instance); ok = !!r;
+    if (r) {
+      scene.floatHere(`+${r.amount} ${crop.name}`, ...at, "coin"); chime(523, 659);
+      notice(r.sold ? `${r.pantry ? `${r.pantry} ${crop.name} to the pantry, and ` : ""}${r.sold} sold at the market for ${money(r.coins)}.` : `${r.pantry} ${crop.name} to the pantry.`);
+    }
+  }
+  if (ok) { save(); scene.refreshHouseEstate(); render(); }
+  return ok;
+}
+
+// The carving bench's close-up (carving-view.js, ui/carving-ui.js): opened
+// from a bench in the garden, it goes back to wherever it was opened from.
+let carvingUI = null, carvingFrom = null;
+function openCarving() {
+  if (state.paused || carvingUI?.isOpen) return false;
+  if (!M.carvingBenches(state)) { notice("Place a carving bench in the garden to carve pumpkins."); return false; }
+  carvingFrom = scene.place?.kind ?? null;
+  lifeActivity?.cancel(); closeSheet(); guestCard.clear(); home.tools.select(null); estateTools.cancel();
+  scene.enter("carving"); document.body.classList.add("carving-open"); carvingUI.open(); renderPlace();
+  return true;
+}
+function closeCarving() {
+  if (!carvingUI?.isOpen) return;
+  // A pumpkin not yet cut goes back to the barn; a started one waits on the bench.
+  if (state.carving.current && !state.carving.current.cut.length) M.cancelCarving(state);
+  carvingUI.close(); document.body.classList.remove("carving-open");
+  if (carvingFrom === "estate") enterEstate(); else if (carvingFrom === "room") enterRoom(state.house.activeRoom); else leavePlace();
+  save(); render();
+}
+
 // Stepping inside the cottage or the shop, and back out.
 let interiorFromEstate = false;
 function enterRoom(id) {
@@ -392,7 +451,7 @@ function renderPlace() {
   document.body.classList.toggle("inside-place", inside);
   document.body.classList.toggle("house-estate", p?.kind === "estate");
   $("place-bar").hidden = !inside; $("actions").hidden = inside; $("goal").hidden = inside;
-  if (inside) $("place-title").textContent = p.kind === "hayride" ? "The Hollow Hayride" : p.kind === "estate" ? "Home & Garden" : p.kind === "maze" ? "The Hollow House · Walkthrough" : p.kind === "foyer" ? "The Hollow House · Foyer" : p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
+  if (inside) $("place-title").textContent = p.kind === "carving" ? "The carving bench" : p.kind === "hayride" ? "The Hollow Hayride" : p.kind === "estate" ? "Home & Garden" : p.kind === "maze" ? "The Hollow House · Walkthrough" : p.kind === "foyer" ? "The Hollow House · Foyer" : p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
   $("place-back").setAttribute("aria-label", p?.kind === "room" && interiorFromEstate ? "Back to the garden" : "Back to the patch");
   $("place-back").querySelector(".place-back-text").textContent = p?.kind === "room" && interiorFromEstate ? "Back to garden" : "Back to farm";
   $("place-rooms").disabled = p?.kind === "shop";
@@ -414,7 +473,7 @@ $("boost").onclick = boost;
 // The HUD, actions, goal and streak, every frame (cheap: only text changes).
 const text = (id, value) => { const el = $(id); if (el.textContent !== String(value)) el.textContent = value; };
 function render() {
-  const controlsBlocked=!!openTab || celebration.active || intro.active || upgradeMenu?.open || mazeUI.active || hayrideUI.active || state.paused || !!homeJourney?.active;
+  const controlsBlocked=!!openTab || celebration.active || intro.active || upgradeMenu?.open || mazeUI.active || hayrideUI.active || state.paused || !!homeJourney?.active || !!carvingUI?.isOpen;
   playControls?.tick(controlsBlocked); homeJourney?.tick();
   if (mazeUI.active) mazeUI.update(scene.mazeStatus);
   if (hayrideUI.active) hayrideUI.update(scene.hayrideRideStatus);
@@ -582,7 +641,8 @@ $("open-settings").onclick = () => openSheet("settings");
 $("sheet-close").onclick = closeSheet;
 
 document.addEventListener("keydown", (e) => {
-  if (intro.active || mazeUI.active || hayrideUI.active || homeJourney?.active) return;
+  // The carving bench has the keyboard to itself while it is open (ui/carving-ui.js).
+  if (intro.active || mazeUI.active || hayrideUI.active || homeJourney?.active || carvingUI?.isOpen) return;
   if(playControls?.handleKey(e))return;
   if (e.key !== "Escape" && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
   if (celebration.active) return;
@@ -651,6 +711,8 @@ function interactAsPlayer(tool='hand',options={}) {
   else if(t.type==='sit')scene.player.rest('sit',t);
   else if(t.type==='read'){scene.player.rest('read',t);if(t.book)collection.read(t.book);else {sheets.journal.setTab('library');openSheet('journal');}}
   else if(t.type==='pet')scene.player.rest('pet',t);
+  else if(t.type==='bed')tendGardenBed(t.instance,true);
+  else if(t.type==='carve')openCarving();
   else if(t.type==='go'){const way=wayOut(w=>t.way?w.id===t.way:w.to==='room:'+t.to);if(way)passThrough(way);else goTo(t.to);}
   else if(t.type==='exit')passThrough(wayOut(w=>w.id==='out')??leaveHouse(state));
   else if(t.type==='piece')home.tools.select(t.instance);
@@ -667,7 +729,17 @@ function followHomeGoal(){
   save();
 }
 lifeActivity=createLifeActivity({state:()=>state,player:scene.player,commit:commitPlayerWork,notice,blocked:()=>!!openTab||intro.active||celebration.active||!!homeJourney?.active||!!playControls?.radial||!!home.tools.selected||upgradeMenu.open});
-playControls=createPlayControls({feel:playFeel,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
+carvingUI=createCarvingUI({ state:()=>state, view:scene.carving, feel:playFeel, actions:{
+  start:(v)=>{const ok=!!M.startCarving(state,v);if(ok){save();scene.carving.refresh();render();}else notice("Pick that kind of pumpkin first.");return ok;},
+  stencil:(id)=>{const ok=M.chooseStencil(state,id);if(ok){save();scene.carving.refresh();}return ok;},
+  decor:(g,id)=>{const ok=M.setCarvingDecor(state,g,id);if(ok){save();scene.carving.refresh();}return ok;},
+  done:()=>M.carvingDone(state),
+  value:()=>{const c=state.carving.current;return c?M.lanternValue({variety:c.variety,stencil:c.stencil,decor:c.decor}):0;},
+  finish:(how)=>{const l=M.finishCarving(state,how);if(l){chime(523,784);if(how==="sell")notice(`Sold your lantern at the village fair for ${money(l.value)}.`);else notice("Your lantern glows on the doorstep.");save();render();scene.refreshHouseEstate();}return l;},
+  close:closeCarving,
+}});
+// B shuts the carving bench through back(), after this tick has noted B as held: closing renders, and a render ticks the pad again.
+playControls=createPlayControls({feel:playFeel,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(carvingUI?.isOpen){queueMicrotask(closeCarving);return;}if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
 homeJourney=createHomeJourney({state:()=>state,blocked:()=>!!openTab||celebration.active||intro.active||mazeUI.active||hayrideUI.active||!!home.tools.selected||!!playControls.radial||state.paused,follow:followHomeGoal,open:()=>openSheet('homelife')});
 scene.setRenderQuality(prefs.renderQuality); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
 render(); renderPlace();
@@ -680,7 +752,7 @@ const mazeDiagnostics = {
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
 const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), get status() { return scene.hayrideRideStatus; } };
-window.PumpkinVoxel = { lifeActivity, playControls, interactAsPlayer, followHomeGoal, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
+window.PumpkinVoxel = { lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";

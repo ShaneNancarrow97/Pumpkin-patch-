@@ -28,7 +28,7 @@ test('Natalie purple wheelchair is free, wearable and saved, with six rolling fr
  const old=M.saveData(M.freshState());old.wardrobe.owned=[];assert.ok(M.restoreState(old).wardrobe.owned.includes('natalie-wheelchair'));
 });
 test('visitor occasions are wired to the model and rich indoor guests use finite money',()=>{
- const s=M.freshState();s.progression.homeLegacyThrough=12;s.coins=1e6;s.earned=110000;s.visitorTimer=s.bigSpender.timer=1e6;assert.ok(M.buyVisitorEventUpgrade(s,'rush'));assert.ok(M.buyVisitorEventUpgrade(s,'vip'));
+ const s=M.freshState();s.progression.homeLegacyThrough=12;s.coins=1e6;s.earned=M.LEVELS[11].at;s.visitorTimer=s.bigSpender.timer=1e6;assert.ok(M.buyVisitorEventUpgrade(s,'rush'));assert.ok(M.buyVisitorEventUpgrade(s,'vip'));
  const before=M.saveData(s);const r=M.restoreState(before);assert.equal(r.visitorEvents.vip.level,1);assert.equal(r.visitorEvents.rush.remaining,300);
  let events=[];for(let t=0;t<301;t++)events.push(...M.update(s,1));assert.ok(events.some(e=>e.type==='visitor-event'&&e.event==='rush'));assert.ok(s.visitorEvents.ledger.vipGuests>=3);
  s.shop.unlocked=true;s.shop.nextCustomer=0;s.shop.arrivalTimer=0;M.update(s,.1);const c=s.shop.customers[0];assert.ok(c.vip&&c.kind>=11);assert.ok(c.budget>=140&&c.budget<=250);

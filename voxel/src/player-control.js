@@ -76,7 +76,7 @@ export function choosePlayerTarget(list, position, heading, previous, reach = 2.
   const candidates = list.map(t => {
     const dx = t.x - position.x, dz = t.z - position.z, distance = Math.hypot(dx, dz), dot = distance > .001 ? (dx * heading.x + dz * heading.z) / distance : 1;
     return { ...t, distance, score: distance + (1 - dot) * .22 - (Number(t.priority) || 0) * .1 };
-  }).filter(t => Number.isFinite(t.distance) && t.distance <= Math.min(reach,Number.isFinite(t.range)?Math.max(0,t.range):reach)).sort((a, b) => a.score - b.score);
+  }).filter(t => Number.isFinite(t.distance) && t.distance <= (Number.isFinite(t.range)?Math.min(reach,Math.max(0,t.range)):Number.isFinite(t.reach)?Math.max(reach,t.reach):reach)).sort((a, b) => a.score - b.score);
   const best = candidates[0], held = candidates.find(t => playerTargetKey(t) === playerTargetKey(previous));
   return held && best && held.score <= best.score + .24 ? held : best ?? null;
 }
@@ -196,7 +196,9 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
       if (magnitude > .15) { walkTarget = null; if (pose) { stand(); Object.assign(pos, localPosition()); } }
       if (walkTarget) {
         const dx = walkTarget.x - pos.x, dz = walkTarget.z - pos.z, distance = Math.hypot(dx, dz);
-        if (distance <= 1.1) { face(walkTarget); walkTarget = null; intent.x = intent.z = 0; }
+        // Arrived (within `near`, 1.1 by default): face it, then do what the
+        // walk was for (a tap on something far off).
+        if (distance <= (walkTarget.near ?? 1.1)) { face(walkTarget); const then = walkTarget.then; walkTarget = null; intent.x = intent.z = 0; if (then) queueMicrotask(then); }
         else { intent.x = dx / distance; intent.z = dz / distance; }
       }
       if (!pose) {
@@ -205,7 +207,8 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
         const next = slidePlayer(pos, step.dx, step.dz, g.bounds, g.obstacles);
         pos.x = next.x; pos.z = next.z;
         if (Math.hypot(intent.x, intent.z) > .08) { const n = Math.hypot(intent.x, intent.z); heading.x = intent.x / n; heading.z = intent.z / n; viewFacing(); }
-        if (walkTarget) { stuck = Math.hypot(pos.x - old.x, pos.z - old.z) < .002 ? stuck + dt : 0; if (stuck > 1.5) walkTarget = null; }
+        // Held up against the thing itself, close enough to reach it, counts as arriving.
+        if (walkTarget) { stuck = Math.hypot(pos.x - old.x, pos.z - old.z) < .002 ? stuck + dt : 0; const reach = Math.hypot(walkTarget.x - pos.x, walkTarget.z - pos.z) <= (walkTarget.reach ?? 2); if (stuck > (reach ? .25 : 1.5)) { const then = reach ? walkTarget.then : null; if (reach) face(walkTarget); walkTarget = null; if (then) queueMicrotask(then); } }
       }
 
     } else velocity.x = velocity.z = 0;
@@ -318,6 +321,8 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     // QA: the figure being controlled (its group), for measuring how it is drawn.
     figure: () => (enabled && available() ? model() ?? null : null),
     teleport(x, z) { if (!sync()) return false; const a = model(), o = origin(), p = safeSpot({ x, z }); a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z); positions.set(key, p); target = nearest(); return true; },
+    // Where the action target is in the world (rooms sit off at their origin), for the prompt over it.
+    targetAt() { const t = enabled && available() ? nearest() : null, o = origin(); return t ? { x: o.x + t.x, y: room() ? 1.9 : 1.7, z: o.z + t.z } : null; },
     state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", passing: passing?.id ?? null, room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, waterCanStyle:'sprite', waterCanWidth:canWidth, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: Math.abs(can.scale.x), waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
     // QA can finish a presentation without advancing harvests, deliveries or any other rule.
     advance(seconds) {

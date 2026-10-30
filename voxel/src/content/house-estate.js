@@ -31,6 +31,21 @@ export const ESTATE_DECOR = [
   { id: "mushroom-patch", name: "Mooncap mushrooms", cost: 125, w: 1.5, d: 1.5, height: .75, score: 1, houseLevel: 0, text: "Little lilac caps glowing in the autumn grass." },
   { id: "fire-pit", name: "Harvest fire bowl", cost: 720, w: 2.2, d: 2.2, height: 1.2, score: 4, houseLevel: 1, text: "A copper fire bowl for cosy evenings outside." },
   { id: "ghost-scarecrow", name: "Garden ghost", cost: 320, w: 1.6, d: 1, height: 2.4, score: 2, houseLevel: 0, text: "A friendly sheet ghost with a tiny lantern." },
+  // Beds that grow something (rules/garden-crops.js): plant, water once to
+  // hurry it along, and pick it for the kitchen's pantry or the market.
+  { id: "berry-patch", name: "Bramble berry patch", cost: 160, w: 2.4, d: 1.3, height: 1.1, score: 2, houseLevel: 0, text: "Thorny canes that fruit with fat, dark berries.", crop: { yields: "berries", seconds: 120, amount: 3, name: "berries" } },
+  { id: "herb-planter", name: "Witch's herb planter", cost: 120, w: 1.8, d: .9, height: .9, score: 1, houseLevel: 0, text: "Sage, thyme and moonwort in a raised timber box.", crop: { yields: "herbs", seconds: 80, amount: 3, name: "herbs" } },
+  { id: "vegetable-bed", name: "Kitchen vegetable bed", cost: 220, w: 2.6, d: 1.6, height: .8, score: 2, houseLevel: 1, text: "Carrots, leeks and little squash for Maisie's pans.", crop: { yields: "vegetables", seconds: 150, amount: 3, name: "vegetables" } },
+  { id: "apple-tree", name: "Crab apple tree", cost: 480, w: 2.6, d: 2.6, height: 4.4, score: 3, houseLevel: 1, text: "Gnarled branches and rosy apples for toffee and pies.", crop: { yields: "apples", seconds: 240, amount: 4, name: "apples" } },
+  // Opens the close-up carving (carving-view.js).
+  { id: "carving-bench", name: "Pumpkin carving bench", cost: 180, w: 2.2, d: 1.2, height: 1.5, score: 2, houseLevel: 0, text: "Knives, scoops and stencils: carve your own jack-o'-lanterns.", carving: true },
+  { id: "hay-bales", name: "Hay bales and gourds", cost: 140, w: 2.2, d: 1.4, height: 1.3, score: 1, houseLevel: 0, text: "A tumble of straw bales piled with little gourds." },
+  { id: "gravestones", name: "Family gravestones", cost: 260, w: 2.6, d: 1.2, height: 1.4, score: 2, houseLevel: 0, text: "Three crooked headstones with very silly epitaphs." },
+  { id: "owl-perch", name: "Owl perch", cost: 300, w: 1, d: 1, height: 2.6, score: 2, houseLevel: 0, text: "A crooked post where a barn owl keeps watch." },
+  { id: "witch-cauldron", name: "Bubbling cauldron", cost: 380, w: 1.6, d: 1.6, height: 1.4, score: 3, houseLevel: 1, text: "A pot-bellied cauldron of glowing green brew." },
+  { id: "picnic-table", name: "Moonlit picnic table", cost: 340, w: 2.6, d: 1.8, height: 1.1, score: 2, houseLevel: 1, text: "Room for two, a gingham cloth and a basket of cocoa." },
+  { id: "lantern-garland", name: "Lantern garland", cost: 260, w: 3.4, d: .6, height: 2.6, score: 2, houseLevel: 1, text: "Paper lanterns strung between two crooked posts." },
+  { id: "lily-pond", name: "Lily pond", cost: 680, w: 3.2, d: 2.4, height: .6, score: 4, houseLevel: 2, text: "Still water, lily pads and a frog who sings at night." },
 ];
 const finish = (id, category, name, cost, houseLevel, color, light, dark) => ({ id, category, name, cost, houseLevel, color, palette: [color, light, dark] });
 export const ESTATE_FINISHES = [

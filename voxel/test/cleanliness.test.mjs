@@ -4,7 +4,9 @@ import { freshCleanliness, restoreCleanliness, updateCleanliness, cleanLitter, c
 import { freshState, saveData, restoreState } from "../src/model.js";
 import { stallPace, shopPace, visitorCapacity } from "../src/rules/selling.js";
 import { fieldDepth } from "../src/content/farm-layout.js";
-const state=()=>({coins:1000,earned:1000,sold:0,paused:false,time:0,progression:{bonusEarned:0},cleanliness:freshCleanliness(),house:{level:0,placed:[],owned:[]}});
+import { LEVELS } from "../src/rules/levels.js";
+// Enough earned for the janitor's level, wherever the thresholds are set.
+const state=()=>({coins:1000,earned:LEVELS[CLEANLINESS.janitorLevel-1].at,sold:0,paused:false,time:0,progression:{bonusEarned:0},cleanliness:freshCleanliness(),house:{level:0,placed:[],owned:[]}});
 
 test("paid guests leave bounded, deterministic litter on the lane",()=>{const s=state();s.sold=16;updateCleanliness(s,1);assert.equal(s.cleanliness.litter.length,4);const t=state();t.sold=16;updateCleanliness(t,1);assert.deepEqual(s.cleanliness.litter,t.cleanliness.litter);s.sold=100000;updateCleanliness(s,1);assert.equal(s.cleanliness.litter.length,CLEANLINESS.maximum);assert.ok(s.cleanliness.litter.every(p=>p.x>28&&p.x<36&&p.z>10));});
 test("litter reduces arrivals and capacity gently, and cleaning fully removes its penalty",()=>{const s=state();s.sold=200;updateCleanliness(s,1);assert.equal(cleanlinessFootfall(s),.65);const ids=s.cleanliness.litter.map(p=>p.id);for(const id of ids)assert.equal(cleanLitter(s,id),true);assert.equal(cleanlinessFootfall(s),1);assert.equal(s.cleanliness.cleaned,24);assert.equal(cleanLitter(s,ids[0]),false);});

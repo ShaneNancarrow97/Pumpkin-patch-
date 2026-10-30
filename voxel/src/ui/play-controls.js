@@ -51,7 +51,7 @@ const shortAction=(label,p,job,tool)=>{
  if(p.pose)return 'Stand up';if(p.available===false)return label;
  const type=p.target?.type;
  if(tool!=='hand'||type==='plot')return /water/i.test(label)?'Water':/pick/i.test(label)?'Pick':/plant/i.test(label)?'Plant':/clean/i.test(label)?'Clean':label;
- return ({pumpkin:'Tap pumpkin',shop:'Shop',home:'Go home',cooking:'Cook',wardrobe:'Dress up',sit:'Sit',read:'Read',exit:'Leave',piece:'Arrange',go:'Go through'})[type]??label;
+ return ({pumpkin:'Tap pumpkin',shop:'Shop',home:'Go home',cooking:'Cook',wardrobe:'Dress up',sit:'Sit',read:'Read',exit:'Leave',piece:'Arrange',go:'Go through',carve:'Carve',bed:({plant:'Plant',water:'Water',harvest:'Pick',wait:'Growing'})[p.target?.kind]})[type]??label;
 };
 // One wedge of the wheel, as an SVG path between two radii.
 function wedge(i,n,inner=86,outer=166,gap=2.2){
@@ -63,6 +63,8 @@ function wedge(i,n,inner=86,outer=166,gap=2.2){
 export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction,feel=()=>{}}) {
   let padName='',menuRepeat=0,details=false,previousPiece=null,previousFocus=null,radial=false,tool='hand',keys=new Set(),cameraKeys=new Set(),move={x:0,y:0},look={x:0,y:0},padPrevious=[],selectedIndex=0,repeatAt=0,held=null,suppressClickUntil=0;
   let inputMode=matchMedia?.('(pointer: coarse)').matches?'touch':'keyboard',shownMode='',hold=null,wheelItems=[],shownTool='',shownGait='',shownWho='',chain=0,retryFace=0;
+  // A prompt over whatever the action button would act on, so the world says what is in reach.
+  const prompt=document.createElement('div');prompt.className='play-prompt';prompt.setAttribute('aria-hidden','true');prompt.innerHTML='<span><kbd data-prompt-key>E</kbd><b data-prompt-label></b></span>';document.body.append(prompt);
   const root=document.createElement('div');root.id='play-controls';
   root.innerHTML=`<button id="play-toggle" class="play-chip" aria-label="Choose a character to play">${svg('play','play-chip-icon')}<span>Play</span></button>
     <div id="play-live" hidden>
@@ -258,7 +260,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     $('#play-toggle').hidden=!!p.enabled||blocked||!!piece;$('#play-live').hidden=!p.enabled||blocked||radial||!!piece;
     stickEl.hidden=lookEl.hidden=$('#play-gait').hidden=$('#play-recenter').hidden=p.available===false;
     $('#furniture-pad').hidden=!piece||blocked||radial||details;
-    $('#play-arrange').hidden=!p.enabled||blocked||radial||!!piece||!p.target?.instance||p.available===false||!!p.pose;
+    $('#play-arrange').hidden=!p.enabled||blocked||radial||!!piece||!p.target?.instance||p.place==='estate'||p.available===false||!!p.pose;
     if(piece)setText($('.play-piece-label'),(piece.id??'Furniture').replaceAll('-',' ')+' · '+Math.round(piece.rotation??0)+'°');
     // The portrait can be blank until the sprites load, so keep asking until it is real.
     const face=$('[data-owner-portrait]');if(p.who&&(p.who!==shownWho||!face.naturalWidth&&performance.now()>retryFace)){const url=portrait(p.who);if(url){shownWho=p.who;face.src=url;}retryFace=performance.now()+1500;}
@@ -269,7 +271,10 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     const label=p.available===false?(p.place==='estate'?'Enter home':'Back to farm'):job.active?job.label:pose?'Stand up':tool==='hand'?p.target?.label:({plant:'Plant seed',water:'Water crop',harvest:'Pick pumpkin',clean:'Clean litter'})[tool];
     const object=p.target?.objectLabel??p.target?.name??p.target?.item?.replaceAll('-',' ')??'';
     setText($('[data-action-key]'),padName==='DualSense'?'□':padName?'A':'E');setText($('[data-action-hint]'),job.travelling?'walking on':job.active?(job.holding?'holding':'finishing'):holdable?'tap · hold':'tap');setText($('[data-action-label]'),shortAction(label||'Explore',p,job,tool));setText($('#play-focus-label'),'');
-    const icon=pose?'stand':job.kind??(tool==='hand'?({plot:/water/i.test(label)?'water':/pick/i.test(label)?'harvest':'plant',litter:'clean',pumpkin:'harvest',shop:'home',home:'home',cooking:'hand',wardrobe:'wardrobe',sit:'sit',read:'read',pet:'pet',exit:'go',go:'go',piece:'hand'})[p.target?.type]??'hand':tool);
+    const reach=p.enabled&&!blocked&&!job.active&&!pose&&!p.passing&&tool==='hand'&&p.target?scene.player?.targetAt?.():null,spot=reach&&scene.project(reach.x,reach.y,reach.z);
+    prompt.classList.toggle('show',!!spot);
+    if(spot){prompt.style.transform=`translate(${Math.round(spot.x)}px,${Math.round(spot.y)}px)`;setText(prompt.querySelector('[data-prompt-label]'),p.target.label);setText(prompt.querySelector('[data-prompt-key]'),padName==='DualSense'?'□':padName?'A':inputMode==='touch'?'Tap':'E');}
+    const icon=pose?'stand':job.kind??(tool==='hand'?({plot:/water/i.test(label)?'water':/pick/i.test(label)?'harvest':'plant',litter:'clean',pumpkin:'harvest',shop:'home',home:'home',cooking:'hand',wardrobe:'wardrobe',sit:'sit',read:'read',pet:'pet',exit:'go',go:'go',piece:'hand',carve:'hand',bed:({plant:'plant',water:'water',harvest:'harvest'})[p.target?.kind]??'hand'})[p.target?.type]??'hand':tool);
     if(shownActionIcon!==icon){$('[data-action-icon]').innerHTML=actionIcon(icon);shownActionIcon=icon;interact.dataset.kind=icon;}interact.dataset.input=padName?'gamepad':'touch';
     // Each finished use: a pulse, a buzz and, while holding, a streak count.
     if(job.last&&job.last!==shownCompletion){shownCompletion=job.last;if(job.last.success){clearTimeout(completeTimer);interact.classList.remove('play-complete');void interact.offsetWidth;interact.classList.add('play-complete');completeTimer=setTimeout(()=>interact.classList.remove('play-complete'),420);

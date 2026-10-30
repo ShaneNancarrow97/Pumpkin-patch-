@@ -97,3 +97,17 @@ test("the garden's door and gate have prompts that lead to their ways", async ()
     assert.ok(free(s, "estate", t) || Math.hypot(t.x - (way.zone.x0 + way.zone.x1) / 2, t.z - (way.zone.z0 + way.zone.z1) / 2) < 1, `${t.label} sits by its way`);
   }
 });
+
+test("eight carved lanterns on the doorstep leave the door, the doorstep and the path clear", async () => {
+  const { lanternSpots } = await import("../src/play-ways.js");
+  for (const level of [0, 3]) {
+    const s = at(level, 0);
+    s.carving.lanterns = Array.from({ length: 8 }, (_, i) => ({ id: i + 1, variety: 0, stencil: "classic", decor: {}, value: 1 }));
+    const spots = lanternSpots(s), door = playWays(s, "estate").find((w) => w.id === "front-door");
+    assert.equal(spots.length, 8);
+    assert.ok(free(s, "estate", gardenDoorstep(s)), "the doorstep");
+    assert.ok(free(s, "estate", { x: 0, z: door.zone.z1 - .05 }), "the door's strip");
+    for (const p of spots) assert.ok(Math.abs(p.x) > 2.2, "beside the steps and porch, not in front of the door");
+    assert.equal(free(s, "estate", spots[0]), false, "and walked round");
+  }
+});

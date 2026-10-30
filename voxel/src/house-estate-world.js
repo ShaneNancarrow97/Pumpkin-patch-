@@ -384,11 +384,138 @@ function tree(v, r, x, z, scale = 1) {
 
 // Each catalogue item is a true free-standing prop with detail on every side.
 // Its pivot is the centre of its footprint, resting on the garden's y=0 plane.
-export function buildEstateDecor(id) {
+// A bed of soil in a timber frame, w by d, with its boards rising `edge` high.
+function bed(v, r, w, d, edge = .22, soil = 0x3b2a25) {
+  for (const side of [-1, 1]) { v.block(0, .02, side * (d / 2 - .06), w, edge, .12, vary(0x6e4a39, .06, r)); v.block(side * (w / 2 - .06), .02, 0, .12, edge, d - .24, vary(0x6e4a39, .06, r)); }
+  v.block(0, .02, 0, w - .24, edge - .04, d - .24, soil);
+  for (let x = -w / 2 + .3; x < w / 2 - .2; x += .28) v.block(x, edge - .02, 0, .14, .03, d - .36, scaleHex(soil, 1.18));
+}
+const scaleHex = (hex, k) => { const c = new THREE.Color(hex).multiplyScalar(k); return c.getHex(); };
+// The garden's newer pieces: crop beds (drawn at their growing stage), the
+// carving bench and the decoration added with them (content/house-estate.js).
+function gardenExtra(v, r, id, stage) {
+  const grown = { empty: 0, sprout: 1, growing: 2, ready: 3 }[stage] ?? 3;
+  if (id === "berry-patch") {
+    bed(v, r, 2.36, 1.24);
+    v.block(-.95, .2, .5, .05, .5, .05, 0x5a4030); v.block(-.95, .52, .52, .34, .2, .04, 0xd8c39a);
+    for (let i = 0; i < 4; i++) {
+      const x = -.72 + i * .48;
+      if (grown === 1) { for (const dz of [-.12, .1]) v.block(x + dz * .5, .2, dz, .05, .16, .05, 0x5f8a45); continue; }
+      if (!grown) continue;
+      // Arching canes, then leaves; ripe canes hang with clusters of berries.
+      for (let k = 0; k < 6; k++) { const a = k / 5, h = .2 + Math.sin(a * Math.PI) * .62 * (grown > 2 ? 1 : .8); v.block(x - .2 + a * .4, h, -.18 + (k % 2) * .3, .07, .1, .07, k % 2 ? 0x5b2f3d : 0x4a3a2c); }
+      for (let k = 0; k < 7; k++) v.block(x - .22 + (k % 4) * .15, .45 + (k % 3) * .14, -.3 + (k % 2) * .5, .17, .1, .17, vary(GREEN[k % 3], .08, r));
+      if (grown > 2) for (let k = 0; k < 6; k++) { const bx = x - .2 + (k % 3) * .2, by = .42 + (k % 2) * .22, bz = -.34 + (k % 2) * .62; v.block(bx, by, bz, .09, .09, .09, k % 4 ? 0x2a1238 : 0x8e2238); v.block(bx + .05, by - .05, bz, .07, .07, .07, 0x3a1a46); }
+    }
+  } else if (id === "herb-planter") {
+    for (const x of [-.78, .78]) for (const z of [-.33, .33]) v.block(x, .02, z, .1, .45, .1, 0x5a4030);
+    bed(v, r, 1.76, .86, .46, 0x3a2924);
+    const herbs = [[-.55, 0x7a8c78, 0xb9b4c9], [-.15, 0x56704a, 0xe8d9f0], [.25, 0x4c6448, 0x9c6bb8], [.6, 0x6d8d64, 0xf0d58a]];
+    for (const [x, leaf, bloom] of herbs) {
+      if (grown === 1) { v.block(x, .45, 0, .06, .1, .06, 0x6a9a4c); continue; }
+      if (!grown) continue;
+      for (let k = 0; k < 5; k++) v.block(x + (k % 2 ? .07 : -.07), .45 + k * .06, (k % 3 - 1) * .09, .16 - k * .015, .08, .16 - k * .015, vary(leaf, .07, r));
+      if (grown > 2) for (const dz of [-.1, .1]) v.block(x, .78 + (dz > 0 ? .04 : 0), dz, .06, .06, .06, bloom);
+    }
+  } else if (id === "vegetable-bed") {
+    bed(v, r, 2.56, 1.56, .18);
+    for (let i = 0; i < 5; i++) {
+      const x = -1 + i * .5;
+      if (grown === 1) { for (const z of [-.4, 0, .4]) v.block(x, .16, z, .05, .1, .05, 0x67954b); continue; }
+      if (!grown) continue;
+      // Carrots' feathers and shoulders, leeks standing tall, squash at the end.
+      for (const z of [-.42, .42]) { v.block(x, .16, z, .1, .2 + grown * .07, .04, 0x5f8f42); v.block(x + .04, .2, z, .04, .16 + grown * .05, .1, 0x76a04f); if (grown > 2) v.block(x, .14, z, .11, .07, .11, 0xe0782c); }
+      v.block(x, .16, 0, .09, .28 + grown * .1, .09, 0xd9e2c4); v.block(x, .36 + grown * .1, 0, .14, .12, .06, 0x4d7a3c);
+      if (grown > 2 && i % 2 === 0 && i < 4) { v.block(x + .22, .16, .2, .2, .16, .2, 0xe9a23b); v.block(x + .22, .32, .2, .05, .05, .05, 0x5b6a33); }
+    }
+  } else if (id === "apple-tree") {
+    stone(v, r, 0, 0, 0, .9, .1, .9);
+    for (let y = .1, x = 0, k = 0; y < 2.2; y += .2, k++) { x += [0, .03, -.04, .02, .05, -.02, 0, .03, -.03, .02, 0][k] ?? 0; v.block(x, y, 0, .3 - k * .008, .22, .3 - k * .008, vary(0x4b3426, .06, r)); }
+    for (const [dx, dz] of [[-.45, .2], [.42, -.15], [.1, .45]]) for (let k = 0; k < 4; k++) v.block(dx * (k + 1) / 4, 2 + k * .13, dz * (k + 1) / 4, .13, .13, .13, 0x4b3426);
+    const leaves = grown ? 1 : .55;
+    for (let i = 0; i < 46; i++) {
+      const a = r() * Math.PI * 2, rad = Math.sqrt(r()) * 1.1, y = 2.25 + r() * 1.7;
+      if (r() > leaves) continue;
+      const x = Math.cos(a) * rad * (1 - (y - 2.25) / 4.2), z = Math.sin(a) * rad * (1 - (y - 2.25) / 4.2);
+      v.block(x, y, z, .34, .3, .34, vary(GREEN[(r() * 3) | 0], .08, r));
+      if (grown === 1 && i % 3 === 0) v.block(x + .12, y + .26, z + .12, .1, .08, .1, 0xf3d8e4);
+      if (grown >= 2 && i % 4 === 0) v.block(x, y - .12, z + .17, .13, .13, .13, grown > 2 ? 0xc0392f : 0x8fa64a);
+    }
+    if (grown > 2) for (const [x, z] of [[-.7, .6], [.62, .55], [.2, -.75]]) v.block(x, .01, z, .14, .13, .14, 0xa93229);
+  } else if (id === "carving-bench") {
+    for (const x of [-.95, .95]) for (const z of [-.45, .45]) v.block(x, .02, z, .12, .78, .12, 0x5c4031);
+    v.block(0, .3, 0, 1.98, .06, .98, 0x4a3529);
+    v.block(0, .8, 0, 2.18, .1, 1.16, 0x8c654a); for (let x = -.95; x < 1; x += .32) v.block(x, .9, 0, .02, .005, 1.14, 0x6d4c39);
+    // Newspaper, the pumpkin half carved with its lid off, and its tools.
+    v.block(.05, .9, .05, .9, .012, .7, 0xd9d2c0); for (let z = -.2; z < .35; z += .1) v.block(-.12, .913, z, .45, .006, .02, 0x8a8478);
+    pumpkin(v, .05, .91, .02, .26, 41, true);
+    v.block(-.55, .91, .2, .26, .05, .24, 0xe48b33); v.block(-.55, .96, .2, .05, .08, .05, 0x5a6a35);
+    v.block(.62, .91, .22, .32, .025, .05, 0xc9ccd6); v.block(.86, .91, .22, .16, .04, .06, 0x3d2c22);
+    v.block(.6, .91, -.2, .1, .04, .3, 0x9c9fa8); v.block(.6, .95, -.32, .16, .04, .1, 0x9c9fa8);
+    v.block(-.62, .91, -.25, .4, .01, .3, 0xefe3c6); for (const [x, z] of [[-.7, -.3], [-.55, -.3], [-.62, -.2]]) v.block(x, .92, z, .06, .006, .05, 0x2c2430);
+    for (let i = 0; i < 6; i++) v.block(-.1 + (i % 3) * .07, .915, .32 + (i > 2 ? .05 : 0), .04, .02, .025, 0xf2e3b5);
+    v.block(.7, .3, 0, .36, .28, .36, 0x6c6f7a); v.block(.7, .58, 0, .3, .03, .3, 0xd8742c);
+    lantern(v, -.88, .9, -.38, .7);
+  } else if (id === "hay-bales") {
+    const bale = (x, y, z, w, h, d) => { v.block(x, y, z, w, h, d, vary(0xc9a65a, .06, r)); for (const dx of [-w / 4, w / 4]) v.block(x + dx, y - .005, z, .05, h + .01, d + .01, 0x9c7a3b); for (let i = 0; i < 4; i++) v.block(x - w / 2 + .1 + r() * (w - .2), y + h - .02, z - d / 2 + .1 + r() * (d - .2), .18, .04, .04, 0xe2c27a); };
+    bale(-.5, .02, -.2, 1.05, .5, .62); bale(.52, .02, .15, 1.05, .5, .62); bale(0, .52, -.05, 1.05, .48, .62);
+    pumpkin(v, .25, 1, 0, .15, 8, false); v.block(-.25, 1, .05, .2, .16, .18, 0xe9e2c8); v.block(-.25, 1.16, .05, .04, .06, .04, 0x5f6c3a);
+    v.block(-.75, .52, .3, .22, .17, .2, 0x7f9a4a); v.block(.85, .52, -.3, .18, .2, .18, 0xd7c26a);
+  } else if (id === "gravestones") {
+    v.block(0, .01, 0, 2.5, .05, 1.1, 0x3e4a3b);
+    for (const [x, kind, h] of [[-.85, 0, 1], [0, 1, 1.3], [.85, 2, .9]]) {
+      const tilt = (r() - .5) * .12;
+      if (kind === 1) { stone(v, r, x, .05, -.1, .16, 1.2, .14); stone(v, r, x, .7, -.1, .62, .15, .14); }
+      else { stone(v, r, x + tilt, .05, -.1, .6, h - .2, .16); stone(v, r, x + tilt, h - .15, -.1, kind ? .3 : .48, .12, .16); if (!kind) stone(v, r, x + tilt, h - .05, -.1, .3, .07, .16); }
+      if (kind !== 1) for (let i = 0; i < 3; i++) v.block(x + tilt, .38 + i * .14, -.015, .32 - i * .06, .03, .01, 0x403a46);
+      v.block(x - .2, .05, .15, .2, .06, .2, vary(0x52713f, .08, r)); v.block(x + .22, .05, .2, .12, .12, .04, 0xe8d6a0); v.block(x + .22, .17, .2, .04, .05, .04, 0xffc767, true);
+    }
+  } else if (id === "owl-perch") {
+    stone(v, r, 0, 0, 0, .5, .12, .5);
+    for (let y = .12, x = 0, k = 0; y < 2; y += .22, k++) { x += [0, .03, .02, -.03, -.02, .02, .03, 0, -.02][k] ?? 0; v.block(x, y, 0, .16, .22, .16, vary(0x4c3a2e, .05, r)); }
+    v.block(.02, 1.96, 0, .7, .08, .1, 0x4c3a2e);
+    v.block(.02, 2.04, 0, .3, .3, .26, 0xc8a06a); v.block(.02, 2.34, 0, .3, .2, .26, 0xd6b07a);
+    v.block(.02, 2.3, .13, .22, .2, .02, 0xf2ead8);
+    for (const dx of [-.06, .06]) { v.block(.02 + dx, 2.4, .145, .06, .06, .01, 0x16121a); v.block(.02 + dx, 2.42, .155, .02, .02, .005, 0xffe3a0, true); }
+    v.block(.02, 2.34, .15, .03, .05, .02, 0xd9a24a); v.block(.02, 2.54, 0, .22, .04, .2, 0xc39a64);
+    for (const s of [-1, 1]) v.block(.02 + s * .17, 2.06, 0, .05, .22, .2, 0xb08656);
+  } else if (id === "witch-cauldron") {
+    for (let i = 0; i < 10; i++) { const a = i * Math.PI / 5; stone(v, r, Math.cos(a) * .6, .02, Math.sin(a) * .6, .22, .12, .22); }
+    for (let i = 0; i < 5; i++) v.block(-.2 + i * .1, .1, 0, .08, .14 + (i % 2) * .1, .2, i % 2 ? 0xffa64e : 0xffcf6e, true);
+    for (const a of [0, 2.1, 4.2]) v.block(Math.cos(a) * .42, .1, Math.sin(a) * .42, .08, .32, .08, 0x1d1a20);
+    for (let k = 0; k < 6; k++) { const y = .3 + k * .13, w = 1.1 - Math.abs(k - 2.4) * .12; v.block(0, y, 0, w, .14, w, k % 2 ? 0x2a2630 : 0x232029); }
+    v.block(0, 1.06, 0, .95, .07, .95, 0x34303a); v.block(0, 1.08, 0, .8, .05, .8, 0x59e07a, true);
+    for (const [x, z, s] of [[-.2, .1, .12], [.18, -.15, .09], [.05, .25, .07]]) v.block(x, 1.12, z, s, s, s, 0x8ef59c, true);
+    v.block(.3, 1.1, -.1, .05, .26, .05, 0x7a5a3c); v.block(.3, 1.34, -.1, .12, .04, .04, 0x7a5a3c);
+  } else if (id === "picnic-table") {
+    for (const x of [-1.05, 1.05]) { v.block(x, .02, 0, .12, .7, .12, 0x5c4031); v.block(x, .02, 0, .1, .06, 1.7, 0x5c4031); }
+    for (let z = -.36; z <= .36; z += .18) v.block(0, .72, z, 2.5, .07, .16, vary(0x8c654a, .05, r));
+    for (const side of [-1, 1]) for (let k = 0; k < 2; k++) v.block(0, .42, side * (.66 + k * .14), 2.3, .06, .13, vary(0x7a563f, .05, r));
+    for (let i = 0; i < 6; i++) for (let k = 0; k < 4; k++) v.block(-.55 + i * .22, .79, -.33 + k * .22, .22, .012, .22, (i + k) % 2 ? 0xf1ece4 : 0xb8423c);
+    v.block(.55, .8, .05, .42, .26, .28, 0x8f6b3e); v.block(.55, 1.06, .05, .05, .02, .3, 0x6d4c2c); v.block(.55, .8, -.14, .44, .08, .02, 0xb8423c);
+    for (const x of [-.35, -.1]) { v.block(x, .8, .1, .1, .12, .1, 0xe6dccb); v.block(x, .91, .1, .07, .015, .07, 0x5a3424); }
+  } else if (id === "lantern-garland") {
+    for (const side of [-1, 1]) { stone(v, r, side * 1.55, 0, 0, .28, .1, .28); for (let y = .1, k = 0; y < 2.3; y += .22, k++) v.block(side * 1.55 + (k % 3 - 1) * .02, y, 0, .12, .22, .12, 0x3f3033); v.block(side * 1.55, 2.3, 0, .16, .1, .16, GOLD); }
+    for (let i = 0; i <= 24; i++) { const t = i / 24, x = -1.55 + t * 3.1, y = 2.3 - Math.sin(t * Math.PI) * .45; v.block(x, y, 0, .14, .02, .02, 0x2a2228); }
+    const shades = [0xff9a5a, 0xcba2ed, 0xffd28b, 0x8fd7c0, 0xff7f6a];
+    for (let i = 0; i < 5; i++) { const t = (i + 1) / 6, x = -1.55 + t * 3.1, y = 2.3 - Math.sin(t * Math.PI) * .45; v.block(x, y - .08, 0, .015, .08, .015, 0x2a2228); v.block(x, y - .38, 0, .24, .3, .24, shades[i], true); v.block(x, y - .41, 0, .16, .03, .16, 0x3a2e2e); v.block(x, y - .09, 0, .16, .03, .16, 0x3a2e2e); }
+  } else if (id === "lily-pond") {
+    for (let i = 0; i < 26; i++) { const a = i * Math.PI * 2 / 26; stone(v, r, Math.cos(a) * 1.42, 0, Math.sin(a) * 1.02, .3, .16 + (i % 3) * .03, .3); }
+    v.block(0, .02, 0, 2.6, .05, 1.8, 0x1d2b3d); v.block(0, .07, 0, 2.46, .02, 1.7, 0x31507a, true);
+    for (const [x, z, s] of [[-.6, -.3, .4], [.3, .35, .34], [.75, -.2, .28], [-.2, .4, .3]]) { v.block(x, .09, z, s, .02, s * .9, 0x4f7f42); v.block(x + s * .25, .09, z + s * .25, s * .3, .021, s * .3, 0x1d2b3d); }
+    v.block(.3, .11, .35, .1, .08, .1, 0xf2b5cf); v.block(.3, .19, .35, .05, .03, .05, 0xffe6a0);
+    v.block(-.6, .11, -.3, .16, .1, .2, 0x5d8a3e); for (const dx of [-.05, .05]) v.block(-.6 + dx, .2, -.24, .05, .05, .05, 0x2d3b20);
+    for (let i = 0; i < 6; i++) v.block(1.05 + (i % 2) * .09, .05, .4 - i * .12, .04, .35 + (i % 3) * .1, .04, 0x5f7a3a);
+    v.block(1.08, .4, .2, .05, .12, .05, 0x5a3a2a);
+  } else return false;
+  return true;
+}
+export function buildEstateDecor(id, stage = "ready") {
   const v = new Voxels(), r = seeded(379 + [...String(id)].reduce((n, c) => n + c.charCodeAt(0), 0));
   const meta = ESTATE_DECOR_BY_ID[id];
   if (!meta) { const empty = new THREE.Group(); empty.userData.id = id; return empty; }
-  if (id === "lantern-post") {
+  if (gardenExtra(v, r, id, stage)) {}
+  else if (id === "lantern-post") {
     stone(v, r, 0, 0, 0, .5, .18, .5); v.block(0, .18, 0, .13, 1.73, .13, 0x3d3037); v.block(0, 1.72, 0, .5, .09, .3, GOLD); lantern(v, 0, 1.92, 0, 1.18);
   } else if (id === "rose-bed") {
     v.block(0, .02, 0, 2.32, .17, 1.12, 0x6e4a39); v.block(0, .19, 0, 2.12, .05, .9, 0x34262b);
@@ -454,7 +581,7 @@ export function buildEstateDecor(id) {
     for (let i = -2; i <= 2; i++) v.block(i * .13, .99 - (i % 2) * .08, 0, .12, .3, .4, 0xd4cbd1);
     lantern(v, .57, .6, .02, .55);
   }
-  const group = v.build(); group.name = meta.name; group.userData.id = id; group.userData.footprint = { w: meta.w, d: meta.d, height: meta.height };
+  const group = v.build(); group.name = meta.name; group.userData.id = id; group.userData.stage = stage; group.userData.footprint = { w: meta.w, d: meta.d, height: meta.height };
   return group;
 }
 

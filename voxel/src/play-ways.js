@@ -8,6 +8,7 @@ import { roomLayout } from "./rules/house.js";
 import { estateBounds } from "./rules/house-estate.js";
 import { ESTATE_DECOR_BY_ID, ESTATE_HOUSE_SIZES, ESTATE_KITCHEN_WING } from "./content/house-estate.js";
 import { HEDGE_ARCH } from "./content/farm-layout.js";
+import { gardenBedAction } from "./rules/garden-crops.js";
 
 // The feet are a circle of FEET; a strip runs REACH past where they stop.
 const FEET = .25, REACH = .3, PLINTH = .2, GARDEN_EDGE = .45;
@@ -21,6 +22,13 @@ export const gardenDoorstep = (s) => ({ place: "estate", x: 0, z: house(s).d / 2
 const gardenGate = (s) => ({ place: "estate", x: 0, z: estateBounds(s).z1 - 1.8, face: { x: 0, z: -1 } });
 const farmArch = { place: "farm", x: HEDGE_ARCH.x, z: 5.2, face: { x: 0, z: 1 } };
 
+// Where carved lanterns stand on the terrace in front of the house, either
+// side of the steps, nearest first (rules/carving.js keeps eight): beyond the
+// porch's own pumpkins and clear of the window boxes.
+export function lanternSpots(s) {
+  const front = house(s).d / 2 + PLINTH + .75;
+  return (s?.carving?.lanterns ?? []).map((_, i) => ({ x: (i % 2 ? 1 : -1) * (2.45 + Math.floor(i / 2) * .66), z: front }));
+}
 // The garden the owner walks: inside the fence, round the house, the porch
 // posts, the open gate's leaves and every piece of garden decor. The rose
 // arch is two posts, so they can walk through it.
@@ -31,6 +39,7 @@ export function gardenGeometry(s) {
     obstacles.push({ x: side * 1.23, z: d / 2 + 1.03, w: .3, d: .3 });
     obstacles.push({ x: side * 2, z: b.z1 - .55, w: .6, d: 1.15 });
   }
+  for (const spot of lanternSpots(s)) obstacles.push({ x: spot.x, z: spot.z, w: .5, d: .5 });
   for (const p of s?.estate?.placed ?? []) {
     const def = ESTATE_DECOR_BY_ID[p.id]; if (!def || ![p.x, p.z].every(Number.isFinite)) continue;
     const angle = (Number(p.rotation) || 0) * Math.PI / 180;
@@ -104,13 +113,21 @@ export function playWays(s, place) {
 }
 
 // The garden's prompts for the action button, as the rooms have for their
-// doorways: in at the front door, out at the gate.
+// doorways: in at the front door, out at the gate, and at each crop bed and
+// carving bench.
 export function gardenTargets(s) {
-  const front = house(s).d / 2 + PLINTH, b = estateBounds(s);
-  return [
+  const front = house(s).d / 2 + PLINTH, b = estateBounds(s), list = [
     { type: "go", way: "front-door", to: "parlour", label: "Go inside", x: 0, z: front + .5 },
     { type: "go", way: "gate", to: "farm", label: "Back to the farm", x: 0, z: b.z1 - .9 },
   ];
+  for (const p of s?.estate?.placed ?? []) {
+    const def = ESTATE_DECOR_BY_ID[p.id];
+    // A big piece is reached from anywhere round it, corners included.
+    const reach = def ? Math.hypot(def.w, def.d) / 2 + .7 : 2;
+    if (def?.crop) { const act = gardenBedAction(s, p.instance); list.push({ type: "bed", instance: p.instance, kind: act.kind, label: act.label, x: p.x, z: p.z, reach }); }
+    if (def?.carving) list.push({ type: "carve", instance: p.instance, label: "Carve a pumpkin", x: p.x, z: p.z, reach });
+  }
+  return list;
 }
 
 // The way the owner is walking through, if any: feet in its strip, heading

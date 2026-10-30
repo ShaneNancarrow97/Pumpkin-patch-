@@ -2,6 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as H from "../src/rules/hayride.js";
 import { LEVELS } from "../src/rules/levels.js";
+import { LEVELS as LEVEL_TABLE } from "../src/rules/levels.js";
+// Earnings that reach a level, wherever the thresholds are set.
+const at = (n) => LEVEL_TABLE[n - 1].at;
 const atLevel = (s, n) => { s.earned = LEVELS[n - 1].at; s.progression = { ...s.progression, claimed: LEVELS.slice(0, n).map((l) => l.level) }; };
 
 function prepared() { return { hayride: H.freshHayride(), hollowHouse: { purchased: true, status: "ready" }, coins: 100000, earned: 200000, progression: { bonusEarned: 0 }, visitors: [], holds: [], time: 0, nextVisitor: 0, paused: false }; }
@@ -18,7 +21,7 @@ function roundTrip(s) {
 }
 
 test("the woodland purchase needs level eleven and a restored first attraction", () => {
-  const s = prepared(); s.earned = 69999; assert.equal(H.buyHayride(s), false); s.earned = 70000;
+  const s = prepared(); s.earned = at(11) - 1; assert.equal(H.buyHayride(s), false); s.earned = at(11);
   s.hollowHouse.status = "restoring"; assert.equal(H.buyHayride(s), false); s.hollowHouse.status = "ready";
   const money = s.coins; assert.equal(H.buyHayride(s), true); assert.equal(s.coins, money - 7500); assert.equal(H.buyHayride(s), false);
   assert.equal(s.hayride.open, false); assert.equal(H.setHayrideTicketPrice(s, 13), false); assert.equal(H.setHayrideTicketPrice(s, 4), true);

@@ -43,6 +43,18 @@ function gardenIcon(id, thumbnail) {
     "mushroom-patch": '<path d="M7 25c-1-13 19-16 20-3zm9 0v12m9-20c1-12 17-11 18 0zm10 0v12m-11 9c0-7 12-8 13-1zm6 0v8M12 18h1m9 1h1m11-8h1"/>',
     "fire-pit": '<path d="m7 31 23-6 12 7-23 6zm1 0 6 9 18 2 9-10m-24 6-2 7m17-5 2 5M18 27c-8-8 4-10 3-19 12 9 0 10 9 16 0-6 4-8 4-11 10 10 5 16-4 18"/>',
     "ghost-scarecrow": '<path d="M13 33V17a11 11 0 0 1 22 0v16l-5-4-6 6-6-5zm11 0v11m-4-26h1m7 0h1m-7 6h4m10-3 6 5m-2-1v10m-4 0h8v6h-8"/>',
+    "berry-patch": '<path d="m5 34 26-7 12 6-26 8zm0 0v4l12 6 26-8v-5"/><path d="M12 31c-1-9 6-14 9-15m0 13c0-8 6-13 10-14m-2 12c1-7 5-10 8-10"/><circle cx="17" cy="21" r="1.6"/><circle cx="26" cy="19" r="1.6"/><circle cx="33" cy="22" r="1.6"/><circle cx="22" cy="25" r="1.6"/>',
+    "herb-planter": '<path d="m8 30 22-6 11 5-22 7zm0 0v8l11 6 22-7v-8M12 38v6m26-9v6"/><path d="M15 29c-2-6 1-10 4-11m2 9c0-7 4-10 7-11m1 8c1-5 4-7 6-7M17 21h1m10-4h1m5 1h1"/>',
+    "vegetable-bed": '<path d="m4 32 26-7 14 6-26 8zm0 0v4l14 6 26-8v-4"/><path d="M12 31l2-9m-4 3 4-3 3 3m6 2 1-10m-3 4 3-4 3 4m5 1v-14m-2 3h4m3 12 2-8m-4 3 4-3 3 3"/>',
+    "apple-tree": '<path d="M22 44V28m0 6-6-4m6 0 7-5M14 44h17"/><path d="M8 20c0-9 8-15 15-15s16 6 16 15-8 12-16 12S8 29 8 20z"/><circle cx="16" cy="19" r="2"/><circle cx="29" cy="15" r="2"/><circle cx="25" cy="25" r="2"/>',
+    "carving-bench": '<path d="M5 27h38M7 27v15m34-15v15M5 34h38"/><path d="M17 26c-6 0-8-11 0-12 3-1 7-1 10 0 8 1 6 12 0 12zm5-12v-4m-6 9 2 2m8-2-2 2m-5 4h6"/><path d="m33 22 7-6m-1 5 4-1"/>',
+    "hay-bales": '<path d="M5 30h17v12H5zm21 0h17v12H26zM14 18h19v12H14z"/><path d="M10 30v12m6-12v12m15-12v12m6-12v12m-17-24v12m7-12v12"/><path d="M19 18c-2-6 4-8 6-4 2-4 8-2 6 4"/>',
+    "gravestones": '<path d="M5 42h38M8 42V24a5 5 0 0 1 10 0v18m3 0V18h4v-5h4v5h4v6h-4v18m7 0V27l4-4 4 4v15"/><path d="M10 28h6m-6 4h6m22-2h3"/>',
+    "owl-perch": '<path d="M24 44V26m-9 0h19M18 44h12"/><path d="M17 25c-1-9 2-15 7-15s8 6 7 15c-4 2-10 2-14 0zm0-15 3 3m11-3-3 3"/><circle cx="21" cy="16" r="2"/><circle cx="27" cy="16" r="2"/><path d="m24 18-1 2h2z"/>',
+    "witch-cauldron": '<path d="M9 21h30M11 21c-2 13 6 19 13 19s15-6 13-19m-21 18-3 5m18-5 3 5m-10-4v4"/><path d="M14 21c2-3 6-2 7 0m3 0c2-4 6-3 8 0"/><circle cx="20" cy="12" r="2.5"/><circle cx="28" cy="9" r="2"/><circle cx="25" cy="15" r="1.5"/>',
+    "picnic-table": '<path d="M5 22h38M9 22l-3 20m36-20 3 20M14 22l-2 20m24-20 2 20M3 32h42"/><path d="M27 21v-6h10v6m-8-6c0-4 6-4 6 0"/><path d="M12 19h6v2h-6z"/>',
+    "lantern-garland": '<path d="M5 44V10m38 34V10M3 44h6m30 0h6M5 11c9 10 29 10 38 0"/><path d="M14 17v4m10-2v5m10-7v4"/><path d="M11 21h6v7h-6zm10 3h6v7h-6zm10-3h6v7h-6z"/>',
+    "lily-pond": '<path d="M5 30c0-8 9-13 19-13s19 5 19 13-9 12-19 12S5 38 5 30z"/><path d="M13 30a5 3 0 1 0 10 0 5 3 0 1 0-10 0m4 0h6m6-4a4 2 0 1 0 8 0 4 2 0 1 0-8 0"/><path d="M38 17v-9m-3 10V10m6 8v-7m-15 9c1-3 4-3 5 0-1 2-4 2-5 0z"/>',
   };
   return `<span class="estate-art" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${drawings[id] ?? drawings["lantern-post"]}</svg></span>`;
 }
@@ -64,7 +76,7 @@ export function estateSheet(ui) {
       const buttons = gardenView === "placed" ? `<button class="button" data-estate-select="${item.instance}" ${editable(s) ? "" : "disabled"}>Move</button>`
         : gardenView === "stored" ? `<button class="button gold" data-estate-place="${d.id}" ${editable(s) ? "" : "disabled"}>Place</button>`
         : `${locked ? `<button class="button" disabled>Locked</button>` : `<button class="button ${amount ? "" : "gold"}" data-estate-buy="${d.id}" ${editable(s) && s.coins >= d.cost ? "" : "disabled"}>${money(d.cost)}</button>`}${amount ? `<button class="button" data-estate-place="${d.id}" ${editable(s) ? "" : "disabled"}>Place · ${amount}</button>` : ""}`;
-      return `<article class="estate-card">${gardenIcon(d.id, ui.scene.estateDecorThumb?.(d.id))}<div><h3>${d.name}</h3><p>${gardenView === "placed" ? "Tap Move to position it in the garden." : d.text}</p><small>${locked ? `Opens with the ${HOUSE_NAMES[d.houseLevel]}` : `${d.w} × ${d.d} footprint · ${amount} stored${placed ? ` · ${placed} outside` : ""}`}</small></div><div class="estate-card-actions">${buttons}</div></article>`;
+      return `<article class="estate-card">${gardenIcon(d.id, ui.scene.estateDecorThumb?.(d.id))}<div><h3>${d.name}</h3><p>${gardenView === "placed" ? "Tap Move to position it in the garden." : d.text}</p><small>${locked ? `Opens with the ${HOUSE_NAMES[d.houseLevel]}` : `${d.crop ? `Grows ${d.crop.amount} ${d.crop.name} in ${Math.round(d.crop.seconds / 60 * 10) / 10} min · ` : d.carving ? "Opens pumpkin carving · " : ""}${d.w} × ${d.d} footprint · ${amount} stored${placed ? ` · ${placed} outside` : ""}`}</small></div><div class="estate-card-actions">${buttons}</div></article>`;
     }).join("") + `<p class="small">Store and reuse garden pieces freely. Keep the front path and the space around the house clear.</p>`;
   }
   function finishes(s) {
