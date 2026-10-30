@@ -56,6 +56,12 @@ function food(v,id){
       for(const dx of [-.035,.035])b(v,x+dx,.15,z-.01,.02,.008,.022,C.brown);
       b(v,x,.15,z+.04,.055,.008,.017,C.brown);
     }
+  }else if(id==='toasted-seeds'){
+    b(v,0,.08,0,.56,.06,.42,0x8a5a32);b(v,0,.14,0,.5,.03,.36,0xc98e4a);
+    for(let i=0;i<22;i++){const x=-.2+(i%6)*.08,z=-.14+Math.floor(i/6)*.09;b(v,x+(i%2)*.02,.17,z,.06,.025,.04,i%5?0xe9d29a:0xd8b26a);}
+    for(const [x,z]of [[-.12,.1],[.14,-.08]])b(v,x,.2,z,.04,.012,.03,C.green);
+  }else if(id==='seed-brittle'){
+    for(let i=0;i<4;i++){const x=-.18+(i%2)*.34,z=-.1+Math.floor(i/2)*.22;b(v,x,.08,z,.28,.05,.18,0xc9862e);b(v,x,.13,z,.24,.02,.14,0xe0a548);for(let k=0;k<5;k++)b(v,x-.09+k*.045,.15,z+(k%2?.03:-.03),.035,.015,.025,0xf0dcaa);}
   }else if(id==='bramble-crumble'){
     b(v,0,.08,0,.62,.13,.46,0x5a2a44);b(v,0,.21,0,.58,.04,.42,0x3d1d33);
     for(let i=0;i<14;i++){const x=-.24+(i%5)*.12,z=-.16+Math.floor(i/5)*.15;b(v,x,.25,z,.1,.04+(i%3)*.012,.09,i%4?0xd9a75e:0xe9c27d);}

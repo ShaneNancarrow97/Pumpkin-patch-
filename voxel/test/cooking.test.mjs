@@ -159,7 +159,7 @@ test("in-flight deliveries and paid jobs survive reload; new/default saves get n
 });
 
 test("all eight recipes use positive finite costs/times/yields and remain within the published level range", () => {
-  assert.equal(RECIPES.length, 16);
+  assert.equal(RECIPES.length, 18);
   assert.deepEqual(RECIPES.slice(0,8).map(r => r.level), [5, 6, 7, 8, 9, 10, 11, 12]);
   for (const r of RECIPES) { assert.ok(r.price > 0 && r.yield > 0 && r.seconds > 0); assert.ok(Object.keys(r.ingredients).length > 0); }
 });

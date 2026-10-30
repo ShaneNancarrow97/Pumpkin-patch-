@@ -6,8 +6,8 @@ import { ESTATE_DECOR_BY_ID } from "./content/house-estate.js";
 import { estateBounds } from "./rules/house-estate.js";
 import { gardenBedStage, gardenCropOf } from "./rules/garden-crops.js";
 import { applyPieceColour } from "./piece-colours.js";
-import { carvingPumpkin } from "./pumpkins.js";
-import { STENCIL_BY_ID, CARVING_DECOR, inPiece } from "./content/carving.js";
+import { buildCarving, LANTERN_R } from "./carving-pumpkin.js";
+import { STENCIL_BY_ID, CARVING_DECOR, inPiece, pieceKind } from "./content/carving.js";
 import { lanternSpots } from "./play-ways.js";
 import { attachPieceGestures, createFraming } from "./piece-gestures.js";
 
@@ -77,7 +77,8 @@ export function createHouseEstateView(canvas, state, hooks) {
       (state.carving?.lanterns ?? []).forEach((l, i) => {
         const st = STENCIL_BY_ID[l.stencil]; if (!st) return;
         const glow = CARVING_DECOR.candle.find(c => c.id === l.decor?.candle)?.colour, paint = CARVING_DECOR.paint.find(c => c.id === l.decor?.paint)?.colour;
-        const g = carvingPumpkin(l.variety, { R: 11, size: .62, cut: (u, v) => st.pieces.some(p => inPiece(p, u, v)), glow, paint });
+        const cuts = st.pieces.filter(p => pieceKind(p) === "cut"), etched = st.pieces.filter(p => (l.etched ?? []).includes(p.id)), free = (l.free ?? []).map(outer => ({ outer }));
+        const g = buildCarving(l.variety, { R: LANTERN_R, size: .62, shape: l.shape, cut: (u, v) => cuts.some(p => inPiece(p, u, v)) || free.some(p => inPiece(p, u, v)), etch: etched.length ? (u, v) => etched.some(p => inPiece(p, u, v)) : null, lid: "on", lit: true, glow, paint });
         g.position.set(spots[i].x, .06, spots[i].z); lanterns.add(g);
       });
       scene.add(lanterns);

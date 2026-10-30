@@ -16,6 +16,7 @@ import { createAudio } from "./ui/audio.js";
 import { createMazeRideUI } from "./ui/maze-ride-ui.js";
 import { createMazeAudio } from "./ui/maze-audio.js";
 import { createHayrideAudio } from "./ui/hayride-audio.js";
+import { createCarvingAudio } from "./ui/carving-audio.js";
 import { createHayrideRideUI } from "./ui/hayride-ride-ui.js";
 import { buildMazeRideConfig } from "./rules/maze-ride.js";
 import { farmSheets } from "./ui/farm-sheets.js";
@@ -62,7 +63,7 @@ const prefs = (() => {
   try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; }
 })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
-const audio = createAudio(prefs), mazeAudio = createMazeAudio(prefs), hayrideAudio = createHayrideAudio(prefs);
+const audio = createAudio(prefs), mazeAudio = createMazeAudio(prefs), hayrideAudio = createHayrideAudio(prefs), carvingAudio = createCarvingAudio(prefs);
 const mazeUI = createMazeRideUI({ prefs, savePrefs,
   onStart: startMazeRide, onPause: pauseMazeRide, onExit: exitMazeRide, onReplay: replayMazeRide,
   onSound: on => mazeAudio.setMuted(!on), onVolume: value => mazeAudio.setVolume(value),
@@ -114,9 +115,24 @@ const scene = createScene($("world"), state, {
   onPieceDragMove: point => home.tools.dragTo(point),
   onPieceDragEnd: cancelled => home.tools.endDrag(cancelled),
   onWay: way => passThrough(way),
-  // The carving bench: a piece cut out of the pumpkin (carving-view.js).
-  onCarveCut: id => { const ok = M.cutPiece(state, id); if (ok) { audio.tone(392); setTimeout(() => audio.tone(262), 90); playFeel("done"); save(); carvingUI?.render(); } return ok; },
-  onCarveProgress: status => carvingUI?.progress(status),
+  // The carving bench (carving-view.js): each job the tools finish goes to the rules.
+  carving: {
+    onLid: () => { const ok = M.cutLid(state); if (ok) { save(); carvingUI?.render(); } return ok; },
+    onScooped: () => {
+      const r = M.finishScoop(state); if (!r) return r;
+      carvingUI?.scooped(r); notice(r.pantry ? `A bowl of seeds: ${r.pantry} to the pantry${r.sold ? `, ${r.sold} sold for ${money(r.coins)}` : ""}.` : `A bowl of seeds, sold at the market for ${money(r.coins)}. A kitchen would keep them.`);
+      save(); render(); carvingUI?.render(); return r;
+    },
+    onCut: id => { const ok = M.cutPiece(state, id); if (ok) { save(); carvingUI?.render(); } return ok; },
+    onEtch: id => { const ok = M.etchPiece(state, id); if (ok) { playFeel("done"); save(); carvingUI?.render(); } return ok; },
+    onFree: poly => { const ok = M.addFreePiece(state, poly); if (ok) { save(); carvingUI?.render(); } return ok; },
+    onFreeMiss: (why) => { if (performance.now() < freeHintAt) return; freeHintAt = performance.now() + 4000; notice(why === "open" ? "Bring the knife back to where you started to close the shape." : "That shape is too small to cut. Draw it a little bigger."); },
+    onRevealed: () => carvingUI?.revealed(),
+    onTool: () => carvingUI?.tool(),
+    onProgress: status => carvingUI?.progress(status),
+    sound: (name, ...args) => carvingAudio[name]?.(...args),
+    feel: name => playFeel(name),
+  },
   onMazeCue: cue => mazeAudio.cue(cue),
   onMazeState: status => mazeUI.update(status),
   onMazeComplete: status => { mazeAudio.pause(true); mazeUI.update(status); },
@@ -344,7 +360,7 @@ function tendGardenBed(instance, playing = false) {
 
 // The carving bench's close-up (carving-view.js, ui/carving-ui.js): opened
 // from a bench in the garden, it goes back to wherever it was opened from.
-let carvingUI = null, carvingFrom = null;
+let carvingUI = null, carvingFrom = null, freeHintAt = 0;
 function openCarving() {
   if (state.paused || carvingUI?.isOpen) return false;
   if (!M.carvingBenches(state)) { notice("Place a carving bench in the garden to carve pumpkins."); return false; }
@@ -355,8 +371,8 @@ function openCarving() {
 }
 function closeCarving() {
   if (!carvingUI?.isOpen) return;
-  // A pumpkin not yet cut goes back to the barn; a started one waits on the bench.
-  if (state.carving.current && !state.carving.current.cut.length) M.cancelCarving(state);
+  // A pumpkin whose lid isn't cut yet goes back to the barn; an opened one waits on the bench.
+  if (state.carving.current && !state.carving.current.lid) M.cancelCarving(state);
   carvingUI.close(); document.body.classList.remove("carving-open");
   if (carvingFrom === "estate") enterEstate(); else if (carvingFrom === "room") enterRoom(state.house.activeRoom); else leavePlace();
   save(); render();
@@ -730,11 +746,13 @@ function followHomeGoal(){
 }
 lifeActivity=createLifeActivity({state:()=>state,player:scene.player,commit:commitPlayerWork,notice,blocked:()=>!!openTab||intro.active||celebration.active||!!homeJourney?.active||!!playControls?.radial||!!home.tools.selected||upgradeMenu.open});
 carvingUI=createCarvingUI({ state:()=>state, view:scene.carving, feel:playFeel, actions:{
-  start:(v)=>{const ok=!!M.startCarving(state,v);if(ok){save();scene.carving.refresh();render();}else notice("Pick that kind of pumpkin first.");return ok;},
+  start:(v,shape)=>{const ok=!!M.startCarving(state,v,shape);if(ok){save();scene.carving.refresh();render();}else notice("Pick that kind of pumpkin first.");return ok;},
   stencil:(id)=>{const ok=M.chooseStencil(state,id);if(ok){save();scene.carving.refresh();}return ok;},
+  // The view starts its reveal before anything renders, so the pumpkin isn't shown lit before the match goes in.
+  light:()=>{const ok=M.lightCarving(state);if(ok){scene.carving.light();save();}return ok;},
   decor:(g,id)=>{const ok=M.setCarvingDecor(state,g,id);if(ok){save();scene.carving.refresh();}return ok;},
-  done:()=>M.carvingDone(state),
-  value:()=>{const c=state.carving.current;return c?M.lanternValue({variety:c.variety,stencil:c.stencil,decor:c.decor}):0;},
+  name:(text)=>{if(M.nameCarving(state,text))save();},
+  value:()=>{const c=state.carving.current;return c?M.lanternValue(c):0;},
   finish:(how)=>{const l=M.finishCarving(state,how);if(l){chime(523,784);if(how==="sell")notice(`Sold your lantern at the village fair for ${money(l.value)}.`);else notice("Your lantern glows on the doorstep.");save();render();scene.refreshHouseEstate();}return l;},
   close:closeCarving,
 }});

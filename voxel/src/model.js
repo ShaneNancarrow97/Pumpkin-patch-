@@ -61,6 +61,7 @@ export * from "./rules/cleanliness.js";
 export * from "./rules/garden-crops.js";
 export * from "./rules/carving.js";
 export * from "./content/carving.js";
+export * from "./content/pumpkin-shapes.js";
 
 export function freshState() {
   return {

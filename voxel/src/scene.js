@@ -13,6 +13,7 @@ import { specialSpriteReady, specialSpriteTexture } from "./special-sprites.js";
 import { cocoaProp, takeawayCup } from "./cocoa-props.js";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { pumpkinTemplate, sproutTemplate, bigPumpkin } from "./pumpkins.js";
+import { plotShape } from "./content/pumpkin-shapes.js";
 import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, signBoard } from "./world.js";
 
 import { buildVisitor, animateWalk } from "./characters.js";
@@ -139,7 +140,8 @@ export function createScene(canvas, state, hooks) {
     const g = new THREE.Group(); g.position.set(p.x, 0.04, p.z);
     // The bed itself is part of the ground (ground.js); the plot holds what grows in it.
     const sp = sprout.clone(); sp.position.y = 0.18; g.add(sp);
-    const pk = pumpkins.map((t) => { const m = t.clone(); m.position.y = 0.18; g.add(m); return m; });
+    // Each plot grows its own shape (content/pumpkin-shapes.js), so the patch isn't all one pumpkin.
+    const pk = VARIETIES.map((_, v) => { const m = pumpkinTemplate(v, 0.62, plotShape(i)).clone(); m.position.y = 0.18; g.add(m); return m; });
     const halo = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ color: 0xffffff, map: glowTexture, transparent: true, opacity: 0.0, toneMapped: false, depthWrite: false, blending: THREE.AdditiveBlending }));
     halo.rotation.x = -Math.PI / 2; halo.position.y = 0.2; g.add(halo);
     const locked = new Voxels(); for (let k = 0; k < 5; k++) locked.box(-0.6 + k * 0.28, 0.18, -0.1 + (k % 2) * 0.2, 0.18, 0.12, 0.18, 0x3d5a2a);
@@ -310,7 +312,9 @@ export function createScene(canvas, state, hooks) {
   const roomCam = new THREE.PerspectiveCamera(INTERIOR.fov, 1, 0.1, 200);
   const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), gesture: hooks.estateGesture, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
   const gardenPlay = createGardenPlay({ view: estateView, state, character });
-  const carvingView = createCarvingView(canvas, state, { onCut: (id) => hooks.onCarveCut?.(id) ?? false, onProgress: (status) => hooks.onCarveProgress?.(status), blocked: () => document.body.classList.contains("menu-open") });
+  // The bench's view reports to main.js through hooks.carving (cuts, the lid, seeds, sounds).
+  const carve = (name) => (...args) => hooks.carving?.[name]?.(...args);
+  const carvingView = createCarvingView(canvas, state, Object.assign(Object.fromEntries(["onCut", "onEtch", "onFree", "onFreeMiss", "onLid", "onScooped", "onRevealed", "onTool", "onProgress", "sound", "feel"].map((n) => [n, carve(n)])), { blocked: () => document.body.classList.contains("menu-open") }));
   const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.(), gesture: hooks.foyerGesture });
   const mazeView = createMazeRideView(canvas, state, { onCue: cue => hooks.onMazeCue?.(cue), onComplete: status => hooks.onMazeComplete?.(status), onState: status => hooks.onMazeState?.(status), blocked: () => document.body.classList.contains("menu-open") });
   const hayrideView = createHayrideView(canvas, state, { world: hayrideWorld, onCue: cue => hooks.onHayrideCue?.(cue), onComplete: status => hooks.onHayrideComplete?.(status), onState: status => hooks.onHayrideState?.(status), blocked: () => document.body.classList.contains("menu-open") });
@@ -445,7 +449,7 @@ export function createScene(canvas, state, hooks) {
     orbitGround.visible=orbitBackdrop.visible=control&&!view.place;
     renderPass.camera = active();
     renderPass.scene = activeScene();
-    renderer.toneMappingExposure = view.place === "maze" ? 1.3 : 1.45;
+    renderer.toneMappingExposure = view.place === "maze" ? 1.3 : view.place === "carving" ? 1.2 : 1.45;
     if (view.place === "maze") { mazeView.resize(); return; }
     if (view.place === "hayride") { hayrideView.resize(); return; }
     if (view.place === "estate") { estateView.resize(w, h); return; }
@@ -468,7 +472,7 @@ export function createScene(canvas, state, hooks) {
   }
   let firstResize = true, lastOverview = false;
   function resize() {
-    const sizing = renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality), w = sizing.width, h = sizing.height;
+    const sizing = renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, view.place === "carving"), w = sizing.width, h = sizing.height;
     if (renderer.getPixelRatio() !== sizing.pixelRatio) renderer.setPixelRatio(sizing.pixelRatio);
     renderer.setSize(w, h, false);
     if (postprocessRatio !== sizing.pixelRatio) { composer.setPixelRatio(sizing.pixelRatio); postprocessRatio = sizing.pixelRatio; }
@@ -801,6 +805,7 @@ export function createScene(canvas, state, hooks) {
     }
 
     if (bloomOn) composer.render(); else renderer.render(activeScene(), active());
+    if (view.place === "carving") carvingView.afterRender(canvas);
     if (warming.size) warmNext();
     requestAnimationFrame(tick);
   }
@@ -865,7 +870,8 @@ export function createScene(canvas, state, hooks) {
       else if (kind === "hayride") { places.leave(); hayrideWorld.sync(); hayrideView.enter(id ?? {}); }
       else if (kind === "room") places.enterRoom(id); else places.enterShop();
       Object.assign(view, { x: 0, z: 0, zoom: 1, reach: { x: 0, z: 0 } }); glide = null;
-      frame();
+      // The bench draws at a sharper pixel ratio than the rest (renderSizing's `close`).
+      if (kind === "carving" || renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality).pixelRatio) resize(); else frame();
     },
     leavePlace() {
       if (!view.place) return;
@@ -877,7 +883,7 @@ export function createScene(canvas, state, hooks) {
       places.leave();
       view.place = null; glide = null; playerOrbit.yaw=0;playerOrbit.pitch=PITCH;
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
-      frame();
+      if (renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality).pixelRatio) resize(); else frame();
     },
     get place() { return view.place === "carving" ? { kind: "carving", id: "bench" } : view.place === "hayride" ? { kind: "hayride", id: "woodland" } : view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
