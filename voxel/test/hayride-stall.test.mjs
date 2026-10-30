@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import { createHayrideView } from "../src/hayride-view.js";
-import { STALL, STALL_CUES, ENGINE, engineAt, stallAlong, stallLamps, hollowManPlace, createHollowMan, poseHollowMan } from "../src/hayride-stall.js";
+import { STALL, STALL_CUES, ENGINE, JINGLE, BLINKS, engineAt, stallAlong, stallLamps, stallBlink, hollowManPlace, createHollowMan, poseHollowMan } from "../src/hayride-stall.js";
 import { HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH } from "../src/content/hayride-layout.js";
 import { HAYRIDE_SCARE_BY_ID } from "../src/content/hayride.js";
 
@@ -58,31 +58,46 @@ test("switched off, unbought, or in gentle mode, the ride is as before", () => {
   }
 });
 
-test("his lamps, his place and the camera's gaze follow the breakdown's clock", () => {
-  assert.equal(stallLamps(null), null); assert.equal(stallLamps(-5), null); assert.equal(stallLamps(14), null);
-  const dark = [.5, 2, 4, 5, 6.5, 8].map(stallLamps);
-  assert.ok(dark.every((l) => l.lanterns === 0 && l.head === 0), "out in the dark (between the flickers)");
-  assert.ok(stallLamps(6).head > 0 && stallLamps(7.2).head > 0 && stallLamps(7.2).head < .3, "faint flickers as the starter turns");
-  assert.ok([.5, 4, STALL.reveal + .2].every((t) => stallLamps(t).sky < .1 && stallLamps(t).dark === 1), "real dark: the moon and the fog all but black");
-  assert.equal(stallLamps(STALL.reveal + .2).head, 0, "his own face reveals him");
-  assert.ok(stallLamps(STALL.hold + .1).head > 1.5, "and the headlamp bursts on as the engine catches");
-  assert.equal(stallLamps(12.99).head > .99, true);
-  // He circles in the trees, stands far down the lane, is revealed beside the tractor, reaches as the wagon comes past,
-  // chases it from behind, howls after it, and is gone, by how far the wagon has gone.
-  const stop = 100, rider0 = stop - 5.5, spot = stop + STALL.ahead;
-  const at = (t, rider = rider0) => hollowManPlace(t, stop, rider)?.mode ?? null;
-  assert.deepEqual([1, 3, 6.5, 7.5, 8.6].map((t) => at(t)), [null, "stalk", null, "lurk", "reveal"]);
-  assert.equal(at(10, spot - 3), "reach"); assert.equal(at(12, spot + 4), "run"); assert.equal(at(16, spot + STALL.chase + 3), "howl"); assert.equal(at(18, spot + STALL.gone + 1), null);
-  assert.ok(hollowManPlace(3, stop, rider0).side > 5, "the walk round is in the trees");
-  const reveal = hollowManPlace(STALL.reveal + .1, stop, rider0);
-  assert.equal(reveal.along, spot); assert.equal(reveal.side, STALL.side); assert.ok(reveal.light > .9);
-  // His jack-o'-lantern face smoulders in the dark, then catches light, flaring as the flame takes, and blazes.
-  const glow = (t) => hollowManPlace(t, stop, rider0).glow;
-  assert.ok(glow(3) < .2 && glow(7.5) < .3 && glow(STALL.reveal - .01) < .3, "only embers before the reveal");
-  assert.ok(glow(STALL.reveal + .2) > 2 && glow(STALL.reveal + .2) > glow(STALL.hold - .1) && glow(STALL.hold - .1) > 1.4, "a flare, then a steady blaze");
-  for (let passed = 0; passed < STALL.chase; passed += 2) { const p = hollowManPlace(12, stop, spot + passed); assert.ok(p.along <= spot + passed - 1.2, "he chases from behind"); assert.equal(p.gaze, 1); }
-  assert.equal(hollowManPlace(5, stop, rider0).gaze, 0, "the camera leaves you to find him in the trees");
-  assert.ok(hollowManPlace(17, stop, spot + STALL.gone - .5).gaze < .05, "and turns ahead again as he falls behind");
+test("pitch dark but for his face and the starter's brown-outs; his face flickers with the music box; the camera blinks", () => {
+  assert.equal(stallLamps(null), null); assert.equal(stallLamps(-5), null); assert.equal(stallLamps(STALL.hold + 5), null);
+  for (const t of [.5, 3, 8, STALL.hush + .5, STALL.stretch + .3, STALL.reveal + .3]) { const l = stallLamps(t); assert.ok(l.head === 0 && l.lanterns === 0 && l.wagon === 0 && l.sky < .1 && l.dark === 1, `dark at ${t}`); }
+  assert.ok(stallLamps(6.4).head > 0 && stallLamps(10.8).head > 0 && stallLamps(10.8).head < .3, "faint brown-outs as the starter turns");
+  assert.ok(stallLamps(STALL.hold + .1).head > 1.5, "the headlamp bursts on as the engine catches");
+  // The tune is ten seconds and winds down; his face flares on each note and gutters between.
+  assert.equal(JINGLE.length, 22); assert.ok(JINGLE.at(-1).t < STALL.hush - STALL.jingle);
+  const gaps = JINGLE.slice(1).map((n, i) => n.t - JINGLE[i].t); assert.ok(gaps.at(-1) > gaps[0] * 1.5, "running down");
+  for (const i of [3, 9, 15]) {
+    const on = hollowManPlace(STALL.jingle + JINGLE[i].t + .02, 100, 94.5), off = hollowManPlace(STALL.jingle + JINGLE[i + 1].t - .02, 100, 94.5);
+    assert.ok(on.glow > 1 && on.light > .6 && off.glow < on.glow * .6, `note ${i} lights his face`);
+  }
+  assert.ok(gaps.every((g) => g > .33), "under three flickers a second");
+  // Blinks: shut on each, open between; the long one in the hush covers his climb onto the roof.
+  for (const b of BLINKS) assert.equal(stallBlink(b.t + .02), 1);
+  assert.equal(stallBlink(5), 0); assert.equal(stallBlink(STALL.climb), 1, "eyes shut as he climbs");
+});
+test("he skulks round the wagon in the dark, climbs onto the tractor's roof, stretches until his face is in yours, then the chase", () => {
+  const stop = 100, rider0 = stop - STALL.bench, at = (t, rider = rider0) => hollowManPlace(t, stop, rider);
+  assert.deepEqual([1, 3, 6, 13, STALL.hush + .4, STALL.climb + .5, STALL.stretch + .6, STALL.reveal + .5].map((t) => at(t)?.mode ?? null), [null, "stalk", "skulk", "skulk", "perch", "perch", "stretch", "face"]);
+  // Round the tractor and the wagon, never through them.
+  const angles = [];
+  for (let t = STALL.jingle; t < STALL.hush; t += .1) { const p = at(t); assert.ok(!(p.along > stop - 6.4 && p.along < stop + 3.4 && Math.abs(p.side) < 1.5), `clear of the wagon at ${t.toFixed(1)}`); angles.push(Math.atan2(p.side, p.along - stop + 2.4)); }
+  assert.ok(new Set(angles.map((a) => Math.round(a * 2))).size >= 10, "all the way round");
+  // In the hush he's on the roof, unseen; he's lit as he climbs; he stretches all the way to you.
+  assert.ok(at(STALL.hush + .4).perch && at(STALL.hush + .4).glow === 0 && at(STALL.hush + .4).y === STALL.roof);
+  assert.ok(at(STALL.climb + .8).glow > .4);
+  assert.ok(at(STALL.stretch + .1).reach < .1 && at(STALL.reveal - .05).reach > .95 && at(STALL.reveal + .5).reach === 1);
+  for (const t of [STALL.stretch + .3, STALL.reveal + .3]) assert.equal(at(t).gaze, 1);
+  assert.ok(!at(STALL.reveal).open && at(STALL.reveal + .8).open === 1, "his face splits open once it's in yours");
+  assert.equal(at(5).gaze < .6, true, "the camera only half turns to find him while he skulks");
+  // Frantic: zig-zagging across the lane behind the rider, lunging close, then falling back to howl.
+  const chase = []; for (let u = 0; u < 6; u += .05) chase.push(at(STALL.hold + u, rider0 + u * 2));
+  assert.ok(chase.every((p) => p.mode === "run" && p.frantic && p.along < rider0 + 12));
+  const sides = chase.map((p) => p.side), gaps = chase.map((p, i) => rider0 + i * .1 - p.along);
+  assert.ok(Math.max(...sides) > 1 && Math.min(...sides) < -1, "across the lane and back");
+  assert.ok(Math.min(...gaps) < 2.4 && Math.max(...gaps) > 4.5, "lunging close, then back");
+  assert.ok(Math.min(...gaps) > 1.95, "but never into the rider");
+  assert.equal(stallBlink(STALL.hold), 1, "your eyes are shut as he's flung off the roof");
+  assert.equal(at(25, rider0 + STALL.chase + 2).mode, "howl"); assert.equal(at(28, rider0 + STALL.gone + 1), null);
 });
 
 test("the tractor idles standing, revs with the wagon, and through the breakdown dies, won't start twice, then roars", () => {
@@ -98,20 +113,35 @@ test("the tractor idles standing, revs with the wagon, and through the breakdown
     const turning = at(c.t + .5); assert.ok(turning.level > 0 && turning.fire < 8, `the starter turns it over slowly (${c.id})`);
     if (i < 2) { assert.ok(at(c.t + 1.05).fire > 10, "it fires once..."); assert.equal(at(c.t + 1.25).level, 0, "...and dies again"); }
   }
+  assert.ok(at(STALL.reveal + .3).fire < 8 && at(STALL.reveal + .3).level > 0, "the starter grinds under him as he's in your face");
   const roar = at(STALL.hold + .6), settled = at(STALL.hold + 6), plain = engineAt(.8, null);
   assert.ok(roar.fire > 38 && roar.level > 1.1, "it catches with a roar");
   assert.ok(Math.abs(settled.fire - plain.fire) < 1 && Math.abs(settled.level - plain.level) < .05 && settled.rough < .01, "and settles to the wagon's pace");
-  assert.deepEqual(at(20), plain);
+  assert.deepEqual(at(STALL.hold + 11), plain);
 });
 
-test("the Hollow Man is one jointed rig, every pose keeps him on his feet and his face burns", () => {
-  const man = createHollowMan(), feet = new THREE.Vector3(), head = new THREE.Vector3();
-  for (const mode of ["stalk", "lurk", "reveal", "reach", "run", "howl"]) for (const k of [0, .5, 1]) {
-    poseHollowMan(man.rig, 1.7, mode, k); man.sync(1); man.rig.root.updateMatrixWorld(true);
-    man.rig.legs[0].knee.getWorldPosition(feet); man.rig.head.getWorldPosition(head);
-    assert.ok(head.y > 2.3, `${mode} ${k}: head up at ${head.y.toFixed(2)}`); assert.ok(feet.y > .2 && feet.y < 1.2, `${mode} ${k}: knees above the ground`);
-  }
+test("the Hollow Man is one fine jointed rig: he keeps his feet in every pose, stretches to reach, and his face burns", () => {
+  const man = createHollowMan(), v = new THREE.Vector3(), head = new THREE.Vector3(), hips = new THREE.Vector3(), feet = new THREE.Vector3();
   const [body, face] = man.group.children;
-  assert.ok(body.count > 60 && face.count > 10, `${body.count} body blocks, ${face.count} burning`);
+  assert.ok(body.count > 250 && face.count >= 20, `${body.count} body blocks, ${face.count} burning`);
+  for (const mode of ["stalk", "skulk", "perch", "run", "howl"]) for (const k of [0, .5, 1]) {
+    poseHollowMan(man.rig, 1.7 + k, mode, k, mode === "run" ? { lunge: k } : null); man.sync(1);
+    man.rig.head.getWorldPosition(head); man.rig.hips.getWorldPosition(hips); man.rig.legs[0].knee.localToWorld(feet.set(0, -.96, 0));
+    assert.ok([head, hips, feet].every((p) => p.toArray().every(Number.isFinite)));
+    assert.ok(head.y > hips.y, `${mode} ${k}: head above his hips`); assert.ok(feet.y > -.15 && feet.y < .5, `${mode} ${k}: on his feet (${feet.y.toFixed(2)})`);
+  }
+  // On the roof he stretches: his face lands where it's aimed, five units off, and his hands on the wagon's sides.
+  man.rig.root.position.set(0, STALL.roof, 0); man.rig.root.updateMatrixWorld(true);
+  const aim = { head: new THREE.Vector3(0, 2, 5), hands: [new THREE.Vector3(1.3, 1.2, 4), new THREE.Vector3(-1.3, 1.2, 4)] };
+  poseHollowMan(man.rig, 2, "face", .3, aim); man.sync(1);
+  man.rig.head.localToWorld(v.set(0, .38, .3));
+  assert.ok(v.distanceTo(aim.head) < .7, `his face reaches you (${v.distanceTo(aim.head).toFixed(2)} off)`);
+  man.rig.arms.forEach((a, i) => { a.wrist.getWorldPosition(v); assert.ok(v.distanceTo(aim.hands[i]) < .5, `hand ${i} on the wagon's side`); });
+  assert.ok(man.rig.torso.scale.y > 2, "a body stretched far longer than a man's");
+  // His face splits open: every petal swings out, and the maw's glowing flesh and teeth are there behind it.
+  const tips = (open) => { poseHollowMan(man.rig, 2, "face", .3, { ...aim, open }); man.sync(1); return man.rig.petals.map((p) => p.counter.localToWorld(new THREE.Vector3(0, 0, .1))); };
+  const shut = tips(0), opened = tips(1);
+  assert.ok(opened.every((p, i) => p.distanceTo(shut[i]) > .15), "all five petals peel back");
+  assert.ok(face.count > 100, `${face.count} glowing blocks: the carving, the flesh and the teeth`);
   man.dispose();
 });

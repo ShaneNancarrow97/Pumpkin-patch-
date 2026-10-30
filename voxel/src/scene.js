@@ -938,6 +938,7 @@ export function createScene(canvas, state, hooks) {
     setHayrideOptions(options) { hayrideView.setOptions(options); },
     setHayrideLook(x, y) { hayrideView.setPadLook(x, y); },
     advanceHayrideRide(seconds) { return hayrideView.advanceForTest(seconds); },
+    holdHayrideRide(on) { return hayrideView.holdForTest(on); },
     get foyerStatus() { return foyerView.status; },
     // For profiling tools: the farm's three.js objects (tools/perf).
     get debug() { return { scene, renderer, camera, composer, active, activeScene }; },

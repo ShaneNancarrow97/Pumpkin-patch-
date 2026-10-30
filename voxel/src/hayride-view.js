@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { HAYRIDE_PROPERTY, HAYRIDE_TIERS, HAYRIDE_SCARE_BY_ID } from "./content/hayride.js";
-import { STALL, STALL_CUES, stallAlong, engineAt } from "./hayride-stall.js";
+import { STALL, STALL_CUES, stallAlong, engineAt, stallBlink } from "./hayride-stall.js";
 import { HAYRIDE_STOPS, hayrideStops, hayrideRouteLength, HAYRIDE_ROUTE_LENGTH, HAYRIDE_RIDE_HILL, HAYRIDE_JUMP } from "./content/hayride-layout.js";
 import { HAYRIDE_LIGHTNING_TIMES, hayrideLightning } from "./content/hayride-weather.js";
 
@@ -64,7 +64,7 @@ const finite = n => Number.isFinite(n) ? n : 0;
 // Autonomous guests, wallets and receipts keep their authoritative farm rules.
 export function createHayrideView(canvas, state, hooks = {}) {
   const camera = new THREE.PerspectiveCamera(68, 1, .045, 48); camera.rotation.order = "YXZ";   // the fog hides all beyond 40 units, so nothing further is drawn
-  let active = false, run = null, pointer = null, disposed = false, yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0;
+  let active = false, run = null, pointer = null, disposed = false, held = false, yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0;
   let options = { gentle: !!globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches, lightning: true }, fogSave = null, backgroundSave = null;
   // The ride's motion: a jolt and a punch-in when a scare fires, a lean into bends.
   let shake = 0, kick = 0, roll = 0, lastHeading = null, baseFov = 68;
@@ -83,6 +83,9 @@ export function createHayrideView(canvas, state, hooks = {}) {
     stall: run?.stallT ?? null, tension: tension(), photo: run?.photo ?? null, photoCaption: run?.photoCaption ?? "",
     // The wagon's pace (1 its usual speed, 0 standing) and what the tractor's engine is doing (hayride-stall.js).
     pace: run?.pace ?? 0, engine: run ? engineAt(run.pace, run.stallT) : null,
+    // The breakdown's POV: how shut the camera's eyes are (0 to 1), and how loud the heartbeat is in the dark.
+    blink: run && !run.paused && Number.isFinite(run.stallT) ? stallBlink(run.stallT) : 0,
+    heart: run && Number.isFinite(run.stallT) && run.stallT >= 0 && run.stallT < STALL.hold ? 1 : 0,
     camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z, yaw: camera.rotation.y, pitch: camera.rotation.x },
   });
   const notify = () => hooks.onState?.(status());
@@ -106,6 +109,8 @@ export function createHayrideView(canvas, state, hooks = {}) {
     const site = world(); site?.setPreview?.(run.progress); site?.setStall?.(run.stallT ?? null);
     site?.setLightning?.(hayrideLightning(run.elapsed, { ...options, paused: run.paused || run.completed }));
     const frame = site?.getPreviewFrame?.(run.progress); if (!frame) return;
+    // The chase is frantic: the wagon shakes as it flees, and jolts each time he lunges at the rail.
+    if (frame.hollow?.frantic && !options.gentle && !run.paused) { shake = Math.max(shake, .55); kick = Math.max(kick, (frame.hollow.lunge ?? 0) * .55); }
     point.copy(frame.position); target.copy(frame.target);
     // Let each roadside set read before it passes. A deliberate look overrides
     // the director, and gentle mode keeps the forward-facing camera steady.
@@ -199,8 +204,8 @@ export function createHayrideView(canvas, state, hooks = {}) {
         run.fired.add("hollow");
         const cue = { type: "encounter", id: "hayride-hollow", stop: "hollow", name: "The Hollow Man", sound: beat.sound, at: run.elapsed, intensity: .5 };
         run.cue = cue; cues.push(cue); hooks.onCue?.(cue); shake = 1.35; kick = 1.25;
-        // The ride's photo waits for the wagon to pass him, at arm's length.
-        run.photoAt = run.elapsed + 2.5; run.photoCaption = "The Hollow Man, reaching for the wagon";
+        // The ride's photo: his face in yours.
+        run.photoAt = run.elapsed + .8; run.photoCaption = "The Hollow Man, face to face";
       } else { const cue = { type: "stall", id: `hayride-${beat.id}`, sound: beat.sound, intensity: .5 }; cues.push(cue); hooks.onCue?.(cue); if (beat.sound === "roar") kick = Math.max(kick, .45); }
     }
     for (let i = 0; i < HAYRIDE_LIGHTNING_TIMES.length; i++) {
@@ -258,11 +263,11 @@ export function createHayrideView(canvas, state, hooks = {}) {
       site?.setLightning?.(0);
       site?.setGentleMotion?.(null);
       if (site?.scene) { site.scene.fog = fogSave; site.scene.background = backgroundSave; }
-      active = false; run = null; fogSave = backgroundSave = null; notify();
+      active = held = false; run = null; fogSave = backgroundSave = null; notify();
     },
     // Real playback deliberately caps a long frame so the owner sees each set.
     // This clock never limits the authoritative farm's separate background dt.
-    tick(dt) { return advance(Math.min(.1, Math.max(0, finite(dt)))); },
+    tick(dt) { return advance(held ? 0 : Math.min(.1, Math.max(0, finite(dt)))); },
     setPaused(on = true) { if (!active || !run || run.completed) return false; const changed = run.paused !== !!on; run.paused = !!on; clearPointer(); pose(0, true); if (changed) notify(); return changed; },
     pause(on = true) { return api.setPaused(on); },
     start(nextOptions = {}) { return active && !run.completed ? api.setPaused(false) : api.enter(nextOptions); },
@@ -281,6 +286,9 @@ export function createHayrideView(canvas, state, hooks = {}) {
     },
     setLook(nextYaw = 0, nextPitch = 0) { if (!inputActive()) return false; targetYaw = clamp(finite(nextYaw), -YAW_LIMIT, YAW_LIMIT); targetPitch = clamp(finite(nextPitch), -PITCH_LIMIT, PITCH_LIMIT); pose(0, true); return true; },
     advanceForTest(seconds) { const cues = advance(seconds); return { ...status(), cues }; },
+    // For browser checks: held, the ride's clock moves only by advanceForTest, though frames are still drawn
+    // (software WebGL draws about one a second, and the ride would run on between screenshots).
+    holdForTest(on = true) { held = !!on; return held; },
     dispose() {
       if (disposed) return; api.leave(); disposed = true;
       for (const [name, listener] of [["pointerdown", down], ["pointermove", move], ["pointerup", up], ["pointercancel", up], ["lostpointercapture", up]]) canvas.removeEventListener?.(name, listener, true);

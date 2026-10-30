@@ -494,7 +494,7 @@ function render() {
   const controlsBlocked=!!openTab || celebration.active || intro.active || upgradeMenu?.open || mazeUI.active || hayrideUI.active || state.paused || !!homeJourney?.active || !!carvingUI?.isOpen;
   playControls?.tick(controlsBlocked); homeJourney?.tick();
   if (mazeUI.active) mazeUI.update(scene.mazeStatus);
-  if (hayrideUI.active) { const ride = scene.hayrideRideStatus; hayrideUI.update(ride); hayrideAudio.setTension(ride.tension ?? 0); hayrideAudio.setEngine(ride.engine, ride.pace); }
+  if (hayrideUI.active) { const ride = scene.hayrideRideStatus; hayrideUI.update(ride); hayrideAudio.setTension(ride.tension ?? 0, ride.heart ?? 0); hayrideAudio.setEngine(ride.engine, ride.pace); }
   if (M.awardLevels(state).length) save();
   text("coins", money(state.coins));
   text("stock", `${M.available(state)}/${M.barnCapacity(state)}`);
@@ -710,7 +710,7 @@ function chime(a,b){audio.tone(a);setTimeout(()=>audio.tone(b),75);}
 // cough, roar and chase, and the Hollow Man hardest of all. Phones buzz at the scenes only.
 function rideRumble(cue){
   if(prefs.haptics===false||hayrideUI.options.gentle)return;
-  const fx={bump:[70,.12,.32],stall:[260,.35,.12],ignition:[620,.12,.3],crank:[900,.12,.3],jump:[320,.95,.8],roar:[700,.55,.35],chase:[1300,.3,.55],thunder:[520,.4,.25],sputter:[320,.14,.38],tunnel:[1400,.18,.12]}[cue.sound];
+  const fx={bump:[70,.12,.32],stall:[260,.35,.12],ignition:[620,.12,.3],crank:[900,.12,.3],climb:[380,.7,.3],stretch:[900,.25,.5],jump:[320,.95,.8],roar:[700,.55,.35],chase:[1300,.3,.55],thunder:[520,.4,.25],sputter:[320,.14,.38],tunnel:[1400,.18,.12]}[cue.sound];
   const [duration,strong,weak]=cue.type==="encounter"?(cue.stop==="hollow"?[850,1,1]:[420,.85,1]):fx??[];if(!duration)return;
   const pad=Array.from(navigator.getGamepads?.()??[]).find(g=>g?.connected);
   try{if(pad?.vibrationActuator)pad.vibrationActuator.playEffect?.("dual-rumble",{duration,strongMagnitude:strong,weakMagnitude:weak});else if(cue.type==="encounter")navigator.vibrate?.(cue.stop==="hollow"?[90,40,180]:60);}catch{}
@@ -787,7 +787,7 @@ const mazeDiagnostics = {
   advance(seconds) { const status = scene.advanceMazeRide(seconds); mazeUI.update(status); return { ...status, audio: mazeAudio.status }; },
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
-const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), get status() { return scene.hayrideRideStatus; } };
+const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), hold: on => scene.holdHayrideRide(on), get status() { return scene.hayrideRideStatus; } };
 window.PumpkinVoxel = { lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";

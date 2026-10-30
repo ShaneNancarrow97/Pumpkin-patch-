@@ -21,6 +21,7 @@ async function audioHarness(moduleName) {
     get currentTime() { return time; }
     createGain() { const gain = node(); gains.push(gain); return gain; }
     createBiquadFilter() { return node(); }
+    createDelay() { return { ...node(), delayTime: param() }; }
     createStereoPanner() { return node(); }
     createDynamicsCompressor() { return { ...node(), threshold: param(), knee: param(), ratio: param(), attack: param(), release: param() }; }
     createBuffer(_channels, length) { return { getChannelData: () => new Float32Array(length), duration: length / this.sampleRate }; }
@@ -168,6 +169,24 @@ test("the tractor follows the ride: it idles, revs, misses when the lamps sputte
   audio.pause(false); const again = h.sources.find(source => source.wave && !source.ended);
   assert.ok(again && again !== body && again.frequency.value === 33 / 4, "resuming starts it as it was");
   audio.stop(); h.advance(1); assert.ok(h.sources.every(source => source.ended));
+});
+
+test("the Hollow Man's music box plays its tune and stops dead, and the heartbeat pounds in the dark", async () => {
+  const h = await audioHarness("hayride-audio"), audio = h.exports.createHayrideAudio({ hayrideSound: true });
+  audio.start({ sound: true }); h.advance(.1);
+  const before = h.sources.length;
+  assert.equal(audio.cue({ type: "stall", id: "hayride-stall-jingle", sound: "jingle", intensity: .5 }), true);
+  const box = h.sources.slice(before);
+  assert.equal(box.length, 6, "two voices of three tines, all in one of the ride's voices");
+  const d5 = 440 * 2 ** (5 / 12), d4 = 440 * 2 ** (-7 / 12);
+  assert.ok(box.some((o) => o.frequency.changes.some((c) => Math.abs(c.value - d5) < 1)), "it opens on D");
+  assert.ok(box.some((o) => o.frequency.changes.some((c) => c.value < d4 && c.value > d4 * .97)), "and ends low, a little flat as it runs down");
+  assert.ok(box.every((o) => Math.abs(o.stopAt - (h.contexts[0].currentTime + 10)) < .1), "and stops dead after ten seconds");
+  for (const sound of ["climb", "stretch", "chase"]) { const n = h.sources.length; assert.equal(audio.cue({ type: "stall", id: `hayride-stall-${sound}`, sound, intensity: .5 }), true); assert.ok(h.sources.length > n + 2, sound); }
+  // The heartbeat: louder in the breakdown's dark than at the same tension elsewhere.
+  const beat = (heart) => { const a = h.exports.createHayrideAudio({ hayrideSound: true }); a.start({ sound: true }); const mark = h.gains.length; a.setTension(.8, heart); const peak = Math.max(...h.gains.slice(mark).map((g) => Math.max(0, ...g.gain.changes.map((c) => c.value))).filter((v) => v < .3)); a.stop(); return peak; };
+  assert.ok(beat(1) > beat(0) * 1.4, "it pounds");
+  audio.stop(); h.advance(12); assert.ok(h.sources.every((source) => source.ended));
 });
 
 test("farm music keeps the ride mix across volume, sync and level-up ducking", async () => {

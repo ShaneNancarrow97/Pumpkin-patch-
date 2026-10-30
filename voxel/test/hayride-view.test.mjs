@@ -41,6 +41,16 @@ test("long render frames do not skip the boarding introduction or scenic reveals
   view.dispose();
 });
 
+test("a held ride (for browser checks) moves only when advanced, and leaving lets go", () => {
+  const f = fixture(), view = createHayrideView(f.canvas, f.state, { world: f.world });
+  view.enter(); view.tick(.1); view.holdForTest(true);
+  for (let i = 0; i < 5; i++) view.tick(.1);
+  assert.equal(view.status.elapsed, .1, "frames drawn while held don't move it on");
+  view.advanceForTest(.5); assert.ok(Math.abs(view.status.elapsed - .6) < 1e-9);
+  view.leave(); view.enter(); view.tick(.1); assert.equal(view.status.elapsed, .1, "a new ride isn't held");
+  view.dispose();
+});
+
 test("paused owner playback and bounded touch look are independent of the farm", () => {
   const f = fixture(), view = createHayrideView(f.canvas, f.state, { world: f.world });
   view.enter({ paused: true }); view.advanceForTest(10); assert.equal(view.status.elapsed, 0);
