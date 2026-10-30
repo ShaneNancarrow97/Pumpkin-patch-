@@ -5,8 +5,9 @@
 // fails. The tune stops dead; pitch dark, only your heartbeat; and when you
 // open your eyes he's crouched on the tractor's roof. He stretches over the
 // wagon, his needle fingers sliding down its sides, until his face is in
-// yours. Then the engine catches with a roar and he's after the wagon,
-// frantic, until it gets away and he howls after it.
+// yours, and it splits open on a red maw of teeth. Then the engine catches
+// with a roar; you flinch, and he's flung off into the lane behind, after
+// the wagon, frantic, diving at the rail, until it gets away and he howls.
 // hayride-view.js keeps the clock (t, seconds since the tractor stopped) and
 // holds the wagon still for STALL.hold seconds; hayride-world.js lights the
 // lane by stallLamps(t) and stands him where hollowManPlace(t) says;
