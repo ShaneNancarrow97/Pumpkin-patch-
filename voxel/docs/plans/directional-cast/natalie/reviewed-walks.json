@@ -1,0 +1,8 @@
+[
+  { "angle": 0, "file": "walk-front-source.png", "columns": 4, "rows": 2 },
+  { "angle": 45, "file": "walk-front-right-strip-source.png", "columns": 4, "rows": 1 },
+  { "angle": 90, "file": "walk-right-four-source.png", "columns": 2, "rows": 2 },
+  { "angle": 180, "file": "walk-back-source.png", "columns": 4, "rows": 2 },
+  { "angle": 270, "file": "walk-left-four-source.png", "columns": 2, "rows": 2 },
+  { "angle": 315, "file": "walk-front-left-strip-source.png", "columns": 4, "rows": 1 }
+]
