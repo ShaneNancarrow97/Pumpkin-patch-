@@ -55,6 +55,17 @@ For Natalie's wheelchair, locomotion is a push/recovery cycle with correctly rot
 | `natalie-freddy` | Freddy costume | Pending |
 | `natalie-wheelchair` | Purple wheels, dungarees and plaits | Pending: separate seated/push reference |
 
+## Initial reviewed snapshot — 30 October 2026
+
+The first indexed batch contains **140 accepted frames in 64 clips on 16 pages**, totalling **2,145,142 encoded bytes**. It includes 48 neutral poses, seven reduced four-phase walks and nine full action clips. No look is complete against the full 13-action, 24-bearing target.
+
+| Base look | Neutral poses | Full eight-phase walk bearings | Reduced four-phase walk bearings | Working actions | Accepted frames |
+| --- | --- | --- | --- | --- | ---: |
+| Shane | All 24 nominal bearings | 0, 90, 180 | 45, 270, 315 | Plant at 0; water at 90; six frames each | 72 |
+| Natalie | All 24 nominal bearings | 0, 180 | 45, 90, 270, 315 | Plant at 0; water at 90; six frames each | 68 |
+
+Neither owner's rear diagonal walks at 135 and 225 degrees passed this batch's review. The other intermediate walk bearings also remain un-authored. The runtime may show a nearby accepted bearing or keep the legacy action, and the art bench identifies that fallback explicitly. Breathing animation, jogging, the remaining working/resting actions and all 18 non-base looks remain in the production backlog above. A six-frame front planting action is not coverage of planting at all 24 bearings.
+
 ## Reproducible coverage report
 
 From the repository root:
