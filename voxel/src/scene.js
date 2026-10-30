@@ -48,6 +48,7 @@ import { createAmbience } from "./ambience.js";
 import { mistClearings } from "./content/ambience.js";
 import { playerOrbitStep, createPlayerControl } from "./player-control.js";
 import { playerDirectionTextures } from "./player-sprite-directions.js";
+import { setDirectionalTextureWarm, directionalRuntimeStatus, animateReviewedOwner } from "./player-directional-atlas.js";
 import wateringCanURL from "../assets/sprite-watering-can.webp";
 import { createCleanlinessView } from "./cleanliness-view.js";
 
@@ -258,7 +259,7 @@ export function createScene(canvas, state, hooks) {
   const carried = pumpkins.map((t) => { const m = t.clone(); m.scale.setScalar(0.5); return m; });
 
   // The cottage's rooms and the shop floor (places.js).
-  const places = createPlaces({ scene, state, character, visitorModel, pumpkinTemplate, animate: animateFigure });
+  const places = createPlaces({ scene, state, character, visitorModel, pumpkinTemplate, animate: animateFigure, getCamera:()=>active() });
   // Out on the farm, the pool's lights go to the lamps nearest the middle of
   // the view. A lamp joining or leaving fades over a third of a second, and
   // each keeps its light while it stays among the nearest.
@@ -284,6 +285,7 @@ export function createScene(canvas, state, hooks) {
   // were the worst, at 30 to 60 ms each. Each loaded picture is sent ahead
   // instead, one a frame, and the farm's shaders, with their indoor variants,
   // compile in the background once the characters are in.
+  setDirectionalTextureWarm(texture=>renderer.initTexture(texture));
   const warming = new Set();
   const warm = (...textures) => textures.forEach((t) => t?.isTexture && warming.add(t));
   function warmNext() { for (const t of warming) if (t.version > 0 && t.image) { renderer.initTexture(t); warming.delete(t); return; } }
@@ -706,8 +708,9 @@ export function createScene(canvas, state, hooks) {
     receiveDelivery();
     // Shane and Natalie walk to their jobs, then drift home.
     for (const [who, a] of Object.entries(actors)) {
+      if(view.place)animateReviewedOwner(a.model,{who,visible:false});
       if (player.state().enabled && player.state().who === who) { a.queue.length = 0; a.delivery = null; a.work = 0; continue; }
-      const pos = a.model.position;
+      const pos = a.model.position, beforeX=pos.x, beforeZ=pos.z;
       let target = a.queue[0] ?? HOMES[who];
       const dx = target.x - pos.x, dz = target.z - pos.z, d = Math.hypot(dx, dz);
       // Wait beside the actual parcel until it is credited (or cancelled),
@@ -720,6 +723,7 @@ export function createScene(canvas, state, hooks) {
       else if (a.queue.length) { const stop = a.queue.shift(); a.work = stop.wait ?? (a.delivery ? 0 : 0.5); if (!a.queue.length) a.delivery = null; }
       // Like the sprites they come from, they always face the viewer (the voxel figures mirror to walk the other way).
       animateSprite(a.model, time, a.moving, dx, who === "shane" ? 1.7 : 0);
+      animateReviewedOwner(a.model,{who,camera,dx,dz,moving:a.moving,travel:Math.hypot(pos.x-beforeX,pos.z-beforeZ),time,visible:!view.place});
       a.hit.position.set(pos.x, 1.1, pos.z);
     }
 
@@ -887,6 +891,7 @@ export function createScene(canvas, state, hooks) {
     },
     get place() { return view.place === "carving" ? { kind: "carving", id: "bench" } : view.place === "hayride" ? { kind: "hayride", id: "woodland" } : view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
+    get directionalArtStatus() { return directionalRuntimeStatus(); },
     get visitorStatus() { return [...visitorModels].map(([id,e]) => ({ id, kind: state.visitors.find(v=>v.id===id)?.kind, visible: e.m.visible, sprite: e.sprite, leadingLeg: e.m.userData.leadingLeg, frames: e.m.userData.walk?.length ?? 0, frame: e.m.userData.walk?.indexOf(e.m.userData.shown) ?? -1, x: e.m.position.x, z: e.m.position.z })); },
     get farmExpansionStatus() { return farmExpansion.status; },
     get festivalStatus() { return festivalWorld.status; },

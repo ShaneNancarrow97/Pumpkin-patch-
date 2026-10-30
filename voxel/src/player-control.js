@@ -6,6 +6,7 @@ import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { MEADOW, cocoaKioskWidth } from "./content/festival-meadow.js";
 import { openPlots } from "./model.js";
 import { playWays, wayThrough, inZone, gardenGeometry, gardenTargets } from "./play-ways.js";
+import { directionFromView } from "./content/directional-atlas.js";
 
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const SETTLE_SECONDS = 0.8;
@@ -89,6 +90,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, strideAge = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0, still = 0, passing = null, ways = null, waysKey = "";
   // Ways the owner arrived inside stay shut until they step out of them.
   const shut = new Set();
+  let viewAngle=0;
   const input = { x: 0, y: 0 }, lookInput = { x: 0, y: 0 }, velocity = { x: 0, z: 0 }, heading = { x: 0, z: 1 }, positions = new Map(), right = new THREE.Vector3(), forward = new THREE.Vector3();
   const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd18a, transparent: true, opacity: .75, side: THREE.DoubleSide, depthWrite: false, toneMapped: false });
   const ring = new THREE.Mesh(new THREE.RingGeometry(.42, .465, 40), ringMat); ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);
@@ -148,6 +150,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     const camera = getCamera(); right.set(1, 0, 0).applyQuaternion(camera.quaternion); right.y = 0; right.normalize();
     camera.getWorldDirection(forward); forward.y = 0; forward.normalize();
     const sx = heading.x * right.x + heading.z * right.z, away = heading.x * forward.x + heading.z * forward.z;
+    viewAngle=directionFromView(sx,away)??viewAngle;
     facing = Math.abs(sx) > Math.abs(away) * .75 ? "side" : away > 0 ? "back" : "front";
     return sx;
   }
@@ -165,12 +168,19 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   }
   function sync() {
     places.setControlled(enabled && room() ? who : null);
-    if (!enabled || !available() || !model()) { ring.visible = marker.visible = tool.visible = drops.visible = false; target = null; return false; }
+    if (!enabled || !available() || !model()) {
+      if(lastModel?.parent)lastModel.userData.playerAnimate?.({release:true});
+      lastModel=null;
+      ring.visible = marker.visible = tool.visible = drops.visible = false; target = null; return false;
+    }
     // The ring, target marker and can live in whichever scene the owner is in.
     const host = inGarden() ? garden.scene : scene;
     if (ring.parent !== host) host.add(ring, marker, tool, drops);
     const nextKey = placeId() + ":" + who;
     if (nextKey !== key || model() !== lastModel) {
+      // A garden figure remains in its separate scene when the owner steps
+      // inside. Its hidden page must not pin an atlas in the mobile cache.
+      if(lastModel?.parent&&lastModel!==model())lastModel.userData.playerAnimate?.({release:true});
       places.clearPlayerRest?.(who); pose = null; walkTarget = null; velocity.x = velocity.z = 0;
       key = nextKey; action = null; moving = false; strideAge = 0;
       const a = model(), o = origin(), p = safeSpot(positions.get(key) ?? localPosition());
@@ -233,7 +243,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     if (moving || action || pose || intent.x || intent.z) still = 0; else if (!asleep) still += Math.max(0, Number(dt) || 0);
     const shown = still > SETTLE_SECONDS ? "front" : facing;
     animate(a, motionAge, moving, dx, who === "shane" ? 1.7 : 0);
-    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing: shown, walking: moving, time, age: motionAge, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
+    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing: shown, viewAngle, walking: moving, time, age: motionAge, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
     const hit = !room() && !inGarden() && actors()[who]?.hit; if (hit) hit.position.set(a.position.x, 1.1, a.position.z);
     target = nearest();
     ring.visible = !asleep; ring.position.set(a.position.x, .075, a.position.z); ringMat.opacity = .6 + Math.sin(time * 2) * .1;
@@ -251,6 +261,8 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
         const side=Math.abs(screenHeading)>.1?(screenHeading<0?-1:1):(a.userData.playerSideSign??1),camera=getCamera();
         tool.quaternion.copy(camera.quaternion);can.scale.x=-side;
         tool.position.set(a.position.x+right.x*.38*side-forward.x*.14,1.1-bend*.06,a.position.z+right.z*.38*side-forward.z*.14);
+        const hand=a.userData.playerHandLocal;
+        if(hand&&[hand.x,hand.y,hand.z].every(Number.isFinite)){a.updateWorldMatrix(true,true);tool.position.copy(a.children[0].localToWorld(new THREE.Vector3(hand.x,hand.y,hand.z)));}
         can.rotation.z=side*.10*bend;
         tool.updateMatrixWorld(true); spout.getWorldPosition(nozzle);
         for (let i = 0; i < 12; i++) { const d = (time * 1.7 + i / 12) % 1; dropMatrix.makeTranslation(nozzle.x + Math.cos(angle) * d * .35, nozzle.y - Math.pow(d,1.35) * Math.max(.1,nozzle.y-.12), nozzle.z - Math.sin(angle) * d * .35 + Math.sin(i * 3) * .035); drops.setMatrixAt(i, dropMatrix); }
@@ -323,7 +335,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     teleport(x, z) { if (!sync()) return false; const a = model(), o = origin(), p = safeSpot({ x, z }); a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z); positions.set(key, p); target = nearest(); return true; },
     // Where the action target is in the world (rooms sit off at their origin), for the prompt over it.
     targetAt() { const t = enabled && available() ? nearest() : null, o = origin(); return t ? { x: o.x + t.x, y: room() ? 1.9 : 1.7, z: o.z + t.z } : null; },
-    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", passing: passing?.id ?? null, room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, waterCanStyle:'sprite', waterCanWidth:canWidth, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: Math.abs(can.scale.x), waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
+    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", passing: passing?.id ?? null, room: room() ? places.place?.id : null, position: localPosition(), facing, viewAngle, atlas:model()?.userData.playerAtlas??null, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, waterCanStyle:'sprite', waterCanWidth:canWidth, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: Math.abs(can.scale.x), waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
     // QA can finish a presentation without advancing harvests, deliveries or any other rule.
     advance(seconds) {
       input.x = input.y = 0;

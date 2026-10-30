@@ -13,6 +13,7 @@ import { createHomePets, homePetTextures } from "./home-pets.js";
 import { homePieceTargets, petInteractionTargets } from "./rules/home-interactions.js";
 import { ownerHomeTextures, applyHomePose, clearHomePose } from "./player-home-poses.js";
 import { activeLook } from "./rules/wardrobe.js";
+import { animateReviewedOwner } from "./player-directional-atlas.js";
 
 // The places you can step into: the cottage's rooms and the Honest Pumpkin.
 // They are built away from the farm (ORIGIN), one at a time, from the save.
@@ -39,7 +40,7 @@ const KEY = { at: { x: 1.2, y: 10, z: 7.5 }, aim: { x: 5.6, y: 0.5, z: 2.6 }, co
 // turned down to a soft fill, so the lamp and the room's own lights carry it.
 const FARM_INDOORS = { hemisphere: 0.26, directional: 0.1 };
 
-export function createPlaces({ scene, state, character, visitorModel, pumpkinTemplate, animate }) {
+export function createPlaces({ scene, state, character, visitorModel, pumpkinTemplate, animate, getCamera }) {
   const root = new THREE.Group();
   scene.add(root);
   const pool = Array.from({ length: LIGHTS }, () => { const l = new THREE.PointLight(0xffb060, 0, 9, 1.4); scene.add(l); return l; });
@@ -101,7 +102,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   const clear = () => {
-    for (const a of actors) clearHomePose(a.model); resting.clear();
+    for (const a of actors) { clearHomePose(a.model); a.model.userData.dispose?.(); } resting.clear();
     pets?.clear(); pets = null;
     cookingFX.visible = false; kitchenFXStatus = { active: false, recipe: null, method: null, steam: 0 };
     for (const f of foodDisplays) disposeFoodProp(f); foodDisplays = []; foodDisplayKey = "";
@@ -319,19 +320,20 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     for (const e of pieces.values()) e.tick?.(time);                  // the cauldron's brew
     for (const a of actors) {
       if (a.who === controlled) { a.target = null; continue; }
-      const pos = a.model.position, o = ORIGIN.room;
+      const pos = a.model.position, o = ORIGIN.room, beforeX=pos.x, beforeZ=pos.z;
       if (!a.target && (a.wait -= dt) <= 0) {
         // Short of the right wall, where the stairs come down.
         const x = 1 + Math.random() * (place.w - 3), z = place.d - 0.4 - Math.random() * 1.2;
         a.target = { x, z };
       }
-      let moving = false, dx = 0;
+      let moving = false, dx = 0, headingZ = 0;
       if (a.target) {
         const tx = o.x + a.target.x, tz = o.z + a.target.z, ddx = tx - pos.x, dz = tz - pos.z, d = Math.hypot(ddx, dz);
         if (d < 0.05) { a.target = null; a.wait = 3 + Math.random() * 5; }
-        else { const step = Math.min(d, 1.4 * dt); pos.x += (ddx / d) * step; pos.z += (dz / d) * step; moving = true; dx = ddx; }
+        else { const step = Math.min(d, 1.4 * dt); pos.x += (ddx / d) * step; pos.z += (dz / d) * step; moving = true; dx = ddx; headingZ=dz; }
       }
       animate(a.model, time, moving, a.who === "shane" ? 1.7 : 0, dx);
+      animateReviewedOwner(a.model,{who:a.who,camera:getCamera?.(),dx,dz:headingZ,moving,travel:Math.hypot(pos.x-beforeX,pos.z-beforeZ),time});
     }
   }
 

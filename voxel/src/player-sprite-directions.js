@@ -17,6 +17,7 @@ import { PLAYER_SIDE_WALK_META, PLAYER_EMPTY_WATER_META } from './player-side-wa
 import { playerViewScale, playerStandFrame } from './player-view-size.js';
 import { crispTexture } from './crisp-sprites.js';
 import { recolour } from './sprite-voxels.js';
+import { applyReviewedDirection } from './player-directional-atlas.js';
 
 const urls={base:baseURL,'shane-a':shaneA,'shane-b':shaneB,'natalie-a':natalieA,'natalie-b':natalieB};
 const walkUrls={base:walkBase,'shane-a':walkShaneA,'shane-b':walkShaneB,'natalie-a':walkNatalieA,'natalie-b':walkNatalieB,wheelchair:walkWheelchair,water:waterEmpty};
@@ -55,7 +56,8 @@ function mapFor(id,direction,who,look){
 function paint(group,map){for(const mesh of group.children[0]?.children??[]){if(!mesh.isMesh)continue;mesh.material.map=map;mesh.material.emissiveMap=map;if(mesh.customDepthMaterial)mesh.customDepthMaterial.map=map;}}
 function setScale(group,amount,sign=1){group.scale.set(amount*sign,amount,amount);}
 
-export function applyPlayerDirection(group,{who,outfit,facing='front',walking=false,moving=walking,time=0,age=time,dx=0,action=null,actionProgress=0,look,release=false}={}){
+export function applyPlayerDirection(group,{who,outfit,facing='front',walking=false,moving=walking,time=0,age=time,dx=0,viewAngle=0,action=null,reviewedAction=action,actionProgress=0,look,release=false}={}){
+ if(applyReviewedDirection(group,{who,outfit,viewAngle,walking:moving,age,action:reviewedAction,actionProgress,look,release}))return true;
  const d=group.userData,id=outfit||who+'-base',m=PLAYER_SIDE_WALK_META[id],available=frames[id];
  if(!m||!available||!d.show)return false;
  const kind=typeof action==='string'?action:action?.kind;

@@ -1,0 +1,3157 @@
+{
+  "version": 1,
+  "angleConvention": "0 front, 90 screen-right, 180 back, 270 screen-left; nominal painted bearings",
+  "looks": {
+    "shane-base": {
+      "version": 1,
+      "owner": "shane",
+      "look": "shane-base",
+      "mobility": "walking",
+      "sourceSeed": "docs/plans/directional-cast/shane/approved-front-seed.png",
+      "pixelsPerUnit": 139.13043478260872,
+      "pages": [
+        {
+          "id": "idle",
+          "url": "assets/directional/shane/base-idle.webp",
+          "width": 1536,
+          "height": 1600,
+          "encodedBytes": 371444,
+          "encodedSHA256": "d69ec9071b68c191b953522e8e1f5de2a6bc4f9ebc16fedc7ffbf243ee82bdc0"
+        },
+        {
+          "id": "walk-000",
+          "url": "assets/directional/shane/walk-000.webp",
+          "width": 1024,
+          "height": 800,
+          "encodedBytes": 127392,
+          "encodedSHA256": "cb31d6dccf373cabb08248b371ab0fe1b5c28c8c9520aa5d274c350b63ad934f"
+        },
+        {
+          "id": "walk-045",
+          "url": "assets/directional/shane/walk-045.webp",
+          "width": 1024,
+          "height": 400,
+          "encodedBytes": 73844,
+          "encodedSHA256": "4a37342cae55e02f45a47f404ecf610c032c67d396e451c2def3ce3745281063"
+        },
+        {
+          "id": "walk-090",
+          "url": "assets/directional/shane/walk-090.webp",
+          "width": 1024,
+          "height": 800,
+          "encodedBytes": 152612,
+          "encodedSHA256": "cb87371489d7e9dc26a1e5a0701291b59f75f115f20bcd8459211ba6ec56e212"
+        },
+        {
+          "id": "walk-180",
+          "url": "assets/directional/shane/walk-180.webp",
+          "width": 1024,
+          "height": 800,
+          "encodedBytes": 112098,
+          "encodedSHA256": "ee57249461c563ad3044a51d3bd6cab0fea2ac4211446c8935ab660573ee0cc5"
+        },
+        {
+          "id": "walk-270",
+          "url": "assets/directional/shane/walk-270.webp",
+          "width": 1024,
+          "height": 400,
+          "encodedBytes": 75448,
+          "encodedSHA256": "778f803219282091420d79e32270248564b848f0b3b9282824a0d1aaaf7477fa"
+        },
+        {
+          "id": "walk-315",
+          "url": "assets/directional/shane/walk-315.webp",
+          "width": 1024,
+          "height": 400,
+          "encodedBytes": 74356,
+          "encodedSHA256": "f9511dd7e62718aed61af908faf2acd10134479d1b61527b45a5bd98a6b36020"
+        },
+        {
+          "id": "shane-actions",
+          "url": "assets/directional/actions/shane-actions.webp",
+          "width": 768,
+          "height": 1600,
+          "encodedBytes": 198494,
+          "encodedSHA256": "322d10ae2d1ea60aba34fa0d7867a4700f95b793fd17afa3c1d6932de2d9b6b2"
+        }
+      ],
+      "clips": [
+        {
+          "action": "idle",
+          "degree": 0,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "28a0eff38332f7ce045c7be80402fd1570a1eed4ec6490d3bb494b619048a5bb"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 15,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "8f50d0698593b82e457e0478125e8852dd41b695f2a28f2a959395c0d79bcf32"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 30,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "b3b2cd2d1561d8d883ba67252a81a90b24e89a22a018d3a329d82377bb8b3051"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 45,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "73aecbc439ee738c3b90359360a40864503c44353b511ed2b0b63a7bfaf035e4"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 60,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1024,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "ccd5878af69a928450f5aa7a2bd04cc70edecdbbcaa9a4f84f320d9f8bbbb4f8"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 75,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1280,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "cbd98e532fafef0d7c909381848654adc7bb92fa01ea181161b180d3471aff19"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 90,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 0,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "fb0aacfcf52262d5faefacd44ed2f53986a35246a58cc242fe5c61ca6962daca"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 105,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 256,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "c6ea5d121dcda354baefbd349f7cb3ba521ad518be496bfbbde64dd4cd645e2b"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 120,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 512,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "90ecf53c456bf37e1e0e33828daddfa41944817921a424d33eb7357069685e2b"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 135,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 768,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "30c534ea20fa4f5411b15becc22a3cedb68d31bb19fb688b6acb640916a84475"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 150,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1024,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "61c00e9c6658ad4867614b11b65a28bb792c7f07ceeb0ae64985e0d171f8caf0"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 165,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1280,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "e06dfb4fb27640fba29932dd0bf39c226fb4702fb24b7e56a1ed185be70f013b"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 180,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 0,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "4aedc858cb477d8ff5ede03815b6ca3764bc624d752b63bb2b18d7176d0d5942"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 195,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 256,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "a57fca964a8065851f55fc6623e311e27d2f5c501368e6129f038d3860f0db52"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 210,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 512,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "c7d71665eda51e48de7f2bb9d39bd701edaf68ea751b164f009382b7c4efa52a"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 225,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 768,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "f8b70d83d1f9bce1e17f2969c89e8f5126b1b43d53eb74c017fc0e67e7edb563"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 240,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1024,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "b542bbfac27f99d8bc7974b4da710acc221a84c3aecaadffdf915893040fba25"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 255,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1280,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "2156719e57e51a50e0ae6b6e0daf6cd94d47e2688318b2a958b8ff67152674db"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 270,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 0,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "0688bce696858196b4fea78903317def86a8e9481b89bbf8ba0f7523ecb2a03a"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 285,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 256,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "566c4c0105a6aa394776f8e35fd74bf588addbf7bcf15d96c3456a719bc3c80d"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 300,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 512,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "11e322b7a1e058408d4fd04a4c72876d824868ac503e642dac900e8746b71ad7"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 315,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 768,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "421c360045db64bbff9cbe950e7d8c247abbf06e0aeba01ffd52651fe9a4665f"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 330,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1024,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "c0002590fa315ea8b0ab95b4d49cffa1afc6685f7d9f483a4eaca4757802ffcb"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 345,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1280,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "45970a4252fa72398325c621c206dbde934d8b65780872c595cdfa3c35a9b829"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "walk",
+          "degree": 0,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "181cb0c797eb533203af7f05df5ca4186931312e0cc8dbdd59bb33735a017a87",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "a4cc77e2da5bd3771b23140261eca7ba0f83ce7faff41095f0e5aeb1d751cfe5",
+              "phase": "down-left"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "152a48764864ab4e2f8071d36a80c4c12b3396752bfb06b6d51cc52d329e26de",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "bf0a4967fd28e8c07282a0679b4185185266a84c248fb2be2643b314eb0870f2",
+              "phase": "up-left"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 0,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "c409ebc1438d6f0f43aac4336a6a457ade0e4c0e079e3973ff3ae8edb49da892",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 256,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "bec43ab17a18df86b8a8ed94899103d4dd30eb98761fe7aca42d7ec1bed32e5c",
+              "phase": "down-right"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 512,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "850e14257ea7a495fe79720852af31275176546cd7dac4051e72ef98eed8fe09",
+              "phase": "passing-right"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 768,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "2f8b5ab7299ac91d3ade8d6250bb4bb2863056d8a9f3f3f16924624da14d9772",
+              "phase": "up-right"
+            }
+          ]
+        },
+        {
+          "action": "walk",
+          "degree": 45,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-045",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "9205a2768ab6e0391562b2b9ef57a955279928bf2482a153c1d80690e06d7a27",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-045",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "fb31b1b798cc569b684f01e7637fc428ee0f2ffde16014038d67e6036987d49a",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-045",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "14c77d6cececc27d98d8d46dc81c4f6db419dc94d617ee76d75644ae951e84ad",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-045",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "9384c0de0a26f14799e8eef359a66c63d79a1cb48a9f545c190d8c8a297126ca",
+              "phase": "passing-right"
+            }
+          ],
+          "mode": "reduced"
+        },
+        {
+          "action": "walk",
+          "degree": 90,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "b5ebe86e8a4338eea38b19af58005b628d7d69990dab64aa53f1b4b824a6e4d7",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "a9c08db40ac00ddf9e72126b9542e426dfb2916987600ff66ee07bb8bd7b40a4",
+              "phase": "down-left"
+            },
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "244cedd7dc82f40ba0bc1fc72376e6f37e32d89372f0671d52185db07337377d",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "20b25ac4533ef4886830bc5e471098883250fbd34f90405d9c939bfecf4fa218",
+              "phase": "up-left"
+            },
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 0,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "b77665c4bcce44a998a686ebfd310982537af117f5bf320516e4c2b37d0fec0a",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 256,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "9dbf73da00a055582538f22be67721f10f4881cbb6e4bd6eecfe119980b388e8",
+              "phase": "down-right"
+            },
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 512,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "87c3803d1b19129e24c54ce41aea1fb804b068351e8a45de11c60a27b4349c09",
+              "phase": "passing-right"
+            },
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 768,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "4bac90be45ee442962b9a66d13ea94d901c04550f08486dbac6770f2b14cfeff",
+              "phase": "up-right"
+            }
+          ]
+        },
+        {
+          "action": "walk",
+          "degree": 180,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "4b356b2c45bebd53b71d538fd8eb5ddba71b18c85127b976deddd6ab5ffc9ce5",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "016fda160fa193d378b01720372ddc249eb816cb9ca45cda8c760e1e584b36f1",
+              "phase": "down-left"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "285941c5447f38f3f9180d79627013e7f14a0411483a4c79177b0b52e821263c",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "611f50cd759a644f72a8542cdcfd9d065e79556613a26766baafa80be5c2e4aa",
+              "phase": "up-left"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 0,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "a306e1b6cf99e79028cb40c2cc97938b89b52a81d2547d8f8fbaf5932f0abc4d",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 256,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "28eef1209d048933eb92dd6194d1d2f0b47d640caab2134a716eb8e744a0e24d",
+              "phase": "down-right"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 512,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "41818c7ced744ec8af628e5f0783e3de4735de4b9f7702d42ad5f9728986df55",
+              "phase": "passing-right"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 768,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "b25415acf95ce8845c718b738ff567afff717a961c09aed6a93e72b5146b0039",
+              "phase": "up-right"
+            }
+          ]
+        },
+        {
+          "action": "walk",
+          "degree": 270,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-270",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "0779f74dfe96a5b11239f4d785a84657091c7be9f48338954c4013d99053517b",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-270",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "f8176426ba6b525d87d051a5b625dbd2708277172bb80b585ba1a58fda6a9647",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-270",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "441b75874c6518a927d0fa9dd64344d02b94476f0d20bc65c5d31d8afa4a16f0",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-270",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "c59b487c9bff23eb078f0e0ccb1743d12dc1bbd71ae9837c2fbe7c10d4d4b67b",
+              "phase": "passing-right"
+            }
+          ],
+          "mode": "reduced"
+        },
+        {
+          "action": "walk",
+          "degree": 315,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/shane/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-315",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "6cc0a5a9e439218e77b33655f0e822fd498882cd634318ce369c2c87d9c0bd63",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-315",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "c6b6b5416bd113a74f0f6c8e35d9076990665a67bf7855f74442f96b146e2768",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-315",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "5b6b61a6c056bb1b8b4e170dc9682ce66a94b2572ce93bf7cead51a84424cf91",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-315",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "494dabf6ecacb2842208967a674f8a88a154f1e5e44d885debdfde15c5a6bab8",
+              "phase": "passing-right"
+            }
+          ],
+          "mode": "reduced"
+        },
+        {
+          "action": "plant",
+          "degree": 0,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/actions/README.md"
+          },
+          "frames": [
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "85dfa89d9b82f7f64253842adeeb47723cad1e8e3bfb5202beea6051b3997f11"
+            },
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "1bc2be686b6b3bb38dc5d07ae0dd1f1211395ffbf9ae4f0e1c5d356580cc99a4"
+            },
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "9bc657cc20b3dc963c54a2cf77354c8dd83c959ac406973359f260366bd5d585"
+            },
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 0,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "9a33846b78f13ea4b1c496ecdaa2611bea287d8ca02fc2bf4981d5159f2e784d"
+            },
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 256,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "c78f7e0b982d70d6119b58e16b2bec4916e497dc9eaee6aeb7c4a386be8a247f"
+            },
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 512,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "98a2c7144c6e95ff66f729b4de3f63bfca7c898e809cc3444a8a60ee09376494"
+            }
+          ]
+        },
+        {
+          "action": "water",
+          "degree": 90,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/actions/README.md"
+          },
+          "frames": [
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 0,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "63ea51ef0d3f808f14178440d542ae312ebc4ecf02b4f604e06ca05bede90cda",
+              "sockets": {
+                "hand": {
+                  "x": 130.23,
+                  "y": 273.87
+                }
+              }
+            },
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 256,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "f82129eb7abcd0ba9374088824c5907283ed09b7a08fbb182dfc927dff587c23",
+              "sockets": {
+                "hand": {
+                  "x": 195.47,
+                  "y": 235.59
+                }
+              }
+            },
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 512,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "ae7b85aee314a69b852614948965b1432feae16a722631d345249201194caa7e",
+              "sockets": {
+                "hand": {
+                  "x": 204.42,
+                  "y": 234.7
+                }
+              }
+            },
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 0,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "e5b138d7f59e418aa1830c0a10a1415e5d777598e1b72f54284d38288c1b9eef",
+              "sockets": {
+                "hand": {
+                  "x": 207.0,
+                  "y": 238.91
+                }
+              }
+            },
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 256,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "5255d9ac2c53f37d646b4069e07892c819c6e9aa13dc9961c7b67fd57f209d10",
+              "sockets": {
+                "hand": {
+                  "x": 196.26,
+                  "y": 218.9
+                }
+              }
+            },
+            {
+              "page": "shane-actions",
+              "rect": {
+                "x": 512,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 139.13043478260872,
+              "fingerprint": "987c18661537ef68b18564baa2fbf562967c20c275cc14721549e36fc34e8d88",
+              "sockets": {
+                "hand": {
+                  "x": 127.23,
+                  "y": 269.82
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "natalie-base": {
+      "version": 1,
+      "owner": "natalie",
+      "look": "natalie-base",
+      "mobility": "walking",
+      "sourceSeed": "docs/plans/directional-cast/natalie/approved-front-seed.png",
+      "pixelsPerUnit": 130.43478260869566,
+      "pages": [
+        {
+          "id": "idle",
+          "url": "assets/directional/natalie/base-idle.webp",
+          "width": 1536,
+          "height": 1600,
+          "encodedBytes": 310420,
+          "encodedSHA256": "27e226b31a8490aa6d9092a6e3dc755f57335d54ffb46b24e70ffab3b9018f4c"
+        },
+        {
+          "id": "walk-000",
+          "url": "assets/directional/natalie/walk-000.webp",
+          "width": 1024,
+          "height": 800,
+          "encodedBytes": 113090,
+          "encodedSHA256": "11d15bb786e453bb3b0f181162ed278649fae63a93548dcd867e15bf8f2fc583"
+        },
+        {
+          "id": "walk-045",
+          "url": "assets/directional/natalie/walk-045.webp",
+          "width": 1024,
+          "height": 400,
+          "encodedBytes": 53934,
+          "encodedSHA256": "4685df6b1a0bbc9891cc4f3a06aff3e290c6744de3d2bc47b74a69eefafcec04"
+        },
+        {
+          "id": "walk-090",
+          "url": "assets/directional/natalie/walk-090.webp",
+          "width": 1024,
+          "height": 400,
+          "encodedBytes": 64472,
+          "encodedSHA256": "33ee6a56ad21788e1d8db7d223faf0dfeebcb48f143a996469e282fa7b6f5234"
+        },
+        {
+          "id": "walk-180",
+          "url": "assets/directional/natalie/walk-180.webp",
+          "width": 1024,
+          "height": 800,
+          "encodedBytes": 107562,
+          "encodedSHA256": "1e83c5b1f0ed89402019a1cb8afcb2a63e96fb705613e791b66a010639274fd9"
+        },
+        {
+          "id": "walk-270",
+          "url": "assets/directional/natalie/walk-270.webp",
+          "width": 1024,
+          "height": 400,
+          "encodedBytes": 57116,
+          "encodedSHA256": "50e0f8fff9ecbfad0dfe06c4007bc6c0997aebf85c5af019370c0e65e356f03d"
+        },
+        {
+          "id": "walk-315",
+          "url": "assets/directional/natalie/walk-315.webp",
+          "width": 1024,
+          "height": 400,
+          "encodedBytes": 57396,
+          "encodedSHA256": "48921ee75669eef9a8d102f5b74cfe0c7df577bd68a80a2bb016b21646736051"
+        },
+        {
+          "id": "natalie-actions",
+          "url": "assets/directional/actions/natalie-actions.webp",
+          "width": 768,
+          "height": 1600,
+          "encodedBytes": 195464,
+          "encodedSHA256": "47bed41d6891fb017917c1bfd64a4745e6612ae42ee0739f93ea18ca79664959"
+        }
+      ],
+      "clips": [
+        {
+          "action": "idle",
+          "degree": 0,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "7b3298d2464f53358d50d21f0e57881924d3ccb44c17d1e746b6a43420c9ca67"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 15,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "0187fe4e8fd403f35bd0ba78c3ab4adf43ae1a5d63ecce380e1fffdac7f537cc"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 30,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "2674a44df37da8f329494de2a61dba48969d5157629661e198f5bfd939c11c7a"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 45,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "35e4a4cb5f6108a9ed1b45968d76470958bfe11cb206c3800bd593dd4ac6713c"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 60,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1024,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "6b9999d4a3423e422794cdcfc974ba1faea188e34f0e0b244b34bb5854995cee"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 75,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1280,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "8766cde357028ebfb4d469188e9e09e91db0be8679887f244ec395dc765a85c5"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 90,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 0,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "0d88e5a027fc3da40d95adc6c20f67bf08aedfa59c6c6dccedf91389d182add0"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 105,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 256,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "9137663a4125c85e8baa7cdc635228137fb82f2af29bf6e85a99a67deb59c051"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 120,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 512,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "60ae7470d65030a14e5d97c25909a7e240641b8730d3b88a40a62b9312cc8933"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 135,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 768,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "00a815486a633700d0b4f2350108b7db6def18978adf8a46515d57eaca5b9405"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 150,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1024,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "8af481032e2a7ec029e927f6a43a5ede00981c2d8289b60c3a7dbc125ad801f5"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 165,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1280,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "b89fd94e7c9880d9d591e6d78b5e60a95de28b9cfdab0c4b4583977cd4964879"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 180,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 0,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "b0d3ebaeb9267a4d9d298403cfa8eda604d2d3b25bc7781b790d1db0106176c0"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 195,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 256,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "d47246f20696a0b10ac7845f47ce933ee9ea8c706d557bf19fb4671421af4a30"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 210,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 512,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "e68573ea7bd52aebeef994b3c0767aa6d7d1dec4aca926b2c85099350115877a"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 225,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 768,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "16b02e7252f9580d60d460068ebeb443ab8191494337d2f7c200a3d6ed1b5204"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 240,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1024,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "9121db33b56f8a270354fc85bb4f7c7d9b7ff711e12e46637d3e71e483946b53"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 255,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1280,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "0d630198947d38d1426fcc33ae0809e3ab8197dd0c868be97c37e89965d070b7"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 270,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 0,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "2f7fe15613f2d456f2f7b228a4294061456689bc4893b1133657b3e942a1e5e7"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 285,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 256,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "901a2f4feb42b25da5b166c20ff355d98f52f33b1673e71b887a4764b28fda3f"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 300,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 512,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "4d2726addc8dc8aec5960981edfe0a14c3abb22735b03ad6f315f077277900b8"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 315,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 768,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "266384bbff3a3f957e727f84d7cb59103accc706bc46cd591a037f4e4614dd07"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 330,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1024,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "dec4bbf46ee26b1603d2daef085d48719bba86c2765d5820ee85c5105c0cc631"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "idle",
+          "degree": 345,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "idle",
+              "rect": {
+                "x": 1280,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "b574862a5a244e7ad794abba1e2e66348354271cc03e35771c403b2690162a56"
+            }
+          ],
+          "mode": "pose"
+        },
+        {
+          "action": "walk",
+          "degree": 0,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "3332b45cde09d9ce7606bbfa6f5f248f1bff09e4e997230d4da13479124200fd",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "76df52538c5a14e6318858f0233dc9539b36ec8270f6f55982d7f867d2d3c901",
+              "phase": "down-left"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "2ef24505ae47284ba17615aa75dcd972e21d24e6f3471a4a188a793c3360c771",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "90059f54bebe0a250c319a8bdec777a2c2cb40bc1266921d839b024961698838",
+              "phase": "up-left"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 0,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "a4babbb0166ab3567758203e3b09b081fc18115919e319c3031ae60c5de38847",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 256,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "ceb91d8f4bd339d64a8a36eed499dcd89dffd57c635d59ef311e4ab439a55964",
+              "phase": "down-right"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 512,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "04a87782ecfb7c584b618625ba4524dd914eb74e1059b16f6d1c15d4e5e3d4d6",
+              "phase": "passing-right"
+            },
+            {
+              "page": "walk-000",
+              "rect": {
+                "x": 768,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "44a21f6aacd9122a8792fc276916a760aa043b62c709ad72a1c468be50ab2098",
+              "phase": "up-right"
+            }
+          ]
+        },
+        {
+          "action": "walk",
+          "degree": 45,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-045",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "48cf04b13f6c5ef7f352d29b9110c254f0ae3554863425f85cbe9b7005a89bab",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-045",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "da85600b0c92c75196ac7c8d697f4fa7a2424d8df9a660d3ce52490190c2fec0",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-045",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "2fb049d8ccfe80d4aeaac4b16a8db85462297da4e0998a857d1392c51118f4a8",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-045",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "66d95f428cd0ab25a3b1be0ad2a5d006e1f00d6cc8db7986ad47849ec1221b26",
+              "phase": "passing-right"
+            }
+          ],
+          "mode": "reduced"
+        },
+        {
+          "action": "walk",
+          "degree": 90,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "800f17bef3c69a07704051405e634ccfc541af3806903a25109e297aca095049",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "ac735bdcbf8e516cffda33b52efd8d7986705be718356bb090568c93b35d9661",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "bc242154de6351387ba21b79cd7e8d6fae221f2cde96b84c9e2a7d5445503dc8",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-090",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "d5d38c531e7100261fe13f57739b73472c2d244fdbdeace24be971871e27a6b2",
+              "phase": "passing-right"
+            }
+          ],
+          "mode": "reduced"
+        },
+        {
+          "action": "walk",
+          "degree": 180,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "831a82f003748e5b68f0c757a934ee9be65786a0fa4027a16e21b9e9532f69f2",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "92f8b651200f438b7d0a4a73ef3aef774e7c5c07ec251f87eeb01040de08683a",
+              "phase": "down-left"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "1559193799fe8d1b8710a45ca3b0ad10d55ded55dc5958026ddd370bcdae8871",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "31ad19e356eab5320426631baaa5a6a64b03dfe9cfa5ad64f8d33713c0c2164c",
+              "phase": "up-left"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 0,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "c5f20045b0f211a63c8e818d0339444955900a1d463296878ab968636f13b038",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 256,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "812da0405b5edd8becea0c201a81e37bbf26a5403b770b6ce77cdfa48e2eaefa",
+              "phase": "down-right"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 512,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "de7dd233dc21b2c09b9a7c99adfa2340d03b2968bea244f68c25c2a288e3a4f6",
+              "phase": "passing-right"
+            },
+            {
+              "page": "walk-180",
+              "rect": {
+                "x": 768,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "320db89ac12e61f7a96181eb3f9dce20dea6b3c0ae4cf855e2e11b91f1e2a7ec",
+              "phase": "up-right"
+            }
+          ]
+        },
+        {
+          "action": "walk",
+          "degree": 270,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-270",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "29e62c53d1d613eb5f6bd8fa7309d003f2d6e354abf13c194fbccbd5cbf882ba",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-270",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "0422b1155ca87e0b2720a24ea02bc297c99775bc97186101a2d17e0fd8d3e698",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-270",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "b1524302a8e7b3c830964064efa42313426a24b23f621efb0395716a5df74e08",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-270",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "4dc96546172d361747024a8b1efe606522e70b8ccfb1da22ccb47ddc75c54b53",
+              "phase": "passing-right"
+            }
+          ],
+          "mode": "reduced"
+        },
+        {
+          "action": "walk",
+          "degree": 315,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/natalie/README.md"
+          },
+          "frames": [
+            {
+              "page": "walk-315",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "4bbdf182bd19575dd24259160a84fef38c8d954e4525322f0ee02b0579d30f1f",
+              "phase": "contact-left"
+            },
+            {
+              "page": "walk-315",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "8857539e624ec281501c6d6742873b7cce2a79e688b1fcf951db3b7ab0ed5e03",
+              "phase": "passing-left"
+            },
+            {
+              "page": "walk-315",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "6f350dceb3a474256d99c27593f8938a759f51ace22cabb5321fa4ff057020a8",
+              "phase": "contact-right"
+            },
+            {
+              "page": "walk-315",
+              "rect": {
+                "x": 768,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "4d850643b1ef672a651c79c8d180b04780ba13ceee28a6a2e2943a6da15a11f7",
+              "phase": "passing-right"
+            }
+          ],
+          "mode": "reduced"
+        },
+        {
+          "action": "plant",
+          "degree": 0,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/actions/README.md"
+          },
+          "frames": [
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "2ba45434d6fb68f7b14ec8bdd39fcc57b2accf028bba1ff59188b022e84e08ad"
+            },
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "1c92aeed42054dd070b244dbf782c9fd41b4284daff2cfa1ce7cfe0ca241642d"
+            },
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 512,
+                "y": 0,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "9e7c8502c6965c8d0e9bcd3c6ac0ca0b45c4d6370c44b326c2e6e5901d36414f"
+            },
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 0,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "d0de595fb55f789624e266e7510246b8f2babde5185ee27c5966216f87bc212d"
+            },
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 256,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "ba92fab1cac55ce1a68079d93479be08b9a247125076154a033ea9ac18a338a6"
+            },
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 512,
+                "y": 400,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "cae1e9c14ce60c17197f90c43be275215b3e5fd93b5947a6dfebc338bfade5ec"
+            }
+          ]
+        },
+        {
+          "action": "water",
+          "degree": 90,
+          "authoring": "drawn",
+          "review": {
+            "approved": true,
+            "preview": "docs/plans/directional-cast/actions/README.md"
+          },
+          "frames": [
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 0,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "864212d82b6f74a51c86b36173d8de81a057d7acfcac7653ebef47511c30de3d",
+              "sockets": {
+                "hand": {
+                  "x": 117.1,
+                  "y": 283.4
+                }
+              }
+            },
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 256,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "9cf5fe65b72cf913a82de2ded5bbeff97e7824640ed24a12495041b677248709",
+              "sockets": {
+                "hand": {
+                  "x": 196.33,
+                  "y": 238.97
+                }
+              }
+            },
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 512,
+                "y": 800,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "c052cd01f5d2e77439294bdeac580d1b2ee234da53f0295b9bd5d872e461f603",
+              "sockets": {
+                "hand": {
+                  "x": 210.81,
+                  "y": 234.81
+                }
+              }
+            },
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 0,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "0ecc7c9707bf588f38acb7b3a4ab2e38f922a65bbc1791db88d9e0c7655cfa5f",
+              "sockets": {
+                "hand": {
+                  "x": 207.32,
+                  "y": 249.78
+                }
+              }
+            },
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 256,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "cd45eb5ff97cd56285fbf6fb2baac77755ee0341502dceceef11c8dfa06d9884",
+              "sockets": {
+                "hand": {
+                  "x": 189.84,
+                  "y": 232.97
+                }
+              }
+            },
+            {
+              "page": "natalie-actions",
+              "rect": {
+                "x": 512,
+                "y": 1200,
+                "w": 256,
+                "h": 400
+              },
+              "anchor": {
+                "x": 128,
+                "y": 390
+              },
+              "pixelsPerUnit": 130.43478260869566,
+              "fingerprint": "d8052b68187fea0f1e54c73f6d348883b48acb887c2992543598ff13736c4375",
+              "sockets": {
+                "hand": {
+                  "x": 104.45,
+                  "y": 271.91
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
