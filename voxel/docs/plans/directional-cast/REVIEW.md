@@ -12,12 +12,12 @@ The JSON root is `{ "looks": { "shane-base": manifest, "natalie-base": manifest 
 
 The bench displays a 24-step direction slider, action and costume selectors, playback speed, frame stepping/scrubbing, previous-frame onion skin and a shared foot anchor. The 2.3-unit ruler uses one fixed scale across looks and actions. Crouching is not enlarged to fill the view. No flat frame is rotated, stretched or mirrored to claim another direction.
 
-Strict authored selection is the default. A missing action/direction shows a gap. Enabling **Allow nearest authored view** makes the fallback explicit, with both the requested and drawn angles. A static neutral idle is labelled **single pose**, not a completed breathing animation. The coverage table separates complete animations, static poses, and missing/rejected clips. The full target matrix remains visible even when only a small production batch exists.
+Strict authored selection is the default. A missing action/direction shows a gap. Enabling **Allow nearest authored view** makes the fallback explicit, with both the requested and drawn angles. A static neutral idle is labelled **single pose**, not a completed breathing animation. The coverage table separates full-phase animations (green), reduced four-phase walking cycles (amber), static poses (blue), and missing/rejected clips. Reduced cycles are usable authored motion, but remain gaps in the full eight-phase target. Frame stepping, scrubbing and onion skin use the selected clip’s actual length, including a four-frame cycle and a single neutral pose. The selector is compiled once when the bench loads; playback does not repeatedly validate the full manifest. The full target matrix remains visible even when only a small production batch exists.
 
 Use the bench to check:
 
 - recognisable likeness, outfit details and head/body ratio from every authored angle;
-- opposite leg contacts and counter-swinging arms through all eight walk frames;
+- opposite leg contacts and counter-swinging arms through all eight full-cycle frames, or the four declared contact/pass phases of a reduced cycle;
 - planted feet, shared anchors, no size jumps or clipped hair/shoes;
 - gesture readability at game scale, including lowered bodies and seated poses;
 - genuine left and right artwork where tattoos or clothing are asymmetric.
