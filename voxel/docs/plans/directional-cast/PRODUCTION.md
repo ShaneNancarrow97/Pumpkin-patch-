@@ -79,7 +79,15 @@ Legacy playability is reported separately. Nearest-bearing selection, legacy fal
 
 Each strip uses one physical scale and ground-contact anchor. Normalising each crouched or airborne phase's alpha box independently would stretch the person; do not do it. Static turnarounds can be reconciled to the same measured standing body, preserving aspect ratio. Heads and hats must be measured separately from the whole silhouette when checking ratios.
 
+### Route to exact 15-degree coverage
+
+For the complete matrix, prepare one approved articulated body per owner, with costume layers sharing its skeleton and scale. Match the painted silhouettes and faces before mass rendering; a generic block character is not a replacement for the supplied likeness. Lock the render camera, ground origin and pixels per unit, then rotate the body through exact 15-degree steps. Author walk contact and recovery poses, plus hand/tool interactions, once on the body and review each costume for cloth, hat, skirt and accessory occlusion. Render the approved animations to sprite pages and retain the camera/rig metadata as `rig-rendered` provenance.
+
+No such complete owner rig is delivered in this batch. Until it exists and passes the art review, the manually painted bearings remain nominal and each accepted animation still requires strip-by-strip anatomical review. Do not label a rotated flat picture or a mirrored frame as a rig render.
+
 Runtime pages stay compressed WebP and decode on demand. GPU RGBA bytes are reported separately from download bytes: a small file can still become a large texture. Keep approved source PNGs, rejected candidates, previews and measurement notes under `docs/`, outside the playable HTML. Avoid one enormous all-costume atlas on mobile.
+
+At the current 256 × 400 cell size, the full 38,400-frame target would occupy **14.65 GiB of raw RGBA**, or **19.53 GiB including a complete mip chain**, if every frame were resident. These are decoded texture estimates, not download sizes. The runtime must page and evict artwork rather than allocate the whole target. This batch limits a page to 12 MiB of base-level RGBA and a 4096-pixel axis; four such resident pages require at most 48 MiB before mipmaps. The report's `pageRGBABytes` totals all unique authored pages, not the current resident working set.
 
 ## Pets
 
