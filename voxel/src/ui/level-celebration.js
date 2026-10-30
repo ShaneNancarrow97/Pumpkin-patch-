@@ -41,7 +41,7 @@ export function createLevelCelebration({ state, audio, save, openRewards }) {
       <p class="level-subtitle">${preview ? `${money(Math.max(0, level.at - current.xp))} more earned to reach level ${level.level}.` : "Your patch has levelled up. These treats are yours!"}</p>
       ${preview ? `<div class="bar"><i style="width:${current.progress * 100}%"></i></div><ul class="home-goals">${homeRequirements(s,level.level).map(r=>`<li><span>${r.met?"✓":"◇"}</span><span>${r.text}</span></li>`).join("")}</ul>` : ""}
       <ul class="level-rewards">${rewards.map((r) => rewardRow(r, preview)).join("")}</ul>
-      <button class="button gold wide level-continue">${preview ? "Back to the patch" : "Lovely! Keep growing"}</button>
+      <button class="button gold wide level-continue" data-pad-default>${preview ? "Back to the patch" : "Lovely! Keep growing"}</button>
       ${!preview ? `<button class="level-details" data-level-details>View all level rewards</button>` : ""}
     </article>`;
     overlay.hidden = false;

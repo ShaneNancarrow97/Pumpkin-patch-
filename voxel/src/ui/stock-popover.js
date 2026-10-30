@@ -49,5 +49,5 @@ export function createStockPopover({ state, onOpen, onManagePumpkins, onManageCo
   panel.querySelectorAll('[data-stock-manage]').forEach(button=>button.addEventListener('click',()=>{close();if(button.dataset.stockManage==='cocoa')onManageCocoa?.();else onManagePumpkins?.();}));
   document.addEventListener('pointerdown',e=>{if(open&&!panel.contains(e.target)&&!trigger.contains(e.target))close();},true);
   document.addEventListener('keydown',e=>{if(open&&e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();close(true);}},true);
-  return {close,tick(blocked=false){if(blocked&&open)close();refresh();}};
+  return {close,get open(){return open;},tick(blocked=false){if(blocked&&open)close();refresh();}};
 }

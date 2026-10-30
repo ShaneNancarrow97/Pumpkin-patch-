@@ -19,6 +19,7 @@ export function settingsSheet(ui) {
           `<div class="setting"><span>Try another tune</span><button class="button" id="next-song">Next song</button></div>` +
           toggle("toggle-sound", "Sound effects", "Soft tones for planting, picking and sales", p.sound) +
           toggle("toggle-pause", "Tea break", "Pause the farm. Nothing grows and nobody visits.", !!s.paused) +
+          toggle("toggle-hold-buy", "Hold to buy", "Hold a price for a moment to buy, so a stray tap never spends coins", p.holdToBuy !== false) +
           `<label class="setting"><span>Render detail<small>Sharp keeps fine edges. Lower settings save battery and reduce graphics load.</small></span><select id="render-quality" aria-label="Render detail">${RENDER_QUALITIES.map(q=>`<option value="${q.id}" ${q.id===validRenderQuality(p.renderQuality)?"selected":""}>${q.name}</option>`).join("")}</select></label>` +
           toggle("toggle-glow", "Glow", "Bloom on lanterns, windows and ripe pumpkins", p.glow) +
           toggle("toggle-mist", "Drifting mist", "A thin mist that rolls across the farm, clears and comes back", p.mist) +
@@ -42,6 +43,7 @@ export function settingsSheet(ui) {
         body.querySelector("#music-track").onchange = (e) => { ui.audio.setTrack(e.target.value); ui.savePrefs(); ui.draw(); };
         body.querySelector("#music-volume").oninput = (e) => { ui.audio.setVolume(+e.target.value); ui.savePrefs(); };
         body.querySelector("#toggle-sound").onclick = flip("sound");
+        body.querySelector("#toggle-hold-buy").onclick = () => { p.holdToBuy = p.holdToBuy === false; ui.savePrefs(); ui.draw(); };
         body.querySelector("#toggle-pause").onclick = () => { s.paused = !s.paused; ui.notice(s.paused ? "Tea break. The farm will wait for you." : "Back to work!"); ui.draw(); };
         body.querySelector("#render-quality").onchange = e => { p.renderQuality = ui.scene.setRenderQuality(e.target.value); ui.savePrefs(); ui.draw(); };
         body.querySelector("#toggle-glow").onclick = flip("glow", (on) => ui.scene.setBloom(on));

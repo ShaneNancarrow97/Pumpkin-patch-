@@ -1,7 +1,8 @@
 import { cookingIcon } from "./cooking-icons.js";
-// The dock's Manage button: a small menu that rises above it, one choice
-// for each part of the upgrades sheet. Arrow keys move through it, Escape or
-// a tap elsewhere closes it, and choosing opens the sheet at that section.
+// The dock's Manage button: a menu that rises above the dock in the middle of
+// the screen, one choice for each part of the upgrades sheet, over a dimmed
+// farm. Arrow keys (or a pad) move through it, Escape or a tap elsewhere
+// closes it, and choosing opens the sheet at that section.
 export const UPGRADE_SECTIONS = [
   ["farm", "Farm upgrades", "tools", "Tools, yield, helpers, plots and the barn"],
   ["seeds", "Seeds", "seeds", "New pumpkin varieties"],
@@ -21,13 +22,13 @@ export function createUpgradeMenu({ button, choose }) {
   button.setAttribute("aria-haspopup", "menu"); button.setAttribute("aria-controls", menu.id); button.setAttribute("aria-expanded", "false");
   const items = () => [...menu.querySelectorAll("[role=menuitem]")];
   const place = () => {
-    const at = button.getClientRects().length ? button.getBoundingClientRect() : {left:innerWidth/2,width:0,top:innerHeight-20}, width = Math.min(320, innerWidth - 16);
+    const at = button.getClientRects().length ? button.getBoundingClientRect() : {left:innerWidth/2,width:0,top:innerHeight-20}, width = Math.min(380, innerWidth - 16);
     menu.style.width = width + "px";
-    menu.style.left = Math.max(8, Math.min(innerWidth - width - 8, at.left + at.width / 2 - width / 2)) + "px";
+    menu.style.left = Math.round((innerWidth - width) / 2) + "px";
     menu.style.bottom = Math.max(8, innerHeight - at.top + 8) + "px";
   };
-  const close = (focus = false) => { if (menu.hidden) return; menu.hidden = true; button.setAttribute("aria-expanded", "false"); if (focus) button.focus({ preventScroll: true }); };
-  const open = () => { place(); menu.hidden = false; button.setAttribute("aria-expanded", "true"); items()[0].focus({ preventScroll: true }); };
+  const close = (focus = false) => { if (menu.hidden) return; menu.hidden = true; document.body.classList.remove("manage-open"); button.setAttribute("aria-expanded", "false"); if (focus) button.focus({ preventScroll: true }); };
+  const open = () => { place(); menu.hidden = false; document.body.classList.add("manage-open"); button.setAttribute("aria-expanded", "true"); items()[0].focus({ preventScroll: true }); };
   menu.addEventListener("click", (e) => { const id = e.target.closest("[data-upgrade-section]")?.dataset.upgradeSection; if (id) { close(); choose(id); } });
   menu.addEventListener("keydown", (e) => {
     const list = items(), at = list.indexOf(document.activeElement);

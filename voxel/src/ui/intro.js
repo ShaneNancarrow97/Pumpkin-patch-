@@ -134,7 +134,7 @@ export function createIntro({ people, portrait, pumpkin, hold, release, onOpen }
       </div>
       <footer class="intro-foot">
         <span class="intro-dots" aria-hidden="true">${"<i></i>".repeat(INTRO_LINES.length + 1)}</span><span class="sr intro-progress"></span>
-        <button class="intro-next" data-intro-next>Begin</button>
+        <button class="intro-next" data-intro-next data-pad-default>Begin</button>
       </footer>`;
     overlay.hidden = false;
     step = 0; show();

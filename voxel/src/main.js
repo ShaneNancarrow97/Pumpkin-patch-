@@ -8,6 +8,7 @@ import * as THREE from "three";
 import { createMenuMemory } from "./ui/menu-memory.js";
 import { createStockPopover } from "./ui/stock-popover.js";
 import { markPurchaseSurfaces } from "./ui/purchase-surfaces.js";
+import { createHoldToBuy } from "./ui/hold-to-buy.js";
 import * as M from "./model.js";
 import { createScene } from "./scene.js";
 import { pumpkinTemplate } from "./pumpkins.js";
@@ -588,6 +589,10 @@ const foyerTools = createFoyerControls(ui), hollowContext = createHollowContext(
 const hayrideContext = createHayrideContext(ui);
 
 let openTab = null, lastBody = "", sheetReturnFocus = null;
+// Price buttons need a short hold (ui/hold-to-buy.js); the sheet waits to redraw until it's done.
+const holdToBuy = createHoldToBuy({ enabled: () => prefs.holdToBuy !== false, feel: (k) => playFeel(k), glyphs: () => document.getElementById("play-controls")?.dataset.input ?? "keyboard" });
+// Menus that work on the world (furnishing, the garden, the foyer) stay at the side; the rest sit in the middle over a dimmed farm.
+const WORLD_MENUS = new Set(["home", "shelf", "estate", "foyer"]);
 const menuMemory = createMenuMemory($("sheet-body"));
 const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
 const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(M.favourFace(M.FAVOURS.find((f) => f.id === id) ?? { kind })), save, tone: f => audio.tone(f), notice });
@@ -606,7 +611,7 @@ $("fullscreen").onclick = async () => {
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
 const TABS = { homelife:"more", cooking: "shop", shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
 function draw() {
-  if(menuMemory.dragging)return;
+  if(menuMemory.dragging||holdToBuy.active)return;
   const sheet = sheets[openTab]; if (!sheet) return;
   const html = sheet.body();
   if (html === lastBody) return;                                                 // only redraw when something changed
@@ -629,6 +634,7 @@ function openSheet(tab) {
   if (home.tools.selected) home.tools.select(null);
   document.body.classList.add("menu-open");
   $("sheet").dataset.section = tab;
+  $("sheet").classList.toggle("centred", !WORLD_MENUS.has(tab)); document.body.classList.toggle("menu-centred", !WORLD_MENUS.has(tab));
   openTab = tab; lastBody = "";
   const sheet = sheets[tab];
   if(tab === "wardrobe" && scene.place?.kind === "room") { M.recordHomeActivity?.(state,"wardrobe"); save(); }
@@ -638,7 +644,7 @@ function openSheet(tab) {
   markTab();
   $("sheet-close").focus({ preventScroll: true });
 }
-function closeSheet() { const wasOpen=!!openTab;menuMemory.leave();document.body.classList.remove("menu-open"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
+function closeSheet() { const wasOpen=!!openTab;menuMemory.leave();holdToBuy.cancel();document.body.classList.remove("menu-open","menu-centred"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
 function markTab() {
   const active = openTab ? TABS[openTab] : ["foyer", "maze", "hayride"].includes(scene.place?.kind) ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
@@ -655,6 +661,7 @@ document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
 }));
 $("open-settings").onclick = () => openSheet("settings");
 $("sheet-close").onclick = closeSheet;
+$("menu-scrim").onclick = () => { if (upgradeMenu.open) upgradeMenu.close(); else closeSheet(); };
 
 document.addEventListener("keydown", (e) => {
   // The carving bench has the keyboard to itself while it is open (ui/carving-ui.js).
@@ -757,7 +764,7 @@ carvingUI=createCarvingUI({ state:()=>state, view:scene.carving, feel:playFeel, 
   close:closeCarving,
 }});
 // B shuts the carving bench through back(), after this tick has noted B as held: closing renders, and a render ticks the pad again.
-playControls=createPlayControls({feel:playFeel,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(carvingUI?.isOpen){queueMicrotask(closeCarving);return;}if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
+playControls=createPlayControls({feel:playFeel,holdToBuy,hubAllowed:()=>!carvingUI?.isOpen&&!mazeUI.active&&!hayrideUI.active&&!homeJourney?.active,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(carvingUI?.isOpen){queueMicrotask(closeCarving);return;}if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(stockPopover.open)stockPopover.close(true);else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
 homeJourney=createHomeJourney({state:()=>state,blocked:()=>!!openTab||celebration.active||intro.active||mazeUI.active||hayrideUI.active||!!home.tools.selected||!!playControls.radial||state.paused,follow:followHomeGoal,open:()=>openSheet('homelife')});
 scene.setRenderQuality(prefs.renderQuality); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
 render(); renderPlace();

@@ -24,6 +24,12 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
     await page.locator("#play-radial").waitFor({ state: "hidden" });
     await page.locator("#piece-bar").waitFor({ state: "visible" });
   };
+  // Prices need a short hold (ui/hold-to-buy.js): press, wait for the fill to finish, let go.
+  const buy = async (selector) => {
+    const el = page.locator(selector).first(); await el.scrollIntoViewIfNeeded(); const r = await el.boundingBox();
+    await page.mouse.move(r.x + r.width / 2, r.y + r.height / 2); await page.mouse.down();
+    await page.waitForFunction(() => !document.querySelector(".purchase-button.holding"), null, { polling: 100, timeout: 20000 }); await page.mouse.up();
+  };
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
@@ -69,7 +75,7 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   check(await page.evaluate(() => PumpkinVoxel.scene.place?.kind === "room") && await page.locator("#place-bar").isVisible(), `${name}: home opens the parlour`);
   await page.locator("#place-decorate").click();
   await page.locator('[data-hometab="decorate"]').click();
-  await page.locator('[data-decor="d01"]').click();
+  await buy('[data-decor="d01"]');
   check(await page.evaluate(() => PumpkinVoxel.state().house.placed.some((p) => p.id === "d01" && p.room === "parlour")), `${name}: a bought piece is placed in the room`);
   check(!(await page.locator("#sheet").isVisible()), `${name}: placing furniture reveals the room`);
   await revealAdvancedFurniture();
@@ -90,7 +96,7 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.evaluate(() => { PumpkinVoxel.state().stock = [4, 4, 0, 0]; });
   await page.locator('[data-tab="shop"]').click();
   await page.locator('[data-upgrade-section="shop"]').click();
-  await page.locator('[data-shopup="open"]').click();
+  await buy('[data-shopup="open"]');
   await page.locator('[data-visit="shop"]').click();
   await page.locator("#sheet-close").click();
   await page.evaluate(() => PumpkinVoxel.advance(6));
@@ -102,7 +108,7 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   // The wardrobe: buy a costume and wear it.
   await page.locator('[data-tab="wardrobe"]').click();
   const costume = await page.locator("[data-costume]:not([disabled])").first().getAttribute("data-costume");
-  await page.locator(`[data-costume="${costume}"]`).click();
+  await buy(`[data-costume="${costume}"]`);
   if (await page.locator(`[data-wear="${costume}"]`).count()) await page.locator(`[data-wear="${costume}"]`).click();
   check(await page.evaluate((id) => Object.values(PumpkinVoxel.state().wardrobe.equipped).includes(id), costume), `${name}: buy and wear a costume`);
   await page.locator("#sheet-close").click();
@@ -110,7 +116,11 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.evaluate(() => { const s=PumpkinVoxel.state();s.paused=false;s.coins=10000;s.upgrades.storage=0;s.upgrades.cart=0;window.__barn=180+40*s.upgrades.plots+20*s.upgrades.yield;s.stock=[window.__barn,0,0,0];s.visitors=[];s.arriving=[];s.shop.customers=[];s.holds=[];s.visitorTimer=s.shop.arrivalTimer=1e6;for(const p of s.plots)Object.assign(p,{phase:"empty",progress:0});Object.assign(s.plots[0],{phase:"ready",progress:1,variety:0}); });
   await page.locator("#harvest-all").click();
   check(await page.evaluate(()=>PumpkinVoxel.state().plots[0].phase==="ready"&&PumpkinVoxel.state().stock[0]===window.__barn),`${name}: full storage keeps a ripe crop instead of paying overflow money`);
-  await page.locator('[data-tab="shop"]').click();await page.locator('[data-upgrade-section="farm"]').click();await page.locator('[data-buy="storage"]').click();await page.locator("#sheet-close").click();await page.locator("#harvest-all").click();
+  await page.locator('[data-tab="shop"]').click();await page.locator('[data-upgrade-section="farm"]').click();
+  await page.evaluate(()=>{window.__hints=0;new MutationObserver(m=>{for(const r of m)for(const n of r.addedNodes)if(n.classList?.contains("hold-hint"))window.__hints++;}).observe(document.body,{childList:true});});
+  await page.locator('[data-buy="storage"]').click();
+  check(await page.evaluate(()=>PumpkinVoxel.state().upgrades.storage===0&&window.__hints>0),`${name}: a quick tap on a price only says hold to buy`);
+  await buy('[data-buy="storage"]');await page.locator("#sheet-close").click();await page.locator("#harvest-all").click();
   check(await page.evaluate(()=>PumpkinVoxel.state().upgrades.storage===1&&PumpkinVoxel.state().stock[0]>window.__barn),`${name}: paid barn expansion permits harvesting again`);
   await page.evaluate(()=>{const s=PumpkinVoxel.state();s.paused=true;s.visitors=Array.from({length:5},(_,i)=>({id:500+i,kind:5+i,age:1.6+i*.8,budget:40,basketLimit:1,preferred:[0],basket:[],amount:0,quantity:0,bought:null,outcome:"shopping",leaveAt:null,spot:0,needs:{thirst:50,hunger:40,happiness:80},festival:{done:true},hollowConsidered:true}));PumpkinVoxel.scene.focus(31,17,1.9);});
   await page.waitForFunction(()=>PumpkinVoxel.scene.visitorStatus.filter(v=>v.id>=500&&v.sprite&&v.visible&&v.frames===4).length===5,null,{timeout:120000});

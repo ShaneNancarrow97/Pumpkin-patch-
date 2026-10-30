@@ -15,7 +15,7 @@ import { STENCILS, STENCIL_BY_ID, STENCIL_GROUPS, CARVING_DECOR, CARVING, pieceK
 import { PUMPKIN_VARIETIES } from "../content/pumpkin-varieties.js";
 import { PUMPKIN_SHAPES } from "../content/pumpkin-shapes.js";
 import { money } from "./kit.js";
-import { glyphHTML } from "./play-controls.js";
+import { glyphHTML, padFamily } from "./glyphs.js";
 
 const STEPS = [["pumpkin", "Pumpkin"], ["open", "Open"], ["stencil", "Stencil"], ["carve", "Carve"], ["dress", "Dress"], ["finish", "Finish"]];
 const PIECE_NAMES = { "eye-l": "Left eye", "eye-r": "Right eye", nose: "Nose", mouth: "Mouth", "ear-l": "Left ear", "ear-r": "Right ear", bat: "Bat", moon: "Moon", ghost: "Ghost", heart: "Heart", "star-a": "Star", "star-b": "Star", "star-c": "Star", "spark-l": "Sparkle", "spark-r": "Sparkle", beak: "Beak", "tuft-l": "Left tuft", "tuft-r": "Right tuft", chest: "Feathers", "brow-l": "Left brow", "brow-r": "Right brow", "cheek-l": "Left cheek", "cheek-r": "Right cheek", roof: "Roof", attic: "Attic window", door: "Door", web: "Web", spider: "Spider" };
@@ -228,7 +228,7 @@ export function createCarvingUI({ state, view, actions, feel = () => {} }) {
   addEventListener("pointerup", () => holdTrace(false)); addEventListener("pointercancel", () => holdTrace(false));
   // What the controls point at changes the prompts; the pad's highlight shows only for the pad.
   function setInput(mode, pad = null) {
-    if (pad) padKind = /dualsense|wireless controller|054c|playstation|ps5/i.test(pad.id) ? "dualsense" : "xbox";
+    if (pad) padKind = padFamily(pad) === "DualSense" ? "dualsense" : "xbox";
     if (mode === "touch") navigated = false;
     if (mode === inputMode) return;
     inputMode = mode; if (!open) return;

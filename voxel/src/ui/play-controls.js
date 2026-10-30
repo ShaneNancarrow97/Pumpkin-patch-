@@ -3,6 +3,8 @@
 // context action biggest. Holding Tools opens a wheel you aim with your thumb
 // or a stick and release to choose. Each button shows the glyph of whatever
 // you're playing with: a keycap, DualSense shapes or Xbox letters.
+import { glyphHTML, padFamily } from './glyphs.js';
+import { createPadMenu } from './pad-menu.js';
 const toolNames={hand:'Interact',plant:'Plant',water:'Water',harvest:'Pick',clean:'Clean'};
 const inputField=()=>['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
 const dead=v=>Math.abs(v)>.18?v:0;
@@ -37,17 +39,6 @@ const actionPaths={
 };
 const svg=(kind,cls='')=>`<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${actionPaths[kind]??actionPaths.hand}"/></svg>`;
 const actionIcon=kind=>svg(kind);
-// The glyph each control shows for each kind of input; touch shows none.
-// The carving bench (ui/carving-ui.js) shares these, with its bumpers, triggers, sticks and Start.
-const GLYPHS={action:{keyboard:'E',dualsense:'square',xbox:'A'},tools:{keyboard:'Q',dualsense:'triangle',xbox:'Y'},gait:{keyboard:'Shift',dualsense:'L3',xbox:'LS'},recenter:{keyboard:'C',dualsense:'R3',xbox:'RS'},back:{keyboard:'Esc',dualsense:'circle',xbox:'B'},confirm:{keyboard:'E',dualsense:'cross',xbox:'A'},
-  lb:{keyboard:'Q',dualsense:'L1',xbox:'LB'},rb:{keyboard:'R',dualsense:'R1',xbox:'RB'},lt:{keyboard:'[',dualsense:'L2',xbox:'LT'},rt:{keyboard:']',dualsense:'R2',xbox:'RT'},start:{keyboard:'Enter',dualsense:'options',xbox:'menu'},dpad:{keyboard:'Tab',dualsense:'dpad',xbox:'dpad'},lstick:{keyboard:'WASD',dualsense:'L',xbox:'L'},rstick:{keyboard:'IJKL',dualsense:'R',xbox:'R'},view:{keyboard:'C',dualsense:'triangle',xbox:'Y'}};
-const SHAPES={cross:'<path d="M7 7l10 10M17 7 7 17"/>',circle:'<circle cx="12" cy="12" r="5.5"/>',square:'<rect x="6.5" y="6.5" width="11" height="11" rx="1"/>',triangle:'<path d="M12 6 18 17H6Z"/>',dpad:'<path d="M9.5 4h5v5.5H20v5h-5.5V20h-5v-5.5H4v-5h5.5z"/>',options:'<path d="M7 8h10M7 12h10M7 16h10"/>',menu:'<path d="M7 8h10M7 12h10M7 16h10"/>'};
-export function glyphHTML(id,mode){
-  const g=GLYPHS[id]?.[mode];if(!g)return'';
-  if(SHAPES[g])return`<i class="glyph glyph-ps glyph-${g}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${SHAPES[g]}</svg></i>`;
-  if(g==='Shift')return`<i class="glyph glyph-keyboard" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 4 4 13h4.5v6h7v-6H20Z"/></svg></i>`;
-  return`<i class="glyph glyph-${mode}${mode==='xbox'?' glyph-xbox-'+g.toLowerCase():''}" aria-hidden="true">${g}</i>`;
-}
 const shortAction=(label,p,job,tool)=>{
  if(job.travelling)return 'Next crop';if(job.active)return label;
  if(p.pose)return 'Stand up';if(p.available===false)return label;
@@ -62,15 +53,15 @@ function wedge(i,n,inner=86,outer=166,gap=2.2){
   return`M${p(outer,a0)}A${outer} ${outer} 0 ${large} 1 ${p(outer,a1)}L${p(inner,a1)}A${inner} ${inner} 0 ${large} 0 ${p(inner,a0)}Z`;
 }
 
-export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction,feel=()=>{}}) {
-  let padName='',menuRepeat=0,details=false,previousPiece=null,previousFocus=null,radial=false,tool='hand',keys=new Set(),cameraKeys=new Set(),move={x:0,y:0},look={x:0,y:0},padPrevious=[],selectedIndex=0,repeatAt=0,held=null,suppressClickUntil=0;
+export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction,feel=()=>{},holdToBuy=null,hubAllowed=()=>true}) {
+  let padName='',details=false,previousPiece=null,previousFocus=null,radial=false,tool='hand',keys=new Set(),cameraKeys=new Set(),move={x:0,y:0},look={x:0,y:0},padPrevious=[],selectedIndex=0,repeatAt=0,held=null,suppressClickUntil=0;
   let inputMode=matchMedia?.('(pointer: coarse)').matches?'touch':'keyboard',shownMode='',hold=null,wheelItems=[],shownTool='',shownGait='',shownWho='',chain=0,retryFace=0;
   // A prompt over whatever the action button would act on, so the world says what is in reach.
   const prompt=document.createElement('div');prompt.className='play-prompt';prompt.setAttribute('aria-hidden','true');prompt.innerHTML='<span><kbd data-prompt-key>E</kbd><b data-prompt-label></b></span>';document.body.append(prompt);
   const root=document.createElement('div');root.id='play-controls';
   root.innerHTML=`<button id="play-toggle" class="play-chip" aria-label="Choose a character to play">${svg('play','play-chip-icon')}<span>Play</span></button>
     <div id="play-live" hidden>
-      <div class="play-owner"><img data-owner-portrait alt=""><span data-owner></span><button data-play="switch" aria-label="Switch character">${svg('switch')}</button><button data-play="exit" aria-label="Exit control mode">${svg('exit')}<span data-glyph="back"></span></button></div>
+      <div class="play-owner"><img data-owner-portrait alt=""><span data-owner></span><button data-play="switch" aria-label="Switch character">${svg('switch')}</button><button data-play="exit" aria-label="Exit control mode">${svg('exit')}<span data-glyph="back"></span></button><span class="play-menu-hint" aria-hidden="true"><span data-glyph="start"></span>Menu</span></div>
       <div id="play-stick" class="play-thumbstick" role="group" aria-label="Movement thumbstick"><b class="stick-ring"></b><b class="stick-arc"></b><i></i><span>MOVE</span></div>
       <div id="play-look" class="play-thumbstick play-look" role="group" aria-label="Camera thumbstick"><b class="stick-ring"></b><b class="stick-arc"></b><i></i><span>LOOK</span></div>
       <div class="play-actions play-face">
@@ -84,6 +75,9 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     <div id="furniture-pad" hidden><div class="play-piece-label"></div><div class="play-dpad" role="group" aria-label="Move selected furniture"><button data-nudge="0,-1" aria-label="Move back">${svg('go','up')}</button><button data-nudge="-1,0" aria-label="Move left">${svg('go','left')}</button><button data-nudge="1,0" aria-label="Move right">${svg('go')}</button><button data-nudge="0,1" aria-label="Move forward">${svg('go','down')}</button></div><div class="play-furniture-actions"><button data-turn="-15" aria-label="Rotate left 15 degrees">${svg('rotate','flip')}</button><button id="furniture-wheel" aria-label="Furniture radial menu">${svg('tools')}</button><button data-turn="15" aria-label="Rotate right 15 degrees">${svg('rotate')}</button><button data-finish>${svg('done')}<span>Done</span></button></div></div>
     <div id="play-radial" hidden role="dialog" aria-modal="true" aria-label="Choose an action"><button class="radial-dismiss" aria-label="Close action wheel"></button><div class="radial-disc"><svg class="radial-ring" viewBox="0 0 360 360" aria-hidden="true"><defs><linearGradient id="play-wedge-on" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd593"/><stop offset=".55" stop-color="#d4924b"/><stop offset="1" stop-color="#94562a"/></linearGradient></defs><circle class="radial-rim" cx="180" cy="180" r="174"/><g class="radial-wedges"></g></svg><div class="radial-options"></div><div class="radial-centre"><b class="radial-centre-icon"></b><p class="eyebrow">Your tools</p><h2>Interact</h2><p class="radial-hint"></p></div><button class="radial-close" aria-label="Close action wheel">${svg('exit')}</button></div></div>`;
   document.body.append(root);
+  // Every menu on a pad (ui/pad-menu.js); Options brings the ring to the dock, the hub.
+  const menus=createPadMenu({feel,back:()=>back?.(),hold:holdToBuy,hubAllowed});
+  const dockGlyph=document.createElement('span');dockGlyph.className='dock-glyph';dockGlyph.dataset.glyph='start';document.getElementById('dock')?.append(dockGlyph);
   // Holding a game button is an input gesture, never Android text selection.
   root.oncontextmenu=e=>e.preventDefault();root.onselectstart=e=>e.preventDefault();root.ondragstart=e=>e.preventDefault();
   const $=s=>root.querySelector(s),wheel=$('#play-radial'),opts=$('.radial-options'),wedges=$('.radial-wedges'),disc=$('.radial-disc'),stickEl=$('#play-stick'),lookEl=$('#play-look'),interact=$('#play-interact');
@@ -98,6 +92,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
   function showGlyphs(){
     const mode=padName?(padName==='DualSense'?'dualsense':'xbox'):inputMode;if(mode===shownMode)return;shownMode=mode;
     root.dataset.input=mode;root.querySelectorAll('[data-glyph]').forEach(el=>{el.innerHTML=mode==='touch'?'':glyphHTML(el.dataset.glyph,mode);});
+    dockGlyph.innerHTML=padName?glyphHTML('start',mode):'';
     if(radial)hintWheel();
   }
 
@@ -230,6 +225,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
       if(step&&!(e.repeat&&key==='tab')&&!(hold?.id===key)){e.preventDefault();focusChoice(selectedIndex+step,!hold);if(hold)hold.aimed=true;feel('tick');return true;}
       if(['enter',' ','x','e'].includes(key)){e.preventDefault();opts.querySelectorAll('button')[selectedIndex]?.click();return true;}return true;
     }
+    if(menus.handleKey(e))return true;
     if(!scene.player?.state().enabled)return false;
     if(document.body.classList.contains('menu-open'))return false;
     if(tools.selected){if(key==='q'||key==='tab'){e.preventDefault();if(!e.repeat)openWheel(undefined,{source:'keyboard',id:key});return true;}return false;}
@@ -243,19 +239,12 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     if(key==='escape'){e.preventDefault();if(activity().active||held)cancelInteraction('back');else back?.();return true;}return false;
   }
 
-  // Controller menu focus uses the same native controls as touch and keyboard.
-  function menuInput(down,pressed) {
-    const menu=document.querySelector('.house-goal-modal:not([hidden]),#level-celebration:not([hidden]),#sheet:not([hidden]),#upgrade-menu:not([hidden]),#intro:not([hidden])');
-    if(pressed(1)){back?.();return;}if(!menu)return;
-    const buttons=[...menu.querySelectorAll('button:not(:disabled),select:not(:disabled),input:not(:disabled),summary')].filter(n=>n.getClientRects().length&&!n.closest('[hidden]'));let at=buttons.indexOf(document.activeElement);const focused=buttons[at];
-    if((down[12]||down[13])&&performance.now()>menuRepeat&&buttons.length){at=(at+(down[12]?-1:1)+buttons.length)%buttons.length;buttons[at].focus({preventScroll:true});buttons[at].scrollIntoView({block:'nearest'});menuRepeat=performance.now()+220;}
-    if((pressed(14)||pressed(15))&&focused){const dir=pressed(15)?1:-1;if(focused.tagName==='SELECT'){let next=focused.selectedIndex;do{next+=dir;}while(focused.options[next]?.disabled);if(focused.options[next]){focused.selectedIndex=next;focused.dispatchEvent(new Event('change',{bubbles:true}));}}else if(focused.matches('input[type=range],input[type=number]')){try{dir>0?focused.stepUp():focused.stepDown();focused.dispatchEvent(new Event('input',{bubbles:true}));focused.dispatchEvent(new Event('change',{bubbles:true}));}catch{}}}
-    if(pressed(0)||pressed(2)){if(focused?.tagName==='SELECT')notice('Use the d-pad left / right to choose.');else focused?.click();}
-  }
-  return {handleKey,open:()=>openWheel('characters'),close,start,cancel:cancelInteraction,get active(){return scene.player?.state().enabled;},get radial(){return radial;},get tool(){return tool;},get chain(){return chain;},tick(blocked=false){
+  return {handleKey,open:()=>openWheel('characters'),close,start,cancel:cancelInteraction,menus,get active(){return scene.player?.state().enabled;},get radial(){return radial;},get tool(){return tool;},get chain(){return chain;},get hub(){return menus.hubOn;},tick(blocked=false){
+    // The hub (the ring on the dock) holds play still, like any menu.
+    blocked=blocked||menus.hubOn;
     const p=scene.player?.state()??{},selected=tools.selected,piece=state().house.placed.find(x=>x.instance===selected),job=activity();
     const pad=Array.from(navigator.getGamepads?.()??[]).find(g=>g?.connected),down=pad?.buttons.map(b=>b.pressed)??[],pressed=i=>down[i]&&!padPrevious[i];
-    padName=pad?(/dualsense|wireless controller|054c|playstation|ps5/i.test(pad.id)?'DualSense':'Controller'):'';
+    padName=padFamily(pad);
     showGlyphs();
     if(selected!==previousPiece){details=false;previousPiece=selected;}
     document.body.classList.toggle('control-mode',!!p.enabled);document.body.classList.toggle('furniture-radial',!!piece&&!blocked&&!details);
@@ -286,9 +275,10 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     const progress=Math.max(0,Math.min(1,Number(job.progress)||0));interact.style.setProperty('--action-progress',progress);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep going':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
     scene.player?.setBlocked(blocked||radial||!!piece);
     if(blocked){cancelInteraction('menu');keys.clear();cameraKeys.clear();releaseMove();releaseLook();if(radial&&!piece)close();}
-    if(pad&&blocked)menuInput(down,pressed);
-    if(pad&&!blocked){
-      if(pressed(9)&&p.enabled&&!radial&&!piece){cancelInteraction('menu');openManage();}
+    // Menus take the pad first: a menu or the hub keeps its presses from play.
+    const menuOwns=pad&&!radial&&!piece?menus.tick({pad,down,pressed,mode:padName==='DualSense'?'dualsense':'xbox',blocked}):false;
+    if(!pad&&menus.hubOn)menus.leaveHub();
+    if(pad&&!blocked&&!menuOwns){
       if(radial){
         // Either stick aims the wheel; letting go of Y/△ after aiming chooses.
         const left=[pad.axes[0]??0,pad.axes[1]??0],right=[pad.axes[2]??0,pad.axes[3]??0],[ax,ay]=Math.hypot(...right)>Math.hypot(...left)?right:left;
@@ -303,7 +293,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
         if(held?.source==='gamepad'&&!down[held.id])endInteraction('gamepad',held.id);
         if(pressed(3))openWheel(undefined,{source:'gamepad',id:3});if(pressed(1)){if(job.active||held)cancelInteraction('back');else back?.();}
         if(pressed(10))toggleGait();if(pressed(11)){scene.player?.recenter?.();feel('select');}if(pressed(6))scene.player?.zoom?.(-1);if(pressed(7))scene.player?.zoom?.(1);
-      }else if(pressed(9)||pressed(0))openWheel('characters');
+      }else if(pressed(0))openWheel('characters');
     }
     if(!pad&&held?.source==='gamepad')cancelInteraction('disconnect');padPrevious=down;
     let x=move.x,y=move.y,cx=look.x,cy=look.y;
