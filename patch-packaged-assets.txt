@@ -1,0 +1,11 @@
+✔ voxel/test/directional-assets.test.mjs (114.578407ms)
+✔ voxel/test/hayride-icons.test.mjs (50.700007ms)
+✔ voxel/test/sandy-art.test.mjs (57.568269ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 232.785102

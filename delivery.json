@@ -1,0 +1,487 @@
+{
+  "sourceCommit": "3b92fa5f4b66439c817a24b932c4f9784cd4fe5b",
+  "patchBase": "b387c85da592ed310dad5838ea7668c45fc0899a",
+  "sourceBranch": "contractor/directional-character-atlases",
+  "artifactBranch": "contractor/directional-cast-download",
+  "htmlSha256": "7909eb960ab10ed9aa6b2cc7cac35a081f8a02e5817ab918b9e62ebfd66e652a",
+  "artReviewSha256": "9815079452c219b25a3ec1cc4b59c66479800226a0086ddff9ba66f066b33422",
+  "ownerCoverage": {
+    "looks": 20,
+    "owners": {
+      "shane": 9,
+      "natalie": 11
+    },
+    "expectedClips": 6240,
+    "expectedFrames": 38400,
+    "authoredClips": 9,
+    "authoredPoses": 48,
+    "authoredReducedCycles": 7,
+    "authoredReducedFrames": 28,
+    "authoredFrames": 140,
+    "incompleteClips": 6231,
+    "completeLooks": 0,
+    "pageCount": 16,
+    "encodedBytes": 2145142,
+    "pageRGBABytes": 57344000,
+    "unknownManifestLooks": []
+  },
+  "native": {
+    "tests": 105,
+    "pass": 105,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "logSha256": "1e1f00e9cb12bffba583df26e71bfdc49c5b5ac4adf127285e6b133f876b17cb"
+  },
+  "smoke": {
+    "checks": 52,
+    "passed": true,
+    "logSha256": "7974ead046fed972b1cb42039ab66fdd69c1ba30e5d814539b1c4f73e65a8127"
+  },
+  "browserReports": [
+    {
+      "file": "checks.json",
+      "sha256": "7909eb960ab10ed9aa6b2cc7cac35a081f8a02e5817ab918b9e62ebfd66e652a",
+      "checks": 44,
+      "passed": true,
+      "reportSha256": "7df87ef026c9065e91f8d56ad2b9fb4d2cca3d5485098615d7aa50d99e13901d"
+    }
+  ],
+  "artBenchReport": {
+    "file": "checks.json",
+    "sha256": "9815079452c219b25a3ec1cc4b59c66479800226a0086ddff9ba66f066b33422",
+    "checks": 235,
+    "passed": true,
+    "reportSha256": "03967c493f1cac0ae562c0fd0312abb5f85f983c04ff914fa60546b050fdfcab"
+  },
+  "actualMenuReport": {
+    "file": "checks.json",
+    "sha256": "fed5379e7400af9f717e35f8387609258ac005f99ac1ea6ce098c02a6cf583a1",
+    "checks": 111,
+    "passed": true,
+    "reportSha256": "5451b22f9e09bca3b57450efa98f86c443a8ca1a67d641f15d5f3ee5be0230c3"
+  },
+  "iconOnlyPatchApplyChecked": true,
+  "browserPassed": true,
+  "cleanSourceRebuildIdentical": true,
+  "appliedPatchRebuildIdentical": true,
+  "patchApplyChecked": true,
+  "rebuilds": {
+    "source": {
+      "gameSha256": "7909eb960ab10ed9aa6b2cc7cac35a081f8a02e5817ab918b9e62ebfd66e652a",
+      "reviewSha256": "9815079452c219b25a3ec1cc4b59c66479800226a0086ddff9ba66f066b33422",
+      "identical": true,
+      "packagedAssetTestsPassed": true
+    },
+    "patch": {
+      "gameSha256": "7909eb960ab10ed9aa6b2cc7cac35a081f8a02e5817ab918b9e62ebfd66e652a",
+      "reviewSha256": "9815079452c219b25a3ec1cc4b59c66479800226a0086ddff9ba66f066b33422",
+      "identical": true,
+      "packagedAssetTestsPassed": true
+    }
+  },
+  "ci": {
+    "snapshot": {
+      "conclusion": "success",
+      "headSha": "daf6d2b2d69f618d1d3c58c51f8d4e962bcc7778",
+      "jobs": [
+        {
+          "completedAt": "2026-10-31T14:11:34Z",
+          "conclusion": "success",
+          "databaseId": 124558068757,
+          "name": "voxel",
+          "startedAt": "2026-10-31T14:03:59Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npm test",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npm run build",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npx playwright install --with-deps chromium",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npm run smoke",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run actions/upload-artifact@v4",
+              "number": 9,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 17,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 18,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 19,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/41208388922/job/124558068757"
+        },
+        {
+          "completedAt": "2026-10-31T14:04:47Z",
+          "conclusion": "success",
+          "databaseId": 124558068849,
+          "name": "check",
+          "startedAt": "2026-10-31T14:03:59Z",
+          "status": "completed",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run actions/checkout@v4",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run actions/setup-node@v4",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npm ci",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npm test",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npm run build",
+              "number": 6,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npm run build:android",
+              "number": 7,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npx playwright install --with-deps chromium",
+              "number": 8,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run npm run smoke",
+              "number": 9,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Economy snapshot",
+              "number": 10,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Run actions/upload-artifact@v4",
+              "number": 11,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Run actions/setup-node@v4",
+              "number": 21,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Post Run actions/checkout@v4",
+              "number": 22,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 23,
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/41208388922/job/124558068849"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/41208388922"
+    },
+    "runtimeEquivalent": true,
+    "passed": true
+  },
+  "omittedPreparationImages": [
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/fold-controls.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/home-pet-comparison.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/landscape-controls.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/natalie-walking-0.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/natalie-walking-180.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/natalie-walking-90.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/phone-controls.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/sandy-cocoa-idle.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/sandy-cocoa-serving.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/shane-walking-0.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/shane-walking-180.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/shane-walking-90.png",
+    "voxel/docs/contractor-patches/directional-cast/verification/browser/watering-can.png",
+    "voxel/docs/plans/directional-cast/actions/natalie-action-guide.png",
+    "voxel/docs/plans/directional-cast/actions/natalie-actions-preview.jpg",
+    "voxel/docs/plans/directional-cast/actions/natalie-actions-source.png",
+    "voxel/docs/plans/directional-cast/actions/natalie-plant.gif",
+    "voxel/docs/plans/directional-cast/actions/natalie-water.gif",
+    "voxel/docs/plans/directional-cast/actions/shane-action-guide.png",
+    "voxel/docs/plans/directional-cast/actions/shane-actions-preview.jpg",
+    "voxel/docs/plans/directional-cast/actions/shane-actions-source.png",
+    "voxel/docs/plans/directional-cast/actions/shane-plant.gif",
+    "voxel/docs/plans/directional-cast/actions/shane-water.gif",
+    "voxel/docs/plans/directional-cast/natalie/back-left-seed.png",
+    "voxel/docs/plans/directional-cast/natalie/back-right-seed.png",
+    "voxel/docs/plans/directional-cast/natalie/back-seed.png",
+    "voxel/docs/plans/directional-cast/natalie/body-scale-review.jpg",
+    "voxel/docs/plans/directional-cast/natalie/contacts-review.jpg",
+    "voxel/docs/plans/directional-cast/natalie/front-left-seed.png",
+    "voxel/docs/plans/directional-cast/natalie/front-right-seed.png",
+    "voxel/docs/plans/directional-cast/natalie/front-seed.png",
+    "voxel/docs/plans/directional-cast/natalie/idle-24-source.png",
+    "voxel/docs/plans/directional-cast/natalie/left-seed.png",
+    "voxel/docs/plans/directional-cast/natalie/right-seed.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-000.gif",
+    "voxel/docs/plans/directional-cast/natalie/walk-045.gif",
+    "voxel/docs/plans/directional-cast/natalie/walk-090.gif",
+    "voxel/docs/plans/directional-cast/natalie/walk-180.gif",
+    "voxel/docs/plans/directional-cast/natalie/walk-270.gif",
+    "voxel/docs/plans/directional-cast/natalie/walk-315.gif",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-left-contact-strip-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-left-four-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-left-rear-strip-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-left-strip-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-rejected.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-right-contact-strip-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-right-four-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-right-rear-strip-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-right-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-right-strip-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-back-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-four-back-phase-guide.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-four-front-phase-guide.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-front-left-four-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-front-left-strip-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-front-right-four-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-front-right-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-front-right-strip-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-front-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-left-four-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-left-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-right-four-source.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-right-pose-guide.png",
+    "voxel/docs/plans/directional-cast/natalie/walk-right-source.png",
+    "voxel/docs/plans/directional-cast/sandy/home-pets-approved.png",
+    "voxel/docs/plans/directional-cast/sandy/lean-pet-preview.jpg",
+    "voxel/docs/plans/directional-cast/sandy/lean-states-source.png",
+    "voxel/docs/plans/directional-cast/sandy/lean-walk-source.png",
+    "voxel/docs/plans/directional-cast/sandy/sandy-walk.gif",
+    "voxel/docs/plans/directional-cast/shane/approved-front.png",
+    "voxel/docs/plans/directional-cast/shane/idle-quarter-0-source.png",
+    "voxel/docs/plans/directional-cast/shane/idle-quarter-1-source.png",
+    "voxel/docs/plans/directional-cast/shane/idle-quarter-2-source.png",
+    "voxel/docs/plans/directional-cast/shane/idle-quarter-3-source.png",
+    "voxel/docs/plans/directional-cast/shane/idle-sequential-review.jpg",
+    "voxel/docs/plans/directional-cast/shane/quarter-0-guide.png",
+    "voxel/docs/plans/directional-cast/shane/quarter-1-guide.png",
+    "voxel/docs/plans/directional-cast/shane/quarter-2-guide.png",
+    "voxel/docs/plans/directional-cast/shane/quarter-3-guide.png",
+    "voxel/docs/plans/directional-cast/shane/quarter-guides.png",
+    "voxel/docs/plans/directional-cast/shane/quarters-preview.png",
+    "voxel/docs/plans/directional-cast/shane/rejected/idle-24-corrected-source.png",
+    "voxel/docs/plans/directional-cast/shane/rejected/idle-24-source.png",
+    "voxel/docs/plans/directional-cast/shane/rejected/walk-000-candidate.png",
+    "voxel/docs/plans/directional-cast/shane/rejected/walk-045-candidate.png",
+    "voxel/docs/plans/directional-cast/shane/rejected/walk-090-candidate.png",
+    "voxel/docs/plans/directional-cast/shane/rejected/walk-135-candidate.png",
+    "voxel/docs/plans/directional-cast/shane/rejected/walk-180-candidate.png",
+    "voxel/docs/plans/directional-cast/shane/rejected/walk-225-candidate.png",
+    "voxel/docs/plans/directional-cast/shane/rejected/walk-270-candidate.png",
+    "voxel/docs/plans/directional-cast/shane/rejected/walk-315-candidate.png",
+    "voxel/docs/plans/directional-cast/shane/remaining-seed-guide.png",
+    "voxel/docs/plans/directional-cast/shane/right-four-phase-guide.png",
+    "voxel/docs/plans/directional-cast/shane/walk-000-review.gif",
+    "voxel/docs/plans/directional-cast/shane/walk-000-seed.png",
+    "voxel/docs/plans/directional-cast/shane/walk-000-source.png",
+    "voxel/docs/plans/directional-cast/shane/walk-045-reduced-source.png",
+    "voxel/docs/plans/directional-cast/shane/walk-045-review.gif",
+    "voxel/docs/plans/directional-cast/shane/walk-045-seed.png",
+    "voxel/docs/plans/directional-cast/shane/walk-090-review.gif",
+    "voxel/docs/plans/directional-cast/shane/walk-090-seed.png",
+    "voxel/docs/plans/directional-cast/shane/walk-090-source.png",
+    "voxel/docs/plans/directional-cast/shane/walk-135-seed.png",
+    "voxel/docs/plans/directional-cast/shane/walk-180-review.gif",
+    "voxel/docs/plans/directional-cast/shane/walk-180-seed.png",
+    "voxel/docs/plans/directional-cast/shane/walk-180-source.png",
+    "voxel/docs/plans/directional-cast/shane/walk-225-seed.png",
+    "voxel/docs/plans/directional-cast/shane/walk-270-curated-pose-guide.png",
+    "voxel/docs/plans/directional-cast/shane/walk-270-reduced-source.png",
+    "voxel/docs/plans/directional-cast/shane/walk-270-review.gif",
+    "voxel/docs/plans/directional-cast/shane/walk-270-seed.png",
+    "voxel/docs/plans/directional-cast/shane/walk-315-reduced-source.png",
+    "voxel/docs/plans/directional-cast/shane/walk-315-review.gif",
+    "voxel/docs/plans/directional-cast/shane/walk-315-seed.png",
+    "voxel/docs/plans/directional-cast/shane/walk-diagonals-review.png",
+    "voxel/docs/plans/directional-cast/shane/walking-review.jpg",
+    "voxel/docs/plans/directional-cast/verification/art-bench/fold-art-bench.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/landscape-art-bench.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/natalie-base-24-bearings.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/natalie-base-desktop-art-bench.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/natalie-base-plant-gesture.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/natalie-base-side-walk-onion.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/natalie-base-water-gesture.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/natalie-base-water-hand-socket.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/phone-art-bench.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/shane-base-24-bearings.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/shane-base-desktop-art-bench.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/shane-base-plant-gesture.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/shane-base-side-walk-onion.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/shane-base-water-gesture.png",
+    "voxel/docs/plans/directional-cast/verification/art-bench/shane-base-water-hand-socket.png",
+    "voxel/docs/plans/hayride-upgrade-icons/review.jpg",
+    "voxel/docs/plans/hayride-upgrade-icons/source.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/desktop-first-tier-upgrades.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/desktop-locked-purchase.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/desktop-scare-purchases.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/desktop-second-tier-upgrades.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/fold-scares-bottom.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/fold-scares-top.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/fold-upgrade-bottom.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/fold-upgrade-top.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/landscape-scares-bottom.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/landscape-scares-top.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/landscape-upgrade-bottom.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/landscape-upgrade-top.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/phone-scares-bottom.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/phone-scares-top.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/phone-upgrade-bottom.png",
+    "voxel/docs/plans/hayride-upgrade-icons/verification/phone-upgrade-top.png"
+  ],
+  "artifacts": {
+    "directional-cast-from-b387c85.patch": {
+      "bytes": 8386929,
+      "sha256": "a31f47091daef33e41a8abc5e82bdf9ecee43708092893d6fae4f7806b19cfd8"
+    },
+    "hayride-icons-only-from-b387c85.patch": {
+      "bytes": 313689,
+      "sha256": "dfedc3125ceb57dec196fb17ea5827f3b4ec1a72ed16abe56085de89f9766c9f"
+    },
+    "source-build.txt": {
+      "bytes": 151,
+      "sha256": "8cfd2df696f189fb3f5ffed0d3254d811b192b9cb874b4de9e1242082264f978"
+    },
+    "source-packaged-assets.txt": {
+      "bytes": 273,
+      "sha256": "4cb2abbd2befb27d6cfe23adf2e6f0e7750201f33dec40c0e25e4e1056150de2"
+    },
+    "owner-sprite-coverage.json": {
+      "bytes": 741874,
+      "sha256": "5dd1e597781a33cc60603f53f2c405d43cc69384f598d9cf08f00f34f360ed06"
+    },
+    "patch-build.txt": {
+      "bytes": 149,
+      "sha256": "efef5241bfaa8b8ee7171aa262de795a8d56cdaa3ad586f0e00e46d9a9c01e04"
+    },
+    "patch-packaged-assets.txt": {
+      "bytes": 273,
+      "sha256": "cc463b2fd507321ec92e54cd94741ae46db58ef6c04b338d90aa62d4aba57e03"
+    },
+    "59-reviewed-owner-directions-and-lean-sandy.md": {
+      "bytes": 7426,
+      "sha256": "951d14d3969394f29ddc0c0a209199b73bd8d7ba7fc1ca4d172c6a3dfc8118fc"
+    },
+    "60-hollow-hayride-upgrade-icons.md": {
+      "bytes": 2616,
+      "sha256": "d35318f2041d0b616e376c00d6267c423f5a8d3cb425200453ce194973a4558e"
+    },
+    "Pumpkin-Patch-Directional-Cast.html": {
+      "bytes": 38038890,
+      "sha256": "7909eb960ab10ed9aa6b2cc7cac35a081f8a02e5817ab918b9e62ebfd66e652a"
+    },
+    "Pumpkin-Patch-Directional-Art-Review.html": {
+      "bytes": 2932766,
+      "sha256": "9815079452c219b25a3ec1cc4b59c66479800226a0086ddff9ba66f066b33422"
+    },
+    "README.md": {
+      "bytes": 4221,
+      "sha256": "4e2d04ba889dbfc62001109eeab9f6e9af6a0b2d3dd3e23300ec17b97e746842"
+    },
+    "omitted-preparation-images.txt": {
+      "bytes": 10472,
+      "sha256": "bb4132baff9b073590dfd89780b4e42568cedf7425bc27667f02ae7d320932d4"
+    },
+    "Pumpkin-Patch-HTML.zip": {
+      "bytes": 29670049,
+      "sha256": "62f465f51f020898738ae64b0b2be7053aed3633502c9033d1d655b42767eb0f"
+    },
+    "Directional-Cast-Claude-Patch.zip": {
+      "bytes": 5981299,
+      "sha256": "4b86a02ac84d04f21dbef74a99fe46a70b3be7317e7602c27d9ff326fd23f103"
+    }
+  }
+}
