@@ -182,11 +182,36 @@ test("the Hollow Man's music box plays its tune and stops dead, and the heartbea
   assert.ok(box.some((o) => o.frequency.changes.some((c) => Math.abs(c.value - d5) < 1)), "it opens on D");
   assert.ok(box.some((o) => o.frequency.changes.some((c) => c.value < d4 && c.value > d4 * .97)), "and ends low, a little flat as it runs down");
   assert.ok(box.every((o) => Math.abs(o.stopAt - (h.contexts[0].currentTime + 10)) < .1), "and stops dead after ten seconds");
-  for (const sound of ["climb", "stretch", "chase"]) { const n = h.sources.length; assert.equal(audio.cue({ type: "stall", id: `hayride-stall-${sound}`, sound, intensity: .5 }), true); assert.ok(h.sources.length > n + 2, sound); }
+  for (const sound of ["climb", "stretch", "chase"]) { const n = h.sources.length; assert.equal(audio.cue({ type: "stall", id: `hayride-stall-${sound}`, sound, intensity: .5 }), true); assert.ok(h.sources.length >= n + 2, sound); }
   // The heartbeat: louder in the breakdown's dark than at the same tension elsewhere.
   const beat = (heart) => { const a = h.exports.createHayrideAudio({ hayrideSound: true }); a.start({ sound: true }); const mark = h.gains.length; a.setTension(.8, heart); const peak = Math.max(...h.gains.slice(mark).map((g) => Math.max(0, ...g.gain.changes.map((c) => c.value))).filter((v) => v < .3)); a.stop(); return peak; };
   assert.ok(beat(1) > beat(0) * 1.4, "it pounds");
   audio.stop(); h.advance(12); assert.ok(h.sources.every((source) => source.ended));
+});
+
+test("the Hollow Man roars from the throat: as his face opens, at each lunge, and growls and howls", async () => {
+  const h = await audioHarness("hayride-audio"), audio = h.exports.createHayrideAudio({ hayrideSound: true });
+  audio.start({ sound: true }); h.advance(.1);
+  const pitches = (o) => o.frequency.changes.map((c) => c.value), saws = (list) => list.filter((o) => o.type === "sawtooth" && o.frequency.changes.length > 1);
+  // His face opens: a roar of two vocal folds an octave apart, low and guttural, chopped by a rattle; no ghoul's scream.
+  const before = h.sources.length;
+  assert.equal(audio.cue({ type: "encounter", id: "hayride-hollow", stop: "hollow", name: "The Hollow Man", sound: "hollow", intensity: .5 }), true);
+  const made = h.sources.slice(before), folds = saws(made).filter((o) => Math.max(...pitches(o)) < 160);
+  assert.ok(folds.length >= 2, "two rough folds");
+  const [high, low] = [...folds].sort((a, b) => pitches(b)[0] - pitches(a)[0]);
+  assert.ok(Math.abs(pitches(high)[0] / pitches(low)[0] - 2) < .01, "an octave apart, the lower one making it guttural");
+  assert.ok(Math.max(...pitches(high)) > 120 && Math.min(...pitches(low)) < 35, "deep, rising and falling");
+  assert.ok(made.some((o) => o.type === "sawtooth" && o.frequency.changes.length === 0 && o.frequency.value > 20 && o.frequency.value < 40), "a rattle, about thirty times a second");
+  assert.ok(!made.some((o) => pitches(o)[0] === 170), "the ghoul's scream is gone; only a rider screams");
+  assert.ok(saws(made).some((o) => pitches(o)[0] > 500), "...and a rider does");
+  // Each lunge roars, as one voice, a little quieter as he falls behind; and the stretch growls, the howl howls.
+  for (const [sound, start] of [["lunge", 100], ["stretch", 60], ["howl", 110]]) {
+    h.advance(2.5); const n = h.sources.length, voices = audio.status.voices;
+    assert.equal(audio.cue({ type: "stall", id: `hayride-stall-${sound}`, sound, intensity: .5 }), true);
+    assert.ok(saws(h.sources.slice(n)).some((o) => pitches(o)[0] === start), sound);
+    assert.ok(audio.status.voices - voices <= 6, `${sound} within the voice limit`);
+  }
+  audio.stop(); h.advance(4); assert.ok(h.sources.every((source) => source.ended));
 });
 
 test("farm music keeps the ride mix across volume, sync and level-up ducking", async () => {

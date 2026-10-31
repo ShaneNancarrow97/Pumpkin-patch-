@@ -4,7 +4,10 @@ import { STALL, STALL_CUES, stallAlong, engineAt, stallBlink } from "./hayride-s
 import { HAYRIDE_STOPS, hayrideStops, hayrideRouteLength, HAYRIDE_ROUTE_LENGTH, HAYRIDE_RIDE_HILL, HAYRIDE_JUMP } from "./content/hayride-layout.js";
 import { HAYRIDE_LIGHTNING_TIMES, hayrideLightning } from "./content/hayride-weather.js";
 
-const INTRO = 2.5, YAW_LIMIT = Math.PI * .48, PITCH_LIMIT = Math.PI / 7;
+// Free look turns all the way round (the look's yaw wraps at ±π) and up or down to PITCH_LIMIT. A look of your
+// own holds LOOK_HOLD seconds after you let go, then eases back to the director.
+const INTRO = 2.5, YAW_LIMIT = Math.PI, PITCH_LIMIT = Math.PI / 3.4, LOOK_HOLD = 2.5;
+const wrapAngle = (a) => Math.atan2(Math.sin(a), Math.cos(a));
 // Roots cross the lane this far apart (buildRideLand lays them; the camera jolts over them).
 export const RUT_GAP = 13.3;
 // The wagon's axles run this far behind the tractor's place on the route
@@ -64,12 +67,13 @@ const finite = n => Number.isFinite(n) ? n : 0;
 // Autonomous guests, wallets and receipts keep their authoritative farm rules.
 export function createHayrideView(canvas, state, hooks = {}) {
   const camera = new THREE.PerspectiveCamera(68, 1, .045, 48); camera.rotation.order = "YXZ";   // the fog hides all beyond 40 units, so nothing further is drawn
-  let active = false, run = null, pointer = null, disposed = false, held = false, yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0;
+  let active = false, run = null, pointer = null, disposed = false, held = false, yaw = 0, pitch = 0, targetYaw = 0, targetPitch = 0, lookUntil = 0;
   let options = { gentle: !!globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches, lightning: true }, fogSave = null, backgroundSave = null;
   // The ride's motion: a jolt and a punch-in when a scare fires, a lean into bends.
   let shake = 0, kick = 0, roll = 0, lastHeading = null, baseFov = 68;
-  // The director's turn toward the Hollow Man, and a pad's stick looking round (held: look; let go: ahead again).
-  let gazeYaw = 0, gazePitch = 0, padSteering = false; const padLook = { x: 0, y: 0 };
+  // The director's turn toward the Hollow Man (aimed a moment ahead of where he's going), and a pad's stick
+  // looking round (held: look; let go: ahead again).
+  let gazeYaw = 0, gazePitch = 0, padSteering = false, hollowSeen = false; const padLook = { x: 0, y: 0 }, lastHollow = new THREE.Vector3(), hollowAim = new THREE.Vector3(), lead = new THREE.Vector3();
   const point = new THREE.Vector3(), target = new THREE.Vector3(), base = new THREE.Euler(0, 0, 0, "YXZ");
   const world = () => typeof hooks.world === "function" ? hooks.world() : hooks.world;
   const inputActive = () => active && run && !run.paused && !run.completed && !hooks.blocked?.();
@@ -112,9 +116,21 @@ export function createHayrideView(canvas, state, hooks = {}) {
     // The chase is frantic: the wagon shakes as it flees, and jolts each time he lunges at the rail.
     if (frame.hollow?.frantic && !options.gentle && !run.paused) { shake = Math.max(shake, .55); kick = Math.max(kick, (frame.hollow.lunge ?? 0) * .55); }
     point.copy(frame.position); target.copy(frame.target);
-    // Let each roadside set read before it passes. A deliberate look overrides
-    // the director, and gentle mode keeps the forward-facing camera steady.
-    if (!options.gentle && Math.abs(targetYaw) < .06 && Math.abs(targetPitch) < .06 && frame.focusTarget && run.elapsed >= INTRO) target.lerp(frame.focusTarget, frame.focusWeight ?? 0);
+    // Your own look: a pad's stick turns it as far as it's pushed, all the way over looking straight back; a
+    // drag holds for a while after you let go, then eases back. The further you've turned, the less the
+    // director has the camera; gentle mode keeps it facing forward and steady.
+    if (inputActive() && Math.hypot(padLook.x, padLook.y) > .15) { padSteering = true; targetYaw = -Math.sign(padLook.x) * Math.abs(padLook.x) ** 1.3 * Math.PI; targetPitch = clamp(-padLook.y * PITCH_LIMIT, -PITCH_LIMIT, PITCH_LIMIT); }
+    else if (padSteering) { padSteering = false; targetYaw = targetPitch = 0; }
+    if (!pointer && !padSteering && run.elapsed > lookUntil && (targetYaw || targetPitch)) {
+      const back = Math.exp(-Math.max(0, dt) * 2.4); targetYaw *= back; targetPitch *= back;
+      if (Math.abs(targetYaw) < 1e-3 && Math.abs(targetPitch) < 1e-3) targetYaw = targetPitch = 0;
+    }
+    // The look eases the short way round to where you're turning it, so it never spins back the long way.
+    const blend = snap ? 1 : 1 - Math.exp(-Math.max(0, dt) * 9);
+    yaw = wrapAngle(yaw + wrapAngle(targetYaw - yaw) * blend); pitch += (targetPitch - pitch) * blend;
+    const free = Math.min(1, Math.hypot(yaw, pitch) / .5);
+    // Let each roadside set read before it plays, and turn to its sprite before it springs (hayride-world.js).
+    if (!options.gentle && frame.focusTarget && run.elapsed >= INTRO) target.lerp(frame.focusTarget, (frame.focusWeight ?? 0) * (1 - free));
     const board = 1 - smooth(run.elapsed / INTRO), heading = finite(frame.yaw);
     point.x += Math.sin(heading) * 3.2 * board; point.z += Math.cos(heading) * 3.2 * board; point.y += .7 * board;
     // A wagon on a forest track: the wheels find ruts and roots (a jolt every
@@ -128,29 +144,29 @@ export function createHayrideView(canvas, state, hooks = {}) {
       nod = Math.sin(d * 2.3 + .6) * .006 - jolt * .02;
       if (dt > 0 && lastHeading !== null) { const turn = Math.atan2(Math.sin(heading - lastHeading), Math.cos(heading - lastHeading)) / Math.max(1e-3, dt); roll += (clamp(-turn * .05, -.06, .06) + Math.sin(d * 1.7) * .006 - roll) * (1 - Math.exp(-dt * 3)); }
       // Nobody stares dead ahead in a dark wood: the eyes wander a little.
-      if (Math.abs(targetYaw) < .06 && Math.abs(targetPitch) < .06) drift = Math.sin(run.elapsed * .23) * .02 + Math.sin(run.elapsed * .11 + 1) * .012;
+      drift = (Math.sin(run.elapsed * .23) * .02 + Math.sin(run.elapsed * .11 + 1) * .012) * (1 - free);
       shake *= Math.exp(-Math.max(0, dt) * 2.6); kick *= Math.exp(-Math.max(0, dt) * 3.2);
       sx = (Math.sin(run.elapsed * 37) + Math.sin(run.elapsed * 23 + 2)) * .012 * shake; sy = (Math.sin(run.elapsed * 31 + 1) + Math.sin(run.elapsed * 19)) * .014 * shake;
     } else { roll *= .8; shake = kick = 0; }
     lastHeading = heading;
     const fov = baseFov - kick * 7;
     if (Math.abs(camera.fov - fov) > 1e-3) { camera.fov = fov; camera.updateProjectionMatrix(); }
-    if (inputActive() && Math.hypot(padLook.x, padLook.y) > .15) { padSteering = true; targetYaw = clamp(-padLook.x * YAW_LIMIT, -YAW_LIMIT, YAW_LIMIT); targetPitch = clamp(-padLook.y * PITCH_LIMIT, -PITCH_LIMIT, PITCH_LIMIT); }
-    else if (padSteering) { padSteering = false; targetYaw = targetPitch = 0; }
-    const blend = snap ? 1 : 1 - Math.exp(-Math.max(0, dt) * 9);
-    yaw += (targetYaw - yaw) * blend; pitch += (targetPitch - pitch) * blend;
     camera.position.copy(point); camera.lookAt(target); base.setFromQuaternion(camera.quaternion, "YXZ");
     // The director turns you to the Hollow Man: into the beam, round as the
-    // wagon passes him, back over your shoulder as he gives chase. A look of
-    // your own, or gentle mode, overrides it.
+    // wagon passes him, all the way back over your shoulder as he gives chase.
+    // It aims where he'll be a moment on, and turns quicker when he's frantic.
+    // A look of your own, or gentle mode, overrides it.
     let wantYaw = 0, wantPitch = 0;
-    if (frame.hollow && frame.hollow.weight > 0 && !options.gentle && Math.abs(targetYaw) < .06 && Math.abs(targetPitch) < .06) {
-      const v = frame.hollow.position, dx = v.x - point.x, dy = v.y - point.y, dz = v.z - point.z;
-      let turn = Math.atan2(-dx, -dz) - base.y; turn = Math.atan2(Math.sin(turn), Math.cos(turn));
+    if (frame.hollow && frame.hollow.weight > 0 && !options.gentle) {
+      const v = frame.hollow.position; hollowAim.copy(v);
+      if (hollowSeen && dt > 0) { lead.subVectors(v, lastHollow).multiplyScalar(.14 / dt); if (lead.length() < 1.6) hollowAim.add(lead); }
+      lastHollow.copy(v); hollowSeen = true;
+      const dx = hollowAim.x - point.x, dy = hollowAim.y - point.y, dz = hollowAim.z - point.z;
+      let turn = wrapAngle(Math.atan2(-dx, -dz) - base.y);
       if (turn - gazeYaw > Math.PI) turn -= Math.PI * 2; else if (turn - gazeYaw < -Math.PI) turn += Math.PI * 2;
-      wantYaw = clamp(turn, -2.7, 2.7) * frame.hollow.weight; wantPitch = clamp(Math.atan2(dy, Math.hypot(dx, dz)) - base.x, -.5, .5) * frame.hollow.weight * .8;
-    }
-    const ease = snap ? 1 : 1 - Math.exp(-Math.max(0, dt) * 3.4); gazeYaw += (wantYaw - gazeYaw) * ease; gazePitch += (wantPitch - gazePitch) * ease;
+      wantYaw = turn * frame.hollow.weight * (1 - free); wantPitch = clamp(Math.atan2(dy, Math.hypot(dx, dz)) - base.x, -.5, .5) * frame.hollow.weight * .8 * (1 - free);
+    } else { hollowSeen = false; gazeYaw = wrapAngle(gazeYaw); }
+    const ease = snap ? 1 : 1 - Math.exp(-Math.max(0, dt) * (frame.hollow?.frantic ? 7 : 4.6)); gazeYaw += (wantYaw - gazeYaw) * ease; gazePitch += (wantPitch - gazePitch) * ease;
     camera.rotation.set(base.x + pitch + gazePitch + nod + sx, base.y + yaw + gazeYaw + drift + sy, roll, "YXZ"); camera.updateMatrixWorld(true);
   }
   function advance(seconds) {
@@ -206,7 +222,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
         run.cue = cue; cues.push(cue); hooks.onCue?.(cue); shake = 1.35; kick = 1.25;
         // The ride's photo: his face in yours.
         run.photoAt = run.elapsed + .8; run.photoCaption = "The Hollow Man, face to face";
-      } else { const cue = { type: "stall", id: `hayride-${beat.id}`, sound: beat.sound, intensity: .5 }; cues.push(cue); hooks.onCue?.(cue); if (beat.sound === "roar") kick = Math.max(kick, .45); }
+      } else { const cue = { type: "stall", id: `hayride-${beat.id}`, sound: beat.sound, intensity: beat.intensity ?? .5 }; cues.push(cue); hooks.onCue?.(cue); if (beat.sound === "roar") kick = Math.max(kick, .45); }
     }
     for (let i = 0; i < HAYRIDE_LIGHTNING_TIMES.length; i++) {
       if (run.elapsed < HAYRIDE_LIGHTNING_TIMES[i] + .8 || run.thunder.has(i)) continue;
@@ -226,12 +242,14 @@ export function createHayrideView(canvas, state, hooks = {}) {
   const move = event => {
     if (!pointer || pointer.id !== event.pointerId) return;
     if (!inputActive()) { clearPointer(); return; }
-    targetYaw = clamp(targetYaw - (event.clientX - pointer.x) * .004, -YAW_LIMIT, YAW_LIMIT);
-    targetPitch = clamp(targetPitch - (event.clientY - pointer.y) * .003, -PITCH_LIMIT, PITCH_LIMIT);
+    // A drag across the whole width turns the look about 150 degrees (never slower than a mouse wants), on round.
+    const rate = Math.max(.004, 2.6 / Math.max(1, canvas.clientWidth || canvas.width || 1));
+    targetYaw = wrapAngle(targetYaw - (event.clientX - pointer.x) * rate); lookUntil = (run?.elapsed ?? 0) + LOOK_HOLD;
+    targetPitch = clamp(targetPitch - (event.clientY - pointer.y) * rate * .75, -PITCH_LIMIT, PITCH_LIMIT);
     pointer.x = event.clientX; pointer.y = event.clientY;
     event.preventDefault(); event.stopImmediatePropagation?.();
   };
-  const up = event => { if (pointer?.id === event.pointerId) { clearPointer(); event.stopImmediatePropagation?.(); } };
+  const up = event => { if (pointer?.id === event.pointerId) { clearPointer(); lookUntil = (run?.elapsed ?? 0) + LOOK_HOLD; event.stopImmediatePropagation?.(); } };
   const visibility = () => { if (active && globalThis.document?.hidden) api.setPaused(true); };
   for (const [name, listener] of [["pointerdown", down], ["pointermove", move], ["pointerup", up], ["pointercancel", up], ["lostpointercapture", up]]) canvas.addEventListener?.(name, listener, true);
   globalThis.document?.addEventListener("visibilitychange", visibility);
@@ -251,7 +269,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
       const pace = hayridePace(stallOn ? [...stops, { id: "stall", at: along / length, kind: "stall" }] : stops, length);
       run = { length, paceCurve: pace, pace: 0, stops, tier: tier.level, elapsed: 0, duration: INTRO + rideDuration + (stallOn ? STALL.hold : 0), rideDuration, progress: 0, paused: !!nextOptions.paused, completed: false, fired: new Set(), jumped: new Set(), thunder: new Set(), cue: null,
         stall: stallOn ? { along, start: paceAt(pace, along / length) * rideDuration } : null, stallT: null, stallFired: new Set(), photo: null, photoAt: null, photoCaption: "" };
-      active = true; yaw = pitch = targetYaw = targetPitch = 0; clearPointer();
+      active = true; yaw = pitch = targetYaw = targetPitch = lookUntil = 0; hollowSeen = false; clearPointer();
       world().setGentleMotion?.(!!options.gentle);
       const scene = world().scene;
       if (scene) { fogSave = scene.fog; backgroundSave = scene.background; scene.fog = new THREE.FogExp2(0x121828, .052); scene.background = new THREE.Color(0x0b0f19); }   // a thin blue fog: trees read as shapes, the far wood fades
@@ -284,7 +302,7 @@ export function createHayrideView(canvas, state, hooks = {}) {
       } catch { run.photo = ""; }
       notify();
     },
-    setLook(nextYaw = 0, nextPitch = 0) { if (!inputActive()) return false; targetYaw = clamp(finite(nextYaw), -YAW_LIMIT, YAW_LIMIT); targetPitch = clamp(finite(nextPitch), -PITCH_LIMIT, PITCH_LIMIT); pose(0, true); return true; },
+    setLook(nextYaw = 0, nextPitch = 0) { if (!inputActive()) return false; targetYaw = wrapAngle(finite(nextYaw)); targetPitch = clamp(finite(nextPitch), -PITCH_LIMIT, PITCH_LIMIT); lookUntil = run.elapsed + LOOK_HOLD; pose(0, true); return true; },
     advanceForTest(seconds) { const cues = advance(seconds); return { ...status(), cues }; },
     // For browser checks: held, the ride's clock moves only by advanceForTest, though frames are still drawn
     // (software WebGL draws about one a second, and the ride would run on between screenshots).

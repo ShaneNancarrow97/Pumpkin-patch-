@@ -1,13 +1,14 @@
 // Offline sounds for the off-map hayride: no speech synthesis, samples or network. Each
 // run consumes encounter ids once, including cues skipped while muted/paused.
-import { distortionCurve, screamRig, stingerRig } from "./scare-voices.js";
+import { distortionCurve, screamRig, roarRig, stingerRig } from "./scare-voices.js";
 import { createTractorEngine } from "./tractor-engine.js";
 import { JINGLE, JINGLE_LENGTH } from "../content/hayride-jingle.js";
 const MAX_VOICES = 22;
 const clamp = (value, fallback = 0) => Number.isFinite(Number(value)) ? Math.max(0, Math.min(1, Number(value))) : fallback;
 // Who screams at each set: the thing in the woods first, then someone on the
-// wagon. The voices are the maze's (scare-voices.js).
-const SCREAMERS = { hollow: ["ghoul", "victim"], scarecrows: ["scarecrow", "victim"], spiders: ["victim", "haunted-girl"], bride: ["haunted-girl", "victim"], pursuit: ["wraith", "victim"], bus: ["ghoul", "victim"], graveyard: ["wraith", "haunted-girl"], thicket: ["scarecrow", "victim"] };
+// wagon. The voices are the maze's (scare-voices.js). The Hollow Man roars
+// instead, on his own cue.
+const SCREAMERS = { hollow: [null, "victim"], scarecrows: ["scarecrow", "victim"], spiders: ["victim", "haunted-girl"], bride: ["haunted-girl", "victim"], pursuit: ["wraith", "victim"], bus: ["ghoul", "victim"], graveyard: ["wraith", "haunted-girl"], thicket: ["scarecrow", "victim"] };
 // The woods between the sets: seconds between each sound, as [shortest, longest].
 const WOODS = { owl: [11, 19], crow: [14, 24], twig: [3.5, 7], creak: [8, 14], wolf: [38, 60], scream: [26, 42] };
 
@@ -86,6 +87,7 @@ export function createHayrideAudio(prefs = {}) {
     return entry;
   }
   const scream = (kind, { delay = 0, amp = .8, out = scareBus, muffle = 0 } = {}) => { if (!ctx) return null; const { length, build } = screamRig(ctx, { noise, curve }, kind, { amp, muffle }); return rig(length, delay, build, out); };
+  const roar = (kind, { delay = 0, amp = .8, out = scareBus, muffle = 0 } = {}) => { if (!ctx) return null; const { length, build } = roarRig(ctx, { noise, curve }, kind, { amp, muffle }); return rig(length, delay, build, out); };
   const stinger = (amp, delay = 0) => { if (!ctx) return null; const { length, build } = stingerRig(ctx, noise, amp); return rig(length, delay, build); };
   // Many short sounds of one kind as one of the ride's voices (so a long run of them is never cut short by the
   // voice limit): one source whose loudness, and pitch, are struck at each time, panned where each one is.
@@ -245,37 +247,35 @@ export function createHayrideAudio(prefs = {}) {
         voice({ frequency: 190, endFrequency: 128, type: "triangle", duration: 1.3, delay: .18, amp: amp * .28, filter: "bandpass", cutoff: 700, vibrato: 12 });
         for (let i = 0; i < 3; i++) voice({ noise: true, filter: "bandpass", cutoff: 2600, duration: .18, delay: .5 + i * .22, amp: amp * .18 });
       } else if (name === "stretch") {
-        // His joints crack one after another as he stretches, a sinew groans, and he breathes, closer and closer.
+        // His joints crack one after another as he stretches, a growl builds in his throat, and he breathes,
+        // closer and closer.
         pulses({ times: Array.from({ length: 8 }, (_, i) => i * .14 + ((i * 53) % 9) * .012), noise: true, filter: "highpass", cutoff: 2400, duration: .03, amp: amp * .5 });
-        voice({ frequency: 92, endFrequency: 54, type: "sawtooth", duration: 1.2, amp: amp * .3, cutoff: 420, vibrato: 9 });
+        roar("growl", { delay: .2, amp: .5 });
         voice({ frequency: 38, endFrequency: 62, duration: 1.2, amp: amp * .55, cutoff: 160 });
         for (let i = 0; i < 2; i++) voice({ noise: true, filter: "bandpass", cutoff: 420, duration: .55, delay: .1 + i * .6, amp: amp * (.3 + i * .15) });
       } else if (name === "hollow") {
-        // His face catches light: the whump of the flame taking inside the pumpkin and its crackle, and a deep,
-        // torn roar under the screams.
+        // His face, in yours, catches light: the whump of the flame taking inside the pumpkin and its crackle...
         voice({ noise: true, filter: "lowpass", cutoff: 380, duration: .75, amp: amp * 1.2 });
         for (let i = 0; i < 6; i++) voice({ noise: true, filter: "highpass", cutoff: 2600, duration: .03, delay: .12 + i * .16 + rand() * .07, amp: amp * .3 });
-        voice({ frequency: 96, endFrequency: 52, type: "sawtooth", duration: 1.3, delay: .1, amp: amp * 1.1, cutoff: 900, vibrato: 11 });
-        voice({ frequency: 980, endFrequency: 310, type: "sawtooth", duration: .7, delay: .05, amp: amp * .45, filter: "bandpass", cutoff: 1500, vibrato: 30 });
-        // ...and his face splits open: a wet tearing, and a guttural rattle from the maw.
+        // ...then it splits open with a wet tearing, and he roars out of the maw, a deep, guttural, rattling roar.
         voice({ noise: true, filter: "bandpass", cutoff: 520, duration: .45, delay: .22, amp: amp * .9 });
-        voice({ frequency: 58, endFrequency: 44, type: "sawtooth", duration: 1.1, delay: .3, amp: amp * .5, cutoff: 380, vibrato: 22 });
-        voice({ noise: true, filter: "bandpass", cutoff: 620, duration: 1.1, delay: .1, amp: amp * .6 });
+        roar("hollow", { delay: .18, amp: .85 });
       } else if (name === "roar") {
         // The engine catches and roars (setEngine) with a bang from the exhaust.
         voice({ noise: true, cutoff: 900, duration: .22, amp: amp * .7 });
         voice({ frequency: 84, endFrequency: 34, duration: .34, amp: amp * .8, cutoff: 300 });
         for (let i = 0; i < 3; i++) voice({ noise: true, filter: "bandpass", cutoff: 1500, duration: .05, delay: .25 + i * .13 + rand() * .05, amp: amp * .25 });
       } else if (name === "chase") {
-        // Frantic: a scrambling gallop on hands and feet behind the wagon, claws raking the lane, snarls.
+        // Frantic: a scrambling gallop on hands and feet behind the wagon, and claws raking the lane.
         const times = Array.from({ length: 22 }, (_, i) => i * .19 + ((i * 29) % 7) * .012), pans = times.map((_, i) => Math.sin(i * 1.7) * .5);
         pulses({ times, pans, frequency: 66, endFrequency: 38, duration: .09, amp: amp * .5, cutoff: 220 });
         pulses({ times: times.filter((_, i) => i % 3 === 1).map((t) => t + .05), pans: pans.filter((_, i) => i % 3 === 1), noise: true, filter: "highpass", cutoff: 3000, duration: .07, amp: amp * .2 });
-        for (const at of [.4, 1.7, 3.1]) voice({ frequency: 150, endFrequency: 74, type: "sawtooth", duration: .75, delay: at, amp: amp * .32, cutoff: 900, vibrato: 18 });
+      } else if (name === "lunge") {
+        // He roars as he dives at the rail, each a little further behind than the last.
+        roar("lunge", { amp: .35 + intensity * .6 });
       } else if (name === "howl") {
-        // Left behind in the dark, he howls after you.
-        voice({ frequency: 230, endFrequency: 118, type: "sawtooth", duration: 2.4, amp: amp * .42, cutoff: 1100, vibrato: 8 });
-        voice({ noise: true, filter: "bandpass", cutoff: 700, duration: 2, amp: amp * .2 });
+        // Left behind in the dark, he howls after you, muffled by the trees between.
+        roar("howl", { amp: .55, muffle: 1600 });
       } else if (name === "jump") {
         // A figure springs at the wagon from across the lane (hayride-scares.js): a hit and its shriek.
         if (!gentle) stinger(.5, .02);
@@ -292,8 +292,8 @@ export function createHayrideAudio(prefs = {}) {
       if (screamers) {
         const force = .55 + intensity * .35;
         if (!gentle) stinger(force * .7, .05);
-        scream(screamers[0], { delay: .08, amp: force });
-        scream(screamers[1], { delay: .55, amp: force * .8 });
+        if (screamers[0]) scream(screamers[0], { delay: .08, amp: force });
+        scream(screamers[1], { delay: screamers[0] ? .55 : .95, amp: force * .8 });
       }
       return true;
     },

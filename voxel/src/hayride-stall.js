@@ -32,6 +32,11 @@ export const STALL = Object.freeze({
   gone: 36,           // ...and howls after it until this far, then he's lost in the dark
   calm: 30,           // the tension has eased by this time
 });
+// In the chase he lunges at the rail this many times a radian of the clock
+// after the engine catches (hollowManPlace): the first at a quarter turn, then
+// once a turn. He roars just before each one lands.
+export const LUNGE_RATE = 3.7;
+const lungeRoar = (k) => +(STALL.hold + (Math.PI / 2 + k * Math.PI * 2) / LUNGE_RATE - .25).toFixed(2);
 // What happens when: each cue fires once a ride, as the clock passes it.
 export const STALL_CUES = Object.freeze([
   { t: -2.4, id: "stall-sputter", sound: "sputter" },          // the engine coughs, the lamps fail
@@ -46,8 +51,12 @@ export const STALL_CUES = Object.freeze([
   { t: 16.6, id: "stall-ignition-3", sound: "crank" },         // the starter turns once more, under him...
   { t: STALL.reveal, id: "stall-reveal", sound: "hollow", encounter: true },
   { t: STALL.hold, id: "stall-roar", sound: "roar" },          // ...and the engine catches
+  { t: lungeRoar(0), id: "stall-lunge-1", sound: "lunge", intensity: .6 },  // he roars as he dives at the rail
   { t: 19.2, id: "stall-chase", sound: "chase" },              // he scrambles after the wagon
+  { t: lungeRoar(1), id: "stall-lunge-2", sound: "lunge", intensity: .55 },
+  { t: lungeRoar(2), id: "stall-lunge-3", sound: "lunge", intensity: .5 },
   { t: 23.6, id: "stall-chase-2", sound: "chase" },            // ...still coming
+  { t: lungeRoar(3), id: "stall-lunge-4", sound: "lunge", intensity: .45 },
   { t: 30, id: "stall-howl", sound: "howl" },                  // and howls as it gets away
 ]);
 // How lit his face is, u seconds into the tune: each note flares it, then it
@@ -164,7 +173,7 @@ export function hollowManPlace(t, stop, rider) {
   // At a lunge he dives at the rail face first, straight down the lane, but never nearer than two units.
   const passed = rider - (stop - STALL.bench), u = t - STALL.hold;
   if (passed < STALL.chase) {
-    const lunge = Math.max(0, Math.sin(u * 3.7)) ** 6, behind = smooth(.6, 1, passed / STALL.chase) * 7;
+    const lunge = Math.max(0, Math.sin(u * LUNGE_RATE)) ** 6, behind = smooth(.6, 1, passed / STALL.chase) * 7;
     return { along: rider - (4.2 + .9 * Math.sin(u * 2.3) * (1 - lunge) - 2.2 * lunge + behind), side: (1.5 * Math.sin(u * 3.1) + .45 * Math.sin(u * 8.3)) * (1 - .7 * lunge), y: 0, mode: "run", k: u, lunge, open: smooth(.15, .7, lunge), glow: 1.25 + .45 * Math.sin(u * 19) * Math.sin(u * 7), light: .8, face: "rider", gaze: 1, frantic: true };
   }
   if (passed < STALL.gone) {

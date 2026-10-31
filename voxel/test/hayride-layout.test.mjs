@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import { Voxels } from "../src/voxels.js";
+import { hayrideFocusWeight } from "../src/content/hayride-layout.js";
 import { HAYRIDE_SITE, HAYRIDE_RIDE_BOUNDS, HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH, hayrideRouteSample, hayrideRouteDistance, hayrideConvoyPose, hayrideQueueSlot, hayrideApproach, hayrideReturn, hayrideJourneyTiming, hayrideGuestPose, hayrideAlong } from "../src/content/hayride-layout.js";
 import { inFarmPatch, counterPlace } from "../src/content/farm-layout.js";
 import { createHayrideWorld } from "../src/hayride-world.js";
@@ -60,4 +61,13 @@ test("native site retains the legacy ground, allocates a fixed light pool and pr
   controller.setPreview(null);assert.equal(rideLights().filter(l=>l.intensity>0).length,0);assert.equal(rideLights().length,7);
   const before=JSON.stringify(state);controller.setPreview(.54);const frame=controller.getPreviewFrame(.54);assert.ok(frame.position.toArray().every(Number.isFinite));controller.tick(12);controller.setPreview(null);assert.equal(JSON.stringify(state),before);
   let boxes=0;const matrix=new THREE.Matrix4();controller.root.traverse(m=>{if(!m.isInstancedMesh)return;for(let i=0;i<m.count;i++){m.getMatrixAt(i,matrix);assert.ok(matrix.elements.every(Number.isFinite));assert.ok(Math.abs(matrix.determinant())>0);}boxes+=m.count;});assert.ok(boxes<35000,`too many boxes: ${boxes}`);controller.dispose();
+});
+
+test("the ride's director turns to a set early, holds it as it plays, and lets go for its sprite", () => {
+  assert.equal(hayrideFocusWeight(12), 0, "not from far off");
+  assert.ok(hayrideFocusWeight(8) > .2 && hayrideFocusWeight(8) < .8, "turning well before it plays");
+  for (const ahead of [4, 2, 0, -.9]) assert.equal(hayrideFocusWeight(ahead), 1, `on it at ${ahead}`);
+  assert.equal(hayrideFocusWeight(-5.5), 0, "gone by the time its sprite has sprung");
+  for (let a = -6; a < 12; a += .25) assert.ok(hayrideFocusWeight(a) >= hayrideFocusWeight(a + (a >= 0 ? .25 : -.25)) - 1e-9, "never jerks back");
+  assert.equal(hayrideFocusWeight(NaN), 0);
 });

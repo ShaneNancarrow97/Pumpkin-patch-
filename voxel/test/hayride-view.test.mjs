@@ -51,18 +51,37 @@ test("a held ride (for browser checks) moves only when advanced, and leaving let
   view.dispose();
 });
 
-test("paused owner playback and bounded touch look are independent of the farm", () => {
-  const f = fixture(), view = createHayrideView(f.canvas, f.state, { world: f.world });
+test("paused owner playback and 360-degree touch look are independent of the farm", () => {
+  const f = fixture(), view = createHayrideView(f.canvas, f.state, { world: f.world }), direction = new THREE.Vector3();
   view.enter({ paused: true }); view.advanceForTest(10); assert.equal(view.status.elapsed, 0);
   assert.equal(view.setLook(100, 100), false); view.setPaused(false);
+  // The look turns all the way round: it wraps rather than stopping, and only up and down are bounded.
+  assert.equal(view.status.lookBounds.yaw, Math.PI);
   assert.equal(view.setLook(100, -100), true);
-  assert.equal(view.status.lookYaw, view.status.lookBounds.yaw); assert.equal(view.status.lookPitch, -view.status.lookBounds.pitch);
+  assert.ok(Math.abs(view.status.lookYaw - Math.atan2(Math.sin(100), Math.cos(100))) < 1e-9); assert.equal(view.status.lookPitch, -view.status.lookBounds.pitch);
+  view.setLook(Math.PI, 0); view.camera.getWorldDirection(direction); assert.ok(direction.z > .99, "it can look straight back");
   let stopped = 0;
   const event = data => ({ pointerId: 1, button: 0, clientX: 10, clientY: 10, preventDefault() {}, stopImmediatePropagation() { stopped++; }, ...data });
   f.listeners.get("pointerdown")(event()); f.listeners.get("pointermove")(event({ clientX: -100000, clientY: 100000 }));
-  view.tick(.05); assert.ok(Math.abs(view.status.lookYaw) <= view.status.lookBounds.yaw); assert.ok(Math.abs(view.status.lookPitch) <= view.status.lookBounds.pitch);
+  view.tick(.05); assert.ok(Math.abs(view.status.lookYaw) <= Math.PI); assert.ok(Math.abs(view.status.lookPitch) <= view.status.lookBounds.pitch);
   f.listeners.get("pointerup")(event()); assert.ok(stopped >= 3);
   assert.ok(view.camera.matrixWorld.elements.every(Number.isFinite)); view.dispose();
+});
+
+test("a look of your own holds a moment after you let go, then eases back to the ride's own view", () => {
+  const f = fixture(), view = createHayrideView(f.canvas, f.state, { world: f.world }), direction = new THREE.Vector3();
+  view.enter({ gentle: false }); view.advanceForTest(3);
+  const event = data => ({ pointerId: 1, button: 0, clientX: 500, clientY: 300, preventDefault() {}, stopImmediatePropagation() {}, ...data });
+  // Two drags across the screen turn about 300 degrees, round past straight back.
+  f.listeners.get("pointerdown")(event()); f.listeners.get("pointermove")(event({ clientX: -500 })); f.listeners.get("pointermove")(event({ clientX: -1500 })); f.listeners.get("pointerup")(event({ clientX: -1500 }));
+  for (let i = 0; i < 20; i++) view.tick(.05);
+  const turned = view.status.lookYaw; assert.ok(Math.abs(turned) > .5 && Math.abs(turned) <= Math.PI, `turned round (${turned.toFixed(2)})`);
+  for (let i = 0; i < 20; i++) view.tick(.05);
+  assert.ok(Math.abs(view.status.lookYaw - turned) < .02, "it holds while you look");
+  for (let i = 0; i < 60; i++) view.tick(.05);
+  assert.ok(Math.abs(view.status.lookYaw) < .05, "then eases back");
+  view.camera.getWorldDirection(direction); assert.ok(direction.z < -.99, "facing ahead again");
+  view.dispose();
 });
 
 test("visibility interruption pauses until explicit resume and rejects unowned rides", () => {

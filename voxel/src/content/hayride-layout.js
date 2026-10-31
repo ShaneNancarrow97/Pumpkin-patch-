@@ -182,6 +182,16 @@ export function hayrideGuestPose(s,v) {
   if(!p.seated)p.y=p.x>=-9.25&&p.x<=-2.8&&p.z>=15.95&&p.z<=18.05?.24:p.x>=(s.hayride?.fleet?-23.15:-19)&&p.x<=-13.7&&p.z>=31.9&&p.z<=35.55?.2:p.x>=-13.7&&p.x<=-10.05&&p.z>=25&&p.z<=33.8?.12:.08;
   return p;
 }
+// How hard the ride's director (hayride-view.js) turns to a set, 0 to 1, with
+// the set this many units ahead of the wagon (behind it when negative): early,
+// from 11 units out and fully by 4, so its animatronics are in view before
+// they play; held until a unit past its middle, then let go by 5.5 past, in
+// time to turn across the lane to its sprite (HAYRIDE_JUMP).
+export function hayrideFocusWeight(ahead) {
+  const ease = (n) => { const t = Math.max(0, Math.min(1, n)); return t * t * (3 - 2 * t); };
+  if (!Number.isFinite(ahead)) return 0;
+  return ahead >= 0 ? 1 - ease((ahead - 4) / 7) : 1 - ease((-ahead - 1) / 4.5);
+}
 // The sprite jump scares (hayride-scares.js) wait across the lane from their
 // scene's set and a little further on, so they never step into its
 // animatronics: the set plays as the wagon comes level, then the figure

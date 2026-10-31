@@ -1,6 +1,7 @@
-// Synthesised screams and the scare hit, shared by the maze (maze-audio.js) and
-// the hayride (hayride-audio.js). Each returns a rig: a length, and a build
-// that adds its sources and nodes for the caller to start, stop and route.
+// Synthesised screams, roars and the scare hit, shared by the maze
+// (maze-audio.js) and the hayride (hayride-audio.js). Each returns a rig: a
+// length, and a build that adds its sources and nodes for the caller to start,
+// stop and route.
 // Screams are synthesised: two rough sawtooth "vocal folds" with a pitch
 // contour and vibrato, breath noise, a little distortion, then three formant
 // filters for the vowel. pitch is [fraction of length, Hz]; formants are
@@ -34,6 +35,64 @@ export function screamRig(ctx, { noise, curve }, kind = "ghoul", { amp = .85, mu
     if (muffle) { const wall = ctx.createBiquadFilter(); wall.type = "lowpass"; wall.frequency.value = muffle; wall.connect(tail); tail = wall; parts.push(wall); }
     for (const [hz, q, g] of p.formants) { const band = ctx.createBiquadFilter(), level = ctx.createGain(); band.type = "bandpass"; band.frequency.value = hz; band.Q.value = q; level.gain.value = g * 2.2; rough.connect(band).connect(level).connect(tail); parts.push(band, level); }
     if (p.sub) { const growl = ctx.createOscillator(), low = ctx.createGain(); growl.type = "square"; growl.frequency.setValueAtTime(62, when); growl.frequency.exponentialRampToValueAtTime(40, when + p.length); low.gain.value = .35; growl.connect(low).connect(tail); sources.push(growl); parts.push(low); }
+  } };
+}
+// Roars: a monster's throat, not a person's. Two rough vocal folds an octave
+// apart (the lower one, a little off, is what makes it guttural) whose pitch
+// wanders, with gargling throat noise, driven hard; then chopped by a rattle
+// many times a second, like vocal fry; then a throat whose formants open with
+// the mouth, over a chest of low end. pitch is [fraction of length, Hz]; open
+// is [fraction of length, 0 shut to 1 wide]; rattle is how many times a second
+// the throat rattles and depth how hard; jitter, in cents, how far the pitch
+// wanders.
+export const ROARS = Object.freeze({
+  // The Hollow Man's face splits open in yours.
+  hollow: { length: 2, attack: .12, release: .6, pitch: [[0, 80], [.16, 140], [.5, 122], [.8, 96], [1, 64]], open: [[0, .1], [.22, 1], [.65, .8], [1, .15]], rattle: 31, depth: .7, jitter: 70, breath: .5, drive: 3, chest: .4 },
+  // A snarl at each lunge of the chase: shorter, higher, snapping open.
+  lunge: { length: .9, attack: .05, release: .32, pitch: [[0, 100], [.22, 165], [1, 88]], open: [[0, .3], [.2, 1], [1, .25]], rattle: 36, depth: .6, jitter: 90, breath: .55, drive: 2.6, chest: .3 },
+  // Building as he stretches toward you: low, the mouth shut, all rattle.
+  growl: { length: 1.4, attack: .5, release: .4, pitch: [[0, 60], [.6, 82], [1, 70]], open: [[0, 0], [1, .3]], rattle: 26, depth: .85, jitter: 50, breath: .4, drive: 2.2, chest: .55 },
+  // Left behind: a long, open-throated howl into the dark, its rattle fading.
+  howl: { length: 2.6, attack: .3, release: 1, pitch: [[0, 110], [.3, 190], [.75, 160], [1, 96]], open: [[0, .4], [.3, 1], [1, .5]], rattle: 22, depth: .35, jitter: 60, breath: .45, drive: 1.8, chest: .2 },
+});
+// The throat's formants: [Hz shut, Hz wide, Q, gain].
+const THROAT = [[280, 620, 3.5, 1], [800, 1200, 4, .7], [2100, 2700, 3, .4]];
+export function roarRig(ctx, { noise, curve }, kind = "hollow", { amp = .8, muffle = 0 } = {}) {
+  const p = ROARS[kind] ?? ROARS.hollow, L = p.length;
+  return { length: L, build: (when, gain, sources, parts) => {
+    envelope(gain.gain, when, amp, p.attack, L, p.release);
+    const drive = ctx.createGain(), rough = ctx.createWaveShaper ? ctx.createWaveShaper() : ctx.createGain(); drive.gain.value = p.drive; if (ctx.createWaveShaper) rough.curve = curve;
+    drive.connect(rough); parts.push(drive, rough);
+    // The folds, the lower an octave down and a little off...
+    const folds = [[1, 0, 1], [.5, 18, .55]].map(([ratio, detune, level]) => {
+      const osc = ctx.createOscillator(), share = ctx.createGain(); osc.type = "sawtooth"; osc.detune.value = detune; share.gain.value = level;
+      p.pitch.forEach(([t, hz], i) => i ? osc.frequency.exponentialRampToValueAtTime(hz * ratio, when + t * L) : osc.frequency.setValueAtTime(hz * ratio, when));
+      osc.connect(share); share.connect(drive); sources.push(osc); parts.push(share); return osc;
+    });
+    // ...and throat noise, driven hard together.
+    const breath = ctx.createBufferSource(), wet = ctx.createBiquadFilter(), air = ctx.createGain();
+    breath.buffer = noise; breath.loop = true; wet.type = "bandpass"; wet.frequency.value = 1100; wet.Q.value = .6; air.gain.value = p.breath;
+    breath.connect(wet); wet.connect(air); air.connect(drive); sources.push(breath); parts.push(wet, air);
+    // The rattle chops what comes out (after the drive, which would flatten it).
+    const fry = ctx.createGain(), rattle = ctx.createOscillator(), chop = ctx.createGain();
+    fry.gain.value = 1 - p.depth / 2; rattle.type = "sawtooth"; rattle.frequency.value = p.rattle; chop.gain.value = p.depth / 2;
+    rattle.connect(chop); chop.connect(fry.gain); rough.connect(fry); sources.push(rattle); parts.push(fry, chop);
+    // The pitch wanders, on two slow wobbles that never line up, and the rattle with it.
+    for (const [hz, share] of [[5.3, .6], [11.7, .4]]) {
+      const wobble = ctx.createOscillator(), cents = ctx.createGain(); wobble.frequency.value = hz; cents.gain.value = p.jitter * share;
+      wobble.connect(cents); for (const osc of [...folds, rattle]) cents.connect(osc.detune); sources.push(wobble); parts.push(cents);
+    }
+    let tail = gain;
+    if (muffle) { const wall = ctx.createBiquadFilter(); wall.type = "lowpass"; wall.frequency.value = muffle; wall.connect(tail); tail = wall; parts.push(wall); }
+    // Through a throat that opens with the mouth...
+    for (const [shut, wide, q, g] of THROAT) {
+      const formant = ctx.createBiquadFilter(), level = ctx.createGain(); formant.type = "bandpass"; formant.Q.value = q; level.gain.value = g * 3.2;
+      p.open.forEach(([t, o], i) => { const hz = shut + (wide - shut) * o; if (i) formant.frequency.linearRampToValueAtTime(hz, when + t * L); else formant.frequency.setValueAtTime(hz, when); });
+      fry.connect(formant); formant.connect(level); level.connect(tail); parts.push(formant, level);
+    }
+    // ...over a chest of low end.
+    const chest = ctx.createBiquadFilter(), body = ctx.createGain(); chest.type = "lowpass"; chest.frequency.value = 250; body.gain.value = p.chest;
+    fry.connect(chest); chest.connect(body); body.connect(tail); parts.push(chest, body);
   } };
 }
 // The hit: a dissonant brass cluster that sweeps shut, a sub boom and a crash.

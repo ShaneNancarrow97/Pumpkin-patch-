@@ -96,6 +96,10 @@ test("he skulks round the wagon in the dark, climbs onto the tractor's roof, str
   assert.ok(Math.max(...sides) > 1 && Math.min(...sides) < -1, "across the lane and back");
   assert.ok(Math.min(...gaps) < 2.4 && Math.max(...gaps) > 4.5, "lunging close, then back");
   assert.ok(Math.min(...gaps) > 1.95, "but never into the rider");
+  // He roars just before each lunge lands.
+  const lunges = STALL_CUES.filter((c) => c.sound === "lunge");
+  assert.equal(lunges.length, 4);
+  for (const c of lunges) { const p = at(c.t + .25, rider0 + 1); assert.ok(p.mode === "run" && p.lunge > .95, `${c.id} lands as he lunges`); }
   assert.equal(stallBlink(STALL.hold), 1, "your eyes are shut as he's flung off the roof");
   assert.equal(at(25, rider0 + STALL.chase + 2).mode, "howl"); assert.equal(at(28, rider0 + STALL.gone + 1), null);
 });

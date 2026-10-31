@@ -27,9 +27,11 @@ export function hayrideScarePose(spec, progress, upgraded = false, gentle = fals
   const width = u(upgraded ? 6.8 : 5.4);
   const reveal = smooth((delta + u(4.5)) / u(2.3)) * (1 - smooth((delta - u(2.6)) / (width - u(2.6))));
   const lunge = gentle ? 0 : smooth((delta + u(.5)) / u(1.7)) * (1 - smooth((delta - u(2.5)) / u(2.5)));
+  // The camera turns to it a moment before it springs (from 2.4 units before, fully by 0.8), so the spring lands in view.
+  const aim = gentle ? 0 : smooth((delta + u(2.4)) / u(1.6)) * (1 - smooth((delta - u(2.5)) / u(2.5)));
   const near = upgraded ? 2.6 : 3.15;
   const offset = spec.offset - (spec.offset - near) * lunge;
-  return { visible: reveal > .008, reveal, lunge, offset, delta };
+  return { visible: reveal > .008, reveal, lunge, aim, offset, delta };
 }
 
 export function createHayrideScares({ state } = {}) {
@@ -69,13 +71,14 @@ export function createHayrideScares({ state } = {}) {
   }
   return {
     group, tick,
-    // The figure springing at the wagon, if one is: its face, and how far it has sprung (0 to 1), for the camera and the riders to turn to.
+    // The figure about to spring, or springing, at the wagon, if one is: its face, how hard the camera turns to it
+    // (aim, 0 to 1, ahead of the spring) and how far it has sprung (weight, 0 to 1, for the riders to jump at).
     lunge() {
       if (disposed) return null;
-      const entry = entries.filter(entry => entry.pose?.visible && entry.pose.lunge > .02).sort((a, b) => b.pose.lunge - a.pose.lunge)[0];
+      const entry = entries.filter(entry => entry.pose?.visible && entry.pose.aim > .02).sort((a, b) => b.pose.aim - a.pose.aim)[0];
       if (!entry) return null;
       entry.actor.getWorldPosition(actorHead); actorHead.y += 1.72;
-      return { point: actorHead.clone(), weight: entry.pose.lunge, stop: entry.stop };
+      return { point: actorHead.clone(), weight: entry.pose.lunge, aim: entry.pose.aim, stop: entry.stop };
     },
     get diagnostics() { return { actors: entries.length, visible: entries.filter(entry => entry.actor.visible).length,
       disposed, cast: entries.map(entry => ({ stop: entry.stop, actor: entry.actor.userData.mazeScareActor,

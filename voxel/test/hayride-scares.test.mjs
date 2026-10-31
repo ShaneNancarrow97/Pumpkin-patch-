@@ -23,6 +23,15 @@ test("foreground scares remain outside the lane and gentle mode removes the lung
   assert.equal(hayrideScarePose({ at: .5, offset: 6.1 }, .1).visible, false);
 });
 
+test("the camera turns to each figure a moment before it springs, so the spring lands in view", () => {
+  const spec = { at: .5, offset: 4.1 }, at = (units) => hayrideScarePose(spec, .5 + hayrideSpan(units));
+  let start = -4; while (at(start).lunge < .05) start += .02;
+  assert.ok(at(start).aim > .95, `already turned to it as it starts to spring (${at(start).aim.toFixed(2)})`);
+  assert.equal(at(-2.5).aim, 0, "but not long before");
+  assert.ok(at(1.2).aim > .95 && at(6).aim === 0, "held through the spring, then let go");
+  assert.equal(hayrideScarePose(spec, .5 + hayrideSpan(-1), false, true).aim, 0, "gentle mode never turns to it");
+});
+
 test("off-map cast reads ownership without changing state and disposes only its instances", () => {
   const state = { coins: 34, hayride: { tier: 3, income: 16, ticketsSold: 2, haunts: { owned: ["bride-procession"], active: ["bride-procession"] } } };
   // Just past the bride's jump spot, across the lane from her manor, where she lunges.
@@ -32,7 +41,11 @@ test("off-map cast reads ownership without changing state and disposes only its 
   assert.equal(cast.diagnostics.actors, 4); assert.equal(cast.diagnostics.visible, 1);
   const bride = cast.diagnostics.cast.find(entry => entry.stop === "bride");
   assert.equal(bride.actor, "haunted-girl"); assert.ok(bride.lunge > .9); assert.ok(bride.offset < 3);
-  const jump = cast.lunge(); assert.ok(jump.point.toArray().every(Number.isFinite) && jump.weight > .9 && jump.stop === "bride");
+  const jump = cast.lunge(); assert.ok(jump.point.toArray().every(Number.isFinite) && jump.weight > .9 && jump.aim > .9 && jump.stop === "bride");
+  // A little before her spot the camera has already found her, though she hasn't sprung.
+  cast.tick({ progress: springs - hayrideSpan(2.2), time: 30, camera: { x: -32, y: 2, z: 15 } });
+  const ready = cast.lunge(); assert.ok(ready && ready.aim > .9 && ready.weight < .05);
+  cast.tick({ progress: springs, time: 30, camera: { x: -32, y: 2, z: 15 } });
   cast.group.traverse(node => assert.ok(node.matrixWorld.elements.every(Number.isFinite)));
   cast.tick({ progress: springs, gentle: true });
   assert.equal(cast.diagnostics.cast.find(entry => entry.stop === "bride").lunge, 0);
