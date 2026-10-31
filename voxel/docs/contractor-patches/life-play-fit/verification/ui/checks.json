@@ -1,0 +1,827 @@
+{
+  "passed": true,
+  "scope": "Isolated actual controls DOM/CSS; no WebGL and no game rules simulated. Responsive bounds, action positioning, notice dimensions, independent touch release and held-action callbacks.",
+  "layouts": [
+    {
+      "name": "phone",
+      "w": 390,
+      "h": 844,
+      "controls": [
+        {
+          "selector": "#play-stick",
+          "x": 14,
+          "y": 740,
+          "width": 86,
+          "height": 86,
+          "top": 740,
+          "right": 100,
+          "bottom": 826,
+          "left": 14
+        },
+        {
+          "selector": "#play-look",
+          "x": 290,
+          "y": 740,
+          "width": 86,
+          "height": 86,
+          "top": 740,
+          "right": 376,
+          "bottom": 826,
+          "left": 290
+        },
+        {
+          "selector": "#play-interact",
+          "x": 256,
+          "y": 658,
+          "width": 120,
+          "height": 68,
+          "top": 658,
+          "right": 376,
+          "bottom": 726,
+          "left": 256
+        },
+        {
+          "selector": "#play-wheel",
+          "x": 202,
+          "y": 670,
+          "width": 44,
+          "height": 44,
+          "top": 670,
+          "right": 246,
+          "bottom": 714,
+          "left": 202
+        },
+        {
+          "selector": "#play-gait",
+          "x": 34,
+          "y": 682,
+          "width": 53.15625,
+          "height": 44,
+          "top": 682,
+          "right": 87.15625,
+          "bottom": 726,
+          "left": 34
+        },
+        {
+          "selector": "#play-recenter",
+          "x": 232,
+          "y": 762,
+          "width": 44,
+          "height": 44,
+          "top": 762,
+          "right": 276,
+          "bottom": 806,
+          "left": 232
+        }
+      ],
+      "overlap": [],
+      "buttons": [
+        {
+          "label": "Switch character",
+          "x": 287,
+          "y": 79,
+          "width": 44,
+          "height": 44,
+          "top": 79,
+          "right": 331,
+          "bottom": 123,
+          "left": 287
+        },
+        {
+          "label": "Exit control mode",
+          "x": 331,
+          "y": 79,
+          "width": 44,
+          "height": 44,
+          "top": 79,
+          "right": 375,
+          "bottom": 123,
+          "left": 331
+        },
+        {
+          "label": "Switch between walking and jogging",
+          "x": 34,
+          "y": 682,
+          "width": 53.15625,
+          "height": 44,
+          "top": 682,
+          "right": 87.15625,
+          "bottom": 726,
+          "left": 34
+        },
+        {
+          "label": "Centre the camera on your character",
+          "x": 232,
+          "y": 762,
+          "width": 44,
+          "height": 44,
+          "top": 762,
+          "right": 276,
+          "bottom": 806,
+          "left": 232
+        },
+        {
+          "label": "Water pumpkin · tap once or hold to keep using",
+          "x": 256,
+          "y": 658,
+          "width": 120,
+          "height": 68,
+          "top": 658,
+          "right": 376,
+          "bottom": 726,
+          "left": 256
+        },
+        {
+          "label": "Interact selected. Open radial tools",
+          "x": 202,
+          "y": 670,
+          "width": 44,
+          "height": 44,
+          "top": 670,
+          "right": 246,
+          "bottom": 714,
+          "left": 202
+        }
+      ],
+      "notice": {
+        "selector": "#notice",
+        "x": 71.2353515625,
+        "y": 607.8125,
+        "width": 267.71875,
+        "height": 34.1875,
+        "top": 607.8125,
+        "right": 338.9541015625,
+        "bottom": 642,
+        "left": 71.2353515625
+      },
+      "selection": "none",
+      "overflow": false,
+      "label": "Water"
+    },
+    {
+      "name": "small",
+      "w": 360,
+      "h": 740,
+      "controls": [
+        {
+          "selector": "#play-stick",
+          "x": 10,
+          "y": 646,
+          "width": 80,
+          "height": 80,
+          "top": 646,
+          "right": 90,
+          "bottom": 726,
+          "left": 10
+        },
+        {
+          "selector": "#play-look",
+          "x": 270,
+          "y": 646,
+          "width": 80,
+          "height": 80,
+          "top": 646,
+          "right": 350,
+          "bottom": 726,
+          "left": 270
+        },
+        {
+          "selector": "#play-interact",
+          "x": 238,
+          "y": 564,
+          "width": 112,
+          "height": 68,
+          "top": 564,
+          "right": 350,
+          "bottom": 632,
+          "left": 238
+        },
+        {
+          "selector": "#play-wheel",
+          "x": 186,
+          "y": 576,
+          "width": 44,
+          "height": 44,
+          "top": 576,
+          "right": 230,
+          "bottom": 620,
+          "left": 186
+        },
+        {
+          "selector": "#play-gait",
+          "x": 28,
+          "y": 588,
+          "width": 53.15625,
+          "height": 44,
+          "top": 588,
+          "right": 81.15625,
+          "bottom": 632,
+          "left": 28
+        },
+        {
+          "selector": "#play-recenter",
+          "x": 212,
+          "y": 664,
+          "width": 44,
+          "height": 44,
+          "top": 664,
+          "right": 256,
+          "bottom": 708,
+          "left": 212
+        }
+      ],
+      "overlap": [],
+      "buttons": [
+        {
+          "label": "Switch character",
+          "x": 257,
+          "y": 79,
+          "width": 44,
+          "height": 44,
+          "top": 79,
+          "right": 301,
+          "bottom": 123,
+          "left": 257
+        },
+        {
+          "label": "Exit control mode",
+          "x": 301,
+          "y": 79,
+          "width": 44,
+          "height": 44,
+          "top": 79,
+          "right": 345,
+          "bottom": 123,
+          "left": 301
+        },
+        {
+          "label": "Switch between walking and jogging",
+          "x": 28,
+          "y": 588,
+          "width": 53.15625,
+          "height": 44,
+          "top": 588,
+          "right": 81.15625,
+          "bottom": 632,
+          "left": 28
+        },
+        {
+          "label": "Centre the camera on your character",
+          "x": 212,
+          "y": 664,
+          "width": 44,
+          "height": 44,
+          "top": 664,
+          "right": 256,
+          "bottom": 708,
+          "left": 212
+        },
+        {
+          "label": "Water pumpkin · tap once or hold to keep using",
+          "x": 238,
+          "y": 564,
+          "width": 112,
+          "height": 68,
+          "top": 564,
+          "right": 350,
+          "bottom": 632,
+          "left": 238
+        },
+        {
+          "label": "Interact selected. Open radial tools",
+          "x": 186,
+          "y": 576,
+          "width": 44,
+          "height": 44,
+          "top": 576,
+          "right": 230,
+          "bottom": 620,
+          "left": 186
+        }
+      ],
+      "notice": {
+        "selector": "#notice",
+        "x": 46.140625,
+        "y": 503.8125,
+        "width": 267.71875,
+        "height": 34.1875,
+        "top": 503.8125,
+        "right": 313.859375,
+        "bottom": 538,
+        "left": 46.140625
+      },
+      "selection": "none",
+      "overflow": false,
+      "label": "Water"
+    },
+    {
+      "name": "fold",
+      "w": 874,
+      "h": 787,
+      "controls": [
+        {
+          "selector": "#play-stick",
+          "x": 14,
+          "y": 683,
+          "width": 86,
+          "height": 86,
+          "top": 683,
+          "right": 100,
+          "bottom": 769,
+          "left": 14
+        },
+        {
+          "selector": "#play-look",
+          "x": 774,
+          "y": 683,
+          "width": 86,
+          "height": 86,
+          "top": 683,
+          "right": 860,
+          "bottom": 769,
+          "left": 774
+        },
+        {
+          "selector": "#play-interact",
+          "x": 740,
+          "y": 601,
+          "width": 120,
+          "height": 68,
+          "top": 601,
+          "right": 860,
+          "bottom": 669,
+          "left": 740
+        },
+        {
+          "selector": "#play-wheel",
+          "x": 686,
+          "y": 613,
+          "width": 44,
+          "height": 44,
+          "top": 613,
+          "right": 730,
+          "bottom": 657,
+          "left": 686
+        },
+        {
+          "selector": "#play-gait",
+          "x": 34,
+          "y": 625,
+          "width": 53.15625,
+          "height": 44,
+          "top": 625,
+          "right": 87.15625,
+          "bottom": 669,
+          "left": 34
+        },
+        {
+          "selector": "#play-recenter",
+          "x": 716,
+          "y": 705,
+          "width": 44,
+          "height": 44,
+          "top": 705,
+          "right": 760,
+          "bottom": 749,
+          "left": 716
+        }
+      ],
+      "overlap": [],
+      "buttons": [
+        {
+          "label": "Switch character",
+          "x": 767,
+          "y": 79,
+          "width": 44,
+          "height": 44,
+          "top": 79,
+          "right": 811,
+          "bottom": 123,
+          "left": 767
+        },
+        {
+          "label": "Exit control mode",
+          "x": 811,
+          "y": 79,
+          "width": 44,
+          "height": 44,
+          "top": 79,
+          "right": 855,
+          "bottom": 123,
+          "left": 811
+        },
+        {
+          "label": "Switch between walking and jogging",
+          "x": 34,
+          "y": 625,
+          "width": 53.15625,
+          "height": 44,
+          "top": 625,
+          "right": 87.15625,
+          "bottom": 669,
+          "left": 34
+        },
+        {
+          "label": "Centre the camera on your character",
+          "x": 716,
+          "y": 705,
+          "width": 44,
+          "height": 44,
+          "top": 705,
+          "right": 760,
+          "bottom": 749,
+          "left": 716
+        },
+        {
+          "label": "Water pumpkin · tap once or hold to keep using",
+          "x": 740,
+          "y": 601,
+          "width": 120,
+          "height": 68,
+          "top": 601,
+          "right": 860,
+          "bottom": 669,
+          "left": 740
+        },
+        {
+          "label": "Interact selected. Open radial tools",
+          "x": 686,
+          "y": 613,
+          "width": 44,
+          "height": 44,
+          "top": 613,
+          "right": 730,
+          "bottom": 657,
+          "left": 686
+        }
+      ],
+      "notice": {
+        "selector": "#notice",
+        "x": 303.140625,
+        "y": 550.8125,
+        "width": 267.71875,
+        "height": 34.1875,
+        "top": 550.8125,
+        "right": 570.859375,
+        "bottom": 585,
+        "left": 303.140625
+      },
+      "selection": "none",
+      "overflow": false,
+      "label": "Water"
+    },
+    {
+      "name": "landscape",
+      "w": 844,
+      "h": 390,
+      "controls": [
+        {
+          "selector": "#play-stick",
+          "x": 14,
+          "y": 298,
+          "width": 80,
+          "height": 80,
+          "top": 298,
+          "right": 94,
+          "bottom": 378,
+          "left": 14
+        },
+        {
+          "selector": "#play-look",
+          "x": 750,
+          "y": 298,
+          "width": 80,
+          "height": 80,
+          "top": 298,
+          "right": 830,
+          "bottom": 378,
+          "left": 750
+        },
+        {
+          "selector": "#play-interact",
+          "x": 710,
+          "y": 216,
+          "width": 120,
+          "height": 68,
+          "top": 216,
+          "right": 830,
+          "bottom": 284,
+          "left": 710
+        },
+        {
+          "selector": "#play-wheel",
+          "x": 656,
+          "y": 228,
+          "width": 44,
+          "height": 44,
+          "top": 228,
+          "right": 700,
+          "bottom": 272,
+          "left": 656
+        },
+        {
+          "selector": "#play-gait",
+          "x": 31,
+          "y": 240,
+          "width": 53.15625,
+          "height": 44,
+          "top": 240,
+          "right": 84.15625,
+          "bottom": 284,
+          "left": 31
+        },
+        {
+          "selector": "#play-recenter",
+          "x": 692,
+          "y": 316,
+          "width": 44,
+          "height": 44,
+          "top": 316,
+          "right": 736,
+          "bottom": 360,
+          "left": 692
+        }
+      ],
+      "overlap": [],
+      "buttons": [
+        {
+          "label": "Switch character",
+          "x": 737,
+          "y": 71,
+          "width": 44,
+          "height": 44,
+          "top": 71,
+          "right": 781,
+          "bottom": 115,
+          "left": 737
+        },
+        {
+          "label": "Exit control mode",
+          "x": 781,
+          "y": 71,
+          "width": 44,
+          "height": 44,
+          "top": 71,
+          "right": 825,
+          "bottom": 115,
+          "left": 781
+        },
+        {
+          "label": "Switch between walking and jogging",
+          "x": 31,
+          "y": 240,
+          "width": 53.15625,
+          "height": 44,
+          "top": 240,
+          "right": 84.15625,
+          "bottom": 284,
+          "left": 31
+        },
+        {
+          "label": "Centre the camera on your character",
+          "x": 692,
+          "y": 316,
+          "width": 44,
+          "height": 44,
+          "top": 316,
+          "right": 736,
+          "bottom": 360,
+          "left": 692
+        },
+        {
+          "label": "Water pumpkin · tap once or hold to keep using",
+          "x": 710,
+          "y": 216,
+          "width": 120,
+          "height": 68,
+          "top": 216,
+          "right": 830,
+          "bottom": 284,
+          "left": 710
+        },
+        {
+          "label": "Interact selected. Open radial tools",
+          "x": 656,
+          "y": 228,
+          "width": 44,
+          "height": 44,
+          "top": 228,
+          "right": 700,
+          "bottom": 272,
+          "left": 656
+        }
+      ],
+      "notice": {
+        "selector": "#notice",
+        "x": 288.140625,
+        "y": 169.8125,
+        "width": 267.71875,
+        "height": 34.1875,
+        "top": 169.8125,
+        "right": 555.859375,
+        "bottom": 204,
+        "left": 288.140625
+      },
+      "selection": "none",
+      "overflow": false,
+      "label": "Water"
+    },
+    {
+      "name": "desktop",
+      "w": 1280,
+      "h": 800,
+      "controls": [
+        {
+          "selector": "#play-stick",
+          "x": 22,
+          "y": 688,
+          "width": 90,
+          "height": 90,
+          "top": 688,
+          "right": 112,
+          "bottom": 778,
+          "left": 22
+        },
+        {
+          "selector": "#play-look",
+          "x": 1168,
+          "y": 688,
+          "width": 90,
+          "height": 90,
+          "top": 688,
+          "right": 1258,
+          "bottom": 778,
+          "left": 1168
+        },
+        {
+          "selector": "#play-interact",
+          "x": 1138,
+          "y": 606,
+          "width": 120,
+          "height": 68,
+          "top": 606,
+          "right": 1258,
+          "bottom": 674,
+          "left": 1138
+        },
+        {
+          "selector": "#play-wheel",
+          "x": 1084,
+          "y": 618,
+          "width": 44,
+          "height": 44,
+          "top": 618,
+          "right": 1128,
+          "bottom": 662,
+          "left": 1084
+        },
+        {
+          "selector": "#play-gait",
+          "x": 45,
+          "y": 630,
+          "width": 53.15625,
+          "height": 44,
+          "top": 630,
+          "right": 98.15625,
+          "bottom": 674,
+          "left": 45
+        },
+        {
+          "selector": "#play-recenter",
+          "x": 1110,
+          "y": 711,
+          "width": 44,
+          "height": 44,
+          "top": 711,
+          "right": 1154,
+          "bottom": 755,
+          "left": 1110
+        }
+      ],
+      "overlap": [],
+      "buttons": [
+        {
+          "label": "Switch character",
+          "x": 1173,
+          "y": 79,
+          "width": 44,
+          "height": 44,
+          "top": 79,
+          "right": 1217,
+          "bottom": 123,
+          "left": 1173
+        },
+        {
+          "label": "Exit control mode",
+          "x": 1217,
+          "y": 79,
+          "width": 44,
+          "height": 44,
+          "top": 79,
+          "right": 1261,
+          "bottom": 123,
+          "left": 1217
+        },
+        {
+          "label": "Switch between walking and jogging",
+          "x": 45,
+          "y": 630,
+          "width": 53.15625,
+          "height": 44,
+          "top": 630,
+          "right": 98.15625,
+          "bottom": 674,
+          "left": 45
+        },
+        {
+          "label": "Centre the camera on your character",
+          "x": 1110,
+          "y": 711,
+          "width": 44,
+          "height": 44,
+          "top": 711,
+          "right": 1154,
+          "bottom": 755,
+          "left": 1110
+        },
+        {
+          "label": "Water pumpkin · tap once or hold to keep using",
+          "x": 1138,
+          "y": 606,
+          "width": 120,
+          "height": 68,
+          "top": 606,
+          "right": 1258,
+          "bottom": 674,
+          "left": 1138
+        },
+        {
+          "label": "Interact selected. Open radial tools",
+          "x": 1084,
+          "y": 618,
+          "width": 44,
+          "height": 44,
+          "top": 618,
+          "right": 1128,
+          "bottom": 662,
+          "left": 1084
+        }
+      ],
+      "notice": {
+        "selector": "#notice",
+        "x": 506.140625,
+        "y": 563.8125,
+        "width": 267.71875,
+        "height": 34.1875,
+        "top": 563.8125,
+        "right": 773.859375,
+        "bottom": 598,
+        "left": 506.140625
+      },
+      "selection": "none",
+      "overflow": false,
+      "label": "Water"
+    }
+  ],
+  "touch": {
+    "held": {
+      "move": [
+        0.6644518272425249,
+        0
+      ],
+      "look": [
+        0.6644518272425249,
+        0
+      ]
+    },
+    "lifted": {
+      "move": [
+        0,
+        0
+      ],
+      "look": [
+        0.6644518272425249,
+        0
+      ]
+    }
+  },
+  "actions": [
+    [
+      "hand",
+      {
+        "phase": "start",
+        "source": "pointer",
+        "chain": true
+      }
+    ],
+    [
+      "hand",
+      {
+        "phase": "release",
+        "source": "pointer",
+        "durationMs": 283.60000000009313,
+        "assist": false
+      }
+    ]
+  ]
+}

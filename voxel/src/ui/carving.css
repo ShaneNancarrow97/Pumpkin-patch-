@@ -1,0 +1,107 @@
+/* The carving bench (ui/carving-ui.js): a header over the close-up, and a
+   panel beside it on wide screens or as a sheet at the bottom on phones. */
+.carving{position:fixed;inset:0;z-index:40;pointer-events:none;color:var(--ink);font-family:var(--body)}
+.carving[hidden]{display:none}
+.carving-open #dock,.carving-open #actions,.carving-open #place-bar,.carving-open #play-controls,.carving-open #goal,.carving-open #streak,.carving-open #piece-bar,.carving-open .estate-controls{display:none!important}
+.carving-top{position:absolute;top:calc(env(safe-area-inset-top) + 64px);left:max(12px,env(safe-area-inset-left));display:flex;align-items:center;gap:12px;flex-wrap:wrap;pointer-events:auto;max-width:calc(100% - 24px)}
+.carving-close{width:46px;height:46px;border-radius:14px;border:1px solid var(--edge-soft);background:var(--panel-glass);display:grid;place-items:center;box-shadow:var(--shadow);cursor:pointer}
+.carving-close svg{width:22px;height:22px;fill:none;stroke:var(--gold-bright);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.carving-title small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.carving-title h2{margin:0;font-family:var(--display);font-weight:600;font-size:22px;text-shadow:0 2px 10px #0009}
+.carving-steps{display:flex;gap:4px;list-style:none;margin:0;padding:4px;border-radius:999px;background:#120d1acc;border:1px solid var(--edge-soft)}
+.carving-steps li{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border-radius:999px;font-size:12px;color:var(--ink-soft)}
+.carving-steps span{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;background:#ffffff14}
+.carving-steps li.done span{background:var(--moss);color:#18210f}
+.carving-steps li.now{background:linear-gradient(180deg,#ffd07c2e,#ed983f1f);color:var(--ink)}
+.carving-steps li.now span{background:linear-gradient(180deg,var(--purchase-top),var(--purchase-bottom));color:var(--purchase-ink)}
+@media(max-width:759px){.carving-steps b{display:none}.carving-steps li{padding:4px}.carving-title h2{font-size:19px}}
+.carving-panel{position:absolute;pointer-events:auto;overflow:auto;background:linear-gradient(180deg,#2a2031f2,#1b1522f5);border:1px solid var(--edge-soft);box-shadow:0 18px 40px #05030a99,inset 0 1px 0 #ffffff12;padding:18px;display:flex;flex-direction:column;gap:14px}
+@media(min-width:760px){.carving-panel{right:max(16px,env(safe-area-inset-right));top:calc(env(safe-area-inset-top) + 64px);bottom:20px;width:360px;border-radius:22px}}
+@media(max-width:759px){.carving-panel{left:0;right:0;bottom:0;max-height:44vh;border-radius:22px 22px 0 0;padding:16px max(16px,env(safe-area-inset-left)) calc(16px + env(safe-area-inset-bottom))}}
+.carving-lead{margin:0;font-size:14px;line-height:1.45;color:var(--ink-soft)}
+.carving-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.carving-card{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px 12px;border-radius:16px;border:1px solid var(--edge-soft);background:#ffffff08;color:var(--ink);cursor:pointer;font:inherit;transition:transform .15s,border-color .15s,background .15s}
+.carving-card svg{width:72px;height:64px}
+.carving-card.stencil svg{width:84px;height:84px}
+.carving-card b{font-size:13px;font-weight:600}
+.carving-card small{font-size:11px;color:var(--ink-soft)}
+.carving-card .stars{color:var(--gold-bright);letter-spacing:.1em}
+.carving-card:hover:not(:disabled){transform:translateY(-2px);border-color:var(--gold)}
+.carving-card.picked{border-color:var(--gold-bright);background:linear-gradient(180deg,#ffd07c26,#ed983f12);box-shadow:0 0 0 2px #f2cf9930}
+.carving-card:disabled{opacity:.42;cursor:default}
+.carving-go{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:14px;border:0;font:600 15px var(--body);color:var(--purchase-ink);background:linear-gradient(180deg,var(--purchase-top),var(--purchase-bottom));box-shadow:0 6px 16px #ed983f40,inset 0 1px 0 #fff6;cursor:pointer}
+.carving-go:disabled{filter:saturate(.3) brightness(.7);cursor:default}
+.carving-secondary{min-height:46px;border-radius:14px;border:1px solid var(--edge);background:#ffffff0c;color:var(--ink);font:600 14px var(--body);cursor:pointer}
+.carving-link{align-self:center;border:0;background:none;color:var(--gold);font:500 13px var(--body);text-decoration:underline;cursor:pointer}
+.carving-actions{display:grid;gap:10px}
+.carving-pieces{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.carving-pieces li{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:999px;background:#ffffff0a;border:1px solid var(--edge-soft);font-size:13px}
+.carving-pieces i{width:22px;height:22px;border-radius:50%;background:conic-gradient(var(--gold-bright) calc(var(--p) * 1%),#ffffff1c 0);box-shadow:inset 0 0 0 5px #231a28}
+.carving-pieces li.cut{border-color:#ffc96b88;background:#ffb04a1f}
+.carving-pieces li.cut i{background:radial-gradient(circle,#fff3c4,#ffb04a 60%,#c4661f);box-shadow:0 0 10px #ffb04a99}
+.carving-tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}
+.carving-tools button,.carving-tabs button,.carving-option{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border-radius:12px;border:1px solid var(--edge-soft);background:#ffffff0a;color:var(--ink);font:600 13px var(--body);cursor:pointer}
+.carving-tools svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.carving-tools [aria-pressed="true"],.carving-tabs [aria-selected="true"],.carving-option[aria-pressed="true"]{border-color:var(--gold-bright);background:linear-gradient(180deg,#ffd07c2b,#ed983f14);color:var(--gold-bright)}
+.carving-trace{grid-column:1/-1;background:linear-gradient(180deg,#3b2c44,#2a2031)!important;border-color:var(--edge)!important;user-select:none;-webkit-user-select:none;touch-action:none}
+.carving-trace:active{border-color:var(--gold-bright)!important;color:var(--gold-bright)}
+/* The controls for the step, drawn as the pad's or the keyboard's own buttons. */
+.carving-keys{display:flex;flex-wrap:wrap;gap:6px 12px;margin:2px 0 0;padding-top:10px;border-top:1px solid var(--edge-soft);font-size:12px;color:var(--ink-soft)}
+.carving-keys:empty{display:none}
+.carving-keys span{display:inline-flex;align-items:center;gap:4px}
+.carving-keys b{margin-left:2px;font-weight:500}
+.carving-keys .glyph{transform:scale(.9)}
+/* The pad's (or the arrow keys') highlight in the panel. */
+.carving [data-pad-focus]{outline:2px solid var(--gold-bright);outline-offset:2px;box-shadow:0 0 0 6px #ffd07c22,0 0 22px #ffd07c45!important}
+.carving-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.carving-tabs button{flex:0 0 auto;padding:0 14px;min-height:38px;border-radius:999px}
+.carving-options{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px}
+.carving-option{justify-content:flex-start;padding:0 12px}
+.carving-option i{width:16px;height:16px;border-radius:50%;background:var(--dot);box-shadow:0 0 8px var(--dot),inset 0 0 0 1px #0004}
+.carving-value{display:flex;justify-content:space-between;align-items:baseline;padding:10px 14px;border-radius:14px;background:#00000030;border:1px solid var(--edge-soft)}
+.carving-value span{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.carving-value b{font-family:var(--display);font-size:20px;color:var(--gold-bright)}
+.carving-value.big b{font-size:28px}
+.carving-result{display:flex;flex-direction:column;gap:4px;padding:16px;border-radius:16px;background:radial-gradient(circle at 20% 0,#ffb04a2e,transparent 60%),#00000030;border:1px solid #ffc96b55}
+.carving-result b{font-family:var(--display);font-size:20px}
+.carving-result small{color:var(--ink-soft)}
+@media(prefers-reduced-motion:reduce){.carving-card{transition:none}.carving-card:hover:not(:disabled){transform:none}}
+.carving-go svg{width:20px;height:20px;fill:currentColor;stroke:none}
+.carving-go.glow{animation:carving-glow 1.8s ease-in-out infinite}
+@keyframes carving-glow{50%{box-shadow:0 0 0 4px #ffd07c30,0 8px 30px #ed983f70,inset 0 1px 0 #fff6}}
+/* A ring that fills as the lid is cut, the pulp scooped, or the shapes drawn. */
+.carving-gauge{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:16px;background:#00000030;border:1px solid var(--edge-soft)}
+.carving-gauge i{width:54px;height:54px;flex:0 0 auto;border-radius:50%;background:conic-gradient(var(--gold-bright) calc(var(--p) * 1%),#ffffff1c 0);box-shadow:inset 0 0 0 9px #231a28;transition:background .2s}
+.carving-gauge b{display:block;font-family:var(--display);font-size:18px;font-weight:600}
+.carving-gauge small{font-size:13px;color:var(--ink-soft)}
+.carving-note{margin:0;padding:8px 12px;border-radius:12px;background:#f3c46c14;border:1px solid #f3c46c3a;font-size:13px;line-height:1.4}
+/* The stencil book: tabs by kind, locked pages for the master stencils. */
+.carving-tabs.book button{min-height:34px;font-size:12.5px}
+.carving-card{position:relative}
+.carving-card.locked{filter:grayscale(.6)}
+.carving-lock,.carving-tag{font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px}
+.carving-lock{background:#00000045;color:var(--ink-soft)}
+.carving-tag{background:#9fd3ff1f;color:#c6e6ff}
+.carving-pieces li.etch i{background:conic-gradient(#9fd3ff calc(var(--p) * 1%),#ffffff1c 0)}
+.carving-pieces li.etch.cut{border-color:#9fd3ff66;background:#9fd3ff14}
+.carving-pieces li.etch.cut i{background:radial-gradient(circle,#fff3c4,#f3c46c 60%,#c48a3a);box-shadow:0 0 10px #f3c46c88}
+/* The finished lantern's photo, on a print with its name under it. */
+.carving-photo{margin:0;display:flex;flex-direction:column;padding:10px 10px 12px;border-radius:16px;background:linear-gradient(180deg,#f6eddb,#e7d9bc);box-shadow:0 16px 34px #05030a99,inset 0 0 0 1px #fff8;transform:rotate(-1.2deg);color:#2a1d20}
+.carving-photo img,.carving-photo-wait{display:block;width:100%;aspect-ratio:1;border-radius:9px;object-fit:cover;background:#120d18}
+.carving-photo-wait{background:radial-gradient(circle at 50% 56%,#ffb04a55,#120d18 62%);animation:carving-wait 1.4s ease-in-out infinite}
+@keyframes carving-wait{50%{filter:brightness(1.3)}}
+.carving-photo figcaption{display:flex;flex-direction:column;gap:2px;padding:10px 4px 0}
+.carving-photo figcaption b{font-family:var(--display);font-size:20px;font-weight:600}
+.carving-photo figcaption small{font-size:13px;color:#6a5a50}
+.carving-name{display:flex;flex-direction:column;gap:4px}
+.carving-name small{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7a6658}
+.carving-name input{min-width:0;padding:8px 10px;border-radius:10px;border:1px solid #c9b48e;background:#fffaf0;color:#2a1d20;font:600 18px var(--display)}
+.carving-name input::placeholder{color:#a0907e}
+.carving-name input:focus{outline:2px solid var(--gold);outline-offset:1px}
+@media(max-width:759px){.carving-photo{width:min(240px,62vw);align-self:center}.carving-panel[data-step="finish"]{gap:10px}}
+@media(prefers-reduced-motion:reduce){.carving-go.glow,.carving-photo-wait{animation:none}}
+/* The shapes a pumpkin can be: ribbed, round, tall, squat and warty. */
+.carving-shapes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.carving-shape{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px 7px;border-radius:12px;border:1px solid var(--edge-soft);background:#ffffff08;color:var(--ink-soft);font:600 11px var(--body);cursor:pointer}
+.carving-shape svg{width:34px;height:31px}
+.carving-shape[aria-pressed="true"]{border-color:var(--gold-bright);background:linear-gradient(180deg,#ffd07c26,#ed983f12);color:var(--gold-bright)}

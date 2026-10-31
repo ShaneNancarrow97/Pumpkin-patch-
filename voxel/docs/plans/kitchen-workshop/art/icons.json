@@ -1,0 +1,268 @@
+{
+  "source": "kitchen-workshop-source.png",
+  "sourceSha256": "9c29b751ec041ea8cb712e6af89d6dc3f8710ae3cb8e5e9566c08656aae8fd65",
+  "runtime": "assets/kitchen-workshop-icons.webp",
+  "runtimeSha256": "e130aa0f6634f3bb4c76a0d40aa09718514c598d3d61f2171aad3f3f36ff802c",
+  "width": 768,
+  "height": 576,
+  "bytes": 144156,
+  "columns": 4,
+  "rows": 3,
+  "cellSize": 192,
+  "minimumTransparentGutter": 16,
+  "cssDisplaySize": 52,
+  "cells": [
+    {
+      "index": 0,
+      "id": "hob",
+      "sourceComponent": 124,
+      "sourceAlphaBounds": [
+        22,
+        133,
+        373,
+        343
+      ],
+      "sourceCrop": [
+        19,
+        130,
+        375,
+        346
+      ],
+      "packedSize": [
+        160,
+        97
+      ]
+    },
+    {
+      "index": 1,
+      "id": "oven",
+      "sourceComponent": 3,
+      "sourceAlphaBounds": [
+        395,
+        28,
+        703,
+        360
+      ],
+      "sourceCrop": [
+        392,
+        26,
+        706,
+        363
+      ],
+      "packedSize": [
+        149,
+        160
+      ]
+    },
+    {
+      "index": 2,
+      "id": "pot",
+      "sourceComponent": 1,
+      "sourceAlphaBounds": [
+        733,
+        17,
+        1075,
+        352
+      ],
+      "sourceCrop": [
+        730,
+        14,
+        1078,
+        355
+      ],
+      "packedSize": [
+        160,
+        157
+      ]
+    },
+    {
+      "index": 3,
+      "id": "pan",
+      "sourceComponent": 20,
+      "sourceAlphaBounds": [
+        1101,
+        76,
+        1439,
+        354
+      ],
+      "sourceCrop": [
+        1098,
+        73,
+        1442,
+        357
+      ],
+      "packedSize": [
+        160,
+        132
+      ]
+    },
+    {
+      "index": 4,
+      "id": "tray",
+      "sourceComponent": 583,
+      "sourceAlphaBounds": [
+        10,
+        439,
+        398,
+        718
+      ],
+      "sourceCrop": [
+        8,
+        436,
+        401,
+        721
+      ],
+      "packedSize": [
+        160,
+        116
+      ]
+    },
+    {
+      "index": 5,
+      "id": "spice",
+      "sourceComponent": 511,
+      "sourceAlphaBounds": [
+        392,
+        379,
+        732,
+        712
+      ],
+      "sourceCrop": [
+        389,
+        376,
+        735,
+        715
+      ],
+      "packedSize": [
+        160,
+        157
+      ]
+    },
+    {
+      "index": 6,
+      "id": "garden-skillet",
+      "sourceComponent": 512,
+      "sourceAlphaBounds": [
+        747,
+        387,
+        1088,
+        699
+      ],
+      "sourceCrop": [
+        744,
+        385,
+        1091,
+        701
+      ],
+      "packedSize": [
+        160,
+        146
+      ]
+    },
+    {
+      "index": 7,
+      "id": "harvest-broth",
+      "sourceComponent": 574,
+      "sourceAlphaBounds": [
+        1092,
+        429,
+        1438,
+        679
+      ],
+      "sourceCrop": [
+        1089,
+        426,
+        1440,
+        682
+      ],
+      "packedSize": [
+        160,
+        117
+      ]
+    },
+    {
+      "index": 8,
+      "id": "spiced-roast",
+      "sourceComponent": 1035,
+      "sourceAlphaBounds": [
+        11,
+        761,
+        378,
+        1026
+      ],
+      "sourceCrop": [
+        9,
+        758,
+        381,
+        1029
+      ],
+      "packedSize": [
+        160,
+        117
+      ]
+    },
+    {
+      "index": 9,
+      "id": "moonfire-chicken",
+      "sourceComponent": 1031,
+      "sourceAlphaBounds": [
+        379,
+        745,
+        733,
+        1025
+      ],
+      "sourceCrop": [
+        376,
+        742,
+        736,
+        1027
+      ],
+      "packedSize": [
+        160,
+        127
+      ]
+    },
+    {
+      "index": 10,
+      "id": "haunted-pie",
+      "sourceComponent": 1032,
+      "sourceAlphaBounds": [
+        740,
+        746,
+        1078,
+        1028
+      ],
+      "sourceCrop": [
+        737,
+        744,
+        1081,
+        1031
+      ],
+      "packedSize": [
+        160,
+        133
+      ]
+    },
+    {
+      "index": 11,
+      "id": "pumpkin-spice-biscuits",
+      "sourceComponent": 1037,
+      "sourceAlphaBounds": [
+        1085,
+        764,
+        1443,
+        1023
+      ],
+      "sourceCrop": [
+        1082,
+        762,
+        1446,
+        1026
+      ],
+      "packedSize": [
+        160,
+        116
+      ]
+    }
+  ]
+}

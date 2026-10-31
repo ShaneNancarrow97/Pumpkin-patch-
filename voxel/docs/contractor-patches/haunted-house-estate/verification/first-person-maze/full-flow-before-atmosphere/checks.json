@@ -1,0 +1,3851 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-House-Ride.html",
+  "sha256": "76434de1a4dac6223deb7018a73676e1ed5c8769ede20d6fc25766f35d86ad70",
+  "dpr": 1,
+  "bloomAndShadows": false,
+  "checks": [
+    {
+      "ok": true,
+      "label": "walkthrough test API is available"
+    },
+    {
+      "ok": true,
+      "label": "fresh derelict house rejects entry and start",
+      "data": {
+        "open": false,
+        "start": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "restoring attraction rejects entry"
+    },
+    {
+      "ok": true,
+      "label": "actual foyer doorway click opens the briefing",
+      "data": {
+        "x": 960.5393398459904,
+        "y": 324.8570111103012
+      }
+    },
+    {
+      "ok": true,
+      "label": "Escape closes the briefing and returns to the foyer"
+    },
+    {
+      "ok": true,
+      "label": "restored closed attraction admits a free owner preview"
+    },
+    {
+      "ok": true,
+      "label": "entry presents a briefing before motion"
+    },
+    {
+      "ok": true,
+      "label": "reduced motion defaults gentle motion on"
+    },
+    {
+      "ok": true,
+      "label": "desktop briefing: controls fit with 44px targets",
+      "data": {
+        "width": 1280,
+        "height": 800,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "sound",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 362.5,
+            "bottom": 406.5
+          },
+          {
+            "action": "gentle",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 412.5,
+            "bottom": 456.5
+          },
+          {
+            "action": "volume",
+            "width": 267.46875,
+            "height": 44,
+            "left": 549.53125,
+            "right": 817,
+            "top": 464.5,
+            "bottom": 508.5
+          },
+          {
+            "action": "start",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 522.5,
+            "bottom": 566.5
+          },
+          {
+            "action": "exit",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 574.5,
+            "bottom": 618.5
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual Start gesture enters the running walkthrough",
+      "data": {
+        "active": true,
+        "id": "maze-run-2",
+        "status": "running",
+        "tier": 5,
+        "title": "The Hollow House",
+        "elapsed": 0.2,
+        "duration": 56,
+        "progress": 0.0035714285714285718,
+        "paused": false,
+        "completed": false,
+        "zone": "forgotten-passage",
+        "zoneName": "Forgotten passage",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          },
+          {
+            "id": "velvet-crypt",
+            "name": "Velvet crypt"
+          }
+        ],
+        "eventsFired": [],
+        "encounters": 5,
+        "activeHaunts": [],
+        "terror": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": true,
+        "gentle": true,
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": 3.735050009130507,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": 3.735050009130507,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 6,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 14611,
+        "floorCells": 2532,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 0.9116116797224301,
+            "y": 0.04,
+            "z": -9.249163226851948,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 12.25,
+            "y": 0.04,
+            "z": -19.563412438369085,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -2.1500000000000004,
+            "y": 0.04,
+            "z": -33.563412438369085,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 12.25,
+            "y": 0.04,
+            "z": -47.56341243836915,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -57.73928759815278,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": null,
+        "phase": "running",
+        "audio": {
+          "active": true,
+          "paused": false,
+          "muted": false,
+          "volume": 0.35,
+          "voices": 2,
+          "context": "running",
+          "cues": 0
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "Start gesture unlocks bounded offline ride audio",
+      "data": {
+        "active": true,
+        "paused": false,
+        "muted": false,
+        "volume": 0.35,
+        "voices": 2,
+        "context": "running",
+        "cues": 0
+      }
+    },
+    {
+      "ok": true,
+      "label": "farm music is ducked during the walkthrough"
+    },
+    {
+      "ok": true,
+      "label": "walkthrough clock advances while the ordinary farm is paused",
+      "data": {
+        "elapsed0": 0.2,
+        "elapsed": 1.2,
+        "farmTime0": 272.9999999999936
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop running: controls fit with 44px targets",
+      "data": {
+        "width": 1280,
+        "height": 800,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 75.921875,
+            "height": 44,
+            "left": 390.4375,
+            "right": 466.359375,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 90.53125,
+            "height": 44,
+            "left": 630.90625,
+            "right": 721.4375,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 112.125,
+            "height": 44,
+            "left": 727.4375,
+            "right": 839.5625,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "fullscreen",
+            "width": 44,
+            "height": 44,
+            "left": 845.5625,
+            "right": 889.5625,
+            "top": 13,
+            "bottom": 57
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "ride Sound control mutes and clears its voices"
+    },
+    {
+      "ok": true,
+      "label": "ride Sound control restores bounded ambience"
+    },
+    {
+      "ok": true,
+      "label": "real touch drag changes look within comfortable bounds",
+      "data": {
+        "lookYaw": -0.7554343389072836,
+        "lookPitch": -0.33574859506990384
+      }
+    },
+    {
+      "ok": true,
+      "label": "touch, tap, wheel and farm shortcuts do not leak into the farm or pointer lock"
+    },
+    {
+      "ok": true,
+      "label": "Escape pauses motion and clears active sounds",
+      "data": {
+        "active": true,
+        "paused": true,
+        "muted": false,
+        "volume": 0.35,
+        "voices": 0,
+        "context": "running",
+        "cues": 0
+      }
+    },
+    {
+      "ok": true,
+      "label": "paused artificial advancement cannot move time or duplicate cues"
+    },
+    {
+      "ok": true,
+      "label": "Maze volume preference updates through its keyboard-accessible control",
+      "data": {
+        "active": true,
+        "paused": true,
+        "muted": false,
+        "volume": 0.05,
+        "voices": 0,
+        "context": "running",
+        "cues": 0
+      }
+    },
+    {
+      "ok": true,
+      "label": "Gentle motion control updates the view independently"
+    },
+    {
+      "ok": true,
+      "label": "Gentle motion can be restored before resuming"
+    },
+    {
+      "ok": true,
+      "label": "explicit Resume gesture restarts the ride"
+    },
+    {
+      "ok": true,
+      "label": "visibility interruption pauses the ride and stops voices",
+      "data": {
+        "active": true,
+        "paused": true,
+        "muted": false,
+        "volume": 0.05,
+        "voices": 0,
+        "context": "running",
+        "cues": 1
+      }
+    },
+    {
+      "ok": true,
+      "label": "returning visibility waits for explicit Resume"
+    },
+    {
+      "ok": true,
+      "label": "large advancement completes exactly at the route duration",
+      "data": {
+        "active": true,
+        "id": "maze-run-2",
+        "status": "complete",
+        "tier": 5,
+        "title": "The Hollow House",
+        "elapsed": 56,
+        "duration": 56,
+        "progress": 1,
+        "paused": false,
+        "completed": true,
+        "zone": "velvet-crypt",
+        "zoneName": "Velvet crypt",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          },
+          {
+            "id": "velvet-crypt",
+            "name": "Velvet crypt"
+          }
+        ],
+        "eventsFired": [
+          "forgotten-passage:baseline",
+          "cobweb-cellar:baseline",
+          "seance-parlour:baseline",
+          "storm-laboratory:baseline",
+          "velvet-crypt:baseline"
+        ],
+        "encounters": 5,
+        "activeHaunts": [],
+        "terror": 35,
+        "lookYaw": -0.7853981633974483,
+        "lookPitch": -0.3490658503988659,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": false,
+        "gentle": true,
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -60.1,
+          "yaw": -0.7853981633974483,
+          "pitch": -0.3490658503988659
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": -60.1,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 7,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 14611,
+        "floorCells": 2532,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 0.9116116797224301,
+            "y": 0.04,
+            "z": -9.147600954234601,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 12.25,
+            "y": 0.04,
+            "z": -19.563412438369085,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -2.1500000000000004,
+            "y": 0.04,
+            "z": -33.563412438369085,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 12.25,
+            "y": 0.04,
+            "z": -47.56341243836915,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -57.73928759815278,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": null,
+        "phase": "complete",
+        "audio": {
+          "active": true,
+          "paused": true,
+          "muted": false,
+          "volume": 0.05,
+          "voices": 0,
+          "context": "running",
+          "cues": 5
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "completed timeline emits no duplicate encounters"
+    },
+    {
+      "ok": true,
+      "label": "Replay resets the presentation timeline and encounter history",
+      "data": {
+        "active": true,
+        "id": "maze-run-3",
+        "status": "running",
+        "tier": 5,
+        "title": "The Hollow House",
+        "elapsed": 0.2,
+        "duration": 56,
+        "progress": 0.0035714285714285718,
+        "paused": false,
+        "completed": false,
+        "zone": "forgotten-passage",
+        "zoneName": "Forgotten passage",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          },
+          {
+            "id": "velvet-crypt",
+            "name": "Velvet crypt"
+          }
+        ],
+        "eventsFired": [],
+        "encounters": 5,
+        "activeHaunts": [],
+        "terror": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": true,
+        "gentle": true,
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": 3.735050009130507,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": 3.735050009130507,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 6,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 14611,
+        "floorCells": 2532,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 0.9116116797224301,
+            "y": 0.04,
+            "z": -9.249163226851948,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 12.25,
+            "y": 0.04,
+            "z": -19.563412438369085,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -2.1500000000000004,
+            "y": 0.04,
+            "z": -33.563412438369085,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 12.25,
+            "y": 0.04,
+            "z": -47.56341243836915,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -57.73928759815278,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": null,
+        "phase": "running",
+        "audio": {
+          "active": true,
+          "paused": false,
+          "muted": false,
+          "volume": 0.05,
+          "voices": 2,
+          "context": "running",
+          "cues": 0
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "Replay keeps stable native scene resources and one WebGL canvas",
+      "data": {
+        "before": {
+          "geometryCount": 6,
+          "textureCount": 3,
+          "lightCount": 6
+        },
+        "after": {
+          "geometryCount": 6,
+          "textureCount": 3,
+          "lightCount": 6
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "Exit returns immediately to the foyer"
+    },
+    {
+      "ok": true,
+      "label": "Exit restores the farm music mix and stops ride voices"
+    },
+    {
+      "ok": true,
+      "label": "free owner preview, replay and Exit preserve a genuine paid guest, receipts and complete farm state"
+    },
+    {
+      "ok": true,
+      "label": "live farm advances over two ride frames without charging a second owner ticket",
+      "data": {
+        "before": {
+          "time": 272.9999999999936,
+          "tickets": 1,
+          "receipts": "[{\"visitId\":\"hollow-0\",\"visitor\":12,\"amount\":6,\"at\":272.9999999999936}]",
+          "coins": 801
+        },
+        "after": {
+          "time": 273.1999999999936,
+          "tickets": 1,
+          "receipts": "[{\"visitId\":\"hollow-0\",\"visitor\":12,\"amount\":6,\"at\":272.9999999999936}]",
+          "coins": 801
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 1 snapshots only its owned, active, valid haunts",
+      "data": {
+        "tier": 1,
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          }
+        ],
+        "activeHaunts": [
+          "cobweb-canopy"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 1: Forgotten passage has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Forgotten passage",
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": 0.27821428571428264,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": true,
+            "x": -0.9299999999999997,
+            "y": 0.04,
+            "z": -2.76321428571429,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -5.377500000000003,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 1 completes all cues once with bounded render batches/lights",
+      "data": {
+        "events": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy"
+        ],
+        "lightCount": 6,
+        "batches": 3,
+        "geometryCount": 4
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 2 snapshots only its owned, active, valid haunts",
+      "data": {
+        "tier": 2,
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          }
+        ],
+        "activeHaunts": [
+          "cobweb-canopy",
+          "whispering-portraits"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 2: Forgotten passage has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Forgotten passage",
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -2.978915044401897,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": true,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.882668432644818,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 3.6618948324990366,
+            "y": 0.04,
+            "z": -4.813125768258878,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -12.234418752212727,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 5.649999999999999,
+            "y": 0.04,
+            "z": -16.76249008947902,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 2: Cobweb cellar has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Cobweb cellar",
+        "camera": {
+          "x": 10,
+          "y": 1.65,
+          "z": -9.31554160570338,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.882668432644818,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 3.6618948324990366,
+            "y": 0.04,
+            "z": -4.813125768258878,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": true,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -12.234418752212727,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 5.649999999999999,
+            "y": 0.04,
+            "z": -16.76249008947902,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 2 completes all cues once with bounded render batches/lights",
+      "data": {
+        "events": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy",
+          "cobweb-cellar:baseline",
+          "cobweb-cellar:whispering-portraits"
+        ],
+        "lightCount": 6,
+        "batches": 3,
+        "geometryCount": 6
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 3 snapshots only its owned, active, valid haunts",
+      "data": {
+        "tier": 3,
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          }
+        ],
+        "activeHaunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 3: Forgotten passage has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Forgotten passage",
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -2.597657561478244,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": true,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.412887970454453,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 5.2352333759424,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -15.588763130238416,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 10,
+            "y": 0.04,
+            "z": -23.209358216158464,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -25.764638290022386,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -33.385233375942384,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 3: Cobweb cellar has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Cobweb cellar",
+        "camera": {
+          "x": 10,
+          "y": 1.65,
+          "z": -12.75158693367522,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.412887970454453,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 5.2352333759424,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": true,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.588763130238416,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 10,
+            "y": 0.04,
+            "z": -23.209358216158464,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -25.764638290022386,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -33.385233375942384,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 3: Séance parlour has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Séance parlour",
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -22.927462093459187,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.412887970454453,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 5.2352333759424,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.588763130238416,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 10,
+            "y": 0.04,
+            "z": -23.209358216158464,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": true,
+            "x": -0.9299999999999997,
+            "y": 0.04,
+            "z": -25.764638290022386,
+            "pose": "scare"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -33.385233375942384,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 3 completes all cues once with bounded render batches/lights",
+      "data": {
+        "events": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy",
+          "cobweb-cellar:baseline",
+          "cobweb-cellar:whispering-portraits",
+          "seance-parlour:baseline",
+          "seance-parlour:spectral-parade"
+        ],
+        "lightCount": 6,
+        "batches": 3,
+        "geometryCount": 8
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 4 snapshots only its owned, active, valid haunts",
+      "data": {
+        "tier": 4,
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          }
+        ],
+        "activeHaunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade",
+          "thunder-chamber"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 4: Forgotten passage has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Forgotten passage",
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -2.298190940663403,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": true,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.07733049746134,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 6.358621437701959,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -15.2532056572453,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 9.663559416755842,
+            "y": 0.04,
+            "z": -23.206868568394377,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -29.253205657245324,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0.3364405832442182,
+            "y": 0.04,
+            "z": -37.2068685683944,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 14.380657041954073,
+            "y": 0.04,
+            "z": -38.51887565160462,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 10,
+            "y": 0.04,
+            "z": -47.400251595177885,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 4: Cobweb cellar has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Cobweb cellar",
+        "camera": {
+          "x": 10,
+          "y": 1.65,
+          "z": -12.474387282072211,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.07733049746134,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 6.358621437701959,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": true,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.2532056572453,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 9.663559416755842,
+            "y": 0.04,
+            "z": -23.206868568394377,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -29.253205657245324,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0.3364405832442182,
+            "y": 0.04,
+            "z": -37.2068685683944,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 14.380657041954073,
+            "y": 0.04,
+            "z": -38.51887565160462,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 10,
+            "y": 0.04,
+            "z": -47.400251595177885,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 4: Séance parlour has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Séance parlour",
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -26.474387282072232,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.07733049746134,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 6.358621437701959,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.2532056572453,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 9.663559416755842,
+            "y": 0.04,
+            "z": -23.206868568394377,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": true,
+            "x": -0.9299999999999997,
+            "y": 0.04,
+            "z": -29.253205657245324,
+            "pose": "scare"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0.3364405832442182,
+            "y": 0.04,
+            "z": -37.2068685683944,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 14.380657041954073,
+            "y": 0.04,
+            "z": -38.51887565160462,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 10,
+            "y": 0.04,
+            "z": -47.400251595177885,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 4: Storm laboratory has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Storm laboratory",
+        "camera": {
+          "x": 10,
+          "y": 1.65,
+          "z": -35.74189259933207,
+          "yaw": -0.014071326845277178,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.07733049746134,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 6.358621437701959,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.2532056572453,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 9.663559416755842,
+            "y": 0.04,
+            "z": -23.206868568394377,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -0.9299999999999997,
+            "y": 0.04,
+            "z": -29.253205657245324,
+            "pose": "scare"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0.3364405832442182,
+            "y": 0.04,
+            "z": -37.2068685683944,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": true,
+            "x": 11.060657041954071,
+            "y": 0.04,
+            "z": -38.51887565160462,
+            "pose": "scare"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 10,
+            "y": 0.04,
+            "z": -47.400251595177885,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 4 completes all cues once with bounded render batches/lights",
+      "data": {
+        "events": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy",
+          "cobweb-cellar:baseline",
+          "cobweb-cellar:whispering-portraits",
+          "seance-parlour:baseline",
+          "seance-parlour:spectral-parade",
+          "storm-laboratory:baseline",
+          "storm-laboratory:thunder-chamber"
+        ],
+        "lightCount": 6,
+        "batches": 3,
+        "geometryCount": 9
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 5 snapshots only its owned, active, valid haunts",
+      "data": {
+        "tier": 5,
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          },
+          {
+            "id": "velvet-crypt",
+            "name": "Velvet crypt"
+          }
+        ],
+        "activeHaunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade",
+          "thunder-chamber",
+          "phantom-finale"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 5: Forgotten passage has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Forgotten passage",
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -2.4081531871756217,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": true,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.112912347064003,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 7.4884124383691795,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -15.001537552500452,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 6.630360225704402,
+            "y": 0.04,
+            "z": -18.815985964368988,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -29.001537552500476,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 3.369639774295634,
+            "y": 0.04,
+            "z": -32.81598596436894,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -42.31441262097953,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.5237735997384139,
+            "y": 0.04,
+            "z": -50.372217603054885,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -2.163624894269891,
+            "y": 0.04,
+            "z": -49.0139808903603,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:phantom-finale",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -61.439162575326556,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 5: Cobweb cellar has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Cobweb cellar",
+        "camera": {
+          "x": 10,
+          "y": 1.65,
+          "z": -12.266487543369934,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.112912347064003,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 7.4884124383691795,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": true,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.001537552500452,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 6.630360225704402,
+            "y": 0.04,
+            "z": -18.815985964368988,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -29.001537552500476,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 3.369639774295634,
+            "y": 0.04,
+            "z": -32.81598596436894,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -42.31441262097953,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.5237735997384139,
+            "y": 0.04,
+            "z": -50.372217603054885,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -2.163624894269891,
+            "y": 0.04,
+            "z": -49.0139808903603,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:phantom-finale",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -61.439162575326556,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 5: Séance parlour has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Séance parlour",
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -26.26648754336997,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.112912347064003,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 7.4884124383691795,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.001537552500452,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 6.630360225704402,
+            "y": 0.04,
+            "z": -18.815985964368988,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": true,
+            "x": -0.9299999999999997,
+            "y": 0.04,
+            "z": -29.001537552500476,
+            "pose": "scare"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 3.369639774295634,
+            "y": 0.04,
+            "z": -32.81598596436894,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -42.31441262097953,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.5237735997384139,
+            "y": 0.04,
+            "z": -50.372217603054885,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -2.163624894269891,
+            "y": 0.04,
+            "z": -49.0139808903603,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:phantom-finale",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -61.439162575326556,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 5: Storm laboratory has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Storm laboratory",
+        "camera": {
+          "x": 10,
+          "y": 1.65,
+          "z": -39.57936261184902,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.112912347064003,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 7.4884124383691795,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.001537552500452,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 6.630360225704402,
+            "y": 0.04,
+            "z": -18.815985964368988,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -0.9299999999999997,
+            "y": 0.04,
+            "z": -29.001537552500476,
+            "pose": "scare"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 3.369639774295634,
+            "y": 0.04,
+            "z": -32.81598596436894,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": true,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -42.31441262097953,
+            "pose": "scare"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.5237735997384139,
+            "y": 0.04,
+            "z": -50.372217603054885,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -2.163624894269891,
+            "y": 0.04,
+            "z": -49.0139808903603,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:phantom-finale",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -61.439162575326556,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 5: Velvet crypt has a finite eye-height view and encounter",
+      "data": {
+        "zone": "Velvet crypt",
+        "camera": {
+          "x": 0.9213875251090357,
+          "y": 1.65,
+          "z": -49,
+          "yaw": 1.473282518791423,
+          "pitch": 0
+        },
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.112912347064003,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 7.4884124383691795,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.001537552500452,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 6.630360225704402,
+            "y": 0.04,
+            "z": -18.815985964368988,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -0.9299999999999997,
+            "y": 0.04,
+            "z": -29.001537552500476,
+            "pose": "scare"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 3.369639774295634,
+            "y": 0.04,
+            "z": -32.81598596436894,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -42.31441262097953,
+            "pose": "scare"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.5237735997384139,
+            "y": 0.04,
+            "z": -50.372217603054885,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": true,
+            "x": -1.633624894269891,
+            "y": 0.04,
+            "z": -49.0139808903603,
+            "pose": "scare"
+          },
+          {
+            "id": "velvet-crypt:phantom-finale",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -61.439162575326556,
+            "pose": "lurking"
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "390x844 running: controls fit with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 63.234375,
+            "height": 44,
+            "left": 13,
+            "right": 76.234375,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 44,
+            "height": 44,
+            "left": 289,
+            "right": 333,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 44,
+            "height": 44,
+            "left": 333,
+            "right": 377,
+            "top": 13,
+            "bottom": 57
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "390x844 paused: controls fit with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 63.234375,
+            "height": 44,
+            "left": 13,
+            "right": 76.234375,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 44,
+            "height": 44,
+            "left": 289,
+            "right": 333,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 44,
+            "height": 44,
+            "left": 333,
+            "right": 377,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 379.015625,
+            "bottom": 423.015625
+          },
+          {
+            "action": "gentle",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 429.015625,
+            "bottom": 473.015625
+          },
+          {
+            "action": "volume",
+            "width": 213.46875,
+            "height": 44,
+            "left": 131.53125,
+            "right": 345,
+            "top": 481.015625,
+            "bottom": 525.015625
+          },
+          {
+            "action": "resume",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 539.015625,
+            "bottom": 583.015625
+          },
+          {
+            "action": "exit",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 591.015625,
+            "bottom": 635.015625
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "844x390 running: controls fit with 44px targets",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 75.921875,
+            "height": 44,
+            "left": 195.28125,
+            "right": 271.203125,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 90.53125,
+            "height": 44,
+            "left": 390.046875,
+            "right": 480.578125,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 112.125,
+            "height": 44,
+            "left": 486.578125,
+            "right": 598.703125,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "fullscreen",
+            "width": 44,
+            "height": 44,
+            "left": 604.703125,
+            "right": 648.703125,
+            "top": 13,
+            "bottom": 57
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "844x390 paused: controls fit with 44px targets",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 75.921875,
+            "height": 44,
+            "left": 189.09375,
+            "right": 265.015625,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 102.90625,
+            "height": 44,
+            "left": 383.859375,
+            "right": 486.765625,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 112.125,
+            "height": 44,
+            "left": 492.765625,
+            "right": 604.890625,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "fullscreen",
+            "width": 44,
+            "height": 44,
+            "left": 610.890625,
+            "right": 654.890625,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 216,
+            "height": 44,
+            "left": 203,
+            "right": 419,
+            "top": 197.703125,
+            "bottom": 241.703125
+          },
+          {
+            "action": "gentle",
+            "width": 216,
+            "height": 44,
+            "left": 425,
+            "right": 641,
+            "top": 197.703125,
+            "bottom": 241.703125
+          },
+          {
+            "action": "volume",
+            "width": 335.46875,
+            "height": 44,
+            "left": 297.53125,
+            "right": 633,
+            "top": 249.703125,
+            "bottom": 293.703125
+          },
+          {
+            "action": "resume",
+            "width": 215,
+            "height": 44,
+            "left": 203,
+            "right": 418,
+            "top": 301.703125,
+            "bottom": 345.703125
+          },
+          {
+            "action": "exit",
+            "width": 215,
+            "height": 44,
+            "left": 426,
+            "right": 641,
+            "top": 301.703125,
+            "bottom": 345.703125
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "874x787 running: controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 75.921875,
+            "height": 44,
+            "left": 210.28125,
+            "right": 286.203125,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 90.53125,
+            "height": 44,
+            "left": 405.046875,
+            "right": 495.578125,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 112.125,
+            "height": 44,
+            "left": 501.578125,
+            "right": 613.703125,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "fullscreen",
+            "width": 44,
+            "height": 44,
+            "left": 619.703125,
+            "right": 663.703125,
+            "top": 13,
+            "bottom": 57
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "874x787 paused: controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 75.921875,
+            "height": 44,
+            "left": 204.09375,
+            "right": 280.015625,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 102.90625,
+            "height": 44,
+            "left": 398.859375,
+            "right": 501.765625,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 112.125,
+            "height": 44,
+            "left": 507.765625,
+            "right": 619.890625,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "fullscreen",
+            "width": 44,
+            "height": 44,
+            "left": 625.890625,
+            "right": 669.890625,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 370,
+            "height": 44,
+            "left": 252,
+            "right": 622,
+            "top": 350.515625,
+            "bottom": 394.515625
+          },
+          {
+            "action": "gentle",
+            "width": 370,
+            "height": 44,
+            "left": 252,
+            "right": 622,
+            "top": 400.515625,
+            "bottom": 444.515625
+          },
+          {
+            "action": "volume",
+            "width": 267.46875,
+            "height": 44,
+            "left": 346.53125,
+            "right": 614,
+            "top": 452.515625,
+            "bottom": 496.515625
+          },
+          {
+            "action": "resume",
+            "width": 370,
+            "height": 44,
+            "left": 252,
+            "right": 622,
+            "top": 510.515625,
+            "bottom": 554.515625
+          },
+          {
+            "action": "exit",
+            "width": 370,
+            "height": 44,
+            "left": 252,
+            "right": 622,
+            "top": 562.515625,
+            "bottom": 606.515625
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "tier 5 completes all cues once with bounded render batches/lights",
+      "data": {
+        "events": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy",
+          "cobweb-cellar:baseline",
+          "cobweb-cellar:whispering-portraits",
+          "seance-parlour:baseline",
+          "seance-parlour:spectral-parade",
+          "storm-laboratory:baseline",
+          "storm-laboratory:thunder-chamber",
+          "velvet-crypt:baseline",
+          "velvet-crypt:phantom-finale"
+        ],
+        "lightCount": 6,
+        "batches": 3,
+        "geometryCount": 7
+      }
+    },
+    {
+      "ok": true,
+      "label": "portrait full-tier briefing: controls fit with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "sound",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 393.59375,
+            "bottom": 437.59375
+          },
+          {
+            "action": "gentle",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 443.59375,
+            "bottom": 487.59375
+          },
+          {
+            "action": "volume",
+            "width": 213.46875,
+            "height": 44,
+            "left": 131.53125,
+            "right": 345,
+            "top": 495.59375,
+            "bottom": 539.59375
+          },
+          {
+            "action": "start",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 553.59375,
+            "bottom": 597.59375
+          },
+          {
+            "action": "exit",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 605.59375,
+            "bottom": 649.59375
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "inactive owned and active unowned installations add no extra encounters",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "ordinary farm simulation can advance independently while the walkthrough is paused"
+    },
+    {
+      "ok": true,
+      "label": "foyer controls are restored after repeated tours"
+    },
+    {
+      "ok": true,
+      "label": "offline HTML requests no external runtime assets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "browser reports no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [
+    {
+      "name": "entry-briefing-desktop",
+      "status": {
+        "active": true,
+        "id": "maze-run-2",
+        "status": "paused",
+        "tier": 5,
+        "title": "The Hollow House",
+        "elapsed": 0,
+        "duration": 56,
+        "progress": 0,
+        "paused": true,
+        "completed": false,
+        "zone": "forgotten-passage",
+        "zoneName": "Forgotten passage",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          },
+          {
+            "id": "velvet-crypt",
+            "name": "Velvet crypt"
+          }
+        ],
+        "eventsFired": [],
+        "encounters": 5,
+        "activeHaunts": [],
+        "terror": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": false,
+        "gentle": true,
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": 4.1,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": 4.1,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 6,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 14611,
+        "floorCells": 2532,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 0.9116116797224301,
+            "y": 0.04,
+            "z": -9.249163226851948,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 12.25,
+            "y": 0.04,
+            "z": -19.563412438369085,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -2.1500000000000004,
+            "y": 0.04,
+            "z": -33.563412438369085,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 12.25,
+            "y": 0.04,
+            "z": -47.56341243836915,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -57.73928759815278,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": null,
+        "phase": "briefing",
+        "audio": {
+          "active": false,
+          "paused": false,
+          "muted": false,
+          "volume": 0.35,
+          "voices": 0,
+          "context": "waiting",
+          "cues": 0
+        }
+      }
+    },
+    {
+      "name": "entry-running-desktop",
+      "status": {
+        "active": true,
+        "id": "maze-run-2",
+        "status": "running",
+        "tier": 5,
+        "title": "The Hollow House",
+        "elapsed": 1.9166999999999976,
+        "duration": 56,
+        "progress": 0.034226785714285675,
+        "paused": false,
+        "completed": false,
+        "zone": "forgotten-passage",
+        "zoneName": "Forgotten passage",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          },
+          {
+            "id": "velvet-crypt",
+            "name": "Velvet crypt"
+          }
+        ],
+        "eventsFired": [],
+        "encounters": 5,
+        "activeHaunts": [],
+        "terror": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": true,
+        "gentle": true,
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": 0.6025017625022246,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": 0.6025017625022246,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 6,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 14611,
+        "floorCells": 2532,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 0.9116116797224301,
+            "y": 0.04,
+            "z": -9.249163226851948,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 12.25,
+            "y": 0.04,
+            "z": -19.563412438369085,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -2.1500000000000004,
+            "y": 0.04,
+            "z": -33.563412438369085,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 12.25,
+            "y": 0.04,
+            "z": -47.56341243836915,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -57.73928759815278,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": null,
+        "phase": "running",
+        "audio": {
+          "active": true,
+          "paused": false,
+          "muted": false,
+          "volume": 0.35,
+          "voices": 4,
+          "context": "running",
+          "cues": 0
+        }
+      }
+    },
+    {
+      "name": "tier3-haunted-girl-scare",
+      "status": {
+        "active": true,
+        "id": "maze-run-7",
+        "status": "running",
+        "tier": 3,
+        "title": "The Hollow House",
+        "elapsed": 35.82000976578481,
+        "duration": 42,
+        "progress": 0.8528573753758288,
+        "paused": false,
+        "completed": false,
+        "zone": "seance-parlour",
+        "zoneName": "Séance parlour",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          }
+        ],
+        "eventsFired": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy",
+          "cobweb-cellar:baseline",
+          "cobweb-cellar:whispering-portraits",
+          "seance-parlour:baseline"
+        ],
+        "encounters": 6,
+        "activeHaunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade"
+        ],
+        "terror": 31,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": true,
+        "gentle": true,
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -23.978757307206397,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": -23.978757307206397,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 8,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 8711,
+        "floorCells": 1458,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.412887970454453,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 5.2352333759424,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.588763130238416,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 10,
+            "y": 0.04,
+            "z": -23.209358216158464,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": true,
+            "x": -2.2052339775861296,
+            "y": 0.04,
+            "z": -25.764638290022386,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -33.385233375942384,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": {
+          "id": "seance-parlour:baseline",
+          "at": 33.470009765784795,
+          "actor": "haunted-girl",
+          "prefab": null,
+          "sound": "whisper"
+        },
+        "phase": "running",
+        "audio": {
+          "active": true,
+          "paused": false,
+          "muted": false,
+          "volume": 0.05,
+          "voices": 4,
+          "context": "running",
+          "cues": 5
+        }
+      }
+    },
+    {
+      "name": "tier5-finale-desktop",
+      "status": {
+        "active": true,
+        "id": "maze-run-9",
+        "status": "running",
+        "tier": 5,
+        "title": "The Hollow House",
+        "elapsed": 55.883300000000006,
+        "duration": 56,
+        "progress": 0.9979160714285715,
+        "paused": false,
+        "completed": false,
+        "zone": "velvet-crypt",
+        "zoneName": "Velvet crypt",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          },
+          {
+            "id": "velvet-crypt",
+            "name": "Velvet crypt"
+          }
+        ],
+        "eventsFired": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy",
+          "cobweb-cellar:baseline",
+          "cobweb-cellar:whispering-portraits",
+          "seance-parlour:baseline",
+          "seance-parlour:spectral-parade",
+          "storm-laboratory:baseline",
+          "storm-laboratory:thunder-chamber",
+          "velvet-crypt:baseline",
+          "velvet-crypt:phantom-finale"
+        ],
+        "encounters": 10,
+        "activeHaunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade",
+          "thunder-chamber",
+          "phantom-finale"
+        ],
+        "terror": 77,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": true,
+        "gentle": true,
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -59.88705168032766,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": -59.88705168032766,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 10,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 15182,
+        "floorCells": 2556,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.9300000000000004,
+            "y": 0.04,
+            "z": -5.112912347064003,
+            "pose": "scare"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 7.4884124383691795,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -15.001537552500452,
+            "pose": "scare"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 6.630360225704402,
+            "y": 0.04,
+            "z": -18.815985964368988,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -0.9299999999999997,
+            "y": 0.04,
+            "z": -29.001537552500476,
+            "pose": "scare"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 3.369639774295634,
+            "y": 0.04,
+            "z": -32.81598596436894,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 10.93,
+            "y": 0.04,
+            "z": -42.31441262097953,
+            "pose": "scare"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.5237735997384139,
+            "y": 0.04,
+            "z": -50.372217603054885,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -1.633624894269891,
+            "y": 0.04,
+            "z": -49.0139808903603,
+            "pose": "scare"
+          },
+          {
+            "id": "velvet-crypt:phantom-finale",
+            "actor": "wraith",
+            "visible": true,
+            "x": 0,
+            "y": 0.04,
+            "z": -61.420352621901884,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": {
+          "id": "velvet-crypt:phantom-finale",
+          "at": 53,
+          "actor": "wraith",
+          "prefab": "phantom-finale",
+          "sound": "sting"
+        },
+        "phase": "running",
+        "audio": {
+          "active": true,
+          "paused": false,
+          "muted": false,
+          "volume": 0.05,
+          "voices": 2,
+          "context": "running",
+          "cues": 10
+        }
+      }
+    },
+    {
+      "name": "tier5-finale-390x844",
+      "status": {
+        "active": true,
+        "id": "maze-run-10",
+        "status": "running",
+        "tier": 5,
+        "title": "The Hollow House",
+        "elapsed": 55.416900000000034,
+        "duration": 56,
+        "progress": 0.9895875000000006,
+        "paused": false,
+        "completed": false,
+        "zone": "velvet-crypt",
+        "zoneName": "Velvet crypt",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          },
+          {
+            "id": "velvet-crypt",
+            "name": "Velvet crypt"
+          }
+        ],
+        "eventsFired": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy",
+          "cobweb-cellar:baseline",
+          "cobweb-cellar:whispering-portraits",
+          "seance-parlour:baseline",
+          "seance-parlour:spectral-parade",
+          "storm-laboratory:baseline",
+          "storm-laboratory:thunder-chamber",
+          "velvet-crypt:baseline",
+          "velvet-crypt:phantom-finale"
+        ],
+        "encounters": 10,
+        "activeHaunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade",
+          "thunder-chamber",
+          "phantom-finale"
+        ],
+        "terror": 77,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": true,
+        "gentle": true,
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -59.035988301620016,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": -59.035988301620016,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 7,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 15182,
+        "floorCells": 2556,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -2.1500000000000004,
+            "y": 0.04,
+            "z": -5.112912347064003,
+            "pose": "lurking"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 7.4884124383691795,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -15.001537552500452,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 6.630360225704402,
+            "y": 0.04,
+            "z": -18.815985964368988,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -29.001537552500476,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 3.369639774295634,
+            "y": 0.04,
+            "z": -32.81598596436894,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -42.31441262097953,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.5237735997384139,
+            "y": 0.04,
+            "z": -50.372217603054885,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -2.163624894269891,
+            "y": 0.04,
+            "z": -49.0139808903603,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:phantom-finale",
+            "actor": "wraith",
+            "visible": true,
+            "x": 0,
+            "y": 0.04,
+            "z": -61.11101885473237,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": {
+          "id": "velvet-crypt:phantom-finale",
+          "at": 53,
+          "actor": "wraith",
+          "prefab": "phantom-finale",
+          "sound": "sting"
+        },
+        "phase": "running",
+        "audio": {
+          "active": true,
+          "paused": false,
+          "muted": false,
+          "volume": 0.05,
+          "voices": 2,
+          "context": "running",
+          "cues": 10
+        }
+      }
+    },
+    {
+      "name": "tier5-finale-844x390",
+      "status": {
+        "active": true,
+        "id": "maze-run-11",
+        "status": "running",
+        "tier": 5,
+        "title": "The Hollow House",
+        "elapsed": 55.66649999999996,
+        "duration": 56,
+        "progress": 0.9940446428571421,
+        "paused": false,
+        "completed": false,
+        "zone": "velvet-crypt",
+        "zoneName": "Velvet crypt",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          },
+          {
+            "id": "velvet-crypt",
+            "name": "Velvet crypt"
+          }
+        ],
+        "eventsFired": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy",
+          "cobweb-cellar:baseline",
+          "cobweb-cellar:whispering-portraits",
+          "seance-parlour:baseline",
+          "seance-parlour:spectral-parade",
+          "storm-laboratory:baseline",
+          "storm-laboratory:thunder-chamber",
+          "velvet-crypt:baseline",
+          "velvet-crypt:phantom-finale"
+        ],
+        "encounters": 10,
+        "activeHaunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade",
+          "thunder-chamber",
+          "phantom-finale"
+        ],
+        "terror": 77,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": true,
+        "gentle": true,
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -59.491445890225016,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": -59.491445890225016,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 7,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 15182,
+        "floorCells": 2556,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -2.1500000000000004,
+            "y": 0.04,
+            "z": -5.112912347064003,
+            "pose": "lurking"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 7.4884124383691795,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -15.001537552500452,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 6.630360225704402,
+            "y": 0.04,
+            "z": -18.815985964368988,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -29.001537552500476,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 3.369639774295634,
+            "y": 0.04,
+            "z": -32.81598596436894,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -42.31441262097953,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.5237735997384139,
+            "y": 0.04,
+            "z": -50.372217603054885,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -2.163624894269891,
+            "y": 0.04,
+            "z": -49.0139808903603,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:phantom-finale",
+            "actor": "wraith",
+            "visible": true,
+            "x": 0,
+            "y": 0.04,
+            "z": -61.30705621069491,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": {
+          "id": "velvet-crypt:phantom-finale",
+          "at": 53,
+          "actor": "wraith",
+          "prefab": "phantom-finale",
+          "sound": "sting"
+        },
+        "phase": "running",
+        "audio": {
+          "active": true,
+          "paused": false,
+          "muted": false,
+          "volume": 0.05,
+          "voices": 4,
+          "context": "running",
+          "cues": 10
+        }
+      }
+    },
+    {
+      "name": "tier5-finale-874x787",
+      "status": {
+        "active": true,
+        "id": "maze-run-12",
+        "status": "running",
+        "tier": 5,
+        "title": "The Hollow House",
+        "elapsed": 55.51669999999972,
+        "duration": 56,
+        "progress": 0.9913696428571379,
+        "paused": false,
+        "completed": false,
+        "zone": "velvet-crypt",
+        "zoneName": "Velvet crypt",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          },
+          {
+            "id": "storm-laboratory",
+            "name": "Storm laboratory"
+          },
+          {
+            "id": "velvet-crypt",
+            "name": "Velvet crypt"
+          }
+        ],
+        "eventsFired": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy",
+          "cobweb-cellar:baseline",
+          "cobweb-cellar:whispering-portraits",
+          "seance-parlour:baseline",
+          "seance-parlour:spectral-parade",
+          "storm-laboratory:baseline",
+          "storm-laboratory:thunder-chamber",
+          "velvet-crypt:baseline",
+          "velvet-crypt:phantom-finale"
+        ],
+        "encounters": 10,
+        "activeHaunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade",
+          "thunder-chamber",
+          "phantom-finale"
+        ],
+        "terror": 77,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": true,
+        "gentle": true,
+        "camera": {
+          "x": 0,
+          "y": 1.65,
+          "z": -59.218098347063325,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": -59.218098347063325,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 7,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 15182,
+        "floorCells": 2556,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -2.1500000000000004,
+            "y": 0.04,
+            "z": -5.112912347064003,
+            "pose": "lurking"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 7.4884124383691795,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -15.001537552500452,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 6.630360225704402,
+            "y": 0.04,
+            "z": -18.815985964368988,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": false,
+            "x": -4.350000000000001,
+            "y": 0.04,
+            "z": -29.001537552500476,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 3.369639774295634,
+            "y": 0.04,
+            "z": -32.81598596436894,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -42.31441262097953,
+            "pose": "lurking"
+          },
+          {
+            "id": "storm-laboratory:thunder-chamber",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -0.5237735997384139,
+            "y": 0.04,
+            "z": -50.372217603054885,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:baseline",
+            "actor": "wraith",
+            "visible": false,
+            "x": -2.163624894269891,
+            "y": 0.04,
+            "z": -49.0139808903603,
+            "pose": "lurking"
+          },
+          {
+            "id": "velvet-crypt:phantom-finale",
+            "actor": "wraith",
+            "visible": true,
+            "x": 0,
+            "y": 0.04,
+            "z": -61.19293781684845,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": {
+          "id": "velvet-crypt:phantom-finale",
+          "at": 53,
+          "actor": "wraith",
+          "prefab": "phantom-finale",
+          "sound": "sting"
+        },
+        "phase": "running",
+        "audio": {
+          "active": true,
+          "paused": false,
+          "muted": false,
+          "volume": 0.05,
+          "voices": 2,
+          "context": "running",
+          "cues": 10
+        }
+      }
+    }
+  ],
+  "mode": "full",
+  "rendering": "performance profile; Chromium SwiftShader; real Start/Resume clicks, real CDP touch; synthetic visibilitychange using document.hidden; ordinary-rules paid-guest fixture"
+}

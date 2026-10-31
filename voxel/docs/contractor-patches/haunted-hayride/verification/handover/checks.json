@@ -1,0 +1,312 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-Hayride.html",
+  "sha256": "3173d8f1d54b32ec3468729967f0c7315c265092e071f018b2aaee178d13e49b",
+  "passed": false,
+  "checks": [
+    {
+      "ok": true,
+      "label": "final visual build renders the upgraded physical station"
+    },
+    {
+      "ok": true,
+      "label": "the compact farm station and full woodland use separate scenes",
+      "data": {
+        "separate": true,
+        "farm": {
+          "x0": -23.5,
+          "x1": -8,
+          "z0": 11,
+          "z1": 44
+        },
+        "ride": {
+          "x0": -51,
+          "x1": -8,
+          "z0": 1,
+          "z1": 40
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "experience"
+    },
+    {
+      "ok": true,
+      "label": "final Fold briefing: ride controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "final Fold running ride: ride controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "final encounter captures use normal motion and the default guided view"
+    },
+    {
+      "ok": true,
+      "label": "the off-map ride produces its scheduled single lightning flash",
+      "data": 1
+    },
+    {
+      "ok": true,
+      "label": "final visual ride reaches Spectral pursuit",
+      "data": {
+        "active": true,
+        "title": "The Hollow Hayride",
+        "tier": 3,
+        "elapsed": 67.04999999999998,
+        "duration": 92.5,
+        "rideDuration": 90,
+        "progress": 0.717222222222222,
+        "paused": false,
+        "completed": false,
+        "zoneName": "Spectral pursuit",
+        "eventsFired": [
+          "scarecrows",
+          "spiders",
+          "bride",
+          "pursuit"
+        ],
+        "currentCue": {
+          "type": "encounter",
+          "id": "hayride-pursuit",
+          "stop": "pursuit",
+          "name": "Spectral pursuit",
+          "sound": "whoosh",
+          "at": 66.4,
+          "intensity": 0.45
+        },
+        "gentle": false,
+        "lightning": true,
+        "lightningIntensity": 0,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 1.5079644737231006,
+          "pitch": 0.4487989505128276
+        },
+        "inputActive": true,
+        "camera": {
+          "x": -43.21628431918766,
+          "y": 2.1220009787701715,
+          "z": 30.6068368515519,
+          "yaw": -1.4817186184115136,
+          "pitch": -0.06570684763652974
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Pause hayride"
+    },
+    {
+      "ok": true,
+      "label": "handover Fold pause: ride controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "gentle motion can be enabled during the off-map ride"
+    },
+    {
+      "ok": true,
+      "label": "gentle mode suppresses lightning flashes"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Pause hayride"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "navigation"
+    },
+    {
+      "ok": true,
+      "label": "final visual ride restores the farm on exit"
+    },
+    {
+      "ok": true,
+      "label": "off-map owner smoke preserves the farm save and paid ledger"
+    },
+    {
+      "ok": true,
+      "label": "fullscreen control remains available for the unfolded game"
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [
+    {
+      "name": "fold-station",
+      "state": {
+        "time": 0,
+        "coins": 72000,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": false,
+          "ticketPrice": 8,
+          "invested": 28000,
+          "ticketsSold": 0,
+          "income": 0,
+          "completed": 0,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 0,
+          "partyAt": null,
+          "nextVisit": 0,
+          "nextRun": 1,
+          "receipts": [],
+          "haunts": {
+            "owned": [],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-0",
+            "manifest": []
+          },
+          "lastEvent": null
+        },
+        "visitors": []
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 45,
+        "triangles": 754158,
+        "geometries": 50,
+        "textures": 13
+      }
+    },
+    {
+      "name": "fold-ride-pursuit",
+      "state": {
+        "time": 0,
+        "coins": 72000,
+        "earned": 200000,
+        "sold": 0,
+        "tips": {
+          "stall": 0,
+          "shop": 0
+        },
+        "version": 11,
+        "h": {
+          "purchased": true,
+          "tier": 3,
+          "open": false,
+          "ticketPrice": 8,
+          "invested": 28000,
+          "ticketsSold": 0,
+          "income": 0,
+          "completed": 0,
+          "missed": 0,
+          "runHome": 0,
+          "departures": 0,
+          "partyAt": null,
+          "nextVisit": 0,
+          "nextRun": 1,
+          "receipts": [],
+          "haunts": {
+            "owned": [],
+            "active": []
+          },
+          "convoy": {
+            "phase": "loading",
+            "elapsed": 0,
+            "progress": 0,
+            "loadWait": 0,
+            "runId": "hayride-run-0",
+            "manifest": []
+          },
+          "lastEvent": null
+        },
+        "visitors": []
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 30,
+        "triangles": 481262,
+        "geometries": 51,
+        "textures": 14
+      }
+    }
+  ],
+  "limitations": [
+    "Handover smoke covers the station, owner entry, one dark encounter, gentle motion and Exit. Full final-build economics/save-reload, all five visual encounters and phone layouts remain pending.",
+    "Managed Chromium disables fullscreen (FullscreenAllowed: false). Successful OS fullscreen entry is unverified."
+  ],
+  "rendering": "Chromium SwiftShader, performance profile, bloom/shadows/mist/lake lights off; desktop and phone/Fold layouts; real UI clicks with stability polling bypassed; game-time advancement uses ordinary rules"
+}

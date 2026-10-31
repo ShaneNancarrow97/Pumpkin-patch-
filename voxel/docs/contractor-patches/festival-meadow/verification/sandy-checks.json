@@ -1,0 +1,99 @@
+{
+  "file": "Pumpkin Patch - Moonbrew Meadow.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "cocoa purchase is locked at level 4"
+    },
+    {
+      "ok": true,
+      "label": "level 5 unlocks purchase without automatically building"
+    },
+    {
+      "ok": true,
+      "label": "building requires the separate \u00a3650 purchase"
+    },
+    {
+      "ok": true,
+      "label": "Sandy is loaded and serving in the actual world"
+    },
+    {
+      "ok": true,
+      "label": "actual voxel sign opens the actual stand menu"
+    },
+    {
+      "ok": true,
+      "label": "tier 2 offers paid flake/ghost stock and editable prices"
+    },
+    {
+      "ok": true,
+      "label": "tier 3 unlocks sauce cocoa and s\u2019mores with separate prices"
+    },
+    {
+      "ok": true,
+      "label": "visitors choose a physically routed stand visit"
+    },
+    {
+      "ok": true,
+      "label": "tapping the walking visitor opens their live needs and money"
+    },
+    {
+      "ok": true,
+      "label": "guests pay for stock from their own finite purse"
+    },
+    {
+      "ok": true,
+      "label": "phone: menu prices and controls fit with 44px targets",
+      "data": {
+        "scroll": 390,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: menu prices and controls fit with 44px targets",
+      "data": {
+        "scroll": 874,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: menu prices and controls fit with 44px targets",
+      "data": {
+        "scroll": 844,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "Fold fullscreen shows the expanded farm at a wide scale"
+    },
+    {
+      "ok": true,
+      "label": "Sandy and actual stocked voxel snacks/cups are present",
+      "data": {
+        "cashier": true,
+        "ready": true,
+        "frame": 0,
+        "tier": 3,
+        "displayed": [
+          "flake",
+          "deluxe",
+          "midnight",
+          "smores"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "save/reload keeps unlocked products, prices and stock"
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors"
+    }
+  ],
+  "errors": [],
+  "rendering": "SwiftShader; content QA bloom/shadows off, final lighting capture on"
+}

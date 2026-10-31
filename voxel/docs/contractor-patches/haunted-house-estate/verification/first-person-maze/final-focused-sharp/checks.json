@@ -1,0 +1,848 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-House-Ride.html",
+  "sha256": "ee06c643160dc1bd1b0eda9ac654d9a3f892f158e72282d19952b57ff3d63352",
+  "dpr": 2,
+  "bloomAndShadows": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "walkthrough test API is available"
+    },
+    {
+      "ok": true,
+      "label": "fresh derelict house rejects entry and start",
+      "data": {
+        "open": false,
+        "start": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "restoring attraction rejects entry"
+    },
+    {
+      "ok": true,
+      "label": "actual foyer doorway click opens the briefing",
+      "data": {
+        "x": 960.5393398459904,
+        "y": 324.8570111103012
+      }
+    },
+    {
+      "ok": true,
+      "label": "Escape closes the briefing and returns to the foyer"
+    },
+    {
+      "ok": true,
+      "label": "live farm advances over two ride frames without charging a second owner ticket",
+      "data": {
+        "before": {
+          "time": 272.9999999999936,
+          "tickets": 1,
+          "receipts": "[{\"visitId\":\"hollow-0\",\"visitor\":12,\"amount\":6,\"at\":272.9999999999936}]",
+          "coins": 801
+        },
+        "after": {
+          "time": 273.1999999999936,
+          "tickets": 1,
+          "receipts": "[{\"visitId\":\"hollow-0\",\"visitor\":12,\"amount\":6,\"at\":272.9999999999936}]",
+          "coins": 801
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "final desktop briefing: controls fit with 44px targets",
+      "data": {
+        "width": 1280,
+        "height": 800,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "sound",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 362.5,
+            "bottom": 406.5
+          },
+          {
+            "action": "gentle",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 412.5,
+            "bottom": 456.5
+          },
+          {
+            "action": "volume",
+            "width": 267.46875,
+            "height": 44,
+            "left": 549.53125,
+            "right": 817,
+            "top": 464.5,
+            "bottom": 508.5
+          },
+          {
+            "action": "start",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 522.5,
+            "bottom": 566.5
+          },
+          {
+            "action": "exit",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 574.5,
+            "bottom": 618.5
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "paused Sound action retains focus in the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "paused Tab 1 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "paused Tab 2 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "paused Tab 3 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "paused Tab 4 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "paused Tab 5 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "paused Tab 6 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "paused Tab 7 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "paused Tab 8 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "final 390x844 paused: controls fit with 44px targets",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 63.234375,
+            "height": 44,
+            "left": 13,
+            "right": 76.234375,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 44,
+            "height": 44,
+            "left": 289,
+            "right": 333,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 44,
+            "height": 44,
+            "left": 333,
+            "right": 377,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 379.015625,
+            "bottom": 423.015625
+          },
+          {
+            "action": "gentle",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 429.015625,
+            "bottom": 473.015625
+          },
+          {
+            "action": "volume",
+            "width": 213.46875,
+            "height": 44,
+            "left": 131.53125,
+            "right": 345,
+            "top": 481.015625,
+            "bottom": 525.015625
+          },
+          {
+            "action": "resume",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 539.015625,
+            "bottom": 583.015625
+          },
+          {
+            "action": "exit",
+            "width": 316,
+            "height": 44,
+            "left": 37,
+            "right": 353,
+            "top": 591.015625,
+            "bottom": 635.015625
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "final 844x390 paused: controls fit with 44px targets",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 75.921875,
+            "height": 44,
+            "left": 165.828125,
+            "right": 241.75,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 102.90625,
+            "height": 44,
+            "left": 406.296875,
+            "right": 509.203125,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 112.96875,
+            "height": 44,
+            "left": 515.203125,
+            "right": 628.171875,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "fullscreen",
+            "width": 44,
+            "height": 44,
+            "left": 634.171875,
+            "right": 678.171875,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 216,
+            "height": 44,
+            "left": 203,
+            "right": 419,
+            "top": 197.703125,
+            "bottom": 241.703125
+          },
+          {
+            "action": "gentle",
+            "width": 216,
+            "height": 44,
+            "left": 425,
+            "right": 641,
+            "top": 197.703125,
+            "bottom": 241.703125
+          },
+          {
+            "action": "volume",
+            "width": 335.46875,
+            "height": 44,
+            "left": 297.53125,
+            "right": 633,
+            "top": 249.703125,
+            "bottom": 293.703125
+          },
+          {
+            "action": "resume",
+            "width": 215,
+            "height": 44,
+            "left": 203,
+            "right": 418,
+            "top": 301.703125,
+            "bottom": 345.703125
+          },
+          {
+            "action": "exit",
+            "width": 215,
+            "height": 44,
+            "left": 426,
+            "right": 641,
+            "top": 301.703125,
+            "bottom": 345.703125
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "final 874x787 paused: controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 75.921875,
+            "height": 44,
+            "left": 180.828125,
+            "right": 256.75,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 102.90625,
+            "height": 44,
+            "left": 421.296875,
+            "right": 524.203125,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 112.96875,
+            "height": 44,
+            "left": 530.203125,
+            "right": 643.171875,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "fullscreen",
+            "width": 44,
+            "height": 44,
+            "left": 649.171875,
+            "right": 693.171875,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 370,
+            "height": 44,
+            "left": 252,
+            "right": 622,
+            "top": 350.515625,
+            "bottom": 394.515625
+          },
+          {
+            "action": "gentle",
+            "width": 370,
+            "height": 44,
+            "left": 252,
+            "right": 622,
+            "top": 400.515625,
+            "bottom": 444.515625
+          },
+          {
+            "action": "volume",
+            "width": 267.46875,
+            "height": 44,
+            "left": 346.53125,
+            "right": 614,
+            "top": 452.515625,
+            "bottom": 496.515625
+          },
+          {
+            "action": "resume",
+            "width": 370,
+            "height": 44,
+            "left": 252,
+            "right": 622,
+            "top": 510.515625,
+            "bottom": 554.515625
+          },
+          {
+            "action": "exit",
+            "width": 370,
+            "height": 44,
+            "left": 252,
+            "right": 622,
+            "top": 562.515625,
+            "bottom": 606.515625
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "final 1280x800 paused: controls fit with 44px targets",
+      "data": {
+        "width": 1280,
+        "height": 800,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 75.921875,
+            "height": 44,
+            "left": 383.828125,
+            "right": 459.75,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 102.90625,
+            "height": 44,
+            "left": 624.296875,
+            "right": 727.203125,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 112.96875,
+            "height": 44,
+            "left": 733.203125,
+            "right": 846.171875,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "fullscreen",
+            "width": 44,
+            "height": 44,
+            "left": 852.171875,
+            "right": 896.171875,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 357.015625,
+            "bottom": 401.015625
+          },
+          {
+            "action": "gentle",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 407.015625,
+            "bottom": 451.015625
+          },
+          {
+            "action": "volume",
+            "width": 267.46875,
+            "height": 44,
+            "left": 549.53125,
+            "right": 817,
+            "top": 459.015625,
+            "bottom": 503.015625
+          },
+          {
+            "action": "resume",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 517.015625,
+            "bottom": 561.015625
+          },
+          {
+            "action": "exit",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 569.015625,
+            "bottom": 613.015625
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "final desktop result: controls fit with 44px targets",
+      "data": {
+        "width": 1280,
+        "height": 800,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 75.921875,
+            "height": 44,
+            "left": 461.125,
+            "right": 537.046875,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 112.96875,
+            "height": 44,
+            "left": 655.890625,
+            "right": 768.859375,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "fullscreen",
+            "width": 44,
+            "height": 44,
+            "left": 774.859375,
+            "right": 818.859375,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "replay",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 431.515625,
+            "bottom": 475.515625
+          },
+          {
+            "action": "exit",
+            "width": 370,
+            "height": 44,
+            "left": 455,
+            "right": 825,
+            "top": 483.515625,
+            "bottom": 527.515625
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "result Tab 1 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "result Tab 2 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "result Tab 3 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "result Tab 4 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "result Tab 5 stays inside the modal panel"
+    },
+    {
+      "ok": true,
+      "label": "final Sharp Fold running: controls fit with 44px targets",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "controls": [
+          {
+            "action": "exit",
+            "width": 75.921875,
+            "height": 44,
+            "left": 187.015625,
+            "right": 262.9375,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "pause",
+            "width": 90.53125,
+            "height": 44,
+            "left": 427.484375,
+            "right": 518.015625,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "sound",
+            "width": 112.96875,
+            "height": 44,
+            "left": 524.015625,
+            "right": 636.984375,
+            "top": 13,
+            "bottom": 57
+          },
+          {
+            "action": "fullscreen",
+            "width": 44,
+            "height": 44,
+            "left": 642.984375,
+            "right": 686.984375,
+            "top": 13,
+            "bottom": 57
+          }
+        ],
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "final visual tour includes the haunted girl encounter"
+    },
+    {
+      "ok": true,
+      "label": "haunted girl reveals close to the viewer without crossing the camera",
+      "data": {
+        "distance": 1.8844819178761953,
+        "actor": {
+          "id": "seance-parlour:baseline",
+          "actor": "haunted-girl",
+          "visible": true,
+          "x": -0.25869969712622254,
+          "y": 0.04,
+          "z": -24.53127873893298,
+          "pose": "scare"
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "final Fold image uses Sharp with full DPR2 postprocessing",
+      "data": {
+        "quality": "sharp",
+        "pixelRatio": 2,
+        "postprocessRatio": 2,
+        "bufferWidth": 1748,
+        "bufferHeight": 1574,
+        "postprocessWidth": 1748,
+        "postprocessHeight": 1574,
+        "antialias": "FXAA",
+        "antialiasResolution": [
+          0.0005720823798627002,
+          0.0006353240152477764
+        ],
+        "touchDevice": true,
+        "calls": 1,
+        "triangles": 1,
+        "geometries": 60,
+        "textures": 28,
+        "shadows": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "final focused pass has no external requests or browser errors",
+      "data": {
+        "externalRequests": [],
+        "errors": []
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [
+    {
+      "name": "final-sharp-fold-haunted-girl",
+      "status": {
+        "active": true,
+        "id": "maze-run-4",
+        "status": "paused",
+        "tier": 3,
+        "title": "The Hollow House",
+        "elapsed": 34.820009765784796,
+        "duration": 42,
+        "progress": 0.8290478515663047,
+        "paused": true,
+        "completed": false,
+        "zone": "seance-parlour",
+        "zoneName": "Séance parlour",
+        "chambers": [
+          {
+            "id": "forgotten-passage",
+            "name": "Forgotten passage"
+          },
+          {
+            "id": "cobweb-cellar",
+            "name": "Cobweb cellar"
+          },
+          {
+            "id": "seance-parlour",
+            "name": "Séance parlour"
+          }
+        ],
+        "eventsFired": [
+          "forgotten-passage:baseline",
+          "forgotten-passage:cobweb-canopy",
+          "cobweb-cellar:baseline",
+          "cobweb-cellar:whispering-portraits",
+          "seance-parlour:baseline"
+        ],
+        "encounters": 6,
+        "activeHaunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade"
+        ],
+        "terror": 31,
+        "lookYaw": 0,
+        "lookPitch": 0,
+        "lookBounds": {
+          "yaw": 0.7853981633974483,
+          "pitch": 0.3490658503988659
+        },
+        "inputActive": false,
+        "gentle": false,
+        "camera": {
+          "x": 0,
+          "y": 1.6426764235548021,
+          "z": -22.664638290022385,
+          "yaw": 0,
+          "pitch": 0
+        },
+        "rail": {
+          "x": 0,
+          "y": 1.65,
+          "z": -22.664638290022385,
+          "dx": 0,
+          "dy": 0,
+          "dz": -1
+        },
+        "geometryCount": 7,
+        "textureCount": 3,
+        "lightCount": 6,
+        "batches": 3,
+        "boxes": 8711,
+        "floorCells": 1458,
+        "actors": [
+          {
+            "id": "forgotten-passage:baseline",
+            "actor": "ghoul",
+            "visible": false,
+            "x": -2.1500000000000004,
+            "y": 0.04,
+            "z": -5.412887970454453,
+            "pose": "lurking"
+          },
+          {
+            "id": "forgotten-passage:cobweb-canopy",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 5.2352333759424,
+            "y": 0.04,
+            "z": -4.85,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:baseline",
+            "actor": "scarecrow",
+            "visible": false,
+            "x": 14.350000000000001,
+            "y": 0.04,
+            "z": -15.588763130238416,
+            "pose": "lurking"
+          },
+          {
+            "id": "cobweb-cellar:whispering-portraits",
+            "actor": "clown",
+            "visible": false,
+            "x": 10,
+            "y": 0.04,
+            "z": -23.209358216158464,
+            "pose": "lurking"
+          },
+          {
+            "id": "seance-parlour:baseline",
+            "actor": "haunted-girl",
+            "visible": true,
+            "x": -0.25869969712622254,
+            "y": 0.04,
+            "z": -24.53127873893298,
+            "pose": "scare"
+          },
+          {
+            "id": "seance-parlour:spectral-parade",
+            "actor": "wraith",
+            "visible": false,
+            "x": 0,
+            "y": 0.04,
+            "z": -33.385233375942384,
+            "pose": "lurking"
+          }
+        ],
+        "currentCue": {
+          "id": "seance-parlour:baseline",
+          "at": 33.470009765784795,
+          "actor": "haunted-girl",
+          "prefab": null,
+          "sound": "whisper"
+        },
+        "phase": "paused",
+        "audio": {
+          "active": true,
+          "paused": false,
+          "muted": true,
+          "volume": 0.35,
+          "voices": 0,
+          "context": "running",
+          "cues": 5
+        }
+      },
+      "capture": "Deterministic reveal paused at cue+1.35s; pause shade hidden only for art inspection."
+    }
+  ],
+  "mode": "focused-only",
+  "rendering": "sharp profile; Chromium SwiftShader; real Start/Resume clicks, real CDP touch; synthetic visibilitychange using document.hidden; ordinary-rules paid-guest fixture"
+}
