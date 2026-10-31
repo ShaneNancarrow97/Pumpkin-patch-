@@ -9,6 +9,11 @@ Source branch: **`contractor/directional-character-atlases`**, based on lead
 main game. Inspect/apply on a clean review branch and reconcile shared files with
 newer lead work; preserve the lead's uncommitted files.
 
+To take only the tractor art, use
+[`hayride-icons-only-from-b387c85.patch`](hayride-icons-only-from-b387c85.patch).
+It contains handover60, the12 icons, menu integration, helpers and native checks.
+It applies to the same review base and does not require the owner atlas runtime.
+
 There are independent commits for the pure direction contract, art review bench,
 Sandy correction, owner art, working-action art, production inventory, integration
 and verification. Sandy's correction can be reviewed independently of the owner

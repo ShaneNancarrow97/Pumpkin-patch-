@@ -1,0 +1,3893 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Directional-Cast.html",
+  "sha256": "7909eb960ab10ed9aa6b2cc7cac35a081f8a02e5817ab918b9e62ebfd66e652a",
+  "started": "2026-10-31T14:03:57.999Z",
+  "passed": true,
+  "scope": "Exact offline game: smaller Sandy, real direct-play bearings, lazy page residency, all legacy costumes, home/action fallback and responsive layouts. Software WebGL is content QA, not a mobile GPU benchmark. Angle and phase anatomy also require the separate visual review bench.",
+  "checks": [
+    {
+      "ok": true,
+      "label": "Sandy has the smaller dedicated cocoa body",
+      "data": {
+        "status": {
+          "cashier": true,
+          "ready": true,
+          "frame": 0,
+          "tier": 3,
+          "barista": false,
+          "bulkCrate": false,
+          "displayed": []
+        },
+        "width": 1.8
+      }
+    },
+    {
+      "ok": true,
+      "label": "All three home companions retain their states; Sandy is29% smaller",
+      "data": {
+        "status": [
+          {
+            "who": "skyla",
+            "phase": "wag",
+            "frame": 4,
+            "position": {
+              "x": 1.25,
+              "z": 4.75
+            },
+            "hasBed": false,
+            "bowls": 0,
+            "reacting": false,
+            "reactions": 0
+          },
+          {
+            "who": "sandy",
+            "phase": "wag",
+            "frame": 4,
+            "position": {
+              "x": 2.75,
+              "z": 5.25
+            },
+            "hasBed": false,
+            "bowls": 0,
+            "reacting": false,
+            "reactions": 0
+          },
+          {
+            "who": "maisie",
+            "phase": "wag",
+            "frame": 4,
+            "position": {
+              "x": 4.25,
+              "z": 4.75
+            },
+            "hasBed": false,
+            "bowls": 0,
+            "reacting": false,
+            "reactions": 0
+          }
+        ],
+        "all": [
+          {
+            "name": "skyla at home",
+            "width": 1.4,
+            "height": 1.0499999999999998
+          },
+          {
+            "name": "sandy at home",
+            "width": 1.45,
+            "height": 1.0875
+          },
+          {
+            "name": "maisie at home",
+            "width": 1.7,
+            "height": 1.275
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "Both reviewed base banks are included",
+      "data": [
+        "shane-base",
+        "natalie-base"
+      ]
+    },
+    {
+      "ok": true,
+      "label": "shane: 0° movement selects its authored gait",
+      "data": {
+        "look": "shane-base",
+        "action": "walk",
+        "requestedDegree": 0,
+        "direction": 0,
+        "coverage": "authored",
+        "mode": "animation"
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 0° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "count": 8,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 45° movement selects its authored gait",
+      "data": {
+        "look": "shane-base",
+        "action": "walk",
+        "requestedDegree": 45,
+        "direction": 45,
+        "coverage": "authored",
+        "mode": "reduced"
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 45° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "count": 4,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 90° movement selects its authored gait",
+      "data": {
+        "look": "shane-base",
+        "action": "walk",
+        "requestedDegree": 90,
+        "direction": 90,
+        "coverage": "authored",
+        "mode": "animation"
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 90° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "count": 8,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 135° movement selects an explicit nearest-bearing fallback",
+      "data": {
+        "look": "shane-base",
+        "action": "walk",
+        "requestedDegree": 135,
+        "direction": 90,
+        "coverage": "fallback",
+        "mode": "animation"
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 135° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "count": 8,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 180° movement selects its authored gait",
+      "data": {
+        "look": "shane-base",
+        "action": "walk",
+        "requestedDegree": 180,
+        "direction": 180,
+        "coverage": "authored",
+        "mode": "animation"
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 180° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "count": 8,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 225° movement selects an explicit nearest-bearing fallback",
+      "data": {
+        "look": "shane-base",
+        "action": "walk",
+        "requestedDegree": 225,
+        "direction": 180,
+        "coverage": "fallback",
+        "mode": "animation"
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 225° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "count": 8,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 270° movement selects its authored gait",
+      "data": {
+        "look": "shane-base",
+        "action": "walk",
+        "requestedDegree": 270,
+        "direction": 270,
+        "coverage": "authored",
+        "mode": "reduced"
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 270° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "count": 4,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 315° movement selects its authored gait",
+      "data": {
+        "look": "shane-base",
+        "action": "walk",
+        "requestedDegree": 315,
+        "direction": 315,
+        "coverage": "authored",
+        "mode": "reduced"
+      }
+    },
+    {
+      "ok": true,
+      "label": "shane: 315° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "count": 4,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "Neutral turn stays facing its real bearing after settling",
+      "data": {
+        "who": "shane",
+        "still": {
+          "enabled": true,
+          "who": "shane",
+          "available": true,
+          "place": "estate",
+          "passing": null,
+          "room": null,
+          "position": {
+            "x": 4.690322391349008,
+            "z": 4.109658170556951
+          },
+          "facing": "side",
+          "viewAngle": 270,
+          "atlas": {
+            "look": "shane-base",
+            "action": "idle",
+            "requestedDegree": 270,
+            "direction": 270,
+            "coverage": "authored",
+            "mode": "pose"
+          },
+          "moving": false,
+          "gait": "walk",
+          "speed": 3.1435760751654386e-18,
+          "pose": null,
+          "travelling": false,
+          "actionProgress": 0,
+          "blocked": false,
+          "action": null,
+          "actionTarget": null,
+          "waterCanVisible": false,
+          "wateringVisible": false,
+          "canVisible": false,
+          "waterCanStyle": "sprite",
+          "waterCanWidth": 0.82,
+          "streamVisible": false,
+          "dropsVisible": false,
+          "canScale": 1,
+          "waterNozzle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "visualYaw": -1.6631764800807548e-9,
+          "spriteFrame": 0,
+          "spriteDirection": "side",
+          "spriteStature": 2.3,
+          "sideFrameCount": 1,
+          "target": null
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 0° movement selects its authored gait",
+      "data": {
+        "look": "natalie-base",
+        "action": "walk",
+        "requestedDegree": 0,
+        "direction": 0,
+        "coverage": "authored",
+        "mode": "animation"
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 0° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "count": 8,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 45° movement selects its authored gait",
+      "data": {
+        "look": "natalie-base",
+        "action": "walk",
+        "requestedDegree": 45,
+        "direction": 45,
+        "coverage": "authored",
+        "mode": "reduced"
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 45° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "count": 4,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 90° movement selects its authored gait",
+      "data": {
+        "look": "natalie-base",
+        "action": "walk",
+        "requestedDegree": 90,
+        "direction": 90,
+        "coverage": "authored",
+        "mode": "reduced"
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 90° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "count": 4,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 135° movement selects an explicit nearest-bearing fallback",
+      "data": {
+        "look": "natalie-base",
+        "action": "walk",
+        "requestedDegree": 135,
+        "direction": 90,
+        "coverage": "fallback",
+        "mode": "reduced"
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 135° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "count": 4,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 180° movement selects its authored gait",
+      "data": {
+        "look": "natalie-base",
+        "action": "walk",
+        "requestedDegree": 180,
+        "direction": 180,
+        "coverage": "authored",
+        "mode": "animation"
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 180° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "count": 8,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 225° movement selects an explicit nearest-bearing fallback",
+      "data": {
+        "look": "natalie-base",
+        "action": "walk",
+        "requestedDegree": 225,
+        "direction": 180,
+        "coverage": "fallback",
+        "mode": "animation"
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 225° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "count": 8,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 270° movement selects its authored gait",
+      "data": {
+        "look": "natalie-base",
+        "action": "walk",
+        "requestedDegree": 270,
+        "direction": 270,
+        "coverage": "authored",
+        "mode": "reduced"
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 270° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "count": 4,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 315° movement selects its authored gait",
+      "data": {
+        "look": "natalie-base",
+        "action": "walk",
+        "requestedDegree": 315,
+        "direction": 315,
+        "coverage": "authored",
+        "mode": "reduced"
+      }
+    },
+    {
+      "ok": true,
+      "label": "natalie: 315° uses all real phases at one unmirrored scale",
+      "data": {
+        "seen": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "count": 4,
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "Neutral turn stays facing its real bearing after settling",
+      "data": {
+        "who": "natalie",
+        "still": {
+          "enabled": true,
+          "who": "natalie",
+          "available": true,
+          "place": "estate",
+          "passing": null,
+          "room": null,
+          "position": {
+            "x": 4.652526183115359,
+            "z": 4.147454250052797
+          },
+          "facing": "side",
+          "viewAngle": 270,
+          "atlas": {
+            "look": "natalie-base",
+            "action": "idle",
+            "requestedDegree": 270,
+            "direction": 270,
+            "coverage": "authored",
+            "mode": "pose"
+          },
+          "moving": false,
+          "gait": "walk",
+          "speed": 3.2167262563621777e-18,
+          "pose": null,
+          "travelling": false,
+          "actionProgress": 0,
+          "blocked": false,
+          "action": null,
+          "actionTarget": null,
+          "waterCanVisible": false,
+          "wateringVisible": false,
+          "canVisible": false,
+          "waterCanStyle": "sprite",
+          "waterCanWidth": 0.82,
+          "streamVisible": false,
+          "dropsVisible": false,
+          "canScale": 1,
+          "waterNozzle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "visualYaw": 8.492167701090687e-9,
+          "spriteFrame": 0,
+          "spriteDirection": "side",
+          "spriteStature": 2.3,
+          "sideFrameCount": 1,
+          "target": null
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "All20 equipped looks retain their own front, side and back rendering",
+      "data": [
+        {
+          "id": "natalie-base",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": "loading"
+        },
+        {
+          "id": "natalie-base",
+          "ok": true,
+          "scale": [
+            0.871749760268816,
+            0.871749760268816,
+            0.871749760268816
+          ],
+          "atlas": "loading"
+        },
+        {
+          "id": "natalie-base",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": "authored"
+        },
+        {
+          "id": "natalie-witch",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-witch",
+          "ok": true,
+          "scale": [
+            0.7763355941809617,
+            0.7763355941809617,
+            0.7763355941809617
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-witch",
+          "ok": true,
+          "scale": [
+            0.9956627021230021,
+            0.9956627021230021,
+            0.9956627021230021
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-ghostbride",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-ghostbride",
+          "ok": true,
+          "scale": [
+            0.9583335729167266,
+            0.9583335729167266,
+            0.9583335729167266
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-ghostbride",
+          "ok": true,
+          "scale": [
+            0.989828247457062,
+            0.989828247457062,
+            0.989828247457062
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-batqueen",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-batqueen",
+          "ok": true,
+          "scale": [
+            0.8874000887400089,
+            0.8874000887400089,
+            0.8874000887400089
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-batqueen",
+          "ok": true,
+          "scale": [
+            0.9677831764783177,
+            0.9677831764783177,
+            0.9677831764783177
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-base",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": "loading"
+        },
+        {
+          "id": "shane-base",
+          "ok": true,
+          "scale": [
+            0.8559003812647152,
+            0.8559003812647152,
+            0.8559003812647152
+          ],
+          "atlas": "loading"
+        },
+        {
+          "id": "shane-base",
+          "ok": true,
+          "scale": [
+            1.0045064211740724,
+            1.0045064211740724,
+            1.0045064211740724
+          ],
+          "atlas": "loading"
+        },
+        {
+          "id": "shane-vampire",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-vampire",
+          "ok": true,
+          "scale": [
+            0.946833570041726,
+            0.946833570041726,
+            0.946833570041726
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-vampire",
+          "ok": true,
+          "scale": [
+            0.989828247457062,
+            0.989828247457062,
+            0.989828247457062
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-skeleton",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-skeleton",
+          "ok": true,
+          "scale": [
+            0.9658181818181818,
+            0.9658181818181818,
+            0.9658181818181818
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-skeleton",
+          "ok": true,
+          "scale": [
+            1.0031350303030304,
+            1.0031350303030304,
+            1.0031350303030304
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-scarecrow",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-scarecrow",
+          "ok": true,
+          "scale": [
+            0.9202900017853626,
+            0.9202900017853626,
+            0.9202900017853626
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-scarecrow",
+          "ok": true,
+          "scale": [
+            0.9984281446769505,
+            0.9984281446769505,
+            0.9984281446769505
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-vampire",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-vampire",
+          "ok": true,
+          "scale": [
+            1.0039061990203884,
+            1.0039061990203884,
+            1.0039061990203884
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-vampire",
+          "ok": true,
+          "scale": [
+            1.0089173494065409,
+            1.0089173494065409,
+            1.0089173494065409
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-frankenstein",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-frankenstein",
+          "ok": true,
+          "scale": [
+            0.9647538572585931,
+            0.9647538572585931,
+            0.9647538572585931
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-frankenstein",
+          "ok": true,
+          "scale": [
+            0.9944170617874148,
+            0.9944170617874148,
+            0.9944170617874148
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-mummy",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-mummy",
+          "ok": true,
+          "scale": [
+            0.969,
+            0.969,
+            0.969
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-mummy",
+          "ok": true,
+          "scale": [
+            1.001565,
+            1.001565,
+            1.001565
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-slasher",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-slasher",
+          "ok": true,
+          "scale": [
+            0.943,
+            0.943,
+            0.943
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-slasher",
+          "ok": true,
+          "scale": [
+            0.9981193250000001,
+            0.9981193250000001,
+            0.9981193250000001
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-frankenstein",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-frankenstein",
+          "ok": true,
+          "scale": [
+            0.949,
+            0.949,
+            0.949
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-frankenstein",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-mummy",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-mummy",
+          "ok": true,
+          "scale": [
+            0.9502730291795578,
+            0.9502730291795578,
+            0.9502730291795578
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-mummy",
+          "ok": true,
+          "scale": [
+            0.9960933219911507,
+            0.9960933219911507,
+            0.9960933219911507
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-slasher",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-slasher",
+          "ok": true,
+          "scale": [
+            0.8874530799340232,
+            0.8874530799340232,
+            0.8874530799340232
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-slasher",
+          "ok": true,
+          "scale": [
+            0.993411584475193,
+            0.993411584475193,
+            0.993411584475193
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-chucky",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-chucky",
+          "ok": true,
+          "scale": [
+            0.9628872352060104,
+            0.9628872352060104,
+            0.9628872352060104
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-chucky",
+          "ok": true,
+          "scale": [
+            0.9906247275782,
+            0.9906247275782,
+            0.9906247275782
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-tiffany",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-tiffany",
+          "ok": true,
+          "scale": [
+            0.9559877927712616,
+            0.9559877927712616,
+            0.9559877927712616
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-tiffany",
+          "ok": true,
+          "scale": [
+            1.022508444393211,
+            1.022508444393211,
+            1.022508444393211
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-freddy",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-freddy",
+          "ok": true,
+          "scale": [
+            0.8520532519253036,
+            0.8520532519253036,
+            0.8520532519253036
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-freddy",
+          "ok": true,
+          "scale": [
+            0.9715836499305075,
+            0.9715836499305075,
+            0.9715836499305075
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-jason",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-jason",
+          "ok": true,
+          "scale": [
+            0.8277635159616704,
+            0.8277635159616704,
+            0.8277635159616704
+          ],
+          "atlas": null
+        },
+        {
+          "id": "shane-jason",
+          "ok": true,
+          "scale": [
+            0.9968652913650485,
+            0.9968652913650485,
+            0.9968652913650485
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-wheelchair",
+          "ok": true,
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-wheelchair",
+          "ok": true,
+          "scale": [
+            0.9579609646357895,
+            0.9579609646357895,
+            0.9579609646357895
+          ],
+          "atlas": null
+        },
+        {
+          "id": "natalie-wheelchair",
+          "ok": true,
+          "scale": [
+            0.8755056921422478,
+            0.8755056921422478,
+            0.8755056921422478
+          ],
+          "atlas": null
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "label": "The illustrated watering can and existing action path remain available",
+      "data": {
+        "look": "natalie-base",
+        "action": "water",
+        "requestedDegree": 90,
+        "direction": 90,
+        "coverage": "authored",
+        "mode": "animation"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Reviewed pages remain within the four-page cache",
+      "data": {
+        "looks": [
+          "shane-base",
+          "natalie-base"
+        ],
+        "residentPages": 4,
+        "pageLimit": 4,
+        "leasedActors": 2,
+        "leasedPages": 2,
+        "rgbaBytes": 27852800,
+        "pendingPages": 0,
+        "errors": [],
+        "coverage": {
+          "shane-base": {
+            "expectedClips": 312,
+            "expectedFrames": 1920,
+            "authoredClips": 5,
+            "authoredPoses": 24,
+            "authoredReducedCycles": 3,
+            "authoredReducedFrames": 12,
+            "authoredFrames": 72,
+            "complete": false,
+            "missing": [
+              {
+                "action": "idle",
+                "degree": 0
+              },
+              {
+                "action": "idle",
+                "degree": 15
+              },
+              {
+                "action": "idle",
+                "degree": 30
+              },
+              {
+                "action": "idle",
+                "degree": 45
+              },
+              {
+                "action": "idle",
+                "degree": 60
+              },
+              {
+                "action": "idle",
+                "degree": 75
+              },
+              {
+                "action": "idle",
+                "degree": 90
+              },
+              {
+                "action": "idle",
+                "degree": 105
+              },
+              {
+                "action": "idle",
+                "degree": 120
+              },
+              {
+                "action": "idle",
+                "degree": 135
+              },
+              {
+                "action": "idle",
+                "degree": 150
+              },
+              {
+                "action": "idle",
+                "degree": 165
+              },
+              {
+                "action": "idle",
+                "degree": 180
+              },
+              {
+                "action": "idle",
+                "degree": 195
+              },
+              {
+                "action": "idle",
+                "degree": 210
+              },
+              {
+                "action": "idle",
+                "degree": 225
+              },
+              {
+                "action": "idle",
+                "degree": 240
+              },
+              {
+                "action": "idle",
+                "degree": 255
+              },
+              {
+                "action": "idle",
+                "degree": 270
+              },
+              {
+                "action": "idle",
+                "degree": 285
+              },
+              {
+                "action": "idle",
+                "degree": 300
+              },
+              {
+                "action": "idle",
+                "degree": 315
+              },
+              {
+                "action": "idle",
+                "degree": 330
+              },
+              {
+                "action": "idle",
+                "degree": 345
+              },
+              {
+                "action": "walk",
+                "degree": 15
+              },
+              {
+                "action": "walk",
+                "degree": 30
+              },
+              {
+                "action": "walk",
+                "degree": 45
+              },
+              {
+                "action": "walk",
+                "degree": 60
+              },
+              {
+                "action": "walk",
+                "degree": 75
+              },
+              {
+                "action": "walk",
+                "degree": 105
+              },
+              {
+                "action": "walk",
+                "degree": 120
+              },
+              {
+                "action": "walk",
+                "degree": 135
+              },
+              {
+                "action": "walk",
+                "degree": 150
+              },
+              {
+                "action": "walk",
+                "degree": 165
+              },
+              {
+                "action": "walk",
+                "degree": 195
+              },
+              {
+                "action": "walk",
+                "degree": 210
+              },
+              {
+                "action": "walk",
+                "degree": 225
+              },
+              {
+                "action": "walk",
+                "degree": 240
+              },
+              {
+                "action": "walk",
+                "degree": 255
+              },
+              {
+                "action": "walk",
+                "degree": 270
+              },
+              {
+                "action": "walk",
+                "degree": 285
+              },
+              {
+                "action": "walk",
+                "degree": 300
+              },
+              {
+                "action": "walk",
+                "degree": 315
+              },
+              {
+                "action": "walk",
+                "degree": 330
+              },
+              {
+                "action": "walk",
+                "degree": 345
+              },
+              {
+                "action": "jog",
+                "degree": 0
+              },
+              {
+                "action": "jog",
+                "degree": 15
+              },
+              {
+                "action": "jog",
+                "degree": 30
+              },
+              {
+                "action": "jog",
+                "degree": 45
+              },
+              {
+                "action": "jog",
+                "degree": 60
+              },
+              {
+                "action": "jog",
+                "degree": 75
+              },
+              {
+                "action": "jog",
+                "degree": 90
+              },
+              {
+                "action": "jog",
+                "degree": 105
+              },
+              {
+                "action": "jog",
+                "degree": 120
+              },
+              {
+                "action": "jog",
+                "degree": 135
+              },
+              {
+                "action": "jog",
+                "degree": 150
+              },
+              {
+                "action": "jog",
+                "degree": 165
+              },
+              {
+                "action": "jog",
+                "degree": 180
+              },
+              {
+                "action": "jog",
+                "degree": 195
+              },
+              {
+                "action": "jog",
+                "degree": 210
+              },
+              {
+                "action": "jog",
+                "degree": 225
+              },
+              {
+                "action": "jog",
+                "degree": 240
+              },
+              {
+                "action": "jog",
+                "degree": 255
+              },
+              {
+                "action": "jog",
+                "degree": 270
+              },
+              {
+                "action": "jog",
+                "degree": 285
+              },
+              {
+                "action": "jog",
+                "degree": 300
+              },
+              {
+                "action": "jog",
+                "degree": 315
+              },
+              {
+                "action": "jog",
+                "degree": 330
+              },
+              {
+                "action": "jog",
+                "degree": 345
+              },
+              {
+                "action": "plant",
+                "degree": 15
+              },
+              {
+                "action": "plant",
+                "degree": 30
+              },
+              {
+                "action": "plant",
+                "degree": 45
+              },
+              {
+                "action": "plant",
+                "degree": 60
+              },
+              {
+                "action": "plant",
+                "degree": 75
+              },
+              {
+                "action": "plant",
+                "degree": 90
+              },
+              {
+                "action": "plant",
+                "degree": 105
+              },
+              {
+                "action": "plant",
+                "degree": 120
+              },
+              {
+                "action": "plant",
+                "degree": 135
+              },
+              {
+                "action": "plant",
+                "degree": 150
+              },
+              {
+                "action": "plant",
+                "degree": 165
+              },
+              {
+                "action": "plant",
+                "degree": 180
+              },
+              {
+                "action": "plant",
+                "degree": 195
+              },
+              {
+                "action": "plant",
+                "degree": 210
+              },
+              {
+                "action": "plant",
+                "degree": 225
+              },
+              {
+                "action": "plant",
+                "degree": 240
+              },
+              {
+                "action": "plant",
+                "degree": 255
+              },
+              {
+                "action": "plant",
+                "degree": 270
+              },
+              {
+                "action": "plant",
+                "degree": 285
+              },
+              {
+                "action": "plant",
+                "degree": 300
+              },
+              {
+                "action": "plant",
+                "degree": 315
+              },
+              {
+                "action": "plant",
+                "degree": 330
+              },
+              {
+                "action": "plant",
+                "degree": 345
+              },
+              {
+                "action": "water",
+                "degree": 0
+              },
+              {
+                "action": "water",
+                "degree": 15
+              },
+              {
+                "action": "water",
+                "degree": 30
+              },
+              {
+                "action": "water",
+                "degree": 45
+              },
+              {
+                "action": "water",
+                "degree": 60
+              },
+              {
+                "action": "water",
+                "degree": 75
+              },
+              {
+                "action": "water",
+                "degree": 105
+              },
+              {
+                "action": "water",
+                "degree": 120
+              },
+              {
+                "action": "water",
+                "degree": 135
+              },
+              {
+                "action": "water",
+                "degree": 150
+              },
+              {
+                "action": "water",
+                "degree": 165
+              },
+              {
+                "action": "water",
+                "degree": 180
+              },
+              {
+                "action": "water",
+                "degree": 195
+              },
+              {
+                "action": "water",
+                "degree": 210
+              },
+              {
+                "action": "water",
+                "degree": 225
+              },
+              {
+                "action": "water",
+                "degree": 240
+              },
+              {
+                "action": "water",
+                "degree": 255
+              },
+              {
+                "action": "water",
+                "degree": 270
+              },
+              {
+                "action": "water",
+                "degree": 285
+              },
+              {
+                "action": "water",
+                "degree": 300
+              },
+              {
+                "action": "water",
+                "degree": 315
+              },
+              {
+                "action": "water",
+                "degree": 330
+              },
+              {
+                "action": "water",
+                "degree": 345
+              },
+              {
+                "action": "harvest",
+                "degree": 0
+              },
+              {
+                "action": "harvest",
+                "degree": 15
+              },
+              {
+                "action": "harvest",
+                "degree": 30
+              },
+              {
+                "action": "harvest",
+                "degree": 45
+              },
+              {
+                "action": "harvest",
+                "degree": 60
+              },
+              {
+                "action": "harvest",
+                "degree": 75
+              },
+              {
+                "action": "harvest",
+                "degree": 90
+              },
+              {
+                "action": "harvest",
+                "degree": 105
+              },
+              {
+                "action": "harvest",
+                "degree": 120
+              },
+              {
+                "action": "harvest",
+                "degree": 135
+              },
+              {
+                "action": "harvest",
+                "degree": 150
+              },
+              {
+                "action": "harvest",
+                "degree": 165
+              },
+              {
+                "action": "harvest",
+                "degree": 180
+              },
+              {
+                "action": "harvest",
+                "degree": 195
+              },
+              {
+                "action": "harvest",
+                "degree": 210
+              },
+              {
+                "action": "harvest",
+                "degree": 225
+              },
+              {
+                "action": "harvest",
+                "degree": 240
+              },
+              {
+                "action": "harvest",
+                "degree": 255
+              },
+              {
+                "action": "harvest",
+                "degree": 270
+              },
+              {
+                "action": "harvest",
+                "degree": 285
+              },
+              {
+                "action": "harvest",
+                "degree": 300
+              },
+              {
+                "action": "harvest",
+                "degree": 315
+              },
+              {
+                "action": "harvest",
+                "degree": 330
+              },
+              {
+                "action": "harvest",
+                "degree": 345
+              },
+              {
+                "action": "clean",
+                "degree": 0
+              },
+              {
+                "action": "clean",
+                "degree": 15
+              },
+              {
+                "action": "clean",
+                "degree": 30
+              },
+              {
+                "action": "clean",
+                "degree": 45
+              },
+              {
+                "action": "clean",
+                "degree": 60
+              },
+              {
+                "action": "clean",
+                "degree": 75
+              },
+              {
+                "action": "clean",
+                "degree": 90
+              },
+              {
+                "action": "clean",
+                "degree": 105
+              },
+              {
+                "action": "clean",
+                "degree": 120
+              },
+              {
+                "action": "clean",
+                "degree": 135
+              },
+              {
+                "action": "clean",
+                "degree": 150
+              },
+              {
+                "action": "clean",
+                "degree": 165
+              },
+              {
+                "action": "clean",
+                "degree": 180
+              },
+              {
+                "action": "clean",
+                "degree": 195
+              },
+              {
+                "action": "clean",
+                "degree": 210
+              },
+              {
+                "action": "clean",
+                "degree": 225
+              },
+              {
+                "action": "clean",
+                "degree": 240
+              },
+              {
+                "action": "clean",
+                "degree": 255
+              },
+              {
+                "action": "clean",
+                "degree": 270
+              },
+              {
+                "action": "clean",
+                "degree": 285
+              },
+              {
+                "action": "clean",
+                "degree": 300
+              },
+              {
+                "action": "clean",
+                "degree": 315
+              },
+              {
+                "action": "clean",
+                "degree": 330
+              },
+              {
+                "action": "clean",
+                "degree": 345
+              },
+              {
+                "action": "interact",
+                "degree": 0
+              },
+              {
+                "action": "interact",
+                "degree": 15
+              },
+              {
+                "action": "interact",
+                "degree": 30
+              },
+              {
+                "action": "interact",
+                "degree": 45
+              },
+              {
+                "action": "interact",
+                "degree": 60
+              },
+              {
+                "action": "interact",
+                "degree": 75
+              },
+              {
+                "action": "interact",
+                "degree": 90
+              },
+              {
+                "action": "interact",
+                "degree": 105
+              },
+              {
+                "action": "interact",
+                "degree": 120
+              },
+              {
+                "action": "interact",
+                "degree": 135
+              },
+              {
+                "action": "interact",
+                "degree": 150
+              },
+              {
+                "action": "interact",
+                "degree": 165
+              },
+              {
+                "action": "interact",
+                "degree": 180
+              },
+              {
+                "action": "interact",
+                "degree": 195
+              },
+              {
+                "action": "interact",
+                "degree": 210
+              },
+              {
+                "action": "interact",
+                "degree": 225
+              },
+              {
+                "action": "interact",
+                "degree": 240
+              },
+              {
+                "action": "interact",
+                "degree": 255
+              },
+              {
+                "action": "interact",
+                "degree": 270
+              },
+              {
+                "action": "interact",
+                "degree": 285
+              },
+              {
+                "action": "interact",
+                "degree": 300
+              },
+              {
+                "action": "interact",
+                "degree": 315
+              },
+              {
+                "action": "interact",
+                "degree": 330
+              },
+              {
+                "action": "interact",
+                "degree": 345
+              },
+              {
+                "action": "sit",
+                "degree": 0
+              },
+              {
+                "action": "sit",
+                "degree": 15
+              },
+              {
+                "action": "sit",
+                "degree": 30
+              },
+              {
+                "action": "sit",
+                "degree": 45
+              },
+              {
+                "action": "sit",
+                "degree": 60
+              },
+              {
+                "action": "sit",
+                "degree": 75
+              },
+              {
+                "action": "sit",
+                "degree": 90
+              },
+              {
+                "action": "sit",
+                "degree": 105
+              },
+              {
+                "action": "sit",
+                "degree": 120
+              },
+              {
+                "action": "sit",
+                "degree": 135
+              },
+              {
+                "action": "sit",
+                "degree": 150
+              },
+              {
+                "action": "sit",
+                "degree": 165
+              },
+              {
+                "action": "sit",
+                "degree": 180
+              },
+              {
+                "action": "sit",
+                "degree": 195
+              },
+              {
+                "action": "sit",
+                "degree": 210
+              },
+              {
+                "action": "sit",
+                "degree": 225
+              },
+              {
+                "action": "sit",
+                "degree": 240
+              },
+              {
+                "action": "sit",
+                "degree": 255
+              },
+              {
+                "action": "sit",
+                "degree": 270
+              },
+              {
+                "action": "sit",
+                "degree": 285
+              },
+              {
+                "action": "sit",
+                "degree": 300
+              },
+              {
+                "action": "sit",
+                "degree": 315
+              },
+              {
+                "action": "sit",
+                "degree": 330
+              },
+              {
+                "action": "sit",
+                "degree": 345
+              },
+              {
+                "action": "read",
+                "degree": 0
+              },
+              {
+                "action": "read",
+                "degree": 15
+              },
+              {
+                "action": "read",
+                "degree": 30
+              },
+              {
+                "action": "read",
+                "degree": 45
+              },
+              {
+                "action": "read",
+                "degree": 60
+              },
+              {
+                "action": "read",
+                "degree": 75
+              },
+              {
+                "action": "read",
+                "degree": 90
+              },
+              {
+                "action": "read",
+                "degree": 105
+              },
+              {
+                "action": "read",
+                "degree": 120
+              },
+              {
+                "action": "read",
+                "degree": 135
+              },
+              {
+                "action": "read",
+                "degree": 150
+              },
+              {
+                "action": "read",
+                "degree": 165
+              },
+              {
+                "action": "read",
+                "degree": 180
+              },
+              {
+                "action": "read",
+                "degree": 195
+              },
+              {
+                "action": "read",
+                "degree": 210
+              },
+              {
+                "action": "read",
+                "degree": 225
+              },
+              {
+                "action": "read",
+                "degree": 240
+              },
+              {
+                "action": "read",
+                "degree": 255
+              },
+              {
+                "action": "read",
+                "degree": 270
+              },
+              {
+                "action": "read",
+                "degree": 285
+              },
+              {
+                "action": "read",
+                "degree": 300
+              },
+              {
+                "action": "read",
+                "degree": 315
+              },
+              {
+                "action": "read",
+                "degree": 330
+              },
+              {
+                "action": "read",
+                "degree": 345
+              },
+              {
+                "action": "pet",
+                "degree": 0
+              },
+              {
+                "action": "pet",
+                "degree": 15
+              },
+              {
+                "action": "pet",
+                "degree": 30
+              },
+              {
+                "action": "pet",
+                "degree": 45
+              },
+              {
+                "action": "pet",
+                "degree": 60
+              },
+              {
+                "action": "pet",
+                "degree": 75
+              },
+              {
+                "action": "pet",
+                "degree": 90
+              },
+              {
+                "action": "pet",
+                "degree": 105
+              },
+              {
+                "action": "pet",
+                "degree": 120
+              },
+              {
+                "action": "pet",
+                "degree": 135
+              },
+              {
+                "action": "pet",
+                "degree": 150
+              },
+              {
+                "action": "pet",
+                "degree": 165
+              },
+              {
+                "action": "pet",
+                "degree": 180
+              },
+              {
+                "action": "pet",
+                "degree": 195
+              },
+              {
+                "action": "pet",
+                "degree": 210
+              },
+              {
+                "action": "pet",
+                "degree": 225
+              },
+              {
+                "action": "pet",
+                "degree": 240
+              },
+              {
+                "action": "pet",
+                "degree": 255
+              },
+              {
+                "action": "pet",
+                "degree": 270
+              },
+              {
+                "action": "pet",
+                "degree": 285
+              },
+              {
+                "action": "pet",
+                "degree": 300
+              },
+              {
+                "action": "pet",
+                "degree": 315
+              },
+              {
+                "action": "pet",
+                "degree": 330
+              },
+              {
+                "action": "pet",
+                "degree": 345
+              },
+              {
+                "action": "cook",
+                "degree": 0
+              },
+              {
+                "action": "cook",
+                "degree": 15
+              },
+              {
+                "action": "cook",
+                "degree": 30
+              },
+              {
+                "action": "cook",
+                "degree": 45
+              },
+              {
+                "action": "cook",
+                "degree": 60
+              },
+              {
+                "action": "cook",
+                "degree": 75
+              },
+              {
+                "action": "cook",
+                "degree": 90
+              },
+              {
+                "action": "cook",
+                "degree": 105
+              },
+              {
+                "action": "cook",
+                "degree": 120
+              },
+              {
+                "action": "cook",
+                "degree": 135
+              },
+              {
+                "action": "cook",
+                "degree": 150
+              },
+              {
+                "action": "cook",
+                "degree": 165
+              },
+              {
+                "action": "cook",
+                "degree": 180
+              },
+              {
+                "action": "cook",
+                "degree": 195
+              },
+              {
+                "action": "cook",
+                "degree": 210
+              },
+              {
+                "action": "cook",
+                "degree": 225
+              },
+              {
+                "action": "cook",
+                "degree": 240
+              },
+              {
+                "action": "cook",
+                "degree": 255
+              },
+              {
+                "action": "cook",
+                "degree": 270
+              },
+              {
+                "action": "cook",
+                "degree": 285
+              },
+              {
+                "action": "cook",
+                "degree": 300
+              },
+              {
+                "action": "cook",
+                "degree": 315
+              },
+              {
+                "action": "cook",
+                "degree": 330
+              },
+              {
+                "action": "cook",
+                "degree": 345
+              },
+              {
+                "action": "carve",
+                "degree": 0
+              },
+              {
+                "action": "carve",
+                "degree": 15
+              },
+              {
+                "action": "carve",
+                "degree": 30
+              },
+              {
+                "action": "carve",
+                "degree": 45
+              },
+              {
+                "action": "carve",
+                "degree": 60
+              },
+              {
+                "action": "carve",
+                "degree": 75
+              },
+              {
+                "action": "carve",
+                "degree": 90
+              },
+              {
+                "action": "carve",
+                "degree": 105
+              },
+              {
+                "action": "carve",
+                "degree": 120
+              },
+              {
+                "action": "carve",
+                "degree": 135
+              },
+              {
+                "action": "carve",
+                "degree": 150
+              },
+              {
+                "action": "carve",
+                "degree": 165
+              },
+              {
+                "action": "carve",
+                "degree": 180
+              },
+              {
+                "action": "carve",
+                "degree": 195
+              },
+              {
+                "action": "carve",
+                "degree": 210
+              },
+              {
+                "action": "carve",
+                "degree": 225
+              },
+              {
+                "action": "carve",
+                "degree": 240
+              },
+              {
+                "action": "carve",
+                "degree": 255
+              },
+              {
+                "action": "carve",
+                "degree": 270
+              },
+              {
+                "action": "carve",
+                "degree": 285
+              },
+              {
+                "action": "carve",
+                "degree": 300
+              },
+              {
+                "action": "carve",
+                "degree": 315
+              },
+              {
+                "action": "carve",
+                "degree": 330
+              },
+              {
+                "action": "carve",
+                "degree": 345
+              }
+            ]
+          },
+          "natalie-base": {
+            "expectedClips": 312,
+            "expectedFrames": 1920,
+            "authoredClips": 4,
+            "authoredPoses": 24,
+            "authoredReducedCycles": 4,
+            "authoredReducedFrames": 16,
+            "authoredFrames": 68,
+            "complete": false,
+            "missing": [
+              {
+                "action": "idle",
+                "degree": 0
+              },
+              {
+                "action": "idle",
+                "degree": 15
+              },
+              {
+                "action": "idle",
+                "degree": 30
+              },
+              {
+                "action": "idle",
+                "degree": 45
+              },
+              {
+                "action": "idle",
+                "degree": 60
+              },
+              {
+                "action": "idle",
+                "degree": 75
+              },
+              {
+                "action": "idle",
+                "degree": 90
+              },
+              {
+                "action": "idle",
+                "degree": 105
+              },
+              {
+                "action": "idle",
+                "degree": 120
+              },
+              {
+                "action": "idle",
+                "degree": 135
+              },
+              {
+                "action": "idle",
+                "degree": 150
+              },
+              {
+                "action": "idle",
+                "degree": 165
+              },
+              {
+                "action": "idle",
+                "degree": 180
+              },
+              {
+                "action": "idle",
+                "degree": 195
+              },
+              {
+                "action": "idle",
+                "degree": 210
+              },
+              {
+                "action": "idle",
+                "degree": 225
+              },
+              {
+                "action": "idle",
+                "degree": 240
+              },
+              {
+                "action": "idle",
+                "degree": 255
+              },
+              {
+                "action": "idle",
+                "degree": 270
+              },
+              {
+                "action": "idle",
+                "degree": 285
+              },
+              {
+                "action": "idle",
+                "degree": 300
+              },
+              {
+                "action": "idle",
+                "degree": 315
+              },
+              {
+                "action": "idle",
+                "degree": 330
+              },
+              {
+                "action": "idle",
+                "degree": 345
+              },
+              {
+                "action": "walk",
+                "degree": 15
+              },
+              {
+                "action": "walk",
+                "degree": 30
+              },
+              {
+                "action": "walk",
+                "degree": 45
+              },
+              {
+                "action": "walk",
+                "degree": 60
+              },
+              {
+                "action": "walk",
+                "degree": 75
+              },
+              {
+                "action": "walk",
+                "degree": 90
+              },
+              {
+                "action": "walk",
+                "degree": 105
+              },
+              {
+                "action": "walk",
+                "degree": 120
+              },
+              {
+                "action": "walk",
+                "degree": 135
+              },
+              {
+                "action": "walk",
+                "degree": 150
+              },
+              {
+                "action": "walk",
+                "degree": 165
+              },
+              {
+                "action": "walk",
+                "degree": 195
+              },
+              {
+                "action": "walk",
+                "degree": 210
+              },
+              {
+                "action": "walk",
+                "degree": 225
+              },
+              {
+                "action": "walk",
+                "degree": 240
+              },
+              {
+                "action": "walk",
+                "degree": 255
+              },
+              {
+                "action": "walk",
+                "degree": 270
+              },
+              {
+                "action": "walk",
+                "degree": 285
+              },
+              {
+                "action": "walk",
+                "degree": 300
+              },
+              {
+                "action": "walk",
+                "degree": 315
+              },
+              {
+                "action": "walk",
+                "degree": 330
+              },
+              {
+                "action": "walk",
+                "degree": 345
+              },
+              {
+                "action": "jog",
+                "degree": 0
+              },
+              {
+                "action": "jog",
+                "degree": 15
+              },
+              {
+                "action": "jog",
+                "degree": 30
+              },
+              {
+                "action": "jog",
+                "degree": 45
+              },
+              {
+                "action": "jog",
+                "degree": 60
+              },
+              {
+                "action": "jog",
+                "degree": 75
+              },
+              {
+                "action": "jog",
+                "degree": 90
+              },
+              {
+                "action": "jog",
+                "degree": 105
+              },
+              {
+                "action": "jog",
+                "degree": 120
+              },
+              {
+                "action": "jog",
+                "degree": 135
+              },
+              {
+                "action": "jog",
+                "degree": 150
+              },
+              {
+                "action": "jog",
+                "degree": 165
+              },
+              {
+                "action": "jog",
+                "degree": 180
+              },
+              {
+                "action": "jog",
+                "degree": 195
+              },
+              {
+                "action": "jog",
+                "degree": 210
+              },
+              {
+                "action": "jog",
+                "degree": 225
+              },
+              {
+                "action": "jog",
+                "degree": 240
+              },
+              {
+                "action": "jog",
+                "degree": 255
+              },
+              {
+                "action": "jog",
+                "degree": 270
+              },
+              {
+                "action": "jog",
+                "degree": 285
+              },
+              {
+                "action": "jog",
+                "degree": 300
+              },
+              {
+                "action": "jog",
+                "degree": 315
+              },
+              {
+                "action": "jog",
+                "degree": 330
+              },
+              {
+                "action": "jog",
+                "degree": 345
+              },
+              {
+                "action": "plant",
+                "degree": 15
+              },
+              {
+                "action": "plant",
+                "degree": 30
+              },
+              {
+                "action": "plant",
+                "degree": 45
+              },
+              {
+                "action": "plant",
+                "degree": 60
+              },
+              {
+                "action": "plant",
+                "degree": 75
+              },
+              {
+                "action": "plant",
+                "degree": 90
+              },
+              {
+                "action": "plant",
+                "degree": 105
+              },
+              {
+                "action": "plant",
+                "degree": 120
+              },
+              {
+                "action": "plant",
+                "degree": 135
+              },
+              {
+                "action": "plant",
+                "degree": 150
+              },
+              {
+                "action": "plant",
+                "degree": 165
+              },
+              {
+                "action": "plant",
+                "degree": 180
+              },
+              {
+                "action": "plant",
+                "degree": 195
+              },
+              {
+                "action": "plant",
+                "degree": 210
+              },
+              {
+                "action": "plant",
+                "degree": 225
+              },
+              {
+                "action": "plant",
+                "degree": 240
+              },
+              {
+                "action": "plant",
+                "degree": 255
+              },
+              {
+                "action": "plant",
+                "degree": 270
+              },
+              {
+                "action": "plant",
+                "degree": 285
+              },
+              {
+                "action": "plant",
+                "degree": 300
+              },
+              {
+                "action": "plant",
+                "degree": 315
+              },
+              {
+                "action": "plant",
+                "degree": 330
+              },
+              {
+                "action": "plant",
+                "degree": 345
+              },
+              {
+                "action": "water",
+                "degree": 0
+              },
+              {
+                "action": "water",
+                "degree": 15
+              },
+              {
+                "action": "water",
+                "degree": 30
+              },
+              {
+                "action": "water",
+                "degree": 45
+              },
+              {
+                "action": "water",
+                "degree": 60
+              },
+              {
+                "action": "water",
+                "degree": 75
+              },
+              {
+                "action": "water",
+                "degree": 105
+              },
+              {
+                "action": "water",
+                "degree": 120
+              },
+              {
+                "action": "water",
+                "degree": 135
+              },
+              {
+                "action": "water",
+                "degree": 150
+              },
+              {
+                "action": "water",
+                "degree": 165
+              },
+              {
+                "action": "water",
+                "degree": 180
+              },
+              {
+                "action": "water",
+                "degree": 195
+              },
+              {
+                "action": "water",
+                "degree": 210
+              },
+              {
+                "action": "water",
+                "degree": 225
+              },
+              {
+                "action": "water",
+                "degree": 240
+              },
+              {
+                "action": "water",
+                "degree": 255
+              },
+              {
+                "action": "water",
+                "degree": 270
+              },
+              {
+                "action": "water",
+                "degree": 285
+              },
+              {
+                "action": "water",
+                "degree": 300
+              },
+              {
+                "action": "water",
+                "degree": 315
+              },
+              {
+                "action": "water",
+                "degree": 330
+              },
+              {
+                "action": "water",
+                "degree": 345
+              },
+              {
+                "action": "harvest",
+                "degree": 0
+              },
+              {
+                "action": "harvest",
+                "degree": 15
+              },
+              {
+                "action": "harvest",
+                "degree": 30
+              },
+              {
+                "action": "harvest",
+                "degree": 45
+              },
+              {
+                "action": "harvest",
+                "degree": 60
+              },
+              {
+                "action": "harvest",
+                "degree": 75
+              },
+              {
+                "action": "harvest",
+                "degree": 90
+              },
+              {
+                "action": "harvest",
+                "degree": 105
+              },
+              {
+                "action": "harvest",
+                "degree": 120
+              },
+              {
+                "action": "harvest",
+                "degree": 135
+              },
+              {
+                "action": "harvest",
+                "degree": 150
+              },
+              {
+                "action": "harvest",
+                "degree": 165
+              },
+              {
+                "action": "harvest",
+                "degree": 180
+              },
+              {
+                "action": "harvest",
+                "degree": 195
+              },
+              {
+                "action": "harvest",
+                "degree": 210
+              },
+              {
+                "action": "harvest",
+                "degree": 225
+              },
+              {
+                "action": "harvest",
+                "degree": 240
+              },
+              {
+                "action": "harvest",
+                "degree": 255
+              },
+              {
+                "action": "harvest",
+                "degree": 270
+              },
+              {
+                "action": "harvest",
+                "degree": 285
+              },
+              {
+                "action": "harvest",
+                "degree": 300
+              },
+              {
+                "action": "harvest",
+                "degree": 315
+              },
+              {
+                "action": "harvest",
+                "degree": 330
+              },
+              {
+                "action": "harvest",
+                "degree": 345
+              },
+              {
+                "action": "clean",
+                "degree": 0
+              },
+              {
+                "action": "clean",
+                "degree": 15
+              },
+              {
+                "action": "clean",
+                "degree": 30
+              },
+              {
+                "action": "clean",
+                "degree": 45
+              },
+              {
+                "action": "clean",
+                "degree": 60
+              },
+              {
+                "action": "clean",
+                "degree": 75
+              },
+              {
+                "action": "clean",
+                "degree": 90
+              },
+              {
+                "action": "clean",
+                "degree": 105
+              },
+              {
+                "action": "clean",
+                "degree": 120
+              },
+              {
+                "action": "clean",
+                "degree": 135
+              },
+              {
+                "action": "clean",
+                "degree": 150
+              },
+              {
+                "action": "clean",
+                "degree": 165
+              },
+              {
+                "action": "clean",
+                "degree": 180
+              },
+              {
+                "action": "clean",
+                "degree": 195
+              },
+              {
+                "action": "clean",
+                "degree": 210
+              },
+              {
+                "action": "clean",
+                "degree": 225
+              },
+              {
+                "action": "clean",
+                "degree": 240
+              },
+              {
+                "action": "clean",
+                "degree": 255
+              },
+              {
+                "action": "clean",
+                "degree": 270
+              },
+              {
+                "action": "clean",
+                "degree": 285
+              },
+              {
+                "action": "clean",
+                "degree": 300
+              },
+              {
+                "action": "clean",
+                "degree": 315
+              },
+              {
+                "action": "clean",
+                "degree": 330
+              },
+              {
+                "action": "clean",
+                "degree": 345
+              },
+              {
+                "action": "interact",
+                "degree": 0
+              },
+              {
+                "action": "interact",
+                "degree": 15
+              },
+              {
+                "action": "interact",
+                "degree": 30
+              },
+              {
+                "action": "interact",
+                "degree": 45
+              },
+              {
+                "action": "interact",
+                "degree": 60
+              },
+              {
+                "action": "interact",
+                "degree": 75
+              },
+              {
+                "action": "interact",
+                "degree": 90
+              },
+              {
+                "action": "interact",
+                "degree": 105
+              },
+              {
+                "action": "interact",
+                "degree": 120
+              },
+              {
+                "action": "interact",
+                "degree": 135
+              },
+              {
+                "action": "interact",
+                "degree": 150
+              },
+              {
+                "action": "interact",
+                "degree": 165
+              },
+              {
+                "action": "interact",
+                "degree": 180
+              },
+              {
+                "action": "interact",
+                "degree": 195
+              },
+              {
+                "action": "interact",
+                "degree": 210
+              },
+              {
+                "action": "interact",
+                "degree": 225
+              },
+              {
+                "action": "interact",
+                "degree": 240
+              },
+              {
+                "action": "interact",
+                "degree": 255
+              },
+              {
+                "action": "interact",
+                "degree": 270
+              },
+              {
+                "action": "interact",
+                "degree": 285
+              },
+              {
+                "action": "interact",
+                "degree": 300
+              },
+              {
+                "action": "interact",
+                "degree": 315
+              },
+              {
+                "action": "interact",
+                "degree": 330
+              },
+              {
+                "action": "interact",
+                "degree": 345
+              },
+              {
+                "action": "sit",
+                "degree": 0
+              },
+              {
+                "action": "sit",
+                "degree": 15
+              },
+              {
+                "action": "sit",
+                "degree": 30
+              },
+              {
+                "action": "sit",
+                "degree": 45
+              },
+              {
+                "action": "sit",
+                "degree": 60
+              },
+              {
+                "action": "sit",
+                "degree": 75
+              },
+              {
+                "action": "sit",
+                "degree": 90
+              },
+              {
+                "action": "sit",
+                "degree": 105
+              },
+              {
+                "action": "sit",
+                "degree": 120
+              },
+              {
+                "action": "sit",
+                "degree": 135
+              },
+              {
+                "action": "sit",
+                "degree": 150
+              },
+              {
+                "action": "sit",
+                "degree": 165
+              },
+              {
+                "action": "sit",
+                "degree": 180
+              },
+              {
+                "action": "sit",
+                "degree": 195
+              },
+              {
+                "action": "sit",
+                "degree": 210
+              },
+              {
+                "action": "sit",
+                "degree": 225
+              },
+              {
+                "action": "sit",
+                "degree": 240
+              },
+              {
+                "action": "sit",
+                "degree": 255
+              },
+              {
+                "action": "sit",
+                "degree": 270
+              },
+              {
+                "action": "sit",
+                "degree": 285
+              },
+              {
+                "action": "sit",
+                "degree": 300
+              },
+              {
+                "action": "sit",
+                "degree": 315
+              },
+              {
+                "action": "sit",
+                "degree": 330
+              },
+              {
+                "action": "sit",
+                "degree": 345
+              },
+              {
+                "action": "read",
+                "degree": 0
+              },
+              {
+                "action": "read",
+                "degree": 15
+              },
+              {
+                "action": "read",
+                "degree": 30
+              },
+              {
+                "action": "read",
+                "degree": 45
+              },
+              {
+                "action": "read",
+                "degree": 60
+              },
+              {
+                "action": "read",
+                "degree": 75
+              },
+              {
+                "action": "read",
+                "degree": 90
+              },
+              {
+                "action": "read",
+                "degree": 105
+              },
+              {
+                "action": "read",
+                "degree": 120
+              },
+              {
+                "action": "read",
+                "degree": 135
+              },
+              {
+                "action": "read",
+                "degree": 150
+              },
+              {
+                "action": "read",
+                "degree": 165
+              },
+              {
+                "action": "read",
+                "degree": 180
+              },
+              {
+                "action": "read",
+                "degree": 195
+              },
+              {
+                "action": "read",
+                "degree": 210
+              },
+              {
+                "action": "read",
+                "degree": 225
+              },
+              {
+                "action": "read",
+                "degree": 240
+              },
+              {
+                "action": "read",
+                "degree": 255
+              },
+              {
+                "action": "read",
+                "degree": 270
+              },
+              {
+                "action": "read",
+                "degree": 285
+              },
+              {
+                "action": "read",
+                "degree": 300
+              },
+              {
+                "action": "read",
+                "degree": 315
+              },
+              {
+                "action": "read",
+                "degree": 330
+              },
+              {
+                "action": "read",
+                "degree": 345
+              },
+              {
+                "action": "pet",
+                "degree": 0
+              },
+              {
+                "action": "pet",
+                "degree": 15
+              },
+              {
+                "action": "pet",
+                "degree": 30
+              },
+              {
+                "action": "pet",
+                "degree": 45
+              },
+              {
+                "action": "pet",
+                "degree": 60
+              },
+              {
+                "action": "pet",
+                "degree": 75
+              },
+              {
+                "action": "pet",
+                "degree": 90
+              },
+              {
+                "action": "pet",
+                "degree": 105
+              },
+              {
+                "action": "pet",
+                "degree": 120
+              },
+              {
+                "action": "pet",
+                "degree": 135
+              },
+              {
+                "action": "pet",
+                "degree": 150
+              },
+              {
+                "action": "pet",
+                "degree": 165
+              },
+              {
+                "action": "pet",
+                "degree": 180
+              },
+              {
+                "action": "pet",
+                "degree": 195
+              },
+              {
+                "action": "pet",
+                "degree": 210
+              },
+              {
+                "action": "pet",
+                "degree": 225
+              },
+              {
+                "action": "pet",
+                "degree": 240
+              },
+              {
+                "action": "pet",
+                "degree": 255
+              },
+              {
+                "action": "pet",
+                "degree": 270
+              },
+              {
+                "action": "pet",
+                "degree": 285
+              },
+              {
+                "action": "pet",
+                "degree": 300
+              },
+              {
+                "action": "pet",
+                "degree": 315
+              },
+              {
+                "action": "pet",
+                "degree": 330
+              },
+              {
+                "action": "pet",
+                "degree": 345
+              },
+              {
+                "action": "cook",
+                "degree": 0
+              },
+              {
+                "action": "cook",
+                "degree": 15
+              },
+              {
+                "action": "cook",
+                "degree": 30
+              },
+              {
+                "action": "cook",
+                "degree": 45
+              },
+              {
+                "action": "cook",
+                "degree": 60
+              },
+              {
+                "action": "cook",
+                "degree": 75
+              },
+              {
+                "action": "cook",
+                "degree": 90
+              },
+              {
+                "action": "cook",
+                "degree": 105
+              },
+              {
+                "action": "cook",
+                "degree": 120
+              },
+              {
+                "action": "cook",
+                "degree": 135
+              },
+              {
+                "action": "cook",
+                "degree": 150
+              },
+              {
+                "action": "cook",
+                "degree": 165
+              },
+              {
+                "action": "cook",
+                "degree": 180
+              },
+              {
+                "action": "cook",
+                "degree": 195
+              },
+              {
+                "action": "cook",
+                "degree": 210
+              },
+              {
+                "action": "cook",
+                "degree": 225
+              },
+              {
+                "action": "cook",
+                "degree": 240
+              },
+              {
+                "action": "cook",
+                "degree": 255
+              },
+              {
+                "action": "cook",
+                "degree": 270
+              },
+              {
+                "action": "cook",
+                "degree": 285
+              },
+              {
+                "action": "cook",
+                "degree": 300
+              },
+              {
+                "action": "cook",
+                "degree": 315
+              },
+              {
+                "action": "cook",
+                "degree": 330
+              },
+              {
+                "action": "cook",
+                "degree": 345
+              },
+              {
+                "action": "carve",
+                "degree": 0
+              },
+              {
+                "action": "carve",
+                "degree": 15
+              },
+              {
+                "action": "carve",
+                "degree": 30
+              },
+              {
+                "action": "carve",
+                "degree": 45
+              },
+              {
+                "action": "carve",
+                "degree": 60
+              },
+              {
+                "action": "carve",
+                "degree": 75
+              },
+              {
+                "action": "carve",
+                "degree": 90
+              },
+              {
+                "action": "carve",
+                "degree": 105
+              },
+              {
+                "action": "carve",
+                "degree": 120
+              },
+              {
+                "action": "carve",
+                "degree": 135
+              },
+              {
+                "action": "carve",
+                "degree": 150
+              },
+              {
+                "action": "carve",
+                "degree": 165
+              },
+              {
+                "action": "carve",
+                "degree": 180
+              },
+              {
+                "action": "carve",
+                "degree": 195
+              },
+              {
+                "action": "carve",
+                "degree": 210
+              },
+              {
+                "action": "carve",
+                "degree": 225
+              },
+              {
+                "action": "carve",
+                "degree": 240
+              },
+              {
+                "action": "carve",
+                "degree": 255
+              },
+              {
+                "action": "carve",
+                "degree": 270
+              },
+              {
+                "action": "carve",
+                "degree": 285
+              },
+              {
+                "action": "carve",
+                "degree": 300
+              },
+              {
+                "action": "carve",
+                "degree": 315
+              },
+              {
+                "action": "carve",
+                "degree": 330
+              },
+              {
+                "action": "carve",
+                "degree": 345
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: control layout stays within the playfield",
+      "data": {
+        "overflow": false,
+        "clipped": 0
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: control layout stays within the playfield",
+      "data": {
+        "overflow": false,
+        "clipped": 0
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: control layout stays within the playfield",
+      "data": {
+        "overflow": false,
+        "clipped": 0
+      }
+    },
+    {
+      "ok": true,
+      "label": "Offline game reports no page errors or external runtime requests",
+      "data": {
+        "errors": [],
+        "requests": []
+      }
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "sandy-cocoa-idle",
+    "sandy-cocoa-serving",
+    "home-pet-comparison",
+    "shane-walking-0",
+    "shane-walking-90",
+    "shane-walking-180",
+    "natalie-walking-0",
+    "natalie-walking-90",
+    "natalie-walking-180",
+    "watering-can",
+    "phone-controls",
+    "fold-controls",
+    "landscape-controls"
+  ]
+}

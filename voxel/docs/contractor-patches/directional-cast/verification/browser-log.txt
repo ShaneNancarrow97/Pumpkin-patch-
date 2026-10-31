@@ -1,0 +1,44 @@
+ok Sandy has the smaller dedicated cocoa body
+ok All three home companions retain their states; Sandy is29% smaller
+ok Both reviewed base banks are included
+ok shane: 0° movement selects its authored gait
+ok shane: 0° uses all real phases at one unmirrored scale
+ok shane: 45° movement selects its authored gait
+ok shane: 45° uses all real phases at one unmirrored scale
+ok shane: 90° movement selects its authored gait
+ok shane: 90° uses all real phases at one unmirrored scale
+ok shane: 135° movement selects an explicit nearest-bearing fallback
+ok shane: 135° uses all real phases at one unmirrored scale
+ok shane: 180° movement selects its authored gait
+ok shane: 180° uses all real phases at one unmirrored scale
+ok shane: 225° movement selects an explicit nearest-bearing fallback
+ok shane: 225° uses all real phases at one unmirrored scale
+ok shane: 270° movement selects its authored gait
+ok shane: 270° uses all real phases at one unmirrored scale
+ok shane: 315° movement selects its authored gait
+ok shane: 315° uses all real phases at one unmirrored scale
+ok Neutral turn stays facing its real bearing after settling
+ok natalie: 0° movement selects its authored gait
+ok natalie: 0° uses all real phases at one unmirrored scale
+ok natalie: 45° movement selects its authored gait
+ok natalie: 45° uses all real phases at one unmirrored scale
+ok natalie: 90° movement selects its authored gait
+ok natalie: 90° uses all real phases at one unmirrored scale
+ok natalie: 135° movement selects an explicit nearest-bearing fallback
+ok natalie: 135° uses all real phases at one unmirrored scale
+ok natalie: 180° movement selects its authored gait
+ok natalie: 180° uses all real phases at one unmirrored scale
+ok natalie: 225° movement selects an explicit nearest-bearing fallback
+ok natalie: 225° uses all real phases at one unmirrored scale
+ok natalie: 270° movement selects its authored gait
+ok natalie: 270° uses all real phases at one unmirrored scale
+ok natalie: 315° movement selects its authored gait
+ok natalie: 315° uses all real phases at one unmirrored scale
+ok Neutral turn stays facing its real bearing after settling
+ok All20 equipped looks retain their own front, side and back rendering
+ok The illustrated watering can and existing action path remain available
+ok Reviewed pages remain within the four-page cache
+ok phone: control layout stays within the playfield
+ok fold: control layout stays within the playfield
+ok landscape: control layout stays within the playfield
+ok Offline game reports no page errors or external runtime requests

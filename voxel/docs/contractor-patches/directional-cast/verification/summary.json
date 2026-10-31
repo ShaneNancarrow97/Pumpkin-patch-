@@ -1,0 +1,14 @@
+{
+  "runtimeCommit": "daf6d2b2d69f618d1d3c58c51f8d4e962bcc7778",
+  "ci": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/41208388922",
+  "ciConclusion": "success",
+  "htmlSHA256": "7909eb960ab10ed9aa6b2cc7cac35a081f8a02e5817ab918b9e62ebfd66e652a",
+  "nativeTestFiles": 105,
+  "gameBrowserChecks": 44,
+  "actualMenuHarnessChecks": 111,
+  "artBenchChecks": 235,
+  "standardCISmokeChecks": 52,
+  "gameErrors": [],
+  "gameExternalRequests": [],
+  "scope": "Owner base-art batch plus all12 tractor-upgrade menu icons. Remaining costume/action views are explicitly incomplete."
+}
