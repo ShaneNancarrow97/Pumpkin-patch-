@@ -1,6 +1,8 @@
 # Claude pickup — directional characters and lean Sandy
 
 Start with [handover59](../../handovers/59-reviewed-owner-directions-and-lean-sandy.md).
+Then read [handover60](../../handovers/60-hollow-hayride-upgrade-icons.md) for the
+twelve new tractor ride upgrade icons and their menu integration.
 
 Source branch: **`contractor/directional-character-atlases`**, based on lead
 **`b387c85`**. This branch is deliberately unmerged while Claude continues the

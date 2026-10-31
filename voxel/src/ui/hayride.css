@@ -55,6 +55,11 @@
 .hayride-next p { margin:4px 0; }
 .hayride-next .button { padding:7px 12px; flex-shrink:0; }
 .hayride-next .button span { display:block; margin-top:1px; }
+.hayride-item-copy { display:flex; align-items:flex-start; gap:10px; min-width:0; }
+.hayride-item-copy > div { flex:1; min-width:0; }
+.hayride-upgrade-art { display:inline-block; flex-shrink:0; background-repeat:no-repeat; }
+.hayride-tier-track li { align-items:center; }
+.hayride-next > .button { margin-left:auto; }
 .hayride-disclosure { border-top:1px solid var(--edge-soft); }
 .hayride-disclosure > summary { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:52px; padding:8px 0; cursor:pointer; list-style:none; font-size:13px; font-weight:600; color:var(--ink); }
 .hayride-disclosure > summary::-webkit-details-marker { display:none; }

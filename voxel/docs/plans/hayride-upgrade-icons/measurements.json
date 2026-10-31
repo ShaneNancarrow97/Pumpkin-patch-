@@ -1,0 +1,226 @@
+{
+  "sourceSHA256": "1f5a6f98834b6647125c9d2dbb58a8b35254765dc8ab87ae669cedc16ab0d66d",
+  "encodedSHA256": "4ac5db3c96de8b1947b84b11fe1e285832b988b9cdac3276491bac1823c0b424",
+  "encodedBytes": 216628,
+  "width": 768,
+  "height": 576,
+  "decodedRGBABytes": 1769472,
+  "icons": [
+    {
+      "id": "tier1",
+      "index": 0,
+      "sourceBounds": [
+        20,
+        129,
+        366,
+        352
+      ],
+      "packedBounds": [
+        8,
+        39,
+        184,
+        152
+      ],
+      "scale": 0.5086705202312138,
+      "rgbaSHA256": "487047e4aad40bd96f2fc5658d534854749a4e6688db08351cb69715f235b9f4"
+    },
+    {
+      "id": "tier2",
+      "index": 1,
+      "sourceBounds": [
+        378,
+        56,
+        737,
+        366
+      ],
+      "packedBounds": [
+        8,
+        20,
+        184,
+        172
+      ],
+      "scale": 0.49025069637883006,
+      "rgbaSHA256": "0a2e742cfbcf4441894e9da1ace3149220fa8509b947be6112e10b8128a5f007"
+    },
+    {
+      "id": "tier3",
+      "index": 2,
+      "sourceBounds": [
+        738,
+        32,
+        1112,
+        362
+      ],
+      "packedBounds": [
+        8,
+        18,
+        184,
+        173
+      ],
+      "scale": 0.47058823529411764,
+      "rgbaSHA256": "949e78000f0eb7be5866003b5261eba2f134e049adaaa9919bc6d4670b1818f3"
+    },
+    {
+      "id": "fleet",
+      "index": 3,
+      "sourceBounds": [
+        1104,
+        160,
+        1432,
+        360
+      ],
+      "packedBounds": [
+        8,
+        42,
+        184,
+        149
+      ],
+      "scale": 0.5365853658536586,
+      "rgbaSHA256": "6d513166019efe9a0c6c6e3f4ddab70d2f3f479cbbb6cba3391e2ce2cd644952"
+    },
+    {
+      "id": "dispatch",
+      "index": 4,
+      "sourceBounds": [
+        32,
+        405,
+        360,
+        691
+      ],
+      "packedBounds": [
+        8,
+        19,
+        184,
+        172
+      ],
+      "scale": 0.5365853658536586,
+      "rgbaSHA256": "338bcd0dc8a04beb066202f7bc6f7fcb924aa5a178501ae5a04f966e6eb3be57"
+    },
+    {
+      "id": "route1",
+      "index": 5,
+      "sourceBounds": [
+        379,
+        389,
+        723,
+        700
+      ],
+      "packedBounds": [
+        8,
+        16,
+        184,
+        175
+      ],
+      "scale": 0.5116279069767442,
+      "rgbaSHA256": "bed329f6ee2a45bbd7bf16344cb44db87f2e816e4919fc21b442ee7ab3c0017a"
+    },
+    {
+      "id": "route2",
+      "index": 6,
+      "sourceBounds": [
+        739,
+        383,
+        1083,
+        702
+      ],
+      "packedBounds": [
+        8,
+        14,
+        184,
+        177
+      ],
+      "scale": 0.5116279069767442,
+      "rgbaSHA256": "a106391a837787fec41aebf8a9289e32fa5761ee7a51f554bbc7991c6b4620c7"
+    },
+    {
+      "id": "turning-scarecrows",
+      "index": 7,
+      "sourceBounds": [
+        1118,
+        373,
+        1427,
+        700
+      ],
+      "packedBounds": [
+        13,
+        8,
+        179,
+        184
+      ],
+      "scale": 0.5382262996941896,
+      "rgbaSHA256": "f039d5bb393bf0ef8c36209623eff70864b7f6144e06249698a5fb0f84e4c898"
+    },
+    {
+      "id": "spider-drop",
+      "index": 8,
+      "sourceBounds": [
+        20,
+        709,
+        365,
+        1042
+      ],
+      "packedBounds": [
+        8,
+        11,
+        184,
+        181
+      ],
+      "scale": 0.5101449275362319,
+      "rgbaSHA256": "c671985093c14d01d4c27a07b32596477317c9737c3de17ad2c81b5334321a27"
+    },
+    {
+      "id": "bride-procession",
+      "index": 9,
+      "sourceBounds": [
+        378,
+        710,
+        721,
+        1040
+      ],
+      "packedBounds": [
+        8,
+        11,
+        184,
+        180
+      ],
+      "scale": 0.5131195335276968,
+      "rgbaSHA256": "0822319bc76c388f5aba5053a11d7637ae9a1fe5c8d98eee1b152cf423cc9dbb"
+    },
+    {
+      "id": "spectral-burst",
+      "index": 10,
+      "sourceBounds": [
+        740,
+        714,
+        1077,
+        1041
+      ],
+      "packedBounds": [
+        8,
+        10,
+        184,
+        181
+      ],
+      "scale": 0.5222551928783383,
+      "rgbaSHA256": "ccc5648ab399778d51951d4bd8474ba96e91d0859cdda79fde644383da9a5d9f"
+    },
+    {
+      "id": "bus-breakout",
+      "index": 11,
+      "sourceBounds": [
+        1085,
+        732,
+        1427,
+        1035
+      ],
+      "packedBounds": [
+        8,
+        18,
+        184,
+        174
+      ],
+      "scale": 0.5146198830409356,
+      "rgbaSHA256": "196d2ac47498656a16d9251b3c88d0cc6ef2c4edcae86d23357f839bc81c28e1"
+    }
+  ]
+}
