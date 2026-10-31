@@ -94,14 +94,16 @@ export function createHayrideView(canvas, state, hooks = {}) {
   });
   const notify = () => hooks.onState?.(status());
   // How near the next fright is, 0 to 1, for the heartbeat and the vignette:
-  // rising as a scene nears, held through the breakdown's dark, easing after.
+  // rising as a scene nears, held through the breakdown's dark, easing after
+  // as the next scene's own rises.
   function tension() {
     if (!run || run.completed || run.paused) return 0;
     const t = run.stallT;
-    if (Number.isFinite(t) && t > -4 && t < STALL.calm) return t < STALL.reveal ? .45 + .55 * Math.min(1, (t + 4) / 6) : Math.max(0, 1 - (t - STALL.reveal) / (STALL.calm - STALL.reveal));
+    const breakdown = Number.isFinite(t) && t > -4 && t < STALL.calm ? (t < STALL.reveal ? .45 + .55 * Math.min(1, (t + 4) / 6) : Math.max(0, 1 - (t - STALL.reveal) / (STALL.calm - STALL.reveal))) : 0;
+    if (Number.isFinite(t) && t > -4 && t < STALL.hold) return breakdown;
     const d = run.progress * run.length; let next = Infinity;
     for (const s of run.stops) if (!run.fired.has(s.id)) next = Math.min(next, s.at * run.length - d);
-    return !Number.isFinite(next) || next < 0 ? 0 : Math.max(0, 1 - next / 24) ** 1.6;
+    return Math.max(breakdown, !Number.isFinite(next) || next < 0 ? 0 : Math.max(0, 1 - next / 24) ** 1.6);
   }
   const clearPointer = () => { const old = pointer; pointer = null; if (old) try { canvas.releasePointerCapture?.(old.id); } catch {} };
   const resize = () => {
@@ -152,21 +154,24 @@ export function createHayrideView(canvas, state, hooks = {}) {
     const fov = baseFov - kick * 7;
     if (Math.abs(camera.fov - fov) > 1e-3) { camera.fov = fov; camera.updateProjectionMatrix(); }
     camera.position.copy(point); camera.lookAt(target); base.setFromQuaternion(camera.quaternion, "YXZ");
-    // The director turns you to the Hollow Man: into the beam, round as the
-    // wagon passes him, all the way back over your shoulder as he gives chase.
-    // It aims where he'll be a moment on, and turns quicker when he's frantic.
-    // A look of your own, or gentle mode, overrides it.
+    // The director turns you to the Hollow Man: round after him a step behind
+    // as he skulks (searching the dark), into his face, all the way back over
+    // your shoulder as he gives chase. It aims where he'll be a moment on, and
+    // turns quicker when he's frantic (frame.hollow.ease). A part turn blends
+    // along the short way round, so it never winds up behind him. A look of
+    // your own, a scene coming up, or gentle mode, overrides it.
     let wantYaw = 0, wantPitch = 0;
     if (frame.hollow && frame.hollow.weight > 0 && !options.gentle) {
       const v = frame.hollow.position; hollowAim.copy(v);
       if (hollowSeen && dt > 0) { lead.subVectors(v, lastHollow).multiplyScalar(.14 / dt); if (lead.length() < 1.6) hollowAim.add(lead); }
       lastHollow.copy(v); hollowSeen = true;
       const dx = hollowAim.x - point.x, dy = hollowAim.y - point.y, dz = hollowAim.z - point.z;
-      let turn = wrapAngle(Math.atan2(-dx, -dz) - base.y);
-      if (turn - gazeYaw > Math.PI) turn -= Math.PI * 2; else if (turn - gazeYaw < -Math.PI) turn += Math.PI * 2;
-      wantYaw = turn * frame.hollow.weight * (1 - free); wantPitch = clamp(Math.atan2(dy, Math.hypot(dx, dz)) - base.x, -.5, .5) * frame.hollow.weight * .8 * (1 - free);
+      const weight = frame.hollow.weight * (1 - free);
+      wantYaw = wrapAngle(Math.atan2(-dx, -dz) - base.y) * weight;
+      if (wantYaw - gazeYaw > Math.PI) wantYaw -= Math.PI * 2; else if (wantYaw - gazeYaw < -Math.PI) wantYaw += Math.PI * 2;
+      wantPitch = clamp(Math.atan2(dy, Math.hypot(dx, dz)) - base.x, -.5, .5) * weight * .8;
     } else { hollowSeen = false; gazeYaw = wrapAngle(gazeYaw); }
-    const ease = snap ? 1 : 1 - Math.exp(-Math.max(0, dt) * (frame.hollow?.frantic ? 7 : 4.6)); gazeYaw += (wantYaw - gazeYaw) * ease; gazePitch += (wantPitch - gazePitch) * ease;
+    const ease = snap ? 1 : 1 - Math.exp(-Math.max(0, dt) * (frame.hollow?.ease ?? 4.6)); gazeYaw += (wantYaw - gazeYaw) * ease; gazePitch += (wantPitch - gazePitch) * ease;
     camera.rotation.set(base.x + pitch + gazePitch + nod + sx, base.y + yaw + gazeYaw + drift + sy, roll, "YXZ"); camera.updateMatrixWorld(true);
   }
   function advance(seconds) {

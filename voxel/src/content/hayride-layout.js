@@ -183,14 +183,15 @@ export function hayrideGuestPose(s,v) {
   return p;
 }
 // How hard the ride's director (hayride-view.js) turns to a set, 0 to 1, with
-// the set this many units ahead of the wagon (behind it when negative): early,
-// from 11 units out and fully by 4, so its animatronics are in view before
-// they play; held until a unit past its middle, then let go by 5.5 past, in
-// time to turn across the lane to its sprite (HAYRIDE_JUMP).
+// the set this many units ahead of the tractor (behind it when negative):
+// early, from 11 units out and fully by 4, so its animatronics are in view
+// before they play; held for two units after its scream (as the tractor comes
+// level), then let go by 5.5 past. Its sprite (HAYRIDE_JUMP) takes the camera
+// from 2 past, just before it springs.
 export function hayrideFocusWeight(ahead) {
   const ease = (n) => { const t = Math.max(0, Math.min(1, n)); return t * t * (3 - 2 * t); };
   if (!Number.isFinite(ahead)) return 0;
-  return ahead >= 0 ? 1 - ease((ahead - 4) / 7) : 1 - ease((-ahead - 1) / 4.5);
+  return ahead >= 0 ? 1 - ease((ahead - 4) / 7) : 1 - ease((-ahead - 2) / 3.5);
 }
 // The sprite jump scares (hayride-scares.js) wait across the lane from their
 // scene's set and a little further on, so they never step into its

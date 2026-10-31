@@ -43,7 +43,7 @@ test("off-map cast reads ownership without changing state and disposes only its 
   assert.equal(bride.actor, "haunted-girl"); assert.ok(bride.lunge > .9); assert.ok(bride.offset < 3);
   const jump = cast.lunge(); assert.ok(jump.point.toArray().every(Number.isFinite) && jump.weight > .9 && jump.aim > .9 && jump.stop === "bride");
   // A little before her spot the camera has already found her, though she hasn't sprung.
-  cast.tick({ progress: springs - hayrideSpan(2.2), time: 30, camera: { x: -32, y: 2, z: 15 } });
+  cast.tick({ progress: springs - hayrideSpan(1.8), time: 30, camera: { x: -32, y: 2, z: 15 } });
   const ready = cast.lunge(); assert.ok(ready && ready.aim > .9 && ready.weight < .05);
   cast.tick({ progress: springs, time: 30, camera: { x: -32, y: 2, z: 15 } });
   cast.group.traverse(node => assert.ok(node.matrixWorld.elements.every(Number.isFinite)));

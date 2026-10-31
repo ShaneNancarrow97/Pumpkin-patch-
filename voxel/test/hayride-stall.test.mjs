@@ -5,6 +5,8 @@ import { createHayrideView } from "../src/hayride-view.js";
 import { STALL, STALL_CUES, ENGINE, JINGLE, BLINKS, engineAt, stallAlong, stallLamps, stallBlink, hollowManPlace, createHollowMan, poseHollowMan } from "../src/hayride-stall.js";
 import { HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH } from "../src/content/hayride-layout.js";
 import { HAYRIDE_SCARE_BY_ID } from "../src/content/hayride.js";
+import { createHayrideWorld } from "../src/hayride-world.js";
+import { freshHayride } from "../src/rules/hayride.js";
 
 // A ride with the Hollow Man bought (or not), through a stand-in world that records the breakdown's clock.
 function ride({ owned = true, active = true, gentle = false, tier = 1 } = {}) {
@@ -88,9 +90,13 @@ test("he skulks round the wagon in the dark, climbs onto the tractor's roof, str
   assert.ok(at(STALL.stretch + .1).reach < .1 && at(STALL.reveal - .05).reach > .95 && at(STALL.reveal + .5).reach === 1);
   for (const t of [STALL.stretch + .3, STALL.reveal + .3]) assert.equal(at(t).gaze, 1);
   assert.ok(!at(STALL.reveal).open && at(STALL.reveal + .8).open === 1, "his face splits open once it's in yours");
-  assert.equal(at(5).gaze < .6, true, "the camera only half turns to find him while he skulks");
+  assert.equal(at(5).gaze, 1, "the camera follows him round as he skulks");
+  // He's gone before the next scene comes up: the chase is over before the pursuit starts to take the camera
+  // (11 units out), and he's lost in the dark before it has it (4 units out).
+  const along = stallAlong(HAYRIDE_STOPS, HAYRIDE_ROUTE_LENGTH), next = HAYRIDE_STOPS.find((s) => s.at * HAYRIDE_ROUTE_LENGTH > along).at * HAYRIDE_ROUTE_LENGTH;
+  assert.ok(along + STALL.chase <= next - 11 && along + STALL.gone <= next - 4, `gone by ${(along + STALL.gone).toFixed(1)}, before the scene at ${next.toFixed(1)}`);
   // Frantic: zig-zagging across the lane behind the rider, lunging close, then falling back to howl.
-  const chase = []; for (let u = 0; u < 6; u += .05) chase.push(at(STALL.hold + u, rider0 + u * 2));
+  const chase = []; for (let u = 0; u < 4.5; u += .05) chase.push(at(STALL.hold + u, rider0 + u * 2));
   assert.ok(chase.every((p) => p.mode === "run" && p.frantic && p.along < rider0 + 12));
   const sides = chase.map((p) => p.side), gaps = chase.map((p, i) => rider0 + i * .1 - p.along);
   assert.ok(Math.max(...sides) > 1 && Math.min(...sides) < -1, "across the lane and back");
@@ -98,7 +104,7 @@ test("he skulks round the wagon in the dark, climbs onto the tractor's roof, str
   assert.ok(Math.min(...gaps) > 1.95, "but never into the rider");
   // He roars just before each lunge lands.
   const lunges = STALL_CUES.filter((c) => c.sound === "lunge");
-  assert.equal(lunges.length, 4);
+  assert.equal(lunges.length, 3);
   for (const c of lunges) { const p = at(c.t + .25, rider0 + 1); assert.ok(p.mode === "run" && p.lunge > .95, `${c.id} lands as he lunges`); }
   assert.equal(stallBlink(STALL.hold), 1, "your eyes are shut as he's flung off the roof");
   assert.equal(at(25, rider0 + STALL.chase + 2).mode, "howl"); assert.equal(at(28, rider0 + STALL.gone + 1), null);
@@ -148,4 +154,17 @@ test("the Hollow Man is one fine jointed rig: he keeps his feet in every pose, s
   assert.ok(opened.every((p, i) => p.distanceTo(shut[i]) > .15), "all five petals peel back");
   assert.ok(face.count > 100, `${face.count} glowing blocks: the carving, the flesh and the teeth`);
   man.dispose();
+});
+
+test("a scene coming up takes the camera from the Hollow Man, and he's gone before it has it", () => {
+  const state = { hayride: { ...freshHayride(), purchased: true, tier: 1, routeLevel: 0, haunts: { owned: ["hollow-man"], active: ["hollow-man"] } }, visitors: [], upgrades: { plots: 0 }, coins: 0 };
+  const world = createHayrideWorld({ scene: new THREE.Scene(), state, world: { group: new THREE.Group() }, signBoard: () => new THREE.Group() });
+  const length = HAYRIDE_ROUTE_LENGTH, stall = stallAlong(HAYRIDE_STOPS, length), pursuit = HAYRIDE_STOPS.find((s) => s.id === "pursuit").at * length;
+  world.setPreview(stall / length); world.setStall(24);
+  const at = (along) => world.getPreviewFrame(along / length);
+  // Howling 12 units on, with the pursuit 10 out: the scene is starting to pull, so he has less than his own gaze.
+  const howl = at(stall + 12), place = hollowManPlace(24, stall, stall + 12 - STALL.bench);
+  assert.equal(place.mode, "howl"); assert.ok(howl.hollow && howl.focusWeight > 0 && howl.hollow.weight < place.gaze * .99);
+  // By the time the pursuit has the camera, he's gone.
+  assert.equal(at(pursuit - 4).hollow, null); assert.equal(at(pursuit - 4).focusWeight, 1);
 });

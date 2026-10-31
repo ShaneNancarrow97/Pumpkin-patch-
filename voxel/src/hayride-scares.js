@@ -27,8 +27,9 @@ export function hayrideScarePose(spec, progress, upgraded = false, gentle = fals
   const width = u(upgraded ? 6.8 : 5.4);
   const reveal = smooth((delta + u(4.5)) / u(2.3)) * (1 - smooth((delta - u(2.6)) / (width - u(2.6))));
   const lunge = gentle ? 0 : smooth((delta + u(.5)) / u(1.7)) * (1 - smooth((delta - u(2.5)) / u(2.5)));
-  // The camera turns to it a moment before it springs (from 2.4 units before, fully by 0.8), so the spring lands in view.
-  const aim = gentle ? 0 : smooth((delta + u(2.4)) / u(1.6)) * (1 - smooth((delta - u(2.5)) / u(2.5)));
+  // The camera whips across to it a moment before it springs (from 1.5 units before, fully by 0.6), once its set
+  // has had the camera for a while after its scream, so the spring lands in view.
+  const aim = gentle ? 0 : smooth((delta + u(1.5)) / u(.9)) * (1 - smooth((delta - u(2.5)) / u(2.5)));
   const near = upgraded ? 2.6 : 3.15;
   const offset = spec.offset - (spec.offset - near) * lunge;
   return { visible: reveal > .008, reveal, lunge, aim, offset, delta };

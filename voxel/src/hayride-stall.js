@@ -28,9 +28,10 @@ export const STALL = Object.freeze({
   perch: .6,          // where he crouches: on the canopy, this far ahead of the tractor's place on the route...
   roof: 3.2,          // ...and this high
   bench: 5.5,         // the rider sits this far behind the tractor's place
-  chase: 24,          // he chases until the rider is this many units on from where the wagon stood,
-  gone: 36,           // ...and howls after it until this far, then he's lost in the dark
-  calm: 30,           // the tension has eased by this time
+  chase: 10,          // he chases until the rider is this many units on from where the wagon stood,
+  gone: 16,           // ...and howls after it until this far, then he's lost in the dark: all before
+                      // the next scene comes up (the pursuit, 22 units on), so it has the camera to itself
+  calm: 25,           // the breakdown's tension has eased by this time
 });
 // In the chase he lunges at the rail this many times a radian of the clock
 // after the engine catches (hollowManPlace): the first at a quarter turn, then
@@ -55,9 +56,7 @@ export const STALL_CUES = Object.freeze([
   { t: 19.2, id: "stall-chase", sound: "chase" },              // he scrambles after the wagon
   { t: lungeRoar(1), id: "stall-lunge-2", sound: "lunge", intensity: .55 },
   { t: lungeRoar(2), id: "stall-lunge-3", sound: "lunge", intensity: .5 },
-  { t: 23.6, id: "stall-chase-2", sound: "chase" },            // ...still coming
-  { t: lungeRoar(3), id: "stall-lunge-4", sound: "lunge", intensity: .45 },
-  { t: 30, id: "stall-howl", sound: "howl" },                  // and howls as it gets away
+  { t: 23.4, id: "stall-howl", sound: "howl" },                // and howls as it gets away
 ]);
 // How lit his face is, u seconds into the tune: each note flares it, then it
 // gutters, and now and then it stutters. Under three flickers a second.
@@ -159,7 +158,7 @@ export function hollowManPlace(t, stop, rider) {
   if (t < STALL.jingle) { const u = (t - 1.4) / (STALL.jingle - 1.4); return { along: stop - 9 + u * 12, side: 6.8, y: 0, mode: "stalk", k: u, glow: .08, light: 0, face: "rider", gaze: 0 }; }
   if (t < STALL.hush) {
     const a = skulkAngle(t), u = t - STALL.jingle, f = jingleFlicker(u);
-    return { along: stop + SKULK.centre + Math.cos(a) * SKULK.along, side: Math.sin(a) * SKULK.side, y: 0, mode: "skulk", k: u, glow: .1 + 1.5 * f, light: .95 * f, face: "rider", gaze: .55 * smooth(0, .8, u) };
+    return { along: stop + SKULK.centre + Math.cos(a) * SKULK.along, side: Math.sin(a) * SKULK.side, y: 0, mode: "skulk", k: u, glow: .1 + 1.5 * f, light: .95 * f, face: "rider", gaze: smooth(0, .8, u) };
   }
   const roof = { along: stop + STALL.perch, side: 0, y: STALL.roof, face: "rider", perch: true };
   if (t < STALL.climb) return { ...roof, mode: "perch", k: 0, reach: 0, glow: 0, light: 0, gaze: 0 };
