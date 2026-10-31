@@ -1,0 +1,2022 @@
+{
+  "scope": "Actual hayrideSheets module, its real purchase/toggle handlers and model rules, complete game CSS in build order and real index.html shell. Pure test fixtures deliberately set level/unlocks; no WebGL, main game loop, 3D picking, sound or physical-device claims.",
+  "fixtureSha256": "fed5379e7400af9f717e35f8387609258ac005f99ac1ea6ce098c02a6cf583a1",
+  "sourceHashes": {
+    "voxel/src/ui/hayride-sheet.js": "a0704fa62a3e19734c1507f4e8df7d3a212c3114fca617374806504999022cba",
+    "voxel/src/ui/hayride-icons.js": "5b79553215d0eb22d10774e0ce4a58ab8194ed1ca3cde63bcb3c84502bbd33bb",
+    "voxel/src/content/hayride-icon-map.js": "74cfa13941891590279e9f90d1d5153b32dabdc788642980331659682f436d8c",
+    "voxel/src/content/hayride.js": "12e687ddaec74e320e96a23892317366ab739c6f8392e13375d49300540e4b6c",
+    "voxel/src/rules/hayride.js": "473a27b6898c011166a7622be8805482ba9b0e468ad84534c07b8d222cbdc5f7",
+    "voxel/assets/hayride-upgrade-icons.webp": "4ac5db3c96de8b1947b84b11fe1e285832b988b9cdac3276491bac1823c0b424",
+    "voxel/src/index.html": "5cc5db5a6a6dac90d73e7878f2d127506300a791921c1f7be4cc0a6de30acba1",
+    "voxel/src/style.css": "a79fe96ab928575742cfc80a8fd1831a130b4af2b2e0009eb55f650caaf0b4b5",
+    "voxel/src/icons.css": "0a7b199afa8de4b8d2ee611112e3f566f5d696d370ab0de883b3c6cd31611fac",
+    "voxel/src/ui/house-skins.css": "e5e49ee46ecbe9819248987ff0219a2acd32ba535902e7afd49df0ad6e77109b",
+    "voxel/src/ui/maze-commerce.css": "f0875fd8f108e88c84d5d7dacc9ccd35e8a1704a04dfe759e99c4b37253e2e10",
+    "voxel/src/ui/house-placement.css": "828dff4a6aa149f44509a9cd0e9e74927de884cbd2b9aec42ee16f3cbd947646",
+    "voxel/src/ui/intro.css": "a9d831fc4c775a04da04e828cf296efc9ed886fe0800f52c999c36bfb190123e",
+    "voxel/src/ui/maze-ride.css": "f67ae52cff6e8038d260596fe6a0e79711632e81fa6b7cba5cb536fd2559c4b9",
+    "voxel/src/ui/meadow-chat.css": "bc655c93fca9f2d3a4ce07612ff9047b11726be80e2d9385c6e4ef58f713802b",
+    "voxel/src/ui/upgrade-menu.css": "1e3dfa38afd34ee50803ff965321128402efb068c926ce00fa5ca1d6b8f7e156",
+    "voxel/src/ui/hayride.css": "3b1734bd5a85d080cdedbe623d53f0913af64913b10bd0aa3cb42a33cedb6382",
+    "voxel/src/ui/hayride-ride.css": "47fd3f6a6229f2234adba74f04101d3d26cc48d244e1e3eff299ebabdc18290f",
+    "voxel/src/ui/hollow-exterior.css": "9fde54bcefea3dbafdce456e5841c6622ec960fdf6dd42f30d8f253a4b92a2fd",
+    "voxel/src/ui/cooking.css": "0bc1c2915615e9b83c242021c0b67f0ccafa74c8dde8d64774237710887bd349",
+    "voxel/src/ui/workshop-polish.css": "8e4117083c0cbdaa0519654f4aadd52a266f8ff53c134eaa5b4d6d3d5b66435e",
+    "voxel/src/ui/service-menus.css": "9cd53beb085001c41d32eaddb57894240b06f80c4887ed4e6033ed1a601a49cb",
+    "voxel/src/ui/play-controls.css": "32c081775e79ce37504f6bd74fda4a75c505129d9329d59aad6e7b3d27ba123e",
+    "voxel/src/ui/carving.css": "184699b245206d30ac0f1125499f2545cfb0deb19645d260e3e4e9bfcfa1274d",
+    "voxel/src/ui/build-catalogue.css": "f3979d0a448e8ed0639b2c6e141217a179015c952902ca888d01f71f04dfebad",
+    "voxel/src/ui/service-premium.css": "811c4fb126d47cd18dd10b3bb0f9eb4159480a127643271197792a19abbe6b08",
+    "voxel/src/ui/polish.css": "68fa0055816febe82dab098c6cb7f879ba60b53590097f4d096845a58ddf84b6",
+    "voxel/assets/fraunces-400.woff2": "fa7949ff6b0094025a72b6cb88c6e6c914dba96d34284fb3fec9c092ebc4f311",
+    "voxel/assets/fraunces-600.woff2": "0a53e3b0f613dc4c06b4b6b673aac53512f89731740527ac7b7cf12594255d43",
+    "voxel/assets/dm-sans.woff": "30ce945bf088ca9edbed7f62e678dbbf10d469acf2c8a4b6ee23770611960890",
+    "voxel/assets/icons.png": "0b8663ed5c781567b2b934e28b38265b2fc8525aed170b003b90f5dc58eca10d",
+    "voxel/build.mjs": "78c83015a1e1806808e28a4af58913da29f0e0a374a11e857649293a5022654d",
+    "voxel/package.json": "1c8e5514bb96f615c04ba83600800fbd72595acfacea23db55a089bb890839cc",
+    "voxel/package-lock.json": "638d614864c66a958a5d5a3296fb001048276e6122f7bdd77018016985f10c98",
+    "voxel/tools/qa-hayride-icons.mjs": "5ddcc0d1afd10b783455f69398c8f91d88a3d4c2616c2d34a596105e7501fac0",
+    "voxel/src/content/cooking-dining.js": "4bfb109ffbe35abd8c824226f6c0c240e4032d589ff9d0cae6c124d6d89ed634",
+    "voxel/src/rules/cooking-dining.js": "b3238e6f44edcadf3f917942f60549211fe3fca5cca7bdc88043f432cb17d047",
+    "src/content/products.js": "ec0bc26eb6b50eb89f6af9e9a0dea03722f8cfabf8a79167f6f9caa81b440b18",
+    "voxel/src/content/pumpkin-varieties.js": "65a6da1c82ff37a125522375ccd1e5ea0fb2ae6ef6c6800f99c73bb846d8fbd7",
+    "voxel/src/content/kitchen-equipment.js": "6b32930357d6f3b5c3a2b987052989c86b9be38466b94c78461aef8b47ea9f7d",
+    "voxel/src/rules/home-goals.js": "dd4df3479a0bd2ba12919605636a08def01f01b5c5173ff6293dba23a30942c3",
+    "voxel/src/rules/levels.js": "18ddb7687c9aa6f509b08d033ece9955139e5a7552928aaf73dee407b0077182",
+    "voxel/src/rules/unlocks.js": "d98c7446babf7e9d3f5f16fd8f013a2a38c901a245b518a7824a24d9d89c5f8d",
+    "src/content/economy.js": "def825f8bf0533b87866fbc24be86362945b75fd00f5a0890d9a873f29fa4f65",
+    "voxel/src/content/farm-layout.js": "c7e3a5dfb69f08153bb6727619c7adda8e4cb7f4b9b7449cfbea63848c4c0130",
+    "voxel/src/rules/market.js": "12de081e9da71b3e2ce70854073c76ff0b39c10a810afff38b6cda900ecd2ca1",
+    "voxel/src/rules/stock.js": "29a8fdd88ca66ae99fac5ed6eae807c8e953d4c83746b838b873f9f6d58bf413",
+    "voxel/src/rules/farm.js": "2b8594d23fad8928fd3ee03d69e9a97a78032c93f0b590b30d946f3e09433f42",
+    "voxel/src/content/visitors.js": "21909162913cba5219768ee092e959d25b1b041c3180d01b6087d8475ccc8f12",
+    "voxel/src/rules/orders.js": "f8d41d982522fe4b9dd6d2f922090ea3526fdc487f3eded07a6340d8002abe51",
+    "voxel/src/rules/cleanliness.js": "651709e0aca70a607b9355d203cd56c15153a8994cb2a2bc5dae08a5864f4eb7",
+    "src/content/stall.js": "6935d674d05254437d3c98793569c569748c95adb3934b30198e38721a0ca788",
+    "src/content/shop.js": "1301ec4948f026912504e37ce597769ee82961ced5ee187dcbc9bec31c5c527b",
+    "voxel/src/content/festival-meadow.js": "96cf8ef863eed4cc71e605ec203b2b074bc12f3a514be537f6addef17bac3206",
+    "voxel/src/rules/guest-needs.js": "30791510fac3523dd7841fba9bbe53e025ae807c3f4a2fa85918c4870b618e57",
+    "voxel/src/rules/customer-care.js": "5d9e6335e34377488fff14bedaeabb9222d610769fe780c34f98336add5be4e2",
+    "voxel/src/content/cooking.js": "b7590a969a10ae4c00ed53a306b5400a9a76d46406f4f8ae141146d51037fca5",
+    "voxel/src/rules/big-spender.js": "08834bd2dbe455c3df779429f2a5868710088466c384bcda25ab5b587fbca414",
+    "voxel/src/rules/cooking-sales.js": "a05d8bd73bfeb4bd1105cc4f61ed82ba874a8360888db96e96f68fb9d2c30df2",
+    "voxel/src/content/visitor-events.js": "0d0af89a6141dc7216a349edb548cd75fb367d296a07fbae8f4342689396ec8a",
+    "voxel/src/rules/visitor-events.js": "f93728e4dcc3fd9bc5bcbb1ca47ecc1112ad0d5d9e48e29f91dbd2e18437e3d3",
+    "voxel/src/rules/cocoa-menu.js": "2d0717de13057838b8e710208b78e56f75cc418fdfbe66e0e1ed2ba5859e8595",
+    "voxel/src/rules/festival-meadow.js": "de155a19aed0731a8d63b9d8774bf39381f0623a0cad926e903f4f80b5ef7bb0",
+    "voxel/src/rules/piece-colours.js": "b9eefae6d505b2be3719180bc8879ea0100585ff8ec6b23f480e40cada4db090",
+    "voxel/src/content/hollow-house.js": "5c3c06bbee869099d52c332ad9c2819c201b565df50d3af8fc2f463fc78e0c19",
+    "voxel/src/rules/hollow-house.js": "98979b58384c2dff31913db4306509887ebc19bd0155f7ca1e54ec9ab7e4be9e",
+    "voxel/src/rules/meadow-talk.js": "75ff822d32ec47858889f6f0133a9991a427ea1c8253b4d262baaff619aa85ba",
+    "voxel/src/rules/meadow-chat.js": "b31b3e59655f7b42e186925c2d4b19720aaf7985d8a37f42400c17ef14c23d69",
+    "voxel/src/content/hayride-layout.js": "75521bc6ba3ceaab5f94d25d9cab054f70f139055fb0a479737a1e237ca5067f",
+    "voxel/src/rules/selling.js": "540b6a2ba4e1bd861545df6666674b6ba52c9999e6d7967ae7698212d3344c46",
+    "src/content/catalog.mjs": "49c649e18c31b16903414ef89a8cf5931e8a844e3a7a676f8d05712970f2c387",
+    "voxel/src/content/premium-wall-catalog.js": "6a67f847b09634e154de4bcbedde3ffe6448a87eb883f0ceea39e2415822000e",
+    "voxel/src/content/premium-furniture-catalog.js": "8ff7c36827f4b84e53c5416e33996751cc69a6a475bdf598e97436cddba001cd",
+    "voxel/src/content/home-furnishings.js": "521476e5ba1b2a5073abf6179693893fae4932bb7f3d0f1de34187da3f3db740",
+    "voxel/src/content/pet-furnishings.js": "ca797a64702155243bbf11ed058f33d53823ef10c21c783588d53e1e7c4992af",
+    "src/content/rooms.mjs": "fba30a2a99c58fe9e869a48afa76854ddbcf6ec4f9ad49544c56b8ed443aa19a",
+    "src/content/library.mjs": "a698266d0e7ae2b33e4a6222935efef9ad70bb89dfa52ebeb4dfd0ed3cc99d37",
+    "voxel/src/content/shelf-catalog.js": "86ea8808e5cd467784b65d93c3a6c167adef2fc8cc44b55db29a14669b01a5d5",
+    "voxel/src/content/decor-sizes.js": "cd5ed8d09a5de8291c80dd10f541542299e3de2d19156fbf63366d4fd374e842",
+    "voxel/src/content/placement.js": "984d7b8c1117fbf15af1dfcf10dcd86ae7574e39e76fc3484a81a4ab163adeb3",
+    "voxel/src/rules/surfaces.js": "a71f966ba1d63c7083cab45ecb3c9710ed8842e368cc1fc6f293ff1fbb681327",
+    "voxel/src/content/kitchen-equipment-sizes.js": "58ca09faaa0669f9cfe2f5623958d20315a96a9d1310419b08da1790def2e7ac",
+    "voxel/src/content/home-furnishing-sizes.js": "56107adddc80a8b739381a6a3e5da2abb22004711398d5eaa28b311d20358f68",
+    "voxel/src/rules/house.js": "de451bb67a5335e124b63f886417cfeca858cdc78096f44cb6d875a91eb441ba",
+    "src/core/costume-model.mjs": "39b5bd55a59b5c73fb73a23459dcd5ac2f031457f1ae4fdb4a63f7bb53c0e4c9",
+    "voxel/src/costume-expansion.js": "7a5129a2b165fc541559b5ae1fdd958d9486131dfaa46cead3de3e8b311268a8",
+    "voxel/src/rules/wardrobe.js": "5a863b8bc285ce46f21d73a82fb78b38da89408f226592607d1879f1cf49be97",
+    "voxel/src/rules/progress.js": "c48d2bf36be59ad9964e766b59dfc2f37382873a5830c7a68be90456c842ec32",
+    "voxel/src/content/house-estate.js": "52133f5ec82b84253d054873afc7248afbc058786bf6cf4a0a128646b3faf2d0",
+    "voxel/src/rules/kitchen-equipment.js": "2544f0d42f01ec9ba76798118f11d7bb2cdde0849d3214d1e1ef2dc5d5aa5ecf",
+    "voxel/src/rules/cooking.js": "61afa711857c21363fcb1d2bc6e7d9397f3e73dd81f4d1a448d05b57866e69e9",
+    "voxel/src/rules/garden-crops.js": "adbeeed467b76811a14ee5be2f681e42f17366713e996d8f1bc4135f01aae6f4",
+    "voxel/src/rules/house-estate.js": "697843cf36699ad826ba9bd6e9d4ed976c9b5257e3bca8c57809ac0de84176c0",
+    "voxel/src/content/carving.js": "aae2d7d0d235c12a311392bb8d1dd2ec03fb4f787ddbcbab83dd1797a11c6a50",
+    "voxel/src/content/pumpkin-shapes.js": "ba97a625b11e6efb103b5897847d79988ea39d518a55762be014488bb20b5b7b",
+    "voxel/src/rules/carving.js": "f7a24a2acf99126906a7cd527ec8b22371894a1f8a0608f99c3c962bfe8c93e3",
+    "voxel/src/rules/intro.js": "b8abb8a808753f3af8f521baa3f02c2e6748c6e30a60ebad43ba63cb7af3382e",
+    "voxel/src/rules/cooking-mix.js": "39b61cf1d6a143500b5137d4ae54b70603439a16ab11a2f25ef077944fbba3c8",
+    "voxel/src/model.js": "002fabb503a9732692b175ce0df8ed0db6591e7555c4f950070b6c79afdfc8ac",
+    "voxel/src/ui/service-kit.js": "be069ac8e85bd93a9300c927cd120e1d16ba8d8466485937e24be29fca88b668",
+    "voxel/assets/kitchen-workshop-icons.webp": "e130aa0f6634f3bb4c76a0d40aa09718514c598d3d61f2171aad3f3f36ff802c",
+    "voxel/src/ui/kitchen-workshop-icons.js": "b1caa4b83ba8fdb3ba9c69fbe9953f05f5f8e245d686d35752c8228a6d4685c6",
+    "voxel/assets/home-furnishings/furnishings.webp": "b03b734b00c31218c0e1a1c5803783e0133087c7d1452253633b4dab079c3b3c",
+    "voxel/src/ui/home-furnishing-icons.js": "0412a90c5d4326b55c62b474848bd3c123e51e6fdb9783275ff3980081b71e80",
+    "voxel/src/decor-meta.js": "ef820ef7df9133951f902c2146d1560dd525420927071fe74b9d7c0e7f944b6f",
+    "voxel/src/voxels.js": "4941c422fa74216614f237ef0a7238db4b53d94d017c47e206f27f150740422b",
+    "voxel/src/voxel-mesh.js": "508392252973b8527de572daf94356bda54636bff3b1b5cf43b47e7034482870",
+    "voxel/assets/decor.png": "13f356798506322da4ffd983d6e73a2f4427667975390c98a25ffaf2b896ced7",
+    "voxel/src/decor-models/seating.js": "b777a8a1e66aec85afddc5ecff81a315afd11fb15df7bc3b526bf613f0c0bd07",
+    "voxel/src/decor-models/tables.js": "b01f049c2495ef59ccbf8e82c0a76748d6a5be932afc60093597de6cc58c5d0b",
+    "voxel/src/decor-models/shelves.js": "821c8ae3ea6cd7fc785504526d7704d3d61ffa72f9d890942a4c7802d068a39d",
+    "voxel/src/decor-models/flat.js": "82725a8c40e4bc39711bb09f8289d2b2701683ed18971fcf53d1e2a4e54c13d8",
+    "voxel/src/decor-models/lights.js": "30b9e77cc3e12ca6914ef57c2f398bb18fe0e6334b5e43675cc87a7ab75de979",
+    "voxel/src/decor-models/curios.js": "40fd6fb9f35b6972886b0ae43fcf3be06685ffec702d8c36023e687ab29c5f18",
+    "voxel/src/decor-models/kit.js": "79830f0611710db6da1ec22953ae212cba1eea5d17c36594e695d31d5f24dc67",
+    "voxel/src/decor-models/shelving.js": "4da9b0df8caf3166e8d363a2e26e76d0ff0efbbaaea1dad7fa9fe8cfdd44e71d",
+    "voxel/src/decor-models/index.js": "bc540b18d53a65b9121bb9354c02892d9bfae3fd98291bc25e1e9f616b0f518a",
+    "voxel/src/decor-models/premium-walls.js": "b789b52409cb28335cfa09978144d5e57d25fafaccd7cafd2e7d6d1fec9be2a0",
+    "voxel/src/premium-wall-props.js": "95d775860d5347bb70e82df3f9f149975cb3fb0930ec36e593a89922b764b156",
+    "voxel/src/decor-models/premium-kitchen.js": "205d96406921ad419c18c026e80efe39a7dcebad195f77ca6ef4a73f43d66512",
+    "voxel/src/decor-models/premium-bedroom.js": "9cc185fca67d11110efbc78463ed4dca7f9d04f23bd657844e5409dd32d53d31",
+    "voxel/src/premium-furniture-props.js": "cbeee6b432a9911a8de38197a2560448ba88947da5b716b276ea2dc07f25c205",
+    "voxel/src/kitchen-props.js": "d653041e1685d30e7047072ab30c143e469a2047d8ab74725842192eb8d0c492",
+    "voxel/src/home-furnishings.js": "176214c021061725f67f7b1a70b3223cb43c4f10d65aca92de44d0cefef2be8a",
+    "voxel/src/pet-furnishings.js": "fd81be500b543637553a030969c052377ab996b98920a54e17d0349519af181d",
+    "voxel/src/decor.js": "729d9bc3713ab7cb07a5306155a1b1957530181a9666b161c6791622c909d592",
+    "voxel/assets/premium-wall-thumbs/copper-pan-rail.png": "d2cd61cc85a72c6411a26cc0754311e4c6958d706ffa546f135c8b8b63cc004e",
+    "voxel/assets/premium-wall-thumbs/gothic-spice-cabinet.png": "9f7a956d309bf23d98c84c21ad670e556caea790eafdb461202a2622595420a5",
+    "voxel/assets/premium-wall-thumbs/iron-utensil-rack.png": "b2ec60c866c1475c974081a10d0a80f3fea52a3e8494f9465bfab34bf3ec8952",
+    "voxel/assets/premium-wall-thumbs/recipe-teapot-shelf.png": "d89af27717b44513c1f2e3139ae01a5c58c90162caf5d2b92aecddc8442eec9b",
+    "voxel/assets/premium-wall-thumbs/crescent-mirror.png": "6c5339623cd71c8e331a959e9000b7d1086b2ec0c8802874b08911f042f2c9c9",
+    "voxel/assets/premium-wall-thumbs/haunted-manor-painting.png": "340bca5bfbd3895151aa00f85a3cae6c035054bae6655e035edbf14d83c6b833",
+    "voxel/src/premium-wall-thumbs.js": "d18ba98b8a33d13e42c274e2d51e55aa8630883e55ac8dc435040cfb5c32d8d0",
+    "voxel/assets/premium-furniture-thumbs/copper-range.png": "f5a0f2c2b3a43fd5835c6f47aa5fc47fa8eb0bd3cc8ed8c1a640d3e8d0ad98c4",
+    "voxel/assets/premium-furniture-thumbs/preserves-dresser.png": "137c485cf26069e548018c6cc07f80151a2115b4ed113ed72f7e7ed4e6fbe7be",
+    "voxel/assets/premium-furniture-thumbs/copper-sink-island.png": "954d68adad954c5fcd118aa44e6b28ec99ce1182504f0a400462975267c85d32",
+    "voxel/assets/premium-furniture-thumbs/moon-canopy-bed.png": "604ebf9229f2fcd1dbbf0e88d253ec2e182a68672eadb14838180bb0c1166d35",
+    "voxel/assets/premium-furniture-thumbs/moon-wardrobe.png": "c15a2e28d5bdca948c44f0acb35e23a66532021a8ce258c73d06ffeb090e7e75",
+    "voxel/assets/premium-furniture-thumbs/moon-vanity.png": "57e6f1fe99d6102518e503417c4abd67641ffd76ba9716d83ac78e93905006be",
+    "voxel/src/premium-furniture-thumbs.js": "5adf6ee87676423336bc5a31784ab146b1357aac1ad1329bf6905032ca738771",
+    "voxel/assets/shelf-thumbs/shelves.webp": "452722351a459efd57aeae458e5e0dfed8f63de974783ec1ed891a797c1257af",
+    "voxel/src/ui/kit.js": "5b6a05849ea00cfe05a802566f5b67e3344798c72de0b39cf8196ec2863013fe"
+  },
+  "dependencyHashes": {
+    "three/build/three.module.js": "0a3368c165eea773490aec7b77c22de70e3eac288503409256fdbf4d12578416"
+  },
+  "started": "2026-10-31T14:11:15.355Z",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "level10 keeps the hayride purchase locked"
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier1",
+      "data": {
+        "id": "tier1",
+        "width": 44,
+        "height": 44,
+        "alpha": 718,
+        "hash": 1914880075,
+        "actualSizeHash": 109149504,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "first tractor purchase: legal purchase is enabled"
+    },
+    {
+      "ok": true,
+      "label": "first tractor purchase: real handler charges exactly once",
+      "data": {
+        "before": {
+          "coins": 120000,
+          "patchLevel": 11,
+          "purchased": false,
+          "tier": 1,
+          "routeLevel": 0,
+          "fleet": 0,
+          "dispatch": 0,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 0,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "after": {
+          "coins": 112500,
+          "patchLevel": 11,
+          "purchased": true,
+          "tier": 1,
+          "routeLevel": 0,
+          "fleet": 0,
+          "dispatch": 0,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 7500,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "price": 7500
+      }
+    },
+    {
+      "ok": true,
+      "label": "the owned station uses the first-tier tractor art"
+    },
+    {
+      "ok": true,
+      "label": "tier2 retains patch-level13 gate"
+    },
+    {
+      "ok": true,
+      "label": "second tractor retains tier2/level15 gate"
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier1",
+      "data": {
+        "id": "tier1",
+        "width": 48,
+        "height": 48,
+        "alpha": 823,
+        "hash": 1914880075,
+        "actualSizeHash": 1914880075,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier1",
+      "data": {
+        "id": "tier1",
+        "width": 28,
+        "height": 28,
+        "alpha": 293,
+        "hash": 1914880075,
+        "actualSizeHash": 4109270953,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier2",
+      "data": {
+        "id": "tier2",
+        "width": 28,
+        "height": 28,
+        "alpha": 320,
+        "hash": 1377776104,
+        "actualSizeHash": 966106394,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 28,
+        "height": 28,
+        "alpha": 358,
+        "hash": 3293863386,
+        "actualSizeHash": 2863985845,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier2",
+      "data": {
+        "id": "tier2",
+        "width": 48,
+        "height": 48,
+        "alpha": 898,
+        "hash": 1377776104,
+        "actualSizeHash": 1377776104,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws fleet",
+      "data": {
+        "id": "fleet",
+        "width": 48,
+        "height": 48,
+        "alpha": 817,
+        "hash": 2986895086,
+        "actualSizeHash": 2986895086,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws dispatch",
+      "data": {
+        "id": "dispatch",
+        "width": 48,
+        "height": 48,
+        "alpha": 1122,
+        "hash": 3683675783,
+        "actualSizeHash": 3683675783,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws route1",
+      "data": {
+        "id": "route1",
+        "width": 48,
+        "height": 48,
+        "alpha": 1367,
+        "hash": 3832057166,
+        "actualSizeHash": 3832057166,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Lantern convoy: legal purchase is enabled"
+    },
+    {
+      "ok": true,
+      "label": "Lantern convoy: real handler charges exactly once",
+      "data": {
+        "before": {
+          "coins": 112500,
+          "patchLevel": 13,
+          "purchased": true,
+          "tier": 1,
+          "routeLevel": 0,
+          "fleet": 0,
+          "dispatch": 0,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 7500,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "after": {
+          "coins": 106000,
+          "patchLevel": 13,
+          "purchased": true,
+          "tier": 2,
+          "routeLevel": 0,
+          "fleet": 0,
+          "dispatch": 0,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 14000,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "price": 6500
+      }
+    },
+    {
+      "ok": true,
+      "label": "upgrading changes the station illustration to tier2"
+    },
+    {
+      "ok": true,
+      "label": "first station crew: legal purchase is enabled"
+    },
+    {
+      "ok": true,
+      "label": "first station crew: real handler charges exactly once",
+      "data": {
+        "before": {
+          "coins": 106000,
+          "patchLevel": 13,
+          "purchased": true,
+          "tier": 2,
+          "routeLevel": 0,
+          "fleet": 0,
+          "dispatch": 0,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 14000,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "after": {
+          "coins": 104200,
+          "patchLevel": 13,
+          "purchased": true,
+          "tier": 2,
+          "routeLevel": 0,
+          "fleet": 0,
+          "dispatch": 1,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 15800,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "price": 1800
+      }
+    },
+    {
+      "ok": true,
+      "label": "second station crew: legal purchase is enabled"
+    },
+    {
+      "ok": true,
+      "label": "second station crew: real handler charges exactly once",
+      "data": {
+        "before": {
+          "coins": 104200,
+          "patchLevel": 13,
+          "purchased": true,
+          "tier": 2,
+          "routeLevel": 0,
+          "fleet": 0,
+          "dispatch": 1,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 15800,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "after": {
+          "coins": 100000,
+          "patchLevel": 13,
+          "purchased": true,
+          "tier": 2,
+          "routeLevel": 0,
+          "fleet": 0,
+          "dispatch": 2,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 20000,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "price": 4200
+      }
+    },
+    {
+      "ok": true,
+      "label": "fully trained crew cannot be purchased a third time"
+    },
+    {
+      "ok": true,
+      "label": "second tractor: legal purchase is enabled"
+    },
+    {
+      "ok": true,
+      "label": "second tractor: real handler charges exactly once",
+      "data": {
+        "before": {
+          "coins": 100000,
+          "patchLevel": 15,
+          "purchased": true,
+          "tier": 2,
+          "routeLevel": 0,
+          "fleet": 0,
+          "dispatch": 2,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 20000,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "after": {
+          "coins": 88000,
+          "patchLevel": 15,
+          "purchased": true,
+          "tier": 2,
+          "routeLevel": 0,
+          "fleet": 1,
+          "dispatch": 2,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 32000,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "price": 12000
+      }
+    },
+    {
+      "ok": true,
+      "label": "forgotten graveyard detour: legal purchase is enabled"
+    },
+    {
+      "ok": true,
+      "label": "forgotten graveyard detour: real handler charges exactly once",
+      "data": {
+        "before": {
+          "coins": 88000,
+          "patchLevel": 15,
+          "purchased": true,
+          "tier": 2,
+          "routeLevel": 0,
+          "fleet": 1,
+          "dispatch": 2,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 32000,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "after": {
+          "coins": 79500,
+          "patchLevel": 15,
+          "purchased": true,
+          "tier": 2,
+          "routeLevel": 1,
+          "fleet": 1,
+          "dispatch": 2,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 40500,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "price": 8500
+      }
+    },
+    {
+      "ok": true,
+      "label": "the next route switches to thicket art and retains its higher gate"
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier2",
+      "data": {
+        "id": "tier2",
+        "width": 48,
+        "height": 48,
+        "alpha": 898,
+        "hash": 1377776104,
+        "actualSizeHash": 1377776104,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier1",
+      "data": {
+        "id": "tier1",
+        "width": 28,
+        "height": 28,
+        "alpha": 293,
+        "hash": 1914880075,
+        "actualSizeHash": 4109270953,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier2",
+      "data": {
+        "id": "tier2",
+        "width": 28,
+        "height": 28,
+        "alpha": 320,
+        "hash": 1377776104,
+        "actualSizeHash": 966106394,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 28,
+        "height": 28,
+        "alpha": 358,
+        "hash": 3293863386,
+        "actualSizeHash": 2863985845,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 48,
+        "height": 48,
+        "alpha": 1000,
+        "hash": 3293863386,
+        "actualSizeHash": 3293863386,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws fleet",
+      "data": {
+        "id": "fleet",
+        "width": 48,
+        "height": 48,
+        "alpha": 817,
+        "hash": 2986895086,
+        "actualSizeHash": 2986895086,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws dispatch",
+      "data": {
+        "id": "dispatch",
+        "width": 48,
+        "height": 48,
+        "alpha": 1122,
+        "hash": 3683675783,
+        "actualSizeHash": 3683675783,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws route2",
+      "data": {
+        "id": "route2",
+        "width": 48,
+        "height": 48,
+        "alpha": 1500,
+        "hash": 340226837,
+        "actualSizeHash": 340226837,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Midnight procession: legal purchase is enabled"
+    },
+    {
+      "ok": true,
+      "label": "Midnight procession: real handler charges exactly once",
+      "data": {
+        "before": {
+          "coins": 79500,
+          "patchLevel": 16,
+          "purchased": true,
+          "tier": 2,
+          "routeLevel": 1,
+          "fleet": 1,
+          "dispatch": 2,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 40500,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "after": {
+          "coins": 65500,
+          "patchLevel": 16,
+          "purchased": true,
+          "tier": 3,
+          "routeLevel": 1,
+          "fleet": 1,
+          "dispatch": 2,
+          "price": 8,
+          "owned": [],
+          "active": [],
+          "invested": 54500,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "price": 14000
+      }
+    },
+    {
+      "ok": true,
+      "label": "the final station tier uses the midnight illustration"
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 48,
+        "height": 48,
+        "alpha": 1000,
+        "hash": 3293863386,
+        "actualSizeHash": 3293863386,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws turning-scarecrows",
+      "data": {
+        "id": "turning-scarecrows",
+        "width": 48,
+        "height": 48,
+        "alpha": 1120,
+        "hash": 2932729119,
+        "actualSizeHash": 2932729119,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws spider-drop",
+      "data": {
+        "id": "spider-drop",
+        "width": 48,
+        "height": 48,
+        "alpha": 1556,
+        "hash": 976642322,
+        "actualSizeHash": 976642322,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws bride-procession",
+      "data": {
+        "id": "bride-procession",
+        "width": 48,
+        "height": 48,
+        "alpha": 1571,
+        "hash": 143590866,
+        "actualSizeHash": 143590866,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws spectral-burst",
+      "data": {
+        "id": "spectral-burst",
+        "width": 48,
+        "height": 48,
+        "alpha": 1304,
+        "hash": 2829986519,
+        "actualSizeHash": 2829986519,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws bus-breakout",
+      "data": {
+        "id": "bus-breakout",
+        "width": 48,
+        "height": 48,
+        "alpha": 1326,
+        "hash": 439206376,
+        "actualSizeHash": 439206376,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Watching scarecrows: its actual purchase handler charges once and activates it",
+      "data": {
+        "price": 900,
+        "before": 65500,
+        "after": 64600
+      }
+    },
+    {
+      "ok": true,
+      "label": "The spider descent: its actual purchase handler charges once and activates it",
+      "data": {
+        "price": 1400,
+        "before": 64600,
+        "after": 63200
+      }
+    },
+    {
+      "ok": true,
+      "label": "The bride's procession: its actual purchase handler charges once and activates it",
+      "data": {
+        "price": 2200,
+        "before": 63200,
+        "after": 61000
+      }
+    },
+    {
+      "ok": true,
+      "label": "Spectral pursuit: its actual purchase handler charges once and activates it",
+      "data": {
+        "price": 3200,
+        "before": 61000,
+        "after": 57800
+      }
+    },
+    {
+      "ok": true,
+      "label": "Prison bus breakout: its actual purchase handler charges once and activates it",
+      "data": {
+        "price": 4500,
+        "before": 57800,
+        "after": 53300
+      }
+    },
+    {
+      "ok": true,
+      "label": "owned scare switches off without another purchase"
+    },
+    {
+      "ok": true,
+      "label": "owned scare switches back on for no charge"
+    },
+    {
+      "ok": true,
+      "label": "crooked thicket extension: legal purchase is enabled"
+    },
+    {
+      "ok": true,
+      "label": "crooked thicket extension: real handler charges exactly once",
+      "data": {
+        "before": {
+          "coins": 53300,
+          "patchLevel": 18,
+          "purchased": true,
+          "tier": 3,
+          "routeLevel": 1,
+          "fleet": 1,
+          "dispatch": 2,
+          "price": 8,
+          "owned": [
+            "turning-scarecrows",
+            "spider-drop",
+            "bride-procession",
+            "spectral-burst",
+            "bus-breakout"
+          ],
+          "active": [
+            "spider-drop",
+            "bride-procession",
+            "spectral-burst",
+            "bus-breakout",
+            "turning-scarecrows"
+          ],
+          "invested": 66700,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "after": {
+          "coins": 37300,
+          "patchLevel": 18,
+          "purchased": true,
+          "tier": 3,
+          "routeLevel": 2,
+          "fleet": 1,
+          "dispatch": 2,
+          "price": 8,
+          "owned": [
+            "turning-scarecrows",
+            "spider-drop",
+            "bride-procession",
+            "spectral-burst",
+            "bus-breakout"
+          ],
+          "active": [
+            "spider-drop",
+            "bride-procession",
+            "spectral-burst",
+            "bus-breakout",
+            "turning-scarecrows"
+          ],
+          "invested": 82700,
+          "tickets": 0,
+          "income": 0,
+          "guests": 0
+        },
+        "price": 16000
+      }
+    },
+    {
+      "ok": true,
+      "label": "upgrade handlers preserve admissions and finite funds",
+      "data": {
+        "coins": 37300,
+        "patchLevel": 18,
+        "purchased": true,
+        "tier": 3,
+        "routeLevel": 2,
+        "fleet": 1,
+        "dispatch": 2,
+        "price": 8,
+        "owned": [
+          "turning-scarecrows",
+          "spider-drop",
+          "bride-procession",
+          "spectral-burst",
+          "bus-breakout"
+        ],
+        "active": [
+          "spider-drop",
+          "bride-procession",
+          "spectral-burst",
+          "bus-breakout",
+          "turning-scarecrows"
+        ],
+        "invested": 82700,
+        "tickets": 0,
+        "income": 0,
+        "guests": 0
+      }
+    },
+    {
+      "ok": true,
+      "label": "ticket stepper remains a price setting, not a payment"
+    },
+    {
+      "ok": true,
+      "label": "ticket price can be reduced again"
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier2",
+      "data": {
+        "id": "tier2",
+        "width": 48,
+        "height": 48,
+        "alpha": 898,
+        "hash": 1377776104,
+        "actualSizeHash": 1377776104,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier1",
+      "data": {
+        "id": "tier1",
+        "width": 28,
+        "height": 28,
+        "alpha": 293,
+        "hash": 1914880075,
+        "actualSizeHash": 4109270953,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier2",
+      "data": {
+        "id": "tier2",
+        "width": 28,
+        "height": 28,
+        "alpha": 320,
+        "hash": 1377776104,
+        "actualSizeHash": 966106394,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 28,
+        "height": 28,
+        "alpha": 358,
+        "hash": 3293863386,
+        "actualSizeHash": 2863985845,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 48,
+        "height": 48,
+        "alpha": 1000,
+        "hash": 3293863386,
+        "actualSizeHash": 3293863386,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws fleet",
+      "data": {
+        "id": "fleet",
+        "width": 48,
+        "height": 48,
+        "alpha": 817,
+        "hash": 2986895086,
+        "actualSizeHash": 2986895086,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws dispatch",
+      "data": {
+        "id": "dispatch",
+        "width": 48,
+        "height": 48,
+        "alpha": 1122,
+        "hash": 3683675783,
+        "actualSizeHash": 3683675783,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws route1",
+      "data": {
+        "id": "route1",
+        "width": 48,
+        "height": 48,
+        "alpha": 1367,
+        "hash": 3832057166,
+        "actualSizeHash": 3832057166,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: upgrade menu fits, keeps44px targets and has no overlapping rows",
+      "data": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "clippedSheet": false,
+        "small": [],
+        "overlaps": 0,
+        "sheet": {
+          "x": 8,
+          "y": 244.734375,
+          "width": 374,
+          "height": 523.265625,
+          "top": 244.734375,
+          "right": 382,
+          "bottom": 768,
+          "left": 8
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 48,
+        "height": 48,
+        "alpha": 1000,
+        "hash": 3293863386,
+        "actualSizeHash": 3293863386,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws turning-scarecrows",
+      "data": {
+        "id": "turning-scarecrows",
+        "width": 48,
+        "height": 48,
+        "alpha": 1120,
+        "hash": 2932729119,
+        "actualSizeHash": 2932729119,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws spider-drop",
+      "data": {
+        "id": "spider-drop",
+        "width": 48,
+        "height": 48,
+        "alpha": 1556,
+        "hash": 976642322,
+        "actualSizeHash": 976642322,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws bride-procession",
+      "data": {
+        "id": "bride-procession",
+        "width": 48,
+        "height": 48,
+        "alpha": 1571,
+        "hash": 143590866,
+        "actualSizeHash": 143590866,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws spectral-burst",
+      "data": {
+        "id": "spectral-burst",
+        "width": 48,
+        "height": 48,
+        "alpha": 1304,
+        "hash": 2829986519,
+        "actualSizeHash": 2829986519,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws bus-breakout",
+      "data": {
+        "id": "bus-breakout",
+        "width": 48,
+        "height": 48,
+        "alpha": 1326,
+        "hash": 439206376,
+        "actualSizeHash": 439206376,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: scares menu fits, keeps44px targets and has no overlapping rows",
+      "data": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "clippedSheet": false,
+        "small": [],
+        "overlaps": 0,
+        "sheet": {
+          "x": 8,
+          "y": 244.734375,
+          "width": 374,
+          "height": 523.265625,
+          "top": 244.734375,
+          "right": 382,
+          "bottom": 768,
+          "left": 8
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier2",
+      "data": {
+        "id": "tier2",
+        "width": 48,
+        "height": 48,
+        "alpha": 898,
+        "hash": 1377776104,
+        "actualSizeHash": 1377776104,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier1",
+      "data": {
+        "id": "tier1",
+        "width": 28,
+        "height": 28,
+        "alpha": 293,
+        "hash": 1914880075,
+        "actualSizeHash": 4109270953,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier2",
+      "data": {
+        "id": "tier2",
+        "width": 28,
+        "height": 28,
+        "alpha": 320,
+        "hash": 1377776104,
+        "actualSizeHash": 966106394,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 28,
+        "height": 28,
+        "alpha": 358,
+        "hash": 3293863386,
+        "actualSizeHash": 2863985845,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 48,
+        "height": 48,
+        "alpha": 1000,
+        "hash": 3293863386,
+        "actualSizeHash": 3293863386,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws fleet",
+      "data": {
+        "id": "fleet",
+        "width": 48,
+        "height": 48,
+        "alpha": 817,
+        "hash": 2986895086,
+        "actualSizeHash": 2986895086,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws dispatch",
+      "data": {
+        "id": "dispatch",
+        "width": 48,
+        "height": 48,
+        "alpha": 1122,
+        "hash": 3683675783,
+        "actualSizeHash": 3683675783,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws route1",
+      "data": {
+        "id": "route1",
+        "width": 48,
+        "height": 48,
+        "alpha": 1367,
+        "hash": 3832057166,
+        "actualSizeHash": 3832057166,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: upgrade menu fits, keeps44px targets and has no overlapping rows",
+      "data": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "clippedSheet": false,
+        "small": [],
+        "overlaps": 0,
+        "sheet": {
+          "x": 472,
+          "y": 66,
+          "width": 390,
+          "height": 645,
+          "top": 66,
+          "right": 862,
+          "bottom": 711,
+          "left": 472
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 48,
+        "height": 48,
+        "alpha": 1000,
+        "hash": 3293863386,
+        "actualSizeHash": 3293863386,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws turning-scarecrows",
+      "data": {
+        "id": "turning-scarecrows",
+        "width": 48,
+        "height": 48,
+        "alpha": 1120,
+        "hash": 2932729119,
+        "actualSizeHash": 2932729119,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws spider-drop",
+      "data": {
+        "id": "spider-drop",
+        "width": 48,
+        "height": 48,
+        "alpha": 1556,
+        "hash": 976642322,
+        "actualSizeHash": 976642322,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws bride-procession",
+      "data": {
+        "id": "bride-procession",
+        "width": 48,
+        "height": 48,
+        "alpha": 1571,
+        "hash": 143590866,
+        "actualSizeHash": 143590866,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws spectral-burst",
+      "data": {
+        "id": "spectral-burst",
+        "width": 48,
+        "height": 48,
+        "alpha": 1304,
+        "hash": 2829986519,
+        "actualSizeHash": 2829986519,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws bus-breakout",
+      "data": {
+        "id": "bus-breakout",
+        "width": 48,
+        "height": 48,
+        "alpha": 1326,
+        "hash": 439206376,
+        "actualSizeHash": 439206376,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: scares menu fits, keeps44px targets and has no overlapping rows",
+      "data": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "clippedSheet": false,
+        "small": [],
+        "overlaps": 0,
+        "sheet": {
+          "x": 472,
+          "y": 66,
+          "width": 390,
+          "height": 645,
+          "top": 66,
+          "right": 862,
+          "bottom": 711,
+          "left": 472
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier2",
+      "data": {
+        "id": "tier2",
+        "width": 48,
+        "height": 48,
+        "alpha": 898,
+        "hash": 1377776104,
+        "actualSizeHash": 1377776104,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier1",
+      "data": {
+        "id": "tier1",
+        "width": 28,
+        "height": 28,
+        "alpha": 293,
+        "hash": 1914880075,
+        "actualSizeHash": 4109270953,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier2",
+      "data": {
+        "id": "tier2",
+        "width": 28,
+        "height": 28,
+        "alpha": 320,
+        "hash": 1377776104,
+        "actualSizeHash": 966106394,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 28,
+        "height": 28,
+        "alpha": 358,
+        "hash": 3293863386,
+        "actualSizeHash": 2863985845,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 48,
+        "height": 48,
+        "alpha": 1000,
+        "hash": 3293863386,
+        "actualSizeHash": 3293863386,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws fleet",
+      "data": {
+        "id": "fleet",
+        "width": 48,
+        "height": 48,
+        "alpha": 817,
+        "hash": 2986895086,
+        "actualSizeHash": 2986895086,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws dispatch",
+      "data": {
+        "id": "dispatch",
+        "width": 48,
+        "height": 48,
+        "alpha": 1122,
+        "hash": 3683675783,
+        "actualSizeHash": 3683675783,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws route1",
+      "data": {
+        "id": "route1",
+        "width": 48,
+        "height": 48,
+        "alpha": 1367,
+        "hash": 3832057166,
+        "actualSizeHash": 3832057166,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: upgrade menu fits, keeps44px targets and has no overlapping rows",
+      "data": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "clippedSheet": false,
+        "small": [],
+        "overlaps": 0,
+        "sheet": {
+          "x": 484,
+          "y": 8,
+          "width": 350,
+          "height": 372,
+          "top": 8,
+          "right": 834,
+          "bottom": 380,
+          "left": 484
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws tier3",
+      "data": {
+        "id": "tier3",
+        "width": 48,
+        "height": 48,
+        "alpha": 1000,
+        "hash": 3293863386,
+        "actualSizeHash": 3293863386,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 0%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws turning-scarecrows",
+      "data": {
+        "id": "turning-scarecrows",
+        "width": 48,
+        "height": 48,
+        "alpha": 1120,
+        "hash": 2932729119,
+        "actualSizeHash": 2932729119,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 50%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws spider-drop",
+      "data": {
+        "id": "spider-drop",
+        "width": 48,
+        "height": 48,
+        "alpha": 1556,
+        "hash": 976642322,
+        "actualSizeHash": 976642322,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "0% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws bride-procession",
+      "data": {
+        "id": "bride-procession",
+        "width": 48,
+        "height": 48,
+        "alpha": 1571,
+        "hash": 143590866,
+        "actualSizeHash": 143590866,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "33.3333% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws spectral-burst",
+      "data": {
+        "id": "spectral-burst",
+        "width": 48,
+        "height": 48,
+        "alpha": 1304,
+        "hash": 2829986519,
+        "actualSizeHash": 2829986519,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "66.6667% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "actual CSS icon decodes and draws bus-breakout",
+      "data": {
+        "id": "bus-breakout",
+        "width": 48,
+        "height": 48,
+        "alpha": 1326,
+        "hash": 439206376,
+        "actualSizeHash": 439206376,
+        "imageWidth": 768,
+        "imageHeight": 576,
+        "backgroundPosition": "100% 100%",
+        "ariaHidden": "true"
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: scares menu fits, keeps44px targets and has no overlapping rows",
+      "data": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "clippedSheet": false,
+        "small": [],
+        "overlaps": 0,
+        "sheet": {
+          "x": 484,
+          "y": 8,
+          "width": 350,
+          "height": 372,
+          "top": 8,
+          "right": 834,
+          "bottom": 380,
+          "left": 484
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "insufficient money still disables upgrades"
+    },
+    {
+      "ok": true,
+      "label": "pause still disables actual management purchases"
+    },
+    {
+      "ok": true,
+      "label": "all12 authored icons were exercised through actual menu states",
+      "data": [
+        "tier1",
+        "tier2",
+        "tier3",
+        "fleet",
+        "dispatch",
+        "route1",
+        "route2",
+        "turning-scarecrows",
+        "spider-drop",
+        "bride-procession",
+        "spectral-burst",
+        "bus-breakout"
+      ]
+    },
+    {
+      "ok": true,
+      "label": "the12 actual CSS crops display distinct sprite art"
+    },
+    {
+      "ok": true,
+      "label": "full-size generation PNGs are not imported into the menu bundle"
+    },
+    {
+      "ok": true,
+      "label": "menu fixture has no page errors or external runtime requests",
+      "data": {
+        "errors": [],
+        "externalRequests": []
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "desktop-locked-purchase.png",
+    "desktop-first-tier-upgrades.png",
+    "desktop-second-tier-upgrades.png",
+    "desktop-scare-purchases.png",
+    "phone-upgrade-top.png",
+    "phone-upgrade-bottom.png",
+    "phone-scares-top.png",
+    "phone-scares-bottom.png",
+    "fold-upgrade-top.png",
+    "fold-upgrade-bottom.png",
+    "fold-scares-top.png",
+    "fold-scares-bottom.png",
+    "landscape-upgrade-top.png",
+    "landscape-upgrade-bottom.png",
+    "landscape-scares-top.png",
+    "landscape-scares-bottom.png"
+  ],
+  "icons": {
+    "tier1": {
+      "id": "tier1",
+      "width": 28,
+      "height": 28,
+      "alpha": 293,
+      "hash": 1914880075,
+      "actualSizeHash": 4109270953,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "0% 0%",
+      "ariaHidden": "true"
+    },
+    "tier2": {
+      "id": "tier2",
+      "width": 28,
+      "height": 28,
+      "alpha": 320,
+      "hash": 1377776104,
+      "actualSizeHash": 966106394,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "33.3333% 0%",
+      "ariaHidden": "true"
+    },
+    "tier3": {
+      "id": "tier3",
+      "width": 48,
+      "height": 48,
+      "alpha": 1000,
+      "hash": 3293863386,
+      "actualSizeHash": 3293863386,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "66.6667% 0%",
+      "ariaHidden": "true"
+    },
+    "fleet": {
+      "id": "fleet",
+      "width": 48,
+      "height": 48,
+      "alpha": 817,
+      "hash": 2986895086,
+      "actualSizeHash": 2986895086,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "100% 0%",
+      "ariaHidden": "true"
+    },
+    "dispatch": {
+      "id": "dispatch",
+      "width": 48,
+      "height": 48,
+      "alpha": 1122,
+      "hash": 3683675783,
+      "actualSizeHash": 3683675783,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "0% 50%",
+      "ariaHidden": "true"
+    },
+    "route1": {
+      "id": "route1",
+      "width": 48,
+      "height": 48,
+      "alpha": 1367,
+      "hash": 3832057166,
+      "actualSizeHash": 3832057166,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "33.3333% 50%",
+      "ariaHidden": "true"
+    },
+    "route2": {
+      "id": "route2",
+      "width": 48,
+      "height": 48,
+      "alpha": 1500,
+      "hash": 340226837,
+      "actualSizeHash": 340226837,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "66.6667% 50%",
+      "ariaHidden": "true"
+    },
+    "turning-scarecrows": {
+      "id": "turning-scarecrows",
+      "width": 48,
+      "height": 48,
+      "alpha": 1120,
+      "hash": 2932729119,
+      "actualSizeHash": 2932729119,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "100% 50%",
+      "ariaHidden": "true"
+    },
+    "spider-drop": {
+      "id": "spider-drop",
+      "width": 48,
+      "height": 48,
+      "alpha": 1556,
+      "hash": 976642322,
+      "actualSizeHash": 976642322,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "0% 100%",
+      "ariaHidden": "true"
+    },
+    "bride-procession": {
+      "id": "bride-procession",
+      "width": 48,
+      "height": 48,
+      "alpha": 1571,
+      "hash": 143590866,
+      "actualSizeHash": 143590866,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "33.3333% 100%",
+      "ariaHidden": "true"
+    },
+    "spectral-burst": {
+      "id": "spectral-burst",
+      "width": 48,
+      "height": 48,
+      "alpha": 1304,
+      "hash": 2829986519,
+      "actualSizeHash": 2829986519,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "66.6667% 100%",
+      "ariaHidden": "true"
+    },
+    "bus-breakout": {
+      "id": "bus-breakout",
+      "width": 48,
+      "height": 48,
+      "alpha": 1326,
+      "hash": 439206376,
+      "actualSizeHash": 439206376,
+      "imageWidth": 768,
+      "imageHeight": 576,
+      "backgroundPosition": "100% 100%",
+      "ariaHidden": "true"
+    }
+  }
+}
