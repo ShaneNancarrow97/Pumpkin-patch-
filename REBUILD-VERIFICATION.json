@@ -1,0 +1,38 @@
+{
+  "sourceCommit": "855f29cc7969883268c6313b13eee06e4339a6f8",
+  "patchBase": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+  "leadReference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+  "scope": "voxel/docs/contractor-patches/late-game-support/ only; no installed game features or save changes",
+  "browser": {
+    "passed": true,
+    "assertions": 139,
+    "previewSHA256": "6e836a015a9ba6101fef7fb939593bbaf45c6a4d6ae0e4b13c761ed890c1d035"
+  },
+  "nativeTestFiles": 6,
+  "patchSHA256": "e3075e80c3f00283292e6c635a34eb92d997698ba327dbec36e7dc2430570eb6",
+  "checks": [
+    {
+      "tree": "review-base",
+      "reference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+      "actualPatchApplied": true,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "previewRebuildByteIdentical": true,
+      "capacityReportByteIdentical": true,
+      "walkInReportByteIdentical": true
+    },
+    {
+      "tree": "committed-source",
+      "reference": "855f29cc7969883268c6313b13eee06e4339a6f8",
+      "actualPatchApplied": false,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "previewRebuildByteIdentical": true,
+      "capacityReportByteIdentical": true,
+      "walkInReportByteIdentical": true,
+      "liveGameByteIdentical": true,
+      "liveGameSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0"
+    }
+  ],
+  "leadGameSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0"
+}

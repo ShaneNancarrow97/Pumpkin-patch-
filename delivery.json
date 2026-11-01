@@ -1,0 +1,71 @@
+{
+  "sourceCommit": "855f29cc7969883268c6313b13eee06e4339a6f8",
+  "patchBase": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+  "leadReference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+  "scope": "voxel/docs/contractor-patches/late-game-support/ only; no installed game features or save changes",
+  "browser": {
+    "passed": true,
+    "assertions": 139,
+    "previewSHA256": "6e836a015a9ba6101fef7fb939593bbaf45c6a4d6ae0e4b13c761ed890c1d035"
+  },
+  "nativeTestFiles": 6,
+  "patchSHA256": "e3075e80c3f00283292e6c635a34eb92d997698ba327dbec36e7dc2430570eb6",
+  "checks": [
+    {
+      "tree": "review-base",
+      "reference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+      "actualPatchApplied": true,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "previewRebuildByteIdentical": true,
+      "capacityReportByteIdentical": true,
+      "walkInReportByteIdentical": true
+    },
+    {
+      "tree": "committed-source",
+      "reference": "855f29cc7969883268c6313b13eee06e4339a6f8",
+      "actualPatchApplied": false,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "previewRebuildByteIdentical": true,
+      "capacityReportByteIdentical": true,
+      "walkInReportByteIdentical": true,
+      "liveGameByteIdentical": true,
+      "liveGameSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0"
+    }
+  ],
+  "leadGameSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0",
+  "sourceBranch": "contractor/late-game-support-pack",
+  "artifactBranch": "contractor/late-game-support-download",
+  "zipCRCChecked": true,
+  "artifacts": {
+    "late-game-support.patch": {
+      "bytes": 10392014,
+      "sha256": "e3075e80c3f00283292e6c635a34eb92d997698ba327dbec36e7dc2430570eb6"
+    },
+    "Pumpkin-Patch-Late-Game-Workshop.html": {
+      "bytes": 734581,
+      "sha256": "6e836a015a9ba6101fef7fb939593bbaf45c6a4d6ae0e4b13c761ed890c1d035"
+    },
+    "Pumpkin-Patch-Late-Game-Workshop.zip": {
+      "bytes": 260594,
+      "sha256": "d1105ba5c1098f5c6814aef70e2c37975f5be1e14aceaa6edb85eaaef40377c5"
+    },
+    "Pumpkin-Patch-Late-Game-Claude-Kit.zip": {
+      "bytes": 16245247,
+      "sha256": "acedab56c13544ae89f7abb1930ddafb51e3b4bdf3180fde3c5d893526402f81"
+    },
+    "README.md": {
+      "bytes": 1794,
+      "sha256": "1cb63a5983bfe9976df9c4d7875d7aca18c9acbaf99b4b313c2a5155ab73125b"
+    },
+    "HANDOVER.md": {
+      "bytes": 10098,
+      "sha256": "dd74ac8eccc40f5927806efecc3b79914fec7b07c0f61a10aa905543b98ae6a3"
+    },
+    "REBUILD-VERIFICATION.json": {
+      "bytes": 1462,
+      "sha256": "f8219c404db3263851fdec6b571d3bfa2e943e9d67aab13b18b7a9477f170079"
+    }
+  }
+}
