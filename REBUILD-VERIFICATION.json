@@ -1,0 +1,66 @@
+{
+  "sourceCommit": "fd58d75c1ac27ecf4f912acdf78bde07a176526c",
+  "patchBase": "855f29cc7969883268c6313b13eee06e4339a6f8",
+  "leadReference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+  "scope": "voxel/docs/contractor-patches/festival-session/ only; no installed game features or save changes",
+  "combinedScope": [
+    "voxel/docs/contractor-patches/late-game-support/",
+    "voxel/docs/contractor-patches/festival-session/"
+  ],
+  "browser": {
+    "passed": true,
+    "assertions": 80,
+    "previewSHA256": "f0cdeafa73ec624e34e790a40379e86c7d580f88820e9dcec9ef706ff960499b"
+  },
+  "nativeTestFiles": 13,
+  "nativeCases": 81,
+  "patchSHA256": "a46c922044d6f6ad4ea92ecef4e5495017105cb726945121599923c0098a4cc2",
+  "combinedPatchSHA256": "d22f69be1069b024178e982349c4e4b007583382c45d32376ac84d51620296d5",
+  "checks": [
+    {
+      "tree": "incremental-base",
+      "reference": "855f29cc7969883268c6313b13eee06e4339a6f8",
+      "actualPatchApplied": true,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "nativeCases": 81,
+      "previewRebuildByteIdentical": true,
+      "parsedContractorBoundaryPassed": true,
+      "semanticImpactByteIdentical": true,
+      "importImpactByteIdentical": true,
+      "capacityReportByteIdentical": true,
+      "walkInReportByteIdentical": true
+    },
+    {
+      "tree": "lead-base",
+      "reference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+      "actualPatchApplied": true,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "nativeCases": 81,
+      "previewRebuildByteIdentical": true,
+      "parsedContractorBoundaryPassed": true,
+      "semanticImpactByteIdentical": true,
+      "importImpactByteIdentical": true,
+      "capacityReportByteIdentical": true,
+      "walkInReportByteIdentical": true
+    },
+    {
+      "tree": "committed-source",
+      "reference": "fd58d75c1ac27ecf4f912acdf78bde07a176526c",
+      "actualPatchApplied": false,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "nativeCases": 81,
+      "previewRebuildByteIdentical": true,
+      "parsedContractorBoundaryPassed": true,
+      "semanticImpactByteIdentical": true,
+      "importImpactByteIdentical": true,
+      "capacityReportByteIdentical": true,
+      "walkInReportByteIdentical": true,
+      "liveGameByteIdentical": true,
+      "liveGameSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0"
+    }
+  ],
+  "leadGameSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0"
+}

@@ -1,0 +1,1658 @@
+{
+  "schemaVersion": 1,
+  "revision": "2026-11-01.2",
+  "status": "contractor-semantic-domain-map",
+  "reviewedBase": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+  "scope": "Voxel game domains and shared/root-game boundaries, plus the currently uninstalled Festival Night contractor module. Potential change impact, not an import graph or proof of safety.",
+  "direction": "from is the changed producer/contract; to is a consumer or behavior that may need review.",
+  "integrationStatus": "Festival Night engine, claims and demo are uninstalled. Integration-conditional edges do not describe current live runtime dependencies.",
+  "coverageRoots": [
+    "voxel/src",
+    "voxel/test",
+    "voxel/tools",
+    "voxel/assets",
+    "voxel/docs/contractor-patches/festival-session",
+    "voxel/docs/contractor-patches/late-game-support",
+    "src",
+    "test",
+    "scripts",
+    ".github/workflows",
+    "voxel/build.mjs",
+    "voxel/smoke.mjs",
+    "voxel/package.json",
+    "voxel/package-lock.json",
+    "package.json",
+    "package-lock.json"
+  ],
+  "knownLimitations": [
+    "Domain paths overlap intentionally. Conditional consequences need human review of what actually changed; no file-name match proves a defect or proves safety.",
+    "This is a reviewed semantic scope, not an exhaustive file-level graph. Unmapped files, new systems, generated outputs and deleted/renamed paths require manual review.",
+    "Root 2D behavior is mapped at its shared-data/runtime boundary; individual root assets, external platform behavior and private/unpublished lead work are not exhaustively modeled.",
+    "Current checks cover direct and active-transitive potential impacts. Future integration suggestions are separate and do not install or imply live Festival Night behavior.",
+    "Printed commands are recommendations only. The planner never executes tests, alters saves, runs builds, updates Git or writes reports.",
+    "Existing economy fixtures and software WebGL checks have limits; whole-venue balance, physical Fold 7 GPU/controller behavior and atomic host persistence still need focused validation."
+  ],
+  "checks": [
+    {
+      "id": "save-tests",
+      "label": "Game restoration and initialization",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/model.test.mjs voxel/test/intro.test.mjs",
+      "files": [
+        "voxel/test/model.test.mjs",
+        "voxel/test/intro.test.mjs"
+      ]
+    },
+    {
+      "id": "progression-tests",
+      "label": "Level gates and home milestones",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/levels-and-visitors.test.mjs voxel/test/unlocks.test.mjs voxel/test/home-progression.test.mjs voxel/test/late-favours.test.mjs",
+      "files": [
+        "voxel/test/levels-and-visitors.test.mjs",
+        "voxel/test/unlocks.test.mjs",
+        "voxel/test/home-progression.test.mjs",
+        "voxel/test/late-favours.test.mjs"
+      ]
+    },
+    {
+      "id": "crop-tests",
+      "label": "Growth, stock, freshness and harvest boosts",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/farm-growth.test.mjs voxel/test/midnight-moon.test.mjs voxel/test/market.test.mjs voxel/test/harvest-rush.test.mjs voxel/test/storage-and-visitors.test.mjs",
+      "files": [
+        "voxel/test/farm-growth.test.mjs",
+        "voxel/test/midnight-moon.test.mjs",
+        "voxel/test/market.test.mjs",
+        "voxel/test/harvest-rush.test.mjs",
+        "voxel/test/storage-and-visitors.test.mjs"
+      ]
+    },
+    {
+      "id": "wallet-tests",
+      "label": "Finite wallets, baskets, food sales and tips",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/economy-baskets.test.mjs voxel/test/cooking-sales.test.mjs voxel/test/customer-care.test.mjs voxel/test/orders.test.mjs voxel/test/hospitality-integration.test.mjs",
+      "files": [
+        "voxel/test/economy-baskets.test.mjs",
+        "voxel/test/cooking-sales.test.mjs",
+        "voxel/test/customer-care.test.mjs",
+        "voxel/test/orders.test.mjs",
+        "voxel/test/hospitality-integration.test.mjs"
+      ]
+    },
+    {
+      "id": "visitor-tests",
+      "label": "Groups, caps, VIPs, rushes and rich guests",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/visitor-events.test.mjs voxel/test/visitor-tiers.test.mjs voxel/test/big-spender.test.mjs voxel/test/storage-and-visitors.test.mjs voxel/test/guest-card.test.mjs",
+      "files": [
+        "voxel/test/visitor-events.test.mjs",
+        "voxel/test/visitor-tiers.test.mjs",
+        "voxel/test/big-spender.test.mjs",
+        "voxel/test/storage-and-visitors.test.mjs",
+        "voxel/test/guest-card.test.mjs"
+      ]
+    },
+    {
+      "id": "navigation-tests",
+      "label": "Navigation, scene gateways and docking",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/player-navigation.test.mjs voxel/test/play-ways.test.mjs voxel/test/hayride-offmap.test.mjs voxel/test/hayride-station.test.mjs",
+      "files": [
+        "voxel/test/player-navigation.test.mjs",
+        "voxel/test/play-ways.test.mjs",
+        "voxel/test/hayride-offmap.test.mjs",
+        "voxel/test/hayride-station.test.mjs"
+      ]
+    },
+    {
+      "id": "cleanliness-tests",
+      "label": "Litter, caretakers and helper rest",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/cleanliness.test.mjs voxel/test/helpers-rest.test.mjs",
+      "files": [
+        "voxel/test/cleanliness.test.mjs",
+        "voxel/test/helpers-rest.test.mjs"
+      ]
+    },
+    {
+      "id": "kitchen-tests",
+      "label": "Recipes, gear, batches and bulk sales",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/cooking.test.mjs voxel/test/kitchen-workshop.test.mjs voxel/test/kitchen-bulk-sales.test.mjs voxel/test/cooking-world.test.mjs",
+      "files": [
+        "voxel/test/cooking.test.mjs",
+        "voxel/test/kitchen-workshop.test.mjs",
+        "voxel/test/kitchen-bulk-sales.test.mjs",
+        "voxel/test/cooking-world.test.mjs"
+      ]
+    },
+    {
+      "id": "garden-carving-tests",
+      "label": "Garden yields, carving seeds and shapes",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/garden-crops.test.mjs voxel/test/carving.test.mjs voxel/test/carving-pumpkin.test.mjs",
+      "files": [
+        "voxel/test/garden-crops.test.mjs",
+        "voxel/test/carving.test.mjs",
+        "voxel/test/carving-pumpkin.test.mjs"
+      ]
+    },
+    {
+      "id": "cocoa-tests",
+      "label": "Cocoa, deluxe automation and meadow comfort",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/cocoa-menu-and-guests.test.mjs voxel/test/sandy-deluxe.test.mjs voxel/test/festival-meadow.test.mjs voxel/test/meadow-chat.test.mjs",
+      "files": [
+        "voxel/test/cocoa-menu-and-guests.test.mjs",
+        "voxel/test/sandy-deluxe.test.mjs",
+        "voxel/test/festival-meadow.test.mjs",
+        "voxel/test/meadow-chat.test.mjs"
+      ]
+    },
+    {
+      "id": "maze-tests",
+      "label": "Restoration, foyer, tickets and maze results",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/hollow-house.test.mjs voxel/test/maze-haunts.test.mjs voxel/test/foyer-controls.test.mjs",
+      "files": [
+        "voxel/test/hollow-house.test.mjs",
+        "voxel/test/maze-haunts.test.mjs",
+        "voxel/test/foyer-controls.test.mjs"
+      ]
+    },
+    {
+      "id": "hayride-tests",
+      "label": "Fleet, queues, paid routes and return rules",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/hayride.test.mjs voxel/test/hayride-fleet.test.mjs voxel/test/hayride-routes.test.mjs voxel/test/hayride-return.test.mjs voxel/test/hayride-integration.test.mjs",
+      "files": [
+        "voxel/test/hayride.test.mjs",
+        "voxel/test/hayride-fleet.test.mjs",
+        "voxel/test/hayride-routes.test.mjs",
+        "voxel/test/hayride-return.test.mjs",
+        "voxel/test/hayride-integration.test.mjs"
+      ]
+    },
+    {
+      "id": "pov-tests",
+      "label": "Camera, geometry, scares and ride actors",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/hayride-view.test.mjs voxel/test/hayride-stall.test.mjs voxel/test/hayride-scares.test.mjs voxel/test/hayride-layout.test.mjs voxel/test/hayride-sets.test.mjs voxel/test/maze-ride-view.test.mjs voxel/test/maze-ride-world.test.mjs",
+      "files": [
+        "voxel/test/hayride-view.test.mjs",
+        "voxel/test/hayride-stall.test.mjs",
+        "voxel/test/hayride-scares.test.mjs",
+        "voxel/test/hayride-layout.test.mjs",
+        "voxel/test/hayride-sets.test.mjs",
+        "voxel/test/maze-ride-view.test.mjs",
+        "voxel/test/maze-ride-world.test.mjs"
+      ]
+    },
+    {
+      "id": "audio-tests",
+      "label": "Music, shuffle, MIDI and sound budgets",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/audio-player.test.mjs voxel/test/camera-and-shuffle.test.mjs voxel/test/midi.test.mjs voxel/test/maze-audio.test.mjs voxel/test/ambience.test.mjs",
+      "files": [
+        "voxel/test/audio-player.test.mjs",
+        "voxel/test/camera-and-shuffle.test.mjs",
+        "voxel/test/midi.test.mjs",
+        "voxel/test/maze-audio.test.mjs",
+        "voxel/test/ambience.test.mjs"
+      ]
+    },
+    {
+      "id": "placement-tests",
+      "label": "Bounds, surfaces, walls, shelves and estate",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/house.test.mjs voxel/test/premium-furniture-house.test.mjs voxel/test/premium-wall-house.test.mjs voxel/test/shelves.test.mjs voxel/test/house-estate.test.mjs voxel/test/house-shell.test.mjs",
+      "files": [
+        "voxel/test/house.test.mjs",
+        "voxel/test/premium-furniture-house.test.mjs",
+        "voxel/test/premium-wall-house.test.mjs",
+        "voxel/test/shelves.test.mjs",
+        "voxel/test/house-estate.test.mjs",
+        "voxel/test/house-shell.test.mjs"
+      ]
+    },
+    {
+      "id": "sprite-tests",
+      "label": "Directions, walk phases, scale and pets",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/player-directions.test.mjs voxel/test/player-side-walk.test.mjs voxel/test/player-views.test.mjs voxel/test/costume-expansion.test.mjs voxel/test/special-sprite-meta.test.mjs voxel/test/home-pets.test.mjs",
+      "files": [
+        "voxel/test/player-directions.test.mjs",
+        "voxel/test/player-side-walk.test.mjs",
+        "voxel/test/player-views.test.mjs",
+        "voxel/test/costume-expansion.test.mjs",
+        "voxel/test/special-sprite-meta.test.mjs",
+        "voxel/test/home-pets.test.mjs"
+      ]
+    },
+    {
+      "id": "control-tests",
+      "label": "Controller/touch, hold-to-buy and interactions",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/pad-menu.test.mjs voxel/test/placement-controls.test.mjs voxel/test/player-feel.test.mjs voxel/test/hands-on.test.mjs voxel/test/life-actions.test.mjs voxel/test/estate-controls.test.mjs",
+      "files": [
+        "voxel/test/pad-menu.test.mjs",
+        "voxel/test/placement-controls.test.mjs",
+        "voxel/test/player-feel.test.mjs",
+        "voxel/test/hands-on.test.mjs",
+        "voxel/test/life-actions.test.mjs",
+        "voxel/test/estate-controls.test.mjs"
+      ]
+    },
+    {
+      "id": "render-tests",
+      "label": "Quality, house skins and furniture art",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/test/render-quality.test.mjs voxel/test/house-skins.test.mjs voxel/test/house-skin-art.test.mjs voxel/test/premium-furniture.test.mjs voxel/test/premium-walls.test.mjs voxel/test/kitchen-equipment-art.test.mjs",
+      "files": [
+        "voxel/test/render-quality.test.mjs",
+        "voxel/test/house-skins.test.mjs",
+        "voxel/test/house-skin-art.test.mjs",
+        "voxel/test/premium-furniture.test.mjs",
+        "voxel/test/premium-walls.test.mjs",
+        "voxel/test/kitchen-equipment-art.test.mjs"
+      ]
+    },
+    {
+      "id": "game-build",
+      "label": "Offline build at an explicit path",
+      "kind": "build",
+      "cwd": ".",
+      "command": "node voxel/build.mjs --out /tmp/pumpkin-patch-impact.html",
+      "files": [
+        "voxel/build.mjs",
+        "voxel/src/index.html",
+        "voxel/package.json"
+      ],
+      "limitations": []
+    },
+    {
+      "id": "game-smoke",
+      "label": "Existing whole-game desktop/phone smoke",
+      "kind": "browser",
+      "cwd": "voxel",
+      "command": "npm run build && npm run smoke",
+      "files": [
+        "voxel/build.mjs",
+        "voxel/smoke.mjs",
+        "voxel/package.json"
+      ],
+      "limitations": []
+    },
+    {
+      "id": "economy-study",
+      "label": "Compare actual rules with a bounded economy fixture",
+      "kind": "analysis",
+      "cwd": "voxel",
+      "command": "node tools/economy-sim.mjs 4",
+      "files": [
+        "voxel/tools/economy-sim.mjs"
+      ],
+      "limitations": [
+        "Read fixture assumptions; it is not a complete house/venue profit or player-time forecast."
+      ]
+    },
+    {
+      "id": "ride-camera-study",
+      "label": "Measure scene/scare framing along a whole ride",
+      "kind": "analysis",
+      "cwd": "voxel",
+      "command": "node tools/ride-camera.mjs 2",
+      "files": [
+        "voxel/tools/ride-camera.mjs"
+      ],
+      "limitations": []
+    },
+    {
+      "id": "render-profile",
+      "label": "Compare rendering after the explicit game build",
+      "kind": "performance",
+      "cwd": ".",
+      "command": "node voxel/tools/perf.mjs /tmp/pumpkin-patch-impact.html --seconds 40",
+      "files": [
+        "voxel/tools/perf.mjs"
+      ],
+      "limitations": [
+        "Needs the built HTML and Chromium. Software WebGL is not a physical Fold 7 GPU benchmark."
+      ]
+    },
+    {
+      "id": "root-checks",
+      "label": "Root 2D game tests/build/smoke for shared data",
+      "kind": "native-build-browser",
+      "cwd": ".",
+      "command": "npm run check",
+      "files": [
+        "package.json",
+        "test/model.test.mjs",
+        "test/save.test.mjs",
+        "scripts/build.mjs",
+        "scripts/smoke.mjs"
+      ],
+      "limitations": []
+    },
+    {
+      "id": "festival-engine",
+      "label": "Isolated session and adversarial persistence checks",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/docs/contractor-patches/festival-session/test/engine.test.mjs voxel/docs/contractor-patches/festival-session/test/engine-adversarial.test.mjs",
+      "files": [
+        "voxel/docs/contractor-patches/festival-session/test/engine.test.mjs",
+        "voxel/docs/contractor-patches/festival-session/test/engine-adversarial.test.mjs"
+      ],
+      "limitations": []
+    },
+    {
+      "id": "festival-bridge",
+      "label": "Read-only readiness and authoritative rule fixtures",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/docs/contractor-patches/festival-session/test/readiness.test.mjs voxel/docs/contractor-patches/festival-session/test/rule-integration.test.mjs",
+      "files": [
+        "voxel/docs/contractor-patches/festival-session/test/readiness.test.mjs",
+        "voxel/docs/contractor-patches/festival-session/test/rule-integration.test.mjs"
+      ],
+      "limitations": []
+    },
+    {
+      "id": "festival-preview",
+      "label": "Isolated import boundary and offline build checks",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/docs/contractor-patches/festival-session/test/preview-build.test.mjs",
+      "files": [
+        "voxel/docs/contractor-patches/festival-session/test/preview-build.test.mjs"
+      ],
+      "limitations": []
+    },
+    {
+      "id": "festival-browser",
+      "label": "Build and inspect the exact offline fixture demo",
+      "kind": "browser",
+      "cwd": ".",
+      "command": "node voxel/docs/contractor-patches/festival-session/tools/build-preview.mjs --out /tmp/Pumpkin-Patch-Festival-Nights.html && node voxel/docs/contractor-patches/festival-session/tools/qa-preview.mjs /tmp/Pumpkin-Patch-Festival-Nights.html /tmp/festival-impact-qa",
+      "files": [
+        "voxel/docs/contractor-patches/festival-session/tools/build-preview.mjs",
+        "voxel/docs/contractor-patches/festival-session/tools/qa-preview.mjs"
+      ],
+      "limitations": []
+    },
+    {
+      "id": "festival-content",
+      "label": "Actual theme, recipe, equipment and reward references",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/docs/contractor-patches/late-game-support/test/content.test.mjs voxel/docs/contractor-patches/late-game-support/test/pack-contract.test.mjs",
+      "files": [
+        "voxel/docs/contractor-patches/late-game-support/test/content.test.mjs",
+        "voxel/docs/contractor-patches/late-game-support/test/pack-contract.test.mjs"
+      ],
+      "limitations": []
+    },
+    {
+      "id": "impact-tests",
+      "label": "Map integrity, traversal and unknown-path handling",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node --test voxel/docs/contractor-patches/festival-session/test/impact.test.mjs voxel/docs/contractor-patches/festival-session/test/dependency-scan.test.mjs",
+      "files": [
+        "voxel/docs/contractor-patches/festival-session/test/impact.test.mjs",
+        "voxel/docs/contractor-patches/festival-session/tools/check-impact.mjs",
+        "voxel/docs/contractor-patches/festival-session/data/dependency-matrix.json",
+        "voxel/docs/contractor-patches/festival-session/test/dependency-scan.test.mjs"
+      ],
+      "limitations": []
+    }
+  ],
+  "domains": [
+    {
+      "id": "shared-catalogue",
+      "label": "Shared catalogue and root-game data",
+      "scope": "shared",
+      "paths": [
+        "src/content/**",
+        "src/core/costume-model.mjs"
+      ],
+      "evidence": [
+        "src/content/catalog.mjs",
+        "src/content/rooms.mjs",
+        "src/core/costume-model.mjs"
+      ],
+      "invariants": [
+        "Shared IDs, dimensions, prices and costume semantics feed both games; do not silently fork them."
+      ],
+      "checkIds": [
+        "root-checks",
+        "render-tests",
+        "progression-tests"
+      ]
+    },
+    {
+      "id": "root-2d",
+      "label": "Separate root 2D runtime",
+      "scope": "legacy-live",
+      "paths": [
+        "src/core/**",
+        "src/scene/**",
+        "src/ui/**",
+        "scripts/**",
+        "test/**"
+      ],
+      "evidence": [
+        "src/core/model.mjs",
+        "src/core/save-model.mjs"
+      ],
+      "invariants": [
+        "Voxel-only work must preserve the root game's own behavior and save migrations."
+      ],
+      "checkIds": [
+        "root-checks"
+      ]
+    },
+    {
+      "id": "save-lifecycle",
+      "label": "State, restoration, pause and initialization",
+      "scope": "live",
+      "paths": [
+        "voxel/src/model.js",
+        "voxel/src/rules/intro.js",
+        "voxel/src/content/intro.js",
+        "voxel/test/model.test.mjs",
+        "voxel/test/intro.test.mjs"
+      ],
+      "evidence": [
+        "voxel/src/model.js",
+        "voxel/src/rules/intro.js"
+      ],
+      "invariants": [
+        "The host owns its save version; save serializable rules, not renderer objects.",
+        "Restoration must preserve valid ownership, reached levels and finite wallets."
+      ],
+      "checkIds": [
+        "save-tests",
+        "progression-tests"
+      ]
+    },
+    {
+      "id": "progression",
+      "label": "Levels, home gates, unlocks and milestones",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/levels.js",
+        "voxel/src/rules/unlocks.js",
+        "voxel/src/rules/home-goals.js",
+        "voxel/src/rules/progress.js",
+        "voxel/test/*progression*.test.mjs",
+        "voxel/test/unlocks.test.mjs",
+        "voxel/test/levels-and-visitors.test.mjs"
+      ],
+      "evidence": [
+        "voxel/src/rules/levels.js",
+        "voxel/src/rules/home-goals.js"
+      ],
+      "invariants": [
+        "Reached levels do not regress; purchase gates and visible unlocks agree.",
+        "Use actual LEVELS thresholds rather than hard-coded earned totals."
+      ],
+      "checkIds": [
+        "progression-tests",
+        "economy-study"
+      ]
+    },
+    {
+      "id": "crop-stock",
+      "label": "Pumpkin production, stock, freshness and streaks",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/farm.js",
+        "voxel/src/rules/stock.js",
+        "voxel/src/rules/market.js",
+        "voxel/src/rules/orders.js",
+        "voxel/src/content/pumpkin-varieties.js",
+        "voxel/src/pumpkins.js"
+      ],
+      "evidence": [
+        "voxel/src/rules/stock.js",
+        "voxel/src/rules/farm.js"
+      ],
+      "invariants": [
+        "Caps, held baskets and fresh batch availability must agree.",
+        "Harvest yield and streak frequency alter both income and arrivals."
+      ],
+      "checkIds": [
+        "crop-tests",
+        "wallet-tests",
+        "economy-study"
+      ]
+    },
+    {
+      "id": "retail-wallet",
+      "label": "Finite-wallet retail, food sales and service",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/selling.js",
+        "voxel/src/rules/customer-care.js",
+        "voxel/src/rules/cooking-sales.js",
+        "voxel/src/customer-bag.js"
+      ],
+      "evidence": [
+        "voxel/src/rules/selling.js",
+        "voxel/src/rules/cooking-sales.js"
+      ],
+      "invariants": [
+        "All businesses spend one real guest purse; reconcile holds, tips and confirmed debits.",
+        "Quotes, displayed stock and cashier animations are not sale receipts."
+      ],
+      "checkIds": [
+        "wallet-tests",
+        "crop-tests",
+        "economy-study"
+      ]
+    },
+    {
+      "id": "visitors",
+      "label": "Arrivals, groups, caps, VIPs, rushes and needs",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/visitor-events.js",
+        "voxel/src/rules/guest-needs.js",
+        "voxel/src/rules/big-spender.js",
+        "voxel/src/rules/meadow-talk.js",
+        "voxel/src/rules/meadow-chat.js",
+        "voxel/src/content/visitor-events.js",
+        "voxel/src/content/visitors.js"
+      ],
+      "evidence": [
+        "voxel/src/rules/visitor-events.js",
+        "voxel/src/rules/guest-needs.js"
+      ],
+      "invariants": [
+        "Invitation sources share guest caps and finite wallets.",
+        "Fear, temporary return and confirmed final departure are different outcomes."
+      ],
+      "checkIds": [
+        "visitor-tests",
+        "wallet-tests",
+        "cleanliness-tests"
+      ]
+    },
+    {
+      "id": "navigation",
+      "label": "Farm expansion, paths, exits and scene gateways",
+      "scope": "live",
+      "paths": [
+        "voxel/src/content/farm-layout.js",
+        "voxel/src/content/farm-walks.js",
+        "voxel/src/farm-expansion-world.js",
+        "voxel/src/world.js",
+        "voxel/src/ground.js",
+        "voxel/src/play-ways.js",
+        "voxel/src/garden-play.js"
+      ],
+      "evidence": [
+        "voxel/src/content/farm-walks.js",
+        "voxel/src/content/farm-layout.js",
+        "voxel/src/play-ways.js"
+      ],
+      "invariants": [
+        "New plots/buildings leave reachable guest routes and visible exits.",
+        "Queue paths, draw geometry and arrival/transition strips must align."
+      ],
+      "checkIds": [
+        "navigation-tests",
+        "control-tests"
+      ]
+    },
+    {
+      "id": "cleanliness",
+      "label": "Litter, caretakers and cleanliness appeal",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/cleanliness.js",
+        "voxel/src/cleanliness-view.js",
+        "voxel/src/janitor-meta.js",
+        "voxel/assets/hattie-janitor*"
+      ],
+      "evidence": [
+        "voxel/src/rules/cleanliness.js",
+        "voxel/src/cleanliness-view.js"
+      ],
+      "invariants": [
+        "Cleaning targets actual reachable litter; do not duplicate caretaker work.",
+        "Pause, restoration and appeal penalties remain consistent."
+      ],
+      "checkIds": [
+        "cleanliness-tests",
+        "navigation-tests",
+        "visitor-tests"
+      ]
+    },
+    {
+      "id": "kitchen",
+      "label": "Ingredients, recipes, equipment, batches and chef",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/cooking.js",
+        "voxel/src/rules/cooking-mix.js",
+        "voxel/src/rules/cooking-dining.js",
+        "voxel/src/rules/kitchen-equipment.js",
+        "voxel/src/content/cooking*.js",
+        "voxel/src/content/kitchen-equipment*.js",
+        "voxel/src/cooking-world.js",
+        "voxel/src/kitchen-props.js",
+        "voxel/src/food-props.js"
+      ],
+      "evidence": [
+        "voxel/src/rules/kitchen-equipment.js",
+        "voxel/src/rules/cooking.js"
+      ],
+      "invariants": [
+        "Only correctly placed kitchen equipment supplies home capabilities; premium equivalents count.",
+        "Pantry, deliveries, batches, holds and chef output conserve ingredient/food quantities."
+      ],
+      "checkIds": [
+        "kitchen-tests",
+        "wallet-tests",
+        "garden-carving-tests"
+      ]
+    },
+    {
+      "id": "garden-carving",
+      "label": "Garden harvest, carving seeds and pumpkin shapes",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/garden-crops.js",
+        "voxel/src/rules/carving.js",
+        "voxel/src/content/carving.js",
+        "voxel/src/content/pumpkin-shapes.js",
+        "voxel/src/carving-*.js",
+        "voxel/src/ui/carving*"
+      ],
+      "evidence": [
+        "voxel/src/rules/garden-crops.js",
+        "voxel/src/rules/carving.js",
+        "voxel/src/carving-pumpkin.js"
+      ],
+      "invariants": [
+        "Harvested ingredients differ from deliveries, gifts and cooking.",
+        "Carving shape/session geometry and seed yields agree with saved state and kitchen supply."
+      ],
+      "checkIds": [
+        "garden-carving-tests",
+        "kitchen-tests",
+        "control-tests"
+      ]
+    },
+    {
+      "id": "cocoa-meadow",
+      "label": "Sandy cocoa service and meadow comfort",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/festival-meadow.js",
+        "voxel/src/rules/cocoa-menu.js",
+        "voxel/src/content/festival-meadow.js",
+        "voxel/src/cocoa-props.js",
+        "voxel/src/festival-meadow-world.js",
+        "voxel/src/sandy.js"
+      ],
+      "evidence": [
+        "voxel/src/rules/cocoa-menu.js",
+        "voxel/src/rules/festival-meadow.js"
+      ],
+      "invariants": [
+        "Cocoa stock, lines, prices and deluxe automation reconcile actual payments.",
+        "Comfort and footfall share attraction limits; no extra unbounded invitation source."
+      ],
+      "checkIds": [
+        "cocoa-tests",
+        "wallet-tests",
+        "visitor-tests"
+      ]
+    },
+    {
+      "id": "maze-service",
+      "label": "Hollow House restoration, foyer and paid visits",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/hollow-house.js",
+        "voxel/src/content/hollow-house.js",
+        "voxel/src/foyer-view.js",
+        "voxel/src/mortimer.js",
+        "voxel/src/ui/foyer-controls.js",
+        "voxel/src/hollow-house-farm.js",
+        "voxel/src/hollow-exterior*.js"
+      ],
+      "evidence": [
+        "voxel/src/rules/hollow-house.js",
+        "voxel/src/foyer-view.js"
+      ],
+      "invariants": [
+        "Unlock, purchase and restoration precede ticket sales; one charge per actual visit.",
+        "Foyer occupancy, maze completion, fear and final exit must reconcile across views."
+      ],
+      "checkIds": [
+        "maze-tests",
+        "pov-tests",
+        "visitor-tests"
+      ]
+    },
+    {
+      "id": "hayride-service",
+      "label": "Hayride fleet, tickets, queue and paid circuit timing",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/hayride.js",
+        "voxel/src/content/hayride.js",
+        "voxel/src/content/hayride-layout.js",
+        "voxel/src/hayride-station.js"
+      ],
+      "evidence": [
+        "voxel/src/rules/hayride.js",
+        "voxel/src/content/hayride-layout.js"
+      ],
+      "invariants": [
+        "Boarding charges one purse once; receipts, manifests and both tractors reconcile.",
+        "Paid circuit duration differs from owner POV duration; preserve route-at-departure and queue-at-boarding."
+      ],
+      "checkIds": [
+        "hayride-tests",
+        "navigation-tests",
+        "wallet-tests",
+        "economy-study"
+      ]
+    },
+    {
+      "id": "ride-pov",
+      "label": "Off-map geometry, scares, cameras and breakdown",
+      "scope": "live",
+      "paths": [
+        "voxel/src/hayride-view.js",
+        "voxel/src/hayride-world.js",
+        "voxel/src/hayride-forest.js",
+        "voxel/src/hayride-sets.js",
+        "voxel/src/hayride-spiders.js",
+        "voxel/src/hayride-scares.js",
+        "voxel/src/hayride-stall.js",
+        "voxel/src/hayride-riders.js",
+        "voxel/src/hayride-vehicle.js",
+        "voxel/src/hayride-atmosphere.js",
+        "voxel/src/hayride-moonlight.js",
+        "voxel/src/rules/maze-ride.js",
+        "voxel/src/content/maze-ride.js",
+        "voxel/src/maze-ride-*.js",
+        "voxel/src/maze-effects.js"
+      ],
+      "evidence": [
+        "voxel/src/hayride-view.js",
+        "voxel/src/hayride-stall.js",
+        "voxel/src/maze-ride-view.js"
+      ],
+      "invariants": [
+        "Director, actor framing, route clearance and light/engine clocks remain aligned.",
+        "Owner POV scenes must not silently change paid operational timings or billing."
+      ],
+      "checkIds": [
+        "pov-tests",
+        "ride-camera-study",
+        "render-profile"
+      ]
+    },
+    {
+      "id": "audio",
+      "label": "Music, MIDI, scare cues and tractor sound",
+      "scope": "live",
+      "paths": [
+        "voxel/src/ui/*audio.js",
+        "voxel/src/ui/music-*.js",
+        "voxel/src/ui/midi.js",
+        "voxel/src/ui/scare-voices.js",
+        "voxel/src/ui/tractor-engine.js",
+        "voxel/src/content/hayride-jingle.js",
+        "voxel/src/ambience.js",
+        "voxel/src/content/ambience.js",
+        "voxel/assets/music/**"
+      ],
+      "evidence": [
+        "voxel/src/ui/hayride-audio.js",
+        "voxel/src/ui/tractor-engine.js",
+        "voxel/src/ui/music-queue.js"
+      ],
+      "invariants": [
+        "Respect activation, pause, visibility and bounded voices.",
+        "Engine, darkness, scare poses and sound cues follow the same ride clock."
+      ],
+      "checkIds": [
+        "audio-tests",
+        "pov-tests"
+      ]
+    },
+    {
+      "id": "house-placement",
+      "label": "Home, estate, furniture, walls and physical bounds",
+      "scope": "live",
+      "paths": [
+        "voxel/src/rules/house.js",
+        "voxel/src/rules/house-estate.js",
+        "voxel/src/rules/surfaces.js",
+        "voxel/src/rules/piece-colours.js",
+        "voxel/src/content/placement.js",
+        "voxel/src/content/decor-sizes.js",
+        "voxel/src/content/home-furnish*.js",
+        "voxel/src/content/premium-*.js",
+        "voxel/src/content/shelf-catalog.js",
+        "voxel/src/content/house-estate.js",
+        "voxel/src/decor*.js",
+        "voxel/src/decor-models/**",
+        "voxel/src/interiors.js",
+        "voxel/src/places.js",
+        "voxel/src/house-estate-*.js",
+        "voxel/src/premium-*.js",
+        "voxel/src/piece-*.js",
+        "voxel/src/fixtures.js",
+        "voxel/src/cottage.js"
+      ],
+      "evidence": [
+        "voxel/src/rules/house.js",
+        "voxel/src/content/decor-sizes.js",
+        "voxel/src/rules/surfaces.js"
+      ],
+      "invariants": [
+        "Rotated measured footprints, supports, walls and floor origins match models, collision and selection.",
+        "Placed interactive gear and home gates agree with actual rooms and owned catalogue IDs."
+      ],
+      "checkIds": [
+        "placement-tests",
+        "progression-tests",
+        "render-tests",
+        "kitchen-tests"
+      ]
+    },
+    {
+      "id": "sprites-pets",
+      "label": "Costumes, walking, scale and companions",
+      "scope": "live",
+      "paths": [
+        "voxel/src/sprite-*.js",
+        "voxel/src/*sprite-meta*.js",
+        "voxel/src/costume-*.js",
+        "voxel/src/player-*meta.js",
+        "voxel/src/player-sprite-directions.js",
+        "voxel/src/player-view-*.js",
+        "voxel/src/player-home-poses.js",
+        "voxel/src/characters.js",
+        "voxel/src/crisp-sprites.js",
+        "voxel/src/face.js",
+        "voxel/src/home-pets*.js",
+        "voxel/src/rules/home-pets.js",
+        "voxel/src/rules/wardrobe.js",
+        "voxel/src/owner-home-pose-meta.js",
+        "voxel/src/maisie*.js",
+        "voxel/src/natalie-wheelchair-meta.js"
+      ],
+      "evidence": [
+        "voxel/src/sprite-actors.js",
+        "voxel/src/player-view-size.js",
+        "voxel/src/rules/home-pets.js"
+      ],
+      "invariants": [
+        "Facing, foot anchors, body scale and alternating legs stay consistent across costumes and rooms.",
+        "Pet art, physical scale, home poses and ownership agree."
+      ],
+      "checkIds": [
+        "sprite-tests",
+        "control-tests",
+        "render-tests"
+      ]
+    },
+    {
+      "id": "controls-ui",
+      "label": "Inputs, cameras, menus and feedback",
+      "scope": "live",
+      "paths": [
+        "voxel/src/player-control.js",
+        "voxel/src/life-activity.js",
+        "voxel/src/play-ways.js",
+        "voxel/src/rules/hands-on.js",
+        "voxel/src/rules/life-actions.js",
+        "voxel/src/rules/home-interactions.js",
+        "voxel/src/action-fx.js",
+        "voxel/src/camera-layout.js",
+        "voxel/src/ui/**",
+        "voxel/src/style.css",
+        "voxel/src/icons.css",
+        "voxel/src/index.html"
+      ],
+      "evidence": [
+        "voxel/src/ui/pad-menu.js",
+        "voxel/src/ui/hold-to-buy.js",
+        "voxel/src/player-control.js"
+      ],
+      "invariants": [
+        "Physical inputs invoke the same authoritative actions; focus, hold-to-buy, pause and thumb targets agree.",
+        "Keep the world visible and controls clear across safe areas, fold states and controller back/confirm."
+      ],
+      "checkIds": [
+        "control-tests",
+        "navigation-tests",
+        "sprite-tests",
+        "game-smoke"
+      ]
+    },
+    {
+      "id": "render-assets",
+      "label": "Voxel kit, atlases, textures and render quality",
+      "scope": "live",
+      "paths": [
+        "voxel/src/voxels.js",
+        "voxel/src/voxel-mesh.js",
+        "voxel/src/render-quality.js",
+        "voxel/src/scene.js",
+        "voxel/src/entrance-glow.js",
+        "voxel/src/wilds.js",
+        "voxel/assets/**",
+        "voxel/tools/bake*.py",
+        "voxel/tools/prepare*.py",
+        "voxel/tools/measure*.mjs"
+      ],
+      "evidence": [
+        "voxel/src/voxels.js",
+        "voxel/src/scene.js",
+        "voxel/src/render-quality.js"
+      ],
+      "invariants": [
+        "Dispose owned GPU resources without destroying shared cube geometry; avoid empty box axes and unbounded lights.",
+        "Atlas cells, foot anchors, scale, DPR and zoom are coupled; compare budgets rather than assuming hardware speed."
+      ],
+      "checkIds": [
+        "render-tests",
+        "sprite-tests",
+        "placement-tests",
+        "render-profile",
+        "game-build"
+      ]
+    },
+    {
+      "id": "build-runtime",
+      "label": "Orchestration, offline build, dependencies and CI",
+      "scope": "live-tooling",
+      "paths": [
+        "voxel/src/main.js",
+        "voxel/src/model.js",
+        "voxel/src/scene.js",
+        "voxel/build.mjs",
+        "voxel/smoke.mjs",
+        "voxel/package*.json",
+        "package*.json",
+        ".github/workflows/**"
+      ],
+      "evidence": [
+        "voxel/src/main.js",
+        "voxel/build.mjs",
+        ".github/workflows/ci.yml"
+      ],
+      "invariants": [
+        "Keep simulation, input, rendering and save loading separated across scene transitions.",
+        "The shipped HTML embeds all assets; import/dependency changes need a clean offline rebuild."
+      ],
+      "checkIds": [
+        "save-tests",
+        "game-build",
+        "game-smoke",
+        "root-checks"
+      ]
+    },
+    {
+      "id": "festival-content",
+      "label": "Uninstalled night definitions and goals",
+      "scope": "isolated",
+      "paths": [
+        "voxel/docs/contractor-patches/late-game-support/data/festival-themes.json",
+        "voxel/docs/contractor-patches/late-game-support/docs/FESTIVAL-CONTENT.md",
+        "voxel/docs/contractor-patches/festival-session/docs/API.md"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/late-game-support/data/festival-themes.json"
+      ],
+      "invariants": [
+        "Targets remain draft; nights retain actual guest purses/caps.",
+        "Changing goal targets/windows/conditions invalidates active progress through its revision marker while valid permanent ownership survives."
+      ],
+      "checkIds": [
+        "festival-content",
+        "festival-engine",
+        "festival-bridge"
+      ]
+    },
+    {
+      "id": "festival-state",
+      "label": "Uninstalled session, dedupe, pause and restoration",
+      "scope": "isolated",
+      "paths": [
+        "voxel/docs/contractor-patches/festival-session/src/**",
+        "voxel/docs/contractor-patches/festival-session/test/engine*.mjs"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/festival-session/src/engine.js",
+        "voxel/docs/contractor-patches/festival-session/docs/API.md"
+      ],
+      "invariants": [
+        "Keep captured session tokens, immutable outcomes and bounded per-goal dedupe across saves.",
+        "Manual/global pause freezes operation; restored service pauses without offline catch-up."
+      ],
+      "checkIds": [
+        "festival-engine",
+        "festival-bridge",
+        "festival-preview"
+      ]
+    },
+    {
+      "id": "festival-readiness",
+      "label": "Uninstalled read-only context and future hooks",
+      "scope": "isolated",
+      "paths": [
+        "voxel/docs/contractor-patches/festival-session/adapters/**",
+        "voxel/docs/contractor-patches/festival-session/docs/HOOK-SEAMS.md",
+        "voxel/docs/contractor-patches/festival-session/test/readiness.test.mjs",
+        "voxel/docs/contractor-patches/festival-session/test/rule-integration.test.mjs"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/festival-session/adapters/readiness.js",
+        "voxel/docs/contractor-patches/festival-session/docs/HOOK-SEAMS.md"
+      ],
+      "invariants": [
+        "Snapshot a valid restored world and actual placed kitchen capabilities.",
+        "Future hooks need real payment/completion, route/queue snapshots and final exit facts."
+      ],
+      "checkIds": [
+        "festival-bridge",
+        "festival-engine"
+      ]
+    },
+    {
+      "id": "festival-claims",
+      "label": "Uninstalled cosmetic entitlement boundary",
+      "scope": "isolated",
+      "paths": [
+        "voxel/docs/contractor-patches/festival-session/src/engine.js",
+        "voxel/docs/contractor-patches/festival-session/docs/API.md"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/festival-session/src/engine.js"
+      ],
+      "invariants": [
+        "One stable grantKey per theme/reward; no duplicate furniture, coins or stat bonus.",
+        "Host entitlement and physical ownership must be atomic or idempotent; the module cannot make independent host writes atomic."
+      ],
+      "checkIds": [
+        "festival-engine",
+        "festival-bridge"
+      ]
+    },
+    {
+      "id": "festival-preview",
+      "label": "Offline contractor fixture demo",
+      "scope": "isolated",
+      "paths": [
+        "voxel/docs/contractor-patches/festival-session/preview/**",
+        "voxel/docs/contractor-patches/festival-session/tools/build-preview.mjs",
+        "voxel/docs/contractor-patches/festival-session/tools/qa-preview.mjs",
+        "voxel/docs/contractor-patches/festival-session/test/preview-build.test.mjs"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/festival-session/preview/app.js",
+        "voxel/docs/contractor-patches/festival-session/tools/build-preview.mjs"
+      ],
+      "invariants": [
+        "Clearly label synthetic receipts; import no live world/save and make no real purchases.",
+        "Keep fixture controls usable on phone/fold layouts without external assets or game-storage writes."
+      ],
+      "checkIds": [
+        "festival-preview",
+        "festival-browser"
+      ]
+    },
+    {
+      "id": "impact-planning",
+      "label": "Semantic map and read-only impact planner",
+      "scope": "tooling",
+      "paths": [
+        "voxel/docs/contractor-patches/festival-session/data/dependency-matrix.json",
+        "voxel/docs/contractor-patches/festival-session/tools/check-impact.mjs",
+        "voxel/docs/contractor-patches/festival-session/docs/DEPENDENCY-MATRIX.md",
+        "voxel/docs/contractor-patches/festival-session/test/impact.test.mjs",
+        "voxel/docs/contractor-patches/festival-session/tools/dependency-scan.mjs",
+        "voxel/docs/contractor-patches/festival-session/tools/run-native.mjs",
+        "voxel/docs/contractor-patches/festival-session/test/dependency-scan.test.mjs",
+        "voxel/docs/contractor-patches/festival-session/README.md",
+        "voxel/docs/contractor-patches/festival-session/docs/HANDOVER.md",
+        "voxel/docs/contractor-patches/festival-session/docs/CHANGE-IMPACT.md",
+        "voxel/docs/contractor-patches/festival-session/verification/**"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/festival-session/data/dependency-matrix.json",
+        "voxel/docs/contractor-patches/festival-session/tools/check-impact.mjs",
+        "voxel/docs/contractor-patches/festival-session/tools/dependency-scan.mjs"
+      ],
+      "invariants": [
+        "Distinguish active semantic dependencies from future integration conditions.",
+        "Unmapped paths or stale evidence require manual review, never a 'safe' conclusion."
+      ],
+      "checkIds": [
+        "impact-tests"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "shared-catalogue",
+      "to": "root-2d",
+      "activation": "active",
+      "consequence": "Shared catalogue and costume data are consumed by the root game."
+    },
+    {
+      "from": "shared-catalogue",
+      "to": "house-placement",
+      "activation": "active",
+      "consequence": "IDs, dimensions, rooms and item categories define furniture ownership and placement."
+    },
+    {
+      "from": "shared-catalogue",
+      "to": "sprites-pets",
+      "activation": "active",
+      "consequence": "Costume IDs and metadata must agree with renderer selections."
+    },
+    {
+      "from": "shared-catalogue",
+      "to": "crop-stock",
+      "activation": "active",
+      "consequence": "Shared pumpkin/product references must retain valid bins and stock meanings."
+    },
+    {
+      "from": "save-lifecycle",
+      "to": "progression",
+      "activation": "active",
+      "consequence": "Restored claimed levels and home requirements must retain earned progress."
+    },
+    {
+      "from": "save-lifecycle",
+      "to": "retail-wallet",
+      "activation": "active",
+      "consequence": "Restored balances, holds and receipts must not create duplicate or free purchases."
+    },
+    {
+      "from": "save-lifecycle",
+      "to": "house-placement",
+      "activation": "active",
+      "consequence": "Saved item IDs, poses, room ownership and bounds must remain valid."
+    },
+    {
+      "from": "save-lifecycle",
+      "to": "visitors",
+      "activation": "active",
+      "consequence": "Restored visitors, timers and reservations must respect the same caps and wallets."
+    },
+    {
+      "from": "save-lifecycle",
+      "to": "festival-readiness",
+      "activation": "active",
+      "consequence": "The isolated adapter reads host state only after valid restoration."
+    },
+    {
+      "from": "progression",
+      "to": "kitchen",
+      "activation": "active",
+      "consequence": "Level gates control recipe research, equipment and automation access."
+    },
+    {
+      "from": "progression",
+      "to": "visitors",
+      "activation": "active",
+      "consequence": "Unlocks control group/frequency/VIP/rush upgrade availability."
+    },
+    {
+      "from": "progression",
+      "to": "house-placement",
+      "activation": "active",
+      "consequence": "Levels and home upgrades constrain one another's progression requirements."
+    },
+    {
+      "from": "progression",
+      "to": "maze-service",
+      "activation": "active",
+      "consequence": "Attraction unlock/purchase/restoration gates must agree."
+    },
+    {
+      "from": "progression",
+      "to": "hayride-service",
+      "activation": "active",
+      "consequence": "Tier, fleet and route purchases depend on level gates."
+    },
+    {
+      "from": "progression",
+      "to": "cocoa-meadow",
+      "activation": "active",
+      "consequence": "Paid cocoa unlock and upgrade visibility must follow actual levels."
+    },
+    {
+      "from": "progression",
+      "to": "festival-readiness",
+      "activation": "active",
+      "consequence": "Proposed evenings query the actual reached level and prerequisites."
+    },
+    {
+      "from": "crop-stock",
+      "to": "retail-wallet",
+      "activation": "active",
+      "consequence": "Harvested availability, holds, freshness and price determine real basket sales."
+    },
+    {
+      "from": "crop-stock",
+      "to": "visitors",
+      "activation": "active",
+      "consequence": "Harvest streak boosts change arrivals within the current cap."
+    },
+    {
+      "from": "retail-wallet",
+      "to": "progression",
+      "activation": "active",
+      "consequence": "Confirmed income changes earned thresholds and purchase pace."
+    },
+    {
+      "from": "retail-wallet",
+      "to": "visitors",
+      "activation": "active",
+      "consequence": "Spending, service and tips change remaining purse, needs and destination choices."
+    },
+    {
+      "from": "visitors",
+      "to": "retail-wallet",
+      "activation": "active",
+      "consequence": "Guest mix, purse and group size change demand and queue load."
+    },
+    {
+      "from": "visitors",
+      "to": "maze-service",
+      "activation": "active",
+      "consequence": "Arrivals, fear and repeat decisions change foyer/maze occupancy."
+    },
+    {
+      "from": "visitors",
+      "to": "hayride-service",
+      "activation": "active",
+      "consequence": "Guest groups, affordability and patience change queue manifests."
+    },
+    {
+      "from": "visitors",
+      "to": "cocoa-meadow",
+      "activation": "active",
+      "consequence": "Hunger/thirst and groups change cocoa demand and comfort occupancy."
+    },
+    {
+      "from": "visitors",
+      "to": "cleanliness",
+      "activation": "active",
+      "consequence": "Guest volume and consumption change litter and caretaker workload."
+    },
+    {
+      "from": "visitors",
+      "to": "festival-readiness",
+      "activation": "active",
+      "consequence": "Purchased VIP/rush upgrades are captured as actual readiness facts."
+    },
+    {
+      "from": "navigation",
+      "to": "visitors",
+      "activation": "active",
+      "consequence": "Guest routes, boundaries and exit transitions must remain reachable."
+    },
+    {
+      "from": "navigation",
+      "to": "cleanliness",
+      "activation": "active",
+      "consequence": "Caretakers use actual farm paths to reach litter."
+    },
+    {
+      "from": "navigation",
+      "to": "hayride-service",
+      "activation": "active",
+      "consequence": "Station paths and off-map docking must align with boarding/return timing."
+    },
+    {
+      "from": "navigation",
+      "to": "controls-ui",
+      "activation": "active",
+      "consequence": "Player walk limits, tap targets and doorway transitions depend on layout."
+    },
+    {
+      "from": "cleanliness",
+      "to": "visitors",
+      "activation": "active",
+      "consequence": "Litter/cleaning appeal affects the visitor arrival penalty and mood."
+    },
+    {
+      "from": "kitchen",
+      "to": "retail-wallet",
+      "activation": "active",
+      "consequence": "Recipes, yields, displayed stock and batches feed confirmed finite-wallet food sales."
+    },
+    {
+      "from": "kitchen",
+      "to": "garden-carving",
+      "activation": "active",
+      "consequence": "Ingredient IDs and pantry caps affect garden/carving seed destinations and overflow."
+    },
+    {
+      "from": "kitchen",
+      "to": "festival-readiness",
+      "activation": "active",
+      "consequence": "The adapter reads purchased recipes and actual placed home capabilities."
+    },
+    {
+      "from": "garden-carving",
+      "to": "kitchen",
+      "activation": "active",
+      "consequence": "Harvests and carving seeds feed pantry quantities and recipe availability."
+    },
+    {
+      "from": "garden-carving",
+      "to": "controls-ui",
+      "activation": "active",
+      "consequence": "Bench actions and gardening interactions must remain reachable and properly mapped."
+    },
+    {
+      "from": "cocoa-meadow",
+      "to": "retail-wallet",
+      "activation": "active",
+      "consequence": "Cocoa line totals and automation spend the same guest wallet."
+    },
+    {
+      "from": "cocoa-meadow",
+      "to": "visitors",
+      "activation": "active",
+      "consequence": "Comfort/footfall and served needs alter subsequent visits."
+    },
+    {
+      "from": "cocoa-meadow",
+      "to": "festival-readiness",
+      "activation": "active",
+      "consequence": "Sandy's actual purchased tier supplies an isolated readiness prerequisite."
+    },
+    {
+      "from": "maze-service",
+      "to": "retail-wallet",
+      "activation": "active",
+      "consequence": "Paid tickets consume the same purse used at later shops."
+    },
+    {
+      "from": "maze-service",
+      "to": "visitors",
+      "activation": "active",
+      "consequence": "Maze fear, completions and repeat/home decisions alter remaining guest flow."
+    },
+    {
+      "from": "maze-service",
+      "to": "ride-pov",
+      "activation": "active",
+      "consequence": "Maze tier/haunts also drive the owner's walkthrough scene interpretation."
+    },
+    {
+      "from": "maze-service",
+      "to": "festival-readiness",
+      "activation": "active",
+      "consequence": "Prepared/open/tier facts determine isolated evening readiness."
+    },
+    {
+      "from": "hayride-service",
+      "to": "retail-wallet",
+      "activation": "active",
+      "consequence": "Boarding receipts debit the shared purse and contribute real earnings."
+    },
+    {
+      "from": "hayride-service",
+      "to": "visitors",
+      "activation": "active",
+      "consequence": "Queue time, circuits, return needs and invitations change farm flow."
+    },
+    {
+      "from": "hayride-service",
+      "to": "ride-pov",
+      "activation": "active",
+      "consequence": "Tier, route and shared layout data feed POV scenery; paid timing is a separate contract."
+    },
+    {
+      "from": "hayride-service",
+      "to": "festival-readiness",
+      "activation": "active",
+      "consequence": "Actual open/tier/route facts determine isolated evening readiness."
+    },
+    {
+      "from": "ride-pov",
+      "to": "audio",
+      "activation": "active",
+      "consequence": "Breakdown/scare clocks and camera framing must align with sound cues."
+    },
+    {
+      "from": "ride-pov",
+      "to": "render-assets",
+      "activation": "active",
+      "consequence": "Added forests, actors, lights and materials affect draw/compile/resource budgets."
+    },
+    {
+      "from": "audio",
+      "to": "ride-pov",
+      "activation": "active",
+      "consequence": "Changed scare/engine cue timing may require corresponding camera/pose timing review."
+    },
+    {
+      "from": "house-placement",
+      "to": "kitchen",
+      "activation": "active",
+      "consequence": "Only correctly placed kitchen gear supplies required home capabilities."
+    },
+    {
+      "from": "house-placement",
+      "to": "navigation",
+      "activation": "active",
+      "consequence": "Furniture bounds and garden pieces affect physical walk/transition clearance."
+    },
+    {
+      "from": "house-placement",
+      "to": "progression",
+      "activation": "active",
+      "consequence": "Home upgrades and room access satisfy level milestones."
+    },
+    {
+      "from": "house-placement",
+      "to": "controls-ui",
+      "activation": "active",
+      "consequence": "Selection, free drag, wall/support rotation and interactions use actual item bounds."
+    },
+    {
+      "from": "sprites-pets",
+      "to": "controls-ui",
+      "activation": "active",
+      "consequence": "Facing, anchors and size affect action feedback and controller targets."
+    },
+    {
+      "from": "sprites-pets",
+      "to": "render-assets",
+      "activation": "active",
+      "consequence": "Atlas size and animation frames affect sampling, uploads and draw resources."
+    },
+    {
+      "from": "controls-ui",
+      "to": "house-placement",
+      "activation": "active",
+      "consequence": "Move/rotate/store and interaction commands must preserve placement rules."
+    },
+    {
+      "from": "controls-ui",
+      "to": "crop-stock",
+      "activation": "active",
+      "consequence": "Plant/water/harvest input must dispatch authoritative rule actions exactly once."
+    },
+    {
+      "from": "render-assets",
+      "to": "sprites-pets",
+      "activation": "active",
+      "consequence": "Atlas dimensions and material settings must agree with crop/frame metadata."
+    },
+    {
+      "from": "render-assets",
+      "to": "house-placement",
+      "activation": "active",
+      "consequence": "Changed model geometry needs measured collision/support bounds and thumbnails."
+    },
+    {
+      "from": "render-assets",
+      "to": "ride-pov",
+      "activation": "active",
+      "consequence": "Geometry/light changes can alter visibility, scare framing and performance."
+    },
+    {
+      "from": "render-assets",
+      "to": "build-runtime",
+      "activation": "active",
+      "consequence": "Embedded assets and renderer resources affect offline builds and scene transitions."
+    },
+    {
+      "from": "build-runtime",
+      "to": "save-lifecycle",
+      "activation": "active",
+      "consequence": "Startup/load sequencing must not erase or partially restore state."
+    },
+    {
+      "from": "build-runtime",
+      "to": "controls-ui",
+      "activation": "active",
+      "consequence": "Scene/menu input ownership and pause must remain coherent across transitions."
+    },
+    {
+      "from": "build-runtime",
+      "to": "render-assets",
+      "activation": "active",
+      "consequence": "Bundling/dependency changes affect shader, texture and offline-resource behavior."
+    },
+    {
+      "from": "festival-content",
+      "to": "festival-state",
+      "activation": "active",
+      "consequence": "Goal targets, windows and conditions are bound into the active configuration revision."
+    },
+    {
+      "from": "festival-content",
+      "to": "festival-readiness",
+      "activation": "active",
+      "consequence": "Actual recipe, capability and attraction references must still satisfy requirements."
+    },
+    {
+      "from": "festival-content",
+      "to": "festival-claims",
+      "activation": "active",
+      "consequence": "Theme/reward IDs define permanent once-only grant identities."
+    },
+    {
+      "from": "festival-content",
+      "to": "festival-preview",
+      "activation": "active",
+      "consequence": "The demo renders the same actual definitions and labels draft targets."
+    },
+    {
+      "from": "festival-state",
+      "to": "festival-claims",
+      "activation": "active",
+      "consequence": "Only an ended successful evening creates a claimable entitlement."
+    },
+    {
+      "from": "festival-state",
+      "to": "festival-readiness",
+      "activation": "active",
+      "consequence": "Engine readiness fields and adapter snapshots must keep the same API contract."
+    },
+    {
+      "from": "festival-state",
+      "to": "festival-preview",
+      "activation": "active",
+      "consequence": "The fixture UI dispatches real reducer commands and displays its actual view."
+    },
+    {
+      "from": "festival-readiness",
+      "to": "festival-state",
+      "activation": "active",
+      "consequence": "Changes in host fact semantics affect whether start conditions pass."
+    },
+    {
+      "from": "festival-claims",
+      "to": "festival-preview",
+      "activation": "active",
+      "consequence": "The demo must present pending/owned cosmetic states without implying live grants."
+    },
+    {
+      "from": "festival-state",
+      "to": "save-lifecycle",
+      "activation": "integration-conditional",
+      "consequence": "Only if adopted: persist session token, paused progress, dedupe and claims without altering existing migrations."
+    },
+    {
+      "from": "festival-state",
+      "to": "retail-wallet",
+      "activation": "integration-conditional",
+      "consequence": "Only if adopted: consume confirmed receipts after payment; never charge the guest again."
+    },
+    {
+      "from": "festival-state",
+      "to": "visitors",
+      "activation": "integration-conditional",
+      "consequence": "Only if adopted: theme invitations must reuse existing guest caps and purses."
+    },
+    {
+      "from": "festival-readiness",
+      "to": "build-runtime",
+      "activation": "integration-conditional",
+      "consequence": "Only if adopted: wire authoritative host hooks at the reviewed seams, not render callbacks."
+    },
+    {
+      "from": "festival-claims",
+      "to": "house-placement",
+      "activation": "integration-conditional",
+      "consequence": "Only if adopted: map grantKey to actual catalogue ownership atomically/idempotently before placement."
+    },
+    {
+      "from": "festival-preview",
+      "to": "controls-ui",
+      "activation": "integration-conditional",
+      "consequence": "Only if adopting this menu: integrate host focus, pause, safe areas and controller action routing."
+    },
+    {
+      "from": "festival-content",
+      "to": "progression",
+      "activation": "integration-conditional",
+      "consequence": "Only if adopted: expose the proposed late-level nights without silently granting recipes or upgrades."
+    }
+  ]
+}

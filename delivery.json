@@ -1,0 +1,111 @@
+{
+  "sourceCommit": "fd58d75c1ac27ecf4f912acdf78bde07a176526c",
+  "patchBase": "855f29cc7969883268c6313b13eee06e4339a6f8",
+  "leadReference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+  "scope": "voxel/docs/contractor-patches/festival-session/ only; no installed game features or save changes",
+  "combinedScope": [
+    "voxel/docs/contractor-patches/late-game-support/",
+    "voxel/docs/contractor-patches/festival-session/"
+  ],
+  "browser": {
+    "passed": true,
+    "assertions": 80,
+    "previewSHA256": "f0cdeafa73ec624e34e790a40379e86c7d580f88820e9dcec9ef706ff960499b"
+  },
+  "nativeTestFiles": 13,
+  "nativeCases": 81,
+  "patchSHA256": "a46c922044d6f6ad4ea92ecef4e5495017105cb726945121599923c0098a4cc2",
+  "combinedPatchSHA256": "d22f69be1069b024178e982349c4e4b007583382c45d32376ac84d51620296d5",
+  "checks": [
+    {
+      "tree": "incremental-base",
+      "reference": "855f29cc7969883268c6313b13eee06e4339a6f8",
+      "actualPatchApplied": true,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "nativeCases": 81,
+      "previewRebuildByteIdentical": true,
+      "parsedContractorBoundaryPassed": true,
+      "semanticImpactByteIdentical": true,
+      "importImpactByteIdentical": true,
+      "capacityReportByteIdentical": true,
+      "walkInReportByteIdentical": true
+    },
+    {
+      "tree": "lead-base",
+      "reference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+      "actualPatchApplied": true,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "nativeCases": 81,
+      "previewRebuildByteIdentical": true,
+      "parsedContractorBoundaryPassed": true,
+      "semanticImpactByteIdentical": true,
+      "importImpactByteIdentical": true,
+      "capacityReportByteIdentical": true,
+      "walkInReportByteIdentical": true
+    },
+    {
+      "tree": "committed-source",
+      "reference": "fd58d75c1ac27ecf4f912acdf78bde07a176526c",
+      "actualPatchApplied": false,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "nativeCases": 81,
+      "previewRebuildByteIdentical": true,
+      "parsedContractorBoundaryPassed": true,
+      "semanticImpactByteIdentical": true,
+      "importImpactByteIdentical": true,
+      "capacityReportByteIdentical": true,
+      "walkInReportByteIdentical": true,
+      "liveGameByteIdentical": true,
+      "liveGameSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0"
+    }
+  ],
+  "leadGameSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0",
+  "sourceBranch": "contractor/festival-session-module",
+  "artifactBranch": "contractor/festival-session-download",
+  "zipCRCChecked": true,
+  "artifacts": {
+    "festival-session-incremental.patch": {
+      "bytes": 4509774,
+      "sha256": "a46c922044d6f6ad4ea92ecef4e5495017105cb726945121599923c0098a4cc2"
+    },
+    "festival-session-combined-from-lead.patch": {
+      "bytes": 14901788,
+      "sha256": "d22f69be1069b024178e982349c4e4b007583382c45d32376ac84d51620296d5"
+    },
+    "Pumpkin-Patch-Festival-Nights.html": {
+      "bytes": 205188,
+      "sha256": "f0cdeafa73ec624e34e790a40379e86c7d580f88820e9dcec9ef706ff960499b"
+    },
+    "Pumpkin-Patch-Festival-Nights.zip": {
+      "bytes": 129868,
+      "sha256": "3ce063ff8fe2a7d651c5f11ed37d9a4fff7d35d00fb997f15c0f20a278f1042a"
+    },
+    "Festival-Nights-Claude-Kit.zip": {
+      "bytes": 18196515,
+      "sha256": "1e3c84619055f5a5b7ba39f8c2bb1f7d2204ac6208b10906caabd691e7b81adc"
+    },
+    "README.md": {
+      "bytes": 2125,
+      "sha256": "6d36dee2263ae51a810cb5bd0d01861c0b37493a3d2894b6f9d8b6605d6eeb8a"
+    },
+    "HANDOVER.md": {
+      "bytes": 9776,
+      "sha256": "8e206f4c8a8aa0776c9ae3bcaec38d4bca094529a3f3d59c91c89b94501a7e06"
+    },
+    "DEPENDENCY-MATRIX.md": {
+      "bytes": 11792,
+      "sha256": "4ae4e2ff73d1f050f2b2a267f27bccbe58f7d29227b28c8cf6c2e19b936019d6"
+    },
+    "dependency-matrix.json": {
+      "bytes": 58594,
+      "sha256": "01fc6fb4dc1d9dc87664a2b40a4b1ece1adaf4e2b77ba9178508c16972ac2250"
+    },
+    "REBUILD-VERIFICATION.json": {
+      "bytes": 2510,
+      "sha256": "731f440e5a1de17c6054650c6cd9c3bd32ba0e352fb6714e407b2e67df6dbca7"
+    }
+  }
+}
