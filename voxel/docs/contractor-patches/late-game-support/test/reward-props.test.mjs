@@ -82,9 +82,10 @@ test('disposing one model releases each owned material/glass geometry once and p
   for(const meta of REWARD_PROPS){
     const g=buildRewardProp(meta.id),other=buildRewardProp(meta.id),materials=new Set(),glass=new Set(),shared=new Set();
     for(const m of meshes(g)){materials.add(m.material);(m.isInstancedMesh?shared:glass).add(m.geometry);}
-    const materialCalls=new Map(),glassCalls=new Map();let sharedDisposals=0,otherDisposals=0;
+    const materialCalls=new Map(),glassCalls=new Map(),instanceCalls=new Map();let sharedDisposals=0,otherDisposals=0;
     for(const m of materials){materialCalls.set(m,0);m.addEventListener('dispose',()=>materialCalls.set(m,materialCalls.get(m)+1));}
     for(const geo of glass){glassCalls.set(geo,0);geo.addEventListener('dispose',()=>glassCalls.set(geo,glassCalls.get(geo)+1));}
+    for(const mesh of meshes(g).filter(m=>m.isInstancedMesh)){instanceCalls.set(mesh,0);mesh.addEventListener('dispose',()=>instanceCalls.set(mesh,instanceCalls.get(mesh)+1));}
     const sharedListener=()=>sharedDisposals++;
     for(const geo of shared)geo.addEventListener('dispose',sharedListener);
     for(const m of new Set(meshes(other).map(m=>m.material)))m.addEventListener('dispose',()=>otherDisposals++);
@@ -92,6 +93,7 @@ test('disposing one model releases each owned material/glass geometry once and p
     assert.deepEqual(snapshot(g),before,'disposed animation is inert');
     assert.ok([...materialCalls.values()].every(n=>n===1));
     assert.ok([...glassCalls.values()].every(n=>n===1));
+    assert.ok([...instanceCalls.values()].every(n=>n===1),'instance attribute buffers are released once too');
     assert.equal(materials.size,g.userData.stats.materialCount);
     assert.equal(sharedDisposals,0,'the core kit owns the shared cube geometry');
     assert.equal(otherDisposals,0,'separate built instances own separate materials');

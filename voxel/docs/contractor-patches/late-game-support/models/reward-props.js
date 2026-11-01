@@ -24,7 +24,7 @@ const circle = (count, fn) => { for (let i = 0; i < count; i++) fn(i / count * M
 
 // New boxes are measured positively; the shared kit's geometry is never owned.
 function context(root) {
-  const materials = new Set(), geometries = new Set();
+  const materials = new Set(), geometries = new Set(), instances = new Set();
   let solid = null, glow = null, boxCount = 0;
   function batch(build, parent = root) {
     const v = new Voxels();
@@ -37,6 +37,7 @@ function context(root) {
     boxCount += v.solid.length + v.glow.length;
     const g = v.build();
     for (const m of g.children) {
+      instances.add(m);
       const emissive = m.material.isMeshBasicMaterial;
       const old = m.material, shared = emissive ? glow : solid;
       if (shared) { m.material = shared; old.dispose(); }
@@ -58,7 +59,7 @@ function context(root) {
   }
   let disposed=false;
   return { root, batch, glass, get boxCount(){return boxCount;}, get materialCount(){return materials.size;},
-    dispose(){if(disposed)return;disposed=true;for(const m of materials)m.dispose();for(const g of geometries)g.dispose();},
+    dispose(){if(disposed)return;disposed=true;for(const mesh of instances)mesh.dispose();for(const m of materials)m.dispose();for(const g of geometries)g.dispose();},
     get disposed(){return disposed;} };
 }
 

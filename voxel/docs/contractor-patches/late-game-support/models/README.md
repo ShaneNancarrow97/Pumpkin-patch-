@@ -47,8 +47,8 @@ The returned Group exposes:
 - `userData.tick(time)`, `dispose()` and `animationEnabled`.
 
 The renderer must remove the object from its scene before disposing it. Disposal
-releases owned materials and conservatory glass geometries exactly once, while
-retaining the kit's shared cube geometry. Models do not share materials across
+releases owned instance buffers, materials and conservatory glass geometries
+exactly once, while retaining the kit's shared cube geometry. Models do not share materials across
 separate builds, so recolouring/disposal of one candidate cannot break another.
 
 ## Details and animation
