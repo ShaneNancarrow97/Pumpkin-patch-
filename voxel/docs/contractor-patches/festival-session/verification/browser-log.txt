@@ -1,0 +1,80 @@
+ok  First view clearly labels the uninstalled contractor demo
+ok  Fixture controls explicitly disclose synthetic transactions
+ok  All three evening choices are present
+ok  The UI uses the actual previous-pack theme definitions
+ok  Reduced-motion view starts without automatic movement
+ok  Diagnostic drawers start collapsed
+ok  Feedback has a polite screen-reader status surface
+ok  desktop initial: no overlap/overflow,44px targets and visible selected card
+ok  Keyboard Enter selects the focused evening
+ok  Keyboard focus remains visible on the selected theme
+ok  Theme choice selects midnight-court-banquet
+ok  Level12 visibly blocks the level13 evening
+ok  A diagnostic command cannot bypass the visible level gate
+ok  Keyboard Space prepares the actual session
+ok  Missing kitchen capabilities appear in readiness and prevent opening
+ok  The actual start button opens a fully prepared evening
+ok  A running evening displays all four alternative goals
+ok  One clearly labelled food fixture advances four paid menu servings
+ok  Hosting time advances only on the explicit simulation tick
+ok  Manual pause disables service fixture controls
+ok  Manual pause freezes reducer time even through the diagnostic dispatch
+ok  Manual pause freezes confirmed-outcome progress
+ok  Global pause prevents producing a new session stamp
+ok  Global pause freezes hosting time
+ok  Global pause freezes a captured service outcome
+ok  The same valid queued fact can be retried after resuming
+ok  Saving records paused service without pausing the running in-memory demo
+ok  Reload retains progress/time and resumes in a paused state
+ok  Replaying an already counted fixture after reload adds no progress
+ok  Ending an incomplete evening has no cosmetic or farm-reset penalty
+ok  A replacement evening has a new persisted session token
+ok  An old outcome is not retagged into the replacement evening
+ok  Actual fixture control reaches capped goal court-supper
+ok  Actual fixture control reaches capped goal court-patrons
+ok  Actual fixture control reaches capped goal court-frights
+ok  Any three complete goals suffice; the fourth can remain untouched
+ok  A completed ended evening earns one pending cosmetic entitlement
+ok  The claim button records the earned keepsake once
+ok  A repeated claim cannot produce another entitlement
+ok  Permanent cosmetic ownership survives save/reload
+ok  Theme choice selects lanterns-in-the-mist
+ok  Actual fixture control reaches capped goal mist-garden-basket
+ok  Successful garden fixture harvests count during untimed preparation
+ok  A paid cocoa receipt counts drink lines and excludes snack quantities
+ok  Actual fixture control reaches capped goal mist-warm-cups
+ok  Actual fixture control reaches capped goal mist-lantern-walk
+ok  Lanterns can complete through garden, cocoa and attraction alternatives
+ok  Lanterns grants its own unique cosmetic
+ok  Theme choice selects the-last-wagon
+ok  An original-route paid completion counts its short queue but not the extended route
+ok  A previously counted completion cannot be reinterpreted after a route upgrade
+ok  Captured46-second queue time does not pass the45-second goal
+ok  Actual fixture control reaches capped goal wagon-full-trail
+ok  Actual fixture control reaches capped goal wagon-sweet-return
+ok  Last Wagon can finish through route, boarding and takeaway service
+ok  All three cosmetics have distinct stable once-only claim keys
+ok  Unsupported future JSON is rejected without overwriting current entitlements
+ok  Malformed JSON leaves current demo progress intact
+ok  Exported JSON equals the actual serialized module state
+ok  Theme choice selects midnight-court-banquet
+ok  Corrupt active records are dropped with a warning while valid ownership survives
+ok  Theme choice selects the-last-wagon
+ok  phone idle: no overlap/overflow,44px targets and visible selected card
+ok  phone idle: the first session action is fully visible without scrolling
+ok  phone hosting: no overlap/overflow,44px targets and visible selected card
+ok  phone hosting: the first session action is fully visible without scrolling
+ok  phone fixture drawer: no overlap/overflow,44px targets and visible selected card
+ok  Theme choice selects the-last-wagon
+ok  fold idle: no overlap/overflow,44px targets and visible selected card
+ok  fold idle: the first session action is fully visible without scrolling
+ok  fold hosting: no overlap/overflow,44px targets and visible selected card
+ok  fold hosting: the first session action is fully visible without scrolling
+ok  fold fixture drawer: no overlap/overflow,44px targets and visible selected card
+ok  Theme choice selects the-last-wagon
+ok  landscape idle: no overlap/overflow,44px targets and visible selected card
+ok  landscape hosting: no overlap/overflow,44px targets and visible selected card
+ok  landscape fixture drawer: no overlap/overflow,44px targets and visible selected card
+ok  Repeated/incomplete layout sessions never duplicate permanent rewards
+ok  The demo never creates a browser game save or storage record
+ok  The exact standalone demo has no page errors or external requests

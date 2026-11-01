@@ -1,0 +1,656 @@
+{
+  "html": "Pumpkin-Patch-Festival-Nights.html",
+  "sha256": "f0cdeafa73ec624e34e790a40379e86c7d580f88820e9dcec9ef706ff960499b",
+  "started": "2026-11-01T03:55:05.251Z",
+  "sourceHashes": {
+    "voxel/docs/contractor-patches/festival-session/src/engine.js": "ee8a49809fe98c492d003fdc9c66d998aa8dff6359f0e474d33196b8470ba241",
+    "voxel/docs/contractor-patches/festival-session/preview/app.js": "203bd9aca815c68e7ddd1eecb4d7ed9faff4a1f1a4ffc900265b0e959866a5af",
+    "voxel/docs/contractor-patches/festival-session/preview/index.html": "43e1dc05025cf59a52c7b4de8cf6afa8d0f48e42b384d776f31924f63865b57f",
+    "voxel/docs/contractor-patches/festival-session/preview/style.css": "8875f803853718c53fb6489a5821977db19e0ae8b48438c10bf6cb3c0491643a",
+    "voxel/docs/contractor-patches/festival-session/tools/build-preview.mjs": "57c3bfbad1170533a0bf45ae828f767ce1fe7c9e11b96f8bef3144d0bd6996ab",
+    "voxel/docs/contractor-patches/festival-session/tools/qa-preview.mjs": "cc41b78d91eb389cdf492d30f0b3e7d211515082262598aa331a9eb108588a2d",
+    "voxel/docs/contractor-patches/late-game-support/data/festival-themes.json": "63d4934e8aac415581f0daf914e91a89b66387dfd2be0e502efc07c4558af37c",
+    "voxel/docs/contractor-patches/late-game-support/art/menu-icons.webp": "aeb67472997eac94e79040ce3c2c3ab17e6e4add839f4d86ba180f117581bf30",
+    "voxel/package-lock.json": "638d614864c66a958a5d5a3296fb001048276e6122f7bdd77018016985f10c98"
+  },
+  "scope": "Offline Festival Night contractor rule demo: real reducer, readiness display and save parser, driven by explicitly synthetic outcome fixtures. No live purchases, guest flow, rewards or game saves are installed or tested.",
+  "finished": "2026-11-01T03:55:22.327Z",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "First view clearly labels the uninstalled contractor demo"
+    },
+    {
+      "ok": true,
+      "label": "Fixture controls explicitly disclose synthetic transactions"
+    },
+    {
+      "ok": true,
+      "label": "All three evening choices are present"
+    },
+    {
+      "ok": true,
+      "label": "The UI uses the actual previous-pack theme definitions"
+    },
+    {
+      "ok": true,
+      "label": "Reduced-motion view starts without automatic movement"
+    },
+    {
+      "ok": true,
+      "label": "Diagnostic drawers start collapsed"
+    },
+    {
+      "ok": true,
+      "label": "Feedback has a polite screen-reader status surface"
+    },
+    {
+      "ok": true,
+      "label": "desktop initial: no overlap/overflow,44px targets and visible selected card",
+      "data": {
+        "width": 1280,
+        "height": 900,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectionVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Keyboard Enter selects the focused evening"
+    },
+    {
+      "ok": true,
+      "label": "Keyboard focus remains visible on the selected theme",
+      "data": {
+        "active": true,
+        "outline": "solid"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Theme choice selects midnight-court-banquet"
+    },
+    {
+      "ok": true,
+      "label": "Level12 visibly blocks the level13 evening"
+    },
+    {
+      "ok": true,
+      "label": "A diagnostic command cannot bypass the visible level gate",
+      "data": {
+        "accepted": false,
+        "changed": false,
+        "reason": "level-locked",
+        "effects": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "Keyboard Space prepares the actual session"
+    },
+    {
+      "ok": true,
+      "label": "Missing kitchen capabilities appear in readiness and prevent opening"
+    },
+    {
+      "ok": true,
+      "label": "The actual start button opens a fully prepared evening"
+    },
+    {
+      "ok": true,
+      "label": "A running evening displays all four alternative goals"
+    },
+    {
+      "ok": true,
+      "label": "One clearly labelled food fixture advances four paid menu servings"
+    },
+    {
+      "ok": true,
+      "label": "Hosting time advances only on the explicit simulation tick"
+    },
+    {
+      "ok": true,
+      "label": "Manual pause disables service fixture controls"
+    },
+    {
+      "ok": true,
+      "label": "Manual pause freezes reducer time even through the diagnostic dispatch"
+    },
+    {
+      "ok": true,
+      "label": "Manual pause freezes confirmed-outcome progress"
+    },
+    {
+      "ok": true,
+      "label": "Global pause prevents producing a new session stamp"
+    },
+    {
+      "ok": true,
+      "label": "Global pause freezes hosting time"
+    },
+    {
+      "ok": true,
+      "label": "Global pause freezes a captured service outcome"
+    },
+    {
+      "ok": true,
+      "label": "The same valid queued fact can be retried after resuming"
+    },
+    {
+      "ok": true,
+      "label": "Saving records paused service without pausing the running in-memory demo"
+    },
+    {
+      "ok": true,
+      "label": "Reload retains progress/time and resumes in a paused state"
+    },
+    {
+      "ok": true,
+      "label": "Replaying an already counted fixture after reload adds no progress"
+    },
+    {
+      "ok": true,
+      "label": "Ending an incomplete evening has no cosmetic or farm-reset penalty"
+    },
+    {
+      "ok": true,
+      "label": "A replacement evening has a new persisted session token"
+    },
+    {
+      "ok": true,
+      "label": "An old outcome is not retagged into the replacement evening"
+    },
+    {
+      "ok": true,
+      "label": "Actual fixture control reaches capped goal court-supper",
+      "data": {
+        "attempts": 3,
+        "value": 12,
+        "target": 12
+      }
+    },
+    {
+      "ok": true,
+      "label": "Actual fixture control reaches capped goal court-patrons",
+      "data": {
+        "attempts": 4,
+        "value": 4,
+        "target": 4
+      }
+    },
+    {
+      "ok": true,
+      "label": "Actual fixture control reaches capped goal court-frights",
+      "data": {
+        "attempts": 3,
+        "value": 12,
+        "target": 12
+      }
+    },
+    {
+      "ok": true,
+      "label": "Any three complete goals suffice; the fourth can remain untouched"
+    },
+    {
+      "ok": true,
+      "label": "A completed ended evening earns one pending cosmetic entitlement"
+    },
+    {
+      "ok": true,
+      "label": "The claim button records the earned keepsake once"
+    },
+    {
+      "ok": true,
+      "label": "A repeated claim cannot produce another entitlement"
+    },
+    {
+      "ok": true,
+      "label": "Permanent cosmetic ownership survives save/reload"
+    },
+    {
+      "ok": true,
+      "label": "Theme choice selects lanterns-in-the-mist"
+    },
+    {
+      "ok": true,
+      "label": "Actual fixture control reaches capped goal mist-garden-basket",
+      "data": {
+        "attempts": 2,
+        "value": 8,
+        "target": 8
+      }
+    },
+    {
+      "ok": true,
+      "label": "Successful garden fixture harvests count during untimed preparation"
+    },
+    {
+      "ok": true,
+      "label": "A paid cocoa receipt counts drink lines and excludes snack quantities"
+    },
+    {
+      "ok": true,
+      "label": "Actual fixture control reaches capped goal mist-warm-cups",
+      "data": {
+        "attempts": 3,
+        "value": 16,
+        "target": 16
+      }
+    },
+    {
+      "ok": true,
+      "label": "Actual fixture control reaches capped goal mist-lantern-walk",
+      "data": {
+        "attempts": 3,
+        "value": 12,
+        "target": 12
+      }
+    },
+    {
+      "ok": true,
+      "label": "Lanterns can complete through garden, cocoa and attraction alternatives"
+    },
+    {
+      "ok": true,
+      "label": "Lanterns grants its own unique cosmetic"
+    },
+    {
+      "ok": true,
+      "label": "Theme choice selects the-last-wagon"
+    },
+    {
+      "ok": true,
+      "label": "An original-route paid completion counts its short queue but not the extended route"
+    },
+    {
+      "ok": true,
+      "label": "A previously counted completion cannot be reinterpreted after a route upgrade"
+    },
+    {
+      "ok": true,
+      "label": "Captured46-second queue time does not pass the45-second goal"
+    },
+    {
+      "ok": true,
+      "label": "Actual fixture control reaches capped goal wagon-full-trail",
+      "data": {
+        "attempts": 4,
+        "value": 16,
+        "target": 16
+      }
+    },
+    {
+      "ok": true,
+      "label": "Actual fixture control reaches capped goal wagon-sweet-return",
+      "data": {
+        "attempts": 3,
+        "value": 12,
+        "target": 12
+      }
+    },
+    {
+      "ok": true,
+      "label": "Last Wagon can finish through route, boarding and takeaway service"
+    },
+    {
+      "ok": true,
+      "label": "All three cosmetics have distinct stable once-only claim keys"
+    },
+    {
+      "ok": true,
+      "label": "Unsupported future JSON is rejected without overwriting current entitlements"
+    },
+    {
+      "ok": true,
+      "label": "Malformed JSON leaves current demo progress intact"
+    },
+    {
+      "ok": true,
+      "label": "Exported JSON equals the actual serialized module state"
+    },
+    {
+      "ok": true,
+      "label": "Theme choice selects midnight-court-banquet"
+    },
+    {
+      "ok": true,
+      "label": "Corrupt active records are dropped with a warning while valid ownership survives"
+    },
+    {
+      "ok": true,
+      "label": "Theme choice selects the-last-wagon"
+    },
+    {
+      "ok": true,
+      "label": "phone idle: no overlap/overflow,44px targets and visible selected card",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectionVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone idle: the first session action is fully visible without scrolling",
+      "data": {
+        "control": "prepare-night",
+        "rect": {
+          "x": 35,
+          "y": 371.265625,
+          "width": 320,
+          "height": 44
+        },
+        "viewport": {
+          "width": 390,
+          "height": 844
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone hosting: no overlap/overflow,44px targets and visible selected card",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectionVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone hosting: the first session action is fully visible without scrolling",
+      "data": {
+        "control": "pause-night",
+        "rect": {
+          "x": 35,
+          "y": 371.265625,
+          "width": 102.25,
+          "height": 44
+        },
+        "viewport": {
+          "width": 390,
+          "height": 844
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone fixture drawer: no overlap/overflow,44px targets and visible selected card",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectionVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Theme choice selects the-last-wagon"
+    },
+    {
+      "ok": true,
+      "label": "fold idle: no overlap/overflow,44px targets and visible selected card",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectionVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold idle: the first session action is fully visible without scrolling",
+      "data": {
+        "control": "prepare-night",
+        "rect": {
+          "x": 387.59375,
+          "y": 407.78125,
+          "width": 443.40625,
+          "height": 45.25
+        },
+        "viewport": {
+          "width": 874,
+          "height": 787
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold hosting: no overlap/overflow,44px targets and visible selected card",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectionVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold hosting: the first session action is fully visible without scrolling",
+      "data": {
+        "control": "pause-night",
+        "rect": {
+          "x": 387.59375,
+          "y": 407.78125,
+          "width": 125.296875,
+          "height": 45.25
+        },
+        "viewport": {
+          "width": 874,
+          "height": 787
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold fixture drawer: no overlap/overflow,44px targets and visible selected card",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectionVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Theme choice selects the-last-wagon"
+    },
+    {
+      "ok": true,
+      "label": "landscape idle: no overlap/overflow,44px targets and visible selected card",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectionVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape hosting: no overlap/overflow,44px targets and visible selected card",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectionVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape fixture drawer: no overlap/overflow,44px targets and visible selected card",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectionVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Repeated/incomplete layout sessions never duplicate permanent rewards"
+    },
+    {
+      "ok": true,
+      "label": "The demo never creates a browser game save or storage record"
+    },
+    {
+      "ok": true,
+      "label": "The exact standalone demo has no page errors or external requests",
+      "data": {
+        "errors": [],
+        "external": []
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "desktop-initial.png",
+    "desktop-kitchen-readiness.png",
+    "desktop-three-goals-ready.png",
+    "desktop-all-keepsakes.png",
+    "phone-idle.png",
+    "phone-hosting.png",
+    "phone-fixtures.png",
+    "fold-idle.png",
+    "fold-hosting.png",
+    "fold-fixtures.png",
+    "landscape-idle.png",
+    "landscape-hosting.png",
+    "landscape-fixtures.png"
+  ],
+  "layouts": [
+    {
+      "label": "desktop initial",
+      "width": 1280,
+      "height": 900,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectionVisible": true
+    },
+    {
+      "label": "phone idle",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectionVisible": true
+    },
+    {
+      "label": "phone hosting",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectionVisible": true
+    },
+    {
+      "label": "phone fixture drawer",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectionVisible": true
+    },
+    {
+      "label": "fold idle",
+      "width": 874,
+      "height": 787,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectionVisible": true
+    },
+    {
+      "label": "fold hosting",
+      "width": 874,
+      "height": 787,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectionVisible": true
+    },
+    {
+      "label": "fold fixture drawer",
+      "width": 874,
+      "height": 787,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectionVisible": true
+    },
+    {
+      "label": "landscape idle",
+      "width": 844,
+      "height": 390,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectionVisible": true
+    },
+    {
+      "label": "landscape hosting",
+      "width": 844,
+      "height": 390,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectionVisible": true
+    },
+    {
+      "label": "landscape fixture drawer",
+      "width": 844,
+      "height": 390,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectionVisible": true
+    }
+  ]
+}

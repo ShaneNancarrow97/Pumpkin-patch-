@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "namespace": "contractor-demo",
+  "nextSession": 5,
+  "active": null,
+  "completedThemes": [
+    "midnight-court-banquet",
+    "lanterns-in-the-mist",
+    "the-last-wagon"
+  ],
+  "claimedRewards": [
+    {
+      "themeId": "midnight-court-banquet",
+      "rewardId": "contract-trophy-banquet-candelabrum",
+      "grantKey": "festival:midnight-court-banquet:contract-trophy-banquet-candelabrum"
+    },
+    {
+      "themeId": "lanterns-in-the-mist",
+      "rewardId": "contract-trophy-moonlit-conservatory",
+      "grantKey": "festival:lanterns-in-the-mist:contract-trophy-moonlit-conservatory"
+    },
+    {
+      "themeId": "the-last-wagon",
+      "rewardId": "contract-trophy-clockwork-hayride-theatre",
+      "grantKey": "festival:the-last-wagon:contract-trophy-clockwork-hayride-theatre"
+    }
+  ],
+  "history": [
+    {
+      "id": "contractor-demo:4",
+      "themeId": "the-last-wagon",
+      "outcome": "completed",
+      "elapsedSeconds": 0,
+      "goals": [
+        {
+          "id": "wagon-full-trail",
+          "value": 16,
+          "target": 16
+        },
+        {
+          "id": "wagon-sweet-return",
+          "value": 12,
+          "target": 12
+        },
+        {
+          "id": "wagon-smooth-boarding",
+          "value": 12,
+          "target": 12
+        },
+        {
+          "id": "wagon-fond-goodbyes",
+          "value": 0,
+          "target": 10
+        }
+      ]
+    },
+    {
+      "id": "contractor-demo:3",
+      "themeId": "lanterns-in-the-mist",
+      "outcome": "completed",
+      "elapsedSeconds": 0,
+      "goals": [
+        {
+          "id": "mist-warm-cups",
+          "value": 16,
+          "target": 16
+        },
+        {
+          "id": "mist-lantern-walk",
+          "value": 12,
+          "target": 12
+        },
+        {
+          "id": "mist-kind-goodbyes",
+          "value": 0,
+          "target": 10
+        },
+        {
+          "id": "mist-garden-basket",
+          "value": 8,
+          "target": 8
+        }
+      ]
+    },
+    {
+      "id": "contractor-demo:2",
+      "themeId": "midnight-court-banquet",
+      "outcome": "completed",
+      "elapsedSeconds": 0,
+      "goals": [
+        {
+          "id": "court-supper",
+          "value": 12,
+          "target": 12
+        },
+        {
+          "id": "court-frights",
+          "value": 12,
+          "target": 12
+        },
+        {
+          "id": "court-patrons",
+          "value": 4,
+          "target": 4
+        },
+        {
+          "id": "court-goodbyes",
+          "value": 0,
+          "target": 10
+        }
+      ]
+    },
+    {
+      "id": "contractor-demo:1",
+      "themeId": "midnight-court-banquet",
+      "outcome": "ended",
+      "elapsedSeconds": 30,
+      "goals": [
+        {
+          "id": "court-supper",
+          "value": 5,
+          "target": 12
+        },
+        {
+          "id": "court-frights",
+          "value": 0,
+          "target": 12
+        },
+        {
+          "id": "court-patrons",
+          "value": 0,
+          "target": 4
+        },
+        {
+          "id": "court-goodbyes",
+          "value": 0,
+          "target": 10
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#19141f">
+  <title>Festival Nights · Pumpkin Patch contractor demo</title>
+  <style>/* @festival:style */</style>
+</head>
+<body>
+  <main class="workshop">
+    <header class="masthead">
+      <div class="brand"><span class="brand-star" aria-hidden="true">✦</span><div><p class="eyebrow">Shane &amp; Natalie’s Pumpkin Patch</p><p class="brand-title">Festival Nights</p></div></div>
+      <p class="scope-badge">Contractor rule demo <span>· Not installed in the game</span></p>
+    </header>
+
+    <section class="introduction" aria-labelledby="page-title">
+      <div><p class="eyebrow">A reason to open the gates again</p><h1 id="page-title">A night worth hosting.</h1></div>
+      <p>Any three goals. Your pace. A keepsake to bring home.</p>
+    </section>
+
+    <nav id="theme-choices" class="theme-choices" aria-label="Choose an evening"></nav>
+
+    <div class="evening-layout">
+      <section class="session-card" aria-labelledby="session-heading">
+        <header class="session-heading"><div><p id="session-phase" class="phase-label">Choose your evening</p><h2 id="session-heading">The hosting book</h2></div><div class="hosting-clock"><span id="hosting-time">0:00</span><small>Hosting time</small></div></header>
+        <div class="session-actions">
+          <button id="prepare-night" class="primary">Prepare evening <span aria-hidden="true">→</span></button>
+          <button id="start-night" class="primary" hidden>Open for the evening <span aria-hidden="true">→</span></button>
+          <button id="pause-night" hidden>Pause service</button>
+          <button id="resume-night" class="primary" hidden>Resume service <span aria-hidden="true">→</span></button>
+          <button id="claim-reward" class="primary" hidden>Claim keepsake <span aria-hidden="true">✦</span></button>
+          <button id="end-night" class="quiet" hidden>End evening</button>
+        </div>
+        <div id="readiness" class="readiness"></div>
+        <div class="completion-strip"><p id="goal-summary">Three of four goals, in any order.</p><span id="goal-count">0 / 3</span></div>
+        <div id="goals" class="goals" aria-label="Evening goals"></div>
+        <p id="feedback" class="feedback" role="status" aria-live="polite">This demo uses synthetic test outcomes. Your farm and game save are untouched.</p>
+        <button id="open-fixtures" class="text-button">Try the contractor fixtures <span aria-hidden="true">↓</span></button>
+      </section>
+
+      <aside class="invitation" aria-labelledby="theme-title">
+        <div id="theme-art" class="invitation-art" aria-hidden="true"></div>
+        <p id="theme-level" class="eyebrow"></p>
+        <h2 id="theme-title"></h2>
+        <p id="theme-decision" class="invitation-copy"></p>
+        <details class="letter"><summary>Read the invitation</summary><blockquote id="theme-letter"></blockquote></details>
+        <div class="reward-brief"><div id="reward-art" aria-hidden="true"></div><div><p class="eyebrow">The evening’s keepsake</p><h3 id="reward-name"></h3><p id="reward-status">One permanent cosmetic per theme.</p></div></div>
+      </aside>
+    </div>
+
+    <details id="fixture-controls" class="fixture-drawer">
+      <summary><span>Contractor fixtures <small>Synthetic receipts · no live purchases</small></span><span class="disclosure" aria-hidden="true">+</span></summary>
+      <div class="fixture-body">
+        <p class="fixture-note">These controls send confirmed-outcome test records through the rule module. They do not buy food, charge guests, spawn visitors or add live furniture. Goal targets remain draft tuning values.</p>
+        <div class="fixture-context"><label>Prepared-world level<select id="fixture-level"><option value="12">12 · All evenings locked</option><option value="13">13 · Midnight Court</option><option value="15">15 · Court and Lanterns</option><option value="18" selected>18 · All three evenings</option></select></label><label class="check-label"><input id="global-pause" type="checkbox"><span>Pause the whole simulation</span></label></div>
+        <div class="fixture-buttons">
+          <button id="fixture-food">Serve 4 menu portions</button>
+          <button id="fixture-cocoa">Serve 4 warm cocoas</button>
+          <button id="fixture-attraction">Complete 4 paid rides</button>
+          <button id="fixture-vip">Serve 1 Court guest</button>
+          <button id="fixture-goodbye">4 happy final departures</button>
+          <button id="fixture-harvest">Harvest 4 garden ingredients</button>
+          <button id="fixture-tick">Advance 30 simulation seconds</button>
+          <button id="fixture-replay">Replay last outcome</button>
+        </div>
+        <p id="fixture-last" class="fixture-last">Prepare an evening to try its service or garden outcomes.</p>
+      </div>
+    </details>
+
+    <section class="cabinet" aria-labelledby="cabinet-heading"><header><div><p class="eyebrow">Something worth coming home for</p><h2 id="cabinet-heading">Your keepsake cabinet</h2></div><span id="owned-count" class="cabinet-count">0 / 3</span></header><div id="owned-rewards" class="owned-rewards"></div><p class="small-note">Demo entitlements only. Claude’s integration must persist cosmetic ownership with the claim.</p></section>
+
+    <details id="save-tools" class="save-drawer">
+      <summary><span>Save &amp; recovery <small>Separate demo JSON · never a game save</small></span><span class="disclosure" aria-hidden="true">+</span></summary>
+      <div class="save-body"><p>Save during service, then reload: progress stays, service returns paused, and no offline time passes.</p><div class="save-buttons"><button id="save-session">Save snapshot</button><button id="reload-session" disabled>Reload saved snapshot</button><button id="export-session">Download JSON</button></div><label for="snapshot-json">Demo snapshot JSON</label><textarea id="snapshot-json" rows="7" spellcheck="false" autocomplete="off" placeholder="Save a snapshot to inspect it here, or paste an exported demo snapshot."></textarea><button id="load-json">Load this JSON</button><details class="history-details"><summary>Recent evenings</summary><div id="history"></div></details></div>
+    </details>
+
+    <footer class="footer"><p>No deadline. No offline penalty. No second guest wallet.</p><p>Standalone contractor module · Existing game remains unchanged.</p></footer>
+  </main>
+  <script>/* @festival:script */</script>
+</body>
+</html>

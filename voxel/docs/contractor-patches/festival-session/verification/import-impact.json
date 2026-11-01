@@ -1,0 +1,4807 @@
+{
+  "version": 1,
+  "scope": "Parsed import dependencies; semantic gameplay and build/template links require the companion matrix.",
+  "changedPaths": [
+    "voxel/docs/contractor-patches/festival-session/README.md",
+    "voxel/docs/contractor-patches/festival-session/adapters/readiness.js",
+    "voxel/docs/contractor-patches/festival-session/data/dependency-matrix.json",
+    "voxel/docs/contractor-patches/festival-session/docs/API.md",
+    "voxel/docs/contractor-patches/festival-session/docs/CHANGE-IMPACT.md",
+    "voxel/docs/contractor-patches/festival-session/docs/DEPENDENCY-MATRIX.md",
+    "voxel/docs/contractor-patches/festival-session/docs/HANDOVER.md",
+    "voxel/docs/contractor-patches/festival-session/docs/HOOK-SEAMS.md",
+    "voxel/docs/contractor-patches/festival-session/preview/app.js",
+    "voxel/docs/contractor-patches/festival-session/preview/index.html",
+    "voxel/docs/contractor-patches/festival-session/preview/style.css",
+    "voxel/docs/contractor-patches/festival-session/src/engine.js",
+    "voxel/docs/contractor-patches/festival-session/test/dependency-scan.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/engine-adversarial.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/engine.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/impact.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/preview-build.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/readiness.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/rule-integration.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/tools/build-preview.mjs",
+    "voxel/docs/contractor-patches/festival-session/tools/check-impact.mjs",
+    "voxel/docs/contractor-patches/festival-session/tools/dependency-scan.mjs",
+    "voxel/docs/contractor-patches/festival-session/tools/qa-preview.mjs",
+    "voxel/docs/contractor-patches/festival-session/tools/run-native.mjs"
+  ],
+  "moduleCount": 350,
+  "edges": [
+    {
+      "from": "package:three/examples/jsm/controls/OrbitControls.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/EffectComposer.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/EffectComposer.js",
+      "to": "package:three/examples/jsm/postprocessing/MaskPass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/EffectComposer.js",
+      "to": "package:three/examples/jsm/postprocessing/MaskPass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/EffectComposer.js",
+      "to": "package:three/examples/jsm/postprocessing/ShaderPass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/EffectComposer.js",
+      "to": "package:three/examples/jsm/shaders/CopyShader.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/MaskPass.js",
+      "to": "package:three/examples/jsm/postprocessing/Pass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/OutputPass.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/OutputPass.js",
+      "to": "package:three/examples/jsm/postprocessing/Pass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/OutputPass.js",
+      "to": "package:three/examples/jsm/shaders/OutputShader.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/Pass.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/RenderPass.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/RenderPass.js",
+      "to": "package:three/examples/jsm/postprocessing/Pass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/ShaderPass.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/ShaderPass.js",
+      "to": "package:three/examples/jsm/postprocessing/Pass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/UnrealBloomPass.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/UnrealBloomPass.js",
+      "to": "package:three/examples/jsm/postprocessing/Pass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/UnrealBloomPass.js",
+      "to": "package:three/examples/jsm/shaders/CopyShader.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/postprocessing/UnrealBloomPass.js",
+      "to": "package:three/examples/jsm/shaders/LuminosityHighPassShader.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/shaders/FXAAShader.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "package:three/examples/jsm/shaders/LuminosityHighPassShader.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-session/adapters/readiness.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-session/adapters/readiness.js",
+      "to": "voxel/src/content/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-session/adapters/readiness.js",
+      "to": "voxel/src/content/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-session/adapters/readiness.js",
+      "to": "voxel/src/rules/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-session/adapters/readiness.js",
+      "to": "voxel/src/rules/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-session/adapters/readiness.js",
+      "to": "voxel/src/rules/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-session/adapters/readiness.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-session/preview/app.js",
+      "to": "voxel/docs/contractor-patches/festival-session/src/engine.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-session/preview/app.js",
+      "to": "voxel/docs/contractor-patches/late-game-support/art/menu-icons.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-session/preview/app.js",
+      "to": "voxel/docs/contractor-patches/late-game-support/data/festival-themes.json",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/late-game-support/models/reward-props.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/late-game-support/models/reward-props.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/late-game-support/preview/app.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/late-game-support/preview/app.js",
+      "to": "voxel/docs/contractor-patches/late-game-support/art/menu-icons.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/late-game-support/preview/app.js",
+      "to": "voxel/docs/contractor-patches/late-game-support/data/festival-themes.json",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/late-game-support/preview/app.js",
+      "to": "voxel/docs/contractor-patches/late-game-support/findings/attraction-audit.json",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/late-game-support/preview/app.js",
+      "to": "voxel/docs/contractor-patches/late-game-support/models/reward-props.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/action-fx.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ambience.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ambience.js",
+      "to": "voxel/src/content/ambience.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ambience.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-pumpkin.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-pumpkin.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-pumpkin.js",
+      "to": "voxel/src/pumpkins.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-pumpkin.js",
+      "to": "voxel/src/voxel-mesh.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-set.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-set.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-view.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-view.js",
+      "to": "package:three/examples/jsm/controls/OrbitControls.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-view.js",
+      "to": "voxel/src/carving-pumpkin.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-view.js",
+      "to": "voxel/src/carving-set.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-view.js",
+      "to": "voxel/src/content/carving.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-view.js",
+      "to": "voxel/src/house-estate-world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/carving-view.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/characters.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/characters.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cleanliness-view.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cleanliness-view.js",
+      "to": "voxel/assets/hattie-janitor.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cleanliness-view.js",
+      "to": "voxel/assets/hettie-janitor-icon.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cleanliness-view.js",
+      "to": "voxel/assets/hettie-janitor.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cleanliness-view.js",
+      "to": "voxel/src/crisp-sprites.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cleanliness-view.js",
+      "to": "voxel/src/janitor-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cleanliness-view.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cleanliness-view.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cocoa-props.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/farm-walks.js",
+      "to": "voxel/src/content/cooking-dining.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/farm-walks.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/farm-walks.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/farm-walks.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/farm-walks.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/festival-meadow.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/hayride-layout.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/hayride-layout.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/hollow-house.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/placement.js",
+      "to": "voxel/src/content/decor-sizes.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/content/pumpkin-varieties.js",
+      "to": "src/content/products.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cooking-world.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cooking-world.js",
+      "to": "voxel/src/content/cooking-dining.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cooking-world.js",
+      "to": "voxel/src/content/cooking-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cooking-world.js",
+      "to": "voxel/src/content/cooking-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cooking-world.js",
+      "to": "voxel/src/food-props.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cooking-world.js",
+      "to": "voxel/src/ground.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cooking-world.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/cooking-world.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/costume-sprite-expansion.js",
+      "to": "voxel/assets/costume-expansion/natalie-freddy.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/costume-sprite-expansion.js",
+      "to": "voxel/assets/costume-expansion/natalie-tiffany.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/costume-sprite-expansion.js",
+      "to": "voxel/assets/costume-expansion/shane-chucky.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/costume-sprite-expansion.js",
+      "to": "voxel/assets/costume-expansion/shane-jason.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/crisp-sprites.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/customer-bag.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor-models/index.js",
+      "to": "voxel/src/decor-models/curios.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor-models/index.js",
+      "to": "voxel/src/decor-models/flat.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor-models/index.js",
+      "to": "voxel/src/decor-models/lights.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor-models/index.js",
+      "to": "voxel/src/decor-models/seating.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor-models/index.js",
+      "to": "voxel/src/decor-models/shelves.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor-models/index.js",
+      "to": "voxel/src/decor-models/shelving.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor-models/index.js",
+      "to": "voxel/src/decor-models/tables.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor-models/kit.js",
+      "to": "voxel/src/voxel-mesh.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor-models/shelving.js",
+      "to": "voxel/src/decor-models/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/assets/decor.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/content/home-furnishings.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/content/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/content/shelf-catalog.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/decor-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/decor-models/index.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/decor-models/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/home-furnishings.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/kitchen-props.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/pet-furnishings.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/premium-furniture-props.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/premium-wall-props.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/voxel-mesh.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/decor.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/entrance-glow.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/farm-expansion-world.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/farm-expansion-world.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/farm-expansion-world.js",
+      "to": "voxel/src/pumpkins.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/farm-expansion-world.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/farm-expansion-world.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/festival-meadow-world.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/festival-meadow-world.js",
+      "to": "voxel/src/cocoa-props.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/festival-meadow-world.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/festival-meadow-world.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/festival-meadow-world.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/festival-meadow-world.js",
+      "to": "voxel/src/ground.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/festival-meadow-world.js",
+      "to": "voxel/src/moth.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/festival-meadow-world.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/festival-meadow-world.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/fixtures.js",
+      "to": "voxel/src/decor-models/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/fixtures.js",
+      "to": "voxel/src/voxel-mesh.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/fixtures.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/food-props.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/food-props.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/foyer-view.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/foyer-view.js",
+      "to": "package:three/examples/jsm/controls/OrbitControls.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/foyer-view.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/foyer-view.js",
+      "to": "voxel/src/hollow-house-world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/foyer-view.js",
+      "to": "voxel/src/maze-effects.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/foyer-view.js",
+      "to": "voxel/src/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/foyer-view.js",
+      "to": "voxel/src/piece-gestures.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/foyer-view.js",
+      "to": "voxel/src/rules/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/foyer-view.js",
+      "to": "voxel/src/special-sprites.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/foyer-view.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/garden-play.js",
+      "to": "voxel/src/play-ways.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/garden-play.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ground.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-atmosphere.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-atmosphere.js",
+      "to": "voxel/src/hayride-spiders.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-atmosphere.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-forest.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-forest.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-forest.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-moonlight.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-riders.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-riders.js",
+      "to": "voxel/src/hayride-spiders.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-scares.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-scares.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-scares.js",
+      "to": "voxel/src/content/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-scares.js",
+      "to": "voxel/src/maze-ride-actors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-sets.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-sets.js",
+      "to": "voxel/src/hayride-spiders.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-sets.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-sets.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-spiders.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-spiders.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-stall.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-stall.js",
+      "to": "voxel/src/content/hayride-jingle.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-stall.js",
+      "to": "voxel/src/hayride-spiders.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-station.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-station.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-station.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-station.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-vehicle.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-vehicle.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-view.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-view.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-view.js",
+      "to": "voxel/src/content/hayride-weather.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-view.js",
+      "to": "voxel/src/content/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-view.js",
+      "to": "voxel/src/hayride-stall.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/content/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/hayride-atmosphere.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/hayride-forest.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/hayride-moonlight.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/hayride-riders.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/hayride-sets.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/hayride-spiders.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/hayride-stall.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/hayride-station.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/hayride-vehicle.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/hayride-view.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hayride-world.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-exterior-effects.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-exterior-effects.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-exterior.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-house-farm.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-house-farm.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-house-farm.js",
+      "to": "voxel/src/entrance-glow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-house-farm.js",
+      "to": "voxel/src/hollow-exterior-effects.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-house-farm.js",
+      "to": "voxel/src/hollow-house-world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-house-world.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-house-world.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-house-world.js",
+      "to": "voxel/src/hollow-exterior.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-house-world.js",
+      "to": "voxel/src/rules/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/hollow-house-world.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/home-furnishings.js",
+      "to": "voxel/src/content/home-furnishings.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/home-furnishings.js",
+      "to": "voxel/src/decor-models/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/home-furnishings.js",
+      "to": "voxel/src/voxel-mesh.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/home-pets.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/home-pets.js",
+      "to": "voxel/assets/home-pets.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/home-pets.js",
+      "to": "voxel/src/crisp-sprites.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/home-pets.js",
+      "to": "voxel/src/home-pets-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/home-pets.js",
+      "to": "voxel/src/interiors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/home-pets.js",
+      "to": "voxel/src/rules/home-pets.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/home-pets.js",
+      "to": "voxel/src/rules/house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "package:three/examples/jsm/controls/OrbitControls.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "voxel/src/carving-pumpkin.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "voxel/src/content/carving.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "voxel/src/content/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "voxel/src/entrance-glow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "voxel/src/house-estate-world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "voxel/src/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "voxel/src/piece-gestures.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "voxel/src/play-ways.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "voxel/src/rules/garden-crops.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-view.js",
+      "to": "voxel/src/rules/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-world.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-world.js",
+      "to": "voxel/src/content/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/house-estate-world.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/interiors.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/interiors.js",
+      "to": "voxel/src/face.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/interiors.js",
+      "to": "voxel/src/fixtures.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/interiors.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/interiors.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/kitchen-props.js",
+      "to": "voxel/src/content/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/kitchen-props.js",
+      "to": "voxel/src/decor-models/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/kitchen-props.js",
+      "to": "voxel/src/voxel-mesh.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/life-activity.js",
+      "to": "voxel/src/rules/life-actions.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/life-activity.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/life-activity.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/play-ways.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/pumpkins.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/rules/hands-on.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/rules/maze-ride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/scene.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/audio.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/carving-audio.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/carving-ui.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/chat-card.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/collection-sheets.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/cooking-reveal.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/cooking-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/customer-care-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/estate-controls.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/estate-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/farm-sheets.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/festival-meadow-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/foyer-controls.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/guest-card.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/hayride-audio.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/hayride-ride-ui.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/hayride-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/hold-to-buy.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/hollow-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/home-life-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/home-sheets.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/intro.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/level-celebration.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/maze-audio.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/maze-ride-ui.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/menu-memory.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/more-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/npc-rewards.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/place-veil.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/play-controls.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/premium-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/purchase-surfaces.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/settings-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/stock-popover.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/ui/upgrade-menu.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/main.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maisie.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maisie.js",
+      "to": "voxel/assets/maisie.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maisie.js",
+      "to": "voxel/src/maisie-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maisie.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-effects.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-effects.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-actors.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-actors.js",
+      "to": "voxel/assets/maze-haunted-girl.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-actors.js",
+      "to": "voxel/assets/maze-scare-actors.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-actors.js",
+      "to": "voxel/src/maze-ride-actor-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-view.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-view.js",
+      "to": "voxel/src/maze-ride-actors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-view.js",
+      "to": "voxel/src/maze-ride-world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-view.js",
+      "to": "voxel/src/rules/maze-ride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-world.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-world.js",
+      "to": "voxel/src/content/maze-ride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-world.js",
+      "to": "voxel/src/content/maze-ride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/maze-ride-world.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/content/carving.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/content/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/content/pumpkin-shapes.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/content/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/carving.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/carving.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/cleanliness.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/cleanliness.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/cooking-dining.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/cooking-mix.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/cooking-sales.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/customer-care.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/customer-care.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/garden-crops.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/garden-crops.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/guest-needs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/home-goals.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/intro.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/intro.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/market.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/market.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/meadow-chat.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/meadow-talk.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/meadow-talk.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/orders.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/orders.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/progress.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/progress.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/selling.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/selling.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/unlocks.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/wardrobe.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/model.js",
+      "to": "voxel/src/rules/wardrobe.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/moth.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/moth.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/pet-furnishings.js",
+      "to": "voxel/src/content/pet-furnishings.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/pet-furnishings.js",
+      "to": "voxel/src/decor-models/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/pet-furnishings.js",
+      "to": "voxel/src/voxel-mesh.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/piece-colours.js",
+      "to": "voxel/src/rules/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/piece-gestures.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/customer-bag.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/decor.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/food-props.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/home-pets.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/interiors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/player-home-poses.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/rules/cooking-sales.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/rules/home-interactions.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/rules/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/rules/surfaces.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/places.js",
+      "to": "voxel/src/rules/wardrobe.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/play-ways.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/play-ways.js",
+      "to": "voxel/src/content/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/play-ways.js",
+      "to": "voxel/src/rules/garden-crops.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/play-ways.js",
+      "to": "voxel/src/rules/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/play-ways.js",
+      "to": "voxel/src/rules/house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-control.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-control.js",
+      "to": "voxel/src/content/cooking-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-control.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-control.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-control.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-control.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-control.js",
+      "to": "voxel/src/play-ways.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-control.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-home-poses.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-home-poses.js",
+      "to": "voxel/assets/owner-home-poses.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-home-poses.js",
+      "to": "voxel/src/crisp-sprites.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-home-poses.js",
+      "to": "voxel/src/owner-home-pose-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-home-poses.js",
+      "to": "voxel/src/sprite-voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-home-poses.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-directions-base.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-directions-natalie-a.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-directions-natalie-b.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-directions-shane-a.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-directions-shane-b.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-walk-base.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-walk-natalie-a.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-walk-natalie-b.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-walk-shane-a.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-walk-shane-b.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-walk-wheelchair.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/assets/player-water-empty.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/src/crisp-sprites.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/src/player-direction-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/src/player-side-walk-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/src/player-view-size.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-sprite-directions.js",
+      "to": "voxel/src/sprite-voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-view-size.js",
+      "to": "voxel/src/player-side-walk-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/player-view-size.js",
+      "to": "voxel/src/player-view-scale.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-furniture-props.js",
+      "to": "voxel/src/decor-models/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-furniture-props.js",
+      "to": "voxel/src/decor-models/premium-bedroom.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-furniture-props.js",
+      "to": "voxel/src/decor-models/premium-kitchen.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-furniture-props.js",
+      "to": "voxel/src/voxel-mesh.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-furniture-thumbs.js",
+      "to": "voxel/assets/premium-furniture-thumbs/copper-range.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-furniture-thumbs.js",
+      "to": "voxel/assets/premium-furniture-thumbs/copper-sink-island.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-furniture-thumbs.js",
+      "to": "voxel/assets/premium-furniture-thumbs/moon-canopy-bed.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-furniture-thumbs.js",
+      "to": "voxel/assets/premium-furniture-thumbs/moon-vanity.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-furniture-thumbs.js",
+      "to": "voxel/assets/premium-furniture-thumbs/moon-wardrobe.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-furniture-thumbs.js",
+      "to": "voxel/assets/premium-furniture-thumbs/preserves-dresser.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-wall-props.js",
+      "to": "voxel/src/decor-models/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-wall-props.js",
+      "to": "voxel/src/decor-models/premium-walls.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-wall-props.js",
+      "to": "voxel/src/voxel-mesh.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-wall-thumbs.js",
+      "to": "voxel/assets/premium-wall-thumbs/copper-pan-rail.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-wall-thumbs.js",
+      "to": "voxel/assets/premium-wall-thumbs/crescent-mirror.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-wall-thumbs.js",
+      "to": "voxel/assets/premium-wall-thumbs/gothic-spice-cabinet.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-wall-thumbs.js",
+      "to": "voxel/assets/premium-wall-thumbs/haunted-manor-painting.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-wall-thumbs.js",
+      "to": "voxel/assets/premium-wall-thumbs/iron-utensil-rack.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/premium-wall-thumbs.js",
+      "to": "voxel/assets/premium-wall-thumbs/recipe-teapot-shelf.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/pumpkins.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/pumpkins.js",
+      "to": "voxel/src/content/pumpkin-shapes.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/pumpkins.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/pumpkins.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/big-spender.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/big-spender.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/big-spender.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/carving.js",
+      "to": "voxel/src/content/carving.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/carving.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/carving.js",
+      "to": "voxel/src/content/pumpkin-shapes.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/carving.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/carving.js",
+      "to": "voxel/src/rules/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/carving.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cleanliness.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cleanliness.js",
+      "to": "voxel/src/content/farm-walks.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cleanliness.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cleanliness.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cleanliness.js",
+      "to": "voxel/src/rules/selling.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cocoa-menu.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cocoa-menu.js",
+      "to": "voxel/src/rules/guest-needs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cocoa-menu.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cocoa-menu.js",
+      "to": "voxel/src/rules/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking-dining.js",
+      "to": "voxel/src/content/cooking-dining.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking-mix.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking-mix.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking-mix.js",
+      "to": "voxel/src/rules/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking-sales.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking-sales.js",
+      "to": "voxel/src/rules/big-spender.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking-sales.js",
+      "to": "voxel/src/rules/guest-needs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking.js",
+      "to": "voxel/src/rules/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking.js",
+      "to": "voxel/src/rules/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/cooking.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/farm.js",
+      "to": "src/content/economy.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/farm.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/farm.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/farm.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/farm.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/farm.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/farm.js",
+      "to": "voxel/src/rules/unlocks.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/festival-meadow.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/festival-meadow.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/festival-meadow.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/festival-meadow.js",
+      "to": "voxel/src/rules/cocoa-menu.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/festival-meadow.js",
+      "to": "voxel/src/rules/cocoa-menu.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/festival-meadow.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/garden-crops.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/garden-crops.js",
+      "to": "voxel/src/content/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/garden-crops.js",
+      "to": "voxel/src/rules/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/guest-needs.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hands-on.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hayride.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hayride.js",
+      "to": "voxel/src/content/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hayride.js",
+      "to": "voxel/src/content/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hayride.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hayride.js",
+      "to": "voxel/src/content/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hayride.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hayride.js",
+      "to": "voxel/src/rules/selling.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hayride.js",
+      "to": "voxel/src/rules/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/content/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/rules/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/rules/selling.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/hollow-house.js",
+      "to": "voxel/src/rules/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/home-goals.js",
+      "to": "voxel/src/content/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/home-interactions.js",
+      "to": "voxel/src/rules/house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house-estate.js",
+      "to": "voxel/src/content/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house-estate.js",
+      "to": "voxel/src/content/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house-estate.js",
+      "to": "voxel/src/rules/garden-crops.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house-estate.js",
+      "to": "voxel/src/rules/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "src/content/catalog.mjs",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "src/content/library.mjs",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "src/content/rooms.mjs",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/content/decor-sizes.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/content/home-furnishing-sizes.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/content/home-furnishings.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/content/kitchen-equipment-sizes.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/content/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/content/pet-furnishings.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/content/premium-furniture-catalog.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/content/premium-wall-catalog.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/content/shelf-catalog.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/rules/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/rules/surfaces.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/house.js",
+      "to": "voxel/src/rules/unlocks.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/kitchen-equipment.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/kitchen-equipment.js",
+      "to": "voxel/src/content/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/kitchen-equipment.js",
+      "to": "voxel/src/rules/house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/levels.js",
+      "to": "voxel/src/rules/home-goals.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/levels.js",
+      "to": "voxel/src/rules/home-goals.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/life-actions.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/life-actions.js",
+      "to": "voxel/src/rules/hands-on.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/market.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/market.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/maze-ride.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/maze-ride.js",
+      "to": "voxel/src/content/maze-ride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/maze-ride.js",
+      "to": "voxel/src/content/maze-ride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-chat.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-chat.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-chat.js",
+      "to": "voxel/src/rules/cocoa-menu.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-chat.js",
+      "to": "voxel/src/rules/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-chat.js",
+      "to": "voxel/src/rules/meadow-talk.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-talk.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-talk.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-talk.js",
+      "to": "voxel/src/content/visitors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-talk.js",
+      "to": "voxel/src/rules/cocoa-menu.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-talk.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/meadow-talk.js",
+      "to": "voxel/src/rules/market.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/orders.js",
+      "to": "voxel/src/content/visitors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/orders.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/orders.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/orders.js",
+      "to": "voxel/src/rules/market.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/orders.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/progress.js",
+      "to": "voxel/src/content/visitors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/progress.js",
+      "to": "voxel/src/rules/house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/progress.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/progress.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/progress.js",
+      "to": "voxel/src/rules/wardrobe.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "src/content/economy.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "src/content/shop.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "src/content/stall.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/content/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/content/visitors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/big-spender.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/big-spender.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/cleanliness.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/cooking-dining.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/cooking-sales.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/customer-care.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/guest-needs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/market.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/meadow-chat.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/unlocks.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/selling.js",
+      "to": "voxel/src/rules/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/stock.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/stock.js",
+      "to": "voxel/src/rules/market.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/surfaces.js",
+      "to": "voxel/src/content/decor-sizes.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/surfaces.js",
+      "to": "voxel/src/content/placement.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/surfaces.js",
+      "to": "voxel/src/content/shelf-catalog.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/unlocks.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/visitor-events.js",
+      "to": "voxel/src/content/visitor-events.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/visitor-events.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/wardrobe.js",
+      "to": "src/core/costume-model.mjs",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/rules/wardrobe.js",
+      "to": "voxel/src/costume-expansion.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sandy.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sandy.js",
+      "to": "voxel/assets/sandy/cocoa-menu-icons.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sandy.js",
+      "to": "voxel/assets/sandy/sandy-base.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sandy.js",
+      "to": "voxel/assets/sandy/sandy-blink.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sandy.js",
+      "to": "voxel/assets/sandy/sandy-serve.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sandy.js",
+      "to": "voxel/src/ui/hospitality-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sandy.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "package:three/examples/jsm/postprocessing/EffectComposer.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "package:three/examples/jsm/postprocessing/OutputPass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "package:three/examples/jsm/postprocessing/RenderPass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "package:three/examples/jsm/postprocessing/ShaderPass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "package:three/examples/jsm/postprocessing/UnrealBloomPass.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "package:three/examples/jsm/shaders/FXAAShader.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/assets/sprite-watering-can.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/action-fx.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/ambience.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/camera-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/carving-view.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/characters.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/cleanliness-view.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/cocoa-props.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/content/ambience.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/content/cooking-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/content/pumpkin-shapes.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/cooking-world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/customer-bag.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/decor.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/farm-expansion-world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/festival-meadow-world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/foyer-view.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/garden-play.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/hayride-scares.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/hayride-view.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/hayride-world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/hollow-house-farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/house-estate-view.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/interiors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/maisie.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/maze-ride-view.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/places.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/player-control.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/player-sprite-directions.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/pumpkins.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/render-quality.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/sandy.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/special-sprites.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/sprite-actors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/sprite-voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/wilds.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/scene.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/special-sprites.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/special-sprites.js",
+      "to": "voxel/assets/maze-cast.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/special-sprites.js",
+      "to": "voxel/src/crisp-sprites.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/special-sprites.js",
+      "to": "voxel/src/special-sprite-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/special-sprites.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-horror-visitors.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-natalie-batqueen.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-natalie-frankenstein.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-natalie-ghostbride.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-natalie-mummy.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-natalie-slasher.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-natalie-vampire.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-natalie-witch.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-natalie.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-shane-frankenstein.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-shane-mummy.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-shane-scarecrow.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-shane-skeleton.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-shane-slasher.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-shane-vampire.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-shane.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-skyla.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hd-visitors.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hospitality-court.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/hospitality-seated.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/assets/natalie-wheelchair.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/content/visitors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/content/visitors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/costume-sprite-expansion.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/costume-sprite-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/crisp-sprites.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/hospitality-cast-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/natalie-wheelchair-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/player-sprite-directions.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/special-sprites.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/sprite-meta-hd.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/sprite-voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/visitor-sprite-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-actors.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-voxels.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-voxels.js",
+      "to": "voxel/assets/costumes.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-voxels.js",
+      "to": "voxel/assets/sprites.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-voxels.js",
+      "to": "voxel/src/sprite-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/sprite-voxels.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/audio.js",
+      "to": "voxel/src/ui/midi.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/audio.js",
+      "to": "voxel/src/ui/music-queue.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/audio.js",
+      "to": "voxel/src/ui/music-tracks.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/carving-ui.js",
+      "to": "voxel/src/content/carving.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/carving-ui.js",
+      "to": "voxel/src/content/pumpkin-shapes.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/carving-ui.js",
+      "to": "voxel/src/content/pumpkin-varieties.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/carving-ui.js",
+      "to": "voxel/src/ui/glyphs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/carving-ui.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/chat-card.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/chat-card.js",
+      "to": "voxel/src/content/visitors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/collection-sheets.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/collection-sheets.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-icons.js",
+      "to": "voxel/assets/cooking-menu-icons.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-icons.js",
+      "to": "voxel/src/ui/kitchen-food-art.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-icons.js",
+      "to": "voxel/src/ui/kitchen-workshop-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-reveal.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-reveal.js",
+      "to": "voxel/src/ui/kitchen-food-art.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/content/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/maisie.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/rules/cooking-mix.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/rules/cooking-sales.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/rules/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/rules/farm.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/rules/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/ui/cooking-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/ui/kitchen-food-art.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/ui/kitchen-guide.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/cooking-sheet.js",
+      "to": "voxel/src/ui/service-kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/customer-care-sheet.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/customer-care-sheet.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/estate-controls.js",
+      "to": "voxel/src/content/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/estate-controls.js",
+      "to": "voxel/src/rules/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/estate-controls.js",
+      "to": "voxel/src/rules/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/estate-controls.js",
+      "to": "voxel/src/ui/premium-icon-markup.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/estate-sheet.js",
+      "to": "voxel/src/content/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/estate-sheet.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/estate-sheet.js",
+      "to": "voxel/src/rules/house-estate.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/estate-sheet.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/farm-sheets.js",
+      "to": "voxel/assets/hattie-janitor-icon.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/farm-sheets.js",
+      "to": "voxel/assets/hettie-janitor-icon.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/farm-sheets.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/farm-sheets.js",
+      "to": "voxel/src/ui/customer-care-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/farm-sheets.js",
+      "to": "voxel/src/ui/festival-meadow-sheet.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/farm-sheets.js",
+      "to": "voxel/src/ui/hospitality-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/farm-sheets.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/farm-sheets.js",
+      "to": "voxel/src/ui/service-kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/festival-meadow-sheet.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/festival-meadow-sheet.js",
+      "to": "voxel/src/sandy.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/festival-meadow-sheet.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/festival-meadow-sheet.js",
+      "to": "voxel/src/ui/service-kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/foyer-controls.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/foyer-controls.js",
+      "to": "voxel/src/rules/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/foyer-controls.js",
+      "to": "voxel/src/rules/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/guest-card.js",
+      "to": "voxel/src/content/visitors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/guest-card.js",
+      "to": "voxel/src/rules/guest-needs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-audio.js",
+      "to": "voxel/src/content/hayride-jingle.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-audio.js",
+      "to": "voxel/src/ui/scare-voices.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-audio.js",
+      "to": "voxel/src/ui/tractor-engine.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-ride-ui.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-ride-ui.js",
+      "to": "voxel/src/content/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-sheet.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-sheet.js",
+      "to": "voxel/src/content/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-sheet.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-sheet.js",
+      "to": "voxel/src/rules/hayride.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-sheet.js",
+      "to": "voxel/src/ui/hospitality-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-sheet.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-sheet.js",
+      "to": "voxel/src/ui/premium-icon-markup.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hayride-sheet.js",
+      "to": "voxel/src/ui/service-kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hold-to-buy.js",
+      "to": "voxel/src/ui/glyphs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hollow-exterior-icons.js",
+      "to": "voxel/assets/hollow-exterior-icons.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hollow-sheet.js",
+      "to": "voxel/assets/maze-prefab-icons.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hollow-sheet.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hollow-sheet.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hollow-sheet.js",
+      "to": "voxel/src/rules/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hollow-sheet.js",
+      "to": "voxel/src/ui/hollow-exterior-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hollow-sheet.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hollow-sheet.js",
+      "to": "voxel/src/ui/premium-icon-markup.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-furnishing-icons.js",
+      "to": "voxel/assets/home-furnishings/furnishings.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-furnishing-icons.js",
+      "to": "voxel/src/content/home-furnishings.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-furnishing-icons.js",
+      "to": "voxel/src/content/pet-furnishings.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-life-sheet.js",
+      "to": "voxel/assets/hettie-janitor-icon.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-life-sheet.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-life-sheet.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-sheets.js",
+      "to": "voxel/src/content/placement.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-sheets.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-sheets.js",
+      "to": "voxel/src/rules/piece-colours.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-sheets.js",
+      "to": "voxel/src/rules/surfaces.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/home-sheets.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/hospitality-icons.js",
+      "to": "voxel/assets/hospitality-icons.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/intro.js",
+      "to": "voxel/src/content/intro.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/intro.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kit.js",
+      "to": "voxel/assets/shelf-thumbs/shelves.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kit.js",
+      "to": "voxel/src/content/shelf-catalog.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kit.js",
+      "to": "voxel/src/decor-meta.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kit.js",
+      "to": "voxel/src/decor.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kit.js",
+      "to": "voxel/src/premium-furniture-thumbs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kit.js",
+      "to": "voxel/src/premium-wall-thumbs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kit.js",
+      "to": "voxel/src/ui/home-furnishing-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kit.js",
+      "to": "voxel/src/ui/kitchen-workshop-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kitchen-food-art.js",
+      "to": "voxel/assets/kitchen-dishes.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kitchen-food-art.js",
+      "to": "voxel/assets/kitchen-ingredients.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kitchen-guide.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kitchen-guide.js",
+      "to": "voxel/src/rules/kitchen-equipment.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kitchen-guide.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kitchen-guide.js",
+      "to": "voxel/src/rules/stock.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/kitchen-workshop-icons.js",
+      "to": "voxel/assets/kitchen-workshop-icons.webp",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/level-celebration.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/level-celebration.js",
+      "to": "voxel/src/rules/levels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/level-celebration.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/maze-audio.js",
+      "to": "voxel/src/ui/scare-voices.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/maze-ride-ui.js",
+      "to": "voxel/assets/maze-ride-icons.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/more-sheet.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/more-sheet.js",
+      "to": "voxel/src/ui/cooking-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/more-sheet.js",
+      "to": "voxel/src/ui/premium-icon-markup.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/crazy-train.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/disasterology.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/dont-fear-the-reaper.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/everybody-backstreets-back.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/ghostbusters.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/gypsys-tramps-and-thieves.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/lantern-march.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/living-dead-girl.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/lullaby-for-a-dead-man.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/moonlit-mischief.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/nightmare.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/nothing-else-matters.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/pumpkin-parade.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/rebel-yell.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/skylas-midnight-market.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/music-tracks.js",
+      "to": "voxel/assets/music/thriller.mid",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/npc-rewards.js",
+      "to": "voxel/src/rules/progress.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/pad-menu.js",
+      "to": "voxel/src/ui/glyphs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/pad-menu.js",
+      "to": "voxel/src/ui/hold-to-buy.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/play-controls.js",
+      "to": "voxel/src/ui/glyphs.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/play-controls.js",
+      "to": "voxel/src/ui/pad-menu.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/premium-icons.js",
+      "to": "voxel/assets/premium-menu-icons.png",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/premium-icons.js",
+      "to": "voxel/src/ui/premium-icon-markup.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/premium-icons.js",
+      "to": "voxel/src/ui/premium-icon-markup.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/settings-sheet.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/settings-sheet.js",
+      "to": "voxel/src/render-quality.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/settings-sheet.js",
+      "to": "voxel/src/ui/audio.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/stock-popover.js",
+      "to": "voxel/src/model.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/stock-popover.js",
+      "to": "voxel/src/ui/kit.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/ui/upgrade-menu.js",
+      "to": "voxel/src/ui/cooking-icons.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/visitor-sprite-meta.js",
+      "to": "voxel/src/content/visitors.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/voxel-mesh.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/voxels.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/wilds.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/wilds.js",
+      "to": "voxel/src/content/cooking-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/wilds.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/wilds.js",
+      "to": "voxel/src/content/festival-meadow.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/wilds.js",
+      "to": "voxel/src/content/hayride-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/wilds.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/wilds.js",
+      "to": "voxel/src/world.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/world.js",
+      "to": "package:three/build/three.module.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/world.js",
+      "to": "voxel/src/content/farm-layout.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/world.js",
+      "to": "voxel/src/content/hollow-house.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/world.js",
+      "to": "voxel/src/face.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/world.js",
+      "to": "voxel/src/ground.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/world.js",
+      "to": "voxel/src/pumpkins.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/src/world.js",
+      "to": "voxel/src/voxels.js",
+      "kind": "import-statement"
+    }
+  ],
+  "directConsumers": {
+    "voxel/docs/contractor-patches/festival-session/README.md": [],
+    "voxel/docs/contractor-patches/festival-session/adapters/readiness.js": [],
+    "voxel/docs/contractor-patches/festival-session/data/dependency-matrix.json": [],
+    "voxel/docs/contractor-patches/festival-session/docs/API.md": [],
+    "voxel/docs/contractor-patches/festival-session/docs/CHANGE-IMPACT.md": [],
+    "voxel/docs/contractor-patches/festival-session/docs/DEPENDENCY-MATRIX.md": [],
+    "voxel/docs/contractor-patches/festival-session/docs/HANDOVER.md": [],
+    "voxel/docs/contractor-patches/festival-session/docs/HOOK-SEAMS.md": [],
+    "voxel/docs/contractor-patches/festival-session/preview/app.js": [],
+    "voxel/docs/contractor-patches/festival-session/preview/index.html": [],
+    "voxel/docs/contractor-patches/festival-session/preview/style.css": [],
+    "voxel/docs/contractor-patches/festival-session/src/engine.js": [
+      "voxel/docs/contractor-patches/festival-session/preview/app.js"
+    ],
+    "voxel/docs/contractor-patches/festival-session/test/dependency-scan.test.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/test/engine-adversarial.test.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/test/engine.test.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/test/impact.test.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/test/preview-build.test.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/test/readiness.test.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/test/rule-integration.test.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/tools/build-preview.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/tools/check-impact.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/tools/dependency-scan.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/tools/qa-preview.mjs": [],
+    "voxel/docs/contractor-patches/festival-session/tools/run-native.mjs": []
+  },
+  "transitiveConsumers": [],
+  "unrepresentedPaths": [
+    "voxel/docs/contractor-patches/festival-session/README.md",
+    "voxel/docs/contractor-patches/festival-session/data/dependency-matrix.json",
+    "voxel/docs/contractor-patches/festival-session/docs/API.md",
+    "voxel/docs/contractor-patches/festival-session/docs/CHANGE-IMPACT.md",
+    "voxel/docs/contractor-patches/festival-session/docs/DEPENDENCY-MATRIX.md",
+    "voxel/docs/contractor-patches/festival-session/docs/HANDOVER.md",
+    "voxel/docs/contractor-patches/festival-session/docs/HOOK-SEAMS.md",
+    "voxel/docs/contractor-patches/festival-session/preview/index.html",
+    "voxel/docs/contractor-patches/festival-session/preview/style.css",
+    "voxel/docs/contractor-patches/festival-session/test/dependency-scan.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/engine-adversarial.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/engine.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/impact.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/preview-build.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/readiness.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/test/rule-integration.test.mjs",
+    "voxel/docs/contractor-patches/festival-session/tools/build-preview.mjs",
+    "voxel/docs/contractor-patches/festival-session/tools/check-impact.mjs",
+    "voxel/docs/contractor-patches/festival-session/tools/dependency-scan.mjs",
+    "voxel/docs/contractor-patches/festival-session/tools/qa-preview.mjs",
+    "voxel/docs/contractor-patches/festival-session/tools/run-native.mjs"
+  ],
+  "unrepresentedPathsNeedReview": true,
+  "semanticReviewRequired": true,
+  "manualReviewRequired": true,
+  "contractorBoundary": {
+    "passed": true,
+    "outsideContractorScope": [],
+    "importedByLive": []
+  },
+  "limitations": [
+    "The esbuild parser supplies literal import/re-export and asset edges. This is not a whole-game semantic dependency proof.",
+    "Runtime-computed names, templates/styles assembled by build scripts, physical placement, wallets, IDs, save migrations and timing contracts need the reviewed matrix.",
+    "An unrepresented path is not classified as safe. Review it through the semantic matrix or manually.",
+    "The contractor boundary covers declared changed paths and parsed live imports. It does not prove arbitrary dynamic integration is absent."
+  ],
+  "entries": [
+    "voxel/src/main.js",
+    "voxel/docs/contractor-patches/late-game-support/preview/app.js",
+    "voxel/docs/contractor-patches/festival-session/preview/app.js",
+    "voxel/docs/contractor-patches/festival-session/adapters/readiness.js"
+  ],
+  "sourceHashes": {
+    "src/content/catalog.mjs": "49c649e18c31b16903414ef89a8cf5931e8a844e3a7a676f8d05712970f2c387",
+    "src/content/economy.js": "def825f8bf0533b87866fbc24be86362945b75fd00f5a0890d9a873f29fa4f65",
+    "src/content/library.mjs": "a698266d0e7ae2b33e4a6222935efef9ad70bb89dfa52ebeb4dfd0ed3cc99d37",
+    "src/content/products.js": "ec0bc26eb6b50eb89f6af9e9a0dea03722f8cfabf8a79167f6f9caa81b440b18",
+    "src/content/rooms.mjs": "fba30a2a99c58fe9e869a48afa76854ddbcf6ec4f9ad49544c56b8ed443aa19a",
+    "src/content/shop.js": "1301ec4948f026912504e37ce597769ee82961ced5ee187dcbc9bec31c5c527b",
+    "src/content/stall.js": "6935d674d05254437d3c98793569c569748c95adb3934b30198e38721a0ca788",
+    "src/core/costume-model.mjs": "39b5bd55a59b5c73fb73a23459dcd5ac2f031457f1ae4fdb4a63f7bb53c0e4c9",
+    "voxel/assets/cooking-menu-icons.webp": "a48bc4df398d3adde879ff658930ad90a012977d80344c9a597fd3afeecc2714",
+    "voxel/assets/costume-expansion/natalie-freddy.webp": "687225b9584724c17330f5cc221a2784ca602dc6aa0313b01b38f608e5fd4597",
+    "voxel/assets/costume-expansion/natalie-tiffany.webp": "af8bfa8468d4a4af7e3424c69be07d71ccdf97dd8b7e982d0d3ca39ed3873dc3",
+    "voxel/assets/costume-expansion/shane-chucky.webp": "49b73383a05ea0f90862d4afe37206542a5bf88740d5c4427a655c5261bfa51c",
+    "voxel/assets/costume-expansion/shane-jason.webp": "ea4b27f871b0fadb8851e380067f0ed1ed240a892bbd416d671c1b58975d0cb5",
+    "voxel/assets/costumes.png": "ebc804ac05ce1875ffda6b892554be7c4dd82e18ffc90479f99fcd5dfbe02972",
+    "voxel/assets/decor.png": "13f356798506322da4ffd983d6e73a2f4427667975390c98a25ffaf2b896ced7",
+    "voxel/assets/hattie-janitor-icon.webp": "42863d7a3f7c64cdf35b467e92f1a6cecd77680d8114d83a1ea469c4d1bbd7e3",
+    "voxel/assets/hattie-janitor.webp": "5a41464698a1670c12086b72baf3c39c8f32b706f3f586336dacf3354fadb52f",
+    "voxel/assets/hd-horror-visitors.png": "907d314912cb32a949fed692f60e8a60e003273635b9273ff0c7da16ea00ff3d",
+    "voxel/assets/hd-natalie-batqueen.webp": "cbe4f662a2b0b1f0eba5e75a962e2e50537a252aecd2fff096c2767ce9a1e4db",
+    "voxel/assets/hd-natalie-frankenstein.webp": "18cdbe28ec8a9e2e5d2f96aad05361a7ce6a1410e7818655410260740f6dc440",
+    "voxel/assets/hd-natalie-ghostbride.webp": "983b0e546b8e56d562f4688f6bb32911510408c38474dadf1e45e24e941bd9d8",
+    "voxel/assets/hd-natalie-mummy.webp": "3c91a46964ade9d5cad2f8e845961fcbbcbcd5908c9dc7980dd08ec7a620f7ce",
+    "voxel/assets/hd-natalie-slasher.webp": "e7398320ebe9132c32d1e3bf318c655dc0f3e56b5958e2db3dfdb36824d204c9",
+    "voxel/assets/hd-natalie-vampire.webp": "be7e91319ee14b0fa25f1ff29deb1d860240e407f7dc67be827bf9ab373c5290",
+    "voxel/assets/hd-natalie-witch.webp": "a4cc479e4f42c01237ff4304e38eda95d10a866bcef540a88b237dba1147a157",
+    "voxel/assets/hd-natalie.webp": "7acdf4d56345beb8e7bcef809027cedf4cd5ba702a8ee1043a6e90ef025ab5fc",
+    "voxel/assets/hd-shane-frankenstein.webp": "d983d9f1db57191611664e0a2e7637713339910f43cf1ec159ab689d972c23b2",
+    "voxel/assets/hd-shane-mummy.webp": "04d6808addde73d3a47cd206b8a7a0c3c02796f7b151229732fd1358c3d877c2",
+    "voxel/assets/hd-shane-scarecrow.webp": "f968df79751aa2b6a423fc5094dadb70c97b221c14f9dbbacd32e35504a5fb78",
+    "voxel/assets/hd-shane-skeleton.webp": "99b6e741559d2473c9207637df1a289cee87268f55a87cf81b0cdda008cbae95",
+    "voxel/assets/hd-shane-slasher.webp": "d1f3a2b09173912ff89e799258776e2ac629e7e98c15efad8e5424e6aee03a99",
+    "voxel/assets/hd-shane-vampire.webp": "8973a31f7a92641d9a0576938037dfee2f72f53a4ef261dd60a5d990c9ff2433",
+    "voxel/assets/hd-shane.webp": "f075ae439d55ba7161239435ae15c88e9541f666151a27ccfacd4d0acde424d3",
+    "voxel/assets/hd-skyla.webp": "e6f80b125857be4521c2a92b33c145eea8d9a003e0edb33dff78451d71a674b9",
+    "voxel/assets/hd-visitors.webp": "666bba4ffeee9e49644a19f823794ed10f535b37b4adeb0d0482877833d8d31d",
+    "voxel/assets/hettie-janitor-icon.webp": "8f093cca02bbe926801c0830842fec063f4d563fb44c5bc56c74f1ea3f8e1ad0",
+    "voxel/assets/hettie-janitor.webp": "825fa38a07e4fc4895e88deb088858437001abc82bbdce0006116b843b0607f8",
+    "voxel/assets/hollow-exterior-icons.webp": "4b476e3a78a8475fc7a85fdbee82a27fa83ed9238c6c529c2745b1a1c4d9e272",
+    "voxel/assets/home-furnishings/furnishings.webp": "b03b734b00c31218c0e1a1c5803783e0133087c7d1452253633b4dab079c3b3c",
+    "voxel/assets/home-pets.webp": "b807b3659a2dd671780657d3f1b8d3466918a07779c004eec1a4f674c5aba647",
+    "voxel/assets/hospitality-court.webp": "e37be0806f44ebdba9339b5517410e40645436f75f35b74f3f29f2bbb79478ac",
+    "voxel/assets/hospitality-icons.webp": "97f9cfb5dac137154fb9363922772488650f4d2c7bb1837b5e63534edf332b78",
+    "voxel/assets/hospitality-seated.webp": "689e96fe40459cec651e727efc4e330d6861f5f00a1d0ca852166e9a33648cbb",
+    "voxel/assets/kitchen-dishes.webp": "d64bd2353c004a629f7ac566d44fb36b494f307b6042b72a7e27fcdf5f2cb06d",
+    "voxel/assets/kitchen-ingredients.webp": "e264ecd3ddee82085adddff3c0ac6b8cb146cd0b2bb8f6314343d51356c480e3",
+    "voxel/assets/kitchen-workshop-icons.webp": "e130aa0f6634f3bb4c76a0d40aa09718514c598d3d61f2171aad3f3f36ff802c",
+    "voxel/assets/maisie.webp": "e4605f0f3cf0b78c65ba74bce71d47eabade169dae7f21fa7c29cbb47a9a2df4",
+    "voxel/assets/maze-cast.png": "591b75e42eb46e22e7e8e2199d06d0f541f955c40a2c98dad99f9b32eeb2b23b",
+    "voxel/assets/maze-haunted-girl.webp": "0e1d4abfd65b4a44cbb99908b3575d15364f85502677972b3cd16f389a343b11",
+    "voxel/assets/maze-prefab-icons.png": "dbc337b9f798cd1e2c377f6befe8ec2ac95e95685ea8b2f4b30d332a08a23c4f",
+    "voxel/assets/maze-ride-icons.png": "4cd7ffea9395145822670c13e76ac7f73e51fa7857d8e848aa5bbc53ad2fa2d0",
+    "voxel/assets/maze-scare-actors.webp": "fe8c345c6f8b2d07bef4930d7b36b89db6becf88068adca18f8d60cba14a09e8",
+    "voxel/assets/music/crazy-train.mid": "240db1d363562915ee26fb069c5232942760c4c7fce72274509d346ff7a49fbf",
+    "voxel/assets/music/disasterology.mid": "0cd5c7057620e896fb23a05fd06ff1fee475df8772dd77d21e07203778b098b0",
+    "voxel/assets/music/dont-fear-the-reaper.mid": "3cfcea63c1db9bd13d3656f6d83651e388b1c7e673be8fae276c94f9eb6ace32",
+    "voxel/assets/music/everybody-backstreets-back.mid": "ee4eb88d48c778a0b396f5b79022caa165737805ec0cd673257152ad85e6ea53",
+    "voxel/assets/music/ghostbusters.mid": "00a1e5e447713f780a81332a3f105cce790396f41f53806730900bc574e503c5",
+    "voxel/assets/music/gypsys-tramps-and-thieves.mid": "8f2e1b2adc0eadee7f701eba6e27a327f83965eaa7595657b96c89dd935d6680",
+    "voxel/assets/music/lantern-march.mid": "87b8305e962c3b5866793a822dc95a7625ca5ac4905b243710573f614aabbd83",
+    "voxel/assets/music/living-dead-girl.mid": "727e65b7a9c1553461e0f43bb57492f83d193aeeedccff12d1c2e9464d5d1385",
+    "voxel/assets/music/lullaby-for-a-dead-man.mid": "b4b06709b400fea3c09f6220d90a0eb7b25e5f3ef1338069ca11f8bda87ee05b",
+    "voxel/assets/music/moonlit-mischief.mid": "c58f60272a40089b2458f714c633cb22b023f93a312c6d1a1db3cd181ce59bcb",
+    "voxel/assets/music/nightmare.mid": "121d07f3ab342fe5b9a06627515e1fd1115efed4e1df88cf64b08365a1652cd6",
+    "voxel/assets/music/nothing-else-matters.mid": "32fd6fb35e8374d8ce8a8ffb7f1123e2520ade66a1d77c80044d9e8542d94338",
+    "voxel/assets/music/pumpkin-parade.mid": "509176d76d5b7fe03af0a5e3b1ba2cbbf0a03b40ce54c0b539bff912633ddaea",
+    "voxel/assets/music/rebel-yell.mid": "6c2b2018875a77a65ddef1a0eb917e2b5869b026fd02fc1a51bba41bc7244857",
+    "voxel/assets/music/skylas-midnight-market.mid": "a40111dff412a82f8fc76f165108ec5e09b2f5c8acc39309db68a4155d337025",
+    "voxel/assets/music/thriller.mid": "23dea848baac885122b49896e5caa9846fa81dc11f00dd9a8dd9b8e0f1cc660a",
+    "voxel/assets/natalie-wheelchair.webp": "2604961bfe574e69d6a2c0a144fb0cd818a4a029199c72e1be3bcc98c16bb687",
+    "voxel/assets/owner-home-poses.webp": "b6da12fac12157de741e38312a76b93b49d4deae9bd22b2bf6efb9a0e76ea10b",
+    "voxel/assets/player-directions-base.webp": "9b9d2bb34460e7c988ce89b532fa36547f8e7f4deb2e8a1f8759cb6fb8e1610b",
+    "voxel/assets/player-directions-natalie-a.webp": "d0cedd282073244980b80bfe62df7c4a7b13103b79a6adfc1985e89d81769e32",
+    "voxel/assets/player-directions-natalie-b.webp": "ec0542d0a4695d59acda36f2824025aee93df435e2226ecff3284b16aa9ab798",
+    "voxel/assets/player-directions-shane-a.webp": "3c3fe05f87c41495a47c1c4d6947c0c6a73e59acf45d31fcb177d2256a573cec",
+    "voxel/assets/player-directions-shane-b.webp": "add91aa005c5cbb3a10e782ba2c96058e4746502af0191b21932ccd4e155f036",
+    "voxel/assets/player-walk-base.webp": "28b430c051d3c7db9eb37457f2a8941b1c38b02686047c7f37b2428d0758a017",
+    "voxel/assets/player-walk-natalie-a.webp": "1e9969433f75124ebadd95d4aa67e463cf0ef655c408a87859f84f79791381fa",
+    "voxel/assets/player-walk-natalie-b.webp": "b12482ef8ae299b9aa217c6d7b7dcdb4e121a426a48dbbd6b689c25132201fdf",
+    "voxel/assets/player-walk-shane-a.webp": "5f2c524d3cb21070fad7e46bd7a2c487e9f5ece7ca4b9ff3484da4b2a9426504",
+    "voxel/assets/player-walk-shane-b.webp": "d4d79db0b4563ef8312b407461348f4331278a6064fceee319765f1bee318d0c",
+    "voxel/assets/player-walk-wheelchair.webp": "e7553deabde86dabaf75a3a0fae1dac91c95bceee0238c2326bfa13d1ee2b4ca",
+    "voxel/assets/player-water-empty.webp": "e4659d549c838fc3a79e369592de1b840dbc08ce9d42ba7708aa232875d9b237",
+    "voxel/assets/premium-furniture-thumbs/copper-range.png": "f5a0f2c2b3a43fd5835c6f47aa5fc47fa8eb0bd3cc8ed8c1a640d3e8d0ad98c4",
+    "voxel/assets/premium-furniture-thumbs/copper-sink-island.png": "954d68adad954c5fcd118aa44e6b28ec99ce1182504f0a400462975267c85d32",
+    "voxel/assets/premium-furniture-thumbs/moon-canopy-bed.png": "604ebf9229f2fcd1dbbf0e88d253ec2e182a68672eadb14838180bb0c1166d35",
+    "voxel/assets/premium-furniture-thumbs/moon-vanity.png": "57e6f1fe99d6102518e503417c4abd67641ffd76ba9716d83ac78e93905006be",
+    "voxel/assets/premium-furniture-thumbs/moon-wardrobe.png": "c15a2e28d5bdca948c44f0acb35e23a66532021a8ce258c73d06ffeb090e7e75",
+    "voxel/assets/premium-furniture-thumbs/preserves-dresser.png": "137c485cf26069e548018c6cc07f80151a2115b4ed113ed72f7e7ed4e6fbe7be",
+    "voxel/assets/premium-menu-icons.png": "c2f8ba0a1c8a706a966cba9337bf5398cdc51f34872159ea666fc64b5285f680",
+    "voxel/assets/premium-wall-thumbs/copper-pan-rail.png": "d2cd61cc85a72c6411a26cc0754311e4c6958d706ffa546f135c8b8b63cc004e",
+    "voxel/assets/premium-wall-thumbs/crescent-mirror.png": "6c5339623cd71c8e331a959e9000b7d1086b2ec0c8802874b08911f042f2c9c9",
+    "voxel/assets/premium-wall-thumbs/gothic-spice-cabinet.png": "9f7a956d309bf23d98c84c21ad670e556caea790eafdb461202a2622595420a5",
+    "voxel/assets/premium-wall-thumbs/haunted-manor-painting.png": "340bca5bfbd3895151aa00f85a3cae6c035054bae6655e035edbf14d83c6b833",
+    "voxel/assets/premium-wall-thumbs/iron-utensil-rack.png": "b2ec60c866c1475c974081a10d0a80f3fea52a3e8494f9465bfab34bf3ec8952",
+    "voxel/assets/premium-wall-thumbs/recipe-teapot-shelf.png": "d89af27717b44513c1f2e3139ae01a5c58c90162caf5d2b92aecddc8442eec9b",
+    "voxel/assets/sandy/cocoa-menu-icons.webp": "911b0b4de785d1376abfe21172f61d68fb3cc4cee1f1786af3bb28adc2427437",
+    "voxel/assets/sandy/sandy-base.webp": "06b0e07eb3ff0b21a1c89234aa85059db38ec3234267d797597634c0f02b12b6",
+    "voxel/assets/sandy/sandy-blink.webp": "e27015c33469b7826904abb7ce184724f7818a9d17e192cba97bd1f9c5844ae6",
+    "voxel/assets/sandy/sandy-serve.webp": "2551cb685284f748fc54b2b995360033aa6fd9deb04fc212288dc73cb7f90183",
+    "voxel/assets/shelf-thumbs/shelves.webp": "452722351a459efd57aeae458e5e0dfed8f63de974783ec1ed891a797c1257af",
+    "voxel/assets/sprite-watering-can.webp": "58f293c6c564e13fc4765ddad90c3636df76a8fb47d26ad2764401aaa8f31492",
+    "voxel/assets/sprites.png": "5bf75a10aaab4285aec63d2ab2384a67cca8f72b871295864e745aefdbf2eab4",
+    "voxel/docs/contractor-patches/festival-session/adapters/readiness.js": "b33e1f869c763c7db8adae54c96d6dbda06013cf79a8fbd55db3efa37292bde2",
+    "voxel/docs/contractor-patches/festival-session/preview/app.js": "203bd9aca815c68e7ddd1eecb4d7ed9faff4a1f1a4ffc900265b0e959866a5af",
+    "voxel/docs/contractor-patches/festival-session/src/engine.js": "ee8a49809fe98c492d003fdc9c66d998aa8dff6359f0e474d33196b8470ba241",
+    "voxel/docs/contractor-patches/late-game-support/art/menu-icons.webp": "aeb67472997eac94e79040ce3c2c3ab17e6e4add839f4d86ba180f117581bf30",
+    "voxel/docs/contractor-patches/late-game-support/data/festival-themes.json": "63d4934e8aac415581f0daf914e91a89b66387dfd2be0e502efc07c4558af37c",
+    "voxel/docs/contractor-patches/late-game-support/findings/attraction-audit.json": "4e4db47c90ddec2fb6c574b168e51ba76fec10f211ca858b299cc38e92574fe4",
+    "voxel/docs/contractor-patches/late-game-support/models/reward-props.js": "4d2b33b8062cc691c9295787c2435b7afdc6f25e9c70e6f7a626f2310d34501d",
+    "voxel/docs/contractor-patches/late-game-support/preview/app.js": "5480338e5009e99d1c2026993f21c34c8e0c5eba8b32ab670d3e285abb405886",
+    "voxel/src/action-fx.js": "1d46eb886ce9460cb0dc57b4577bcd3adcbd61b7873f676c08dd2a8835e56fe5",
+    "voxel/src/ambience.js": "a58b826d59870ad23a8012ac92bd03df9d1d5001c182dbc7ab22303be3174aae",
+    "voxel/src/camera-layout.js": "f789dc79036e565c9755d521458c03cdec8a94e7058da388225348f6be42b8cb",
+    "voxel/src/carving-pumpkin.js": "a1983081c514c1bfd0d73087a156df5e90d3269a582d779a76e012d6cc35ae22",
+    "voxel/src/carving-set.js": "6a69f3398e35683bcdff7a83b4307c3b0a1db1b37ee6fb87b4da4fcaa4a1dfcc",
+    "voxel/src/carving-view.js": "23e40f22e427f039f9b0252169e0372b2925a198843cfdbe3ab8a4a0049c8bfb",
+    "voxel/src/characters.js": "08ba0739368d07742a2b86efe7284d74f1d52bda95dc3edd99518dfeef624ef5",
+    "voxel/src/cleanliness-view.js": "9ced2f52ad12b6876c5f9c33308ad4f931876cfbabd3e66c1689acf751aa3b82",
+    "voxel/src/cocoa-props.js": "1114fd75ae2292ee0f6d858778fa2343291a88cbeb786b0f92511b15031a8ffd",
+    "voxel/src/content/ambience.js": "cb5ed613652dc9fc8e277ad145ce84b91cb82fe37134a2e2c13e7b57003d2f17",
+    "voxel/src/content/carving.js": "aae2d7d0d235c12a311392bb8d1dd2ec03fb4f787ddbcbab83dd1797a11c6a50",
+    "voxel/src/content/cooking-dining.js": "4bfb109ffbe35abd8c824226f6c0c240e4032d589ff9d0cae6c124d6d89ed634",
+    "voxel/src/content/cooking-layout.js": "7c3644fbdd939a350b6355d2b2d0734c772bff8e0380d3904b00a1bd3ea545e3",
+    "voxel/src/content/cooking.js": "b7590a969a10ae4c00ed53a306b5400a9a76d46406f4f8ae141146d51037fca5",
+    "voxel/src/content/decor-sizes.js": "cd5ed8d09a5de8291c80dd10f541542299e3de2d19156fbf63366d4fd374e842",
+    "voxel/src/content/farm-layout.js": "8d43f8617e58fe575140430379db2f209c80b7fceb9f7036bc3628229038e113",
+    "voxel/src/content/farm-walks.js": "d9c9020fe802130aad6c0604d5df2afa3b3db588c59468e839908ea6f2caf6c5",
+    "voxel/src/content/festival-meadow.js": "96cf8ef863eed4cc71e605ec203b2b074bc12f3a514be537f6addef17bac3206",
+    "voxel/src/content/hayride-jingle.js": "c653c7059e0077b304bd1aa0a79aa5241792e6cd331b3f18f8b77544a8ca8919",
+    "voxel/src/content/hayride-layout.js": "469b64a9a37c32e064a8fe787c5697e69ae7c890292a91753ab848b65c45dc63",
+    "voxel/src/content/hayride-weather.js": "11ec03c8644c87026d3ef53aebb315183999528799f40752f8bfc6409a03c696",
+    "voxel/src/content/hayride.js": "d23178778684c667b5f69f9be3c3501e6dae672ec6396d95bb2d9758e2c8d805",
+    "voxel/src/content/hollow-house.js": "5c3c06bbee869099d52c332ad9c2819c201b565df50d3af8fc2f463fc78e0c19",
+    "voxel/src/content/home-furnishing-sizes.js": "56107adddc80a8b739381a6a3e5da2abb22004711398d5eaa28b311d20358f68",
+    "voxel/src/content/home-furnishings.js": "521476e5ba1b2a5073abf6179693893fae4932bb7f3d0f1de34187da3f3db740",
+    "voxel/src/content/house-estate.js": "52133f5ec82b84253d054873afc7248afbc058786bf6cf4a0a128646b3faf2d0",
+    "voxel/src/content/intro.js": "3adae3d95a03ed8bc5878ad4169b18e7e2328308fd4f036a7afc802f964d3cc1",
+    "voxel/src/content/kitchen-equipment-sizes.js": "58ca09faaa0669f9cfe2f5623958d20315a96a9d1310419b08da1790def2e7ac",
+    "voxel/src/content/kitchen-equipment.js": "6b32930357d6f3b5c3a2b987052989c86b9be38466b94c78461aef8b47ea9f7d",
+    "voxel/src/content/maze-ride.js": "19d15d9279788226ab8e20080dbf68aaddf68978bd15983197765be7874ebbbe",
+    "voxel/src/content/pet-furnishings.js": "ca797a64702155243bbf11ed058f33d53823ef10c21c783588d53e1e7c4992af",
+    "voxel/src/content/placement.js": "984d7b8c1117fbf15af1dfcf10dcd86ae7574e39e76fc3484a81a4ab163adeb3",
+    "voxel/src/content/premium-furniture-catalog.js": "8ff7c36827f4b84e53c5416e33996751cc69a6a475bdf598e97436cddba001cd",
+    "voxel/src/content/premium-wall-catalog.js": "6a67f847b09634e154de4bcbedde3ffe6448a87eb883f0ceea39e2415822000e",
+    "voxel/src/content/pumpkin-shapes.js": "ba97a625b11e6efb103b5897847d79988ea39d518a55762be014488bb20b5b7b",
+    "voxel/src/content/pumpkin-varieties.js": "65a6da1c82ff37a125522375ccd1e5ea0fb2ae6ef6c6800f99c73bb846d8fbd7",
+    "voxel/src/content/shelf-catalog.js": "86ea8808e5cd467784b65d93c3a6c167adef2fc8cc44b55db29a14669b01a5d5",
+    "voxel/src/content/visitor-events.js": "0d0af89a6141dc7216a349edb548cd75fb367d296a07fbae8f4342689396ec8a",
+    "voxel/src/content/visitors.js": "21909162913cba5219768ee092e959d25b1b041c3180d01b6087d8475ccc8f12",
+    "voxel/src/cooking-world.js": "49e85f37c2cf4f178196deb9bd82a3f0c3b9385ab441d5eab7b30bb514bb9d18",
+    "voxel/src/costume-expansion.js": "7a5129a2b165fc541559b5ae1fdd958d9486131dfaa46cead3de3e8b311268a8",
+    "voxel/src/costume-sprite-expansion.js": "417d55d53bc793cdbc2ced948fd31b4d848601b4a02e143e89a3ff01aa314e78",
+    "voxel/src/costume-sprite-meta.js": "f31df84ffe4c7d8278665dd9a73a1234b51c03467be24211f96fd186bd5782b5",
+    "voxel/src/crisp-sprites.js": "7b45c1cfe446723c264b0b142b3ba6e95f1ec7b52545b65ca94c486f2a2e1896",
+    "voxel/src/customer-bag.js": "68dd7fe673b780f713c6b8dd20196b6a0e6d917f8daed2039b9d160ad9e6233a",
+    "voxel/src/decor-meta.js": "ef820ef7df9133951f902c2146d1560dd525420927071fe74b9d7c0e7f944b6f",
+    "voxel/src/decor-models/curios.js": "40fd6fb9f35b6972886b0ae43fcf3be06685ffec702d8c36023e687ab29c5f18",
+    "voxel/src/decor-models/flat.js": "82725a8c40e4bc39711bb09f8289d2b2701683ed18971fcf53d1e2a4e54c13d8",
+    "voxel/src/decor-models/index.js": "bc540b18d53a65b9121bb9354c02892d9bfae3fd98291bc25e1e9f616b0f518a",
+    "voxel/src/decor-models/kit.js": "79830f0611710db6da1ec22953ae212cba1eea5d17c36594e695d31d5f24dc67",
+    "voxel/src/decor-models/lights.js": "30b9e77cc3e12ca6914ef57c2f398bb18fe0e6334b5e43675cc87a7ab75de979",
+    "voxel/src/decor-models/premium-bedroom.js": "9cc185fca67d11110efbc78463ed4dca7f9d04f23bd657844e5409dd32d53d31",
+    "voxel/src/decor-models/premium-kitchen.js": "205d96406921ad419c18c026e80efe39a7dcebad195f77ca6ef4a73f43d66512",
+    "voxel/src/decor-models/premium-walls.js": "b789b52409cb28335cfa09978144d5e57d25fafaccd7cafd2e7d6d1fec9be2a0",
+    "voxel/src/decor-models/seating.js": "b777a8a1e66aec85afddc5ecff81a315afd11fb15df7bc3b526bf613f0c0bd07",
+    "voxel/src/decor-models/shelves.js": "821c8ae3ea6cd7fc785504526d7704d3d61ffa72f9d890942a4c7802d068a39d",
+    "voxel/src/decor-models/shelving.js": "4da9b0df8caf3166e8d363a2e26e76d0ff0efbbaaea1dad7fa9fe8cfdd44e71d",
+    "voxel/src/decor-models/tables.js": "b01f049c2495ef59ccbf8e82c0a76748d6a5be932afc60093597de6cc58c5d0b",
+    "voxel/src/decor.js": "729d9bc3713ab7cb07a5306155a1b1957530181a9666b161c6791622c909d592",
+    "voxel/src/entrance-glow.js": "9b8c1388974fc5db28e5e6fdbe56cea35b32fe1c2c74617b8d089d6c5b623811",
+    "voxel/src/face.js": "c3ab412a2ad4ef73b40483952cc3367aeed163d34098e0a4c4e75658aa42adf7",
+    "voxel/src/farm-expansion-world.js": "7707c8287dc5dcabdd90e212bd23a01f46551b58b754e4e3e20099ddee110f6b",
+    "voxel/src/festival-meadow-world.js": "1dbd9f348c509c7794c72c3878df5d81809e49df9edae7094cef896877b7a056",
+    "voxel/src/fixtures.js": "96323a7d22023cadd36f5f58c2c482cba850ca5d0717b3825271edaa576b2fc9",
+    "voxel/src/food-props.js": "6059ee12cd30a51a766c30f819dba58261595f8d50b927f0051784585c565862",
+    "voxel/src/foyer-view.js": "08978639262614ed84b54929d2938af651338dcffad797aa722d3d83a1d81505",
+    "voxel/src/garden-play.js": "c8b9ed4fa66295b38474a41989414ad1f7ed0c2be29cfef46afe97e1688ff70d",
+    "voxel/src/ground.js": "e0c3cae970b661b8fe8ecb6dd9c7458119fff74454f15c8ccc758680a760ac97",
+    "voxel/src/hayride-atmosphere.js": "266fca170fac0df6807d073fd27e07b02feace7da971733aa6d1e50896d6fb1e",
+    "voxel/src/hayride-forest.js": "b9e9d40da23a607eccc29df5af1d05ff744d3e27753dbb1ac94610841f725d25",
+    "voxel/src/hayride-moonlight.js": "5799b251ad175d8630b8b15874026af017aa1676e7d0f671f9f82675eafe80d9",
+    "voxel/src/hayride-riders.js": "dc27514c98867bf4a580019f32b308e3739a875e91fd67399e2a4d4acd26fcd4",
+    "voxel/src/hayride-scares.js": "9eabb08e505b0c425aeedcb46bc35da1448d88f7409f0bf43d4784145ae00fba",
+    "voxel/src/hayride-sets.js": "cfaef190a1de3ce63f0c39fa547eee9a3d076229387d5b46de286a7763b6fbd3",
+    "voxel/src/hayride-spiders.js": "9386dd3a83db222e78964a8e6c6802d9e45ec6121ad02ce31abb317f832001f2",
+    "voxel/src/hayride-stall.js": "b66ee579cac70722a428b650f34e55d1098bcadcad2fc33d23a0945913a7f302",
+    "voxel/src/hayride-station.js": "f01b1e8ff24f9b135ab583ef77063996abafddfef7940c930862b327e06f25c8",
+    "voxel/src/hayride-vehicle.js": "ce1b382e0e2e9e377913e0e5cab88555a87d30a35b5b768281321e2f4288145f",
+    "voxel/src/hayride-view.js": "c9d21926eb4ca1b481cfc9a590384b0246ae4040f350ea6d184d5d8b56d9a2d2",
+    "voxel/src/hayride-world.js": "091ead169d3bfa836f4a258180290954da36f4abcd0717d02b53c53de412289e",
+    "voxel/src/hollow-exterior-effects.js": "db2f3cb58ae58fb7d102ac46d79fa0022d5f6317fb12b4554131c0ae208e6785",
+    "voxel/src/hollow-exterior.js": "72dab6e789e2c1650c2dc27be76d8095bc0ee9a6350a948cf69effb469ee3525",
+    "voxel/src/hollow-house-farm.js": "ff905cdaf32bc7c956e062c1c7d5ffcc14eaaa76dd1c645b426a75c53f49d7d6",
+    "voxel/src/hollow-house-world.js": "67e0d92949807818361c6cc7a5f32ee3675e935b592c6d9c1a7a38b679b0cba6",
+    "voxel/src/home-furnishings.js": "176214c021061725f67f7b1a70b3223cb43c4f10d65aca92de44d0cefef2be8a",
+    "voxel/src/home-pets-meta.js": "c070742770c65bb7b710bed3b9a2a8fc1f3613cf8a941d383b28a944144f9082",
+    "voxel/src/home-pets.js": "4b57cced63f706a1568794a4b48cdec385e30c4fcb37ba48bd0e12f39bebb4ee",
+    "voxel/src/hospitality-cast-meta.js": "1678a1a1a4fe50979ad28282edd467520a9ee4c182eca24e606f2efed31f2c08",
+    "voxel/src/house-estate-view.js": "4db21cf6615f3db25cde6dfde4477321a16bc283a829a2a32a79366b21c5dfbd",
+    "voxel/src/house-estate-world.js": "6b819a5898414408cf86410414254894065ec98ca1a9ba0b743fa83db1b11228",
+    "voxel/src/interiors.js": "276f808cf5dd868b282e0e1fb83e571b47a7006a690d7ae253b01143b3a14082",
+    "voxel/src/janitor-meta.js": "98883da7d523b46ccebbc0896cc22ed58dc42a4266e5baae3d40041f8307ac41",
+    "voxel/src/kitchen-props.js": "d653041e1685d30e7047072ab30c143e469a2047d8ab74725842192eb8d0c492",
+    "voxel/src/life-activity.js": "d5da445ee63981b9b75f7e1fab3e07e29aa9d12377aaf28f6d1a6352f6bb3f23",
+    "voxel/src/main.js": "1c1df28cdf8a96ebda7715030c319c13a2e5201cf5fec50813f6cf2840b0400f",
+    "voxel/src/maisie-meta.js": "751250ea3d9fcc46355e5a6435762ccd518a69b8e6ff6a4d60dd74cf6ba9d45e",
+    "voxel/src/maisie.js": "bdd23c66b0bb1933cf621b43ac9a5f2342dc2ac27a6eb23509703a7b01bc4f39",
+    "voxel/src/maze-effects.js": "9f6d16035425736256c7fdf655209e89d963ee48442b9a189fb0256adc8eee97",
+    "voxel/src/maze-ride-actor-meta.js": "666eebdc0aef13e7b2da6741bb7bcd5317f9f8aaab2d108c81b337b946fb19fe",
+    "voxel/src/maze-ride-actors.js": "2c67f4d244a4a0de8c2104769595a21d52a9f20a65438c9c3c7c0f505df4ba3d",
+    "voxel/src/maze-ride-view.js": "641aa56a2e39078064093f2a21faa06940dd0b89185305f405f88018aae4bbc6",
+    "voxel/src/maze-ride-world.js": "fb392f4c12af6e7ae26ca7c3efb4f8732146bfcb892054e3ab022b6f443443cb",
+    "voxel/src/model.js": "002fabb503a9732692b175ce0df8ed0db6591e7555c4f950070b6c79afdfc8ac",
+    "voxel/src/moth.js": "b596e7cf65b5dc0e04a021964e8cb432519c7e3ffd7ce221e044e42cd70b7e43",
+    "voxel/src/natalie-wheelchair-meta.js": "f7ef30bdf88339d76f0b42389b5f173965284b0cc37013cc4b7e0836ef389d7e",
+    "voxel/src/owner-home-pose-meta.js": "78f636e87258163939a39451490ebc626ca7c4a7c2942ab06f252169be2f94f0",
+    "voxel/src/pet-furnishings.js": "fd81be500b543637553a030969c052377ab996b98920a54e17d0349519af181d",
+    "voxel/src/piece-colours.js": "48fd014853127d825526469ebd981e8be56fdb1ab67e375d685fac9ecc63f2d1",
+    "voxel/src/piece-gestures.js": "79987f3cdf8a1160022110c80ed719dbcf8d281de8ecce06bcce10f9000ff553",
+    "voxel/src/places.js": "708597ec7437a0001263c92ac92d54239ade176667eb44a02608faa2fe4e3439",
+    "voxel/src/play-ways.js": "37b7fed4e30b3095499f91a39ba5b13eb1f832e08570eeaf04641d194aa3af9a",
+    "voxel/src/player-control.js": "a8225b2fb7a2c5f95f2bffd5cf4ca9f1d917d7a8e02468e1fd08f382736f3ef9",
+    "voxel/src/player-direction-meta.js": "1c73464603af928282cd8e8b40160861bc6b1d886a44d7e4df8d42b0d157c101",
+    "voxel/src/player-home-poses.js": "bf0bf3cfe9a071bfd28a2669ceee559452cb23c7285affdc23541bf8c40fb94e",
+    "voxel/src/player-side-walk-meta.js": "d4ebad772842a4698c5a7ef24eda690f67bb7979d3cb7f982c24c22008ddb791",
+    "voxel/src/player-sprite-directions.js": "19548d86a4c391366908a9ed34875c3430b5c8cab3dad61a0000ffeecff61eeb",
+    "voxel/src/player-view-scale.js": "32728eb5f5c6f7e7e25fc8b62a87b25b7451d40e38b41c1ef678d73e223a8932",
+    "voxel/src/player-view-size.js": "e97ca91a950928e3720a4f6fce5243d82cf1c5a835b04f127ec91acc48fd4f8c",
+    "voxel/src/premium-furniture-props.js": "cbeee6b432a9911a8de38197a2560448ba88947da5b716b276ea2dc07f25c205",
+    "voxel/src/premium-furniture-thumbs.js": "5adf6ee87676423336bc5a31784ab146b1357aac1ad1329bf6905032ca738771",
+    "voxel/src/premium-wall-props.js": "95d775860d5347bb70e82df3f9f149975cb3fb0930ec36e593a89922b764b156",
+    "voxel/src/premium-wall-thumbs.js": "d18ba98b8a33d13e42c274e2d51e55aa8630883e55ac8dc435040cfb5c32d8d0",
+    "voxel/src/pumpkins.js": "0b19ffa394038702a55a3d0c06ecf9c43549e2f016befc722f173463981d6af8",
+    "voxel/src/render-quality.js": "c28a739c45751f705cdd8232d1c8552e527adc66fdf333a3185ac103d458b39b",
+    "voxel/src/rules/big-spender.js": "08834bd2dbe455c3df779429f2a5868710088466c384bcda25ab5b587fbca414",
+    "voxel/src/rules/carving.js": "f7a24a2acf99126906a7cd527ec8b22371894a1f8a0608f99c3c962bfe8c93e3",
+    "voxel/src/rules/cleanliness.js": "53eb25ac98a062e30aa654bec39a4d9a2fe464d69621c9590d8605c19b2061c3",
+    "voxel/src/rules/cocoa-menu.js": "2d0717de13057838b8e710208b78e56f75cc418fdfbe66e0e1ed2ba5859e8595",
+    "voxel/src/rules/cooking-dining.js": "b3238e6f44edcadf3f917942f60549211fe3fca5cca7bdc88043f432cb17d047",
+    "voxel/src/rules/cooking-mix.js": "39b61cf1d6a143500b5137d4ae54b70603439a16ab11a2f25ef077944fbba3c8",
+    "voxel/src/rules/cooking-sales.js": "a05d8bd73bfeb4bd1105cc4f61ed82ba874a8360888db96e96f68fb9d2c30df2",
+    "voxel/src/rules/cooking.js": "61afa711857c21363fcb1d2bc6e7d9397f3e73dd81f4d1a448d05b57866e69e9",
+    "voxel/src/rules/customer-care.js": "5d9e6335e34377488fff14bedaeabb9222d610769fe780c34f98336add5be4e2",
+    "voxel/src/rules/farm.js": "2b8594d23fad8928fd3ee03d69e9a97a78032c93f0b590b30d946f3e09433f42",
+    "voxel/src/rules/festival-meadow.js": "de155a19aed0731a8d63b9d8774bf39381f0623a0cad926e903f4f80b5ef7bb0",
+    "voxel/src/rules/garden-crops.js": "adbeeed467b76811a14ee5be2f681e42f17366713e996d8f1bc4135f01aae6f4",
+    "voxel/src/rules/guest-needs.js": "30791510fac3523dd7841fba9bbe53e025ae807c3f4a2fa85918c4870b618e57",
+    "voxel/src/rules/hands-on.js": "29a05be725b1f53a13267cd08a60bc225acd9a56774eb610e4b0c96475050f59",
+    "voxel/src/rules/hayride.js": "473a27b6898c011166a7622be8805482ba9b0e468ad84534c07b8d222cbdc5f7",
+    "voxel/src/rules/hollow-house.js": "98979b58384c2dff31913db4306509887ebc19bd0155f7ca1e54ec9ab7e4be9e",
+    "voxel/src/rules/home-goals.js": "dd4df3479a0bd2ba12919605636a08def01f01b5c5173ff6293dba23a30942c3",
+    "voxel/src/rules/home-interactions.js": "ac99bc2b0de4e6194900c16772e5d133b56657dc91ad2a119d59243cccd4ed49",
+    "voxel/src/rules/home-pets.js": "de44cb878beec13c1389fc8e73cf9872bc00bc1fecff6f216649a20096246e5d",
+    "voxel/src/rules/house-estate.js": "697843cf36699ad826ba9bd6e9d4ed976c9b5257e3bca8c57809ac0de84176c0",
+    "voxel/src/rules/house.js": "de451bb67a5335e124b63f886417cfeca858cdc78096f44cb6d875a91eb441ba",
+    "voxel/src/rules/intro.js": "b8abb8a808753f3af8f521baa3f02c2e6748c6e30a60ebad43ba63cb7af3382e",
+    "voxel/src/rules/kitchen-equipment.js": "2544f0d42f01ec9ba76798118f11d7bb2cdde0849d3214d1e1ef2dc5d5aa5ecf",
+    "voxel/src/rules/levels.js": "18ddb7687c9aa6f509b08d033ece9955139e5a7552928aaf73dee407b0077182",
+    "voxel/src/rules/life-actions.js": "7d28bdff28651a32a4c8fb62fafaf7032b6db5a183589e7e5e94248cb9612a8a",
+    "voxel/src/rules/market.js": "12de081e9da71b3e2ce70854073c76ff0b39c10a810afff38b6cda900ecd2ca1",
+    "voxel/src/rules/maze-ride.js": "6931495c77c928f7bd0e55abb3b21bddfa5b13aca6ea9b8adb98a21bf172ba42",
+    "voxel/src/rules/meadow-chat.js": "b31b3e59655f7b42e186925c2d4b19720aaf7985d8a37f42400c17ef14c23d69",
+    "voxel/src/rules/meadow-talk.js": "75ff822d32ec47858889f6f0133a9991a427ea1c8253b4d262baaff619aa85ba",
+    "voxel/src/rules/orders.js": "f8d41d982522fe4b9dd6d2f922090ea3526fdc487f3eded07a6340d8002abe51",
+    "voxel/src/rules/piece-colours.js": "b9eefae6d505b2be3719180bc8879ea0100585ff8ec6b23f480e40cada4db090",
+    "voxel/src/rules/progress.js": "b98bf8d119e2cc93aedf7cf559f01e70d93b3edf7cbd53cfee81d350e048b2a6",
+    "voxel/src/rules/selling.js": "3c4880ba45d24e7772ddbf0fcdf5ede82891eafeb80eda0dea47123fa9e7369a",
+    "voxel/src/rules/stock.js": "29a8fdd88ca66ae99fac5ed6eae807c8e953d4c83746b838b873f9f6d58bf413",
+    "voxel/src/rules/surfaces.js": "a71f966ba1d63c7083cab45ecb3c9710ed8842e368cc1fc6f293ff1fbb681327",
+    "voxel/src/rules/unlocks.js": "d98c7446babf7e9d3f5f16fd8f013a2a38c901a245b518a7824a24d9d89c5f8d",
+    "voxel/src/rules/visitor-events.js": "f93728e4dcc3fd9bc5bcbb1ca47ecc1112ad0d5d9e48e29f91dbd2e18437e3d3",
+    "voxel/src/rules/wardrobe.js": "5a863b8bc285ce46f21d73a82fb78b38da89408f226592607d1879f1cf49be97",
+    "voxel/src/sandy.js": "615874239c243f588bd362b7c0aab9dff526b932237645d7186efae3d6503a25",
+    "voxel/src/scene.js": "63ef4c747cf459ad67ac818285c07312eb6406859718c2730916386aad158f65",
+    "voxel/src/special-sprite-meta.js": "76b1e493d4480d1d1c6f7b0c302836f2280445526bac292a31cf3d8f53d5cc02",
+    "voxel/src/special-sprites.js": "03268353c0ded7f528eb5ef0c9e069a313fdf63765c33d2fba6261636b38e32f",
+    "voxel/src/sprite-actors.js": "95e970c17e9a5a77f0aa61cbd31d6ec1b4dc8d4b325bbb4b6f2a6e445f2445c3",
+    "voxel/src/sprite-meta-hd.js": "695ffcb59eb3b068ee37e16f5760d161b0bd57ff1904b6f8ff1cb6a079af6641",
+    "voxel/src/sprite-meta.js": "f76fd98a61875ef34398d66247288e3b27eaa1b739c2fa21ba9c28e9bd91e94e",
+    "voxel/src/sprite-voxels.js": "a6be72aac717fc8c1ad4b847044fad55f2f4a1b1f1153e3e1b95781114633136",
+    "voxel/src/ui/audio.js": "a38689bee2cecac2dfb57cf601b057a84374faf81eee8a4b5ad80c7dff1ce522",
+    "voxel/src/ui/carving-audio.js": "3c1b45abfeba94d1f575ec169d3ea604b1bf9317380527b639914e57b87f4e74",
+    "voxel/src/ui/carving-ui.js": "a675ee06716235208aa96534b27b9432eb0e6a49bce7347606f9ff2e66724545",
+    "voxel/src/ui/chat-card.js": "7944adb5ac41e9ebcb886727f7e4a3dbd18e9918ba3d7d42ae02a5114a8e18e9",
+    "voxel/src/ui/collection-sheets.js": "e4ba366266e75b5eb196d7af972f1294b8dfe9a0ea160449cd4e2ce2ce71b296",
+    "voxel/src/ui/cooking-icons.js": "d51f2893dee0370ee279785095fc0d849d27d83ec15a3598811e5468c11d04bd",
+    "voxel/src/ui/cooking-reveal.js": "1c580657e133047a3dad385db943e0c943d9dd089e50d89699521b50b86e8a1b",
+    "voxel/src/ui/cooking-sheet.js": "b4942acb5ee4191442dae096605b43faab67753e117b3c7b866893a5885f3f7f",
+    "voxel/src/ui/customer-care-sheet.js": "a3091fa93242916bcd29bd524b35e02ddc6154d9e3180fbe6e93f5a86a4bdea0",
+    "voxel/src/ui/estate-controls.js": "10042c1edd3ef52926dfdc73c73e1cdd1446e44891b10586ece28fd94f2eea16",
+    "voxel/src/ui/estate-sheet.js": "416a1d5993f8e760c7ea9790980693e6c878ab8d38d809bb39ed09beb2c8049e",
+    "voxel/src/ui/farm-sheets.js": "ba01c86cd40b961d9d3f3e912a1786bf9bddcd5b070b569216fe319dc74ef721",
+    "voxel/src/ui/festival-meadow-sheet.js": "c26eb7987e2609fd7ddbc9998a0900d8fbeef7a312e2e14df0cc70c8ab0c8827",
+    "voxel/src/ui/foyer-controls.js": "7cf87b2f6728891cc7b14c8f4a84c5491e22d39b29615497d1ff05eebbbdf1d0",
+    "voxel/src/ui/glyphs.js": "ae47b3258eed0fa3383dec4a11a387a86e12e4dbc70a51eba3a718cae131bff1",
+    "voxel/src/ui/guest-card.js": "00b5df2e23071d64ac32071b61de76cf0d8a2a0b9de3df2b58942b785546e291",
+    "voxel/src/ui/hayride-audio.js": "d922083d25a901e6248357534c3a0e93681b340fbd805d98458d5c3a9a25fdb9",
+    "voxel/src/ui/hayride-ride-ui.js": "89ac4f4451cf2804e5a1ebd38b18947cd32f1f9ccc45673573ad35b6a100de95",
+    "voxel/src/ui/hayride-sheet.js": "2cb1c464a179d825dc316bde1c3b311302fab12dc0fd9c0233a7f87b67a67777",
+    "voxel/src/ui/hold-to-buy.js": "6b45711e58e0ea51a0ceb1dcf96a32b8c68a36fd20feef57dd5d46f1098d44cf",
+    "voxel/src/ui/hollow-exterior-icons.js": "cd559cc1dc1ed9a656ce693b24f92df702bbc8afd7b684668a61f052095239aa",
+    "voxel/src/ui/hollow-sheet.js": "689ceb7dd1992babf6d005f895901a004fc0ce4935a021562971c41fb24daeb9",
+    "voxel/src/ui/home-furnishing-icons.js": "0412a90c5d4326b55c62b474848bd3c123e51e6fdb9783275ff3980081b71e80",
+    "voxel/src/ui/home-life-sheet.js": "c4805d46eedcbd54d281fc3bd4d9d47e3502e1fb01712cb27d95c122a9e0d474",
+    "voxel/src/ui/home-sheets.js": "d7188e7a2c28fc71e8562c5530cec6d1bb809a61868d1afa7b81d2d895770dd7",
+    "voxel/src/ui/hospitality-icons.js": "c913b5290dcd41ae79a91551a0d335613afa6e539095f1a6148636a8eab590f1",
+    "voxel/src/ui/intro.js": "6a90e409b04428dd03b80674a0ebea75e158c0684ebe0cb6e86d32681b2cda03",
+    "voxel/src/ui/kit.js": "5b6a05849ea00cfe05a802566f5b67e3344798c72de0b39cf8196ec2863013fe",
+    "voxel/src/ui/kitchen-food-art.js": "fff8e0b7db58670a254d43d49efb4403692da6fa22d0e238b17bb645f4dda11b",
+    "voxel/src/ui/kitchen-guide.js": "bf7190fa1de1b38ed52c00764f90f688c5685da51e005b877edf3a66f7c9e5fd",
+    "voxel/src/ui/kitchen-workshop-icons.js": "b1caa4b83ba8fdb3ba9c69fbe9953f05f5f8e245d686d35752c8228a6d4685c6",
+    "voxel/src/ui/level-celebration.js": "2dce56119ddfc1b351f8beadd8452c050e6acf550d780323b45bf125e6f413c3",
+    "voxel/src/ui/maze-audio.js": "da039526997b316d7712085dd6d9f5449a1f643eb018379fa6d56be618392340",
+    "voxel/src/ui/maze-ride-ui.js": "583b03a53811542ea208b838fe447f17643ef2e644e38f9914bf480129b840ee",
+    "voxel/src/ui/menu-memory.js": "c10a6f9416ef579d9ade7eee24a5f2843a37bac736eaee81dede73e39104fce4",
+    "voxel/src/ui/midi.js": "e62522616acc0ff44485926e12adaafb7ab5225cefe4c26cd2a6882711ea385c",
+    "voxel/src/ui/more-sheet.js": "65fd1efd0362c719a4dcf9e2ea96405f9e646f3b97098f93b4c17fbee54b30f2",
+    "voxel/src/ui/music-queue.js": "2c5f57960afbaab27d874d8842791c3c49df3e44ca777d911069c08afa77363c",
+    "voxel/src/ui/music-tracks.js": "ce3709f3ef820ed2d1736a946e538a4d9a5aafa5ce76d42798092db45a1f8b0c",
+    "voxel/src/ui/npc-rewards.js": "469dc47e6ec59244ab46ca5d0c0ed217d2d9a36f0ed39e2d709bcea3486b22f4",
+    "voxel/src/ui/pad-menu.js": "3f508b8daae2f18963d82e1aabc243b09fdebe59b7fa592542201a3d56060c70",
+    "voxel/src/ui/place-veil.js": "26f660497083a7b822e61a281a6ae85a712441833d22151b709832728dc82dd1",
+    "voxel/src/ui/play-controls.js": "db7c700f3bbbaa80217b5715009bb345ce9b880c7d9139fa38cd47052f0e3688",
+    "voxel/src/ui/premium-icon-markup.js": "a1d0ff924e040d3b6ffc39e0c1504f69453b7ec1e48e750ef370fe9c72e13082",
+    "voxel/src/ui/premium-icons.js": "15d94c0587cab8d51e70feea5d0ff82cd6910e831c5e24beef25cf3d02197449",
+    "voxel/src/ui/purchase-surfaces.js": "a674057a469f7e2206673055345f71bc74a2064d5b43f1b34f366d5abab6916c",
+    "voxel/src/ui/scare-voices.js": "d3ac8fa05fd068add87f24014dfb1290eeea978a730effda9f67e81414ae6f73",
+    "voxel/src/ui/service-kit.js": "be069ac8e85bd93a9300c927cd120e1d16ba8d8466485937e24be29fca88b668",
+    "voxel/src/ui/settings-sheet.js": "db8b9f634dcfa2ea528b1fbaf455eb0976dc48fc212b9ad3d07df557f28b4beb",
+    "voxel/src/ui/stock-popover.js": "59226ed75f2dc710ad7b8a0f0c9cab2b0dfa3c6e3c5e2107599f17021c918eb0",
+    "voxel/src/ui/tractor-engine.js": "80bd3637dc66533d794bf3ea2945fd93499966e97c8e4ff1ef31150265ebc69f",
+    "voxel/src/ui/upgrade-menu.js": "ae828937aa71963b671dc9c0f5f53f98c49c09ece528f3eda9edbfc3c2f9d04e",
+    "voxel/src/visitor-sprite-meta.js": "1f9e9143181d3a50b1a300e143cf48930f909c369dce5bc58a1d4ef7fc7d5729",
+    "voxel/src/voxel-mesh.js": "508392252973b8527de572daf94356bda54636bff3b1b5cf43b47e7034482870",
+    "voxel/src/voxels.js": "4941c422fa74216614f237ef0a7238db4b53d94d017c47e206f27f150740422b",
+    "voxel/src/wilds.js": "f060c735e35a835d69cca7d20217142f0c80cafdec75781f7eca13d610594bc6",
+    "voxel/src/world.js": "351be16d972d0daea61546766cff2afb849c552a17fe0cb61da845ea2ff7e314"
+  },
+  "warnings": [],
+  "scannerSHA256": "48641f18dd19cea62d2b27fc685ba4aad50157f9b44ef8aff365ba48c13db6ab",
+  "lockfileSHA256": "638d614864c66a958a5d5a3296fb001048276e6122f7bdd77018016985f10c98"
+}
