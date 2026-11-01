@@ -25,6 +25,8 @@ test('reward candidates have unique isolated IDs, measured room-scale bodies and
     assert.ok(b.max.y<=meta.height+EPS&&b.max.y>1.3,meta.id+' height');
     assert.ok(meta.height<=2.1&&meta.footprint.w<=1.6&&meta.footprint.d<=1.2);
     assert.ok(drawn.length<=20&&drawn.length===g.userData.stats.meshCount);
+    const calls=drawn.reduce((n,m)=>n+(m.material.transparent&&m.material.side===THREE.DoubleSide&&!m.material.forceSinglePass?2:1),0);
+    assert.equal(calls,g.userData.stats.colourPassCalls);assert.ok(calls<=20,'transparent panels retain the colour-pass draw budget');
     g.traverse(o=>assert.ok(!o.isLight,'models use emissive surfaces, not new scene lights'));
     for(const mesh of drawn){
       assert.ok(mesh.geometry.attributes.position.count>0);

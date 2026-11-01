@@ -52,6 +52,7 @@ function context(root) {
     const material = [...materials].find(m=>m.userData.rewardGlass) ?? (() => {
       const m = new THREE.MeshStandardMaterial({ color:0xc2c2df, transparent:true, opacity:.15,
         roughness:.16, metalness:.08, depthWrite:false, side:THREE.DoubleSide });
+      m.forceSinglePass=true;
       m.userData.rewardGlass=true; materials.add(m); return m;
     })();
     const geometry = new THREE.BoxGeometry(w,h,d); geometries.add(geometry);
@@ -373,12 +374,12 @@ export function buildRewardProp(id,{animate=true}={}) {
   const tick=time=>{if(ctx.disposed)return;pose(animate&&Number.isFinite(time)?Math.max(0,time):0);};
   tick(0);root.updateMatrixWorld(true);
   const bounds=new THREE.Box3().setFromObject(root),size=bounds.getSize(new THREE.Vector3());
-  let meshCount=0;root.traverse(m=>{if(m.isMesh)meshCount++;});
+  let meshCount=0,colourPassCalls=0;root.traverse(m=>{if(m.isMesh){meshCount++;colourPassCalls+=m.material.transparent&&m.material.side===THREE.DoubleSide&&!m.material.forceSinglePass?2:1;}});
   root.userData={ rewardId:id,status:'contractor-preview-not-registered',native:true,front:'+Z',up:'+Y',
     footprint:meta.footprint,gridFootprint:meta.gridFootprint,height:meta.height,width:meta.footprint.w,depth:meta.footprint.d,
     bounds:{min:bounds.min.toArray(),max:bounds.max.toArray()},measuredSize:size.toArray(),
     animationBounds:{min:[-meta.footprint.w/2,0,-meta.footprint.d/2],max:[meta.footprint.w/2,meta.height,meta.footprint.d/2]},
-    stats:{boxCount:ctx.boxCount,meshCount,materialCount:ctx.materialCount},
+    stats:{boxCount:ctx.boxCount,meshCount,colourPassCalls,materialCount:ctx.materialCount},
     tick,dispose:()=>ctx.dispose(),animationEnabled:!!animate };
   return root;
 }

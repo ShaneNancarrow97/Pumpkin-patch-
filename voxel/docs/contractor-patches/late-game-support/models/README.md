@@ -43,7 +43,8 @@ The returned Group exposes:
 - `userData.measuredSize`, `footprint`, `gridFootprint`, `height`.
 - `userData.native: true`, conservative `width` and `depth`, ready for an
   explicitly registered `decorProp` adapter.
-- `userData.stats`: actual box, mesh and distinct owned-material counts.
+- `userData.stats`: actual box, mesh and distinct owned-material counts, plus
+  `colourPassCalls` (shadow passes belong to the host renderer).
 - `userData.tick(time)`, `dispose()` and `animationEnabled`.
 
 The renderer must remove the object from its scene before disposing it. Disposal
@@ -60,7 +61,7 @@ small flame assemblies. The five flames sway/flicker within the height bound.
 The conservatory has an oak drawer base, iron/brass uprights, clear front/rear/
 side panes, a segmented curved glass roof, roof ribs/finials, three sculpted
 moonflowers, ivy, soil, little pumpkins and a golden moth. Glass shares one
-restrained transparent material and writes no depth. The moth circles inside the
+restrained transparent material, uses a single colour pass and writes no depth. The moth circles inside the
 case and moves its wings. The19-mesh budget includes the14 small glass panels;
 all the rest is instanced, keeping this detailed hero piece below20 draw meshes.
 
