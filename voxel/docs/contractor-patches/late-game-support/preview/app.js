@@ -15,12 +15,25 @@ try{const bytes=Uint8Array.from(atob(atlas.split(',')[1]),c=>c.charCodeAt(0));at
 function icon(index,size=48){return `<span class="art" aria-hidden="true" style="width:${size}px;height:${size}px;background-image:url(${atlasURL});background-size:300% 200%;background-position:${index%3*50}% ${Math.floor(index/3)*100}%"></span>`;}
 const rewardIcon=id=>3+REWARD_PROPS.findIndex(p=>p.id===id),themeIcon=id=>content.themes.findIndex(p=>p.id===id);
 
+// Keep the active card visible in narrow horizontal catalogues without moving
+// the page itself, including after switching from an unfolded to a phone view.
+function revealSelectedChoices(){
+ for(const id of ['reward-choices','night-choices']){
+  const list=$(id),selected=list.querySelector('[aria-pressed=true]');
+  if(!selected||!list.clientWidth||list.scrollWidth<=list.clientWidth)continue;
+  const a=list.getBoundingClientRect(),b=selected.getBoundingClientRect();
+  if(b.left<a.left)list.scrollLeft+=b.left-a.left;
+  else if(b.right>a.right)list.scrollLeft+=b.right-a.right;
+ }
+}
+addEventListener('resize',()=>requestAnimationFrame(revealSelectedChoices));
 // All choices remain DOM controls; the renderer only displays the selected prop.
 function choices(){
  if(!$('reward-choices').children.length){$('reward-choices').innerHTML=REWARD_PROPS.map(p=>`<button class="choice" data-reward="${escape(p.id)}" aria-pressed="${p.id===state.reward}">${icon(rewardIcon(p.id))}<span class="choice-copy"><span class="choice-name">${escape(p.name)}</span><small>360° voxel model</small></span></button>`).join('');$('reward-choices').querySelectorAll('[data-reward]').forEach(b=>b.onclick=()=>selectReward(b.dataset.reward));}
  if(!$('night-choices').children.length){$('night-choices').innerHTML=content.themes.map(p=>`<button class="choice" data-night="${escape(p.id)}" aria-pressed="${p.id===state.theme}">${icon(themeIcon(p.id))}<span class="choice-copy"><span class="choice-name">${escape(p.name)}</span><small>Level ${p.level} brief · Proposal</small></span></button>`).join('');$('night-choices').querySelectorAll('[data-night]').forEach(b=>b.onclick=()=>selectNight(b.dataset.night));}
  $('reward-choices').querySelectorAll('[data-reward]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.reward===state.reward)));
  $('night-choices').querySelectorAll('[data-night]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.night===state.theme)));
+ requestAnimationFrame(revealSelectedChoices);
 }
 function tab(next,focus=false,reveal=false){
  if(!['rewards','nights','balance'].includes(next))return;
@@ -28,6 +41,7 @@ function tab(next,focus=false,reveal=false){
  for(const id of ['rewards','nights','balance']){const active=id===next,b=$('tab-'+id);b.setAttribute('aria-selected',String(active));b.tabIndex=active?0:-1;$('panel-'+id).hidden=!active;}
  if(focus)$('tab-'+next).focus();
  if(next==='rewards'){viewer?.resize();viewer?.resume();}else viewer?.pause();
+ requestAnimationFrame(revealSelectedChoices);
  if(reveal)requestAnimationFrame(()=>{$('panel-'+next).scrollIntoView({block:'start',behavior:motion.matches?'auto':'smooth'});});
 }
 for(const button of document.querySelectorAll('[data-tab]')){
@@ -113,9 +127,10 @@ function createViewer(){
  canvas.addEventListener('wheel',e=>{e.preventDefault();adjustZoom(Math.exp(THREE.MathUtils.clamp(e.deltaY,-150,150)*.002));},{passive:false});
  canvas.addEventListener('keydown',e=>{let handled=true;if(e.key==='ArrowLeft')yaw-=.13;else if(e.key==='ArrowRight')yaw+=.13;else if(e.key==='ArrowUp')pitch=Math.min(1.3,pitch+.08);else if(e.key==='ArrowDown')pitch=Math.max(.12,pitch-.08);else if(['+','='].includes(e.key))adjustZoom(.9);else if(e.key==='-')adjustZoom(1.1);else if(e.key==='Home')reset();else handled=false;if(handled){e.preventDefault();draw();}});
  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();pointers.clear();pinchDistance=0;fallback('The 3D context paused. The painted reference is shown while the browser recovers.');});
- // Three.js restores its renderer in a listener on this same event. Rebuild
- // after those listeners have run, rather than drawing into half-restored state.
- canvas.addEventListener('webglcontextrestored',()=>queueMicrotask(()=>{if(destroyed)return;contextHealthy=true;select(modelId??state.reward);resize();resume();}));
+ // DOM event listeners can have a microtask checkpoint between callbacks.
+ // A new task lets Three.js finish its own restoration listener before a model
+ // is uploaded again, including when our listener was registered first.
+ canvas.addEventListener('webglcontextrestored',()=>setTimeout(()=>{if(destroyed)return;contextHealthy=true;select(modelId??state.reward);resize();resume();},0));
  $('zoom-in').onclick=()=>adjustZoom(.86);$('zoom-out').onclick=()=>adjustZoom(1.16);$('reset-view').onclick=reset;
  $('view-preset').onchange=e=>{yaw={quarter:.65,front:0,side:Math.PI/2,back:Math.PI}[e.target.value]??.65;pitch=.58;draw();};
  $('spin-model').onclick=()=>{spin=!spin;$('spin-model').setAttribute('aria-pressed',String(spin));resume();};

@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "status": "contractor-reference-art",
+  "installedInGame": false,
+  "columns": 3,
+  "rows": 2,
+  "cell": 192,
+  "width": 576,
+  "height": 384,
+  "encodedBytes": 103532,
+  "encodedSHA256": "aeb67472997eac94e79040ce3c2c3ab17e6e4add839f4d86ba180f117581bf30",
+  "sourceSHA256": "1534607f0e6685be528354d8a21ec3366fc4b65db4157515185faf4f6a6ca2e4",
+  "icons": [
+    {
+      "id": "midnight-court-banquet",
+      "index": 0,
+      "column": 0,
+      "row": 0,
+      "sourceBounds": [
+        45,
+        51,
+        495,
+        444
+      ],
+      "packedBounds": [
+        8,
+        19,
+        184,
+        173
+      ],
+      "rgbaSHA256": "d1319295b4384fc275744344b582508bad34d901b39e9c2e0148d58b64033802"
+    },
+    {
+      "id": "lanterns-in-the-mist",
+      "index": 1,
+      "column": 1,
+      "row": 0,
+      "sourceBounds": [
+        520,
+        28,
+        1013,
+        447
+      ],
+      "packedBounds": [
+        8,
+        21,
+        184,
+        171
+      ],
+      "rgbaSHA256": "f9eb97a0976c063bbc7da0e14fb44d33708a33aca703bb798e797617e1f8fc60"
+    },
+    {
+      "id": "the-last-wagon",
+      "index": 2,
+      "column": 2,
+      "row": 0,
+      "sourceBounds": [
+        1040,
+        28,
+        1491,
+        441
+      ],
+      "packedBounds": [
+        8,
+        15,
+        184,
+        176
+      ],
+      "rgbaSHA256": "0041067c8922ca44bfae9a6cc371198e32001e6190c58a766dd42fd8542c090b"
+    },
+    {
+      "id": "contract-trophy-banquet-candelabrum",
+      "index": 3,
+      "column": 0,
+      "row": 1,
+      "sourceBounds": [
+        94,
+        447,
+        456,
+        986
+      ],
+      "packedBounds": [
+        37,
+        8,
+        155,
+        184
+      ],
+      "rgbaSHA256": "57b499d7a5d55717c06a0acb2e580155180d1baad43a0874d03e0180b9ef8cf9"
+    },
+    {
+      "id": "contract-trophy-moonlit-conservatory",
+      "index": 4,
+      "column": 1,
+      "row": 1,
+      "sourceBounds": [
+        591,
+        449,
+        918,
+        980
+      ],
+      "packedBounds": [
+        42,
+        8,
+        150,
+        184
+      ],
+      "rgbaSHA256": "59f8d1ae82c05f0e850dca39620ed7bcf339496af6b52e993d60fb4f87700aa2"
+    },
+    {
+      "id": "contract-trophy-clockwork-hayride-theatre",
+      "index": 5,
+      "column": 2,
+      "row": 1,
+      "sourceBounds": [
+        1007,
+        485,
+        1509,
+        1007
+      ],
+      "packedBounds": [
+        11,
+        8,
+        180,
+        184
+      ],
+      "rgbaSHA256": "a6f460c11a941db0539d7ca304f1585fdd8707eb60fe729283ffefd50b8363e7"
+    }
+  ]
+}

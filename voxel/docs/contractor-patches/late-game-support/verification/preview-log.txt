@@ -1,0 +1,139 @@
+ok  Scope badge makes the separate contractor status clear
+ok  The first view contains one real3D reward model
+ok  Reduced-motion default does not start automatic movement
+ok  Browser briefs match the checked-in proposal data
+ok  Browser audit matches the emitted current-rule evidence
+ok  All three reward candidates are selectable
+ok  Midnight Banquet Candelabrum: selection replaces the previous model
+ok  Midnight Banquet Candelabrum: actual geometry renders within the preview draw budget
+ok  Midnight Banquet Candelabrum: front preset uses the actual camera
+ok  Midnight Banquet Candelabrum: front has readable rendered pixels
+ok  Midnight Banquet Candelabrum: side preset uses the actual camera
+ok  Midnight Banquet Candelabrum: side has readable rendered pixels
+ok  Midnight Banquet Candelabrum: back preset uses the actual camera
+ok  Midnight Banquet Candelabrum: back has readable rendered pixels
+ok  Midnight Banquet Candelabrum: front, side and back are distinct renders
+ok  Moonlit Wardian Conservatory: selection replaces the previous model
+ok  Moonlit Wardian Conservatory: actual geometry renders within the preview draw budget
+ok  Moonlit Wardian Conservatory: front preset uses the actual camera
+ok  Moonlit Wardian Conservatory: front has readable rendered pixels
+ok  Moonlit Wardian Conservatory: side preset uses the actual camera
+ok  Moonlit Wardian Conservatory: side has readable rendered pixels
+ok  Moonlit Wardian Conservatory: back preset uses the actual camera
+ok  Moonlit Wardian Conservatory: back has readable rendered pixels
+ok  Moonlit Wardian Conservatory: front, side and back are distinct renders
+ok  Clockwork Hayride Theatre: selection replaces the previous model
+ok  Clockwork Hayride Theatre: actual geometry renders within the preview draw budget
+ok  Clockwork Hayride Theatre: front preset uses the actual camera
+ok  Clockwork Hayride Theatre: front has readable rendered pixels
+ok  Clockwork Hayride Theatre: side preset uses the actual camera
+ok  Clockwork Hayride Theatre: side has readable rendered pixels
+ok  Clockwork Hayride Theatre: back preset uses the actual camera
+ok  Clockwork Hayride Theatre: back has readable rendered pixels
+ok  Clockwork Hayride Theatre: front, side and back are distinct renders
+ok  Dragging the actual canvas rotates the camera
+ok  Zoom in moves the real camera closer
+ok  Zoom out increases the real camera radius
+ok  Reset returns to the common model framing
+ok  Two captured touch pointers pinch the real view closer
+ok  Explicit Auto-turn starts visible camera motion
+ok  Stopping Auto-turn returns the reduced-motion preview to rest
+ok  Repeated model swaps release owned GPU buffers and geometry
+ok  nights tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  The hidden model viewer stops its frame loop
+ok  Midnight Court Banquet: letter and flexible proposal goals are rendered
+ok  Midnight Court Banquet: court-supper appears with its actual target
+ok  Midnight Court Banquet: court-frights appears with its actual target
+ok  Midnight Court Banquet: court-patrons appears with its actual target
+ok  Midnight Court Banquet: court-goodbyes appears with its actual target
+ok  Midnight Court Banquet: implementation and timing limits remain visible
+ok  The night reward link opens its matching actual model
+ok  Inspect reward brings its model into view
+ok  The reward links back to the corresponding evening brief
+ok  Lanterns in the Mist: letter and flexible proposal goals are rendered
+ok  Lanterns in the Mist: mist-warm-cups appears with its actual target
+ok  Lanterns in the Mist: mist-lantern-walk appears with its actual target
+ok  Lanterns in the Mist: mist-kind-goodbyes appears with its actual target
+ok  Lanterns in the Mist: mist-garden-basket appears with its actual target
+ok  Lanterns in the Mist: implementation and timing limits remain visible
+ok  The night reward link opens its matching actual model
+ok  Inspect reward brings its model into view
+ok  The reward links back to the corresponding evening brief
+ok  The Last Wagon: letter and flexible proposal goals are rendered
+ok  The Last Wagon: wagon-full-trail appears with its actual target
+ok  The Last Wagon: wagon-sweet-return appears with its actual target
+ok  The Last Wagon: wagon-smooth-boarding appears with its actual target
+ok  The Last Wagon: wagon-fond-goodbyes appears with its actual target
+ok  The Last Wagon: implementation and timing limits remain visible
+ok  The night reward link opens its matching actual model
+ok  Inspect reward brings its model into view
+ok  The reward links back to the corresponding evening brief
+ok  balance tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  Capacity evidence is labelled separately from a profit forecast
+ok  The source audit supplies all18 matched cases
+ok  Original circuit · 1 tractor · £8: displayed evidence matches the emitted scenario
+ok  The forgotten graveyard · 1 tractor · £8: displayed evidence matches the emitted scenario
+ok  The crooked thicket · 1 tractor · £8: displayed evidence matches the emitted scenario
+ok  Original circuit · 1 tractor · £12: displayed evidence matches the emitted scenario
+ok  The forgotten graveyard · 1 tractor · £12: displayed evidence matches the emitted scenario
+ok  The crooked thicket · 1 tractor · £12: displayed evidence matches the emitted scenario
+ok  Original circuit · 1 tractor · £20: displayed evidence matches the emitted scenario
+ok  The forgotten graveyard · 1 tractor · £20: displayed evidence matches the emitted scenario
+ok  The crooked thicket · 1 tractor · £20: displayed evidence matches the emitted scenario
+ok  Original circuit · 2 tractors · £8: displayed evidence matches the emitted scenario
+ok  The forgotten graveyard · 2 tractors · £8: displayed evidence matches the emitted scenario
+ok  The crooked thicket · 2 tractors · £8: displayed evidence matches the emitted scenario
+ok  Original circuit · 2 tractors · £12: displayed evidence matches the emitted scenario
+ok  The forgotten graveyard · 2 tractors · £12: displayed evidence matches the emitted scenario
+ok  The crooked thicket · 2 tractors · £12: displayed evidence matches the emitted scenario
+ok  Original circuit · 2 tractors · £20: displayed evidence matches the emitted scenario
+ok  The forgotten graveyard · 2 tractors · £20: displayed evidence matches the emitted scenario
+ok  The crooked thicket · 2 tractors · £20: displayed evidence matches the emitted scenario
+ok  Each comparison retains all three route lengths
+ok  Saved audit JSON preserves the exact emitted evidence
+ok  rewards tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  phone rewards: the selected catalogue card stays visible after resizing
+ok  phone rewards: responsive controls stay distinct and44px
+ok  nights tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  phone nights: the selected catalogue card stays visible after resizing
+ok  phone nights: responsive controls stay distinct and44px
+ok  balance tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  phone balance: the selected catalogue card stays visible after resizing
+ok  phone balance: responsive controls stay distinct and44px
+ok  rewards tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  fold rewards: the selected catalogue card stays visible after resizing
+ok  fold rewards: responsive controls stay distinct and44px
+ok  nights tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  fold nights: the selected catalogue card stays visible after resizing
+ok  fold nights: responsive controls stay distinct and44px
+ok  balance tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  fold balance: the selected catalogue card stays visible after resizing
+ok  fold balance: responsive controls stay distinct and44px
+ok  rewards tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  landscape rewards: the selected catalogue card stays visible after resizing
+ok  landscape rewards: responsive controls stay distinct and44px
+ok  nights tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  landscape nights: the selected catalogue card stays visible after resizing
+ok  landscape nights: responsive controls stay distinct and44px
+ok  balance tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  landscape balance: the selected catalogue card stays visible after resizing
+ok  landscape balance: responsive controls stay distinct and44px
+ok  rewards tab opens its own panel
+ok  Only the selected workshop panel is visible
+ok  Context loss shows an explicit painted-reference fallback
+ok  Context restoration rebuilds one usable model
+ok  The workshop never creates a player save
+ok  Unavailable WebGL retains the painted reference and contractor controls
+ok  The evidence remains usable without WebGL
+ok  The exact offline preview has no page errors or external requests

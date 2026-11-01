@@ -1,0 +1,1694 @@
+{
+  "version": 1,
+  "scope": "Controlled ride capacity study — not whole-farm profit or a player-time forecast",
+  "options": {
+    "durationSeconds": 1800,
+    "stepSeconds": 1,
+    "arrivalEverySeconds": 30,
+    "partySize": 4,
+    "guestBudget": 60,
+    "acceptance": "walk-in"
+  },
+  "assumptions": [
+    "Prepared tier 3 attraction, all eligible haunts and all available station-crew tiers. Each case starts afresh; 1800s horizon.",
+    "The same 4 visitors are offered every 30s, starting at time 0. Each has a finite £60 wallet and hunger 50.",
+    "Walk-in mode keeps the real deterministic willingness/value roll. Guests are not marked as attraction-invited.",
+    "The automatic opening party and attraction-generated invitations are disabled only in these private fixtures so demand is identical across configurations.",
+    "Actual physical approach/return timing is used. Each visitor is offered one ride and then removed after their return, without later shopping or a second attraction.",
+    "Farm production, food/cocoa sales, tips, other attractions, natural needs drift and whole-farm arrival generation are excluded. The real hayride unloading effects still apply.",
+    "The house and Hollow House are prepared fixtures. Hayride capital is purchased through real rules and reported separately; it is not an operating cost/profit estimate.",
+    "The horizon stops exactly without draining the queue. Tickets already sold, rides completed and guests fully returned are reported separately.",
+    "The planner returns a refusal without a reason code. Audit classifications check insufficient budget first, then a full queue, then the remaining willingness/value rejection.",
+    "Frightened is the current ride flag/statistic. It does not prove that a returned arrival visitor actually leaves the whole farm."
+  ],
+  "sourceHashes": {
+    "src/content/catalog.mjs": "49c649e18c31b16903414ef89a8cf5931e8a844e3a7a676f8d05712970f2c387",
+    "src/content/economy.js": "def825f8bf0533b87866fbc24be86362945b75fd00f5a0890d9a873f29fa4f65",
+    "src/content/library.mjs": "a698266d0e7ae2b33e4a6222935efef9ad70bb89dfa52ebeb4dfd0ed3cc99d37",
+    "src/content/products.js": "ec0bc26eb6b50eb89f6af9e9a0dea03722f8cfabf8a79167f6f9caa81b440b18",
+    "src/content/rooms.mjs": "fba30a2a99c58fe9e869a48afa76854ddbcf6ec4f9ad49544c56b8ed443aa19a",
+    "src/content/shop.js": "1301ec4948f026912504e37ce597769ee82961ced5ee187dcbc9bec31c5c527b",
+    "src/content/stall.js": "6935d674d05254437d3c98793569c569748c95adb3934b30198e38721a0ca788",
+    "src/core/costume-model.mjs": "39b5bd55a59b5c73fb73a23459dcd5ac2f031457f1ae4fdb4a63f7bb53c0e4c9",
+    "voxel/src/content/carving.js": "aae2d7d0d235c12a311392bb8d1dd2ec03fb4f787ddbcbab83dd1797a11c6a50",
+    "voxel/src/content/cooking-dining.js": "4bfb109ffbe35abd8c824226f6c0c240e4032d589ff9d0cae6c124d6d89ed634",
+    "voxel/src/content/cooking.js": "b7590a969a10ae4c00ed53a306b5400a9a76d46406f4f8ae141146d51037fca5",
+    "voxel/src/content/decor-sizes.js": "cd5ed8d09a5de8291c80dd10f541542299e3de2d19156fbf63366d4fd374e842",
+    "voxel/src/content/farm-layout.js": "c7e3a5dfb69f08153bb6727619c7adda8e4cb7f4b9b7449cfbea63848c4c0130",
+    "voxel/src/content/festival-meadow.js": "96cf8ef863eed4cc71e605ec203b2b074bc12f3a514be537f6addef17bac3206",
+    "voxel/src/content/hayride-layout.js": "75521bc6ba3ceaab5f94d25d9cab054f70f139055fb0a479737a1e237ca5067f",
+    "voxel/src/content/hayride.js": "12e687ddaec74e320e96a23892317366ab739c6f8392e13375d49300540e4b6c",
+    "voxel/src/content/hollow-house.js": "5c3c06bbee869099d52c332ad9c2819c201b565df50d3af8fc2f463fc78e0c19",
+    "voxel/src/content/home-furnishing-sizes.js": "56107adddc80a8b739381a6a3e5da2abb22004711398d5eaa28b311d20358f68",
+    "voxel/src/content/home-furnishings.js": "521476e5ba1b2a5073abf6179693893fae4932bb7f3d0f1de34187da3f3db740",
+    "voxel/src/content/house-estate.js": "52133f5ec82b84253d054873afc7248afbc058786bf6cf4a0a128646b3faf2d0",
+    "voxel/src/content/kitchen-equipment-sizes.js": "58ca09faaa0669f9cfe2f5623958d20315a96a9d1310419b08da1790def2e7ac",
+    "voxel/src/content/kitchen-equipment.js": "6b32930357d6f3b5c3a2b987052989c86b9be38466b94c78461aef8b47ea9f7d",
+    "voxel/src/content/pet-furnishings.js": "ca797a64702155243bbf11ed058f33d53823ef10c21c783588d53e1e7c4992af",
+    "voxel/src/content/placement.js": "984d7b8c1117fbf15af1dfcf10dcd86ae7574e39e76fc3484a81a4ab163adeb3",
+    "voxel/src/content/premium-furniture-catalog.js": "8ff7c36827f4b84e53c5416e33996751cc69a6a475bdf598e97436cddba001cd",
+    "voxel/src/content/premium-wall-catalog.js": "6a67f847b09634e154de4bcbedde3ffe6448a87eb883f0ceea39e2415822000e",
+    "voxel/src/content/pumpkin-shapes.js": "ba97a625b11e6efb103b5897847d79988ea39d518a55762be014488bb20b5b7b",
+    "voxel/src/content/pumpkin-varieties.js": "65a6da1c82ff37a125522375ccd1e5ea0fb2ae6ef6c6800f99c73bb846d8fbd7",
+    "voxel/src/content/shelf-catalog.js": "86ea8808e5cd467784b65d93c3a6c167adef2fc8cc44b55db29a14669b01a5d5",
+    "voxel/src/content/visitor-events.js": "0d0af89a6141dc7216a349edb548cd75fb367d296a07fbae8f4342689396ec8a",
+    "voxel/src/content/visitors.js": "21909162913cba5219768ee092e959d25b1b041c3180d01b6087d8475ccc8f12",
+    "voxel/src/costume-expansion.js": "7a5129a2b165fc541559b5ae1fdd958d9486131dfaa46cead3de3e8b311268a8",
+    "voxel/src/model.js": "002fabb503a9732692b175ce0df8ed0db6591e7555c4f950070b6c79afdfc8ac",
+    "voxel/src/rules/big-spender.js": "08834bd2dbe455c3df779429f2a5868710088466c384bcda25ab5b587fbca414",
+    "voxel/src/rules/carving.js": "f7a24a2acf99126906a7cd527ec8b22371894a1f8a0608f99c3c962bfe8c93e3",
+    "voxel/src/rules/cleanliness.js": "651709e0aca70a607b9355d203cd56c15153a8994cb2a2bc5dae08a5864f4eb7",
+    "voxel/src/rules/cocoa-menu.js": "2d0717de13057838b8e710208b78e56f75cc418fdfbe66e0e1ed2ba5859e8595",
+    "voxel/src/rules/cooking-dining.js": "b3238e6f44edcadf3f917942f60549211fe3fca5cca7bdc88043f432cb17d047",
+    "voxel/src/rules/cooking-mix.js": "39b61cf1d6a143500b5137d4ae54b70603439a16ab11a2f25ef077944fbba3c8",
+    "voxel/src/rules/cooking-sales.js": "a05d8bd73bfeb4bd1105cc4f61ed82ba874a8360888db96e96f68fb9d2c30df2",
+    "voxel/src/rules/cooking.js": "61afa711857c21363fcb1d2bc6e7d9397f3e73dd81f4d1a448d05b57866e69e9",
+    "voxel/src/rules/customer-care.js": "5d9e6335e34377488fff14bedaeabb9222d610769fe780c34f98336add5be4e2",
+    "voxel/src/rules/farm.js": "2b8594d23fad8928fd3ee03d69e9a97a78032c93f0b590b30d946f3e09433f42",
+    "voxel/src/rules/festival-meadow.js": "de155a19aed0731a8d63b9d8774bf39381f0623a0cad926e903f4f80b5ef7bb0",
+    "voxel/src/rules/garden-crops.js": "adbeeed467b76811a14ee5be2f681e42f17366713e996d8f1bc4135f01aae6f4",
+    "voxel/src/rules/guest-needs.js": "30791510fac3523dd7841fba9bbe53e025ae807c3f4a2fa85918c4870b618e57",
+    "voxel/src/rules/hayride.js": "473a27b6898c011166a7622be8805482ba9b0e468ad84534c07b8d222cbdc5f7",
+    "voxel/src/rules/hollow-house.js": "98979b58384c2dff31913db4306509887ebc19bd0155f7ca1e54ec9ab7e4be9e",
+    "voxel/src/rules/home-goals.js": "dd4df3479a0bd2ba12919605636a08def01f01b5c5173ff6293dba23a30942c3",
+    "voxel/src/rules/house-estate.js": "697843cf36699ad826ba9bd6e9d4ed976c9b5257e3bca8c57809ac0de84176c0",
+    "voxel/src/rules/house.js": "de451bb67a5335e124b63f886417cfeca858cdc78096f44cb6d875a91eb441ba",
+    "voxel/src/rules/intro.js": "b8abb8a808753f3af8f521baa3f02c2e6748c6e30a60ebad43ba63cb7af3382e",
+    "voxel/src/rules/kitchen-equipment.js": "2544f0d42f01ec9ba76798118f11d7bb2cdde0849d3214d1e1ef2dc5d5aa5ecf",
+    "voxel/src/rules/levels.js": "18ddb7687c9aa6f509b08d033ece9955139e5a7552928aaf73dee407b0077182",
+    "voxel/src/rules/market.js": "12de081e9da71b3e2ce70854073c76ff0b39c10a810afff38b6cda900ecd2ca1",
+    "voxel/src/rules/meadow-chat.js": "b31b3e59655f7b42e186925c2d4b19720aaf7985d8a37f42400c17ef14c23d69",
+    "voxel/src/rules/meadow-talk.js": "75ff822d32ec47858889f6f0133a9991a427ea1c8253b4d262baaff619aa85ba",
+    "voxel/src/rules/orders.js": "f8d41d982522fe4b9dd6d2f922090ea3526fdc487f3eded07a6340d8002abe51",
+    "voxel/src/rules/piece-colours.js": "b9eefae6d505b2be3719180bc8879ea0100585ff8ec6b23f480e40cada4db090",
+    "voxel/src/rules/progress.js": "c48d2bf36be59ad9964e766b59dfc2f37382873a5830c7a68be90456c842ec32",
+    "voxel/src/rules/selling.js": "540b6a2ba4e1bd861545df6666674b6ba52c9999e6d7967ae7698212d3344c46",
+    "voxel/src/rules/stock.js": "29a8fdd88ca66ae99fac5ed6eae807c8e953d4c83746b838b873f9f6d58bf413",
+    "voxel/src/rules/surfaces.js": "a71f966ba1d63c7083cab45ecb3c9710ed8842e368cc1fc6f293ff1fbb681327",
+    "voxel/src/rules/unlocks.js": "d98c7446babf7e9d3f5f16fd8f013a2a38c901a245b518a7824a24d9d89c5f8d",
+    "voxel/src/rules/visitor-events.js": "f93728e4dcc3fd9bc5bcbb1ca47ecc1112ad0d5d9e48e29f91dbd2e18437e3d3",
+    "voxel/src/rules/wardrobe.js": "5a863b8bc285ce46f21d73a82fb78b38da89408f226592607d1879f1cf49be97"
+  },
+  "rulesFingerprint": "46a74ac3b0744943debd7d340aa1346a4d27d53417d017382effb155ac8afe3d",
+  "auditorSHA256": "6b6ca5bf787709959a132f0de0aabe2f9acdf5ddb42544262d156bbe25d6f01c",
+  "metricDefinitions": {
+    "ticketRevenue": "Gross ticket receipts in the fixed study window. No retail revenue, operating costs or profit forecast is included.",
+    "ticketsSold": "Unique admitted visitors who actually paid at boarding, including anyone still on their trip at the window end.",
+    "completed": "Paid guests whose wagon finished unloading by the window end.",
+    "returnedGuests": "All admitted visits whose physical return finished, including guests who missed the ride after admission.",
+    "paidReturnedGuests": "Paid guests whose physical return finished by the window end.",
+    "configuredInvitationGapSeconds": "The current rule’s calculated invitation gap; automatic invitations are held off in this fixture.",
+    "meanReturnedHunger": "Paid returned guests only. Natural need drift is excluded; actual hayride unloading effects are included.",
+    "refusedQueue": "A refused offer with enough money where the actual approach/queue occupancy has reached capacity.",
+    "refusedWillingnessOrValue": "A refused offer with enough money and available queue capacity under the real willingness/value rule."
+  },
+  "staticFacts": {
+    "tier": 3,
+    "baseCaseFleet": 1,
+    "baseScare": 36,
+    "fullHauntScareContribution": 81,
+    "rawScareWithoutRoutes": 117,
+    "cappedScareWithoutRoutes": 100,
+    "standaloneHayrideFootfallPercent": 30,
+    "sharedFootfallCapPercent": 75,
+    "fullEstateFootfallWithoutRidePercent": 65,
+    "fullEstateMarginalRideFootfallPercent": 10,
+    "routes": [
+      {
+        "routeLevel": 0,
+        "name": "Original circuit",
+        "circuitSeconds": 90,
+        "scareRating": 100,
+        "ticketRange": {
+          "min": 4,
+          "max": 20
+        },
+        "capitalInvested": 46200
+      },
+      {
+        "routeLevel": 1,
+        "name": "The forgotten graveyard",
+        "circuitSeconds": 110,
+        "scareRating": 100,
+        "ticketRange": {
+          "min": 4,
+          "max": 20
+        },
+        "capitalInvested": 54700
+      },
+      {
+        "routeLevel": 2,
+        "name": "The crooked thicket",
+        "circuitSeconds": 130,
+        "scareRating": 100,
+        "ticketRange": {
+          "min": 4,
+          "max": 20
+        },
+        "capitalInvested": 70700
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "route-0-fleet-1-ticket-8",
+      "label": "Original circuit · 1 tractor · £8",
+      "config": {
+        "tier": 3,
+        "routeLevel": 0,
+        "fleet": 1,
+        "ticketPrice": 8,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 90,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 46200,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 15,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 112,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 128,
+        "ticketsSold": 110,
+        "completed": 102,
+        "returnedGuests": 94,
+        "paidReturnedGuests": 94,
+        "ticketRevenue": 880,
+        "ticketsPerMinute": 3.666667,
+        "completionsPerMinute": 3.4,
+        "departures": 17,
+        "peakQueue": 10,
+        "peakActive": 19,
+        "meanBoardingQueueSeconds": 51.381818,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 13520,
+        "meanPaidGuestRemainder": 52,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 62.212766,
+        "frightenedFlagged": 82,
+        "frightenedReturnedGuests": 76,
+        "activeAtEnd": 18,
+        "chargedActiveAtEnd": 16,
+        "activePhases": {
+          "return": 8,
+          "riding": 8,
+          "queue": 2
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 880,
+        "saleEventTotal": 880,
+        "coinIncreaseAfterCapital": 880,
+        "earnedIncrease": 880,
+        "uniqueChargedVisitors": 110,
+        "uniqueVisitReceipts": 110,
+        "retainedRuntimeReceipts": 110
+      },
+      "warnings": [
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-1-fleet-1-ticket-8",
+      "label": "The forgotten graveyard · 1 tractor · £8",
+      "config": {
+        "tier": 3,
+        "routeLevel": 1,
+        "fleet": 1,
+        "ticketPrice": 8,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 110,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 54700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 15,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 112,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 128,
+        "ticketsSold": 102,
+        "completed": 94,
+        "returnedGuests": 94,
+        "paidReturnedGuests": 94,
+        "ticketRevenue": 816,
+        "ticketsPerMinute": 3.4,
+        "completionsPerMinute": 3.133333,
+        "departures": 14,
+        "peakQueue": 12,
+        "peakActive": 20,
+        "meanBoardingQueueSeconds": 66.755686,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 13584,
+        "meanPaidGuestRemainder": 52,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 62.212766,
+        "frightenedFlagged": 76,
+        "frightenedReturnedGuests": 76,
+        "activeAtEnd": 18,
+        "chargedActiveAtEnd": 8,
+        "activePhases": {
+          "riding": 8,
+          "queue": 10
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 816,
+        "saleEventTotal": 816,
+        "coinIncreaseAfterCapital": 816,
+        "earnedIncrease": 816,
+        "uniqueChargedVisitors": 102,
+        "uniqueVisitReceipts": 102,
+        "retainedRuntimeReceipts": 102
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-2-fleet-1-ticket-8",
+      "label": "The crooked thicket · 1 tractor · £8",
+      "config": {
+        "tier": 3,
+        "routeLevel": 2,
+        "fleet": 1,
+        "ticketPrice": 8,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 130,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 70700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 15,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 110,
+        "refusedQueue": 3,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 127,
+        "ticketsSold": 97,
+        "completed": 89,
+        "returnedGuests": 86,
+        "paidReturnedGuests": 81,
+        "ticketRevenue": 776,
+        "ticketsPerMinute": 3.233333,
+        "completionsPerMinute": 2.966667,
+        "departures": 13,
+        "peakQueue": 16,
+        "peakActive": 26,
+        "meanBoardingQueueSeconds": 127.946804,
+        "queueTimedOut": 5,
+        "missedAfterAdmission": 5,
+        "remainingGuestMoney": 13624,
+        "meanPaidGuestRemainder": 52,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 62.617284,
+        "frightenedFlagged": 71,
+        "frightenedReturnedGuests": 64,
+        "activeAtEnd": 24,
+        "chargedActiveAtEnd": 16,
+        "activePhases": {
+          "return": 8,
+          "riding": 8,
+          "queue": 8
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 776,
+        "saleEventTotal": 776,
+        "coinIncreaseAfterCapital": 776,
+        "earnedIncrease": 776,
+        "uniqueChargedVisitors": 97,
+        "uniqueVisitReceipts": 97,
+        "retainedRuntimeReceipts": 97
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-0-fleet-1-ticket-12",
+      "label": "Original circuit · 1 tractor · £12",
+      "config": {
+        "tier": 3,
+        "routeLevel": 0,
+        "fleet": 1,
+        "ticketPrice": 12,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 90,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 46200,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 15,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 108,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 132,
+        "ticketsSold": 106,
+        "completed": 98,
+        "returnedGuests": 91,
+        "paidReturnedGuests": 91,
+        "ticketRevenue": 1272,
+        "ticketsPerMinute": 3.533333,
+        "completionsPerMinute": 3.266667,
+        "departures": 17,
+        "peakQueue": 10,
+        "peakActive": 19,
+        "meanBoardingQueueSeconds": 50.656226,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 13128,
+        "meanPaidGuestRemainder": 48,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 61.626374,
+        "frightenedFlagged": 82,
+        "frightenedReturnedGuests": 76,
+        "activeAtEnd": 17,
+        "chargedActiveAtEnd": 15,
+        "activePhases": {
+          "return": 7,
+          "riding": 8,
+          "queue": 2
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 1272,
+        "saleEventTotal": 1272,
+        "coinIncreaseAfterCapital": 1272,
+        "earnedIncrease": 1272,
+        "uniqueChargedVisitors": 106,
+        "uniqueVisitReceipts": 106,
+        "retainedRuntimeReceipts": 106
+      },
+      "warnings": [
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-1-fleet-1-ticket-12",
+      "label": "The forgotten graveyard · 1 tractor · £12",
+      "config": {
+        "tier": 3,
+        "routeLevel": 1,
+        "fleet": 1,
+        "ticketPrice": 12,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 110,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 54700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 15,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 108,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 132,
+        "ticketsSold": 99,
+        "completed": 91,
+        "returnedGuests": 91,
+        "paidReturnedGuests": 91,
+        "ticketRevenue": 1188,
+        "ticketsPerMinute": 3.3,
+        "completionsPerMinute": 3.033333,
+        "departures": 14,
+        "peakQueue": 12,
+        "peakActive": 22,
+        "meanBoardingQueueSeconds": 63.082828,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 13212,
+        "meanPaidGuestRemainder": 48,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 61.626374,
+        "frightenedFlagged": 76,
+        "frightenedReturnedGuests": 76,
+        "activeAtEnd": 17,
+        "chargedActiveAtEnd": 8,
+        "activePhases": {
+          "riding": 8,
+          "queue": 9
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 1188,
+        "saleEventTotal": 1188,
+        "coinIncreaseAfterCapital": 1188,
+        "earnedIncrease": 1188,
+        "uniqueChargedVisitors": 99,
+        "uniqueVisitReceipts": 99,
+        "retainedRuntimeReceipts": 99
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-2-fleet-1-ticket-12",
+      "label": "The crooked thicket · 1 tractor · £12",
+      "config": {
+        "tier": 3,
+        "routeLevel": 2,
+        "fleet": 1,
+        "ticketPrice": 12,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 130,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 70700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 15,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 108,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 132,
+        "ticketsSold": 97,
+        "completed": 89,
+        "returnedGuests": 85,
+        "paidReturnedGuests": 81,
+        "ticketRevenue": 1164,
+        "ticketsPerMinute": 3.233333,
+        "completionsPerMinute": 2.966667,
+        "departures": 13,
+        "peakQueue": 16,
+        "peakActive": 26,
+        "meanBoardingQueueSeconds": 119.905567,
+        "queueTimedOut": 4,
+        "missedAfterAdmission": 4,
+        "remainingGuestMoney": 13236,
+        "meanPaidGuestRemainder": 48,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 62.074074,
+        "frightenedFlagged": 74,
+        "frightenedReturnedGuests": 66,
+        "activeAtEnd": 23,
+        "chargedActiveAtEnd": 16,
+        "activePhases": {
+          "return": 8,
+          "riding": 8,
+          "queue": 7
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 1164,
+        "saleEventTotal": 1164,
+        "coinIncreaseAfterCapital": 1164,
+        "earnedIncrease": 1164,
+        "uniqueChargedVisitors": 97,
+        "uniqueVisitReceipts": 97,
+        "retainedRuntimeReceipts": 97
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-0-fleet-1-ticket-20",
+      "label": "Original circuit · 1 tractor · £20",
+      "config": {
+        "tier": 3,
+        "routeLevel": 0,
+        "fleet": 1,
+        "ticketPrice": 20,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 90,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 46200,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 15,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 10,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 230,
+        "ticketsSold": 9,
+        "completed": 8,
+        "returnedGuests": 8,
+        "paidReturnedGuests": 8,
+        "ticketRevenue": 180,
+        "ticketsPerMinute": 0.3,
+        "completionsPerMinute": 0.266667,
+        "departures": 5,
+        "peakQueue": 2,
+        "peakActive": 4,
+        "meanBoardingQueueSeconds": 13.235556,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 14220,
+        "meanPaidGuestRemainder": 40,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 77.25,
+        "frightenedFlagged": 1,
+        "frightenedReturnedGuests": 1,
+        "activeAtEnd": 2,
+        "chargedActiveAtEnd": 1,
+        "activePhases": {
+          "riding": 1,
+          "queue": 1
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 180,
+        "saleEventTotal": 180,
+        "coinIncreaseAfterCapital": 180,
+        "earnedIncrease": 180,
+        "uniqueChargedVisitors": 9,
+        "uniqueVisitReceipts": 9,
+        "retainedRuntimeReceipts": 9
+      },
+      "warnings": [
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-1-fleet-1-ticket-20",
+      "label": "The forgotten graveyard · 1 tractor · £20",
+      "config": {
+        "tier": 3,
+        "routeLevel": 1,
+        "fleet": 1,
+        "ticketPrice": 20,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 110,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 54700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 15,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 10,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 230,
+        "ticketsSold": 9,
+        "completed": 8,
+        "returnedGuests": 8,
+        "paidReturnedGuests": 8,
+        "ticketRevenue": 180,
+        "ticketsPerMinute": 0.3,
+        "completionsPerMinute": 0.266667,
+        "departures": 5,
+        "peakQueue": 2,
+        "peakActive": 4,
+        "meanBoardingQueueSeconds": 22.124444,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 14220,
+        "meanPaidGuestRemainder": 40,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 77.25,
+        "frightenedFlagged": 1,
+        "frightenedReturnedGuests": 1,
+        "activeAtEnd": 2,
+        "chargedActiveAtEnd": 1,
+        "activePhases": {
+          "riding": 1,
+          "queue": 1
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 180,
+        "saleEventTotal": 180,
+        "coinIncreaseAfterCapital": 180,
+        "earnedIncrease": 180,
+        "uniqueChargedVisitors": 9,
+        "uniqueVisitReceipts": 9,
+        "retainedRuntimeReceipts": 9
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-2-fleet-1-ticket-20",
+      "label": "The crooked thicket · 1 tractor · £20",
+      "config": {
+        "tier": 3,
+        "routeLevel": 2,
+        "fleet": 1,
+        "ticketPrice": 20,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 130,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 70700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 15,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 10,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 230,
+        "ticketsSold": 9,
+        "completed": 8,
+        "returnedGuests": 8,
+        "paidReturnedGuests": 8,
+        "ticketRevenue": 180,
+        "ticketsPerMinute": 0.3,
+        "completionsPerMinute": 0.266667,
+        "departures": 5,
+        "peakQueue": 2,
+        "peakActive": 4,
+        "meanBoardingQueueSeconds": 31.013333,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 14220,
+        "meanPaidGuestRemainder": 40,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 77.25,
+        "frightenedFlagged": 1,
+        "frightenedReturnedGuests": 1,
+        "activeAtEnd": 2,
+        "chargedActiveAtEnd": 1,
+        "activePhases": {
+          "riding": 1,
+          "queue": 1
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 180,
+        "saleEventTotal": 180,
+        "coinIncreaseAfterCapital": 180,
+        "earnedIncrease": 180,
+        "uniqueChargedVisitors": 9,
+        "uniqueVisitReceipts": 9,
+        "retainedRuntimeReceipts": 9
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-0-fleet-2-ticket-8",
+      "label": "Original circuit · 2 tractors · £8",
+      "config": {
+        "tier": 3,
+        "routeLevel": 0,
+        "fleet": 2,
+        "ticketPrice": 8,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 90,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 58200,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 14,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 112,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 128,
+        "ticketsSold": 112,
+        "completed": 104,
+        "returnedGuests": 96,
+        "paidReturnedGuests": 96,
+        "ticketRevenue": 896,
+        "ticketsPerMinute": 3.733333,
+        "completionsPerMinute": 3.466667,
+        "departures": 32,
+        "peakQueue": 10,
+        "peakActive": 19,
+        "meanBoardingQueueSeconds": 48.591786,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 13504,
+        "meanPaidGuestRemainder": 52,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 62.354167,
+        "frightenedFlagged": 82,
+        "frightenedReturnedGuests": 77,
+        "activeAtEnd": 16,
+        "chargedActiveAtEnd": 16,
+        "activePhases": {
+          "return": 8,
+          "riding": 8
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 896,
+        "saleEventTotal": 896,
+        "coinIncreaseAfterCapital": 896,
+        "earnedIncrease": 896,
+        "uniqueChargedVisitors": 112,
+        "uniqueVisitReceipts": 112,
+        "retainedRuntimeReceipts": 112
+      },
+      "warnings": [
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-1-fleet-2-ticket-8",
+      "label": "The forgotten graveyard · 2 tractors · £8",
+      "config": {
+        "tier": 3,
+        "routeLevel": 1,
+        "fleet": 2,
+        "ticketPrice": 8,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 110,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 66700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 14,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 112,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 128,
+        "ticketsSold": 106,
+        "completed": 96,
+        "returnedGuests": 96,
+        "paidReturnedGuests": 96,
+        "ticketRevenue": 848,
+        "ticketsPerMinute": 3.533333,
+        "completionsPerMinute": 3.2,
+        "departures": 28,
+        "peakQueue": 10,
+        "peakActive": 20,
+        "meanBoardingQueueSeconds": 53.853962,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 13552,
+        "meanPaidGuestRemainder": 52,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 62.354167,
+        "frightenedFlagged": 77,
+        "frightenedReturnedGuests": 77,
+        "activeAtEnd": 16,
+        "chargedActiveAtEnd": 10,
+        "activePhases": {
+          "riding": 10,
+          "queue": 6
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 848,
+        "saleEventTotal": 848,
+        "coinIncreaseAfterCapital": 848,
+        "earnedIncrease": 848,
+        "uniqueChargedVisitors": 106,
+        "uniqueVisitReceipts": 106,
+        "retainedRuntimeReceipts": 106
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-2-fleet-2-ticket-8",
+      "label": "The crooked thicket · 2 tractors · £8",
+      "config": {
+        "tier": 3,
+        "routeLevel": 2,
+        "fleet": 2,
+        "ticketPrice": 8,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 130,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 82700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 14,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 112,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 128,
+        "ticketsSold": 102,
+        "completed": 93,
+        "returnedGuests": 93,
+        "paidReturnedGuests": 93,
+        "ticketRevenue": 816,
+        "ticketsPerMinute": 3.4,
+        "completionsPerMinute": 3.1,
+        "departures": 24,
+        "peakQueue": 12,
+        "peakActive": 24,
+        "meanBoardingQueueSeconds": 64.66,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 13584,
+        "meanPaidGuestRemainder": 52,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 62.258065,
+        "frightenedFlagged": 75,
+        "frightenedReturnedGuests": 75,
+        "activeAtEnd": 19,
+        "chargedActiveAtEnd": 9,
+        "activePhases": {
+          "riding": 9,
+          "queue": 10
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 816,
+        "saleEventTotal": 816,
+        "coinIncreaseAfterCapital": 816,
+        "earnedIncrease": 816,
+        "uniqueChargedVisitors": 102,
+        "uniqueVisitReceipts": 102,
+        "retainedRuntimeReceipts": 102
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-0-fleet-2-ticket-12",
+      "label": "Original circuit · 2 tractors · £12",
+      "config": {
+        "tier": 3,
+        "routeLevel": 0,
+        "fleet": 2,
+        "ticketPrice": 12,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 90,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 58200,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 14,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 108,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 132,
+        "ticketsSold": 108,
+        "completed": 100,
+        "returnedGuests": 92,
+        "paidReturnedGuests": 92,
+        "ticketRevenue": 1296,
+        "ticketsPerMinute": 3.6,
+        "completionsPerMinute": 3.333333,
+        "departures": 32,
+        "peakQueue": 10,
+        "peakActive": 19,
+        "meanBoardingQueueSeconds": 49.107037,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 13104,
+        "meanPaidGuestRemainder": 48,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 61.586957,
+        "frightenedFlagged": 82,
+        "frightenedReturnedGuests": 77,
+        "activeAtEnd": 16,
+        "chargedActiveAtEnd": 16,
+        "activePhases": {
+          "return": 8,
+          "riding": 8
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 1296,
+        "saleEventTotal": 1296,
+        "coinIncreaseAfterCapital": 1296,
+        "earnedIncrease": 1296,
+        "uniqueChargedVisitors": 108,
+        "uniqueVisitReceipts": 108,
+        "retainedRuntimeReceipts": 108
+      },
+      "warnings": [
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-1-fleet-2-ticket-12",
+      "label": "The forgotten graveyard · 2 tractors · £12",
+      "config": {
+        "tier": 3,
+        "routeLevel": 1,
+        "fleet": 2,
+        "ticketPrice": 12,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 110,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 66700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 14,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 108,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 132,
+        "ticketsSold": 102,
+        "completed": 92,
+        "returnedGuests": 92,
+        "paidReturnedGuests": 92,
+        "ticketRevenue": 1224,
+        "ticketsPerMinute": 3.4,
+        "completionsPerMinute": 3.066667,
+        "departures": 28,
+        "peakQueue": 10,
+        "peakActive": 20,
+        "meanBoardingQueueSeconds": 54.869412,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 13176,
+        "meanPaidGuestRemainder": 48,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 61.586957,
+        "frightenedFlagged": 77,
+        "frightenedReturnedGuests": 77,
+        "activeAtEnd": 16,
+        "chargedActiveAtEnd": 10,
+        "activePhases": {
+          "riding": 10,
+          "queue": 6
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 1224,
+        "saleEventTotal": 1224,
+        "coinIncreaseAfterCapital": 1224,
+        "earnedIncrease": 1224,
+        "uniqueChargedVisitors": 102,
+        "uniqueVisitReceipts": 102,
+        "retainedRuntimeReceipts": 102
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-2-fleet-2-ticket-12",
+      "label": "The crooked thicket · 2 tractors · £12",
+      "config": {
+        "tier": 3,
+        "routeLevel": 2,
+        "fleet": 2,
+        "ticketPrice": 12,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 130,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 82700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 14,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 108,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 132,
+        "ticketsSold": 98,
+        "completed": 90,
+        "returnedGuests": 90,
+        "paidReturnedGuests": 90,
+        "ticketRevenue": 1176,
+        "ticketsPerMinute": 3.266667,
+        "completionsPerMinute": 3,
+        "departures": 24,
+        "peakQueue": 12,
+        "peakActive": 23,
+        "meanBoardingQueueSeconds": 64.266939,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 13224,
+        "meanPaidGuestRemainder": 48,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 61.666667,
+        "frightenedFlagged": 75,
+        "frightenedReturnedGuests": 75,
+        "activeAtEnd": 18,
+        "chargedActiveAtEnd": 8,
+        "activePhases": {
+          "riding": 8,
+          "queue": 10
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 1176,
+        "saleEventTotal": 1176,
+        "coinIncreaseAfterCapital": 1176,
+        "earnedIncrease": 1176,
+        "uniqueChargedVisitors": 98,
+        "uniqueVisitReceipts": 98,
+        "retainedRuntimeReceipts": 98
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-0-fleet-2-ticket-20",
+      "label": "Original circuit · 2 tractors · £20",
+      "config": {
+        "tier": 3,
+        "routeLevel": 0,
+        "fleet": 2,
+        "ticketPrice": 20,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 90,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 58200,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 14,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 10,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 230,
+        "ticketsSold": 10,
+        "completed": 8,
+        "returnedGuests": 8,
+        "paidReturnedGuests": 8,
+        "ticketRevenue": 200,
+        "ticketsPerMinute": 0.333333,
+        "completionsPerMinute": 0.266667,
+        "departures": 10,
+        "peakQueue": 2,
+        "peakActive": 4,
+        "meanBoardingQueueSeconds": 11.656,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 14200,
+        "meanPaidGuestRemainder": 40,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 77.25,
+        "frightenedFlagged": 1,
+        "frightenedReturnedGuests": 1,
+        "activeAtEnd": 2,
+        "chargedActiveAtEnd": 2,
+        "activePhases": {
+          "riding": 2
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 200,
+        "saleEventTotal": 200,
+        "coinIncreaseAfterCapital": 200,
+        "earnedIncrease": 200,
+        "uniqueChargedVisitors": 10,
+        "uniqueVisitReceipts": 10,
+        "retainedRuntimeReceipts": 10
+      },
+      "warnings": [
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-1-fleet-2-ticket-20",
+      "label": "The forgotten graveyard · 2 tractors · £20",
+      "config": {
+        "tier": 3,
+        "routeLevel": 1,
+        "fleet": 2,
+        "ticketPrice": 20,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 110,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 66700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 14,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 10,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 230,
+        "ticketsSold": 10,
+        "completed": 8,
+        "returnedGuests": 8,
+        "paidReturnedGuests": 8,
+        "ticketRevenue": 200,
+        "ticketsPerMinute": 0.333333,
+        "completionsPerMinute": 0.266667,
+        "departures": 10,
+        "peakQueue": 2,
+        "peakActive": 4,
+        "meanBoardingQueueSeconds": 19.656,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 14200,
+        "meanPaidGuestRemainder": 40,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 77.25,
+        "frightenedFlagged": 1,
+        "frightenedReturnedGuests": 1,
+        "activeAtEnd": 2,
+        "chargedActiveAtEnd": 2,
+        "activePhases": {
+          "riding": 2
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 200,
+        "saleEventTotal": 200,
+        "coinIncreaseAfterCapital": 200,
+        "earnedIncrease": 200,
+        "uniqueChargedVisitors": 10,
+        "uniqueVisitReceipts": 10,
+        "retainedRuntimeReceipts": 10
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    },
+    {
+      "id": "route-2-fleet-2-ticket-20",
+      "label": "The crooked thicket · 2 tractors · £20",
+      "config": {
+        "tier": 3,
+        "routeLevel": 2,
+        "fleet": 2,
+        "ticketPrice": 20,
+        "dispatch": 2,
+        "acceptance": "walk-in",
+        "durationSeconds": 1800,
+        "circuitSeconds": 130,
+        "seatsPerWagon": 8,
+        "queueCapacity": 16,
+        "capitalInvested": 82700,
+        "scareRating": 100,
+        "boardingSeconds": 0.64,
+        "partLoadWaitSeconds": 9,
+        "standaloneFootfallPercent": 30,
+        "configuredInvitationGapSeconds": 14,
+        "invitationsActuallySimulated": false
+      },
+      "metrics": {
+        "offered": 240,
+        "accepted": 10,
+        "refusedQueue": 0,
+        "refusedBudget": 0,
+        "refusedWillingnessOrValue": 230,
+        "ticketsSold": 10,
+        "completed": 8,
+        "returnedGuests": 8,
+        "paidReturnedGuests": 8,
+        "ticketRevenue": 200,
+        "ticketsPerMinute": 0.333333,
+        "completionsPerMinute": 0.266667,
+        "departures": 10,
+        "peakQueue": 2,
+        "peakActive": 4,
+        "meanBoardingQueueSeconds": 27.656,
+        "queueTimedOut": 0,
+        "missedAfterAdmission": 0,
+        "remainingGuestMoney": 14200,
+        "meanPaidGuestRemainder": 40,
+        "meanReturnedHunger": 75,
+        "meanReturnedHappiness": 77.25,
+        "frightenedFlagged": 1,
+        "frightenedReturnedGuests": 1,
+        "activeAtEnd": 2,
+        "chargedActiveAtEnd": 2,
+        "activePhases": {
+          "riding": 2
+        },
+        "ledgerBalanced": true
+      },
+      "ledger": {
+        "offeredWalletTotal": 14400,
+        "walletDebits": 200,
+        "saleEventTotal": 200,
+        "coinIncreaseAfterCapital": 200,
+        "earnedIncrease": 200,
+        "uniqueChargedVisitors": 10,
+        "uniqueVisitReceipts": 10,
+        "retainedRuntimeReceipts": 10
+      },
+      "warnings": [
+        {
+          "code": "route-scare-saturated",
+          "title": "Longer route has no extra scare or ticket ceiling",
+          "text": "The original circuit already reaches the same scare rating with its eligible haunts. This longer paid circuit adds neither scare rating nor ticket ceiling in this fixture."
+        },
+        {
+          "code": "study-scope",
+          "title": "Ride-only fixture",
+          "text": "Fixed arrivals and prepared upgrades isolate service capacity. Ticket revenue is not whole-farm profit or a player progression forecast."
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "route-payoff-at-scare-cap",
+      "severity": "review",
+      "title": "Longer routes need a benefit beyond capped scare",
+      "text": "Tier 3 and all eligible haunt content total 117 raw scare; the current rule reports 100 before a detour. Routes change the paid circuit from 90 to 130s. Compare scare, ticket ranges and the paired results below. These results cover this fixture only; scenery/POV enjoyment is not monetised by the audit.",
+      "comparisons": [
+        {
+          "baselineId": "route-0-fleet-1-ticket-8",
+          "scenarioId": "route-1-fleet-1-ticket-8",
+          "addedCircuitSeconds": 20,
+          "addedCapital": 8500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": -8,
+          "completionDelta": -8,
+          "revenueDelta": -64
+        },
+        {
+          "baselineId": "route-0-fleet-1-ticket-8",
+          "scenarioId": "route-2-fleet-1-ticket-8",
+          "addedCircuitSeconds": 40,
+          "addedCapital": 24500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": -13,
+          "completionDelta": -13,
+          "revenueDelta": -104
+        },
+        {
+          "baselineId": "route-0-fleet-1-ticket-12",
+          "scenarioId": "route-1-fleet-1-ticket-12",
+          "addedCircuitSeconds": 20,
+          "addedCapital": 8500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": -7,
+          "completionDelta": -7,
+          "revenueDelta": -84
+        },
+        {
+          "baselineId": "route-0-fleet-1-ticket-12",
+          "scenarioId": "route-2-fleet-1-ticket-12",
+          "addedCircuitSeconds": 40,
+          "addedCapital": 24500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": -9,
+          "completionDelta": -9,
+          "revenueDelta": -108
+        },
+        {
+          "baselineId": "route-0-fleet-1-ticket-20",
+          "scenarioId": "route-1-fleet-1-ticket-20",
+          "addedCircuitSeconds": 20,
+          "addedCapital": 8500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": 0,
+          "completionDelta": 0,
+          "revenueDelta": 0
+        },
+        {
+          "baselineId": "route-0-fleet-1-ticket-20",
+          "scenarioId": "route-2-fleet-1-ticket-20",
+          "addedCircuitSeconds": 40,
+          "addedCapital": 24500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": 0,
+          "completionDelta": 0,
+          "revenueDelta": 0
+        },
+        {
+          "baselineId": "route-0-fleet-2-ticket-8",
+          "scenarioId": "route-1-fleet-2-ticket-8",
+          "addedCircuitSeconds": 20,
+          "addedCapital": 8500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": -6,
+          "completionDelta": -8,
+          "revenueDelta": -48
+        },
+        {
+          "baselineId": "route-0-fleet-2-ticket-8",
+          "scenarioId": "route-2-fleet-2-ticket-8",
+          "addedCircuitSeconds": 40,
+          "addedCapital": 24500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": -10,
+          "completionDelta": -11,
+          "revenueDelta": -80
+        },
+        {
+          "baselineId": "route-0-fleet-2-ticket-12",
+          "scenarioId": "route-1-fleet-2-ticket-12",
+          "addedCircuitSeconds": 20,
+          "addedCapital": 8500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": -6,
+          "completionDelta": -8,
+          "revenueDelta": -72
+        },
+        {
+          "baselineId": "route-0-fleet-2-ticket-12",
+          "scenarioId": "route-2-fleet-2-ticket-12",
+          "addedCircuitSeconds": 40,
+          "addedCapital": 24500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": -10,
+          "completionDelta": -10,
+          "revenueDelta": -120
+        },
+        {
+          "baselineId": "route-0-fleet-2-ticket-20",
+          "scenarioId": "route-1-fleet-2-ticket-20",
+          "addedCircuitSeconds": 20,
+          "addedCapital": 8500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": 0,
+          "completionDelta": 0,
+          "revenueDelta": 0
+        },
+        {
+          "baselineId": "route-0-fleet-2-ticket-20",
+          "scenarioId": "route-2-fleet-2-ticket-20",
+          "addedCircuitSeconds": 40,
+          "addedCapital": 24500,
+          "addedScare": 0,
+          "addedStandaloneFootfallPoints": 0,
+          "ticketDelta": 0,
+          "completionDelta": 0,
+          "revenueDelta": 0
+        }
+      ]
+    },
+    {
+      "id": "shared-footfall-cap",
+      "severity": "context",
+      "title": "Permanent footfall bonuses do not all stack",
+      "text": "A fully dressed maze and meadow provide 65% combined attraction footfall. The ride has a standalone 30% bonus, but adds 10 points in that context before the shared 75% result. Invitation demand remains a separate mechanism.",
+      "comparisons": []
+    },
+    {
+      "id": "finite-visit-wallet",
+      "severity": "context",
+      "title": "Ticket money is the visitor’s real money",
+      "text": "Every scenario checks unique charges and equality of wallet debits, ticket events, ride income, coins and earned. The remaining purse is available for later businesses, whose sales this study deliberately does not predict.",
+      "comparisons": []
+    }
+  ],
+  "summary": {
+    "scenarioCount": 18,
+    "ledgerBalanced": true,
+    "minimumTicketThroughput": 0.3,
+    "maximumTicketThroughput": 3.733333,
+    "pairedLongerRoutesWithFewerCompletions": 8,
+    "pairedRouteComparisons": 12,
+    "headline": "Compare service-capacity consequences separately from the creative value of new scenery."
+  }
+}

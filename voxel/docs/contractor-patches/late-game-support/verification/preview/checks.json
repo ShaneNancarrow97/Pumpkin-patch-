@@ -1,0 +1,2194 @@
+{
+  "html": "Pumpkin-Patch-Late-Game-Workshop.html",
+  "sha256": "d50cc04130890a583856231fc20d1b2779404c0043707d8d95202c5d8a30b2e7",
+  "started": "2026-11-01T01:53:18.848Z",
+  "sourceHashes": {
+    "voxel/docs/contractor-patches/late-game-support/art/manifest.json": "bbb0534bd58ee735804dddd55d712f70a0f992080fb4123a3c264ff85e39e705",
+    "voxel/docs/contractor-patches/late-game-support/art/menu-icons.webp": "aeb67472997eac94e79040ce3c2c3ab17e6e4add839f4d86ba180f117581bf30",
+    "voxel/docs/contractor-patches/late-game-support/data/festival-themes.json": "63d4934e8aac415581f0daf914e91a89b66387dfd2be0e502efc07c4558af37c",
+    "voxel/docs/contractor-patches/late-game-support/findings/attraction-audit.json": "67ec7132509d74f720fa22a73ad9415b2914b30ef2a50f971eb179e11924e362",
+    "voxel/docs/contractor-patches/late-game-support/findings/attraction-walk-in-audit.json": "e05e40774dacb1b77d8612110233886e2e1b24bf7037356ec4ea2eed9975a4a7",
+    "voxel/docs/contractor-patches/late-game-support/models/reward-props.js": "4d2b33b8062cc691c9295787c2435b7afdc6f25e9c70e6f7a626f2310d34501d",
+    "voxel/docs/contractor-patches/late-game-support/preview/app.js": "5480338e5009e99d1c2026993f21c34c8e0c5eba8b32ab670d3e285abb405886",
+    "voxel/docs/contractor-patches/late-game-support/preview/index.html": "8ba9e4b723cdae6f81949f56bdc419c08d5d1c88e9fa74f40842c997dd0835df",
+    "voxel/docs/contractor-patches/late-game-support/preview/style.css": "b741d85fdef8c7de835a07aff9eb23f1a1af28b4b9173868df8a6d6d15ae2537",
+    "voxel/docs/contractor-patches/late-game-support/test/art.test.mjs": "baa349680dc58b08648e934f604ce847021e7be730fcbcd5c8847ac511adca06",
+    "voxel/docs/contractor-patches/late-game-support/test/audit.test.mjs": "f882da2ada2ebaa264ee44969f56ece67e448876b1d498642eb21e5f3c2994ef",
+    "voxel/docs/contractor-patches/late-game-support/test/content.test.mjs": "23694363296802ab4ec8b1dfd467f02f93de27937603e4a0fe3ea0c2aebadf81",
+    "voxel/docs/contractor-patches/late-game-support/test/pack-contract.test.mjs": "ca3de6082f4979e7d14c01ca9402db33c456ddaab1df092208153219c3fdeec4",
+    "voxel/docs/contractor-patches/late-game-support/test/preview-build.test.mjs": "da4eba10864d5a7599c58f81f0b3fb8b1989bd39ce1d2d53053cd343894fdc1d",
+    "voxel/docs/contractor-patches/late-game-support/test/reward-props.test.mjs": "fa1765a782716ce296ee7dcb8715d114c1ce331bb9ef7989618a298b2d847e4c",
+    "voxel/docs/contractor-patches/late-game-support/tools/audit-attractions.mjs": "6b6ca5bf787709959a132f0de0aabe2f9acdf5ddb42544262d156bbe25d6f01c",
+    "voxel/docs/contractor-patches/late-game-support/tools/build-preview.mjs": "da14f2a39870332b975962e8ae00de6a47eddb8ce76ca29cff9a470fcf58e295",
+    "voxel/docs/contractor-patches/late-game-support/tools/qa-preview.mjs": "5bbcfceb1850d250394ab4c9f7dac2f2fd4e1ff1b0f6f1fbfd1f34b7c4f409a5",
+    "voxel/src/voxels.js": "4941c422fa74216614f237ef0a7238db4b53d94d017c47e206f27f150740422b",
+    "voxel/package-lock.json": "638d614864c66a958a5d5a3296fb001048276e6122f7bdd77018016985f10c98"
+  },
+  "scope": "Actual standalone contractor workshop: three real voxel props, pointer/camera controls, context recovery, all proposed night briefs and all18 emitted capacity cases. Not a live-game playtest or device GPU benchmark.",
+  "contextLossControlAvailable": true,
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "Scope badge makes the separate contractor status clear"
+    },
+    {
+      "ok": true,
+      "label": "The first view contains one real3D reward model",
+      "data": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-banquet-candelabrum",
+        "modelStats": {
+          "boxCount": 440,
+          "meshCount": 6,
+          "colourPassCalls": 6,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.6524999905377626,
+            0,
+            -0.4375
+          ],
+          "max": [
+            0.6524999905377626,
+            1.9713288554886976,
+            0.4375
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 6,
+        "yaw": 0.65,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.86875568932113,
+        "cameraPosition": [
+          1.9584253515795547,
+          3.105835151092073,
+          2.576182608008271
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 6,
+        "drawCalls": 8,
+        "rendererFrame": 6,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Reduced-motion default does not start automatic movement",
+      "data": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-banquet-candelabrum",
+        "modelStats": {
+          "boxCount": 440,
+          "meshCount": 6,
+          "colourPassCalls": 6,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.6524999905377626,
+            0,
+            -0.4375
+          ],
+          "max": [
+            0.6524999905377626,
+            1.9713288554886976,
+            0.4375
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 6,
+        "yaw": 0.65,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.86875568932113,
+        "cameraPosition": [
+          1.9584253515795547,
+          3.105835151092073,
+          2.576182608008271
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 6,
+        "drawCalls": 8,
+        "rendererFrame": 6,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Browser briefs match the checked-in proposal data"
+    },
+    {
+      "ok": true,
+      "label": "Browser audit matches the emitted current-rule evidence"
+    },
+    {
+      "ok": true,
+      "label": "All three reward candidates are selectable"
+    },
+    {
+      "ok": true,
+      "label": "Midnight Banquet Candelabrum: selection replaces the previous model",
+      "data": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-banquet-candelabrum",
+        "modelStats": {
+          "boxCount": 440,
+          "meshCount": 6,
+          "colourPassCalls": 6,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.6524999905377626,
+            0,
+            -0.4375
+          ],
+          "max": [
+            0.6524999905377626,
+            1.9713288554886976,
+            0.4375
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 6,
+        "yaw": 0.65,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.86875568932113,
+        "cameraPosition": [
+          1.9584253515795547,
+          3.105835151092073,
+          2.576182608008271
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 8,
+        "drawCalls": 8,
+        "rendererFrame": 8,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Midnight Banquet Candelabrum: actual geometry renders within the preview draw budget",
+      "data": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-banquet-candelabrum",
+        "modelStats": {
+          "boxCount": 440,
+          "meshCount": 6,
+          "colourPassCalls": 6,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.6524999905377626,
+            0,
+            -0.4375
+          ],
+          "max": [
+            0.6524999905377626,
+            1.9713288554886976,
+            0.4375
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 6,
+        "yaw": 0.65,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.86875568932113,
+        "cameraPosition": [
+          1.9584253515795547,
+          3.105835151092073,
+          2.576182608008271
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 8,
+        "drawCalls": 8,
+        "rendererFrame": 8,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Midnight Banquet Candelabrum: front preset uses the actual camera"
+    },
+    {
+      "ok": true,
+      "label": "Midnight Banquet Candelabrum: front has readable rendered pixels",
+      "data": {
+        "width": 833,
+        "height": 487,
+        "bright": 31549,
+        "centreSHA256": "981c7c301ec3985143519ee315acce2e52b404708aca57c9c703b6890a92e773"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Midnight Banquet Candelabrum: side preset uses the actual camera"
+    },
+    {
+      "ok": true,
+      "label": "Midnight Banquet Candelabrum: side has readable rendered pixels",
+      "data": {
+        "width": 833,
+        "height": 487,
+        "bright": 14501,
+        "centreSHA256": "961b86b2d0ef9d8ec58a59e86afa9cfdf36ecb94e3c7b9ceeeecb5a83c8e46ba"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Midnight Banquet Candelabrum: back preset uses the actual camera"
+    },
+    {
+      "ok": true,
+      "label": "Midnight Banquet Candelabrum: back has readable rendered pixels",
+      "data": {
+        "width": 833,
+        "height": 487,
+        "bright": 22155,
+        "centreSHA256": "34bad2263897a62d324b5a4d9fd9758db030f73af3e2f41317b28e75a18d54ee"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Midnight Banquet Candelabrum: front, side and back are distinct renders"
+    },
+    {
+      "ok": true,
+      "label": "Moonlit Wardian Conservatory: selection replaces the previous model",
+      "data": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-moonlit-conservatory",
+        "modelStats": {
+          "boxCount": 560,
+          "meshCount": 19,
+          "colourPassCalls": 19,
+          "materialCount": 3
+        },
+        "modelBounds": {
+          "min": [
+            -0.6875,
+            0,
+            -0.5364999892190099
+          ],
+          "max": [
+            0.6875,
+            2.060000019147992,
+            0.5519999782554805
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 19,
+        "yaw": 0.65,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 4.042773874024554,
+        "cameraPosition": [
+          2.046516110450617,
+          3.2455368635762656,
+          2.6998103308998886
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 13,
+        "drawCalls": 21,
+        "rendererFrame": 13,
+        "geometries": 17,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Moonlit Wardian Conservatory: actual geometry renders within the preview draw budget",
+      "data": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-moonlit-conservatory",
+        "modelStats": {
+          "boxCount": 560,
+          "meshCount": 19,
+          "colourPassCalls": 19,
+          "materialCount": 3
+        },
+        "modelBounds": {
+          "min": [
+            -0.6875,
+            0,
+            -0.5364999892190099
+          ],
+          "max": [
+            0.6875,
+            2.060000019147992,
+            0.5519999782554805
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 19,
+        "yaw": 0.65,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 4.042773874024554,
+        "cameraPosition": [
+          2.046516110450617,
+          3.2455368635762656,
+          2.6998103308998886
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 13,
+        "drawCalls": 21,
+        "rendererFrame": 13,
+        "geometries": 17,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Moonlit Wardian Conservatory: front preset uses the actual camera"
+    },
+    {
+      "ok": true,
+      "label": "Moonlit Wardian Conservatory: front has readable rendered pixels",
+      "data": {
+        "width": 833,
+        "height": 487,
+        "bright": 56054,
+        "centreSHA256": "d045c7de93dc5a2c3d4d366c8f4432fb7de1ac7f96bfe988505f6e63dd4aa3a8"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Moonlit Wardian Conservatory: side preset uses the actual camera"
+    },
+    {
+      "ok": true,
+      "label": "Moonlit Wardian Conservatory: side has readable rendered pixels",
+      "data": {
+        "width": 833,
+        "height": 487,
+        "bright": 37502,
+        "centreSHA256": "3b60cc0e89c40157e0bf471a69e9061d92c76f436e52380f095c7206b5571a27"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Moonlit Wardian Conservatory: back preset uses the actual camera"
+    },
+    {
+      "ok": true,
+      "label": "Moonlit Wardian Conservatory: back has readable rendered pixels",
+      "data": {
+        "width": 833,
+        "height": 487,
+        "bright": 26061,
+        "centreSHA256": "ab9c36ebf764b711521d50a064e227346f342cac1f2acd1ffaff003bc8b046d1"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Moonlit Wardian Conservatory: front, side and back are distinct renders"
+    },
+    {
+      "ok": true,
+      "label": "Clockwork Hayride Theatre: selection replaces the previous model",
+      "data": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-clockwork-hayride-theatre",
+        "modelStats": {
+          "boxCount": 619,
+          "meshCount": 7,
+          "colourPassCalls": 7,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.737500011920929,
+            0,
+            -0.5464999796822667
+          ],
+          "max": [
+            0.7929999994784593,
+            1.587999975308776,
+            0.5464999796822667
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 7,
+        "yaw": 0.65,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.1164683264348763,
+        "cameraPosition": [
+          1.605355577592655,
+          2.501899228794411,
+          2.075238693187935
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 18,
+        "drawCalls": 9,
+        "rendererFrame": 18,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Clockwork Hayride Theatre: actual geometry renders within the preview draw budget",
+      "data": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-clockwork-hayride-theatre",
+        "modelStats": {
+          "boxCount": 619,
+          "meshCount": 7,
+          "colourPassCalls": 7,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.737500011920929,
+            0,
+            -0.5464999796822667
+          ],
+          "max": [
+            0.7929999994784593,
+            1.587999975308776,
+            0.5464999796822667
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 7,
+        "yaw": 0.65,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.1164683264348763,
+        "cameraPosition": [
+          1.605355577592655,
+          2.501899228794411,
+          2.075238693187935
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 18,
+        "drawCalls": 9,
+        "rendererFrame": 18,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Clockwork Hayride Theatre: front preset uses the actual camera"
+    },
+    {
+      "ok": true,
+      "label": "Clockwork Hayride Theatre: front has readable rendered pixels",
+      "data": {
+        "width": 833,
+        "height": 487,
+        "bright": 23358,
+        "centreSHA256": "70aad150a2e0ba97f8ce8899767601efc73a9b75f128534d165007d053bcb2f9"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Clockwork Hayride Theatre: side preset uses the actual camera"
+    },
+    {
+      "ok": true,
+      "label": "Clockwork Hayride Theatre: side has readable rendered pixels",
+      "data": {
+        "width": 833,
+        "height": 487,
+        "bright": 9395,
+        "centreSHA256": "25c3494fb5b3fd85935f20976c3a2b41e493b05ba9843401ec2fb75920e87eae"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Clockwork Hayride Theatre: back preset uses the actual camera"
+    },
+    {
+      "ok": true,
+      "label": "Clockwork Hayride Theatre: back has readable rendered pixels",
+      "data": {
+        "width": 833,
+        "height": 487,
+        "bright": 18368,
+        "centreSHA256": "985e22495408d84bea2afc408c68f2c171a5a1cb1308a5af957eba0f426caa8e"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Clockwork Hayride Theatre: front, side and back are distinct renders"
+    },
+    {
+      "ok": true,
+      "label": "Dragging the actual canvas rotates the camera",
+      "data": {
+        "before": 0.65,
+        "after": -1.012
+      }
+    },
+    {
+      "ok": true,
+      "label": "Zoom in moves the real camera closer",
+      "data": {
+        "before": 3.1164683264348763,
+        "after": 2.6801627607339937
+      }
+    },
+    {
+      "ok": true,
+      "label": "Zoom out increases the real camera radius"
+    },
+    {
+      "ok": true,
+      "label": "Reset returns to the common model framing"
+    },
+    {
+      "ok": true,
+      "label": "Two captured touch pointers pinch the real view closer",
+      "data": {
+        "before": 3.1164683264348763,
+        "after": 1.8698809958609257
+      }
+    },
+    {
+      "ok": true,
+      "label": "Explicit Auto-turn starts visible camera motion"
+    },
+    {
+      "ok": true,
+      "label": "Stopping Auto-turn returns the reduced-motion preview to rest"
+    },
+    {
+      "ok": true,
+      "label": "Repeated model swaps release owned GPU buffers and geometry",
+      "data": {
+        "warm": [
+          {
+            "viewer": {
+              "ready": true,
+              "destroyed": false,
+              "model": "contract-trophy-banquet-candelabrum",
+              "modelStats": {
+                "boxCount": 440,
+                "meshCount": 6,
+                "colourPassCalls": 6,
+                "materialCount": 2
+              },
+              "modelBounds": {
+                "min": [
+                  -0.6524999905377626,
+                  0,
+                  -0.4375
+                ],
+                "max": [
+                  0.6524999905377626,
+                  1.9713288554886976,
+                  0.4375
+                ]
+              },
+              "activeModels": 1,
+              "actualModelMeshes": 6,
+              "yaw": 0.65,
+              "pitch": 0.58,
+              "zoom": 1,
+              "radius": 3.86875568932113,
+              "cameraPosition": [
+                1.9584253515795547,
+                3.105835151092073,
+                2.576182608008271
+              ],
+              "spin": false,
+              "reducedMotion": true,
+              "rafActive": false,
+              "drawCount": 45,
+              "drawCalls": 8,
+              "rendererFrame": 45,
+              "geometries": 3,
+              "textures": 0,
+              "dpr": 1,
+              "contextControlAvailable": true
+            },
+            "gpu": {
+              "buffers": {
+                "created": 126,
+                "deleted": 104,
+                "live": 22
+              },
+              "textures": {
+                "created": 4,
+                "deleted": 0,
+                "live": 4
+              }
+            }
+          },
+          {
+            "viewer": {
+              "ready": true,
+              "destroyed": false,
+              "model": "contract-trophy-moonlit-conservatory",
+              "modelStats": {
+                "boxCount": 560,
+                "meshCount": 19,
+                "colourPassCalls": 19,
+                "materialCount": 3
+              },
+              "modelBounds": {
+                "min": [
+                  -0.6875,
+                  0,
+                  -0.5364999892190099
+                ],
+                "max": [
+                  0.6875,
+                  2.060000019147992,
+                  0.5519999782554805
+                ]
+              },
+              "activeModels": 1,
+              "actualModelMeshes": 19,
+              "yaw": 0.65,
+              "pitch": 0.58,
+              "zoom": 1,
+              "radius": 4.042773874024554,
+              "cameraPosition": [
+                2.046516110450617,
+                3.2455368635762656,
+                2.6998103308998886
+              ],
+              "spin": false,
+              "reducedMotion": true,
+              "rafActive": false,
+              "drawCount": 47,
+              "drawCalls": 21,
+              "rendererFrame": 47,
+              "geometries": 17,
+              "textures": 0,
+              "dpr": 1,
+              "contextControlAvailable": true
+            },
+            "gpu": {
+              "buffers": {
+                "created": 192,
+                "deleted": 116,
+                "live": 76
+              },
+              "textures": {
+                "created": 4,
+                "deleted": 0,
+                "live": 4
+              }
+            }
+          },
+          {
+            "viewer": {
+              "ready": true,
+              "destroyed": false,
+              "model": "contract-trophy-clockwork-hayride-theatre",
+              "modelStats": {
+                "boxCount": 619,
+                "meshCount": 7,
+                "colourPassCalls": 7,
+                "materialCount": 2
+              },
+              "modelBounds": {
+                "min": [
+                  -0.737500011920929,
+                  0,
+                  -0.5464999796822667
+                ],
+                "max": [
+                  0.7929999994784593,
+                  1.587999975308776,
+                  0.5464999796822667
+                ]
+              },
+              "activeModels": 1,
+              "actualModelMeshes": 7,
+              "yaw": 0.65,
+              "pitch": 0.58,
+              "zoom": 1,
+              "radius": 3.1164683264348763,
+              "cameraPosition": [
+                1.605355577592655,
+                2.501899228794411,
+                2.075238693187935
+              ],
+              "spin": false,
+              "reducedMotion": true,
+              "rafActive": false,
+              "drawCount": 49,
+              "drawCalls": 9,
+              "rendererFrame": 49,
+              "geometries": 3,
+              "textures": 0,
+              "dpr": 1,
+              "contextControlAvailable": true
+            },
+            "gpu": {
+              "buffers": {
+                "created": 206,
+                "deleted": 182,
+                "live": 24
+              },
+              "textures": {
+                "created": 4,
+                "deleted": 0,
+                "live": 4
+              }
+            }
+          }
+        ],
+        "tail": [
+          {
+            "viewer": {
+              "ready": true,
+              "destroyed": false,
+              "model": "contract-trophy-banquet-candelabrum",
+              "modelStats": {
+                "boxCount": 440,
+                "meshCount": 6,
+                "colourPassCalls": 6,
+                "materialCount": 2
+              },
+              "modelBounds": {
+                "min": [
+                  -0.6524999905377626,
+                  0,
+                  -0.4375
+                ],
+                "max": [
+                  0.6524999905377626,
+                  1.9713288554886976,
+                  0.4375
+                ]
+              },
+              "activeModels": 1,
+              "actualModelMeshes": 6,
+              "yaw": 0.65,
+              "pitch": 0.58,
+              "zoom": 1,
+              "radius": 3.86875568932113,
+              "cameraPosition": [
+                1.9584253515795547,
+                3.105835151092073,
+                2.576182608008271
+              ],
+              "spin": false,
+              "reducedMotion": true,
+              "rafActive": false,
+              "drawCount": 63,
+              "drawCalls": 8,
+              "rendererFrame": 63,
+              "geometries": 3,
+              "textures": 0,
+              "dpr": 1,
+              "contextControlAvailable": true
+            },
+            "gpu": {
+              "buffers": {
+                "created": 402,
+                "deleted": 380,
+                "live": 22
+              },
+              "textures": {
+                "created": 4,
+                "deleted": 0,
+                "live": 4
+              }
+            }
+          },
+          {
+            "viewer": {
+              "ready": true,
+              "destroyed": false,
+              "model": "contract-trophy-moonlit-conservatory",
+              "modelStats": {
+                "boxCount": 560,
+                "meshCount": 19,
+                "colourPassCalls": 19,
+                "materialCount": 3
+              },
+              "modelBounds": {
+                "min": [
+                  -0.6875,
+                  0,
+                  -0.5364999892190099
+                ],
+                "max": [
+                  0.6875,
+                  2.060000019147992,
+                  0.5519999782554805
+                ]
+              },
+              "activeModels": 1,
+              "actualModelMeshes": 19,
+              "yaw": 0.65,
+              "pitch": 0.58,
+              "zoom": 1,
+              "radius": 4.042773874024554,
+              "cameraPosition": [
+                2.046516110450617,
+                3.2455368635762656,
+                2.6998103308998886
+              ],
+              "spin": false,
+              "reducedMotion": true,
+              "rafActive": false,
+              "drawCount": 65,
+              "drawCalls": 21,
+              "rendererFrame": 65,
+              "geometries": 17,
+              "textures": 0,
+              "dpr": 1,
+              "contextControlAvailable": true
+            },
+            "gpu": {
+              "buffers": {
+                "created": 468,
+                "deleted": 392,
+                "live": 76
+              },
+              "textures": {
+                "created": 4,
+                "deleted": 0,
+                "live": 4
+              }
+            }
+          },
+          {
+            "viewer": {
+              "ready": true,
+              "destroyed": false,
+              "model": "contract-trophy-clockwork-hayride-theatre",
+              "modelStats": {
+                "boxCount": 619,
+                "meshCount": 7,
+                "colourPassCalls": 7,
+                "materialCount": 2
+              },
+              "modelBounds": {
+                "min": [
+                  -0.737500011920929,
+                  0,
+                  -0.5464999796822667
+                ],
+                "max": [
+                  0.7929999994784593,
+                  1.587999975308776,
+                  0.5464999796822667
+                ]
+              },
+              "activeModels": 1,
+              "actualModelMeshes": 7,
+              "yaw": 0.65,
+              "pitch": 0.58,
+              "zoom": 1,
+              "radius": 3.1164683264348763,
+              "cameraPosition": [
+                1.605355577592655,
+                2.501899228794411,
+                2.075238693187935
+              ],
+              "spin": false,
+              "reducedMotion": true,
+              "rafActive": false,
+              "drawCount": 67,
+              "drawCalls": 9,
+              "rendererFrame": 67,
+              "geometries": 3,
+              "textures": 0,
+              "dpr": 1,
+              "contextControlAvailable": true
+            },
+            "gpu": {
+              "buffers": {
+                "created": 482,
+                "deleted": 458,
+                "live": 24
+              },
+              "textures": {
+                "created": 4,
+                "deleted": 0,
+                "live": 4
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "nights tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "The hidden model viewer stops its frame loop"
+    },
+    {
+      "ok": true,
+      "label": "Midnight Court Banquet: letter and flexible proposal goals are rendered"
+    },
+    {
+      "ok": true,
+      "label": "Midnight Court Banquet: court-supper appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "Midnight Court Banquet: court-frights appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "Midnight Court Banquet: court-patrons appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "Midnight Court Banquet: court-goodbyes appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "Midnight Court Banquet: implementation and timing limits remain visible"
+    },
+    {
+      "ok": true,
+      "label": "The night reward link opens its matching actual model"
+    },
+    {
+      "ok": true,
+      "label": "Inspect reward brings its model into view"
+    },
+    {
+      "ok": true,
+      "label": "The reward links back to the corresponding evening brief"
+    },
+    {
+      "ok": true,
+      "label": "Lanterns in the Mist: letter and flexible proposal goals are rendered"
+    },
+    {
+      "ok": true,
+      "label": "Lanterns in the Mist: mist-warm-cups appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "Lanterns in the Mist: mist-lantern-walk appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "Lanterns in the Mist: mist-kind-goodbyes appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "Lanterns in the Mist: mist-garden-basket appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "Lanterns in the Mist: implementation and timing limits remain visible"
+    },
+    {
+      "ok": true,
+      "label": "The night reward link opens its matching actual model"
+    },
+    {
+      "ok": true,
+      "label": "Inspect reward brings its model into view"
+    },
+    {
+      "ok": true,
+      "label": "The reward links back to the corresponding evening brief"
+    },
+    {
+      "ok": true,
+      "label": "The Last Wagon: letter and flexible proposal goals are rendered"
+    },
+    {
+      "ok": true,
+      "label": "The Last Wagon: wagon-full-trail appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "The Last Wagon: wagon-sweet-return appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "The Last Wagon: wagon-smooth-boarding appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "The Last Wagon: wagon-fond-goodbyes appears with its actual target"
+    },
+    {
+      "ok": true,
+      "label": "The Last Wagon: implementation and timing limits remain visible"
+    },
+    {
+      "ok": true,
+      "label": "The night reward link opens its matching actual model"
+    },
+    {
+      "ok": true,
+      "label": "Inspect reward brings its model into view"
+    },
+    {
+      "ok": true,
+      "label": "The reward links back to the corresponding evening brief"
+    },
+    {
+      "ok": true,
+      "label": "balance tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "Capacity evidence is labelled separately from a profit forecast"
+    },
+    {
+      "ok": true,
+      "label": "The source audit supplies all18 matched cases"
+    },
+    {
+      "ok": true,
+      "label": "Original circuit · 1 tractor · £8: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Original circuit",
+          "90s",
+          "100/100",
+          "124",
+          "£1,056",
+          "159.5s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The forgotten graveyard · 1 tractor · £8: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Graveyard extension",
+          "110s",
+          "100/100",
+          "108",
+          "£920",
+          "155.2s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The crooked thicket · 1 tractor · £8: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Complete woodland route",
+          "130s",
+          "100/100",
+          "92",
+          "£800",
+          "133.8s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "Original circuit · 1 tractor · £12: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Original circuit",
+          "90s",
+          "100/100",
+          "124",
+          "£1,584",
+          "159.5s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The forgotten graveyard · 1 tractor · £12: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Graveyard extension",
+          "110s",
+          "100/100",
+          "108",
+          "£1,380",
+          "155.2s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The crooked thicket · 1 tractor · £12: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Complete woodland route",
+          "130s",
+          "100/100",
+          "92",
+          "£1,200",
+          "133.8s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "Original circuit · 1 tractor · £20: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Original circuit",
+          "90s",
+          "100/100",
+          "124",
+          "£2,640",
+          "159.5s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The forgotten graveyard · 1 tractor · £20: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Graveyard extension",
+          "110s",
+          "100/100",
+          "108",
+          "£2,300",
+          "155.2s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The crooked thicket · 1 tractor · £20: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Complete woodland route",
+          "130s",
+          "100/100",
+          "92",
+          "£2,000",
+          "133.8s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "Original circuit · 2 tractors · £8: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Original circuit",
+          "90s",
+          "100/100",
+          "224",
+          "£1,920",
+          "44.7s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The forgotten graveyard · 2 tractors · £8: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Graveyard extension",
+          "110s",
+          "100/100",
+          "212",
+          "£1,808",
+          "57.6s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The crooked thicket · 2 tractors · £8: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Complete woodland route",
+          "130s",
+          "100/100",
+          "180",
+          "£1,568",
+          "76.5s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "Original circuit · 2 tractors · £12: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Original circuit",
+          "90s",
+          "100/100",
+          "224",
+          "£2,880",
+          "44.7s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The forgotten graveyard · 2 tractors · £12: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Graveyard extension",
+          "110s",
+          "100/100",
+          "212",
+          "£2,712",
+          "57.6s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The crooked thicket · 2 tractors · £12: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Complete woodland route",
+          "130s",
+          "100/100",
+          "180",
+          "£2,352",
+          "76.5s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "Original circuit · 2 tractors · £20: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Original circuit",
+          "90s",
+          "100/100",
+          "224",
+          "£4,800",
+          "44.7s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The forgotten graveyard · 2 tractors · £20: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Graveyard extension",
+          "110s",
+          "100/100",
+          "212",
+          "£4,520",
+          "57.6s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "The crooked thicket · 2 tractors · £20: displayed evidence matches the emitted scenario",
+      "data": {
+        "row": [
+          "Complete woodland route",
+          "130s",
+          "100/100",
+          "180",
+          "£3,920",
+          "76.5s"
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "Each comparison retains all three route lengths"
+    },
+    {
+      "ok": true,
+      "label": "Saved audit JSON preserves the exact emitted evidence"
+    },
+    {
+      "ok": true,
+      "label": "rewards tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "phone rewards: the selected catalogue card stays visible after resizing"
+    },
+    {
+      "ok": true,
+      "label": "phone rewards: responsive controls stay distinct and44px",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "nights tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "phone nights: the selected catalogue card stays visible after resizing"
+    },
+    {
+      "ok": true,
+      "label": "phone nights: responsive controls stay distinct and44px",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "balance tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "phone balance: the selected catalogue card stays visible after resizing"
+    },
+    {
+      "ok": true,
+      "label": "phone balance: responsive controls stay distinct and44px",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "rewards tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "fold rewards: the selected catalogue card stays visible after resizing"
+    },
+    {
+      "ok": true,
+      "label": "fold rewards: responsive controls stay distinct and44px",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "nights tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "fold nights: the selected catalogue card stays visible after resizing"
+    },
+    {
+      "ok": true,
+      "label": "fold nights: responsive controls stay distinct and44px",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "balance tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "fold balance: the selected catalogue card stays visible after resizing"
+    },
+    {
+      "ok": true,
+      "label": "fold balance: responsive controls stay distinct and44px",
+      "data": {
+        "width": 874,
+        "height": 787,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "rewards tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "landscape rewards: the selected catalogue card stays visible after resizing"
+    },
+    {
+      "ok": true,
+      "label": "landscape rewards: responsive controls stay distinct and44px",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "nights tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "landscape nights: the selected catalogue card stays visible after resizing"
+    },
+    {
+      "ok": true,
+      "label": "landscape nights: responsive controls stay distinct and44px",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "balance tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "landscape balance: the selected catalogue card stays visible after resizing"
+    },
+    {
+      "ok": true,
+      "label": "landscape balance: responsive controls stay distinct and44px",
+      "data": {
+        "width": 844,
+        "height": 390,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "rewards tab opens its own panel"
+    },
+    {
+      "ok": true,
+      "label": "Only the selected workshop panel is visible"
+    },
+    {
+      "ok": true,
+      "label": "Context loss shows an explicit painted-reference fallback"
+    },
+    {
+      "ok": true,
+      "label": "Context restoration rebuilds one usable model"
+    },
+    {
+      "ok": true,
+      "label": "The workshop never creates a player save"
+    },
+    {
+      "ok": true,
+      "label": "Unavailable WebGL retains the painted reference and contractor controls"
+    },
+    {
+      "ok": true,
+      "label": "The evidence remains usable without WebGL"
+    },
+    {
+      "ok": true,
+      "label": "The exact offline preview has no page errors or external requests",
+      "data": {
+        "errors": [],
+        "external": []
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "model-1-front.png",
+    "model-1-side.png",
+    "model-1-back.png",
+    "model-2-front.png",
+    "model-2-side.png",
+    "model-2-back.png",
+    "model-3-front.png",
+    "model-3-side.png",
+    "model-3-back.png",
+    "phone-rewards.png",
+    "phone-nights.png",
+    "phone-balance.png",
+    "fold-rewards.png",
+    "fold-nights.png",
+    "fold-balance.png",
+    "landscape-rewards.png",
+    "landscape-nights.png",
+    "landscape-balance.png",
+    "context-lost.png",
+    "context-restored.png",
+    "phone-no3d-fallback.png"
+  ],
+  "modelViews": [
+    {
+      "id": "contract-trophy-banquet-candelabrum",
+      "view": "front",
+      "width": 833,
+      "height": 487,
+      "bright": 31549,
+      "centreSHA256": "981c7c301ec3985143519ee315acce2e52b404708aca57c9c703b6890a92e773",
+      "viewer": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-banquet-candelabrum",
+        "modelStats": {
+          "boxCount": 440,
+          "meshCount": 6,
+          "colourPassCalls": 6,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.6524999905377626,
+            0,
+            -0.4375
+          ],
+          "max": [
+            0.6524999905377626,
+            1.9713288554886976,
+            0.4375
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 6,
+        "yaw": 0,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.86875568932113,
+        "cameraPosition": [
+          0,
+          3.105835151092073,
+          3.236069635764008
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 9,
+        "drawCalls": 8,
+        "rendererFrame": 9,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "id": "contract-trophy-banquet-candelabrum",
+      "view": "side",
+      "width": 833,
+      "height": 487,
+      "bright": 14501,
+      "centreSHA256": "961b86b2d0ef9d8ec58a59e86afa9cfdf36ecb94e3c7b9ceeeecb5a83c8e46ba",
+      "viewer": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-banquet-candelabrum",
+        "modelStats": {
+          "boxCount": 440,
+          "meshCount": 6,
+          "colourPassCalls": 6,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.6524999905377626,
+            0,
+            -0.4375
+          ],
+          "max": [
+            0.6524999905377626,
+            1.9713288554886976,
+            0.4375
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 6,
+        "yaw": 1.5707963267948966,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.86875568932113,
+        "cameraPosition": [
+          3.236069635764008,
+          3.105835151092073,
+          1.9815211606281668e-16
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 10,
+        "drawCalls": 8,
+        "rendererFrame": 10,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "id": "contract-trophy-banquet-candelabrum",
+      "view": "back",
+      "width": 833,
+      "height": 487,
+      "bright": 22155,
+      "centreSHA256": "34bad2263897a62d324b5a4d9fd9758db030f73af3e2f41317b28e75a18d54ee",
+      "viewer": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-banquet-candelabrum",
+        "modelStats": {
+          "boxCount": 440,
+          "meshCount": 6,
+          "colourPassCalls": 6,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.6524999905377626,
+            0,
+            -0.4375
+          ],
+          "max": [
+            0.6524999905377626,
+            1.9713288554886976,
+            0.4375
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 6,
+        "yaw": 3.141592653589793,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.86875568932113,
+        "cameraPosition": [
+          3.9630423212563336e-16,
+          3.105835151092073,
+          -3.236069635764008
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 11,
+        "drawCalls": 8,
+        "rendererFrame": 11,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "id": "contract-trophy-moonlit-conservatory",
+      "view": "front",
+      "width": 833,
+      "height": 487,
+      "bright": 56054,
+      "centreSHA256": "d045c7de93dc5a2c3d4d366c8f4432fb7de1ac7f96bfe988505f6e63dd4aa3a8",
+      "viewer": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-moonlit-conservatory",
+        "modelStats": {
+          "boxCount": 560,
+          "meshCount": 19,
+          "colourPassCalls": 19,
+          "materialCount": 3
+        },
+        "modelBounds": {
+          "min": [
+            -0.6875,
+            0,
+            -0.5364999892190099
+          ],
+          "max": [
+            0.6875,
+            2.060000019147992,
+            0.5519999782554805
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 19,
+        "yaw": 0,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 4.042773874024554,
+        "cameraPosition": [
+          0,
+          3.2455368635762656,
+          3.3893793421926994
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 14,
+        "drawCalls": 21,
+        "rendererFrame": 14,
+        "geometries": 17,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "id": "contract-trophy-moonlit-conservatory",
+      "view": "side",
+      "width": 833,
+      "height": 487,
+      "bright": 37502,
+      "centreSHA256": "3b60cc0e89c40157e0bf471a69e9061d92c76f436e52380f095c7206b5571a27",
+      "viewer": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-moonlit-conservatory",
+        "modelStats": {
+          "boxCount": 560,
+          "meshCount": 19,
+          "colourPassCalls": 19,
+          "materialCount": 3
+        },
+        "modelBounds": {
+          "min": [
+            -0.6875,
+            0,
+            -0.5364999892190099
+          ],
+          "max": [
+            0.6875,
+            2.060000019147992,
+            0.5519999782554805
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 19,
+        "yaw": 1.5707963267948966,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 4.042773874024554,
+        "cameraPosition": [
+          3.381629347674464,
+          3.2455368635762656,
+          0.007749994518235533
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 15,
+        "drawCalls": 21,
+        "rendererFrame": 15,
+        "geometries": 17,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "id": "contract-trophy-moonlit-conservatory",
+      "view": "back",
+      "width": 833,
+      "height": 487,
+      "bright": 26061,
+      "centreSHA256": "ab9c36ebf764b711521d50a064e227346f342cac1f2acd1ffaff003bc8b046d1",
+      "viewer": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-moonlit-conservatory",
+        "modelStats": {
+          "boxCount": 560,
+          "meshCount": 19,
+          "colourPassCalls": 19,
+          "materialCount": 3
+        },
+        "modelBounds": {
+          "min": [
+            -0.6875,
+            0,
+            -0.5364999892190099
+          ],
+          "max": [
+            0.6875,
+            2.060000019147992,
+            0.5519999782554805
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 19,
+        "yaw": 3.141592653589793,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 4.042773874024554,
+        "cameraPosition": [
+          4.1413015565322846e-16,
+          3.2455368635762656,
+          -3.3738793531562288
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 16,
+        "drawCalls": 21,
+        "rendererFrame": 16,
+        "geometries": 17,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "id": "contract-trophy-clockwork-hayride-theatre",
+      "view": "front",
+      "width": 833,
+      "height": 487,
+      "bright": 23358,
+      "centreSHA256": "70aad150a2e0ba97f8ce8899767601efc73a9b75f128534d165007d053bcb2f9",
+      "viewer": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-clockwork-hayride-theatre",
+        "modelStats": {
+          "boxCount": 619,
+          "meshCount": 7,
+          "colourPassCalls": 7,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.737500011920929,
+            0,
+            -0.5464999796822667
+          ],
+          "max": [
+            0.7929999994784593,
+            1.587999975308776,
+            0.5464999796822667
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 7,
+        "yaw": 0,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.1164683264348763,
+        "cameraPosition": [
+          0.027749993778765192,
+          2.501899228794411,
+          2.6068093547064644
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 19,
+        "drawCalls": 9,
+        "rendererFrame": 19,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "id": "contract-trophy-clockwork-hayride-theatre",
+      "view": "side",
+      "width": 833,
+      "height": 487,
+      "bright": 9395,
+      "centreSHA256": "25c3494fb5b3fd85935f20976c3a2b41e493b05ba9843401ec2fb75920e87eae",
+      "viewer": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-clockwork-hayride-theatre",
+        "modelStats": {
+          "boxCount": 619,
+          "meshCount": 7,
+          "colourPassCalls": 7,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.737500011920929,
+            0,
+            -0.5464999796822667
+          ],
+          "max": [
+            0.7929999994784593,
+            1.587999975308776,
+            0.5464999796822667
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 7,
+        "yaw": 1.5707963267948966,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.1164683264348763,
+        "cameraPosition": [
+          2.6345593484852294,
+          2.501899228794411,
+          1.5962103661143245e-16
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 20,
+        "drawCalls": 9,
+        "rendererFrame": 20,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    },
+    {
+      "id": "contract-trophy-clockwork-hayride-theatre",
+      "view": "back",
+      "width": 833,
+      "height": 487,
+      "bright": 18368,
+      "centreSHA256": "985e22495408d84bea2afc408c68f2c171a5a1cb1308a5af957eba0f426caa8e",
+      "viewer": {
+        "ready": true,
+        "destroyed": false,
+        "model": "contract-trophy-clockwork-hayride-theatre",
+        "modelStats": {
+          "boxCount": 619,
+          "meshCount": 7,
+          "colourPassCalls": 7,
+          "materialCount": 2
+        },
+        "modelBounds": {
+          "min": [
+            -0.737500011920929,
+            0,
+            -0.5464999796822667
+          ],
+          "max": [
+            0.7929999994784593,
+            1.587999975308776,
+            0.5464999796822667
+          ]
+        },
+        "activeModels": 1,
+        "actualModelMeshes": 7,
+        "yaw": 3.141592653589793,
+        "pitch": 0.58,
+        "zoom": 1,
+        "radius": 3.1164683264348763,
+        "cameraPosition": [
+          0.02774999377876551,
+          2.501899228794411,
+          -2.6068093547064644
+        ],
+        "spin": false,
+        "reducedMotion": true,
+        "rafActive": false,
+        "drawCount": 21,
+        "drawCalls": 9,
+        "rendererFrame": 21,
+        "geometries": 3,
+        "textures": 0,
+        "dpr": 1,
+        "contextControlAvailable": true
+      }
+    }
+  ],
+  "layouts": [
+    {
+      "label": "phone rewards",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": []
+    },
+    {
+      "label": "phone nights",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": []
+    },
+    {
+      "label": "phone balance",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": []
+    },
+    {
+      "label": "fold rewards",
+      "width": 874,
+      "height": 787,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": []
+    },
+    {
+      "label": "fold nights",
+      "width": 874,
+      "height": 787,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": []
+    },
+    {
+      "label": "fold balance",
+      "width": 874,
+      "height": 787,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": []
+    },
+    {
+      "label": "landscape rewards",
+      "width": 844,
+      "height": 390,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": []
+    },
+    {
+      "label": "landscape nights",
+      "width": 844,
+      "height": 390,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": []
+    },
+    {
+      "label": "landscape balance",
+      "width": 844,
+      "height": 390,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": []
+    }
+  ]
+}
