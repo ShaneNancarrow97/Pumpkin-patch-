@@ -7,7 +7,7 @@ Everything is confined to this folder. **Nothing is installed in the live game.*
 Open `Pumpkin-Patch-Late-Game-Workshop.html` from the delivery ZIP to inspect the
 models in 360°, read the evening briefs and compare the actual audit results.
 It is an offline review workshop, **not a new playable-game release**. It never
-reads or writes a player save. The previous playable HTML remains unchanged.
+reads or writes a player save. The current lead's playable game is untouched.
 
 Start with [Claude's handover](docs/HANDOVER.md). For focused review:
 
@@ -44,8 +44,8 @@ offline HTML over a temporary localhost server, with external requests blocked.
 Source branch: `contractor/late-game-support-pack`.
 
 Use the folder-only patch in `Pumpkin-Patch-Late-Game-Claude-Kit.zip`, or copy this
-folder into Claude's current checkout. Do not merge the branch's earlier sprite
-history simply to obtain these assets. The patch has no changes to game source,
+folder into Claude's current checkout. The branch starts at the pushed lead
+`f2f96f8` and does not include the earlier unmerged sprite branch. The patch has no changes to game source,
 dependency manifests, global handovers, economy, saves, controls or sprites.
 
 The kit records exact tested bases and hashes. Changes to the lead's relevant

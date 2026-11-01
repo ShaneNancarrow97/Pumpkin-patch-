@@ -1,9 +1,9 @@
-✔ voxel/docs/contractor-patches/late-game-support/test/art.test.mjs (66.888695ms)
-✔ voxel/docs/contractor-patches/late-game-support/test/audit.test.mjs (1093.507407ms)
-✔ voxel/docs/contractor-patches/late-game-support/test/content.test.mjs (68.237471ms)
-✔ voxel/docs/contractor-patches/late-game-support/test/pack-contract.test.mjs (107.071627ms)
-✔ voxel/docs/contractor-patches/late-game-support/test/preview-build.test.mjs (171.564897ms)
-✔ voxel/docs/contractor-patches/late-game-support/test/reward-props.test.mjs (153.301683ms)
+✔ voxel/docs/contractor-patches/late-game-support/test/art.test.mjs (56.280879ms)
+✔ voxel/docs/contractor-patches/late-game-support/test/audit.test.mjs (1138.250826ms)
+✔ voxel/docs/contractor-patches/late-game-support/test/content.test.mjs (75.759635ms)
+✔ voxel/docs/contractor-patches/late-game-support/test/pack-contract.test.mjs (107.480143ms)
+✔ voxel/docs/contractor-patches/late-game-support/test/preview-build.test.mjs (171.359887ms)
+✔ voxel/docs/contractor-patches/late-game-support/test/reward-props.test.mjs (149.511026ms)
 ℹ tests 6
 ℹ suites 0
 ℹ pass 6
@@ -11,4 +11,4 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 1674.183315
+ℹ duration_ms 1710.299666

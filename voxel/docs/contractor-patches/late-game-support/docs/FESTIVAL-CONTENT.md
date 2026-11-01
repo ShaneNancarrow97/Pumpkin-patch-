@@ -96,7 +96,8 @@ admission/boarding; changing boarding bay must not erase it.
 
 Do not infer a successful visit from an NPC disappearing off screen, a service
 animation, a quoted price or a renderer notification. Current fear/return labels
-need the review in handover61 before using them as a new event outcome.
+need the review in this pack's `findings/AUDIT.md` before using them as a new
+event outcome.
 
 The `contract-trophy-*` reward IDs are reserved only within this pack. Before
 registering them, the lead should adopt measured model dimensions, add normal

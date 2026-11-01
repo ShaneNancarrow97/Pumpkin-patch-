@@ -32,12 +32,10 @@ Twenty-one screenshots accompany the final run. Any screenshots from failed
 intermediate runs have been excluded. `checks.json` identifies the verified
 HTML, not an earlier failed version.
 
-The production build was rebuilt separately and matches the previous delivered
-game byte for byte:
-
-```text
-7909eb960ab10ed9aa6b2cc7cac35a081f8a02e5817ab918b9e62ebfd66e652a
-```
+The production build is compared byte for byte with a clean build of the current
+lead `f2f96f8351dea4cf6072862b1e3e0b14d6a318dc`. The exact hash and comparison
+result are recorded in the delivery's `REBUILD-VERIFICATION.json`; no comparison
+to an older character-branch game is claimed for this refreshed pack.
 
 The delivery's `delivery.json` and `REBUILD-VERIFICATION.json` add final committed
 source, folder-only patch application, clean rebuild and ZIP hashes. Those

@@ -8,11 +8,12 @@ active gameplay work. This delivery adds only
 assets, menus, progression, prices and saved-player data intact. No live import
 points at this folder. There is no event runtime or reward grant to merge.
 
-Source review base: `70d411dcd0bc3a0ead43fe03f87603fd72b9ccab`, following the
-directional-character contractor work and high-level attraction review.
-Lead reviewed independently: `b387c85da592ed310dad5838ea7668c45fc0899a` on
-`voxel-reference`. Those are reference commits, not instructions to reset the
-lead. Preserve any unpublished work and check the latest pushed lead first.
+Source and patch base: `f2f96f8351dea4cf6072862b1e3e0b14d6a318dc`, the pushed
+`voxel-reference` lead with handover 63 and the timed ride-camera work. The
+pack was refreshed onto that lead before publication; it does not bring the
+previous unmerged character branch with it. This is a reference commit, not an
+instruction to reset the lead. Preserve unpublished work and check the latest
+pushed lead first.
 
 ## Completed part 1: three real voxel rewards
 
@@ -80,7 +81,7 @@ willingness/value choices. Neither models the complete farm economy. No natural
 needs drift, production, food/cocoa/retail transactions, tips or automatic
 invitation demand is simulated. The actual unload effects still apply.
 
-Key conditional finding: tier 3 plus all eligible haunts is already 117 raw
+Key conditional finding: tier 3 plus all eligible haunts is already 137 raw
 scare, clamped at 100 before routes. In that configuration, routes extend the
 paid circuit from 90 to 130 seconds without improving scare, the £20 ceiling or
 standalone 30% footfall. At £12, one tractor completes 124 guests on the original
@@ -101,7 +102,7 @@ horizon. A test crosses the live receipt-history limit of 256 without losing
 income. Frightened flags are not treated as proof the guest actually left the
 whole farm. Read [the complete method and limits](../findings/AUDIT.md).
 
-Source provenance follows 66 actual static dependencies, including shared root
+Source provenance follows 67 actual static dependencies, including shared root
 data, instead of hashing unrelated contractor sprite/UI files. The report also
 hashes the auditor itself. The preview refuses stale evidence. If the lead's
 rules change, rerun both audits and inspect the findings; do not restore old rules
@@ -166,12 +167,13 @@ Or obtain the folder without merging the branch's earlier contractor history:
 
 ```sh
 git fetch origin contractor/late-game-support-pack
-git diff --binary 70d411dcd0bc3a0ead43fe03f87603fd72b9ccab origin/contractor/late-game-support-pack -- voxel/docs/contractor-patches/late-game-support/ > /tmp/late-game-support.patch
+git diff --binary f2f96f8351dea4cf6072862b1e3e0b14d6a318dc origin/contractor/late-game-support-pack -- voxel/docs/contractor-patches/late-game-support/ > /tmp/late-game-support.patch
 git apply --check /tmp/late-game-support.patch
 git apply /tmp/late-game-support.patch
 ```
 
-The delivery manifest records patch/application tests on both reference commits.
+The delivery manifest records actual patch application on that lead and a clean
+committed-source rebuild.
 Do not reset, stash, overwrite or merge Claude's working files to adopt this
 folder. Review and integrate each live feature deliberately in lead-owned files.
 
