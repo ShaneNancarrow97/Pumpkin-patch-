@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#17131d">
+  <title>Pumpkin Patch · Late-game workshop</title>
+  <style>/* @workshop:style */</style>
+</head>
+<body>
+  <main class="workshop">
+    <header class="masthead">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">✦</span><div><p class="eyebrow">Shane &amp; Natalie’s Pumpkin Patch</p><h1>The late-game workshop</h1></div></div>
+      <p class="scope-badge">Contractor preview <span>· Not installed in the game</span></p>
+    </header>
+    <nav class="tabs" role="tablist" aria-label="Workshop views">
+      <button id="tab-rewards" role="tab" aria-selected="true" aria-controls="panel-rewards" data-tab="rewards">Rewards</button>
+      <button id="tab-nights" role="tab" aria-selected="false" aria-controls="panel-nights" data-tab="nights" tabindex="-1">Night briefs</button>
+      <button id="tab-balance" role="tab" aria-selected="false" aria-controls="panel-balance" data-tab="balance" tabindex="-1">Balance evidence</button>
+    </nav>
+
+    <section id="panel-rewards" class="view" role="tabpanel" aria-labelledby="tab-rewards">
+      <div class="section-heading"><div><p class="eyebrow">Something worth coming home for</p><h2>Three rewards, made in voxels.</h2></div><p>Turn them through 360° and inspect every side.</p></div>
+      <div id="reward-choices" class="choices" role="group" aria-label="Choose a reward model"></div>
+      <div class="reward-layout">
+        <div class="stage-shell">
+          <div id="model-stage" class="model-stage">
+            <canvas id="model-canvas" tabindex="0" aria-label="Interactive reward model. Drag to turn, pinch or use plus and minus to zoom. Arrow keys turn the view; Home resets it."></canvas>
+            <div id="model-fallback" class="model-fallback" hidden></div>
+            <p id="model-status" class="stage-hint" aria-live="polite">Drag to turn · Pinch to zoom</p>
+            <span id="angle-readout" class="angle-readout" aria-hidden="true">Three-quarter view</span>
+          </div>
+          <div class="viewer-controls" role="group" aria-label="Model view controls">
+            <label class="view-preset"><span class="sr-only">View angle</span><select id="view-preset" aria-label="View angle"><option value="quarter">Three-quarter</option><option value="front">Front</option><option value="side">Side</option><option value="back">Back</option></select></label>
+            <button id="zoom-out" class="square" aria-label="Zoom out">−</button>
+            <button id="zoom-in" class="square" aria-label="Zoom in">+</button>
+            <button id="reset-view" aria-label="Reset model view">Reset</button>
+            <button id="spin-model" aria-pressed="false">Auto-turn</button>
+          </div>
+        </div>
+        <aside class="reward-information">
+          <p class="eyebrow">Cosmetic reward · Model ready for review</p>
+          <h3 id="reward-title"></h3><p id="reward-description" class="body-copy"></p>
+          <dl id="reward-measurements" class="measurements"></dl>
+          <p id="reward-flavour" class="flavour"></p>
+          <button id="see-night" class="button-primary">Read its night brief <span aria-hidden="true">↗</span></button>
+          <details class="notes"><summary>Model &amp; integration notes</summary><div id="model-notes"></div></details>
+        </aside>
+      </div>
+    </section>
+
+    <section id="panel-nights" class="view" role="tabpanel" aria-labelledby="tab-nights" hidden>
+      <div class="section-heading"><div><p class="eyebrow">A reason to open the gates again</p><h2>Plan an evening worth remembering.</h2></div><p>Three optional event briefs for Claude to integrate.</p></div>
+      <div id="night-choices" class="choices" role="group" aria-label="Choose a festival night"></div>
+      <article id="night-content" class="night-content"></article>
+    </section>
+
+    <section id="panel-balance" class="view" role="tabpanel" aria-labelledby="tab-balance" hidden>
+      <div class="section-heading"><div><p class="eyebrow">Evidence before tuning</p><h2>What does a longer ride change?</h2></div><p id="audit-scope"></p></div>
+      <p class="study-label"><span class="status-dot" aria-hidden="true"></span>Controlled ride-capacity fixture <span>· Not a profit or player-time forecast</span></p>
+      <div id="audit-finding" class="finding-banner"></div>
+      <div class="audit-controls">
+        <label>Tractors<select id="audit-fleet"><option value="1">One tractor</option><option value="2">Two tractors</option></select></label>
+        <label>Ticket price<select id="audit-ticket"><option value="8">£8</option><option value="12" selected>£12</option><option value="20">£20</option></select></label>
+        <label>Inspect route<select id="audit-route"><option value="0">Original circuit</option><option value="1">Graveyard extension</option><option value="2">Complete woodland route</option></select></label>
+      </div>
+      <div id="audit-metrics" class="audit-metrics" aria-live="polite"></div>
+      <div class="comparison"><div class="comparison-heading"><h3>Same demand. Same ticket price.</h3><span id="study-duration"></span></div><div class="table-scroll"><table><caption class="sr-only">Compare the three route lengths using the selected tractor count and price</caption><thead><tr><th scope="col">Route</th><th scope="col">Circuit</th><th scope="col">Scare</th><th scope="col">Completed</th><th scope="col">Ticket receipts</th><th scope="col">Mean queue</th></tr></thead><tbody id="audit-table"></tbody></table></div><p class="table-note">Receipts are ticket income. They do not include retail sales, ingredients, attraction purchases or net profit.</p></div>
+      <div id="audit-warnings" class="audit-warnings"></div>
+      <div class="audit-details"><details class="notes"><summary>Fixture assumptions &amp; limits</summary><div id="audit-assumptions"></div></details><details class="notes"><summary>Other findings &amp; source snapshot</summary><div id="audit-more"></div></details></div>
+      <button id="download-audit" class="quiet-button">Save audit JSON <span aria-hidden="true">↓</span></button>
+    </section>
+    <footer class="footer">Prepared for selective contractor pickup. Reward registration, event goals and balance changes remain integration work.</footer>
+  </main>
+  <script>/* @workshop:script */</script>
+</body>
+</html>
