@@ -1,0 +1,507 @@
+{
+  "version": 1,
+  "status": "proposal",
+  "integrationStatus": "not-installed",
+  "title": "Three evenings worth preparing for",
+  "scope": "Content and reward briefs for Claude to integrate. No festival runtime, save fields, visitor spawns, reward grants or economy changes are installed by this file.",
+  "policy": {
+    "preparation": "untimed",
+    "completion": "choose-any-three-of-four-goals",
+    "targets": "Suggested tuning values; not balanced or advertised as guaranteed completion times.",
+    "guestBudget": "Use each visitor's existing finite wallet; an event never creates a second purse.",
+    "guestCapacity": "Use existing invitation and queue systems within their current caps.",
+    "pause": "Freeze operational counters and clocks with the game.",
+    "offline": "No deadline expiry, failure penalty or event simulation while the game is closed.",
+    "restart": "Allow ending and trying another evening without resetting the farm, home or permanent progress.",
+    "rewards": "One permanent cosmetic unlock per theme. Further completions may record an evening in a future event history; they do not grant duplicate items, coins, currency or automatic stat bonuses.",
+    "counting": "Consume authoritative completed transactions/outcomes for the selected evening. Deduplicate by source plus receipt/visit ID; distinct-guest goals additionally deduplicate by guest ID. Never infer success from an NPC disappearing off screen."
+  },
+  "metricDefinitions": {
+    "food-servings": {
+      "unit": "servings",
+      "aggregation": "paid-quantity",
+      "adapterRequirement": "Consume confirmed food-payment receipts, filtered to the evening's listed recipe IDs. Count paid servings once, not stock displayed, recipes cooked or money quoted."
+    },
+    "completed-attraction-guests": {
+      "unit": "guests",
+      "aggregation": "distinct-guests",
+      "adapterRequirement": "Record actual paid maze/hayride completion outcomes. A guest counts once for this goal even if they repeat the maze or use both attractions."
+    },
+    "vip-served-guests": {
+      "unit": "VIP guests",
+      "aggregation": "distinct-guests",
+      "adapterRequirement": "Join an existing VIP guest flag to a confirmed paid food or attraction receipt from the evening. Arrival alone and free owner ride-alongs do not qualify."
+    },
+    "happy-departures": {
+      "unit": "guests",
+      "aggregation": "distinct-guests",
+      "adapterRequirement": "Sample the visitor's real happiness at their confirmed final departure, before removing their state. Apply the configured threshold. Do not count a temporary return from a ride as a departure."
+    },
+    "cocoa-servings": {
+      "unit": "drinks",
+      "aggregation": "paid-quantity",
+      "adapterRequirement": "Consume confirmed Sandy stand receipts for cocoa or the listed cocoa specials. Supplying stock, a quote or the cashier animation is not a sale."
+    },
+    "garden-harvest-quantity": {
+      "unit": "ingredients",
+      "aggregation": "successful-harvest-quantity",
+      "adapterRequirement": "Consume successful harvest results from the listed garden crop pieces after choosing the evening. Count harvested quantity once whether it enters the pantry or sells as overflow; later cooking is a separate transaction."
+    },
+    "extended-hayride-guests": {
+      "unit": "guests",
+      "aggregation": "distinct-guests",
+      "adapterRequirement": "At paid departure, capture the convoy's actual routeLevel. Count a guest only after completing that captured route, not because a route upgrade was bought mid-journey."
+    },
+    "short-queue-completions": {
+      "unit": "guests",
+      "aggregation": "distinct-guests",
+      "adapterRequirement": "Capture each visitor's queue wait before boarding/admission and join it to their paid completion outcome. Use the configured maximum wait; never reset waiting time when a second tractor changes boarding bay."
+    }
+  },
+  "themes": [
+    {
+      "id": "midnight-court-banquet",
+      "name": "Midnight Court Banquet",
+      "level": 13,
+      "rewardId": "contract-trophy-banquet-candelabrum",
+      "recipeIds": [
+        "haunted-pie",
+        "moonlight-tart"
+      ],
+      "letter": "Dear keepers of the patch, the Court has heard that your pastry is worth rising for. Set two dishes beneath the lanterns and leave a carriage waiting by the woods. We shall bring our best velvet, our oldest coins, and reasonably good table manners. Yours until dawn, the Midnight Court.",
+      "intendedDecision": "Balance a premium two-dish menu and ticket prices against the same guests' remaining wallets, while keeping both attractions moving.",
+      "preparation": [
+        "Bake Haunted harvest pie and Moonlight tart in the home kitchen, then choose those two shop displays.",
+        "Prepare vegetables from the garden or order a delivery, and leave room in the pantry and finished-food cupboard.",
+        "Open the restored Hollow House and the hayride, then review ticket prices and the existing Midnight Court invitation upgrade."
+      ],
+      "prerequisites": {
+        "houseLevel": 2,
+        "kitchenPurchased": true,
+        "visitorEventIds": [
+          "vip"
+        ],
+        "cocoaTier": 0,
+        "attractions": [
+          {
+            "id": "hollow-house",
+            "minTier": 2,
+            "ready": true
+          },
+          {
+            "id": "hayride",
+            "minTier": 1,
+            "ready": true,
+            "routeLevel": 0
+          }
+        ],
+        "gardenDecorIds": [],
+        "suggestedKitchenEquipmentIds": [
+          "kitchen-oven",
+          "kitchen-baking-rack"
+        ],
+        "kitchenCapabilities": [
+          "oven",
+          "tray"
+        ]
+      },
+      "operation": {
+        "mode": "player-ended",
+        "suggestedMinutes": 20,
+        "hardDeadline": false,
+        "pauseWithGame": true,
+        "offlineSimulation": false,
+        "failurePenalty": "none"
+      },
+      "goals": {
+        "choose": 3,
+        "tuningStatus": "suggested-unbalanced",
+        "options": [
+          {
+            "id": "court-supper",
+            "label": "Sell 12 portions from tonight's two-dish menu",
+            "metricId": "food-servings",
+            "target": 12,
+            "unit": "servings",
+            "window": "session",
+            "conditions": {
+              "recipeIds": [
+                "haunted-pie",
+                "moonlight-tart"
+              ]
+            }
+          },
+          {
+            "id": "court-frights",
+            "label": "Welcome 12 guests through a paid attraction visit",
+            "metricId": "completed-attraction-guests",
+            "target": 12,
+            "unit": "guests",
+            "window": "session",
+            "conditions": {
+              "attractionIds": [
+                "hollow-house",
+                "hayride"
+              ]
+            }
+          },
+          {
+            "id": "court-patrons",
+            "label": "Serve 4 different Midnight Court guests",
+            "metricId": "vip-served-guests",
+            "target": 4,
+            "unit": "VIP guests",
+            "window": "session",
+            "conditions": {
+              "visitorEventId": "vip",
+              "paidSources": [
+                "food",
+                "hollow-house",
+                "hayride"
+              ]
+            }
+          },
+          {
+            "id": "court-goodbyes",
+            "label": "See 10 guests finish their evening happily",
+            "metricId": "happy-departures",
+            "target": 10,
+            "unit": "guests",
+            "window": "session",
+            "conditions": {
+              "minimumHappiness": 75
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "lanterns-in-the-mist",
+      "name": "Lanterns in the Mist",
+      "level": 15,
+      "rewardId": "contract-trophy-moonlit-conservatory",
+      "recipeIds": [
+        "harvest-broth",
+        "bramble-crumble"
+      ],
+      "letter": "The mist has reached the village windows, and something gentle is ringing the garden bell. Tonight, keep the broth warm and the lanterns low. A little fright is welcome; a kind welcome is remembered. Meet us where the moonflowers open.",
+      "intendedDecision": "Choose a welcoming food-and-cocoa service and a comfortable scare programme, or spend more time harvesting garden ingredients and completing the harvest alternative.",
+      "preparation": [
+        "Prepare Harvest cauldron broth and Bramble crumble; use garden vegetables, herbs and berries or buy the ingredients.",
+        "Restock Sandy's cocoa and ghost marshmallow cocoa, and review the number of guests waiting for service.",
+        "Choose a few favourite maze effects for the evening and leave a clear route between the attractions and refreshments."
+      ],
+      "prerequisites": {
+        "houseLevel": 2,
+        "kitchenPurchased": true,
+        "visitorEventIds": [],
+        "cocoaTier": 2,
+        "attractions": [
+          {
+            "id": "hollow-house",
+            "minTier": 3,
+            "ready": true
+          },
+          {
+            "id": "hayride",
+            "minTier": 2,
+            "ready": true,
+            "routeLevel": 1
+          }
+        ],
+        "gardenDecorIds": [],
+        "suggestedKitchenEquipmentIds": [
+          "kitchen-hob",
+          "kitchen-pot-rail",
+          "kitchen-oven",
+          "kitchen-baking-rack"
+        ],
+        "kitchenCapabilities": [
+          "hob",
+          "pot",
+          "oven",
+          "tray"
+        ]
+      },
+      "recommendedGardenDecorIds": [
+        "vegetable-bed",
+        "herb-planter",
+        "berry-patch"
+      ],
+      "operation": {
+        "mode": "player-ended",
+        "suggestedMinutes": 20,
+        "hardDeadline": false,
+        "pauseWithGame": true,
+        "offlineSimulation": false,
+        "failurePenalty": "none"
+      },
+      "goals": {
+        "choose": 3,
+        "tuningStatus": "suggested-unbalanced",
+        "options": [
+          {
+            "id": "mist-warm-cups",
+            "label": "Serve 16 warm cocoas from Sandy's stand",
+            "metricId": "cocoa-servings",
+            "target": 16,
+            "unit": "drinks",
+            "window": "session",
+            "conditions": {
+              "cocoaProductIds": [
+                "cocoa",
+                "deluxe"
+              ]
+            }
+          },
+          {
+            "id": "mist-lantern-walk",
+            "label": "Welcome 12 guests through a paid attraction visit",
+            "metricId": "completed-attraction-guests",
+            "target": 12,
+            "unit": "guests",
+            "window": "session",
+            "conditions": {
+              "attractionIds": [
+                "hollow-house",
+                "hayride"
+              ]
+            }
+          },
+          {
+            "id": "mist-kind-goodbyes",
+            "label": "See 10 guests leave with a truly warm welcome",
+            "metricId": "happy-departures",
+            "target": 10,
+            "unit": "guests",
+            "window": "session",
+            "conditions": {
+              "minimumHappiness": 80
+            }
+          },
+          {
+            "id": "mist-garden-basket",
+            "label": "Harvest 8 ingredients from your kitchen garden",
+            "metricId": "garden-harvest-quantity",
+            "target": 8,
+            "unit": "ingredients",
+            "window": "preparation-or-session",
+            "conditions": {
+              "gardenDecorIds": [
+                "vegetable-bed",
+                "herb-planter",
+                "berry-patch"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "the-last-wagon",
+      "name": "The Last Wagon",
+      "level": 18,
+      "rewardId": "contract-trophy-clockwork-hayride-theatre",
+      "recipeIds": [
+        "seed-brittle",
+        "pumpkin-spice-biscuits"
+      ],
+      "letter": "One last wagon before the witching hour? The old driver swears the trees have moved closer, and the graveyard gate is standing open. Pack something sweet for the way back. If every lantern returns, a tiny carriage of your own will be waiting in your parlour.",
+      "intendedDecision": "Prepare enough takeaway snacks for a busy extended route, then decide whether seats, dispatch, prices or a gentler scare combination best supports the crowd.",
+      "preparation": [
+        "Cook Pumpkin seed brittle and Pumpkin spice biscuits; carving seeds can supply the pantry, or ingredients can be delivered.",
+        "Open the Midnight procession with both purchased route extensions and check the existing Harvest rush invitation upgrade.",
+        "Check queue space, boarding crew and food stock before inviting the next party; a second tractor is useful but is not an entry requirement."
+      ],
+      "prerequisites": {
+        "houseLevel": 2,
+        "kitchenPurchased": true,
+        "visitorEventIds": [
+          "rush"
+        ],
+        "cocoaTier": 0,
+        "attractions": [
+          {
+            "id": "hollow-house",
+            "minTier": 1,
+            "ready": true
+          },
+          {
+            "id": "hayride",
+            "minTier": 3,
+            "ready": true,
+            "routeLevel": 2
+          }
+        ],
+        "gardenDecorIds": [],
+        "suggestedKitchenEquipmentIds": [
+          "kitchen-hob",
+          "kitchen-pot-rail",
+          "kitchen-oven",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "kitchenCapabilities": [
+          "hob",
+          "pot",
+          "oven",
+          "tray",
+          "spice"
+        ]
+      },
+      "operation": {
+        "mode": "player-ended",
+        "suggestedMinutes": 20,
+        "hardDeadline": false,
+        "pauseWithGame": true,
+        "offlineSimulation": false,
+        "failurePenalty": "none"
+      },
+      "goals": {
+        "choose": 3,
+        "tuningStatus": "suggested-unbalanced",
+        "options": [
+          {
+            "id": "wagon-full-trail",
+            "label": "Bring 16 guests back from the complete woodland route",
+            "metricId": "extended-hayride-guests",
+            "target": 16,
+            "unit": "guests",
+            "window": "session",
+            "conditions": {
+              "attractionIds": [
+                "hayride"
+              ],
+              "minimumRouteLevel": 2
+            }
+          },
+          {
+            "id": "wagon-sweet-return",
+            "label": "Sell 12 portions from tonight's takeaway menu",
+            "metricId": "food-servings",
+            "target": 12,
+            "unit": "servings",
+            "window": "session",
+            "conditions": {
+              "recipeIds": [
+                "seed-brittle",
+                "pumpkin-spice-biscuits"
+              ]
+            }
+          },
+          {
+            "id": "wagon-smooth-boarding",
+            "label": "Complete 12 visits with no more than 45 seconds in the queue",
+            "metricId": "short-queue-completions",
+            "target": 12,
+            "unit": "guests",
+            "window": "session",
+            "conditions": {
+              "attractionIds": [
+                "hayride"
+              ],
+              "maximumQueueSeconds": 45
+            }
+          },
+          {
+            "id": "wagon-fond-goodbyes",
+            "label": "See 10 guests finish their evening happily",
+            "metricId": "happy-departures",
+            "target": 10,
+            "unit": "guests",
+            "window": "session",
+            "conditions": {
+              "minimumHappiness": 75
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "rewards": [
+    {
+      "id": "contract-trophy-banquet-candelabrum",
+      "name": "Midnight Banquet Candelabrum",
+      "integrationStatus": "not-registered",
+      "kind": "cosmetic-floor-prop",
+      "mechanicalEffects": [],
+      "flavour": "Five candles for guests who never let a good supper go cold.",
+      "blueprint": {
+        "gridFootprint": [
+          2,
+          2
+        ],
+        "layer": "floor",
+        "suggestedRooms": [
+          "parlour",
+          "kitchen"
+        ],
+        "dimensions": "Use the model's measured bounds; target width1.6, depth1.2 and height1.9 world units.",
+        "coordinates": "Y up; front is+Z. Center the piece on X/Z and keep its base at Y0. Model all four sides for free rotation.",
+        "structure": [
+          "Carved dark walnut floor pedestal with four stable feet",
+          "Five branched antique-brass candle arms around a small crowned centre",
+          "Plum wax, warm ivory candles and a restrained amber glow"
+        ],
+        "animationSuggestion": "Subtle individual flame flicker; keep physical candle geometry and floor footprint fixed.",
+        "collisionNote": "Register the measured model body with the existing furniture system only during integration; this brief grants no placement or ownership."
+      }
+    },
+    {
+      "id": "contract-trophy-moonlit-conservatory",
+      "name": "Moonlit Wardian Conservatory",
+      "integrationStatus": "not-registered",
+      "kind": "cosmetic-floor-prop",
+      "mechanicalEffects": [],
+      "flavour": "The moonflowers open whenever somebody remembers a kind welcome.",
+      "blueprint": {
+        "gridFootprint": [
+          2,
+          2
+        ],
+        "layer": "floor",
+        "suggestedRooms": [
+          "parlour",
+          "bedroom"
+        ],
+        "dimensions": "Use the model's measured bounds; target width1.6, depth1.2 and height2.1 world units.",
+        "coordinates": "Y up; front is+Z. Center the piece on X/Z and keep its base at Y0. Model all four sides for free rotation.",
+        "structure": [
+          "Blackened-iron stand and shallow planter bed",
+          "Small gothic Wardian glasshouse with visible rear and side framing",
+          "Lilac moonflowers, silver leaves and a crescent finial"
+        ],
+        "animationSuggestion": "A slow spectral flower glow or a small floating mote inside the case; no expanding collision shape.",
+        "collisionNote": "Glass is decorative, not an invisible room wall. Measured frame/stand body sets placement clearance."
+      }
+    },
+    {
+      "id": "contract-trophy-clockwork-hayride-theatre",
+      "name": "Clockwork Hayride Theatre",
+      "integrationStatus": "not-registered",
+      "kind": "cosmetic-floor-prop",
+      "mechanicalEffects": [],
+      "flavour": "A little carriage circles a forest that is almost certainly larger on the inside.",
+      "blueprint": {
+        "gridFootprint": [
+          2,
+          2
+        ],
+        "layer": "floor",
+        "suggestedRooms": [
+          "parlour",
+          "attic"
+        ],
+        "dimensions": "Use the model's measured bounds; target width1.6, depth1.2 and height1.6 world units.",
+        "coordinates": "Y up; front is+Z. Center the piece on X/Z and keep its base at Y0. Model all four sides for free rotation.",
+        "structure": [
+          "Floor-standing walnut display cabinet with a brass hand crank",
+          "A tiny dark-green tractor and hay wagon on a contained miniature route",
+          "Crooked woodland scenery, a moon silhouette and warm marquee lamps"
+        ],
+        "animationSuggestion": "Move the miniature tractor on a short contained loop and turn the crank slowly; the outer cabinet stays fixed.",
+        "collisionNote": "All animated parts must remain inside the measured cabinet envelope at every phase. This is a home display, not another operating ride."
+      }
+    }
+  ]
+}
