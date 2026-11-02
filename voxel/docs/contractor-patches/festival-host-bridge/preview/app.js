@@ -1,4 +1,6 @@
 import { createLab } from '../lab/scenario.js';
+import { serviceOffers } from '../lab/offers.js';
+import { serviceState } from './service-state.js';
 import definitions from '../../late-game-support/data/festival-themes.json' with { type: 'json' };
 import atlas from '../../late-game-support/art/menu-icons.webp';
 import serifFont from '../../../../assets/fraunces-400.woff2';
@@ -60,16 +62,18 @@ function invoke(action,...args){
  const before=lab.view();let result;
  try{result=lab[action](...args);}catch(error){say('The private operation could not complete. Inspect the contractor diagnostics before retrying.');throw error;}
  lastAction={action,result:copy(result)};render();
- if(result?.accepted===false||result?.compatible===false){say(friendly[result.reason]??result.warnings?.[0]??`Operation not applied · ${String(result.reason??'not accepted').replaceAll('-',' ')}.`,true);return result;}
+ if(result?.accepted===false||result?.compatible===false){if(result.reason==='pending-outcomes')$('delivery-inspector').open=true;say(friendly[result.reason]??result.warnings?.[0]??`Operation not applied · ${String(result.reason??'not accepted').replaceAll('-',' ')}.`,true);return result;}
  const after=lab.view(),receipt=after.ledger?.[0];
  if(receipt&&receipt.serial!==before.ledger?.[0]?.serial){
   animate($('recent-receipt'),[{opacity:.4,transform:'translateY(8px) rotate(-.6deg)'},{opacity:1,transform:'translateY(0) rotate(0)'}],360);
   animate($('receipt-seal'),[{opacity:0,transform:'rotate(-8deg) scale(1.18)'},{opacity:1,transform:'rotate(-8deg) scale(1)'}],400);
   animate($('guest-sales'),[{color:'#fff0c6'},{color:'#f0d3a1'}]);
+  animate($('latest-operation'),[{opacity:.35,transform:'translateY(4px)'},{opacity:1,transform:'translateY(0)'}],280);
  }
  if(after.outbox.pending!==before.outbox.pending)animate($('queue-count'),[{transform:'scale(1.12)',opacity:.5},{transform:'scale(1)',opacity:1}],220);
  if(after.outbox.pending<before.outbox.pending)animate(document.querySelector('.outbox'),[{borderColor:'#d7bc82',backgroundColor:'#584129'},{borderColor:'#6c566335',backgroundColor:'#15101c66'}],380);
  for(const goal of after.festival.active?.goals??[]){const previous=before.festival.active?.goals.find(g=>g.id===goal.id);if(goal.done&&!previous?.done)animate(document.querySelector(`[data-goal="${goal.id}"] .goal-marker`),[{transform:'scale(.75)',boxShadow:'0 0 0 6px #b6caa044'},{transform:'scale(1)',boxShadow:'0 0 0 0 #b6caa000'}],360);}
+ if(action==='end'&&!after.festival.active&&after.festival.pendingRewards.some(r=>r.themeId===selectedTheme))animate($('completion-card'),[{opacity:0,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],420);
  if(action==='prepare')say('Preparation is untimed. Garden harvests can count after this selection.');
  else if(action==='start')say('The evening is open. Each service operation runs the actual private-world rules.');
  else if(action==='pause')say('Festival service is paused. Queued confirmed outcomes are retained.');
@@ -79,7 +83,7 @@ function invoke(action,...args){
   say(held?`${number(held)} confirmed outcomes remain held while service is paused.`:rejected?`Delivery finished. ${number(rejected)} stale or invalid outcomes were explicitly rejected.`:`Confirmed outcomes delivered${delivered?' · '+number(delivered)+' processed':''}. Guest spending and stock did not change.`);
  }
  else if(action==='replayLast')say('The exact previous outcome was replayed. Guest wallets, venue takings and stock were not charged again.');
- else if(action==='end')say('The evening ended without a penalty. Confirmed spending stays in the private ledger.');
+ else if(action==='end')say(after.festival.pendingRewards.some(r=>r.themeId===selectedTheme)?'Three goals complete. Your keepsake is ready to record.':'The evening ended without a penalty. Confirmed spending stays in the private ledger.');
  else if(action==='claim')say('The once-only entitlement was recorded. Live furniture registration remains separate.');
  else if(['serveFood','serveCocoa','harvest','runRide'].includes(action)){
   const v=lab.view(),pending=v.outbox?.pending??v.festival?.outbox?.pending??0;
@@ -107,7 +111,8 @@ function render(){
  const pendingRewards=festival.pendingRewards??[],pendingReward=pendingRewards.find(r=>r.themeId===theme.id),claimed=(festival.ownedRewards??[]).some(r=>r.themeId===theme.id);
  const outbox=v.outbox??festival.outbox??{pending:0,capacity:256,free:256};
  const world=lab.world,worldPaused=world.paused===true,service=active?.phase==='running'&&!worldPaused;
- document.body.dataset.phase=active?.phase??'idle';document.body.dataset.worldPaused=String(worldPaused);
+ const presentation=serviceState(v,theme.id,{worldPaused}),finished=!!presentation.completion&&!active;
+ document.body.dataset.phase=active?.phase??'idle';document.body.dataset.stage=presentation.stage;document.body.dataset.worldPaused=String(worldPaused);
  if(!$('theme-choices').children.length){$('theme-choices').innerHTML=definitions.themes.map(t=>`<button class="theme-choice" data-theme="${escape(t.id)}">${art(themeIndex(t.id))}<span class="choice-copy"><b>${escape(t.name)}</b><small>Level ${t.level} · <span data-choice-status="${escape(t.id)}">Private prepared venue</span></small></span></button>`).join('');for(const button of $('theme-choices').querySelectorAll('[data-theme]'))button.onclick=()=>selectTheme(button.dataset.theme);}
  for(const t of festival.themes){const b=$('theme-choices').querySelector(`[data-theme="${t.id}"]`);b.setAttribute('aria-pressed',String(t.id===theme.id));b.disabled=!!active&&active.themeId!==t.id;b.querySelector('[data-choice-status]').textContent=t.claimed?'Entitlement recorded':t.completed?'Completed':'Private prepared venue';}
  requestAnimationFrame(revealChoice);
@@ -115,30 +120,65 @@ function render(){
  $('reward-art').innerHTML=art(rewardIndex(theme.rewardId),66);$('reward-name').textContent=rewards.get(theme.rewardId).name;
  $('reward-status').textContent=claimed?'Entitlement recorded once. Live physical ownership is separate.':pendingReward?'Evening complete · entitlement earned. Live furniture registration is separate.':'One entitlement per theme. Live furniture registration remains separate.';
  $('hosting-time').textContent=clock(active?.elapsedSeconds??0);
- $('session-phase').textContent=worldPaused&&active?'Private world paused':active?.phase==='preparing'?'Untimed preparation':active?.phase==='running'?'Open for the evening':active?.phase==='paused'?'Service paused':pendingReward?'Evening complete':'Choose your evening';
+ $('session-phase').textContent=presentation.status;
+ $('session-heading').textContent=finished?'Evening complete':active?'Tonight’s service':'Your evening awaits';
+ $('next-step').textContent=presentation.nextStep;
  $('prepare-night').hidden=!!active||!!pendingReward;$('prepare-night').disabled=themeView?.readiness?.unlocked===false;
+ $('prepare-night').className=finished?'quiet':'primary';$('prepare-night').innerHTML=finished?'Host this evening again':'Prepare evening <span aria-hidden="true">→</span>';
  $('start-night').hidden=active?.phase!=='preparing';$('start-night').disabled=!readiness.ready||worldPaused;
- $('pause-night').hidden=active?.phase!=='running';$('pause-night').disabled=worldPaused;
+ $('pause-night').textContent=outbox.pending?'Pause':'Pause service';$('pause-night').hidden=active?.phase!=='running';$('pause-night').disabled=worldPaused;
  $('resume-night').hidden=active?.phase!=='paused';$('resume-night').disabled=worldPaused;
  $('end-night').hidden=!active;$('end-night').textContent=active?.canFinish?'Finish evening':active?.phase==='preparing'?'Cancel preparation':'End evening';
- $('end-night').className=active?.canFinish?'primary':'quiet';
+ $('end-night').className=active?.canFinish&&!outbox.pending?'primary':'quiet';
+ $('deliver-now').hidden=!service||!outbox.pending;
  $('claim-reward').hidden=!pendingReward||typeof lab.claim!=='function';
+ $('completion-card').hidden=!finished;
+ $('completion-card').dataset.tone=presentation.completion?.tone??'';
+ $('completion-title').textContent=presentation.completion?.title??'';
+ $('completion-body').textContent=presentation.completion?.body??'';
+ $('completion-keepsake').textContent=rewards.get(theme.rewardId).name;
+ $('completion-art').innerHTML=art(rewardIndex(theme.rewardId),100);
+ $('choose-next').hidden=!finished||!claimed;
+ $('choose-next').innerHTML=(festival.themes.some(t=>!t.claimed&&t.id!==selectedTheme)?'Choose another evening':'Browse evenings')+' <span aria-hidden="true">→</span>';
+ document.querySelector('.hosting-clock').hidden=finished;
+ const home=finished?$('completion-card'):document.querySelector('.session-actions');if($('prepare-night').parentElement!==home)home.append($('prepare-night'));document.querySelector('.session-actions').hidden=finished;
+ $('service-operations').hidden=finished;$('goals').hidden=finished;$('readiness').hidden=finished||!!active&&active.phase!=='preparing'&&!worldPaused;
  if(active?.phase==='running'||active?.phase==='paused'){$('readiness').textContent=worldPaused?'The private world is paused. Real rule operations cannot spend or produce.':active.phase==='paused'?'Festival progress is paused. Confirmed outcomes stay queued.':'No deadline · Real operations use their actual rule prices and stock.';$('readiness').className='readiness ready';}
  else if(readiness.ready){$('readiness').textContent='The prepared developer venue is ready. No player progression has been granted.';$('readiness').className='readiness ready';}
  else{$('readiness').innerHTML=`<strong>Before opening</strong><ul>${(readiness.missing??[]).map(m=>`<li>${escape(m.label)}</li>`).join('')}</ul>`;$('readiness').className='readiness';}
- for(const id of ['serve-food','serve-cocoa','run-ride'])$(id).disabled=!service;
- $('harvest-garden').disabled=!active||active.phase==='paused'||worldPaused;
+ renderOffers(v,theme,world,active);
  $('flush-outcomes').disabled=!outbox.pending;$('flush-outcomes').className=outbox.pending?'small-primary':'quiet';
  $('queue-count').textContent=number(outbox.pending);$('queue-status').textContent=outbox.pending?`${number(outbox.pending)} awaiting delivery · ${number(outbox.free)} free slots`:'Nothing awaiting delivery';
- $('defer-delivery').checked=!!v.deferred;$('replay-outcome').disabled=!(v.ledger?.length);
+ $('delivery-inspector').dataset.pending=String(outbox.pending>0);$('defer-delivery').checked=!!v.deferred;$('replay-outcome').disabled=!(v.ledger?.length);
  const goals=active?.goals??theme.goals.options.map(g=>({id:g.id,label:g.label,value:0,target:g.target,done:false}));
- $('goal-summary').textContent=active?.canFinish?'Three goals complete. Finish whenever you are ready.':'Complete any three of four goals.';$('goal-count').textContent=`${active?.completedGoals??0} / 3`;
+ $('goal-summary').textContent=finished?'Three goals achieved':active?.canFinish?'Three goals complete':'Complete any three of four goals.';$('goal-count').textContent=presentation.objectives.display;
+ $('objective-overview').dataset.complete=String(presentation.objectives.completed>=presentation.objectives.required);
  const signature=goals.map(g=>g.id).join('|');
  if($('goals').dataset.signature!==signature){$('goals').dataset.signature=signature;$('goals').innerHTML=goals.map(g=>`<div class="goal" data-goal="${escape(g.id)}"><span class="goal-marker" aria-hidden="true"></span><p class="goal-label"></p><span class="goal-value"></span><div class="goal-track" role="progressbar" aria-valuemin="0"><div class="goal-fill"></div></div></div>`).join('');}
  for(const goal of goals){const row=$('goals').querySelector(`[data-goal="${goal.id}"]`),value=row.querySelector('.goal-value'),track=row.querySelector('.goal-track');row.classList.toggle('done',goal.done);row.querySelector('.goal-label').textContent=goal.label;value.textContent=`${number(goal.value)} / ${number(goal.target)}`;value.dataset.value=goal.value;value.dataset.target=goal.target;track.setAttribute('aria-label',goal.label);track.setAttribute('aria-valuemax',goal.target);track.setAttribute('aria-valuenow',goal.value);row.querySelector('.goal-fill').style.width=goal.value/goal.target*100+'%';}
  renderAccounts(v,theme,world);
  $('world-pause-control').hidden=typeof lab.setWorldPaused!=='function';$('pause-world').checked=worldPaused;
  $('scope-disclosure').textContent=typeof v.disclosure==='string'?v.disclosure:'Prepared developer state isolates receipt handling. It is not a player progression, profit or timing forecast.';
+}
+
+function renderOffers(v,theme,world,active){
+ const offers=serviceOffers(world,theme,{previewSelection:!active}),free=v.outbox.free,phase=active?.phase;
+ for(const [kind,id,slots]of [['food','serve-food',1],['cocoa','serve-cocoa',1],['garden','harvest-garden',1],['ride','run-ride',2]]){
+  const offer=offers[kind],button=$(id),canCapture=!!active&&phase!=='paused'&&(kind==='garden'||phase==='running')&&!world.paused;
+  button.disabled=!canCapture||!offer.available||free<slots;
+  const quote=$('offer-'+kind);let description;
+  if(world.paused)description='Private world paused';
+  else if(!offer.available)description=kind==='food'&&!offer.stock?'No portions left · Try cocoa or a ride':'Unavailable in this venue';
+  else if(free<slots)description='Deliver queued outcomes first';
+  else if(kind==='food')description=`${number(offer.quantity)} portions · Quote ${money(offer.amount)} · ${number(offer.stock)} left`;
+  else if(kind==='cocoa')description=`${number(offer.quantity)} items · Quote ${money(offer.amount)}`;
+  else if(kind==='garden')description=offer.phase==='ready'?'Ripe now · Kitchen ingredients':'Grow & pick · Simulated time';
+  else description=`Quote ${money(offer.amount)} · Route ${number(offer.routeLevel)}`;
+  quote.textContent=description;
+  button.querySelector('strong').textContent=kind==='food'?'Serve '+offer.label:kind==='cocoa'?'Pour cocoa & treats':kind==='garden'?'Grow & harvest a bed':'Complete a paid ride';
+  button.setAttribute('aria-label',button.querySelector('strong').textContent);
+  button.title=kind==='cocoa'?offer.items.map(item=>item.name).join(' + '):offer.label;
+ }
 }
 
 function renderAccounts(v,theme,world){
@@ -152,6 +192,8 @@ function renderAccounts(v,theme,world){
  $('guest-wallets').innerHTML=guests.length?guests.slice(0,8).map(g=>`<div class="guest-wallet"><span>${escape(g.kind??'guest')} · ${escape(g.id)}</span><strong>${money(g.initialBudget)} → ${money(g.budget)}</strong></div>`).join(''):'<p class="operation-note">A finite-wallet private guest is created by each service test.</p>';
  const ledger=v.ledger??[];$('ledger-count').textContent=ledger.length?`${number(ledger.length)} committed operations`:'No committed operations yet';
  const recent=ledger[0];
+ $('latest-operation').hidden=!recent;
+ if(recent){const harvested=recent.kind==='harvest';$('latest-kind').textContent=harvested?'Harvest confirmed':'Payment confirmed';$('latest-detail').textContent=`${number(recent.quantity)} ${harvested?'ingredients picked':recent.kind==='hayride'?'paid ride completed':recent.kind==='cocoa'?'cocoa & treat items':'portions served'} · ${v.outbox.pending?'Delivery held':'Tracking up to date'}`;$('latest-amount').textContent=money(recent.amount);}
  if(recent){const harvested=recent.kind==='harvest';$('recent-receipt').dataset.committed='true';$('receipt-seal').textContent=harvested?'Picked':'Paid';$('receipt-heading').textContent={food:'A warm supper',cocoa:'A little cup of comfort',hayride:'A trip into the Hollow',harvest:'From the kitchen garden'}[recent.kind]??'Confirmed operation';$('receipt-description').textContent=`${number(recent.quantity)} ${harvested?'ingredients harvested':recent.kind==='hayride'?'paid visitor':recent.kind==='cocoa'?'items in the committed order':'portions served'}`;$('receipt-amount-label').textContent=harvested?'Market overflow income':'Guest paid';$('receipt-amount').textContent=money(recent.amount);$('receipt-reference').textContent=`No. ${String(recent.serial).padStart(4,'0')} · ${harvested?'Grown here':'Payment confirmed'}`;}
  else{$('recent-receipt').dataset.committed='false';$('receipt-seal').textContent='Ready';$('receipt-heading').textContent='Your first receipt';$('receipt-description').textContent='A real service operation will leave its mark here.';$('receipt-amount-label').textContent='Committed amount';$('receipt-amount').textContent='—';$('receipt-reference').textContent='No transaction has been made.';}
  const labels={food:'Menu dish','food-sale':'Menu dish',cocoa:'Cocoa order','cocoa-sale':'Cocoa order',harvest:'Garden harvest','garden-harvest':'Garden harvest',ride:'Paid hayride',hayride:'Paid hayride','hayride-completion':'Paid hayride'};
@@ -168,7 +210,8 @@ const actions={
  prepare:()=>invoke('prepare',selectedTheme),start:()=>invoke('start'),pause:()=>invoke('pause'),resume:()=>invoke('resume'),flush:()=>invoke('flush'),end:()=>invoke('end'),claim:()=>invoke('claim',selectedTheme),
  serveFood:()=>invoke('serveFood'),serveCocoa:()=>invoke('serveCocoa'),harvest:()=>invoke('harvest',{grow:true}),runRide:()=>invoke('runRide'),replayLast:()=>invoke('replayLast'),saveSnapshot,loadSnapshot,exportSnapshot
 };
-for(const [id,action]of [['prepare-night','prepare'],['start-night','start'],['pause-night','pause'],['resume-night','resume'],['flush-outcomes','flush'],['end-night','end'],['claim-reward','claim'],['serve-food','serveFood'],['serve-cocoa','serveCocoa'],['harvest-garden','harvest'],['run-ride','runRide'],['replay-outcome','replayLast'],['save-snapshot','saveSnapshot'],['export-snapshot','exportSnapshot']])$(id).onclick=actions[action];
+for(const [id,action]of [['prepare-night','prepare'],['start-night','start'],['pause-night','pause'],['resume-night','resume'],['flush-outcomes','flush'],['deliver-now','flush'],['end-night','end'],['claim-reward','claim'],['serve-food','serveFood'],['serve-cocoa','serveCocoa'],['harvest-garden','harvest'],['run-ride','runRide'],['replay-outcome','replayLast'],['save-snapshot','saveSnapshot'],['export-snapshot','exportSnapshot']])$(id).onclick=actions[action];
+$('choose-next').onclick=()=>{const next=lab.view().festival.themes.find(t=>!t.claimed&&t.id!==selectedTheme);if(next)selectTheme(next.id);const button=$('theme-choices').querySelector('[aria-pressed=true]');button?.focus();button?.scrollIntoView({block:'nearest',inline:'nearest',behavior:motion.matches?'instant':'smooth'});};
 $('reload-snapshot').onclick=()=>{if(lastSaved)loadSnapshot(lastSaved);};
 $('load-json').onclick=()=>{try{if($('snapshot-json').value.length>2*1024*1024)throw Error('Too large');loadSnapshot(JSON.parse($('snapshot-json').value));}catch{say('That text is invalid or too large for this private lab. Current progress was kept.');}};
 $('defer-delivery').onchange=e=>{lab.setDeferred(e.target.checked);render();say(e.target.checked?'Delivery is held for inspection. Real payments still commit once; their outcomes wait in the outbox.':'Automatic outcome delivery is enabled for subsequent operations. Existing queued facts can be delivered explicitly.');};
@@ -180,7 +223,7 @@ const operationArt={
  'harvest-garden':['<path d="M12 21V9M12 15C4 16 3 10 3 7c6-1 9 2 9 8Zm0-5c0-6 4-8 9-8 0 6-3 9-9 8Z"/>','Your kitchen garden'],
  'run-ride':['<path d="M3 15h12V6h-5v9m5-5h4l2 5v2h-3M9 6V3h8M5 13v-3"/><circle cx="7" cy="17" r="4"/><circle cx="19" cy="18" r="2"/>','Tickets & return']
 };
-for(const [id,[path,subtitle]]of Object.entries(operationArt)){const button=$(id),label=button.textContent;button.setAttribute('aria-label',label);button.innerHTML=`<span class="operation-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">${path}</svg></span><span class="operation-copy"><strong>${escape(label)}</strong><small>${escape(subtitle)}</small></span>`;}
+for(const [id,[path,subtitle]]of Object.entries(operationArt)){const button=$(id),label=button.textContent;button.setAttribute('aria-label',label);const kind={'serve-food':'food','serve-cocoa':'cocoa','harvest-garden':'garden','run-ride':'ride'}[id];button.setAttribute('aria-describedby','offer-'+kind);button.innerHTML=`<span class="operation-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">${path}</svg></span><span class="operation-copy"><strong>${escape(label)}</strong><small id="offer-${kind}">${escape(subtitle)}</small></span>`;}
 render();
 window.FestivalBridgeLab={controller:lab,definitions,actions,invoke,selectTheme,saveSnapshot,loadSnapshot,
  get motion(){return {reduced:motion.matches,activeOneShots:oneShots.size,played:playedAnimations};},

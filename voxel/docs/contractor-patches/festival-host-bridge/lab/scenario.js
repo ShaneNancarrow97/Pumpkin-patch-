@@ -104,7 +104,7 @@ export function createLab({capacity=256}={}){
  }
  function serveFood(options={}){
   const blocked=preflight(1);if(blocked)return blocked;
-  const [binding]=bindings(1),recipeId=themes.get(selectedTheme).recipeIds[0];
+  const [binding]=bindings(1);
   const budget=options.budget??100;if(!finite(budget))return result(false,'invalid-budget');
   const record=newGuest('customer',budget,options),before=world.coins;
   const quote=quoteFoodForCustomer(world,record.guest);
@@ -113,7 +113,7 @@ export function createLab({capacity=256}={}){
   if(!receipt)return result(false,'food-not-paid');
   const outcome=foodOutcome(binding,receipt,record.identity);queue(outcome);noteGuest(record,'food');
   must(world.coins-before===receipt.amount,'food receipt differs from real income');
-  const entry=row({kind:'food',guestId:record.guestId,amount:receipt.amount,quantity:receipt.quantity,recipeId,receiptId:receipt.id});
+  const entry=row({kind:'food',guestId:record.guestId,amount:receipt.amount,quantity:receipt.quantity,recipeId:receipt.recipe,receiptId:receipt.id});
   const delivered=deliver();return serviceResult({amount:receipt.amount,quantity:receipt.quantity,receipt:copy(receipt),entry:copy(entry)},[outcome],delivered);
  }
  function serveCocoa(options={}){

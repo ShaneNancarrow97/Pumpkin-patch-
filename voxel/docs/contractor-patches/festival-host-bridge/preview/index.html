@@ -19,18 +19,20 @@
 
     <div class="desk-layout">
       <section class="session-card" aria-labelledby="session-heading">
-        <header class="session-heading"><div><p id="session-phase" class="phase-label">Choose your evening</p><h2 id="session-heading">Tonight’s service</h2></div><div class="hosting-clock"><span id="hosting-time">0:00</span><small>Hosting time</small></div></header>
+        <header class="session-heading"><div><p id="session-phase" class="phase-label">Choose your evening</p><h2 id="session-heading">Tonight’s service</h2></div><div class="hosting-clock"><span id="hosting-time" title="Only simulated growth and ride steps advance this clock; menu service does not add time.">0:00</span><small>Simulated time</small></div></header>
+        <div class="completion-strip" id="objective-overview"><div><p id="goal-summary">Complete any three of four goals.</p><p id="next-step" class="next-step">Prepare your chosen evening.</p></div><span id="goal-count">0 / 3</span></div>
         <div class="session-actions">
           <button id="prepare-night" class="primary">Prepare evening <span aria-hidden="true">→</span></button>
           <button id="start-night" class="primary" hidden>Open for the evening <span aria-hidden="true">→</span></button>
           <button id="pause-night" hidden>Pause service</button>
           <button id="resume-night" class="primary" hidden>Resume service <span aria-hidden="true">→</span></button>
+          <button id="deliver-now" class="primary" hidden>Deliver outcomes <span aria-hidden="true">→</span></button>
           <button id="end-night" class="quiet" hidden>End evening</button>
-          <button id="claim-reward" class="primary" hidden>Record keepsake entitlement <span aria-hidden="true">→</span></button>
+          
         </div>
         <div id="readiness" class="readiness"></div>
 
-        <section class="operations" aria-labelledby="operations-heading">
+        <section id="service-operations" class="operations" aria-labelledby="operations-heading">
           <header><h3 id="operations-heading">Serve the private venue</h3><span class="small-label">Actual game rules</span></header>
           <div class="operation-buttons">
             <button id="serve-food">Serve a menu dish</button>
@@ -38,18 +40,34 @@
             <button id="harvest-garden">Grow &amp; harvest a bed</button>
             <button id="run-ride">Complete one paid ride</button>
           </div>
-          <p class="operation-note">Prepared developer stock, finite guest wallets and actual rule payments. Further harvests simulate crop growth; no player save is read.</p>
+          <p class="operation-note">Quotes use a nominated private guest. Payment commits only when you serve; rides and growing use accelerated simulation.</p>
         </section>
 
-        <section class="outbox" aria-labelledby="outbox-heading">
-          <header><div><h3 id="outbox-heading">Confirmed outcomes</h3><p id="queue-status">Nothing awaiting delivery</p></div><span id="queue-count" class="queue-count">0</span></header>
-          <div class="delivery-controls"><label class="check-label"><input id="defer-delivery" type="checkbox"><span>Hold delivery for inspection</span></label><button id="flush-outcomes" class="small-primary">Deliver outcomes</button></div>
-          <div class="replay-controls"><button id="replay-outcome" class="quiet">Replay last outcome</button><span>Replaying never charges a guest again.</span></div>
+        <section id="completion-card" class="completion-card" aria-labelledby="completion-title" hidden>
+          <div id="completion-art" aria-hidden="true"></div><p id="completion-caption" class="eyebrow">A night to remember</p>
+          <h3 id="completion-title"></h3><p id="completion-body"></p>
+          <p id="completion-keepsake"></p>
+          <button id="claim-reward" class="primary" hidden>Record keepsake <span aria-hidden="true">→</span></button>
+          <button id="choose-next" class="primary" hidden>Choose another evening <span aria-hidden="true">→</span></button>
+          <small>Cosmetic entitlement only · Physical furniture integration remains separate.</small>
         </section>
 
-        <div class="completion-strip"><p id="goal-summary">Complete any three of four goals.</p><span id="goal-count">0 / 3</span></div>
+        <div class="service-feedback" id="service-feedback">
+          <div id="latest-operation" class="latest-operation" hidden><div><span id="latest-kind" class="small-label"></span><p id="latest-detail"></p></div><strong id="latest-amount"></strong></div>
+          <p id="feedback" class="feedback" role="status" aria-live="polite">Prepare an evening to begin. No deadline or offline penalty.</p>
+        </div>
         <div id="goals" class="goals" aria-label="Evening goals"></div>
-        <p id="feedback" class="feedback" role="status" aria-live="polite">Prepare an evening to begin. No deadline or offline penalty.</p>
+
+
+
+        <details id="delivery-inspector" class="outbox">
+          <summary><div><h3 id="outbox-heading">Delivery inspector</h3><p id="queue-status">Nothing awaiting delivery</p></div><span id="queue-count" class="queue-count">0</span><span class="inspector-chevron" aria-hidden="true">⌄</span></summary>
+          <div class="inspector-body">
+            <p class="inspector-note">Review confirmed facts separately from payments. Nothing here charges a guest.</p>
+            <div class="delivery-controls"><label class="check-label"><input id="defer-delivery" type="checkbox"><span>Hold delivery for inspection</span></label><button id="flush-outcomes" class="small-primary">Deliver outcomes</button></div>
+            <div class="replay-controls"><button id="replay-outcome" class="quiet">Replay last outcome</button><span>Replaying never charges a guest again.</span></div>
+          </div>
+        </details>
       </section>
 
       <aside class="venue" aria-labelledby="theme-title">

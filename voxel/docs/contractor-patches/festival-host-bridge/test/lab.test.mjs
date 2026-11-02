@@ -120,6 +120,16 @@ test('saved checkpoints are detached, and incompatible/corrupt imports preserve 
  assert.equal(lab.restore(mismatched).reason,'inconsistent-selected-evening');assert.deepEqual(lab.snapshot(),baseline);
 });
 
+test('a restored menu display records the actual committed recipe without relabelling it as the theme default',()=>{
+ const lab=open(),saved=lab.snapshot();saved.game.kitchen.displays=['moonlight-tart',null];
+ ok(lab.restore(saved));ok(lab.resume());const before=lab.view().balances;
+ const paid=ok(lab.serveFood());assert.equal(paid.amount,81);assert.equal(paid.receipt.recipe,'moonlight-tart');
+ assert.equal(paid.entry.recipeId,'moonlight-tart');assert.equal(lab.view().ledger[0].recipeId,'moonlight-tart');
+ assert.equal(lab.world.kitchen.food['moonlight-tart'],9);assert.equal(lab.world.kitchen.food['haunted-pie'],12);
+ assert.equal(goal(lab,'court-supper'),3);assert.equal(lab.view().balances.coins,before.coins+81);
+ assert.equal(lab.view().balances.ledgerBalanced,true);
+});
+
 test('all three themes can finish from actual service/harvest/ride outcomes without fabricated departures',()=>{
  for(const theme of [COURT,MIST,WAGON]){
   const lab=createLab();ok(lab.prepare(theme));
