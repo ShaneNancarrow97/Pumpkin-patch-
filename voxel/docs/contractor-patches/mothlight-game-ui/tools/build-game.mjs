@@ -17,7 +17,7 @@ try{
  const run=spawnSync(process.execPath,[path.join(root,'voxel/build.mjs'),'--out',base],{cwd:root,encoding:'utf8'});
  if(run.error||run.status!==0)throw Error(run.error?.message??run.stdout+'\n'+run.stderr);
  const original=fs.readFileSync(base,'utf8'),font=fs.readFileSync(path.join(pack,'assets/caveat-latin.woff2'));
- const svgData=svg=>'data:image/svg+xml,'+encodeURIComponent(svg.replaceAll('currentColor','#74506b'));
+ const svgData=svg=>'data:image/svg+xml,'+encodeURIComponent(svg.replaceAll('currentColor','#d3bbd8'));
  let css=fs.readFileSync(path.join(pack,'theme.css'),'utf8')
   .replaceAll('mothlight:caveat','data:font/woff2;base64,'+font.toString('base64'))
   .replaceAll('mothlight:moth',svgData(mothOrnament()))

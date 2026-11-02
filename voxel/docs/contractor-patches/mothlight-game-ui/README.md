@@ -1,7 +1,7 @@
 # Mothlight · full game visual edition
 
 This builds the actual complete Pumpkin Patch Voxel game with witchy ledger
-menus: parchment pages, mulberry binding, moth and botanical margins and
+menus: purple parchment pages, mulberry binding, moth and botanical margins and
 handwritten notes. The farm remains visible during normal play. Prices, controls,
 controller prompts and financial figures keep the regular readable game fonts.
 
@@ -25,3 +25,5 @@ standard stylesheet list with its assets inlined. Preserve unpublished work.
 Caveat is supplied under the included SIL Open Font License; a copy is embedded
 inside the output HTML as well. Moth/botanical SVGs are original decorative art.
 The separate Festival receipt lab is not imported into this game edition.
+
+Normal menus retain purple parchment and clear cream type. Edge sparkles are subtle and switch off with reduced motion. The village expansion is [planned separately](../../plans/mothlight-village/ROADMAP.md); it is not part of this HTML build.

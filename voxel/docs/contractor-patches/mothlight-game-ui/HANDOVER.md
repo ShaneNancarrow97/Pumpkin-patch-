@@ -6,7 +6,7 @@ skin, independently of the earlier Festival lab.
 
 ## Completed
 
-- Scoped parchment menus with mulberry book edges, faint moth/pressed-botanical
+- Scoped purple purple parchment menus with mulberry book edges with subtle foil sparkles, faint moth/pressed-botanical
   marginalia and handwritten decorative notes.
 - Manage hub, standard sheets, upgrades, wardrobe, house, shop/cocoa/kitchen
   surfaces, settings and milestone surfaces share the palette.
@@ -31,6 +31,10 @@ three `mothlight:` asset placeholders as the wrapper does. Set
 `mothlight-game` on the body. Do not register new rules or change a save version;
 this is a visual layer. Keep `OFL-Caveat.txt` with source distributions and its
 license copy with the embedded font.
+
+## Future village expansion
+
+The separate [village roadmap](../../plans/mothlight-village/ROADMAP.md) is plan only. It proposes residents, quests, gathering, building and cinematics; none of that expansion is installed by this visual edition. Existing twenty-level gameplay stays intact.
 
 ## Checks and limits
 
