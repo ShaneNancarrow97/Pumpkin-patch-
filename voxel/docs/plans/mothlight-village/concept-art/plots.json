@@ -1,0 +1,1387 @@
+{
+  "schemaVersion": 1,
+  "status": "proposed concept greybox; no runtime integration",
+  "coordinateSystem": {
+    "pointOrder": [
+      "x",
+      "z"
+    ],
+    "xDirection": "east",
+    "zDirection": "north",
+    "origin": "southwest",
+    "units": "world units"
+  },
+  "bounds": {
+    "min": [
+      0,
+      0
+    ],
+    "max": [
+      120,
+      96
+    ]
+  },
+  "minimumMainRoadPlotGap": 1,
+  "districts": [
+    {
+      "id": "hollow_green",
+      "name": "Hollow Green",
+      "minimumLevel": 6,
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          120,
+          0
+        ],
+        [
+          120,
+          12
+        ],
+        [
+          84,
+          12
+        ],
+        [
+          84,
+          36
+        ],
+        [
+          0,
+          36
+        ]
+      ],
+      "colour": "#69564d"
+    },
+    {
+      "id": "moonroot_copse",
+      "name": "Moonroot Copse",
+      "minimumLevel": 9,
+      "polygon": [
+        [
+          0,
+          36
+        ],
+        [
+          40,
+          36
+        ],
+        [
+          40,
+          96
+        ],
+        [
+          0,
+          96
+        ]
+      ],
+      "colour": "#46584d"
+    },
+    {
+      "id": "lantern_quarry",
+      "name": "Lantern Quarry",
+      "minimumLevel": 12,
+      "polygon": [
+        [
+          40,
+          36
+        ],
+        [
+          84,
+          36
+        ],
+        [
+          84,
+          74
+        ],
+        [
+          40,
+          74
+        ]
+      ],
+      "colour": "#5d546b"
+    },
+    {
+      "id": "carnival_moor",
+      "name": "Carnival Moor",
+      "minimumLevel": 15,
+      "polygon": [
+        [
+          84,
+          12
+        ],
+        [
+          120,
+          12
+        ],
+        [
+          120,
+          74
+        ],
+        [
+          84,
+          74
+        ]
+      ],
+      "colour": "#734958"
+    },
+    {
+      "id": "mirror_marsh",
+      "name": "Mirror Marsh",
+      "minimumLevel": 18,
+      "polygon": [
+        [
+          40,
+          74
+        ],
+        [
+          120,
+          74
+        ],
+        [
+          120,
+          96
+        ],
+        [
+          40,
+          96
+        ]
+      ],
+      "colour": "#355b62"
+    }
+  ],
+  "plots": [
+    {
+      "id": "01",
+      "occupant": "Elowen Mothwick",
+      "building": "Conservatory library",
+      "bounds": {
+        "min": [
+          28,
+          10
+        ],
+        "max": [
+          48,
+          30
+        ]
+      },
+      "size": [
+        20,
+        20
+      ],
+      "door": {
+        "point": [
+          48,
+          20
+        ],
+        "facing": "east",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "hollow_green",
+      "minimumLevel": 6,
+      "kind": "resident",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    },
+    {
+      "id": "02",
+      "occupant": "Rowan Rattlewood",
+      "building": "Workshop cottage",
+      "bounds": {
+        "min": [
+          66,
+          8
+        ],
+        "max": [
+          82,
+          28
+        ]
+      },
+      "size": [
+        16,
+        20
+      ],
+      "door": {
+        "point": [
+          66,
+          20
+        ],
+        "facing": "west",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "hollow_green",
+      "minimumLevel": 6,
+      "kind": "resident",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    },
+    {
+      "id": "03",
+      "occupant": "Mabel Moonstitch",
+      "building": "Haberdashery cottage",
+      "bounds": {
+        "min": [
+          6,
+          40
+        ],
+        "max": [
+          24,
+          56
+        ]
+      },
+      "size": [
+        18,
+        16
+      ],
+      "door": {
+        "point": [
+          24,
+          48
+        ],
+        "facing": "east",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "moonroot_copse",
+      "minimumLevel": 9,
+      "kind": "resident",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    },
+    {
+      "id": "04",
+      "occupant": "Tansy Thistledown",
+      "building": "Herb cottage and garden",
+      "bounds": {
+        "min": [
+          6,
+          60
+        ],
+        "max": [
+          24,
+          78
+        ]
+      },
+      "size": [
+        18,
+        18
+      ],
+      "door": {
+        "point": [
+          24,
+          68
+        ],
+        "facing": "east",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "moonroot_copse",
+      "minimumLevel": 9,
+      "kind": "resident",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    },
+    {
+      "id": "05",
+      "occupant": "Opal Graves",
+      "building": "Stoneworking studio",
+      "bounds": {
+        "min": [
+          40,
+          44
+        ],
+        "max": [
+          52,
+          64
+        ]
+      },
+      "size": [
+        12,
+        20
+      ],
+      "door": {
+        "point": [
+          52,
+          54
+        ],
+        "facing": "east",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "lantern_quarry",
+      "minimumLevel": 12,
+      "kind": "resident",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    },
+    {
+      "id": "06",
+      "occupant": "Chef Cinder",
+      "building": "Restaurant and upstairs flat",
+      "bounds": {
+        "min": [
+          66,
+          42
+        ],
+        "max": [
+          82,
+          62
+        ]
+      },
+      "size": [
+        16,
+        20
+      ],
+      "door": {
+        "point": [
+          66,
+          50
+        ],
+        "facing": "west",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "lantern_quarry",
+      "minimumLevel": 12,
+      "kind": "resident",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    },
+    {
+      "id": "07",
+      "occupant": "Ringmaster Corvus",
+      "building": "Tent home and living wagon",
+      "bounds": {
+        "min": [
+          90,
+          32
+        ],
+        "max": [
+          104,
+          52
+        ]
+      },
+      "size": [
+        14,
+        20
+      ],
+      "door": {
+        "point": [
+          104,
+          42
+        ],
+        "facing": "east",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "carnival_moor",
+      "minimumLevel": 15,
+      "kind": "resident",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    },
+    {
+      "id": "08",
+      "occupant": "Baron Brassbolt",
+      "building": "Velvet manor",
+      "bounds": {
+        "min": [
+          90,
+          56
+        ],
+        "max": [
+          104,
+          72
+        ]
+      },
+      "size": [
+        14,
+        16
+      ],
+      "door": {
+        "point": [
+          104,
+          64
+        ],
+        "facing": "east",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "carnival_moor",
+      "minimumLevel": 15,
+      "kind": "resident",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    },
+    {
+      "id": "09",
+      "occupant": "Observatory",
+      "building": "Story and festival ruin",
+      "bounds": {
+        "min": [
+          76,
+          82
+        ],
+        "max": [
+          94,
+          94
+        ]
+      },
+      "size": [
+        18,
+        12
+      ],
+      "door": {
+        "point": [
+          85,
+          82
+        ],
+        "facing": "south",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "mirror_marsh",
+      "minimumLevel": 18,
+      "kind": "landmark",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    },
+    {
+      "id": "R1",
+      "occupant": "Future home",
+      "building": "Empty reservation",
+      "bounds": {
+        "min": [
+          4,
+          8
+        ],
+        "max": [
+          22,
+          26
+        ]
+      },
+      "size": [
+        18,
+        18
+      ],
+      "door": {
+        "point": [
+          22,
+          17
+        ],
+        "facing": "east",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "hollow_green",
+      "minimumLevel": 6,
+      "kind": "reservation",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    },
+    {
+      "id": "R2",
+      "occupant": "Future home",
+      "building": "Empty reservation",
+      "bounds": {
+        "min": [
+          4,
+          80
+        ],
+        "max": [
+          22,
+          92
+        ]
+      },
+      "size": [
+        18,
+        12
+      ],
+      "door": {
+        "point": [
+          22,
+          86
+        ],
+        "facing": "east",
+        "minimumClearWidth": 2,
+        "levelApproach": true
+      },
+      "district": "moonroot_copse",
+      "minimumLevel": 9,
+      "kind": "reservation",
+      "envelopePurpose": "Full eventual exterior building and garden reserve; interior is a separate scene."
+    }
+  ],
+  "paths": [
+    {
+      "id": "arrival",
+      "name": "Carriage and return approach",
+      "kind": "main",
+      "width": 6,
+      "points": [
+        [
+          58,
+          0
+        ],
+        [
+          58,
+          4
+        ],
+        [
+          58,
+          24
+        ]
+      ],
+      "activeWhen": "route unlocked; gates below control traversal",
+      "plotId": null
+    },
+    {
+      "id": "copse",
+      "name": "Green to Copse",
+      "kind": "main",
+      "width": 6,
+      "points": [
+        [
+          58,
+          24
+        ],
+        [
+          58,
+          34
+        ],
+        [
+          30,
+          34
+        ],
+        [
+          30,
+          78
+        ]
+      ],
+      "activeWhen": "route unlocked; gates below control traversal",
+      "plotId": null
+    },
+    {
+      "id": "quarry",
+      "name": "Quarry bridge and spine",
+      "kind": "main",
+      "width": 6,
+      "points": [
+        [
+          58,
+          34
+        ],
+        [
+          58,
+          70
+        ]
+      ],
+      "activeWhen": "route unlocked; gates below control traversal",
+      "plotId": null
+    },
+    {
+      "id": "moor",
+      "name": "Moor dogleg and east spine",
+      "kind": "main",
+      "width": 6,
+      "points": [
+        [
+          58,
+          34
+        ],
+        [
+          86,
+          34
+        ],
+        [
+          86,
+          24
+        ],
+        [
+          108,
+          24
+        ],
+        [
+          108,
+          70
+        ]
+      ],
+      "activeWhen": "route unlocked; gates below control traversal",
+      "plotId": null
+    },
+    {
+      "id": "marsh",
+      "name": "Late Marsh loop",
+      "kind": "main",
+      "width": 6,
+      "points": [
+        [
+          58,
+          70
+        ],
+        [
+          58,
+          78
+        ],
+        [
+          108,
+          78
+        ],
+        [
+          108,
+          70
+        ]
+      ],
+      "activeWhen": "route unlocked; gates below control traversal",
+      "plotId": null
+    },
+    {
+      "id": "door-01",
+      "name": "Plot 01 door approach",
+      "kind": "door_spur",
+      "width": 4,
+      "points": [
+        [
+          48,
+          20
+        ],
+        [
+          58,
+          20
+        ]
+      ],
+      "activeWhen": "plot district unlocked",
+      "plotId": "01"
+    },
+    {
+      "id": "door-02",
+      "name": "Plot 02 door approach",
+      "kind": "door_spur",
+      "width": 4,
+      "points": [
+        [
+          66,
+          20
+        ],
+        [
+          58,
+          20
+        ]
+      ],
+      "activeWhen": "plot district unlocked",
+      "plotId": "02"
+    },
+    {
+      "id": "door-03",
+      "name": "Plot 03 door approach",
+      "kind": "door_spur",
+      "width": 4,
+      "points": [
+        [
+          24,
+          48
+        ],
+        [
+          30,
+          48
+        ]
+      ],
+      "activeWhen": "plot district unlocked",
+      "plotId": "03"
+    },
+    {
+      "id": "door-04",
+      "name": "Plot 04 door approach",
+      "kind": "door_spur",
+      "width": 4,
+      "points": [
+        [
+          24,
+          68
+        ],
+        [
+          30,
+          68
+        ]
+      ],
+      "activeWhen": "plot district unlocked",
+      "plotId": "04"
+    },
+    {
+      "id": "door-05",
+      "name": "Plot 05 door approach",
+      "kind": "door_spur",
+      "width": 4,
+      "points": [
+        [
+          52,
+          54
+        ],
+        [
+          58,
+          54
+        ]
+      ],
+      "activeWhen": "plot district unlocked",
+      "plotId": "05"
+    },
+    {
+      "id": "door-06",
+      "name": "Plot 06 door approach",
+      "kind": "door_spur",
+      "width": 4,
+      "points": [
+        [
+          66,
+          50
+        ],
+        [
+          58,
+          50
+        ]
+      ],
+      "activeWhen": "plot district unlocked",
+      "plotId": "06"
+    },
+    {
+      "id": "door-07",
+      "name": "Plot 07 door approach",
+      "kind": "door_spur",
+      "width": 4,
+      "points": [
+        [
+          104,
+          42
+        ],
+        [
+          108,
+          42
+        ]
+      ],
+      "activeWhen": "plot district unlocked",
+      "plotId": "07"
+    },
+    {
+      "id": "door-08",
+      "name": "Plot 08 door approach",
+      "kind": "door_spur",
+      "width": 4,
+      "points": [
+        [
+          104,
+          64
+        ],
+        [
+          108,
+          64
+        ]
+      ],
+      "activeWhen": "plot district unlocked",
+      "plotId": "08"
+    },
+    {
+      "id": "door-09",
+      "name": "Plot 09 door approach",
+      "kind": "door_spur",
+      "width": 4,
+      "points": [
+        [
+          85,
+          82
+        ],
+        [
+          85,
+          78
+        ]
+      ],
+      "activeWhen": "plot district unlocked",
+      "plotId": "09"
+    },
+    {
+      "id": "door-R1",
+      "name": "Plot R1 door approach",
+      "kind": "future_spur",
+      "width": 3,
+      "points": [
+        [
+          22,
+          17
+        ],
+        [
+          25,
+          17
+        ],
+        [
+          25,
+          34
+        ],
+        [
+          30,
+          34
+        ]
+      ],
+      "activeWhen": "reservation commissioned",
+      "plotId": "R1"
+    },
+    {
+      "id": "door-R2",
+      "name": "Plot R2 door approach",
+      "kind": "future_spur",
+      "width": 3,
+      "points": [
+        [
+          22,
+          86
+        ],
+        [
+          30,
+          86
+        ],
+        [
+          30,
+          78
+        ]
+      ],
+      "activeWhen": "reservation commissioned",
+      "plotId": "R2"
+    }
+  ],
+  "plaza": {
+    "bounds": {
+      "min": [
+        50,
+        18
+      ],
+      "max": [
+        64,
+        30
+      ]
+    }
+  },
+  "gates": [
+    {
+      "id": "copse-gate",
+      "point": [
+        30,
+        38
+      ],
+      "axis": "horizontal",
+      "unlockKey": "moonroot_copse",
+      "minimumLevel": 9,
+      "storyRequirement": "first_village_chapter"
+    },
+    {
+      "id": "quarry-bridge",
+      "point": [
+        58,
+        38
+      ],
+      "axis": "horizontal",
+      "unlockKey": "lantern_quarry",
+      "minimumLevel": 12,
+      "storyRequirement": "repaired_footbridge"
+    },
+    {
+      "id": "moor-gate",
+      "point": [
+        84,
+        34
+      ],
+      "axis": "vertical",
+      "unlockKey": "carnival_moor",
+      "minimumLevel": 15,
+      "storyRequirement": "restaurant_opening"
+    },
+    {
+      "id": "marsh-west",
+      "point": [
+        58,
+        74
+      ],
+      "axis": "horizontal",
+      "unlockKey": "mirror_marsh",
+      "minimumLevel": 18,
+      "storyRequirement": "four_district_stories"
+    },
+    {
+      "id": "marsh-east",
+      "point": [
+        108,
+        74
+      ],
+      "axis": "horizontal",
+      "unlockKey": "mirror_marsh",
+      "minimumLevel": 18,
+      "storyRequirement": "four_district_stories"
+    }
+  ],
+  "bridge": {
+    "bounds": {
+      "min": [
+        55,
+        36
+      ],
+      "max": [
+        61,
+        40
+      ]
+    },
+    "clearWidth": 6,
+    "ravineBounds": {
+      "min": [
+        40,
+        36
+      ],
+      "max": [
+        84,
+        40
+      ]
+    }
+  },
+  "arrival": {
+    "carriageCentre": [
+      58,
+      4
+    ],
+    "returnTrigger": [
+      58,
+      0
+    ],
+    "playerSpawn": [
+      58,
+      10
+    ],
+    "playerFacing": "north",
+    "noticeboard": [
+      62,
+      28
+    ],
+    "note": "Define disjoint spawn and return trigger volumes in runtime. New farm carriage gate must preserve existing homestead arch and attraction/guest exits."
+  },
+  "resourceSockets": [
+    {
+      "id": "logs-01",
+      "resource": "logs",
+      "point": [
+        6,
+        30
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "logs-02",
+      "resource": "logs",
+      "point": [
+        10,
+        30
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "logs-03",
+      "resource": "logs",
+      "point": [
+        14,
+        30
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "logs-04",
+      "resource": "logs",
+      "point": [
+        18,
+        30
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "logs-05",
+      "resource": "logs",
+      "point": [
+        22,
+        30
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "logs-06",
+      "resource": "logs",
+      "point": [
+        6,
+        34
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "logs-07",
+      "resource": "logs",
+      "point": [
+        10,
+        34
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "logs-08",
+      "resource": "logs",
+      "point": [
+        14,
+        34
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "stone-01",
+      "resource": "stone",
+      "point": [
+        6,
+        2
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "stone-02",
+      "resource": "stone",
+      "point": [
+        10,
+        2
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "stone-03",
+      "resource": "stone",
+      "point": [
+        14,
+        2
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "stone-04",
+      "resource": "stone",
+      "point": [
+        18,
+        2
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "stone-05",
+      "resource": "stone",
+      "point": [
+        22,
+        2
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "stone-06",
+      "resource": "stone",
+      "point": [
+        6,
+        6
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "fibre-01",
+      "resource": "fibre",
+      "point": [
+        10,
+        6
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "fibre-02",
+      "resource": "fibre",
+      "point": [
+        14,
+        6
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "fibre-03",
+      "resource": "fibre",
+      "point": [
+        18,
+        6
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "fibre-04",
+      "resource": "fibre",
+      "point": [
+        22,
+        6
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "fibre-05",
+      "resource": "fibre",
+      "point": [
+        18,
+        34
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "fibre-06",
+      "resource": "fibre",
+      "point": [
+        22,
+        34
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "herbs-01",
+      "resource": "herbs",
+      "point": [
+        36,
+        4
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "herbs-02",
+      "resource": "herbs",
+      "point": [
+        40,
+        4
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "herbs-03",
+      "resource": "herbs",
+      "point": [
+        44,
+        4
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "herbs-04",
+      "resource": "herbs",
+      "point": [
+        48,
+        4
+      ],
+      "maximumRadius": 0.65,
+      "district": "hollow_green"
+    },
+    {
+      "id": "hardwood-01",
+      "resource": "hardwood",
+      "point": [
+        4,
+        38
+      ],
+      "maximumRadius": 0.65,
+      "district": "moonroot_copse"
+    },
+    {
+      "id": "hardwood-02",
+      "resource": "hardwood",
+      "point": [
+        8,
+        38
+      ],
+      "maximumRadius": 0.65,
+      "district": "moonroot_copse"
+    },
+    {
+      "id": "hardwood-03",
+      "resource": "hardwood",
+      "point": [
+        12,
+        38
+      ],
+      "maximumRadius": 0.65,
+      "district": "moonroot_copse"
+    },
+    {
+      "id": "hardwood-04",
+      "resource": "hardwood",
+      "point": [
+        16,
+        38
+      ],
+      "maximumRadius": 0.65,
+      "district": "moonroot_copse"
+    },
+    {
+      "id": "moth_silk-01",
+      "resource": "moth_silk",
+      "point": [
+        4,
+        58
+      ],
+      "maximumRadius": 0.65,
+      "district": "moonroot_copse"
+    },
+    {
+      "id": "moth_silk-02",
+      "resource": "moth_silk",
+      "point": [
+        8,
+        58
+      ],
+      "maximumRadius": 0.65,
+      "district": "moonroot_copse"
+    },
+    {
+      "id": "iron-01",
+      "resource": "iron",
+      "point": [
+        42,
+        40
+      ],
+      "maximumRadius": 0.65,
+      "district": "lantern_quarry"
+    },
+    {
+      "id": "iron-02",
+      "resource": "iron",
+      "point": [
+        46,
+        40
+      ],
+      "maximumRadius": 0.65,
+      "district": "lantern_quarry"
+    },
+    {
+      "id": "iron-03",
+      "resource": "iron",
+      "point": [
+        50,
+        40
+      ],
+      "maximumRadius": 0.65,
+      "district": "lantern_quarry"
+    },
+    {
+      "id": "clay-01",
+      "resource": "clay",
+      "point": [
+        70,
+        68
+      ],
+      "maximumRadius": 0.65,
+      "district": "lantern_quarry"
+    },
+    {
+      "id": "clay-02",
+      "resource": "clay",
+      "point": [
+        74,
+        68
+      ],
+      "maximumRadius": 0.65,
+      "district": "lantern_quarry"
+    },
+    {
+      "id": "clay-03",
+      "resource": "clay",
+      "point": [
+        78,
+        68
+      ],
+      "maximumRadius": 0.65,
+      "district": "lantern_quarry"
+    },
+    {
+      "id": "moonstone-01",
+      "resource": "moonstone",
+      "point": [
+        114,
+        34
+      ],
+      "maximumRadius": 0.65,
+      "district": "carnival_moor"
+    },
+    {
+      "id": "moonstone-02",
+      "resource": "moonstone",
+      "point": [
+        114,
+        38
+      ],
+      "maximumRadius": 0.65,
+      "district": "carnival_moor"
+    },
+    {
+      "id": "emberbloom-01",
+      "resource": "emberbloom",
+      "point": [
+        114,
+        50
+      ],
+      "maximumRadius": 0.65,
+      "district": "carnival_moor"
+    },
+    {
+      "id": "emberbloom-02",
+      "resource": "emberbloom",
+      "point": [
+        114,
+        54
+      ],
+      "maximumRadius": 0.65,
+      "district": "carnival_moor"
+    },
+    {
+      "id": "emberbloom-03",
+      "resource": "emberbloom",
+      "point": [
+        114,
+        58
+      ],
+      "maximumRadius": 0.65,
+      "district": "carnival_moor"
+    },
+    {
+      "id": "star_amber-01",
+      "resource": "star_amber",
+      "point": [
+        112,
+        90
+      ],
+      "maximumRadius": 0.65,
+      "district": "mirror_marsh"
+    }
+  ],
+  "resourceRulesSource": "../ROADMAP.md#5-gathering-spawn-rates-and-material-sinks",
+  "notes": [
+    "Plot05 is Opal's STONEWORKING studio, not the conservatory/glass roof suggested by one generated mood-map label.",
+    "Resident plot envelopes include eventual exterior/garden expansions; do not interpret them as measured interior room dimensions.",
+    "Future spurs are inactive until their reservation is commissioned. Their only contact with the owning reserve is the intentional door threshold.",
+    "Main paths are clipped to realm bounds where arrival reaches z=0. Door spur linecaps stop at their threshold.",
+    "Gate minimum levels in diagram are shorthand: matching storyRequirement is also mandatory. Both Marsh gates share one unlockKey.",
+    "Resource yields and cooldowns are defined by ROADMAP.md, not duplicated here. Nodes are outside every plot and every path reserve including future spurs.",
+    "Roads use gentle level grades, broad approaches and minimum 2-unit clear doors; wheelchair turning space still requires runtime collider validation."
+  ]
+}

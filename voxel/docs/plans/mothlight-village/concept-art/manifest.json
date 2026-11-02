@@ -1,0 +1,95 @@
+{
+  "package": "Mothlight Village concept atlas",
+  "date": "2026-11-02",
+  "scope": "Concept art and proposed authoring layout only; no runtime changes",
+  "source_base": "1edc15d71a0d7c031f6aaefc95c0c76575acab3d",
+  "board_count": 9,
+  "boards": [
+    {
+      "file": "01-world-and-atmosphere.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3347634,
+      "sha256": "3b0ea825563f514f188b1a668f8ad0075b20dcb9a440c6da96f46cc36da22243"
+    },
+    {
+      "file": "02-residents-first-neighbours.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3313306,
+      "sha256": "abbb796fabcf9d08e8af180efea34dbc3a66f742de9c04d05d0ba120ffc4f548"
+    },
+    {
+      "file": "03-residents-village-life.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2941139,
+      "sha256": "f7b0c836e70623bdc9f981fd7c7cc7f987c37dd9ad48e9bee6e5c713fbd11232"
+    },
+    {
+      "file": "04-homes-and-gardens.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3461108,
+      "sha256": "f1e3ed0737d31ebe594f4e7c2b4845bdd8c3950f8d438bcd0c688b10e93218e4"
+    },
+    {
+      "file": "05-venues-and-grand-homes.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3707497,
+      "sha256": "062738bd08901c5e6a27206888c9d0d768dcfb9bbbf25ca37b064ccb56f57693"
+    },
+    {
+      "file": "06-gathering-and-materials.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3641465,
+      "sha256": "014a529142d10606c65c3741a64c538a6bc3062398d925f272a58fd84f26f306"
+    },
+    {
+      "file": "07-quests-and-cinematics.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 2925833,
+      "sha256": "7c42ca90c1b2566c6df3ff835562660427f065a462d6511cb124ddb20666cdea"
+    },
+    {
+      "file": "08-rewards-and-decorating.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3052955,
+      "sha256": "3732e75c154dfedc274c4dd3bf3174a400179630d1c0dc07d755c9a0ca1232cf"
+    },
+    {
+      "file": "09-building-footprint.png",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 3690958,
+      "sha256": "55baa21ffca68aaded9a66b4503ba387dd0478bbf81a76d6e20560fec45749c7"
+    }
+  ],
+  "roadmap_sha256": "ef4e3b7f5c06c6b964d405f8b00af91494d4f919bdb09f06ce2c62ec44d5eb08",
+  "layout_assets": [
+    {
+      "file": "FOOTPRINT.md",
+      "bytes": 8455,
+      "sha256": "39f3264daf0ba4c55eca0bcd09c47d526545b8f9c9983fa17f27934ba24711b7"
+    },
+    {
+      "file": "plots.json",
+      "bytes": 25588,
+      "sha256": "175ff5e8e7b1c0082b6d2127c89007cb23b5d7bc9e602831b0eee33dd22786e4"
+    },
+    {
+      "file": "measured-footprint.svg",
+      "bytes": 27722,
+      "sha256": "a5e02e9d3dbd49195799df422680eaa9fd839ef6fa88edaa9981737f838f5138"
+    },
+    {
+      "file": "generate-footprint.py",
+      "bytes": 18959,
+      "sha256": "84b15035fc48d05bf99beab845afabe359906078792ce262d6ed1bce0e25ee47"
+    }
+  ]
+}

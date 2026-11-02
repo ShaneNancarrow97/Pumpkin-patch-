@@ -1,0 +1,306 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1152" viewBox="0 0 1536 1152" role="img" aria-labelledby="title desc">
+<title id="title">Mothlight Village measured building footprint</title>
+<desc id="desc">Proposed 120 by96 unit orthographic greybox. Eight resident plots, observatory, two reserved plots, accessible path spurs and42 fixed resource sockets. Coordinates are defined in plots.json. North is up.</desc>
+<defs><pattern id="minor-grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#f7e8cb" stroke-opacity=".07"/></pattern>
+<pattern id="reserved" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M-3 3L3-3M0 12L12 0M9 15L15 9" stroke="#bfa6c6" stroke-opacity=".3" stroke-width="1"/></pattern>
+<pattern id="bridge" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#825339"/><path d="M0 1H8" stroke="#e5b777" stroke-opacity=".8"/></pattern>
+<clipPath id="mapclip"><rect x="56" y="190" width="960" height="768"/></clipPath></defs>
+<style>text{font-family:system-ui,-apple-system,Segoe UI,sans-serif;fill:#f8eedb}.muted{fill:#cbbbd0}.title{font-family:Georgia,serif;font-size:36px;letter-spacing:2px}.small{font-size:12px}.tiny{font-size:11px}.section{font-size:18px;font-weight:650;letter-spacing:1px}</style>
+<rect width="1536" height="1152" fill="#211a2b"/>
+<rect x="20" y="20" width="1496" height="1112" rx="24" fill="#30243b" stroke="#806783" stroke-opacity=".65"/>
+<text class="title" x="56" y="65">MOTHLIGHT VILLAGE</text>
+<text x="58" y="95" font-size="16" class="muted">MEASURED BUILDING FOOTPRINT · PROPOSED AUTHORING PLAN</text>
+<rect x="56" y="118" width="960" height="42" rx="9" fill="#47364f"/>
+<text x="74" y="145" font-size="15">120 × 96 world units · 8 residents + observatory · 2 future plots · 42 resource sockets</text>
+<text x="1062" y="68" font-size="14" fill="#edb768">PLAN DATA → SVG</text>
+<text x="1062" y="92" class="small muted">Illustrative art is a mood reference.</text>
+<text x="1062" y="111" class="small muted">This drawing follows plots.json.</text>
+
+<g clip-path="url(#mapclip)"><rect x="56" y="190" width="960" height="768" fill="#382e43"/>
+<polygon points="56,958 1016,958 1016,862 728,862 728,670 56,670" fill="#69564d" fill-opacity=".65"/>
+<polygon points="56,670 376,670 376,190 56,190" fill="#46584d" fill-opacity=".65"/>
+<polygon points="376,670 728,670 728,366 376,366" fill="#5d546b" fill-opacity=".65"/>
+<polygon points="728,862 1016,862 1016,366 728,366" fill="#734958" fill-opacity=".65"/>
+<polygon points="376,366 1016,366 1016,190 376,190" fill="#355b62" fill-opacity=".65"/>
+<rect x="56" y="190" width="960" height="768" fill="url(#minor-grid)"/>
+<rect x="376" y="638" width="352" height="32" fill="#355a68" fill-opacity=".8"/>
+<polyline points="520,958 520,926 520,766" fill="none" stroke="#b88753" stroke-width="48" stroke-linejoin="round" stroke-linecap="butt" stroke-opacity=".8"/>
+<polyline points="520,958 520,926 520,766" fill="none" stroke="#ffe0a4" stroke-width="1" stroke-dasharray="5 6" stroke-opacity=".55"/>
+<polyline points="520,766 520,686 296,686 296,334" fill="none" stroke="#b88753" stroke-width="48" stroke-linejoin="round" stroke-linecap="butt" stroke-opacity=".8"/>
+<polyline points="520,766 520,686 296,686 296,334" fill="none" stroke="#ffe0a4" stroke-width="1" stroke-dasharray="5 6" stroke-opacity=".55"/>
+<polyline points="520,686 520,398" fill="none" stroke="#b88753" stroke-width="48" stroke-linejoin="round" stroke-linecap="butt" stroke-opacity=".8"/>
+<polyline points="520,686 520,398" fill="none" stroke="#ffe0a4" stroke-width="1" stroke-dasharray="5 6" stroke-opacity=".55"/>
+<polyline points="520,686 744,686 744,766 920,766 920,398" fill="none" stroke="#b88753" stroke-width="48" stroke-linejoin="round" stroke-linecap="butt" stroke-opacity=".8"/>
+<polyline points="520,686 744,686 744,766 920,766 920,398" fill="none" stroke="#ffe0a4" stroke-width="1" stroke-dasharray="5 6" stroke-opacity=".55"/>
+<polyline points="520,398 520,334 920,334 920,398" fill="none" stroke="#b88753" stroke-width="48" stroke-linejoin="round" stroke-linecap="butt" stroke-opacity=".8"/>
+<polyline points="520,398 520,334 920,334 920,398" fill="none" stroke="#ffe0a4" stroke-width="1" stroke-dasharray="5 6" stroke-opacity=".55"/>
+<rect x="456" y="718" width="112" height="96" fill="#b88753" stroke="#e7bc7e" stroke-opacity=".5" rx="14"/>
+<rect x="496" y="638" width="48" height="32" fill="url(#bridge)" stroke="#eec98a" stroke-width="1.5"/>
+<polyline points="440,798 520,798" fill="none" stroke="#d2a86d" stroke-width="32" stroke-opacity="0.76" stroke-linejoin="round" stroke-linecap="butt"/>
+<polyline points="584,798 520,798" fill="none" stroke="#d2a86d" stroke-width="32" stroke-opacity="0.76" stroke-linejoin="round" stroke-linecap="butt"/>
+<polyline points="248,574 296,574" fill="none" stroke="#d2a86d" stroke-width="32" stroke-opacity="0.76" stroke-linejoin="round" stroke-linecap="butt"/>
+<polyline points="248,414 296,414" fill="none" stroke="#d2a86d" stroke-width="32" stroke-opacity="0.76" stroke-linejoin="round" stroke-linecap="butt"/>
+<polyline points="472,526 520,526" fill="none" stroke="#d2a86d" stroke-width="32" stroke-opacity="0.76" stroke-linejoin="round" stroke-linecap="butt"/>
+<polyline points="584,558 520,558" fill="none" stroke="#d2a86d" stroke-width="32" stroke-opacity="0.76" stroke-linejoin="round" stroke-linecap="butt"/>
+<polyline points="888,622 920,622" fill="none" stroke="#d2a86d" stroke-width="32" stroke-opacity="0.76" stroke-linejoin="round" stroke-linecap="butt"/>
+<polyline points="888,446 920,446" fill="none" stroke="#d2a86d" stroke-width="32" stroke-opacity="0.76" stroke-linejoin="round" stroke-linecap="butt"/>
+<polyline points="736,302 736,334" fill="none" stroke="#d2a86d" stroke-width="32" stroke-opacity="0.76" stroke-linejoin="round" stroke-linecap="butt"/>
+<polyline points="232,822 256,822 256,686 296,686" fill="none" stroke="#cbbbd0" stroke-width="24" stroke-opacity="0.38" stroke-linejoin="round" stroke-linecap="butt" stroke-dasharray="6 6"/>
+<polyline points="232,270 296,270 296,334" fill="none" stroke="#cbbbd0" stroke-width="24" stroke-opacity="0.38" stroke-linejoin="round" stroke-linecap="butt" stroke-dasharray="6 6"/>
+<rect x="280" y="718" width="160" height="160" fill="#43334c" stroke="#f0c27f" stroke-width="2" stroke-dasharray="none" rx="5"/>
+<text x="360" y="782" text-anchor="middle" font-size="24" font-weight="700">01</text>
+<text x="360" y="804" text-anchor="middle" font-size="14">Elowen</text>
+<text x="360" y="823" text-anchor="middle" class="tiny muted">20 × 20</text>
+<path d="M440 790.0v16" stroke="#fff2ca" stroke-width="5"/>
+<rect x="584" y="734" width="128" height="160" fill="#43334c" stroke="#f0c27f" stroke-width="2" stroke-dasharray="none" rx="5"/>
+<text x="648" y="798" text-anchor="middle" font-size="24" font-weight="700">02</text>
+<text x="648" y="820" text-anchor="middle" font-size="14">Rowan</text>
+<text x="648" y="839" text-anchor="middle" class="tiny muted">16 × 20</text>
+<path d="M584 790.0v16" stroke="#fff2ca" stroke-width="5"/>
+<rect x="104" y="510" width="144" height="128" fill="#43334c" stroke="#f0c27f" stroke-width="2" stroke-dasharray="none" rx="5"/>
+<text x="176" y="558" text-anchor="middle" font-size="24" font-weight="700">03</text>
+<text x="176" y="580" text-anchor="middle" font-size="14">Mabel</text>
+<text x="176" y="599" text-anchor="middle" class="tiny muted">18 × 16</text>
+<path d="M248 566.0v16" stroke="#fff2ca" stroke-width="5"/>
+<rect x="104" y="334" width="144" height="144" fill="#43334c" stroke="#f0c27f" stroke-width="2" stroke-dasharray="none" rx="5"/>
+<text x="176" y="390" text-anchor="middle" font-size="24" font-weight="700">04</text>
+<text x="176" y="412" text-anchor="middle" font-size="14">Tansy</text>
+<text x="176" y="431" text-anchor="middle" class="tiny muted">18 × 18</text>
+<path d="M248 406.0v16" stroke="#fff2ca" stroke-width="5"/>
+<rect x="376" y="446" width="96" height="160" fill="#43334c" stroke="#f0c27f" stroke-width="2" stroke-dasharray="none" rx="5"/>
+<text x="424" y="510" text-anchor="middle" font-size="24" font-weight="700">05</text>
+<text x="424" y="532" text-anchor="middle" font-size="14">Opal</text>
+<text x="424" y="551" text-anchor="middle" class="tiny muted">12 × 20</text>
+<path d="M472 518.0v16" stroke="#fff2ca" stroke-width="5"/>
+<rect x="584" y="462" width="128" height="160" fill="#43334c" stroke="#f0c27f" stroke-width="2" stroke-dasharray="none" rx="5"/>
+<text x="648" y="526" text-anchor="middle" font-size="24" font-weight="700">06</text>
+<text x="648" y="548" text-anchor="middle" font-size="14">Cinder</text>
+<text x="648" y="567" text-anchor="middle" class="tiny muted">16 × 20</text>
+<path d="M584 550.0v16" stroke="#fff2ca" stroke-width="5"/>
+<rect x="776" y="542" width="112" height="160" fill="#43334c" stroke="#f0c27f" stroke-width="2" stroke-dasharray="none" rx="5"/>
+<text x="832" y="606" text-anchor="middle" font-size="24" font-weight="700">07</text>
+<text x="832" y="628" text-anchor="middle" font-size="14">Corvus</text>
+<text x="832" y="647" text-anchor="middle" class="tiny muted">14 × 20</text>
+<path d="M888 614.0v16" stroke="#fff2ca" stroke-width="5"/>
+<rect x="776" y="382" width="112" height="128" fill="#43334c" stroke="#f0c27f" stroke-width="2" stroke-dasharray="none" rx="5"/>
+<text x="832" y="430" text-anchor="middle" font-size="24" font-weight="700">08</text>
+<text x="832" y="452" text-anchor="middle" font-size="14">Baron</text>
+<text x="832" y="471" text-anchor="middle" class="tiny muted">14 × 16</text>
+<path d="M888 438.0v16" stroke="#fff2ca" stroke-width="5"/>
+<rect x="664" y="206" width="144" height="96" fill="#43334c" stroke="#f0c27f" stroke-width="2" stroke-dasharray="none" rx="5"/>
+<text x="736" y="238" text-anchor="middle" font-size="24" font-weight="700">09</text>
+<text x="736" y="260" text-anchor="middle" font-size="14">Observatory</text>
+<text x="736" y="279" text-anchor="middle" class="tiny muted">18 × 12</text>
+<path d="M728.0 302h16" stroke="#fff2ca" stroke-width="5"/>
+<rect x="88" y="750" width="144" height="144" fill="#43334c" stroke="#bfa6c6" stroke-width="2" stroke-dasharray="7 5" rx="5"/>
+<rect x="88" y="750" width="144" height="144" fill="url(#reserved)" rx="5"/>
+<text x="160" y="806" text-anchor="middle" font-size="24" font-weight="700">R1</text>
+<text x="160" y="828" text-anchor="middle" font-size="14">Reserved</text>
+<text x="160" y="847" text-anchor="middle" class="tiny muted">18 × 18</text>
+<path d="M232 814.0v16" stroke="#fff2ca" stroke-width="5"/>
+<rect x="88" y="222" width="144" height="96" fill="#43334c" stroke="#bfa6c6" stroke-width="2" stroke-dasharray="7 5" rx="5"/>
+<rect x="88" y="222" width="144" height="96" fill="url(#reserved)" rx="5"/>
+<text x="160" y="254" text-anchor="middle" font-size="24" font-weight="700">R2</text>
+<text x="160" y="276" text-anchor="middle" font-size="14">Reserved</text>
+<text x="160" y="295" text-anchor="middle" class="tiny muted">18 × 12</text>
+<path d="M232 262.0v16" stroke="#fff2ca" stroke-width="5"/>
+<circle cx="104" cy="718" r="5.2" fill="#e4b169" stroke="#211a2b" stroke-width="1.5"><title>logs-01: [6, 30]</title></circle>
+<circle cx="136" cy="718" r="5.2" fill="#e4b169" stroke="#211a2b" stroke-width="1.5"><title>logs-02: [10, 30]</title></circle>
+<circle cx="168" cy="718" r="5.2" fill="#e4b169" stroke="#211a2b" stroke-width="1.5"><title>logs-03: [14, 30]</title></circle>
+<circle cx="200" cy="718" r="5.2" fill="#e4b169" stroke="#211a2b" stroke-width="1.5"><title>logs-04: [18, 30]</title></circle>
+<circle cx="232" cy="718" r="5.2" fill="#e4b169" stroke="#211a2b" stroke-width="1.5"><title>logs-05: [22, 30]</title></circle>
+<circle cx="104" cy="686" r="5.2" fill="#e4b169" stroke="#211a2b" stroke-width="1.5"><title>logs-06: [6, 34]</title></circle>
+<circle cx="136" cy="686" r="5.2" fill="#e4b169" stroke="#211a2b" stroke-width="1.5"><title>logs-07: [10, 34]</title></circle>
+<circle cx="168" cy="686" r="5.2" fill="#e4b169" stroke="#211a2b" stroke-width="1.5"><title>logs-08: [14, 34]</title></circle>
+<circle cx="104" cy="942" r="5.2" fill="#c6c8d2" stroke="#211a2b" stroke-width="1.5"><title>stone-01: [6, 2]</title></circle>
+<circle cx="136" cy="942" r="5.2" fill="#c6c8d2" stroke="#211a2b" stroke-width="1.5"><title>stone-02: [10, 2]</title></circle>
+<circle cx="168" cy="942" r="5.2" fill="#c6c8d2" stroke="#211a2b" stroke-width="1.5"><title>stone-03: [14, 2]</title></circle>
+<circle cx="200" cy="942" r="5.2" fill="#c6c8d2" stroke="#211a2b" stroke-width="1.5"><title>stone-04: [18, 2]</title></circle>
+<circle cx="232" cy="942" r="5.2" fill="#c6c8d2" stroke="#211a2b" stroke-width="1.5"><title>stone-05: [22, 2]</title></circle>
+<circle cx="104" cy="910" r="5.2" fill="#c6c8d2" stroke="#211a2b" stroke-width="1.5"><title>stone-06: [6, 6]</title></circle>
+<circle cx="136" cy="910" r="5.2" fill="#d6dfa0" stroke="#211a2b" stroke-width="1.5"><title>fibre-01: [10, 6]</title></circle>
+<circle cx="168" cy="910" r="5.2" fill="#d6dfa0" stroke="#211a2b" stroke-width="1.5"><title>fibre-02: [14, 6]</title></circle>
+<circle cx="200" cy="910" r="5.2" fill="#d6dfa0" stroke="#211a2b" stroke-width="1.5"><title>fibre-03: [18, 6]</title></circle>
+<circle cx="232" cy="910" r="5.2" fill="#d6dfa0" stroke="#211a2b" stroke-width="1.5"><title>fibre-04: [22, 6]</title></circle>
+<circle cx="200" cy="686" r="5.2" fill="#d6dfa0" stroke="#211a2b" stroke-width="1.5"><title>fibre-05: [18, 34]</title></circle>
+<circle cx="232" cy="686" r="5.2" fill="#d6dfa0" stroke="#211a2b" stroke-width="1.5"><title>fibre-06: [22, 34]</title></circle>
+<circle cx="344" cy="926" r="5.2" fill="#9ce3b5" stroke="#211a2b" stroke-width="1.5"><title>herbs-01: [36, 4]</title></circle>
+<circle cx="376" cy="926" r="5.2" fill="#9ce3b5" stroke="#211a2b" stroke-width="1.5"><title>herbs-02: [40, 4]</title></circle>
+<circle cx="408" cy="926" r="5.2" fill="#9ce3b5" stroke="#211a2b" stroke-width="1.5"><title>herbs-03: [44, 4]</title></circle>
+<circle cx="440" cy="926" r="5.2" fill="#9ce3b5" stroke="#211a2b" stroke-width="1.5"><title>herbs-04: [48, 4]</title></circle>
+<circle cx="88" cy="654" r="5.2" fill="#c8905c" stroke="#211a2b" stroke-width="1.5"><title>hardwood-01: [4, 38]</title></circle>
+<circle cx="120" cy="654" r="5.2" fill="#c8905c" stroke="#211a2b" stroke-width="1.5"><title>hardwood-02: [8, 38]</title></circle>
+<circle cx="152" cy="654" r="5.2" fill="#c8905c" stroke="#211a2b" stroke-width="1.5"><title>hardwood-03: [12, 38]</title></circle>
+<circle cx="184" cy="654" r="5.2" fill="#c8905c" stroke="#211a2b" stroke-width="1.5"><title>hardwood-04: [16, 38]</title></circle>
+<circle cx="88" cy="494" r="5.2" fill="#e8ccff" stroke="#211a2b" stroke-width="1.5"><title>moth_silk-01: [4, 58]</title></circle>
+<circle cx="120" cy="494" r="5.2" fill="#e8ccff" stroke="#211a2b" stroke-width="1.5"><title>moth_silk-02: [8, 58]</title></circle>
+<circle cx="392" cy="638" r="5.2" fill="#87abc8" stroke="#211a2b" stroke-width="1.5"><title>iron-01: [42, 40]</title></circle>
+<circle cx="424" cy="638" r="5.2" fill="#87abc8" stroke="#211a2b" stroke-width="1.5"><title>iron-02: [46, 40]</title></circle>
+<circle cx="456" cy="638" r="5.2" fill="#87abc8" stroke="#211a2b" stroke-width="1.5"><title>iron-03: [50, 40]</title></circle>
+<circle cx="616" cy="414" r="5.2" fill="#d79272" stroke="#211a2b" stroke-width="1.5"><title>clay-01: [70, 68]</title></circle>
+<circle cx="648" cy="414" r="5.2" fill="#d79272" stroke="#211a2b" stroke-width="1.5"><title>clay-02: [74, 68]</title></circle>
+<circle cx="680" cy="414" r="5.2" fill="#d79272" stroke="#211a2b" stroke-width="1.5"><title>clay-03: [78, 68]</title></circle>
+<circle cx="968" cy="686" r="5.2" fill="#b5a4ff" stroke="#211a2b" stroke-width="1.5"><title>moonstone-01: [114, 34]</title></circle>
+<circle cx="968" cy="654" r="5.2" fill="#b5a4ff" stroke="#211a2b" stroke-width="1.5"><title>moonstone-02: [114, 38]</title></circle>
+<circle cx="968" cy="558" r="5.2" fill="#ffb06a" stroke="#211a2b" stroke-width="1.5"><title>emberbloom-01: [114, 50]</title></circle>
+<circle cx="968" cy="526" r="5.2" fill="#ffb06a" stroke="#211a2b" stroke-width="1.5"><title>emberbloom-02: [114, 54]</title></circle>
+<circle cx="968" cy="494" r="5.2" fill="#ffb06a" stroke="#211a2b" stroke-width="1.5"><title>emberbloom-03: [114, 58]</title></circle>
+<circle cx="952" cy="238" r="5.2" fill="#6ee1df" stroke="#211a2b" stroke-width="1.5"><title>star_amber-01: [112, 90]</title></circle>
+<path d="M272 654h48" stroke="#5e342e" stroke-width="7"/><path d="M272 654h48" stroke="#edb768" stroke-width="3"/>
+<circle cx="296" cy="654" r="10" fill="#372638" stroke="#edb768"/>
+<text x="296" y="658" text-anchor="middle" font-size="10" font-weight="700">9</text>
+<path d="M496 654h48" stroke="#5e342e" stroke-width="7"/><path d="M496 654h48" stroke="#edb768" stroke-width="3"/>
+<circle cx="520" cy="654" r="10" fill="#372638" stroke="#edb768"/>
+<text x="520" y="658" text-anchor="middle" font-size="10" font-weight="700">12</text>
+<path d="M728 662v48" stroke="#5e342e" stroke-width="7"/><path d="M728 662v48" stroke="#edb768" stroke-width="3"/>
+<circle cx="728" cy="686" r="10" fill="#372638" stroke="#edb768"/>
+<text x="728" y="690" text-anchor="middle" font-size="10" font-weight="700">15</text>
+<path d="M496 366h48" stroke="#5e342e" stroke-width="7"/><path d="M496 366h48" stroke="#edb768" stroke-width="3"/>
+<circle cx="520" cy="366" r="10" fill="#372638" stroke="#edb768"/>
+<text x="520" y="370" text-anchor="middle" font-size="10" font-weight="700">18</text>
+<path d="M896 366h48" stroke="#5e342e" stroke-width="7"/><path d="M896 366h48" stroke="#edb768" stroke-width="3"/>
+<circle cx="920" cy="366" r="10" fill="#372638" stroke="#edb768"/>
+<text x="920" y="370" text-anchor="middle" font-size="10" font-weight="700">18</text>
+<circle cx="520" cy="926" r="5" fill="#fff2cf"/>
+<text x="532" y="930" font-size="9" font-weight="700">CARRIAGE</text>
+<circle cx="520" cy="878" r="5" fill="#fff2cf"/>
+<text x="532" y="882" font-size="9" font-weight="700">SPAWN</text>
+<rect x="548" y="729" width="8" height="10" fill="#f4e2b9" stroke="#3a2b36"/>
+</g>
+<rect x="56" y="190" width="960" height="768" fill="none" stroke="#b9a2ba" stroke-width="1.5"/>
+<path d="M56 958v7" stroke="#b7a3bd"/>
+<text x="56" y="983" text-anchor="middle" class="small muted">0</text>
+<path d="M152 958v7" stroke="#b7a3bd"/>
+<text x="152" y="983" text-anchor="middle" class="small muted">12</text>
+<path d="M248 958v7" stroke="#b7a3bd"/>
+<text x="248" y="983" text-anchor="middle" class="small muted">24</text>
+<path d="M344 958v7" stroke="#b7a3bd"/>
+<text x="344" y="983" text-anchor="middle" class="small muted">36</text>
+<path d="M440 958v7" stroke="#b7a3bd"/>
+<text x="440" y="983" text-anchor="middle" class="small muted">48</text>
+<path d="M536 958v7" stroke="#b7a3bd"/>
+<text x="536" y="983" text-anchor="middle" class="small muted">60</text>
+<path d="M632 958v7" stroke="#b7a3bd"/>
+<text x="632" y="983" text-anchor="middle" class="small muted">72</text>
+<path d="M728 958v7" stroke="#b7a3bd"/>
+<text x="728" y="983" text-anchor="middle" class="small muted">84</text>
+<path d="M824 958v7" stroke="#b7a3bd"/>
+<text x="824" y="983" text-anchor="middle" class="small muted">96</text>
+<path d="M920 958v7" stroke="#b7a3bd"/>
+<text x="920" y="983" text-anchor="middle" class="small muted">108</text>
+<path d="M1016 958v7" stroke="#b7a3bd"/>
+<text x="1016" y="983" text-anchor="middle" class="small muted">120</text>
+<path d="M56 958h-6" stroke="#b7a3bd"/>
+<text x="43" y="962" text-anchor="end" class="small muted">0</text>
+<path d="M56 862h-6" stroke="#b7a3bd"/>
+<text x="43" y="866" text-anchor="end" class="small muted">12</text>
+<path d="M56 766h-6" stroke="#b7a3bd"/>
+<text x="43" y="770" text-anchor="end" class="small muted">24</text>
+<path d="M56 670h-6" stroke="#b7a3bd"/>
+<text x="43" y="674" text-anchor="end" class="small muted">36</text>
+<path d="M56 574h-6" stroke="#b7a3bd"/>
+<text x="43" y="578" text-anchor="end" class="small muted">48</text>
+<path d="M56 478h-6" stroke="#b7a3bd"/>
+<text x="43" y="482" text-anchor="end" class="small muted">60</text>
+<path d="M56 382h-6" stroke="#b7a3bd"/>
+<text x="43" y="386" text-anchor="end" class="small muted">72</text>
+<path d="M56 286h-6" stroke="#b7a3bd"/>
+<text x="43" y="290" text-anchor="end" class="small muted">84</text>
+<path d="M56 190h-6" stroke="#b7a3bd"/>
+<text x="43" y="194" text-anchor="end" class="small muted">96</text>
+<text x="518" y="1005" text-anchor="middle" class="small muted">x → EAST · world units</text>
+<text x="58" y="177" class="small muted">z ↑ NORTH</text>
+<path d="M992 177v-34m0 0l-6 10m6-10l6 10" stroke="#f3dcab" stroke-width="2" fill="none"/>
+<text x="992" y="135" text-anchor="middle" class="small">N</text>
+<text x="1060" y="170" class="section">PLOT KEY</text>
+<rect x="1060" y="189" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="207" text-anchor="middle" font-size="13" font-weight="700">01</text>
+<text x="1104" y="204" font-size="14" font-weight="600">Elowen Mothwick</text>
+<text x="1104" y="221" class="small muted">Conservatory library</text>
+<rect x="1060" y="228" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="246" text-anchor="middle" font-size="13" font-weight="700">02</text>
+<text x="1104" y="243" font-size="14" font-weight="600">Rowan Rattlewood</text>
+<text x="1104" y="260" class="small muted">Workshop cottage</text>
+<rect x="1060" y="267" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="285" text-anchor="middle" font-size="13" font-weight="700">03</text>
+<text x="1104" y="282" font-size="14" font-weight="600">Mabel Moonstitch</text>
+<text x="1104" y="299" class="small muted">Haberdashery cottage</text>
+<rect x="1060" y="306" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="324" text-anchor="middle" font-size="13" font-weight="700">04</text>
+<text x="1104" y="321" font-size="14" font-weight="600">Tansy Thistledown</text>
+<text x="1104" y="338" class="small muted">Herb cottage and garden</text>
+<rect x="1060" y="345" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="363" text-anchor="middle" font-size="13" font-weight="700">05</text>
+<text x="1104" y="360" font-size="14" font-weight="600">Opal Graves</text>
+<text x="1104" y="377" class="small muted">Stoneworking studio</text>
+<rect x="1060" y="384" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="402" text-anchor="middle" font-size="13" font-weight="700">06</text>
+<text x="1104" y="399" font-size="14" font-weight="600">Chef Cinder</text>
+<text x="1104" y="416" class="small muted">Restaurant and upstairs flat</text>
+<rect x="1060" y="423" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="441" text-anchor="middle" font-size="13" font-weight="700">07</text>
+<text x="1104" y="438" font-size="14" font-weight="600">Ringmaster Corvus</text>
+<text x="1104" y="455" class="small muted">Tent home and living wagon</text>
+<rect x="1060" y="462" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="480" text-anchor="middle" font-size="13" font-weight="700">08</text>
+<text x="1104" y="477" font-size="14" font-weight="600">Baron Brassbolt</text>
+<text x="1104" y="494" class="small muted">Velvet manor</text>
+<rect x="1060" y="501" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="519" text-anchor="middle" font-size="13" font-weight="700">09</text>
+<text x="1104" y="516" font-size="14" font-weight="600">Observatory</text>
+<text x="1104" y="533" class="small muted">Story and festival ruin</text>
+<rect x="1060" y="540" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="558" text-anchor="middle" font-size="13" font-weight="700">R1</text>
+<text x="1104" y="555" font-size="14" font-weight="600">Future home</text>
+<text x="1104" y="572" class="small muted">Empty reservation</text>
+<rect x="1060" y="579" width="32" height="26" rx="6" fill="#51405a" stroke="#b596bc"/>
+<text x="1076" y="597" text-anchor="middle" font-size="13" font-weight="700">R2</text>
+<text x="1104" y="594" font-size="14" font-weight="600">Future home</text>
+<text x="1104" y="611" class="small muted">Empty reservation</text>
+<text x="1060" y="666" class="section">DISTRICTS &amp; GATES</text>
+<rect x="1060" y="684" width="14" height="14" rx="3" fill="#69564d" stroke="#b7a3bd"/>
+<text x="1085" y="696" font-size="13">Hollow Green</text>
+<text x="1370" y="696" font-size="13" font-weight="650">L6</text>
+<rect x="1060" y="709" width="14" height="14" rx="3" fill="#46584d" stroke="#b7a3bd"/>
+<text x="1085" y="721" font-size="13">Moonroot Copse</text>
+<text x="1370" y="721" font-size="13" font-weight="650">L9</text>
+<rect x="1060" y="734" width="14" height="14" rx="3" fill="#5d546b" stroke="#b7a3bd"/>
+<text x="1085" y="746" font-size="13">Lantern Quarry</text>
+<text x="1370" y="746" font-size="13" font-weight="650">L12</text>
+<rect x="1060" y="759" width="14" height="14" rx="3" fill="#734958" stroke="#b7a3bd"/>
+<text x="1085" y="771" font-size="13">Carnival Moor</text>
+<text x="1370" y="771" font-size="13" font-weight="650">L15</text>
+<rect x="1060" y="784" width="14" height="14" rx="3" fill="#355b62" stroke="#b7a3bd"/>
+<text x="1085" y="796" font-size="13">Mirror Marsh</text>
+<text x="1370" y="796" font-size="13" font-weight="650">L18</text>
+<text x="1060" y="841" class="section">42 FIXED RESOURCE SOCKETS</text>
+<circle cx="1065" cy="865" r="5" fill="#e4b169" stroke="#211a2b"/>
+<text x="1079" y="869" class="small">Logs ×8</text>
+<circle cx="1065" cy="888" r="5" fill="#c6c8d2" stroke="#211a2b"/>
+<text x="1079" y="892" class="small">Stone ×6</text>
+<circle cx="1065" cy="911" r="5" fill="#d6dfa0" stroke="#211a2b"/>
+<text x="1079" y="915" class="small">Fibre ×6</text>
+<circle cx="1065" cy="934" r="5" fill="#9ce3b5" stroke="#211a2b"/>
+<text x="1079" y="938" class="small">Herbs ×4</text>
+<circle cx="1065" cy="957" r="5" fill="#c8905c" stroke="#211a2b"/>
+<text x="1079" y="961" class="small">Hardwood ×4</text>
+<circle cx="1065" cy="980" r="5" fill="#e8ccff" stroke="#211a2b"/>
+<text x="1079" y="984" class="small">Moth Silk ×2</text>
+<circle cx="1275" cy="865" r="5" fill="#87abc8" stroke="#211a2b"/>
+<text x="1289" y="869" class="small">Iron ×3</text>
+<circle cx="1275" cy="888" r="5" fill="#d79272" stroke="#211a2b"/>
+<text x="1289" y="892" class="small">Clay ×3</text>
+<circle cx="1275" cy="911" r="5" fill="#b5a4ff" stroke="#211a2b"/>
+<text x="1289" y="915" class="small">Moonstone ×2</text>
+<circle cx="1275" cy="934" r="5" fill="#ffb06a" stroke="#211a2b"/>
+<text x="1289" y="938" class="small">Emberbloom ×3</text>
+<circle cx="1275" cy="957" r="5" fill="#6ee1df" stroke="#211a2b"/>
+<text x="1289" y="961" class="small">Star Amber ×1</text>
+<text x="1060" y="1023" class="small muted">Gates also require their story chapter.</text>
+<text x="1060" y="1043" class="small muted">Both Marsh gates share one unlock.</text>
+<text x="1060" y="1063" class="small muted">Dashed plots/spurs: future reservations.</text>
+<text x="1060" y="1083" class="small muted">White marks: level doorway thresholds.</text>
+<text x="58" y="1045" font-size="14">6-unit main roads · 4-unit door spurs · 3-unit future spurs · minimum 2-unit clear doors</text>
+<text x="58" y="1072" font-size="13">01 = glass conservatory. 05 = Opal’s STONE workshop. 06 = restaurant + upstairs home.</text>
+<text x="58" y="1098" class="small muted">Concept envelopes only. Validate terrain, colliders, wheelchair turning and mobile cameras in the game.</text>
+</svg>
