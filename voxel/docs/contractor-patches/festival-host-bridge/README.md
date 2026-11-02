@@ -1,38 +1,38 @@
-# Festival Host Bridge · The evening desk
+# Festival Host Bridge · Mothlight ledger
 
-Optional contractor increment, refinement 2, 2 November 2026. **This is a private real-rule lab,
-not a playable-game update.** Nothing imports it from the production entry, reads
-a player save, installs live hooks or changes the original save schema.
+The latest visual pass opens the optional Festival desk as a witchy seasonal
+ledger: warm parchment pages, a mulberry cover, a shaded book gutter, original
+moth and pressed-botanical marginalia, and small handwritten flourishes.
 
-The evening desk adds a premium, gently animated review surface for the Festival
-Night module. Real food, cocoa, garden and paid hayride rules feed confirmed facts
-through a durable bounded queue. Paper receipts show actual committed payments;
-delivering or replaying a fact does not charge again. Embedded game fonts, muted
-velvet surfaces, warm brass actions and restrained receipt/stamp motion work
-offline. Reduced-motion mode removes both one-shots and the faint service light.
+**This folder remains a private real-rule lab.** For the current full-game UI
+work, use [`contractor/mothlight-game-ui`](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/contractor/mothlight-game-ui).
+The Festival lab does not boot the game, read a player save, install live hooks,
+register physical rewards or change the original save schema.
 
-The second pass puts objective progress and next steps beside the actions, brings
-committed results into the phone viewport and folds technical delivery controls
-away. Cards show actual read-only quotes and stock; completed evenings retain
-3/3 with a keepsake card instead of falsely restarting their summary. See the
-[refinement notes](docs/REFINEMENT.md).
+Real food, cocoa, garden and paid hayride rules feed confirmed facts through the
+existing durable bridge. Quotes, committed spending and delivered goal progress
+remain separate. Replaying a fact cannot debit another guest or consume stock.
+Completed evenings retain their earned summary; a repeat uses fresh actual goals.
 
 ## Review and pickup
 
-Start with [Claude handover](docs/HANDOVER.md), then [API](docs/API.md),
-[integration seams](docs/INTEGRATION-NOTES.md), and [dependencies](docs/DEPENDENCIES.md).
-The [change assessment](docs/CHANGE-IMPACT.md) distinguishes checks for this pack
-from the live integration tests Claude will need later.
+Start with [Claude handover](docs/HANDOVER.md) and the current
+[visual review](docs/VISUAL-REVIEW.md), then [API](docs/API.md),
+[integration seams](docs/INTEGRATION-NOTES.md) and [dependencies](docs/DEPENDENCIES.md).
+The [change assessment](docs/CHANGE-IMPACT.md) distinguishes this lab's checks from
+future live integration requirements.
 
 Source branch: `contractor/festival-host-bridge`.
-Refinement patch base: `9f489f99e3a6035f73df2e95b06d022be7574637`.
-Full bridge patch base: `fd58d75c1ac27ecf4f912acdf78bde07a176526c`.
-Reviewed live lead: `f2f96f8351dea4cf6072862b1e3e0b14d6a318dc`.
+Mothlight UI source: `7f8b15f` (with the current documentation/evidence follow-up).
+Previous lab refinement: `b71a3f75a45926ec6c0a89a808a24fb496b2a17e`.
+Reviewed live producer contracts: `f2f96f8351dea4cf6072862b1e3e0b14d6a318dc`.
 Prerequisites: the isolated `festival-session` and `late-game-support` folders.
-The download kit supplies a small refinement patch after the first bridge pack,
-a full bridge patch after the session pack, or all three folders as a combined
-patch against that lead. Choose exactly one matching your tree. Preserve
-Claude's unpublished work and review against any newer receipt/save contracts.
+
+The previously published `contractor/festival-host-download` kits describe older
+lab revisions. Their HTML hashes and patch/rebuild proofs do not describe this
+Mothlight source iteration. Rebuild this lab from the source branch; preserve
+Claude's unpublished work and review any newer producer/save contracts before
+installing live hooks. This documentation pass publishes no new artifact kit.
 
 ## Build and verify
 
@@ -44,20 +44,25 @@ node voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs --i
 node voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs /tmp/Pumpkin-Patch-Receipt-Lab.html /tmp/festival-browser
 ```
 
-Open the built single HTML locally, prepare an evening and start service. Serve a
-dish or cocoa order, harvest a real bed, or simulate one actual paid ride. Expand
-Delivery controls to defer and drain facts; use Private checkpoint to test
-save/reload or export JSON. These controls touch only this page's private state.
+The desktop desk reads as an open two-page book; phones receive one continuous
+page flow. Moths, pressed stems and margin notes never catch pointer input.
+Functional actions, prices, stock and goal progress retain DM Sans/Fraunces.
+Caveat is embedded with its SIL Open Font License 1.1 and is used for nonessential
+handwritten flourishes, flavour text and keepsake lettering.
 
-Prepared funding, learned recipes, finished stock, nominated Court guests and
-forced nominated-rider willingness are explicit developer inputs. Prices, finite
-wallet debits, stock losses, growth, queue timing, payments and completion are
-real game rules. This is not a demand, profit, progression or player-time forecast.
-The lab never fabricates final happy departures to finish the fourth goal.
+The exact offline lab is **1,544,786 bytes**, below its **2 MiB** browser-checked
+budget. Fonts and the three reviewed service atlases are embedded. Exact food
+art follows the quoted recipe; category/fallback art is illustrative, never proof
+of order contents, payment or ownership. Reduced-motion mode removes one-shots
+and the faint running-service light.
 
-Verification: **156 native cases across 21 files**, including the prior two packs;
-**92 browser checks** against the exact offline HTML, with phone, unfolded and
-landscape layouts. See [evidence and limits](verification/README.md). Physical
-Fold 7 GPU, browser file-provider and Bluetooth-controller testing remain outside
-this lab's scope. Physical house rewards and live Festival Night hooks remain
-Claude's integration work.
+Verification: **163 native cases across 22 files**, including the two prerequisite
+packs; **145 browser assertions** against the exact HTML. Phone, unfolded and
+landscape layouts, pointer-safe ornament margins, functional type, declared-paper
+contrast and real financial flows are covered. See [evidence and limits](verification/README.md).
+
+Prepared funding, equipment, food stock, learned recipes and nominated Court/rider
+demand are explicit fixture inputs. The lab does not forecast live demand,
+profit, progression or player time, and does not fabricate final happy departures.
+Physical Fold 7 GPU, Android file-provider and Bluetooth-controller behavior remain
+outside this lab's emulated checks.

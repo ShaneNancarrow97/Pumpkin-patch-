@@ -2,9 +2,9 @@
   "version": 1,
   "status": "review-required",
   "requiresHumanReview": true,
-  "matrixRevision": "2026-11-02.2",
+  "matrixRevision": "2026-11-02.3",
   "reviewedBase": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
-  "matrixContentSHA256": "436a7babc3559b88e3b2dc46aa3104d76e5a22ee0b0636d73581c79efe0549e3",
+  "matrixContentSHA256": "6d40bbc351a1ba6817f65acc81adca874c4cb58bc90c202c43af56904c8a6a67",
   "changedPaths": [
     "voxel/docs/contractor-patches/festival-host-bridge/README.md",
     "voxel/docs/contractor-patches/festival-host-bridge/adapters/outcomes.js",
@@ -15,10 +15,17 @@
     "voxel/docs/contractor-patches/festival-host-bridge/docs/HANDOVER.md",
     "voxel/docs/contractor-patches/festival-host-bridge/docs/INTEGRATION-NOTES.md",
     "voxel/docs/contractor-patches/festival-host-bridge/docs/REFINEMENT.md",
+    "voxel/docs/contractor-patches/festival-host-bridge/docs/VISUAL-REVIEW.md",
     "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js",
     "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/OFL-Caveat.txt",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/SOURCES.json",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/caveat-latin.woff2",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/index.html",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/ledger-ornaments.js",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/ledger.css",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/service-art.js",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css",
     "voxel/docs/contractor-patches/festival-host-bridge/src/bridge.js",
@@ -29,6 +36,7 @@
     "voxel/docs/contractor-patches/festival-host-bridge/test/offers.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/outcomes.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs",
+    "voxel/docs/contractor-patches/festival-host-bridge/test/service-art.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs",
@@ -44,7 +52,11 @@
       "invariants": [
         "A receipt/stamp animates only after a new committed operation, never on replay or delivery. Real numeric values remain immediate.",
         "Embed fonts/art, preserve keyboard/touch layouts, cancel one-shots for reduced motion and hidden pages. Do not boot live main/scene/storage.",
-        "Completed evenings retain earned3/3 summary without fabricated per-goal progress; repeats show fresh actual goals. Collapse inspectors and surface goals/results near touch actions."
+        "Completed evenings retain earned 3/3 summary without fabricated per-goal progress; repeats show fresh actual goals. Collapse inspectors and surface goals/results near touch actions.",
+        "Exact food art follows the real recipe ID; missing dish/category art stays illustrative and is never order or ownership evidence. Embed three reviewed atlases under the 2 MiB lab budget.",
+        "The open ledger is a material layer: clipped moth/botanical SVG margins are decorative, assistive-hidden and pointer-safe. Desktop pages collapse to a single mobile flow.",
+        "Caveat remains embedded with its SIL Open Font License 1.1 and attribution. Functional actions, prices, stock and goals retain DM Sans/Fraunces; handwriting is nonessential lettering.",
+        "Enabled functional ink is checked against the declared solid paper base at 4.5:1, not every decorative gradient pixel. The exact optional lab HTML must remain below 2 MiB."
       ]
     },
     {
@@ -98,7 +110,11 @@
       "invariants": [
         "A receipt/stamp animates only after a new committed operation, never on replay or delivery. Real numeric values remain immediate.",
         "Embed fonts/art, preserve keyboard/touch layouts, cancel one-shots for reduced motion and hidden pages. Do not boot live main/scene/storage.",
-        "Completed evenings retain earned3/3 summary without fabricated per-goal progress; repeats show fresh actual goals. Collapse inspectors and surface goals/results near touch actions."
+        "Completed evenings retain earned 3/3 summary without fabricated per-goal progress; repeats show fresh actual goals. Collapse inspectors and surface goals/results near touch actions.",
+        "Exact food art follows the real recipe ID; missing dish/category art stays illustrative and is never order or ownership evidence. Embed three reviewed atlases under the 2 MiB lab budget.",
+        "The open ledger is a material layer: clipped moth/botanical SVG margins are decorative, assistive-hidden and pointer-safe. Desktop pages collapse to a single mobile flow.",
+        "Caveat remains embedded with its SIL Open Font License 1.1 and attribution. Functional actions, prices, stock and goals retain DM Sans/Fraunces; handwriting is nonessential lettering.",
+        "Enabled functional ink is checked against the declared solid paper base at 4.5:1, not every decorative gradient pixel. The exact optional lab HTML must remain below 2 MiB."
       ]
     },
     {
@@ -419,7 +435,8 @@
       "command": "node voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs",
       "files": [
         "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs",
-        "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs"
+        "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/service-art.test.mjs"
       ],
       "selection": "current-scope"
     },
@@ -1368,7 +1385,7 @@
     {
       "from": "render-assets",
       "to": "bridge-desk",
-      "consequence": "The existing generated icon atlas and embedded fonts affect UI sizing/readability.",
+      "consequence": "Existing event/service atlases, the licensed embedded Caveat font and original moth/botanical SVG margins affect book identity, typography, pointer safety and the below-2-MiB offline lab budget. Preserve OFL attribution. Exact dish order follows kitchen-food-art metadata; category art does not promise order contents.",
       "activation": "active"
     },
     {
@@ -1459,15 +1476,21 @@
     "src/core/save-model.mjs": "ceb90f73de85548cb01bc5988fdca74354f345bbcc3da69de4aaf0eab7480753",
     "voxel/build.mjs": "f4f2bb7f92e3eca8ed859dea92ce072c4f6530c8ba1b24c489cf454b7713c999",
     "voxel/docs/contractor-patches/festival-host-bridge/adapters/outcomes.js": "441b4a51568a1fe7b4a8b15ba8d84e58680b57c79a8a9587f9f2ae7192ea1aa2",
-    "voxel/docs/contractor-patches/festival-host-bridge/data/dependency-overlay.json": "a48ad04eb677de564e52f37318ab9a71ef27d9ba0b2b50b11c18c0354a711aad",
+    "voxel/docs/contractor-patches/festival-host-bridge/data/dependency-overlay.json": "ce616dc919797bea58d4a9b6284ef1803045410cbbace676995dcf01173e0b6a",
     "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js": "0846c0b1acc241e33e02a12c02cac4492d3cab9ba0c715ab6804d75b33cf68c6",
     "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js": "57123273a1fba55ad15fb8ce45d477940e573f25a24f5b48b8d3a32e0a9ae66f",
-    "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js": "0e1134c632e1456a9692aa9c6886ffcab29eb07370e342d7a95c12b2f7ddf7a7",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js": "58a398ff2a78363e663557370efac0d96f34118f9d170f883f097c3e52018378",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/OFL-Caveat.txt": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/SOURCES.json": "0dd902ce4d96e3e9e0bce6d85fb6db934470bf1cadb50cbe8017ccc4baa1c501",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/caveat-latin.woff2": "891951df5e8b5b0f0bc760d31375405e795c666b5add70437de12d4a6482b33f",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/ledger-ornaments.js": "28fed655d2a9a09c03ed9d588862616209b0d83195919e075e2ec4ae765e2290",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/ledger.css": "2e34106dca0ccb4fb256141f16fc086bf85675c64253eb6af834ebba0a9017f2",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/service-art.js": "224544a5c7653bb8edb74cf531a163696bd5116c10a6fd62499c1363f7f19129",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js": "fc21d9499b08336fba7d2b34c2cf880dc2f39f7212c5e0ac39c0d8c5613dcb4c",
-    "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css": "eb42a6393f674455bf428b1eb8a8b54eb178ea260cd501d42a88e4abb04d6e0c",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css": "046afe78ccfbbaf0d24e16c869596c8bf65dd562a46014ae9c12b56b8a777242",
     "voxel/docs/contractor-patches/festival-host-bridge/src/bridge.js": "3149e6d7461b250a21a31fb9caa9897867537810241826a9f000ee01b567ede0",
-    "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs": "26d222e610797efcd2a64b0b62314b0e7f341c719b819f66d30963779f20ce31",
-    "voxel/docs/contractor-patches/festival-host-bridge/tools/review-impact.mjs": "c723da72e678660a3d3785c334527bf14b8e7ad9742c570b2a255848716863c3",
+    "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs": "afd2564222169943704e8d5d30b335e64f7f59f32a0eb02444b38518f3f337f4",
+    "voxel/docs/contractor-patches/festival-host-bridge/tools/review-impact.mjs": "9657e888bf8d0693a91ddfc5f6fe5d3678276bbf03586e8d80373618534098b6",
     "voxel/docs/contractor-patches/festival-session/adapters/readiness.js": "b33e1f869c763c7db8adae54c96d6dbda06013cf79a8fbd55db3efa37292bde2",
     "voxel/docs/contractor-patches/festival-session/data/dependency-matrix.json": "01fc6fb4dc1d9dc87664a2b40a4b1ece1adaf4e2b77ba9178508c16972ac2250",
     "voxel/docs/contractor-patches/festival-session/docs/API.md": "cdd3eeeb2ed705ada680ffdeab92103190cc01f166ac141c0b76d95ef4bd5837",
@@ -1519,6 +1542,7 @@
     "voxel/src/sprite-actors.js": "95e970c17e9a5a77f0aa61cbd31d6ec1b4dc8d4b325bbb4b6f2a6e445f2445c3",
     "voxel/src/ui/hayride-audio.js": "d922083d25a901e6248357534c3a0e93681b340fbd805d98458d5c3a9a25fdb9",
     "voxel/src/ui/hold-to-buy.js": "6b45711e58e0ea51a0ceb1dcf96a32b8c68a36fd20feef57dd5d46f1098d44cf",
+    "voxel/src/ui/kitchen-food-art.js": "fff8e0b7db58670a254d43d49efb4403692da6fa22d0e238b17bb645f4dda11b",
     "voxel/src/ui/music-queue.js": "2c5f57960afbaab27d874d8842791c3c49df3e44ca777d911069c08afa77363c",
     "voxel/src/ui/pad-menu.js": "3f508b8daae2f18963d82e1aabc243b09fdebe59b7fa592542201a3d56060c70",
     "voxel/src/ui/tractor-engine.js": "80bd3637dc66533d794bf3ea2945fd93499966e97c8e4ff1ef31150265ebc69f",

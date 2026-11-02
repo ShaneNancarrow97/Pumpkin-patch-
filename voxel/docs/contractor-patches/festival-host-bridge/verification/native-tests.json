@@ -3,8 +3,8 @@
   "scope": "Individual assertion-level contractor tests, not live whole-game browser verification.",
   "runnerSHA256": "da2e010dc7530aef1befc5c4760912f08ec5f36e2bea348b5f4a1d919fbc8390",
   "passed": true,
-  "fileCount": 21,
-  "tests": 156,
+  "fileCount": 22,
+  "tests": 163,
   "results": [
     {
       "file": "voxel/docs/contractor-patches/festival-host-bridge/test/bridge-adversarial.test.mjs",
@@ -18,7 +18,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "c593ec22de168f7bb16751d5d50f2df123c0bf62c3c758c3d75dc02cff8aff55",
-      "logSHA256": "6dda9f85b92f98e988ef174ca95bff6145ca8b04d238ed944a3821d0fdaef250"
+      "logSHA256": "e7f9c3b7711ee4fc9b24d3fd0aeecb9517fc9bb0d3c116bd452c44870321ea12"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-host-bridge/test/bridge.test.mjs",
@@ -32,7 +32,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "fb6fb5d9cbeb1f99dfa0c894d6b3d7ea112610850c7f6bd437b5ed9d62b7f18e",
-      "logSHA256": "1270c2eb699d3ce395446864d81187194a1bc8c22c179fd72564b1b62952b8a8"
+      "logSHA256": "37a28d8328a879f6bcaf8145e7527c494badb9317298c3db8092d4bc0a6386fe"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-host-bridge/test/impact.test.mjs",
@@ -46,7 +46,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "43a0483beacf3baf7eab5170a82f151a795fb6bee71378e678d58bc127fdcc95",
-      "logSHA256": "0b88e431d7928b1fa2a297cba0b745916318626452936fd7b24543ee59d4f264"
+      "logSHA256": "fa2fad8fc4c760d0d6ff0c5f7d26d072a947be213ddf608cfc1f7ad26315cbac"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs",
@@ -60,7 +60,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "65d41a95221601cd81188c7fe43a53733969d825c25cd971884150b3100e7650",
-      "logSHA256": "73362901d61c9266f65f0002845a886a00bb11f5eab3588a6443b3cb2b66b997"
+      "logSHA256": "5786236dbda472ba5ff8c9cea4d589e69cb51594ce141d7ca78d4a682374a61e"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-host-bridge/test/offers.test.mjs",
@@ -74,7 +74,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "45ff1683c0fe54af307c55b4a7504d34c990b9447fc19af0347a0bc62beb1ecf",
-      "logSHA256": "c8d20237980206fe4d88c96603768c5c630d270461e91bbab6014c2b34dc8155"
+      "logSHA256": "0270d7c31554624860b8a8e7df407acc03292d5a8f54fc6b09f1166dcf4dd043"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-host-bridge/test/outcomes.test.mjs",
@@ -88,7 +88,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "974096652bef87dfa9bbdc294077d744d83cb2faab383fb29d726f1cb1aef4bb",
-      "logSHA256": "12c015b3b60736f29ac0bdc61ebbafdfbab86b8025813283db9f39ff5eaf1772"
+      "logSHA256": "e0a2ec0a60c9c722052e9c6be6cd47cd7410f1a8c8aa8f3373d895264d498c1d"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs",
@@ -101,8 +101,22 @@
       "cancelled": 0,
       "skipped": 0,
       "todo": 0,
-      "sourceSHA256": "3e2cc74c004f62637e16eb126116e5757668ca279aaff6b8f35a5fecefebdcf0",
-      "logSHA256": "900b5949e6cbaeb6796680cb530b91a9c10c4c341551fa9c1838f4d1ee0d590d"
+      "sourceSHA256": "79661a013e0f3608f0cc8595265c55f4f2e902acac288f7fcc1d026b79df667b",
+      "logSHA256": "014c875e89b98eeec280b89e5818aa86b06f10cb9222cc4a0becc451740efa92"
+    },
+    {
+      "file": "voxel/docs/contractor-patches/festival-host-bridge/test/service-art.test.mjs",
+      "passed": true,
+      "status": 0,
+      "error": null,
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "sourceSHA256": "d6858d0437c7ff71c5f1b9b28abf0bb87e7c191e2abce98969b39563a9271b25",
+      "logSHA256": "21bc0a37ba3975463c4e8a1e8c4c3fb2569920c11149c1e2a1fb9b4eff97d5bf"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs",
@@ -116,7 +130,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "41e77dbcc169138e0c0d8cc9e77022f6c72bfa33d8b2a564eeadc221221c1b15",
-      "logSHA256": "9ee051d4ce1d6515c5660e640f3f8e07da7625ff11a419876b001df4092327b9"
+      "logSHA256": "bfacba1ccb86427d3fd3395fe02a3addc2ac7bd19167720645bbfdab6a0e42e9"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-session/test/dependency-scan.test.mjs",
@@ -130,7 +144,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "e0617f636440e539f7188b14c90c9a0ef1c7dde620a524a644b88fed120cecc8",
-      "logSHA256": "9b2dda3428c898e2df7488fb386abd5a522ff284a344ae79de9c0a6b68e01a20"
+      "logSHA256": "d3ecce1ffa6bbe67ae56fbe9cab77b5cc6044a1b41b69eb617139fbe5fcb95d7"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-session/test/engine-adversarial.test.mjs",
@@ -144,7 +158,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "68a187fad425077ab4ebf654eb6ccb97b286466ca84b897ab6c97f89258a8047",
-      "logSHA256": "fea01c422b8e748afb825790f973031d13c9a4cfb591c484e24fb8a2b834ce2a"
+      "logSHA256": "f89d9cdae58ce90f448b6f5086eff2577d09304e7af0dbe810383f4708dbacf3"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-session/test/engine.test.mjs",
@@ -158,7 +172,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "e49533d908c7c620028ca4588f3e3417f1a0fdfaee267c0fd826c364369b3907",
-      "logSHA256": "b1079c0eafb007bdc77583f70c8636316fc3e412610ed60afa139c8e282f8fd3"
+      "logSHA256": "87fefb8657b5c897e2820d6600cc8685eacdf7060f5d90038eb71e3837f1dbf8"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-session/test/impact.test.mjs",
@@ -172,7 +186,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "1aceb956e4e83674d348598c9190f8adc5228150298c4400e145dace3596921a",
-      "logSHA256": "3ae299cf736c5ee9842a0d833a6eeb184494b2e15e237bf0204f05551a073b48"
+      "logSHA256": "4c711ebe0f5c1b5a9d4551258e49f980b325b47ac15a929c3299a216aed2fec2"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-session/test/preview-build.test.mjs",
@@ -186,7 +200,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "ef7c0d1bef9c06562acdf9b2a5b49cded106cf2c94d6813bebe2eb25505c6cf0",
-      "logSHA256": "b62aff6fed5d5df52c6bd65bdbb670ff9e29cb63c50f5241e068d3e5e8b9d257"
+      "logSHA256": "067c6aec859bb0bfa14610ebf7bac11a41008b2f7c04d787e37322e349202576"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-session/test/readiness.test.mjs",
@@ -200,7 +214,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "852e3ff3ea836178b2ed7fe8076c1290aff122103b833bdb1ca9849bd2ea5538",
-      "logSHA256": "5d927c868fc937a0a5ca92c8274dc0954b56c9030f6a9132c1f91fa76c52724b"
+      "logSHA256": "12d0a3d7f814907c8069a883d74dae17c193e55bced442122e08cde6c6e86d49"
     },
     {
       "file": "voxel/docs/contractor-patches/festival-session/test/rule-integration.test.mjs",
@@ -214,7 +228,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "5cb05879d0306187e5910f12c62bf5e75ab7b3fad480cc00c724662c60aa50f9",
-      "logSHA256": "b84f7051581fbe17e1122bc3d5038d4ee4215eec5371e5f873e196a703f5333a"
+      "logSHA256": "e86e5a63fa5f45b4df34f6f3a704460836101e6a5cb884ccd7e91b0d0aa84925"
     },
     {
       "file": "voxel/docs/contractor-patches/late-game-support/test/art.test.mjs",
@@ -228,7 +242,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "baa349680dc58b08648e934f604ce847021e7be730fcbcd5c8847ac511adca06",
-      "logSHA256": "a37a40de01ecd9b67fd58f37c528793d1ee29bd42e3b1ef25a8f675323371f5b"
+      "logSHA256": "9d7e86fcfb39ef8cc8f48099001751bf2533c2025670f5752b6e45fc895eec45"
     },
     {
       "file": "voxel/docs/contractor-patches/late-game-support/test/audit.test.mjs",
@@ -242,7 +256,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "f882da2ada2ebaa264ee44969f56ece67e448876b1d498642eb21e5f3c2994ef",
-      "logSHA256": "e2bfb9d0dcfeec1e704c936b702a9cf9e7e78983cca1b586430c382ea0a540cd"
+      "logSHA256": "1f80cb81f23775909e1869f94f8e11cfea10b7e4d920a33155edd5b0c7eb5ee3"
     },
     {
       "file": "voxel/docs/contractor-patches/late-game-support/test/content.test.mjs",
@@ -256,7 +270,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "23694363296802ab4ec8b1dfd467f02f93de27937603e4a0fe3ea0c2aebadf81",
-      "logSHA256": "fa707b006201b35651d23af22220f294fff7f2288476ed70fd4bdd35e74c6bf7"
+      "logSHA256": "aab4241054a8422858ce9c66673249554b7b42d589287609989b4d2a3cd5d4af"
     },
     {
       "file": "voxel/docs/contractor-patches/late-game-support/test/pack-contract.test.mjs",
@@ -270,7 +284,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "ca3de6082f4979e7d14c01ca9402db33c456ddaab1df092208153219c3fdeec4",
-      "logSHA256": "7f38e2d361f02b3c85cee361d74313a47f8e6f9948d3f32b7a77bdac4d189010"
+      "logSHA256": "b813da619fc255c1aafa43b84760daef5fc0d1eb13b04c0e462440f77d79051a"
     },
     {
       "file": "voxel/docs/contractor-patches/late-game-support/test/preview-build.test.mjs",
@@ -284,7 +298,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "da4eba10864d5a7599c58f81f0b3fb8b1989bd39ce1d2d53053cd343894fdc1d",
-      "logSHA256": "b18ea1f88b42f6b25a3a9f54e458d930c45c2bf603f421dfd334acf93d47f295"
+      "logSHA256": "c6449a9b1ff37df463003dca74ffc1b56953d2098595286f0dd41a29f6969203"
     },
     {
       "file": "voxel/docs/contractor-patches/late-game-support/test/reward-props.test.mjs",
@@ -298,7 +312,7 @@
       "skipped": 0,
       "todo": 0,
       "sourceSHA256": "fa1765a782716ce296ee7dcb8715d114c1ce331bb9ef7989618a298b2d847e4c",
-      "logSHA256": "398e5b0519655aa4ec9a4df08e146d8fd4e7ca6ddb710c4dfcb71fd7ccbfd9c4"
+      "logSHA256": "9ab2383640d366d519131e419eb3066314ea0ff3feb063d8530e4f5b310f1222"
     }
   ]
 }

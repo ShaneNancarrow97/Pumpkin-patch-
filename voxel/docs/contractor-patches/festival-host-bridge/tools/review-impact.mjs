@@ -54,7 +54,7 @@ export function renderBridgeDependencies(matrix){
  'The parsed graph includes the real game entry and the private lab. Physical JSON paths are normalized from esbuild import-attribute metadata. The lab imports real rule/model modules but cannot boot main, scene or storage; its standalone build checks that separate boundary.','',
  'Unrepresented template/style/tool/document paths still need semantic review. Literal import tracing cannot discover every computed asset, save field, money allocation, queue/route timing or source-side callback. A green scope boundary is not a general safety approval.','',
  '## Consequences to check','');
- for(const e of matrix.edges.filter(e=>e.from.startsWith('bridge-')||e.to==='bridge-evidence'))lines.push(`- **${e.from} → ${e.to}** (${e.activation}): ${e.consequence}`);
+ for(const e of matrix.edges.filter(e=>e.from.startsWith('bridge-')||e.to.startsWith('bridge-')))lines.push(`- **${e.from} → ${e.to}** (${e.activation}): ${e.consequence}`);
  lines.push('','The current change assessment and test decisions are recorded in `verification/`. See the prior [full matrix](../../festival-session/docs/DEPENDENCY-MATRIX.md) for the reviewed base and [integration notes](INTEGRATION-NOTES.md) before wiring live hooks.','');
  return lines.join('\n');
 }

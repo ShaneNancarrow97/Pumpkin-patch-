@@ -1,45 +1,44 @@
-# Verification record
+# Verification record · Mothlight lab
 
-Reviewed exact HTML SHA-256:
-`7414b28048a2703d700beedf2f79b7991296712569278c9969420154f3a9c2e5`.
+Reviewed exact lab HTML SHA-256:
+`e8e824aaddb0ea65843098f1e62a463bc2275eb45c17714de580aeeeb2fb6b85`.
+Size: **1,544,786 bytes**, below the browser-checked **2 MiB** lab budget.
 
-- `native-tests.json` and `.txt`: 156 passing assertion cases across 21 files,
-  comprising 75 bridge cases and 81 prerequisite cases. Each file runs directly;
-  empty summaries, child process errors, skips and failures reject the run.
-  JSON records test-file and runner hashes, so stale evidence is detectable.
-- `browser/checks.json`: 92 passing exact-offline-HTML browser assertions, source
-  hashes, viewport geometry, screenshots, no page errors/external requests.
-- `browser/*.png`: desktop receipts/recovery and phone 390×844, unfolded 874×787,
-  landscape 844×390 states. Comfortable controls and clear first actions remain
-  visible; secondary delivery/checkpoint controls expand on demand.
-- `current-impact.json`: final semantic assessment of every new source path
-  outside this evidence directory. Zero unmapped paths required before release.
+- `native-tests.json` and `.txt`: **163 passing cases across 22 files**, comprising
+  82 bridge and 81 prerequisite cases. Direct execution requires real assertion
+  summaries and rejects empty output, child process errors, failures and skips.
+  Test-file and runner hashes make stale evidence detectable.
+- `browser/checks.json`: **145 passing exact-HTML assertions**, source hashes,
+  viewport geometry and screenshots, with no page errors/external requests or
+  player-storage access.
+- `browser/*.png`: current desktop receipt/recovery/keepsake states; phone 390×844,
+  unfolded 874×787 and landscape 844×390 layouts. `desktop-premium-fullpage.png`
+  shows the complete open-book material layer.
+- `current-impact.json`: regenerated semantic review over every lab source path
+  outside this verification directory. Zero unmapped paths required.
 - `import-impact.json`: actual parsed production-entry/private-lab graph and scope
-  guard. Imports are parsed, never executed. JSON import-attribute annotations are
-  normalized to real physical paths before graph analysis/hashing.
-- `initial-unmapped.json`: expected initial failure of the previous matrix to
-  recognize the new bridge; retained to explain the reviewed overlay extension.
+  guard. Parsed imports are not executed; JSON attribute metadata is normalized
+  to physical paths before graph analysis/hashing.
+- `initial-unmapped.json`: retained historical evidence that the earlier base
+  matrix initially did not recognize the new bridge domain.
 
-The browser flow covers real food debit/stock/receipt, deferred queue, pause,
-end guard, save/resume, replay without double payment, global pause, all three
-three-of-four theme completions, no fabricated final exits, claims/repeats,
-recovery/export, layout/touch targets and causal/reduced animation. UI motion
-never advances the private simulation clock.
+The current browser flow covers actual receipts/debits/stock, deferred queue,
+pause/end guards, replay/save/recovery, all themes, no fabricated final exits,
+claims/repeats, restored shelves and causal/reduced motion. Visual checks add
+actual atlas decode, exact versus illustrative art mapping, licensed offline
+handwriting, pointer-safe marginal ornaments, equal desktop pages/single mobile
+flow, readable functional fonts and 44px touch targets. Functional ink is checked
+against the declared solid paper base at 4.5:1; decorative gradients are not sampled
+pixel by pixel. That does not certify the separate full-game palette.
 
-The lab deliberately supplies prepared funding, equipment, stock and nominated
-Court/rider demand. It validates receipt conservation and module flow, not live
-visitor demand, economy pacing, profitability or player progression time. It does
-not register physical house rewards or install save/producer hooks. Physical
-Fold 7 GPU, Android file provider and Bluetooth-controller tests remain unverified.
+The fixture supplies funding, prepared stock/equipment and nominated demand.
+It validates receipt conservation and module flow, not live demand, profitability,
+progression time or a complete farm simulation. No physical house item is granted.
+Physical Fold 7 GPU, Android file-provider and PS5 Bluetooth checks remain outside
+these emulations.
 
-The artifact kit separately records clean actual incremental/combined patch
-application and source rebuild proof in `REBUILD-VERIFICATION.json`. It includes
-the reviewed HTML, source copies, three patches and a SHA-256/ZIP-CRC manifest.
-
-Refinement coverage additionally checks that quotes do not create real holds or
-visits, stock exhaustion is actionable, delivery inspection stays collapsed,
-keyboard expansion works, direct delivery does not re-charge, completed evenings
-retain 3/3, and a claim/next-evening action fits the first phone viewport. The
-`phone-keepsake-ready.png` and `phone-keepsake-recorded.png` captures show those
-states. Mobile hosting shows actual service actions and payment feedback in the
-same viewport; no routine action automatically opens developer tools.
+The current actual full-game UI work is on `contractor/mothlight-game-ui`.
+This folder and these checks remain a private Festival lab. Earlier artifact kits
+and `REBUILD-VERIFICATION.json` files describe prior lab revisions; no fresh
+Mothlight artifact/rebuild kit is published by this documentation update.
+See `docs/VISUAL-REVIEW.md` for the materials, font license and handoff caveats.

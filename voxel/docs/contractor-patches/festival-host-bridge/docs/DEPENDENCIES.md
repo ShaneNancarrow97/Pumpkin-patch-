@@ -1,6 +1,6 @@
 # Bridge dependencies and impact review
 
-Reviewed overlay **2026-11-02.2**; 32 domains and 108 semantic links after extending the prior matrix.
+Reviewed overlay **2026-11-02.3**; 32 domains and 108 semantic links after extending the prior matrix.
 
 The original matrix is pinned by revision and SHA-256. A changed base fails validation until the overlay is reviewed. No previous contractor or live game file is overwritten.
 
@@ -32,11 +32,15 @@ Unrepresented template/style/tool/document paths still need semantic review. Lit
 - **hayride-service → bridge-evidence** (active): Paid manifests, run identity, source phase, route and waiting evidence determine completion facts.
 - **maze-service → bridge-evidence** (active): Paid maze completion must be captured before repeat visit IDs change.
 - **visitors → bridge-evidence** (active): Court cohort flags and visitor/customer namespaces affect distinct guest credit.
+- **festival-state → bridge-queue** (active): Engine transitions and normalized reason/schema contracts drive queue delivery.
+- **festival-readiness → bridge-lab** (active): The private venue uses actual current level/equipment/service readiness.
 - **bridge-evidence → bridge-queue** (active): Clean, detached facts are the only accepted outbox payload.
 - **bridge-evidence → bridge-lab** (active): Private source operations must normalize actual results, not fabricate service outcomes.
 - **bridge-queue → bridge-lab** (active): Deferred delivery, replay and snapshot behavior determine whether paid facts remain durable.
+- **save-lifecycle → bridge-lab** (active): The lab uses real saveData/restoreState and must deep-copy shallow serializer results.
 - **bridge-lab → bridge-desk** (active): Committed ledger, wallets, stock and operation results drive the receipt view and motion.
 - **bridge-queue → bridge-desk** (active): Queue and progress are separate UI states; held facts cannot look delivered.
+- **render-assets → bridge-desk** (active): Existing event/service atlases, the licensed embedded Caveat font and original moth/botanical SVG margins affect book identity, typography, pointer safety and the below-2-MiB offline lab budget. Preserve OFL attribution. Exact dish order follows kitchen-food-art metadata; category art does not promise order contents.
 - **bridge-review → bridge-evidence** (active): A stale dependency assessment may miss a producer contract change.
 - **bridge-review → bridge-queue** (active): A stale dependency assessment may miss persistence/identity consequences.
 - **bridge-review → bridge-desk** (active): Viewport, motion, fonts and offline build checks are selected before release.
@@ -44,5 +48,10 @@ Unrepresented template/style/tool/document paths still need semantic review. Lit
 - **bridge-queue → save-lifecycle** (integration-conditional): Only when adopted: add explicit host state/migration and persist origins on ongoing saved attraction visits.
 - **bridge-queue → house-placement** (integration-conditional): Only when physical rewards are registered: commit ownership and the stable claim key atomically or idempotently.
 - **bridge-desk → controls-ui** (integration-conditional): Only when adopting UI in-game: connect focus/controller/menu selectors and preserve the playfield.
+- **kitchen → bridge-lab** (active): Read-only dish previews must reproduce the real nominated guest quantity/price/stock without reserving real holds.
+- **cocoa-meadow → bridge-lab** (active): Cocoa previews must follow actual stock, changing guest IDs and current paid order pricing; quotes are not receipts.
+- **garden-carving → bridge-lab** (active): The garden action describes current crop phase without promising a fabricated yield or income.
+- **hayride-service → bridge-lab** (active): Ride fare/route previews use detached planning and must not allocate real visit IDs or promise a simulated trip duration.
+- **festival-state → bridge-desk** (active): Derived completion/claimed/repeat states follow the real view. An inactive completed evening must not display a false0/3 reset.
 
 The current change assessment and test decisions are recorded in `verification/`. See the prior [full matrix](../../festival-session/docs/DEPENDENCY-MATRIX.md) for the reviewed base and [integration notes](INTEGRATION-NOTES.md) before wiring live hooks.

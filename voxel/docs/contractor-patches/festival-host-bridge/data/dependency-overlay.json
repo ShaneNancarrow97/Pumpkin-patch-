@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-11-02.2",
+  "revision": "2026-11-02.3",
   "baseMatrixRevision": "2026-11-01.2",
   "baseFileSHA256": "01fc6fb4dc1d9dc87664a2b40a4b1ece1adaf4e2b77ba9178508c16972ac2250",
   "reviewedLiveBase": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
@@ -46,7 +46,8 @@
       "command": "node voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs",
       "files": [
         "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs",
-        "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs"
+        "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/service-art.test.mjs"
       ]
     },
     {
@@ -148,18 +149,30 @@
         "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs",
         "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs",
         "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs",
-        "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs"
+        "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/service-art.test.mjs"
       ],
       "evidence": [
         "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js",
         "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css",
         "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs",
-        "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js"
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js",
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/service-art.js",
+        "voxel/src/ui/kitchen-food-art.js",
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/ledger.css",
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/ledger-ornaments.js",
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/SOURCES.json",
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/OFL-Caveat.txt",
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/caveat-latin.woff2"
       ],
       "invariants": [
         "A receipt/stamp animates only after a new committed operation, never on replay or delivery. Real numeric values remain immediate.",
         "Embed fonts/art, preserve keyboard/touch layouts, cancel one-shots for reduced motion and hidden pages. Do not boot live main/scene/storage.",
-        "Completed evenings retain earned3/3 summary without fabricated per-goal progress; repeats show fresh actual goals. Collapse inspectors and surface goals/results near touch actions."
+        "Completed evenings retain earned 3/3 summary without fabricated per-goal progress; repeats show fresh actual goals. Collapse inspectors and surface goals/results near touch actions.",
+        "Exact food art follows the real recipe ID; missing dish/category art stays illustrative and is never order or ownership evidence. Embed three reviewed atlases under the 2 MiB lab budget.",
+        "The open ledger is a material layer: clipped moth/botanical SVG margins are decorative, assistive-hidden and pointer-safe. Desktop pages collapse to a single mobile flow.",
+        "Caveat remains embedded with its SIL Open Font License 1.1 and attribution. Functional actions, prices, stock and goals retain DM Sans/Fraunces; handwriting is nonessential lettering.",
+        "Enabled functional ink is checked against the declared solid paper base at 4.5:1, not every decorative gradient pixel. The exact optional lab HTML must remain below 2 MiB."
       ],
       "checkIds": [
         "bridge-ui-build",
@@ -280,7 +293,7 @@
     {
       "from": "render-assets",
       "to": "bridge-desk",
-      "consequence": "The existing generated icon atlas and embedded fonts affect UI sizing/readability.",
+      "consequence": "Existing event/service atlases, the licensed embedded Caveat font and original moth/botanical SVG margins affect book identity, typography, pointer safety and the below-2-MiB offline lab budget. Preserve OFL attribution. Exact dish order follows kitchen-food-art metadata; category art does not promise order contents.",
       "activation": "active"
     },
     {

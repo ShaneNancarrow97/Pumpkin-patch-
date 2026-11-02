@@ -1,5 +1,5 @@
 {
-  "sha256": "7414b28048a2703d700beedf2f79b7991296712569278c9969420154f3a9c2e5",
+  "sha256": "e8e824aaddb0ea65843098f1e62a463bc2275eb45c17714de580aeeeb2fb6b85",
   "sourceHashes": {
     "src/content/catalog.mjs": "49c649e18c31b16903414ef89a8cf5931e8a844e3a7a676f8d05712970f2c387",
     "src/content/economy.js": "def825f8bf0533b87866fbc24be86362945b75fd00f5a0890d9a873f29fa4f65",
@@ -11,16 +11,25 @@
     "src/core/costume-model.mjs": "39b5bd55a59b5c73fb73a23459dcd5ac2f031457f1ae4fdb4a63f7bb53c0e4c9",
     "voxel/assets/dm-sans.woff": "30ce945bf088ca9edbed7f62e678dbbf10d469acf2c8a4b6ee23770611960890",
     "voxel/assets/fraunces-400.woff2": "fa7949ff6b0094025a72b6cb88c6e6c914dba96d34284fb3fec9c092ebc4f311",
+    "voxel/assets/hospitality-icons.webp": "97f9cfb5dac137154fb9363922772488650f4d2c7bb1837b5e63534edf332b78",
+    "voxel/assets/kitchen-dishes.webp": "d64bd2353c004a629f7ac566d44fb36b494f307b6042b72a7e27fcdf5f2cb06d",
+    "voxel/assets/kitchen-ingredients.webp": "e264ecd3ddee82085adddff3c0ac6b8cb146cd0b2bb8f6314343d51356c480e3",
     "voxel/docs/contractor-patches/festival-host-bridge/adapters/outcomes.js": "441b4a51568a1fe7b4a8b15ba8d84e58680b57c79a8a9587f9f2ae7192ea1aa2",
     "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js": "0846c0b1acc241e33e02a12c02cac4492d3cab9ba0c715ab6804d75b33cf68c6",
     "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js": "57123273a1fba55ad15fb8ce45d477940e573f25a24f5b48b8d3a32e0a9ae66f",
-    "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js": "0e1134c632e1456a9692aa9c6886ffcab29eb07370e342d7a95c12b2f7ddf7a7",
-    "voxel/docs/contractor-patches/festival-host-bridge/preview/index.html": "4d0a907dd88b7f3be38f0fe5e47b578db85678dc53e92d6ef4b24fcd07aee990",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js": "58a398ff2a78363e663557370efac0d96f34118f9d170f883f097c3e52018378",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/OFL-Caveat.txt": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/SOURCES.json": "0dd902ce4d96e3e9e0bce6d85fb6db934470bf1cadb50cbe8017ccc4baa1c501",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/assets/caveat-latin.woff2": "891951df5e8b5b0f0bc760d31375405e795c666b5add70437de12d4a6482b33f",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/index.html": "1c69df550714fde0ed490106457eddeff10c5f3e99a82672e2af94e3533e2557",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/ledger-ornaments.js": "28fed655d2a9a09c03ed9d588862616209b0d83195919e075e2ec4ae765e2290",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/ledger.css": "2e34106dca0ccb4fb256141f16fc086bf85675c64253eb6af834ebba0a9017f2",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/service-art.js": "224544a5c7653bb8edb74cf531a163696bd5116c10a6fd62499c1363f7f19129",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js": "fc21d9499b08336fba7d2b34c2cf880dc2f39f7212c5e0ac39c0d8c5613dcb4c",
-    "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css": "eb42a6393f674455bf428b1eb8a8b54eb178ea260cd501d42a88e4abb04d6e0c",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css": "046afe78ccfbbaf0d24e16c869596c8bf65dd562a46014ae9c12b56b8a777242",
     "voxel/docs/contractor-patches/festival-host-bridge/src/bridge.js": "3149e6d7461b250a21a31fb9caa9897867537810241826a9f000ee01b567ede0",
-    "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs": "26d222e610797efcd2a64b0b62314b0e7f341c719b819f66d30963779f20ce31",
-    "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs": "ce7372d097601016610a7e9e1c4455f8202c2c84bf7bd4af8f1c104f1b58d1e3",
+    "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs": "afd2564222169943704e8d5d30b335e64f7f59f32a0eb02444b38518f3f337f4",
+    "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs": "2e5f2b8de724a51c27396e6a1ebdcd7f60e9b48e76b320a095d78d0683f47f56",
     "voxel/docs/contractor-patches/festival-session/adapters/readiness.js": "b33e1f869c763c7db8adae54c96d6dbda06013cf79a8fbd55db3efa37292bde2",
     "voxel/docs/contractor-patches/festival-session/src/engine.js": "ee8a49809fe98c492d003fdc9c66d998aa8dff6359f0e474d33196b8470ba241",
     "voxel/docs/contractor-patches/late-game-support/art/menu-icons.webp": "aeb67472997eac94e79040ce3c2c3ab17e6e4add839f4d86ba180f117581bf30",
@@ -103,11 +112,323 @@
     },
     {
       "ok": true,
+      "label": "Licensed handwritten margin font is embedded and loaded offline"
+    },
+    {
+      "ok": true,
+      "label": "The standalone ledger retains its embedded font license and attribution"
+    },
+    {
+      "ok": true,
+      "label": "Moth and botanical marginalia stay decorative and cannot intercept controls",
+      "data": [
+        {
+          "hidden": "true",
+          "focusable": "false",
+          "pointerEvents": "none"
+        },
+        {
+          "hidden": "true",
+          "focusable": "false",
+          "pointerEvents": "none"
+        },
+        {
+          "hidden": "true",
+          "focusable": "false",
+          "pointerEvents": "none"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "label": "Handwritten flourishes are confined to hidden decorative margin notes"
+    },
+    {
+      "ok": true,
+      "label": "Desktop initial: ledger pages read side by side on desktop and in one mobile flow",
+      "data": {
+        "mobile": false,
+        "left": {
+          "x": 86,
+          "y": 225.78125,
+          "width": 554,
+          "height": 1312.890625,
+          "top": 225.78125,
+          "right": 640,
+          "bottom": 1538.671875,
+          "left": 86
+        },
+        "right": {
+          "x": 640,
+          "y": 225.78125,
+          "width": 554,
+          "height": 1312.890625,
+          "top": 225.78125,
+          "right": 1194,
+          "bottom": 1538.671875,
+          "left": 640
+        },
+        "ordered": true,
+        "equalPages": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Desktop initial: actions, prices and progress retain readable functional typography",
+      "data": {
+        "samples": [
+          {
+            "text": "Haunted harvest pie",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Cocoa & treats",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Kitchen garden",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "A ride into the Hollow",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "3 portions · 12 in stock",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "2 items in this order",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£12quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£8quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Prepare the private venue, then open for",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Prepare an evening to begin. No deadline",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£0",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "—",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "0 / 3",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Prepare evening →",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          }
+        ],
+        "handwritten": [],
+        "unreviewed": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "Desktop initial: functional ink contrasts with the declared paper base at least4.5:1",
+      "data": {
+        "basis": "Computed solid paper base only; decorative gradients are not sampled per pixel.",
+        "samples": [
+          {
+            "text": "0 / 3",
+            "ink": [
+              109,
+              78,
+              50
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 4.916481072058683
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "ink": [
+              93,
+              73,
+              91
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.330807720488068
+          },
+          {
+            "text": "Prepare the private venue, then open for",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "Prepare an evening to begin. No deadline",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "—",
+            "ink": [
+              110,
+              74,
+              66
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.033693661700404
+          },
+          {
+            "text": "£0",
+            "ink": [
+              75,
+              52,
+              73
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 7.260556965161024
+          }
+        ],
+        "low": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "Illustrated service desk remains a compact offline HTML below2MiB"
+    },
+    {
+      "ok": true,
+      "label": "All four service illustrations decode from three embedded reviewed atlases",
+      "data": [
+        {
+          "atlas": "kitchen-dishes",
+          "decoded": true,
+          "embedded": true,
+          "width": 1024,
+          "height": 1024
+        },
+        {
+          "atlas": "hospitality-icons",
+          "decoded": true,
+          "embedded": true,
+          "width": 768,
+          "height": 576
+        },
+        {
+          "atlas": "kitchen-ingredients",
+          "decoded": true,
+          "embedded": true,
+          "width": 384,
+          "height": 192
+        },
+        {
+          "atlas": "hospitality-icons",
+          "decoded": true,
+          "embedded": true,
+          "width": 768,
+          "height": 576
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "label": "One primary takings figure is visible while account reconciliation stays collapsed"
+    },
+    {
+      "ok": true,
+      "label": "Each evening has its own selected illustrated identity without mixing titles",
+      "data": [
+        {
+          "title": "Midnight Court Banquet",
+          "expected": "Midnight Court Banquet",
+          "selected": true,
+          "crop": "0% 0%"
+        },
+        {
+          "title": "Lanterns in the Mist",
+          "expected": "Lanterns in the Mist",
+          "selected": true,
+          "crop": "50% 0%"
+        },
+        {
+          "title": "The Last Wagon",
+          "expected": "The Last Wagon",
+          "selected": true,
+          "crop": "100% 0%"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "label": "Browsing illustrated invitations does not spend stock, money or simulation time"
+    },
+    {
+      "ok": true,
       "label": "Delivery inspection stays collapsed on first load"
     },
     {
       "ok": true,
       "label": "Keyboard expands the delivery inspector"
+    },
+    {
+      "ok": true,
+      "label": "Desktop initial capture shows the wordmark and first action rather than a scrolled inspector"
     },
     {
       "ok": true,
@@ -124,7 +445,7 @@
     {
       "ok": true,
       "label": "Food action exposes the actual current private quote before payment",
-      "data": "3 portions · Quote £78 · 12 left"
+      "data": "£78quote3 portions · 12 in stock"
     },
     {
       "ok": true,
@@ -162,7 +483,43 @@
     },
     {
       "ok": true,
+      "label": "Primary takings update from the paid receipt without opening financial inspection"
+    },
+    {
+      "ok": true,
+      "label": "Deferred receipt: objective dial follows actual completed goals",
+      "data": {
+        "expected": 0,
+        "actual": "0 / 3"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Deferred receipt: objective graphic exposes the actual goal count to assistive technology",
+      "data": {
+        "role": "img",
+        "label": "0 of 3 evening goals complete"
+      }
+    },
+    {
+      "ok": true,
       "label": "Manual pause retains confirmed facts and cannot create another payment"
+    },
+    {
+      "ok": true,
+      "label": "Paused delivery: objective dial follows actual completed goals",
+      "data": {
+        "expected": 0,
+        "actual": "0 / 3"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Paused delivery: objective graphic exposes the actual goal count to assistive technology",
+      "data": {
+        "role": "img",
+        "label": "0 of 3 evening goals complete"
+      }
     },
     {
       "ok": true,
@@ -194,6 +551,22 @@
     },
     {
       "ok": true,
+      "label": "Replayed receipt: objective dial follows actual completed goals",
+      "data": {
+        "expected": 0,
+        "actual": "0 / 3"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Replayed receipt: objective graphic exposes the actual goal count to assistive technology",
+      "data": {
+        "role": "img",
+        "label": "0 of 3 evening goals complete"
+      }
+    },
+    {
+      "ok": true,
       "label": "Reload restores original deferred state rather than inferring delivery"
     },
     {
@@ -206,11 +579,43 @@
     },
     {
       "ok": true,
+      "label": "Two completed food/Court objectives: objective dial follows actual completed goals",
+      "data": {
+        "expected": 2,
+        "actual": "2 / 3"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Two completed food/Court objectives: objective graphic exposes the actual goal count to assistive technology",
+      "data": {
+        "role": "img",
+        "label": "2 of 3 evening goals complete"
+      }
+    },
+    {
+      "ok": true,
       "label": "Exhausted food stock changes the action card to an unavailable state instead of promising another sale"
     },
     {
       "ok": true,
       "label": "midnight-court-banquet: real rules can complete three goals"
+    },
+    {
+      "ok": true,
+      "label": "midnight-court-banquet ready to finish: objective dial follows actual completed goals",
+      "data": {
+        "expected": 3,
+        "actual": "3 / 3"
+      }
+    },
+    {
+      "ok": true,
+      "label": "midnight-court-banquet ready to finish: objective graphic exposes the actual goal count to assistive technology",
+      "data": {
+        "role": "img",
+        "label": "3 of 3 evening goals complete"
+      }
     },
     {
       "ok": true,
@@ -289,6 +694,22 @@
     },
     {
       "ok": true,
+      "label": "lanterns-in-the-mist ready to finish: objective dial follows actual completed goals",
+      "data": {
+        "expected": 3,
+        "actual": "3 / 3"
+      }
+    },
+    {
+      "ok": true,
+      "label": "lanterns-in-the-mist ready to finish: objective graphic exposes the actual goal count to assistive technology",
+      "data": {
+        "role": "img",
+        "label": "3 of 3 evening goals complete"
+      }
+    },
+    {
+      "ok": true,
       "label": "lanterns-in-the-mist: no fabricated final departure was counted"
     },
     {
@@ -324,6 +745,22 @@
     {
       "ok": true,
       "label": "the-last-wagon: real rules can complete three goals"
+    },
+    {
+      "ok": true,
+      "label": "the-last-wagon ready to finish: objective dial follows actual completed goals",
+      "data": {
+        "expected": 3,
+        "actual": "3 / 3"
+      }
+    },
+    {
+      "ok": true,
+      "label": "the-last-wagon ready to finish: objective graphic exposes the actual goal count to assistive technology",
+      "data": {
+        "role": "img",
+        "label": "3 of 3 evening goals complete"
+      }
     },
     {
       "ok": true,
@@ -417,6 +854,15 @@
     },
     {
       "ok": true,
+      "label": "Restored shelf also changes to the real Moonlight-tart illustration",
+      "data": {
+        "atlas": "kitchen-dishes",
+        "index": "7",
+        "crop": "100% 33.3333%"
+      }
+    },
+    {
+      "ok": true,
       "label": "Actual restored-shelf receipt, quote and ledger recipe agree"
     },
     {
@@ -434,6 +880,248 @@
     },
     {
       "ok": true,
+      "label": "phone idle: price and stock metadata remain readable without tiny type",
+      "data": {
+        "samples": [
+          {
+            "text": "£78quote",
+            "font": 21
+          },
+          {
+            "text": "3 portions · 12 in stock",
+            "font": 10
+          },
+          {
+            "text": "£12quote",
+            "font": 21
+          },
+          {
+            "text": "2 items in this order",
+            "font": 10
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": 10
+          },
+          {
+            "text": "£8quote",
+            "font": 21
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": 10
+          }
+        ],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone idle: ledger pages read side by side on desktop and in one mobile flow",
+      "data": {
+        "mobile": true,
+        "left": {
+          "x": 23,
+          "y": 1139.65625,
+          "width": 344,
+          "height": 1362.328125,
+          "top": 1139.65625,
+          "right": 367,
+          "bottom": 2501.984375,
+          "left": 23
+        },
+        "right": {
+          "x": 23,
+          "y": 207.625,
+          "width": 344,
+          "height": 932.03125,
+          "top": 207.625,
+          "right": 367,
+          "bottom": 1139.65625,
+          "left": 23
+        },
+        "ordered": true,
+        "equalPages": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone idle: actions, prices and progress retain readable functional typography",
+      "data": {
+        "samples": [
+          {
+            "text": "Haunted harvest pie",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Cocoa & treats",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Kitchen garden",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "A ride into the Hollow",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "3 portions · 12 in stock",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "2 items in this order",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£12quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£8quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Prepare the private venue, then open for",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Prepare an evening to begin. No deadline",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£0",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "—",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "0 / 3",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Prepare evening →",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          }
+        ],
+        "handwritten": [],
+        "unreviewed": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone idle: functional ink contrasts with the declared paper base at least4.5:1",
+      "data": {
+        "basis": "Computed solid paper base only; decorative gradients are not sampled per pixel.",
+        "samples": [
+          {
+            "text": "0 / 3",
+            "ink": [
+              109,
+              78,
+              50
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 4.916481072058683
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "ink": [
+              93,
+              73,
+              91
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.330807720488068
+          },
+          {
+            "text": "Prepare the private venue, then open for",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "Prepare an evening to begin. No deadline",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "—",
+            "ink": [
+              110,
+              74,
+              66
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.033693661700404
+          },
+          {
+            "text": "£0",
+            "ink": [
+              75,
+              52,
+              73
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 7.260556965161024
+          }
+        ],
+        "low": []
+      }
+    },
+    {
+      "ok": true,
       "label": "phone: primary preparation action is in the first viewport"
     },
     {
@@ -447,6 +1135,358 @@
         "clipped": [],
         "overlaps": [],
         "selectedVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone hosting: price and stock metadata remain readable without tiny type",
+      "data": {
+        "samples": [
+          {
+            "text": "£78quote",
+            "font": 21
+          },
+          {
+            "text": "3 portions · 9 in stock",
+            "font": 10
+          },
+          {
+            "text": "£12quote",
+            "font": 21
+          },
+          {
+            "text": "2 items in this order",
+            "font": 10
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": 10
+          },
+          {
+            "text": "£8quote",
+            "font": 21
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": 10
+          }
+        ],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone hosting: ledger pages read side by side on desktop and in one mobile flow",
+      "data": {
+        "mobile": true,
+        "left": {
+          "x": 23,
+          "y": 1154.046875,
+          "width": 344,
+          "height": 1362.328125,
+          "top": 1154.046875,
+          "right": 367,
+          "bottom": 2516.375,
+          "left": 23
+        },
+        "right": {
+          "x": 23,
+          "y": 207.625,
+          "width": 344,
+          "height": 946.421875,
+          "top": 207.625,
+          "right": 367,
+          "bottom": 1154.046875,
+          "left": 23
+        },
+        "ordered": true,
+        "equalPages": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone hosting: actions, prices and progress retain readable functional typography",
+      "data": {
+        "samples": [
+          {
+            "text": "Haunted harvest pie",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Cocoa & treats",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Kitchen garden",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "A ride into the Hollow",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "3 portions · 9 in stock",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "2 items in this order",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£12quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£8quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Deliver 1 confirmed outcome to update th",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Receipt recorded. Deliver it when you ar",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "0 / 3",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Pause",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Deliver outcomes →",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "End evening",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          }
+        ],
+        "handwritten": [],
+        "unreviewed": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone hosting: functional ink contrasts with the declared paper base at least4.5:1",
+      "data": {
+        "basis": "Computed solid paper base only; decorative gradients are not sampled per pixel.",
+        "samples": [
+          {
+            "text": "0 / 3",
+            "ink": [
+              109,
+              78,
+              50
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 4.916481072058683
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "ink": [
+              93,
+              73,
+              91
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.330807720488068
+          },
+          {
+            "text": "Deliver 1 confirmed outcome to update th",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£78quote",
+            "ink": [
+              106,
+              70,
+              45
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.4209446327582835
+          },
+          {
+            "text": "3 portions · 9 in stock",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£12quote",
+            "ink": [
+              106,
+              70,
+              45
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.4209446327582835
+          },
+          {
+            "text": "2 items in this order",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£8quote",
+            "ink": [
+              106,
+              70,
+              45
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.4209446327582835
+          },
+          {
+            "text": "Route upgrade 2",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "Receipt recorded. Deliver it when you ar",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£78",
+            "ink": [
+              110,
+              74,
+              66
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.033693661700404
+          },
+          {
+            "text": "£78",
+            "ink": [
+              75,
+              52,
+              73
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 7.260556965161024
+          }
+        ],
+        "low": []
       }
     },
     {
@@ -484,6 +1524,252 @@
     },
     {
       "ok": true,
+      "label": "fold idle: price and stock metadata remain readable without tiny type",
+      "data": {
+        "samples": [
+          {
+            "text": "£78quote",
+            "font": 21
+          },
+          {
+            "text": "3 portions · 9 in stock",
+            "font": 10
+          },
+          {
+            "text": "£12quote",
+            "font": 21
+          },
+          {
+            "text": "2 items in this order",
+            "font": 10
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": 10
+          },
+          {
+            "text": "£8quote",
+            "font": 21
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": 10
+          }
+        ],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold idle: ledger pages read side by side on desktop and in one mobile flow",
+      "data": {
+        "mobile": false,
+        "left": {
+          "x": 41,
+          "y": 224.78125,
+          "width": 396,
+          "height": 1295.40625,
+          "top": 224.78125,
+          "right": 437,
+          "bottom": 1520.1875,
+          "left": 41
+        },
+        "right": {
+          "x": 437,
+          "y": 224.78125,
+          "width": 396,
+          "height": 1295.40625,
+          "top": 224.78125,
+          "right": 833,
+          "bottom": 1520.1875,
+          "left": 437
+        },
+        "ordered": true,
+        "equalPages": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold idle: actions, prices and progress retain readable functional typography",
+      "data": {
+        "samples": [
+          {
+            "text": "Haunted harvest pie",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Cocoa & treats",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Kitchen garden",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "A ride into the Hollow",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "3 portions · 9 in stock",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "2 items in this order",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£12quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£8quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Prepare the private venue, then open for",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "The evening ended without a penalty. Con",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "0 / 3",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Prepare evening →",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          }
+        ],
+        "handwritten": [],
+        "unreviewed": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold idle: functional ink contrasts with the declared paper base at least4.5:1",
+      "data": {
+        "basis": "Computed solid paper base only; decorative gradients are not sampled per pixel.",
+        "samples": [
+          {
+            "text": "0 / 3",
+            "ink": [
+              109,
+              78,
+              50
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 4.916481072058683
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "ink": [
+              93,
+              73,
+              91
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.330807720488068
+          },
+          {
+            "text": "Prepare the private venue, then open for",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "The evening ended without a penalty. Con",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£78",
+            "ink": [
+              110,
+              74,
+              66
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.033693661700404
+          },
+          {
+            "text": "£78",
+            "ink": [
+              75,
+              52,
+              73
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 7.260556965161024
+          }
+        ],
+        "low": []
+      }
+    },
+    {
+      "ok": true,
       "label": "fold: primary preparation action is in the first viewport"
     },
     {
@@ -497,6 +1783,358 @@
         "clipped": [],
         "overlaps": [],
         "selectedVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold hosting: price and stock metadata remain readable without tiny type",
+      "data": {
+        "samples": [
+          {
+            "text": "£78quote",
+            "font": 21
+          },
+          {
+            "text": "3 portions · 6 in stock",
+            "font": 10
+          },
+          {
+            "text": "£12quote",
+            "font": 21
+          },
+          {
+            "text": "2 items in this order",
+            "font": 10
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": 10
+          },
+          {
+            "text": "£8quote",
+            "font": 21
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": 10
+          }
+        ],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold hosting: ledger pages read side by side on desktop and in one mobile flow",
+      "data": {
+        "mobile": false,
+        "left": {
+          "x": 41,
+          "y": 224.78125,
+          "width": 396,
+          "height": 1295.40625,
+          "top": 224.78125,
+          "right": 437,
+          "bottom": 1520.1875,
+          "left": 41
+        },
+        "right": {
+          "x": 437,
+          "y": 224.78125,
+          "width": 396,
+          "height": 1295.40625,
+          "top": 224.78125,
+          "right": 833,
+          "bottom": 1520.1875,
+          "left": 437
+        },
+        "ordered": true,
+        "equalPages": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold hosting: actions, prices and progress retain readable functional typography",
+      "data": {
+        "samples": [
+          {
+            "text": "Haunted harvest pie",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Cocoa & treats",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Kitchen garden",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "A ride into the Hollow",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "3 portions · 6 in stock",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "2 items in this order",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£12quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£8quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Deliver 1 confirmed outcome to update th",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Receipt recorded. Deliver it when you ar",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£156",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "0 / 3",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Pause",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Deliver outcomes →",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "End evening",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          }
+        ],
+        "handwritten": [],
+        "unreviewed": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold hosting: functional ink contrasts with the declared paper base at least4.5:1",
+      "data": {
+        "basis": "Computed solid paper base only; decorative gradients are not sampled per pixel.",
+        "samples": [
+          {
+            "text": "0 / 3",
+            "ink": [
+              109,
+              78,
+              50
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 4.916481072058683
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "ink": [
+              93,
+              73,
+              91
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.330807720488068
+          },
+          {
+            "text": "Deliver 1 confirmed outcome to update th",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£78quote",
+            "ink": [
+              106,
+              70,
+              45
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.4209446327582835
+          },
+          {
+            "text": "3 portions · 6 in stock",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£12quote",
+            "ink": [
+              106,
+              70,
+              45
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.4209446327582835
+          },
+          {
+            "text": "2 items in this order",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£8quote",
+            "ink": [
+              106,
+              70,
+              45
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.4209446327582835
+          },
+          {
+            "text": "Route upgrade 2",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "Receipt recorded. Deliver it when you ar",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£78",
+            "ink": [
+              110,
+              74,
+              66
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.033693661700404
+          },
+          {
+            "text": "£156",
+            "ink": [
+              75,
+              52,
+              73
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 7.260556965161024
+          }
+        ],
+        "low": []
       }
     },
     {
@@ -522,6 +2160,252 @@
     },
     {
       "ok": true,
+      "label": "landscape idle: price and stock metadata remain readable without tiny type",
+      "data": {
+        "samples": [
+          {
+            "text": "£78quote",
+            "font": 21
+          },
+          {
+            "text": "3 portions · 6 in stock",
+            "font": 10
+          },
+          {
+            "text": "£12quote",
+            "font": 21
+          },
+          {
+            "text": "2 items in this order",
+            "font": 10
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": 10
+          },
+          {
+            "text": "£8quote",
+            "font": 21
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": 10
+          }
+        ],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape idle: ledger pages read side by side on desktop and in one mobile flow",
+      "data": {
+        "mobile": false,
+        "left": {
+          "x": 41,
+          "y": 169.78125,
+          "width": 381,
+          "height": 1289.59375,
+          "top": 169.78125,
+          "right": 422,
+          "bottom": 1459.375,
+          "left": 41
+        },
+        "right": {
+          "x": 422,
+          "y": 169.78125,
+          "width": 381,
+          "height": 1289.59375,
+          "top": 169.78125,
+          "right": 803,
+          "bottom": 1459.375,
+          "left": 422
+        },
+        "ordered": true,
+        "equalPages": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape idle: actions, prices and progress retain readable functional typography",
+      "data": {
+        "samples": [
+          {
+            "text": "Haunted harvest pie",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Cocoa & treats",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Kitchen garden",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "A ride into the Hollow",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "3 portions · 6 in stock",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "2 items in this order",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£12quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£8quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Prepare the private venue, then open for",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "The evening ended without a penalty. Con",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£156",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "0 / 3",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Prepare evening →",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          }
+        ],
+        "handwritten": [],
+        "unreviewed": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape idle: functional ink contrasts with the declared paper base at least4.5:1",
+      "data": {
+        "basis": "Computed solid paper base only; decorative gradients are not sampled per pixel.",
+        "samples": [
+          {
+            "text": "0 / 3",
+            "ink": [
+              109,
+              78,
+              50
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 4.916481072058683
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "ink": [
+              93,
+              73,
+              91
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.330807720488068
+          },
+          {
+            "text": "Prepare the private venue, then open for",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "The evening ended without a penalty. Con",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£78",
+            "ink": [
+              110,
+              74,
+              66
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.033693661700404
+          },
+          {
+            "text": "£156",
+            "ink": [
+              75,
+              52,
+              73
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 7.260556965161024
+          }
+        ],
+        "low": []
+      }
+    },
+    {
+      "ok": true,
       "label": "landscape: primary preparation action is in the first viewport"
     },
     {
@@ -535,6 +2419,358 @@
         "clipped": [],
         "overlaps": [],
         "selectedVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape hosting: price and stock metadata remain readable without tiny type",
+      "data": {
+        "samples": [
+          {
+            "text": "£78quote",
+            "font": 21
+          },
+          {
+            "text": "3 portions · 3 in stock",
+            "font": 10
+          },
+          {
+            "text": "£12quote",
+            "font": 21
+          },
+          {
+            "text": "2 items in this order",
+            "font": 10
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": 10
+          },
+          {
+            "text": "£8quote",
+            "font": 21
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": 10
+          }
+        ],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape hosting: ledger pages read side by side on desktop and in one mobile flow",
+      "data": {
+        "mobile": false,
+        "left": {
+          "x": 41,
+          "y": 169.78125,
+          "width": 381,
+          "height": 1286.078125,
+          "top": 169.78125,
+          "right": 422,
+          "bottom": 1455.859375,
+          "left": 41
+        },
+        "right": {
+          "x": 422,
+          "y": 169.78125,
+          "width": 381,
+          "height": 1286.078125,
+          "top": 169.78125,
+          "right": 803,
+          "bottom": 1455.859375,
+          "left": 422
+        },
+        "ordered": true,
+        "equalPages": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape hosting: actions, prices and progress retain readable functional typography",
+      "data": {
+        "samples": [
+          {
+            "text": "Haunted harvest pie",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Cocoa & treats",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Kitchen garden",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "A ride into the Hollow",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "3 portions · 3 in stock",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "2 items in this order",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Route upgrade 2",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£12quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£8quote",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Deliver 1 confirmed outcome to update th",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Receipt recorded. Deliver it when you ar",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£234",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "£78",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "0 / 3",
+            "font": "Fraunces, Georgia, serif"
+          },
+          {
+            "text": "Pause",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "Deliver outcomes →",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          },
+          {
+            "text": "End evening",
+            "font": "\"DM Sans\", system-ui, -apple-system, sans-serif"
+          }
+        ],
+        "handwritten": [],
+        "unreviewed": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape hosting: functional ink contrasts with the declared paper base at least4.5:1",
+      "data": {
+        "basis": "Computed solid paper base only; decorative gradients are not sampled per pixel.",
+        "samples": [
+          {
+            "text": "0 / 3",
+            "ink": [
+              109,
+              78,
+              50
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 4.916481072058683
+          },
+          {
+            "text": "Complete any three of four goals.",
+            "ink": [
+              93,
+              73,
+              91
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.330807720488068
+          },
+          {
+            "text": "Deliver 1 confirmed outcome to update th",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£78quote",
+            "ink": [
+              106,
+              70,
+              45
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.4209446327582835
+          },
+          {
+            "text": "3 portions · 3 in stock",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£12quote",
+            "ink": [
+              106,
+              70,
+              45
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.4209446327582835
+          },
+          {
+            "text": "2 items in this order",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "Ripe now · Pick ingredients",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£8quote",
+            "ink": [
+              106,
+              70,
+              45
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.4209446327582835
+          },
+          {
+            "text": "Route upgrade 2",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "Receipt recorded. Deliver it when you ar",
+            "ink": [
+              98,
+              75,
+              96
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.083214959142782
+          },
+          {
+            "text": "£78",
+            "ink": [
+              110,
+              74,
+              66
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 5.033693661700404
+          },
+          {
+            "text": "£234",
+            "ink": [
+              75,
+              52,
+              73
+            ],
+            "declaredPaper": [
+              223,
+              207,
+              177
+            ],
+            "ratio": 7.260556965161024
+          }
+        ],
+        "low": []
       }
     },
     {
@@ -597,7 +2833,8 @@
     "fold-hosting.png",
     "landscape-idle.png",
     "landscape-hosting.png",
-    "desktop-premium-receipt.png"
+    "desktop-premium-receipt.png",
+    "desktop-premium-fullpage.png"
   ],
   "layouts": [
     {

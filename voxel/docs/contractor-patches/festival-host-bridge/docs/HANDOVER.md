@@ -1,29 +1,29 @@
 # Claude pickup · Festival Host Bridge
 
-## Scope and bases
+## Current scope and pickup
 
-Source branch: `contractor/festival-host-bridge`.
-Refinement base: `9f489f99e3a6035f73df2e95b06d022be7574637` (first host bridge).
-Full bridge base: `fd58d75c1ac27ecf4f912acdf78bde07a176526c` (session pack).
-Live lead inspected: `f2f96f8351dea4cf6072862b1e3e0b14d6a318dc` (`voxel-reference`).
-The source diff changes only `voxel/docs/contractor-patches/festival-host-bridge/`.
-It preserves the two prerequisite packs, production source, dependencies and saves.
+- **Current full-game UI work:** [`contractor/mothlight-game-ui`](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/contractor/mothlight-game-ui).
+- **This optional lab:** `contractor/festival-host-bridge`, Mothlight UI commit
+  `7f8b15f` plus the current documentation/evidence follow-up.
+- **Previous lab refinement:** `b71a3f75a45926ec6c0a89a808a24fb496b2a17e`.
+- **Reviewed live producer contracts:** `f2f96f8351dea4cf6072862b1e3e0b14d6a318dc`.
 
-The artifact branch `contractor/festival-host-download` carries the HTML, ZIP,
-Claude kit, manifests and rebuild proof independently of game history. The kit
-includes `festival-host-refinement.patch` (after the first host pack),
-`festival-host-bridge-from-session.patch` (full bridge after the session pack), and
-`festival-host-combined-from-lead.patch`. The last adds the three isolated
-folders `late-game-support`, `festival-session`, and `festival-host-bridge` on
-the inspected live lead. Do not merge unrelated earlier sprite branches.
+This source increment remains inside
+`voxel/docs/contractor-patches/festival-host-bridge/`. The prerequisite
+`festival-session` and `late-game-support` packs, production entry, live economy
+and original save schema are unchanged by this lab. The full-game Mothlight UI
+is a separate branch and must not be confused with this private service venue.
 
-Choose the patch matching your tree and first run `git apply --check <patch>`.
-Apply only after reviewing against current source, particularly if your live lead
-advanced. Do not reset or overwrite uncommitted Claude work. A newer matrix base
-requires an explicit overlay review, not blindly updating its hash.
+Review the source diff after the previous lab refinement. Preserve unpublished
+Claude work and recheck newer receipt/save contracts before applying anything.
+The older `contractor/festival-host-download` artifacts and their patch/rebuild
+proofs cover earlier lab versions; they are not a fresh Mothlight release. No new
+artifact kit is published by this documentation pass.
 
-Read [REFINEMENT.md](REFINEMENT.md) for the second pass and its observed mobile
-issues. Choose exactly one patch matching the declared base.
+Read [VISUAL-REVIEW.md](VISUAL-REVIEW.md) for the open-book material direction,
+font licensing and current checks. [REFINEMENT.md](REFINEMENT.md) records the
+previous goal/quote/keepsake refinement. The actual latest lab HTML SHA-256 is:
+`e8e824aaddb0ea65843098f1e62a463bc2275eb45c17714de580aeeeb2fb6b85`.
 
 ## Completed parts
 
@@ -33,10 +33,10 @@ issues. Choose exactly one patch matching the declared base.
 | Durable bridge | Monotonic bindings, original session stamps, bounded outbox, conflict detection, pause/reload and once-only delivery | `src/bridge.js` |
 | Real-rule service lab | Finite wallets and stock, actual debits/revenue, actual garden growth and paid return trip, detached JSON checkpoints | `lab/scenario.js` |
 | Read-only offers | Exact detached-copy food/cocoa quotes, stock and paid ride fare/route previews; no live holds or visit allocation | `lab/offers.js` |
-| Service presentation | Goal-first hierarchy, explicit next step, retained completion3/3 and fresh repeat-attempt progress | `preview/service-state.js` |
-| Premium desk | Existing embedded fonts/art, paper receipt, clear action hierarchy, causal micro-animation, reduced motion and responsive layouts | `preview/` |
+| Service presentation | Goal-first hierarchy, explicit next step, retained completion 3/3 and fresh repeat-attempt progress | `preview/service-state.js` |
+| Mothlight ledger | Parchment open-book spread, illustrated service choices, original moth/botanical margins, licensed handwritten flourishes, paper receipts and causal motion | `preview/`, `docs/VISUAL-REVIEW.md` |
 | Dependency review | Pinned prior matrix plus 5 domains/27 links; physical import graph and current/conditional consumer separation | `data/dependency-overlay.json`, `tools/review-impact.mjs` |
-| Verification | 156 direct native cases, 92 exact-HTML browser checks, viewport screenshots; separate clean patch/rebuild proof in download kit | `verification/` |
+| Verification | 163 direct native cases across 22 files, 145 exact-HTML browser assertions, current source hashes and viewport screenshots | `verification/` |
 
 The lab's real operations can complete three of four goals for all three themes.
 It does not invent happy final departures. Court guests are deliberately
@@ -77,34 +77,49 @@ Read `API.md` and `INTEGRATION-NOTES.md` before inserting callbacks.
    controller/focus routing, HUD selectors and safe areas. This page is not a
    replacement for the live farm interface.
 
-## Visual refinement
+## Mothlight visual refinement
 
-Fraunces headings and DM Sans body are embedded from the game's own font assets.
-Warm primary actions, custom inline operation icons and quieter secondary controls
-make the important step legible. The parchment receipt displays the actual most
-recent committed operation. A new operation animates the receipt and Paid stamp;
-queue delivery/replay cannot fake another payment animation. Progress fills
-transition without rebuilding their DOM. The running service dot has one faint
-5-second breath; pausing stops it. Reduced motion and hidden pages cancel motion.
-There is no UI timer or animation-driven simulation/currency change.
+The desk is now an opened seasonal ledger with warm bone parchment, a mulberry
+cover, a shaded centre binding and ink-plum functional text. Desktop pages share
+a book spread; mobile uses a single continuous page flow rather than shrinking
+two pages. Original moth and pressed fern/lavender SVGs sit in clipped outer
+margins, are hidden from assistive technology and cannot intercept input.
+
+DM Sans and Fraunces remain the functional fonts for actions, prices, stock and
+goals. The added Caveat Latin WOFF2 is embedded, unmodified, with its SIL Open Font
+License 1.1 and attribution retained in the standalone HTML. Handwritten margin,
+flavour and keepsake lettering is nonessential to operating the lab. Source and
+hashes are recorded in `preview/assets/SOURCES.json`.
+
+Reviewed food/cocoa/ingredient/hospitality artwork replaces generic service icon
+boxes. Exact food art follows the actual recipe ID; unknown dishes use an
+illustrative place-setting fallback. Cocoa, garden and ride art is category art,
+not a promise of a paid order's contents. Existing receipt, queue and goal motion
+continues only after actual state changes. Reduced motion and hidden-page
+cancellation remain intact; decoration never advances simulation or currency.
+
+The reviewed HTML is 1,544,786 bytes, below the browser-checked 2 MiB lab budget.
+This budget applies to the optional lab, not the separate full-game build.
 
 ## Validation and limits
 
-Run the commands in the root README. The direct runner requires actual assertion
-summaries and rejects empty child output/process errors. All 75 new cases plus 81
-prerequisite cases pass. The exact HTML passes 92 browser assertions with no page
-errors, external requests or player storage access, including reduced motion,
-replay/recovery, all themes, finite-wallet conservation and 44px touch layouts.
+The captured direct runner passes **163 native cases across 22 files**: 82 bridge
+cases plus 81 prerequisite cases. It requires real assertion summaries and rejects
+empty output, process errors, failures and skips. The exact HTML passes **145
+browser assertions**, with no page errors, external requests or player storage.
 
-The private fixture deliberately supplies funding, prepared equipment/stock and
-nominated demand; it is not evidence of live economy balance. The ride completes
-actual game simulation steps; its accelerated lab operation is not real-time play.
-Phone/unfolded/landscape emulations are not physical Fold 7 or PS5 verification.
+Coverage includes actual financial conservation, pause/replay/save recovery,
+restored shelves, all themes, once-only entitlements, illustrated asset decoding,
+licensed-font embedding, functional typography, 44px targets, pointer-safe margins,
+side-by-side/single-flow page layout and reduced motion. Functional ink is checked
+against the declared solid paper base at 4.5:1; decorative gradients are not sampled
+pixel by pixel. That narrower result is not a full contrast certification of all
+rendered art or the separate live game.
 
-The download kit's `REBUILD-VERIFICATION.json` records actual application to three
-bases and the clean committed source, native reruns, exact HTML rebuilds, parsed
-scope checks and a production build comparison against the inspected live lead.
-The source verification folder records the reviewed HTML hash and source hashes.
+The private fixture is not a demand/profit/pacing forecast. Physical Fold 7 GPU,
+Android file-provider and PS5 Bluetooth verification are not supplied. Fresh native,
+browser and impact evidence for this source iteration lives in `verification/`;
+the previous downloadable kit's clean patch/prod-build proof remains historical.
 
 ## Suggested next lead-owned work
 
