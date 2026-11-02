@@ -1,9 +1,9 @@
 {
-  "sourceCommit": "d69b1c1cbccd7950f4408754df7e498d16abdcad",
+  "sourceCommit": "1edc15d71a0d7c031f6aaefc95c0c76575acab3d",
   "reviewedBase": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
   "scope": "The actual complete offline game with an injected visual skin; runtime script is byte-identical to its standard build",
-  "bytes": 37955852,
-  "sha256": "041f111a629117705383aebfc1397a078a4119f7bb7408c16f19f2157b1f2e91",
+  "bytes": 37956595,
+  "sha256": "55a86e616607da83bbeb98fc5cb27b94ffa8a7890f32c0c7384b3e954b7eab2c",
   "baseSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0",
   "runtimeSHA256": "3911f35ad522082cebd64e8575373a09229f08f58ae8fbaa64dfeeb47f7c51ac",
   "runtimeByteIdentical": true,

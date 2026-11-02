@@ -6,7 +6,7 @@ skin, independently of the earlier Festival lab.
 
 ## Completed
 
-- Scoped parchment menus with mulberry book edges, faint moth/pressed-botanical
+- Scoped purple purple parchment menus with mulberry book edges with subtle foil sparkles, faint moth/pressed-botanical
   marginalia and handwritten decorative notes.
 - Manage hub, standard sheets, upgrades, wardrobe, house, shop/cocoa/kitchen
   surfaces, settings and milestone surfaces share the palette.
@@ -32,6 +32,10 @@ three `mothlight:` asset placeholders as the wrapper does. Set
 this is a visual layer. Keep `OFL-Caveat.txt` with source distributions and its
 license copy with the embedded font.
 
+## Future village expansion
+
+The separate [village roadmap](VILLAGE-ROADMAP.md) is plan only. It proposes residents, quests, gathering, building and cinematics; none of that expansion is installed by this visual edition. Existing twenty-level gameplay stays intact.
+
 ## Checks and limits
 
 `tools/qa-game.mjs` checks the actual WebGL game, real menu navigation and
@@ -41,3 +45,5 @@ or Bluetooth-device test. Hold-to-buy and controller focus remain native.
 
 Use `DEPENDENCIES.md` before changing selectors, sheet positioning or service
 menus. The rendered menu still relies on the lead's world-menu/pad-menu rules.
+
+Final purple edition:85 actual-game browser checks pass with no page errors or external requests. See verification/README.md and screenshots. Village roadmap is plan-only.
