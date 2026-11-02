@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#19141f">
+  <title>Festival service desk · Pumpkin Patch contractor lab</title>
+  <style>/* @bridge:style */</style>
+</head>
+<body>
+  <main class="workshop">
+    <header class="masthead">
+      <div class="brand"><span class="brand-star" aria-hidden="true">✦</span><div><p class="eyebrow">Shane &amp; Natalie’s Pumpkin Patch</p><p class="brand-title">The evening desk</p></div></div>
+      <p class="scope-badge">Private rule lab <span>· Not installed in the game</span></p>
+    </header>
+
+    <section class="introduction" aria-labelledby="page-title"><h1 id="page-title">Every sale has a story.</h1><p>Real prices, stock and guest wallets. Confirmed outcomes, delivered once.</p></section>
+    <nav id="theme-choices" class="theme-choices" aria-label="Choose an evening"></nav>
+
+    <div class="desk-layout">
+      <section class="session-card" aria-labelledby="session-heading">
+        <header class="session-heading"><div><p id="session-phase" class="phase-label">Choose your evening</p><h2 id="session-heading">Tonight’s service</h2></div><div class="hosting-clock"><span id="hosting-time">0:00</span><small>Hosting time</small></div></header>
+        <div class="session-actions">
+          <button id="prepare-night" class="primary">Prepare evening <span aria-hidden="true">→</span></button>
+          <button id="start-night" class="primary" hidden>Open for the evening <span aria-hidden="true">→</span></button>
+          <button id="pause-night" hidden>Pause service</button>
+          <button id="resume-night" class="primary" hidden>Resume service <span aria-hidden="true">→</span></button>
+          <button id="end-night" class="quiet" hidden>End evening</button>
+          <button id="claim-reward" class="primary" hidden>Record keepsake entitlement <span aria-hidden="true">→</span></button>
+        </div>
+        <div id="readiness" class="readiness"></div>
+
+        <section class="operations" aria-labelledby="operations-heading">
+          <header><h3 id="operations-heading">Serve the private venue</h3><span class="small-label">Actual game rules</span></header>
+          <div class="operation-buttons">
+            <button id="serve-food">Serve a menu dish</button>
+            <button id="serve-cocoa">Sell a cocoa order</button>
+            <button id="harvest-garden">Grow &amp; harvest a bed</button>
+            <button id="run-ride">Complete one paid ride</button>
+          </div>
+          <p class="operation-note">Prepared developer stock, finite guest wallets and actual rule payments. Further harvests simulate crop growth; no player save is read.</p>
+        </section>
+
+        <section class="outbox" aria-labelledby="outbox-heading">
+          <header><div><h3 id="outbox-heading">Confirmed outcomes</h3><p id="queue-status">Nothing awaiting delivery</p></div><span id="queue-count" class="queue-count">0</span></header>
+          <div class="delivery-controls"><label class="check-label"><input id="defer-delivery" type="checkbox"><span>Hold delivery for inspection</span></label><button id="flush-outcomes" class="small-primary">Deliver outcomes</button></div>
+          <div class="replay-controls"><button id="replay-outcome" class="quiet">Replay last outcome</button><span>Replaying never charges a guest again.</span></div>
+        </section>
+
+        <div class="completion-strip"><p id="goal-summary">Complete any three of four goals.</p><span id="goal-count">0 / 3</span></div>
+        <div id="goals" class="goals" aria-label="Evening goals"></div>
+        <p id="feedback" class="feedback" role="status" aria-live="polite">Prepare an evening to begin. No deadline or offline penalty.</p>
+      </section>
+
+      <aside class="venue" aria-labelledby="theme-title">
+          <div class="theme-heading"><div><p id="theme-level" class="eyebrow"></p><h2 id="theme-title"></h2></div><div id="theme-art" aria-hidden="true"></div></div>
+        <section id="recent-receipt" class="receipt-card" aria-labelledby="receipt-heading"><header><p class="receipt-caption">The midnight ledger</p><span id="receipt-seal" class="receipt-seal">Ready</span></header><h3 id="receipt-heading">Your first receipt</h3><p id="receipt-description" class="receipt-description">A real service operation will leave its mark here.</p><div class="receipt-total"><span id="receipt-amount-label">Committed amount</span><strong id="receipt-amount">—</strong></div><footer id="receipt-reference">No transaction has been made.</footer></section>
+        <section class="accounts" aria-labelledby="accounts-heading"><h3 id="accounts-heading">Private venue accounts</h3><dl class="balances"><div><dt>Guest spending</dt><dd id="guest-spend">£0</dd></div><div><dt>Food, cocoa &amp; tickets</dt><dd id="guest-sales">£0</dd></div></dl><p id="conservation-status" class="conservation">No paid operations yet.</p><dl class="secondary-balances"><div><dt>Harvest overflow income</dt><dd id="harvest-income">£0</dd></div><div><dt>Prepared venue cash</dt><dd id="venue-cash">£0</dd></div></dl></section>
+        <section class="stock-section" aria-labelledby="stock-heading"><h3 id="stock-heading">Stock on hand</h3><dl id="stock-counts" class="stock-counts"></dl></section>
+        <details class="guest-details"><summary>Guest wallets <span id="guest-count">0 guests</span></summary><div id="guest-wallets" class="guest-wallets"></div></details>
+        <details class="invitation"><summary>Read the invitation</summary><blockquote id="theme-letter"></blockquote><p id="theme-decision"></p></details>
+        <div class="reward-brief"><div id="reward-art" aria-hidden="true"></div><div><p class="eyebrow">The evening’s keepsake</p><h3 id="reward-name"></h3><p id="reward-status">One entitlement per theme. Live furniture registration remains separate.</p></div></div>
+      </aside>
+    </div>
+
+    <details id="ledger-details" class="ledger-details">
+      <summary><span>Receipt ledger <small id="ledger-count">No committed operations yet</small></span><span class="disclosure" aria-hidden="true">+</span></summary>
+      <div class="ledger-body"><p>These are committed private-world rule operations. Festival delivery and replay do not create another sale. Harvest overflow is shown separately from guest spending.</p><div class="table-scroll"><table><thead><tr><th scope="col">Operation</th><th scope="col">Guest</th><th scope="col">Quantity</th><th scope="col">Paid / income</th><th scope="col">Evidence</th></tr></thead><tbody id="receipt-rows"></tbody></table></div></div>
+    </details>
+
+    <details id="save-tools" class="save-drawer">
+      <summary><span>Save &amp; recovery <small>Private lab envelope · never your game save</small></span><span class="disclosure" aria-hidden="true">+</span></summary>
+      <div class="save-body"><p>Save with confirmed outcomes still queued, reload paused, then resume and deliver them. Prices, receipts and spending remain in the same private envelope.</p><div class="save-buttons"><button id="save-snapshot">Save snapshot</button><button id="reload-snapshot" disabled>Reload saved snapshot</button><button id="export-snapshot">Download private JSON</button></div><label for="snapshot-json">Private lab snapshot JSON</label><textarea id="snapshot-json" rows="7" spellcheck="false" autocomplete="off" placeholder="Save a snapshot to inspect or paste an exported private lab envelope."></textarea><button id="load-json">Load this JSON</button><label id="world-pause-control" class="check-label" hidden><input id="pause-world" type="checkbox"><span>Pause the whole private world</span></label></div>
+    </details>
+
+    <details class="scope-details"><summary>What this lab proves</summary><div><p id="scope-disclosure">Prepared developer state isolates receipt handling. It is not a player progression, profit or timing forecast.</p><p>Food, cocoa and tickets use the game’s real payment rules. A ticket is not a completed ride. No happy final departures are fabricated, and physical cosmetic registration remains Claude’s integration work.</p></div></details>
+    <footer class="footer"><p>No second purse. No duplicate sale. No player-save access.</p><p>Independent contractor lab · Existing game remains unchanged.</p></footer>
+  </main>
+  <script>/* @bridge:script */</script>
+</body>
+</html>
