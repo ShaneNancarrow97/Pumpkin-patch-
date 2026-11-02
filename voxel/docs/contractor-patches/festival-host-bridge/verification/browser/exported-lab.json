@@ -1,0 +1,2623 @@
+{
+  "format": "festival-host-lab",
+  "version": 1,
+  "game": {
+    "version": 14,
+    "coins": 919262,
+    "earned": 3400932,
+    "sold": 0,
+    "harvested": 0,
+    "taps": 0,
+    "time": 7615,
+    "wholesale": 0,
+    "plots": [
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      },
+      {
+        "phase": "empty",
+        "progress": 0,
+        "variety": 0
+      }
+    ],
+    "plotLevels": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "plotCrops": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "upgrades": {
+      "tools": 0,
+      "yield": 0,
+      "auto": 0,
+      "plots": 0,
+      "sign": 0,
+      "storage": 0,
+      "cart": 0
+    },
+    "visitorUpgrades": {
+      "party": 0,
+      "lights": 0,
+      "cocoa": 0,
+      "loyalty": 0,
+      "crowd": 0,
+      "appetite": 0,
+      "janitor": 0
+    },
+    "helperTimer": 0,
+    "streak": {
+      "count": 0,
+      "until": 0,
+      "best": 0,
+      "bonusCoins": 0,
+      "nextBonusAt": 0,
+      "visitorBoost": 0,
+      "visitorBoostUntil": 0,
+      "last": -1
+    },
+    "stock": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "fresh": [
+      [],
+      [],
+      [],
+      [],
+      []
+    ],
+    "wanted": {
+      "variety": null,
+      "until": 0,
+      "serial": 0
+    },
+    "orders": {
+      "list": [],
+      "next": 0,
+      "serial": 0,
+      "filled": 0,
+      "missed": 0,
+      "income": 0,
+      "trust": {}
+    },
+    "holds": [],
+    "visitorEvents": {
+      "seed": 1298752622,
+      "rush": {
+        "level": 1,
+        "enabled": true,
+        "remaining": 300,
+        "event": 0,
+        "pending": null
+      },
+      "vip": {
+        "level": 1,
+        "enabled": true,
+        "remaining": 240,
+        "event": 0,
+        "pending": null
+      },
+      "ledger": {
+        "rushGroups": 0,
+        "rushGuests": 0,
+        "vipGroups": 0,
+        "vipGuests": 0
+      }
+    },
+    "stall": {
+      "income": 0,
+      "itemsSold": 0,
+      "served": 0,
+      "missedBudget": 0,
+      "missedStock": 0,
+      "cocoa": 192,
+      "receipts": []
+    },
+    "visitors": [],
+    "arriving": [],
+    "nextVisitor": 56,
+    "nextParty": 1,
+    "visitorTimer": 3,
+    "shop": {
+      "unlocked": true,
+      "capacityLevel": 0,
+      "displayLevel": 0,
+      "checkoutLevel": 0,
+      "displays": [
+        0,
+        1,
+        null,
+        null
+      ],
+      "customers": [],
+      "nextCustomer": 6,
+      "arrivalTimer": 2,
+      "income": 0,
+      "itemsSold": 0,
+      "served": 0,
+      "invested": 0
+    },
+    "bigSpender": {
+      "timer": 110,
+      "seen": 0,
+      "spent": 0,
+      "pumpkins": 0
+    },
+    "festival": {
+      "meadow": true,
+      "comforts": [],
+      "cocoa": {
+        "level": 3,
+        "stock": 40,
+        "price": 4,
+        "open": true,
+        "courier": false,
+        "autoSupply": false,
+        "barista": false,
+        "bulkCourier": false,
+        "autoSpecials": [],
+        "sold": 16,
+        "gross": 192,
+        "supplies": 0,
+        "invested": 8450,
+        "missed": 0,
+        "prices": {
+          "flake": 6,
+          "deluxe": 7,
+          "midnight": 9,
+          "smores": 5,
+          "ghost-wafer": 13,
+          "caramel-flake": 15,
+          "smores-platter": 12
+        },
+        "extras": {
+          "flake": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          },
+          "deluxe": {
+            "stock": 4,
+            "sold": 16,
+            "gross": 112,
+            "supplies": 0
+          },
+          "midnight": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          },
+          "smores": {
+            "stock": 4,
+            "sold": 16,
+            "gross": 80,
+            "supplies": 0
+          },
+          "ghost-wafer": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          },
+          "caramel-flake": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          },
+          "smores-platter": {
+            "stock": 0,
+            "sold": 0,
+            "gross": 0,
+            "supplies": 0
+          }
+        },
+        "lastSaleAt": 2410
+      }
+    },
+    "customerCare": {
+      "bags": 1,
+      "tipJar": 0,
+      "serial": 0,
+      "invested": 0,
+      "tips": {
+        "stall": 0,
+        "shop": 0
+      },
+      "tipped": {
+        "stall": 0,
+        "shop": 0
+      },
+      "qualityTotal": 0,
+      "graded": 0,
+      "receipts": []
+    },
+    "house": {
+      "level": 3,
+      "activeRoom": "parlour",
+      "roomStyles": {
+        "parlour": "house-default",
+        "bedroom": "bedroom-base",
+        "kitchen": "kitchen-base",
+        "attic": "attic-base"
+      },
+      "ownedRoomStyles": [],
+      "owned": [
+        "f01",
+        "f11",
+        "b01",
+        "copper-range",
+        "gothic-spice-cabinet"
+      ],
+      "wallpapers": {},
+      "nextInstance": 4,
+      "reading": {},
+      "placed": [
+        {
+          "instance": "piece-0",
+          "id": "f01",
+          "room": "parlour",
+          "x": 2,
+          "z": 3,
+          "flip": false,
+          "books": []
+        },
+        {
+          "instance": "piece-1",
+          "id": "f11",
+          "room": "parlour",
+          "x": 6,
+          "z": 0,
+          "flip": false,
+          "books": [
+            "b01"
+          ]
+        },
+        {
+          "instance": "piece-2",
+          "id": "copper-range",
+          "room": "kitchen",
+          "x": 0,
+          "z": 0,
+          "flip": false,
+          "books": []
+        },
+        {
+          "instance": "piece-3",
+          "id": "gothic-spice-cabinet",
+          "room": "kitchen",
+          "x": 3,
+          "z": 0,
+          "flip": false,
+          "books": []
+        }
+      ]
+    },
+    "estate": {
+      "expansion": 0,
+      "finishes": {
+        "walls": "warm-timber",
+        "roof": "midnight-slate",
+        "trim": "old-brass",
+        "door": "plum-door",
+        "fence": "gothic-iron"
+      },
+      "ownedFinishes": [
+        "warm-timber",
+        "midnight-slate",
+        "old-brass",
+        "plum-door",
+        "gothic-iron"
+      ],
+      "ownedDecor": {
+        "lantern-post": 0,
+        "rose-bed": 0,
+        "pumpkin-pile": 0,
+        "stone-urn": 0,
+        "garden-bench": 0,
+        "bird-bath": 0,
+        "gargoyle": 0,
+        "crooked-tree": 0,
+        "moon-fountain": 0,
+        "coffin-planter": 0,
+        "rose-arch": 0,
+        "wishing-well": 0,
+        "bat-hedge": 0,
+        "mushroom-patch": 0,
+        "fire-pit": 0,
+        "ghost-scarecrow": 0,
+        "berry-patch": 0,
+        "herb-planter": 0,
+        "vegetable-bed": 0,
+        "apple-tree": 0,
+        "carving-bench": 0,
+        "hay-bales": 0,
+        "gravestones": 0,
+        "owl-perch": 0,
+        "witch-cauldron": 0,
+        "picnic-table": 0,
+        "lantern-garland": 0,
+        "lily-pond": 0
+      },
+      "nextInstance": 6,
+      "invested": 220,
+      "placed": [
+        {
+          "instance": "garden-0",
+          "id": "lantern-post",
+          "x": -3,
+          "z": 8,
+          "rotation": 0
+        },
+        {
+          "instance": "garden-1",
+          "id": "lantern-post",
+          "x": 3,
+          "z": 8,
+          "rotation": 0
+        },
+        {
+          "instance": "garden-2",
+          "id": "rose-bed",
+          "x": -10,
+          "z": -4,
+          "rotation": 0
+        },
+        {
+          "instance": "garden-3",
+          "id": "garden-bench",
+          "x": 10,
+          "z": 2,
+          "rotation": 0
+        },
+        {
+          "instance": "garden-4",
+          "id": "pumpkin-pile",
+          "x": 5.2,
+          "z": 9.3,
+          "rotation": 0
+        },
+        {
+          "instance": "garden-5",
+          "id": "vegetable-bed",
+          "x": -10.5,
+          "z": 8.5,
+          "rotation": 0,
+          "crop": {
+            "phase": "empty"
+          }
+        }
+      ]
+    },
+    "hollowHouse": {
+      "purchased": true,
+      "status": "ready",
+      "restoreRemaining": 0,
+      "tier": 3,
+      "open": true,
+      "ticketPrice": 6,
+      "invested": 0,
+      "ticketsSold": 0,
+      "income": 0,
+      "completed": 0,
+      "missed": 0,
+      "runHome": 0,
+      "repeatVisits": 0,
+      "haunts": {
+        "owned": [],
+        "active": []
+      },
+      "nextVisit": 0,
+      "receipts": [],
+      "lastEvent": null,
+      "foyer": {
+        "ownedDecor": {
+          "velvet-bench": 0,
+          "spectral-sofa": 0,
+          "parlour-table": 0,
+          "gothic-cabinet": 0,
+          "skull-plinth": 0,
+          "pumpkin-cluster": 0,
+          "book-stack": 0,
+          "standing-lantern": 0,
+          "candle-cluster": 0,
+          "haunted-portrait": 0,
+          "cobweb": 0,
+          "ghost-orb": 0,
+          "fog-cauldron": 0,
+          "grand-chandelier": 0,
+          "curtain-arch": 0,
+          "ticket-sign": 0
+        },
+        "placed": [
+          {
+            "instance": "foyer-0",
+            "id": "velvet-bench",
+            "x": -3,
+            "z": 2.7,
+            "rotation": 0
+          },
+          {
+            "instance": "foyer-1",
+            "id": "parlour-table",
+            "x": 3.2,
+            "z": 2.9,
+            "rotation": 0
+          },
+          {
+            "instance": "foyer-2",
+            "id": "pumpkin-cluster",
+            "x": 3.8,
+            "z": 1.8,
+            "rotation": 0
+          }
+        ],
+        "finishes": {
+          "floor": "wooden-boards",
+          "walls": "old-wallpaper",
+          "reception": "wood-counter",
+          "lighting": "candle-glow",
+          "entrance": "gothic-door",
+          "effects": "quiet-air"
+        },
+        "ownedFinishes": [
+          "wooden-boards",
+          "old-wallpaper",
+          "wood-counter",
+          "candle-glow",
+          "gothic-door",
+          "quiet-air"
+        ],
+        "nextInstance": 3
+      }
+    },
+    "hayride": {
+      "purchased": true,
+      "tier": 3,
+      "open": true,
+      "ticketPrice": 8,
+      "invested": 52500,
+      "ticketsSold": 40,
+      "income": 320,
+      "completed": 40,
+      "missed": 0,
+      "runHome": 0,
+      "departures": 40,
+      "partyAt": 0,
+      "nextVisit": 40,
+      "nextRun": 41,
+      "receipts": [
+        {
+          "visitId": "hayride-39",
+          "runId": "hayride-run-39",
+          "visitor": 55,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 7430
+        },
+        {
+          "visitId": "hayride-38",
+          "runId": "hayride-run-38",
+          "visitor": 54,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 7245
+        },
+        {
+          "visitId": "hayride-37",
+          "runId": "hayride-run-37",
+          "visitor": 53,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 7058
+        },
+        {
+          "visitId": "hayride-36",
+          "runId": "hayride-run-36",
+          "visitor": 52,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 6873
+        },
+        {
+          "visitId": "hayride-35",
+          "runId": "hayride-run-35",
+          "visitor": 51,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 6687
+        },
+        {
+          "visitId": "hayride-34",
+          "runId": "hayride-run-34",
+          "visitor": 50,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 6502
+        },
+        {
+          "visitId": "hayride-33",
+          "runId": "hayride-run-33",
+          "visitor": 49,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 6316
+        },
+        {
+          "visitId": "hayride-32",
+          "runId": "hayride-run-32",
+          "visitor": 48,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 6130
+        },
+        {
+          "visitId": "hayride-31",
+          "runId": "hayride-run-31",
+          "visitor": 47,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 5943
+        },
+        {
+          "visitId": "hayride-30",
+          "runId": "hayride-run-30",
+          "visitor": 46,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 5758
+        },
+        {
+          "visitId": "hayride-29",
+          "runId": "hayride-run-29",
+          "visitor": 45,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 5571
+        },
+        {
+          "visitId": "hayride-28",
+          "runId": "hayride-run-28",
+          "visitor": 44,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 5386
+        },
+        {
+          "visitId": "hayride-27",
+          "runId": "hayride-run-27",
+          "visitor": 43,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 5200
+        },
+        {
+          "visitId": "hayride-26",
+          "runId": "hayride-run-26",
+          "visitor": 42,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 5015
+        },
+        {
+          "visitId": "hayride-25",
+          "runId": "hayride-run-25",
+          "visitor": 41,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 4829
+        },
+        {
+          "visitId": "hayride-24",
+          "runId": "hayride-run-24",
+          "visitor": 40,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 4643
+        },
+        {
+          "visitId": "hayride-23",
+          "runId": "hayride-run-23",
+          "visitor": 39,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 4456
+        },
+        {
+          "visitId": "hayride-22",
+          "runId": "hayride-run-22",
+          "visitor": 38,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 4271
+        },
+        {
+          "visitId": "hayride-21",
+          "runId": "hayride-run-21",
+          "visitor": 37,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 4084
+        },
+        {
+          "visitId": "hayride-20",
+          "runId": "hayride-run-20",
+          "visitor": 36,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 3899
+        },
+        {
+          "visitId": "hayride-19",
+          "runId": "hayride-run-19",
+          "visitor": 35,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 3713
+        },
+        {
+          "visitId": "hayride-18",
+          "runId": "hayride-run-18",
+          "visitor": 34,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 3528
+        },
+        {
+          "visitId": "hayride-17",
+          "runId": "hayride-run-17",
+          "visitor": 33,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 3342
+        },
+        {
+          "visitId": "hayride-16",
+          "runId": "hayride-run-16",
+          "visitor": 32,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 3156
+        },
+        {
+          "visitId": "hayride-15",
+          "runId": "hayride-run-15",
+          "visitor": 31,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 2969
+        },
+        {
+          "visitId": "hayride-14",
+          "runId": "hayride-run-14",
+          "visitor": 30,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 2784
+        },
+        {
+          "visitId": "hayride-13",
+          "runId": "hayride-run-13",
+          "visitor": 29,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 2597
+        },
+        {
+          "visitId": "hayride-12",
+          "runId": "hayride-run-12",
+          "visitor": 28,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 2412
+        },
+        {
+          "visitId": "hayride-11",
+          "runId": "hayride-run-11",
+          "visitor": 11,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 2046
+        },
+        {
+          "visitId": "hayride-10",
+          "runId": "hayride-run-10",
+          "visitor": 10,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 1861
+        },
+        {
+          "visitId": "hayride-9",
+          "runId": "hayride-run-9",
+          "visitor": 9,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 1675
+        },
+        {
+          "visitId": "hayride-8",
+          "runId": "hayride-run-8",
+          "visitor": 8,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 1489
+        },
+        {
+          "visitId": "hayride-7",
+          "runId": "hayride-run-7",
+          "visitor": 7,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 1302
+        },
+        {
+          "visitId": "hayride-6",
+          "runId": "hayride-run-6",
+          "visitor": 6,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 1117
+        },
+        {
+          "visitId": "hayride-5",
+          "runId": "hayride-run-5",
+          "visitor": 5,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 930
+        },
+        {
+          "visitId": "hayride-4",
+          "runId": "hayride-run-4",
+          "visitor": 4,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 745
+        },
+        {
+          "visitId": "hayride-3",
+          "runId": "hayride-run-3",
+          "visitor": 3,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 559
+        },
+        {
+          "visitId": "hayride-2",
+          "runId": "hayride-run-2",
+          "visitor": 2,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 374
+        },
+        {
+          "visitId": "hayride-1",
+          "runId": "hayride-run-1",
+          "visitor": 1,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 188
+        },
+        {
+          "visitId": "hayride-0",
+          "runId": "hayride-run-0",
+          "visitor": 0,
+          "seat": 0,
+          "berth": 0,
+          "amount": 8,
+          "at": 2
+        }
+      ],
+      "haunts": {
+        "owned": [],
+        "active": []
+      },
+      "convoy": {
+        "phase": "loading",
+        "elapsed": 0,
+        "progress": 0,
+        "loadWait": 0,
+        "runId": "hayride-run-40",
+        "manifest": []
+      },
+      "secondConvoy": null,
+      "fleet": 0,
+      "dispatch": 0,
+      "routeLevel": 2,
+      "lastEvent": {
+        "kind": "survivor",
+        "visitor": 55,
+        "at": 7587
+      },
+      "guestTimer": 999999992565
+    },
+    "kitchen": {
+      "diners": [],
+      "cookAnimations": [],
+      "revision": 2,
+      "purchased": true,
+      "pantry": {
+        "flour": 0,
+        "sugar": 0,
+        "milk": 0,
+        "butter": 0,
+        "cocoa": 0,
+        "apples": 0,
+        "marshmallows": 0,
+        "vegetables": 9,
+        "meat": 0,
+        "chicken": 0,
+        "stock": 0,
+        "herbs": 0,
+        "spices": 0,
+        "berries": 0,
+        "seeds": 0
+      },
+      "food": {
+        "wedges": 0,
+        "soup": 0,
+        "toffee-apples": 0,
+        "pumpkin-jam": 0,
+        "ghost-cookies": 0,
+        "pumpkin-pie": 0,
+        "cocoa-brownies": 0,
+        "moonlight-tart": 12,
+        "garden-skillet": 0,
+        "harvest-broth": 12,
+        "spiced-roast": 0,
+        "moonfire-chicken": 0,
+        "haunted-pie": 0,
+        "pumpkin-spice-biscuits": 12,
+        "bramble-crumble": 12,
+        "toasted-seeds": 0,
+        "seed-brittle": 0,
+        "bramble-apple-pie": 0
+      },
+      "recipes": [
+        "haunted-pie",
+        "moonlight-tart",
+        "harvest-broth",
+        "bramble-crumble",
+        "seed-brittle",
+        "pumpkin-spice-biscuits"
+      ],
+      "prices": {
+        "wedges": 11,
+        "soup": 13,
+        "toffee-apples": 8,
+        "pumpkin-jam": 22,
+        "ghost-cookies": 4,
+        "pumpkin-pie": 27,
+        "cocoa-brownies": 7,
+        "moonlight-tart": 27,
+        "garden-skillet": 12,
+        "harvest-broth": 14,
+        "spiced-roast": 19,
+        "moonfire-chicken": 18,
+        "haunted-pie": 26,
+        "pumpkin-spice-biscuits": 8,
+        "bramble-crumble": 15,
+        "toasted-seeds": 6,
+        "seed-brittle": 9,
+        "bramble-apple-pie": 27
+      },
+      "displays": [
+        "seed-brittle",
+        null
+      ],
+      "orders": [],
+      "jobs": {
+        "truck": null,
+        "home": null
+      },
+      "upgrades": {
+        "pantry": 0,
+        "storage": 3,
+        "speed": 0,
+        "truck-oven": 0,
+        "truck-spices": 0,
+        "chef": 0
+      },
+      "chefRecipe": null,
+      "ledger": {
+        "ingredientSpend": 0,
+        "researchSpend": 0,
+        "foodIncome": 420,
+        "foodSold": 24,
+        "invested": 0,
+        "deliveryFees": 0,
+        "batchesCooked": 0,
+        "receipts": [
+          {
+            "id": 24,
+            "recipe": "seed-brittle",
+            "quantity": 6,
+            "amount": 54,
+            "at": 4641
+          },
+          {
+            "id": 18,
+            "recipe": "seed-brittle",
+            "quantity": 6,
+            "amount": 54,
+            "at": 4641
+          },
+          {
+            "id": 12,
+            "recipe": "haunted-pie",
+            "quantity": 3,
+            "amount": 78,
+            "at": 0
+          },
+          {
+            "id": 9,
+            "recipe": "haunted-pie",
+            "quantity": 3,
+            "amount": 78,
+            "at": 0
+          },
+          {
+            "id": 6,
+            "recipe": "haunted-pie",
+            "quantity": 3,
+            "amount": 78,
+            "at": 0
+          },
+          {
+            "id": 3,
+            "recipe": "haunted-pie",
+            "quantity": 3,
+            "amount": 78,
+            "at": 0
+          }
+        ]
+      },
+      "nextOrder": 1,
+      "nextJob": 1,
+      "delivered": [],
+      "foodHolds": []
+    },
+    "wardrobe": {
+      "owned": [
+        "natalie-base",
+        "shane-base",
+        "natalie-wheelchair"
+      ],
+      "equipped": {
+        "natalie": "natalie-base",
+        "shane": "shane-base"
+      }
+    },
+    "looks": {
+      "natalie": "olive",
+      "shane": "black",
+      "owned": [
+        "olive",
+        "black"
+      ]
+    },
+    "claimed": [],
+    "memories": [],
+    "progression": {
+      "claimed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "pending": [],
+      "receipts": {},
+      "bonusEarned": 0,
+      "homeVersion": 1,
+      "homeLegacyThrough": 1,
+      "homeActivities": {
+        "visit": 0,
+        "wardrobe": 0,
+        "cook": 0,
+        "decorate": 0,
+        "plant": 0,
+        "water": 0,
+        "harvest": 0
+      },
+      "pace": 2,
+      "floorLevel": 1,
+      "floorFrom": 0
+    },
+    "paused": false,
+    "introSeen": false,
+    "cleanliness": {
+      "litter": [],
+      "nextId": 0,
+      "seenSales": 0,
+      "cleaned": 0,
+      "janitors": []
+    },
+    "carving": {
+      "lanterns": [],
+      "current": null,
+      "made": 0,
+      "sold": 0,
+      "nextId": 1
+    },
+    "hollowVisitors": [],
+    "hayrideVisitors": []
+  },
+  "bridge": {
+    "version": 1,
+    "nextSerial": 106,
+    "festival": {
+      "version": 1,
+      "namespace": "real-rule-lab",
+      "nextSession": 4,
+      "active": null,
+      "completedThemes": [
+        "midnight-court-banquet",
+        "lanterns-in-the-mist",
+        "the-last-wagon"
+      ],
+      "claimedRewards": [
+        {
+          "themeId": "midnight-court-banquet",
+          "rewardId": "contract-trophy-banquet-candelabrum",
+          "grantKey": "festival:midnight-court-banquet:contract-trophy-banquet-candelabrum"
+        },
+        {
+          "themeId": "lanterns-in-the-mist",
+          "rewardId": "contract-trophy-moonlit-conservatory",
+          "grantKey": "festival:lanterns-in-the-mist:contract-trophy-moonlit-conservatory"
+        },
+        {
+          "themeId": "the-last-wagon",
+          "rewardId": "contract-trophy-clockwork-hayride-theatre",
+          "grantKey": "festival:the-last-wagon:contract-trophy-clockwork-hayride-theatre"
+        }
+      ],
+      "history": [
+        {
+          "id": "real-rule-lab:3",
+          "themeId": "the-last-wagon",
+          "outcome": "completed",
+          "elapsedSeconds": 2974,
+          "goals": [
+            {
+              "id": "wagon-full-trail",
+              "value": 16,
+              "target": 16
+            },
+            {
+              "id": "wagon-sweet-return",
+              "value": 12,
+              "target": 12
+            },
+            {
+              "id": "wagon-smooth-boarding",
+              "value": 12,
+              "target": 12
+            },
+            {
+              "id": "wagon-fond-goodbyes",
+              "value": 0,
+              "target": 10
+            }
+          ]
+        },
+        {
+          "id": "real-rule-lab:2",
+          "themeId": "lanterns-in-the-mist",
+          "outcome": "completed",
+          "elapsedSeconds": 2231,
+          "goals": [
+            {
+              "id": "mist-warm-cups",
+              "value": 16,
+              "target": 16
+            },
+            {
+              "id": "mist-lantern-walk",
+              "value": 12,
+              "target": 12
+            },
+            {
+              "id": "mist-kind-goodbyes",
+              "value": 0,
+              "target": 10
+            },
+            {
+              "id": "mist-garden-basket",
+              "value": 8,
+              "target": 8
+            }
+          ]
+        },
+        {
+          "id": "real-rule-lab:1",
+          "themeId": "midnight-court-banquet",
+          "outcome": "completed",
+          "elapsedSeconds": 2230,
+          "goals": [
+            {
+              "id": "court-supper",
+              "value": 12,
+              "target": 12
+            },
+            {
+              "id": "court-frights",
+              "value": 12,
+              "target": 12
+            },
+            {
+              "id": "court-patrons",
+              "value": 4,
+              "target": 4
+            },
+            {
+              "id": "court-goodbyes",
+              "value": 0,
+              "target": 10
+            }
+          ]
+        }
+      ]
+    },
+    "pending": []
+  },
+  "lab": {
+    "selectedTheme": "the-last-wagon",
+    "deferred": false,
+    "ledger": [
+      {
+        "serial": 65,
+        "at": 7615,
+        "kind": "hayride",
+        "guestId": "visitor:55",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-39",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 187
+      },
+      {
+        "serial": 64,
+        "at": 7428,
+        "kind": "hayride",
+        "guestId": "visitor:54",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-38",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 63,
+        "at": 7243,
+        "kind": "hayride",
+        "guestId": "visitor:53",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-37",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 187
+      },
+      {
+        "serial": 62,
+        "at": 7056,
+        "kind": "hayride",
+        "guestId": "visitor:52",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-36",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 61,
+        "at": 6871,
+        "kind": "hayride",
+        "guestId": "visitor:51",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-35",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 60,
+        "at": 6685,
+        "kind": "hayride",
+        "guestId": "visitor:50",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-34",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 59,
+        "at": 6500,
+        "kind": "hayride",
+        "guestId": "visitor:49",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-33",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 58,
+        "at": 6314,
+        "kind": "hayride",
+        "guestId": "visitor:48",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-32",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 57,
+        "at": 6128,
+        "kind": "hayride",
+        "guestId": "visitor:47",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-31",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 187
+      },
+      {
+        "serial": 56,
+        "at": 5941,
+        "kind": "hayride",
+        "guestId": "visitor:46",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-30",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 55,
+        "at": 5756,
+        "kind": "hayride",
+        "guestId": "visitor:45",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-29",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 187
+      },
+      {
+        "serial": 54,
+        "at": 5569,
+        "kind": "hayride",
+        "guestId": "visitor:44",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-28",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 53,
+        "at": 5384,
+        "kind": "hayride",
+        "guestId": "visitor:43",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-27",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 52,
+        "at": 5198,
+        "kind": "hayride",
+        "guestId": "visitor:42",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-26",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 51,
+        "at": 5013,
+        "kind": "hayride",
+        "guestId": "visitor:41",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-25",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 50,
+        "at": 4827,
+        "kind": "hayride",
+        "guestId": "visitor:40",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-24",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 49,
+        "at": 4641,
+        "kind": "food",
+        "guestId": "customer:5",
+        "amount": 54,
+        "quantity": 6,
+        "recipeId": "seed-brittle",
+        "receiptId": 24
+      },
+      {
+        "serial": 48,
+        "at": 4641,
+        "kind": "food",
+        "guestId": "customer:4",
+        "amount": 54,
+        "quantity": 6,
+        "recipeId": "seed-brittle",
+        "receiptId": 18
+      },
+      {
+        "serial": 47,
+        "at": 4641,
+        "kind": "hayride",
+        "guestId": "visitor:39",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-23",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 187
+      },
+      {
+        "serial": 46,
+        "at": 4454,
+        "kind": "hayride",
+        "guestId": "visitor:38",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-22",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 45,
+        "at": 4269,
+        "kind": "hayride",
+        "guestId": "visitor:37",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-21",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 187
+      },
+      {
+        "serial": 44,
+        "at": 4082,
+        "kind": "hayride",
+        "guestId": "visitor:36",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-20",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 43,
+        "at": 3897,
+        "kind": "hayride",
+        "guestId": "visitor:35",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-19",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 42,
+        "at": 3711,
+        "kind": "hayride",
+        "guestId": "visitor:34",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-18",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 41,
+        "at": 3526,
+        "kind": "hayride",
+        "guestId": "visitor:33",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-17",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 40,
+        "at": 3340,
+        "kind": "hayride",
+        "guestId": "visitor:32",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-16",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 39,
+        "at": 3154,
+        "kind": "hayride",
+        "guestId": "visitor:31",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-15",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 187
+      },
+      {
+        "serial": 38,
+        "at": 2967,
+        "kind": "hayride",
+        "guestId": "visitor:30",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-14",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 37,
+        "at": 2782,
+        "kind": "hayride",
+        "guestId": "visitor:29",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-13",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 187
+      },
+      {
+        "serial": 36,
+        "at": 2595,
+        "kind": "hayride",
+        "guestId": "visitor:28",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-12",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 35,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:27",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-47"
+      },
+      {
+        "serial": 34,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:26",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-46"
+      },
+      {
+        "serial": 33,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:25",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-45"
+      },
+      {
+        "serial": 32,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:24",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-44"
+      },
+      {
+        "serial": 31,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:23",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-43"
+      },
+      {
+        "serial": 30,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:22",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-42"
+      },
+      {
+        "serial": 29,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:21",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-41"
+      },
+      {
+        "serial": 28,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:20",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-40"
+      },
+      {
+        "serial": 27,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:19",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-39"
+      },
+      {
+        "serial": 26,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:18",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-38"
+      },
+      {
+        "serial": 25,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:17",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-37"
+      },
+      {
+        "serial": 24,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:16",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-36"
+      },
+      {
+        "serial": 23,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:15",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-35"
+      },
+      {
+        "serial": 22,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:14",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-34"
+      },
+      {
+        "serial": 21,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:13",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-33"
+      },
+      {
+        "serial": 20,
+        "at": 2410,
+        "kind": "cocoa",
+        "guestId": "visitor:12",
+        "amount": 12,
+        "quantity": 2,
+        "productIds": [
+          "deluxe",
+          "smores"
+        ],
+        "receiptId": "real-rule-lab-event-32"
+      },
+      {
+        "serial": 19,
+        "at": 2410,
+        "kind": "harvest",
+        "amount": 0,
+        "quantity": 3,
+        "pantry": 3,
+        "sold": 0,
+        "bedId": "vegetable-bed",
+        "receiptId": "real-rule-lab-event-31",
+        "growthSeconds": 90
+      },
+      {
+        "serial": 18,
+        "at": 2320,
+        "kind": "harvest",
+        "amount": 0,
+        "quantity": 3,
+        "pantry": 3,
+        "sold": 0,
+        "bedId": "vegetable-bed",
+        "receiptId": "real-rule-lab-event-30",
+        "growthSeconds": 90
+      },
+      {
+        "serial": 17,
+        "at": 2230,
+        "kind": "harvest",
+        "amount": 0,
+        "quantity": 3,
+        "pantry": 3,
+        "sold": 0,
+        "bedId": "vegetable-bed",
+        "receiptId": "real-rule-lab-event-29",
+        "growthSeconds": 0
+      },
+      {
+        "serial": 16,
+        "at": 2230,
+        "kind": "hayride",
+        "guestId": "visitor:11",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-11",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 15,
+        "at": 2044,
+        "kind": "hayride",
+        "guestId": "visitor:10",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-10",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 14,
+        "at": 1859,
+        "kind": "hayride",
+        "guestId": "visitor:9",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-9",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 13,
+        "at": 1673,
+        "kind": "hayride",
+        "guestId": "visitor:8",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-8",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 12,
+        "at": 1487,
+        "kind": "hayride",
+        "guestId": "visitor:7",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-7",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 187
+      },
+      {
+        "serial": 11,
+        "at": 1300,
+        "kind": "hayride",
+        "guestId": "visitor:6",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-6",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 10,
+        "at": 1115,
+        "kind": "hayride",
+        "guestId": "visitor:5",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-5",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 187
+      },
+      {
+        "serial": 9,
+        "at": 928,
+        "kind": "hayride",
+        "guestId": "visitor:4",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-4",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 8,
+        "at": 743,
+        "kind": "hayride",
+        "guestId": "visitor:3",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-3",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 7,
+        "at": 557,
+        "kind": "hayride",
+        "guestId": "visitor:2",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-2",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 185
+      },
+      {
+        "serial": 6,
+        "at": 372,
+        "kind": "hayride",
+        "guestId": "visitor:1",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-1",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 5,
+        "at": 186,
+        "kind": "hayride",
+        "guestId": "visitor:0",
+        "amount": 8,
+        "quantity": 1,
+        "receiptId": "hayride-0",
+        "routeLevelAtDeparture": 2,
+        "queueSecondsAtBoarding": 0,
+        "simulationSeconds": 186
+      },
+      {
+        "serial": 4,
+        "at": 0,
+        "kind": "food",
+        "guestId": "customer:3",
+        "amount": 78,
+        "quantity": 3,
+        "recipeId": "haunted-pie",
+        "receiptId": 12
+      },
+      {
+        "serial": 3,
+        "at": 0,
+        "kind": "food",
+        "guestId": "customer:2",
+        "amount": 78,
+        "quantity": 3,
+        "recipeId": "haunted-pie",
+        "receiptId": 9
+      },
+      {
+        "serial": 2,
+        "at": 0,
+        "kind": "food",
+        "guestId": "customer:1",
+        "amount": 78,
+        "quantity": 3,
+        "recipeId": "haunted-pie",
+        "receiptId": 6
+      }
+    ],
+    "guests": [
+      {
+        "id": "visitor:55",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:54",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:53",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:52",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:51",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:50",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:49",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:48",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:47",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:46",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:45",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:44",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:43",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:42",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:41",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:40",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "customer:5",
+        "kind": "food",
+        "budget": 46,
+        "initialBudget": 100,
+        "spent": 54
+      },
+      {
+        "id": "customer:4",
+        "kind": "food",
+        "budget": 46,
+        "initialBudget": 100,
+        "spent": 54
+      },
+      {
+        "id": "visitor:39",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:38",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:37",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:36",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:35",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:34",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:33",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:32",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:31",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:30",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:29",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:28",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:27",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:26",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:25",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:24",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:23",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:22",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:21",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:20",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:19",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:18",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:17",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:16",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:15",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:14",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:13",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:12",
+        "kind": "cocoa",
+        "budget": 48,
+        "initialBudget": 60,
+        "spent": 12
+      },
+      {
+        "id": "visitor:11",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:10",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:9",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:8",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:7",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:6",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:5",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:4",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:3",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:2",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:1",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "visitor:0",
+        "kind": "hayride",
+        "budget": 52,
+        "initialBudget": 60,
+        "spent": 8
+      },
+      {
+        "id": "customer:3",
+        "kind": "food",
+        "budget": 22,
+        "initialBudget": 100,
+        "spent": 78
+      },
+      {
+        "id": "customer:2",
+        "kind": "food",
+        "budget": 22,
+        "initialBudget": 100,
+        "spent": 78
+      },
+      {
+        "id": "customer:1",
+        "kind": "food",
+        "budget": 22,
+        "initialBudget": 100,
+        "spent": 78
+      },
+      {
+        "id": "customer:0",
+        "kind": "food",
+        "budget": 22,
+        "initialBudget": 100,
+        "spent": 78
+      }
+    ],
+    "nextLedger": 66,
+    "baseline": {
+      "coins": 918330,
+      "earned": 3400000,
+      "food": 0,
+      "cocoa": 0,
+      "ride": 0
+    },
+    "harvestIncome": 0,
+    "guestSpend": 932,
+    "lastOutcome": {
+      "id": "hayride-39",
+      "sessionId": "real-rule-lab:3",
+      "window": "service",
+      "guestId": "visitor:55",
+      "cohort": "midnight-court",
+      "kind": "attraction-completed",
+      "source": "hayride",
+      "paid": true,
+      "paidAmount": 8,
+      "queueSecondsAtBoarding": 0,
+      "routeLevelAtDeparture": 2
+    },
+    "bedInstance": "garden-5"
+  }
+}

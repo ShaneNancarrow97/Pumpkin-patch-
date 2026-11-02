@@ -1,0 +1,332 @@
+
+voxel/docs/contractor-patches/festival-host-bridge/test/bridge-adversarial.test.mjs
+✔ bindings carry the originating session and allocate identities only in active unpaused windows (9.632324ms)
+✔ queue ingestion detaches facts and strips incidental world data (1.012322ms)
+✔ exact pending replay coalesces while a changed payload preserves the original fact (0.524467ms)
+✔ bounded backpressure returns the original paid fact for retry without losing queued facts (2.469713ms)
+✔ manual and whole-world pause preserve queued confirmation facts and elapsed time (0.582895ms)
+✔ a saved pending queue reloads paused, drains once, and survives exact fact replay (1.15998ms)
+✔ ending with pending outcomes requires an explicit drain or explicit discard (0.342218ms)
+✔ only literal discardPending true authorizes abandoning confirmed queued facts (0.429858ms)
+✔ old session facts remain old after ending and preparing the same evening again (0.516536ms)
+✔ binding serials do not restart after save or after replacement evenings (0.589605ms)
+✔ outcomes cannot bypass the durable queue through lifecycle dispatch (0.233446ms)
+✔ unknown bridge or inner-engine schema is incompatible rather than silently reset (0.41807ms)
+✔ a present bridge document missing its inner festival state cannot silently create a replacement (0.253757ms)
+✔ malformed or oversized saved pending data is not turned into credited progress (0.740468ms)
+✔ saved exact duplicates may coalesce but conflicting duplicates are not silently replaced (0.413884ms)
+✔ a corrupt serial cannot reuse an outstanding cocoa fact identity (0.416318ms)
+✔ bad normalized inputs never modify a valid existing queue (0.277902ms)
+✔ corrupt active progress cannot retag preserved pending facts into its replacement evening (1.946356ms)
+✔ identity exhaustion and unsafe capacity are explicit failures, never serial wraparound (0.744605ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 30.530146
+
+voxel/docs/contractor-patches/festival-host-bridge/test/bridge.test.mjs
+✔ queued real facts are separate from credited progress until explicit delivery (9.553007ms)
+✔ bindings retain origin while outcome IDs increase and all operations accept frozen state (0.671926ms)
+✔ full queues preserve the original fact for retry, never perform another transaction (0.786266ms)
+✔ end requires an explicit decision for confirmed outcomes still waiting in the outbox (4.452172ms)
+✔ unknown schemas and conflicting saved facts preserve the payload for explicit migration (1.225357ms)
+✔ a smaller configured capacity never truncates confirmed facts while restoring (0.650285ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23.915607
+
+voxel/docs/contractor-patches/festival-host-bridge/test/impact.test.mjs
+✔ overlay is grounded in existing evidence and does not alter base domain definitions (4.779338ms)
+✔ bridge effects remain isolated now while save/inventory/input adoption is explicit (9.66338ms)
+✔ unknown paths still need review after adding the overlay (3.931671ms)
+✔ a stale base matrix cannot silently inherit an outdated overlay (1.390052ms)
+✔ parser attribute metadata maps to physical JSON inputs and import targets (0.376568ms)
+✔ human dependency notes stay in sync with the machine-readable overlay (0.730444ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26.218401
+
+voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs
+✔ real food payment debits finite purse and stock once; flush and replay cannot add cash (15.31411ms)
+✔ the actual cocoa order includes its snack but only its allowed drink advances Mist (3.525418ms)
+✔ genuine garden picks and actual planted growth count during untimed preparation (2.679624ms)
+✔ garden overflow is real market income, separated from guest spending (1.522618ms)
+✔ paid deferred outcomes survive real game serialization, pause and retry without another purchase (9.467961ms)
+✔ one real paid hayride produces a ticket first, completion later and no invented final departure (11.396491ms)
+✔ ride credit uses captured route rather than a subsequently changed private configuration (5.957445ms)
+✔ a trip bound before manual pause can finish while its confirmed outcomes remain held (5.908813ms)
+✔ outbox preflight prevents a synchronous private purchase that cannot retain its outcome (2.095908ms)
+✔ failed payments and global pause never produce normalized receipts or income (1.309102ms)
+✔ saved checkpoints are detached, and incompatible/corrupt imports preserve the current lab (5.887521ms)
+✔ all three themes can finish from actual service/harvest/ride outcomes without fabricated departures (200.842787ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 273.337776
+
+voxel/docs/contractor-patches/festival-host-bridge/test/outcomes.test.mjs
+✔ actual food quantities use original stable receipt identity across retries and bindings (5.616459ms)
+✔ failed commits, generic quantity-zero sale notifications and malformed food receipts do not count (0.307236ms)
+✔ guest number spaces remain distinct and the ordinary rich guest is not a Court patron (0.172046ms)
+✔ paid cocoa preserves separate drink/snack identities and reconciles the actual order sum (0.387275ms)
+✔ garden facts count confirmed harvested quantity including genuine full-pantry overflow (0.221899ms)
+✔ confirmed ticket IDs are stable and joined to the correct charged guest (0.44549ms)
+✔ departure snapshot freezes paid manifest, original route and preboarding wait without live references (0.345753ms)
+✔ inconsistent or unpaid departure evidence cannot produce a snapshot (0.502406ms)
+✔ completion requires completed unloading, original paid passenger and captured route evidence (0.565279ms)
+✔ maze facts require explicit paid completion and do not re-read a repeated visit ID (0.412412ms)
+✔ final departure is explicit and never inferred from frightened flags or disappearance (0.303931ms)
+✔ queue cleaner only retains bounded official data and rejects malformed/future kinds (0.292363ms)
+✔ missing or non-record adapter inputs return null instead of throwing (0.268408ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17.713879
+
+voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs
+✔ the offline service desk contains actual private rule operations without live game boot (71.806216ms)
+✔ live boot, renderer/UI/storage and unreviewed helpers fail the import boundary (0.739967ms)
+✔ JSON import attributes are parser metadata without relaxing live source restrictions (0.29693ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77.105935
+
+voxel/docs/contractor-patches/festival-session/test/dependency-scan.test.mjs
+✔ reverse import traversal follows real consumer direction and terminates through cycles (8.400577ms)
+✔ an isolated review module stays outside the live import closure (0.299835ms)
+✔ a live import of the same contractor module fails its isolation boundary (0.298854ms)
+✔ unknown paths, styles and empty inputs are never represented as a safety proof (0.29659ms)
+✔ changed paths are normalized without permitting repository escapes (0.287546ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15.085411
+
+voxel/docs/contractor-patches/festival-session/test/engine-adversarial.test.mjs
+✔ one receipt can advance two goals, but a changed replay cannot add another guest or quantity (12.064491ms)
+✔ event identity includes source while distinct VIP guests remain independently deduplicated (1.967458ms)
+✔ a contributed receipt cannot be replayed with a different cohort to open a previously ineligible goal (0.563726ms)
+✔ namespaced visitor zero is valid and separate from customer zero; bare numeric IDs are rejected (0.798304ms)
+✔ the same person completing repeat or different paid attractions counts once for a guest goal (0.554252ms)
+✔ a new session cannot accept a delayed preparation outcome from the previous evening (0.713879ms)
+✔ counter persistence and session allocation survive reload without reusing earlier tokens (0.964791ms)
+✔ manual and world pause reject outcomes and clocks without consuming a valid queued receipt (0.499481ms)
+✔ a running save restores paused and cannot count or advance until explicitly resumed (0.630185ms)
+✔ route and queue eligibility use the immutable departure/boarding values carried by each outcome (0.610195ms)
+✔ free rides, unconfirmed departures and malformed paid outcomes never advance a goal (0.706538ms)
+✔ ending early cannot claim a cosmetic; a successful end and replayed claims grant it once (2.584683ms)
+✔ world pause still permits finishing an earned evening and recording its cosmetic entitlement (1.205868ms)
+✔ pruning a long history never revokes permanent completion or permits duplicate cosmetics (3.003724ms)
+✔ corrupt active progress is discarded without losing a genuinely claimed cosmetic (0.91654ms)
+✔ missing or false definition revisions drop active progress while retaining permanent ownership (1.600022ms)
+✔ tuning goal definitions invalidates only the active evening, without revoking an earned cosmetic (1.338765ms)
+✔ untimed preparation cannot restore service-only progress or an operational clock (0.880937ms)
+✔ unsupported versions and unsafe permanent ownership fail closed without mutating the host snapshot (0.703092ms)
+✔ restoring duplicate contributing records cannot manufacture progress or an earned reward (0.457369ms)
+✔ a long stream of irrelevant and over-target receipts leaves bounded session storage (5.458324ms)
+✔ reserved content keys are either rejected or survive save restoration as own progress fields (0.524027ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 49.303746
+
+voxel/docs/contractor-patches/festival-session/test/engine.test.mjs
+✔ each evening has accessible preparation, clear current blockers and no mandatory garden (8.215623ms)
+✔ transitions leave frozen state, commands, content and world context untouched (0.758996ms)
+✔ one VIP food receipt contributes quantity and one patron, with no second wallet (0.818835ms)
+✔ cocoa excludes snacks and unrelated premium products from the selected drinks goal (0.878623ms)
+✔ preparation harvests survive start without retroactively admitting service sales (0.457118ms)
+✔ a long evening has no deadline or auto-failure and ending early has no penalty (1.48333ms)
+✔ three goals complete the evening; ownership is a permanent once-only entitlement (1.615116ms)
+✔ history is bounded without losing ownership or reusing old session IDs (5.157319ms)
+✔ definition inputs are bound once; later editing a caller object cannot change goals (0.975457ms)
+✔ wording and row order edits retain progress while semantic tuning is separately revision checked (0.794409ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28.877915
+
+voxel/docs/contractor-patches/festival-session/test/impact.test.mjs
+✔ every semantic link, check and evidence file is grounded in the current repository (3.682211ms)
+✔ the readable matrix is generated from the same versioned source as the planner (0.676844ms)
+✔ hayride content impact reaches service, queues and relevant checks (7.091627ms)
+✔ uninstalled session rules distinguish current consumers from live integration work (4.589706ms)
+✔ unknown paths and empty input do not imply safety (8.164709ms)
+✔ transitive planning terminates through cycles and remains deterministic (6.809148ms)
+✔ missing evidence or dangling domains cannot produce a valid impact plan (3.632747ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 40.816499
+
+voxel/docs/contractor-patches/festival-session/test/preview-build.test.mjs
+✔ the offline demo bundles the actual engine, content and art without live game code (23.152494ms)
+✔ a live rule or unrelated source cannot silently enter this isolated review demo (0.70148ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28.289723
+
+voxel/docs/contractor-patches/festival-session/test/readiness.test.mjs
+✔ a new world supplies facts without granting a kitchen, event or attraction (2.360711ms)
+✔ readiness follows claimed levels and home gates, never raw earnings alone (0.604696ms)
+✔ owned equipment in storage and equipment placed in the wrong room grant no capability (0.487924ms)
+✔ actual starter equipment and premium gear provide equivalent required kitchen capabilities (0.614751ms)
+✔ attraction purchase, restoration, tiers, routes and open flags stay separate facts (0.255148ms)
+✔ only learned recipes, real purchased visitor upgrades and placed garden decor enter the snapshot (0.306034ms)
+✔ context construction is read-only and detached from the host world (1.462129ms)
+✔ raw non-object input is rejected instead of treated as a ready world (0.464859ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13.452199
+
+voxel/docs/contractor-patches/festival-session/test/rule-integration.test.mjs
+✔ a real paid kitchen receipt supplies true servings and one Court guest without a second stock or wallet debit (13.408585ms)
+✔ a successful real garden harvest counts during untimed preparation, including genuine overflow sold at market (1.370963ms)
+✔ a real paid hayride counts only after unloading, using its departure manifest, route and queue snapshot (7.249832ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27.792746
+
+voxel/docs/contractor-patches/late-game-support/test/art.test.mjs
+✔ six distinct reference icons retain their reviewed file and mobile dimensions (2.072443ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6.67569
+
+voxel/docs/contractor-patches/late-game-support/test/audit.test.mjs
+✔ matched inputs produce a reproducible 18-case study with source fingerprints (383.080821ms)
+✔ actual ticket transactions conserve finite wallets and capital is kept separate (41.968488ms)
+✔ forced capacity acceptance does not bypass an insufficient guest budget (1.643107ms)
+✔ ordinary walk-in mode preserves willingness/value choices (49.187053ms)
+✔ event-aligned half-second and one-second steps preserve outcomes (111.704314ms)
+✔ the ledger remains complete after the live ride truncates its receipt history (288.036544ms)
+✔ paid departures and completed returns are kept distinct at the horizon (0.927165ms)
+✔ route warnings are conditional evidence and the original circuit is not mislabelled (171.829793ms)
+✔ invalid or accidentally enormous studies are rejected without running fixtures (0.886064ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1056.219566
+
+voxel/docs/contractor-patches/late-game-support/test/content.test.mjs
+✔ the content is an isolated proposal with unregistered cosmetic rewards (1.570009ms)
+✔ every themed menu uses attainable existing recipes and physical kitchen equipment (0.293786ms)
+✔ event prerequisites do not require a higher future patch level or attraction tier (0.187779ms)
+✔ every proposed goal has explicit counting, units and an attainable referenced product (0.287517ms)
+✔ garden alternatives use real productive pieces and remain optional (0.227948ms)
+✔ preparation and operation cannot punish absence or force an active-play style (0.25642ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8.068839
+
+voxel/docs/contractor-patches/late-game-support/test/pack-contract.test.mjs
+✔ night briefs, authored icons and model IDs agree without registering live rewards (1.57048ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6.386904
+
+voxel/docs/contractor-patches/late-game-support/test/preview-build.test.mjs
+✔ the offline reviewer embeds real assets without importing the running game (110.144913ms)
+✔ missing metrics and duplicate scenarios cannot silently appear as zeroes (1.833089ms)
+✔ a stale report must be regenerated before it can be published as current (3.163993ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 119.590855
+
+voxel/docs/contractor-patches/late-game-support/test/reward-props.test.mjs
+✔ reward candidates have unique isolated IDs, measured room-scale bodies and bounded draw counts (19.792028ms)
+✔ all animation phases stay inside the blueprint at every15-degree rotation (23.202737ms)
+✔ animation is deterministic, can be stopped, and rejects invalid clocks without NaN transforms (8.988673ms)
+✔ disposing one model releases each owned material/glass geometry once and preserves shared voxel geometry (5.385358ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 71.716708
+
+PASS: 140 cases across 19 files.

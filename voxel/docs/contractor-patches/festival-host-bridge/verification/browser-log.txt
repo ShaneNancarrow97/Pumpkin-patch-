@@ -1,0 +1,59 @@
+ok  Private scope remains visible
+ok  The real game does not boot and no player storage is read or created
+ok  Existing game fonts are embedded and loaded offline
+ok  Keyboard activates the primary preparation action
+ok  Real food payment reconciles guest debit and private income
+ok  Actual food stock loses exactly three servings
+ok  Confirmed payment queues before Festival progress is delivered
+ok  Paper receipt displays the actual committed amount
+ok  Manual pause retains confirmed facts and cannot create another payment
+ok  Ending cannot silently discard queued paid evidence
+ok  Private checkpoint includes the paid fact and a paused session
+ok  One delivered receipt can advance serving and distinct Court goals
+ok  Replay does not re-charge, remove stock or duplicate progress
+ok  Reload restores original deferred state rather than inferring delivery
+ok  Reloaded facts deliver once after explicit resume
+ok  Whole-world pause blocks real service stock and wallet mutation
+ok  midnight-court-banquet: real rules can complete three goals
+ok  midnight-court-banquet: no fabricated final departure was counted
+ok  midnight-court-banquet: finite guest purses and committed revenue reconcile
+ok  midnight-court-banquet: one module entitlement is recorded after completion
+ok  Cocoa order pays for drink and snack while only the allowed drink advances its goal
+ok  Both paid cocoa order lines decrement actual stock
+ok  lanterns-in-the-mist: real rules can complete three goals
+ok  lanterns-in-the-mist: no fabricated final departure was counted
+ok  lanterns-in-the-mist: finite guest purses and committed revenue reconcile
+ok  lanterns-in-the-mist: one module entitlement is recorded after completion
+ok  the-last-wagon: real rules can complete three goals
+ok  the-last-wagon: no fabricated final departure was counted
+ok  the-last-wagon: finite guest purses and committed revenue reconcile
+ok  Ride completion uses captured purchased route and actual simulation time
+ok  the-last-wagon: one module entitlement is recorded after completion
+ok  All three module entitlements remain unique
+ok  A repeated claim cannot add another entitlement
+ok  Future bridge schemas are rejected without resetting the current lab
+ok  Rejected imports preserve the existing private checkpoint
+ok  Invalid JSON is explained without a page error
+ok  Exported JSON is exactly the detached private checkpoint
+ok  A genuine pristine checkpoint can be restored
+ok  Restoring empty history clears the old paper receipt
+ok  phone idle: controls stay distinct, readable and44px
+ok  phone: primary preparation action is in the first viewport
+ok  phone hosting: controls stay distinct, readable and44px
+ok  phone: service pause remains in the first viewport
+ok  fold idle: controls stay distinct, readable and44px
+ok  fold: primary preparation action is in the first viewport
+ok  fold hosting: controls stay distinct, readable and44px
+ok  fold: service pause remains in the first viewport
+ok  landscape idle: controls stay distinct, readable and44px
+ok  landscape: primary preparation action is in the first viewport
+ok  landscape hosting: controls stay distinct, readable and44px
+ok  landscape: service pause remains in the first viewport
+ok  Normal motion gives actual payments a short receipt/stamp animation
+ok  A single quiet service light is animated while running
+ok  One-shot animations release their active bookkeeping after finishing
+ok  UI motion never advances game time or generates an operation
+ok  Reduced motion suppresses one-shot animations while real payments still work
+ok  Reduced motion also stops the ambient service light
+ok  Exact offline lab has no page errors or external requests
+ok  No player storage was created by service, snapshots or animation
