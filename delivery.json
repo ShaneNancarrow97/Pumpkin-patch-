@@ -1,0 +1,24 @@
+{
+  "sourceCommit": "7f8b15f36cd6069c4a8f665783e0674eb0243f79",
+  "scope": "Optional contractor Festival lab, no installed live game or player save changes",
+  "nativeCases": 163,
+  "browserChecks": 145,
+  "artifacts": {
+    "Pumpkin-Patch-Mothlight-Ledger.zip": {
+      "bytes": 1025436,
+      "sha256": "548e2ff18af641b21e56b7ccd33fc540b2983e66eb9c6a8431757f9d089585d6"
+    },
+    "README.md": {
+      "bytes": 1046,
+      "sha256": "b067362578b2d66a322cf1b6af4c52d11a9913d4f84fca64274c1b878a3ba614"
+    },
+    "Pumpkin-Patch-Mothlight-Ledger.html": {
+      "bytes": 1544786,
+      "sha256": "e8e824aaddb0ea65843098f1e62a463bc2275eb45c17714de580aeeeb2fb6b85"
+    },
+    "OFL-Caveat.txt": {
+      "bytes": 4385,
+      "sha256": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b"
+    }
+  }
+}
