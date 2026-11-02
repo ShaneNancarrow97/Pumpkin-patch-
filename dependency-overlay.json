@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 1,
+  "revision": "2026-11-02.1",
+  "baseMatrixRevision": "2026-11-01.2",
+  "baseFileSHA256": "01fc6fb4dc1d9dc87664a2b40a4b1ece1adaf4e2b77ba9178508c16972ac2250",
+  "reviewedLiveBase": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+  "scope": "Optional confirmed-outcome bridge and private real-rule lab. No live hook, storage key, save schema or physical reward registration is installed.",
+  "checks": [
+    {
+      "id": "bridge-queue-tests",
+      "label": "Durable queue, identity, pause and safe restoration",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs",
+      "files": [
+        "voxel/docs/contractor-patches/festival-host-bridge/test/bridge.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/bridge-adversarial.test.mjs"
+      ]
+    },
+    {
+      "id": "bridge-evidence-tests",
+      "label": "Actual paid receipt and departure evidence grammar",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs",
+      "files": [
+        "voxel/docs/contractor-patches/festival-host-bridge/test/outcomes.test.mjs"
+      ]
+    },
+    {
+      "id": "bridge-lab-tests",
+      "label": "Private real-rule financial and lifecycle conservation",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs",
+      "files": [
+        "voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs"
+      ]
+    },
+    {
+      "id": "bridge-ui-build",
+      "label": "Offline real-rule lab import and asset boundaries",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs",
+      "files": [
+        "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs"
+      ]
+    },
+    {
+      "id": "bridge-ui-browser",
+      "label": "Premium UI, real operation flows and reduced motion",
+      "kind": "browser",
+      "cwd": ".",
+      "command": "node voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs --out /tmp/Pumpkin-Patch-Receipt-Lab.html && node voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs /tmp/Pumpkin-Patch-Receipt-Lab.html /tmp/receipt-lab-qa",
+      "files": [
+        "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs"
+      ]
+    },
+    {
+      "id": "bridge-impact-tests",
+      "label": "Overlay freshness, consumer direction and scope",
+      "kind": "native",
+      "cwd": ".",
+      "command": "node voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs",
+      "files": [
+        "voxel/docs/contractor-patches/festival-host-bridge/test/impact.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/tools/review-impact.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/data/dependency-overlay.json"
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "id": "bridge-evidence",
+      "label": "Confirmed rule-result adapters",
+      "scope": "isolated",
+      "paths": [
+        "voxel/docs/contractor-patches/festival-host-bridge/adapters/**",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/outcomes.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/docs/API.md"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/festival-host-bridge/adapters/outcomes.js"
+      ],
+      "invariants": [
+        "A payment receipt is not admission, an animation or a completed visit. Preserve source/guest identity and original stamps.",
+        "Capture paid manifest route and queue wait at the real departure. No disappearance-based final-departure detector."
+      ],
+      "checkIds": [
+        "bridge-evidence-tests",
+        "bridge-lab-tests"
+      ]
+    },
+    {
+      "id": "bridge-queue",
+      "label": "Durable bounded host outbox",
+      "scope": "isolated",
+      "paths": [
+        "voxel/docs/contractor-patches/festival-host-bridge/src/**",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/bridge*.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/docs/API.md"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/festival-host-bridge/src/bridge.js"
+      ],
+      "invariants": [
+        "Queue acceptance does not charge again. Full queues retain the normalized retry fact; a producer must handle backpressure.",
+        "Pause retains confirmed facts; end requires delivery or literal true to discard. Preserve unsupported schemas and monotonic serials."
+      ],
+      "checkIds": [
+        "bridge-queue-tests",
+        "bridge-lab-tests"
+      ]
+    },
+    {
+      "id": "bridge-lab",
+      "label": "Private real-rule service venue",
+      "scope": "isolated",
+      "paths": [
+        "voxel/docs/contractor-patches/festival-host-bridge/lab/**",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js"
+      ],
+      "invariants": [
+        "Prepared funding, stock, Court guests and nominated ride demand are explicit test inputs, not a player-time/profit forecast.",
+        "Actual stock, guest spending and income reconcile. Snapshots are detached; restore preserves pending outcomes without inventing paid facts."
+      ],
+      "checkIds": [
+        "bridge-lab-tests",
+        "bridge-ui-build"
+      ]
+    },
+    {
+      "id": "bridge-desk",
+      "label": "Premium receipt desk and causal motion",
+      "scope": "isolated",
+      "paths": [
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/**",
+        "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js",
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css",
+        "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs"
+      ],
+      "invariants": [
+        "A receipt/stamp animates only after a new committed operation, never on replay or delivery. Real numeric values remain immediate.",
+        "Embed fonts/art, preserve keyboard/touch layouts, cancel one-shots for reduced motion and hidden pages. Do not boot live main/scene/storage."
+      ],
+      "checkIds": [
+        "bridge-ui-build",
+        "bridge-ui-browser"
+      ]
+    },
+    {
+      "id": "bridge-review",
+      "label": "Bridge impact review and contractor handover",
+      "scope": "isolated",
+      "paths": [
+        "voxel/docs/contractor-patches/festival-host-bridge/README.md",
+        "voxel/docs/contractor-patches/festival-host-bridge/docs/**",
+        "voxel/docs/contractor-patches/festival-host-bridge/data/**",
+        "voxel/docs/contractor-patches/festival-host-bridge/tools/review-impact.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/impact.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/verification/**"
+      ],
+      "evidence": [
+        "voxel/docs/contractor-patches/festival-host-bridge/tools/review-impact.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/data/dependency-overlay.json"
+      ],
+      "invariants": [
+        "Pin the base matrix and reject a stale overlay; unknown changed paths require review, not a safe label.",
+        "Current-scope tests stay separate from conditional live hook/schema/inventory integration. Never execute suggested commands automatically."
+      ],
+      "checkIds": [
+        "bridge-impact-tests"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "kitchen",
+      "to": "bridge-evidence",
+      "consequence": "Food receipt identity, quantity and paid amount are an adapter contract.",
+      "activation": "active"
+    },
+    {
+      "from": "cocoa-meadow",
+      "to": "bridge-evidence",
+      "consequence": "Only actually paid order lines count; snacks and drinks remain distinct.",
+      "activation": "active"
+    },
+    {
+      "from": "garden-carving",
+      "to": "bridge-evidence",
+      "consequence": "A successful pick supplies real yield/overflow; delivery or pantry stock is not harvest proof.",
+      "activation": "active"
+    },
+    {
+      "from": "hayride-service",
+      "to": "bridge-evidence",
+      "consequence": "Paid manifests, run identity, source phase, route and waiting evidence determine completion facts.",
+      "activation": "active"
+    },
+    {
+      "from": "maze-service",
+      "to": "bridge-evidence",
+      "consequence": "Paid maze completion must be captured before repeat visit IDs change.",
+      "activation": "active"
+    },
+    {
+      "from": "visitors",
+      "to": "bridge-evidence",
+      "consequence": "Court cohort flags and visitor/customer namespaces affect distinct guest credit.",
+      "activation": "active"
+    },
+    {
+      "from": "festival-state",
+      "to": "bridge-queue",
+      "consequence": "Engine transitions and normalized reason/schema contracts drive queue delivery.",
+      "activation": "active"
+    },
+    {
+      "from": "festival-readiness",
+      "to": "bridge-lab",
+      "consequence": "The private venue uses actual current level/equipment/service readiness.",
+      "activation": "active"
+    },
+    {
+      "from": "bridge-evidence",
+      "to": "bridge-queue",
+      "consequence": "Clean, detached facts are the only accepted outbox payload.",
+      "activation": "active"
+    },
+    {
+      "from": "bridge-evidence",
+      "to": "bridge-lab",
+      "consequence": "Private source operations must normalize actual results, not fabricate service outcomes.",
+      "activation": "active"
+    },
+    {
+      "from": "bridge-queue",
+      "to": "bridge-lab",
+      "consequence": "Deferred delivery, replay and snapshot behavior determine whether paid facts remain durable.",
+      "activation": "active"
+    },
+    {
+      "from": "save-lifecycle",
+      "to": "bridge-lab",
+      "consequence": "The lab uses real saveData/restoreState and must deep-copy shallow serializer results.",
+      "activation": "active"
+    },
+    {
+      "from": "bridge-lab",
+      "to": "bridge-desk",
+      "consequence": "Committed ledger, wallets, stock and operation results drive the receipt view and motion.",
+      "activation": "active"
+    },
+    {
+      "from": "bridge-queue",
+      "to": "bridge-desk",
+      "consequence": "Queue and progress are separate UI states; held facts cannot look delivered.",
+      "activation": "active"
+    },
+    {
+      "from": "render-assets",
+      "to": "bridge-desk",
+      "consequence": "The existing generated icon atlas and embedded fonts affect UI sizing/readability.",
+      "activation": "active"
+    },
+    {
+      "from": "bridge-review",
+      "to": "bridge-evidence",
+      "consequence": "A stale dependency assessment may miss a producer contract change.",
+      "activation": "active"
+    },
+    {
+      "from": "bridge-review",
+      "to": "bridge-queue",
+      "consequence": "A stale dependency assessment may miss persistence/identity consequences.",
+      "activation": "active"
+    },
+    {
+      "from": "bridge-review",
+      "to": "bridge-desk",
+      "consequence": "Viewport, motion, fonts and offline build checks are selected before release.",
+      "activation": "active"
+    },
+    {
+      "from": "bridge-evidence",
+      "to": "retail-wallet",
+      "consequence": "Only when wiring live hooks: insert after confirmed debits, never pay twice or consume short receipt history as a full ledger.",
+      "activation": "integration-conditional"
+    },
+    {
+      "from": "bridge-queue",
+      "to": "save-lifecycle",
+      "consequence": "Only when adopted: add explicit host state/migration and persist origins on ongoing saved attraction visits.",
+      "activation": "integration-conditional"
+    },
+    {
+      "from": "bridge-queue",
+      "to": "house-placement",
+      "consequence": "Only when physical rewards are registered: commit ownership and the stable claim key atomically or idempotently.",
+      "activation": "integration-conditional"
+    },
+    {
+      "from": "bridge-desk",
+      "to": "controls-ui",
+      "consequence": "Only when adopting UI in-game: connect focus/controller/menu selectors and preserve the playfield.",
+      "activation": "integration-conditional"
+    }
+  ]
+}

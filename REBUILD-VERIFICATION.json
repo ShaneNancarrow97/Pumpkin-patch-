@@ -1,0 +1,61 @@
+{
+  "sourceCommit": "9f489f99e3a6035f73df2e95b06d022be7574637",
+  "patchBase": "fd58d75c1ac27ecf4f912acdf78bde07a176526c",
+  "leadReference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+  "scope": "voxel/docs/contractor-patches/festival-host-bridge/ only; no installed game features or save changes",
+  "combinedScope": [
+    "voxel/docs/contractor-patches/late-game-support/",
+    "voxel/docs/contractor-patches/festival-session/",
+    "voxel/docs/contractor-patches/festival-host-bridge/"
+  ],
+  "browser": {
+    "passed": true,
+    "assertions": 59,
+    "previewSHA256": "5459bf552cfcfff8d654a33264296859f3ea1f46b718398fd99e65aff7bc6d45"
+  },
+  "nativeTestFiles": 19,
+  "nativeCases": 140,
+  "patchSHA256": "7c3568874d0bc7a9a2179891b5ee9a30da532676ff6a1874a4e0fc4dafd591f5",
+  "combinedPatchSHA256": "ca01add5fb983d28d42e11d5820a3c20a73b2e653a34b66bb5acbe736e6764a7",
+  "checks": [
+    {
+      "tree": "incremental-base",
+      "reference": "fd58d75c1ac27ecf4f912acdf78bde07a176526c",
+      "actualPatchApplied": true,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "nativeCases": 140,
+      "previewRebuildByteIdentical": true,
+      "parsedContractorBoundaryPassed": true,
+      "semanticImpactByteIdentical": true,
+      "importImpactByteIdentical": true
+    },
+    {
+      "tree": "lead-base",
+      "reference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+      "actualPatchApplied": true,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "nativeCases": 140,
+      "previewRebuildByteIdentical": true,
+      "parsedContractorBoundaryPassed": true,
+      "semanticImpactByteIdentical": true,
+      "importImpactByteIdentical": true
+    },
+    {
+      "tree": "committed-source",
+      "reference": "9f489f99e3a6035f73df2e95b06d022be7574637",
+      "actualPatchApplied": false,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "nativeCases": 140,
+      "previewRebuildByteIdentical": true,
+      "parsedContractorBoundaryPassed": true,
+      "semanticImpactByteIdentical": true,
+      "importImpactByteIdentical": true,
+      "liveGameByteIdentical": true,
+      "liveGameSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0"
+    }
+  ],
+  "leadGameSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0"
+}
