@@ -1,0 +1,102 @@
+/* The book is a material layer. Functional type stays in DM Sans/Fraunces;
+   handwritten notes and original marginal art are decorative. */
+:root{--hand:"Ledger Hand",cursive}
+body{background:radial-gradient(ellipse at 10% 0,#5c3a4d50,transparent 55%),radial-gradient(ellipse at 100% 15%,#3c3b4c42,transparent 50%),#141018}
+.masthead{margin-bottom:25px}.brand-mark{color:#c6b18c}.brand-title{color:#f1dfc9}.brand .eyebrow{color:#bca589}
+.theme-choice[aria-pressed=true]{background:linear-gradient(0deg,#9b798126,transparent);border-bottom-color:#c8b28c}
+.desk-layout{
+ --ink:#392e3b;--muted:#624b60;--quiet:#624b60;--gold:#705035;--gold-light:#6d4b30;--line:#74535f2b;--green:#4f634d;
+ position:relative;isolation:isolate;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;align-items:stretch;padding:9px;
+ border:1px solid #b294725f;border-radius:18px 22px 19px 20px;
+ background:repeating-linear-gradient(90deg,#b2966a1b 0,#b2966a1b 1px,transparent 1px,transparent 4px),linear-gradient(115deg,#483345,#352636 50%,#513a4b);
+ box-shadow:0 28px 70px #05030775,0 3px 0 #30202e,0 6px 0 #241c28,inset 0 0 0 3px #ad8a601c;
+}
+.desk-layout::after{content:"";position:absolute;inset:9px;z-index:5;border:1px solid #83644e28;border-radius:11px;pointer-events:none;box-shadow:inset 0 1px 2px #fff5}
+.venue,.session-card{position:relative;min-width:0;margin:0;padding:29px 32px 35px;color:var(--ink);background-color:#dfcfb1;box-shadow:none}
+.venue{
+ width:auto;border-radius:11px 1px 1px 11px;
+ background-image:repeating-linear-gradient(0deg,#76533004 0,#76533004 1px,transparent 1px,transparent 4px),radial-gradient(ellipse at 0 90%,#b7986f32,transparent 55%),linear-gradient(90deg,#d9c6a3,#e5d6b9 6%,#e4d4b6 94%,#c9b593);
+ box-shadow:inset 2px 0 7px #fff3,inset -10px 0 16px #74563a15;
+}
+.session-card{
+ border:0;border-radius:1px 11px 11px 1px;
+ background-image:repeating-linear-gradient(0deg,#6e493604 0,#6e493604 1px,transparent 1px,transparent 4px),radial-gradient(ellipse at 100% 90%,#af8d5a26,transparent 60%),linear-gradient(90deg,#cbb695,#e3d4b6 5%,#e7d8bd 95%,#d5c09d);
+ box-shadow:inset 10px 0 17px #8d6c3c12,inset -2px 0 8px #fff2;
+}
+.book-binding{position:absolute;z-index:4;left:calc(50% - 9px);top:10px;bottom:10px;width:18px;pointer-events:none;background:linear-gradient(90deg,transparent,#5b3e3318 20%,#553d332b 45%,#8c6b4b38 50%,#fff0 80%);border-left:1px solid #fff2;border-right:1px solid #72533b10}
+.book-ornaments{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden;border-radius:18px}
+.book-ornaments *{pointer-events:none}
+.book-ornaments svg{display:block;width:100%;height:100%;overflow:visible}
+.book-moth{position:absolute;width:100px;height:75px;left:-22px;top:17px;color:#745263;opacity:.64;transform:rotate(-17deg)}
+.book-botanical{position:absolute;width:52px;height:110px;bottom:28px;color:#6f6b50;opacity:.4}
+.book-botanical.left{left:-17px;transform:rotate(11deg)}.book-botanical.right{right:-16px;transform:scaleX(-1) rotate(8deg)}
+.book-marginalia{position:absolute;bottom:24px;left:38px;font:20px/1.05 var(--hand);letter-spacing:.02em;color:#705469;opacity:.72;transform:rotate(-5deg)}
+.theme-heading{padding-top:0;padding-bottom:23px;margin-bottom:22px;border-color:#79604a2d}
+.theme-heading::before{border-color:#78613f30;background:radial-gradient(ellipse at 50% 38%,#b6a58025,transparent 70%)}
+.theme-heading h2{font-size:37px;max-width:340px;letter-spacing:-.035em;color:#423144}
+.theme-heading .eyebrow{color:#82633e;margin-bottom:10px}
+#theme-art{margin-top:0;margin-bottom:18px}#theme-art .art{width:146px!important;height:146px!important;filter:drop-shadow(0 9px 13px #76583d3d)}
+.book-note{font:24px/1.1 var(--hand);color:#82677a;margin-top:13px;transform:rotate(-3deg);letter-spacing:.01em}
+.session-heading h2{font-size:29px;color:#443247}.phase-label{color:#624b60;font-size:9px;letter-spacing:.1em}
+.phase-label::before{background:#8d7185;box-shadow:none}
+body[data-phase=running][data-world-paused=false] .phase-label::before{background:#896a36;box-shadow:0 0 6px #9473453b}
+.objective-dial{background:conic-gradient(from -90deg,#936e40 var(--goal-turn),#8766442b 0);box-shadow:none}
+.objective-dial::before{background:#e3d3b6;border-color:#e3d3b6;box-shadow:inset 0 0 0 1px #8d6c3d2b}
+.objective-dial>span{color:#6d4e32}.objective-dial>small{color:#7d6578}
+.completion-strip{padding-right:0}#goal-summary{color:#5d495b}.next-step{color:#624b60;font-size:11px}
+.session-actions{margin-bottom:17px}.session-actions>button{border-color:#89677f33;background:#c3aeb12b;color:#5e455e}
+.primary,.small-primary,.session-actions>.primary{background:linear-gradient(140deg,#825a70,#5c3e59);border-color:#6b4b6470;color:#f6e5d0;box-shadow:inset 0 1px #e8d4dd38,0 3px 9px #6b495a21}
+.primary:hover,.small-primary:hover,.session-actions>.primary:hover{background:linear-gradient(140deg,#90667e,#674560);border-color:#97748a}
+.quiet,.session-actions>.quiet{background:transparent;color:#795e75;border-color:#98748a30}.quiet:hover{background:#906e8020}
+.readiness{color:#756575}.readiness.ready{color:#53634e}.small-label{color:#705035}
+.operations{border-color:#80624230}.operations h3{color:#4e394e;font-size:20px}
+.operation-buttons button{border-bottom-color:#896a6330}.operation-buttons button:hover{background:radial-gradient(ellipse at 25% 50%,#a788571d,transparent 80%);border-bottom-color:#8f6f4975}
+.operation-buttons button:disabled{background:transparent;border-bottom-color:#82605024}.operation-buttons button:disabled strong{color:#867081}.operation-buttons button:disabled .quote-price{color:#937859}
+.operation-copy strong{color:#483548}.service-art{filter:drop-shadow(0 4px 5px #76583a3b)}.operation-buttons button:disabled .service-art{filter:saturate(.5) opacity(.7)}
+.quote-price{color:#6a462d}.quote-price em,.offer-meta{color:#624b60}.operation-note{color:#624b60}
+.service-feedback{border-color:#81614a30}.latest-operation .small-label{color:#80613c}.latest-operation p{color:#624b60}.latest-operation>strong{color:#68482f}.feedback{color:#624b60}.feedback[data-state=error]{color:#944f43}
+.goal{border-bottom-color:#8d6b7724}.goal-marker{border-color:#8d6b7b75}.goal-label{color:#624b60}.goal-value{color:#6a462d}.goal-track{background:#8a6d4b25}.goal-fill{background:linear-gradient(90deg,#847653,#7b5f3b)}
+.goal.done .goal-marker{background:#657652;border-color:#657652;box-shadow:inset 0 0 0 3px #e1d0b3}.goal.done .goal-label{color:#47543e}
+.outbox{border-color:#83625135}.outbox h3{color:#624b60}.outbox p{color:#624b60}.queue-count{color:#624b60}.outbox[data-pending=true] .queue-count{color:#6a462d}.inspector-chevron{color:#8c6945}
+.hosting-clock span{color:#6a462d}.hosting-clock small{color:#624b60}.inspector-note,.replay-controls>span{color:#624b60}.check-label{color:#624b60}
+.replay-controls>.quiet{color:#73546d;border-color:#98748840}
+.completion-card{border-color:#91734a45;background:radial-gradient(ellipse at 50% 20%,#9a7c4120,transparent 70%)}
+.completion-card h3{color:#563c54}.completion-card .eyebrow{color:#825d3b}.completion-card>p:not(.eyebrow){color:#624b60}.completion-card small{color:#624b60}
+#completion-keepsake{font:23px/1.15 var(--hand);color:#8b6980!important;margin:9px auto 14px;transform:rotate(-2deg)}
+.receipt-card{border:1px solid #9b7d5621;box-shadow:0 7px 12px #88674520;transform:rotate(-1deg);background:repeating-linear-gradient(0deg,#76533004 0,#76533004 1px,transparent 1px,transparent 4px),linear-gradient(135deg,#f1e5ca,#e9d9bb)}
+.receipt-card[data-committed=false]{background:linear-gradient(135deg,#e8d9be,#dcc8a7)}
+.receipt-card h3{font-size:26px}.receipt-caption{color:#92734e}.receipt-seal{font-family:var(--hand);font-size:15px;letter-spacing:.03em;text-transform:none;color:#865575}.receipt-card footer{font-size:10px}
+.receipt-total>span{color:#86694f}.receipt-total strong{color:#6e4a42}.receipt-description{color:#8c705b}
+.accounts{border-color:#886b4933}.accounts h3,.stock-section h3{color:#735771}.takings-total{color:#4b3449}.takings-caption{color:#624b60}.account-star{color:#9a7a4e}
+.account-inspector>summary{color:#624b60}.account-inspector>summary span{color:#8d6a41}.secondary-balances dt{color:#624b60}.secondary-balances dd{color:#624b60}.secondary-balances>div{border-color:#8e6f6a21}
+.conservation{color:#57664b}.conservation.mismatch{color:#985648}
+.stock-counts>div{border-color:#906f6724}.stock-counts dt{color:#624b60}.stock-counts dd{color:#6e523a}
+.guest-details,.invitation{border-color:#87624b30}.guest-details>summary,.invitation>summary{color:#624b60}.guest-details summary>span{color:#624b60}.guest-wallet{border-color:#8b6b6224}.guest-wallet>span{color:#624b60}.guest-wallet>strong{color:#765736}
+.invitation blockquote{font:25px/1.35 var(--hand);color:#77536b;border-color:#94704850;transform:rotate(-1deg)}.invitation>p{color:#624b60}
+.reward-brief h3{color:#5e4257}.reward-brief .eyebrow{color:#937247}.reward-brief p:last-child{color:#624b60}
+@media(hover:hover) and (pointer:fine){.operation-buttons button:not(:disabled):hover .service-art{filter:drop-shadow(0 5px 7px #76583a35)}}
+@media(max-width:1050px) and (min-width:741px){
+ .desk-layout{padding:8px}.venue,.session-card{padding:25px 23px 33px}.theme-heading h2{font-size:31px}.session-heading h2{font-size:25px}.session-heading{gap:10px}.objective-dial{width:57px;height:57px}.phase-label{font-size:8px}
+ .operation-buttons{column-gap:12px}.operation-buttons button{grid-template-columns:36px minmax(0,1fr);gap:7px;min-height:112px}.service-art{width:36px;height:36px}.operation-copy strong{font-size:12px}.quote-price{font-size:21px}.offer-meta{font-size:10px}.operation-copy small{gap:4px}.quote-price em{font-size:10px}
+ .session-actions{gap:6px}.session-actions>button{padding-left:10px;padding-right:10px}.primary{min-width:170px}.book-note{font-size:23px}
+}
+@media(max-width:740px){
+ .desk-layout{grid-template-columns:minmax(0,1fr);grid-template-areas:"book" "venue";padding:6px;border-radius:16px;background:linear-gradient(115deg,#493245,#382735);box-shadow:0 16px 35px #05030770,0 4px 0 #30202f}
+ .desk-layout::after{inset:6px;border-radius:9px}.book-binding{display:none}
+ .session-card,.venue{padding:20px 16px 20px;margin:0;width:auto;border-radius:9px;background-image:repeating-linear-gradient(0deg,#76533004 0,#76533004 1px,transparent 1px,transparent 4px),linear-gradient(90deg,#d9c4a2,#e5d4b7 5%,#e7d9be 95%,#d7c29f);box-shadow:inset 0 1px 6px #fff3}
+ .session-card{border-radius:9px 9px 1px 1px}.venue{border-radius:1px 1px 9px 9px;padding:26px 21px 47px;border-top:1px solid #94704b45}
+ .book-ornaments{border-radius:16px}.book-moth{width:61px;height:46px;left:-14px;top:3px;opacity:.18;transform:rotate(-28deg)}
+ .book-botanical{width:36px;height:73px;opacity:.28}.book-botanical.left{left:-15px;bottom:19px}.book-botanical.right{right:-14px;bottom:19px}.book-marginalia{font-size:20px;left:33px;bottom:17px}
+ .session-heading{gap:9px}.session-heading h2{font-size:27px}.phase-label{font-size:8px;letter-spacing:.07em}.objective-dial{width:55px;height:55px}.objective-dial>span{font-size:21px}
+ .completion-strip{margin-bottom:14px}.next-step{font-size:11px}.session-actions{gap:6px}.session-actions>button{font-size:12px;padding:10px 10px}#deliver-now{font-size:12px;padding:10px 10px;gap:7px}.session-actions>.primary{min-width:0}
+ .readiness{font-size:11px;margin-bottom:13px}.operations{padding-top:14px}.operations h3{font-size:19px}.operations .small-label{font-size:8px}
+ .operation-buttons{column-gap:11px}.operation-buttons button{grid-template-columns:35px minmax(0,1fr);gap:6px;min-height:112px}.service-art{width:35px;height:35px}.operation-copy strong{font-size:12px}.quote-price{font-size:21px}.quote-price em,.offer-meta{font-size:10px}
+ .feedback,.latest-operation p{font-size:11px}.latest-operation>strong{font-size:28px}.service-feedback{padding-bottom:12px}.operation-note{font-size:10px}
+ .goal-label,.goal-value{font-size:11px}.goal{padding-top:14px;padding-bottom:14px}.theme-heading h2{font-size:33px}.book-note{font-size:25px;margin-top:12px}
+ .receipt-card{margin-left:3px;margin-right:3px}.completion-card h3{font-size:28px}.completion-card>p:not(.eyebrow){font-size:11px}#completion-keepsake{font-size:23px}.completion-card small{font-size:10px}
+}
+@media(max-width:355px){
+ .session-card{padding-left:13px;padding-right:13px}.session-heading h2{font-size:24px}.objective-dial{width:50px;height:50px}.operation-buttons button{grid-template-columns:29px minmax(0,1fr);gap:5px}.service-art{width:29px;height:29px}.operation-copy strong{font-size:11px}.quote-price{font-size:19px}
+ .session-actions>button,#deliver-now{font-size:11px;padding-left:8px;padding-right:8px}
+}
+@media(max-height:480px) and (min-width:741px){.venue,.session-card{padding-top:20px}.theme-heading h2{font-size:29px}.session-heading h2{font-size:25px}.book-note{font-size:21px}.book-marginalia{font-size:18px}}

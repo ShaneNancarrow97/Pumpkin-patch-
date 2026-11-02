@@ -11,12 +11,13 @@ test('the offline service desk contains actual private rule operations without l
   const result=await buildPreview({out:path.join(dir,'receipt-lab.html')}),html=fs.readFileSync(result.out,'utf8');
   assert.ok(result.bytes<2*1024*1024,'keep the DOM/pure-rule contractor lab below2MiB');
   assert.ok(html.includes('Private rule lab')&&html.includes('Not installed in the game'));
+  assert.ok(html.includes('SIL OPEN FONT LICENSE')&&html.includes('Ledger Hand'),'handwritten font is embedded with its redistribution license');
   assert.ok(html.includes('Actual game rules')&&html.includes('never your game save'));
   assert.equal(html.match(/<script>/g)?.length,1);assert.equal(html.match(/<\/script>/g)?.length,1);
   assert.equal(html.match(/<style>/g)?.length,1);assert.equal(html.match(/<\/style>/g)?.length,1);
   assert.ok(!html.includes('/* @bridge:'));
   assert.ok(!/(?:src|href)\s*=\s*["'](?:https?:)?\/\//i.test(html));
-  for(const name of ['src/bridge.js','lab/scenario.js','adapters/outcomes.js','rules/cooking-sales.js','rules/cocoa-menu.js','rules/garden-crops.js','rules/hayride.js'])assert.ok(result.inputs.some(p=>p.replaceAll('\\','/').endsWith(name)),name);
+  for(const name of ['assets/kitchen-dishes.webp','assets/hospitality-icons.webp','assets/kitchen-ingredients.webp','preview/service-art.js','preview/ledger-ornaments.js','preview/assets/caveat-latin.woff2','src/bridge.js','lab/scenario.js','adapters/outcomes.js','rules/cooking-sales.js','rules/cocoa-menu.js','rules/garden-crops.js','rules/hayride.js'])assert.ok(result.inputs.some(p=>p.replaceAll('\\','/').endsWith(name)),name);
   assert.ok(!result.inputs.some(p=>/voxel\/src\/(?:main|scene)\.js$|voxel\/src\/ui\//.test(p.replaceAll('\\','/'))));
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });

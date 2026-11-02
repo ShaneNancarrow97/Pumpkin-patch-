@@ -1,0 +1,19 @@
+{
+  "family": "Caveat",
+  "use": "Unmodified Latin WOFF2, handwritten decorative margins only",
+  "license": "SIL Open Font License1.1; seeOFL-Caveat.txt",
+  "downloads": [
+    {
+      "file": "caveat-latin.woff2",
+      "source": "https://fonts.gstatic.com/s/caveat/v23/Wnz6HAc5bAfYB2Q7ZjYY.woff2",
+      "bytes": 74932,
+      "sha256": "891951df5e8b5b0f0bc760d31375405e795c666b5add70437de12d4a6482b33f"
+    },
+    {
+      "file": "OFL-Caveat.txt",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/caveat/OFL.txt",
+      "bytes": 4385,
+      "sha256": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b"
+    }
+  ]
+}

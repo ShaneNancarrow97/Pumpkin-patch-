@@ -17,6 +17,7 @@ export function validatePreviewInputs(inputs,pack=DEFAULT_PACK){
   path.resolve(pack,'../festival-session/src/engine.js'),path.resolve(pack,'../festival-session/adapters/readiness.js'),
   path.resolve(pack,'../late-game-support/data/festival-themes.json'),path.resolve(pack,'../late-game-support/art/menu-icons.webp'),
   path.join(voxel,'model.js'),path.join(voxel,'costume-expansion.js'),path.join(shared,'core/costume-model.mjs'),
+  ...['kitchen-dishes.webp','hospitality-icons.webp','kitchen-ingredients.webp'].map(name=>path.join(repo,'voxel/assets',name)),
   path.join(repo,'voxel/assets/fraunces-400.woff2'),path.join(repo,'voxel/assets/dm-sans.woff')
  ]);
  if(!Array.isArray(inputs)||!inputs.length)throw Error('Receipt lab contains no inspected source inputs.');
@@ -31,13 +32,14 @@ export function validatePreviewInputs(inputs,pack=DEFAULT_PACK){
 }
 export async function buildPreview({pack=DEFAULT_PACK,out='Pumpkin-Patch-Receipt-Lab.html'}={}){
  pack=path.resolve(pack);out=path.resolve(out);
- for(const name of ['preview/index.html','preview/app.js','preview/style.css','src/bridge.js','adapters/outcomes.js','lab/scenario.js'])if(!fs.existsSync(path.join(pack,name)))throw Error('Missing receipt lab input: '+name);
+ for(const name of ['preview/index.html','preview/app.js','preview/style.css','preview/ledger.css','preview/assets/OFL-Caveat.txt','preview/service-art.js','src/bridge.js','adapters/outcomes.js','lab/scenario.js'])if(!fs.existsSync(path.join(pack,name)))throw Error('Missing receipt lab input: '+name);
  const result=await esbuild.build({entryPoints:[path.join(pack,'preview/app.js')],bundle:true,format:'iife',minify:true,target:['es2020'],write:false,metafile:true,loader:{'.webp':'dataurl','.woff':'dataurl','.woff2':'dataurl'},logLevel:'warning'});
  const inputs=Object.keys(result.metafile.inputs);validatePreviewInputs(inputs,pack);
- const script=result.outputFiles[0].text.replace(/<\/script/gi,'<\\/script'),css=fs.readFileSync(path.join(pack,'preview/style.css'),'utf8');
- const html=fs.readFileSync(path.join(pack,'preview/index.html'),'utf8').replace('/* @bridge:style */',()=>css).replace('/* @bridge:script */',()=>script);
+ const script=result.outputFiles[0].text.replace(/<\/script/gi,'<\\/script'),css=fs.readFileSync(path.join(pack,'preview/style.css'),'utf8')+'\n'+fs.readFileSync(path.join(pack,'preview/ledger.css'),'utf8');
+ const license=fs.readFileSync(path.join(pack,'preview/assets/OFL-Caveat.txt'),'utf8').replaceAll('--','—');
+ const html=fs.readFileSync(path.join(pack,'preview/index.html'),'utf8').replace('<!-- @bridge:font-license -->',()=>'<!-- Embedded Caveat font license\n'+license+'\n-->').replace('/* @bridge:style */',()=>css).replace('/* @bridge:script */',()=>script);
  if(/(?:src|href)\s*=\s*["'](?:https?:)?\/\//i.test(html))throw Error('Receipt lab unexpectedly references a remote asset.');
- if(html.includes('/* @bridge:'))throw Error('Receipt lab build placeholders remain.');
+ if(html.includes('@bridge:'))throw Error('Receipt lab build placeholders remain.');
  fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSync(out,html);
  return {out,bytes:Buffer.byteLength(html),sha256:sha(html),inputs};
 }

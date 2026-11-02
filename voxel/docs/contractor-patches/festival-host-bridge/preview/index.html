@@ -4,23 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#19141f">
-  <title>Festival service desk · Pumpkin Patch contractor lab</title>
+  <title>The mothlight ledger · Pumpkin Patch contractor lab</title>
+  <!-- @bridge:font-license -->
   <style>/* @bridge:style */</style>
 </head>
 <body>
   <main class="workshop">
     <header class="masthead">
-      <div class="brand"><span class="brand-star" aria-hidden="true">✦</span><div><p class="eyebrow">Shane &amp; Natalie’s Pumpkin Patch</p><p class="brand-title">The evening desk</p></div></div>
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width=".6"/><path d="M31 10c-8 0-14 6-14 14s6 14 14 14a15 15 0 1 1 0-28Z" fill="currentColor" opacity=".85"/><path d="m33 16 1.5 4.5L39 22l-4.5 1.5L33 28l-1.5-4.5L27 22l4.5-1.5L33 16Z" fill="currentColor"/><circle cx="36" cy="12" r="1" fill="currentColor"/></svg></span><div><p class="eyebrow">Shane &amp; Natalie’s Pumpkin Patch</p><h1 id="page-title" class="brand-title">The mothlight ledger</h1></div></div>
       <p class="scope-badge">Private rule lab <span>· Not installed in the game</span></p>
     </header>
 
-    <section class="introduction" aria-labelledby="page-title"><h1 id="page-title">Every sale has a story.</h1><p>Real prices, stock and guest wallets. Confirmed outcomes, delivered once.</p></section>
+
     <nav id="theme-choices" class="theme-choices" aria-label="Choose an evening"></nav>
 
     <div class="desk-layout">
+      <div class="book-binding" aria-hidden="true"></div>
+      <div id="book-ornaments" class="book-ornaments" aria-hidden="true"></div>
       <section class="session-card" aria-labelledby="session-heading">
-        <header class="session-heading"><div><p id="session-phase" class="phase-label">Choose your evening</p><h2 id="session-heading">Tonight’s service</h2></div><div class="hosting-clock"><span id="hosting-time" title="Only simulated growth and ride steps advance this clock; menu service does not add time.">0:00</span><small>Simulated time</small></div></header>
-        <div class="completion-strip" id="objective-overview"><div><p id="goal-summary">Complete any three of four goals.</p><p id="next-step" class="next-step">Prepare your chosen evening.</p></div><span id="goal-count">0 / 3</span></div>
+        <header class="session-heading"><div><p id="session-phase" class="phase-label">Choose your evening</p><h2 id="session-heading">Tonight’s service</h2></div><div id="objective-dial" class="objective-dial" role="img"><span id="goal-count">0 / 3</span><small>goals</small></div></header>
+        <div class="completion-strip" id="objective-overview"><div><p id="goal-summary">Complete any three of four goals.</p><p id="next-step" class="next-step">Prepare your chosen evening.</p></div></div>
         <div class="session-actions">
           <button id="prepare-night" class="primary">Prepare evening <span aria-hidden="true">→</span></button>
           <button id="start-night" class="primary" hidden>Open for the evening <span aria-hidden="true">→</span></button>
@@ -33,14 +36,14 @@
         <div id="readiness" class="readiness"></div>
 
         <section id="service-operations" class="operations" aria-labelledby="operations-heading">
-          <header><h3 id="operations-heading">Serve the private venue</h3><span class="small-label">Actual game rules</span></header>
+          <header><h3 id="operations-heading">Tonight’s offerings</h3><span class="small-label">Actual game rules</span></header>
           <div class="operation-buttons">
             <button id="serve-food">Serve a menu dish</button>
             <button id="serve-cocoa">Sell a cocoa order</button>
             <button id="harvest-garden">Grow &amp; harvest a bed</button>
             <button id="run-ride">Complete one paid ride</button>
           </div>
-          <p class="operation-note">Quotes use a nominated private guest. Payment commits only when you serve; rides and growing use accelerated simulation.</p>
+          <p class="operation-note">Private stock · Current quotes · Growth and rides simulate time</p>
         </section>
 
         <section id="completion-card" class="completion-card" aria-labelledby="completion-title" hidden>
@@ -59,10 +62,9 @@
         <div id="goals" class="goals" aria-label="Evening goals"></div>
 
 
-
         <details id="delivery-inspector" class="outbox">
           <summary><div><h3 id="outbox-heading">Delivery inspector</h3><p id="queue-status">Nothing awaiting delivery</p></div><span id="queue-count" class="queue-count">0</span><span class="inspector-chevron" aria-hidden="true">⌄</span></summary>
-          <div class="inspector-body">
+          <div class="inspector-body"><div class="hosting-clock"><span id="hosting-time" title="Only simulated growth and ride steps advance this clock; menu service does not add time.">0:00</span><small>Simulated service time</small></div>
             <p class="inspector-note">Review confirmed facts separately from payments. Nothing here charges a guest.</p>
             <div class="delivery-controls"><label class="check-label"><input id="defer-delivery" type="checkbox"><span>Hold delivery for inspection</span></label><button id="flush-outcomes" class="small-primary">Deliver outcomes</button></div>
             <div class="replay-controls"><button id="replay-outcome" class="quiet">Replay last outcome</button><span>Replaying never charges a guest again.</span></div>
@@ -71,9 +73,9 @@
       </section>
 
       <aside class="venue" aria-labelledby="theme-title">
-          <div class="theme-heading"><div><p id="theme-level" class="eyebrow"></p><h2 id="theme-title"></h2></div><div id="theme-art" aria-hidden="true"></div></div>
+          <div class="theme-heading"><div><p id="theme-level" class="eyebrow"></p><h2 id="theme-title"></h2><p class="book-note" aria-hidden="true">a little autumn magic, kept here</p></div><div id="theme-art" aria-hidden="true"></div></div>
         <section id="recent-receipt" class="receipt-card" aria-labelledby="receipt-heading"><header><p class="receipt-caption">The midnight ledger</p><span id="receipt-seal" class="receipt-seal">Ready</span></header><h3 id="receipt-heading">Your first receipt</h3><p id="receipt-description" class="receipt-description">A real service operation will leave its mark here.</p><div class="receipt-total"><span id="receipt-amount-label">Committed amount</span><strong id="receipt-amount">—</strong></div><footer id="receipt-reference">No transaction has been made.</footer></section>
-        <section class="accounts" aria-labelledby="accounts-heading"><h3 id="accounts-heading">Private venue accounts</h3><dl class="balances"><div><dt>Guest spending</dt><dd id="guest-spend">£0</dd></div><div><dt>Food, cocoa &amp; tickets</dt><dd id="guest-sales">£0</dd></div></dl><p id="conservation-status" class="conservation">No paid operations yet.</p><dl class="secondary-balances"><div><dt>Harvest overflow income</dt><dd id="harvest-income">£0</dd></div><div><dt>Prepared venue cash</dt><dd id="venue-cash">£0</dd></div></dl></section>
+        <section class="accounts" aria-labelledby="accounts-heading"><header><h3 id="accounts-heading">Tonight’s takings</h3><span class="account-star" aria-hidden="true">✦</span></header><strong id="guest-sales" class="takings-total">£0</strong><p class="takings-caption">Food, cocoa &amp; paid tickets</p><details id="account-inspector" class="account-inspector"><summary>Inspect accounts <span aria-hidden="true">+</span></summary><div><dl class="secondary-balances"><div><dt>Guest spending</dt><dd id="guest-spend">£0</dd></div><div><dt>Harvest overflow income</dt><dd id="harvest-income">£0</dd></div><div><dt>Prepared venue cash</dt><dd id="venue-cash">£0</dd></div></dl><p id="conservation-status" class="conservation">No paid operations yet.</p></div></details></section>
         <section class="stock-section" aria-labelledby="stock-heading"><h3 id="stock-heading">Stock on hand</h3><dl id="stock-counts" class="stock-counts"></dl></section>
         <details class="guest-details"><summary>Guest wallets <span id="guest-count">0 guests</span></summary><div id="guest-wallets" class="guest-wallets"></div></details>
         <details class="invitation"><summary>Read the invitation</summary><blockquote id="theme-letter"></blockquote><p id="theme-decision"></p></details>
