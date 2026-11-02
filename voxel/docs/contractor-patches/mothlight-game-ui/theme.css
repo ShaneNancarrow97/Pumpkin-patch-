@@ -3,48 +3,48 @@
 .mothlight-game .hud,.mothlight-game .dock{background:linear-gradient(160deg,#302332ed,#1d1725f5);border-color:#b5977938;box-shadow:0 7px 24px #09061050,inset 0 1px #dec7ad0d}
 .mothlight-game .tab.active{color:#e8cc9b;background:linear-gradient(180deg,#b79a6b18,transparent),linear-gradient(90deg,transparent,#bfa17d,transparent) no-repeat 50% 100%/44% 2px}
 .mothlight-game :is(.sheet,.upgrade-menu,.intro,.level-celebration){--panel:#ddcbac;--panel-glass:#e0cfb3fa;--raised:#c7b2b92e;--edge:#8d6c704d;--edge-soft:#8e6d7430;--ink:#453047;--ink-soft:#674c62;--brass:#8b6743;--gold:#765231;--gold-bright:#77502f;--purchase-top:#dec18e;--purchase-bottom:#c8a26c;--purchase-ink:#372318;--moss:#56674a;color:var(--ink);color-scheme:light}
-.mothlight-game .sheet-frame{border:6px solid #51394c;border-radius:16px;outline:1px solid #bda48680;outline-offset:-7px;padding:19px 23px 17px;background:repeating-linear-gradient(0deg,#76533004 0,#76533004 1px,transparent 1px,transparent 4px),radial-gradient(ellipse at 100% 100%,#b28f5430,transparent 60%),linear-gradient(90deg,#c4ad8c,#e4d3b4 5%,#e7d8bd 94%,#cdb58f);box-shadow:inset 8px 0 14px #7b5a3826,0 18px 65px #05030890;isolation:isolate}
-.mothlight-game .sheet-frame::before{content:'';position:absolute;inset:8px;z-index:-1;border:1px solid #80604426;border-radius:8px;pointer-events:none;box-shadow:inset 0 1px #fff5}
-.mothlight-game .sheet-frame::after{content:'';position:absolute;right:-3px;bottom:5px;width:46px;height:110px;background:url('mothlight:botanical') center/contain no-repeat;opacity:.27;pointer-events:none;z-index:1}
-.mothlight-game .sheet-head{position:relative;border-bottom-color:#84604435;padding:0 2px 24px}
-.mothlight-game .sheet-head::before{content:'';position:absolute;right:45px;top:-14px;width:74px;height:57px;background:url('mothlight:moth') center/contain no-repeat;opacity:.25;pointer-events:none;z-index:-1;transform:rotate(9deg)}
-.mothlight-game .sheet:not(:has(.service-hero)) .sheet-head::after{content:'a little autumn magic, kept here';position:absolute;bottom:4px;left:2px;font:20px/1 'Mothlight Hand',cursive;color:#80627a;pointer-events:none;transform:rotate(-2deg)}
-.mothlight-game .sheet .sheet-head h2,.mothlight-game .sheet[data-section] .sheet-head h2{color:#49334b;font:500 24px/1.15 var(--display);letter-spacing:-.025em}
-.mothlight-game .sheet .sheet-head .eyebrow{color:#825f3d;font-size:10px;letter-spacing:.12em}
-.mothlight-game .sheet .close{background:#ad8c9d15;border:1px solid #98728735;color:#6c4e65;min-height:44px;min-width:44px}
-.mothlight-game .sheet-body{scrollbar-color:#9a7c88 #e2cfb0;padding-top:14px}
-.mothlight-game .sheet :is(h3,h4,.section,.who h3,.service-hero b,.service-product-copy h3,.estate-card h3){color:#4f3750}
-.mothlight-game .sheet :is(p,small,.small,.about,.service-product-foot,.service-product-copy p,.service-food-copy p,.supply-meter span,.cooking-food-row small,.service-status){color:#674c62}
-.mothlight-game .sheet :is(.service-sheet,.cooking-sheet){--service-muted:#674c62;--service-line:#84604430;--service-ink:#453047}
-.mothlight-game .sheet :is(.card,.plot-card,.estate-card,.estate-ground-card,.recipe-tile,.service-product,.cooking-station,.cooking-food-row,.food-slot,.cook-choice,.service-location,.service-hero-stats span,.service-panel,.home-journey-card){border-color:#89667530;background:linear-gradient(130deg,#fff5,#c5a8b014);box-shadow:inset 0 1px #fff5,0 2px 5px #8062450b}
-.mothlight-game .sheet[data-section] .card:not(.hero):not(.purchase-card):not(.intro-card):not(.home-journey-card){border-color:#9879852c;background:linear-gradient(130deg,#fff4,#c7acb014);box-shadow:none;border-radius:9px}
-.mothlight-game .sheet :is(.card.owned,.card.current){border-color:#866c4660}
-.mothlight-game .sheet :is(.thumb,.service-hero .maisie-art){background-color:transparent;background-image:radial-gradient(circle,#b6914b12,transparent 70%);box-shadow:none}
-.mothlight-game .sheet .segmented{border-color:#98728c30;background:#8e6a7d12;border-radius:11px}
-.mothlight-game .sheet .segmented button{color:#70536b;background:transparent;border-radius:8px}
-.mothlight-game .sheet :is(.segmented button[aria-pressed=true],.chip[aria-pressed=true],.button[aria-pressed=true]:not(.gold),.food-slot-picks button[aria-pressed=true]){color:#f1dfcb;background:linear-gradient(140deg,#805a75,#65465f);border-color:#85647c;box-shadow:inset 0 -2px #baa08455}
-.mothlight-game .sheet .button:not(.gold):not(.purchase-button):not(.is-destructive){color:#674862;background:#a7879b10;border-color:#926b852f;box-shadow:inset 0 1px #fff4}
-.mothlight-game .sheet .button.gold,.mothlight-game .sheet .purchase-button{color:#3c281a;background:linear-gradient(145deg,#dfc18e,#cba46c);border-color:#b8915e90;box-shadow:inset 0 1px #fff6,0 2px 7px #80592b18;text-shadow:none}
-.mothlight-game .sheet .button.gold:not(:disabled):hover{background:linear-gradient(145deg,#ecd3a4,#d4b17c)}
-.mothlight-game .sheet .button.gold:disabled{color:#967b6c;background:#9b7d6d13;border-color:#9c7c6e24;opacity:1;box-shadow:none}
-.mothlight-game .sheet .button.gold small{color:#64442b}.mothlight-game .sheet .button.gold:disabled small{color:#967b6c}
-.mothlight-game .sheet :is(.price-stepper,.service-switch,.food-slot-picks button){background:#9d7e9015;border-color:#99758b35;color:#70536a}
-.mothlight-game .sheet .price-stepper :is(button,output){color:#62435b;background:#ffffff25}.mothlight-game .sheet .price-stepper button:disabled{opacity:.4}
-.mothlight-game .sheet .service-switch[aria-pressed=true]{color:#405638;border-color:#7b8b5f65}
-.mothlight-game .sheet :is(.supply-meter b,.service-hero-stats b,.on-show){color:#536044}
-.mothlight-game .sheet :is(input,select,textarea){color:#4e374a;background:#f2e5ca;border-color:#94708050}
-.mothlight-game .sheet input[type=range]{accent-color:#805973}
-.mothlight-game .sheet :is(.error,.danger){color:#994e44!important}
-.mothlight-game .sheet .bar,.mothlight-game .sheet .pips i{background:#927a612b}.mothlight-game .sheet .pips i.on{background:#8b8153}
-.mothlight-game .sheet .chip{color:#70526b;background:#a7889b10;border-color:#9b768b35}
-.mothlight-game .sheet :is(button:focus-visible,input:focus-visible,select:focus-visible),.mothlight-game .sheet [data-pad-focus]{outline-color:#704863!important}
+body.mothlight-game #sheet.sheet .sheet-frame{border:6px solid #51394c;border-radius:16px;outline:1px solid #bda48680;outline-offset:-7px;padding:19px 23px 17px;background:repeating-linear-gradient(0deg,#76533004 0,#76533004 1px,transparent 1px,transparent 4px),radial-gradient(ellipse at 100% 100%,#b28f5430,transparent 60%),linear-gradient(90deg,#c4ad8c,#e4d3b4 5%,#e7d8bd 94%,#cdb58f);box-shadow:inset 8px 0 14px #7b5a3826,0 18px 65px #05030890;isolation:isolate}
+body.mothlight-game #sheet.sheet .sheet-frame::before{content:'';position:absolute;inset:8px;z-index:-1;border:1px solid #80604426;border-radius:8px;pointer-events:none;box-shadow:inset 0 1px #fff5}
+body.mothlight-game #sheet.sheet .sheet-frame::after{content:'';position:absolute;right:-3px;bottom:5px;width:46px;height:110px;background:url('mothlight:botanical') center/contain no-repeat;opacity:.27;pointer-events:none;z-index:1}
+body.mothlight-game #sheet.sheet .sheet-head{position:relative;border-bottom-color:#84604435;padding:0 2px 24px}
+body.mothlight-game #sheet.sheet .sheet-head::before{content:'';position:absolute;right:45px;top:-14px;width:74px;height:57px;background:url('mothlight:moth') center/contain no-repeat;opacity:.25;pointer-events:none;z-index:-1;transform:rotate(9deg)}
+body.mothlight-game #sheet.sheet:not(:has(.service-hero)) .sheet-head::after{content:'a little autumn magic, kept here';position:absolute;bottom:4px;left:2px;font:20px/1 'Mothlight Hand',cursive;color:#80627a;pointer-events:none;transform:rotate(-2deg)}
+body.mothlight-game #sheet.sheet .sheet-head h2,body.mothlight-game #sheet.sheet[data-section] .sheet-head h2{color:#49334b;font:500 24px/1.15 var(--display);letter-spacing:-.025em}
+body.mothlight-game #sheet.sheet .sheet-head .eyebrow{color:#825f3d;font-size:10px;letter-spacing:.12em}
+body.mothlight-game #sheet.sheet .close{background:#ad8c9d15;border:1px solid #98728735;color:#6c4e65;min-height:44px;min-width:44px}
+body.mothlight-game #sheet.sheet .sheet-body{scrollbar-color:#9a7c88 #e2cfb0;padding-top:14px}
+body.mothlight-game #sheet.sheet :is(h3,h4,.section,.who h3,.service-hero b,.service-product-copy h3,.estate-card h3){color:#4f3750}
+body.mothlight-game #sheet.sheet :is(p,small,.small,.about,.service-product-foot,.service-product-copy p,.service-food-copy p,.supply-meter span,.cooking-food-row small,.service-status){color:#674c62}
+body.mothlight-game #sheet.sheet :is(.service-sheet,.cooking-sheet){--service-muted:#674c62;--service-line:#84604430;--service-ink:#453047}
+body.mothlight-game #sheet.sheet :is(.card,.plot-card,.estate-card,.estate-ground-card,.recipe-tile,.service-product,.cooking-station,.cooking-food-row,.food-slot,.cook-choice,.service-location,.service-hero-stats span,.service-panel,.home-journey-card){border-color:#89667530;background:linear-gradient(130deg,#fff5,#c5a8b014);box-shadow:inset 0 1px #fff5,0 2px 5px #8062450b}
+body.mothlight-game #sheet.sheet[data-section] .card:not(.hero):not(.purchase-card):not(.intro-card):not(.home-journey-card){border-color:#9879852c;background:linear-gradient(130deg,#fff4,#c7acb014);box-shadow:none;border-radius:9px}
+body.mothlight-game #sheet.sheet :is(.card.owned,.card.current){border-color:#866c4660}
+body.mothlight-game #sheet.sheet :is(.thumb,.service-hero .maisie-art){background-color:transparent;background-image:radial-gradient(circle,#b6914b12,transparent 70%);box-shadow:none}
+body.mothlight-game #sheet.sheet .segmented{border-color:#98728c30;background:#8e6a7d12;border-radius:11px}
+body.mothlight-game #sheet.sheet .segmented button{color:#70536b;background:transparent;border-radius:8px}
+body.mothlight-game #sheet.sheet :is(.segmented button[aria-pressed=true],.chip[aria-pressed=true],.button[aria-pressed=true]:not(.gold),.food-slot-picks button[aria-pressed=true]){color:#f1dfcb;background:linear-gradient(140deg,#805a75,#65465f);border-color:#85647c;box-shadow:inset 0 -2px #baa08455}
+body.mothlight-game #sheet.sheet .button:not(.gold):not(.purchase-button):not(.is-destructive){color:#674862;background:#a7879b10;border-color:#926b852f;box-shadow:inset 0 1px #fff4}
+body.mothlight-game #sheet.sheet .button.gold,body.mothlight-game #sheet.sheet .purchase-button{color:#3c281a;background:linear-gradient(145deg,#dfc18e,#cba46c);border-color:#b8915e90;box-shadow:inset 0 1px #fff6,0 2px 7px #80592b18;text-shadow:none}
+body.mothlight-game #sheet.sheet .button.gold:not(:disabled):hover{background:linear-gradient(145deg,#ecd3a4,#d4b17c)}
+body.mothlight-game #sheet.sheet .button.gold:disabled{color:#967b6c;background:#9b7d6d13;border-color:#9c7c6e24;opacity:1;box-shadow:none}
+body.mothlight-game #sheet.sheet .button.gold small{color:#64442b}body.mothlight-game #sheet.sheet .button.gold:disabled small{color:#967b6c}
+body.mothlight-game #sheet.sheet :is(.price-stepper,.service-switch,.food-slot-picks button){background:#9d7e9015;border-color:#99758b35;color:#70536a}
+body.mothlight-game #sheet.sheet .price-stepper :is(button,output){color:#62435b;background:#ffffff25}body.mothlight-game #sheet.sheet .price-stepper button:disabled{opacity:.4}
+body.mothlight-game #sheet.sheet .service-switch[aria-pressed=true]{color:#405638;border-color:#7b8b5f65}
+body.mothlight-game #sheet.sheet :is(.supply-meter b,.service-hero-stats b,.on-show){color:#536044}
+body.mothlight-game #sheet.sheet :is(input,select,textarea){color:#4e374a;background:#f2e5ca;border-color:#94708050}
+body.mothlight-game #sheet.sheet input[type=range]{accent-color:#805973}
+body.mothlight-game #sheet.sheet :is(.error,.danger){color:#994e44!important}
+body.mothlight-game #sheet.sheet .bar,body.mothlight-game #sheet.sheet .pips i{background:#927a612b}body.mothlight-game #sheet.sheet .pips i.on{background:#8b8153}
+body.mothlight-game #sheet.sheet .chip{color:#70526b;background:#a7889b10;border-color:#9b768b35}
+body.mothlight-game #sheet.sheet :is(button:focus-visible,input:focus-visible,select:focus-visible),body.mothlight-game #sheet.sheet [data-pad-focus]{outline-color:#704863!important}
 .mothlight-game .upgrade-menu{border:5px solid #51394c;border-radius:15px;background:repeating-linear-gradient(0deg,#76533004 0,#76533004 1px,transparent 1px,transparent 4px),linear-gradient(110deg,#d4bd99,#e6d5b8 10%,#dfcbab);box-shadow:inset 3px 0 9px #795c342b,0 14px 40px #08050b75;backdrop-filter:none}
 .mothlight-game .upgrade-menu::before{content:'the mothlight ledger';display:block;padding:8px 10px 7px;border-bottom:1px solid #94705230;margin-bottom:4px;font:23px/1 'Mothlight Hand',cursive;color:#77526d;pointer-events:none}
 .mothlight-game .upgrade-menu button{color:#4e354b;border-radius:8px}.mothlight-game .upgrade-menu small{color:#74576e}
 .mothlight-game .upgrade-menu button:hover,.mothlight-game .upgrade-menu button:focus-visible,.mothlight-game .upgrade-menu [data-pad-focus]{background:#8e6b7e16!important;outline-color:#77506b!important}
 .mothlight-game .intro-card,.mothlight-game .level-celebration{background:linear-gradient(120deg,#dbc7a6,#e7d7bb);border-color:#987158;color:#49354b}
 .mothlight-game .level-celebration :is(h2,h3,p,small){color:#62495d}
-@media(min-width:720px){.mothlight-game .sheet.centred .sheet-frame{padding:21px 25px 19px;border-radius:16px}.mothlight-game .sheet.centred .sheet-body{padding-inline:0}}
-@media(max-width:430px){.mothlight-game .sheet-frame{padding:16px 15px 14px;border-width:5px;border-radius:14px}.mothlight-game .sheet .sheet-head h2{font-size:22px}.mothlight-game .sheet-head::before{width:55px;right:43px;top:-9px}.mothlight-game .sheet:not(:has(.service-hero)) .sheet-head::after{font-size:19px}}
-@media(max-height:480px){.mothlight-game .sheet-frame,.mothlight-game .sheet.centred .sheet-frame{padding:12px 17px}.mothlight-game .sheet .sheet-head{padding-bottom:21px}.mothlight-game .sheet:not(:has(.service-hero)) .sheet-head::after{font-size:18px}.mothlight-game .sheet .sheet-head h2{font-size:21px}}
-@media(prefers-reduced-motion:reduce){.mothlight-game .sheet-frame,.mothlight-game .upgrade-menu{animation:none}.mothlight-game .sheet button{transition:none}}
+@media(min-width:720px){body.mothlight-game #sheet.sheet.centred .sheet-frame{padding:21px 25px 19px;border-radius:16px}body.mothlight-game #sheet.sheet.centred .sheet-body{padding-inline:0}}
+@media(max-width:430px){body.mothlight-game #sheet.sheet .sheet-frame{padding:16px 15px 14px;border-width:5px;border-radius:14px}body.mothlight-game #sheet.sheet .sheet-head h2{font-size:22px}body.mothlight-game #sheet.sheet .sheet-head::before{width:55px;right:43px;top:-9px}body.mothlight-game #sheet.sheet:not(:has(.service-hero)) .sheet-head::after{font-size:19px}}
+@media(max-height:480px){body.mothlight-game #sheet.sheet .sheet-frame,body.mothlight-game #sheet.sheet.centred .sheet-frame{padding:12px 17px}body.mothlight-game #sheet.sheet .sheet-head{padding-bottom:21px}body.mothlight-game #sheet.sheet:not(:has(.service-hero)) .sheet-head::after{font-size:18px}body.mothlight-game #sheet.sheet .sheet-head h2{font-size:21px}}
+@media(prefers-reduced-motion:reduce){body.mothlight-game #sheet.sheet .sheet-frame,.mothlight-game .upgrade-menu{animation:none}body.mothlight-game #sheet.sheet button{transition:none}}
