@@ -1,0 +1,49 @@
+{
+  "sourceCommit": "5d36b07314b58c847cab6b8bd6940ed0a2de982b",
+  "gameBuild": {
+    "sourceCommit": "5d36b07314b58c847cab6b8bd6940ed0a2de982b",
+    "reviewedBase": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
+    "scope": "The actual complete offline game with an injected visual skin; runtime script is byte-identical to its standard build",
+    "bytes": 37955232,
+    "sha256": "1d6c2fad4d4b653bd46b1843435ae757faf0c83e9d0a569d812860365f65fc56",
+    "baseSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0",
+    "runtimeSHA256": "3911f35ad522082cebd64e8575373a09229f08f58ae8fbaa64dfeeb47f7c51ac",
+    "runtimeByteIdentical": true,
+    "playerSaveKeyChanged": false
+  },
+  "zipCRCChecked": true,
+  "artifacts": {
+    "Pumpkin-Patch-Mothlight-Full-Game.html": {
+      "bytes": 37955232,
+      "sha256": "1d6c2fad4d4b653bd46b1843435ae757faf0c83e9d0a569d812860365f65fc56"
+    },
+    "Pumpkin-Patch-Mothlight-Full-Game.zip": {
+      "bytes": 27422097,
+      "sha256": "ec05a40e33760454e16f31a931ad165414d163f71d073896ba56a9f963a83c54"
+    },
+    "README.md": {
+      "bytes": 1308,
+      "sha256": "27d1c8566aa70f9490ead44f25720da3377c52fa2841c72d107026a6e055b2fa"
+    },
+    "OFL-Caveat.txt": {
+      "bytes": 4385,
+      "sha256": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b"
+    },
+    "BUILD-VERIFICATION.json": {
+      "bytes": 596,
+      "sha256": "c3b874f60afa17e166d2589dc339211e6afe9fba5ddf9f3ebfe456a85aa5f8d3"
+    },
+    "HANDOVER.md": {
+      "bytes": 2234,
+      "sha256": "8bac5505571d7d27132469881e6be3adc8a7f96e05eba5e970a456a5cef18765"
+    },
+    "DEPENDENCIES.md": {
+      "bytes": 1941,
+      "sha256": "1de50382b7e9ad84efae71693faa5727d62d0ff1399fa49ce14140e104e04613"
+    },
+    "mothlight-full-game-ui.patch": {
+      "bytes": 128221,
+      "sha256": "181b81258fbf0e5765d7d63cff80dff048a4b49afcc03e3c2012d7be60c3db60"
+    }
+  }
+}
