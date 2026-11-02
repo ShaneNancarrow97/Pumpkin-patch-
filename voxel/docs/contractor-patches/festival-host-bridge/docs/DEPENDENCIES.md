@@ -1,6 +1,6 @@
 # Bridge dependencies and impact review
 
-Reviewed overlay **2026-11-02.1**; 32 domains and 103 semantic links after extending the prior matrix.
+Reviewed overlay **2026-11-02.2**; 32 domains and 108 semantic links after extending the prior matrix.
 
 The original matrix is pinned by revision and SHA-256. A changed base fails validation until the overlay is reviewed. No previous contractor or live game file is overwritten.
 

@@ -7,7 +7,7 @@ import { loadBridgeMatrix,bridgeImpact,physicalMetadata,renderBridgeDependencies
 import { validateMatrix } from '../../festival-session/tools/check-impact.mjs';
 const p='voxel/docs/contractor-patches/festival-host-bridge/';
 test('overlay is grounded in existing evidence and does not alter base domain definitions',()=>{
- const m=loadBridgeMatrix();assert.equal(m.domains.length,32);assert.equal(m.edges.length,103);assert.deepEqual(validateMatrix(m),{valid:true,errors:[],missingFiles:[]});
+ const m=loadBridgeMatrix();assert.equal(m.domains.length,32);assert.equal(m.edges.length,108);assert.deepEqual(validateMatrix(m),{valid:true,errors:[],missingFiles:[]});
  const original=JSON.parse(fs.readFileSync(path.join(ROOT,'voxel/docs/contractor-patches/festival-session/data/dependency-matrix.json')));assert.deepEqual(m.domains.slice(0,original.domains.length),original.domains);
 });
 test('bridge effects remain isolated now while save/inventory/input adoption is explicit',()=>{

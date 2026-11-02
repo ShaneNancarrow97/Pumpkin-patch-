@@ -10,7 +10,7 @@ checks actual esbuild inputs, including embedded fonts and normalized JSON paths
 The prior matrix did not recognize new bridge paths; `initial-unmapped.json`
 preserves that honest initial failure. The new overlay extends rather than edits
 the delivered matrix. Its base revision and SHA-256 pin force review if the base
-changes. The combined map has 32 domains and 103 semantic links. This avoids
+changes. The combined map has 32 domains and 108 semantic links. This avoids
 mistaking an unrecognized new subsystem for a safe zero-impact change.
 
 The final semantic report covers all new source/document/tool/test paths outside
@@ -26,14 +26,19 @@ from imports alone.
 | --- | --- | --- |
 | Receipt truth | 13 adapter cases plus lab cases | Prices/quantities/identity must come from paid rules, never quotes or rendered events |
 | Delivery durability | 6 bridge and 19 adversarial cases | Paused facts, replay, overflow, corrupt/future saves and permanent claims share identity contracts |
-| Finite-world conservation | 12 lab cases | Actual stock and wallets must reconcile to revenue across save/reload and all three themes |
-| Offline premium UI | 3 build cases and 59 exact-HTML browser checks | Fonts, receipt motion, keyboard/touch layouts and scope must work without external assets |
+| Finite-world conservation | 13 lab cases + 8 read-only quote cases | Actual stock and wallets must reconcile to revenue across save/reload and all three themes |
+| Offline premium UI | 3 build cases, 7 derived-state cases and 92 exact-HTML browser checks | Fonts, receipt motion, keyboard/touch layouts and scope must work without external assets |
 | Matrix validity | 6 overlay cases, current semantic/import review | Stale base evidence, unknown paths and changed consumers require explicit handling |
 | Prerequisites | 81 earlier cases | The bridge consumes the delivered engine/readiness and old theme content |
 | Patch pickup | Kit rebuild verification | Applying a patch must reproduce the reviewed source and exact HTML |
 
-The direct native total is 140 cases across 19 files. Browser checks are an
-additional 59 assertions. No default in-game behavior changes in this pack, so
+The refinement adds actual price/stock quote consumers and completed/repeat-state
+presentation. Mutating food holds and ride planning execute only on cloned state;
+the browser verifies that rendering changes no wallet, stock, ID or clock. The
+new edges make those upstream rule/view contracts explicit in the matrix.
+
+The direct native total is 156 cases across 21 files. Browser checks are an
+additional 92 assertions. No default in-game behavior changes in this pack, so
 full live farm economy/controller/scenes are not presented as newly verified.
 The separate clean production rebuild comparison establishes the narrower claim
 that this optional source increment leaves that inspected lead's shipped HTML

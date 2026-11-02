@@ -10,23 +10,28 @@
     "voxel/docs/contractor-patches/festival-host-bridge/docs/DEPENDENCIES.md",
     "voxel/docs/contractor-patches/festival-host-bridge/docs/HANDOVER.md",
     "voxel/docs/contractor-patches/festival-host-bridge/docs/INTEGRATION-NOTES.md",
+    "voxel/docs/contractor-patches/festival-host-bridge/docs/REFINEMENT.md",
+    "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js",
     "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/index.html",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css",
     "voxel/docs/contractor-patches/festival-host-bridge/src/bridge.js",
     "voxel/docs/contractor-patches/festival-host-bridge/test/bridge-adversarial.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/bridge.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/impact.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs",
+    "voxel/docs/contractor-patches/festival-host-bridge/test/offers.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/outcomes.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs",
+    "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/tools/review-impact.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs"
   ],
-  "moduleCount": 352,
+  "moduleCount": 354,
   "edges": [
     {
       "from": "package:three/examples/jsm/controls/OrbitControls.js",
@@ -134,6 +139,31 @@
       "kind": "import-statement"
     },
     {
+      "from": "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js",
+      "to": "voxel/src/content/cooking.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js",
+      "to": "voxel/src/rules/cocoa-menu.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js",
+      "to": "voxel/src/rules/cooking-sales.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js",
+      "to": "voxel/src/rules/garden-crops.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js",
+      "to": "voxel/src/rules/hayride.js",
+      "kind": "import-statement"
+    },
+    {
       "from": "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js",
       "to": "voxel/docs/contractor-patches/festival-host-bridge/adapters/outcomes.js",
       "kind": "import-statement"
@@ -210,7 +240,17 @@
     },
     {
       "from": "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js",
+      "to": "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js",
       "to": "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js",
+      "kind": "import-statement"
+    },
+    {
+      "from": "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js",
+      "to": "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js",
       "kind": "import-statement"
     },
     {
@@ -4451,11 +4491,18 @@
     "voxel/docs/contractor-patches/festival-host-bridge/docs/DEPENDENCIES.md": [],
     "voxel/docs/contractor-patches/festival-host-bridge/docs/HANDOVER.md": [],
     "voxel/docs/contractor-patches/festival-host-bridge/docs/INTEGRATION-NOTES.md": [],
+    "voxel/docs/contractor-patches/festival-host-bridge/docs/REFINEMENT.md": [],
+    "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js": [
+      "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js"
+    ],
     "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js": [
       "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js"
     ],
     "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js": [],
     "voxel/docs/contractor-patches/festival-host-bridge/preview/index.html": [],
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js": [
+      "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js"
+    ],
     "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css": [],
     "voxel/docs/contractor-patches/festival-host-bridge/src/bridge.js": [
       "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js"
@@ -4464,8 +4511,10 @@
     "voxel/docs/contractor-patches/festival-host-bridge/test/bridge.test.mjs": [],
     "voxel/docs/contractor-patches/festival-host-bridge/test/impact.test.mjs": [],
     "voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs": [],
+    "voxel/docs/contractor-patches/festival-host-bridge/test/offers.test.mjs": [],
     "voxel/docs/contractor-patches/festival-host-bridge/test/outcomes.test.mjs": [],
     "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs": [],
+    "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs": [],
     "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs": [],
     "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs": [],
     "voxel/docs/contractor-patches/festival-host-bridge/tools/review-impact.mjs": [],
@@ -4480,14 +4529,17 @@
     "voxel/docs/contractor-patches/festival-host-bridge/docs/DEPENDENCIES.md",
     "voxel/docs/contractor-patches/festival-host-bridge/docs/HANDOVER.md",
     "voxel/docs/contractor-patches/festival-host-bridge/docs/INTEGRATION-NOTES.md",
+    "voxel/docs/contractor-patches/festival-host-bridge/docs/REFINEMENT.md",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/index.html",
     "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css",
     "voxel/docs/contractor-patches/festival-host-bridge/test/bridge-adversarial.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/bridge.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/impact.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs",
+    "voxel/docs/contractor-patches/festival-host-bridge/test/offers.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/outcomes.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs",
+    "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs",
     "voxel/docs/contractor-patches/festival-host-bridge/tools/review-impact.mjs",
@@ -4617,8 +4669,10 @@
     "voxel/assets/sprite-watering-can.webp": "58f293c6c564e13fc4765ddad90c3636df76a8fb47d26ad2764401aaa8f31492",
     "voxel/assets/sprites.png": "5bf75a10aaab4285aec63d2ab2384a67cca8f72b871295864e745aefdbf2eab4",
     "voxel/docs/contractor-patches/festival-host-bridge/adapters/outcomes.js": "441b4a51568a1fe7b4a8b15ba8d84e58680b57c79a8a9587f9f2ae7192ea1aa2",
-    "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js": "15b05cd26cd3da0b8d61857aad556682a6cf162360f68c15d3af163fa2e3d609",
-    "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js": "012ab0df1b6ab2a1d8a26af006d7a6ff52e03c19a8c557e01fde980db46b628c",
+    "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js": "0846c0b1acc241e33e02a12c02cac4492d3cab9ba0c715ab6804d75b33cf68c6",
+    "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js": "57123273a1fba55ad15fb8ce45d477940e573f25a24f5b48b8d3a32e0a9ae66f",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js": "0e1134c632e1456a9692aa9c6886ffcab29eb07370e342d7a95c12b2f7ddf7a7",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js": "fc21d9499b08336fba7d2b34c2cf880dc2f39f7212c5e0ac39c0d8c5613dcb4c",
     "voxel/docs/contractor-patches/festival-host-bridge/src/bridge.js": "3149e6d7461b250a21a31fb9caa9897867537810241826a9f000ee01b567ede0",
     "voxel/docs/contractor-patches/festival-session/adapters/readiness.js": "b33e1f869c763c7db8adae54c96d6dbda06013cf79a8fbd55db3efa37292bde2",
     "voxel/docs/contractor-patches/festival-session/src/engine.js": "ee8a49809fe98c492d003fdc9c66d998aa8dff6359f0e474d33196b8470ba241",

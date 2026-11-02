@@ -101,3 +101,30 @@ The browser exposes documented diagnostics through `window.FestivalBridgeLab`,
 including the private controller, actions, current view and motion bookkeeping.
 All UI should label real-rule/private-fixture operations clearly and distinguish
 payment from delivered Festival Night progress.
+
+## Read-only action offers and presentation (refinement 2)
+
+`lab/offers.js` exports `serviceOffers(world, theme, {previewSelection=false}={})`. It returns
+`{food,cocoa,garden,ride}`, each with `available`, `label`, `reason`, `amount`
+(current quote or null), and `quantity`. Food includes `recipeId`/`stock`, cocoa
+includes detached `items`, garden includes only `phase` without a promised yield,
+and ride includes `routeLevel`/`circuitSeconds` (not a total trip-time promise).
+Active offers follow the actual displayed recipe, including restored checkpoints.
+Only idle selection previews explicitly override the copied display. The food
+quote and ride planner mutate only a structured clone. Calling this
+helper does not reserve real food, allocate a real visit, pay, bind or tick.
+Lifecycle and outbox capacity are separately gated by the UI. Quotes can change
+with stock and the next guest ID; payment still comes from the later real rule.
+
+`preview/service-state.js` exports
+`serviceState(labView, selectedThemeId, {worldPaused=false}={})`. It derives stage,
+status, title, next step, objective summary, primary action and optional completion
+presentation. A completed inactive theme retains its earned3/3 summary, while
+individual old goal rows are hidden rather than fabricated. A repeat attempt
+uses fresh actual goal progress. It executes no rules and mutates no state.
+
+Delivery inspection is a collapsed native details element. Pending facts expose
+a direct service-level Deliver action; it invokes the existing flush, never a
+payment. Goal progress and committed receipt feedback stay near the touch actions.
+A successful completed evening alone triggers a short keepsake reveal. Reduced
+motion suppresses it. The lab remains optional and separate from the live game.

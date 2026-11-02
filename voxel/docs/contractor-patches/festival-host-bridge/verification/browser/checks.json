@@ -1,5 +1,5 @@
 {
-  "sha256": "5459bf552cfcfff8d654a33264296859f3ea1f46b718398fd99e65aff7bc6d45",
+  "sha256": "7414b28048a2703d700beedf2f79b7991296712569278c9969420154f3a9c2e5",
   "sourceHashes": {
     "src/content/catalog.mjs": "49c649e18c31b16903414ef89a8cf5931e8a844e3a7a676f8d05712970f2c387",
     "src/content/economy.js": "def825f8bf0533b87866fbc24be86362945b75fd00f5a0890d9a873f29fa4f65",
@@ -12,13 +12,15 @@
     "voxel/assets/dm-sans.woff": "30ce945bf088ca9edbed7f62e678dbbf10d469acf2c8a4b6ee23770611960890",
     "voxel/assets/fraunces-400.woff2": "fa7949ff6b0094025a72b6cb88c6e6c914dba96d34284fb3fec9c092ebc4f311",
     "voxel/docs/contractor-patches/festival-host-bridge/adapters/outcomes.js": "441b4a51568a1fe7b4a8b15ba8d84e58680b57c79a8a9587f9f2ae7192ea1aa2",
-    "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js": "15b05cd26cd3da0b8d61857aad556682a6cf162360f68c15d3af163fa2e3d609",
-    "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js": "012ab0df1b6ab2a1d8a26af006d7a6ff52e03c19a8c557e01fde980db46b628c",
-    "voxel/docs/contractor-patches/festival-host-bridge/preview/index.html": "d7ce2f1f7f22bc1a22da26e486c562f81695173bee62b2c858bf2d5feb45efe4",
-    "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css": "6cc4d931347aa3a72d329618b229fe41dd5a1e8260163efe81121ef07b3d3ee7",
+    "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js": "0846c0b1acc241e33e02a12c02cac4492d3cab9ba0c715ab6804d75b33cf68c6",
+    "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js": "57123273a1fba55ad15fb8ce45d477940e573f25a24f5b48b8d3a32e0a9ae66f",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js": "0e1134c632e1456a9692aa9c6886ffcab29eb07370e342d7a95c12b2f7ddf7a7",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/index.html": "4d0a907dd88b7f3be38f0fe5e47b578db85678dc53e92d6ef4b24fcd07aee990",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js": "fc21d9499b08336fba7d2b34c2cf880dc2f39f7212c5e0ac39c0d8c5613dcb4c",
+    "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css": "eb42a6393f674455bf428b1eb8a8b54eb178ea260cd501d42a88e4abb04d6e0c",
     "voxel/docs/contractor-patches/festival-host-bridge/src/bridge.js": "3149e6d7461b250a21a31fb9caa9897867537810241826a9f000ee01b567ede0",
     "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs": "26d222e610797efcd2a64b0b62314b0e7f341c719b819f66d30963779f20ce31",
-    "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs": "d63c6efeed99a80f6e0c7602374135c1945a8d5f1dc701695cbab9c674cf34ea",
+    "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs": "ce7372d097601016610a7e9e1c4455f8202c2c84bf7bd4af8f1c104f1b58d1e3",
     "voxel/docs/contractor-patches/festival-session/adapters/readiness.js": "b33e1f869c763c7db8adae54c96d6dbda06013cf79a8fbd55db3efa37292bde2",
     "voxel/docs/contractor-patches/festival-session/src/engine.js": "ee8a49809fe98c492d003fdc9c66d998aa8dff6359f0e474d33196b8470ba241",
     "voxel/docs/contractor-patches/late-game-support/art/menu-icons.webp": "aeb67472997eac94e79040ce3c2c3ab17e6e4add839f4d86ba180f117581bf30",
@@ -101,7 +103,28 @@
     },
     {
       "ok": true,
+      "label": "Delivery inspection stays collapsed on first load"
+    },
+    {
+      "ok": true,
+      "label": "Keyboard expands the delivery inspector"
+    },
+    {
+      "ok": true,
       "label": "Keyboard activates the primary preparation action"
+    },
+    {
+      "ok": true,
+      "label": "Rendering current quotes does not reserve stock, allocate visitors, change money or advance the world"
+    },
+    {
+      "ok": true,
+      "label": "Visible action labels match accessible names and include quote descriptions"
+    },
+    {
+      "ok": true,
+      "label": "Food action exposes the actual current private quote before payment",
+      "data": "3 portions · Quote £78 · 12 left"
     },
     {
       "ok": true,
@@ -135,6 +158,10 @@
     },
     {
       "ok": true,
+      "label": "Compact latest-operation strip displays the same actual committed payment as the paper receipt"
+    },
+    {
+      "ok": true,
       "label": "Manual pause retains confirmed facts and cannot create another payment"
     },
     {
@@ -143,11 +170,23 @@
     },
     {
       "ok": true,
+      "label": "A blocked ending opens the delivery inspector so its next step is available"
+    },
+    {
+      "ok": true,
       "label": "Private checkpoint includes the paid fact and a paused session"
     },
     {
       "ok": true,
+      "label": "Pending facts expose a direct delivery action without opening technical tools"
+    },
+    {
+      "ok": true,
       "label": "One delivered receipt can advance serving and distinct Court goals"
+    },
+    {
+      "ok": true,
+      "label": "Direct delivery preserves money and leaves the inspection drawer collapsed"
     },
     {
       "ok": true,
@@ -164,6 +203,10 @@
     {
       "ok": true,
       "label": "Whole-world pause blocks real service stock and wallet mutation"
+    },
+    {
+      "ok": true,
+      "label": "Exhausted food stock changes the action card to an unavailable state instead of promising another sale"
     },
     {
       "ok": true,
@@ -193,7 +236,44 @@
     },
     {
       "ok": true,
+      "label": "Phone: earned keepsake can be recorded in the first viewport"
+    },
+    {
+      "ok": true,
+      "label": "midnight-court-banquet: completed evening keeps 3/3 objectives and a keepsake card without fabricated individual goal values"
+    },
+    {
+      "ok": true,
+      "label": "Keepsake card explicitly distinguishes entitlement from physical furniture"
+    },
+    {
+      "ok": true,
+      "label": "phone keepsake: controls stay distinct, readable and44px",
+      "data": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "small": [],
+        "clipped": [],
+        "overlaps": [],
+        "selectedVisible": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "Phone: next-evening action is visible with the recorded keepsake"
+    },
+    {
+      "ok": true,
       "label": "midnight-court-banquet: one module entitlement is recorded after completion"
+    },
+    {
+      "ok": true,
+      "label": "midnight-court-banquet: claiming retains the completed evening presentation"
+    },
+    {
+      "ok": true,
+      "label": "Choose-next selects the next unclaimed evening without preparing or charging it"
     },
     {
       "ok": true,
@@ -231,7 +311,15 @@
     },
     {
       "ok": true,
+      "label": "lanterns-in-the-mist: completed evening keeps 3/3 objectives and a keepsake card without fabricated individual goal values"
+    },
+    {
+      "ok": true,
       "label": "lanterns-in-the-mist: one module entitlement is recorded after completion"
+    },
+    {
+      "ok": true,
+      "label": "lanterns-in-the-mist: claiming retains the completed evening presentation"
     },
     {
       "ok": true,
@@ -265,7 +353,19 @@
     },
     {
       "ok": true,
+      "label": "the-last-wagon: completed evening keeps 3/3 objectives and a keepsake card without fabricated individual goal values"
+    },
+    {
+      "ok": true,
       "label": "the-last-wagon: one module entitlement is recorded after completion"
+    },
+    {
+      "ok": true,
+      "label": "the-last-wagon: claiming retains the completed evening presentation"
+    },
+    {
+      "ok": true,
+      "label": "All recorded evenings offer an honest browse action"
     },
     {
       "ok": true,
@@ -293,11 +393,31 @@
     },
     {
       "ok": true,
+      "label": "Host-again starts fresh actual goals while keeping all once-only ownership"
+    },
+    {
+      "ok": true,
+      "label": "An active repeat does not show the old completed card"
+    },
+    {
+      "ok": true,
       "label": "A genuine pristine checkpoint can be restored"
     },
     {
       "ok": true,
       "label": "Restoring empty history clears the old paper receipt"
+    },
+    {
+      "ok": true,
+      "label": "A valid private checkpoint can restore its actual selected food shelf"
+    },
+    {
+      "ok": true,
+      "label": "Restored shelf quotes and names the actual dish instead of a theme default"
+    },
+    {
+      "ok": true,
+      "label": "Actual restored-shelf receipt, quote and ledger recipe agree"
     },
     {
       "ok": true,
@@ -328,6 +448,22 @@
         "overlaps": [],
         "selectedVisible": true
       }
+    },
+    {
+      "ok": true,
+      "label": "phone: objective count remains beside the first-viewport service controls"
+    },
+    {
+      "ok": true,
+      "label": "Phone: all service actions remain in the first hosting viewport"
+    },
+    {
+      "ok": true,
+      "label": "Phone: committed result and feedback remain within reach after serving"
+    },
+    {
+      "ok": true,
+      "label": "Phone: serving does not expand inspection tools over the goals"
     },
     {
       "ok": true,
@@ -365,6 +501,10 @@
     },
     {
       "ok": true,
+      "label": "fold: objective count remains beside the first-viewport service controls"
+    },
+    {
+      "ok": true,
       "label": "fold: service pause remains in the first viewport"
     },
     {
@@ -396,6 +536,10 @@
         "overlaps": [],
         "selectedVisible": true
       }
+    },
+    {
+      "ok": true,
+      "label": "landscape: objective count remains beside the first-viewport service controls"
     },
     {
       "ok": true,
@@ -443,6 +587,9 @@
   "screenshots": [
     "desktop-initial.png",
     "desktop-deferred-recovery.png",
+    "desktop-keepsake-ready.png",
+    "phone-keepsake-ready.png",
+    "phone-keepsake-recorded.png",
     "desktop-three-goals.png",
     "phone-idle.png",
     "phone-hosting.png",
@@ -453,6 +600,16 @@
     "desktop-premium-receipt.png"
   ],
   "layouts": [
+    {
+      "name": "phone keepsake",
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "small": [],
+      "clipped": [],
+      "overlaps": [],
+      "selectedVisible": true
+    },
     {
       "name": "phone idle",
       "width": 390,
