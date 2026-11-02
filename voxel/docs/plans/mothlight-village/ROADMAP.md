@@ -191,6 +191,20 @@ The village supplies unique utility and variety, not a flat multiplier that make
 
 Guest budgets remain finite. Travel does not reset them. Keep visitor/customer identity namespaces and stable visit IDs. Tip, ticket, food, commission and quest-gift statistics remain distinct. New footfall bonuses must join one capped calculation with existing rushes, VIPs, appeal and harvest streaks; do not multiply every bonus indefinitely.
 
+The first specialist rewards should visibly change what the player can do:
+
+| Quest-earned blueprint | New practical use | Economy constraint |
+| --- | --- | --- |
+| Rowan’s organised harvest store | A new stock-capacity branch and material chest | Buy the new tier with real coins/materials; no free duplicate produce |
+| Elowen’s moonwell garden | Cultivate discovered ingredients and unlock a crop-care branch | Real growth times, pantry space and supply consumption remain |
+| Cinder’s prepared-service kitchen | Queue supplied cooking batches and meet new restaurant orders | Use the existing recipe/equipment/purse rules; no second payment for a delivery |
+| Corvus’s festival invitation | A bounded new attraction/visitor event plus authored scare scene | Share the existing global rush/footfall cap; preserve guest budgets |
+| Opal’s inhabited house extension | New useful room/exterior blueprints and interactive décor | Keep valid furnishing footprints and existing house ownership |
+
+These are new expansion branches. A quest teaches and unlocks the blueprint; it
+need not instantly hand out its strongest economic tier. Cost and throughput
+must be simulated with the current late-game upgrades before implementation.
+
 Aim for ordinary character quests to take roughly 8–15 minutes of varied activity, and finales 20–30 minutes. Long home restorations are visible projects spread across sessions. No single short quest should demand more than two normal gathering routes. This is a target to simulate and test, not a reason to add waiting screens.
 
 ## 8. Cinematics, dialogue and puzzle accessibility
@@ -210,6 +224,8 @@ Puzzles need progressive hints, reset and equivalent symbol/text cues for colour
 ## 9. Save and reward contracts
 
 Village state needs a versioned namespace: district flags, node remaining timers, construction jobs, resident bonds/chapters, quest evidence, scene checkpoints, claimed reward keys and venue supplies. Preserve unknown future data rather than replacing it with an empty village. Persist origin bindings on in-flight deliveries and visits explicitly.
+
+Shane and Natalie share village progression and resident bonds. Switching the controlled owner must neither reset a quest nor create a second reward claim.
 
 A quest reward uses a stable claim key. Commit step completion, material consumption, coins and ownership together, or recover idempotently from that key. A skipped cinematic, reload during a reveal, full inventory, duplicate callback or scene transition must not lose or duplicate a recipe, costume or item. Presentation completion is not proof of gameplay completion. Gift/contract repeat limits use saved IDs and active time, not a fresh random roll on every load.
 

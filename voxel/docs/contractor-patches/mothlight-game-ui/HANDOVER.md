@@ -45,3 +45,5 @@ or Bluetooth-device test. Hold-to-buy and controller focus remain native.
 
 Use `DEPENDENCIES.md` before changing selectors, sheet positioning or service
 menus. The rendered menu still relies on the lead's world-menu/pad-menu rules.
+
+Final purple edition:85 actual-game browser checks pass with no page errors or external requests. See verification/README.md and screenshots. Village roadmap is plan-only.

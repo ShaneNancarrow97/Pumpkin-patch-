@@ -1,0 +1,85 @@
+ok  The real voxel game boots with the optional ledger theme and no receipt-lab runtime
+ok  The existing introduction hands control back to the sprite-based farm
+ok  desktop initial: farm canvas, HUD and dock are unobstructed after closing menus
+ok  desktop Manage: panel fits the viewport without horizontal scrolling
+ok  desktop Manage: visible enabled buttons retain comfortable44px targets
+ok  desktop Manage: actual menu surface keeps purple parchment and the dark color scheme
+ok  desktop Manage: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  desktop: existing farm upgrade content opens
+ok  desktop Farm upgrades: panel fits the viewport without horizontal scrolling
+ok  desktop Farm upgrades: visible enabled buttons retain comfortable44px targets
+ok  desktop Farm upgrades: actual menu surface keeps purple parchment and the dark color scheme
+ok  desktop Farm upgrades: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  Reduced motion keeps the sparkling page edge static and noninteractive
+ok  Normal motion adds only the restrained six-second sparkling page edge
+ok  Restoring reduced motion stops the page-edge twinkle
+ok  desktop: existing wardrobe opens
+ok  desktop Wardrobe: panel fits the viewport without horizontal scrolling
+ok  desktop Wardrobe: visible enabled buttons retain comfortable44px targets
+ok  desktop Wardrobe: actual menu surface keeps purple parchment and the dark color scheme
+ok  desktop Wardrobe: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  desktop: existing settings open
+ok  desktop Settings: panel fits the viewport without horizontal scrolling
+ok  desktop Settings: visible enabled buttons retain comfortable44px targets
+ok  desktop Settings: actual menu surface keeps purple parchment and the dark color scheme
+ok  desktop Settings: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  desktop Home sheet: panel fits the viewport without horizontal scrolling
+ok  desktop Home sheet: visible enabled buttons retain comfortable44px targets
+ok  desktop Home sheet: actual menu surface keeps purple parchment and the dark color scheme
+ok  desktop Home sheet: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  desktop final: farm canvas, HUD and dock are unobstructed after closing menus
+ok  desktop: menu navigation does not charge coins or change earned income
+ok  fold initial: farm canvas, HUD and dock are unobstructed after closing menus
+ok  fold Manage: panel fits the viewport without horizontal scrolling
+ok  fold Manage: visible enabled buttons retain comfortable44px targets
+ok  fold Manage: actual menu surface keeps purple parchment and the dark color scheme
+ok  fold Manage: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  fold: existing farm upgrade content opens
+ok  fold Farm upgrades: panel fits the viewport without horizontal scrolling
+ok  fold Farm upgrades: visible enabled buttons retain comfortable44px targets
+ok  fold Farm upgrades: actual menu surface keeps purple parchment and the dark color scheme
+ok  fold Farm upgrades: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  fold: existing wardrobe opens
+ok  fold Wardrobe: panel fits the viewport without horizontal scrolling
+ok  fold Wardrobe: visible enabled buttons retain comfortable44px targets
+ok  fold Wardrobe: actual menu surface keeps purple parchment and the dark color scheme
+ok  fold Wardrobe: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  fold: existing settings open
+ok  fold Settings: panel fits the viewport without horizontal scrolling
+ok  fold Settings: visible enabled buttons retain comfortable44px targets
+ok  fold Settings: actual menu surface keeps purple parchment and the dark color scheme
+ok  fold Settings: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  fold Home sheet: panel fits the viewport without horizontal scrolling
+ok  fold Home sheet: visible enabled buttons retain comfortable44px targets
+ok  fold Home sheet: actual menu surface keeps purple parchment and the dark color scheme
+ok  fold Home sheet: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  fold final: farm canvas, HUD and dock are unobstructed after closing menus
+ok  fold: menu navigation does not charge coins or change earned income
+ok  phone initial: farm canvas, HUD and dock are unobstructed after closing menus
+ok  phone Manage: panel fits the viewport without horizontal scrolling
+ok  phone Manage: visible enabled buttons retain comfortable44px targets
+ok  phone Manage: actual menu surface keeps purple parchment and the dark color scheme
+ok  phone Manage: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  phone: existing farm upgrade content opens
+ok  phone Farm upgrades: panel fits the viewport without horizontal scrolling
+ok  phone Farm upgrades: visible enabled buttons retain comfortable44px targets
+ok  phone Farm upgrades: actual menu surface keeps purple parchment and the dark color scheme
+ok  phone Farm upgrades: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  phone: existing wardrobe opens
+ok  phone Wardrobe: panel fits the viewport without horizontal scrolling
+ok  phone Wardrobe: visible enabled buttons retain comfortable44px targets
+ok  phone Wardrobe: actual menu surface keeps purple parchment and the dark color scheme
+ok  phone Wardrobe: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  phone: existing settings open
+ok  phone Settings: panel fits the viewport without horizontal scrolling
+ok  phone Settings: visible enabled buttons retain comfortable44px targets
+ok  phone Settings: actual menu surface keeps purple parchment and the dark color scheme
+ok  phone Settings: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  phone Home sheet: panel fits the viewport without horizontal scrolling
+ok  phone Home sheet: visible enabled buttons retain comfortable44px targets
+ok  phone Home sheet: actual menu surface keeps purple parchment and the dark color scheme
+ok  phone Home sheet: normal labels contrast at least4.5:1 against the declared purple paper base
+ok  phone final: farm canvas, HUD and dock are unobstructed after closing menus
+ok  phone: menu navigation does not charge coins or change earned income
+ok  Existing save key and version14 serializer still record the real game state
+ok  Full offline game menu pass has no JavaScript errors or external requests

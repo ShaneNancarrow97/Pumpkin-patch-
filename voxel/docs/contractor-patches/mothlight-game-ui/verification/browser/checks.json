@@ -1,0 +1,5088 @@
+{
+  "htmlSHA256": "55a86e616607da83bbeb98fc5cb27b94ffa8a7890f32c0c7384b3e954b7eab2c",
+  "htmlBytes": 37956595,
+  "scope": "Actual offline voxel game; theme and existing menu navigation on software WebGL. Exact embedded HTML served over loopback because managed Chromium blocks file URLs. Reduced-effects QA preferences only. No physical Fold, Bluetooth, ride or full-economy claim.",
+  "qaSHA256": "d78571a5de378c753244ff72380cd6f99bb677fbcb7cbecf811396f78307c816",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "The real voxel game boots with the optional ledger theme and no receipt-lab runtime"
+    },
+    {
+      "ok": true,
+      "label": "The existing introduction hands control back to the sprite-based farm"
+    },
+    {
+      "ok": true,
+      "label": "desktop initial: farm canvas, HUD and dock are unobstructed after closing menus",
+      "data": {
+        "canvas": {
+          "width": 1280,
+          "height": 800,
+          "display": "block"
+        },
+        "blocked": [],
+        "sheetHidden": true,
+        "manageHidden": true,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Manage: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 450,
+          "y": 71,
+          "width": 380,
+          "height": 660,
+          "top": 71,
+          "right": 830,
+          "bottom": 731,
+          "left": 450
+        },
+        "width": 1280,
+        "height": 800,
+        "paper": "rgba(0, 0, 0, 0)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), linear-gradient(110deg, rgb(56, 41, 64), rgb(73, 54, 79) 10%, rgb(61, 43, 70))",
+        "paperColors": [
+          "rgb(56, 41, 64)",
+          "rgb(73, 54, 79)",
+          "rgb(61, 43, 70)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "#45364d",
+        "text": [
+          {
+            "text": "Manage your patch",
+            "color": "rgb(241, 230, 215)",
+            "contrast": 9.02610536617041
+          },
+          {
+            "text": "Grow your patch",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Tools, yield, helpers, plots and the barn",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Seeds",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "New pumpkin varieties",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Stock",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "The stall, stock and the market cart",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Visitors & VIPs",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Crowds, caretakers, spending, harvest rushes ",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Home & care",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Home goals and hands-on play",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Your businesses",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Skyla’s shop",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Skyla’s shop and customer care",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Sandy’s cocoa",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Sandy’s stand and the meadow",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Maisie’s kitchen",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Food truck, pantry, recipes and food shelves",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          }
+        ],
+        "titleInk": "rgb(241, 230, 215)",
+        "controls": [
+          {
+            "text": "Farm upgradesTools, yield, helpers, plots and",
+            "x": 463,
+            "y": 229.59375,
+            "width": 354,
+            "height": 58,
+            "top": 229.59375,
+            "right": 817,
+            "bottom": 287.59375,
+            "left": 463
+          },
+          {
+            "text": "SeedsNew pumpkin varieties›",
+            "x": 463,
+            "y": 287.59375,
+            "width": 354,
+            "height": 58,
+            "top": 287.59375,
+            "right": 817,
+            "bottom": 345.59375,
+            "left": 463
+          },
+          {
+            "text": "StockThe stall, stock and the market cart›",
+            "x": 463,
+            "y": 345.59375,
+            "width": 354,
+            "height": 58,
+            "top": 345.59375,
+            "right": 817,
+            "bottom": 403.59375,
+            "left": 463
+          },
+          {
+            "text": "Visitors & VIPsCrowds, caretakers, spending, ",
+            "x": 463,
+            "y": 403.59375,
+            "width": 354,
+            "height": 74.09375,
+            "top": 403.59375,
+            "right": 817,
+            "bottom": 477.6875,
+            "left": 463
+          },
+          {
+            "text": "Home & careHome goals and hands-on play›",
+            "x": 463,
+            "y": 477.6875,
+            "width": 354,
+            "height": 58,
+            "top": 477.6875,
+            "right": 817,
+            "bottom": 535.6875,
+            "left": 463
+          },
+          {
+            "text": "Skyla’s shopSkyla’s shop and customer care›",
+            "x": 463,
+            "y": 572.484375,
+            "width": 354,
+            "height": 58,
+            "top": 572.484375,
+            "right": 817,
+            "bottom": 630.484375,
+            "left": 463
+          },
+          {
+            "text": "Sandy’s cocoaSandy’s stand and the meadow›",
+            "x": 463,
+            "y": 630.484375,
+            "width": 354,
+            "height": 58,
+            "top": 630.484375,
+            "right": 817,
+            "bottom": 688.484375,
+            "left": 463
+          },
+          {
+            "text": "Maisie’s kitchenFood truck, pantry, recipes a",
+            "x": 463,
+            "y": 688.484375,
+            "width": 354,
+            "height": 58,
+            "top": 688.484375,
+            "right": 817,
+            "bottom": 746.484375,
+            "left": 463
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Manage: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "desktop Manage: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgba(0, 0, 0, 0)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), linear-gradient(110deg, rgb(56, 41, 64), rgb(73, 54, 79) 10%, rgb(61, 43, 70))",
+        "paperColors": [
+          "rgb(56, 41, 64)",
+          "rgb(73, 54, 79)",
+          "rgb(61, 43, 70)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Manage: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "#45364d",
+        "samples": [
+          {
+            "text": "Manage your patch",
+            "color": "rgb(241, 230, 215)",
+            "contrast": 9.02610536617041
+          },
+          {
+            "text": "Grow your patch",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Tools, yield, helpers, plots and the barn",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Seeds",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "New pumpkin varieties",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Stock",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "The stall, stock and the market cart",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Visitors & VIPs",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Crowds, caretakers, spending, harvest rushes ",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Home & care",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Home goals and hands-on play",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Your businesses",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Skyla’s shop",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Skyla’s shop and customer care",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Sandy’s cocoa",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Sandy’s stand and the meadow",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Maisie’s kitchen",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Food truck, pantry, recipes and food shelves",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop: existing farm upgrade content opens"
+    },
+    {
+      "ok": true,
+      "label": "desktop Farm upgrades: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 350,
+          "y": 66,
+          "width": 580,
+          "height": 652,
+          "top": 66,
+          "right": 930,
+          "bottom": 718,
+          "left": 350
+        },
+        "width": 1280,
+        "height": 800,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Your pumpkin patch",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "A better watering can",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Pumpkins grow 18% faster.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A little extra love",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "One more pumpkin per harvest.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Helping hands",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Shane and Natalie plant and pick for you, and",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Room for more",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Open more beds, then buy the south field for ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A market cart",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "When the barn is full, Shane drives the extra",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A bigger pumpkin barn",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "0/180 stored. Next tier adds 180 spaces.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 853,
+            "y": 85.59375,
+            "width": 44,
+            "height": 44,
+            "top": 85.59375,
+            "right": 897,
+            "bottom": 129.59375,
+            "left": 853
+          },
+          {
+            "text": "Farm",
+            "x": 384,
+            "y": 164.171875,
+            "width": 168.65625,
+            "height": 46,
+            "top": 164.171875,
+            "right": 552.65625,
+            "bottom": 210.171875,
+            "left": 384
+          },
+          {
+            "text": "Seeds",
+            "x": 555.65625,
+            "y": 164.171875,
+            "width": 168.671875,
+            "height": 46,
+            "top": 164.171875,
+            "right": 724.328125,
+            "bottom": 210.171875,
+            "left": 555.65625
+          },
+          {
+            "text": "Shop",
+            "x": 727.328125,
+            "y": 164.171875,
+            "width": 168.671875,
+            "height": 46,
+            "top": 164.171875,
+            "right": 896,
+            "bottom": 210.171875,
+            "left": 727.328125
+          },
+          {
+            "text": "Cocoa",
+            "x": 384,
+            "y": 213.171875,
+            "width": 168.65625,
+            "height": 46,
+            "top": 213.171875,
+            "right": 552.65625,
+            "bottom": 259.171875,
+            "left": 384
+          },
+          {
+            "text": "Stock",
+            "x": 555.65625,
+            "y": 213.171875,
+            "width": 168.671875,
+            "height": 46,
+            "top": 213.171875,
+            "right": 724.328125,
+            "bottom": 259.171875,
+            "left": 555.65625
+          },
+          {
+            "text": "Visitors",
+            "x": 727.328125,
+            "y": 213.171875,
+            "width": 168.671875,
+            "height": 46,
+            "top": 213.171875,
+            "right": 896,
+            "bottom": 259.171875,
+            "left": 727.328125
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Farm upgrades: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "desktop Farm upgrades: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Farm upgrades: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Your pumpkin patch",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "A better watering can",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Pumpkins grow 18% faster.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A little extra love",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "One more pumpkin per harvest.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Helping hands",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Shane and Natalie plant and pick for you, and",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Room for more",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Open more beds, then buy the south field for ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A market cart",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "When the barn is full, Shane drives the extra",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A bigger pumpkin barn",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "0/180 stored. Next tier adds 180 spaces.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "Reduced motion keeps the sparkling page edge static and noninteractive",
+      "data": {
+        "animation": "none",
+        "duration": "0s",
+        "pointerEvents": "none",
+        "background": "radial-gradient(circle at 1% 8%, rgb(244, 219, 162) 0px, rgb(244, 219, 162) 1.3px, rgba(0, 0, 0, 0) 2.7px), radial-gradient(circle at 99% 14%, rgb(230, 198, 239) 0px, rgb(230, 198, 239) 1.2px, rgba(0, 0, 0, 0) 2.8px), radial-gradient(circle at 99% 87%, rgb(243, 214, 155) 0px, rgb(243, 214, 155) 1.5px, rgba(0, 0, 0, 0) 3px), radial-gradient(circle at 1% 91%, rgb(219, 193, 237) 0px, rgb(219, 193, 237) 1px, rgba(0, 0, 0, 0) 2.6px)"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Normal motion adds only the restrained six-second sparkling page edge",
+      "data": {
+        "animation": "mothlight-foil",
+        "duration": "6s",
+        "pointerEvents": "none",
+        "background": "radial-gradient(circle at 1% 8%, rgb(244, 219, 162) 0px, rgb(244, 219, 162) 1.3px, rgba(0, 0, 0, 0) 2.7px), radial-gradient(circle at 99% 14%, rgb(230, 198, 239) 0px, rgb(230, 198, 239) 1.2px, rgba(0, 0, 0, 0) 2.8px), radial-gradient(circle at 99% 87%, rgb(243, 214, 155) 0px, rgb(243, 214, 155) 1.5px, rgba(0, 0, 0, 0) 3px), radial-gradient(circle at 1% 91%, rgb(219, 193, 237) 0px, rgb(219, 193, 237) 1px, rgba(0, 0, 0, 0) 2.6px)"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Restoring reduced motion stops the page-edge twinkle"
+    },
+    {
+      "ok": true,
+      "label": "desktop: existing wardrobe opens"
+    },
+    {
+      "ok": true,
+      "label": "desktop Wardrobe: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 350,
+          "y": 66,
+          "width": 580,
+          "height": 652,
+          "top": 66,
+          "right": 930,
+          "bottom": 718,
+          "left": 350
+        },
+        "width": 1280,
+        "height": 800,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Dress for the witching hour",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Wardrobe",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Natalie’s original outfit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Her olive sweater, favourite boots, glasses, ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Harvest witch",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A pointed hat, enchanted layers, and a little",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Ghost bride",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Moon-white lace and a haunting veil for a won",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bat queen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Velvet, batwing details, and queen-of-the-pat",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Velvet vampire",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A crimson-lined cape, velvet dress and tiny f",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Patchwork monster",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Playful green makeup, stitched details and ch",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Moonlit mummy",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Soft linen wrappings and golden amulet detail",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Midnight slasher",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "An original pale scream mask and flowing blac",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Tiffany costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie's glasses and tattoos with a blonde w",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Freddy costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie in red and green stripes, a battered ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Purple wheels & dungarees",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Purple wheelchair, plaits and stylish dungare",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Natalie’s knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Olive knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Wearing now",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Plum knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Rust knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 853,
+            "y": 81.5,
+            "width": 44,
+            "height": 44,
+            "top": 81.5,
+            "right": 897,
+            "bottom": 125.5,
+            "left": 853
+          },
+          {
+            "text": "Natalie",
+            "x": 384,
+            "y": 156,
+            "width": 255,
+            "height": 46,
+            "top": 156,
+            "right": 639,
+            "bottom": 202,
+            "left": 384
+          },
+          {
+            "text": "Shane",
+            "x": 641,
+            "y": 156,
+            "width": 255,
+            "height": 46,
+            "top": 156,
+            "right": 896,
+            "bottom": 202,
+            "left": 641
+          },
+          {
+            "text": "Everything",
+            "x": 384,
+            "y": 220,
+            "width": 169.328125,
+            "height": 46,
+            "top": 220,
+            "right": 553.328125,
+            "bottom": 266,
+            "left": 384
+          },
+          {
+            "text": "Classic",
+            "x": 555.328125,
+            "y": 220,
+            "width": 169.34375,
+            "height": 46,
+            "top": 220,
+            "right": 724.671875,
+            "bottom": 266,
+            "left": 555.328125
+          },
+          {
+            "text": "90s Halloween",
+            "x": 726.671875,
+            "y": 220,
+            "width": 169.328125,
+            "height": 46,
+            "top": 220,
+            "right": 896,
+            "bottom": 266,
+            "left": 726.671875
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Wardrobe: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "desktop Wardrobe: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Wardrobe: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Dress for the witching hour",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Wardrobe",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Natalie’s original outfit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Her olive sweater, favourite boots, glasses, ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Harvest witch",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A pointed hat, enchanted layers, and a little",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Ghost bride",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Moon-white lace and a haunting veil for a won",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bat queen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Velvet, batwing details, and queen-of-the-pat",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Velvet vampire",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A crimson-lined cape, velvet dress and tiny f",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Patchwork monster",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Playful green makeup, stitched details and ch",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Moonlit mummy",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Soft linen wrappings and golden amulet detail",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Midnight slasher",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "An original pale scream mask and flowing blac",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Tiffany costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie's glasses and tattoos with a blonde w",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Freddy costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie in red and green stripes, a battered ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Purple wheels & dungarees",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Purple wheelchair, plaits and stylish dungare",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Natalie’s knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Olive knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Wearing now",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Plum knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Rust knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop: existing settings open"
+    },
+    {
+      "ok": true,
+      "label": "desktop Settings: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 350,
+          "y": 66,
+          "width": 580,
+          "height": 652,
+          "top": 66,
+          "right": 930,
+          "bottom": 718,
+          "left": 350
+        },
+        "width": 1280,
+        "height": 800,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Make yourself at home",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Settings",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Backups",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Your farm saves itself on this device. Copy a",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Voxel build of Shane & Natalie’s Pumpkin Patc",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 853,
+            "y": 81.5,
+            "width": 44,
+            "height": 44,
+            "top": 81.5,
+            "right": 897,
+            "bottom": 125.5,
+            "left": 853
+          },
+          {
+            "text": "Off",
+            "x": 821,
+            "y": 163,
+            "width": 76,
+            "height": 44,
+            "top": 163,
+            "right": 897,
+            "bottom": 207,
+            "left": 821
+          },
+          {
+            "text": "On",
+            "x": 821,
+            "y": 398,
+            "width": 76,
+            "height": 44,
+            "top": 398,
+            "right": 897,
+            "bottom": 442,
+            "left": 821
+          },
+          {
+            "text": "Next song",
+            "x": 810.65625,
+            "y": 475,
+            "width": 86.34375,
+            "height": 44,
+            "top": 475,
+            "right": 897,
+            "bottom": 519,
+            "left": 810.65625
+          },
+          {
+            "text": "Off",
+            "x": 821,
+            "y": 552,
+            "width": 76,
+            "height": 44,
+            "top": 552,
+            "right": 897,
+            "bottom": 596,
+            "left": 821
+          },
+          {
+            "text": "Off",
+            "x": 821,
+            "y": 629,
+            "width": 76,
+            "height": 44,
+            "top": 629,
+            "right": 897,
+            "bottom": 673,
+            "left": 821
+          },
+          {
+            "text": "On",
+            "x": 821,
+            "y": 706,
+            "width": 76,
+            "height": 44,
+            "top": 706,
+            "right": 897,
+            "bottom": 750,
+            "left": 821
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Settings: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "desktop Settings: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Settings: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Make yourself at home",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Settings",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Backups",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Your farm saves itself on this device. Copy a",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Voxel build of Shane & Natalie’s Pumpkin Patc",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Home sheet: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 908,
+          "y": 66,
+          "width": 360,
+          "height": 658,
+          "top": 66,
+          "right": 1268,
+          "bottom": 724,
+          "left": 908
+        },
+        "width": 1280,
+        "height": 800,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Our crooked cottage",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Home",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Rooms",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Parlour",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Our reading corner and the heart of the house",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor · 2/6 pieces",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bedroom",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Crooked cottage.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, up new stairs from the Parlour",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Kitchen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Midnight manor.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, through a new doorway from the ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Attic",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Haunted haven.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "12 × 6 floor, up a ladder from the Bedroom",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "The Parlour’s look",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "The parlour’s look changes as the house grows",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Wallpaper",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Buy wallpaper in Decorate to dress these wall",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 1193,
+            "y": 84.9375,
+            "width": 44,
+            "height": 44,
+            "top": 84.9375,
+            "right": 1237,
+            "bottom": 128.9375,
+            "left": 1193
+          },
+          {
+            "text": "Rooms",
+            "x": 940,
+            "y": 164.875,
+            "width": 97.328125,
+            "height": 44,
+            "top": 164.875,
+            "right": 1037.328125,
+            "bottom": 208.875,
+            "left": 940
+          },
+          {
+            "text": "Furnish",
+            "x": 1039.328125,
+            "y": 164.875,
+            "width": 97.34375,
+            "height": 44,
+            "top": 164.875,
+            "right": 1136.671875,
+            "bottom": 208.875,
+            "left": 1039.328125
+          },
+          {
+            "text": "Expand",
+            "x": 1138.671875,
+            "y": 164.875,
+            "width": 97.328125,
+            "height": 44,
+            "top": 164.875,
+            "right": 1236,
+            "bottom": 208.875,
+            "left": 1138.671875
+          },
+          {
+            "text": "Go in",
+            "x": 1160,
+            "y": 291.046875,
+            "width": 68,
+            "height": 44,
+            "top": 291.046875,
+            "right": 1228,
+            "bottom": 335.046875,
+            "left": 1160
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Home sheet: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "desktop Home sheet: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop Home sheet: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Our crooked cottage",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Home",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Rooms",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Parlour",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Our reading corner and the heart of the house",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor · 2/6 pieces",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bedroom",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Crooked cottage.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, up new stairs from the Parlour",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Kitchen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Midnight manor.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, through a new doorway from the ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Attic",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Haunted haven.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "12 × 6 floor, up a ladder from the Bedroom",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "The Parlour’s look",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "The parlour’s look changes as the house grows",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Wallpaper",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Buy wallpaper in Decorate to dress these wall",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop final: farm canvas, HUD and dock are unobstructed after closing menus",
+      "data": {
+        "canvas": {
+          "width": 1280,
+          "height": 800,
+          "display": "block"
+        },
+        "blocked": [],
+        "sheetHidden": true,
+        "manageHidden": true,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "desktop: menu navigation does not charge coins or change earned income"
+    },
+    {
+      "ok": true,
+      "label": "fold initial: farm canvas, HUD and dock are unobstructed after closing menus",
+      "data": {
+        "canvas": {
+          "width": 874,
+          "height": 787,
+          "display": "block"
+        },
+        "blocked": [],
+        "sheetHidden": true,
+        "manageHidden": true,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Manage: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 247,
+          "y": 71,
+          "width": 380,
+          "height": 647,
+          "top": 71,
+          "right": 627,
+          "bottom": 718,
+          "left": 247
+        },
+        "width": 874,
+        "height": 787,
+        "paper": "rgba(0, 0, 0, 0)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), linear-gradient(110deg, rgb(56, 41, 64), rgb(73, 54, 79) 10%, rgb(61, 43, 70))",
+        "paperColors": [
+          "rgb(56, 41, 64)",
+          "rgb(73, 54, 79)",
+          "rgb(61, 43, 70)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "#45364d",
+        "text": [
+          {
+            "text": "Manage your patch",
+            "color": "rgb(241, 230, 215)",
+            "contrast": 9.02610536617041
+          },
+          {
+            "text": "Grow your patch",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Tools, yield, helpers, plots and the barn",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Seeds",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "New pumpkin varieties",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Stock",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "The stall, stock and the market cart",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Visitors & VIPs",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Crowds, caretakers, spending, harvest rushes ",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Home & care",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Home goals and hands-on play",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Your businesses",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Skyla’s shop",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Skyla’s shop and customer care",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Sandy’s cocoa",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Sandy’s stand and the meadow",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Maisie’s kitchen",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Food truck, pantry, recipes and food shelves",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          }
+        ],
+        "titleInk": "rgb(241, 230, 215)",
+        "controls": [
+          {
+            "text": "Farm upgradesTools, yield, helpers, plots and",
+            "x": 260,
+            "y": 229.59375,
+            "width": 354,
+            "height": 58,
+            "top": 229.59375,
+            "right": 614,
+            "bottom": 287.59375,
+            "left": 260
+          },
+          {
+            "text": "SeedsNew pumpkin varieties›",
+            "x": 260,
+            "y": 287.59375,
+            "width": 354,
+            "height": 58,
+            "top": 287.59375,
+            "right": 614,
+            "bottom": 345.59375,
+            "left": 260
+          },
+          {
+            "text": "StockThe stall, stock and the market cart›",
+            "x": 260,
+            "y": 345.59375,
+            "width": 354,
+            "height": 58,
+            "top": 345.59375,
+            "right": 614,
+            "bottom": 403.59375,
+            "left": 260
+          },
+          {
+            "text": "Visitors & VIPsCrowds, caretakers, spending, ",
+            "x": 260,
+            "y": 403.59375,
+            "width": 354,
+            "height": 74.09375,
+            "top": 403.59375,
+            "right": 614,
+            "bottom": 477.6875,
+            "left": 260
+          },
+          {
+            "text": "Home & careHome goals and hands-on play›",
+            "x": 260,
+            "y": 477.6875,
+            "width": 354,
+            "height": 58,
+            "top": 477.6875,
+            "right": 614,
+            "bottom": 535.6875,
+            "left": 260
+          },
+          {
+            "text": "Skyla’s shopSkyla’s shop and customer care›",
+            "x": 260,
+            "y": 572.484375,
+            "width": 354,
+            "height": 58,
+            "top": 572.484375,
+            "right": 614,
+            "bottom": 630.484375,
+            "left": 260
+          },
+          {
+            "text": "Sandy’s cocoaSandy’s stand and the meadow›",
+            "x": 260,
+            "y": 630.484375,
+            "width": 354,
+            "height": 58,
+            "top": 630.484375,
+            "right": 614,
+            "bottom": 688.484375,
+            "left": 260
+          },
+          {
+            "text": "Maisie’s kitchenFood truck, pantry, recipes a",
+            "x": 260,
+            "y": 688.484375,
+            "width": 354,
+            "height": 58,
+            "top": 688.484375,
+            "right": 614,
+            "bottom": 746.484375,
+            "left": 260
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Manage: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "fold Manage: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgba(0, 0, 0, 0)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), linear-gradient(110deg, rgb(56, 41, 64), rgb(73, 54, 79) 10%, rgb(61, 43, 70))",
+        "paperColors": [
+          "rgb(56, 41, 64)",
+          "rgb(73, 54, 79)",
+          "rgb(61, 43, 70)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Manage: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "#45364d",
+        "samples": [
+          {
+            "text": "Manage your patch",
+            "color": "rgb(241, 230, 215)",
+            "contrast": 9.02610536617041
+          },
+          {
+            "text": "Grow your patch",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Tools, yield, helpers, plots and the barn",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Seeds",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "New pumpkin varieties",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Stock",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "The stall, stock and the market cart",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Visitors & VIPs",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Crowds, caretakers, spending, harvest rushes ",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Home & care",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Home goals and hands-on play",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Your businesses",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Skyla’s shop",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Skyla’s shop and customer care",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Sandy’s cocoa",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Sandy’s stand and the meadow",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Maisie’s kitchen",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Food truck, pantry, recipes and food shelves",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: existing farm upgrade content opens"
+    },
+    {
+      "ok": true,
+      "label": "fold Farm upgrades: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 147,
+          "y": 66,
+          "width": 580,
+          "height": 639,
+          "top": 66,
+          "right": 727,
+          "bottom": 705,
+          "left": 147
+        },
+        "width": 874,
+        "height": 787,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Your pumpkin patch",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "A better watering can",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Pumpkins grow 18% faster.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A little extra love",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "One more pumpkin per harvest.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Helping hands",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Shane and Natalie plant and pick for you, and",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Room for more",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Open more beds, then buy the south field for ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A market cart",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "When the barn is full, Shane drives the extra",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A bigger pumpkin barn",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "0/180 stored. Next tier adds 180 spaces.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 650,
+            "y": 85.25,
+            "width": 44,
+            "height": 44,
+            "top": 85.25,
+            "right": 694,
+            "bottom": 129.25,
+            "left": 650
+          },
+          {
+            "text": "Farm",
+            "x": 181,
+            "y": 163.484375,
+            "width": 168.65625,
+            "height": 46,
+            "top": 163.484375,
+            "right": 349.65625,
+            "bottom": 209.484375,
+            "left": 181
+          },
+          {
+            "text": "Seeds",
+            "x": 352.65625,
+            "y": 163.484375,
+            "width": 168.671875,
+            "height": 46,
+            "top": 163.484375,
+            "right": 521.328125,
+            "bottom": 209.484375,
+            "left": 352.65625
+          },
+          {
+            "text": "Shop",
+            "x": 524.328125,
+            "y": 163.484375,
+            "width": 168.671875,
+            "height": 46,
+            "top": 163.484375,
+            "right": 693,
+            "bottom": 209.484375,
+            "left": 524.328125
+          },
+          {
+            "text": "Cocoa",
+            "x": 181,
+            "y": 212.484375,
+            "width": 168.65625,
+            "height": 46,
+            "top": 212.484375,
+            "right": 349.65625,
+            "bottom": 258.484375,
+            "left": 181
+          },
+          {
+            "text": "Stock",
+            "x": 352.65625,
+            "y": 212.484375,
+            "width": 168.671875,
+            "height": 46,
+            "top": 212.484375,
+            "right": 521.328125,
+            "bottom": 258.484375,
+            "left": 352.65625
+          },
+          {
+            "text": "Visitors",
+            "x": 524.328125,
+            "y": 212.484375,
+            "width": 168.671875,
+            "height": 46,
+            "top": 212.484375,
+            "right": 693,
+            "bottom": 258.484375,
+            "left": 524.328125
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Farm upgrades: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "fold Farm upgrades: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Farm upgrades: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Your pumpkin patch",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "A better watering can",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Pumpkins grow 18% faster.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A little extra love",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "One more pumpkin per harvest.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Helping hands",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Shane and Natalie plant and pick for you, and",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Room for more",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Open more beds, then buy the south field for ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A market cart",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "When the barn is full, Shane drives the extra",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A bigger pumpkin barn",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "0/180 stored. Next tier adds 180 spaces.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: existing wardrobe opens"
+    },
+    {
+      "ok": true,
+      "label": "fold Wardrobe: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 147,
+          "y": 66,
+          "width": 580,
+          "height": 639,
+          "top": 66,
+          "right": 727,
+          "bottom": 705,
+          "left": 147
+        },
+        "width": 874,
+        "height": 787,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Dress for the witching hour",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Wardrobe",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Natalie’s original outfit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Her olive sweater, favourite boots, glasses, ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Harvest witch",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A pointed hat, enchanted layers, and a little",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Ghost bride",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Moon-white lace and a haunting veil for a won",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bat queen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Velvet, batwing details, and queen-of-the-pat",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Velvet vampire",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A crimson-lined cape, velvet dress and tiny f",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Patchwork monster",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Playful green makeup, stitched details and ch",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Moonlit mummy",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Soft linen wrappings and golden amulet detail",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Midnight slasher",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "An original pale scream mask and flowing blac",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Tiffany costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie's glasses and tattoos with a blonde w",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Freddy costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie in red and green stripes, a battered ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Purple wheels & dungarees",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Purple wheelchair, plaits and stylish dungare",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Natalie’s knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Olive knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Wearing now",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Plum knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Rust knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 650,
+            "y": 81.5,
+            "width": 44,
+            "height": 44,
+            "top": 81.5,
+            "right": 694,
+            "bottom": 125.5,
+            "left": 650
+          },
+          {
+            "text": "Natalie",
+            "x": 181,
+            "y": 156,
+            "width": 255,
+            "height": 46,
+            "top": 156,
+            "right": 436,
+            "bottom": 202,
+            "left": 181
+          },
+          {
+            "text": "Shane",
+            "x": 438,
+            "y": 156,
+            "width": 255,
+            "height": 46,
+            "top": 156,
+            "right": 693,
+            "bottom": 202,
+            "left": 438
+          },
+          {
+            "text": "Everything",
+            "x": 181,
+            "y": 220,
+            "width": 169.328125,
+            "height": 46,
+            "top": 220,
+            "right": 350.328125,
+            "bottom": 266,
+            "left": 181
+          },
+          {
+            "text": "Classic",
+            "x": 352.328125,
+            "y": 220,
+            "width": 169.34375,
+            "height": 46,
+            "top": 220,
+            "right": 521.671875,
+            "bottom": 266,
+            "left": 352.328125
+          },
+          {
+            "text": "90s Halloween",
+            "x": 523.671875,
+            "y": 220,
+            "width": 169.328125,
+            "height": 46,
+            "top": 220,
+            "right": 693,
+            "bottom": 266,
+            "left": 523.671875
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Wardrobe: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "fold Wardrobe: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Wardrobe: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Dress for the witching hour",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Wardrobe",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Natalie’s original outfit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Her olive sweater, favourite boots, glasses, ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Harvest witch",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A pointed hat, enchanted layers, and a little",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Ghost bride",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Moon-white lace and a haunting veil for a won",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bat queen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Velvet, batwing details, and queen-of-the-pat",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Velvet vampire",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A crimson-lined cape, velvet dress and tiny f",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Patchwork monster",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Playful green makeup, stitched details and ch",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Moonlit mummy",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Soft linen wrappings and golden amulet detail",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Midnight slasher",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "An original pale scream mask and flowing blac",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Tiffany costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie's glasses and tattoos with a blonde w",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Freddy costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie in red and green stripes, a battered ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Purple wheels & dungarees",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Purple wheelchair, plaits and stylish dungare",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Natalie’s knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Olive knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Wearing now",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Plum knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Rust knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: existing settings open"
+    },
+    {
+      "ok": true,
+      "label": "fold Settings: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 147,
+          "y": 66,
+          "width": 580,
+          "height": 639,
+          "top": 66,
+          "right": 727,
+          "bottom": 705,
+          "left": 147
+        },
+        "width": 874,
+        "height": 787,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Make yourself at home",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Settings",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Backups",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Your farm saves itself on this device. Copy a",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Voxel build of Shane & Natalie’s Pumpkin Patc",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 650,
+            "y": 81.5,
+            "width": 44,
+            "height": 44,
+            "top": 81.5,
+            "right": 694,
+            "bottom": 125.5,
+            "left": 650
+          },
+          {
+            "text": "Off",
+            "x": 618,
+            "y": 163,
+            "width": 76,
+            "height": 44,
+            "top": 163,
+            "right": 694,
+            "bottom": 207,
+            "left": 618
+          },
+          {
+            "text": "On",
+            "x": 618,
+            "y": 398,
+            "width": 76,
+            "height": 44,
+            "top": 398,
+            "right": 694,
+            "bottom": 442,
+            "left": 618
+          },
+          {
+            "text": "Next song",
+            "x": 607.65625,
+            "y": 475,
+            "width": 86.34375,
+            "height": 44,
+            "top": 475,
+            "right": 694,
+            "bottom": 519,
+            "left": 607.65625
+          },
+          {
+            "text": "Off",
+            "x": 618,
+            "y": 552,
+            "width": 76,
+            "height": 44,
+            "top": 552,
+            "right": 694,
+            "bottom": 596,
+            "left": 618
+          },
+          {
+            "text": "Off",
+            "x": 618,
+            "y": 629,
+            "width": 76,
+            "height": 44,
+            "top": 629,
+            "right": 694,
+            "bottom": 673,
+            "left": 618
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Settings: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "fold Settings: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Settings: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Make yourself at home",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Settings",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Backups",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Your farm saves itself on this device. Copy a",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Voxel build of Shane & Natalie’s Pumpkin Patc",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Home sheet: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 502,
+          "y": 66,
+          "width": 360,
+          "height": 645,
+          "top": 66,
+          "right": 862,
+          "bottom": 711,
+          "left": 502
+        },
+        "width": 874,
+        "height": 787,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Our crooked cottage",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Home",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Rooms",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Parlour",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Our reading corner and the heart of the house",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor · 2/6 pieces",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bedroom",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Crooked cottage.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, up new stairs from the Parlour",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Kitchen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Midnight manor.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, through a new doorway from the ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Attic",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Haunted haven.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "12 × 6 floor, up a ladder from the Bedroom",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "The Parlour’s look",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "The parlour’s look changes as the house grows",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Wallpaper",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Buy wallpaper in Decorate to dress these wall",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 787,
+            "y": 84.578125,
+            "width": 44,
+            "height": 44,
+            "top": 84.578125,
+            "right": 831,
+            "bottom": 128.578125,
+            "left": 787
+          },
+          {
+            "text": "Rooms",
+            "x": 534,
+            "y": 164.15625,
+            "width": 97.328125,
+            "height": 44,
+            "top": 164.15625,
+            "right": 631.328125,
+            "bottom": 208.15625,
+            "left": 534
+          },
+          {
+            "text": "Furnish",
+            "x": 633.328125,
+            "y": 164.15625,
+            "width": 97.34375,
+            "height": 44,
+            "top": 164.15625,
+            "right": 730.671875,
+            "bottom": 208.15625,
+            "left": 633.328125
+          },
+          {
+            "text": "Expand",
+            "x": 732.671875,
+            "y": 164.15625,
+            "width": 97.328125,
+            "height": 44,
+            "top": 164.15625,
+            "right": 830,
+            "bottom": 208.15625,
+            "left": 732.671875
+          },
+          {
+            "text": "Go in",
+            "x": 754,
+            "y": 290.328125,
+            "width": 68,
+            "height": 44,
+            "top": 290.328125,
+            "right": 822,
+            "bottom": 334.328125,
+            "left": 754
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Home sheet: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "fold Home sheet: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold Home sheet: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Our crooked cottage",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Home",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Rooms",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Parlour",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Our reading corner and the heart of the house",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor · 2/6 pieces",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bedroom",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Crooked cottage.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, up new stairs from the Parlour",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Kitchen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Midnight manor.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, through a new doorway from the ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Attic",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Haunted haven.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "12 × 6 floor, up a ladder from the Bedroom",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "The Parlour’s look",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "The parlour’s look changes as the house grows",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Wallpaper",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Buy wallpaper in Decorate to dress these wall",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold final: farm canvas, HUD and dock are unobstructed after closing menus",
+      "data": {
+        "canvas": {
+          "width": 874,
+          "height": 787,
+          "display": "block"
+        },
+        "blocked": [],
+        "sheetHidden": true,
+        "manageHidden": true,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: menu navigation does not charge coins or change earned income"
+    },
+    {
+      "ok": true,
+      "label": "phone initial: farm canvas, HUD and dock are unobstructed after closing menus",
+      "data": {
+        "canvas": {
+          "width": 390,
+          "height": 844,
+          "display": "block"
+        },
+        "blocked": [],
+        "sheetHidden": true,
+        "manageHidden": true,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Manage: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 8,
+          "y": 86.515625,
+          "width": 374,
+          "height": 688.484375,
+          "top": 86.515625,
+          "right": 382,
+          "bottom": 775,
+          "left": 8
+        },
+        "width": 390,
+        "height": 844,
+        "paper": "rgba(0, 0, 0, 0)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), linear-gradient(110deg, rgb(56, 41, 64), rgb(73, 54, 79) 10%, rgb(61, 43, 70))",
+        "paperColors": [
+          "rgb(56, 41, 64)",
+          "rgb(73, 54, 79)",
+          "rgb(61, 43, 70)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "#45364d",
+        "text": [
+          {
+            "text": "Manage your patch",
+            "color": "rgb(241, 230, 215)",
+            "contrast": 9.02610536617041
+          },
+          {
+            "text": "Grow your patch",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Tools, yield, helpers, plots and the barn",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Seeds",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "New pumpkin varieties",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Stock",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "The stall, stock and the market cart",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Visitors & VIPs",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Crowds, caretakers, spending, harvest rushes ",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Home & care",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Home goals and hands-on play",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Your businesses",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Skyla’s shop",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Skyla’s shop and customer care",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Sandy’s cocoa",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Sandy’s stand and the meadow",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Maisie’s kitchen",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Food truck, pantry, recipes and food shelves",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          }
+        ],
+        "titleInk": "rgb(241, 230, 215)",
+        "controls": [
+          {
+            "text": "Farm upgradesTools, yield, helpers, plots and",
+            "x": 21,
+            "y": 245.109375,
+            "width": 348,
+            "height": 58,
+            "top": 245.109375,
+            "right": 369,
+            "bottom": 303.109375,
+            "left": 21
+          },
+          {
+            "text": "SeedsNew pumpkin varieties›",
+            "x": 21,
+            "y": 303.109375,
+            "width": 348,
+            "height": 58,
+            "top": 303.109375,
+            "right": 369,
+            "bottom": 361.109375,
+            "left": 21
+          },
+          {
+            "text": "StockThe stall, stock and the market cart›",
+            "x": 21,
+            "y": 361.109375,
+            "width": 348,
+            "height": 58,
+            "top": 361.109375,
+            "right": 369,
+            "bottom": 419.109375,
+            "left": 21
+          },
+          {
+            "text": "Visitors & VIPsCrowds, caretakers, spending, ",
+            "x": 21,
+            "y": 419.109375,
+            "width": 348,
+            "height": 74.09375,
+            "top": 419.109375,
+            "right": 369,
+            "bottom": 493.203125,
+            "left": 21
+          },
+          {
+            "text": "Home & careHome goals and hands-on play›",
+            "x": 21,
+            "y": 493.203125,
+            "width": 348,
+            "height": 58,
+            "top": 493.203125,
+            "right": 369,
+            "bottom": 551.203125,
+            "left": 21
+          },
+          {
+            "text": "Skyla’s shopSkyla’s shop and customer care›",
+            "x": 21,
+            "y": 588,
+            "width": 348,
+            "height": 58,
+            "top": 588,
+            "right": 369,
+            "bottom": 646,
+            "left": 21
+          },
+          {
+            "text": "Sandy’s cocoaSandy’s stand and the meadow›",
+            "x": 21,
+            "y": 646,
+            "width": 348,
+            "height": 58,
+            "top": 646,
+            "right": 369,
+            "bottom": 704,
+            "left": 21
+          },
+          {
+            "text": "Maisie’s kitchenFood truck, pantry, recipes a",
+            "x": 21,
+            "y": 704,
+            "width": 348,
+            "height": 58,
+            "top": 704,
+            "right": 369,
+            "bottom": 762,
+            "left": 21
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Manage: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "phone Manage: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgba(0, 0, 0, 0)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), linear-gradient(110deg, rgb(56, 41, 64), rgb(73, 54, 79) 10%, rgb(61, 43, 70))",
+        "paperColors": [
+          "rgb(56, 41, 64)",
+          "rgb(73, 54, 79)",
+          "rgb(61, 43, 70)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Manage: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "#45364d",
+        "samples": [
+          {
+            "text": "Manage your patch",
+            "color": "rgb(241, 230, 215)",
+            "contrast": 9.02610536617041
+          },
+          {
+            "text": "Grow your patch",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Tools, yield, helpers, plots and the barn",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Seeds",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "New pumpkin varieties",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Stock",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "The stall, stock and the market cart",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Visitors & VIPs",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Crowds, caretakers, spending, harvest rushes ",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Home & care",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Home goals and hands-on play",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Your businesses",
+            "color": "rgb(198, 169, 116)",
+            "contrast": 4.941291922929221
+          },
+          {
+            "text": "Skyla’s shop",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Skyla’s shop and customer care",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Sandy’s cocoa",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Sandy’s stand and the meadow",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          },
+          {
+            "text": "Maisie’s kitchen",
+            "color": "rgb(238, 226, 216)",
+            "contrast": 8.742932263113493
+          },
+          {
+            "text": "Food truck, pantry, recipes and food shelves",
+            "color": "rgb(209, 189, 215)",
+            "contrast": 6.34118949448595
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: existing farm upgrade content opens"
+    },
+    {
+      "ok": true,
+      "label": "phone Farm upgrades: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 8,
+          "y": 244.734375,
+          "width": 374,
+          "height": 523.265625,
+          "top": 244.734375,
+          "right": 382,
+          "bottom": 768,
+          "left": 8
+        },
+        "width": 390,
+        "height": 844,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Your pumpkin patch",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "A better watering can",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Pumpkins grow 18% faster.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A little extra love",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "One more pumpkin per harvest.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Helping hands",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Shane and Natalie plant and pick for you, and",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Room for more",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Open more beds, then buy the south field for ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A market cart",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "When the barn is full, Shane drives the extra",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A bigger pumpkin barn",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "0/180 stored. Next tier adds 180 spaces.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 316,
+            "y": 254.234375,
+            "width": 44,
+            "height": 44,
+            "top": 254.234375,
+            "right": 360,
+            "bottom": 298.234375,
+            "left": 316
+          },
+          {
+            "text": "Farm",
+            "x": 31,
+            "y": 328.734375,
+            "width": 107.328125,
+            "height": 44,
+            "top": 328.734375,
+            "right": 138.328125,
+            "bottom": 372.734375,
+            "left": 31
+          },
+          {
+            "text": "Seeds",
+            "x": 141.328125,
+            "y": 328.734375,
+            "width": 107.328125,
+            "height": 44,
+            "top": 328.734375,
+            "right": 248.65625,
+            "bottom": 372.734375,
+            "left": 141.328125
+          },
+          {
+            "text": "Shop",
+            "x": 251.65625,
+            "y": 328.734375,
+            "width": 107.34375,
+            "height": 44,
+            "top": 328.734375,
+            "right": 359,
+            "bottom": 372.734375,
+            "left": 251.65625
+          },
+          {
+            "text": "Cocoa",
+            "x": 31,
+            "y": 375.734375,
+            "width": 107.328125,
+            "height": 44,
+            "top": 375.734375,
+            "right": 138.328125,
+            "bottom": 419.734375,
+            "left": 31
+          },
+          {
+            "text": "Stock",
+            "x": 141.328125,
+            "y": 375.734375,
+            "width": 107.328125,
+            "height": 44,
+            "top": 375.734375,
+            "right": 248.65625,
+            "bottom": 419.734375,
+            "left": 141.328125
+          },
+          {
+            "text": "Visitors",
+            "x": 251.65625,
+            "y": 375.734375,
+            "width": 107.34375,
+            "height": 44,
+            "top": 375.734375,
+            "right": 359,
+            "bottom": 419.734375,
+            "left": 251.65625
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Farm upgrades: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "phone Farm upgrades: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Farm upgrades: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Your pumpkin patch",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Farm upgrades",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "A better watering can",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Pumpkins grow 18% faster.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A little extra love",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "One more pumpkin per harvest.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Helping hands",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Shane and Natalie plant and pick for you, and",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Room for more",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Open more beds, then buy the south field for ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A market cart",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "When the barn is full, Shane drives the extra",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "A bigger pumpkin barn",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "0/180 stored. Next tier adds 180 spaces.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: existing wardrobe opens"
+    },
+    {
+      "ok": true,
+      "label": "phone Wardrobe: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 8,
+          "y": 244.734375,
+          "width": 374,
+          "height": 523.265625,
+          "top": 244.734375,
+          "right": 382,
+          "bottom": 768,
+          "left": 8
+        },
+        "width": 390,
+        "height": 844,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Dress for the witching hour",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Wardrobe",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Natalie’s original outfit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Her olive sweater, favourite boots, glasses, ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Harvest witch",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A pointed hat, enchanted layers, and a little",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Ghost bride",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Moon-white lace and a haunting veil for a won",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bat queen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Velvet, batwing details, and queen-of-the-pat",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Velvet vampire",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A crimson-lined cape, velvet dress and tiny f",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Patchwork monster",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Playful green makeup, stitched details and ch",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Moonlit mummy",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Soft linen wrappings and golden amulet detail",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Midnight slasher",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "An original pale scream mask and flowing blac",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Tiffany costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie's glasses and tattoos with a blonde w",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Freddy costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie in red and green stripes, a battered ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Purple wheels & dungarees",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Purple wheelchair, plaits and stylish dungare",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Natalie’s knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Olive knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Wearing now",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Plum knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Rust knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 316,
+            "y": 254.234375,
+            "width": 44,
+            "height": 44,
+            "top": 254.234375,
+            "right": 360,
+            "bottom": 298.234375,
+            "left": 316
+          },
+          {
+            "text": "Natalie",
+            "x": 31,
+            "y": 328.734375,
+            "width": 163,
+            "height": 44,
+            "top": 328.734375,
+            "right": 194,
+            "bottom": 372.734375,
+            "left": 31
+          },
+          {
+            "text": "Shane",
+            "x": 196,
+            "y": 328.734375,
+            "width": 163,
+            "height": 44,
+            "top": 328.734375,
+            "right": 359,
+            "bottom": 372.734375,
+            "left": 196
+          },
+          {
+            "text": "Everything",
+            "x": 31,
+            "y": 392.734375,
+            "width": 108,
+            "height": 44,
+            "top": 392.734375,
+            "right": 139,
+            "bottom": 436.734375,
+            "left": 31
+          },
+          {
+            "text": "Classic",
+            "x": 141,
+            "y": 392.734375,
+            "width": 108,
+            "height": 44,
+            "top": 392.734375,
+            "right": 249,
+            "bottom": 436.734375,
+            "left": 141
+          },
+          {
+            "text": "90s Halloween",
+            "x": 251,
+            "y": 392.734375,
+            "width": 108,
+            "height": 44,
+            "top": 392.734375,
+            "right": 359,
+            "bottom": 436.734375,
+            "left": 251
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Wardrobe: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "phone Wardrobe: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Wardrobe: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Dress for the witching hour",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Wardrobe",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Natalie’s original outfit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Her olive sweater, favourite boots, glasses, ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Harvest witch",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A pointed hat, enchanted layers, and a little",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Ghost bride",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Moon-white lace and a haunting veil for a won",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bat queen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Velvet, batwing details, and queen-of-the-pat",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Velvet vampire",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A crimson-lined cape, velvet dress and tiny f",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Patchwork monster",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Playful green makeup, stitched details and ch",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Moonlit mummy",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Soft linen wrappings and golden amulet detail",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Midnight slasher",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "An original pale scream mask and flowing blac",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Tiffany costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie's glasses and tattoos with a blonde w",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Freddy costume",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Natalie in red and green stripes, a battered ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "90s Halloween",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Purple wheels & dungarees",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Purple wheelchair, plaits and stylish dungare",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Natalie’s knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Olive knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Wearing now",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Plum knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Rust knit",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "A new colour for the original outfit",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: existing settings open"
+    },
+    {
+      "ok": true,
+      "label": "phone Settings: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 8,
+          "y": 244.734375,
+          "width": 374,
+          "height": 523.265625,
+          "top": 244.734375,
+          "right": 382,
+          "bottom": 768,
+          "left": 8
+        },
+        "width": 390,
+        "height": 844,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Make yourself at home",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Settings",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Backups",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Your farm saves itself on this device. Copy a",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Voxel build of Shane & Natalie’s Pumpkin Patc",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 316,
+            "y": 254.234375,
+            "width": 44,
+            "height": 44,
+            "top": 254.234375,
+            "right": 360,
+            "bottom": 298.234375,
+            "left": 316
+          },
+          {
+            "text": "Off",
+            "x": 284,
+            "y": 340.328125,
+            "width": 76,
+            "height": 44,
+            "top": 340.328125,
+            "right": 360,
+            "bottom": 384.328125,
+            "left": 284
+          },
+          {
+            "text": "On",
+            "x": 284,
+            "y": 599.703125,
+            "width": 76,
+            "height": 44,
+            "top": 599.703125,
+            "right": 360,
+            "bottom": 643.703125,
+            "left": 284
+          },
+          {
+            "text": "Next song",
+            "x": 273.65625,
+            "y": 683.296875,
+            "width": 86.34375,
+            "height": 44,
+            "top": 683.296875,
+            "right": 360,
+            "bottom": 727.296875,
+            "left": 273.65625
+          },
+          {
+            "text": "Off",
+            "x": 284,
+            "y": 762.296875,
+            "width": 76,
+            "height": 44,
+            "top": 762.296875,
+            "right": 360,
+            "bottom": 806.296875,
+            "left": 284
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Settings: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "phone Settings: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Settings: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Make yourself at home",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Settings",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Backups",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Your farm saves itself on this device. Copy a",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Voxel build of Shane & Natalie’s Pumpkin Patc",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Home sheet: panel fits the viewport without horizontal scrolling",
+      "data": {
+        "rect": {
+          "x": 8,
+          "y": 244.734375,
+          "width": 374,
+          "height": 523.265625,
+          "top": 244.734375,
+          "right": 382,
+          "bottom": 768,
+          "left": 8
+        },
+        "width": 390,
+        "height": 844,
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "purple": true,
+        "colorScheme": "dark",
+        "paperBase": "rgb(69, 54, 77)",
+        "text": [
+          {
+            "text": "Our crooked cottage",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Home",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Rooms",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Parlour",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Our reading corner and the heart of the house",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor · 2/6 pieces",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bedroom",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Crooked cottage.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, up new stairs from the Parlour",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Kitchen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Midnight manor.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, through a new doorway from the ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Attic",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Haunted haven.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "12 × 6 floor, up a ladder from the Bedroom",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "The Parlour’s look",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "The parlour’s look changes as the house grows",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Wallpaper",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Buy wallpaper in Decorate to dress these wall",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ],
+        "titleInk": "rgb(244, 232, 213)",
+        "controls": [
+          {
+            "text": "Close",
+            "x": 316,
+            "y": 256.40625,
+            "width": 44,
+            "height": 44,
+            "top": 256.40625,
+            "right": 360,
+            "bottom": 300.40625,
+            "left": 316
+          },
+          {
+            "text": "Rooms",
+            "x": 31,
+            "y": 333.0625,
+            "width": 108,
+            "height": 44,
+            "top": 333.0625,
+            "right": 139,
+            "bottom": 377.0625,
+            "left": 31
+          },
+          {
+            "text": "Furnish",
+            "x": 141,
+            "y": 333.0625,
+            "width": 108,
+            "height": 44,
+            "top": 333.0625,
+            "right": 249,
+            "bottom": 377.0625,
+            "left": 141
+          },
+          {
+            "text": "Expand",
+            "x": 251,
+            "y": 333.0625,
+            "width": 108,
+            "height": 44,
+            "top": 333.0625,
+            "right": 359,
+            "bottom": 377.0625,
+            "left": 251
+          },
+          {
+            "text": "Go in",
+            "x": 283,
+            "y": 459.234375,
+            "width": 68,
+            "height": 44,
+            "top": 459.234375,
+            "right": 351,
+            "bottom": 503.234375,
+            "left": 283
+          }
+        ],
+        "small": [],
+        "horizontalOverflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Home sheet: visible enabled buttons retain comfortable44px targets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "phone Home sheet: actual menu surface keeps purple parchment and the dark color scheme",
+      "data": {
+        "paper": "rgb(69, 54, 77)",
+        "background": "repeating-linear-gradient(0deg, rgba(232, 210, 240, 0.024) 0px, rgba(232, 210, 240, 0.024) 1px, rgba(0, 0, 0, 0) 1px, rgba(0, 0, 0, 0) 4px), radial-gradient(at 100% 100%, rgba(164, 127, 177, 0.14), rgba(0, 0, 0, 0) 60%), linear-gradient(90deg, rgb(51, 37, 60), rgb(71, 54, 78) 5%, rgb(75, 56, 83) 94%, rgb(53, 38, 62))",
+        "paperColors": [
+          "rgb(69, 54, 77)",
+          "rgb(51, 37, 60)",
+          "rgb(71, 54, 78)",
+          "rgb(75, 56, 83)",
+          "rgb(53, 38, 62)"
+        ],
+        "colorScheme": "dark"
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone Home sheet: normal labels contrast at least4.5:1 against the declared purple paper base",
+      "data": {
+        "basis": "Computed text versus declared solid paper base; gradients are not sampled per pixel and purchase controls use separate amber surfaces.",
+        "paperBase": "rgb(69, 54, 77)",
+        "samples": [
+          {
+            "text": "Our crooked cottage",
+            "color": "rgb(211, 180, 138)",
+            "contrast": 5.649361143950893
+          },
+          {
+            "text": "Home",
+            "color": "rgb(244, 232, 213)",
+            "contrast": 9.190281764722156
+          },
+          {
+            "text": "Rooms",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Parlour",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Our reading corner and the heart of the house",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor · 2/6 pieces",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Bedroom",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Crooked cottage.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, up new stairs from the Parlour",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Kitchen",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Midnight manor.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "10 × 6 floor, through a new doorway from the ",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Attic",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Opens with the Haunted haven.",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "12 × 6 floor, up a ladder from the Bedroom",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "The Parlour’s look",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "The parlour’s look changes as the house grows",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          },
+          {
+            "text": "Wallpaper",
+            "color": "rgb(239, 225, 208)",
+            "contrast": 8.661093367873791
+          },
+          {
+            "text": "Buy wallpaper in Decorate to dress these wall",
+            "color": "rgb(213, 196, 220)",
+            "contrast": 6.758219505565697
+          }
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone final: farm canvas, HUD and dock are unobstructed after closing menus",
+      "data": {
+        "canvas": {
+          "width": 390,
+          "height": 844,
+          "display": "block"
+        },
+        "blocked": [],
+        "sheetHidden": true,
+        "manageHidden": true,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: menu navigation does not charge coins or change earned income"
+    },
+    {
+      "ok": true,
+      "label": "Existing save key and version14 serializer still record the real game state"
+    },
+    {
+      "ok": true,
+      "label": "Full offline game menu pass has no JavaScript errors or external requests",
+      "data": {
+        "errors": [],
+        "externalRequests": []
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "desktop-farm.png",
+    "desktop-manage.png",
+    "desktop-farm-upgrades.png",
+    "desktop-wardrobe.png",
+    "fold-farm-upgrades.png",
+    "phone-farm.png",
+    "phone-manage.png",
+    "phone-farm-upgrades.png",
+    "phone-settings.png"
+  ]
+}
