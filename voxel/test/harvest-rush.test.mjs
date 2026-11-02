@@ -112,6 +112,7 @@ test("the outdoor capacity holds the next whole party at the gate", () => {
 
 test("helpers never build a streak, and the tea break stops the countdown", () => {
   const s = M.freshState(); s.upgrades.auto = 1;
+  M.grantLegacyHelpers(s);
   for (const p of s.plots.slice(0, 6)) Object.assign(p, { phase: "ready", progress: 1 });
   const events = M.update(s, 2.1);
   assert.ok(events.some((e) => e.type === "harvest"));

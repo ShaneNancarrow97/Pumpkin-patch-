@@ -46,11 +46,11 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.locator("#plant-all").click();
   await page.locator("#boost").click();
   const s = await page.evaluate(() => PumpkinVoxel.state());
-  check(s.plots.slice(0, 6).every((p) => p.phase === "growing") && s.taps === 1, `${name}: plant and boost`);
+  check(s.plots.slice(0, 6).filter((p) => p.phase === "growing").length === 1 && s.taps === 1, `${name}: plant one plot and boost`);
   // Ripen everything rather than waiting in a slow software-rendered browser.
   await page.evaluate(() => { for (const p of PumpkinVoxel.state().plots.slice(0, 6)) { p.progress = 1; p.phase = "ready"; } PumpkinVoxel.state().visitorTimer = 0.1; });
   await page.locator("#harvest-all").click();
-  check(await page.evaluate(() => PumpkinVoxel.state().harvested) === 6, `${name}: harvest`);
+  check(await page.evaluate(() => PumpkinVoxel.state().harvested) === 1, `${name}: pick one plot at base capacity`);
   await page.waitForTimeout(2500);
   if (shots) await page.screenshot({ path: `${shots}/${name}.png` });
   for (const tab of ["shop", "wardrobe", "journal"]) {

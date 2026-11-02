@@ -27,8 +27,9 @@ test("the big pumpkin hurries growing plots, and shakes a pumpkin loose every ei
   assert.equal(M.tap(s).boost, true);
   assert.ok(s.plots[0].progress > 0.05);
   s.plots[0] = { phase: "empty", progress: 0, variety: 0 };
+  s.visitorTimer = s.shop.arrivalTimer = 1e6;
   let rewards = 0;
-  for (let i = 0; i < 15; i++) { s.time += 0.2; rewards += M.tap(s).reward; }
+  for (let i = 0; i < 15; i++) { run(s, 1.3); rewards += M.tap(s).reward; }
   assert.equal(s.taps, 16);
   assert.equal(rewards, 2);
   assert.equal(M.available(s), 2);
@@ -46,8 +47,8 @@ test("upgrades cost 2.2 times more each level and stop at their maximum", () => 
   assert.ok(!M.buyUpgrade(s, "plots"), "max 4");
   assert.equal(M.openPlots(s), 24);
   assert.ok(M.buyUpgrade(s, "auto"));
-  run(s, 2.1);
-  assert.ok(s.plots.every((p) => p.phase === "growing"), "helping hands planted everything");
+  run(s, 2.5);
+  assert.equal(s.plots.filter((p) => p.phase === "growing").length, 2, "each helper plants one plot in a work cycle");
 });
 
 test("better seeds per plot, and any owned variety can be chosen", () => {

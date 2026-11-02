@@ -820,7 +820,14 @@ export function createScene(canvas, state, hooks) {
       get passing() { return player.passing; },
       setEnabled(on,who){playerLook.x=playerLook.z=0;playerOrbit.yaw=0;playerOrbit.pitch=view.place==='room'?INTERIOR.pitch:PITCH;const result=player.setEnabled(on,who);if(on){const p=player.state().position;view.x=view.place==='room'?p.x-places.place.w/2:p.x;view.z=view.place==='room'?p.z-places.place.d*.42:p.z;}if(!view.place)view.zoom=on?Math.max(view.zoom,canvas.clientWidth>=740?2.3:1.35):1;if(!on)restoreCast();frame();return result;},
     },
-    sendTo(plotIndex) { const p = PLOTS[plotIndex], a = nearestActor(p.x, p.z); a?.queue.push({ x: p.x - 0.9, z: p.z + 0.4 }); },
+    sendTo(plotIndex, owner) {
+      const p = PLOTS[plotIndex]; if (!p) return;
+      const a = owner ? actors[owner] : nearestActor(p.x, p.z);
+      if (!a || a.delivery || player.state().enabled && player.state().who === owner) return;
+      // A busy helper keeps only its next two stops; queues never grow with a fast harvest.
+      if (a.queue.length >= 2) a.queue.shift();
+      a.queue.push({ x: p.x - 0.9, z: p.z + 0.4 });
+    },
     tapPumpkin() { tapPulse = 1; floatText("✦", BIG_PUMPKIN.x, 3.6, BIG_PUMPKIN.z, "spark"); },
     // A sale: Skyla reacts, and the takings float up from whichever counter you can see.
     sale(amount, route) {

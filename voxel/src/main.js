@@ -1,4 +1,5 @@
 import { createLifeActivity } from './life-activity.js';
+import { mountBoostDial, renderBoostDial } from './ui/farm-work-ui.js';
 import { createPlayControls } from './ui/play-controls.js';
 import { homeLifeSheet, createHomeJourney } from './ui/home-life-sheet.js';
 import { waterPlot, wateringStatus } from './rules/hands-on.js';
@@ -52,6 +53,7 @@ function load() {
   try { return M.restoreState(JSON.parse(localStorage.getItem(SAVE_KEY) || "null")); } catch { return M.freshState(); }
 }
 let state = load();
+mountBoostDial($("boost"));
 let playControls, homeJourney, lifeActivity;
 const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(state))); } catch {} };
 setInterval(save, 5000);
@@ -231,8 +233,9 @@ function handle(e) {
   }
   if (e.type === "chat-line") scene.chatLine(e);
   if (e.type === "missed" && e.reason !== "shop") scene.say(e.reason === "budget" ? "A smaller pumpkin next time." : "Back after harvest!");
-  if (e.type === "harvest") { scene.harvested(e.plot, e.count); scene.sendTo(e.plot); }
-  if (e.type === "plant") scene.sendTo(e.plot);
+  if (e.type === "harvest") { scene.harvested(e.plot, e.count); scene.sendTo(e.plot, e.owner); }
+  if (e.type === "plant") scene.sendTo(e.plot, e.owner);
+  if (e.type === "water") { scene.sendTo(e.plot, e.owner); const p = PLOTS[e.plot]; if (p) scene.actionBurst("water", p.x, p.z); }
   if (e.type === "memory") {
     const m = M.MEMORIES.find((x) => x.id === e.id);
     notice("New scrapbook memory: " + m.title);
@@ -247,14 +250,19 @@ function handle(e) {
 function pickPlot(i) {
   const n = M.harvest(state, i);
   if (!n) { if (state.plots[i]?.phase === "ready" && M.barnBlocked(state)) notice(state.upgrades.cart ? "Barn full and the market cart is loaded. It sets off again within the minute." : "Barn full. Ripe pumpkins are safe—sell stock, add storage or buy a market cart in Build."); return 0; }
-  scene.sendTo(i); scene.harvested(i, n);
+  showManualPick(i, n);
+  return n;
+}
+function showManualPick(i, n) {
+  if (!state.handsOn) scene.sendTo(i, farmOwner());
+  scene.harvested(i, n);
   audio.tone(650);
   if (state.harvested === n) say("natalie", "Our first pumpkin! Quick, put it in the shop before Shane gives it a name.");
   const streak = M.rewardHarvestStreak(state);
   if (streak.count >= 2) floatStreak(streak, PLOTS[i]);
   if (streak.bonus) audio.tone(880);
-  return n;
 }
+const farmOwner = () => scene.player?.state().who ?? "natalie";
 // What the streak does for visitors, in plain words: the bonus that actually
 // reaches the path, or that the path is as busy as it gets.
 function streakBoostText() {
@@ -280,13 +288,24 @@ function tapPlot(i) {
 }
 function boost() {
   if (state.paused) return;
-  const { reward } = M.tap(state);
+  const { reward, accepted } = M.tap(state);
+  if (!accepted) return;
   scene.tapPumpkin();
   audio.tone(520);
   if (reward) notice("The big pumpkin shook a pumpkin loose. +1 in stock.");
 }
-function plantAll() { if (state.paused) return; let n = 0; for (let i = 0; i < M.openPlots(state); i++) if (M.plant(state, i)) { scene.sendTo(i); n++; } if (n) { audio.tone(340); notice(`${n} seeds planted. Give them a little love!`); } }
-function harvestAll() { if (state.paused) return; let n = 0; for (let i = 0; i < M.openPlots(state); i++) n += pickPlot(i); if (n) notice(`${n} pumpkins picked for the shop.`); }
+function plantOne() {
+  const i = M.plantNext(state);
+  if (i < 0) return;
+  if (!state.handsOn) scene.sendTo(i, farmOwner());
+  audio.tone(340); scene.actionBurst("plant", PLOTS[i].x, PLOTS[i].z);
+}
+// One press picks one trained batch, rather than sweeping every open bed.
+function pickSome(candidates = null) {
+  const picked = M.pickBatch(state, farmOwner(), candidates);
+  for (const p of picked) showManualPick(p.plot, p.count);
+  return picked.length;
+}
 
 // Speech: tapping Shane or Natalie, and lines for big moments.
 let bubbleTimer, sayTimer;
@@ -484,8 +503,8 @@ $("place-rooms").onclick = () => { if (scene.place?.kind === "foyer") openHollow
 $("place-cook").onclick = () => openCookingSheet(M.homeCookingAvailable(state) ? "recipes" : "equipment", "home");
 $("place-decorate").onclick = () => { if (scene.place?.kind === "foyer") openFoyerSheet(); else { sheets.home.setTab("decorate"); openSheet("home"); } };
 
-$("plant-all").onclick = plantAll;
-$("harvest-all").onclick = harvestAll;
+$("plant-all").onclick = plantOne;
+$("harvest-all").onclick = () => pickSome();
 $("boost").onclick = boost;
 
 // The HUD, actions, goal and streak, every frame (cheap: only text changes).
@@ -520,10 +539,14 @@ function render() {
   text("level-name", lvl.name);
   const open = state.plots.slice(0, M.openPlots(state));
   const empty = open.filter((p) => p.phase === "empty").length, ripe = open.filter((p) => p.phase === "ready").length, full = M.barnBlocked(state);
-  $("plant-all").hidden = !empty; text("plant-count", empty);
+  $("plant-all").hidden = !empty; text("plant-count", 1);
+  $("plant-all").setAttribute("aria-label", `Plant one seed · ${empty} empty plots`);
+  renderBoostDial($("boost"), M.boostStatus(state));
+  $("boost").disabled = state.paused || M.boostStatus(state).overheated;
   // A full barn stacks its note under the label (style.css), so Harvest still fits beside Boost on a phone.
-  $("harvest-all").hidden = !ripe; text("harvest-count", full ? "Barn full" : ripe); $("harvest-all").classList.toggle("barn-full", full);
-  $("harvest-all").setAttribute("aria-label", full ? "Barn full: sell pumpkins, add storage or buy a market cart" : `Harvest ${ripe} ready plots`);
+  const batch = Math.min(ripe, M.helperStatus(state, farmOwner()).capacity);
+  $("harvest-all").hidden = !ripe; text("harvest-count", full ? "Barn full" : batch); $("harvest-all").classList.toggle("barn-full", full);
+  $("harvest-all").setAttribute("aria-label", full ? "Barn full: sell pumpkins, add storage or buy a market cart" : `${farmOwner() === "shane" ? "Shane" : "Natalie"}: pick ${batch} ready ${batch === 1 ? "plot" : "plots"}`);
   const ready = M.claimable(state), next = M.FAVOURS.find((f) => !state.claimed.includes(f.id));
   $("goal").classList.toggle("ready", ready.length > 0);
   text("goal-text", ready.length ? (ready.length > 1 ? `${ready.length} favours are ready to claim` : ready[0].guest + " has a reward for you") : next ? `${next.title} · ${M.favourProgress(state, next)}/${next.target}` : "Every favour done. The neighbours adore you.");
@@ -692,15 +715,19 @@ document.addEventListener("keydown", (e) => {
   }
   if (scene.place || openTab || e.repeat) return;                                 // a held key is one press
   if (e.key === " ") { e.preventDefault(); boost(); }
-  if (e.key === "p" || e.key === "P") plantAll();
-  if (e.key === "h" || e.key === "H") harvestAll();
+  if (e.key === "p" || e.key === "P") plantOne();
+  if (e.key === "h" || e.key === "H") pickSome();
 });
 
 // The controller layer uses the same purchases and farming rules as taps.
 // Timed crop work commits here once, using the same stock and streak rules as taps.
 function commitPlayerWork(kind,t){
   const at=t.type==='plot'?PLOTS[t.index]:t;
-  let ok=false;if(kind==='plant')ok=M.plant(state,t.index);else if(kind==='harvest')ok=!!pickPlot(t.index);else if(kind==='water')ok=waterPlot(state,t.index);else if(kind==='clean')ok=M.cleanLitter(state,t.id);
+  let ok=false;if(kind==='plant')ok=M.plant(state,t.index);else if(kind==='harvest'){
+    const origin=PLOTS[t.index],position=scene.player.state().position;
+    const nearby=PLOTS.map((p,index)=>({index,d:Math.hypot(p.x-origin.x,p.z-origin.z),reach:Math.hypot(p.x-position.x,p.z-position.z)})).filter(p=>p.index===t.index||p.d<=3.2&&p.reach<=3.2).sort((a,b)=>(a.index===t.index?-1:b.index===t.index?1:a.d-b.d||a.index-b.index)).map(p=>p.index);
+    ok=!!pickSome(nearby);
+  }else if(kind==='water')ok=waterPlot(state,t.index);else if(kind==='clean')ok=M.cleanLitter(state,t.id);
   if(ok){M.recordHomeActivity?.(state,kind);if(at)scene.actionBurst(kind,at.x,at.z);if(kind!=='harvest')chime(...({plant:[330,494],water:[587,784],clean:[784,1047]})[kind]);save();}
   return !!ok;
 }

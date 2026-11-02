@@ -60,6 +60,8 @@ export function collectionSheets(ui) {
       if (at === level && at > 1) out.push(`${table.find((u) => u.id === id)?.name ?? id}, ${ORDINAL[tier] ?? tier + 1 + "th"} tier`);
     });
     M.UNLOCKS.house.forEach((at, i) => { if (at === level) out.push(`Grow the house into the ${M.HOUSE_LEVELS[i + 1].name}`); });
+    for (const u of M.HELPER_UPGRADES) u.levels.forEach((at, tier) => { if (at === level && at > 1) out.push(`${u.name}, ${ORDINAL[tier]} tier for Shane and Natalie`); });
+    for (const u of M.BOOST_UPGRADES) u.levels.forEach((at, tier) => { if (at === level && at > 1) out.push(`${u.name}, ${ORDINAL[tier]} tier`); });
     if (M.MEADOW.level === level) out.push("Moonbrew Meadow");
     M.COCOA_TIERS.forEach((t) => { if (t.level === level) out.push(`Sandy’s ${t.name}`); });
     if (M.HOLLOW_PROPERTY.level === level) out.push("The Hollow House");

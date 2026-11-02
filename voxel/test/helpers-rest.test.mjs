@@ -6,6 +6,7 @@ import * as M from "../src/model.js";
 test("helping hands rest while the player is in control", () => {
   const s = M.freshState();
   s.upgrades.auto = 1;
+  M.grantLegacyHelpers(s);
   s.plots[0] = { phase: "ready", progress: 1, variety: 0 }; s.plots[0].ripe = -100;
   s.handsOn = true;
   M.update(s, 3);

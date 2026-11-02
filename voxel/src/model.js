@@ -25,6 +25,7 @@ import { freshHayride, restoreHayride, updateHayride, saveHayrideVisitors, resto
 import { freshVisitorEvents, restoreVisitorEvents, updateVisitorEvents } from "./rules/visitor-events.js";
 import { freshKitchen, restoreKitchen, updateKitchen } from "./rules/cooking.js";
 import { freshCleanliness, restoreCleanliness, updateCleanliness } from "./rules/cleanliness.js";
+import { freshFarmWork, restoreFarmWork } from "./rules/farm-work.js";
 
 export * from "./rules/farm.js";
 export * from "./rules/stock.js";
@@ -36,7 +37,9 @@ export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 export * from "./rules/unlocks.js";
 
-export const STATE_VERSION = 14;
+export const STATE_VERSION = 15;
+export * from "./rules/farm-work.js";
+export * from "./rules/farm-buttons.js";
 export * from "./rules/visitor-events.js";
 export * from "./content/visitor-events.js";
 export * from "./content/farm-layout.js";
@@ -68,7 +71,7 @@ export function freshState() {
     version: STATE_VERSION,
     coins: 40, earned: 0, sold: 0, harvested: 0, taps: 0, time: 0, wholesale: 0,
     plots: freshPlots(), plotLevels: Array(MAX_PLOTS).fill(0), plotCrops: Array(MAX_PLOTS).fill(0),
-    upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(),
+    upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(), farmWork: freshFarmWork(),
     stock: freshStock(), fresh: freshBatches(), wanted: freshWanted(), orders: freshOrders(), holds: [],
     visitorEvents: freshVisitorEvents(), stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
     shop: freshShop(), bigSpender: freshBigSpender(), festival: freshFestival(), customerCare: freshCustomerCare(),
@@ -102,7 +105,12 @@ export function restoreState(raw) {
   s.plots = Array.from({ length: MAX_PLOTS }, (_, i) => {
     const p = raw.plots[i];
     const variety = Math.min(MAX_VARIETY_INDEX, count(p?.variety));
-    return ["growing", "ready"].includes(p?.phase) ? { phase: p.phase, progress: Math.max(0, Math.min(1, Number(p.progress) || 0)), variety } : { phase: "empty", progress: 0, variety: s.plotCrops[i] };
+    if (!["growing", "ready"].includes(p?.phase)) return { phase: "empty", progress: 0, variety: s.plotCrops[i] };
+    const crop = { phase: p.phase, progress: Math.max(0, Math.min(1, Number(p.progress) || 0)), variety };
+    // Preserve grace and watering through a reload, without accepting future timers.
+    if (p.phase === "ready") crop.ripe = Number.isFinite(p.ripe) ? Math.max(0, Math.min(s.time, p.ripe)) : s.time;
+    if (p.phase === "growing" && Number.isFinite(p.wateredAt)) crop.wateredAt = Math.max(0, Math.min(s.time, p.wateredAt));
+    return crop;
   });
   // Tiers are kept and held to today's maxima (a save at an old maximum is a tier partway up now).
   const u = raw.upgrades ?? {}, top = Object.fromEntries(UPGRADES.map((x) => [x.id, x.max]));
@@ -145,6 +153,7 @@ export function restoreState(raw) {
   s.claimed = [...new Set(claimed.filter((id) => FAVOURS.some((f) => f.id === id)))];
   s.memories = Array.isArray(raw.memories) ? [...new Set(raw.memories.filter((id) => typeof id === "string"))] : [];
   s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4), !(raw.version >= 14));
+  s.farmWork = restoreFarmWork(raw.farmWork, s);
   s.kitchen = restoreKitchen(raw.kitchen, s, raw.version);
   s.visitorEvents = restoreVisitorEvents(raw.visitorEvents, s);
   s.festival = restoreFestival(raw.festival);
@@ -165,7 +174,7 @@ export const saveData = (s) => ({ ...s, hollowVisitors: saveHollowVisitors(s), h
 // Advances the farm by dt seconds and returns what happened, for the scene to show.
 export function update(s, dt) {
   const events = [];
-  if (s.paused) return events;
+  if (s.paused || !Number.isFinite(dt) || dt <= 0) return events;
   // The streak's boost is read from the clock, so the arrival timers just count down faster while it lasts.
   s.time += dt;
   updateFarm(s, dt, events);

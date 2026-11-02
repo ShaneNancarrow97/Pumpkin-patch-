@@ -40,7 +40,7 @@ test("version13 saves retain their earned level and rewards but new levels need 
   old.earned = 110000; old.progression.claimed = Array.from({ length: 12 }, (_, i) => i + 1);
   delete old.progression.homeActivities; delete old.progression.homeLegacyThrough; delete old.progression.homeVersion;
   const loaded = M.restoreState(JSON.parse(JSON.stringify(M.saveData(old))));
-  assert.equal(loaded.version, 14); assert.equal(M.patchLevel(loaded).level, 12);
+  assert.equal(loaded.version, M.STATE_VERSION); assert.equal(M.patchLevel(loaded).level, 12);
   assert.equal(loaded.progression.homeLegacyThrough, 12); assert.deepEqual(M.awardLevels(loaded), []);
   assert.equal(loaded.coins, old.coins); loaded.earned = M.LEVELS[12].at;
   assert.equal(M.patchLevel(loaded).level, 12); assert.equal(M.homeGoal(loaded).action, "recipes");

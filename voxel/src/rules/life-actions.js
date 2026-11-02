@@ -2,6 +2,7 @@
 // after receiving one completion; releasing early never changes the farm.
 import { barnBlocked, openPlots } from './farm.js';
 import { wateringStatus } from './hands-on.js';
+import { helperStatus } from './farm-work.js';
 
 export const LIFE_ACTIONS = Object.freeze({
   plant: Object.freeze({ seconds: .8, label: 'Planting' }),
@@ -32,12 +33,14 @@ export function toolForTarget(s, target, tool = 'hand') {
 
 // Snapshot the crop identity as well as its phase. Another helper may replace
 // that crop during the gesture; the original gesture must not affect the new one.
-export function beginAction(s, target, tool = 'hand') {
+export function beginAction(s, target, tool = 'hand', owner = 'natalie') {
   const kind = toolForTarget(s, target, tool);
   if (!actionAvailable(s, target, kind) || finite(target.distance) && target.distance > ACTION_REACH) return null;
   const saved = target.type === 'plot' ? { type: 'plot', index: target.index } : { type: 'litter', id: target.id };
   for (const key of ['x', 'z']) if (finite(target[key])) saved[key] = target[key];
-  return { kind, target: saved, elapsed: 0, duration: LIFE_ACTIONS[kind].seconds, label: LIFE_ACTIONS[kind].label, status: 'active', crop: target.type === 'plot' ? s.plots[target.index] : null };
+  const trained = helperStatus(s, owner) ?? helperStatus(s, 'natalie');
+  const factor = kind === 'plant' ? trained.plantFactor : kind === 'water' ? trained.waterFactor : 1;
+  return { kind, target: saved, elapsed: 0, duration: LIFE_ACTIONS[kind].seconds * factor, label: LIFE_ACTIONS[kind].label, status: 'active', crop: target.type === 'plot' ? s.plots[target.index] : null };
 }
 
 export const actionProgress = job => !job || job.status === 'cancelled' || job.status === 'invalid' ? 0 : Math.max(0, Math.min(1, job.elapsed / job.duration));

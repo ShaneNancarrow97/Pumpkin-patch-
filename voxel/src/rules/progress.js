@@ -49,7 +49,7 @@ export const MEMORIES = [
   { id: "first", icon: "seed", title: "Our first little harvest", text: "Pick 5 pumpkins.", memory: "Five pumpkins. One big beginning.", met: (s) => s.harvested >= 5 },
   { id: "visitors", icon: "heart", title: "The neighbourhood favourite", text: "Serve 10 happy visitors.", memory: "Word travels fast when the pumpkins are good.", met: (s) => s.sold >= 10 },
   { id: "moon", icon: "moon", title: "A little moonlight", text: "Upgrade a plot to Moonlight seeds.", memory: "This plot now grows pale pumpkins worth £24 each.", met: (s) => s.plotLevels.some((l) => l > 0) },
-  { id: "helper", icon: "hands", title: "Better together", text: "Buy the Helping hands upgrade.", memory: "Shane and Natalie now keep the farm growing.", met: (s) => s.upgrades.auto > 0 },
+  { id: "helper", icon: "hands", title: "Better together", text: "Recruit Shane or Natalie as a helping hand.", memory: "A little teamwork keeps the farm growing.", met: (s) => s.upgrades.auto > 0 },
   { id: "empire", icon: "crown", title: "An autumn empire", text: "Earn £1,000 in total.", memory: "From a handful of seeds to something wonderful.", met: (s) => s.earned >= 1000 },
   { id: "clicker", icon: "spark", title: "Pumpkin whisperer", text: "Tap the big pumpkin 100 times.", memory: "Good things grow with a little encouragement.", met: (s) => s.taps >= 100 },
   { id: "hollow", icon: "house", title: "The doors creak open", text: "Restore the Hollow House.", memory: "Axel swept the cobwebs, then put most of them back.", met: (s) => s.hollowHouse?.status === "ready" },

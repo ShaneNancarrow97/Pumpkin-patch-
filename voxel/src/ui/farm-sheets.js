@@ -5,6 +5,7 @@ import { hospitalityIcon } from "./hospitality-icons.js";
 import * as M from "../model.js";
 import { customerCareUpgrades, customerCareSummary, bindCustomerCareUpgrades } from "./customer-care-sheet.js";
 import { festivalMeadowSheet } from "./festival-meadow-sheet.js";
+import { farmWorkTabs, helperUpgradeCards, boostUpgradeCards, bindFarmWorkPurchases } from "./farm-work-ui.js";
 import { money, segmented, plural } from "./kit.js";
 import hettieArt from "../../assets/hettie-janitor-icon.webp";
 import hattieArt from "../../assets/hattie-janitor-icon.webp";
@@ -94,15 +95,20 @@ export function farmSheets(ui) {
   let tab = "farm";
   const cocoaMenu = festivalMeadowSheet(ui).festival; cocoaMenu.setTab("cocoa");
   let visitorSection="arrivals";
+  let farmSection="patch";
   const tabs = () => segmented("shoptab", "Shop sections", [["farm", "Farm"], ["seeds", "Seeds"], ["shop", "Shop"], ["cocoa", "Cocoa"], ["stall", "Stock"], ["visitors", "Visitors"]], tab).replace('class="segmented"', 'class="segmented build-sections"');
 
   // Spread the word lives in the Visitors tab with the rest of its kind.
   function farm(s) {
-    return M.UPGRADES.filter((u) => u.id !== "sign").map((u) => {
+    const nav = farmWorkTabs(farmSection);
+    if (farmSection === "helpers") return `<div class="service-sheet farm-upgrade-sheet" data-menu-view="farm:helpers">${nav}${helperUpgradeCards(s, ui)}</div>`;
+    if (farmSection === "boost") return `<div class="service-sheet farm-upgrade-sheet" data-menu-view="farm:boost">${nav}${boostUpgradeCards(s)}</div>`;
+    const cards = M.UPGRADES.filter((u) => !["sign", "auto"].includes(u.id)).map((u) => {
       const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id), at = max ? 0 : opensAt(s, "farm", u.id, level);
       return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.id === "cart" ? `${u.text} ${cartLine(s)}` : u.text}</p>${levelNote(at)}${tiers(level, u.max)}</div>
         ${at ? levelButton(at) : priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
     }).join("");
+    return `<div class="service-sheet farm-upgrade-sheet" data-menu-view="farm:patch">${nav}${cards}</div>`;
   }
 
   function seeds(s) {
@@ -192,6 +198,8 @@ export function farmSheets(ui) {
       },
       bind(body) {
         const s = ui.state;
+        body.querySelectorAll("[data-farm-section]").forEach(b=>b.onclick=()=>{farmSection=b.dataset.farmSection;ui.draw();});
+        bindFarmWorkPurchases(body, ui);
         body.querySelectorAll("[data-visitor-section]").forEach(b=>b.onclick=()=>{visitorSection=b.dataset.visitorSection;ui.draw();});
         body.querySelectorAll('[data-occasion]').forEach(b=>b.onclick=()=>{if(M.buyVisitorEventUpgrade(s,b.dataset.occasion)){ui.save();ui.draw();}});
         body.querySelectorAll('[data-occasion-toggle]').forEach(b=>b.onclick=()=>{const id=b.dataset.occasionToggle;if(M.setVisitorEventEnabled(s,id,!s.visitorEvents[id].enabled)){ui.save();ui.draw();}});

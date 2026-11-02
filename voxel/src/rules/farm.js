@@ -8,6 +8,7 @@ import { tierOpen } from "./unlocks.js";
 import { economy } from "../../../src/content/economy.js";
 import { addStock, stockCount } from "./stock.js";
 import { MAX_PLOTS, PLOT_COUNTS } from "../content/farm-layout.js";
+import { useBoost, updateBoost, updateHelpers, grantLegacyHelpers } from "./farm-work.js";
 export { MAX_PLOTS, PLOT_COUNTS, fieldDepth, farmPathEnd, farmExpansionTier } from "../content/farm-layout.js";
 
 export const VARIETIES = PUMPKIN_VARIETIES;
@@ -15,7 +16,7 @@ export const VARIETIES = PUMPKIN_VARIETIES;
 export const UPGRADES = [
   { id: "tools", name: "A better watering can", text: "Pumpkins grow 18% faster.", cost: 90, max: 6 },
   { id: "yield", name: "A little extra love", text: "One more pumpkin per harvest.", cost: 150, max: 5 },
-  { id: "auto", name: "Helping hands", text: "Shane and Natalie plant and pick for you, and rest while you play as them.", cost: 500, max: 1 },
+  { id: "auto", name: "Helping hands", text: "Shane and Natalie plant, water and pick for you, and rest while you play as them.", cost: 500, max: 1 },
   { id: "plots", name: "Room for more", text: "Open more beds, then buy the south field for eighteen and twenty-four plots.", costs: [300, 660, 2200, 5500], max: 4 },
   { id: "cart", name: "A market cart", text: "When the barn is full, Shane drives the extra pumpkins down to the village market for a share of the price, so the picking never has to stop.", costs: [400, 2500, 9000] },
   { id: "storage", name: "A bigger pumpkin barn", text: "Store more pumpkins before the harvest pauses. Keeps ripe crops safe when full.", costs: [60, 180, 500, 1400, 4000, 10000], max: 6 },
@@ -101,29 +102,30 @@ export function harvest(s, i) {
 // every eighth tap shakes a pumpkin loose.
 // Taps closer than a seventh of a second are a held key or a bot: ignored.
 export function tap(s) {
-  if (s.time - (s.lastTap ?? -Infinity) < 0.14) return { boost: false, reward: 0 };
-  s.lastTap = s.time;
+  const use = useBoost(s);
+  if (!use.accepted) return { ...use, boost: false, reward: 0 };
   s.taps++;
   let growing = 0;
   for (let i = 0; i < openPlots(s); i++) {
     const p = s.plots[i];
     if (p.phase !== "growing") continue;
     growing++;
-    p.progress = Math.min(1, p.progress + 1.5 / (22 * Math.pow(0.82, s.upgrades.tools)));
+    p.progress = Math.min(1, p.progress + use.strength * 1.5 / (22 * Math.pow(0.82, s.upgrades.tools)));
     if (p.progress >= 1) { p.phase = "ready"; p.ripe = s.time; }
   }
   let reward = 0;
   if (!growing && s.taps % 8 === 0 && store(s, bestVariety(s), 1)) { s.harvested++; reward = 1; }
-  return { boost: growing > 0, reward };
+  return { accepted: true, boost: growing > 0, reward };
 }
 
 export function buyUpgrade(s, id) {
   const u = UPGRADES.find((x) => x.id === id);
-  if (!u || s.upgrades[id] >= u.max || !tierOpen(s, "farm", id, s.upgrades[id])) return false;
+  if (s.paused || !u || s.upgrades[id] >= u.max || !tierOpen(s, "farm", id, s.upgrades[id])) return false;
   const c = upgradeCost(s, id);
   if (s.coins < c) return false;
   s.coins -= c;
   s.upgrades[id]++;
+  if (id === "auto") grantLegacyHelpers(s);
   return true;
 }
 
@@ -169,23 +171,12 @@ export function rewardHarvestStreak(s) {
 }
 
 export function updateFarm(s, dt, events) {
+  updateBoost(s, dt);
   for (let i = 0; i < openPlots(s); i++) {
     const p = s.plots[i];
     if (p.phase !== "growing") continue;
     p.progress = Math.min(1, p.progress + dt / growTime(s, i));
     if (p.progress >= 1) { p.phase = "ready"; p.ripe = s.time; events.push({ type: "ripe", plot: i }); }
   }
-  // Helping hands step back while the player is steering Shane or Natalie:
-  // the farm is theirs to work by hand.
-  if (!s.upgrades.auto || s.handsOn) return;
-  s.helperTimer += dt;
-  if (s.helperTimer < 2) return;
-  s.helperTimer %= 2;
-  // Helpers leave a fresh pumpkin a few seconds for Shane and Natalie, so a
-  // player picking by hand keeps the picks (and the streak) that are theirs.
-  for (let i = 0; i < openPlots(s); i++) {
-    const p = s.plots[i], n = p.phase === "ready" && s.time - (p.ripe ?? -Infinity) >= HELPER_WAIT ? harvest(s, i) : 0;
-    if (n) events.push({ type: "harvest", plot: i, count: n });
-    if (plant(s, i)) events.push({ type: "plant", plot: i });
-  }
+  updateHelpers(s, dt, events);
 }

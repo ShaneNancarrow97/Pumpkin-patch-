@@ -9,7 +9,7 @@ export function createLifeActivity({state,player,commit,blocked,notice}){
   function start(target,tool,hold=false){
     const s=state(),p=player.state();if(!p.enabled||p.available===false||s.paused||blocked())return false;
     const distance=target&&Math.hypot(target.x-p.position.x,target.z-p.position.z);
-    const next=beginAction(s,{...target,distance},tool);if(!next)return false;
+    const next=beginAction(s,{...target,distance},tool,p.who);if(!next)return false;
     job=next;pending=null;holding=hold;assisted=!hold;serial++;
     player.act(next.kind,next.duration+.05,target);player.faceTarget?.(target);return true;
   }
