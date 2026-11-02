@@ -1,11 +1,11 @@
 {
-  "sourceCommit": "5d36b07314b58c847cab6b8bd6940ed0a2de982b",
+  "sourceCommit": "d69b1c1cbccd7950f4408754df7e498d16abdcad",
   "gameBuild": {
-    "sourceCommit": "5d36b07314b58c847cab6b8bd6940ed0a2de982b",
+    "sourceCommit": "d69b1c1cbccd7950f4408754df7e498d16abdcad",
     "reviewedBase": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
     "scope": "The actual complete offline game with an injected visual skin; runtime script is byte-identical to its standard build",
-    "bytes": 37955232,
-    "sha256": "1d6c2fad4d4b653bd46b1843435ae757faf0c83e9d0a569d812860365f65fc56",
+    "bytes": 37955852,
+    "sha256": "041f111a629117705383aebfc1397a078a4119f7bb7408c16f19f2157b1f2e91",
     "baseSHA256": "4c55a0d1917b23d6eb407242f986b63a26d9c61114fb8ec4457b279611c8cdd0",
     "runtimeSHA256": "3911f35ad522082cebd64e8575373a09229f08f58ae8fbaa64dfeeb47f7c51ac",
     "runtimeByteIdentical": true,
@@ -14,16 +14,16 @@
   "zipCRCChecked": true,
   "artifacts": {
     "Pumpkin-Patch-Mothlight-Full-Game.html": {
-      "bytes": 37955232,
-      "sha256": "1d6c2fad4d4b653bd46b1843435ae757faf0c83e9d0a569d812860365f65fc56"
+      "bytes": 37955852,
+      "sha256": "041f111a629117705383aebfc1397a078a4119f7bb7408c16f19f2157b1f2e91"
     },
     "Pumpkin-Patch-Mothlight-Full-Game.zip": {
-      "bytes": 27422097,
-      "sha256": "ec05a40e33760454e16f31a931ad165414d163f71d073896ba56a9f963a83c54"
+      "bytes": 27422112,
+      "sha256": "b47cd02670ad8192ab99d208352528f6dc019a58fb3067254da7840cf7fee738"
     },
     "README.md": {
       "bytes": 1308,
-      "sha256": "27d1c8566aa70f9490ead44f25720da3377c52fa2841c72d107026a6e055b2fa"
+      "sha256": "b470d25b47bcef5c03b1b85c076d1d2cc5f73138291687839881f9638b503d55"
     },
     "OFL-Caveat.txt": {
       "bytes": 4385,
@@ -31,7 +31,7 @@
     },
     "BUILD-VERIFICATION.json": {
       "bytes": 596,
-      "sha256": "c3b874f60afa17e166d2589dc339211e6afe9fba5ddf9f3ebfe456a85aa5f8d3"
+      "sha256": "7ce8cab79e4e5dd73d9682e56c235b6f8007f8bc49ca548376af540f4dc7ec2b"
     },
     "HANDOVER.md": {
       "bytes": 2234,
@@ -42,8 +42,8 @@
       "sha256": "1de50382b7e9ad84efae71693faa5727d62d0ff1399fa49ce14140e104e04613"
     },
     "mothlight-full-game-ui.patch": {
-      "bytes": 128221,
-      "sha256": "181b81258fbf0e5765d7d63cff80dff048a4b49afcc03e3c2012d7be60c3db60"
+      "bytes": 128841,
+      "sha256": "b6cc9f6a2ace7de62a8d8395d9774e6e7374dacf4bf358c79fbc8bd5ee36100d"
     }
   }
 }

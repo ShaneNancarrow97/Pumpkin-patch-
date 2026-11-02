@@ -14,9 +14,9 @@ Real WebGL boot was checked. Browser menu/layout evidence is being recorded
 in the source branch. Physical device/file-provider testing is not implied.
 
 Source branch: contractor/mothlight-game-ui
-Source commit: 5d36b07314b58c847cab6b8bd6940ed0a2de982b
+Source commit: d69b1c1cbccd7950f4408754df7e498d16abdcad
 Reviewed lead: f2f96f8351dea4cf6072862b1e3e0b14d6a318dc
-HTML SHA256: 1d6c2fad4d4b653bd46b1843435ae757faf0c83e9d0a569d812860365f65fc56
+HTML SHA256: 041f111a629117705383aebfc1397a078a4119f7bb7408c16f19f2157b1f2e91
 
 Claude: read HANDOVER.md and DEPENDENCIES.md. The patch adds only the isolated
 mothlight-game-ui folder and builds through its wrapper; it does not replace
