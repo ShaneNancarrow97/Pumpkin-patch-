@@ -1,6 +1,7 @@
 {
-  "sourceCommit": "9f489f99e3a6035f73df2e95b06d022be7574637",
-  "patchBase": "fd58d75c1ac27ecf4f912acdf78bde07a176526c",
+  "sourceCommit": "b71a3f75a45926ec6c0a89a808a24fb496b2a17e",
+  "patchBase": "9f489f99e3a6035f73df2e95b06d022be7574637",
+  "bridgePatchBase": "fd58d75c1ac27ecf4f912acdf78bde07a176526c",
   "leadReference": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
   "scope": "voxel/docs/contractor-patches/festival-host-bridge/ only; no installed game features or save changes",
   "combinedScope": [
@@ -10,21 +11,34 @@
   ],
   "browser": {
     "passed": true,
-    "assertions": 59,
-    "previewSHA256": "5459bf552cfcfff8d654a33264296859f3ea1f46b718398fd99e65aff7bc6d45"
+    "assertions": 92,
+    "previewSHA256": "7414b28048a2703d700beedf2f79b7991296712569278c9969420154f3a9c2e5"
   },
-  "nativeTestFiles": 19,
-  "nativeCases": 140,
-  "patchSHA256": "7c3568874d0bc7a9a2179891b5ee9a30da532676ff6a1874a4e0fc4dafd591f5",
-  "combinedPatchSHA256": "ca01add5fb983d28d42e11d5820a3c20a73b2e653a34b66bb5acbe736e6764a7",
+  "nativeTestFiles": 21,
+  "nativeCases": 156,
+  "patchSHA256": "4ebc51a2e885e6efbbb8038f1b56c10689f5eb255a0f55099eeeea4bde91650d",
+  "fullBridgePatchSHA256": "a4d20dc901ccce7e3f526df9f0288f50a77ad26a352bfbdbf225ae21f6e31964",
+  "combinedPatchSHA256": "d39b4b835ef5756a2e918c9e0eb0818b237fc534803b6ba1e56d26bf9c144704",
   "checks": [
     {
-      "tree": "incremental-base",
+      "tree": "refinement-base",
+      "reference": "9f489f99e3a6035f73df2e95b06d022be7574637",
+      "actualPatchApplied": true,
+      "sourceFilesMatchCommit": true,
+      "nativePassed": true,
+      "nativeCases": 156,
+      "previewRebuildByteIdentical": true,
+      "parsedContractorBoundaryPassed": true,
+      "semanticImpactByteIdentical": true,
+      "importImpactByteIdentical": true
+    },
+    {
+      "tree": "bridge-base",
       "reference": "fd58d75c1ac27ecf4f912acdf78bde07a176526c",
       "actualPatchApplied": true,
       "sourceFilesMatchCommit": true,
       "nativePassed": true,
-      "nativeCases": 140,
+      "nativeCases": 156,
       "previewRebuildByteIdentical": true,
       "parsedContractorBoundaryPassed": true,
       "semanticImpactByteIdentical": true,
@@ -36,7 +50,7 @@
       "actualPatchApplied": true,
       "sourceFilesMatchCommit": true,
       "nativePassed": true,
-      "nativeCases": 140,
+      "nativeCases": 156,
       "previewRebuildByteIdentical": true,
       "parsedContractorBoundaryPassed": true,
       "semanticImpactByteIdentical": true,
@@ -44,11 +58,11 @@
     },
     {
       "tree": "committed-source",
-      "reference": "9f489f99e3a6035f73df2e95b06d022be7574637",
+      "reference": "b71a3f75a45926ec6c0a89a808a24fb496b2a17e",
       "actualPatchApplied": false,
       "sourceFilesMatchCommit": true,
       "nativePassed": true,
-      "nativeCases": 140,
+      "nativeCases": 156,
       "previewRebuildByteIdentical": true,
       "parsedContractorBoundaryPassed": true,
       "semanticImpactByteIdentical": true,
@@ -62,45 +76,53 @@
   "artifactBranch": "contractor/festival-host-download",
   "zipCRCChecked": true,
   "artifacts": {
-    "festival-host-incremental.patch": {
-      "bytes": 6187357,
-      "sha256": "7c3568874d0bc7a9a2179891b5ee9a30da532676ff6a1874a4e0fc4dafd591f5"
+    "festival-host-refinement.patch": {
+      "bytes": 11901190,
+      "sha256": "4ebc51a2e885e6efbbb8038f1b56c10689f5eb255a0f55099eeeea4bde91650d"
+    },
+    "festival-host-bridge-from-session.patch": {
+      "bytes": 6765766,
+      "sha256": "a4d20dc901ccce7e3f526df9f0288f50a77ad26a352bfbdbf225ae21f6e31964"
     },
     "festival-host-combined-from-lead.patch": {
-      "bytes": 21089145,
-      "sha256": "ca01add5fb983d28d42e11d5820a3c20a73b2e653a34b66bb5acbe736e6764a7"
+      "bytes": 21667554,
+      "sha256": "d39b4b835ef5756a2e918c9e0eb0818b237fc534803b6ba1e56d26bf9c144704"
     },
     "Pumpkin-Patch-Receipt-Lab.html": {
-      "bytes": 586769,
-      "sha256": "5459bf552cfcfff8d654a33264296859f3ea1f46b718398fd99e65aff7bc6d45"
+      "bytes": 605220,
+      "sha256": "7414b28048a2703d700beedf2f79b7991296712569278c9969420154f3a9c2e5"
     },
     "Pumpkin-Patch-Receipt-Lab.zip": {
-      "bytes": 316677,
-      "sha256": "9218c6d06b45578068f9575aeaadaf207cb54048a07c78024c9d085e9b8de6b1"
+      "bytes": 321983,
+      "sha256": "98004e9ed2cc9b950193c2e0051eaf6a1f30142cb0f3b0e64915469d1263d0bc"
     },
     "Festival-Host-Claude-Kit.zip": {
-      "bytes": 25687541,
-      "sha256": "f0fb169b65c5b15eb875d80df0d9aaf9d72296d410955adbc00634f18972ffd0"
+      "bytes": 36528164,
+      "sha256": "ebe3800c6c3cabbc493047f7582c87c2f556356a58e756c58893721d8eef39b7"
     },
     "README.md": {
-      "bytes": 2583,
-      "sha256": "3ebcd1d141d6d0a0981c36c53d656e454cc1e8612e337c9822bd0f54e17bbe56"
+      "bytes": 2748,
+      "sha256": "8314eb13e89a3dba4eeac7b5bd9278fb563955d536e05bd66681355e2a146528"
     },
     "HANDOVER.md": {
-      "bytes": 7016,
-      "sha256": "a03df384922021e5a1d9f8836ed378919819b818861223c0dc925b20628a4a8a"
+      "bytes": 7654,
+      "sha256": "7c4d0f08b5e942f75ff708e059314aeab58208d57b7206902ba15eb27a953121"
+    },
+    "REFINEMENT.md": {
+      "bytes": 3857,
+      "sha256": "e2f1065f736b82f87576bc44d93c788124d25974542f6fe97ed582bfafe15338"
     },
     "DEPENDENCIES.md": {
       "bytes": 4966,
-      "sha256": "c2bd77ad3d183cc6ba8f3441108d2c3a1f3699e4ffa29a936ba0742166a9251f"
+      "sha256": "b95434342c3a95de2703a4291a880a4e3f99b84e9fd5d283138911af43970810"
     },
     "dependency-overlay.json": {
-      "bytes": 12832,
-      "sha256": "64210af05d248be932ea616ecb1212e4ad653f92a01cde9a2c71c238c12c029c"
+      "bytes": 14865,
+      "sha256": "a48ad04eb677de564e52f37318ab9a71ef27d9ba0b2b50b11c18c0354a711aad"
     },
     "REBUILD-VERIFICATION.json": {
-      "bytes": 2325,
-      "sha256": "4ce53e4f9680f74ff8f46b01cf765bf4d4403d81e3c0db9fc191abd74447e718"
+      "bytes": 2887,
+      "sha256": "07dfa9d764d45ac821d4440b098d98a2e40ce98511cef22efe90c486d623e4c7"
     }
   }
 }

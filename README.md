@@ -1,4 +1,4 @@
-# Pumpkin Patch · The evening desk
+# Pumpkin Patch · The evening desk · Refinement 2
 
 Private real-rule lab and optional contractor integration kit.
 This is not a playable-game update or an installed live feature.
@@ -15,29 +15,31 @@ conservation and the Festival bridge; it is not an economy/profit/pacing forecas
 No player save/storage is read. No physical house reward is granted. Claude owns
 live hooks, save migration, origin-binding persistence and atomic item grants.
 
-Claude pickup: read HANDOVER.md and DEPENDENCIES.md. Choose the incremental patch
-after fd58d75 (previous Festival session/support packs), or the combined patch on
-the inspected f2f96f8 lead. Run git apply --check before git apply; do not apply
-both. The files/ copy includes only the new folder and needs both prerequisites.
+Claude pickup: read HANDOVER.md, REFINEMENT.md and DEPENDENCIES.md. Choose exactly
+one patch matching your tree:
+- festival-host-refinement.patch after the first host pack 9f489f9.
+- festival-host-bridge-from-session.patch after the session pack fd58d75.
+- festival-host-combined-from-lead.patch on the inspected f2f96f8 live lead.
+Run git apply --check before git apply; never apply more than one. The files/ copy includes only the new folder and needs both prerequisites.
 The combined patch adds only three isolated contractor folders. Preserve
 Claude's unpublished work and review newer producer/save contracts before use.
 
 Source branch: contractor/festival-host-bridge
-Source commit: 9f489f99e3a6035f73df2e95b06d022be7574637
-Incremental base: fd58d75c1ac27ecf4f912acdf78bde07a176526c
+Source commit: b71a3f75a45926ec6c0a89a808a24fb496b2a17e
+Incremental base: 9f489f99e3a6035f73df2e95b06d022be7574637
 Live lead used for combined patch/build comparison: f2f96f8351dea4cf6072862b1e3e0b14d6a318dc
 
-All 140 native assertions across 19 files pass,
-including the previous two packs. The exact HTML passes 59
+All 156 native assertions across 21 files pass,
+including the previous two packs. The exact HTML passes 92
 browser checks with no errors/external requests/player storage. Phone, unfolded
 and landscape emulations cover 44px targets, reduced motion, actual financial
 conservation, all themes, pause/replay/reload, claims and safe failure. These are
 not physical Fold 7 GPU, file-provider or Bluetooth-controller tests.
 
-Actual patch application on both bases and a clean committed-source rebuild
+Actual patch application on three bases and a clean committed-source rebuild
 reproduce the reviewed HTML exactly, pass the native assertions and reproduce
 the semantic/import reports. The production game rebuild remains byte-identical
 to the inspected live lead. See REBUILD-VERIFICATION.json and delivery.json.
 
-Preview SHA-256: 5459bf552cfcfff8d654a33264296859f3ea1f46b718398fd99e65aff7bc6d45
-Incremental patch SHA-256: 7c3568874d0bc7a9a2179891b5ee9a30da532676ff6a1874a4e0fc4dafd591f5
+Preview SHA-256: 7414b28048a2703d700beedf2f79b7991296712569278c9969420154f3a9c2e5
+Incremental patch SHA-256: 4ebc51a2e885e6efbbb8038f1b56c10689f5eb255a0f55099eeeea4bde91650d

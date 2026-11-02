@@ -3,15 +3,17 @@
 ## Scope and bases
 
 Source branch: `contractor/festival-host-bridge`.
-Incremental base: `fd58d75c1ac27ecf4f912acdf78bde07a176526c` (Festival session pack).
+Refinement base: `9f489f99e3a6035f73df2e95b06d022be7574637` (first host bridge).
+Full bridge base: `fd58d75c1ac27ecf4f912acdf78bde07a176526c` (session pack).
 Live lead inspected: `f2f96f8351dea4cf6072862b1e3e0b14d6a318dc` (`voxel-reference`).
-The source diff adds only `voxel/docs/contractor-patches/festival-host-bridge/`.
-It does not overwrite previous packs, production source, dependencies or saves.
+The source diff changes only `voxel/docs/contractor-patches/festival-host-bridge/`.
+It preserves the two prerequisite packs, production source, dependencies and saves.
 
 The artifact branch `contractor/festival-host-download` carries the HTML, ZIP,
 Claude kit, manifests and rebuild proof independently of game history. The kit
-includes `festival-host-incremental.patch` and
-`festival-host-combined-from-lead.patch`. The latter adds the three isolated
+includes `festival-host-refinement.patch` (after the first host pack),
+`festival-host-bridge-from-session.patch` (full bridge after the session pack), and
+`festival-host-combined-from-lead.patch`. The last adds the three isolated
 folders `late-game-support`, `festival-session`, and `festival-host-bridge` on
 the inspected live lead. Do not merge unrelated earlier sprite branches.
 
@@ -20,6 +22,9 @@ Apply only after reviewing against current source, particularly if your live lea
 advanced. Do not reset or overwrite uncommitted Claude work. A newer matrix base
 requires an explicit overlay review, not blindly updating its hash.
 
+Read [REFINEMENT.md](REFINEMENT.md) for the second pass and its observed mobile
+issues. Choose exactly one patch matching the declared base.
+
 ## Completed parts
 
 | Part | Delivered behavior | Review entry |
@@ -27,9 +32,11 @@ requires an explicit overlay review, not blindly updating its hash.
 | Receipt adapters | Confirmed food, cocoa, garden, ticket, paid maze/hayride completion and explicit departure normalization; detached original identities | `adapters/outcomes.js` |
 | Durable bridge | Monotonic bindings, original session stamps, bounded outbox, conflict detection, pause/reload and once-only delivery | `src/bridge.js` |
 | Real-rule service lab | Finite wallets and stock, actual debits/revenue, actual garden growth and paid return trip, detached JSON checkpoints | `lab/scenario.js` |
+| Read-only offers | Exact detached-copy food/cocoa quotes, stock and paid ride fare/route previews; no live holds or visit allocation | `lab/offers.js` |
+| Service presentation | Goal-first hierarchy, explicit next step, retained completion3/3 and fresh repeat-attempt progress | `preview/service-state.js` |
 | Premium desk | Existing embedded fonts/art, paper receipt, clear action hierarchy, causal micro-animation, reduced motion and responsive layouts | `preview/` |
-| Dependency review | Pinned prior matrix plus 5 domains/22 links; physical import graph and current/conditional consumer separation | `data/dependency-overlay.json`, `tools/review-impact.mjs` |
-| Verification | 140 direct native cases, 59 exact-HTML browser checks, viewport screenshots; separate clean patch/rebuild proof in download kit | `verification/` |
+| Dependency review | Pinned prior matrix plus 5 domains/27 links; physical import graph and current/conditional consumer separation | `data/dependency-overlay.json`, `tools/review-impact.mjs` |
+| Verification | 156 direct native cases, 92 exact-HTML browser checks, viewport screenshots; separate clean patch/rebuild proof in download kit | `verification/` |
 
 The lab's real operations can complete three of four goals for all three themes.
 It does not invent happy final departures. Court guests are deliberately
@@ -84,8 +91,8 @@ There is no UI timer or animation-driven simulation/currency change.
 ## Validation and limits
 
 Run the commands in the root README. The direct runner requires actual assertion
-summaries and rejects empty child output/process errors. All 59 new cases plus 81
-prerequisite cases pass. The exact HTML passes 59 browser assertions with no page
+summaries and rejects empty child output/process errors. All 75 new cases plus 81
+prerequisite cases pass. The exact HTML passes 92 browser assertions with no page
 errors, external requests or player storage access, including reduced motion,
 replay/recovery, all themes, finite-wallet conservation and 44px touch layouts.
 
@@ -94,7 +101,7 @@ nominated demand; it is not evidence of live economy balance. The ride completes
 actual game simulation steps; its accelerated lab operation is not real-time play.
 Phone/unfolded/landscape emulations are not physical Fold 7 or PS5 verification.
 
-The download kit's `REBUILD-VERIFICATION.json` records actual application to both
+The download kit's `REBUILD-VERIFICATION.json` records actual application to three
 bases and the clean committed source, native reruns, exact HTML rebuilds, parsed
 scope checks and a production build comparison against the inspected live lead.
 The source verification folder records the reviewed HTML hash and source hashes.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-11-02.1",
+  "revision": "2026-11-02.2",
   "baseMatrixRevision": "2026-11-01.2",
   "baseFileSHA256": "01fc6fb4dc1d9dc87664a2b40a4b1ece1adaf4e2b77ba9178508c16972ac2250",
   "reviewedLiveBase": "f2f96f8351dea4cf6072862b1e3e0b14d6a318dc",
@@ -34,7 +34,8 @@
       "cwd": ".",
       "command": "node voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs",
       "files": [
-        "voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs"
+        "voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/offers.test.mjs"
       ]
     },
     {
@@ -44,7 +45,8 @@
       "cwd": ".",
       "command": "node voxel/docs/contractor-patches/festival-host-bridge/tools/run-native.mjs",
       "files": [
-        "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs"
+        "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs"
       ]
     },
     {
@@ -120,14 +122,17 @@
       "scope": "isolated",
       "paths": [
         "voxel/docs/contractor-patches/festival-host-bridge/lab/**",
-        "voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs"
+        "voxel/docs/contractor-patches/festival-host-bridge/test/lab.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/offers.test.mjs"
       ],
       "evidence": [
-        "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js"
+        "voxel/docs/contractor-patches/festival-host-bridge/lab/scenario.js",
+        "voxel/docs/contractor-patches/festival-host-bridge/lab/offers.js"
       ],
       "invariants": [
         "Prepared funding, stock, Court guests and nominated ride demand are explicit test inputs, not a player-time/profit forecast.",
-        "Actual stock, guest spending and income reconcile. Snapshots are detached; restore preserves pending outcomes without inventing paid facts."
+        "Actual stock, guest spending and income reconcile. Snapshots are detached; restore preserves pending outcomes without inventing paid facts.",
+        "Action quotes run on a detached copy, including mutating food holds and planned ride visit IDs. A quote is never a committed sale."
       ],
       "checkIds": [
         "bridge-lab-tests",
@@ -142,16 +147,19 @@
         "voxel/docs/contractor-patches/festival-host-bridge/preview/**",
         "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs",
         "voxel/docs/contractor-patches/festival-host-bridge/tools/qa-preview.mjs",
-        "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs"
+        "voxel/docs/contractor-patches/festival-host-bridge/test/preview-build.test.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/test/service-state.test.mjs"
       ],
       "evidence": [
         "voxel/docs/contractor-patches/festival-host-bridge/preview/app.js",
         "voxel/docs/contractor-patches/festival-host-bridge/preview/style.css",
-        "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs"
+        "voxel/docs/contractor-patches/festival-host-bridge/tools/build-preview.mjs",
+        "voxel/docs/contractor-patches/festival-host-bridge/preview/service-state.js"
       ],
       "invariants": [
         "A receipt/stamp animates only after a new committed operation, never on replay or delivery. Real numeric values remain immediate.",
-        "Embed fonts/art, preserve keyboard/touch layouts, cancel one-shots for reduced motion and hidden pages. Do not boot live main/scene/storage."
+        "Embed fonts/art, preserve keyboard/touch layouts, cancel one-shots for reduced motion and hidden pages. Do not boot live main/scene/storage.",
+        "Completed evenings retain earned3/3 summary without fabricated per-goal progress; repeats show fresh actual goals. Collapse inspectors and surface goals/results near touch actions."
       ],
       "checkIds": [
         "bridge-ui-build",
@@ -316,6 +324,36 @@
       "to": "controls-ui",
       "consequence": "Only when adopting UI in-game: connect focus/controller/menu selectors and preserve the playfield.",
       "activation": "integration-conditional"
+    },
+    {
+      "from": "kitchen",
+      "to": "bridge-lab",
+      "consequence": "Read-only dish previews must reproduce the real nominated guest quantity/price/stock without reserving real holds.",
+      "activation": "active"
+    },
+    {
+      "from": "cocoa-meadow",
+      "to": "bridge-lab",
+      "consequence": "Cocoa previews must follow actual stock, changing guest IDs and current paid order pricing; quotes are not receipts.",
+      "activation": "active"
+    },
+    {
+      "from": "garden-carving",
+      "to": "bridge-lab",
+      "consequence": "The garden action describes current crop phase without promising a fabricated yield or income.",
+      "activation": "active"
+    },
+    {
+      "from": "hayride-service",
+      "to": "bridge-lab",
+      "consequence": "Ride fare/route previews use detached planning and must not allocate real visit IDs or promise a simulated trip duration.",
+      "activation": "active"
+    },
+    {
+      "from": "festival-state",
+      "to": "bridge-desk",
+      "consequence": "Derived completion/claimed/repeat states follow the real view. An inactive completed evening must not display a false0/3 reset.",
+      "activation": "active"
     }
   ]
 }
