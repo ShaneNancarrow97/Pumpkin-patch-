@@ -1,0 +1,26 @@
+{
+  "source_branch": "contractor/boost-helping-hands",
+  "implementation_commit": "2b50fa37a58b8c87132b290fc2bfc0af79f852c6",
+  "handover_commit": "87714df8a6e3f158ce3e6e6279f14777e5749954",
+  "files": [
+    {
+      "file": "Pumpkin-Patch-Boost-and-Helping-Hands.html",
+      "bytes": 37852671,
+      "sha256": "bd6a053533a1a5c2c01489085f012140746e6340c7e70d4da40f8062bdf1ba64"
+    },
+    {
+      "file": "Pumpkin-Patch-Boost-and-Helping-Hands.zip",
+      "bytes": 27342412,
+      "sha256": "842a82fc5fb63e72a96cb777cf6f12de80523578250122bd12c2424bfc3d1f67"
+    },
+    {
+      "file": "Boost-and-Helping-Hands-Claude-Kit.zip",
+      "bytes": 9700927,
+      "sha256": "5897f5bd3582d74443529fce7930ba276dc06e8df66f33822b67ff34b44ef02c"
+    }
+  ],
+  "zip_crc": "passed",
+  "focused_browser_checks": 22,
+  "full_rule_suite": "passed",
+  "broad_smoke": "partial10earlierdesktopchecks only"
+}
