@@ -1,0 +1,2 @@
+# Blank context lines in a generated unified patch are intentionally one space.
+changes.patch -whitespace
