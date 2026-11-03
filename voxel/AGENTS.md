@@ -20,6 +20,8 @@
 
 Read this before changing anything in `voxel/`. It covers what the game is, how the code fits together, how to check your work, and the conventions the code follows. The player-facing overview is [`README.md`](README.md); the design source is [`docs/GAME-BIBLE.md`](docs/GAME-BIBLE.md).
 
+**Contractor farm work:** [`docs/contractor-patches/boost-helping-hands/README.md`](docs/contractor-patches/boost-helping-hands/README.md) adds personal Shane/Natalie hires and skills, one-plot planting, trained picking batches and saved boost heat. Read its design, dependency matrix and verification before integration; version 15 preserves old shared Helping hands ownership and crop timing. `farmWork.helpers` is authoritative, not the legacy `upgrades.auto` flag.
+
 **Codex's hayride (merged in 39):** [`docs/handovers/38-hayride-lead-integration.md`](docs/handovers/38-hayride-lead-integration.md) preserves Claude’s `1abaff5` maze update and isolates hayride audio from lead-owned runtime files.
 
 **Latest contractor takeover:** [`docs/handovers/37-off-map-hayride-takeover.md`](docs/handovers/37-off-map-hayride-takeover.md) records the final off-map route, dark forest, scare cast, lightning, exact review scope and remaining checks.
@@ -97,7 +99,7 @@ Generated files: `src/sprite-meta.js`, `src/sprite-meta-hd.js`, `src/decor-meta.
 - **Rules are pure.** No DOM and no three.js; time comes in only as `dt`. Keep it that way so `npm test` can run them in Node. When a rule changes, add or update a test.
 - **Saves:**
   - The key is `pumpkin-patch-voxel-reference-v1`, separate from the main game's, plus `-prefs` for settings.
-  - `STATE_VERSION` is 14 (additive cooking, home-life and progression state; legacy saves migrate). `restoreState` must accept anything, including junk, older versions and missing fields, and return a valid state.
+  - `STATE_VERSION` is 15 (personal farm skills, saved boost heat and crop timing, after cooking/home-life/progression; legacy saves migrate). `restoreState` must accept anything, including junk, older versions and missing fields, and return a valid state.
   - If you change the shape of saved state, bump the version, migrate in `restoreState`, and test the round trip.
   - Customers and baskets are never saved (`closeForTheNight`).
 - **Picking:**
