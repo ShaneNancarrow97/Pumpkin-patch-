@@ -1,0 +1,16 @@
+{
+  "scope": "Planning and UI prototype only",
+  "source_commit": "b0861383ed07d9f5aa69472a4655f11566c8ee8d",
+  "files": [
+    {
+      "file": "Pumpkin-Patch-Achievement-UI-Preview.html",
+      "bytes": 1138811,
+      "sha256": "0ffd86ba90be36654ff19fcd52565485bea90635a0f45a02327176b28be59330"
+    },
+    {
+      "file": "Achievement-Plan-Claude-Kit.zip",
+      "bytes": 6020399,
+      "sha256": "c9cc20581ba423a194b61342395b3a0f657e7320b56100690e717a93dca952c9"
+    }
+  ]
+}
