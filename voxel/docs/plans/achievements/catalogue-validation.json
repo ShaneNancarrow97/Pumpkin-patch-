@@ -1,0 +1,26 @@
+{
+  "entries": 64,
+  "score": 1000,
+  "phases": {
+    "early": {
+      "count": 16,
+      "points": 80
+    },
+    "mid": {
+      "count": 20,
+      "points": 300
+    },
+    "late": {
+      "count": 16,
+      "points": 400
+    },
+    "secret": {
+      "count": 12,
+      "points": 220
+    }
+  },
+  "unique_ids": true,
+  "meta_dependency_count": 63,
+  "circular_meta": false,
+  "status": "catalogue structural validation passed; gameplay is not implemented"
+}

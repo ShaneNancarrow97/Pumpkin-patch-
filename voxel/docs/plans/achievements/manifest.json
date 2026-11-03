@@ -1,0 +1,138 @@
+{
+  "scope": "Achievement plan and sample UI only",
+  "catalogue_count": 64,
+  "score": 1000,
+  "prototype_checks": 20,
+  "files": [
+    {
+      "file": "ASSET-BRIEF.md",
+      "bytes": 2400,
+      "sha256": "7764c32b9312040a3ad9acd1fc3f3ec7f82fda4509ee07993f73392759996d1e"
+    },
+    {
+      "file": "CATALOGUE.md",
+      "bytes": 24033,
+      "sha256": "1a1ed305e888a56315675bccd3fb3093735836e5f97c024a3eb25f7292922f95"
+    },
+    {
+      "file": "CLAUDE-HANDOVER.md",
+      "bytes": 3929,
+      "sha256": "c67ec58a08581c1fff8ba42ca8dd3c1703b2638ea85cd032cd90aee9a9c7a575"
+    },
+    {
+      "file": "DEPENDENCIES.md",
+      "bytes": 2819,
+      "sha256": "b5b172425a222196ab259c5d33f6b9cd1f8a46fe5ec2fa18ab1c546346126062"
+    },
+    {
+      "file": "EVIDENCE-AUDIT.md",
+      "bytes": 14186,
+      "sha256": "1a5dd2cfc808ade5225bd69048ad73c870bc714a33c8bf8137b52c2251cbc759"
+    },
+    {
+      "file": "PLAN.md",
+      "bytes": 14516,
+      "sha256": "72da6ae366c0135347ac3d78778e5597a2c0566e9813a7fa3a0f4ca8c3542be3"
+    },
+    {
+      "file": "README.md",
+      "bytes": 2998,
+      "sha256": "3b43660f683323093cedb2927ba47dcc8bb2e765f68d8020a8312fc10048ee6c"
+    },
+    {
+      "file": "VALIDATION.md",
+      "bytes": 2268,
+      "sha256": "e7c5b3d8909e5d40d7b9120892b4bcb3fb87c43d480aa55ae5e8d7444b908a00"
+    },
+    {
+      "file": "background-reference.png",
+      "bytes": 793813,
+      "sha256": "fb5a8200ab84e120f388e682e119a6930ab78e56493db44a244ae4fdfa501835"
+    },
+    {
+      "file": "build-preview.mjs",
+      "bytes": 1192,
+      "sha256": "5dbe84ac37bd6d0811af3f9241c6d17d9f00a668f5c7eeac818a9993509a2e35"
+    },
+    {
+      "file": "catalogue-validation.json",
+      "bytes": 458,
+      "sha256": "749313fd67693b8d633b6d3adda60b138c92f39e56fac4e5dc59e8fc10b37fe2"
+    },
+    {
+      "file": "catalogue.json",
+      "bytes": 57303,
+      "sha256": "a45e5ce7dc1ce77cedbc7f802f8f3bf2860fcbd61e4ffb10579acf6ec1388033"
+    },
+    {
+      "file": "launch-sets.json",
+      "bytes": 1894,
+      "sha256": "bb8ab576f77fa00bddd212bad10abaf4a9adf83e584d09b928f4b098755b474e"
+    },
+    {
+      "file": "preview.html",
+      "bytes": 1138811,
+      "sha256": "0ffd86ba90be36654ff19fcd52565485bea90635a0f45a02327176b28be59330"
+    },
+    {
+      "file": "prototype-template.html",
+      "bytes": 35261,
+      "sha256": "02de3ae068717b505034e00e2b4bda8ed3bcb641a82975d8ff9e93fe87c64e15"
+    },
+    {
+      "file": "verification/desktop-detail.png",
+      "bytes": 512583,
+      "sha256": "fab4f4b5e61cf8cc4ac82d8a3ca8d6e789646f068379582e0e60dff15364fc92"
+    },
+    {
+      "file": "verification/desktop-library.png",
+      "bytes": 544189,
+      "sha256": "02472cf3975c8c3825e65c706e286a207eb24d02221ec9e527763a99772ff3ab"
+    },
+    {
+      "file": "verification/desktop-toast.png",
+      "bytes": 1156230,
+      "sha256": "7f1582d8fed23a660fbc3fcbd334f33c8edb090b89e684212015cf7dc3ea9b41"
+    },
+    {
+      "file": "verification/fold-detail.png",
+      "bytes": 429198,
+      "sha256": "c69e0ee5fc2f65b3a29f95dba1a5ac135f5518a274e98643a0254cb70091055d"
+    },
+    {
+      "file": "verification/fold-library.png",
+      "bytes": 553762,
+      "sha256": "e22867c5870a8f1005f9313486fe839434dadfd83636cb33f53f691f189a8685"
+    },
+    {
+      "file": "verification/landscape-detail.png",
+      "bytes": 183272,
+      "sha256": "93eb85cb423fc1d19314bf491789a7bddd46ea61b3c9e3e9bbc13d92482d3b55"
+    },
+    {
+      "file": "verification/landscape-library.png",
+      "bytes": 172752,
+      "sha256": "a0384fe29ab7ce690b3839e5a87fcd83ca8cf393d53569c441f1dac49ffe420f"
+    },
+    {
+      "file": "verification/phone-detail.png",
+      "bytes": 192129,
+      "sha256": "a469fb0acf5af4bba6ac9fa8cfe4091fdfccdfdfd54a3406f376c9a559d50770"
+    },
+    {
+      "file": "verification/phone-library.png",
+      "bytes": 208323,
+      "sha256": "826b2ea948cc8cc2e29ba538e01267822c474d5956a2de121df9a68685c3dc4d"
+    },
+    {
+      "file": "verification/phone-toast.png",
+      "bytes": 408147,
+      "sha256": "5528fbd4c562b1eca845449c53bc2dc49077ed4523b3ffdd873b725abdc20fb7"
+    },
+    {
+      "file": "verification/prototype-report.json",
+      "bytes": 1942,
+      "sha256": "d44cfe572f021f49cc417f94a91cd1fb6ebd72d7e45aac36f06df1279a020f9c"
+    }
+  ]
+}

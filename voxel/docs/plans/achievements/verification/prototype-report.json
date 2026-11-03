@@ -1,0 +1,104 @@
+{
+  "checks": [
+    {
+      "name": "click toast opens that exact achievement",
+      "passed": true
+    },
+    {
+      "name": "earned details explain saved example evidence",
+      "passed": true
+    },
+    {
+      "name": "early filter count",
+      "passed": true
+    },
+    {
+      "name": "mid filter count",
+      "passed": true
+    },
+    {
+      "name": "late filter count",
+      "passed": true
+    },
+    {
+      "name": "secret filter count",
+      "passed": true
+    },
+    {
+      "name": "locked secret name concealed",
+      "passed": true
+    },
+    {
+      "name": "secret name does not leak through search",
+      "passed": true
+    },
+    {
+      "name": "secret clue can be revealed",
+      "passed": true
+    },
+    {
+      "name": "explicit spoiler confirmation reveals requirement",
+      "passed": true
+    },
+    {
+      "name": "hint/solution reveal grants no score",
+      "passed": true
+    },
+    {
+      "name": "return keeps phase filter",
+      "passed": true
+    },
+    {
+      "name": "fold no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "phone no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "landscape no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "hover holds toast beyond dwell",
+      "passed": true
+    },
+    {
+      "name": "separate close dismisses toast",
+      "passed": true
+    },
+    {
+      "name": "close does not open details",
+      "passed": true
+    },
+    {
+      "name": "no page errors",
+      "passed": true
+    },
+    {
+      "name": "no external requests",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "viewports": [
+    {
+      "name": "fold",
+      "width": 884,
+      "height": 1104
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "landscape",
+      "width": 844,
+      "height": 390
+    }
+  ],
+  "passed": true
+}
