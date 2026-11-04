@@ -4,7 +4,7 @@ import { updateDining } from "./rules/cooking-dining.js";
 // rules/; this file puts the state together, loads old saves and runs a step.
 import { UPGRADES, VARIETIES, MAX_VARIETY_INDEX, VARIETY_COUNT, STREAK, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
 import { MAX_PLOTS } from "./content/farm-layout.js";
-import { freshStock, freshBatches, restoreFresh, settleFresh } from "./rules/stock.js";
+import { freshStock, freshBatches, restoreFresh, settleFresh, freshPumpkinAges, freshStockWaste, restorePumpkinAges, restoreStockWaste, settlePumpkinStock } from "./rules/stock.js";
 import { freshWanted, restoreWanted, updateWanted } from "./rules/market.js";
 import { freshOrders, restoreOrders, updateOrders } from "./rules/orders.js";
 import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, freshBigSpender, restoreBigSpender, updateShop, updateStall } from "./rules/selling.js";
@@ -37,7 +37,9 @@ export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 export * from "./rules/unlocks.js";
 
-export const STATE_VERSION = 15;
+export const STATE_VERSION = 16;
+export * from "./rules/room-extensions.js";
+export * from "./rules/home-media.js";
 export * from "./rules/farm-work.js";
 export * from "./rules/farm-buttons.js";
 export * from "./rules/visitor-events.js";
@@ -72,7 +74,7 @@ export function freshState() {
     coins: 40, earned: 0, sold: 0, harvested: 0, taps: 0, time: 0, wholesale: 0,
     plots: freshPlots(), plotLevels: Array(MAX_PLOTS).fill(0), plotCrops: Array(MAX_PLOTS).fill(0),
     upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(), farmWork: freshFarmWork(),
-    stock: freshStock(), fresh: freshBatches(), wanted: freshWanted(), orders: freshOrders(), holds: [],
+    stock: freshStock(), fresh: freshBatches(), pumpkinAges: freshPumpkinAges(), stockWaste: freshStockWaste(), wanted: freshWanted(), orders: freshOrders(), holds: [],
     visitorEvents: freshVisitorEvents(), stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
     shop: freshShop(), bigSpender: freshBigSpender(), festival: freshFestival(), customerCare: freshCustomerCare(),
     house: freshHouse(), estate: freshEstate(), hollowHouse: freshHollowHouse(), hayride: freshHayride(), kitchen: freshKitchen(),
@@ -123,6 +125,9 @@ export function restoreState(raw) {
   if (Array.isArray(raw.stock) && v1) for (const v of raw.stock) if (VARIETIES[v]) s.stock[v]++;
   if (Array.isArray(raw.stock) && !v1 && [4, VARIETY_COUNT].includes(raw.stock.length)) s.stock = Array.from({ length: VARIETY_COUNT }, (_, i) => count(raw.stock[i]));
   s.fresh = restoreFresh(raw.fresh, s);
+  s.pumpkinAges = restorePumpkinAges(raw.pumpkinAges, s);
+  s.stockWaste = restoreStockWaste(raw.stockWaste, s);
+  settlePumpkinStock(s);
   s.wanted = restoreWanted(raw.wanted, s);
   s.orders = restoreOrders(raw.orders, s);
   if (raw.streak) for (const k of Object.keys(s.streak)) s.streak[k] = money(raw.streak[k]);
@@ -178,7 +183,7 @@ export function update(s, dt) {
   // The streak's boost is read from the clock, so the arrival timers just count down faster while it lasts.
   s.time += dt;
   updateFarm(s, dt, events);
-  settleFresh(s); updateWanted(s, events); updateOrders(s, events);
+  settlePumpkinStock(s, events); settleFresh(s); updateWanted(s, events); updateOrders(s, events);
   updateFestival(s);
   updateHollowHouse(s, dt, events);
   updateHayride(s, dt, events);

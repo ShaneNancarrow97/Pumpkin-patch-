@@ -50,7 +50,8 @@ test("side-wall art avoids kitchen jar shelves", () => {
   M.buyDecor(s, "d10"); const instance = M.placeDecor(s, "d10", "kitchen");
   assert.ok(M.setDecorWall(s, instance, "left"));
   const p = s.house.placed.find((q) => q.instance === instance);
-  assert.equal(p.x, 5.2); assert.ok(!M.fits(s, "kitchen", "d10", 1, 0, instance));
+  assert.ok(M.fits(s,"kitchen",p.id,p.x,p.z,instance),"a narrow clear gap is usable");
+  assert.ok(!M.fits(s, "kitchen", "d10", 1, 0, instance, {wall:"left",y:2.5}),"the fixed jars remain reserved at their real height");
 });
 
 // A turned piece occupies its rectangle, not the empty corners around it.

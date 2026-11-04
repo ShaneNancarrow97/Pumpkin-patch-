@@ -1,9 +1,10 @@
 // Pet schedules are presentation-only; beds follow normal saved furniture poses.
+import { roomUnlocked } from "./house.js";
 export const HOME_PET_NAMES = Object.freeze({ skyla: "Skyla", maisie: "Maisie", sandy: "Sandy" });
 export const HOME_PET_ACTIONS = Object.freeze(["idle", "walk", "wag", "sleep", "stretch", "eat", "drink"]);
 export function homePetRooms(s) {
   const placed=s.house?.placed??[],cats=placed.filter(p=>p.id==="moon-cat-bed"),dogs=placed.filter(p=>p.id==="harvest-dog-bed");
-  const open=room=>room==="parlour"||room==="bedroom"&&s.house.level>=1||room==="kitchen"&&s.house.level>=2||room==="attic"&&s.house.level>=3;
+  const open=room=>roomUnlocked(s,room);
   return {
     skyla:open(cats[0]?.room)?cats[0].room:"parlour",
     sandy:open(dogs[0]?.room)?dogs[0].room:s.house.level>=1?"bedroom":"parlour",

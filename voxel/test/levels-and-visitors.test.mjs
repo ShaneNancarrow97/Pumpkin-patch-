@@ -63,19 +63,19 @@ test("version 3 saves retain progress without replaying historical celebrations"
   assert.deepEqual(M.awardLevels(loaded), [7]);
 });
 
-test("outdoor base frequency is 21 seconds; Spread the word has five tiers and Fairy lights four", () => {
+test("outdoor base frequency is fifteen seconds; Spread the word has five tiers and Fairy lights six", () => {
   const s = M.freshState(); s.coins = 1e7; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
-  assert.equal(M.stallArrivalSeconds(s), 21); assert.equal(M.shopArrivalSeconds(s), 3);
+  assert.equal(M.stallArrivalSeconds(s), 15); assert.equal(M.shopArrivalSeconds(s), 2.5);
   for (let i = 0; i < 5; i++) assert.ok(M.buyUpgrade(s, "sign"));
   assert.equal(M.buyUpgrade(s, "sign"), false);
-  for (let i = 0; i < 4; i++) assert.ok(M.buyVisitorUpgrade(s, "lights"));
+  for (let i = 0; i < 6; i++) assert.ok(M.buyVisitorUpgrade(s, "lights"));
   assert.equal(M.buyVisitorUpgrade(s, "lights"), false);
-  assert.equal(s.upgrades.sign, 5); assert.equal(s.visitorUpgrades.lights, 4);
+  assert.equal(s.upgrades.sign, 5); assert.equal(s.visitorUpgrades.lights, 6);
   const sign = M.UPGRADES.find((u) => u.id === "sign").steps;
-  assert.ok(Math.abs(M.stallArrivalSeconds(s) - 21 * M.tierFactor(sign, 5) * M.tierFactor(M.LIGHTS, 4)) < 1e-8);
-  assert.ok(M.stallArrivalSeconds(s) > 7 && M.stallArrivalSeconds(s) < 8, "about seven and a half seconds, fully upgraded");
+  assert.ok(Math.abs(M.stallArrivalSeconds(s) - 15 * M.tierFactor(sign, 5) * M.tierFactor(M.LIGHTS, 6)) < 1e-8);
+  assert.ok(M.stallArrivalSeconds(s) > 4.5 && M.stallArrivalSeconds(s) < 5, "about five seconds, fully upgraded");
   const loaded = M.restoreState(M.saveData(s));
-  assert.equal(loaded.upgrades.sign, 5); assert.equal(loaded.visitorUpgrades.lights, 4);
+  assert.equal(loaded.upgrades.sign, 5); assert.equal(loaded.visitorUpgrades.lights, 6);
 });
 
 test("the slower pace keeps every level an older save reached, and fills its bar from there", () => {

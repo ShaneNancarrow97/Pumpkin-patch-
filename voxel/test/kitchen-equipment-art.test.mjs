@@ -43,7 +43,8 @@ test("new kitchen equipment uses the normal house storage, rotation and side-wal
     const instance=H.placeDecor(s,item.id,"kitchen");assert.ok(instance,item.id+" fits an empty kitchen");
     const p=s.house.placed.find(p=>p.instance===instance);
     if(item.wall){
-      assert.equal(H.setDecorWall(s,instance,"left"),false,"the kitchen's fixed jar shelves keep their reserved side-wall space");
+      assert.equal(H.setDecorWall(s,instance,"left"),true,"usable wall space above or below fixed shelves is available");
+      assert.equal(H.fits(s,"kitchen",item.id,1,0,instance,{wall:"left",y:2.5}),false,"the actual fixed shelf rectangle remains reserved");
       assert.equal(H.fits(s,"kitchen",item.id,p.x,p.z,instance),true);
       assert.equal(H.sendToRoom(s,instance,"bedroom"),true);
       assert.equal(H.setDecorWall(s,instance,"left"),true,"a free side wall uses the same ordinary hanging controls");

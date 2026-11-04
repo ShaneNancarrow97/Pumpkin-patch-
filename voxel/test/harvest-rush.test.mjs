@@ -20,7 +20,7 @@ test("each quick pick stacks on the streak: ×7 brings parties 55% more often", 
   picks(s, 1); near(M.visitorBonus(s), 0.1);
   picks(s, 5);
   assert.equal(s.streak.count, 7); near(M.visitorBonus(s), 0.55); near(M.pathBoost(s), 0.55);
-  near(M.stallGapSeconds(s), 21 / 1.55); assert.equal(M.stallArrivalSeconds(s), 21, "the upgrades' own gap is unchanged");
+  near(M.stallGapSeconds(s), 15 / 1.55); assert.equal(M.stallArrivalSeconds(s), 15, "the upgrades' own gap is unchanged");
   near(M.visitorBoostSeconds(s), M.STREAK.window + M.STREAK.fade);
 });
 
@@ -75,27 +75,27 @@ test("timers count down faster with the bonus instead of being rescaled", () => 
 
 test("a steady picker's party arrives sooner than an idle farm's", () => {
   const arrival = (keepPicking) => {
-    const s = M.freshState(); s.visitorTimer = 21;
+    const s = M.freshState(); s.visitorTimer = 15;
     for (let t = 0; t < 60; t = Math.round((t + 0.1) * 10) / 10) {
       if (keepPicking && Math.abs(t % 1) < 1e-9) M.rewardHarvestStreak(s);
       if (M.update(s, 0.1).some((e) => e.type === "arrival")) return t + 0.1;
     }
   };
   const idle = arrival(false), busy = arrival(true);
-  assert.ok(Math.abs(idle - 21) < 0.11, `idle ${idle}`);
-  assert.ok(busy < 15, `busy ${busy}`);                                     // about 14s, a third sooner
+  assert.ok(Math.abs(idle - 15) < 0.11, `idle ${idle}`);
+  assert.ok(busy < 11, `busy ${busy}`);
 });
 
 test("the floor keeps a long streak on a fully upgraded farm from running away, and drops as tiers are bought", () => {
-  const s = M.freshState(); s.upgrades.sign = 5; s.visitorUpgrades.lights = 4; s.shop.unlocked = true;
+  const s = M.freshState(); s.upgrades.sign = 5; s.visitorUpgrades.lights = 6; s.shop.unlocked = true;
   picks(s, 30);
   near(M.visitorBonus(s), 1.5);
-  near(M.stallGapSeconds(s), Math.max(2.5, M.stallArrivalSeconds(s) / 2.5));
+  near(M.stallGapSeconds(s), Math.max(2, M.stallArrivalSeconds(s) / 2.5));
   assert.ok(M.stallGapSeconds(s) < M.stallArrivalSeconds(s), "the streak still helps a maxed farm");
-  near(M.shopArrivalSeconds(s) / M.shopPace(s), Math.max(M.shopArrivalSeconds(s) / 2.5, 1.1));
-  const mid = M.freshState(); mid.upgrades.sign = 2; picks(mid, 30); near(M.stallGapSeconds(mid), Math.max(4.4, 21 * 0.88 * 0.89 / 2.5));
+  near(M.shopArrivalSeconds(s) / M.shopPace(s), Math.max(M.shopArrivalSeconds(s) / 2.5, 1));
+  const mid = M.freshState(); mid.upgrades.sign = 2; picks(mid, 30); near(M.stallGapSeconds(mid), Math.max(3.4, 15 * 0.88 * 0.89 / 2.5));
   // A fresh farm gets the whole +150%.
-  const t = M.freshState(); picks(t, 30); near(M.stallGapSeconds(t), 21 / 2.5);
+  const t = M.freshState(); picks(t, 30); near(M.stallGapSeconds(t), 15 / 2.5);
 });
 
 test("the outdoor capacity holds the next whole party at the gate", () => {

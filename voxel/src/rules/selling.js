@@ -6,7 +6,6 @@ import { cleanlinessFootfall } from "./cleanliness.js";
 // src/content/stall.js, src/content/shop.js).
 import { NORMAL_VISITOR_KINDS } from "../content/visitors.js";
 import { tierOpen } from "./unlocks.js";
-import { economy } from "../../../src/content/economy.js";
 import { stallProfiles } from "../../../src/content/stall.js";
 import { checkoutSeconds, customerProfiles, shopCapacity, shopUpgradeCosts } from "../../../src/content/shop.js";
 import { UPGRADES, VARIETIES, tierFactor, visitorBonus } from "./farm.js";
@@ -54,9 +53,9 @@ export const freshStall = () => ({ income: 0, itemsSold: 0, served: 0, missedBud
 // little: a regular's loyalty card adds a pumpkin and the money for it together.
 export const VISITOR_UPGRADES = [
   { id: "appetite", name: "Bigger baskets", text: "Word of the pumpkins gets round the village, and neighbours come with bigger baskets and a little more to spend.", costs: [400, 1500, 4500, 11000, 24000, 50000], needs: null },
-  { id: "crowd", name: "Room for more neighbours", text: "Raise the outdoor visitor limit, with room for whole parties to enjoy the farm: benches, a wider gate, then the lane and the green.", costs: [300, 1200, 4000, 10000, 20000, 35000, 55000], needs: { id: "party", text: "Opens after Bring a friend." } },
-  { id: "party", name: "Bring a friend", text: "Neighbours come together: friends, family, then parties of up to six or eight.", costs: [600, 1800, 6000, 12000, 24000], needs: null },
-  { id: "lights", name: "Fairy lights down the path", text: "A string of lights by the gate, then lanterns all the way down. Parties set off for the stall more often.", costs: [150, 600, 2400, 9000], needs: { id: "sign", text: "Opens after Spread the word." } },
+  { id: "crowd", name: "Room for more neighbours", text: "Raise the outdoor visitor limit from eighteen to sixty-four, with room for whole parties to enjoy the farm.", costs: [300, 1200, 4000, 10000, 20000, 35000, 55000, 80000, 120000], needs: { id: "party", text: "Opens after Bring a friend." } },
+  { id: "party", name: "Bring a friend", text: "Neighbours come together: friends, family, then late-game parties of ten or twelve.", costs: [600, 1800, 6000, 12000, 24000, 42000, 70000], needs: null },
+  { id: "lights", name: "Fairy lights down the path", text: "A string of lights, lantern walks, then the festival avenue. Six tiers bring parties to the stall more often.", costs: [150, 600, 2400, 9000, 28000, 80000], needs: { id: "sign", text: "Opens after Spread the word." } },
   { id: "cocoa", name: "Cocoa hospitality", text: "A warmer welcome: neighbours wait longer for pumpkins and Sandy serves cocoa more quickly.", costs: [250, 700, 1400], needs: { id: "party", text: "Opens after Bring a friend." } },
   { id: "loyalty", name: "A loyalty card", text: "Buy nine pumpkins, get a slightly larger pumpkin. Regulars take one more home, at the stall and in the shop.", costs: [6000, 12000], needs: { id: "open", text: "Opens with the shop." } },
   // Caretakers sweep up the litter guests drop anywhere on the farm (rules/cleanliness.js): Hettie, then her twin.
@@ -64,18 +63,19 @@ export const VISITOR_UPGRADES = [
 ];
 export const freshVisitorUpgrades = () => ({ party: 0, lights: 0, cocoa: 0, loyalty: 0, crowd: 0, appetite: 0, janitor: 0 });
 // Fairy lights do most at first; old saves' four tiers are never slower than before.
-export const LIGHTS = [0.85, 0.87, 0.89, 0.92], PATIENCE = [6, 12, 20, 30], MUG = [0, 2, 4, 7];
+export const LIGHTS = [0.85, 0.87, 0.89, 0.92, 0.94, 0.96], PATIENCE = [6, 12, 20, 30], MUG = [0, 2, 4, 7];
 // However hot the streak, parties set off at least this far apart and shoppers
 // come through the door no faster than this: the boost multiplies the upgrades,
 // so the floor is what keeps a long late-game streak from running away.
 // The quickest the path can get. Each frequency tier bought lowers it, so tiers
 // keep paying off for a player whose streak already keeps the path full.
-export const ARRIVAL_FLOOR = { stall: 5, shop: 1.5 };
+export const ARRIVAL_FLOOR = { stall: 4, shop: 1.35 };
 const floorFor = (s, base, step, least) => Math.max(least, base - step * (lv(s, "sign") + lv(s, "lights")));
 // At most this many neighbours on the path at once; the next party waits at the gate.
-export const PATH_CAP = 16;
-// Outdoor guests at once: 16, then up to 50 with every crowd tier.
-export const CROWD = [16, 20, 24, 28, 32, 38, 44, 50];
+export const PATH_CAP = 18;
+// Outdoor guests at once: eighteen, then up to sixty-four. The total-world
+// ceiling still includes attraction guests and occasion arrivals.
+export const CROWD = [18, 22, 26, 30, 34, 40, 46, 52, 58, 64];
 export const visitorCapacity = s => Math.max(8,Math.floor(CROWD[Math.min(CROWD.length - 1, lv(s, "crowd"))]*cleanlinessFootfall(s)));
 // Party members set off this far apart, so a party walks up the path in a line.
 export const PARTY_GAP = 0.5;
@@ -84,14 +84,15 @@ export const COUNTER_SPOTS = 8;
 
 // Spread the word lives with the farm's upgrades; the rest have their own record.
 const lv = (s, id) => (id === "sign" ? s.upgrades.sign : s.visitorUpgrades?.[id]) || 0;
-export const PARTY_SIZES = [1, 2, 3, 4, 6, 8];
+export const PARTY_SIZES = [1, 2, 3, 4, 6, 8, 10, 12];
 export const partyMax = s => PARTY_SIZES[Math.min(PARTY_SIZES.length - 1, Math.max(0, lv(s, "party")))];
 // Party sizes run through every size up to the most, so the average is (max + 1) / 2.
-export const partySize = (s, party) => 1 + ((party * 5 + 2) % partyMax(s));
+export const partySize = (s, party) => { const max=partyMax(s),step=max===10?7:5;return 1+((party*step+2)%max); };
 // The gaps the upgrades give, before any streak.
 const SIGN = UPGRADES.find((u) => u.id === "sign").steps;
-export const stallArrivalSeconds = (s) => (economy.outdoorArrivalSeconds - 3) * tierFactor(SIGN, lv(s, "sign")) * tierFactor(LIGHTS, lv(s, "lights"));
-export const shopArrivalSeconds = (s) => economy.indoorArrivalSeconds * tierFactor(SIGN, lv(s, "sign"));
+export const BASE_ARRIVAL = Object.freeze({ stall: 15, shop: 2.5 });
+export const stallArrivalSeconds = (s) => BASE_ARRIVAL.stall * tierFactor(SIGN, lv(s, "sign")) * tierFactor(LIGHTS, lv(s, "lights"));
+export const shopArrivalSeconds = (s) => BASE_ARRIVAL.shop * tierFactor(SIGN, lv(s, "sign"));
 // How much faster than that the wait counts down with the streak's boost, held
 // to the floor. Timers count down faster rather than being rescaled, so a
 // boost that grows or fades changes the pace smoothly.
@@ -99,14 +100,14 @@ const pace = (seconds, floor, bonus) => Math.max(1, Math.min(1 + bonus, seconds 
 // Lasting attractions (the maze, the hayride, the meadow's comforts) add to the
 // streak's boost, together capped at 75%.
 export const attractionFootfallBonus = s => Math.min(.75, mazeFootfallBonus(s) + hayrideFootfallBonus(s) + meadowFootfallBonus(s));
-export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), visitorBonus(s) + attractionFootfallBonus(s))*cleanlinessFootfall(s);
-export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1.1), visitorBonus(s) + attractionFootfallBonus(s))*cleanlinessFootfall(s);
+export const stallPace = (s) => pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2), visitorBonus(s) + attractionFootfallBonus(s))*cleanlinessFootfall(s);
+export const shopPace = (s) => pace(shopArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.shop, 0.05, 1), visitorBonus(s) + attractionFootfallBonus(s))*cleanlinessFootfall(s);
 // The gap between parties right now, and the boost that actually reaches the path.
 export const stallGapSeconds = (s) => stallArrivalSeconds(s) / stallPace(s);
 export const pathBoost = (s) => stallPace(s) - 1;
 // Only the extra pace attributable to the temporary harvest streak, after the
 // permanent attraction benefit and the same arrival floor have been applied.
-export const streakPathBoost = (s) => stallPace(s) - pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2.5), attractionFootfallBonus(s));
+export const streakPathBoost = (s) => stallPace(s) - pace(stallArrivalSeconds(s), floorFor(s, ARRIVAL_FLOOR.stall, 0.3, 2), attractionFootfallBonus(s));
 // The HUD can distinguish guests actually on the path from indoor excursions.
 export const onThePath = (s) => s.visitors.filter((v) => !chatting(v) && (!v.festival || v.festival.done) && (!v.hayride || v.hayride.done || ["approach", "return"].includes(v.hayride.phase)) && (!v.hollow || v.hollow.done || ["approach", "arriving-house", "door-wait", "to-border", "to-shop"].includes(v.hollow.phase))).length + s.arriving.length;
 // Every outdoor trip keeps a return space, including guests in the foyer or at

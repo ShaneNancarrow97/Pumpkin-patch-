@@ -114,9 +114,15 @@ const farm = () => {
 test("the two new party tiers each add two places and keep old tiers valid on reload", () => {
   const s = farm(); s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); s.visitorUpgrades.party = 3; assert.equal(S.partyMax(s), 4);
   assert.equal(S.buyVisitorUpgrade(s, "party"), true); assert.equal(S.partyMax(s), 6);
-  assert.equal(S.buyVisitorUpgrade(s, "party"), true); assert.equal(S.partyMax(s), 8); assert.equal(S.buyVisitorUpgrade(s, "party"), false);
+  assert.equal(S.buyVisitorUpgrade(s, "party"), true); assert.equal(S.partyMax(s), 8);
   assert.deepEqual(Array.from({ length: 8 }, (_, n) => S.partySize(s, n)).sort((a, b) => a - b), [1, 2, 3, 4, 5, 6, 7, 8]);
   assert.equal(M.restoreState(M.saveData(s)).visitorUpgrades.party, 5);
+  s.coins=200000;
+  assert.equal(S.buyVisitorUpgrade(s,"party"),true);assert.equal(S.partyMax(s),10);
+  assert.deepEqual(Array.from({length:10},(_,n)=>S.partySize(s,n)).sort((a,b)=>a-b),[1,2,3,4,5,6,7,8,9,10]);
+  assert.equal(S.buyVisitorUpgrade(s,"party"),true);assert.equal(S.partyMax(s),12);assert.equal(S.buyVisitorUpgrade(s,"party"),false);
+  assert.deepEqual(Array.from({length:12},(_,n)=>S.partySize(s,n)).sort((a,b)=>a-b),[1,2,3,4,5,6,7,8,9,10,11,12]);
+  assert.equal(M.restoreState(M.saveData(s)).visitorUpgrades.party,7);
 });
 
 test("one rush enters within two seconds while preserving its complete invited count", () => {

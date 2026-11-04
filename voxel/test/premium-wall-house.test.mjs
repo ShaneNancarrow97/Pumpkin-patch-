@@ -33,10 +33,11 @@ test("wide wall items reserve their full hook span and keep the kitchen floor fr
   for(const item of PREMIUM_WALL_CATALOG) M.buyDecor(s,item.id);
   const a=M.placeDecor(s,"copper-pan-rail","kitchen");
   const p=s.house.placed.find(q=>q.instance===a);
-  assert.ok(a);assert.equal(M.fits(s,"kitchen","iron-utensil-rack",p.x+2,0),false);
-  assert.equal(M.fits(s,"kitchen","f04",p.x,0),true,"a wall rail does not block a floor cell");
+  assert.ok(a);assert.equal(M.fits(s,"kitchen","iron-utensil-rack",p.x,0,undefined,{wall:p.wall,y:M.wallMountHeight(s,p)}),false,"two pieces cannot share the same wall rectangle");
+  assert.equal(M.fits(s,"kitchen","f04",4,4),true,"a wall rail does not reserve the kitchen floor");
   const b=M.placeDecor(s,"iron-utensil-rack","kitchen");
-  assert.ok(b);assert.equal(s.house.placed.find(q=>q.instance===b).x,p.x+3);
+  assert.ok(b);const second=s.house.placed.find(q=>q.instance===b);
+  assert.ok(M.fits(s,"kitchen",second.id,second.x,second.z,second.instance),"another piece finds a free wall/height without overlapping");
 });
 
 test("premium wall mounts clear bookcases and stay below the ceiling trim",()=>{

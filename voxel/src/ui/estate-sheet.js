@@ -2,6 +2,7 @@ import * as M from "../model.js";
 import * as E from "../rules/house-estate.js";
 import { ESTATE_DECOR, ESTATE_DECOR_BY_ID, ESTATE_EXPANSIONS, ESTATE_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_HOUSE_SKINS } from "../content/house-estate.js";
 import { money, segmented } from "./kit.js";
+import { gardenSpriteIcon as gardenIcon } from "./garden-icons.js";
 
 const HOUSE_NAMES = ["Little cottage", "Crooked cottage", "Midnight manor", "Haunted haven"];
 const FINISH_GROUPS = [["walls", "Walls"], ["roof", "Roof"], ["trim", "Window trim"], ["door", "Front door"], ["fence", "Garden fence"]];
@@ -21,42 +22,6 @@ function houseSkinIcon(skin) {
   else if (skin.id === "storm-laboratory") emblem = '<path d="m90 11-10 19h8l-5 16 17-23h-9l7-12z"/>';
   else emblem = '<path d="M12 78a8 8 0 0 1 16 0v8h-3v6H15v-6h-3z"/><path d="M16 79h2m4 0h2m-6 8v4m4-4v4" class="skin-ink"/>';
   return `<span class="estate-skin-preview" style="${style}" aria-hidden="true"><svg viewBox="0 0 112 104"><ellipse cx="56" cy="96" rx="50" ry="6" fill="#0d0b1499"/><path d="M23 ${y}h62v47H23z" fill="var(--skin-walls)"/><path d="m85 ${y} 14 7v47l-14-7z" fill="var(--skin-door)"/><path d="M19 ${y} 54 ${peak} 90 ${y}z" fill="var(--skin-roof)" stroke="var(--skin-trim)" stroke-width="3"/><path d="m90 ${y} 12 7-13 1" fill="var(--skin-roof)"/>${tall ? '<path d="M24 76h60v17H24z" fill="var(--skin-walls)"/><path d="M24 68h60" stroke="var(--skin-trim)" stroke-width="3"/>' : ""}<path d="M48 73h15v21H48z" fill="var(--skin-door)" stroke="var(--skin-trim)" stroke-width="2"/><path d="M30 54h12v12H30zm39 0h11v12H69z" fill="var(--skin-window)" stroke="var(--skin-trim)" stroke-width="2"/>${tall ? '<path d="M30 38h12v12H30zm39 0h11v12H69z" fill="var(--skin-window)" stroke="var(--skin-trim)" stroke-width="2"/>' : ""}${skin.houseLevel === 3 ? '<path d="M87 37V18h12v25m-14-25 8-11 8 11z" fill="var(--skin-roof)" stroke="var(--skin-trim)" stroke-width="2"/>' : ""}<g fill="var(--skin-accent)" stroke="var(--skin-accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${emblem}</g><path d="M49 95h14" stroke="var(--skin-trim)" stroke-width="3"/></svg></span>`;
-}
-
-// Small catalogue drawings echo the silhouettes of the native voxel props.
-function gardenIcon(id, thumbnail) {
-  if (thumbnail) return `<span class="estate-art" aria-hidden="true"><img src="${thumbnail}" alt=""></span>`;
-  const drawings = {
-    "lantern-post": '<path d="M23 43V18m-8 0h16l-3-7H18zm2 0v11h12V18m-9 25h8M20 22h6"/>',
-    "rose-bed": '<path d="m6 35 24-7 12 6-24 8zm5-3v-9m10 7V18m11 9V15"/><path d="m7 22 4-4 4 4-4 4zm10-5 4-4 4 4-4 4zm11-3 4-4 4 4-4 4z"/>',
-    "pumpkin-pile": '<path d="M24 16c-7-7-18 0-15 10s17 9 21 2m-7-14 2-6m0 9c8-6 17 0 15 10S21 36 20 29m-3-10c-3 4-3 8 0 11m13-10c3 3 4 7 1 11M13 23h1m10 1h1m9 1h1"/>',
-    "stone-urn": '<path d="M14 21h20l-3 11H17zm10 11v7m-9 3h18m-5-24V9m-7 10-7-8m13 5 8-6"/><path d="m12 9 3 1 1 4-4-1zm14-3 3 2-1 4-3-2zm8 1 3 1-1 4-3-1z"/>',
-    "garden-bench": '<path d="m7 26 25-6 10 6-26 7zm3-11 25-6v11m-25-5v11m7-12v11m10-14v11M10 29v9m28-10v9M17 33v10m15-13v10"/>',
-    "bird-bath": '<path d="m8 22 23-6 10 6-23 7zm2 0c3 12 22 11 28 0M24 30v10m-9 3h18m-2-27v-5l5-3 4 3-5 2m0 0 4 6-8-2"/>',
-    "gargoyle": '<path d="M16 39h17l-2-9-1-12-6-5-7 5 1 13zm3-22-5-7 8 3m7 3 6-6-1 10m-17 4L8 19l4 14 6-2m12-8 11-4-5 14-5-2M21 21h1m5 0h1m-6 6h5"/>',
-    "crooked-tree": '<path d="m24 43-3-17 5-15m-4 19-9-8m12 2 12-7m-15 4-8-9m13 2 9-7m-21 4-8 4 4 7m25-14 7 4-6 8M18 43h13"/>',
-    "moon-fountain": '<path d="m6 36 23-6 14 6-23 7zm7-12 16-4 8 5-16 5zm12 3v7M29 7c-11 0-12 15-1 18-5-7-5-11 1-18zM12 35l-1-7m25 6 2-6"/>',
-    "coffin-planter": '<path d="m10 30 5-16 19-5 7 7-7 17-16 7zm6-14 4 5 14-4 5-4M19 21l-6 13m21-17-8 19m-4-20-5-9m10 8 3-10m-6 10 11-4"/>',
-    "rose-arch": '<path d="M11 41V19c0-17 26-17 26 0v22M16 39V19c0-10 16-10 16 0v20m-21-9 5-5m16 5 5-5M11 19l5 5m16-5 5 5"/><path d="m11 11 3-3 3 3-3 3zm18-5 3-3 3 3-3 3zm6 28 3-3 3 3-3 3z"/>',
-    "wishing-well": '<path d="m7 17 18-12 18 12-18 5zm4 0v19m28-19v19m-27-5 15-4 13 5-15 5zm0 0v8l13 5 15-5v-7m-15-10v9m-4-2h8v5h-8"/>',
-    "bat-hedge": '<path d="m7 23 3-9 8 6 6-10 6 10 8-6 3 9-7 8-7-3-3 7-3-7-7 3zm17 12v8m-7 0h14"/>',
-    "mushroom-patch": '<path d="M7 25c-1-13 19-16 20-3zm9 0v12m9-20c1-12 17-11 18 0zm10 0v12m-11 9c0-7 12-8 13-1zm6 0v8M12 18h1m9 1h1m11-8h1"/>',
-    "fire-pit": '<path d="m7 31 23-6 12 7-23 6zm1 0 6 9 18 2 9-10m-24 6-2 7m17-5 2 5M18 27c-8-8 4-10 3-19 12 9 0 10 9 16 0-6 4-8 4-11 10 10 5 16-4 18"/>',
-    "ghost-scarecrow": '<path d="M13 33V17a11 11 0 0 1 22 0v16l-5-4-6 6-6-5zm11 0v11m-4-26h1m7 0h1m-7 6h4m10-3 6 5m-2-1v10m-4 0h8v6h-8"/>',
-    "berry-patch": '<path d="m5 34 26-7 12 6-26 8zm0 0v4l12 6 26-8v-5"/><path d="M12 31c-1-9 6-14 9-15m0 13c0-8 6-13 10-14m-2 12c1-7 5-10 8-10"/><circle cx="17" cy="21" r="1.6"/><circle cx="26" cy="19" r="1.6"/><circle cx="33" cy="22" r="1.6"/><circle cx="22" cy="25" r="1.6"/>',
-    "herb-planter": '<path d="m8 30 22-6 11 5-22 7zm0 0v8l11 6 22-7v-8M12 38v6m26-9v6"/><path d="M15 29c-2-6 1-10 4-11m2 9c0-7 4-10 7-11m1 8c1-5 4-7 6-7M17 21h1m10-4h1m5 1h1"/>',
-    "vegetable-bed": '<path d="m4 32 26-7 14 6-26 8zm0 0v4l14 6 26-8v-4"/><path d="M12 31l2-9m-4 3 4-3 3 3m6 2 1-10m-3 4 3-4 3 4m5 1v-14m-2 3h4m3 12 2-8m-4 3 4-3 3 3"/>',
-    "apple-tree": '<path d="M22 44V28m0 6-6-4m6 0 7-5M14 44h17"/><path d="M8 20c0-9 8-15 15-15s16 6 16 15-8 12-16 12S8 29 8 20z"/><circle cx="16" cy="19" r="2"/><circle cx="29" cy="15" r="2"/><circle cx="25" cy="25" r="2"/>',
-    "carving-bench": '<path d="M5 27h38M7 27v15m34-15v15M5 34h38"/><path d="M17 26c-6 0-8-11 0-12 3-1 7-1 10 0 8 1 6 12 0 12zm5-12v-4m-6 9 2 2m8-2-2 2m-5 4h6"/><path d="m33 22 7-6m-1 5 4-1"/>',
-    "hay-bales": '<path d="M5 30h17v12H5zm21 0h17v12H26zM14 18h19v12H14z"/><path d="M10 30v12m6-12v12m15-12v12m6-12v12m-17-24v12m7-12v12"/><path d="M19 18c-2-6 4-8 6-4 2-4 8-2 6 4"/>',
-    "gravestones": '<path d="M5 42h38M8 42V24a5 5 0 0 1 10 0v18m3 0V18h4v-5h4v5h4v6h-4v18m7 0V27l4-4 4 4v15"/><path d="M10 28h6m-6 4h6m22-2h3"/>',
-    "owl-perch": '<path d="M24 44V26m-9 0h19M18 44h12"/><path d="M17 25c-1-9 2-15 7-15s8 6 7 15c-4 2-10 2-14 0zm0-15 3 3m11-3-3 3"/><circle cx="21" cy="16" r="2"/><circle cx="27" cy="16" r="2"/><path d="m24 18-1 2h2z"/>',
-    "witch-cauldron": '<path d="M9 21h30M11 21c-2 13 6 19 13 19s15-6 13-19m-21 18-3 5m18-5 3 5m-10-4v4"/><path d="M14 21c2-3 6-2 7 0m3 0c2-4 6-3 8 0"/><circle cx="20" cy="12" r="2.5"/><circle cx="28" cy="9" r="2"/><circle cx="25" cy="15" r="1.5"/>',
-    "picnic-table": '<path d="M5 22h38M9 22l-3 20m36-20 3 20M14 22l-2 20m24-20 2 20M3 32h42"/><path d="M27 21v-6h10v6m-8-6c0-4 6-4 6 0"/><path d="M12 19h6v2h-6z"/>',
-    "lantern-garland": '<path d="M5 44V10m38 34V10M3 44h6m30 0h6M5 11c9 10 29 10 38 0"/><path d="M14 17v4m10-2v5m10-7v4"/><path d="M11 21h6v7h-6zm10 3h6v7h-6zm10-3h6v7h-6z"/>',
-    "lily-pond": '<path d="M5 30c0-8 9-13 19-13s19 5 19 13-9 12-19 12S5 38 5 30z"/><path d="M13 30a5 3 0 1 0 10 0 5 3 0 1 0-10 0m4 0h6m6-4a4 2 0 1 0 8 0 4 2 0 1 0-8 0"/><path d="M38 17v-9m-3 10V10m6 8v-7m-15 9c1-3 4-3 5 0-1 2-4 2-5 0z"/>',
-  };
-  return `<span class="estate-art" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${drawings[id] ?? drawings["lantern-post"]}</svg></span>`;
 }
 
 // Garden purchases, exterior finishes and the growing grounds share one sheet.

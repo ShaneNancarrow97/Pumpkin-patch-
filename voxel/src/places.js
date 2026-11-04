@@ -5,7 +5,7 @@ import { availableFood } from "./rules/cooking-sales.js";
 import { kitchenEquipment } from "./rules/kitchen-equipment.js";
 import { RECIPE_BY_ID } from "./content/cooking.js";
 import { applyPieceColour } from "./piece-colours.js";
-import { GRID, footprint, pieceFootprint, pieceBody, roomStyle, roomPieces, roomLayout, available, displayCount, decorById, hostSurfaces } from "./model.js";
+import { GRID, footprint, pieceFootprint, pieceBody, roomStyle, roomPieces, roomLayout, available, displayCount, decorById, hostSurfaces, wallMountHeight } from "./model.js";
 import { riderSize } from "./rules/surfaces.js";
 import { WALL_H, INTERIOR, buildRoom, buildShopInterior, SHOP_SPOTS } from "./interiors.js";
 import { decorProp, shelfBooks, decorReady } from "./decor.js";
@@ -107,7 +107,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     for (const f of foodDisplays) disposeFoodProp(f); foodDisplays = []; foodDisplayKey = "";
     for (const a of customers.values()) if (a.food) { disposeFoodProp(a.food); a.food = null; }
     for (const guide of [selection?.box, selection?.ring, ghost, gridLines]) if (guide) { guide.removeFromParent(); guide.geometry.dispose(); guide.material.dispose(); }
-    for (const o of [...root.children]) { root.remove(o); o.traverse?.((m) => { if (m.isMesh && m.geometry && !m.geometry.userData.shared) m.geometry.dispose?.(); for (const mat of Array.isArray(m.material) ? m.material : m.material ? [m.material] : []) if(mat.userData.pieceColourOwned)mat.dispose(); }); }
+    for (const o of [...root.children]) { root.remove(o); o.traverse?.((m) => { if (m.isInstancedMesh && m.name === "household-animated-screen") m.dispose(); if (m.isMesh && m.geometry && !m.geometry.userData.shared) m.geometry.dispose?.(); for (const mat of Array.isArray(m.material) ? m.material : m.material ? [m.material] : []) if(mat.userData.pieceColourOwned)mat.dispose(); }); }
     pool.forEach((l) => (l.intensity = 0));
     pieces = new Map(); pickables = []; actors = []; customers = new Map(); tables = []; skyla = null; selection = null; ghost = null; gridLines = null; tableKey = "";
   };
@@ -146,9 +146,9 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     light(lamps, o);
     lightIndoors(o);
     hitPlane(w, d, "floor", new THREE.Vector3(o.x + w / 2, 0.01, o.z + d / 2), -Math.PI / 2);
-    hitPlane(w, WALL_H - 1.5, "wall", new THREE.Vector3(o.x + w / 2, 1.5 + (WALL_H - 1.5) / 2, o.z + 0.02));
-    hitPlane(d, WALL_H - 1.5, "wall", new THREE.Vector3(o.x + 0.02, 1.5 + (WALL_H - 1.5) / 2, o.z + d / 2), 0, "left");
-    hitPlane(d, WALL_H - 1.5, "wall", new THREE.Vector3(o.x + w - 0.02, 1.5 + (WALL_H - 1.5) / 2, o.z + d / 2), 0, "right");
+    hitPlane(w, WALL_H, "wall", new THREE.Vector3(o.x + w / 2, WALL_H / 2, o.z + 0.02));
+    hitPlane(d, WALL_H, "wall", new THREE.Vector3(o.x + 0.02, WALL_H / 2, o.z + d / 2), 0, "left");
+    hitPlane(d, WALL_H, "wall", new THREE.Vector3(o.x + w - 0.02, WALL_H / 2, o.z + d / 2), 0, "right");
     // Shane and Natalie are home too, at the front of the room.
     for (const [who, x] of [["natalie", 2.2], ["shane", w - 2.2]]) {
       const a = character(who);
@@ -161,8 +161,6 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     setGrid(showGrid);
   }
 
-  // How high a wall piece hangs: the chandelier from the ceiling, the rest centred on the panel.
-  const hangAt = (id, height) => (id === "d04" ? WALL_H - 0.45 - height : (decorById[id].hangHeight ?? 2.9) - height / 2);
   // Where a piece standing on another sits in its host's group: its centre on the
   // top, measured in the host's unturned frame (rules/surfaces.js).
   function riderAt(host, p) {
@@ -194,7 +192,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     return [{ x: w.x - o.x, y: w.y, z: w.z - o.z, intensity: 7 }];
   }
   function addPiece(p) {
-    const prop = decorProp(p.id, { finish: p.finish });
+    const prop = decorProp(p.id, { finish: p.finish, piece: p });
     if (p.on) return addRider(p, prop);
     const fp = pieceFootprint(p), o = ORIGIN.room, native = prop.userData.native === true;
     applyPieceColour(prop,p.tint,true);
@@ -211,9 +209,10 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     // Wall pieces hang with their back against the wall; the rest sit centred on their cells.
     if (wall) {
       const offset = native ? 0.005 : 0.02;
-      if (p.wall === "left") { g.position.set(o.x + offset, hangAt(p.id, height), o.z + cx); g.rotation.y = Math.PI / 2; }
-      else if (p.wall === "right") { g.position.set(o.x + place.w - offset, hangAt(p.id, height), o.z + cx); g.rotation.y = -Math.PI / 2; }
-      else g.position.set(o.x + cx, hangAt(p.id, height), o.z + offset);
+      const y = wallMountHeight(state, p);
+      if (p.wall === "left") { g.position.set(o.x + offset, y, o.z + cx); g.rotation.y = Math.PI / 2; }
+      else if (p.wall === "right") { g.position.set(o.x + place.w - offset, y, o.z + cx); g.rotation.y = -Math.PI / 2; }
+      else g.position.set(o.x + cx, y, o.z + offset);
     } else { g.position.set(o.x + cx, fp.layer === "rug" ? 0.005 : 0, o.z + cz); g.rotation.y = (p.rotation ?? 0) * Math.PI / 180; }
     if (p.flip) lean.scale.x = -1;
     root.add(g);
@@ -344,11 +343,12 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     root.add(box);
     return box;
   }
-  const outlineAt = (entry, fp, x, z) => {
+  const outlineAt = (entry, fp, x, z, pose = entry.pose ?? entry.piece) => {
     const o = ORIGIN.room, wall = fp.layer === "wall";
-    if (wall && entry.piece.wall === "left") return new THREE.Vector3(o.x + 0.05, entry.bottom + entry.height / 2, o.z + x + fp.w / 2);
-    if (wall && entry.piece.wall === "right") return new THREE.Vector3(o.x + place.w - 0.05, entry.bottom + entry.height / 2, o.z + x + fp.w / 2);
-    return new THREE.Vector3(o.x + x + fp.w / 2, wall ? entry.bottom + entry.height / 2 : 0.06, o.z + (wall ? 0.05 : z + fp.d / 2));
+    const y = wall ? wallMountHeight(state, pose) + entry.height / 2 : .06;
+    if (wall && pose.wall === "left") return new THREE.Vector3(o.x + 0.05, y, o.z + x + fp.w / 2);
+    if (wall && pose.wall === "right") return new THREE.Vector3(o.x + place.w - 0.05, y, o.z + x + fp.w / 2);
+    return new THREE.Vector3(o.x + x + fp.w / 2, y, o.z + (wall ? 0.05 : z + fp.d / 2));
   };
   function select(instance) {
     if (selection) { selection.box.removeFromParent(); selection.box.geometry.dispose(); selection.box.material.dispose(); if (selection.ring) { selection.ring.removeFromParent(); selection.ring.geometry.dispose(); selection.ring.material.dispose(); } selection = null; }
@@ -384,13 +384,13 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     selection.ring.position.set(g.position.x, g.position.y + 0.015, g.position.z);
     selection.box.material.color.setHex(ok ? 0xffd36a : 0xff6a5a); selection.ring.material.color.setHex(ok ? 0xffe2a0 : 0xff6a5a);
   }
-  function preview(instance, x, z, ok) {
+  function preview(instance, x, z, ok, pose = null) {
     if (ghost) { root.remove(ghost); ghost.geometry.dispose(); ghost.material.dispose(); ghost = null; }
     const entry = pieces.get(instance);
     if (!entry || x === null || entry.rider) return;
-    const p = entry.pose ?? entry.piece, fp = pieceFootprint(p);
-    ghost = outline(fp.layer === "wall" ? footprint(p.id) : { ...footprint(p.id), ...pieceBody(p.id) }, outlineAt(entry, fp, x, z), ok ? 0x8ae6a0 : 0xff6a5a, entry.height);
-    ghost.rotation.y = entry.group.rotation.y;
+    const p = { ...(entry.pose ?? entry.piece), ...pose }, fp = pieceFootprint(p);
+    ghost = outline(fp.layer === "wall" ? footprint(p.id) : { ...footprint(p.id), ...pieceBody(p.id) }, outlineAt(entry, fp, x, z, p), ok ? 0x8ae6a0 : 0xff6a5a, entry.height);
+    ghost.rotation.y = fp.layer === "wall" ? p.wall === "left" ? Math.PI / 2 : p.wall === "right" ? -Math.PI / 2 : 0 : entry.group.rotation.y;
   }
   // Dragging changes only a handful of transforms. Rebuilding the diorama on
   // every touch move discarded geometry, lights and the visitor animation.
@@ -410,7 +410,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     const cx = p.x + fp.w / 2, cz = p.z + fp.d / 2;
     if (wall) {
       const side = p.wall ?? "back";
-      entry.group.position.set(o.x + (side === "left" ? entry.wallOffset : side === "right" ? place.w - entry.wallOffset : cx), entry.bottom, o.z + (side === "back" ? entry.wallOffset : cx));
+      entry.group.position.set(o.x + (side === "left" ? entry.wallOffset : side === "right" ? place.w - entry.wallOffset : cx), wallMountHeight(state, p), o.z + (side === "back" ? entry.wallOffset : cx));
       entry.group.rotation.y = side === "left" ? Math.PI / 2 : side === "right" ? -Math.PI / 2 : 0;
     } else { entry.group.position.set(o.x + cx, fp.layer === "rug" ? .005 : 0, o.z + cz); entry.group.rotation.y = (p.rotation ?? 0) * Math.PI / 180; }
     entry.hit.position.copy(entry.group.position).add(new THREE.Vector3(0, entry.height / 2, wall ? entry.hitDepth / 2 : 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), wall ? entry.group.rotation.y : 0));
@@ -455,7 +455,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     },
     playerTargets() {
       if (place?.kind !== "room") return [];
-      const layout = roomLayout(state, place.id), list = [{ type: "exit", label: "Leave the house", x: place.w / 2, z: place.d - .25 }];
+      const layout = roomLayout(state, place.id), list = place.id === "bathroom" ? [] : [{ type: "exit", label: "Leave the house", x: place.w / 2, z: place.d - .25 }];
       list.push(...homePieceTargets(state,place.id),...petInteractionTargets(pets?.status()??[]));
       for (const st of layout?.stairs ?? []) { const to = st.up ?? st.down; if (to) list.push({ type: "go", to, label: "Go to " + to, x: st.exit.x + .5, z: st.exit.z + .5 }); }
       for (const dr of layout?.doors ?? []) list.push({ type: "go", to: dr.to, label: "Go to " + dr.to, x: dr.wall === "left" ? .35 : place.w - .35, z: dr.at + dr.width / 2 });
@@ -506,6 +506,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       entry.group.updateMatrixWorld(true);
       return entry.group.getWorldPosition(new THREE.Vector3()).y;
     },
+    pieceWall(instance) { const p = pieces.get(instance)?.piece; return p && !p.on && footprint(p.id).layer === "wall" ? p.wall ?? "back" : null; },
     rotatePiece(instance) { movePiece(instance); },
     // A piece's box in the world (its hit box), for the camera to keep in view.
     pieceBox(instance) {
@@ -518,7 +519,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     cellAt(point, type, wall = "back", snap = .1) {
       const o = ORIGIN.room;
       const at = n => +(snap > 0 ? Math.round(n / snap) * snap : n).toFixed(6);
-      return type === "wall" ? { x: at(wall === "back" ? point.x - o.x : point.z - o.z), z: 0, wall } : { x: at(point.x - o.x), z: at(point.z - o.z) };
+      return type === "wall" ? { x: at(wall === "back" ? point.x - o.x : point.z - o.z), y: at(point.y), z: 0, wall } : { x: at(point.x - o.x), z: at(point.z - o.z) };
     },
     tick(dt, time, paying) {
       if (place?.kind === "shop") { tickShop(dt, time); if (skyla) animate(skyla, time, false, 0, 0, paying); }

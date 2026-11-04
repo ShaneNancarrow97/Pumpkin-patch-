@@ -1,8 +1,7 @@
 // The cottage and its rooms. The catalogue, room styles, house levels,
-// capacities and haunting points are the main game's (src/content/catalog.mjs,
-// src/content/rooms.mjs, src/core/house-model.mjs). Placement is new: each room
-// is a voxel diorama with a floor grid and a row of hooks on the back wall,
-// instead of a painted backdrop.
+// haunting points and base catalogue come from the main game. Voxel-only home
+// content adds collections of small objects and an optional bathroom wing.
+// Every room is a voxel diorama with floor placement and free 2D wall mounting.
 //
 // ── The growing cottage: the API for the renderer and menus ──
 // Rooms grow with the house level and join up with stairs and doorways:
@@ -46,8 +45,13 @@ import { PREMIUM_WALL_CATALOG } from "../content/premium-wall-catalog.js";
 import { PREMIUM_FURNITURE_CATALOG } from "../content/premium-furniture-catalog.js";
 import { KITCHEN_EQUIPMENT } from "../content/kitchen-equipment.js";
 import { HOME_FURNISHINGS } from "../content/home-furnishings.js";
+import { HOUSEHOLD_CATALOG } from "../content/household-catalog.js";
+import { HOUSEHOLD_SIZES } from "../content/household-sizes.js";
 import { PET_FURNISHINGS, PET_FURNISHING_SIZES } from "../content/pet-furnishings.js";
-import { findRoom, findRoomStyle, freshRoomStyles, houseRooms, parlourInteriors, roomStyles } from "../../../src/content/rooms.mjs";
+import { findRoom, findRoomStyle, freshRoomStyles, houseRooms, parlourInteriors, roomStyles, roomWallOpenings } from "../content/home-rooms.js";
+import { freshRoomExtensions, restoreRoomExtensions } from "./room-extensions.js";
+import { restoreHomeMedia } from "./home-media.js";
+import { WALL_HEIGHT, wallBounds, wallRectanglesOverlap } from "./wall-placement.js";
 import { libraryStories } from "../../../src/content/library.mjs";
 import { validPieceColour } from "./piece-colours.js";
 import { SHELF_CATALOG } from "../content/shelf-catalog.js";
@@ -56,23 +60,23 @@ import { DECOR_SIZES as BASE_DECOR_SIZES } from "../content/decor-sizes.js";
 import { KITCHEN_EQUIPMENT_SIZES } from "../content/kitchen-equipment-sizes.js";
 import { HOME_FURNISHING_SIZES } from "../content/home-furnishing-sizes.js";
 
-const DECOR_SIZES = { ...BASE_DECOR_SIZES, ...KITCHEN_EQUIPMENT_SIZES, ...HOME_FURNISHING_SIZES, ...PET_FURNISHING_SIZES };
+const DECOR_SIZES = { ...BASE_DECOR_SIZES, ...KITCHEN_EQUIPMENT_SIZES, ...HOME_FURNISHING_SIZES, ...PET_FURNISHING_SIZES, ...HOUSEHOLD_SIZES };
 
-const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG, ...PREMIUM_FURNITURE_CATALOG, ...SHELF_CATALOG, ...KITCHEN_EQUIPMENT, ...HOME_FURNISHINGS, ...PET_FURNISHINGS];
+const decorCatalog = [...baseDecorCatalog, ...PREMIUM_WALL_CATALOG, ...PREMIUM_FURNITURE_CATALOG, ...SHELF_CATALOG, ...KITCHEN_EQUIPMENT, ...HOME_FURNISHINGS, ...PET_FURNISHINGS, ...HOUSEHOLD_CATALOG];
 const decorById = Object.fromEntries(decorCatalog.map(item=>[item.id,item]));
 const decorCategories = baseDecorCategories.map(([id,name])=>[id,id === "all" ? `All ${decorCatalog.length}` : id === "shelves" ? "Shelves" : name]);
 export { decorById, decorCatalog, decorCategories, houseRooms, roomStyles, libraryStories };
 
 // What each level of the house costs to move on from, and how many pieces its parlour holds.
 export const HOUSE_LEVELS = [
-  { name: "Little cottage", capacity: 6, cost: 650, text: "Stairs up to a new bedroom, and a wider parlour with room for 10 pieces." },
-  { name: "Crooked cottage", capacity: 10, cost: 2600, text: "A doorway through to a new kitchen, and bigger rooms all round." },
-  { name: "Midnight manor", capacity: 16, cost: 9000, text: "A ladder up to the attic, and room for 24 pieces in the parlour." },
-  { name: "Haunted haven", capacity: 24, cost: 0, text: "Four rooms for our perfectly spooky forever home." },
+  { name: "Little cottage", capacity: 48, cost: 650, text: "Stairs up to a new bedroom, and a wider parlour for a collection of little treasures." },
+  { name: "Crooked cottage", capacity: 64, cost: 2600, text: "A doorway through to a new kitchen, and bigger rooms all round." },
+  { name: "Midnight manor", capacity: 80, cost: 9000, text: "A ladder up to the attic, and more space for our perfectly spooky home." },
+  { name: "Haunted haven", capacity: 96, cost: 0, text: "Four rooms and an optional bathroom for our perfectly spooky forever home." },
 ];
 
-// The little cottage's parlour. Pictures, mirrors and the chandelier hang from
-// hooks on the back wall's central panel, between the two windows.
+// The little cottage's parlour. HOOKS remains the legacy central-panel guide;
+// actual wall placement now follows its full surface and authored apertures.
 export const GRID = { w: 10, d: 6 };
 export const HOOKS = { from: 3, to: 7 };
 
@@ -83,8 +87,9 @@ export const ROOM_SIZES = {
   bedroom: [, [10, 6], [11, 6], [12, 7]],
   kitchen: [, , [10, 6], [11, 7]],
   attic: [, , , [12, 6]],
+  bathroom: [, , [6, 6], [6, 6]],
 };
-const STOREY = { parlour: 0, kitchen: 0, bedroom: 1, attic: 2 };
+const STOREY = { parlour: 0, kitchen: 0, bathroom: 0, bedroom: 1, attic: 2 };
 export const HOUSE_LINKS = [
   { kind: "stair", from: "parlour", to: "bedroom" },
   { kind: "door", from: "parlour", to: "kitchen" },
@@ -100,15 +105,17 @@ const doorway = (wall, to) => ({ wall, at: 2, width: 2, to });
 function fixtures(room, rw, open) {
   if (room === "parlour") return { stairs: open("bedroom") ? [flight(rw, "bedroom", null, { x: rw - 1, z: 5 })] : [], doors: open("kitchen") ? [doorway("left", "kitchen")] : [] };
   if (room === "bedroom") return { stairs: [flight(rw, null, "parlour", { x: rw - 2, z: 0 }), ...(open("attic") ? [ladder(rw, "attic", null, { x: rw - 2, z: 0 })] : [])], doors: [] };
-  if (room === "kitchen") return { stairs: [], doors: [doorway("right", "parlour")] };
-  return { stairs: [ladder(rw, null, "bedroom", { x: rw - 1, z: 1 })], doors: [] };
+  if (room === "kitchen") return { stairs: [], doors: [doorway("right", "parlour"), ...(open("bathroom") ? [doorway("left", "bathroom")] : [])] };
+  if (room === "bathroom") return { stairs: [], doors: [doorway("right", "kitchen")] };
+  if (room === "attic") return { stairs: [ladder(rw, null, "bedroom", { x: rw - 1, z: 1 })], doors: [] };
+  return { stairs: [], doors: [] };
 }
 
 const freeze = (o) => { for (const v of Object.values(o)) if (v && typeof v === "object") freeze(v); return Object.freeze(o); };
-function buildLayout(id, level) {
+function buildLayout(id, level, bathroom = false) {
   const room = findRoom(id), size = ROOM_SIZES[id]?.[level];
-  if (!room || !size || level < room.level) return null;
-  const [w, d] = size, open = (other) => findRoom(other).level <= level;
+  if (!room || !size || level < room.level || (id === "bathroom" && !bathroom)) return null;
+  const [w, d] = size, open = (other) => !!findRoom(other) && findRoom(other).level <= level && (other !== "bathroom" || bathroom);
   const { stairs, doors } = fixtures(id, w, open);
   const cells = new Map(), block = (x, z) => x >= 0 && x < w && z >= 0 && z < d && cells.set(x + "," + z, { x, z });
   for (const st of stairs) {
@@ -118,16 +125,16 @@ function buildLayout(id, level) {
   for (const dr of doors) for (let z = dr.at; z < dr.at + dr.width; z++) block(dr.wall === "left" ? 0 : w - 1, z);
   const parlourW = ROOM_SIZES.parlour[level][0];
   return freeze({
-    id, level, w, d, storey: STOREY[id], offset: id === "kitchen" ? -w : parlourW - (id === "parlour" ? parlourW : w),
-    capacity: id === "parlour" ? HOUSE_LEVELS[level].capacity : room.capacity + 2 * (level - room.level),
+    id, level, w, d, storey: STOREY[id], offset: id === "bathroom" ? -ROOM_SIZES.kitchen[level][0] - w : id === "kitchen" ? -w : parlourW - (id === "parlour" ? parlourW : w),
+    capacity: id === "parlour" ? HOUSE_LEVELS[level].capacity : 48 + 8 * (level - room.level),
     hooks: { from: HOOKS.from, to: w - 3 }, doors, stairs,
     blocked: [...cells.values()].sort((a, b) => a.z - b.z || a.x - b.x),
   });
 }
 const layouts = new Map();
 export function roomLayout(s, room, level = s.house.level) {
-  const key = room + "@" + level;
-  if (!layouts.has(key)) layouts.set(key, buildLayout(room, level));
+  const bathroom = s.house.extensions?.bathroom === true, key = room + "@" + level + "@" + Number(bathroom);
+  if (!layouts.has(key)) layouts.set(key, buildLayout(room, level, bathroom));
   return layouts.get(key);
 }
 // The ways out of a room: up or down the stairs, or through a doorway.
@@ -164,13 +171,14 @@ const placedPiece = (instance, id, room, x, z, books = []) => ({ instance, id, r
 export function freshHouse() {
   return {
     level: 0, activeRoom: "parlour", roomStyles: freshRoomStyles(), ownedRoomStyles: [],
-    owned: ["f01", "f11", "b01"], wallpapers: {}, nextInstance: 2, reading: {},
+    owned: ["f01", "f11", "b01"], copies: { f01: 1, f11: 1, b01: 1 }, extensions: freshRoomExtensions(), wallpapers: {}, nextInstance: 2, reading: {},
     placed: [placedPiece("piece-0", "f01", "parlour", 2, 3), placedPiece("piece-1", "f11", "parlour", 6, 0, ["b01"])],
   };
 }
 
-export const roomUnlocked = (s, id) => !!findRoom(id) && s.house.level >= findRoom(id).level;
-// Bigger rooms hold more: the parlour by the house level, the others two more pieces a level after they open.
+export const roomUnlocked = (s, id) => !!findRoom(id) && s.house.level >= findRoom(id).level && (id !== "bathroom" || s.house.extensions?.bathroom === true);
+// Room budgets leave room for small collections; collision still prevents a
+// crowded floor from accepting another large piece.
 export const roomCapacity = (s, id) => roomLayout(s, id)?.capacity ?? 0;
 export const roomPieces = (s, id = s.house.activeRoom) => s.house.placed.filter((p) => p.room === id);
 // The parlour's look follows the house level; other rooms have a free and a paid style.
@@ -191,6 +199,40 @@ export function pieceFootprint(p) {
   return { ...fp, w: +(fp.w * c + fp.d * s).toFixed(6), d: +(fp.w * s + fp.d * c).toFixed(6) };
 }
 const surface = (p) => ["left", "right"].includes(p.wall) ? p.wall : "back";
+// Heights are measured from the very same native props used by the renderer.
+// Blank shelf recipes are authored at 40 voxels per room unit; their native
+// envelopes are deliberately kept here rather than importing Three.js models.
+const SHELF_WALL_HEIGHTS = { "shelf-floating": 0.15, "shelf-bracket": 0.55, "shelf-two-tier": 1.975 };
+export function wallPieceHeight(piece) {
+  const id = typeof piece === "string" ? piece : piece?.id, item = decorById[id];
+  const measured = item?.wallHeight ?? DECOR_SIZES[id]?.box?.[4] ?? SHELF_WALL_HEIGHTS[id] ?? item?.height;
+  return Number.isFinite(measured) && measured > 0 ? measured : 1;
+}
+// Legacy saves have no y: keep the old centred panel mount (or chandelier
+// ceiling drop) exactly until the player moves that piece vertically.
+export function wallMountHeight(s, p) {
+  if (Number.isFinite(p?.y)) return p.y;
+  const height = wallPieceHeight(p);
+  return p?.id === "d04" ? WALL_HEIGHT - 0.45 - height : (decorById[p?.id]?.hangHeight ?? 2.9) - height / 2;
+}
+export function wallPlacementRange(s, p) {
+  const L = roomLayout(s, p.room) ?? GRID;
+  return wallBounds(surface(p) === "back" ? L.w : L.d, footprint(p.id).w, wallPieceHeight(p));
+}
+// The shell and placement rules share authored apertures. Windows, built-in
+// shelves and trim occupy only their real rectangles, leaving wall space above
+// and below usable. Openings and stairs come from the room's current layout.
+export function wallZones(s, room, wall = "back") {
+  const L = roomLayout(s, room);
+  if (!L || !["back", "left", "right"].includes(wall)) return [];
+  const zones = roomWallOpenings(roomStyle(s, room).id, L.w, L.d, wall, L).map((z) => ({ ...z }));
+  for (const dr of L.doors) if (dr.wall === wall) zones.push({ kind: "door", x: dr.at - 0.05, y: 0, w: dr.width + 0.1, h: 3.6 });
+  for (const st of L.stairs) {
+    if (st.wall === wall) zones.push({ kind: st.kind, x: wall === "back" ? st.x : st.z, y: 0, w: wall === "back" ? st.w : st.d, h: WALL_HEIGHT });
+    else if (wall === "back" && st.z === 0) zones.push({ kind: st.kind, x: st.x, y: 0, w: st.w, h: WALL_HEIGHT });
+  }
+  return zones;
+}
 // What a floor piece really takes up: its measured size (content/decor-sizes.js,
 // from the models), never more than its cells, and where its art sits in them.
 // Pieces without a measurement fill their cells.
@@ -211,6 +253,7 @@ const reach = (r) => ({ x: r.w * Math.abs(r.axes[0].x) + r.d * Math.abs(r.axes[1
 // The x and z a floor piece's corner may take in its room, at its turn: for
 // clamping drags, taps and turns to the walls.
 export function placementRange(s, p) {
+  if (footprint(p.id).layer === "wall") return wallPlacementRange(s, p);
   const L = roomLayout(s, p.room) ?? GRID, r = floorRectangle({ ...p, x: 0, z: 0 }), h = reach(r);
   return { x0: h.x - r.x, x1: L.w - h.x - r.x, z0: h.z - r.z, z1: L.d - h.z - r.z };
 }
@@ -225,27 +268,19 @@ function overlaps(a, b) {
   if (a.on || b.on) return false;                                    // riders keep to their tops
   const fa = pieceFootprint(a), fb = pieceFootprint(b);
   if (fa.layer !== fb.layer || (fa.layer === "wall" && surface(a) !== surface(b))) return false;
-  if (fa.layer === "wall") return a.x < b.x + fb.w - 1e-6 && b.x < a.x + fa.w - 1e-6;
+  if (fa.layer === "wall") return wallRectanglesOverlap({ x: a.x, y: wallMountHeight(null, a), w: fa.w, h: wallPieceHeight(a) }, { x: b.x, y: wallMountHeight(null, b), w: fb.w, h: wallPieceHeight(b) });
   return rectanglesOverlap(floorRectangle(a), floorRectangle(b));
 }
 export function fits(s, room, id, x, z, ignore, options) {
   if (!decorById[id]) return false;
-  const existing = s.house.placed.find((p) => p.instance === ignore), candidate = { ...existing, ...options, id, x, z };
+  const existing = s.house.placed.find((p) => p.instance === ignore), candidate = { ...existing, ...options, id, room, x, z };
   if (candidate.on) return riderFits(s, room, candidate, ignore);
   const L = roomLayout(s, room), f = pieceFootprint(candidate), wall = surface(candidate);
   if (!L || !Number.isFinite(x) || !Number.isFinite(z)) return false;
   if (f.layer === "wall") {
-    if (z !== 0 || x < -1e-6) return false;
-    if (wall === "back") { if (x < L.hooks.from || x + f.w > L.hooks.to + 1e-6) return false; }
-    else {
-      if (x < 0.5 || x + f.w > L.d - 0.5 + 1e-6) return false;
-      if (L.doors.some((dr) => dr.wall === wall && x < dr.at + dr.width + 0.2 && x + f.w > dr.at - 0.2)) return false;
-      if (L.stairs.some((st) => st.wall === wall && x < st.z + st.d && x + f.w > st.z)) return false;
-      // The kitchen shell owns its two jar shelves; keep user art clear of them.
-      if (room === "kitchen" && x < 5.2 && x + f.w > 0.8) return false;
-      const style = roomStyle(s, room).id;
-      if (["parlour-crooked", "parlour-manor"].includes(style) && !L.doors.some((dr) => dr.wall === wall) && !L.stairs.some((st) => st.wall === wall) && x < 3.4 && x + f.w > 2.6) return false;
-    }
+    const y = wallMountHeight(s, candidate), bounds = wallPlacementRange(s, candidate);
+    if (z !== 0 || !Number.isFinite(y) || (Object.hasOwn(candidate, "y") && !Number.isFinite(candidate.y)) || x < bounds.x0 - 1e-6 || x > bounds.x1 + 1e-6 || y < bounds.y0 - 1e-6 || y > bounds.y1 + 1e-6) return false;
+    if (wallZones(s, room, wall).some((zone) => wallRectanglesOverlap({ x, y, w: f.w, h: wallPieceHeight(candidate) }, zone))) return false;
   } else {
     const rect = floorRectangle(candidate), h = reach(rect);
     if (rect.x - h.x < -1e-6 || rect.x + h.x > L.w + 1e-6 || rect.z - h.z < -1e-6 || rect.z + h.z > L.d + 1e-6) return false;
@@ -255,7 +290,22 @@ export function fits(s, room, id, x, z, ignore, options) {
 }
 export function findSpot(s, room, id, ignore, options) {
   const L = roomLayout(s, room), existing = s.house.placed.find((p) => p.instance === ignore), wall = surface({ ...existing, ...options });
-  const limit = footprint(id).layer === "wall" && wall !== "back" ? L?.d : L?.w;
+  if (L && footprint(id).layer === "wall") {
+    // A player's explicit destination stays on that wall. Ordinary placement
+    // can use any wall, important in a kitchen with a large built-in hearth.
+    const walls = ["back", "left", "right"].includes(options?.wall) ? [wall] : [wall, ...["back", "left", "right"].filter((w) => w !== wall)];
+    for (const target of walls) {
+      const p = { ...existing, ...options, id, room, wall: target }, bounds = wallPlacementRange(s, p), mounted = wallMountHeight(s, p);
+      if (bounds.x1 < bounds.x0 || bounds.y1 < bounds.y0) continue;
+      // Keep a chosen/legacy height first. Only search up and down if that row
+      // has no room, instead of shifting an existing arrangement unnecessarily.
+      const heights = [mounted];
+      for (let y = bounds.y0; y <= bounds.y1 + 1e-6; y = snapDecorPosition(y + DECOR_STEP, 0.05)) if (Math.abs(y - mounted) > 1e-6) heights.push(y);
+      for (const y of heights) for (let x = bounds.x0; x <= bounds.x1 + 1e-6; x = snapDecorPosition(x + DECOR_STEP, 0.05)) if (fits(s, room, id, x, 0, ignore, { ...options, wall: target, y })) return { x, z: 0, ...(target !== "back" || existing?.wall || options?.wall ? { wall: target } : {}), ...(Number.isFinite(p.y) || Math.abs(y - mounted) > 1e-6 ? { y } : {}) };
+    }
+    return null;
+  }
+  const limit = L?.w;
   const step = DECOR_STEP;
   if (L) for (let z = 0; z < L.d; z = snapDecorPosition(z + step)) for (let x = 0; x < limit; x = snapDecorPosition(x + step)) if (fits(s, room, id, x, z, ignore, options)) return { x, z };
   return null;
@@ -279,13 +329,50 @@ export function setDecorWall(s, instance, wall) {
   if (!spot) return false;
   Object.assign(p, spot, { wall }); return true;
 }
+export function moveWallDecor(s, instance, wall, x, y) {
+  const p = s.house.placed.find((q) => q.instance === instance);
+  if (!p || s.paused || footprint(p.id).layer !== "wall" || !["back", "left", "right"].includes(wall) || !Number.isFinite(y) || !fits(s, p.room, p.id, x, 0, instance, { wall, y })) return false;
+  Object.assign(p, { wall, x, y, z: 0 });
+  return true;
+}
 
+const copyable = (id) => !!decorById[id] && !["books", "wallpaper"].includes(decorById[id].category);
+const validCopyCount = (n) => Number.isSafeInteger(n) && n >= 0 ? Math.min(n, 999) : 0;
+// owned remains the unique catalogue/library list used by existing saves. copies
+// counts all paid instances, including pieces currently standing in a room.
+export function ownedCopies(s, id) {
+  if (!decorById[id] || !s.house.owned.includes(id)) return 0;
+  return copyable(id) ? Math.max(1, validCopyCount(s.house.copies?.[id])) : 1;
+}
+export const placedCopies = (s, id) => s.house.placed.filter((p) => p.id === id).length;
+export function availableCopies(s, id) {
+  if (decorById[id]?.category === "books") return availableBook(s, id) ? 1 : 0;
+  if (decorById[id]?.category === "wallpaper") return ownedCopies(s, id);
+  return Math.max(0, ownedCopies(s, id) - placedCopies(s, id));
+}
 export function buyDecor(s, id) {
   const item = decorById[id];
-  if (!item || s.house.owned.includes(id) || s.coins < item.price) return false;
+  const owned = ownedCopies(s, id);
+  if (!item || (!copyable(id) && owned) || owned >= 999 || s.coins < item.price) return false;
   s.coins -= item.price;
-  s.house.owned.push(id);
+  if (!s.house.owned.includes(id)) s.house.owned.push(id);
+  s.house.copies ??= {};
+  s.house.copies[id] = owned + 1;
   return true;
+}
+
+// Shell changes (a new doorway, a different wall finish) must not leave objects
+// inside their fixtures. Rehome only affected pieces; storage retains all paid
+// copies if a very full room has no safe position left.
+export function reconcileRoomPlacement(s, room) {
+  const moved = [], stored = [];
+  for (const p of [...roomPieces(s, room)]) {
+    if (!s.house.placed.includes(p) || fits(s, p.room, p.id, p.x, p.z, p.instance)) continue;
+    const spot = p.on ? null : findSpot(s, p.room, p.id, p.instance);
+    if (spot) { Object.assign(p, spot); moved.push({ instance: p.instance, id: p.id, room: p.room, ...spot }); }
+    else { for (const q of [p, ...ridersOf(s, p.instance)]) stored.push({ instance: q.instance, id: q.id, room: q.room }); removeDecor(s, p.instance); }
+  }
+  return { moved, stored };
 }
 
 // Grows the house a level. Rooms only get bigger, but new stairs and doorways
@@ -296,25 +383,21 @@ export function upgradeHouse(s) {
   if (h.level >= 3 || s.coins < HOUSE_LEVELS[h.level].cost || !tierOpen(s, "house", null, h.level)) return false;
   s.coins -= HOUSE_LEVELS[h.level].cost;
   h.level++;
-  const moved = [], stored = [];
-  for (const p of [...h.placed]) {
-    if (!h.placed.includes(p) || fits(s, p.room, p.id, p.x, p.z, p.instance)) continue;
-    const spot = p.on ? null : findSpot(s, p.room, p.id, p.instance);
-    if (spot) { Object.assign(p, spot); moved.push({ instance: p.instance, id: p.id, room: p.room, ...spot }); }
-    else { for (const q of [p, ...ridersOf(s, p.instance)]) stored.push({ instance: q.instance, id: q.id, room: q.room }); removeDecor(s, p.instance); }
-  }
+  const results = houseRooms.map((r) => reconcileRoomPlacement(s, r.id)), moved = results.flatMap((r) => r.moved), stored = results.flatMap((r) => r.stored);
   return { level: h.level, moved, stored };
 }
 
 // Puts an owned piece into a room at the first free spot. Returns its instance id.
 export function placeDecor(s, id, room = s.house.activeRoom) {
   const item = decorById[id], h = s.house;
-  if (!item || !h.owned.includes(id) || ["books", "wallpaper"].includes(item.category) || h.placed.some((p) => p.id === id)) return null;
+  if (!item || ["books", "wallpaper"].includes(item.category) || availableCopies(s, id) <= 0) return null;
   if (!roomUnlocked(s, room) || roomPieces(s, room).length >= roomCapacity(s, room)) return null;
   const spot = findSpot(s, room, id);
   if (!spot) return null;
+  h.nextInstance = Number.isSafeInteger(h.nextInstance) && h.nextInstance >= 0 ? h.nextInstance : 0;
+  while (h.placed.some((p) => p.instance === "piece-" + h.nextInstance)) h.nextInstance++;
   const instance = "piece-" + h.nextInstance++;
-  h.placed.push({ ...placedPiece(instance, id, room, spot.x, spot.z), ...(isShelf(id) ? { finish: item.finishes[0].id } : {}) });
+  h.placed.push({ ...placedPiece(instance, id, room, spot.x, spot.z), ...(spot.wall ? { wall: spot.wall } : {}), ...(Number.isFinite(spot.y) ? { y: spot.y } : {}), ...(isShelf(id) ? { finish: item.finishes[0].id } : {}) });
   return instance;
 }
 
@@ -328,10 +411,10 @@ export function moveDecor(s, instance, x, z) {
 export function sendToRoom(s, instance, room) {
   const p = s.house.placed.find((q) => q.instance === instance), riders = p ? ridersOf(s, instance) : [];
   if (!p || p.room === room || !roomUnlocked(s, room) || roomPieces(s, room).length + 1 + riders.length > roomCapacity(s, room)) return false;
-  const spot = findSpot(s, room, p.id, undefined, { rotation: p.rotation, wall: p.wall });
+  const spot = findSpot(s, room, p.id, undefined, { rotation: p.rotation, wall: p.wall, ...(Number.isFinite(p.y) ? { y: p.y } : {}) });
   if (!spot) return false;
   offTop(p);
-  Object.assign(p, { room, x: spot.x, z: spot.z });
+  Object.assign(p, { room, ...spot });
   for (const r of riders) r.room = room;
   return true;
 }
@@ -466,16 +549,23 @@ export function applyWallpaper(s, room, id) {
 
 export function buyRoomStyle(s, styleId) {
   const style = findRoomStyle(styleId);
-  if (!style || !style.price || s.house.ownedRoomStyles.includes(styleId) || s.coins < style.price || !roomUnlocked(s, style.roomId)) return false;
+  if (!style || style.level > s.house.level || !style.price || s.house.ownedRoomStyles.includes(styleId) || s.coins < style.price || !roomUnlocked(s, style.roomId)) return false;
   s.coins -= style.price;
   s.house.ownedRoomStyles.push(styleId);
   s.house.roomStyles[style.roomId] = styleId;
+  reconcileRoomPlacement(s, style.roomId);
   return true;
 }
 export function setRoomStyle(s, styleId) {
+  if (styleId === "house-default") {
+    s.house.roomStyles.parlour = styleId;
+    reconcileRoomPlacement(s, "parlour");
+    return true;
+  }
   const style = findRoomStyle(styleId);
-  if (!style || style.roomId === "parlour" || !roomUnlocked(s, style.roomId) || (style.price && !s.house.ownedRoomStyles.includes(styleId))) return false;
+  if (!style || style.level > s.house.level || !roomUnlocked(s, style.roomId) || (style.price && !s.house.ownedRoomStyles.includes(styleId))) return false;
   s.house.roomStyles[style.roomId] = styleId;
+  reconcileRoomPlacement(s, style.roomId);
   return true;
 }
 
@@ -499,37 +589,77 @@ export function restoreHouse(raw) {
   const h = freshHouse();
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return h;
   const level = Number.isInteger(raw.level) ? Math.max(0, Math.min(3, raw.level)) : 0;
-  const s = { house: { ...h, level, placed: [], owned: Array.isArray(raw.owned) ? [...new Set(raw.owned.filter((id) => decorById[id]))] : h.owned } };
-  const known = (room) => findRoom(room) && findRoom(room).level <= level;
-  for (const [room, id] of Object.entries(raw.roomStyles ?? {})) if (known(room) && (id === "house-default" || findRoomStyle(id)?.roomId === room)) s.house.roomStyles[room] = id;
-  s.house.ownedRoomStyles = (raw.ownedRoomStyles ?? []).filter((id) => findRoomStyle(id)?.price > 0);
-  for (const [room, id] of Object.entries(raw.wallpapers ?? {})) if (known(room) && s.house.owned.includes(id) && decorById[id]?.category === "wallpaper") s.house.wallpapers[room] = id;
+  const knownItem = (id) => typeof id === "string" && Object.hasOwn(decorById, id);
+  const owned = Array.isArray(raw.owned) ? [...new Set(raw.owned.filter(knownItem))] : [...h.owned];
+  const copies = Object.fromEntries(owned.map((id) => [id, 1]));
+  if (raw.copies && typeof raw.copies === "object" && !Array.isArray(raw.copies)) for (const [id, n] of Object.entries(raw.copies)) {
+    if (!knownItem(id) || !validCopyCount(n)) continue;
+    if (!owned.includes(id)) owned.push(id);
+    copies[id] = copyable(id) ? validCopyCount(n) : 1;
+  }
+  const s = { house: { ...h, level, placed: [], owned, copies, extensions: restoreRoomExtensions(raw.extensions) } };
+  const known = (room) => roomUnlocked(s, room);
+  for (const [room, id] of Object.entries(raw.roomStyles ?? {})) if (known(room) && ((id === "house-default" && room === "parlour") || (findRoomStyle(id)?.roomId === room && findRoomStyle(id).level <= level))) s.house.roomStyles[room] = id;
+  s.house.ownedRoomStyles = [...new Set((Array.isArray(raw.ownedRoomStyles) ? raw.ownedRoomStyles : []).filter((id) => findRoomStyle(id)?.price > 0))];
+  for (const [room, id] of Object.entries(raw.wallpapers ?? {})) if (known(room) && owned.includes(id) && decorById[id]?.category === "wallpaper") s.house.wallpapers[room] = id;
   s.house.activeRoom = known(raw.activeRoom) ? raw.activeRoom : "parlour";
-  const used = new Set(), booked = new Set(), later = [];
-  const keep = (p, x, z, on) => {
-    used.add(p.id);
-    const books = (Array.isArray(p.books) ? p.books : []).filter((b) => s.house.owned.includes(b) && decorById[b]?.category === "books" && !booked.has(b)).slice(0, shelfCapacity(p.id));
-    books.forEach((b) => booked.add(b));
-    s.house.placed.push({ ...placedPiece(typeof p.instance === "string" ? p.instance : "piece-r" + s.house.placed.length, p.id, p.room, x, z, books), flip: !!p.flip, ...(validPieceColour(p.tint) ? {tint:p.tint} : {}), ...(Number.isFinite(p.rotation) ? { rotation: decorAngle(p.rotation) } : {}), ...(["left", "right"].includes(p.wall) ? { wall: p.wall } : {}), ...(isShelf(p.id) ? { finish: validFinish(p.id, p.finish) ? p.finish : decorById[p.id].finishes[0].id } : {}), ...(on ? { on, top: p.top } : {}) });
+  const booked = new Set(), instances = new Set(), aliases = new Map();
+  // Repair duplicate instance keys independently of catalogue IDs. Riders retain
+  // their original host's first instance, and every copy gets its own identity.
+  const list = (Array.isArray(raw.placed) ? raw.placed : []).filter((p) => p && typeof p === "object" && !Array.isArray(p) && knownItem(p.id)).map((p, index) => {
+    const original = typeof p.instance === "string" && p.instance.length > 0 && p.instance.length <= 128 ? p.instance : null;
+    let instance = original ?? "piece-r" + index;
+    let repair = 0;
+    while (instances.has(instance)) instance = "piece-r" + index + "-" + repair++;
+    instances.add(instance);
+    if (original && !aliases.has(original)) aliases.set(original, instance);
+    const q = { ...p, instance };
+    if (footprint(p.id).layer === "wall") {
+      delete q.y;
+      if (Number.isFinite(p.y)) {
+        const bounds = wallPlacementRange(s, q);
+        q.y = Math.max(bounds.y0, Math.min(bounds.y1, p.y));
+      }
+    }
+    return q;
+  });
+  for (const p of list) if (typeof p.on === "string") p.on = aliases.get(p.on) ?? p.on;
+  const roomFor = (p) => roomPieces(s, p.room).length < roomCapacity(s, p.room) && availableCopies(s, p.id) > 0;
+  const keep = (p, spot, on) => {
+    const books = (Array.isArray(p.books) ? p.books : []).filter((b) => owned.includes(b) && decorById[b]?.category === "books" && !booked.has(b));
+    const uniqueBooks = [...new Set(books)].slice(0, shelfCapacity(p.id));
+    uniqueBooks.forEach((b) => booked.add(b));
+    s.house.placed.push({ ...placedPiece(p.instance, p.id, p.room, spot.x, spot.z, uniqueBooks), flip: !!p.flip,
+      ...(validPieceColour(p.tint) ? { tint: p.tint } : {}),
+      ...(Number.isFinite(p.rotation) ? { rotation: decorAngle(p.rotation) } : {}),
+      ...(["back", "left", "right"].includes(spot.wall ?? p.wall) ? { wall: spot.wall ?? p.wall } : {}),
+      ...(footprint(p.id).layer === "wall" && Number.isFinite(spot.y ?? p.y) ? { y: spot.y ?? p.y } : {}),
+      ...(isShelf(p.id) ? { finish: validFinish(p.id, p.finish) ? p.finish : decorById[p.id].finishes[0].id } : {}),
+      ...(restoreHomeMedia(p.media) ? { media: restoreHomeMedia(p.media) } : {}),
+      ...(on ? { on, top: p.top } : {}) });
   };
-  const roomFor = (p) => roomPieces(s, p.room).length < roomCapacity(s, p.room);
-  // Hosts first, then what stands on them: a rider whose host is gone goes to the floor.
-  const list = (Array.isArray(raw.placed) ? raw.placed : []).filter((p) => p && typeof p === "object"), riding = (p) => typeof p.on === "string";
-  for (const p of [...list.filter((p) => !riding(p)), ...list.filter(riding)]) {
-    const item = decorById[p?.id];
-    if (!item || !s.house.owned.includes(p.id) || used.has(p.id) || !known(p.room) || ["books", "wallpaper"].includes(item.category) || !roomFor(p)) continue;
-    if (riding(p) && Number.isInteger(p.top) && fits(s, p.room, p.id, p.x, p.z, undefined, { on: p.on, top: p.top, rotation: p.rotation })) keep(p, p.x, p.z, p.on);
-    else if (!riding(p) && fits(s, p.room, p.id, p.x, p.z, undefined, { rotation: p.rotation, wall: p.wall })) keep(p, p.x, p.z);
-    else later.push(p);
+  const eligible = (p) => owned.includes(p.id) && known(p.room) && copyable(p.id) && roomFor(p);
+  const pose = (p) => ({ rotation: p.rotation, wall: p.wall, ...(Number.isFinite(p.y) ? { y: p.y } : {}) });
+  const riding = (p) => typeof p.on === "string";
+  // Hosts/floor pieces first, preserving valid positions before repairing old
+  // positions. Then their riders, so a relocated shelf still keeps its objects.
+  for (const group of [list.filter((p) => !riding(p)), list.filter(riding)]) {
+    const later = [];
+    for (const p of group) {
+      if (!eligible(p)) continue;
+      const on = riding(p) && Number.isInteger(p.top) ? p.on : undefined;
+      const options = { ...pose(p), ...(on ? { on, top: p.top } : {}) };
+      if (fits(s, p.room, p.id, p.x, p.z, undefined, options)) keep(p, { x: p.x, z: p.z }, on);
+      else later.push(p);
+    }
+    for (const p of later) {
+      const spot = eligible(p) && findSpot(s, p.room, p.id, undefined, pose(p));
+      if (spot) keep(p, spot);
+    }
   }
-  // Out-of-place pieces go after the rest, so they never take a spot a well-placed piece holds.
-  for (const p of later) {
-    const spot = !used.has(p.id) && roomFor(p) && findSpot(s, p.room, p.id, undefined, { rotation: p.rotation, wall: p.wall });
-    if (spot) keep(p, spot.x, spot.z);
-  }
-  s.house.nextInstance = Number.isSafeInteger(raw.nextInstance) ? Math.max(raw.nextInstance, s.house.placed.length) : s.house.placed.length + 1;
+  s.house.nextInstance = Number.isSafeInteger(raw.nextInstance) && raw.nextInstance >= 0 ? Math.max(Math.min(raw.nextInstance, 1e9), s.house.placed.length) : s.house.placed.length + 1;
   while (s.house.placed.some((p) => p.instance === "piece-" + s.house.nextInstance)) s.house.nextInstance++;
-  for (const id of s.house.owned) {
+  for (const id of owned) {
     const pages = libraryStories[id]?.pages;
     if (pages && Number.isInteger(raw.reading?.[id])) s.house.reading[id] = Math.max(0, Math.min(pages.length - 1, raw.reading[id]));
   }

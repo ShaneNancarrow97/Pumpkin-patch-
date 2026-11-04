@@ -9,7 +9,6 @@ import * as THREE from "three";
 import { createMenuMemory } from "./ui/menu-memory.js";
 import { createStockPopover } from "./ui/stock-popover.js";
 import { markPurchaseSurfaces } from "./ui/purchase-surfaces.js";
-import { createHoldToBuy } from "./ui/hold-to-buy.js";
 import * as M from "./model.js";
 import { createScene } from "./scene.js";
 import { pumpkinTemplate } from "./pumpkins.js";
@@ -90,6 +89,7 @@ const BANTER = {
 };
 const VISITOR_LINES = ["Lovely glow!", "Perfect for tonight.", "Freshly picked!", "Spooky choice!", "Taking this home!"];
 let banterIndex = { natalie: 0, shane: 0 };
+let spoilageNoticeAt = -Infinity;
 
 // Left alone for ten minutes, Shane and Natalie put the kettle on: the farm takes
 // a tea break until you're back, so a window left open overnight doesn't play
@@ -114,7 +114,7 @@ const scene = createScene($("world"), state, {
     render();
   },
   selectedPiece: () => home.tools.selected,
-  canDragPiece: () => !!home.tools.selected && M.footprint(state.house.placed.find((p) => p.instance === home.tools.selected)?.id ?? "f01").layer !== "wall",
+  canDragPiece: () => !!home.tools.selected,
   onPieceDragStart: point => home.tools.beginDrag(point),
   onPieceDragMove: point => home.tools.dragTo(point),
   onPieceDragEnd: cancelled => home.tools.endDrag(cancelled),
@@ -208,6 +208,10 @@ const scene = createScene($("world"), state, {
 
 // What the rules report, turned into sights and sounds.
 function handle(e) {
+  if (e.type === "stock-discarded" && state.time - spoilageNoticeAt >= 60) {
+    spoilageNoticeAt = state.time;
+    notice("Spoiled pumpkins were discarded. Check stock for fading batches.");
+  }
   if (e.type === "cooking-started") showFirstCooking(state,e.recipe,e.station,save);
   if (e.type === "visitor-event") notice(`${e.event === "vip" ? "The midnight court" : "Harvest rush"}: ${e.count} guests are on their way.`);
   if (e.type === "vip-arrived") notice("Baron Brassbolt has arrived with a generous shopping budget.");
@@ -595,7 +599,7 @@ const intro = createIntro({
 const ui = {
   get state() { return state; }, scene, prefs, savePrefs, audio, save,
   get playControls(){return playControls;}, followHomeGoal, homeTab:t=>sheets.home.setTab(t),
-  notice, say, tone: (f) => audio.tone(f),
+  notice, say, tone: (f) => audio.tone(f), playHomeInstrument,
   draw: () => draw(), openSheet: (tab) => openSheet(tab), closeSheet: () => closeSheet(),
   openVisitors: () => { sheets.shop.setTab("visitors"); openSheet("shop"); },
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
@@ -614,8 +618,8 @@ const foyerTools = createFoyerControls(ui), hollowContext = createHollowContext(
 const hayrideContext = createHayrideContext(ui);
 
 let openTab = null, lastBody = "", sheetReturnFocus = null;
-// Price buttons need a short hold (ui/hold-to-buy.js); the sheet waits to redraw until it's done.
-const holdToBuy = createHoldToBuy({ enabled: () => prefs.holdToBuy !== false, feel: (k) => playFeel(k), glyphs: () => document.getElementById("play-controls")?.dataset.input ?? "keyboard" });
+// Purchases use one tap/click/confirm across touch, mouse and controllers.
+const holdToBuy = null;
 // Menus that work on the world (furnishing, the garden, the foyer) stay at the side; the rest sit in the middle over a dimmed farm.
 const WORLD_MENUS = new Set(["home", "shelf", "estate", "foyer"]);
 const menuMemory = createMenuMemory($("sheet-body"));
@@ -636,7 +640,7 @@ $("fullscreen").onclick = async () => {
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
 const TABS = { homelife:"more", cooking: "shop", shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
 function draw() {
-  if(menuMemory.dragging||holdToBuy.active)return;
+  if(menuMemory.dragging||holdToBuy?.active)return;
   const sheet = sheets[openTab]; if (!sheet) return;
   const html = sheet.body();
   if (html === lastBody) return;                                                 // only redraw when something changed
@@ -669,7 +673,7 @@ function openSheet(tab) {
   markTab();
   $("sheet-close").focus({ preventScroll: true });
 }
-function closeSheet() { const wasOpen=!!openTab;menuMemory.leave();holdToBuy.cancel();document.body.classList.remove("menu-open","menu-centred"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
+function closeSheet() { const wasOpen=!!openTab;menuMemory.leave();holdToBuy?.cancel();document.body.classList.remove("menu-open","menu-centred"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
 function markTab() {
   const active = openTab ? TABS[openTab] : ["foyer", "maze", "hayride"].includes(scene.place?.kind) ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
@@ -733,6 +737,11 @@ function commitPlayerWork(kind,t){
 }
 // Two quick notes, rising: the sound of a job done.
 function chime(a,b){audio.tone(a);setTimeout(()=>audio.tone(b),75);}
+function playHomeInstrument(instance) {
+  const p=state.house.placed.find(p=>p.instance===instance),kind=M.decorById[p?.id]?.interaction;
+  if(state.paused||!['guitar','piano'].includes(kind))return false;
+  audio.houseInstrument(kind);playFeel('select');return true;
+}
 // The ride on a pad: a knock at each root, a jolt at each scene, the breakdown's
 // cough, roar and chase, and the Hollow Man hardest of all. Phones buzz at the scenes only.
 function rideRumble(cue){
@@ -772,6 +781,10 @@ function interactAsPlayer(tool='hand',options={}) {
   else if(t.type==='sit')scene.player.rest('sit',t);
   else if(t.type==='read'){scene.player.rest('read',t);if(t.book)collection.read(t.book);else {sheets.journal.setTab('library');openSheet('journal');}}
   else if(t.type==='pet')scene.player.rest('pet',t);
+  else if(t.type==='home-media'){
+    if(M.toggleHomeMedia(state,t.instance)){save();scene.refreshRoom();playFeel('select');}
+  }
+  else if(t.type==='instrument')playHomeInstrument(t.instance);
   else if(t.type==='bed')tendGardenBed(t.instance,true);
   else if(t.type==='carve')openCarving();
   else if(t.type==='go'){const way=wayOut(w=>t.way?w.id===t.way:w.to==='room:'+t.to);if(way)passThrough(way);else goTo(t.to);}

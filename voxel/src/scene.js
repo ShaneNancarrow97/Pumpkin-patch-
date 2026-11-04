@@ -21,6 +21,7 @@ import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./spr
 import { loadSpriteSheets, spriteActor, spriteVisitor, seatedVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
 import { VARIETIES, VISIT, visitorLeaveSeconds, openPlots, activeLook, counterSide } from "./model.js";
 import { createPlaces, ORIGIN } from "./places.js";
+import { projectWallRay } from "./wall-drag.js";
 import { INTERIOR } from "./interiors.js";
 import { loadDecor } from "./decor.js";
 import { GRID } from "./model.js";
@@ -500,14 +501,28 @@ export function createScene(canvas, state, hooks) {
     pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
     ray.setFromCamera(pointer, active());
   }
-  // Where the pointer meets the plane the selected piece stands on: the floor, or the top of a table.
-  const piecePoint = e => { inputRay(e); floorPlane.constant = -places.standHeight(hooks.selectedPiece?.()); return ray.ray.intersectPlane(floorPlane, floorPoint) ? { x: floorPoint.x - ORIGIN.room.x, y: floorPoint.y, z: floorPoint.z - ORIGIN.room.z } : null; };
+  // Wall pieces follow the face under this ray, including crossing a corner.
+  // Floor pieces and riders retain their horizontal drag plane.
+  let dragWall = null;
+  const piecePoint = e => {
+    inputRay(e);
+    const instance = hooks.selectedPiece?.(), wall = places.pieceWall(instance);
+    if (wall) {
+      const o = ray.ray.origin, d = ray.ray.direction;
+      const point = projectWallRay({ origin: { x: o.x - ORIGIN.room.x, y: o.y, z: o.z - ORIGIN.room.z }, direction: d }, places.place, dragWall ?? wall);
+      if (point) dragWall = point.wall;
+      return point;
+    }
+    floorPlane.constant = -places.standHeight(instance);
+    return ray.ray.intersectPlane(floorPlane, floorPoint) ? { x: floorPoint.x - ORIGIN.room.x, y: floorPoint.y, z: floorPoint.z - ORIGIN.room.z } : null;
+  };
   const worldPerPixel = () => (camera.right - camera.left) / canvas.clientWidth;
   canvas.addEventListener("pointerdown", (e) => {
     if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
     canvas.setPointerCapture(e.pointerId); glide = null;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 1) {
+      dragWall = null;
       drag = { x: e.clientX, y: e.clientY, vx: view.x, vz: view.z, moved: 0 };
       if (view.place === "room" && hooks.canDragPiece?.()) {
         inputRay(e); scene.updateMatrixWorld(true);
@@ -952,7 +967,7 @@ export function createScene(canvas, state, hooks) {
     get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? antialias.enabled ? "FXAA" : "density" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
     setRenderQuality(value) { renderQuality = validRenderQuality(value); resize(); return renderQuality; },
     selectPiece(instance) { places.select(instance); },
-    previewPiece(instance, x, z, ok) { places.preview(instance, x, z, ok); },
+    previewPiece(instance, x, z, ok, pose) { places.preview(instance, x, z, ok, pose); },
     showGrid(on) { places.setGrid(on); },
     cellAt(point, type, wall, snap = .1) { return places.cellAt(point, type, wall, snap); },
     movePiece(instance, pose, ok) { places.movePiece(instance, pose, ok); },

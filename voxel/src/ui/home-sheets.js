@@ -6,13 +6,18 @@ import { SMALL_PIECES } from "../content/placement.js";
 import * as M from "../model.js";
 import { money, segmented, decorIcon, spooky, plural, $ } from "./kit.js";
 
-const roomName = (id) => M.houseRooms.find((r) => r.id === id).name;
+const roomName = (id) => M.houseRooms.find((r) => r.id === id)?.name ?? id;
 // Into [a, b], the range a piece's corner may take: it reaches the walls by its real size, not its cells.
 const clampTo = (v, a, b) => +Math.max(a, Math.min(b, v)).toFixed(6);
 // A characteristic piece of each room's furniture, as its icon.
-const ROOM_ICONS = { parlour: "f01", bedroom: "f06", kitchen: "d13", attic: "d06" };
+const ROOM_ICONS = { parlour: "f01", bedroom: "f06", kitchen: "d13", attic: "d06", bathroom: "household-clawfoot-bath" };
 const houseIcon = `<span class="thumb"><span class="ico i-home"></span></span>`;
 const size = (L) => `${L.w} × ${L.d}`;
+const styleSwatch = st => {
+  if (!st.look) return "";
+  const hex = n => "#" + n.toString(16).padStart(6, "0"), a = hex(st.look.wall), b = hex(st.look.wall2 ?? st.look.wall);
+  return ` style="background:linear-gradient(135deg,${a},${b});box-shadow:inset 0 -6px ${hex(st.look.floor)}"`;
+};
 // The ways between rooms, in words: from a room, and as the way a new room is reached.
 const WAYS = { stair: { up: "Stairs up to the", down: "Stairs down to the" }, ladder: { up: "A ladder up to the", down: "A ladder down to the" }, door: { through: "A doorway to the" } };
 const REACHED = { stair: (from) => `up new stairs from the ${roomName(from)}`, door: (from) => `through a new doorway from the ${roomName(from)}`, ladder: (from) => `up a ladder from the ${roomName(from)}` };
@@ -20,11 +25,15 @@ const BUILDS = { stair: "Stairs up from the", door: "A doorway from the", ladder
 
 // The build catalogue sorts every piece by what it's for, and by the rooms it
 // suits, like a build-and-buy panel: a rail of modes, a row of kinds, a grid.
-const KINDS = [["all", "Everything"], ["seating", "Seating"], ["tables", "Tables & desks"], ["beds", "Beds & dressing"], ["storage", "Shelves & storage"], ["lighting", "Lighting"], ["rugs", "Rugs"], ["wall", "On the walls"], ["curios", "Curios & plants"], ["kitchen", "Kitchen"], ["pets", "Pets"], ["books", "Books"], ["wallpaper", "Wallpaper"]];
+const KINDS = [["all", "Everything"], ["seating", "Seating"], ["tables", "Tables & desks"], ["beds", "Beds & dressing"], ["storage", "Shelves & storage"], ["lighting", "Lighting"], ["rugs", "Rugs"], ["wall", "On the walls"], ["small", "Little treasures"], ["curios", "Curios & plants"], ["kitchen", "Kitchen"], ["bathroom", "Bathroom"], ["electronics", "Electronics"], ["laundry", "Laundry"], ["music", "Music"], ["pets", "Pets"], ["books", "Books"], ["wallpaper", "Wallpaper"]];
 export function kindOf(it) {
   const n = (it.name + " " + it.id).toLowerCase();
   if (it.category === "wallpaper") return "wallpaper";
   if (it.category === "books") return "books";
+  if (/toilet|shower|clawfoot|basin|towel|bath-mirror|bath-mat/.test(n)) return "bathroom";
+  if (/laundry|washing-machine|dryer|detergent/.test(n)) return "laundry";
+  if (/television|laptop/.test(n)) return "electronics";
+  if (/guitar|piano|vinyl|records/.test(n)) return "music";
   if (it.petUse || /\b(hound|bowls|basket)\b|pet-|-pet/.test(n)) return "pets";
   if (it.grants || /kitchen|range|sink|preserves|spice|pan rail|pan-rail|utensil|oven|hob/.test(n)) return "kitchen";
   if (it.rug || /\brug\b/.test(n)) return "rugs";
@@ -34,13 +43,15 @@ export function kindOf(it) {
   if (/table|desk|console|island/.test(n)) return "tables";
   if (it.category === "shelves" || /shelf|bookcase|cabinet|dresser|chest|trunk|etagere|whatnot/.test(n)) return "storage";
   if (it.wall || it.wallWidth) return "wall";
+  if (it.small || SMALL_PIECES.includes(it.id)) return "small";
   return "curios";
 }
 const ROOM_KINDS = {
-  parlour: ["seating", "tables", "storage", "lighting", "rugs", "wall", "curios", "books", "pets", "wallpaper"],
-  bedroom: ["beds", "seating", "storage", "lighting", "rugs", "wall", "curios", "books", "pets", "wallpaper"],
-  kitchen: ["kitchen", "tables", "storage", "lighting", "wall", "curios", "pets", "wallpaper"],
-  attic: ["storage", "books", "curios", "lighting", "seating", "tables", "rugs", "wall", "beds", "wallpaper"],
+  parlour: ["seating", "tables", "storage", "lighting", "rugs", "wall", "small", "electronics", "music", "curios", "books", "pets", "wallpaper"],
+  bedroom: ["beds", "seating", "storage", "lighting", "rugs", "wall", "small", "electronics", "music", "curios", "books", "pets", "wallpaper"],
+  kitchen: ["kitchen", "tables", "storage", "lighting", "wall", "small", "laundry", "electronics", "curios", "pets", "wallpaper"],
+  attic: ["storage", "books", "curios", "lighting", "seating", "tables", "rugs", "wall", "small", "electronics", "music", "laundry", "beds", "wallpaper"],
+  bathroom: ["bathroom", "laundry", "storage", "lighting", "wall", "small", "rugs", "curios", "wallpaper"],
 };
 const OWNED = [["all", "Everything you own"], ["stored", "In storage"], ["here", "In this room"], ["elsewhere", "In other rooms"]];
 const BUILD_ICONS = {
@@ -67,6 +78,11 @@ const BUILD_ICONS = {
   here: "M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11ZM12 8a2 2 0 1 0 0 .1",
   elsewhere: "M4 12h16m-6-6 6 6-6 6",
   search: "M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14ZM21 21l-5-5",
+  bathroom: "M3 12h18v3a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5zM5 12V5a2 2 0 0 1 4 0M7 20v2M17 20v2",
+  electronics: "M3 4h18v13H3zM8 21h8M12 17v4M7 8h4M7 11h7",
+  laundry: "M4 3h16v18H4zM4 7h16M7 5h1M11 10a4 4 0 1 0 0 8 4 4 0 0 0 0-8",
+  music: "M9 18V5l11-2v13M9 18a3 2 0 1 1-3-2c2 0 3 1 3 2ZM20 16a3 2 0 1 1-3-2c2 0 3 1 3 2ZM9 9l11-2",
+  small: "M7 11h10l2 9H5zM9 11V7a3 3 0 0 1 6 0v4M4 5l1-2M19 5l-1-2M12 1v2",
 };
 const buildIcon = (k) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${BUILD_ICONS[k] ?? BUILD_ICONS.all}"/></svg>`;
 
@@ -140,9 +156,16 @@ export function homeSheets(ui) {
   const tabs = () => segmented("hometab", "Home sections", [["rooms", "Rooms"], ["decorate", "Furnish"], ["house", "Expand"]], tab);
   const here = () => ui.state.house.activeRoom;
 
+  function bathroomCard(s, current = false) {
+    const info = M.roomExtensionInfo(s, "bathroom");
+    const layout = info.owned && M.roomLayout(s, "bathroom");
+    return `<article class="card room-extension${current ? " current" : ""}">${decorIcon(ROOM_ICONS.bathroom)}<div><p class="eyebrow">Optional room</p><h3>${info.name}</h3><p>${info.description}</p><p class="small">${info.owned ? `${size(layout)} floor · ${M.roomPieces(s, "bathroom").length}/${layout.capacity} pieces · Through the kitchen` : `6 × 6 annex · Patch level ${info.level} · House tier ${info.houseLevel + 1}`}</p></div>${info.owned ? `<button class="button ${current ? "" : "gold"}" data-go="bathroom" ${current ? "disabled" : ""}>${current ? "You’re here" : "Go in"}</button>` : `<button class="button gold" data-room-extension="bathroom" ${info.canBuy ? "" : "disabled"}>${info.unlocked ? `Build · ${money(info.cost)}` : `Level ${info.level} · ${money(info.cost)}`}<small>${info.canBuy ? "Connects to the kitchen" : info.reason}</small></button>`}</article>`;
+  }
+
   function rooms(s) {
     const cards = M.houseRooms.map((r) => {
       const open = M.roomUnlocked(s, r.id), current = here() === r.id && ui.scene.place?.kind === "room";
+      if (r.id === "bathroom") return bathroomCard(s, current);
       const need = M.HOUSE_LEVELS[r.level].name, pieces = M.roomPieces(s, r.id).length, L = M.roomLayout(s, r.id, Math.max(r.level, s.house.level));
       const link = M.HOUSE_LINKS.find((l) => l.to === r.id), ways = M.connections(s, r.id).map((c) => `${WAYS[c.kind][c.way]} ${roomName(c.to)}`).join(" · ");
       const about = open ? `<p class="small">${size(L)} floor · ${pieces}/${L.capacity} pieces</p>${ways ? `<p class="small">${ways}</p>` : ""}` : `<p class="small">${size(L)} floor, ${REACHED[link.kind](link.from)}</p>`;
@@ -151,18 +174,17 @@ export function homeSheets(ui) {
     }).join("");
     const room = here(), styles = M.roomStyles.filter((st) => st.roomId === room);
     const style = M.roomStyle(s, room);
-    const styleCards = room === "parlour"
-      ? `<p class="small">The parlour’s look changes as the house grows: now ${style.name}.</p>`
-      : styles.map((st) => {
-        const owned = !st.price || s.house.ownedRoomStyles.includes(st.id), using = style.id === st.id;
-        return `<article class="card"><span class="thumb"><span class="style-swatch ${st.id}"></span></span><div><h3>${st.name}</h3><p>${st.price ? (owned ? "Yours to use any time" : "A premium look for this room") : "The room’s own look"}</p></div>
-          ${using ? `<button class="button" disabled>In use</button>` : owned ? `<button class="button" data-style="${st.id}">Use</button>` : `<button class="button gold" data-buystyle="${st.id}" ${s.coins < st.price ? "disabled" : ""}>${money(st.price)}</button>`}</article>`;
+    const styleCards = styles.map((st) => {
+        const owned = !st.price || s.house.ownedRoomStyles.includes(st.id), followsHouse = room === "parlour" && s.house.roomStyles.parlour === "house-default", using = style.id === st.id && !followsHouse, locked = st.level > s.house.level;
+        return `<article class="card room-style"><span class="thumb"><span class="style-swatch ${st.id}"${styleSwatch(st)}></span></span><div><h3>${st.name}</h3><p>${st.plainWalls || st.plain || st.id.includes("plain") ? "Full-height walls · no columns or panelling" : st.price ? (owned ? "Yours to use any time" : "A premium look for this room") : "The room’s own look"}</p></div>
+          ${locked ? `<button class="button" disabled>House tier ${st.level + 1}</button>` : using ? `<button class="button" disabled>In use</button>` : owned ? `<button class="button" data-style="${st.id}">Use</button>` : `<button class="button gold" data-buystyle="${st.id}" ${s.coins < st.price ? "disabled" : ""}>${money(st.price)}</button>`}</article>`;
       }).join("");
+    const automaticStyle = room === "parlour" ? `<article class="card room-style">${houseIcon}<div><h3>Follow house upgrades</h3><p>The parlour grows with your home. Currently ${M.HOUSE_LEVELS[s.house.level].name}.</p></div>${s.house.roomStyles.parlour === "house-default" ? `<button class="button" disabled>In use</button>` : `<button class="button" data-style="house-default">Use</button>`}</article>` : "";
     const papers = s.house.owned.filter((id) => M.decorById[id].category === "wallpaper"), on = s.house.wallpapers[room] ?? null;
     const paper = papers.length
-      ? `<div class="chips" role="group" aria-label="Wallpaper for the ${roomName(room)}"><button class="chip" data-paper="none" aria-pressed="${on === null}">Bare walls</button>${papers.map((id) => `<button class="chip" data-paper="${id}" aria-pressed="${on === id}"><i class="dot" style="background:${M.decorById[id].color}"></i>${M.decorById[id].name}</button>`).join("")}</div>`
+      ? `<div class="chips" role="group" aria-label="Wallpaper for the ${roomName(room)}"><button class="chip" data-paper="none" aria-pressed="${on === null}">Room’s own walls</button>${papers.map((id) => `<button class="chip" data-paper="${id}" aria-pressed="${on === id}"><i class="dot" style="background:${M.decorById[id].color}"></i>${M.decorById[id].name}</button>`).join("")}</div>`
       : `<p class="small">Buy wallpaper in Decorate to dress these walls.</p>`;
-    return `<h3 class="section">Rooms</h3>${cards}<h3 class="section">The ${roomName(room)}’s look</h3>${styleCards}<h3 class="section">Wallpaper</h3>${paper}`;
+    return `<h3 class="section">Rooms</h3>${cards}<h3 class="section">The ${roomName(room)}’s look</h3>${automaticStyle}${styleCards}<h3 class="section">Wallpaper</h3>${paper}`;
   }
 
   function statusButton(s, item) {
@@ -174,8 +196,7 @@ export function homeSheets(ui) {
       const shelf = M.roomPieces(s, here()).find((p) => M.shelfCapacity(p.id) > p.books.length);
       return `<button class="button" data-shelve="${id}" ${shelf ? "" : "disabled"}>${shelf ? "Shelve here" : "No shelf space here"}</button>`;
     }
-    const placed = s.house.placed.find((p) => p.id === id);
-    if (placed) return `<button class="button" data-show="${placed.instance}">${placed.room === here() ? "Show me" : "In the " + roomName(placed.room)}</button>`;
+    if (!M.availableCopies(s, id)) return `<button class="button gold" data-decor="${id}" ${s.coins < item.price ? "disabled" : ""}>Buy another · ${money(item.price)}</button>`;
     const full = M.roomPieces(s, here()).length >= M.roomCapacity(s, here());
     return `<button class="button" data-place="${id}" ${full ? "disabled" : ""}>${full ? "Room is full" : "Place here"}</button>`;
   }
@@ -185,7 +206,7 @@ export function homeSheets(ui) {
   const holdsLine = (it) => it.capacity ? `Holds ${it.capacity} books` : isShelf(it.id) ? `In ${it.finishes.length} finishes · lamps and curios stand on it` : HOSTS.has(it.id) ? "Lamps and curios can stand on it" : canRide(it.id) ? "Can stand on a table or shelf" : "";
   const thumbOf = (it, px) => it.category === "wallpaper" ? `<span class="thumb"><span class="paper" style="background-color:${it.color}"></span></span>` : decorIcon(it.id, px);
   // The tile's own button: the price to buy and place it, or what to do with one you own.
-  function tileAction(s, it) {
+  function tileAction(s, it, detailed = false) {
     const id = it.id, owned = s.house.owned.includes(id);
     if (!owned) return `<button class="build-chip buy" data-decor="${id}" ${s.coins < it.price ? "disabled" : ""}>${money(it.price)}</button>`;
     if (it.category === "wallpaper") return s.house.wallpapers[here()] === id ? `<button class="build-chip" disabled>On the walls</button>` : `<button class="build-chip" data-paper="${id}">Hang</button>`;
@@ -194,22 +215,21 @@ export function homeSheets(ui) {
       const shelf = M.roomPieces(s, here()).find((p) => M.shelfCapacity(p.id) > p.books.length);
       return `<button class="build-chip" data-shelve="${id}" ${shelf ? "" : "disabled"}>${shelf ? "Shelve" : "No shelf"}</button>`;
     }
-    const placed = s.house.placed.find((p) => p.id === id);
-    if (placed) return `<button class="build-chip" data-show="${placed.instance}">${placed.room === here() ? "Show me" : roomName(placed.room)}</button>`;
+    if (!M.availableCopies(s, id)) return `<button class="build-chip buy" data-decor="${id}" ${s.coins < it.price ? "disabled" : ""}>${detailed ? "Buy another · " : "+1 · "}${money(it.price)}</button>`;
     const full = M.roomPieces(s, here()).length >= M.roomCapacity(s, here());
-    return `<button class="build-chip place" data-place="${id}" ${full ? "disabled" : ""}>${full ? "Room full" : "Place"}</button>`;
+    return `<button class="build-chip place" data-place="${id}" ${full ? "disabled" : ""}>${full ? "Room full" : `Place · ${M.availableCopies(s, id)}`}</button>`;
   }
   function buildItems(s) {
-    const q = search.trim().toLowerCase(), owns = (it) => s.house.owned.includes(it.id), where = (it) => s.house.placed.find((p) => p.id === it.id);
+    const q = search.trim().toLowerCase(), owns = (it) => s.house.owned.includes(it.id), where = (it) => s.house.placed.filter((p) => p.id === it.id);
     return M.decorCatalog.filter((it) => {
-      if (mode === "function" && sub !== "all" && kindOf(it) !== sub) return false;
+      if (mode === "function" && sub !== "all" && kindOf(it) !== sub && !(sub === "wall" && (it.wall || it.wallWidth))) return false;
       if (mode === "room" && !ROOM_KINDS[sub]?.includes(kindOf(it))) return false;
       if (mode === "owned") {
         if (!owns(it)) return false;
-        const p = where(it);
-        if (sub === "stored" && (p || it.category === "wallpaper" || (it.category === "books" && !M.availableBook(s, it.id)))) return false;
-        if (sub === "here" && p?.room !== here()) return false;
-        if (sub === "elsewhere" && (!p || p.room === here())) return false;
+        const copies = where(it);
+        if (sub === "stored" && (it.category === "wallpaper" || (it.category === "books" ? !M.availableBook(s, it.id) : !M.availableCopies(s, it.id)))) return false;
+        if (sub === "here" && !copies.some(p => p.room === here())) return false;
+        if (sub === "elsewhere" && !copies.some(p => p.room !== here())) return false;
       }
       if (ownedOnly && !owns(it)) return false;
       if (affordable && !owns(it) && s.coins < it.price) return false;
@@ -219,9 +239,12 @@ export function homeSheets(ui) {
   function detail(s, id) {
     const it = M.decorById[id];
     if (!it) return `<p class="build-empty">Pick a piece to see it here.</p>`;
-    const owned = s.house.owned.includes(id), placed = s.house.placed.find((p) => p.id === id), holds = holdsLine(it);
-    const status = !owned ? money(it.price) : placed ? (placed.room === here() ? "In this room" : "In the " + roomName(placed.room)) : "Yours, in storage";
-    return `${thumbOf(it, 72)}<div class="build-detail-copy"><p class="eyebrow">${KINDS.find(([k]) => k === kindOf(it))?.[1] ?? ""}</p><h3>${it.name}</h3><p>${it.description}</p><div class="build-detail-meta">${spooky(it.spooky)}${holds ? `<span>${holds}</span>` : ""}</div></div><div class="build-detail-act"><b>${status}</b>${tileAction(s, it).replace(/data-(decor|place|show|paper|shelve|read)="/, 'data-act="$1" data-id="')}</div>`;
+    const owned = s.house.owned.includes(id), placed = s.house.placed.filter((p) => p.id === id), holds = holdsLine(it), repeatable = !["books", "wallpaper"].includes(it.category);
+    const count = M.ownedCopies(s, id), stored = M.availableCopies(s, id);
+    const status = !owned ? `${money(it.price)} each` : repeatable ? `${count} owned · ${stored} in storage` : "Yours to keep";
+    const copies = placed.length ? `<div class="build-copy-list" role="group" aria-label="Placed copies">${placed.map((p, i) => `<button class="build-copy" data-act="show" data-id="${p.instance}" aria-label="Select ${it.name}, copy ${i + 1}, in the ${roomName(p.room)}">${roomName(p.room)}${placed.length > 1 ? ` · ${i + 1}` : ""}<span aria-hidden="true">↗</span></button>`).join("")}</div>` : "";
+    const another = owned && repeatable && stored ? `<button class="build-chip buy" data-act="decor" data-id="${id}" ${s.coins < it.price ? "disabled" : ""}>Buy another · ${money(it.price)}</button>` : "";
+    return `${thumbOf(it, 72)}<div class="build-detail-copy"><p class="eyebrow">${KINDS.find(([k]) => k === kindOf(it))?.[1] ?? ""}</p><h3>${it.name}</h3><p>${it.description}</p><div class="build-detail-meta">${spooky(it.spooky)}${holds ? `<span>${holds}</span>` : ""}</div>${copies}</div><div class="build-detail-act"><b>${status}</b>${tileAction(s, it, true).replace(/data-(decor|place|show|paper|shelve|read)="/g, 'data-act="$1" data-id="')}${another}</div>`;
   }
   function decorate(s) {
     const items = buildItems(s);
@@ -232,7 +255,7 @@ export function homeSheets(ui) {
     const row = subs.map(([k, n, locked]) => `<button class="build-sub" data-sub="${k}" aria-pressed="${sub === k}" aria-label="${n}${locked ? " (locked)" : ""}" title="${n}" ${locked ? "disabled" : ""}>${buildIcon(k)}</button>`).join("");
     const tiles = items.map((it) => {
       const owned = s.house.owned.includes(it.id), placed = s.house.placed.some((p) => p.id === it.id);
-      return `<div class="build-tile${owned ? " owned" : ""}${placed ? " placed" : ""}${picked === it.id ? " picked" : ""}"><button class="build-pick" data-pick="${it.id}" aria-label="${it.name}">${thumbOf(it, 64)}${placed ? `<i class="build-badge" aria-hidden="true">✓</i>` : ""}</button><span class="build-name">${it.name}</span>${tileAction(s, it)}</div>`;
+      return `<div class="build-tile${owned ? " owned" : ""}${placed ? " placed" : ""}${picked === it.id ? " picked" : ""}"><button class="build-pick" data-pick="${it.id}" aria-label="${it.name}">${thumbOf(it, 64)}${owned ? `<i class="build-badge" aria-label="${M.ownedCopies(s, it.id)} owned">${["books", "wallpaper"].includes(it.category) ? "✓" : M.ownedCopies(s, it.id)}</i>` : ""}</button><span class="build-name">${it.name}</span>${tileAction(s, it)}</div>`;
     }).join("");
     const find = `<label class="build-search">${buildIcon("search")}<span class="sr">Search the catalogue</span><input id="decor-search" type="search" placeholder="Search ${M.decorCatalog.length} pieces" value="${search.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;")}"></label>`;
     return `<section class="build-cat" aria-label="Build catalogue">
@@ -241,7 +264,7 @@ export function homeSheets(ui) {
       <div class="build-subs" role="group" aria-label="${mode === "room" ? "Rooms" : "Kinds"}">${row}<span class="build-sub-name">${label}</span></div>
       <div class="build-grid" role="list">${tiles || `<p class="build-empty">Nothing here${search ? ` matches “${search}”` : " yet"}.</p>`}</div>
       <div class="build-detail" aria-live="polite">${detail(s, picked)}</div>
-      <div class="build-foot"><button class="build-toggle" data-toggle="owned" aria-pressed="${ownedOnly}"><i></i>Owned only</button><button class="build-toggle" data-toggle="afford" aria-pressed="${affordable}"><i></i>Can afford</button><span>Buy once · keep forever</span></div>
+      <div class="build-foot"><button class="build-toggle" data-toggle="owned" aria-pressed="${ownedOnly}"><i></i>Owned only</button><button class="build-toggle" data-toggle="afford" aria-pressed="${affordable}"><i></i>Can afford</button><span>Each purchase adds one copy · store and reuse</span></div>
     </section>`;
   }
 
@@ -259,7 +282,7 @@ export function homeSheets(ui) {
       : `${plan(s, h.level, `The ${level.name}`)}<p>${level.text}</p>`;
     return `<article class="card hero">${houseIcon}<div><p class="eyebrow">Level ${h.level + 1} of 4</p><h3>${level.name}</h3><p>${byRoom}</p></div></article>
       <div class="stats"><div><b>${M.spookyScore(s)}</b><span>haunting points</span></div><div><b>${h.owned.length}/${M.decorCatalog.length}</b><span>treasures collected</span></div><div><b>${M.shelvedBooks(s)}</b><span>books on shelves</span></div></div>
-      ${grow}
+      ${grow}<h3 class="section">Make room for everyday magic</h3>${bathroomCard(s, false)}
       <p class="small">Haunting points: 4 for each level of the house, plus every spooky piece, wallpaper and shelved book.</p>`;
   }
 
@@ -297,11 +320,13 @@ export function homeSheets(ui) {
       const others = M.houseRooms.filter((r) => r.id !== p.room && M.roomUnlocked(s, r.id));
       const icon = (action, symbol, label) => `<button class="icon-button tool-icon" data-tool="${action}" aria-label="${label}" title="${label}">${symbol}</button>`;
       const angle = Math.round(M.decorAngle(p.rotation));
+      const media = M.isHomeMediaPiece(p) ? M.homeMedia(s, p.instance) : null;
+      const mediaActions = media ? `<button class="button media-action" data-tool="media-toggle">${media.on ? "Switch off" : "Switch on"}</button>${item.interaction === "television" && media.on ? `<button class="button" data-tool="media-channel">Next channel</button>` : ""}` : ["guitar", "piano"].includes(item.interaction) ? `<button class="button media-action" data-tool="instrument">Play a little tune</button>` : "";
       const rotation = wall ? `<div class="wall-tools" role="group" aria-label="Hang on a wall">${["left", "back", "right"].map((side) => `<button class="button wall-tool" data-wall="${side}" aria-pressed="${(p.wall ?? "back") === side}">${side[0].toUpperCase() + side.slice(1)}</button>`).join("")}</div>`
         : `<div class="rotation-tools" role="group" aria-label="Rotate furniture">${icon("rotate-left", "↶", "Rotate anticlockwise 15 degrees")}<button class="rotation-dial" role="slider" tabindex="0" aria-label="Furniture rotation" aria-valuemin="0" aria-valuemax="359" aria-valuenow="${angle}" style="--angle:${angle}deg"><span>${angle}°</span></button>${icon("rotate-right", "↷", "Rotate clockwise 15 degrees")}</div>`;
-      const html = `<div class="piece-heading"><div class="piece-name">${decorIcon(p.id, 40)}<span><b>${item.name}</b><small data-placement-hint>${host ? `On the ${M.decorById[host.id].name.toLowerCase()} · drag to slide it` : tools.moving ? (canRide(p.id) ? "Tap a spot, or a table or shelf · arrows move 0.1" : "Tap a spot · arrows move 0.1") : wall ? "Choose a wall or move along it" : "Drag furniture · two fingers turn"}</small></span></div><button class="button gold tool-done" data-tool="done">Done</button></div>
-        <div class="piece-actions">${item.interaction === "wardrobe" ? `<button class="button gold" data-tool="wardrobe">Wardrobe</button>` : ""}${["copper-range", "kitchen-hob", "kitchen-oven"].includes(p.id) && p.room === "kitchen" && s.kitchen?.purchased ? `<button class="button gold" data-tool="cook">Cook</button>` : ""}<button class="button tool-move ${tools.moving ? "gold" : ""}" data-tool="move" aria-pressed="${tools.moving}">Move</button>${rotation}${host ? `<button class="button" data-tool="ontop">Next top</button>` : tops ? `<button class="button" data-tool="ontop">On a table</button>` : ""}<button class="button" data-tool="undo" ${editHistory.length ? "" : "disabled"}>Undo</button><button class="icon-button tool-icon" data-tool="more" aria-label="More furniture actions" aria-expanded="${more}">•••</button></div>
-        ${tools.moving ? `<div class="nudge-tools" role="group" aria-label="Fine-tune position">${icon("left", "←", "Move left 0.1")}${icon("back", "↑", "Move towards back wall 0.1")}${icon("front", "↓", "Move towards front 0.1")}${icon("right", "→", "Move right 0.1")}<button class="button snap-choice" data-tool="snap" aria-pressed="${tools.snap > 0}" aria-label="${tools.snap > 0 ? "Fine grid on. Switch to free placement" : "Free placement on. Switch to fine grid"}">${tools.snap > 0 ? "Snap 0.1" : "Free"}</button></div>` : ""}
+      const html = `<div class="piece-heading"><div class="piece-name">${decorIcon(p.id, 40)}<span><b>${item.name}</b><small data-placement-hint>${host ? `On the ${M.decorById[host.id].name.toLowerCase()} · drag to slide it` : wall ? "Drag across a wall · up or down to change height" : tools.moving ? (canRide(p.id) ? "Tap a spot, or a table or shelf · arrows move 0.1" : "Tap a spot · arrows move 0.1") : "Drag furniture · two fingers turn"}</small></span></div><button class="button gold tool-done" data-tool="done">Done</button></div>
+        <div class="piece-actions">${mediaActions}${item.interaction === "wardrobe" ? `<button class="button gold" data-tool="wardrobe">Wardrobe</button>` : ""}${["copper-range", "kitchen-hob", "kitchen-oven"].includes(p.id) && p.room === "kitchen" && s.kitchen?.purchased ? `<button class="button gold" data-tool="cook">Cook</button>` : ""}<button class="button tool-move ${tools.moving ? "gold" : ""}" data-tool="move" aria-pressed="${tools.moving}">Move</button>${rotation}${host ? `<button class="button" data-tool="ontop">Next top</button>` : tops ? `<button class="button" data-tool="ontop">On a table</button>` : ""}<button class="button" data-tool="undo" ${editHistory.length ? "" : "disabled"}>Undo</button><button class="icon-button tool-icon" data-tool="more" aria-label="More furniture actions" aria-expanded="${more}">•••</button></div>
+        ${tools.moving ? `<div class="nudge-tools" role="group" aria-label="Fine-tune position">${icon("left", "←", "Move left 0.1")}${icon("back", "↑", wall ? "Raise on wall 0.1" : "Move towards back wall 0.1")}${icon("front", "↓", wall ? "Lower on wall 0.1" : "Move towards front 0.1")}${icon("right", "→", "Move right 0.1")}<button class="button snap-choice" data-tool="snap" aria-pressed="${tools.snap > 0}" aria-label="${tools.snap > 0 ? "Fine grid on. Switch to free placement" : "Free placement on. Switch to fine grid"}">${tools.snap > 0 ? "Snap 0.1" : "Free"}</button></div>` : ""}
         ${more ? `<div class="piece-more" role="group" aria-label="More furniture actions">${host ? `<button class="button" data-tool="setdown">Set down on the floor</button>` : ""}${isShelf(p.id) ? `<button class="button" data-tool="finish">Finish · ${item.finishes.find((f) => f.id === p.finish)?.name ?? item.finishes[0].name}</button>` : ""}<button class="button" data-tool="colour">Colour</button><button class="button" data-tool="flip">Mirror</button>${M.shelfCapacity(p.id) ? `<button class="button" data-tool="books">Books · ${p.books.length}/${M.shelfCapacity(p.id)}</button>` : ""}${others.map((r) => `<button class="button" data-room="${r.id}">To ${r.name.toLowerCase()}</button>`).join("")}<button class="button" data-tool="store">Put in storage</button></div>` : ""}`;
       bar.hidden = false; ui.scene.keepInView(p.instance, bar);
       if (html === lastTools) return;
@@ -347,8 +372,13 @@ export function homeSheets(ui) {
     },
     beginDrag(point) {
       const p = ui.state.house.placed.find(q => q.instance === tools.selected);
-      if (!p || ui.state.paused || M.footprint(p.id).layer === "wall") return false;
+      if (!p || ui.state.paused) return false;
       tools.finishRotation();
+      if (M.footprint(p.id).layer === "wall") {
+        if (!point.wall) return false;
+        dragPose = { before: structuredClone(p), pose: { ...p }, wall: true, offset: { x: point.x - p.x, y: point.y - M.wallMountHeight(ui.state, p) }, valid: true };
+        document.body.classList.add("dragging-piece"); return true;
+      }
       const fp = M.pieceFootprint(p), q = p.on && ui.scene.hostPoint(p.on, point);
       if (p.on && !q) return false;
       // On a top the piece slides in its table's frame; on the floor, in the room's.
@@ -357,6 +387,17 @@ export function homeSheets(ui) {
     },
     dragTo(point) {
       if (!dragPose) return false;
+      if (dragPose.wall) {
+        const p = dragPose.before;
+        if (!point.wall) return false;
+        const x = M.snapDecorPosition(point.x - dragPose.offset.x, tools.snap), y = M.snapDecorPosition(point.y - dragPose.offset.y, tools.snap);
+        dragPose.pose = { ...p, wall: point.wall, x, y, z: 0 };
+        dragPose.valid = M.fits(ui.state, p.room, p.id, x, 0, p.instance, dragPose.pose);
+        ui.scene.movePiece(p.instance, dragPose.pose, dragPose.valid);
+        const hint = $("piece-bar").querySelector("[data-placement-hint]");
+        if (hint) hint.textContent = dragPose.valid ? `Release to hang · ${point.wall} wall` : "Keep clear of windows, doors and other wall pieces";
+        return dragPose.valid;
+      }
       const p = dragPose.before, fp = M.pieceFootprint(p), q = p.on && ui.scene.hostPoint(p.on, point);
       const range = !q && M.placementRange(ui.state, p);
       const x = q ? M.snapDecorPosition(q.x - dragPose.offset.x, tools.snap) : clampTo(M.snapDecorPosition(point.x - dragPose.offset.x - fp.w / 2, tools.snap), range.x0, range.x1);
@@ -370,8 +411,8 @@ export function homeSheets(ui) {
     endDrag(cancelled = false) {
       if (!dragPose) return false;
       const drag = dragPose; dragPose = null;
-      const p = ui.state.house.placed.find(q => q.instance === drag.before.instance), changed = p && (p.x !== drag.pose.x || p.z !== drag.pose.z);
-      const placed = !cancelled && drag.valid && changed && M.moveDecor(ui.state, p.instance, drag.pose.x, drag.pose.z);
+      const p = ui.state.house.placed.find(q => q.instance === drag.before.instance), changed = p && (p.x !== drag.pose.x || p.z !== drag.pose.z || drag.wall && ((p.wall ?? "back") !== drag.pose.wall || M.wallMountHeight(ui.state, p) !== drag.pose.y));
+      const placed = !cancelled && drag.valid && changed && (drag.wall ? M.moveWallDecor(ui.state, p.instance, drag.pose.wall, drag.pose.x, drag.pose.y) : M.moveDecor(ui.state, p.instance, drag.pose.x, drag.pose.z));
       if (placed) { remember(drag.before); ui.save(); }
       ui.scene.movePiece(drag.before.instance);
       document.body.classList.remove("dragging-piece"); lastTools = ""; tools.render(); return !!placed;
@@ -384,6 +425,12 @@ export function homeSheets(ui) {
         if (previous && p && M.restorePose(s, id, previous)) { if(tinted||previous.tint)p.tint=previous.tint??"original"; ui.scene.refreshRoom(); ui.save(); }
         tools.render(); return;
       }
+      if (["media-toggle", "media-channel"].includes(action)) {
+        const changed = action === "media-toggle" ? M.toggleHomeMedia(s, id) : M.cycleHomeChannel(s, id);
+        if (changed) { ui.scene.refreshRoom(); ui.save(); lastTools = ""; tools.render(); }
+        return;
+      }
+      if (action === "instrument") { ui.playHomeInstrument?.(id); return; }
       if (action === "cook" && ["copper-range", "kitchen-hob", "kitchen-oven"].includes(s.house.placed.find(q => q.instance === id)?.id) && M.homeCookingAvailable(s)) { tools.select(null); ui.openCookingSheet("recipes", "home"); return; }
       if (action === "wardrobe") { M.recordHomeActivity?.(s,"wardrobe"); tools.select(null); ui.openSheet("wardrobe"); ui.save(); return; }
       if (action === "move") { tools.moving = !tools.moving; more = false; ui.scene.showGrid(tools.moving); tools.render(); return; }
@@ -417,6 +464,14 @@ export function homeSheets(ui) {
       if (!p) return;
       if (!tools.moving) { tools.select(null); return; }
       const room = M.roomLayout(s, p.room) ?? M.GRID, fp = M.pieceFootprint(p);
+      if (fp.layer === "wall") {
+        if (!cell.wall) return;
+        const x = M.snapDecorPosition(cell.x - fp.w / 2, tools.snap), y = M.snapDecorPosition((cell.y ?? M.wallMountHeight(s, p) + M.wallPieceHeight(p) / 2) - M.wallPieceHeight(p) / 2, tools.snap);
+        const before = structuredClone(p), pose = { ...p, wall: cell.wall, x, y, z: 0 };
+        if (M.moveWallDecor(s, p.instance, cell.wall, x, y)) { remember(before); ui.tone(600); tools.moving = false; ui.scene.showGrid(false); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
+        else { ui.scene.previewPiece(p.instance, x, 0, false, pose); ui.notice("Keep clear of windows, doors and other wall pieces."); }
+        return;
+      }
       if (p.on) {
         if (cell.wall) return;
         const pose = structuredClone(p);
@@ -453,6 +508,10 @@ export function homeSheets(ui) {
     nudge(dx, dz) {
       const s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
       const before = p && structuredClone(p);
+      if (p && M.footprint(p.id).layer === "wall") {
+        if (M.moveWallDecor(s, p.instance, p.wall ?? "back", M.snapDecorPosition(p.x + dx * M.DECOR_STEP, 0), M.snapDecorPosition(M.wallMountHeight(s, p) - dz * M.DECOR_STEP, 0))) { remember(before); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
+        return;
+      }
       // On a top the arrows still point across the room, whichever way the table faces.
       if (p?.on) {
         const host = s.house.placed.find((q) => q.instance === p.on), v = host && intoHostFrame(dx * M.DECOR_STEP, dz * M.DECOR_STEP, M.hostYaw(host));
@@ -473,6 +532,7 @@ export function homeSheets(ui) {
         const s = ui.state, refresh = () => { ui.scene.refreshRoom(); ui.draw(); };
         body.querySelectorAll("[data-hometab]").forEach((b) => (b.onclick = () => { tab = b.dataset.hometab; ui.draw(); }));
         body.querySelectorAll("[data-go]").forEach((b) => (b.onclick = () => { s.house.activeRoom = b.dataset.go; tools.select(null); ui.enterRoom(b.dataset.go); ui.closeSheet(); }));
+        body.querySelectorAll("[data-room-extension]").forEach((b) => (b.onclick = () => { if (M.buyRoomExtension(s, b.dataset.roomExtension)) { ui.tone(820); ui.notice("The bathroom is ready, through the kitchen."); ui.save(); refresh(); } }));
         body.querySelectorAll("[data-style]").forEach((b) => (b.onclick = () => { if (M.setRoomStyle(s, b.dataset.style)) refresh(); }));
         body.querySelectorAll("[data-buystyle]").forEach((b) => (b.onclick = () => { if (M.buyRoomStyle(s, b.dataset.buystyle)) { ui.tone(820); ui.notice("A new look for the " + roomName(here()) + "."); refresh(); } }));
         body.querySelectorAll("[data-paper]").forEach((b) => (b.onclick = () => { const id = b.dataset.paper === "none" ? null : b.dataset.paper; if (M.applyWallpaper(s, here(), id)) { ui.tone(600); refresh(); } }));

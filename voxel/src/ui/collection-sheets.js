@@ -47,7 +47,7 @@ export function collectionSheets(ui) {
         const made = s.memories.includes(m.id);
         return `<article class="card memory${made ? "" : " waiting"}"><span class="thumb"><span class="ico i-${MEMORY_ICONS[m.icon]}"></span></span><div><h3>${m.title}</h3><p>${m.text}</p><p class="small">${made ? "✓ " + m.memory : "A memory waiting to be made"}</p></div></article>`;
       }).join("") +
-      `<div class="stats"><div><b>${s.harvested}</b><span>pumpkins picked</span></div><div><b>${s.sold}</b><span>happy visitors</span></div><div><b>${money(s.earned)}</b><span>earned in total</span></div><div><b>${s.streak.best}</b><span>best harvest streak</span></div></div>`;
+      `<div class="stats"><div><b>${s.harvested}</b><span>pumpkins picked</span></div><div><b>${s.sold}</b><span>happy visitors</span></div><div><b>${money(s.earned)}</b><span>earned in total</span></div><div><b>${s.streak.best}</b><span>best harvest streak</span></div><div><b>${M.totalDiscarded(s)}</b><span>spoiled pumpkins discarded</span></div></div>`;
   }
 
   // What a level opens: the later upgrade tiers (rules/unlocks.js), the

@@ -14,6 +14,8 @@ import { kitchenProp, kitchenPropStats } from "./kitchen-props.js";
 import { HOME_FURNISHINGS_BY_ID } from "./content/home-furnishings.js";
 import { homeFurnishingProp, homeFurnishingStats } from "./home-furnishings.js";
 import { buildPetFurnishing, petFurnishingStats } from "./pet-furnishings.js";
+import { HOUSEHOLD_BY_ID } from "./content/household-catalog.js";
+import { householdProp, householdPropStats } from "./household-props.js";
 
 // Decor. Pieces with a recipe in decor-models/ are modelled in voxels as real
 // 3D objects, coloured from the main game's own art (decor.png); the rest are
@@ -101,12 +103,13 @@ function shelfModel(id, finish) {
 }
 
 // For the bench: how many faces a modelled piece has.
-export const modelStats = (id, finish) => { const pet=petFurnishingStats(id);if(pet)return pet; if (HOME_FURNISHINGS_BY_ID[id]) return homeFurnishingStats(id); if (KITCHEN_EQUIPMENT_BY_ID[id]) return kitchenPropStats(id); if (SHELVES[id]) return shelfModel(id, finish).data; if (PREMIUM_WALL_RECIPES[id]) return premiumWallStats(id); if (PREMIUM_FURNITURE_RECIPES[id]) return premiumFurnitureStats(id); const m = RECIPES[id] && decorPixels ? model(id) : null; return m && { triangles: m.geometry.reduce((n, g) => n + (g ? g.index.count / 3 : 0), 0), ...m.grid }; };
+export const modelStats = (id, finish) => { if (HOUSEHOLD_BY_ID[id]) return householdPropStats(id); const pet=petFurnishingStats(id);if(pet)return pet; if (HOME_FURNISHINGS_BY_ID[id]) return homeFurnishingStats(id); if (KITCHEN_EQUIPMENT_BY_ID[id]) return kitchenPropStats(id); if (SHELVES[id]) return shelfModel(id, finish).data; if (PREMIUM_WALL_RECIPES[id]) return premiumWallStats(id); if (PREMIUM_FURNITURE_RECIPES[id]) return premiumFurnitureStats(id); const m = RECIPES[id] && decorPixels ? model(id) : null; return m && { triangles: m.geometry.reduce((n, g) => n + (g ? g.index.count / 3 : 0), 0), ...m.grid }; };
 
 // The voxel prop for one catalogue piece, standing on (0, 0, 0) and centred on
 // its footprint. Rugs lie flat; wall pieces hang with their back at z = 0.
 // finish: one of the piece's finishes (blank shelves), else ignored.
-export function decorProp(id, { finish } = {}) {
+export function decorProp(id, { finish, piece } = {}) {
+  if (HOUSEHOLD_BY_ID[id]) return householdProp(id, { piece });
   const pet=buildPetFurnishing(id);if(pet)return pet;
   if (HOME_FURNISHINGS_BY_ID[id]) return homeFurnishingProp(id);
   if (KITCHEN_EQUIPMENT_BY_ID[id]) return kitchenProp(id);

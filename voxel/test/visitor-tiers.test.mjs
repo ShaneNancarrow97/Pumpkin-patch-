@@ -15,7 +15,7 @@ test("Spread the word and Fairy lights start at tens of pounds and get dearer ev
   }
   assert.ok(SIGN.costs[0] < 100 && SIGN.costs[1] < 200, "the first two are a few minutes' takings");
   assert.ok(LIGHTS.costs[0] <= 200);
-  assert.equal(SIGN.costs.length, 5); assert.equal(LIGHTS.costs.length, 4);
+  assert.equal(SIGN.costs.length, 5); assert.equal(LIGHTS.costs.length, 6);
   assert.equal(SIGN.max, 5);
   const s = M.freshState(); s.coins = 1e7; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
   SIGN.costs.forEach((price, level) => { assert.equal(M.upgradeCost(s, "sign"), price); const c = s.coins; M.buyUpgrade(s, "sign"); assert.equal(c - s.coins, price); assert.equal(s.upgrades.sign, level + 1); });
@@ -28,16 +28,16 @@ test("each tier does a little less than the one before", () => {
     for (let i = 1; i < gaps.length; i++) assert.ok(gaps[i] < gaps[i - 1], `tier ${i + 1} saves less time than tier ${i}`);
   }
   // Neither path alone, nor both together, gets silly.
-  const s = M.freshState(); s.upgrades.sign = 5; s.visitorUpgrades.lights = 4;
+  const s = M.freshState(); s.upgrades.sign = 5; s.visitorUpgrades.lights = 6;
   assert.ok(M.stallArrivalSeconds(s) > M.ARRIVAL_FLOOR.stall);
   assert.ok(M.shopArrivalSeconds(s) > M.ARRIVAL_FLOOR.shop);
 });
 
 test("the Shop sheet's figures: a fresh farm, then one tier of each", () => {
   const s = M.freshState();
-  assert.equal(M.stallArrivalSeconds(s), 21);
-  s.upgrades.sign = 1; assert.ok(Math.abs(M.stallArrivalSeconds(s) - 21 * SIGN.steps[0]) < 1e-9);
-  s.visitorUpgrades.lights = 1; assert.ok(Math.abs(M.stallArrivalSeconds(s) - 21 * SIGN.steps[0] * M.LIGHTS[0]) < 1e-9);
+  assert.equal(M.stallArrivalSeconds(s), 15);
+  s.upgrades.sign = 1; assert.ok(Math.abs(M.stallArrivalSeconds(s) - 15 * SIGN.steps[0]) < 1e-9);
+  s.visitorUpgrades.lights = 1; assert.ok(Math.abs(M.stallArrivalSeconds(s) - 15 * SIGN.steps[0] * M.LIGHTS[0]) < 1e-9);
   assert.equal(M.visitorUpgradeCost(s, "lights"), LIGHTS.costs[1]);
 });
 
@@ -50,17 +50,19 @@ test("old saves keep their tiers, and are never slower than before", () => {
     assert.ok(M.stallArrivalSeconds(loaded) <= 21 * 0.9 ** n * 0.88 ** n + 1e-9, `tier ${n}`);
     assert.ok(M.shopArrivalSeconds(loaded) <= 3 * 0.9 ** n + 1e-9);
   }
-  // A save at the old maximum has one more Spread the word to buy, and the lights are done.
-  const old = M.freshState(); old.upgrades.sign = 4; old.visitorUpgrades.lights = 4; old.coins = 1e6; old.earned = 2e6; old.progression.claimed = M.LEVELS.map((l) => l.level);
+  // A save at the old maximum can buy its remaining sign and two new light tiers.
+  const old = M.freshState(); old.upgrades.sign = 4; old.visitorUpgrades.lights = 4; old.coins = 1e6; old.earned = M.LEVELS.at(-1).at; old.progression.claimed = M.LEVELS.map((l) => l.level);
   const loaded = M.restoreState(old);
   assert.equal(M.upgradeCost(loaded, "sign"), SIGN.costs[4]); assert.ok(M.buyUpgrade(loaded, "sign"));
-  assert.equal(M.buyVisitorUpgrade(loaded, "lights"), false);
+  assert.equal(M.visitorUpgradeCost(loaded,"lights"),LIGHTS.costs[4]);assert.ok(M.buyVisitorUpgrade(loaded,"lights"));
+  assert.equal(M.visitorUpgradeCost(loaded,"lights"),LIGHTS.costs[5]);assert.ok(M.buyVisitorUpgrade(loaded,"lights"));
+  assert.equal(M.buyVisitorUpgrade(loaded,"lights"),false);
 });
 
 test("restoreState holds tiers to the new maxima, version 1 saves included", () => {
   const s = M.freshState(); s.upgrades.sign = 99; s.visitorUpgrades.lights = 40; s.upgrades.tools = 9;
   const loaded = M.restoreState(s);
-  assert.equal(loaded.upgrades.sign, 5); assert.equal(loaded.visitorUpgrades.lights, 4); assert.equal(loaded.upgrades.tools, 6);
+  assert.equal(loaded.upgrades.sign, 5); assert.equal(loaded.visitorUpgrades.lights, 6); assert.equal(loaded.upgrades.tools, 6);
   const v1 = M.freshState(); delete v1.version; v1.upgrades = { tools: 2, helper: 1, plots: 1, signs: 6 };
   const migrated = M.restoreState(v1);
   assert.equal(migrated.upgrades.sign, 5); assert.equal(migrated.upgrades.auto, 1);

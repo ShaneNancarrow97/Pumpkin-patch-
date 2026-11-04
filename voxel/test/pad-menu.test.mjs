@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { nearestInDirection, nearestTo, choiceKey } from "../src/ui/pad-menu.js";
-import { buyButton, HOLD_TO_BUY_MS } from "../src/ui/hold-to-buy.js";
+import { buyButton, HOLD_TO_BUY_MS, createHoldToBuy } from "../src/ui/hold-to-buy.js";
 import { glyphHTML, padFamily } from "../src/ui/glyphs.js";
 
 const box = (left, top, width, height) => ({ left, top, right: left + width, bottom: top + height });
@@ -38,13 +38,16 @@ test("a lost choice is found again by its data, its id or its words, and else by
   assert.equal(nearestTo({ x: 280, y: 140 }, [box(0, 0, 100, 40), box(240, 120, 80, 40), box(240, 180, 80, 40)]), 1);
 });
 
-test("hold to buy: only a marked button with a price on it waits for the hold", () => {
+test("single-tap purchases retain price classification without installing hold handlers", () => {
   const button = (text, marked = true) => ({ textContent: text, closest: (s) => (s === ".purchase-button" && marked ? button.self : null) });
   const priced = button("£120"); button.self = priced; assert.equal(buyButton(priced), priced);
   const cook = button("Cook"); button.self = cook; assert.equal(buyButton(cook), null, "the kitchen's Cook stays a tap");
   const plain = button("£40", false); assert.equal(buyButton(plain), null, "an unmarked button stays a tap");
   assert.equal(buyButton(null), null);
-  assert.ok(HOLD_TO_BUY_MS >= 300 && HOLD_TO_BUY_MS <= 700, "the hold is short");
+  assert.equal(HOLD_TO_BUY_MS, 0);
+  const adapter=createHoldToBuy({enabled:()=>true});
+  assert.equal(adapter.press(priced),false);assert.equal(adapter.active,false);assert.equal(adapter.holding,null);
+  adapter.release();adapter.cancel();
 });
 
 test("menu prompts draw each pad's own buttons", () => {

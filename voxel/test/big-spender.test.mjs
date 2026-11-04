@@ -61,7 +61,7 @@ test("scare footfall boosts arrivals only when open and retains the existing fre
   s.hollowHouse.haunts = { owned: M.MAZE_PREFABS.map(p => p.id), active: M.MAZE_PREFABS.map(p => p.id) };
   assert.equal(M.mazeFootfallBonus(s), .5); assert.equal(M.stallPace(s), 1.5); assert.equal(M.streakPathBoost(s), 0);
   s.streak.visitorBoost = 1.5; s.streak.visitorBoostUntil = s.time + 100; assert.equal(M.stallPace(s), 3); assert.equal(M.streakPathBoost(s), 1.5);
-  s.upgrades.sign = 5; s.visitorUpgrades.lights = 4; assert.ok(M.stallGapSeconds(s) >= 2.5);
+  s.upgrades.sign = 5; s.visitorUpgrades.lights = 6; assert.ok(M.stallGapSeconds(s) >= 2);
   s.hollowHouse.open = false; assert.equal(M.mazeFootfallBonus(s), 0); s.hollowHouse.open = true; s.hollowHouse.status = "restoring"; assert.equal(M.mazeFootfallBonus(s), 0);
 });
 

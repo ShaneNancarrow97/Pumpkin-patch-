@@ -3,6 +3,7 @@ import { Voxels, seeded, vary } from "./voxels.js";
 import { GRID } from "./model.js";
 import { Face as Panel } from "./face.js";
 import * as FX from "./fixtures.js";
+import { HOME_ROOM_LOOKS, roomWallOpenings } from "./content/home-rooms.js";
 class Face extends Panel { constructor(cols, rows = ROWS) { super(cols, rows, V); } }
 
 // Inside the cottage and the shop: voxel dioramas seen from the front, like
@@ -46,6 +47,7 @@ const STYLES = {
   "kitchen-apothecary": { wall: 0x3f5c40, wall2: 0x36523a, wood: 0x4a3020, dark: 0x2e2018, trim: 0xb0683a, floor: 0x6e4428, window: "square", hearth: "copper", jars: true, tiles: true, herbs: true },
   "attic-base": { wall: 0xd6c29e, wall2: 0xcbb690, wood: 0x6a4428, dark: 0x4a2e1c, trim: 0x7a5236, floor: 0x7a4a2a, window: "round", rafters: true, roundWindow: true, cobwebs: true },
   "attic-starlight": { wall: 0x36426e, wall2: 0x303b64, wood: 0x4a3020, dark: 0x2e1e14, trim: 0x8a6a3a, floor: 0x6e4428, window: "gothic", rafters: true, roundWindow: true, stars: true, fairyLights: true },
+  ...HOME_ROOM_LOOKS,
 };
 // Colours mixed in sRGB, channel by channel, as a painter would mix them.
 const mix = (a, b, t) => {
@@ -521,6 +523,36 @@ function sideWall(v, r, look, paper, side, lights, door = false, arches = [], st
   if (look.jars && !arches.length && !door) fit(lights, FX.jarShelf({ length: Math.min(4, R.d - 2), rows: 2, seed: sx > 0 ? 2 : 5, gap: 0.8 }, look), x, 2.6 - 0.22, R.d / 2 - 0.25, sx * Math.PI / 2);
 }
 
+// These are genuinely bare walls: paint runs from skirting to ceiling, with
+// no inherited chair rail, moulded centre panel or projecting columns.
+function unbrokenWall(v, look, paper, side, lights, arches = []) {
+  const face = new Face(cell(side === "back" ? R.w : R.d));
+  const field = paper ? papered(paper) : look.wallTiles ? (i, j) => {
+    if (i % 12 === 11 || j % 8 === 7) return [mix(look.wall, look.dark, 0.26), 0];
+    const glaze = hash(Math.floor(i / 12), Math.floor(j / 8));
+    return [mix(look.wall2, look.wall, glaze), 0.008];
+  } : plain(look, side === "back" ? 0 : side === "left" ? 1 : 2);
+  face.paint(0, 0, face.cols, ROWS, field);
+  face.rect(0, 0, face.cols, 2, [look.dark, 0.04]);
+  face.rect(0, 2, face.cols, 3, [mix(look.wood, look.trim, 0.35), 0.035]);
+  face.rect(0, ROWS - 1, face.cols, ROWS, [mix(look.wall, look.dark, 0.08), 0]);
+  if (side === "back" && look.frostedWindow) {
+    // The same bounds are exported to the placement rules, so frames cannot
+    // be hung over this high, private window.
+    const zone = roomWallOpenings("bathroom-plum", R.w, R.d, "back")[0];
+    const x0 = cell(zone.x), y0 = cell(zone.y), x1 = cell(zone.x + zone.w), y1 = cell(zone.y + zone.h);
+    face.rect(x0, y0, x1, y1, [look.dark, 0.06]);
+    face.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, [look.trim, 0.07]);
+    face.paint(x0 + 2, y0 + 2, x1 - 2, y1 - 2, (i, j) => [noise(i / 3, j / 4) < 0.45 ? 0xa6b8be : 0xc0cbca, -0.035]);
+    const middle = Math.floor((x0 + x1) / 2);
+    face.rect(middle, y0 + 2, middle + 1, y1 - 2, [look.dark, 0.015]);
+    lights.push({ x: R.w / 2, y: 3.8, z: 0.9, color: 0xb9cbd3, intensity: 1.2 });
+  }
+  for (const arch of arches) archway(v, face, look, side, arch, lights);
+  face.shade((i, j) => soft(Math.min(i, face.cols - 1 - i), j) * 0.65);
+  face.build(wall(v, side));
+}
+
 // An archway through a side wall to the next room: an arched opening with a
 // moulded architrave and keystone, a stone threshold, and beyond it a glimpse
 // of the room next door, lamplit. a is the house layout's door { at, width }.
@@ -531,7 +563,9 @@ function archway(v, face, look, side, a, lights) {
   const i0 = cell(u0) - 4, i1 = cell(u1) + 4, top = cell(ARCH.spring + rad) + 5;
   face.cut(i0, 0, i1, top, open);
   // Beyond the wall: a short passage, its floor, a far wall with a lamp, all a little darker.
-  const out = side === "left" ? -1 : 1, edge = side === "left" ? 0 : R.w, far = 2.2, x0 = side === "left" ? edge - far : edge;
+  // Bare shells use a shallow lit reveal. A full projecting corridor would
+  // appear as an exposed brown box outside the bathroom's cutaway wall.
+  const out = side === "left" ? -1 : 1, edge = side === "left" ? 0 : R.w, far = look.plainWalls ? .32 : 2.2, x0 = side === "left" ? edge - far : edge;
   const z0 = a.at, w = a.width, through = shade(look.wall, 0.4);
   v.box(x0, -0.12, z0, far, 0.12, w, shade(look.floor, 0.25));
   v.box(side === "left" ? x0 - 0.1 : edge + far, 0, z0 - 0.4, 0.1, 3.6, w + 0.8, through);
@@ -621,6 +655,19 @@ function floor(v, r, look, holes = []) {
   v.box(-T, -0.0625, R.d, R.w + 2 * T, 0.0625, 0.24, tint(look.dark, 0.08));
 }
 
+function tiledFloor(v, r, look) {
+  v.box(0, -0.3, 0, R.w, 0.27, R.d, mix(look.floor, look.dark, 0.45));
+  const size = 0.5;
+  for (let x = 0; x < R.w; x += size) for (let z = 0; z < R.d; z += size) {
+    const border = x === 0 || z === 0 || x + size >= R.w || z + size >= R.d;
+    const checked = look.checkerFloor && ((Math.round(x / size) + Math.round(z / size)) % 2 === 1);
+    const colour = border ? mix(look.floor, look.dark, 0.27) : checked ? mix(look.dark, look.floor, 0.15) : look.floor;
+    v.box(x + 0.0125, -0.1, z + 0.0125, Math.min(size, R.w - x) - 0.025, 0.1, Math.min(size, R.d - z) - 0.025, vary(colour, 0.035, r));
+  }
+  v.box(-T, -0.6, R.d, R.w + 2 * T, 0.6, 0.2, look.dark);
+  v.box(-T, -0.0625, R.d, R.w + 2 * T, 0.0625, 0.24, tint(look.dark, 0.08));
+}
+
 function extras(v, r, look, lights) {
   if (look.chandelier) fit(lights, FX.chandelier({ style: look.stars ? "celestial" : "manor", chain: 0.55 }, look), R.w / 2, WALL_H, 2.6);
   if (look.herbs) fit(lights, FX.hangingHerbs({ length: R.w - 1, seed: 1 }, look), R.w / 2, WALL_H - 1.05, 1.1);
@@ -641,9 +688,15 @@ export function buildRoom(style, wallpaper, layout) {
   const doors = layout?.doors ?? [], stairs = layout?.stairs ?? [];
   // Stairwells and hatches open in the floor of the room they arrive in.
   const holes = stairs.filter((st) => st.down).map((st) => (st.kind === "ladder" ? { x0: st.x, x1: st.x + st.w, z0: st.z, z1: st.z + 1 } : { x0: st.x, x1: st.x + st.w, z0: st.z + 1, z1: st.z + st.d }));
-  floor(v, r, look, holes);
-  backWall(v, r, look, paper, lights, look.hearth ? "hearth" : look.roundWindow ? "round" : "panel");
-  for (const side of ["left", "right"]) sideWall(v, r, look, paper, side, lights, false, doors.filter((d) => d.wall === side), stairs.some((st) => st.wall === side));
+  if (look.floorTiles) tiledFloor(v, r, look);
+  else floor(v, r, look, holes);
+  if (look.plainWalls) {
+    unbrokenWall(v, look, paper, "back", lights);
+    for (const side of ["left", "right"]) unbrokenWall(v, look, paper, side, lights, doors.filter(d => d.wall === side));
+  } else {
+    backWall(v, r, look, paper, lights, look.hearth ? "hearth" : look.roundWindow ? "round" : "panel");
+    for (const side of ["left", "right"]) sideWall(v, r, look, paper, side, lights, false, doors.filter((d) => d.wall === side), stairs.some((st) => st.wall === side));
+  }
   for (const d of doors) links.push({ to: d.to, x: d.wall === "left" ? -0.8 : R.w - 0.2, y: 0, z: d.at, w: 1, h: 3, d: d.width });
   for (const st of stairs) {
     const build = st.kind === "ladder" ? (st.up ? ladderUp : hatch) : st.up ? staircase : stairwell;

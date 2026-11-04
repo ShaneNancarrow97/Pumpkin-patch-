@@ -96,7 +96,7 @@ function roomWays(s, id) {
       zone: { x0: left ? 0 : L.w - strip, x1: left ? strip : L.w, z0: dr.at + .3, z1: dr.at + dr.width - .3 } });
   }
   // The ground floor's open front is the way out to the garden.
-  if (L.storey === 0) ways.push({ ...leaveHouse(s), zone: { x0: L.w / 2 - 1.2, x1: L.w / 2 + 1.2, z0: L.d - strip, z1: L.d } });
+  if (L.storey === 0 && id !== "bathroom") ways.push({ ...leaveHouse(s), zone: { x0: L.w / 2 - 1.2, x1: L.w / 2 + 1.2, z0: L.d - strip, z1: L.d } });
   return ways;
 }
 

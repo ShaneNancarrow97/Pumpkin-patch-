@@ -21,14 +21,14 @@ test("rooms grow with the house, only to the right and towards the front", () =>
   assert.deepEqual(sizes("bedroom"), [null, "10x6", "11x6", "12x7"]);
   assert.deepEqual(sizes("kitchen"), [null, null, "10x6", "11x7"]);
   assert.deepEqual(sizes("attic"), [null, null, null, "12x6"]);
-  for (const r of M.houseRooms) for (let level = r.level; level < 3; level++) {
+  for (const r of M.houseRooms.filter(r => !r.extension)) for (let level = r.level; level < 3; level++) {
     const a = M.roomLayout(at(level), r.id), b = M.roomLayout(at(level + 1), r.id);
     assert.ok(b.w >= a.w && b.d >= a.d && b.capacity >= a.capacity && b.hooks.from === a.hooks.from && b.hooks.to >= a.hooks.to, r.id + " never shrinks");
   }
   const little = M.roomLayout(at(0), "parlour");
   assert.deepEqual([little.w, little.d, little.hooks.from, little.hooks.to], [M.GRID.w, M.GRID.d, M.HOOKS.from, M.HOOKS.to], "the little cottage is the old grid");
-  assert.deepEqual([1, 2, 3].map((level) => M.roomCapacity(at(level), "bedroom")), [8, 10, 12]);
-  assert.deepEqual([0, 1, 2, 3].map((level) => M.roomCapacity(at(level), "parlour")), [6, 10, 16, 24]);
+  assert.deepEqual([1, 2, 3].map((level) => M.roomCapacity(at(level), "bedroom")), [48, 56, 64]);
+  assert.deepEqual([0, 1, 2, 3].map((level) => M.roomCapacity(at(level), "parlour")), [48, 64, 80, 96]);
   assert.equal(M.roomCapacity(at(0), "bedroom"), 0, "a shut room holds nothing");
   assert.equal(M.roomLayout(at(3), "parlour"), M.roomLayout(at(3), "parlour"), "layouts are cached");
   assert.ok(Object.isFrozen(M.roomLayout(at(3), "parlour").stairs[0].exit), "and frozen");
@@ -42,7 +42,7 @@ test("stairs, a doorway and a ladder join the rooms up, one storey over the next
   assert.deepEqual(M.connections(s, "bedroom"), [{ kind: "stair", to: "parlour", way: "down" }, { kind: "ladder", to: "attic", way: "up" }]);
   assert.deepEqual(M.connections(s, "kitchen"), [{ kind: "door", to: "parlour", way: "through" }]);
   assert.deepEqual(M.connections(s, "attic"), [{ kind: "ladder", to: "bedroom", way: "down" }]);
-  assert.deepEqual(M.houseRooms.map((r) => L(r.id).storey), [0, 1, 0, 2]);
+  assert.deepEqual(M.houseRooms.filter(r => !r.extension).map((r) => L(r.id).storey), [0, 1, 0, 2]);
   // Both ends of each link sit in the same place in the house.
   const houseX = (id, x) => L(id).offset + x;
   for (const level of [1, 2, 3]) {
@@ -60,7 +60,7 @@ test("stairs, a doorway and a ladder join the rooms up, one storey over the next
   assert.deepEqual(M.nextLevel(at(0)).links, [M.HOUSE_LINKS[0]]);
   const next = M.nextLevel(at(1));
   assert.equal(next.cost, M.HOUSE_LEVELS[1].cost);
-  assert.deepEqual(next.rooms.map((r) => `${r.id} ${r.opens ? "opens" : "grows"} ${r.to.w}x${r.to.d} ${r.to.capacity}`), ["parlour grows 13x7 16", "bedroom grows 11x6 10", "kitchen opens 10x6 8"]);
+  assert.deepEqual(next.rooms.map((r) => `${r.id} ${r.opens ? "opens" : "grows"} ${r.to.w}x${r.to.d} ${r.to.capacity}`), ["parlour grows 13x7 80", "bedroom grows 11x6 56", "kitchen opens 10x6 48"]);
   assert.deepEqual(next.links, [{ kind: "door", from: "parlour", to: "kitchen" }]);
   assert.equal(M.nextLevel(s), null);
 });
@@ -81,7 +81,7 @@ test("stairs, doorways and the space in front of them block placement", () => {
   assert.deepEqual(M.roomLayout(s, "attic").blocked.map((c) => `${c.x},${c.z}`), ["11,0", "11,1"]);
   // Wall pieces hang on more hooks in a wider room, and never past them.
   assert.ok(!M.fits(at(0), "parlour", "d10", 7, 0));
-  assert.ok(M.fits(s, "parlour", "d10", 10, 0) && !M.fits(s, "parlour", "d10", 11, 0));
+  assert.ok(M.fits(s, "parlour", "d10", 9.5, 0) && !M.fits(s, "parlour", "d10", 11, 0), "wall art clears the actual column and window");
   // findSpot steps over the landing and the pieces along the back to a free place.
   const b = at(1);
   SMALL.slice(0, 8).forEach((id, x) => put(b, "bedroom", id, x, 0));
@@ -105,10 +105,10 @@ test("placement follows each room's size, capacity and blocked cells", () => {
   const t = at(1);
   t.house.owned.push(...SMALL);
   for (const id of SMALL.slice(0, 8)) assert.ok(M.placeDecor(t, id, "bedroom"), id);
-  assert.equal(M.placeDecor(t, SMALL[8], "bedroom"), null, "the bedroom is full");
+  assert.ok(M.placeDecor(t, SMALL[8], "bedroom"), "small collections no longer fill the bedroom after eight pieces");
   assert.ok(M.roomPieces(t, "bedroom").every((q) => clear(t, q)));
   t.house.level = 2;
-  assert.ok(M.placeDecor(t, SMALL[8], "bedroom"));
+  assert.ok(M.placeDecor(t, SMALL[9], "bedroom"));
 });
 
 test("upgrading never leaves a piece on new stairs or in a doorway", () => {

@@ -1,0 +1,90 @@
+/* Home customisation uses the same quiet purple surfaces as the game HUD.
+   The catalogue closes when a piece is picked; only its relevant tools remain. */
+.build-cat { --home-amber: #f1c27c; }
+.build-cat .build-sub { min-height: 44px; }
+.build-cat .build-name, .build-cat .build-rail-tab { font-size: 12px !important; }
+.build-cat .build-sub[aria-pressed="true"] { width: auto; flex-basis: auto; display: flex; gap: 7px; padding: 0 11px; }
+.build-cat .build-sub[aria-pressed="true"]::after { content: attr(title); color: #ffdfab; font: 600 12px var(--body); white-space: nowrap; }
+.build-cat .build-sub-name { display: none; }
+.build-cat .build-chip { min-height: 44px !important; font-size: 12px !important; }
+.build-cat .build-chip.buy { background: linear-gradient(145deg, #f3cb88, #d9a866); color: #302119 !important; border-color: #ffe4b259; box-shadow: inset 0 1px #fff6dc75, 0 3px 10px #08050e26; font-weight: 700; }
+.build-cat .build-chip.buy:disabled { background: #71584166; color: #cfbdab !important; box-shadow: none; }
+.build-cat .build-detail { align-items: flex-start; border-color: #e8c7921c; background: linear-gradient(145deg, #272030ed, #17121eee); }
+.build-cat .build-detail-copy .eyebrow, .build-cat .build-detail-meta { font-size: 12px; }
+.build-cat .build-detail-meta { flex-wrap: wrap; gap: 4px 8px; }
+.build-cat .build-detail-act { min-width: 116px; }
+.build-copy-list { display: flex; flex-wrap: wrap; gap: 5px; max-height: 94px; overflow: auto; overscroll-behavior: contain; margin-top: 8px; padding: 1px; }
+.build-copy { min-height: 44px; display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 10px; border: 1px solid #dab7812b; border-radius: 11px; background: #ffffff07; color: #f2dec3; font: 500 12px var(--body); }
+.build-copy span { color: #f1c27c; }
+.build-copy:hover, .build-copy:focus-visible { background: #d6a86b20; border-color: #f1c27c80; }
+.build-cat .build-badge { min-width: 20px; padding: 1px 4px; font: 700 12px var(--body); font-style: normal; }
+.build-cat .build-foot { flex-wrap: wrap; font-size: 12px; }
+.room-extension .button, .room-style .button { min-height: 44px; flex-shrink: 0; }
+.room-extension .button small { display: block; margin-top: 3px; max-width: 180px; font: 400 12px/1.3 var(--body); }
+.room-extension .eyebrow { color: #dbb77e; font-size: 12px; }
+.room-style .style-swatch { width: 44px; height: 48px; display: block; border-radius: 10px; border: 1px solid #e3c38c33; background: linear-gradient(#9e84aa 0 67%, #483140 67%); box-shadow: inset 0 0 0 5px #32233c35; }
+.room-style .style-swatch[class*="plain"] { background: linear-gradient(130deg, #c6b2ce, #897395); box-shadow: inset 0 -3px #5b4263; }
+.room-style .style-swatch[class*="cream"] { background: linear-gradient(130deg, #eadbc4, #bea88e); }
+.room-style .style-swatch[class*="plum"] { background: linear-gradient(130deg, #8a607c, #4e354f); }
+.room-style .style-swatch[class*="sage"] { background: linear-gradient(130deg, #a2b39b, #6e8270); }
+.room-style .style-swatch[class*="charcoal"] { background: linear-gradient(130deg, #676173, #34303e); }
+.piece-bar .piece-actions { flex-wrap: wrap; justify-content: flex-start; gap: 5px; }
+.piece-bar .wall-tools { display: flex; flex: 1 0 auto; gap: 3px; padding: 2px; border-radius: 14px; background: #09061040; }
+.piece-bar .wall-tool { flex: 1; min-width: 54px; padding: 0 9px; }
+.piece-bar .wall-tool[aria-pressed="true"] { background: #edbd7820; color: #ffdda6; box-shadow: inset 0 0 0 1px #e5b77344; }
+.piece-bar .media-action { color: #ffe1ae; background: #b893ce19; }
+.piece-bar .piece-more { max-height: min(180px, 28dvh); overflow-y: auto; overscroll-behavior: contain; }
+.piece-bar .piece-name small { line-height: 1.35; }
+.piece-bar .button:focus-visible, .build-cat button:focus-visible { outline: 2px solid #ffd99a; outline-offset: 2px; }
+@media (max-width: 460px) {
+  .build-cat .build-detail > .thumb { display: none !important; }
+  .build-cat .build-detail { gap: 8px; }
+  .build-cat .build-detail-act { min-width: 108px; }
+  .build-cat .build-detail-act b { font-size: 12px; text-align: right; }
+  .room-extension { flex-wrap: wrap; }
+  .room-extension > .button { margin-left: auto; }
+  .piece-bar .piece-actions > .media-action { flex-grow: 1; }
+}
+@media (max-height: 480px) {
+  .build-copy-list { max-height: 48px; }
+  .build-cat .build-detail-meta { display: none; }
+  .piece-bar .piece-more { max-height: 112px; }
+}
+/* Landscape phones need browse space, not a stack of header and detail rows.
+   The selected item becomes a quiet side column; the grid keeps a real row
+   of thumbnails and can scroll independently of the item's controls. */
+@media (max-height: 500px) and (min-width: 600px) {
+  .sheet[data-section="home"]:has(.build-cat) { width: min(680px, 74vw) !important; }
+  .sheet[data-section="home"]:has(.build-cat) .sheet-frame { padding: 8px 10px; }
+  .sheet[data-section="home"]:has(.build-cat) .sheet-body { gap: 6px; }
+  .build-cat { grid-template-columns: 54px minmax(0, 1fr) 164px; grid-template-rows: 44px 44px minmax(110px, 1fr) 44px; grid-template-areas: "top top detail" "rail subs detail" "rail grid detail" "foot foot detail"; gap: 6px 8px; }
+  .build-cat .build-top { gap: 7px; }
+  .build-cat .build-room { font-size: 12px; }
+  .build-cat .build-room b { display: block; }
+  .build-cat .build-search { min-height: 44px; padding: 0 9px; }
+  .build-cat .build-search input { min-height: 40px; font-size: 12px; }
+  .build-cat .build-rail { padding: 3px; gap: 4px; }
+  .build-cat .build-rail-tab { min-height: 48px !important; padding: 3px 0; font-size: 12px !important; }
+  .build-cat .build-rail-tab svg { width: 18px; height: 18px; }
+  .build-cat .build-subs { padding: 0; border-bottom: 0; }
+  .build-cat .build-grid { min-height: 110px; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 6px; }
+  .build-cat .build-pick { height: 64px; aspect-ratio: auto; }
+  .build-cat .build-detail { min-height: 0; flex-direction: column; align-items: stretch; gap: 7px; padding: 8px; overflow-y: auto; overscroll-behavior: contain; }
+  .build-cat .build-detail > .thumb { display: none !important; }
+  .build-cat .build-detail-copy { flex: 0 0 auto; }
+  .build-cat .build-detail-copy h3 { font-size: 15px; }
+  .build-cat .build-detail-copy p { display: block; font-size: 12px; -webkit-line-clamp: unset; }
+  .build-cat .build-detail-copy .eyebrow { display: none; }
+  .build-cat .build-detail-act { min-width: 0; align-items: stretch; }
+  .build-cat .build-detail-act b { font-size: 12px; line-height: 1.35; text-align: left; }
+  .build-cat .build-detail-act .build-chip { padding: 0 6px; }
+  .build-cat .build-copy-list { max-height: none; overflow: visible; }
+  .build-cat .build-copy { width: 100%; }
+  .build-cat .build-foot { gap: 6px; flex-wrap: nowrap; }
+  .build-cat .build-toggle { min-height: 44px !important; padding: 0 8px; gap: 5px; }
+  .build-cat .build-foot > span { display: none; }
+}
+@media (max-height: 360px) and (min-width: 600px) {
+  .build-cat { grid-template-rows: 44px 44px minmax(110px, 1fr); grid-template-areas: "top top detail" "rail subs detail" "rail grid detail"; }
+  .build-cat .build-foot { display: none; }
+}

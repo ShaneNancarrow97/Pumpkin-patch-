@@ -16,7 +16,10 @@ export function recordHomeActivity(s, kind) {
 const pieces = s => Array.isArray(s.house?.placed) ? s.house.placed : [];
 const activity = (s, kind) => count(s.progression?.homeActivities?.[kind]);
 const tools = s => new Set(pieces(s).filter(p => p.room === "kitchen").flatMap(p => KITCHEN_CAPABILITIES[p.id] ?? []));
-const rooms = s => new Set(pieces(s).map(p => p.room)).size;
+// Optional annexes must not replace the original attic in the level-20 goal,
+// nor add a new obligation to an existing four-room milestone.
+const CORE_ROOMS = new Set(["parlour", "bedroom", "kitchen", "attic"]);
+const rooms = s => new Set(pieces(s).map(p => p.room).filter(room => CORE_ROOMS.has(room))).size;
 const books = s => pieces(s).reduce((n, p) => n + (Array.isArray(p.books) ? p.books.length : 0), 0);
 const requirement = (id, text, target, read, action, room = "parlour") => ({ id, text, target, read, action, room });
 // House upgrades deliberately precede their new room's activity requirements.

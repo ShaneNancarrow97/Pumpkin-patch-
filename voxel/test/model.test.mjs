@@ -132,7 +132,10 @@ test("the house: buy, place, move and store decor, within each room's grid and c
   assert.equal(M.roomPieces(s, "parlour").length, 2);
   s.coins = 1e5;
   assert.ok(M.buyDecor(s, "f02"));
-  assert.ok(!M.buyDecor(s, "f02"), "already owned");
+  const afterFirst=s.coins;
+  assert.ok(M.buyDecor(s, "f02"), "a second paid copy is allowed");
+  assert.equal(s.coins,afterFirst-M.decorById.f02.price);
+  assert.equal(M.ownedCopies(s,"f02"),2);
   const sofa = M.placeDecor(s, "f02");
   assert.ok(sofa);
   const piece = s.house.placed.find((p) => p.instance === sofa);
@@ -145,11 +148,11 @@ test("the house: buy, place, move and store decor, within each room's grid and c
   assert.ok(M.buyDecor(s, "d10") && M.placeDecor(s, "d10"), "a portrait goes on the wall");
   assert.equal(s.house.placed.find((p) => p.id === "d10").z, 0);
   for (const id of ["d01", "d02", "d03"]) { M.buyDecor(s, id); M.placeDecor(s, id); }
-  assert.equal(M.roomPieces(s, "parlour").length, 6);
+  assert.equal(M.roomPieces(s, "parlour").length, 8);
   M.buyDecor(s, "d05");
-  assert.equal(M.placeDecor(s, "d05"), null, "the little cottage's parlour holds 6");
+  assert.ok(M.placeDecor(s, "d05"), "the little cottage supports smaller details beyond the old six-piece cap");
   assert.ok(M.removeDecor(s, sofa));
-  assert.ok(M.placeDecor(s, "d05"));
+  assert.equal(M.availableCopies(s,"f02"),2,"storing returns a paid copy to its quantity");
 });
 
 test("a bigger house opens rooms; styles and wallpaper make it more haunted", () => {
@@ -160,7 +163,7 @@ test("a bigger house opens rooms; styles and wallpaper make it more haunted", ()
   assert.ok(M.upgradeHouse(s));
   assert.ok(M.roomUnlocked(s, "bedroom"));
   assert.equal(M.roomStyle(s, "parlour").id, "parlour-crooked");
-  assert.equal(M.roomCapacity(s, "parlour"), 10);
+  assert.equal(M.roomCapacity(s, "parlour"), 64);
   assert.ok(!M.setRoomStyle(s, "bedroom-celestial"), "not bought");
   assert.ok(M.buyRoomStyle(s, "bedroom-celestial"));
   assert.equal(M.roomStyle(s, "bedroom").id, "bedroom-celestial");

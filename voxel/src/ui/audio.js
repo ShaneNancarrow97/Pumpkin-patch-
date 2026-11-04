@@ -91,6 +91,16 @@ export function createAudio(prefs) {
   return {
     sync,
     tone(freq = 520) { if (!prefs.sound || !touched || sceneGain < 1) return; try { ensure(); blip(freq, ctx.currentTime, .18, .035); } catch {} },
+    houseInstrument(kind) {
+      if (!prefs.sound || !touched || sceneGain < 1 || !["guitar", "piano"].includes(kind)) return;
+      try {
+        ensure(); const start=ctx.currentTime;
+        // An original tiny minor arpeggio; audio stays in the existing bounded
+        // synth and respects the game's sound/mute preferences.
+        const notes=kind==="guitar"?[57,64,69,72,76,72]:[57,60,64,69,68,64];
+        notes.forEach((note,i)=>blip(440*2**((note-69)/12),start+i*.13,.46,.026,kind==="guitar"?"triangle":"sine"));
+      } catch {}
+    },
     levelUp() {
       if ((!prefs.sound && !prefs.music) || !touched || sceneGain < 1) return;
       try {

@@ -188,7 +188,7 @@ test("the public save migration keeps legacy hires and a new single-owner hot ca
   const old = fresh(); old.upgrades.auto = 1;
   const rawOld = JSON.parse(JSON.stringify(M.saveData(old))); rawOld.version = 14; delete rawOld.farmWork;
   const migrated = M.restoreState(rawOld);
-  assert.equal(migrated.version, 15); assert.ok(F.helperStatus(migrated, "shane").hired); assert.ok(F.helperStatus(migrated, "natalie").hired);
+  assert.equal(migrated.version, M.STATE_VERSION); assert.ok(F.helperStatus(migrated, "shane").hired); assert.ok(F.helperStatus(migrated, "natalie").hired);
   const one = fresh(); F.buyHelperUpgrade(one, "natalie", "hire"); F.buyHelperUpgrade(one, "natalie", "water");
   one.time = 12; one.farmWork.boost.heat = 90; one.farmWork.boost.overheated = true;
   const loaded = M.restoreState(JSON.parse(JSON.stringify(M.saveData(one))));

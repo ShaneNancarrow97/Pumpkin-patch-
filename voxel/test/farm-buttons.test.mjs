@@ -47,7 +47,7 @@ test('water cooldown and fresh ripe grace survive saves without free repeated gr
   const s=M.freshState(); s.time=20; M.plant(s,0); assert.ok(waterPlot(s,0));
   s.plots[1]={phase:'ready',progress:1,variety:0,ripe:19};
   const restored=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));
-  assert.equal(restored.version,15); assert.equal(restored.plots[0].progress,WATER.progress);
+  assert.equal(restored.version,M.STATE_VERSION); assert.equal(restored.plots[0].progress,WATER.progress);
   assert.equal(wateringStatus(restored,0).seconds,12); assert.equal(waterPlot(restored,0),false);
   assert.equal(restored.plots[1].ripe,19);
   restored.time+=12; assert.ok(waterPlot(restored,0));

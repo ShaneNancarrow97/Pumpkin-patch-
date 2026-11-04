@@ -5,6 +5,7 @@
 // mirrors with its host. rules/house.js does the rest.
 import { SMALL_PIECES, BASE, BOARD, measuredSurfaces } from "../content/placement.js";
 import { DECOR_SIZES } from "../content/decor-sizes.js";
+import { HOUSEHOLD_SIZES } from "../content/household-sizes.js";
 import { SHELF_CATALOG, SHELF_FINISHES } from "../content/shelf-catalog.js";
 
 const SHELVES = Object.fromEntries(SHELF_CATALOG.map((item) => [item.id, item]));
@@ -32,7 +33,7 @@ export function surfacesOf(id, w, d, wall, flip = false) {
 
 // A rider's measured size: across, deep and tall.
 export function riderSize(id) {
-  const b = DECOR_SIZES[id]?.box ?? [-0.4, 0.4, -0.4, 0.4, 1];
+  const b = HOUSEHOLD_SIZES[id]?.box ?? DECOR_SIZES[id]?.box ?? [-0.4, 0.4, -0.4, 0.4, 1];
   return { w: b[1] - b[0], d: b[3] - b[2], h: b[4] };
 }
 // The box round a w × d rectangle centred on (x, z) and turned by rotation degrees.
