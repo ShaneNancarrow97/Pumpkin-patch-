@@ -59,3 +59,14 @@ export function decodeMidi(bytes) {
   notes.sort((a, b) => a.time - b.time);
   return { notes, duration: Math.max(1, seconds(endTick), ...notes.map((n) => n.time + n.duration)) };
 }
+
+// A short supplied riff played several times through, so it lasts as a track
+// rather than ending in seconds. The riff repeats on its own length (its last
+// bar's end), so a riff written as whole bars loops seamlessly.
+export function loopClip(clip, times = 1) {
+  const n = Math.max(1, Math.floor(times) || 1);
+  if (n === 1) return clip;
+  const notes = [];
+  for (let k = 0; k < n; k++) for (const note of clip.notes) notes.push({ ...note, time: note.time + k * clip.duration });
+  return { notes, duration: clip.duration * n };
+}

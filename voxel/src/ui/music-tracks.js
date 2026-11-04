@@ -15,6 +15,14 @@ import nothingElseMatters from "../../assets/music/nothing-else-matters.mid";
 import dontFearTheReaper from "../../assets/music/dont-fear-the-reaper.mid";
 import gypsys from "../../assets/music/gypsys-tramps-and-thieves.mid";
 import everybody from "../../assets/music/everybody-backstreets-back.mid";
+import whereIsMyMind from "../../assets/music/where-is-my-mind.mid";
+import zombie from "../../assets/music/zombie.mid";
+import killerQueen from "../../assets/music/killer-queen.mid";
+import creep from "../../assets/music/creep.mid";
+import numb from "../../assets/music/numb-tim-dawes-remix.mid";
+// The Numb remix file is one four-bar riff (about 7 seconds), so it plays nine
+// times through: about a minute.
+export const MUSIC_REPEATS = Object.freeze({ "numb-tim-dawes-remix.mid": 9 });
 export const MUSIC_TRACKS = [
   { id: "lantern", name: "Lantern March", credit: "Original · playful music-box march", bytes: lantern },
   { id: "thriller", name: "Thriller", credit: "Michael Jackson · your supplied MIDI", bytes: thriller },
@@ -32,4 +40,9 @@ export const MUSIC_TRACKS = [
   { id: "dont-fear-the-reaper", name: "(Don’t Fear) The Reaper", credit: "Blue Öyster Cult · your supplied MIDI", bytes: dontFearTheReaper },
   { id: "gypsys-tramps-and-thieves", name: "Gypsys, Tramps & Thieves", credit: "Cher · your supplied MIDI", bytes: gypsys },
   { id: "everybody", name: "Everybody (Backstreet’s Back)", credit: "Backstreet Boys · your supplied MIDI", bytes: everybody },
+  { id: "where-is-my-mind", name: "Where Is My Mind?", credit: "Pixies · your supplied MIDI", bytes: whereIsMyMind },
+  { id: "zombie", name: "Zombie", credit: "The Cranberries · your supplied MIDI", bytes: zombie },
+  { id: "killer-queen", name: "Killer Queen", credit: "Queen · your supplied MIDI", bytes: killerQueen },
+  { id: "creep", name: "Creep", credit: "Radiohead · your supplied MIDI", bytes: creep },
+  { id: "numb", name: "Numb (Tim Dawes remix)", credit: "Linkin Park · your supplied riff, looped", bytes: numb, repeat: MUSIC_REPEATS["numb-tim-dawes-remix.mid"] },
 ];

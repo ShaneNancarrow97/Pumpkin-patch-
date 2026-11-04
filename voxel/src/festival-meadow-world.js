@@ -157,16 +157,47 @@ export function chatDressing(level, comforts = []) {
       for (const d of [-.025, .025]) v.block(x + d, y + .08, front + .066, .02, .02, .005, 0x1e1a22);
     }
   }
-  const notes = [];
+  // The dance floor (handover 65): a low round dais of cream and plum boards
+  // edged in brass, which reads from the farm's camera; a ring of bulbs that
+  // chase round its edge; a maypole of festoon lights under a turning mirror
+  // ball; and a big brass gramophone at its back edge. Notes rise from the horn.
+  const notes = [], chase = [], spin = [];
   if (has("dancefloor")) {
-    const [x, z] = floor;
-    for (let dz = -1.45; dz <= 1.45; dz += .29) { const half = Math.sqrt(Math.max(0, 1.5 ** 2 - dz ** 2)); v.block(x, .015, z + dz, half * 2, .025, .27, vary(0x8a5e3c, .1, r)); }
-    // The gramophone on its stand by the fence, its horn turned to the floor.
-    const gx = x + .8, gz = z - 1.39;
-    for (const [dx, dz] of [[-.16, -.16], [.16, -.16], [-.16, .16], [.16, .16]]) v.block(gx + dx, 0, gz + dz, .05, .7, .05, 0x3b2620);
-    v.block(gx, .7, gz, .44, .05, .44, 0x553829); v.block(gx, .75, gz, .28, .14, .28, 0x4a2e1c); v.block(gx, .89, gz, .24, .02, .24, 0x141014);
-    for (let i = 0; i < 6; i++) { const size = .05 + i * .05; v.block(gx - .03 - i * .07, .92 + i * .08, gz, size * .6, size, size, i === 5 ? 0xd8b06a : 0xc39b61); }
-    for (let i = 0; i < 3; i++) { const n = new Voxels(); n.block(0, 0, 0, .1, .08, .03, 0xffe0a0, true); n.block(.04, .04, 0, .02, .16, .02, 0xffe0a0, true); const g = n.build(); g.userData.base = [gx - .45, 1.35, gz]; g.userData.phase = i / 3; notes.push(g); }
+    const [x, z] = floor, R = 1.5;
+    for (let dz = -R - .12; dz <= R + .12 + 1e-9; dz += .12) { const half = Math.sqrt(Math.max(0, (R + .12) ** 2 - dz ** 2)); if (half > .05) v.block(x, 0, z + dz, half * 2, .07, .12, 0x3b2620); }
+    for (let i = -5; i < 5; i++) for (let j = -5; j < 5; j++) {
+      const cx = x + (i + .5) * .29, cz = z + (j + .5) * .29;
+      if (Math.hypot(cx - x, cz - z) <= R - .1) v.block(cx, .07, cz, .28, .025, .28, (i + j) & 1 ? 0x4a2446 : 0xe9d9b8);
+    }
+    for (let k = 0; k < 48; k++) { const a = k / 48 * Math.PI * 2; v.block(x + Math.cos(a) * (R + .03), .07, z + Math.sin(a) * (R + .03), .2, .035, .2, BRASS_RAIL); }
+    const ring = [new Voxels(), new Voxels()];
+    for (let k = 0; k < 24; k++) { const a = (k + .5) / 24 * Math.PI * 2; ring[k % 2].block(x + Math.cos(a) * (R + .05), .105, z + Math.sin(a) * (R + .05), .09, .05, .09, k % 2 ? 0xcba2ed : 0xffc46b, true); }
+    for (const r of ring) chase.push(r.build({ shadows: false }));
+    // The maypole: an iron pole, and ten strands of bulbs sagging out and down from its top.
+    v.block(x, .07, z, .2, .06, .2, iron); v.block(x, .13, z, .07, 3.25, .07, iron); v.block(x, 3.32, z, .14, .05, .14, BRASS_RAIL);
+    for (let k = 0; k < 10; k++) {
+      const a = k / 10 * Math.PI * 2 + .3, steps = 16;
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps, rr = .08 + t * 1.78, y = 3.3 - t * .95 - Math.sin(Math.PI * t) * .28;
+        v.block(x + Math.cos(a) * rr, y, z + Math.sin(a) * rr, .03, .03, .03, 0x2a2228);
+        if (i % 3 === 0) v.block(x + Math.cos(a) * rr, y - .09, z + Math.sin(a) * rr, .08, .09, .08, [0xffd28b, 0xcba2ed, 0xff9a5a, 0x9fe0c0][(k + i / 3) % 4], true);
+      }
+    }
+    // A mirror ball that turns at the top of the pole.
+    const ball = new Voxels();
+    for (let la = -2; la <= 2; la++) for (let lo = 0; lo < 10; lo++) {
+      const phi = la / 2.6 * Math.PI / 2, th = lo / 10 * Math.PI * 2, rr = .17 * Math.cos(phi);
+      ball.block(Math.cos(th) * rr, Math.sin(phi) * .17, Math.sin(th) * rr, .065, .065, .065, (la + lo) % 4 === 0 ? 0xf2f6ff : (la + lo) % 2 ? 0x9aa6c0 : 0xc8d2e6, (la + lo) % 7 === 0);
+    }
+    const mirror = ball.build({ shadows: false }); mirror.position.set(x, 3.08, z); spin.push(mirror);
+    // The gramophone on a little round table, its big brass horn turned to the floor.
+    const gx = x + 1.05, gz = z - 1.45;
+    v.block(gx, 0, gz, .1, .62, .1, 0x3b2620); v.block(gx, 0, gz, .34, .04, .34, 0x3b2620);
+    v.block(gx, .62, gz, .5, .05, .5, 0x553829); v.block(gx, .67, gz, .36, .18, .34, 0x4a2e1c); v.block(gx, .85, gz, .3, .02, .3, 0x141014); v.block(gx, .87, gz, .06, .02, .06, 0xd8b06a);
+    v.block(gx + .11, .89, gz + .02, .03, .03, .2, BRASS_RAIL);
+    for (let i = 0; i < 8; i++) { const size = .05 + i * .065, d = i * .085; v.block(gx - .04 - d * .9, .92 + d * .95, gz + d * .25, size * .55, size, size, i >= 6 ? 0xe2bd6e : BRASS_RAIL); }
+    v.block(gx - .04 - 7 * .085 * .9 - .02, .92 + 7 * .085 * .95, gz + 7 * .085 * .25, .05, .3, .3, 0x2a1a12);
+    for (let i = 0; i < 5; i++) { const n = new Voxels(); n.block(0, 0, 0, .12, .1, .03, 0xffe0a0, true); n.block(.05, .05, 0, .025, .2, .025, 0xffe0a0, true); const g = n.build(); g.userData.base = [gx - .7, 1.65, gz + .15]; g.userData.phase = i / 5; notes.push(g); }
   }
   if (has("trolley")) {
     const x = 45.3, z = 24.4;
@@ -175,11 +206,16 @@ export function chatDressing(level, comforts = []) {
     v.block(x + .5, .5, z, .06, .4, .4, BRASS_RAIL);
     v.block(x - .15, .59, z, .3, .38, .3, 0xb67745); v.block(x - .15, .97, z, .22, .05, .22, 0xc39b61); v.block(x - .15, .64, z + .16, .05, .05, .05, 0xc39b61);
     for (let i = 0; i < 3; i++) v.block(x + .15 + i * .09 - .09, .59, z + .1 - (i % 2) * .16, .08, .1, .08, 0xe8dcc4);
+    // A striped canopy on two brass poles, with a scalloped fringe and a lantern, so it reads from afar.
+    for (const dx of [-.42, .42]) v.block(x + dx, .54, z - .2, .04, 1.05, .04, BRASS_RAIL);
+    for (let i = 0; i < 6; i++) v.block(x - .45 + .09 + i * .155, 1.58, z - .02, .155, .05, .62, i % 2 ? 0xe8dcc4 : 0x7a3a5a);
+    for (let i = 0; i < 6; i++) v.block(x - .45 + .09 + i * .155, 1.5, z + .3, .1, .08, .03, i % 2 ? 0xe8dcc4 : 0x7a3a5a);
+    v.block(x, 1.3, z + .05, .03, .2, .03, 0x2a2228); v.block(x, 1.16, z + .05, .1, .14, .1, 0xffc46b, true); v.block(x, 1.3, z + .05, .13, .03, .13, 0x2a2228);
   }
   const group = v.build(), fire = flames.build();
   if (level >= 3) { fire.position.set(brazier[0], .92, brazier[1]); group.add(fire); }
-  for (const n of notes) group.add(n);
-  return { group, flames: level >= 3 ? fire : null, notes };
+  for (const n of [...notes, ...chase, ...spin]) group.add(n);
+  return { group, flames: level >= 3 ? fire : null, notes, chase, spin };
 }
 // Open a connection through the old fence/trees without changing world.js.
 // Compact positive, nonzero instances in place; keep the shared geometry alive.
@@ -304,6 +340,9 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
       courier?.tick(time);
       sync(); const c = state.festival.cocoa;
       if (sandy) { sandy.group.visible = c.level > 0; sandy.tick(time, c.level, state.visitors.some(v => v.festival?.phase === "serving" || v.social?.phase === "cocoa-serving") || state.time - c.lastSaleAt < 1.1); }
+      // The dance floor's edge bulbs chase round (two sets in turn) and the mirror ball turns.
+      if (chatProps?.chase?.length) { const on = Math.floor(time * 2.5) % 2; chatProps.chase.forEach((g, i) => { g.visible = i === on; }); }
+      for (const g of chatProps?.spin ?? []) g.rotation.y = time * .9;
       for (const n of chatProps?.notes ?? []) { const t = (time * .45 + n.userData.phase) % 1, [x, y, z] = n.userData.base; n.position.set(x - t * .5 + Math.sin(t * 9) * .08, y + t * 1.1, z); n.scale.setScalar(Math.sin(t * Math.PI) * 1.2 + .01); }
       if (barista) {barista.position.y=1.55+Math.sin(time*2)*.05;barista.rotation.y=Math.sin(time*.8)*.1;}
       if (chatProps?.flames) { const f = chatProps.flames; f.scale.set(1 + Math.sin(time * 9) * .08, .85 + Math.abs(Math.sin(time * 7.3)) * .35 + Math.sin(time * 13) * .05, 1 + Math.cos(time * 8) * .08); f.rotation.y = time * .7; } cups.forEach((m, i) => m.visible = c.stock > i); specials.forEach(({ prop, id }) => prop.visible = c.extras[id].stock > 0); wisps.visible = !!c.level && c.open && (c.stock > 0 || ["flake", "deluxe", "midnight", "ghost-wafer", "caramel-flake"].some(id => c.extras[id].stock > 0));

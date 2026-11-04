@@ -30,6 +30,7 @@ import { createHayrideWorld } from "./hayride-world.js";
 import { createHayrideScares } from "./hayride-scares.js";
 import { HAYRIDE_SITE, hayrideGuestPose } from "./content/hayride-layout.js";
 import { fieldWidth, MEADOW, MEADOW_EXIT, CHAT_SPOTS } from "./content/festival-meadow.js";
+const DANCE = CHAT_SPOTS.find((spot) => spot.id === "dancefloor");
 import { cameraLayout, controlledRoomFraming, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
 import { createGardenPlay } from "./garden-play.js";
@@ -791,7 +792,10 @@ export function createScene(canvas, state, hooks) {
       // Parties stand side by side along the counter: each fans out to its own
       // place over the last stretch of the path, and back in as it sets off home.
       const fan = excursion ? 0 : leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
-      entry.m.position.set(p.x + counterSide(v.spot ?? 0) * COUNTER_GAP * fan, p.y ?? .04, p.z);
+      // On the dance floor they stand on its dais, and once they're there, they dance: a bounce on the beat and a sway.
+      const dais = DANCE && state.festival?.comforts?.includes("dancefloor") && Math.hypot(p.x - DANCE.x, p.z - DANCE.z) < 1.62;
+      const dancing = dais && chat?.spot === "dancefloor" && chat.phase === "chatting";
+      entry.m.position.set(p.x + counterSide(v.spot ?? 0) * COUNTER_GAP * fan + (dancing ? Math.sin(time * 2.1 + v.id) * .07 : 0), (p.y ?? .04) + (dais ? .095 : 0) + (dancing ? Math.abs(Math.sin(time * 4.2 + v.id * 1.7)) * .11 : 0), p.z);
       // The wagon rail masks the lower body; riders keep a quiet idle frame.
       entry.m.scale.y = hayridePose?.seated ? .66 : 1;
       const walking = excursion ? journey.walking : leaving || v.age < VISIT.arrive;
