@@ -67,6 +67,20 @@ function buildTruck(signBoard){
   pumpkin(v,-1.8,1.83,1.35,.2);b(v,1.8,2.15,1.29,.13,.3,.15,C.trim);b(v,1.8,2.45,1.29,.12,.13,.14,C.amber,true);
   // Chimney stays at the back, clear of the label and service window.
   b(v,-1.3,2.96,-.75,.32,.55,.34,C.metal);b(v,-1.3,3.51,-.75,.47,.08,.47,C.dark);
+  // Dressing for a proper night market (handover 64). A warm strip light inside
+  // the hatch, and festoon bulbs sagging along the awning's edge.
+  b(v,0,2.52,1.04,3.7,.05,.07,0xffd59a,true);
+  for(let i=0;i<=12;i++){const t=i/12,x=-2.1+t*4.2,y=2.5-Math.sin(t*Math.PI)*.12;b(v,x,y+.04,1.74,.37,.025,.025,C.dark);b(v,x,y-.07,1.74,.08,.1,.08,i%3===1?0xffe0a0:0xffc46b,true);}
+  // A chalk menu board under the counter's left end: tonight's dishes and prices.
+  const mx=-1.6,mz=1.86;
+  for(const dx of [-.33,.33])b(v,mx+dx,0,mz,.05,1.0,.06,C.wood);
+  b(v,mx,.28,mz,.7,.76,.06,C.wood);b(v,mx,.32,mz+.012,.6,.68,.06,0x2b2d33);
+  b(v,mx-.03,.86,mz+.05,.4,.05,.02,C.cream);pumpkin(v,mx+.22,.84,mz+.05,.06);
+  for(const [y,w] of [[.74,.42],[.65,.34],[.56,.38],[.47,.3]]){b(v,mx-.06,y,mz+.05,w,.025,.02,0xbdb5a6);b(v,mx+.22,y,mz+.05,.07,.025,.02,0xe0b25c);}
+  // Crates of produce and a cider barrel stacked at the truck's left end.
+  for(const [x,z,h,top] of [[-2.62,.55,.42,0xc97431],[-2.62,1.02,.3,0x8a9a4a]]){b(v,x,0,z,.44,h,.42,C.wood);for(const dz of [-.16,.16])b(v,x,h*.5,z+dz,.46,.04,.02,0x4a3122);for(let i=0;i<4;i++)b(v,x-.12+(i%2)*.22,h,z-.1+(i>>1)*.2,.15,.1,.15,top);}
+  for(let i=0;i<7;i++){const y=i*.11,r=.42+Math.sin((i+.5)/7*Math.PI)*.08;b(v,-2.62,y,-.3,r,.11,r,i===1||i===5?C.metal:0x7b4f33);}
+  for(let i=0;i<5;i++)b(v,-2.68+(i%2)*.12,.77,-.38+(i>>1)*.1,.09,.09,.09,0xb33a2c);
   root.add(v.build());root.position.set(t.x,0,t.z);root.name='The Midnight Kitchen · food truck';
   if(signBoard){const sign=signBoard('Maisie’s Midnight Kitchen','farm ingredients · freshly cooked',3.8);sign.position.set(0,3.6,1.1);sign.userData={type:'food-truck'};root.add(sign);}
   const f=buildFoodProp('wedges',{scale:.65});f.position.set(-.35,1.83,1.4);root.add(f);
@@ -111,14 +125,21 @@ export function createCookingWorld({scene,state,signBoard,lamps=[],world=null,cr
   const marker=signBoard?.('Midnight Kitchen','level 5 · food truck plot',3.6)??new THREE.Group();marker.position.set(SITE.marker.x,1.6,SITE.marker.z);marker.userData={type:'food-truck'};root.add(marker);
   const hit=new THREE.Mesh(new THREE.BoxGeometry(SITE.truck.w,3.5,3.3),new THREE.MeshBasicMaterial({visible:false}));hit.position.set(SITE.truck.x+.8,1.75,SITE.truck.z+.25);hit.userData={type:'food-truck'};root.add(hit);
   const lamp={x:44.55,y:2.51,z:4.09,active:false};lamps.push(lamp);
+  // The string of lights over the dining tables lights them too: a lamp position, never a light of its own.
+  const tableLamp={x:50.2,y:2.3,z:3.5,active:false};lamps.push(tableLamp);
   let built=false,pad=null,truck=null,cart=null,chef=null,maisie=null,steam=[],cleared=0;
   const diners=new Map();
   function sync(){
-    const purchased=!!state.kitchen?.purchased;marker.visible=!purchased;hit.visible=purchased;lamp.active=purchased;
+    const purchased=!!state.kitchen?.purchased;marker.visible=!purchased;hit.visible=purchased;lamp.active=tableLamp.active=purchased;
     if(!purchased){if(pad)pad.visible=false;if(truck)truck.visible=false;if(cart)cart.root.visible=false;if(chef)chef.visible=false;return;}
     if(!built){built=true;cleared=openReceivingGate(world);pad=buildPad();truck=buildTruck(signBoard);cart=buildCart();chef=buildChef();chef.position.set(43.5,1.12,2.95);root.add(pad,truck,cart.root,chef);
       if(createMaisie){maisie=createMaisie();maisie.group.position.set(42.5,1.82,4.74);root.add(maisie.group);}
-      const tables=new Voxels();for(const x of [48.9,51.5]){b(tables,x,.96,3.2,1.8,.11,.85,C.wood);for(const dx of [-.65,.65])for(const z of [2.9,3.5])b(tables,x+dx,.03,z,.09,.93,.09,C.dark);b(tables,x,.5,2.3,1.75,.12,.55,C.wood);for(const dx of [-.65,.65])b(tables,x+dx,.03,2.3,.09,.47,.45,C.dark);pumpkin(tables,x,.1+1.0,3.2,.12);}
+      const tables=new Voxels();for(const x of [48.9,51.5]){b(tables,x,.96,3.2,1.8,.11,.85,C.wood);for(const dx of [-.65,.65])for(const z of [2.9,3.5])b(tables,x+dx,.03,z,.09,.93,.09,C.dark);b(tables,x,.5,2.3,1.75,.12,.55,C.wood);for(const dx of [-.65,.65])b(tables,x+dx,.03,2.3,.09,.47,.45,C.dark);pumpkin(tables,x,.1+1.0,3.2,.12);
+        // A jam-jar lantern on each table.
+        b(tables,x+.55,1.07,3.3,.13,.17,.13,0xffc46b,true);b(tables,x+.55,1.24,3.3,.15,.03,.15,C.dark);b(tables,x+.55,1.27,3.3,.03,.07,.03,C.dark);}
+      // Festoon lights from the cab's roof out over the tables to a post past the last one.
+      b(tables,53.0,0,3.6,.12,2.78,.12,C.wood);b(tables,53.0,2.72,3.6,.32,.06,.06,C.dark);
+      for(let i=0;i<=24;i++){const t=i/24,x=46.85+t*6.15,y=2.92-.17*t-Math.sin(t*Math.PI)*.42;b(tables,x,y+.04,3.6,.27,.025,.025,C.dark);if(i%2===0)b(tables,x,y-.07,3.6,.08,.1,.08,i%6===0?0xffe0a0:0xffc46b,true);}
       const furniture=tables.build();furniture.name='Midnight Kitchen outdoor dining tables';root.add(furniture);for(let i=0;i<3;i++){const vapor=new Voxels();b(vapor,0,0,0,.12,.09,.1,0xa2a2ab);b(vapor,.07,.05,0,.1,.09,.09,0xa2a2ab);const cloud=vapor.build({shadows:false});root.add(cloud);steam.push(cloud);}}
     pad.visible=truck.visible=true;
     const apron=pad.getObjectByName('Kitchen apron · matching farm ground');if(apron)apron.visible=!state.festival?.meadow;
@@ -137,5 +158,5 @@ chef.visible=(state.kitchen?.upgrades?.chef??0)>0;
   function tick(time=state.time??0){sync();if(!built)return;const t=Number.isFinite(time)?time:state.time??0;maisie?.tick(t);chef.position.y=1.12+Math.sin(t*1.6)*.045;chef.rotation.y=Math.sin(t*.7)*.09;for(let i=0;i<steam.length;i++){const p=((t*.33+i/3)%1+1)%1;steam[i].visible=!!state.kitchen?.purchased&&!!state.kitchen?.jobs?.truck;steam[i].position.set(41.45+Math.sin(p*3+i)*.06,3.58+p*.55,2.05);steam[i].scale.setScalar(.6+p*.7);}}
   sync();return{root,sync,tick,focus:SITE.focus,get pickables(){return state.kitchen?.purchased?[hit]:[marker];},
     get status(){const p=cookingDeliveryPose(state);let boxes=0;root.traverse(m=>{if(m.isInstancedMesh)boxes+=m.count;});return{purchased:!!state.kitchen?.purchased,built,bounds:SITE.bounds,route:ROUTE.bounds,receiverPoint:SITE.receiver,cart:p,chefVisible:!!chef?.visible,maisieVisible:!!maisie?.group.visible, diners:[...diners].map(([id,e])=>({id,seated:e.seated,x:e.model.position.x,z:e.model.position.z})),boxes,cleared,lights:0};},
-    dispose(){lamp.active=false;const i=lamps.indexOf(lamp);if(i>=0)lamps.splice(i,1);for(const e of diners.values()){root.remove(e.model);e.model.userData.dispose?.();}diners.clear();if(maisie){root.remove(maisie.group);maisie.group.userData.dispose?.();}removeOwned(root);}};
+    dispose(){lamp.active=tableLamp.active=false;for(const l of [lamp,tableLamp]){const i=lamps.indexOf(l);if(i>=0)lamps.splice(i,1);}for(const e of diners.values()){root.remove(e.model);e.model.userData.dispose?.();}diners.clear();if(maisie){root.remove(maisie.group);maisie.group.userData.dispose?.();}removeOwned(root);}};
 }

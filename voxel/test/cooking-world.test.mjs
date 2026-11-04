@@ -23,7 +23,7 @@ test('delivery poses follow saved phase; waits and queued orders do not invent t
 test('purchased world is native, read-only, bounded, and leaves pedestrian exit clear',()=>{
   const scene=new THREE.Scene(),s=state(),lamps=[];
   const c=createCookingWorld({scene,state:s,signBoard,lamps});assert.equal(c.status.built,false);assert.equal(c.pickables.length,1);assert.equal(lamps[0].active,false);
-  s.kitchen.purchased=true;s.kitchen.orders=[{id:3,phase:'unloading',remaining:0}];const before=JSON.stringify(s);c.sync();c.tick(60);assert.equal(JSON.stringify(s),before);assert.equal(c.status.built,true);assert.equal(c.status.cart.visible,true);assert.equal(c.status.lights,0);assert.equal(lamps.length,1);assert.equal(lamps[0].active,true);
+  s.kitchen.purchased=true;s.kitchen.orders=[{id:3,phase:'unloading',remaining:0}];const before=JSON.stringify(s);c.sync();c.tick(60);assert.equal(JSON.stringify(s),before);assert.equal(c.status.built,true);assert.equal(c.status.cart.visible,true);assert.equal(c.status.lights,0);assert.equal(lamps.length,2,'the truck, and the string of lights over the tables');assert.ok(lamps.every(l=>l.active));
   const all=boxes(c.root);assert.ok(all.length>150&&all.length<8000,`bounded native budget ${all.length}`);
   assert.ok(all.every(b=>b.max.z<5.5),'all raised construction stays north of public visitor exit z6.6');
   let terrainTriangles=0;c.root.traverse(m=>{if(m.isMesh&&!m.isInstancedMesh&&m.name.includes('Kitchen ')){terrainTriangles+=m.geometry.index.count/3;assert.ok([...m.geometry.attributes.position.array].every(Number.isFinite));}});assert.ok(terrainTriangles>5000&&terrainTriangles<20000,`farm-matching ground remains light: ${terrainTriangles} triangles`);
@@ -33,7 +33,7 @@ test('purchased world is native, read-only, bounded, and leaves pedestrian exit 
   const cart=c.root.getObjectByName('Timed ingredient delivery cart');assert.ok(cart);
   for(const remaining of [12,10,6,2,0]){s.kitchen.orders=[{id:3,phase:'travelling',remaining}];c.sync();for(const b of boxes(cart)){assert.ok(b.min.x>=ROUTE.bounds.x0&&b.max.x<=ROUTE.bounds.x1);assert.ok(b.min.z>=ROUTE.bounds.z0&&b.max.z<=ROUTE.bounds.z1);}}
   const truck=c.root.getObjectByName('The Midnight Kitchen · food truck');assert.ok(boxes(truck).every(b=>b.min.x>ROUTE.bounds.x1));
-  s.kitchen.upgrades.chef=1;c.sync();assert.equal(c.status.chefVisible,true);for(let i=0;i<10;i++)c.tick(i);assert.equal(lamps.length,1);
+  s.kitchen.upgrades.chef=1;c.sync();assert.equal(c.status.chefVisible,true);for(let i=0;i<10;i++)c.tick(i);assert.equal(lamps.length,2);
   assert.equal(scene.children.filter(x=>x.isPointLight).length,0);c.dispose();assert.equal(lamps.length,0);assert.equal(scene.children.length,0);
 });
 
