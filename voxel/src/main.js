@@ -38,6 +38,7 @@ import { cookingSheets } from "./ui/cooking-sheet.js";
 import { createFoyerControls } from "./ui/foyer-controls.js";
 import { settingsSheet } from "./ui/settings-sheet.js";
 import { createTvMode } from "./ui/tv-mode.js";
+import { createSaveFiles } from "./ui/save-files.js";
 import { createIntro } from "./ui/intro.js";
 import { money, $ } from "./ui/kit.js";
 import { PLOTS } from "./world.js";
@@ -622,6 +623,15 @@ const ui = {
   read: (id) => collection.read(id),
   replaceState(next) { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(next))); state = next; location.reload(); },
 };
+// Save files (ui/save-files.js): the farm to a file, and a file back, for new versions and other devices.
+ui.files = createSaveFiles({ key: SAVE_KEY, getState: () => state, replace: (next) => ui.replaceState(next), prefs, savePrefs });
+// A farm with some progress and no file saved this week gets a nudge, at most once a day.
+setTimeout(() => {
+  const day = 864e5, last = Date.parse(prefs.lastExport ?? "") || 0, nudged = Date.parse(prefs.saveNudgeAt ?? "") || 0;
+  if (state.earned < 2000 || Date.now() - last < 7 * day || Date.now() - nudged < day) return;
+  prefs.saveNudgeAt = new Date().toISOString(); savePrefs();
+  notice("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
+}, 60000);
 const home = homeSheets(ui), collection = collectionSheets(ui);
 const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...cookingSheets(ui), ...moreSheet(ui), ...homeLifeSheet(ui), ...settingsSheet(ui) };
 const estateTools = createEstateControls(ui);

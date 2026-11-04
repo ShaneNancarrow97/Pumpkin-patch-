@@ -39,3 +39,19 @@
 /* On a phone the home tool bar fills the foot of the screen, so Play waits up
    by the top bar instead of covering "Enter home". */
 @media (max-width: 600px) { .inside-place .play-chip { top: calc(78px + env(safe-area-inset-top)); bottom: auto; } }
+
+/* The farm's save (settings-sheet.js, ui/save-files.js): this farm and its
+   buttons on a card, a file waiting to load on an amber one, and the old
+   text backup tucked away below. */
+.save-card, .save-preview { display: grid; gap: 6px; padding: 12px 14px; border-radius: 16px; border: 1px solid #f0d2a22b; background: linear-gradient(160deg, #ffffff0a, #ffffff03); }
+.save-card h4, .save-preview h4 { margin: 0; font: 600 14px/1.35 var(--body); color: var(--ink); }
+.save-card p, .save-preview p { margin: 0; font-size: 12px; color: var(--ink-soft); }
+.save-card b { color: var(--gold-bright); font-weight: 600; }
+.save-kicker { font-size: 11px !important; letter-spacing: .08em; text-transform: uppercase; color: var(--gold) !important; }
+.save-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.save-actions .button { flex: 1 1 auto; min-height: 44px; }
+.save-preview { border-color: #e7b46e88; background: radial-gradient(120% 140% at 0% 0%, #e8964a26, transparent 60%), #2a2030; box-shadow: 0 0 0 1px #e7b46e22, 0 8px 24px #08060d55; }
+.save-warning { padding: 6px 10px; border-radius: 10px; background: #f3a04d1f; color: #ffd9a3 !important; }
+.text-backup { border-top: 1px solid var(--edge-soft); padding-top: 4px; }
+.text-backup summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font: 600 13px var(--body); color: var(--ink); }
+.text-backup[open] { display: grid; gap: 8px; padding-bottom: 6px; }
