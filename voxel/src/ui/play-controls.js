@@ -71,9 +71,10 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
         <button id="play-gait" class="play-gait face-button" aria-label="Switch between walking and jogging" title="Walk / jog · Shift / L3"><b data-gait-icon></b><small data-gait-label>Walk</small><span data-glyph="gait"></span></button>
         <button id="play-recenter" class="play-recenter face-button" aria-label="Centre the camera on your character" title="Centre camera · C / R3">${svg('recenter')}<span data-glyph="recenter"></span></button>
       </div>
+      <div class="play-legend" aria-hidden="true"><span class="legend-act"><b data-glyph="action"></b><span data-legend-act>Explore</span><i class="legend-bar"><i></i></i></span><span><b data-glyph="tools"></b><span data-legend-tool>Tools</span></span><span><b data-glyph="gait"></b><span data-legend-gait>Walk</span></span><span><b data-glyph="recenter"></b><span>Camera</span></span><span><b data-glyph="start"></b><span>Menu</span></span></div>
     </div>
     <button id="play-arrange" class="play-arrange" aria-label="Arrange the nearby furniture" hidden>${svg('move')}<span>Arrange</span></button>
-    <div id="furniture-pad" hidden><div class="play-piece-label"></div><div class="play-dpad" role="group" aria-label="Move selected furniture"><button data-nudge="0,-1" aria-label="Move back">${svg('go','up')}</button><button data-nudge="-1,0" aria-label="Move left">${svg('go','left')}</button><button data-nudge="1,0" aria-label="Move right">${svg('go')}</button><button data-nudge="0,1" aria-label="Move forward">${svg('go','down')}</button></div><div class="play-furniture-actions"><button data-turn="-15" aria-label="Rotate left 15 degrees">${svg('rotate','flip')}</button><button id="furniture-wheel" aria-label="Furniture radial menu">${svg('tools')}</button><button data-turn="15" aria-label="Rotate right 15 degrees">${svg('rotate')}</button><button data-finish>${svg('done')}<span>Done</span></button></div></div>
+    <div id="furniture-pad" hidden><div class="play-piece-label"></div><div class="play-dpad" role="group" aria-label="Move selected furniture"><button data-nudge="0,-1" aria-label="Move back">${svg('go','up')}</button><button data-nudge="-1,0" aria-label="Move left">${svg('go','left')}</button><button data-nudge="1,0" aria-label="Move right">${svg('go')}</button><button data-nudge="0,1" aria-label="Move forward">${svg('go','down')}</button></div><div class="play-furniture-actions"><button data-turn="-15" aria-label="Rotate left 15 degrees">${svg('rotate','flip')}</button><button id="furniture-wheel" aria-label="Furniture radial menu">${svg('tools')}</button><button data-turn="15" aria-label="Rotate right 15 degrees">${svg('rotate')}</button><button data-finish>${svg('done')}<span>Done</span></button></div><div class="furniture-legend" aria-hidden="true"><span><b data-glyph="dpad"></b><span>Move</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span data-legend-turn>Turn</span></span><span><b data-glyph="tools"></b><span>More</span></span><span><b data-glyph="back"></b><span>Done</span></span></div></div>
     <div id="play-radial" hidden role="dialog" aria-modal="true" aria-label="Choose an action"><button class="radial-dismiss" aria-label="Close action wheel"></button><div class="radial-disc"><svg class="radial-ring" viewBox="0 0 360 360" aria-hidden="true"><defs><linearGradient id="play-wedge-on" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd593"/><stop offset=".55" stop-color="#d4924b"/><stop offset="1" stop-color="#94562a"/></linearGradient></defs><circle class="radial-rim" cx="180" cy="180" r="174"/><g class="radial-wedges"></g></svg><div class="radial-options"></div><div class="radial-centre"><b class="radial-centre-icon"></b><p class="eyebrow">Your tools</p><h2>Interact</h2><p class="radial-hint"></p></div><button class="radial-close" aria-label="Close action wheel">${svg('exit')}</button></div></div>`;
   document.body.append(root);
   // Every menu on a pad (ui/pad-menu.js); Options brings the ring to the dock, the hub.
@@ -84,7 +85,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
   const $=s=>root.querySelector(s),wheel=$('#play-radial'),opts=$('.radial-options'),wedges=$('.radial-wedges'),disc=$('.radial-disc'),stickEl=$('#play-stick'),lookEl=$('#play-look'),interact=$('#play-interact');
   const setText=(el,text)=>{if(el&&el.textContent!==String(text))el.textContent=text;};
   const activity=()=>getActivity()??{};
-  let releaseMove=()=>{},releaseLook=()=>{},shownActionIcon='',shownCompletion=null,completeTimer;
+  let releaseMove=()=>{},releaseLook=()=>{},shownActionIcon='',shownCompletion=null,completeTimer,shownPad=null;
 
   // The glyphs follow the last thing used: touch, keys or a controller.
   function useInput(mode){if(mode!==inputMode){inputMode=mode;}}
@@ -246,6 +247,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     const p=scene.player?.state()??{},selected=tools.selected,piece=state().house.placed.find(x=>x.instance===selected),job=activity();
     const pad=Array.from(navigator.getGamepads?.()??[]).find(g=>g?.connected),down=pad?.buttons.map(b=>b.pressed)??[],pressed=i=>down[i]&&!padPrevious[i];
     padName=padFamily(pad);
+    if(padName!==shownPad){shownPad=padName;document.body.classList.toggle('has-pad',!!padName);document.body.dataset.pad=padName?(padName==='DualSense'?'dualsense':'xbox'):'';}
     showGlyphs();
     if(selected!==previousPiece){details=false;previousPiece=selected;}
     document.body.classList.toggle('control-mode',!!p.enabled);document.body.classList.toggle('furniture-radial',!!piece&&!blocked&&!details);
@@ -255,7 +257,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     $('#play-arrange').hidden=!p.enabled||blocked||radial||!!piece||!p.target?.instance||p.place==='estate'||p.available===false||!!p.pose;
     if(piece){const onWall=footprint(piece.id).layer==='wall';setText($('.play-piece-label'),(decorById[piece.id]?.name??'Furniture')+' · '+(onWall?(piece.wall??'back')+' wall':Math.round(piece.rotation??0)+'°'));
       // On a wall piece the turn buttons carry it to the next wall round (home-sheets.js rotate).
-      if(root.dataset.pieceWall!==String(onWall)){root.dataset.pieceWall=String(onWall);root.querySelectorAll('[data-turn]').forEach(b=>b.setAttribute('aria-label',onWall?`Move to the wall on the ${b.dataset.turn<0?'left':'right'}`:`Rotate ${b.dataset.turn<0?'left':'right'} 15 degrees`));}}
+      if(root.dataset.pieceWall!==String(onWall)){root.dataset.pieceWall=String(onWall);root.querySelectorAll('[data-turn]').forEach(b=>b.setAttribute('aria-label',onWall?`Move to the wall on the ${b.dataset.turn<0?'left':'right'}`:`Rotate ${b.dataset.turn<0?'left':'right'} 15 degrees`));setText($('[data-legend-turn]'),onWall?'Next wall':'Turn');}}
     // The portrait can be blank until the sprites load, so keep asking until it is real.
     const face=$('[data-owner-portrait]');if(p.who&&(p.who!==shownWho||!face.naturalWidth&&performance.now()>retryFace)){const url=portrait(p.who);if(url){shownWho=p.who;face.src=url;}retryFace=performance.now()+1500;}
     setText($('[data-owner]'),p.who==='shane'?'Shane':'Natalie');setText($('#play-toggle span'),padName?'Play · '+padName:'Play');
@@ -275,7 +277,8 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
       chain=held||job.holding||job.travelling?chain+1:1;feel('done',{kind:job.last.kind,pad});}}
     if(!held&&!job.active&&!job.travelling)chain=0;
     const streak=$('.play-chain');streak.hidden=chain<2;if(chain>=2)setText(streak,'×'+chain);
-    const progress=Math.max(0,Math.min(1,Number(job.progress)||0));interact.style.setProperty('--action-progress',progress);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep going':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
+    const progress=Math.max(0,Math.min(1,Number(job.progress)||0));interact.style.setProperty('--action-progress',progress);
+    const legend=$('.play-legend');setText($('[data-legend-act]'),shortAction(label||'Explore',p,job,tool));setText($('[data-legend-tool]'),tool==='hand'?'Tools':toolNames[tool]);setText($('[data-legend-gait]'),gait==='jog'?'Jog':'Walk');legend.dataset.busy=String(!!job.active);legend.style.setProperty('--p',progress.toFixed(2));legend.dataset.idle=String(!job.active&&!p.target&&!pose);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep going':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
     scene.player?.setBlocked(blocked||radial||!!piece);
     if(blocked){cancelInteraction('menu');keys.clear();cameraKeys.clear();releaseMove();releaseLook();if(radial&&!piece)close();}
     // Menus take the pad first: a menu or the hub keeps its presses from play.

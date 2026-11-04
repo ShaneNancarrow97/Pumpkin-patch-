@@ -1,18 +1,54 @@
-// Settings: sound, a tea break, backups, graphics and starting over.
+// Settings: TV mode and casting, sound, a tea break, backups, graphics and
+// starting over. Cast to TV is its own sheet: it readies the phone for
+// mirroring (ui/tv-mode.js) and says how this device reaches a TV.
 import * as M from "../model.js";
 import { MUSIC_TRACKS } from "./audio.js";
 import { RENDER_QUALITIES, validRenderQuality } from "../render-quality.js";
+import { TV_SIZES, CAST_STEPS } from "./tv-mode.js";
+import { padFamily } from "./glyphs.js";
+
+const TV_ART = `<svg viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="6" width="54" height="32" rx="4"/><path d="M24 44h16M32 38v6"/><path d="M27 27c0-4 2.5-7 5-7s5 3 5 7-2.5 5-5 5-5-1-5-5Z" fill="#e8964a" stroke="#f6c27d"/><path d="M32 20v-3l2-1" stroke="#9ccf7a"/><path d="M45 13a7 7 0 0 1 5 5M45 9a11 11 0 0 1 9 9" stroke="#f2cf99"/></svg>`;
+const connectedPad = () => { const g = [...(navigator.getGamepads?.() ?? [])].find((x) => x?.connected); return g ? (padFamily(g) === "DualSense" ? "DualSense" : "A controller") : ""; };
 
 export function settingsSheet(ui) {
-  let confirmReset = false, restoreText = "", restoreError = "";
+  let confirmReset = false, restoreText = "", restoreError = "", castResult = null;
   const toggle = (id, label, help, on) => `<div class="setting"><span>${label}<small>${help}</small></span><button class="button" id="${id}" aria-pressed="${on}">${on ? "On" : "Off"}</button></div>`;
+  const sizeSelect = (p) => `<label class="setting"><span>TV menu size<small>How big menus and buttons look on the TV</small></span><select id="tv-size" aria-label="TV menu size">${TV_SIZES.map(([id, name]) => `<option value="${id}" ${id === (p.tvSize ?? "standard") ? "selected" : ""}>${name}</option>`).join("")}</select></label>`;
+  const tvToggle = (p) => toggle("toggle-tv", "TV mode", "For a phone mirrored to a TV: smaller menus, bigger close buttons, and no touch sticks while a controller is connected", !!p.tvMode);
+  const bindTv = (body) => {
+    body.querySelector("#toggle-tv").onclick = () => { ui.tv.set(!ui.prefs.tvMode); ui.draw(); };
+    body.querySelector("#tv-size").onchange = (e) => { ui.prefs.tvSize = e.target.value; ui.savePrefs(); ui.tv.apply(); ui.draw(); };
+  };
+  const check = (ok, label, otherwise) => `<li class="${ok ? "is-done" : "is-todo"}"><i aria-hidden="true">${ok ? "✓" : "·"}</i><span>${label}${ok || !otherwise ? "" : `<small>${otherwise}</small>`}</span></li>`;
   return {
+    // Cast to TV: everything a page may do, then this device's way to the TV.
+    cast: {
+      eyebrow: "Play on the big screen", title: "Cast to TV",
+      opened() { castResult = null; },
+      body() {
+        const p = ui.prefs, route = ui.tv.route(), pad = connectedPad(), screenWord = ["chrome", "mac", "other"].includes(route) ? "screen" : "phone";
+        return `<div class="cast-sheet"><article class="cast-hero"><span class="cast-art">${TV_ART}</span><div><h3>Your patch on the TV</h3><p>Mirror this ${screenWord} to your TV and play with a controller. TV mode makes the menus smaller and puts the controller's buttons on screen in place of the touch sticks.</p></div></article>` +
+          `<button class="button gold wide cast-ready" id="cast-ready" data-pad-default>${castResult ? "Get ready again" : "Get ready to cast"}</button>` +
+          (castResult ? `<ul class="cast-checks">${check(castResult.tv, "TV mode on")}${check(castResult.fullscreen, "Fullscreen", "Press the game's fullscreen button, or tap the screen and try again")}${check(castResult.landscape, "Held in landscape", "Turn the phone on its side")}${check(castResult.awake, "Screen kept awake", "Set a longer screen timeout in the phone's settings")}</ul>` : "") +
+          `<h3 class="section">Then mirror to your TV</h3><ol class="cast-steps">${CAST_STEPS[route].map((step) => `<li>${step}</li>`).join("")}</ol>` +
+          (route === "android" ? `<p class="small">On a Samsung, Smart View's <b>⋮</b> menu, then Settings, then <b>Phone aspect ratio</b>: <b>Full screen on connected device</b> fills a 16:9 TV.</p>` : "") +
+          `<h3 class="section">Controller</h3><p class="cast-pad${pad ? " is-on" : ""}">${pad ? `<b>${pad} connected.</b> Options opens the menu, ✕ chooses and ○ goes back. The touchpad moves a pointer on most phones.` : `No controller yet. On a DualSense, hold <b>PS</b> and <b>Create</b> until the light bar flashes, then pair it in the ${screenWord}'s Bluetooth settings.`}</p>` +
+          tvToggle(p) + sizeSelect(p) + `<button class="button wide" id="cast-done">Done</button></div>`;
+      },
+      bind(body) {
+        body.querySelector("#cast-ready").onclick = async () => { castResult = await ui.tv.ready(); ui.draw(); };
+        body.querySelector("#cast-done").onclick = () => ui.closeSheet();
+        bindTv(body);
+      },
+    },
     settings: {
       eyebrow: "Make yourself at home", title: "Settings",
       opened() { confirmReset = false; restoreError = ""; },
       body() {
         const p = ui.prefs, s = ui.state;
-        return toggle("toggle-music", "Music", `${MUSIC_TRACKS.length} offline MIDI tracks · originals and your supplied songs`, p.music) +
+        return `<h3 class="section">TV and controller</h3>` + tvToggle(p) + sizeSelect(p) +
+          `<div class="setting"><span>Cast to TV<small>Get this phone ready, then mirror it to your TV</small></span><button class="button gold" id="open-cast">Cast to TV</button></div>` +
+          `<h3 class="section">Sound and look</h3>` + toggle("toggle-music", "Music", `${MUSIC_TRACKS.length} offline MIDI tracks · originals and your supplied songs`, p.music) +
           `<div class="setting"><span>Music volume</span><input id="music-volume" type="range" min="0" max="1" step="0.05" value="${p.musicVolume}" aria-label="Music volume"></div>` +
           `<label class="setting"><span>Now playing<small>${(MUSIC_TRACKS.find((t) => t.id === p.musicTrack) ?? MUSIC_TRACKS[0]).credit}</small></span><select id="music-track" aria-label="Music track">${MUSIC_TRACKS.map((t) => `<option value="${t.id}" ${t.id === (p.musicTrack ?? "lantern") ? "selected" : ""}>${t.name}</option>`).join("")}</select></label>` +
           toggle("toggle-shuffle", "Shuffle", "Play the soundtrack in a fresh order without back-to-back repeats", p.musicShuffle !== false) +
@@ -32,10 +68,12 @@ export function settingsSheet(ui) {
           <label class="restore"><span class="sr">Paste a backup</span><textarea id="restore-text" rows="3" placeholder="Paste a backup here"></textarea></label>
           <div class="backup"><button class="button" id="restore-backup" disabled>Restore this backup</button></div>${restoreError ? `<p class="error">${restoreError}</p>` : ""}
           <div class="setting"><span>Start a new patch<small>Clears this build’s save only</small></span><button class="button danger" id="reset">${confirmReset ? "Tap again to reset" : "Reset"}</button></div>
-          <p class="about">Voxel build of Shane &amp; Natalie’s Pumpkin Patch. Drag to look around, pinch or scroll to zoom. Tap plots, the big pumpkin, the shop, the cottage, or Shane and Natalie. Keys: P plant, H harvest, Space boost, Esc close.</p>`;
+          <p class="about">Voxel build of Shane &amp; Natalie’s Pumpkin Patch. Drag to look around, pinch or scroll to zoom. Tap plots, the big pumpkin, the shop, the cottage, or Shane and Natalie. Keys: P plant, H harvest, Space boost, Esc close. On a controller: Options for the menu, ✕ to choose, ○ to go back, L1 and R1 for tabs, and the right stick to scroll.</p>`;
       },
       bind(body) {
         const p = ui.prefs, s = ui.state, flip = (key, after) => () => { p[key] = !p[key]; after?.(p[key]); ui.savePrefs(); ui.draw(); };
+        bindTv(body);
+        body.querySelector("#open-cast").onclick = () => ui.openSheet("cast");
         body.querySelector("#toggle-music").onclick = flip("music", () => ui.audio.sync());
         body.querySelector("#toggle-shuffle").onclick = () => { ui.audio.setShuffle(p.musicShuffle === false); ui.savePrefs(); ui.draw(); };
         body.querySelector("#next-song").onclick = () => { ui.audio.nextTrack(); ui.savePrefs(); ui.draw(); };

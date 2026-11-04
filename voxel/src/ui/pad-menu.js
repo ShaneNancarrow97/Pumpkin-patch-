@@ -1,9 +1,11 @@
 // Controller menus. Every menu plays on a pad the way the carving bench does:
 // a gold ring marks the choice and the D-pad or left stick moves it to the
-// nearest choice that way; ✕ chooses (held on a price, ui/hold-to-buy.js),
-// ○ goes back, L1/R1 turn the menu's tabs (or a book's pages), and the right
-// stick or L2/R2 scroll. Options brings the ring down to the dock, the farm's
-// buttons and the HUD (the hub), so a pad reaches every part of the game.
+// nearest choice that way; ✕ chooses, ○ goes back, L1/R1 turn the menu's tabs
+// (or a book's pages), and the right stick or L2/R2 scroll. Up or down with
+// nothing further that way, or with the next choice a long way off, scrolls
+// a step instead, so long menus read like a page. Options brings the ring
+// down to the dock, the farm's buttons, the HUD and the cards over the farm
+// (the hub), so a pad reaches every part of the game.
 import { glyphHTML } from "./glyphs.js";
 import { buyButton } from "./hold-to-buy.js";
 
@@ -12,7 +14,7 @@ const FOCUSABLE = 'button:not(:disabled),a[href],input:not(:disabled):not([type=
 // ring there, then the panels.
 const MODALS = [".house-goal-modal:not([hidden])", "#level-celebration:not([hidden])", "#intro:not([hidden])"];
 const PANELS = ["#hayride-ride-ui:not([hidden]) .hayride-ride-panel", "#stock-popover:not([hidden])", "#upgrade-menu:not([hidden])", "#sheet:not([hidden])"];
-const HUB = ["#dock", "#actions", "#hud", "#place-bar", ".home-journey-chip"];
+const HUB = ["#dock", "#actions", "#hud", "#place-bar", ".home-journey-chip", "#play-toggle", ".npc-reward", ".guest-card", ".chat-card", ".hollow-context", ".hayride-context", "#dialogue"];
 const FIRST_REPEAT = 380, REPEAT = 140, STICK = .5;
 
 // The nearest choice from `from` in the direction (dx, dy), as an index into
@@ -123,6 +125,14 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
       if (i >= 0) { focus(sf, visible[i]); feel("tick"); return; }
     }
     const others = list.filter((el) => el !== current), i = nearestInDirection(current.getBoundingClientRect(), others.map((el) => el.getBoundingClientRect()), dx, dy);
+    // Up or down with nothing that way, or the next choice over half a screen
+    // past the edge: scroll a step instead, so the words between are read.
+    if (dy && box) {
+      const v = box.getBoundingClientRect(), next = i >= 0 ? others[i].getBoundingClientRect() : null;
+      const far = !!next && (dy > 0 ? next.top - v.bottom : v.top - next.bottom) > v.height * .5;
+      const room = dy > 0 ? box.scrollTop + box.clientHeight < box.scrollHeight - 2 : box.scrollTop > 2;
+      if ((!next || far) && room) { box.scrollBy({ top: dy * box.clientHeight * .6, behavior: "smooth" }); feel("tick"); return; }
+    }
     if (i >= 0) { focus(sf, others[i]); feel("tick"); }
   }
   // Left and right change a slider or a list in place, the way a console's settings do.

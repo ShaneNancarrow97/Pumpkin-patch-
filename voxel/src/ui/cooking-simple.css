@@ -184,3 +184,30 @@
  .cook-upgrade-art { width: 40px; height: 40px; }
 }
 @media (prefers-reduced-motion: reduce) { .cooking-simple .service-status.is-open::before { animation: none; } .cooking-simple .recipe-tile, .cook-now-bar > i { transition: none; } }
+
+/* Whatever can be done now glows amber (cooking-sheet.js marks it .can-act):
+   the way forward is never a quiet button. A tab with something to do in it
+   carries a glowing dot. The id keeps these above the finish layer's buttons. */
+#sheet .cooking-sheet .button.can-act:not(:disabled) {
+  color: #2e1c16; background: linear-gradient(155deg, #ffd795, #e7994a); border: 1px solid #ffe4b4;
+  box-shadow: inset 0 1px #fff6dcaa, 0 0 0 1px #ffcf8a55, 0 0 18px #f3a04d88; font-weight: 700;
+  animation: can-act-glow 2.6s ease-in-out infinite;
+}
+#sheet .cooking-sheet .button.can-act:not(:disabled) small { color: #5a3518; }
+#sheet .cooking-sheet .button.can-act:hover:not(:disabled) { background: linear-gradient(155deg, #ffe2ad, #f0a75a); }
+@keyframes can-act-glow { 50% { box-shadow: inset 0 1px #fff6dcaa, 0 0 0 2px #ffcf8a77, 0 0 30px #f3a04dcc; } }
+#sheet .cooking-sheet .service-inline-link.can-act-link {
+  display: inline-flex; align-items: center; gap: 6px; width: max-content; min-height: 40px; padding: 8px 16px; border-radius: 999px;
+  background: linear-gradient(155deg, #ffd795, #e7994a); color: #2e1c16; font-weight: 700; box-shadow: 0 0 16px #f3a04d77;
+  animation: can-act-glow 2.6s ease-in-out infinite;
+}
+#sheet .cooking-simple .service-tabs button[data-has-action] { position: relative; color: #ffd9a3; }
+#sheet .cooking-simple .service-tabs button[data-has-action]::after {
+  content: ""; position: absolute; top: 7px; left: calc(50% + 12px); width: 9px; height: 9px; border-radius: 50%;
+  background: #ffb65c; box-shadow: 0 0 0 2px #241b2b, 0 0 10px #ffb65ccc; animation: can-act-dot 1.6s ease-in-out infinite;
+}
+@keyframes can-act-dot { 50% { transform: scale(1.25); box-shadow: 0 0 0 2px #241b2b, 0 0 16px #ffb65c; } }
+#sheet .cooking-simple .recipe-tile.is-ready:not(.is-selected) .recipe-choice { box-shadow: 0 0 0 1px #f3c78466, 0 0 14px #f3a04d40; }
+@media (prefers-reduced-motion: reduce) {
+  #sheet .cooking-sheet :is(.can-act, .can-act-link), #sheet .cooking-simple .service-tabs button[data-has-action]::after { animation: none; }
+}

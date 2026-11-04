@@ -1,0 +1,102 @@
+/* TV mode (ui/tv-mode.js): a phone mirrored to a 16:9 television and played
+   with a controller from the sofa. Everything over the world shrinks by
+   --tv-zoom (set from the screen's height and the chosen size); menus open
+   wider and taller in the middle so more fits; close buttons grow and show
+   the pad's back button; the gold ring is thicker and brighter; and play
+   mode, with a pad connected, swaps the touch sticks and face buttons for a
+   slim legend. Loaded last, after every other layer.
+
+   Zoom scales an element's own pixels and viewport units, not percentages:
+   a height in vh inside a zoomed element is divided by --tv-zoom below to
+   keep its reach. */
+
+/* One zoom for everything drawn over the world. None of these nest. */
+.tv-mode :is(#hud, #goal, #streak, #paused, #notice, #dialogue, #place-bar, #piece-bar, #actions, #dock, #sheet, #upgrade-menu, #stock-popover, #level-celebration, #intro, #play-controls, #carving, #cooking-reveal, .pad-hints, .home-journey-chip, .house-goal-modal, .npc-reward, .guest-card, .chat-card, .building-context, .estate-controls) { zoom: var(--tv-zoom, 1); }
+.tv-mode .stock-popover { max-height: calc(100dvh / var(--tv-zoom, 1) - var(--top) - 148px); }
+.tv-mode .upgrade-menu { max-height: calc(100dvh / var(--tv-zoom, 1) - 140px); }
+.tv-mode .level-card { max-height: calc(100dvh / var(--tv-zoom, 1) - 28px); }
+.tv-mode .house-goal-modal > article { max-height: calc(80dvh / var(--tv-zoom, 1)); }
+@media (max-width: 759px) { .tv-mode .carving-panel { max-height: calc(44vh / var(--tv-zoom, 1)); } }
+
+/* Menus in the middle: wider and as tall as the screen allows. */
+.tv-mode .sheet.centred, .tv-mode .sheet.centred[data-section] {
+  left: 0; right: 0; top: max(10px, env(safe-area-inset-top)); bottom: calc(var(--dock-h) + 6px);
+  width: min(880px, calc(100% - 40px)); height: auto; max-width: none; max-height: none; margin: 0 auto;
+}
+/* Tighter rows, so more fits: a pad doesn't need touch-sized gaps. Muted
+   words are brighter, to read at a distance. */
+.tv-mode { --ink-soft: #ddd2cb; }
+.tv-mode .sheet-head { min-height: 40px; padding-bottom: 6px; }
+.tv-mode .sheet-body { gap: 7px; padding-top: 8px; }
+.tv-mode .sheet :is(.button, .chip, .segmented button) { min-height: 38px; }
+.tv-mode .sheet .card, .tv-mode .sheet.centred .card { padding: 7px 6px; gap: 7px; }
+.tv-mode .sheet :is(.purchase-card, .purchase-card[class]) { padding-block: 8px; }
+.tv-mode .sheet .setting { padding: 6px 2px; }
+.tv-mode .sheet .service-tabs.segmented button, .tv-mode .cooking-simple .service-tabs button { min-height: 44px; padding-block: 4px; }
+.tv-mode .upgrade-menu button { min-height: 44px; padding-block: 5px; }
+.tv-mode :is(.sheet, .upgrade-menu, .stock-popover) :is(p, small) { color: #ddd2cb; }
+/* While the pad works a menu its prompts take the dock's place, lower down. */
+.tv-mode.pad-menus .sheet.centred, .tv-mode.pad-menus .sheet.centred[data-section] { bottom: calc(68px + env(safe-area-inset-bottom)); }
+.tv-mode .sheet.centred .sheet-frame { padding: 14px 22px 16px; }
+
+/* Close buttons: big enough to hit with the touchpad's pointer. */
+.tv-mode :is(#sheet-close, #stock-popover header .icon-button, .radial-close) {
+  position: relative; width: 60px; height: 60px; min-width: 60px; min-height: 60px; border-radius: 50%;
+  border: 1.5px solid #f2cf9966; background: #ffffff12; color: var(--ink); font: 400 36px/1 var(--body);
+  box-shadow: 0 4px 16px #08060d66;
+}
+.tv-mode :is(#sheet-close, #stock-popover header .icon-button):hover { background: #f2cf9930; border-color: var(--gold-bright); }
+/* With a pad, a badge on the close button names the button that closes: ○ or B. */
+.tv-mode.has-pad :is(#sheet-close, #stock-popover header .icon-button)::after {
+  content: ""; position: absolute; right: -7px; bottom: -7px; width: 26px; height: 26px; border-radius: 50%;
+  border: 1px solid #f4dbb266; box-shadow: 0 2px 6px #0009; pointer-events: none;
+  background: #16111b url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='6' fill='none' stroke='%23ff9a95' stroke-width='2.4'/%3E%3C/svg%3E") center / 18px no-repeat;
+}
+.tv-mode[data-pad="xbox"] :is(#sheet-close, #stock-popover header .icon-button)::after { content: "B"; display: grid; place-items: center; background: #16111b; color: #ff9a8c; font: 700 13px/1 var(--body); }
+
+/* The ring: a bright band inside a dark one, so it shows on light buttons and
+   dark cards alike, and a wide glow the eye finds across the room. */
+.tv-mode [data-pad-focus] { outline: 5px solid #ffe4ad !important; outline-offset: 2px !important; box-shadow: 0 0 0 10px #120b16d9, 0 0 34px 10px #ffc56daa !important; z-index: 1; }
+.tv-mode [data-pad-focus]:not(.purchase-button):not(.cook-cta):not(.gold):not(.can-act) { background-color: #ffe2b01c !important; }
+.tv-mode .pad-hints { height: 56px; gap: 22px; font-size: 15px; }
+.tv-mode .pad-hints .glyph { transform: scale(1.12); }
+
+/* Play mode with a pad: no touch sticks or face buttons, only the legend. */
+.play-legend, .furniture-legend { display: none; }
+.tv-mode.has-pad :is(#play-stick, #play-look, #play-interact, #play-wheel, #play-gait, #play-recenter, .play-dpad, .play-furniture-actions) { display: none !important; }
+.tv-mode.has-pad :is(.play-legend, .furniture-legend) {
+  position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  display: flex; align-items: center; gap: 20px; height: 50px; padding: 0 20px; max-width: calc(100% - 24px);
+  border: 1px solid #f2cf9947; border-radius: 25px; background: linear-gradient(160deg, #2b2231f0, #18131ef5);
+  box-shadow: 0 10px 28px #0009, inset 0 1px #ffe8c21a; backdrop-filter: blur(10px);
+  font: 600 15px var(--body); color: #efdcc2; white-space: nowrap; pointer-events: none;
+}
+.tv-mode.has-pad :is(.play-legend, .furniture-legend) > span { display: inline-flex; align-items: center; gap: 7px; }
+.tv-mode.has-pad :is(.play-legend, .furniture-legend) b { display: inline-flex; }
+.tv-mode.has-pad .legend-act { position: relative; color: #ffe0ad; font-weight: 700; }
+.tv-mode.has-pad .play-legend[data-idle="true"] .legend-act { color: #c9b8b0; font-weight: 600; }
+.legend-bar { position: absolute; left: 30px; right: 0; bottom: -7px; height: 3px; border-radius: 2px; background: #ffffff1f; overflow: hidden; opacity: 0; transition: opacity .15s; }
+.legend-bar i { display: block; height: 100%; width: calc(var(--p, 0) * 100%); background: linear-gradient(90deg, #ffd28f, #ffb45e); }
+.play-legend[data-busy="true"] .legend-bar { opacity: 1; }
+.tv-mode.has-pad .play-piece-label { bottom: calc(80px + env(safe-area-inset-bottom)); }
+.tv-mode.has-pad.control-mode .notice { bottom: calc(80px + env(safe-area-inset-bottom)); }
+/* The prompt over what's in reach stays readable at a distance. */
+.tv-mode .play-prompt span { font-size: 14px; }
+
+/* Cast to TV (settings-sheet.js): a card, one big button, what took, then the steps. */
+.cast-sheet { display: flex; flex-direction: column; gap: 12px; }
+.cast-hero { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 14px; align-items: center; padding: 14px; border: 1px solid #f2cf9933; border-radius: 18px; background: radial-gradient(120% 140% at 0% 0%, #e8964a24, transparent 60%), #ffffff06; }
+.cast-art { display: grid; place-items: center; width: 72px; height: 60px; color: #d9c4e6; }
+.cast-art svg { width: 64px; height: 48px; filter: drop-shadow(0 0 10px #f2cf9933); }
+.cast-hero h3 { margin: 0 0 4px; font: 600 17px/1.25 var(--display); color: var(--gold-bright); }
+.cast-hero p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--ink-soft); }
+.cast-ready { min-height: 52px; font-size: 15px !important; }
+.cast-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.cast-checks li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px; border-radius: 12px; background: #ffffff06; font-size: 13px; }
+.cast-checks i { display: grid; place-items: center; flex: 0 0 22px; height: 22px; border-radius: 50%; font-style: normal; font-weight: 700; background: #ffffff10; color: var(--ink-soft); }
+.cast-checks .is-done i { background: #9fd38a33; color: #c7e8b3; }
+.cast-checks small { display: block; margin-top: 2px; color: var(--ink-soft); font-size: 12px; }
+.cast-steps { margin: 0; padding-left: 22px; display: grid; gap: 8px; font-size: 13px; line-height: 1.5; color: var(--ink); }
+.cast-steps b, .cast-sheet .small b, .cast-pad b { color: var(--gold-bright); font-weight: 600; }
+.cast-pad { margin: 0; padding: 10px 12px; border-radius: 12px; border: 1px dashed #bba88c40; font-size: 13px; line-height: 1.5; color: var(--ink-soft); }
+.cast-pad.is-on { border-style: solid; border-color: #9fd38a55; background: #9fd38a12; }

@@ -21,11 +21,13 @@ export function createUpgradeMenu({ button, choose }) {
   document.body.append(menu);
   button.setAttribute("aria-haspopup", "menu"); button.setAttribute("aria-controls", menu.id); button.setAttribute("aria-expanded", "false");
   const items = () => [...menu.querySelectorAll("[role=menuitem]")];
+  // Centred over the dock. TV mode zooms the menu (ui/tv-mode.css), so its own pixels are smaller than the screen's by z.
   const place = () => {
-    const at = button.getClientRects().length ? button.getBoundingClientRect() : {left:innerWidth/2,width:0,top:innerHeight-20}, width = Math.min(380, innerWidth - 16);
+    const z = parseFloat(getComputedStyle(menu).zoom) || 1;
+    const at = button.getClientRects().length ? button.getBoundingClientRect() : {left:innerWidth/2,width:0,top:innerHeight-20}, width = Math.min(380, innerWidth / z - 16);
     menu.style.width = width + "px";
-    menu.style.left = Math.round((innerWidth - width) / 2) + "px";
-    menu.style.bottom = Math.max(8, innerHeight - at.top + 8) + "px";
+    menu.style.left = Math.round((innerWidth / z - width) / 2) + "px";
+    menu.style.bottom = Math.max(8, (innerHeight - at.top) / z + 8) + "px";
   };
   const close = (focus = false) => { if (menu.hidden) return; menu.hidden = true; document.body.classList.remove("manage-open"); button.setAttribute("aria-expanded", "false"); if (focus) button.focus({ preventScroll: true }); };
   const open = () => { place(); menu.hidden = false; document.body.classList.add("manage-open"); button.setAttribute("aria-expanded", "true"); items()[0].focus({ preventScroll: true }); };
