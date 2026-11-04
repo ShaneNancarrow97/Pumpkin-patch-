@@ -106,7 +106,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     cookingFX.visible = false; kitchenFXStatus = { active: false, recipe: null, method: null, steam: 0 };
     for (const f of foodDisplays) disposeFoodProp(f); foodDisplays = []; foodDisplayKey = "";
     for (const a of customers.values()) if (a.food) { disposeFoodProp(a.food); a.food = null; }
-    for (const guide of [selection?.box, selection?.ring, ghost, gridLines]) if (guide) { guide.removeFromParent(); guide.geometry.dispose(); guide.material.dispose(); }
+    for (const guide of [selection?.box, selection?.ring, ghost, gridLines]) if (guide) dropGuide(guide);
     for (const o of [...root.children]) { root.remove(o); o.traverse?.((m) => { if (m.isInstancedMesh && m.name === "household-animated-screen") m.dispose(); if (m.isMesh && m.geometry && !m.geometry.userData.shared) m.geometry.dispose?.(); for (const mat of Array.isArray(m.material) ? m.material : m.material ? [m.material] : []) if(mat.userData.pieceColourOwned)mat.dispose(); }); }
     pool.forEach((l) => (l.intensity = 0));
     pieces = new Map(); pickables = []; actors = []; customers = new Map(); tables = []; skyla = null; selection = null; ghost = null; gridLines = null; tableKey = "";
@@ -336,6 +336,8 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
 
   // Decorating: a gold outline round the chosen piece, and where it would go.
   // Floor pieces show their cells; wall pieces a frame as tall as the piece.
+  // A decorating guide and anything hung on it, gone for good.
+  const dropGuide = (guide) => { guide.removeFromParent(); guide.traverse((o) => { o.geometry?.dispose(); o.material?.dispose(); }); };
   function outline(fp, at, colour, height) {
     const wall = fp.layer === "wall";
     const box = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(fp.w, wall ? height : 0.12, wall ? 0.1 : fp.d)), new THREE.LineBasicMaterial({ color: colour, toneMapped: false }));
@@ -352,7 +354,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   };
   function select(instance) {
     if (selection) { selection.box.removeFromParent(); selection.box.geometry.dispose(); selection.box.material.dispose(); if (selection.ring) { selection.ring.removeFromParent(); selection.ring.geometry.dispose(); selection.ring.material.dispose(); } selection = null; }
-    if (ghost) { root.remove(ghost); ghost.geometry.dispose(); ghost.material.dispose(); ghost = null; }
+    if (ghost) { dropGuide(ghost); ghost = null; }
     const entry = pieces.get(instance);
     if (!entry) return;
     if (entry.rider) { selectRider(entry); return; }
@@ -385,12 +387,17 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     selection.box.material.color.setHex(ok ? 0xffd36a : 0xff6a5a); selection.ring.material.color.setHex(ok ? 0xffe2a0 : 0xff6a5a);
   }
   function preview(instance, x, z, ok, pose = null) {
-    if (ghost) { root.remove(ghost); ghost.geometry.dispose(); ghost.material.dispose(); ghost = null; }
+    if (ghost) { dropGuide(ghost); ghost = null; }
     const entry = pieces.get(instance);
     if (!entry || x === null || entry.rider) return;
     const p = { ...(entry.pose ?? entry.piece), ...pose }, fp = pieceFootprint(p);
-    ghost = outline(fp.layer === "wall" ? footprint(p.id) : { ...footprint(p.id), ...pieceBody(p.id) }, outlineAt(entry, fp, x, z, p), ok ? 0x8ae6a0 : 0xff6a5a, entry.height);
+    const shape = fp.layer === "wall" ? footprint(p.id) : { ...footprint(p.id), ...pieceBody(p.id) }, colour = ok ? 0x8ae6a0 : 0xff6a5a;
+    ghost = outline(shape, outlineAt(entry, fp, x, z, p), colour, entry.height);
     ghost.rotation.y = fp.layer === "wall" ? p.wall === "left" ? Math.PI / 2 : p.wall === "right" ? -Math.PI / 2 : 0 : entry.group.rotation.y;
+    // Drawn over everything, with a soft fill, so it shows through a door's frame or the stairs.
+    ghost.material.depthTest = false; ghost.renderOrder = 20;
+    const fill = new THREE.Mesh(new THREE.BoxGeometry(shape.w, fp.layer === "wall" ? entry.height : 0.12, fp.layer === "wall" ? 0.1 : shape.d), new THREE.MeshBasicMaterial({ color: colour, transparent: true, opacity: 0.22, depthTest: false, depthWrite: false, toneMapped: false }));
+    fill.renderOrder = 19; ghost.add(fill);
   }
   // Dragging changes only a handful of transforms. Rebuilding the diorama on
   // every touch move discarded geometry, lights and the visitor animation.
@@ -420,7 +427,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
       selection.box.material.color.setHex(ok ? 0xffd36a : 0xff6a5a);
       if (selection.ring) { selection.ring.position.x = entry.group.position.x; selection.ring.position.z = entry.group.position.z; selection.ring.material.color.setHex(ok ? 0xe7b46e : 0xff6a5a); }
     }
-    if (ghost) { root.remove(ghost); ghost.geometry.dispose(); ghost.material.dispose(); ghost = null; }
+    if (ghost) { dropGuide(ghost); ghost = null; }
   }
   function setGrid(on) {
     showGrid = on;

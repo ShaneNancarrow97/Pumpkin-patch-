@@ -115,6 +115,8 @@ const scene = createScene($("world"), state, {
   },
   selectedPiece: () => home.tools.selected,
   canDragPiece: () => !!home.tools.selected,
+  // While arranging, pressing another piece and moving picks that one up instead.
+  grabPiece: instance => { if (state.paused || !state.house.placed.some((p) => p.instance === instance)) return false; home.tools.select(instance); return home.tools.selected === instance; },
   onPieceDragStart: point => home.tools.beginDrag(point),
   onPieceDragMove: point => home.tools.dragTo(point),
   onPieceDragEnd: cancelled => home.tools.endDrag(cancelled),

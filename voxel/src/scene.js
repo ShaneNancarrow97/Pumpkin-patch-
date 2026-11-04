@@ -372,7 +372,10 @@ export function createScene(canvas, state, hooks) {
     const controlled = orbiting() && view.place === "room";
     const o = ORIGIN[view.place], aspect = w / h, p = controlled ? playerOrbit.pitch : INTERIOR.pitch, layout = cameraLayout(w);
     const half = 3.5 + (rw / 2 + 0.4 - 3.5) * layout.overview;
-    const corners = [[-half, 5.4, 0], [half, 5.4, 0], [-half, -0.1, rd + 0.3], [half, -0.1, rd + 0.3]];
+    // On a phone the framed stretch slides along with the camera, so the room
+    // keeps its size as you drag along it (it used to back away to half size).
+    const along = !controlled && layout.overview < .95 ? view.x : 0;
+    const corners = [[along - half, 5.4, 0], [along + half, 5.4, 0], [along - half, -0.1, rd + 0.3], [along + half, -0.1, rd + 0.3]];
     const yaw=controlled?playerOrbit.yaw:0;
     const target = new THREE.Vector3(o.x + rw / 2 + view.x, controlled ? 1.1 : 2, o.z + rd * 0.42 + view.z), dir = new THREE.Vector3(Math.sin(yaw)*Math.cos(p), Math.sin(p), Math.cos(yaw)*Math.cos(p));
     probe.fov = INTERIOR.fov; probe.aspect = aspect; probe.near = 0.1; probe.far = 200; probe.updateProjectionMatrix();
@@ -503,7 +506,9 @@ export function createScene(canvas, state, hooks) {
   }
   // Wall pieces follow the face under this ray, including crossing a corner.
   // Floor pieces and riders retain their horizontal drag plane.
-  let dragWall = null;
+  // grab: another piece pressed while one is selected, picked up once the finger
+  // moves. dragAt: the finger of a piece drag, for sliding the room at the edges.
+  let dragWall = null, grab = null, dragAt = null;
   const piecePoint = e => {
     inputRay(e);
     const instance = hooks.selectedPiece?.(), wall = places.pieceWall(instance);
@@ -522,18 +527,23 @@ export function createScene(canvas, state, hooks) {
     canvas.setPointerCapture(e.pointerId); glide = null;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 1) {
-      dragWall = null;
+      dragWall = null; grab = null;
       drag = { x: e.clientX, y: e.clientY, vx: view.x, vz: view.z, moved: 0 };
       if (view.place === "room" && hooks.canDragPiece?.()) {
         inputRay(e); scene.updateMatrixWorld(true);
-        const selected = hooks.selectedPiece?.(), hit = ray.intersectObjects(places.pickables, false).find(h => h.object.userData.type === "piece" && h.object.userData.instance === selected);
+        const selected = hooks.selectedPiece?.(), hits = ray.intersectObjects(places.pickables, false).filter(h => h.object.userData.type === "piece");
+        const hit = hits.find(h => h.object.userData.instance === selected);
         const point = hit && piecePoint(e);
-        if (point && hooks.onPieceDragStart?.(point)) pieceDrag = e.pointerId;
+        if (point && hooks.onPieceDragStart?.(point)) { pieceDrag = e.pointerId; dragAt = { clientX: e.clientX, clientY: e.clientY }; }
+        // Another piece under the finger is picked up as soon as the finger moves
+        // (a tap still just picks it, or puts a small piece on it).
+        else if (hits.length) grab = { instance: (hits.find(h => h.object.userData.host && h.object.userData.host === hits[0].object.userData.instance) ?? hits[0]).object.userData.instance, clientX: e.clientX, clientY: e.clientY };
       }
     }
     if (touches.size === 2) {
       // A second finger turns the selected object; it never turns its release
       // into another pick, and one-finger dragging never moves the camera.
+      grab = null;
       if (pieceDrag !== null) { hooks.onPieceDragEnd?.(false); pieceDrag = null; }
       const [a, b] = [...touches.values()]; pinch = { d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)), zoom: view.zoom, angle: Math.atan2(a.y - b.y, a.x - b.x), rotate: !!view.place && !!hooks.canRotatePiece?.() }; drag = null;
     }
@@ -550,7 +560,11 @@ export function createScene(canvas, state, hooks) {
     if (!drag) return;
     const k = worldPerPixel(), dx = e.clientX - drag.x, dy = e.clientY - drag.y;
     drag.moved = Math.max(drag.moved, Math.hypot(dx, dy));
-    if (pieceDrag === e.pointerId) { if (drag.moved >= 4) { const point = piecePoint(e); if (point) hooks.onPieceDragMove?.(point); } return; }
+    if (grab && pieceDrag === null && drag.moved >= 4) {
+      const g = grab; grab = null;
+      if (hooks.grabPiece?.(g.instance)) { const point = piecePoint(g); if (point && hooks.onPieceDragStart?.(point)) pieceDrag = e.pointerId; }
+    }
+    if (pieceDrag === e.pointerId) { dragAt = { clientX: e.clientX, clientY: e.clientY }; if (drag.moved >= 4) { const point = piecePoint(e); if (point) hooks.onPieceDragMove?.(point); } return; }
     if (view.place) {
       // Indoors, dragging slides along the room and in and out a little.
       const kr = (2 * view.roomDist * Math.tan(THREE.MathUtils.degToRad(INTERIOR.fov) / 2)) / canvas.clientHeight;
@@ -563,6 +577,7 @@ export function createScene(canvas, state, hooks) {
     if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place) || !touches.has(e.pointerId)) return;
     const wasPieceDrag = pieceDrag === e.pointerId;
     const wasTap = !wasPieceDrag && drag && drag.moved < 8 && touches.size === 1 && (e.pointerType !== "mouse" || e.button === 0);
+    grab = null; dragAt = null;
     if (wasPieceDrag) { hooks.onPieceDragEnd?.(false); pieceDrag = null; }
     touches.delete(e.pointerId);
     if (touches.size < 2) { if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null; }
@@ -584,6 +599,7 @@ export function createScene(canvas, state, hooks) {
   const cancelGesture = (id) => {
     if (id !== undefined && !touches.has(id)) return;
     if (pieceDrag !== null) { hooks.onPieceDragEnd?.(true); pieceDrag = null; }
+    grab = null; dragAt = null;
     if (id === undefined) touches.clear(); else touches.delete(id);
     drag = null; if (pinch?.rotate) hooks.onRotateEnd?.(true); pinch = null;
   };
@@ -690,6 +706,16 @@ export function createScene(canvas, state, hooks) {
       const k = 1 - (1 - glide.t) ** 3;
       view.x = glide.x + (glide.to.x - glide.x) * k; view.z = glide.z + (glide.to.z - glide.z) * k; frame();
       if (glide.t === 1) glide = null;
+    }
+    // A piece dragged to the canvas's left or right edge slides the room along
+    // under it, as far as a drag along the room goes, where a phone shows only
+    // part of the room. The piece keeps up with the finger.
+    if (pieceDrag !== null && dragAt && drag?.moved >= 4 && view.place === "room" && cameraLayout(canvas.clientWidth).overview < .95) {
+      const box = canvas.getBoundingClientRect(), edge = Math.min(72, box.width * .12);
+      const into = dragAt.clientX < box.left + edge ? (dragAt.clientX - box.left) / edge - 1 : dragAt.clientX > box.right - edge ? 1 - (box.right - dragAt.clientX) / edge : 0;
+      const was = view.x;
+      if (into) { view.x += Math.max(-1, Math.min(1, into)) * dt * 3.2; clampView(); }
+      if (view.x !== was) { frame(); const point = piecePoint(dragAt); if (point) hooks.onPieceDragMove?.(point); }
     }
 
     // Hidden farm rendering rests during the ride; the pure simulation still runs.

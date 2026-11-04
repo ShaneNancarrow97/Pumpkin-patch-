@@ -284,7 +284,15 @@ export function fits(s, room, id, x, z, ignore, options) {
   } else {
     const rect = floorRectangle(candidate), h = reach(rect);
     if (rect.x - h.x < -1e-6 || rect.x + h.x > L.w + 1e-6 || rect.z - h.z < -1e-6 || rect.z + h.z > L.d + 1e-6) return false;
-    if (L.blocked.some(c => rectanglesOverlap(rect, { x: c.x + .5, z: c.z + .5, w: .5, d: .5, axes: [{ x: 1, z: 0 }, { x: 0, z: 1 }] }))) return false;
+    // Boxes first: most cells and pieces are nowhere near, and a drag asks this
+    // many times a move (nearestSpot).
+    const near = (x, z, hx, hz) => Math.abs(x - rect.x) < hx + h.x + 1e-6 && Math.abs(z - rect.z) < hz + h.z + 1e-6;
+    if (L.blocked.some(c => near(c.x + .5, c.z + .5, .5, .5) && rectanglesOverlap(rect, { x: c.x + .5, z: c.z + .5, w: .5, d: .5, axes: [{ x: 1, z: 0 }, { x: 0, z: 1 }] }))) return false;
+    return !roomPieces(s, room).some((p) => {
+      if (p.instance === ignore || p.on || footprint(p.id).layer !== f.layer) return false;
+      const r = floorRectangle(p), k = reach(r);
+      return near(r.x, r.z, k.x, k.z) && rectanglesOverlap(rect, r);
+    });
   }
   return !roomPieces(s, room).some((p) => p.instance !== ignore && overlaps(candidate, p));
 }
@@ -334,6 +342,124 @@ export function moveWallDecor(s, instance, wall, x, y) {
   if (!p || s.paused || footprint(p.id).layer !== "wall" || !["back", "left", "right"].includes(wall) || !Number.isFinite(y) || !fits(s, p.room, p.id, x, 0, instance, { wall, y })) return false;
   Object.assign(p, { wall, x, y, z: 0 });
   return true;
+}
+
+// Drags and taps land as near the pointer as the piece fits, within NEAR_REACH,
+// after clamping to the room or the wall. A drag past an edge pins the piece to
+// it, and one onto a window, a door, the stairs or another piece slides it to the
+// nearest clear spot, rather than the move being refused and the piece jumping back.
+export const NEAR_REACH = 1.6;
+const rings = (step, most) => {
+  const n = Math.round(most / step), out = [];
+  for (let i = -n; i <= n; i++) for (let j = -n; j <= n; j++) { const d = Math.hypot(i, j) * step; if (d > 1e-9 && d <= most + 1e-9) out.push([i * step, j * step, d]); }
+  return out.sort((a, b) => a[2] - b[2]);
+};
+const COARSE = rings(0.2, NEAR_REACH), FINE = rings(0.1, 0.2);
+const within = (n, a, b) => +Math.max(a, Math.min(b, n)).toFixed(6);
+function nearestTo(ok, clamp, u, v, most) {
+  const start = clamp(u, v);
+  if (ok(start)) return start;
+  const tried = new Set([start.join()]), off = (c) => Math.hypot(c[0] - start[0], c[1] - start[1]);
+  let best = null;
+  for (const [du, dv, d] of COARSE) {
+    if (d > most + 1e-9) break;
+    const c = clamp(u + du, v + dv), key = c.join();
+    if (!tried.has(key) && (tried.add(key), ok(c))) { best = c; break; }
+  }
+  if (!best) return null;
+  // A finer look round that find, for a spot nearer still.
+  const found = best;
+  for (const [du, dv] of FINE) {
+    const c = clamp(found[0] + du, found[1] + dv), key = c.join();
+    if (!tried.has(key) && (tried.add(key), off(c) < off(best) - 1e-9) && ok(c)) best = c;
+  }
+  return best;
+}
+// The clear spot nearest target ({ x, z } on the floor, or { wall, x, y } for a
+// wall piece), or null if there's none within reach. Riders keep to their tops.
+export function nearestSpot(s, p, target, most = NEAR_REACH) {
+  if (!p || !decorById[p.id] || !target || p.on) return null;
+  if (footprint(p.id).layer === "wall") {
+    const wall = ["back", "left", "right"].includes(target.wall) ? target.wall : surface(p), b = wallPlacementRange(s, { ...p, wall });
+    if (!Number.isFinite(target.x) || !Number.isFinite(target.y) || b.x1 < b.x0 || b.y1 < b.y0) return null;
+    const hit = nearestTo(([x, y]) => fits(s, p.room, p.id, x, 0, p.instance, { wall, y }), (x, y) => [within(x, b.x0, b.x1), within(y, b.y0, b.y1)], target.x, target.y, most);
+    return hit && { wall, x: hit[0], y: hit[1], z: 0 };
+  }
+  if (!Number.isFinite(target.x) || !Number.isFinite(target.z)) return null;
+  const r = placementRange(s, p), turn = { rotation: p.rotation };
+  if (r.x1 < r.x0 || r.z1 < r.z0) return null;
+  const hit = nearestTo(([x, z]) => fits(s, p.room, p.id, x, z, p.instance, turn), (x, z) => [within(x, r.x0, r.x1), within(z, r.z0, r.z1)], target.x, target.z, most);
+  return hit && { x: hit[0], z: hit[1] };
+}
+// The walls in order round the room as the camera sees them, left to right.
+const WALL_ORDER = ["left", "back", "right"];
+// A wall piece moved onto another wall comes in at the corner it shares with the
+// wall it leaves (a side wall's back end, or the back wall's end on that side),
+// at the same height, and as near that corner as it fits. With no room at that
+// height it takes any clear spot on the wall.
+export function hangOnWall(s, instance, wall) {
+  const p = s.house.placed.find((q) => q.instance === instance);
+  if (!p || s.paused || footprint(p.id).layer !== "wall" || !WALL_ORDER.includes(wall)) return false;
+  const from = surface(p);
+  if (from === wall) return true;
+  const spot = cornerSpot(s, p, from, wall) ?? findSpot(s, p.room, p.id, instance, { wall });
+  if (!spot) return false;
+  Object.assign(p, spot, { wall, z: 0 });
+  return true;
+}
+function cornerSpot(s, p, from, wall) {
+  const b = wallPlacementRange(s, { ...p, wall }), y = within(wallMountHeight(s, p), b.y0, b.y1);
+  if (b.x1 < b.x0 || b.y1 < b.y0) return null;
+  const [start, dir] = wall === "back" && from === "right" ? [b.x1, -1] : [b.x0, 1];
+  for (let k = 0, last = null; k < 400; k++) {
+    const x = within(start + dir * DECOR_STEP * k, b.x0, b.x1);
+    if (x === last) break;
+    last = x;
+    if (fits(s, p.room, p.id, x, 0, p.instance, { wall, y })) return { x, y, z: 0 };
+  }
+  return nearestSpot(s, p, { wall, x: start, y });
+}
+// One press of an arrow: a step of DECOR_STEP across the floor or along and up a
+// wall, hopping past whatever is in the way. Left and right are as the camera sees
+// them, so on the left wall right runs towards the back, and on the right wall
+// towards the front. A wall piece at a wall's back end carries on round the
+// corner onto the next wall. dz -1 is the arrow pointing into the room: back
+// across the floor, or up a wall.
+export function stepDecor(s, instance, dx, dz) {
+  const p = s.house.placed.find((q) => q.instance === instance);
+  if (!p || s.paused || p.on || (!dx && !dz)) return false;
+  if (footprint(p.id).layer !== "wall") {
+    const r = placementRange(s, p);
+    // Floor pieces hop past a neighbour, but never further than a few units.
+    for (let k = 1, last = [p.x, p.z]; k <= 40; k++) {
+      const c = [within(p.x + dx * DECOR_STEP * k, r.x0, r.x1), within(p.z + dz * DECOR_STEP * k, r.z0, r.z1)];
+      if (c[0] === last[0] && c[1] === last[1]) return false;
+      last = c;
+      if (fits(s, p.room, p.id, c[0], c[1], instance)) { [p.x, p.z] = c; return true; }
+    }
+    return false;
+  }
+  const wall = surface(p), b = wallPlacementRange(s, p), y = within(wallMountHeight(s, p), b.y0, b.y1);
+  if (dz) {
+    for (let k = 1, last = y; k <= 60; k++) {
+      const up = within(y - dz * DECOR_STEP * k, b.y0, b.y1);
+      if (up === last) return false;
+      last = up;
+      if (fits(s, p.room, p.id, p.x, 0, instance, { wall, y: up })) { Object.assign(p, { y: up, z: 0 }); return true; }
+    }
+    return false;
+  }
+  const along = wall === "left" ? -dx : dx;
+  for (let k = 1, last = p.x; k <= 400; k++) {
+    const x = within(p.x + along * DECOR_STEP * k, b.x0, b.x1);
+    if (x === last) break;
+    last = x;
+    if (fits(s, p.room, p.id, x, 0, instance, { wall, y })) { Object.assign(p, { x, y, z: 0 }); return true; }
+  }
+  // Past a wall's end: the back wall's ends turn onto the side walls, and a side
+  // wall's back end onto the back wall. The open front goes nowhere.
+  const next = wall === "back" ? (dx < 0 ? "left" : "right") : along < 0 ? "back" : null;
+  return !!next && hangOnWall(s, instance, next);
 }
 
 const copyable = (id) => !!decorById[id] && !["books", "wallpaper"].includes(decorById[id].category);

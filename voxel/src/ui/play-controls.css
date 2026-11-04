@@ -116,7 +116,7 @@
 
 /* Arranging furniture keeps its own pad. */
 .furniture-radial #piece-bar,.furniture-radial #dock,.furniture-radial #actions{display:none!important}
-.play-piece-label{left:50%;right:auto;transform:translateX(-50%);top:auto;bottom:calc(145px + env(safe-area-inset-bottom));padding:6px 14px;font-size:12px;max-width:65vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:capitalize}
+.play-piece-label{left:50%;right:auto;transform:translateX(-50%);top:auto;bottom:calc(145px + env(safe-area-inset-bottom));padding:6px 14px;font-size:12px;max-width:65vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .play-dpad{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:calc(18px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,46px);grid-template-rows:repeat(3,46px);gap:3px}
 .play-dpad button,.play-furniture-actions button{display:grid;place-items:center;border:1px solid var(--rim);border-radius:14px;background:var(--glass);box-shadow:inset 0 1px #fff1d81a,0 4px 12px #0007;color:#f3dcb8!important}
 .play-dpad svg,.play-furniture-actions svg{width:20px;height:20px}

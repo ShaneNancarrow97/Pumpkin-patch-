@@ -35,7 +35,9 @@ const FACES = [[0, 1], [0, -1], [1, 1], [1, -1], [2, 1], [2, -1]].map(([a, s]) =
 // glowing ones (either may be null). Each voxel is `scale` units, and voxel
 // (0, 0, 0)'s corner sits at `offset`. Neighbouring faces of one colour and
 // even shading merge into one quad (greedy meshing), so flat colour is cheap.
-export function meshGrid(grid, { scale = 1, offset = [0, 0, 0], ao = true } = {}) {
+// only: a mask (one byte a voxel) of the voxels to draw; the rest still hide
+// faces and shade corners, so one grid can be split between two materials.
+export function meshGrid(grid, { scale = 1, offset = [0, 0, 0], ao = true, only = null } = {}) {
   const { nx, ny, nz, kind, rgb } = grid, dims = [nx, ny, nz];
   const out = [1, 2].map(() => ({ pos: [], col: [], nor: [], idx: [], n: 0 }));
   const solid = (x, y, z) => x >= 0 && y >= 0 && z >= 0 && x < nx && y < ny && z < nz && kind[(z * ny + y) * nx + x] !== 0;
@@ -49,7 +51,7 @@ export function meshGrid(grid, { scale = 1, offset = [0, 0, 0], ao = true } = {}
       for (let v = 0; v < nv; v++) for (let u = 0; u < nu; u++) {
         c[f.a] = w; c[f.u] = u; c[f.v] = v;
         const at = (c[2] * ny + c[1]) * nx + c[0], k = kind[at];
-        if (!k) continue;
+        if (!k || (only && !only[at])) continue;
         q[0] = c[0]; q[1] = c[1]; q[2] = c[2]; q[f.a] += f.s;
         if (solid(q[0], q[1], q[2])) continue;
         // How shut in each corner is: the classic three-neighbour test.

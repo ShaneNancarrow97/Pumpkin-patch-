@@ -335,7 +335,7 @@ export function homeSheets(ui) {
       bar.querySelectorAll("[data-room]").forEach((b) => b.onclick = () => tools.act("room", b.dataset.room));
       bar.querySelectorAll("[data-wall]").forEach((b) => b.onclick = () => {
         const before = structuredClone(p);
-        if (M.setDecorWall(s, p.instance, b.dataset.wall)) { remember(before); ui.scene.refreshRoom(); ui.save(); tools.render(); }
+        if (M.hangOnWall(s, p.instance, b.dataset.wall)) { remember(before); ui.scene.refreshRoom(); ui.save(); tools.render(); }
         else ui.notice("No clear space on that wall. Try moving another piece.");
       });
       const dial = bar.querySelector(".rotation-dial");
@@ -357,6 +357,13 @@ export function homeSheets(ui) {
     rotate(delta, redraw = true) {
       const p = ui.state.house.placed.find((q) => q.instance === tools.selected);
       const before = p && structuredClone(p);
+      // A wall piece doesn't turn: the turn buttons (and L1/R1) carry it round to the next wall.
+      if (p && redraw && M.footprint(p.id).layer === "wall") {
+        const order = ["left", "back", "right"], next = order[order.indexOf(p.wall ?? "back") + Math.sign(delta)];
+        if (!next) { ui.notice(`It's on the ${p.wall ?? "back"} wall, as far round as it goes.`); return false; }
+        if (!M.hangOnWall(ui.state, p.instance, next)) { ui.notice(`No clear space on the ${next} wall.`); return false; }
+        remember(before); ui.scene.movePiece(p.instance); lastTools = ""; tools.render(); ui.save(); return true;
+      }
       if (!p || !M.rotateDecor(ui.state, p.instance, M.decorAngle(p.rotation) + delta)) return false;
       if (redraw) remember(before); else rotationBefore ??= before;
       ui.scene.rotatePiece(p.instance);
@@ -385,32 +392,43 @@ export function homeSheets(ui) {
       dragPose = { before: structuredClone(p), pose: { ...p }, offset: q ? { x: q.x - p.x, z: q.z - p.z } : { x: point.x - p.x - fp.w / 2, z: point.z - p.z - fp.d / 2 }, valid: true };
       document.body.classList.add("dragging-piece"); return true;
     },
+    // The piece goes to the clear spot nearest the finger (M.nearestSpot), so it
+    // slides up to a window, a door or a neighbour and stops there. With nothing
+    // clear near, it waits at the last clear spot and a red outline shows the finger.
     dragTo(point) {
       if (!dragPose) return false;
-      if (dragPose.wall) {
-        const p = dragPose.before;
-        if (!point.wall) return false;
-        const x = M.snapDecorPosition(point.x - dragPose.offset.x, tools.snap), y = M.snapDecorPosition(point.y - dragPose.offset.y, tools.snap);
-        dragPose.pose = { ...p, wall: point.wall, x, y, z: 0 };
-        dragPose.valid = M.fits(ui.state, p.room, p.id, x, 0, p.instance, dragPose.pose);
-        ui.scene.movePiece(p.instance, dragPose.pose, dragPose.valid);
-        const hint = $("piece-bar").querySelector("[data-placement-hint]");
-        if (hint) hint.textContent = dragPose.valid ? `Release to hang · ${point.wall} wall` : "Keep clear of windows, doors and other wall pieces";
-        return dragPose.valid;
+      const p = dragPose.before, fp = M.pieceFootprint(p), hint = $("piece-bar").querySelector("[data-placement-hint]");
+      if (dragPose.wall || !p.on) {
+        if (dragPose.wall && !point.wall) return false;
+        const target = dragPose.wall
+          ? { wall: point.wall, x: M.snapDecorPosition(point.x - dragPose.offset.x, tools.snap), y: M.snapDecorPosition(point.y - dragPose.offset.y, tools.snap) }
+          : { x: M.snapDecorPosition(point.x - dragPose.offset.x - fp.w / 2, tools.snap), z: M.snapDecorPosition(point.z - dragPose.offset.z - fp.d / 2, tools.snap) };
+        const spot = M.nearestSpot(ui.state, p, target);
+        if (spot) { dragPose.pose = { ...p, ...spot }; ui.scene.previewPiece(p.instance, null); }
+        else {
+          const r = dragPose.wall ? M.placementRange(ui.state, { ...p, wall: target.wall }) : M.placementRange(ui.state, p);
+          const x = clampTo(target.x, r.x0, r.x1);
+          ui.scene.previewPiece(p.instance, x, dragPose.wall ? 0 : clampTo(target.z, r.z0, r.z1), false, dragPose.wall ? { wall: target.wall, x, y: clampTo(target.y, r.y0, r.y1) } : null);
+        }
+        dragPose.blocked = !spot; dragPose.valid = true;
+        ui.scene.movePiece(p.instance, dragPose.pose, true);
+        if (hint) hint.textContent = !spot ? "No room there · it waits at the last clear spot" : dragPose.wall ? `Release to hang · ${dragPose.pose.wall} wall` : "Release to place";
+        return !!spot;
       }
-      const p = dragPose.before, fp = M.pieceFootprint(p), q = p.on && ui.scene.hostPoint(p.on, point);
-      const range = !q && M.placementRange(ui.state, p);
-      const x = q ? M.snapDecorPosition(q.x - dragPose.offset.x, tools.snap) : clampTo(M.snapDecorPosition(point.x - dragPose.offset.x - fp.w / 2, tools.snap), range.x0, range.x1);
-      const z = q ? M.snapDecorPosition(q.z - dragPose.offset.z, tools.snap) : clampTo(M.snapDecorPosition(point.z - dragPose.offset.z - fp.d / 2, tools.snap), range.z0, range.z1);
+      // On a top the piece slides in its host's frame and must stay on it.
+      const q = ui.scene.hostPoint(p.on, point);
+      if (!q) return false;
+      const x = M.snapDecorPosition(q.x - dragPose.offset.x, tools.snap), z = M.snapDecorPosition(q.z - dragPose.offset.z, tools.snap);
       dragPose.pose = { ...p, x, z };
       dragPose.valid = M.fits(ui.state, p.room, p.id, x, z, p.instance, p);
       ui.scene.movePiece(p.instance, dragPose.pose, dragPose.valid);
-      const hint = $("piece-bar").querySelector("[data-placement-hint]"); if (hint) hint.textContent = dragPose.valid ? "Release to place" : p.on ? "Keep it on the top, clear of the rest" : "Space occupied";
+      if (hint) hint.textContent = dragPose.valid ? "Release to place" : "Keep it on the top, clear of the rest";
       return dragPose.valid;
     },
     endDrag(cancelled = false) {
       if (!dragPose) return false;
       const drag = dragPose; dragPose = null;
+      ui.scene.previewPiece(drag.before.instance, null);
       const p = ui.state.house.placed.find(q => q.instance === drag.before.instance), changed = p && (p.x !== drag.pose.x || p.z !== drag.pose.z || drag.wall && ((p.wall ?? "back") !== drag.pose.wall || M.wallMountHeight(ui.state, p) !== drag.pose.y));
       const placed = !cancelled && drag.valid && changed && (drag.wall ? M.moveWallDecor(ui.state, p.instance, drag.pose.wall, drag.pose.x, drag.pose.y) : M.moveDecor(ui.state, p.instance, drag.pose.x, drag.pose.z));
       if (placed) { remember(drag.before); ui.save(); }
@@ -463,12 +481,13 @@ export function homeSheets(ui) {
       const s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
       if (!p) return;
       if (!tools.moving) { tools.select(null); return; }
-      const room = M.roomLayout(s, p.room) ?? M.GRID, fp = M.pieceFootprint(p);
+      const fp = M.pieceFootprint(p);
       if (fp.layer === "wall") {
         if (!cell.wall) return;
         const x = M.snapDecorPosition(cell.x - fp.w / 2, tools.snap), y = M.snapDecorPosition((cell.y ?? M.wallMountHeight(s, p) + M.wallPieceHeight(p) / 2) - M.wallPieceHeight(p) / 2, tools.snap);
-        const before = structuredClone(p), pose = { ...p, wall: cell.wall, x, y, z: 0 };
-        if (M.moveWallDecor(s, p.instance, cell.wall, x, y)) { remember(before); ui.tone(600); tools.moving = false; ui.scene.showGrid(false); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
+        // As near the tap as there's room on that wall.
+        const before = structuredClone(p), pose = { ...p, wall: cell.wall, x, y, z: 0 }, spot = !s.paused && M.nearestSpot(s, p, pose);
+        if (spot && M.moveWallDecor(s, p.instance, spot.wall, spot.x, spot.y)) { remember(before); ui.tone(600); tools.moving = false; ui.scene.showGrid(false); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
         else { ui.scene.previewPiece(p.instance, x, 0, false, pose); ui.notice("Keep clear of windows, doors and other wall pieces."); }
         return;
       }
@@ -483,15 +502,10 @@ export function homeSheets(ui) {
         else ui.notice("Keep this spot clear for furniture, stairs and doors.");
         return;
       }
-      const wall = cell.wall ?? p.wall ?? "back";
-      const limit = fp.layer === "wall" && wall !== "back" ? room.d : room.w;
-      const range = fp.layer === "wall" ? null : M.placementRange(s, p);
-      const x = range ? clampTo(M.snapDecorPosition(cell.x - fp.w / 2, tools.snap), range.x0, range.x1) : Math.max(0, Math.min(limit - fp.w, M.snapDecorPosition(cell.x - fp.w / 2, tools.snap))), z = range ? clampTo(M.snapDecorPosition(cell.z - fp.d / 2, tools.snap), range.z0, range.z1) : 0;
-      if (!s.paused && M.fits(s, p.room, p.id, x, z, p.instance, { wall })) {
-        remember(p);
-        if (fp.layer === "wall") p.wall = wall;
-        M.moveDecor(s, p.instance, x, z); ui.tone(600); tools.moving = false; ui.scene.showGrid(false); ui.scene.movePiece(p.instance); tools.render(); ui.save();
-      }
+      // A floor piece goes as near the tap as there's room.
+      const range = M.placementRange(s, p), x = clampTo(M.snapDecorPosition(cell.x - fp.w / 2, tools.snap), range.x0, range.x1), z = clampTo(M.snapDecorPosition(cell.z - fp.d / 2, tools.snap), range.z0, range.z1);
+      const spot = !s.paused && M.nearestSpot(s, p, { x, z }), before = structuredClone(p);
+      if (spot && M.moveDecor(s, p.instance, spot.x, spot.z)) { remember(before); ui.tone(600); tools.moving = false; ui.scene.showGrid(false); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
       else { ui.scene.previewPiece(p.instance, x, z, false); ui.notice("Keep this spot clear for furniture, stairs and doors."); }
     },
     // While moving a small piece, a tap on a table or shelf puts it there, as near the tap as there's room.
@@ -508,8 +522,10 @@ export function homeSheets(ui) {
     nudge(dx, dz) {
       const s = ui.state, p = s.house.placed.find((q) => q.instance === tools.selected);
       const before = p && structuredClone(p);
-      if (p && M.footprint(p.id).layer === "wall") {
-        if (M.moveWallDecor(s, p.instance, p.wall ?? "back", M.snapDecorPosition(p.x + dx * M.DECOR_STEP, 0), M.snapDecorPosition(M.wallMountHeight(s, p) - dz * M.DECOR_STEP, 0))) { remember(before); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
+      // Across the floor or along a wall, hopping past whatever's in the way and
+      // round the back corners onto the next wall (M.stepDecor).
+      if (p && !p.on) {
+        if (M.stepDecor(s, p.instance, dx, dz)) { remember(before); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
         return;
       }
       // On a top the arrows still point across the room, whichever way the table faces.
@@ -518,7 +534,6 @@ export function homeSheets(ui) {
         if (v && M.moveDecor(s, p.instance, M.snapDecorPosition(p.x + v.x, 0), M.snapDecorPosition(p.z + v.z, 0))) { remember(before); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
         return;
       }
-      if (p && M.moveDecor(s, p.instance, M.snapDecorPosition(p.x + dx * M.DECOR_STEP, 0), M.footprint(p.id).layer === "wall" ? 0 : M.snapDecorPosition(p.z + dz * M.DECOR_STEP, 0))) { remember(before); ui.scene.movePiece(p.instance); tools.render(); ui.save(); }
     },
   };
 

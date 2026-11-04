@@ -5,13 +5,15 @@ import { HOUSEHOLD_BY_ID } from "./content/household-catalog.js";
 import { HOUSEHOLD_SIZES } from "./content/household-sizes.js";
 
 // Forty voxels to a world unit: the same fine, exposed-face construction as the
-// existing furniture. Every object has a solid back, sides and underside.
-const PX = 40, S = 1 / PX;
+// existing furniture. Every object has a solid back, sides and underside. Small
+// things (a mug, a figurine, the kettle) are built at twice that, eighty to the
+// unit, or a cat would be twelve voxels across and read as a blob.
+const FINE = 80, fineFor = item => Math.max(item.width, item.height, item.depth) <= .65;
 const C = { cream:0xe5d6bb, light:0xf1e7d5, plum:0x69425f, velvet:0x916581,
   dark:0x29232e, black:0x191b25, brass:0xb99255, gold:0xdec080, copper:0xad7048,
   wood:0x684630, edge:0x946743, walnut:0x432f29, silver:0x8997a4, glass:0x526580,
   glint:0xb0c8d7, lavender:0xac98ba, green:0x6d8757, orange:0xc9793a, cocoa:0x53392d };
-function kit(k) {
+function kit(k, PX) {
   const p = a => a.map(v => v * PX);
   return {
     box:(a,b,c,d,e,f,col,o)=>k.box(a*PX,b*PX,c*PX,d*PX,e*PX,f*PX,col,o),
@@ -21,6 +23,8 @@ function kit(k) {
     shape:(a,b,c,d,e,f,fn,col,o)=>k.shape(a*PX,b*PX,c*PX,d*PX,e*PX,f*PX,(x,y,z)=>fn(x/PX,y/PX,z/PX),col,o),
     carve:(a,b,c,d,e,f,fn=()=>true)=>k.carve(a*PX,b*PX,c*PX,d*PX,e*PX,f*PX,(x,y,z)=>fn(x/PX,y/PX,z/PX)),
     grain:col=>k.vary(col,.045,4),
+    // A paint worked out in world units, for patterns the shapes can't make.
+    paint:fn=>(x,y,z)=>fn(x/PX,y/PX,z/PX),
   };
 }
 function ring(k,x,y,z,rx,ry,depth,col,thick=.04) {
@@ -132,18 +136,44 @@ const draws = {
     k.box(w/2-.045,.145,d-.05,w/2+.045,.16,d-.025,C.walnut);
   },
   "knife-block"(k,w,h,d){
-    k.box(.025,0,.05,w-.025,.35,d-.025,k.grain(C.wood));k.box(.025,.3,.05,w-.025,.375,d-.025,C.edge);
-    for(let i=0;i<5;i++){const x=.07+i*.06,top=h-.03-(i%2)*.08;k.box(x,.33,.17,x+.025,top-.14,.25,C.silver);k.box(x-.015,top-.16,.15,x+.04,top,.27,C.dark);k.box(x-.015,top-.035,.15,x+.04,top-.01,.27,C.brass);}
-    k.box(.07,.06,d-.025,w-.07,.11,d,C.copper);
-    for(const x of [.095,.275])k.box(x,.075,d-.025,x+.025,.1,d,C.gold);
-    for(const z of [.09,.3])k.box(.025,.05,z,.05,.28,z+.025,C.edge);
+    // A walnut block with a moulded top and a copper foot, holding five knives
+    // that fan out a little: dark horn handles with brass bolsters and rivets.
+    k.box(.03,0,.04,w-.03,.4,d-.03,k.grain(C.wood),{round:2});
+    k.box(.025,.37,.035,w-.025,.4,d-.025,C.edge,{round:1});
+    k.box(.03,0,.04,w-.03,.045,d-.03,C.copper);
+    k.box(.03,.045,d-.04,w-.03,.06,d-.03,C.gold);
+    for(let i=0;i<5;i++){
+      const x=.09+i*.055,z=.15+(i%2)*.09,lean=(i-2)*.012,top=h-.03-(i%2)*.07;
+      k.box(x-.02,.394,z-.012,x+.02,.402,z+.012,C.dark);
+      k.cyl([x,.395,z],[x+lean*.3,.43,z],.022,C.brass);
+      k.cyl([x+lean*.3,.43,z],[x+lean,top,z],[.021,.025],C.dark,{caps:true});
+      for(const t of [.35,.7])k.ball(x+lean*(.3+.7*t),.43+(top-.43)*t,z+.02,.008,.008,.006,C.gold);
+    }
   },
   "cat-figure"(k,w,h,d){
-    k.ball(w/2,.15,d/2,.08,.14,.075,C.dark);k.ball(w/2,.3,d/2,.105,.09,.085,C.dark);
-    for(const x of [w*.29,w*.71])k.cyl([x,.33,d/2],[x,.415,d/2], [.045,.005],C.dark);
-    for(const x of [w*.36,w*.64])k.box(x-.0125,.3,d*.8,x+.0125,.325,d*.89,C.gold);
-    k.cyl([w*.67,.08,d*.37],[w*.87,.2,d*.35],.025,C.dark);k.cyl([w*.87,.2,d*.35],[w*.75,.29,d*.35],.025,C.dark);
-    k.box(w*.34,0,.12,w*.66,.035,.24,C.brass);
+    // A sitting moon cat on a turned walnut plinth: haunches, a chest, folded
+    // front paws, pointed ears lined in plum, glowing amber eyes with slit
+    // pupils, a collar and bell, and a tail swept round to lie by the paws.
+    const x=w/2,z=d*.5,fur=k.grain(0x262330);
+    k.lathe(x,z,0,.03,[[0,.135],[1,.125]],k.grain(C.walnut),{depth:.88});
+    ovalRim(k,x,z,.028,.128,.112,.016,C.brass,.0125);
+    k.lathe(x,z-.012,.03,.245,[[0,.09],[.22,.1],[.55,.075],[.85,.055],[1,.048]],fur,{depth:.92});
+    k.ball(x,.165,z+.035,.058,.085,.055,fur);
+    for(const s of [-1,1]){k.cyl([x+s*.032,.19,z+.055],[x+s*.034,.055,z+.07],.021,fur);k.ball(x+s*.034,.046,z+.083,.026,.016,.032,fur);}
+    k.ball(x,.315,z+.012,.078,.068,.068,fur);
+    k.ball(x,.29,z+.058,.042,.028,.03,fur);
+    for(const s of [-1,1]){
+      const ex=x+s*.052,ey=.322;
+      k.shape(ex-.034,.345,z-.03,ex+.034,.425,z+.04,(a,b,c)=>{const t=(b-.345)/.08;return Math.abs(a-ex-s*.008*t)<.03*(1-t)+.004&&Math.abs(c-z)<.024*(1-t)+.004;},fur);
+      k.shape(ex-.022,.355,z+.012,ex+.022,.405,z+.032,(a,b)=>{const t=(b-.355)/.05;return Math.abs(a-ex-s*.008*t)<.017*(1-t)+.002;},C.velvet);
+      k.shape(x+s*.032-.021,ey-.014,z+.052,x+s*.032+.021,ey+.014,z+.083,(a,b)=>((a-x-s*.032)/.021)**2+((b-ey)/.013)**2<1,0xf2c25a,{glow:true});
+      k.box(x+s*.032-.004,ey-.012,z+.07,x+s*.032+.004,ey+.012,z+.085,C.black);
+    }
+    k.shape(x-.013,.287,z+.08,x+.013,.3,z+.09,(a,b)=>Math.abs(a-x)<(b-.285)*1.1,C.velvet);
+    k.lathe(x,z+.004,.226,.243,.057,C.plum,{depth:.95});
+    k.ball(x,.216,z+.064,.015,.015,.013,C.gold);
+    // The tail, from behind the haunch round the right side to the paws.
+    for(let i=0;i<=26;i++){const t=i/26,a=-Math.PI*.6+t*Math.PI*1.08,r=.105-.012*t,rr=.02-.008*t;k.ball(x+r*Math.cos(a),.05+.012*Math.sin(t*Math.PI)+(t>.85?(t-.85)*.3:0),z+r*Math.sin(a),rr,rr,rr,fur);}
   },
   "ghost-figure"(k,w,h,d){
     k.ball(w/2,.24,d/2,.12,.17,.12,C.cream);k.box(.04,.035,.04,w-.04,.19,d-.04,C.cream);
@@ -158,10 +188,19 @@ const draws = {
     k.lathe(w/2,d/2,.09,.14,.12,C.copper);k.box(.155,.09,d*.8,.245,.16,d*.9,C.brass);k.box(.18,.11,d*.84,.22,.14,d*.94,C.dark);
   },
   "jack-o-lantern"(k,w,h,d){
-    k.ball(w/2,.18,d/2,.185,.17,.185,C.orange,{ribs:[10,.07]});
-    k.lathe(w/2,d/2,.33,.41,[[0,.04],[1,.025]],C.green);
-    for(const x of [.13,.27])k.shape(x-.035,.2,d-.06,x+.035,.27,d-.01,(a,b)=>Math.abs(a-x)<(b-.195)*.6,C.gold,{glow:true});
-    k.shape(.1,.09,d-.06,.3,.17,d-.01,(a,b)=>b>.1+Math.abs(a-.2)*.35,C.gold,{glow:true});
+    // Carved right through: a ribbed shell, a glowing hollow behind the face
+    // (eyes, a nose and a grin with two teeth left in), a curled stem and a leaf.
+    const x=w/2,z=d/2,cy=.175,front=(c)=>c>z+.08;
+    // The lobes are shaded darker down each groove.
+    k.ball(x,cy,z,.192,.168,.192,k.paint((a,b,c)=>Math.abs(Math.sin(Math.atan2(c-z,a-x)*5))<.28?0xa8551f:C.orange),{ribs:[10,.09]});
+    k.ball(x,cy,z,.15,.13,.15,0xf6a43a,{glow:true});
+    const eye=(a,b,ex)=>b>cy+.012&&b<cy+.088&&Math.abs(a-ex)<(cy+.088-b)*.66;
+    const grin=(a,b)=>{const u=a-x,top=cy-.03+2.4*u*u,low=cy-.11+3*u*u;return Math.abs(u)<.125&&b<top&&b>low&&!(Math.abs(u+.04)<.017&&b>top-.026)&&!(Math.abs(u-.035)<.017&&b<low+.026);};
+    k.carve(x-.16,cy-.13,z,x+.16,cy+.11,z+.2,(a,b,c)=>front(c)&&(eye(a,b,x-.075)||eye(a,b,x+.075)||(b>cy-.022&&b<cy+.02&&Math.abs(a-x)<(cy+.02-b)*.6)||grin(a,b)));
+    // Stem, curl and leaf.
+    k.cyl([x,.31,z],[x+.012,.39,z+.006],[.034,.024],k.grain(0x5e5a32));
+    k.cyl([x+.012,.39,z+.006],[x+.05,.405,z],.012,0x6f7a3a);k.ball(x+.055,.398,z,.012,.012,.012,0x6f7a3a);
+    k.shape(x-.11,.3,z-.06,x-.01,.34,z+.04,(a,b,c)=>{const u=(a-x+.06)/.05,v=(c-z+.01)/.04;return u*u+v*v<1&&Math.abs(b-(.31+.02*(1-u*u)))<.009;},C.green);
   },
   "folded-towels"(k,w,h,d){
     for(let i=0;i<3;i++){const col=[C.plum,C.cream,C.lavender][i],y=i*.085;k.box(.025,y,.025,w-.025,y+.075,d-.025,col,{round:1});k.box(.05,y+.045,d-.04,w-.05,y+.065,d-.015,i===1?C.brass:C.cream);}
@@ -203,16 +242,22 @@ const draws = {
     for(const x of [.105,.23])k.box(x,.12,d-.025,x+.025,.145,d,C.gold);
   },
   "kettle"(k,w,h,d){
-    k.lathe(w*.45,d/2,.025,.38,[[0,.13],[.12,.16],[.3,.18],[.65,.18],[.9,.15],[1,.125]],C.copper);
-    k.lathe(w*.45,d/2,.375,.4,.13,C.brass);k.ball(w*.45,.425,d/2,.035,.035,.035,C.dark);
-    k.cyl([.1,.24,d/2],[.025,.38,d/2],[.06,.035],C.copper);
-    k.cyl([.31,.3,d/2],[.45,.3,d/2],.035,C.dark);k.cyl([.45,.3,d/2],[.45,.54,d/2],.035,C.dark);k.cyl([.45,.54,d/2],[.2,.54,d/2],.035,C.dark);k.cyl([.2,.54,d/2],[.15,.39,d/2],.025,C.dark);
-    k.lathe(w*.45,d/2,0,.03,.14,C.dark);
-    ovalRim(k,w*.45,d/2,.075,.155,.155,.025,C.brass);
-    ovalRim(k,w*.45,d/2,.35,.145,.145,.025,0xd49868);
-    k.lathe(w*.45,d/2,.395,.4125,.1,C.light);
-    k.ball(w*.45,.44,d/2,.04,.025,.04,C.walnut);
-    for(const x of [.25,.425])k.ball(x,.38,d/2,.025,.025,.04,C.brass);
+    // A stovetop kettle in copper: a brass-banded belly, a domed lid
+    // with a walnut knob, a swan-neck spout and an arched handle with a grip.
+    const x=.28,z=d/2,copper=C.copper;
+    k.lathe(x,z,0,.03,.15,C.dark);
+    k.lathe(x,z,.025,.36,[[0,.15],[.15,.175],[.45,.185],[.75,.17],[1,.12]],copper);
+    ovalRim(k,x,z,.07,.182,.182,.02,C.brass,.025);
+    ovalRim(k,x,z,.33,.14,.14,.02,C.brass,.02);
+    k.lathe(x,z,.36,.405,[[0,.12],[1,.085]],copper);
+    k.lathe(x,z,.4,.415,.05,C.brass);
+    k.ball(x,.44,z,.034,.028,.034,C.walnut);
+    const neck=[[.15,.13],[.1,.19],[.068,.26],[.05,.33],[.032,.375]];
+    for(let i=0;i<neck.length-1;i++)k.cyl([neck[i][0],neck[i][1],z],[neck[i+1][0],neck[i+1][1],z],[.044-.0075*i,.037-.0075*i],copper);
+    k.cyl([.04,.37,z],[.024,.385,z],.016,C.brass);
+    for(let i=0;i<=20;i++){const a=Math.PI*i/20;k.ball(x+Math.cos(a)*.135,.4+Math.sin(a)*.135,z,.017,.017,.017,C.dark);}
+    k.cyl([x-.065,.528,z],[x+.065,.528,z],.026,k.grain(C.walnut));
+    for(const s of [-1,1])k.ball(x+s*.135,.392,z,.024,.024,.024,C.brass);
   },
   "cream-mug":(k,w,h,d)=>cup(k,w,h,d,C.cream),
   "plum-mug":(k,w,h,d)=>cup(k,w,h,d,C.plum),
@@ -276,8 +321,10 @@ const draws = {
       for(const dx of [-.05,0,.05])k.ball(x+dx,.05,z+.05,.035,.04,.055,C.brass);
       k.ball(x,.225,z,.08,.07,.075,C.gold);
     }
-    k.shape(.05,.25,.05,w-.05,.9,d-.05,(x,y,z)=>((x-w/2)/(.98-(.9-y)*.25))**2+((z-d/2)/(.5-(.9-y)*.2))**2<1,C.copper);
-    k.shape(.1,.4,.1,w-.1,.95,d-.1,(x,y,z)=>((x-w/2)/.9)**2+((z-d/2)/.42)**2<1,C.cream);
+    // The enamel lining stays inside the copper shell as it tapers, so no cream bands show through the sides.
+    const rx=y=>.98-(.9-y)*.25,rz=y=>.5-(.9-y)*.2;
+    k.shape(.05,.25,.05,w-.05,.9,d-.05,(x,y,z)=>((x-w/2)/rx(y))**2+((z-d/2)/rz(y))**2<1,k.grain(C.copper));
+    k.shape(.1,.4,.1,w-.1,.95,d-.1,(x,y,z)=>((x-w/2)/Math.min(.9,rx(y)-.05))**2+((z-d/2)/Math.min(.42,rz(y)-.04))**2<1,C.cream);
     k.shape(.2,.55,.17,w-.2,1,d-.17,(x,y,z)=>((x-w/2)/.8)**2+((z-d/2)/.33)**2<1,C.glass);
     k.carve(.2,.65,.17,w-.2,1,d-.17,(x,y,z)=>((x-w/2)/.8)**2+((z-d/2)/.33)**2<1);
     ovalRim(k,w/2,d/2,.85,.975,.475,.075,C.light,.05);
@@ -396,8 +443,20 @@ const draws = {
   "washing-machine":(k,w,h,d)=>machine(k,w,h,d),
   "dryer":(k,w,h,d)=>machine(k,w,h,d,true),
   "detergent"(k,w,h,d){
-    k.box(.025,0,.025,w-.025,.375,d-.025,C.plum,{round:2});k.lathe(w/2,d/2,.35,.43,.065,C.plum);k.lathe(w/2,d/2,.425,.5,.075,C.brass);
-    k.box(.05,.1,d-.04,w-.05,.29,d-.015,C.cream);moon(k,w/2,.2,d-.01,.055,C.plum);
+    // A turned plum glass bottle with shoulders, a brass collar and stopper,
+    // and a cream label with a little moth on it.
+    const x=w/2,z=d/2,glass=k.grain(C.plum);
+    k.lathe(x,z,0,.33,[[0,.108],[.06,.125],[.82,.125],[1,.112]],glass,{depth:.82});
+    k.lathe(x,z,.33,.4,[[0,.112],[1,.045]],glass,{depth:.82});
+    k.lathe(x,z,.4,.43,.042,glass);
+    k.lathe(x,z,.425,.442,.056,C.brass);
+    k.lathe(x,z,.44,.49,[[0,.05],[.6,.045],[1,.03]],C.brass);
+    k.ball(x,.49,z,.022,.01,.022,C.gold);
+    const body=(a,c)=>((a-x)/.126)**2+((c-z)/.104)**2<=1.02;
+    k.shape(x-.08,.1,z+.05,x+.08,.28,z+.11,(a,b,c)=>body(a,c)&&((a-x)/.078)**2+((b-.19)/.082)**2<1,C.cream);
+    k.shape(x-.07,.12,z+.088,x+.07,.26,z+.11,(a,b,c)=>body(a,c)&&((a-x)/.078)**2+((b-.19)/.082)**2<.72&&!(((a-x)/.07)**2+((b-.19)/.074)**2<.6),C.gold);
+    for(const s of [-1,1])k.shape(x-.07,.15,z+.09,x+.07,.24,z+.11,(a,b,c)=>body(a,c)&&((a-x-s*.028)/.026)**2+((b-.2+Math.abs(a-x)*.2)/.03)**2<1,C.velvet);
+    k.box(x-.005,.16,z+.095,x+.005,.235,z+.11,C.dark);
   },
   "bath-mirror"(k,w,h,d){
     k.shape(0,0,0,w,h,d-.025,(x,y)=>((x-w/2)/(.45))**2+((y-h/2)/(.575))**2<=1,C.brass);
@@ -429,26 +488,68 @@ const draws = {
     k.lathe(w*.6,d*.5,.105,.125,.175,C.dark);k.lathe(w*.6,d*.5,.125,.15,.055,C.copper);
   },
   "bookend"(k,w,h,d){
-    k.box(.025,0,.025,w-.025,.05,d-.025,C.brass);k.box(.025,.05,.025,.075,h-.025,d-.025,C.brass);
-    moon(k,w*.52,h*.55,d-.08,.16,C.copper);k.box(.07,.05,d-.1,w-.025,.1,d-.025,C.copper);
+    // A weighted walnut foot, a brass plate the books lean on, and a copper
+    // crescent moon with a sleepy eye, a gold star hanging from its horn.
+    k.box(0,0,0,w,.05,d,k.grain(C.walnut),{round:1});
+    k.box(.015,.05,.015,w-.015,.065,d-.015,C.brass);
+    k.box(.02,.05,.02,.065,h-.02,d-.02,C.brass,{round:1});
+    k.box(.02,h-.035,.02,.065,h-.015,d-.02,C.gold);
+    const mx=.19,my=.25,R=.13;
+    k.shape(mx-R,my-R,.13,mx+R,my+R,.24,(a,b)=>(a-mx)**2+(b-my)**2<R*R&&(a-mx-.055)**2+(b-my-.035)**2>(R*.8)**2&&b>.07,k.grain(C.copper));
+    k.shape(mx-R,my-R,.235,mx+R,my+R,.25,(a,b)=>{const o=(a-mx)**2+(b-my)**2,i=(a-mx-.055)**2+(b-my-.035)**2;return o<R*R&&o>(R-.014)**2&&i>(R*.8)**2&&b>.07;},C.gold);
+    k.box(mx-.098,my+.005,.24,mx-.062,my+.017,.25,C.dark);
+    k.cyl([mx+.04,my+.105,.19],[mx+.04,my+.04,.19],.006,C.gold);
+    for(const [a,b] of [[.03,.008],[.008,.03]])k.box(mx+.04-a,my+.02-b,.18,mx+.04+a,my+.02+b,.2,C.gold);
   },
 };
+
+// The premium finish every piece gets once it's modelled. Light catches the
+// top edges and corners, the bottom edges sit in a little shadow, enamel, wood
+// and cloth take a soft mottle in blocks of four voxels (so faces still merge),
+// and metal gets brushed streaks and goes to its own satin material, where the
+// room's lamps glint on it. Returns the mask of metal voxels.
+const METALS = new Set([C.brass, C.gold, C.copper, C.silver, 0xd49868]);
+const hash3 = (x, y, z) => { let h = (x * 374761393 + y * 668265263 + z * 2147483647) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+const tone = (c, f) => (Math.min(255, Math.round((c >> 16) * f)) << 16) | (Math.min(255, Math.round(((c >> 8) & 255) * f)) << 8) | Math.min(255, Math.round((c & 255) * f));
+function finishGrid(grid) {
+  const { nx, ny, nz, kind, rgb } = grid, metal = new Uint8Array(kind.length), open = (x, y, z) => !grid.filled(x, y, z);
+  for (let z = 0; z < nz; z++) for (let y = 0; y < ny; y++) for (let x = 0; x < nx; x++) {
+    const i = grid.index(x, y, z);
+    if (kind[i] !== 1) continue;
+    const c = rgb[i], shiny = METALS.has(c), up = open(x, y + 1, z), down = open(x, y - 1, z);
+    const sides = open(x - 1, y, z) + open(x + 1, y, z) + open(x, y, z - 1) + open(x, y, z + 1);
+    if (shiny) metal[i] = 1;
+    if (!up && !down && !sides) continue;
+    let f = shiny ? 1.12 * (1 + (hash3(x >> 1, y >> 2, z >> 1) - .5) * .05) : 1 + (hash3(x >> 2, y >> 2, z >> 2) - .5) * .06;
+    if (up && sides) f *= shiny ? 1.2 : 1.1;
+    else if (sides >= 2 && !down) f *= 1.04;
+    if (down && sides) f *= .88;
+    rgb[i] = tone(c, f);
+  }
+  return metal;
+}
+// Satin metal: without an environment to reflect, a little metalness and a
+// lower roughness give glints from the lamps without going dark.
+export const VOXEL_METAL = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .4, metalness: .28 });
 
 const cache = new Map();
 function model(id) {
   if(cache.has(id))return cache.get(id);
   const item=HOUSEHOLD_BY_ID[id],draw=draws[id.replace(/^household-/,"")];
   if(!item||!draw)throw new RangeError("Unknown household prop: "+id);
+  const PX=fineFor(item)?FINE:40,S=1/PX;
   const recipe={width:Math.round(item.width*PX),height:Math.round(item.height*PX),depth:Math.round(item.depth*PX),
-    build:k=>draw(kit(k),item.width,item.height,item.depth)};
+    build:k=>draw(kit(k,PX),item.width,item.height,item.depth)};
   const pixels=Array.from({length:recipe.height},()=>new Int32Array(recipe.width).fill(-1));
   const {grid}=buildModel(recipe,{w:recipe.width,h:recipe.height},pixels);
-  const geometry=meshGrid(grid,{scale:S,offset:[-item.width/2,0,item.wall?0:-item.depth/2]});
+  const metal=finishGrid(grid),rest=metal.map(v=>1-v),offset=[-item.width/2,0,item.wall?0:-item.depth/2];
+  const geometry=meshGrid(grid,{scale:S,offset,only:rest}),shine=meshGrid(grid,{scale:S,offset,only:metal})[0];
   const data={id,native:true,mount:item.wall?"wall":"floor",anchor:item.wall?"wall-bottom-centre":"floor-centre",
     width:item.width,height:item.height,depth:item.depth,voxels:grid.count,
-    triangles:geometry.reduce((n,g)=>n+(g?g.index.count/3:0),0),
+    triangles:[...geometry,shine].reduce((n,g)=>n+(g?g.index.count/3:0),0),
     interaction:item.interaction??null,sockets:[],surfaceCount:HOUSEHOLD_SIZES[id].tops.length};
-  const m={geometry,data};cache.set(id,m);return m;
+  if(shine)shine.userData.shared=true;
+  const m={geometry,shine,data};cache.set(id,m);return m;
 }
 
 const pixelGeometry=new THREE.BoxGeometry(1,1,.008);
@@ -516,6 +617,7 @@ function addDrum(group,item,piece) {
 
 export function householdProp(id,{piece}={}) {
   const m=model(id),item=HOUSEHOLD_BY_ID[id],group=voxelGroup(m.geometry,{shared:true});
+  if(m.shine){const mesh=new THREE.Mesh(m.shine,VOXEL_METAL);mesh.castShadow=mesh.receiveShadow=true;group.add(mesh);}
   group.name=id;group.userData={...m.data,sockets:[],media:piece?.media??{on:false,channel:0}};
   if(item.interaction==="television"||item.interaction==="laptop")addScreen(group,item,piece);
   if(item.interaction==="washing-machine")addDrum(group,item,piece);

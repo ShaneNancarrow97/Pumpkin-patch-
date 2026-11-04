@@ -5,6 +5,7 @@
 // you're playing with: a keycap, DualSense shapes or Xbox letters.
 import { glyphHTML, padFamily } from './glyphs.js';
 import { createPadMenu } from './pad-menu.js';
+import { decorById, footprint } from '../model.js';
 const toolNames={hand:'Interact',plant:'Plant',water:'Water',harvest:'Pick',clean:'Clean'};
 const inputField=()=>['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
 const dead=v=>Math.abs(v)>.18?v:0;
@@ -252,7 +253,9 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     stickEl.hidden=lookEl.hidden=$('#play-gait').hidden=$('#play-recenter').hidden=p.available===false;
     $('#furniture-pad').hidden=!piece||blocked||radial||details;
     $('#play-arrange').hidden=!p.enabled||blocked||radial||!!piece||!p.target?.instance||p.place==='estate'||p.available===false||!!p.pose;
-    if(piece)setText($('.play-piece-label'),(piece.id??'Furniture').replaceAll('-',' ')+' · '+Math.round(piece.rotation??0)+'°');
+    if(piece){const onWall=footprint(piece.id).layer==='wall';setText($('.play-piece-label'),(decorById[piece.id]?.name??'Furniture')+' · '+(onWall?(piece.wall??'back')+' wall':Math.round(piece.rotation??0)+'°'));
+      // On a wall piece the turn buttons carry it to the next wall round (home-sheets.js rotate).
+      if(root.dataset.pieceWall!==String(onWall)){root.dataset.pieceWall=String(onWall);root.querySelectorAll('[data-turn]').forEach(b=>b.setAttribute('aria-label',onWall?`Move to the wall on the ${b.dataset.turn<0?'left':'right'}`:`Rotate ${b.dataset.turn<0?'left':'right'} 15 degrees`));}}
     // The portrait can be blank until the sprites load, so keep asking until it is real.
     const face=$('[data-owner-portrait]');if(p.who&&(p.who!==shownWho||!face.naturalWidth&&performance.now()>retryFace)){const url=portrait(p.who);if(url){shownWho=p.who;face.src=url;}retryFace=performance.now()+1500;}
     setText($('[data-owner]'),p.who==='shane'?'Shane':'Natalie');setText($('#play-toggle span'),padName?'Play · '+padName:'Play');
