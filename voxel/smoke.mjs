@@ -25,11 +25,8 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
     await page.locator("#piece-bar").waitFor({ state: "visible" });
   };
   // Prices need a short hold (ui/hold-to-buy.js): press, wait for the fill to finish, let go.
-  const buy = async (selector) => {
-    const el = page.locator(selector).first(); await el.scrollIntoViewIfNeeded(); const r = await el.boundingBox();
-    await page.mouse.move(r.x + r.width / 2, r.y + r.height / 2); await page.mouse.down();
-    await page.waitForFunction(() => !document.querySelector(".purchase-button.holding"), null, { polling: 100, timeout: 20000 }); await page.mouse.up();
-  };
+  // Prices buy with one tap (Codex's home customisation removed hold to buy).
+  const buy = async (selector) => { const el = page.locator(selector).first(); await el.scrollIntoViewIfNeeded(); await el.click(); };
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
@@ -117,10 +114,9 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.locator("#harvest-all").click();
   check(await page.evaluate(()=>PumpkinVoxel.state().plots[0].phase==="ready"&&PumpkinVoxel.state().stock[0]===window.__barn),`${name}: full storage keeps a ripe crop instead of paying overflow money`);
   await page.locator('[data-tab="shop"]').click();await page.locator('[data-upgrade-section="farm"]').click();
-  await page.evaluate(()=>{window.__hints=0;new MutationObserver(m=>{for(const r of m)for(const n of r.addedNodes)if(n.classList?.contains("hold-hint"))window.__hints++;}).observe(document.body,{childList:true});});
-  await page.locator('[data-buy="storage"]').click();
-  check(await page.evaluate(()=>PumpkinVoxel.state().upgrades.storage===0&&window.__hints>0),`${name}: a quick tap on a price only says hold to buy`);
-  await buy('[data-buy="storage"]');await page.locator("#sheet-close").click();await page.locator("#harvest-all").click();
+  await buy('[data-buy="storage"]');
+  check(await page.evaluate(()=>PumpkinVoxel.state().upgrades.storage===1),`${name}: one tap on a price buys it`);
+  await page.locator("#sheet-close").click();await page.locator("#harvest-all").click();
   check(await page.evaluate(()=>PumpkinVoxel.state().upgrades.storage===1&&PumpkinVoxel.state().stock[0]>window.__barn),`${name}: paid barn expansion permits harvesting again`);
   await page.evaluate(()=>{const s=PumpkinVoxel.state();s.paused=true;s.visitors=Array.from({length:5},(_,i)=>({id:500+i,kind:5+i,age:1.6+i*.8,budget:40,basketLimit:1,preferred:[0],basket:[],amount:0,quantity:0,bought:null,outcome:"shopping",leaveAt:null,spot:0,needs:{thirst:50,hunger:40,happiness:80},festival:{done:true},hollowConsidered:true}));PumpkinVoxel.scene.focus(31,17,1.9);});
   await page.waitForFunction(()=>PumpkinVoxel.scene.visitorStatus.filter(v=>v.id>=500&&v.sprite&&v.visible&&v.frames===4).length===5,null,{timeout:120000});

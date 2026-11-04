@@ -1,4 +1,4 @@
-import atlas from "../../assets/home/garden-icons.png";
+import atlas from "../../assets/home/garden-icons.webp";
 import { ESTATE_DECOR } from "../content/house-estate.js";
 
 // One generated 4×7 atlas, matching the catalogue order exactly. Keep its data
