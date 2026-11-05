@@ -63,7 +63,7 @@ const centre = (r) => ({ x: (r.left + r.right) / 2, y: (r.top + r.bottom) / 2 })
 
 export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, hubAllowed = () => true } = {}) {
   let using = false, hubOn = false, hubFrom = "", hubKey = null, lastKey = null, lastSpot = null, lastSurface = "", ringOn = null;
-  let dir = "", nextAt = 0, then = performance.now(), crossHeld = false, hintKey = "";
+  let dir = "", nextAt = 0, then = performance.now(), crossHeld = false, hintKey = "", stickScroll = null;
   const hints = document.createElement("div"); hints.className = "pad-hints"; hints.hidden = true; hints.setAttribute("aria-hidden", "true");
   document.body.append(hints);
   function quiet() { ring(null); hints.hidden = true; document.body.classList.remove("pad-menus"); }
@@ -92,20 +92,23 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
     el?.setAttribute("data-pad-focus", "");
   }
   // The menu's scrolling list, if the choice is in one.
+  // The nearest list that really scrolls wins (the furniture catalogue's grid
+  // scrolls inside a sheet body that doesn't); a sheet falls back to its body.
   function scroller(sf, el) {
-    if (sf.el.id === "sheet") return document.getElementById("sheet-body");
     for (let n = el?.parentElement; n && inside(sf, n); n = n.parentElement) {
       if (/(auto|scroll)/.test(getComputedStyle(n).overflowY) && n.scrollHeight > n.clientHeight + 2) return n;
     }
-    return null;
+    return sf.el.id === "sheet" ? document.getElementById("sheet-body") : null;
   }
+  // Screen pixels to a list's own: TV mode zooms menus, and scrollTop counts the list's pixels.
+  const scale = (box) => (box.offsetHeight ? box.getBoundingClientRect().height / box.offsetHeight : 1) || 1;
   // Scroll just enough to show a choice, clear of a sticky row of tabs; a choice in that row is always in view.
   function reveal(sf, el) {
     const box = scroller(sf, el); if (!box) return;
     for (let n = el; n && n !== box; n = n.parentElement) if (getComputedStyle(n).position === "sticky") return;
     const r = el.getBoundingClientRect(), v = box.getBoundingClientRect(), top = Math.min(parseFloat(getComputedStyle(box).scrollPaddingTop) || 0, v.height / 3) + 10;
     const by = r.top < v.top + top ? r.top - v.top - top : r.bottom > v.bottom - 10 ? r.bottom - v.bottom + 10 : 0;
-    if (by) box.scrollTo({ top: box.scrollTop + by, behavior: "smooth" });
+    if (by) box.scrollTo({ top: box.scrollTop + by / scale(box), behavior: "smooth" });
   }
   function focus(sf, el, scroll = true) {
     if (!el) return;
@@ -157,7 +160,7 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
   }
   // L1 / R1: the menu's first row of tabs, or a book's pages.
   function turn(sf, step) {
-    const root = bodyOf(sf), row = root.querySelector(".segmented");
+    const root = bodyOf(sf), row = root.querySelector("[data-pad-tabs]") ?? root.querySelector(".segmented");  // a row marked for the bumpers (the catalogue's kinds) before the sheet's own tabs
     const tabs = row ? [...row.querySelectorAll("button:not(:disabled)")].filter((b) => b.getClientRects().length) : [];
     if (tabs.length > 1) {
       const at = Math.max(0, tabs.findIndex((b) => b.getAttribute("aria-pressed") === "true")), next = tabs[(at + step + tabs.length) % tabs.length];
@@ -259,7 +262,8 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
       // Scrolling: a page at a time on L2 / R2, smoothly on the right stick.
       if (box) {
         if (pressed(6) || pressed(7)) box.scrollBy({ top: (pressed(7) ? 1 : -1) * box.clientHeight * .8, behavior: "smooth" });
-        if (Math.abs(ry) > .3) box.scrollTop += Math.sign(ry) * (Math.abs(ry) - .3) / .7 * 1300 * dt;
+        if (Math.abs(ry) > .3) { stickScroll = (stickScroll ?? box.scrollTop) + Math.sign(ry) * (Math.abs(ry) - .3) / .7 * 1300 * dt; box.scrollTop = stickScroll = Math.max(0, Math.min(box.scrollHeight - box.clientHeight, stickScroll)); }
+        else stickScroll = null;
       }
       return true;
     },

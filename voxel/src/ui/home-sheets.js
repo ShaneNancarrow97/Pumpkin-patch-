@@ -261,7 +261,7 @@ export function homeSheets(ui) {
     return `<section class="build-cat" aria-label="Build catalogue">
       <div class="build-top">${find}<span class="build-room"><b>${M.roomPieces(s, here()).length}/${M.roomCapacity(s, here())}</b> in the ${roomName(here()).toLowerCase()}</span></div>
       <nav class="build-rail" aria-label="Browse by">${rail}</nav>
-      <div class="build-subs" role="group" aria-label="${mode === "room" ? "Rooms" : "Kinds"}">${row}<span class="build-sub-name">${label}</span></div>
+      <div class="build-subs" data-pad-tabs role="group" aria-label="${mode === "room" ? "Rooms" : "Kinds"}">${row}<span class="build-sub-name">${label}</span></div>
       <div class="build-grid" role="list">${tiles || `<p class="build-empty">Nothing here${search ? ` matches “${search}”` : " yet"}.</p>`}</div>
       <div class="build-detail" aria-live="polite">${detail(s, picked)}</div>
       <div class="build-foot"><button class="build-toggle" data-toggle="owned" aria-pressed="${ownedOnly}"><i></i>Owned only</button><button class="build-toggle" data-toggle="afford" aria-pressed="${affordable}"><i></i>Can afford</button><span>Each purchase adds one copy · store and reuse</span></div>

@@ -108,3 +108,15 @@
 .tv-mode .sheet :is(.card p, .purchase-card p, .cooking-upgrade p, .more-link small, .setting span small) { display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 .tv-mode .sheet :is(.about, .cooking-note:not(.is-warning), .service-next p) { display: none; }
 .tv-mode .sheet .card h3, .tv-mode .sheet .purchase-card h3 { font-size: 15px; }
+
+/* The furniture catalogue on a TV: a tall panel down the left two thirds of
+   the screen, with the room beside it, big tabs and big tiles. */
+.tv-mode .sheet[data-section="home"]:has(.build-cat) { left: 12px !important; right: auto !important; top: 12px !important; bottom: 12px !important; width: calc(64vw / var(--tv-zoom, 1)) !important; height: auto !important; }
+.tv-mode .build-cat { grid-template-columns: 84px minmax(0, 1fr); }
+.tv-mode .build-rail-tab { min-height: 76px !important; font-size: 13px !important; }
+.tv-mode .build-rail-tab svg { width: 30px; height: 30px; }
+.tv-mode .build-sub { flex-basis: 54px; width: 54px; height: 54px; }
+.tv-mode .build-sub svg { width: 26px; height: 26px; }
+.tv-mode .build-grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)) !important; gap: 10px !important; scroll-behavior: auto; }
+.tv-mode .sheet[data-section="home"]:has(.build-cat) .segmented button { min-height: 46px; font-size: 15px; }
+.tv-mode .build-search { min-height: 46px; }
