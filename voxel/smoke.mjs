@@ -24,9 +24,11 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
     await page.locator("#play-radial").waitFor({ state: "hidden" });
     await page.locator("#piece-bar").waitFor({ state: "visible" });
   };
-  // Prices need a short hold (ui/hold-to-buy.js): press, wait for the fill to finish, let go.
-  // Prices buy with one tap (Codex's home customisation removed hold to buy).
-  const buy = async (selector) => { const el = page.locator(selector).first(); await el.scrollIntoViewIfNeeded(); await el.click(); };
+  // Prices buy with one tap (Codex's home customisation removed hold to buy). A
+  // plain click scrolls the price into view and finds it again if the menu
+  // redraws meanwhile (an open menu redraws when its live numbers change); a
+  // separate scroll into view holds the old element and fails when it goes.
+  const buy = (selector) => page.locator(selector).first().click();
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
