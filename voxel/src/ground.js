@@ -89,53 +89,91 @@ function bed(x, z, plot) {
 }
 
 // Builds the ground mesh over [x0, x1) x [z0, z1): cell(x, z) → [height, colour].
-// `farmView`: only ever seen by the farm's camera, which looks north and down
-// and never turns, so the sides facing east, west and north are left out (two
-// fifths of the cobbles' triangles).
+// Each cell's colour lives in a texture, one texel a cell, drawn sharp, so the
+// geometry only has to follow the heights: rectangles of one height merge into
+// a single top quad (cobbles, grass and soil come to a few hundred thousand
+// triangles fewer), and the sides merge along their runs, sampling the cells
+// they stand under. Vertex colours only shade the sides. `farmView`: the
+// sides the management camera never sees (east, west, north) go in a child
+// mesh, `far`, hidden until the play camera turns about (scene.js shows it).
 export function buildGround(bounds, cell, { farmView = false } = {}) {
   const { x0, x1, z0, z1 } = bounds, nx = Math.round((x1 - x0) / G), nz = Math.round((z1 - z0) / G);
-  const hgt = new Float32Array(nx * nz), col = new Uint32Array(nx * nz);
+  const hgt = new Float32Array(nx * nz), texels = new Uint8Array(nx * nz * 4);
   for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
-    const [h, c] = cell(x0 + (i + 0.5) * G, z0 + (j + 0.5) * G);
-    hgt[j * nx + i] = Math.round(h * 200) / 200; col[j * nx + i] = c;
+    const [h, c] = cell(x0 + (i + 0.5) * G, z0 + (j + 0.5) * G), k = j * nx + i;
+    hgt[k] = Math.round(h * 200) / 200;
+    texels[k * 4] = (c >> 16) & 255; texels[k * 4 + 1] = (c >> 8) & 255; texels[k * 4 + 2] = c & 255; texels[k * 4 + 3] = 255;
   }
-  const pos = [], nor = [], rgb = [], idx = [], linear = new THREE.Color();
-  const quad = (corners, normal, c) => {
-    const n = pos.length / 3;
-    linear.setHex(c, THREE.SRGBColorSpace);
-    for (const p of corners) { pos.push(...p); nor.push(...normal); rgb.push(linear.r, linear.g, linear.b); }
-    idx.push(n, n + 1, n + 2, n, n + 2, n + 3);
+  const near = { pos: [], nor: [], uv: [], rgb: [], idx: [] }, far = farmView ? { pos: [], nor: [], uv: [], rgb: [], idx: [] } : near;
+  let into = near;
+  const U = (x) => (x - x0) / (x1 - x0), V = (z) => (z - z0) / (z1 - z0);
+  // A quad's corners with their texture points and a shade (1 on top).
+  const quad = (corners, uvs, normal, shade) => {
+    const b = normal[2] === 1 || normal[1] === 1 ? near : into, n = b.pos.length / 3;
+    corners.forEach((p, q) => { b.pos.push(...p); b.nor.push(...normal); b.uv.push(...uvs[q]); b.rgb.push(shade, shade, shade); });
+    b.idx.push(n, n + 1, n + 2, n, n + 2, n + 3);
   };
+  into = far;
   const at = (i, j) => (i < 0 || j < 0 || i >= nx || j >= nz ? -0.5 : hgt[j * nx + i]);
+  // Tops: greedy rectangles of equal height.
+  const done = new Uint8Array(nx * nz);
+  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
+    const k = j * nx + i; if (done[k]) continue;
+    const h = hgt[k]; let w = 1, d = 1;
+    while (i + w < nx && !done[k + w] && hgt[k + w] === h) w++;
+    grow: while (j + d < nz) { for (let q = 0; q < w; q++) { const m = (j + d) * nx + i + q; if (done[m] || hgt[m] !== h) break grow; } d++; }
+    for (let r = 0; r < d; r++) done.fill(1, (j + r) * nx + i, (j + r) * nx + i + w);
+    const xa = x0 + i * G, xb = x0 + (i + w) * G, za = z0 + j * G, zb = z0 + (j + d) * G;
+    quad([[xa, h, za], [xa, h, zb], [xb, h, zb], [xb, h, za]], [[U(xa), V(za)], [U(xa), V(zb)], [U(xb), V(zb)], [U(xb), V(za)]], [0, 1, 0], 1);
+  }
+  // Sides facing south and north: runs along a row with the same step down.
+  // The texture point sits in the middle of the cell's row, so each stretch
+  // shows the colour of the cell above it.
   for (let j = 0; j < nz; j++) {
-    const za = z0 + j * G, zb = za + G;
-    // Tops: runs of equal height and colour along the row merge into one quad.
-    for (let i = 0; i < nx;) {
-      const k = j * nx + i, h = hgt[k], c = col[k];
-      let e = i + 1;
-      while (e < nx && hgt[j * nx + e] === h && col[j * nx + e] === c) e++;
-      const xa = x0 + i * G, xb = x0 + e * G;
-      quad([[xa, h, za], [xa, h, zb], [xb, h, zb], [xb, h, za]], [0, 1, 0], c);
-      i = e;
-    }
-    // Sides, where a column stands above its neighbour: a touch darker.
-    for (let i = 0; i < nx; i++) {
-      const k = j * nx + i, h = hgt[k], c = shade(col[k], 0.22), xa = x0 + i * G, xb = xa + G;
-      const east = at(i + 1, j), west = at(i - 1, j), south = at(i, j + 1), north = at(i, j - 1);
-      if (farmView) { if (south < h) quad([[xa, south, zb], [xb, south, zb], [xb, h, zb], [xa, h, zb]], [0, 0, 1], shade(col[k], 0.1)); continue; }
-      if (east < h) quad([[xb, east, za], [xb, h, za], [xb, h, zb], [xb, east, zb]], [1, 0, 0], c);
-      if (west < h) quad([[xa, west, zb], [xa, h, zb], [xa, h, za], [xa, west, za]], [-1, 0, 0], c);
-      if (south < h) quad([[xa, south, zb], [xb, south, zb], [xb, h, zb], [xa, h, zb]], [0, 0, 1], shade(col[k], 0.1));
-      if (north < h) quad([[xb, north, za], [xa, north, za], [xa, h, za], [xb, h, za]], [0, 0, -1], c);
+    const vm = (j + 0.5) / nz;
+    for (const [dj, zEdge, normal, shade] of [[1, z0 + (j + 1) * G, [0, 0, 1], 0.9], [-1, z0 + j * G, [0, 0, -1], 0.78]]) {
+      for (let i = 0; i < nx;) {
+        const h = hgt[j * nx + i], o = at(i, j + dj);
+        if (o >= h) { i++; continue; }
+        let e = i + 1;
+        while (e < nx && hgt[j * nx + e] === h && at(e, j + dj) === o) e++;
+        const xa = x0 + i * G, xb = x0 + e * G, ua = U(xa), ub = U(xb);
+        if (dj > 0) quad([[xa, o, zEdge], [xb, o, zEdge], [xb, h, zEdge], [xa, h, zEdge]], [[ua, vm], [ub, vm], [ub, vm], [ua, vm]], normal, shade);
+        else quad([[xb, o, zEdge], [xa, o, zEdge], [xa, h, zEdge], [xb, h, zEdge]], [[ub, vm], [ua, vm], [ua, vm], [ub, vm]], normal, shade);
+        i = e;
+      }
     }
   }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
-  geo.setAttribute("normal", new THREE.Float32BufferAttribute(nor, 3));
-  geo.setAttribute("color", new THREE.Float32BufferAttribute(rgb, 3));
-  geo.setIndex(idx.length > 65535 ? new THREE.Uint32BufferAttribute(idx, 1) : new THREE.Uint16BufferAttribute(idx, 1));
-  const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, metalness: 0 }));
-  mesh.receiveShadow = true;
+  // Sides facing east and west: runs down a column.
+  for (let i = 0; i < nx; i++) {
+    const um = (i + 0.5) / nx;
+    for (const [di, xEdge, normal] of [[1, x0 + (i + 1) * G, [1, 0, 0]], [-1, x0 + i * G, [-1, 0, 0]]]) {
+      for (let j = 0; j < nz;) {
+        const h = hgt[j * nx + i], o = at(i + di, j);
+        if (o >= h) { j++; continue; }
+        let e = j + 1;
+        while (e < nz && hgt[e * nx + i] === h && at(i + di, e) === o) e++;
+        const za = z0 + j * G, zb = z0 + e * G, va = V(za), vb = V(zb);
+        if (di > 0) quad([[xEdge, o, za], [xEdge, h, za], [xEdge, h, zb], [xEdge, o, zb]], [[um, va], [um, va], [um, vb], [um, vb]], normal, 0.78);
+        else quad([[xEdge, o, zb], [xEdge, h, zb], [xEdge, h, za], [xEdge, o, za]], [[um, vb], [um, vb], [um, va], [um, va]], normal, 0.78);
+        j = e;
+      }
+    }
+  }
+  const map = new THREE.DataTexture(texels, nx, nz);
+  map.colorSpace = THREE.SRGBColorSpace; map.magFilter = THREE.NearestFilter; map.minFilter = THREE.LinearMipmapLinearFilter; map.generateMipmaps = true; map.needsUpdate = true;
+  const material = new THREE.MeshStandardMaterial({ map, vertexColors: true, roughness: 0.95, metalness: 0 });
+  const build = (b) => {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(b.pos, 3));
+    geo.setAttribute("normal", new THREE.Float32BufferAttribute(b.nor, 3));
+    geo.setAttribute("uv", new THREE.Float32BufferAttribute(b.uv, 2));
+    geo.setAttribute("color", new THREE.Float32BufferAttribute(b.rgb, 3));
+    geo.setIndex(b.pos.length / 3 > 65535 ? new THREE.Uint32BufferAttribute(b.idx, 1) : new THREE.Uint16BufferAttribute(b.idx, 1));
+    const mesh = new THREE.Mesh(geo, material); mesh.receiveShadow = true; return mesh;
+  };
+  const mesh = build(near);
+  if (far !== near && far.pos.length) { const back = build(far); back.visible = false; back.userData.groundFar = true; mesh.add(back); }
   return mesh;
 }
 

@@ -356,7 +356,9 @@ export function createScene(canvas, state, hooks) {
   // the manner of a cosy life-sim, rather than the management view's high
   // orthographic shot. Its distance follows the zoom (L2 / R2).
   const followCam = new THREE.PerspectiveCamera(40, 1, 0.3, 160);
-  let followOn = false;
+  let followOn = false, farSides = false;
+  // The ground's far sides (ground.js) show only while the play camera can turn.
+  function showFarSides(on) { farSides = on; scene.traverse((o) => { if (o.userData.groundFar) o.visible = on; }); }
   const FOLLOW = { pitch: THREE.MathUtils.degToRad(27), near: 7.5, far: 19 };
   const active = () => view.place === "carving" ? carvingView.camera : view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : followOn ? followCam : camera;
   const activeScene = () => view.place === "carving" ? carvingView.scene : view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
@@ -491,6 +493,7 @@ export function createScene(canvas, state, hooks) {
     backdrop.visible = view.place !== "hayride" && !(control && !view.place);
     orbitGround.visible=orbitBackdrop.visible=control&&!view.place;
     followOn = control && !view.place;
+    if (followOn !== farSides) showFarSides(followOn);
     renderPass.camera = active();
     renderPass.scene = activeScene();
     renderer.toneMappingExposure = view.place === "maze" ? 1.3 : view.place === "carving" ? 1.2 : 1.45;
@@ -814,7 +817,7 @@ export function createScene(canvas, state, hooks) {
     festivalWorld.tick(time);
     farmExpansion.sync(); wilds.sync();
     const land = `${farmViewWidth()}:${fieldDepth(state)}`;
-    if (land !== framedLand) { framedLand = land; frame(); clearMist(); }
+    if (land !== framedLand) { framedLand = land; frame(); clearMist(); if (farSides) showFarSides(true); }
     hollowFarm.sync(); hollowFarm.tick(time);
     hayrideWorld.tick(time);
     cookingWorld.tick(time);
@@ -865,7 +868,8 @@ export function createScene(canvas, state, hooks) {
     }
     syncChats();
     lightLamps(dt);
-    if (!view.place && (shadowFrame++ & 1) === 0) moon.shadow.needsUpdate = true;
+    // The farm's shadows redraw every third frame: a sprite's shadow trailing by two frames can't be seen, and the pass costs as much as the view.
+    if (!view.place && shadowFrame++ % 3 === 0) moon.shadow.needsUpdate = true;
     for (const [id, entry] of visitorModels) if (!state.visitors.some((v) => v.id === id)) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); disposeCustomerBag(entry.dish); entry.m.userData.dispose?.(); visitorModels.delete(id); }
 
     // Fireflies.
@@ -1052,6 +1056,7 @@ export function createScene(canvas, state, hooks) {
     get foyerStatus() { return foyerView.status; },
     // For profiling tools: the farm's three.js objects (tools/perf).
     get debug() { return { scene, renderer, camera, composer, active, activeScene }; },
+    get world() { return scene; },
     get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? antialias.enabled ? "FXAA" : "density" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
     setRenderQuality(value) { renderQuality = validRenderQuality(value); resize(); return renderQuality; },
     selectPiece(instance) { places.select(instance); },

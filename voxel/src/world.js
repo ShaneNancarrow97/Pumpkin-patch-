@@ -89,7 +89,7 @@ export function yardGround({ width = MAP.w, depth = MAP.d, plotsTier = 0, pathEn
     }
     if (edge(x, z, z > MAP.d ? MAP.w : width, x > MAP.w ? MAP.d : depth)) return grounds.grass(x, z);
     return grounds.cobble(x, z, COL.yard, 0.3, 2, 0x2a2430);
-  }, { farmView: false });
+  }, { farmView: true });
 }
 // Rough grass beyond the map's edges, for when the view is zoomed out.
 function ground(v, r) {
@@ -775,7 +775,7 @@ export function buildWorld() {
   for (const [x, z] of [[2.2, 12.4 + DROP], [12.4, 23.8 + DROP], [19, 23.8 + DROP], [30, 21 + DROP], [38, 16.6 + DROP], [11.8, 4.2], [28, 4.4], [3.2, 9.4]]) flowers(z > 23 + DROP ? front : v, r, x, z);
   for (let x = 8; x < 32; x += 1.3) for (let k = 0; k < 7; k++)                           // low autumn hedging beyond the front fence
     front.block(x + (r() - 0.5) * 1.2, (r() * 0.5), 25.9 + DROP + r() * 1.4, 0.42, 0.42, 0.42, vary(CANOPY[(r() * 3) | 0][1 + ((r() * 3) | 0)], 0.08, r));
-  const group = v.build(), frontBoundary = front.build(), patchBoundary = patch.build(); frontBoundary.name = "Original farm front"; patchBoundary.name = "Original patch rim"; group.add(frontBoundary, patchBoundary);
+  const group = v.build({ detailShadows: false }), frontBoundary = front.build(), patchBoundary = patch.build(); frontBoundary.name = "Original farm front"; patchBoundary.name = "Original patch rim"; group.add(frontBoundary, patchBoundary);
   const terrain = yardGround(); group.add(terrain);
   return { group, serviceTrees, serviceTreeMesh: group.children.find(m => m.isInstancedMesh), ground: terrain, frontBoundary, patchBoundary, lights: [...lights, ...stall.lights], door: home.door };
 }

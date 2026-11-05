@@ -23,7 +23,7 @@ export class Voxels {
     return this.box(x - w / 2, y, z - d / 2, w, h, d, color, glow);
   }
 
-  build({ shadows = true } = {}) {
+  build({ shadows = true, detailShadows = true } = {}) {
     const group = new THREE.Group();
     const make = (list, material, cast) => {
       if (!list.length) return;
@@ -37,7 +37,12 @@ export class Voxels {
       mesh.receiveShadow = shadows;
       group.add(mesh);
     };
-    make(this.solid, new THREE.MeshStandardMaterial({ roughness: 0.92, metalness: 0 }), true);
+    // detailShadows: false leaves detail voxels (every side under 0.16 units)
+    // out of the shadow pass, in a mesh of their own: their shadows would be a
+    // pixel or two, and big farm builds have thousands of them.
+    const lit = new THREE.MeshStandardMaterial({ roughness: 0.92, metalness: 0 }), small = (b) => Math.max(b[3], b[4], b[5]) < 0.16;
+    if (detailShadows) make(this.solid, lit, true);
+    else { make(this.solid.filter((b) => !small(b)), lit, true); make(this.solid.filter(small), lit, false); }
     make(this.glow, new THREE.MeshBasicMaterial({ toneMapped: false }), false);
     return group;
   }

@@ -334,7 +334,7 @@ export function buildHayrideStation(signBoard, fleet = false) {
   for (const l of lanes) { bore(v, r, l, rz + 0.2, -1, 4.8); tunnelMouth(v, r, l, rz + 0.2, -1, false); }
   for (let x = west - 1.2; x < east + 1.6; x += 0.5) if (!inBore(x, lanes)) block(v, x + 0.25, 3.35, rz + 0.45, 0.5, 0.3 + (Math.floor(x * 2) % 2) * 0.1, 0.3, vary(ROCK[Math.floor(r() * 4)], 0.08, r));  // a parapet along the lip
   for (const l of lanes) for (const side of [-1, 1]) { const px = l + side * (BORE.half + 0.4); block(v, px, 3.35, rz + 0.45, 0.12, 0.3, 0.12, IRON); block(v, px, 3.62, rz + 0.45, 0.22, 0.26, 0.22, LANTERN, true); }
-  root.add(v.build(), into); root.name = "The Hollow Hayride farm station";
+  root.add(v.build({ detailShadows: false }), into); root.name = "The Hollow Hayride farm station";
   // The hayride's sign across the ticket barn's gable, facing the camera.
   const sign = signBoard("The Hollow Hayride", "tickets · woodland scares", 2.8);
   sign.position.set(BX, 2.68, BZ + BD / 2 + 0.36); sign.userData = { type: "hayride", hayrideLabel: true }; root.add(sign);
