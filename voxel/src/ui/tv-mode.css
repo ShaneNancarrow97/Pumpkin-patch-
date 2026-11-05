@@ -131,6 +131,16 @@ body.has-pad:not(.tv-mode) .play-legend { gap: 12px; height: 42px; padding: 0 14
 
 /* No frosted glass in TV mode or on a touch screen: a backdrop blur is
    worked out again every frame over the moving farm (a phone casting to a TV
-   is also encoding video), and these panels are near-opaque anyway. */
+   is also encoding video). Without the blur, bright things behind the glass
+   read through it (the farm's signs behind the HUD), so the panels it
+   covered go near-solid instead. */
 .tv-mode *, .tv-mode *::before, .tv-mode *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
-@media (pointer: coarse) { *, *::before, *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; } }
+.tv-mode { --panel-glass: #211e29fc; }
+.tv-mode .whisper { background: #1d1724fc; }
+.tv-mode .estate-camera-tools, .tv-mode .estate-place-tools { background: #211b29fc; }
+@media (pointer: coarse) {
+  *, *::before, *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  :root { --panel-glass: #211e29fc; }
+  .whisper { background: #1d1724fc; }
+  .estate-camera-tools, .estate-place-tools { background: #211b29fc; }
+}

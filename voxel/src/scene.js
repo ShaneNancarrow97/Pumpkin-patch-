@@ -398,10 +398,12 @@ export function createScene(canvas, state, hooks) {
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
   const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.5, 0.45, 0.86);
-  // In TV mode the glow's blur chain runs at half size: a soft glow loses
-  // nothing in the cast's video, and the chain is most of the glow's cost.
+  // The glow's blur is measured in its own pixels, so a smaller chain spreads
+  // every halo wider. In TV mode it's worked out at the size the picture would
+  // be drawn without TV mode, so lanterns glow as designed at any density.
   const bloomSize = bloom.setSize.bind(bloom);
-  bloom.setSize = (w, h) => { const k = tvProfile ? .5 : 1; bloomSize(Math.max(1, Math.round(w * k)), Math.max(1, Math.round(h * k))); };
+  let glowScale = 1;
+  bloom.setSize = (w, h) => bloomSize(Math.max(1, Math.round(w * glowScale)), Math.max(1, Math.round(h * glowScale)));
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
   // Canvas MSAA does not apply to offscreen composer targets. FXAA smooths
@@ -539,6 +541,7 @@ export function createScene(canvas, state, hooks) {
   function resize() {
     const sizing = renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, view.place === "carving", tvProfile), w = sizing.width, h = sizing.height;
     viewW = w; viewH = h; viewRect = canvas.getBoundingClientRect();
+    glowScale = tvProfile ? renderSizing(w, h, window.devicePixelRatio, renderQuality, view.place === "carving").pixelRatio / sizing.pixelRatio : 1;
     if (renderer.getPixelRatio() !== sizing.pixelRatio) renderer.setPixelRatio(sizing.pixelRatio);
     renderer.setSize(w, h, false);
     if (postprocessRatio !== sizing.pixelRatio) { composer.setPixelRatio(sizing.pixelRatio); postprocessRatio = sizing.pixelRatio; }

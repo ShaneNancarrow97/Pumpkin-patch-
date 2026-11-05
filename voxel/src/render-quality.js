@@ -5,17 +5,19 @@ export const RENDER_QUALITIES = [
   { id: "performance", name: "Performance", maxDpr: 1, maxPixels: 1250000 },
 ];
 export const validRenderQuality = value => RENDER_QUALITIES.some(q => q.id === value) ? value : "sharp";
-// A phone mirrored to a TV sends the picture as compressed 720p or 1080p
-// video while it draws, so fine pixels never reach the screen: TV mode caps
-// the density and the pixel count below any quality's own limits.
-export const TV_RENDER = Object.freeze({ maxDpr: 1.5, maxPixels: 1600000 });
+// A phone mirrored to a TV sends its screen as 720p or 1080p video, fitted
+// inside 1920 × 1080. TV mode draws no more pixels than that shows (an
+// unfolded phone would draw twice as many), and no fewer, or the TV
+// stretches the picture and faces go soft (a folded phone's wide screen).
+export const TV_CAST = Object.freeze({ width: 1920, height: 1080 });
+export const tvPixelRatio = (width, height) => Math.max(1, Math.min(TV_CAST.width / width, TV_CAST.height / height));
 // `close`: a small scene seen up close (the carving bench) can afford sharper pixels.
-// `tv`: the TV caps above, after the rest.
+// `tv`: no denser than the cast, after the rest.
 export function renderSizing(width, height, deviceRatio = 1, value = "sharp", close = false, tv = false) {
   const base = RENDER_QUALITIES.find(q => q.id === validRenderQuality(value)), near = close ? { ...base, maxDpr: Math.min(3, base.maxDpr * 1.5), maxPixels: base.maxPixels * 1.6 } : base;
-  const quality = tv ? { ...near, maxDpr: Math.min(near.maxDpr, TV_RENDER.maxDpr), maxPixels: Math.min(near.maxPixels, TV_RENDER.maxPixels) } : near;
   const safe = n => Number.isFinite(n) && n > 0 ? n : 1;
   const w = Math.max(1, Math.round(safe(width))), h = Math.max(1, Math.round(safe(height)));
+  const quality = tv ? { ...near, maxDpr: Math.min(near.maxDpr, tvPixelRatio(w, h)) } : near;
   const pixelRatio = Math.min(safe(deviceRatio), quality.maxDpr, Math.sqrt(quality.maxPixels / w / h));
   return { quality: quality.id, pixelRatio, postprocessRatio: pixelRatio, width: w, height: h, bufferWidth: Math.max(1, Math.floor(w * pixelRatio)), bufferHeight: Math.max(1, Math.floor(h * pixelRatio)) };
 }

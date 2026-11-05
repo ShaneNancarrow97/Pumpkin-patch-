@@ -7,7 +7,7 @@
 #play-controls svg{display:block}
 
 /* The Play chip and the player card. */
-.play-chip,.play-owner,.play-piece-label{position:fixed;right:max(16px,env(safe-area-inset-right));top:calc(78px + env(safe-area-inset-top));border:1px solid var(--play-edge);border-radius:28px;background:linear-gradient(160deg,#3a2e3ff2,#211a28f5);box-shadow:inset 0 1px #ffe8c21a,0 8px 26px #0006}
+.play-chip,.play-owner,.play-piece-label{position:fixed;right:max(16px,env(safe-area-inset-right));top:calc(78px + env(safe-area-inset-top));border:1px solid var(--play-edge);border-radius:28px;background:linear-gradient(160deg,#3a2e3ffc,#211a28fc);box-shadow:inset 0 1px #ffe8c21a,0 8px 26px #0006}
 .play-chip{display:flex;align-items:center;gap:8px;padding:6px 16px 6px 12px;color:var(--play-gold)!important;font-weight:600!important;letter-spacing:.02em}
 .play-chip-icon{width:22px;height:22px}
 .inside-place .play-chip,.inside-place .play-owner{top:auto;bottom:calc(98px + env(safe-area-inset-bottom))}
@@ -74,7 +74,7 @@
 .play-gait[aria-pressed=true]{border-color:#ffd38d80;color:var(--play-gold)!important}
 .play-recenter{right:calc(max(var(--edge),env(safe-area-inset-right)) + var(--look) + 16px);bottom:calc(var(--bottom) + var(--a) + 34px + env(safe-area-inset-bottom));width:var(--r);height:var(--r);min-height:var(--r)}
 .play-recenter svg{width:20px;height:20px}
-.play-arrange{position:fixed;right:max(14px,env(safe-area-inset-right));top:calc(132px + env(safe-area-inset-top));display:flex;align-items:center;gap:7px;min-height:44px;padding:0 14px;border:1px solid var(--play-edge);border-radius:22px;background:linear-gradient(160deg,#3a2e3ff2,#211a28f5);box-shadow:0 6px 18px #0006;font-size:13px!important;font-weight:600!important;color:#f5ddb4!important}
+.play-arrange{position:fixed;right:max(14px,env(safe-area-inset-right));top:calc(132px + env(safe-area-inset-top));display:flex;align-items:center;gap:7px;min-height:44px;padding:0 14px;border:1px solid var(--play-edge);border-radius:22px;background:linear-gradient(160deg,#3a2e3ffc,#211a28fc);box-shadow:0 6px 18px #0006;font-size:13px!important;font-weight:600!important;color:#f5ddb4!important}
 .play-arrange svg{width:18px;height:18px}
 
 /* Glyph badges: a keycap, DualSense shapes or Xbox letters. */
