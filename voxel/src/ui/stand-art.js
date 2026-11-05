@@ -105,3 +105,7 @@ export const standArt = {
     }, { w: 720, h: 360, from: [-.36, .42, 1], fov: 26, pad: 1.02, margin: .03, warm: 10, warmAt: [0, 2.4, 2.2] });
   },
 };
+
+// The same studio for other menus' pictures (ui/fishing-art.js): a model,
+// photographed once and kept as a short blob URL under its key.
+export const voxelPhoto = (key, make, options) => shoot(key, make, options);

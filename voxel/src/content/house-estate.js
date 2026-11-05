@@ -46,6 +46,9 @@ export const ESTATE_DECOR = [
   { id: "picnic-table", name: "Moonlit picnic table", cost: 340, w: 2.6, d: 1.8, height: 1.1, score: 2, houseLevel: 1, text: "Room for two, a gingham cloth and a basket of cocoa." },
   { id: "lantern-garland", name: "Lantern garland", cost: 260, w: 3.4, d: .6, height: 2.6, score: 2, houseLevel: 1, text: "Paper lanterns strung between two crooked posts." },
   { id: "lily-pond", name: "Lily pond", cost: 680, w: 3.2, d: 2.4, height: .6, score: 4, houseLevel: 2, text: "Still water, lily pads and a frog who sings at night." },
+  // The fishing lake (rules/fishing.js, content/fishing.js): one per garden,
+  // fished from its jetty, with traps round its edge.
+  { id: "fishing-lake", name: "Fishing lake", cost: 1500, w: 7.2, d: 5.2, height: 1.6, score: 6, houseLevel: 1, lake: true, unique: true, text: "Reeds, lily pads and a jetty to fish from. Set traps round its edge for crayfish and eels." },
 ];
 const finish = (id, category, name, cost, houseLevel, color, light, dark) => ({ id, category, name, cost, houseLevel, color, palette: [color, light, dark] });
 export const ESTATE_FINISHES = [

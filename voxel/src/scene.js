@@ -1038,6 +1038,8 @@ export function createScene(canvas, state, hooks) {
     refreshRoom() { places.refresh(); },
     refreshEstate() { festivalWorld.sync(); farmExpansion.sync(); frame(); },
     refreshHouseEstate() { if (view.place === "estate") estateView.sync(); },
+    // Turns the garden's camera onto a point (the fishing lake), keeping its angle.
+    focusGarden(x, z) { estateView.focus?.(x, z); },
     // The carving bench's close-up (carving-view.js), for its controls and QA.
     get carving() { return carvingView; },
     previewEstateDecor(data) { estateView.preview(data); },

@@ -3,6 +3,7 @@
 import { ESTATE_EXPANSIONS, ESTATE_DECOR, ESTATE_DECOR_BY_ID, ESTATE_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_DEFAULT_FINISHES, ESTATE_HOUSE_RESERVE, ESTATE_PATH_HALF_WIDTH, ESTATE_BORDER, ESTATE_HOUSE_SKINS, ESTATE_SKIN_BY_ID } from "../content/house-estate.js";
 import { validPieceColour } from "./piece-colours.js";
 import { restoreGardenCrop } from "./garden-crops.js";
+import { LAKE } from "../content/fishing.js";
 export { ESTATE_EXPANSIONS, ESTATE_DECOR, ESTATE_DECOR_BY_ID, ESTATE_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_DEFAULT_FINISHES, ESTATE_HOUSE_SKINS, ESTATE_SKIN_BY_ID } from "../content/house-estate.js";
 
 const EPS = 1e-6, MAX_COPIES = 200, MAX_INSTANCE = 1000000;
@@ -44,6 +45,14 @@ function rect(id, x, z, rotation) {
   const d = ESTATE_DECOR_BY_ID[id], a = angle(rotation) * Math.PI / 180, c = Math.cos(a), sn = Math.sin(a);
   return { x, z, hx: d.w / 2, hz: d.d / 2, ux: c, uz: -sn, vx: sn, vz: c };
 }
+// The fishing lake's jetty needs a clear landing on the shore in front of it,
+// or no one could walk out to fish: the lake only fits where it has one, and
+// nothing else may be put on it.
+function landing(x, z, rotation) {
+  const a = angle(rotation) * Math.PI / 180, c = Math.cos(a), sn = Math.sin(a), lx = LAKE.jetty.x, lz = LAKE.d / 2 + .6;
+  return { x: x + lx * c + lz * sn, z: z - lx * sn + lz * c, hx: (LAKE.jetty.w + .4) / 2, hz: .6, ux: c, uz: -sn, vx: sn, vz: c };
+}
+const footprints = (id, x, z, rotation) => ESTATE_DECOR_BY_ID[id]?.lake ? [rect(id, x, z, rotation), landing(x, z, rotation)] : [rect(id, x, z, rotation)];
 const axisRect = r => ({ x: (r.x0 + r.x1) / 2, z: (r.z0 + r.z1) / 2, hx: (r.x1 - r.x0) / 2, hz: (r.z1 - r.z0) / 2, ux: 1, uz: 0, vx: 0, vz: 1 });
 function overlaps(a, b) {
   for (const [x, z] of [[a.ux, a.uz], [a.vx, a.vz], [b.ux, b.uz], [b.vx, b.vz]]) {
@@ -56,17 +65,20 @@ function overlaps(a, b) {
 }
 export function estateFits(s, id, x, z, rotation = 0, ignoreInstance) {
   if (!s?.estate || typeof id !== "string" || !ESTATE_DECOR_BY_ID[id] || ![x, z, rotation].every(Number.isFinite)) return false;
-  const b = estateBounds(s), r = rect(id, x, z, rotation), hw = Math.abs(r.ux) * r.hx + Math.abs(r.vx) * r.hz, hd = Math.abs(r.uz) * r.hx + Math.abs(r.vz) * r.hz;
-  if (x - hw < b.x0 + ESTATE_BORDER - EPS || x + hw > b.x1 - ESTATE_BORDER + EPS || z - hd < b.z0 + ESTATE_BORDER - EPS || z + hd > b.z1 - ESTATE_BORDER + EPS) return false;
+  const b = estateBounds(s), mine = footprints(id, x, z, rotation), r = mine[0];
+  for (const q of mine) {
+    const hw = Math.abs(q.ux) * q.hx + Math.abs(q.vx) * q.hz, hd = Math.abs(q.uz) * q.hx + Math.abs(q.vz) * q.hz;
+    if (q.x - hw < b.x0 + ESTATE_BORDER - EPS || q.x + hw > b.x1 - ESTATE_BORDER + EPS || q.z - hd < b.z0 + ESTATE_BORDER - EPS || q.z + hd > b.z1 - ESTATE_BORDER + EPS) return false;
+  }
   if (overlaps(r, axisRect(ESTATE_HOUSE_RESERVE)) || overlaps(r, axisRect({ x0: -ESTATE_PATH_HALF_WIDTH, x1: ESTATE_PATH_HALF_WIDTH, z0: ESTATE_HOUSE_RESERVE.z1, z1: b.z1 }))) return false;
-  return !s.estate.placed.some(p => p.instance !== ignoreInstance && overlaps(r, rect(p.id, p.x, p.z, p.rotation)));
+  return !s.estate.placed.some(p => p.instance !== ignoreInstance && footprints(p.id, p.x, p.z, p.rotation).some(o => mine.some(q => overlaps(q, o))));
 }
 
 export function buyEstateDecor(s, id) {
   const d = typeof id === "string" ? ESTATE_DECOR_BY_ID[id] : null;
   if (!d || (s?.house?.level ?? 0) < d.houseLevel || !spendable(s, d.cost)) return false;
   const owned = (s.estate.ownedDecor[id] ?? 0) + s.estate.placed.filter(p => p.id === id).length;
-  if (owned >= MAX_COPIES) return false;
+  if (owned >= (d.unique ? 1 : MAX_COPIES)) return false;
   s.coins -= d.cost; s.estate.invested += d.cost; s.estate.ownedDecor[id] = (s.estate.ownedDecor[id] ?? 0) + 1; return true;
 }
 

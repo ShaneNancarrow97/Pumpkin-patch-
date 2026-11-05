@@ -10,6 +10,8 @@ import { buildCarving, LANTERN_R } from "./carving-pumpkin.js";
 import { STENCIL_BY_ID, CARVING_DECOR, inPiece, pieceKind } from "./content/carving.js";
 import { lanternSpots } from "./play-ways.js";
 import { attachPieceGestures, createFraming } from "./piece-gestures.js";
+import { createLakeLife } from "./fishing-lake-models.js";
+import { currentTraps } from "./rules/fishing.js";
 
 // A separate render scene: the farm keeps running while the camera explores
 // a complete house, rather than exposing the backs of the farm's diorama.
@@ -53,6 +55,7 @@ export function createHouseEstateView(canvas, state, hooks) {
     begin: () => hooks.gesture.begin(), drag: (x, z) => hooks.gesture.drag(x, z), turn: degrees => hooks.gesture.turn(degrees), end: cancelled => hooks.gesture.end(cancelled),
   });
 
+  const def$ = (p) => ESTATE_DECOR_BY_ID[p.id] ?? {};
   function sync() {
     const e = state.estate, bounds = estateBounds(state), hk = JSON.stringify([state.house.level, e.finishes.walls, e.finishes.roof, e.finishes.trim, e.finishes.door]), gk = JSON.stringify([e.expansion, e.finishes.fence]);
     if (hk !== houseKey) {
@@ -96,6 +99,8 @@ export function createHouseEstateView(canvas, state, hooks) {
         const def = ESTATE_DECOR_BY_ID[p.id], group = buildEstateDecor(p.id, stage), hit = new THREE.Mesh(new THREE.BoxGeometry(def.w, def.height, def.d), pickMaterial);
         hit.userData = { type: "estate-decor", instance: p.instance }; scene.add(group, hit); pickables.push(hit); item = { group, hit, stage }; props.set(p.instance, item);
       }
+      // The fishing lake's moving parts ride on its model (fishing-lake-models.js).
+      if (def$(p).lake && !item.life) { item.life = createLakeLife(); item.water = item.group.getObjectByName("lake-water"); item.group.add(item.life.group); }
       const q = override?.instance === p.instance ? override : p;
       item.group.position.set(q.x, .04, q.z); item.group.rotation.y = THREE.MathUtils.degToRad(q.rotation);
       if(item.tint!==p.tint){applyPieceColour(item.group,p.tint);item.tint=p.tint;}
@@ -179,6 +184,11 @@ export function createHouseEstateView(canvas, state, hooks) {
   canvas.addEventListener("contextmenu", e => { if (active) e.preventDefault(); });
   return {
     scene, camera, cameraActions, sync, resize, preview, play,
+    // Looks at a point in the garden from a little closer, keeping the camera's angle.
+    focus(x, z) {
+      const offset = camera.position.clone().sub(controls.target); offset.setLength(Math.min(offset.length(), 17));
+      controls.target.set(x, .8, z); camera.position.copy(controls.target).add(offset); controls.update();
+    },
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = true; },
     leave() { active = false; controls.enabled = false; pointers.clear(); gesture = false; preview(null); following = false; controls.minDistance = 13; },
     tick(time = 0) {
@@ -186,6 +196,7 @@ export function createHouseEstateView(canvas, state, hooks) {
       sync(); entrance.tick(time, !hooks.editing?.() && !hooks.blocked?.()); const b = estateBounds(state), old = controls.target.clone();
       controls.target.x = THREE.MathUtils.clamp(controls.target.x, b.x0 + 2, b.x1 - 2); controls.target.z = THREE.MathUtils.clamp(controls.target.z, b.z0 + 2, b.z1 - 2); controls.target.y = THREE.MathUtils.clamp(controls.target.y, .5, 9);
       camera.position.add(controls.target.clone().sub(old)); if (!gestures.busy) framing.step(); controls.update();
+      for (const item of props.values()) if (item.life) { if (item.water) item.water.material.userData.uTime.value = time; item.life.update(time, state.fishing, currentTraps(state)); }
     },
     get status() { return { active, built, houseLevel: state.house.level, skin: house?.userData.skin ?? null, skinDetailCount: house?.userData.skinDetailCount ?? 0, expansion: state.estate.expansion, placed: props.size, entrance: { visible: entrance.group.visible, position: entrance.group.position.toArray() }, azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle(), distance: controls.getDistance(), target: controls.target.toArray(), preview: previewData ? { ...previewData } : null }; },
   };

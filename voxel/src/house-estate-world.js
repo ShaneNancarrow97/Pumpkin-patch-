@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
+import { addLakeModel, lakeWater } from "./fishing-lake-models.js";
 import { ESTATE_DEFAULT_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_EXPANSIONS, ESTATE_DECOR_BY_ID, ESTATE_SKIN_BY_ID, ESTATE_HOUSE_SIZES, ESTATE_KITCHEN_WING } from "./content/house-estate.js";
 
 const STONE = [0x777281, 0x99919b, 0x5a5666], WOOD = 0x392b2b, GOLD = 0xcaa269, LEAVES = [0x7b3141, 0xab4f37, 0xd5823e, 0x62404d], GREEN = [0x35483c, 0x4c6250, 0x6a7654];
@@ -515,6 +516,7 @@ export function buildEstateDecor(id, stage = "ready") {
   const meta = ESTATE_DECOR_BY_ID[id];
   if (!meta) { const empty = new THREE.Group(); empty.userData.id = id; return empty; }
   if (gardenExtra(v, r, id, stage)) {}
+  else if (id === "fishing-lake") addLakeModel(v, r);
   else if (id === "lantern-post") {
     stone(v, r, 0, 0, 0, .5, .18, .5); v.block(0, .18, 0, .13, 1.73, .13, 0x3d3037); v.block(0, 1.72, 0, .5, .09, .3, GOLD); lantern(v, 0, 1.92, 0, 1.18);
   } else if (id === "rose-bed") {
@@ -581,7 +583,7 @@ export function buildEstateDecor(id, stage = "ready") {
     for (let i = -2; i <= 2; i++) v.block(i * .13, .99 - (i % 2) * .08, 0, .12, .3, .4, 0xd4cbd1);
     lantern(v, .57, .6, .02, .55);
   }
-  const group = v.build(); group.name = meta.name; group.userData.id = id; group.userData.stage = stage; group.userData.footprint = { w: meta.w, d: meta.d, height: meta.height };
+  const group = v.build(); if (id === "fishing-lake") group.add(lakeWater()); group.name = meta.name; group.userData.id = id; group.userData.stage = stage; group.userData.footprint = { w: meta.w, d: meta.d, height: meta.height };
   return group;
 }
 

@@ -14,9 +14,21 @@ export const TV_SIZES = [["compact", "Compact", .86], ["standard", "Standard", 1
 // screen would show (a folded phone at 412 gets .59), and at most .75 (an
 // unfolded Fold is about 750 tall, and its menus would otherwise cover most
 // of the TV), scaled by the chosen size and never past life size.
-export function tvZoom(height, size = "standard") {
-  const k = TV_SIZES.find((s) => s[0] === size)?.[2] ?? 1;
-  return Math.round(Math.min(1, Math.max(.45, Math.min(.75, (Number(height) || 700) / 700)) * k) * 1000) / 1000;
+//
+// A TV's own screen (Samsung DeX, by cable or wirelessly, or a browser on the
+// TV) is tall in CSS pixels, about 1080: there everything grows instead, so
+// text stands as high on the TV as it does from a mirrored phone (about 1.85%
+// of the screen's height), up to 1.6 times.
+export function tvZoom(height, size = "standard", width = 0) {
+  const k = TV_SIZES.find((s) => s[0] === size)?.[2] ?? 1, h = Number(height) || 700;
+  if (bigScreen(width, h)) return Math.round(Math.min(1.6, Math.max(1, h * .0185 / 13)) * k * 1000) / 1000;
+  return Math.round(Math.min(1, Math.max(.45, Math.min(.75, h / 700)) * k) * 1000) / 1000;
+}
+// A screen shaped and sized like a TV's own: landscape, about 16:9, and at
+// least 900 CSS pixels tall. A phone's own screen never is.
+export function bigScreen(width, height) {
+  const w = Number(width) || 0, h = Number(height) || 0, a = w / h;
+  return h >= 900 && a > 1.6 && a < 1.95;
 }
 
 // How this device puts its screen on a TV, from its user agent.
@@ -42,7 +54,12 @@ export function createTvMode({ prefs, savePrefs = () => {}, notice = () => {}, o
     const on = !!prefs.tvMode;
     document.body.classList.toggle("tv-mode", on);
     onChange(on);
-    document.documentElement.style.setProperty("--tv-zoom", on ? String(tvZoom(innerHeight, prefs.tvSize)) : "1");
+    document.documentElement.style.setProperty("--tv-zoom", on ? String(tvZoom(innerHeight, prefs.tvSize, innerWidth)) : "1");
+    // The game opened on a TV's own screen (DeX, the first time): TV mode sizes everything for the sofa.
+    if (!on && !prefs.bigScreenHinted && bigScreen(innerWidth, innerHeight) && navigator.maxTouchPoints > 0) {
+      prefs.bigScreenHinted = true; savePrefs();
+      setTimeout(() => notice("On a TV's own screen? Turn on TV mode in Settings: menus sized for the sofa, and the controller's buttons on screen."), 1500);
+    }
   }
   function set(on) { prefs.tvMode = !!on; savePrefs(); apply(); }
   // The screen stays awake while mirroring; the lock lapses when the page is hidden, so take it again on return.
@@ -69,5 +86,5 @@ export function createTvMode({ prefs, savePrefs = () => {}, notice = () => {}, o
     return done;
   }
   apply();
-  return { apply, set, ready, keepAwake, get on() { return !!prefs.tvMode; }, zoom: () => (prefs.tvMode ? tvZoom(innerHeight, prefs.tvSize) : 1), route: () => castRoute(navigator.userAgent) };
+  return { apply, set, ready, keepAwake, get on() { return !!prefs.tvMode; }, zoom: () => (prefs.tvMode ? tvZoom(innerHeight, prefs.tvSize, innerWidth) : 1), route: () => castRoute(navigator.userAgent) };
 }

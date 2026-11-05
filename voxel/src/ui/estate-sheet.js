@@ -3,6 +3,9 @@ import * as E from "../rules/house-estate.js";
 import { ESTATE_DECOR, ESTATE_DECOR_BY_ID, ESTATE_EXPANSIONS, ESTATE_FINISHES, ESTATE_FINISH_BY_ID, ESTATE_HOUSE_SKINS } from "../content/house-estate.js";
 import { money, segmented } from "./kit.js";
 import { gardenSpriteIcon as gardenIcon } from "./garden-icons.js";
+import { fishingArt } from "./fishing-art.js";
+// The lake is newer than the garden's picture grid: a photograph of its model.
+const lakeArt = () => { const url = fishingArt.lake(); return url ? `<span class="estate-art"><img src="${url}" alt="" style="width:100%;height:100%;object-fit:contain"></span>` : ""; };
 
 const HOUSE_NAMES = ["Little cottage", "Crooked cottage", "Midnight manor", "Haunted haven"];
 const FINISH_GROUPS = [["walls", "Walls"], ["roof", "Roof"], ["trim", "Window trim"], ["door", "Front door"], ["fence", "Garden fence"]];
@@ -41,7 +44,7 @@ export function estateSheet(ui) {
       const buttons = gardenView === "placed" ? `<button class="button" data-estate-select="${item.instance}" ${editable(s) ? "" : "disabled"}>Move</button>`
         : gardenView === "stored" ? `<button class="button gold" data-estate-place="${d.id}" ${editable(s) ? "" : "disabled"}>Place</button>`
         : `${locked ? `<button class="button" disabled>Locked</button>` : `<button class="button ${amount ? "" : "gold"}" data-estate-buy="${d.id}" ${editable(s) && s.coins >= d.cost ? "" : "disabled"}>${money(d.cost)}</button>`}${amount ? `<button class="button" data-estate-place="${d.id}" ${editable(s) ? "" : "disabled"}>Place · ${amount}</button>` : ""}`;
-      return `<article class="estate-card">${gardenIcon(d.id, ui.scene.estateDecorThumb?.(d.id))}<div><h3>${d.name}</h3><p>${gardenView === "placed" ? "Tap Move to position it in the garden." : d.text}</p><small>${locked ? `Opens with the ${HOUSE_NAMES[d.houseLevel]}` : `${d.crop ? `Grows ${d.crop.amount} ${d.crop.name} in ${Math.round(d.crop.seconds / 60 * 10) / 10} min · ` : d.carving ? "Opens pumpkin carving · " : ""}${d.w} × ${d.d} footprint · ${amount} stored${placed ? ` · ${placed} outside` : ""}`}</small></div><div class="estate-card-actions">${buttons}</div></article>`;
+      return `<article class="estate-card">${gardenIcon(d.id, ui.scene.estateDecorThumb?.(d.id)) || (d.lake ? lakeArt() : "")}<div><h3>${d.name}</h3><p>${gardenView === "placed" ? "Tap Move to position it in the garden." : d.text}</p><small>${locked ? `Opens with the ${HOUSE_NAMES[d.houseLevel]}` : `${d.crop ? `Grows ${d.crop.amount} ${d.crop.name} in ${Math.round(d.crop.seconds / 60 * 10) / 10} min · ` : d.carving ? "Opens pumpkin carving · " : ""}${d.w} × ${d.d} footprint · ${amount} stored${placed ? ` · ${placed} outside` : ""}`}</small></div><div class="estate-card-actions">${buttons}</div></article>`;
     }).join("") + `<p class="small">Store and reuse garden pieces freely. Keep the front path and the space around the house clear.</p>`;
   }
   function finishes(s) {

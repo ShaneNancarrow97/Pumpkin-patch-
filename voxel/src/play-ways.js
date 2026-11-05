@@ -9,6 +9,8 @@ import { estateBounds } from "./rules/house-estate.js";
 import { ESTATE_DECOR_BY_ID, ESTATE_HOUSE_SIZES, ESTATE_KITCHEN_WING } from "./content/house-estate.js";
 import { HEDGE_ARCH } from "./content/farm-layout.js";
 import { gardenBedAction } from "./rules/garden-crops.js";
+import { LAKE } from "./content/fishing.js";
+import { lakePoint, trapCount, trapCatches } from "./rules/fishing.js";
 
 // The feet are a circle of FEET; a strip runs REACH past where they stop.
 const FEET = .25, REACH = .3, PLINTH = .2, GARDEN_EDGE = .45;
@@ -29,6 +31,11 @@ export function lanternSpots(s) {
   const front = house(s).d / 2 + PLINTH + .75;
   return (s?.carving?.lanterns ?? []).map((_, i) => ({ x: (i % 2 ? 1 : -1) * (2.45 + Math.floor(i / 2) * .66), z: front }));
 }
+// The lake's water, in its own plan: everything but its jetty.
+function lakeWater() {
+  const j = LAKE.jetty, w = LAKE.w / 2, d = LAKE.d / 2, left = j.x - j.w / 2, right = j.x + j.w / 2;
+  return [{ x0: -w, x1: left, z0: -d, z1: d }, { x0: right, x1: w, z0: -d, z1: d }, { x0: left, x1: right, z0: -d, z1: j.z0 }];
+}
 // The garden the owner walks: inside the fence, round the house, the porch
 // posts, the open gate's leaves and every piece of garden decor. The rose
 // arch is two posts, so they can walk through it.
@@ -44,6 +51,9 @@ export function gardenGeometry(s) {
     const def = ESTATE_DECOR_BY_ID[p.id]; if (!def || ![p.x, p.z].every(Number.isFinite)) continue;
     const angle = (Number(p.rotation) || 0) * Math.PI / 180;
     if (p.id === "rose-arch") for (const u of [-1.13, 1.13]) obstacles.push({ x: p.x + u * Math.cos(angle), z: p.z - u * Math.sin(angle), w: .4, d: .8, angle });
+    // The fishing lake is water either side of its jetty and past its end, so
+    // the owner can walk out along the jetty to fish.
+    else if (def.lake) for (const r of lakeWater()) { const c = lakePoint(p, (r.x0 + r.x1) / 2, (r.z0 + r.z1) / 2); obstacles.push({ x: c.x, z: c.z, w: r.x1 - r.x0, d: r.z1 - r.z0, angle }); }
     else obstacles.push({ x: p.x, z: p.z, w: def.w, d: def.d, angle });
   }
   return { bounds: { x0: b.x0 + GARDEN_EDGE, x1: b.x1 - GARDEN_EDGE, z0: b.z0 + GARDEN_EDGE, z1: b.z1 - GARDEN_EDGE }, obstacles };
@@ -126,6 +136,12 @@ export function gardenTargets(s) {
     const reach = def ? Math.hypot(def.w, def.d) / 2 + .7 : 2;
     if (def?.crop) { const act = gardenBedAction(s, p.instance); list.push({ type: "bed", instance: p.instance, kind: act.kind, label: act.label, x: p.x, z: p.z, reach }); }
     if (def?.carving) list.push({ type: "carve", instance: p.instance, label: "Carve a pumpkin", x: p.x, z: p.z, reach });
+    // The lake: its traps from the jetty's landing, and a line from its end.
+    if (def?.lake) {
+      const end = lakePoint(p, LAKE.stand.x, LAKE.stand.z), landing = lakePoint(p, LAKE.jetty.x, LAKE.jetty.z1 - .45), held = trapCatches(s);
+      list.push({ type: "fish", instance: p.instance, label: "Fish", x: end.x, z: end.z, reach: .75 });
+      if (trapCount(s)) list.push({ type: "traps", instance: p.instance, label: held ? `Empty traps (${held})` : "Traps set", x: landing.x, z: landing.z, reach: .8 });
+    }
   }
   return list;
 }

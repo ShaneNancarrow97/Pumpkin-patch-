@@ -13,7 +13,7 @@ function install() {
   document.head.append(style); installed=true;
 }
 export function gardenSpriteIcon(id) {
-  const index=GARDEN_ICON_IDS.indexOf(id);if(index<0)return "";
+  const index=GARDEN_ICON_IDS.indexOf(id);if(index<0||index>=GARDEN_ICON_GRID.columns*GARDEN_ICON_GRID.rows)return "";
   install();
   return `<span class="estate-art garden-sprite" aria-hidden="true" style="--garden-x:${index%4/3*100}%;--garden-y:${Math.floor(index/4)/6*100}%"></span>`;
 }

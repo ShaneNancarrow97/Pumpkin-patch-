@@ -101,8 +101,9 @@ export function createEstateControls(ui) {
       if (ui.state.paused || !ui.state.estate.ownedDecor[id] || !ESTATE_DECOR_BY_ID[id]) return false;
       const b = E.estateBounds(ui.state), candidates = [[-5, 8], [6, 9], [10, -2], [-10, 2]];
       for (let z = b.z1 - 2; z > b.z0 + 1; z -= 2) for (let x = b.x0 + 2; x < b.x1 - 1; x += 2) candidates.push([x, z]);
-      const [x, z] = candidates.find(([x, z]) => E.estateFits(ui.state, id, x, z, 0)) ?? [0, 8];
-      pending = { id, x, z, rotation: 0 }; displayPreview(); render(); return true;
+      let rotation = 0; const spot = candidates.find(([x, z]) => [0, 180, 90, 270].some((r) => E.estateFits(ui.state, id, x, z, (rotation = r)))), [x, z] = spot ?? [0, 8];
+      if (!spot) rotation = 0;
+      pending = { id, x, z, rotation }; displayPreview(); render(); return true;
     },
     placeAt(x, z) {
       if (!active() || ![x, z].every(Number.isFinite)) return false;
