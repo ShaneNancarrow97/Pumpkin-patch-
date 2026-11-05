@@ -19,7 +19,7 @@ test("twenty levels, each further than the last, with real rewards", () => {
 });
 
 test("every gate fits its upgrade's tiers, opens in order, and within the twenty levels", () => {
-  const tiers = { farm: (id) => M.UPGRADES.find((u) => u.id === id).max, visitor: (id) => M.VISITOR_UPGRADES.find((u) => u.id === id).costs.length, shop: (id) => M.SHOP_UPGRADES.find((u) => u.id === id) && { capacity: 3, displays: 1, checkout: 2 }[id] };
+  const tiers = { farm: (id) => M.UPGRADES.find((u) => u.id === id).max, visitor: (id) => M.VISITOR_UPGRADES.find((u) => u.id === id).costs.length, shop: (id) => M.SHOP_UPGRADES.find((u) => u.id === id) && M.SHOP_MAX_LEVELS[id] };
   for (const [kind, table] of Object.entries(M.UNLOCKS)) {
     const lists = kind === "house" ? { house: table } : table;
     for (const [id, gates] of Object.entries(lists)) {

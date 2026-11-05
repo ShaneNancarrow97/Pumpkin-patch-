@@ -281,7 +281,8 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   // Where a customer stands in each phase of their visit.
   function customerSpot(c, queueIndex) {
     if (c.phase === "entering" || c.phase === "leaving") return SHOP_SPOTS.door;
-    if (c.phase === "browsing") { const t = SHOP_SPOTS.tables[c.slot % SHOP_SPOTS.tables.length]; return { x: t.x + (c.slot >= 4 ? 0.6 : 0), z: t.z + 0.9 }; }
+    // Up to twelve browse at once: three to a table, side by side.
+    if (c.phase === "browsing") { const n = SHOP_SPOTS.tables.length, t = SHOP_SPOTS.tables[c.slot % n], ring = Math.floor(c.slot / n) % 3; return { x: t.x + [0, .6, -.6][ring], z: t.z + 0.9 + (ring ? .15 : 0) }; }
     if (c.phase === "paying") return SHOP_SPOTS.pay;
     return SHOP_SPOTS.queue[Math.min(queueIndex, SHOP_SPOTS.queue.length - 1)];
   }

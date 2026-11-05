@@ -525,6 +525,7 @@ $("harvest-all").onclick = () => pickSome();
 $("boost").onclick = boost;
 
 // The HUD, actions, goal and streak, every frame (cheap: only text changes).
+let shownPinata;
 const text = (id, value) => { const el = $(id); if (el.textContent !== String(value)) el.textContent = value; };
 function render() {
   const controlsBlocked=!!openTab || celebration.active || intro.active || upgradeMenu?.open || mazeUI.active || hayrideUI.active || state.paused || !!homeJourney?.active || !!carvingUI?.isOpen;
@@ -579,6 +580,17 @@ function render() {
     chip.style.setProperty("--fade", on ? 1 : Math.min(1, M.visitorBoostSeconds(state) / M.STREAK.fade).toFixed(2));
   }
   $("paused").hidden = !state.paused;
+  // A piñata burst (rules/pinata.js): confetti on its plot and what it gave.
+  const burst = state.pinata?.last;
+  if (burst && burst.serial !== shownPinata) {
+    const first = shownPinata === undefined; shownPinata = burst.serial;
+    if (!first) {
+      const items = Object.entries(burst.items).map(([id, n]) => `${n} ${(M.INGREDIENT_BY_ID?.[id]?.name ?? id).toLowerCase()}`);
+      notice(`Piñata! ${items.length ? items.join(", ") + " for Maisie’s pantry" : ""}${items.length && burst.coins ? ", and " : ""}${burst.coins ? money(burst.coins) + " in coins" : ""}.`);
+      if (PLOTS[burst.plot]) scene.actionBurst?.("harvest", PLOTS[burst.plot].x, PLOTS[burst.plot].z);
+      audio.tone(990);
+    }
+  }
   if (openTab) draw();
 }
 $("goal").onclick = () => { sheets.journal.setTab("favours"); openSheet("journal"); };

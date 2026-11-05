@@ -8,10 +8,10 @@ export const freshStock = () => Array(VARIETY_COUNT).fill(0);
 // [picked at, count], oldest first (market.js). Never more than are in stock.
 export const freshBatches = () => Array.from({ length: VARIETY_COUNT }, () => []);
 
-// The freshness premium lasts 90 seconds; the physical pumpkin lasts fifteen
-// minutes of active game time. The final three minutes are shown as fading.
+// The freshness premium lasts 90 seconds; the physical pumpkin lasts five
+// minutes of active game time. The final minute is shown as fading.
 // This ledger includes ordinary/legacy stock as well as fresh harvests.
-export const STOCK_LIFE = Object.freeze({ seconds: 900, warning: 180 });
+export const STOCK_LIFE = Object.freeze({ seconds: 300, warning: 60 });
 export const freshPumpkinAges = () => Array.from({ length: VARIETY_COUNT }, () => []);
 export const freshStockWaste = () => ({ discarded: Array(VARIETY_COUNT).fill(0), lastAt: 0, lastCount: 0 });
 const safeCount = n => Number.isSafeInteger(n) && n >= 0 ? Math.min(n, 1e12) : 0;

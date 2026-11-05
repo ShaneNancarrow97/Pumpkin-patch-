@@ -4,10 +4,11 @@ import { updateDining } from "./rules/cooking-dining.js";
 // rules/; this file puts the state together, loads old saves and runs a step.
 import { UPGRADES, VARIETIES, MAX_VARIETY_INDEX, VARIETY_COUNT, STREAK, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
 import { MAX_PLOTS } from "./content/farm-layout.js";
+import { freshPinata, restorePinata } from "./rules/pinata.js";
 import { freshStock, freshBatches, restoreFresh, settleFresh, freshPumpkinAges, freshStockWaste, restorePumpkinAges, restoreStockWaste, settlePumpkinStock } from "./rules/stock.js";
 import { freshWanted, restoreWanted, updateWanted } from "./rules/market.js";
 import { freshOrders, restoreOrders, updateOrders } from "./rules/orders.js";
-import { VISITOR_UPGRADES, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, freshBigSpender, restoreBigSpender, updateShop, updateStall } from "./rules/selling.js";
+import { VISITOR_UPGRADES, SHOP_LEVEL_KEYS, SHOP_MAX_LEVELS, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, freshBigSpender, restoreBigSpender, updateShop, updateStall } from "./rules/selling.js";
 import { freshHouse, restoreHouse } from "./rules/house.js";
 import { freshLooks, freshWardrobe, restoreWardrobe } from "./rules/wardrobe.js";
 import { awardLevels, freshProgression, restoreProgression } from "./rules/levels.js";
@@ -31,6 +32,7 @@ export * from "./rules/farm.js";
 export * from "./rules/stock.js";
 export * from "./rules/market.js";
 export * from "./rules/orders.js";
+export * from "./rules/pinata.js";
 export * from "./rules/selling.js";
 export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
@@ -72,7 +74,7 @@ export function freshState() {
   return {
     version: STATE_VERSION,
     coins: 40, earned: 0, sold: 0, harvested: 0, taps: 0, time: 0, wholesale: 0,
-    plots: freshPlots(), plotLevels: Array(MAX_PLOTS).fill(0), plotCrops: Array(MAX_PLOTS).fill(0),
+    plots: freshPlots(), plotLevels: Array(MAX_PLOTS).fill(0), plotCrops: Array(MAX_PLOTS).fill(0), pinata: freshPinata(),
     upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(), farmWork: freshFarmWork(),
     stock: freshStock(), fresh: freshBatches(), pumpkinAges: freshPumpkinAges(), stockWaste: freshStockWaste(), wanted: freshWanted(), orders: freshOrders(), holds: [],
     visitorEvents: freshVisitorEvents(), stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
@@ -109,6 +111,7 @@ export function restoreState(raw) {
     const variety = Math.min(MAX_VARIETY_INDEX, count(p?.variety));
     if (!["growing", "ready"].includes(p?.phase)) return { phase: "empty", progress: 0, variety: s.plotCrops[i] };
     const crop = { phase: p.phase, progress: Math.max(0, Math.min(1, Number(p.progress) || 0)), variety };
+    if (p.pinata === true) crop.pinata = true;
     // Preserve grace and watering through a reload, without accepting future timers.
     if (p.phase === "ready") crop.ripe = Number.isFinite(p.ripe) ? Math.max(0, Math.min(s.time, p.ripe)) : s.time;
     if (p.phase === "growing" && Number.isFinite(p.wateredAt)) crop.wateredAt = Math.max(0, Math.min(s.time, p.wateredAt));
@@ -127,6 +130,7 @@ export function restoreState(raw) {
   s.fresh = restoreFresh(raw.fresh, s);
   s.pumpkinAges = restorePumpkinAges(raw.pumpkinAges, s);
   s.stockWaste = restoreStockWaste(raw.stockWaste, s);
+  s.pinata = restorePinata(raw.pinata);
   settlePumpkinStock(s);
   s.wanted = restoreWanted(raw.wanted, s);
   s.orders = restoreOrders(raw.orders, s);
@@ -142,9 +146,7 @@ export function restoreState(raw) {
   if (raw.shop && typeof raw.shop === "object") {
     const shop = raw.shop;
     s.shop.unlocked = shop.unlocked === true;
-    s.shop.capacityLevel = Math.min(3, count(shop.capacityLevel));
-    s.shop.displayLevel = Math.min(1, count(shop.displayLevel));
-    s.shop.checkoutLevel = Math.min(2, count(shop.checkoutLevel));
+    for (const [id, key] of Object.entries(SHOP_LEVEL_KEYS)) s.shop[key] = Math.min(SHOP_MAX_LEVELS[id], count(shop[key]));
     if (Array.isArray(shop.displays) && shop.displays.length === 4) s.shop.displays = shop.displays.map((d, i) => (VARIETIES[d] && shop.displays.indexOf(d) === i ? d : null));
     for (const k of ["nextCustomer", "income", "itemsSold", "served", "invested"]) s.shop[k] = count(shop[k]);
   }

@@ -5,64 +5,67 @@ import * as M from "../src/model.js";
 const prices=M.VARIETIES.map(v=>v.price);
 const quiet=()=>{const s=M.freshState();s.visitorTimer=s.shop.arrivalTimer=s.bigSpender.timer=1e9;return s;};
 const shopper=(quantity=1)=>({preferred:[0],budget:1000,basketLimit:quantity});
+// A pumpkin lasts L seconds of active play, fading for its last W (five minutes and one).
+const L=M.STOCK_LIFE.seconds,W=M.STOCK_LIFE.warning;
 
-test("ordinary and fresh harvested stock both age, fade and disappear after fifteen active minutes",()=>{
+test("ordinary and fresh harvested stock both age, fade and disappear after five active minutes",()=>{
+  assert.equal(L,300);
   const s=quiet();M.addStock(s,0,3,true);M.addStock(s,1,2,false);
   assert.deepEqual(s.pumpkinAges[0],[[0,3]]);
-  s.time=719;M.settleFresh(s);assert.equal(M.stockCondition(s).fading,0);
-  s.time=720;assert.equal(M.stockCondition(s).fading,5);
-  s.time=899.9;assert.equal(M.settlePumpkinStock(s),0);
-  s.time=900;const events=[];assert.equal(M.settlePumpkinStock(s,events),5);
+  s.time=L-W-1;M.settleFresh(s);assert.equal(M.stockCondition(s).fading,0);
+  s.time=L-W;assert.equal(M.stockCondition(s).fading,5);
+  s.time=L-.1;assert.equal(M.settlePumpkinStock(s),0);
+  s.time=L;const events=[];assert.equal(M.settlePumpkinStock(s,events),5);
   assert.deepEqual(s.stock,[0,0,0,0,0]);assert.equal(M.totalDiscarded(s),5);
   assert.deepEqual(events,[{type:"stock-discarded",quantity:5,byVariety:[3,2,0,0,0]}]);
   assert.equal(M.settlePumpkinStock(s,events),0);assert.equal(events.length,1,"discard cannot pay or count twice");
 });
 test("older batches disappear separately without throwing away a new harvest",()=>{
-  const s=quiet();M.addStock(s,0,3,true);s.time=600;M.addStock(s,0,4,true);
-  s.time=900;assert.equal(M.settlePumpkinStock(s),3);assert.equal(s.stock[0],4);
-  assert.deepEqual(s.pumpkinAges[0],[[600,4]]);assert.equal(M.stockCondition(s,0).nextDiscardIn,600);
-  s.time=1500;assert.equal(M.settlePumpkinStock(s),4);assert.equal(M.totalDiscarded(s),7);
+  const s=quiet();M.addStock(s,0,3,true);s.time=200;M.addStock(s,0,4,true);
+  s.time=L;assert.equal(M.settlePumpkinStock(s),3);assert.equal(s.stock[0],4);
+  assert.deepEqual(s.pumpkinAges[0],[[200,4]]);assert.equal(M.stockCondition(s,0).nextDiscardIn,200);
+  s.time=200+L;assert.equal(M.settlePumpkinStock(s),4);assert.equal(M.totalDiscarded(s),7);
 });
 test("a customer holds exact pumpkin batches across expiry and pays only once",()=>{
-  const s=quiet();M.addStock(s,0,3);s.time=899;
+  const s=quiet();M.addStock(s,0,3);s.time=L-1;
   assert.ok(M.chooseBasket(s,shopper(),[0],"guest",prices));
-  s.time=901;assert.equal(M.settlePumpkinStock(s),2);assert.equal(s.stock[0],1);assert.equal(M.available(s,0),0);
+  s.time=L+1;assert.equal(M.settlePumpkinStock(s),2);assert.equal(s.stock[0],1);assert.equal(M.available(s,0),0);
   const coins=s.coins,receipt=M.commitHold(s,"guest");assert.equal(receipt.quantity,1);assert.equal(s.stock[0],0);
   assert.equal(M.commitHold(s,"guest"),null);assert.equal(M.totalDiscarded(s),2);assert.equal(s.coins,coins,"stock settlement never creates sales income");
 });
 test("releasing a basket lets its expired pumpkins be discarded without stealing young units",()=>{
-  const s=quiet();M.addStock(s,0,2);s.time=899;M.chooseBasket(s,shopper(),[0],"guest",prices);
-  M.addStock(s,0,3,true);s.time=902;assert.equal(M.settlePumpkinStock(s),1);M.releaseHold(s,"guest");
-  assert.equal(M.settlePumpkinStock(s),1);assert.equal(s.stock[0],3);assert.deepEqual(s.pumpkinAges[0],[[899,3]]);
+  const s=quiet();M.addStock(s,0,2);s.time=L-1;M.chooseBasket(s,shopper(),[0],"guest",prices);
+  M.addStock(s,0,3,true);s.time=L+2;assert.equal(M.settlePumpkinStock(s),1);M.releaseHold(s,"guest");
+  assert.equal(M.settlePumpkinStock(s),1);assert.equal(s.stock[0],3);assert.deepEqual(s.pumpkinAges[0],[[L-1,3]]);
 });
 test("fresh shoppers reserve young stock and cannot accidentally shield an old surplus",()=>{
-  const s=quiet();M.addStock(s,0,4);s.time=899;M.addStock(s,0,2,true);
+  const s=quiet();M.addStock(s,0,4);s.time=L-1;M.addStock(s,0,2,true);
   const lines=M.chooseBasket(s,shopper(),[0],"fresh-guest",prices);assert.equal(lines[0].fresh,true);
-  s.time=901;assert.equal(M.settlePumpkinStock(s),4);assert.equal(s.stock[0],2);assert.equal(M.commitHold(s,"fresh-guest").quantity,1);
-  assert.deepEqual(s.pumpkinAges[0],[[899,1]]);
+  s.time=L+1;assert.equal(M.settlePumpkinStock(s),4);assert.equal(s.stock[0],2);assert.equal(M.commitHold(s,"fresh-guest").quantity,1);
+  assert.deepEqual(s.pumpkinAges[0],[[L-1,1]]);
 });
 test("a direct older-stock order preserves another customer's held batches",()=>{
-  const s=quiet();M.addStock(s,0,2);s.time=100;M.chooseBasket(s,shopper(),[0],"guest",prices);
-  s.time=600;M.addStock(s,0,3,true);s.stock[0]-=2;M.settlePumpkinStock(s);
-  assert.deepEqual(s.pumpkinAges[0],[[0,1],[600,2]],"unreserved old stock then one young pumpkin supplied the order");
-  s.time=901;assert.equal(M.settlePumpkinStock(s),0,"the only old unit belongs to the queued guest");
-  assert.equal(M.commitHold(s,"guest").quantity,1);assert.deepEqual(s.pumpkinAges[0],[[600,2]]);
+  const s=quiet();M.addStock(s,0,2);s.time=30;M.chooseBasket(s,shopper(),[0],"guest",prices);
+  s.time=200;M.addStock(s,0,3,true);s.stock[0]-=2;M.settlePumpkinStock(s);
+  assert.deepEqual(s.pumpkinAges[0],[[0,1],[200,2]],"unreserved old stock then one young pumpkin supplied the order");
+  s.time=L+1;assert.equal(M.settlePumpkinStock(s),0,"the only old unit belongs to the queued guest");
+  assert.equal(M.commitHold(s,"guest").quantity,1);assert.deepEqual(s.pumpkinAges[0],[[200,2]]);
 });
 test("legacy holds without batch metadata are assigned safely before expiry",()=>{
   const s=quiet();M.addStock(s,0,3);s.holds.push({owner:"old-guest",lines:[{variety:0,quantity:1,price:12,fresh:false}]});
-  s.time=901;assert.equal(M.settlePumpkinStock(s),2);assert.equal(s.stock[0],1);assert.equal(M.commitHold(s,"old-guest").amount,12);
+  s.time=L+1;assert.equal(M.settlePumpkinStock(s),2);assert.equal(s.stock[0],1);assert.equal(M.commitHold(s,"old-guest").amount,12);
 });
 test("ages and discarded totals survive a real save without rejuvenating pumpkins",()=>{
-  const s=quiet();M.addStock(s,0,3,true);s.time=400;M.addStock(s,0,2);s.time=800;
+  const s=quiet();M.addStock(s,0,3,true);s.time=130;M.addStock(s,0,2);s.time=260;
   let back=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));
-  assert.deepEqual(back.pumpkinAges,s.pumpkinAges);back.time=900;assert.equal(M.settlePumpkinStock(back),3);
-  back=M.restoreState(JSON.parse(JSON.stringify(M.saveData(back))));assert.equal(M.totalDiscarded(back),3);assert.deepEqual(back.pumpkinAges[0],[[400,2]]);
+  assert.deepEqual(back.pumpkinAges,s.pumpkinAges);back.time=L;assert.equal(M.settlePumpkinStock(back),3);
+  back=M.restoreState(JSON.parse(JSON.stringify(M.saveData(back))));assert.equal(M.totalDiscarded(back),3);assert.deepEqual(back.pumpkinAges[0],[[130,2]]);
 });
 test("legacy unaged stock receives one migration grace period and malformed batches are bounded",()=>{
   const s=quiet();s.time=1000;s.stock[0]=7;
   const raw=M.saveData(s);delete raw.pumpkinAges;delete raw.stockWaste;
   const restored=M.restoreState(JSON.parse(JSON.stringify(raw)));assert.deepEqual(restored.pumpkinAges[0],[[1000,7]]);
-  restored.time=1899;assert.equal(M.settlePumpkinStock(restored),0);restored.time=1900;assert.equal(M.settlePumpkinStock(restored),7);
+  restored.time=1000+L-1;assert.equal(M.settlePumpkinStock(restored),0);restored.time=1000+L;assert.equal(M.settlePumpkinStock(restored),7);
   const odd=quiet();odd.time=100;odd.stock[0]=3;
   odd.pumpkinAges=M.restorePumpkinAges([[[NaN,5],[101,5],[-1,5],[1,99]],null],odd);assert.deepEqual(odd.pumpkinAges[0],[[1,3]]);
   odd.stockWaste=M.restoreStockWaste({discarded:[Infinity,-1,1.4,4],lastAt:Infinity,lastCount:-9},odd);assert.equal(M.totalDiscarded(odd),4);assert.equal(odd.stockWaste.lastCount,0);

@@ -1,14 +1,15 @@
 // Earned milestones, with once-only rewards. Bonus coins never earn more levels.
 import { freshHomeActivities, homeRequirements, restoreHomeActivities } from "./home-goals.js";
+import { unlockLevel } from "./unlocks.js";
 export { HOME_MILESTONES, HOME_ACTIVITY_KINDS, homeGoal, homeRequirements, recordHomeActivity } from "./home-goals.js";
 export const LEVELS = [
   { level: 1, at: 0, name: "Little seed", rewards: [] },
   { level: 2, at: 300, name: "Growing roots", rewards: [{ kind: "coins", amount: 35 }, { kind: "decor", id: "d03" }] },
   { level: 3, at: 1200, name: "Local favourite", rewards: [{ kind: "coins", amount: 60 }, { kind: "costume", id: "natalie-witch" }] },
-  { level: 4, at: 2800, name: "Autumn empire", rewards: [{ kind: "coins", amount: 100 }, { kind: "upgrade", id: "tools", name: "A better watering can", max: 6 }] },
+  { level: 4, at: 2800, name: "Autumn empire", rewards: [{ kind: "coins", amount: 100 }, { kind: "upgrade", id: "tools", name: "A better watering can", max: 9 }] },
   { level: 5, at: 6000, name: "Lantern keeper", rewards: [{ kind: "coins", amount: 150 }, { kind: "decor", id: "w04" }] },
   { level: 6, at: 12500, name: "Midnight market", rewards: [{ kind: "coins", amount: 225 }, { kind: "costume", id: "shane-skeleton" }] },
-  { level: 7, at: 24000, name: "Moonlit harvest", rewards: [{ kind: "coins", amount: 325 }, { kind: "upgrade", id: "yield", name: "A little extra love", max: 5 }] },
+  { level: 7, at: 24000, name: "Moonlit harvest", rewards: [{ kind: "coins", amount: 325 }, { kind: "upgrade", id: "yield", name: "A little extra love", max: 7 }] },
   { level: 8, at: 42000, name: "Haunted hideaway", rewards: [{ kind: "coins", amount: 450 }, { kind: "decor", id: "f12" }] },
   { level: 9, at: 72000, name: "Festival of frights", rewards: [{ kind: "coins", amount: 650 }, { kind: "costume", id: "natalie-tiffany" }] },
   { level: 10, at: 115000, name: "Spooktacular", rewards: [{ kind: "coins", amount: 900 }, { kind: "costume", id: "shane-chucky" }] },
@@ -85,7 +86,8 @@ export function awardLevels(s) {
     if (milestone.level > reached || p.claimed.includes(milestone.level)) continue;
     const receipt = milestone.rewards.map((r) => {
       if (r.kind === "coins") coins(r.amount);
-      else if (r.kind === "upgrade") { if (s.upgrades[r.id] < r.max) s.upgrades[r.id]++; else { coins(100); return { ...r, duplicate: true }; } }
+      // A gift tier must be open at the level it comes with: past that (the late copper cans, say) it's coins instead.
+      else if (r.kind === "upgrade") { if (s.upgrades[r.id] < r.max && unlockLevel("farm", r.id, s.upgrades[r.id]) <= milestone.level) s.upgrades[r.id]++; else { coins(100); return { ...r, duplicate: true }; } }
       else {
         const owned = r.kind === "decor" ? s.house.owned : s.wardrobe.owned;
         if (!owned.includes(r.id)) owned.push(r.id);

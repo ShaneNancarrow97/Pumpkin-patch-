@@ -12,7 +12,7 @@ export function recipeShoppingList(s,recipe,batches=1){
 export function kitchenNextStep(s,station='truck',preferred=null){
  const k=s.kitchen;if(!k?.purchased)return {kind:'purchase'};
  const job=k.jobs[station];if(job)return {kind:'cooking',recipe:job.recipe};
- if(Object.values(k.food).some(n=>n>0)&&!k.displays.some(id=>id&&(k.food[id]??0)>0))return {kind:s.shop.unlocked?'sell':'shop'};
+ if(Object.values(k.food).some(n=>n>0)&&!k.displays.some(id=>id&&(k.food[id]??0)>0))return {kind:k.sellAt==='shop'&&!s.shop.unlocked?'shop':'sell'};
  const equipment=kitchenEquipment(s,station),candidates=RECIPES.filter(r=>k.recipes.includes(r.id)&&r.level<=patchLevel(s).level&&(!r.homeOnly||station==='home')&&(r.equipment??[]).every(id=>equipment.includes(id)));
  const r=candidates.find(r=>r.id===preferred)??candidates[0];
  if(!r)return {kind:'equipment'};

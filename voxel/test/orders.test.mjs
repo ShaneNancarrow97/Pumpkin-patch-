@@ -67,3 +67,18 @@ test("open orders and trust survive a reload; nonsense does not", () => {
   assert.deepEqual(odd.trust, { 3: 0, 4: 2 });
   delete raw.orders; assert.deepEqual(M.restoreState(raw).orders, M.freshOrders());
 });
+
+test("the contract board brings more contracts, sooner, for longer and better pay, and keeps its tier", () => {
+  const s = farm(); s.coins = 1e6; s.earned = M.LEVELS[19].at; s.progression.claimed = M.LEVELS.map((l) => l.level);
+  assert.equal(M.contractBoard(s).open, 1);
+  let tiers = 0; while (M.upgradeContractBoard(s)) tiers++;
+  assert.equal(tiers, M.CONTRACT_BOARD.length - 1); assert.equal(M.nextContractBoard(s), null);
+  const top = M.contractBoard(s);
+  M.CONTRACT_BOARD.forEach((t, i) => { if (i) { const p = M.CONTRACT_BOARD[i - 1]; assert.ok(t.open >= p.open && t.gap < p.gap && t.time > p.time && t.pay > p.pay && t.level > (p.level ?? 0)); } });
+  // With the top board, several contracts open as time passes.
+  for (let t = 0; t < 400; t += 5) { s.time += 5; M.updateOrders(s, []); }
+  assert.ok(s.orders.list.length >= 2 && s.orders.list.length <= top.open, `${s.orders.list.length} open`);
+  assert.equal(M.restoreState(JSON.parse(JSON.stringify(M.saveData(s)))).orders.board, M.CONTRACT_BOARD.length - 1);
+  // A tier waits for its level.
+  const early = farm(); early.coins = 1e6; assert.equal(M.upgradeContractBoard(early), M.patchLevel(early).level >= M.CONTRACT_BOARD[1].level);
+});

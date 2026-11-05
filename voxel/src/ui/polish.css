@@ -55,3 +55,28 @@
 .text-backup { border-top: 1px solid var(--edge-soft); padding-top: 4px; }
 .text-backup summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font: 600 13px var(--body); color: var(--ink); }
 .text-backup[open] { display: grid; gap: 8px; padding-bottom: 6px; }
+
+/* The seed shed (farm-sheets.js seeds): the piñata card, the varieties as
+   tiles, and the plots as compact tiles. */
+.seed-pinata { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 18px; border: 1px solid #ff8fc455; background: radial-gradient(120% 140% at 0% 0%, #ff3e9a22, transparent 55%), radial-gradient(120% 140% at 100% 100%, #19d3c51c, transparent 55%), #2a2030; }
+.seed-pinata.ready { box-shadow: 0 0 0 1px #ffd23f66, 0 0 22px #ff3e9a44; }
+.seed-pinata h3 { margin: 0; font: 600 15px/1.3 var(--body); color: #ffe9f4; }
+.seed-pinata p { margin: 0; font-size: 12px; line-height: 1.45; color: var(--ink-soft); }
+.seed-kicker { font-size: 11px !important; letter-spacing: .08em; text-transform: uppercase; color: #ff9fcd !important; }
+.pinata-art { width: 60px; height: 52px; border-radius: 48% 48% 44% 44%; background: repeating-linear-gradient(180deg, #ff3e9a 0 8px, #19d3c5 8px 16px, #ffd23f 16px 24px, #ff7a1a 24px 32px, #8b4bff 32px 40px, #7bd63a 40px 48px); box-shadow: inset -6px -6px 12px #0005, inset 4px 4px 8px #ffffff33, 0 6px 16px #0006; position: relative; }
+.pinata-art::before { content: ""; position: absolute; left: 50%; top: -9px; width: 6px; height: 11px; margin-left: -3px; border-radius: 2px; background: #6a7c44; }
+.seed-gate { padding: 6px 10px; border-radius: 999px; background: #ffffff0d; color: var(--ink-soft); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.seed-gate.done { color: #c7e8b3; }
+.seed-varieties { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; }
+.seed-variety { display: grid; justify-items: center; gap: 3px; padding: 10px 8px; border-radius: 14px; border: 1px solid var(--edge-soft); background: #ffffff05; text-align: center; }
+.seed-variety b { font-size: 13px; }
+.seed-variety small { font-size: 12px; color: var(--ink-soft); }
+.seed-variety.locked { opacity: .5; }
+.seed-variety.wanted { border-color: #f2cf9966; background: #f2cf9910; }
+.seed-variety .button { margin-top: 4px; min-height: 36px; font-size: 12px; }
+.seed-plots { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; gap: 8px !important; }
+.seed-plots .plot-card { padding: 9px; gap: 5px; }
+.seed-plots .plot-card h3 { font-size: 12px; }
+.seed-plots .plot-card p { font-size: 12px; margin: 0; }
+.seed-plots .plot-card .chips { gap: 3px; }
+.seed-plots .plot-card .chip { min-height: 32px; padding: 0 7px; font-size: 11.5px; }

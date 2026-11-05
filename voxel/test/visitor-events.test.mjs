@@ -163,7 +163,7 @@ test("courtiers keep their quoted full purses and do not inflate the Baron's pri
 
 test("normal indoor visitors bring a reserved meal contribution once and starving guests bring a larger one", () => {
   const make = (cooking, id) => {
-    const s = farm(); s.kitchen.purchased = cooking; s.shop.unlocked = true; s.shop.arrivalTimer = 0; s.shop.nextCustomer = id;
+    const s = farm(); s.kitchen.purchased = cooking; s.kitchen.sellAt = 'shop'; s.shop.unlocked = true; s.shop.arrivalTimer = 0; s.shop.nextCustomer = id;
     S.updateShop(s, .01, []); return { s, guest: s.shop.customers[0] };
   };
   const old = make(false, 0), normal = make(true, 0), hungry = make(true, 33);

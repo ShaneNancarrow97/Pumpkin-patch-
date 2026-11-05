@@ -13,7 +13,7 @@ const zeroPantry = () => Object.fromEntries(INGREDIENTS.map(i => [i.id, 0]));
 const zeroFood = () => Object.fromEntries(RECIPES.map(r => [r.id, 0]));
 const sum = o => Object.values(o).reduce((n, v) => n + v, 0);
 export function freshKitchen() {
-  return { diners: [], cookAnimations: [], revision: 2, purchased: false, pantry: zeroPantry(), food: zeroFood(), recipes: [], prices: Object.fromEntries(RECIPES.map(r => [r.id, r.price])), displays: [null, null], orders: [], jobs: { truck: null, home: null }, upgrades: Object.fromEntries(KITCHEN_UPGRADES.map(u => [u.id, 0])), chefRecipe: null, ledger: { ingredientSpend: 0, researchSpend: 0, foodIncome: 0, foodSold: 0, invested: 0, deliveryFees: 0, batchesCooked: 0, receipts: [] }, nextOrder: 1, nextJob: 1, delivered: [], foodHolds: [] };
+  return { diners: [], cookAnimations: [], revision: 2, purchased: false, pantry: zeroPantry(), food: zeroFood(), recipes: [], prices: Object.fromEntries(RECIPES.map(r => [r.id, r.price])), displays: [null, null], sellAt: "truck", orders: [], jobs: { truck: null, home: null }, upgrades: Object.fromEntries(KITCHEN_UPGRADES.map(u => [u.id, 0])), chefRecipe: null, ledger: { ingredientSpend: 0, researchSpend: 0, foodIncome: 0, foodSold: 0, invested: 0, deliveryFees: 0, batchesCooked: 0, receipts: [] }, nextOrder: 1, nextJob: 1, delivered: [], foodHolds: [] };
 }
 export const kitchenUnlocked = s => patchLevel(s).level >= COOKING.level;
 export const pantryCapacity = s => COOKING.pantryBase * (1 + (s.kitchen?.upgrades.pantry ?? 0));
@@ -130,6 +130,13 @@ export function assignFoodDisplay(s, slot, id) {
   if (s.paused || !k?.purchased || !Number.isInteger(slot) || slot < 0 || slot > 1 || (id !== null && !k.recipes.includes(id))) return false;
   k.displays[slot] = id; return true;
 }
+// Where guests buy food: "truck" (Maisie's hatch, on their way home) or "shop"
+// (the truck and Skyla's indoor shelves too).
+export function setFoodOutlet(s, where) {
+  if (!s.kitchen || !["truck", "shop"].includes(where)) return false;
+  s.kitchen.sellAt = where; return true;
+}
+
 export function setFoodPrice(s, id, value) {
   const k = s.kitchen, range = foodPriceRange(s, id);
   if (s.paused || !k?.purchased || !k.recipes.includes(id) || !range || !Number.isInteger(value) || value < range.min || value > range.max) return false;
@@ -199,6 +206,8 @@ export function restoreKitchen(raw, s, sourceVersion) {
   for (const i of INGREDIENTS) { k.pantry[i.id] = Math.min(pantryRoom, k.pantry[i.id]); pantryRoom -= k.pantry[i.id]; }
   for (const r of RECIPES) { k.food[r.id] = Math.min(foodRoom, k.food[r.id]); foodRoom -= k.food[r.id]; }
   k.displays = [0, 1].map(i => k.recipes.includes(raw.displays?.[i]) ? raw.displays[i] : null);
+  // Guests buy food at Maisie's truck; a player may also sell it inside Skyla's shop. Older saves start at the truck.
+  k.sellAt = raw.sellAt === "shop" ? "shop" : "truck";
   k.chefRecipe = k.upgrades.chef && k.recipes.includes(raw.chefRecipe) && !RECIPE_BY_ID[raw.chefRecipe]?.homeOnly ? raw.chefRecipe : null;
   for (const key of Object.keys(k.ledger).filter(key => key !== "receipts")) k.ledger[key] = amount(raw.ledger?.[key]);
   k.ledger.foodSold = units(k.ledger.foodSold); k.ledger.batchesCooked = units(k.ledger.batchesCooked);

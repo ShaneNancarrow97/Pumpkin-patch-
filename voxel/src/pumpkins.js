@@ -155,6 +155,40 @@ function buildPumpkin(variety, size, shape) {
   leafAndTendril(v, at, form, LEAF, [-0.5, -2.4, -0.9, -2.0, -.6][variety], { dir: [0.5, -0.4, 2.6, 0.9, .7][variety], turns: 1.6, radius: 1.6, length: 6 });
   return v.build();
 }
+// A piñata pumpkin: the pumpkin's own body banded in fiesta paper (pink,
+// turquoise, sunny yellow, orange, violet and lime), each band keeping the
+// lobes' light and shade, with a fringe of paper tips at the band edges and
+// ribbons streaming from the stem. Built once per shape and cloned per plot.
+export const PINATA_COLOURS = [0xff3e9a, 0x19d3c5, 0xffd23f, 0xff7a1a, 0x8b4bff, 0x7bd63a];
+const pinatas = new Map();
+export function pinataTemplate(size = 0.62, shape = "ribbed") {
+  const key = size + ":" + shape;
+  if (!pinatas.has(key)) pinatas.set(key, buildPinata(size, shape));
+  return pinatas.get(key);
+}
+function buildPinata(size, shape) {
+  const v = new Voxels(), r = seeded(41), f = shapedForm(0, shape), R = 13, at = { s: size / R, r }, base = new THREE.Color(VARIETIES[0].color);
+  const from = v.solid.length;
+  const form = lobed(v, { ...at, R, H: Math.round(f.tall * 2 * R), lobes: f.lobes, groove: f.groove, squash: f.squash, crease: f.crease, dimple: f.dimple, warts: 0, seed: 1, color: VARIETIES[0].color });
+  const body = v.solid.slice(from), top = Math.max(...body.map((b) => b[1])), bottom = Math.min(...body.map((b) => b[1])), bands = PINATA_COLOURS.length;
+  const lum = (c) => { const k = new THREE.Color(c); return (k.r + k.g + k.b) / 3; }, baseLum = lum(base) || 1, colour = new THREE.Color();
+  for (const b of body) {
+    const t = (b[1] - bottom) / Math.max(1e-6, top - bottom), band = Math.min(bands - 1, Math.floor(t * bands)), edge = (t * bands) % 1;
+    // Keep the lobes' own light: the band colour scaled by how lit this voxel was.
+    colour.setHex(PINATA_COLOURS[band]).multiplyScalar(Math.max(.55, Math.min(1.25, lum(b[6]) / baseLum)));
+    b[6] = colour.getHex();
+    // A paper fringe at the top of each band: a few tips stand proud.
+    if (edge > .86 && r() < .35) v.box(b[0] - b[3] * .6, b[1] - b[4] * .2, b[2] - b[5] * .6, b[3] * 1.2, b[4] * .45, b[5] * 1.2, PINATA_COLOURS[(band + 1) % bands]);
+  }
+  stem(v, at, 0, form.base, 0, 3, f.bend, f.wood);
+  // Ribbons streaming from the stem.
+  const s1 = at.s, y = form.base * s1 + 2.5 * s1;
+  for (const [i, c] of [0xff3e9a, 0xffd23f, 0x19d3c5].entries()) {
+    const ang = i * 2.1 + .4;
+    for (let k = 0; k < 6; k++) v.box(Math.cos(ang) * (1 + k) * s1 * 1.2, y - k * s1 * 1.1, Math.sin(ang) * (1 + k) * s1 * 1.2, s1 * .9, s1 * 1.4, s1 * .9, c);
+  }
+  return v.build();
+}
 export function sproutTemplate() {
   const v = new Voxels();
   v.box(-0.04, 0, -0.04, 0.08, 0.32, 0.08, 0x5c8a3a);

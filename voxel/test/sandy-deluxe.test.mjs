@@ -125,7 +125,7 @@ test('the real meadow displays the three deluxe products and hired helpers witho
 
 test('explicit starving and VIP guests may buy eight or six portions, still bounded by cash', () => {
   for(const [flags,budget,expected]of [[{starving:true},100,8],[{vip:true},100,6],[{starving:true},30,2]]){
-    const s=M.freshState();s.shop.unlocked=true;s.kitchen.purchased=true;s.kitchen.recipes=['wedges'];s.kitchen.displays=['wedges',null];s.kitchen.food.wedges=20;s.customerCare.bags=1;
+    const s=M.freshState();s.shop.unlocked=true;s.kitchen.sellAt='shop';s.kitchen.purchased=true;s.kitchen.recipes=['wedges'];s.kitchen.displays=['wedges',null];s.kitchen.food.wedges=20;s.customerCare.bags=1;
     const v={...guest(budget),...flags};const q=M.quoteFoodForCustomer(s,v);assert.equal(q.quantity,expected);const paid=M.commitFoodForCustomer(s,v);assert.equal(paid.amount,11*expected);assert.equal(v.budget,budget-paid.amount);
     const saved=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.equal(saved.kitchen.ledger.receipts[0].quantity,expected);
   }

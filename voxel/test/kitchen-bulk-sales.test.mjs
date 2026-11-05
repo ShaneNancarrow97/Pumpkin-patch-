@@ -9,7 +9,7 @@ import { buildFoodProp, buildFoodWallDisplay, disposeFoodProp } from '../src/foo
 
 const setup = () => {
   const s = freshState(); s.shop.unlocked = true; s.shop.arrivalTimer = 1e9;
-  s.kitchen = freshKitchen(); s.kitchen.purchased = true;
+  s.kitchen = freshKitchen(); s.kitchen.purchased = true; s.kitchen.sellAt = 'shop';
   s.kitchen.recipes = ['wedges']; s.kitchen.displays = ['wedges', null]; s.kitchen.food.wedges = 20;
   return s;
 };

@@ -5,6 +5,7 @@
 import { PUMPKIN_VARIETIES } from "../content/pumpkin-varieties.js";
 export { VARIETY_COUNT, MAX_VARIETY_INDEX, VARIETY_INDICES } from "../content/pumpkin-varieties.js";
 import { tierOpen } from "./unlocks.js";
+import { plantsPinata, burstPinata } from "./pinata.js";
 import { economy } from "../../../src/content/economy.js";
 import { addStock, stockCount } from "./stock.js";
 import { MAX_PLOTS, PLOT_COUNTS } from "../content/farm-layout.js";
@@ -14,8 +15,8 @@ export { MAX_PLOTS, PLOT_COUNTS, fieldDepth, farmPathEnd, farmExpansionTier } fr
 export const VARIETIES = PUMPKIN_VARIETIES;
 
 export const UPGRADES = [
-  { id: "tools", name: "A better watering can", text: "Pumpkins grow 18% faster.", cost: 90, max: 6 },
-  { id: "yield", name: "A little extra love", text: "One more pumpkin per harvest.", cost: 150, max: 5 },
+  { id: "tools", name: "A better watering can", text: "Pumpkins grow faster: 18% a can, then 10% for each of the late copper cans.", cost: 90, max: 9 },
+  { id: "yield", name: "A little extra love", text: "One more pumpkin per harvest.", cost: 150, max: 7 },
   { id: "auto", name: "Helping hands", text: "Shane and Natalie plant, water and pick for you, and rest while you play as them.", cost: 500, max: 1 },
   { id: "plots", name: "Room for more", text: "Open more beds, then buy the south field for eighteen and twenty-four plots.", costs: [300, 660, 2200, 5500], max: 4 },
   { id: "cart", name: "A market cart", text: "When the barn is full, Shane drives the extra pumpkins down to the village market for a share of the price, so the picking never has to stop.", costs: [400, 2500, 9000] },
@@ -43,7 +44,10 @@ export const freshStreak = () => ({ count: 0, until: 0, best: 0, bonusCoins: 0, 
 
 export const HELPER_WAIT = 8;
 export const openPlots = (s) => PLOT_COUNTS[Math.max(0, Math.min(PLOT_COUNTS.length - 1, Math.trunc(s.upgrades.plots || 0)))];
-export const growTime = (s, i) => VARIETIES[s.plots[i].variety].grow * Math.pow(0.82, s.upgrades.tools);
+// The first six cans each make pumpkins grow 18% faster; the late three
+// (levels 12, 15 and 18) 10% each, so the patch keeps quickening past level 12.
+export const toolsFactor = (level) => Math.pow(0.82, Math.min(6, level)) * Math.pow(0.9, Math.max(0, level - 6));
+export const growTime = (s, i) => VARIETIES[s.plots[i].variety].grow * toolsFactor(s.upgrades.tools);
 export const harvestSize = (s) => 1 + s.upgrades.yield;
 export const upgradeCost = (s, id) => {
   const u = UPGRADES.find((x) => x.id === id);
@@ -55,6 +59,8 @@ const bestVariety = (s) => Math.max(...s.plotLevels.slice(0, openPlots(s)));
 export function plant(s, i) {
   if (!Number.isInteger(i) || i < 0 || i >= openPlots(s) || s.plots[i].phase !== "empty") return false;
   s.plots[i] = { phase: "growing", progress: 0, variety: s.plotCrops[i] };
+  // Now and then it grows as a piñata (rules/pinata.js).
+  if (plantsPinata(s, i)) s.plots[i].pinata = true;
   return true;
 }
 
@@ -94,6 +100,8 @@ export function harvest(s, i) {
   const n = harvestSize(s);
   if (!store(s, p.variety, n)) return 0;
   s.harvested += n;
+  // A piñata bursts with pantry ingredients as it's picked.
+  if (p.pinata) burstPinata(s, i);
   s.plots[i] = { phase: "empty", progress: 0, variety: s.plotCrops[i] };
   return n;
 }
@@ -110,7 +118,7 @@ export function tap(s) {
     const p = s.plots[i];
     if (p.phase !== "growing") continue;
     growing++;
-    p.progress = Math.min(1, p.progress + use.strength * 1.5 / (22 * Math.pow(0.82, s.upgrades.tools)));
+    p.progress = Math.min(1, p.progress + use.strength * 1.5 / (22 * toolsFactor(s.upgrades.tools)));
     if (p.progress >= 1) { p.phase = "ready"; p.ripe = s.time; }
   }
   let reward = 0;

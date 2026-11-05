@@ -300,19 +300,29 @@ export function updateStall(s, dt, events) {
   s.visitors = s.visitors.filter((v) => v.social ? !v.social.gone : !v.hayride?.wentHome && !v.hollow?.fledHome && !v.hollow?.wentHome && (v.hayride && !v.hayride.done || v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s)));
 }
 
-// The indoor shop: open it, then add room, display tables and a faster till.
+// The indoor shop: open it, then add room, display tables and a faster till,
+// carried on past the main game's tiers so the shop keeps growing after level
+// 12. Late on Skyla rings up a basket in under a second and a half, signs and
+// baskets help customers choose sooner, and gift wrapping has them spend more.
 export const SHOP_UPGRADES = [
   { id: "open", name: "Open the shop", text: "Customers come inside to browse the display tables." },
   { id: "capacity", name: "More room to browse", text: "More customers can shop at once." },
   { id: "displays", name: "Two more display tables", text: "Show four varieties instead of two." },
   { id: "checkout", name: "A faster till", text: "Skyla rings up each basket more quickly." },
+  { id: "browse", name: "Signs and baskets", text: "Customers find what they want sooner." },
+  { id: "wrap", name: "Gift wrapping", text: "Ribbon and tissue: customers spend a little more." },
 ];
-export const SHOP_CAPACITY = shopCapacity;
-export const CHECKOUT_SECONDS = checkoutSeconds;
-export const freshShop = () => ({ unlocked: false, capacityLevel: 0, displayLevel: 0, checkoutLevel: 0, displays: [0, 1, null, null], customers: [], nextCustomer: 0, arrivalTimer: 2, income: 0, itemsSold: 0, served: 0, invested: 0 });
+export const SHOP_CAPACITY = [...shopCapacity, 8, 10, 12];
+export const CHECKOUT_SECONDS = [...checkoutSeconds, 6, 4.5, 3.2, 2.2, 1.4];
+export const BROWSE_SECONDS = [4, 3, 2.2, 1.5];
+export const WRAP_SPEND = [0, .06, .12, .2];
+const SHOP_COSTS = { ...shopUpgradeCosts, capacity: [...shopUpgradeCosts.capacity, 18000, 34000, 60000], checkout: [...shopUpgradeCosts.checkout, 11000, 21000, 38000, 62000, 98000], browse: [3500, 12000, 30000], wrap: [6000, 20000, 48000] };
+export const SHOP_LEVEL_KEYS = { capacity: "capacityLevel", displays: "displayLevel", checkout: "checkoutLevel", browse: "browseLevel", wrap: "wrapLevel" };
+export const SHOP_MAX_LEVELS = { capacity: SHOP_CAPACITY.length - 1, displays: 1, checkout: CHECKOUT_SECONDS.length - 1, browse: BROWSE_SECONDS.length - 1, wrap: WRAP_SPEND.length - 1 };
+export const freshShop = () => ({ unlocked: false, capacityLevel: 0, displayLevel: 0, checkoutLevel: 0, browseLevel: 0, wrapLevel: 0, displays: [0, 1, null, null], customers: [], nextCustomer: 0, arrivalTimer: 2, income: 0, itemsSold: 0, served: 0, invested: 0 });
 
-const shopLevel = (shop, id) => (id === "open" ? Number(shop.unlocked) : id === "capacity" ? shop.capacityLevel : id === "displays" ? shop.displayLevel : shop.checkoutLevel);
-export const shopUpgradeCost = (s, id) => shopUpgradeCosts[id]?.[shopLevel(s.shop, id)];
+const shopLevel = (shop, id) => (id === "open" ? Number(shop.unlocked) : shop[SHOP_LEVEL_KEYS[id]] ?? 0);
+export const shopUpgradeCost = (s, id) => SHOP_COSTS[id]?.[shopLevel(s.shop, id)];
 export const shopLevelOf = (s, id) => shopLevel(s.shop, id);
 export const displayCount = (shop) => (shop.displayLevel ? 4 : 2);
 
@@ -321,7 +331,7 @@ export function upgradeShop(s, id) {
   if (price === undefined || s.coins < price || (id !== "open" && !s.shop.unlocked) || !tierOpen(s, "shop", id, shopLevel(s.shop, id))) return false;
   s.coins -= price; s.shop.invested += price;
   if (id === "open") s.shop.unlocked = true;
-  else s.shop[id === "capacity" ? "capacityLevel" : id === "displays" ? "displayLevel" : "checkoutLevel"]++;
+  else s.shop[SHOP_LEVEL_KEYS[id]] = shopLevel(s.shop, id) + 1;
   return true;
 }
 
@@ -338,9 +348,13 @@ function createCustomer(s, id, slot) {
   const p = customerProfiles[(id * 7) % customerProfiles.length];
   const customer = { id, slot, kind: (id * 3 + Math.floor(id / 5)) % KINDS.length, ...basketFor(s, id, p), preferred: p.preferred.map(variety), phase: "entering", remaining: 3, checkoutDuration: 0, basket: [], spent: 0, quantity: 0, outcome: "shopping" };
   customer.needs = freshGuestNeeds(id, true); customer.starving = starvingGuest(s, id);
-  customer.mealPurse = foodMealAllowance(s, id); customer.budget += customer.mealPurse;
+  // Meal money comes indoors only when food sells in the shop too (cooking-sales.js sellsInShop).
+  customer.mealPurse = s.kitchen?.sellAt === "shop" ? foodMealAllowance(s, id) : 0; customer.budget += customer.mealPurse;
   if (customer.starving) customer.needs.hunger = 100;
   if(s.visitorEvents?.vip?.level && id%7===0){customer.kind=11+id%4;customer.vip=true;customer.courtier=true;customer.budget=160+id%91;customer.basketLimit=10+id%5;customer.mealPurse=40;customer.needs.hunger=85;}
+  // Gift wrapping brings shoppers to spend a little more on pumpkins.
+  const wrap = WRAP_SPEND[s.shop.wrapLevel ?? 0] ?? 0;
+  if (wrap) customer.budget = Math.round(customer.budget * (1 + wrap));
   customer.originalBudget = customer.budget; return customer;
 }
 const occupied = (shop) => shop.customers.filter((c) => c.phase !== "leaving").length;
@@ -364,7 +378,7 @@ export function updateShop(s, dt, events) {
     if (c.phase === "queue") continue;
     c.remaining = Math.max(0, c.remaining - dt);
     if (c.remaining > 1e-8) continue;
-    if (c.phase === "entering") { c.phase = "browsing"; c.remaining = 4; }
+    if (c.phase === "entering") { c.phase = "browsing"; c.remaining = BROWSE_SECONDS[shop.browseLevel ?? 0] ?? 4; }
     else if (c.phase === "browsing") {
       const lines = chooseBasket(s, pumpkinShoppingProfile(s, c), offered, "customer-" + c.id, PRICES);
       c.basket = lines ?? [];

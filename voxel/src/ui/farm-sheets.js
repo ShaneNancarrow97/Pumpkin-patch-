@@ -11,10 +11,10 @@ import hettieArt from "../../assets/hettie-janitor-icon.webp";
 import hattieArt from "../../assets/hattie-janitor-icon.webp";
 
 // Each upgrade's own icon from the main game.
-const ICONS = { storage: "stock", crowd: "visitors", tools: "tools", yield: "yield", auto: "auto", plots: "plots", sign: "sign", open: "shop", capacity: "visitors", displays: "stock", checkout: "coins", party: "visitors", lights: "boost", cocoa: "talk", loyalty: "coins" };
+const ICONS = { browse: "sign", wrap: "coins", storage: "stock", crowd: "visitors", tools: "tools", yield: "yield", auto: "auto", plots: "plots", sign: "sign", open: "shop", capacity: "visitors", displays: "stock", checkout: "coins", party: "visitors", lights: "boost", cocoa: "talk", loyalty: "coins" };
 // The caretakers' card shows the next one to hire: Hettie, then her twin.
 const icon = (id, s) => id === "janitor" ? `<span class="thumb"><img src="${M.visitorUpgradeLevel(s, "janitor") ? hattieArt : hettieArt}" alt=""></span>` : `<span class="thumb"><span class="ico i-${ICONS[id]}"></span></span>`;
-const SHOP_LEVELS = { capacity: "capacityLevel", displays: "displayLevel", checkout: "checkoutLevel" };
+const SHOP_LEVELS = M.SHOP_LEVEL_KEYS;
 const SHOP_MAX = { capacity: 3, displays: 1, checkout: 2 };
 
 // The visitor upgrades, Spread the word first. Each says what it does now and at the next level.
@@ -111,9 +111,21 @@ export function farmSheets(ui) {
     return `<div class="service-sheet farm-upgrade-sheet" data-menu-view="farm:patch">${nav}${cards}</div>`;
   }
 
+  // The seed shed: piñata seeds, the varieties at a glance with one tap to
+  // grow one on every plot that can, an upgrade-every-plot button, then each
+  // plot as a compact tile.
   function seeds(s) {
-    const open = M.openPlots(s), remaining = s.plots.length - open, wanted = M.wantedVariety(s);
-    return `<p>Better seeds unlock per plot. Rarer pumpkins sell for more and grow more slowly.${wanted !== null ? ` <b>${M.VARIETIES[wanted].name}</b> is wanted now (★): up to ${Math.round(M.WANTED.bonus * 100)}% more.` : ""}</p><div class="plot-grid">` + s.plots.slice(0, open).map((p, i) => {
+    const open = M.openPlots(s), remaining = s.plots.length - open, wanted = M.wantedVariety(s), level = M.patchLevel(s).level;
+    const grow = (k) => { const t = Math.round(M.VARIETIES[k].grow * M.toolsFactor(s.upgrades.tools)); return t >= 60 ? `${Math.floor(t / 60)}m ${t % 60 ? (t % 60) + "s" : ""}`.trim() : `${t}s`; };
+    const best = Math.max(...s.plotLevels.slice(0, open)), next = M.pinataUpgrade(s), chance = Math.round(M.pinataChance(s) * 100);
+    const pinata = `<article class="seed-pinata${next && level >= next.opensAt && s.coins >= next.cost ? " ready" : ""}"><span class="pinata-art" aria-hidden="true"></span><div><p class="seed-kicker">Fiesta crop</p><h3>${M.PINATA.name}</h3><p>${chance ? `${chance}% of plantings grow as piñatas.` : "Some plantings grow as striped piñatas."} Pick one for its pumpkin and a burst of ingredients for Maisie’s pantry.${s.pinata?.popped ? ` ${s.pinata.popped} popped so far.` : ""}</p></div>${next ? (level < next.opensAt ? `<span class="seed-gate">Level ${next.opensAt}</span>` : `<button class="button purchase-button" data-pinata ${s.coins < next.cost ? "disabled" : ""}>${chance ? `${Math.round(next.chance * 100)}% chance` : "Buy seeds"} · ${money(next.cost)}</button>`) : `<span class="seed-gate done">Every tier</span>`}</article>`;
+    const varieties = `<h3 class="section">The varieties</h3><div class="seed-varieties">${M.VARIETIES.map((v, k) => {
+      const on = s.plotCrops.slice(0, open).filter((c) => c === k).length, can = s.plotLevels.slice(0, open).filter((l) => l >= k).length, locked = k > best;
+      return `<article class="seed-variety${locked ? " locked" : ""}${wanted === k ? " wanted" : ""}">${ui.thumb(k)}<b>${v.name}${wanted === k ? ' <span class="wanted-mark" aria-label="wanted now">★</span>' : ""}</b><small>${money(v.price)} each · ${grow(k)}</small><small>${locked ? "Buy its seeds on a plot below" : `${on} of ${open} plots`}</small>${!locked && on < can ? `<button class="button" data-crop-all="${k}">Grow on ${can === open ? "every plot" : `${can} plots`}</button>` : ""}</article>`;
+    }).join("")}</div>`;
+    const upgradable = s.plots.slice(0, open).map((_, i) => i).filter((i) => M.VARIETIES[s.plotLevels[i] + 1]), allCost = upgradable.reduce((n, i) => n + M.VARIETIES[s.plotLevels[i] + 1].cost, 0);
+    const bulk = upgradable.length > 1 ? `<button class="button purchase-button wide" data-plot-all ${s.coins < Math.min(...upgradable.map((i) => M.VARIETIES[s.plotLevels[i] + 1].cost)) ? "disabled" : ""}>Next seeds for every plot · ${money(allCost)}</button>` : "";
+    return pinata + varieties + `<h3 class="section">Your plots</h3><p class="small">Rarer pumpkins sell for more and grow more slowly.${wanted !== null ? ` <b>${M.VARIETIES[wanted].name}</b> is wanted now (★): up to ${Math.round(M.WANTED.bonus * 100)}% more.` : ""}</p>${bulk}<div class="plot-grid seed-plots">` + s.plots.slice(0, open).map((p, i) => {
       const level = s.plotLevels[i], next = M.VARIETIES[level + 1], crop = s.plotCrops[i];
       const chips = level ? `<div class="chips" role="group" aria-label="What plot ${i + 1} grows">${M.VARIETIES.slice(0, level + 1).map((v, k) => `<button class="chip${wanted === k ? " wanted" : ""}" data-crop="${i}:${k}" aria-pressed="${crop === k}"${wanted === k ? ` aria-label="${v.name}, wanted now"` : ""}>${v.name}${wanted === k ? ` <span class="wanted-mark" aria-hidden="true">★</span>` : ""}</button>`).join("")}</div>` : "";
       return `<div class="plot-card">${ui.thumb(crop)}<h3>Plot ${i + 1} · ${M.VARIETIES[crop].name}</h3><p>${money(M.VARIETIES[crop].price)} each</p>${chips}
@@ -140,7 +152,7 @@ export function farmSheets(ui) {
     }).join("");
     const upgrades = M.SHOP_UPGRADES.filter((u) => u.id !== "open").map((u) => {
       const level = sh[SHOP_LEVELS[u.id]], price = M.shopUpgradeCost(s, u.id), max = price === undefined, at = max ? 0 : opensAt(s, "shop", u.id, level);
-      const now = u.id === "capacity" ? `${M.SHOP_CAPACITY[level]} browsing` : u.id === "displays" ? `${M.displayCount(sh)} tables` : `${M.CHECKOUT_SECONDS[level]}s at the till`;
+      const now = u.id === "capacity" ? `${M.SHOP_CAPACITY[level]} browsing` : u.id === "displays" ? `${M.displayCount(sh)} tables` : u.id === "browse" ? `${M.BROWSE_SECONDS[level]}s to choose` : u.id === "wrap" ? `+${Math.round(M.WRAP_SPEND[level] * 100)}% spend` : `${M.CHECKOUT_SECONDS[level]}s at the till`;
       return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text} Now: ${now}.</p>${levelNote(at)}${tiers(level, SHOP_MAX[u.id])}</div>${at ? levelButton(at) : priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
     }).join("");
     return tip + visit + stats + `<button class="button wide" data-food-shelves>Food shelves · ${s.kitchen?.purchased ? money(s.kitchen.ledger.foodIncome) + " food takings" : "Start cooking from level 5"}</button><h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades + comforts;
@@ -227,6 +239,10 @@ export function farmSheets(ui) {
         }));
         body.querySelectorAll("[data-plot]").forEach((b) => (b.onclick = () => { const i = +b.dataset.plot; if (M.upgradePlot(s, i)) { ui.tone(820); ui.notice(`Plot ${i + 1} can now grow ${M.VARIETIES[s.plotLevels[i]].name}.`); ui.draw(); } }));
         body.querySelectorAll("[data-crop]").forEach((b) => (b.onclick = () => { const [i, v] = b.dataset.crop.split(":").map(Number); if (M.choosePlotCrop(s, i, v)) ui.draw(); }));
+        // The seed shed's bulk actions: one variety on every plot that can grow it, and the next seeds for every plot, cheapest first.
+        body.querySelectorAll("[data-crop-all]").forEach((b) => (b.onclick = () => { const k = +b.dataset.cropAll; let n = 0; for (let i = 0; i < M.openPlots(s); i++) if (s.plotLevels[i] >= k && s.plotCrops[i] !== k && M.choosePlotCrop(s, i, k)) n++; if (n) { ui.notice(`${n} plot${n === 1 ? "" : "s"} now grow ${M.VARIETIES[k].name}.`); ui.draw(); } }));
+        body.querySelector("[data-plot-all]")?.addEventListener("click", () => { const order = s.plots.slice(0, M.openPlots(s)).map((_, i) => i).filter((i) => M.VARIETIES[s.plotLevels[i] + 1]).sort((a, b) => M.VARIETIES[s.plotLevels[a] + 1].cost - M.VARIETIES[s.plotLevels[b] + 1].cost); let n = 0; for (const i of order) if (M.upgradePlot(s, i)) n++; if (n) { ui.tone(820); ui.notice(`New seeds for ${n} plot${n === 1 ? "" : "s"}.`); ui.save?.(); ui.draw(); } });
+        body.querySelector("[data-pinata]")?.addEventListener("click", () => { if (M.buyPinataSeeds(s, M.patchLevel(s).level)) { ui.tone(880); ui.notice(`Piñata seeds: ${Math.round(M.pinataChance(s) * 100)}% of plantings grow as piñatas.`); ui.save?.(); ui.draw(); } });
         body.querySelectorAll("[data-shopup]").forEach((b) => (b.onclick = () => {
           const id = b.dataset.shopup;
           if (!M.upgradeShop(s, id)) return;

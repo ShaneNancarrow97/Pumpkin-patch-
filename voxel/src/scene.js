@@ -12,7 +12,7 @@ import { createSandy, sandyTextures } from "./sandy.js";
 import { specialSpriteReady, specialSpriteTexture } from "./special-sprites.js";
 import { cocoaProp, takeawayCup } from "./cocoa-props.js";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
-import { pumpkinTemplate, sproutTemplate, bigPumpkin } from "./pumpkins.js";
+import { pumpkinTemplate, pinataTemplate, sproutTemplate, bigPumpkin } from "./pumpkins.js";
 import { plotShape } from "./content/pumpkin-shapes.js";
 import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, signBoard } from "./world.js";
 
@@ -39,6 +39,7 @@ import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
 import { createWilds } from "./wilds.js";
 import { createCookingWorld } from "./cooking-world.js";
+import { buildFoodProp } from "./food-props.js";
 import { COOKING_SITE } from "./content/cooking-layout.js";
 import { createActionFx } from "./action-fx.js";
 import { fieldDepth, extendFarmRoute, DROP, patchShape, COUNTER_GAP } from "./content/farm-layout.js";
@@ -144,6 +145,8 @@ export function createScene(canvas, state, hooks) {
     const sp = sprout.clone(); sp.position.y = 0.18; g.add(sp);
     // Each plot grows its own shape (content/pumpkin-shapes.js), so the patch isn't all one pumpkin.
     const pk = VARIETIES.map((_, v) => { const m = pumpkinTemplate(v, 0.62, plotShape(i)).clone(); m.position.y = 0.18; g.add(m); return m; });
+    // A piñata grows in fiesta stripes instead (rules/pinata.js).
+    const pinata = pinataTemplate(0.62, plotShape(i)).clone(); pinata.position.y = 0.18; pinata.visible = false; g.add(pinata);
     const halo = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ color: 0xffffff, map: glowTexture, transparent: true, opacity: 0.0, toneMapped: false, depthWrite: false, blending: THREE.AdditiveBlending }));
     halo.rotation.x = -Math.PI / 2; halo.position.y = 0.2; g.add(halo);
     const locked = new Voxels(); for (let k = 0; k < 5; k++) locked.box(-0.6 + k * 0.28, 0.18, -0.1 + (k % 2) * 0.2, 0.18, 0.12, 0.18, 0x3d5a2a);
@@ -151,7 +154,7 @@ export function createScene(canvas, state, hooks) {
     const hit = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.4, 1.6), new THREE.MeshBasicMaterial({ visible: false }));
     hit.position.y = 0.6; hit.userData = { type: "plot", index: i }; g.add(hit); pickables.push(hit);
     scene.add(g);
-    return { g, sp, pk, halo, lockedVines };
+    return { g, sp, pk, pinata, halo, lockedVines };
   });
   const festivalWorld = createFestivalWorld({ scene, state, world, signBoard, createCashier: createSandy });
   const farmExpansion = createFarmExpansion(state, world, lamps);
@@ -206,7 +209,7 @@ export function createScene(canvas, state, hooks) {
   function placeCharacters() {
     placeSkyla(); placeActor("natalie"); placeActor("shane");
     warm(...playerDirectionTextures([state.wardrobe.equipped.shane,state.wardrobe.equipped.natalie]));
-    for (const entry of visitorModels.values()) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); entry.m.userData.dispose?.(); }
+    for (const entry of visitorModels.values()) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); disposeCustomerBag(entry.dish); entry.m.userData.dispose?.(); }
     visitorModels.clear();                                                            // rebuilt in the new style next frame
     const inside = places.place;
     if (inside?.kind === "room") places.enterRoom(inside.id);
@@ -256,6 +259,16 @@ export function createScene(canvas, state, hooks) {
 
   // Visitors.
   const visitorModels = new Map(), outLen = routeLength(ROUTE_OUT), meadowOutLen = routeLength(MEADOW_EXIT);
+  // Guests who buy from Maisie's truck stop at its hatch on the way home: both
+  // ways out pass it at their fifth point (42.5, 6.6), where the walk pauses
+  // for a share of the leaving time while they're served, facing the truck.
+  const HATCH_PAUSE = .24, hatchAt = routeLength(ROUTE_OUT.slice(0, 5));
+  function hatchWalk(t, len) {
+    const f = Math.min(1, hatchAt / len), a = f * (1 - HATCH_PAUSE);
+    if (t < a) return { u: t / a * f, served: false, waiting: false };
+    if (t < a + HATCH_PAUSE) return { u: f, served: t > a + HATCH_PAUSE * .55, waiting: true };
+    return { u: f + (t - a - HATCH_PAUSE) / Math.max(1e-6, 1 - a - HATCH_PAUSE) * (1 - f), served: true, waiting: false };
+  }
   const guestHitGeometry = new THREE.BoxGeometry(1.15, 2.2, .9), guestHitMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const carried = pumpkins.map((t) => { const m = t.clone(); m.scale.setScalar(0.5); return m; });
 
@@ -725,15 +738,15 @@ export function createScene(canvas, state, hooks) {
     plots.forEach((p, i) => {
       const plot = state.plots[i], open = i < openPlots(state);
       p.g.visible = i < (state.upgrades.plots >= 4 ? 24 : state.upgrades.plots >= 3 ? 18 : 12);
-      p.lockedVines.visible = !open; p.sp.visible = false; p.pk.forEach((m) => (m.visible = false)); p.halo.material.opacity = 0;
+      p.lockedVines.visible = !open; p.sp.visible = false; p.pk.forEach((m) => (m.visible = false)); p.pinata.visible = false; p.halo.material.opacity = 0;
       if (!open || plot.phase === "empty") return;
       if (plot.phase === "growing" && plot.progress < 0.3) { p.sp.visible = true; p.sp.scale.setScalar(0.6 + plot.progress * 2); return; }
-      const m = p.pk[plot.variety]; m.visible = true;
+      const m = plot.pinata ? p.pinata : p.pk[plot.variety]; m.visible = true;
       const s = plot.phase === "ready" ? 1 : 0.35 + plot.progress * 0.6;
       m.scale.setScalar(s);
       if (plot.phase === "ready") {
         m.position.y = 0.18 + Math.abs(Math.sin(time * 2 + i)) * 0.05;
-        p.halo.material.color.setHex(VARIETIES[plot.variety].glow);
+        p.halo.material.color.setHex(plot.pinata ? 0xff5fb0 : VARIETIES[plot.variety].glow);
         p.halo.material.opacity = 0.35 + Math.sin(time * 3 + i) * 0.12;
       }
     });
@@ -788,7 +801,10 @@ export function createScene(canvas, state, hooks) {
       const t = leaving ? (v.age - v.leaveAt) / visitorLeaveSeconds(state) : Math.min(1, v.age / VISIT.arrive);
       const excursion = chat || hayrideJourney || hollowJourney || v.festival && !v.festival.done;
       const journey = chat ?? (hayrideJourney ? hayridePose : hollowJourney ? v.hollow : v.festival);
-      const p = excursion ? journey : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, t * (state.festival.meadow ? meadowOutLen : outLen)) : along(routeIn, t * inLen);
+      const exitLen = state.festival.meadow ? meadowOutLen : outLen, truckGuest = leaving && v.food?.status === "paid" && typeof v.foodOwner === "string";
+      const hatch = truckGuest ? hatchWalk(t, exitLen) : null;
+      const p = excursion ? journey : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, (hatch ? hatch.u : t) * exitLen) : along(routeIn, t * inLen);
+      if (hatch?.waiting) { p.dx = 0; p.dz = -1; }
       // Parties stand side by side along the counter: each fans out to its own
       // place over the last stretch of the path, and back in as it sets off home.
       const fan = excursion ? 0 : leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
@@ -798,7 +814,9 @@ export function createScene(canvas, state, hooks) {
       entry.m.position.set(p.x + counterSide(v.spot ?? 0) * COUNTER_GAP * fan + (dancing ? Math.sin(time * 2.1 + v.id) * .07 : 0), (p.y ?? .04) + (dais ? .095 : 0) + (dancing ? Math.abs(Math.sin(time * 4.2 + v.id * 1.7)) * .11 : 0), p.z);
       // The wagon rail masks the lower body; riders keep a quiet idle frame.
       entry.m.scale.y = hayridePose?.seated ? .66 : 1;
-      const walking = excursion ? journey.walking : leaving || v.age < VISIT.arrive;
+      const walking = excursion ? journey.walking : (leaving && !hatch?.waiting) || v.age < VISIT.arrive;
+      // Served at the hatch: they carry their dish home.
+      if (hatch?.served && !entry.dish && v.food?.recipe) { entry.dish = buildFoodProp(v.food.recipe, { scale: .3 }); entry.dish.position.set(-.38, .82, .3); entry.m.add(entry.dish); }
       if (entry.sprite) animateVisitor(entry.m, excursion ? time + v.id : v.age, walking, p.dx / (Math.hypot(p.dx, p.dz) || 1), walking || chat?.phase === "chatting");
       else {
         entry.m.rotation.y = walking ? Math.atan2(p.dx, p.dz) : Math.PI;              // at the counter they face Skyla
@@ -815,7 +833,7 @@ export function createScene(canvas, state, hooks) {
     syncChats();
     lightLamps(dt);
     if (!view.place && (shadowFrame++ & 1) === 0) moon.shadow.needsUpdate = true;
-    for (const [id, entry] of visitorModels) if (!state.visitors.some((v) => v.id === id)) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); entry.m.userData.dispose?.(); visitorModels.delete(id); }
+    for (const [id, entry] of visitorModels) if (!state.visitors.some((v) => v.id === id)) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); disposeCustomerBag(entry.dish); entry.m.userData.dispose?.(); visitorModels.delete(id); }
 
     // Fireflies.
     const fp = flies.geometry.attributes.position;

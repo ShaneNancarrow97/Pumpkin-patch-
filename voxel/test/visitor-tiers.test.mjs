@@ -60,9 +60,9 @@ test("old saves keep their tiers, and are never slower than before", () => {
 });
 
 test("restoreState holds tiers to the new maxima, version 1 saves included", () => {
-  const s = M.freshState(); s.upgrades.sign = 99; s.visitorUpgrades.lights = 40; s.upgrades.tools = 9;
+  const s = M.freshState(); s.upgrades.sign = 99; s.visitorUpgrades.lights = 40; s.upgrades.tools = 12;
   const loaded = M.restoreState(s);
-  assert.equal(loaded.upgrades.sign, 5); assert.equal(loaded.visitorUpgrades.lights, 6); assert.equal(loaded.upgrades.tools, 6);
+  assert.equal(loaded.upgrades.sign, 5); assert.equal(loaded.visitorUpgrades.lights, 6); assert.equal(loaded.upgrades.tools, 9);
   const v1 = M.freshState(); delete v1.version; v1.upgrades = { tools: 2, helper: 1, plots: 1, signs: 6 };
   const migrated = M.restoreState(v1);
   assert.equal(migrated.upgrades.sign, 5); assert.equal(migrated.upgrades.auto, 1);
@@ -76,6 +76,7 @@ test("level gifts still give a real tier, and coins when that upgrade is already
   }
   const gift = M.freshState(); gift.earned = at(4); gift.progression.claimed = [1, 2, 3];
   M.awardLevels(gift); assert.equal(gift.upgrades.tools, 1);
+  // Six cans is as far as level 4 reaches (the copper cans open at 12): the gift is coins.
   const full = M.freshState(); full.earned = at(4); full.progression.claimed = [1, 2, 3]; full.upgrades.tools = 6;
   const coins = full.coins; M.awardLevels(full);
   assert.equal(full.upgrades.tools, 6); assert.equal(full.coins, coins + 100 + 100);

@@ -38,9 +38,12 @@ export const foodPaymentReserve = (s, customer) => {
   return h ? h.quantity * h.price : 0;
 };
 
+// Guests outdoors buy at Maisie's truck from the day it opens; shop customers
+// only when the player also sells food inside Skyla's shop (sellAt "shop").
+export const sellsInShop = s => !!s.shop?.unlocked && s.kitchen?.sellAt === 'shop';
 export function quoteFoodForCustomer(s, customer, pumpkinLines = customer.basket) {
-  const k = s.kitchen;
-  if (s.paused || !k?.purchased || !s.shop?.unlocked || customer.food?.status === 'paid') return null;
+  const k = s.kitchen, outdoors = typeof customer.foodOwner === 'string' && customer.foodOwner.startsWith('visitor-');
+  if (s.paused || !k?.purchased || (!outdoors && !sellsInShop(s)) || customer.food?.status === 'paid') return null;
   const existing = heldBy(s, customer);
   if (existing) return existing;
   const hunger = purse(customer.needs?.hunger), value = Math.max(.5, Math.min(1.5, customer.needs?.value ?? 1));
