@@ -4,6 +4,7 @@
 import * as M from "../model.js";
 import { MUSIC_TRACKS } from "./audio.js";
 import { RENDER_QUALITIES, validRenderQuality } from "../render-quality.js";
+import { FRAME_RATES, validFrameRate } from "../frame-pacing.js";
 import { TV_SIZES, CAST_STEPS } from "./tv-mode.js";
 import { readSaveFile, saveSummary } from "../save-file.js";
 import { money } from "./kit.js";
@@ -17,6 +18,14 @@ const ago = (iso) => { const t = Date.parse(iso ?? ""); if (Number.isNaN(t)) ret
 const connectedPad = () => { const g = [...(navigator.getGamepads?.() ?? [])].find((x) => x?.connected); return g ? (padFamily(g) === "DualSense" ? "DualSense" : "A controller") : ""; };
 
 export function settingsSheet(ui) {
+  // What the frame rate setting is doing now, in a line.
+  const frameNote = (p) => {
+    const mode = validFrameRate(p.frameRate), cap = ui.scene.pacing?.cap;
+    if (mode === "auto") return p.tvMode ? `Drawing ${cap || 60} a second. When casting it settles on a steady 30 if 60 can't be held, and tries 60 again now and then` : "Up to 60 a second, which spares the battery on a 120 Hz screen";
+    if (mode === "30") return "A steady 30 a second: the easiest on the phone, and even on a cast";
+    if (mode === "60") return "Up to 60 a second";
+    return "Every screen refresh: smoothest on a fast screen, hardest on the battery";
+  };
   let confirmReset = false, restoreText = "", restoreError = "", castResult = null, pending = null, fileError = "", here = null;
   const toggle = (id, label, help, on) => `<div class="setting"><span>${label}<small>${help}</small></span><button class="button" id="${id}" aria-pressed="${on}">${on ? "On" : "Off"}</button></div>`;
   const sizeSelect = (p) => `<label class="setting"><span>TV menu size<small>How big menus and buttons look on the TV</small></span><select id="tv-size" aria-label="TV menu size">${TV_SIZES.map(([id, name]) => `<option value="${id}" ${id === (p.tvSize ?? "standard") ? "selected" : ""}>${name}</option>`).join("")}</select></label>`;
@@ -65,6 +74,7 @@ export function settingsSheet(ui) {
           toggle("toggle-sound", "Sound effects", "Soft tones for planting, picking and sales", p.sound) +
           toggle("toggle-pause", "Tea break", "Pause the farm. Nothing grows and nobody visits.", !!s.paused) +
           `<label class="setting"><span>Render detail<small>Sharp keeps fine edges. Lower settings save battery and reduce graphics load.</small></span><select id="render-quality" aria-label="Render detail">${RENDER_QUALITIES.map(q=>`<option value="${q.id}" ${q.id===validRenderQuality(p.renderQuality)?"selected":""}>${q.name}</option>`).join("")}</select></label>` +
+          `<label class="setting"><span>Frame rate<small>${frameNote(p)}</small></span><select id="frame-rate" aria-label="Frame rate">${FRAME_RATES.map(([id, name]) => `<option value="${id}" ${id === validFrameRate(p.frameRate) ? "selected" : ""}>${name}</option>`).join("")}</select></label>` +
           toggle("toggle-glow", "Glow", "Bloom on lanterns, windows and ripe pumpkins", p.glow) +
           toggle("toggle-mist", "Drifting mist", "A thin mist that rolls across the farm, clears and comes back", p.mist) +
           toggle("toggle-lake", "Lake and twinkling lights", "Ripples on the far lake, flickering village lamps and twinkling stars", p.lakeLights) +
@@ -95,6 +105,7 @@ export function settingsSheet(ui) {
         body.querySelector("#toggle-sound").onclick = flip("sound");
         body.querySelector("#toggle-pause").onclick = () => { s.paused = !s.paused; ui.notice(s.paused ? "Tea break. The farm will wait for you." : "Back to work!"); ui.draw(); };
         body.querySelector("#render-quality").onchange = e => { p.renderQuality = ui.scene.setRenderQuality(e.target.value); ui.savePrefs(); ui.draw(); };
+        body.querySelector("#frame-rate").onchange = e => { p.frameRate = validFrameRate(e.target.value); ui.scene.setFramePacing({ mode: p.frameRate, tv: !!p.tvMode }); ui.savePrefs(); ui.draw(); };
         body.querySelector("#toggle-glow").onclick = flip("glow", (on) => ui.scene.setBloom(on));
         const ambience = () => ui.scene.setAmbience({ mist: p.mist, lake: p.lakeLights });
         body.querySelector("#toggle-mist").onclick = flip("mist", ambience);

@@ -7,6 +7,7 @@ import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import { renderSizing, validRenderQuality } from "./render-quality.js";
+import { createPacer } from "./frame-pacing.js";
 import { Voxels, seeded, vary } from "./voxels.js";
 import { createSandy, sandyTextures } from "./sandy.js";
 import { specialSpriteReady, specialSpriteTexture } from "./special-sprites.js";
@@ -72,7 +73,7 @@ export function createScene(canvas, state, hooks) {
   // Foldables get the same detail as other high-density displays. A pixel
   // budget protects large viewports; a lower quality is an explicit choice.
   const touchDevice = window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
-  let renderQuality = "sharp";
+  let renderQuality = "sharp", tvProfile = false;
   renderer.setPixelRatio(renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality).pixelRatio);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -397,6 +398,10 @@ export function createScene(canvas, state, hooks) {
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
   const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.5, 0.45, 0.86);
+  // In TV mode the glow's blur chain runs at half size: a soft glow loses
+  // nothing in the cast's video, and the chain is most of the glow's cost.
+  const bloomSize = bloom.setSize.bind(bloom);
+  bloom.setSize = (w, h) => { const k = tvProfile ? .5 : 1; bloomSize(Math.max(1, Math.round(w * k)), Math.max(1, Math.round(h * k))); };
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
   // Canvas MSAA does not apply to offscreen composer targets. FXAA smooths
@@ -528,13 +533,17 @@ export function createScene(canvas, state, hooks) {
     }
   }
   let firstResize = true, lastOverview = false;
+  // The canvas's size and place on the page, kept from the last resize: read
+  // per frame after the DOM has been written, they would force a layout each time.
+  let viewW = canvas.clientWidth || 1, viewH = canvas.clientHeight || 1, viewRect = canvas.getBoundingClientRect();
   function resize() {
-    const sizing = renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, view.place === "carving"), w = sizing.width, h = sizing.height;
+    const sizing = renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, view.place === "carving", tvProfile), w = sizing.width, h = sizing.height;
+    viewW = w; viewH = h; viewRect = canvas.getBoundingClientRect();
     if (renderer.getPixelRatio() !== sizing.pixelRatio) renderer.setPixelRatio(sizing.pixelRatio);
     renderer.setSize(w, h, false);
     if (postprocessRatio !== sizing.pixelRatio) { composer.setPixelRatio(sizing.pixelRatio); postprocessRatio = sizing.pixelRatio; }
     composer.setSize(w, h);
-    antialias.uniforms.resolution.value.set(1 / sizing.bufferWidth, 1 / sizing.bufferHeight); antialias.enabled = sizing.pixelRatio < FXAA_BELOW;
+    antialias.uniforms.resolution.value.set(1 / sizing.bufferWidth, 1 / sizing.bufferHeight); antialias.enabled = !tvProfile && sizing.pixelRatio < FXAA_BELOW;
     const overview = cameraLayout(w).overview >= 0.95;
     if (!firstResize && overview && !lastOverview && !player.state().enabled) {
       view.zoom = Math.min(view.zoom, 1);
@@ -693,7 +702,7 @@ export function createScene(canvas, state, hooks) {
     document.getElementById("fx").append(el);
     fx.push({ el, scene: view.place, pos: new THREE.Vector3(x, y, z), t: 0, life: cls === "speech" ? 1.8 : 1.2 });
   }
-  const project = (p) => { const v = p.clone().project(active()); return { x: (v.x + 1) / 2 * canvas.clientWidth, y: (1 - v.y) / 2 * canvas.clientHeight }; };
+  const project = (p) => { const v = p.clone().project(active()); return { x: (v.x + 1) / 2 * viewW, y: (1 - v.y) / 2 * viewH }; };
 
   // Chats in the meadow (rules/meadow-chat.js): a speech marker over each group
   // that's talking, which opens what they're saying, and, zoomed in, the
@@ -738,7 +747,13 @@ export function createScene(canvas, state, hooks) {
   }
 
   let framedLand = "", tapPulse = 0, last = performance.now(), time = 0, nextSpeechAt = 0, shadowFrame = 0;
+  // How often to draw (frame-pacing.js): a frame the pacer passes over does
+  // nothing at all, and the next one runs the rules for the whole time since.
+  const pacer = createPacer();
+  let drawnFrames = 0;
   function tick(now) {
+    if (!pacer.draw(now)) { requestAnimationFrame(tick); return; }
+    drawnFrames++;
     // The first frame's timestamp can come before the scene finished building, and
     // a negative time would pick a walk frame that doesn't exist.
     const dt = THREE.MathUtils.clamp((now - last) / 1000, 0, 0.1); last = now; time += dt;
@@ -872,7 +887,8 @@ export function createScene(canvas, state, hooks) {
     syncChats();
     lightLamps(dt);
     // The farm's shadows redraw every third frame: a sprite's shadow trailing by two frames can't be seen, and the pass costs as much as the view.
-    if (!view.place && shadowFrame++ % 3 === 0) moon.shadow.needsUpdate = true;
+    // At 30 frames a second or fewer, every other frame keeps them as fresh as every third at 60.
+    if (!view.place && shadowFrame++ % (pacer.cap && pacer.cap <= 30 ? 2 : 3) === 0) moon.shadow.needsUpdate = true;
     for (const [id, entry] of visitorModels) if (!state.visitors.some((v) => v.id === id)) { scene.remove(entry.m); disposeCustomerBag(entry.bag); disposeCustomerBag(entry.cup); disposeCustomerBag(entry.snack); disposeCustomerBag(entry.dish); entry.m.userData.dispose?.(); visitorModels.delete(id); }
 
     // Fireflies.
@@ -983,7 +999,7 @@ export function createScene(canvas, state, hooks) {
       else if (kind === "room") places.enterRoom(id); else places.enterShop();
       Object.assign(view, { x: 0, z: 0, zoom: 1, reach: { x: 0, z: 0 } }); glide = null;
       // The bench draws at a sharper pixel ratio than the rest (renderSizing's `close`).
-      if (kind === "carving" || renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality).pixelRatio) resize(); else frame();
+      if (kind === "carving" || renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, false, tvProfile).pixelRatio) resize(); else frame();
     },
     leavePlace() {
       if (!view.place) return;
@@ -995,7 +1011,7 @@ export function createScene(canvas, state, hooks) {
       places.leave();
       view.place = null; glide = null; playerOrbit.yaw=0;playerOrbit.pitch=PITCH;
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
-      if (renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality).pixelRatio) resize(); else frame();
+      if (renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, false, tvProfile).pixelRatio) resize(); else frame();
     },
     get place() { return view.place === "carving" ? { kind: "carving", id: "bench" } : view.place === "hayride" ? { kind: "hayride", id: "woodland" } : view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
@@ -1035,7 +1051,7 @@ export function createScene(canvas, state, hooks) {
     refreshFoyer() { if (view.place === "foyer") foyerView.sync(); },
     previewFoyerDecor(data) { foyerView.preview(data); },
     // For tests: where a world point lands on the canvas, in CSS pixels.
-    project(x, y, z) { const v = new THREE.Vector3(x, y, z).project(active()), box = canvas.getBoundingClientRect(); return { x: box.left + (v.x + 1) / 2 * box.width, y: box.top + (1 - v.y) / 2 * box.height }; },
+    project(x, y, z) { const v = new THREE.Vector3(x, y, z).project(active()), box = viewRect; return { x: box.left + (v.x + 1) / 2 * box.width, y: box.top + (1 - v.y) / 2 * box.height }; },
     // The ground's directions as the camera sees them: unit x, z vectors for
     // right and down the screen, so a stick steers a piece the way it looks.
     groundAxes() {
@@ -1065,6 +1081,12 @@ export function createScene(canvas, state, hooks) {
     get carvingStandStatus() { return carvingStand?.status; },
     get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? antialias.enabled ? "FXAA" : "density" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
     setRenderQuality(value) { renderQuality = validRenderQuality(value); resize(); return renderQuality; },
+    // TV mode's lighter picture (render-quality.js TV_RENDER, a half-size glow, no FXAA) and its frame pacing.
+    setTvProfile(on) { if (tvProfile === !!on) return; tvProfile = !!on; resize(); },
+    setFramePacing(options) { pacer.set(options); },
+    // A centred menu dims the farm: it draws at most 24 frames a second behind it.
+    setMenuOpen(on) { pacer.setMenu(on); },
+    get pacing() { return { cap: pacer.cap, settled: pacer.settled, tv: tvProfile, drawn: drawnFrames, bloomWidth: bloom.renderTargetsHorizontal?.[0]?.width ?? 0, fxaa: antialias.enabled }; },
     selectPiece(instance) { places.select(instance); },
     previewPiece(instance, x, z, ok, pose) { places.preview(instance, x, z, ok, pose); },
     showGrid(on) { places.setGrid(on); },

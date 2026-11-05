@@ -36,11 +36,12 @@ export const CAST_STEPS = {
   other: ["Use your device's screen mirroring: Smart View, Cast, Screen cast or AirPlay.", "Choose your TV.", "Come back here and play."],
 };
 
-export function createTvMode({ prefs, savePrefs = () => {}, notice = () => {} }) {
+export function createTvMode({ prefs, savePrefs = () => {}, notice = () => {}, onChange = () => {} }) {
   let wake = null;
   function apply() {
     const on = !!prefs.tvMode;
     document.body.classList.toggle("tv-mode", on);
+    onChange(on);
     document.documentElement.style.setProperty("--tv-zoom", on ? String(tvZoom(innerHeight, prefs.tvSize)) : "1");
   }
   function set(on) { prefs.tvMode = !!on; savePrefs(); apply(); }

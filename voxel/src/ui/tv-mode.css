@@ -128,3 +128,9 @@ body.has-pad:not(.tv-mode) .play-legend { gap: 12px; height: 42px; padding: 0 14
 .tv-mode .menu-art { width: 136px; height: 130px; } .tv-mode .menu-art .stand-render { width: 132px; height: 128px; }
 .tv-mode .stand-hero-art { max-width: 720px; }
 .tv-mode .stand-seats { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+
+/* No frosted glass in TV mode or on a touch screen: a backdrop blur is
+   worked out again every frame over the moving farm (a phone casting to a TV
+   is also encoding video), and these panels are near-opaque anyway. */
+.tv-mode *, .tv-mode *::before, .tv-mode *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+@media (pointer: coarse) { *, *::before, *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; } }

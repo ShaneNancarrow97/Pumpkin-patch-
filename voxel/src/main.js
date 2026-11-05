@@ -66,12 +66,13 @@ document.addEventListener("visibilitychange", () => document.hidden && save());
 const prefs = (() => {
   // Mist and the moving lake start off for anyone who has asked for less motion.
   const still = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const base = { renderQuality: "sharp", glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false, mist: !still, lakeLights: !still, mazeSound: true, mazeVolume: .45 };
+  const base = { renderQuality: "sharp", frameRate: "auto", glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false, mist: !still, lakeLights: !still, mazeSound: true, mazeVolume: .45 };
   try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; }
 })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
 // TV mode (ui/tv-mode.js): a phone mirrored to a TV and played with a controller.
-const tv = createTvMode({ prefs, savePrefs, notice: (text) => notice(text) });
+// TV mode also lightens the picture and paces the frames for a cast (scene.js, frame-pacing.js).
+const tv = createTvMode({ prefs, savePrefs, notice: (text) => notice(text), onChange: (on) => { try { scene.setTvProfile(on); scene.setFramePacing({ mode: prefs.frameRate, tv: on }); } catch { /* the scene isn't made yet; it takes TV mode as it starts */ } } });
 const audio = createAudio(prefs), mazeAudio = createMazeAudio(prefs), hayrideAudio = createHayrideAudio(prefs), carvingAudio = createCarvingAudio(prefs);
 const mazeUI = createMazeRideUI({ prefs, savePrefs,
   onStart: startMazeRide, onPause: pauseMazeRide, onExit: exitMazeRide, onReplay: replayMazeRide,
@@ -541,6 +542,8 @@ $("boost").onclick = boost;
 // The HUD, actions, goal and streak, every frame (cheap: only text changes).
 let shownPinata;
 const text = (id, value) => { const el = $(id); if (el.textContent !== String(value)) el.textContent = value; };
+const shownLevel = { label: "", fill: "" };
+let sheetDrawnAt = 0;
 function render() {
   const controlsBlocked=!!openTab || celebration.active || intro.active || upgradeMenu?.open || mazeUI.active || hayrideUI.active || state.paused || !!homeJourney?.active || !!carvingUI?.isOpen;
   playControls?.tick(controlsBlocked); homeJourney?.tick();
@@ -554,8 +557,10 @@ function render() {
   litterHint();
   const lvl = M.patchLevel(state);
   text("level-number", lvl.level);
-  $("open-levels").setAttribute("aria-label", `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View rewards`);
-  $("open-levels").style.setProperty("--progress", (lvl.progress * 100).toFixed(1) + "%");
+  // Written only when they change: an unchanged write still costs a style pass every frame.
+  const levelLabel = `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View rewards`, levelFill = (lvl.progress * 100).toFixed(1) + "%";
+  if (levelLabel !== shownLevel.label) { shownLevel.label = levelLabel; $("open-levels").setAttribute("aria-label", levelLabel); }
+  if (levelFill !== shownLevel.fill) { shownLevel.fill = levelFill; $("open-levels").style.setProperty("--progress", levelFill); }
   celebration.tick(mazeUI.active || hayrideUI.active || !!openTab || !!home.tools.selected || state.paused);
   stockPopover.tick(mazeUI.active || hayrideUI.active || celebration.active || !!openTab || estateTools.active || foyerTools.active || !!home.tools.selected);
   guestCard.tick(mazeUI.active || hayrideUI.active || !!openTab || celebration.active || estateTools.active || foyerTools.active || !!home.tools.selected);
@@ -605,7 +610,9 @@ function render() {
       audio.tone(990);
     }
   }
-  if (openTab) draw();
+  // An open menu's live numbers (timers, counts) refresh five times a second;
+  // anything the player does redraws it at once (ui.draw).
+  if (openTab && performance.now() - sheetDrawnAt > 200) { sheetDrawnAt = performance.now(); draw(); }
 }
 $("goal").onclick = () => { sheets.journal.setTab("favours"); openSheet("journal"); };
 
@@ -715,7 +722,7 @@ function openSheet(tab) {
   if (home.tools.selected) home.tools.select(null);
   document.body.classList.add("menu-open");
   $("sheet").dataset.section = tab;
-  $("sheet").classList.toggle("centred", !WORLD_MENUS.has(tab)); document.body.classList.toggle("menu-centred", !WORLD_MENUS.has(tab));
+  $("sheet").classList.toggle("centred", !WORLD_MENUS.has(tab)); document.body.classList.toggle("menu-centred", !WORLD_MENUS.has(tab)); scene.setMenuOpen(!WORLD_MENUS.has(tab));
   openTab = tab; lastBody = "";
   const sheet = sheets[tab];
   if(tab === "wardrobe" && scene.place?.kind === "room") { M.recordHomeActivity?.(state,"wardrobe"); save(); }
@@ -725,7 +732,7 @@ function openSheet(tab) {
   markTab();
   $("sheet-close").focus({ preventScroll: true });
 }
-function closeSheet() { const wasOpen=!!openTab;menuMemory.leave();holdToBuy?.cancel();document.body.classList.remove("menu-open","menu-centred"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
+function closeSheet() { const wasOpen=!!openTab;scene.setMenuOpen(false);menuMemory.leave();holdToBuy?.cancel();document.body.classList.remove("menu-open","menu-centred"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
 function markTab() {
   const active = openTab ? TABS[openTab] : ["foyer", "maze", "hayride"].includes(scene.place?.kind) ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
@@ -875,7 +882,7 @@ playControls=createPlayControls({feel:playFeel,holdToBuy,farmAction,quick:{
   label:()=>scene.place?.kind==='room'?'Furnish':scene.place?.kind==='estate'?'Garden':!scene.place?'Stock':'',
   open(){const k=scene.place?.kind;if(k==='room'){sheets.home.setTab('decorate');openSheet('home');}else if(k==='estate')openEstateSheet('garden');else if(!scene.place)$('open-stock').click();}},placement:createPadPlacement({scene,state:()=>state,house:home.tools,estate:()=>estateTools,foyer:()=>foyerTools,feel:playFeel}),hubAllowed:()=>!carvingUI?.isOpen&&!mazeUI.active&&!hayrideUI.active&&!homeJourney?.active,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(carvingUI?.isOpen){queueMicrotask(closeCarving);return;}if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(hayrideUI.active){if(hayrideUI.stage==="running")hayrideUI.pause(true);else if(hayrideUI.stage==="pause")hayrideUI.pause(false);else exitHayrideRide();}else if(stockPopover.open)stockPopover.close(true);else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
 homeJourney=createHomeJourney({state:()=>state,blocked:()=>!!openTab||celebration.active||intro.active||mazeUI.active||hayrideUI.active||!!home.tools.selected||!!playControls.radial||state.paused,follow:followHomeGoal,open:()=>openSheet('homelife')});
-scene.setRenderQuality(prefs.renderQuality); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
+scene.setRenderQuality(prefs.renderQuality); scene.setTvProfile(!!prefs.tvMode); scene.setFramePacing({ mode: prefs.frameRate, tv: !!prefs.tvMode }); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
 render(); renderPlace();
 // For the smoke test and screenshots: `advance` runs the rules forward, since a
 // software-rendered browser only manages a few frames a second.
