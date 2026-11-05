@@ -5,6 +5,7 @@
 // fair sign what each pays. Pure rules: the farm's own numbers drive a hash,
 // so the same state always plays out the same way.
 import { patchLevel } from "./levels.js";
+import { NORMAL_VISITOR_KINDS } from "../content/visitors.js";
 
 export const CARVING_STAND = Object.freeze({
   level: 8, cost: 4000,
@@ -36,7 +37,7 @@ export const STAND_UPGRADE_BY_ID = Object.freeze(Object.fromEntries(CARVING_STAN
 export const STAND_DESIGN_BY_ID = Object.freeze(Object.fromEntries(CARVING_STAND.designs.map((d) => [d.id, d])));
 export const STAND_EXTRA_BY_ID = Object.freeze(Object.fromEntries(CARVING_STAND.extras.map((e) => [e.id, e])));
 
-export const freshCarvingStand = () => ({ built: false, open: true, benches: 0, tools: 0, sign: 0, designs: ["classic"], extras: [], carvers: [], next: 0, serial: 0, carved: 0, income: 0, last: null });
+export const freshCarvingStand = () => ({ built: false, open: true, benches: 0, tools: 0, sign: 0, designs: ["classic"], extras: [], carvers: [], next: 0, serial: 0, carved: 0, income: 0, tally: {}, last: null });
 export function restoreCarvingStand(raw) {
   const c = freshCarvingStand();
   if (!raw || typeof raw !== "object") return c;
@@ -46,12 +47,29 @@ export function restoreCarvingStand(raw) {
   c.designs = ["classic", ...new Set((Array.isArray(raw.designs) ? raw.designs : []).filter((id) => STAND_DESIGN_BY_ID[id] && id !== "classic"))];
   c.extras = [...new Set((Array.isArray(raw.extras) ? raw.extras : []).filter((id) => STAND_EXTRA_BY_ID[id]))];
   c.serial = whole(raw.serial); c.carved = whole(raw.carved); c.income = whole(raw.income);
+  for (const d of CARVING_STAND.designs) if (whole(raw.tally?.[d.id])) c.tally[d.id] = whole(raw.tally[d.id]);
   return c;   // Carvers at the benches aren't saved: like the shop's customers, they've gone home.
 }
 
 const level = (s) => patchLevel(s).level;
 export const standValue = (s, id) => STAND_UPGRADE_BY_ID[id].values[s.carvingStand?.[id] ?? 0];
 export const standOpensAt = () => CARVING_STAND.level;
+// How far a guest has got with their lantern, by the share of their time at the bench:
+// choosing a pumpkin, scooping it out, carving the face, then lighting the candle.
+export const CARVING_STAGES = Object.freeze([
+  Object.freeze({ id: "whole", until: .25, name: "Choosing a pumpkin" }),
+  Object.freeze({ id: "open", until: .5, name: "Scooping it out" }),
+  Object.freeze({ id: "carved", until: .85, name: "Carving the face" }),
+  Object.freeze({ id: "lit", until: Infinity, name: "Lighting the candle" }),
+]);
+export const carverProgress = (k) => Math.max(0, Math.min(1, 1 - k.left / Math.max(1e-6, k.length)));
+export const carvingStage = (k) => CARVING_STAGES.find((st) => carverProgress(k) < st.until);
+// How guests split between the designs on the menu (what carvingOrder weighs them by).
+export function designShares(s) {
+  const designs = s.carvingStand.designs.map((id) => STAND_DESIGN_BY_ID[id]), weights = designs.map((d) => d.keen + d.price / 40), total = weights.reduce((a, b) => a + b, 0) || 1;
+  return Object.fromEntries(designs.map((d, i) => [d.id, weights[i] / total]));
+}
+export const averageCarvingFee = (s) => (s.carvingStand.carved ? Math.round(s.carvingStand.income / s.carvingStand.carved) : 0);
 export const canBuildStand = (s) => !s.carvingStand.built && level(s) >= CARVING_STAND.level && s.coins >= CARVING_STAND.cost && !s.paused;
 export function buildCarvingStand(s) {
   if (!canBuildStand(s)) return false;
@@ -97,7 +115,7 @@ export function carvingOrder(s, serial) {
   for (let i = 0; i < designs.length; i++) { pick -= weights[i]; if (pick < 0) { design = designs[i]; break; } }
   const extras = c.extras.filter((id, i) => roll(serial, 11 + i) < STAND_EXTRA_BY_ID[id].chance);
   const fee = Math.round((design.price + extras.reduce((n, id) => n + STAND_EXTRA_BY_ID[id].price, 0)) * standValue(s, "sign"));
-  return { design: design.id, extras, fee };
+  return { design: design.id, extras, fee, kind: Math.floor(roll(serial, 5) * NORMAL_VISITOR_KINDS.length) };
 }
 // Guests a minute who'd stop to carve, from how busy the farm is.
 export const carversPerMinute = (s, perMinute) => s.carvingStand.built && s.carvingStand.open ? Math.max(1, perMinute * CARVING_STAND.appeal * (1 + (standValue(s, "sign") - 1) * 1.2)) : 0;
@@ -108,7 +126,7 @@ export function updateCarvingStand(s, dt, perMinute, events = []) {
   if (!c?.built) return events;
   for (const k of c.carvers) k.left -= dt;
   for (const k of c.carvers.filter((x) => x.left <= 0)) {
-    s.coins += k.fee; s.earned += k.fee; c.income += k.fee; c.carved++;
+    s.coins += k.fee; s.earned += k.fee; c.income += k.fee; c.carved++; c.tally[k.design] = (c.tally[k.design] ?? 0) + 1;
     c.last = { design: k.design, extras: k.extras, fee: k.fee, bench: k.bench, at: s.time, serial: k.serial };
     events.push({ type: "carving-sold", ...c.last });
   }

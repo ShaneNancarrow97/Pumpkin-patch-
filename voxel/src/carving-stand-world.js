@@ -1,58 +1,102 @@
-// The guests' carving stand on the farm (rules/carving-stand.js): a covered
-// stall between the west lane and the big pumpkin, an orange-and-plum awning
-// over a long bench, a jack-o'-lantern on each bench that a guest is carving
-// (dark at first, lit as it's finished), and a rack of finished lanterns.
-// Hidden until built; rebuilt only when the benches change.
+// The guests' carving stand on the farm (rules/carving-stand.js), beside the
+// Hollow House on the open ground between its west wall, the back fence and
+// the lantern path the maze guests walk. A timber pavilion
+// (carving-stand-models.js): a lantern wall showing every design (lit once
+// it's on the menu), a shingled hood with the sign and a great lantern on
+// its gable, and a long bench where guests sit and carve. Each guest's
+// lantern goes from a whole pumpkin to lid off, carved and lit as they work.
+// Hidden until built; the pavilion rebuilds only when its benches, menu or
+// extras change, and a guest's lantern only when its stage does.
 import * as THREE from "three";
-import { Voxels, seeded, vary } from "./voxels.js";
-import { DROP } from "./content/farm-layout.js";
+import { buildStandBody, lanternModel, chalkboard, GLOW } from "./carving-stand-models.js";
+import { STAND_DESIGN_BY_ID, STAND_EXTRA_BY_ID, carvingStage, standValue } from "./rules/carving-stand.js";
 
-export const STAND_SITE = Object.freeze({ x: 1.2, z: 17 + DROP, w: 5.4, d: 2.6 });
-const BENCH_SPOTS = (n) => Array.from({ length: n }, (_, i) => STAND_SITE.x - STAND_SITE.w / 2 + .6 + (i + .5) * ((STAND_SITE.w - 1.2) / n));
+export const STAND_SITE = Object.freeze({ x: -2.7, z: 6.3, w: 7.2, d: 4.4 });
 
-export function createCarvingStandWorld({ scene, state, signBoard, postSign, pickables }) {
-  const root = new THREE.Group(); root.name = "The Carving Stand"; root.visible = false; scene.add(root);
-  let built = "", body = null, lanterns = [];
-  const hit = new THREE.Mesh(new THREE.BoxGeometry(STAND_SITE.w, 3, STAND_SITE.d), new THREE.MeshBasicMaterial({ visible: false }));
-  hit.position.set(STAND_SITE.x, 1.5, STAND_SITE.z); hit.userData = { type: "carving-stand" }; root.add(hit); pickables.push(hit);
-  const sign = postSign(signBoard("The Carving Stand", "carve your own lantern", 3), 3.1);
-  sign.position.set(STAND_SITE.x, 3.1, STAND_SITE.z - STAND_SITE.d / 2 - .05); sign.userData = { type: "carving-stand" }; root.add(sign);
-  const pumpkinGeo = new THREE.BoxGeometry(.42, .34, .42), faceGeo = new THREE.PlaneGeometry(.3, .18);
-  const skin = new THREE.MeshStandardMaterial({ color: 0xd9661f, roughness: .8 });
+// Drops what a build made, but never the voxels' shared cube or a kept template.
+function release(object) {
+  object.traverse((o) => {
+    if (!o.isMesh || o.userData.template) return;
+    for (const m of [].concat(o.material)) { m.map?.dispose(); m.dispose(); }
+    if (!o.isInstancedMesh) o.geometry.dispose();
+  });
+}
 
-  // The stall itself: posts, a striped awning, a long bench and stools, and a rack of finished lanterns.
-  function build(benches) {
-    if (body) { root.remove(body); body.traverse((o) => o.geometry?.dispose?.()); }
-    const v = new Voxels(), r = seeded(4471), { x, z, w, d } = STAND_SITE, x0 = x - w / 2, z0 = z - d / 2;
-    for (const px of [x0 + .1, x0 + w - .25]) for (const pz of [z0 + .1, z0 + d - .25]) v.box(px, 0, pz, .15, 2.7, .15, 0x3a2618);
-    for (let i = 0; i < 9; i++) v.box(x0 - .1 + i * (w + .2) / 9, 2.65, z0 - .2, (w + .2) / 9, .14, d + .45, i % 2 ? 0x4a2a5c : 0xd8742a);
-    for (let i = 0; i < 9; i++) v.box(x0 - .1 + i * (w + .2) / 9, 2.45, z0 + d + .2, (w + .2) / 9, .22, .06, i % 2 ? 0x4a2a5c : 0xd8742a);
-    v.box(x0 + .3, .78, z + .05, w - .6, .1, .7, 0x6b4428); v.box(x0 + .35, 0, z + .1, .12, .78, .6, 0x3a2618); v.box(x0 + w - .47, 0, z + .1, .12, .78, .6, 0x3a2618);
-    for (const bx of BENCH_SPOTS(benches)) { v.box(bx - .17, 0, z + .95, .34, .42, .3, vary(0x5a3a24, .1, r)); for (let k = 0; k < 3; k++) v.box(bx - .3 + r() * .5, .88, z + .1 + r() * .5, .05, .05, .05, 0xf2b25a); }
-    v.box(x0 + .15, 0, z0 + .2, .9, 1.9, .35, 0x4a3020); for (const y of [.55, 1.15, 1.75]) v.box(x0 + .12, y, z0 + .15, .96, .06, .45, 0x6b4428);
-    body = v.build({ detailShadows: false }); root.add(body);
-    lanterns.forEach((l) => root.remove(l)); lanterns = [];
-    // A pumpkin on each bench, and three finished ones on the rack.
-    for (const bx of BENCH_SPOTS(benches)) lanterns.push(lantern(bx, .83 + .17, z + .4));
-    for (const [i, y] of [[0, .58], [1, 1.18], [2, 1.78]]) { const l = lantern(x0 + .6, y + .17, z0 + .38); l.userData.rack = i; lanterns.push(l); }
+export function createCarvingStandWorld({ scene, state, signBoard, pickables, lamps = [], seatedVisitor = null, animate = null }) {
+  const root = new THREE.Group(); root.name = "The Carving Stand"; root.visible = false; root.position.set(STAND_SITE.x, 0, STAND_SITE.z); scene.add(root);
+  const hit = new THREE.Mesh(new THREE.BoxGeometry(STAND_SITE.w, 3.6, STAND_SITE.d), new THREE.MeshBasicMaterial({ visible: false }));
+  hit.position.y = 1.8; hit.userData = { type: "carving-stand" }; root.add(hit); pickables.push(hit);
+  let key = "", body = null, places = [], chalkKey = "", chalk = null, chalkAt = { x: 1.45, y: .1, z: 1.62 };
+  const own = [];                                                     // lamp positions, lit while the stand is built
+  const templates = new Map(), glows = new Set(), seats = new Map();
+
+  // A lantern for a stage, built once and shared by every bench that shows it.
+  function template(design, stage, extras) {
+    const paint = extras.includes("paint") && stage === "lit", hat = extras.includes("hat") && stage === "lit", stand = extras.includes("stand") && stage === "lit";
+    const id = `${design}:${stage}:${paint}:${hat}:${stand}`;
+    if (!templates.has(id)) {
+      const t = lanternModel(design, stage, paint ? GLOW.paint : GLOW.candle, hat, stand);
+      t.traverse((o) => { if (!o.isMesh) return; o.userData.template = true; if (o.material.isMeshBasicMaterial) glows.add(o.material); });
+      templates.set(id, t);
+    }
+    return templates.get(id);
   }
-  function lantern(x, y, z) {
-    const g = new THREE.Group(), p = new THREE.Mesh(pumpkinGeo, skin), face = new THREE.Mesh(faceGeo, new THREE.MeshBasicMaterial({ color: 0xffd36b, toneMapped: false, transparent: true }));
-    p.castShadow = true; face.position.set(0, 0, .215); g.add(p, face); g.position.set(x, y, z); root.add(g); g.userData.face = face; return g;
+  function rebuild(c) {
+    if (body) { root.remove(body); release(body); }
+    const built = buildStandBody({ benches: standValue(state, "benches"), designs: c.designs, extras: c.extras });
+    body = built.voxels.build({ detailShadows: false }); body.name = "Carving stand pavilion";
+    const sign = signBoard("The Carving Stand", "carve your own lantern", built.sign.width); sign.position.set(built.sign.x, built.sign.y, built.sign.z); sign.userData = { type: "carving-stand" }; body.add(sign);
+    root.add(body); places = built.places; chalkAt = built.chalk;
+    if (!own.length) for (const l of built.lamps) { const lamp = { x: STAND_SITE.x + l.x, y: l.y, z: STAND_SITE.z + l.z, active: false }; own.push(lamp); lamps.push(lamp); }
+    // Benches that went away take their guests with them.
+    for (const [bench, seat] of seats) if (bench >= places.length) { clearSeat(seat); seats.delete(bench); }
+    chalkKey = "";
   }
+  // The chalkboard: tonight's designs and extras, with what they cost now.
+  function writeChalk(c) {
+    const sign = standValue(state, "sign"), next = `${c.designs.join()}|${c.extras.join()}|${sign}`;
+    if (next === chalkKey) return; chalkKey = next;
+    if (chalk) { root.remove(chalk); release(chalk); }
+    const lines = [...c.designs.map((id) => [STAND_DESIGN_BY_ID[id].name, `£${Math.round(STAND_DESIGN_BY_ID[id].price * sign)}`]), ...c.extras.map((id) => [`+ ${STAND_EXTRA_BY_ID[id].name.toLowerCase()}`, `£${STAND_EXTRA_BY_ID[id].price}`, "#c8f0d8"])];
+    chalk = chalkboard(lines); chalk.position.set(chalkAt.x, chalkAt.y, chalkAt.z); root.add(chalk);
+  }
+  function clearSeat(seat) {
+    if (seat.guest) { root.remove(seat.guest); seat.guest.userData.dispose?.(); }
+    if (seat.lantern) root.remove(seat.lantern);
+  }
+
   return {
-    sync(time) {
+    get status() {
+      return { built: !!state.carvingStand?.built, site: STAND_SITE, places: places.length, seats: [...seats].map(([bench, s]) => ({ bench, serial: s.serial, stage: s.stage, guest: !!s.guest })), boxes: (() => { let n = 0; root.traverse((o) => { if (o.isInstancedMesh) n += o.count; }); return n; })() };
+    },
+    sync(time = 0) {
       const c = state.carvingStand;
       root.visible = !!c?.built;
+      for (const l of own) l.active = !!c?.built;
       if (!c?.built) return;
-      const benches = [1, 2, 3, 4, 6][c.benches] ?? 1, key = String(benches);
-      if (key !== built) { built = key; build(benches); }
-      // Bench lanterns show only while a guest carves there, and light up as the carving nears its end.
-      lanterns.forEach((l, i) => {
-        if (l.userData.rack !== undefined) { l.userData.face.material.opacity = .75 + Math.sin(time * 3 + i) * .15; l.visible = c.carved > l.userData.rack; return; }
-        const k = c.carvers.find((x) => x.bench === i), done = k ? 1 - k.left / k.length : 0;
-        l.visible = !!k; l.userData.face.material.opacity = done < .45 ? 0 : Math.min(1, (done - .45) * 2.2) * (.85 + Math.sin(time * 9 + i) * .1);
+      const next = `${standValue(state, "benches")}|${c.designs.join()}|${c.extras.join()}`;
+      if (next !== key) { key = next; rebuild(c); }
+      writeChalk(c);
+      // Each bench: the guest carving there, and their lantern at its stage.
+      places.forEach((p, bench) => {
+        const k = c.carvers.find((x) => x.bench === bench);
+        let seat = seats.get(bench);
+        if (!k) { if (seat) { clearSeat(seat); seats.delete(bench); } return; }
+        if (seat && seat.serial !== k.serial) { clearSeat(seat); seats.delete(bench); seat = null; }
+        if (!seat) {
+          const guest = seatedVisitor?.(k.kind ?? 0) ?? null;
+          if (guest) { guest.position.set(p.x - .12, .1, p.seat - .02); root.add(guest); }
+          seat = { serial: k.serial, guest, stage: "", lantern: null }; seats.set(bench, seat);
+        }
+        const stage = carvingStage(k).id, extras = stage === "lit" ? k.extras ?? [] : [];
+        if (stage !== seat.stage) {
+          if (seat.lantern) root.remove(seat.lantern);
+          seat.lantern = template(k.design, stage, extras).clone(); seat.lantern.position.set(p.x + .32, .83, p.table); root.add(seat.lantern); seat.stage = stage;
+        }
+        if (seat.guest) animate?.(seat.guest, time + bench * .7, false, 0, 0);
       });
+      // Candlelight: the lit lanterns flicker a little, each template at its own pace.
+      let n = 0; for (const m of glows) { m.color.setScalar(.9 + .1 * Math.sin(time * 9.3 + n * 1.7) * Math.sin(time * 5.1 + n)); n++; }
     },
   };
 }

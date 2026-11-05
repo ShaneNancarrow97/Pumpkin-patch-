@@ -1,88 +1,114 @@
-// The guests' carving stand menu: a hero card with the stand's state, then
-// three tabs (bumpers on a pad): the stand's upgrades, the designs guests can
-// carve, and the extras they can add. Every design and extra is drawn, glowing,
-// so the menu reads at a glance on a phone or across the room on a TV.
+// The guests' carving stand menu. A hero photographed from the stand's own
+// voxel model (ui/stand-art.js) with its takings; the benches live, each guest
+// with the lantern they're carving at its stage; then three tabs (bumpers on
+// a pad): a chalkboard menu of designs, the extras shelf, and the upgrades.
+// Every picture is the same voxel lantern or model the farm shows, so what
+// you buy here is what appears beside the Hollow House.
 import * as M from "../model.js";
 import { money, segmented } from "./kit.js";
+import { visitorIdentity } from "../content/visitors.js";
+import { standArt } from "./stand-art.js";
 
-// A carved pumpkin in SVG, lit from inside, with each design's cut-outs.
+// Drawn lanterns, for a device without WebGL to photograph the models with.
 const CUTS = {
   classic: '<path d="M36 44l9-12 9 12z M66 44l9-12 9 12z M56 55l4-6 4 6z M34 64q26 22 52 0l-6 4-5-5-5 6-6-6-6 6-5-6-5 5z"/>',
   spooky: '<path d="M33 40q10-8 20 2-10 6-20-2z M67 42q10-10 20-2-10 8-20 2z M58 54l2-4 2 4z M38 70q22-16 44 0q-22 6-44 0z"/>',
   cat: '<path d="M44 74q-6-14 4-22l-2-10 6 6q8-3 16 0l6-6-2 10q10 8 4 22q-16 6-32 0z M76 72q14-2 12-16"/>',
-  bat: '<path d="M60 52q-4-6-10-2-6-6-16-2 6 2 6 8 6-2 10 2 4-2 10 0 4-4 10-2 4-4 10-2 0-6 6-8-10-4-16 2-6-4-10 2z M42 70q-3-3-6-1-3-3-8-1 3 1 3 4 3-1 5 1 2-1 6 0z M84 68q3-3 6-1 3-3 8-1-3 1-3 4-3-1-5 1-2-1-6 0z"/>',
-  ghost: '<path d="M60 36q-14 0-14 18v24l5-5 5 5 4-5 4 5 5-5 5 5V54q0-18-14-18z" /><circle cx="55" cy="52" r="2.6" fill="#7a3a10"/><circle cx="65" cy="52" r="2.6" fill="#7a3a10"/>',
+  bat: '<path d="M60 52q-4-6-10-2-6-6-16-2 6 2 6 8 6-2 10 2 4-2 10 0 4-4 10-2 4-4 10-2 0-6 6-8-10-4-16 2-6-4-10 2z"/>',
+  ghost: '<path d="M60 36q-14 0-14 18v24l5-5 5 5 4-5 4 5 5-5 5 5V54q0-18-14-18z"/>',
   castle: '<path d="M36 78V58h6v4h5v-4h6v-8l7-10 7 10v8h6v4h5v-4h6v20z"/><circle cx="82" cy="40" r="5"/>',
 };
-export function jackArt(design, size = 72) {
-  const cut = CUTS[design] ?? CUTS.classic;
-  return `<svg class="jack-art" viewBox="0 0 120 110" width="${size}" height="${size}" aria-hidden="true"><defs><radialGradient id="jg-${design}" cx="50%" cy="55%" r="60%"><stop offset="0" stop-color="#ffb04a"/><stop offset=".7" stop-color="#e2721f"/><stop offset="1" stop-color="#9a3f12"/></radialGradient><filter id="jf-${design}" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M58 18q-1-8 6-12l3 3q-5 3-4 9z" fill="#5f7a33"/><ellipse cx="60" cy="60" rx="50" ry="40" fill="url(#jg-${design})"/><path d="M60 22q-14 38 0 77M60 22q14 38 0 77M38 26q-22 34-2 70M82 26q22 34 2 70" stroke="#a9481433" stroke-width="3" fill="none"/><g fill="#ffe08a" filter="url(#jf-${design})">${cut}</g></svg>`;
+export function jackArt(design, size = 96) {
+  return `<svg class="jack-art" viewBox="0 0 120 110" width="${size}" height="${size}" aria-hidden="true"><path d="M58 18q-1-8 6-12l3 3q-5 3-4 9z" fill="#5f7a33"/><ellipse cx="60" cy="60" rx="50" ry="40" fill="#e2721f"/><path d="M60 22q-14 38 0 77M60 22q14 38 0 77" stroke="#a94814" stroke-width="3" fill="none"/><g fill="#ffe08a">${CUTS[design] ?? CUTS.classic}</g></svg>`;
 }
-const EXTRA_ART = {
-  candle: '<path d="M27 16q-4 6 0 10 4-4 0-10z" fill="#ffd36b"/><rect x="22" y="26" width="10" height="20" rx="2" fill="#f3e3c4"/>',
-  paint: '<path d="M14 40l14-22 8 5-14 22z" fill="#7a5a3a"/><path d="M28 18l8 5 4-7-8-5z" fill="#b8ffcf"/><circle cx="16" cy="44" r="4" fill="#b8ffcf"/>',
-  hat: '<path d="M10 42h34l-8-4-9-24-7 24z" fill="#3a2a4a"/><rect x="18" y="35" width="18" height="4" fill="#b884ff"/>',
-  stand: '<path d="M14 46h26M18 46l6-18M36 46l-6-18M20 28h14" stroke="#8a8a9a" stroke-width="3" fill="none"/><circle cx="27" cy="22" r="7" fill="#e2721f"/>',
-};
-// The upgrades' own pictures: a bench, a carving saw, a fair sign.
-const UPGRADE_ART = {
-  benches: '<svg viewBox="0 0 48 48" width="34" height="34"><rect x="8" y="20" width="32" height="6" rx="2" fill="#c98a45"/><path d="M12 26v14M36 26v14M18 26v10M30 26v10" stroke="#7a4a24" stroke-width="3"/><circle cx="24" cy="14" r="6" fill="#e2721f"/><path d="M22 13h4" stroke="#ffe08a" stroke-width="2"/></svg>',
-  tools: '<svg viewBox="0 0 48 48" width="34" height="34"><path d="M10 38l18-18 4 4-18 18z" fill="#cfd3dc"/><path d="M28 20l8-8 4 4-8 8z" fill="#7a4a24"/><path d="M12 36l2-2M15 33l2-2M18 30l2-2M21 27l2-2" stroke="#8a8f9a" stroke-width="1.5"/></svg>',
-  sign: '<svg viewBox="0 0 48 48" width="34" height="34"><path d="M14 44V18M34 44V18" stroke="#5a3a24" stroke-width="3"/><rect x="8" y="10" width="32" height="16" rx="3" fill="#3a2618" stroke="#c98a45" stroke-width="2"/><path d="M15 18h18" stroke="#ffd36b" stroke-width="2.5"/><circle cx="24" cy="6" r="3" fill="#ffd36b"/></svg>',
-};
-const extraArt = (id) => `<svg class="extra-art" viewBox="0 0 54 54" width="46" height="46" aria-hidden="true">${EXTRA_ART[id] ?? ""}</svg>`;
+const pct = (x) => Math.round(x * 100);
+const VALUE = { benches: (v) => `${v} bench${v > 1 ? "es" : ""}`, tools: (v) => `${v}s a lantern`, sign: (v) => `×${v} fees` };
 
 export function carvingStandSheet(ui) {
-  let tab = "stand";
+  let tab = "designs";
   const level = (s) => M.patchLevel(s).level;
-  const buy = (attr, id, price, s, opensAt, label = money(price)) => level(s) < opensAt ? `<span class="seed-gate">Level ${opensAt}</span>` : `<button class="button purchase-button${s.coins >= price ? " can-act" : ""}" data-${attr}="${id}" ${s.coins < price || s.paused ? "disabled" : ""}>${label}</button>`;
+  const lantern = (id, lit = true) => { const url = standArt.design(id, lit); return url ? `<img class="stand-render" src="${url}" alt="" draggable="false">` : jackArt(id); };
+  const render = (url, fallback = "") => (url ? `<img class="stand-render" src="${url}" alt="" draggable="false">` : fallback);
+  // A price to pay, or the level it opens at.
+  const price = (attr, id, cost, s, opensAt, label = money(cost)) => level(s) < opensAt
+    ? `<span class="stand-lock"><i aria-hidden="true"></i>Level ${opensAt}</span>`
+    : `<button class="button purchase-button${s.coins >= cost && !s.paused ? " can-act" : ""}" data-${attr}="${id}" ${s.coins < cost || s.paused ? "disabled" : ""}>${label}</button>`;
+  // The chalkboard in the hero's photo, as the farm's own board lists it.
+  const chalk = (designs, extras, sign) => [...designs.map((id) => [M.STAND_DESIGN_BY_ID[id].name, `£${Math.round(M.STAND_DESIGN_BY_ID[id].price * sign)}`]), ...extras.map((id) => [`+ ${M.STAND_EXTRA_BY_ID[id].name.toLowerCase()}`, `£${M.STAND_EXTRA_BY_ID[id].price}`, "#c8f0d8"])];
 
   function hero(s) {
-    const c = s.carvingStand, benches = M.standValue(s, "benches");
-    if (!c.built) {
-      const ready = level(s) >= M.CARVING_STAND.level;
-      return `<article class="stand-hero"><div class="stand-hero-art">${jackArt("classic", 96)}</div><div><p class="seed-kicker">A new business</p><h3>The Carving Stand</h3><p>A covered stall by the big pumpkin where guests pay to carve a lantern of their own, from your designs, with extras if they fancy them.</p></div>${ready ? `<button class="button purchase-button gold${s.coins >= M.CARVING_STAND.cost ? " can-act" : ""}" data-stand-build ${s.coins < M.CARVING_STAND.cost ? "disabled" : ""} data-pad-default>Build · ${money(M.CARVING_STAND.cost)}</button>` : `<span class="seed-gate">Level ${M.CARVING_STAND.level}</span>`}</article>`;
+    const c = s.carvingStand, built = c.built, benches = built ? M.standValue(s, "benches") : 2, designs = built ? c.designs : ["classic", "spooky", "cat"], extras = built ? c.extras : ["candle"];
+    const photo = standArt.hero({ benches, designs, extras, lines: chalk(designs, extras, built ? M.standValue(s, "sign") : 1) });
+    const pic = photo ? `<img class="stand-hero-art" src="${photo}" alt="The Carving Stand">` : `<div class="stand-hero-art drawn">${jackArt("classic", 120)}</div>`;
+    if (!built) {
+      const ready = level(s) >= M.CARVING_STAND.level, can = ready && s.coins >= M.CARVING_STAND.cost && !s.paused;
+      return `<section class="stand-hero">${pic}<div class="stand-hero-copy"><p class="stand-kicker">A new business · beside the Hollow House</p><h3>The Carving Stand</h3><p>Guests passing the Hollow House stop to carve a lantern of their own from your designs, and pay for it, with extras if they fancy them.</p></div><div class="stand-hero-act">${ready ? `<button class="button purchase-button gold${can ? " can-act" : ""}" data-stand-build ${can ? "" : "disabled"} data-pad-default>Build the stand · ${money(M.CARVING_STAND.cost)}</button>` : `<span class="stand-lock"><i aria-hidden="true"></i>Opens at level ${M.CARVING_STAND.level}</span>`}</div></section>`;
     }
-    const now = c.carvers.map((k) => `<span class="stand-bench busy" title="${M.STAND_DESIGN_BY_ID[k.design].name}">${jackArt(k.design, 30)}<i style="--p:${Math.round((1 - k.left / k.length) * 5) / 5}"></i></span>`).join("") + Array.from({ length: Math.max(0, benches - c.carvers.length) }, () => `<span class="stand-bench"></span>`).join("");
-    return `<article class="stand-hero built"><div class="stand-hero-art">${jackArt(c.last?.design ?? "classic", 96)}</div><div><p class="seed-kicker">${c.open ? "Open · guests stop as they pass" : "Closed for now"}</p><h3>The Carving Stand</h3><div class="stand-benches" aria-label="${c.carvers.length} of ${benches} benches carving">${now}</div><p class="stand-stats"><b>${c.carved}</b> carved · <b>${money(c.income)}</b> taken${c.last ? ` · last: ${M.STAND_DESIGN_BY_ID[c.last.design].name} for ${money(c.last.fee)}` : ""}</p></div><button class="button" data-stand-open>${c.open ? "Close stand" : "Open stand"}</button></article>`;
+    const fav = Object.entries(c.tally).sort((a, b) => b[1] - a[1])[0];
+    const chips = [[c.carved.toLocaleString("en-GB"), c.carved === 1 ? "lantern carved" : "lanterns carved"], [money(c.income), "taken"], [money(M.averageCarvingFee(s)), "a guest"], ...(fav ? [[M.STAND_DESIGN_BY_ID[fav[0]].name, "the favourite"]] : [])];
+    return `<section class="stand-hero">${pic}<div class="stand-hero-copy"><p class="stand-kicker"><i class="stand-dot${c.open ? " on" : ""}" aria-hidden="true"></i>${c.open ? "Open" : "Closed"} · beside the Hollow House</p><h3>The Carving Stand</h3><div class="stand-chips">${chips.map(([b, t]) => `<span><b>${b}</b> ${t}</span>`).join("")}</div></div><div class="stand-hero-act"><button class="button" data-stand-visit>Visit the stand</button><button class="button${c.open ? "" : " gold can-act"}" data-stand-open>${c.open ? "Close for now" : "Open the stand"}</button></div></section>`;
   }
-  function upgrades(s) {
-    return M.CARVING_STAND.upgrades.map((u) => {
-      const at = s.carvingStand[u.id], next = M.standUpgrade(s, u.id), now = u.id === "benches" ? `${u.values[at]} bench${u.values[at] > 1 ? "es" : ""}` : u.id === "tools" ? `${u.values[at]}s a carving` : `×${u.values[at]} fees`;
-      const then = next && (u.id === "benches" ? `${next.value} benches` : u.id === "tools" ? `${next.value}s` : `×${next.value}`);
-      return `<article class="card stand-upgrade"><span class="thumb stand-icon" aria-hidden="true">${UPGRADE_ART[u.id]}</span><div><h3>${u.name}</h3><p>${u.text}</p><p class="effect">Now ${now}${then ? ` → ${then}` : ""}</p><div class="tiers">${u.values.map((_, i) => `<i class="${i <= at ? "on" : ""}"></i>`).join("")}</div></div>${next ? buy("stand-up", u.id, next.cost, s, next.opensAt) : `<span class="seed-gate done">Every tier</span>`}</article>`;
+
+  // Who's carving at each bench, and how far they've got.
+  function floor(s) {
+    const c = s.carvingStand, benches = M.standValue(s, "benches"), next = M.standUpgrade(s, "benches");
+    const seats = Array.from({ length: benches }, (_, i) => {
+      const k = c.carvers.find((x) => x.bench === i);
+      if (!k) return `<div class="stand-seat"><span class="seat-empty" aria-hidden="true"></span><small>Bench ${i + 1} · waiting for a guest</small></div>`;
+      const who = visitorIdentity(k.kind ?? 0), face = ui.portrait("visitor-" + who.id), stage = M.carvingStage(k), p = Math.round(M.carverProgress(k) * 10) / 10, art = standArt.stage(k.design, stage.id);
+      return `<div class="stand-seat busy"><span class="seat-face">${face ? `<img src="${face}" alt="">` : ""}</span>${art ? `<img class="seat-lantern" src="${art}" alt="">` : "<span></span>"}<div class="seat-copy"><b><span>${who.name}</span><em>${money(k.fee)}</em></b><small>${M.STAND_DESIGN_BY_ID[k.design].name}</small><i class="seat-bar" style="--p:${p}" aria-hidden="true"></i><small class="seat-stage">${stage.name}</small></div></div>`;
     }).join("");
+    const add = next ? `<button class="stand-seat add" data-stand-more><span aria-hidden="true">+</span><small>Another bench · ${level(s) >= next.opensAt ? money(next.cost) : `level ${next.opensAt}`}</small></button>` : "";
+    const rate = M.carversPerMinute(s, M.visitorsPerMinute(s));
+    return `<section class="stand-floor"><header><h4>At the benches</h4><small>${c.carvers.length} of ${benches} carving · ${c.open ? `about ${rate.toFixed(1)} guests a minute stop` : "closed, so no one stops"}</small></header><div class="stand-seats">${seats}${add}</div></section>`;
   }
+
+  // Tonight's menu: every design, its price and how keen guests are on it.
   function designs(s) {
-    const c = s.carvingStand;
-    return `<p class="small">Guests choose from what's on your menu, the fancier the better. Each pays the design's price${M.standValue(s, "sign") > 1 ? `, ×${M.standValue(s, "sign")} with the fair sign` : ""}.</p><div class="stand-grid">${M.CARVING_STAND.designs.map((d) => {
-      const owned = c.designs.includes(d.id);
-      return `<article class="stand-tile${owned ? " owned" : ""}">${jackArt(d.id, 84)}<b>${d.name}</b><small>${money(Math.round(d.price * M.standValue(s, "sign")))} a carving</small>${owned ? `<span class="stand-on">On the menu</span>` : buy("stand-design", d.id, d.cost, s, d.level)}</article>`;
-    }).join("")}</div>`;
+    const c = s.carvingStand, shares = M.designShares(s), sign = M.standValue(s, "sign");
+    return `<section class="stand-board"><header><b>Tonight’s menu</b><small>${c.designs.length} of ${M.CARVING_STAND.designs.length} designs · each draws its share of guests, and the dearer ones pay more</small></header><div class="stand-menu">${M.CARVING_STAND.designs.map((d) => {
+      const on = c.designs.includes(d.id), locked = level(s) < d.level;
+      const foot = on ? `<div class="menu-meta"><i style="--p:${shares[d.id].toFixed(2)}" aria-hidden="true"></i><small>${pct(shares[d.id])}% of guests · ${c.tally[d.id] ?? 0} carved</small></div><span class="stand-on">On the menu</span>` : `<p class="menu-note">${locked ? "Opens later" : "Teach the stand this design"}</p>${price("stand-design", d.id, d.cost, s, d.level, `Add · ${money(d.cost)}`)}`;
+      return `<article class="menu-tile${on ? " on" : ""}${locked ? " locked" : ""}"><div class="menu-art">${lantern(d.id, !locked)}</div><b>${d.name}</b><span class="menu-price">${money(Math.round(d.price * sign))}<small> a lantern</small></span>${foot}</article>`;
+    }).join("")}</div></section>`;
   }
+  // The extras shelf: stocked once, added by some guests, each paid for.
   function extras(s) {
     const c = s.carvingStand;
-    return `<p class="small">Once stocked, guests add these to their lantern now and then, and pay for each.</p><div class="stand-grid">${M.CARVING_STAND.extras.map((e) => {
-      const owned = c.extras.includes(e.id);
-      return `<article class="stand-tile${owned ? " owned" : ""}">${extraArt(e.id)}<b>${e.name}</b><small>+${money(e.price)} · ${Math.round(e.chance * 100)}% of guests</small>${owned ? `<span class="stand-on">Stocked</span>` : buy("stand-extra", e.id, e.cost, s, e.level)}</article>`;
-    }).join("")}</div>`;
+    return `<section class="stand-shelf"><header><b>The extras shelf</b><small>Stock one once, and guests add it now and then and pay for each</small></header><div class="stand-menu">${M.CARVING_STAND.extras.map((e) => {
+      const on = c.extras.includes(e.id), locked = level(s) < e.level;
+      return `<article class="menu-tile${on ? " on" : ""}${locked ? " locked" : ""}"><div class="menu-art">${render(standArt.extra(e.id), jackArt("classic"))}</div><b>${e.name}</b><span class="menu-price">+${money(e.price)}<small> each</small></span><p class="menu-note">About ${pct(e.chance)}% of guests add one</p>${on ? `<span class="stand-on">Stocked</span>` : price("stand-extra", e.id, e.cost, s, e.level, `Stock · ${money(e.cost)}`)}</article>`;
+    }).join("")}</div></section>`;
+  }
+  function upgrades(s) {
+    return `<section class="stand-ups">${M.CARVING_STAND.upgrades.map((u) => {
+      const at = s.carvingStand[u.id], next = M.standUpgrade(s, u.id);
+      return `<article class="stand-up"><div class="up-art">${render(standArt.upgrade(u.id))}</div><div class="up-copy"><h3>${u.name}</h3><p>${u.text}</p><div class="up-values"><span>${VALUE[u.id](u.values[at])}</span>${next ? `<i aria-hidden="true">→</i><span class="next">${VALUE[u.id](next.value)}</span>` : ""}</div><div class="up-pips" aria-label="Tier ${at + 1} of ${u.values.length}">${u.values.map((_, i) => `<i class="${i <= at ? "on" : ""}"></i>`).join("")}</div></div>${next ? price("stand-up", u.id, next.cost, s, next.opensAt) : `<span class="stand-on">Every tier</span>`}</article>`;
+    }).join("")}</section>`;
+  }
+  // Before it's built: what guests could carve, and how the stand works.
+  function preview() {
+    return `<section class="stand-board"><header><b>What your guests could carve</b><small>The Classic grin from the start; more designs as the farm grows</small></header><div class="stand-menu">${M.CARVING_STAND.designs.map((d) => `<article class="menu-tile${d.cost ? "" : " on"}"><div class="menu-art">${lantern(d.id)}</div><b>${d.name}</b><span class="menu-price">${money(d.price)}<small> a lantern</small></span><p class="menu-note">${d.cost ? `From level ${d.level}` : "Ready on the first night"}</p></article>`).join("")}</div></section>
+      <ol class="stand-steps"><li><b>Guests stop</b><small>on their way past the Hollow House</small></li><li><b>They carve</b><small>a design from your menu, at one of your benches</small></li><li><b>They pay</b><small>for the design and any extras, and take it home</small></li></ol>`;
   }
 
   return {
     carvingStand: {
       eyebrow: "Your businesses", title: "The Carving Stand",
-      setTab(t) { tab = ["stand", "designs", "extras"].includes(t) ? t : "stand"; },
+      setTab(t) { tab = ["designs", "extras", "stand"].includes(t) ? t : "designs"; },
       body() {
         const s = ui.state;
-        if (!s.carvingStand.built) return `<div class="stand-sheet">${hero(s)}<h3 class="section">What you'll be able to offer</h3><div class="stand-grid">${M.CARVING_STAND.designs.map((d) => `<article class="stand-tile">${jackArt(d.id, 72)}<b>${d.name}</b><small>${money(d.price)} a carving</small></article>`).join("")}</div></div>`;
-        const tabs = segmented("standtab", "Carving stand sections", [["stand", "Stand"], ["designs", "Designs"], ["extras", "Extras"]], tab);
-        return `<div class="stand-sheet">${hero(s)}${tabs}${({ stand: upgrades, designs, extras })[tab](s)}</div>`;
+        if (!s.carvingStand.built) return `<div class="stand-sheet">${hero(s)}${preview()}</div>`;
+        const tabs = segmented("standtab", "Carving stand sections", [["designs", "Designs"], ["extras", "Extras"], ["stand", "Upgrades"]], tab);
+        return `<div class="stand-sheet">${hero(s)}${floor(s)}${tabs}${({ designs, extras, stand: upgrades })[tab](s)}</div>`;
       },
       bind(body) {
         const s = ui.state, done = (text) => { ui.tone(820); if (text) ui.notice(text); ui.save(); ui.draw(); };
         body.querySelectorAll("[data-standtab]").forEach((b) => (b.onclick = () => { tab = b.dataset.standtab; ui.draw(); }));
-        body.querySelector("[data-stand-build]")?.addEventListener("click", () => { if (M.buildCarvingStand(s)) done("The Carving Stand is open by the big pumpkin."); });
+        body.querySelector("[data-stand-more]")?.addEventListener("click", () => { tab = "stand"; ui.draw(); });
+        body.querySelector("[data-stand-build]")?.addEventListener("click", () => { if (M.buildCarvingStand(s)) done("The Carving Stand is open beside the Hollow House."); });
         body.querySelector("[data-stand-open]")?.addEventListener("click", () => { M.setStandOpen(s, !s.carvingStand.open); done(); });
+        body.querySelector("[data-stand-visit]")?.addEventListener("click", () => { ui.closeSheet(); if (ui.scene.place) ui.leavePlace?.(); ui.scene.focusCarvingStand?.(); });
         body.querySelectorAll("[data-stand-up]").forEach((b) => (b.onclick = () => { if (M.buyStandUpgrade(s, b.dataset.standUp)) done(`${M.STAND_UPGRADE_BY_ID[b.dataset.standUp].name} improved.`); }));
         body.querySelectorAll("[data-stand-design]").forEach((b) => (b.onclick = () => { if (M.buyStandDesign(s, b.dataset.standDesign)) done(`${M.STAND_DESIGN_BY_ID[b.dataset.standDesign].name} is on the menu.`); }));
         body.querySelectorAll("[data-stand-extra]").forEach((b) => (b.onclick = () => { if (M.buyStandExtra(s, b.dataset.standExtra)) done(`${M.STAND_EXTRA_BY_ID[b.dataset.standExtra].name} stocked.`); }));

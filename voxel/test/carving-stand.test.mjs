@@ -38,3 +38,23 @@ test("a stand saves and loads, without the guests at its benches", () => {
   assert.deepEqual(back.carvingStand.carvers, []); assert.equal(back.carvingStand.income, s.carvingStand.income);
   assert.deepEqual(M.restoreState({}).carvingStand, M.freshCarvingStand());
 });
+
+test("each sale is tallied by design, and every carver is a guest kind the farm can draw", () => {
+  const s = farm(); M.buildCarvingStand(s); for (const d of ["spooky", "cat"]) M.buyStandDesign(s, d);
+  const kinds = new Set();
+  for (let i = 0; i < 1800; i++) { M.update(s, 1); for (const k of s.carvingStand.carvers) kinds.add(k.kind); }
+  const tally = s.carvingStand.tally;
+  assert.equal(Object.values(tally).reduce((a, b) => a + b, 0), s.carvingStand.carved);
+  assert.ok(Object.keys(tally).every((id) => s.carvingStand.designs.includes(id)));
+  assert.ok([...kinds].every((k) => Number.isInteger(k) && k >= 0 && k < 10), [...kinds].join());
+  const shares = M.designShares(s); assert.ok(Math.abs(Object.values(shares).reduce((a, b) => a + b, 0) - 1) < 1e-9);
+  assert.ok(Object.values(shares).every((x) => x > .15), "every design on the menu draws its share");
+  const back = M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));
+  assert.deepEqual(back.carvingStand.tally, tally);
+});
+
+test("a guest's lantern goes whole, open, carved, then lit", () => {
+  const stages = [45, 30, 15, 3].map((left) => M.carvingStage({ left, length: 45 }).id);
+  assert.deepEqual(stages, ["whole", "open", "carved", "lit"]);
+  assert.equal(M.carverProgress({ left: 0, length: 45 }), 1);
+});

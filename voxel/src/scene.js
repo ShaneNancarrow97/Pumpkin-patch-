@@ -167,7 +167,7 @@ export function createScene(canvas, state, hooks) {
   const farmViewWidth = () => Math.max(fieldWidth(state), state.kitchen?.purchased ? COOKING_SITE.bounds.x1 : 0);
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit);
-  carvingStand = createCarvingStandWorld({ scene, state, signBoard, postSign, pickables }); pickables.push(bigHit);
+  carvingStand = createCarvingStandWorld({ scene, state, signBoard, pickables, lamps, seatedVisitor: (kind) => seatedVisitor(sheets, kind), animate: (...args) => animateFigure(...args) }); pickables.push(bigHit);
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
   shopHit.position.set(SHOP.x, 2.5, SHOP.z + 0.4); shopHit.userData = { type: "shop" }; scene.add(shopHit); pickables.push(shopHit);
   const homesteadArch = new THREE.Mesh(new THREE.BoxGeometry(3.4, 5, 1), new THREE.MeshBasicMaterial({ visible: false })); homesteadArch.position.set(20, 2.5, 3); homesteadArch.userData = { type: "home" }; scene.add(homesteadArch); pickables.push(homesteadArch);
@@ -938,7 +938,7 @@ export function createScene(canvas, state, hooks) {
       if (route === "hollow-ticket") { if (view.place === "foyer") floatText("+£" + amount, -2, 2, 0, "coin"); else if (!view.place) floatText("+£" + amount, HOLLOW_PROPERTY.x, 2.8, HOLLOW_PROPERTY.door[1], "coin"); return; }
       if (route === "hayride-ticket") { if (!view.place) floatText("+£" + amount, HAYRIDE_SITE.rearEntry.x, 2.5, HAYRIDE_SITE.rearEntry.z, "coin"); return; }
       if (route === "festival-cocoa" && !view.place) { floatText("+£" + amount, MEADOW.counter[0], 2.2, MEADOW.counter[1], "coin"); return; }
-      if (route === "carving") { if (!view.place) floatText("+£" + amount, STAND_SITE.x, 2.4, STAND_SITE.z, "coin"); return; }
+      if (route === "carving") { if (!view.place) floatText("+£" + amount, STAND_SITE.x, 2.2, STAND_SITE.z + .4, "coin"); return; }
       if (route === "takeaway") { if (!view.place) floatText("+£" + amount, COOKING_SITE.marker.x, 2.6, COOKING_SITE.marker.z, "coin"); return; }
       if ((route === "shop" || route === "food") && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
       else if (!view.place) floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin");
@@ -1027,6 +1027,7 @@ export function createScene(canvas, state, hooks) {
     refreshHollow() { hollowFarm.sync(); },
     refreshHayride() { hayrideWorld.sync(); frame(); },
     refreshCooking() { cookingWorld.sync(); places.refreshFood?.(); wilds.sync(); frame(); },
+    focusCarvingStand() { if (view.place) return; view.x = STAND_SITE.x + .6; view.z = STAND_SITE.z - 2.6; view.zoom = canvas.clientWidth < 740 ? 2.2 : 3.1; frame(); },
     focusCooking() { if (view.place) return; const p = COOKING_SITE.focus; view.x = p.x; view.z = p.z; view.zoom = canvas.clientWidth < 740 ? 2 : p.zoom ?? 3.2; frame(); },
     // For screenshots and QA: put the farm camera anywhere.
     setView(x, z, zoom = view.zoom) { view.x = x; view.z = z; view.zoom = zoom; frame(); },
@@ -1061,6 +1062,7 @@ export function createScene(canvas, state, hooks) {
     // For profiling tools: the farm's three.js objects (tools/perf).
     get debug() { return { scene, renderer, camera, composer, active, activeScene }; },
     get world() { return scene; },
+    get carvingStandStatus() { return carvingStand?.status; },
     get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? antialias.enabled ? "FXAA" : "density" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
     setRenderQuality(value) { renderQuality = validRenderQuality(value); resize(); return renderQuality; },
     selectPiece(instance) { places.select(instance); },

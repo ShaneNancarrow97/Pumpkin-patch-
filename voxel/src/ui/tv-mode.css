@@ -123,3 +123,8 @@ body.has-pad.control-mode .notice { bottom: calc(80px + env(safe-area-inset-bott
 .play-legend [hidden] { display: none !important; }
 body.has-pad:not(.tv-mode) .play-legend { gap: 12px; height: 42px; padding: 0 14px; font-size: 12.5px; }
 @media (max-width: 640px) { body.has-pad:not(.tv-mode) .play-legend > span:nth-child(n+5) { display: none; } }
+/* The carving stand on a TV: bigger lanterns, a wider hero. */
+.tv-mode .stand-menu { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+.tv-mode .menu-art { width: 136px; height: 130px; } .tv-mode .menu-art .stand-render { width: 132px; height: 128px; }
+.tv-mode .stand-hero-art { max-width: 720px; }
+.tv-mode .stand-seats { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }

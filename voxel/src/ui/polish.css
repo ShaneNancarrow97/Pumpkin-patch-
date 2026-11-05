@@ -97,29 +97,98 @@
 .float-text.spark { font-size: 15px; }
 .bubble { max-width: 170px; font-size: 11.5px; padding: 6px 8px; }
 
-/* The Carving Stand (ui/carving-stand-sheet.js): a lantern-lit hero, glowing
-   design tiles, and the same purchase buttons as every other business. */
-.stand-sheet { display: grid; gap: 10px; }
-.stand-hero { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 14px; border-radius: 20px; border: 1px solid #f2cf9940; background: radial-gradient(90% 140% at 8% 50%, #ff9a3a33, transparent 60%), linear-gradient(160deg, #2f2236, #1b1520); box-shadow: inset 0 1px #ffe6c01a; }
-.stand-hero h3 { margin: 0 0 3px; font: 600 19px/1.2 var(--display); color: var(--gold-bright); }
-.stand-hero p { margin: 0; font: 12.5px/1.45 var(--body); color: var(--ink-soft); }
-.stand-hero-art { display: grid; place-items: center; }
-.jack-art { filter: drop-shadow(0 0 14px #ff9a3a66); }
-.stand-benches { display: flex; flex-wrap: wrap; gap: 6px; margin: 7px 0; }
-.stand-bench { position: relative; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; border: 1px dashed #f2cf9933; background: #ffffff06; }
-.stand-bench.busy { border-style: solid; border-color: #ffb45e77; background: #ff9a3a1a; }
-.stand-bench i { position: absolute; left: 4px; right: 4px; bottom: 3px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, #ffd28f, #ffb45e) 0 0 / calc(var(--p, 0) * 100%) 100% no-repeat, #ffffff1a; }
-.stand-stats b { color: var(--gold-bright); font-weight: 600; }
-.stand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 9px; }
-.stand-tile { display: grid; justify-items: center; gap: 4px; padding: 12px 8px 10px; border-radius: 16px; border: 1px solid #ffffff12; background: linear-gradient(170deg, #2a2131, #1a1520); text-align: center; }
-.stand-tile b { font: 600 14px/1.2 var(--display); color: var(--ink); }
-.stand-tile small { font-size: 12px; color: var(--ink-soft); }
-.stand-tile.owned { border-color: #ffb45e66; box-shadow: 0 0 22px #ff9a3a22, inset 0 1px #ffe6c01a; }
-.stand-tile .button { margin-top: 4px; width: 100%; }
-.stand-on { margin-top: 4px; padding: 6px 10px; border-radius: 999px; background: #9fd38a22; color: #c7e8b3; font: 600 12px var(--body); }
-.extra-art { filter: drop-shadow(0 0 8px #ffd36b55); }
-.stand-icon { display: grid; place-items: center; border-radius: 14px; background: radial-gradient(circle at 50% 40%, #ff9a3a33, #1b1520 75%); box-shadow: 0 0 14px #ff9a3a33; }
-.stand-upgrade .tiers { display: flex; gap: 4px; margin-top: 5px; }
-.stand-upgrade .tiers i { width: 18px; height: 5px; border-radius: 3px; background: #ffffff1a; }
-.stand-upgrade .tiers i.on { background: linear-gradient(90deg, #d58c37, #ffd68a); }
-@media (max-width: 480px) { .stand-hero { grid-template-columns: 72px minmax(0, 1fr); } .stand-hero > .button, .stand-hero > .seed-gate { grid-column: 1 / -1; } .stand-hero-art svg { width: 72px; height: 72px; } }
+/* The Carving Stand (ui/carving-stand-sheet.js): a photo of the stand on a
+   night sky, live bench cards, a chalkboard menu, a wooden extras shelf and
+   upgrade cards, every picture a render of the stand's own voxel models. */
+.stand-sheet { display: grid; gap: 12px; }
+.stand-render { display: block; width: 116px; height: 116px; object-fit: contain; filter: drop-shadow(0 0 14px #ff9a3a55) drop-shadow(0 6px 10px #0008); user-select: none; }
+.stand-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; overflow: hidden; border-radius: 22px; border: 1px solid #f2cf9940;
+  background: radial-gradient(2px 2px at 12% 18%, #fff8 50%, transparent), radial-gradient(1.5px 1.5px at 72% 12%, #fff7 50%, transparent), radial-gradient(1.5px 1.5px at 38% 30%, #fff5 50%, transparent), radial-gradient(2px 2px at 88% 26%, #fff6 50%, transparent),
+    radial-gradient(70% 90% at 50% 100%, #ff9a3a2e, transparent 70%), linear-gradient(180deg, #2a1f4a 0%, #3a2350 45%, #1c1424 100%); box-shadow: inset 0 1px #ffe6c01f, 0 14px 34px #0007; }
+.stand-hero-art { grid-column: 1 / -1; display: block; width: 100%; max-width: 640px; height: auto; aspect-ratio: 2 / 1; object-fit: contain; margin: 4px auto -18px; filter: drop-shadow(0 16px 22px #000b); }
+.stand-hero-art.drawn { display: grid; place-items: center; }
+.stand-hero-copy { position: relative; padding: 0 16px 14px; min-width: 0; }
+.stand-hero-copy h3 { margin: 0 0 6px; font: 600 22px/1.15 var(--display); color: var(--gold-bright); text-shadow: 0 2px 10px #000c; }
+.stand-hero-copy p { margin: 0; font: 13px/1.5 var(--body); color: var(--ink-soft); max-width: 46ch; }
+.stand-kicker { display: flex; align-items: center; gap: 7px; margin: 0 0 3px !important; font: 600 11.5px var(--body) !important; letter-spacing: .08em; text-transform: uppercase; color: #e8c79a !important; }
+.stand-dot { width: 8px; height: 8px; border-radius: 50%; background: #8a8090; }
+.stand-dot.on { background: #9fe28a; box-shadow: 0 0 10px #9fe28a; }
+.stand-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.stand-chips span { padding: 5px 10px; border-radius: 999px; background: #0000004a; border: 1px solid #ffffff14; font: 12px/1.3 var(--body); color: var(--ink-soft); }
+.stand-chips b { color: var(--gold-bright); font-weight: 600; }
+.stand-hero-act { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 0 16px 16px 0; }
+.stand-hero-act .button { white-space: nowrap; }
+.stand-lock { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px dashed #f2cf9955; color: #e8c79a; font: 600 12.5px var(--body); white-space: nowrap; }
+.stand-lock i { width: 10px; height: 8px; border-radius: 2px; background: currentColor; position: relative; margin-top: 4px; }
+.stand-lock i::before { content: ""; position: absolute; left: 1.5px; top: -6px; width: 7px; height: 7px; border: 1.5px solid currentColor; border-bottom: 0; border-radius: 4px 4px 0 0; box-sizing: border-box; }
+.stand-on { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; margin-top: 2px; padding: 0 12px; border-radius: 999px; background: #9fd38a24; color: #c7e8b3; font: 600 12px var(--body); }
+/* At the benches. */
+.stand-floor { padding: 12px; border-radius: 18px; border: 1px solid #ffffff12; background: linear-gradient(170deg, #2a2131, #1a1520); }
+.stand-floor header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; margin-bottom: 9px; }
+.stand-floor h4 { margin: 0; font: 600 15px var(--display); color: var(--ink); }
+.stand-floor header small { font-size: 12px; color: var(--ink-soft); }
+.stand-seats { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.stand-seat { display: grid; grid-template-columns: 44px 44px minmax(0, 1fr); align-items: center; gap: 8px; min-height: 62px; padding: 8px 10px; border-radius: 14px; border: 1px dashed #f2cf9930; background: #ffffff05; color: var(--ink-soft); font: 12px var(--body); text-align: left; }
+.stand-seat:not(.busy) { grid-template-columns: 44px minmax(0, 1fr); }
+.stand-seat.busy { border: 1px solid #ffb45e55; background: linear-gradient(120deg, #ff9a3a1a, #ffffff06 70%); }
+.seat-face { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: #ffffff10; box-shadow: 0 0 0 2px #f2cf9944; }
+.seat-face img { width: 100%; height: 100%; object-fit: cover; object-position: top; image-rendering: pixelated; }
+.seat-lantern { width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 0 8px #ff9a3a66); }
+.seat-copy { display: grid; gap: 3px; min-width: 0; }
+.seat-copy b { display: flex; justify-content: space-between; gap: 8px; color: var(--ink); font: 600 13px var(--body); }
+.seat-copy b em { font-style: normal; color: var(--gold-bright); }
+.seat-stage { color: #e8c79a; }
+.seat-copy small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seat-bar { height: 4px; border-radius: 2px; background: linear-gradient(90deg, #ffd28f, #ffb45e) 0 0 / calc(var(--p, 0) * 100%) 100% no-repeat, #ffffff1a; }
+.seat-empty { width: 44px; height: 44px; border-radius: 12px; background: radial-gradient(circle at 50% 70%, #6b4428 0 30%, transparent 31%), radial-gradient(circle at 50% 38%, #8a5a34 0 36%, transparent 37%); opacity: .7; }
+.stand-seat.add { grid-template-columns: 44px minmax(0, 1fr); cursor: pointer; border-color: #f2cf9955; }
+.stand-seat.add span { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: #f2cf9918; color: var(--gold-bright); font: 600 24px var(--body); }
+/* The chalkboard menu and the extras shelf. */
+.stand-board, .stand-shelf { padding: 14px; border-radius: 18px; }
+.stand-board { border: 6px solid #5a3a24; background: radial-gradient(120% 80% at 20% 0%, #ffffff0a, transparent 60%), radial-gradient(90% 70% at 90% 100%, #ffffff06, transparent 60%), #1e2b25; box-shadow: inset 0 0 0 1px #0006, inset 0 6px 18px #0007, 0 10px 26px #0006; }
+.stand-shelf { border: 1px solid #f2cf9930; background: repeating-linear-gradient(180deg, transparent 0 196px, #2a1a10 196px 204px, #6b4428 204px 210px), linear-gradient(180deg, #3a2618, #2a1b12); box-shadow: inset 0 1px #ffe6c01a, 0 10px 26px #0006; }
+.stand-board header, .stand-shelf header { display: grid; gap: 2px; margin-bottom: 12px; text-align: center; }
+.stand-board header b, .stand-shelf header b { font: 600 19px var(--display); color: #f4efe2; letter-spacing: .02em; text-shadow: 0 0 1px #f4efe2aa; }
+.stand-board header small, .stand-shelf header small { font-size: 12px; color: #d8d2c2b0; }
+.stand-menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.menu-tile { display: grid; justify-items: center; align-content: start; gap: 4px; padding: 10px 10px 12px; border-radius: 16px; border: 1px solid #ffffff14; background: #00000030; text-align: center; }
+.menu-tile.on { border-color: #ffb45e66; background: radial-gradient(90% 70% at 50% 30%, #ff9a3a1e, transparent 70%), #00000030; box-shadow: 0 0 24px #ff9a3a1a; }
+.menu-tile.locked .stand-render { filter: grayscale(.5) brightness(.55); }
+.menu-art { position: relative; display: grid; place-items: center; width: 120px; height: 116px; }
+.menu-tile > b { font: 600 15px/1.2 var(--display); color: #f4efe2; }
+.menu-price { font: 600 15px var(--body); color: #ffd36b; }
+.menu-price small { font-weight: 500; font-size: 12px; color: #d8d2c2b0; }
+.menu-note { margin: 0; font: 12px/1.35 var(--body); color: #d8d2c2b0; }
+.menu-meta { display: grid; gap: 4px; width: 100%; }
+.menu-meta i { display: block; height: 4px; border-radius: 2px; background: linear-gradient(90deg, #ffd28f, #ffb45e) 0 0 / calc(var(--p, 0) * 100%) 100% no-repeat, #ffffff1a; }
+.menu-meta small { font-size: 12px; color: #d8d2c2b0; }
+.menu-tile .button { width: 100%; margin-top: 2px; }
+/* Upgrades. */
+.stand-ups { display: grid; gap: 10px; }
+.stand-up { display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 14px 10px 8px; border-radius: 18px; border: 1px solid #ffffff12; background: linear-gradient(170deg, #2a2131, #1a1520); }
+.up-art { display: grid; place-items: center; width: 112px; height: 100px; border-radius: 14px; background: radial-gradient(70% 70% at 50% 60%, #ff9a3a22, transparent 70%); }
+.up-art .stand-render { width: 104px; height: 96px; }
+.up-copy h3 { margin: 0 0 3px; font: 600 16px var(--display); color: var(--ink); }
+.up-copy p { margin: 0 0 6px; font: 12.5px/1.4 var(--body); color: var(--ink-soft); }
+.up-values { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.up-values span { padding: 4px 10px; border-radius: 999px; background: #ffffff0d; font: 600 12.5px var(--body); color: var(--ink); }
+.up-values span.next { background: #ffb45e22; color: var(--gold-bright); }
+.up-values i { font-style: normal; color: var(--ink-soft); }
+.up-pips { display: flex; gap: 4px; margin-top: 7px; }
+.up-pips i { width: 20px; height: 5px; border-radius: 3px; background: #ffffff1a; }
+.up-pips i.on { background: linear-gradient(90deg, #d58c37, #ffd68a); }
+/* How it works, before it's built. */
+.stand-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.stand-steps li { counter-increment: step; display: grid; gap: 2px; padding: 12px 12px 12px 46px; position: relative; border-radius: 14px; background: #ffffff07; border: 1px solid #ffffff10; font: 12px/1.4 var(--body); color: var(--ink-soft); }
+.stand-steps li::before { content: counter(step); position: absolute; left: 12px; top: 12px; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 40% 30%, #ffd99a, #c98a45); color: #2a180c; font: 700 13px var(--body); }
+.stand-steps b { color: var(--ink); font: 600 13.5px var(--body); }
+@media (max-width: 560px) {
+  .stand-hero { grid-template-columns: minmax(0, 1fr); }
+  .stand-hero-act { flex-direction: row; flex-wrap: wrap; padding: 0 16px 16px; }
+  .stand-hero-act .button, .stand-hero-act .stand-lock { flex: 1 1 140px; }
+  .stand-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stand-up { grid-template-columns: 76px minmax(0, 1fr); }
+  .up-art { width: 76px; height: 76px; } .up-art .stand-render { width: 72px; height: 72px; }
+  .stand-up > .button, .stand-up > .stand-lock, .stand-up > .stand-on { grid-column: 1 / -1; width: 100%; }
+  .stand-steps { grid-template-columns: 1fr; }
+}
