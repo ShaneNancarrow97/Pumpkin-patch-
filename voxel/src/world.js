@@ -809,6 +809,7 @@ export function signBoard(text, sub, width) {
 // Stands a sign on two dark posts that reach the ground from its height, so
 // it reads as planted rather than floating. Returns the board.
 export function postSign(board, height) {
+  if (!board?.geometry?.parameters) return board;
   const w = board.geometry.parameters.width, h = board.geometry.parameters.height, mat = new THREE.MeshStandardMaterial({ color: 0x1c1418, roughness: .9 });
   for (const side of [-1, 1]) {
     const post = new THREE.Mesh(new THREE.BoxGeometry(.16, height + h / 2, .16), mat);
