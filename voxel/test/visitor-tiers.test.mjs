@@ -74,14 +74,15 @@ test("level gifts still give a real tier, and coins when that upgrade is already
   for (const level of M.LEVELS) for (const r of level.rewards.filter((x) => x.kind === "upgrade")) {
     assert.equal(M.UPGRADES.find((u) => u.id === r.id).max, r.max, `${r.id}'s gift knows its maximum`);
   }
-  const gift = M.freshState(); gift.earned = at(4); gift.progression.claimed = [1, 2, 3];
+  const met = (s) => { s.village.quests.invitation = { step: 3, base: null, done: true }; return s; };
+  const gift = met(M.freshState()); gift.earned = at(4); gift.progression.claimed = [1, 2, 3];
   M.awardLevels(gift); assert.equal(gift.upgrades.tools, 1);
   // Six cans is as far as level 4 reaches (the copper cans open at 12): the gift is coins.
-  const full = M.freshState(); full.earned = at(4); full.progression.claimed = [1, 2, 3]; full.upgrades.tools = 6;
+  const full = met(M.freshState()); full.earned = at(4); full.progression.claimed = [1, 2, 3]; full.upgrades.tools = 6;
   const coins = full.coins; M.awardLevels(full);
   assert.equal(full.upgrades.tools, 6); assert.equal(full.coins, coins + 100 + 100);
   assert.equal(full.progression.receipts[4][1].duplicate, true);
   // Buying the frequency tiers doesn't disturb a gift.
-  const both = M.freshState(); both.coins = 1e6; both.earned = 2e6; both.progression.claimed = M.LEVELS.map((l) => l.level); while (M.buyUpgrade(both, "sign")); both.earned = at(4); both.progression.claimed = [1, 2, 3];
+  const both = met(M.freshState()); both.coins = 1e6; both.earned = 2e6; both.progression.claimed = M.LEVELS.map((l) => l.level); while (M.buyUpgrade(both, "sign")); both.earned = at(4); both.progression.claimed = [1, 2, 3];
   M.awardLevels(both); assert.equal(both.upgrades.sign, 5); assert.equal(both.upgrades.tools, 1);
 });

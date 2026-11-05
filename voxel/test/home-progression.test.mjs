@@ -14,6 +14,9 @@ test("twenty levels combine earned income and the next useful home task", () => 
   assert.equal(M.patchLevel(s).level, 2); assert.equal(M.patchLevel(s).blocked, true);
   assert.equal(M.homeGoal(s).action, "home");
   assert.equal(M.recordHomeActivity(s, "visit"), true);
+  assert.equal(M.patchLevel(s).level, 3, "level 4 asks for Mothlight's first neighbours");
+  assert.equal(M.patchLevel(s).requirements[0].action, "village");
+  s.village.quests.invitation = { step: 3, base: null, done: true };
   assert.equal(M.patchLevel(s).level, 4);
   assert.equal(M.patchLevel(s).requirements[0].action, "upgrade-house");
   const earned = s.earned, coins = s.coins;
@@ -22,7 +25,7 @@ test("twenty levels combine earned income and the next useful home task", () => 
   assert.equal(M.patchLevel(s).level, 5); assert.equal(M.patchLevel(s).blocked, false);
 });
 test("earned income is banked at a blocked milestone without granting its reward", () => {
-  const s = reached(5); M.recordHomeActivity(s, "visit");
+  const s = reached(5); M.recordHomeActivity(s, "visit"); s.village.quests.invitation = { step: 3, base: null, done: true };
   const xp = M.levelEarnings(s); assert.deepEqual(M.awardLevels(s), [2, 3, 4]);
   assert.equal(M.levelEarnings(s), xp); assert.ok(!s.progression.claimed.includes(5));
   M.upgradeHouse(s); const coins = s.coins;

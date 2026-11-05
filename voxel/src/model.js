@@ -22,6 +22,7 @@ import { freshEstate, restoreEstate } from "./rules/house-estate.js";
 import { freshHollowHouse, restoreHollowHouse, updateHollowHouse, saveHollowVisitors, restoreHollowVisitors } from "./rules/hollow-house.js";
 import { updateGardenCrops } from "./rules/garden-crops.js";
 import { freshFishing, restoreFishing, saveFishing, updateFishing } from "./rules/fishing.js";
+import { freshVillage, restoreVillage, saveVillage, updateVillage } from "./rules/village.js";
 import { freshCarving, restoreCarving } from "./rules/carving.js";
 import { restoreIntroSeen } from "./rules/intro.js";
 import { freshSocial, recordNews } from "./rules/meadow-talk.js";
@@ -71,6 +72,7 @@ export * from "./rules/cooking-mix.js";
 export * from "./rules/cleanliness.js";
 export * from "./rules/garden-crops.js";
 export * from "./rules/fishing.js";
+export * from "./rules/village.js";
 export * from "./rules/carving.js";
 export * from "./content/carving.js";
 export * from "./content/pumpkin-shapes.js";
@@ -84,7 +86,7 @@ export function freshState() {
     stock: freshStock(), fresh: freshBatches(), pumpkinAges: freshPumpkinAges(), stockWaste: freshStockWaste(), wanted: freshWanted(), orders: freshOrders(), holds: [],
     visitorEvents: freshVisitorEvents(), stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
     shop: freshShop(), bigSpender: freshBigSpender(), festival: freshFestival(), customerCare: freshCustomerCare(),
-    house: freshHouse(), estate: freshEstate(), fishing: freshFishing(), hollowHouse: freshHollowHouse(), hayride: freshHayride(), kitchen: freshKitchen(),
+    house: freshHouse(), estate: freshEstate(), fishing: freshFishing(), village: freshVillage(), hollowHouse: freshHollowHouse(), hayride: freshHayride(), kitchen: freshKitchen(),
     wardrobe: freshWardrobe(), looks: freshLooks(),
     claimed: [], memories: [], progression: freshProgression(), paused: false, introSeen: false,
     cleanliness: freshCleanliness(), carving: freshCarving(),
@@ -159,6 +161,7 @@ export function restoreState(raw) {
   s.house = restoreHouse(raw.house);
   s.estate = restoreEstate(raw.estate);
   s.fishing = restoreFishing(raw.fishing);
+  s.village = restoreVillage(raw.village);
   s.hollowHouse = restoreHollowHouse(raw.hollowHouse);
   s.hayride = restoreHayride(raw.hayride);
   s.wardrobe = restoreWardrobe(raw.wardrobe);
@@ -183,7 +186,7 @@ export function restoreState(raw) {
 }
 
 // What is worth saving: everything except who is out walking or shopping.
-export const saveData = (s) => ({ ...s, carvingStand: s.carvingStand && { ...s.carvingStand, carvers: [] }, hollowVisitors: saveHollowVisitors(s), hayrideVisitors: saveHayrideVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, kitchen: { ...s.kitchen, foodHolds: [], diners: [] }, fishing: saveFishing(s.fishing), social: undefined, handsOn: undefined });
+export const saveData = (s) => ({ ...s, carvingStand: s.carvingStand && { ...s.carvingStand, carvers: [] }, hollowVisitors: saveHollowVisitors(s), hayrideVisitors: saveHayrideVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, kitchen: { ...s.kitchen, foodHolds: [], diners: [] }, fishing: saveFishing(s.fishing), village: saveVillage(s.village), social: undefined, handsOn: undefined });
 
 // Advances the farm by dt seconds and returns what happened, for the scene to show.
 export function update(s, dt) {
@@ -204,6 +207,8 @@ export function update(s, dt) {
   updateCleanliness(s, dt, events);
   updateGardenCrops(s, dt);
   updateFishing(s, dt);
+  // Mothlight's clock runs with the farm's (rules/village.js): its events (a quest step, a duty) go out with the farm's.
+  for (const e of updateVillage(s, dt)) events.push({ ...e, village: true });
   updateDining(s, dt);
   checkMemories(s, events);
   for (const level of awardLevels(s)) events.push({ type: "level-up", level });

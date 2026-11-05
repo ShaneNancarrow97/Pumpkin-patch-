@@ -1,19 +1,21 @@
 // Mothlight Village (Codex's plan: docs/plans/mothlight-village/ROADMAP.md and
-// concept-art/FOOTPRINT.md). The realm's measured greybox, its districts,
-// residents, materials and first chapters, as data. rules/village.js runs it;
-// nothing draws it yet (handover 65). Realm coordinates: x east, z north, in
+// concept-art/FOOTPRINT.md; built in handover 73). The realm's measured layout,
+// its districts, materials and the square's fixtures, as data. rules/village.js
+// runs it, village-world.js builds it. Realm coordinates: x east, z north, in
 // world units from the south-west corner; the realm is its own place, apart
-// from the farm's map. Costs, rates and bond values are first proposals, to
-// be tuned in play and in the economy simulator.
-export const VILLAGE_LEVEL = 6;
+// from the farm's map. The village's people are in content/village-folk.js,
+// its quests in content/village-quests.js and its decor in content/village-decor.js.
+// Elowen brings the invitation at level 3 (it was 6 in the plan), and each
+// later district opens three levels on.
+export const VILLAGE_LEVEL = 3;
 export const VILLAGE_BOUNDS = Object.freeze({ x0: 0, z0: 0, x1: 120, z1: 96 });
 // Each district opens at a patch level and, after the Green, a story beat (STORY_FLAGS).
 export const DISTRICTS = Object.freeze([
-  { id: "green", name: "Hollow Green", level: 6, story: null, polygon: [[0, 0], [120, 0], [120, 12], [84, 12], [84, 36], [0, 36]] },
-  { id: "copse", name: "Moonroot Copse", level: 9, story: "first-chapter", polygon: [[0, 36], [40, 36], [40, 96], [0, 96]] },
-  { id: "quarry", name: "Lantern Quarry", level: 12, story: "footbridge", polygon: [[40, 36], [84, 36], [84, 74], [40, 74]] },
-  { id: "moor", name: "Carnival Moor", level: 15, story: "restaurant-opening", polygon: [[84, 12], [120, 12], [120, 74], [84, 74]] },
-  { id: "marsh", name: "Mirror Marsh", level: 18, story: "four-stories", polygon: [[40, 74], [120, 74], [120, 96], [40, 96]] },
+  { id: "green", name: "Hollow Green", level: 3, story: null, polygon: [[0, 0], [120, 0], [120, 12], [84, 12], [84, 36], [0, 36]] },
+  { id: "copse", name: "Moonroot Copse", level: 6, story: "two-doorbells", polygon: [[0, 36], [40, 36], [40, 96], [0, 96]] },
+  { id: "quarry", name: "Lantern Quarry", level: 9, story: "footbridge", polygon: [[40, 36], [84, 36], [84, 74], [40, 74]] },
+  { id: "moor", name: "Carnival Moor", level: 12, story: "restaurant-opening", polygon: [[84, 12], [120, 12], [120, 74], [84, 74]] },
+  { id: "marsh", name: "Mirror Marsh", level: 15, story: "four-stories", polygon: [[40, 74], [120, 74], [120, 96], [40, 96]] },
 ].map(Object.freeze));
 export const DISTRICT_BY_ID = Object.freeze(Object.fromEntries(DISTRICTS.map((d) => [d.id, d])));
 // What the village is built from (roadmap §5): yield per node, and seconds of active play before a node grows back.
@@ -148,47 +150,14 @@ export const CHAT_BOND = Object.freeze({ xp: 10, wait: 300 });
 // Each material's store holds this many to begin with; Rowan's store blueprint will add to it.
 export const STORE_BASE = 40;
 
-// Homes to build on the plots. Materials and coins are taken together, or not at all.
-export const BLUEPRINTS = Object.freeze([
-  { id: "rowan-workshop", name: "Rowan’s workshop cottage", plot: "02", cost: Object.freeze({ logs: 20, stone: 12, fibre: 4 }), coins: 250 },
-  { id: "elowen-conservatory", name: "Elowen’s conservatory library", plot: "01", cost: Object.freeze({ logs: 18, stone: 14, fibre: 6, herbs: 2 }), coins: 450 },
-].map(Object.freeze));
-export const BLUEPRINT_BY_ID = Object.freeze(Object.fromEntries(BLUEPRINTS.map((b) => [b.id, b])));
-
-// The first slice's quests (roadmap §10, phase 1): the invitation, then two chapters
-// each for Rowan and Elowen. A step is done by a real action (rules/village.js
-// recordVillageAction): arriving, talking, gathering, delivering, finding a story
-// object, building, or furnishing with things that count as a light, a seat or books.
-// A reward is claimed once, by the quest's key, whatever happens to the scene.
-export const QUESTS = Object.freeze([
-  { id: "invitation", title: "The Moving Address", resident: null, chapter: 0, needs: [],
-    steps: [{ kind: "arrive" }, { kind: "talk", resident: "rowan" }, { kind: "talk", resident: "elowen" }],
-    reward: { coins: 150 } },
-  { id: "rowan-1", title: "Loose Boards", resident: "rowan", chapter: 1, needs: ["invitation"],
-    steps: [{ kind: "gather", material: "logs", n: 4 }, { kind: "gather", material: "stone", n: 2 }, { kind: "deliver", cost: { logs: 4, stone: 2 }, to: "bench" }],
-    reward: { bond: { rowan: 100 }, materials: { logs: 4 }, unlock: ["blueprint:material-store"] } },
-  { id: "rowan-2", title: "A Door of His Own", resident: "rowan", chapter: 2, needs: ["rowan-1"],
-    steps: [{ kind: "build", blueprint: "rowan-workshop" }],
-    reward: { bond: { rowan: 180 }, unlock: ["decor:workshop-shelves", "decor:timber-garden-gate"] } },
-  { id: "elowen-1", title: "A Letter That Will Not Stay Still", resident: "elowen", chapter: 1, needs: ["invitation"],
-    steps: [{ kind: "find", item: "page-1" }, { kind: "find", item: "page-2" }, { kind: "find", item: "page-3" }, { kind: "talk", resident: "elowen" }],
-    reward: { bond: { elowen: 100 }, unlock: ["item:mothlight-journal", "pattern:moth-lantern"] } },
-  { id: "elowen-2", title: "A Room for Quiet Wings", resident: "elowen", chapter: 2, needs: ["elowen-1"],
-    steps: [{ kind: "build", blueprint: "elowen-conservatory" }, { kind: "furnish", plot: "01", tags: ["light", "seating", "books"] }],
-    reward: { bond: { elowen: 180 }, unlock: ["decor:moth-lamp", "blueprint:library-shelving"] } },
-].map((q) => Object.freeze({ ...q, steps: Object.freeze(q.steps.map(Object.freeze)) })));
-export const QUEST_BY_ID = Object.freeze(Object.fromEntries(QUESTS.map((q) => [q.id, q])));
-// Story beats that open later districts: each is the quests that make it. Beats
-// whose quests aren't written yet stay shut.
-export const STORY_BEATS = Object.freeze({
-  "first-chapter": ["rowan-2", "elowen-2"],
-  "footbridge": ["rowan-3"],
-  "restaurant-opening": ["cinder-2"],
-  "four-stories": ["elowen-4", "rowan-4", "tansy-4", "opal-4"],
+// The square's fixtures and landmarks on the Green (rules keep decor off them; the world builds them).
+export const FIXTURES = Object.freeze({
+  well: Object.freeze({ x: 52.5, z: 26, r: 1.7 }),
+  bench: Object.freeze({ x: 51.5, z: 23.15, w: 2.6, d: 1.1 }),
+  stall: Object.freeze({ x: 62.6, z: 24.4, w: 2.8, d: 3.4 }),
+  noticeboard: Object.freeze({ x: 62, z: 28.6, w: 2, d: .8 }),
+  carriage: Object.freeze({ x: 58, z: 4, w: 10, d: 7 }),
+  oak: Object.freeze({ x: 25.4, z: 9.6, r: 1.6 }),
 });
-// The three pages of Elowen's letter, where they've blown to on the Green.
-export const STORY_OBJECTS = Object.freeze([
-  { id: "page-1", quest: "elowen-1", x: 54, z: 26 },
-  { id: "page-2", quest: "elowen-1", x: 26, z: 4 },
-  { id: "page-3", quest: "elowen-1", x: 46, z: 32 },
-].map(Object.freeze));
+// The plot kept for you: an empty reservation on the Green, yours to fill.
+export const YOUR_PLOT = "R1";

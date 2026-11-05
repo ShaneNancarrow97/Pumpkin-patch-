@@ -25,6 +25,8 @@ const requirement = (id, text, target, read, action, room = "parlour") => ({ id,
 // House upgrades deliberately precede their new room's activity requirements.
 export const HOME_MILESTONES = Object.freeze([
   { level: 3, title: "Make yourself at home", needs: [requirement("first-visit", "Step inside your home", 1, s => activity(s, "visit"), "home")] },
+  // Mothlight's invitation comes at level 3 (rules/village.js); level 4 asks you to have answered it.
+  { level: 4, title: "A neighbourly visit", needs: [requirement("mothlight", "Meet Mothlight's first neighbours", 1, s => s.village?.quests?.invitation?.done ? 1 : 0, "village")] },
   { level: 5, title: "Room for two", needs: [requirement("bedroom", "Upgrade to the Crooked cottage", 1, s => s.house?.level ?? 0, "upgrade-house")] },
   { level: 6, title: "Dress for the occasion", needs: [requirement("wardrobe", "Use a costume rack or wardrobe at home", 1, s => activity(s, "wardrobe"), "wardrobe")] },
   { level: 7, title: "A home with character", needs: [requirement("four-pieces", "Place four pieces of furniture or decor", 4, s => pieces(s).length, "decorate")] },

@@ -6,7 +6,7 @@ const at = (n) => M.LEVELS[n - 1].at;
 
 test("level boundaries, rewards and maximum progress share one source", () => {
   const s = M.freshState();
-  s.progression.homeActivities = { visit: 1, wardrobe: 1, cook: 10 }; s.house.level = 3;
+  s.progression.homeActivities = { visit: 1, wardrobe: 1, cook: 10 }; s.house.level = 3; s.village.quests.invitation = { step: 3, base: null, done: true };
   s.house.wallpapers.parlour = "w01"; s.kitchen.recipes = M.RECIPES.map(r => r.id);
   s.house.placed = Array.from({ length: 12 }, (_, i) => ({ id: i === 0 ? "copper-range" : i === 1 ? "gothic-spice-cabinet" : "d03", room: ["kitchen", "kitchen", "parlour", "bedroom", "attic"][i % 5], books: i === 2 ? ["b01", "b02", "b03", "b04", "b05", "b06"] : [] }));
   for (const milestone of M.LEVELS.slice(1)) {
