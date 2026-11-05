@@ -4,10 +4,10 @@ import { unlockLevel } from "./unlocks.js";
 export { HOME_MILESTONES, HOME_ACTIVITY_KINDS, homeGoal, homeRequirements, recordHomeActivity } from "./home-goals.js";
 export const LEVELS = [
   { level: 1, at: 0, name: "Little seed", rewards: [] },
-  { level: 2, at: 300, name: "Growing roots", rewards: [{ kind: "coins", amount: 35 }, { kind: "decor", id: "d03" }] },
-  { level: 3, at: 1200, name: "Local favourite", rewards: [{ kind: "coins", amount: 60 }, { kind: "costume", id: "natalie-witch" }] },
-  { level: 4, at: 2800, name: "Autumn empire", rewards: [{ kind: "coins", amount: 100 }, { kind: "upgrade", id: "tools", name: "A better watering can", max: 9 }] },
-  { level: 5, at: 6000, name: "Lantern keeper", rewards: [{ kind: "coins", amount: 150 }, { kind: "decor", id: "w04" }] },
+  { level: 2, at: 450, name: "Growing roots", rewards: [{ kind: "coins", amount: 35 }, { kind: "decor", id: "d03" }] },
+  { level: 3, at: 3200, name: "Local favourite", rewards: [{ kind: "coins", amount: 60 }, { kind: "costume", id: "natalie-witch" }] },
+  { level: 4, at: 5800, name: "Autumn empire", rewards: [{ kind: "coins", amount: 100 }, { kind: "upgrade", id: "tools", name: "A better watering can", max: 9 }] },
+  { level: 5, at: 9000, name: "Lantern keeper", rewards: [{ kind: "coins", amount: 150 }, { kind: "decor", id: "w04" }] },
   { level: 6, at: 12500, name: "Midnight market", rewards: [{ kind: "coins", amount: 225 }, { kind: "costume", id: "shane-skeleton" }] },
   { level: 7, at: 24000, name: "Moonlit harvest", rewards: [{ kind: "coins", amount: 325 }, { kind: "upgrade", id: "yield", name: "A little extra love", max: 7 }] },
   { level: 8, at: 42000, name: "Haunted hideaway", rewards: [{ kind: "coins", amount: 450 }, { kind: "decor", id: "f12" }] },
@@ -26,12 +26,15 @@ export const LEVELS = [
   { level: 19, at: 2600000, name: "Keeper of stories", rewards: [{ kind: "coins", amount: 10500 }, { kind: "decor", id: "moon-wardrobe" }, { kind: "costume", id: "shane-mummy" }] },
   { level: 20, at: 3400000, name: "Our forever haunted home", rewards: [{ kind: "coins", amount: 15000 }, { kind: "costume", id: "natalie-slasher" }, { kind: "costume", id: "shane-slasher" }] },
 ];
-// The slower pace: each level asks for two to three times the earnings it once did.
-// A level once reached is kept (patchLevel), so saves from before the change
-// keep every level they had, checked against the thresholds they earned them
-// under; only the levels still to come take longer.
-export const LEVEL_PACE = 2;
+// The slower pace: each level asks for two to three times the earnings it once did
+// (pace 2), and the first levels longer still (pace 3, handover 73: about eleven
+// minutes to level 3, where Mothlight's invitation arrives). A level once reached
+// is kept (patchLevel), so saves from before a change keep every level they had,
+// checked against the thresholds they earned them under; only the levels still
+// to come take longer.
+export const LEVEL_PACE = 3;
 export const LEGACY_LEVEL_AT = Object.freeze([0, 150, 500, 1000, 2200, 4500, 8500, 15000, 26000, 42000, 70000, 110000, 170000, 250000, 360000, 500000, 680000, 900000, 1200000, 1600000]);
+export const PACE2_LEVEL_AT = Object.freeze([0, 300, 1200, 2800, 6000, 12500, 24000, 42000, 72000, 115000, 180000, 270000, 400000, 580000, 820000, 1120000, 1500000, 1980000, 2600000, 3400000]);
 export const freshProgression = () => ({ claimed: [1], pending: [], receipts: {}, bonusEarned: 0, homeVersion: 1, homeLegacyThrough: 1, homeActivities: freshHomeActivities(), pace: LEVEL_PACE, floorLevel: 1, floorFrom: 0 });
 export const levelEarnings = (s) => Math.max(0, s.earned - (s.progression?.bonusEarned ?? 0));
 const keptLevel = (s) => Math.max(1, ...(s.progression?.claimed ?? []).filter((n) => Number.isInteger(n) && n >= 1 && n <= LEVELS.length));
@@ -57,15 +60,17 @@ export function restoreProgression(raw, s, legacy = false, legacyHome = false) {
     return p;
   }
   p.bonusEarned = Number.isFinite(raw.bonusEarned) ? Math.max(0, Math.min(s.earned, raw.bonusEarned)) : 0;
-  // Claims are checked against the thresholds they were earned under.
-  const paced = raw.pace === LEVEL_PACE && !legacyHome, at = (n) => paced ? LEVELS[n - 1].at : LEGACY_LEVEL_AT[n - 1];
+  // Claims are checked against the thresholds they were earned under: today's,
+  // pace 2's, or the first pace's.
+  const pace = legacyHome ? 1 : raw.pace === LEVEL_PACE ? LEVEL_PACE : raw.pace === 2 ? 2 : 1, paced = pace === LEVEL_PACE;
+  const at = (n) => pace === LEVEL_PACE ? LEVELS[n - 1].at : pace === 2 ? PACE2_LEVEL_AT[n - 1] : LEGACY_LEVEL_AT[n - 1];
   p.floorFrom = paced ? (Number.isFinite(raw.floorFrom) ? Math.max(0, Math.min(s.earned, raw.floorFrom)) : 0) : Math.max(0, s.earned - p.bonusEarned);
   const earned = LEVELS.filter(l => at(l.level) <= s.earned - p.bonusEarned).at(-1).level;
   p.homeLegacyThrough = legacyHome ? Math.min(12, earned) : Number.isInteger(raw.homeLegacyThrough) ? Math.max(1, Math.min(12, earned, raw.homeLegacyThrough)) : 1;
   p.homeActivities = restoreHomeActivities(raw.homeActivities);
   // The level kept when the pace changed stays valid at any earnings it was
   // reached with under the old thresholds.
-  const floor = paced && Number.isInteger(raw.floorLevel) && raw.floorLevel >= 1 && raw.floorLevel <= LEVELS.length && LEGACY_LEVEL_AT[raw.floorLevel - 1] <= s.earned - p.bonusEarned ? raw.floorLevel : 1;
+  const floor = pace > 1 && Number.isInteger(raw.floorLevel) && raw.floorLevel >= 1 && raw.floorLevel <= LEVELS.length && LEGACY_LEVEL_AT[raw.floorLevel - 1] <= s.earned - p.bonusEarned ? raw.floorLevel : 1;
   const valid = (n) => Number.isInteger(n) && n >= 1 && n <= LEVELS.length && (n <= floor || at(n) <= s.earned - p.bonusEarned);
   p.claimed = [...new Set([1, ...(Array.isArray(raw.claimed) ? raw.claimed.filter(valid) : [])])].sort((a, b) => a - b);
   p.floorLevel = paced ? Math.min(floor, p.claimed.at(-1)) : p.claimed.at(-1);

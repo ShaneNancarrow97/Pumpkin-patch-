@@ -93,3 +93,21 @@ test("the slower pace keeps every level an older save reached, and fills its bar
   assert.equal(M.patchLevel(again).level, 10, "the new pace saves and loads");
   assert.equal(again.progression.pace, M.LEVEL_PACE);
 });
+
+test("the longer road to level 3 keeps every level a save reached at the earlier pace", () => {
+  const old = M.freshState(); old.earned = 1500; old.progression.claimed = [1, 2, 3];
+  const raw = JSON.parse(JSON.stringify(M.saveData(old))); raw.progression.pace = 2; raw.progression.floorLevel = 1; raw.progression.floorFrom = 0;
+  const loaded = M.restoreState(raw), p = M.patchLevel(loaded);
+  assert.equal(p.level, 3, "level 3, reached at £1,500, is kept though it now asks more");
+  assert.equal(p.progress, 0, "its bar starts where the save was");
+  loaded.earned = (1500 + p.next.at) / 2; assert.ok(Math.abs(M.patchLevel(loaded).progress - .5) < 1e-9, "and fills on the way to level 4");
+  assert.equal(loaded.progression.pace, M.LEVEL_PACE);
+  assert.deepEqual(M.awardLevels(loaded), [], "no level is given again or taken away");
+  const again = M.restoreState(JSON.parse(JSON.stringify(M.saveData(loaded))));
+  assert.equal(M.patchLevel(again).level, 3, "and keeps it through another save");
+  const fresh = M.freshState(); fresh.earned = 1500; M.recordHomeActivity(fresh, "visit");
+  assert.equal(M.patchLevel(fresh).level, 2, "a new farm needs more for level 3");
+  assert.ok(M.LEVELS[2].at >= M.PACE2_LEVEL_AT[2] * 2.5, "about two and a half times what it asked");
+  fresh.earned = M.LEVELS[2].at; assert.equal(M.patchLevel(fresh).level, 3);
+  for (let i = 1; i < M.LEVELS.length; i++) assert.ok(M.LEVELS[i].at > M.LEVELS[i - 1].at, "every level asks more than the one before");
+});
