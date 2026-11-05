@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
 import { buildGround, grounds } from "./ground.js";
 import { cocoaProp, takeawayCup } from "./cocoa-props.js";
-import { yardGround, fenceRun, tree, lanternPost } from "./world.js";
+import { yardGround, fenceRun, tree, lanternPost, postSign } from "./world.js";
 import { MEADOW, MEADOW_PATHS, CHAT_SPOTS, pathDistance, cocoaKioskWidth } from "./content/festival-meadow.js";
 import { hollowPathDistance } from "./content/hollow-house.js";
 import { createMoth } from "./moth.js";
@@ -258,7 +258,7 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
   const makeHit = (x, y, z, w, h, d, type) => { const hit = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(x, y, z); hit.userData = { type }; root.add(hit); pickables.push(hit); };
   const preview = new Voxels();
   preview.block(37, 0, 20, .14, 1.8, .14, 0x423020); preview.block(37, 1.1, 20, 1.4, .75, .12, 0x68452f);
-  marker = preview.build(); const forSale = signBoard("Moonbrew Meadow", "room for a little more magic", 2.5); forSale.position.set(37, 1.55, 20.1); root.add(marker, forSale);
+  marker = preview.build(); const forSale = postSign(signBoard("Moonbrew Meadow", "room for a little more magic", 2.8), 1.2); forSale.position.set(37, 1.2, 20.1); root.add(marker, forSale);
   makeHit(37, 1.2, 20, 2.8, 2.4, .6, "meadow-land");
   function buildLand() {
     builtLand = true; openMeadowEdge(world.group); root.remove(marker, forSale); disposeObject(marker); disposeObject(forSale);

@@ -2,7 +2,7 @@ import { DINING_SEATS, diningGuestPose } from "./content/cooking-dining.js";
 import * as THREE from 'three';
 import { Voxels,seeded } from './voxels.js';
 import { buildGround,grounds } from './ground.js';
-import { COL } from './world.js';
+import { COL, postSign } from './world.js';
 import { buildFoodProp,disposeFoodProp } from './food-props.js';
 import { COOKING_SITE as SITE,COOKING_SERVICE_ROUTE as ROUTE,cookingDeliveryPose } from './content/cooking-layout.js';
 export { COOKING_SITE,COOKING_SERVICE_ROUTE,cookingDeliveryPose } from './content/cooking-layout.js';
@@ -122,7 +122,7 @@ function openReceivingGate(world){
 function removeOwned(group){disposeFoodProp(group);}
 export function createCookingWorld({scene,state,signBoard,lamps=[],world=null,createMaisie=null,visitorModel=null,seatedVisitor=null,animate=null}){
   const root=new THREE.Group();root.name='Cooking service area';scene.add(root);
-  const marker=signBoard?.('Midnight Kitchen','level 5 · food truck plot',3.6)??new THREE.Group();marker.position.set(SITE.marker.x,1.6,SITE.marker.z);marker.userData={type:'food-truck'};root.add(marker);
+  const marker=signBoard?postSign(signBoard('Midnight Kitchen','level 5 · food truck plot',3.2),1.3):new THREE.Group();marker.position.set(SITE.marker.x-1.4,1.3,SITE.marker.z+1.6);marker.userData={type:'food-truck'};root.add(marker);
   const hit=new THREE.Mesh(new THREE.BoxGeometry(SITE.truck.w,3.5,3.3),new THREE.MeshBasicMaterial({visible:false}));hit.position.set(SITE.truck.x+.8,1.75,SITE.truck.z+.25);hit.userData={type:'food-truck'};root.add(hit);
   const lamp={x:44.55,y:2.51,z:4.09,active:false};lamps.push(lamp);
   // The string of lights over the dining tables lights them too: a lamp position, never a light of its own.

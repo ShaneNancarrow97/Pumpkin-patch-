@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Voxels, seeded, vary, chunkedVoxels } from "./voxels.js";
-import { lanternPost } from "./world.js";
+import { lanternPost, postSign } from "./world.js";
 import { buildHayrideVehicle } from "./hayride-vehicle.js";
 import { createHayrideForest } from "./hayride-forest.js";
 import { buildHayrideStation, buildRideHill, HAYRIDE_STATION_LAMP } from "./hayride-station.js";
@@ -123,7 +123,7 @@ export function createHayrideWorld({scene: farmScene,state,world,signBoard,creat
   moon.position.set(-60,40,-14);lightning.position.set(-15,30,-20);rideScene.add(sky,moon,lightning);
   const headlamp=new THREE.SpotLight(0xffd29a,60,34,Math.PI/3.6,.45,1.2),encounterLamp=new THREE.PointLight(0xbba4ee,0,13,1.6);rideScene.add(headlamp,headlamp.target,encounterLamp);
   const wagonLamp=new THREE.PointLight(0xffb15c,0,8,1.5),setLamp=new THREE.PointLight(0xffffff,0,15,1.4),lanternPool=Array.from({length:4},()=>new THREE.PointLight(0xffa04a,0,12,1.4));rideScene.add(wagonLamp,setLamp,...lanternPool);
-  const marker=signBoard("The Hollow Hayride",`woodland clearing · level ${HAYRIDE_PROPERTY.level}`,4.0);marker.position.set(SITE.marker.x,2.15,SITE.marker.z);marker.userData={type:"hayride"};root.add(marker);
+  const marker=postSign(signBoard("The Hollow Hayride",`woodland clearing · level ${HAYRIDE_PROPERTY.level}`,3.4),1.35);marker.position.set(SITE.marker.x+.9,1.35,SITE.marker.z+1.2);marker.userData={type:"hayride"};root.add(marker);
   const hit=new THREE.Mesh(new THREE.BoxGeometry(SITE.hit.w,SITE.hit.h,SITE.hit.d),new THREE.MeshBasicMaterial({visible:false}));hit.position.set(SITE.hit.x,SITE.hit.y,SITE.hit.z);hit.userData={type:"hayride"};root.add(hit);hit.visible=false;
   const fleetHit=new THREE.Mesh(new THREE.BoxGeometry(3.5,3,9),new THREE.MeshBasicMaterial({visible:false}));fleetHit.position.set(HAYRIDE_FLEET_BAY.station.x,1.5,30);fleetHit.userData={type:"hayride"};fleetHit.visible=false;root.add(fleetHit);
   // The ride's moving lights, each frame of the preview (see the comment above).

@@ -14,12 +14,12 @@ import { cocoaProp, takeawayCup } from "./cocoa-props.js";
 import { customerBag, disposeCustomerBag } from "./customer-bag.js";
 import { pumpkinTemplate, pinataTemplate, sproutTemplate, bigPumpkin } from "./pumpkins.js";
 import { plotShape } from "./content/pumpkin-shapes.js";
-import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, signBoard } from "./world.js";
+import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, buildWorld, buildBackdrop, signBoard, postSign } from "./world.js";
 
 import { buildVisitor, animateWalk } from "./characters.js";
 import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./sprite-voxels.js";
 import { loadSpriteSheets, spriteActor, spriteVisitor, seatedVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
-import { VARIETIES, VISIT, visitorLeaveSeconds, openPlots, activeLook, counterSide } from "./model.js";
+import { VARIETIES, VISIT, visitorLeaveSeconds, openPlots, activeLook, counterSide, cleanLitter } from "./model.js";
 import { createPlaces, ORIGIN } from "./places.js";
 import { projectWallRay } from "./wall-drag.js";
 import { INTERIOR } from "./interiors.js";
@@ -42,7 +42,7 @@ import { createCookingWorld } from "./cooking-world.js";
 import { buildFoodProp } from "./food-props.js";
 import { COOKING_SITE } from "./content/cooking-layout.js";
 import { createActionFx } from "./action-fx.js";
-import { fieldDepth, extendFarmRoute, DROP, patchShape, COUNTER_GAP } from "./content/farm-layout.js";
+import { fieldDepth, extendFarmRoute, DROP, patchShape, COUNTER_GAP, PATCH } from "./content/farm-layout.js";
 import { createHollowFarm } from "./hollow-house-farm.js";
 import { createMazeRideView } from "./maze-ride-view.js";
 import { createHayrideView } from "./hayride-view.js";
@@ -112,10 +112,9 @@ export function createScene(canvas, state, hooks) {
   scene.add(backdrop);
 
   // Signs.
-  const patchSign = signBoard("Pumpkin Patch", "grown with love", 5);
-  patchSign.position.set(13.4, 3.2, 8.4); patchSign.userData = { type: "seeds" }; scene.add(patchSign);
-  const post = new THREE.Mesh(new THREE.BoxGeometry(0.2, 4.2, 0.2), new THREE.MeshStandardMaterial({ color: 0x1c1418 }));
-  post.position.set(11.4, 2.1, 8.4); post.castShadow = true; scene.add(post);
+  // At the head of the patch, where the path meets it, on its own two posts.
+  const patchSign = postSign(signBoard("Pumpkin Patch", "grown with love", 3.6), 1.25);
+  patchSign.position.set(PATCH.x - PATCH.rx + .4, 1.25, PATCH.back - PATCH.rz - .2); patchSign.userData = { type: "seeds" }; scene.add(patchSign);
   const shopSign = signBoard("Skyla’s Shop", "the honest pumpkin", 4.4);   // between the gable's moon windows
   shopSign.position.set(SHOP.x, 6.1, SHOP.z - 2.0); shopSign.userData = { type: "shop" }; scene.add(shopSign);
 
@@ -239,6 +238,26 @@ export function createScene(canvas, state, hooks) {
     actors[who] = { model, hit, queue: old?.queue ?? [], delivery: old?.delivery ?? null, moving: false, work: 0, dx: 0 };
   }
   const nearestActor = (x, z) => Object.entries(actors).filter(([who,a]) => (!player.state().enabled || who !== player.state().who) && (!a.delivery || !a.queue.length)).map(([,a])=>a).sort((a, b) => (Math.hypot(a.model.position.x - x, a.model.position.z - z) + a.queue.length * 4) - (Math.hypot(b.model.position.x - x, b.model.position.z - z) + b.queue.length * 4))[0];
+
+  // While one owner is played, the other keeps the farm going: walks to litter
+  // no caretaker is on and tidies it, or else strolls between the patch, the
+  // big pumpkin and the stall and lingers a while. Never in a parcel walk.
+  let partnerAt = 0, strollAt = 0;
+  const STROLL = () => [{ x: BIG_PUMPKIN.x + 2.2, z: BIG_PUMPKIN.z + .8 }, ...PLOTS.slice(0, openPlots(state)).filter((_, i) => i % 3 === 0).map((p) => ({ x: p.x + .9, z: p.z + .6 })), { x: SHOP.x - 2, z: SHOP.z + 3.2 }, HOMES.natalie, HOMES.shane];
+  function partnerChores() {
+    const ps = player.state();
+    if (!ps.enabled || view.place || state.paused || time < partnerAt) return;
+    const who = ps.who === "shane" ? "natalie" : "shane", a = actors[who];
+    if (!a || a.queue.length || a.delivery || a.work > 0) return;
+    partnerAt = time + .8;
+    const pos = a.model.position, claimed = new Set((state.cleanliness?.janitors ?? []).map((j) => j.target));
+    const near = (state.cleanliness?.litter ?? []).filter((p) => !claimed.has(p.id) && p.x > 1 && p.x < MAP.w - 1 && p.z > 1 && p.z < fieldDepth(state) - .5).sort((p, q) => Math.hypot(p.x - pos.x, p.z - pos.z) - Math.hypot(q.x - pos.x, q.z - pos.z))[0];
+    if (near) { a.queue.push({ x: near.x + .45, z: near.z + .25, tidy: near.id, wait: 1.1 }); return; }
+    if (time < strollAt) return;
+    const spots = STROLL(), pick = spots[Math.floor((time * 7.31) % spots.length)];
+    if (Math.hypot(pick.x - pos.x, pick.z - pos.z) < 1.5) return;
+    a.queue.push({ ...pick, wait: 3 + (time * 3.7) % 4 }); strollAt = time + 9;
+  }
 
   // The existing Shane figure receives a parcel along the east path. Never
   // spawn a second copy or interrupt a crop task; Natalie keeps helping.
@@ -758,7 +777,7 @@ export function createScene(canvas, state, hooks) {
     tapHalo.material.opacity = .13 + Math.sin(time * 1.8) * .025 + tapPulse * .12;
     pumpkinTilt.rotation.x = -0.24 - tapPulse * .06;
 
-    receiveDelivery();
+    receiveDelivery(); partnerChores();
     // Shane and Natalie walk to their jobs, then drift home.
     for (const [who, a] of Object.entries(actors)) {
       if (player.state().enabled && player.state().who === who) { a.queue.length = 0; a.delivery = null; a.work = 0; continue; }
@@ -772,7 +791,7 @@ export function createScene(canvas, state, hooks) {
       if (receiving) a.work = 0;
       else if (a.work > 0) a.work -= dt;
       else if (d > 0.12) { const step = Math.min(d, WALK * dt); pos.x += dx / d * step; pos.z += dz / d * step; }
-      else if (a.queue.length) { const stop = a.queue.shift(); a.work = stop.wait ?? (a.delivery ? 0 : 0.5); if (!a.queue.length) a.delivery = null; }
+      else if (a.queue.length) { const stop = a.queue.shift(); a.work = stop.wait ?? (a.delivery ? 0 : 0.5); if (!a.queue.length) a.delivery = null; if (stop.tidy && cleanLitter(state, stop.tidy) && !view.place) floatText("Tidied", pos.x, 2.6, pos.z, "spark"); }
       // Like the sprites they come from, they always face the viewer (the voxel figures mirror to walk the other way).
       animateSprite(a.model, time, a.moving, dx, who === "shane" ? 1.7 : 0);
       a.hit.position.set(pos.x, 1.1, pos.z);
