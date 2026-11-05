@@ -976,6 +976,13 @@ export function createScene(canvas, state, hooks) {
     previewFoyerDecor(data) { foyerView.preview(data); },
     // For tests: where a world point lands on the canvas, in CSS pixels.
     project(x, y, z) { const v = new THREE.Vector3(x, y, z).project(active()), box = canvas.getBoundingClientRect(); return { x: box.left + (v.x + 1) / 2 * box.width, y: box.top + (1 - v.y) / 2 * box.height }; },
+    // The ground's directions as the camera sees them: unit x, z vectors for
+    // right and down the screen, so a stick steers a piece the way it looks.
+    groundAxes() {
+      const cam = active(); cam.updateMatrixWorld();
+      const e = cam.matrixWorld.elements, flat = (x, z) => { const l = Math.hypot(x, z) || 1; return { x: x / l, z: z / l }; };
+      return { right: flat(e[0], e[2]), down: flat(e[8], e[10]) };
+    },
     speakMortimer() { foyerView.speak(true); },
     get foyerCamera() { return foyerView.cameraActions; },
     get mazeStatus() { return mazeView.status; },

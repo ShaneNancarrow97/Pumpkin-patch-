@@ -169,3 +169,33 @@
 .play-prompt span::after{content:"";position:absolute;left:50%;bottom:-6px;width:10px;height:10px;transform:translateX(-50%) rotate(45deg);background:#1d1624eb;border-right:1px solid #f2cf9959;border-bottom:1px solid #f2cf9959}
 .carving-open .play-prompt,.menu-open .play-prompt{display:none}
 @media(prefers-reduced-motion:reduce){.play-prompt{transition:none}}
+/* The Play chip lives top right and never moves: just under the HUD on a
+   phone, beside it on wider screens, in every place. With a pad it shows the
+   button that starts play (Create). */
+.play-chip, .inside-place .play-chip { top: calc(var(--top) + 58px); bottom: auto; right: max(10px, env(safe-area-inset-right)); min-height: 40px; padding: 4px 12px 4px 10px; font-size: 13px; }
+@media (orientation: landscape) and (min-width: 600px), (min-width: 900px) { .play-chip, .inside-place .play-chip { top: var(--top); min-height: 48px; } }
+.play-chip-glyph { display: inline-flex; }
+.play-chip-glyph:empty { display: none; }
+/* The farm's buttons always stand in the bar, faded while there's nothing for
+   them to do. A pad's press that can't act shakes the button; one that can pops it. */
+.action.idle { opacity: .42; filter: saturate(.5); box-shadow: none; }
+.action.idle:disabled { cursor: default; }
+.action.nope { animation: action-nope .32s ease-in-out; }
+.action.pressed { animation: action-press .22s ease-out; }
+@keyframes action-nope { 25% { transform: translateX(-4px); } 60% { transform: translateX(4px); } }
+@keyframes action-press { 40% { transform: scale(.92); } }
+.action-glyph { display: inline-flex; margin-right: 1px; }
+.action-glyph:empty { display: none; }
+.action-glyph .glyph { min-width: 20px; height: 20px; }
+@media (prefers-reduced-motion: reduce) { .action.nope, .action.pressed { animation: none; } }
+/* Moving a piece on a pad (ui/pad-placement.js): what each button does, under the HUD. */
+.place-legend { display: none; }
+body.has-pad #play-controls:is([data-placing="house"], [data-placing="estate"], [data-placing="foyer"]) .place-legend {
+  position: fixed; left: 50%; top: calc(var(--top) + 112px); transform: translateX(-50%); display: flex; align-items: center; gap: 14px;
+  max-width: calc(100% - 20px); padding: 6px 14px; border: 1px solid #f2cf9947; border-radius: 20px; background: linear-gradient(160deg, #2b2231f0, #18131ef5);
+  box-shadow: 0 8px 22px #0008; font: 600 12px var(--body); color: #efdcc2; white-space: nowrap; pointer-events: none; z-index: 46;
+}
+@media (orientation: landscape) and (min-width: 600px), (min-width: 900px) { body.has-pad #play-controls[data-placing] .place-legend { top: calc(var(--top) + 108px); } }
+.place-legend > span { display: inline-flex; align-items: center; gap: 5px; }
+.place-legend b { display: inline-flex; }
+#play-controls:not([data-placing="house"]) .place-legend-more { display: none !important; }

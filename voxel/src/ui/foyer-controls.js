@@ -53,7 +53,7 @@ export function createFoyerControls(ui) {
   }
   const tools = {
     get placement() { return pose(); },
-    get selected() { return selected ?? (pending ? "pending:" + pending.id : null); }, get active() { return !!pose(); },
+    get selected() { return selected ?? (pending ? "pending:" + pending.id : null); }, get active() { return !!pose(); }, get placement() { return pose(); },
     select(instance) { if (instance && instance === selected && !pending) return true; tools.cancel(); const p = ui.state.hollowHouse.foyer.placed.find(p => p.instance === instance); if (!p || ui.state.paused) return false; selected = instance; original = { ...p }; preview(); render(); return true; },
     selectForPlacement(id) {
       tools.cancel(); const d = FOYER_DECOR_BY_ID[id]; if (!d || ui.state.paused || !ui.state.hollowHouse.foyer.ownedDecor[id]) return false;

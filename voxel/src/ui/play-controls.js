@@ -54,13 +54,13 @@ function wedge(i,n,inner=86,outer=166,gap=2.2){
   return`M${p(outer,a0)}A${outer} ${outer} 0 ${large} 1 ${p(outer,a1)}L${p(inner,a1)}A${inner} ${inner} 0 ${large} 0 ${p(inner,a0)}Z`;
 }
 
-export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction,feel=()=>{},holdToBuy=null,hubAllowed=()=>true}) {
+export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction,feel=()=>{},holdToBuy=null,hubAllowed=()=>true,placement=null,farmAction=null}) {
   let padName='',details=false,previousPiece=null,previousFocus=null,radial=false,tool='hand',keys=new Set(),cameraKeys=new Set(),move={x:0,y:0},look={x:0,y:0},padPrevious=[],selectedIndex=0,repeatAt=0,held=null,suppressClickUntil=0;
   let inputMode=matchMedia?.('(pointer: coarse)').matches?'touch':'keyboard',shownMode='',hold=null,wheelItems=[],shownTool='',shownGait='',shownWho='',chain=0,retryFace=0;
   // A prompt over whatever the action button would act on, so the world says what is in reach.
   const prompt=document.createElement('div');prompt.className='play-prompt';prompt.setAttribute('aria-hidden','true');prompt.innerHTML='<span><kbd data-prompt-key>E</kbd><b data-prompt-label></b></span>';document.body.append(prompt);
   const root=document.createElement('div');root.id='play-controls';
-  root.innerHTML=`<button id="play-toggle" class="play-chip" aria-label="Choose a character to play">${svg('play','play-chip-icon')}<span>Play</span></button>
+  root.innerHTML=`<button id="play-toggle" class="play-chip" aria-label="Choose a character to play">${svg('play','play-chip-icon')}<span>Play</span><b class="play-chip-glyph" data-glyph="play"></b></button>
     <div id="play-live" hidden>
       <div class="play-owner"><img data-owner-portrait alt=""><span data-owner></span><button data-play="switch" aria-label="Switch character">${svg('switch')}</button><button data-play="exit" aria-label="Exit control mode">${svg('exit')}<span data-glyph="back"></span></button><span class="play-menu-hint" aria-hidden="true"><span data-glyph="start"></span>Menu</span></div>
       <div id="play-stick" class="play-thumbstick" role="group" aria-label="Movement thumbstick"><b class="stick-ring"></b><b class="stick-arc"></b><i></i><span>MOVE</span></div>
@@ -74,7 +74,8 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
       <div class="play-legend" aria-hidden="true"><span class="legend-act"><b data-glyph="action"></b><span data-legend-act>Explore</span><i class="legend-bar"><i></i></i></span><span><b data-glyph="tools"></b><span data-legend-tool>Tools</span></span><span><b data-glyph="gait"></b><span data-legend-gait>Walk</span></span><span><b data-glyph="recenter"></b><span>Camera</span></span><span><b data-glyph="start"></b><span>Menu</span></span></div>
     </div>
     <button id="play-arrange" class="play-arrange" aria-label="Arrange the nearby furniture" hidden>${svg('move')}<span>Arrange</span></button>
-    <div id="furniture-pad" hidden><div class="play-piece-label"></div><div class="play-dpad" role="group" aria-label="Move selected furniture"><button data-nudge="0,-1" aria-label="Move back">${svg('go','up')}</button><button data-nudge="-1,0" aria-label="Move left">${svg('go','left')}</button><button data-nudge="1,0" aria-label="Move right">${svg('go')}</button><button data-nudge="0,1" aria-label="Move forward">${svg('go','down')}</button></div><div class="play-furniture-actions"><button data-turn="-15" aria-label="Rotate left 15 degrees">${svg('rotate','flip')}</button><button id="furniture-wheel" aria-label="Furniture radial menu">${svg('tools')}</button><button data-turn="15" aria-label="Rotate right 15 degrees">${svg('rotate')}</button><button data-finish>${svg('done')}<span>Done</span></button></div><div class="furniture-legend" aria-hidden="true"><span><b data-glyph="dpad"></b><span>Move</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span data-legend-turn>Turn</span></span><span><b data-glyph="tools"></b><span>More</span></span><span><b data-glyph="back"></b><span>Done</span></span></div></div>
+    <div id="furniture-pad" hidden><div class="play-piece-label"></div><div class="play-dpad" role="group" aria-label="Move selected furniture"><button data-nudge="0,-1" aria-label="Move back">${svg('go','up')}</button><button data-nudge="-1,0" aria-label="Move left">${svg('go','left')}</button><button data-nudge="1,0" aria-label="Move right">${svg('go')}</button><button data-nudge="0,1" aria-label="Move forward">${svg('go','down')}</button></div><div class="play-furniture-actions"><button data-turn="-15" aria-label="Rotate left 15 degrees">${svg('rotate','flip')}</button><button id="furniture-wheel" aria-label="Furniture radial menu">${svg('tools')}</button><button data-turn="15" aria-label="Rotate right 15 degrees">${svg('rotate')}</button><button data-finish>${svg('done')}<span>Done</span></button></div></div>
+    <div class="place-legend" aria-hidden="true"><span><b data-glyph="lstick"></b><span>Move</span></span><span><b data-glyph="dpad"></b><span>Step</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span data-legend-turn>Turn</span></span><span><b data-glyph="confirm"></b><span>Done</span></span><span><b data-glyph="action"></b><span>Undo</span></span><span class="place-legend-more"><b data-glyph="tools"></b><span>More</span></span></div>
     <div id="play-radial" hidden role="dialog" aria-modal="true" aria-label="Choose an action"><button class="radial-dismiss" aria-label="Close action wheel"></button><div class="radial-disc"><svg class="radial-ring" viewBox="0 0 360 360" aria-hidden="true"><defs><linearGradient id="play-wedge-on" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd593"/><stop offset=".55" stop-color="#d4924b"/><stop offset="1" stop-color="#94562a"/></linearGradient></defs><circle class="radial-rim" cx="180" cy="180" r="174"/><g class="radial-wedges"></g></svg><div class="radial-options"></div><div class="radial-centre"><b class="radial-centre-icon"></b><p class="eyebrow">Your tools</p><h2>Interact</h2><p class="radial-hint"></p></div><button class="radial-close" aria-label="Close action wheel">${svg('exit')}</button></div></div>`;
   document.body.append(root);
   // Every menu on a pad (ui/pad-menu.js); Options brings the ring to the dock, the hub.
@@ -95,6 +96,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     const mode=padName?(padName==='DualSense'?'dualsense':'xbox'):inputMode;if(mode===shownMode)return;shownMode=mode;
     root.dataset.input=mode;root.querySelectorAll('[data-glyph]').forEach(el=>{el.innerHTML=mode==='touch'?'':glyphHTML(el.dataset.glyph,mode);});
     dockGlyph.innerHTML=padName?glyphHTML('start',mode):'';
+    document.querySelectorAll('#actions [data-glyph]').forEach(el=>{el.innerHTML=mode==='touch'?'':glyphHTML(el.dataset.glyph,mode);});
     if(radial)hintWheel();
   }
 
@@ -260,7 +262,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
       if(root.dataset.pieceWall!==String(onWall)){root.dataset.pieceWall=String(onWall);root.querySelectorAll('[data-turn]').forEach(b=>b.setAttribute('aria-label',onWall?`Move to the wall on the ${b.dataset.turn<0?'left':'right'}`:`Rotate ${b.dataset.turn<0?'left':'right'} 15 degrees`));setText($('[data-legend-turn]'),onWall?'Next wall':'Turn');}}
     // The portrait can be blank until the sprites load, so keep asking until it is real.
     const face=$('[data-owner-portrait]');if(p.who&&(p.who!==shownWho||!face.naturalWidth&&performance.now()>retryFace)){const url=portrait(p.who);if(url){shownWho=p.who;face.src=url;}retryFace=performance.now()+1500;}
-    setText($('[data-owner]'),p.who==='shane'?'Shane':'Natalie');setText($('#play-toggle span'),padName?'Play · '+padName:'Play');
+    setText($('[data-owner]'),p.who==='shane'?'Shane':'Natalie');setText($('#play-toggle span'),'Play');
     const gait=p.gait==='jog'?'jog':'walk';if(gait!==shownGait){shownGait=gait;$('[data-gait-icon]').innerHTML=svg(gait);setText($('[data-gait-label]'),gait==='jog'?'Jog':'Walk');$('#play-gait').setAttribute('aria-pressed',String(gait==='jog'));}
     if(tool!==shownTool){shownTool=tool;$('[data-tool-icon]').innerHTML=svg(tool==='hand'?'tools':tool);setText($('[data-tool-name]'),tool==='hand'?'Tools':toolNames[tool]);$('#play-wheel').setAttribute('aria-label',`${toolNames[tool]} selected. Open radial tools; hold to aim`);$('#play-wheel').dataset.tool=tool;}
     const pose=p.pose&&(typeof p.pose==='string'?p.pose:p.pose.kind),holdable=['plot','litter'].includes(p.target?.type);
@@ -279,10 +281,12 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     const streak=$('.play-chain');streak.hidden=chain<2;if(chain>=2)setText(streak,'×'+chain);
     const progress=Math.max(0,Math.min(1,Number(job.progress)||0));interact.style.setProperty('--action-progress',progress);
     const legend=$('.play-legend');setText($('[data-legend-act]'),shortAction(label||'Explore',p,job,tool));setText($('[data-legend-tool]'),tool==='hand'?'Tools':toolNames[tool]);setText($('[data-legend-gait]'),gait==='jog'?'Jog':'Walk');legend.dataset.busy=String(!!job.active);legend.style.setProperty('--p',progress.toFixed(2));legend.dataset.idle=String(!job.active&&!p.target&&!pose);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep going':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
-    scene.player?.setBlocked(blocked||radial||!!piece);
+    // A piece in hand anywhere (a room, the garden, the foyer) takes the pad (ui/pad-placement.js).
+    const placing=!blocked&&!radial?placement?.kind??null:null;root.dataset.placing=pad&&placing?placing:'';
+    scene.player?.setBlocked(blocked||radial||!!piece||!!placing);
     if(blocked){cancelInteraction('menu');keys.clear();cameraKeys.clear();releaseMove();releaseLook();if(radial&&!piece)close();}
     // Menus take the pad first: a menu or the hub keeps its presses from play.
-    const menuOwns=pad&&!radial&&!piece?menus.tick({pad,down,pressed,mode:padName==='DualSense'?'dualsense':'xbox',blocked}):false;
+    const menuOwns=pad&&!radial&&!piece&&!placing?menus.tick({pad,down,pressed,mode:padName==='DualSense'?'dualsense':'xbox',blocked}):false;
     if(!pad&&menus.hubOn)menus.leaveHub();
     if(pad&&!blocked&&!menuOwns){
       if(radial){
@@ -291,25 +295,29 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
         if(Math.hypot(ax,ay)>.55)aimAt(ax*100,ay*100);
         if(hold?.source==='gamepad'&&!down[3])releaseWheel();
         else if(pressed(1))close();else if(pressed(0)||pressed(2))opts.querySelectorAll('button')[selectedIndex]?.click();else if(pressed(12)||pressed(13)||pressed(14)||pressed(15)){focusChoice(selectedIndex+(pressed(12)||pressed(14)?-1:1));feel('tick');}
-      }else if(piece){
-        if(pressed(4))tools.rotate(-15);if(pressed(5))tools.rotate(15);if(pressed(1))tools.act('done');if(pressed(3))openWheel(undefined,{source:'gamepad',id:3});
-        if(performance.now()>repeatAt){const dx=(down[15]?1:0)-(down[14]?1:0),dz=(down[13]?1:0)-(down[12]?1:0);if(dx||dz){tools.nudge(dx,dz);repeatAt=performance.now()+140;}}
+      }else if(placing){
+        placement.tick({pad,down,pressed});
+        if(placing==='house'&&pressed(3))openWheel(undefined,{source:'gamepad',id:3});
       }else if(p.enabled){
         if(pressed(0)||pressed(2))beginInteraction('gamepad',pressed(2)?2:0);
         if(held?.source==='gamepad'&&!down[held.id])endInteraction('gamepad',held.id);
         if(pressed(3))openWheel(undefined,{source:'gamepad',id:3});if(pressed(1)){if(job.active||held)cancelInteraction('back');else back?.();}
         if(pressed(10))toggleGait();if(pressed(11)){scene.player?.recenter?.();feel('select');}if(pressed(6))scene.player?.zoom?.(-1);if(pressed(7))scene.player?.zoom?.(1);
-      }else if(pressed(0))openWheel('characters');
+      // Off play mode: Create starts play; on the farm △ plants, □ boosts and ✕ picks (elsewhere ✕ starts play too).
+      }else if(pressed(8))openWheel('characters');
+      else if(pressed(3))farmAction?.('plant');
+      else if(pressed(2))farmAction?.('boost');
+      else if(pressed(0)&&!farmAction?.('pick'))openWheel('characters');
     }
     if(!pad&&held?.source==='gamepad')cancelInteraction('disconnect');padPrevious=down;
     let x=move.x,y=move.y,cx=look.x,cy=look.y;
     if(keys.has('a')||keys.has('arrowleft'))x--;if(keys.has('d')||keys.has('arrowright'))x++;if(keys.has('w')||keys.has('arrowup'))y--;if(keys.has('s')||keys.has('arrowdown'))y++;
     if(cameraKeys.has('j'))cx--;if(cameraKeys.has('l'))cx++;if(cameraKeys.has('i'))cy--;if(cameraKeys.has('k'))cy++;
-    if(pad&&!radial&&!piece&&p.enabled){x+=dead(pad.axes[0]??0)+(down[15]?1:0)-(down[14]?1:0);y+=dead(pad.axes[1]??0)+(down[13]?1:0)-(down[12]?1:0);cx+=dead(pad.axes[2]??0);cy+=dead(pad.axes[3]??0);}
+    if(pad&&!radial&&!piece&&!placing&&p.enabled){x+=dead(pad.axes[0]??0)+(down[15]?1:0)-(down[14]?1:0);y+=dead(pad.axes[1]??0)+(down[13]?1:0)-(down[12]?1:0);cx+=dead(pad.axes[2]??0);cy+=dead(pad.axes[3]??0);}
     // Keys and pads move the on-screen sticks too, so the screen shows the push.
     if(!releaseMove.engaged)releaseMove.show({x:Math.max(-1,Math.min(1,x)),y:Math.max(-1,Math.min(1,y))});
     if(!releaseLook.engaged)releaseLook.show({x:Math.max(-1,Math.min(1,cx)),y:Math.max(-1,Math.min(1,cy))});
     if(Math.hypot(x,y)>.12&&(job.active||held))cancelInteraction('movement');
-    const stop=blocked||radial||!!piece||!p.enabled;scene.player?.input(stop?0:x,stop?0:y);scene.player?.cameraInput?.(stop?0:cx,stop?0:cy);
+    const stop=blocked||radial||!!piece||!!placing||!p.enabled;scene.player?.input(stop?0:x,stop?0:y);scene.player?.cameraInput?.(stop?0:cx,stop?0:cy);
   }};
 }

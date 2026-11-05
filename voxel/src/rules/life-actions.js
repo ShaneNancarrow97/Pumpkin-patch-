@@ -63,6 +63,24 @@ export function cancelAction(job) {
 
 // Held tools continue to the closest suitable neighbour, never a map-wide
 // harvest. The controller walks there and rechecks reach before starting it.
+// The nearest plot from a spot that needs one of these jobs, tried in order
+// (the first kind with any plot wins), for holding the action to keep working
+// across the patch. Null if nothing in reach needs doing.
+export const HOLD_ORDER = ['harvest', 'water', 'plant'];
+export function selectNearestPlot(s, from, kinds, positions, radius = 40) {
+  if (!from || !finite(from.x) || !finite(from.z) || !Array.isArray(positions)) return null;
+  for (const kind of kinds) {
+    let best = null;
+    for (let i = 0; i < openPlots(s); i++) {
+      const p = positions[i];
+      if (!p || !finite(p.x) || !finite(p.z) || i === from.skip || !actionAvailable(s, { type: 'plot', index: i }, kind)) continue;
+      const distance = Math.hypot(p.x - from.x, p.z - from.z);
+      if (distance <= radius && (!best || distance < best.distance - 1e-9)) best = { type: 'plot', index: i, x: p.x, z: p.z, distance, kind };
+    }
+    if (best) return best;
+  }
+  return null;
+}
 export function selectNextPlot(s, current, kind, positions, radius = 3.2) {
   const index = Number.isInteger(current) ? current : current?.index;
   const from = positions?.[index];

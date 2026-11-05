@@ -39,6 +39,7 @@ import { createFoyerControls } from "./ui/foyer-controls.js";
 import { settingsSheet } from "./ui/settings-sheet.js";
 import { createTvMode } from "./ui/tv-mode.js";
 import { createSaveFiles } from "./ui/save-files.js";
+import { createPadPlacement } from "./ui/pad-placement.js";
 import { createIntro } from "./ui/intro.js";
 import { money, $ } from "./ui/kit.js";
 import { PLOTS } from "./world.js";
@@ -555,13 +556,14 @@ function render() {
   text("level-name", lvl.name);
   const open = state.plots.slice(0, M.openPlots(state));
   const empty = open.filter((p) => p.phase === "empty").length, ripe = open.filter((p) => p.phase === "ready").length, full = M.barnBlocked(state);
-  $("plant-all").hidden = !empty; text("plant-count", 1);
+  // The farm's three buttons always stand in the bar, faded while there's nothing for them to do.
+  $("plant-all").classList.toggle("idle", !empty); $("plant-all").disabled = !empty || state.paused; text("plant-count", 1);
   $("plant-all").setAttribute("aria-label", `Plant one seed · ${empty} empty plots`);
   renderBoostDial($("boost"), M.boostStatus(state));
-  $("boost").disabled = state.paused || M.boostStatus(state).overheated;
+  $("boost").disabled = state.paused || M.boostStatus(state).overheated; $("boost").classList.toggle("idle", $("boost").disabled);
   // A full barn stacks its note under the label (style.css), so Harvest still fits beside Boost on a phone.
   const batch = Math.min(ripe, M.helperStatus(state, farmOwner()).capacity);
-  $("harvest-all").hidden = !ripe; text("harvest-count", full ? "Barn full" : batch); $("harvest-all").classList.toggle("barn-full", full);
+  $("harvest-all").classList.toggle("idle", !ripe); $("harvest-all").disabled = !ripe || state.paused; text("harvest-count", full ? "Barn full" : ripe ? batch : 0); $("harvest-all").classList.toggle("barn-full", full);
   $("harvest-all").setAttribute("aria-label", full ? "Barn full: sell pumpkins, add storage or buy a market cart" : `${farmOwner() === "shane" ? "Shane" : "Natalie"}: pick ${batch} ready ${batch === 1 ? "plot" : "plots"}`);
   const ready = M.claimable(state), next = M.FAVOURS.find((f) => !state.claimed.includes(f.id));
   $("goal").classList.toggle("ready", ready.length > 0);
@@ -786,7 +788,8 @@ function interactAsPlayer(tool='hand',options={}) {
   const p=scene.player?.state(),t=p?.target;if(!p?.enabled||state.paused||openTab)return false;
   if(p.pose){scene.player.stand();return true;}
   if(p.available===false){if(p.place==='estate')enterRoom(state.house.activeRoom);else leavePlace();return true;}
-  if(!t)return false;
+  // Nothing in reach: a held press walks to the nearest job on the patch (life-activity.js).
+  if(!t)return options.phase==='start'?lifeActivity.handle(tool,options):false;
   if(['plot','litter'].includes(t.type)){
     const ok=lifeActivity.handle(tool,options);
     if(!ok&&t.type==='plot'&&['hand','water'].includes(tool)&&wateringStatus(state,t.index).seconds)notice('This crop has had a drink. Try the next one.');
@@ -837,7 +840,9 @@ carvingUI=createCarvingUI({ state:()=>state, view:scene.carving, feel:playFeel, 
   close:closeCarving,
 }});
 // B shuts the carving bench through back(), after this tick has noted B as held: closing renders, and a render ticks the pad again.
-playControls=createPlayControls({feel:playFeel,holdToBuy,hubAllowed:()=>!carvingUI?.isOpen&&!mazeUI.active&&!hayrideUI.active&&!homeJourney?.active,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(carvingUI?.isOpen){queueMicrotask(closeCarving);return;}if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(hayrideUI.active){if(hayrideUI.stage==="running")hayrideUI.pause(true);else if(hayrideUI.stage==="pause")hayrideUI.pause(false);else exitHayrideRide();}else if(stockPopover.open)stockPopover.close(true);else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
+// On a pad off play mode, the farm's buttons answer △ □ ✕: pressed if there's something to do, a shake if not.
+const farmAction=kind=>{if(scene.place)return false;const el=$({plant:"plant-all",boost:"boost",pick:"harvest-all"}[kind]);const cls=el.disabled?"nope":"pressed";el.classList.remove("nope","pressed");void el.offsetWidth;el.classList.add(cls);if(!el.disabled)el.click();return true;};
+playControls=createPlayControls({feel:playFeel,holdToBuy,farmAction,placement:createPadPlacement({scene,state:()=>state,house:home.tools,estate:()=>estateTools,foyer:()=>foyerTools,feel:playFeel}),hubAllowed:()=>!carvingUI?.isOpen&&!mazeUI.active&&!hayrideUI.active&&!homeJourney?.active,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(carvingUI?.isOpen){queueMicrotask(closeCarving);return;}if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(hayrideUI.active){if(hayrideUI.stage==="running")hayrideUI.pause(true);else if(hayrideUI.stage==="pause")hayrideUI.pause(false);else exitHayrideRide();}else if(stockPopover.open)stockPopover.close(true);else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
 homeJourney=createHomeJourney({state:()=>state,blocked:()=>!!openTab||celebration.active||intro.active||mazeUI.active||hayrideUI.active||!!home.tools.selected||!!playControls.radial||state.paused,follow:followHomeGoal,open:()=>openSheet('homelife')});
 scene.setRenderQuality(prefs.renderQuality); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
 render(); renderPlace();
