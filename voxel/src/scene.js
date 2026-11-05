@@ -39,6 +39,7 @@ import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
 import { createWilds } from "./wilds.js";
 import { createCookingWorld } from "./cooking-world.js";
+import { createCarvingStandWorld, STAND_SITE } from "./carving-stand-world.js";
 import { buildFoodProp } from "./food-props.js";
 import { COOKING_SITE } from "./content/cooking-layout.js";
 import { createActionFx } from "./action-fx.js";
@@ -162,9 +163,11 @@ export function createScene(canvas, state, hooks) {
   const hollowFarm = createHollowFarm(scene, state, signBoard, lamps);
   const hayrideWorld = createHayrideWorld({ scene, state, world, signBoard, createScares: createHayrideScares });
   const cookingWorld = createCookingWorld({ scene, state, world, signBoard, lamps, createMaisie, visitorModel: kind => visitorModel(kind), seatedVisitor: kind => seatedVisitor(sheets,kind), animate: (...args) => animateFigure(...args) });
+  let carvingStand = null;  // built once the pickables exist, below
   const farmViewWidth = () => Math.max(fieldWidth(state), state.kitchen?.purchased ? COOKING_SITE.bounds.x1 : 0);
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
-  bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit); pickables.push(bigHit);
+  bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit);
+  carvingStand = createCarvingStandWorld({ scene, state, signBoard, postSign, pickables }); pickables.push(bigHit);
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
   shopHit.position.set(SHOP.x, 2.5, SHOP.z + 0.4); shopHit.userData = { type: "shop" }; scene.add(shopHit); pickables.push(shopHit);
   const homesteadArch = new THREE.Mesh(new THREE.BoxGeometry(3.4, 5, 1), new THREE.MeshBasicMaterial({ visible: false })); homesteadArch.position.set(20, 2.5, 3); homesteadArch.userData = { type: "home" }; scene.add(homesteadArch); pickables.push(homesteadArch);
@@ -818,7 +821,7 @@ export function createScene(canvas, state, hooks) {
     farmExpansion.sync(); wilds.sync();
     const land = `${farmViewWidth()}:${fieldDepth(state)}`;
     if (land !== framedLand) { framedLand = land; frame(); clearMist(); if (farSides) showFarSides(true); }
-    hollowFarm.sync(); hollowFarm.tick(time);
+    hollowFarm.sync(); hollowFarm.tick(time); carvingStand?.sync(time);
     hayrideWorld.tick(time);
     cookingWorld.tick(time);
 
@@ -935,6 +938,7 @@ export function createScene(canvas, state, hooks) {
       if (route === "hollow-ticket") { if (view.place === "foyer") floatText("+£" + amount, -2, 2, 0, "coin"); else if (!view.place) floatText("+£" + amount, HOLLOW_PROPERTY.x, 2.8, HOLLOW_PROPERTY.door[1], "coin"); return; }
       if (route === "hayride-ticket") { if (!view.place) floatText("+£" + amount, HAYRIDE_SITE.rearEntry.x, 2.5, HAYRIDE_SITE.rearEntry.z, "coin"); return; }
       if (route === "festival-cocoa" && !view.place) { floatText("+£" + amount, MEADOW.counter[0], 2.2, MEADOW.counter[1], "coin"); return; }
+      if (route === "carving") { if (!view.place) floatText("+£" + amount, STAND_SITE.x, 2.4, STAND_SITE.z, "coin"); return; }
       if (route === "takeaway") { if (!view.place) floatText("+£" + amount, COOKING_SITE.marker.x, 2.6, COOKING_SITE.marker.z, "coin"); return; }
       if ((route === "shop" || route === "food") && view.place === "shop") floatText("+£" + amount, ORIGIN.shop.x + 7.6, 2.6, ORIGIN.shop.z + 2.6, "coin");
       else if (!view.place) floatText("+£" + amount, SHOP.x - 0.2, 2.6, SHOP.counterZ + 0.6, "coin");

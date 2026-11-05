@@ -96,3 +96,30 @@
 .float-text.crop, .float-text.water { font-size: 11px; font-weight: 600; opacity: .85; }
 .float-text.spark { font-size: 15px; }
 .bubble { max-width: 170px; font-size: 11.5px; padding: 6px 8px; }
+
+/* The Carving Stand (ui/carving-stand-sheet.js): a lantern-lit hero, glowing
+   design tiles, and the same purchase buttons as every other business. */
+.stand-sheet { display: grid; gap: 10px; }
+.stand-hero { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 14px; border-radius: 20px; border: 1px solid #f2cf9940; background: radial-gradient(90% 140% at 8% 50%, #ff9a3a33, transparent 60%), linear-gradient(160deg, #2f2236, #1b1520); box-shadow: inset 0 1px #ffe6c01a; }
+.stand-hero h3 { margin: 0 0 3px; font: 600 19px/1.2 var(--display); color: var(--gold-bright); }
+.stand-hero p { margin: 0; font: 12.5px/1.45 var(--body); color: var(--ink-soft); }
+.stand-hero-art { display: grid; place-items: center; }
+.jack-art { filter: drop-shadow(0 0 14px #ff9a3a66); }
+.stand-benches { display: flex; flex-wrap: wrap; gap: 6px; margin: 7px 0; }
+.stand-bench { position: relative; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; border: 1px dashed #f2cf9933; background: #ffffff06; }
+.stand-bench.busy { border-style: solid; border-color: #ffb45e77; background: #ff9a3a1a; }
+.stand-bench i { position: absolute; left: 4px; right: 4px; bottom: 3px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, #ffd28f, #ffb45e) 0 0 / calc(var(--p, 0) * 100%) 100% no-repeat, #ffffff1a; }
+.stand-stats b { color: var(--gold-bright); font-weight: 600; }
+.stand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 9px; }
+.stand-tile { display: grid; justify-items: center; gap: 4px; padding: 12px 8px 10px; border-radius: 16px; border: 1px solid #ffffff12; background: linear-gradient(170deg, #2a2131, #1a1520); text-align: center; }
+.stand-tile b { font: 600 14px/1.2 var(--display); color: var(--ink); }
+.stand-tile small { font-size: 12px; color: var(--ink-soft); }
+.stand-tile.owned { border-color: #ffb45e66; box-shadow: 0 0 22px #ff9a3a22, inset 0 1px #ffe6c01a; }
+.stand-tile .button { margin-top: 4px; width: 100%; }
+.stand-on { margin-top: 4px; padding: 6px 10px; border-radius: 999px; background: #9fd38a22; color: #c7e8b3; font: 600 12px var(--body); }
+.extra-art { filter: drop-shadow(0 0 8px #ffd36b55); }
+.stand-icon { display: grid; place-items: center; border-radius: 14px; background: radial-gradient(circle at 50% 40%, #ff9a3a33, #1b1520 75%); box-shadow: 0 0 14px #ff9a3a33; }
+.stand-upgrade .tiers { display: flex; gap: 4px; margin-top: 5px; }
+.stand-upgrade .tiers i { width: 18px; height: 5px; border-radius: 3px; background: #ffffff1a; }
+.stand-upgrade .tiers i.on { background: linear-gradient(90deg, #d58c37, #ffd68a); }
+@media (max-width: 480px) { .stand-hero { grid-template-columns: 72px minmax(0, 1fr); } .stand-hero > .button, .stand-hero > .seed-gate { grid-column: 1 / -1; } .stand-hero-art svg { width: 72px; height: 72px; } }

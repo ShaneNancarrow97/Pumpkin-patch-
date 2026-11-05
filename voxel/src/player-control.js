@@ -5,6 +5,7 @@ import { COOKING_SITE } from "./content/cooking-layout.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { MEADOW, cocoaKioskWidth } from "./content/festival-meadow.js";
 import { openPlots } from "./model.js";
+import { STAND_SITE } from "./carving-stand-world.js";
 import { playWays, wayThrough, inZone, gardenGeometry, gardenTargets } from "./play-ways.js";
 
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
@@ -32,6 +33,7 @@ export function farmPlayerGeometry(state) {
     { x: HOLLOW_PROPERTY.x, z: 5.2, w: 8.8, d: 7.3 },
     { x: BIG_PUMPKIN.x, z: BIG_PUMPKIN.z, w: 3.4, d: 3.2 },
   ];
+  if (state.carvingStand?.built) obstacles.push({ x: STAND_SITE.x, z: STAND_SITE.z, w: STAND_SITE.w, d: STAND_SITE.d });
   if (kitchen) obstacles.push({ x: COOKING_SITE.truck.x, z: COOKING_SITE.truck.z, w: COOKING_SITE.truck.w, d: COOKING_SITE.truck.d });
   const level = meadow ? state.festival.cocoa?.level ?? 0 : 0;
   if (level) obstacles.push({ x: MEADOW.stand[0], z: MEADOW.stand[1] + .2, w: cocoaKioskWidth(level) + .4, d: 3.4 });

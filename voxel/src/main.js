@@ -36,6 +36,7 @@ import { hollowSheets, createHollowContext } from "./ui/hollow-sheet.js";
 import { hayrideSheets, createHayrideContext } from "./ui/hayride-sheet.js";
 import { cookingSheets } from "./ui/cooking-sheet.js";
 import { contractsSheet } from "./ui/contracts-sheet.js";
+import { carvingStandSheet } from "./ui/carving-stand-sheet.js";
 import { createFoyerControls } from "./ui/foyer-controls.js";
 import { settingsSheet } from "./ui/settings-sheet.js";
 import { createTvMode } from "./ui/tv-mode.js";
@@ -213,6 +214,7 @@ const scene = createScene($("world"), state, {
     else if (what.type === "mortimer") { if (!foyerTools.active) scene.speakMortimer(); }
     else if (what.type === "foyer-decor") foyerTools.select(what.instance);
     else if (["foyer-ground", "foyer-wall"].includes(what.type)) { if (foyerTools.active) foyerTools.placeAt(what.point.x, what.point.z, what.wall, what.point.y); }
+    else if (what.type === "carving-stand") { closeSheet(); openSheet("carvingStand"); }
     else if (what.type === "talk") talk(what.who);
     else if (what.type === "piece") { if (!home.tools.tapPiece(what.instance, what.point)) home.tools.select(what.instance); }
     else if (what.type === "go") goTo(what.to);
@@ -233,6 +235,7 @@ function handle(e) {
   if (e.type === "recipe-discovered") { notice(`Recipe discovered: ${M.RECIPE_BY_ID[e.recipe]?.name ?? "a new dish"}.`); save(); audio.tone(880); }
   if (e.type === "ingredient-delivery") { whisper("Ingredients delivered to the pantry", "kitchen"); save(); audio.tone(660); }
   if (e.type === "cooking-complete") { whisper("A fresh batch is ready", "kitchen"); save(); }
+  if (e.type === "carving-sold") { scene.sale(e.fee, "carving"); audio.tone(760); if (state.carvingStand.carved === 1) whisper(`Your first guest lantern: ${M.STAND_DESIGN_BY_ID[e.design].name} for ${money(e.fee)}`, "coin"); }
   if (e.type === "sale") {
     scene.sale(e.amount, e.route);
     audio.tone(700);
@@ -658,7 +661,7 @@ setTimeout(() => {
   notice("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
 }, 60000);
 const home = homeSheets(ui), collection = collectionSheets(ui);
-const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...cookingSheets(ui), ...contractsSheet(ui), ...moreSheet(ui), ...homeLifeSheet(ui), ...settingsSheet(ui) };
+const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...cookingSheets(ui), ...contractsSheet(ui), ...carvingStandSheet(ui), ...moreSheet(ui), ...homeLifeSheet(ui), ...settingsSheet(ui) };
 const estateTools = createEstateControls(ui);
 const foyerTools = createFoyerControls(ui), hollowContext = createHollowContext(ui);
 const hayrideContext = createHayrideContext(ui);
@@ -686,7 +689,7 @@ $("fullscreen").onclick = async () => {
   catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
 };
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
-const TABS = { homelife:"more", contracts: "shop", cooking: "shop", shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", cast: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
+const TABS = { homelife:"more", contracts: "shop", carvingStand: "shop", cooking: "shop", shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", cast: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
 function draw() {
   if(menuMemory.dragging||holdToBuy?.active)return;
   const sheet = sheets[openTab]; if (!sheet) return;
@@ -728,7 +731,7 @@ function markTab() {
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
 }
 // Manage opens the farm and business directory.
-const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if(section === "homelife") openSheet("homelife"); else if (section === "contracts") openSheet("contracts"); else if (section === "cooking") openCookingSheet(); else if(section === "cocoa") openCocoaSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
+const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if(section === "homelife") openSheet("homelife"); else if (section === "contracts") openSheet("contracts"); else if (section === "carving-stand") openSheet("carvingStand"); else if (section === "cooking") openCookingSheet(); else if(section === "cocoa") openCocoaSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
   const tab = t.dataset.tab;
   if (tab === "shop") { upgradeMenu.toggle(); return; }
