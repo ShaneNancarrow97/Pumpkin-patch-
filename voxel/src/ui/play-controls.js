@@ -54,7 +54,7 @@ function wedge(i,n,inner=86,outer=166,gap=2.2){
   return`M${p(outer,a0)}A${outer} ${outer} 0 ${large} 1 ${p(outer,a1)}L${p(inner,a1)}A${inner} ${inner} 0 ${large} 0 ${p(inner,a0)}Z`;
 }
 
-export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction,feel=()=>{},holdToBuy=null,hubAllowed=()=>true,placement=null,farmAction=null}) {
+export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction,feel=()=>{},holdToBuy=null,hubAllowed=()=>true,placement=null,farmAction=null,quick=null}) {
   let padName='',details=false,previousPiece=null,previousFocus=null,radial=false,tool='hand',keys=new Set(),cameraKeys=new Set(),move={x:0,y:0},look={x:0,y:0},padPrevious=[],selectedIndex=0,repeatAt=0,held=null,suppressClickUntil=0;
   let inputMode=matchMedia?.('(pointer: coarse)').matches?'touch':'keyboard',shownMode='',hold=null,wheelItems=[],shownTool='',shownGait='',shownWho='',chain=0,retryFace=0;
   // A prompt over whatever the action button would act on, so the world says what is in reach.
@@ -71,7 +71,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
         <button id="play-gait" class="play-gait face-button" aria-label="Switch between walking and jogging" title="Walk / jog · Shift / L3"><b data-gait-icon></b><small data-gait-label>Walk</small><span data-glyph="gait"></span></button>
         <button id="play-recenter" class="play-recenter face-button" aria-label="Centre the camera on your character" title="Centre camera · C / R3">${svg('recenter')}<span data-glyph="recenter"></span></button>
       </div>
-      <div class="play-legend" aria-hidden="true"><span class="legend-act"><b data-glyph="action"></b><span data-legend-act>Explore</span><i class="legend-bar"><i></i></i></span><span><b data-glyph="tools"></b><span data-legend-tool>Tools</span></span><span><b data-glyph="gait"></b><span data-legend-gait>Walk</span></span><span><b data-glyph="recenter"></b><span>Camera</span></span><span><b data-glyph="start"></b><span>Menu</span></span></div>
+      <div class="play-legend" aria-hidden="true"><span class="legend-act"><b data-glyph="action"></b><span data-legend-act>Explore</span><i class="legend-bar"><i></i></i></span><span><b data-glyph="tools"></b><span>Tools</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span data-legend-tool>Interact</span></span><span><b data-glyph="gait"></b><span data-legend-gait>Walk</span></span><span><b data-glyph="recenter"></b><span>Camera</span></span><span data-legend-quick-wrap><b data-glyph="play"></b><span data-legend-quick>Menu</span></span><span><b data-glyph="start"></b><span>Menu</span></span></div>
     </div>
     <button id="play-arrange" class="play-arrange" aria-label="Arrange the nearby furniture" hidden>${svg('move')}<span>Arrange</span></button>
     <div id="furniture-pad" hidden><div class="play-piece-label"></div><div class="play-dpad" role="group" aria-label="Move selected furniture"><button data-nudge="0,-1" aria-label="Move back">${svg('go','up')}</button><button data-nudge="-1,0" aria-label="Move left">${svg('go','left')}</button><button data-nudge="1,0" aria-label="Move right">${svg('go')}</button><button data-nudge="0,1" aria-label="Move forward">${svg('go','down')}</button></div><div class="play-furniture-actions"><button data-turn="-15" aria-label="Rotate left 15 degrees">${svg('rotate','flip')}</button><button id="furniture-wheel" aria-label="Furniture radial menu">${svg('tools')}</button><button data-turn="15" aria-label="Rotate right 15 degrees">${svg('rotate')}</button><button data-finish>${svg('done')}<span>Done</span></button></div></div>
@@ -280,13 +280,13 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     if(!held&&!job.active&&!job.travelling)chain=0;
     const streak=$('.play-chain');streak.hidden=chain<2;if(chain>=2)setText(streak,'×'+chain);
     const progress=Math.max(0,Math.min(1,Number(job.progress)||0));interact.style.setProperty('--action-progress',progress);
-    const legend=$('.play-legend');setText($('[data-legend-act]'),shortAction(label||'Explore',p,job,tool));setText($('[data-legend-tool]'),tool==='hand'?'Tools':toolNames[tool]);setText($('[data-legend-gait]'),gait==='jog'?'Jog':'Walk');legend.dataset.busy=String(!!job.active);legend.style.setProperty('--p',progress.toFixed(2));legend.dataset.idle=String(!job.active&&!p.target&&!pose);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep going':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
+    const legend=$('.play-legend');setText($('[data-legend-act]'),shortAction(label||'Explore',p,job,tool));setText($('[data-legend-tool]'),toolNames[tool]);{const q=quick?.label?.();$('[data-legend-quick-wrap]').hidden=!q;if(q)setText($('[data-legend-quick]'),q);}setText($('[data-legend-gait]'),gait==='jog'?'Jog':'Walk');legend.dataset.busy=String(!!job.active);legend.style.setProperty('--p',progress.toFixed(2));legend.dataset.idle=String(!job.active&&!p.target&&!pose);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep going':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
     // A piece in hand anywhere (a room, the garden, the foyer) takes the pad (ui/pad-placement.js).
     const placing=!blocked&&!radial?placement?.kind??null:null;root.dataset.placing=pad&&placing?placing:'';
     scene.player?.setBlocked(blocked||radial||!!piece||!!placing);
     if(blocked){cancelInteraction('menu');keys.clear();cameraKeys.clear();releaseMove();releaseLook();if(radial&&!piece)close();}
     // Menus take the pad first: a menu or the hub keeps its presses from play.
-    const menuOwns=pad&&!radial&&!piece&&!placing?menus.tick({pad,down,pressed,mode:padName==='DualSense'?'dualsense':'xbox',blocked}):false;
+    const menuOwns=pad&&!radial&&!piece&&!placing?menus.tick({pad,down,pressed:i=>i===17&&p.enabled&&!blocked&&quick?false:pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked}):false;
     if(!pad&&menus.hubOn)menus.leaveHub();
     if(pad&&!blocked&&!menuOwns){
       if(radial){
@@ -302,6 +302,9 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
         if(pressed(0)||pressed(2))beginInteraction('gamepad',pressed(2)?2:0);
         if(held?.source==='gamepad'&&!down[held.id])endInteraction('gamepad',held.id);
         if(pressed(3))openWheel(undefined,{source:'gamepad',id:3});if(pressed(1)){if(job.active||held)cancelInteraction('back');else back?.();}
+        // L1 / R1 swap the tool in hand, round the wheel's order; Create (or the touchpad) opens what's useful here.
+        if(pressed(4)||pressed(5)){const order=['hand','plant','water','harvest','clean'],i=order.indexOf(tool);cancelInteraction('tool');tool=order[(i+(pressed(5)?1:-1)+order.length)%order.length];feel('tick');}
+        if((pressed(8)||pressed(17))&&quick){quick.open();feel('select');}
         if(pressed(10))toggleGait();if(pressed(11)){scene.player?.recenter?.();feel('select');}if(pressed(6))scene.player?.zoom?.(-1);if(pressed(7))scene.player?.zoom?.(1);
       // Off play mode: Create starts play; on the farm △ plants, □ boosts and ✕ picks (elsewhere ✕ starts play too).
       }else if(pressed(8))openWheel('characters');
