@@ -11,7 +11,7 @@
    keep its reach. */
 
 /* One zoom for everything drawn over the world. None of these nest. */
-.tv-mode :is(#hud, #goal, #streak, #paused, #notice, #dialogue, #place-bar, #piece-bar, #actions, #dock, #sheet, #upgrade-menu, #stock-popover, #level-celebration, #intro, #play-controls, #carving, #cooking-reveal, .pad-hints, .home-journey-chip, .house-goal-modal, .npc-reward, .guest-card, .chat-card, .building-context, .estate-controls) { zoom: var(--tv-zoom, 1); }
+.tv-mode :is(#hud, #goal, #streak, #paused, #notice, #whispers, #dialogue, #place-bar, #piece-bar, #actions, #dock, #sheet, #upgrade-menu, #stock-popover, #level-celebration, #intro, #play-controls, #carving, #cooking-reveal, .pad-hints, .home-journey-chip, .house-goal-modal, .npc-reward, .guest-card, .chat-card, .building-context, .estate-controls) { zoom: var(--tv-zoom, 1); }
 .tv-mode .stock-popover { max-height: calc(100dvh / var(--tv-zoom, 1) - var(--top) - 148px); }
 .tv-mode .upgrade-menu { max-height: calc(100dvh / var(--tv-zoom, 1) - 140px); }
 .tv-mode .level-card { max-height: calc(100dvh / var(--tv-zoom, 1) - 28px); }

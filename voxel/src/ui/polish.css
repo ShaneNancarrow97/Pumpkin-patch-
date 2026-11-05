@@ -80,3 +80,19 @@
 .seed-plots .plot-card p { font-size: 12px; margin: 0; }
 .seed-plots .plot-card .chips { gap: 3px; }
 .seed-plots .plot-card .chip { min-height: 32px; padding: 0 7px; font-size: 11.5px; }
+
+/* Discreet by default: farm news as whispers under the HUD (main.js
+   whisper()), smaller speech, and quiet words over the patch. */
+.whispers { position: fixed; z-index: 24; top: calc(var(--top) + 60px); left: calc(var(--rail-w, 0px) + 12px); display: grid; gap: 5px; max-width: min(300px, calc(100% - 24px)); pointer-events: none; }
+.whisper { margin: 0; justify-self: start; display: flex; align-items: center; gap: 7px; padding: 5px 11px 5px 8px; border: 1px solid #f0d2a226; border-radius: 999px; background: #1d1724cc; backdrop-filter: blur(8px); box-shadow: 0 4px 14px #0006; font: 500 12px/1.3 var(--body); color: var(--ink); opacity: 0; transform: translateX(-8px); transition: opacity .25s, transform .25s; }
+.whisper::before { content: ""; flex: 0 0 7px; height: 7px; border-radius: 50%; background: var(--gold-bright); box-shadow: 0 0 8px var(--gold-bright); }
+.whisper.guest::before { background: #c9a6ff; box-shadow: 0 0 8px #c9a6ff; }
+.whisper.kitchen::before { background: #9fd38a; box-shadow: 0 0 8px #9fd38a; }
+.whisper.warn::before { background: #ff9a6a; box-shadow: 0 0 8px #ff9a6a; }
+.whisper.show { opacity: 1; transform: none; }
+.menu-open .whispers { opacity: .0; }
+@media (max-width: 759px) and (orientation: portrait) { .whispers { top: calc(var(--top) + 108px); } }
+.float-text.speech, .chat-bubble { max-width: 150px; padding: 3px 7px; font-size: 11px; line-height: 1.3; white-space: normal; background: #241a2bc4; }
+.float-text.crop, .float-text.water { font-size: 11px; font-weight: 600; opacity: .85; }
+.float-text.spark { font-size: 15px; }
+.bubble { max-width: 170px; font-size: 11.5px; padding: 6px 8px; }

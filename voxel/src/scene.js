@@ -791,7 +791,7 @@ export function createScene(canvas, state, hooks) {
       if (receiving) a.work = 0;
       else if (a.work > 0) a.work -= dt;
       else if (d > 0.12) { const step = Math.min(d, WALK * dt); pos.x += dx / d * step; pos.z += dz / d * step; }
-      else if (a.queue.length) { const stop = a.queue.shift(); a.work = stop.wait ?? (a.delivery ? 0 : 0.5); if (!a.queue.length) a.delivery = null; if (stop.tidy && cleanLitter(state, stop.tidy) && !view.place) floatText("Tidied", pos.x, 2.6, pos.z, "spark"); }
+      else if (a.queue.length) { const stop = a.queue.shift(); a.work = stop.wait ?? (a.delivery ? 0 : 0.5); if (!a.queue.length) a.delivery = null; if (stop.tidy && cleanLitter(state, stop.tidy) && !view.place) actionFx.burst("clean", pos.x, pos.z); }
       // Like the sprites they come from, they always face the viewer (the voxel figures mirror to walk the other way).
       animateSprite(a.model, time, a.moving, dx, who === "shane" ? 1.7 : 0);
       a.hit.position.set(pos.x, 1.1, pos.z);
@@ -932,7 +932,7 @@ export function createScene(canvas, state, hooks) {
     // A finished hands-on job (play mode): a burst at the spot, and a word.
     actionBurst(kind, x, z) {
       if (view.place) return; actionFx.burst(kind, x, z);
-      const word = { plant: "Planted", water: "+12% growth", clean: "Tidy!" }[kind];
+      const word = { water: "+12%", clean: "Tidy" }[kind];
       if (word) floatText(word, x, 1.25, z, kind === "water" ? "water" : "crop");
     },
     harvested(i, n = 1) { if (!view.place) { const p = PLOTS[i]; floatText("+" + n, p.x, 1.4, p.z, "crop"); } },

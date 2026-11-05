@@ -224,15 +224,15 @@ const scene = createScene($("world"), state, {
 function handle(e) {
   if (e.type === "stock-discarded" && state.time - spoilageNoticeAt >= 60) {
     spoilageNoticeAt = state.time;
-    notice("Spoiled pumpkins were discarded. Check stock for fading batches.");
+    whisper("Spoiled pumpkins were discarded. Check stock for fading batches.", "warn");
   }
   if (e.type === "cooking-started") showFirstCooking(state,e.recipe,e.station,save);
-  if (e.type === "visitor-event") notice(`${e.event === "vip" ? "The midnight court" : "Harvest rush"}: ${e.count} guests are on their way.`);
-  if (e.type === "vip-arrived") notice("Baron Brassbolt has arrived with a generous shopping budget.");
+  if (e.type === "visitor-event") whisper(`${e.event === "vip" ? "The midnight court" : "Harvest rush"}: ${e.count} guests on their way`, "guest");
+  if (e.type === "vip-arrived") whisper("Baron Brassbolt has arrived, purse bulging", "guest");
   if (e.type === "hollow-restored") { notice("Restoration complete. The Hollow House is ready to open."); save(); audio.tone(880); }
   if (e.type === "recipe-discovered") { notice(`Recipe discovered: ${M.RECIPE_BY_ID[e.recipe]?.name ?? "a new dish"}.`); save(); audio.tone(880); }
-  if (e.type === "ingredient-delivery") { notice("Ingredients delivered to your pantry."); save(); audio.tone(660); }
-  if (e.type === "cooking-complete") { notice("A fresh batch is ready for the shop."); save(); }
+  if (e.type === "ingredient-delivery") { whisper("Ingredients delivered to the pantry", "kitchen"); save(); audio.tone(660); }
+  if (e.type === "cooking-complete") { whisper("A fresh batch is ready", "kitchen"); save(); }
   if (e.type === "sale") {
     scene.sale(e.amount, e.route);
     audio.tone(700);
@@ -240,10 +240,10 @@ function handle(e) {
   }
   if (e.type === "order") {
     const o = e.order;
-    notice(`${M.orderFrom(o)} would like ${o.count} ${M.VARIETIES[o.variety].name} within ${Math.round(M.ORDERS.time / 60)} minutes · ${money(o.pay)}. Send them from the stock panel.`);
+    whisper(`New contract: ${M.orderFrom(o)} wants ${o.count} ${M.VARIETIES[o.variety].name} · ${money(o.pay)}`, "coin");
     if (state.orders.serial === 1) say("shane", `${M.orderFrom(o)} has sent an order up! Find it under Contracts, in the stock menu at the top or in Manage, and send the pumpkins before the time runs out. They pay better than the stall.`);
   }
-  if (e.type === "order-missed") notice(`${M.orderFrom(e.order)}’s order ran out of time. They’ll ask for a little less next time.`);
+  if (e.type === "order-missed") whisper(`${M.orderFrom(e.order)}’s contract ran out of time`, "warn");
   if (e.type === "wanted") {
     const name = M.VARIETIES[e.variety].name, more = Math.round(M.WANTED.bonus * 100);
     notice(`Wanted now: ${name} pumpkins · up to ${more}% more for ${Math.round(M.WANTED.seconds / 60)} minutes`);
@@ -352,6 +352,16 @@ function litterHint() {
   if (c.janitors >= M.CLEANLINESS.janitors || c.penalty < 5) return;
   litterHinted = true;
   notice(c.janitor ? "Litter is putting guests off. Hettie’s twin Hattie can help: Manage, then Visitors & VIPs." : "Litter is putting guests off. Hire Hettie the caretaker in Manage, then Visitors & VIPs, or pick it up in Play.");
+}
+// Farm news that needs no answer (arrivals, deliveries, a new contract): a
+// slim line under the HUD that slips away, three at most, so the farm stays
+// in view. notice() is for the replies to what the player just did.
+function whisper(text, kind = "") {
+  const box = $("whispers"), line = document.createElement("p");
+  line.className = "whisper" + (kind ? " " + kind : ""); line.textContent = text; box.append(line);
+  while (box.children.length > 3) box.firstElementChild.remove();
+  requestAnimationFrame(() => line.classList.add("show"));
+  setTimeout(() => { line.classList.remove("show"); setTimeout(() => line.remove(), 400); }, Math.max(3.2, text.length / 16) * 1000);
 }
 function notice(text) {
   $("notice").textContent = text; $("notice").classList.add("show");
@@ -587,7 +597,7 @@ function render() {
     const first = shownPinata === undefined; shownPinata = burst.serial;
     if (!first) {
       const items = Object.entries(burst.items).map(([id, n]) => `${n} ${(M.INGREDIENT_BY_ID?.[id]?.name ?? id).toLowerCase()}`);
-      notice(`Piñata! ${items.length ? items.join(", ") + " for Maisie’s pantry" : ""}${items.length && burst.coins ? ", and " : ""}${burst.coins ? money(burst.coins) + " in coins" : ""}.`);
+      whisper(`Piñata! ${items.length ? items.join(", ") + " for Maisie’s pantry" : ""}${items.length && burst.coins ? ", and " : ""}${burst.coins ? money(burst.coins) + " in coins" : ""}`, "coin");
       if (PLOTS[burst.plot]) scene.actionBurst?.("harvest", PLOTS[burst.plot].x, PLOTS[burst.plot].z);
       audio.tone(990);
     }
