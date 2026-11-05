@@ -527,6 +527,21 @@ export function placeDecor(s, id, room = s.house.activeRoom) {
   return instance;
 }
 
+// Places a piece at a chosen spot ({ x, z } and, for a wall piece, wall and
+// y) if it fits there; otherwise at the first free spot, as placeDecor does.
+// For setting things down where they belong (a kitchen's pans over its hob)
+// rather than in the first corner found.
+export function placeDecorAt(s, id, room, spot) {
+  const item = decorById[id], h = s.house, extra = spot ? { ...(spot.wall && spot.wall !== "back" ? { wall: spot.wall } : {}), ...(Number.isFinite(spot.y) ? { y: spot.y } : {}) } : {};
+  if (!spot || !item || ["books", "wallpaper"].includes(item.category) || availableCopies(s, id) <= 0 || !fits(s, room, id, spot.x, spot.z, undefined, extra)) return placeDecor(s, id, room);
+  if (!roomUnlocked(s, room) || roomPieces(s, room).length >= roomCapacity(s, room)) return null;
+  h.nextInstance = Number.isSafeInteger(h.nextInstance) && h.nextInstance >= 0 ? h.nextInstance : 0;
+  while (h.placed.some((p) => p.instance === "piece-" + h.nextInstance)) h.nextInstance++;
+  const instance = "piece-" + h.nextInstance++;
+  h.placed.push({ ...placedPiece(instance, id, room, spot.x, spot.z), ...extra, ...(isShelf(id) ? { finish: item.finishes[0].id } : {}) });
+  return instance;
+}
+
 export function moveDecor(s, instance, x, z) {
   const p = s.house.placed.find((q) => q.instance === instance);
   if (!p || s.paused || !fits(s, p.room, p.id, x, z, instance)) return false;

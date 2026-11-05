@@ -35,6 +35,7 @@ import { moreSheet } from "./ui/more-sheet.js";
 import { hollowSheets, createHollowContext } from "./ui/hollow-sheet.js";
 import { hayrideSheets, createHayrideContext } from "./ui/hayride-sheet.js";
 import { cookingSheets } from "./ui/cooking-sheet.js";
+import { contractsSheet } from "./ui/contracts-sheet.js";
 import { createFoyerControls } from "./ui/foyer-controls.js";
 import { settingsSheet } from "./ui/settings-sheet.js";
 import { createTvMode } from "./ui/tv-mode.js";
@@ -240,7 +241,7 @@ function handle(e) {
   if (e.type === "order") {
     const o = e.order;
     notice(`${M.orderFrom(o)} would like ${o.count} ${M.VARIETIES[o.variety].name} within ${Math.round(M.ORDERS.time / 60)} minutes · ${money(o.pay)}. Send them from the stock panel.`);
-    if (state.orders.serial === 1) say("shane", `${M.orderFrom(o)} has sent an order up! Tap the crate at the top, and send the pumpkins before the time runs out. They pay better than the stall.`);
+    if (state.orders.serial === 1) say("shane", `${M.orderFrom(o)} has sent an order up! Find it under Contracts, in the stock menu at the top or in Manage, and send the pumpkins before the time runs out. They pay better than the stall.`);
   }
   if (e.type === "order-missed") notice(`${M.orderFrom(e.order)}’s order ran out of time. They’ll ask for a little less next time.`);
   if (e.type === "wanted") {
@@ -629,7 +630,7 @@ const ui = {
   draw: () => draw(), openSheet: (tab) => openSheet(tab), closeSheet: () => closeSheet(),
   openVisitors: () => { sheets.shop.setTab("visitors"); openSheet("shop"); },
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
-  portrait: (id) => scene.portrait(id),
+  portrait: (id) => scene.portrait(id), sendContract: (id) => sendContract(id),
   intro,
   enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide, openHayrideSheet, focusHayride, openHayrideRide, openCookingSheet, openShopSheet, openCocoaSheet, enterKitchen, showCookingAnimation(job,station) { showFirstCooking(state,job.recipe,station,save); }, openKitchenDecorate() { sheets.home.setTab("decorate"); openSheet("home"); },
   get estateTools() { return estateTools; },
@@ -647,7 +648,7 @@ setTimeout(() => {
   notice("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
 }, 60000);
 const home = homeSheets(ui), collection = collectionSheets(ui);
-const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...cookingSheets(ui), ...moreSheet(ui), ...homeLifeSheet(ui), ...settingsSheet(ui) };
+const sheets = { ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...cookingSheets(ui), ...contractsSheet(ui), ...moreSheet(ui), ...homeLifeSheet(ui), ...settingsSheet(ui) };
 const estateTools = createEstateControls(ui);
 const foyerTools = createFoyerControls(ui), hollowContext = createHollowContext(ui);
 const hayrideContext = createHayrideContext(ui);
@@ -662,18 +663,20 @@ const celebration = createLevelCelebration({ state: () => state, audio, save, op
 const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(M.favourFace(M.FAVOURS.find((f) => f.id === id) ?? { kind })), save, tone: f => audio.tone(f), notice });
 const guestCard = createGuestCard({ state: () => state, portrait: id => scene.portrait(id), onListen: spot => chatCard.open(spot) });
 const chatCard = createChatCard({ state: () => state, portrait: id => scene.portrait(id), onGuest: id => { chatCard.clear(); guestCard.open(id); } });
-const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); hayrideContext.close(); guestCard.clear(); chatCard.clear(); }, onManagePumpkins() { sheets.shop.setTab("farm"); openSheet("shop"); }, onManageCocoa() { sheets.festival.setTab("cocoa"); openSheet("festival"); }, onSendOrder(id) {
+const stockPopover = createStockPopover({ state: () => state, onOpen() { closeSheet(); hollowContext.close(); hayrideContext.close(); guestCard.clear(); chatCard.clear(); }, onManagePumpkins() { sheets.shop.setTab("farm"); openSheet("shop"); }, onManageCocoa() { sheets.festival.setTab("cocoa"); openSheet("festival"); }, onContracts() { openSheet("contracts"); } });
+function sendContract(id) {
   const o = state.orders.list.find((x) => x.id === id), pay = o && M.fillOrder(state, id);
-  if (!pay) return;
+  if (!pay) return false;
   audio.tone(880); notice(`Sent ${o.count} ${M.VARIETIES[o.variety].name} to ${M.orderFrom(o)} · ${money(pay)}`); scene.sale(pay, "order"); save(); draw();
-} });
+  return true;
+}
 $("open-levels").onclick = () => celebration.preview();
 $("fullscreen").onclick = async () => {
   try { if (document.fullscreenElement) await document.exitFullscreen(); else if (document.fullscreenEnabled === false) notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); else notice("For fullscreen, add the game to your home screen from the browser menu."); }
   catch { notice("Fullscreen is unavailable here. Try opening this HTML in Chrome or Safari."); }
 };
 document.addEventListener("fullscreenchange", () => { const on = !!document.fullscreenElement; if (on) requestAnimationFrame(() => scene.fitView()); $("fullscreen").setAttribute("aria-pressed", String(on)); $("fullscreen").setAttribute("aria-label", on ? "Exit fullscreen" : "Enter fullscreen"); });
-const TABS = { homelife:"more", cooking: "shop", shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", cast: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
+const TABS = { homelife:"more", contracts: "shop", cooking: "shop", shop: "shop", festival: "shop", care: "shop", estate: "home", home: "home", shelf: "home", wardrobe: "wardrobe", journal: "more", reader: "more", more: "more", settings: "more", cast: "more", attractions: "attractions", hollow: "attractions", foyer: "attractions", hayride: "attractions" };
 function draw() {
   if(menuMemory.dragging||holdToBuy?.active)return;
   const sheet = sheets[openTab]; if (!sheet) return;
@@ -715,7 +718,7 @@ function markTab() {
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
 }
 // Manage opens the farm and business directory.
-const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if(section === "homelife") openSheet("homelife"); else if (section === "cooking") openCookingSheet(); else if(section === "cocoa") openCocoaSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
+const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if(section === "homelife") openSheet("homelife"); else if (section === "contracts") openSheet("contracts"); else if (section === "cooking") openCookingSheet(); else if(section === "cocoa") openCocoaSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
   const tab = t.dataset.tab;
   if (tab === "shop") { upgradeMenu.toggle(); return; }
@@ -867,7 +870,7 @@ const mazeDiagnostics = {
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
 const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), hold: on => scene.holdHayrideRide(on), get status() { return scene.hayrideRideStatus; } };
-window.PumpkinVoxel = { lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
+window.PumpkinVoxel = { lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, openShopSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";
