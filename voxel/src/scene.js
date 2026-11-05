@@ -352,7 +352,13 @@ export function createScene(canvas, state, hooks) {
   const foyerView = createFoyerView(canvas, state, { onPick: what => hooks.onPick(what), visitorModel, animate: animateFigure, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden, decorating: () => hooks.foyerEditing?.(), wallEditing: () => hooks.foyerWallEditing?.(), gesture: hooks.foyerGesture });
   const mazeView = createMazeRideView(canvas, state, { onCue: cue => hooks.onMazeCue?.(cue), onComplete: status => hooks.onMazeComplete?.(status), onState: status => hooks.onMazeState?.(status), blocked: () => document.body.classList.contains("menu-open") });
   const hayrideView = createHayrideView(canvas, state, { world: hayrideWorld, onCue: cue => hooks.onHayrideCue?.(cue), onComplete: status => hooks.onHayrideComplete?.(status), onState: status => hooks.onHayrideState?.(status), blocked: () => document.body.classList.contains("menu-open") });
-  const active = () => view.place === "carving" ? carvingView.camera : view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : camera;
+  // Play mode on the farm: a low perspective camera close behind the owner, in
+  // the manner of a cosy life-sim, rather than the management view's high
+  // orthographic shot. Its distance follows the zoom (L2 / R2).
+  const followCam = new THREE.PerspectiveCamera(40, 1, 0.3, 160);
+  let followOn = false;
+  const FOLLOW = { pitch: THREE.MathUtils.degToRad(27), near: 7.5, far: 19 };
+  const active = () => view.place === "carving" ? carvingView.camera : view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : followOn ? followCam : camera;
   const activeScene = () => view.place === "carving" ? carvingView.scene : view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
   const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null, reach: { x: 0, z: 0 } };
   // The optional orbit follows the owner; the management view stays canonical.
@@ -374,7 +380,7 @@ export function createScene(canvas, state, hooks) {
     wateringTexture, garden: gardenPlay, onWay: (way) => hooks.onWay?.(way) ?? false,
     cameraLook(x,y,dt){if(view.place==='estate'){estateView.play.look(x,y,dt);return;}Object.assign(playerOrbit,playerOrbitStep(playerOrbit,x,y,dt,view.place==='room'));playerLook.x=playerOrbit.yaw;playerLook.z=playerOrbit.pitch-PITCH;},
     cameraZoom(direction){if(view.place==='estate'){estateView.play.zoom(direction);return;}if(touches.size||kept||!direction)return;const l=cameraLayout(canvas.clientWidth),inside=view.place==='room';view.zoom=THREE.MathUtils.clamp(view.zoom*Math.exp(direction*.13),inside?l.roomMinZoom:l.minZoom,inside?1.9:l.maxZoom);frame();},
-    cameraReset(pos,inside){if(view.place==='estate'){estateView.play.reset(pos);return;}playerOrbit.yaw=0;playerOrbit.pitch=inside?INTERIOR.pitch:PITCH;playerLook.x=playerLook.z=0;view.x=inside?pos.x-places.place.w/2:pos.x;view.z=inside?pos.z-places.place.d*.42:pos.z;view.zoom=inside?1:canvas.clientWidth>=740?2.3:1.35;frame();},
+    cameraReset(pos,inside){if(view.place==='estate'){estateView.play.reset(pos);return;}playerOrbit.yaw=0;playerOrbit.pitch=inside?INTERIOR.pitch:FOLLOW.pitch;playerLook.x=playerLook.z=0;view.x=inside?pos.x-places.place.w/2:pos.x;view.z=inside?pos.z-places.place.d*.42:pos.z;view.zoom=inside?1:canvas.clientWidth>=740?2.3:1.35;frame();},
     follow(pos,dt,inside){if(view.place==='estate'){estateView.play.follow(pos,dt);return;}if(touches.size||kept)return;const k=1-Math.exp(-dt*9);const tx=inside?pos.x-ORIGIN.room.x-places.place.w/2:pos.x,tz=inside?pos.z-ORIGIN.room.z-places.place.d*.42:pos.z;view.x+=(tx-view.x)*k;view.z+=(tz-view.z)*k;frame();},
   });
   let farmView = null;
@@ -484,6 +490,7 @@ export function createScene(canvas, state, hooks) {
     const control = orbiting();
     backdrop.visible = view.place !== "hayride" && !(control && !view.place);
     orbitGround.visible=orbitBackdrop.visible=control&&!view.place;
+    followOn = control && !view.place;
     renderPass.camera = active();
     renderPass.scene = activeScene();
     renderer.toneMappingExposure = view.place === "maze" ? 1.3 : view.place === "carving" ? 1.2 : 1.45;
@@ -503,8 +510,15 @@ export function createScene(canvas, state, hooks) {
     camera.position.set(target.x+Math.sin(yaw)*Math.cos(pitch)*dist, target.y+Math.sin(pitch)*dist, target.z+Math.cos(yaw)*Math.cos(pitch)*dist);
     camera.lookAt(target);camera.updateMatrixWorld();
     if(control){
-      camera.getWorldDirection(orbitForward);orbitUp.set(0,1,0).applyQuaternion(camera.quaternion);
-      orbitBackdrop.position.copy(target).addScaledVector(orbitForward,85).addScaledVector(orbitUp,halfH*.4);orbitBackdrop.quaternion.copy(camera.quaternion);orbitBackdrop.scale.set(halfW*2.8,halfH*2.5,1);
+      // Zoomed in is close over the shoulder; zoomed out pulls back and up a little.
+      const l = cameraLayout(w), z = THREE.MathUtils.clamp((view.zoom - l.minZoom) / Math.max(.01, l.maxZoom - l.minZoom), 0, 1), d = THREE.MathUtils.lerp(FOLLOW.far, FOLLOW.near, z);
+      followCam.aspect = aspect; followCam.fov = aspect < 1 ? 52 : 40; followCam.updateProjectionMatrix();
+      target.y = 1.3;
+      followCam.position.set(target.x+Math.sin(yaw)*Math.cos(pitch)*d, target.y+Math.sin(pitch)*d, target.z+Math.cos(yaw)*Math.cos(pitch)*d);
+      followCam.lookAt(target.x, target.y + .4, target.z); followCam.updateMatrixWorld();
+      followCam.getWorldDirection(orbitForward);orbitUp.set(0,1,0).applyQuaternion(followCam.quaternion);
+      const far = 120, hh = Math.tan(THREE.MathUtils.degToRad(followCam.fov / 2)) * far;
+      orbitBackdrop.position.copy(followCam.position).addScaledVector(orbitForward,far).addScaledVector(orbitUp,hh*.35);orbitBackdrop.quaternion.copy(followCam.quaternion);orbitBackdrop.scale.set(hh*2*aspect*1.4,hh*2.2,1);
     }
   }
   let firstResize = true, lastOverview = false;
