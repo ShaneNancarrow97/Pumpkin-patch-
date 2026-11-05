@@ -2,6 +2,8 @@
 
 Branch: `voxel-reference` (lead), following handover 68. The player asked: "Game optimisation? For tv mode more specifically".
 
+**Retuned in [handover 70](70-the-tv-picture-checked.md):** the fixed 1.5× density, the half-size glow and the bare panels below looked worse on the TV, so TV mode now draws at the cast's own size, keeps the glow's size and makes the panels near-solid. The frame pacing, menu and layout changes stand.
+
 ## Why TV mode needs its own care
 
 In TV mode a phone renders the game and, at the same time, encodes its screen as video for Smart View, Cast or AirPlay. The cast reaches the TV as compressed 720p or 1080p at 30 or 60 frames a second, so fine pixels and frames past 60 never arrive. Meanwhile a 120 Hz phone (a Fold 7) was drawing up to 120 frames a second at double density, and heat throttles a phone that does both.
