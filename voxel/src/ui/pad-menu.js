@@ -50,7 +50,8 @@ export function nearestTo(spot, rects) {
 export function choiceKey(el) {
   if (!el) return null;
   if (el.id) return { id: el.id };
-  const data = [...el.attributes].filter((a) => a.name.startsWith("data-") && a.name !== "data-pad-focus").map((a) => [a.name, a.value]);
+  // The pad's own marks (data-pad-focus, -default, -label) come and go; they aren't part of a choice's identity.
+  const data = [...el.attributes].filter((a) => a.name.startsWith("data-") && !a.name.startsWith("data-pad-")).map((a) => [a.name, a.value]);
   return { tag: el.tagName, data, text: data.length ? "" : el.textContent.trim().slice(0, 60) };
 }
 const matchesKey = (el, key) => key && (key.id ? el.id === key.id : el.tagName === key.tag && (key.data.length ? key.data.every(([k, v]) => el.getAttribute(k) === v) : el.textContent.trim().slice(0, 60) === key.text));
@@ -60,10 +61,13 @@ const closer = (el) => !!el?.matches?.('.close,[data-intro-skip],[aria-label^="C
 const query = (selectors) => { for (const s of selectors) { const el = document.querySelector(s); if (el) return el; } return null; };
 const surfaceName = (el) => !el ? "" : el.id === "sheet" ? "sheet:" + (el.dataset.section ?? "") : el.id || el.className;
 const centre = (r) => ({ x: (r.left + r.right) / 2, y: (r.top + r.bottom) / 2 });
+// Where a choice is, for moving the ring: a choice inside a [data-pad-box] (a catalogue tile, whose
+// picture is the choice) is the whole box, so a step down lands on the tile below, not beside.
+const rectOf = (el) => (el.closest?.("[data-pad-box]") ?? el).getBoundingClientRect();
 
 export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, hubAllowed = () => true } = {}) {
   let using = false, hubOn = false, hubFrom = "", hubKey = null, lastKey = null, lastSpot = null, lastSurface = "", ringOn = null;
-  let dir = "", nextAt = 0, then = performance.now(), crossHeld = false, hintKey = "", stickScroll = null;
+  let dir = "", nextAt = 0, then = performance.now(), crossHeld = false, hintKey = "", stickScroll = null, movedAt = 0, openedAt = 0;
   const hints = document.createElement("div"); hints.className = "pad-hints"; hints.hidden = true; hints.setAttribute("aria-hidden", "true");
   document.body.append(hints);
   function quiet() { ring(null); hints.hidden = true; document.body.classList.remove("pad-menus"); }
@@ -77,7 +81,8 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
     const panel = query(PANELS); return panel ? { el: panel, roots: [panel], name: surfaceName(panel) } : null;
   }
   const inside = (sf, el) => !!el && sf.roots.some((r) => r.contains(el));
-  const usable = (el) => el.matches(FOCUSABLE) && !el.closest("[hidden]") && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== "hidden";
+  // data-pad-skip keeps the ring off a choice a pad can't use well (the catalogue's search box).
+  const usable = (el) => el.matches(FOCUSABLE) && !el.hasAttribute("data-pad-skip") && !el.closest("[hidden]") && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== "hidden";
   const choices = (sf) => sf.roots.flatMap((r) => [r, ...r.querySelectorAll(FOCUSABLE)]).filter(usable);
   const bodyOf = (sf) => sf.el.id === "sheet" ? document.getElementById("sheet-body") : sf.el;
   // Where the ring starts in a menu: a marked choice, the open tab, the first
@@ -106,7 +111,7 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
   function reveal(sf, el) {
     const box = scroller(sf, el); if (!box) return;
     for (let n = el; n && n !== box; n = n.parentElement) if (getComputedStyle(n).position === "sticky") return;
-    const r = el.getBoundingClientRect(), v = box.getBoundingClientRect(), top = Math.min(parseFloat(getComputedStyle(box).scrollPaddingTop) || 0, v.height / 3) + 10;
+    const r = rectOf(el), v = box.getBoundingClientRect(), top = Math.min(parseFloat(getComputedStyle(box).scrollPaddingTop) || 0, v.height / 3) + 10;
     const by = r.top < v.top + top ? r.top - v.top - top : r.bottom > v.bottom - 10 ? r.bottom - v.bottom + 10 : 0;
     if (by) box.scrollTo({ top: box.scrollTop + by / scale(box), behavior: "smooth" });
   }
@@ -114,9 +119,9 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
     if (!el) return;
     if (document.activeElement !== el) el.focus({ preventScroll: true });
     if (scroll) reveal(sf, el);
-    lastKey = choiceKey(el); lastSpot = centre(el.getBoundingClientRect()); ring(using ? el : null);
+    lastKey = choiceKey(el); lastSpot = centre(rectOf(el)); ring(using ? el : null);
   }
-  const inView = (el, box) => { if (!box) return true; const r = el.getBoundingClientRect(), v = box.getBoundingClientRect(); return r.bottom > v.top + 4 && r.top < v.bottom - 4; };
+  const inView = (el, box) => { if (!box) return true; const r = rectOf(el), v = box.getBoundingClientRect(); return r.bottom > v.top + 4 && r.top < v.bottom - 4; };
 
   function move(sf, current, dx, dy) {
     const list = choices(sf), box = current ? scroller(sf, current) : null;
@@ -124,19 +129,19 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
     // After a scroll the ring may be out of sight: start from what's in view.
     if (!inView(current, box)) {
       const v = box.getBoundingClientRect(), visible = list.filter((el) => inView(el, box));
-      const i = nearestTo({ x: (v.left + v.right) / 2, y: dy < 0 ? v.bottom : v.top }, visible.map((el) => el.getBoundingClientRect()));
+      const i = nearestTo({ x: (v.left + v.right) / 2, y: dy < 0 ? v.bottom : v.top }, visible.map(rectOf));
       if (i >= 0) { focus(sf, visible[i]); feel("tick"); return; }
     }
-    const others = list.filter((el) => el !== current), i = nearestInDirection(current.getBoundingClientRect(), others.map((el) => el.getBoundingClientRect()), dx, dy);
+    const others = list.filter((el) => el !== current), i = nearestInDirection(rectOf(current), others.map(rectOf), dx, dy);
     // Up or down with nothing that way, or the next choice over half a screen
     // past the edge: scroll a step instead, so the words between are read.
     if (dy && box) {
-      const v = box.getBoundingClientRect(), next = i >= 0 ? others[i].getBoundingClientRect() : null;
+      const v = box.getBoundingClientRect(), next = i >= 0 ? rectOf(others[i]) : null;
       const far = !!next && (dy > 0 ? next.top - v.bottom : v.top - next.bottom) > v.height * .5;
       const room = dy > 0 ? box.scrollTop + box.clientHeight < box.scrollHeight - 2 : box.scrollTop > 2;
       if ((!next || far) && room) { box.scrollBy({ top: dy * box.clientHeight * .6, behavior: "smooth" }); feel("tick"); return; }
     }
-    if (i >= 0) { focus(sf, others[i]); feel("tick"); }
+    if (i >= 0) { focus(sf, others[i]); movedAt = performance.now(); feel("tick"); }
   }
   // Left and right change a slider or a list in place, the way a console's settings do.
   function nudge(el, step) {
@@ -150,6 +155,8 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
   }
   function choose(sf, el) {
     if (!el) return;
+    // A menu can answer ✕ itself (a catalogue tile buys and hands over its piece): it cancels "padchoose".
+    if (!el.dispatchEvent(new CustomEvent("padchoose", { bubbles: true, cancelable: true }))) return;
     if (buyButton(el) && hold?.press(el, "pad")) { crossHeld = true; return; }
     if (el.tagName === "SELECT") { if (!nudge(el, 1)) { el.selectedIndex = 0; el.dispatchEvent(new Event("change", { bubbles: true })); } return; }
     if (textField(el)) return;
@@ -186,7 +193,8 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
     if (sf.hub) items.push([G("confirm"), "Choose"], [G("back"), "Close"]);
     else {
       const root = bodyOf(sf), panel = ["sheet", "upgrade-menu", "stock-popover"].includes(sf.el.id);
-      items.push(hold && buyButton(current) ? [`Hold ${G("confirm")}`, "Buy"] : [G("confirm"), "Select"]);
+      // data-pad-label says what ✕ does on a choice that answers it itself (a catalogue tile: Buy, Place).
+      items.push(hold && buyButton(current) ? [`Hold ${G("confirm")}`, "Buy"] : [G("confirm"), current?.dataset.padLabel ?? "Select"]);
       if (slider(current)) items.push([G("dpad"), "Change"]);
       items.push([G("back"), panel ? "Close" : "Back"]);
       if (root.querySelector(".segmented")) items.push([G("lb") + G("rb"), "Tabs"]);
@@ -212,6 +220,8 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
       if (crossHeld && !down[0] && !down[2]) { crossHeld = false; hold?.release("pad"); }
       const sf = surface(), menuPress = pressed(9) || pressed(17);
       if (!sf) {
+        // The pad at work outside the menus (play, building) means the next menu it opens shows the ring at once.
+        if (Math.hypot(lx, ly) > STICK || down.some((d, i) => d && pressed(i))) using = true;
         quiet(); lastSurface = "";
         // Options (or the DualSense's touchpad) brings the ring to the hub.
         if (menuPress && hubAllowed()) { using = true; toggleHub(true); return true; }
@@ -228,14 +238,15 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
       let current = isChoice(document.activeElement) ? document.activeElement : null;
       if (sf.name !== lastSurface) {
         // A new menu: the ring starts on its first choice, not its way out.
-        lastSurface = sf.name;
+        lastSurface = sf.name; openedAt = now;
         if (!current || closer(current) || sf.hub) current = firstChoice(sf, choices(sf));
         if (using) focus(sf, current); else { lastKey = choiceKey(current); lastSpot = null; }
       } else if (!current && using) {
         // The choice went in a redraw (or was bought): the same one again, or the nearest to where it was.
         const list = choices(sf), same = list.find((el) => matchesKey(el, lastKey));
-        const near = same ?? (lastSpot ? list[nearestTo(lastSpot, list.map((el) => el.getBoundingClientRect()))] : null);
-        current = near ?? firstChoice(sf, list); focus(sf, current, false);
+        const near = same ?? (lastSpot ? list[nearestTo(lastSpot, list.map(rectOf))] : null);
+        // Shown again only if the ring had just moved there (a redraw cut its scroll short), never after a scroll away.
+        current = near ?? firstChoice(sf, list); focus(sf, current, now - movedAt < 900);
       }
       if (sf.hub && query(PANELS) && surfaceName(query(PANELS)) !== hubFrom) { toggleHub(false); return true; }
       ring(using ? current : null);
@@ -255,7 +266,8 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
         if (dx && slider(current)) nudge(current, dx); else move(sf, current, dx, dy);
         current = isChoice(document.activeElement) ? document.activeElement : current;
       } else if (!want) dir = "";
-      if (pressed(0) || pressed(2)) choose(sf, current);
+      // A card that pops up on its own (a level reached) isn't taken by a ✕ already on its way to the farm.
+      if ((pressed(0) || pressed(2)) && !(sf.modal && now - openedAt < 450)) choose(sf, current);
       if (pressed(1)) { if (sf.hub) toggleHub(false); else back(); return true; }
       if (menuPress) { if (sf.hub) toggleHub(false); else if (!sf.modal && hubAllowed()) toggleHub(true); return true; }
       if (!sf.hub && (pressed(4) || pressed(5))) turn(sf, pressed(5) ? 1 : -1);
@@ -276,5 +288,7 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
       e.preventDefault(); move(sf, el, d[0], d[1]); ring(null); return true;
     },
     leaveHub() { toggleHub(false); },
+    // While something else has the pad (a piece in hand, the tool wheel) the menus' ring and prompts go.
+    rest() { if (ringOn || !hints.hidden) quiet(); lastSurface = ""; },
   };
 }

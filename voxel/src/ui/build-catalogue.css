@@ -93,3 +93,7 @@ body:has(.sheet:not([hidden]) .build-cat) #dock{display:none!important}
  .build-room{display:none}
  .build-foot>span{display:none}
 }
+/* A tile is one stop for a pad (ui/pad-menu.js data-pad-box): the ring goes round the whole tile, not just its picture. */
+.build-cat .build-tile>[data-pad-focus]{outline:none!important;box-shadow:none!important}
+.build-cat .build-tile:has(>[data-pad-focus]){outline:2.5px solid var(--gold-bright);outline-offset:2px;box-shadow:0 0 0 6px #f2cf9922,0 0 22px #f2cf9955}
+.tv-mode .build-cat .build-tile:has(>[data-pad-focus]){outline:5px solid #ffe4ad;outline-offset:2px;box-shadow:0 0 0 10px #120b16d9,0 0 34px 10px #ffc56daa;z-index:1}

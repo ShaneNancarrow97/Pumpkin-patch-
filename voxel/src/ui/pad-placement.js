@@ -9,7 +9,7 @@ import * as M from "../model.js";
 
 const GLIDE = 3.4, DEAD = .22, STEP_MS = 140, FIRST_STEP_MS = 320, LEASH = .7;
 
-export function createPadPlacement({ scene, state, house, estate, foyer, feel = () => {} }) {
+export function createPadPlacement({ scene, state, house, estate, foyer, feel = () => {}, placed = () => {} }) {
   let glide = null, stepDir = "", stepAt = 0, then = performance.now();
   const housePiece = () => state().house.placed.find((q) => q.instance === house.selected);
   // Which tool has a piece in hand: the house's, the garden's or the foyer's.
@@ -86,9 +86,19 @@ export function createPadPlacement({ scene, state, house, estate, foyer, feel = 
         stepAt = now + (dir !== stepDir ? FIRST_STEP_MS : STEP_MS); stepDir = dir;
         stop(); step(k, dir === "l" ? -1 : dir === "r" ? 1 : 0, dir === "u" ? -1 : dir === "d" ? 1 : 0);
       } else if (!dir) stepDir = "";
-      // L1 / R1 turn it; ✕ or ○ finish; □ undoes.
+      // The right stick looks about while placing: the room's camera slides along, the garden's and the foyer's turn.
+      const rx = pad.axes[2] ?? 0;
+      if (Math.abs(rx) > .2) { if (k === "house") scene.panRoom?.(rx * dt * 4.5); else (k === "estate" ? scene.estateCamera : scene.foyerCamera)?.rotate?.(-rx * dt * 110); }
+      // L1 / R1 turn it; ✕ or ○ finish (and the arrange outline comes back on it, ui/pad-arrange.js); □ undoes.
       if (pressed(4) || pressed(5)) { stop(); const by = pressed(5) ? 15 : -15; if (k === "house") house.rotate(by); else tool(k).rotate(by); feel("tick"); }
-      if (pressed(0) || pressed(1)) { stop(); if (k === "house") house.act("done"); else tool(k).done(); feel("select"); }
+      if (pressed(0) || pressed(1)) {
+        stop();
+        const before = k === "house" ? house.selected : tool(k)?.selected;
+        if (k === "house") house.act("done"); else tool(k).done(); feel("select");
+        // A new garden or foyer piece gets its instance as it's put down: the newest one.
+        const id = typeof before === "string" && before.startsWith("pending:") ? (k === "estate" ? state().estate.placed : state().hollowHouse.foyer.placed).at(-1)?.instance : before;
+        if (id) placed(id);
+      }
       if (pressed(2)) { stop(); if (k === "house") house.act("undo"); else tool(k).undo(); feel("tick"); }
       return k;
     },

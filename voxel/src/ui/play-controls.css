@@ -199,3 +199,14 @@ body.has-pad #play-controls:is([data-placing="house"], [data-placing="estate"], 
 .place-legend > span { display: inline-flex; align-items: center; gap: 5px; }
 .place-legend b { display: inline-flex; }
 #play-controls:not([data-placing="house"]) .place-legend-more { display: none !important; }
+/* Arranging on a pad (ui/pad-arrange.js): the outline hops between pieces; what each button does, under the HUD. */
+.arrange-legend { display: none; }
+body.has-pad #play-controls:is([data-arranging="on"], [data-arranging="ready"]) .arrange-legend {
+  position: fixed; left: 50%; top: calc(var(--top) + 112px); transform: translateX(-50%); display: flex; align-items: center; gap: 14px;
+  max-width: calc(100% - 20px); padding: 6px 14px; border: 1px solid #f2cf9947; border-radius: 20px; background: linear-gradient(160deg, #2b2231f0, #18131ef5);
+  box-shadow: 0 8px 22px #0008; font: 600 12px var(--body); color: #efdcc2; white-space: nowrap; pointer-events: none; z-index: 46;
+}
+@media (orientation: landscape) and (min-width: 600px), (min-width: 900px) { body.has-pad #play-controls:is([data-arranging="on"], [data-arranging="ready"]) .arrange-legend { top: calc(var(--top) + 108px); } }
+.arrange-legend > span { display: inline-flex; align-items: center; gap: 5px; }
+.arrange-legend b { display: inline-flex; }
+#play-controls[data-arranging="ready"] .arrange-legend-done { display: none; }

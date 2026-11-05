@@ -32,6 +32,7 @@ test("a grid moves cell by cell, and a wide button below takes the move from eit
 test("a lost choice is found again by its data, its id or its words, and else by where it was", () => {
   const el = (attrs, text = "") => ({ id: attrs.id ?? "", tagName: "BUTTON", textContent: text, attributes: Object.entries(attrs).filter(([k]) => k !== "id").map(([name, value]) => ({ name, value })) });
   assert.deepEqual(choiceKey(el({ "data-buy": "tools", "data-pad-focus": "", class: "button" })), { tag: "BUTTON", data: [["data-buy", "tools"]], text: "" });
+  assert.deepEqual(choiceKey(el({ "data-pick": "f03", "data-pad-default": "", "data-pad-label": "Buy" })), { tag: "BUTTON", data: [["data-pick", "f03"]], text: "" }, "the pad's own marks come and go, so they aren't part of it");
   assert.deepEqual(choiceKey(el({ id: "sheet-close" })), { id: "sheet-close" });
   assert.deepEqual(choiceKey(el({ class: "button" }, "  Watch again ")), { tag: "BUTTON", data: [], text: "Watch again" });
   assert.equal(choiceKey(null), null);

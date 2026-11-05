@@ -1093,6 +1093,23 @@ export function createScene(canvas, state, hooks) {
     setMenuOpen(on) { pacer.setMenu(on); },
     get pacing() { return { cap: pacer.cap, settled: pacer.settled, tv: tvProfile, drawn: drawnFrames, bloomWidth: bloom.renderTargetsHorizontal?.[0]?.width ?? 0, fxaa: antialias.enabled }; },
     selectPiece(instance) { places.select(instance); },
+    // The pad's arrange ring (ui/pad-arrange.js, handover 72): where each piece
+    // in this room, the garden or the foyer stands on screen; an outline on the one
+    // the ring is on; and the room camera slid along by the right stick.
+    pieceSpots() {
+      const out = [], c = new THREE.Vector3(), r = viewRect;
+      const keep = (id, x, y, z) => { const v = c.set(x, y, z).project(active()); if (v.z > 1) return; const sx = r.left + (v.x + 1) / 2 * r.width, sy = r.top + (1 - v.y) / 2 * r.height; if (sx > r.left - 8 && sx < r.right + 8 && sy > r.top - 8 && sy < r.bottom + 8) out.push({ id, x: sx, y: sy }); };
+      if (view.place === "room" && places.place?.kind === "room") {
+        for (const p of state.house.placed) { if (p.room !== places.place.id) continue; const b = places.pieceBox(p.instance); if (b) { const m = b.getCenter(new THREE.Vector3()); keep(p.instance, m.x, m.y, m.z); } }
+      } else if (view.place === "estate") for (const p of state.estate.placed) keep(p.instance, p.x, .6, p.z);
+      else if (view.place === "foyer") for (const p of state.hollowHouse.foyer.placed) keep(p.instance, p.x, (p.y ?? .07) + .5, p.z);
+      return out;
+    },
+    hoverPiece(instance) {
+      if (view.place === "room") places.select(instance); else if (view.place === "estate") estateView.hover?.(instance);
+      else if (view.place === "foyer") { const p = instance && state.hollowHouse.foyer.placed.find((q) => q.instance === instance); foyerView.preview(p ? { ...p } : null); }
+    },
+    panRoom(dx) { if (view.place !== "room") return false; view.x += dx; clampView(); return true; },
     previewPiece(instance, x, z, ok, pose) { places.preview(instance, x, z, ok, pose); },
     showGrid(on) { places.setGrid(on); },
     cellAt(point, type, wall, snap = .1) { return places.cellAt(point, type, wall, snap); },

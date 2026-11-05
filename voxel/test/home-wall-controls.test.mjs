@@ -110,7 +110,7 @@ test("the catalogue exposes per-copy selection and the optional bathroom gate", 
   h.home.setTab("decorate"); const cat = h.home.body();
   assert.ok(cat.includes("Little treasures")); assert.ok(cat.includes("Electronics"));
   assert.ok(cat.includes("+1 · £25"), "furniture remains purchasable when all existing copies are placed");
-  const pickButton = { dataset: { pick: "household-cream-mug" } }, strip = { innerHTML: "", querySelectorAll: () => [] };
+  const pickButton = { dataset: { pick: "household-cream-mug" }, addEventListener() {} }, strip = { innerHTML: "", querySelectorAll: () => [] };
   const catalogueBody = { querySelectorAll: q => q === "[data-pick]" ? [pickButton] : [], querySelector: q => q === ".build-detail" ? strip : null };
   h.home.bind(catalogueBody); pickButton.onclick();
   for (const p of h.state.house.placed) assert.ok(strip.innerHTML.includes(`data-id="${p.instance}"`), "each placed copy has its own selection target");

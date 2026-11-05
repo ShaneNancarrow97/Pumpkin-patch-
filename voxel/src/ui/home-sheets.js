@@ -219,6 +219,13 @@ export function homeSheets(ui) {
     const full = M.roomPieces(s, here()).length >= M.roomCapacity(s, here());
     return `<button class="build-chip place" data-place="${id}" ${full ? "disabled" : ""}>${full ? "Room full" : `Place · ${M.availableCopies(s, id)}`}</button>`;
   }
+  // What a tile's ✕ does on a pad, for the legend (the same as its button: tileAction).
+  function padVerb(s, it) {
+    if (!s.house.owned.includes(it.id)) return "Buy";
+    if (it.category === "wallpaper") return "Hang";
+    if (it.category === "books") return M.availableBook(s, it.id) ? "Shelve" : "Read";
+    return M.availableCopies(s, it.id) ? "Place" : "Buy another";
+  }
   function buildItems(s) {
     const q = search.trim().toLowerCase(), owns = (it) => s.house.owned.includes(it.id), where = (it) => s.house.placed.filter((p) => p.id === it.id);
     return M.decorCatalog.filter((it) => {
@@ -255,14 +262,15 @@ export function homeSheets(ui) {
     const row = subs.map(([k, n, locked]) => `<button class="build-sub" data-sub="${k}" aria-pressed="${sub === k}" aria-label="${n}${locked ? " (locked)" : ""}" title="${n}" ${locked ? "disabled" : ""}>${buildIcon(k)}</button>`).join("");
     const tiles = items.map((it) => {
       const owned = s.house.owned.includes(it.id), placed = s.house.placed.some((p) => p.id === it.id);
-      return `<div class="build-tile${owned ? " owned" : ""}${placed ? " placed" : ""}${picked === it.id ? " picked" : ""}"><button class="build-pick" data-pick="${it.id}" aria-label="${it.name}">${thumbOf(it, 64)}${owned ? `<i class="build-badge" aria-label="${M.ownedCopies(s, it.id)} owned">${["books", "wallpaper"].includes(it.category) ? "✓" : M.ownedCopies(s, it.id)}</i>` : ""}</button><span class="build-name">${it.name}</span>${tileAction(s, it)}</div>`;
+      return `<div class="build-tile${owned ? " owned" : ""}${placed ? " placed" : ""}${picked === it.id ? " picked" : ""}" data-pad-box><button class="build-pick" data-pick="${it.id}" aria-label="${it.name}" data-pad-label="${padVerb(s, it)}"${picked === it.id ? " data-pad-default" : ""}>${thumbOf(it, 64)}${owned ? `<i class="build-badge" aria-label="${M.ownedCopies(s, it.id)} owned">${["books", "wallpaper"].includes(it.category) ? "✓" : M.ownedCopies(s, it.id)}</i>` : ""}</button><span class="build-name">${it.name}</span>${tileAction(s, it).replace("<button ", "<button data-pad-skip ")}</div>`;
     }).join("");
-    const find = `<label class="build-search">${buildIcon("search")}<span class="sr">Search the catalogue</span><input id="decor-search" type="search" placeholder="Search ${M.decorCatalog.length} pieces" value="${search.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;")}"></label>`;
+    const where = [mode, sub, ownedOnly, affordable, search].join("|").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+    const find = `<label class="build-search">${buildIcon("search")}<span class="sr">Search the catalogue</span><input id="decor-search" type="search" data-pad-skip placeholder="Search ${M.decorCatalog.length} pieces" value="${search.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;")}"></label>`;
     return `<section class="build-cat" aria-label="Build catalogue">
       <div class="build-top">${find}<span class="build-room"><b>${M.roomPieces(s, here()).length}/${M.roomCapacity(s, here())}</b> in the ${roomName(here()).toLowerCase()}</span></div>
       <nav class="build-rail" aria-label="Browse by">${rail}</nav>
       <div class="build-subs" data-pad-tabs role="group" aria-label="${mode === "room" ? "Rooms" : "Kinds"}">${row}<span class="build-sub-name">${label}</span></div>
-      <div class="build-grid" role="list">${tiles || `<p class="build-empty">Nothing here${search ? ` matches “${search}”` : " yet"}.</p>`}</div>
+      <div class="build-grid" role="list" data-keep-scroll="build|${where}">${tiles || `<p class="build-empty">Nothing here${search ? ` matches “${search}”` : " yet"}.</p>`}</div>
       <div class="build-detail" aria-live="polite">${detail(s, picked)}</div>
       <div class="build-foot"><button class="build-toggle" data-toggle="owned" aria-pressed="${ownedOnly}"><i></i>Owned only</button><button class="build-toggle" data-toggle="afford" aria-pressed="${affordable}"><i></i>Can afford</button><span>Each purchase adds one copy · store and reuse</span></div>
     </section>`;
@@ -557,16 +565,29 @@ export function homeSheets(ui) {
         body.querySelectorAll("[data-toggle]").forEach((b) => (b.onclick = () => { if (b.dataset.toggle === "owned") ownedOnly = !ownedOnly; else affordable = !affordable; ui.draw(); }));
         // Picking a tile shows it in the strip below, without redrawing the grid.
         const pick = (id) => {
-          picked = id; body.querySelectorAll(".build-tile").forEach((tile) => tile.classList.toggle("picked", tile.querySelector("[data-pick]")?.dataset.pick === id));
+          picked = id; body.querySelectorAll(".build-tile").forEach((tile) => { const b = tile.querySelector("[data-pick]"), on = b?.dataset.pick === id; tile.classList.toggle("picked", on); b?.toggleAttribute("data-pad-default", on); });
           const strip = body.querySelector(".build-detail"); if (strip) { strip.innerHTML = detail(s, id); bindActs(strip); }
+          // The page now matches the sheet, so it isn't rebuilt (a rebuild mid-scroll would lose the grid's place).
+          ui.settle?.();
         };
-        body.querySelectorAll("[data-pick]").forEach((b) => { b.onclick = () => pick(b.dataset.pick); b.onpointerenter = (e) => { if (e.pointerType === "mouse") pick(b.dataset.pick); }; });
+        body.querySelectorAll("[data-pick]").forEach((b) => {
+          b.onclick = () => pick(b.dataset.pick); b.onpointerenter = (e) => { if (e.pointerType === "mouse") pick(b.dataset.pick); };
+          // The pad's ring (or Tab) on a tile shows it below; ✕ does what its button does (pad-menu.js "padchoose").
+          b.onfocus = () => { if (picked !== b.dataset.pick) pick(b.dataset.pick); };
+          b.addEventListener("padchoose", (e) => {
+            e.preventDefault();
+            const it = M.decorById[b.dataset.pick], act = b.closest(".build-tile")?.querySelector(".build-chip");
+            if (act && !act.disabled) { act.click(); return; }
+            ui.tone(220); ui.notice(!s.house.owned.includes(it.id) || act?.classList.contains("buy") ? `The ${it.name} costs ${money(it.price)}.` : act?.textContent === "Room full" ? "The room is full. Store a piece to make space." : act?.textContent === "No shelf" ? "No shelf space for it in here." : "It’s already on these walls.");
+          });
+        });
+        const hand = (inst) => { tools.select(inst); if (document.body.classList.contains("pad-menus")) ui.closeSheet(); };
         const input = body.querySelector("#decor-search");
         if (input) input.oninput = () => { search = input.value; ui.draw(); body.querySelector("#decor-search")?.focus(); };
         const acts = {
           decor: (id) => buy(id),
-          place: (id) => { const inst = M.placeDecor(s, id, here()); if (inst) { M.recordHomeActivity?.(s,"decorate"); ui.tone(600); ui.scene.refreshRoom(); tools.select(inst); ui.draw(); } else ui.notice("No free spot for it in here. Make some room, or try another room."); },
-          show: (instance) => { const p = s.house.placed.find((q) => q.instance === instance); if (!p) return; s.house.activeRoom = p.room; ui.enterRoom(p.room); tools.select(p.instance); ui.draw(); },
+          place: (id) => { const inst = M.placeDecor(s, id, here()); if (inst) { M.recordHomeActivity?.(s,"decorate"); ui.tone(600); ui.scene.refreshRoom(); hand(inst); ui.draw(); } else ui.notice("No free spot for it in here. Make some room, or try another room."); },
+          show: (instance) => { const p = s.house.placed.find((q) => q.instance === instance); if (!p) return; s.house.activeRoom = p.room; ui.enterRoom(p.room); hand(p.instance); ui.draw(); },
           paper: (id) => { if (M.applyWallpaper(s, here(), id)) { ui.tone(600); refresh(); } },
           shelve: (id) => { const shelfP = M.roomPieces(s, here()).find((p) => M.shelfCapacity(p.id) > p.books.length); if (shelfP && M.shelfBook(s, shelfP.instance, id)) { ui.tone(600); refresh(); } },
           read: (id) => ui.read(id),
@@ -577,13 +598,13 @@ export function homeSheets(ui) {
           if (!M.buyDecor(s, id)) return;
           ui.tone(820); ui.notice(M.decorById[id].name + " is yours.");
           const item = M.decorById[id];
-          if (!["books", "wallpaper"].includes(item.category)) { const inst = M.placeDecor(s, id, here()); if (inst) { M.recordHomeActivity?.(s,"decorate"); ui.scene.refreshRoom(); tools.select(inst); } }
+          if (!["books", "wallpaper"].includes(item.category)) { const inst = M.placeDecor(s, id, here()); if (inst) { M.recordHomeActivity?.(s,"decorate"); ui.scene.refreshRoom(); hand(inst); } }
           else if (item.category === "books") { const shelfP = M.roomPieces(s, here()).find((p) => M.shelfCapacity(p.id) > p.books.length); if (shelfP && M.shelfBook(s, shelfP.instance, id)) ui.scene.refreshRoom(); }
           ui.draw();
         }
         body.querySelectorAll("[data-decor]").forEach((b) => (b.onclick = () => buy(b.dataset.decor)));
-        body.querySelectorAll("[data-place]").forEach((b) => (b.onclick = () => { const inst = M.placeDecor(s, b.dataset.place, here()); if (inst) { M.recordHomeActivity?.(s,"decorate"); ui.tone(600); ui.scene.refreshRoom(); tools.select(inst); ui.draw(); } else ui.notice("No free spot for it in here."); }));
-        body.querySelectorAll("[data-show]").forEach((b) => (b.onclick = () => { const p = s.house.placed.find((q) => q.instance === b.dataset.show); if (!p) return; s.house.activeRoom = p.room; ui.enterRoom(p.room); tools.select(p.instance); ui.draw(); }));
+        body.querySelectorAll("[data-place]").forEach((b) => (b.onclick = () => { const inst = M.placeDecor(s, b.dataset.place, here()); if (inst) { M.recordHomeActivity?.(s,"decorate"); ui.tone(600); ui.scene.refreshRoom(); hand(inst); ui.draw(); } else ui.notice("No free spot for it in here."); }));
+        body.querySelectorAll("[data-show]").forEach((b) => (b.onclick = () => { const p = s.house.placed.find((q) => q.instance === b.dataset.show); if (!p) return; s.house.activeRoom = p.room; ui.enterRoom(p.room); hand(p.instance); ui.draw(); }));
         body.querySelectorAll("[data-shelve]").forEach((b) => (b.onclick = () => { const shelfP = M.roomPieces(s, here()).find((p) => M.shelfCapacity(p.id) > p.books.length); if (shelfP && M.shelfBook(s, shelfP.instance, b.dataset.shelve)) { ui.tone(600); refresh(); } }));
         body.querySelectorAll("[data-read]").forEach((b) => (b.onclick = () => ui.read(b.dataset.read)));
         body.querySelectorAll("[data-house]").forEach((b) => (b.onclick = () => {

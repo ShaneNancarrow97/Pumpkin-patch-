@@ -41,9 +41,9 @@ export function estateSheet(ui) {
     if (!items.length) return intro + `<p class="estate-empty">${gardenView === "stored" ? "All your pieces are outside. Store one from its controls to bring it back here." : "A little space for something wonderfully spooky. Choose a piece from the catalogue."}</p>`;
     return intro + items.map(item => {
       const d = ESTATE_DECOR_BY_ID[item.id], amount = s.estate.ownedDecor[d.id] ?? 0, placed = s.estate.placed.filter(p => p.id === d.id).length, locked = s.house.level < d.houseLevel;
-      const buttons = gardenView === "placed" ? `<button class="button" data-estate-select="${item.instance}" ${editable(s) ? "" : "disabled"}>Move</button>`
-        : gardenView === "stored" ? `<button class="button gold" data-estate-place="${d.id}" ${editable(s) ? "" : "disabled"}>Place</button>`
-        : `${locked ? `<button class="button" disabled>Locked</button>` : `<button class="button ${amount ? "" : "gold"}" data-estate-buy="${d.id}" ${editable(s) && s.coins >= d.cost ? "" : "disabled"}>${money(d.cost)}</button>`}${amount ? `<button class="button" data-estate-place="${d.id}" ${editable(s) ? "" : "disabled"}>Place · ${amount}</button>` : ""}`;
+      const buttons = gardenView === "placed" ? `<button class="button" data-estate-select="${item.instance}" data-pad-default ${editable(s) ? "" : "disabled"}>Move</button>`
+        : gardenView === "stored" ? `<button class="button gold" data-estate-place="${d.id}" data-pad-default ${editable(s) ? "" : "disabled"}>Place</button>`
+        : `${locked ? `<button class="button" disabled>Locked</button>` : `<button class="button ${amount ? "" : "gold"}" data-estate-buy="${d.id}" data-pad-default ${editable(s) && s.coins >= d.cost ? "" : "disabled"}>${money(d.cost)}</button>`}${amount ? `<button class="button" data-estate-place="${d.id}" ${editable(s) ? "" : "disabled"}>Place · ${amount}</button>` : ""}`;
       return `<article class="estate-card">${gardenIcon(d.id, ui.scene.estateDecorThumb?.(d.id)) || (d.lake ? lakeArt() : "")}<div><h3>${d.name}</h3><p>${gardenView === "placed" ? "Tap Move to position it in the garden." : d.text}</p><small>${locked ? `Opens with the ${HOUSE_NAMES[d.houseLevel]}` : `${d.crop ? `Grows ${d.crop.amount} ${d.crop.name} in ${Math.round(d.crop.seconds / 60 * 10) / 10} min · ` : d.carving ? "Opens pumpkin carving · " : ""}${d.w} × ${d.d} footprint · ${amount} stored${placed ? ` · ${placed} outside` : ""}`}</small></div><div class="estate-card-actions">${buttons}</div></article>`;
     }).join("") + `<p class="small">Store and reuse garden pieces freely. Keep the front path and the space around the house clear.</p>`;
   }
@@ -95,7 +95,8 @@ export function estateSheet(ui) {
       });
       body.querySelectorAll("[data-estate-skin]").forEach(b => b.onclick = () => { if (E.equipEstateSkin(ui.state, b.dataset.estateSkin)) change(); });
       body.querySelectorAll("[data-estate-part]").forEach(b => b.onclick = () => { finishGroup = b.dataset.estatePart; ui.draw(); });
-      body.querySelectorAll("[data-estate-buy]").forEach(b => b.onclick = () => { if (E.buyEstateDecor(ui.state, b.dataset.estateBuy)) { change(); ui.notice("In garden storage. Choose Place when you’re ready."); } });
+      // On a pad a bought piece goes straight into hand in the garden, as the house's catalogue does.
+      body.querySelectorAll("[data-estate-buy]").forEach(b => b.onclick = () => { const id = b.dataset.estateBuy; if (!E.buyEstateDecor(ui.state, id)) return; change(); if (document.body.classList.contains("pad-menus")) { visit(); ui.estateTools.selectForPlacement(id); } else ui.notice("In garden storage. Choose Place when you’re ready."); });
       body.querySelectorAll("[data-estate-place]").forEach(b => b.onclick = () => { visit(); ui.estateTools.selectForPlacement(b.dataset.estatePlace); });
       body.querySelectorAll("[data-estate-select]").forEach(b => b.onclick = () => { visit(); ui.estateTools.select(b.dataset.estateSelect); });
       body.querySelectorAll("[data-estate-finish]").forEach(b => b.onclick = () => { if (E.equipEstateFinish(ui.state, b.dataset.estateFinish)) change(); });

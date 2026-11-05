@@ -54,7 +54,7 @@ function wedge(i,n,inner=86,outer=166,gap=2.2){
   return`M${p(outer,a0)}A${outer} ${outer} 0 ${large} 1 ${p(outer,a1)}L${p(inner,a1)}A${inner} ${inner} 0 ${large} 0 ${p(inner,a0)}Z`;
 }
 
-export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction,feel=()=>{},holdToBuy=null,hubAllowed=()=>true,placement=null,farmAction=null,quick=null}) {
+export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction,feel=()=>{},holdToBuy=null,hubAllowed=()=>true,placement=null,arrange=null,farmAction=null,quick=null}) {
   let padName='',details=false,previousPiece=null,previousFocus=null,radial=false,tool='hand',keys=new Set(),cameraKeys=new Set(),move={x:0,y:0},look={x:0,y:0},padPrevious=[],selectedIndex=0,repeatAt=0,held=null,suppressClickUntil=0;
   let inputMode=matchMedia?.('(pointer: coarse)').matches?'touch':'keyboard',shownMode='',hold=null,wheelItems=[],shownTool='',shownGait='',shownWho='',chain=0,retryFace=0;
   // A prompt over whatever the action button would act on, so the world says what is in reach.
@@ -75,7 +75,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     </div>
     <button id="play-arrange" class="play-arrange" aria-label="Arrange the nearby furniture" hidden>${svg('move')}<span>Arrange</span></button>
     <div id="furniture-pad" hidden><div class="play-piece-label"></div><div class="play-dpad" role="group" aria-label="Move selected furniture"><button data-nudge="0,-1" aria-label="Move back">${svg('go','up')}</button><button data-nudge="-1,0" aria-label="Move left">${svg('go','left')}</button><button data-nudge="1,0" aria-label="Move right">${svg('go')}</button><button data-nudge="0,1" aria-label="Move forward">${svg('go','down')}</button></div><div class="play-furniture-actions"><button data-turn="-15" aria-label="Rotate left 15 degrees">${svg('rotate','flip')}</button><button id="furniture-wheel" aria-label="Furniture radial menu">${svg('tools')}</button><button data-turn="15" aria-label="Rotate right 15 degrees">${svg('rotate')}</button><button data-finish>${svg('done')}<span>Done</span></button></div></div>
-    <div class="place-legend" aria-hidden="true"><span><b data-glyph="lstick"></b><span>Move</span></span><span><b data-glyph="dpad"></b><span>Step</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span data-legend-turn>Turn</span></span><span><b data-glyph="confirm"></b><span>Done</span></span><span><b data-glyph="action"></b><span>Undo</span></span><span class="place-legend-more"><b data-glyph="tools"></b><span>More</span></span></div>
+    <div class="place-legend" aria-hidden="true"><span><b data-glyph="lstick"></b><span>Move</span></span><span><b data-glyph="dpad"></b><span>Step</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span data-legend-turn>Turn</span></span><span><b data-glyph="confirm"></b><span>Done</span></span><span><b data-glyph="action"></b><span>Undo</span></span><span class="place-legend-more"><b data-glyph="tools"></b><span>More</span></span></div><div class="arrange-legend" aria-hidden="true"><span><b data-glyph="lstick"></b><b data-glyph="dpad"></b><span data-arrange-choose>Choose</span></span><span><b data-glyph="confirm"></b><span>Pick up</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span>Next</span></span><span><b data-glyph="tools"></b><span data-arrange-shop>Furnish</span></span><span><b data-glyph="rstick"></b><span>Camera</span></span><span class="arrange-legend-done"><b data-glyph="back"></b><span>Done</span></span></div>
     <div id="play-radial" hidden role="dialog" aria-modal="true" aria-label="Choose an action"><button class="radial-dismiss" aria-label="Close action wheel"></button><div class="radial-disc"><svg class="radial-ring" viewBox="0 0 360 360" aria-hidden="true"><defs><linearGradient id="play-wedge-on" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd593"/><stop offset=".55" stop-color="#d4924b"/><stop offset="1" stop-color="#94562a"/></linearGradient></defs><circle class="radial-rim" cx="180" cy="180" r="174"/><g class="radial-wedges"></g></svg><div class="radial-options"></div><div class="radial-centre"><b class="radial-centre-icon"></b><p class="eyebrow">Your tools</p><h2>Interact</h2><p class="radial-hint"></p></div><button class="radial-close" aria-label="Close action wheel">${svg('exit')}</button></div></div>`;
   document.body.append(root);
   // Every menu on a pad (ui/pad-menu.js); Options brings the ring to the dock, the hub.
@@ -283,11 +283,16 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     const legend=$('.play-legend');setText($('[data-legend-act]'),shortAction(label||'Explore',p,job,tool));setText($('[data-legend-tool]'),toolNames[tool]);{const q=quick?.label?.();$('[data-legend-quick-wrap]').hidden=!q;if(q)setText($('[data-legend-quick]'),q);}setText($('[data-legend-gait]'),gait==='jog'?'Jog':'Walk');legend.dataset.busy=String(!!job.active);legend.style.setProperty('--p',progress.toFixed(2));legend.dataset.idle=String(!job.active&&!p.target&&!pose);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep going':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
     // A piece in hand anywhere (a room, the garden, the foyer) takes the pad (ui/pad-placement.js).
     const placing=!blocked&&!radial?placement?.kind??null:null;root.dataset.placing=pad&&placing?placing:'';
+    // Arranging (ui/pad-arrange.js): off play mode in a room or the garden, nothing in hand, no menu.
+    if(arrange&&(blocked||radial||piece||placing||p.enabled))arrange.hide(!piece&&!placing);
+    const arranging=pad&&arrange&&!blocked&&!radial&&!piece&&!placing&&!p.enabled?arrange.place:null;root.dataset.arranging=arranging?(arrange.on?'on':'ready'):'';
+    if(arranging){setText($('[data-arrange-choose]'),arrange.on?'Choose':'Arrange');setText($('[data-arrange-shop]'),arranging==='estate'?'Garden':arranging==='foyer'?'Decorate':'Furnish');}
     scene.player?.setBlocked(blocked||radial||!!piece||!!placing);
     if(blocked){cancelInteraction('menu');keys.clear();cameraKeys.clear();releaseMove();releaseLook();if(radial&&!piece)close();}
     // Menus take the pad first: a menu or the hub keeps its presses from play.
     const menuOwns=pad&&!radial&&!piece&&!placing?menus.tick({pad,down,pressed:i=>i===17&&p.enabled&&!blocked&&quick?false:pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked}):false;
     if(!pad&&menus.hubOn)menus.leaveHub();
+    if(pad&&(radial||piece||placing))menus.rest();
     if(pad&&!blocked&&!menuOwns){
       if(radial){
         // Either stick aims the wheel; letting go of Y/△ after aiming chooses.
@@ -306,6 +311,8 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
         if(pressed(4)||pressed(5)){const order=['hand','plant','water','harvest','clean'],i=order.indexOf(tool);cancelInteraction('tool');tool=order[(i+(pressed(5)?1:-1)+order.length)%order.length];feel('tick');}
         if((pressed(8)||pressed(17))&&quick){quick.open();feel('select');}
         if(pressed(10))toggleGait();if(pressed(11)){scene.player?.recenter?.();feel('select');}if(pressed(6))scene.player?.zoom?.(-1);if(pressed(7))scene.player?.zoom?.(1);
+      // Off play mode in a room or the garden, the pad arranges the furniture first.
+      }else if(arranging&&arrange.tick({pad,down,pressed})){
       // Off play mode: Create starts play; on the farm △ plants, □ boosts and ✕ picks (elsewhere ✕ starts play too).
       }else if(pressed(8))openWheel('characters');
       else if(pressed(3))farmAction?.('plant');

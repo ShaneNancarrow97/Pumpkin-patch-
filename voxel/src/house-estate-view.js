@@ -184,6 +184,11 @@ export function createHouseEstateView(canvas, state, hooks) {
   canvas.addEventListener("contextmenu", e => { if (active) e.preventDefault(); });
   return {
     scene, camera, cameraActions, sync, resize, preview, play,
+    // The pad's arrange ring on a placed piece: its outline, the camera turning to it (or none).
+    hover(instance) {
+      const p = instance && state.estate.placed.find((q) => q.instance === instance);
+      preview(p ? { id: p.id, instance: p.instance, x: p.x, z: p.z, rotation: p.rotation } : null);
+    },
     // Looks at a point in the garden from a little closer, keeping the camera's angle.
     focus(x, z) {
       const offset = camera.position.clone().sub(controls.target); offset.setLength(Math.min(offset.length(), 17));
