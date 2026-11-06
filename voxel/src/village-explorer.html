@@ -36,6 +36,11 @@ button.primary { border-color: rgba(255, 179, 71, .5); }
 #knob { position: absolute; left: 38px; top: 38px; width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #ffd79a, var(--amber-deep)); box-shadow: 0 0 18px rgba(255, 160, 60, .55); }
 .hint { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(max(12px, env(safe-area-inset-bottom)) + 70px); font-size: 12px; color: var(--muted); background: var(--panel); border: 1px solid var(--edge); padding: 6px 12px; border-radius: 99px; white-space: nowrap; display: none; }
 .walking .hint { display: block; }
+.act { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(max(12px, env(safe-area-inset-bottom)) + 108px); z-index: 4; min-height: 48px; padding: 12px 20px; font-size: 15px; background: linear-gradient(180deg, var(--amber), var(--amber-deep)); color: #2a160a; box-shadow: 0 6px 24px rgba(0, 0, 0, .45); }
+.act b { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 8px; border-radius: 50%; background: #2a160a; color: #ffd79a; font-size: 12px; }
+.leave { position: fixed; top: max(14px, env(safe-area-inset-top)); right: max(64px, calc(env(safe-area-inset-right) + 64px)); z-index: 4; background: var(--panel); border: 1px solid var(--edge); }
+#fade { position: fixed; inset: 0; background: #050307; opacity: 0; pointer-events: none; transition: opacity .3s ease; z-index: 8; }
+#fade.on { opacity: 1; }
 #card { position: fixed; left: 50%; top: max(84px, calc(env(safe-area-inset-top) + 72px)); transform: translate(-50%, -8px); width: min(420px, calc(100% - 28px)); padding: 13px 16px 14px; border-radius: 16px; background: var(--panel); border: 1px solid var(--edge); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; z-index: 5; }
 #card.shown { opacity: 1; transform: translate(-50%, 0); }
 #card h2 { margin: 0; font: 600 18px/1.15 Fraunces, Georgia, serif; color: var(--amber); }
@@ -58,7 +63,10 @@ button.primary { border-color: rgba(255, 179, 71, .5); }
 <div id="title"><h2 id="title-name"></h2><p id="title-sub"></p></div>
 <div id="pad"></div>
 <div id="stick"><div id="knob"></div></div>
-<p class="hint">Left thumb walks · drag right to look · pinch to zoom · tap a neighbour to say hello</p>
+<p class="hint">Left thumb walks · drag right to look · pinch to zoom · tap a neighbour to say hello · walk to the Velvet Bat's door to go in</p>
+<button id="act" class="act" hidden></button>
+<button id="leave" class="leave" hidden>Leave</button>
+<div id="fade"></div>
 <nav>
   <div class="group">
     <button id="walk" class="primary" disabled>Walk</button>

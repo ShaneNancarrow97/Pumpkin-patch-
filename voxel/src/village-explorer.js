@@ -3,14 +3,15 @@
 // their true size. Built by `node build.mjs --village` into dist/mothlight-village.html.
 // Touch: drag to turn, pinch to zoom, two fingers to pan; walking, the left of the
 // screen is a stick. Keys: WASD or arrows to walk, Shift to jog, Q/E to turn.
-// A pad: left stick walks, right stick looks, L1/R1 zoom, ✕ jogs.
+// A pad: left stick walks, right stick looks, L1/R1 zoom, R2 jogs, ✕ goes in at a door.
+// Walking up to the Velvet Bat's door offers to go in (✕, Enter, F or a tap); inside, walk out through the doorway.
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import * as M from "./model.js";
-import { createVillageView, TOUR } from "./village-view.js";
+import { createVillageView, TOUR, INSIDES } from "./village-view.js";
 import { loadSpriteSheets, spriteActor } from "./sprite-actors.js";
 import { animateSprite } from "./sprite-voxels.js";
 import { LEAN } from "./world.js";
@@ -22,7 +23,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPrefere
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
 const state = M.freshState(); state.earned = M.LEVELS[2].at; M.recordHomeActivity(state, "visit"); M.inviteToVillage(state);
 let everyone = false;
-const view = createVillageView(canvas, state, { everyone: () => everyone, onPick: (hit) => { if (hit.type === "village-folk") meet(hit.id); } });
+const view = createVillageView(canvas, state, { everyone: () => everyone, onPick: (hit) => { if (hit.type === "village-folk") meet(hit.id); if (hit.type === "village-door") goIn(hit.id); } });
 // A tap on a neighbour: who they are, a greeting, and a wave.
 let cardTimer = 0;
 function meet(id) {
@@ -53,6 +54,7 @@ const PLACES = {
   valley: [[64, 150, -66], [64, 0, 64]],
 };
 function go(id) {
+  if (view.inside) leaveHall();
   if (walking) setWalk(false);
   const p = PLACES[id]; if (!p) view.cameraActions.reset(); else view.cameraActions.place(p[0].map((v) => v * K), p[1].map((v) => v * K));
   for (const b of document.querySelectorAll("[data-place]")) b.classList.toggle("on", b.dataset.place === id);
@@ -88,16 +90,16 @@ function makeActor() {
   if (actor) { view.scene.remove(actor); actor.userData.dispose?.(); }
   actor = spriteActor(sheets, who); view.scene.add(actor); place();
 }
-function place() { actor.position.set(pos.x, view.groundAt(pos.x, pos.z) + .04, -pos.z); }
+function place() { actor.position.set(pos.x, view.inside ? .2 : view.groundAt(pos.x, pos.z) + .04, -pos.z); }
 function setWalk(on) {
   if (on && !sheets) return;
   walking = on; document.body.classList.toggle("walking", on); $("walk").classList.toggle("on", on);
   if (on) { if (!actor) makeActor(); actor.visible = true; place(); view.play.reset({ x: actor.position.x, y: actor.position.y, z: actor.position.z }); for (const b of document.querySelectorAll("[data-place]")) b.classList.remove("on"); }
-  else { if (actor) actor.visible = false; view.leave(); view.enter(); }
+  else { if (actor) actor.visible = false; $("act").hidden = true; const hall = view.inside; view.leave(); view.enter(); if (hall) { view.goInside(hall); $("leave").hidden = false; view.cameraActions.place(toPlace(view.hallPoint(0, 8.6, 9.6)), toPlace(view.hallPoint(0, -6.4, 1.4))); } }
 }
 $("walk").addEventListener("click", () => setWalk(!walking));
 $("who").addEventListener("click", () => { who = who === "shane" ? "natalie" : "shane"; $("who").textContent = who === "shane" ? "Shane" : "Natalie"; if (sheets && walking) makeActor(); });
-addEventListener("keydown", (e) => { keys.add(e.key.toLowerCase()); if (e.key === " " && !e.repeat) setWalk(!walking); });
+addEventListener("keydown", (e) => { keys.add(e.key.toLowerCase()); if (e.key === " " && !e.repeat) setWalk(!walking); if ((e.key === "Enter" || e.key.toLowerCase() === "f") && !e.repeat && offer) act(); });
 addEventListener("keyup", (e) => keys.delete(e.key.toLowerCase()));
 addEventListener("blur", () => keys.clear());
 
@@ -113,10 +115,41 @@ pad.addEventListener("pointermove", (e) => {
 const release = (e) => { if (e.pointerId !== stickId) return; stickId = null; move.x = move.y = 0; stick.classList.remove("shown"); };
 pad.addEventListener("pointerup", release); pad.addEventListener("pointercancel", release);
 
+// ---- Inside: through the Velvet Bat's door and out again, with a fade between ----------------------------
+const fade = (then) => { $("fade").classList.add("on"); setTimeout(() => { then(); requestAnimationFrame(() => $("fade").classList.remove("on")); }, 320); };
+const toPlace = (v) => [v.x, v.y, -v.z];
+function goIn(id) {
+  const plan = INSIDES[id]; if (!plan || view.inside === id) return;
+  fade(() => {
+    view.goInside(id); $("leave").hidden = walking; $("act").hidden = true;
+    if (walking) { const p = view.hallPoint(plan.hall.spawn[0], plan.hall.spawn[1]); pos.x = p.x; pos.z = -p.z; heading.x = 0; heading.z = 1; place(); view.play.reset({ x: actor.position.x, y: actor.position.y, z: actor.position.z }); }
+    else view.cameraActions.place(toPlace(view.hallPoint(0, 8.6, 9.6)), toPlace(view.hallPoint(0, -6.4, 1.4)));
+  });
+}
+function leaveHall() {
+  const id = view.inside; if (!id) return; const d = INSIDES[id].door;
+  view.goOutside(); $("leave").hidden = true;
+  // Out on the doorstep, turned to the road, with the camera looking back at the door just left.
+  if (walking) { pos.x = d.x * K; pos.z = (d.z + 3.2) * K; heading.x = 0; heading.z = -1; place(); view.play.reset({ x: actor.position.x, y: actor.position.y, z: actor.position.z }, Math.PI); }
+  else view.cameraActions.place([d.x * K, 13 * K, (d.z + 20) * K], [d.x * K, 4 * K, (d.z - 2) * K]);
+}
+$("leave").addEventListener("click", () => fade(leaveHall));
+$("act").addEventListener("click", () => act());
+let offer = null;
+function act() { if (offer) goIn(offer); }
+// Where a walker may stand inside a hall: within its walls (out through the doorway only) and clear of its furniture.
+function hallFree(plan, lx, lz) {
+  const h = plan.hall, hw = h.w / 2, pad = .4;
+  if (lx < -hw + pad + .2 || lx > hw - pad - .2 || lz < -h.d + pad + .2) return false;
+  if (lz > -.25 && Math.abs(lx) > 1.05) return false;
+  return !h.blocks.some(([x0, z0, x1, z1]) => lx > x0 - pad && lx < x1 + pad && lz > z0 - pad && lz < z1 + pad);
+}
+let padCross = false;
 function readPad() {
   const g = [...(navigator.getGamepads?.() ?? [])].find(Boolean); if (!g) return null;
   const dead = (v) => Math.abs(v) < .15 ? 0 : v;
-  return { x: dead(g.axes[0] ?? 0), y: dead(g.axes[1] ?? 0), lx: dead(g.axes[2] ?? 0), ly: dead(g.axes[3] ?? 0), jog: !!g.buttons[0]?.pressed, zoomIn: !!g.buttons[5]?.pressed, zoomOut: !!g.buttons[4]?.pressed };
+  const cross = !!g.buttons[0]?.pressed, pressed = cross && !padCross; padCross = cross;
+  return { x: dead(g.axes[0] ?? 0), y: dead(g.axes[1] ?? 0), lx: dead(g.axes[2] ?? 0), ly: dead(g.axes[3] ?? 0), jog: !!g.buttons[7]?.pressed || !!g.buttons[10]?.pressed, act: pressed, zoomIn: !!g.buttons[5]?.pressed, zoomOut: !!g.buttons[4]?.pressed };
 }
 function walk(dt, time) {
   const gp = readPad(), k = (a, b) => (keys.has(a) || keys.has(b) ? 1 : 0);
@@ -124,14 +157,25 @@ function walk(dt, time) {
   const n = Math.hypot(ix, iy); if (n > 1) { ix /= n; iy /= n; }
   const cam = view.camera; right.set(1, 0, 0).applyQuaternion(cam.quaternion); right.y = 0; right.normalize(); cam.getWorldDirection(forward); forward.y = 0; forward.normalize();
   // Screen up is away from the camera; three's z runs south, the realm's north.
-  const wx = right.x * ix - forward.x * iy, wz = right.z * ix - forward.z * iy, speed = 3.3 * (keys.has("shift") || gp?.jog ? 1.6 : 1);
+  const wx = right.x * ix - forward.x * iy, wz = right.z * ix - forward.z * iy, speed = 3.3 * (keys.has("shift") || gp?.jog ? 1.6 : 1) * (view.inside ? .8 : 1);
   const moving = Math.hypot(wx, wz) > .05;
-  if (moving) {
+  if (moving && view.inside) {
+    const plan = INSIDES[view.inside], o = view.hallPoint(0, 0), nx = pos.x + wx * speed * dt, nz = pos.z - wz * speed * dt, local = (x, z) => [(x - o.x) / K, -z / K];
+    const [ax, az] = local(nx, nz), [bx, bz] = local(nx, pos.z), [cx, cz] = local(pos.x, nz);
+    if (az > 0 && Math.abs(ax) < 1.05) { fade(leaveHall); }
+    else if (hallFree(plan, ax, az)) { pos.x = nx; pos.z = nz; } else if (hallFree(plan, bx, bz)) pos.x = nx; else if (hallFree(plan, cx, cz)) pos.z = nz;
+    heading.x = wx; heading.z = wz; age += Math.hypot(wx, wz) * speed * dt / 2.3; still = 0;
+  } else if (moving) {
     pos.x = THREE.MathUtils.clamp(pos.x + wx * speed * dt, VILLAGE_BOUNDS.x0 - 20, VILLAGE_BOUNDS.x1 + 20);
     pos.z = THREE.MathUtils.clamp(pos.z - wz * speed * dt, VILLAGE_BOUNDS.z0 - 20, VILLAGE_BOUNDS.z1 + 20);
     heading.x = wx; heading.z = wz; age += Math.hypot(wx, wz) * speed * dt / 2.3; still = 0;
   } else still += dt;
   place();
+  // At a door that can be gone through, offer it.
+  offer = null;
+  if (!view.inside) for (const [id, p] of Object.entries(INSIDES)) if (Math.hypot(pos.x - p.door.x * K, pos.z - (p.door.z + 1.4) * K) < 2.8) offer = id;
+  $("act").hidden = !offer; if (offer) $("act").innerHTML = `<b>✕</b>Enter ${INSIDES[offer].name}`;
+  if (offer && (gp?.act || keys.has("enter") || keys.has("f"))) { keys.delete("enter"); keys.delete("f"); act(); }
   const lookX = (gp?.lx ?? 0) + (k("e", "e") - k("q", "q")), lookY = gp?.ly ?? 0;
   view.play.look(lookX, lookY, dt); if (gp?.zoomIn) view.play.zoom(-1); if (gp?.zoomOut) view.play.zoom(1);
   view.play.follow({ x: actor.position.x, y: actor.position.y, z: actor.position.z }, dt);
@@ -161,7 +205,7 @@ function frame(now) {
 requestAnimationFrame(frame);
 setTimeout(() => document.body.classList.add("ready"), 400);
 // For checks in a browser: the view and the tour's stops.
-window.explorer = { view, TOUR, place: (i) => view.cameraActions.place(TOUR[i].at, TOUR[i].look),
+window.explorer = { view, TOUR, place: (i) => view.cameraActions.place(TOUR[i].at, TOUR[i].look), walkTo(x, z) { pos.x = x; pos.z = z; if (actor) place(); },
   // What one frame draws: draw calls and triangles across every pass (shadows and bloom included).
   frameStats() { renderer.info.autoReset = false; renderer.info.reset(); view.tick(1 / 30); view.scene.traverse((o) => { if (o.isDirectionalLight && o.castShadow) o.shadow.needsUpdate = true; }); composer.render(); const i = renderer.info.render; renderer.info.autoReset = true; return { calls: i.calls, tris: i.triangles }; },
   // What each part of the village costs in the current view: the frame without it, subtracted.

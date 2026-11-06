@@ -8,14 +8,15 @@ import { buildGround, buildPaving, buildWater, buildGreen, buildBeyond, buildHor
 import { createGrass } from "./village-grass.js";
 import { terrainHeight, REALM } from "./village-terrain.js";
 import { createBats } from "./village-bats.js";
-import { buildVillageDecor, letterPage } from "./village-models.js";
+import { buildVillageDecor, letterPage, frame, velvetBatHall, VELVET_HALL } from "./village-models.js";
+import { Voxels } from "./voxels.js";
 import { buildEstateDecor } from "./house-estate-world.js";
 import { VILLAGE_DECOR_BY_ID } from "./content/village-decor.js";
 import { FIXTURES, NODES, PLAN_SCALE } from "./content/village.js";
 import { createVillageLife } from "./village-life.js";
 import { storyObjectsHere, nodeReady } from "./rules/village.js";
 import { attachPieceGestures, createFraming } from "./piece-gestures.js";
-import { createVillageFolk } from "./village-folk.js";
+import { createVillageFolk, makeResident } from "./village-folk.js";
 
 const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z), K = PLAN_SCALE;
 // How high the ground is at a world point (the terrain is drawn on the design grid).
@@ -36,6 +37,11 @@ export const TOUR = Object.freeze([
   { at: [57, 6.5, 13], look: [56, 1.2, 24], title: "Welcome to Mothlight", sub: "" },
 ].map((p) => Object.freeze({ ...p, at: p.at.map((v) => v * K), look: p.look.map((v) => v * K) })));
 const TOUR_SECONDS = 4.6;
+// Buildings you can go inside: their hall, its plan (size, spawn, host's post, where a walker can't go), the host
+// who keeps it, and the front door on the design grid.
+export const INSIDES = Object.freeze({
+  "velvet-bat": Object.freeze({ name: "The Velvet Bat", build: velvetBatHall, hall: VELVET_HALL, host: "vesper", door: Object.freeze({ x: 102, z: 24.4 }) }),
+});
 
 export function createVillageView(canvas, state, hooks = {}) {
   // Lantern Night: a dark indigo sky, cool moonlight from over your shoulder, and
@@ -43,11 +49,11 @@ export function createVillageView(canvas, state, hooks = {}) {
   // A plum haze thickens with distance, so far things melt into the night instead of popping in;
   // past its reach whole patches of the village aren't drawn at all (thicker and nearer in play mode).
   const scene = new THREE.Scene(); scene.background = new THREE.Color(SKY.top); scene.fog = new THREE.FogExp2(0x1d1430, .0045);
-  const REACH = { look: { fog: .0042, far: 400 }, play: { fog: .0072, far: 250 } };
+  const REACH = { look: { fog: .0042, far: 400 }, play: { fog: .0072, far: 250 }, inside: { fog: .0015, far: 0 } };
   // The village is built on its design grid and scaled into the world here; people, decor and pages stand in the world itself.
   const root = new THREE.Group(); root.scale.setScalar(K); scene.add(root);
   scene.userData.exposure = 1.15;
-  scene.add(new THREE.HemisphereLight(0x5a68b8, 0x231b2c, .7));
+  const hemi = new THREE.HemisphereLight(0x5a68b8, 0x231b2c, .7); scene.add(hemi);
   const SUN = new THREE.Vector3(.42, .78, .46).normalize();
   const sun = new THREE.DirectionalLight(0xb8c2ff, 1.25); sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -44, right: 44, top: 44, bottom: -44, near: 1, far: 170 }); sun.shadow.normalBias = .04; sun.shadow.bias = -.0004;
@@ -92,6 +98,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     hit(f.well.r * 2, 4.4, f.well.r * 2, { type: "village-well" }, f.well.x, f.well.z);
     hit(f.carriage.w, 4.6, f.carriage.d, { type: "village-carriage" }, f.carriage.x, f.carriage.z);
     for (const n of NODES.filter((n) => n.district === "green")) hit(2, 1.8, 2, { type: "village-node", id: n.id }, n.x, n.z);
+    for (const [id, p] of Object.entries(INSIDES)) hit(3.4, 5.8, 1.2, { type: "village-door", id }, p.door.x * K, (p.door.z + .5) * K);
   }
   // Rebuilds a part when its key changes.
   function part(name, key, make) {
@@ -147,11 +154,42 @@ export function createVillageView(canvas, state, hooks = {}) {
     focus(x, z, distance = 22) { const o = camera.position.clone().sub(controls.target).setLength(distance); controls.target.copy(W(x, z, 1)); camera.position.copy(controls.target).add(o); controls.update(); },
   };
 
+  // Inside places: a building's own hall, built on first entry far from the village (on the design grid, scaled
+  // like it), lit by its own marked lamps, with its host at their post. While inside, the village isn't drawn,
+  // the moon is dimmed and the haze thins. door is where its front door stands (design grid); spawn and host are
+  // in the hall's own frame (x across, z from the door back into the hall).
+  const INSIDE = new THREE.Vector3(4000, 0, 0), insides = new Map();
+  let inside = null;
+  const hallPoint = (x, z, y = 0) => new THREE.Vector3(x, y, z).multiplyScalar(K).add(INSIDE);
+  function buildInside(id) {
+    if (insides.has(id)) return insides.get(id);
+    const plan = INSIDES[id], v = new Voxels(); plan.build(frame(v, 0, 0, "south", 0));
+    const built = v.build({ glow: 1.6 }), group = new THREE.Group(); group.add(built); group.scale.setScalar(K); group.position.copy(INSIDE); group.visible = false; scene.add(group);
+    const lamps = (built.userData.marks.lamp ?? []).map(([x, y, z]) => hallPoint(x, z, y));
+    let host = null;
+    if (plan.host) { host = makeResident(plan.host); host.root.position.copy(hallPoint(plan.hall.host[0], plan.hall.host[1], .12)); host.root.visible = false; scene.add(host.root);
+      const h = new THREE.Mesh(new THREE.BoxGeometry(.9, 2, .9), pickMaterial); h.userData = { type: "village-folk", id: plan.host }; h.position.y = 1; host.root.add(h); pickables.push(h); }
+    const entry = { id, plan, group, lamps, host }; insides.set(id, entry); return entry;
+  }
+  function goInside(id) {
+    if (inside?.id === id) return inside;
+    if (inside) goOutside();
+    inside = buildInside(id); inside.group.visible = true; if (inside.host) inside.host.root.visible = true;
+    root.visible = false; if (sky) sky.visible = false; scene.background.set(0x0a070d); scene.fog.color.set(0x0a070d); scene.fog.density = REACH.inside.fog;
+    sun.intensity = .08; hemi.intensity = .32; scene.userData.exposure = 1.3; following = false;
+    return inside;
+  }
+  function goOutside() {
+    if (!inside) return; inside.group.visible = false; if (inside.host) inside.host.root.visible = false; inside = null;
+    root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = 1.25; hemi.intensity = .7; scene.userData.exposure = 1.15; following = false;
+  }
+
   // Play mode: the camera follows the owner, as in the garden.
   const PLAY_PITCH = THREE.MathUtils.degToRad(34), PLAY_DISTANCE = 14, sphere = new THREE.Spherical(), offset = new THREE.Vector3();
   let following = false;
   const play = {
-    reset(pos) { following = true; resize(); controls.target.set(pos.x, (pos.y ?? 0) + 1.3, pos.z); sphere.set(PLAY_DISTANCE, Math.PI / 2 - PLAY_PITCH, 0); camera.position.copy(controls.target).add(offset.setFromSpherical(sphere)); controls.update(); },
+    // theta turns the camera round the walker (0 looks north from behind them; π looks back south).
+    reset(pos, theta = 0) { following = true; resize(); controls.target.set(pos.x, (pos.y ?? 0) + 1.3, pos.z); sphere.set(PLAY_DISTANCE, Math.PI / 2 - PLAY_PITCH, theta); camera.position.copy(controls.target).add(offset.setFromSpherical(sphere)); controls.update(); },
     follow(pos, dt) {
       if (!following) { play.reset(pos); return; }
       // Up and down the terraces too, when the walker says how high they stand.
@@ -227,8 +265,9 @@ export function createVillageView(canvas, state, hooks = {}) {
   canvas.addEventListener("pointercancel", (e) => { pointers.delete(e.pointerId); if (!pointers.size) multi = false; });
 
   function placeLights() {
-    const t = tour ? focus : controls.target, near = [...LAMPS].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z));
-    pool.forEach((l, i) => { const lamp = near[i]; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); });
+    const t = tour ? focus : controls.target;
+    if (inside) { const near = [...inside.lamps].sort((a, b) => a.distanceToSquared(t) - b.distanceToSquared(t)); pool.forEach((l, i) => { const p = near[i % near.length]; l.position.copy(p); l.visible = true; }); }
+    else { const near = [...LAMPS].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z)); pool.forEach((l, i) => { const lamp = near[i]; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); }); }
     sun.target.position.copy(t); sun.position.copy(t).addScaledVector(SUN, 100); sun.target.updateMatrixWorld();
     // Walking, the moon's shadows only matter round the walker: a tighter box draws fewer casters, and sharper.
     const reachShadow = following ? 28 : 44, sc = sun.shadow.camera;
@@ -239,13 +278,14 @@ export function createVillageView(canvas, state, hooks = {}) {
   }
   return {
     scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt,
+    goInside, goOutside, get inside() { return inside?.id ?? null; }, hallPoint, insidePlan: (id) => INSIDES[id],
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = !tour; },
     leave() { active = false; controls.enabled = false; pointers.clear(); multi = false; preview(null); following = false; tour = null; },
     tick(dt = 0) {
       time += dt; if (!active) return;
       controls.enabled = !tour && !hooks.blocked?.() && !hooks.gesture?.busy?.();
       tickTour(dt); if (!tour) { if (!following) framing.step(); controls.update(); }
-      const reach = following ? REACH.play : REACH.look; scene.fog.density += (reach.fog - scene.fog.density) * Math.min(1, dt * 2);
+      const reach = inside ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog - scene.fog.density) * Math.min(1, dt * 2);
       for (const p of patches) p.chunk.visible = p.sphere.center.distanceTo(camera.position) - p.sphere.radius < reach.far;
       placeLights(); folk.tick(dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera);
       if (mist) for (const m of mist.children) { const u = m.userData; m.position.x = u.x + Math.sin(time * .07 + u.phase) * 2.5; m.position.z = -u.z + Math.cos(time * .05 + u.phase) * 1.5; }

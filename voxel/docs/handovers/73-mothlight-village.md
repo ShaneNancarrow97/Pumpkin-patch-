@@ -133,6 +133,11 @@ The village is **not in the game yet**. Its rules and content are done and teste
 - **Falls point any way.** Each entry in `FALLS` has `nx`, `nz` (which way the water leaves) and `w` (its width). Two are the cliffs'; two are the culverts in the Quarry's south face.
 - **The woods (`buildWoods`) grow on open ground only.** They keep off terraces, ramps, water, the Green, roads (by 2.8) and gates. Something new on open ground needs its own rule in `clear`, or trees will grow through it.
 - **Festoons in a district take absolute coordinates through `base`**, never the district's `R`: that writer moves them again (the Moor's bulbs once hung in the woods). Their cables take absolute coordinates too.
+- **Inside places are data** (`INSIDES` in `village-view.js`). Each has a name, a hall builder, the hall's plan (size, the walker's spawn, the host's post, and the rects a walker can't enter), its host and its front door.
+  - `goInside(id)` builds the hall on first entry, at `INSIDE` far from the village and scaled like it. It hides the village, dims the moon and thins the haze.
+  - It moves the light pool onto the hall's own lamps (marks `"lamp"` from its builder) and stands the host at their post. `goOutside()` undoes all of it.
+  - A hall is a front-open diorama, like the farm's rooms: its front wall is a low sill, so the follow camera sees in.
+  - The Velvet Bat is the first. A new building needs a hall builder, a plan, and a door hit (added for every entry in `buildOnce`).
 - **Hosts are not residents.** Vesper is in `HOSTS` (content and view), not `RESIDENTS` or `FOLK`, so the friendship rules and tests are untouched. The view lists hosts after the residents.
 - **The explorer is not the game.** It builds its own state (level 3, invited) and never saves.
 
@@ -166,8 +171,16 @@ In order. Each item says what done looks like.
      - the cottages' gardens in the Copse.
    - Done when side-by-side shots of the Green and the valley read as the same place as the painting.
 3. **The Velvet Bat and Vesper.**
-   - Vesper's chat in the village UI (V7), using `HOST_BY_ID.vesper.greet`.
-   - Its interior when homes open (#183): a bar, booths, candles, a hearth, bats in the rafters and the crypt cellar.
+   - **Done:** the hall inside, walked into and out of in the explorer (see Inside places). It has:
+     - a velvet bar with a gothic mirror and shelves of bottles;
+     - booths, a hearth with wing chairs, a candle chandelier;
+     - bats in the rafters, an upright coffin and the crypt's trapdoor;
+     - Vesper behind the bar.
+   - **Still to do:**
+     - Vesper's chat in the village UI (V7), using `HOST_BY_ID.vesper.greet`;
+     - the crypt cellar down the trapdoor;
+     - guests at the tables in the evening.
+   - **The same mechanism opens every resident's home for #183**: Elowen's library, Rowan's workshop, then the districts' homes as they open.
 4. **V4: residents' animation.** Jointed rigs for the six posed residents and Vesper: idle, talk, wave, walk. These stand in until Codex's sprites arrive. If the sprites come first, use them through `spriteActor`-style billboards at 2.3 units.
 5. **V5: the village in the game.**
    - Travel by Elowen's carriage from the farm and back (`ARRIVAL`).

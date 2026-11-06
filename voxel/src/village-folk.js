@@ -189,7 +189,7 @@ const DESIGNS = {
   },
 };
 // Hosts keep a place on the Green rather than a home plot: Vesper the Velvet Bat (design grid).
-export const HOSTS = Object.freeze({ vesper: Object.freeze({ x: 102, z: 26.7, face: "north" }) });
+export const HOSTS = Object.freeze({ vesper: Object.freeze({ x: 100.2, z: 26, face: "north" }) });
 
 // A resident's figure: joints for the head, arms and legs (or a skirt), posed by tick().
 export function makeResident(id) {

@@ -570,6 +570,84 @@ export function festoon(f, ax, ay, az, bx, by, bz, n = 12, sag = .5, colours = [
   else { const len = Math.hypot(bx - ax, by - ay, bz - az), steps = Math.max(n * 2, Math.round(len / .1)); for (let i = 0; i < steps; i++) { const [x, y, z] = at((i + .5) / steps); f.block(x, y + .02, z, .03, .03, .03, 0x1e1a24); } }
   for (let i = 1; i < n; i++) { const [x, y, z] = at(i / n); f.block(x, y - .05, z, .02, .05, .02, 0x1e1a24); f.block(x, y - .14, z, .08, .1, .08, colours[i % colours.length], true); f.block(x, y - .06, z, .05, .03, .05, 0x2a2430); }
 }
+// The Velvet Bat's hall, inside. Front +z is the door, and the front wall is cut away to a low sill so the camera
+// sees in, as the farm's rooms are. Oak boards and a red runner lead from the door to a long bar with a gothic
+// mirror and shelves of bottles. Velvet booths stand along one wall, a hearth with wing chairs along the other,
+// with a candle chandelier overhead and bats roosting in the rafters. Pointed windows, sconces, banners,
+// portraits, an upright coffin and the crypt's trapdoor complete it. Its lights are marked "lamp" for the
+// light pool. The floor is 14 by 12, from x -7 to 7 and z 0 back to -12.
+export const VELVET_HALL = Object.freeze({ w: 14, d: 12, host: [0, -10.5], spawn: [0, -1.8],
+  // Where a walker can't go (x0, z0, x1, z1): the bar, the hearth, the chairs, the booths, the coffin, the trapdoor.
+  blocks: Object.freeze([[-4.85, -12, 4.85, -8.75], [-7, -7.7, -5.4, -4.3], [-4.9, -7.8, -3.5, -4.2], [5, -8.3, 7, -1.5], [-6.7, -2, -5.2, -.6], [4.5, -2, 6.2, -.4]]) });
+export function velvetBatHall(f, r = seeded(173)) {
+  const W = 14, D = 12, hw = W / 2, H = 6.4;
+  const stone = [0x3a3444, 0x433c4e, 0x352f40, 0x4a4256], trim = [0x6a6276, 0x5e566a], oak = [0x3a2418, 0x45291b, 0x2f1d14, 0x50301f];
+  const velvet = 0x7a1424, plush = 0x951c30, dark = 0x22140e, iron = 0x1a1418, glass = 0x3a3070;
+  const candle = (x, y, z, lamp = false) => { f.block(x, y, z, .1, .26, .1, 0xf0e6d8); f.block(x, y + .26, z, .06, .1, .06, 0xffb347, true); if (lamp) f.mark?.("lamp", x, y + .5, z); };
+  // Floor: oak boards in staggered rows; a red runner with gold edges from the door to the bar; the door's step.
+  for (let k = 0, z = -D + .25; z < 0; z += .5, k++) for (let x = -hw - (k % 2); x < hw; x += 2) { const x0 = Math.max(-hw, x), x1 = Math.min(hw, x + 2); if (x1 - x0 > .05) f.block((x0 + x1) / 2, 0, z, x1 - x0 - .03, .12, .47, vary(pick(oak, r), .05, r)); }
+  f.block(0, .12, -4.4, 1.7, .02, 8.6, velvet); for (const s of [-1, 1]) f.block(s * .82, .13, -4.4, .07, .02, 8.6, C.gold);
+  f.block(0, 0, .35, 2.4, .1, .7, trim[0]);
+  // Walls in courses of dark stone; the front only a sill with stone posts at the doorway.
+  for (let y = 0, k = 0; y < H; y += .42, k++) {
+    for (let x = -hw + (k % 2) * .45; x < hw - .05; x += .9) { const w = Math.min(.9, hw - x); f.block(x + w / 2, y, -D, w - .03, .4, .3, vary(pick(stone, r), .06, r)); }
+    for (const sx of [-1, 1]) for (let z = -(k % 2) * .45; z > -D + .05; z -= .9) { const d = Math.min(.9, z + D); f.block(sx * hw, y, z - d / 2, .3, .4, d - .03, vary(pick(stone, r), .06, r)); }
+  }
+  for (const sx of [-1, 1]) { for (let x = 1.35; x < hw; x += .9) f.block(sx * Math.min(hw - .45, x + .45), 0, 0, .87, .8, .3, vary(pick(stone, r), .06, r)); f.block(sx * (1.35 + (hw - 1.35) / 2), .8, 0, hw - 1.35, .1, .4, trim[0]); for (let y = 0; y < 1.6; y += .4) f.block(sx * 1.4, y, 0, .5, .38, .4, vary(pick(trim, r), .05, r)); f.block(sx * 1.4, 1.6, 0, .6, .1, .5, trim[0]); lantern(f, sx * 1.4, 1.7, 0, .7); f.mark?.("lamp", sx * 1.4, 2.3, .2); }
+  for (const z of [0, -D]) f.block(0, 0, z + (z ? .2 : -.2), W, .2, .1, trim[1]);
+  // Pointed windows on the side walls: moonlit glass in lead, a stone frame and a sill.
+  const win = (sx, z) => { const x = sx * (hw - .17); for (let i = 0; i < 12; i++) { const t = i / 12, half = t < .6 ? .55 : .55 * Math.cos((t - .6) / .4 * Math.PI / 2); if (half < .05) break; f.block(x, 2 + i * .2, z, .04, .2, half * 2, i % 3 === 2 ? iron : glass, i % 3 !== 2); f.block(x - sx * .03, 2 + i * .2, z - half - .07, .08, .2, .12, trim[0]); f.block(x - sx * .03, 2 + i * .2, z + half + .07, .08, .2, .12, trim[0]); } f.block(x - sx * .1, 1.88, z, .26, .12, 1.4, trim[1]); f.block(x - sx * .02, 2, z, .03, 1.7, .04, iron); };
+  for (const [sx, z] of [[-1, -2.4], [-1, -9.6], [1, -3.2], [1, -6.8], [1, -10.2]]) win(sx, z);
+  // Sconces between the windows: an iron bracket and a candle.
+  for (const [sx, z] of [[-1, -1.2], [-1, -10.9], [1, -1.4], [1, -5], [1, -8.6]]) { const x = sx * (hw - .3); f.block(x, 2.7, z, .3, .06, .06, iron); f.block(x - sx * .1, 2.62, z, .16, .08, .16, iron); candle(x - sx * .1, 2.7, z, true); }
+  // The bar: dark oak with velvet panels and a brass rail, a polished top, stools, glasses, a bell and two lamps.
+  f.block(0, 0, -9.4, 9.2, 1.1, .9, dark); for (let i = 0; i < 8; i++) { f.block(-4 + i * 1.143, .22, -8.93, .86, .66, .03, velvet); f.block(-4 + i * 1.143, .88, -8.93, .9, .04, .04, C.gold); }
+  f.block(0, 1.1, -9.4, 9.5, .1, 1.12, 0x1a0e08); f.block(0, 1.08, -8.83, 9.5, .06, .06, C.brass); f.block(0, .24, -8.68, 9, .06, .06, C.brass); for (let x = -4.4; x <= 4.4; x += 2.2) f.block(x, 0, -8.7, .06, .26, .06, C.brass);
+  for (const x of [-3.6, -1.8, 0, 1.8, 3.6]) { f.block(x, 0, -8.1, .36, .05, .36, iron); f.block(x, 0, -8.1, .08, .78, .08, C.brass); f.block(x, .78, -8.1, .48, .14, .48, plush); f.block(x, .5, -8.1, .3, .04, .3, C.brass); }
+  for (const x of [-2.6, -2.3, 1.2, 1.5, 3.9]) { f.block(x, 1.2, -9.3, .12, .2, .12, 0xd8dce8); f.block(x, 1.24, -9.3, .08, .1, .08, pick([0x7a1424, 0xa8203a, 0x3a1a4a], r)); }
+  f.block(-.6, 1.2, -9.5, .2, .12, .2, C.gold); f.block(-.6, 1.32, -9.5, .04, .08, .04, C.gold);
+  for (const x of [-3.4, 3.4]) { f.block(x, 1.2, -9.5, .26, .08, .26, C.brass); f.block(x, 1.28, -9.5, .16, .3, .16, 0xffc06a, true); f.block(x, 1.58, -9.5, .2, .06, .2, C.brass); f.mark?.("lamp", x, 2, -9.3); }
+  // Behind it: shelves of bottles either side of a tall gothic mirror, a gilded bat above, banners and barrels.
+  for (const sx of [-1, 1]) for (const y of [1.6, 2.45, 3.3]) { f.block(sx * 3.55, y, -11.6, 3.9, .08, .5, oak[2]); for (let x = 1.75; x < 5.4; x += .3) { if (r() < .18) continue; const h = .32 + r() * .22, c = pick([0x7a1424, 0x2a5a3a, 0x4a2a6a, 0xb07a2a, 0x1a3a5a, 0xa8203a], r), lit = r() < .3; f.block(sx * x, y + .08, -11.6 + (r() - .5) * .2, .14, h, .14, c, lit); f.block(sx * x, y + .08 + h, -11.6, .06, .1, .06, 0x2a1a14); } }
+  for (let i = 0; i < 17; i++) { const t = i / 16, half = t < .7 ? 1.1 : 1.1 * Math.cos((t - .7) / .3 * Math.PI / 2); if (half < .05) break; f.block(0, 1.5 + i * .2, -11.8, half * 2, .2, .04, 0x8a90b8); f.block(-half - .1, 1.5 + i * .2, -11.75, .16, .2, .08, C.gold); f.block(half + .1, 1.5 + i * .2, -11.75, .16, .2, .08, C.gold); }
+  f.block(0, 1.4, -11.7, 2.6, .14, .14, C.gold);
+  { const y = 5.1, z = -11.78; f.block(0, y, z, .4, .5, .06, C.gold); for (const s of [-1, 1]) { f.block(s * .55, y + .15, z, .7, .3, .05, C.gold); f.block(s * .95, y + .05, z, .3, .2, .05, C.gold); f.block(s * .1, y + .5, z, .08, .14, .05, C.gold); } f.block(-.07, y + .32, z + .03, .05, .05, .02, 0xff3a2a, true); f.block(.07, y + .32, z + .03, .05, .05, .02, 0xff3a2a, true); }
+  for (const sx of [-1, 1]) { f.block(sx * 6.2, 2.4, -11.78, .9, 2.8, .05, velvet); for (let k = 0; k < 3; k++) f.block(sx * 6.2 + (k - 1) * .3, 2.4 - .14 * (1 - Math.abs(k - 1)), -11.76, .3, .16, .04, velvet); f.block(sx * 6.2, 4.5, -11.75, 1.1, .1, .1, C.gold); f.block(sx * 6.2, 3.6, -11.74, .3, .2, .02, C.gold); for (const s of [-1, 1]) f.block(sx * 6.2 + s * .22, 3.66, -11.74, .2, .1, .02, C.gold); }
+  for (const sx of [-1, 1]) { const x = sx * 5.7; f.block(x, 0, -10.7, .2, .5, .2, dark); f.block(x, .5, -10.7, 1, .9, .9, 0x5a3a24); for (const y of [.62, 1.2]) f.block(x, y, -10.7, 1.04, .06, .94, iron); f.block(x - sx * .52, .9, -10.7, .1, .12, .1, C.brass); }
+  // The hearth on the left wall: a chimney breast, a dark mouth with logs and flames, a mantel with candles, a skull
+  // and a clock, a portrait above, and two wing chairs on a rug before it with a little table between.
+  const hx = -hw + .65;
+  f.block(hx, 0, -6, 1, H, 3.2, stone[3]); for (let y = 0, k = 0; y < H; y += .42, k++) f.block(hx + .5, y, -6, .04, .4, 3.2, vary(pick(stone, r), .06, r));
+  f.block(hx + .53, .2, -6, .04, 1.7, 2.1, 0x0a0608); f.block(hx + .9, 0, -6, .8, .14, 3.2, trim[0]);
+  for (const dz of [-.35, .35]) f.block(hx + .6, .3, -6 + dz, .5, .2, .7, 0x3a2418);
+  for (const [dz, h, c] of [[-.4, .6, 0xff8a2a], [0, .85, 0xffc04a], [.38, .55, 0xff6a1a], [-.15, .45, 0xffe08a], [.2, .7, 0xff9a3a]]) f.block(hx + .6, .48, -6 + dz, .14, h, .22, c, true);
+  f.mark?.("lamp", hx + 1.4, 1.1, -6);
+  f.block(hx + .7, 2.15, -6, .5, .2, 3.6, dark); candle(hx + .75, 2.35, -7.4); candle(hx + .75, 2.35, -4.6);
+  f.block(hx + .75, 2.35, -6.5, .26, .24, .26, 0xe8e0cc); f.block(hx + .89, 2.45, -6.56, .02, .06, .06, 0x1a1418); f.block(hx + .89, 2.45, -6.44, .02, .06, .06, 0x1a1418);
+  f.block(hx + .72, 2.35, -5.5, .2, .5, .3, 0x3a2418); f.block(hx + .83, 2.55, -5.5, .02, .2, .2, 0xe8dcc0);
+  f.block(hx + .54, 3.1, -6, .06, 1.9, 1.5, C.gold); f.block(hx + .57, 3.25, -6, .04, 1.6, 1.2, 0x2a1820); f.block(hx + .59, 3.95, -6, .03, .4, .32, 0xe0d8e0); f.block(hx + .6, 3.6, -6, .03, .5, .5, 0x1a1418);
+  f.block(hx + .6, 4.05, -6.08, .02, .05, .05, 0xff3a2a, true); f.block(hx + .6, 4.05, -5.92, .02, .05, .05, 0xff3a2a, true);
+  f.block(-4.4, .12, -6, 2.6, .02, 3.4, 0x5a1020); for (const s of [-1, 1]) { f.block(-4.4, .13, -6 + s * 1.62, 2.6, .02, .08, C.gold); f.block(-4.4 + s * 1.26, .13, -6, .08, .02, 3.4, C.gold); }
+  for (const z of [-4.9, -7.1]) { f.block(-4.2, 0, z, .7, .45, .7, dark); f.block(-4.25, .45, z, .7, .16, .7, plush); f.block(-3.85, .45, z, .16, 1.4, .8, plush); f.block(-3.8, 1.85, z, .2, .2, .9, plush); for (const s of [-1, 1]) f.block(-4.25, .6, z + s * .36, .7, .32, .12, plush); }
+  f.block(-4.2, 0, -6, .08, .6, .08, dark); f.block(-4.2, .6, -6, .5, .06, .5, dark); candle(-4.2, .66, -6.1, true); f.block(-4.1, .66, -5.9, .26, .06, .2, 0x4a2a5a);
+  // Booths along the right wall: high-backed velvet benches either side of a candlelit table.
+  for (const zc of [-3.2, -6.7]) { const x = hw - 1.5;
+    f.block(x, 0, zc, .12, .74, .12, iron); f.block(x, .74, zc, 1.5, .08, 1, dark); f.block(x, .82, zc, 1.1, .01, .7, 0xa8122a); candle(x, .83, zc, true);
+    for (const s of [-1, 1]) { const z = zc + s * 1.15; f.block(x + .15, 0, z, 1.8, .42, .5, dark); f.block(x + .15, .42, z, 1.8, .14, .5, plush); f.block(x + .15, .42, z + s * .28, 1.8, 1.7, .14, dark); f.block(x + .15, .6, z + s * .2, 1.6, 1.2, .04, plush); f.block(x + .15, 2.12, z + s * .28, .5, .3, .14, dark); f.block(x + .15, 2.42, z + s * .28, .2, .2, .14, C.gold); } }
+  // The chandelier: an iron ring of candles hung on chains from the rafters.
+  { const y = 4.6, z = -5.6; for (let i = 0; i < 16; i++) { const t = i / 16 * Math.PI * 2; f.block(Math.cos(t) * 1.3, y, z + Math.sin(t) * 1.3, .32, .08, .32, iron); if (i % 2 === 0) candle(Math.cos(t) * 1.3, y + .08, z + Math.sin(t) * 1.3); }
+    for (let i = 0; i < 4; i++) { const t = i / 4 * Math.PI * 2 + .4; for (let k = 0; k < 6; k++) { const u = k / 6; f.block(Math.cos(t) * 1.3 * (1 - u), y + .1 + u * 1.6, z + Math.sin(t) * 1.3 * (1 - u), .05, .26, .05, iron); } }
+    f.block(0, y + 1.7, z, .08, H - y - 1.7, .08, iron); f.block(0, y - .2, z, .3, .3, .3, iron); f.mark?.("lamp", 0, y - .3, z); }
+  // Rafters, with bats roosting upside down along them.
+  for (const z of [-1.6, -4.4, -7.2, -10]) { f.block(0, H, z, W, .28, .28, dark); for (const sx of [-1, 1]) f.block(sx * (hw - .3), H - 1, z, .24, 1, .24, dark); }
+  f.block(0, H + .28, -D / 2, .3, .3, D, dark);
+  for (let i = 0; i < 10; i++) { const z = [-1.6, -4.4, -7.2, -10][i % 4], x = -5.5 + i * 1.2 + (r() - .5) * .4, y = H - .3; f.block(x, y, z, .12, .26, .1, 0x15121a); for (const s of [-1, 1]) f.block(x + s * .09, y + .02, z, .06, .22, .08, 0x221a2a); f.block(x - .03, y + .02, z + .05, .03, .03, .01, 0xff3a2a, true); f.block(x + .03, y + .02, z + .05, .03, .03, .01, 0xff3a2a, true); }
+  // A portrait on the right wall by the bar, and an upright coffin and the crypt's trapdoor by the door.
+  { const x = hw - .2, z = -10.4; f.block(x, 2.5, z, .06, 2, 1.5, C.gold); f.block(x - .03, 2.65, z, .04, 1.7, 1.2, 0x2a1820); f.block(x - .05, 3.6, z, .03, .4, .32, 0xe0d8e0); f.block(x - .05, 3.1, z, .03, .5, .6, 0x1a1418); f.block(x - .06, 3.72, z - .07, .02, .05, .05, 0xff3a2a, true); f.block(x - .06, 3.72, z + .07, .02, .05, .05, 0xff3a2a, true); }
+  { const x = -5.95, z = -1.3; for (let i = 0; i < 12; i++) { const t = i / 11, w = t < .25 ? .5 + t * 1.6 : .9 - (t - .25) * .6; f.block(x, i * .2, z, .5, .2, w, 0x2a1810); } f.block(x + .27, .6, z, .02, 1.4, .06, C.brass); f.block(x + .27, 1.6, z, .02, .06, .4, C.brass); f.block(x, 2.4, z, .5, .1, .7, 0x15121a); f.block(x, 2.5, z, .36, .36, .4, 0x15121a); }
+  { const x = 5.35, z = -1.2; f.block(x, .12, z, 1.3, .02, 1.3, 0x050306); for (let k = -2; k <= 2; k++) { f.block(x + k * .26, .14, z, .05, .05, 1.3, iron); f.block(x, .14, z + k * .26, 1.3, .05, .05, iron); } for (const s of [-1, 1]) candle(x + s * .85, .12, z + .8, true); f.block(x, .14, z - .78, 1.4, .3, .1, iron); }
+}
+
 // A fair's market stall (front +z): a timber counter with a striped skirt under a striped awning
 // with a scalloped edge, goods on the counter and shelf, a lantern under the awning and a sign.
 export function marketStall(f, a, b, goods = "pumpkins", r = seeded(171)) {
