@@ -23,6 +23,10 @@ export class Voxels {
     return this.box(x - w / 2, y, z - d / 2, w, h, d, color, glow);
   }
 
+  // A named point noted while building (a chimney's top, for its smoke), in the same
+  // coordinates as the boxes; the built group carries them as userData.marks[kind].
+  mark(kind, x, y, z) { ((this.marks ??= {})[kind] ??= []).push([x, y, z]); return this; }
+
   // glow brightens the glowing voxels past white so the bloom catches them (1 leaves them as painted).
   build({ shadows = true, detailShadows = true, glow = 1 } = {}) {
     const group = new THREE.Group();
@@ -45,6 +49,7 @@ export class Voxels {
     if (detailShadows) make(this.solid, lit, true);
     else { make(this.solid.filter((b) => !small(b)), lit, true); make(this.solid.filter(small), lit, false); }
     make(this.glow, new THREE.MeshBasicMaterial({ toneMapped: false, color: new THREE.Color(glow, glow, glow) }), false);
+    group.userData.marks = this.marks ?? {};
     return group;
   }
 }
@@ -57,8 +62,9 @@ export class ChunkedVoxels {
   at(x, z) { const key = Math.floor(x / this.size) + "," + Math.floor(z / this.size); let v = this.chunks.get(key); if (!v) this.chunks.set(key, v = new Voxels()); return v; }
   box(x, y, z, w, h, d, color, glow = false) { this.at(x + w / 2, z + d / 2).box(x, y, z, w, h, d, color, glow); return this; }
   block(x, y, z, w, h, d, color, glow = false) { this.at(x, z).block(x, y, z, w, h, d, color, glow); return this; }
+  mark(kind, x, y, z) { ((this.marks ??= {})[kind] ??= []).push([x, y, z]); return this; }
   get count() { let n = 0; for (const v of this.chunks.values()) n += v.solid.length + v.glow.length; return n; }
-  build(options) { const group = new THREE.Group(); for (const v of this.chunks.values()) group.add(v.build(options)); return group; }
+  build(options) { const group = new THREE.Group(); for (const v of this.chunks.values()) group.add(v.build(options)); group.userData.marks = this.marks ?? {}; return group; }
 }
 
 // Small deterministic random numbers, so the world looks the same every load.

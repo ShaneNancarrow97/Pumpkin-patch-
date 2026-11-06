@@ -15,7 +15,7 @@ export const C = Object.freeze({
   slate: [0x4c5079, 0x575b87, 0x444870], slatePlum: [0x5f4879, 0x6b5387, 0x533e6b], terracotta: [0xb5583a, 0xc46a48, 0xa24c32], roofMoss: [0x5a6b4a, 0x667a52],
   iron: 0x27242d, gold: 0xdcab4c, brass: 0xc9973f, glow: 0xff9632, glowSoft: 0xffb45a, window: 0xffb860, glass: 0xd8c4ff,
   leaves: [0xb3352a, 0xd0532c, 0xe8873a, 0x9c2a2a, 0xc8432e], crimson: [0xa8172c, 0xbe2135, 0x8f1226, 0xd2364b], golden: [0xe2a83a, 0xf0c252, 0xcf8f2c, 0xf6d56b],
-  green: [0x4c8c3c, 0x5b9f45, 0x417a34, 0x6db250], pine: [0x2f5d46, 0x386c51, 0x29503e], violet: [0x7d4fa3, 0x9461bb, 0x6a4190, 0xa979cf],
+  green: [0x4c8c3c, 0x5b9f45, 0x417a34, 0x6db250], pine: [0x2f5d46, 0x386c51, 0x29503e], violet: [0x7d4fa3, 0x9461bb, 0x6a4190, 0xa979cf], magenta: [0xb0306a, 0xc8407a, 0x9a2a5e, 0xd85a8a], teal: [0x2a7a6a, 0x3a8a7a, 0x226a5a, 0x4a9a88],
   hedge: [0x3b7733, 0x45853a, 0x336a2d], hedgeTop: [0x5c9f44, 0x68ab4b, 0x52923f], grass: [0x5e9440, 0x6aa047, 0x548838],
   flowers: [0xf28fb5, 0xd6407a, 0xf5d04a, 0xf08a3a, 0x9a6ae0, 0x6a8ef0, 0xf6f0f5, 0xe0403a],
   plum: 0x6a2f58, plumDeep: 0x4a1f3f, cream: 0xf3e6c8, moth: 0xe6d6b0, water: 0x4aa3d8,
@@ -32,10 +32,11 @@ export function frame(v, rx, rz, facing = "south", base = 0) {
   return {
     block(x, y, z, w, h, d, colour, glow = false) { v.block(X0 + x * c + z * s, y + base, Z0 - x * s + z * c, swap ? d : w, h, swap ? w : d, colour, glow); return this; },
     at(x, z) { return { x: X0 + x * c + z * s, z: Z0 - x * s + z * c }; },
+    mark(kind, x, y, z) { v.mark?.(kind, X0 + x * c + z * s, y + base, Z0 - x * s + z * c); return this; },
   };
 }
 // Writes in realm coordinates directly (x east, z north), for things laid out on the map.
-export const realm = (v) => ({ block(x, y, z, w, h, d, colour, glow = false) { v.block(x, y, -z, w, h, d, colour, glow); return this; } });
+export const realm = (v) => ({ block(x, y, z, w, h, d, colour, glow = false) { v.block(x, y, -z, w, h, d, colour, glow); return this; }, mark(kind, x, y, z) { v.mark?.(kind, x, y, -z); return this; } });
 
 // ---- Small things -----------------------------------------------------------
 export function lantern(f, x, y, z, size = 1, lit = true) {
@@ -405,6 +406,7 @@ export function cottage(f, opts = {}) {
 function chimneyStack(f, x, y, z, r) {
   for (let k = 0; k < 8; k++) { f.block(x, y + k * .3, z, .8, .28, .8, vary(pick(C.brick, r), .06, r)); f.block(x, y + k * .3 + .28, z, .78, .02, .78, C.mortar); }
   f.block(x, y + 2.4, z, .96, .14, .96, C.stone[3]); for (const s of [-1, 1]) f.block(x + s * .18, y + 2.54, z, .22, .3, .22, 0xa0583a);
+  f.mark?.("smoke", x, y + 2.84, z);
 }
 // A narrow three-storey townhouse with a shopfront, for the backdrop beyond the Green.
 export function townhouse(f, opts = {}) {
@@ -699,7 +701,7 @@ export function tavern(f, r = seeded(93)) {
   for (let i = 0; i < steps; i++) { const t = i / steps, y = top + t * rise, z0 = (1 - t) * (d / 2 + .9), z1 = (1 - (i + 1) / steps) * (d / 2 + .9); for (const side of [-1, 1]) { const c = vary(pick(slate, r), .05, r); f.block(0, y, -d / 2 + .3 + side * (z0 + z1) / 2, w + 1.2, rise / steps + .04, z0 - z1 + .1, c); f.block(0, y - .04, -d / 2 + .3 + side * (z0 - (z0 - z1) * .2), w + 1.22, .05, (z0 - z1) * .4, shade(c, .7)); } }
   for (const side of [-1, 1]) for (let i = 0; i < steps; i++) { const t = i / steps, half = (1 - t) * (d / 2 + .2); if (half < .1) break; f.block(side * (hw + .3), top + t * rise, -d / 2 + .3, .1, rise / steps + .02, half * 2, C.plasterWarm); }
   for (const dx of [-2.4, 0, 2.4]) { const b = top + .3; f.block(dx, b, .1, 1.3, 1.2, 1.3, C.plasterWarm); f.block(dx, b + .2, .76, .7, .7, .05, win, true); for (let i = 0; i < 5; i++) for (const s of [-1, 1]) f.block(dx + s * (.75 - i * .15), b + 1.15 + i * .14, .1, .3, .14, 1.5, vary(pick(slate, r), .05, r)); }
-  for (const cx of [-hw + 1, hw - 1.2]) { for (let k = 0; k < 9; k++) { f.block(cx, top + 1 + k * .32, -d * .6, .9, .3, .9, vary(pick(C.brick, r), .06, r)); } f.block(cx, top + 3.9, -d * .6, 1.05, .14, 1.05, C.stone[3]); for (const s of [-1, 1]) f.block(cx + s * .2, top + 4.04, -d * .6, .24, .32, .24, 0xa0583a); }
+  for (const cx of [-hw + 1, hw - 1.2]) { for (let k = 0; k < 9; k++) { f.block(cx, top + 1 + k * .32, -d * .6, .9, .3, .9, vary(pick(C.brick, r), .06, r)); } f.block(cx, top + 3.9, -d * .6, 1.05, .14, 1.05, C.stone[3]); for (const s of [-1, 1]) f.block(cx + s * .2, top + 4.04, -d * .6, .24, .32, .24, 0xa0583a); f.mark?.("smoke", cx, top + 4.36, -d * .6); }
   for (const s of [-1, 1]) lantern(f, s * (hw - .3), 2.0, .4, .8);
   for (let i = 0; i < 4; i++) { const x = -2.6 + (i % 2) * 3.4, z = 2.2 + (i >> 1) * 1.9; f.block(x, 0, z, .14, .7, .14, C.timber); f.block(x, .7, z, 1.1, .08, 1.1, 0xf0e6d8); f.block(x, .78, z, .12, .2, .12, 0xf6f0e0); f.block(x, .98, z, .06, .08, .06, 0xffb347, true); for (const s of [-1, 1]) { f.block(x + s * .8, 0, z, .4, .42, .4, C.wood); f.block(x + s * .97, .42, z, .06, .5, .4, C.wood); } }
   f.block(hw + .4, 0, -1.2, 1.4, 1.6, 2.4, 0x6a4a34); f.block(hw + .4, 1.6, -1.2, 1.7, .14, 2.7, pick(slate, r));
@@ -723,7 +725,7 @@ export function caravan(f, r = seeded(97)) {
   for (const s of [-1, 1]) { f.block(s * 1.12, 1.4, -.6, .04, .8, .9, C.window, true); f.block(s * 1.13, 1.4, -.6, .04, .8, .06, C.gold); f.block(s * 1.13, 1.8, -.6, .04, .06, .9, C.gold); }
   for (const s of [-1, 1]) for (const t of [-1.3, 1.3]) { f.block(s * 1.18, .1, t, .14, 1.1, 1.1, 0xd9a441); f.block(s * 1.18, .55, t, .16, .2, .2, C.iron); for (let i = 0; i < 4; i++) f.block(s * 1.2, .55, t, .08, .06, 1, 0x8a6a3a); }
   f.block(0, .9, 2.1, 1.2, 1.6, .1, 0xd9a441); f.block(0, .9, 2.15, .8, 1.3, .06, 0x6a2a4a); for (let k = 0; k < 4; k++) f.block(0, .7 - k * .2, 2.4 + k * .3, 1, .1, .3, C.wood);
-  f.block(-.6, 3.4, -1.2, .3, .9, .3, C.iron); f.block(-.6, 4.3, -1.2, .4, .1, .4, C.iron); lantern(f, .9, 2.0, 2.2, .7);
+  f.block(-.6, 3.4, -1.2, .3, .9, .3, C.iron); f.block(-.6, 4.3, -1.2, .4, .1, .4, C.iron); f.mark?.("smoke", -.6, 4.4, -1.2); lantern(f, .9, 2.0, 2.2, .7);
 }
 // The Baron's velvet manor: dark stone and plum slate, two spired towers, a dome with a
 // telescope, iron cresting, rows of red-lit windows, a red carpet up its front steps.
@@ -746,7 +748,7 @@ export function manor(f, r = seeded(99)) {
   }
   for (let k = 0; k < 6; k++) { const rr = 2 * Math.cos(k / 6 * Math.PI / 2), y = 9.2 + Math.sin(k / 6 * Math.PI / 2) * 1.8; for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2; f.block(-2 + Math.cos(a) * rr, y, -d * .7 + Math.sin(a) * rr, .5, .32, .5, k % 2 ? C.brass : 0xa87a3a); } }
   f.block(-2 + .9, 10.6, -d * .7 + .6, 1.6, .3, .3, C.brass);
-  for (const cx of [-1, 3.5]) { for (let k = 0; k < 7; k++) f.block(cx, 9.6 + k * .4, -d * .3, .9, .4, .9, vary(pick(C.brick, r), .05, r)); f.block(cx, 12.4, -d * .3, 1.05, .14, 1.05, 0x5a4a62); }
+  for (const cx of [-1, 3.5]) { for (let k = 0; k < 7; k++) f.block(cx, 9.6 + k * .4, -d * .3, .9, .4, .9, vary(pick(C.brick, r), .05, r)); f.block(cx, 12.4, -d * .3, 1.05, .14, 1.05, 0x5a4a62); f.mark?.("smoke", cx, 12.54, -d * .3); }
 }
 // A marsh hut on stilts with a lit window, a ladder and a lantern on a pole.
 export function stiltHut(f, r = seeded(101)) {
@@ -764,7 +766,7 @@ export function stiltHut(f, r = seeded(101)) {
 // terrace behind railings and a crypt stair at its side. Its front is local +z.
 export function velvetBat(f, r = seeded(131)) {
   const W = 14, D = 12, hw = W / 2, g = 3.4, u = 3, top = .5 + g + u;
-  const stone = [0x3a3444, 0x433c4e, 0x352f40, 0x4a4256], trim = [0x6a6276, 0x5e566a], slate = [0x24202e, 0x2a2536, 0x201c28], red = 0xd8304a, red2 = 0xff6a4a;
+  const stone = [0x3a3444, 0x433c4e, 0x352f40, 0x4a4256], trim = [0x6a6276, 0x5e566a], slate = [0x24202e, 0x2a2536, 0x201c28], red = 0xa8122a, red2 = 0xd84a26;
   // Plinth and walls in courses of dark stone, each course offset from the last.
   for (const [z, face] of [[0, 1], [-D, -1]]) for (let x = -hw; x < hw; x += .7) f.block(x + .35, 0, z + face * .05, .7, .5, .3, vary(pick(trim, r), .05, r));
   for (let y = .5, k = 0; y < top; y += .42, k++) for (let x = -hw + (k % 2) * .45; x < hw - .05; x += .9) { const w = Math.min(.9, hw - x); for (const z of [0, -D]) f.block(x + w / 2, y, z, w - .03, .4, .22, vary(pick(stone, r), .06, r)); }
@@ -776,12 +778,12 @@ export function velvetBat(f, r = seeded(131)) {
   // A pointed window: stepped glass narrowing to a point, lead lines, a stone frame and sill.
   const pointed = (x, y, z, w, h, face = 1) => {
     const rows = Math.round(h / .2);
-    for (let i = 0; i < rows; i++) { const t = i / rows, half = t < .62 ? w / 2 : w / 2 * Math.cos((t - .62) / .38 * Math.PI / 2); if (half < .05) break; f.block(x, y + i * .2, z + face * .05, half * 2, .2, .05, i % 4 === 3 ? 0x2a1a20 : (i + Math.round(x)) % 3 ? red : red2, i % 4 !== 3); f.block(x - half - .08, y + i * .2, z + face * .07, .14, .2, .08, trim[0]); f.block(x + half + .08, y + i * .2, z + face * .07, .14, .2, .08, trim[0]); }
-    f.block(x, y, z + face * .09, .05, h * .7, .04, 0x1a1418); f.block(x, y - .12, z + face * .14, w + .4, .12, .26, trim[1]);
-    f.block(x, y + h + .02, z + face * .08, .16, .16, .08, trim[0]);
+    for (let i = 0; i < rows; i++) { const t = i / rows, half = t < .62 ? w / 2 : w / 2 * Math.cos((t - .62) / .38 * Math.PI / 2); if (half < .05) break; f.block(x, y + i * .2, z + face * .13, half * 2, .2, .05, i % 4 === 3 ? 0x2a1a20 : (i + Math.round(x)) % 3 ? red : red2, i % 4 !== 3); f.block(x - half - .08, y + i * .2, z + face * .15, .14, .2, .08, trim[0]); f.block(x + half + .08, y + i * .2, z + face * .15, .14, .2, .08, trim[0]); }
+    f.block(x, y, z + face * .17, .05, h * .7, .04, 0x1a1418); f.block(x, y - .12, z + face * .2, w + .4, .12, .26, trim[1]);
+    f.block(x, y + h + .02, z + face * .16, .16, .16, .08, trim[0]);
   };
   for (const x of [-4.4, 4.4]) { pointed(x, 1.1, 0, 1.5, 2.4); pointed(x, .5 + g + .5, 0, 1.2, 1.9); }
-  for (const z of [-3, -6.5, -10]) for (const sx of [-1, 1]) { f.block(sx * (hw + .06), 1.2, z, .05, 2.2, 1.1, red, true); f.block(sx * (hw + .09), 1.2, z, .04, 2.2, .06, 0x1a1418); f.block(sx * (hw + .06), .5 + g + .5, z, .05, 1.7, .9, red2, true); f.block(sx * (hw + .1), 1.05, z, .2, .12, 1.3, trim[1]); }
+  for (const z of [-3, -6.5, -10]) for (const sx of [-1, 1]) { f.block(sx * (hw + .13), 1.2, z, .05, 2.2, 1.1, red, true); f.block(sx * (hw + .16), 1.2, z, .04, 2.2, .06, 0x1a1418); f.block(sx * (hw + .13), .5 + g + .5, z, .05, 1.7, .9, red2, true); f.block(sx * (hw + .16), 1.05, z, .2, .12, 1.3, trim[1]); for (const y of [1.2, .5 + g + .5]) for (const e of [-1, 1]) f.block(sx * (hw + .15), y, z + e * .6, .08, y < 2 ? 2.2 : 1.7, .12, trim[0]); }
   // The great door: a pointed arch of stone, two leaves of oxblood oak strapped with iron, a glow at the crack, steps and lanterns.
   for (let i = 0; i < 18; i++) { const t = i / 17, half = t < .6 ? 1.15 : 1.15 * Math.cos((t - .6) / .4 * Math.PI / 2); f.block(0, .5 + i * .19, .12, half * 2, .19, .06, 0x4a1420); f.block(-half - .12, .5 + i * .19, .16, .24, .19, .14, trim[0]); f.block(half + .12, .5 + i * .19, .16, .24, .19, .14, trim[0]); }
   f.block(0, .5, .16, .05, 3.2, .05, 0xff8a4a, true); for (const y of [1, 1.9, 2.7]) for (const s of [-1, 1]) f.block(s * .55, .5 + y, .17, .9, .08, .03, 0x1a1418); for (const s of [-1, 1]) f.block(s * .35, 1.9, .2, .1, .1, .05, C.gold);
@@ -797,11 +799,11 @@ export function velvetBat(f, r = seeded(131)) {
   for (const sx of [-1, 1]) for (let i = 0; i < steps; i++) { const t = i / steps, half = (1 - t) * (D / 2); if (half < .1) break; f.block(sx * hw, top + t * rise, -D / 2, .24, rise / steps + .02, half * 2, vary(pick(stone, r), .05, r)); }
   f.block(0, top + rise, -D / 2, W + 1, .2, .3, 0x1a1418); for (let i = 0; i <= 28; i++) { const x = -hw - .3 + i * (W + .6) / 28; f.block(x, top + rise + .2, -D / 2, .05, .4 + (i % 2) * .2, .05, 0x1a1418); if (i % 4 === 0) f.block(x, top + rise + .62, -D / 2, .12, .12, .12, C.gold); }
   for (const sx of [-1, 1]) { f.block(sx * (hw + .2), top + rise - .2, -D / 2, .3, 2.2, .3, 0x1a1418); f.block(sx * (hw + .2), top + rise + 2, -D / 2, .16, .5, .16, C.gold); }
-  for (const dx of [-4.4, 4.4]) { const b = top + 1.4, dz = -1.6; f.block(dx, b, dz, 1.4, 1.6, 1.2, vary(pick(stone, r), .05, r)); f.block(dx, b + .3, dz + .62, .7, .9, .05, red, true); for (let i = 0; i < 6; i++) for (const s of [-1, 1]) f.block(dx + s * (.8 - i * .14), b + 1.6 + i * .2, dz, .3, .2, 1.4, vary(pick(slate, r), .06, r)); f.block(dx, b + 2.8, dz, .06, .5, .06, 0x1a1418); }
+  for (const dx of [-4.4, 4.4]) { const b = top + 1.4, dz = -1.6; f.block(dx, b, dz, 1.4, 1.6, 1.2, vary(pick(stone, r), .05, r)); pointed(dx, b + .3, dz + .6, .56, 1.0); for (let i = 0; i < 6; i++) for (const s of [-1, 1]) f.block(dx + s * (.8 - i * .14), b + 1.6 + i * .2, dz, .3, .2, 1.4, vary(pick(slate, r), .06, r)); f.block(dx, b + 2.8, dz, .06, .5, .06, 0x1a1418); }
   const gargoyle = (x, y, z, face) => { f.block(x, y, z, .5, .4, .7, trim[1]); f.block(x, y + .3, z + face * .4, .32, .3, .3, trim[0]); for (const s of [-1, 1]) f.block(x + s * .32, y + .3, z - face * .05, .3, .4, .1, trim[1]); f.block(x - .07, y + .45, z + face * .56, .05, .05, .02, 0xff3a2a, true); f.block(x + .07, y + .45, z + face * .56, .05, .05, .02, 0xff3a2a, true); };
   for (const sx of [-1, 1]) { gargoyle(sx * (hw + .1), top - .1, .5, 1); gargoyle(sx * (hw + .1), top - .1, -D - .5, -1); }
   // Tall chimneys of dark brick with clay pots.
-  for (const cx of [-hw + 1.6, hw - 3.6]) { for (let k = 0; k < 14; k++) f.block(cx, top + 1 + k * .32, -D * .62, .9, .3, .9, vary(pick([0x4a2a2a, 0x3e2424, 0x552e2e], r), .06, r)); f.block(cx, top + 5.5, -D * .62, 1.1, .16, 1.1, trim[0]); for (const s of [-1, 1]) f.block(cx + s * .2, top + 5.66, -D * .62, .24, .4, .24, 0x8a4a3a); }
+  for (const cx of [-hw + 1.6, hw - 3.6]) { for (let k = 0; k < 14; k++) f.block(cx, top + 1 + k * .32, -D * .62, .9, .3, .9, vary(pick([0x4a2a2a, 0x3e2424, 0x552e2e], r), .06, r)); f.block(cx, top + 5.5, -D * .62, 1.1, .16, 1.1, trim[0]); for (const s of [-1, 1]) f.block(cx + s * .2, top + 5.66, -D * .62, .24, .4, .24, 0x8a4a3a); f.mark?.("smoke", cx, top + 6.06, -D * .62); }
   // The belfry tower at the front right: windows like slits, open arches with a bell, an eight-sided spire and a bat on top.
   const tx = hw + 1.4, tz = -2.2, th = 12;
   for (let y = 0, k = 0; y < th; y += .45, k++) for (const [dx, dz, w, d] of [[0, 1.6, 3.2, .24], [0, -1.6, 3.2, .24], [1.6, 0, .24, 3.2], [-1.6, 0, .24, 3.2]]) f.block(tx + dx, y, tz + dz, w + (k % 2) * .06, .43, d + (k % 2) * .06, vary(pick(stone, r), .06, r));
@@ -812,6 +814,8 @@ export function velvetBat(f, r = seeded(131)) {
   f.block(tx, th, tz, 3.6, .3, 3.6, trim[0]); for (const [dx, dz] of [[1.6, 1.6], [-1.6, 1.6], [1.6, -1.6], [-1.6, -1.6]]) { f.block(tx + dx, th + .3, tz + dz, .4, .9, .4, trim[1]); f.block(tx + dx, th + 1.2, tz + dz, .14, .5, .14, trim[0]); }
   for (let k = 0; k < 12; k++) { const w = 3 - k * .24; f.block(tx, th + .3 + k * .45, tz, w, .45, w * .72, vary(pick(slate, r), .05, r)); f.block(tx, th + .3 + k * .45, tz, w * .72, .45, w, vary(pick(slate, r), .05, r)); }
   f.block(tx, th + 5.7, tz, .1, 1.2, .1, 0x1a1418); for (const s of [-1, 1]) { f.block(tx + s * .35, th + 6.7, tz, .55, .3, .05, 0x1a1418); f.block(tx + s * .62, th + 6.55, tz, .25, .2, .05, 0x1a1418); }
+  for (const s of [-1, 1]) lantern(f, s * hw, 2.9, 1.15, .85);
+  lantern(f, tx, 2.6, tz + 1.85, .8);
   // The bat sign on its iron bracket, gilded at the edge, red-eyed.
   f.block(-2.6, 3.3, .7, .08, .08, 1.3, 0x1a1418); f.block(-2.6, 2.95, .2, .06, .4, .06, 0x1a1418);
   { const sx = -2.6, sy = 2.35, sz = 1.25; f.block(sx, sy, sz, .1, .7, .3, 0x15121a); for (const s of [-1, 1]) { f.block(sx, sy + .2, sz + s * .45, .08, .45, .6, 0x15121a); f.block(sx, sy + .05, sz + s * .8, .08, .3, .3, 0x15121a); f.block(sx, sy + .65, sz + s * .3, .1, .05, .5, C.gold); } f.block(sx, sy + .5, sz + .07, .11, .06, .05, 0xff3a2a, true); f.block(sx, sy + .5, sz - .07, .11, .06, .05, 0xff3a2a, true); for (const s of [-1, 1]) f.block(sx, sy + .74, sz + s * .1, .06, .12, .05, 0x15121a); }

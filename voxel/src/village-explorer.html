@@ -41,6 +41,11 @@ button.primary { border-color: rgba(255, 179, 71, .5); }
 #card h2 { margin: 0; font: 600 18px/1.15 Fraunces, Georgia, serif; color: var(--amber); }
 #card .role { margin: 2px 0 8px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
 #card .line { margin: 0; font-family: Fraunces, Georgia, serif; font-size: 15px; }
+#title { position: fixed; left: 50%; bottom: calc(max(12px, env(safe-area-inset-bottom)) + 86px); transform: translate(-50%, 10px); text-align: center; opacity: 0; transition: opacity .5s, transform .5s; pointer-events: none; z-index: 5; width: min(560px, calc(100% - 32px)); }
+#title.shown { opacity: 1; transform: translate(-50%, 0); }
+#title h2 { margin: 0; font: 600 clamp(24px, 4vw, 36px)/1.1 Fraunces, Georgia, serif; color: var(--amber); text-shadow: 0 2px 18px rgba(0, 0, 0, .7); }
+#title p { margin: 6px 0 0; font-size: 14px; color: var(--text); text-shadow: 0 1px 10px rgba(0, 0, 0, .8); }
+.touring nav .group:last-child, .touring #walk, .touring #who, .touring #everyone { opacity: .35; pointer-events: none; }
 @media (max-width: 520px) { header p { display: none; } }
 </style>
 </head>
@@ -50,6 +55,7 @@ button.primary { border-color: rgba(255, 179, 71, .5); }
 <header><h1>Mothlight <span>Village</span></h1><p>Explorer build · the village before it joins the game</p></header>
 <div id="fps">– fps</div>
 <div id="card"><h2 id="card-name"></h2><p class="role" id="card-role"></p><p class="line" id="card-line"></p></div>
+<div id="title"><h2 id="title-name"></h2><p id="title-sub"></p></div>
 <div id="pad"></div>
 <div id="stick"><div id="knob"></div></div>
 <p class="hint">Left thumb walks · drag right to look · pinch to zoom · tap a neighbour to say hello</p>
@@ -58,6 +64,7 @@ button.primary { border-color: rgba(255, 179, 71, .5); }
     <button id="walk" class="primary" disabled>Walk</button>
     <button id="who">Shane</button>
     <button id="everyone">Everyone</button>
+    <button id="tour">Tour</button>
   </div>
   <div class="group">
     <button data-place="green" class="on">Green</button>

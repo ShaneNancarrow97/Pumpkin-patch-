@@ -4,9 +4,9 @@
 // pages to find, and the grand tour's camera director. Realm (x, z) → three (x, -z).
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { buildGround, buildPaving, buildWater, buildGreen, buildBeyond, buildHorizon, buildMist, buildStall, buildBench, buildHomes, buildNodes, buildTerrainWorks, grassAt, LAMPS, SKY } from "./village-world.js";
+import { buildGround, buildPaving, buildWater, buildGreen, buildBeyond, buildHorizon, buildMist, buildStall, buildBench, buildHomes, buildNodes, buildTerrainWorks, buildWoods, grassAt, LAMPS, SKY } from "./village-world.js";
 import { createGrass } from "./village-grass.js";
-import { terrainHeight } from "./village-terrain.js";
+import { terrainHeight, REALM } from "./village-terrain.js";
 import { createBats } from "./village-bats.js";
 import { buildVillageDecor, letterPage } from "./village-models.js";
 import { buildEstateDecor } from "./house-estate-world.js";
@@ -27,11 +27,12 @@ export const TOUR = Object.freeze([
   { at: [58, 10, 4], look: [57, 1, 24], title: "Hollow Green", sub: "The square, the well and the noticeboard" },
   { at: [49, 8, 14], look: [40, 2, 22], title: "Elowen's library", sub: "A conservatory, one day" },
   { at: [62, 7, 13], look: [72, 1.5, 19], title: "Rowan's workshop", sub: "More plans than walls" },
-  { at: [56, 16, 26], look: [62, 2, 52], title: "Lantern Quarry", sub: "Beyond the broken bridge · opens at level 9" },
-  { at: [40, 15, 40], look: [18, 2, 58], title: "Moonroot Copse", sub: "Mabel and Tansy, behind the brambles · level 6" },
-  { at: [78, 16, 30], look: [100, 3, 40], title: "Carnival Moor", sub: "Corvus's tents and the Baron's manor · level 12" },
-  { at: [84, 22, 62], look: [85, 4, 88], title: "Mirror Marsh", sub: "Where the observatory waits · level 15" },
-  { at: [60, 64, -6], look: [82, 18, 150], title: "…and beyond", sub: "" },
+  { at: [100, 16, 46], look: [102, 5, 21], title: "The Velvet Bat", sub: "A tavern for bats and night folk · Vesper keeps the door" },
+  { at: [120, 22, 22], look: [144, 5, 52], title: "Carnival Moor", sub: "Corvus's tents and the Baron's manor · level 12" },
+  { at: [104, 26, 96], look: [84, 0, 122], title: "Mirror Marsh", sub: "Where the observatory waits · level 15" },
+  { at: [62, 22, 52], look: [62, 8, 80], title: "Lantern Quarry", sub: "Beyond the broken bridge · opens at level 9" },
+  { at: [16, 22, 48], look: [-12, 4, 82], title: "Moonroot Copse", sub: "Mabel and Tansy, behind the brambles · level 6" },
+  { at: [60, 70, -10], look: [82, 18, 170], title: "…and beyond", sub: "" },
   { at: [57, 6.5, 13], look: [56, 1.2, 24], title: "Welcome to Mothlight", sub: "" },
 ].map((p) => Object.freeze({ ...p, at: p.at.map((v) => v * K), look: p.look.map((v) => v * K) })));
 const TOUR_SECONDS = 4.6;
@@ -74,12 +75,14 @@ export function createVillageView(canvas, state, hooks = {}) {
   function buildOnce() {
     if (built) return; built = true;
     horizon = buildHorizon(); sky = horizon.userData.sky; horizon.remove(sky); scene.add(sky);
-    mist = buildMist(); bats = createBats(); life = createVillageLife(); grass = createGrass({ x0: 0, z0: 0, x1: 122, z1: 98, density: 3, grow: grassAt, height: terrainHeight, scale: K });
-    const works = buildTerrainWorks(), green = buildGreen(), beyond = buildBeyond();
-    root.add(buildGround(), buildPaving(), buildWater(), works, green, beyond, horizon, mist, bats.group, life.group, grass.group);
+    const works = buildTerrainWorks(), green = buildGreen(), beyond = buildBeyond(), woods = buildWoods();
+    // The chimneys the village noted as it was built smoke where they stand.
+    const smoke = [green, beyond].flatMap((g) => g.userData.marks?.smoke ?? []).map(([x, y, z]) => ({ x, y, z: -z }));
+    mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: 0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
+    root.add(buildGround(), buildPaving(), buildWater(), works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group);
     // Every patch of the built village, with where it is, so those beyond the haze can be skipped.
     root.updateMatrixWorld(true);
-    for (const g of [works, green, beyond, horizon]) for (const chunk of g.children) { if (!chunk.isGroup) continue; const box = new THREE.Box3().setFromObject(chunk); if (box.isEmpty()) continue; const sphere = box.getBoundingSphere(new THREE.Sphere()); patches.push({ chunk, sphere }); }
+    for (const g of [works, green, beyond, woods, horizon]) for (const chunk of g.children) { if (!chunk.isGroup) continue; const box = new THREE.Box3().setFromObject(chunk); if (box.isEmpty()) continue; const sphere = box.getBoundingSphere(new THREE.Sphere()); patches.push({ chunk, sphere }); }
     const ground = new THREE.Mesh(new THREE.PlaneGeometry(122 * K, 38 * K), pickMaterial); ground.rotation.x = -Math.PI / 2; ground.position.copy(W(60 * K, 18 * K, .02)); ground.userData = { type: "village-ground" }; scene.add(ground); pickables.push(ground);
     const f = FIXTURES;
     hit(f.stall.d, 4, f.stall.w, { type: "village-stall" }, f.stall.x, f.stall.z);

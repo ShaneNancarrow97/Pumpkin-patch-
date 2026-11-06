@@ -4,10 +4,13 @@
 // so the whole colony is three draws.
 import * as THREE from "three";
 
+// Round the Lantern Spire, the moth-yard, the Baron's manor, the Moth Tree and the Velvet Bat's belfry
+// (design grid; the Quarry's and the Moor's where those districts now stand).
 const FLOCKS = [
-  { x: 64, z: 66.5, y: 30, r: 6, n: 7, speed: .55 },
+  { x: 64, z: 86.5, y: 30, r: 6, n: 7, speed: .55 },
   { x: 90, z: 6, y: 7, r: 4, n: 4, speed: .8 },
-  { x: 96, z: 64, y: 22, r: 7, n: 6, speed: .5 },
+  { x: 140, z: 68, y: 22, r: 7, n: 6, speed: .5 },
+  { x: 97, z: 21, y: 16, r: 4.5, n: 7, speed: .7 },
   { x: 58, z: 25, y: 12.5, r: 9, n: 4, speed: .35 },
 ];
 export function createBats() {

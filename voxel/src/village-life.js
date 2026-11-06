@@ -9,6 +9,7 @@ import * as THREE from "three";
 import { Voxels, seeded } from "./voxels.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { LAYOUT_DESIGN, LAMPS } from "./village-world.js";
+import { DISTRICT_SHIFT } from "./content/village.js";
 
 const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z);
 const dummy = new THREE.Object3D();
@@ -17,10 +18,14 @@ const noise = (t) => Math.sin(t) * .5 + Math.sin(t * 2.31 + 1.7) * .3 + Math.sin
 // Where a crow may perch (design grid x, height, z): lamp tops, piers, the well's
 // roof, the noticeboard, the wall and fences, the scarecrows' arms, and the ground.
 const PERCHES_DESIGN = [
-  [55.2, 4.1, 22.6], [60.8, 4.1, 22.6], [55.2, 4.1, 28.6], [60.8, 4.1, 28.6], [51.4, 3.1, 27.8], [63, 2.75, 29.8],
+  [54.5, 4.1, 21.1], [61.5, 4.1, 21.1], [54.5, 4.1, 28.1], [61.5, 4.1, 28.1], [51.4, 3.1, 27.8], [63, 2.75, 29.8],
   [54.4, 1.62, 8], [54.4, 1.62, 15.6], [61.6, 1.62, 8], [61.6, 1.62, 15.6], [44, 1.32, .6], [72, 1.32, .6], [34, 1.32, .6],
   [80.6, 2.66, 5.4], [38, 2.66, 7.6], [30, .86, 11], [40, .86, 29], [70, .86, 9], [75, .86, 27],
 ];
+// Where fireflies drift (design grid rects): the Copse, the moth-yard, the Green's west edge, the corn rows,
+// the woods west and east of the Quarry, and the Marsh's banks.
+const [cx, cz] = DISTRICT_SHIFT.copse;
+const FLY_ZONES = [[2 + cx, 40 + cz, 38 + cx, 92 + cz], [86, 2, 95, 10], [4, 28, 22, 35], [30, 5, 46, 10], [6, 40, 36, 100], [90, 40, 124, 104], [40, 104, 120, 109]];
 const TREES = [[50.2, 4], [65.8, 4], [70.6, 25.4], [79, 21], [31, 25.5], [31.5, 14.5], [25.4, 9.6], [35.5, 20], [58, 24.6]];
 
 // Boxes [x, y, z, w, h, d, colour?] merged into one geometry (bottom-centred on y), coloured if asked.
@@ -29,7 +34,8 @@ function mergeBoxes(list, coloured = false) {
   const merged = mergeGeometries(geos); geos.forEach((g) => g.dispose()); return merged;
 }
 
-export function createVillageLife() {
+// chimneyTops: noted as the village was built (design grid: x, height, z north).
+export function createVillageLife({ chimneyTops = [] } = {}) {
   const group = new THREE.Group(), r = seeded(907), D = LAYOUT_DESIGN;
   const lit = (c) => new THREE.MeshLambertMaterial({ color: c }), glow = (c, o = 1) => new THREE.MeshBasicMaterial({ color: c, toneMapped: false, transparent: o < 1, opacity: o, depthWrite: o >= 1 });
 
@@ -52,7 +58,7 @@ export function createVillageLife() {
   leaf.forEach((_, i) => leaves.setColorAt(i, new THREE.Color(leafColours[i % leafColours.length])));
 
   // ---- Chimney smoke: soft puffs rising, swelling and fading, all in one draw of points.
-  const chimneys = [{ x: 19.45, y: 10.7, z: 50 }, { x: 19.9, y: 10.7, z: 65.8 }, { x: 70.8, y: 14.6, z: 53.5 }, { x: 70.8, y: 14.6, z: 46.7 }, { x: 94.6, y: 19, z: 63 }, { x: 94.6, y: 19, z: 67.5 }, { x: 104.6, y: 7.4, z: 49 }, { x: 70.7, y: 7.9, z: 22.2, home: "rowan-workshop" }, { x: 43.3, y: 8, z: 18.1, home: "elowen-conservatory" }];
+  const chimneys = [...chimneyTops, { x: 70.7, y: 7.9, z: 22.2, home: "rowan-workshop" }, { x: 43.3, y: 8, z: 18.1, home: "elowen-conservatory" }];
   const PUFFS = 7, smokeCount = chimneys.length * PUFFS, smokePos = new Float32Array(smokeCount * 3), smokeSize = new Float32Array(smokeCount), smokeAlpha = new Float32Array(smokeCount);
   const smokeGeo = new THREE.BufferGeometry(); smokeGeo.setAttribute("position", new THREE.BufferAttribute(smokePos, 3)); smokeGeo.setAttribute("size", new THREE.BufferAttribute(smokeSize, 1)); smokeGeo.setAttribute("alpha", new THREE.BufferAttribute(smokeAlpha, 1));
   const smoke = new THREE.Points(smokeGeo, new THREE.ShaderMaterial({ transparent: true, depthWrite: false, uniforms: { tint: { value: new THREE.Color(0x9a90b8) } },
@@ -90,19 +96,20 @@ export function createVillageLife() {
   const squirrels = [squirrel(3), squirrel(6), squirrel(1)];
 
   // ---- The Lantern Spire's beam, turning slowly; the Moor's wheel of lights.
-  const beam = new THREE.Group(); beam.position.copy(W(64, 66.5, H(64, 66.5) + 19.1)); group.add(beam);
+  const [qx, qz] = DISTRICT_SHIFT.quarry, [mx, mz] = DISTRICT_SHIFT.moor;
+  const beam = new THREE.Group(); beam.position.copy(W(64 + qx, 66.5 + qz, H(64 + qx, 66.5 + qz) + 19.1)); group.add(beam);
   const beamGeo = new THREE.CylinderGeometry(.25, 1.6, 30, 16, 1, true); beamGeo.translate(0, 15, 0); beamGeo.rotateZ(-Math.PI / 2 + .06);
   for (const a of [0, Math.PI]) { const m = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({ color: 0xffd48a, transparent: true, opacity: .018, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); m.rotation.y = a; beam.add(m); }
-  const wheel = new THREE.Group(); wheel.position.copy(W(115.5, 50, H(115.5, 50) + 5.6)); wheel.rotation.y = -Math.PI / 2; group.add(wheel);
+  const wheel = new THREE.Group(); wheel.position.copy(W(115.5 + mx, 50 + mz, H(115.5 + mx, 50 + mz) + 5.6)); wheel.rotation.y = -Math.PI / 2; group.add(wheel);
   { const v = new Voxels(); for (const s of [-1, 1]) for (let k = 0; k < 6; k++) v.block(s * (1.6 - k * .26), k - 5.6, 0, .3, 1, .3, 0x27242d); const legs = v.build(); legs.position.copy(wheel.position); legs.rotation.y = wheel.rotation.y; group.add(legs); }
   { const v = new Voxels(); for (let i = 0; i < 28; i++) { const t = i / 28 * Math.PI * 2; v.block(Math.cos(t) * 4.6, Math.sin(t) * 4.6 - .2, 0, .4, .4, .4, i % 3 ? 0xffc06a : 0xe8b0ff, true); if (i % 4 === 0) for (let k = 1; k < 5; k++) v.block(Math.cos(t) * 4.6 * k / 5, Math.sin(t) * 4.6 * k / 5 - .06, 0, .12, .12, .12, 0x27242d); }
     for (let i = 0; i < 7; i++) { const t = i / 7 * Math.PI * 2; v.block(Math.cos(t) * 4.6, Math.sin(t) * 4.6 - 1, .4, .7, .6, .5, [0xa8172c, 0x4b3a8a, 0xf0c252][i % 3]); }
     wheel.add(v.build({ glow: 1.95 })); }
 
   // ---- Fireflies over the Copse, the moth-yard and the Green's edges.
-  const flyCount = 120, flyPos = new Float32Array(flyCount * 3), fly = Array.from({ length: flyCount }, (_, i) => {
-    const zone = i % 4, x = zone === 0 ? 2 + r() * 36 : zone === 1 ? 86 + r() * 9 : zone === 2 ? 4 + r() * 18 : 30 + r() * 16, z = zone === 0 ? 40 + r() * 52 : zone === 1 ? 2 + r() * 8 : zone === 2 ? 28 + r() * 7 : 5 + r() * 5;
-    return { x, z, y: .4 + r() * 1.6, p: r() * 9, s: .3 + r() * .5 };
+  const flyCount = 160, flyPos = new Float32Array(flyCount * 3), fly = Array.from({ length: flyCount }, (_, i) => {
+    const [x0, z0, x1, z1] = FLY_ZONES[i % FLY_ZONES.length], x = x0 + r() * (x1 - x0), z = z0 + r() * (z1 - z0);
+    return { x, z, y: H(x, z) + .4 + r() * 1.6, p: r() * 9, s: .3 + r() * .5 };
   });
   const flyGeo = new THREE.BufferGeometry(); flyGeo.setAttribute("position", new THREE.BufferAttribute(flyPos, 3));
   const fireflies = new THREE.Points(flyGeo, new THREE.PointsMaterial({ color: new THREE.Color(1.6, 1.9, .9), size: .16, transparent: true, opacity: .9, depthWrite: false, toneMapped: false })); fireflies.frustumCulled = false; group.add(fireflies);

@@ -10,7 +10,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import * as M from "./model.js";
-import { createVillageView } from "./village-view.js";
+import { createVillageView, TOUR } from "./village-view.js";
 import { loadSpriteSheets, spriteActor } from "./sprite-actors.js";
 import { animateSprite } from "./sprite-voxels.js";
 import { LEAN } from "./world.js";
@@ -45,7 +45,7 @@ addEventListener("resize", fit); view.enter(); fit();
 const PLACES = {
   green: null,
   tree: [[58, 7.5, 9], [58, 4.2, 24.6]],
-  bat: [[95, 8.5, 45], [102, 4.5, 22]],
+  bat: [[100, 16, 46], [102, 5, 21]],
   copse: [[12, 24, 46], [-12, 3, 82]],
   quarry: [[56, 26, 40], [62, 8, 78]],
   moor: [[118, 24, 18], [144, 4, 52]],
@@ -59,6 +59,17 @@ function go(id) {
 }
 for (const b of document.querySelectorAll("[data-place]")) b.addEventListener("click", () => go(b.dataset.place));
 $("everyone").addEventListener("click", () => { everyone = !everyone; $("everyone").classList.toggle("on", everyone); view.sync(); });
+// The grand tour: the flight Elowen gives on arrival, its titles rising at each stop. Tour again skips it.
+let titleTimer = 0;
+$("tour").addEventListener("click", () => {
+  if (document.body.classList.contains("touring")) { view.director.skip(); return; }
+  if (walking) setWalk(false);
+  document.body.classList.add("touring"); $("tour").classList.add("on"); $("tour").textContent = "Skip";
+  view.director.start((k) => {
+    $("title-name").textContent = k.title; $("title-sub").textContent = k.sub; $("title").classList.add("shown");
+    clearTimeout(titleTimer); titleTimer = setTimeout(() => $("title").classList.remove("shown"), 3400);
+  }, () => { document.body.classList.remove("touring"); $("tour").classList.remove("on"); $("tour").textContent = "Tour"; $("title").classList.remove("shown"); });
+});
 
 // ---- Walking: an owner at play-mode size, a stick, keys and a pad ------------------------
 let sheets = null, actor = null, who = "shane", walking = false, age = 0, still = 0, facing = "front";
@@ -141,3 +152,5 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 setTimeout(() => document.body.classList.add("ready"), 400);
+// For checks in a browser: the view and the tour's stops.
+window.explorer = { view, TOUR, place: (i) => view.cameraActions.place(TOUR[i].at, TOUR[i].look) };
