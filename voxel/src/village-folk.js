@@ -152,7 +152,44 @@ const DESIGNS = {
     head.push([0, .3, -.02, .38, .1, .36, 0x1a1a1a]); head.push([.08, .14, .175, .14, .14, .02, gold]);
     return { body, head, height: 1.98, posed: true };
   },
+  // Vesper, host of the Velvet Bat: a tailcoat over a red waistcoat, a jabot with a ruby pin, a red-lined
+  // cape with a high collar, slicked hair to a widow's peak, pointed ears, fangs, eyes that glow, a bat
+  // on one shoulder and a lit candelabrum held up to see guests in.
+  vesper() {
+    const skin = 0xe6e0ea, hair = 0x14101a, coat = 0x17121d, lining = 0xa0122c, vest = 0x7a1424, gold = 0xc9a25f, shirt = 0xeee6dc, boot = 0x0e0c12;
+    const body = [], head = [];
+    for (const sx of [-1, 1]) { body.push([sx * .1, 0, 0, .16, .84, .17, 0x1c1822]); body.push([sx * .1, 0, .05, .17, .1, .3, boot]); body.push([sx * .1, .01, .21, .08, .05, .06, boot]); body.push([sx * .1, .07, .12, .1, .04, .02, gold]); }
+    // The tailcoat, its tails behind to the knee, lapels; the waistcoat with gold buttons and a watch chain.
+    body.push([0, .84, 0, .44, .62, .27, coat]); for (const sx of [-1, 1]) body.push([sx * .11, .34, -.11, .2, .54, .06, coat]);
+    body.push([0, .86, .137, .22, .5, .02, vest]); for (let i = 0; i < 4; i++) body.push([0, 1.24 - i * .11, .15, .035, .035, .02, gold]);
+    body.push([-.06, 1.0, .15, .1, .02, .01, gold]); body.push([-.1, .97, .15, .03, .04, .01, gold]);
+    for (const sx of [-1, 1]) { body.push([sx * .15, 1.12, .145, .08, .34, .02, 0x2a2232]); body.push([sx * .17, 1.3, .15, .05, .06, .02, 0x2a2232]); }
+    body.push([0, 1.3, .152, .14, .16, .04, shirt]); body.push([0, 1.2, .17, .1, .12, .03, shirt]); body.push([0, 1.14, .176, .07, .06, .02, shirt]); body.push([0, 1.31, .178, .04, .04, .02, 0xe01a3a, true]);
+    // The cape: red-lined, from the shoulders to the calf, and a high standing collar framing the head.
+    body.push([0, .24, -.18, .62, 1.22, .04, coat]); body.push([0, .27, -.152, .56, 1.15, .02, lining]);
+    for (const sx of [-1, 1]) { body.push([sx * .31, .28, -.06, .04, 1.16, .24, coat]); body.push([sx * .292, .3, -.05, .02, 1.1, .2, lining]); }
+    body.push([0, 1.38, -.17, .52, .44, .05, coat]); body.push([0, 1.4, -.143, .46, .38, .02, lining]);
+    for (const sx of [-1, 1]) { body.push([sx * .25, 1.42, -.09, .05, .42, .16, coat]); body.push([sx * .225, 1.44, -.09, .02, .38, .12, lining]); }
+    body.push([0, 1.44, .16, .1, .05, .04, gold]); for (const sx of [-1, 1]) body.push([sx * .07, 1.45, .16, .06, .03, .03, gold]);
+    // The left arm at the side; the right forearm raised forward with a three-candle candelabrum, flames lit.
+    body.push([-.29, .88, 0, .12, .52, .14, coat]); body.push([-.29, .84, 0, .13, .06, .15, shirt]); body.push([-.29, .76, 0, .09, .08, .09, skin]);
+    body.push([.29, 1.0, 0, .12, .42, .14, coat]); body.push([.29, .98, .14, .12, .12, .3, coat]); body.push([.29, .98, .3, .13, .13, .05, shirt]); body.push([.29, .97, .36, .09, .1, .08, skin]);
+    body.push([.29, .9, .36, .05, .36, .05, gold]); body.push([.29, 1.24, .36, .4, .04, .05, gold]);
+    for (const dx of [-.17, 0, .17]) { const y = dx ? 1.27 : 1.3; body.push([.29 + dx, y - .03, .36, .08, .03, .08, gold]); body.push([.29 + dx, y, .36, .045, .17, .045, 0xf4ecdc]); body.push([.29 + dx, y + .17, .36, .035, .07, .035, 0xffb347, true]); body.push([.29 + dx, y + .21, .36, .02, .04, .02, 0xfff0c0, true]); }
+    // A bat roosting on the left shoulder, wings folded, eyes lit.
+    body.push([-.2, 1.46, -.02, .09, .09, .08, 0x1a1420]); for (const sx of [-1, 1]) { body.push([-.2 + sx * .06, 1.45, -.02, .05, .12, .06, 0x221a2a]); body.push([-.2 + sx * .03, 1.56, -.02, .02, .04, .02, 0x1a1420]); }
+    for (const sx of [-1, 1]) body.push([-.2 + sx * .02, 1.51, .025, .015, .015, .01, 0xff3a2a, true]);
+    // The head: pale, pointed ears, a widow's peak swept back, red eyes that glow, fine brows and two fangs.
+    head.push([0, 0, 0, .28, .3, .27, skin]);
+    for (const sx of [-1, 1]) { head.push([sx * .056, .134, .141, .04, .03, .02, 0xe0203a, true]); head.push([sx * .056, .182, .141, .056, .016, .02, hair]); head.push([sx * .15, .12, -.01, .03, .1, .07, skin]); head.push([sx * .165, .2, -.03, .02, .07, .03, skin]); head.push([sx * .02, .044, .143, .012, .024, .01, 0xffffff]); }
+    head.push([0, .1, .145, .03, .05, .02, 0xd8d0dc]); head.push([0, .065, .141, .07, .014, .02, 0x5a1020]);
+    head.push([0, .26, -.02, .3, .08, .3, hair]); head.push([0, .06, -.135, .3, .26, .07, hair]); for (const sx of [-1, 1]) head.push([sx * .145, .14, -.04, .03, .18, .2, hair]);
+    head.push([0, .245, .13, .1, .04, .03, hair]); head.push([0, .225, .142, .05, .03, .02, hair]); for (let i = 0; i < 3; i++) head.push([0, .28 + i * .01, -.06 - i * .07, .26 - i * .04, .03, .08, 0x241c2c]);
+    return { body, head, height: 1.96, posed: true };
+  },
 };
+// Hosts keep a place on the Green rather than a home plot: Vesper the Velvet Bat (design grid).
+export const HOSTS = Object.freeze({ vesper: Object.freeze({ x: 102, z: 26.7, face: "north" }) });
 
 // A resident's figure: joints for the head, arms and legs (or a skirt), posed by tick().
 export function makeResident(id) {
@@ -181,6 +218,7 @@ export function residentSpot(state, id) {
   const v = state.village, K = PLAN_SCALE, spot = (x, z, face, reach) => ({ x: x * K, z: z * K, face, ...(reach ? { reach: reach * K } : {}) });
   if (id === "rowan") return v.unlocks.includes("stall") ? spot(66, 24.6, "west", 3.8) : spot(53.8, 20.6, "south");
   if (id === "elowen") return v.built["elowen-conservatory"] ? spot(49.6, 21.6, "east") : spot(53.6, 30.2, "south");
+  if (HOSTS[id]) return spot(HOSTS[id].x, HOSTS[id].z, HOSTS[id].face);
   const door = doorOf(id), east = door.x < 60 * K;
   return { x: door.x + (east ? 1.8 : -1.8), z: door.z, face: east ? "east" : "west" };
 }
@@ -188,11 +226,11 @@ const FACE = { south: 0, east: Math.PI / 2, north: Math.PI, west: -Math.PI / 2 }
 // Where to stand to talk to them (realm), a step in front.
 export function talkSpot(state, id) { const s = residentSpot(state, id), a = FACE[s.face] ?? 0, d = s.reach ?? 1.8; return { x: s.x + Math.sin(a) * d, z: s.z - Math.cos(a) * d }; }
 
-export function createVillageFolk({ scene, state, pickables, pickMaterial, ground = () => 0 }) {
+export function createVillageFolk({ scene, state, pickables, pickMaterial, ground = () => 0, everyone = () => false }) {
   const people = new Map(), moods = new Map();
   function sync() {
     // Residents of districts that aren't open yet wait out of sight until they are.
-    const here = ["elowen", "rowan", "mabel", "tansy", "opal", "cinder", "corvus", "baron"].filter((id) => districtOpen(state, RESIDENT_BY_ID[id].district));
+    const here = ["elowen", "rowan", "mabel", "tansy", "opal", "cinder", "corvus", "baron"].filter((id) => everyone() || districtOpen(state, RESIDENT_BY_ID[id].district)).concat(Object.keys(HOSTS));
     for (const [id, p] of people) if (!here.includes(id)) p.root.visible = false;
     for (const id of here) {
       let p = people.get(id);

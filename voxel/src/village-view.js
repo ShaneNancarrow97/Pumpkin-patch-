@@ -65,7 +65,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   let active = false, built = false, firstView = true, keys = {}, parts = {}, tour = null, time = 0, horizon = null, sky = null, mist = null, bats = null, life = null, grass = null;
   const pickables = [], pickMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const hit = (w, h, d, data, x, z, y = h / 2) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), pickMaterial); m.position.copy(W(x, z, y)); m.userData = data; scene.add(m); pickables.push(m); return m; };
-  const folk = createVillageFolk({ scene, state, pickables, pickMaterial, ground: groundAt });
+  const folk = createVillageFolk({ scene, state, pickables, pickMaterial, ground: groundAt, everyone: () => !!hooks.everyone?.() });
   const decor = new Map(), pages = new Map();
   const selection = new THREE.Group(); scene.add(selection); selection.visible = false;
   let outline = null, ghost = null, ghostId = null, override = null, framed = "";
@@ -146,11 +146,12 @@ export function createVillageView(canvas, state, hooks = {}) {
   const PLAY_PITCH = THREE.MathUtils.degToRad(34), PLAY_DISTANCE = 14, sphere = new THREE.Spherical(), offset = new THREE.Vector3();
   let following = false;
   const play = {
-    reset(pos) { following = true; resize(); controls.target.set(pos.x, 1.3, pos.z); sphere.set(PLAY_DISTANCE, Math.PI / 2 - PLAY_PITCH, 0); camera.position.copy(controls.target).add(offset.setFromSpherical(sphere)); controls.update(); },
+    reset(pos) { following = true; resize(); controls.target.set(pos.x, (pos.y ?? 0) + 1.3, pos.z); sphere.set(PLAY_DISTANCE, Math.PI / 2 - PLAY_PITCH, 0); camera.position.copy(controls.target).add(offset.setFromSpherical(sphere)); controls.update(); },
     follow(pos, dt) {
       if (!following) { play.reset(pos); return; }
-      const k = 1 - Math.exp(-Math.max(0, dt) * 7), dx = (pos.x - controls.target.x) * k, dz = (pos.z - controls.target.z) * k;
-      controls.target.x += dx; controls.target.z += dz; camera.position.x += dx; camera.position.z += dz;
+      // Up and down the terraces too, when the walker says how high they stand.
+      const k = 1 - Math.exp(-Math.max(0, dt) * 7), dx = (pos.x - controls.target.x) * k, dz = (pos.z - controls.target.z) * k, dy = pos.y === undefined ? 0 : (pos.y + 1.3 - controls.target.y) * k;
+      controls.target.x += dx; controls.target.y += dy; controls.target.z += dz; camera.position.x += dx; camera.position.y += dy; camera.position.z += dz;
     },
     look(x, y, dt) {
       if (!x && !y) return; const t = Math.min(.25, Math.max(0, dt));

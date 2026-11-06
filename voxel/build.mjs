@@ -9,6 +9,8 @@ import * as esbuild from "esbuild";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 // --readable leaves the code unminified, for profiling.
+// --village builds the Mothlight explorer instead: dist/mothlight-village.html.
+const village = process.argv.includes("--village");
 const dev = process.argv.includes("--dev"), readable = process.argv.includes("--readable"), at = process.argv.indexOf("--out"), outFile = at > 0 ? path.resolve(process.argv[at + 1]) : null;
 const MIME = { ".woff": "font/woff", ".woff2": "font/woff2", ".png": "image/png" };
 const inline = (css) => css.replace(/url\('(assets\/[^']+)'\)/g, (m, rel) => `url('data:${MIME[path.extname(rel)]};base64,${fs.readFileSync(path.join(root, rel)).toString("base64")}')`);
@@ -19,6 +21,14 @@ const writeHtml = {
     build.onEnd((result) => {
       if (result.errors.length) return;
       const js = result.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
+      if (village) {
+        const fonts = inline(fs.readFileSync(path.join(root, "src/style.css"), "utf8").split("\n").filter((l) => l.startsWith("@font-face")).join("\n"));
+        const page = fs.readFileSync(path.join(root, "src/village-explorer.html"), "utf8").replace("/* @build:style */", () => fonts).replace("/* @build:script */", () => js);
+        const out = outFile ?? path.join(root, "dist", "mothlight-village.html");
+        fs.mkdirSync(path.dirname(out), { recursive: true }); fs.writeFileSync(out, page);
+        console.log(`${new Date().toLocaleTimeString()} built ${path.relative(root, out)} (${(page.length / 1024).toFixed(0)} KB)`);
+        return;
+      }
       const css = inline(["src/style.css", "src/icons.css", "src/ui/house-skins.css", "src/ui/maze-commerce.css", "src/ui/house-placement.css", "src/ui/intro.css", "src/ui/maze-ride.css", "src/ui/meadow-chat.css", "src/ui/upgrade-menu.css", "src/ui/hayride.css", "src/ui/hayride-ride.css", "src/ui/hollow-exterior.css", "src/ui/cooking.css", "src/ui/workshop-polish.css", "src/ui/service-menus.css", "src/ui/play-controls.css", "src/ui/carving.css", "src/ui/build-catalogue.css", "src/ui/service-premium.css", "src/ui/polish.css", "src/ui/menus.css", "src/ui/farm-work.css", "src/ui/home-customisation.css", "src/ui/garden-icons.css", "src/ui/cooking-simple.css", "src/ui/fishing.css", "src/ui/tv-mode.css"].map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n"));
       const html = fs.readFileSync(path.join(root, "src/index.html"), "utf8")
         .replace("/* @build:style */", () => css).replace("/* @build:script */", () => js);
@@ -29,7 +39,7 @@ const writeHtml = {
     });
   },
 };
-const options = { entryPoints: [path.join(root, "src/main.js")], bundle: true, loader: { ".png": "dataurl", ".webp": "dataurl", ".mp3": "dataurl", ".mid": "binary" }, format: "iife", minify: !dev && !readable, target: ["es2020"], write: false, outfile: "game.js", logLevel: "warning", plugins: [writeHtml] };
+const options = { entryPoints: [path.join(root, village ? "src/village-explorer.js" : "src/main.js")], bundle: true, loader: { ".png": "dataurl", ".webp": "dataurl", ".mp3": "dataurl", ".mid": "binary" }, format: "iife", minify: !dev && !readable, target: ["es2020"], write: false, outfile: "game.js", logLevel: "warning", plugins: [writeHtml] };
 if (dev) {
   const ctx = await esbuild.context(options);
   await ctx.watch();

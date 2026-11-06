@@ -14,15 +14,20 @@ export const VILLAGE_LEVEL = 3;
 export const PLAN_SCALE = 1.5;
 const S = (v) => Math.round(v * PLAN_SCALE * 1000) / 1000, at = ([x, z]) => [S(x), S(z)];
 const box = (b) => ({ ...b, x0: S(b.x0), z0: S(b.z0), x1: S(b.x1), z1: S(b.z1) });
-export const VILLAGE_BOUNDS = Object.freeze({ x0: 0, z0: 0, x1: S(120), z1: S(96) });
+// Each district sits away from the Green across its own stretch of woods (design grid):
+// the Copse to the north-west, the Quarry's island north, the Moor east, the Marsh beyond the Quarry.
+export const DISTRICT_SHIFT = Object.freeze({ green: [0, 0], copse: [-30, 14], quarry: [0, 20], moor: [44, 4], marsh: [0, 34] });
+const sh = (d, [x, z]) => [x + DISTRICT_SHIFT[d][0], z + DISTRICT_SHIFT[d][1]];
+const shBox = (d, b) => ({ ...b, x0: b.x0 + DISTRICT_SHIFT[d][0], x1: b.x1 + DISTRICT_SHIFT[d][0], z0: b.z0 + DISTRICT_SHIFT[d][1], z1: b.z1 + DISTRICT_SHIFT[d][1] });
+export const VILLAGE_BOUNDS = Object.freeze({ x0: S(-34), z0: 0, x1: S(168), z1: S(134) });
 // Each district opens at a patch level and, after the Green, a story beat (STORY_FLAGS).
 export const DISTRICTS = Object.freeze([
-  { id: "green", name: "Hollow Green", level: 3, story: null, polygon: [[0, 0], [120, 0], [120, 12], [84, 12], [84, 36], [0, 36]] },
+  { id: "green", name: "Hollow Green", level: 3, story: null, polygon: [[0, 0], [120, 0], [120, 36], [0, 36]] },
   { id: "copse", name: "Moonroot Copse", level: 6, story: "two-doorbells", polygon: [[0, 36], [40, 36], [40, 96], [0, 96]] },
   { id: "quarry", name: "Lantern Quarry", level: 9, story: "footbridge", polygon: [[40, 36], [84, 36], [84, 74], [40, 74]] },
   { id: "moor", name: "Carnival Moor", level: 12, story: "restaurant-opening", polygon: [[84, 12], [120, 12], [120, 74], [84, 74]] },
   { id: "marsh", name: "Mirror Marsh", level: 15, story: "four-stories", polygon: [[40, 74], [120, 74], [120, 96], [40, 96]] },
-].map((d) => Object.freeze({ ...d, polygon: d.polygon.map(at) })));
+].map((d) => Object.freeze({ ...d, polygon: d.id === "green" ? d.polygon.map(at) : d.polygon.map((p) => at(sh(d.id, p))) })));
 export const DISTRICT_BY_ID = Object.freeze(Object.fromEntries(DISTRICTS.map((d) => [d.id, d])));
 // What the village is built from (roadmap §5): yield per node, and seconds of active play before a node grows back.
 export const MATERIALS = Object.freeze([
@@ -71,9 +76,9 @@ export const NODES = Object.freeze([
   { id: "hardwood-04", material: "hardwood", x: 16, z: 38, district: "copse" },
   { id: "moth_silk-01", material: "moth-silk", x: 4, z: 58, district: "copse" },
   { id: "moth_silk-02", material: "moth-silk", x: 8, z: 58, district: "copse" },
-  { id: "iron-01", material: "iron", x: 42, z: 40, district: "quarry" },
-  { id: "iron-02", material: "iron", x: 46, z: 40, district: "quarry" },
-  { id: "iron-03", material: "iron", x: 50, z: 40, district: "quarry" },
+  { id: "iron-01", material: "iron", x: 46, z: 46, district: "quarry" },
+  { id: "iron-02", material: "iron", x: 49.5, z: 46, district: "quarry" },
+  { id: "iron-03", material: "iron", x: 53, z: 46, district: "quarry" },
   { id: "clay-01", material: "clay", x: 70, z: 68, district: "quarry" },
   { id: "clay-02", material: "clay", x: 74, z: 68, district: "quarry" },
   { id: "clay-03", material: "clay", x: 78, z: 68, district: "quarry" },
@@ -83,7 +88,7 @@ export const NODES = Object.freeze([
   { id: "emberbloom-02", material: "emberbloom", x: 114, z: 54, district: "moor" },
   { id: "emberbloom-03", material: "emberbloom", x: 114, z: 58, district: "moor" },
   { id: "star_amber-01", material: "star-amber", x: 112, z: 90, district: "marsh" },
-].map((n) => Object.freeze({ ...n, x: S(n.x), z: S(n.z) })));
+].map((n) => { const [x, z] = sh(n.district, [n.x, n.z]); return Object.freeze({ ...n, x: S(x), z: S(z) }); }));
 export const NODE_BY_ID = Object.freeze(Object.fromEntries(NODES.map((n) => [n.id, n])));
 // Building plots: the full eventual home-and-garden reserve, with a level doorway on its spur road.
 export const PLOTS = Object.freeze([
@@ -98,37 +103,37 @@ export const PLOTS = Object.freeze([
   { id: "09", kind: "landmark", resident: null, building: "Story and festival ruin", x0: 76, z0: 82, x1: 94, z1: 94, door: [85, 82], facing: "south", district: "marsh" },
   { id: "R1", kind: "reservation", resident: null, building: "Empty reservation", x0: 4, z0: 8, x1: 22, z1: 26, door: [22, 17], facing: "east", district: "green" },
   { id: "R2", kind: "reservation", resident: null, building: "Empty reservation", x0: 4, z0: 80, x1: 22, z1: 92, door: [22, 86], facing: "east", district: "copse" },
-].map((p) => Object.freeze({ ...box(p), door: at(p.door) })));
+].map((p) => Object.freeze({ ...box(shBox(p.district, p)), door: at(sh(p.district, p.door)) })));
 export const PLOT_BY_ID = Object.freeze(Object.fromEntries(PLOTS.map((p) => [p.id, p])));
 // Roads by their centre-lines: main roads six units wide, door spurs four, future spurs three (used once their plot is).
 export const ROADS = Object.freeze([
   { id: "arrival", kind: "main", width: 6, points: [[58, 0], [58, 4], [58, 24]], plot: null },
-  { id: "copse", kind: "main", width: 6, points: [[58, 24], [58, 34], [30, 34], [30, 78]], plot: null },
-  { id: "quarry", kind: "main", width: 6, points: [[58, 34], [58, 70]], plot: null },
-  { id: "moor", kind: "main", width: 6, points: [[58, 34], [86, 34], [86, 24], [108, 24], [108, 70]], plot: null },
-  { id: "marsh", kind: "main", width: 6, points: [[58, 70], [58, 78], [108, 78], [108, 70]], plot: null },
+  { id: "copse", kind: "main", width: 6, points: [[58, 24], [58, 34], [0, 34], [0, 92]], plot: null },
+  { id: "quarry", kind: "main", width: 6, points: [[58, 34], [58, 90]], plot: null },
+  { id: "moor", kind: "main", width: 6, points: [[58, 34], [130, 34], [130, 28], [152, 28], [152, 74]], plot: null },
+  { id: "marsh", kind: "main", width: 6, points: [[58, 90], [58, 112], [152, 112], [152, 74]], plot: null },
   { id: "door-01", kind: "door-spur", width: 4, points: [[48, 20], [58, 20]], plot: "01" },
   { id: "door-02", kind: "door-spur", width: 4, points: [[66, 20], [58, 20]], plot: "02" },
-  { id: "door-03", kind: "door-spur", width: 4, points: [[24, 48], [30, 48]], plot: "03" },
-  { id: "door-04", kind: "door-spur", width: 4, points: [[24, 68], [30, 68]], plot: "04" },
-  { id: "door-05", kind: "door-spur", width: 4, points: [[52, 54], [58, 54]], plot: "05" },
-  { id: "door-06", kind: "door-spur", width: 4, points: [[66, 50], [58, 50]], plot: "06" },
-  { id: "door-07", kind: "door-spur", width: 4, points: [[104, 42], [108, 42]], plot: "07" },
-  { id: "door-08", kind: "door-spur", width: 4, points: [[104, 64], [108, 64]], plot: "08" },
-  { id: "door-09", kind: "door-spur", width: 4, points: [[85, 82], [85, 78]], plot: "09" },
+  { id: "door-03", kind: "door-spur", width: 4, points: [[-6, 62], [0, 62]], plot: "03" },
+  { id: "door-04", kind: "door-spur", width: 4, points: [[-6, 82], [0, 82]], plot: "04" },
+  { id: "door-05", kind: "door-spur", width: 4, points: [[52, 74], [58, 74]], plot: "05" },
+  { id: "door-06", kind: "door-spur", width: 4, points: [[66, 70], [58, 70]], plot: "06" },
+  { id: "door-07", kind: "door-spur", width: 4, points: [[148, 46], [152, 46]], plot: "07" },
+  { id: "door-08", kind: "door-spur", width: 4, points: [[148, 68], [152, 68]], plot: "08" },
+  { id: "door-09", kind: "door-spur", width: 4, points: [[85, 116], [85, 112]], plot: "09" },
   { id: "door-R1", kind: "future-spur", width: 3, points: [[22, 17], [25, 17], [25, 34], [30, 34]], plot: "R1" },
-  { id: "door-R2", kind: "future-spur", width: 3, points: [[22, 86], [30, 86], [30, 78]], plot: "R2" },
+  { id: "door-R2", kind: "future-spur", width: 3, points: [[-8, 100], [0, 100], [0, 92]], plot: "R2" },
 ].map((r) => Object.freeze({ ...r, width: S(r.width), points: r.points.map(at) })));
 export const PLAZA = Object.freeze(box({ x0: 50, z0: 18, x1: 64, z1: 30 }));
 // Gates on the roads between districts; both Marsh gates share one unlock, so the loop can't bypass it.
 export const GATES = Object.freeze([
-  { id: "copse-gate", x: 30, z: 38, district: "copse" },
-  { id: "quarry-bridge", x: 58, z: 38, district: "quarry" },
-  { id: "moor-gate", x: 84, z: 34, district: "moor" },
-  { id: "marsh-west", x: 58, z: 74, district: "marsh" },
-  { id: "marsh-east", x: 108, z: 74, district: "marsh" },
+  { id: "copse-gate", x: 0, z: 52, district: "copse" },
+  { id: "quarry-bridge", x: 58, z: 58, district: "quarry" },
+  { id: "moor-gate", x: 124, z: 34, district: "moor" },
+  { id: "marsh-west", x: 58, z: 106, district: "marsh" },
+  { id: "marsh-east", x: 152, z: 106, district: "marsh" },
 ].map((g) => Object.freeze({ ...g, x: S(g.x), z: S(g.z) })));
-export const BRIDGE = Object.freeze({ ...box({ x0: 55, z0: 36, x1: 61, z1: 40 }), ravine: Object.freeze(box({ x0: 40, z0: 36, x1: 84, z1: 40 })) });
+export const BRIDGE = Object.freeze({ ...box(shBox("quarry", { x0: 55, z0: 37, x1: 61, z1: 43 })), ravine: Object.freeze(box(shBox("quarry", { x0: 39, z0: 37, x1: 87, z1: 43 }))) });
 // The carriage stop: where the carriage turns, the step back to the farm, where you arrive (facing north) and the noticeboard.
 export const ARRIVAL = Object.freeze({ carriage: at([58, -4.4]), back: at([58, -1.4]), spawn: at([58, 3]), noticeboard: at([63, 28.8]) });
 
@@ -176,16 +181,17 @@ export const FIXTURES = Object.freeze({
 export const SCENERY = Object.freeze([
   { id: "garden-west", x0: 48.6, z0: 8, x1: 54.4, z1: 15.6 },
   { id: "garden-east", x0: 61.6, z0: 8, x1: 66.4, z1: 15.6 },
-  { id: "lamp-sw", x: 55.2, z: 22.6, r: .45 }, { id: "lamp-se", x: 60.8, z: 22.6, r: .45 },
-  { id: "lamp-nw", x: 55.2, z: 28.6, r: .45 }, { id: "lamp-ne", x: 60.8, z: 28.6, r: .45 },
+  { id: "lamp-sw", x: 54.5, z: 21.1, r: .45 }, { id: "lamp-se", x: 61.5, z: 21.1, r: .45 },
+  { id: "lamp-nw", x: 54.5, z: 28.1, r: .45 }, { id: "lamp-ne", x: 61.5, z: 28.1, r: .45 },
   { id: "planter-nw", x: 49.2, z: 30.3, r: .7 }, { id: "planter-ne", x: 65.8, z: 30.3, r: .7 },
   { id: "bench-avenue-w", x0: 55.1, z0: 10.2, x1: 56.1, z1: 12.8 }, { id: "bench-avenue-e", x0: 59.9, z0: 10.2, x1: 60.9, z1: 12.8 },
   { id: "bed-west", x0: 48.8, z0: 16.1, x1: 54.2, z1: 16.9 }, { id: "bed-east", x0: 61.8, z0: 16.1, x1: 66.2, z1: 16.9 },
   { id: "pumpkin-patch", x0: 67.6, z0: 2.4, x1: 81.4, z1: 8.4 }, { id: "corn-rows", x0: 29.6, z0: 5.6, x1: 46.6, z1: 9.4 }, { id: "moth-yard", x0: 85.5, z0: 1.5, x1: 94.5, z1: 10.5 },
+  { id: "velvet-bat", x0: 91.4, z0: 11.6, x1: 111.8, z1: 30 },
 ].map((x) => Object.freeze(x.r ? { ...x, x: S(x.x), z: S(x.z), r: S(x.r) } : box(x))));
 // The rules' own measures: where on the Green decor may go, the Moor's walled corner, and how near a door counts as "near".
 export const GREEN_AREA = Object.freeze(box({ x0: 1, z0: 1, x1: 119, z1: 35 }));
-export const MOOR_CORNER = Object.freeze({ x0: S(84), x1: 1e4, z0: S(12), z1: 1e4 });
+export const MOOR_CORNER = Object.freeze({ x0: 1e4, x1: 1e4 + 1, z0: 1e4, z1: 1e4 + 1 });
 export const NEAR_DOOR = S(9);
 // The plot kept for you: an empty reservation on the Green, yours to fill.
 export const YOUR_PLOT = "R1";

@@ -10,11 +10,12 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { Voxels, ChunkedVoxels, seeded, vary } from "./voxels.js";
 import * as LAYOUT from "./content/village.js";
-import { terrainHeight as H, TERRACES, RAMPS, WATERS, isWater, rampAt, terraceAt, MARSH_ISLANDS } from "./village-terrain.js";
+import { terrainHeight as H, TERRACES, RAMPS, WATERS, REALM, isWater, rampAt, terraceAt, MARSH_ISLANDS } from "./village-terrain.js";
+const SHIFT = LAYOUT.DISTRICT_SHIFT;
 import {
   C, shade, frame, realm, lampPost, studio, tavern, bigTent, caravan, manor, stiltHut, canopyTree, pine, twistedTree, deadTree, glowShroom, stoneWall, picketFence, mothPillar, carriage, fountain, well, noticeboard, stall, bench,
   workshop, conservatory, node, bush, flower, grassTuft, lantern, cottage, townhouse, hedge, topiary, brickPier, railing, parkBench, flowerBed, roundPlanter,
-  pumpkin, jackOLantern, hayBale, cornSheaf, scarecrow, festoon, gravestone, spookyTree, crow, cauldron, mothTree,
+  pumpkin, jackOLantern, hayBale, cornSheaf, scarecrow, festoon, gravestone, spookyTree, crow, cauldron, mothTree, velvetBat,
 } from "./village-models.js";
 // Writers that stand things on the terraced ground: onGround puts each block's foot
 // on the ground beneath it; at() stands a whole model at the height of its origin.
@@ -47,11 +48,11 @@ function cableMesh(list) {
 const FOUNTAINS = [{ x: 51.5, z: 11.8, r: 1.05 }, { x: 64, z: 11.8, r: .85 }];
 
 // The ground's extent: the realm and a margin of woods all round.
-export const GROUND = Object.freeze({ x0: -50, x1: 170, z0: -40, z1: 150, scale: 5 });
+export const GROUND = Object.freeze({ x0: -80, x1: 210, z0: -40, z1: 176, scale: 4, step: 1.5 });
 // The round square, set in rings round the Moth Tree, reaching both doors and the roads.
 export const SQUARE = Object.freeze({ x0: 49.2, z0: 15.8, x1: 66.8, z1: 33.4, cx: FIXTURES.tree.x, cz: FIXTURES.tree.z, r: 8.8 });
 // Where the waterfalls tumble off the Quarry's island into the moat (design grid: x, z, top, foot, facing x).
-const FALLS = [{ x: 82.3, z: 51, top: 5, foot: -1.6, dir: 1 }, { x: 43.7, z: 62, top: 5, foot: -1.6, dir: -1 }];
+const FALLS = [{ x: 82.3, z: 51 + SHIFT.quarry[1], top: 5, foot: -1.6, dir: 1 }, { x: 43.7, z: 62 + SHIFT.quarry[1], top: 5, foot: -1.6, dir: -1 }];
 const pick = (list, r) => list[(r() * list.length) | 0];
 
 // ---- Ground ----------------------------------------------------------------------
@@ -72,22 +73,17 @@ function groundTexture() {
   speckle(0, 0, 120, 36, ["#f6f2e8", "#f5d04a", "#f2a0c0", "#ffffff"], 2600, .16);
   for (let i = 0; i < 70; i++) blob(r() * 120, r() * 36, .8 + r() * 1.6, .6 + r() * 1.2, "rgba(40,80,30,.18)");
   speckle(0, 0, 120, 4, ["#b3352a", "#d0532c", "#e8873a", "#cf8f2c"], 900, .3); speckle(0, 31, 120, 36, ["#b3352a", "#d0532c", "#e8873a", "#cf8f2c"], 700, .3); speckle(0, 0, 4, 36, ["#b3352a", "#e8873a"], 400, .3);
-  // The Copse: deep moss, violet flowers, dark hollows.
-  rect(0, 36, 40, 96, "#3a6250"); speckle(0, 36, 40, 96, ["#416c58", "#335a48", "#47735c", "#2f5442"], 9000, .6); speckle(0, 36, 40, 96, ["#a77ad8", "#d6a6ff", "#7fe8d0"], 900, .25);
-  for (let i = 0; i < 30; i++) blob(r() * 40, 36 + r() * 60, 1 + r() * 2, 1 + r() * 2, "rgba(20,40,40,.25)");
-  // The Quarry: warm gravel and grey rock.
-  rect(40, 36, 84, 74, "#8e8678"); speckle(40, 36, 84, 74, ["#978f80", "#857d70", "#a0988a", "#7a7366"], 10000, .55);
-  for (let i = 0; i < 26; i++) blob(42 + r() * 40, 42 + r() * 30, 1 + r() * 2.4, .8 + r() * 1.6, "rgba(90,80,70,.25)");
-  // The Moor: heather and gold grass.
-  rect(84, 12, 120, 74, "#5a4868"); speckle(84, 12, 120, 74, ["#634f72", "#523f60", "#6b5878", "#4c3c5a"], 10000, .55); speckle(84, 12, 120, 74, ["#8a7a4a", "#9a8a58", "#a07ab8"], 2400, .3);
-  // The Marsh: wet green and still pools.
-  rect(40, 74, 120, 96, "#355e52"); speckle(40, 74, 120, 96, ["#3c6a5c", "#2f5448", "#4a7458"], 9000, .6);
-  for (let i = 0; i < 22; i++) blob(44 + r() * 72, 77 + r() * 16, 1.5 + r() * 3, 1 + r() * 1.6, "#2f5f78");
-  // The moat's rocky bed round the Quarry's pale island, and the island's two tiers.
-  rect(39, 37, 87, 76, "#2a3036"); speckle(39, 37, 87, 76, ["#323840", "#24292e", "#3a4048"], 3000, .7);
-  rect(44, 43, 82, 71, "#b5ac9c"); speckle(44, 43, 82, 71, ["#c0b7a6", "#a89f90", "#cbc2b0", "#9d9484"], 9000, .5);
-  rect(46, 58, 80, 71, "#c2b9a8"); speckle(46, 58, 80, 71, ["#cdc4b2", "#b4ab9a"], 4000, .5);
-  for (let i = 0; i < 40; i++) blob(46 + r() * 34, 45 + r() * 24, .6 + r() * 1.4, .5 + r() * 1, "rgba(80,70,60,.2)");
+  // The districts, each where it now stands (drawn in its own place, then moved).
+  const at = (d, x0, z0, x1, z1) => [x0 + SHIFT[d][0], z0 + SHIFT[d][1], x1 + SHIFT[d][0], z1 + SHIFT[d][1]];
+  // The woods between the districts: a dark leafy floor.
+  rect(REALM.x0, 36, REALM.x1, REALM.z1, "#2f4a32"); speckle(REALM.x0, 36, REALM.x1, REALM.z1, ["#355236", "#2a422c", "#3c5a38", "#4a3a2a", "#6a3a26"], 14000, .7);
+  for (let i = 0; i < 90; i++) blob(REALM.x0 + r() * (REALM.x1 - REALM.x0), 36 + r() * 98, 1.5 + r() * 3, 1.5 + r() * 3, "rgba(20,30,20,.25)");
+  { const [a, b, c, d] = at("copse", -2, 40, 39, 98); rect(a, b, c, d, "#3a6250"); speckle(a, b, c, d, ["#416c58", "#335a48", "#47735c", "#2f5442"], 9000, .6); speckle(a, b, c, d, ["#a77ad8", "#d6a6ff", "#7fe8d0"], 900, .25); }
+  { const [a, b, c, d] = at("quarry", 39, 37, 87, 76); rect(a, b, c, d, "#2a3036"); speckle(a, b, c, d, ["#323840", "#24292e", "#3a4048"], 3000, .7); }
+  { const [a, b, c, d] = at("quarry", 44, 43, 82, 71); rect(a, b, c, d, "#b5ac9c"); speckle(a, b, c, d, ["#c0b7a6", "#a89f90", "#cbc2b0", "#9d9484"], 9000, .5); }
+  { const [a, b, c, d] = at("quarry", 46, 58, 80, 71); rect(a, b, c, d, "#c2b9a8"); speckle(a, b, c, d, ["#cdc4b2", "#b4ab9a"], 4000, .5); }
+  { const [a, b, c, d] = at("moor", 82.5, 12, 122, 76); rect(a, b, c, d, "#5a4868"); speckle(a, b, c, d, ["#634f72", "#523f60", "#6b5878", "#4c3c5a"], 10000, .55); speckle(a, b, c, d, ["#8a7a4a", "#9a8a58", "#a07ab8"], 2400, .3); }
+  { const [a, b, c, d] = at("marsh", 38, 76, 122, 98); rect(a, b, c, d, "#355e52"); speckle(a, b, c, d, ["#3c6a5c", "#2f5448", "#4a7458"], 9000, .6); }
   // Bare earth under where the paving meets the grass, so a gap never shows green.
   for (const road of ROADS.filter((x) => x.kind !== "future-spur")) {
     const h = road.width / 2 + .25;
@@ -100,8 +96,8 @@ function groundTexture() {
   const t = new THREE.CanvasTexture(canvas); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 }
 export function buildGround() {
-  const g = GROUND, nx = g.x1 - g.x0, nz = g.z1 - g.z0, pos = new Float32Array((nx + 1) * (nz + 1) * 3), uv = new Float32Array((nx + 1) * (nz + 1) * 2), idx = [];
-  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = g.x0 + i, z = g.z0 + j, k = j * (nx + 1) + i; pos.set([x, H(x, z), -z], k * 3); uv.set([i / nx, j / nz], k * 2); }
+  const g = GROUND, st = g.step, nx = Math.round((g.x1 - g.x0) / st), nz = Math.round((g.z1 - g.z0) / st), pos = new Float32Array((nx + 1) * (nz + 1) * 3), uv = new Float32Array((nx + 1) * (nz + 1) * 2), idx = [];
+  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = g.x0 + i * st, z = g.z0 + j * st, k = j * (nx + 1) + i; pos.set([x, H(x, z), -z], k * 3); uv.set([i / nx, j / nz], k * 2); }
   for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, c = a + nx + 1, d = c + 1; idx.push(a, b, c, b, d, c); }
   const geo = new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.BufferAttribute(pos, 3)); geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2)); geo.setIndex(idx); geo.computeVertexNormals();
   const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: groundTexture(), roughness: 1, metalness: 0 }));
@@ -216,7 +212,7 @@ export function buildWater() {
 // never on paving, stairs, water, gardens, under buildings or on the Quarry's stone.
 const NO_GRASS = [
   [40, 16.2, 47.8, 29.8], [66.2, 15.6, 75.4, 24.6], [17, 43.6, 24.4, 52.4], [16.6, 63.6, 24.4, 76.2], [48.6, 8, 54.4, 15.6], [61.6, 8, 66.4, 15.6], [48.8, 16.1, 54.2, 16.9], [61.8, 16.1, 66.2, 16.9],
-  [67.6, 2.4, 81.4, 8.4], [29.6, 5.6, 46.6, 9.4], [85.5, 1.5, 94.5, 10.5], [74.8, 14.5, 81.4, 20], [8, 42.6, 20.4, 46.4], [8, 62.4, 21, 72.4], [89, 55, 105, 73], [86, 13.4, 104, 17.2], [52.4, -6, 63.6, 1.4], [96, 1.6, 108.6, 10.4],
+  [67.6, 2.4, 81.4, 8.4], [29.6, 5.6, 46.6, 9.4], [85.5, 1.5, 94.5, 10.5], [74.8, 14.5, 81.4, 20], [8, 42.6, 20.4, 46.4], [8, 62.4, 21, 72.4], [89, 55, 105, 73], [91.4, 11.6, 111.8, 30],[52.4, -6, 63.6, 1.4], [96, 1.6, 108.6, 10.4],
 ];
 const GRASS = {
   lawn: { h: .46, flowers: true, colours: [0x4f8a36, 0x5b9a3e, 0x67a644, 0x46802f, 0x76ad4a, 0x84b04e, 0x9aa848] },
@@ -245,7 +241,10 @@ export const LAMPS = Object.freeze([
   [54.5, 21.1, 3.4], [61.5, 21.1, 3.4], [54.5, 28.1, 3.4], [61.5, 28.1, 3.4],
   [55.3, 9.0, 3.6], [60.7, 9.0, 3.6], [55.3, 14.6, 3.6], [60.7, 14.6, 3.6], [54, 1.3, 3], [62, 1.3, 3],
   [46, 30.6, 3.6], [38, 30.6, 3.6], [70, 30.6, 3.6], [78, 30.6, 3.6], [54.4, 36.6, 3.6], [61.6, 36.6, 3.6],
-  [54.4, 43, 8.8], [61.6, 43, 8.8], [52.6, 54, 7.4], [64.8, 50, 7.4], [58, 66, 11.6], [25, 48, 5.4], [25, 68, 5.4], [104, 42, 5.4], [104, 64, 9.5], [86, 80, 2.6],
+  [54.4, 63, 3.4], [61.6, 63, 3.4], [52.6, 74, 7.4], [64.8, 70, 7.4], [-5, 62, 5.4], [-5, 82, 5.4], [148, 46, 5.4], [148, 68, 9.5], [86, 114, 2.6],
+  [10, 30.6, 3.6], [22, 30.6, 3.6], [94, 30.6, 3.6], [106, 30.6, 3.6], [118, 30.6, 3.6], [3.4, 44, 3.6], [61.4, 46, 3.6], [61.4, 52, 3.6], [148.6, 92, 3.6], [61.4, 104, 3.6], [148.6, 100, 3.6], [88, 109.4, 3.6], [118, 109.4, 3.6], [3.4, 70, 6.6],
+  // The Velvet Bat: its door lanterns, and the lit piers along its terrace.
+  [102, 25.4, 2.8], [96.8, 29.6, 2.4], [107.2, 29.6, 2.4],
 ].map(([x, z, y]) => Object.freeze({ x, z, y })));
 // A knot garden behind railings: a hedge border, a ring with four arms, flowers
 // in each quarter, a cone of topiary at its heart and balls at its corners.
@@ -274,7 +273,7 @@ export function buildGreen() {
   const v = new ChunkedVoxels(24), R = onGround(v), r = seeded(101), fr = (x, z, facing) => at(v, x, z, facing), cables = [];
   // The south wall with the moth gate, and the carriage waiting inside it.
   stoneWall(R, 0, .6, 53.3, .6, 1.2, r); stoneWall(R, 62.7, .6, 120, .6, 1.2, r);
-  stoneWall(R, .6, 0, .6, 36, 1.2, r); stoneWall(R, 119.4, 0, 119.4, 12, 1.2, r);
+  stoneWall(R, .6, 0, .6, 30, 1.2, r); stoneWall(R, 119.4, 0, 119.4, 30, 1.2, r);
   mothPillar(fr(54, .6, "south"), 0, 0, r); mothPillar(fr(62, .6, "south"), 0, 0, r);
   for (let i = 0; i < 9; i++) { const a = i / 8 * Math.PI; R.block(58 + Math.cos(a) * 4, 4.4 + Math.sin(a) * 1.1, .6, .5, .22, .3, C.iron); }
   R.block(58, 5.2, .6, 1.2, .5, .1, C.plum); R.block(58, 5.3, .65, .8, .3, .05, C.gold);
@@ -302,12 +301,13 @@ export function buildGreen() {
   const roadClear = (x, z, pad) => ROADS.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + pad && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + pad));
   const pondClear = (x, z) => Math.abs(x - FIXTURES.pond.x) < FIXTURES.pond.w / 2 + 1.6 && Math.abs(z - FIXTURES.pond.z) < FIXTURES.pond.d / 2 + 1.6;
   const keepClear = (x, z, pad = 2.2) => roadClear(x, z, pad) || PLOTS.some((p) => p.kind === "resident" && x > p.x0 - 1 && x < p.x1 + 1 && z > p.z0 - 1 && z < p.z1 + 1) || NODES.some((n) => Math.hypot(n.x - x, n.z - z) < 2.2)
-    || x > 83 && z > 11 || x > SQUARE.x0 - 1.5 && x < SQUARE.x1 + 1.5 && z > 2 && z < SQUARE.z1 + 1 || x > 3 && x < 23 && z > 7 && z < 27 || pondClear(x, z) || Math.hypot(x - FIXTURES.oak.x, z - FIXTURES.oak.z) < 4;
+    || x > SQUARE.x0 - 1.5 && x < SQUARE.x1 + 1.5 && z > 2 && z < SQUARE.z1 + 1 || x > 3 && x < 23 && z > 7 && z < 27 || pondClear(x, z) || Math.hypot(x - FIXTURES.oak.x, z - FIXTURES.oak.z) < 4
+    || x > 89.6 - pad && x < 113.6 + pad && z > 10.4 - pad && z < 31;
   const palettes = [C.crimson, C.golden, C.green, C.leaves, C.violet];
   let planted = 0;
   for (let i = 0; i < 3000 && planted < 125; i++) {
-    const band = i % 5, x = band === 0 ? 1.5 + r() * 2.5 : band === 1 ? 84 + r() * 34 : band === 2 ? 2 + r() * 116 : band === 3 ? 23 + r() * 4.5 : 2 + r() * 116;
-    const z = band === 0 ? 2 + r() * 33 : band === 1 ? 1.5 + r() * 9.5 : band === 2 ? 1.6 + r() * 1.8 : band === 3 ? 3 + r() * 28 : 32 + r() * 3.5;
+    const band = i % 5, x = band === 0 ? 1.5 + r() * 2.5 : band === 1 ? 84 + r() * 34 : band === 2 ? 2 + r() * 116 : band === 3 ? 23 + r() * 4.5 : 84 + r() * 34;
+    const z = band === 0 ? 2 + r() * 33 : band === 1 ? 1.5 + r() * 9.5 : band === 2 ? 1.6 + r() * 1.8 : band === 3 ? 3 + r() * 28 : 12 + r() * 18;
     if (keepClear(x, z)) continue;
     planted++; const kind = r(); kind < .7 ? canopyTree(R, x, z, .85 + r() * .5, r, pick(palettes, r), { cell: .56 }) : kind < .86 ? spookyTree(R, x, z, .8 + r() * .5, r) : pine(R, x, z, .7 + r() * .4, r);
   }
@@ -355,6 +355,14 @@ export function buildGreen() {
   for (const z of [6.2, 7.6, 9.0]) for (let x = 30.2; x < 46.2; x += .48) { if (r() < .12) continue; const h = 1.7 + r() * .7; R.block(x, 0, z, .08, h, .08, vary(0xc0a060, .1, r)); R.block(x + .12, h * .55, z, .3, .05, .06, vary(0xb09050, .1, r)); R.block(x - .1, h * .75, z + .05, .26, .05, .06, vary(0xb09050, .1, r)); if (r() < .25) R.block(x + .08, h * .5, z + .08, .1, .26, .1, 0xd8b050); }
   scarecrow(fr(38, 7.6, "south"), 0, 0, r, 0); crow(R, 37.4, 7.6, 2.66, r);
   for (let i = 0; i < 5; i++) pumpkin(R, 31 + i * 3.4 + r(), 5.5 + r() * .3, .3 + r() * .2, r, pick(["orange", "gold"], r));
+  // The Velvet Bat: an old gothic tavern for bats and night folk, facing the Moor road, its host at the door.
+  // Flagstones from its terrace gate to the road, crooked trees round it, crows on the ridge and roses at its feet.
+  velvetBat(fr(102, 24.4, "north"), r);
+  for (let z = 29.8; z < 31.2; z += .46) for (const dx of [-.8, 0, .8]) R.block(102 + dx + (r() - .5) * .1, 0, z, .74, .06, .42, vary(pick(C.stone, r), .05, r));
+  for (const [x, z, k] of [[92.6, 28.6, 1.15], [111.4, 27.8, 1.05], [112.4, 20.8, 1.2], [91.4, 14.4, .95], [112.2, 12.8, .9]]) spookyTree(R, x, z, k, r);
+  for (const dx of [-3.6, 1.2, 4.6]) crow(R, 102 + dx, 18.4, 12.3, r);
+  for (let i = 0; i < 26; i++) { const side = i % 2 ? 1 : -1, x = 102 + side * (2.3 + r() * 3.2), z = 24.9 + r() * .5; flower(R, x, z, pick([0xb01a32, 0x7a1028, 0x2a1a2a, 0xd84060], r), r, .7); }
+  for (const s of [-1, 1]) jackOLantern(fr(102 + s * 1.15, 30.1, "north"), 0, 0, .5, r, 7 + s, 0);
   // The old moth-yard in the south-east corner: leaning stones, candles, a crooked railing and a lamp.
   const MY = { x0: 85.5, z0: 1.5, x1: 94.5, z1: 10.5 };
   for (const [a, b, c, d] of [[MY.x0, MY.z0, MY.x1, MY.z0], [MY.x0, MY.z1, MY.x1, MY.z1], [MY.x0, MY.z0, MY.x0, MY.z1]]) railing(R, a, b, c, d, .95);
@@ -424,13 +432,13 @@ export function buildTerrainWorks() {
   { const B = RAMPS.find((x) => x.bridge), cx = (B.x0 + B.x1) / 2, w = B.x1 - B.x0;
     for (let z = B.z0; z < B.z1; z += .5) v.block(cx, -.55, -(z + .25), w + .3, .55, .5, vary(pick(pale, r), .04, r));
     for (const side of [-1, 1]) for (let z = B.z0; z < B.z1; z += .5) { v.block(cx + side * (w / 2 + .1), 0, -(z + .25), .4, .85, .5, vary(pick(pale, r), .05, r)); v.block(cx + side * (w / 2 + .1), .85, -(z + .25), .5, .1, .52, C.stone[3]); }
-    for (const pz of [38.6, 41.4]) for (const side of [-1, 0, 1]) v.block(cx + side * 2.2, -2.4, -pz, 1.2, 1.9, 1.2, vary(pick(pale, r), .04, r));
+    for (const pz of [B.z0 + 1.6, B.z1 - 1.6]) for (const side of [-1, 0, 1]) v.block(cx + side * 2.2, -2.4, -pz, 1.2, 1.9, 1.2, vary(pick(pale, r), .04, r));
     for (let a = 0; a <= 8; a++) { const t = a / 8, z = B.z0 + .6 + t * (B.z1 - B.z0 - 1.2), y = -.55 - Math.sin(t * Math.PI) * 0 - (1 - Math.sin(t * Math.PI)) * 1.4; v.block(cx, y - .4, -z, w + .2, .4, .8, vary(pick(pale, r), .05, r)); }
     for (const side of [-1, 1]) { const p = frame(v, cx + side * 3.3, B.z1 - .3, "south", H(cx, B.z1 + .5)); for (let k = 0; k < 6; k++) p.block(0, k * .5, 0, .95, .5, .95, vary(pick(pale, r), .04, r)); p.block(0, 3, 0, 1.15, .16, 1.15, C.stone[3]); lantern(p, 0, 3.16, 0, .9); }
     for (let i = 0; i < 15; i++) { const x = cx - 2.8 + i * .4, top = 2.3 + Math.sin(i / 14 * Math.PI) * .5; v.block(x, H(cx, B.z1) + .1, -(B.z1 - .3), .05, top, .05, C.iron); if (i % 2) v.block(x, H(cx, B.z1) + .1 + top, -(B.z1 - .3), .08, .12, .08, C.gold); }
     for (const y of [.5, 1.4, 2.2]) v.block(cx, H(cx, B.z1) + .1 + y, -(B.z1 - .3), 5.8, .05, .05, C.iron); }
   // The moat's railing along the Green's side of the water, gapped for the bridge.
-  for (const [a, b] of [[39.5, 54.6], [61.4, 76.4]]) { railing(R, a, 37.25, b, 37.25, 1.0); for (let x = a; x <= b; x += 5) brickPier(R, x, 37.25, 1.3, r, "lamp"); }
+  { const mz = 37.25 + SHIFT.quarry[1]; for (const [a, b] of [[39.5, 54.6], [61.4, 86.4]]) { railing(R, a, mz, b, mz, 1.0); for (let x = a; x <= b; x += 5) brickPier(R, x, mz, 1.3, r, "lamp"); } }
   // The waterfalls' rocks and foam where they land.
   for (const f of FALLS) { for (let i = 0; i < 14; i++) v.block(f.x + f.dir * (.6 + r() * 1.6), f.foot - .4, -(f.z + (r() - .5) * 3), .5 + r() * .5, .3 + r() * .4, .5 + r() * .5, vary(pick(pale, r), .06, r)); for (let i = 0; i < 10; i++) v.block(f.x + f.dir * (.4 + r() * 1.2), f.foot + .02, -(f.z + (r() - .5) * 2.4), .3, .06, .3, 0xe8f6ff, true); }
   return v.build({ detailShadows: false, glow: GLOW });
@@ -474,15 +482,19 @@ export function buildNodes(ready) {
 
 // ---- Beyond the Green: the four districts, after the concept atlas -----------------
 export function buildBeyond() {
-  const v = new ChunkedVoxels(28), r = seeded(401), R = onGround(v), fr = (x, z, facing) => at(v, x, z, facing), cables = [];
+  const v = new ChunkedVoxels(28), r = seeded(401), base = onGround(v), cables = [];
+  // Each district is drawn in its own place on the grid and moved to where it now stands (SHIFT).
+  const district = (d) => { const [dx, dz] = SHIFT[d]; return { R: { block: (x, y, z, w, h, dd, c, g) => { base.block(x + dx, y, z + dz, w, h, dd, c, g); } }, fr: (x, z, facing) => at(v, x + dx, z + dz, facing), road: (x, z, pad) => onRoad(x + dx, z + dz, pad), dx, dz }; };
   const near = (x, z, list, d) => list.some(([a, b]) => Math.hypot(x - a, z - b) < d);
   const onRoad = (x, z, pad = 1.2) => ROADS.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + pad && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + pad));
 
+  {
+  const { R, fr, road } = district("copse");
   // ---- Moonroot Copse (west, on its shelf): a deep wood of moonroots, autumn crowns and dark pines,
   // glowing toadstools, Mabel's haberdashery and Tansy's herb cottage in fenced gardens, a moonstone circle.
-  const copseKeep = (x, z) => onRoad(x, z, 1.4) || (x > 4 && x < 27.5 && (z > 40.5 && z < 57 || z > 59 && z < 79.5)) || x > 3 && x < 23 && z > 79 && z < 93 || Math.hypot(x - 32, z - 90) < 4.5 || x > 37.4 || z < 41;
+  const copseKeep = (x, z) => road(x, z, 1.4) || (x > 4 && x < 27.5 && (z > 40.5 && z < 57 || z > 59 && z < 79.5)) || x > 3 && x < 23 && z > 79 && z < 93 || Math.hypot(x - 32, z - 90) < 4.5 || x > 37.4 || z < 41;
   for (let i = 0, n = 0; i < 1600 && n < 95; i++) { const x = 0 + r() * 38.5, z = 41 + r() * 56; if (copseKeep(x, z)) continue; n++; const k = r(); k < .45 ? twistedTree(R, x, z, 1 + r() * .7, r) : k < .68 ? canopyTree(R, x, z, 1 + r() * .5, r, pick([C.crimson, C.golden, C.violet], r), { cell: .5 }) : k < .86 ? pine(R, x, z, 1 + r() * .5, r) : spookyTree(R, x, z, .9 + r() * .4, r); }
-  for (let i = 0; i < 160; i++) { const x = r() * 38, z = 41 + r() * 56; if (onRoad(x, z, .6)) continue; r() < .55 ? glowShroom(R, x, z, r, r() < .5 ? 0x7fe8d0 : 0xd59cff) : r() < .6 ? bush(R, x, z, .9, r, [0x3f5a4a, 0x4a6a52, 0x5a3a5a]) : flower(R, x, z, pick([0x9a6ae0, 0xd6a6ff, 0xf6f0f5], r), r); }
+  for (let i = 0; i < 160; i++) { const x = r() * 38, z = 41 + r() * 56; if (road(x, z, .6)) continue; r() < .55 ? glowShroom(R, x, z, r, r() < .5 ? 0x7fe8d0 : 0xd59cff) : r() < .6 ? bush(R, x, z, .9, r, [0x3f5a4a, 0x4a6a52, 0x5a3a5a]) : flower(R, x, z, pick([0x9a6ae0, 0xd6a6ff, 0xf6f0f5], r), r); }
   cottage(fr(24, 48, "east"), { w: 8, d: 7, h: 3.2, roof: C.slatePlum, plaster: C.plasterRose, r, doorColour: 0x6a2f58, shutter: 0x8a4a6a, sign: C.plum, ridge: "z" });
   { const aw = fr(24, 48, "east"); for (let i = 0; i < 9; i++) for (let k = 0; k < 3; k++) aw.block(-3.6 + i * .44 + .22, 2.6 - k * .14, .5 + k * .4, .44, .1, .42, i % 2 ? C.cream : 0x6a2f58);
     for (const dx of [-2.4, 2.4]) { aw.block(dx, 0, 1.4, .5, 1.6, .5, 0xf0e6d8); aw.block(dx, 1.6, 1.4, .3, .3, .3, 0xd8c8b0); aw.block(dx, .5, 1.4, .7, .9, .5, pick([0x6a2f58, 0x3d4a7a, 0xa8172c], r)); } }
@@ -499,6 +511,9 @@ export function buildBeyond() {
   for (let i = 0; i < 17; i++) { const a = i / 16 * Math.PI; R.block(30 + Math.cos(a) * 3.4, Math.sin(a) * 3.8, 40.6, .8, .8, .8, vary(0x3f5a3a, .12, r)); if (i % 2) R.block(30 + Math.cos(a) * 3.4, Math.sin(a) * 3.8 + .5, 40.2, .2, .2, .2, 0x7a2a6a); }
   for (let i = 0; i < 40; i++) R.block(27 + r() * 6, r() * 2.4, 40.2 + r() * .8, .3, .3, .3, pick([0x3f5a3a, 0x2f4a32, 0x7a2a6a, 0x5a2a4a], r));
 
+  }
+  {
+  const { R, fr, road } = district("quarry");
   // ---- Lantern Quarry (its island): Opal's studio and Cinder's restaurant on the lower tier,
   // the cut terraces, a crane, block stacks, a mine cart and the Lantern Spire on the upper.
   studio(fr(51.6, 54, "east"), r);
@@ -518,38 +533,45 @@ export function buildBeyond() {
     sp.block(0, 17.9, 0, 2.2, 2.4, 2.2, 0xffc060, true); for (const [dx, dz] of [[1.1, 1.1], [-1.1, 1.1], [1.1, -1.1], [-1.1, -1.1]]) sp.block(dx, 17.9, dz, .2, 2.4, .2, C.iron);
     for (let k = 0; k < 5; k++) sp.block(0, 20.3 + k * .4, 0, 2.8 - k * .55, .4, 2.8 - k * .55, vary(pick(C.slatePlum, r), .04, r));
     sp.block(0, 22.3, 0, .14, 1.2, .14, C.brass); for (const s of [-1, 1]) sp.block(s * .4, 23.1, 0, .6, .5, .08, C.brass); }
-  for (let i = 0; i < 30; i++) { const x = 45 + r() * 36, z = 44 + r() * 26; if (onRoad(x, z, .8) || (x > 44 && x < 53 && z > 49 && z < 59) || (x > 60 && x < 76 && z > 44 && z < 56) || Math.hypot(x - 64, z - 66.5) < 3.5) continue; bush(R, x, z, .8, r, C.green); }
+  for (let i = 0; i < 30; i++) { const x = 45 + r() * 36, z = 44 + r() * 26; if (road(x, z, .8) || (x > 44 && x < 53 && z > 49 && z < 59) || (x > 60 && x < 76 && z > 44 && z < 56) || Math.hypot(x - 64, z - 66.5) < 3.5) continue; bush(R, x, z, .8, r, C.green); }
 
+  }
+  {
+  const { R, fr, road, dx, dz } = district("moor");
   // ---- Carnival Moor (east, raised): Corvus's big top, booths and pennants, his caravan,
   // and the Baron's velvet manor on its own crag behind iron railings.
   bigTent(R, 97, 42, 4.6, 7.4, 0x7d4fa3, 0xf0c252, r);
-  bigTent(R, 94, 26, 3.4, 5.6, 0xa8172c, 0xf3e6c8, r);
-  bigTent(R, 112, 18, 2.8, 4.8, 0x4b3a8a, 0xf3e6c8, r);
-  caravan(fr(103.4, 48.4, "west"), r);
+  bigTent(R, 94, 31.5, 3.4, 5.6, 0xa8172c, 0xf3e6c8, r);
+  bigTent(R, 114, 16, 2.8, 4.8, 0x4b3a8a, 0xf3e6c8, r);
+  caravan(fr(101.6, 48.4, "west"), r);
   for (let i = 0; i < 5; i++) { const b = fr(88 + i * 3.2, 15.5, "north"); b.block(0, 0, 0, 2.4, 1, 1.4, i % 2 ? 0xa8172c : 0x4b3a8a); b.block(0, 1, .6, 2.5, .08, .3, C.cream); for (const s of [-1, 1]) b.block(s * 1.15, 1, 0, .1, 1.5, .1, C.timber); for (let k = 0; k < 5; k++) b.block(-1 + k * .5, 2.5, .2, .5, .12, 1.6, k % 2 ? C.cream : i % 2 ? 0xa8172c : 0x4b3a8a); lantern(b, 0, 2.62, .1, .6); }
-  for (const [ax, az, bx, bz] of [[88, 30, 104, 30], [88, 36, 104, 52], [90, 20, 110, 20], [104, 30, 112, 22]]) { for (const [x, z] of [[ax, az], [bx, bz]]) R.block(x, 0, z, .16, 3.6, .16, C.timber); festoon(R, ax, 3.5, az, bx, 3.5, bz, 18, .7, undefined, cables); }
+  for (const [ax, az, bx, bz] of [[86, 40, 90, 52], [88, 26, 88, 22], [90, 20, 106, 20], [100, 26, 106, 36]]) { if (road(ax, az, .4) || road(bx, bz, .4)) continue; for (const [x, z] of [[ax, az], [bx, bz]]) R.block(x, 0, z, .16, 3.6, .16, C.timber); festoon(R, ax + dx, 3.5 + H(ax + dx, az + dz) - H(ax + dx, az + dz), az + dz, bx + dx, 3.5, bz + dz, 18, .7, undefined, cables); }
   { const mirror = fr(91, 50, "east"); mirror.block(0, 0, 0, 1.2, .3, .8, C.stone[1]); mirror.block(0, .3, 0, 1, 2.2, .14, C.gold); mirror.block(0, .45, .08, .8, 1.9, .03, 0xb8d0ff, true); mirror.block(0, 2.5, 0, .5, .3, .14, C.gold); }
-  for (let i = 0; i < 46; i++) { const x = 86 + r() * 34, z = 13 + r() * 40; if (onRoad(x, z, 1) || Math.hypot(x - 97, z - 42) < 6 || Math.hypot(x - 94, z - 26) < 4.6 || Math.hypot(x - 112, z - 18) < 4 || (z < 18 && x < 104)) continue; const k = r(); k < .35 ? bush(R, x, z, .9, r, [0x6a4a7a, 0x7d5a8a, 0x5a4a3a]) : k < .55 ? pumpkin(R, x, z, .35 + r() * .3, r, pick(["orange", "gold", "white"], r)) : k < .7 ? jackOLantern(fr(x, z, "west"), 0, 0, .45, r, i) : k < .85 ? spookyTree(R, x, z, .9 + r() * .4, r) : canopyTree(R, x, z, 1 + r() * .4, r, pick([C.crimson, C.golden, C.violet], r), { cell: .42 }); }
+  for (let i = 0; i < 46; i++) { const x = 86 + r() * 34, z = 13 + r() * 40; if (road(x, z, 1) || Math.hypot(x - 97, z - 42) < 6 || Math.hypot(x - 94, z - 31.5) < 4.6 || Math.hypot(x - 114, z - 16) < 4 || (z < 18 && x < 104)) continue; const k = r(); k < .35 ? bush(R, x, z, .9, r, [0x6a4a7a, 0x7d5a8a, 0x5a4a3a]) : k < .55 ? pumpkin(R, x, z, .35 + r() * .3, r, pick(["orange", "gold", "white"], r)) : k < .7 ? jackOLantern(fr(x, z, "west"), 0, 0, .45, r, i) : k < .85 ? spookyTree(R, x, z, .9 + r() * .4, r) : canopyTree(R, x, z, 1 + r() * .4, r, pick([C.crimson, C.golden, C.violet], r), { cell: .42 }); }
   manor(fr(97, 64, "east"), r);
   for (const [x0, z0, x1, z1] of [[90, 56, 104.6, 56], [90, 72, 104.6, 72], [104.6, 56, 104.6, 61.4], [104.6, 66.6, 104.6, 72]]) { railing(R, x0, z0, x1, z1, 1.4); for (const [x, z] of [[x0, z0], [x1, z1]]) brickPier(R, x, z, 1.8, r, "lamp"); }
   for (const [x, z] of [[101, 58], [101, 70], [92, 58.5], [92, 70]]) topiary(R, x, z, 1.1, r, true);
   fountain(R, 101.5, 64, .9, r); for (let i = 0; i < 16; i++) { const a = r() * Math.PI * 2, d = 2 + r() * 1.4; bush(R, 101.5 + Math.cos(a) * d * .6, 64 + Math.sin(a) * d, .7, r, [0x7a1a2a, 0x8a2236, 0x3f5a35]); }
 
+  }
+  {
+  const { R: Rl, fr, dx, dz } = district("marsh");
   // ---- Mirror Marsh (low, behind it all): islands of reeds and dead trees, glowing wisps,
   // stilt huts, boardwalks, a ruined arch, and the observatory's tower on its own island.
-  for (const I of MARSH_ISLANDS) { if (Math.hypot(I.x - 85, I.z - 88.5) < 2) continue; for (let i = 0; i < I.rx * I.rz * 1.4; i++) { const a = r() * Math.PI * 2, d = Math.sqrt(r()), x = I.x + Math.cos(a) * I.rx * d * .9, z = I.z + Math.sin(a) * I.rz * d * .9, k = r(); k < .12 ? deadTree(R, x, z, .9 + r() * .7, r) : k < .2 ? spookyTree(R, x, z, .8 + r() * .5, r) : k < .65 ? R.block(x, 0, z, .1, .9 + r() * .9, .1, vary(0x6a8a4a, .1, r)) : k < .8 ? bush(R, x, z, .8, r, [0x3f5a4a, 0x4a6a52]) : glowShroom(R, x, z, r, 0x7fe8d0); } }
-  for (let i = 0; i < 90; i++) { const x = 40 + r() * 80, z = 77 + r() * 20; R.block(x, .4 + r() * 2.2, z, .16, .16, .16, 0x9ff8e8, true); }
-  for (let i = 0; i < 60; i++) { const x = 40 + r() * 80, z = 77 + r() * 20; if (!isWater(x, z)) continue; v.block(x, -1.02, -z, .5, .03, .5, 0x3f7a4a); if (i % 4 === 0) v.block(x + .1, -.98, -z, .16, .1, .16, 0xf0d0f0); }
+  for (const I of MARSH_ISLANDS) { const R = base; if (Math.hypot(I.x - 85, I.z - 88.5) < 2) continue; for (let i = 0; i < I.rx * I.rz * 1.4; i++) { const a = r() * Math.PI * 2, d = Math.sqrt(r()), x = I.x + Math.cos(a) * I.rx * d * .9, z = I.z + Math.sin(a) * I.rz * d * .9, k = r(); k < .12 ? deadTree(R, x, z, .9 + r() * .7, r) : k < .2 ? spookyTree(R, x, z, .8 + r() * .5, r) : k < .65 ? R.block(x, 0, z, .1, .9 + r() * .9, .1, vary(0x6a8a4a, .1, r)) : k < .8 ? bush(R, x, z, .8, r, [0x3f5a4a, 0x4a6a52]) : glowShroom(R, x, z, r, 0x7fe8d0); } }
+  for (let i = 0; i < 90; i++) { const x = 40 + r() * 80, z = 77 + r() * 20; Rl.block(x, .4 + r() * 2.2, z, .16, .16, .16, 0x9ff8e8, true); }
+  for (let i = 0; i < 60; i++) { const x = 40 + r() * 80 + dx, z = 77 + r() * 20 + dz; if (!isWater(x, z)) continue; v.block(x, -1.02, -z, .5, .03, .5, 0x3f7a4a); if (i % 4 === 0) v.block(x + .1, -.98, -z, .16, .1, .16, 0xf0d0f0); }
   stiltHut(fr(52, 86, "south"), r); stiltHut(fr(100, 86, "south"), r); stiltHut(fr(112, 92, "west"), r);
-  for (let x = 61.5; x < 105; x += .6) { v.block(x, -.3, -76, .55, .12, .3, vary(C.wood, .1, r)); }
-  for (let z = 81; z < 83.4; z += .5) v.block(85, H(85, z) - .1, -z, 3.6, .12, .45, vary(C.wood, .1, r));
-  for (let i = 0; i < 9; i++) { const a = i / 8 * Math.PI; R.block(70 + Math.cos(a) * 2.6, 0, 92 + Math.sin(a) * 0, .9, Math.sin(a) * 3.6 + 1, .9, vary(pick(C.stoneDark, r), .06, r)); }
-  { const ox = 85, oz = 88.5; // The observatory: a round stone tower with a broken dome and a brass telescope.
+  
+  for (let z = 112; z < 117.4; z += .5) v.block(85, H(85, z) - .1, -z, 3.6, .12, .45, vary(C.wood, .1, r));
+  for (let i = 0; i < 9; i++) { const a = i / 8 * Math.PI; Rl.block(70 + Math.cos(a) * 2.6, 0, 92 + Math.sin(a) * 0, .9, Math.sin(a) * 3.6 + 1, .9, vary(pick(C.stoneDark, r), .06, r)); }
+  { const R = Rl, ox = 85, oz = 88.5; // The observatory: a round stone tower with a broken dome and a brass telescope.
     for (let i = 0; i < 24; i++) { const t = i / 24 * Math.PI * 2; for (let k = 0; k < 5; k++) R.block(ox + Math.cos(t) * 4.2, k * 1.1, oz + Math.sin(t) * 4.2, 1.3, 1.1, 1.3, vary(pick(C.stone, r), .05, r)); if (i % 4 === 0) R.block(ox + Math.cos(t) * 4.85, 2, oz + Math.sin(t) * 4.85, .1, 1.1, .6, C.window, true); }
     for (let k = 0; k < 5; k++) for (let i = 0; i < 18 - k * 2; i++) { if (i % 5 === 2) continue; const t = i / (18 - k * 2) * Math.PI * 2, rr = 4.2 * Math.cos(k / 5 * Math.PI / 2); R.block(ox + Math.cos(t) * rr, 5.5 + Math.sin(k / 5 * Math.PI / 2) * 3.4, oz + Math.sin(t) * rr, .9, .5, .9, k % 2 ? 0x8fa6c8 : 0xa8bcd8); }
     R.block(ox + .6, 6, oz, 1, .8, 3.4, C.brass); R.block(ox + .6, 5.4, oz - 1.2, .4, .8, .4, C.brass); }
+  }
   // The districts' gates, shut for now: lantern-topped pillars.
-  for (const g of GATES) if (g.id !== "copse-gate" && g.id !== "quarry-bridge") for (const s of [-1, 1]) { const moor = g.id.startsWith("moor"), p = fr(g.x + (moor ? 0 : s * 3.6), g.z + (moor ? s * 3.6 : 0)); for (let k = 0; k < 5; k++) p.block(0, k * .6, 0, .9, .6, .9, C.stone[k % 4]); p.block(0, 3, 0, 1.1, .14, 1.1, C.stone[3]); lantern(p, 0, 3.14, 0, .8); }
+  for (const g of GATES) if (g.id !== "copse-gate" && g.id !== "quarry-bridge") for (const s of [-1, 1]) { const moor = g.id.startsWith("moor"), p = at(v, g.x + (moor ? 0 : s * 3.6), g.z + (moor ? s * 3.6 : 0)); for (let k = 0; k < 5; k++) p.block(0, k * .6, 0, .9, .6, .9, C.stone[k % 4]); p.block(0, 3, 0, 1.1, .14, 1.1, C.stone[3]); lantern(p, 0, 3.14, 0, .8); }
   const group = v.build({ glow: GLOW }), wire = cableMesh(cables); if (wire) group.add(wire);
   return group;
 }

@@ -242,3 +242,21 @@ export const FOLK_BY_ID = Object.freeze(Object.fromEntries(FOLK.map((f) => [f.id
 
 // What a friendship level is called, for the journal.
 export const FRIEND_TITLES = Object.freeze(["", "Acquaintance", "Neighbour", "Friendly", "Pal", "Good friend", "Close friend", "Confidant", "Kindred spirit", "Dear friend", "Best friend"]);
+
+// Hosts keep a place on the Green rather than a home: they greet and talk, but have
+// no friendship track. Vesper keeps the Velvet Bat, the old tavern for bats and night folk.
+export const HOSTS = Object.freeze([
+  Object.freeze({
+    id: "vesper", name: "Vesper Nocturne", short: "Vesper", role: "Host of the Velvet Bat", district: "green", colour: "#c0203e",
+    about: "Keeps the Velvet Bat, Mothlight's old tavern for bats and night folk. Has poured the same dark cordial since the roof was new, and never forgets a guest's order.",
+    greet: Object.freeze([
+      "Good evening, and welcome to the Velvet Bat. Mind the rafters; the regulars hang there.",
+      "Come in, come in. The candles have been waiting for someone worth lighting for.",
+      "A table by the window? The moon has the one by the fire, I'm afraid. Standing booking.",
+      "Ah, the pumpkin farmer. You smell of honest work and woodsmoke. A rare vintage round here.",
+      "We never close. We do, now and then, hang upside down for a bit.",
+      "The cordial is beetroot, blackcurrant and a secret. Mostly the secret.",
+    ]),
+  }),
+]);
+export const HOST_BY_ID = Object.freeze(Object.fromEntries(HOSTS.map((h) => [h.id, h])));

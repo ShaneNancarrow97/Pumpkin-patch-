@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#130f1b">
+<title>Mothlight Village explorer</title>
+<style>
+/* @build:style */
+:root { --ground: #130f1b; --panel: rgba(29, 21, 36, .78); --edge: rgba(255, 214, 150, .16); --text: #f4e9dc; --muted: #c4b2c8; --amber: #ffb347; --amber-deep: #e88a2a; --plum: #6a3a7a; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; background: var(--ground); color: var(--text); font: 15px/1.4 "DM Sans", system-ui, sans-serif; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+.veil { position: fixed; inset: 0; background: var(--ground); display: grid; place-items: center; transition: opacity .8s ease; z-index: 9; pointer-events: none; }
+.veil p { font-family: Fraunces, Georgia, serif; font-size: 22px; color: var(--amber); letter-spacing: .02em; }
+.ready .veil { opacity: 0; }
+header { position: fixed; top: max(12px, env(safe-area-inset-top)); left: max(14px, env(safe-area-inset-left)); padding: 10px 14px 9px; border-radius: 14px; background: var(--panel); border: 1px solid var(--edge); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); pointer-events: none; }
+header h1 { margin: 0; font: 600 19px/1.1 Fraunces, Georgia, serif; letter-spacing: .01em; }
+header h1 span { color: var(--amber); }
+header p { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
+#fps { position: fixed; top: max(14px, env(safe-area-inset-top)); right: max(14px, env(safe-area-inset-right)); font-size: 11px; color: var(--muted); background: var(--panel); border: 1px solid var(--edge); padding: 4px 9px; border-radius: 99px; font-variant-numeric: tabular-nums; }
+nav { position: fixed; left: 0; right: 0; bottom: max(12px, env(safe-area-inset-bottom)); display: flex; gap: 8px; padding: 0 max(14px, env(safe-area-inset-left)); overflow-x: auto; scrollbar-width: none; z-index: 3; }
+nav::-webkit-scrollbar { display: none; }
+nav .group { display: flex; gap: 6px; padding: 6px; border-radius: 16px; background: var(--panel); border: 1px solid var(--edge); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); flex: none; }
+button { font: 600 13px/1 "DM Sans", system-ui, sans-serif; color: var(--text); background: rgba(255, 255, 255, .06); border: 1px solid transparent; border-radius: 11px; padding: 10px 13px; min-height: 40px; white-space: nowrap; cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
+button:hover { background: rgba(255, 255, 255, .12); }
+button.on { background: linear-gradient(180deg, var(--amber), var(--amber-deep)); color: #2a160a; }
+button:disabled { opacity: .45; }
+button.primary { border-color: rgba(255, 179, 71, .5); }
+#who { display: none; }
+.walking #who { display: inline-block; }
+#pad { position: fixed; left: 0; top: 0; bottom: 0; width: 46%; display: none; z-index: 2; touch-action: none; }
+.walking #pad { display: block; }
+#stick { position: fixed; left: 0; top: 0; width: 120px; height: 120px; border-radius: 50%; border: 2px solid rgba(255, 214, 150, .35); background: radial-gradient(circle, rgba(255, 179, 71, .08), rgba(19, 15, 27, .25)); opacity: 0; transition: opacity .15s; pointer-events: none; z-index: 4; }
+#stick.shown { opacity: 1; }
+#knob { position: absolute; left: 38px; top: 38px; width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #ffd79a, var(--amber-deep)); box-shadow: 0 0 18px rgba(255, 160, 60, .55); }
+.hint { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(max(12px, env(safe-area-inset-bottom)) + 70px); font-size: 12px; color: var(--muted); background: var(--panel); border: 1px solid var(--edge); padding: 6px 12px; border-radius: 99px; white-space: nowrap; display: none; }
+.walking .hint { display: block; }
+#card { position: fixed; left: 50%; top: max(84px, calc(env(safe-area-inset-top) + 72px)); transform: translate(-50%, -8px); width: min(420px, calc(100% - 28px)); padding: 13px 16px 14px; border-radius: 16px; background: var(--panel); border: 1px solid var(--edge); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none; z-index: 5; }
+#card.shown { opacity: 1; transform: translate(-50%, 0); }
+#card h2 { margin: 0; font: 600 18px/1.15 Fraunces, Georgia, serif; color: var(--amber); }
+#card .role { margin: 2px 0 8px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+#card .line { margin: 0; font-family: Fraunces, Georgia, serif; font-size: 15px; }
+@media (max-width: 520px) { header p { display: none; } }
+</style>
+</head>
+<body>
+<canvas></canvas>
+<div class="veil"><p>Lighting the lanterns…</p></div>
+<header><h1>Mothlight <span>Village</span></h1><p>Explorer build · the village before it joins the game</p></header>
+<div id="fps">– fps</div>
+<div id="card"><h2 id="card-name"></h2><p class="role" id="card-role"></p><p class="line" id="card-line"></p></div>
+<div id="pad"></div>
+<div id="stick"><div id="knob"></div></div>
+<p class="hint">Left thumb walks · drag right to look · pinch to zoom · tap a neighbour to say hello</p>
+<nav>
+  <div class="group">
+    <button id="walk" class="primary" disabled>Walk</button>
+    <button id="who">Shane</button>
+    <button id="everyone">Everyone</button>
+  </div>
+  <div class="group">
+    <button data-place="green" class="on">Green</button>
+    <button data-place="tree">Moth Tree</button>
+    <button data-place="bat">Velvet Bat</button>
+    <button data-place="copse">Copse</button>
+    <button data-place="quarry">Quarry</button>
+    <button data-place="moor">Moor</button>
+    <button data-place="marsh">Marsh</button>
+    <button data-place="valley">Valley</button>
+  </div>
+</nav>
+<script>/* @build:script */</script>
+</body>
+</html>
