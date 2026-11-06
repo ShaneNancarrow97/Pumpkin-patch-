@@ -10,6 +10,7 @@ import { Voxels, seeded } from "./voxels.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { LAYOUT_DESIGN, LAMPS } from "./village-world.js";
 import { DISTRICT_SHIFT } from "./content/village.js";
+import { C } from "./village-models.js";
 
 const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z);
 const dummy = new THREE.Object3D();
@@ -100,11 +101,29 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
   const beam = new THREE.Group(); beam.position.copy(W(64 + qx, 66.5 + qz, H(64 + qx, 66.5 + qz) + 19.1)); group.add(beam);
   const beamGeo = new THREE.CylinderGeometry(.25, 1.6, 30, 16, 1, true); beamGeo.translate(0, 15, 0); beamGeo.rotateZ(-Math.PI / 2 + .06);
   for (const a of [0, Math.PI]) { const m = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({ color: 0xffd48a, transparent: true, opacity: .018, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); m.rotation.y = a; beam.add(m); }
-  const wheel = new THREE.Group(); wheel.position.copy(W(115.5 + mx, 50 + mz, H(115.5 + mx, 50 + mz) + 5.6)); wheel.rotation.y = -Math.PI / 2; group.add(wheel);
-  { const v = new Voxels(); for (const s of [-1, 1]) for (let k = 0; k < 6; k++) v.block(s * (1.6 - k * .26), k - 5.6, 0, .3, 1, .3, 0x27242d); const legs = v.build(); legs.position.copy(wheel.position); legs.rotation.y = wheel.rotation.y; group.add(legs); }
-  { const v = new Voxels(); for (let i = 0; i < 28; i++) { const t = i / 28 * Math.PI * 2; v.block(Math.cos(t) * 4.6, Math.sin(t) * 4.6 - .2, 0, .4, .4, .4, i % 3 ? 0xffc06a : 0xe8b0ff, true); if (i % 4 === 0) for (let k = 1; k < 5; k++) v.block(Math.cos(t) * 4.6 * k / 5, Math.sin(t) * 4.6 * k / 5 - .06, 0, .12, .12, .12, 0x27242d); }
-    for (let i = 0; i < 7; i++) { const t = i / 7 * Math.PI * 2; v.block(Math.cos(t) * 4.6, Math.sin(t) * 4.6 - 1, .4, .7, .6, .5, [0xa8172c, 0x4b3a8a, 0xf0c252][i % 3]); }
+  // The Moor's Ferris wheel: A-frame legs, a boarding deck and a ticket booth stand still; the wheel
+  // (two rims and sixteen spokes strung with bulbs) turns, and its gondolas hang upright as it does.
+  const WR = 5.4, wheelAt = W(115.5 + mx, 50 + mz, H(115.5 + mx, 50 + mz) + 6.6);
+  const wheel = new THREE.Group(); wheel.position.copy(wheelAt); wheel.rotation.y = -Math.PI / 2; group.add(wheel);
+  const wheelFrame = new THREE.Group(); wheelFrame.position.copy(wheelAt); wheelFrame.rotation.y = -Math.PI / 2; group.add(wheelFrame);
+  { const v = new Voxels(), iron = 0x27242d;
+    for (const sz of [-1.05, 1.05]) for (const sx of [-1, 1]) for (let k = 0; k <= 16; k++) { const t = k / 16; v.block(sx * 3.5 * (1 - t), -6.6 + t * 6.6, sz, .26, .44, .26, iron); }
+    for (const sz of [-1.05, 1.05]) { v.block(0, -3.4, sz, 3.7, .2, .2, iron); v.block(0, -5.6, sz, 5.6, .2, .2, iron); }
+    v.block(0, -.2, 0, .36, .36, 2.4, iron); for (const sz of [-1.2, 1.2]) v.block(0, -.28, sz, .5, .5, .1, C.gold);
+    v.block(0, -6.6, 0, 3.4, .3, 3.2, C.wood); for (let k = 0; k < 3; k++) v.block(2 + k * .3, -6.6, 0, .3, .3 - k * .1, 1.6, C.woodLight);
+    for (const sx of [-1.6, 1.6]) for (const sz of [-1.5, 1.5]) { v.block(sx, -6.3, sz, .1, .9, .1, iron); } v.block(0, -5.45, 1.5, 3.2, .06, .06, C.gold); v.block(0, -5.45, -1.5, 3.2, .06, .06, C.gold);
+    const bx = 3.9, bz = 2.4; v.block(bx, -6.6, bz, 1.4, 1.7, 1.2, 0x6a3a8a); v.block(bx, -5.2, bz + .61, .8, .5, .03, 0xffd08a, true); v.block(bx, -6.0, bz + .62, 1.2, .1, .1, C.gold);
+    for (let i = 0; i < 5; i++) v.block(bx - .56 + i * .28, -4.9, bz, .28, .14, 1.5, i % 2 ? C.cream : 0xa8172c);
+    const legs = v.build(); legs.position.copy(wheelAt); legs.rotation.y = wheel.rotation.y; group.add(legs); }
+  { const v = new Voxels(), iron = 0x2e2a36;
+    for (const sz of [-.45, .45]) for (let i = 0; i < 48; i++) { const t = i / 48 * Math.PI * 2; v.block(Math.cos(t) * WR, Math.sin(t) * WR - .08, sz, .2, .16, .16, iron); if (i % 2 === 0) v.block(Math.cos(t) * (WR + .12), Math.sin(t) * (WR + .12) - .07, sz, .14, .14, .14, i % 4 ? 0xe8b0ff : 0xffc06a, true); }
+    for (let i = 0; i < 16; i++) { const t = i / 16 * Math.PI * 2; for (const sz of [-.45, .45]) for (let k = 1; k < 10; k++) { const d = WR * k / 10; v.block(Math.cos(t) * d, Math.sin(t) * d - .05, sz, .1, .1, .1, k % 3 === 0 ? 0xffd890 : iron, k % 3 === 0); } if (i % 2 === 0) v.block(Math.cos(t) * WR, Math.sin(t) * WR - .05, 0, .12, .12, 1.1, iron); }
+    v.block(0, -.5, 0, 1, 1, 1.2, iron); v.block(0, -.2, .62, .5, .5, .04, 0xffc06a, true); v.block(0, -.2, -.62, .5, .5, .04, 0xffc06a, true);
     wheel.add(v.build({ glow: 1.95 })); }
+  const GONDOLAS = 8, gondolaGeo = mergeBoxes([[0, -.95, 0, .9, .7, .8], [0, -.25, 0, 1, .12, .9], [0, -.13, 0, .7, .1, .6], [0, -.95, 0, 1, .08, .9], [0, -.25, 0, .06, .3, .06]]);
+  const gondolas = new THREE.InstancedMesh(gondolaGeo, new THREE.MeshLambertMaterial(), GONDOLAS), gondolaLamps = new THREE.InstancedMesh(new THREE.BoxGeometry(.18, .14, .18), glow(new THREE.Color(1.9, 1.5, .8)), GONDOLAS);
+  for (const m of [gondolas, gondolaLamps]) { m.frustumCulled = false; wheelFrame.add(m); }
+  for (let i = 0; i < GONDOLAS; i++) gondolas.setColorAt(i, new THREE.Color([0xa8172c, 0x4b3a8a, 0xd9a441, 0x2a7a6a][i % 4]));
 
   // ---- Fireflies over the Copse, the moth-yard and the Green's edges.
   const flyCount = 160, flyPos = new Float32Array(flyCount * 3), fly = Array.from({ length: flyCount }, (_, i) => {
@@ -189,6 +208,8 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
       for (const q of squirrels) tickSquirrel(q, time, dt);
       // The spire turns its beam; the wheel turns.
       beam.rotation.y = time * .35; wheel.rotation.z = time * .12;
+      for (let i = 0; i < GONDOLAS; i++) { const t = i / GONDOLAS * Math.PI * 2 + wheel.rotation.z; dummy.position.set(Math.cos(t) * WR, Math.sin(t) * WR, 0); dummy.rotation.set(0, 0, 0); dummy.scale.setScalar(1); dummy.updateMatrix(); gondolas.setMatrixAt(i, dummy.matrix); dummy.position.y -= .04; dummy.updateMatrix(); gondolaLamps.setMatrixAt(i, dummy.matrix); }
+      gondolas.instanceMatrix.needsUpdate = gondolaLamps.instanceMatrix.needsUpdate = true;
       // Fireflies.
       fly.forEach((f, i) => { const t = time * f.s + f.p; flyPos.set([f.x + Math.sin(t) * .8, f.y + Math.sin(t * 1.7) * .3, -(f.z + Math.cos(t * .8) * .8)], i * 3); });
       flyGeo.attributes.position.needsUpdate = true; fireflies.material.opacity = .6 + .3 * Math.sin(time * 2.2);

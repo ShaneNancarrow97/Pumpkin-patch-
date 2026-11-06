@@ -570,6 +570,22 @@ export function festoon(f, ax, ay, az, bx, by, bz, n = 12, sag = .5, colours = [
   else { const len = Math.hypot(bx - ax, by - ay, bz - az), steps = Math.max(n * 2, Math.round(len / .1)); for (let i = 0; i < steps; i++) { const [x, y, z] = at((i + .5) / steps); f.block(x, y + .02, z, .03, .03, .03, 0x1e1a24); } }
   for (let i = 1; i < n; i++) { const [x, y, z] = at(i / n); f.block(x, y - .05, z, .02, .05, .02, 0x1e1a24); f.block(x, y - .14, z, .08, .1, .08, colours[i % colours.length], true); f.block(x, y - .06, z, .05, .03, .05, 0x2a2430); }
 }
+// A fair's market stall (front +z): a timber counter with a striped skirt under a striped awning
+// with a scalloped edge, goods on the counter and shelf, a lantern under the awning and a sign.
+export function marketStall(f, a, b, goods = "pumpkins", r = seeded(171)) {
+  const w = 3.2, d = 1.8, n = 7, sw = (w + .3) / n;
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) f.block(sx * (w / 2 - .1), 0, sz * (d / 2 - .1), .14, sz > 0 ? 2.45 : 2.95, .14, C.timber);
+  f.block(0, 0, .45, w, .95, .62, C.wood); f.block(0, .95, .45, w + .12, .08, .74, C.woodLight); f.block(0, 1.55, -.62, w - .2, .08, .4, C.woodLight);
+  for (let i = 0; i < 6; i++) f.block(-w / 2 + .27 + i * .53, .18, .77, .5, .62, .02, i % 2 ? a : b);
+  // The awning slopes from the back posts down over the counter; its front edge hangs in scallops.
+  for (let i = 0; i < n; i++) { const x = -w / 2 - .15 + (i + .5) * sw; for (let k = 0; k < 4; k++) f.block(x, 2.98 - k * .15, -d / 2 - .1 + k * .66, sw, .1, .68, i % 2 ? a : b); f.block(x, 2.3, d / 2 + .52, sw - .03, .2, .05, i % 2 ? a : b); f.block(x, 2.2, d / 2 + .52, sw * .5, .1, .05, i % 2 ? a : b); }
+  // Goods on the counter and the shelf behind.
+  const lay = (y, z, k) => { for (let i = 0; i < k; i++) { const x = -w / 2 + .4 + i * (w - .8) / (k - 1); if (goods === "pumpkins") { const p = pick([0xe8771f, 0xf08a2a, 0xd9962a, 0xece4d4], r), sz = .26 + r() * .14; f.block(x, y, z, sz, sz * .8, sz, p); f.block(x, y + sz * .8, z, .05, .08, .05, 0x5a7a3a); } else if (goods === "apples") { f.block(x, y, z, .36, .16, .3, C.wood); for (const o of [-.08, .08]) f.block(x + o, y + .16, z, .12, .12, .12, pick([0xc8302a, 0xa8202a, 0xd8b03a], r)); } else if (goods === "sweets") { f.block(x, y, z, .16, .3, .16, 0xd8e4f0); f.block(x, y + .3, z, .18, .05, .18, C.gold); f.block(x, y + .05, z, .12, .18, .12, pick([0xe85a9a, 0x8ad86a, 0xf0c252, 0x9a6ae0], r), true); } else { f.block(x, y, z, .14, .3, .14, pick([0x3a8a5a, 0x7a3aa0, 0xa8203a], r), true); f.block(x, y + .3, z, .06, .1, .06, 0x5a3a2a); } } };
+  lay(1.03, .4, 6); lay(1.63, -.62, 5);
+  lantern(f, 0, 2.05, .75, .6);
+  f.block(0, 3.08, -.95, 1.5, .48, .08, C.woodLight); f.block(0, 3.16, -.9, 1.2, .3, .02, a); f.block(0, 3.22, -.88, .6, .14, .01, C.cream);
+}
+
 // A leaning gravestone with moss, sometimes a candle at its foot.
 export function gravestone(f, x, z, r = seeded(71), kind = 0) {
   const c = vary(pick(C.stoneDark, r), .06, r);
