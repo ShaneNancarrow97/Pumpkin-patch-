@@ -184,7 +184,7 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
       });
       water.instanceMatrix.needsUpdate = splash.instanceMatrix.needsUpdate = true;
       // Waterfalls: each bead pours over the lip, falls and quickens, then starts again at the top.
-      D.falls.forEach((f, fi) => { for (let i = 0; i < fallBeads; i++) { const b = fallSpot[fi * fallBeads + i], t = (time * .55 * b.s + b.p) % 1, y = f.top + .1 - (f.top - f.foot) * t * t; dummy.position.copy(W(f.x + f.dir * (.25 + b.out + t * .5), f.z + b.z, y)); dummy.rotation.set(0, 0, 0); dummy.scale.set(1, 1 + t * 1.5, 1); dummy.updateMatrix(); falls.setMatrixAt(fi * fallBeads + i, dummy.matrix); } });
+      D.falls.forEach((f, fi) => { for (let i = 0; i < fallBeads; i++) { const b = fallSpot[fi * fallBeads + i], t = (time * .55 * b.s + b.p) % 1, y = f.top + .1 - (f.top - f.foot) * t * t; const out = .25 + b.out + t * .5, k = f.w / 2.2; dummy.position.copy(W(f.x + f.nx * out + (f.nx ? 0 : b.z * k), f.z + f.nz * out + (f.nx ? b.z * k : 0), y)); dummy.rotation.set(0, 0, 0); const thin = f.w < 2 && i % 3 ? 0 : 1; dummy.scale.set(thin, (1 + t * 1.5) * thin, thin); dummy.updateMatrix(); falls.setMatrixAt(fi * fallBeads + i, dummy.matrix); } });
       falls.instanceMatrix.needsUpdate = true;
       // Candlelight: each pooled light breathes on its own.
       pool?.forEach((l, i) => { l.intensity = 48 * (.86 + .14 * noise(time * 7.3 + i * 3.1)); });

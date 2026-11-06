@@ -23,7 +23,7 @@ The village is **not in the game yet**. Its rules and content are done and teste
 | --- | --- |
 | V1 Pace: a longer road to level 3 | Done (`335bc5a`): about twice as long, keeping every level already reached |
 | V2 Rules and content | Done (`a8f17fd`) and tested: friendship to 10, chats in three tones, gifts, favours, quests, gathering nodes, Rowan's stall, decorating on the Green |
-| V3 / V3b The world in voxels | Mostly done (`82ced1b` and this push). Terraced valley, five districts apart from each other, the Moth Tree, knot gardens, homes, venues, the Velvet Bat, Lantern Night lighting, life and grass. Follow-ups are listed in the roadmap |
+| V3 / V3b The world in voxels | Mostly done (`82ced1b` and later pushes). The terraced valley has:<ul><li>five districts apart from each other, with woods between them;</li><li>the Moth Tree, the knot gardens, the homes and the venues;</li><li>the Velvet Bat;</li><li>Lantern Night lighting under a twilight sky;</li><li>the Moor's fair (a Ferris wheel and a market row);</li><li>the Quarry's ivy and culverts;</li><li>life and grass.</li></ul>Follow-ups are in the roadmap |
 | Explorer page | Done (this push): `node build.mjs --village`, see below |
 | V4 Residents' animation | Partial. Elowen and Rowan have jointed rigs that idle, talk and wave; the other six (and Vesper) stand posed |
 | V5 In the game: getting there, play mode, picking, the tour | Not started. The view has a camera, a following play camera and a tour director whose keyframes are now out of date |
@@ -112,15 +112,15 @@ The village is **not in the game yet**. Its rules and content are done and teste
   - a rect in `NO_GRASS`;
   - a clause in `buildGreen`'s `keepClear`, so trees and the flower scatter keep off;
   - a `SCENERY` entry (world units, via `box`), so decor can't be placed on it.
-- **`grassAt`'s district checks still use pre-shift rects** for the Moor's tents. See the roadmap.
-- **The life layer's positions are partly stale since the districts moved.** These are still pre-shift:
-  - the chimney list;
-  - the spire's beam (64, 66.5);
-  - the wheel (115.5, 50);
-  - the fireflies' zones;
-  - the bat flocks.
-  - Fix them by recording points as models are built (roadmap, step 1), not by hand.
-- **The tour's keyframes (`TOUR` in `village-view.js`) are pre-shift.** Re-plan them before V5.
+- **Chimney smoke comes from marks, not a list.** A model notes its chimney's top with `f.mark?.("smoke", x, top, z)`. `chimneyStack` does this, as do the inn, the manor, the caravan and the Velvet Bat.
+  - `frame`, `realm`, `onGround`, the districts' writers and both voxel classes pass marks through.
+  - The built group carries them (`userData.marks`), and the view hands them to the life layer.
+  - Give any new chimney a mark, and use the same mechanism for anything else the life layer should find.
+  - The two homes that change (Rowan's workshop and Elowen's conservatory) keep their smoke in `village-life.js`.
+- **District things in the life layer are written in the district's own place plus `DISTRICT_SHIFT`.** This covers the beam, the wheel, the fireflies' Copse zone, the bat flocks and the Moor's grass clearings. Keep doing it that way, so moving a district moves them.
+- **Falls point any way.** Each entry in `FALLS` has `nx`, `nz` (which way the water leaves) and `w` (its width). Two are the cliffs'; two are the culverts in the Quarry's south face.
+- **The woods (`buildWoods`) grow on open ground only.** They keep off terraces, ramps, water, the Green, roads (by 2.8) and gates. Something new on open ground needs its own rule in `clear`, or trees will grow through it.
+- **Festoons in a district take absolute coordinates through `base`**, never the district's `R`: that writer moves them again (the Moor's bulbs once hung in the woods). Their cables take absolute coordinates too.
 - **Hosts are not residents.** Vesper is in `HOSTS` (content and view), not `RESIDENTS` or `FOLK`, so the friendship rules and tests are untouched. The view lists hosts after the residents.
 - **The explorer is not the game.** It builds its own state (level 3, invited) and never saves.
 
@@ -129,24 +129,27 @@ The village is **not in the game yet**. Its rules and content are done and teste
 In order. Each item says what done looks like.
 
 1. **Finish the separated districts** (V3c).
-   - **The woods between districts.** The bare ground between them needs:
-     - dense mixed woods, using the purple, magenta, gold and crimson canopies of the reference and pines at the back;
-     - undergrowth and paths' edges;
-     - road lamps at the `LAMPS` entries that have no post yet (from `[-5, 62]` onwards);
-     - fence lines and signposts at forks.
-     - Done when the valley shot has no empty dark ground inside the realm and stays near the farm's budget.
-   - **Chimney smoke from the buildings themselves.** `chimneyStack` and the bespoke chimneys (the Velvet Bat's two, the inn, the manor, the caravan) should note their tops through a `mark("smoke", …)` on the writers (`frame`, `realm`, `onGround`, `Voxels`, `ChunkedVoxels`). The view would collect them from the built groups and hand them to the life layer. Then do the same for the beam, the wheel, the perches and the flocks.
-   - **The grass mask.** Shift the Moor's tent circles in `grassAt`, and give the Copse, Quarry and Marsh rects their shift.
-   - **The tour.** Re-plan `TOUR` through the new layout: the carriage, the Green, the Velvet Bat, then each district by its road and gate.
-   - **Nothing on the paths.** Check every road and stair for props, trees and lamps standing on them, with a test over `ROADS` against the built boxes if it can be made cheap.
+   - **Done in this round:**
+     - the woods, road lamps and a signpost;
+     - chimney smoke from marks;
+     - the life layer, bats and grass moved with their districts;
+     - the tour re-planned.
+   - **Nothing on the paths.** Check every road and stair for props, trees and lamps standing on them. Add a test over `ROADS` against the built boxes if it can be made cheap.
+   - **Re-measure the cost with the woods in.** There are about 550 trees in 23k boxes. Use `frameStats` from the Green and from the valley, and cull woods patches harder in play mode if it's over the farm's budget.
 2. **Fidelity pass against the reference** (task #185).
-   - **Colour:** more saturated, more varied tree colour; violet and magenta crowns round the Green.
-   - **Sky:** a twilight band at the horizon with pink cloud.
-   - **Retaining walls:** ivy, and arched culverts with falls into the moat.
-   - **Buildings:**
+   - **Done in this round:**
+     - violet, magenta and teal crowns, on the Green and in the woods;
+     - a twilight band with rose clouds;
+     - ivy on the walls and cliffs, and flowers along the walls' tops;
+     - arched culverts with falls into the moat;
+     - the Velvet Bat's crimson glass shown and its front lit;
+     - the Ferris wheel rebuilt;
+     - a striped market row.
+   - **Still to do:**
      - lit windows and flower boxes on every cottage;
-     - the Velvet Bat's facade lit (it reads dark from the road: a warm wash from its terrace, more lit glass, lanterns at the tower);
-     - a striped market row and the Ferris wheel lit on the Moor.
+     - the Moor's open ground west of its road (a carousel, hay bales, bunting);
+     - the Marsh's banks;
+     - the cottages' gardens in the Copse.
    - Done when side-by-side shots of the Green and the valley read as the same place as the painting.
 3. **The Velvet Bat and Vesper.**
    - Vesper's chat in the village UI (V7), using `HOST_BY_ID.vesper.greet`.

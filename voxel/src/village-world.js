@@ -52,7 +52,11 @@ export const GROUND = Object.freeze({ x0: -80, x1: 210, z0: -40, z1: 176, scale:
 // The round square, set in rings round the Moth Tree, reaching both doors and the roads.
 export const SQUARE = Object.freeze({ x0: 49.2, z0: 15.8, x1: 66.8, z1: 33.4, cx: FIXTURES.tree.x, cz: FIXTURES.tree.z, r: 8.8 });
 // Where the waterfalls tumble off the Quarry's island into the moat (design grid: x, z, top, foot, facing x).
-const FALLS = [{ x: 82.3, z: 51 + SHIFT.quarry[1], top: 5, foot: -1.6, dir: 1 }, { x: 43.7, z: 62 + SHIFT.quarry[1], top: 5, foot: -1.6, dir: -1 }];
+// Falls off the Quarry's island (design grid): two down its east and west cliffs, and two pouring from arched
+// culverts in its south face into the moat, as in the concept painting. nx, nz point the way the water leaves; w is its width.
+const CULVERTS = [48.5, 67.5].map((x) => ({ x, z: 43 + SHIFT.quarry[1] - .7 }));
+const FALLS = [{ x: 82.3, z: 51 + SHIFT.quarry[1], top: 5, foot: -1.6, nx: 1, nz: 0, w: 2.2 }, { x: 43.7, z: 62 + SHIFT.quarry[1], top: 5, foot: -1.6, nx: -1, nz: 0, w: 2.2 },
+  ...CULVERTS.map((c) => ({ x: c.x, z: c.z, top: .5, foot: -1.6, nx: 0, nz: -1, w: 1.3 }))];
 const pick = (list, r) => list[(r() * list.length) | 0];
 
 // ---- Ground ----------------------------------------------------------------------
@@ -308,7 +312,7 @@ export function buildGreen() {
   const keepClear = (x, z, pad = 2.2) => roadClear(x, z, pad) || PLOTS.some((p) => p.kind === "resident" && x > p.x0 - 1 && x < p.x1 + 1 && z > p.z0 - 1 && z < p.z1 + 1) || NODES.some((n) => Math.hypot(n.x - x, n.z - z) < 2.2)
     || x > SQUARE.x0 - 1.5 && x < SQUARE.x1 + 1.5 && z > 2 && z < SQUARE.z1 + 1 || x > 3 && x < 23 && z > 7 && z < 27 || pondClear(x, z) || Math.hypot(x - FIXTURES.oak.x, z - FIXTURES.oak.z) < 4
     || x > 89.6 - pad && x < 113.6 + pad && z > 10.4 - pad && z < 31;
-  const palettes = [C.crimson, C.golden, C.green, C.leaves, C.violet];
+  const palettes = [C.crimson, C.golden, C.magenta, C.leaves, C.violet, C.violet, C.teal, C.green];
   let planted = 0;
   for (let i = 0; i < 3000 && planted < 125; i++) {
     const band = i % 5, x = band === 0 ? 1.5 + r() * 2.5 : band === 1 ? 84 + r() * 34 : band === 2 ? 2 + r() * 116 : band === 3 ? 23 + r() * 4.5 : 84 + r() * 34;
@@ -383,6 +387,8 @@ export function buildGreen() {
 const WALL_STYLE = { "quarry": "cliff", "quarry-top": "cliff", manor: "crag", observatory: "crag", copse: "wall", moor: "wall", moat: "bank", marsh: "bank" };
 export function buildTerrainWorks() {
   const v = new ChunkedVoxels(30), r = seeded(613), R = onGround(v);
+  // A strand of ivy hanging from a wall's top down its face (out along the wall's normal by `face`), wandering a little.
+  const ivy = (x, z, nx, nz, along, top, len, face) => { const off = (r() - .5) * .6; for (let y = 0; y < len; y += .22) { const wob = Math.sin(y * 2.6 + x) * .1 + off; v.block(x + (along ? wob : 0) + nx * face, top - y, -(z + (along ? 0 : wob) + nz * face), along ? .2 + r() * .16 : .08, .22, along ? .08 : .2 + r() * .16, vary(pick(C.hedge, r), .1, r)); if (r() < .25) v.block(x + (along ? wob + .14 : 0) + nx * (face + .03), top - y - .05, -(z + (along ? 0 : wob + .14) + nz * (face + .03)), .12, .12, .12, vary(pick(C.hedgeTop, r), .1, r)); } };
   const pale = [0xd8d0c0, 0xcbc2b2, 0xe2dacb, 0xbfb6a6], dark = [0x4a4250, 0x3e3846, 0x564c5c], stone = C.stone;
   // Walls along every terrace edge that drops to lower ground: pale cliffs on the Quarry's island,
   // dark crags under the manor and the observatory, dressed retaining walls round the Copse and the Moor.
@@ -401,6 +407,7 @@ export function buildTerrainWorks() {
           // Rough cliff: stacked blocks that jut and recess, with ledges, ivy and the odd lantern.
           const pal = style === "cliff" ? pale : dark;
           for (let y = lo - .6; y < hi; y += .7) { const j = (r() - .5) * .3, top = Math.min(hi, y + .7); put(j * .5 - .1, y, top + (top >= hi ? 0 : .02), seg + .08, 1.15 + j, vary(pick(pal, r), .06, r)); }
+          if (style === "cliff" && inY > outY && r() < .22) ivy(x, z, nx, nz, along, hi + .1, Math.min(hi - lo, .8 + r() * (hi - lo) * .7), .66);
           if (style === "cliff" && r() < .08) { const c = frame(v, x + nx * .75, z + nz * .75, nx ? (nx > 0 ? "east" : "west") : (nz > 0 ? "north" : "south"), hi - 1.4); lantern(c, 0, 0, 0, .8); }
           put(-.1, hi - .02, hi + .14, seg + .1, 1.2, vary(style === "cliff" ? 0xc8bfae : 0x3a3442, .05, r));
         } else if (style === "wall") {
@@ -408,6 +415,8 @@ export function buildTerrainWorks() {
           for (let y = lo - .4, k = 0; y < hi; y += .45, k++) put(-.05 + (k % 2) * .04, y, Math.min(hi, y + .45) - .02, seg - .03, 1.0, vary(pick(stone, r), .06, r));
           put(0, hi, hi + .22, seg + .04, 1.15, C.stone[3]);
           if (i % 9 === 4) { const c = frame(v, x + nx * .2, z + nz * .2, "south", hi + .22); c.block(0, 0, 0, .34, .5, .34, C.stone[1]); lantern(c, 0, .5, 0, .9); }
+          if (inY > outY && r() < .32) ivy(x, z, nx, nz, along, hi + .1, Math.min(hi - lo, 1 + r() * (hi - lo) * .8), .53);
+          if (inY > outY && r() < .2) for (let k = 0; k < 3; k++) v.block(x + (along ? (r() - .5) * seg : 0) + nx * .1, hi + .22, -(z + (along ? 0 : (r() - .5) * seg) + nz * .1), .14, .14, .14, pick(C.flowers, r));
           if (T.id === "moor" && inY > outY) for (let k = 0; k < 3; k++) put(-.25, hi + .22, hi + 1.1, .04, .04, C.iron);
         } else {
           // A stone bank down to the water.
@@ -445,7 +454,17 @@ export function buildTerrainWorks() {
   // The moat's railing along the Green's side of the water, gapped for the bridge.
   { const mz = 37.25 + SHIFT.quarry[1]; for (const [a, b] of [[39.5, 54.6], [61.4, 86.4]]) { railing(R, a, mz, b, mz, 1.0); for (let x = a; x <= b; x += 5) brickPier(R, x, mz, 1.3, r, "lamp"); } }
   // The waterfalls' rocks and foam where they land.
-  for (const f of FALLS) { for (let i = 0; i < 14; i++) v.block(f.x + f.dir * (.6 + r() * 1.6), f.foot - .4, -(f.z + (r() - .5) * 3), .5 + r() * .5, .3 + r() * .4, .5 + r() * .5, vary(pick(pale, r), .06, r)); for (let i = 0; i < 10; i++) v.block(f.x + f.dir * (.4 + r() * 1.2), f.foot + .02, -(f.z + (r() - .5) * 2.4), .3, .06, .3, 0xe8f6ff, true); }
+  // Stones and foam where each fall lands, across its width.
+  for (const f of FALLS) { const across = (k) => (r() - .5) * f.w * k, at = (out, k) => [f.x + f.nx * out + (f.nx ? 0 : across(k)), f.z + f.nz * out + (f.nx ? across(k) : 0)];
+    for (let i = 0; i < 14; i++) { const [x, z] = at(.6 + r() * 1.6, 1.35); v.block(x, f.foot - .4, -z, .5 + r() * .5, .3 + r() * .4, .5 + r() * .5, vary(pick(pale, r), .06, r)); }
+    for (let i = 0; i < 10; i++) { const [x, z] = at(.4 + r() * 1.2, 1.1); v.block(x, f.foot + .02, -z, .3, .06, .3, 0xe8f6ff, true); } }
+  // The culverts: arches of pale voussoirs round dark mouths in the island's south face, a keystone, a sill and ivy.
+  for (const c of CULVERTS) { const R2 = frame(v, c.x, c.z, "south", 0), sill = .5, spring = 1.9, rad = 1.05;
+    R2.block(0, sill, .05, 1.8, spring - sill + rad * .9, .3, 0x0e0c14);
+    for (const s of [-1, 1]) for (let y = -1.7; y < spring; y += .45) R2.block(s * (rad + .1), y, .1, .42, .44, .5, vary(pick(pale, r), .05, r));
+    for (let k = 0; k <= 8; k++) { const a = k / 8 * Math.PI; R2.block(Math.cos(a) * (rad + .1), spring + Math.sin(a) * (rad + .1) - .2, .12, .42, .42, .54, vary(k === 4 ? 0xe8e0d0 : pick(pale, r), .04, r)); }
+    R2.block(0, spring + rad + .1, .16, .56, .5, .58, 0xe8e0d0); R2.block(0, sill - .14, .2, 2.1, .16, .6, 0xd8d0c0);
+    for (let k = 0; k < 9; k++) { const x = (r() - .5) * 3.4, len = .8 + r() * 1.8; for (let y = 0; y < len; y += .2) R2.block(x + Math.sin(y * 3 + k) * .08, spring + rad + .5 - y, .42, .18 + r() * .14, .2, .06, vary(pick(C.hedge, r), .1, r)); } }
   return v.build({ detailShadows: false, glow: GLOW });
 }
 
