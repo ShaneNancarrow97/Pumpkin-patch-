@@ -153,4 +153,9 @@ function frame(now) {
 requestAnimationFrame(frame);
 setTimeout(() => document.body.classList.add("ready"), 400);
 // For checks in a browser: the view and the tour's stops.
-window.explorer = { view, TOUR, place: (i) => view.cameraActions.place(TOUR[i].at, TOUR[i].look) };
+window.explorer = { view, TOUR, place: (i) => view.cameraActions.place(TOUR[i].at, TOUR[i].look),
+  // What one frame draws: draw calls and triangles across every pass (shadows and bloom included).
+  frameStats() { renderer.info.autoReset = false; renderer.info.reset(); view.tick(1 / 30); view.scene.traverse((o) => { if (o.isDirectionalLight && o.castShadow) o.shadow.needsUpdate = true; }); composer.render(); const i = renderer.info.render; renderer.info.autoReset = true; return { calls: i.calls, tris: i.triangles }; },
+  // What each part of the village costs in the current view: the frame without it, subtracted.
+  partStats() { const root = view.scene.children.find((c) => c.isGroup && c.scale.x > 1.2), all = this.frameStats(), out = { all };
+    root.children.forEach((c, k) => { if (!c.visible) return; c.visible = false; const s = this.frameStats(); c.visible = true; out[k + ":" + (c.name || c.type) + ":" + c.children.length] = { calls: all.calls - s.calls, tris: all.tris - s.tris }; }); return out; } };

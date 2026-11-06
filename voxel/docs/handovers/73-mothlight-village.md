@@ -100,7 +100,19 @@ The village is **not in the game yet**. Its rules and content are done and teste
   - Never add or remove lights at runtime: the pool of 8 point lights moves to the lamps nearest the focus, as on the farm.
   - Glowing voxels are built with `glow: GLOW` (1.6) so the bloom catches them. Keep lamp glass small or it blows out to white squares.
 - **Flocks and smoke:** bats, crows and grass are instanced; smoke is one `Points` draw.
-- **Last measured** (before the districts moved apart): about 211 draw calls and 1.59M triangles from the Green. The farm's budget is about 200 calls and 1.18M triangles. Re-measure after the woods go in (`frameStats` in the preview).
+- **Measured** with the woods, the fair and the ivy in, counting a shadow pass every frame (the game draws one every other frame):
+
+  | View | Draw calls | Triangles |
+  | --- | --- | --- |
+  | Walking the avenue | 183 | 1.30M |
+  | The Green's orbit view | 245 | 1.61M |
+  | The Moor | 159 | 0.78M |
+  | The valley flyover | about 320 | 1.9M |
+
+  - Two things keep walking cheap:
+    - while walking, the moon's shadow box shrinks from ±44 to ±28 units round the walker;
+    - boxes no longer than `SMALL` (0.3) on any side (flowers, ivy leaves, bulbs) stay out of the shadow pass, through `Voxels.build({ small })`.
+  - The explorer measures any view: `explorer.frameStats()` gives the whole frame, and `explorer.partStats()` the cost of each part of the village. Use `dist/qa/explorer-check.mjs --parts`.
 
 ## Gotchas
 
@@ -135,7 +147,9 @@ In order. Each item says what done looks like.
      - the life layer, bats and grass moved with their districts;
      - the tour re-planned.
    - **Nothing on the paths.** Check every road and stair for props, trees and lamps standing on them. Add a test over `ROADS` against the built boxes if it can be made cheap.
-   - **Re-measure the cost with the woods in.** There are about 550 trees in 23k boxes. Use `frameStats` from the Green and from the valley, and cull woods patches harder in play mode if it's over the farm's budget.
+   - **The cost, measured** (see Rendering and performance). The Green is the heaviest part, at 34.5k boxes. If a mid-range phone struggles:
+     - thin the Green's edge trees (125 at cell 0.56);
+     - or build the trees far from the square at cell 0.7.
 2. **Fidelity pass against the reference** (task #185).
    - **Done in this round:**
      - violet, magenta and teal crowns, on the Green and in the woods;

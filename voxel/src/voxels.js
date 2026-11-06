@@ -28,7 +28,8 @@ export class Voxels {
   mark(kind, x, y, z) { ((this.marks ??= {})[kind] ??= []).push([x, y, z]); return this; }
 
   // glow brightens the glowing voxels past white so the bloom catches them (1 leaves them as painted).
-  build({ shadows = true, detailShadows = true, glow = 1 } = {}) {
+  // small: how big a box can be (its longest side) and still count as detail, kept out of the shadow pass.
+  build({ shadows = true, detailShadows = true, glow = 1, small: smallSide = 0.16 } = {}) {
     const group = new THREE.Group();
     const make = (list, material, cast) => {
       if (!list.length) return;
@@ -45,7 +46,7 @@ export class Voxels {
     // detailShadows: false leaves detail voxels (every side under 0.16 units)
     // out of the shadow pass, in a mesh of their own: their shadows would be a
     // pixel or two, and big farm builds have thousands of them.
-    const lit = new THREE.MeshStandardMaterial({ roughness: 0.92, metalness: 0 }), small = (b) => Math.max(b[3], b[4], b[5]) < 0.16;
+    const lit = new THREE.MeshStandardMaterial({ roughness: 0.92, metalness: 0 }), small = (b) => Math.max(b[3], b[4], b[5]) < smallSide;
     if (detailShadows) make(this.solid, lit, true);
     else { make(this.solid.filter((b) => !small(b)), lit, true); make(this.solid.filter(small), lit, false); }
     make(this.glow, new THREE.MeshBasicMaterial({ toneMapped: false, color: new THREE.Color(glow, glow, glow) }), false);

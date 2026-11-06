@@ -79,7 +79,9 @@ export function createVillageView(canvas, state, hooks = {}) {
     // The chimneys the village noted as it was built smoke where they stand.
     const smoke = [green, beyond].flatMap((g) => g.userData.marks?.smoke ?? []).map(([x, y, z]) => ({ x, y, z: -z }));
     mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: 0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
-    root.add(buildGround(), buildPaving(), buildWater(), works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group);
+    const earth = buildGround(), paving = buildPaving(), water = buildWater();
+    root.add(earth, paving, water, works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group);
+    Object.entries({ ground: earth, paving, water, works, green, beyond, woods, horizon, mist, bats: bats.group, life: life.group, grass: grass.group }).forEach(([n, g]) => { g.name = n; });
     // Every patch of the built village, with where it is, so those beyond the haze can be skipped.
     root.updateMatrixWorld(true);
     for (const g of [works, green, beyond, woods, horizon]) for (const chunk of g.children) { if (!chunk.isGroup) continue; const box = new THREE.Box3().setFromObject(chunk); if (box.isEmpty()) continue; const sphere = box.getBoundingSphere(new THREE.Sphere()); patches.push({ chunk, sphere }); }
@@ -228,6 +230,9 @@ export function createVillageView(canvas, state, hooks = {}) {
     const t = tour ? focus : controls.target, near = [...LAMPS].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z));
     pool.forEach((l, i) => { const lamp = near[i]; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); });
     sun.target.position.copy(t); sun.position.copy(t).addScaledVector(SUN, 100); sun.target.updateMatrixWorld();
+    // Walking, the moon's shadows only matter round the walker: a tighter box draws fewer casters, and sharper.
+    const reachShadow = following ? 28 : 44, sc = sun.shadow.camera;
+    if (sc.right !== reachShadow) { Object.assign(sc, { left: -reachShadow, right: reachShadow, top: reachShadow, bottom: -reachShadow }); sc.updateProjectionMatrix(); }
     // The moonlight's shadows are redrawn every other frame, as on the farm (handover 40).
     if (++shadowTick % 2 === 0 || tour) sun.shadow.needsUpdate = true;
     if (sky) sky.position.copy(camera.position);

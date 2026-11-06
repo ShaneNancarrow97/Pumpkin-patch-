@@ -23,6 +23,9 @@ const onGround = (v) => ({ block(x, y, z, w, h, d, c, g) { v.block(x, y + H(x, z
 const at = (v, x, z, facing = "south") => frame(v, x, z, facing, H(x, z));
 // How much brighter than painted the glowing voxels are drawn, so the bloom catches lamps, windows and faces.
 const GLOW = 1.6;
+// Boxes no longer than this on any side (flowers, ivy leaves, bulbs, trim) stay out of the moon's shadow pass:
+// their shadows would be a pixel or two, and the village has tens of thousands of them.
+const SMALL = .3;
 // Everything here is drawn on the design grid; the view scales the whole village by
 // PLAN_SCALE into world units, where the owners are 2.3 units tall. So the layout
 // (in world units) is read back onto the grid.
@@ -379,7 +382,7 @@ export function buildGreen() {
   for (let i = 0; i < 12; i++) { const gx = MY.x0 + 1.4 + (i % 4) * 2, gz = MY.z0 + 1.8 + (i >> 2) * 2.6; gravestone(fr(gx + (r() - .5) * .4, gz, "east"), 0, 0, r, i); }
   spookyTree(R, 87.2, 9, 1.15, r); spookyTree(R, 93, 2.8, .9, r);
   lampPost(R, 95.4, 6, 3.2, r, 1);
-  const group = v.build({ detailShadows: false, glow: GLOW }), wire = cableMesh(cables); if (wire) group.add(wire);
+  const group = v.build({ detailShadows: false, small: SMALL, glow: GLOW }), wire = cableMesh(cables); if (wire) group.add(wire);
   return group;
 }
 
@@ -465,7 +468,7 @@ export function buildTerrainWorks() {
     for (let k = 0; k <= 8; k++) { const a = k / 8 * Math.PI; R2.block(Math.cos(a) * (rad + .1), spring + Math.sin(a) * (rad + .1) - .2, .12, .42, .42, .54, vary(k === 4 ? 0xe8e0d0 : pick(pale, r), .04, r)); }
     R2.block(0, spring + rad + .1, .16, .56, .5, .58, 0xe8e0d0); R2.block(0, sill - .14, .2, 2.1, .16, .6, 0xd8d0c0);
     for (let k = 0; k < 9; k++) { const x = (r() - .5) * 3.4, len = .8 + r() * 1.8; for (let y = 0; y < len; y += .2) R2.block(x + Math.sin(y * 3 + k) * .08, spring + rad + .5 - y, .42, .18 + r() * .14, .2, .06, vary(pick(C.hedge, r), .1, r)); } }
-  return v.build({ detailShadows: false, glow: GLOW });
+  return v.build({ detailShadows: false, small: SMALL, glow: GLOW });
 }
 
 // The parts that change: Rowan's stall, the bench, the two homes, the gathering spots.
@@ -637,7 +640,7 @@ export function buildWoods() {
   // A signpost where the roads part north of the Green: the Quarry ahead, the Copse west, the Moor east.
   { const x = 62.6, z = 38.4; R.block(x, 0, z, .18, 2.7, .18, C.timber); R.block(x, 2.7, z, .26, .12, .26, C.iron);
     for (const [y, dx, dz, col] of [[2.3, 0, .55, 0xc9a25f], [1.9, -.6, 0, 0x5a8a5a], [1.5, .6, 0, 0x9a3a5a]]) { R.block(x + dx, y, z + dz, dx ? 1.1 : .14, .26, dz ? 1.1 : .14, col); R.block(x + dx * 1.55, y + .04, z + dz * 1.55, dx ? .2 : .1, .18, dz ? .2 : .1, col); } }
-  const group = v.build({ detailShadows: false }); group.userData.trees = trees; return group;
+  const group = v.build({ detailShadows: false, small: SMALL }); group.userData.trees = trees; return group;
 }
 
 export function buildHorizon() {
