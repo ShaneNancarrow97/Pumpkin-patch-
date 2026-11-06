@@ -23,7 +23,8 @@ export class Voxels {
     return this.box(x - w / 2, y, z - d / 2, w, h, d, color, glow);
   }
 
-  build({ shadows = true, detailShadows = true } = {}) {
+  // glow brightens the glowing voxels past white so the bloom catches them (1 leaves them as painted).
+  build({ shadows = true, detailShadows = true, glow = 1 } = {}) {
     const group = new THREE.Group();
     const make = (list, material, cast) => {
       if (!list.length) return;
@@ -43,9 +44,21 @@ export class Voxels {
     const lit = new THREE.MeshStandardMaterial({ roughness: 0.92, metalness: 0 }), small = (b) => Math.max(b[3], b[4], b[5]) < 0.16;
     if (detailShadows) make(this.solid, lit, true);
     else { make(this.solid.filter((b) => !small(b)), lit, true); make(this.solid.filter(small), lit, false); }
-    make(this.glow, new THREE.MeshBasicMaterial({ toneMapped: false }), false);
+    make(this.glow, new THREE.MeshBasicMaterial({ toneMapped: false, color: new THREE.Color(glow, glow, glow) }), false);
     return group;
   }
+}
+
+// Voxels sorted into squares of the ground as they're written (same block and box
+// as Voxels), built as one group of per-square meshes, so the renderer and the
+// shadow pass skip every square out of view. For big worlds a turning camera sees part of.
+export class ChunkedVoxels {
+  constructor(size = 16) { this.size = size; this.chunks = new Map(); }
+  at(x, z) { const key = Math.floor(x / this.size) + "," + Math.floor(z / this.size); let v = this.chunks.get(key); if (!v) this.chunks.set(key, v = new Voxels()); return v; }
+  box(x, y, z, w, h, d, color, glow = false) { this.at(x + w / 2, z + d / 2).box(x, y, z, w, h, d, color, glow); return this; }
+  block(x, y, z, w, h, d, color, glow = false) { this.at(x, z).block(x, y, z, w, h, d, color, glow); return this; }
+  get count() { let n = 0; for (const v of this.chunks.values()) n += v.solid.length + v.glow.length; return n; }
+  build(options) { const group = new THREE.Group(); for (const v of this.chunks.values()) group.add(v.build(options)); return group; }
 }
 
 // Small deterministic random numbers, so the world looks the same every load.

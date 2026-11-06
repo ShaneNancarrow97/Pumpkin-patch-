@@ -3,7 +3,7 @@
 // are content (content/village*.js). Everything here returns events or
 // results for main.js and the UI to show, and nothing is ever granted twice:
 // rewards are claimed once by key (v.claims).
-import { NODES, NODE_BY_ID, MATERIALS, MATERIAL_BY_ID, PLOTS, PLOT_BY_ID, ROADS, FIXTURES, VILLAGE_LEVEL, STORE_BASE, VILLAGE_BOUNDS, PLAZA, ARRIVAL } from "../content/village.js";
+import { NODES, NODE_BY_ID, MATERIALS, MATERIAL_BY_ID, PLOTS, PLOT_BY_ID, ROADS, FIXTURES, SCENERY, VILLAGE_LEVEL, STORE_BASE, VILLAGE_BOUNDS, PLAZA, ARRIVAL, GREEN_AREA, MOOR_CORNER, NEAR_DOOR } from "../content/village.js";
 import { FOLK, FOLK_BY_ID, FRIEND_XP, FRIENDSHIP, FRIEND_TITLES } from "../content/village-folk.js";
 import { QUESTS, QUEST_BY_ID, STORY_OBJECTS, BLUEPRINTS, FAVOURS, FAVOUR_BY_ID, FAVOUR_WAIT, DUTIES, DUTY_BY_ID, ALMANAC_PRIZES } from "../content/village-quests.js";
 import { VILLAGE_DECOR, VILLAGE_DECOR_BY_ID, STALL } from "../content/village-decor.js";
@@ -391,7 +391,7 @@ export function buyFromStall(s, key) {
 // ---- Decorating the Green --------------------------------------------------
 // Where decor may go: on the Green (south band, less the Moor's inset), off the roads,
 // homes, gathering spots and the square's fixtures, and clear of other decor.
-const GREEN = { x0: 1, z0: 1, x1: VILLAGE_BOUNDS.x1 - 1, z1: 35 };
+const GREEN = GREEN_AREA;
 function corners(def, x, z, rotation) {
   const a = rotation * Math.PI / 180, c = Math.cos(a), sn = Math.sin(a), hw = def.w / 2, hd = def.d / 2;
   return [[-hw, -hd], [hw, -hd], [hw, hd], [-hw, hd]].map(([u, w]) => [x + u * c + w * sn, z - u * sn + w * c]);
@@ -401,10 +401,10 @@ const overlap = (a, b, gap = 0) => a.x0 < b.x1 + gap && b.x0 < a.x1 + gap && a.z
 const roadBoxes = ROADS.filter((r) => r.kind !== "future-spur").flatMap((r) => r.points.slice(1).map((p, i) => {
   const q = r.points[i], h = r.width / 2; return { x0: Math.min(p[0], q[0]) - h, x1: Math.max(p[0], q[0]) + h, z0: Math.min(p[1], q[1]) - h, z1: Math.max(p[1], q[1]) + h };
 }));
-const fixtureBoxes = Object.values(FIXTURES).map((f) => f.r ? { x0: f.x - f.r, x1: f.x + f.r, z0: f.z - f.r, z1: f.z + f.r } : { x0: f.x - f.w / 2, x1: f.x + f.w / 2, z0: f.z - f.d / 2, z1: f.z + f.d / 2 });
+const fixtureBoxes = [...Object.values(FIXTURES), ...SCENERY].map((f) => f.r ? { x0: f.x - f.r, x1: f.x + f.r, z0: f.z - f.r, z1: f.z + f.r } : f.x0 !== undefined ? { x0: f.x0, x1: f.x1, z0: f.z0, z1: f.z1 } : { x0: f.x - f.w / 2, x1: f.x + f.w / 2, z0: f.z - f.d / 2, z1: f.z + f.d / 2 });
 const homeBoxes = PLOTS.filter((p) => p.kind !== "reservation").map((p) => ({ x0: p.x0, x1: p.x1, z0: p.z0, z1: p.z1 }));
 const nodeBoxes = NODES.map((n) => ({ x0: n.x - 1, x1: n.x + 1, z0: n.z - 1, z1: n.z + 1 }));
-const MOOR_INSET = { x0: 84, x1: 999, z0: 12, z1: 999 };
+const MOOR_INSET = MOOR_CORNER;
 function decorRoom(v, id, x, z, rotation, ignore) {
   const def = VILLAGE_DECOR_BY_ID[id]; if (!def) return false;
   const b = box(corners(def, x, z, rotation));
@@ -433,7 +433,7 @@ export function storeVillageDecor(s, instance) {
 export function doorOf(who) { const plot = PLOTS.find((p) => p.resident === who); return plot ? { x: plot.door[0], z: plot.door[1] } : { x: ARRIVAL.noticeboard[0], z: ARRIVAL.noticeboard[1] }; }
 function placedTags(s, near) {
   const door = doorOf(near), tags = new Set();
-  for (const p of s.village.decor.placed) if (Math.hypot(p.x - door.x, p.z - door.z) <= 9) for (const t of VILLAGE_DECOR_BY_ID[p.id].tags) tags.add(t);
+  for (const p of s.village.decor.placed) if (Math.hypot(p.x - door.x, p.z - door.z) <= NEAR_DOOR) for (const t of VILLAGE_DECOR_BY_ID[p.id].tags) tags.add(t);
   return tags;
 }
 

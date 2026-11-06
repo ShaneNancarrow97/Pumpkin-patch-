@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
-import { NODES } from "../src/content/village.js";
+import { NODES, FIXTURES } from "../src/content/village.js";
 import { FOLK_BY_ID, FRIENDSHIP } from "../src/content/village-folk.js";
 import { QUESTS, STORY_OBJECTS } from "../src/content/village-quests.js";
 import { VILLAGE_DECOR } from "../src/content/village-decor.js";
@@ -122,15 +122,16 @@ test("favours take farm produce and pay like a sale, counting towards the level"
 
 test("decor goes anywhere open on the Green, but not on roads, homes, nodes or fixtures", () => {
   const s = invited(); s.village.decor.owned = { "garden-bench": 2, "moth-lamp": 1, "reading-stand": 1 };
-  assert.equal(M.villageDecorFits(s, "garden-bench", 14, 16), true, "your plot");
-  assert.equal(M.villageDecorFits(s, "garden-bench", 58, 12), false, "the arrival road");
-  assert.equal(M.villageDecorFits(s, "garden-bench", 40, 20), false, "Elowen's plot");
-  assert.equal(M.villageDecorFits(s, "garden-bench", 52.5, 26), false, "the well");
+  assert.equal(M.villageDecorFits(s, "garden-bench", 21, 24), true, "your plot");
+  assert.equal(M.villageDecorFits(s, "garden-bench", 87, 18), false, "the arrival road");
+  assert.equal(M.villageDecorFits(s, "garden-bench", 60, 30), false, "Elowen's plot");
+  assert.equal(M.villageDecorFits(s, "garden-bench", FIXTURES.well.x, FIXTURES.well.z), false, "the well");
+  assert.equal(M.villageDecorFits(s, "garden-bench", 77, 18), false, "the avenue's knot garden");
   assert.equal(M.villageDecorFits(s, "garden-bench", NODES[0].x, NODES[0].z), false, "a gathering spot");
-  assert.equal(M.villageDecorFits(s, "garden-bench", 14, 50), false, "the Copse isn't the Green");
-  const placed = M.placeVillageDecor(s, "garden-bench", 14, 16); assert.ok(placed); assert.equal(s.village.decor.owned["garden-bench"], 1);
-  assert.equal(M.placeVillageDecor(s, "garden-bench", 14, 16), null, "not on top of another");
-  assert.equal(M.moveVillageDecor(s, placed.piece.instance, 14, 20, 90), true); assert.equal(M.storeVillageDecor(s, placed.piece.instance), true);
+  assert.equal(M.villageDecorFits(s, "garden-bench", 21, 75), false, "the Copse isn't the Green");
+  const placed = M.placeVillageDecor(s, "garden-bench", 21, 24); assert.ok(placed); assert.equal(s.village.decor.owned["garden-bench"], 1);
+  assert.equal(M.placeVillageDecor(s, "garden-bench", 21, 24), null, "not on top of another");
+  assert.equal(M.moveVillageDecor(s, placed.piece.instance, 21, 30, 90), true); assert.equal(M.storeVillageDecor(s, placed.piece.instance), true);
   assert.equal(s.village.decor.owned["garden-bench"], 2);
   for (const d of VILLAGE_DECOR) assert.ok(d.w > 0 && d.d > 0 && d.height > 0 && d.cost > 0, d.id);
 });
@@ -141,8 +142,8 @@ test("A Room for Quiet Wings asks for a reading nook by Elowen's door, made of a
   M.doHandOver(s, "elowen"); M.doHandOver(s, "elowen"); assert.equal(s.village.built["elowen-conservatory"], true);
   assert.deepEqual(M.stepProgress(s, "elowen-2").missing, ["light", "seat", "books"]);
   s.village.decor.owned = { "moth-lamp": 1, "garden-bench": 1, "reading-stand": 1 };
-  M.placeVillageDecor(s, "moth-lamp", 50, 25); M.placeVillageDecor(s, "garden-bench", 51.5, 13); assert.equal(M.questStep(s, "elowen-2").kind, "place");
-  assert.ok(M.placeVillageDecor(s, "reading-stand", 53, 15.2)); assert.equal(M.questStep(s, "elowen-2").kind, "talk", "light, seat and books: done");
+  assert.ok(M.placeVillageDecor(s, "moth-lamp", 74.4, 36.9)); assert.ok(M.placeVillageDecor(s, "garden-bench", 80.1, 37.2)); assert.equal(M.questStep(s, "elowen-2").kind, "place");
+  assert.ok(M.placeVillageDecor(s, "reading-stand", 74.1, 33.9)); assert.equal(M.questStep(s, "elowen-2").kind, "talk", "light, seat and books: done");
 });
 
 test("friendship rewards are given once, and turn to coins when they can't be", () => {
