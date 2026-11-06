@@ -1,0 +1,20 @@
+/* The stick cursor (ui/pad-cursor.js): an amber pointer edged in plum with a moth's wing on it, a soft halo
+   that swells over something to click, a ripple when ✕ clicks, and a label saying what ✕ will do. */
+.pad-cursor { position: fixed; left: 0; top: 0; z-index: 2147483000; pointer-events: none; will-change: transform; transform-origin: 0 0; transition: opacity .5s ease; }
+.pad-cursor[hidden] { display: none; }
+.pad-cursor.idle { opacity: 0; }
+.pad-cursor-tip { position: absolute; left: -3px; top: -2px; width: 34px; height: 40px; filter: drop-shadow(0 3px 5px rgba(10, 4, 14, .6)) drop-shadow(0 0 9px rgba(255, 166, 70, .45)); }
+.pad-cursor-halo { position: absolute; left: -20px; top: -20px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255, 196, 120, .5); background: radial-gradient(circle, rgba(255, 190, 100, .14), rgba(255, 190, 100, 0) 70%); box-shadow: 0 0 16px rgba(255, 160, 60, .28); transform: scale(.8); transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease; }
+.pad-cursor.over .pad-cursor-halo { transform: scale(1.18); border-color: rgba(255, 216, 150, .95); background: radial-gradient(circle, rgba(255, 196, 110, .3), rgba(255, 196, 110, 0) 72%); box-shadow: 0 0 24px rgba(255, 170, 70, .55); }
+.pad-cursor.press .pad-cursor-halo { animation: pad-cursor-ripple .38s ease-out; }
+@keyframes pad-cursor-ripple { 0% { transform: scale(.7); border-color: #fff2d0; } 60% { transform: scale(1.75); border-color: rgba(255, 210, 140, .35); } 100% { transform: scale(1.18); } }
+.pad-cursor-label { position: absolute; left: 24px; top: 34px; display: none; align-items: center; gap: 6px; padding: 5px 10px 5px 5px; border-radius: 99px; white-space: nowrap; background: rgba(28, 18, 34, .93); border: 1px solid rgba(255, 196, 120, .38); box-shadow: 0 6px 18px rgba(0, 0, 0, .45); color: #f4e9dc; font: 600 13px/1 "DM Sans", system-ui, sans-serif; }
+.pad-cursor.named .pad-cursor-label { display: inline-flex; }
+.pad-cursor.flip-y .pad-cursor-label { top: auto; bottom: 26px; }
+.pad-cursor.flip-x .pad-cursor-label { left: auto; right: 14px; }
+.pad-cursor-label b { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(180deg, #ffd38a, #e8892e); color: #2a1430; font-size: 11px; }
+.pad-cursor-label em { font-style: normal; }
+[data-pad-hover] { outline: 2px solid rgba(255, 214, 150, .85) !important; outline-offset: 2px !important; }
+/* The menus' ring stands down while the pointer is up. */
+.pad-cursor-on [data-pad-focus]:not([data-pad-hover]) { outline: none !important; box-shadow: none !important; }
+@media (prefers-reduced-motion: reduce) { .pad-cursor.press .pad-cursor-halo { animation: none; } .pad-cursor-halo { transition: none; } }

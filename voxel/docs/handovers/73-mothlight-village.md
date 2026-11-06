@@ -17,6 +17,20 @@ The village is **not in the game yet**. Its rules and content are done and teste
 - An old gothic bat- and vampire-themed tavern with an NPC host, highly detailed: the Velvet Bat and Vesper.
 - A visual fidelity reference: the concept painting of the whole village at dusk. Colourful purple, magenta and gold trees; a cobbled round plaza; knot gardens with fountains; half-timbered cottages with lit windows; ivy on stone walls; arched culverts with waterfalls; the lighthouse spire, gothic manor, striped tents, Ferris wheel and market stalls; a twilight sky.
 
+## The stick cursor (#182), in the game itself
+
+The player asked for "an analogue stick controlled cursor that some games use: click thumbstick to bring up cursor, x to select, o to go back", well drawn. It's in `ui/pad-cursor.js` and `ui/pad-cursor.css`, wired in at the top of the play controls' pad handling.
+
+- **Bringing it up.** Click either stick. This works off play mode, and over any menu in play mode; in play mode with no menu, a stick click still jogs or centres the camera. Play mode with no menu open puts the pointer away.
+- **Steering.** The left stick steers it, curved so a small push is fine, and quicker the longer it's held right over. It settles onto a button it comes to rest near. The D-pad nudges it a step, repeating while held.
+- **What it says.** A label names what ✕ will do there, from the thing's own label, or "Tap" over the world. The label flips above or to the left of the pointer at the screen's edges.
+- **✕** clicks a button, tab or tile. Over the world it taps through `scene.tapAt(x, y)`, the same pick a finger's tap makes.
+- **○** goes back, and puts the pointer away when there's nothing to go back from.
+- **The other controls.** The right stick scrolls whatever is under the pointer, and a stick click puts it away. L1/R1, L2/R2, Options and the touchpad still reach the menus' tabs and the hub.
+- **Its look.** An amber arrow edged in plum, with a moth's wing on it and a soft halo that swells over something to click. ✕ sends a ripple out.
+- **Fading and giving way.** It fades after twelve seconds untouched; any press or push brings it back. The menus' ring stands down while it's up, and a finger or the mouse puts it away. TV mode draws it 1.45 times the size.
+- **Checked** on a pretend DualSense (`dist/qa/cursor.mjs [--tv]`): up over the farm, onto Manage, ✕ opens the menu, ○ closes it, ○ again puts the pointer away, and L3 brings it back and puts it away again.
+
 ## Where it stands
 
 | Step | State |

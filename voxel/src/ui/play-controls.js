@@ -5,6 +5,9 @@
 // you're playing with: a keycap, DualSense shapes or Xbox letters.
 import { glyphHTML, padFamily } from './glyphs.js';
 import { createPadMenu } from './pad-menu.js';
+import { createPadCursor } from './pad-cursor.js';
+// While the stick cursor is up, the menus still hear L1/R1, L2/R2, Options and the touchpad; never its sticks or ✕ ○.
+const CURSOR_PASS=new Set([4,5,6,7,9,17]),STILL_PAD={axes:[0,0,0,0],buttons:[]};
 import { decorById, footprint } from '../model.js';
 const toolNames={hand:'Interact',plant:'Plant',water:'Water',harvest:'Pick',clean:'Clean'};
 const inputField=()=>['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
@@ -80,6 +83,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
   document.body.append(root);
   // Every menu on a pad (ui/pad-menu.js); Options brings the ring to the dock, the hub.
   const menus=createPadMenu({feel,back:()=>back?.(),hold:holdToBuy,hubAllowed});
+  const cursor=createPadCursor({scene,back:()=>back?.(),feel});
   const dockGlyph=document.createElement('span');dockGlyph.className='dock-glyph';dockGlyph.dataset.glyph='start';document.getElementById('dock')?.append(dockGlyph);
   // Holding a game button is an input gesture, never Android text selection.
   root.oncontextmenu=e=>e.preventDefault();root.onselectstart=e=>e.preventDefault();root.ondragstart=e=>e.preventDefault();
@@ -243,7 +247,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     if(key==='escape'){e.preventDefault();if(activity().active||held)cancelInteraction('back');else back?.();return true;}return false;
   }
 
-  return {handleKey,open:()=>openWheel('characters'),close,start,cancel:cancelInteraction,menus,get active(){return scene.player?.state().enabled;},get radial(){return radial;},get tool(){return tool;},get chain(){return chain;},get hub(){return menus.hubOn;},tick(blocked=false){
+  return {handleKey,open:()=>openWheel('characters'),close,start,cancel:cancelInteraction,menus,cursor,get active(){return scene.player?.state().enabled;},get radial(){return radial;},get tool(){return tool;},get chain(){return chain;},get hub(){return menus.hubOn;},tick(blocked=false){
     // The hub (the ring on the dock) holds play still, like any menu.
     blocked=blocked||menus.hubOn;
     const p=scene.player?.state()??{},selected=tools.selected,piece=state().house.placed.find(x=>x.instance===selected),job=activity();
@@ -290,7 +294,12 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     scene.player?.setBlocked(blocked||radial||!!piece||!!placing);
     if(blocked){cancelInteraction('menu');keys.clear();cameraKeys.clear();releaseMove();releaseLook();if(radial&&!piece)close();}
     // Menus take the pad first: a menu or the hub keeps its presses from play.
-    const menuOwns=pad&&!radial&&!piece&&!placing?menus.tick({pad,down,pressed:i=>i===17&&p.enabled&&!blocked&&quick?false:pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked}):false;
+    // The stick cursor (ui/pad-cursor.js) has the pad first while it's up: a stick click brings it up off play
+    // mode or over a menu, and play mode with no menu open puts it away. The menus still hear L1/R1 and Options.
+    if(p.enabled&&!menus.open)cursor.hide();
+    const cursorOwns=pad&&!radial&&!piece&&!placing?cursor.tick({pad,down,pressed,canToggle:!p.enabled||menus.open,menuOpen:()=>menus.open}):(cursor.hide(),false);
+    const passing=i=>CURSOR_PASS.has(i);
+    const menuOwns=pad&&!radial&&!piece&&!placing?menus.tick(cursorOwns?{pad:STILL_PAD,down:down.map((d,i)=>passing(i)&&d),pressed:i=>passing(i)&&pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked}:{pad,down,pressed:i=>i===17&&p.enabled&&!blocked&&quick?false:pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked})||cursorOwns:false;
     if(!pad&&menus.hubOn)menus.leaveHub();
     if(pad&&(radial||piece||placing))menus.rest();
     if(pad&&!blocked&&!menuOwns){

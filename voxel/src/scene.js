@@ -638,6 +638,20 @@ export function createScene(canvas, state, hooks) {
     clampView(); frame();
   });
   let lastPick = null;
+  // A tap at a point on the screen: what's there is picked, as a finger's tap would (also the pad cursor's ✕).
+  function tapAt(x, y) {
+    if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place)) return false;
+    const box = canvas.getBoundingClientRect();
+    pointer.set(((x - box.left) / box.width) * 2 - 1, -((y - box.top) / box.height) * 2 + 1);
+    ray.setFromCamera(pointer, active());
+    scene.updateMatrixWorld(true);
+    const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables.filter(p => p.userData.type !== "plot" || plots[p.userData.index].g.visible), ...festivalWorld.pickables, ...hollowFarm.pickables, ...hayrideWorld.pickables, ...cookingWorld.pickables, ...[...visitorModels.values()].filter(e => e.m.visible).map(e => e.hit)], false);
+    // A visible guest at a counter takes priority over its large building hit box.
+    const hit = hits.find(h => ["visitor", "customer"].includes(h.object.userData.type)) ?? hits.find(h => h.object.userData.host && h.object.userData.host === hits[0].object.userData.instance) ?? hits[0];
+    lastPick = hit ? { ...hit.object.userData } : null;
+    if (hit) hooks.onPick({ ...hit.object.userData, point: hit.point });
+    return !!hit;
+  }
   const end = (e) => {
     if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place) || !touches.has(e.pointerId)) return;
     const wasPieceDrag = pieceDrag === e.pointerId;
@@ -646,17 +660,7 @@ export function createScene(canvas, state, hooks) {
     if (wasPieceDrag) { hooks.onPieceDragEnd?.(false); pieceDrag = null; }
     touches.delete(e.pointerId);
     if (touches.size < 2) { if (pinch?.rotate) hooks.onRotateEnd?.(); pinch = null; }
-    if (wasTap) {
-      const box = canvas.getBoundingClientRect();
-      pointer.set(((e.clientX - box.left) / box.width) * 2 - 1, -((e.clientY - box.top) / box.height) * 2 + 1);
-      ray.setFromCamera(pointer, active());
-      scene.updateMatrixWorld(true);
-      const hits = ray.intersectObjects(view.place ? places.pickables : [...pickables.filter(p => p.userData.type !== "plot" || plots[p.userData.index].g.visible), ...festivalWorld.pickables, ...hollowFarm.pickables, ...hayrideWorld.pickables, ...cookingWorld.pickables, ...[...visitorModels.values()].filter(e => e.m.visible).map(e => e.hit)], false);
-      // A visible guest at a counter takes priority over its large building hit box.
-      const hit = hits.find(h => ["visitor", "customer"].includes(h.object.userData.type)) ?? hits.find(h => h.object.userData.host && h.object.userData.host === hits[0].object.userData.instance) ?? hits[0];
-      lastPick = hit ? { ...hit.object.userData } : null;
-      if (hit) hooks.onPick({ ...hit.object.userData, point: hit.point });
-    }
+    if (wasTap) tapAt(e.clientX, e.clientY);
     drag = null;
   };
   canvas.addEventListener("pointerup", end);
@@ -935,6 +939,7 @@ export function createScene(canvas, state, hooks) {
   requestAnimationFrame(tick);
 
   return {
+    tapAt,
     player: {
       ...player,
       // A spread copies a getter's value once; these must stay live.

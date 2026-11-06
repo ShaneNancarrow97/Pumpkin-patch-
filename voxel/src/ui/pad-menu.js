@@ -209,6 +209,8 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
 
   return {
     get hubOn() { return hubOn; },
+    // Whether a menu (or the hub) is on screen now, for the pad cursor.
+    get open() { return !!surface(); },
     get using() { return using; },
     // Called by play mode every frame a pad is connected. Returns true while a
     // menu (or the hub, or anything else holding the screen) has the pad, so
