@@ -180,7 +180,14 @@ In order. Each item says what done looks like.
      - Vesper's chat in the village UI (V7), using `HOST_BY_ID.vesper.greet`;
      - the crypt cellar down the trapdoor;
      - guests at the tables in the evening.
-   - **The same mechanism opens every resident's home for #183**: Elowen's library, Rowan's workshop, then the districts' homes as they open.
+   - **Done for #183 on the Green:**
+     - Elowen's library: shelves of books to the ceiling with a ladder, a moon window over a cushioned seat, a telescope and a star chart, her desk with the almanac open, a bookbinding press, a stove, drying herbs and a jar of moths.
+     - Rowan's workshop: a pegboard of tools, the workbench with a vice and shavings, a lathe, a timber rack, sawhorses, a door on trestles, a chair awaiting its seat, a potbelly stove, his patchwork bed and crows on the beam.
+     - Both have their owner inside. Doors face any way (`DOOR_NORMAL`), and each hall sets its own candle strength and exposure (`light`, `exposure`).
+   - **Still to do for #183:**
+     - The districts' homes, as each district opens.
+     - Neighbours following you on their quests, which needs the quests in play (V7).
+     - Whether a home can be entered before it's restored. In the explorer it can; the game might wait for the restoration.
 4. **V4: residents' animation.** Jointed rigs for the six posed residents and Vesper: idle, talk, wave, walk. These stand in until Codex's sprites arrive. If the sprites come first, use them through `spriteActor`-style billboards at 2.3 units.
 5. **V5: the village in the game.**
    - Travel by Elowen's carriage from the farm and back (`ARRIVAL`).

@@ -204,7 +204,7 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
       D.falls.forEach((f, fi) => { for (let i = 0; i < fallBeads; i++) { const b = fallSpot[fi * fallBeads + i], t = (time * .55 * b.s + b.p) % 1, y = f.top + .1 - (f.top - f.foot) * t * t; const out = .25 + b.out + t * .5, k = f.w / 2.2; dummy.position.copy(W(f.x + f.nx * out + (f.nx ? 0 : b.z * k), f.z + f.nz * out + (f.nx ? b.z * k : 0), y)); dummy.rotation.set(0, 0, 0); const thin = f.w < 2 && i % 3 ? 0 : 1; dummy.scale.set(thin, (1 + t * 1.5) * thin, thin); dummy.updateMatrix(); falls.setMatrixAt(fi * fallBeads + i, dummy.matrix); } });
       falls.instanceMatrix.needsUpdate = true;
       // Candlelight: each pooled light breathes on its own.
-      pool?.forEach((l, i) => { l.intensity = 48 * (.86 + .14 * noise(time * 7.3 + i * 3.1)); });
+      pool?.forEach((l, i) => { l.intensity = (l.userData.base ?? 48) * (.86 + .14 * noise(time * 7.3 + i * 3.1)); });
       // Moths.
       mothHome.forEach((m, i) => { const t = time * m.s + m.p; dummy.position.copy(W(m.x + Math.cos(t) * m.r + noise(t * 2.3) * .15, m.z + Math.sin(t * 1.3) * m.r, m.y + Math.sin(t * 2.1) * .35)); dummy.rotation.set(0, -t, Math.sin(time * 40 + i) * .9); dummy.scale.setScalar(1); dummy.updateMatrix(); moths.setMatrixAt(i, dummy.matrix); });
       moths.instanceMatrix.needsUpdate = true;

@@ -648,6 +648,104 @@ export function velvetBatHall(f, r = seeded(173)) {
   { const x = 5.35, z = -1.2; f.block(x, .12, z, 1.3, .02, 1.3, 0x050306); for (let k = -2; k <= 2; k++) { f.block(x + k * .26, .14, z, .05, .05, 1.3, iron); f.block(x, .14, z + k * .26, 1.3, .05, .05, iron); } for (const s of [-1, 1]) candle(x + s * .85, .12, z + .8, true); f.block(x, .14, z - .78, 1.4, .3, .1, iron); }
 }
 
+// The shell of a front-open hall (front +z is the door): boards in staggered rows, plaster walls in a timber frame,
+// beams overhead, and the front cut to a sill with lanterns on posts either side of the doorway. Halls are a little
+// roomier than the cottages outside them, as game rooms are.
+function hallShell(f, r, { w, d, h = 4.8, boards, wall, beam = C.beam, doorLamps = false }) {
+  const hw = w / 2;
+  for (let k = 0, z = -d + .25; z < 0; z += .5, k++) for (let x = -hw - (k % 2); x < hw; x += 2) { const x0 = Math.max(-hw, x), x1 = Math.min(hw, x + 2); if (x1 - x0 > .05) f.block((x0 + x1) / 2, 0, z, x1 - x0 - .03, .12, .47, vary(pick(boards, r), .05, r)); }
+  f.block(0, 0, -d, w, h, .26, wall); for (const sx of [-1, 1]) f.block(sx * hw, 0, -d / 2, .26, h, d, wall);
+  for (let x = -hw; x <= hw + .01; x += 2.2) f.block(Math.max(-hw + .1, Math.min(hw - .1, x)), 0, -d + .16, .22, h, .1, beam);
+  for (const sx of [-1, 1]) for (let z = -d; z <= .01; z += 2.25) f.block(sx * (hw - .16), 0, Math.min(-.12, z), .1, h, .22, beam);
+  for (const y of [.9, h - .16]) { f.block(0, y, -d + .17, w, .16, .08, beam); for (const sx of [-1, 1]) f.block(sx * (hw - .17), y, -d / 2, .08, .16, d, beam); }
+  for (let z = -1.3; z > -d; z -= 2.2) f.block(0, h, z, w, .24, .26, beam);
+  for (const sx of [-1, 1]) { const len = hw - 1.15; f.block(sx * (1.15 + len / 2), 0, 0, len, .7, .26, wall); f.block(sx * (1.15 + len / 2), .7, 0, len + .1, .08, .34, beam); f.block(sx * 1.2, 0, 0, .3, 1.3, .3, beam); lantern(f, sx * 1.2, 1.3, 0, .6); if (doorLamps) f.mark?.("lamp", sx * 1.2, 1.9, .3); }
+  f.block(0, 0, .3, 2.2, .1, .6, C.stone[1]);
+}
+// Books packed along a shelf from x0 to x1 at height y, their spines facing +z (or leaning now and then).
+function bookRow(f, r, x0, x1, y, z, depth = .3) {
+  const spines = [0x6a2f58, 0x2a5a6a, 0xc8a03a, 0x8a1a2a, 0x2a3a6a, 0x5a6a2a, 0x6a4028, 0x3a2a4a, 0xa85a2a];
+  for (let x = x0; x < x1 - .06;) { const t = .08 + r() * .07, h = .3 + r() * .2; if (r() < .06) { x += .12; continue; } f.block(x + t / 2, y, z, t - .01, h, depth, vary(pick(spines, r), .08, r)); if (r() < .3) f.block(x + t / 2, y + h * .7, z + depth / 2 + .005, t - .03, .03, .01, C.gold); x += t; }
+}
+// Elowen's library, inside: shelves of books to the ceiling with a rolling ladder, a window seat under a round
+// moon window with a telescope by it, her writing desk with the almanac open under candles, a bookbinding bench
+// with its press, a stove with a kettle, herbs drying from the beams, a jar of glowing moths and a round rug.
+export const ELOWEN_HALL = Object.freeze({ w: 11, d: 9, host: [.9, -5.4], spawn: [0, -1.4], light: .38, exposure: 1,
+  blocks: Object.freeze([[-5.5, -9, 5.5, -8.1], [-2.3, -5.2, .3, -3.6], [3.9, -4.6, 5.5, -1.6], [3.9, -7.6, 5.5, -5.8], [-5.5, -5.8, -4.2, -3.2], [-5.5, -7.4, -4, -6.2], [-1.1, -7, .5, -6.2]]) });
+export function elowenLibrary(f, r = seeded(177)) {
+  const W = 11, D = 9, hw = W / 2, H = 4.8, dark = 0x3a2418, plum = C.plum;
+  hallShell(f, r, { w: W, d: D, h: H, boards: [0x4a3020, 0x553826, 0x3e281a], wall: 0x9a86a8 });
+  // Shelves to the ceiling across the back wall, packed with books, and a rolling ladder.
+  for (let x = -hw + .3; x <= hw - .3; x += 2.08) f.block(x, 0, -D + .5, .1, H - .2, .6, dark);
+  for (const y of [.05, .9, 1.75, 2.6, 3.45]) { f.block(0, y, -D + .5, W - .4, .07, .62, dark); bookRow(f, r, -hw + .4, hw - .4, y + .07, -D + .5); }
+  for (const sx of [-1, 1]) f.block(2.6 + sx * .3, 0, -D + 1.05, .06, 4.2, .06, C.wood); for (let y = .4; y < 4.1; y += .4) f.block(2.6, y, -D + 1.05, .6, .05, .06, C.wood); f.block(2.6, 4.15, -D + .9, .7, .06, .3, C.brass);
+  // A round moon window on the left wall with a cushioned seat beneath, a telescope and a star chart.
+  { const x = -hw + .15, z = -4.5; for (let i = 0; i < 24; i++) { const t = i / 24 * Math.PI * 2; f.block(x + .02, 2.5 + Math.sin(t) * 1.05, z + Math.cos(t) * 1.05, .12, .26, .26, C.beam); } for (let i = -4; i <= 4; i++) for (let j = -4; j <= 4; j++) { if (Math.hypot(i, j) > 4.2) continue; f.block(x, 2.5 + j * .22, z + i * .22, .04, .22, .22, (i + j) % 2 ? 0x4a4a9a : 0x5a5ab0, true); }
+    f.block(x + .03, 2.5, z, .05, 2, .05, C.beam); f.block(x + .03, 2.5, z, .05, .05, 2, C.beam);
+    f.block(x + .6, 0, z, 1.1, .5, 2.4, dark); f.block(x + .6, .5, z, 1.1, .18, 2.4, plum); for (const dz of [-.8, .1, .9]) f.block(x + .45, .68, z + dz, .4, .32, .5, pick([0x8a5a9a, 0xc8a03a, 0x5a3a6a], r)); }
+  { const x = -hw + 1, z = -6.8; for (const [a, b] of [[-.25, -.2], [.25, -.2], [0, .3]]) f.block(x + a, 0, z + b, .05, 1.3, .05, C.brass); f.block(x, 1.3, z, .16, .16, .16, C.brass); for (let k = 0; k < 6; k++) f.block(x + .1 + k * .1, 1.4 + k * .09, z, .14 - k * .01, .14 - k * .01, .14 - k * .01, k ? C.brass : 0x2a2a3a); }
+  { const x = -hw + .15, z = -7.6; f.block(x + .02, 1.6, z, .04, 1.4, 1.1, 0x1a1a3a); for (let i = 0; i < 14; i++) f.block(x + .05, 1.7 + r() * 1.2, z - .5 + r(), .02, .05, .05, 0xf0e8c0, r() < .5); f.block(x + .04, 1.55, z, .05, .08, 1.2, C.gold); f.block(x + .04, 3.02, z, .05, .08, 1.2, C.gold); }
+  // The writing desk: the almanac open under two candles, a quill and ink, a globe, and books stacked about.
+  { const x = -1, z = -4.4; f.block(x, 0, z, 2.2, .78, 1.1, dark); f.block(x, .78, z, 2.4, .08, 1.2, 0x2a1810); for (const sx of [-1, 1]) f.block(x + sx * .9, 0, z, .3, .78, 1, 0x2a1810);
+    f.block(x, .86, z + .1, .9, .05, .6, 0xe8dcc0, true); f.block(x, .88, z + .1, .04, .04, .62, 0x6a2f58); for (let i = 0; i < 4; i++) f.block(x - .3 + (i % 2) * .6, .9, z - .05 + (i >> 1) * .25, .3, .01, .02, 0x6a5a7a);
+    for (const dx of [-.95, .95]) { f.block(x + dx, .86, z - .3, .1, .3, .1, 0xf0e6d8); f.block(x + dx, 1.16, z - .3, .06, .1, .06, 0xffb347, true); }
+    f.mark?.("lamp", x, 1.6, z); f.block(x + .7, .86, z + .3, .12, .14, .12, 0x1a1a2a); f.block(x + .78, .95, z + .28, .02, .4, .02, 0xe8e0d0);
+    f.block(x - .75, .86, z + .25, .08, .3, .08, C.brass); f.block(x - .75, 1.16, z + .25, .36, .36, .36, 0x3a6a8a); f.block(x - .75, 1.2, z + .25, .3, .28, .38, 0x6a8a4a);
+    for (const [dx, dz, n] of [[1.6, .4, 5], [-1.9, .7, 3], [1.4, -.6, 4]]) for (let k = 0; k < n; k++) f.block(x + dx + (r() - .5) * .08, k * .12, z + dz, .5, .11, .38, vary(pick([0x6a2f58, 0x2a5a6a, 0xc8a03a, 0x8a1a2a], r), .08, r)); }
+  f.block(-1, .12, -4.4, 3.6, .02, 3.2, 0x4a2a5a); for (const s of [-1, 1]) { f.block(-1, .13, -4.4 + s * 1.55, 3.6, .02, .08, C.gold); f.block(-1 + s * 1.75, .13, -4.4, .08, .02, 3.2, C.gold); } for (const s of [-1, 1]) f.block(-1 + s * .3, .14, -2.2, .5, .01, .3, C.moth); f.block(-1, .14, -2.2, .12, .01, .4, 0x8a6a4a);
+  // The bookbinding bench on the right wall: a screw press, leather, spools of thread and a stack of loose pages.
+  { const x = hw - .8, z = -3.1; f.block(x, 0, z, 1.2, .82, 2.8, dark); f.block(x, .82, z, 1.3, .08, 3, 0x2a1810);
+    f.block(x, .9, z - .8, .6, .5, .6, C.iron); f.block(x, 1.4, z - .8, .1, .5, .1, C.iron); f.block(x, 1.9, z - .8, .8, .08, .08, C.iron); f.block(x, .9, z + .3, .7, .02, .6, 0x8a4a2a); f.block(x, .92, z + .3, .5, .02, .4, 0x6a3a1a);
+    for (const [dz, c] of [[.9, 0xc8302a], [1.1, 0x2a5a8a], [1.25, 0xd8b03a]]) f.block(x - .3, .9, z + dz, .14, .16, .14, c); for (let k = 0; k < 6; k++) f.block(x + .25, .9 + k * .03, z + 1, .4, .03, .5, 0xf0e8d4); }
+  // A little iron stove with a kettle and its pipe, and herbs and dried flowers hung from the beam above it.
+  { const x = hw - .9, z = -6.7; f.block(x, 0, z, .9, .9, .9, C.iron); f.block(x - .46, .3, z, .02, .3, .4, 0xff8a3a, true); f.block(x, .9, z, 1, .08, 1, 0x1a1a22); f.block(x + .2, .98, z, .14, H - 1, .14, C.iron); f.block(x - .2, .98, z, .3, .24, .3, 0x6a6a7a); f.block(x - .38, 1.1, z, .14, .04, .04, 0x6a6a7a); f.mark?.("lamp", x - .6, .8, z); }
+  for (let i = 0; i < 9; i++) { const x = hw - 2.6 + i * .28, z = -6.1, len = .5 + r() * .5; f.block(x, H - len - .05, z, .02, len, .02, 0x5a4a3a); f.block(x, H - len - .35, z, .16, .32, .12, pick([0x5a7a3a, 0x8a6a9a, 0xb89a4a, 0x7a3a4a], r)); }
+  // The moth jar: a glass lantern hung from a beam with moths glowing in it, and moths resting on the walls.
+  { const x = 1.6, z = -3.4, y = 3.2; f.block(x, y + .6, z, .03, H - y - .6, .03, C.iron); f.block(x, y + .5, z, .5, .1, .5, C.brass); f.block(x, y, z, .44, .5, .44, 0x9a9ad0); for (let i = 0; i < 6; i++) f.block(x + (r() - .5) * .3, y + .08 + r() * .34, z + (r() - .5) * .3, .08, .04, .06, 0xfff0b0, true); f.mark?.("lamp", x, y, z); }
+  for (let i = 0; i < 16; i++) { const left = i % 2, x = left ? -hw + .15 : hw - .15, z = -1 - r() * 7, y = 1.2 + r() * 3; f.block(x, y, z, .02, .06, .1, C.moth); f.block(x, y, z - .07, .02, .1, .07, C.moth); f.block(x, y, z + .07, .02, .1, .07, C.moth); }
+  // Ferns in pots by the door.
+  for (const sx of [-1, 1]) { const x = sx * (hw - .7), z = -.8; f.block(x, 0, z, .5, .45, .5, 0xa05a3a); for (let i = 0; i < 7; i++) { const a = i / 7 * Math.PI * 2; f.block(x + Math.cos(a) * .25, .45 + (i % 3) * .1, z + Math.sin(a) * .25, .28, .1, .1, vary(0x4a7a3a, .1, r)); } }
+}
+// Rowan's workshop, inside: a heavy workbench with a vice, a plank and shavings, a pegboard of tools, a lathe,
+// stacked timber, sawhorses, a door on trestles and a chair waiting for its seat, a potbelly stove, his straw
+// bed with a patched quilt, a nail barrel, a broom, and crows watching from the beam.
+export const ROWAN_HALL = Object.freeze({ w: 11, d: 9, host: [-.4, -5.1], spawn: [0, -1.4], light: .5, exposure: 1.05,
+  blocks: Object.freeze([[-2.6, -7, 2.6, -5.5], [-5.5, -7.6, -3.8, -5.2], [-5.5, -4.6, -4.5, -.8], [3.8, -9, 5.5, -7], [3.2, -3.8, 5.5, -.6], [-3.8, -2.8, -1.6, -1.5], [1, -5, 3.2, -3.6], [-5.5, -9, 5.5, -8.4]]) });
+export function rowanWorkshop(f, r = seeded(179)) {
+  const W = 11, D = 9, hw = W / 2, H = 4.6, pine = [0x9a7a52, 0xa8885e, 0x8c6c46], dark = 0x4a3020, steel = 0x8a8a96, shaving = 0xe8c890;
+  hallShell(f, r, { w: W, d: D, h: H, boards: pine, wall: 0x6a4a32, beam: 0x3a2618 });
+  for (let i = 0; i < 26; i++) f.block((r() - .5) * 9, .12, -1 - r() * 7, .3 + r() * .4, .015, .2 + r() * .3, 0xd8b884);
+  // The pegboard of tools across the back wall: saws, hammers, chisels, a mallet, a square and clamps.
+  f.block(0, 1.2, -D + .2, 7, 2.2, .06, 0xc8a878); for (let x = -3.3; x <= 3.3; x += .3) for (let y = 1.35; y < 3.3; y += .3) f.block(x, y, -D + .24, .03, .03, .02, 0x6a5038);
+  for (const x of [-2.9, -1.6]) { f.block(x, 1.6, -D + .27, .9, .5, .02, steel); f.block(x + .5, 1.65, -D + .28, .25, .4, .04, C.wood); }
+  for (const x of [-.6, -.25, .1]) { f.block(x, 2.2, -D + .28, .06, .6, .04, C.wood); f.block(x, 2.75, -D + .28, .22, .1, .06, steel); }
+  for (const x of [.6, .8, 1, 1.2]) { f.block(x, 1.5, -D + .28, .04, .4, .03, C.woodLight); f.block(x, 1.38, -D + .28, .03, .14, .02, steel); }
+  f.block(1.9, 2.4, -D + .28, .1, .5, .04, C.wood); f.block(1.9, 2.9, -D + .28, .36, .26, .2, 0x8a6a46); f.block(2.7, 1.6, -D + .28, .08, .7, .03, steel); f.block(2.94, 2.26, -D + .28, .5, .06, .03, steel);
+  for (const x of [-.5, 2.4]) { f.block(x, 3.0, -D + .28, .5, .06, .06, 0x8a2a2a); f.block(x - .22, 2.8, -D + .28, .06, .26, .06, steel); }
+  // The workbench: a thick top on stout legs, a vice, a plank with curls of shavings, a plane, a square and a lantern.
+  { const z = -6.25; f.block(0, 0, z, 4.8, .9, 1.4, dark); f.block(0, .9, z, 5, .16, 1.5, 0x6a4a2e); for (const sx of [-1, 1]) f.block(sx * 2.2, 0, z, .3, .9, 1.3, 0x3a2418); f.block(0, .3, z, 4.2, .08, 1.1, 0x5a3a24);
+    f.block(2.2, 1.06, z + .55, .5, .3, .3, steel); f.block(2.2, 1.2, z + .82, .06, .06, .4, steel);
+    f.block(-.4, 1.06, z, 2.6, .08, .5, C.woodLight); for (let i = 0; i < 12; i++) f.block(-1.6 + r() * 3.2, 1.06 + (r() < .5 ? .08 : 0), z - .4 + r() * .8, .12, .06, .08, shaving);
+    f.block(.6, 1.14, z + .05, .4, .1, .14, C.wood); f.block(.6, 1.24, z + .05, .1, .08, .1, steel); f.block(-1.9, 1.06, z + .4, .5, .02, .08, steel); f.block(-1.66, 1.06, z + .2, .02, .02, .4, steel);
+    lantern(f, -2.1, 1.06, z - .3, .7); f.mark?.("lamp", -2.1, 1.8, z); }
+  // A lathe on the left, a spindle half turned in it, and timber stacked on a rack along the wall.
+  { const x = -hw + .9, z = -6.4; f.block(x, 0, z, .8, .8, 2.2, dark); f.block(x, .8, z, .5, .3, 2.2, C.iron); for (const dz of [-.9, .9]) f.block(x, 1.1, z + dz, .4, .4, .3, C.iron); f.block(x, 1.26, z, .14, .14, 1.5, C.woodLight); for (let k = -3; k <= 3; k++) f.block(x, 1.26, z + k * .2, .2 - Math.abs(k) * .02, .2 - Math.abs(k) * .02, .1, C.woodLight); }
+  for (const y of [.2, 1.2, 2.2]) { f.block(-hw + .25, y, -2.7, .4, .06, 3.8, C.iron); for (let k = 0; k < 4; k++) f.block(-hw + .5, y + .06 + (k % 2) * .1, -2.7, .2 + k * .05, .1, 3.6 - k * .2, vary(pick(pine, r), .06, r)); }
+  // Sawhorses with a plank across them, a door on trestles, and a chair waiting for its seat.
+  for (const x of [-3.4, -2]) { for (const s of [-1, 1]) f.block(x, 0, -2.15 + s * .3, .08, .72, .08, C.wood); f.block(x, .7, -2.15, .12, .08, .8, C.wood); } f.block(-2.7, .78, -2.15, 2.2, .1, .5, C.woodLight);
+  for (const x of [1.3, 2.9]) { for (const s of [-1, 1]) f.block(x, 0, -4.3 + s * .4, .08, .76, .08, C.wood); f.block(x, .76, -4.3, .12, .06, 1, C.wood); } f.block(2.1, .82, -4.3, 2, .1, 1.1, 0x5a7a5a); for (const dx of [-.5, .5]) f.block(2.1 + dx, .92, -4.3, .7, .02, .8, 0x4a6a4a); f.block(2.9, .94, -4.1, .12, .04, .12, C.brass);
+  { const x = .2, z = -2.6; for (const [a, b] of [[-.25, -.25], [.25, -.25], [-.25, .25], [.25, .25]]) f.block(x + a, 0, z + b, .07, .5, .07, C.woodLight); f.block(x, .5, z + .25, .56, .06, .06, C.woodLight); f.block(x, .5, z - .25, .56, .06, .06, C.woodLight); for (const a of [-.25, .25]) f.block(x + a, .5, z - .25, .07, .8, .07, C.woodLight); f.block(x, 1.2, z - .25, .56, .1, .06, C.woodLight); }
+  // The potbelly stove in the back corner, its door aglow, a kettle on top and the pipe up through the roof.
+  { const x = hw - .9, z = -7.9; f.block(x, 0, z, .7, .3, .7, C.iron); f.block(x, .3, z, .9, .8, .9, C.iron); f.block(x - .46, .5, z, .02, .35, .35, 0xff7a2a, true); f.block(x, 1.1, z, .7, .12, .7, C.iron); f.block(x, 1.22, z, .18, H - 1.2, .18, C.iron); f.block(x - .1, 1.22, z + .2, .28, .22, .28, 0x6a6a7a); f.mark?.("lamp", x - .7, .7, z); }
+  // His bed: a straw-stuffed frame with a patched quilt, a pumpkin for a pillow, and his boots beside it.
+  { const x = hw - 1.1, z = -2.2; f.block(x, 0, z, 1.6, .5, 2.6, 0x6a4a2e); f.block(x, .5, z, 1.5, .18, 2.5, 0xd8b85a); for (let i = 0; i < 12; i++) f.block(x - .6 + (i % 3) * .6, .68, z - 1.05 + Math.floor(i / 3) * .5, .58, .05, .48, pick([0x8a3a4a, 0x3a6a8a, 0xc8a03a, 0x5a7a3a, 0x8a6a9a], r)); f.block(x, .73, z - .9, .5, .34, .44, 0xe8771f); f.block(x, 1.07, z - .9, .06, .1, .06, 0x5a7a3a);
+    for (const dz of [.6, .85]) f.block(x - 1, 0, z + dz, .2, .3, .14, 0x3a2a1a); }
+  // A nail barrel, a broom against the wall, a pile of sawdust, and crows on the beam watching him work.
+  f.block(-hw + .9, 0, -.9, .6, .7, .6, 0x6a4a2e); for (const y of [.12, .55]) f.block(-hw + .9, y, -.9, .64, .05, .64, C.iron); for (let i = 0; i < 8; i++) f.block(-hw + .9 + (r() - .5) * .4, .7, -.9 + (r() - .5) * .4, .02, .14, .02, steel);
+  f.block(hw - .3, 0, -5, .06, 1.8, .06, C.wood); f.block(hw - .3, 0, -5, .3, .4, .14, 0xc8a048); f.block(-1, .12, -7.6, .9, .14, .5, 0xd8b884);
+  for (const [x, z] of [[-2.5, -3.5], [-1.9, -3.5], [3.1, -5.7]]) { const y = H + .24; f.block(x, y, z, .26, .22, .16, 0x17141d); f.block(x + .13, y + .16, z, .14, .14, .14, 0x17141d); f.block(x + .22, y + .17, z, .1, .04, .05, 0x3a3a3a); f.block(x + .14, y + .22, z + .07, .03, .03, .02, 0xffd060, true); f.block(x - .15, y + .06, z, .12, .08, .12, 0x17141d); }
+}
+
 // A fair's market stall (front +z): a timber counter with a striped skirt under a striped awning
 // with a scalloped edge, goods on the counter and shelf, a lantern under the awning and a sign.
 export function marketStall(f, a, b, goods = "pumpkins", r = seeded(171)) {

@@ -11,7 +11,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import * as M from "./model.js";
-import { createVillageView, TOUR, INSIDES } from "./village-view.js";
+import { createVillageView, TOUR, INSIDES, DOOR_NORMAL } from "./village-view.js";
 import { loadSpriteSheets, spriteActor } from "./sprite-actors.js";
 import { animateSprite } from "./sprite-voxels.js";
 import { LEAN } from "./world.js";
@@ -126,12 +126,13 @@ function goIn(id) {
     else view.cameraActions.place(toPlace(view.hallPoint(0, 8.6, 9.6)), toPlace(view.hallPoint(0, -6.4, 1.4)));
   });
 }
+const DOOR_THETA = { north: Math.PI, south: 0, east: Math.PI / 2, west: -Math.PI / 2 };
 function leaveHall() {
-  const id = view.inside; if (!id) return; const d = INSIDES[id].door;
+  const id = view.inside; if (!id) return; const d = INSIDES[id].door, [nx, nz] = DOOR_NORMAL[d.facing];
   view.goOutside(); $("leave").hidden = true;
-  // Out on the doorstep, turned to the road, with the camera looking back at the door just left.
-  if (walking) { pos.x = d.x * K; pos.z = (d.z + 3.2) * K; heading.x = 0; heading.z = -1; place(); view.play.reset({ x: actor.position.x, y: actor.position.y, z: actor.position.z }, Math.PI); }
-  else view.cameraActions.place([d.x * K, 13 * K, (d.z + 20) * K], [d.x * K, 4 * K, (d.z - 2) * K]);
+  // Out on the doorstep, turned away from the door, with the camera looking back at the door just left.
+  if (walking) { pos.x = (d.x + nx * 3.2) * K; pos.z = (d.z + nz * 3.2) * K; heading.x = nx; heading.z = -nz; place(); view.play.reset({ x: actor.position.x, y: actor.position.y, z: actor.position.z }, DOOR_THETA[d.facing]); }
+  else view.cameraActions.place([(d.x + nx * 20) * K, 13 * K, (d.z + nz * 20) * K], [(d.x - nx * 2) * K, 4 * K, (d.z - nz * 2) * K]);
 }
 $("leave").addEventListener("click", () => fade(leaveHall));
 $("act").addEventListener("click", () => act());
@@ -173,8 +174,8 @@ function walk(dt, time) {
   place();
   // At a door that can be gone through, offer it.
   offer = null;
-  if (!view.inside) for (const [id, p] of Object.entries(INSIDES)) if (Math.hypot(pos.x - p.door.x * K, pos.z - (p.door.z + 1.4) * K) < 2.8) offer = id;
-  $("act").hidden = !offer; if (offer) $("act").innerHTML = `<b>✕</b>Enter ${INSIDES[offer].name}`;
+  if (!view.inside) for (const [id, p] of Object.entries(INSIDES)) { const [nx, nz] = DOOR_NORMAL[p.door.facing]; if (Math.hypot(pos.x - (p.door.x + nx * 1.4) * K, pos.z - (p.door.z + nz * 1.4) * K) < 2.8) offer = id; }
+  $("act").hidden = !offer; if (offer) $("act").innerHTML = `<b>✕</b>Go into ${INSIDES[offer].name.replace(/^The /, "the ")}`;
   if (offer && (gp?.act || keys.has("enter") || keys.has("f"))) { keys.delete("enter"); keys.delete("f"); act(); }
   const lookX = (gp?.lx ?? 0) + (k("e", "e") - k("q", "q")), lookY = gp?.ly ?? 0;
   view.play.look(lookX, lookY, dt); if (gp?.zoomIn) view.play.zoom(-1); if (gp?.zoomOut) view.play.zoom(1);

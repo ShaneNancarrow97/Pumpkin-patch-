@@ -8,7 +8,7 @@ import { buildGround, buildPaving, buildWater, buildGreen, buildBeyond, buildHor
 import { createGrass } from "./village-grass.js";
 import { terrainHeight, REALM } from "./village-terrain.js";
 import { createBats } from "./village-bats.js";
-import { buildVillageDecor, letterPage, frame, velvetBatHall, VELVET_HALL } from "./village-models.js";
+import { buildVillageDecor, letterPage, frame, velvetBatHall, VELVET_HALL, elowenLibrary, ELOWEN_HALL, rowanWorkshop, ROWAN_HALL } from "./village-models.js";
 import { Voxels } from "./voxels.js";
 import { buildEstateDecor } from "./house-estate-world.js";
 import { VILLAGE_DECOR_BY_ID } from "./content/village-decor.js";
@@ -39,9 +39,13 @@ export const TOUR = Object.freeze([
 const TOUR_SECONDS = 4.6;
 // Buildings you can go inside: their hall, its plan (size, spawn, host's post, where a walker can't go), the host
 // who keeps it, and the front door on the design grid.
+// A door's facing is the way out of it; DOOR_NORMAL says which way that is on the grid (x east, z north).
 export const INSIDES = Object.freeze({
-  "velvet-bat": Object.freeze({ name: "The Velvet Bat", build: velvetBatHall, hall: VELVET_HALL, host: "vesper", door: Object.freeze({ x: 102, z: 24.4 }) }),
+  "velvet-bat": Object.freeze({ name: "The Velvet Bat", build: velvetBatHall, hall: VELVET_HALL, host: "vesper", door: Object.freeze({ x: 102, z: 24.4, facing: "north" }) }),
+  "elowen-library": Object.freeze({ name: "Elowen's library", build: elowenLibrary, hall: ELOWEN_HALL, host: "elowen", door: Object.freeze({ x: 47.6, z: 18.6, facing: "east" }) }),
+  "rowan-workshop": Object.freeze({ name: "Rowan's workshop", build: rowanWorkshop, hall: ROWAN_HALL, host: "rowan", door: Object.freeze({ x: 66.4, z: 20, facing: "west" }) }),
 });
+export const DOOR_NORMAL = Object.freeze({ north: [0, 1], south: [0, -1], east: [1, 0], west: [-1, 0] });
 
 export function createVillageView(canvas, state, hooks = {}) {
   // Lantern Night: a dark indigo sky, cool moonlight from over your shoulder, and
@@ -98,7 +102,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     hit(f.well.r * 2, 4.4, f.well.r * 2, { type: "village-well" }, f.well.x, f.well.z);
     hit(f.carriage.w, 4.6, f.carriage.d, { type: "village-carriage" }, f.carriage.x, f.carriage.z);
     for (const n of NODES.filter((n) => n.district === "green")) hit(2, 1.8, 2, { type: "village-node", id: n.id }, n.x, n.z);
-    for (const [id, p] of Object.entries(INSIDES)) hit(3.4, 5.8, 1.2, { type: "village-door", id }, p.door.x * K, (p.door.z + .5) * K);
+    for (const [id, p] of Object.entries(INSIDES)) { const [nx, nz] = DOOR_NORMAL[p.door.facing]; hit(nx ? 1.2 : 3.4, 5.8, nx ? 3.4 : 1.2, { type: "village-door", id }, (p.door.x + nx * .5) * K, (p.door.z + nz * .5) * K); }
   }
   // Rebuilds a part when its key changes.
   function part(name, key, make) {
@@ -176,12 +180,12 @@ export function createVillageView(canvas, state, hooks = {}) {
     if (inside) goOutside();
     inside = buildInside(id); inside.group.visible = true; if (inside.host) inside.host.root.visible = true;
     root.visible = false; if (sky) sky.visible = false; scene.background.set(0x0a070d); scene.fog.color.set(0x0a070d); scene.fog.density = REACH.inside.fog;
-    sun.intensity = .08; hemi.intensity = .32; scene.userData.exposure = 1.3; following = false;
+    const glow = inside.plan.hall.light ?? 1; pool.forEach((l) => { l.userData.base = 48 * glow; }); sun.intensity = .08; hemi.intensity = .32; scene.userData.exposure = inside.plan.hall.exposure ?? 1.3; following = false;
     return inside;
   }
   function goOutside() {
     if (!inside) return; inside.group.visible = false; if (inside.host) inside.host.root.visible = false; inside = null;
-    root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = 1.25; hemi.intensity = .7; scene.userData.exposure = 1.15; following = false;
+    root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = 1.25; hemi.intensity = .7; scene.userData.exposure = 1.15; following = false; pool.forEach((l) => { l.userData.base = 48; });
   }
 
   // Play mode: the camera follows the owner, as in the garden.
