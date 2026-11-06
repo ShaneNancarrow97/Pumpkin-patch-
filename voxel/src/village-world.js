@@ -224,7 +224,7 @@ const NO_GRASS = [
   ...[[17, 43.6, 24.4, 52.4], [16.6, 63.6, 24.4, 76.2], [8, 42.6, 20.4, 46.4], [8, 62.4, 21, 72.4]].map(([a, b, c, d]) => [a + SHIFT.copse[0], b + SHIFT.copse[1], c + SHIFT.copse[0], d + SHIFT.copse[1]]),
 ];
 // The Moor's big top, tents, wheel and caravan stand on bare ground (in the Moor's own place, moved with it).
-const MOOR_CLEAR = [[97, 42, 5.2], [94, 31.5, 4], [114, 16, 3.4], [115.5, 50, 2.4], [101.6, 48.4, 2.4], [116.6, 24, 2], [116.6, 28.5, 2], [116.6, 33, 2], [116.6, 37.5, 2]].map(([a, b, rr]) => [a + SHIFT.moor[0], b + SHIFT.moor[1], rr]);
+const MOOR_CLEAR = [[97, 42, 5.2], [94, 31.5, 4], [114, 16, 3.4], [115.5, 50, 2.4], [101.6, 48.4, 2.4], [116.6, 24, 2], [116.6, 28.5, 2], [116.6, 33, 2], [116.6, 37.5, 2], [102, 35, 3]].map(([a, b, rr]) => [a + SHIFT.moor[0], b + SHIFT.moor[1], rr]);
 const GRASS = {
   lawn: { h: .46, flowers: true, colours: [0x4f8a36, 0x5b9a3e, 0x67a644, 0x46802f, 0x76ad4a, 0x84b04e, 0x9aa848] },
   moss: { h: .36, flowers: true, colours: [0x3a6a52, 0x467a5c, 0x52866a, 0x356048, 0x5a7a5a] },
@@ -573,13 +573,17 @@ export function buildBeyond() {
   caravan(fr(101.6, 48.4, "west"), r);
   for (let i = 0; i < 5; i++) { const b = fr(88 + i * 3.2, 15.5, "north"); b.block(0, 0, 0, 2.4, 1, 1.4, i % 2 ? 0xa8172c : 0x4b3a8a); b.block(0, 1, .6, 2.5, .08, .3, C.cream); for (const s of [-1, 1]) b.block(s * 1.15, 1, 0, .1, 1.5, .1, C.timber); for (let k = 0; k < 5; k++) b.block(-1 + k * .5, 2.5, .2, .5, .12, 1.6, k % 2 ? C.cream : i % 2 ? 0xa8172c : 0x4b3a8a); lantern(b, 0, 2.62, .1, .6); }
   for (const [ax, az, bx, bz] of [[86, 40, 90, 52], [88, 26, 88, 22], [90, 20, 106, 20], [100, 26, 106, 36]]) { if (road(ax, az, .4) || road(bx, bz, .4)) continue; for (const [x, z] of [[ax, az], [bx, bz]]) R.block(x, 0, z, .16, 3.6, .16, C.timber); festoon(base, ax + dx, 3.5, az + dz, bx + dx, 3.5, bz + dz, 18, .7, undefined, cables); }
+  // The carousel's round plinth and steps (it turns in the life layer), with hay bales and pumpkins about it.
+  for (let i = 0; i < 28; i++) { const t = i / 28 * Math.PI * 2; R.block(102 + Math.cos(t) * 2.35, 0, 35 + Math.sin(t) * 2.35, .9, .32, .9, vary(pick(C.stone, r), .05, r)); }
+  R.block(102, 0, 35, 3.6, .3, 3.6, C.stone[2]); for (const [x, z] of [[99.2, 35], [104.8, 35]]) R.block(x, 0, z, .5, .16, 1.2, C.stone[1]);
+  for (const [x, z, k] of [[99, 31.6, 0], [105, 38.6, 1], [99.4, 38.8, 0]]) { hayBale(R, x, z, r, k > 0); pumpkin(R, x + .7, z + .4, .4, r, k ? "gold" : "orange"); }
   // The fair's market row east of the road: striped stalls under a string of lights, facing the road.
   [[24, 0xa8172c, C.cream, "pumpkins"], [28.5, 0x3a5a9a, C.cream, "sweets"], [33, 0x3f7a4a, 0xf0c252, "apples"], [37.5, 0x6a3a8a, 0xf0c252, "potions"]].forEach(([z, a, b, goods]) => marketStall(fr(116.6, z, "west"), a, b, goods, r));
   for (const z of [21.8, 39.8]) { R.block(113.4, 0, z, .18, 4, .18, C.timber); R.block(113.4, 4, z, .3, .3, .3, C.gold); }
   festoon(base, 113.4 + dx, 3.9, 21.8 + dz, 113.4 + dx, 3.9, 39.8 + dz, 26, .9, [0xff9a30, 0xe85a9a, 0xffd06a, 0x9a8aff], cables);
   for (const [z0, z1] of [[21.8, 30.8], [30.8, 39.8]]) festoon(base, 113.4 + dx, 3.9, z0 + dz, 118.2 + dx, 3.2, (z0 + z1) / 2 + dz, 10, .4, [0xffb84a, 0xe85a9a], cables);
   { const mirror = fr(91, 50, "east"); mirror.block(0, 0, 0, 1.2, .3, .8, C.stone[1]); mirror.block(0, .3, 0, 1, 2.2, .14, C.gold); mirror.block(0, .45, .08, .8, 1.9, .03, 0xb8d0ff, true); mirror.block(0, 2.5, 0, .5, .3, .14, C.gold); }
-  for (let i = 0; i < 46; i++) { const x = 86 + r() * 34, z = 13 + r() * 40; if (road(x, z, 1) || Math.hypot(x - 97, z - 42) < 6 || Math.hypot(x - 94, z - 31.5) < 4.6 || Math.hypot(x - 114, z - 16) < 4 || (z < 18 && x < 104) || x > 112.6 && z > 21 && z < 40.6) continue; const k = r(); k < .35 ? bush(R, x, z, .9, r, [0x6a4a7a, 0x7d5a8a, 0x5a4a3a]) : k < .55 ? pumpkin(R, x, z, .35 + r() * .3, r, pick(["orange", "gold", "white"], r)) : k < .7 ? jackOLantern(fr(x, z, "west"), 0, 0, .45, r, i) : k < .85 ? spookyTree(R, x, z, .9 + r() * .4, r) : canopyTree(R, x, z, 1 + r() * .4, r, pick([C.crimson, C.golden, C.violet], r), { cell: .42 }); }
+  for (let i = 0; i < 46; i++) { const x = 86 + r() * 34, z = 13 + r() * 40; if (road(x, z, 1) || Math.hypot(x - 97, z - 42) < 6 || Math.hypot(x - 94, z - 31.5) < 4.6 || Math.hypot(x - 114, z - 16) < 4 || (z < 18 && x < 104) || x > 112.6 && z > 21 && z < 40.6 || Math.hypot(x - 102, z - 35) < 4.4) continue; const k = r(); k < .35 ? bush(R, x, z, .9, r, [0x6a4a7a, 0x7d5a8a, 0x5a4a3a]) : k < .55 ? pumpkin(R, x, z, .35 + r() * .3, r, pick(["orange", "gold", "white"], r)) : k < .7 ? jackOLantern(fr(x, z, "west"), 0, 0, .45, r, i) : k < .85 ? spookyTree(R, x, z, .9 + r() * .4, r) : canopyTree(R, x, z, 1 + r() * .4, r, pick([C.crimson, C.golden, C.violet], r), { cell: .42 }); }
   manor(fr(97, 64, "east"), r);
   for (const [x0, z0, x1, z1] of [[90, 56, 104.6, 56], [90, 72, 104.6, 72], [104.6, 56, 104.6, 61.4], [104.6, 66.6, 104.6, 72]]) { railing(R, x0, z0, x1, z1, 1.4); for (const [x, z] of [[x0, z0], [x1, z1]]) brickPier(R, x, z, 1.8, r, "lamp"); }
   for (const [x, z] of [[101, 58], [101, 70], [92, 58.5], [92, 70]]) topiary(R, x, z, 1.1, r, true);

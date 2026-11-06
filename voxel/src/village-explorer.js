@@ -59,6 +59,14 @@ function go(id) {
 }
 for (const b of document.querySelectorAll("[data-place]")) b.addEventListener("click", () => go(b.dataset.place));
 $("everyone").addEventListener("click", () => { everyone = !everyone; $("everyone").classList.toggle("on", everyone); view.sync(); });
+// Restored: the homes as they'll be once their quests are done, Rowan's stall open and the bench mended.
+const before = JSON.stringify({ built: state.village.built, unlocks: state.village.unlocks, effects: state.village.effects });
+$("restored").addEventListener("click", () => {
+  const on = !$("restored").classList.contains("on"); $("restored").classList.toggle("on", on); const v = state.village;
+  if (on) { v.built = { ...v.built, "rowan-workshop": true, "elowen-conservatory": true }; v.unlocks = [...new Set([...v.unlocks, "stall", "gathering"])]; v.effects = [...new Set([...v.effects, "bench"])]; }
+  else Object.assign(v, JSON.parse(before));
+  view.sync();
+});
 // The grand tour: the flight Elowen gives on arrival, its titles rising at each stop. Tour again skips it.
 let titleTimer = 0;
 $("tour").addEventListener("click", () => {

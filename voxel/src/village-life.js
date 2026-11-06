@@ -26,6 +26,8 @@ const PERCHES_DESIGN = [
 // Where fireflies drift (design grid rects): the Copse, the moth-yard, the Green's west edge, the corn rows,
 // the woods west and east of the Quarry, and the Marsh's banks.
 const [cx, cz] = DISTRICT_SHIFT.copse;
+// The Moor's carousel, in the Moor's own place (moved with it).
+export const CAROUSEL = Object.freeze({ x: 102, z: 35 });
 const FLY_ZONES = [[2 + cx, 40 + cz, 38 + cx, 92 + cz], [86, 2, 95, 10], [4, 28, 22, 35], [30, 5, 46, 10], [6, 40, 36, 100], [90, 40, 124, 104], [40, 104, 120, 109]];
 const TREES = [[50.2, 4], [65.8, 4], [70.6, 25.4], [79, 21], [31, 25.5], [31.5, 14.5], [25.4, 9.6], [35.5, 20], [58, 24.6]];
 
@@ -125,6 +127,21 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
   for (const m of [gondolas, gondolaLamps]) { m.frustumCulled = false; wheelFrame.add(m); }
   for (let i = 0; i < GONDOLAS; i++) gondolas.setColorAt(i, new THREE.Color([0xa8172c, 0x4b3a8a, 0xd9a441, 0x2a7a6a][i % 4]));
 
+  // ---- The Moor's carousel: a striped canopy ringed with bulbs over a mirrored column, turning slowly,
+  // its painted horses rising and falling on their gilt poles. (Its plinth is built with the Moor.)
+  const carousel = new THREE.Group(); carousel.position.copy(W(CAROUSEL.x + mx, CAROUSEL.z + mz, H(CAROUSEL.x + mx, CAROUSEL.z + mz) + .32)); group.add(carousel);
+  { const v = new Voxels();
+    for (let i = 0; i < 24; i++) { const t = i / 24 * Math.PI * 2; v.block(Math.cos(t) * 1.6, 0, Math.sin(t) * 1.6, 1.5, .14, .7, i % 2 ? C.woodLight : C.wood); v.block(Math.cos(t) * 2.38, .02, Math.sin(t) * 2.38, .7, .14, .3, C.gold); }
+    v.block(0, 0, 0, 1.4, .15, 1.4, C.woodLight); v.block(0, .15, 0, .7, 3.2, .7, 0xc8c0e0); for (let k = 0; k < 6; k++) v.block(0, .4 + k * .5, 0, .74, .08, .74, C.gold);
+    for (let k = 0; k < 5; k++) { const rr = 2.75 - k * .55; for (let i = 0; i < 16; i++) { const t = i / 16 * Math.PI * 2; v.block(Math.cos(t) * rr * .82, 3.35 + k * .24, Math.sin(t) * rr * .82, rr * .42, .24, rr * .42, (i + k) % 2 ? 0xa8172c : C.cream); } }
+    for (let i = 0; i < 24; i++) { const t = i / 24 * Math.PI * 2; v.block(Math.cos(t) * 2.62, 3.12, Math.sin(t) * 2.62, .62, .24, .62, i % 2 ? 0xa8172c : C.cream); v.block(Math.cos(t) * 2.72, 3.0, Math.sin(t) * 2.72, .12, .12, .12, i % 3 ? 0xffc06a : 0xe8b0ff, true); }
+    v.block(0, 4.55, 0, .3, .5, .3, C.gold); v.block(0, 5.05, 0, .06, .7, .06, 0x2a2430); v.block(.22, 5.5, 0, .4, .22, .03, 0x7d4fa3);
+    carousel.add(v.build({ glow: 1.95 })); }
+  const HORSES = 6, horseGeo = mergeBoxes([[0, 0, 0, .9, .38, .3, 0xf0e8dc], [.42, .3, 0, .22, .42, .22, 0xf0e8dc], [.58, .6, 0, .36, .2, .2, 0xf0e8dc], [.3, .44, 0, .28, .3, .06, 0xd8a83a], [-.05, .33, 0, .4, .1, .34, 0xa8172c],
+    [-.5, .05, 0, .24, .1, .1, 0xd8a83a], [.35, -.42, .09, .08, .42, .08, 0xf0e8dc], [.35, -.42, -.09, .08, .42, .08, 0xf0e8dc], [-.32, -.36, .09, .08, .36, .08, 0xf0e8dc], [-.32, -.36, -.09, .08, .36, .08, 0xf0e8dc], [.05, -.9, 0, .06, 3.9, .06, C.gold]], true);
+  const horses = new THREE.InstancedMesh(horseGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), HORSES); horses.frustumCulled = false; carousel.add(horses);
+  [0xffffff, 0x8a7a9a, 0xffffff, 0xd8b090, 0xffffff, 0x9aa0c8].forEach((c, i) => horses.setColorAt(i, new THREE.Color(c)));
+
   // ---- Fireflies over the Copse, the moth-yard and the Green's edges.
   const flyCount = 160, flyPos = new Float32Array(flyCount * 3), fly = Array.from({ length: flyCount }, (_, i) => {
     const [x0, z0, x1, z1] = FLY_ZONES[i % FLY_ZONES.length], x = x0 + r() * (x1 - x0), z = z0 + r() * (z1 - z0);
@@ -207,7 +224,9 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
       owl.head.rotation.y = Math.sin(time * .35) * 1.4 + (Math.sin(time * .9) > .97 ? .6 : 0);
       for (const q of squirrels) tickSquirrel(q, time, dt);
       // The spire turns its beam; the wheel turns.
-      beam.rotation.y = time * .35; wheel.rotation.z = time * .12;
+      beam.rotation.y = time * .35; wheel.rotation.z = time * .12; carousel.rotation.y = time * .4;
+      for (let i = 0; i < HORSES; i++) { const t = i / HORSES * Math.PI * 2; dummy.position.set(Math.cos(t) * 1.85, 1.05 + Math.sin(time * 2.2 + i * 1.7) * .18, Math.sin(t) * 1.85); dummy.rotation.set(0, Math.PI / 2 - t, 0); dummy.scale.setScalar(1); dummy.updateMatrix(); horses.setMatrixAt(i, dummy.matrix); }
+      horses.instanceMatrix.needsUpdate = true;
       for (let i = 0; i < GONDOLAS; i++) { const t = i / GONDOLAS * Math.PI * 2 + wheel.rotation.z; dummy.position.set(Math.cos(t) * WR, Math.sin(t) * WR, 0); dummy.rotation.set(0, 0, 0); dummy.scale.setScalar(1); dummy.updateMatrix(); gondolas.setMatrixAt(i, dummy.matrix); dummy.position.y -= .04; dummy.updateMatrix(); gondolaLamps.setMatrixAt(i, dummy.matrix); }
       gondolas.instanceMatrix.needsUpdate = gondolaLamps.instanceMatrix.needsUpdate = true;
       // Fireflies.
