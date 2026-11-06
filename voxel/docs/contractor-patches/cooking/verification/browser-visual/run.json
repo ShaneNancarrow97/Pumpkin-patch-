@@ -1,0 +1,11 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Cooking-Final.html",
+  "sha256": "4d47c0003b9325fb16e65eac13ee9e33acee71c524785f70d9b9fee2a4b81659",
+  "focus": "visual-regression",
+  "started": "2026-10-26T01:42:05.005Z",
+  "fixture": "QA-only funds and level gates; game rules, UI handlers and HTML are unmodified",
+  "checks": [],
+  "errors": [],
+  "externalRequests": [],
+  "samples": []
+}

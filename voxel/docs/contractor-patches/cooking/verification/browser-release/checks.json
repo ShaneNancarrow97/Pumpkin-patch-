@@ -1,0 +1,153 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Cooking-Release.html",
+  "sha256": "e8601b62048df0df52e035fc332c4b080d612ea6fb52d6a986d9c362b49c5ecf",
+  "focus": "final-artifact-smoke",
+  "started": "2026-10-26T01:47:39.854Z",
+  "fixture": "QA-only funds and level gates; game rules, UI handlers and HTML are unmodified",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "final service area shows the purchased truck and unloading cart",
+      "data": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": 4.199999999999999,
+          "yaw": 0,
+          "progress": 1,
+          "distance": 10.2,
+          "unloading": true,
+          "unloadProgress": 0.33333333333333337,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 230,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null,
+        "receiverStatus": null
+      }
+    },
+    {
+      "ok": true,
+      "label": "final terrain refinement retains the physical truck interaction"
+    },
+    {
+      "ok": true,
+      "label": "phone: menu fits with 44px touch targets",
+      "data": {
+        "width": 390,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "both native food wall displays remain installed"
+    },
+    {
+      "ok": true,
+      "label": "visual scene changes and terrain focus cannot alter saved stock, cash or delivery progress"
+    },
+    {
+      "ok": true,
+      "label": "one main WebGL canvas remains"
+    },
+    {
+      "ok": true,
+      "label": "standalone HTML fetches no external runtime assets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [
+    {
+      "name": "desktop-truck-service-pad",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": 4.199999999999999,
+          "yaw": 0,
+          "progress": 1,
+          "distance": 10.2,
+          "unloading": true,
+          "unloadProgress": 0.33333333333333337,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 230,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null,
+        "receiverStatus": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 36,
+        "triangles": 501522,
+        "geometries": 62,
+        "textures": 19
+      }
+    }
+  ],
+  "rendering": "Single Chromium/SwiftShader process; performance/DPR1, bloom/shadows/mist/lake lights off. Viewport checks do not prove physical Fold frame rate. Managed policy prevents direct file:// and native fullscreen."
+}

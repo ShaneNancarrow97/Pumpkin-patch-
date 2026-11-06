@@ -1,0 +1,5 @@
+ok Sharp Fold scene and bloom use matching high-density buffers
+ok Baron changes the actual leading leg on alternating half-strides
+ok final foyer renders a real guest and host with native active haunts
+ok standalone HTML needs no external assets or CDNs
+ok no final-build browser errors

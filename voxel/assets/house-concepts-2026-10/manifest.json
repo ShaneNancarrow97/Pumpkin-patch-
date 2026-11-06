@@ -1,0 +1,560 @@
+{
+  "version": 1,
+  "purpose": "Painted concept sprites and wallpaper references for Claude to build native voxel furnishings. Not registered in the live game.",
+  "artStyle": "Same inked hand-painted storybook gothic style as existing moon wardrobe, copper pan rail and pumpkin ottoman; walnut, brass/copper, plum/burgundy, amber glow.",
+  "angle": "Front+left three-quarter view; vertical edges remain vertical. Wallpaper swatches are flat orthographic.",
+  "scaleNote": "Individual concepts fill their allotted space independently; suggested world scale is semantic, not a pixel-to-unit conversion. Measure actual native model bodies before release.",
+  "references": [
+    "voxel/assets/premium/moon-wardrobe.webp",
+    "voxel/assets/premium/copper-pan-rail.webp",
+    "assets/house/item-f04.webp"
+  ],
+  "palette": {
+    "walnut": "#57331e",
+    "darkIron": "#211e25",
+    "agedBrass": "#bc8541",
+    "plum": "#452438",
+    "burgundy": "#6f2338",
+    "amber": "#ffd07c"
+  },
+  "sheets": [
+    {
+      "file": "exterior-furnishings.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "sha256": "d3e2bcdbaa81b36f7e3f5edaeb471f579bfa4687194b5d96f41fa70b352a8779",
+      "sourceGeneratedFile": "exec-e936e2d9-f892-4b68-a490-839f2132930d.png",
+      "nominalGrid": {
+        "columns": 3,
+        "rows": 2,
+        "cellWidth": 512,
+        "cellHeight": 512
+      },
+      "alphaRange": [
+        0,
+        254
+      ],
+      "transparentPixelCount": 897521,
+      "layoutNote": "Use referenceRectPx, not a uniform UV grid. Tall ornaments can cross a nominal row edge. Images are visual modelling references, not a runtime-ready sprite atlas."
+    },
+    {
+      "file": "interior-decor.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "sha256": "561adc2f6f444984f27f5450592c39b7822937ba7f99f578f429ff61e205bd1e",
+      "sourceGeneratedFile": "exec-0e18e3dc-04ae-4428-aec9-dd75c3c24066.png",
+      "nominalGrid": {
+        "columns": 3,
+        "rows": 2,
+        "cellWidth": 512,
+        "cellHeight": 512
+      },
+      "alphaRange": [
+        0,
+        254
+      ],
+      "transparentPixelCount": 895624,
+      "layoutNote": "Use referenceRectPx, not a uniform UV grid. Tall ornaments can cross a nominal row edge. Images are visual modelling references, not a runtime-ready sprite atlas."
+    },
+    {
+      "file": "wallpapers.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "sha256": "6f1447705fc9013f2584ea2e3f90562ea84ef1d7b134bf414e5579d92eef1c5e",
+      "sourceGeneratedFile": "exec-b6c9a9ce-272d-49f3-bb80-689a6ef25a48.png",
+      "nominalGrid": {
+        "columns": 3,
+        "rows": 2,
+        "cellWidth": 512,
+        "cellHeight": 512
+      },
+      "layoutNote": "Six exact512x512 flat swatches. Repetition seams are not certified."
+    }
+  ],
+  "items": [
+    {
+      "id": "crescent-twin-lantern",
+      "label": "Crescent Twin Lantern",
+      "sheet": "exterior-furnishings.png",
+      "nominalSlot": 0,
+      "nominalRow": 0,
+      "nominalColumn": 0,
+      "referenceRectPx": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        125,
+        19,
+        410,
+        490
+      ],
+      "mount": "floor",
+      "suggestedCells": [
+        1,
+        1
+      ],
+      "suggestedHeightUnits": 2.8,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "Amber glass lanterns only; fixed pooled light, not one light per prop.",
+      "collisionGuidance": "Keep stone base solid; iron curls and vine planes can be non-colliding.",
+      "category": "garden lighting",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "raven-garden-gates",
+      "label": "Raven Garden Gates",
+      "sheet": "exterior-furnishings.png",
+      "nominalSlot": 1,
+      "nominalRow": 0,
+      "nominalColumn": 1,
+      "referenceRectPx": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        10,
+        88,
+        482,
+        477
+      ],
+      "mount": "estate boundary",
+      "suggestedCells": [
+        3,
+        1
+      ],
+      "suggestedHeightUnits": 2.5,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "Optional tiny amber eye highlight only.",
+      "collisionGuidance": "Two piers and gate leaves are solid; use a predefined garden opening and preserve visitor routes.",
+      "category": "entrance",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "gothic-window-planter",
+      "label": "Gothic Window Planter",
+      "sheet": "exterior-furnishings.png",
+      "nominalSlot": 2,
+      "nominalRow": 0,
+      "nominalColumn": 2,
+      "referenceRectPx": [
+        1024,
+        0,
+        1536,
+        508
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        24,
+        150,
+        476,
+        508
+      ],
+      "mount": "wall",
+      "suggestedCells": [
+        2,
+        1
+      ],
+      "suggestedHeightUnits": 1.2,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "Two amber lantern interiors; foliage stays non-emissive.",
+      "collisionGuidance": "Back-centre mount plane; wall sockets, no floor footprint. Mirror/orient for side walls.",
+      "category": "exterior wall decor",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "pumpkin-rain-barrel",
+      "label": "Pumpkin Rain Barrel",
+      "sheet": "exterior-furnishings.png",
+      "nominalSlot": 3,
+      "nominalRow": 1,
+      "nominalColumn": 0,
+      "referenceRectPx": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        81,
+        55,
+        417,
+        465
+      ],
+      "mount": "floor",
+      "suggestedCells": [
+        1,
+        1
+      ],
+      "suggestedHeightUnits": 1.2,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "None.",
+      "collisionGuidance": "Solid barrel body; tap is decorative. No water mechanic implied.",
+      "category": "garden decor",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "crescent-porch-swing",
+      "label": "Crescent Porch Swing",
+      "sheet": "exterior-furnishings.png",
+      "nominalSlot": 4,
+      "nominalRow": 1,
+      "nominalColumn": 1,
+      "referenceRectPx": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        46,
+        18,
+        483,
+        466
+      ],
+      "mount": "floor",
+      "suggestedCells": [
+        3,
+        2
+      ],
+      "suggestedHeightUnits": 2.7,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "Optional brass moon glint only.",
+      "collisionGuidance": "Solid frame/seat; reserve swing envelope before optional small idle rocking.",
+      "category": "garden seating",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "creeping-rose-trellis",
+      "label": "Creeping Rose Trellis",
+      "sheet": "exterior-furnishings.png",
+      "nominalSlot": 5,
+      "nominalRow": 1,
+      "nominalColumn": 2,
+      "referenceRectPx": [
+        1024,
+        508,
+        1536,
+        1024
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        63,
+        0,
+        436,
+        466
+      ],
+      "mount": "floor",
+      "suggestedCells": [
+        2,
+        1
+      ],
+      "suggestedHeightUnits": 2.4,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "Single hanging amber lantern; fixed pooled light.",
+      "collisionGuidance": "Piers solid; plants non-colliding. A reference arch, not a new guest route.",
+      "category": "garden structure",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "haunted-grandfather-clock",
+      "label": "Haunted Grandfather Clock",
+      "sheet": "interior-decor.png",
+      "nominalSlot": 0,
+      "nominalRow": 0,
+      "nominalColumn": 0,
+      "referenceRectPx": [
+        128,
+        8,
+        445,
+        544
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        41,
+        23,
+        260,
+        527
+      ],
+      "mount": "floor",
+      "suggestedCells": [
+        1,
+        1
+      ],
+      "suggestedHeightUnits": 2.4,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "Candle flames; faint gold clock face optional.",
+      "collisionGuidance": "Measure case base; pendulum swings inside its housing, no expanding collision.",
+      "category": "parlour",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "moth-reading-lamp",
+      "label": "Moth Reading Lamp",
+      "sheet": "interior-decor.png",
+      "nominalSlot": 1,
+      "nominalRow": 0,
+      "nominalColumn": 1,
+      "referenceRectPx": [
+        620,
+        12,
+        980,
+        540
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        24,
+        27,
+        324,
+        520
+      ],
+      "mount": "floor",
+      "suggestedCells": [
+        1,
+        1
+      ],
+      "suggestedHeightUnits": 1.85,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "Amber bulb and a restrained stained-glass glow.",
+      "collisionGuidance": "Measure claw-foot base. Shade overhang contributes to headroom.",
+      "category": "bedroom lighting",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "pumpkin-record-console",
+      "label": "Pumpkin Record Console",
+      "sheet": "interior-decor.png",
+      "nominalSlot": 2,
+      "nominalRow": 0,
+      "nominalColumn": 2,
+      "referenceRectPx": [
+        1030,
+        100,
+        1536,
+        540
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        19,
+        51,
+        445,
+        422
+      ],
+      "mount": "floor",
+      "suggestedCells": [
+        2,
+        1
+      ],
+      "suggestedHeightUnits": 0.95,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "Small brass indicator optional.",
+      "collisionGuidance": "Closed body footprint; lid has a fixed open pose. Record spin optional, no extra audio implied.",
+      "category": "parlour",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "raven-writing-desk",
+      "label": "Raven Writing Desk",
+      "sheet": "interior-decor.png",
+      "nominalSlot": 3,
+      "nominalRow": 1,
+      "nominalColumn": 0,
+      "referenceRectPx": [
+        0,
+        548,
+        544,
+        1024
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        37,
+        15,
+        536,
+        419
+      ],
+      "mount": "floor",
+      "suggestedCells": [
+        3,
+        2
+      ],
+      "suggestedHeightUnits": 1.15,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "Candle flame only.",
+      "collisionGuidance": "Solid legs/pedestals. If top supports riders, measure actual free tabletop and keep books/quill out of host surface.",
+      "category": "study",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "potion-terrarium-sideboard",
+      "label": "Potion Terrarium Sideboard",
+      "sheet": "interior-decor.png",
+      "nominalSlot": 4,
+      "nominalRow": 1,
+      "nominalColumn": 1,
+      "referenceRectPx": [
+        544,
+        540,
+        1018,
+        1024
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        17,
+        5,
+        458,
+        424
+      ],
+      "mount": "floor",
+      "suggestedCells": [
+        2,
+        1
+      ],
+      "suggestedHeightUnits": 1.7,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "Purple mushroom/crystal and coloured potion highlights, low intensity.",
+      "collisionGuidance": "Solid cabinet; terrarium is occupied space, not a rider top. Glass must have sealed sides.",
+      "category": "apothecary",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "bat-wing-chaise",
+      "label": "Bat-wing Chaise",
+      "sheet": "interior-decor.png",
+      "nominalSlot": 5,
+      "nominalRow": 1,
+      "nominalColumn": 2,
+      "referenceRectPx": [
+        1018,
+        548,
+        1536,
+        1024
+      ],
+      "visibleBoundsInRectAtAlpha102": [
+        5,
+        33,
+        492,
+        426
+      ],
+      "mount": "floor",
+      "suggestedCells": [
+        3,
+        1
+      ],
+      "suggestedHeightUnits": 1.1,
+      "pivot": "base centre at y=0; wall items back-centre mount plane",
+      "emissiveGuidance": "None.",
+      "collisionGuidance": "Measure real seat/base; use existing rotated-body placement and seated actor anchor if later supported.",
+      "category": "bedroom seating",
+      "implementationStatus": "art reference only; native voxel model and catalogue registration not implemented"
+    },
+    {
+      "id": "plum-gold-moth-damask",
+      "label": "Plum & Gold Moth Damask",
+      "sheet": "wallpapers.png",
+      "nominalSlot": 0,
+      "nominalRow": 0,
+      "nominalColumn": 0,
+      "referenceRectPx": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "mount": "wall material",
+      "seamlessVerified": false,
+      "emissiveGuidance": "None; let room lighting shade the pattern.",
+      "implementationStatus": "wallpaper artwork concept only; tile preparation and voxel room finish registration not implemented"
+    },
+    {
+      "id": "midnight-haunted-botanical",
+      "label": "Midnight Haunted Botanical",
+      "sheet": "wallpapers.png",
+      "nominalSlot": 1,
+      "nominalRow": 0,
+      "nominalColumn": 1,
+      "referenceRectPx": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "mount": "wall material",
+      "seamlessVerified": false,
+      "emissiveGuidance": "None; let room lighting shade the pattern.",
+      "implementationStatus": "wallpaper artwork concept only; tile preparation and voxel room finish registration not implemented"
+    },
+    {
+      "id": "dusty-burgundy-gothic-stripe",
+      "label": "Dusty Burgundy Gothic Stripe",
+      "sheet": "wallpapers.png",
+      "nominalSlot": 2,
+      "nominalRow": 0,
+      "nominalColumn": 2,
+      "referenceRectPx": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "mount": "wall material",
+      "seamlessVerified": false,
+      "emissiveGuidance": "None; let room lighting shade the pattern.",
+      "implementationStatus": "wallpaper artwork concept only; tile preparation and voxel room finish registration not implemented"
+    },
+    {
+      "id": "dark-teal-raven-vines",
+      "label": "Dark Teal Raven Vines",
+      "sheet": "wallpapers.png",
+      "nominalSlot": 3,
+      "nominalRow": 1,
+      "nominalColumn": 0,
+      "referenceRectPx": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "mount": "wall material",
+      "seamlessVerified": false,
+      "emissiveGuidance": "None; let room lighting shade the pattern.",
+      "implementationStatus": "wallpaper artwork concept only; tile preparation and voxel room finish registration not implemented"
+    },
+    {
+      "id": "antique-cream-ghost-cameo",
+      "label": "Antique Cream Ghost Cameo",
+      "sheet": "wallpapers.png",
+      "nominalSlot": 4,
+      "nominalRow": 1,
+      "nominalColumn": 1,
+      "referenceRectPx": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "mount": "wall material",
+      "seamlessVerified": false,
+      "emissiveGuidance": "None; let room lighting shade the pattern.",
+      "implementationStatus": "wallpaper artwork concept only; tile preparation and voxel room finish registration not implemented"
+    },
+    {
+      "id": "charcoal-silver-celestial",
+      "label": "Charcoal & Silver Celestial",
+      "sheet": "wallpapers.png",
+      "nominalSlot": 5,
+      "nominalRow": 1,
+      "nominalColumn": 2,
+      "referenceRectPx": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "mount": "wall material",
+      "seamlessVerified": false,
+      "emissiveGuidance": "None; let room lighting shade the pattern.",
+      "implementationStatus": "wallpaper artwork concept only; tile preparation and voxel room finish registration not implemented"
+    }
+  ],
+  "rectangleFormat": "[left, top, right, bottom), pixels; right/bottom exclusive"
+}

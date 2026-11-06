@@ -1,0 +1,32 @@
+{
+  "status": "Concept art, not an installed attraction or measured terrain plan",
+  "created": "2026-10-23",
+  "generator": "image_gen",
+  "reference": "voxel/docs/contractor-patches/haunted-house-estate/verification/first-person-maze/farm-latest-lead.png",
+  "referenceLeadCommit": "ac698dca2410091694c00b011eb7098ba7556d0d",
+  "assets": [
+    {
+      "file": "route-map.png",
+      "source": "exec-b791f038-51ad-4715-ba0b-dff3f4315a90.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 3179023,
+      "sha256": "0de3638460ab89ffe060c22de9d63f089002fcf77ca94106cb4b7d3f2c83ec82"
+    },
+    {
+      "file": "tractor-design.png",
+      "source": "exec-cbde36e3-ee2b-404b-9a5c-fcf7be32250e.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2111070,
+      "sha256": "b93edd78d47a5e7968b3ca3fffa3880a90e969bd8403d3e9d8fbec6a032f6d59"
+    }
+  ],
+  "notes": [
+    "Final route map is an image-generation refinement of exec-98d61b05-96ff-4021-b441-57a5b9e3d758.png to clarify the continuous clockwise circuit.",
+    "Tractor sheet includes a passenger ride-along view; native prototype geometry and anchors are authoritative for dimensions.",
+    "Original image generation outputs are preserved outside the repository; copies here are unmodified."
+  ]
+}

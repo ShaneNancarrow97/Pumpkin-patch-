@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "pageErrors": [],
+  "gateClosed": true,
+  "wheelsRolling": true,
+  "mobileControlsFit": true,
+  "mobileModelFits": true,
+  "stats": {
+    "drawCalls": 14,
+    "triangles": 13756
+  },
+  "scope": "Standalone native voxel model preview; no live-game integration"
+}

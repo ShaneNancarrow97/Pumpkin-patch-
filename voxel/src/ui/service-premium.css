@@ -1,0 +1,150 @@
+/* Maisie's kitchen and Sandy's cocoa, laid out for doing rather than reading:
+   the owner and their state in one strip, icon tabs, quick pills instead of
+   menus, recipes and drinks as tiles, and prices you nudge in place.
+   Loads after the older service layers and before polish.css. */
+.sheet[data-section="cooking"]:has(.service-hero), .sheet[data-section="festival"]:has(.service-hero) { max-height: min(84dvh, calc(100% - var(--dock-h) - 56px)); }
+@media (min-width: 720px) and (min-height: 481px) { .sheet[data-section="cooking"]:has(.service-hero), .sheet[data-section="festival"]:has(.service-hero) { width: min(600px, calc(100vw - 24px)); } }
+
+/* The owner strip stands in for the sheet's title; only the close button stays. */
+.sheet:has(.service-hero) .sheet-head { position: absolute; top: 12px; right: 14px; padding: 0; border: 0; z-index: 6; }
+.sheet:has(.service-hero) .sheet-head > div:first-child { display: none; }
+.sheet:has(.service-hero) .sheet-body { padding-top: 0; }
+.service-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px 8px; padding: 2px 0 12px; border-bottom: 1px solid var(--service-line); }
+.service-hero > div:first-child { grid-column: 1 / -1; min-width: 0; padding-right: 54px; }
+.service-hero .maisie-art, .service-hero > div:first-child > .thumb, .service-hero > div:first-child > .dish-art { width: 54px !important; height: 54px !important; --thumb: 54px; flex: 0 0 54px; border-radius: 16px; background-color: #ffffff08; box-shadow: inset 0 0 0 1px #f0d2a21f; }
+.service-hero > div:first-child b { font: 500 21px/1.15 var(--display); color: #fff0d8; letter-spacing: -.01em; }
+.service-hero small { margin-top: 5px; }
+.service-hero-stats { grid-column: 1; display: flex; gap: 6px; flex-wrap: wrap; min-width: 0; }
+.service-hero > .service-location { grid-column: 3; }
+.service-hero-stats span { padding: 4px 10px; border-radius: 999px; background: #ffffff08; font-size: 12px; color: var(--service-muted); }
+.service-hero-stats b { display: inline; color: #f6dcae; font: 700 12px var(--body); }
+.service-hero .service-location { padding: 8px 10px; border-radius: 12px; background: #ffffff06; }
+.service-status { gap: 6px; }
+.service-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #8d8094; }
+.service-status.is-open::before { background: #9fd38a; box-shadow: 0 0 8px #9fd38a99; }
+
+/* A proper switch for open and closed. */
+.service-switch { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px 0 8px; border: 1px solid #f0d2a22b; border-radius: 22px; background: #ffffff06; color: var(--service-muted); font: 600 12px var(--body); }
+.service-switch i { position: relative; width: 34px; height: 20px; border-radius: 10px; background: #3a2f42; box-shadow: inset 0 1px 3px #0009; transition: background .15s; }
+.service-switch i::after { content: ""; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #bfa889; transition: transform .15s; }
+.service-switch[aria-pressed="true"] { color: #d9f0c8; border-color: #9fd38a55; }
+.service-switch[aria-pressed="true"] i { background: #5f8a4e; }
+.service-switch[aria-pressed="true"] i::after { transform: translateX(14px); background: #f4ffe9; }
+
+/* Icon tabs. */
+.service-tabs.segmented button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 52px; padding: 5px 4px; font-size: 11.5px; }
+.service-tab-icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.service-tabs.segmented button[aria-pressed="true"] { color: #ffdca0; background: linear-gradient(180deg, #f2c27a2e, #f2c27a12); box-shadow: inset 0 -2px #f2c27a, inset 0 1px #ffe6c014; }
+
+/* Quick choices as pills. */
+.cook-toolbar { display: flex; flex-wrap: wrap; gap: 8px; }
+.cook-choice { display: flex; align-items: center; gap: 3px; padding: 3px; border-radius: 14px; background: #100d163f; border: 1px solid #fff2d608; flex: 1 1 auto; }
+.cook-choice > span { padding: 0 8px 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--service-muted); white-space: nowrap; }
+.cook-choice button { flex: 1; min-width: 44px; min-height: 40px; padding: 0 8px; border: 0; border-radius: 11px; background: transparent; color: var(--ink-soft); font: 600 13px var(--body); }
+.cook-choice button[aria-pressed="true"] { background: linear-gradient(180deg, #f6cf8d, #d4914a); color: #2a170b; box-shadow: inset 0 1px #fff3d488, 0 2px 6px #0005; }
+.cook-choice button:disabled:not([aria-pressed="true"]) { opacity: .4; }
+
+/* What's cooking now. */
+.cooking-sheet .cooking-station.is-busy { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: 4px 12px; padding: 12px; border: 1px solid #f2c27a40; border-radius: 16px; background: linear-gradient(135deg, #5a3d2a40, #2a2130aa); }
+.cooking-station > .dish-art { width: 56px !important; height: 56px !important; filter: drop-shadow(0 4px 6px #0008); }
+.cooking-station-copy { min-width: 0; }
+.cooking-station-copy h4 { margin: 0; font: 600 15px/1.25 var(--body); }
+.cooking-station-copy .cooking-note { margin: 3px 0 0; font-size: 12px; }
+.cooking-station .cooking-kicker { margin: 0 0 2px !important; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; }
+.cook-progress { height: 6px; margin-top: 8px; border-radius: 3px; background: #0006; overflow: hidden; }
+.cook-progress i { display: block; height: 100%; width: calc(var(--fill) * 100%); border-radius: 3px; background: linear-gradient(90deg, #d4914a, #ffd99a); box-shadow: 0 0 10px #f2c27a88; transition: width .4s linear; }
+.cook-stop { min-width: 64px !important; }
+.cook-wide { grid-column: 1 / -1; }
+
+/* The recipe book as a grid of tiles; the open recipe spans the row beneath. */
+.cooking-sheet .recipe-book { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); grid-auto-flow: row dense; gap: 9px; }
+.recipe-tile { position: relative; border: 1px solid #f0d2a21c; border-radius: 16px; background: linear-gradient(180deg, #30263a, #231b2a); box-shadow: 0 3px 10px #0005; overflow: hidden; }
+.recipe-tile .recipe-choice { display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 0; padding: 10px 8px 10px; text-align: center; }
+.recipe-tile .recipe-choice > .dish-art { width: 76px !important; height: 76px !important; margin-bottom: 2px; filter: drop-shadow(0 6px 8px #0a070c88); }
+.recipe-tile .recipe-choice b { font: 600 13px/1.25 var(--body); color: #f6e3c4; }
+.recipe-tile .recipe-choice small { font-size: 11px; color: var(--service-muted); }
+.recipe-badge { margin-top: 4px; padding: 3px 9px; border-radius: 999px; font: 600 11px/1.3 var(--body); font-style: normal; background: #ffffff0a; color: var(--service-muted); }
+.recipe-tile.is-ready .recipe-badge { background: #9fd38a1f; color: #c7e8b3; }
+.recipe-tile.is-short .recipe-badge { background: #e0ad7318; color: #f0c48a; }
+.recipe-tile.is-new .recipe-badge { background: #f2c27a24; color: #ffdca0; }
+.recipe-tile.is-locked { opacity: .6; }
+.recipe-tile.is-selected { border-color: #f5c47c; box-shadow: 0 0 0 1px #f5c47c80, 0 0 18px #f0b25a33, 0 3px 10px #0006; }
+.cooking-sheet .recipe-book > .recipe-detail { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 11px; padding: 14px; border: 1px solid #f2c27a40; border-radius: 18px; background: linear-gradient(160deg, #3a2c38, #221b29); box-shadow: 0 10px 28px #0007, inset 0 1px #ffe6c012; }
+.recipe-detail-head { display: flex; gap: 12px; align-items: center; }
+.recipe-detail-head > .dish-art { width: 64px !important; height: 64px !important; flex: 0 0 64px; }
+.recipe-detail-head h4 { margin: 0 0 3px; font: 500 19px/1.2 var(--display); color: #fff0d8; }
+.recipe-detail-head p { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--service-muted); }
+.cooking-sheet .recipe-yield { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 0; border: 0; }
+.cooking-sheet .recipe-yield span { padding: 8px; border-radius: 12px; background: #ffffff07; text-align: center; font-size: 11px; color: var(--service-muted); }
+.cooking-sheet .recipe-yield b { display: block; font: 600 15px/1.2 var(--body); color: #f6dcae; }
+.cook-label { margin: 0; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #cfae7c; }
+.cooking-sheet .cooking-inputs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+.cooking-sheet .cooking-input { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 5px 9px; border-radius: 12px; background: #ffffff07; border: 1px solid transparent; font-size: 12.5px; }
+.cooking-sheet .cooking-input b { color: #fff0d8; }
+.cooking-sheet .cooking-input small { display: block; font-size: 11px; color: var(--service-muted); }
+.cooking-sheet .cooking-input.is-short { border-color: #e0ad7355; background: #e0ad730f; }
+.cooking-sheet .cooking-input.is-short small { color: #f0c48a; }
+.cook-cta { min-height: 52px !important; font-size: 15px !important; border-radius: 14px !important; }
+.recipe-detail .recipe-help-actions .button { min-height: 44px; white-space: normal; }
+
+/* The food wall: two slots you fill with a tap. */
+.food-slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.food-slot { display: flex; flex-direction: column; gap: 8px; padding: 10px; border: 1px dashed #f0d2a233; border-radius: 16px; background: #ffffff04; min-width: 0; }
+.food-slot.is-filled { border-style: solid; border-color: #f2c27a55; background: linear-gradient(160deg, #3a2c38, #221b29); }
+.food-slot-face { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.food-slot-face > .dish-art { width: 52px !important; height: 52px !important; flex: 0 0 52px; }
+.food-slot-face b { display: block; font: 600 14px/1.25 var(--body); color: #f6e3c4; }
+.food-slot-face small { display: block; font-size: 11.5px; color: var(--service-muted); margin-top: 2px; }
+.food-slot-face .cooking-kicker { margin: 0 0 2px !important; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; }
+.food-slot-empty { display: grid; place-items: center; width: 52px; height: 52px; flex: 0 0 52px; border-radius: 14px; border: 1px dashed #f0d2a240; color: #cfae7c; font-size: 22px; }
+.food-slot-picks { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.food-slot-picks::-webkit-scrollbar { display: none; }
+.food-slot-picks button { flex: 0 0 auto; display: flex; align-items: center; gap: 5px; min-height: 40px; padding: 3px 10px 3px 4px; border: 1px solid #f0d2a21f; border-radius: 12px; background: #ffffff06; color: var(--ink-soft); font: 600 11.5px var(--body); white-space: nowrap; }
+.food-slot-picks button .dish-art { width: 30px !important; height: 30px !important; }
+.food-slot-picks button[aria-pressed="true"] { border-color: #f2c27a80; background: #f2c27a26; color: #ffdca0; }
+.food-slot-picks button:only-child, .food-slot-picks button:last-child:not(:has(.dish-art)) { padding-left: 10px; }
+.cooking-sheet .food-prices .cooking-food-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid #f0d2a21a; border-radius: 14px; background: #ffffff04; }
+.cooking-sheet .food-prices .cooking-food-row > .dish-art { width: 46px !important; height: 46px !important; }
+.cooking-food-row h4 { margin: 0; font: 600 13.5px/1.25 var(--body); }
+.cooking-food-row small { font-size: 11.5px; color: var(--service-muted); }
+.on-show { color: #c7e8b3; }
+
+/* Prices you nudge in place. */
+.price-stepper { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border-radius: 14px; background: #0f0b13a8; border: 1px solid #f0d2a21f; }
+.price-stepper button { width: 40px; min-width: 40px !important; height: 40px; min-height: 40px !important; padding: 0; border: 0; border-radius: 11px; background: #ffffff0a; color: #f6dcae; font: 600 18px/1 var(--body); }
+.price-stepper button:hover:not(:disabled) { background: #f2c27a2a; }
+.price-stepper button:disabled { opacity: .3; }
+.price-stepper output { min-width: 52px; text-align: center; font: 600 15px var(--body); font-variant-numeric: tabular-nums; color: #fff0d8; }
+
+/* A slim stock bar. */
+.supply-meter { display: flex; flex-direction: column; gap: 4px; min-width: 120px; }
+.supply-meter i { display: block; height: 5px; border-radius: 3px; background: linear-gradient(90deg, #d4914a, #ffd99a) 0 0 / calc(var(--fill) * 100%) 100% no-repeat, #0006; }
+.supply-meter span { font-size: 11.5px; color: var(--service-muted); }
+.supply-meter b { color: #f6dcae; }
+.service-section-heading .supply-meter { min-width: 140px; }
+
+/* Sandy's drinks as cards. */
+.service-sheet .service-product-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.service-sheet .service-product { grid-template-columns: 56px minmax(0, 1fr); gap: 10px 12px; padding: 12px; border: 1px solid #f0d2a21c; border-radius: 18px; background: linear-gradient(180deg, #30263a, #231b2a); box-shadow: 0 3px 10px #0005; align-content: start; }
+.service-sheet .service-product.is-empty { border-color: #e0ad7355; }
+.service-product-copy h3 { margin: 0; font: 600 15px/1.25 var(--body); color: #f6e3c4; }
+.service-product-copy p { margin: 3px 0 0; font-size: 12px; line-height: 1.45; color: var(--service-muted); }
+.service-product > .supply-meter, .service-product > .service-product-controls, .service-product > .service-product-foot { grid-column: 1 / -1; }
+.service-sheet .service-product-controls { display: flex; flex-direction: column; gap: 8px; }
+.service-price { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.service-price > span { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--service-muted); }
+.service-product-controls .purchase-button { width: 100%; min-height: 46px; }
+.service-product-foot { font-size: 11.5px; color: var(--service-muted); }
+
+@media (max-width: 430px) {
+  .service-hero > div:first-child b { font-size: 19px; }
+  .service-hero .service-location { padding: 8px; }
+  .cooking-sheet .recipe-book { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .recipe-tile .recipe-choice > .dish-art { width: 64px !important; height: 64px !important; }
+  .service-sheet .service-product-list { grid-template-columns: 1fr; }
+  .cooking-sheet .cooking-inputs { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .cook-progress i, .service-switch i, .service-switch i::after { transition: none; } }
+.service-hero > .service-switch { justify-self: start; }
+/* The tabs stick to the top as the page scrolls; keep them clear of the close button. */
+.sheet:has(.service-hero) .service-sheet > .service-nav:first-of-type { margin-right: 54px; }

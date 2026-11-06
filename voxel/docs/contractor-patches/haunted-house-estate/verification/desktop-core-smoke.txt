@@ -1,0 +1,35 @@
+ok   desktop: characters drawn with the original sprites
+ok   desktop: plant and boost
+ok   desktop: harvest
+ok   desktop: shop opens
+ok   desktop: wardrobe opens
+ok   desktop: journal opens
+ok   desktop: menu closes
+ok   desktop: voxel characters switch on and off
+ok   desktop: home opens the separate garden
+ok   desktop: home opens the parlour
+ok   desktop: a bought piece is placed in the room
+ok   desktop: placing furniture reveals the room
+ok   desktop: flip the piece and finish
+ok   desktop: customers come into the shop
+ok   desktop: back to the patch
+ok   desktop: buy and wear a costume
+ok   desktop: full storage keeps a ripe crop instead of paying overflow money
+ok   desktop: paid barn expansion permits harvesting again
+ok   desktop: all five new visitors render and advance through walking frames
+ok   desktop: no page errors
+ok   phone: characters drawn with the original sprites
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Target page, context or browser has been closed
+Call log:
+[2m  - waiting for locator('#boost')[22m
+[2m    - locator resolved to <button id="boost" class="action">…</button>[22m
+[2m  - attempting click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+
+    at /workspace/contractor-house-verify/voxel/smoke.mjs:25:32
+
+Node.js v24.19.0

@@ -1,0 +1,488 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Cooking.html",
+  "sha256": "4f4c95522325f9dc699388508d184cd7376098f81345ada1503bac28d9ad4f57",
+  "started": "2026-10-26T01:34:49.230Z",
+  "fixture": "QA-only funds and level gates; game rules, UI handlers and HTML are unmodified",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "legacy-compatible state exposes additive cooking schema 12"
+    },
+    {
+      "ok": true,
+      "label": "level four previews the truck without permitting purchase"
+    },
+    {
+      "ok": true,
+      "label": "reaching level five unlocks purchase without buying automatically"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "purchase"
+    },
+    {
+      "ok": true,
+      "label": "paid truck includes starter recipe and works without a home kitchen"
+    },
+    {
+      "ok": true,
+      "label": "later recipes retain their own level gates"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "order"
+    },
+    {
+      "ok": true,
+      "label": "delivery payment includes ingredients and fee but credits no ingredients early"
+    },
+    {
+      "ok": true,
+      "label": "tea break freezes the paid delivery timer"
+    },
+    {
+      "ok": true,
+      "label": "paid order puts a visible cart on the north receiving road"
+    },
+    {
+      "ok": true,
+      "label": "tapping the physical food truck opens its contextual cooking sheet"
+    },
+    {
+      "ok": true,
+      "label": "cart arrives before ingredients enter the pantry"
+    },
+    {
+      "ok": true,
+      "label": "unloading credits the complete paid parcel once"
+    },
+    {
+      "ok": true,
+      "label": "completed delivery cannot credit again on subsequent ticks"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "order"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Cancel"
+    },
+    {
+      "ok": true,
+      "label": "cancelling before departure refunds ingredients and retains only the stated fee"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Cook 2 · Truck"
+    },
+    {
+      "ok": true,
+      "label": "starting a real batch consumes butter and an unreserved pumpkin immediately"
+    },
+    {
+      "ok": true,
+      "label": "tea break also freezes cooking"
+    },
+    {
+      "ok": true,
+      "label": "completed batch produces its declared yield once"
+    },
+    {
+      "ok": true,
+      "label": "food display and selling price are controlled through the player menu"
+    },
+    {
+      "ok": true,
+      "label": "kitchen accounts include ingredient cost and both delivery fees"
+    },
+    {
+      "ok": true,
+      "label": "phone: menu fits with 44px touch targets",
+      "data": {
+        "width": 390,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone-landscape: menu fits with 44px touch targets",
+      "data": {
+        "width": 844,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: menu fits with 44px touch targets",
+      "data": {
+        "width": 874,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "shop scene still opens with finished food configured"
+    },
+    {
+      "ok": true,
+      "label": "hungry customer reserves a real serving while queuing without debiting stock yet"
+    },
+    {
+      "ok": true,
+      "label": "single finite-wallet checkout pays the locked food quote exactly once and keeps pumpkin/tip ledgers separate"
+    },
+    {
+      "ok": true,
+      "label": "departed guest cannot pay a second time"
+    },
+    {
+      "ok": true,
+      "label": "home cooking requires both paid house expansion and a placed paid copper range",
+      "data": {
+        "before": 49125,
+        "after": 31875,
+        "noRoom": false,
+        "noRange": false,
+        "a": {
+          "level": 1,
+          "moved": [],
+          "stored": []
+        },
+        "b": {
+          "level": 2,
+          "moved": [],
+          "stored": []
+        },
+        "bought": true,
+        "instance": "piece-2",
+        "ready": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Cook"
+    },
+    {
+      "ok": true,
+      "label": "tapping the physical range exposes a compact Cook control for the home station"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Cook 2 · Home"
+    },
+    {
+      "ok": true,
+      "label": "home cooker starts a batch from the same delivered pantry"
+    },
+    {
+      "ok": true,
+      "label": "home batch consumes the shared pantry and finishes into shared food storage"
+    },
+    {
+      "ok": true,
+      "label": "chef hire remains locked before level ten"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "£7,500"
+    },
+    {
+      "ok": true,
+      "label": "hiring the chef is a paid upgrade with an explicit selected recipe"
+    },
+    {
+      "ok": true,
+      "label": "chef cooks only supplied batches and stops without inventing inputs or ordering/spending automatically"
+    },
+    {
+      "ok": true,
+      "label": "save/reload preserves cooking inventories, recipe prices, chef and separate accounts without ghost holds"
+    },
+    {
+      "ok": true,
+      "label": "one main WebGL canvas remains"
+    },
+    {
+      "ok": true,
+      "label": "standalone HTML fetches no external runtime assets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [
+    {
+      "name": "desktop-truck-delivery",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": -5.149999999999723,
+          "yaw": 0,
+          "progress": 0.08333333333336046,
+          "distance": 0.8500000000002766,
+          "unloading": false,
+          "unloadProgress": 0,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 849,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 33,
+        "triangles": 499386,
+        "geometries": 61,
+        "textures": 20
+      }
+    },
+    {
+      "name": "phone-cooking-menu",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": false,
+          "x": 38.8,
+          "z": -6,
+          "yaw": 0,
+          "progress": 0,
+          "distance": 0,
+          "unloading": false,
+          "unloadProgress": 0,
+          "orderId": null
+        },
+        "chefVisible": false,
+        "boxes": 849,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 390,
+        "bufferHeight": 844,
+        "postprocessWidth": 390,
+        "postprocessHeight": 844,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.002564102564102564,
+          0.001184834123222749
+        ],
+        "touchDevice": true,
+        "calls": 18,
+        "triangles": 496522,
+        "geometries": 66,
+        "textures": 20
+      }
+    },
+    {
+      "name": "fold-cooking-menu",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": false,
+          "x": 38.8,
+          "z": -6,
+          "yaw": 0,
+          "progress": 0,
+          "distance": 0,
+          "unloading": false,
+          "unloadProgress": 0,
+          "orderId": null
+        },
+        "chefVisible": false,
+        "boxes": 849,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 106,
+        "triangles": 613850,
+        "geometries": 71,
+        "textures": 20
+      }
+    },
+    {
+      "name": "desktop-shop-food-shelves",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": false,
+          "x": 38.8,
+          "z": -6,
+          "yaw": 0,
+          "progress": 0,
+          "distance": 0,
+          "unloading": false,
+          "unloadProgress": 0,
+          "orderId": null
+        },
+        "chefVisible": false,
+        "boxes": 849,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [
+          {
+            "slot": 0,
+            "x": 0.07999999999998408,
+            "y": 1.55,
+            "z": 1.45,
+            "yaw": 1.5707963267948966
+          },
+          {
+            "slot": 1,
+            "x": 9.920000000000016,
+            "y": 1.75,
+            "z": 4.7,
+            "yaw": -1.5707963267948966
+          }
+        ],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 25,
+        "triangles": 249356,
+        "geometries": 87,
+        "textures": 20
+      }
+    }
+  ],
+  "rendering": "Single Chromium/SwiftShader process; performance/DPR1, bloom/shadows/mist/lake lights off. Viewport checks do not prove physical Fold frame rate. Managed policy prevents direct file:// and native fullscreen."
+}

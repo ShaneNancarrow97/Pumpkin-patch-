@@ -1,0 +1,283 @@
+{
+  "shane-base": {
+    "heightRange": [
+      329,
+      330
+    ],
+    "targetHeight": 330,
+    "legChange": [
+      0.6723758147898404,
+      0.6561113165680473,
+      0.6546329723225031,
+      0.6720330979898368
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-base": {
+    "heightRange": [
+      316,
+      320
+    ],
+    "targetHeight": 320,
+    "legChange": [
+      0.6478533941323238,
+      0.6170732811297696,
+      0.7594881991873433,
+      0.7615358847667699
+    ],
+    "frameHashCount": 4
+  },
+  "shane-vampire": {
+    "heightRange": [
+      328,
+      330
+    ],
+    "targetHeight": 330,
+    "legChange": [
+      0.5752676329353716,
+      0.5318518518518518,
+      0.45792635392305225,
+      0.49566514402908546
+    ],
+    "frameHashCount": 4
+  },
+  "shane-skeleton": {
+    "heightRange": [
+      328,
+      330
+    ],
+    "targetHeight": 330,
+    "legChange": [
+      0.7326946227929374,
+      0.7249574676496365,
+      0.663630877269984,
+      0.6912561123087438
+    ],
+    "frameHashCount": 4
+  },
+  "shane-scarecrow": {
+    "heightRange": [
+      337,
+      345
+    ],
+    "targetHeight": 345,
+    "legChange": [
+      0.6695496850615775,
+      0.6688241130060943,
+      0.6554047503635483,
+      0.6880414312617702
+    ],
+    "frameHashCount": 4
+  },
+  "shane-frankenstein": {
+    "heightRange": [
+      317,
+      320
+    ],
+    "targetHeight": 320,
+    "legChange": [
+      0.677443056576047,
+      0.6687238381453258,
+      0.6540692855958893,
+      0.7071450955813224
+    ],
+    "frameHashCount": 4
+  },
+  "shane-mummy": {
+    "heightRange": [
+      318,
+      320
+    ],
+    "targetHeight": 320,
+    "legChange": [
+      0.6493915978328448,
+      0.6321771418221337,
+      0.5539753487742111,
+      0.5549827408436814
+    ],
+    "frameHashCount": 4
+  },
+  "shane-slasher": {
+    "heightRange": [
+      319,
+      320
+    ],
+    "targetHeight": 320,
+    "legChange": [
+      0.5126964493597206,
+      0.480083857442348,
+      0.44358083037144086,
+      0.475428187618941
+    ],
+    "frameHashCount": 4
+  },
+  "shane-chucky": {
+    "heightRange": [
+      316,
+      320
+    ],
+    "targetHeight": 320,
+    "legChange": [
+      0.5865388861899925,
+      0.5947085719358991,
+      0.6173460461861442,
+      0.5965397619988583
+    ],
+    "frameHashCount": 4
+  },
+  "shane-jason": {
+    "heightRange": [
+      324,
+      330
+    ],
+    "targetHeight": 330,
+    "legChange": [
+      0.6025869229856414,
+      0.5456967981013449,
+      0.5999114403027132,
+      0.5869949393525584
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-witch": {
+    "heightRange": [
+      369,
+      372
+    ],
+    "targetHeight": 372,
+    "legChange": [
+      0.3420809959271498,
+      0.3290002732560409,
+      0.3668143374949658,
+      0.3907842442844214
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-ghostbride": {
+    "heightRange": [
+      326,
+      330
+    ],
+    "targetHeight": 330,
+    "legChange": [
+      0.2509763685708612,
+      0.23714136671883151,
+      0.32825153158228293,
+      0.36182712300736
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-batqueen": {
+    "heightRange": [
+      346,
+      350
+    ],
+    "targetHeight": 350,
+    "legChange": [
+      0.33205867602808425,
+      0.33938040747976556,
+      0.3763478482140017,
+      0.39560856772234
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-vampire": {
+    "heightRange": [
+      314,
+      320
+    ],
+    "targetHeight": 320,
+    "legChange": [
+      0.33080019432299257,
+      0.34196217898300446,
+      0.32367371430588404,
+      0.3415827642047455
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-frankenstein": {
+    "heightRange": [
+      318,
+      320
+    ],
+    "targetHeight": 320,
+    "legChange": [
+      0.6490413080111126,
+      0.6978699058181498,
+      0.6382216506682589,
+      0.6419042397660819
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-mummy": {
+    "heightRange": [
+      317,
+      320
+    ],
+    "targetHeight": 320,
+    "legChange": [
+      0.660415451568038,
+      0.575591985428051,
+      0.5621304666503787,
+      0.5554936896807721
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-slasher": {
+    "heightRange": [
+      319,
+      320
+    ],
+    "targetHeight": 320,
+    "legChange": [
+      0.5530116893753257,
+      0.5173046349516938,
+      0.47273569413448985,
+      0.5038592158073479
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-tiffany": {
+    "heightRange": [
+      319,
+      320
+    ],
+    "targetHeight": 320,
+    "legChange": [
+      0.6731755056389226,
+      0.6464888718342287,
+      0.6262454434993925,
+      0.6114519427402862
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-freddy": {
+    "heightRange": [
+      337,
+      340
+    ],
+    "targetHeight": 340,
+    "legChange": [
+      0.7706699472038546,
+      0.7948266030791561,
+      0.7619964454976303,
+      0.8239930745398214
+    ],
+    "frameHashCount": 4
+  },
+  "natalie-wheelchair": {
+    "heightRange": [
+      268,
+      270
+    ],
+    "targetHeight": 270,
+    "legChange": [
+      0.10677945812218187,
+      0.17061252320163642,
+      0.3064654863450649,
+      0.29512472904956094
+    ],
+    "frameHashCount": 4
+  },
+  "budgetBytes": 1639880
+}

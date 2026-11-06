@@ -1,0 +1,54 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Refined-Menus.html",
+  "sha256": "2e75700848ce22833468521af835fb786583337add68745a8177b29bafabc747",
+  "started": "2026-10-26T21:47:05.308Z",
+  "fixture": "Only browser localStorage receives QA funds/unlocks. The downloadable HTML is unmodified.",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "shipping copy points plot expansion to Manage"
+    },
+    {
+      "ok": true,
+      "label": "business directory names each shopkeeper"
+    },
+    {
+      "ok": true,
+      "label": "exact release exposes the four kitchen destinations"
+    },
+    {
+      "ok": true,
+      "label": "exact release unfolded Fold: no horizontal clipping, all controls at least 44px",
+      "data": {
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "exact release shopping shortcut spends nothing"
+    },
+    {
+      "ok": true,
+      "label": "exact release quote contains the missing ingredient"
+    },
+    {
+      "ok": true,
+      "label": "exact release has no browser errors",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "exact release requests no external assets",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "requests": [],
+  "shots": [
+    "release-fold-directory",
+    "release-fold-cooking"
+  ]
+}

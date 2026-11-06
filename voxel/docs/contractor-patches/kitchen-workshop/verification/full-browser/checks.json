@@ -1,0 +1,498 @@
+{
+  "file": "/workspace/kitchen-workshop/voxel/dist/pumpkin-patch-voxel.html",
+  "sha256": "fb8c0e0e7fd1a5358f6b3719f5388b1fb09f0cb47f1973e47164da8397f0095b",
+  "started": "2026-10-26T19:50:45.281Z",
+  "fixture": "QA-only funds, published levels and suppressed unrelated arrivals; runtime and UI unmodified",
+  "finished": "2026-10-26T19:55:17.478Z",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "additive kitchen workshop schema 13 boots"
+    },
+    {
+      "ok": true,
+      "label": "paid truck and two house tiers unlock the real kitchen without free equipment",
+      "data": {
+        "truck": true,
+        "first": {
+          "level": 1,
+          "moved": [],
+          "stored": []
+        },
+        "second": {
+          "level": 2,
+          "moved": [],
+          "stored": []
+        },
+        "spent": 4150,
+        "kitchen": true,
+        "equipment": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "entering home cooking navigates into the physical kitchen"
+    },
+    {
+      "ok": true,
+      "label": "an empty kitchen cannot cook"
+    },
+    {
+      "ok": true,
+      "label": "only equipment physically placed in the kitchen qualifies, not owned or placed elsewhere",
+      "data": {
+        "bought": true,
+        "stored": false,
+        "placed": true,
+        "elsewhere": false,
+        "moved": true,
+        "active": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "six affordable tools are paid for, physically placed and usable",
+      "data": {
+        "placed": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ],
+        "cash": 53330
+      }
+    },
+    {
+      "ok": true,
+      "label": "tapping the real kitchen hob exposes its Cook action without losing house editing"
+    },
+    {
+      "ok": true,
+      "label": "raw meat, vegetables, herbs and spices are bought in a paid delivery"
+    },
+    {
+      "ok": true,
+      "label": "delivery credits the actual raw supplies to the shared pantry"
+    },
+    {
+      "ok": true,
+      "label": "an unknown combination does not charge or consume ingredients",
+      "data": {
+        "recipe": null,
+        "started": false,
+        "unchanged": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "a kitchen mix consumes real supplies and begins discovery at home"
+    },
+    {
+      "ok": true,
+      "label": "first cooking shows a skippable dish preparation presentation"
+    },
+    {
+      "ok": true,
+      "label": "unlearned discovery survives save and reload without losing paid inputs"
+    },
+    {
+      "ok": true,
+      "label": "first completion discovers the dish and creates its portions once"
+    },
+    {
+      "ok": true,
+      "label": "five batches consume five input sets up front and reserve fifteen spaces"
+    },
+    {
+      "ok": true,
+      "label": "bulk cooking releases one batch at a time"
+    },
+    {
+      "ok": true,
+      "label": "the run finishes fifteen further portions without extra spending"
+    },
+    {
+      "ok": true,
+      "label": "a hungry bag-carrying guest pays once for three servings from one wallet",
+      "data": {
+        "hold": {
+          "owner": "customer-900",
+          "recipe": "garden-skillet",
+          "price": 12,
+          "quantity": 3
+        },
+        "paid": {
+          "id": 3,
+          "recipe": "garden-skillet",
+          "quantity": 3,
+          "amount": 36,
+          "at": 305.650000000001
+        },
+        "again": null,
+        "budget": 14,
+        "gained": 36,
+        "consumed": 3
+      }
+    },
+    {
+      "ok": true,
+      "label": "roasting needs oven, tray, spice shelf and actual meat, vegetables and spices",
+      "data": {
+        "preview": {
+          "batches": 1,
+          "portions": 3,
+          "seconds": 65,
+          "reservedOutput": 0,
+          "missingEquipment": [],
+          "ok": true,
+          "reason": "",
+          "recipe": "spiced-roast",
+          "known": false,
+          "level": 7,
+          "name": "Midnight spiced roast"
+        },
+        "started": true,
+        "ingredients": {
+          "meat": 0,
+          "vegetables": 0,
+          "spices": 0
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "paid VIP entry spawns real courtier sprites with finite purses"
+    },
+    {
+      "ok": true,
+      "label": "free wheelchair look is equipped through wardrobe rules"
+    },
+    {
+      "ok": true,
+      "label": "phone: menus fit and controls meet 44px touch targets",
+      "data": {
+        "width": 390,
+        "pageOverflow": false,
+        "small": [],
+        "clipped": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: menus fit and controls meet 44px touch targets",
+      "data": {
+        "width": 844,
+        "pageOverflow": false,
+        "small": [],
+        "clipped": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: menus fit and controls meet 44px touch targets",
+      "data": {
+        "width": 874,
+        "pageOverflow": false,
+        "small": [],
+        "clipped": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "schema 13 reload preserves equipment, supplies, discoveries, batch state, prices and food sales"
+    },
+    {
+      "ok": true,
+      "label": "one WebGL canvas remains after kitchen transitions"
+    },
+    {
+      "ok": true,
+      "label": "standalone HTML requests no external runtime assets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    {
+      "name": "desktop-equipped-kitchen",
+      "kitchen": {
+        "active": false,
+        "recipe": null,
+        "method": null,
+        "steam": 0,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 29,
+        "triangles": 174280,
+        "geometries": 78,
+        "textures": 23
+      }
+    },
+    {
+      "name": "desktop-active-home-cooking",
+      "kitchen": {
+        "active": true,
+        "recipe": "spiced-roast",
+        "method": "bake",
+        "steam": 4,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 35,
+        "triangles": 174428,
+        "geometries": 98,
+        "textures": 23
+      }
+    },
+    {
+      "name": "maisie-food-truck",
+      "kitchen": {
+        "active": false,
+        "recipe": null,
+        "method": null,
+        "steam": 0,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 33,
+        "triangles": 510294,
+        "geometries": 85,
+        "textures": 23
+      }
+    },
+    {
+      "name": "vip-and-purple-wheelchair",
+      "kitchen": {
+        "active": false,
+        "recipe": null,
+        "method": null,
+        "steam": 0,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 82,
+        "triangles": 550674,
+        "geometries": 99,
+        "textures": 23
+      }
+    },
+    {
+      "name": "phone-kitchen-controls",
+      "kitchen": {
+        "active": false,
+        "recipe": null,
+        "method": null,
+        "steam": 0,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 390,
+        "bufferHeight": 844,
+        "postprocessWidth": 390,
+        "postprocessHeight": 844,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.002564102564102564,
+          0.001184834123222749
+        ],
+        "touchDevice": true,
+        "calls": 37,
+        "triangles": 482878,
+        "geometries": 100,
+        "textures": 23
+      }
+    },
+    {
+      "name": "fold-kitchen-controls",
+      "kitchen": {
+        "active": false,
+        "recipe": null,
+        "method": null,
+        "steam": 0,
+        "pieces": [
+          "kitchen-hob",
+          "kitchen-oven",
+          "kitchen-pot-rail",
+          "kitchen-pan-rail",
+          "kitchen-baking-rack",
+          "kitchen-spice-shelf"
+        ],
+        "capabilities": [
+          "hob",
+          "oven",
+          "pot",
+          "pan",
+          "tray",
+          "spice"
+        ]
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 120,
+        "triangles": 627250,
+        "geometries": 106,
+        "textures": 23
+      }
+    }
+  ]
+}

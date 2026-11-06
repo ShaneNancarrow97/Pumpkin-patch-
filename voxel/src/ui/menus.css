@@ -1,0 +1,91 @@
+/* Menus in the middle (main.js marks these sheets .centred; furnishing, the
+   garden and the foyer stay at the side, over the world they change), the
+   dimmed farm behind them, the pad's gold ring and prompts (ui/pad-menu.js)
+   and hold to buy (ui/hold-to-buy.js). Loaded last, after polish.css. */
+
+/* The dimmed farm: under the dock, so the dock still switches menus. */
+.menu-scrim { position: fixed; inset: 0; z-index: 29; display: none; background: radial-gradient(120% 95% at 50% 46%, #0b081261, #0b0812c7); }
+.menu-centred .menu-scrim, .manage-open .menu-scrim { display: block; animation: scrim-in .18s ease-out; }
+@keyframes scrim-in { from { opacity: 0; } }
+
+/* Centred sheets: one roomy panel between the HUD and the dock. */
+@media (min-width: 720px) {
+  .sheet.centred, .sheet.centred[data-section] {
+    left: 0; right: 0; top: calc(var(--top) + 58px); bottom: calc(var(--dock-h) + 6px);
+    width: min(580px, calc(100% - 32px)); height: min(780px, calc(100% - var(--top) - var(--dock-h) - 64px));
+    max-width: none; max-height: none; margin: auto;
+  }
+}
+@media (max-height: 480px) and (min-width: 600px) {
+  .sheet.centred, .sheet.centred[data-section] {
+    left: 0; right: 0; top: max(8px, env(safe-area-inset-top)); bottom: calc(var(--dock-h) + 4px);
+    width: min(560px, calc(100% - 24px)); height: auto; max-width: none; max-height: none; margin: 0 auto;
+  }
+}
+.sheet.centred .sheet-frame { border-color: #d8b47a38; }
+@media (min-width: 720px) {
+  .sheet.centred .sheet-frame { padding: 16px 20px 18px; border-radius: 24px; }
+  .sheet.centred .sheet-body { padding-inline: 2px; gap: 12px; }
+  .sheet.centred .segmented button { min-height: 46px; font-size: 13px; }
+  .sheet.centred .card { padding: 12px 6px; }
+  .sheet.centred .card h3 { font-size: 15px; }
+  .sheet.centred .card p { font-size: 13px; }
+}
+
+/* The Manage menu, in the middle above the dock, with roomier rows. */
+.upgrade-menu { padding: 8px; border-radius: 20px; }
+.upgrade-menu button { min-height: 54px; padding: 7px 12px; }
+.upgrade-menu b { font-size: 15px; }
+.upgrade-menu small { font-size: 12px; }
+
+/* The pad's ring: the choice ✕ would take. */
+[data-pad-focus] { outline: 2.5px solid var(--gold-bright) !important; outline-offset: 2px !important; box-shadow: 0 0 0 6px #f2cf9922, 0 0 22px #f2cf9955 !important; }
+.upgrade-menu [data-pad-focus], .segmented [data-pad-focus] { background: #e2b67524 !important; }
+
+/* The pad's prompts take the dock's place while a pad works a panel, and sit above it in the hub. */
+.pad-hints {
+  position: fixed; z-index: 45; left: 50%; bottom: calc(8px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  display: flex; align-items: center; gap: 16px; height: 52px; max-width: calc(100% - 16px); padding: 0 18px; overflow: hidden;
+  border: 1px solid var(--edge-soft); border-radius: 18px; background: var(--panel-glass); backdrop-filter: blur(14px); box-shadow: var(--shadow);
+  color: var(--ink); font: 600 13px var(--body); white-space: nowrap; pointer-events: none; animation: pad-hints-in .16s ease-out;
+}
+.pad-hints[hidden] { display: none; }
+.pad-hints span { display: inline-flex; align-items: center; gap: 6px; }
+.pad-hints span .glyph + .glyph { margin-left: -2px; }
+.pad-hints b { font-weight: 600; }
+.pad-hints.hub { bottom: calc(var(--dock-h) + 8px); height: 40px; padding: 0 14px; font-size: 12px; }
+.pad-menus .dock { visibility: hidden; }
+@keyframes pad-hints-in { from { opacity: 0; transform: translate(-50%, 6px); } }
+@media (max-width: 430px) { .pad-hints { gap: 10px; padding: 0 12px; font-size: 12px; } }
+/* Options, on the dock's corner while a pad is connected: the way to the hub. */
+.dock-glyph { position: absolute; left: -9px; top: -9px; pointer-events: none; }
+.dock-glyph:empty { display: none; }
+
+/* Hold to buy: a fill sweeps across the price while it's held, then the button pops. */
+.purchase-button { position: relative; isolation: isolate; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.purchase-button::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(90deg, #fff4d633, #fff8e6d9); opacity: 0; transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .16s ease-out, opacity .16s ease-out;
+}
+.purchase-button.holding::after { opacity: 1; transform: scaleX(1); transition: transform var(--hold-ms, 450ms) linear, opacity .06s; }
+.purchase-button.bought { animation: bought-pop .42s ease-out; }
+@keyframes bought-pop { 35% { transform: scale(1.07); box-shadow: 0 0 0 4px #ffe1a066, 0 0 26px #ffc96a99; } }
+.purchase-button.hold-nudge { animation: hold-nudge .38s ease-in-out; }
+@keyframes hold-nudge { 25% { transform: translateX(-3px); } 55% { transform: translateX(3px); } 80% { transform: translateX(-1px); } }
+.hold-hint {
+  position: fixed; z-index: 75; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+  border: 1px solid #f2cf9966; border-radius: 999px; background: #1d1724f2; box-shadow: 0 6px 18px #08060d66;
+  color: var(--gold-bright); font: 600 12px var(--body); white-space: nowrap; pointer-events: none; animation: hold-hint-in .15s ease-out;
+}
+@keyframes hold-hint-in { from { opacity: 0; transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) {
+  .menu-scrim, .pad-hints, .hold-hint { animation: none; }
+  .purchase-button.bought, .purchase-button.hold-nudge { animation: none; }
+}
+/* The hub in play mode: the dock comes back while the ring is on it. */
+.control-mode.pad-hub #dock { display: flex !important; }
+/* Play mode's reminder that Options opens the hub, shown only with a pad. */
+.play-menu-hint { display: none; align-items: center; gap: 5px; margin-left: 4px; color: var(--ink-soft); font: 600 11px var(--body); }
+#play-controls:is([data-input="dualsense"], [data-input="xbox"]) .play-menu-hint { display: inline-flex; }
+.play-owner .play-menu-hint [data-glyph] { position: static; }

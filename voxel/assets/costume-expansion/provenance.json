@@ -1,0 +1,110 @@
+{
+  "shane-chucky": {
+    "source": "chucky-tiffany.png",
+    "sourceColumnCuts": [
+      0,
+      280,
+      520,
+      768
+    ],
+    "sourceRowBounds": [
+      [
+        0,
+        357
+      ],
+      [
+        356,
+        683
+      ],
+      [
+        682,
+        1024
+      ]
+    ],
+    "scale": 0.91428571,
+    "frameCount": 9,
+    "idleFrames": 3,
+    "walkFrames": 6
+  },
+  "natalie-tiffany": {
+    "source": "chucky-tiffany.png",
+    "sourceColumnCuts": [
+      768,
+      1048,
+      1288,
+      1536
+    ],
+    "sourceRowBounds": [
+      [
+        0,
+        365
+      ],
+      [
+        362,
+        686
+      ],
+      [
+        684,
+        1024
+      ]
+    ],
+    "scale": 0.91690544,
+    "frameCount": 9,
+    "idleFrames": 3,
+    "walkFrames": 6
+  },
+  "natalie-freddy": {
+    "source": "natalie-freddy.png",
+    "sourceColumnCuts": [
+      0,
+      357,
+      713,
+      1070
+    ],
+    "sourceRowBounds": [
+      [
+        0,
+        490
+      ],
+      [
+        490,
+        980
+      ],
+      [
+        980,
+        1470
+      ]
+    ],
+    "scale": 0.67940552,
+    "frameCount": 9,
+    "idleFrames": 3,
+    "walkFrames": 6
+  },
+  "shane-jason": {
+    "source": "shane-jason.png",
+    "sourceColumnCuts": [
+      0,
+      357,
+      713,
+      1070
+    ],
+    "sourceRowBounds": [
+      [
+        0,
+        490
+      ],
+      [
+        490,
+        980
+      ],
+      [
+        980,
+        1470
+      ]
+    ],
+    "scale": 0.69414317,
+    "frameCount": 9,
+    "idleFrames": 3,
+    "walkFrames": 6
+  }
+}

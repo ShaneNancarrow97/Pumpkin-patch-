@@ -1,0 +1,100 @@
+{
+  "character": "Sandy",
+  "layout": "Three separate 1536x1024 character frames; menu atlas 3 columns x 2 rows",
+  "iconCells": {
+    "cocoa": [
+      0,
+      0
+    ],
+    "flake": [
+      1,
+      0
+    ],
+    "deluxe": [
+      2,
+      0
+    ],
+    "midnight": [
+      0,
+      1
+    ],
+    "smores": [
+      1,
+      1
+    ],
+    "shop": [
+      2,
+      1
+    ]
+  },
+  "feetAnchor": {
+    "x": 0.5,
+    "y": 0.97
+  },
+  "assets": [
+    {
+      "id": "sandy-base",
+      "source": "sandy-base.png",
+      "runtime": "sandy-base.webp",
+      "width": 1536,
+      "height": 1024,
+      "opaqueBounds": [
+        65,
+        8,
+        1501,
+        996
+      ],
+      "alphaPreserved": true,
+      "visiblePixelsLossless": true,
+      "sha256": "06b0e07eb3ff0b21a1c89234aa85059db38ec3234267d797597634c0f02b12b6"
+    },
+    {
+      "id": "sandy-blink",
+      "source": "sandy-blink.png",
+      "runtime": "sandy-blink.webp",
+      "width": 1536,
+      "height": 1024,
+      "opaqueBounds": [
+        66,
+        9,
+        1499,
+        996
+      ],
+      "alphaPreserved": true,
+      "visiblePixelsLossless": true,
+      "sha256": "e27015c33469b7826904abb7ce184724f7818a9d17e192cba97bd1f9c5844ae6"
+    },
+    {
+      "id": "sandy-serve",
+      "source": "sandy-serve.png",
+      "runtime": "sandy-serve.webp",
+      "width": 1536,
+      "height": 1024,
+      "opaqueBounds": [
+        66,
+        9,
+        1502,
+        997
+      ],
+      "alphaPreserved": true,
+      "visiblePixelsLossless": true,
+      "sha256": "2551cb685284f748fc54b2b995360033aa6fd9deb04fc212288dc73cb7f90183"
+    },
+    {
+      "id": "cocoa-menu-icons",
+      "source": "cocoa-menu-icons.png",
+      "runtime": "cocoa-menu-icons.webp",
+      "width": 1536,
+      "height": 1024,
+      "opaqueBounds": [
+        59,
+        47,
+        1511,
+        974
+      ],
+      "alphaPreserved": true,
+      "visiblePixelsLossless": true,
+      "sha256": "911b0b4de785d1376abfe21172f61d68fb3cc4cee1f1786af3bb28adc2427437"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Minor-Polish.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "stock inspector accurately shows full barn and closed cocoa stand"
+    },
+    {
+      "ok": true,
+      "label": "barn capacity meter uses the actual count"
+    },
+    {
+      "ok": true,
+      "label": "stock shortcut opens barn/farm upgrades"
+    },
+    {
+      "ok": true,
+      "label": "cocoa shortcut opens Sandy’s stock management"
+    },
+    {
+      "ok": true,
+      "label": "Owned only has a helpful empty state before buying skins"
+    },
+    {
+      "ok": true,
+      "label": "Owned only shows the purchased skin"
+    },
+    {
+      "ok": true,
+      "label": "Classic look is free and retains the purchased skin"
+    },
+    {
+      "ok": true,
+      "label": "owned skin can be reused freely after Classic"
+    },
+    {
+      "ok": true,
+      "label": "reopening a catalogue remembers its scroll position"
+    },
+    {
+      "ok": true,
+      "label": "live menu updates preserve a slider while it is being dragged"
+    },
+    {
+      "ok": true,
+      "label": "Escape closes a menu while a text field is focused"
+    },
+    {
+      "ok": true,
+      "label": "stock panel 390×844 stays in view",
+      "data": {
+        "fits": true,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "stock panel 320×740 stays in view",
+      "data": {
+        "fits": true,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "stock panel 844×390 stays in view",
+      "data": {
+        "fits": true,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "no browser runtime errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium SwiftShader; Performance mode, staged test purchases and stock"
+}

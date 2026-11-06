@@ -1,0 +1,119 @@
+#!/usr/bin/env python3
+"""Measure how big each owner view looks, so a figure reads as one size whichever way it faces.
+
+The side and back turnarounds (bake_player_side_walk.py, bake_player_directions.py)
+are drawn to the same height as the front sprites but with bigger heads, so a
+turn to the side looks like a size up. Height alone is the wrong match: the eye
+judges a figure's size by its head. Each view's head width (the top fifth of a
+standing figure, in world units) is compared with the front's, and the view is
+scaled by (front / view) ** 0.35. That meets the head size about a third of the
+way while keeping the height close; a full match shrinks the body to a child's.
+A view is never scaled up, and never below 0.85.
+
+It also picks each view's standing frame: the side and back walks have no idle,
+so the side's passing frame, or the back frame with its feet closest together,
+stands in for one while the owner settles (player-control.js turns them back to
+the front sprite, which has an idle, after a moment standing still).
+
+Writes src/player-view-scale.js. Run it after re-baking any owner sheet.
+"""
+from pathlib import Path
+import json, re
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parents[1]
+ASSETS = ROOT / 'assets'
+STRENGTH, LOWEST = 0.35, 0.85
+
+
+def module(name, constant):
+    text = (ROOT / 'src' / name).read_text()
+    return json.loads(re.search(r'export const ' + constant + r'\s*=\s*({.*?});', text, re.S).group(1))
+
+
+SIDE = module('player-side-walk-meta.js', 'PLAYER_SIDE_WALK_META')
+WATER = module('player-side-walk-meta.js', 'PLAYER_EMPTY_WATER_META')
+DIRECTIONS = module('player-direction-meta.js', 'PLAYER_DIRECTION_META')
+FRONT = {**module('sprite-meta-hd.js', 'SHEETS'), **module('costume-sprite-meta.js', 'COSTUME_SHEETS'), **module('natalie-wheelchair-meta.js', 'WHEELCHAIR_META')}
+images = {}
+
+
+def sheet(path):
+    if path not in images:
+        images[path] = Image.open(ASSETS / path).convert('RGBA')
+    return images[path]
+
+
+def front_path(name):
+    for path in (f'hd-{name}.webp', f'costume-expansion/{name}.webp', f'{name}.webp'):
+        if (ASSETS / path).exists():
+            return path
+    raise FileNotFoundError(name)
+
+
+def alpha(path, f):
+    cell = sheet(path).crop((int(f['x']), int(f['y']), int(f['x'] + f['w']), int(f['y'] + f['h'])))
+    return cell.getchannel('A').point(lambda v: 255 if v > 24 else 0)
+
+
+def head_width(path, f, unit, stature):
+    """The widest part of the top fifth of a standing figure, in world units."""
+    a = alpha(path, f)
+    top = a.getbbox()[1]
+    box = a.crop((0, top, a.width, min(a.height, int(top + stature * 0.2 / unit)))).getbbox()
+    return (box[2] - box[0]) * unit
+
+
+def feet_spread(path, f):
+    """How far apart the feet are: the width of the lowest eighth of the figure."""
+    a = alpha(path, f)
+    top = a.getbbox()[1]
+    box = a.crop((0, int(f['ay'] - (f['ay'] - top) * 0.125), a.width, int(f['ay']) + 1)).getbbox()
+    return box[2] - box[0] if box else 0
+
+
+def average(values):
+    values = list(values)
+    return sum(values) / len(values)
+
+
+def factor(front, view):
+    return round(min(1.0, max(LOWEST, (front / view) ** STRENGTH)), 3)
+
+
+scales = {}
+for outfit, side in SIDE.items():
+    who = outfit.split('-')[0]
+    name = who if outfit.endswith('-base') else outfit
+    front = FRONT.get(name)
+    if not front:
+        continue
+    stature = side['targetHeight'] * 2.3 / 320
+    path = front_path(name)
+    head = average(head_width(path, f, 2.3 / front['rows'] * side['frontScale']['idle'], stature) for f in front['idle'])
+    walk = f"player-walk-{side['sheet']}.webp"
+    entry = {'side': factor(head, average(head_width(walk, f, 2.3 / side['rows'], stature) for f in side['side']))}
+    # The passing frame (one foot down, the other just off the ground) where the
+    # walk names it; otherwise whichever frame has its feet closest together.
+    phases = side.get('phase', [])
+    entry['standSide'] = phases.index('pass') if 'pass' in phases else min(range(len(side['side'])), key=lambda i: feet_spread(walk, side['side'][i]))
+    turns = DIRECTIONS.get(outfit, {})
+    turn_sheet = f"player-directions-{turns.get('sheet')}.webp"
+    if turns.get('back'):
+        entry['back'] = factor(head, average(head_width(turn_sheet, f, 2.3 / turns['rows'] * side['backScale'], stature) for f in turns['back']))
+        entry['standBack'] = min(range(len(turns['back'])), key=lambda i: feet_spread(turn_sheet, turns['back'][i]))
+    for action in ('plant', 'harvest'):
+        if turns.get(action):
+            entry[action] = factor(head, average(head_width(turn_sheet, f, 2.3 / turns['rows'] * side['targetHeight'] / 320, stature) for f in turns[action]))
+    if outfit in WATER:
+        entry['water'] = factor(head, head_width('player-water-empty.webp', WATER[outfit], 2.3 / 320, stature))
+    scales[outfit] = entry
+
+text = ('// Generated by tools/measure_player_views.py. Do not edit.\n'
+        '// How much to scale each owner view so a figure reads as one size whichever way it\n'
+        '// faces (the side and back art have bigger heads than the front sprites), and\n'
+        '// which side and back frames stand in for an idle.\n'
+        f'export const PLAYER_VIEW_SCALE = {json.dumps(scales, separators=(",", ":"))};\n')
+(ROOT / 'src' / 'player-view-scale.js').write_text(text)
+for outfit, entry in scales.items():
+    print(f'{outfit:22s} {entry}')
