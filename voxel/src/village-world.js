@@ -15,7 +15,7 @@ const SHIFT = LAYOUT.DISTRICT_SHIFT;
 import {
   C, shade, frame, realm, lampPost, studio, tavern, bigTent, caravan, manor, stiltHut, canopyTree, pine, twistedTree, deadTree, glowShroom, stoneWall, picketFence, mothPillar, carriage, fountain, well, noticeboard, stall, bench,
   workshop, conservatory, node, bush, flower, grassTuft, lantern, cottage, townhouse, hedge, topiary, brickPier, railing, parkBench, flowerBed, roundPlanter,
-  pumpkin, jackOLantern, hayBale, cornSheaf, scarecrow, festoon, gravestone, spookyTree, crow, cauldron, mothTree, velvetBat, marketStall,
+  pumpkin, jackOLantern, hayBale, cornSheaf, scarecrow, festoon, gravestone, spookyTree, crow, cauldron, mothTree, mothBanner, velvetBat, marketStall,
 } from "./village-models.js";
 // Writers that stand things on the terraced ground: onGround puts each block's foot
 // on the ground beneath it; at() stands a whole model at the height of its origin.
@@ -150,6 +150,29 @@ function squareTexture() {
       ctx.save(); ctx.translate(px, py); ctx.rotate(a + Math.PI / 2); settAt(ctx, -Math.PI * rad / n * K - 1, -.165 * K, Math.PI * 2 * rad / n * K + 2, .33 * K, band ? rose[(r() * 3) | 0] : tones[(r() * tones.length) | 0], r); ctx.restore();
     }
   }
+  // Moonstone and brass inlays give the plaza a readable identity and point
+  // back to its heart. These are part of the existing ground texture: no
+  // extra meshes, glow or raised pieces across the walking routes.
+  ctx.save(); ctx.translate(cx, cy);
+  for (const radius of [3.65, 7.7]) {
+    ctx.beginPath(); ctx.arc(0, 0, radius * K, 0, Math.PI * 2); ctx.strokeStyle = "#545568"; ctx.lineWidth = .17 * K; ctx.stroke();
+    ctx.strokeStyle = "#c8aa6c"; ctx.lineWidth = .045 * K; ctx.stroke();
+  }
+  for (let q = 0; q < 4; q++) {
+    ctx.save(); ctx.rotate(q * Math.PI / 2); ctx.translate(0, -5.65 * K);
+    ctx.beginPath(); ctx.arc(0, 0, .94 * K, 0, Math.PI * 2); ctx.fillStyle = "#555567"; ctx.fill();
+    ctx.strokeStyle = "#c8aa6c"; ctx.lineWidth = .055 * K; ctx.stroke();
+    for (const side of [-1, 1]) {
+      ctx.beginPath(); ctx.moveTo(side * .08 * K, -.12 * K); ctx.lineTo(side * .68 * K, -.5 * K); ctx.lineTo(side * .62 * K, .13 * K); ctx.lineTo(side * .18 * K, .2 * K); ctx.closePath(); ctx.fillStyle = "#ded2b7"; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(side * .12 * K, .18 * K); ctx.lineTo(side * .49 * K, .23 * K); ctx.lineTo(side * .28 * K, .61 * K); ctx.closePath(); ctx.fillStyle = "#b79e70"; ctx.fill();
+      ctx.fillStyle = "#766578"; ctx.fillRect(side * .4 * K - .06 * K, -.2 * K, .12 * K, .12 * K);
+    }
+    ctx.fillStyle = "#d7bb78"; ctx.fillRect(-.045 * K, -.39 * K, .09 * K, .9 * K);
+    // Three small tesserae connect each medallion to the outer ring.
+    for (let i = 0; i < 3; i++) { ctx.save(); ctx.translate(0, -(1.2 + i * .27) * K); ctx.rotate(Math.PI / 4); ctx.fillStyle = i % 2 ? "#555567" : "#c8aa6c"; ctx.fillRect(-.09 * K, -.09 * K, .18 * K, .18 * K); ctx.restore(); }
+    ctx.restore();
+  }
+  ctx.restore();
   // A border of long kerb-stones round the square's edge.
   ctx.fillStyle = "#c9c1b5"; for (const [x, y, w, h] of [[0, 0, W, 10], [0, H - 10, W, 10], [0, 0, 10, H], [W - 10, 0, 10, H]]) ctx.fillRect(x, y, w, h);
   const t = new THREE.CanvasTexture(canvas); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
@@ -301,6 +324,9 @@ export function buildGreen() {
   knotGarden(v, 48.6, 8, 54.4, 15.6, "east", r, [0xd6407a, 0xf5d04a, 0xf6f0f5, 0xf08a3a], FOUNTAINS[0].r);
   knotGarden(v, 61.6, 8, 66.4, 15.6, "west", r, [0xf5d04a, 0xd6407a, 0xf08a3a, 0xf6f0f5], FOUNTAINS[1].r);
   for (const l of LAMPS.slice(4, 8)) lampPost(R, l.x, l.z, 3.2, r, 1);
+  // The same moth marks the route from carriage to plaza, mounted on the
+  // existing lamps. The cloth starts above 2.2 design units (3.3 world units).
+  for (const l of LAMPS.slice(0, 8)) mothBanner(R, l.x + (l.x < F.x ? -.55 : .55), 2.22, l.z - .05, .78);
   parkBench(fr(55.6, 11.5, "east"), 0, 0, r); parkBench(fr(60.4, 11.5, "west"), 0, 0, r);
   // Crimson maples flanking the gate, the old oak, and a feature maple in Rowan's garden.
   canopyTree(R, 50.2, 4, 1.25, r, C.crimson, { cell: .3 }); canopyTree(R, 65.8, 4, 1.25, r, C.crimson, { cell: .3 });
@@ -383,6 +409,7 @@ export function buildGreen() {
   spookyTree(R, 87.2, 9, 1.15, r); spookyTree(R, 93, 2.8, .9, r);
   lampPost(R, 95.4, 6, 3.2, r, 1);
   const group = v.build({ detailShadows: false, small: SMALL, glow: GLOW }), wire = cableMesh(cables); if (wire) group.add(wire);
+  group.userData.visualBudget = { boxes: v.count, addedLights: 0, textureBytes: 0 };
   return group;
 }
 
@@ -499,7 +526,9 @@ export function buildHomes(built) {
   jackOLantern(at(v, 48.6, 17.6, "east"), 0, 0, .5, r, 0); jackOLantern(at(v, 48.7, 22.2, "east"), 0, 0, .42, r, 2); pumpkin(R, 48.9, 22.9, .34, r, "white");
   jackOLantern(at(v, 65.4, 18.4, "west"), 0, 0, .5, r, 1); jackOLantern(at(v, 65.4, 21.6, "west"), 0, 0, .44, r, 0); pumpkin(R, 65.1, 17.7, .36, r, "gold");
   scarecrow(at(v, 80.6, 17.5, "west"), 0, 0, r, 0);
-  return v.build({ glow: GLOW });
+  const group = v.build({ glow: GLOW });
+  group.userData.visualBudget = { boxes: v.solid.length + v.glow.length, addedLights: 0 };
+  return group;
 }
 export function buildNodes(ready) {
   const v = new Voxels(), r = seeded(307);

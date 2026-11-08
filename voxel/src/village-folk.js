@@ -9,6 +9,8 @@ import { doorOf, districtOpen } from "./rules/village.js";
 import { RESIDENT_BY_ID } from "./content/village.js";
 import { createVillageSprite, tickVillageSprite, readyVillageSprites, villageSpritePortrait } from "./village-sprite-actors.js";
 import { activeVillageMood } from "./village-sprite-math.js";
+import { villageWalkObstacles } from "./rules/village-navigation.js";
+import { residentRoute, createResidentRoutine, advanceResidentRoutine, residentTalkPoint } from "./rules/village-resident-life.js";
 
 const FOLK_SCALE = 1.15;
 const solid = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .85, metalness: 0 });
@@ -219,9 +221,9 @@ export function makeResident(id, { style = "sprite" } = {}) {
 // Where each resident stands, by what's been built; the six who wait stand at their own doors.
 // reach is how far in front of them to stand to talk (Rowan's is across his counter).
 export function residentSpot(state, id) {
-  const v = state.village, K = PLAN_SCALE, spot = (x, z, face, reach) => ({ x: x * K, z: z * K, face, ...(reach ? { reach: reach * K } : {}) });
-  if (id === "rowan") return v.unlocks.includes("stall") ? spot(66, 24.6, "west", 3.8) : spot(53.8, 20.6, "south");
-  if (id === "elowen") return v.built["elowen-conservatory"] ? spot(49.6, 21.6, "east") : spot(53.6, 30.2, "south");
+  const K = PLAN_SCALE, spot = (x, z, face, reach) => ({ x: x * K, z: z * K, face, ...(reach ? { reach: reach * K } : {}) });
+  const route = residentRoute(state, id);
+  if (route) { const { x, z, face, reach } = route.stops[0]; return { x, z, face, ...(reach ? { reach } : {}) }; }
   if (HOSTS[id]) return spot(HOSTS[id].x, HOSTS[id].z, HOSTS[id].face);
   const door = doorOf(id), east = door.x < 60 * K;
   return { x: door.x + (east ? 1.8 : -1.8), z: door.z, face: east ? "east" : "west" };
@@ -230,9 +232,10 @@ const FACE = { south: 0, east: Math.PI / 2, north: Math.PI, west: -Math.PI / 2 }
 // Where to stand to talk to them (realm), a step in front.
 export function talkSpot(state, id) { const s = residentSpot(state, id), a = FACE[s.face] ?? 0, d = s.reach ?? 1.8; return { x: s.x + Math.sin(a) * d, z: s.z - Math.cos(a) * d }; }
 
-export function createVillageFolk({ scene, state, pickables, pickMaterial, ground = () => 0, everyone = () => false, style = "sprite" }) {
-  const people = new Map(), moods = new Map();
-  let castStyle = style === "voxel" ? "voxel" : "sprite", clock = 0;
+export function createVillageFolk({ scene, state, getState, pickables, pickMaterial, ground = () => 0, everyone = () => false, reducedMotion, style = "sprite" }) {
+  const people = new Map(), moods = new Map(), routines = new Map(), readState = getState ?? (typeof state === "function" ? state : () => state);
+  const media = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)"), still = () => !!(typeof reducedMotion === "function" ? reducedMotion() : reducedMotion ?? media?.matches);
+  let castStyle = style === "voxel" ? "voxel" : "sprite", clock = 0, obstacles = villageWalkObstacles(readState());
   const retire = p => {
     scene.remove(p.root);
     const index = pickables.indexOf(p.hit); if (index >= 0) pickables.splice(index, 1);
@@ -242,6 +245,7 @@ export function createVillageFolk({ scene, state, pickables, pickMaterial, groun
     if (!p.sprite) p.root.traverse(o => { if (o !== p.hit) o.geometry?.dispose?.(); });
   };
   function sync() {
+    const state = readState(); obstacles = villageWalkObstacles(state);
     // Residents of districts that aren't open yet wait out of sight until they are.
     const here = ["elowen", "rowan", "mabel", "tansy", "opal", "cinder", "corvus", "baron"].filter((id) => everyone() || districtOpen(state, RESIDENT_BY_ID[id].district)).concat(Object.keys(HOSTS));
     for (const [id, p] of people) if (!here.includes(id)) p.root.visible = false;
@@ -253,19 +257,23 @@ export function createVillageFolk({ scene, state, pickables, pickMaterial, groun
         people.set(id, p);
       }
       p.root.visible = true; const spot = residentSpot(state, id); p.spot = spot;
-      if (!p.walking) { p.root.position.set(spot.x, ground(spot.x, spot.z), -spot.z); p.baseYaw = FACE[spot.face] ?? 0; }
+      if (!routines.has(id)) { const routine = createResidentRoutine(state, id); if (routine) routines.set(id, routine); }
+      p.routine = routines.get(id);
+      const current = p.routine ?? spot;
+      p.root.position.set(current.x, ground(current.x, current.z), -current.z); p.baseYaw = current.yaw ?? FACE[spot.face] ?? 0;
+      if (!p.placed) { p.root.rotation.y = p.baseYaw; p.placed = true; }
     }
   }
   // Moods: idle, talk (while in a conversation), wave (a greeting), set by the UI.
-  function mood(id, m, facing) { moods.set(id, { m, at: clock, facing }); }
-  function animate(p, dt, time, camera) {
-      const md = moods.get(p.id), t = time + p.id.length, d = p.design;
+  function mood(id, m, facing) { moods.set(id, { m, at: clock, facing }); if (m === "talk" || m === "wave") { const p = people.get(id); if (p) p.walking = false; } }
+  function animate(p, dt, time, camera, options = {}) {
+      const reduced = options.reducedMotion ?? still(), md = moods.get(p.id), t = reduced ? 0 : time + p.id.length, d = p.design;
       let yaw = p.baseYaw ?? 0;
       if (md?.facing) yaw = Math.atan2(md.facing.x - p.root.position.x, -md.facing.z - p.root.position.z);
       const turn = ((yaw - p.root.rotation.y + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
       p.root.rotation.y += Math.sign(turn) * Math.min(Math.abs(turn), dt * 4);
-      const mood = activeVillageMood(md, time), talking = mood === "talk", waving = mood === "wave";
-      if (p.sprite) { tickVillageSprite(p.root, { time, walking: !!p.walking, mood: waving ? "wave" : talking ? "talk" : "idle", camera }); return; }
+      const mood = activeVillageMood(md, time), talking = mood === "talk", waving = mood === "wave" || p.routine?.action === "wave";
+      if (p.sprite) { tickVillageSprite(p.root, { time: p.walking ? options.walkTime ?? time : time, walking: !!p.walking && !talking && !waving && !reduced, mood: talking ? "talk" : waving ? "wave" : "idle", camera }); return; }
       const breathe = Math.sin(t * 1.6) * .012;
       p.hip.scale.y = 1 + breathe; if (d.float) p.hip.position.y = .12 + Math.sin(t * 1.2) * .08;
       p.head.rotation.z = Math.sin(t * .7) * .04; p.head.rotation.x = Math.sin(t * .5) * .03;
@@ -274,21 +282,31 @@ export function createVillageFolk({ scene, state, pickables, pickMaterial, groun
       p.armR.rotation.x = Math.sin(t * 1.3 + 1) * .05 + (talking ? Math.sin(t * 2.6 + 1) * .2 - .1 : 0);
       p.armR.rotation.z = waving ? 2.4 + Math.sin(t * 9) * .35 : 0;
       if (talking) p.head.rotation.x = Math.sin(t * 4.2) * .06;
+      if (p.legL) { const stride = p.walking && !reduced && !talking && !waving ? Math.sin((options.walkTime ?? time) * Math.PI * 3) * .35 : 0; p.legL.rotation.x = stride; p.legR.rotation.x = -stride; }
   }
-  function tick(dt, time, camera) {
+  function tick(dt, time, camera, options = {}) {
     clock = time;
-    for (const p of people.values()) if (p.root.visible) animate(p, dt, time, camera);
+    const state = readState(), reduced = options.reducedMotion ?? still();
+    for (const p of people.values()) if (p.root.visible) {
+      if (p.routine) {
+        const md = activeVillageMood(moods.get(p.id), time), routine = advanceResidentRoutine(state, p.routine, dt, { obstacles, paused: options.paused ?? !!state?.paused, reducedMotion: reduced, talking: md === "talk", waving: md === "wave" });
+        p.walking = routine.walking; p.baseYaw = routine.yaw;
+        p.root.position.set(routine.x, ground(routine.x, routine.z), -routine.z);
+      }
+      animate(p, dt, time, camera, { reducedMotion: reduced, walkTime: p.routine?.walkAge });
+    }
   }
   function setStyle(next) {
     castStyle = next === "voxel" ? "voxel" : "sprite";
     const positions = new Map([...people].map(([id, p]) => [id, { position: p.root.position.clone(), walking: p.walking, baseYaw: p.baseYaw, yaw: p.root.rotation.y }]));
     for (const p of people.values()) retire(p); people.clear(); sync();
-    for (const [id, p] of people) { const old = positions.get(id); if (old?.walking) { p.walking = old.walking; p.root.position.copy(old.position); p.baseYaw = old.baseYaw; p.root.rotation.y = old.yaw; } }
+    for (const [id, p] of people) { const old = positions.get(id); if (old) { p.walking = old.walking; p.root.position.copy(old.position); p.baseYaw = old.baseYaw; p.root.rotation.y = old.yaw; } }
     return castStyle;
   }
   const ready = readyVillageSprites().then(() => { if (castStyle === "sprite" && people.size) setStyle("sprite"); });
   return { sync, tick, mood, people, animate, setStyle, ready, get style() { return castStyle; }, portrait: villageSpritePortrait,
-    diagnostics: () => [...people.values()].filter(p => p.root.visible).map(p => ({ id: p.id, style: p.sprite ? "sprite" : "voxel", ready: !!p.root.userData.ready, frame: p.root.userData.frame ?? 0, action: p.root.userData.action ?? "idle", walking: !!p.walking, height: p.sprite ? p.root.userData.height : p.design.height * FOLK_SCALE, frames: p.root.userData.data?.meta.actions ?? {} })),
-    spotOf: (id) => residentSpot(state, id), talkSpot: (id) => talkSpot(state, id) };
+    diagnostics: () => [...people.values()].filter(p => p.root.visible).map(p => ({ id: p.id, style: p.sprite ? "sprite" : "voxel", ready: !!p.root.userData.ready, frame: p.root.userData.frame ?? 0, action: p.root.userData.action ?? "idle", walking: !!p.walking, height: p.sprite ? p.root.userData.height : p.design.height * FOLK_SCALE, frames: p.root.userData.data?.meta.actions ?? {}, x: p.root.position.x, z: -p.root.position.z, activity: p.routine?.activity ?? "at their post", route: p.routine?.key ?? null })),
+    spotOf: (id) => { const p = people.get(id); return p ? { x: p.root.position.x, z: -p.root.position.z, yaw: p.root.rotation.y, face: p.spot.face, reach: p.routine?.reach ?? (p.routine ? undefined : p.spot.reach) } : residentSpot(readState(), id); },
+    talkSpot: (id) => { const p = people.get(id); return p ? residentTalkPoint(readState(), { x: p.root.position.x, z: -p.root.position.z, yaw: p.root.rotation.y, reach: p.routine?.reach ?? (p.routine ? undefined : p.spot.reach) }, obstacles) : talkSpot(readState(), id); } };
 }
 export { DESIGNS };

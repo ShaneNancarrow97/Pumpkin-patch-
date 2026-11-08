@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { validVillageSprite, villageFrameShape, villageSpritePose, visibleVillagePick, activeVillageMood } from "../src/village-sprite-math.js";
+import { validVillageSprite, villageFrameShape, villageSpritePose, villagePortraitCrop, visibleVillagePick, activeVillageMood } from "../src/village-sprite-math.js";
 
 const frames = Array.from({ length: 6 }, (_, i) => ({ x: i * 100, y: 0, w: 100, h: 200, ax: 50, ay: 190 }));
 const meta = { url: "test.webp", w: 600, h: 200, rows: 180, frames, actions: { idle: [0], walk: [1, 2, 3, 4], wave: [5] } };
@@ -36,4 +36,15 @@ test("greetings use the village clock and finish after two seconds even on a slo
   assert.equal(activeVillageMood(greeting, 703), "idle");
   assert.equal(activeVillageMood({ m: "wave", at: NaN }, 700), "idle");
   assert.equal(activeVillageMood({ m: "talk", at: 10 }, 900), "talk");
+});
+
+test("small menu portraits frame the upper body without changing any world frame or scale", () => {
+  const real = { ...meta, rows: 256, w: 1536, h: 320, frames: Array.from({ length: 6 }, (_, i) => ({ x: i * 256, y: 0, w: 256, h: 320, ax: 128, ay: 300 })) }, before = structuredClone(real);
+  const crop = villagePortraitCrop(real);
+  assert.deepEqual(real, before, "runtime framing leaves the atlas contract untouched");
+  assert.ok(crop.width < 256 && crop.height < 240, "portrait excludes the distant full-body feet");
+  assert.ok(crop.y < 44 && crop.y + crop.height > 180, "hat and shoulders fit");
+  assert.ok(Math.abs(crop.x + crop.width / 2 - 128) < 1);
+  assert.ok(crop.x >= 0 && crop.y >= 0 && crop.x + crop.width <= 256 && crop.y + crop.height <= 320);
+  assert.deepEqual(real.frames.map(frame => villageFrameShape(real, frame)), before.frames.map(frame => villageFrameShape(before, frame)), "all four walk phases keep their common geometry");
 });

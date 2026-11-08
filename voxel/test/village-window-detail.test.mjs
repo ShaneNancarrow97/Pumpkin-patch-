@@ -33,7 +33,7 @@ test("the detail pass preserves restoration contrast, deterministic builds and c
 test("small joinery uses positive finite boxes within the existing building reserve", () => {
   for (const draw of [f => cottage(f), f => cottage(f, { ridge: "z" }), f => cottage(f, { shabby: true }), f => workshop(f, true), f => conservatory(f, true)]) {
     const { boxes, marks } = build(draw);
-    assert.ok(boxes.length < 1250, "the cottage detail adds at most a few hundred batched boxes");
+    assert.ok(boxes.length < 1350, "the cottage and restored craft details stay within their shared-batch budget");
     for (const b of boxes) {
       assert.ok(b.slice(0, 7).every(Number.isFinite));
       assert.ok(b[3] > 0 && b[4] > 0 && b[5] > 0);

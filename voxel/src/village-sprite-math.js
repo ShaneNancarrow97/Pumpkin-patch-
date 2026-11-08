@@ -12,6 +12,13 @@ export function villageFrameShape(meta, frame) {
   const unit = (meta.height ?? VILLAGE_PERSON_HEIGHT) / meta.rows;
   return { width: frame.w * unit, height: frame.h * unit, x: (frame.w / 2 - frame.ax) * unit, y: (frame.ay - frame.h / 2) * unit, unit };
 }
+// Small menu tiles frame the head and shoulders from the same measured body
+// and foot anchor used in the world. This crops only the UI, never a walk cell.
+export function villagePortraitCrop(meta) {
+  const frame = meta.frames[meta.actions?.idle?.[0] ?? 0], width = Math.min(frame.w, Math.round(meta.rows * .68)), height = Math.min(frame.h, Math.round(meta.rows * .76));
+  const x = Math.max(0, Math.min(frame.w - width, Math.round(frame.ax - width / 2))), y = Math.max(0, Math.min(frame.h - height, Math.round(frame.ay - meta.rows - meta.rows * .045)));
+  return { x: frame.x + x, y: frame.y + y, width, height };
+}
 export function villageSpritePose(meta, { time = 0, walking = false, mood = "idle" } = {}) {
   const actions = meta.actions ?? {}, action = walking && actions.walk?.length ? "walk" : mood === "wave" && actions.wave?.length ? "wave" : mood === "talk" && actions.talk?.length ? "talk" : "idle";
   const list = actions[action]?.length ? actions[action] : actions.idle?.length ? actions.idle : [0];

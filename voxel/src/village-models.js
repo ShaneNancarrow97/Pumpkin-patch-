@@ -53,6 +53,32 @@ function globe(f, x, y, z, k = 1) {
   for (const [dx, dz] of [[.17, 0], [-.17, 0], [0, .17], [0, -.17]]) f.block(x + dx * k, y + .08 * k, z + dz * k, (dx ? .03 : .05) * k, .42 * k, (dz ? .03 : .05) * k, C.iron);
   f.block(x, y + .5 * k, z, .34 * k, .06 * k, .34 * k, C.iron); f.block(x, y + .56 * k, z, .14 * k, .1 * k, .14 * k, C.iron); f.block(x, y + .66 * k, z, .05 * k, .12 * k, .05 * k, C.gold);
 }
+// The Green's shared heraldry: carved ivory wings, brass veins and a dark body.
+// A shallow relief, so it can dress an existing wall, banner or tree without
+// extending a building's footprint. All pieces join its existing voxel batch.
+export function mothRelief(f, x, y, z, k = 1, wing = C.moth) {
+  for (const side of [-1, 1]) {
+    f.block(x + side * .28 * k, y + .35 * k, z, .4 * k, .34 * k, .07 * k, wing);
+    f.block(x + side * .55 * k, y + .49 * k, z, .2 * k, .28 * k, .07 * k, wing);
+    f.block(x + side * .27 * k, y + .08 * k, z, .34 * k, .22 * k, .07 * k, wing);
+    f.block(x + side * .41 * k, y + .44 * k, z - .045 * k, .13 * k, .12 * k, .025 * k, C.plumDeep);
+    f.block(x + side * .22 * k, y + .32 * k, z - .05 * k, .28 * k, .035 * k, .025 * k, C.brass);
+    f.block(x + side * .1 * k, y + .72 * k, z, .04 * k, .17 * k, .06 * k, C.brass);
+  }
+  f.block(x, y + .13 * k, z - .04 * k, .1 * k, .57 * k, .12 * k, C.brass);
+}
+
+// Banners hang from the existing lamp posts, well above walking height.
+export function mothBanner(f, x, y, z, k = 1) {
+  f.block(x, y + 1.26 * k, z, 1.12 * k, .065 * k, .065 * k, C.brass);
+  f.block(x, y + .22 * k, z, .92 * k, 1.04 * k, .045 * k, C.plumDeep);
+  for (const side of [-1, 1]) {
+    f.block(x + side * .43 * k, y + .22 * k, z - .026 * k, .045 * k, 1.04 * k, .02 * k, C.gold);
+    f.block(x + side * .23 * k, y + .11 * k, z, .43 * k, .14 * k, .045 * k, C.plumDeep);
+    f.block(x + side * .34 * k, y + .03 * k, z, .2 * k, .12 * k, .045 * k, C.plumDeep);
+  }
+  mothRelief(f, x, y + .48 * k, z - .06 * k, .62 * k);
+}
 // The village's lamp post: a stone foot, a fluted iron post with gilt rings and one or two globes on scrolled arms.
 export function lampPost(f, x, z, h = 3.2, r = seeded(1), heads = 2) {
   f.block(x, 0, z, .64, .2, .64, C.stone[1]); f.block(x, .2, z, .46, .46, .46, C.iron); f.block(x, .66, z, .34, .1, .34, C.iron);
@@ -488,6 +514,18 @@ export function workshop(f, built, r = seeded(43)) {
   if (built) {
     f.block(4.9, 0, -2.2, 1.8, 1.0, 3.6, C.wood); for (let i = 0; i < 9; i++) f.block(4.9 + ((i % 3) - 1) * .5, 1 + (i / 3 | 0) * .32, -2.2, .34, .34, 3.2, vary(0x8a6040, .1, r)); for (const z of [-.6, -3.8]) f.block(5.8, 0, z, .14, 2.3, .14, C.timber); f.block(5.3, 2.3, -2.2, 1.4, .1, 3.8, pick(C.terracotta, r));
     f.block(-2.6, 0, 1.7, 2.2, 1.0, .9, C.wood); f.block(-2.6, 1.0, 1.7, 2.3, .1, 1, C.woodLight); f.block(-3.1, 1.1, 1.7, .5, .3, .3, 0x9a9aa2); f.block(-2.2, 1.1, 1.6, .7, .08, .2, 0xc9c9cf);
+    // Rowan's repairs have a visible craft signature: pegged oak fascias,
+    // a carved moth in the gable, and a chair taking shape on the old bench.
+    for (const x of [-3.5, -2.5, -1.5, -.5, .5, 1.5, 2.5, 3.5]) {
+      f.block(x, 3.13, .12, .09, .18, .04, C.gold);
+      f.block(x, 3.05, .14, .32, .06, .04, C.woodLight);
+    }
+    // The gable faces sideways; a writer rotates the relief onto that wall.
+    mothRelief({ block(x, y, z, w, h, d, c, g) { f.block(-4.12 + z, y, -3.5 + x, d, h, w, c, g); } }, 0, 4.25, 0, .95, C.woodLight);
+    f.block(-2.1, 1.1, 1.8, .52, .07, .47, C.woodLight);
+    for (const dx of [-.21, .21]) f.block(-2.1 + dx, 1.16, 1.62, .06, .61, .06, C.wood);
+    for (const y of [1.4, 1.64]) f.block(-2.1, y, 1.62, .48, .09, .06, C.woodLight);
+    for (let i = 0; i < 8; i++) f.block(-3.5 + i * .19, 1.105, 1.45 + (i % 3) * .19, .11, .025, .06, C.cream);
     return;
   }
   // Not yet his own: the lean-to fallen in, timber stacked ready under a tarp, a sawhorse and a sign asking for help.
@@ -510,7 +548,22 @@ export function conservatory(f, built, r = seeded(47)) {
   }
   for (let k = 0; k < 7; k++) { const rr = R * Math.cos(k / 7 * Math.PI / 2), y = 3.44 + Math.sin(k / 7 * Math.PI / 2) * 2.3; for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2; if (built || (i + k) % 5) f.block(cx + Math.cos(a) * rr, y, cz + Math.sin(a) * rr, .5, .3, .5, built ? (k % 2 ? 0x9283a9 : 0x756c94) : (k % 2 ? 0x3a3a52 : 0x30304a)); if (i % 2 === 0) f.block(cx + Math.cos(a) * rr * 1.03, y, cz + Math.sin(a) * rr * 1.03, .1, .32, .1, C.iron); } }
   f.block(cx, 5.8, cz, .3, .6, .3, C.gold); for (const s of [-1, 1]) f.block(cx + s * .36, 6.2, cz, .52, .38, .08, C.brass);
-  if (built) { for (let i = 0; i < 8; i++) bush(f, cx - 3.6 + (i % 4) * 2.4, cz + (i < 4 ? 3.7 : -3.7), .8, r, C.green); for (let i = 0; i < 5; i++) f.block(cx - 1.5 + i * .7, .44, cz + 1, .5, 1.6 + (i % 2) * .5, .3, pick([0x7a3d4a, 0x3d4a6a, 0x5a4a2a, 0x6a4a7a], r)); }
+  if (built) {
+    for (let i = 0; i < 8; i++) bush(f, cx - 3.6 + (i % 4) * 2.4, cz + (i < 4 ? 3.7 : -3.7), .8, r, C.green);
+    for (let i = 0; i < 5; i++) f.block(cx - 1.5 + i * .7, .44, cz + 1, .5, 1.6 + (i % 2) * .5, .3, pick([0x7a3d4a, 0x3d4a6a, 0x5a4a2a, 0x6a4a7a], r));
+    // Brass ribs pick out the restored glasshouse against the lilac skyline.
+    // The fine collar sits on its original plinth; no new garden obstacle.
+    for (let i = 0; i < 28; i++) {
+      const a = i / 28 * Math.PI * 2;
+      f.block(cx + Math.cos(a) * 3.08, .43, cz + Math.sin(a) * 3.08, .24, .09, .24, C.brass);
+      if (i % 2 === 0) f.block(cx + Math.cos(a) * 3.05, 3.38, cz + Math.sin(a) * 3.05, .25, .09, .25, C.brass);
+    }
+    for (let k = 0; k < 7; k++) {
+      const a = k / 7 * Math.PI / 2, rr = R * Math.cos(a), y = 3.44 + Math.sin(a) * 2.3;
+      for (let i = 0; i < 4; i++) { const angle = i / 4 * Math.PI * 2; f.block(cx + Math.cos(angle) * rr * 1.03, y + .07, cz + Math.sin(angle) * rr * 1.03, .085, .32, .085, C.brass); }
+    }
+    mothRelief(f, cx, 2.42, cz + 3.14, .75);
+  }
   else { for (let i = 0; i < 40; i++) { const a = r() * Math.PI * 2, y = .5 + r() * 4.5, rr = R * Math.cos(Math.max(0, y - 3.44) / 2.3 * Math.PI / 2) + .15; f.block(cx + Math.cos(a) * rr, y, cz + Math.sin(a) * rr, .3, .3, .3, vary(C.hedge[r() < .5 ? 0 : 1], .14, r)); } for (let i = 0; i < 12; i++) bush(f, cx - 3.4 + r() * 6.8, cz - 3.6 + r() * 7.2, .8, r, C.hedge); for (let i = 0; i < 14; i++) f.block(cx + (r() - .5) * 5, .45, cz + 3 + r() * 1.2, .2, .04, .16, 0x5a5a7a); }
 }
 
@@ -896,7 +949,21 @@ export function mothTree(f, x, z, r = seeded(81)) {
   }
   // Lanterns hung from the boughs, moths of brass among them.
   for (let i = 0; i < 14; i++) { const e = ends[(i * 3) % ends.length], len = .25 + r() * .5, lx = e[0] + (r() - .5) * 1.4, lz = e[2] + (r() - .5) * 1.4, ly = e[1] - e[3] * .5; f.block(lx, ly - len, lz, .03, len, .03, 0x2a2228); lantern(f, lx, ly - len - .62, lz, .9); }
-
+  // The village's heart: a great ivory moth in a brass moon. It sits against
+  // the existing trunk, inside the tree's collision circle, facing the avenue.
+  for (let i = 0; i < 44; i++) {
+    const a = i / 44 * Math.PI * 2;
+    f.block(x + Math.cos(a) * 1.36, 3.18 + Math.sin(a) * 1.36, z - 1.28, .13, .13, .13, i % 4 ? C.brass : C.cream);
+  }
+  mothRelief(f, x, 2.38, z - 1.38, 1.8);
+  // Narrow wish ribbons and warm votives hang in the clear below the crown.
+  // Their tiny glass cores use the existing emissive batch, never new lights.
+  for (let i = 0; i < 8; i++) {
+    const a = i / 8 * Math.PI * 2 + .18, lx = x + Math.cos(a) * 2.35, lz = z + Math.sin(a) * 2.35, y = 2.35 + (i % 3) * .32;
+    f.block(lx, y + .5, lz, .025, 2.45 - (i % 3) * .32, .025, C.brass);
+    lantern(f, lx, y, lz, .55);
+    for (let k = 0; k < 3; k++) f.block(lx + .15 + (k % 2) * .05, y + .76 + k * .22, lz, .12, .23, .045, i % 2 ? C.plum : C.cream);
+  }
 }
 
 // ---- The districts' venues (after the concept sheets) ---------------------------------

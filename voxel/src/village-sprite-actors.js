@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { VILLAGE_SPRITES } from "./content/village-sprite-meta.js";
 import { crispen, crispTexture } from "./crisp-sprites.js";
-import { validVillageSprite, villageFrameShape, villageSpritePose, VILLAGE_PERSON_HEIGHT } from "./village-sprite-math.js";
+import { validVillageSprite, villageFrameShape, villageSpritePose, villagePortraitCrop, VILLAGE_PERSON_HEIGHT } from "./village-sprite-math.js";
 
 // One shared texture per sheet, and one cached plane per authored frame.
 // Actors own their transforms only, so changing cast style cannot free another
@@ -66,9 +66,9 @@ export function tickVillageSprite(root, options = {}) {
 export function villageSpritePortrait(id) {
   if (portraits.has(id)) return portraits.get(id);
   const item = cast.get(id); if (!item || typeof document === "undefined") return null;
-  const f = item.meta.frames[item.meta.actions?.idle?.[0] ?? 0], canvas = document.createElement("canvas");
-  canvas.width = f.w; canvas.height = f.h;
-  canvas.getContext("2d").drawImage(item.sheet.image, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+  const crop = villagePortraitCrop(item.meta), canvas = document.createElement("canvas");
+  canvas.width = crop.width; canvas.height = crop.height;
+  canvas.getContext("2d").drawImage(item.sheet.image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height);
   const data = canvas.toDataURL("image/webp", .9), bytes = Uint8Array.from(atob(data.split(",")[1]), c => c.charCodeAt(0));
   const url = URL.createObjectURL(new Blob([bytes], { type: "image/webp" })); portraits.set(id, url); return url;
 }
