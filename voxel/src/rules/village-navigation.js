@@ -2,6 +2,7 @@
 // rather than the larger garden/decoration reserves round the houses.
 import { PLAN_SCALE as K, DISTRICT_BY_ID, ARRIVAL, FIXTURES, SCENERY } from "../content/village.js";
 import { VILLAGE_DECOR_BY_ID } from "../content/village-decor.js";
+import { villageDecorBounds, villageDecorContains } from "./village-decor-geometry.js";
 import { isWater } from "../village-terrain.js";
 
 export const VILLAGE_WALK_RADIUS = .32;
@@ -45,8 +46,24 @@ const green=DISTRICT_BY_ID.green.polygon,limits={x0:Math.min(...green.map(p=>p[0
 export function villageWalkObstacles(s) {
   const boxes=[...scenery,...buildings,...walls,...tavern];
   boxes.push(body(FIXTURES.stall),body(FIXTURES.noticeboard),body(FIXTURES.bench),body(FIXTURES.pond),{x:FIXTURES.tree.x,z:FIXTURES.tree.z,r:3.4*K},{x:FIXTURES.well.x,z:FIXTURES.well.z,r:FIXTURES.well.r});
-  for(const p of s?.village?.decor?.placed??[]){const d=VILLAGE_DECOR_BY_ID[p.id];if(!d)continue;const a=(p.rotation??0)*Math.PI/180,w=Math.abs(Math.cos(a))*d.w+Math.abs(Math.sin(a))*d.d,h=Math.abs(Math.sin(a))*d.w+Math.abs(Math.cos(a))*d.d;boxes.push({x0:p.x-w/2,z0:p.z-h/2,x1:p.x+w/2,z1:p.z+h/2});}
+  for(const p of s?.village?.decor?.placed??[]){const bounds=villageDecorBounds(p.id,p.x,p.z,p.rotation??0);if(bounds)boxes.push({...bounds,decor:p});}
   return boxes;
+}
+// Placement shares the actual building, fence and water exclusions with walking.
+// A conservative enclosing box keeps every rotated corner off fixed scenery.
+export function villageDecorGroundClear(id,x,z,rotation=0) {
+  const bounds=villageDecorBounds(id,x,z,rotation),def=VILLAGE_DECOR_BY_ID[id];if(!bounds||!def)return false;
+  const {x0,z0,x1,z1}=bounds;
+  if(villageWalkObstacles(null).some(b=>b.r!==undefined?Math.hypot(Math.max(x0,Math.min(x1,b.x))-b.x,Math.max(z0,Math.min(z1,b.z))-b.z)<b.r:x0<b.x1&&x1>b.x0&&z0<b.z1&&z1>b.z0))return false;
+  const a=rotation*Math.PI/180,c=Math.cos(a),sn=Math.sin(a),nx=Math.max(1,Math.ceil(def.w/.4)),nz=Math.max(1,Math.ceil(def.d/.4));
+  for(let i=0;i<=nx;i++)for(let j=0;j<=nz;j++){const u=(i/nx-.5)*def.w,w=(j/nz-.5)*def.d;if(isWater((x+u*c+w*sn)/K,(z-u*sn+w*c)/K))return false;}
+  return true;
+}
+// The owner stays put during arranging; furniture may never be committed over them.
+export function villageDecorWalkClear(s,piece,actor) {
+  if(!piece)return false;
+  const radius=Number.isFinite(actor?.radius)?Math.max(0,actor.radius):VILLAGE_WALK_RADIUS+.08;
+  return !actor||!villageDecorContains(piece.id,piece.x,piece.z,piece.rotation??0,actor.x,actor.z,radius);
 }
 export function villageCellFree(s,x,z,r=VILLAGE_WALK_RADIUS,boxes=villageWalkObstacles(s)) {
   if(![x,z,r].every(Number.isFinite)||r<0)return false;
@@ -56,7 +73,7 @@ export function villageCellFree(s,x,z,r=VILLAGE_WALK_RADIUS,boxes=villageWalkObs
   const atCarriage=Math.abs(x-ARRIVAL.spawn[0])<=3*K-r&&z>=ARRIVAL.back[1]-r&&z<=limits.z0+r;
   if(!onGreen&&!atCarriage)return false;
   if(isWater(x/K,z/K))return false;
-  return !boxes.some(b=>b.r!==undefined?Math.hypot(x-b.x,z-b.z)<b.r+r:x>b.x0-r&&x<b.x1+r&&z>b.z0-r&&z<b.z1+r);
+  return !boxes.some(b=>b.decor?villageDecorContains(b.decor.id,b.decor.x,b.decor.z,b.decor.rotation??0,x,z,r):b.r!==undefined?Math.hypot(x-b.x,z-b.z)<b.r+r:x>b.x0-r&&x<b.x1+r&&z>b.z0-r&&z<b.z1+r);
 }
 // Short axis-sliding steps prevent a jog or a slow device's frame crossing a
 // wall. The closed district gates stay closed even when the scenery is visible.

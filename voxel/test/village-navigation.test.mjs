@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import * as M from "../src/model.js";
 import { ARRIVAL, GATES, NODES, FIXTURES, PLAN_SCALE as K } from "../src/content/village.js";
 import { ELOWEN_HALL, ROWAN_HALL, VELVET_HALL } from "../src/village-models.js";
-import { villageCellFree, villageWalkObstacles, moveVillageWalker, villageHallFree, moveVillageHallWalker, VILLAGE_WALK_RADIUS } from "../src/rules/village-navigation.js";
+import { villageCellFree, villageWalkObstacles, moveVillageWalker, villageHallFree, moveVillageHallWalker, villageDecorGroundClear, villageDecorWalkClear, VILLAGE_WALK_RADIUS } from "../src/rules/village-navigation.js";
 
 const state=()=>M.freshState(), at=(x,z)=>({x:x*K,z:z*K});
 const free=(s,x,z)=>villageCellFree(s,x*K,z*K);
@@ -76,6 +76,21 @@ test("placed furniture collision follows its saved rotation without mutating the
   assert.equal(villageCellFree(s,15*K+.7,18*K,0),true);
   assert.equal(villageCellFree(s,15*K,18*K+.7,0),false);
   const saved=JSON.stringify(s);moveVillageWalker(s,at(14,18),3,2);assert.equal(JSON.stringify(s),saved);
+});
+
+test("turned furniture blocks its body while leaving the enclosing box's empty corners walkable",()=>{
+  const s=state(),p={id:"market-crates",instance:"turned",x:15*K,z:18*K,rotation:45};s.village.decor.placed=[p];
+  assert.equal(villageCellFree(s,p.x,p.z,0),false);
+  assert.equal(villageCellFree(s,p.x+.9,p.z+.9,0),true,"the empty corner of a rotated footprint stays clear");
+  assert.equal(villageCellFree(s,p.x+.5,p.z-.5,.1),false,"the long turned body blocks the walker");
+  assert.equal(villageDecorWalkClear(s,p,{x:p.x,z:p.z}),false,"a preview cannot be confirmed over the owner");
+  assert.equal(villageDecorWalkClear(s,p,{x:p.x+3,z:p.z}),true);
+});
+
+test("placement and walking share the solid fences, buildings and water",()=>{
+  for(const [id,x,z,rotation] of [["stool",14*K,8*K,0],["market-crates",44*K,20*K,45],["stool",FIXTURES.pond.x,FIXTURES.pond.z,0]])assert.equal(villageDecorGroundClear(id,x,z,rotation),false,`${id} cannot overlap fixed scenery`);
+  assert.equal(villageDecorGroundClear("stool",14*K,7*K),true,"clear ground remains available");
+  assert.equal(villageDecorGroundClear("stool",NaN,7*K),false);
 });
 
 test("all hall spawns, doorway thresholds and furniture use local design coordinates",()=>{

@@ -25,7 +25,7 @@ export const foodPriceRange = (s, id) => RECIPE_BY_ID[id] ? { min: Math.ceil(REC
 
 export function buyFoodTruck(s) {
   if (s.paused || !kitchenUnlocked(s) || !s.kitchen || s.kitchen.purchased || s.coins < COOKING.price) return false;
-  s.coins -= COOKING.price; s.kitchen.purchased = true; s.kitchen.recipes = ["wedges"]; s.kitchen.ledger.invested += COOKING.price;
+  s.coins -= COOKING.price; s.kitchen.purchased = true; s.kitchen.recipes = [...new Set(["wedges", ...s.kitchen.recipes])]; s.kitchen.ledger.invested += COOKING.price;
   return true;
 }
 export function quoteIngredientOrder(s, requested) {
@@ -189,10 +189,12 @@ export function updateKitchen(s, dt, events = []) {
 export function restoreKitchen(raw, s, sourceVersion) {
   const k = freshKitchen();
   k.cookAnimations = [...new Set((Array.isArray(raw?.cookAnimations)?raw.cookAnimations:[]).filter(id=>!!RECIPE_BY_ID[id]))];
+  // A neighbour can give a recipe before the farm can buy its first cooker.
+  k.recipes = [...new Set((Array.isArray(raw?.recipes) ? raw.recipes : []).filter(id => RECIPE_BY_ID[id]))];
   if (!raw || typeof raw !== "object" || raw.purchased !== true) return k;
   k.purchased = true;
   for (const u of KITCHEN_UPGRADES) k.upgrades[u.id] = Math.min(u.costs.length, units(raw.upgrades?.[u.id]));
-  k.recipes = [...new Set(["wedges", ...(Array.isArray(raw.recipes) ? raw.recipes.filter(id => RECIPE_BY_ID[id]) : [])])];
+  k.recipes = [...new Set(["wedges", ...k.recipes])];
   // Previously learned bakes remain usable after equipment was introduced.
   if (!(raw.revision >= 2) && !(sourceVersion >= 13) && k.recipes.some(id => ["ghost-cookies", "pumpkin-pie", "cocoa-brownies", "moonlight-tart"].includes(id))) k.upgrades["truck-oven"] = 1;
   for (const i of INGREDIENTS) k.pantry[i.id] = units(raw.pantry?.[i.id]);

@@ -14,9 +14,15 @@ import { decorById, ownedCopies } from "./house.js";
 import { costumeById } from "./wardrobe.js";
 import { visitorUpgradeCost } from "./selling.js";
 import { unlockLevel } from "./unlocks.js";
-import { RECIPE_BY_ID, INGREDIENT_BY_ID } from "../content/cooking.js";
+import { RECIPE_BY_ID, INGREDIENT_BY_ID, COOKING } from "../content/cooking.js";
+import { availableFood } from "./cooking-sales.js";
+import { villageMaterialCapacity, villageGatheringYield, villageGatheringWait } from "./village-upgrades.js";
+import { villageDecorBounds } from "./village-decor-geometry.js";
+import { villageDecorGroundClear } from "./village-navigation.js";
 
 export { VILLAGE_LEVEL };
+export * from "./village-upgrades.js";
+export { villageDecorBounds } from "./village-decor-geometry.js";
 const PLAYABLE = FOLK.filter((f) => f.playable).map((f) => f.id);
 const count = (n) => (Number.isFinite(n) && n > 0 ? Math.floor(n) : 0);
 const time = (n) => (Number.isFinite(n) && n > 0 ? n : 0);
@@ -59,7 +65,7 @@ export function restoreVillage(raw) {
       gifts: (Array.isArray(f.gifts) ? f.gifts : []).filter((t) => Number.isFinite(t) && t > 0).slice(-FRIENDSHIP.giftsPer).map((t) => Math.min(FRIENDSHIP.giftWait, t)),
       seen: (Array.isArray(f.seen) ? f.seen : []).filter((c) => typeof c === "string").slice(-40) };
   }
-  for (const m of MATERIALS) v.materials[m.id] = Math.min(STORE_BASE, count(raw.materials?.[m.id]));
+  for (const m of MATERIALS) v.materials[m.id] = Math.min(villageMaterialCapacity(v), count(raw.materials?.[m.id]));
   for (const n of NODES) v.nodes[n.id] = Math.min(MATERIAL_BY_ID[n.material].respawn, time(raw.nodes?.[n.id]));
   v.stall = { rotation: count(raw.stall?.rotation), refreshIn: Math.min(STALL.refresh, time(raw.stall?.refreshIn)) || STALL.refresh, bought: {} };
   for (const [id, n] of Object.entries(raw.stall?.bought ?? {})) if (typeof id === "string") v.stall.bought[id] = Math.min(9, count(n));
@@ -114,7 +120,7 @@ export function villageItemName(item, n = 1) {
 export function villageItemCount(s, item) {
   const [kind, id] = item.split(":");
   if (kind === "pumpkin") return id === "any" ? available(s) : VARIETY_BY_ID[id] === undefined ? 0 : available(s, VARIETY_BY_ID[id]);
-  if (kind === "food") return count(s.kitchen?.food?.[id]);
+  if (kind === "food") return count(availableFood(s, id));
   if (kind === "pantry") return count(s.kitchen?.pantry?.[id]);
   if (kind === "material") return count(s.village.materials[id]);
   return 0;
@@ -145,7 +151,7 @@ function itemValue(item) {
 export function giftable(s) {
   const out = [];
   VARIETIES.forEach((x, i) => { const n = available(s, i); if (n) out.push({ item: "pumpkin:" + x.id, n }); });
-  for (const [id, n] of Object.entries(s.kitchen?.food ?? {})) if (n > 0 && RECIPE_BY_ID[id]) out.push({ item: "food:" + id, n });
+  for (const id of Object.keys(s.kitchen?.food ?? {})) { const n = villageItemCount(s, "food:" + id); if (n > 0 && RECIPE_BY_ID[id]) out.push({ item: "food:" + id, n }); }
   for (const [id, n] of Object.entries(s.kitchen?.pantry ?? {})) if (n > 0 && INGREDIENT_BY_ID[id]) out.push({ item: "pantry:" + id, n });
   for (const m of MATERIALS) if (s.village.materials[m.id] > 0) out.push({ item: "material:" + m.id, n: s.village.materials[m.id] });
   return out;
@@ -188,7 +194,7 @@ export function grantVillage(s, rewards) {
     if (r.kind === "coins") bonusCoins(s, r.amount);
     else if (r.kind === "village-decor") v.decor.owned[r.id] = (v.decor.owned[r.id] ?? 0) + (r.amount ?? 1);
     else if (r.kind === "decor") { if (!grantHouseDecor(s, r.id)) { bonusCoins(s, 60); note.duplicate = true; } }
-    else if (r.kind === "material") v.materials[r.id] = Math.min(STORE_BASE, (v.materials[r.id] ?? 0) + r.amount);
+    else if (r.kind === "material") v.materials[r.id] = Math.min(villageMaterialCapacity(s), (v.materials[r.id] ?? 0) + r.amount);
     else if (r.kind === "recipe") { const k = s.kitchen; if (k && RECIPE_BY_ID[r.id] && !k.recipes.includes(r.id)) k.recipes.push(r.id); else { bonusCoins(s, 80); note.duplicate = true; } }
     else if (r.kind === "costume") { if (costumeById[r.id] && !s.wardrobe.owned.includes(r.id)) s.wardrobe.owned.push(r.id); else { bonusCoins(s, 80); note.duplicate = true; } }
     else if (r.kind === "upgrade") {
@@ -269,7 +275,7 @@ export function questStep(s, id) { const q = QUEST_BY_ID[id], state = s.village.
 // How far along a step is, for the journal.
 export function stepProgress(s, id) {
   const step = questStep(s, id), state = s.village.quests[id]; if (!step) return null;
-  if (COUNTED.has(step.kind)) return { have: Math.min(step.n, metric(s, step.kind) - (state.base ?? metric(s, step.kind))), need: step.n };
+  if (COUNTED.has(step.kind)) return { have: Math.max(0, Math.min(step.n, metric(s, step.kind) - (state.base ?? metric(s, step.kind)))), need: step.n };
   if (step.kind === "gather") return { have: Math.min(step.n, s.village.materials[step.material] ?? 0), need: step.n };
   if (step.kind === "give") return { have: Math.min(step.n, villageItemCount(s, step.item)), need: step.n };
   if (step.kind === "deliver") return { have: Object.entries(step.cost).filter(([m, n]) => s.village.materials[m] >= n).length, need: Object.keys(step.cost).length, cost: step.cost };
@@ -306,7 +312,7 @@ function finishQuest(s, id) {
   s.village.claims[key] = true;
   const r = q.reward, v = s.village, given = [], events = [];
   if (r.coins) { bonusCoins(s, r.coins); given.push({ kind: "coins", amount: r.coins }); }
-  for (const [m, n] of Object.entries(r.materials ?? {})) { v.materials[m] = Math.min(STORE_BASE, (v.materials[m] ?? 0) + n); given.push({ kind: "material", id: m, amount: n }); }
+  for (const [m, n] of Object.entries(r.materials ?? {})) { v.materials[m] = Math.min(villageMaterialCapacity(s), (v.materials[m] ?? 0) + n); given.push({ kind: "material", id: m, amount: n }); }
   for (const [d, n] of Object.entries(r.villageDecor ?? {})) { v.decor.owned[d] = (v.decor.owned[d] ?? 0) + n; given.push({ kind: "village-decor", id: d, amount: n }); }
   for (const d of r.decor ?? []) given.push(...grantVillage(s, [{ kind: "decor", id: d }]));
   for (const u of r.unlock ?? []) if (!v.unlocks.includes(u)) v.unlocks.push(u);
@@ -329,16 +335,17 @@ export function finishTalk(s, questId, who) {
   return [{ type: "quest-step", quest: questId, step: s.village.quests[questId].step - 1 }, ...advanceQuests(s)];
 }
 // A hand-over step at this resident (materials, coins or farm items), and whether it can be done now.
-export function handOver(s, who) {
+export function handOver(s, who, questId = null) {
   for (const q of activeQuests(s)) {
+    if (questId && q.id !== questId) continue;
     const step = questStep(s, q.id); if (!step || step.who !== who || !["deliver", "pay", "give"].includes(step.kind)) continue;
     const ok = step.kind === "deliver" ? Object.entries(step.cost).every(([m, n]) => (s.village.materials[m] ?? 0) >= n) : step.kind === "pay" ? s.coins >= step.coins : villageItemCount(s, step.item) >= step.n;
     return { quest: q.id, step, ok };
   }
   return null;
 }
-export function doHandOver(s, who) {
-  const h = handOver(s, who); if (!h?.ok) return null;
+export function doHandOver(s, who, questId = null) {
+  const h = handOver(s, who, questId); if (!h?.ok) return null;
   const { step } = h;
   if (step.kind === "deliver") for (const [m, n] of Object.entries(step.cost)) s.village.materials[m] -= n;
   else if (step.kind === "pay") s.coins -= step.coins;
@@ -361,8 +368,8 @@ export const canGather = (s) => s.village.unlocks.includes("gathering");
 export const nodeReady = (s, id) => !!NODE_BY_ID[id] && districtOpen(s, NODE_BY_ID[id].district) && (s.village.nodes[id] ?? 0) <= 0;
 export function gatherNode(s, id) {
   const n = NODE_BY_ID[id], v = s.village; if (!n || !canGather(s) || !nodeReady(s, id)) return null;
-  const m = MATERIAL_BY_ID[n.material], room = STORE_BASE - (v.materials[m.id] ?? 0); if (room <= 0) return { full: true, material: m.id };
-  const got = Math.min(room, m.yield); v.materials[m.id] += got; v.nodes[id] = m.respawn; v.stats.gathered += got;
+  const m = MATERIAL_BY_ID[n.material], room = villageMaterialCapacity(s) - (v.materials[m.id] ?? 0); if (room <= 0) return { full: true, material: m.id };
+  const got = Math.min(room, villageGatheringYield(s, m.id)); v.materials[m.id] += got; v.nodes[id] = villageGatheringWait(s, m.id); v.stats.gathered += got;
   return { material: m.id, amount: got, events: advanceQuests(s) };
 }
 export const districtOpen = (s, id) => id === "green" && s.village.invited;
@@ -392,11 +399,6 @@ export function buyFromStall(s, key) {
 // Where decor may go: on the Green (south band, less the Moor's inset), off the roads,
 // homes, gathering spots and the square's fixtures, and clear of other decor.
 const GREEN = GREEN_AREA;
-function corners(def, x, z, rotation) {
-  const a = rotation * Math.PI / 180, c = Math.cos(a), sn = Math.sin(a), hw = def.w / 2, hd = def.d / 2;
-  return [[-hw, -hd], [hw, -hd], [hw, hd], [-hw, hd]].map(([u, w]) => [x + u * c + w * sn, z - u * sn + w * c]);
-}
-function box(pts) { const xs = pts.map((p) => p[0]), zs = pts.map((p) => p[1]); return { x0: Math.min(...xs), x1: Math.max(...xs), z0: Math.min(...zs), z1: Math.max(...zs) }; }
 const overlap = (a, b, gap = 0) => a.x0 < b.x1 + gap && b.x0 < a.x1 + gap && a.z0 < b.z1 + gap && b.z0 < a.z1 + gap;
 const roadBoxes = ROADS.filter((r) => r.kind !== "future-spur").flatMap((r) => r.points.slice(1).map((p, i) => {
   const q = r.points[i], h = r.width / 2; return { x0: Math.min(p[0], q[0]) - h, x1: Math.max(p[0], q[0]) + h, z0: Math.min(p[1], q[1]) - h, z1: Math.max(p[1], q[1]) + h };
@@ -406,28 +408,44 @@ const homeBoxes = PLOTS.filter((p) => p.kind !== "reservation").map((p) => ({ x0
 const nodeBoxes = NODES.map((n) => ({ x0: n.x - 1, x1: n.x + 1, z0: n.z - 1, z1: n.z + 1 }));
 const MOOR_INSET = MOOR_CORNER;
 function decorRoom(v, id, x, z, rotation, ignore) {
-  const def = VILLAGE_DECOR_BY_ID[id]; if (!def) return false;
-  const b = box(corners(def, x, z, rotation));
+  const b = villageDecorBounds(id, x, z, rotation); if (!b) return false;
   if (b.x0 < GREEN.x0 || b.x1 > GREEN.x1 || b.z0 < GREEN.z0 || b.z1 > GREEN.z1 || overlap(b, MOOR_INSET)) return false;
   if ([...roadBoxes, ...fixtureBoxes, ...homeBoxes, ...nodeBoxes].some((o) => overlap(b, o))) return false;
-  return !v.decor.placed.some((p) => p.instance !== ignore && overlap(b, box(corners(VILLAGE_DECOR_BY_ID[p.id], p.x, p.z, p.rotation)), .05));
+  if (!villageDecorGroundClear(id, x, z, rotation)) return false;
+  return !v.decor.placed.some((p) => p.instance !== ignore && overlap(b, villageDecorBounds(p.id, p.x, p.z, p.rotation), .05));
 }
 export const villageDecorFits = (s, id, x, z, rotation = 0, ignore = null) => decorRoom(s.village, id, x, z, rotation, ignore);
+const decorTransform = (x, z, rotation) => ({ x: Math.round(x * 20) / 20, z: Math.round(z * 20) / 20, rotation: ((Math.round(rotation) % 360) + 360) % 360 });
 export function placeVillageDecor(s, id, x, z, rotation = 0) {
-  const v = s.village; if (!(v.decor.owned[id] > 0) || !villageDecorFits(s, id, x, z, rotation)) return null;
-  const p = { instance: "v" + v.decor.next++, id, x: Math.round(x * 20) / 20, z: Math.round(z * 20) / 20, rotation: ((Math.round(rotation) % 360) + 360) % 360 };
+  const v = s.village, t = decorTransform(x, z, rotation); if (!(v.decor.owned[id] > 0) || !villageDecorFits(s, id, t.x, t.z, t.rotation)) return null;
+  let instance; do { instance = "v" + v.decor.next++; } while (v.decor.placed.some((p) => p.instance === instance));
+  const p = { instance, id, ...t };
   v.decor.owned[id]--; v.decor.placed.push(p); v.stats.placed++;
   return { piece: p, events: advanceQuests(s) };
 }
 export function moveVillageDecor(s, instance, x, z, rotation) {
   const p = s.village.decor.placed.find((q) => q.instance === instance); if (!p) return false;
-  const r = Number.isFinite(rotation) ? ((Math.round(rotation) % 360) + 360) % 360 : p.rotation;
-  if (!villageDecorFits(s, p.id, x, z, r, instance)) return false;
-  p.x = Math.round(x * 20) / 20; p.z = Math.round(z * 20) / 20; p.rotation = r; advanceQuests(s); return true;
+  const t = decorTransform(x, z, rotation === undefined ? p.rotation : rotation);
+  if (!villageDecorFits(s, p.id, t.x, t.z, t.rotation, instance)) return false;
+  Object.assign(p, t); advanceQuests(s); return true;
 }
 export function storeVillageDecor(s, instance) {
   const v = s.village, i = v.decor.placed.findIndex((q) => q.instance === instance); if (i < 0) return false;
   const [p] = v.decor.placed.splice(i, 1); v.decor.owned[p.id] = (v.decor.owned[p.id] ?? 0) + 1; return true;
+}
+// Undo changes the layout only. Recompute storage from the current total so
+// purchases and quest prizes earned since the snapshot are never lost or copied.
+export function restoreVillageDecor(s, snapshot) {
+  if (!Array.isArray(snapshot?.placed)) return false;
+  const v = s.village, totals = { ...v.decor.owned }, placed = [];
+  for (const p of v.decor.placed) totals[p.id] = (totals[p.id] ?? 0) + 1;
+  for (const p of snapshot.placed) {
+    if (!p || typeof p.instance !== "string" || !totals[p.id] || placed.some((q) => q.instance === p.instance)) return false;
+    if (!decorRoom({ decor: { placed } }, p.id, p.x, p.z, p.rotation ?? 0, null)) return false;
+    totals[p.id]--; placed.push({ instance: p.instance, id: p.id, x: p.x, z: p.z, rotation: p.rotation ?? 0 });
+  }
+  v.decor.placed = placed; v.decor.owned = totals;
+  return true;
 }
 // Where a resident's door is, for a step that asks for decor near it.
 export function doorOf(who) { const plot = PLOTS.find((p) => p.resident === who); return plot ? { x: plot.door[0], z: plot.door[1] } : { x: ARRIVAL.noticeboard[0], z: ARRIVAL.noticeboard[1] }; }
@@ -441,11 +459,19 @@ function placedTags(s, near) {
 // The favour a resident would ask for now (one at a time; a new one a few minutes after the last).
 export function favourOf(s, who) {
   const v = s.village, f = v.favours[who]; if (!f || !friendshipWith(s, who)?.met) return null;
+  // Earlier saves could request a gifted recipe years before it could be cooked.
+  if (FAVOUR_BY_ID[f.id]?.item.startsWith("food:") && !favourAvailable(s, FAVOUR_BY_ID[f.id])) f.id = null;
   if (f.id) return FAVOUR_BY_ID[f.id];
   if (f.readyIn > 0) return null;
-  const pool = FAVOURS.filter((x) => x.who === who && x.level <= level(s) && (!x.when || x.when(s)));
+  const pool = FAVOURS.filter((x) => x.who === who && favourAvailable(s, x));
   if (!pool.length) return null;
   f.id = pool[Math.floor(roll(v) * pool.length)].id; return FAVOUR_BY_ID[f.id];
+}
+function favourAvailable(s, f) {
+  if (!f || f.level > level(s) || f.when && !f.when(s)) return false;
+  if (!f.item.startsWith("food:")) return true;
+  const recipe = RECIPE_BY_ID[f.item.slice(5)];
+  return !!s.kitchen?.purchased && !!recipe && recipe.level <= level(s) && s.kitchen.recipes.includes(recipe.id);
 }
 export function doFavour(s, who) {
   const v = s.village, f = v.favours[who], fav = f?.id && FAVOUR_BY_ID[f.id];
@@ -478,7 +504,7 @@ function settleAlmanac(s) {
   if (v.almanac.page.length && v.almanac.page.every((p) => p.done)) {
     const prize = ALMANAC_PRIZES[v.almanac.prize % ALMANAC_PRIZES.length], given = [];
     if (prize.coins) { bonusCoins(s, prize.coins); given.push({ kind: "coins", amount: prize.coins }); }
-    for (const [m, n] of Object.entries(prize.materials ?? {})) { v.materials[m] = Math.min(STORE_BASE, (v.materials[m] ?? 0) + n); given.push({ kind: "material", id: m, amount: n }); }
+    for (const [m, n] of Object.entries(prize.materials ?? {})) { v.materials[m] = Math.min(villageMaterialCapacity(s), (v.materials[m] ?? 0) + n); given.push({ kind: "material", id: m, amount: n }); }
     for (const [d, n] of Object.entries(prize.villageDecor ?? {})) { v.decor.owned[d] = (v.decor.owned[d] ?? 0) + n; given.push({ kind: "village-decor", id: d, amount: n }); }
     v.almanac.prize++; v.almanac.pages++; events.push({ type: "almanac-page", rewards: given }); drawPage(s);
   }
@@ -506,6 +532,38 @@ export function questStepText(s, id) {
   const step = questStep(s, id); if (!step) return "";
   const p = stepProgress(s, id);
   return p && p.need > 1 && !["deliver", "place"].includes(step.kind) ? `${step.text} (${p.have}/${p.need})` : step.text;
+}
+// Concrete requirements for the current Journal card and resident hand-over.
+// Materials retain their individual counts rather than a misleading 3/4 total.
+export function questRequirementRows(s, id) {
+  const step = questStep(s, id); if (!step) return [];
+  const row = (key, label, have, need) => ({ key, label, have, need, complete: have >= need });
+  if (step.kind === "deliver") return Object.entries(step.cost).map(([m, n]) => row(m, MATERIAL_BY_ID[m].name, s.village.materials[m] ?? 0, n));
+  if (step.kind === "gather") return [row(step.material, MATERIAL_BY_ID[step.material].name, s.village.materials[step.material] ?? 0, step.n)];
+  if (step.kind === "give") return [row(step.item, villageItemName(step.item, step.n), villageItemCount(s, step.item), step.n)];
+  if (step.kind === "pay") return [row("coins", "Coins", s.coins, step.coins)];
+  if (step.kind === "place") { const tags = placedTags(s, step.near), names = { light: "A lamp or lantern", seat: "A stool or bench", books: "A reading stand or book cart" }; return step.tags.map((tag) => row(tag, names[tag] ?? tag, +tags.has(tag), 1)); }
+  const p = stepProgress(s, id);
+  return p ? [row(step.kind, step.text, p.have, p.need)] : [];
+}
+// Practical next actions for farm steps whose equipment is bought elsewhere.
+export function questStepHint(s, id) {
+  const step = questStep(s, id); if (!step) return "";
+  if (step.kind === "cook") return !s.kitchen?.purchased ? `Cooking opens at patch level ${COOKING.level}. Buy Maisie's food truck for £${COOKING.price}; then cook a batch of pumpkin wedges.` : "Return to the farm and finish a batch at Maisie's truck or your home kitchen. Earlier batches do not count.";
+  if (step.kind === "carve") return s.estate?.placed?.some((p) => p.id === "carving-bench") ? "Return to your garden's carving bench and finish a new jack-o'-lantern." : "Buy a carving bench for the garden, place it, then finish a jack-o'-lantern at the bench.";
+  if (step.kind === "place") return "Place all three pieces within the reading nook by Elowen's door. Rowan always stocks a stool; your letter reward includes a reading stand.";
+  if (step.kind === "find") return step.item === "page-3" ? "Take the carriage home. This page is beside your pumpkin patch." : "Look for the loose page marked on the Green's map.";
+  if (step.kind === "deliver" || step.kind === "give" || step.kind === "pay") return `Bring the full amount to ${FOLK_BY_ID[step.who].name}; it is taken only when you hand it over.`;
+  return "";
+}
+// Rewards settle on the farm clock; the panel never needs a claim button.
+export function almanacPrize(s) {
+  const prize = ALMANAC_PRIZES[s.village.almanac.prize % ALMANAC_PRIZES.length];
+  return [
+    ...(prize.coins ? [{ kind: "coins", amount: prize.coins }] : []),
+    ...Object.entries(prize.materials ?? {}).map(([id, amount]) => ({ kind: "material", id, amount })),
+    ...Object.entries(prize.villageDecor ?? {}).map(([id, amount]) => ({ kind: "village-decor", id, amount })),
+  ];
 }
 // The one quest to show on screen: the story first, then the oldest friendship quest.
 export function trackedQuest(s) { const list = activeQuests(s); return list.find((q) => q.kind === "story") ?? list[0] ?? null; }
