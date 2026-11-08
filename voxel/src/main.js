@@ -14,6 +14,8 @@ import { createScene } from "./scene.js";
 import { pumpkinTemplate } from "./pumpkins.js";
 import { createLevelCelebration } from "./ui/level-celebration.js";
 import { createAudio } from "./ui/audio.js";
+import { createNarration } from "./ui/narration.js";
+import { VOICE_CLIPS } from "./ui/voice-clips.js";
 import { createMazeRideUI } from "./ui/maze-ride-ui.js";
 import { createMazeAudio } from "./ui/maze-audio.js";
 import { createHayrideAudio } from "./ui/hayride-audio.js";
@@ -70,7 +72,7 @@ document.addEventListener("visibilitychange", () => document.hidden && save());
 const prefs = (() => {
   // Mist and the moving lake start off for anyone who has asked for less motion.
   const still = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const base = { renderQuality: "sharp", frameRate: "auto", glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false, mist: !still, lakeLights: !still, mazeSound: true, mazeVolume: .45 };
+  const base = { renderQuality: "sharp", frameRate: "auto", glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false, voiceEnabled: true, voiceVolume: .85, mist: !still, lakeLights: !still, mazeSound: true, mazeVolume: .45 };
   try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; }
 })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
@@ -78,6 +80,7 @@ const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.s
 // TV mode also lightens the picture and paces the frames for a cast (scene.js, frame-pacing.js).
 const tv = createTvMode({ prefs, savePrefs, notice: (text) => notice(text), onChange: (on) => { try { scene.setTvProfile(on); scene.setFramePacing({ mode: prefs.frameRate, tv: on }); } catch { /* the scene isn't made yet; it takes TV mode as it starts */ } } });
 const audio = createAudio(prefs), mazeAudio = createMazeAudio(prefs), hayrideAudio = createHayrideAudio(prefs), carvingAudio = createCarvingAudio(prefs);
+const narration = createNarration({ prefs, clips: VOICE_CLIPS, duck: (on) => audio.setNarrationActive(on) });
 const mazeUI = createMazeRideUI({ prefs, savePrefs,
   onStart: startMazeRide, onPause: pauseMazeRide, onExit: exitMazeRide, onReplay: replayMazeRide,
   onSound: on => mazeAudio.setMuted(!on), onVolume: value => mazeAudio.setVolume(value),
@@ -681,6 +684,7 @@ const thumbs = (() => {
 // still while it plays, and the patch counts it as seen once it ends.
 let pausedBeforeIntro = false;
 const intro = createIntro({
+  narration, savePrefs,
   people: PEOPLE,
   portrait: (who) => scene.portrait(who === "skyla" ? "skyla" : state.wardrobe.equipped[who]),
   pumpkin: (v) => thumbs[v],
@@ -691,7 +695,8 @@ const intro = createIntro({
 
 // The menus. Each sheet module gets this small toolkit.
 const ui = {
-  get state() { return state; }, scene, prefs, savePrefs, audio, save, tv,
+  get state() { return state; }, scene, prefs, savePrefs, audio, narration, save, tv,
+  previewVoice() { const clip = Object.values(VOICE_CLIPS).find((line) => line.speaker === "natalie") ?? Object.values(VOICE_CLIPS)[0]; return clip ? narration.play(clip.speaker, clip.text) : Promise.resolve(false); },
   get playControls(){return playControls;}, followHomeGoal, homeTab:t=>sheets.home.setTab(t),
   notice, say, tone: (f) => audio.tone(f), playHomeInstrument,
   draw: () => draw(), openSheet: (tab) => openSheet(tab), closeSheet: () => closeSheet(),
@@ -718,7 +723,7 @@ setTimeout(() => {
   prefs.saveNudgeAt = new Date().toISOString(); savePrefs();
   notice("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
 }, 60000);
-villageGame = createVillageGame({ state: () => state, scene, save, notice,
+villageGame = createVillageGame({ state: () => state, scene, save, notice, narration, savePrefs,
   closeMenus() { closeSheet(); upgradeMenu?.close(); home.tools.select(null); lifeActivity?.cancel(); playControls?.close(); playControls?.cursor.hide(); },
   onLeave() { renderPlace(); render(); }, onRender: renderPlace,
 });
@@ -772,6 +777,7 @@ function openSheet(tab) {
   if (mazeUI.active) exitMazeRide();
   if(!openTab)sheetReturnFocus=document.activeElement instanceof HTMLElement&&document.activeElement!==document.body?document.activeElement:null;
   menuMemory.leave();
+  sheets[openTab]?.closed?.();
   // Only an open Manage menu has set manage-open, so upgradeMenu exists by then.
   stockPopover.close(); if (document.body.classList.contains("manage-open")) upgradeMenu.close();
   if (foyerTools.active) foyerTools.cancel();
@@ -790,7 +796,7 @@ function openSheet(tab) {
   markTab();
   $("sheet-close").focus({ preventScroll: true });
 }
-function closeSheet() { const wasOpen=!!openTab;scene.setMenuOpen(false);menuMemory.leave();holdToBuy?.cancel();document.body.classList.remove("menu-open","menu-centred"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
+function closeSheet() { const wasOpen=!!openTab;sheets[openTab]?.closed?.();scene.setMenuOpen(false);menuMemory.leave();holdToBuy?.cancel();document.body.classList.remove("menu-open","menu-centred"); openTab = null; $("sheet").hidden = true; markTab();if(wasOpen&&sheetReturnFocus?.isConnected&&!sheetReturnFocus.closest("#sheet")&&sheetReturnFocus.getClientRects().length)sheetReturnFocus.focus({preventScroll:true});sheetReturnFocus=null; }
 function markTab() {
   const active = openTab ? TABS[openTab] : ["foyer", "maze", "hayride"].includes(scene.place?.kind) ? "attractions" : ["room", "estate"].includes(scene.place?.kind) ? "home" : scene.place?.kind === "shop" ? "shop" : "patch";
   document.querySelectorAll(".tab").forEach((t) => { const on = t.dataset.tab === active; t.classList.toggle("active", on); t.setAttribute("aria-pressed", String(on)); });
@@ -958,7 +964,7 @@ const mazeDiagnostics = {
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
 const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), hold: on => scene.holdHayrideRide(on), get status() { return scene.hayrideRideStatus; } };
-window.PumpkinVoxel = { village: villageGame, openVillage, lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, get fishingUI() { return fishingUI; }, get padArrange() { return padArrange; }, startFishing, emptyLakeTraps, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, openShopSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
+window.PumpkinVoxel = { village: villageGame, openVillage, lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, get fishingUI() { return fishingUI; }, get padArrange() { return padArrange; }, startFishing, emptyLakeTraps, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, openShopSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, narration, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";

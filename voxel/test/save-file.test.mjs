@@ -17,12 +17,13 @@ function farm() {
 }
 
 test("a farm saved to a file loads back the same", () => {
-  const s = farm(), file = buildSaveFile(s, { prefs: { music: false }, savedAt: "2026-11-04T10:00:00.000Z" });
+  const s = farm(), prefs = { music: false, voiceEnabled: false, voiceVolume: .45 };
+  const file = buildSaveFile(s, { prefs, savedAt: "2026-11-04T10:00:00.000Z" });
   assert.equal(file.format, SAVE_FILE_FORMAT); assert.equal(file.fileVersion, SAVE_FILE_VERSION); assert.equal(file.stateVersion, M.STATE_VERSION);
   assert.deepEqual(file.summary, saveSummary(s));
   const got = readSaveFile(JSON.stringify(file));
   assert.ok(got.ok); same(got.state, s);
-  assert.equal(got.savedAt, "2026-11-04T10:00:00.000Z"); assert.deepEqual(got.prefs, { music: false });
+  assert.equal(got.savedAt, "2026-11-04T10:00:00.000Z"); assert.deepEqual(got.prefs, prefs);
   assert.equal(got.newer, false); assert.equal(got.edited, false); assert.equal(got.legacy, false);
   assert.equal(got.state.house.placed.length, s.house.placed.length);
   // Pretty-printed, or with a byte-order mark from a text editor, it reads the same.

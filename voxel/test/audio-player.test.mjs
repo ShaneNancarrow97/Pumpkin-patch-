@@ -6,12 +6,13 @@ import { build } from "esbuild";
 test("MIDI endings advance shuffle automatically; mute and repeat remain reliable", async () => {
   const bundle = await build({ entryPoints: [new URL("../src/ui/audio.js", import.meta.url).pathname], bundle: true, platform: "node", format: "cjs", loader: { ".mid": "binary" }, write: false });
   let time = 0, scheduled = null;
-  const handlers = {}, param = () => ({ value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {}, setTargetAtTime() {}, cancelScheduledValues() {} });
+  const gains = [];
+  const handlers = {}, param = () => ({ value: 0, setValueAtTime(v) { this.value = v; }, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {}, setTargetAtTime(v) { this.value = v; }, cancelScheduledValues() {} });
   const node = () => ({ connect() { return this; }, disconnect() {}, gain: param(), frequency: param() });
   class AudioContext {
     sampleRate = 16; state = "running"; destination = node();
     get currentTime() { return time; }
-    createGain() { return node(); }
+    createGain() { const gain = node(); gains.push(gain); return gain; }
     createBiquadFilter() { return node(); }
     createDynamicsCompressor() { return { ...node(), threshold: param(), knee: param(), ratio: param() }; }
     createBuffer() { return { getChannelData: () => new Float32Array(16) }; }
@@ -25,6 +26,15 @@ test("MIDI endings advance shuffle automatically; mute and repeat remain reliabl
   const audio = sandbox.module.exports.createAudio(prefs);
   assert.equal(audio.status.playing, false, "waits for the first gesture");
   handlers.pointerdown(); assert.equal(audio.status.track, "parade"); assert.equal(audio.status.playing, true);
+  const musicGain = () => gains[0].gain.value;
+  audio.setSceneGain(.08); audio.setNarrationActive(true);
+  assert.equal(musicGain(), .32 * .22 * .08 * .25, "narration composes with scene attenuation");
+  assert.equal(prefs.musicVolume, .32, "ducking never changes the saved music level");
+  audio.setVolume(.5); assert.equal(musicGain(), .5 * .22 * .08 * .25);
+  audio.setSceneGain(1); assert.equal(musicGain(), .5 * .22 * .25);
+  audio.setNarrationActive(false); assert.equal(musicGain(), .5 * .22);
+  assert.equal(audio.status.track, "parade", "ducking does not restart or advance music");
+  audio.setVolume(.32);
   const played = [];
   for (let i = 0; i < 9; i++) {
     const previous = audio.status.track; time += audio.status.duration + .5; scheduled();

@@ -13,6 +13,8 @@ import { Voxels } from "./voxels.js";
 import { buildEstateDecor } from "./house-estate-world.js";
 import { VILLAGE_DECOR_BY_ID } from "./content/village-decor.js";
 import { FIXTURES, NODES, PLAN_SCALE } from "./content/village.js";
+import { TOUR } from "./content/village-tour.js";
+export { TOUR } from "./content/village-tour.js";
 import { createVillageLife } from "./village-life.js";
 import { storyObjectsHere, nodeReady } from "./rules/village.js";
 import { attachPieceGestures, createFraming } from "./piece-gestures.js";
@@ -23,21 +25,6 @@ import { visibleVillagePick } from "./village-sprite-math.js";
 const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z), K = PLAN_SCALE;
 // How high the ground is at a world point (the terrain is drawn on the design grid).
 export const groundAt = (x, z) => terrainHeight(x / K, z / K) * K;
-// The grand tour (realm coordinates, drawn up on the design grid and scaled into the world):
-// the camera's place [x, height, z], where it looks, and the title that rises there.
-export const TOUR = Object.freeze([
-  { at: [58, 30, -16], look: [58, 2, 22], title: "Mothlight Village", sub: "Over the hill from your farm" },
-  { at: [58, 10, 4], look: [57, 1, 24], title: "Hollow Green", sub: "The square, the well and the noticeboard" },
-  { at: [49, 8, 14], look: [40, 2, 22], title: "Elowen's library", sub: "A conservatory, one day" },
-  { at: [62, 7, 13], look: [72, 1.5, 19], title: "Rowan's workshop", sub: "More plans than walls" },
-  { at: [100, 16, 46], look: [102, 5, 21], title: "The Velvet Bat", sub: "A tavern for bats and night folk · Vesper keeps the door" },
-  { at: [120, 22, 22], look: [144, 5, 52], title: "Carnival Moor", sub: "Corvus's tents and the Baron's manor · level 12" },
-  { at: [104, 26, 96], look: [84, 0, 122], title: "Mirror Marsh", sub: "Where the observatory waits · level 15" },
-  { at: [62, 22, 52], look: [62, 8, 80], title: "Lantern Quarry", sub: "Beyond the broken bridge · opens at level 9" },
-  { at: [16, 22, 48], look: [-12, 4, 82], title: "Moonroot Copse", sub: "Mabel and Tansy, behind the brambles · level 6" },
-  { at: [60, 70, -10], look: [82, 18, 170], title: "…and beyond", sub: "" },
-  { at: [57, 6.5, 13], look: [56, 1.2, 24], title: "Welcome to Mothlight", sub: "" },
-].map((p) => Object.freeze({ ...p, at: p.at.map((v) => v * K), look: p.look.map((v) => v * K) })));
 const TOUR_SECONDS = 4.6;
 // Buildings you can go inside: their hall, its plan (size, spawn, host's post, where a walker can't go), the host
 // who keeps it, and the front door on the design grid.
@@ -234,21 +221,25 @@ export function createVillageView(canvas, state, hooks = {}) {
   const curve = (key) => new THREE.CatmullRomCurve3(TOUR.map((p) => W(p[key][0], p[key][2], p[key][1])), false, "centripetal");
   const tourPath = { at: null, look: null }, focus = new THREE.Vector3();
   const director = {
-    start(onTitle = () => {}, onDone = () => {}) {
+    start(onTitle = () => {}, onDone = () => {}, { hold = () => false } = {}) {
       buildOnce(); tourPath.at ??= curve("at"); tourPath.look ??= curve("look");
-      tour = { t: 0, shown: -1, onTitle, onDone, length: (TOUR.length - 1) * TOUR_SECONDS }; controls.enabled = false;
+      tour = { t: 0, shown: -1, onTitle, onDone, hold, cueAt: 0, length: (TOUR.length - 1) * TOUR_SECONDS }; controls.enabled = false;
     },
     skip() { if (!tour) return; const done = tour.onDone; tour = null; reset(); done(); },
     get active() { return !!tour; },
   };
   function tickTour(dt) {
     if (!tour) return;
+    // Let each recorded caption finish at its view. Muted, missing or blocked
+    // speech keeps the original pacing; a broken player cannot trap the tour.
+    const holding = () => tour.shown >= 0 && performance.now() - tour.cueAt < 40000 && tour.hold();
+    if (holding()) return;
     tour.t = Math.min(tour.length, tour.t + dt);
     const raw = tour.t / tour.length, seg = raw * (TOUR.length - 1), i = Math.floor(seg), f = seg - i, eased = (i + (f < .5 ? 2 * f * f : 1 - 2 * (1 - f) ** 2)) / (TOUR.length - 1);
     camera.position.copy(tourPath.at.getPoint(Math.min(1, eased))); focus.copy(tourPath.look.getPoint(Math.min(1, eased))); camera.lookAt(focus);
     const near = Math.min(TOUR.length - 1, Math.round(seg));
-    if (near !== tour.shown && Math.abs(seg - near) < .35) { tour.shown = near; tour.onTitle(TOUR[near], near); }
-    if (tour.t >= tour.length) { const done = tour.onDone; tour = null; controls.target.copy(tourPath.look.getPoint(1)); controls.update(); done(); }
+    if (near !== tour.shown && Math.abs(seg - near) < .35) { tour.shown = near; tour.cueAt = performance.now(); tour.onTitle(TOUR[near], near); }
+    if (tour.t >= tour.length && !holding()) { const done = tour.onDone; tour = null; controls.target.copy(tourPath.look.getPoint(1)); controls.update(); done(); }
   }
 
   // Placing decor: an outline (gold, or red where it won't fit) and a ghost of a new piece.

@@ -3,8 +3,9 @@
 // (shouldShowIntro in rules/intro.js) and again from Settings. The farm holds
 // still while it plays (hold and release), and Skip, Escape or the last line
 // hands it back.
-import { INTRO_LINES, INTRO_TITLE } from "../content/intro.js";
+import { INTRO_LINES, INTRO_TITLE, INTRO_NARRATION } from "../content/intro.js";
 import { VARIETIES } from "../model.js";
+import { createNarrationControls } from "./narration-controls.js";
 
 const reduced = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const escape = (text) => String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -47,11 +48,12 @@ function night(pumpkin) {
   </div>`;
 }
 
-export function createIntro({ people, portrait, pumpkin, hold, release, onOpen }) {
+export function createIntro({ people, portrait, pumpkin, hold, release, onOpen, narration, savePrefs = () => {} }) {
   const overlay = document.getElementById("intro");
-  let step = -1, previousFocus = null, inert = [], timers = [], revealing = false;
+  let step = -1, previousFocus = null, inert = [], timers = [], revealing = false, voices = null;
   const later = (fn, ms) => timers.push(setTimeout(fn, ms));
   const find = (selector) => overlay.querySelector(selector);
+  const currentVoice = () => step < 0 ? null : step === 0 ? { speaker: "natalie", text: INTRO_NARRATION } : { speaker: INTRO_LINES[step - 1].who, text: INTRO_LINES[step - 1].text };
 
   // A portrait, or a crescent until the sprite sheets have loaded; then it fills
   // itself in, unless someone else is speaking by then.
@@ -84,12 +86,14 @@ export function createIntro({ people, portrait, pumpkin, hold, release, onOpen }
     find(".intro-progress").textContent = step ? `Line ${step} of ${INTRO_LINES.length}` : "";
     find("[data-intro-next]").textContent = step === 0 ? "Begin" : step === INTRO_LINES.length ? "Start growing" : "Next";
     if (step) speak(INTRO_LINES[step - 1]);
+    const line = currentVoice(); narration?.play(line.speaker, line.text); voices?.refresh();
   }
 
   // Tap, click, Enter or Space: finish the words appearing, or go on.
   function next() {
     if (step < 0 || overlay.dataset.stage === "closing") return;
     if (revealing) { revealing = false; find(".intro-talk").classList.add("shown"); return; }
+    narration?.stop();
     if (step >= INTRO_LINES.length) return close(true);
     step++; find(".intro-talk").classList.remove("shown"); show();
   }
@@ -97,6 +101,8 @@ export function createIntro({ people, portrait, pumpkin, hold, release, onOpen }
   // Skip ends at once; the last line fades out into the farm.
   function close(fade = false) {
     if (step < 0) return;
+    narration?.stop();
+    voices?.dispose(); voices = null;
     const done = () => {
       timers.forEach(clearTimeout); timers = [];
       step = -1; overlay.hidden = true; overlay.innerHTML = ""; delete overlay.dataset.stage;
@@ -137,11 +143,12 @@ export function createIntro({ people, portrait, pumpkin, hold, release, onOpen }
         <button class="intro-next" data-intro-next data-pad-default>Begin</button>
       </footer>`;
     overlay.hidden = false;
+    voices = createNarrationControls({ mount: overlay, narration, savePrefs, line: currentVoice, className: "intro-voices" });
     step = 0; show();
     find("[data-intro-next]").focus({ preventScroll: true });
   }
 
-  overlay.addEventListener("click", (e) => { if (e.target.closest("[data-intro-skip]")) close(); else next(); });
+  overlay.addEventListener("click", (e) => { if (e.target.closest(".narration-controls")) return; if (e.target.closest("[data-intro-skip]")) close(); else next(); });
   // Keys go to the introduction first while it plays; buttons keep their own Enter and Space.
   document.addEventListener("keydown", (e) => {
     if (step < 0) return;

@@ -24,9 +24,9 @@ try { ({ createVillageGame } = await import(pathToFileURL(modulePath))); } final
 const dataName = name => name.replace(/^data-/, "").replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 
 class Element {
-  constructor(tag, doc) { this.tagName = tag.toUpperCase(); this.doc = doc; this.children = []; this.dataset = {}; this.style = {}; this.hidden = false; this.disabled = false; this.attributes = {}; this.classes = new Set(); this.classList = { add: (...xs) => xs.forEach(x => this.classes.add(x)), remove: (...xs) => xs.forEach(x => this.classes.delete(x)), contains: x => this.classes.has(x) }; }
+  constructor(tag, doc) { this.tagName = tag.toUpperCase(); this.doc = doc; this.children = []; this.dataset = {}; this.style = {}; this.hidden = false; this.disabled = false; this.attributes = {}; this.classes = new Set(); this.classList = { add: (...xs) => xs.forEach(x => this.classes.add(x)), remove: (...xs) => xs.forEach(x => this.classes.delete(x)), contains: x => this.classes.has(x), toggle: (x, on) => on ? this.classes.add(x) : this.classes.delete(x) }; }
   setAttribute(key, value) { this.attributes[key] = String(value); if (key === "id") this.id = value; if (key === "class") this.classes = new Set(String(value).split(/\s+/)); if (key.startsWith("data-")) this.dataset[dataName(key)] = value; if (key === "hidden") this.hidden = true; if (key === "disabled") this.disabled = true; }
-  append(...nodes) { for (const node of nodes) { node.parentElement = this; this.children.push(node); } }
+  append(...nodes) { for (const node of nodes) { node.remove(); node.parentElement = this; this.children.push(node); } }
   remove() { if (this.parentElement) this.parentElement.children = this.parentElement.children.filter(x => x !== this); }
   set innerHTML(html) {
     this.html = html; this.children = []; const stack = [this];
@@ -50,21 +50,22 @@ class Element {
   querySelector(selector) { return this.querySelectorAll(selector)[0] ?? null; }
   closest(selector) { for (let el = this; el; el = el.parentElement) if (selector.split(",").some(s => el.matches(s))) return el; return null; }
   focus() { this.doc.activeElement = this; }
-  click() { if (!this.disabled) this.onclick?.(); }
+  addEventListener(type, fn) { this["on" + type] = fn; }
+  click() { if (!this.disabled) this.onclick?.({ target: this, stopPropagation() {} }); }
   getClientRects() { for (let el = this; el; el = el.parentElement) if (el.hidden) return []; return [{}]; }
   setPointerCapture() {}
 }
 function farm(level = 3) { const s = M.freshState(); M.recordHomeActivity(s, "visit"); s.earned = M.LEVELS[level - 1].at; M.awardLevels(s); return s; }
-function harness(t, s = farm()) {
+function harness(t, s = farm(), narration) {
   const doc = { createElement(tag) { return new Element(tag, doc); }, getElementById(id) { return doc.body.querySelector("#" + id); } }; doc.body = new Element("body", doc); doc.activeElement = doc.body;
   const listeners = new Map(), globals = new Map(), pad = { connected: true, mapping: "standard", axes: [0, 0, 0, 0], buttons: Array.from({ length: 18 }, () => ({ pressed: false })) };
   for (const [key, value] of Object.entries({ document: doc, navigator: { getGamepads: () => [pad] }, addEventListener(type, fn) { if (!listeners.has(type)) listeners.set(type, new Set()); listeners.get(type).add(fn); }, removeEventListener(type, fn) { listeners.get(type)?.delete(fn); } })) { globals.set(key, Object.getOwnPropertyDescriptor(globalThis, key)); Object.defineProperty(globalThis, key, { configurable: true, writable: true, value }); }
   const cameraCalls = { follow: 0, reset: 0, focus: [] };
   const notices = [], saves = [], owner = { enabled: true, who: "natalie" }, actors = [], picture = new THREE.Scene(), camera = new THREE.PerspectiveCamera(); camera.position.set(87, 8, 15); camera.lookAt(87, 1, -4.5);
   let inside = null, touring = false, finishTour = null, conversation = null, callback = null, menuCloses = 0, leaves = 0;
-  const view = { scene: picture, camera, groundAt: () => 0, sync() {}, folk: { mood() {}, talkSpot: id => ({ x: id === "rowan" ? 80 : 81, z: 30 }) }, play: { reset() { cameraCalls.reset++; }, follow() { cameraCalls.follow++; }, look() {}, zoom() {} }, cameraActions: { focus(...args) { cameraCalls.focus.push(args); } }, get inside() { return inside; }, goInside(id) { inside = id; }, goOutside() { inside = null; }, hallPoint(x, z, y = 0) { return new THREE.Vector3(4000 + x * K, y * K, z * K); }, director: { get active() { return touring; }, start(title, done) { touring = true; finishTour = done; title({ title: "Mothlight", sub: "Welcome" }); }, skip() { if (!touring) return; touring = false; finishTour(); } } };
+  const view = { scene: picture, camera, groundAt: () => 0, sync() {}, folk: { mood() {}, talkSpot: id => ({ x: id === "rowan" ? 80 : 81, z: 30 }) }, play: { reset() { cameraCalls.reset++; }, follow() { cameraCalls.follow++; }, look() {}, zoom() {} }, cameraActions: { focus(...args) { cameraCalls.focus.push(args); } }, get inside() { return inside; }, goInside(id) { inside = id; }, goOutside() { inside = null; }, hallPoint(x, z, y = 0) { return new THREE.Vector3(4000 + x * K, y * K, z * K); }, director: { get active() { return touring; }, start(title, done, options) { touring = true; finishTour = done; this.options = options; title({ title: "Mothlight", sub: "Welcome" }); }, skip() { if (!touring) return; touring = false; finishTour(); } } };
   const scene = { villageView: view, place: null, player: { state: () => ({ ...owner }), setEnabled(on, who = owner.who) { owner.enabled = on; owner.who = who; } }, enter(kind) { this.place = { kind }; }, leavePlace() { touring = false; this.place = null; }, villageCharacter() { const actor = new THREE.Group(), frame = new THREE.Group(); actor.add(new THREE.Group()); actor.userData = { idle: [frame], walk: [frame], shown: frame, show() {}, dispose() { actor.userData.disposed = true; } }; actors.push(actor); return actor; } };
-  const game = createVillageGame({ state: () => s, scene, save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: () => null, conversationView(options) { callback = options; return { open(options) { conversation = options; }, close() { if (conversation) { conversation = null; options.onClose(); } }, get active() { return !!conversation; }, dispose() { this.close(); } }; } });
+  const game = createVillageGame({ state: () => s, scene, narration, save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: () => null, conversationView(options) { callback = options; return { open(options) { conversation = options; }, close() { if (conversation) { conversation = null; options.onClose(); } }, get active() { return !!conversation; }, dispose() { this.close(); } }; } });
   const h = { game, state: s, doc, scene, view, cameraCalls, owner, actors, saves, notices, listeners, pad, get conversation() { return conversation; }, get menuCloses() { return menuCloses; }, get leaves() { return leaves; }, complete() { callback.onContinue({ finished: true }); }, choose(index = 0) { return callback.onChoice(index); }, $(selector) { return doc.body.querySelector(selector); }, click(selector) { const el = doc.body.querySelector(selector); assert.ok(el, selector); assert.equal(el.disabled, false, selector + " enabled"); el.click(); }, key(type, key, target = doc.body) { for (const fn of listeners.get(type) ?? []) fn({ key, target, preventDefault() {}, stopImmediatePropagation() {}, repeat: false }); }, press(button) { pad.buttons[button].pressed = true; game.tick(.1); pad.buttons[button].pressed = false; game.tick(.1); } };
   t.after(() => { game.dispose(); for (const [key, desc] of globals) desc ? Object.defineProperty(globalThis, key, desc) : delete globalThis[key]; }); return h;
 }
@@ -143,4 +144,23 @@ test("Map destinations hold their view until movement or camera centre resumes f
   showMap(); h.press(11); assert.equal(h.game.status.surveying, false, "R3 centres the playable owner");
   showMap(); h.game.enterHall("rowan-workshop"); assert.equal(h.game.status.surveying, false, "going inside restores the room's follow camera"); h.game.leaveHall();
   showMap(); h.game.close(); h.game.open(); assert.equal(h.game.status.surveying, false, "a new visit starts at the carriage");
+});
+
+test("tour narration can replay and mute without completing the tour; leaving cancels it", t => {
+  const listeners = new Set(), voice = { enabled: true, playing: false, current: null,
+    emit() { for (const fn of listeners) fn(); }, subscribe(fn) { listeners.add(fn); fn(); return () => listeners.delete(fn); },
+    play(speaker, text) { this.current = { speaker, text, status: this.enabled ? "playing" : "idle" }; this.playing = this.enabled; this.emit(); },
+    replay() { this.play(this.current.speaker, this.current.text); },
+    stop() { this.playing = false; if (this.current) this.current.status = "idle"; this.emit(); },
+    setEnabled(on) { this.enabled = on; if (!on) this.stop(); this.emit(); },
+  };
+  const h = harness(t, farm(), voice); h.game.open();
+  assert.deepEqual(voice.current, { speaker: "narrator", text: "Mothlight. Welcome", status: "playing" }); assert.equal(h.view.director.options.hold(), true);
+  const before = JSON.stringify(M.saveData(h.state)), saves = h.saves.length;
+  h.press(12); assert.equal(h.doc.activeElement.attributes["data-voice-replay"], "", "D-pad reaches replay during the tour"); h.press(0); assert.equal(h.state.village.toured, false);
+  const tour = h.$("#vg-tour"); tour.querySelector("[data-voice-replay]").click(); tour.querySelector("[data-voice-toggle]").click();
+  assert.equal(voice.enabled, false); assert.equal(h.view.director.options.hold(), false); assert.equal(JSON.stringify(M.saveData(h.state)), before); assert.equal(h.saves.length, saves);
+  tour.querySelector("[data-voice-toggle]").click(); assert.equal(voice.playing, true);
+  h.game.close(); assert.equal(voice.playing, false); assert.equal(h.state.village.toured, false);
+  h.game.open(); h.game.back(); assert.equal(voice.playing, false); assert.equal(h.state.village.toured, true);
 });

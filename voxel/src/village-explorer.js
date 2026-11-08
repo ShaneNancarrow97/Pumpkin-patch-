@@ -20,8 +20,16 @@ import { FOLK_BY_ID, HOST_BY_ID } from "./content/village-folk.js";
 import { createVillageShell } from "./ui/village-shell.js";
 import { createVillageConversation } from "./ui/village-conversation.js";
 import { villageSpritePortrait } from "./village-sprite-actors.js";
+import { createNarration } from "./ui/narration.js";
+import { VOICE_CLIPS } from "./ui/voice-clips.js";
+import { createNarrationControls } from "./ui/narration-controls.js";
+import { tourVoiceText } from "./content/village-tour.js";
 
 const canvas = document.querySelector("canvas"), $ = (id) => document.getElementById(id);
+const PREFS_KEY = "pumpkin-patch-voxel-reference-v1-prefs";
+function storedPrefs() { try { const value = JSON.parse(localStorage.getItem(PREFS_KEY) ?? "{}"); return value && typeof value === "object" && !Array.isArray(value) ? value : {}; } catch { return {}; } }
+const prefs = storedPrefs(), narration = createNarration({ prefs, clips: VOICE_CLIPS });
+function savePrefs() { try { localStorage.setItem(PREFS_KEY, JSON.stringify({ ...storedPrefs(), voiceEnabled: narration.enabled, voiceVolume: prefs.voiceVolume })); } catch {} }
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
 const state = M.freshState(); state.earned = M.LEVELS[2].at; M.recordHomeActivity(state, "visit"); M.inviteToVillage(state);
@@ -32,6 +40,7 @@ const view = createVillageView(canvas, state, { blocked, everyone: () => everyon
 // The preview uses the same authored conversations as the saved village. Its
 // temporary state stays in this page; travelling in the real game saves it.
 function meet(id) {
+  if (view.director.active) view.director.skip();
   shell?.close(false);
   const person = HOST_BY_ID[id] ?? FOLK_BY_ID[id]; if (!person) return;
   const quest = M.talkStep(state, id), chat = !quest && M.canChat(state, id) ? M.nextChat(state, id) : null;
@@ -39,7 +48,7 @@ function meet(id) {
   dialogue.open({ id, name: person.name, role: person.role, lines: quest?.lines?.length ? quest.lines : chat?.lines ?? [person.greet?.[0] ?? "Good evening."], choices: chat?.choices, friendship: M.friendshipWith(state,id) });
   view.folk.mood(id, "talk");
 }
-dialogue = createVillageConversation({ portrait: villageSpritePortrait,
+dialogue = createVillageConversation({ portrait: villageSpritePortrait, narration, savePrefs,
   onChoice(index, info) { if (!talking?.chat) return info.choice.reply; return M.answerChat(state, talking.id, talking.chat, index)?.reply ?? false; },
   onContinue() { if (talking?.quest) M.finishTalk(state,talking.quest,talking.id); },
   onClose(id) { view.folk.mood(id,"wave"); talking=null; },
@@ -67,6 +76,7 @@ const PLACES = {
   valley: [[64, 150, -66], [64, 0, 64]],
 };
 function go(id) {
+  narration.stop(); if (view.director.active) view.director.skip(); dialogue.close(false);
   if (view.inside) leaveHall();
   if (walking) setWalk(false);
   const p = PLACES[id]; if (!p) view.cameraActions.reset(); else view.cameraActions.place(p[0].map((v) => v * K), p[1].map((v) => v * K));
@@ -83,16 +93,18 @@ $("restored").addEventListener("click", () => {
   view.sync();
 });
 // The grand tour: the flight Elowen gives on arrival, its titles rising at each stop. Tour again skips it.
-let titleTimer = 0;
+let tourLine = null;
+const tourVoices = createNarrationControls({ mount: $("title"), narration, savePrefs, line: () => view.director.active ? tourLine : null, className: "tour-voices" });
+const tourSkip = document.createElement("button"); tourSkip.type = "button"; tourSkip.setAttribute("data-voice-skip", ""); tourSkip.textContent = "Skip tour"; tourSkip.addEventListener("click", () => view.director.skip()); tourVoices.element.append(tourSkip);
 $("tour").addEventListener("click", () => {
-  dialogue.close(false); shell.close(false);
+  narration.stop(); dialogue.close(false); shell.close(false);
   if (document.body.classList.contains("touring")) { view.director.skip(); return; }
   if (walking) setWalk(false);
   document.body.classList.add("touring"); $("tour").classList.add("on"); $("tour").textContent = "Skip";
   view.director.start((k) => {
     $("title-name").textContent = k.title; $("title-sub").textContent = k.sub; $("title").classList.add("shown");
-    clearTimeout(titleTimer); titleTimer = setTimeout(() => $("title").classList.remove("shown"), 3400);
-  }, () => { M.finishTour(state); document.body.classList.remove("touring"); $("tour").classList.remove("on"); $("tour").textContent = "Take the grand tour"; $("title").classList.remove("shown"); });
+    tourLine = { speaker: "narrator", text: tourVoiceText(k) }; narration.play(tourLine.speaker, tourLine.text); tourVoices.refresh();
+  }, () => { narration.stop(); tourLine = null; M.finishTour(state); document.body.classList.remove("touring"); $("tour").classList.remove("on"); $("tour").textContent = "Take the grand tour"; $("title").classList.remove("shown"); }, { hold: () => narration.enabled && ["loading", "playing"].includes(narration.current?.status) });
 });
 
 // ---- Walking: an owner at play-mode size, a stick, keys and a pad ------------------------
@@ -107,6 +119,7 @@ function makeActor() {
 function place() { actor.position.set(pos.x, view.inside ? .2 : view.groundAt(pos.x, pos.z) + .04, -pos.z); }
 function setWalk(on) {
   if (on && !sheets) return;
+  narration.stop(); if (view.director.active) view.director.skip(); dialogue.close(false);
   walking = on; document.body.classList.toggle("walking", on); $("walk").classList.toggle("on", on);
   if (on) { if (!actor) makeActor(); actor.visible = true; place(); view.play.reset({ x: actor.position.x, y: actor.position.y, z: actor.position.z }); for (const b of document.querySelectorAll("[data-place]")) b.classList.remove("on"); }
   else { if (actor) actor.visible = false; $("act").hidden = true; const hall = view.inside; view.leave(); view.enter(); if (hall) { view.goInside(hall); $("leave").hidden = false; view.cameraActions.place(toPlace(view.hallPoint(0, 8.6, 9.6)), toPlace(view.hallPoint(0, -6.4, 1.4))); } }
@@ -134,6 +147,7 @@ const fade = (then) => { $("fade").classList.add("on"); setTimeout(() => { then(
 const toPlace = (v) => [v.x, v.y, -v.z];
 function goIn(id) {
   const plan = INSIDES[id]; if (!plan || view.inside === id) return;
+  narration.stop(); if (view.director.active) view.director.skip(); dialogue.close(false);
   fade(() => {
     view.goInside(id); $("leave").hidden = walking; $("act").hidden = true;
     if (walking) { const p = view.hallPoint(plan.hall.spawn[0], plan.hall.spawn[1]); pos.x = p.x; pos.z = -p.z; heading.x = 0; heading.z = 1; place(); view.play.reset({ x: actor.position.x, y: actor.position.y, z: actor.position.z }); }
@@ -143,6 +157,7 @@ function goIn(id) {
 const DOOR_THETA = { north: Math.PI, south: 0, east: Math.PI / 2, west: -Math.PI / 2 };
 function leaveHall() {
   const id = view.inside; if (!id) return; const d = INSIDES[id].door, [nx, nz] = DOOR_NORMAL[d.facing];
+  narration.stop(); dialogue.close(false);
   view.goOutside(); $("leave").hidden = true;
   // Out on the doorstep, turned away from the door, with the camera looking back at the door just left.
   if (walking) { pos.x = (d.x + nx * 3.2) * K; pos.z = (d.z + nz * 3.2) * K; heading.x = nx; heading.z = -nz; place(); view.play.reset({ x: actor.position.x, y: actor.position.y, z: actor.position.z }, DOOR_THETA[d.facing]); }
@@ -223,7 +238,7 @@ function frame(now) {
 requestAnimationFrame(frame);
 setTimeout(() => document.body.classList.add("ready"), 400);
 // For checks in a browser: the view and the tour's stops.
-window.explorer = { view, TOUR, shell, dialogue, meet, state:()=>state, place: (i) => view.cameraActions.place(TOUR[i].at, TOUR[i].look), walkTo(x, z) { pos.x = x; pos.z = z; if (actor) place(); },
+window.explorer = { view, TOUR, shell, dialogue, narration, meet, state:()=>state, place: (i) => view.cameraActions.place(TOUR[i].at, TOUR[i].look), walkTo(x, z) { pos.x = x; pos.z = z; if (actor) place(); },
   // What one frame draws: draw calls and triangles across every pass (shadows and bloom included).
   frameStats() { renderer.info.autoReset = false; renderer.info.reset(); view.tick(1 / 30); view.scene.traverse((o) => { if (o.isDirectionalLight && o.castShadow) o.shadow.needsUpdate = true; }); composer.render(); const i = renderer.info.render; renderer.info.autoReset = true; return { calls: i.calls, tris: i.triangles }; },
   // What each part of the village costs in the current view: the frame without it, subtracted.

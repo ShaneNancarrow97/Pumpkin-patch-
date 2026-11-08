@@ -23,7 +23,7 @@ const writeHtml = {
       const js = result.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
       if (village) {
         const fonts = inline(fs.readFileSync(path.join(root, "src/style.css"), "utf8").split("\n").filter((l) => l.startsWith("@font-face")).join("\n"));
-        const villageStyle = fs.readFileSync(path.join(root, "src/ui/village-ui.css"), "utf8");
+        const villageStyle = ["src/ui/village-ui.css", "src/ui/narration-controls.css"].map(f => fs.readFileSync(path.join(root, f), "utf8")).join("\n");
         const page = fs.readFileSync(path.join(root, "src/village-explorer.html"), "utf8").replace("/* @build:style */", () => fonts + "\n" + villageStyle).replace("/* @build:script */", () => js);
         const out = outFile ?? path.join(root, "dist", "mothlight-village.html");
         fs.mkdirSync(path.dirname(out), { recursive: true }); fs.writeFileSync(out, page);
@@ -31,8 +31,9 @@ const writeHtml = {
         return;
       }
       const css = inline(["src/style.css", "src/icons.css", "src/ui/house-skins.css", "src/ui/maze-commerce.css", "src/ui/house-placement.css", "src/ui/intro.css", "src/ui/maze-ride.css", "src/ui/meadow-chat.css", "src/ui/upgrade-menu.css", "src/ui/hayride.css", "src/ui/hayride-ride.css", "src/ui/hollow-exterior.css", "src/ui/cooking.css", "src/ui/workshop-polish.css", "src/ui/service-menus.css", "src/ui/play-controls.css", "src/ui/carving.css", "src/ui/build-catalogue.css", "src/ui/service-premium.css", "src/ui/polish.css", "src/ui/menus.css", "src/ui/farm-work.css", "src/ui/home-customisation.css", "src/ui/garden-icons.css", "src/ui/cooking-simple.css", "src/ui/fishing.css", "src/ui/tv-mode.css", "src/ui/pad-cursor.css", "src/ui/village-ui.css", "src/ui/village-game.css"].map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n"));
+      const voiceCss = fs.readFileSync(path.join(root, "src/ui/narration-controls.css"), "utf8");
       const html = fs.readFileSync(path.join(root, "src/index.html"), "utf8")
-        .replace("/* @build:style */", () => css).replace("/* @build:script */", () => js);
+        .replace("/* @build:style */", () => css + "\n" + voiceCss).replace("/* @build:script */", () => js);
       const out = outFile ?? path.join(root, "dist", dev ? "index.html" : "pumpkin-patch-voxel.html");
       fs.mkdirSync(path.dirname(out), { recursive: true });
       fs.writeFileSync(out, html);

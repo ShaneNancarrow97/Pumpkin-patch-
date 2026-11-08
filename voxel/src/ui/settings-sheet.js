@@ -88,6 +88,7 @@ export function settingsSheet(ui) {
     settings: {
       eyebrow: "Make yourself at home", title: "Settings",
       opened() { confirmReset = false; restoreError = ""; pending = null; fileError = ""; here = saveSummary(ui.state); },
+      closed() { ui.narration.stop(); },
       body() {
         const p = ui.prefs, s = ui.state, kept = ui.files.previous();
         here ??= saveSummary(s);
@@ -101,6 +102,9 @@ export function settingsSheet(ui) {
           toggle("toggle-shuffle", "Shuffle", "Play the soundtrack in a fresh order without back-to-back repeats", p.musicShuffle !== false) +
           `<div class="setting"><span>Try another tune</span><button class="button" id="next-song">Next song</button></div>` +
           toggle("toggle-sound", "Sound effects", "Soft tones for planting, picking and sales", p.sound) +
+          toggle("toggle-voice", "Voice narration", "Read aloud in the introduction and Mothlight Village. Dialogue stays on screen.", p.voiceEnabled) +
+          `<div class="setting"><span>Voice volume</span><input id="voice-volume" type="range" min="0" max="1" step="0.05" value="${p.voiceVolume}" aria-label="Voice volume"></div>` +
+          `<div class="setting"><span>Listen to a voice</span><button class="button" id="preview-voice" ${!p.voiceEnabled || p.voiceVolume === 0 ? "disabled" : ""}>${ui.narration.playing || ui.narration.current?.status === "loading" ? "Stop voice" : "Preview voice"}</button></div>` +
           toggle("toggle-pause", "Tea break", "Pause the farm. Nothing grows and nobody visits.", !!s.paused) +
           `<label class="setting"><span>Render detail<small>Sharp keeps fine edges. Lower settings save battery and reduce graphics load.</small></span><select id="render-quality" aria-label="Render detail">${RENDER_QUALITIES.map(q=>`<option value="${q.id}" ${q.id===validRenderQuality(p.renderQuality)?"selected":""}>${q.name}</option>`).join("")}</select></label>` +
           `<label class="setting"><span>Frame rate<small>${frameNote(p)}</small></span><select id="frame-rate" aria-label="Frame rate">${FRAME_RATES.map(([id, name]) => `<option value="${id}" ${id === validFrameRate(p.frameRate) ? "selected" : ""}>${name}</option>`).join("")}</select></label>` +
@@ -132,6 +136,9 @@ export function settingsSheet(ui) {
         body.querySelector("#music-track").onchange = (e) => { ui.audio.setTrack(e.target.value); ui.savePrefs(); ui.draw(); };
         body.querySelector("#music-volume").oninput = (e) => { ui.audio.setVolume(+e.target.value); ui.savePrefs(); };
         body.querySelector("#toggle-sound").onclick = flip("sound");
+        body.querySelector("#toggle-voice").onclick = () => { ui.narration.setEnabled(!p.voiceEnabled); ui.savePrefs(); ui.draw(); };
+        body.querySelector("#voice-volume").oninput = (e) => { ui.narration.setVolume(+e.target.value); ui.savePrefs(); };
+        body.querySelector("#preview-voice").onclick = () => { if (ui.narration.playing || ui.narration.current?.status === "loading") ui.narration.stop(); else ui.previewVoice().then(() => ui.draw()); ui.draw(); };
         body.querySelector("#toggle-pause").onclick = () => { s.paused = !s.paused; ui.notice(s.paused ? "Tea break. The farm will wait for you." : "Back to work!"); ui.draw(); };
         body.querySelector("#render-quality").onchange = e => { p.renderQuality = ui.scene.setRenderQuality(e.target.value); ui.savePrefs(); ui.draw(); };
         body.querySelector("#frame-rate").onchange = e => { p.frameRate = validFrameRate(e.target.value); ui.scene.setFramePacing({ mode: p.frameRate, tv: !!p.tvMode }); ui.savePrefs(); ui.draw(); };
