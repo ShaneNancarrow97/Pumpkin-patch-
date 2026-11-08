@@ -13,3 +13,5 @@ Includes the expanded village, physical farm gateway, quest HUD, relocated forag
 Source: contractor/village-journey at e61180ffd2f7a9304a0af6feb330eff4b8f34c4b. Handover: voxel/docs/contractor-patches/village-journey/README.md. This branch remains separate from Claude’s active work. All 904 automated tests and 21 targeted browser checks passed. The five-patch kit applies cleanly to its stated parent and rebuilds identical HTML bytes. BUILD.json records exact hashes. Viewport/input checks do not certify physical Fold, Bluetooth or TV hardware.
 
 [Claude patch kit](Pumpkin-Patch-Village-Journey-Claude-Patch.zip?raw=1) includes the ordered source changes, README, dependency matrix and test receipts. The latest source-branch handover includes final browser evidence.
+
+Final source handover and evidence: [contractor/village-journey](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/ff6b5803686c449b902d405037f8958d03e3e2d8/voxel/docs/contractor-patches/village-journey). The duplicate broad smoke is explicitly incomplete after eight passing desktop checks; all 21 targeted final-build checks are complete.

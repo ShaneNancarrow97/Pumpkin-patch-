@@ -35,7 +35,7 @@
       "sha256": "6e595e34cc0cd212f426d0a7553a1edfc700174d3cf7be141b22eb630b7d226e"
     }
   },
-  "verification": "904 automated tests and21 targeted final-HTML browser checks passed; clean patch replay rebuilt identical HTML bytes. Standard smoke in progress.",
+  "verification": "904 automated tests and 21 targeted final-HTML browser checks passed; clean patch replay rebuilt identical HTML. Duplicate broad smoke intentionally stopped for urgent delivery after 8 desktop checks; incomplete.",
   "patchReplay": {
     "passed": true,
     "tree": "4090296e3795314ad4ad1dcea98a7783b7764384",
@@ -47,7 +47,12 @@
     "finalBrowserChecksPassed": 21,
     "browserErrors": 0,
     "externalAssetRequests": 0,
-    "desktopPhoneSmoke": "in progress"
+    "desktopPhoneSmoke": {
+      "status": "incomplete",
+      "passedBeforeStop": 8,
+      "failAssertions": 0,
+      "reason": "Stopped intentionally to prioritise urgent HTML delivery; software WebGL was slow."
+    }
   },
   "publicDownloadChecks": {
     "commit": "cc04f8a482d71b134fdf651ec46d66f87710f145",
@@ -59,5 +64,11 @@
       "bytes": 41528719,
       "sha256": "785621ec7919801531a11db37bd090dc32488661fdabb4150ae59da8f3d00cad"
     }
+  },
+  "verificationCommit": "ff6b5803686c449b902d405037f8958d03e3e2d8",
+  "publicPatchDownloadCheck": {
+    "commit": "390ec31f0aed1902285cb3ca0d4c1436e3530c43",
+    "bytes": 86062343,
+    "sha256": "75c5acaeaaf39cfb053881b9a2836f70bbdc52f007d7d4c5e0e4f101137630d5"
   }
 }
