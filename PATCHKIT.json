@@ -1,6 +1,8 @@
 {
-  "base": "b530974120e43c28f0f97424208cc25d6278d2f9",
-  "head": "dc991e4059dce8cceb4f1e921ae53bb33f1c64d3",
-  "tree": "b9e12fc9164938274fd30f33e75f2c78c055f0b6",
-  "gitAmVerified": true
+  "file": "Pumpkin-Patch-Living-Mothlight-Claude-Patch.zip",
+  "bytes": 49503108,
+  "sha256": "436d07677d734e3321f2e0c7fe58321386c7b96fca67bf126595d6dff4650fff",
+  "incrementalPatches": 4,
+  "fullLeadPatches": 11,
+  "applyOneSeriesOnly": true
 }
