@@ -1,0 +1,432 @@
+{
+  "source": "../home-category-concepts/source.png",
+  "sourceSha256": "03f5298106f0f3349ce5a557fcf9bc84d3192c46fcf37ff330acd5c5c7c494bd",
+  "columns": 5,
+  "rows": 4,
+  "cell": 128,
+  "inset": 10,
+  "icons": [
+    {
+      "id": "all",
+      "column": 0,
+      "row": 0,
+      "sourceCrop": [
+        0,
+        0,
+        280,
+        280
+      ],
+      "alphaBounds": [
+        47,
+        26,
+        257,
+        267
+      ],
+      "packedSize": [
+        94,
+        108
+      ]
+    },
+    {
+      "id": "seating",
+      "column": 1,
+      "row": 0,
+      "sourceCrop": [
+        280,
+        0,
+        561,
+        280
+      ],
+      "alphaBounds": [
+        50,
+        42,
+        261,
+        266
+      ],
+      "packedSize": [
+        102,
+        108
+      ]
+    },
+    {
+      "id": "tables",
+      "column": 2,
+      "row": 0,
+      "sourceCrop": [
+        561,
+        0,
+        841,
+        280
+      ],
+      "alphaBounds": [
+        29,
+        51,
+        257,
+        258
+      ],
+      "packedSize": [
+        108,
+        98
+      ]
+    },
+    {
+      "id": "beds",
+      "column": 3,
+      "row": 0,
+      "sourceCrop": [
+        841,
+        0,
+        1122,
+        280
+      ],
+      "alphaBounds": [
+        39,
+        21,
+        258,
+        274
+      ],
+      "packedSize": [
+        93,
+        108
+      ]
+    },
+    {
+      "id": "storage",
+      "column": 4,
+      "row": 0,
+      "sourceCrop": [
+        1122,
+        0,
+        1402,
+        280
+      ],
+      "alphaBounds": [
+        39,
+        19,
+        242,
+        266
+      ],
+      "packedSize": [
+        89,
+        108
+      ]
+    },
+    {
+      "id": "lighting",
+      "column": 0,
+      "row": 1,
+      "sourceCrop": [
+        0,
+        280,
+        280,
+        561
+      ],
+      "alphaBounds": [
+        79,
+        31,
+        231,
+        248
+      ],
+      "packedSize": [
+        76,
+        108
+      ]
+    },
+    {
+      "id": "rugs",
+      "column": 1,
+      "row": 1,
+      "sourceCrop": [
+        280,
+        280,
+        561,
+        561
+      ],
+      "alphaBounds": [
+        11,
+        49,
+        277,
+        245
+      ],
+      "packedSize": [
+        108,
+        80
+      ]
+    },
+    {
+      "id": "wall",
+      "column": 2,
+      "row": 1,
+      "sourceCrop": [
+        561,
+        280,
+        841,
+        561
+      ],
+      "alphaBounds": [
+        29,
+        23,
+        251,
+        251
+      ],
+      "packedSize": [
+        105,
+        108
+      ]
+    },
+    {
+      "id": "small",
+      "column": 3,
+      "row": 1,
+      "sourceCrop": [
+        841,
+        280,
+        1122,
+        561
+      ],
+      "alphaBounds": [
+        53,
+        63,
+        247,
+        248
+      ],
+      "packedSize": [
+        108,
+        103
+      ]
+    },
+    {
+      "id": "curios",
+      "column": 4,
+      "row": 1,
+      "sourceCrop": [
+        1122,
+        280,
+        1402,
+        561
+      ],
+      "alphaBounds": [
+        24,
+        27,
+        250,
+        249
+      ],
+      "packedSize": [
+        108,
+        106
+      ]
+    },
+    {
+      "id": "kitchen",
+      "column": 0,
+      "row": 2,
+      "sourceCrop": [
+        0,
+        561,
+        280,
+        842
+      ],
+      "alphaBounds": [
+        32,
+        2,
+        258,
+        261
+      ],
+      "packedSize": [
+        94,
+        108
+      ]
+    },
+    {
+      "id": "bathroom",
+      "column": 1,
+      "row": 2,
+      "sourceCrop": [
+        280,
+        561,
+        561,
+        842
+      ],
+      "alphaBounds": [
+        26,
+        36,
+        262,
+        252
+      ],
+      "packedSize": [
+        108,
+        99
+      ]
+    },
+    {
+      "id": "electronics",
+      "column": 2,
+      "row": 2,
+      "sourceCrop": [
+        561,
+        561,
+        841,
+        842
+      ],
+      "alphaBounds": [
+        34,
+        19,
+        237,
+        251
+      ],
+      "packedSize": [
+        94,
+        108
+      ]
+    },
+    {
+      "id": "laundry",
+      "column": 3,
+      "row": 2,
+      "sourceCrop": [
+        841,
+        561,
+        1122,
+        842
+      ],
+      "alphaBounds": [
+        33,
+        13,
+        239,
+        254
+      ],
+      "packedSize": [
+        92,
+        108
+      ]
+    },
+    {
+      "id": "music",
+      "column": 4,
+      "row": 2,
+      "sourceCrop": [
+        1122,
+        561,
+        1402,
+        842
+      ],
+      "alphaBounds": [
+        40,
+        7,
+        225,
+        264
+      ],
+      "packedSize": [
+        78,
+        108
+      ]
+    },
+    {
+      "id": "pets",
+      "column": 0,
+      "row": 3,
+      "sourceCrop": [
+        0,
+        842,
+        280,
+        1122
+      ],
+      "alphaBounds": [
+        22,
+        57,
+        263,
+        232
+      ],
+      "packedSize": [
+        108,
+        78
+      ]
+    },
+    {
+      "id": "books",
+      "column": 1,
+      "row": 3,
+      "sourceCrop": [
+        280,
+        842,
+        561,
+        1122
+      ],
+      "alphaBounds": [
+        29,
+        39,
+        259,
+        245
+      ],
+      "packedSize": [
+        108,
+        97
+      ]
+    },
+    {
+      "id": "wallpaper",
+      "column": 2,
+      "row": 3,
+      "sourceCrop": [
+        561,
+        842,
+        841,
+        1122
+      ],
+      "alphaBounds": [
+        37,
+        29,
+        237,
+        249
+      ],
+      "packedSize": [
+        98,
+        108
+      ]
+    },
+    {
+      "id": "room",
+      "column": 3,
+      "row": 3,
+      "sourceCrop": [
+        841,
+        842,
+        1122,
+        1122
+      ],
+      "alphaBounds": [
+        12,
+        17,
+        260,
+        262
+      ],
+      "packedSize": [
+        108,
+        107
+      ]
+    },
+    {
+      "id": "owned",
+      "column": 4,
+      "row": 3,
+      "sourceCrop": [
+        1122,
+        842,
+        1402,
+        1122
+      ],
+      "alphaBounds": [
+        21,
+        40,
+        252,
+        236
+      ],
+      "packedSize": [
+        108,
+        92
+      ]
+    }
+  ],
+  "atlasBytes": 342446,
+  "atlasSha256": "c035905327dc8da4c62b5befc51e1fd51f7c0e2920920a4ec7f07631329c2e1d"
+}

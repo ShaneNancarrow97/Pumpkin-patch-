@@ -1,3 +1,4 @@
+import { ps5Icon } from "./dualsense-icons.js";
 // Button glyphs: what each control shows for each kind of input, as a keycap,
 // DualSense shapes or Xbox letters; touch shows none. Play mode, the carving
 // bench and the controller menus (ui/pad-menu.js) all draw from here.
@@ -6,6 +7,7 @@ export const GLYPHS={play:{keyboard:'G',dualsense:'create',xbox:'view'},plant:{k
 const SHAPES={create:'<path d="M12 5v7M7.5 8 12 12l4.5-4M8 18h8"/>',view:'<rect x="5" y="7" width="10" height="8" rx="1.5"/><path d="M9 7V5h10v8h-4"/>',cross:'<path d="M7 7l10 10M17 7 7 17"/>',circle:'<circle cx="12" cy="12" r="5.5"/>',square:'<rect x="6.5" y="6.5" width="11" height="11" rx="1"/>',triangle:'<path d="M12 6 18 17H6Z"/>',dpad:'<path d="M9.5 4h5v5.5H20v5h-5.5V20h-5v-5.5H4v-5h5.5z"/>',options:'<path d="M7 8h10M7 12h10M7 16h10"/>',menu:'<path d="M7 8h10M7 12h10M7 16h10"/>'};
 export function glyphHTML(id,mode){
   const g=GLYPHS[id]?.[mode];if(!g)return'';
+  if(mode==='dualsense')return `<i class="glyph glyph-ps glyph-${g.toLowerCase()} glyph-dualsense" aria-hidden="true">${ps5Icon(g,22)}</i>`;
   if(SHAPES[g])return`<i class="glyph glyph-ps glyph-${g}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${SHAPES[g]}</svg></i>`;
   if(g==='Shift')return`<i class="glyph glyph-keyboard" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 4 4 13h4.5v6h7v-6H20Z"/></svg></i>`;
   return`<i class="glyph glyph-${mode}${mode==='xbox'?' glyph-xbox-'+g.toLowerCase():''}" aria-hidden="true">${g}</i>`;

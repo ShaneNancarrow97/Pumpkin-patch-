@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-08",
+  "purpose": "Quieter, lighter fine-bladed grass base beneath village3Dgrass; replaces earlier noisy/dark tile",
+  "method": "image_gen generation with viewed previous grass-tile.webp reference",
+  "originalGeneratedPath": "/workspace/generated_images/exec-4ff08d4c-2e3b-48d0-86fa-635cc2debf71.png",
+  "source": "grass-source.png",
+  "sourceSha256": "e998ad8994ee56719c44716ab455cf80211b481d0fa888a93006c44f0cc9d2c4",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "prompt": "prompt.txt",
+  "runtime": "../../terrain/grass-tile.webp",
+  "runtimeSha256": "ccc2158587d4a03d1e7f51e811b6655fdc7f07b1a3cd2f46341bf5d67f95d2a0",
+  "runtimeSize": [
+    512,
+    512
+  ],
+  "runtimeBytes": 101386,
+  "technicalProcessing": "Pillow only convertsRGB, downsamples to512px, WebP quality94, packs2x2repeatproof. No painting or seam retouching.",
+  "repeatReview": {
+    "proof": "grass-repeat-proof.jpg",
+    "viewed": true,
+    "verticalMeanChannelDelta": 8.444,
+    "horizontalMeanChannelDelta": 7.394,
+    "internalX": 7.419,
+    "internalY": 6.396,
+    "interpretation": "Opposite-edge colour changes are comparable to ordinary blade variation;2x2repeatshowsno prominent seam. Not a claim of equal edgepixels."
+  }
+}
