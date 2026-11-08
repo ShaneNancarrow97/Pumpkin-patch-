@@ -1,0 +1,26 @@
+{
+  "id": "rowan",
+  "initialAtlas": "rowan-before-front-repair.png",
+  "initialAtlasSha256": "d52296f994e03f0f1a6a4d66224f2860e98ee462438859e946d5246efb63ef7c",
+  "frontStrip": "rowan-front-repair.png",
+  "frontStripGenerated": "exec-908ac874-777b-4299-8911-906b8e39ef85.png",
+  "frontStripSha256": "28cacceba20f5e02f0b8e9a51eced1f98271dca9a16df1a8c92e40f5a1957a9b",
+  "sharedStripScale": 0.4768211920529801,
+  "sourceGridColumns": 8,
+  "sourceGridRows": 1,
+  "outputRow": 0,
+  "visibleHeight": 144,
+  "outputFootBaseline": 153,
+  "perFrameOverrides": [
+    {
+      "outputColumn": 6,
+      "source": "rowan-before-front-repair.png",
+      "sourceColumn": 3,
+      "sourceRow": 0,
+      "uniformScalar": 1.006993006993007,
+      "reason": "Use original two-leg left-knee passing pose, rejecting new third-boot anatomy."
+    }
+  ],
+  "method": "Crop authored frames, uniform Lanczos scale shared across strip, foot-anchor alignment; only row0 replaced. No redraw, reflection or motion interpolation.",
+  "review": "Opposite contact boots at0/4; opposite lifted passing knees2/6. Diagonal/profile/rear source rows untouched."
+}

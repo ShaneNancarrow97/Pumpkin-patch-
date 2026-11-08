@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "generator": "OpenAI image generation",
+  "directionOrder": [
+    "front",
+    "frontRight",
+    "right",
+    "backRight",
+    "back",
+    "backLeft",
+    "left",
+    "frontLeft"
+  ],
+  "phaseOrder": [
+    "left-contact",
+    "left-down",
+    "right-pass",
+    "right-up",
+    "right-contact",
+    "right-down",
+    "left-pass",
+    "left-up"
+  ],
+  "characters": [
+    {
+      "id": "cinder",
+      "file": "exec-aa99ee70-7a4e-49ad-8a71-aaaa108970ca.png",
+      "prompt": "Production movement animation sprite sheet by editing the supplied approved Cinder ghost chef. Preserve EXACT character identity and polished hand-painted game art: small translucent lavender ghost with big dark oval eyes, cute smile, cream puffy chef hat, burgundy neckerchief/waistcoat, cream pumpkin embroidered apron, wooden spoon in RIGHT hand, plate of orange pastry with cream and steam in LEFT hand. He has NO LEGS, NO FEET: wispy ghost tail underneath, a floating movement cycle. One transparent square RGBA image, 8 columns x 8 rows, exactly64 complete separate figures on a perfectly regular grid, no text, no borders, no floor shadows. All figures same body scale/hat height, clear transparent margins; 2048x2048 if possible. Each row is an eight-frame floating travel cycle: tail curls left, lifts, swings through centre, curls right, rightmost tail, dips, swings through centre, curls left; gentle body bob, subtle opposite arm sway and steam wisps, keeps plate level. This is NOT a repeated idle pose. Eight true body viewing directions: row1 FRONT directly facing viewer; row2 FRONT-RIGHT diagonal, face clearly toward RIGHT EDGE OF IMAGE \u2192; row3 PURE RIGHT PROFILE, face and spoon point RIGHT EDGE \u2192; row4 BACK-RIGHT diagonal, see BACK and tiny right-side cheek, moving away towards RIGHT EDGE \u2192; row5 ONLY BACK of hat/head/waistcoat and apron ties, NO FACE visible; row6 BACK-LEFT diagonal moving away towards LEFT EDGE \u2190; row7 PURE LEFT PROFILE, face points LEFT EDGE \u2190; row8 FRONT-LEFT diagonal, face toward LEFT EDGE \u2190. Rows2/3/4 must face opposite direction from6/7/8! Whole body rotates and asymmetrical spoon/plate stay in anatomical hands, not simple reflected front art. All64 individually painted animation frames; consistent camera about10degrees above horizontal and consistent lighting. No background, no captions, no grid lines.",
+      "movement": "float",
+      "limitations": [
+        "Legless ghost: eight authored tail/arm/steam floating phases, no footsteps.",
+        "Rear-left view is subtle; designed as an eight-sector authored approximation, not photogrammetric 45-degree rotation."
+      ],
+      "reference": "voxel/assets/village/cinder.webp",
+      "source": "cinder.png",
+      "sourceOutput": "/workspace/generated_images/exec-aa99ee70-7a4e-49ad-8a71-aaaa108970ca.png",
+      "review": "Approved after visual direction review: front, right-facing front/profile/rear, back, left-facing rear/profile/front. 64 connected character components. Outer-edge alpha below32; no opaque canvas clipping.",
+      "bake": "Technical alpha cleanup, measured source rectangles and common scalar only; never redraw/reflect frames in baker."
+    },
+    {
+      "id": "corvus",
+      "file": "exec-1fe2e8b4-e3d4-4f20-9bcc-2aa6c714523b.png",
+      "prompt": "Repair this Corvus raven game sprite sheet for shipping. Keep the EXACT same raven design, painted art, costume, 64 poses, eight directional rows and eight gait columns. Only improve the packing and animation clarity. The reference has its LAST COLUMN CUT OFF at the right edge; recreate those complete missing parts and fit ALL64 complete figures safely inside the canvas. Re-layout to a precise uniform8columns x8rows grid with each full figure centred inside its cell, enough blank TRANSPARENT gutter all around each individual figure, and blank transparent margins round outer image. Shrink each character to occupy 70% of cell height and at most65% of cell width; absolutely no touching neighbouring cells or canvas edge. Output2048x2048 transparentRGBA if possible. Same body proportions, lighting and size for every sprite. No drawn grid/labels/shadows/background. Maintain directions row1front, row2front-right (beak toward RIGHT EDGE), row3true RIGHTPROFILE (beak\u2192), row4back-right, row5pureBACK, row6back-left, row7true LEFTPROFILE(beak\u2190),row8front-left. Make row6 visibly back-left, not identical pureback. Eight columns clear continuous walk sequence alternating LEFT then RIGHT foot, actual knee bending and opposite arm movement: contact/down/pass/up/oppositecontact/down/pass/up. Keep cane in correct anatomical right wing hand. Regenerate complete clipping-free high quality sheet, all feet and hats enclosed within cells.",
+      "initialPrompt": "Production WALK animation sprite sheet editing the approved Corvus raven gentleman in reference. Preserve EXACT premium painted game style and identity: black raven head with long black beak, amber eye, purple top hat gold ornament and burgundy feather, plum coat with gold embroidered edges, burgundy lining, cream ruffled cravat, purple waistcoat, dark short trousers, brown booted bird legs and visible raven toes, gold topped walking cane in RIGHT wing-hand. Same costume, anatomy and proportions in all frames. Transparent square RGBA image 2048x2048 if possible, perfectly regular 8 COLUMNS x 8 ROWS grid of exactly64 individual full-body figures. No words, no gridlines, no background, no shadows beneath. Plenty transparent margin. Identical camera scale and ground baseline per row. Eight consecutive real WALK frames each row: left heel/claw contacts forward right foot back; weight settles; right knee passes forward; right foot swings forward; RIGHT foot contacts forward left back; weight settles; left knee passes forward; left foot swings forward. Opposite arms/cane swing lightly, tail and coat secondary motion; left and right leg articulation visually different, no sliding static figure. Row1 FRONT directly at viewer, beak toward camera; row2 FRONT-RIGHT diagonal, beak unmistakably towards RIGHT EDGE OF IMAGE \u2192; row3 PURE RIGHT PROFILE, long beak points RIGHT EDGE \u2192; row4 BACK-RIGHT diagonal, mostly back, beak tip towards RIGHT EDGE \u2192; row5 PURE BACK only back of hat/head/coat/tail, no eyes or face; row6 BACK-LEFT diagonal mostly back, beak tip toward LEFT EDGE \u2190; row7 PURE LEFT PROFILE, long beak points LEFT EDGE \u2190; row8 FRONT-LEFT diagonal beak toward LEFT EDGE \u2190. Rows2/3/4 MUST face opposite direction to rows6/7/8. Whole character body turns with beak. Correct anatomical cane hand from each viewpoint, not duplicated mirror front pose. Each row is full8phasecycle and eachview distinct. Consistent painted detail, colour and silhouette from supplied sprite. All64 heads/hats complete and feet unclipped.",
+      "rejected": "exec-580813c4-3cdb-49d4-95cc-1a10fab4ec27.png",
+      "movement": "walk",
+      "limitations": [
+        "First generation rejected because rightmost column was clipped; repaired generation encloses all figures.",
+        "Coat obscures upper legs; bird claw and knee movement provide visible lower gait."
+      ],
+      "reference": "voxel/assets/village/corvus.webp",
+      "source": "corvus.png",
+      "sourceOutput": "/workspace/generated_images/exec-1fe2e8b4-e3d4-4f20-9bcc-2aa6c714523b.png",
+      "review": "Final front contacts0/4 and passing2/6 visibly alternate opposite screen-side feet; other seven original direction rows retained.",
+      "bake": "Technical alpha cleanup, measured source rectangles and common scalar only; never redraw/reflect frames in baker.",
+      "sourceOutputIsBaseOnly": true,
+      "finalSource": "Composed by repairs/night/compose.py"
+    },
+    {
+      "id": "baron",
+      "file": "exec-bd9350a9-6ead-4017-b57b-bebddfb03c79.png",
+      "prompt": "Create a technical game WALK sprite sheet from this approved Baron Brassbolt reference. Exactly same handpainted style, identity, proportions, pale olive Frankenstein gentleman, short dark hair stitched forehead, brass head bolts, gold MONOCLE, red velvet frock coat with gold embroidery, gold waistcoat, cream ruffled cravat, dark trousers, polished black shoes, pocket watch and gold chain. ONE SAME CHARACTER all64frames. 8columns by8rows regular square transparent RGBA sprite atlas, 2048square if possible. Important: fit EACH WHOLE FIGURE in the middle of its cell leaving 18 percent empty margin on every side; ample empty margin at ALL outer canvas edges especially rightmost column and bottom row; do not crop any heads/hats/arms/shoes. Characters should be small enough to fit. No text, gridlines, backgrounds or floor shadows. Exact row-direction order: Row1 FRONT facing viewer; Row2 diagonal FRONT-RIGHT, nose towards RIGHT EDGE \u2192; Row3 strict RIGHT PROFILE, nose points RIGHT EDGE \u2192; Row4 diagonal BACK-RIGHT, see back of head/coat with slight cheek/nose towards RIGHT EDGE \u2192; Row5 strict BACK, no face visible; Row6 diagonal BACK-LEFT, back of head/coat with slight cheek/nose towards LEFT EDGE \u2190; Row7 strict LEFT PROFILE nose points LEFT EDGE \u2190; Row8 diagonal FRONT-LEFT face towards LEFT EDGE \u2190. ROWS2,3,4 MUST FACE RIGHT and ROWS6,7,8 MUST FACE LEFT, each with true body rotation. Eight frames across each row must form full WALK cycle with genuinely alternating legs, bent knees and opposite arm swing: col1 left foot forward contact/right toe back; col2 weight onleft/right lifts; col3 right leg passes forward; col4 right leg swings forward; col5 right foot forward contact/left toe back; col6 weight onright/left lifts; col7 left leg passes; col8 left leg swings forward. No cloned or merely sliding poses. Monocle and watch stay on anatomical side through rotation. Same height/body ratio/lighting/camera in every cell. Character scale stable, subtle coat and arm movement. Preserve approved handsome friendly undead face. Produce complete64sprite sheet with generous transparent gutters.",
+      "movement": "walk",
+      "limitations": [
+        "Source grid has a broad left margin and requires measured source cuts, not width/8."
+      ],
+      "reference": "voxel/assets/village/baron.webp",
+      "source": "baron.png",
+      "sourceOutput": "/workspace/generated_images/exec-bd9350a9-6ead-4017-b57b-bebddfb03c79.png",
+      "review": "Final front contacts0/4 and passing2/6 visibly alternate opposite screen-side feet; other seven original direction rows retained.",
+      "bake": "Technical alpha cleanup, measured source rectangles and common scalar only; never redraw/reflect frames in baker.",
+      "sourceOutputIsBaseOnly": true,
+      "finalSource": "Composed by repairs/night/compose.py"
+    }
+  ],
+  "correction": "Baron and Corvus front cycles repaired after explicit opposite-foot review. Final source PNGs are composed whole-frame sheets; see repairs/night/provenance.json, composition.json and compose.py for reproducible source inputs and gait mapping."
+}

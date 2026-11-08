@@ -1,0 +1,35 @@
+{
+  "generator": "OpenAI image generation, reference-image edit",
+  "date": "2026-11-08",
+  "scope": "Authored locomotion only. Eight camera-relative facing views, eight successive walk drawings per view. No mirrored directions or interpolated angle frames.",
+  "characters": {
+    "shane-base": {
+      "source": "shane-base.png",
+      "generatedFile": "exec-cd18384b-8816-4ab5-b266-c1f0729528e2.png",
+      "reference": "../hd-shane.webp",
+      "brief": "Preserve Shane's approved adult likeness, black beanie, hoodie, denim jacket, cargo trousers and black/white trainers. Empty-handed eight-phase walk in eight full-body directions. Left heel contact/down/opposite passing/up, then opposite contact/down/passing/up. Same camera, body scale and lighting; transparent 8 by 8 grid. Right-facing rows point to the image's right edge and left-facing rows to its left edge; rear row shows no face."
+    },
+    "natalie-base": {
+      "source": "natalie-base.png",
+      "generatedFile": "exec-86456d48-2c84-4073-8387-a35fd41818d3.png",
+      "reference": "../hd-natalie.webp",
+      "brief": "Preserve Natalie's approved adult likeness and build, black hair and short fringe, glasses, piercings, tattoos, olive jumper, belted black jeans and boots. Empty-handed eight-phase walk in eight full-body directions, regular transparent 8 by 8 grid. Clear left/right foot alternation and opposing arm swing; front, right diagonals/profile, back, left diagonals/profile."
+    },
+    "elowen": {
+      "source": "elowen.png",
+      "reference": "../village/elowen.webp",
+      "brief": "Preserve the moth witch's face, braid, burgundy hat and dress, cream moth cape, lantern and book. Eight full-body directions with eight alternating-foot walk drawings each, transparent regular grid. Explicit image-right profiles in rows 2\u20134 and image-left profiles in rows 6\u20138; rear view shows the back of the cape.",
+      "initialGeneratedFile": "exec-7c03f40f-0bae-4040-824c-19d1ce487d8a.png",
+      "initialSource": "elowen-before-front-repair.png",
+      "frontRepairProvenance": "provenance-elowen-front-footfall.json",
+      "sourceConstruction": "Original seven side/rear/diagonal rows plus accepted generated front footfall strip, assembled with measured uniform scaling and fixed body root."
+    }
+  },
+  "review": "Viewed full source sheets before packing. Both side profiles, front, rear and diagonal views are distinct. Direction slots are intended 45-degree sectors; hand-painted views are not calibrated 3D renders. Step labels describe the intended gait order, not motion-capture measurements.",
+  "rejected": [
+    {
+      "generatedFile": "exec-fe2b24a7-766a-4b49-bdcc-5338277f244b.png",
+      "reason": "Elowen's initial draft duplicated left-facing profiles where right-facing views were required. Not included in the runtime or contractor art package."
+    }
+  ]
+}

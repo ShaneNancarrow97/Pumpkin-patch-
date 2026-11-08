@@ -7,6 +7,7 @@ import { MEADOW, cocoaKioskWidth } from "./content/festival-meadow.js";
 import { openPlots } from "./model.js";
 import { STAND_SITE } from "./carving-stand-world.js";
 import { playWays, wayThrough, inZone, gardenGeometry, gardenTargets } from "./play-ways.js";
+import { gaitPhase } from "./directional-sprite-math.js";
 
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const SETTLE_SECONDS = 0.8;
@@ -88,7 +89,7 @@ export function choosePlayerTarget(list, position, heading, previous, reach = 2.
 // onWay(way): the owner has walked into a way through (play-ways.js); return
 // false to refuse it. Whoever takes it calls arrive() once the place has changed.
 export function createPlayerControl({ scene, state, actors, places, getPlace, getCamera, animate, follow, cameraLook, cameraZoom, cameraReset, wateringTexture, garden = null, onWay = null }) {
-  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", key = null, action = null, target = null, lastModel = null, renderedTime = 0, strideAge = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0, still = 0, passing = null, ways = null, waysKey = "";
+  let enabled = false, who = "natalie", blocked = false, moving = false, facing = "front", facingAngle = 0, key = null, action = null, target = null, lastModel = null, renderedTime = 0, strideAge = 0, gait = "walk", pose = null, walkTarget = null, stuck = 0, still = 0, passing = null, ways = null, waysKey = "";
   // Ways the owner arrived inside stay shut until they step out of them.
   const shut = new Set();
   const input = { x: 0, y: 0 }, lookInput = { x: 0, y: 0 }, velocity = { x: 0, z: 0 }, heading = { x: 0, z: 1 }, positions = new Map(), right = new THREE.Vector3(), forward = new THREE.Vector3();
@@ -151,6 +152,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     camera.getWorldDirection(forward); forward.y = 0; forward.normalize();
     const sx = heading.x * right.x + heading.z * right.z, away = heading.x * forward.x + heading.z * forward.z;
     facing = Math.abs(sx) > Math.abs(away) * .75 ? "side" : away > 0 ? "back" : "front";
+    if (Math.hypot(sx, away) > .001) facingAngle = Math.atan2(sx, -away);
     return sx;
   }
   function face(t) {
@@ -215,8 +217,11 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
 
     } else velocity.x = velocity.z = 0;
     if (!asleep) cameraLook?.(lookInput.x, lookInput.y, dt);
-    const screenHeading = viewFacing();
     moving = !pose && Math.hypot(pos.x - old.x, pos.z - old.z) > .0005;
+    // Collision sliding changes where the feet travel, so draw that heading
+    // instead of walking sideways into the wall the stick points towards.
+    if (moving) { const n = Math.hypot(pos.x - old.x, pos.z - old.z); heading.x = (pos.x - old.x) / n; heading.z = (pos.z - old.z) / n; }
+    const screenHeading = viewFacing();
     a.position.x = o.x + pos.x; a.position.z = o.z + pos.z;
     if (!pose) positions.set(key, { ...pos });
     // Walking into a doorway, a gate, the stairs or a ladder takes the owner through.
@@ -235,7 +240,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     if (moving || action || pose || intent.x || intent.z) still = 0; else if (!asleep) still += Math.max(0, Number(dt) || 0);
     const shown = still > SETTLE_SECONDS ? "front" : facing;
     animate(a, motionAge, moving, dx, who === "shane" ? 1.7 : 0);
-    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing: shown, walking: moving, time, age: motionAge, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
+    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing: shown, angle: facingAngle, phase: gaitPhase(strideAge * 2.3, 1.8), walking: moving, time, age: motionAge, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
     const hit = !room() && !inGarden() && actors()[who]?.hit; if (hit) hit.position.set(a.position.x, 1.1, a.position.z);
     target = nearest();
     ring.visible = !asleep; ring.position.set(a.position.x, .075, a.position.z); ringMat.opacity = .6 + Math.sin(time * 2) * .1;

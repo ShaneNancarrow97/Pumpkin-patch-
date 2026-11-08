@@ -1,3 +1,5 @@
+import { directionalSpritePose, directionFromAngle } from "./directional-sprite-math.js";
+
 // Sprite geometry and timing use one measured body scale and a shared foot
 // anchor. Changing the walking frame must never resize or lift a neighbour.
 export const VILLAGE_PERSON_HEIGHT = 2.3;
@@ -25,6 +27,13 @@ export function villageSpritePose(meta, { time = 0, walking = false, mood = "idl
   const age = Math.max(0, Number.isFinite(time) ? time : 0), index = Math.floor(age * (action === "walk" ? 6 : action === "wave" ? 2 : 1.2)) % list.length;
   const frame = list[index];
   return { action, frame: Number.isInteger(frame) && frame >= 0 && frame < meta.frames.length ? frame : 0, leadingLeg: action === "walk" ? index < list.length / 2 ? "left" : "right" : null };
+}
+// Keep the original idle and greetings when only new walking rows exist. A
+// fallback explicitly reports its coverage rather than pretending to turn.
+export function villageDirectionalPose(meta, directional, options = {}) {
+  const pose = directionalSpritePose(directional, options);
+  if (pose) return { ...pose, atlas: "directional", requestedDirection: pose.direction };
+  return { ...villageSpritePose(meta, options), atlas: "legacy", authored: false, direction: "front", requestedDirection: directionFromAngle(options.angle), directionIndex: 0, phase: options.phase ?? 0, phaseIndex: null };
 }
 export function visibleVillagePick(object) {
   for (let p = object; p; p = p.parent) if (p.visible === false) return false;

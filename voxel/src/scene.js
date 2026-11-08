@@ -55,6 +55,7 @@ import { createAmbience } from "./ambience.js";
 import { mistClearings } from "./content/ambience.js";
 import { playerOrbitStep, createPlayerControl } from "./player-control.js";
 import { playerDirectionTextures } from "./player-sprite-directions.js";
+import { animateAutonomousOwner } from "./owner-walk-motion.js";
 import wateringCanURL from "../assets/sprite-watering-can.webp";
 import { createCleanlinessView } from "./cleanliness-view.js";
 
@@ -197,12 +198,21 @@ export function createScene(canvas, state, hooks) {
     m.userData.kind = "visitor"; m.userData.sprite = sprite;
     return m;
   };
-  // One animation call for any figure, voxel or sprite.
-  const animateFigure = (m, t, moving, offset = 0, dx = 0, isPaying = false) => {
+  const ownerTowardCamera = new THREE.Vector3();
+  // Only owners receive travel data. Visitors, pets and home interaction poses
+  // keep their own animation paths, while autonomous owners share play's gait.
+  const animateFigure = (m, t, moving, offset = 0, dx = 0, isPaying = false, travel = null) => {
     const u = m.userData;
     if (u.kind === "skyla") animateSkyla(m, t, isPaying);
     else if (u.kind === "visitor") (u.sprite ? animateVisitor(m, t, moving, dx) : animateWalk(m, t, moving));
-    else animateSprite(m, t, moving, dx, offset);
+    else {
+      animateSprite(m, t, moving, dx, offset);
+      if (!travel || !u.playerAnimate) return;
+      const viewCamera = travel.camera ?? active();
+      if (viewCamera.isOrthographicCamera) { viewCamera.getWorldDirection(ownerTowardCamera); ownerTowardCamera.negate(); }
+      else ownerTowardCamera.set(viewCamera.position.x - m.position.x, 0, viewCamera.position.z - m.position.z);
+      animateAutonomousOwner(u, { ...travel, moving, towardCamera: ownerTowardCamera, time: t });
+    }
   };
   function placeSkyla() {
     if (!ready()) return;
@@ -856,7 +866,7 @@ export function createScene(canvas, state, hooks) {
     // Shane and Natalie walk to their jobs, then drift home.
     for (const [who, a] of Object.entries(actors)) {
       if (player.state().enabled && player.state().who === who) { a.queue.length = 0; a.delivery = null; a.work = 0; continue; }
-      const pos = a.model.position;
+      const pos = a.model.position, oldX = pos.x, oldZ = pos.z;
       let target = a.queue[0] ?? HOMES[who];
       const dx = target.x - pos.x, dz = target.z - pos.z, d = Math.hypot(dx, dz);
       // Wait beside the actual parcel until it is credited (or cancelled),
@@ -867,8 +877,7 @@ export function createScene(canvas, state, hooks) {
       else if (a.work > 0) a.work -= dt;
       else if (d > 0.12) { const step = Math.min(d, WALK * dt); pos.x += dx / d * step; pos.z += dz / d * step; }
       else if (a.queue.length) { const stop = a.queue.shift(); a.work = stop.wait ?? (a.delivery ? 0 : 0.5); if (!a.queue.length) a.delivery = null; if (stop.tidy && cleanLitter(state, stop.tidy) && !view.place) actionFx.burst("clean", pos.x, pos.z); }
-      // Like the sprites they come from, they always face the viewer (the voxel figures mirror to walk the other way).
-      animateSprite(a.model, time, a.moving, dx, who === "shane" ? 1.7 : 0);
+      animateFigure(a.model, time, a.moving, who === "shane" ? 1.7 : 0, dx, false, { dx: pos.x - oldX, dz: pos.z - oldZ, camera: view.place ? camera : active() });
       a.hit.position.set(pos.x, 1.1, pos.z);
     }
 

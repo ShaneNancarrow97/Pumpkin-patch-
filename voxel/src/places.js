@@ -101,7 +101,13 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
   }
 
   const clear = () => {
-    for (const a of actors) clearHomePose(a.model); resting.clear();
+    for (const a of actors) {
+      clearHomePose(a.model);
+      // Sprite frames belong to the shared atlas cache; only the actor's own
+      // materials are released. Voxel figures stay for the geometry sweep.
+      if (typeof a.model.userData.dispose === "function") { root.remove(a.model); a.model.userData.dispose(); }
+    }
+    resting.clear();
     pets?.clear(); pets = null;
     cookingFX.visible = false; kitchenFXStatus = { active: false, recipe: null, method: null, steam: 0 };
     for (const f of foodDisplays) disposeFoodProp(f); foodDisplays = []; foodDisplayKey = "";
@@ -318,8 +324,8 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
     tickKitchen(time);
     for (const e of pieces.values()) e.tick?.(time);                  // the cauldron's brew
     for (const a of actors) {
-      if (a.who === controlled) { a.target = null; continue; }
-      const pos = a.model.position, o = ORIGIN.room;
+      if (a.who === controlled || resting.has(a.who)) { a.target = null; continue; }
+      const pos = a.model.position, oldX = pos.x, oldZ = pos.z, o = ORIGIN.room;
       if (!a.target && (a.wait -= dt) <= 0) {
         // Short of the right wall, where the stairs come down.
         const x = 1 + Math.random() * (place.w - 3), z = place.d - 0.4 - Math.random() * 1.2;
@@ -331,7 +337,7 @@ export function createPlaces({ scene, state, character, visitorModel, pumpkinTem
         if (d < 0.05) { a.target = null; a.wait = 3 + Math.random() * 5; }
         else { const step = Math.min(d, 1.4 * dt); pos.x += (ddx / d) * step; pos.z += (dz / d) * step; moving = true; dx = ddx; }
       }
-      animate(a.model, time, moving, a.who === "shane" ? 1.7 : 0, dx);
+      animate(a.model, time, moving, a.who === "shane" ? 1.7 : 0, dx, false, { dx: pos.x - oldX, dz: pos.z - oldZ });
     }
   }
 

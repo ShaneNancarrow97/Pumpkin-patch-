@@ -1,5 +1,7 @@
 # Pumpkin Patch Voxel: context for coding agents
 
+**Contractor directional cast:** [`docs/contractor-patches/directional-character-sheets/README.md`](docs/contractor-patches/directional-character-sheets/README.md) adds eight-view movement sheets for the owners' everyday looks and nine village neighbours, distance-driven gait, camera-relative facing and shared sprite lifetime fixes. Read its coverage and dependency matrix before expanding costumes or action poses; this is a contractor patch on Living Mothlight, not a save or economy change.
+
 **Contractor narration:** [`docs/contractor-patches/mothlight-voices/README.md`](docs/contractor-patches/mothlight-voices/README.md) adds offline speech, independent voice controls and correct multi-speaker village dialogue. Recording delivery is partial because of the ElevenLabs key quota; read the exact coverage and dependency matrix before extending it. No runtime API key or network service is used.
 
 **Contractor Mothlight integration:** [`docs/contractor-patches/village-design-and-cast/README.md`](docs/contractor-patches/village-design-and-cast/README.md) connects the first saved Hollow Green visit to the farm, adds nine painted neighbour sheets, compact village menus and collision-aware walking. Read its dependency matrix and release receipt before integrating shared scene/input adapters. Handover 73 below records the original explorer; the contractor roadmap distinguishes completed first-visit gameplay from the later districts, decorating and followers still to build.
