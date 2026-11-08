@@ -1,5 +1,7 @@
 # Directional character sheets — contractor handover
 
+[Download the full game, sprite pack and Claude patch kit](DELIVERY.md).
+
 This patch replaces one-view walking for the Mothlight cast and three-view walking for the owners' everyday looks with painted directional locomotion. The renderer selects the body's viewing angle from actual travel relative to the active camera. Walk progress follows distance travelled, so a blocked character stops stepping and a turn does not restart the cycle.
 
 ## Integration
