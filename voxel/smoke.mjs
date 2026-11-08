@@ -35,6 +35,13 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   if(process.env.SMOKE_LITE)await page.addInitScript(()=>localStorage.setItem("pumpkin-patch-voxel-reference-v1-prefs",JSON.stringify({glow:false,shadows:false,music:false})));
   await page.goto(file);
   await page.waitForSelector("body[data-ready]", { timeout: 120000 });
+  // Optional logic regression profile for CPU-only Chromium: keep the actual
+  // RAF, scene/model updates and UI, but skip costly software draw calls. Visual
+  // and shader checks must be run separately with normal rendering.
+  if(process.env.SMOKE_HOLD_DRAWS==="1"){
+    await page.evaluate(()=>{const d=PumpkinVoxel.scene.debug;d.renderer.render=()=>{};d.composer.render=()=>{};});
+    console.log(`info ${name}: renderer/composer draws held; real RAF, simulation and UI continue`);
+  }
   // A new patch opens on the introduction, with the farm held still; Skip hands it back.
   check(await page.locator("#intro").isVisible() && await page.evaluate(() => PumpkinVoxel.intro.active && PumpkinVoxel.state().paused), `${name}: a new patch opens on the introduction`);
   await page.locator("[data-intro-next]").click();
@@ -113,8 +120,10 @@ for (const [name, width, height] of [["desktop", 1280, 800], ["phone", 390, 844]
   await page.locator("#sheet-close").click();
   // Stock cap is a real gameplay gate, and buying storage releases it.
   await page.evaluate(() => { const s=PumpkinVoxel.state();s.paused=false;s.coins=10000;s.upgrades.storage=0;s.upgrades.cart=0;window.__barn=180+40*s.upgrades.plots+20*s.upgrades.yield;s.stock=[window.__barn,0,0,0];s.visitors=[];s.arriving=[];s.shop.customers=[];s.holds=[];s.visitorTimer=s.shop.arrivalTimer=1e6;for(const p of s.plots)Object.assign(p,{phase:"empty",progress:0});Object.assign(s.plots[0],{phase:"ready",progress:1,variety:0}); });
-  await page.locator("#harvest-all").click();
-  check(await page.evaluate(()=>PumpkinVoxel.state().plots[0].phase==="ready"&&PumpkinVoxel.state().stock[0]===window.__barn),`${name}: full storage keeps a ripe crop instead of paying overflow money`);
+  // A full barn disables picking; exercising the gate must not wait on a click
+  // which is correctly unavailable. The ripe crop stays for the next expansion.
+  await page.waitForFunction(()=>document.querySelector("#harvest-all")?.disabled);
+  check(await page.locator("#harvest-all").isDisabled()&&await page.evaluate(()=>PumpkinVoxel.state().plots[0].phase==="ready"&&PumpkinVoxel.state().stock[0]===window.__barn),`${name}: full storage disables picking and keeps a ripe crop instead of paying overflow money`);
   await page.locator('[data-tab="shop"]').click();await page.locator('[data-upgrade-section="farm"]').click();
   await buy('[data-buy="storage"]');
   check(await page.evaluate(()=>PumpkinVoxel.state().upgrades.storage===1),`${name}: one tap on a price buys it`);

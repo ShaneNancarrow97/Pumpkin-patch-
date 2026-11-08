@@ -67,4 +67,4 @@ Read the focused notes in this folder before merging shared files into independe
 
 Run from `voxel/`: `npm test`, `node build.mjs --out /absolute/path/game.html`, and the exact-HTML browser runner `tools/village-play-polish-qa.mjs`. Some asset tests invoke Python; the execution profile must allow child processes. Reports distinguish fixture setup, real controller/touch actions, held drawing, screenshots and viewport emulation.
 
-Final hashes, command receipts, download links and patch replay are recorded in the delivery receipt after verification. Browser viewport tests do not certify physical Z Fold, Bluetooth, TV or native Android performance. Android packaging is a separate final job after the HTML and ZIP have passed their checks.
+Final hashes, command receipts, download links and clean patch replay are recorded in [the verified delivery receipt](DELIVERY.md). Browser viewport tests do not certify physical Z Fold, Bluetooth, TV or native Android performance. Android packaging is a separate final job after the HTML and ZIP have passed their checks.

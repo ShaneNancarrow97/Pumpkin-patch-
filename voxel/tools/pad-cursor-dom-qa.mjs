@@ -1,0 +1,62 @@
+// Actual DOM regression for the stick cursor and illustrated catalogue tabs.
+// No game renderer or save fixture; item thumbnails are stubbed for this UI-only check.
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createServer} from 'node:http';
+import {createHash} from 'node:crypto';
+import {build} from 'esbuild';
+import {chromium} from 'playwright';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const output=path.resolve(process.argv[2]??path.join(root,'docs/contractor-patches/village-play-polish/verification/cursor-catalogue'));
+await fs.mkdir(output,{recursive:true});
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const report={date:new Date().toISOString(),scope:'Actual headless Chromium DOM using production cursor, catalogue rendering and category artwork. No WebGL game, emulated viewport/controller state; furniture item thumbnails stubbed. No physical hardware claims.',checks:[],errors:[],sourceHashes:{}};
+for(const name of ['src/ui/pad-cursor.js','src/ui/menu-memory.js','src/ui/home-sheets.js','src/ui/build-catalogue.css','src/ui/home-category-icon-markup.js','assets/home-category-icons/home-categories.webp'])report.sourceHashes[name]=sha(await fs.readFile(path.join(root,name)));
+const entry=`
+import {createPadCursor} from './src/ui/pad-cursor.js';
+import {installHomeCategoryArt} from './src/ui/home-category-icons.js';
+import {homeSheets} from './src/ui/home-sheets.js';
+import {createMenuMemory} from './src/ui/menu-memory.js';
+import * as M from './src/model.js';
+window.__now=100;Object.defineProperty(performance,'now',{configurable:true,value:()=>window.__now});
+window.cursor=createPadCursor({scene:{tapAt:(x,y)=>window.taps.push([x,y])}});window.taps=[];window.clicks=0;
+window.frame=(axes=[0,0,0,0],pressed=[],held=[])=>{window.__now+=25;const down=Array.from({length:18},(_,i)=>held.includes(i)||pressed.includes(i));cursor.tick({pad:{axes},down,pressed:i=>pressed.includes(i),menuOpen:()=>false});return cursor.at;};
+window.idle=(n=12)=>{for(let i=0;i<n;i++)frame();return cursor.at;};
+window.fixture=kind=>{document.querySelector('#fixture').innerHTML='<button id="choice" style="position:absolute;left:80px;top:80px;width:160px;height:60px">Buy sofa</button>';const b=document.querySelector('#choice');b.onclick=()=>{window.clicks++;if(kind==='replace')document.querySelector('#fixture').innerHTML='<button id="replacement" style="position:absolute;left:400px;top:300px;width:160px;height:60px">New menu</button>';else if(kind==='reflow'){b.style.left='400px';b.style.top='300px';}};return b;};
+installHomeCategoryArt();
+const state=M.freshState();const ui={state,scene:{place:{kind:'room',id:'parlour'},refreshRoom(){},keepInView(){},selectPiece(){},showGrid(){}},save(){},notice(){},tone(){},closeSheet(){},enterRoom(){},read(){},draw(){renderCatalogue();}};
+const home=homeSheets(ui),memory=createMenuMemory(document.querySelector('#catalogue'));home.home.setTab('decorate');function renderCatalogue(){const node=document.querySelector('#catalogue'),restore=memory.captureFocus();memory.before();node.innerHTML=home.home.body();home.home.bind(node);memory.after('home');restore();}window.showCatalogue=()=>{document.querySelector('#fixture').hidden=true;document.querySelector('#home').hidden=false;cursor.hide();renderCatalogue();};
+window.ready=true;`;
+const compiled=await build({stdin:{contents:entry,resolveDir:root,sourcefile:'cursor-catalogue-dom-entry.js'},bundle:true,format:'iife',write:false,loader:{'.webp':'dataurl'},plugins:[{name:'item-thumbnails-only-double',setup(b){b.onLoad({filter:/\/ui\/kit\.js$/},()=>({loader:'js',contents:`export const money=n=>'£'+Math.floor(n).toLocaleString('en-GB'),$=id=>document.getElementById(id);export const decorIcon=id=>'<span class="thumb" data-item-thumb="'+id+'"></span>';export const segmented=(name,label,options,current)=>'<div class="segmented" role="group" aria-label="'+label+'">'+options.map(([value,text])=>'<button data-'+name+'="'+value+'" aria-pressed="'+(value===current)+'">'+text+'</button>').join('')+'</div>';export const spooky=()=>'',plural=(n,s)=>n+' '+s;`}))}}]});
+const css=(await fs.readFile(path.join(root,'src/ui/pad-cursor.css'),'utf8'))+'\n'+await fs.readFile(path.join(root,'src/ui/build-catalogue.css'),'utf8');
+const html=`<!doctype html><meta charset="utf-8"><style>:root{--body:Arial,sans-serif;--ink:#fff1d8;--ink-soft:#d6c4b1;--gold-bright:#ffd790}body{margin:0;background:#201729;color:var(--ink);font-family:Arial,sans-serif}button{color:inherit;font:inherit;min-height:44px;background:#49354b;border:1px solid #8d6e70;border-radius:12px}.segmented{display:flex}.segmented button{flex:1}#home{height:600px}#catalogue{display:flex;flex-direction:column;height:100%}.build-subs{flex-wrap:nowrap}.home-category-icon{pointer-events:none}${css}</style><div id="fixture"></div><section id="home" hidden class="sheet" data-section="home"><div class="sheet-frame"><div id="catalogue" class="sheet-body"></div></div></section><div id="piece-bar" hidden></div><script>${compiled.outputFiles[0].text}</script>`;
+const server=createServer((req,res)=>{res.setHeader('Content-Type','text/html');res.end(html)});await new Promise(r=>server.listen(0,'127.0.0.1',r));let browser;
+const check=(pass,label,detail)=>{report.checks.push({pass:!!pass,label,detail});console.log((pass?'PASS ':'FAIL ')+label)};
+try{
+ browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH??'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const page=await browser.newPage({viewport:{width:1000,height:700}});page.on('pageerror',e=>report.errors.push(e.message));await page.goto('http://127.0.0.1:'+server.address().port);await page.waitForFunction(()=>window.ready);
+ const replace=await page.evaluate(()=>{fixture('replace');frame([0,0,0,0],[10]);cursor.moveTo(100,100);frame([.6,0,0,0]);frame();const before=cursor.at;frame([0,0,0,0],[0]);const after=idle(20);return{before,after,clicks,oldGone:!document.querySelector('#choice')};});
+ check(replace.before.x===replace.after.x&&replace.before.y===replace.after.y&&replace.clicks===1&&replace.oldGone,'Click replacing menu preserves exact pointer point; detached hover cannot pull to origin',replace);
+ const reflow=await page.evaluate(()=>{fixture('reflow');cursor.moveTo(110,110);frame([.5,0,0,0]);frame();const before=cursor.at;frame([0,0,0,0],[0]);const after=idle(20);return{before,after,clicks,connected:document.querySelector('#choice').isConnected};});
+ check(reflow.before.x===reflow.after.x&&reflow.before.y===reflow.after.y&&reflow.connected&&reflow.clicks===2,'Connected clicked button moving to another panel cannot steer pointer',reflow);
+ const live=await page.evaluate(()=>{fixture('none');cursor.moveTo(95,95);frame([.5,0,0,0]);const release=frame(),settled=idle(2);document.querySelector('#choice').replaceWith(Object.assign(document.createElement('button'),{textContent:'Replacement'}));const before=cursor.at,after=idle(15);return{release,settled,before,after};});
+ check(live.settled.x>live.release.x&&live.before.x===live.after.x&&live.before.y===live.after.y,'Magnetic settling needs steering and stops immediately when target node changes',live);
+ const idle=await page.evaluate(()=>{fixture('none');cursor.moveTo(100,100);const before=cursor.at;frame([0,0,0,0],[5]);window.__now+=100;const after=window.idle(12);return{before,after};});
+ check(idle.before.x===idle.after.x&&idle.before.y===idle.after.y,'Other controller buttons do not create fresh cursor steering intent',idle);
+ const bad=await page.evaluate(()=>{cursor.moveTo(100,100);frame([NaN,Infinity,-Infinity,NaN]);cursor.moveTo(NaN,Infinity);return cursor.at;});check(bad.x===100&&bad.y===100,'Invalid controller coordinates cannot corrupt screen position',bad);
+ const nudge=await page.evaluate(()=>{cursor.moveTo(100,100);return frame([0,0,0,0],[15]);});check(nudge.x>100&&nudge.y===100,'D-pad makes a controlled screen-space nudge',nudge);
+ const scrolled=await page.evaluate(()=>{document.querySelector('#fixture').innerHTML='<div id="scroll" style="position:absolute;left:50px;top:50px;width:250px;height:180px;overflow:auto"><div style="height:900px"><button style="margin:30px">Scrollable option</button></div></div>';cursor.moveTo(110,105);const before=cursor.at;frame([0,0,0,.9]);return{before,after:cursor.at,scroll:document.querySelector('#scroll').scrollTop};});check(scrolled.scroll>0&&scrolled.before.x===scrolled.after.x&&scrolled.before.y===scrolled.after.y,'Right stick scrolls without moving the cursor point',scrolled);
+ await page.evaluate(()=>cursor.moveTo(990,690));await page.setViewportSize({width:390,height:300});await page.waitForTimeout(50);const resized=await page.evaluate(()=>cursor.at);check(resized.x<=388&&resized.y<=298&&resized.x>=2&&resized.y>=2,'Viewport change clamps pointer to visible bounds without resetting it',resized);
+ await page.setViewportSize({width:1000,height:700});await page.evaluate(()=>{fixture('none');cursor.moveTo(100,100)});await page.mouse.click(10,10);const hidden=await page.evaluate(()=>!cursor.on);await page.evaluate(()=>frame([0,0,0,0],[10]));check(hidden&&await page.evaluate(()=>cursor.on&&cursor.at.x===100&&cursor.at.y===100),'Mouse takeover hides cursor; toggling resumes its retained point');
+ await page.evaluate(()=>showCatalogue());await page.waitForFunction(()=>[...document.querySelectorAll('[data-home-category-icon]')].every(e=>getComputedStyle(e).backgroundImage.startsWith('url(')));
+ const cats=await page.evaluate(()=>[...document.querySelectorAll('.build-sub')].map(e=>{const r=e.getBoundingClientRect();return{id:e.dataset.sub,label:e.getAttribute('aria-label'),caption:e.querySelector('.build-sub-label')?.textContent,icon:e.querySelector('[data-home-category-icon]')?.dataset.homeCategoryIcon,w:r.width,h:r.height,font:getComputedStyle(e.querySelector('.build-sub-label')).fontSize}}));
+ check(cats.length===18&&cats.every(e=>e.icon&&e.label&&e.caption&&e.w>=44&&e.h>=44&&parseFloat(e.font)>=12),'Actual Furnish markup has18 illustrated, labelled44px category tabs',cats);
+ await page.locator('[data-mode="room"]').click();const rooms=await page.locator('.build-sub [data-home-category-icon]').count();check(rooms===5,'By room uses corresponding furniture/category art for all five rooms');
+ await page.locator('[data-mode="owned"]').click();const own=await page.locator('.build-sub [data-home-category-icon]').count();check(own===4,'Owned modes retain four illustrated inventory filters');
+ await page.locator('[data-mode="function"]').click();await page.locator('[data-sub="pets"]').click();check(await page.locator('[data-sub="pets"]').getAttribute('aria-pressed')==='true','Illustrated category preserves actual catalogue filter selection');
+ check(await page.locator('[data-hometab] [data-home-category-icon]').count()===3,'Top Rooms/Furnish/Expand menu actions include artwork');
+ const heldScroll=await page.evaluate(()=>{const row=document.querySelector('.build-subs');row.scrollLeft=450;const before=row.scrollLeft;document.querySelector('[data-sub="pets"]').click();return{before,after:document.querySelector('.build-subs').scrollLeft};});check(heldScroll.before>0&&heldScroll.before===heldScroll.after,'Late category selection retains horizontal scroll through full menu replacement',heldScroll);
+ await page.screenshot({path:path.join(output,'home-category-tabs.png')});
+ check(report.errors.length===0,'UI-only browser test produced no page errors',report.errors);
+}catch(error){report.errors.push(error.stack??String(error));console.error(error)}finally{await browser?.close();await new Promise(r=>server.close(r));report.passed=report.errors.length===0&&report.checks.every(c=>c.pass);await fs.writeFile(path.join(output,'cursor-catalogue-report.json'),JSON.stringify(report,null,2)+'\n')}
+console.log(JSON.stringify({passed:report.passed,checks:report.checks.length,errors:report.errors.length}));if(!report.passed)process.exitCode=1;
