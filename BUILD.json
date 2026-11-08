@@ -1,20 +1,46 @@
 {
-  "builtAt": "2026-11-08T08:12:53.187929+00:00",
-  "sourceBranch": "contractor/mothlight-living-village",
-  "codeCommit": "a9a84150aadf84eafcb71c5c56bc354a0bce3586",
-  "codeTree": "18203904edd79829f499ebacde0c73f6a8431386",
-  "incrementalBase": "e2cd697a993ae46d372420d7f966c1b99b5519ab",
-  "leadBase": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
+  "builtAt": "2026-11-08T08:59:59.789474+00:00",
+  "sourceBranch": "contractor/directional-character-sheets",
+  "codeCommit": "c2b6a409120fca3b2e1c9bc29e65316ed8570b1e",
+  "codeTree": "2a82ada8f828c243b1484e677c34845c1c0bfba9",
+  "incrementalBase": "8901e18df05367d7ce38f3e0da775d07ce877a21",
+  "leadChecked": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
+  "characters": 11,
+  "movementCells": 704,
+  "spriteManifest": {
+    "bytes": 892600,
+    "sha256": "eb632460f2ac740783e9245889628b2a6723138e6d3f8cd92da122c5abcfd59c"
+  },
   "artifacts": {
-    "Pumpkin-Patch-Living-Mothlight.html": {
-      "bytes": 48455659,
-      "sha256": "6cfd4e648a2f79ff499895f1957190a59fc3566415d98c9c4c214b94012fa9c8"
+    "Pumpkin-Patch-Directional-Characters.html": {
+      "bytes": 54956692,
+      "sha256": "392db73e5daeee1b2c23687e4ea946bce41a7018ab93ca407a182b9944b7c8de"
     },
-    "Pumpkin-Patch-Living-Mothlight.zip": {
-      "bytes": 34828925,
-      "sha256": "fbbbe680d66f81ea8ef38f6163ab238918f8d7bcdd83e45bf1e903c5d7b4ec47"
+    "Pumpkin-Patch-Directional-Sprite-Preview.html": {
+      "bytes": 12632252,
+      "sha256": "bde41e302931d59e65039b944bfccbf83f634879e8558dcf8a19d29ca0fc4e13"
+    },
+    "Pumpkin-Patch-Directional-Characters.zip": {
+      "bytes": 39749738,
+      "sha256": "920249bc5f888429e2c108a0c91d257d9fd3e1ee3610fda70d49dcb2fc12b39f"
+    },
+    "Pumpkin-Patch-Directional-Sprite-Pack.zip": {
+      "bytes": 38953781,
+      "sha256": "077e7d4f95007c8e6d6a3694cfc85913c9391fe0b90fca9e3ff678818943ba28"
+    },
+    "Pumpkin-Patch-Directional-Characters-Claude-Patch.zip": {
+      "bytes": 73328770,
+      "sha256": "8d77aecc8a9c207ddc7dd8677fea4e2a75a261842e5d402ec0fd40ea5cd327dc"
     }
   },
-  "delivery": "One offline full-game HTML, including existing recorded narration. No API key required.",
-  "hardwareLimit": "Viewport and standard-mapped gamepad emulation; physical Fold 7, Bluetooth pairing and TV casting not verified."
+  "verificationCommit": "7b62cb651eb318229414e2a76fa8d6cd1f538e95",
+  "validation": {
+    "nodeTests": 146,
+    "directionalGameChecks": 60,
+    "desktopPhoneSmokeChecks": 54,
+    "spritePreviewChecks": 4,
+    "residentPhotoChecks": 11,
+    "pageErrors": 0,
+    "cleanPatchReplay": true
+  }
 }
