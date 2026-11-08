@@ -11,8 +11,8 @@
       "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
     },
     "Pumpkin-Patch-Furniture-Menu-Icons.zip": {
-      "bytes": 1673170,
-      "sha256": "597deafb41631b518ee2ced84427fe04f2f9df203f53c22e24c23f545d6b154e"
+      "bytes": 1673222,
+      "sha256": "a04d82f66a219e3cde8d168563be132021d6a5faea4394009f33f04c34abc48c"
     },
     "Pumpkin-Patch-Village-Journey.zip": {
       "bytes": 41528719,
@@ -21,6 +21,10 @@
     "Pumpkin-Patch-Furniture-Menu-Icons.jpg": {
       "bytes": 67749,
       "sha256": "262348bd0f245ab3c11e15b80fa33371b90749c6f36e6eb82ec8c6648c3fb054"
+    },
+    "Pumpkin-Patch-Village-Journey-Claude-Patch.zip": {
+      "bytes": 86062343,
+      "sha256": "75c5acaeaaf39cfb053881b9a2836f70bbdc52f007d7d4c5e0e4f101137630d5"
     },
     "Pumpkin-Patch-Owner-Walk-Preview.html": {
       "bytes": 2399054,
@@ -31,5 +35,29 @@
       "sha256": "6e595e34cc0cd212f426d0a7553a1edfc700174d3cf7be141b22eb630b7d226e"
     }
   },
-  "verification": "Final browser checks and patch replay in progress; this is the complete current playable HTML, with no external assets."
+  "verification": "904 automated tests and21 targeted final-HTML browser checks passed; clean patch replay rebuilt identical HTML bytes. Standard smoke in progress.",
+  "patchReplay": {
+    "passed": true,
+    "tree": "4090296e3795314ad4ad1dcea98a7783b7764384",
+    "htmlSha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
+  },
+  "validation": {
+    "nodeTestsPassed": 904,
+    "nodeTestsFailed": 0,
+    "finalBrowserChecksPassed": 21,
+    "browserErrors": 0,
+    "externalAssetRequests": 0,
+    "desktopPhoneSmoke": "in progress"
+  },
+  "publicDownloadChecks": {
+    "commit": "cc04f8a482d71b134fdf651ec46d66f87710f145",
+    "html": {
+      "bytes": 57503178,
+      "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
+    },
+    "zip": {
+      "bytes": 41528719,
+      "sha256": "785621ec7919801531a11db37bd090dc32488661fdabb4150ae59da8f3d00cad"
+    }
+  }
 }

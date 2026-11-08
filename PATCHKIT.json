@@ -1,0 +1,49 @@
+{
+  "sourceBranch": "contractor/village-journey",
+  "base": "fa3ce1616919d3e75b0488421d42c7df50f0df31",
+  "head": "e61180ffd2f7a9304a0af6feb330eff4b8f34c4b",
+  "tree": "4090296e3795314ad4ad1dcea98a7783b7764384",
+  "leadChecked": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
+  "stateVersion": 18,
+  "patches": {
+    "0001-Illustrate-village-materials-upgrades-and-decoration.patch": {
+      "bytes": 16017332,
+      "sha256": "41c80b1c21533926793e286c625697ad756dcb0d62754435ba30c8fad0f2049c"
+    },
+    "0002-Connect-the-village-with-farm-travel-saved-foraging-.patch": {
+      "bytes": 13408447,
+      "sha256": "df826e01f03e95910435f93f169e14f4f73c7bc970329144f7ad3dc96fb9de7d"
+    },
+    "0003-Add-five-supplied-MIDI-songs-and-trim-silent-playbac.patch": {
+      "bytes": 117701,
+      "sha256": "e59388c99b19048b9aa297effdc0cdfc7e48063725a02cd30bd1104fabf6bd3f"
+    },
+    "0004-Repair-both-base-walking-cycles-and-paint-shared-gra.patch": {
+      "bytes": 75308833,
+      "sha256": "2de643f8fdecea908f73b0c53a95007fa6bcadb6c36bef11a919ac3560125b89"
+    },
+    "0005-Complete-nearby-village-interactions-furniture-art-a.patch": {
+      "bytes": 1976418,
+      "sha256": "12f0f07a9736635b6eb99ae0005b9c9ebf992875700bd0645a897ee25d34386d"
+    }
+  },
+  "cleanReplay": {
+    "passed": true,
+    "tree": "4090296e3795314ad4ad1dcea98a7783b7764384",
+    "htmlSha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
+  },
+  "nodeTests": {
+    "pass": 904,
+    "fail": 0,
+    "log": "handover/verification/final-node-tests.log"
+  },
+  "browserChecks": {
+    "pass": 21,
+    "fail": 0,
+    "errors": 0,
+    "externalRequests": 0,
+    "htmlSha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd",
+    "report": "handover/verification/final-increment-report.json",
+    "note": "Emulated input/viewports and declared fixtures; no physical hardware certification."
+  }
+}
