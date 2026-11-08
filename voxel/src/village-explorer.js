@@ -17,22 +17,35 @@ import { animateSprite } from "./sprite-voxels.js";
 import { LEAN } from "./world.js";
 import { PLAN_SCALE as K, VILLAGE_BOUNDS, RESIDENT_BY_ID } from "./content/village.js";
 import { FOLK_BY_ID, HOST_BY_ID } from "./content/village-folk.js";
+import { createVillageShell } from "./ui/village-shell.js";
+import { createVillageConversation } from "./ui/village-conversation.js";
+import { villageSpritePortrait } from "./village-sprite-actors.js";
 
 const canvas = document.querySelector("canvas"), $ = (id) => document.getElementById(id);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
 const state = M.freshState(); state.earned = M.LEVELS[2].at; M.recordHomeActivity(state, "visit"); M.inviteToVillage(state);
 let everyone = false;
-const view = createVillageView(canvas, state, { everyone: () => everyone, onPick: (hit) => { if (hit.type === "village-folk") meet(hit.id); if (hit.type === "village-door") goIn(hit.id); } });
-// A tap on a neighbour: who they are, a greeting, and a wave.
-let cardTimer = 0;
+let shell = null, dialogue = null, talking = null;
+const blocked = () => !!shell?.blocked || !!dialogue?.active;
+const view = createVillageView(canvas, state, { blocked, everyone: () => everyone, onPick: (hit) => { if (blocked()) return; if (hit.type === "village-folk") meet(hit.id); if (hit.type === "village-door") goIn(hit.id); } });
+// The preview uses the same authored conversations as the saved village. Its
+// temporary state stays in this page; travelling in the real game saves it.
 function meet(id) {
-  const host = HOST_BY_ID[id], res = RESIDENT_BY_ID[id], lines = host?.greet ?? FOLK_BY_ID[id]?.greet ?? [];
-  $("card-name").textContent = host?.name ?? res?.name ?? id; $("card-role").textContent = host?.role ?? res?.role ?? "";
-  $("card-line").textContent = lines.length ? `\u201c${lines[Math.floor(Math.random() * lines.length)]}\u201d` : "";
-  $("card").classList.add("shown"); clearTimeout(cardTimer); cardTimer = setTimeout(() => $("card").classList.remove("shown"), 6000);
-  view.folk.mood(id, "wave");
+  shell?.close(false);
+  const person = HOST_BY_ID[id] ?? FOLK_BY_ID[id]; if (!person) return;
+  const quest = M.talkStep(state, id), chat = !quest && M.canChat(state, id) ? M.nextChat(state, id) : null;
+  talking = { id, quest: quest?.quest, chat: chat?.id };
+  dialogue.open({ id, name: person.name, role: person.role, lines: quest?.lines?.length ? quest.lines : chat?.lines ?? [person.greet?.[0] ?? "Good evening."], choices: chat?.choices, friendship: M.friendshipWith(state,id) });
+  view.folk.mood(id, "talk");
 }
+dialogue = createVillageConversation({ portrait: villageSpritePortrait,
+  onChoice(index, info) { if (!talking?.chat) return info.choice.reply; return M.answerChat(state, talking.id, talking.chat, index)?.reply ?? false; },
+  onContinue() { if (talking?.quest) M.finishTalk(state,talking.quest,talking.id); },
+  onClose(id) { view.folk.mood(id,"wave"); talking=null; },
+});
+shell = createVillageShell({ onMeet: meet, portrait: villageSpritePortrait, available: id => everyone || (HOST_BY_ID[id] ?? FOLK_BY_ID[id])?.district === "green", onOverlayChange(open) { if (open) dialogue.close(false); } });
+view.spritesReady.then(() => shell.refresh());
 const composer = new EffectComposer(renderer), bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), .5, .45, .86);
 composer.addPass(new RenderPass(view.scene, view.camera)); composer.addPass(bloom); composer.addPass(new OutputPass());
 function fit() {
@@ -57,7 +70,7 @@ function go(id) {
   if (view.inside) leaveHall();
   if (walking) setWalk(false);
   const p = PLACES[id]; if (!p) view.cameraActions.reset(); else view.cameraActions.place(p[0].map((v) => v * K), p[1].map((v) => v * K));
-  for (const b of document.querySelectorAll("[data-place]")) b.classList.toggle("on", b.dataset.place === id);
+  shell.setPlace(id);
 }
 for (const b of document.querySelectorAll("[data-place]")) b.addEventListener("click", () => go(b.dataset.place));
 $("everyone").addEventListener("click", () => { everyone = !everyone; $("everyone").classList.toggle("on", everyone); view.sync(); });
@@ -72,13 +85,14 @@ $("restored").addEventListener("click", () => {
 // The grand tour: the flight Elowen gives on arrival, its titles rising at each stop. Tour again skips it.
 let titleTimer = 0;
 $("tour").addEventListener("click", () => {
+  dialogue.close(false); shell.close(false);
   if (document.body.classList.contains("touring")) { view.director.skip(); return; }
   if (walking) setWalk(false);
   document.body.classList.add("touring"); $("tour").classList.add("on"); $("tour").textContent = "Skip";
   view.director.start((k) => {
     $("title-name").textContent = k.title; $("title-sub").textContent = k.sub; $("title").classList.add("shown");
     clearTimeout(titleTimer); titleTimer = setTimeout(() => $("title").classList.remove("shown"), 3400);
-  }, () => { document.body.classList.remove("touring"); $("tour").classList.remove("on"); $("tour").textContent = "Tour"; $("title").classList.remove("shown"); });
+  }, () => { M.finishTour(state); document.body.classList.remove("touring"); $("tour").classList.remove("on"); $("tour").textContent = "Take the grand tour"; $("title").classList.remove("shown"); });
 });
 
 // ---- Walking: an owner at play-mode size, a stick, keys and a pad ------------------------
@@ -99,14 +113,14 @@ function setWalk(on) {
 }
 $("walk").addEventListener("click", () => setWalk(!walking));
 $("who").addEventListener("click", () => { who = who === "shane" ? "natalie" : "shane"; $("who").textContent = who === "shane" ? "Shane" : "Natalie"; if (sheets && walking) makeActor(); });
-addEventListener("keydown", (e) => { keys.add(e.key.toLowerCase()); if (e.key === " " && !e.repeat) setWalk(!walking); if ((e.key === "Enter" || e.key.toLowerCase() === "f") && !e.repeat && offer) act(); });
+addEventListener("keydown", (e) => { if (blocked() || e.target?.closest?.("button,summary,input,select,textarea,[role=dialog]")) return; keys.add(e.key.toLowerCase()); if (e.key === " " && !e.repeat) { e.preventDefault(); setWalk(!walking); } if ((e.key === "Enter" || e.key.toLowerCase() === "f") && !e.repeat && offer) act(); });
 addEventListener("keyup", (e) => keys.delete(e.key.toLowerCase()));
 addEventListener("blur", () => keys.clear());
 
 // The stick: wherever a thumb lands on the left of the screen while walking.
 const stick = $("stick"), knob = $("knob"), pad = $("pad");
 let stickId = null, sx = 0, sy = 0;
-pad.addEventListener("pointerdown", (e) => { stickId = e.pointerId; sx = e.clientX; sy = e.clientY; pad.setPointerCapture(e.pointerId); stick.style.transform = `translate(${sx - 60}px, ${sy - 60}px)`; stick.classList.add("shown"); knob.style.transform = ""; e.preventDefault(); });
+pad.addEventListener("pointerdown", (e) => { if(blocked())return; stickId = e.pointerId; sx = e.clientX; sy = e.clientY; pad.setPointerCapture(e.pointerId); stick.style.transform = `translate(${sx - 60}px, ${sy - 60}px)`; stick.classList.add("shown"); knob.style.transform = ""; e.preventDefault(); });
 pad.addEventListener("pointermove", (e) => {
   if (e.pointerId !== stickId) return;
   let dx = e.clientX - sx, dy = e.clientY - sy; const d = Math.hypot(dx, dy), max = 46; if (d > max) { dx *= max / d; dy *= max / d; }
@@ -197,7 +211,10 @@ function faceCamera(f) {
 let last = performance.now(), time = 0, frames = 0, fpsAt = last;
 function frame(now) {
   const dt = Math.min(.05, (now - last) / 1000); last = now; time += dt;
-  if (walking && actor) walk(dt, time);
+  // The active hall owns the label, including direct preview/debug entry.
+  shell.setRoom(INSIDES[view.inside]?.name);
+  if (blocked()) { keys.clear(); move.x = move.y = 0; stick.classList.remove("shown"); }
+  else if (walking && actor) walk(dt, time);
   view.tick(dt); if (walking && actor) faceCamera(actor);
   renderer.toneMappingExposure = view.scene.userData.exposure ?? 1; composer.render();
   frames++; if (now - fpsAt > 1000) { $("fps").textContent = `${Math.round(frames * 1000 / (now - fpsAt))} fps`; frames = 0; fpsAt = now; }
@@ -206,7 +223,7 @@ function frame(now) {
 requestAnimationFrame(frame);
 setTimeout(() => document.body.classList.add("ready"), 400);
 // For checks in a browser: the view and the tour's stops.
-window.explorer = { view, TOUR, place: (i) => view.cameraActions.place(TOUR[i].at, TOUR[i].look), walkTo(x, z) { pos.x = x; pos.z = z; if (actor) place(); },
+window.explorer = { view, TOUR, shell, dialogue, meet, state:()=>state, place: (i) => view.cameraActions.place(TOUR[i].at, TOUR[i].look), walkTo(x, z) { pos.x = x; pos.z = z; if (actor) place(); },
   // What one frame draws: draw calls and triangles across every pass (shadows and bloom included).
   frameStats() { renderer.info.autoReset = false; renderer.info.reset(); view.tick(1 / 30); view.scene.traverse((o) => { if (o.isDirectionalLight && o.castShadow) o.shadow.needsUpdate = true; }); composer.render(); const i = renderer.info.render; renderer.info.autoReset = true; return { calls: i.calls, tris: i.triangles }; },
   // What each part of the village costs in the current view: the frame without it, subtracted.

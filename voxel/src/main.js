@@ -51,6 +51,7 @@ import { PLOTS } from "./world.js";
 import { leaveHouse } from "./play-ways.js";
 import { createPlaceVeil } from "./ui/place-veil.js";
 import { createCarvingUI } from "./ui/carving-ui.js";
+import { createVillageGame } from "./village-game.js";
 
 const SAVE_KEY = "pumpkin-patch-voxel-reference-v1";
 
@@ -61,7 +62,7 @@ function load() {
 }
 let state = load();
 mountBoostDial($("boost"));
-let playControls, homeJourney, lifeActivity;
+let playControls, homeJourney, lifeActivity, villageGame;
 const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(state))); } catch {} };
 setInterval(save, 5000);
 document.addEventListener("visibilitychange", () => document.hidden && save());
@@ -126,10 +127,17 @@ const scene = createScene($("world"), state, {
     if (handsOn && !state.handsOn && state.upgrades.auto) notice("Helping hands are resting while you're in charge.");
     state.handsOn = handsOn;
     if (!state.paused) for (const e of M.update(state, dt)) handle(e);
+    if (villageGame?.active) { villageGame.tick(dt); return; }
+    if (!state.paused && !scene.place && scene.player.enabled) {
+      const pos = scene.player.state().position;
+      for (const page of M.storyObjectsHere(state, "farm")) if (Math.hypot(page.x-pos.x,page.z-pos.z)<1.8) collectVillagePage(page.id);
+    }
     lifeActivity?.tick(dt);
     carvingUI?.tick(dt);
     render();
   },
+  onVillagePick: what => villageGame?.pick(what),
+  villageBlocked: () => !!villageGame?.blocked,
   selectedPiece: () => home.tools.selected,
   canDragPiece: () => !!home.tools.selected,
   // While arranging, pressing another piece and moving picks that one up instead.
@@ -174,6 +182,7 @@ const scene = createScene($("world"), state, {
   // A chat marker over a group in the meadow (scene.js syncChats).
   onChat(spot) { guestCard.clear(); chatCard.open(spot); },
   onPick(what) {
+    if (what.type === "village-page") { if(!state.paused)collectVillagePage(what.id); return; }
     // Playing: a tap on a plot, a piece of furniture, or a garden bed or bench
     // walks the owner over and does it there.
     if (playControls?.active && !home.tools.selected && !openTab && ["plot", "piece", "estate-decor"].includes(what.type)) {
@@ -538,7 +547,7 @@ function goTo(id) {
   if (openTab === "home") draw();
 }
 function enterShop() { if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.enter("shop"); renderPlace(); }
-function leavePlace() { lifeActivity?.cancel(); if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.leavePlace(); renderPlace(); }
+function leavePlace() { if(villageGame?.active){villageGame.close();return;} lifeActivity?.cancel(); if (mazeUI.active) stopMazePresentation(); if (hayrideUI.active) stopHayridePresentation(); foyerTools.cancel(); hollowContext.close(); hayrideContext.close(); estateTools.cancel(); guestCard.clear(); home.tools.select(null); interiorFromEstate = false; scene.leavePlace(); renderPlace(); }
 function openHome() { if (scene.place?.kind === "room") { sheets.home.setTab("rooms"); openSheet("home"); } else if (scene.place?.kind === "estate") openEstateSheet("grounds"); else enterEstate(); }
 function openEstateSheet(tab = "garden") { sheets.estate.setTab(tab); openSheet("estate"); }
 function upgradeEstateHouse() {
@@ -553,7 +562,7 @@ function renderPlace() {
   document.body.classList.toggle("inside-place", inside);
   document.body.classList.toggle("house-estate", p?.kind === "estate");
   $("place-bar").hidden = !inside; $("actions").hidden = inside; $("goal").hidden = inside;
-  if (inside) $("place-title").textContent = p.kind === "carving" ? "The carving bench" : p.kind === "hayride" ? "The Hollow Hayride" : p.kind === "estate" ? "Home & Garden" : p.kind === "maze" ? "The Hollow House · Walkthrough" : p.kind === "foyer" ? "The Hollow House · Foyer" : p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
+  if (inside) $("place-title").textContent = p.kind === "village" ? "Mothlight Village" : p.kind === "carving" ? "The carving bench" : p.kind === "hayride" ? "The Hollow Hayride" : p.kind === "estate" ? "Home & Garden" : p.kind === "maze" ? "The Hollow House · Walkthrough" : p.kind === "foyer" ? "The Hollow House · Foyer" : p.kind === "shop" ? "The Honest Pumpkin" : "The " + M.houseRooms.find((r) => r.id === p.id).name;
   $("place-back").setAttribute("aria-label", p?.kind === "room" && interiorFromEstate ? "Back to the garden" : "Back to the patch");
   $("place-back").querySelector(".place-back-text").textContent = p?.kind === "room" && interiorFromEstate ? "Back to garden" : "Back to farm";
   $("place-rooms").disabled = p?.kind === "shop";
@@ -578,6 +587,8 @@ const text = (id, value) => { const el = $(id); if (el.textContent !== String(va
 const shownLevel = { label: "", fill: "" };
 let sheetDrawnAt = 0;
 function render() {
+  villageGame?.render();
+  if (villageGame?.active) return;
   const controlsBlocked=!!openTab || celebration.active || intro.active || upgradeMenu?.open || mazeUI.active || hayrideUI.active || state.paused || !!homeJourney?.active || !!carvingUI?.isOpen || !!fishingUI?.isOpen;
   // Fishing ends if the garden is left (the dock, a doorway).
   if (fishingUI?.isOpen && scene.place?.kind !== "estate") fishingUI.close();
@@ -690,7 +701,7 @@ const ui = {
   thumb: (v) => (thumbs[v] ? `<span class="thumb"><img src="${thumbs[v]}" alt=""></span>` : `<span class="thumb"><span class="seed-icon"></span></span>`),
   portrait: (id) => scene.portrait(id), sendContract: (id) => sendContract(id),
   intro,
-  enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide, openHayrideSheet, focusHayride, openHayrideRide, openCookingSheet, openShopSheet, openCocoaSheet, enterKitchen, showCookingAnimation(job,station) { showFirstCooking(state,job.recipe,station,save); }, openKitchenDecorate() { sheets.home.setTab("decorate"); openSheet("home"); },
+  openVillage, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, upgradeEstateHouse, openHollowSheet, openFoyerSheet, openMazeRide, openHayrideSheet, focusHayride, openHayrideRide, openCookingSheet, openShopSheet, openCocoaSheet, enterKitchen, showCookingAnimation(job,station) { showFirstCooking(state,job.recipe,station,save); }, openKitchenDecorate() { sheets.home.setTab("decorate"); openSheet("home"); },
   get estateTools() { return estateTools; },
   get foyerTools() { return foyerTools; }, get hollowContext() { return hollowContext; },
   read: (id) => collection.read(id),
@@ -707,6 +718,12 @@ setTimeout(() => {
   prefs.saveNudgeAt = new Date().toISOString(); savePrefs();
   notice("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
 }, 60000);
+villageGame = createVillageGame({ state: () => state, scene, save, notice,
+  closeMenus() { closeSheet(); upgradeMenu?.close(); home.tools.select(null); lifeActivity?.cancel(); playControls?.close(); playControls?.cursor.hide(); },
+  onLeave() { renderPlace(); render(); }, onRender: renderPlace,
+});
+function openVillage() { return villageGame.open(); }
+function collectVillagePage(id) { const events=M.findObject(state,id);if(!events)return false;for(const event of events)handle(event);save();notice("A page of Elowen's letter · bring it back to the village");return true; }
 const home = homeSheets(ui), collection = collectionSheets(ui);
 const sheets = { fishing: fishingSheet(ui), ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...cookingSheets(ui), ...contractsSheet(ui), ...carvingStandSheet(ui), ...moreSheet(ui), ...homeLifeSheet(ui), ...settingsSheet(ui) };
 const estateTools = createEstateControls(ui);
@@ -796,6 +813,7 @@ document.addEventListener("keydown", (e) => {
   if (fishingUI?.isOpen && fishingUI.key(e)) return;
   // The carving bench has the keyboard to itself while it is open (ui/carving-ui.js).
   if (intro.active || mazeUI.active || hayrideUI.active || homeJourney?.active || carvingUI?.isOpen) return;
+  if(villageGame?.active)return;
   if(playControls?.handleKey(e))return;
   if (e.key !== "Escape" && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)) return;
   if (celebration.active) return;
@@ -898,7 +916,8 @@ function interactAsPlayer(tool='hand',options={}) {
 }
 function followHomeGoal(){
   const g=M.homeGoal?.(state);if(!g){openSheet('homelife');return;}
-  const a=g.action;if(a==='upgrade-house'){enterRoom('parlour');sheets.home.setTab('house');openSheet('home');}
+  const a=g.action;if(a==='village'){openVillage();}
+  else if(a==='upgrade-house'){enterRoom('parlour');sheets.home.setTab('house');openSheet('home');}
   else if(a==='wardrobe'){enterRoom('parlour');M.recordHomeActivity?.(state,'wardrobe');openSheet('wardrobe');}
   else if(a==='cook'||a==='equipment'){enterKitchen({tab:a==='equipment'?'equipment':'recipes'});}
   else if(a==='recipes'){openCookingSheet('recipes');}
@@ -939,7 +958,7 @@ const mazeDiagnostics = {
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
 const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), hold: on => scene.holdHayrideRide(on), get status() { return scene.hayrideRideStatus; } };
-window.PumpkinVoxel = { lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, get fishingUI() { return fishingUI; }, get padArrange() { return padArrange; }, startFishing, emptyLakeTraps, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, openShopSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
+window.PumpkinVoxel = { village: villageGame, openVillage, lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, get fishingUI() { return fishingUI; }, get padArrange() { return padArrange; }, startFishing, emptyLakeTraps, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, openShopSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";

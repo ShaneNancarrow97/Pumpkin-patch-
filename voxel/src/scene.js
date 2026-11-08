@@ -20,7 +20,7 @@ import { MAP, PLOTS, BIG_PUMPKIN, SHOP, HOMES, ROUTE_IN, ROUTE_OUT, PITCH, build
 import { buildVisitor, animateWalk } from "./characters.js";
 import { loadSprites, spriteCharacter, animateSprite, animateSkyla } from "./sprite-voxels.js";
 import { loadSpriteSheets, spriteActor, spriteVisitor, seatedVisitor, animateVisitor, portraitURL } from "./sprite-actors.js";
-import { VARIETIES, VISIT, visitorLeaveSeconds, openPlots, activeLook, counterSide, cleanLitter } from "./model.js";
+import { VARIETIES, VISIT, visitorLeaveSeconds, openPlots, activeLook, counterSide, cleanLitter, storyObjectsHere } from "./model.js";
 import { createPlaces, ORIGIN } from "./places.js";
 import { projectWallRay } from "./wall-drag.js";
 import { INTERIOR } from "./interiors.js";
@@ -35,6 +35,8 @@ const DANCE = CHAT_SPOTS.find((spot) => spot.id === "dancefloor");
 import { cameraLayout, controlledRoomFraming, farmVerticalLimits } from "./camera-layout.js";
 import { createHouseEstateView } from "./house-estate-view.js";
 import { createGardenPlay } from "./garden-play.js";
+import { createVillageView } from "./village-view.js";
+import { letterPage } from "./village-models.js";
 import { createCarvingView } from "./carving-view.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
 import { createFarmExpansion } from "./farm-expansion-world.js";
@@ -280,6 +282,22 @@ export function createScene(canvas, state, hooks) {
     if (receivedOrders.size > 64) receivedOrders.delete(receivedOrders.values().next().value);
   }
 
+  // Elowen's windblown page crosses back to the farm with the same saved quest.
+  const farmPages = new Map();
+  function syncFarmPages() {
+    const wanted = storyObjectsHere(state, "farm"), ids = new Set(wanted.map(p => p.id));
+    for (const [id, page] of farmPages) if (!ids.has(id)) {
+      scene.remove(page.group, page.hit); pickables.splice(pickables.indexOf(page.hit), 1);
+      page.group.traverse(o => { o.geometry?.dispose?.(); if(o.material)[].concat(o.material).forEach(m => m.dispose()); }); page.hit.geometry.dispose(); page.hit.material.dispose(); farmPages.delete(id);
+    }
+    for (const page of wanted) if (!farmPages.has(page.id)) {
+      const group = letterPage(), hit = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1, 1.3), new THREE.MeshBasicMaterial({ visible: false }));
+      group.position.set(page.x, .15, page.z); hit.position.set(page.x, .5, page.z); hit.userData = { type: "village-page", id: page.id };
+      scene.add(group, hit); pickables.push(hit); farmPages.set(page.id, { group, hit });
+    }
+    for (const page of farmPages.values()) { page.group.position.y = .15 + Math.sin(time * 2.3) * .04; page.group.rotation.y = Math.sin(time * .9) * .3; }
+  }
+
   // Visitors.
   const visitorModels = new Map(), outLen = routeLength(ROUTE_OUT), meadowOutLen = routeLength(MEADOW_EXIT);
   // Guests who buy from Maisie's truck stop at its hatch on the way home: both
@@ -350,6 +368,7 @@ export function createScene(canvas, state, hooks) {
   const roomCam = new THREE.PerspectiveCamera(INTERIOR.fov, 1, 0.1, 200);
   const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), gesture: hooks.estateGesture, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
   const gardenPlay = createGardenPlay({ view: estateView, state, character });
+  const villageView = createVillageView(canvas, state, { onPick: what => hooks.onVillagePick?.(what), blocked: () => view.place !== "village" || !!hooks.villageBlocked?.() });
   // The bench's view reports to main.js through hooks.carving (cuts, the lid, seeds, sounds).
   const carve = (name) => (...args) => hooks.carving?.[name]?.(...args);
   const carvingView = createCarvingView(canvas, state, Object.assign(Object.fromEntries(["onCut", "onEtch", "onFree", "onFreeMiss", "onLid", "onScooped", "onRevealed", "onTool", "onProgress", "sound", "feel"].map((n) => [n, carve(n)])), { blocked: () => document.body.classList.contains("menu-open") }));
@@ -364,8 +383,8 @@ export function createScene(canvas, state, hooks) {
   // The ground's far sides (ground.js) show only while the play camera can turn.
   function showFarSides(on) { farSides = on; scene.traverse((o) => { if (o.userData.groundFar) o.visible = on; }); }
   const FOLLOW = { pitch: THREE.MathUtils.degToRad(27), near: 7.5, far: 19 };
-  const active = () => view.place === "carving" ? carvingView.camera : view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : followOn ? followCam : camera;
-  const activeScene = () => view.place === "carving" ? carvingView.scene : view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
+  const active = () => view.place === "village" ? villageView.camera : view.place === "carving" ? carvingView.camera : view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : followOn ? followCam : camera;
+  const activeScene = () => view.place === "village" ? villageView.scene : view.place === "carving" ? carvingView.scene : view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
   const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null, reach: { x: 0, z: 0 } };
   // The optional orbit follows the owner; the management view stays canonical.
   const playerOrbit = { yaw: 0, pitch: PITCH }, playerLook = { x: 0, z: 0 };
@@ -509,6 +528,7 @@ export function createScene(canvas, state, hooks) {
     renderer.toneMappingExposure = view.place === "maze" ? 1.3 : view.place === "carving" ? 1.2 : 1.45;
     if (view.place === "maze") { mazeView.resize(); return; }
     if (view.place === "hayride") { hayrideView.resize(); return; }
+    if (view.place === "village") { villageView.resize(w, h); return; }
     if (view.place === "estate") { estateView.resize(w, h); return; }
     if (view.place === "carving") { carvingView.resize(w, h); return; }
     if (view.place === "foyer") { foyerView.resize(); return; }
@@ -588,7 +608,7 @@ export function createScene(canvas, state, hooks) {
   };
   const worldPerPixel = () => (camera.right - camera.left) / canvas.clientWidth;
   canvas.addEventListener("pointerdown", (e) => {
-    if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
+    if (["estate", "foyer", "maze", "hayride", "carving", "village"].includes(view.place) || e.pointerType === "mouse" && e.button !== 0) return;
     canvas.setPointerCapture(e.pointerId); glide = null;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touches.size === 1) {
@@ -614,7 +634,7 @@ export function createScene(canvas, state, hooks) {
     }
   });
   canvas.addEventListener("pointermove", (e) => {
-    if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place)) return;
+    if (["estate", "foyer", "maze", "hayride", "carving", "village"].includes(view.place)) return;
     if (!touches.has(e.pointerId)) return;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pinch && touches.size === 2) { const [a, b] = [...touches.values()];
@@ -640,7 +660,7 @@ export function createScene(canvas, state, hooks) {
   let lastPick = null;
   // A tap at a point on the screen: what's there is picked, as a finger's tap would (also the pad cursor's ✕).
   function tapAt(x, y) {
-    if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place)) return false;
+    if (["estate", "foyer", "maze", "hayride", "carving", "village"].includes(view.place)) return false;
     const box = canvas.getBoundingClientRect();
     pointer.set(((x - box.left) / box.width) * 2 - 1, -((y - box.top) / box.height) * 2 + 1);
     ray.setFromCamera(pointer, active());
@@ -653,7 +673,7 @@ export function createScene(canvas, state, hooks) {
     return !!hit;
   }
   const end = (e) => {
-    if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place) || !touches.has(e.pointerId)) return;
+    if (["estate", "foyer", "maze", "hayride", "carving", "village"].includes(view.place) || !touches.has(e.pointerId)) return;
     const wasPieceDrag = pieceDrag === e.pointerId;
     const wasTap = !wasPieceDrag && drag && drag.moved < 8 && touches.size === 1 && (e.pointerType !== "mouse" || e.button === 0);
     grab = null; dragAt = null;
@@ -677,7 +697,7 @@ export function createScene(canvas, state, hooks) {
   canvas.addEventListener("contextmenu", e => { e.preventDefault(); cancelGesture(); });
   window.addEventListener("blur", () => cancelGesture());
   document.addEventListener("visibilitychange", () => { if (document.hidden) cancelGesture(); });
-  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer", "maze", "hayride", "carving"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, cameraLayout(canvas.clientWidth).maxZoom); clampView(); frame(); }, { passive: false });
+  canvas.addEventListener("wheel", (e) => { if (["estate", "foyer", "maze", "hayride", "carving", "village"].includes(view.place)) return; e.preventDefault(); glide = null; view.zoom = THREE.MathUtils.clamp(view.zoom * (e.deltaY < 0 ? 1.1 : 0.9), cameraLayout(canvas.clientWidth).minZoom, cameraLayout(canvas.clientWidth).maxZoom); clampView(); frame(); }, { passive: false });
   // Keep the fence at or below the bottom edge (a tall phone shows the sky and
   // hills above instead of empty ground below), and the map's sides in view.
   function clampView() {
@@ -765,7 +785,15 @@ export function createScene(canvas, state, hooks) {
     // a negative time would pick a walk frame that doesn't exist.
     const dt = THREE.MathUtils.clamp((now - last) / 1000, 0, 0.1); last = now; time += dt;
     hooks.onTick(dt);
-    ambience.tick(time);
+    // The saved village shares this renderer and clock. Its own scene replaces
+    // the farm completely, so the unseen farm does not animate or draw beneath it.
+    if (view.place === "village") {
+      villageView.tick(state.paused ? 0 : dt); renderer.toneMappingExposure = villageView.scene.userData.exposure ?? 1.15;
+      renderPass.scene = villageView.scene; renderPass.camera = villageView.camera;
+      if (bloomOn) composer.render(); else renderer.render(villageView.scene, villageView.camera);
+      if (warming.size) warmNext(); requestAnimationFrame(tick); return;
+    }
+    syncFarmPages(); ambience.tick(time);
     // The camera shows the kept piece after any press on the canvas is over; a short
     // ease, or a cut for anyone who has asked for less motion.
     if (aimNext && !touches.size && view.place === "room") {
@@ -998,8 +1026,10 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
       if (view.place === "carving") carvingView.leave();
+      if (view.place === "village") villageView.leave();
       view.place = kind; playerOrbit.yaw=0;playerOrbit.pitch=kind==="room"?INTERIOR.pitch:PITCH;
-      if (kind === "estate") { places.leave(); estateView.enter(); }
+      if (kind === "village") { places.leave(); villageView.enter(); warm(...(villageView.spriteTextures?.() ?? [])); }
+      else if (kind === "estate") { places.leave(); estateView.enter(); }
       else if (kind === "carving") { places.leave(); carvingView.enter(); }
       else if (kind === "foyer") { places.leave(); foyerView.enter(); }
       else if (kind === "maze") { places.leave(); mazeView.enter(id.config, id.options); }
@@ -1016,12 +1046,13 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "estate") estateView.leave();
       if (view.place === "foyer") foyerView.leave();
       if (view.place === "carving") carvingView.leave();
+      if (view.place === "village") villageView.leave();
       places.leave();
       view.place = null; glide = null; playerOrbit.yaw=0;playerOrbit.pitch=PITCH;
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
       if (renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, false, tvProfile).pixelRatio) resize(); else frame();
     },
-    get place() { return view.place === "carving" ? { kind: "carving", id: "bench" } : view.place === "hayride" ? { kind: "hayride", id: "woodland" } : view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
+    get place() { return view.place === "village" ? { kind: "village", id: "mothlight" } : view.place === "carving" ? { kind: "carving", id: "bench" } : view.place === "hayride" ? { kind: "hayride", id: "woodland" } : view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
     get visitorStatus() { return [...visitorModels].map(([id,e]) => ({ id, kind: state.visitors.find(v=>v.id===id)?.kind, visible: e.m.visible, sprite: e.sprite, leadingLeg: e.m.userData.leadingLeg, frames: e.m.userData.walk?.length ?? 0, frame: e.m.userData.walk?.indexOf(e.m.userData.shown) ?? -1, x: e.m.position.x, z: e.m.position.z })); },
     get farmExpansionStatus() { return farmExpansion.status; },
@@ -1033,6 +1064,7 @@ export function createScene(canvas, state, hooks) {
     get cookingStatus() { return { ...cookingWorld.status, displays: places.foodDisplayStatus, receiver: actors.shane?.delivery ?? null, receiverStatus: actors.shane?.delivery ? { order: actors.shane.delivery, x: actors.shane.model.position.x, z: actors.shane.model.position.z, waiting: !!actors.shane.queue[0]?.receive && Math.hypot(actors.shane.model.position.x - 39.65, actors.shane.model.position.z - 4.45) <= .12 } : null }; },
     get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight, playerLook: { ...playerLook }, playerOrbit: {...playerOrbit,active:orbiting()} }; },
     fitView() {
+      if (view.place === "village") { villageView.cameraActions.reset(); return; }
       if (view.place === "maze") { mazeView.setLook(0, 0); mazeView.resize(); return; }
       if (view.place === "hayride") { hayrideView.setLook(0, 0); hayrideView.resize(); return; }
       if (view.place === "estate") { estateView.cameraActions.reset(); return; }
@@ -1040,6 +1072,8 @@ export function createScene(canvas, state, hooks) {
       Object.assign(view, { x: view.place ? 0 : cameraLayout(canvas.clientWidth).overview >= .95 ? (farmViewWidth() + HOLLOW_PROPERTY.westEdge) / 2 : 15.5, z: view.place ? 0 : 8.4, zoom: 1 });
       frame();
     },
+    get villageView() { return villageView; },
+    villageCharacter(who) { if(!sheets)return null;const actor=spriteActor(sheets,who,activeLook(state,who),state.wardrobe.equipped[who]);actor.userData.kind="person";return actor; },
     refreshRoom() { places.refresh(); },
     refreshEstate() { festivalWorld.sync(); farmExpansion.sync(); frame(); },
     refreshHouseEstate() { if (view.place === "estate") estateView.sync(); },

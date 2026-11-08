@@ -19,17 +19,19 @@ export function moreSheet(ui) {
       const s = ui.state, ready = claimable(s).length;
       const links = [
         ["homelife", "Home & hands-on play", "Play as Shane or Natalie · home milestones · clean-up"],
+        ["village", "Mothlight Village", s.village?.invited ? "Visit neighbours, stories & Rowan’s stall" : "A letter from Elowen · opens at level 3"],
         ["cooking", "Kitchen & food", s.kitchen?.purchased ? "Cook, order ingredients & stock Skyla’s shelves" : "Food truck · available to purchase at level 5"],
         ["journal", "Journal", ready ? `${ready} favour${ready === 1 ? "" : "s"} ready to collect` : "Favours, memories, books & level rewards"],
         ["settings", "Settings", "Sound, graphics, fullscreen & backups"],
         ["patch", "Back to the farm", "Return to the pumpkin patch"],
       ];
-      return `<div class="more-summary"><span><b>${stockCount(s).toLocaleString("en-GB")}</b> in stock</span><span><b>${s.sold.toLocaleString("en-GB")}</b> visitors served</span></div><div class="more-links">${links.map(([id, title, detail]) => `<button class="more-link" data-more="${id}"><span class="more-icon">${id === "cooking" ? cookingIcon("truck") : premiumIcon(id === "patch" ? "farm" : id === "homelife" ? "home" : id)}</span><span><b>${title}${id === "journal" && ready ? '<i class="more-dot" aria-label="Rewards ready"></i>' : ""}</b><small>${detail}</small></span><span class="more-chevron" aria-hidden="true">›</span></button>`).join("")}</div><details class="more-help"><summary>Controls & little tips</summary><p>Tap a plot to plant or pick. Tap the glowing pumpkin to help your crops along. Buildings open their own controls.</p><p>In tycoon mode, drag to pan and tap buildings to manage them. Play mode adds MOVE and LOOK thumbsticks, tap/hold tools and walk/jog. Use the centre-camera button or R3 to find your character. Keyboard: WASD move, IJKL look, X use, Q tools, C centre, Shift walk/jog.</p></details>`;
+      return `<div class="more-summary"><span><b>${stockCount(s).toLocaleString("en-GB")}</b> in stock</span><span><b>${s.sold.toLocaleString("en-GB")}</b> visitors served</span></div><div class="more-links">${links.map(([id, title, detail]) => `<button class="more-link" data-more="${id}"><span class="more-icon">${id === "cooking" ? cookingIcon("truck") : premiumIcon(id === "patch" ? "farm" : ["homelife","village"].includes(id) ? "home" : id)}</span><span><b>${title}${id === "journal" && ready ? '<i class="more-dot" aria-label="Rewards ready"></i>' : ""}</b><small>${detail}</small></span><span class="more-chevron" aria-hidden="true">›</span></button>`).join("")}</div><details class="more-help"><summary>Controls & little tips</summary><p>Tap a plot to plant or pick. Tap the glowing pumpkin to help your crops along. Buildings open their own controls.</p><p>In tycoon mode, drag to pan and tap buildings to manage them. Play mode adds MOVE and LOOK thumbsticks, tap/hold tools and walk/jog. Use the centre-camera button or R3 to find your character. Keyboard: WASD move, IJKL look, X use, Q tools, C centre, Shift walk/jog.</p></details>`;
     },
     bind(body) {
       body.querySelectorAll("[data-more]").forEach(button => button.onclick = () => {
         const tab = button.dataset.more;
         if (tab === "patch") { ui.leavePlace(); ui.closeSheet(); ui.scene.fitView(); }
+        else if (tab === "village") ui.openVillage();
         else if (tab === "cooking") ui.openCookingSheet();
         else ui.openSheet(tab);
       });

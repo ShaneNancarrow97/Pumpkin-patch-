@@ -7,6 +7,8 @@ import * as THREE from "three";
 import { FIXTURES, PLAN_SCALE } from "./content/village.js";
 import { doorOf, districtOpen } from "./rules/village.js";
 import { RESIDENT_BY_ID } from "./content/village.js";
+import { createVillageSprite, tickVillageSprite, readyVillageSprites, villageSpritePortrait } from "./village-sprite-actors.js";
+import { activeVillageMood } from "./village-sprite-math.js";
 
 const FOLK_SCALE = 1.15;
 const solid = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .85, metalness: 0 });
@@ -192,7 +194,9 @@ const DESIGNS = {
 export const HOSTS = Object.freeze({ vesper: Object.freeze({ x: 100.2, z: 26, face: "north" }) });
 
 // A resident's figure: joints for the head, arms and legs (or a skirt), posed by tick().
-export function makeResident(id) {
+export function makeResident(id, { style = "sprite" } = {}) {
+  const sprite = style === "sprite" && createVillageSprite(id);
+  if (sprite) return { root: sprite, hip: sprite.children[0], head: null, design: { sprite: true, height: sprite.userData.height }, id, sprite: true };
   const d = DESIGNS[id](), root = new THREE.Group(), hip = new THREE.Group(); root.add(hip); root.name = "resident-" + id;
   // Drawn a touch over life size so they stand as tall as Shane and Natalie (2.3 units).
   root.scale.setScalar(FOLK_SCALE);
@@ -226,8 +230,17 @@ const FACE = { south: 0, east: Math.PI / 2, north: Math.PI, west: -Math.PI / 2 }
 // Where to stand to talk to them (realm), a step in front.
 export function talkSpot(state, id) { const s = residentSpot(state, id), a = FACE[s.face] ?? 0, d = s.reach ?? 1.8; return { x: s.x + Math.sin(a) * d, z: s.z - Math.cos(a) * d }; }
 
-export function createVillageFolk({ scene, state, pickables, pickMaterial, ground = () => 0, everyone = () => false }) {
+export function createVillageFolk({ scene, state, pickables, pickMaterial, ground = () => 0, everyone = () => false, style = "sprite" }) {
   const people = new Map(), moods = new Map();
+  let castStyle = style === "voxel" ? "voxel" : "sprite", clock = 0;
+  const retire = p => {
+    scene.remove(p.root);
+    const index = pickables.indexOf(p.hit); if (index >= 0) pickables.splice(index, 1);
+    p.hit?.geometry.dispose();
+    // Sprite frames/materials are shared by the hall hosts. Voxel geometry is
+    // private to a figure, but its two palette materials are shared too.
+    if (!p.sprite) p.root.traverse(o => { if (o !== p.hit) o.geometry?.dispose?.(); });
+  };
   function sync() {
     // Residents of districts that aren't open yet wait out of sight until they are.
     const here = ["elowen", "rowan", "mabel", "tansy", "opal", "cinder", "corvus", "baron"].filter((id) => everyone() || districtOpen(state, RESIDENT_BY_ID[id].district)).concat(Object.keys(HOSTS));
@@ -235,8 +248,8 @@ export function createVillageFolk({ scene, state, pickables, pickMaterial, groun
     for (const id of here) {
       let p = people.get(id);
       if (!p) {
-        p = makeResident(id); scene.add(p.root);
-        const hit = new THREE.Mesh(new THREE.BoxGeometry(.9, 2, .9), pickMaterial); hit.userData = { type: "village-folk", id }; p.root.add(hit); hit.position.y = 1; pickables.push(hit);
+        p = makeResident(id, { style: castStyle }); scene.add(p.root);
+        const hit = new THREE.Mesh(new THREE.BoxGeometry(.9, 2.4, .9), pickMaterial); hit.userData = { type: "village-folk", id }; p.root.add(hit); hit.position.y = 1.2; pickables.push(hit); p.hit = hit;
         people.set(id, p);
       }
       p.root.visible = true; const spot = residentSpot(state, id); p.spot = spot;
@@ -244,25 +257,38 @@ export function createVillageFolk({ scene, state, pickables, pickMaterial, groun
     }
   }
   // Moods: idle, talk (while in a conversation), wave (a greeting), set by the UI.
-  function mood(id, m, facing) { moods.set(id, { m, at: performance.now() / 1000, facing }); }
-  function tick(dt, time, camera) {
-    for (const p of people.values()) {
+  function mood(id, m, facing) { moods.set(id, { m, at: clock, facing }); }
+  function animate(p, dt, time, camera) {
       const md = moods.get(p.id), t = time + p.id.length, d = p.design;
       let yaw = p.baseYaw ?? 0;
       if (md?.facing) yaw = Math.atan2(md.facing.x - p.root.position.x, -md.facing.z - p.root.position.z);
       const turn = ((yaw - p.root.rotation.y + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
       p.root.rotation.y += Math.sign(turn) * Math.min(Math.abs(turn), dt * 4);
+      const mood = activeVillageMood(md, time), talking = mood === "talk", waving = mood === "wave";
+      if (p.sprite) { tickVillageSprite(p.root, { time, walking: !!p.walking, mood: waving ? "wave" : talking ? "talk" : "idle", camera }); return; }
       const breathe = Math.sin(t * 1.6) * .012;
       p.hip.scale.y = 1 + breathe; if (d.float) p.hip.position.y = .12 + Math.sin(t * 1.2) * .08;
       p.head.rotation.z = Math.sin(t * .7) * .04; p.head.rotation.x = Math.sin(t * .5) * .03;
-      if (!p.armL) continue;
-      const talking = md?.m === "talk", waving = md?.m === "wave" && time < (md.at ?? 0) + 2.2;
+      if (!p.armL) return;
       p.armL.rotation.x = Math.sin(t * 1.3) * .05 + (talking ? Math.sin(t * 3.1) * .25 - .2 : 0);
       p.armR.rotation.x = Math.sin(t * 1.3 + 1) * .05 + (talking ? Math.sin(t * 2.6 + 1) * .2 - .1 : 0);
       p.armR.rotation.z = waving ? 2.4 + Math.sin(t * 9) * .35 : 0;
       if (talking) p.head.rotation.x = Math.sin(t * 4.2) * .06;
-    }
   }
-  return { sync, tick, mood, people, spotOf: (id) => residentSpot(state, id), talkSpot: (id) => talkSpot(state, id) };
+  function tick(dt, time, camera) {
+    clock = time;
+    for (const p of people.values()) if (p.root.visible) animate(p, dt, time, camera);
+  }
+  function setStyle(next) {
+    castStyle = next === "voxel" ? "voxel" : "sprite";
+    const positions = new Map([...people].map(([id, p]) => [id, { position: p.root.position.clone(), walking: p.walking, baseYaw: p.baseYaw, yaw: p.root.rotation.y }]));
+    for (const p of people.values()) retire(p); people.clear(); sync();
+    for (const [id, p] of people) { const old = positions.get(id); if (old?.walking) { p.walking = old.walking; p.root.position.copy(old.position); p.baseYaw = old.baseYaw; p.root.rotation.y = old.yaw; } }
+    return castStyle;
+  }
+  const ready = readyVillageSprites().then(() => { if (castStyle === "sprite" && people.size) setStyle("sprite"); });
+  return { sync, tick, mood, people, animate, setStyle, ready, get style() { return castStyle; }, portrait: villageSpritePortrait,
+    diagnostics: () => [...people.values()].filter(p => p.root.visible).map(p => ({ id: p.id, style: p.sprite ? "sprite" : "voxel", ready: !!p.root.userData.ready, frame: p.root.userData.frame ?? 0, action: p.root.userData.action ?? "idle", walking: !!p.walking, height: p.sprite ? p.root.userData.height : p.design.height * FOLK_SCALE, frames: p.root.userData.data?.meta.actions ?? {} })),
+    spotOf: (id) => residentSpot(state, id), talkSpot: (id) => talkSpot(state, id) };
 }
 export { DESIGNS };

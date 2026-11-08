@@ -17,6 +17,8 @@ import { createVillageLife } from "./village-life.js";
 import { storyObjectsHere, nodeReady } from "./rules/village.js";
 import { attachPieceGestures, createFraming } from "./piece-gestures.js";
 import { createVillageFolk, makeResident } from "./village-folk.js";
+import { readyVillageSprites, villageSpriteTextures } from "./village-sprite-actors.js";
+import { visibleVillagePick } from "./village-sprite-math.js";
 
 const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z), K = PLAN_SCALE;
 // How high the ground is at a world point (the terrain is drawn on the design grid).
@@ -76,7 +78,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   let active = false, built = false, firstView = true, keys = {}, parts = {}, tour = null, time = 0, horizon = null, sky = null, mist = null, bats = null, life = null, grass = null;
   const pickables = [], pickMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const hit = (w, h, d, data, x, z, y = h / 2) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), pickMaterial); m.position.copy(W(x, z, y)); m.userData = data; scene.add(m); pickables.push(m); return m; };
-  const folk = createVillageFolk({ scene, state, pickables, pickMaterial, ground: groundAt, everyone: () => !!hooks.everyone?.() });
+  const folk = createVillageFolk({ scene, state, pickables, pickMaterial, ground: groundAt, everyone: () => !!hooks.everyone?.(), style: hooks.castStyle?.() ?? "sprite" });
   const decor = new Map(), pages = new Map();
   const selection = new THREE.Group(); scene.add(selection); selection.visible = false;
   let outline = null, ghost = null, ghostId = null, override = null, framed = "";
@@ -171,10 +173,28 @@ export function createVillageView(canvas, state, hooks = {}) {
     const built = v.build({ glow: 1.6 }), group = new THREE.Group(); group.add(built); group.scale.setScalar(K); group.position.copy(INSIDE); group.visible = false; scene.add(group);
     const lamps = (built.userData.marks.lamp ?? []).map(([x, y, z]) => hallPoint(x, z, y));
     let host = null;
-    if (plan.host) { host = makeResident(plan.host); host.root.position.copy(hallPoint(plan.hall.host[0], plan.hall.host[1], .12)); host.root.visible = false; scene.add(host.root);
-      const h = new THREE.Mesh(new THREE.BoxGeometry(.9, 2, .9), pickMaterial); h.userData = { type: "village-folk", id: plan.host }; h.position.y = 1; host.root.add(h); pickables.push(h); }
+    if (plan.host) host = hallHost(plan);
     const entry = { id, plan, group, lamps, host }; insides.set(id, entry); return entry;
   }
+  function hallHost(plan) {
+    const host = makeResident(plan.host, { style: folk.style });
+    host.root.position.copy(hallPoint(plan.hall.host[0], plan.hall.host[1], .12)); host.root.visible = false; scene.add(host.root);
+    const h = new THREE.Mesh(new THREE.BoxGeometry(.9, 2.4, .9), pickMaterial); h.userData = { type: "village-folk", id: plan.host }; h.position.y = 1.2; host.root.add(h); pickables.push(h); host.hit = h;
+    return host;
+  }
+  function refreshHallCast() {
+    for (const entry of insides.values()) {
+      const old = entry.host; if (!old) continue;
+      scene.remove(old.root); const index = pickables.indexOf(old.hit); if (index >= 0) pickables.splice(index, 1);
+      old.hit.geometry.dispose(); if (!old.sprite) old.root.traverse(o => { if (o !== old.hit) o.geometry?.dispose?.(); });
+      entry.host = hallHost(entry.plan); entry.host.root.visible = entry === inside;
+    }
+  }
+  function setCastStyle(style) { folk.setStyle(style); refreshHallCast(); return folk.style; }
+  const spriteReady = readyVillageSprites().then(() => {
+    if (folk.style === "sprite") refreshHallCast();
+    for (const texture of villageSpriteTextures()) hooks.warmTexture?.(texture);
+  });
   function goInside(id) {
     if (inside?.id === id) return inside;
     if (inside) goOutside();
@@ -258,13 +278,19 @@ export function createVillageView(canvas, state, hooks = {}) {
   const pointers = new Map(); let multi = false;
   canvas.addEventListener("pointerdown", (e) => { if (!active || tour || hooks.blocked?.()) return; pointers.set(e.pointerId, { x: e.clientX, y: e.clientY, moved: 0 }); if (pointers.size > 1) multi = true; });
   canvas.addEventListener("pointermove", (e) => { const p = pointers.get(e.pointerId); if (p) p.moved = Math.max(p.moved, Math.hypot(e.clientX - p.x, e.clientY - p.y)); });
+  function tapAt(clientX, clientY) {
+    if (!active || tour || hooks.blocked?.()) return false;
+    const b = canvas.getBoundingClientRect(), ray = new THREE.Raycaster(); ray.near = camera.near; ray.far = camera.far;
+    ray.setFromCamera(new THREE.Vector2((clientX - b.left) / b.width * 2 - 1, -(clientY - b.top) / b.height * 2 + 1), camera);
+    scene.updateMatrixWorld(true); const found = ray.intersectObjects(pickables, false).filter(h => visibleVillagePick(h.object)), editing = hooks.editing?.();
+    const h = editing ? found.find(x => x.object.userData.type === "village-ground") : found[0];
+    if (!h) return false;
+    hooks.onPick?.({ ...h.object.userData, point: { x: h.point.x, z: -h.point.z } }); return true;
+  }
   canvas.addEventListener("pointerup", (e) => {
     const p = pointers.get(e.pointerId), tap = active && !tour && p && p.moved < 7 && !multi && e.button === 0 && !hooks.blocked?.(); pointers.delete(e.pointerId); if (!pointers.size) multi = false;
     if (!tap) return;
-    const b = canvas.getBoundingClientRect(), ray = new THREE.Raycaster(); ray.setFromCamera(new THREE.Vector2((e.clientX - b.left) / b.width * 2 - 1, -(e.clientY - b.top) / b.height * 2 + 1), camera);
-    scene.updateMatrixWorld(true); const found = ray.intersectObjects(pickables, false), editing = hooks.editing?.();
-    const h = editing ? found.find((x) => x.object.userData.type === "village-ground") : found[0];
-    if (h) hooks.onPick?.({ ...h.object.userData, point: { x: h.point.x, z: -h.point.z } });
+    tapAt(e.clientX, e.clientY);
   });
   canvas.addEventListener("pointercancel", (e) => { pointers.delete(e.pointerId); if (!pointers.size) multi = false; });
 
@@ -282,6 +308,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   }
   return {
     scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt,
+    setCastStyle, get castStyle() { return folk.style; }, spriteReady, spritesReady: spriteReady, spriteTextures: villageSpriteTextures, tapAt,
     goInside, goOutside, get inside() { return inside?.id ?? null; }, hallPoint, insidePlan: (id) => INSIDES[id],
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = !tour; },
     leave() { active = false; controls.enabled = false; pointers.clear(); multi = false; preview(null); following = false; tour = null; },
@@ -291,7 +318,7 @@ export function createVillageView(canvas, state, hooks = {}) {
       tickTour(dt); if (!tour) { if (!following) framing.step(); controls.update(); }
       const reach = inside ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog - scene.fog.density) * Math.min(1, dt * 2);
       for (const p of patches) p.chunk.visible = p.sphere.center.distanceTo(camera.position) - p.sphere.radius < reach.far;
-      placeLights(); folk.tick(dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera);
+      placeLights(); folk.tick(dt, time, camera); if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera);
       if (mist) for (const m of mist.children) { const u = m.userData; m.position.x = u.x + Math.sin(time * .07 + u.phase) * 2.5; m.position.z = -u.z + Math.cos(time * .05 + u.phase) * 1.5; }
       for (const p of pages.values()) { p.group.position.y = .05 + Math.sin(time * 2.3 + p.x) * .04; p.group.rotation.y = Math.sin(time * .9 + p.z) * .5; }
     },

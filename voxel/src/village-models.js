@@ -297,6 +297,52 @@ export function bench(f, x, z, mended, r = seeded(37)) {
 }
 
 // ---- Homes ---------------------------------------------------------------------
+// Small projecting details share the wall's frame, so a side window receives
+// the same joinery as the front without extending the house's garden reserve.
+function cottageWindow(f, x, y, z, { side = 0, face = 1, wide = 1.05, tall = 1.2, lit = true, shutter, flowers = false, r }) {
+  const block = (u, dy, out, w, h, d, c, glow = false) => side
+    ? f.block(x + side * out, y + dy, z + u, d, h, w, c, glow)
+    : f.block(x + u, y + dy, z + face * out, w, h, d, c, glow);
+  block(0, 0, .07, wide + .16, tall + .16, .06, C.cream);
+  block(0, .055, .115, wide + .04, tall + .05, .035, C.wood);
+  // Four separate panes keep their warm tint at dusk; only glass glows.
+  for (const col of [-1, 1]) for (let row = 0; row < 2; row++) {
+    block(col * wide / 4, .08 + row * tall / 2, .145, wide / 2 - .035, tall / 2 - .03, .025,
+      lit ? row ? 0xffc582 : C.window : row ? 0x494052 : 0x383241, lit);
+  }
+  block(0, .08, .173, .06, tall, .035, C.cream);
+  block(0, .08 + tall / 2, .173, wide, .06, .035, C.cream);
+  block(0, tall + .13, .15, wide + .26, .07, .13, C.stone[3]);
+  block(0, tall + .16, .18, .14, .1, .06, C.cream);
+  block(0, -.08, .2, wide + .3, .1, .2, C.stone[3]);
+  block(0, -.105, .19, wide + .2, .035, .18, C.stoneDark[1]);
+  for (const s of [-1, 1]) {
+    block(s * (wide / 2 + .28), 0, .07, .32, tall + .1, .05, shutter);
+    block(s * (wide / 2 + .28), .15, .105, .28, .045, .025, shade(shutter, .65));
+    block(s * (wide / 2 + .28), tall - .1, .105, .28, .045, .025, shade(shutter, .65));
+    block(s * (wide / 2 + .37), .16, .127, .035, .035, .012, C.brass);
+  }
+  if (!flowers) return;
+  block(0, -.36, .29, wide + .1, .28, .3, C.wood);
+  block(0, -.12, .29, wide + .16, .055, .34, C.woodLight);
+  block(0, -.12, .29, wide - .06, .025, .2, C.timber);
+  block(0, -.32, .448, wide + .07, .045, .022, C.woodLight);
+  for (const s of [-1, 1]) {
+    block(s * wide * .3, -.48, .2, .07, .22, .08, C.iron);
+    block(s * wide * .3, -.29, .46, .045, .045, .018, C.brass);
+  }
+  for (let i = 0; i < 5; i++) {
+    const u = -wide * .38 + i * wide * .19, height = .1 + (i % 2) * .07, colour = pick(C.flowers, r);
+    block(u, -.1, .28 + (i % 2) * .06, .035, height, .035, C.hedge[1]);
+    block(u, -.1 + height, .28 + (i % 2) * .06, .14, .075, .14, colour);
+    block(u, -.055 + height, .28 + (i % 2) * .06, .055, .045, .055, C.cream);
+  }
+  for (const s of [-1, 1]) {
+    block(s * wide * .36, -.39, .46, .09, .27, .045, C.hedge[0]);
+    block(s * wide * .36 - .04, -.35, .47, .12, .08, .04, C.hedge[1]);
+  }
+}
+
 // A cottage: a stone footing, plaster walls between dark beams, mullioned windows
 // lit warm with shutters and window boxes, a steep tiled roof with bargeboards and
 // a brick chimney. Its local origin is the front wall's middle; it runs back to
@@ -328,23 +374,14 @@ export function cottage(f, opts = {}) {
   for (const sx of [-1, 1]) { f.block(sx * (hw + .05), .44 + h * .52, -d / 2, .08, .14, d, C.beam); for (const zz of [-d * .5]) f.block(sx * (hw + .05), .44, zz, .08, h, .18, C.beam); }
   for (const y of [.44, top - .16]) { f.block(0, y, .04, w + .12, .18, .1, C.beam); f.block(0, y, -d - .04, w + .12, .18, .1, C.beam); f.block(-hw - .04, y, -d / 2, .1, .18, d + .12, C.beam); f.block(hw + .04, y, -d / 2, .1, .18, d + .12, C.beam); }
   // Windows: a frame, four lit panes, a sill, shutters and (in front) a box of flowers.
-  const window = (x, y, z, face = 1, wide = 1.05, tall = 1.2, withBox = false) => {
-    const zz = z + face * .07;
-    f.block(x, y, zz, wide + .16, tall + .16, .06, C.cream); f.block(x, y + .08, zz + face * .02, wide, tall, .05, win, lit);
-    f.block(x, y + .08, zz + face * .05, .06, tall, .04, C.cream); f.block(x, y + .08 + tall / 2, zz + face * .05, wide, .06, .04, C.cream);
-    f.block(x, y - .08, zz + face * .1, wide + .3, .1, .2, C.stone[3]);
-    for (const s of [-1, 1]) f.block(x + s * (wide / 2 + .28), y, zz, .32, tall + .1, .05, shutter);
-    if (withBox && boxes) { f.block(x, y - .36, zz + face * .22, wide + .1, .28, .3, C.wood); for (let i = 0; i < 6; i++) f.block(x - wide / 2 + .1 + i * (wide - .2) / 5, y - .1, zz + face * (.2 + (i % 2) * .08), .16, .2, .16, pick(C.flowers, r)); for (let i = 0; i < 3; i++) f.block(x - .3 + i * .3, y - .26, zz + face * .4, .12, .26, .06, C.hedge[0]); }
-  };
+  const window = (x, y, z, face = 1, wide = 1.05, tall = 1.2, withBox = false) => cottageWindow(f, x, y, z, { face, wide, tall, lit, shutter, flowers: withBox && boxes, r });
   const wy = .44 + h * .3;
   for (const x of front) window(x, wy, 0, 1, 1.05, 1.2, true);
   if (shabby) for (const x of front) for (let i = 0; i < 5; i++) { f.block(x - .45 + i * .22, wy + .15 + i * .2, .16, .3, .12, .04, vary(C.woodLight, .12, r)); f.block(x + .45 - i * .22, wy + .15 + i * .2, .17, .3, .12, .04, vary(C.wood, .12, r)); }
   for (const x of back) window(x, wy, -d, -1, 1, 1.1);
   for (const side of [-1, 1]) for (const zz of [-d * .27, -d * .73]) {
-    f.block(side * (hw + .07), wy, zz, .06, 1.2, 1.05, C.cream); f.block(side * (hw + .1), wy + .08, zz, .05, 1.05, .9, win, lit); f.block(side * (hw + .12), wy + .08, zz, .04, 1.05, .06, C.cream); f.block(side * (hw + .12), wy + .6, zz, .04, .06, .9, C.cream);
-    f.block(side * (hw + .18), wy - .1, zz, .2, .1, 1.2, C.stone[3]); for (const k of [-1, 1]) f.block(side * (hw + .09), wy, zz + k * .68, .05, 1.15, .3, shutter);
+    cottageWindow(f, side * hw, wy, zz, { side, wide: .9, tall: 1.05, lit, shutter, flowers: !shabby && boxes, r });
     if (shabby) for (let i = 0; i < 4; i++) f.block(side * (hw + .15), wy + .15 + i * .26, zz - .3 + i * .2, .04, .12, .34, vary(C.woodLight, .1, r));
-    else if (boxes) { f.block(side * (hw + .26), wy - .34, zz, .3, .26, 1.1, C.wood); for (let i = 0; i < 5; i++) f.block(side * (hw + .3), wy - .1, zz - .4 + i * .2, .16, .2, .16, pick(C.flowers, r)); }
   }
   // The door: planks in a stone surround, a fanlight, a step, a knocker and a lamp beside it.
   f.block(door, .44, .06, 1.24, 2.15, .1, C.stone[3]); f.block(door, .44, .1, 1.04, 1.95, .08, doorColour);
@@ -364,6 +401,15 @@ export function cottage(f, opts = {}) {
   }
   if (sign) { const sx = door + (door > 0 ? -1.6 : 1.6); f.block(sx, 2.6, .5, .08, .08, .9, C.iron); f.block(sx, 1.95, .9, .1, .64, .84, sign); f.block(sx, 2.07, .9, .12, .4, .6, C.gold); }
   const steps = 12, eave = .55;
+  // The eave's dark underside and pale lip close the join to the plaster.
+  // They stay under the existing tiles, clear of the paths around the home.
+  if (ridge === "z") for (const sx of [-1, 1]) {
+    f.block(sx * (hw + .42), top - .08, -d / 2, .14, .12, d + eave * 2, C.beam);
+    f.block(sx * (hw + .48), top + .005, -d / 2, .12, .065, d + eave * 2, C.cream);
+  } else for (const zz of [.42, -d - .42]) {
+    f.block(0, top - .08, zz, w + eave * 2, .12, .14, C.beam);
+    f.block(0, top + .005, zz + (zz > 0 ? .06 : -.06), w + eave * 2, .065, .12, C.cream);
+  }
   // A course of tiles: the long side split into tiles with hairline gaps, each its own shade.
   const tileRow = (cx, y, cz, wx, hh, dz, alongX) => {
     const len = alongX ? wx : dz, n = Math.max(1, Math.round(len / .5)), seg = len / n;
@@ -452,15 +498,17 @@ export function workshop(f, built, r = seeded(43)) {
 }
 export function conservatory(f, built, r = seeded(47)) {
   cottage(f, { w: 7, d: 7, h: 3.3, roof: C.slatePlum, plaster: C.plasterLilac, r, chimney: 1, door: -1.4, doorColour: 0x3d4a7a, shutter: 0x6a4a8a, sign: 0x3d4a7a, shabby: !built });
-  // The glasshouse: a stone base, iron ribs, glass walls and a dome; lit gold when restored, dark, cracked and ivied before.
+  // The restored glasshouse catches lilac moonlight; only small warm panes
+  // glow. An entirely emissive dome blooms into a white roof-sized halo.
   const cx = 6.2, cz = -3.5, R = 3;
   f.block(cx, 0, cz, 6.8, .44, 6.8, C.stone[1]);
   for (let i = 0; i < 20; i++) {
     const a = i / 20 * Math.PI * 2, x = cx + Math.cos(a) * R, z = cz + Math.sin(a) * R;
     f.block(x, .44, z, .12, 3, .12, C.iron);
-    if (built || i % 4) f.block(cx + Math.cos(a + .16) * R, .5, cz + Math.sin(a + .16) * R, .5, 2.9, .5, built ? (i % 2 ? 0xffe2a8 : 0xf6d8a0) : (i % 3 ? 0x3a3a52 : 0x2c2c40), built);
+    if (built || i % 4) f.block(cx + Math.cos(a + .16) * R, .5, cz + Math.sin(a + .16) * R, .5, 2.9, .5, built ? (i % 2 ? 0xb59d99 : 0x9d8aa4) : (i % 3 ? 0x3a3a52 : 0x2c2c40));
+    if (built && i % 3 === 0) f.block(cx + Math.cos(a + .16) * (R + .3), .9, cz + Math.sin(a + .16) * (R + .3), .2, .85, .2, C.window, true);
   }
-  for (let k = 0; k < 7; k++) { const rr = R * Math.cos(k / 7 * Math.PI / 2), y = 3.44 + Math.sin(k / 7 * Math.PI / 2) * 2.3; for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2; if (built || (i + k) % 5) f.block(cx + Math.cos(a) * rr, y, cz + Math.sin(a) * rr, .5, .3, .5, built ? (k % 2 ? 0xfff0c8 : 0xffe2a8) : (k % 2 ? 0x3a3a52 : 0x30304a), built); if (i % 2 === 0) f.block(cx + Math.cos(a) * rr * 1.03, y, cz + Math.sin(a) * rr * 1.03, .1, .32, .1, C.iron); } }
+  for (let k = 0; k < 7; k++) { const rr = R * Math.cos(k / 7 * Math.PI / 2), y = 3.44 + Math.sin(k / 7 * Math.PI / 2) * 2.3; for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2; if (built || (i + k) % 5) f.block(cx + Math.cos(a) * rr, y, cz + Math.sin(a) * rr, .5, .3, .5, built ? (k % 2 ? 0x9283a9 : 0x756c94) : (k % 2 ? 0x3a3a52 : 0x30304a)); if (i % 2 === 0) f.block(cx + Math.cos(a) * rr * 1.03, y, cz + Math.sin(a) * rr * 1.03, .1, .32, .1, C.iron); } }
   f.block(cx, 5.8, cz, .3, .6, .3, C.gold); for (const s of [-1, 1]) f.block(cx + s * .36, 6.2, cz, .52, .38, .08, C.brass);
   if (built) { for (let i = 0; i < 8; i++) bush(f, cx - 3.6 + (i % 4) * 2.4, cz + (i < 4 ? 3.7 : -3.7), .8, r, C.green); for (let i = 0; i < 5; i++) f.block(cx - 1.5 + i * .7, .44, cz + 1, .5, 1.6 + (i % 2) * .5, .3, pick([0x7a3d4a, 0x3d4a6a, 0x5a4a2a, 0x6a4a7a], r)); }
   else { for (let i = 0; i < 40; i++) { const a = r() * Math.PI * 2, y = .5 + r() * 4.5, rr = R * Math.cos(Math.max(0, y - 3.44) / 2.3 * Math.PI / 2) + .15; f.block(cx + Math.cos(a) * rr, y, cz + Math.sin(a) * rr, .3, .3, .3, vary(C.hedge[r() < .5 ? 0 : 1], .14, r)); } for (let i = 0; i < 12; i++) bush(f, cx - 3.4 + r() * 6.8, cz - 3.6 + r() * 7.2, .8, r, C.hedge); for (let i = 0; i < 14; i++) f.block(cx + (r() - .5) * 5, .45, cz + 3 + r() * 1.2, .2, .04, .16, 0x5a5a7a); }
