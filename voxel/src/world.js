@@ -420,9 +420,11 @@ const BANNER = [
 ];
 // The banner hangs west from its pole, towards the shop, so the meadow's
 // opening to the east (festival-meadow-world.js) never cuts it in half.
-function banner(v, x, z) {
-  v.box(x - 0.06, 0, z - 0.06, 0.12, 3.8, 0.12, COL.iron);
-  v.box(x - 0.1, 3.8, z - 0.1, 0.2, 0.08, 0.2, COL.iron); v.box(x - 0.03, 3.88, z - 0.03, 0.06, 0.24, 0.06, COL.iron);
+function banner(v, x, z, mounted = false) {
+  if (!mounted) {
+    v.box(x - 0.06, 0, z - 0.06, 0.12, 3.8, 0.12, COL.iron);
+    v.box(x - 0.1, 3.8, z - 0.1, 0.2, 0.08, 0.2, COL.iron); v.box(x - 0.03, 3.88, z - 0.03, 0.06, 0.24, 0.06, COL.iron);
+  }
   v.box(x - 1.26, 3.62, z - 0.03, 1.26, 0.05, 0.06, COL.iron); v.box(x - 1.28, 3.55, z - 0.04, 0.08, 0.08, 0.08, COL.iron);
   pixelArt(v, BANNER, { p: [0x5b2a4a, 0], y: [0xd9a84a, 0.01], o: [0xe8862e, 0.02], O: [0xb85a1e, 0.02], g: [0x5e7a2a, 0.02] }, x - 0.08 - BANNER[0].length * B, 3.6 - BANNER.length * B, z + 0.02, B, 0.04);
 }
@@ -581,12 +583,13 @@ function shop(v, r, lights) {
   gourd(v, x + 3.35, 1.42, counterZ - 0.33, 0.22, 0xf0821e); gourd(v, x + 3.6, 1.42, counterZ - 0.3, 0.2, 0xe8b23a);
   const bx = x + 2.52, bz = counterZ - 0.48;
   [[0.26, 0.03, 0x6a4a2a], [0.2, 0.05, BRASS], [0.15, 0.04, BRASS], [0.09, 0.03, tint(BRASS, 0.2)], [0.03, 0.05, DEEP]].reduce((y, [s, h, c]) => (v.block(bx, y, bz, s, h, s, c), y + h), 1.3);
-  // Out front: crates of pumpkins, a cask, hay, the chalkboard and the banner.
+  // Stock stays against the shop walls, leaving the whole eastbound road open.
+  // The little chalkboard joins the west display; the banner uses an awning
+  // post instead of a separate mast on the public corner.
   produceCrate(v, r, x0 - 1.1, counterZ + 0.3); produceCrate(v, r, x0 - 0.8, counterZ + 1.3, 0.9);
-  produceCrate(v, r, x1 + 0.7, counterZ - 0.6); cask(v, r, x1 + 0.8, counterZ + 0.6);
-  bale(v, r, x1 + 0.6, counterZ + 1.8, 1.2);
-  chalkboard(v, x + 4.2, counterZ + 1.66);
-  banner(v, x1 + 1.5, counterZ - 1.4);
+  produceCrate(v, r, x1 + 0.6, z); cask(v, r, x1 + 0.6, z - 1.5);
+  chalkboard(v, x0 - 1.1, counterZ - 1.2);
+  banner(v, x1 - 0.175, counterZ - 0.35, true);
   return { lights: [{ x: x - 2, y: 3, z: counterZ - 1.5 }, { x: x + 2.4, y: 3, z: counterZ - 1.5 }] };
 }
 

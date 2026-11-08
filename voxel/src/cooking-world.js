@@ -1,4 +1,4 @@
-import { DINING_SEATS, diningGuestPose } from "./content/cooking-dining.js";
+import { DINING_TABLES, diningGuestPose } from "./content/cooking-dining.js";
 import * as THREE from 'three';
 import { Voxels,seeded } from './voxels.js';
 import { buildGround,grounds } from './ground.js';
@@ -32,8 +32,8 @@ function buildPad(){
   },{farmView:true});lane.name='Kitchen north receiving road';root.add(lane);
   // The walking apron reaches z7.5 and the existing public route at z6.6.
   // Keep all planting beside it; no kerbs or chunky platform edges.
-  for(const x of [40.1,45.8]){b(v,x,.02,5.0,.5,.3,.55,0x453b35);b(v,x,.32,5.0,.58,.08,.6,C.trim);for(let j=0;j<4;j++)b(v,x+(r()-.5)*.4,.4+r()*.2,5+(r()-.5)*.3,.17,.14,.18,[0x85422d,0xb2702e,0x53445a][j%3]);}
-  root.add(v.build());return root;
+  for(const {x,z} of SITE.planters){b(v,x,.02,z,.5,.3,.55,0x453b35);b(v,x,.32,z,.58,.08,.6,C.trim);for(let j=0;j<4;j++)b(v,x+(r()-.5)*.4,.4+r()*.2,z+(r()-.5)*.3,.17,.14,.18,[0x85422d,0xb2702e,0x53445a][j%3]);}
+  const planting=v.build();planting.name='Kitchen perimeter planters';root.add(planting);return root;
 }
 function wheel(v,x,y,z){b(v,x,y,z,.56,.56,.25,C.dark);b(v,x,y+.07,z,.4,.4,.28,0x49424a);b(v,x,y+.17,z,.2,.2,.3,C.metal);}
 function buildTruck(signBoard){
@@ -79,8 +79,8 @@ function buildTruck(signBoard){
   b(v,mx,.28,mz,.7,.76,.06,C.wood);b(v,mx,.32,mz+.012,.6,.68,.06,0x2b2d33);
   b(v,mx-.03,.86,mz+.05,.4,.05,.02,C.cream);pumpkin(v,mx+.22,.84,mz+.05,.06);
   for(const [y,w] of [[.74,.42],[.65,.34],[.56,.38],[.47,.3]]){b(v,mx-.06,y,mz+.05,w,.025,.02,0xbdb5a6);b(v,mx+.22,y,mz+.05,.07,.025,.02,0xe0b25c);}
-  // Crates of produce and a cider barrel stacked at the truck's left end.
-  for(const [x,z,h,top] of [[-2.62,.55,.42,0xc97431],[-2.62,1.02,.3,0x8a9a4a]]){b(v,x,0,z,.44,h,.42,C.wood);for(const dz of [-.16,.16])b(v,x,h*.5,z+dz,.46,.04,.02,0x4a3122);for(let i=0;i<4;i++)b(v,x-.12+(i%2)*.22,h,z-.1+(i>>1)*.2,.15,.1,.15,top);}
+  // Keep the ingredient crate by the rear receiving side, off the frontage.
+  for(const [x,z,h,top] of [[-2.62,-.9,.42,0xc97431]]){b(v,x,0,z,.44,h,.42,C.wood);for(const dz of [-.16,.16])b(v,x,h*.5,z+dz,.46,.04,.02,0x4a3122);for(let i=0;i<4;i++)b(v,x-.12+(i%2)*.22,h,z-.1+(i>>1)*.2,.15,.1,.15,top);}
   for(let i=0;i<7;i++){const y=i*.11,r=.42+Math.sin((i+.5)/7*Math.PI)*.08;b(v,-2.62,y,-.3,r,.11,r,i===1||i===5?C.metal:0x7b4f33);}
   for(let i=0;i<5;i++)b(v,-2.68+(i%2)*.12,.77,-.38+(i>>1)*.1,.09,.09,.09,0xb33a2c);
   root.add(v.build());root.position.set(t.x,0,t.z);root.name='The Midnight Kitchen · food truck';
@@ -127,8 +127,9 @@ export function createCookingWorld({scene,state,signBoard,lamps=[],world=null,cr
   const marker=new THREE.Group();marker.position.set(SITE.marker.x-1.4,1.3,SITE.marker.z+1.6);marker.userData={type:'food-truck'};root.add(marker);
   const hit=new THREE.Mesh(new THREE.BoxGeometry(SITE.truck.w,3.5,3.3),new THREE.MeshBasicMaterial({visible:false}));hit.position.set(SITE.truck.x+.8,1.75,SITE.truck.z+.25);hit.userData={type:'food-truck'};root.add(hit);
   const lamp={x:44.55,y:2.51,z:4.09,active:false};lamps.push(lamp);
-  // The string of lights over the dining tables lights them too: a lamp position, never a light of its own.
-  const tableLamp={x:50.2,y:2.3,z:3.5,active:false};lamps.push(tableLamp);
+  // Low table lanterns share one existing light-pool position, without a wire
+  // or pole crossing diners' heads and the food-truck silhouette.
+  const tableLamp={x:DINING_TABLES.reduce((n,t)=>n+t.x,0)/DINING_TABLES.length,y:1.6,z:3.3,active:false};lamps.push(tableLamp);
   let built=false,pad=null,truck=null,cart=null,chef=null,maisie=null,steam=[],cleared=0;
   const diners=new Map();
   function sync(){
@@ -136,12 +137,9 @@ export function createCookingWorld({scene,state,signBoard,lamps=[],world=null,cr
     if(!purchased){if(pad)pad.visible=false;if(truck)truck.visible=false;if(cart)cart.root.visible=false;if(chef)chef.visible=false;return;}
     if(!built){built=true;cleared=openReceivingGate(world);pad=buildPad();truck=buildTruck(signBoard);cart=buildCart();chef=buildChef();chef.position.set(43.5,1.12,2.95);root.add(pad,truck,cart.root,chef);
       if(createMaisie){maisie=createMaisie();maisie.group.position.set(42.5,1.82,4.74);root.add(maisie.group);}
-      const tables=new Voxels();for(const x of [48.9,51.5]){b(tables,x,.96,3.2,1.8,.11,.85,C.wood);for(const dx of [-.65,.65])for(const z of [2.9,3.5])b(tables,x+dx,.03,z,.09,.93,.09,C.dark);b(tables,x,.5,2.3,1.75,.12,.55,C.wood);for(const dx of [-.65,.65])b(tables,x+dx,.03,2.3,.09,.47,.45,C.dark);pumpkin(tables,x,.1+1.0,3.2,.12);
+      const tables=new Voxels();for(const t of DINING_TABLES){const x=t.x,leg=t.w/2-.2;b(tables,x,.96,t.z,t.w,.11,t.d,C.wood);for(const dx of [-leg,leg])for(const z of [t.z-.3,t.z+.3])b(tables,x+dx,.03,z,.09,.93,.09,C.dark);b(tables,x,.5,t.seatZ,1.65,.12,.55,C.wood);for(const dx of [-leg,leg])b(tables,x+dx,.03,t.seatZ,.09,.47,.45,C.dark);pumpkin(tables,x,.1+1.0,t.z,.12);
         // A jam-jar lantern on each table.
-        b(tables,x+.55,1.07,3.3,.13,.17,.13,0xffc46b,true);b(tables,x+.55,1.24,3.3,.15,.03,.15,C.dark);b(tables,x+.55,1.27,3.3,.03,.07,.03,C.dark);}
-      // Festoon lights from the cab's roof out over the tables to a post past the last one.
-      b(tables,53.0,0,3.6,.12,2.78,.12,C.wood);b(tables,53.0,2.72,3.6,.32,.06,.06,C.dark);
-      for(let i=0;i<=24;i++){const t=i/24,x=46.85+t*6.15,y=2.92-.17*t-Math.sin(t*Math.PI)*.42;b(tables,x,y+.04,3.6,.27,.025,.025,C.dark);if(i%2===0)b(tables,x,y-.07,3.6,.08,.1,.08,i%6===0?0xffe0a0:0xffc46b,true);}
+        b(tables,x+.47,1.07,t.z+.1,.13,.17,.13,0xffc46b,true);b(tables,x+.47,1.24,t.z+.1,.15,.03,.15,C.dark);b(tables,x+.47,1.27,t.z+.1,.03,.07,.03,C.dark);}
       const furniture=tables.build();furniture.name='Midnight Kitchen outdoor dining tables';root.add(furniture);for(let i=0;i<3;i++){const vapor=new Voxels();b(vapor,0,0,0,.12,.09,.1,0xa2a2ab);b(vapor,.07,.05,0,.1,.09,.09,0xa2a2ab);const cloud=vapor.build({shadows:false});root.add(cloud);steam.push(cloud);}}
     pad.visible=truck.visible=true;
     const apron=pad.getObjectByName('Kitchen apron · matching farm ground');if(apron)apron.visible=!state.festival?.meadow;

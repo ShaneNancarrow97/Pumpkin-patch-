@@ -9,9 +9,11 @@ export const TRUCK_HATCH = Object.freeze([COOKING_SITE.truck.x, 5.15]);
 export const TRUCK_WALK_SPEED = 2.8;
 export const TRUCK_SERVICE_SECONDS = 2;
 export const TRUCK_QUEUE_CAPACITY = 8;
-export const truckQueuePlace = place => [TRUCK_HATCH[0] + Math.max(0, place) * .65, 6.6];
+// Ordering has its own strip on the apron, leaving the village road free.
+export const TRUCK_QUEUE = Object.freeze({x:44.2,z:5.3,gap:.65});
+export const truckQueuePlace = place => [TRUCK_QUEUE.x + Math.max(0, place) * TRUCK_QUEUE.gap, TRUCK_QUEUE.z];
 export const truckApproachRoute = (visitor, place) => [counterPlace(visitor.spot), ...ROUTE_OUT.slice(1), truckQueuePlace(place)];
-export const truckHatchRoute = place => [truckQueuePlace(place), [TRUCK_HATCH[0], 6.6], [...TRUCK_HATCH]];
+export const truckHatchRoute = place => [truckQueuePlace(place), [TRUCK_HATCH[0], TRUCK_QUEUE.z], [...TRUCK_HATCH]];
 export const TRUCK_EXIT_ROUTE = Object.freeze([[...TRUCK_HATCH], [TRUCK_HATCH[0], 6.6], [53.6, 6.6], [57, 6.6]]);
 
 function along(route, distance) {

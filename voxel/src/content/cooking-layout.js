@@ -8,6 +8,8 @@ export const COOKING_SITE = Object.freeze({
   focus: Object.freeze({ x: 41.8, z: 3.2, zoom: 3.2 }),
   receiver: Object.freeze({ x: 39.65, z: 4.45 }),
   gate: Object.freeze({ x0: 37.8, x1: 39.8, z0: -.8, z1: .8 }),
+  // Low planting frames the back edge; the serving apron stays clear.
+  planters: Object.freeze([{ x: 40.2, z: 1.15 }, { x: 53.1, z: 1.15 }].map(Object.freeze)),
 });
 export const COOKING_SERVICE_ROUTE = Object.freeze({
   x: 38.8, startZ: -6, endZ: 4.2, halfWidth: .72,
