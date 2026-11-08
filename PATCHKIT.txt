@@ -1,0 +1,30 @@
+Claude: Mothlight Green contractor patch
+
+Source head: b530974120e43c28f0f97424208cc25d6278d2f9
+Base: 604fe2359427fc7e90a3d1248a6c4d1d6b0136c8
+Branch: contractor/village-design-and-cast
+
+Preferred: fetch and review the source branch. This archive is an alternative
+three-commit git-am mailbox, including binary art and the full handover folder.
+
+Review in a clean worktree at the declared base; keep unpublished lead work:
+  git worktree add -b review/codex-mothlight ../mothlight-review 604fe23
+  cd ../mothlight-review
+  git am /absolute/path/mothlight-contractor.mbox
+
+If the lead has advanced, inspect the shared adapters before cherry-picking.
+Read voxel/docs/contractor-patches/village-design-and-cast/README.md,
+RELEASE.md, DEPENDENCIES.md and ROADMAP.md after applying.
+
+Commits:
+  dffa38f — painted NPC art, reproducible baker and pixel tests
+  e9e60a9 — saved Green loop, compact UI, collision/navigation, lighting
+  b530974 — handover, reports, screenshots and browser tools
+
+Verified: 130 unit test files; 55 saved-game checks; 60 explorer checks;
+54 existing farm smoke checks across desktop and phone. No runtime changes
+after the verified HTML build. Later districts remain gated.
+
+Full offline game: artifact branch contractor/mothlight-green-html, build
+commit 3d701467d68c6383da47815d3ebe40c70eac1a68. The ZIP contains the playable
+HTML and its short README. Physical Fold/Bluetooth performance is not certified.

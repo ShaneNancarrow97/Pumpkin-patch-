@@ -1,0 +1,9 @@
+{
+  "sourceHead": "b530974120e43c28f0f97424208cc25d6278d2f9",
+  "base": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
+  "archiveBytes": 38401806,
+  "sha256": "3a78dda9580c89e4fadda6c6fa85c98af4dd267d5f4b9f8ba63627c157f6a783",
+  "cleanApplyVerified": true,
+  "verifiedTree": "ad224b64411545af85befd51d75057932fd1ce18",
+  "verification": "All three git-am commits applied to the declared base; resulting tree equals the source handover head."
+}
