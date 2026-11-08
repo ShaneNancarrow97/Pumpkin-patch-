@@ -137,5 +137,11 @@
     "installVerified": false,
     "hardwareVerified": false,
     "emulatorReason": "Cached emulator framework StorageManager failure and no current WebView provider. See source Android verification report."
+  },
+  "publicDownloadVerification": {
+    "passed": true,
+    "artifactCommit": "62b0f60c9e89f2576fb3560b1bab97d30337b689",
+    "files": 5,
+    "method": "Complete public-file retrieval, streaming SHA-256 and exact byte counts"
   }
 }
