@@ -1,44 +1,58 @@
 {
   "sourceBranch": "contractor/village-play-polish",
   "base": "ff6b5803686c449b902d405037f8958d03e3e2d8",
-  "codeHead": "a1965f00630a78366e555c8c9066921bdde9e0db",
-  "codeTree": "51ce02e81431662807faea1c3ceef1b4d0e3ffb8",
+  "codeHead": "8bf4d53b530fd835c20f4515e76913b376b295c9",
+  "codeTree": "c3d63518246339f6e86e71c5ab9e4e855d9f93d9",
   "patches": {
     "0001-Illustrate-village-and-home-navigation-with-clear-co.patch": {
       "bytes": 12455068,
-      "sha256": "c27dde04063840872e1a22871fc533374d4d2c9e3d3d99d7f84ea3e6620ab14a"
+      "sha256": "30d10718820b3552fd11aca24fc17b448ede4a8fc9624669f67a0cd5f983a4ef"
     },
     "0002-Refine-village-exploration-safe-travel-and-controlle.patch": {
       "bytes": 389018,
-      "sha256": "6f1b113788335c6c7e6945b06e1a05c44582735bdfe602cd917d8cfc0833a30f"
+      "sha256": "57305c77a7f7cd2a88267f0f1a9331ddbcd2785b5c1a82d4e2d3c5c47e3d3814"
     },
     "0003-Keep-the-furniture-control-legend-on-one-balanced-de.patch": {
-      "bytes": 2605,
-      "sha256": "c67dcb51a29c4ab003f012c894335263a22ac9e34eaeb657f288d210841a2120"
+      "bytes": 2610,
+      "sha256": "6efd655384b8d60fa12ab30f271eec0c29e28a35351a5d9e6631a46668e74784"
+    },
+    "0004-Record-verified-game-downloads-and-desktop-phone-reg.patch": {
+      "bytes": 8777516,
+      "sha256": "72aaa06b41cd7cea086b6a7d2100a1d318254cd132452523c45397fc32883df5"
+    },
+    "0005-Use-Maisie-s-existing-public-exit-for-natural-villag.patch": {
+      "bytes": 5278382,
+      "sha256": "8409a24c22bf35e56bb210f1af0e09a8150fc72ffa5498a3e9202dfd3a51416b"
     }
   },
   "html": {
-    "bytes": 58258944,
-    "sha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e"
+    "bytes": 58259782,
+    "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
   },
   "stateVersion": 18,
-  "nodeTestsPassed": 961,
   "cleanReplay": {
     "passed": true,
-    "tree": "51ce02e81431662807faea1c3ceef1b4d0e3ffb8",
-    "htmlSha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e"
+    "tree": "c3d63518246339f6e86e71c5ab9e4e855d9f93d9",
+    "htmlSha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
   },
-  "verification": {
-    "nodeTests": 961,
-    "gameplayBrowserChecks": 57,
-    "gameplayHtml": "7514ee4994efecc707b13510e9273cd6e5ab53984774126bf041544b6386351a",
-    "finalCssChecks": 17,
-    "standardSmoke": 54,
-    "finalHtml": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e",
-    "standardSmokeProfile": [
-      "SMOKE_LITE=1",
-      "SMOKE_HOLD_DRAWS=1"
-    ],
+  "validation": {
+    "sharedExitLogic": {
+      "node": 961,
+      "browser": 24,
+      "html": "d72d1d63b8946da228708bb9f81bcabf2fbd1c0e69e7d2c6efe2ebcb510e9463"
+    },
+    "finalVisualDelta": {
+      "focusedNode": 32,
+      "browser": 10,
+      "html": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
+    },
+    "initialPolish": {
+      "node": 961,
+      "gameplayBrowser": 57,
+      "cssBrowser": 17,
+      "standardSmoke": 54,
+      "see": "handover/DELIVERY.md"
+    },
     "pageErrors": 0,
     "externalAssets": 0
   }

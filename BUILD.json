@@ -1,30 +1,62 @@
 {
-  "builtAt": "2026-11-08T20:25:45.519543+00:00",
   "sourceBranch": "contractor/village-play-polish",
-  "codeCommit": "a1965f00630a78366e555c8c9066921bdde9e0db",
-  "codeTree": "51ce02e81431662807faea1c3ceef1b4d0e3ffb8",
+  "codeCommit": "8bf4d53b530fd835c20f4515e76913b376b295c9",
+  "codeTree": "c3d63518246339f6e86e71c5ab9e4e855d9f93d9",
   "base": "ff6b5803686c449b902d405037f8958d03e3e2d8",
   "html": {
-    "bytes": 58258944,
-    "sha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e"
+    "bytes": 58259782,
+    "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
   },
-  "nodeTestsPassed": 961,
-  "artifacts": {
-    "Pumpkin-Patch-Village-Play-Polish.html": {
-      "bytes": 58258944,
-      "sha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e"
+  "validation": {
+    "sharedExitLogic": {
+      "node": 961,
+      "browser": 24,
+      "html": "d72d1d63b8946da228708bb9f81bcabf2fbd1c0e69e7d2c6efe2ebcb510e9463"
     },
+    "finalVisualDelta": {
+      "focusedNode": 32,
+      "browser": 10,
+      "html": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
+    },
+    "initialPolish": {
+      "node": 961,
+      "gameplayBrowser": 57,
+      "cssBrowser": 17,
+      "standardSmoke": 54,
+      "see": "handover/DELIVERY.md"
+    },
+    "pageErrors": 0,
+    "externalAssets": 0
+  },
+  "cleanReplay": {
+    "passed": true,
+    "tree": "c3d63518246339f6e86e71c5ab9e4e855d9f93d9",
+    "htmlSha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
+  },
+  "artifacts": {
     "Pumpkin-Patch-Controller-Icons.html": {
       "bytes": 68746,
       "sha256": "44e71118ed2743aebbf5e5c3c62ab4587915319d1489f91b3b3e3c4b77c5151e"
     },
-    "Pumpkin-Patch-Village-Play-Polish.zip": {
-      "bytes": 42070517,
-      "sha256": "5824eeeb66813b598d51d1941b502630b8728e967663f45a9c5d74f4ca92e436"
+    "Pumpkin-Patch-Home-Category-Icons.html": {
+      "bytes": 460248,
+      "sha256": "fd76a88a026912e39ea0addb869de4454ae62e46a8447127c687b8154fd5355b"
+    },
+    "Pumpkin-Patch-Home-Category-Icons.zip": {
+      "bytes": 4092341,
+      "sha256": "50783d46e642cf94afc04c26511133dadfe89970f012228840533118f80b4fb6"
     },
     "Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip": {
-      "bytes": 10280361,
-      "sha256": "fa38344234a8aa318561e8d418e56dc8a135087f5ba63eec6cb353d11f7937fb"
+      "bytes": 31763499,
+      "sha256": "18b8a185bf3b5ce24eb2caebed5c7ef3ec7e6cb227481fc9e307de6785595ece"
+    },
+    "Pumpkin-Patch-Village-Play-Polish.html": {
+      "bytes": 58259782,
+      "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
+    },
+    "Pumpkin-Patch-Village-Play-Polish.zip": {
+      "bytes": 42067260,
+      "sha256": "121e0228a3d673d88ced09a2e97e41d80aa8261e776723c045a93c7d60a4fbd5"
     },
     "Pumpkin-Patch-Village-UI-Art.zip": {
       "bytes": 6124942,
@@ -33,40 +65,6 @@
     "Pumpkin-Patch-Village-UI-Icons.html": {
       "bytes": 505396,
       "sha256": "97b2a33511149bf095d164f360db217c0ced02e3d6af681008e3511b9a042302"
-    },
-    "Pumpkin-Patch-Home-Category-Icons.zip": {
-      "bytes": 4092341,
-      "sha256": "50783d46e642cf94afc04c26511133dadfe89970f012228840533118f80b4fb6"
-    },
-    "Pumpkin-Patch-Home-Category-Icons.html": {
-      "bytes": 460248,
-      "sha256": "fd76a88a026912e39ea0addb869de4454ae62e46a8447127c687b8154fd5355b"
     }
-  },
-  "cleanReplay": {
-    "passed": true,
-    "tree": "51ce02e81431662807faea1c3ceef1b4d0e3ffb8",
-    "htmlSha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e"
-  },
-  "validation": {
-    "nodeTests": 961,
-    "gameplayBrowserChecks": 57,
-    "gameplayHtml": "7514ee4994efecc707b13510e9273cd6e5ab53984774126bf041544b6386351a",
-    "finalCssChecks": 17,
-    "standardSmoke": 54,
-    "finalHtml": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e",
-    "standardSmokeProfile": [
-      "SMOKE_LITE=1",
-      "SMOKE_HOLD_DRAWS=1"
-    ],
-    "pageErrors": 0,
-    "externalAssets": 0
-  },
-  "verificationCommit": "c1990b24beba955269feaeb69c9425b0b753a3ce",
-  "artifactCommit": "abea66665f18f04e221d6880ed6af9440735aaa7",
-  "publicDownloadVerification": {
-    "passed": true,
-    "files": 3,
-    "method": "Full public download, byte count and SHA-256 comparison"
   }
 }

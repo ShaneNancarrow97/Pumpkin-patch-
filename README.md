@@ -1,15 +1,16 @@
 # Pumpkin Patch — Village Play Polish
 
-- [Download full game HTML](Pumpkin-Patch-Village-Play-Polish.html?raw=1)
+- [Download full offline HTML](Pumpkin-Patch-Village-Play-Polish.html?raw=1)
 - [Download game ZIP](Pumpkin-Patch-Village-Play-Polish.zip?raw=1)
-- [Claude patch kit](Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip?raw=1)
-- [Village icon preview](Pumpkin-Patch-Village-UI-Icons.html?raw=1)
-- [Home category preview](Pumpkin-Patch-Home-Category-Icons.html?raw=1)
+- [Claude game patch kit](Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip?raw=1)
+- [Village icons](Pumpkin-Patch-Village-UI-Icons.html?raw=1) · [Home icons](Pumpkin-Patch-Home-Category-Icons.html?raw=1) · [Controller icons](Pumpkin-Patch-Controller-Icons.html?raw=1)
 
-Extract the ZIP and open its HTML, or download the HTML directly. All assets are included; no account or server is needed. Export your existing farm in Settings before changing browser/file origin, then import the save. Save format 18 preserves older progress.
+The village now follows the existing public road past Maisie's site and its eastern extension. The extra side arch/spur is gone. A small grounded waymark, clear forest opening and narrow walk corridor keep travel natural without opening unpurchased land. Walking, clicking, return travel and food service were checked on base, kitchen-only and expanded layouts.
 
-Includes safe farm/village travel, a closer follow camera, farm R3 zoom/pan, spatial map with lock criteria, tree/grass fading, nearby gathering/quest rings, subtle player/NPC glow, two or three roaming visitors, custom village/home/controller icons, improved journal/chat/build controls, stable cursor and catalogue scroll, quieter village music and a ten-minute farm reminder. Future districts remain locked as later chapters.
+Also includes the closer follow camera, farm R3 zoom/pan, spatial village map with honest lock criteria, nearby resource rings and subtle glows, tree/grass fade, a few roaming visitors, illustrated navigation, refined journal/dialogue/build controls, stable cursor/scroll, quieter village music and the ten-minute farm reminder.
 
-Source: contractor/village-play-polish. Read voxel/docs/contractor-patches/village-play-polish/README.md in the repository for the dependency matrix and exact integration boundaries. All game jobs and public download verification are complete. [Claude source handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/c1990b24beba955269feaeb69c9425b0b753a3ce/voxel/docs/contractor-patches/village-play-polish/README.md) and [delivery receipt](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/c1990b24beba955269feaeb69c9425b0b753a3ce/voxel/docs/contractor-patches/village-play-polish/DELIVERY.md) are committed. APK packaging is the separate final job. BUILD.json records current hashes and validation.
+Extract the ZIP and open its HTML, or download HTML directly. No account/server is needed. Export your current farm in Settings before changing browser/file origin, then import the save. Format18 preserves older progress. All art/audio is included.
 
-Validation: 961 automated checks, 57 gameplay browser checks, 17 final CSS/layout checks and 54 standard desktop/phone smoke checks passed. Reports distinguish the CSS-only final delta and held drawing in the functional smoke; normal-renderer screenshots and shader checks are separate. Three source patches replay cleanly and rebuild identical HTML bytes. Physical Fold/TV/Bluetooth performance is not certified by browser emulation.
+Source: contractor/village-play-polish. Read voxel/docs/contractor-patches/village-play-polish/README.md for Claude's integration/dependency notes and SHARED-EXIT-DELIVERY.md for exact-hash validation. All game jobs precede final Android packaging; APK is the separate last addition.
+
+Validation retains scope: 961 full regression checks plus24 browser checks on the shared-exit logic candidate; 32 focused geometry/gameplay checks plus10 browser/visual checks on the final build. Earlier57/17/54 browser/smoke evidence belongs to the earlier polish release. Browser fixture/held-draw details are explicit; physical Fold/TV/Bluetooth performance is not certified by viewport tests. BUILD.json records hashes and replay.
