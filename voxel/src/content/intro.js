@@ -3,6 +3,9 @@
 // the game has. `skyla` brings her in for a cameo on that line.
 export const INTRO_TITLE = { owners: "Shane & Natalie’s", name: "Pumpkin Patch", tagline: "A little darkness, a lot of heart." };
 
+// Read the existing title card in one breath.
+export const INTRO_NARRATION = `${INTRO_TITLE.owners} ${INTRO_TITLE.name}. ${INTRO_TITLE.tagline}`;
+
 export const INTRO_LINES = [
   { who: "natalie", text: "Welcome to our pumpkin patch! It’s always a warm October night here, and our pumpkins glow." },
   { who: "shane", text: "And the neighbours are monsters. Lovely ones, honestly. They wander up the path to buy our pumpkins." },
