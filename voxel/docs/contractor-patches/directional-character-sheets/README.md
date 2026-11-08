@@ -14,7 +14,7 @@ Claude's lead branch was checked before work; its recorded head was `604fe235942
 
 The runtime manifest in `assets/directional/manifest.json` is authoritative. The pack covers Shane and Natalie in their everyday clothes, plus Elowen, Rowan, Vesper, Mabel, Tansy, Opal, Cinder, Corvus and Baron. Each has 64 drawings: eight viewing directions with eight successive movement phases. Cinder floats and remains legless.
 
-These are eight hand-painted viewing sectors, not calibrated 15-degree renders. The pack does not claim new directional costumes, pet movement, seated poses, watering, planting or picking. Original idle, greeting, tool and costume art is retained where the new manifest has no matching action. Never substitute an owner's everyday atlas for an equipped costume.
+These are eight generated painted viewing sectors, not calibrated 15-degree renders. The pack does not claim new directional costumes, pet movement, seated poses, watering, planting or picking. Original idle, greeting, tool and costume art is retained where the new manifest has no matching action. Never substitute an owner's everyday atlas for an equipped costume.
 
 ## Runtime changes
 
@@ -41,7 +41,7 @@ CHROMIUM_PATH=/usr/bin/chromium node tools/directional-game-qa.mjs dist/pumpkin-
 
 The preview builder makes a separate self-contained animation reviewer with the WebP and contact sheets embedded. It does not require a local server. The full game remains the normal `dist/pumpkin-patch-voxel.html`; the review page is not a replacement game.
 
-Visual review confirms distinct body views and repaired opposite front contacts/passing poses. Capes, skirts and coats obscure parts of the side/rear gait. These are hand-painted cycles, with small differences in face and cloth details between independently painted views; they are not a rig-certified animation library. Review those obscured transitions before using the art for very close cinematic views.
+Visual review confirms distinct body views and repaired opposite front contacts/passing poses. Capes, skirts and coats obscure parts of the side/rear gait. These are generated painted cycles, with small differences in face and cloth details between independently painted views; they are not a rig-certified animation library. Review those obscured transitions before using the art for very close cinematic views.
 
 Runtime cells are 128 × 176, with a shared root `(64,164)` and one uniform scale per character. The measured body height determines world scale. Each RGBA sheet is about 5.5 MiB decoded, independent of its compressed WebP size. Do not increase resolution or expand every costume without rechecking mobile texture memory.
 

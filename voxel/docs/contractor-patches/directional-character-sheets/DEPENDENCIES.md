@@ -2,7 +2,7 @@
 
 This patch changes character presentation. Saved state, save version, economy, visitor capacity, quest rules, furniture placement and controller bindings are unchanged. Walking uses the existing collision and movement systems. No renderer, mesh per direction, light or runtime dependency is added.
 
-Read [COVERAGE.md](COVERAGE.md) and the generated `assets/directional/manifest.json` for the actual delivered art. A base character's new sheet does not cover their costumes. This pack supplies eight painted views at 45° intervals and eight movement phases, not 15° views or new interaction/idle paintings.
+Read [COVERAGE.md](COVERAGE.md) and the generated `assets/directional/manifest.json` for the actual delivered art. A base character's new sheet does not cover their costumes. This pack supplies eight painted views selected in 45° bins and eight movement phases, not 15° views or new interaction/idle paintings.
 
 | Change surface | Depends on / callers | Consequence when changing it | Verification |
 |---|---|---|---|

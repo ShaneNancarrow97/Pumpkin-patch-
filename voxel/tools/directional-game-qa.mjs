@@ -1,6 +1,7 @@
 // Full offline game, one Chromium: owner controls, authored rows, home scale,
 // legacy costumes/tools and the village neighbours' actual route simulation.
 // node tools/directional-game-qa.mjs [game.html] [output-dir]
+// Add --resident-photos to retake only the village evidence after camera staging.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,6 +15,7 @@ import { findResidentPath } from '../src/rules/village-resident-life.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const filename=path.resolve(process.argv[2]??path.join(root,'dist/pumpkin-patch-voxel.html'));
 const output=path.resolve(process.argv[3]??path.join(root,'docs/contractor-patches/directional-character-sheets/verification/game'));
+const residentPhotos=process.argv.includes('--resident-photos');
 await fs.mkdir(output,{recursive:true});
 const html=await fs.readFile(filename),sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fixture=M.freshState();fixture.introSeen=true;fixture.paused=false;fixture.coins=50000;fixture.earned=M.LEVELS.at(-1).at;
@@ -57,13 +59,17 @@ async function residentShot(id,name){
  const walked=await page.evaluate(route=>{
   const game=PumpkinVoxel.village,v=PumpkinVoxel.scene.villageView,pad={id:'QA standard gamepad',index:0,connected:true,mapping:'standard',axes:[0,0,0,0],buttons:Array.from({length:18},()=>({pressed:false,value:0}))};
   const previous=Object.getOwnPropertyDescriptor(navigator,'getGamepads');Object.defineProperty(navigator,'getGamepads',{configurable:true,value:()=>[pad]});
+  // A newly connected controller must first be observed at rest; the runtime
+  // correctly suppresses a held stick until neutral to prevent reconnect drift.
+  game.tick(.05);
   let steps=0,stuck=0,last=game.status.position;
   try{for(const goal of route){for(let i=0;i<1600;i++){
    const p=game.status.position,dx=goal.x-p.x,dz=-(goal.z-p.z),distance=Math.hypot(dx,dz);if(distance<.2)break;
    const right=v.camera.position.clone().set(1,0,0).applyQuaternion(v.camera.quaternion);right.y=0;right.normalize();const forward=v.camera.getWorldDirection(v.camera.position.clone());forward.y=0;forward.normalize();
    const strength=Math.min(.8,distance/.3);pad.axes[0]=(dx*right.x+dz*right.z)/distance*strength;pad.axes[1]=-(dx*forward.x+dz*forward.z)/distance*strength;
    game.tick(.05);steps++;const now=game.status.position;stuck=Math.hypot(now.x-last.x,now.z-last.z)<.001?stuck+1:0;last=now;if(stuck>35)throw new Error('Owner approach blocked at '+JSON.stringify(now));
-  }}pad.axes[0]=pad.axes[1]=0;game.tick(.05);return{steps,position:game.status.position};}
+   }const end=game.status.position;if(Math.hypot(goal.x-end.x,goal.z-end.z)>=.2)throw new Error('Owner approach did not reach waypoint '+JSON.stringify({goal,position:end}));
+  }pad.axes[0]=pad.axes[1]=0;game.tick(.05);return{steps,position:game.status.position};}
   finally{if(previous)Object.defineProperty(navigator,'getGamepads',previous);else delete navigator.getGamepads;}
  },route);
  report.checks.push({pass:true,label:id+': owner reaches a nearby clear spot through the village controller',detail:{source:'Mock standard pad with accelerated .05s steps, using the real collision/controller path',route,...walked}});
@@ -72,7 +78,9 @@ async function residentShot(id,name){
  const framed=await page.evaluate(id=>{
   const p=PumpkinVoxel,v=p.scene.villageView,resident=v.folk.people.get(id),owner=v.scene.children.find(o=>o.userData.playerAnimate),centre={x:(owner.position.x+resident.root.position.x)/2,y:Math.max(owner.position.y,resident.root.position.y),z:-(owner.position.z+resident.root.position.z)/2};
   // cameraActions takes realm coordinates (positive south-to-north z).
-  v.cameraActions.place([centre.x+6,centre.y+7,centre.z-11],[centre.x,centre.y+1,centre.z]);
+  // View from the west, away from the central tree canopy and its lamp posts.
+  // This stages the survey camera only; it never changes production follow.
+  v.cameraActions.place([centre.x-6,centre.y+5,centre.z+(id==='elowen'?9:-9)],[centre.x,centre.y+1,centre.z]);
   for(let i=0;i<1000;i++){v.folk.tick(.1,1000+i*.1,v.camera,{paused:false,reducedMotion:false});if(resident.walking&&resident.root.userData.atlas==='directional')break;}
   v.camera.updateMatrixWorld(true);const project=o=>{const point=o.position.clone();point.y+=1.1;point.project(v.camera);return{x:point.x,y:point.y};};
   return{surveying:p.village.status.surveying,owner:project(owner),resident:project(resident.root),direction:resident.root.userData.direction,walking:resident.walking};
@@ -92,7 +100,7 @@ try{
    frameRecord(actor){const d=actor.userData,mesh=actor.children[0]?.children.find(m=>m.isMesh),g=mesh?.geometry;if(!g)return null;const uv=g.attributes.uv,image=mesh.material.map.image,us=[],vs=[];for(let i=0;i<uv.count;i++){us.push(uv.getX(i));vs.push(uv.getY(i));}const x=Math.min(...us)*image.width,y=(1-Math.max(...vs))*image.height,w=(Math.max(...us)-Math.min(...us))*image.width,h=(Math.max(...vs)-Math.min(...vs))*image.height;g.computeBoundingBox();const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(w));canvas.height=Math.max(1,Math.round(h));const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(image,x,y,w,h,0,0,canvas.width,canvas.height);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;let top=canvas.height,bottom=0;for(let py=0;py<canvas.height;py++)for(let px=0;px<canvas.width;px++)if(pixels[(py*canvas.width+px)*4+3]>=108){top=Math.min(top,py);bottom=Math.max(bottom,py+1);}return{direction:d.playerDirection,frame:d.playerDirectionFrame,phase:d.playerGaitPhase,leadingLeg:d.playerLeadingLeg,authored:!!d.playerAuthoredDirection,stature:d.playerStature,scale:actor.scale.toArray(),geometry:g.uuid,shared:g.userData.shared,uv:[x,y,w,h].map(n=>Math.round(n*100)/100),visibleBodyHeight:(bottom-top)/canvas.height*(g.boundingBox.max.y-g.boundingBox.min.y)*actor.scale.y};}
   };
  });
- for(const who of ['shane','natalie']){
+ if(!residentPhotos){for(const who of ['shane','natalie']){
   console.log('OWNER '+who);await begin(who);
   let motion=await keys(['d'],10);
   await page.waitForFunction(()=>!!PumpkinVoxel.scene.player.figure()?.userData.playerDirectionTexture,{timeout:90000});
@@ -140,7 +148,9 @@ try{
  }
  await page.setViewportSize({width:864,height:768});await poseShot('natalie',Math.PI/4,'fold-house-natalie-walking');
  const people=await page.evaluate(()=>{const out=[];PumpkinVoxel.scene.debug.activeScene().traverse(o=>{if(o.userData.playerAnimate&&o.position.x>=200&&o.position.x<=220)out.push({x:o.position.x,z:o.position.z,scale:o.scale.toArray()});});return out;});check(people.length===2,'The house retains both owner figures',people);
- await page.evaluate(()=>{const p=PumpkinVoxel;p.scene.player.setEnabled(false);p.leavePlace();p.openVillage();});await page.evaluate(()=>PumpkinVoxel.scene.villageView.spritesReady);await settle();
+ await page.evaluate(()=>{const p=PumpkinVoxel;p.scene.player.setEnabled(false);p.leavePlace();p.openVillage();});
+ }else{await page.setViewportSize({width:864,height:768});await page.evaluate(()=>{PumpkinVoxel.playControls.start('natalie');PumpkinVoxel.openVillage();});}
+ await page.evaluate(()=>PumpkinVoxel.scene.villageView.spritesReady);await settle();
  await page.evaluate(async()=>{const v=PumpkinVoxel.scene.villageView;await Promise.all([...v.folk.people.values()].map(p=>p.root.userData.directionalReady));});
  const villageKeys=await keys(['d'],8);report.villageKeyboard=villageKeys;check(villageKeys.some(x=>x.authored)&&new Set(villageKeys.map(x=>x.position.x.toFixed(3)+','+x.position.z.toFixed(3))).size>1,'Actual keyboard input moves an authored owner in the village after room exits',villageKeys);
  const routes=await page.evaluate(()=>{const v=PumpkinVoxel.scene.villageView,out={elowen:[],rowan:[]};for(let i=0;i<1800;i++){v.folk.tick(.1,300+i*.1,v.camera,{paused:false,reducedMotion:false});if(i%2===0)for(const p of v.folk.diagnostics())if(out[p.id]&&p.walking)out[p.id].push(p);}return out;});report.residents=routes;
@@ -149,5 +159,5 @@ try{
  await page.setViewportSize({width:1280,height:800});await residentShot('rowan','desktop-rowan-walking-with-natalie');
  check(!report.errors.length,'Full-game directional checks produce no page errors',report.errors);check(!report.externalRequests.length,'Standalone game requests no external assets',report.externalRequests);
 }catch(error){report.errors.push(error.stack??String(error));console.error(error);if(page)await shot('directional-failure').catch(()=>{});}
-finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));report.passed=!report.errors.length&&report.checks.every(c=>c.pass);await fs.writeFile(path.join(output,'directional-game-report.json'),JSON.stringify(report,null,2)+'\n');}
+finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));report.passed=!report.errors.length&&report.checks.every(c=>c.pass);report.mode=residentPhotos?'resident-photo-retake':'full-game';await fs.writeFile(path.join(output,residentPhotos?'directional-resident-photo-report.json':'directional-game-report.json'),JSON.stringify(report,null,2)+'\n');}
 console.log(JSON.stringify({passed:report.passed,checks:report.checks.length,errors:report.errors.length,sha256:report.sha256}));if(!report.passed)process.exitCode=1;
