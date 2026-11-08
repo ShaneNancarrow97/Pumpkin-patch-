@@ -227,7 +227,7 @@ export function createVillageView(canvas, state, hooks = {}) {
 
   // Reusable hand tools sit in world space beside the painted owner's hand. No lights are added.
   const handTools = new Map(), toolPoint = new THREE.Vector3(), toolSide = new THREE.Vector3();
-  function gatherTool({ actor, material, progress = 0, active: on = false } = {}) {
+  function gatherTool({ actor, material, progress = 0, active: on = false, target } = {}) {
     for (const tool of handTools.values()) tool.visible = false;
     const owner = actor?.root ?? actor;
     if (!on || !owner?.getWorldPosition) return;
@@ -241,7 +241,9 @@ export function createVillageView(canvas, state, hooks = {}) {
       else { v.block(0, .35, 0, .62, .11, .1, 0x9caabd); for (const s of [-1, 1]) v.block(s*.32,.27,0,.12,.12,.08,0xd6dfeb); }
       tool = v.build({ shadows: false }); tool.name = "village-" + kind; scene.add(tool); handTools.set(kind, tool);
     }
-    owner.getWorldPosition(toolPoint); camera.getWorldDirection(toolSide); toolSide.y = 0; toolSide.normalize();
+    owner.getWorldPosition(toolPoint);
+    if(target&&Number.isFinite(target.x)&&Number.isFinite(target.z))toolSide.set(target.x-toolPoint.x,0,-target.z-toolPoint.z);else camera.getWorldDirection(toolSide);
+    toolSide.y=0;if(toolSide.lengthSq()<.0001)camera.getWorldDirection(toolSide);toolSide.normalize();
     const x = -toolSide.z, z = toolSide.x;
     tool.position.copy(toolPoint).add(new THREE.Vector3(x*.43, 1.18, z*.43));
     tool.rotation.set(0, Math.atan2(toolSide.x, toolSide.z), -.35 + Math.sin(Math.min(1, Math.max(0, progress))*Math.PI*4)*.95);

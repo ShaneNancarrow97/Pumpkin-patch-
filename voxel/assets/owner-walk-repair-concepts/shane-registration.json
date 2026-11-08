@@ -1,0 +1,1488 @@
+{
+  "cell": [
+    320,
+    360
+  ],
+  "anchor": [
+    160,
+    340
+  ],
+  "height": 320,
+  "frames": [
+    {
+      "direction": "front",
+      "phase": 0,
+      "file": "shane/front-repair.png",
+      "sourcePhase": 0,
+      "sourceSha256": "e7fe10017c949adddef6135377cfaa706d2b4a47eaeb07be6f811ed6a1924174",
+      "sourceBounds": [
+        120,
+        12,
+        315,
+        438
+      ],
+      "torsoX": 218.5,
+      "scale": 0.757396449704142,
+      "offset": [
+        85,
+        17
+      ],
+      "size": [
+        148,
+        323
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 1,
+      "file": "shane/front-repair.png",
+      "sourcePhase": 1,
+      "sourceSha256": "e7fe10017c949adddef6135377cfaa706d2b4a47eaeb07be6f811ed6a1924174",
+      "sourceBounds": [
+        116,
+        12,
+        322,
+        433
+      ],
+      "torsoX": 221.0,
+      "scale": 0.757396449704142,
+      "offset": [
+        80,
+        21
+      ],
+      "size": [
+        156,
+        319
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 2,
+      "file": "shane/front-repair.png",
+      "sourcePhase": 2,
+      "sourceSha256": "e7fe10017c949adddef6135377cfaa706d2b4a47eaeb07be6f811ed6a1924174",
+      "sourceBounds": [
+        118,
+        12,
+        321,
+        433
+      ],
+      "torsoX": 220.5,
+      "scale": 0.757396449704142,
+      "offset": [
+        82,
+        21
+      ],
+      "size": [
+        154,
+        319
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 3,
+      "file": "shane/front-repair.png",
+      "sourcePhase": 3,
+      "sourceSha256": "e7fe10017c949adddef6135377cfaa706d2b4a47eaeb07be6f811ed6a1924174",
+      "sourceBounds": [
+        119,
+        12,
+        324,
+        433
+      ],
+      "torsoX": 224.0,
+      "scale": 0.757396449704142,
+      "offset": [
+        80,
+        21
+      ],
+      "size": [
+        155,
+        319
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 4,
+      "file": "shane/front-repair.png",
+      "sourcePhase": 4,
+      "sourceSha256": "e7fe10017c949adddef6135377cfaa706d2b4a47eaeb07be6f811ed6a1924174",
+      "sourceBounds": [
+        121,
+        13,
+        323,
+        432
+      ],
+      "torsoX": 221.5,
+      "scale": 0.757396449704142,
+      "offset": [
+        84,
+        23
+      ],
+      "size": [
+        153,
+        317
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 5,
+      "file": "shane/front-repair.png",
+      "sourcePhase": 5,
+      "sourceSha256": "e7fe10017c949adddef6135377cfaa706d2b4a47eaeb07be6f811ed6a1924174",
+      "sourceBounds": [
+        121,
+        13,
+        323,
+        432
+      ],
+      "torsoX": 223.0,
+      "scale": 0.757396449704142,
+      "offset": [
+        83,
+        23
+      ],
+      "size": [
+        153,
+        317
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 6,
+      "file": "shane/front-repair.png",
+      "sourcePhase": 6,
+      "sourceSha256": "e7fe10017c949adddef6135377cfaa706d2b4a47eaeb07be6f811ed6a1924174",
+      "sourceBounds": [
+        120,
+        13,
+        322,
+        432
+      ],
+      "torsoX": 222.0,
+      "scale": 0.757396449704142,
+      "offset": [
+        83,
+        23
+      ],
+      "size": [
+        153,
+        317
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 7,
+      "file": "shane/front-repair.png",
+      "sourcePhase": 7,
+      "sourceSha256": "e7fe10017c949adddef6135377cfaa706d2b4a47eaeb07be6f811ed6a1924174",
+      "sourceBounds": [
+        118,
+        13,
+        323,
+        432
+      ],
+      "torsoX": 222.5,
+      "scale": 0.757396449704142,
+      "offset": [
+        81,
+        23
+      ],
+      "size": [
+        155,
+        317
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 0,
+      "file": "shane/frontRight.png",
+      "sourcePhase": 4,
+      "sourceSha256": "c9a040dc499f469a4780732c9f9d14a42d1e8e4261bb479d767a32d16b2b8282",
+      "sourceBounds": [
+        73,
+        19,
+        364,
+        429
+      ],
+      "torsoX": 216.5,
+      "scale": 0.7766990291262136,
+      "offset": [
+        49,
+        22
+      ],
+      "size": [
+        226,
+        318
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 1,
+      "file": "shane/frontRight.png",
+      "sourcePhase": 5,
+      "sourceSha256": "c9a040dc499f469a4780732c9f9d14a42d1e8e4261bb479d767a32d16b2b8282",
+      "sourceBounds": [
+        107,
+        19,
+        302,
+        429
+      ],
+      "torsoX": 216.0,
+      "scale": 0.7766990291262136,
+      "offset": [
+        75,
+        22
+      ],
+      "size": [
+        151,
+        318
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 2,
+      "file": "shane/frontRight.png",
+      "sourcePhase": 6,
+      "sourceSha256": "c9a040dc499f469a4780732c9f9d14a42d1e8e4261bb479d767a32d16b2b8282",
+      "sourceBounds": [
+        132,
+        19,
+        318,
+        429
+      ],
+      "torsoX": 218.5,
+      "scale": 0.7766990291262136,
+      "offset": [
+        93,
+        22
+      ],
+      "size": [
+        144,
+        318
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 3,
+      "file": "shane/frontRight.png",
+      "sourcePhase": 7,
+      "sourceSha256": "c9a040dc499f469a4780732c9f9d14a42d1e8e4261bb479d767a32d16b2b8282",
+      "sourceBounds": [
+        76,
+        19,
+        364,
+        429
+      ],
+      "torsoX": 214.5,
+      "scale": 0.7766990291262136,
+      "offset": [
+        52,
+        22
+      ],
+      "size": [
+        224,
+        318
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 4,
+      "file": "shane/frontRight.png",
+      "sourcePhase": 0,
+      "sourceSha256": "c9a040dc499f469a4780732c9f9d14a42d1e8e4261bb479d767a32d16b2b8282",
+      "sourceBounds": [
+        87,
+        18,
+        353,
+        432
+      ],
+      "torsoX": 213.0,
+      "scale": 0.7766990291262136,
+      "offset": [
+        62,
+        18
+      ],
+      "size": [
+        207,
+        322
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 5,
+      "file": "shane/frontRight.png",
+      "sourcePhase": 1,
+      "sourceSha256": "c9a040dc499f469a4780732c9f9d14a42d1e8e4261bb479d767a32d16b2b8282",
+      "sourceBounds": [
+        98,
+        19,
+        317,
+        430
+      ],
+      "torsoX": 217.5,
+      "scale": 0.7766990291262136,
+      "offset": [
+        67,
+        21
+      ],
+      "size": [
+        170,
+        319
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 6,
+      "file": "shane/frontRight.png",
+      "sourcePhase": 2,
+      "sourceSha256": "c9a040dc499f469a4780732c9f9d14a42d1e8e4261bb479d767a32d16b2b8282",
+      "sourceBounds": [
+        126,
+        19,
+        295,
+        431
+      ],
+      "torsoX": 216.5,
+      "scale": 0.7766990291262136,
+      "offset": [
+        90,
+        20
+      ],
+      "size": [
+        131,
+        320
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 7,
+      "file": "shane/frontRight.png",
+      "sourcePhase": 3,
+      "sourceSha256": "c9a040dc499f469a4780732c9f9d14a42d1e8e4261bb479d767a32d16b2b8282",
+      "sourceBounds": [
+        90,
+        19,
+        347,
+        429
+      ],
+      "torsoX": 217.5,
+      "scale": 0.7766990291262136,
+      "offset": [
+        61,
+        22
+      ],
+      "size": [
+        200,
+        318
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 0,
+      "file": "shane/right.png",
+      "sourcePhase": 4,
+      "sourceSha256": "f1b53db50f875ce090ca88bcb244f1dd2351289600db38f2289fa7d2ac3cd5e2",
+      "sourceBounds": [
+        78,
+        21,
+        364,
+        429
+      ],
+      "torsoX": 216.25,
+      "scale": 0.78239608801956,
+      "offset": [
+        52,
+        21
+      ],
+      "size": [
+        224,
+        319
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 1,
+      "file": "shane/right.png",
+      "sourcePhase": 5,
+      "sourceSha256": "f1b53db50f875ce090ca88bcb244f1dd2351289600db38f2289fa7d2ac3cd5e2",
+      "sourceBounds": [
+        112,
+        23,
+        307,
+        426
+      ],
+      "torsoX": 214.0,
+      "scale": 0.78239608801956,
+      "offset": [
+        80,
+        25
+      ],
+      "size": [
+        153,
+        315
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 2,
+      "file": "shane/right.png",
+      "sourcePhase": 6,
+      "sourceSha256": "f1b53db50f875ce090ca88bcb244f1dd2351289600db38f2289fa7d2ac3cd5e2",
+      "sourceBounds": [
+        142,
+        21,
+        324,
+        426
+      ],
+      "torsoX": 220.0,
+      "scale": 0.78239608801956,
+      "offset": [
+        99,
+        23
+      ],
+      "size": [
+        142,
+        317
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 3,
+      "file": "shane/right.png",
+      "sourcePhase": 7,
+      "sourceSha256": "f1b53db50f875ce090ca88bcb244f1dd2351289600db38f2289fa7d2ac3cd5e2",
+      "sourceBounds": [
+        82,
+        24,
+        369,
+        423
+      ],
+      "torsoX": 216.5,
+      "scale": 0.78239608801956,
+      "offset": [
+        55,
+        28
+      ],
+      "size": [
+        225,
+        312
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 4,
+      "file": "shane/right.png",
+      "sourcePhase": 0,
+      "sourceSha256": "f1b53db50f875ce090ca88bcb244f1dd2351289600db38f2289fa7d2ac3cd5e2",
+      "sourceBounds": [
+        0,
+        0,
+        317,
+        410
+      ],
+      "torsoX": 165.0,
+      "scale": 0.78239608801956,
+      "offset": [
+        31,
+        19
+      ],
+      "size": [
+        248,
+        321
+      ],
+      "replacementPainting": "shane-right-phase0-repair.png",
+      "replacementSha256": "10fb6948182e5527d1d464172c8b3719210c69d79ebdbf49b34d95de18dfca59",
+      "replacementRegistration": "Replacement is first normalised to the original strip contact height, then uses the strip-wide scalar."
+    },
+    {
+      "direction": "right",
+      "phase": 5,
+      "file": "shane/right.png",
+      "sourcePhase": 1,
+      "sourceSha256": "f1b53db50f875ce090ca88bcb244f1dd2351289600db38f2289fa7d2ac3cd5e2",
+      "sourceBounds": [
+        100,
+        24,
+        316,
+        426
+      ],
+      "torsoX": 215.5,
+      "scale": 0.78239608801956,
+      "offset": [
+        70,
+        25
+      ],
+      "size": [
+        169,
+        315
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 6,
+      "file": "shane/right.png",
+      "sourcePhase": 2,
+      "sourceSha256": "f1b53db50f875ce090ca88bcb244f1dd2351289600db38f2289fa7d2ac3cd5e2",
+      "sourceBounds": [
+        137,
+        20,
+        297,
+        428
+      ],
+      "torsoX": 219.0,
+      "scale": 0.78239608801956,
+      "offset": [
+        96,
+        21
+      ],
+      "size": [
+        125,
+        319
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 7,
+      "file": "shane/right.png",
+      "sourcePhase": 3,
+      "sourceSha256": "f1b53db50f875ce090ca88bcb244f1dd2351289600db38f2289fa7d2ac3cd5e2",
+      "sourceBounds": [
+        91,
+        20,
+        332,
+        426
+      ],
+      "torsoX": 216.5,
+      "scale": 0.78239608801956,
+      "offset": [
+        62,
+        22
+      ],
+      "size": [
+        189,
+        318
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 0,
+      "file": "shane/backRight.png",
+      "sourcePhase": 0,
+      "sourceSha256": "fca406fc77983588b187a00151a328dde4eeb701db631fdca31d421ce011f351",
+      "sourceBounds": [
+        96,
+        14,
+        354,
+        436
+      ],
+      "torsoX": 215.0,
+      "scale": 0.7600950118764845,
+      "offset": [
+        70,
+        19
+      ],
+      "size": [
+        196,
+        321
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 1,
+      "file": "shane/backRight.png",
+      "sourcePhase": 1,
+      "sourceSha256": "fca406fc77983588b187a00151a328dde4eeb701db631fdca31d421ce011f351",
+      "sourceBounds": [
+        104,
+        14,
+        328,
+        436
+      ],
+      "torsoX": 216.5,
+      "scale": 0.7600950118764845,
+      "offset": [
+        74,
+        19
+      ],
+      "size": [
+        170,
+        321
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 2,
+      "file": "shane/backRight.png",
+      "sourcePhase": 2,
+      "sourceSha256": "fca406fc77983588b187a00151a328dde4eeb701db631fdca31d421ce011f351",
+      "sourceBounds": [
+        136,
+        14,
+        326,
+        436
+      ],
+      "torsoX": 218.0,
+      "scale": 0.7600950118764845,
+      "offset": [
+        98,
+        19
+      ],
+      "size": [
+        144,
+        321
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 3,
+      "file": "shane/backRight.png",
+      "sourcePhase": 3,
+      "sourceSha256": "fca406fc77983588b187a00151a328dde4eeb701db631fdca31d421ce011f351",
+      "sourceBounds": [
+        95,
+        14,
+        349,
+        436
+      ],
+      "torsoX": 216.0,
+      "scale": 0.7600950118764845,
+      "offset": [
+        68,
+        19
+      ],
+      "size": [
+        193,
+        321
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 4,
+      "file": "shane/backRight.png",
+      "sourcePhase": 4,
+      "sourceSha256": "fca406fc77983588b187a00151a328dde4eeb701db631fdca31d421ce011f351",
+      "sourceBounds": [
+        77,
+        16,
+        352,
+        436
+      ],
+      "torsoX": 213.5,
+      "scale": 0.7600950118764845,
+      "offset": [
+        56,
+        21
+      ],
+      "size": [
+        209,
+        319
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 5,
+      "file": "shane/backRight.png",
+      "sourcePhase": 5,
+      "sourceSha256": "fca406fc77983588b187a00151a328dde4eeb701db631fdca31d421ce011f351",
+      "sourceBounds": [
+        107,
+        16,
+        322,
+        436
+      ],
+      "torsoX": 214.5,
+      "scale": 0.7600950118764845,
+      "offset": [
+        78,
+        21
+      ],
+      "size": [
+        163,
+        319
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 6,
+      "file": "shane/backRight.png",
+      "sourcePhase": 6,
+      "sourceSha256": "fca406fc77983588b187a00151a328dde4eeb701db631fdca31d421ce011f351",
+      "sourceBounds": [
+        126,
+        16,
+        326,
+        436
+      ],
+      "torsoX": 215.5,
+      "scale": 0.7600950118764845,
+      "offset": [
+        92,
+        21
+      ],
+      "size": [
+        152,
+        319
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 7,
+      "file": "shane/backRight.png",
+      "sourcePhase": 7,
+      "sourceSha256": "fca406fc77983588b187a00151a328dde4eeb701db631fdca31d421ce011f351",
+      "sourceBounds": [
+        78,
+        16,
+        367,
+        435
+      ],
+      "torsoX": 216.0,
+      "scale": 0.7600950118764845,
+      "offset": [
+        55,
+        22
+      ],
+      "size": [
+        220,
+        318
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 0,
+      "file": "shane/back.png",
+      "sourcePhase": 0,
+      "sourceSha256": "e851c0f35d30a6f27d4778ce1d063cff9bce7d45cb8e2c29060816bfc12e2d0c",
+      "sourceBounds": [
+        125,
+        15,
+        315,
+        432
+      ],
+      "torsoX": 223.5,
+      "scale": 0.7673860911270983,
+      "offset": [
+        84,
+        20
+      ],
+      "size": [
+        146,
+        320
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 1,
+      "file": "shane/back.png",
+      "sourcePhase": 1,
+      "sourceSha256": "e851c0f35d30a6f27d4778ce1d063cff9bce7d45cb8e2c29060816bfc12e2d0c",
+      "sourceBounds": [
+        126,
+        15,
+        320,
+        421
+      ],
+      "torsoX": 226.5,
+      "scale": 0.7673860911270983,
+      "offset": [
+        83,
+        28
+      ],
+      "size": [
+        149,
+        312
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 2,
+      "file": "shane/back.png",
+      "sourcePhase": 2,
+      "sourceSha256": "e851c0f35d30a6f27d4778ce1d063cff9bce7d45cb8e2c29060816bfc12e2d0c",
+      "sourceBounds": [
+        126,
+        15,
+        316,
+        421
+      ],
+      "torsoX": 225.5,
+      "scale": 0.7673860911270983,
+      "offset": [
+        84,
+        28
+      ],
+      "size": [
+        146,
+        312
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 3,
+      "file": "shane/back.png",
+      "sourcePhase": 3,
+      "sourceSha256": "e851c0f35d30a6f27d4778ce1d063cff9bce7d45cb8e2c29060816bfc12e2d0c",
+      "sourceBounds": [
+        127,
+        15,
+        316,
+        432
+      ],
+      "torsoX": 226.5,
+      "scale": 0.7673860911270983,
+      "offset": [
+        84,
+        20
+      ],
+      "size": [
+        145,
+        320
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 4,
+      "file": "shane/back.png",
+      "sourcePhase": 4,
+      "sourceSha256": "e851c0f35d30a6f27d4778ce1d063cff9bce7d45cb8e2c29060816bfc12e2d0c",
+      "sourceBounds": [
+        125,
+        16,
+        318,
+        433
+      ],
+      "torsoX": 226.0,
+      "scale": 0.7673860911270983,
+      "offset": [
+        82,
+        20
+      ],
+      "size": [
+        148,
+        320
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 5,
+      "file": "shane/back.png",
+      "sourcePhase": 5,
+      "sourceSha256": "e851c0f35d30a6f27d4778ce1d063cff9bce7d45cb8e2c29060816bfc12e2d0c",
+      "sourceBounds": [
+        126,
+        16,
+        318,
+        415
+      ],
+      "torsoX": 226.0,
+      "scale": 0.7673860911270983,
+      "offset": [
+        83,
+        34
+      ],
+      "size": [
+        147,
+        306
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 6,
+      "file": "shane/back.png",
+      "sourcePhase": 6,
+      "sourceSha256": "e851c0f35d30a6f27d4778ce1d063cff9bce7d45cb8e2c29060816bfc12e2d0c",
+      "sourceBounds": [
+        128,
+        16,
+        317,
+        432
+      ],
+      "torsoX": 226.5,
+      "scale": 0.7673860911270983,
+      "offset": [
+        84,
+        21
+      ],
+      "size": [
+        145,
+        319
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 7,
+      "file": "shane/back.png",
+      "sourcePhase": 7,
+      "sourceSha256": "e851c0f35d30a6f27d4778ce1d063cff9bce7d45cb8e2c29060816bfc12e2d0c",
+      "sourceBounds": [
+        125,
+        16,
+        317,
+        420
+      ],
+      "torsoX": 226.0,
+      "scale": 0.7673860911270983,
+      "offset": [
+        82,
+        30
+      ],
+      "size": [
+        147,
+        310
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 0,
+      "file": "shane/backLeft.png",
+      "sourcePhase": 0,
+      "sourceSha256": "75fad9e82949ae09411ef8464e3ed57c26429672797fb4a3f226740c215bcb09",
+      "sourceBounds": [
+        81,
+        13,
+        352,
+        430
+      ],
+      "torsoX": 230.25,
+      "scale": 0.7664670658682635,
+      "offset": [
+        46,
+        20
+      ],
+      "size": [
+        208,
+        320
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 1,
+      "file": "shane/backLeft.png",
+      "sourcePhase": 1,
+      "sourceSha256": "75fad9e82949ae09411ef8464e3ed57c26429672797fb4a3f226740c215bcb09",
+      "sourceBounds": [
+        129,
+        13,
+        323,
+        431
+      ],
+      "torsoX": 231.5,
+      "scale": 0.7664670658682635,
+      "offset": [
+        81,
+        20
+      ],
+      "size": [
+        149,
+        320
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 2,
+      "file": "shane/backLeft.png",
+      "sourcePhase": 2,
+      "sourceSha256": "75fad9e82949ae09411ef8464e3ed57c26429672797fb4a3f226740c215bcb09",
+      "sourceBounds": [
+        128,
+        13,
+        314,
+        431
+      ],
+      "torsoX": 233.0,
+      "scale": 0.7664670658682635,
+      "offset": [
+        80,
+        20
+      ],
+      "size": [
+        143,
+        320
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 3,
+      "file": "shane/backLeft.png",
+      "sourcePhase": 3,
+      "sourceSha256": "75fad9e82949ae09411ef8464e3ed57c26429672797fb4a3f226740c215bcb09",
+      "sourceBounds": [
+        90,
+        13,
+        357,
+        430
+      ],
+      "torsoX": 232.5,
+      "scale": 0.7664670658682635,
+      "offset": [
+        51,
+        20
+      ],
+      "size": [
+        205,
+        320
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 4,
+      "file": "shane/backLeft.png",
+      "sourcePhase": 4,
+      "sourceSha256": "75fad9e82949ae09411ef8464e3ed57c26429672797fb4a3f226740c215bcb09",
+      "sourceBounds": [
+        90,
+        14,
+        362,
+        432
+      ],
+      "torsoX": 231.5,
+      "scale": 0.7664670658682635,
+      "offset": [
+        52,
+        20
+      ],
+      "size": [
+        208,
+        320
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 5,
+      "file": "shane/backLeft.png",
+      "sourcePhase": 5,
+      "sourceSha256": "75fad9e82949ae09411ef8464e3ed57c26429672797fb4a3f226740c215bcb09",
+      "sourceBounds": [
+        121,
+        15,
+        320,
+        432
+      ],
+      "torsoX": 233.0,
+      "scale": 0.7664670658682635,
+      "offset": [
+        74,
+        20
+      ],
+      "size": [
+        153,
+        320
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 6,
+      "file": "shane/backLeft.png",
+      "sourcePhase": 6,
+      "sourceSha256": "75fad9e82949ae09411ef8464e3ed57c26429672797fb4a3f226740c215bcb09",
+      "sourceBounds": [
+        127,
+        14,
+        325,
+        432
+      ],
+      "torsoX": 233.5,
+      "scale": 0.7664670658682635,
+      "offset": [
+        78,
+        20
+      ],
+      "size": [
+        152,
+        320
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 7,
+      "file": "shane/backLeft.png",
+      "sourcePhase": 7,
+      "sourceSha256": "75fad9e82949ae09411ef8464e3ed57c26429672797fb4a3f226740c215bcb09",
+      "sourceBounds": [
+        100,
+        15,
+        357,
+        432
+      ],
+      "torsoX": 233.75,
+      "scale": 0.7664670658682635,
+      "offset": [
+        57,
+        20
+      ],
+      "size": [
+        197,
+        320
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 0,
+      "file": "shane/left.png",
+      "sourcePhase": 0,
+      "sourceSha256": "abe72ee9d9ca79c888aec37904b95af19878982db25e16398df97cb19a6ab4a1",
+      "sourceBounds": [
+        63,
+        16,
+        362,
+        430
+      ],
+      "torsoX": 228.0,
+      "scale": 0.7710843373493976,
+      "offset": [
+        33,
+        21
+      ],
+      "size": [
+        231,
+        319
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 1,
+      "file": "shane/left.png",
+      "sourcePhase": 1,
+      "sourceSha256": "abe72ee9d9ca79c888aec37904b95af19878982db25e16398df97cb19a6ab4a1",
+      "sourceBounds": [
+        115,
+        16,
+        337,
+        430
+      ],
+      "torsoX": 231.0,
+      "scale": 0.7710843373493976,
+      "offset": [
+        71,
+        21
+      ],
+      "size": [
+        171,
+        319
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 2,
+      "file": "shane/left.png",
+      "sourcePhase": 2,
+      "sourceSha256": "abe72ee9d9ca79c888aec37904b95af19878982db25e16398df97cb19a6ab4a1",
+      "sourceBounds": [
+        154,
+        16,
+        316,
+        430
+      ],
+      "torsoX": 232.0,
+      "scale": 0.7710843373493976,
+      "offset": [
+        100,
+        21
+      ],
+      "size": [
+        125,
+        319
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 3,
+      "file": "shane/left.png",
+      "sourcePhase": 3,
+      "sourceSha256": "abe72ee9d9ca79c888aec37904b95af19878982db25e16398df97cb19a6ab4a1",
+      "sourceBounds": [
+        90,
+        16,
+        370,
+        430
+      ],
+      "torsoX": 232.75,
+      "scale": 0.7710843373493976,
+      "offset": [
+        50,
+        21
+      ],
+      "size": [
+        216,
+        319
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 4,
+      "file": "shane/left.png",
+      "sourcePhase": 4,
+      "sourceSha256": "abe72ee9d9ca79c888aec37904b95af19878982db25e16398df97cb19a6ab4a1",
+      "sourceBounds": [
+        68,
+        16,
+        372,
+        432
+      ],
+      "torsoX": 230.5,
+      "scale": 0.7710843373493976,
+      "offset": [
+        35,
+        19
+      ],
+      "size": [
+        234,
+        321
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 5,
+      "file": "shane/left.png",
+      "sourcePhase": 5,
+      "sourceSha256": "abe72ee9d9ca79c888aec37904b95af19878982db25e16398df97cb19a6ab4a1",
+      "sourceBounds": [
+        140,
+        16,
+        320,
+        432
+      ],
+      "torsoX": 233.0,
+      "scale": 0.7710843373493976,
+      "offset": [
+        88,
+        19
+      ],
+      "size": [
+        139,
+        321
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 6,
+      "file": "shane/left.png",
+      "sourcePhase": 6,
+      "sourceSha256": "abe72ee9d9ca79c888aec37904b95af19878982db25e16398df97cb19a6ab4a1",
+      "sourceBounds": [
+        134,
+        16,
+        307,
+        433
+      ],
+      "torsoX": 233.75,
+      "scale": 0.7710843373493976,
+      "offset": [
+        83,
+        18
+      ],
+      "size": [
+        133,
+        322
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 7,
+      "file": "shane/left.png",
+      "sourcePhase": 7,
+      "sourceSha256": "abe72ee9d9ca79c888aec37904b95af19878982db25e16398df97cb19a6ab4a1",
+      "sourceBounds": [
+        69,
+        16,
+        374,
+        432
+      ],
+      "torsoX": 234.25,
+      "scale": 0.7710843373493976,
+      "offset": [
+        33,
+        19
+      ],
+      "size": [
+        235,
+        321
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 0,
+      "file": "shane/frontLeft.png",
+      "sourcePhase": 0,
+      "sourceSha256": "86b94a8810dd5febe379791069ce09f14dbb8a13b9820de0a3c2fd021ba60bce",
+      "sourceBounds": [
+        109,
+        16,
+        358,
+        433
+      ],
+      "torsoX": 231.0,
+      "scale": 0.7664670658682635,
+      "offset": [
+        66,
+        20
+      ],
+      "size": [
+        191,
+        320
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 1,
+      "file": "shane/frontLeft.png",
+      "sourcePhase": 1,
+      "sourceSha256": "86b94a8810dd5febe379791069ce09f14dbb8a13b9820de0a3c2fd021ba60bce",
+      "sourceBounds": [
+        149,
+        16,
+        328,
+        433
+      ],
+      "torsoX": 232.0,
+      "scale": 0.7664670658682635,
+      "offset": [
+        96,
+        20
+      ],
+      "size": [
+        137,
+        320
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 2,
+      "file": "shane/frontLeft.png",
+      "sourcePhase": 2,
+      "sourceSha256": "86b94a8810dd5febe379791069ce09f14dbb8a13b9820de0a3c2fd021ba60bce",
+      "sourceBounds": [
+        157,
+        16,
+        314,
+        434
+      ],
+      "torsoX": 229.0,
+      "scale": 0.7664670658682635,
+      "offset": [
+        105,
+        20
+      ],
+      "size": [
+        120,
+        320
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 3,
+      "file": "shane/frontLeft.png",
+      "sourcePhase": 3,
+      "sourceSha256": "86b94a8810dd5febe379791069ce09f14dbb8a13b9820de0a3c2fd021ba60bce",
+      "sourceBounds": [
+        109,
+        16,
+        332,
+        432
+      ],
+      "torsoX": 233.5,
+      "scale": 0.7664670658682635,
+      "offset": [
+        65,
+        21
+      ],
+      "size": [
+        171,
+        319
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 4,
+      "file": "shane/frontLeft.png",
+      "sourcePhase": 4,
+      "sourceSha256": "86b94a8810dd5febe379791069ce09f14dbb8a13b9820de0a3c2fd021ba60bce",
+      "sourceBounds": [
+        97,
+        17,
+        342,
+        435
+      ],
+      "torsoX": 236.0,
+      "scale": 0.7664670658682635,
+      "offset": [
+        53,
+        20
+      ],
+      "size": [
+        188,
+        320
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 5,
+      "file": "shane/frontLeft.png",
+      "sourcePhase": 5,
+      "sourceSha256": "86b94a8810dd5febe379791069ce09f14dbb8a13b9820de0a3c2fd021ba60bce",
+      "sourceBounds": [
+        150,
+        17,
+        317,
+        435
+      ],
+      "torsoX": 227.5,
+      "scale": 0.7664670658682635,
+      "offset": [
+        101,
+        20
+      ],
+      "size": [
+        128,
+        320
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 6,
+      "file": "shane/frontLeft.png",
+      "sourcePhase": 6,
+      "sourceSha256": "86b94a8810dd5febe379791069ce09f14dbb8a13b9820de0a3c2fd021ba60bce",
+      "sourceBounds": [
+        134,
+        17,
+        317,
+        435
+      ],
+      "torsoX": 230.0,
+      "scale": 0.7664670658682635,
+      "offset": [
+        86,
+        20
+      ],
+      "size": [
+        140,
+        320
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 7,
+      "file": "shane/frontLeft.png",
+      "sourcePhase": 7,
+      "sourceSha256": "86b94a8810dd5febe379791069ce09f14dbb8a13b9820de0a3c2fd021ba60bce",
+      "sourceBounds": [
+        88,
+        17,
+        352,
+        434
+      ],
+      "torsoX": 230.5,
+      "scale": 0.7664670658682635,
+      "offset": [
+        51,
+        20
+      ],
+      "size": [
+        202,
+        320
+      ]
+    }
+  ]
+}

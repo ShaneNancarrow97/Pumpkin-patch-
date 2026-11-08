@@ -574,9 +574,14 @@ export function node(f, material, ready, r = seeded(51)) {
   if (material === "logs") {
     // One fallen hand-sized log: about46cm in the scaled world, not a stockpile.
     f.block(0,0,0,.09,.09,.3,vary(0x7a5236,.08,r));
-    f.block(0,.01,.153,.07,.07,.006,0xd8b88a);
+    // Pale growth rings at both ends remain readable whichever way the log lies.
+    for(const end of [-1,1]){
+      f.block(0,.01,end*.153,.07,.07,.006,0xe0bf8e);
+      f.block(.004,.027,end*.157,.037,.037,.003,0xb48a59);
+      f.block(.004,.037,end*.159,.016,.016,.002,0xe8d0a3);
+    }
     f.block(-.047,.015,0,.008,.055,.27,0x4e3428);f.block(.047,.015,0,.008,.055,.27,0x925e39);
-    f.block(.004,.032,.157,.025,.025,.003,0x9f784c);
+    f.block(0,.085,0,.055,.006,.27,0x9a744f);
   } else if (material === "stone") {
     // A single loose boulder, at most35cm across; mining never leaves rubble.
     f.block(0,0,0,.23,.14,.21,vary(C.stoneDark[0],.05,r));

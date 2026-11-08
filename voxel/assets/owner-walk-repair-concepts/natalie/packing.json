@@ -1,0 +1,1305 @@
+{
+  "technicalOnly": true,
+  "uniformCharacterScale": 0.5152224824355972,
+  "sourceBodyMax": 427,
+  "outputCell": [
+    256,
+    256
+  ],
+  "root": [
+    128,
+    246
+  ],
+  "directionOrder": [
+    "front",
+    "frontRight",
+    "right",
+    "backRight",
+    "back",
+    "backLeft",
+    "left",
+    "frontLeft"
+  ],
+  "placements": [
+    {
+      "direction": "front",
+      "phase": 0,
+      "source": "front.png",
+      "sourceCell": [
+        0,
+        0,
+        443,
+        443
+      ],
+      "sourceRoot": [
+        222.0,
+        435
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        14,
+        22
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 1,
+      "source": "front.png",
+      "sourceCell": [
+        443,
+        0,
+        886,
+        443
+      ],
+      "sourceRoot": [
+        221.5,
+        435
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        14,
+        22
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 2,
+      "source": "front.png",
+      "sourceCell": [
+        886,
+        0,
+        1330,
+        443
+      ],
+      "sourceRoot": [
+        223.5,
+        435
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        13,
+        22
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 3,
+      "source": "front.png",
+      "sourceCell": [
+        1330,
+        0,
+        1774,
+        443
+      ],
+      "sourceRoot": [
+        224.5,
+        435
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        12,
+        22
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 4,
+      "source": "front.png",
+      "sourceCell": [
+        0,
+        443,
+        443,
+        887
+      ],
+      "sourceRoot": [
+        222.5,
+        434
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        13,
+        22
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 5,
+      "source": "front.png",
+      "sourceCell": [
+        443,
+        443,
+        886,
+        887
+      ],
+      "sourceRoot": [
+        223.0,
+        434
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        13,
+        22
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 6,
+      "source": "front.png",
+      "sourceCell": [
+        886,
+        443,
+        1330,
+        887
+      ],
+      "sourceRoot": [
+        223.5,
+        434
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        13,
+        22
+      ]
+    },
+    {
+      "direction": "front",
+      "phase": 7,
+      "source": "front.png",
+      "sourceCell": [
+        1330,
+        443,
+        1774,
+        887
+      ],
+      "sourceRoot": [
+        224.75,
+        432
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        12,
+        23
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 0,
+      "source": "frontRight.png",
+      "sourceCell": [
+        0,
+        0,
+        443,
+        443
+      ],
+      "sourceRoot": [
+        223.0,
+        433
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        13,
+        23
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 1,
+      "source": "frontRight.png",
+      "sourceCell": [
+        443,
+        0,
+        886,
+        443
+      ],
+      "sourceRoot": [
+        228.5,
+        434
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        10,
+        22
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 2,
+      "source": "frontRight.png",
+      "sourceCell": [
+        886,
+        0,
+        1330,
+        443
+      ],
+      "sourceRoot": [
+        227.5,
+        432
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        11,
+        23
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 3,
+      "source": "frontRight.png",
+      "sourceCell": [
+        1330,
+        0,
+        1774,
+        443
+      ],
+      "sourceRoot": [
+        219.0,
+        428
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        15,
+        25
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 4,
+      "source": "frontRight.png",
+      "sourceCell": [
+        0,
+        443,
+        443,
+        887
+      ],
+      "sourceRoot": [
+        223.5,
+        437
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        13,
+        21
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 5,
+      "source": "frontRight.png",
+      "sourceCell": [
+        443,
+        443,
+        886,
+        887
+      ],
+      "sourceRoot": [
+        224.5,
+        437
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        12,
+        21
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 6,
+      "source": "frontRight.png",
+      "sourceCell": [
+        886,
+        443,
+        1330,
+        887
+      ],
+      "sourceRoot": [
+        229.0,
+        439
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        10,
+        20
+      ]
+    },
+    {
+      "direction": "frontRight",
+      "phase": 7,
+      "source": "frontRight.png",
+      "sourceCell": [
+        1330,
+        443,
+        1774,
+        887
+      ],
+      "sourceRoot": [
+        223.0,
+        433
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        13,
+        23
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 0,
+      "source": "right-repair.png",
+      "sourceCell": [
+        0,
+        0,
+        443,
+        443
+      ],
+      "sourceRoot": [
+        226.5,
+        428
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        11,
+        25
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 1,
+      "source": "right-repair.png",
+      "sourceCell": [
+        443,
+        0,
+        886,
+        443
+      ],
+      "sourceRoot": [
+        224.5,
+        429
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        12,
+        25
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 2,
+      "source": "right-repair.png",
+      "sourceCell": [
+        886,
+        0,
+        1330,
+        443
+      ],
+      "sourceRoot": [
+        231.0,
+        429
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        9,
+        25
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 3,
+      "source": "right-repair.png",
+      "sourceCell": [
+        1330,
+        0,
+        1774,
+        443
+      ],
+      "sourceRoot": [
+        224.25,
+        426
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        12,
+        27
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 4,
+      "source": "right-repair.png",
+      "sourceCell": [
+        0,
+        443,
+        443,
+        887
+      ],
+      "sourceRoot": [
+        222.0,
+        430
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        14,
+        24
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 5,
+      "source": "right-repair.png",
+      "sourceCell": [
+        443,
+        443,
+        886,
+        887
+      ],
+      "sourceRoot": [
+        224.0,
+        430
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        13,
+        24
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 6,
+      "source": "right-repair.png",
+      "sourceCell": [
+        886,
+        443,
+        1330,
+        887
+      ],
+      "sourceRoot": [
+        237.5,
+        431
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        6,
+        24
+      ]
+    },
+    {
+      "direction": "right",
+      "phase": 7,
+      "source": "right-repair.png",
+      "sourceCell": [
+        1330,
+        443,
+        1774,
+        887
+      ],
+      "sourceRoot": [
+        230.0,
+        427
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        9,
+        26
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 0,
+      "source": "backRight.png",
+      "sourceCell": [
+        0,
+        0,
+        443,
+        443
+      ],
+      "sourceRoot": [
+        225.0,
+        439
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        12,
+        20
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 1,
+      "source": "backRight.png",
+      "sourceCell": [
+        443,
+        0,
+        886,
+        443
+      ],
+      "sourceRoot": [
+        227.0,
+        434
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        11,
+        22
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 2,
+      "source": "backRight.png",
+      "sourceCell": [
+        886,
+        0,
+        1330,
+        443
+      ],
+      "sourceRoot": [
+        227.5,
+        432
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        11,
+        23
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 3,
+      "source": "backRight.png",
+      "sourceCell": [
+        1330,
+        0,
+        1774,
+        443
+      ],
+      "sourceRoot": [
+        219.5,
+        432
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        15,
+        23
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 4,
+      "source": "backRight.png",
+      "sourceCell": [
+        0,
+        443,
+        443,
+        887
+      ],
+      "sourceRoot": [
+        217.0,
+        433
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        16,
+        23
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 5,
+      "source": "backRight.png",
+      "sourceCell": [
+        443,
+        443,
+        886,
+        887
+      ],
+      "sourceRoot": [
+        221.5,
+        433
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        14,
+        23
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 6,
+      "source": "backRight.png",
+      "sourceCell": [
+        886,
+        443,
+        1330,
+        887
+      ],
+      "sourceRoot": [
+        230.5,
+        433
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        9,
+        23
+      ]
+    },
+    {
+      "direction": "backRight",
+      "phase": 7,
+      "source": "backRight.png",
+      "sourceCell": [
+        1330,
+        443,
+        1774,
+        887
+      ],
+      "sourceRoot": [
+        226.0,
+        430
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        12,
+        24
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 0,
+      "source": "back.png",
+      "sourceCell": [
+        0,
+        0,
+        443,
+        443
+      ],
+      "sourceRoot": [
+        221.0,
+        435
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        14,
+        22
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 1,
+      "source": "back.png",
+      "sourceCell": [
+        443,
+        0,
+        886,
+        443
+      ],
+      "sourceRoot": [
+        212.0,
+        425
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        19,
+        27
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 2,
+      "source": "back.png",
+      "sourceCell": [
+        886,
+        0,
+        1330,
+        443
+      ],
+      "sourceRoot": [
+        217.5,
+        435
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        16,
+        22
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 3,
+      "source": "back.png",
+      "sourceCell": [
+        1330,
+        0,
+        1774,
+        443
+      ],
+      "sourceRoot": [
+        225.0,
+        433
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        12,
+        23
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 4,
+      "source": "back.png",
+      "sourceCell": [
+        0,
+        443,
+        443,
+        887
+      ],
+      "sourceRoot": [
+        224.5,
+        432
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        12,
+        23
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 5,
+      "source": "back.png",
+      "sourceCell": [
+        443,
+        443,
+        886,
+        887
+      ],
+      "sourceRoot": [
+        224.5,
+        431
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        12,
+        24
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 6,
+      "source": "back.png",
+      "sourceCell": [
+        886,
+        443,
+        1330,
+        887
+      ],
+      "sourceRoot": [
+        244.0,
+        432
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        2,
+        23
+      ]
+    },
+    {
+      "direction": "back",
+      "phase": 7,
+      "source": "back.png",
+      "sourceCell": [
+        1330,
+        443,
+        1774,
+        887
+      ],
+      "sourceRoot": [
+        220.0,
+        433
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        15,
+        23
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 0,
+      "source": "backLeft.png",
+      "sourceCell": [
+        0,
+        0,
+        443,
+        443
+      ],
+      "sourceRoot": [
+        227.5,
+        433
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        11,
+        23
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 1,
+      "source": "backLeft.png",
+      "sourceCell": [
+        443,
+        0,
+        886,
+        443
+      ],
+      "sourceRoot": [
+        229.25,
+        427
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        10,
+        26
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 2,
+      "source": "backLeft.png",
+      "sourceCell": [
+        886,
+        0,
+        1330,
+        443
+      ],
+      "sourceRoot": [
+        230.5,
+        429
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        9,
+        25
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 3,
+      "source": "backLeft.png",
+      "sourceCell": [
+        1330,
+        0,
+        1774,
+        443
+      ],
+      "sourceRoot": [
+        232.0,
+        435
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        8,
+        22
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 4,
+      "source": "backLeft.png",
+      "sourceCell": [
+        0,
+        443,
+        443,
+        887
+      ],
+      "sourceRoot": [
+        226.5,
+        439
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        11,
+        20
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 5,
+      "source": "backLeft.png",
+      "sourceCell": [
+        443,
+        443,
+        886,
+        887
+      ],
+      "sourceRoot": [
+        230.0,
+        425
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        9,
+        27
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 6,
+      "source": "backLeft.png",
+      "sourceCell": [
+        886,
+        443,
+        1330,
+        887
+      ],
+      "sourceRoot": [
+        230.0,
+        435
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        9,
+        22
+      ]
+    },
+    {
+      "direction": "backLeft",
+      "phase": 7,
+      "source": "backLeft.png",
+      "sourceCell": [
+        1330,
+        443,
+        1774,
+        887
+      ],
+      "sourceRoot": [
+        240.0,
+        437
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        4,
+        21
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 0,
+      "source": "left.png",
+      "sourceCell": [
+        0,
+        0,
+        443,
+        443
+      ],
+      "sourceRoot": [
+        230.0,
+        438
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        9,
+        20
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 1,
+      "source": "left.png",
+      "sourceCell": [
+        443,
+        0,
+        886,
+        443
+      ],
+      "sourceRoot": [
+        227.0,
+        439
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        11,
+        20
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 2,
+      "source": "left.png",
+      "sourceCell": [
+        886,
+        0,
+        1330,
+        443
+      ],
+      "sourceRoot": [
+        232.75,
+        439
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        8,
+        20
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 3,
+      "source": "left.png",
+      "sourceCell": [
+        1330,
+        0,
+        1774,
+        443
+      ],
+      "sourceRoot": [
+        241.0,
+        438
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        4,
+        20
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 4,
+      "source": "left.png",
+      "sourceCell": [
+        0,
+        443,
+        443,
+        887
+      ],
+      "sourceRoot": [
+        227.25,
+        437
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        11,
+        21
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 5,
+      "source": "left.png",
+      "sourceCell": [
+        443,
+        443,
+        886,
+        887
+      ],
+      "sourceRoot": [
+        234.0,
+        437
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        7,
+        21
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 6,
+      "source": "left.png",
+      "sourceCell": [
+        886,
+        443,
+        1330,
+        887
+      ],
+      "sourceRoot": [
+        236.0,
+        437
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        6,
+        21
+      ]
+    },
+    {
+      "direction": "left",
+      "phase": 7,
+      "source": "left.png",
+      "sourceCell": [
+        1330,
+        443,
+        1774,
+        887
+      ],
+      "sourceRoot": [
+        239.5,
+        437
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        5,
+        21
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 0,
+      "source": "frontLeft.png",
+      "sourceCell": [
+        0,
+        0,
+        443,
+        443
+      ],
+      "sourceRoot": [
+        230.0,
+        434
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        9,
+        22
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 1,
+      "source": "frontLeft.png",
+      "sourceCell": [
+        443,
+        0,
+        886,
+        443
+      ],
+      "sourceRoot": [
+        229.5,
+        428
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        10,
+        25
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 2,
+      "source": "frontLeft.png",
+      "sourceCell": [
+        886,
+        0,
+        1330,
+        443
+      ],
+      "sourceRoot": [
+        230.5,
+        427
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        9,
+        26
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 3,
+      "source": "frontLeft.png",
+      "sourceCell": [
+        1330,
+        0,
+        1774,
+        443
+      ],
+      "sourceRoot": [
+        237.5,
+        419
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        6,
+        30
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 4,
+      "source": "frontLeft.png",
+      "sourceCell": [
+        0,
+        443,
+        443,
+        887
+      ],
+      "sourceRoot": [
+        242.5,
+        439
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        3,
+        20
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 5,
+      "source": "frontLeft.png",
+      "sourceCell": [
+        443,
+        443,
+        886,
+        887
+      ],
+      "sourceRoot": [
+        241.5,
+        435
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        4,
+        22
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 6,
+      "source": "frontLeft.png",
+      "sourceCell": [
+        886,
+        443,
+        1330,
+        887
+      ],
+      "sourceRoot": [
+        243.5,
+        435
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        3,
+        22
+      ]
+    },
+    {
+      "direction": "frontLeft",
+      "phase": 7,
+      "source": "frontLeft.png",
+      "sourceCell": [
+        1330,
+        443,
+        1774,
+        887
+      ],
+      "sourceRoot": [
+        244.5,
+        436
+      ],
+      "scale": 0.5152224824355972,
+      "offset": [
+        2,
+        21
+      ]
+    }
+  ]
+}

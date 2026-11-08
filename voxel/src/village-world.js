@@ -7,6 +7,7 @@
 // homes, the gathering spots) are rebuilt from their own keys by village-view.js.
 // Realm (x east, z north) → three (x, -z).
 import * as THREE from "three";
+import { applyGrassDetail } from "./grass-detail.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { Voxels, ChunkedVoxels, seeded, vary } from "./voxels.js";
 import * as LAYOUT from "./content/village.js";
@@ -116,14 +117,25 @@ function groundTexture() {
   { const p = FIXTURES.pond; blob(p.x, p.z, p.w / 2 + 1.1, p.d / 2 + 1.1, "#4c6a3a"); }
   // The future spur to your plot: a worn track for now.
   for (const road of ROADS.filter((x) => x.kind === "future-spur" && x.plot === "R1")) for (let i = 1; i < road.points.length; i++) { const [ax, az] = road.points[i - 1], [bx, bz] = road.points[i]; speckle(Math.min(ax, bx) - .8, Math.min(az, bz) - .8, Math.max(ax, bx) + .8, Math.max(az, bz) + .8, ["#8a7a5a", "#7a6a4c", "#6a8a44"], Math.abs(bx - ax + bz - az) * 22, .5); }
-  const t = new THREE.CanvasTexture(canvas); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
+  // The existing colour map carries coverage too: preserve earth, stone, leaves and water.
+  const pixels=ctx.getImageData(0,0,W,H),rgba=pixels.data,texels=new Uint8Array(rgba.length);
+  for(let py=0;py<H;py++)for(let px=0;px<W;px++){
+    const i=(py*W+px)*4,r=rgba[i],green=rgba[i+1],b=rgba[i+2];
+    const to=((H-1-py)*W+px)*4;texels[to]=r;texels[to+1]=green;texels[to+2]=b;
+    if(green<=r*1.08||green<=b*1.08){texels[to+3]=0;continue;}
+    const x=g.x0+(px+.5)/g.scale,z=g.z1-(py+.5)/g.scale,p=FIXTURES.pond;
+    const pond=((x-p.x)/(p.w/2))**2+((z-p.z)/(p.d/2))**2<1;
+    texels[to+3]=isWater(x,z)||pond?0:255;
+  }
+  // Typed pixels preserve RGB under zero coverage; canvas premultiplication would lose it.
+  const t = new THREE.DataTexture(texels,W,H);t.colorSpace=THREE.SRGBColorSpace;t.minFilter=THREE.LinearMipmapLinearFilter;t.magFilter=THREE.LinearFilter;t.generateMipmaps=true;t.anisotropy=4;t.needsUpdate=true;return t;
 }
 export function buildGround() {
   const g = GROUND, st = g.step, nx = Math.round((g.x1 - g.x0) / st), nz = Math.round((g.z1 - g.z0) / st), pos = new Float32Array((nx + 1) * (nz + 1) * 3), uv = new Float32Array((nx + 1) * (nz + 1) * 2), idx = [];
   for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = g.x0 + i * st, z = g.z0 + j * st, k = j * (nx + 1) + i; pos.set([x, H(x, z), -z], k * 3); uv.set([i / nx, j / nz], k * 2); }
   for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, c = a + nx + 1, d = c + 1; idx.push(a, b, c, b, d, c); }
   const geo = new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.BufferAttribute(pos, 3)); geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2)); geo.setIndex(idx); geo.computeVertexNormals();
-  const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: groundTexture(), roughness: 1, metalness: 0 }));
+  const mesh = new THREE.Mesh(geo, applyGrassDetail(new THREE.MeshStandardMaterial({ map: groundTexture(), roughness: 1, metalness: 0 })));
   mesh.receiveShadow = true; mesh.name = "village-ground"; return mesh;
 }
 
@@ -265,9 +277,9 @@ const NO_GRASS = [
 // The Moor's big top, tents, wheel and caravan stand on bare ground (in the Moor's own place, moved with it).
 const MOOR_CLEAR = [[97, 42, 5.2], [94, 31.5, 4], [114, 16, 3.4], [115.5, 50, 2.4], [101.6, 48.4, 2.4], [116.6, 24, 2], [116.6, 28.5, 2], [116.6, 33, 2], [116.6, 37.5, 2], [102, 35, 3]].map(([a, b, rr]) => [a + SHIFT.moor[0], b + SHIFT.moor[1], rr]);
 const GRASS = {
-  meadow: { h: .3, flowers: true, colours: [0x557b48,0x6b8853,0x74975a,0x4a734c] },
-  lawn: { h: .46, flowers: true, colours: [0x4f8a36, 0x5b9a3e, 0x67a644, 0x46802f, 0x76ad4a, 0x84b04e, 0x9aa848] },
-  moss: { h: .36, flowers: true, colours: [0x3a6a52, 0x467a5c, 0x52866a, 0x356048, 0x5a7a5a] },
+  meadow: { h: .22, flowers: true, colours: [0x557b48,0x6b8853,0x74975a,0x4a734c] },
+  lawn: { h: .32, flowers: true, colours: [0x4f8a36, 0x5b9a3e, 0x67a644, 0x46802f, 0x76ad4a, 0x84b04e, 0x9aa848] },
+  moss: { h: .26, flowers: true, colours: [0x3a6a52, 0x467a5c, 0x52866a, 0x356048, 0x5a7a5a] },
   heather: { h: .4, flowers: true, colours: [0x6a4a7a, 0x7d5a8a, 0x8a6a9a, 0x9a8a50, 0x5a4a6a, 0xa88ab8] },
 };
 export function grassAt(x, z) {

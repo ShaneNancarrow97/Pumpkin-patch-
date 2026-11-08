@@ -1,0 +1,22 @@
+✔ directional baker retains one root and one scalar across all 64 authored frames (4757.551286ms)
+✔ unapproved and incomplete direction declarations cannot overwrite accepted art (2562.576584ms)
+✔ missing, duplicated and clipped painted poses are rejected before publication (2870.211882ms)
+✔ explicit uneven cuts and measured torso roots preserve the same output grid (2786.808551ms)
+✔ shipped directional textures match approved source provenance, metadata and cell bounds (455.746085ms)
+✔ the eight screen-relative sectors wrap through the front without a seam (0.803165ms)
+✔ world heading is measured against the camera and retained when movement stops (0.242924ms)
+✔ all eight foot phases survive direction changes and both contact legs are drawn (1.491649ms)
+✔ uncovered directions and actions use an explicit fallback rather than mirrored art (0.640581ms)
+✔ the loader rejects stale frame bounds, changed anchors and duplicated step indices (0.651879ms)
+✔ village idle, talk and wave retain their original performances while new walk art loads (0.311037ms)
+✔ voxel/test/owner-empty-idle.test.mjs (158.771399ms)
+✔ autonomous owner footsteps follow actual distance and retain phase through camera turns and waits (1.322575ms)
+✔ only owners invoke directional artwork and their atlas releases once when they stop (0.409785ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13765.213392

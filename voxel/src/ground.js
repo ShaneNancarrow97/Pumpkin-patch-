@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { applyGrassDetail } from "./grass-detail.js";
 
 // The yard's ground as one dense height field: a column per cell, 1/10 unit
 // across, drawn as its top and whichever sides stand above a neighbour. That
@@ -53,11 +54,11 @@ function grass(x, z) {
   const n = noise(x * 0.9, z * 0.9), i = Math.round(x / G), j = Math.round(z / G), h = hash(i, j, 21);
   // Fallen leaves in drifts, a cell or two each, lying on top of the grass.
   const leaf = hash(Math.floor(i / 2), Math.floor(j / 2), 22);
-  if (leaf < 0.07 + n * 0.08) return [0.05 + h * 0.02, LEAVES[Math.floor(hash(Math.floor(i / 2), Math.floor(j / 2), 23) * LEAVES.length)]];
+  if (leaf < 0.07 + n * 0.08) return [0.05 + h * 0.02, LEAVES[Math.floor(hash(Math.floor(i / 2), Math.floor(j / 2), 23) * LEAVES.length)], 0];
   const c = mix(GRASS[Math.floor(n * 4.99)], GRASS[Math.floor(h * 4.99)], 0.35);
   // Tufts stand up here and there; the rest is a little uneven.
   const block = hash(Math.floor(i / 3), Math.floor(j / 3), 24);
-  return h < 0.06 ? [0.08, tint(c, 0.1)] : [0.015 + (block < 0.4 ? 0.015 : 0), shade(c, h * 0.12)];
+  return h < 0.06 ? [0.08, tint(c, 0.1), 1] : [0.015 + (block < 0.4 ? 0.015 : 0), shade(c, h * 0.12), 1];
 }
 
 // Tilled soil: ridges running across the patch with damp furrows between,
@@ -100,9 +101,9 @@ export function buildGround(bounds, cell, { farmView = false } = {}) {
   const { x0, x1, z0, z1 } = bounds, nx = Math.round((x1 - x0) / G), nz = Math.round((z1 - z0) / G);
   const hgt = new Float32Array(nx * nz), texels = new Uint8Array(nx * nz * 4);
   for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
-    const [h, c] = cell(x0 + (i + 0.5) * G, z0 + (j + 0.5) * G), k = j * nx + i;
+    const [h, c, grassCoverage = 0] = cell(x0 + (i + 0.5) * G, z0 + (j + 0.5) * G), k = j * nx + i;
     hgt[k] = Math.round(h * 200) / 200;
-    texels[k * 4] = (c >> 16) & 255; texels[k * 4 + 1] = (c >> 8) & 255; texels[k * 4 + 2] = c & 255; texels[k * 4 + 3] = 255;
+    texels[k * 4] = (c >> 16) & 255; texels[k * 4 + 1] = (c >> 8) & 255; texels[k * 4 + 2] = c & 255; texels[k * 4 + 3] = Math.round(Math.max(0,Math.min(1,grassCoverage))*255);
   }
   const near = { pos: [], nor: [], uv: [], rgb: [], idx: [] }, far = farmView ? { pos: [], nor: [], uv: [], rgb: [], idx: [] } : near;
   let into = near;
@@ -162,7 +163,7 @@ export function buildGround(bounds, cell, { farmView = false } = {}) {
   }
   const map = new THREE.DataTexture(texels, nx, nz);
   map.colorSpace = THREE.SRGBColorSpace; map.magFilter = THREE.NearestFilter; map.minFilter = THREE.LinearMipmapLinearFilter; map.generateMipmaps = true; map.needsUpdate = true;
-  const material = new THREE.MeshStandardMaterial({ map, vertexColors: true, roughness: 0.95, metalness: 0 });
+  const material = applyGrassDetail(new THREE.MeshStandardMaterial({ map, vertexColors: true, roughness: 0.95, metalness: 0 }));
   const build = (b) => {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.Float32BufferAttribute(b.pos, 3));
