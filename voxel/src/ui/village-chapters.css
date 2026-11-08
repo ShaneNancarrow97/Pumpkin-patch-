@@ -75,3 +75,23 @@
 #vg-panel-body .vg-ch-product-body button{margin-top:9px;min-width:82px}
 @media(max-width:380px){#vg-panel-body .vg-ch-card-head{gap:6px}#vg-panel-body article.vg-ch-card{padding:12px}#vg-panel-body .vg-ch-card-head h3{font-size:15px}#vg-panel-body .vg-ch-intro h3{font-size:21px}#vg-panel-body .vg-ch-intro>.vg-ch-seal{display:none}#vg-panel-body .vg-ch-product-art{flex-basis:56px}#vg-panel-body .vg-ch-product-art .garden-sprite{width:56px;height:56px}}
 @media(prefers-reduced-motion:no-preference){#vg-panel-body .vg-ch-primary{transition:background-color .15s,box-shadow .15s}#vg-panel-body .vg-ch-primary:hover:not(:disabled){box-shadow:inset 0 1px #fff4d2aa,0 3px 16px #dfad691e}}
+/* Named items keep the same picture in the satchel, workshop and reward receipt. */
+#vg-panel-body .vg-ch-illustration{width:56px;height:56px;flex-basis:56px;border:0;border-radius:0;background:radial-gradient(ellipse,#d9b47b18,transparent 72%);box-shadow:none}
+#vg-panel-body .vg-ch-illustration>.village-item-icon{width:56px;height:56px}
+#vg-panel-body .vg-ch-link>.vg-ch-illustration>.village-item-icon{width:40px;height:40px}
+#vg-panel-body .vg-ch-material .vg-ch-card-head{align-items:center}
+#vg-panel-body .vg-ch-material-title{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+#vg-panel-body .vg-ch-material-title>.village-item-icon{width:48px;height:48px;flex:0 0 48px}
+#vg-panel-body .vg-ch-material-title h3{min-width:0;overflow-wrap:anywhere}
+#vg-panel-body .vg-ch-requirement-label{display:flex;align-items:center;gap:6px;min-width:0}
+#vg-panel-body .vg-ch-requirement-label>span:last-child{min-width:0;overflow-wrap:anywhere}
+#vg-panel-body .vg-ch-requirement-label>.village-item-icon{width:24px;height:24px;flex:0 0 24px}
+#vg-panel-body .vg-ch-rewards>span{display:inline-flex;align-items:center;gap:6px;max-width:100%}
+#vg-panel-body .vg-ch-rewards .village-item-icon{width:24px;height:24px;flex:0 0 24px}
+#vg-panel-body .vg-ch-reward-text{min-width:0;overflow-wrap:anywhere}
+#vg-panel-body .vg-ch-upgrade-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+#vg-panel-body .vg-ch-upgrade-head>.village-item-icon{width:60px;height:60px;flex:0 0 60px}
+#vg-panel-body .vg-ch-upgrade-head>div{flex:1;min-width:0}
+#vg-panel-body .vg-ch-upgrade-head h3{margin:2px 0 0;line-height:1.3}
+#vg-panel-body .vg-ch-product-art>.village-item-icon{width:64px;height:64px;flex:0 0 64px}
+@media(max-width:380px){#vg-panel-body .vg-ch-material-title{gap:7px}#vg-panel-body .vg-ch-material-title>.village-item-icon{width:42px;height:42px;flex-basis:42px}#vg-panel-body .vg-ch-upgrade-head{gap:9px}#vg-panel-body .vg-ch-upgrade-head>.village-item-icon{width:50px;height:50px;flex-basis:50px}#vg-panel-body .vg-ch-product-art>.village-item-icon{width:54px;height:54px;flex-basis:54px}}

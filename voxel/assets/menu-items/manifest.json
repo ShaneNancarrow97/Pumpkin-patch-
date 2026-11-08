@@ -1,0 +1,1022 @@
+{
+  "version": 1,
+  "grid": {
+    "columns": 6,
+    "rows": 6,
+    "cell": 128,
+    "inset": 10
+  },
+  "bytes": 561952,
+  "sha256": "5c8dfec734351e56f8575b36d92dc96480d0d9824daad3713c52d526d30d5b8c",
+  "decodedRgbaBytes": 2359296,
+  "icons": [
+    {
+      "id": "logs",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        0,
+        0,
+        362,
+        362
+      ],
+      "sourceCrop": [
+        43,
+        86,
+        335,
+        345
+      ],
+      "scale": 0.3698630136986301,
+      "packedSize": [
+        108,
+        96
+      ],
+      "offset": [
+        10,
+        16
+      ],
+      "column": 0,
+      "row": 0
+    },
+    {
+      "id": "stone",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        362,
+        0,
+        724,
+        362
+      ],
+      "sourceCrop": [
+        36,
+        94,
+        322,
+        328
+      ],
+      "scale": 0.3776223776223776,
+      "packedSize": [
+        108,
+        88
+      ],
+      "offset": [
+        10,
+        20
+      ],
+      "column": 1,
+      "row": 0
+    },
+    {
+      "id": "fibre",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        724,
+        0,
+        1086,
+        362
+      ],
+      "sourceCrop": [
+        31,
+        81,
+        327,
+        333
+      ],
+      "scale": 0.36486486486486486,
+      "packedSize": [
+        108,
+        92
+      ],
+      "offset": [
+        10,
+        18
+      ],
+      "column": 2,
+      "row": 0
+    },
+    {
+      "id": "herbs",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        1086,
+        0,
+        1448,
+        362
+      ],
+      "sourceCrop": [
+        46,
+        60,
+        333,
+        349
+      ],
+      "scale": 0.3737024221453287,
+      "packedSize": [
+        107,
+        108
+      ],
+      "offset": [
+        10,
+        10
+      ],
+      "column": 3,
+      "row": 0
+    },
+    {
+      "id": "hardwood",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        0,
+        362,
+        362,
+        724
+      ],
+      "sourceCrop": [
+        39,
+        59,
+        333,
+        331
+      ],
+      "scale": 0.3673469387755102,
+      "packedSize": [
+        108,
+        100
+      ],
+      "offset": [
+        10,
+        14
+      ],
+      "column": 4,
+      "row": 0
+    },
+    {
+      "id": "moth-silk",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        362,
+        362,
+        724,
+        724
+      ],
+      "sourceCrop": [
+        25,
+        48,
+        324,
+        330
+      ],
+      "scale": 0.3612040133779264,
+      "packedSize": [
+        108,
+        102
+      ],
+      "offset": [
+        10,
+        13
+      ],
+      "column": 5,
+      "row": 0
+    },
+    {
+      "id": "iron",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        724,
+        362,
+        1086,
+        724
+      ],
+      "sourceCrop": [
+        28,
+        66,
+        326,
+        312
+      ],
+      "scale": 0.3624161073825503,
+      "packedSize": [
+        108,
+        89
+      ],
+      "offset": [
+        10,
+        19
+      ],
+      "column": 0,
+      "row": 1
+    },
+    {
+      "id": "clay",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        1086,
+        362,
+        1448,
+        724
+      ],
+      "sourceCrop": [
+        29,
+        76,
+        334,
+        316
+      ],
+      "scale": 0.3540983606557377,
+      "packedSize": [
+        108,
+        85
+      ],
+      "offset": [
+        10,
+        21
+      ],
+      "column": 1,
+      "row": 1
+    },
+    {
+      "id": "moonstone",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        0,
+        724,
+        362,
+        1086
+      ],
+      "sourceCrop": [
+        52,
+        51,
+        301,
+        314
+      ],
+      "scale": 0.41064638783269963,
+      "packedSize": [
+        102,
+        108
+      ],
+      "offset": [
+        13,
+        10
+      ],
+      "column": 2,
+      "row": 1
+    },
+    {
+      "id": "emberbloom",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        362,
+        724,
+        724,
+        1086
+      ],
+      "sourceCrop": [
+        28,
+        44,
+        327,
+        317
+      ],
+      "scale": 0.3612040133779264,
+      "packedSize": [
+        108,
+        99
+      ],
+      "offset": [
+        10,
+        14
+      ],
+      "column": 3,
+      "row": 1
+    },
+    {
+      "id": "star-amber",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        724,
+        724,
+        1086,
+        1086
+      ],
+      "sourceCrop": [
+        48,
+        51,
+        296,
+        307
+      ],
+      "scale": 0.421875,
+      "packedSize": [
+        105,
+        108
+      ],
+      "offset": [
+        11,
+        10
+      ],
+      "column": 4,
+      "row": 1
+    },
+    {
+      "id": "satchel",
+      "source": "materials/source.png",
+      "sourceSha256": "65899cb14dd7f4d8f655d9dcadd9f4a8ebe54c1d0aa65982468a04e0c7428529",
+      "sourceCell": [
+        1086,
+        724,
+        1448,
+        1086
+      ],
+      "sourceCrop": [
+        18,
+        55,
+        319,
+        315
+      ],
+      "scale": 0.3588039867109635,
+      "packedSize": [
+        108,
+        93
+      ],
+      "offset": [
+        10,
+        17
+      ],
+      "column": 5,
+      "row": 1
+    },
+    {
+      "id": "moth-lamp",
+      "source": "decor/decor-a.png",
+      "sourceSha256": "c9f04c4551602e1a5f898d2b464009069afd960aff6816b7952285d466320e5d",
+      "sourceCell": [
+        0,
+        0,
+        418,
+        418
+      ],
+      "sourceCrop": [
+        125,
+        22,
+        356,
+        405
+      ],
+      "scale": 0.2819843342036554,
+      "packedSize": [
+        65,
+        108
+      ],
+      "offset": [
+        31,
+        10
+      ],
+      "column": 0,
+      "row": 2
+    },
+    {
+      "id": "toadstool-lamp",
+      "source": "decor/decor-a.png",
+      "sourceSha256": "c9f04c4551602e1a5f898d2b464009069afd960aff6816b7952285d466320e5d",
+      "sourceCell": [
+        418,
+        0,
+        790,
+        418
+      ],
+      "sourceCrop": [
+        74,
+        86,
+        320,
+        378
+      ],
+      "scale": 0.3698630136986301,
+      "packedSize": [
+        91,
+        108
+      ],
+      "offset": [
+        18,
+        10
+      ],
+      "column": 1,
+      "row": 2
+    },
+    {
+      "id": "moth-lantern-string",
+      "source": "decor/decor-a.png",
+      "sourceSha256": "c9f04c4551602e1a5f898d2b464009069afd960aff6816b7952285d466320e5d",
+      "sourceCell": [
+        790,
+        0,
+        1254,
+        418
+      ],
+      "sourceCrop": [
+        41,
+        69,
+        424,
+        373
+      ],
+      "scale": 0.2819843342036554,
+      "packedSize": [
+        108,
+        86
+      ],
+      "offset": [
+        10,
+        21
+      ],
+      "column": 2,
+      "row": 2
+    },
+    {
+      "id": "signpost",
+      "source": "decor/decor-a.png",
+      "sourceSha256": "c9f04c4551602e1a5f898d2b464009069afd960aff6816b7952285d466320e5d",
+      "sourceCell": [
+        0,
+        418,
+        390,
+        836
+      ],
+      "sourceCrop": [
+        111,
+        15,
+        343,
+        404
+      ],
+      "scale": 0.2776349614395887,
+      "packedSize": [
+        64,
+        108
+      ],
+      "offset": [
+        32,
+        10
+      ],
+      "column": 3,
+      "row": 2
+    },
+    {
+      "id": "market-crates",
+      "source": "decor/decor-a.png",
+      "sourceSha256": "c9f04c4551602e1a5f898d2b464009069afd960aff6816b7952285d466320e5d",
+      "sourceCell": [
+        390,
+        418,
+        840,
+        836
+      ],
+      "sourceCrop": [
+        45,
+        57,
+        411,
+        391
+      ],
+      "scale": 0.29508196721311475,
+      "packedSize": [
+        108,
+        99
+      ],
+      "offset": [
+        10,
+        14
+      ],
+      "column": 4,
+      "row": 2
+    },
+    {
+      "id": "reading-stand",
+      "source": "decor/decor-a.png",
+      "sourceSha256": "c9f04c4551602e1a5f898d2b464009069afd960aff6816b7952285d466320e5d",
+      "sourceCell": [
+        840,
+        418,
+        1254,
+        836
+      ],
+      "sourceCrop": [
+        63,
+        52,
+        344,
+        399
+      ],
+      "scale": 0.3112391930835735,
+      "packedSize": [
+        87,
+        108
+      ],
+      "offset": [
+        20,
+        10
+      ],
+      "column": 5,
+      "row": 2
+    },
+    {
+      "id": "book-cart",
+      "source": "decor/decor-a.png",
+      "sourceSha256": "c9f04c4551602e1a5f898d2b464009069afd960aff6816b7952285d466320e5d",
+      "sourceCell": [
+        0,
+        836,
+        440,
+        1254
+      ],
+      "sourceCrop": [
+        63,
+        61,
+        391,
+        381
+      ],
+      "scale": 0.32926829268292684,
+      "packedSize": [
+        108,
+        105
+      ],
+      "offset": [
+        10,
+        11
+      ],
+      "column": 0,
+      "row": 3
+    },
+    {
+      "id": "stool",
+      "source": "decor/decor-a.png",
+      "sourceSha256": "c9f04c4551602e1a5f898d2b464009069afd960aff6816b7952285d466320e5d",
+      "sourceCell": [
+        440,
+        836,
+        800,
+        1254
+      ],
+      "sourceCrop": [
+        62,
+        71,
+        292,
+        361
+      ],
+      "scale": 0.3724137931034483,
+      "packedSize": [
+        86,
+        108
+      ],
+      "offset": [
+        21,
+        10
+      ],
+      "column": 1,
+      "row": 3
+    },
+    {
+      "id": "timber-gate",
+      "source": "decor/decor-a.png",
+      "sourceSha256": "c9f04c4551602e1a5f898d2b464009069afd960aff6816b7952285d466320e5d",
+      "sourceCell": [
+        800,
+        836,
+        1254,
+        1254
+      ],
+      "sourceCrop": [
+        62,
+        47,
+        404,
+        360
+      ],
+      "scale": 0.3157894736842105,
+      "packedSize": [
+        108,
+        99
+      ],
+      "offset": [
+        10,
+        14
+      ],
+      "column": 2,
+      "row": 3
+    },
+    {
+      "id": "flower-barrow",
+      "source": "decor/decor-b.png",
+      "sourceSha256": "4ad9c5cb5719d7febe04b11a92af6298c643e2ac71d2f2e4774213c1ddbb9555",
+      "sourceCell": [
+        0,
+        0,
+        460,
+        420
+      ],
+      "sourceCrop": [
+        61,
+        81,
+        425,
+        399
+      ],
+      "scale": 0.2967032967032967,
+      "packedSize": [
+        108,
+        94
+      ],
+      "offset": [
+        10,
+        17
+      ],
+      "column": 3,
+      "row": 3
+    },
+    {
+      "id": "sundial",
+      "source": "decor/decor-b.png",
+      "sourceSha256": "4ad9c5cb5719d7febe04b11a92af6298c643e2ac71d2f2e4774213c1ddbb9555",
+      "sourceCell": [
+        460,
+        0,
+        800,
+        420
+      ],
+      "sourceCrop": [
+        40,
+        47,
+        290,
+        399
+      ],
+      "scale": 0.3068181818181818,
+      "packedSize": [
+        77,
+        108
+      ],
+      "offset": [
+        25,
+        10
+      ],
+      "column": 4,
+      "row": 3
+    },
+    {
+      "id": "bunting-posts",
+      "source": "decor/decor-b.png",
+      "sourceSha256": "4ad9c5cb5719d7febe04b11a92af6298c643e2ac71d2f2e4774213c1ddbb9555",
+      "sourceCell": [
+        800,
+        0,
+        1254,
+        420
+      ],
+      "sourceCrop": [
+        48,
+        67,
+        416,
+        386
+      ],
+      "scale": 0.29347826086956524,
+      "packedSize": [
+        108,
+        94
+      ],
+      "offset": [
+        10,
+        17
+      ],
+      "column": 5,
+      "row": 3
+    },
+    {
+      "id": "workbench",
+      "source": "decor/decor-b.png",
+      "sourceSha256": "4ad9c5cb5719d7febe04b11a92af6298c643e2ac71d2f2e4774213c1ddbb9555",
+      "sourceCell": [
+        0,
+        420,
+        425,
+        810
+      ],
+      "sourceCrop": [
+        41,
+        49,
+        401,
+        373
+      ],
+      "scale": 0.3,
+      "packedSize": [
+        108,
+        97
+      ],
+      "offset": [
+        10,
+        15
+      ],
+      "column": 0,
+      "row": 4
+    },
+    {
+      "id": "wheelbarrow",
+      "source": "decor/decor-b.png",
+      "sourceSha256": "4ad9c5cb5719d7febe04b11a92af6298c643e2ac71d2f2e4774213c1ddbb9555",
+      "sourceCell": [
+        425,
+        420,
+        840,
+        810
+      ],
+      "sourceCrop": [
+        24,
+        42,
+        390,
+        361
+      ],
+      "scale": 0.29508196721311475,
+      "packedSize": [
+        108,
+        94
+      ],
+      "offset": [
+        10,
+        17
+      ],
+      "column": 1,
+      "row": 4
+    },
+    {
+      "id": "moth-statue",
+      "source": "decor/decor-b.png",
+      "sourceSha256": "4ad9c5cb5719d7febe04b11a92af6298c643e2ac71d2f2e4774213c1ddbb9555",
+      "sourceCell": [
+        840,
+        420,
+        1254,
+        810
+      ],
+      "sourceCrop": [
+        26,
+        25,
+        371,
+        371
+      ],
+      "scale": 0.31213872832369943,
+      "packedSize": [
+        108,
+        108
+      ],
+      "offset": [
+        10,
+        10
+      ],
+      "column": 2,
+      "row": 4
+    },
+    {
+      "id": "scarecrow-statue",
+      "source": "decor/decor-b.png",
+      "sourceSha256": "4ad9c5cb5719d7febe04b11a92af6298c643e2ac71d2f2e4774213c1ddbb9555",
+      "sourceCell": [
+        0,
+        810,
+        390,
+        1254
+      ],
+      "sourceCrop": [
+        61,
+        13,
+        356,
+        400
+      ],
+      "scale": 0.27906976744186046,
+      "packedSize": [
+        82,
+        108
+      ],
+      "offset": [
+        23,
+        10
+      ],
+      "column": 3,
+      "row": 4
+    },
+    {
+      "id": "pumpkin-arch",
+      "source": "decor/decor-b.png",
+      "sourceSha256": "4ad9c5cb5719d7febe04b11a92af6298c643e2ac71d2f2e4774213c1ddbb9555",
+      "sourceCell": [
+        390,
+        810,
+        835,
+        1254
+      ],
+      "sourceCrop": [
+        24,
+        15,
+        430,
+        387
+      ],
+      "scale": 0.2660098522167488,
+      "packedSize": [
+        108,
+        99
+      ],
+      "offset": [
+        10,
+        14
+      ],
+      "column": 4,
+      "row": 4
+    },
+    {
+      "id": "moon-gate",
+      "source": "decor/decor-b.png",
+      "sourceSha256": "4ad9c5cb5719d7febe04b11a92af6298c643e2ac71d2f2e4774213c1ddbb9555",
+      "sourceCell": [
+        835,
+        810,
+        1254,
+        1254
+      ],
+      "sourceCrop": [
+        26,
+        16,
+        366,
+        392
+      ],
+      "scale": 0.2872340425531915,
+      "packedSize": [
+        98,
+        108
+      ],
+      "offset": [
+        15,
+        10
+      ],
+      "column": 5,
+      "row": 4
+    },
+    {
+      "id": "satchel-pockets",
+      "source": "upgrades/upgrade-icons-source.png",
+      "sourceSha256": "c9a21cff61377f9691ed4679102a7ada3eaae87b4f2ee00b73c2ef436fe953b6",
+      "sourceCell": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "sourceCrop": [
+        33,
+        40,
+        482,
+        464
+      ],
+      "scale": 0.24053452115812918,
+      "packedSize": [
+        108,
+        102
+      ],
+      "offset": [
+        10,
+        13
+      ],
+      "column": 0,
+      "row": 5
+    },
+    {
+      "id": "satchel-frame",
+      "source": "upgrades/upgrade-icons-source.png",
+      "sourceSha256": "c9a21cff61377f9691ed4679102a7ada3eaae87b4f2ee00b73c2ef436fe953b6",
+      "sourceCell": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "sourceCrop": [
+        26,
+        19,
+        474,
+        488
+      ],
+      "scale": 0.2302771855010661,
+      "packedSize": [
+        103,
+        108
+      ],
+      "offset": [
+        12,
+        10
+      ],
+      "column": 1,
+      "row": 5
+    },
+    {
+      "id": "gathering-kit",
+      "source": "upgrades/upgrade-icons-source.png",
+      "sourceSha256": "c9a21cff61377f9691ed4679102a7ada3eaae87b4f2ee00b73c2ef436fe953b6",
+      "sourceCell": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "sourceCrop": [
+        15,
+        80,
+        479,
+        470
+      ],
+      "scale": 0.23275862068965517,
+      "packedSize": [
+        108,
+        91
+      ],
+      "offset": [
+        10,
+        18
+      ],
+      "column": 2,
+      "row": 5
+    },
+    {
+      "id": "gathering-straps",
+      "source": "upgrades/upgrade-icons-source.png",
+      "sourceSha256": "c9a21cff61377f9691ed4679102a7ada3eaae87b4f2ee00b73c2ef436fe953b6",
+      "sourceCell": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "sourceCrop": [
+        17,
+        57,
+        488,
+        446
+      ],
+      "scale": 0.22929936305732485,
+      "packedSize": [
+        108,
+        89
+      ],
+      "offset": [
+        10,
+        19
+      ],
+      "column": 3,
+      "row": 5
+    },
+    {
+      "id": "almanac",
+      "source": "upgrades/upgrade-icons-source.png",
+      "sourceSha256": "c9a21cff61377f9691ed4679102a7ada3eaae87b4f2ee00b73c2ef436fe953b6",
+      "sourceCell": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "sourceCrop": [
+        16,
+        65,
+        496,
+        445
+      ],
+      "scale": 0.225,
+      "packedSize": [
+        108,
+        86
+      ],
+      "offset": [
+        10,
+        21
+      ],
+      "column": 4,
+      "row": 5
+    },
+    {
+      "id": "wandering-letter",
+      "source": "upgrades/upgrade-icons-source.png",
+      "sourceSha256": "c9a21cff61377f9691ed4679102a7ada3eaae87b4f2ee00b73c2ef436fe953b6",
+      "sourceCell": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "sourceCrop": [
+        19,
+        65,
+        490,
+        471
+      ],
+      "scale": 0.22929936305732485,
+      "packedSize": [
+        108,
+        93
+      ],
+      "offset": [
+        10,
+        17
+      ],
+      "column": 5,
+      "row": 5
+    }
+  ]
+}

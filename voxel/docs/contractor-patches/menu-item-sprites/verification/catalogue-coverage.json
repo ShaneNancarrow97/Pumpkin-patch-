@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "materials": 11,
+  "upgrades": 4,
+  "nativeDecor": 18,
+  "utilities": 3,
+  "total": 36,
+  "grid": {
+    "columns": 6,
+    "rows": 6,
+    "cell": 128,
+    "inset": 10
+  },
+  "unknownIdsEmpty": true
+}

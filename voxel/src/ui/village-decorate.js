@@ -5,13 +5,14 @@ import { ARRIVAL } from "../content/village.js";
 import { villageDecorWalkClear } from "../rules/village-navigation.js";
 import { gardenSpriteIcon } from "./garden-icons.js";
 import { premiumIcon } from "./premium-icon-markup.js";
+import { villageItemIcon } from "./village-item-markup.js";
 
 const CATEGORIES = [["all","All"],["light","Lights"],["seat","Seats"],["books","Books"],["plant","Plants"],["other","Keepsakes"]];
 const angle = value => ((Math.round(value / 15) * 15 % 360) + 360) % 360;
 const snap = value => Math.round(value * 20) / 20;
 const escape = value => String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const category = def => def.tags.find(tag => CATEGORIES.some(([id]) => id === tag)) ?? "other";
-const art = def => def.estate ? gardenSpriteIcon(def.id) : premiumIcon({light:"attractions",seat:"home",books:"journal",plant:"garden",other:"build"}[category(def)]);
+const art = def => def.estate ? gardenSpriteIcon(def.id) : villageItemIcon(def.id) || premiumIcon({light:"attractions",seat:"home",books:"journal",plant:"garden",other:"build"}[category(def)]);
 const snapshot = state => ({owned:{...state.village.decor.owned},placed:state.village.decor.placed.map(piece=>({...piece}))});
 
 export function createVillageDecorate({state,view,save=()=>{},onChanged=()=>{},notice=()=>{},onClose=()=>{},onShop=()=>{},actorPosition=()=>null,onMenuInput=null,onInputReset=()=>{},root}={}) {

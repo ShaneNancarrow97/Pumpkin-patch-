@@ -1,5 +1,7 @@
 # Pumpkin Patch Voxel: context for coding agents
 
+**Contractor menu items:** [`docs/contractor-patches/menu-item-sprites/README.md`](docs/contractor-patches/menu-item-sprites/README.md) adds 36 illustrated village item icons in a shared atlas. Read the coverage and dependency matrix before expanding it. Existing gameplay, saves and other menu artwork are unchanged.
+
 **Contractor directional cast:** [`docs/contractor-patches/directional-character-sheets/README.md`](docs/contractor-patches/directional-character-sheets/README.md) adds eight-view movement sheets for the owners' everyday looks and nine village neighbours, distance-driven gait, camera-relative facing and shared sprite lifetime fixes. Read its coverage and dependency matrix before expanding costumes or action poses; this is a contractor patch on Living Mothlight, not a save or economy change.
 
 **Contractor narration:** [`docs/contractor-patches/mothlight-voices/README.md`](docs/contractor-patches/mothlight-voices/README.md) adds offline speech, independent voice controls and correct multi-speaker village dialogue. Recording delivery is partial because of the ElevenLabs key quota; read the exact coverage and dependency matrix before extending it. No runtime API key or network service is used.

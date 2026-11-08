@@ -1,0 +1,134 @@
+{
+  "generator": "image_gen.imagegen",
+  "source": "upgrade-icons-source.png",
+  "sha256": "c9a21cff61377f9691ed4679102a7ada3eaae87b4f2ee00b73c2ef436fe953b6",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "grid": {
+    "columns": 3,
+    "rows": 2,
+    "cell": 512
+  },
+  "transparentBackgroundRequested": true,
+  "alphaReview": {
+    "transparentPixels": 751888,
+    "alphaExtrema": [
+      0,
+      254
+    ],
+    "guttersClearAt32": true,
+    "notes": "RGB behind zero-alpha pixels contains a blurred brown fill; these pixels are transparent. Keep alpha when packing."
+  },
+  "prompt": "prompt.txt",
+  "references": [
+    "../../home/garden-icons.webp"
+  ],
+  "generatedOriginal": "/workspace/generated_images/exec-6a4ba74c-d81a-4644-949d-bab4988b74da.png",
+  "entries": [
+    {
+      "id": "satchel-pockets",
+      "column": 0,
+      "row": 0,
+      "crop": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "alphaBoundsAt32": [
+        36,
+        44,
+        478,
+        460
+      ]
+    },
+    {
+      "id": "satchel-frame",
+      "column": 1,
+      "row": 0,
+      "crop": [
+        512,
+        0,
+        1024,
+        512
+      ],
+      "alphaBoundsAt32": [
+        30,
+        22,
+        471,
+        485
+      ]
+    },
+    {
+      "id": "gathering-kit",
+      "column": 2,
+      "row": 0,
+      "crop": [
+        1024,
+        0,
+        1536,
+        512
+      ],
+      "alphaBoundsAt32": [
+        18,
+        84,
+        476,
+        467
+      ]
+    },
+    {
+      "id": "gathering-straps",
+      "column": 0,
+      "row": 1,
+      "crop": [
+        0,
+        512,
+        512,
+        1024
+      ],
+      "alphaBoundsAt32": [
+        21,
+        61,
+        485,
+        443
+      ]
+    },
+    {
+      "id": "almanac",
+      "column": 1,
+      "row": 1,
+      "crop": [
+        512,
+        512,
+        1024,
+        1024
+      ],
+      "alphaBoundsAt32": [
+        19,
+        69,
+        493,
+        441
+      ]
+    },
+    {
+      "id": "wandering-letter",
+      "column": 2,
+      "row": 1,
+      "crop": [
+        1024,
+        512,
+        1536,
+        1024
+      ],
+      "alphaBoundsAt32": [
+        22,
+        69,
+        487,
+        468
+      ]
+    }
+  ],
+  "review": "All six objects match requested categories and remain inside their equal grid slots. Source art inspected; no drawing or recolouring applied after generation."
+}

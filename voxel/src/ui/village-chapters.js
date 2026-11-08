@@ -5,6 +5,7 @@ import { MATERIALS, MATERIAL_BY_ID, NODES } from "../content/village.js";
 import { FOLK_BY_ID } from "../content/village-folk.js";
 import { QUESTS, DUTY_BY_ID } from "../content/village-quests.js";
 import { VILLAGE_DECOR_BY_ID } from "../content/village-decor.js";
+import { villageItemIcon } from "./village-item-markup.js";
 
 const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const money = n => "£" + Math.floor(n).toLocaleString("en-GB");
@@ -21,28 +22,34 @@ const paths = {
   compass: '<circle cx="12" cy="12" r="10"/><path d="m16 6-2 8-8 4 4-8 6-4Zm-6 4 4 4M12 1v2m0 18v2M1 12h2m18 0h2"/>',
   tools: '<path d="m5 3 4 4 3-3-4-3m4 3 5 1 3 3-3 3-3-1L5 21l-3-3L13 8M18 16l4 4-2 2-4-4M5 9l3 3"/>',
 };
-const seal = kind => `<span class="vg-ch-seal" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">${paths[kind] ?? paths.lantern}</svg></span>`;
+const seal = kind => {
+  const art = villageItemIcon(({ book: "almanac", bag: "satchel", tools: "gathering-kit", letter: "wandering-letter" })[kind]);
+  return `<span class="vg-ch-seal${art ? " vg-ch-illustration" : ""}" aria-hidden="true">${art || `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round">${paths[kind] ?? paths.lantern}</svg>`}</span>`;
+};
 const kicker = text => `<span class="vg-ch-kicker">${esc(text)}</span>`;
 const intro = (icon, title, text, meta = "") => `<div class="vg-ch-intro">${seal(icon)}<div>${meta ? kicker(meta) : ""}<h3>${esc(title)}</h3><p>${esc(text)}</p></div></div>`;
 const wait = seconds => seconds < 60 ? `${Math.max(1, Math.ceil(seconds))}s` : `${Math.ceil(seconds / 60)} min`;
-const requirements = rows => rows.length ? `<ul class="vg-ch-requirements" aria-label="Requirements">${rows.map(r => `<li class="${r.complete ? "is-ready" : ""}"><span aria-hidden="true">${r.complete ? "✓" : "○"}</span><span>${esc(r.label)}</span><b>${r.key === "coins" ? money(r.have) + " / " + money(r.need) : `${r.have} / ${r.need}`}</b></li>`).join("")}</ul>` : "";
+// Only named materials get a material picture; generic quest criteria retain their labels.
+const materialArt = key => { const id = String(key ?? "").replace(/^material:/, ""); return MATERIAL_BY_ID[id] ? villageItemIcon(id) : ""; };
+const requirements = rows => rows.length ? `<ul class="vg-ch-requirements" aria-label="Requirements">${rows.map(r => `<li class="${r.complete ? "is-ready" : ""}"><span aria-hidden="true">${r.complete ? "✓" : "○"}</span><span class="vg-ch-requirement-label">${materialArt(r.key)}<span>${esc(r.label)}</span></span><b>${r.key === "coins" ? money(r.have) + " / " + money(r.need) : `${r.have} / ${r.need}`}</b></li>`).join("")}</ul>` : "";
 const rewardName = r => {
   if (r.kind === "coins") return money(r.amount);
   if (r.kind === "discount") return `${Math.round(r.amount * 100)}% at Rowan’s stall`;
   const name = r.name ?? (r.kind === "recipe" ? M.RECIPE_BY_ID[r.id]?.name : r.kind === "costume" ? M.costumeById[r.id]?.name : r.kind === "decor" ? M.decorById[r.id]?.name : r.kind === "material" ? MATERIAL_BY_ID[r.id]?.name : VILLAGE_DECOR_BY_ID[r.id]?.name) ?? r.id;
   return `${r.amount > 1 ? `${r.amount} × ` : ""}${name}${r.kind === "recipe" ? " recipe" : ""}`;
 };
-const rewardChips = rows => `<div class="vg-ch-rewards">${rows.map(r => `<span>${esc(rewardName(r))}</span>`).join("")}</div>`;
+const rewardChip = (label, art = "") => `<span>${art}<span class="vg-ch-reward-text">${esc(label)}</span></span>`;
+const rewardChips = rows => `<div class="vg-ch-rewards">${rows.map(r => rewardChip(rewardName(r), ["material", "village-decor"].includes(r.kind) ? villageItemIcon(r.id) : "")).join("")}</div>`;
 function questRewards(q) {
-  const r = q.reward ?? {}, names = [];
-  if (r.coins) names.push(money(r.coins));
-  for (const [id, n] of Object.entries(r.villageDecor ?? {})) names.push(`${n > 1 ? `${n} × ` : ""}${VILLAGE_DECOR_BY_ID[id]?.name ?? id}`);
-  for (const [id, xp] of Object.entries(r.friendship ?? {})) names.push(`${short(id)} +${xp} friendship`);
-  for (const id of r.decor ?? []) names.push(M.decorById[id]?.name ?? "A farmhouse piece");
-  if (r.effect === "bench") names.push("Village bench restored");
-  if (r.build) names.push(r.build === "rowan-workshop" ? "Rowan’s workshop restored" : "Elowen’s conservatory restored");
-  for (const u of r.unlock ?? []) names.push(({ gathering: "Gathering tools", stall: "Rowan's stall", almanac: "Village almanac" })[u] ?? u);
-  return names.length ? `<div class="vg-ch-rewards">${names.map(n => `<span>${esc(n)}</span>`).join("")}</div>` : "";
+  const r = q.reward ?? {}, gifts = [], gift = (label, icon) => gifts.push(rewardChip(label, icon ? villageItemIcon(icon) : ""));
+  if (r.coins) gift(money(r.coins));
+  for (const [id, n] of Object.entries(r.villageDecor ?? {})) gift(`${n > 1 ? `${n} × ` : ""}${VILLAGE_DECOR_BY_ID[id]?.name ?? id}`, id);
+  for (const [id, xp] of Object.entries(r.friendship ?? {})) gift(`${short(id)} +${xp} friendship`);
+  for (const id of r.decor ?? []) gift(M.decorById[id]?.name ?? "A farmhouse piece");
+  if (r.effect === "bench") gift("Village bench restored");
+  if (r.build) gift(r.build === "rowan-workshop" ? "Rowan’s workshop restored" : "Elowen’s conservatory restored");
+  for (const u of r.unlock ?? []) gift(({ gathering: "Gathering tools", stall: "Rowan's stall", almanac: "Village almanac" })[u] ?? u, ({ gathering: "gathering-kit", almanac: "almanac" })[u]);
+  return gifts.length ? `<div class="vg-ch-rewards">${gifts.join("")}</div>` : "";
 }
 function questAction(s, q, step, rows) {
   if (!step) return "";
@@ -88,7 +95,7 @@ function journal(s, trackedQuestId) {
   return { title: "Village journal", tag: "Stories of Hollow Green", html };
 }
 function almanac(s) {
-  if (!M.almanacOpen(s)) return { title: "Elowen’s almanac", tag: "A book waiting for its story", html: intro("book", "Find the wandering letter", "Help Elowen recover the three pages of her letter. She will give you an almanac of everyday tasks and keepsake rewards.") + actions(button("Visit Elowen", 'data-vg-meet="elowen"', { primary: true }) + pageButton("journal", "Your stories")) };
+  if (!M.almanacOpen(s)) return { title: "Elowen’s almanac", tag: "A book waiting for its story", html: intro("letter", "Find the wandering letter", "Help Elowen recover the three pages of her letter. She will give you an almanac of everyday tasks and keepsake rewards.") + actions(button("Visit Elowen", 'data-vg-meet="elowen"', { primary: true }) + pageButton("journal", "Your stories")) };
   const duties = M.almanacPage(s), finished = duties.filter(d => d.done).length;
   let html = intro("book", `Page ${s.village.almanac.pages + 1}`, "Every little task pays as you play. Finish the page to receive its keepsake and turn to a fresh page.", `${finished} / ${duties.length || 4} tasks complete`);
   html += `<section class="vg-ch-prize">${kicker("Finish this page to receive")}${rewardChips(M.almanacPrize(s))}<p>Rewards arrive automatically. No collection trip needed.</p></section>`;
@@ -107,17 +114,17 @@ function materials(s) {
   if (!canGather) html += `<p class="vg-ch-hint">Meet Rowan and Elowen to receive your gathering tools.</p>${button("Meet your neighbours", 'data-vg-page="people"', { primary: true })}`;
   html += MATERIALS.filter(m => m.district === "green").map(m => {
     const nodes = NODES.filter(n => n.material === m.id && n.district === "green"), ready = nodes.filter(n => M.nodeReady(s, n.id)).length, next = Math.min(...nodes.map(n => s.village.nodes[n.id] ?? 0)), count = s.village.materials[m.id] ?? 0;
-    return `<article class="vg-ch-material"><div class="vg-ch-card-head"><h3>${esc(m.name)}</h3><b>${count}<span> / ${cap}</span></b></div><meter aria-label="${esc(m.name)} stored" min="0" max="${cap}" value="${count}"></meter><footer><small>${count >= cap ? "Satchel full for this material" : ready ? `${ready} gathering spots ready` : `Next spot in ${wait(next)}`}</small>${button("Find", `data-vg-gather="${m.id}" aria-label="Find ${esc(m.name.toLowerCase())}"`, { disabled: !canGather || count >= cap })}</footer></article>`;
+    return `<article class="vg-ch-material"><div class="vg-ch-card-head"><div class="vg-ch-material-title">${villageItemIcon(m.id)}<h3>${esc(m.name)}</h3></div><b>${count}<span> / ${cap}</span></b></div><meter aria-label="${esc(m.name)} stored" min="0" max="${cap}" value="${count}"></meter><footer><small>${count >= cap ? "Satchel full for this material" : ready ? `${ready} gathering spots ready` : `Next spot in ${wait(next)}`}</small>${button("Find", `data-vg-gather="${m.id}" aria-label="Find ${esc(m.name.toLowerCase())}"`, { disabled: !canGather || count >= cap })}</footer></article>`;
   }).join("");
   const later = MATERIALS.filter(m => m.district !== "green" && s.village.materials[m.id] > 0);
-  if (later.length) html += `<details><summary>Other keepsakes · ${later.length}</summary><div class="vg-materials">${later.map(m => `<div><span>${esc(m.name)}</span><b>${s.village.materials[m.id]} / ${cap}</b></div>`).join("")}</div></details>`;
+  if (later.length) html += `<details><summary>Other keepsakes · ${later.length}</summary><div class="vg-materials">${later.map(m => `<div><span class="vg-ch-requirement-label">${villageItemIcon(m.id)}<span>${esc(m.name)}</span></span><b>${s.village.materials[m.id]} / ${cap}</b></div>`).join("")}</div></details>`;
   html += '<p class="vg-ch-footnote">Other materials belong to later districts. They are not needed to restore Hollow Green.</p>';
   return { title: "Your satchel", tag: "Gather · restore · make a home", html };
 }
 function upgrades(s) {
   const stock = M.villageUpgradeStock(s);
   let html = intro("tools", "Made by Rowan", "Room for more finds. Better tools for the work ahead. Each upgrade is yours permanently.", `${stock.filter(u => u.owned).length} / ${stock.length} made`);
-  html += stock.map(u => `<article class="vg-ch-card${u.owned ? " is-owned" : ""}">${kicker(u.owned ? "Owned" : u.unlocked ? "Workshop upgrade" : "A little further in the story")}<h3>${esc(u.name)}</h3><p>${esc(u.text)}</p>${u.owned ? '<span class="vg-ch-owned">✓ Made for you</span>' : requirements([{ key: "coins", label: "Coins", have: s.coins, need: u.coins, complete: s.coins >= u.coins }, ...u.materials.map(m => ({ key: m.id, label: m.name, have: m.have, need: m.need, complete: m.have >= m.need }))]) + `<p class="vg-ch-hint">${esc(u.reason)}</p>` + actions(button(`Make · ${money(u.coins)}`, `data-vg-upgrade="${u.id}"`, { disabled: !u.canBuy, primary: true }))}</article>`).join("");
+  html += stock.map(u => `<article class="vg-ch-card${u.owned ? " is-owned" : ""}"><div class="vg-ch-upgrade-head">${villageItemIcon(u.id)}<div>${kicker(u.owned ? "Owned" : u.unlocked ? "Workshop upgrade" : "A little further in the story")}<h3>${esc(u.name)}</h3></div></div><p>${esc(u.text)}</p>${u.owned ? '<span class="vg-ch-owned">✓ Made for you</span>' : requirements([{ key: "coins", label: "Coins", have: s.coins, need: u.coins, complete: s.coins >= u.coins }, ...u.materials.map(m => ({ key: m.id, label: m.name, have: m.have, need: m.need, complete: m.have >= m.need }))]) + `<p class="vg-ch-hint">${esc(u.reason)}</p>` + actions(button(`Make · ${money(u.coins)}`, `data-vg-upgrade="${u.id}"`, { disabled: !u.canBuy, primary: true }))}</article>`).join("");
   html += actions(pageButton("materials", "Your materials") + pageButton("stall", "Browse the stall"));
   return { title: "Rowan’s workshop", tag: "Useful things, made to last", html };
 }
@@ -129,7 +136,7 @@ function stall(s, itemArt) {
   for (const kind of ["village", "home"]) {
     const items = stock.filter(i => i.kind === kind); if (!items.length) continue;
     html += `<section class="vg-ch-section"><h3>${kind === "village" ? "For the Green" : "For your farmhouse"}</h3>${items.map(item => {
-      const d = VILLAGE_DECOR_BY_ID[item.id], stored = kind === "village" ? owned[item.id] ?? 0 : M.ownedCopies?.(s, item.id) ?? 0, uniqueOwned = kind === "home" && stored > 0 && ["wallpaper", "books"].includes(M.decorById?.[item.id]?.category), art = itemArt?.(item) || seal(kind === "home" ? "house" : d?.tags.includes("books") ? "book" : d?.tags.includes("plant") ? "leaf" : "lantern");
+      const d = VILLAGE_DECOR_BY_ID[item.id], stored = kind === "village" ? owned[item.id] ?? 0 : M.ownedCopies?.(s, item.id) ?? 0, uniqueOwned = kind === "home" && stored > 0 && ["wallpaper", "books"].includes(M.decorById?.[item.id]?.category), art = itemArt?.(item) || (kind === "village" ? villageItemIcon(item.id) : "") || seal(kind === "home" ? "house" : d?.tags.includes("books") ? "book" : d?.tags.includes("plant") ? "leaf" : "lantern");
       return `<article class="vg-ch-product"><div class="vg-ch-product-art">${art}</div><div class="vg-ch-product-body"><h3>${esc(item.name)}</h3><small>${item.staple ? "Always stocked" : `${item.left} left`}${stored ? ` · ${stored} ${kind === "home" ? "owned" : "stored"}` : ""}</small>${d ? `<p>${esc(d.text)}</p>` : ""}${button(uniqueOwned ? "Owned" : item.left ? money(item.price) : "Sold out", `data-vg-buy="${esc(item.key)}" aria-label="Buy ${esc(item.name)} for ${money(item.price)}"`, { disabled: uniqueOwned || !item.left || s.coins < item.price, primary: true })}</div></article>`;
     }).join("")}</section>`;
   }
