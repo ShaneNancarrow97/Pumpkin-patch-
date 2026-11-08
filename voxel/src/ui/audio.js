@@ -1,7 +1,7 @@
 // A small offline MIDI synthesiser with bounded polyphony. It pauses when the
 // page is hidden and starts only after a gesture. No network or audio library.
 import { createMusicQueue } from "./music-queue.js";
-import { decodeMidi, loopClip } from "./midi.js";
+import { decodeMidi, loopClip, trimMidiTail } from "./midi.js";
 import { MUSIC_TRACKS } from "./music-tracks.js";
 export { MUSIC_TRACKS };
 
@@ -74,7 +74,10 @@ export function createAudio(prefs) {
       ensure(); const track = current();
       if (timer && selected === track.id) { applyMusicGain(); return; }
       stop(); selected = track.id;
-      if (!cache.has(track.id)) cache.set(track.id, loopClip(decodeMidi(track.bytes), track.repeat));
+      if (!cache.has(track.id)) {
+        const decoded = decodeMidi(track.bytes);
+        cache.set(track.id, loopClip(track.trimTail ? trimMidiTail(decoded) : decoded, track.repeat));
+      }
       clip = cache.get(track.id); cursor = 0; start = ctx.currentTime + .06;
       applyMusicGain();
       timer = setInterval(schedule, 50); schedule();

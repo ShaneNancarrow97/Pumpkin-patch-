@@ -20,6 +20,13 @@ import zombie from "../../assets/music/zombie.mid";
 import killerQueen from "../../assets/music/killer-queen.mid";
 import creep from "../../assets/music/creep.mid";
 import numb from "../../assets/music/numb-tim-dawes-remix.mid";
+import crossing_field from "../../assets/music/crossing-field.mid";
+import billie_jean from "../../assets/music/billie-jean.mid";
+import africa from "../../assets/music/africa.mid";
+import still_dre from "../../assets/music/still-dre.mid";
+import bohemian_rhapsody from "../../assets/music/bohemian-rhapsody.mid";
+// Billie Jean and Bohemian Rhapsody include long silent end markers; their
+// explicit trim flag finishes playback after the last note without editing MIDI.
 // The Numb remix file is one four-bar riff (about 7 seconds), so it plays nine
 // times through: about a minute.
 export const MUSIC_REPEATS = Object.freeze({ "numb-tim-dawes-remix.mid": 9 });
@@ -45,4 +52,9 @@ export const MUSIC_TRACKS = [
   { id: "killer-queen", name: "Killer Queen", credit: "Queen · your supplied MIDI", bytes: killerQueen },
   { id: "creep", name: "Creep", credit: "Radiohead · your supplied MIDI", bytes: creep },
   { id: "numb", name: "Numb (Tim Dawes remix)", credit: "Linkin Park · your supplied riff, looped", bytes: numb, repeat: MUSIC_REPEATS["numb-tim-dawes-remix.mid"] },
+  { id: "crossing-field", name: "Crossing Field", credit: "LiSA \u00b7 Sword Art Online opening \u00b7 your supplied MIDI", bytes: crossing_field },
+  { id: "billie-jean", name: "Billie Jean", credit: "Michael Jackson \u00b7 your supplied MIDI", bytes: billie_jean, trimTail: true },
+  { id: "africa", name: "Africa", credit: "Toto \u00b7 your supplied MIDI", bytes: africa },
+  { id: "still-dre", name: "Still D.R.E.", credit: "Dr. Dre \u00b7 your supplied MIDI", bytes: still_dre },
+  { id: "bohemian-rhapsody", name: "Bohemian Rhapsody", credit: "Queen \u00b7 your supplied MIDI", bytes: bohemian_rhapsody, trimTail: true },
 ];

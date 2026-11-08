@@ -1,19 +1,21 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { decodeMidi, loopClip } from "../src/ui/midi.js";
+import { decodeMidi, loopClip, trimMidiTail } from "../src/ui/midi.js";
 // The repeat counts music-tracks.js gives short riffs (it imports the files
 // through the bundler, so the test keeps its own copy of the table).
 const REPEATS = { "numb-tim-dawes-remix.mid": 9 };
 
 test("every bundled original and supplied MIDI decodes into finite timed notes", () => {
   const dir = new URL("../assets/music/", import.meta.url), files = fs.readdirSync(dir).filter((f) => f.endsWith(".mid"));
-  assert.equal(files.length, 21);
+  assert.equal(files.length, 26);
   for (const file of files) {
-    const bytes = fs.readFileSync(new URL(file, dir)), clip = loopClip(decodeMidi(bytes), REPEATS[file]);
+    const bytes = fs.readFileSync(new URL(file, dir)), decoded = decodeMidi(bytes);
+    const prepared = ["billie-jean.mid", "bohemian-rhapsody.mid"].includes(file) ? trimMidiTail(decoded) : decoded;
+    const clip = loopClip(prepared, REPEATS[file]);
     assert.ok(clip.notes.length > 100, file); assert.ok(clip.duration > 30 && clip.duration < 600, file);
     assert.ok(clip.notes.every((n, i) => Number.isFinite(n.time) && n.time >= 0 && n.duration > 0 && n.duration <= 12 && n.pitch >= 0 && n.pitch <= 127 && n.velocity >= 0 && n.velocity <= 1 && (!i || n.time >= clip.notes[i - 1].time)), file);
-    assert.deepEqual(loopClip(decodeMidi(bytes), REPEATS[file]), clip, "decoding is deterministic");
+    assert.deepEqual(loopClip(prepared, REPEATS[file]), clip, "decoding is deterministic");
   }
 });
 
@@ -33,4 +35,16 @@ test("a short riff loops on its own length into a track", () => {
   assert.ok(Math.abs(track.notes[riff.notes.length].time - (riff.notes[0].time + riff.duration)) < 1e-9);
   assert.equal(loopClip(riff, 1), riff);
   assert.equal(loopClip(riff, undefined), riff);
+});
+
+test("supplied songs with long end markers finish after their notes, preserving source timing", () => {
+  for (const file of ["billie-jean.mid", "bohemian-rhapsody.mid"]) {
+    const clip = decodeMidi(fs.readFileSync(new URL("../assets/music/" + file, import.meta.url)));
+    const end = Math.max(...clip.notes.map(n => n.time + n.duration)), trimmed = trimMidiTail(clip);
+    assert.ok(clip.duration - end > 300, file + " retains the source end marker");
+    assert.equal(trimmed.notes, clip.notes, "no note is rewritten or dropped");
+    assert.equal(trimmed.duration, end + .35);
+    assert.ok(trimmed.duration > 250 && trimmed.duration < 360);
+    assert.equal(trimMidiTail(trimmed), trimmed, "trimming is idempotent");
+  }
 });

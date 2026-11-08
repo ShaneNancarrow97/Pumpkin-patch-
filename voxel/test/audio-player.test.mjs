@@ -36,11 +36,17 @@ test("MIDI endings advance shuffle automatically; mute and repeat remain reliabl
   assert.equal(audio.status.track, "parade", "ducking does not restart or advance music");
   audio.setVolume(.32);
   const played = [];
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < sandbox.module.exports.MUSIC_TRACKS.length; i++) {
     const previous = audio.status.track; time += audio.status.duration + .5; scheduled();
     assert.notEqual(audio.status.track, previous, "the end of a song advances without a button press"); played.push(audio.status.track);
   }
-  assert.equal(new Set(played).size, 9, "all songs appear in one shuffle round");
+  assert.equal(new Set(played).size, sandbox.module.exports.MUSIC_TRACKS.length, "all songs appear in one shuffle round");
+  for (const [id, upper] of [["crossing-field",90],["billie-jean",300],["africa",270],["still-dre",100],["bohemian-rhapsody",360]]) {
+    audio.setTrack(id);
+    assert.equal(audio.status.track, id, "each supplied song is selectable");
+    assert.ok(audio.status.duration > 30 && audio.status.duration < upper, id + " ends at its playable duration");
+    assert.equal(prefs.musicVolume, .32, "song selection preserves volume");
+  }
   audio.setShuffle(false); const repeated = audio.status.track;
   time += audio.status.duration + .5; scheduled(); assert.equal(audio.status.track, repeated);
   prefs.music = false; audio.sync(); assert.equal(audio.status.playing, false); assert.equal(scheduled, null);

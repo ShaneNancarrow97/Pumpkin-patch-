@@ -70,3 +70,12 @@ export function loopClip(clip, times = 1) {
   for (let k = 0; k < n; k++) for (const note of clip.notes) notes.push({ ...note, time: note.time + k * clip.duration });
   return { notes, duration: clip.duration * n };
 }
+
+// Some supplied files carry long, silent end markers. Keep the notes, but let
+// those tracks finish after their audible tail; bar-based riff loops opt out.
+export function trimMidiTail(clip, tail = .35) {
+  if (!clip.notes.length) return clip;
+  const end = clip.notes.reduce((n, note) => Math.max(n, note.time + note.duration), 0);
+  const duration = Math.min(clip.duration, end + Math.max(0, Number(tail) || 0));
+  return duration === clip.duration ? clip : { notes: clip.notes, duration };
+}

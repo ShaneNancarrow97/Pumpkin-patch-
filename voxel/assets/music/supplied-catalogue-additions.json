@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "source": "User-uploaded MIDI files; original bytes retained without conversion",
+  "tracks": [
+    {
+      "id": "crossing-field",
+      "file": "crossing-field.mid",
+      "title": "Crossing Field",
+      "credit": "LiSA \u00b7 Sword Art Online opening \u00b7 your supplied MIDI",
+      "originalFile": "Sword Art Online - Crossing Field _SAO OP_.mid",
+      "originalBytes": 1879,
+      "sha256": "918338feb36483ced992248d59f52417d71a78f2b2fd4b8d3d3a1545938d21c6",
+      "notes": 197,
+      "peakSourcePolyphony": 2,
+      "sourceEndDuration": 83.02728183750001,
+      "playbackDuration": 83.02728183750001,
+      "trimTrailingSilence": false
+    },
+    {
+      "id": "billie-jean",
+      "file": "billie-jean.mid",
+      "title": "Billie Jean",
+      "credit": "Michael Jackson \u00b7 your supplied MIDI",
+      "originalFile": "Michael Jackson - Billie Jean.mid",
+      "originalBytes": 55342,
+      "sha256": "bd140556022b6aad58aa11e6f92add32c8ed89ec90fb80b547b122d52e3d4a20",
+      "notes": 6267,
+      "peakSourcePolyphony": 14,
+      "sourceEndDuration": 682.6640625,
+      "playbackDuration": 282.240625,
+      "trimTrailingSilence": true
+    },
+    {
+      "id": "africa",
+      "file": "africa.mid",
+      "title": "Africa",
+      "credit": "Toto \u00b7 your supplied MIDI",
+      "originalFile": "toto-africa.mid",
+      "originalBytes": 98639,
+      "sha256": "e089ee1a0795d5706b0d594c2152e530c6d1abac9f914c7117afa6e14892b190",
+      "notes": 11606,
+      "peakSourcePolyphony": 28,
+      "sourceEndDuration": 252.67252702083334,
+      "playbackDuration": 252.67252702083334,
+      "trimTrailingSilence": false
+    },
+    {
+      "id": "still-dre",
+      "file": "still-dre.mid",
+      "title": "Still D.R.E.",
+      "credit": "Dr. Dre \u00b7 your supplied MIDI",
+      "originalFile": "Dr Dre - Still Dre.mid",
+      "originalBytes": 9994,
+      "sha256": "da1d6a8c70355ac627e9df51afbe9a4d74be916b63fdc5847800028c8f19c7c1",
+      "notes": 1217,
+      "peakSourcePolyphony": 5,
+      "sourceEndDuration": 92.1875,
+      "playbackDuration": 92.1875,
+      "trimTrailingSilence": false
+    },
+    {
+      "id": "bohemian-rhapsody",
+      "file": "bohemian-rhapsody.mid",
+      "title": "Bohemian Rhapsody",
+      "credit": "Queen \u00b7 your supplied MIDI",
+      "originalFile": "Queen - Bohemian Rhapsody.mid",
+      "originalBytes": 51221,
+      "sha256": "5e468ed7b8f4f31b87fca059e60617b8089960a1b7dad1d406c1982320bd961a",
+      "notes": 5925,
+      "peakSourcePolyphony": 23,
+      "sourceEndDuration": 1006.97467359375,
+      "playbackDuration": 328.22679500000004,
+      "trimTrailingSilence": true
+    }
+  ]
+}
