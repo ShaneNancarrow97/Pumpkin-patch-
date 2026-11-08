@@ -1,3 +1,5 @@
+import { installLevelRewardArt, levelBadgeMarkup } from "./ui/level-reward-icons.js";
+import villageShortcutURL from "../assets/village-shortcut/village.webp";
 import { installHomeCategoryArt } from "./ui/home-category-icons.js";
 import grassTileURL from '../assets/terrain/grass-tile.webp';
 import { installGrassDetailTexture } from './grass-detail.js';
@@ -128,6 +130,9 @@ const padInUse = () => { for (const g of navigator.getGamepads?.() ?? []) if (g?
 
 installGrassDetailTexture(grassTileURL);
 installHomeCategoryArt();
+installLevelRewardArt();
+const villageShortcut=document.querySelector('#dock [data-tab="village"] svg');
+if(villageShortcut){const image=document.createElement("img");image.src=villageShortcutURL;image.alt="";image.className="village-shortcut-art";villageShortcut.replaceWith(image);}
 const scene = createScene($("world"), state, {
   onTick(dt) {
     idle += dt;
@@ -612,7 +617,7 @@ $("boost").onclick = boost;
 // The HUD, actions, goal and streak, every frame (cheap: only text changes).
 let shownPinata;
 const text = (id, value) => { const el = $(id); if (el.textContent !== String(value)) el.textContent = value; };
-const shownLevel = { label: "", fill: "" };
+const shownLevel = { label: "", fill: "", rank: 0 };
 let sheetDrawnAt = 0;
 function render() {
   villageGame?.render();
@@ -632,8 +637,9 @@ function render() {
   litterHint();
   const lvl = M.patchLevel(state);
   text("level-number", lvl.level);
+  if(shownLevel.rank!==lvl.level){shownLevel.rank=lvl.level;$("level-rank-art").innerHTML=levelBadgeMarkup(lvl.level,38);}
   // Written only when they change: an unchanged write still costs a style pass every frame.
-  const levelLabel = `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View rewards`, levelFill = (lvl.progress * 100).toFixed(1) + "%";
+  const levelLabel = `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View level requirements and rewards`, levelFill = (lvl.progress * 100).toFixed(1) + "%";
   if (levelLabel !== shownLevel.label) { shownLevel.label = levelLabel; $("open-levels").setAttribute("aria-label", levelLabel); }
   if (levelFill !== shownLevel.fill) { shownLevel.fill = levelFill; $("open-levels").style.setProperty("--progress", levelFill); }
   celebration.tick(mazeUI.active || hayrideUI.active || !!openTab || !!home.tools.selected || state.paused);
@@ -768,7 +774,7 @@ const holdToBuy = null;
 // Menus that work on the world (furnishing, the garden, the foyer) stay at the side; the rest sit in the middle over a dimmed farm.
 const WORLD_MENUS = new Set(["home", "shelf", "estate", "foyer"]);
 const menuMemory = createMenuMemory($("sheet-body"));
-const celebration = createLevelCelebration({ state: () => state, audio, save, openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
+const celebration = createLevelCelebration({ state: () => state, audio, save, openHome: () => enterEstate(), openVillage: () => openVillage(), openRewards: () => { sheets.journal.setTab("levels"); openSheet("journal"); } });
 const npcRewards = createNpcRewards({ state: () => state, portrait: (kind, id) => scene.portrait(M.favourFace(M.FAVOURS.find((f) => f.id === id) ?? { kind })), save, tone: f => audio.tone(f), notice });
 const guestCard = createGuestCard({ state: () => state, portrait: id => scene.portrait(id), onListen: spot => chatCard.open(spot) });
 const chatCard = createChatCard({ state: () => state, portrait: id => scene.portrait(id), onGuest: id => { chatCard.clear(); guestCard.open(id); } });
@@ -994,7 +1000,7 @@ const mazeDiagnostics = {
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
 const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), hold: on => scene.holdHayrideRide(on), get status() { return scene.hayrideRideStatus; } };
-window.PumpkinVoxel = { village: villageGame, openVillage, lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, get fishingUI() { return fishingUI; }, get padArrange() { return padArrange; }, startFishing, emptyLakeTraps, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, openShopSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, narration, advance, rules: M, save };
+window.PumpkinVoxel = { village: villageGame, openVillage, lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, get fishingUI() { return fishingUI; }, get padArrange() { return padArrange; }, startFishing, emptyLakeTraps, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, openShopSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, narration, levelCelebration: celebration, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";

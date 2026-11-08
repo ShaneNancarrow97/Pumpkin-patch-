@@ -50,10 +50,10 @@ class Element {
     selector = selector.trim(); if (selector === "button:not(:disabled)") return this.tagName === "BUTTON" && !this.disabled;
     if (selector.startsWith("#")) return this.id === selector.slice(1);
     if (selector.startsWith(".")) return this.classes.has(selector.slice(1));
-    const attr = /^\[([^=\]]+)(?:="([^"]*)")?\]$/.exec(selector); if (attr) return Object.hasOwn(this.attributes, attr[1]) && (attr[2] === undefined || this.attributes[attr[1]] === attr[2]);
+    const attr = /^\[([^=\]]+)(?:="([^"]*)")?\]$/.exec(selector); if (attr?.[1] === "hidden") return this.hidden; if (attr?.[1] === "disabled") return this.disabled; if (attr) return Object.hasOwn(this.attributes, attr[1]) && (attr[2] === undefined || this.attributes[attr[1]] === attr[2]);
     return this.tagName === selector.toUpperCase();
   }
-  querySelectorAll(selector) { const bits = selector.trim().split(/\s+/), out = []; const walk = el => { for (const child of el.children) { if (child.matches(bits.at(-1))) { let ancestor = child.parentElement, i = bits.length - 2; while (i >= 0 && ancestor) { if (ancestor.matches(bits[i])) i--; ancestor = ancestor.parentElement; } if (i < 0) out.push(child); } walk(child); } }; walk(this); return out; }
+  querySelectorAll(selector) { if(selector.includes(","))return [...new Set(selector.split(",").flatMap(part=>this.querySelectorAll(part)))]; const bits = selector.trim().split(/\s+/), out = []; const walk = el => { for (const child of el.children) { if (child.matches(bits.at(-1))) { let ancestor = child.parentElement, i = bits.length - 2; while (i >= 0 && ancestor) { if (ancestor.matches(bits[i])) i--; ancestor = ancestor.parentElement; } if (i < 0) out.push(child); } walk(child); } }; walk(this); return out; }
   querySelector(selector) { return this.querySelectorAll(selector)[0] ?? null; }
   closest(selector) { for (let el = this; el; el = el.parentElement) if (selector.split(",").some(s => el.matches(s))) return el; return null; }
   focus() { this.doc.activeElement = this; }
@@ -111,7 +111,7 @@ function harness(t, s = farm(), narration) {
     }assert.ok(reached,"controller reaches resource waypoint");}
     pad.axes[0]=pad.axes[1]=0;game.tick(.05);assert.ok(Math.hypot(game.status.position.x-point.x,game.status.position.z-point.z)<3);
   };
-  h.meet = id => {if(game.status.panel)game.back();if(game.status.inside)game.leaveHall();h.walkNear(view.folk.talkSpot(id));game.meet(id);};
+  h.meet = id => {while(game.status.panel)game.back();if(game.status.inside)game.leaveHall();h.walkNear(view.folk.talkSpot(id));game.meet(id);};
   h.gather = node => {h.walkNear(node);const before=s.village.materials[node.material]??0;game.pick({type:"village-node",id:node.id});assert.equal(s.village.materials[node.material]??0,before,"no grant before swing finishes");assert.ok(game.status.gathering);game.tick(.4);assert.equal(s.village.materials[node.material]??0,before);game.tick(.6);assert.ok((s.village.materials[node.material]??0)>before);assert.equal(game.status.gathering,null);};
   t.after(() => { game.dispose(); for (const [key, desc] of globals) desc ? Object.defineProperty(globalThis, key, desc) : delete globalThis[key]; }); return h;
 }
@@ -172,7 +172,7 @@ test("keyboard, touch and pad movement stop behind menus and while paused", t =>
   const h = harness(t); welcome(h); const start = h.game.status.position;
   h.key("keydown", "d"); h.game.tick(.2); assert.ok(h.game.status.position.x > start.x); h.key("keyup", "d");
   const zone = h.$("#vg-stick-zone"); zone.onpointerdown({ pointerId: 1, clientX: 20, clientY: 20 }); zone.onpointermove({ pointerId: 1, clientX: 60, clientY: 20 }); h.game.showPanel("map"); const stopped = h.game.status.position; h.game.tick(.2); assert.deepEqual(h.game.status.position, stopped); h.game.back(); h.game.tick(.2); assert.deepEqual(h.game.status.position, stopped, "menu clears the held thumbstick");
-  h.pad.axes[0] = 1; h.press(2); assert.equal(h.game.status.panel, "map"); const menuAt = h.game.status.position; h.game.tick(.2); assert.deepEqual(h.game.status.position, menuAt, "pad movement cannot pass through a menu"); h.press(13); assert.notEqual(h.doc.activeElement.id, "vg-panel-close", "D-pad moves the focus among menu buttons"); h.pad.axes[0] = 0; h.press(0); assert.equal(h.game.status.panel, "map", "confirm opens the selected region criteria without travelling"); assert.equal(h.game.status.panelId, "green"); h.click('[data-vg-focus="arrival"]'); assert.equal(h.game.status.panel, null, "a real landmark shortcut closes the map"); h.press(2); h.press(1); assert.equal(h.game.status.panel, null, "back closes a panel");
+  h.pad.axes[0] = 1; h.press(2); assert.equal(h.game.status.panel, "map"); const menuAt = h.game.status.position; h.game.tick(.2); assert.deepEqual(h.game.status.position, menuAt, "pad movement cannot pass through a menu"); h.press(13); assert.notEqual(h.doc.activeElement.id, "vg-panel-close", "D-pad moves the focus among menu buttons"); h.pad.axes[0] = 0; h.press(0); assert.equal(h.game.status.panel, "map", "confirm opens the selected region criteria without travelling"); assert.ok(["green","copse","quarry","moor","marsh"].includes(h.game.status.panelId),"confirm opens criteria for the focused region"); h.click('[data-vg-focus="arrival"]'); assert.equal(h.game.status.panel, null, "a real landmark shortcut closes the map"); h.press(2); h.press(1); assert.equal(h.game.status.panel, null, "back closes a panel");
   h.state.paused = true; h.key("keydown", "d"); h.pad.axes[0] = 1; const pausedAt = h.game.status.position; h.game.tick(1); assert.deepEqual(h.game.status.position, pausedAt); h.pad.axes[0] = 0; h.state.paused = false; h.game.tick(.1); assert.deepEqual(h.game.status.position, pausedAt);
 });
 
@@ -289,6 +289,6 @@ test("walking through the carriage threshold returns once without waiting for an
 
 test("Options opens the six-action village hub and Cross chooses a real menu", t => {
   const h=harness(t);h.game.open();h.game.back();h.press(9);assert.equal(h.game.status.panel,"navigation");
-  const cards=h.$('#vg-panel-body').querySelectorAll('button');assert.equal(cards.length,6);assert.equal(h.doc.activeElement,cards[0]);
-  h.press(0);assert.equal(h.game.status.panel,"map");h.press(1);assert.equal(h.game.status.panel,null);
+  const cards=h.$('#vg-panel-body').querySelectorAll('button');assert.equal(cards.length,6);assert.ok(h.doc.activeElement===cards[0],"the first menu action receives focus");
+  h.press(0);assert.equal(h.game.status.panel,"map");h.press(1);assert.equal(h.game.status.panel,"navigation","Circle returns to the menu that opened the map");h.press(1);assert.equal(h.game.status.panel,null);
 });

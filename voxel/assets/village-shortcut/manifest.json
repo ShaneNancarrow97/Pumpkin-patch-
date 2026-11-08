@@ -1,0 +1,25 @@
+{
+  "generatedBy": "tools/bake-village-shortcut.py",
+  "source": "assets/village-shortcut/source.png",
+  "sourceSha256": "b9daba002869c0020afa5fd4de67642811fae7f27047a6a50f007bbf31c98547",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "alphaBounds": [
+    113,
+    91,
+    1137,
+    1130
+  ],
+  "runtimeSize": [
+    128,
+    128
+  ],
+  "artRenderSize": [
+    114,
+    116
+  ],
+  "runtimeBytes": 26158,
+  "runtimeSha256": "84abe6571f33cb08fd9704ed87b0529bc9fe408be7e0a4e90da735298c4a9353"
+}

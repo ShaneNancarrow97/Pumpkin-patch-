@@ -40,7 +40,8 @@ class Element {
   click() { if (this.disabled) return; const event = { target: this, stopPropagation() {}, preventDefault() {} }; for (const fn of this.listeners.get("click") ?? []) fn(event); }
 }
 function harness(t) {
-  const doc = { createElement: tag => new Element(tag, doc), getElementById: id => doc.body.querySelector("#" + id), addEventListener() {}, removeEventListener() {} };
+  const listeners = new Map();
+  const doc = { createElement: tag => new Element(tag, doc), getElementById: id => doc.body.querySelector("#" + id), addEventListener(type, fn) { if (!listeners.has(type)) listeners.set(type, new Set()); listeners.get(type).add(fn); }, removeEventListener(type, fn) { listeners.get(type)?.delete(fn); } };
   doc.body = new Element("body", doc); doc.activeElement = doc.body;
   const original = new Map();
   for (const [name, value] of Object.entries({ document: doc, window: { innerHeight: 800 }, matchMedia: () => ({ matches: true }) })) { original.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { configurable: true, value }); }
@@ -52,7 +53,7 @@ function harness(t) {
     setEnabled(on) { this.enabled = on; if (!on) this.stop(); this.emit(); },
     subscribe(fn) { subscribers.add(fn); fn(); return () => subscribers.delete(fn); }, emit() { for (const fn of subscribers) fn(); },
   };
-  return { doc, audio, calls, subscribers, latest: () => calls.filter(call => call[0] === "play").at(-1) };
+  return { doc, audio, calls, subscribers, latest: () => calls.filter(call => call[0] === "play").at(-1), key(key, shiftKey = false) { let prevented = false; const event = { key, shiftKey, target: doc.activeElement, preventDefault() { prevented = true; }, stopImmediatePropagation() {} }; for (const fn of [...listeners.get("keydown") ?? []]) fn(event); return prevented; } };
 }
 
 test("conversation voices follow each portrait; choices stay silent and replay grants no story progress", t => {
@@ -101,10 +102,55 @@ test("dialogue exposes its current text and puts controller focus on the visible
   const panel = h.doc.getElementById("village-dialogue"), reply = panel.querySelector(".village-reply"), next = panel.querySelector("[data-village-dialogue-next]");
   assert.equal(panel.attrs["aria-describedby"], "village-dialogue-line");
   assert.equal(panel.querySelector(".village-dialogue-line").attrs["aria-atomic"], "true");
-  assert.equal(panel.dataset.dialogueState, "choice"); assert.ok(Object.hasOwn(reply.attrs, "data-pad-default")); assert.equal(next.hidden, true);
+  assert.equal(panel.dataset.dialogueState, "choice"); assert.ok(Object.hasOwn(reply.attrs, "data-pad-default")); assert.equal(next.hidden, true); assert.equal(h.doc.activeElement, reply);
   reply.click(); reply.click(); assert.equal(answers, 1); assert.equal(completed, 0);
   assert.equal(panel.dataset.dialogueState, "speaking"); assert.equal(h.doc.activeElement, next); assert.equal(next.hidden, false);
   next.click(); assert.equal(completed, 1); dialogue.dispose();
+});
+
+test("Tab contains the current reply path and ignores hidden narration and Continue buttons", t => {
+  const h = harness(t), opener = h.doc.createElement("button"); h.doc.body.append(opener); opener.focus();
+  const dialogue = createVillageConversation();
+  dialogue.open({ id: "elowen", lines: [{ choices: [{ text: "I can help." }, { text: "Tell me more." }] }] });
+  const panel = h.doc.getElementById("village-dialogue"), replies = panel.querySelectorAll(".village-reply"), close = panel.querySelector("[data-village-dialogue-close]");
+  assert.equal(panel.attrs["aria-modal"], "true"); assert.equal(h.doc.activeElement, replies[0]);
+  replies[1].focus(); assert.equal(h.key("Tab"), true); assert.equal(h.doc.activeElement, close);
+  assert.equal(h.key("Tab", true), true); assert.equal(h.doc.activeElement, replies[1], "hidden Next and voice buttons are never focused");
+  assert.equal(h.key("Enter"), false, "native button activation is not handled twice");
+  dialogue.close(); assert.equal(h.doc.activeElement, opener); assert.equal(h.key("Tab"), false, "closing releases the keyboard boundary");
+  dialogue.dispose();
+});
+
+test("a speaking page focuses Continue and replacement conversations keep their real opener", t => {
+  const h = harness(t), opener = h.doc.createElement("button"); h.doc.body.append(opener); opener.focus();
+  const dialogue = createVillageConversation({ narration: h.audio });
+  dialogue.open({ id: "rowan", lines: ["A new door.", "A new beginning."] });
+  const panel = h.doc.getElementById("village-dialogue"), next = panel.querySelector("[data-village-dialogue-next]"), close = panel.querySelector("[data-village-dialogue-close]");
+  assert.equal(h.doc.activeElement, next); assert.equal(next.textContent, "Continue");
+  assert.equal(h.key("Tab"), true); assert.equal(h.doc.activeElement, close);
+  assert.equal(h.key("Tab", true), true); assert.equal(h.doc.activeElement, next);
+  dialogue.open({ id: "elowen", lines: ["And a new story."] });
+  assert.equal(h.doc.activeElement, next); assert.equal(next.textContent, "Finish chat");
+  dialogue.close(); assert.equal(h.doc.activeElement, opener, "replacement never saves the previous dialogue button as its opener");
+  dialogue.dispose();
+});
+
+test("a close callback can hand off to another conversation without stealing its focus", t => {
+  const h = harness(t), opener = h.doc.createElement("button"); h.doc.body.append(opener); opener.focus(); let handoff = false;
+  const dialogue = createVillageConversation({ onClose() { if (!handoff) { handoff = true; dialogue.open({ id: "elowen", lines: [{ choices: [{ text: "I am listening." }] }] }); } } });
+  dialogue.open({ id: "rowan", lines: ["Elowen has something to say."] }); dialogue.close();
+  const panel = h.doc.getElementById("village-dialogue");
+  assert.equal(dialogue.active, true); assert.equal(h.doc.activeElement, panel.querySelector(".village-reply"), "new session keeps its primary action");
+  dialogue.close(); assert.equal(h.doc.activeElement, opener, "the hand-off retains the original world/menu opener"); dialogue.dispose();
+});
+
+test("a completed page can open another session without closing or answering the new one", t => {
+  const h = harness(t); let completed = 0, answered = 0;
+  const dialogue = createVillageConversation({ onContinue() { completed++; dialogue.open({ id: "elowen", lines: [{ choices: [{ text: "What can I do?" }] }] }); }, onChoice() { answered++; } });
+  dialogue.open({ id: "rowan", lines: ["You should meet Elowen."] });
+  const panel = h.doc.getElementById("village-dialogue"), next = panel.querySelector("[data-village-dialogue-next]"); next.click();
+  assert.equal(completed, 1); assert.equal(dialogue.active, true); assert.equal(h.doc.activeElement, panel.querySelector(".village-reply"));
+  next.click(); assert.equal(completed, 1); assert.equal(answered, 0, "a stale primary action cannot answer the replacement"); dialogue.dispose();
 });
 
 test("introduction speaks its title and alternating lines; replay and mute do not advance it", t => {

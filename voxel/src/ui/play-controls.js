@@ -86,7 +86,10 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     <div id="play-radial" hidden role="dialog" aria-modal="true" aria-label="Choose an action"><button class="radial-dismiss" aria-label="Close action wheel"></button><div class="radial-disc"><svg class="radial-ring" viewBox="0 0 360 360" aria-hidden="true"><defs><linearGradient id="play-wedge-on" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd593"/><stop offset=".55" stop-color="#d4924b"/><stop offset="1" stop-color="#94562a"/></linearGradient></defs><circle class="radial-rim" cx="180" cy="180" r="174"/><g class="radial-wedges"></g></svg><div class="radial-options"></div><div class="radial-centre"><b class="radial-centre-icon"></b><p class="eyebrow">Your tools</p><h2>Interact</h2><p class="radial-hint"></p></div><button class="radial-close" aria-label="Close action wheel">${svg('exit')}</button></div></div>`;
   document.body.append(root);
   // Every menu on a pad (ui/pad-menu.js); Options brings the ring to the dock, the hub.
-  const menus=createPadMenu({feel,back:()=>back?.(),hold:holdToBuy,hubAllowed});
+  const menus=createPadMenu({feel,back:()=>back?.(),hold:holdToBuy,hubAllowed,onFarmBarsChange:()=>{
+    cancelInteraction('farm-menus');keys.clear();cameraKeys.clear();releaseMove();releaseLook();cursor.hide();
+    padBoundary.release(rawPad());scene.player?.input(0,0);scene.player?.cameraInput?.(0,0);
+  }});
   const cursor=createPadCursor({scene,back:()=>back?.(),feel});
   const dockGlyph=document.createElement('span');dockGlyph.className='dock-glyph';dockGlyph.dataset.glyph='start';document.getElementById('dock')?.append(dockGlyph);
   // Holding a game button is an input gesture, never Android text selection.
@@ -334,9 +337,10 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     if(p.enabled&&!menus.open||cameraOwns)cursor.hide();
     const cursorOwns=pad&&!cameraOwns&&!radial&&!piece&&!placing?cursor.tick({pad,down,pressed:i=>farmScope&&i===11?false:pressed(i),canToggle:!p.enabled||menus.open,menuOpen:()=>menus.open}):(cursor.hide(),false);
     const passing=i=>CURSOR_PASS.has(i);
-    const menuOwns=pad&&!cameraOwns&&!radial&&!piece&&!placing?menus.tick(cursorOwns?{pad:STILL_PAD,down:down.map((d,i)=>passing(i)&&d),pressed:i=>passing(i)&&pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked}:{pad,down,pressed:i=>i===17&&p.enabled&&!blocked&&quick?false:pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked})||cursorOwns:false;
-    if(!pad&&menus.hubOn)menus.leaveHub();
-    if(pad&&(radial||piece||placing))menus.rest();
+    const farmBarsEligible=farmScope&&!blocked&&!menus.open&&!cameraOwns&&!cursorOwns&&!held&&!job.active&&!job.travelling;
+    const menuOwns=pad&&!cameraOwns&&!radial&&!piece&&!placing?menus.tick(cursorOwns?{pad:STILL_PAD,down:down.map((d,i)=>passing(i)&&d),pressed:i=>passing(i)&&pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked}:{pad,down,pressed:i=>i===17&&p.enabled&&!blocked&&quick?false:pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked,farmBarsEligible})||cursorOwns:false;
+    if(!pad){if(menus.hubOn)menus.leaveHub();menus.rest();}
+    if(pad&&(radial||piece||placing||cameraOwns))menus.rest();
     if(pad&&!blocked&&!menuOwns&&!cameraOwns){
       if(radial){
         // Either stick aims the wheel; letting go of Y/△ after aiming chooses.
@@ -354,7 +358,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
         // L1 / R1 swap the tool in hand, round the wheel's order; Create (or the touchpad) opens what's useful here.
         if(pressed(4)||pressed(5)){const order=['hand','plant','water','harvest','clean'],i=order.indexOf(tool);cancelInteraction('tool');tool=order[(i+(pressed(5)?1:-1)+order.length)%order.length];feel('tick');}
         if((pressed(8)||pressed(17))&&quick){quick.open();feel('select');}
-        if(pressed(10))toggleGait();if(pressed(11)&&!farmScope){scene.player?.recenter?.();feel('select');}if(pressed(6))scene.player?.zoom?.(-1);if(pressed(7))scene.player?.zoom?.(1);
+        if(pressed(10))toggleGait();if(pressed(11)&&!farmScope){scene.player?.recenter?.();feel('select');}if(pressed(6)&&!farmScope)scene.player?.zoom?.(-1);if(pressed(7))scene.player?.zoom?.(1);
       // Off play mode in a room or the garden, the pad arranges the furniture first.
       }else if(arranging&&arrange.tick({pad,down,pressed})){
       // Off play mode: Create starts play; on the farm △ plants, □ boosts and ✕ picks (elsewhere ✕ starts play too).
@@ -372,6 +376,8 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     if(!padName&&!releaseMove.engaged)releaseMove.show({x:Math.max(-1,Math.min(1,x)),y:Math.max(-1,Math.min(1,y))});
     if(!padName&&!releaseLook.engaged)releaseLook.show({x:Math.max(-1,Math.min(1,cx)),y:Math.max(-1,Math.min(1,cy))});
     if(Math.hypot(x,y)>.12&&(job.active||held))cancelInteraction('movement');
-    const stop=blocked||radial||!!piece||!!placing||cameraOwns||!p.enabled;scene.player?.setBlocked(blocked||radial||!!piece||!!placing||cameraOwns);scene.player?.input(stop?0:x,stop?0:y);scene.player?.cameraInput?.(stop?0:cx,stop?0:cy);
+    // A hub opened this frame owns movement immediately, before next tick's blocked flag.
+    const inputBlocked=blocked||radial||!!piece||!!placing||cameraOwns||menuOwns||menus.hubOn;
+    const stop=inputBlocked||!p.enabled;scene.player?.setBlocked(inputBlocked);scene.player?.input(stop?0:x,stop?0:y);scene.player?.cameraInput?.(stop?0:cx,stop?0:cy);
   }};
 }

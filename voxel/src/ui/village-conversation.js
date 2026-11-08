@@ -16,13 +16,26 @@ export function conversationPages(lines = [], choices = []) {
 
 export function createVillageConversation({ mount = document.body, onChoice = () => {}, onContinue = () => {}, onClose = () => {}, portrait = () => null, narration, savePrefs = () => {} } = {}) {
   const panel = document.createElement("section"); panel.id = "village-dialogue"; panel.hidden = true;
-  panel.setAttribute("role", "dialog"); panel.setAttribute("aria-modal", "false"); panel.setAttribute("aria-labelledby", "village-dialogue-name"); panel.setAttribute("aria-describedby", "village-dialogue-line"); panel.tabIndex = -1;
+  panel.setAttribute("role", "dialog"); panel.setAttribute("aria-modal", "true"); panel.setAttribute("aria-labelledby", "village-dialogue-name"); panel.setAttribute("aria-describedby", "village-dialogue-line"); panel.tabIndex = -1;
   panel.innerHTML = '<header class="village-dialogue-head"><span class="village-person-art" aria-hidden="true"></span><div class="village-dialogue-person"><h2 id="village-dialogue-name"></h2><p class="village-dialogue-role"></p></div><button class="village-close" data-village-dialogue-close aria-label="Close conversation">×</button></header><div class="village-dialogue-body"><p class="village-dialogue-heading" hidden></p><p id="village-dialogue-line" class="village-dialogue-line" aria-live="polite" aria-atomic="true"></p><div class="village-dialogue-replies" role="group" aria-label="Your reply"></div><div class="village-dialogue-bond" hidden></div></div><footer class="village-dialogue-footer"><span class="village-dialogue-page" aria-label="Conversation progress"></span><button class="village-dialogue-next" data-village-dialogue-next data-pad-default>Continue</button></footer>';
   mount.append(panel);
   const query = selector => panel.querySelector(selector), next = query("[data-village-dialogue-next]");
-  let session = null, pages = [], page = 0, answered = false, showingReply = false, previousFocus = null, speaker = null, currentVoice = null;
+  let session = null, pages = [], page = 0, answered = false, showingReply = false, previousFocus = null, closingOpener = null, speaker = null, currentVoice = null;
   const voices = createNarrationControls({ mount: query(".village-dialogue-footer"), narration, savePrefs, line: () => session ? currentVoice : null });
   query(".village-dialogue-footer").append(next);
+  // A page change should land on the answer, not leave focus on hidden voice
+  // controls. The village controller still owns pad navigation and activation.
+  const available = element => {
+    if (!element || element.disabled) return false;
+    for (let node = element; node; node = node.parentElement) if (node.hidden || node.inert) return false;
+    return !element.getClientRects || !!element.getClientRects().length;
+  };
+  function focusAction() { (available(query(".village-reply")) ? query(".village-reply") : available(next) ? next : query("[data-village-dialogue-close]"))?.focus({ preventScroll: true }); }
+  function updateProgress() {
+    next.textContent = page === pages.length - 1 ? "Finish chat" : "Continue";
+    next.setAttribute("aria-label", page === pages.length - 1 ? "Finish conversation" : "Continue conversation");
+    query(".village-dialogue-page").textContent = pages[page].choices?.length && !showingReply ? "Your reply" : pages.length > 1 ? `${page + 1} of ${pages.length}` : "";
+  }
   function speak(text) {
     narration?.stop();
     currentVoice = text && text !== "How will you answer?" ? { speaker, text } : null;
@@ -32,9 +45,11 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
   function close(restoreFocus = true) {
     if (!session) return;
     narration?.stop(); currentVoice = null;
-    const id = session.id; session = null; panel.hidden = true;
-    document.body.classList.remove("village-conversation-open"); onClose(id);
-    if (restoreFocus && previousFocus?.isConnected) previousFocus.focus?.({ preventScroll: true });
+    const id = session.id, opener = previousFocus; session = null; panel.hidden = true;
+    document.body.classList.remove("village-conversation-open"); closingOpener = opener;
+    try { onClose(id); } finally { closingOpener = null; }
+    // A completion callback may already have opened the next conversation.
+    if (!session && restoreFocus && opener?.isConnected && available(opener)) opener.focus?.({ preventScroll: true });
   }
   function updatePerson() {
     const person = speaker === session.id ? session : FOLK_BY_ID[speaker] ?? HOST_BY_ID[speaker] ?? { name: speaker };
@@ -70,8 +85,7 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
     }
     replies.hidden = !current.choices?.length || showingReply;
     next.hidden = !!current.choices?.length && !showingReply;
-    next.textContent = page === pages.length - 1 ? "Done" : "Continue";
-    query(".village-dialogue-page").textContent = pages.length > 1 ? `${page + 1} / ${pages.length}` : "";
+    updateProgress();
     query(".village-dialogue-body").scrollTop = 0;
   }
   function reply(text, who) {
@@ -81,25 +95,38 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
     panel.dataset.dialogueState = "speaking";
     query(".village-dialogue-line").textContent = String(text ?? "");
     speak(String(text ?? ""));
-    query(".village-dialogue-replies").hidden = true; next.hidden = false; next.textContent = page === pages.length - 1 ? "Done" : "Continue"; next.focus({ preventScroll: true });
+    query(".village-dialogue-replies").hidden = true; next.hidden = false; updateProgress(); query(".village-dialogue-body").scrollTop = 0; focusAction();
   }
   function advance() {
     if (!session || next.hidden) return;
     narration?.stop();
-    if (page < pages.length - 1) { page++; answered = false; showingReply = false; render(); (query(".village-reply") ?? next).focus({ preventScroll: true }); return; }
+    if (page < pages.length - 1) { page++; answered = false; showingReply = false; render(); focusAction(); return; }
     const current = session; onContinue({ id: session.id, finished: true });
     if (session === current) close();
   }
   const escape = event => { if (event.key === "Escape" && session) { event.preventDefault(); event.stopImmediatePropagation(); close(); } };
+  // Tab stays in the conversation while its village movement is suspended;
+  // Enter/Space retain native button behaviour and never trigger an extra reply.
+  const tab = event => {
+    if (event.key !== "Tab" || !session) return;
+    const choices = [...panel.querySelectorAll("button")].filter(available), first = choices[0], last = choices.at(-1), current = document.activeElement;
+    if (!choices.length) { event.preventDefault(); panel.focus({ preventScroll: true }); return; }
+    if (!choices.includes(current)) { event.preventDefault(); (event.shiftKey ? last : first).focus({ preventScroll: true }); }
+    else if (event.shiftKey && current === first) { event.preventDefault(); last.focus({ preventScroll: true }); }
+    else if (!event.shiftKey && current === last) { event.preventDefault(); first.focus({ preventScroll: true }); }
+  };
   query("[data-village-dialogue-close]").addEventListener("click", () => close()); next.addEventListener("click", advance); document.addEventListener("keydown", escape, true);
+  document.addEventListener("keydown", tab, true);
   return {
     open(options) {
       narration?.stop();
-      previousFocus = document.activeElement; session = { ...options }; pages = conversationPages(options.lines, options.choices); page = 0; answered = false; showingReply = false;
-      speaker = options.id; currentVoice = null; render(); panel.hidden = false; document.body.classList.add("village-conversation-open"); panel.focus({ preventScroll: true });
+      if (closingOpener) previousFocus = closingOpener;
+      else if (!session || !panel.contains(document.activeElement)) previousFocus = document.activeElement;
+      session = { ...options }; pages = conversationPages(options.lines, options.choices); page = 0; answered = false; showingReply = false;
+      speaker = options.id; currentVoice = null; render(); panel.hidden = false; document.body.classList.add("village-conversation-open"); focusAction();
     },
     reply, close,
     get active() { return !!session; },
-    dispose() { close(false); voices.dispose(); document.removeEventListener("keydown", escape, true); panel.remove(); },
+    dispose() { close(false); voices.dispose(); document.removeEventListener("keydown", escape, true); document.removeEventListener("keydown", tab, true); panel.remove(); },
   };
 }

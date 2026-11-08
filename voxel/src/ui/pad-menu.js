@@ -15,6 +15,7 @@ const FOCUSABLE = 'button:not(:disabled),a[href],input:not(:disabled):not([type=
 const MODALS = [".house-goal-modal:not([hidden])", "#level-celebration:not([hidden])", "#intro:not([hidden])"];
 const PANELS = ["#hayride-ride-ui:not([hidden]) .hayride-ride-panel", "#stock-popover:not([hidden])", "#upgrade-menu:not([hidden])", "#sheet:not([hidden])"];
 const HUB = ["#dock", "#actions", "#hud", "#place-bar", ".home-journey-chip", "#play-toggle", ".npc-reward", ".guest-card", ".chat-card", ".hollow-context", ".hayride-context", "#dialogue"];
+const FARM_BARS = ["#hud", "#actions", "#dock"];
 const FIRST_REPEAT = 380, REPEAT = 140, STICK = .5;
 
 // The nearest choice from `from` in the direction (dx, dy), as an index into
@@ -65,19 +66,20 @@ const centre = (r) => ({ x: (r.left + r.right) / 2, y: (r.top + r.bottom) / 2 })
 // picture is the choice) is the whole box, so a step down lands on the tile below, not beside.
 const rectOf = (el) => (el.closest?.("[data-pad-box]") ?? el).getBoundingClientRect();
 
-export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, hubAllowed = () => true } = {}) {
-  let using = false, hubOn = false, hubFrom = "", hubKey = null, lastKey = null, lastSpot = null, lastSurface = "", ringOn = null;
+export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, hubAllowed = () => true, onFarmBarsChange = () => {} } = {}) {
+  let using = false, hubOn = false, farmBars = false, farmKey = null, hubFrom = "", hubKey = null, lastKey = null, lastSpot = null, lastSurface = "", ringOn = null;
   let dir = "", nextAt = 0, then = performance.now(), crossHeld = false, hintKey = "", stickScroll = null, movedAt = 0, openedAt = 0;
   const hints = document.createElement("div"); hints.className = "pad-hints"; hints.hidden = true; hints.setAttribute("aria-hidden", "true");
-  document.body.append(hints);
-  function quiet() { ring(null); hints.hidden = true; document.body.classList.remove("pad-menus"); }
+  const shortcut = document.createElement("div"); shortcut.className = "farm-hud-shortcut"; shortcut.hidden = true; shortcut.setAttribute("aria-hidden", "true");
+  document.body.append(hints, shortcut);
+  function quiet() { ring(null); hints.hidden = shortcut.hidden = true; document.body.classList.remove("pad-menus"); }
   // Touch, the mouse or a key hands the menus back: the ring and the prompts go.
   const handBack = () => { if (using) { using = false; quiet(); } };
   addEventListener("pointerdown", handBack, true); addEventListener("keydown", handBack, true); addEventListener("wheel", handBack, { capture: true, passive: true });
 
   function surface() {
     const modal = query(MODALS); if (modal) return { el: modal, roots: [modal], name: surfaceName(modal), modal: true };
-    if (hubOn) return { el: document.getElementById("dock"), roots: HUB.map((s) => document.querySelector(s)).filter(Boolean), name: "hub", hub: true };
+    if (hubOn) return { el: document.getElementById("dock"), roots: (farmBars ? FARM_BARS : HUB).map((s) => document.querySelector(s)).filter(Boolean), name: farmBars ? "farm-bars" : "hub", hub: true, farmBars };
     const panel = query(PANELS); return panel ? { el: panel, roots: [panel], name: surfaceName(panel) } : null;
   }
   const inside = (sf, el) => !!el && sf.roots.some((r) => r.contains(el));
@@ -88,6 +90,7 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
   // Where the ring starts in a menu: a marked choice, the open tab, the first
   // choice; never the way out.
   function firstChoice(sf, list) {
+    if (sf.farmBars) return list.find((el) => matchesKey(el, farmKey)) ?? list.find((el) => el.id === "open-levels") ?? list.find((el) => el.closest("#hud")) ?? list[0] ?? null;
     if (sf.hub) return document.querySelector("#dock .tab.active") ?? document.querySelector('#dock .tab[data-tab="shop"]');
     return list.find((el) => el.matches("[data-pad-default]")) ?? list.find((el) => el.matches('.segmented [aria-pressed="true"]')) ?? list.find((el) => !closer(el)) ?? list[0] ?? null;
   }
@@ -120,6 +123,7 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
     if (document.activeElement !== el) el.focus({ preventScroll: true });
     if (scroll) reveal(sf, el);
     lastKey = choiceKey(el); lastSpot = centre(rectOf(el)); ring(using ? el : null);
+    if (sf.farmBars) farmKey = lastKey;
   }
   const inView = (el, box) => { if (!box) return true; const r = rectOf(el), v = box.getBoundingClientRect(); return r.bottom > v.top + 4 && r.top < v.bottom - 4; };
 
@@ -176,21 +180,30 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
     const pages = [...root.querySelectorAll(".pager [data-page]")], page = step > 0 ? pages.at(-1) : pages[0];
     if (page && !page.disabled) { focus(sf, page, false); page.click(); feel("tick"); }
   }
-  function toggleHub(on) {
+  function toggleHub(on, bars = false) {
     if (on === hubOn) return;
     // Play mode hides the dock; the hub shows it again (ui/menus.css).
     document.body.classList.toggle("pad-hub", on);
-    if (on) { hubFrom = surfaceName(query(PANELS)); hubKey = choiceKey(document.activeElement); hubOn = true; lastSurface = ""; feel("open"); return; }
-    hubOn = false; lastSurface = "";
+    if (on) {
+      hubFrom = surfaceName(query(PANELS)); hubKey = choiceKey(document.activeElement); hubOn = true; farmBars = bars; lastSurface = ""; dir = "";
+      document.body.classList.toggle("farm-bars-nav", farmBars); shortcut.hidden = true;
+      if (farmBars) { onFarmBarsChange(true); const sf = surface(); focus(sf, firstChoice(sf, choices(sf)), false); }
+      feel("open"); return;
+    }
+    const wasFarmBars = farmBars;
+    hubOn = farmBars = false; lastSurface = ""; dir = ""; hints.hidden = true;
+    document.body.classList.remove("farm-bars-nav");
+    if (wasFarmBars) onFarmBarsChange(false);
     // Back to the menu the ring came down from, on the same choice.
-    const sf = surface(); if (!sf) { ring(null); if (document.activeElement && document.getElementById("dock").contains(document.activeElement)) document.activeElement.blur(); return; }
+    const sf = surface(); if (!sf) { ring(null); if (document.activeElement && (wasFarmBars ? FARM_BARS : ["#dock"]).some((s) => document.querySelector(s)?.contains(document.activeElement))) document.activeElement.blur(); return; }
     const list = choices(sf), el = sf.name === hubFrom ? list.find((x) => matchesKey(x, hubKey)) : null;
     focus(sf, el ?? firstChoice(sf, list));
   }
 
   function prompts(sf, current, box, mode) {
     const G = (id) => glyphHTML(id, mode), items = [];
-    if (sf.hub) items.push([G("confirm"), "Choose"], [G("back"), "Close"]);
+    if (sf.farmBars) items.push([G("dpad"), "Navigate"], [G("confirm"), "Select"], [G("back"), "Back"], [G("lt"), "Close"]);
+    else if (sf.hub) items.push([G("confirm"), "Choose"], [G("back"), "Close"]);
     else {
       const root = bodyOf(sf), panel = ["sheet", "upgrade-menu", "stock-popover"].includes(sf.el.id);
       // data-pad-label says what ✕ does on a choice that answers it itself (a catalogue tile: Buy, Place).
@@ -205,17 +218,19 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
     const key = mode + "|" + items.map((i) => i[1]).join();
     if (key !== hintKey) { hintKey = key; hints.innerHTML = items.map(([g, t]) => `<span>${g}<b>${t}</b></span>`).join(""); }
     hints.classList.toggle("hub", !!sf.hub);
+    hints.classList.toggle("farm-bars", !!sf.farmBars);
   }
 
   return {
     get hubOn() { return hubOn; },
+    get farmBars() { return farmBars; },
     // Whether a menu (or the hub) is on screen now, for the pad cursor.
     get open() { return !!surface(); },
     get using() { return using; },
     // Called by play mode every frame a pad is connected. Returns true while a
     // menu (or the hub, or anything else holding the screen) has the pad, so
     // play mode leaves the buttons alone.
-    tick({ pad, down, pressed, mode, blocked }) {
+    tick({ pad, down, pressed, mode, blocked, farmBarsEligible = false }) {
       const now = performance.now(), dt = Math.min(.1, (now - then) / 1000); then = now;
       const lx = pad.axes[0] ?? 0, ly = pad.axes[1] ?? 0, ry = pad.axes[3] ?? 0;
       // ✕ let go of after a hold-to-buy press.
@@ -225,12 +240,21 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
         // The pad at work outside the menus (play, building) means the next menu it opens shows the ring at once.
         if (Math.hypot(lx, ly) > STICK || down.some((d, i) => d && pressed(i))) using = true;
         quiet(); lastSurface = "";
+        if (using && farmBarsEligible && hubAllowed()) {
+          const key = mode + ":farm";
+          if (shortcut.dataset.mode !== key) { shortcut.dataset.mode = key; shortcut.innerHTML = `${glyphHTML("lt", mode)}<b>Farm menus</b>`; }
+          shortcut.hidden = false;
+        }
+        // L2 reaches just the two farm bars, including while controlling an owner.
+        // The input owner releases held world controls at both boundaries.
+        if (farmBarsEligible && pressed(6) && hubAllowed()) { using = true; toggleHub(true, true); return true; }
         // Options (or the DualSense's touchpad) brings the ring to the hub.
         if (menuPress && hubAllowed()) { using = true; toggleHub(true); return true; }
         // Something else has the screen (the carving bench, a ride): ○ still means back.
         if (blocked && pressed(1)) back();
         return blocked;
       }
+      shortcut.hidden = true;
       const moved = [12, 13, 14, 15].some((i) => down[i]) || Math.hypot(lx, ly) > STICK || Math.abs(ry) > .3;
       const active = moved || menuPress || [0, 1, 2, 4, 5, 6, 7].some((i) => pressed(i));
       const wasUsing = using; if (active) using = true;
@@ -255,6 +279,8 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
       if (!using) return true;
       const box = current ? scroller(sf, current) : null;
       prompts(sf, current, box, mode); hints.hidden = !!sf.modal;
+      // Closing the bars wins over any face button held on the same frame.
+      if (sf.farmBars && (pressed(1) || pressed(6))) { toggleHub(false); return true; }
       const stickDir = Math.hypot(lx, ly) > STICK ? (Math.abs(lx) > Math.abs(ly) ? (lx > 0 ? "r" : "l") : (ly > 0 ? "d" : "u")) : "";
       const want = down[12] ? "u" : down[13] ? "d" : down[14] ? "l" : down[15] ? "r" : stickDir;
       // The first press after touch or keys only shows the ring (○ and Options still act).

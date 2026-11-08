@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
 import { QUESTS } from "../src/content/village-quests.js";
+import { NODES } from "../src/content/village.js";
 import { renderVillageChapter } from "../src/ui/village-chapters.js";
 
 function village() {
@@ -110,4 +111,69 @@ test("the valuable costume reward is visible before its optional full receipt", 
   assert.ok(quest.indexOf("Moonlit mummy outfits for both") < quest.indexOf('<details class="vg-ch-reward-fold"'));
   assert.match(quest, /Moonlit mummy outfits for both · £250/);
   assert.match(quest, /All rewards/); assert.match(quest, /aria-pressed="true"/);
+});
+
+test("one followed quest leads while other active stories start folded with stable memory keys", () => {
+  const s = village();
+  s.village.quests["rowan-1"] = { step: 2, done: false, base: null };
+  s.village.quests["elowen-1"] = { step: 0, done: false, base: null };
+  const html = render(s, "journal", { trackedQuestId: "rowan-1" }).html;
+  assert.equal((html.match(/vg-ch-quest is-tracked/g) ?? []).length, 1);
+  assert.match(html, /<details class="vg-ch-story-fold" data-vg-details-key="story:elowen-1">/);
+  assert.doesNotMatch(html, /<details[^>]*story:elowen-1[^>]*\bopen\b/);
+  assert.match(html, /data-vg-details-key="reward:rowan-1"/);
+  assert.match(html, /data-vg-details-key="reward:elowen-1"/);
+  assert.match(html, /data-vg-details-key="finished-stories"/);
+  assert.match(html, /data-vg-details-key="friendship-keepsakes"/);
+  assert.match(html, /data-vg-details-key="explore-help"/);
+  // Following another story changes presentation, without changing either quest.
+  const before = structuredClone(s), changed = render(s, "journal", { trackedQuestId: "elowen-1" }).html;
+  assert.match(changed, /data-vg-details-key="story:rowan-1"/); assert.deepEqual(s, before);
+});
+
+test("satchel priorities show the supplies first and explain full, returning and quest-needed stock", () => {
+  const s = village(); s.village.quests["rowan-1"] = { step: 2, done: false, base: null };
+  let html = render(s, "materials").html;
+  assert.ok(html.indexOf('data-vg-material="logs"') < html.indexOf('data-vg-page="upgrades"'));
+  assert.match(html, /Needed for a quest/);
+  assert.doesNotMatch(card(html, 'data-vg-gather="logs"'), /disabled/);
+  s.village.materials.logs = M.villageMaterialCapacity(s);
+  html = render(s, "materials").html;
+  assert.match(card(html, 'data-vg-gather="logs"'), /disabled/);
+  assert.match(html, /Use some supplies or improve your satchel/);
+  s.village.materials.logs = 0;
+  for (const node of NODES) if (node.material === "logs" && node.district === "green") s.village.nodes[node.id] = 80;
+  html = render(s, "materials").html;
+  assert.match(card(html, 'data-vg-gather="logs"'), /disabled/); assert.match(html, /Next spot in 2 min/);
+});
+
+test("the workshop puts unlocked choices before future plans and gives the precise shortage", () => {
+  const s = village(); done(s, "rowan-stall"); s.village.unlocks.push("stall");
+  s.coins = 100; s.village.materials.fibre = 3;
+  let html = render(s, "upgrades").html;
+  assert.ok(html.indexOf('class="vg-ch-upgrade-list"') < html.indexOf('data-vg-details-key="workshop-later"'));
+  assert.match(html, /Need £20 more and 1 more fibre/);
+  assert.match(card(html, 'data-vg-upgrade="satchel-pockets"'), /disabled/);
+  assert.match(html, /data-vg-upgrade="satchel-frame"[^>]*disabled/);
+  s.coins = 120; s.village.materials.fibre = 4;
+  html = render(s, "upgrades").html;
+  assert.match(card(html, 'data-vg-upgrade="satchel-pockets"'), /data-pad-default/);
+  s.paused = true;
+  assert.match(render(s, "upgrades").html, /Resume play to make this improvement/);
+  s.paused = false; assert.equal(M.buyVillageUpgrade(s, "satchel-pockets"), true);
+  html = render(s, "upgrades").html;
+  assert.equal(card(html, 'data-vg-upgrade="satchel-pockets"'), undefined);
+  assert.match(html, /data-vg-details-key="workshop-owned"/);
+});
+
+test("stall prices explain insufficient funds and become usable when the quote is affordable", () => {
+  const s = village(); s.village.unlocks.push("stall"); s.coins = 0;
+  const item = M.stallStock(s).find(i => i.left > 0); assert.ok(item);
+  let html = render(s, "stall").html;
+  assert.match(html, /Available to spend/); assert.match(html, /more needed/);
+  assert.match(card(html, `data-vg-buy="${item.key}"`), /disabled/);
+  s.coins = item.price;
+  html = render(s, "stall").html;
+  assert.doesNotMatch(card(html, `data-vg-buy="${item.key}"`), /disabled/);
+  assert.ok(html.indexOf(`data-vg-buy="${item.key}"`) < html.indexOf('data-vg-decorate'));
 });

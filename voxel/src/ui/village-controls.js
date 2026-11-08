@@ -226,7 +226,7 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
     const choices = [...surface.querySelectorAll(CHOICES)].filter(usable);
     const first = () => choices.find(el => el.hasAttribute("data-pad-default")) ?? choices.find(el => !el.matches('[aria-label^="Close"],.village-close,[data-voice-toggle],[data-voice-replay]')) ?? choices[0];
     let current = choices.includes(doc.activeElement) ? doc.activeElement : null;
-    if (menu !== surface) { menu = surface; repeating.clear(); lastKey = null; current = first(); focus(surface, current); }
+    if (menu !== surface) { menu = surface; repeating.clear(); lastKey = null; current ??= first(); focus(surface, current); }
     else if (!current) { current = choices.find(el => JSON.stringify(choiceKey(el)) === lastKey) ?? first(); focus(surface, current); }
     else setRing(current);
     const down = pad.down ?? Array.from(pad.g.buttons ?? [], (_, i) => downAt(pad.g, i));

@@ -180,3 +180,72 @@
 #vg-panel-body .vg-ch-prize-preview small{display:block;font-size:12px;line-height:1.4;color:#bda4c6;margin-bottom:3px}
 #vg-panel-body .vg-ch-prize-preview b{display:block;font-size:12px;line-height:1.45;color:#efd6ad;font-weight:600;overflow-wrap:anywhere}
 #vg-panel-body .vg-ch-quest .vg-ch-reward-fold summary{min-height:44px;font-size:12px;color:#c4adce}
+
+/* One story leads; the rest are easy to recognise without a wall of tasks. */
+#vg-panel-body .vg-ch-other-stories{margin:19px 0 17px}
+#vg-panel-body :is(.vg-ch-other-stories>h3,.vg-ch-section-title){display:flex;align-items:center;gap:8px;margin:0 0 11px;color:#ddc9e1;font:600 13px/1.4 var(--body)}
+#vg-panel-body :is(.vg-ch-other-stories>h3,.vg-ch-section-title)>span{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 4px;border-radius:7px;background:#b28dc021;color:#e7cfed;font-size:12px;box-sizing:border-box}
+#vg-panel-body details.vg-ch-story-fold{margin:0 0 8px;padding:0;border:1px solid #bd9bc52b;border-radius:14px;background:#a784b80a;overflow:hidden}
+#vg-panel-body .vg-ch-story-fold>summary{display:flex;align-items:center;gap:12px;min-height:75px;padding:12px;list-style:none;box-sizing:border-box;cursor:pointer}
+#vg-panel-body .vg-ch-story-fold>summary::-webkit-details-marker{display:none}
+#vg-panel-body .vg-ch-story-fold>summary>span{flex:1;min-width:0}
+#vg-panel-body .vg-ch-story-fold>summary small{display:block;font-size:12px;line-height:1.4;color:#bfa6cc}
+#vg-panel-body .vg-ch-story-fold>summary b{display:block;margin:3px 0;color:#f0dfdc;font-size:14px;line-height:1.35;font-weight:600}
+#vg-panel-body .vg-ch-story-task{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#cfbdd6;font-size:12px;line-height:1.4}
+#vg-panel-body .vg-ch-story-fold>summary>i{color:#e4c18c;font-style:normal;font-size:20px;flex:0 0 20px;text-align:center}
+#vg-panel-body .vg-ch-story-fold[open]{border-color:#d8b77c50;background:#b88ac611}
+#vg-panel-body .vg-ch-story-fold[open]>summary>i{transform:rotate(180deg)}
+#vg-panel-body .vg-ch-story-fold[open] .vg-ch-story-task{display:none}
+#vg-panel-body .vg-ch-story-fold>.vg-ch-quest{padding:0 12px 13px;margin:0;border:0;border-radius:0;background:none;box-shadow:none}
+#vg-panel-body .vg-ch-story-fold .vg-ch-card-head{justify-content:flex-end}
+#vg-panel-body .vg-ch-story-fold .vg-ch-card-head>div{display:none}
+#vg-panel-body .vg-ch-quest-progress{display:block;appearance:none;width:100%;height:4px;margin:0 0 12px;border:0;background:#160f20;border-radius:4px;overflow:hidden}
+
+/* The satchel exposes usable quantities and why a spot cannot be found yet. */
+#vg-panel-body .vg-ch-info-note{padding:13px 14px;margin:0 0 16px;background:#aa83bb12;border:1px solid #ba95c12e;border-radius:13px}
+#vg-panel-body .vg-ch-info-note>b{color:#f1ddc8;font-size:14px;font-weight:600}
+#vg-panel-body .vg-ch-info-note>p{font-size:13px;line-height:1.5;color:#d2bdd9;margin:7px 0 10px}
+#vg-panel-body .vg-ch-material-copy{min-width:0;flex:1}
+#vg-panel-body .vg-ch-material-copy h3{margin:0;font-size:15px;line-height:1.4}
+#vg-panel-body .vg-ch-needed{display:block;font-size:12px;line-height:1.4;color:#e8c48e;margin-top:3px}
+#vg-panel-body .vg-ch-material-list{margin-bottom:16px}
+#vg-panel-body .vg-ch-material footer{align-items:flex-end;padding-top:10px}
+#vg-panel-body .vg-ch-material footer>span{min-width:0;flex:1}
+#vg-panel-body .vg-ch-material footer small{display:block;line-height:1.45;overflow-wrap:anywhere}
+#vg-panel-body .vg-ch-availability{display:block;color:#dcc4e3;font-size:12px;line-height:1.4;font-weight:600;margin-bottom:2px}
+#vg-panel-body .vg-ch-material.is-ready .vg-ch-availability{color:#cedab6}
+#vg-panel-body .vg-ch-material.is-full .vg-ch-availability{color:#ebcd9d}
+#vg-panel-body .vg-ch-material footer .vg-ch-action{flex-shrink:0;margin-left:4px;min-width:74px}
+
+/* Workshop choices lead with the effect; costs are short, consistent receipts. */
+#vg-panel-body .vg-ch-summary-band{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 14px;margin:0 0 19px;border-radius:12px;background:#17101f45;border:1px solid #b998c02b}
+#vg-panel-body .vg-ch-summary-band>span{min-width:0}
+#vg-panel-body .vg-ch-summary-band>span+span{border-left:1px solid #b998c026;padding-left:12px}
+#vg-panel-body .vg-ch-summary-band small{display:block;font-size:12px;line-height:1.4;color:#c5adcf}
+#vg-panel-body .vg-ch-summary-band b{display:block;margin-top:4px;font-size:20px;line-height:1.25;color:#f0c98e;font-weight:600;font-variant-numeric:tabular-nums}
+#vg-panel-body .vg-ch-summary-band b>small{display:inline;font-size:12px;color:#c5adcf}
+#vg-panel-body .vg-ch-upgrade>p:not(.vg-ch-hint){font-size:13px;line-height:1.5;color:#dfcde1;margin:7px 0 12px}
+#vg-panel-body .vg-ch-costs{display:flex;flex-wrap:wrap;gap:6px;margin:11px 0 7px}
+#vg-panel-body .vg-ch-costs>span{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:4px 8px;background:#110b1d35;border:1px solid #b79bc126;border-radius:8px;color:#dbd4ca;font-size:12px;line-height:1.4;box-sizing:border-box}
+#vg-panel-body .vg-ch-costs>span.is-short{color:#e0b8c5;border-color:#cb8da337}
+#vg-panel-body .vg-ch-costs b{font-size:12px;font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+#vg-panel-body .vg-ch-costs .village-item-icon{width:24px;height:24px;flex:0 0 24px}
+#vg-panel-body p.vg-ch-hint.is-ready{color:#cadab7}
+#vg-panel-body details.vg-ch-workshop-fold{margin:15px 0 16px;padding:0;border-top:1px solid #c3a1cc25}
+#vg-panel-body .vg-ch-workshop-fold>summary{display:flex;align-items:center;gap:10px;min-height:50px;padding:10px 2px;color:#ddc9e1;font-size:13px;list-style:none;cursor:pointer}
+#vg-panel-body .vg-ch-workshop-fold>summary::before{content:'›';font-size:21px;line-height:1;color:#d9b67e;width:14px;flex-shrink:0}
+#vg-panel-body .vg-ch-workshop-fold>summary::-webkit-details-marker{display:none}
+#vg-panel-body .vg-ch-workshop-fold[open]>summary::before{transform:rotate(90deg)}
+#vg-panel-body .vg-ch-workshop-fold>summary>span{flex:1}
+#vg-panel-body .vg-ch-workshop-fold>summary>b{font-size:12px;font-weight:500;color:#bfa6ca}
+#vg-panel-body .vg-ch-workshop-fold .vg-ch-upgrade{margin-bottom:10px}
+#vg-panel-body article.vg-ch-made{display:flex;align-items:flex-start;gap:10px;padding:11px 0;margin:0;border:0;border-bottom:1px solid #bd9ac323;border-radius:0;background:none}
+#vg-panel-body .vg-ch-made>span{color:#c9d8ad;font-size:15px;padding-top:1px}
+#vg-panel-body .vg-ch-made h3{font-size:14px;line-height:1.4;margin:0;color:#e7d7df}
+#vg-panel-body .vg-ch-made p{font-size:12px;line-height:1.5;color:#c5afce;margin:4px 0 0}
+#vg-panel-body .vg-ch-wallet{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:10px 13px;border:1px solid #bc97c22c;border-radius:11px;background:#1b132642}
+#vg-panel-body .vg-ch-wallet>span{flex:1;font-size:12px;color:#ccb6d3}
+#vg-panel-body .vg-ch-wallet>b{font-size:18px;font-variant-numeric:tabular-nums;color:#edc98e;font-weight:600}
+#vg-panel-body .vg-ch-product-body .vg-ch-shortfall{display:block;margin-top:7px;color:#e0b6c6;font-size:12px;line-height:1.4}
+@media(max-width:380px){#vg-panel-body .vg-ch-material-title{gap:8px}#vg-panel-body .vg-ch-material-title>.village-item-icon{width:40px;height:40px;flex-basis:40px}#vg-panel-body .vg-ch-costs{gap:5px}#vg-panel-body .vg-ch-costs>span{padding-inline:6px}}
+@media(prefers-reduced-motion:no-preference){#vg-panel-body .vg-ch-story-fold>summary>i,#vg-panel-body .vg-ch-workshop-fold>summary::before{transition:transform .15s ease}}
