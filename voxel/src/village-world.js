@@ -310,7 +310,8 @@ export function buildGreen() {
   stoneWall(R, 0, .6, 53.3, .6, 1.2, r); stoneWall(R, 62.7, .6, 120, .6, 1.2, r);
   stoneWall(R, .6, 0, .6, 30, 1.2, r); stoneWall(R, 119.4, 0, 119.4, 30, 1.2, r);
   mothPillar(fr(54, .6, "south"), 0, 0, r); mothPillar(fr(62, .6, "south"), 0, 0, r);
-  for (let i = 0; i < 9; i++) { const a = i / 8 * Math.PI; R.block(58 + Math.cos(a) * 4, 4.4 + Math.sin(a) * 1.1, .6, .5, .22, .3, C.iron); }
+  // Overlapping segments read as an arch from the low decorating camera, not floating cubes.
+  for (let i = 0; i <= 32; i++) { const a = i / 32 * Math.PI; R.block(58 + Math.cos(a) * 4, 4.4 + Math.sin(a) * 1.1, .6, .5, .22, .3, C.iron); }
   R.block(58, 5.2, .6, 1.2, .5, .1, C.plum); R.block(58, 5.3, .65, .8, .3, .05, C.gold);
   { const c = FIXTURES.carriage; carriage(fr(c.x - 2.2, c.z, c.facing), 0, 0, r); }
   // The square: the Moth Tree at its heart, its lamps, the well, planters, flowers round the edges.
