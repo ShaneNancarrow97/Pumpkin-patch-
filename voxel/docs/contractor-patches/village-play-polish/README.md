@@ -68,3 +68,7 @@ Read the focused notes in this folder before merging shared files into independe
 Run from `voxel/`: `npm test`, `node build.mjs --out /absolute/path/game.html`, and the exact-HTML browser runner `tools/village-play-polish-qa.mjs`. Some asset tests invoke Python; the execution profile must allow child processes. Reports distinguish fixture setup, real controller/touch actions, held drawing, screenshots and viewport emulation.
 
 The current shared-exit build and its exact verification scope are recorded in [the latest delivery receipt](SHARED-EXIT-DELIVERY.md). Initial polish provenance remains in [the earlier receipt](DELIVERY.md). Browser viewport tests do not certify physical Z Fold, Bluetooth, TV or native Android performance. Android packaging is a separate final job after the HTML and ZIP have passed their checks.
+
+## Android delivery
+
+The offline Android host was built last from the checked shared-exit HTML. See [the Android contractor addendum](ANDROID-HANDOVER.md) and [source/rebuild guide](../../../android/README.md) for asset caching, native input, save transfer, signing and the unverified hardware-test scope. The Android code does not change browser game rules or artwork.

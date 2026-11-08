@@ -21,3 +21,11 @@ Keep `content/village-gateway.js`, `main.js`, `player-control.js`, `scene.js`, `
 Source remains isolated on `contractor/village-play-polish`. Claude’s working checkout and `voxel-reference` were not modified. The checked lead remained `604fe2359427fc7e90a3d1248a6c4d1d6b0136c8`. Review in a clean worktree; do not overwrite independently changed files. The game patch kit starts at `ff6b5803686c449b902d405037f8958d03e3e2d8`; public artifact metadata records the exact source commit and clean replay.
 
 The HTML and ZIP are verified and published before the final Android rebuild. Android is a separate contractor addition under `voxel/android`, with its own source, native-only adapters, signing instructions and honest install/hardware-test scope.
+
+## Published game files
+
+- [Full offline HTML](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/42946eceb72922388a4b3bcd6cf9bd70ac0c27cc/Pumpkin-Patch-Village-Play-Polish.html)
+- [Game ZIP](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/42946eceb72922388a4b3bcd6cf9bd70ac0c27cc/Pumpkin-Patch-Village-Play-Polish.zip)
+- [Five-patch Claude game kit](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/42946eceb72922388a4b3bcd6cf9bd70ac0c27cc/Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip)
+
+Game source: `8bf4d53b530fd835c20f4515e76913b376b295c9`, tree `c3d63518246339f6e86e71c5ab9e4e855d9f93d9`. A clean replay from the previous handover recreated that exact tree and rebuilt byte-identical HTML. All three public files were downloaded in full and checked against SHA-256/byte counts; see [download receipt](verification/download-receipt-latest.json). Android packaging began only after these game jobs and checks were complete.

@@ -1,0 +1,11 @@
+test_dedupes_css_and_js_with_exact_binary_hashes (extract_assets_test.AssetExtraction.test_dedupes_css_and_js_with_exact_binary_hashes) ... ok
+test_json_escaped_slashes_and_unpadded_fonts (extract_assets_test.AssetExtraction.test_json_escaped_slashes_and_unpadded_fonts) ... ok
+test_malformed_data_never_partially_rewrites_the_package (extract_assets_test.AssetExtraction.test_malformed_data_never_partially_rewrites_the_package) ... ok
+test_origin_and_source_are_not_ambiguous (extract_assets_test.AssetExtraction.test_origin_and_source_are_not_ambiguous) ... ok
+test_other_data_and_non_base64_svg_are_retained (extract_assets_test.AssetExtraction.test_other_data_and_non_base64_svg_are_retained) ... ok
+test_repeat_build_removes_only_previously_generated_stale_files (extract_assets_test.AssetExtraction.test_repeat_build_removes_only_previously_generated_stale_files) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.004s
+
+OK
