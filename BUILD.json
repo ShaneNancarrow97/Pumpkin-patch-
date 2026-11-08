@@ -61,5 +61,12 @@
     ],
     "pageErrors": 0,
     "externalAssets": 0
+  },
+  "verificationCommit": "c1990b24beba955269feaeb69c9425b0b753a3ce",
+  "artifactCommit": "abea66665f18f04e221d6880ed6af9440735aaa7",
+  "publicDownloadVerification": {
+    "passed": true,
+    "files": 3,
+    "method": "Full public download, byte count and SHA-256 comparison"
   }
 }
