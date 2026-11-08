@@ -1,5 +1,7 @@
 # Mothlight roadmap after the first saved Green visit
 
+> Update, 8 November 2026: the repeatable Green interface, decorating, explicit tracking, almanac, gathering upgrades and local resident routes described below as next steps now ship in [Living Mothlight](../mothlight-living-village/ROADMAP.md). This document records the earlier first-visit slice.
+
 This roadmap distinguishes Claude's world at `604fe23`, this contractor's implemented first slice and later expansion. The remote lead was checked on 8 November 2026 and remains at that base. Exact release tests and screenshots belong in the release receipt; this is not a claim that every planned system ships.
 
 ## Already built: keep and polish

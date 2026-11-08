@@ -1,0 +1,10 @@
+{
+  "incrementalPatches": 4,
+  "leadPatches": 11,
+  "incrementalBase": "e2cd697a993ae46d372420d7f966c1b99b5519ab",
+  "leadBase": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
+  "resultTree": "18203904edd79829f499ebacde0c73f6a8431386",
+  "bothSeriesAppliedCleanly": true,
+  "rebuiltHtmlSHA256": "6cfd4e648a2f79ff499895f1957190a59fc3566415d98c9c4c214b94012fa9c8",
+  "matchesDeliveredHTML": true
+}
