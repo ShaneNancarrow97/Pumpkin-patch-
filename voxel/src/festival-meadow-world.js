@@ -275,7 +275,7 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
     fenceRun(v, r, 40, 2.9, 53.6, 2.9);
     // Same pickets, post caps, lanterns, tree crowns and leaf colours as the farm.
     for (const [x, z] of [[41, f + .5], [47, f + .5], [53.4, f + .5], [53.1, 16], [53.1, 9], [43, 3.2], [49, 3.2]]) lanternPost(v, x, z, [], false);
-    for (const [x, z, size, kind] of [[44.4, .6, 1, 2], [49, .8, 1.1, 0], [53.8, 1, 1.1, 1], [55.6, 8, 1, 2], [55.6, 14, 1.05, 0], [55.6, 21.8 + DROP, 1, 1]]) tree(v, r, x, z, size, kind);
+    for (const [x, z, size, kind] of [[44.4, .6, 1, 2], [49, .8, 1.1, 0], [53.8, 1, 1.1, 1], [55.6, 3.2, 1, 2], [58.6, 3.4, 1.05, 0], [55.6, 21.8 + DROP, 1, 1]]) tree(v, r, x, z, size, kind);
     for (const z of [5.1, 8.1]) { v.block(53.6, 0, z, .3, 2.8, .3, 0x4a2e1c); v.block(53.6, 2.8, z, .45, .12, .45, 0x6a4428); lanternPost(v, 54.1, z, [], false); }
     v.block(53.6, 2.9, 6.6, .35, .16, 3.4, 0x6a4428);
     // Planted drifts soften the border instead of outlining a new rectangle.

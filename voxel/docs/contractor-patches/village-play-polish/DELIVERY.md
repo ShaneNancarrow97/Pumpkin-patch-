@@ -1,6 +1,8 @@
-# Verified game delivery — Village Play Polish
+# Initial verified game delivery — Village Play Polish
 
-Game source is frozen at `a1965f00630a78366e555c8c9066921bdde9e0db`, tree `51ce02e81431662807faea1c3ceef1b4d0e3ffb8`. The following verification-only commit does not change the generated game.
+> This records the initial checked polish release. The later shared-exit update replaces its farm gateway after the user requested the existing road past Maisie. Retain these exact-hash reports as provenance; the latest handover records the follow-up build.
+
+Game source was frozen at `a1965f00630a78366e555c8c9066921bdde9e0db`, tree `51ce02e81431662807faea1c3ceef1b4d0e3ffb8`. The following verification-only commit does not change the generated game.
 
 ## Downloads
 

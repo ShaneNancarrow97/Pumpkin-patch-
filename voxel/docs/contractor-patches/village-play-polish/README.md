@@ -17,7 +17,7 @@ This is an isolated contractor update on `contractor/village-play-polish`, based
 - The home catalogue has 20 matching illustrated category icons. Village navigation has 12 custom icons. Controller legends use recreated vector DualSense symbols from the user's reference, with restrained face-button colours and amber active states.
 - The stick cursor keeps its position after a menu rebuild or selection. A detached old button can no longer pull it towards the screen origin. Both vertical and horizontal catalogue scroll positions are retained.
 - Build controls distinguish choosing a piece from positioning it, emphasise the real primary action and remove duplicate controller/touch instructions. The village's old header `Done` actually closed/cancelled editing; it is now labelled `Close`.
-- The farm's village entrance is a clearer timber, stone and brass arch at `(37.8, 15.1)`. Its path uses the existing farm cobble recipe. Nearby props and overhanging crowns are cleared. The approach and trigger share one layout export and are checked across 80 expansion/service combinations.
+- Village travel now follows the existing northeast public exit road past Maisie’s site. The extra arch and spur have been removed. A small grounded waymark sits beside the road; the approach, click target and walk-through trigger follow the same state-aware exit when the eastern area opens. Narrow road access preserves the surrounding farm boundaries. See [the shared-exit notes](FARM-ENTRANCE.md).
 
 ## Controller quick reference
 
@@ -67,4 +67,4 @@ Read the focused notes in this folder before merging shared files into independe
 
 Run from `voxel/`: `npm test`, `node build.mjs --out /absolute/path/game.html`, and the exact-HTML browser runner `tools/village-play-polish-qa.mjs`. Some asset tests invoke Python; the execution profile must allow child processes. Reports distinguish fixture setup, real controller/touch actions, held drawing, screenshots and viewport emulation.
 
-Final hashes, command receipts, download links and clean patch replay are recorded in [the verified delivery receipt](DELIVERY.md). Browser viewport tests do not certify physical Z Fold, Bluetooth, TV or native Android performance. Android packaging is a separate final job after the HTML and ZIP have passed their checks.
+The current shared-exit build and its exact verification scope are recorded in [the latest delivery receipt](SHARED-EXIT-DELIVERY.md). Initial polish provenance remains in [the earlier receipt](DELIVERY.md). Browser viewport tests do not certify physical Z Fold, Bluetooth, TV or native Android performance. Android packaging is a separate final job after the HTML and ZIP have passed their checks.

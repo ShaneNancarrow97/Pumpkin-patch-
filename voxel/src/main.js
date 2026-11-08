@@ -1,7 +1,7 @@
 import { installHomeCategoryArt } from "./ui/home-category-icons.js";
 import grassTileURL from '../assets/terrain/grass-tile.webp';
 import { installGrassDetailTexture } from './grass-detail.js';
-import { atVillageGateway, VILLAGE_GATEWAY } from './content/village-gateway.js';
+import { atVillageGateway, villageGateway } from './content/village-gateway.js';
 import { createLifeActivity } from './life-activity.js';
 import { mountBoostDial, renderBoostDial } from './ui/farm-work-ui.js';
 import { createPlayControls } from './ui/play-controls.js';
@@ -138,7 +138,7 @@ const scene = createScene($("world"), state, {
     state.handsOn = handsOn;
     if (!state.paused) for (const e of M.update(state, dt, { villageAway: !!villageGame?.active })) handle(e);
     if (!scene.place && scene.player.enabled && !villageGame?.active) {
-      const atGate = atVillageGateway(scene.player.state().position);
+      const atGate = atVillageGateway(scene.player.state().position, state);
       if (!atGate) villageGateArmed = true;
       if (atGate && villageGateArmed && !state.paused && !openTab && !intro.active && !celebration.active && M.patchLevel(state).level >= M.VILLAGE_LEVEL) openVillage();
     }
@@ -202,7 +202,7 @@ const scene = createScene($("world"), state, {
   onChat(spot) { guestCard.clear(); chatCard.open(spot); },
   onPick(what) {
     if (what.type === 'village') {
-      if (playControls?.active && scene.player.enabled) scene.player.walkTo({...VILLAGE_GATEWAY.approach,near:.35,then:()=>openVillage()});
+      if (playControls?.active && scene.player.enabled) scene.player.walkTo({...villageGateway(state).approach,near:.35,then:()=>openVillage()});
       else openVillage();
       return;
     }

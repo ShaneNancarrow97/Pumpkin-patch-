@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import * as M from "../src/model.js";
-import { createWilds, wildsFootprint, wildsRoads, WILDS, REACH_BACK, CROWN } from "../src/wilds.js";
+import { createWilds, wildsFootprint, wildsRoads, WILDS, REACH_BACK, CROWN, villageExitViewWindow, blocksVillageExitView } from "../src/wilds.js";
 import { HAYRIDE_SITE } from "../src/content/hayride-layout.js";
 
 const inside = (rects, x, z) => rects.some((r) => x > r.x0 + 1e-6 && x < r.x1 - 1e-6 && z > r.z0 + 1e-6 && z < r.z1 - 1e-6);
@@ -51,4 +51,26 @@ test("nothing in the wilds hides the farm from its camera, and the roads run lev
   // Everything fades into the night by the far edge of the fade.
   const far = wilds.uniforms.uHazeFade.value.y; assert.equal(far, WILDS.fade[1]);
   assert.deepEqual(wilds.uniforms.uHazeColour.value.getHex(), new THREE.Color(WILDS.haze).getHex());
+});
+
+
+test("the shared village exit keeps a narrow clear sightline without removing wilds floor", () => {
+  const state = M.freshState(), wilds = createWilds(new THREE.Scene(), state);
+  for (const stage of ["base", "kitchen", "meadow"]) {
+    if (stage === "kitchen") state.kitchen.purchased = true;
+    if (stage === "meadow") state.festival.meadow = true;
+    wilds.sync();
+    const view = villageExitViewWindow(state), { tops, boxes } = contents(wilds);
+    for (const box of boxes) assert.equal(blocksVillageExitView(view, box), false, `${stage}: a crown hides the exit at ${box.x},${box.z}`);
+    for (const top of tops) if (top.y > 0) {
+      const box = { x: (top.x0 + top.x1) / 2, y: top.y / 2, z: (top.z0 + top.z1) / 2, w: top.x1 - top.x0, h: top.y, d: top.z1 - top.z0 };
+      assert.equal(blocksVillageExitView(view, box), false, `${stage}: a hill hides the exit at ${box.x},${box.z}`);
+    }
+    if (stage !== "base") {
+      // The extra visual clearance is NOT ground ownership: terrain immediately
+      // south of the real extension must still fill the forest floor.
+      assert.equal(inside(wildsFootprint(state), 57.5, 10.5), false);
+      assert.ok(tops.some((top) => top.x0 <= 57.5 && top.x1 >= 57.5 && top.z0 <= 10.5 && top.z1 >= 10.5), `${stage}: sightline clearance retains its floor`);
+    }
+  }
 });

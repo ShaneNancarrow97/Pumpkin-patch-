@@ -1,4 +1,4 @@
-import { VILLAGE_GATEWAY } from './content/village-gateway.js';
+import { villageGateway, onVillageExitCorridor } from './content/village-gateway.js';
 import * as THREE from "three";
 import { PLOTS, BIG_PUMPKIN, SHOP, HOMES, PITCH } from "./world.js";
 import { fieldDepth } from "./content/farm-layout.js";
@@ -14,8 +14,11 @@ const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const SETTLE_SECONDS = 0.8;
 // A circular foot collider slides along a turned piece rather than snagging on its cells.
 export function playerPointFree(x, z, bounds, obstacles, radius = .25) {
-  if (x < bounds.x0 + radius || x > bounds.x1 - radius || z < bounds.z0 + radius || z > bounds.z1 - radius) return false;
+  if(![x,z,radius].every(Number.isFinite)||radius<0)return false;
+  const exitLane=onVillageExitCorridor(x,z,bounds.exitCorridor,radius);
+  if ((x < bounds.x0 + radius || x > bounds.x1 - radius || z < bounds.z0 + radius || z > bounds.z1 - radius) && !exitLane) return false;
   for (const o of obstacles) {
+    if(o.exitBoundary&&exitLane)continue;
     const a = o.angle ?? 0, c = Math.cos(a), s = Math.sin(a), dx = x - o.x, dz = z - o.z;
     const px = dx * c - dz * s, pz = dx * s + dz * c;
     const qx = Math.max(Math.abs(px) - o.w / 2, 0), qz = Math.max(Math.abs(pz) - o.d / 2, 0);
@@ -42,10 +45,10 @@ export function farmPlayerGeometry(state) {
   // East of the yard's fence line only the paving or the meadow is open: the
   // rest is one block, from where they end to past the deepest front fence.
   const open = meadow ? MEADOW_FRONT - .25 : kitchen ? COOKING_SITE.pavingBounds.z1 : null;
-  if (open !== null && open < front) obstacles.push({ x: EAST_FENCE + 10, z: (open + front + 2) / 2, w: 20, d: front + 2 - open });
+  if (open !== null && open < front) obstacles.push({ x: EAST_FENCE + 10, z: (open + front + 2) / 2, w: 20, d: front + 2 - open, exitBoundary:true });
   // The meadow's front fence starts at the lane (x 35.6); a grown field runs on past it.
   if (meadow && open < front) obstacles.push({ x: (35.6 + EAST_FENCE) / 2, z: MEADOW_FRONT, w: EAST_FENCE - 35.6, d: .5 });
-  return { bounds: { x0: -5, x1: meadow || kitchen ? COOKING_SITE.bounds.x1 : EAST_FENCE, z0: 3.9, z1: front }, obstacles };
+  return { bounds: { x0: -5, x1: meadow || kitchen ? COOKING_SITE.bounds.x1 : EAST_FENCE, z0: 3.9, z1: front, exitCorridor:villageGateway(state).corridor }, obstacles };
 }
 // Substeps stop a slow frame tunnelling through a narrow chair or wall.
 export function slidePlayer(position, dx, dz, bounds, obstacles, radius = .25) {
@@ -126,6 +129,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
   }
   function safeSpot(wanted) {
     const { bounds, obstacles } = geometry();
+    if(playerPointFree(wanted.x,wanted.z,bounds,obstacles))return {...wanted};
     const p = { x: clamp(wanted.x, bounds.x0 + .3, bounds.x1 - .3), z: clamp(wanted.z, bounds.z0 + .3, bounds.z1 - .3) };
     if (playerPointFree(p.x, p.z, bounds, obstacles)) return p;
     for (let r = .3; r < 20; r += .3) for (let i = 0; i < 16; i++) {
@@ -142,7 +146,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
       ...PLOTS.slice(0, openPlots(state)).map((p, index) => ({ type: "plot", index, x: p.x, z: p.z, label: state.plots[index].phase === "ready" ? "Pick pumpkin" : state.plots[index].phase === "growing" ? "Water pumpkin" : "Plant pumpkin" })),
       { type: "pumpkin", label: "Encourage the patch", x: BIG_PUMPKIN.x + 2, z: BIG_PUMPKIN.z },
       { type: "shop", label: "Visit Skyla’s shop", x: SHOP.x, z: SHOP.counterZ + 1.2 },
-      { type: "village", label: "Travel to Mothlight", ...VILLAGE_GATEWAY.approach },
+      { type: "village", label: "Travel to Mothlight", ...villageGateway(state).approach },
       { type: "home", label: "Go home", x: 20, z: 4.6 },
       ...(state.kitchen?.purchased ? [{ type: "cooking", label: "Cook at Maisie’s truck", x: COOKING_SITE.truck.x, z: COOKING_SITE.truck.z + 2.1 }] : []),
       ...(state.cleanliness?.litter ?? []).map((p, index) => ({ type: "litter", id: p.id, index, label: "Clean up", x: p.x, z: p.z })),

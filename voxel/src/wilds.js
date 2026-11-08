@@ -11,6 +11,7 @@ import { fieldWidth } from "./content/festival-meadow.js";
 import { fieldDepth } from "./content/farm-layout.js";
 import { HAYRIDE_SITE, HAYRIDE_HILLS } from "./content/hayride-layout.js";
 import { COOKING_SITE } from "./content/cooking-layout.js";
+import { villageGateway } from "./content/village-gateway.js";
 
 // How far the wilds reach past the farm's edge, and where they fade: fully
 // into the night by FADE[1] units out, so their far edge never shows.
@@ -20,6 +21,17 @@ const DIRT = [0x4a3b30, 0x54432f, 0x443628], PINE = [0x1c2e2a, 0x22382f, 0x2a423
 // The farm camera looks north and down at PITCH, so anything standing h tall
 // covers the ground up to h * REACH_BACK units north of it on screen.
 export const REACH_BACK = 1 / Math.tan(PITCH), CROWN = 1.8;
+// A narrow sightline protects the last stretch of the public road and its low
+// roadside board. Unlike a ground footprint, this never removes the floor.
+export function villageExitViewWindow(state) {
+  const g = villageGateway(state);
+  return { x0: g.x - 3.5, x1: g.x + 1.2, z0: g.z - 1.2, z1: g.z + 2.2 };
+}
+export function blocksVillageExitView(view, box) {
+  const north = box.z - box.d / 2 - (box.y + box.h / 2) * REACH_BACK;
+  const south = box.z + box.d / 2 - (box.y - box.h / 2) * REACH_BACK;
+  return box.x + box.w / 2 > view.x0 && box.x - box.w / 2 < view.x1 && north < view.z1 && south > view.z0;
+}
 const smooth = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
 // Where the farm's own ground lies: the rough grass round the first map, the
@@ -29,6 +41,8 @@ export function wildsFootprint(state) {
   const rects = [{ x0: -16, x1: MAP.w + 16, z0: -1, z1: MAP.d + 12 }, { x0: -8, x1: fieldWidth(state), z0: -1, z1: fieldDepth(state) + 5 }];
   if (state.hayride?.purchased) { const b = HAYRIDE_SITE.bounds; rects.push({ x0: b.x0, x1: b.x1, z0: b.z0, z1: b.z1 }, ...HAYRIDE_HILLS.map((h) => ({ ...h }))); }
   if (state.kitchen?.purchased) { rects.push({ ...COOKING_SITE.bounds }, { ...COOKING_SITE.pavingBounds }, { x0: 37.8, x1: 39.8, z0: -6.8, z1: 5.4 }); }
+  // Only the strip actually built by farm-village-gate replaces wilds ground.
+  rects.push({ ...villageGateway(state).extension });
   return rects;
 }
 // The roads that carry on into the wilds: the visitors' lane and the west lane
@@ -95,7 +109,7 @@ export function createWilds(scene, state) {
     for (const child of [...group.children]) { group.remove(child); if (child.isInstancedMesh) child.dispose(); else child.geometry.dispose(); }
   }
   function build() {
-    const rects = wildsFootprint(state), roads = wildsRoads(state), r = seeded(9137);
+    const rects = wildsFootprint(state), roads = wildsRoads(state), view = villageExitViewWindow(state), r = seeded(9137);
     const fx0 = Math.min(...rects.map((q) => q.x0)), fx1 = Math.max(...rects.map((q) => q.x1)), fz1 = Math.max(...rects.map((q) => q.z1));
     uniforms.uHazeRect.value.set(fx0, -1, fx1, fz1);
     const X0 = Math.floor(fx0 - WILDS.reach), X1 = Math.ceil(fx1 + WILDS.reach), Z0 = -1, Z1 = Math.ceil(fz1 + WILDS.reach);
@@ -107,6 +121,9 @@ export function createWilds(scene, state) {
       // Never so tall that, seen from the farm camera, it covers the farm.
       let h = wildsHeight(d, x, z, road);
       while (h > 0 && outside(rects, x, z - h * REACH_BACK) < 0) h -= .5;
+      // Keep any foreground terrace below the road's projected sightline;
+      // a flat floor remains here, avoiding a black cut-out in the wilds.
+      while (h > 0 && blocksVillageExitView(view, { x, y: h / 2, z, w: 1, h, d: 1 })) h -= .5;
       hgt[k] = h; dist[k] = d;
       col[k] = road < .9 ? DIRT[(r() * 3) | 0] : r() < .13 ? LITTER[(r() * 4) | 0] : h >= 4 && r() < .5 ? MOSS[(r() * 3) | 0] : FLOOR[(r() * 4) | 0];
     }
@@ -170,8 +187,11 @@ export function createWilds(scene, state) {
       // Each kind's height, so none is tall enough to hide the farm behind it.
       const type = d < 12 ? (kind < .62 ? "round" : kind < .95 ? "pine" : "dead") : (kind < .55 ? "pine" : kind < .93 ? "crown" : "dead");
       const tall = { round: 5.2, pine: 3.8, crown: 4.2, dead: 3.4 }[type] * scale;
-      // CROWN: how far its leaves reach on each side.
-      if ([x - CROWN, x, x + CROWN].some((cx) => outside(rects, cx, z - CROWN - (h + tall) * REACH_BACK) < 0)) continue;
+      // Reject the whole projected crown, including larger scaled trees;
+      // sampling only its northern centre misses corners over service plots.
+      const reach = CROWN * Math.max(1, scale);
+      const silhouette = { x, y: h + tall / 2, z, w: reach * 2, h: tall, d: reach * 2 };
+      if (rects.some((rect) => blocksVillageExitView(rect, silhouette)) || blocksVillageExitView(view, silhouette)) continue;
       if (type === "round") {                                                        // a round autumn tree, as on the farm
         const trunk = 2.2 * scale; add(x, h, z, .4 * scale, trunk + .6, .4 * scale, BARK);
         crown(x, h + trunk + 1.1 * scale, z, 1.25 * scale, CANOPY[(r() * 3) | 0]);

@@ -743,11 +743,13 @@ export function buildWorld() {
     [-8.4, 6.8, 1.1, 1], [-8.2, 11.5 + DROP, 0.9, 0], [-8.6, 16.4 + DROP, 1.1, 2], [-8.4, 21.8 + DROP, 0.9, 1], [-8.2, 26 + DROP, 1.2, 0], [4.4, 27.2 + DROP, 1.1, 2],
     [37.6, 27 + DROP, 1.1, 1], [41.4, 24 + DROP, 1.2, 0],
     // The lantern-road forecourt stays clear of the former east-edge crowns.
-    [42.8, 22, 1.0, 2], [43.4, 13, 1.1, 0], [40.6, 8, 1.0, 1], [6.8, 1.2, 0.8, 2],
+    [42.8, 22, 1.0, 2], [45.8, 13, 1.1, 0], [40.6, 8, 1.0, 1], [6.8, 1.2, 0.8, 2],
     [-8.3, 9.4, 0.8, 2],                                                                   // filling the west edge the yard grew into
   ]) {
     const from = v.solid.length;
-    tree(v, r, x, z, s, k);
+    // Keep the public exit visible through the same natural treeline. Retain
+    // the service tree's source identity so buying Maisie's plot removes it.
+    tree(v, r, x, x === 40.6 && z === 8 ? 3.8 : z, s, k);
     // Exact source ranges let a purchased service plot replace its two trees
     // without heuristically clipping nearby buildings, paths or foliage.
     if ((x === 40 && z === 1.6) || (x === 40.6 && z === 8)) serviceTrees.push({ from, to: v.solid.length, x, z, boxes: v.solid.slice(from) });

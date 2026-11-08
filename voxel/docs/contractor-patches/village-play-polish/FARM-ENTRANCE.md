@@ -1,19 +1,34 @@
-# Mothlight lantern-road entrance
+# Mothlight uses the existing public exit
 
-The original arch sat beside Skyla’s awning, a lamp and a tree crown. Twelve oversized raised stepping slabs also used a different purple stone recipe from the farm. The new permanent entrance stands at **(37.8,15.1)** on the clear east side of the original yard, with approach **(37.8,16.7)**. Its mounted board sits on one dressed timber lintel, with stone feet, small outward iron lanterns, brass joinery, a moth crest and short clipped hedge wings. It uses 53 voxel boxes and no added lights. There are no freestanding direction signs or raised stepping slabs.
+The player reaches Mothlight by continuing along the existing northeast road past Maisie’s food truck. The separate side arch and its yard spur have been removed. A small, grounded, angled **Mothlight** waymark stands beside the road; no structure spans or blocks it. The former `(37.8,15.1)` portal has no travel trigger.
 
-## One plan, one ground
+## Shared plan and progression
 
-`content/village-gateway.js` exports the same `VILLAGE_GATEWAY` and `atVillageGateway(position)` API as before. Scene picking, the direct-control target, automatic crossing and the arch model read that one plan. No new state-dependent sync or root adapter is needed. The lane and clear forecourt are exposed for future build reservations. `villageGatewayPathDistance(x,z)` and `onVillageGatewayPath(x,z)` share the same frozen centreline.
+`villageGateway(state)` returns the current route, approach, trigger, narrow walking corridor and road-continuation bounds. The original-farm endpoint is exactly `ROUTE_OUT.at(-1)`, **(42.5,6.6)**. Once either the kitchen plot or cocoa meadow is purchased, the endpoint is the end of `MEADOW_EXIT`, **(57,6.6)**. The latter also matches Maisie’s existing `TRUCK_EXIT_ROUTE` endpoint. Existing visitor route arrays, timers and purchase behaviour are unchanged.
 
-The continuous spur joins the established visitor lane at `(31.6,15.6)`, bends through `(34.4,17.2)` to `(37.8,17.2)`, then crosses the arch. `world.js` adds its footprint to `yardGround`’s existing path branch: **the same `COL.stone` palette, 0.42m cobble grid, seed 1 and grout**. It is part of the existing terrain, never an overlaid connector. Every purchased-field or meadow terrain rebuild automatically keeps it. The generic ground/grass-mask code is unchanged.
+The approach lies 1.25m before the endpoint on the actual last segment: approximately **(41.358,7.108)** on the original diagonal, or **(55.75,6.6)** on the extended road. `atVillageGateway(position,state)` checks only the final crossing strip. Food-truck hatch and queue positions are outside the expanded trigger, so ordering or gathering nearby never causes travel. `VILLAGE_GATEWAY` remains a default-farm alias for older diagnostics; runtime callers must use the state-aware function.
 
-The former pumpkin beside the bend moves to `(35.2,19)`, and the old shop-side lamp moves to `(35.3,14.2)`. Two boundary crowns move rightward to `(43.4,13)` and `(42.8,22)`, clearing the arch rather than disguising an obstruction in navigation data. Existing meadow trimming still replaces those edge trees when bought. The two tracked food-delivery service trees keep their original positions and IDs.
+`farmPlayerGeometry` keeps the existing yard/owned-land bounds. A 1.9m-wide exception follows only the public exit corridor beyond them; it does not unlock the surrounding meadow. That corridor also bypasses the virtual east ownership boundary, while real shop, truck and kiosk bodies still collide. `safeSpot` checks a valid requested road point before clamping, allowing teleport, state restoration and clicked walking to reach the actual exit.
 
-## Expansion and verification
+## Terrain and rendering
 
-The junction stays fixed as the farm expands south to 18/24 plots and east into the cocoa meadow; it is outside every pumpkin bed and well south of Maisie’s receiving lane. The widest cocoa kiosk remains east of its reserved forecourt. A player-radius sweep reaches the trigger from the approach across all five plot tiers, both truck states, both meadow states and representative cocoa tiers 0/1/3/5.
+The existing farm ground and Maisie’s apron recognise the same public-road centreline. Its cobbles use the original `COL.stone` palette, 0.42m grid, seed 1 and grout. Only a narrow continuation beyond existing owned ground is added: original farm **x40→43.3**, kitchen-only **x53.7→57.8**, cocoa meadow **x54→57.8**. It is not a second surface over existing owned terrain, and it never builds a whole unpurchased meadow. The apron’s road strip uses those same light cobbles rather than the apron’s darker yard fill.
 
-Focused tests audit actual whole-farm voxel batches: no box taller than 20cm intersects the inner forecourt. Arch geometry has finite positive instances, a clear walking opening, a board mounted at its lintel and a picking target aligned with the crossing zone. The terrain test samples the real ground texture on both original and maximum purchased land and verifies the path uses the exact original cobble colours with zero grass coverage. No saved fields, economy or visitor routes change.
+`buildVillageGateway(signBoard,state)` reuses one board/hit target and exposes `sync()` for ownership changes. The board faces west/south towards arriving players and sits on a short post beside the road. Scene framing includes the real exit, and calls `sync()` after farm world updates. No point lights are added; there is no giant portal or unrelated side path.
 
-Tests: `farm-village-gateway.test.mjs`, `player-navigation.test.mjs`, `farm-growth.test.mjs`, plus service/world checks in the final root run. Browser screenshots of the actual farm camera remain part of parent verification.
+The two authored farm-edge crowns and two meadow crowns beside this route sit behind or beside its sightline, leaving the endpoint and low waymark readable. The wilds reserve a narrow projected view of the final 3.5m of road and its board: foreground hill columns lower and tree crowns are excluded only where they would obscure that window. The floor remains rendered. Only the exact ground continuation joins `wildsFootprint`; the additional visibility window does not remove terrain. Projected tree checks include each scaled crown’s whole bounds, protecting existing service plots as well as the exit.
+
+## Dependencies and checks
+
+| Surface | Must stay aligned |
+| --- | --- |
+| `content/village-gateway.js` | Existing guest endpoints, owner approach, crossing strip and road-only corridor |
+| `main.js` | Pass state to automatic crossing and read the current clicked approach |
+| `player-control.js` | State-aware target, narrow boundary exception and unclamped valid safe spot |
+| `scene.js` / `farm-village-gate.js` | State-aware marker sync and exit framing |
+| `world.js` / `cooking-world.js` | Same existing road palette, coverage and purchased-ground edges |
+| `wilds.js` / `festival-meadow-world.js` | Clear projected exit sightline; only actual built terrain belongs to ground footprint |
+
+Four focused tests cover actual route identity, 80 land/service combinations, exact terrain texture colours, marker reuse and real controller teleport/clicked walks from the farm to both endpoints. Existing player-navigation, farm-growth, cooking and meadow tests form the broader regression set. Browser QA tests actual walking, pointer selection, food service and return travel against the final HTML. No saved fields or format changes are required.
+
+The wilds regression additionally inspects the actual generated hill and tree meshes on the base, kitchen-only and meadow layouts, checks that their projected bounds leave the exit visible, and verifies retained forest floor south of the continuation. The authored tree poses keep their counts and the service-tree source identity used to remove Maisie’s two original trees.

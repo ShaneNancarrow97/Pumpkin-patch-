@@ -1,67 +1,76 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Group, Matrix4 } from 'three';
-import { VILLAGE_GATEWAY as G, atVillageGateway, villageGatewayPathDistance } from '../src/content/village-gateway.js';
+import * as THREE from 'three';
+import { villageGateway, atVillageGateway, villageRoadDistance, onVillageExitCorridor } from '../src/content/village-gateway.js';
 import { buildVillageGateway } from '../src/farm-village-gate.js';
-import { farmPlayerGeometry, playerPointFree, slidePlayer } from '../src/player-control.js';
-import { inFarmPatch, fieldDepth, farmPathEnd } from '../src/content/farm-layout.js';
+import { createPlayerControl, farmPlayerGeometry, playerPointFree, slidePlayer } from '../src/player-control.js';
+import { inFarmPatch, ROUTE_OUT } from '../src/content/farm-layout.js';
+import { MEADOW_EXIT } from '../src/content/festival-meadow.js';
+import { TRUCK_EXIT_ROUTE } from '../src/content/cooking-visits.js';
 import { COOKING_SITE } from '../src/content/cooking-layout.js';
-import { MEADOW, cocoaKioskWidth } from '../src/content/festival-meadow.js';
-import { yardGround, buildWorld, COL } from '../src/world.js';
+import { freshState } from '../src/model.js';
+import { COL } from '../src/world.js';
 import { grounds, G as CELL } from '../src/ground.js';
-
 const state=(plots=0,kitchen=false,meadow=false,cocoa=0)=>({upgrades:{plots},kitchen:{purchased:kitchen},festival:{meadow,cocoa:{level:cocoa}}});
-function samples(){const list=[];for(let i=1;i<G.lane.length;i++){const [ax,az]=G.lane[i-1],[bx,bz]=G.lane[i],count=Math.ceil(Math.hypot(bx-ax,bz-az)/.15);for(let j=0;j<=count;j++)list.push({x:ax+(bx-ax)*j/count,z:az+(bz-az)*j/count});}return list;}
+function samples(points){const list=[];for(let i=1;i<points.length;i++){const [ax,az]=points[i-1],[bx,bz]=points[i],n=Math.ceil(Math.hypot(bx-ax,bz-az)/.15);for(let j=0;j<=n;j++)list.push({x:ax+(bx-ax)*j/n,z:az+(bz-az)*j/n});}return list;}
 
-test('the permanent lantern-road spur stays walkable through every farm expansion and service purchase',()=>{
+test('village travel shares the existing guest exit before and after the service land opens',()=>{
+ const base=villageGateway(state()),truck=villageGateway(state(0,true)),meadow=villageGateway(state(0,false,true));
+ assert.deepEqual([base.x,base.z],ROUTE_OUT.at(-1));
+ assert.deepEqual([truck.x,truck.z],MEADOW_EXIT.at(-1));assert.deepEqual([meadow.x,meadow.z],TRUCK_EXIT_ROUTE.at(-1));
+ assert.deepEqual(base.lane,ROUTE_OUT);assert.deepEqual(truck.lane,MEADOW_EXIT);
+ assert.ok(villageRoadDistance(base.approach.x,base.approach.z,base.lane)<1e-9);
+ assert.equal(atVillageGateway({x:37.8,z:15.1},state()),false,'former side portal has no travel zone');
+});
+
+test('only the public exit corridor extends the farm across every expansion and service combination',()=>{
  for(const plots of [0,1,2,3,4])for(const kitchen of [false,true])for(const meadow of [false,true])for(const cocoa of [0,1,3,5]){
-  const s=state(plots,kitchen,meadow,cocoa),geometry=farmPlayerGeometry(s),label=JSON.stringify({plots,kitchen,meadow,cocoa});
-  for(const p of samples()){
-   assert.equal(playerPointFree(p.x,p.z,geometry.bounds,geometry.obstacles),true,label+' approach');
-   assert.equal(inFarmPatch(p.x,p.z,plots),false,label+' off the pumpkin beds');
-   assert.ok(villageGatewayPathDistance(p.x,p.z)<1e-8);
+  const s=state(plots,kitchen,meadow,cocoa),g=villageGateway(s),geometry=farmPlayerGeometry(s),label=JSON.stringify({plots,kitchen,meadow,cocoa});
+  for(const p of samples(g.corridor.points)){
+   assert.equal(playerPointFree(p.x,p.z,geometry.bounds,geometry.obstacles),true,label+' road reachable');
+   assert.equal(inFarmPatch(p.x,p.z,plots),false,label+' off pumpkins');
   }
-  assert.equal(playerPointFree(G.x,G.z,geometry.bounds,geometry.obstacles),true,label+' trigger');
-  const walked=slidePlayer(G.approach,0,G.z-G.approach.z,geometry.bounds,geometry.obstacles);
-  assert.equal(atVillageGateway(walked),true,label+' actual northward crossing');
+  const walked=slidePlayer(g.approach,g.x-g.approach.x,g.z-g.approach.z,geometry.bounds,geometry.obstacles);
+  assert.equal(atVillageGateway(walked,s),true,label+' actual eastward crossing');
+  assert.equal(playerPointFree(g.x,10,geometry.bounds,geometry.obstacles),false,label+' not an unlocked meadow');
+  assert.equal(atVillageGateway(g.approach,s),false,label+' approach is safely before travel');
+  if(kitchen||meadow)for(const p of [{x:42.75,z:5.15},{x:42.75,z:6.6},{x:49,z:6.6}])assert.equal(atVillageGateway(p,s),false,label+' no travel while ordering/queuing');
  }
- const c=G.clearance;
- assert.ok(c.z0>COOKING_SITE.bounds.z1+6,'entry separated from Maisie’s receiving lane');
- assert.ok(c.x1<MEADOW.stand[0]-cocoaKioskWidth(5)/2,'premium cocoa frontage cannot swallow the entry');
+ assert.equal(onVillageExitCorridor(42.5,9,villageGateway(state()).corridor),false);
 });
 
-test('gateway geometry, sign, picking target and travel trigger share one plan',()=>{
- let sign;
- const build=buildVillageGateway((title,sub,width)=>{sign=new Group();sign.userData={title,sub,width};return sign;});
- assert.equal(sign.userData.title,'Mothlight Village');assert.equal(sign.position.x,G.x);assert.equal(sign.position.z,G.z+.24);
- assert.equal(build.hit.position.x,G.x);assert.equal(build.hit.position.z,G.z);assert.equal(build.hit.userData.type,'village');
- assert.deepEqual(build.root.userData.gateway.approach,G.approach);
- assert.equal(atVillageGateway({x:G.x,z:G.z}),true);assert.equal(atVillageGateway(G.approach),false);
- assert.equal(atVillageGateway({x:NaN,z:G.z}),false);assert.equal(atVillageGateway({x:G.x,z:Infinity}),false);
- let boxes=0,lights=0;const matrix=new Matrix4();
- build.root.traverse(o=>{if(o.isLight)lights++;if(o.isInstancedMesh){boxes+=o.count;for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);assert.ok(matrix.elements.every(Number.isFinite));assert.ok(matrix.determinant()>0);const e=matrix.elements,y0=e[13]-e[5]/2,y1=e[13]+e[5]/2;
-   if(y0<2.3&&y1>.1){const dx=Math.max(Math.abs(G.x-e[12])-e[0]/2,0),dz=Math.max(Math.abs(G.z-e[14])-e[10]/2,0);assert.ok(Math.hypot(dx,dz)>.25,'walking opening remains clear');}
-  }}});
- assert.ok(boxes<=80);assert.equal(lights,0);
-});
-
-test('the spur is part of the existing farm cobbles on both original and fully purchased ground',()=>{
- for(const [plots,width,meadow] of [[0,40,false],[4,54,true]]){
-  const s=state(plots,true,meadow,5),depth=fieldDepth(s),ground=yardGround({width,depth,plotsTier:plots,pathEnd:farmPathEnd(s)}),map=ground.material.map.image;
-  for(const p of samples()){
-   const i=Math.floor((p.x+8)/CELL),j=Math.floor((p.z+1)/CELL),x=-8+(i+.5)*CELL,z=-1+(j+.5)*CELL,k=(j*map.width+i)*4;
+test('the small roadside marker and exact cobble continuation follow purchased land without a portal',()=>{
+ const s=state(),signs=[],build=buildVillageGateway((title,sub,width)=>{const sign=new THREE.Group();sign.userData={title,sub,width};signs.push(sign);return sign;},s);
+ assert.equal(signs.length,1);assert.equal(signs[0].userData.title,'Mothlight');assert.ok(signs[0].rotation.y<-.5,'lettering faces arriving travellers');
+ let boxes=0,lights=0;build.root.traverse(o=>{if(o.isInstancedMesh)boxes+=o.count;if(o.isLight)lights++;});assert.ok(boxes<12);assert.equal(lights,0);assert.equal(build.hit.userData.type,'village');
+ let previous=null;
+ for(const [kitchen,meadow,start] of [[false,false,40],[true,false,53.7],[true,true,54]]){
+  s.kitchen.purchased=kitchen;s.festival.meadow=meadow;build.sync();const g=villageGateway(s),road=build.root.getObjectByName('Existing public road continuation'),map=road.material.map.image;
+  assert.equal(g.extension.x0,start);assert.equal(build.root.userData.gateway.x,g.x);assert.equal(signs.length,1,'reuse the same board texture');
+  if(previous){assert.notEqual(road,previous);assert.equal(previous.parent,null);}previous=road;
+  assert.ok(g.extension.z1-g.extension.z0<3.5,'only a roadside strip is added');
+  for(const p of samples(g.lane).filter(p=>p.x>=start&&p.x<=g.x)){
+   const i=Math.floor((p.x-g.extension.x0)/CELL),j=Math.floor((p.z-g.extension.z0)/CELL),x=g.extension.x0+(i+.5)*CELL,z=g.extension.z0+(j+.5)*CELL,k=(j*map.width+i)*4;
    const [,colour]=grounds.cobble(x,z,COL.stone,.42,1,0x2a2430);
-   assert.deepEqual(Array.from(map.data.slice(k,k+4)),[(colour>>16)&255,(colour>>8)&255,colour&255,0],'same stones/grout and zero grass mask');
+   assert.deepEqual(Array.from(map.data.slice(k,k+4)),[(colour>>16)&255,(colour>>8)&255,colour&255,0],'same farm path palette/grout, no grass over road');
   }
-  ground.geometry.dispose();ground.material.map.dispose();ground.material.dispose();
  }
+ assert.equal(villageGateway(state(0,true)).extension.x0,COOKING_SITE.pavingBounds.x1,'no overlap with the truck apron');
 });
 
-
-test('the actual farm voxel dressing leaves the lantern-road forecourt empty',()=>{
- const world=buildWorld(),matrix=new Matrix4();let checked=0;
- world.group.traverse(o=>{if(!o.isInstancedMesh)return;for(let i=0;i<o.count;i++){
-  o.getMatrixAt(i,matrix);const e=matrix.elements,x=e[12],y=e[13],z=e[14],hx=Math.abs(e[0])/2,hy=Math.abs(e[5])/2,hz=Math.abs(e[10])/2;
-  if(y+hy>.2){assert.equal(x+hx>36.85&&x-hx<38.7&&z+hz>13.4&&z-hz<18,false,'no lantern, pumpkin, trunk or leaf box blocks the entry');checked++;}
- }});assert.ok(checked>1000,'audits the real whole-farm voxel batches');
+test('real controller teleports and clicked walks retain exit endpoints beyond the old yard bounds',async()=>{
+ const previous=globalThis.document;globalThis.document={body:{classList:{contains:()=>false}}};
+ try{
+  for(const kitchen of [false,true])for(const meadow of [false,true]){
+   const s=freshState();s.kitchen.purchased=kitchen;s.festival.meadow=meadow;
+   const scene=new THREE.Scene(),actor=new THREE.Group();actor.add(new THREE.Group());actor.position.set(13.2,0,16.6);
+   const camera=new THREE.OrthographicCamera(-10,10,10,-10,.1,100);camera.position.set(20,25,40);camera.lookAt(20,0,16);camera.updateMatrixWorld();
+   const places={setControlled(){},playerActor(){return null;},clearPlayerRest(){}};
+   const player=createPlayerControl({scene,state:s,actors:()=>({natalie:{model:actor}}),places,getPlace:()=>null,getCamera:()=>camera,animate(){}}),g=villageGateway(s);
+   player.setEnabled(true,'natalie');player.teleport(g.approach.x,g.approach.z);assert.ok(Math.hypot(player.state().position.x-g.approach.x,player.state().position.z-g.approach.z)<1e-9,'safeSpot does not clamp exit approach');
+   player.teleport(13.2,16.6);let arrived=0,time=0;assert.equal(player.walkTo({...g.approach,near:.3,reach:.5,then:()=>arrived++}),true);
+   for(let i=0;i<1400&&player.state().travelling;i++){player.update(.05,time+=.05);await Promise.resolve();}
+   await Promise.resolve();assert.equal(arrived,1,`clicked walk arrives kitchen=${kitchen},meadow=${meadow}`);assert.ok(Math.hypot(player.state().position.x-g.approach.x,player.state().position.z-g.approach.z)<.55);
+  }
+ }finally{if(previous===undefined)delete globalThis.document;else globalThis.document=previous;}
 });

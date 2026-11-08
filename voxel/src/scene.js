@@ -2,6 +2,7 @@ import { fountainStar, createFountainBursts } from './fountain-effects.js';
 import { createFollowCameraRig } from "./follow-camera.js";
 import { truckGuestPose } from './content/cooking-visits.js';
 import { buildVillageGateway } from './farm-village-gate.js';
+import { villageGateway } from './content/village-gateway.js';
 import { createMaisie, maisieTextures } from "./maisie.js";
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
@@ -171,14 +172,14 @@ export function createScene(canvas, state, hooks) {
   const hayrideWorld = createHayrideWorld({ scene, state, world, signBoard, createScares: createHayrideScares });
   const cookingWorld = createCookingWorld({ scene, state, world, signBoard, lamps, createMaisie, visitorModel: kind => visitorModel(kind), seatedVisitor: kind => seatedVisitor(sheets,kind), animate: (...args) => animateFigure(...args) });
   let carvingStand = null;  // built once the pickables exist, below
-  const farmViewWidth = () => Math.max(fieldWidth(state), state.kitchen?.purchased ? COOKING_SITE.bounds.x1 : 0);
+  const farmViewWidth = () => Math.max(fieldWidth(state), state.kitchen?.purchased ? COOKING_SITE.bounds.x1 : 0, villageGateway(state).x+.8);
   const bigHit = new THREE.Mesh(new THREE.BoxGeometry(4, 3.6, 4), new THREE.MeshBasicMaterial({ visible: false }));
   bigHit.position.set(BIG_PUMPKIN.x, 1.8, BIG_PUMPKIN.z); bigHit.userData = { type: "pumpkin" }; scene.add(bigHit);
   carvingStand = createCarvingStandWorld({ scene, state, signBoard, pickables, lamps, seatedVisitor: (kind) => seatedVisitor(sheets, kind), animate: (...args) => animateFigure(...args) }); pickables.push(bigHit);
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
   shopHit.position.set(SHOP.x, 2.5, SHOP.z + 0.4); shopHit.userData = { type: "shop" }; scene.add(shopHit); pickables.push(shopHit);
   const homesteadArch = new THREE.Mesh(new THREE.BoxGeometry(3.4, 5, 1), new THREE.MeshBasicMaterial({ visible: false })); homesteadArch.position.set(20, 2.5, 3); homesteadArch.userData = { type: "home" }; scene.add(homesteadArch); pickables.push(homesteadArch);
-  const villageGateway=buildVillageGateway(signBoard);scene.add(villageGateway.root);pickables.push(villageGateway.hit);
+  const villageRoad=buildVillageGateway(signBoard,state);scene.add(villageRoad.root);pickables.push(villageRoad.hit);
 
 
   // Shane, Natalie, Skyla and the visitors are drawn with the main game's
@@ -911,7 +912,7 @@ export function createScene(canvas, state, hooks) {
     }
 
     festivalWorld.tick(time);
-    farmExpansion.sync(); wilds.sync();
+    farmExpansion.sync(); wilds.sync(); villageRoad.sync();
     const land = `${farmViewWidth()}:${fieldDepth(state)}`;
     if (land !== framedLand) { framedLand = land; frame(); clearMist(); if (farSides) showFarSides(true); }
     hollowFarm.sync(); hollowFarm.tick(time); carvingStand?.sync(time);

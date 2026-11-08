@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { Voxels,seeded } from './voxels.js';
 import { buildGround,grounds } from './ground.js';
 import { COL, postSign } from './world.js';
+import { onVillageGatewayPath } from './content/village-gateway.js';
 import { buildFoodProp,disposeFoodProp } from './food-props.js';
 import { COOKING_SITE as SITE,COOKING_SERVICE_ROUTE as ROUTE,cookingDeliveryPose } from './content/cooking-layout.js';
 export { COOKING_SITE,COOKING_SERVICE_ROUTE,cookingDeliveryPose } from './content/cooking-layout.js';
@@ -19,6 +20,7 @@ function buildPad(){
     const front=land.z1-.36+Math.sin(x*4.1)*.14;
     const back=land.z0+.23+Math.sin(x*3.3)*.12;
     const feather=x>right||z>front||z<back&&x>41;
+    if(onVillageGatewayPath(x,z))return grounds.cobble(x,z,COL.stone,.42,1,0x2a2430);
     return feather?grounds.grass(x,z):grounds.cobble(x,z,COL.yard,.3,2,0x2a2430);
   },{farmView:true});
   apron.name='Kitchen apron · matching farm ground';root.add(apron);
