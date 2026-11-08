@@ -10,7 +10,17 @@ const extras = Object.fromEntries([...EXTRA_COSTUMES, WHEELS].map((item) => [ite
 const extra = (id) => typeof id === "string" && Object.hasOwn(extras, id) ? extras[id] : null;
 
 // Preserve the same purchase and pause rules for the extra costumes.
+export const VILLAGE_COSTUME_GATES = Object.freeze({
+  "natalie-mummy": { quest: "lantern-keepers", title: "The Lantern Keepers" },
+  "shane-mummy": { quest: "lantern-keepers", title: "The Lantern Keepers" },
+});
+// Existing owned costumes are always kept, including saves made before the village gate.
+export function costumeVillageGate(s, id) {
+  const gate = typeof id === "string" && Object.hasOwn(VILLAGE_COSTUME_GATES, id) ? VILLAGE_COSTUME_GATES[id] : null;
+  return !gate || s?.wardrobe?.owned?.includes(id) || s?.village?.quests?.[gate.quest]?.done ? null : { ...gate, reason: `Earn in Mothlight: ${gate.title}` };
+}
 export function buyCostume(s, id) {
+  if (costumeVillageGate(s, id)) return false;
   const item = extra(id);
   if (!item) return buyOriginal(s, id);
   if (!s || s.paused || !Number.isFinite(s.coins) || s.coins < item.price || !Array.isArray(s.wardrobe?.owned) || s.wardrobe.owned.includes(id)) return false;

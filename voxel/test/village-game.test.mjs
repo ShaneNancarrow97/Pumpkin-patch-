@@ -9,6 +9,10 @@ import * as THREE from "three";
 import * as M from "../src/model.js";
 import { buildSaveFile, readSaveFile } from "../src/save-file.js";
 import { NODES, ARRIVAL, PLAN_SCALE as K } from "../src/content/village.js";
+import { QUEST_BY_ID } from "../src/content/village-quests.js";
+import { villageNodePosition } from "../src/content/village-node-sites.js";
+import { findResidentPath } from "../src/rules/village-resident-life.js";
+import { villageCellFree } from "../src/rules/village-navigation.js";
 import { createVillagePadState, normaliseVillageStick } from "../src/ui/village-controls.js";
 
 // The game controller is exercised without a renderer or browser. Rules and
@@ -90,6 +94,21 @@ function harness(t, s = farm(), narration) {
   const scene = { villageView: view, place: null, player: { state: () => ({ ...owner }), setEnabled(on, who = owner.who) { owner.enabled = on; owner.who = who; } }, enter(kind) { this.place = { kind }; }, leavePlace() { touring = false; this.place = null; }, villageCharacter() { const actor = new THREE.Group(), frame = new THREE.Group(); actor.add(new THREE.Group()); actor.userData = { idle: [frame], walk: [frame], shown: frame, show() {}, dispose() { actor.userData.disposed = true; } }; actors.push(actor); return actor; } };
   const game = createVillageGame({ state: () => s, scene, narration, save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: () => null, itemArt: () => "", controlsView: headlessControls, decorateView: () => ({ active: false, close() {}, dispose() {}, tick() {}, pick() {}, back() {}, open() { return false; } }), conversationView(options) { callback = options; return { open(options) { conversation = options; }, close() { if (conversation) { conversation = null; options.onClose(); } }, get active() { return !!conversation; }, dispose() { this.close(); } }; } });
   const h = { game, state: s, doc, scene, view, cameraCalls, owner, actors, saves, notices, listeners, pad, get conversation() { return conversation; }, get menuCloses() { return menuCloses; }, get leaves() { return leaves; }, complete() { callback.onContinue({ finished: true }); }, choose(index = 0) { return callback.onChoice(index); }, $(selector) { return doc.body.querySelector(selector); }, click(selector) { const el = doc.body.querySelector(selector); assert.ok(el, selector); assert.equal(el.disabled, false, selector + " enabled"); el.click(); }, key(type, key, target = doc.body) { for (const fn of listeners.get(type) ?? []) fn({ key, target, preventDefault() {}, stopImmediatePropagation() {}, repeat: false }); }, press(button) { pad.buttons[button].pressed = true; game.tick(.1); pad.buttons[button].pressed = false; game.tick(.1); } };
+  // Resource interactions must use the real controller path and finish their swing.
+  h.walkNear = point => {
+    if(point.id)point={...point,...villageNodePosition(s,point)};
+    const from=game.status.position,candidates=[point,...Array.from({length:8},(_,i)=>({x:point.x+Math.cos(i*Math.PI/4)*1.5,z:point.z+Math.sin(i*Math.PI/4)*1.5}))];
+    let path=[];for(const candidate of candidates){if(!villageCellFree(s,candidate.x,candidate.z))continue;path=findResidentPath(s,from,candidate);if(path.length)break;}
+    assert.ok(path.length,"resource has a walkable approach: "+point.id);
+    pad.axes[0]=pad.axes[1]=0;game.tick(.05);
+    for(const target of path){let reached=false;for(let n=0;n<4000;n++){
+      const at=game.status.position,dx=target.x-at.x,dz=-(target.z-at.z),distance=Math.hypot(dx,dz);if(distance<.2){reached=true;break;}
+      const right=new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion),forward=camera.getWorldDirection(new THREE.Vector3());right.y=forward.y=0;right.normalize();forward.normalize();
+      const force=Math.min(.95,distance/.3);pad.axes[0]=(dx*right.x+dz*right.z)/distance*force;pad.axes[1]=-(dx*forward.x+dz*forward.z)/distance*force;game.tick(.05);
+    }assert.ok(reached,"controller reaches resource waypoint");}
+    pad.axes[0]=pad.axes[1]=0;game.tick(.05);assert.ok(Math.hypot(game.status.position.x-point.x,game.status.position.z-point.z)<3);
+  };
+  h.gather = node => {h.walkNear(node);const before=s.village.materials[node.material]??0;game.pick({type:"village-node",id:node.id});assert.equal(s.village.materials[node.material]??0,before,"no grant before swing finishes");assert.ok(game.status.gathering);game.tick(.4);assert.equal(s.village.materials[node.material]??0,before);game.tick(.6);assert.ok((s.village.materials[node.material]??0)>before);assert.equal(game.status.gathering,null);};
   t.after(() => { game.dispose(); for (const [key, desc] of globals) desc ? Object.defineProperty(globalThis, key, desc) : delete globalThis[key]; }); return h;
 }
 function welcome(h) { h.game.open(); h.game.back(); for (const who of ["rowan", "elowen"]) { h.game.meet(who); assert.ok(h.conversation); h.complete(); } }
@@ -118,10 +137,10 @@ test("resident panels use real gift and chat shapes, and each chat answer saves 
 test("Rowan's UI callbacks consume gathered materials, charge the opening cost and save a stall purchase", t => {
   const h = harness(t); welcome(h); h.state.coins = 1000;
   h.game.meet("rowan"); h.click('[data-vg-start="rowan-1"]'); h.complete(); assert.equal(h.game.status.panel, "journal"); h.game.back();
-  for (const material of ["logs", "logs", "stone"]) { const node = NODES.find(n => n.district === "green" && n.material === material && M.nodeReady(h.state, n.id)); assert.ok(node, material); h.game.pick({ type: "village-node", id: node.id }); }
+  for (const material of ["logs", "logs", "stone"]) { const node = NODES.find(n => n.district === "green" && n.material === material && M.nodeReady(h.state, n.id)); assert.ok(node, material); h.gather(node); }
   h.game.meet("rowan"); h.click('[data-vg-handover="rowan"]'); assert.equal(M.questStatus(h.state, "rowan-1"), "done"); assert.equal(h.state.village.materials.stone, 0);
   h.click('[data-vg-start="rowan-stall"]'); h.complete(); h.game.back();
-  for (const material of ["stone", "fibre", "fibre", "fibre"]) { const node = NODES.find(n => n.district === "green" && n.material === material && M.nodeReady(h.state, n.id)); assert.ok(node, material); h.game.pick({ type: "village-node", id: node.id }); }
+  for (const material of ["stone", "fibre", "fibre", "fibre"]) { const node = NODES.find(n => n.district === "green" && n.material === material && M.nodeReady(h.state, n.id)); assert.ok(node, material); h.gather(node); }
   h.game.meet("rowan"); h.click('[data-vg-handover="rowan"]'); const coins = h.state.coins; h.click('[data-vg-handover="rowan"]'); assert.equal(h.state.coins, coins - 200); assert.equal(M.stallOpen(h.state), true);
   h.game.back(); h.game.pick({ type: "village-stall" }); const price = M.stallStock(h.state).find(x => x.key === "village:stool").price, before = h.state.coins; h.click('[data-vg-buy="village:stool"]'); assert.equal(h.state.coins, before - price); assert.equal(h.state.village.decor.owned.stool, 1);
   const restored = M.restoreState(h.saves.at(-1)); assert.equal(restored.village.decor.owned.stool, 1); assert.equal(M.stallOpen(restored), true); assert.equal(restored.coins, h.state.coins);
@@ -186,4 +205,37 @@ test("tour narration can replay and mute without completing the tour; leaving ca
   tour.querySelector("[data-voice-toggle]").click(); assert.equal(voice.playing, true);
   h.game.close(); assert.equal(voice.playing, false); assert.equal(h.state.village.toured, false);
   h.game.open(); h.game.back(); assert.equal(voice.playing, false); assert.equal(h.state.village.toured, true);
+});
+
+
+test("resource tools require a nearby owner, finish once, and cancel safely", t => {
+  const h=harness(t);welcome(h);const node=NODES.find(n=>n.district==="green"&&n.material==="logs");
+  const before=h.state.village.materials.logs??0;
+  h.game.pick({type:"village-node",id:node.id});assert.equal(h.game.status.gathering,null);assert.equal(h.state.village.materials.logs??0,before);assert.ok(h.game.status.waypoint,"distant resource becomes a walking destination");
+  h.walkNear(node);h.game.pick({type:"village-node",id:node.id});assert.equal(h.game.status.gathering.tool,"axe");const at=h.game.status.position;
+  h.key("keydown","d");h.game.tick(.25);h.key("keyup","d");assert.deepEqual(h.game.status.position,at,"a tool swing does not slide the character");
+  h.game.back();assert.equal(h.game.status.gathering,null);h.game.tick(1);assert.equal(h.state.village.materials.logs??0,before,"cancelled tool swing grants nothing");assert.ok(M.nodeReady(h.state,node.id));
+  h.game.pick({type:"village-node",id:node.id});h.state.paused=true;h.game.tick(10);assert.equal(h.game.status.gathering.progress,0,"paused time cannot finish a swing");h.state.paused=false;h.game.tick(1);const after=h.state.village.materials.logs;assert.ok(after>before);h.game.tick(1);assert.equal(h.state.village.materials.logs,after,"completed swing grants once");
+  const stone=NODES.find(n=>n.district==="green"&&n.material==="stone");h.walkNear(stone);h.game.pick({type:"village-node",id:stone.id});assert.equal(h.game.status.gathering.tool,"pickaxe");h.game.close();assert.equal(h.game.status.gathering,null);assert.equal(h.state.village.materials.stone??0,0,"leaving cancels mining without an award");
+});
+
+
+test("followed quest stays pinned and its details toggle without opening a menu", t => {
+  const h=harness(t);welcome(h);h.game.meet("rowan");h.click('[data-vg-start="rowan-1"]');h.complete();h.game.back();h.game.render();
+  assert.equal(h.$("#vg-objective").hidden,false);assert.equal(h.$("#vg-quest-title").textContent,QUEST_BY_ID["rowan-1"].title);assert.equal(h.game.status.questExpanded,false);
+  h.click("#vg-quest-toggle");assert.equal(h.game.status.questExpanded,true);assert.equal(h.game.status.panel,null,"expanding keeps the owner in the world");assert.equal(h.$("#vg-quest-details").hidden,false);
+  h.pad.buttons[12].pressed=true;h.game.tick(.1);assert.equal(h.game.status.questExpanded,false);h.game.tick(.1);h.game.tick(.1);assert.equal(h.game.status.questExpanded,false,"a held D-pad Up toggles once");h.pad.buttons[12].pressed=false;h.game.tick(.1);
+  h.press(12);assert.equal(h.game.status.questExpanded,true);
+  const next=material=>NODES.find(n=>n.district==="green"&&n.material===material&&M.nodeReady(h.state,n.id));
+  h.gather(next("logs"));assert.equal(h.$("#vg-quest-counts").textContent,"2/4");assert.match(h.$("#vg-quest-details").innerHTML,/2 \/ 4/);h.gather(next("logs"));assert.match(h.$("#vg-task").textContent,/stone/);h.gather(next("stone"));assert.equal(h.$("#vg-quest-counts").textContent,"2/2 ready");assert.match(h.$("#vg-quest-details").innerHTML,/4 \/ 4/);assert.match(h.$("#vg-task").textContent,/Rowan/);
+  h.game.showPanel("map");h.press(12);assert.equal(h.game.status.questExpanded,true,"D-pad Up navigates an open menu instead of toggling the HUD");h.game.back();h.game.meet("vesper");h.press(12);assert.equal(h.game.status.questExpanded,true,"dialogue keeps priority");h.game.back();
+  h.key("keydown","t");assert.equal(h.game.status.questExpanded,false);h.key("keyup","t");assert.equal(h.game.status.panel,null);h.game.close();h.game.open();assert.equal(h.$("#vg-objective").hidden,false,"every later visit pins the current story");
+});
+
+test("respawned resources use their saved new position for guidance and collection", t => {
+  const h=harness(t);welcome(h);const node=NODES.find(n=>n.district==="green"&&n.material==="logs"),before={...villageNodePosition(h.state,node)};h.gather(node);
+  assert.equal(h.state.village.gatherCycles[node.id],1);const after=villageNodePosition(h.state,node);assert.notDeepEqual(after,before,"the next visible resource uses another site");
+  h.state.village.nodes[node.id]=.05;const events=M.update(h.state,.1,{villageAway:true});assert.ok(events.some(e=>e.type==="village-resource-ready"&&e.id===node.id));let synced=0;h.view.sync=()=>synced++;
+  const notices=h.notices.length;for(const e of events.filter(e=>e.type==="village-resource-ready"))h.game.onEvent(e);assert.equal(synced,1);assert.equal(h.notices.length,notices,"resource return does not create a toast");
+  h.game.pick({type:"village-node",id:node.id});assert.equal(h.game.status.waypoint.x,after.x);assert.equal(h.game.status.waypoint.z,after.z);if(h.game.status.gathering)h.game.back();h.gather(node);assert.equal(h.state.village.gatherCycles[node.id],2,"the next gather follows the current location and awards once");
 });

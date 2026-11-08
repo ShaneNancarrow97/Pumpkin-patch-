@@ -22,7 +22,7 @@ import { freshEstate, restoreEstate } from "./rules/house-estate.js";
 import { freshHollowHouse, restoreHollowHouse, updateHollowHouse, saveHollowVisitors, restoreHollowVisitors } from "./rules/hollow-house.js";
 import { updateGardenCrops } from "./rules/garden-crops.js";
 import { freshFishing, restoreFishing, saveFishing, updateFishing } from "./rules/fishing.js";
-import { freshVillage, restoreVillage, saveVillage, updateVillage } from "./rules/village.js";
+import { freshVillage, restoreVillage, saveVillage, updateVillage, villageFarmRate } from "./rules/village.js";
 import { freshCarving, restoreCarving } from "./rules/carving.js";
 import { restoreIntroSeen } from "./rules/intro.js";
 import { freshSocial, recordNews } from "./rules/meadow-talk.js";
@@ -44,7 +44,7 @@ export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 export * from "./rules/unlocks.js";
 
-export const STATE_VERSION = 16;
+export const STATE_VERSION = 17;
 export * from "./rules/room-extensions.js";
 export * from "./rules/home-media.js";
 export * from "./rules/farm-work.js";
@@ -189,9 +189,12 @@ export function restoreState(raw) {
 export const saveData = (s) => ({ ...s, carvingStand: s.carvingStand && { ...s.carvingStand, carvers: [] }, hollowVisitors: saveHollowVisitors(s), hayrideVisitors: saveHayrideVisitors(s), visitors: [], arriving: [], holds: [], shop: { ...s.shop, customers: [] }, kitchen: { ...s.kitchen, foodHolds: [], diners: [] }, fishing: saveFishing(s.fishing), village: saveVillage(s.village), social: undefined, handsOn: undefined });
 
 // Advances the farm by dt seconds and returns what happened, for the scene to show.
-export function update(s, dt) {
+export function update(s, dt, options = {}) {
   const events = [];
   if (s.paused || !Number.isFinite(dt) || dt <= 0) return events;
+  // A village visit keeps its own clock while the farm runs at its managed rate.
+  const villageDt = dt;
+  if (options?.villageAway === true) dt *= villageFarmRate(s);
   // The streak's boost is read from the clock, so the arrival timers just count down faster while it lasts.
   s.time += dt;
   updateFarm(s, dt, events);
@@ -207,8 +210,8 @@ export function update(s, dt) {
   updateCleanliness(s, dt, events);
   updateGardenCrops(s, dt);
   updateFishing(s, dt);
-  // Mothlight's clock runs with the farm's (rules/village.js): its events (a quest step, a duty) go out with the farm's.
-  for (const e of updateVillage(s, dt)) events.push({ ...e, village: true });
+  // Village timers use the full active-play slice even while the farm runs slowly.
+  for (const e of updateVillage(s, villageDt)) events.push({ ...e, village: true });
   updateDining(s, dt);
   checkMemories(s, events);
   for (const level of awardLevels(s)) events.push({ type: "level-up", level });

@@ -2,6 +2,7 @@
 import { VILLAGE_ITEM_ICONS, VILLAGE_ITEM_GRID } from '../content/village-item-icon-meta.js';
 
 export function villageItemIcon(id) {
+  id = ({'away-ledger':'almanac','away-steward':'gathering-kit','away-network':'moth-lantern-string','moonlit-reading-set':'reading-stand','rattlewood-workshop-set':'workbench'})[id] ?? id;
   const icon = Object.hasOwn(VILLAGE_ITEM_ICONS, id) && VILLAGE_ITEM_ICONS[id];
   if (!icon) return '';
   const x = icon.column / (VILLAGE_ITEM_GRID.columns - 1) * 100;

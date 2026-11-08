@@ -126,9 +126,23 @@ export function tap(s) {
   return { accepted: true, boost: growing > 0, reward };
 }
 
+// Village restorations unlock the last new purchases, never revoke an owned tier.
+export function villageFarmGate(s, key, index) {
+  let quest, title, reason;
+  if (key === "plots") {
+    const bought = s.upgrades.plots || 0, tier = Number.isInteger(index) ? index : bought, max = PLOT_COUNTS.length - 1;
+    if (bought > tier || tier !== max - 1) return null;
+    quest = "rowan-2"; title = "A Door of His Own"; reason = "Restore Rowan's workshop in Mothlight";
+  } else if (key === "variety") {
+    if (!Number.isInteger(index) || index < 0 || index >= s.plotLevels.length || s.plotLevels[index] !== VARIETIES.length - 2) return null;
+    quest = "lantern-keepers"; title = "The Lantern Keepers"; reason = "Complete The Lantern Keepers in Mothlight";
+  } else return null;
+  return s.village?.quests?.[quest]?.done ? null : { quest, title, reason };
+}
+
 export function buyUpgrade(s, id) {
   const u = UPGRADES.find((x) => x.id === id);
-  if (s.paused || !u || s.upgrades[id] >= u.max || !tierOpen(s, "farm", id, s.upgrades[id])) return false;
+  if (s.paused || !u || s.upgrades[id] >= u.max || !tierOpen(s, "farm", id, s.upgrades[id]) || villageFarmGate(s, id)) return false;
   const c = upgradeCost(s, id);
   if (s.coins < c) return false;
   s.coins -= c;
@@ -139,8 +153,9 @@ export function buyUpgrade(s, id) {
 
 // Better seeds for one plot. If it was growing its best crop, it moves up too.
 export function upgradePlot(s, i) {
+  if (!Number.isInteger(i) || i < 0 || i >= openPlots(s) || villageFarmGate(s, "variety", i)) return false;
   const next = VARIETIES[s.plotLevels[i] + 1];
-  if (!Number.isInteger(i) || i < 0 || i >= openPlots(s) || !next || s.coins < next.cost) return false;
+  if (!next || s.coins < next.cost) return false;
   s.coins -= next.cost;
   const wasBest = s.plotCrops[i] === s.plotLevels[i];
   s.plotLevels[i]++;

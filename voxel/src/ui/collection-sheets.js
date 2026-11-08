@@ -18,9 +18,9 @@ export function collectionSheets(ui) {
     const outfits = M.costumeCatalog.filter((c) => c.character === who && (collection === "all" || (collection === "classic" ? c.collection !== "90s-horror" : c.collection === collection)));
     const worn = s.wardrobe.equipped[who];
     const cards = outfits.map((c) => {
-      const owned = s.wardrobe.owned.includes(c.id), wearing = worn === c.id;
+      const owned = s.wardrobe.owned.includes(c.id), wearing = worn === c.id, gate = M.costumeVillageGate(s, c.id);
       return `<article class="card outfit${wearing ? " current" : ""}">${portrait(c.id)}<div><h3>${c.name}</h3><p>${c.description}</p>${c.collection === "90s-horror" ? `<p class="small">90s Halloween</p>` : ""}</div>
-        ${wearing ? `<button class="button" disabled>Wearing</button>` : owned ? `<button class="button" data-wear="${c.id}">Wear</button>` : `<button class="button gold" data-costume="${c.id}" ${s.coins < c.price ? "disabled" : ""}>${money(c.price)}${s.coins < c.price ? `<small>need ${money(c.price - s.coins)}</small>` : ""}</button>`}</article>`;
+        ${gate ? `<div><span class="small">${gate.reason}</span><button class="button" disabled>Village quest</button></div>` : wearing ? `<button class="button" disabled>Wearing</button>` : owned ? `<button class="button" data-wear="${c.id}">Wear</button>` : `<button class="button gold" data-costume="${c.id}" ${s.coins < c.price ? "disabled" : ""}>${money(c.price)}${s.coins < c.price ? `<small>need ${money(c.price - s.coins)}</small>` : ""}</button>`}</article>`;
     }).join("");
     const key = who === "natalie" ? "sweater" : "beanie";
     const colours = worn === who + "-base" ? `<h3 class="section">${who === "natalie" ? "Natalie’s knit" : "Shane’s beanie"}</h3>` + M.LOOKS[who].map((l) => {

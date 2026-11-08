@@ -1,3 +1,4 @@
+import { buildVillageGateway } from './farm-village-gate.js';
 import { createMaisie, maisieTextures } from "./maisie.js";
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
@@ -117,9 +118,6 @@ export function createScene(canvas, state, hooks) {
   scene.add(backdrop);
 
   // Signs.
-  // At the head of the patch, where the path meets it, on its own two posts.
-  const patchSign = postSign(signBoard("Pumpkin Patch", "grown with love", 3.6), 1.25);
-  patchSign.position.set(PATCH.x - PATCH.rx + .4, 1.25, PATCH.back - PATCH.rz - .2); patchSign.userData = { type: "seeds" }; scene.add(patchSign);
   const shopSign = signBoard("Skyla’s Shop", "the honest pumpkin", 4.4);   // between the gable's moon windows
   shopSign.position.set(SHOP.x, 6.1, SHOP.z - 2.0); shopSign.userData = { type: "shop" }; scene.add(shopSign);
 
@@ -134,7 +132,7 @@ export function createScene(canvas, state, hooks) {
   scene.add(bigLight);
 
   // Plots: mound, sprout, a pumpkin per variety, a glow when ripe, a hit box.
-  const pumpkins = VARIETIES.map((_, i) => pumpkinTemplate(i)), sprout = sproutTemplate(), pickables = [patchSign, shopSign];
+  const pumpkins = VARIETIES.map((_, i) => pumpkinTemplate(i)), sprout = sproutTemplate(), pickables = [shopSign];
   // Soft round glow for ripe pumpkins, drawn once.
   const glowCanvas = document.createElement("canvas"); glowCanvas.width = glowCanvas.height = 64;
   const gc = glowCanvas.getContext("2d"), grad = gc.createRadialGradient(32, 32, 2, 32, 32, 32);
@@ -175,7 +173,7 @@ export function createScene(canvas, state, hooks) {
   const shopHit = new THREE.Mesh(new THREE.BoxGeometry(9, 5, 5.5), new THREE.MeshBasicMaterial({ visible: false }));
   shopHit.position.set(SHOP.x, 2.5, SHOP.z + 0.4); shopHit.userData = { type: "shop" }; scene.add(shopHit); pickables.push(shopHit);
   const homesteadArch = new THREE.Mesh(new THREE.BoxGeometry(3.4, 5, 1), new THREE.MeshBasicMaterial({ visible: false })); homesteadArch.position.set(20, 2.5, 3); homesteadArch.userData = { type: "home" }; scene.add(homesteadArch); pickables.push(homesteadArch);
-  const estateSign = signBoard("Shane & Natalie", "home through the hedge arch", 4.8); estateSign.position.set(20, 4.7, 3.4); estateSign.userData = { type: "home" }; scene.add(estateSign); pickables.push(estateSign);
+  const villageGateway=buildVillageGateway(signBoard);scene.add(villageGateway.root);pickables.push(villageGateway.hit);
 
 
   // Shane, Natalie, Skyla and the visitors are drawn with the main game's

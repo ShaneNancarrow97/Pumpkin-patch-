@@ -541,7 +541,7 @@ button:focus-visible, summary:focus-visible, select:focus-visible { outline: 2px
 .goal-chip { display: none !important; }
 .dock {
   position: fixed; top: auto; left: 50%; right: auto; bottom: calc(8px + env(safe-area-inset-bottom)); transform: translateX(-50%);
-  width: min(430px, calc(100% - 16px - env(safe-area-inset-left) - env(safe-area-inset-right))); height: 58px;
+  width: min(490px, calc(100% - 16px - env(safe-area-inset-left) - env(safe-area-inset-right))); height: 58px;
   flex-direction: row; gap: 1px; justify-content: center; align-items: stretch; padding: 4px;
   border: 1px solid var(--edge-soft); border-radius: 18px; background: var(--panel-glass); backdrop-filter: blur(14px); box-shadow: var(--shadow);
 }
@@ -725,7 +725,7 @@ body:has(.building-context:not([hidden])) .actions { visibility: hidden; }
   .estate-place-tools .estate-tool { padding: 0 8px; }
 }
 @media (max-height: 480px) and (min-width: 600px) {
-  .dock { width: 360px; height: 54px; bottom: calc(6px + env(safe-area-inset-bottom)); }
+  .dock { width: 430px; height: 54px; bottom: calc(6px + env(safe-area-inset-bottom)); }
   .tab { min-height: 44px; gap: 1px; }
   .tab svg { width: 18px; height: 18px; }
   .hud, .inside-place .hud { left: max(10px, env(safe-area-inset-left)); transform: none; width: 345px; height: 48px; }

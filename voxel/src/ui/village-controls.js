@@ -85,7 +85,7 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
   const sticks = [];
   const legend = make("div", "vg-pad-legend", "vg-pad-legend");
   legend.setAttribute("aria-label", "Controller controls");
-  legend.innerHTML = '<span class="vg-pad-world"><b>LS</b> Walk <b>RS</b> Look</span><span><b>✕</b> <em>Interact</em></span><span><b>○</b> Back</span><span class="vg-pad-world vg-pad-extra"><b>R2</b> Jog</span><span><b>Options</b> Menu</span>';
+  legend.innerHTML = '<span class="vg-pad-world"><b>LS</b> Walk <b>RS</b> Look</span><span><b>✕</b> <em>Interact</em></span><span><b>○</b> Back</span><span class="vg-pad-world vg-pad-extra"><b>R2</b> Jog</span><span class="vg-pad-world"><b>↑</b> Quest details</span><span><b>Options</b> Menu</span>';
   legend.hidden = true;
   const jog = make("button", "vg-jog", "vg-jog"); jog.type = "button"; jog.textContent = "Jog"; jog.setAttribute("aria-label", "Toggle jogging"); jog.setAttribute("aria-pressed", "false");
   listen(jog, "click", () => { if (isBlocked()) return; setSource("touch"); sprint = !sprint; jog.setAttribute("aria-pressed", String(sprint)); });

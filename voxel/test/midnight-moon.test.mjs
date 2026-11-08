@@ -5,7 +5,7 @@ import { pumpkinTemplate } from '../src/pumpkins.js';
 import * as THREE from 'three';
 
 test('Midnight Moon is a paid fifth seed tier per plot, never a global/free crop',()=>{
- const s=M.freshState(); s.coins=20000;
+ const s=M.freshState(); s.coins=20000; s.village.quests["lantern-keepers"]={done:true,step:3,base:null};
  assert.deepEqual(M.VARIETIES.slice(0,4).map(v=>v.price),[12,24,42,70]);
  assert.equal(M.choosePlotCrop(s,0,4),false);
  for(let i=0;i<4;i++)assert.equal(M.upgradePlot(s,0),true);

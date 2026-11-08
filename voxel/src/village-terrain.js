@@ -42,7 +42,7 @@ export const WATERS = Object.freeze([
   shift("marsh", { id: "marsh", kind: "rect", x0: 38, z0: 76, x1: 122, z1: 98, y: -1.05 }),
 ]);
 // The valley: the realm runs from the Copse's far side to the Moor's, and from the gate to the Marsh; beyond it the hills rise into the woods.
-export const REALM = Object.freeze({ x0: -34, z0: 0, x1: 168, z1: 134 });
+export const REALM = Object.freeze({ x0: -34, z0: -22, x1: 168, z1: 134 });
 const smooth = (t) => t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);
 const inside = (r, x, z) => x >= r.x0 && x <= r.x1 && z >= r.z0 && z <= r.z1;
 // Low rolling rises in the woods between the districts, kept off roads.

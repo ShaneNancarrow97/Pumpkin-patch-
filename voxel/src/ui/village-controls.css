@@ -61,7 +61,7 @@ body.village-conversation-open #village-game :is(.vg-thumb-zone,.vg-jog,.vg-look
   #village-game .vg-dock{left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:auto;max-width:calc(100% - 400px)}
   #village-game .vg-dock button{min-width:44px!important;padding:9px 8px!important;font-size:12px!important}
   #village-game .vg-tour{bottom:78px;max-height:calc(100dvh - 158px);overflow:auto;max-width:52vw}
-  #village-game.has-panel :is(.vg-objective,.vg-dock){visibility:hidden}
+  #village-game.has-panel .vg-dock{visibility:hidden}
   #vg-panel{top:max(10px,env(safe-area-inset-top));bottom:max(10px,env(safe-area-inset-bottom));width:min(440px,calc(62vw - 20px));max-width:none}
   .tv-mode #vg-panel{top:12px;bottom:65px;max-height:calc(100dvh / var(--vg-ui-zoom,1) - 80px);width:min(540px,calc(67vw / var(--vg-ui-zoom,1) - 20px))}
   .tv-mode.in-village:has(#village-game:not(.vg-input-pad)) #village-dialogue{max-height:calc(100dvh / max(1,var(--tv-zoom,1)) - 16px)}

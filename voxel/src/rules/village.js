@@ -18,6 +18,7 @@ import { RECIPE_BY_ID, INGREDIENT_BY_ID, COOKING } from "../content/cooking.js";
 import { availableFood } from "./cooking-sales.js";
 import { villageMaterialCapacity, villageGatheringYield, villageGatheringWait } from "./village-upgrades.js";
 import { villageDecorBounds } from "./village-decor-geometry.js";
+import { villageNodeCandidates } from "../content/village-node-sites.js";
 import { villageDecorGroundClear } from "./village-navigation.js";
 
 export { VILLAGE_LEVEL };
@@ -34,7 +35,7 @@ export function freshVillage() {
     quests: {}, claims: {}, unlocks: [], effects: [], built: {}, found: {},
     friends: Object.fromEntries(PLAYABLE.map((id) => [id, { xp: 0, met: false, chatIn: 0, gifts: [], seen: [] }])),
     materials: Object.fromEntries(MATERIALS.map((m) => [m.id, 0])),
-    nodes: Object.fromEntries(NODES.map((n) => [n.id, 0])),
+    nodes: Object.fromEntries(NODES.map((n) => [n.id, 0])), gatherCycles: {},
     stall: { rotation: 0, refreshIn: STALL.refresh, bought: {} },
     discount: 0,
     decor: { owned: {}, placed: [], next: 1 },
@@ -66,7 +67,11 @@ export function restoreVillage(raw) {
       seen: (Array.isArray(f.seen) ? f.seen : []).filter((c) => typeof c === "string").slice(-40) };
   }
   for (const m of MATERIALS) v.materials[m.id] = Math.min(villageMaterialCapacity(v), count(raw.materials?.[m.id]));
-  for (const n of NODES) v.nodes[n.id] = Math.min(MATERIAL_BY_ID[n.material].respawn, time(raw.nodes?.[n.id]));
+  const cycles = raw.gatherCycles && typeof raw.gatherCycles === "object" && !Array.isArray(raw.gatherCycles) ? raw.gatherCycles : {};
+  for (const n of NODES) {
+    v.nodes[n.id] = Math.min(MATERIAL_BY_ID[n.material].respawn, time(raw.nodes?.[n.id]));
+    if (Number.isSafeInteger(cycles[n.id]) && cycles[n.id] >= 0) v.gatherCycles[n.id] = Math.min(1e9, cycles[n.id]);
+  }
   v.stall = { rotation: count(raw.stall?.rotation), refreshIn: Math.min(STALL.refresh, time(raw.stall?.refreshIn)) || STALL.refresh, bought: {} };
   for (const [id, n] of Object.entries(raw.stall?.bought ?? {})) if (typeof id === "string") v.stall.bought[id] = Math.min(9, count(n));
   v.discount = Math.min(.25, Math.max(0, Number(raw.discount) || 0));
@@ -315,6 +320,7 @@ function finishQuest(s, id) {
   for (const [m, n] of Object.entries(r.materials ?? {})) { v.materials[m] = Math.min(villageMaterialCapacity(s), (v.materials[m] ?? 0) + n); given.push({ kind: "material", id: m, amount: n }); }
   for (const [d, n] of Object.entries(r.villageDecor ?? {})) { v.decor.owned[d] = (v.decor.owned[d] ?? 0) + n; given.push({ kind: "village-decor", id: d, amount: n }); }
   for (const d of r.decor ?? []) given.push(...grantVillage(s, [{ kind: "decor", id: d }]));
+  for (const id of r.costumes ?? []) given.push(...grantVillage(s, [{ kind: "costume", id }]));
   for (const u of r.unlock ?? []) if (!v.unlocks.includes(u)) v.unlocks.push(u);
   if (r.effect && !v.effects.includes(r.effect)) v.effects.push(r.effect);
   if (r.build) build(s, r.build);
@@ -367,9 +373,13 @@ export function findObject(s, id) {
 export const canGather = (s) => s.village.unlocks.includes("gathering");
 export const nodeReady = (s, id) => !!NODE_BY_ID[id] && districtOpen(s, NODE_BY_ID[id].district) && (s.village.nodes[id] ?? 0) <= 0;
 export function gatherNode(s, id) {
-  const n = NODE_BY_ID[id], v = s.village; if (!n || !canGather(s) || !nodeReady(s, id)) return null;
+  const n = NODE_BY_ID[id], v = s.village; if (s.paused || !n || !canGather(s) || !nodeReady(s, id)) return null;
   const m = MATERIAL_BY_ID[n.material], room = villageMaterialCapacity(s) - (v.materials[m.id] ?? 0); if (room <= 0) return { full: true, material: m.id };
   const got = Math.min(room, villageGatheringYield(s, m.id)); v.materials[m.id] += got; v.nodes[id] = villageGatheringWait(s, m.id); v.stats.gathered += got;
+  // The next site is chosen only after a successful award, while this node is hidden.
+  v.gatherCycles ??= {};
+  const cycle = Number.isSafeInteger(v.gatherCycles[id]) ? Math.max(0, v.gatherCycles[id]) : 0;
+  v.gatherCycles[id] = cycle >= 1e9 ? 0 : cycle + 1;
   return { material: m.id, amount: got, events: advanceQuests(s) };
 }
 export const districtOpen = (s, id) => id === "green" && s.village.invited;
@@ -405,7 +415,8 @@ const roadBoxes = ROADS.filter((r) => r.kind !== "future-spur").flatMap((r) => r
 }));
 const fixtureBoxes = [...Object.values(FIXTURES), ...SCENERY].map((f) => f.r ? { x0: f.x - f.r, x1: f.x + f.r, z0: f.z - f.r, z1: f.z + f.r } : f.x0 !== undefined ? { x0: f.x0, x1: f.x1, z0: f.z0, z1: f.z1 } : { x0: f.x - f.w / 2, x1: f.x + f.w / 2, z0: f.z - f.d / 2, z1: f.z + f.d / 2 });
 const homeBoxes = PLOTS.filter((p) => p.kind !== "reservation").map((p) => ({ x0: p.x0, x1: p.x1, z0: p.z0, z1: p.z1 }));
-const nodeBoxes = NODES.map((n) => ({ x0: n.x - 1, x1: n.x + 1, z0: n.z - 1, z1: n.z + 1 }));
+// Keep every possible small-prop site clear, so decorating never moves a visible resource.
+const nodeBoxes = NODES.flatMap(n => villageNodeCandidates(n).map(p => ({ x0: p.x - .55, x1: p.x + .55, z0: p.z - .55, z1: p.z + .55 })));
 const MOOR_INSET = MOOR_CORNER;
 function decorRoom(v, id, x, z, rotation, ignore) {
   const b = villageDecorBounds(id, x, z, rotation); if (!b) return false;
@@ -513,18 +524,22 @@ function settleAlmanac(s) {
 
 // ---- One step of the village's time ------------------------------------------
 // Nodes grow back, the stall restocks, favours return and gifts and chats come round
-// again, all on the farm's own clock; then quests and the almanac catch up.
+// again on their own active-play clock; then quests and the almanac catch up.
 export function updateVillage(s, dt) {
-  const v = s.village; if (!v?.invited || !(dt > 0)) return [];
+  const v = s.village; if (s.paused || !v?.invited || !Number.isFinite(dt) || !(dt > 0)) return [];
+  const events = [];
   v.clock += dt;
-  for (const id in v.nodes) if (v.nodes[id] > 0) v.nodes[id] = Math.max(0, v.nodes[id] - dt);
+  for (const id in v.nodes) if (v.nodes[id] > 0) {
+    v.nodes[id] = Math.max(0, v.nodes[id] - dt);
+    if (v.nodes[id] === 0) events.push({ type: "village-resource-ready", id });
+  }
   for (const id of PLAYABLE) {
     const f = v.friends[id]; f.chatIn = Math.max(0, f.chatIn - dt); f.gifts = f.gifts.map((t) => t - dt).filter((t) => t > 0);
     const fav = v.favours[id]; if (!fav.id && fav.readyIn > 0) fav.readyIn = Math.max(0, fav.readyIn - dt);
   }
   v.stall.refreshIn -= dt;
   if (v.stall.refreshIn <= 0) { v.stall.rotation++; v.stall.refreshIn = STALL.refresh; v.stall.bought = {}; }
-  return [...advanceQuests(s), ...settleAlmanac(s)];
+  return [...events, ...advanceQuests(s), ...settleAlmanac(s)];
 }
 
 // What a quest's step says in the journal, with its progress.

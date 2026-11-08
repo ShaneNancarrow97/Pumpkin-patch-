@@ -569,20 +569,23 @@ export function conservatory(f, built, r = seeded(47)) {
 
 // ---- Gathering spots: full, then spent until they grow back --------------------
 export function node(f, material, ready, r = seeded(51)) {
+  // A gathered pile disappears completely; only its save timer remains.
+  if (!ready) return;
   if (material === "logs") {
-    if (!ready) { f.block(0, 0, 0, .7, .35, .7, 0x6a4a34); f.block(0, .35, 0, .6, .04, .6, 0xd8b88a); for (let i = 0; i < 4; i++) f.block((r() - .5) * .9, 0, (r() - .5) * .9, .12, .05, .2, 0xd8b88a); return; }
-    for (const [dx, dy, dz] of [[-.2, 0, 0], [.25, 0, .05], [0, .32, .02]]) { f.block(dx, dy, dz, .32, .32, 1.5, vary(0x7a5236, .08, r)); f.block(dx, dy, dz + .76, .26, .26, .02, 0xd8b88a); }
-    f.block(.5, 0, -.5, .6, .12, .12, 0x5a3d2a); f.block(.55, .05, -.45, .06, .25, .06, 0x6a9a4a);
+    // One fallen hand-sized log: about46cm in the scaled world, not a stockpile.
+    f.block(0,0,0,.09,.09,.3,vary(0x7a5236,.08,r));
+    f.block(0,.01,.153,.07,.07,.006,0xd8b88a);
+    f.block(-.047,.015,0,.008,.055,.27,0x4e3428);f.block(.047,.015,0,.008,.055,.27,0x925e39);
+    f.block(.004,.032,.157,.025,.025,.003,0x9f784c);
   } else if (material === "stone") {
-    if (!ready) { for (let i = 0; i < 5; i++) f.block((r() - .5) * .8, 0, (r() - .5) * .8, .15, .1, .15, pick(C.stone, r)); return; }
-    f.block(0, 0, 0, 1, .6, .9, vary(C.stoneDark[0], .05, r)); f.block(.2, .5, -.1, .6, .45, .5, C.stoneDark[1]); f.block(-.35, 0, .35, .45, .35, .4, C.stone[1]);
-    f.block(.1, .95, 0, .2, .08, .2, 0xa9d4ff, true);
+    // A single loose boulder, at most35cm across; mining never leaves rubble.
+    f.block(0,0,0,.23,.14,.21,vary(C.stoneDark[0],.05,r));
+    f.block(.012,.13,-.008,.18,.055,.16,C.stoneDark[1]);
+    f.block(-.05,.185,.03,.025,.008,.025,0xa9c2ce);
   } else if (material === "fibre") {
-    if (!ready) { for (let i = 0; i < 6; i++) f.block((r() - .5) * .7, 0, (r() - .5) * .7, .05, .1, .05, 0x9a8a4a); return; }
     for (let i = 0; i < 14; i++) f.block((r() - .5) * .8, 0, (r() - .5) * .8, .06, .8 + r() * .6, .06, vary(0xd2be6a, .1, r));
     f.block(0, .5, 0, .5, .08, .5, 0x8a5a3a);
   } else if (material === "herbs") {
-    if (!ready) { for (let i = 0; i < 3; i++) f.block((r() - .5) * .5, 0, (r() - .5) * .5, .1, .12, .1, 0x5a8a45); return; }
     for (let i = 0; i < 9; i++) { const x = (r() - .5) * .7, z = (r() - .5) * .7; f.block(x, 0, z, .14, .3 + r() * .2, .14, vary(0x6aa84f, .1, r)); }
     for (let i = 0; i < 5; i++) f.block((r() - .5) * .6, .45, (r() - .5) * .6, .1, .1, .1, pick([0xb77ad8, 0xf6e6a0, 0xf28fb5], r));
   }
@@ -682,6 +685,7 @@ export const VELVET_HALL = Object.freeze({ w: 14, d: 12, host: [0, -10.5], spawn
   blocks: Object.freeze([[-4.85, -12, 4.85, -8.75], [-7, -7.7, -5.4, -4.3], [-4.9, -7.8, -3.5, -4.2], [5, -8.3, 7, -1.5], [-6.7, -2, -5.2, -.6], [4.5, -2, 6.2, -.4]]) });
 export function velvetBatHall(f, r = seeded(173)) {
   const W = 14, D = 12, hw = W / 2, H = 6.4;
+  hallFinery(f,W,D,H,0x5a203b);
   const stone = [0x3a3444, 0x433c4e, 0x352f40, 0x4a4256], trim = [0x6a6276, 0x5e566a], oak = [0x3a2418, 0x45291b, 0x2f1d14, 0x50301f];
   const velvet = 0x7a1424, plush = 0x951c30, dark = 0x22140e, iron = 0x1a1418, glass = 0x3a3070;
   const candle = (x, y, z, lamp = false) => { f.block(x, y, z, .1, .26, .1, 0xf0e6d8); f.block(x, y + .26, z, .06, .1, .06, 0xffb347, true); if (lamp) f.mark?.("lamp", x, y + .5, z); };
@@ -752,8 +756,27 @@ export function velvetBatHall(f, r = seeded(173)) {
 // The shell of a front-open hall (front +z is the door): boards in staggered rows, plaster walls in a timber frame,
 // beams overhead, and the front cut to a sill with lanterns on posts either side of the doorway. Halls are a little
 // roomier than the cottages outside them, as game rooms are.
+// Low-relief panelling and ceiling-height carving enrich the rooms without occupying their walkways.
+function hallFinery(f, w, d, h, accent = C.plum) {
+  const hw=w/2;
+  for(const side of [-1,1]) {
+    const x=side*(hw-.14);
+    f.block(x,.2,-d/2,.045,.72,d-.4,accent);f.block(x,.9,-d/2,.06,.045,d-.4,C.brass);
+    for(let z=-.7;z>-d+.5;z-=.65){f.block(x,.25,z,.06,.6,.035,C.brass);f.block(x,h-.45,z,.09,.08,.17,C.gold);}
+    for(const z of [-d*.3,-d*.67]) {
+      f.block(x,2.1,z,.1,.8,.58,C.wood);f.block(x-side*.06,2.18,z,.03,.64,.46,accent);
+      f.block(x-side*.09,2.35,z,.03,.2,.2,C.gold);f.block(x-side*.09,2.62,z,.03,.1,.12,C.moth);
+    }
+    // Thin brass floor inlay follows the wall, not the central route through the room.
+    f.block(side*(hw-.4),.125,-d/2,.035,.012,d-.8,C.gold);
+  }
+  f.block(0,h-.43,-d+.2,w-.3,.09,.08,C.brass);
+  for(let x=-hw+.4;x<hw-.3;x+=.7)f.block(x,h-.32,-d+.22,.16,.1,.08,C.gold);
+}
+
 function hallShell(f, r, { w, d, h = 4.8, boards, wall, beam = C.beam, doorLamps = false }) {
   const hw = w / 2;
+  hallFinery(f,w,d,h,wall===0x9a86a8?0x5c355e:0x4f392c);
   for (let k = 0, z = -d + .25; z < 0; z += .5, k++) for (let x = -hw - (k % 2); x < hw; x += 2) { const x0 = Math.max(-hw, x), x1 = Math.min(hw, x + 2); if (x1 - x0 > .05) f.block((x0 + x1) / 2, 0, z, x1 - x0 - .03, .12, .47, vary(pick(boards, r), .05, r)); }
   f.block(0, 0, -d, w, h, .26, wall); for (const sx of [-1, 1]) f.block(sx * hw, 0, -d / 2, .26, h, d, wall);
   for (let x = -hw; x <= hw + .01; x += 2.2) f.block(Math.max(-hw + .1, Math.min(hw - .1, x)), 0, -d + .16, .22, h, .1, beam);
@@ -771,7 +794,7 @@ function bookRow(f, r, x0, x1, y, z, depth = .3) {
 // Elowen's library, inside: shelves of books to the ceiling with a rolling ladder, a window seat under a round
 // moon window with a telescope by it, her writing desk with the almanac open under candles, a bookbinding bench
 // with its press, a stove with a kettle, herbs drying from the beams, a jar of glowing moths and a round rug.
-export const ELOWEN_HALL = Object.freeze({ w: 11, d: 9, host: [.9, -5.4], spawn: [0, -1.4], light: .38, exposure: 1,
+export const ELOWEN_HALL = Object.freeze({ w: 11, d: 9, host: [.9, -5.4], spawn: [0, -1.4], light: .46, exposure: 1.08,
   blocks: Object.freeze([[-5.5, -9, 5.5, -8.1], [-2.3, -5.2, .3, -3.6], [3.9, -4.6, 5.5, -1.6], [3.9, -7.6, 5.5, -5.8], [-5.5, -5.8, -4.2, -3.2], [-5.5, -7.4, -4, -6.2], [-1.1, -7, .5, -6.2]]) });
 export function elowenLibrary(f, r = seeded(177)) {
   const W = 11, D = 9, hw = W / 2, H = 4.8, dark = 0x3a2418, plum = C.plum;

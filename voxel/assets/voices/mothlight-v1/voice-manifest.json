@@ -17,7 +17,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 25271441,
       "duration": 6.288,
@@ -45,7 +45,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 134049643,
       "duration": 4.848,
@@ -73,7 +73,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 139764369,
       "duration": 4.248,
@@ -101,7 +101,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 160331301,
       "duration": 4.512,
@@ -129,7 +129,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 162572411,
       "duration": 4.704,
@@ -157,7 +157,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 189486381,
       "duration": 5.208,
@@ -185,7 +185,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 196815840,
       "duration": 3.168,
@@ -213,7 +213,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 202910634,
       "duration": 4.704,
@@ -241,7 +241,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 219413501,
       "duration": 3.6,
@@ -269,7 +269,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 240088693,
       "duration": 4.656,
@@ -297,7 +297,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 246363133,
       "duration": 1.32,
@@ -325,7 +325,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 273029656,
       "duration": 3.168,
@@ -353,7 +353,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 395431280,
       "duration": 2.808,
@@ -381,7 +381,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 426359576,
       "duration": 2.76,
@@ -409,7 +409,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 433949964,
       "duration": 3.072,
@@ -437,7 +437,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 599587274,
       "duration": 4.464,
@@ -465,7 +465,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 634713099,
       "duration": 3.072,
@@ -493,7 +493,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 667321991,
       "duration": 3.168,
@@ -521,7 +521,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 710647994,
       "duration": 4.248,
@@ -549,7 +549,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 714754376,
       "duration": 2.976,
@@ -577,7 +577,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 721640663,
       "duration": 5.16,
@@ -605,7 +605,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 827495921,
       "duration": 5.4,
@@ -633,7 +633,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 883374988,
       "duration": 2.712,
@@ -661,7 +661,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 971291574,
       "duration": 2.856,
@@ -689,7 +689,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1050526271,
       "duration": 3.672,
@@ -717,7 +717,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1073397082,
       "duration": 3.864,
@@ -745,7 +745,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1117415991,
       "duration": 4.656,
@@ -773,7 +773,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1149677531,
       "duration": 3.456,
@@ -801,7 +801,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1160086892,
       "duration": 5.736,
@@ -829,7 +829,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1211468077,
       "duration": 3.168,
@@ -857,7 +857,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1242930154,
       "duration": 1.488,
@@ -885,7 +885,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1376523695,
       "duration": 4.848,
@@ -913,7 +913,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1476404743,
       "duration": 3.672,
@@ -941,7 +941,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1479291309,
       "duration": 3.624,
@@ -969,7 +969,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1572855411,
       "duration": 3.768,
@@ -997,7 +997,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1602379302,
       "duration": 4.464,
@@ -1025,7 +1025,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1613651231,
       "duration": 2.976,
@@ -1053,7 +1053,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1642045997,
       "duration": 4.248,
@@ -1081,7 +1081,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1723742096,
       "duration": 4.752,
@@ -1109,7 +1109,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1734628231,
       "duration": 3.72,
@@ -1137,7 +1137,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1739295432,
       "duration": 4.512,
@@ -1165,7 +1165,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1752764679,
       "duration": 4.248,
@@ -1193,7 +1193,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1786316757,
       "duration": 2.904,
@@ -1221,7 +1221,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1865245377,
       "duration": 6.192,
@@ -1249,7 +1249,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1872842068,
       "duration": 2.208,
@@ -1277,7 +1277,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1903470799,
       "duration": 4.344,
@@ -1305,7 +1305,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1963368927,
       "duration": 4.296,
@@ -1333,7 +1333,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1965263412,
       "duration": 3.12,
@@ -1361,7 +1361,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1984536561,
       "duration": 3.168,
@@ -1389,7 +1389,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2031459731,
       "duration": 4.464,
@@ -1417,7 +1417,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2054053286,
       "duration": 5.856,
@@ -1445,7 +1445,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2072411832,
       "duration": 3.12,
@@ -1473,7 +1473,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2158440669,
       "duration": 6.048,
@@ -1501,7 +1501,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2260049004,
       "duration": 5.16,
@@ -1529,7 +1529,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2295944452,
       "duration": 3.6,
@@ -1557,7 +1557,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2310027956,
       "duration": 3.504,
@@ -1585,7 +1585,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2352527325,
       "duration": 5.808,
@@ -1613,7 +1613,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2392006016,
       "duration": 3.864,
@@ -1641,7 +1641,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2404516201,
       "duration": 2.112,
@@ -1669,7 +1669,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2404853371,
       "duration": 1.368,
@@ -1697,7 +1697,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2483165991,
       "duration": 4.608,
@@ -1725,7 +1725,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2495321205,
       "duration": 1.92,
@@ -1753,7 +1753,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2590622991,
       "duration": 4.056,
@@ -1781,7 +1781,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2606243483,
       "duration": 3.024,
@@ -1809,7 +1809,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2657626503,
       "duration": 4.992,
@@ -1837,7 +1837,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2685403939,
       "duration": 2.808,
@@ -1865,7 +1865,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2857302729,
       "duration": 3.264,
@@ -1893,7 +1893,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2931873797,
       "duration": 3.6,
@@ -1921,7 +1921,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2942612705,
       "duration": 5.304,
@@ -1949,7 +1949,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2958786543,
       "duration": 4.464,
@@ -1977,7 +1977,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2964906983,
       "duration": 3.216,
@@ -2005,7 +2005,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3004699512,
       "duration": 2.856,
@@ -2033,7 +2033,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3038193429,
       "duration": 3.024,
@@ -2061,7 +2061,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3052412397,
       "duration": 5.04,
@@ -2089,7 +2089,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3105806622,
       "duration": 3.768,
@@ -2117,7 +2117,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3110012227,
       "duration": 3.456,
@@ -2145,7 +2145,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3113868758,
       "duration": 3.36,
@@ -2173,7 +2173,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3114052401,
       "duration": 4.416,
@@ -2201,7 +2201,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3115092895,
       "duration": 1.08,
@@ -2229,7 +2229,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3150220941,
       "duration": 3.408,
@@ -2257,7 +2257,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3163110126,
       "duration": 2.064,
@@ -2285,7 +2285,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3237481007,
       "duration": 5.784,
@@ -2313,7 +2313,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3249522048,
       "duration": 3.36,
@@ -2341,7 +2341,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3255678246,
       "duration": 4.296,
@@ -2369,7 +2369,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3276202293,
       "duration": 4.848,
@@ -2397,7 +2397,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3435712180,
       "duration": 2.208,
@@ -2425,7 +2425,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3461231199,
       "duration": 4.296,
@@ -2453,7 +2453,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3480396289,
       "duration": 3.264,
@@ -2481,7 +2481,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3489528859,
       "duration": 3.36,
@@ -2509,7 +2509,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3520039795,
       "duration": 2.568,
@@ -2537,7 +2537,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3696841208,
       "duration": 2.928,
@@ -2565,7 +2565,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3774918606,
       "duration": 4.344,
@@ -2593,7 +2593,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3796816377,
       "duration": 2.904,
@@ -2621,7 +2621,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3894641721,
       "duration": 4.416,
@@ -2649,7 +2649,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3921022217,
       "duration": 2.76,
@@ -2677,7 +2677,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3959215411,
       "duration": 2.76,
@@ -2705,7 +2705,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3969049650,
       "duration": 2.16,
@@ -2733,7 +2733,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4004291300,
       "duration": 3.12,
@@ -2761,7 +2761,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4058719965,
       "duration": 3.456,
@@ -2789,7 +2789,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4071173219,
       "duration": 2.208,
@@ -2817,7 +2817,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4172748867,
       "duration": 5.808,
@@ -2845,7 +2845,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4173624121,
       "duration": 2.808,
@@ -2873,7 +2873,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4240296569,
       "duration": 3.216,
@@ -2901,7 +2901,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4246977596,
       "duration": 1.488,
@@ -2919,7 +2919,7 @@
       "speaker": "narrator",
       "text": "Elowen's library. A conservatory, one day",
       "spokenText": "Elowen's library. A conservatory, one day",
-      "source": "src/content/village-tour.js:TOUR[2]",
+      "source": "src/content/village-tour.js:TOUR[4]",
       "availability": "playable",
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "voice_name": "George",
@@ -2929,7 +2929,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 368510415,
       "duration": 2.928,
@@ -2947,7 +2947,7 @@
       "speaker": "narrator",
       "text": "Carnival Moor. Corvus's tents and the Baron's manor · level 12",
       "spokenText": "Carnival Moor. Corvus's tents and the Baron's manor · level 12",
-      "source": "src/content/village-tour.js:TOUR[5]",
+      "source": "src/content/village-tour.js:TOUR[7]",
       "availability": "playable",
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "voice_name": "George",
@@ -2957,7 +2957,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 493779146,
       "duration": 4.8,
@@ -2975,7 +2975,7 @@
       "speaker": "narrator",
       "text": "Moonroot Copse. Mabel and Tansy, behind the brambles · level 6",
       "spokenText": "Moonroot Copse. Mabel and Tansy, behind the brambles · level 6",
-      "source": "src/content/village-tour.js:TOUR[8]",
+      "source": "src/content/village-tour.js:TOUR[10]",
       "availability": "playable",
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "voice_name": "George",
@@ -2985,7 +2985,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 628252838,
       "duration": 5.04,
@@ -3003,7 +3003,7 @@
       "speaker": "narrator",
       "text": "Rowan's workshop. More plans than walls",
       "spokenText": "Rowan's workshop. More plans than walls",
-      "source": "src/content/village-tour.js:TOUR[3]",
+      "source": "src/content/village-tour.js:TOUR[5]",
       "availability": "playable",
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "voice_name": "George",
@@ -3013,7 +3013,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 855757807,
       "duration": 2.712,
@@ -3031,7 +3031,7 @@
       "speaker": "narrator",
       "text": "Welcome to Mothlight",
       "spokenText": "Welcome to Mothlight",
-      "source": "src/content/village-tour.js:TOUR[10]",
+      "source": "src/content/village-tour.js:TOUR[12]",
       "availability": "playable",
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "voice_name": "George",
@@ -3041,7 +3041,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1814649607,
       "duration": 1.416,
@@ -3059,7 +3059,7 @@
       "speaker": "narrator",
       "text": "Mirror Marsh. Where the observatory waits · level 15",
       "spokenText": "Mirror Marsh. Where the observatory waits · level 15",
-      "source": "src/content/village-tour.js:TOUR[6]",
+      "source": "src/content/village-tour.js:TOUR[8]",
       "availability": "playable",
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "voice_name": "George",
@@ -3069,7 +3069,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1826875401,
       "duration": 4.608,
@@ -3097,7 +3097,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2468291813,
       "duration": 3.12,
@@ -3115,7 +3115,7 @@
       "speaker": "narrator",
       "text": "Lantern Quarry. Beyond the broken bridge · opens at level 9",
       "spokenText": "Lantern Quarry. Beyond the broken bridge · opens at level 9",
-      "source": "src/content/village-tour.js:TOUR[7]",
+      "source": "src/content/village-tour.js:TOUR[9]",
       "availability": "playable",
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "voice_name": "George",
@@ -3125,7 +3125,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3020310914,
       "duration": 3.912,
@@ -3143,7 +3143,7 @@
       "speaker": "narrator",
       "text": "The Velvet Bat. A tavern for bats and night folk · Vesper keeps the door",
       "spokenText": "The Velvet Bat. A tavern for bats and night folk · Vesper keeps the door",
-      "source": "src/content/village-tour.js:TOUR[4]",
+      "source": "src/content/village-tour.js:TOUR[6]",
       "availability": "playable",
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "voice_name": "George",
@@ -3153,7 +3153,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3439333962,
       "duration": 5.208,
@@ -3171,7 +3171,7 @@
       "speaker": "narrator",
       "text": "Hollow Green. The square, the well and the noticeboard",
       "spokenText": "Hollow Green. The square, the well and the noticeboard",
-      "source": "src/content/village-tour.js:TOUR[1]",
+      "source": "src/content/village-tour.js:TOUR[3]",
       "availability": "playable",
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "voice_name": "George",
@@ -3181,7 +3181,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3696238097,
       "duration": 3.6,
@@ -3199,7 +3199,7 @@
       "speaker": "narrator",
       "text": "…and beyond",
       "spokenText": "…and beyond",
-      "source": "src/content/village-tour.js:TOUR[9]",
+      "source": "src/content/village-tour.js:TOUR[11]",
       "availability": "playable",
       "voice_id": "JBFqnCBsd6RMkjVDRZzb",
       "voice_name": "George",
@@ -3209,7 +3209,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4167509960,
       "duration": 1.128,
@@ -3237,7 +3237,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1059075705,
       "duration": 4.848,
@@ -3265,7 +3265,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1514578195,
       "duration": 6.288,
@@ -3293,10 +3293,10 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2667257829,
-      "duration": 6.0,
+      "duration": 6,
       "bytes": 48236,
       "sha256": "8bb2c1504e7aac7daf961a0047f00e5602785db7a9a286529bb55f7b7c0299eb",
       "processing": {
@@ -3321,7 +3321,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2732447459,
       "duration": 5.256,
@@ -3349,7 +3349,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3948594038,
       "duration": 6.288,
@@ -3377,7 +3377,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 40790875,
       "duration": 3.912,
@@ -3405,7 +3405,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 254997893,
       "duration": 4.752,
@@ -3433,7 +3433,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 407662604,
       "duration": 4.416,
@@ -3461,7 +3461,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 799551029,
       "duration": 2.856,
@@ -3489,7 +3489,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1289708230,
       "duration": 4.248,
@@ -3517,7 +3517,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1410141436,
       "duration": 5.4,
@@ -3545,7 +3545,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1470646064,
       "duration": 1.584,
@@ -3573,7 +3573,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1533383510,
       "duration": 5.736,
@@ -3601,7 +3601,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1557676597,
       "duration": 2.52,
@@ -3629,7 +3629,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1642331338,
       "duration": 3.36,
@@ -3657,7 +3657,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1768831245,
       "duration": 3.672,
@@ -3685,7 +3685,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 1832898680,
       "duration": 3.912,
@@ -3713,7 +3713,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2050302872,
       "duration": 3.552,
@@ -3741,7 +3741,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2054159048,
       "duration": 2.664,
@@ -3769,7 +3769,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2085907100,
       "duration": 1.32,
@@ -3797,7 +3797,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2213592449,
       "duration": 3.552,
@@ -3825,7 +3825,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2247430961,
       "duration": 3.72,
@@ -3853,7 +3853,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2388373824,
       "duration": 4.152,
@@ -3881,7 +3881,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2475768996,
       "duration": 4.008,
@@ -3909,7 +3909,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2491488358,
       "duration": 3.072,
@@ -3937,7 +3937,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2540462991,
       "duration": 3.312,
@@ -3965,7 +3965,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2566432407,
       "duration": 3.6,
@@ -3993,7 +3993,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2630475365,
       "duration": 5.808,
@@ -4021,7 +4021,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2736131496,
       "duration": 6.096,
@@ -4049,7 +4049,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2989039975,
       "duration": 6.696,
@@ -4077,7 +4077,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3007183864,
       "duration": 5.64,
@@ -4105,7 +4105,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3037682019,
       "duration": 3.72,
@@ -4133,7 +4133,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3101140828,
       "duration": 3.36,
@@ -4161,7 +4161,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3413623466,
       "duration": 8.232,
@@ -4189,7 +4189,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3489859656,
       "duration": 2.928,
@@ -4217,7 +4217,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3517651279,
       "duration": 4.704,
@@ -4245,7 +4245,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3567752977,
       "duration": 5.448,
@@ -4273,7 +4273,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3591746299,
       "duration": 2.328,
@@ -4301,7 +4301,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3602427069,
       "duration": 6.432,
@@ -4329,7 +4329,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3761165345,
       "duration": 3.864,
@@ -4357,7 +4357,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3835828540,
       "duration": 3.912,
@@ -4385,7 +4385,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 3892066140,
       "duration": 4.008,
@@ -4413,7 +4413,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4171177703,
       "duration": 5.496,
@@ -4441,7 +4441,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4201341323,
       "duration": 5.16,
@@ -4469,7 +4469,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4274074518,
       "duration": 6.432,
@@ -4497,7 +4497,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4282634295,
       "duration": 5.256,
@@ -4525,7 +4525,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 4040323,
       "duration": 7.176,
@@ -4553,7 +4553,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 742765931,
       "duration": 9.264,
@@ -4581,7 +4581,7 @@
         "similarity_boost": 0.75,
         "style": 0.16,
         "use_speaker_boost": true,
-        "speed": 1.0
+        "speed": 1
       },
       "seed": 2996238992,
       "duration": 8.688,

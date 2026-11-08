@@ -258,10 +258,10 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
   const makeHit = (x, y, z, w, h, d, type) => { const hit = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(x, y, z); hit.userData = { type }; root.add(hit); pickables.push(hit); };
   const preview = new Voxels();
   preview.block(37, 0, 20, .14, 1.8, .14, 0x423020); preview.block(37, 1.1, 20, 1.4, .75, .12, 0x68452f);
-  marker = preview.build(); const forSale = postSign(signBoard("Moonbrew Meadow", "room for a little more magic", 2.8), 1.2); forSale.position.set(37, 1.2, 20.1); root.add(marker, forSale);
+  marker = preview.build(); root.add(marker);
   makeHit(37, 1.2, 20, 2.8, 2.4, .6, "meadow-land");
   function buildLand() {
-    builtLand = true; openMeadowEdge(world.group); root.remove(marker, forSale); disposeObject(marker); disposeObject(forSale);
+    builtLand = true; openMeadowEdge(world.group); root.remove(marker); disposeObject(marker);
     pickables.forEach((h) => { root.remove(h); h.geometry.dispose(); h.material.dispose(); }); pickables = [];
     // Rebuild once from the original farm generator: one palette, height and
     // cobble seed across the old boundary. No overlaid connector or seam.
@@ -290,8 +290,6 @@ export function createFestivalWorld({ scene, state, world, signBoard, createCash
     for (const x of [42, 44]) { for (const dx of [-.6, .6]) v.block(x + dx, 0, 21.6, .13, .55, .5, 0x392b27); v.block(x, .55, 21.6, 1.8, .12, .6, 0x795039); v.block(x, .85, 21.35, 1.8, .38, .1, 0x795039); }
     root.add(v.build());
     const exitPath = buildGround({ x0: 54, x1: 58, z0: 5.5, z1: 7.7 }, (x, z) => grounds.cobble(x, z, [0x8c8094, 0x7a6f84, 0x9a8d9e, 0x6c6276], .42, 1, 0x2a2430), { farmView: true }); root.add(exitPath);
-    const exitSign = signBoard("Village →", "homeward path", 3.6); exitSign.position.set(53, 3.4, 6.5); root.add(exitSign);
-    const welcome = signBoard("Moonbrew Meadow", "cocoa & treats", 5); welcome.position.set(46.8, 1.6, 7); welcome.userData = { type: "meadow-land" }; root.add(welcome); pickables.push(welcome);
     makeHit(47, 1.4, 17.9, 5.5, 3, 4, "cocoa-stand");
   }
   function sync() {

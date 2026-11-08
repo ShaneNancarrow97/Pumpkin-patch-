@@ -19,10 +19,10 @@ const box = (b) => ({ ...b, x0: S(b.x0), z0: S(b.z0), x1: S(b.x1), z1: S(b.z1) }
 export const DISTRICT_SHIFT = Object.freeze({ green: [0, 0], copse: [-30, 14], quarry: [0, 20], moor: [44, 4], marsh: [0, 34] });
 const sh = (d, [x, z]) => [x + DISTRICT_SHIFT[d][0], z + DISTRICT_SHIFT[d][1]];
 const shBox = (d, b) => ({ ...b, x0: b.x0 + DISTRICT_SHIFT[d][0], x1: b.x1 + DISTRICT_SHIFT[d][0], z0: b.z0 + DISTRICT_SHIFT[d][1], z1: b.z1 + DISTRICT_SHIFT[d][1] });
-export const VILLAGE_BOUNDS = Object.freeze({ x0: S(-34), z0: 0, x1: S(168), z1: S(134) });
+export const VILLAGE_BOUNDS = Object.freeze({ x0: S(-34), z0: S(-22), x1: S(168), z1: S(134) });
 // Each district opens at a patch level and, after the Green, a story beat (STORY_FLAGS).
 export const DISTRICTS = Object.freeze([
-  { id: "green", name: "Hollow Green", level: 3, story: null, polygon: [[0, 0], [120, 0], [120, 36], [0, 36]] },
+  { id: "green", name: "Hollow Green", level: 3, story: null, polygon: [[0, -22], [120, -22], [120, 36], [0, 36]] },
   { id: "copse", name: "Moonroot Copse", level: 6, story: "two-doorbells", polygon: [[0, 36], [40, 36], [40, 96], [0, 96]] },
   { id: "quarry", name: "Lantern Quarry", level: 9, story: "footbridge", polygon: [[40, 36], [84, 36], [84, 74], [40, 74]] },
   { id: "moor", name: "Carnival Moor", level: 12, story: "restaurant-opening", polygon: [[84, 12], [120, 12], [120, 74], [84, 74]] },
@@ -44,32 +44,40 @@ export const MATERIALS = Object.freeze([
   { id: "star-amber", name: "Star amber", district: "marsh", yield: 1, respawn: 900 },
 ].map(Object.freeze));
 export const MATERIAL_BY_ID = Object.freeze(Object.fromEntries(MATERIALS.map((m) => [m.id, m])));
-// The 42 authored gathering sockets: each grows one pile at a time, never on a road, a plot or a doorway.
+// The 50 authored gathering sockets: each grows one pile at a time, never on a road, a plot or a doorway.
 export const NODES = Object.freeze([
-  { id: "logs-01", material: "logs", x: 6, z: 30, district: "green" },
-  { id: "logs-02", material: "logs", x: 10, z: 30, district: "green" },
-  { id: "logs-03", material: "logs", x: 14, z: 30, district: "green" },
-  { id: "logs-04", material: "logs", x: 18, z: 30, district: "green" },
-  { id: "logs-05", material: "logs", x: 22, z: 30, district: "green" },
-  { id: "logs-06", material: "logs", x: 6, z: 34, district: "green" },
-  { id: "logs-07", material: "logs", x: 10, z: 34, district: "green" },
-  { id: "logs-08", material: "logs", x: 14, z: 34, district: "green" },
-  { id: "stone-01", material: "stone", x: 6, z: 2, district: "green" },
-  { id: "stone-02", material: "stone", x: 10, z: 2, district: "green" },
-  { id: "stone-03", material: "stone", x: 14, z: 2, district: "green" },
-  { id: "stone-04", material: "stone", x: 18, z: 2, district: "green" },
-  { id: "stone-05", material: "stone", x: 22, z: 2, district: "green" },
-  { id: "stone-06", material: "stone", x: 6, z: 6, district: "green" },
-  { id: "fibre-01", material: "fibre", x: 10, z: 6, district: "green" },
-  { id: "fibre-02", material: "fibre", x: 14, z: 6, district: "green" },
-  { id: "fibre-03", material: "fibre", x: 18, z: 6, district: "green" },
-  { id: "fibre-04", material: "fibre", x: 22, z: 6, district: "green" },
-  { id: "fibre-05", material: "fibre", x: 18, z: 34, district: "green" },
-  { id: "fibre-06", material: "fibre", x: 22, z: 34, district: "green" },
-  { id: "herbs-01", material: "herbs", x: 36, z: 4, district: "green" },
-  { id: "herbs-02", material: "herbs", x: 40, z: 4, district: "green" },
-  { id: "herbs-03", material: "herbs", x: 44, z: 4, district: "green" },
-  { id: "herbs-04", material: "herbs", x: 48, z: 4, district: "green" },
+  { id: "logs-01", material: "logs", x: 9, z: -6, district: "green" },
+  { id: "logs-02", material: "logs", x: 15, z: -14, district: "green" },
+  { id: "logs-03", material: "logs", x: 22, z: -8, district: "green" },
+  { id: "logs-04", material: "logs", x: 28, z: -15, district: "green" },
+  { id: "logs-05", material: "logs", x: 33, z: -5, district: "green" },
+  { id: "logs-06", material: "logs", x: 9, z: 29, district: "green" },
+  { id: "logs-07", material: "logs", x: 19, z: 29, district: "green" },
+  { id: "logs-08", material: "logs", x: 25, z: -5, district: "green" },
+  { id: "stone-01", material: "stone", x: 91, z: -8, district: "green" },
+  { id: "stone-02", material: "stone", x: 102, z: -16, district: "green" },
+  { id: "stone-03", material: "stone", x: 107, z: -4, district: "green" },
+  { id: "stone-04", material: "stone", x: 88, z: -17, district: "green" },
+  { id: "stone-05", material: "stone", x: 111, z: 2, district: "green" },
+  { id: "stone-06", material: "stone", x: 113, z: -16, district: "green" },
+  { id: "fibre-01", material: "fibre", x: 39, z: -15, district: "green" },
+  { id: "fibre-02", material: "fibre", x: 40, z: -5, district: "green" },
+  { id: "fibre-03", material: "fibre", x: 46, z: -17, district: "green" },
+  { id: "fibre-04", material: "fibre", x: 31, z: -7, district: "green" },
+  { id: "fibre-05", material: "fibre", x: 25, z: 28, district: "green" },
+  { id: "fibre-06", material: "fibre", x: 42, z: -7, district: "green" },
+  { id: "herbs-01", material: "herbs", x: 72, z: -7, district: "green" },
+  { id: "herbs-02", material: "herbs", x: 78, z: -17, district: "green" },
+  { id: "herbs-03", material: "herbs", x: 85, z: -4, district: "green" },
+  { id: "herbs-04", material: "herbs", x: 70, z: -16, district: "green" },
+  { id: "logs-09", material: "logs", x: 7, z: -17, district: "green" },
+  { id: "logs-10", material: "logs", x: 21, z: -5, district: "green" },
+  { id: "stone-07", material: "stone", x: 99, z: -5, district: "green" },
+  { id: "stone-08", material: "stone", x: 108, z: -17, district: "green" },
+  { id: "fibre-07", material: "fibre", x: 40, z: -20, district: "green" },
+  { id: "fibre-08", material: "fibre", x: 47, z: -5, district: "green" },
+  { id: "herbs-05", material: "herbs", x: 81, z: -8, district: "green" },
+  { id: "herbs-06", material: "herbs", x: 87, z: -15, district: "green" },
   { id: "hardwood-01", material: "hardwood", x: 4, z: 38, district: "copse" },
   { id: "hardwood-02", material: "hardwood", x: 8, z: 38, district: "copse" },
   { id: "hardwood-03", material: "hardwood", x: 12, z: 38, district: "copse" },
@@ -107,7 +115,11 @@ export const PLOTS = Object.freeze([
 export const PLOT_BY_ID = Object.freeze(Object.fromEntries(PLOTS.map((p) => [p.id, p])));
 // Roads by their centre-lines: main roads six units wide, door spurs four, future spurs three (used once their plot is).
 export const ROADS = Object.freeze([
-  { id: "arrival", kind: "main", width: 6, points: [[58, 0], [58, 4], [58, 24]], plot: null },
+  { id: "arrival", kind: "main", width: 6, points: [[58, -22], [58, -11], [58, 4], [58, 24]], plot: null },
+  { id: "forage-west", kind: "forage", width: 2.4, points: [[58, -11], [35, -11], [5, -11]], plot: null },
+  { id: "forage-west-loop", kind: "forage", width: 2.4, points: [[35, -11], [35, -19], [5, -19]], plot: null },
+  { id: "forage-east", kind: "forage", width: 2.4, points: [[58, -11], [94, -11], [112, -11], [112, -3]], plot: null },
+  { id: "forage-east-loop", kind: "forage", width: 2.4, points: [[94, -11], [94, -20], [112, -20]], plot: null },
   { id: "copse", kind: "main", width: 6, points: [[58, 24], [58, 34], [0, 34], [0, 92]], plot: null },
   { id: "quarry", kind: "main", width: 6, points: [[58, 34], [58, 90]], plot: null },
   { id: "moor", kind: "main", width: 6, points: [[58, 34], [130, 34], [130, 28], [152, 28], [152, 74]], plot: null },
@@ -135,7 +147,7 @@ export const GATES = Object.freeze([
 ].map((g) => Object.freeze({ ...g, x: S(g.x), z: S(g.z) })));
 export const BRIDGE = Object.freeze({ ...box(shBox("quarry", { x0: 55, z0: 37, x1: 61, z1: 43 })), ravine: Object.freeze(box(shBox("quarry", { x0: 39, z0: 37, x1: 87, z1: 43 }))) });
 // The carriage stop: where the carriage turns, the step back to the farm, where you arrive (facing north) and the noticeboard.
-export const ARRIVAL = Object.freeze({ carriage: at([58, -4.4]), back: at([58, -1.4]), spawn: at([58, 3]), noticeboard: at([63, 28.8]) });
+export const ARRIVAL = Object.freeze({ carriage: at([58, -24.4]), back: at([58, -21.4]), spawn: at([58, -17]), noticeboard: at([63, 28.8]) });
 
 // The eight residents (roadmap §4): each has a home plot, ten bond ranks and five
 // chapters, opening at CHAPTER_RANKS. Original characters; the Baron is the farm's
@@ -170,7 +182,7 @@ export const FIXTURES = Object.freeze({
   bench: Object.freeze({ x: S(51.2), z: S(23.6), w: 1.7, d: 3.9, facing: "east" }),
   stall: Object.freeze({ x: S(64.2), z: S(24.6), w: 4.2, d: 5.1, facing: "west" }),
   noticeboard: Object.freeze({ x: S(63), z: S(29.8), w: 3.3, d: 1.2, facing: "south" }),
-  carriage: Object.freeze({ x: S(58), z: S(-4.4), w: 14, d: 4.8, facing: "east" }),
+  carriage: Object.freeze({ x: S(58), z: S(-24.4), w: 14, d: 4.8, facing: "east" }),
   oak: Object.freeze({ x: S(25.4), z: S(9.6), r: 2.4 }),
   pond: Object.freeze({ x: S(102), z: S(6), w: S(13), d: S(8) }),
 });
@@ -179,6 +191,14 @@ export const FIXTURES = Object.freeze({
 // pumpkin patch, the corn and the old moth-yard. Decor can't go on it and play
 // mode walks round it (boxes, or circles with r).
 export const SCENERY = Object.freeze([
+  { id: "arrival-tree-0", x: 4, z: -17, r: .65 },
+  { id: "arrival-tree-1", x: 4, z: -4, r: .65 },
+  { id: "arrival-tree-2", x: 31, z: -2, r: .65 },
+  { id: "arrival-tree-3", x: 48, z: -20, r: .65 },
+  { id: "arrival-tree-4", x: 68, z: -20, r: .65 },
+  { id: "arrival-tree-5", x: 92, z: -2, r: .65 },
+  { id: "arrival-tree-6", x: 117, z: -18, r: .65 },
+  { id: "arrival-tree-7", x: 117, z: -5, r: .65 },
   { id: "garden-west", x0: 48.6, z0: 8, x1: 54.4, z1: 15.6 },
   { id: "garden-east", x0: 61.6, z0: 8, x1: 66.4, z1: 15.6 },
   { id: "lamp-sw", x: 54.5, z: 21.1, r: .45 }, { id: "lamp-se", x: 61.5, z: 21.1, r: .45 },
@@ -190,8 +210,16 @@ export const SCENERY = Object.freeze([
   { id: "velvet-bat", x0: 91.4, z0: 11.6, x1: 111.8, z1: 30 },
 ].map((x) => Object.freeze(x.r ? { ...x, x: S(x.x), z: S(x.z), r: S(x.r) } : box(x))));
 // The rules' own measures: where on the Green decor may go, the Moor's walled corner, and how near a door counts as "near".
-export const GREEN_AREA = Object.freeze(box({ x0: 1, z0: 1, x1: 119, z1: 35 }));
+export const GREEN_AREA = Object.freeze(box({ x0: 1, z0: -21, x1: 119, z1: 35 }));
 export const MOOR_CORNER = Object.freeze({ x0: 1e4, x1: 1e4 + 1, z0: 1e4, z1: 1e4 + 1 });
 export const NEAR_DOOR = S(9);
 // The plot kept for you: an empty reservation on the Green, yours to fill.
 export const YOUR_PLOT = "R1";
+
+// Named, walkable forage clearings; these are part of the Green, not later district unlocks.
+export const FORAGE_AREAS = Object.freeze([
+  { id: "fallen-timber", name: "Fallen Timber Grove", material: "logs", x: 18, z: -8, x0: 4, z0: -20, x1: 34, z1: -2 },
+  { id: "flax-hollow", name: "Flax Hollow", material: "fibre", x: 42, z: -7, x0: 36, z0: -21, x1: 49, z1: -2 },
+  { id: "moonflower-meadow", name: "Moonflower Meadow", material: "herbs", x: 78, z: -13, x0: 67, z0: -20, x1: 89, z1: -2 },
+  { id: "stone-bank", name: "Old Stone Bank", material: "stone", x: 103, z: -14, x0: 90, z0: -21, x1: 116, z1: -2 },
+].map(p => Object.freeze({ ...box(p), x: S(p.x), z: S(p.z) })));

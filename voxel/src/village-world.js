@@ -10,6 +10,7 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { Voxels, ChunkedVoxels, seeded, vary } from "./voxels.js";
 import * as LAYOUT from "./content/village.js";
+import { villageNodePosition, villageNodeCandidates } from "./content/village-node-sites.js";
 import { terrainHeight as H, TERRACES, RAMPS, WATERS, REALM, isWater, rampAt, terraceAt, MARSH_ISLANDS } from "./village-terrain.js";
 const SHIFT = LAYOUT.DISTRICT_SHIFT;
 import {
@@ -34,6 +35,14 @@ const dv = (n) => n / PLAN_SCALE;
 const ROADS = LAYOUT.ROADS.map((r) => ({ ...r, width: dv(r.width), points: r.points.map(([x, z]) => [dv(x), dv(z)]) }));
 const PLOTS = LAYOUT.PLOTS.map((p) => ({ ...p, x0: dv(p.x0), z0: dv(p.z0), x1: dv(p.x1), z1: dv(p.z1), door: p.door.map(dv) }));
 const NODES = LAYOUT.NODES.map((n) => ({ ...n, x: dv(n.x), z: dv(n.z) }));
+const NODE_SITES = LAYOUT.NODES.filter(n=>n.district==="green").flatMap(n=>villageNodeCandidates(n).map(p=>({x:dv(p.x),z:dv(p.z)})));
+// A small spatial index keeps meadow grass sampling independent of the total site count.
+const SITE_BUCKETS = new Map();
+for(const p of NODE_SITES){const key=Math.floor(p.x/2)+","+Math.floor(p.z/2);if(!SITE_BUCKETS.has(key))SITE_BUCKETS.set(key,[]);SITE_BUCKETS.get(key).push(p);}
+function nearNodeSite(x,z,r){
+  for(let a=Math.floor((x-r)/2);a<=Math.floor((x+r)/2);a++)for(let b=Math.floor((z-r)/2);b<=Math.floor((z+r)/2);b++)for(const p of SITE_BUCKETS.get(a+","+b)??[])if((p.x-x)**2+(p.z-z)**2<r*r)return true;
+  return false;
+}
 const GATES = LAYOUT.GATES.map((g) => ({ ...g, x: dv(g.x), z: dv(g.z) }));
 const FIXTURES = Object.fromEntries(Object.entries(LAYOUT.FIXTURES).map(([k, f]) => [k, { ...f, x: dv(f.x), z: dv(f.z), ...(f.w ? { w: dv(f.w), d: dv(f.d) } : {}), ...(f.r ? { r: dv(f.r) } : {}) }]));
 // The fairy lights' cables: each string a smooth tube along its sag, all of a build's in one mesh.
@@ -74,7 +83,9 @@ function groundTexture() {
   // The woods round the realm.
   rect(g.x0, g.z0, g.x1, g.z1, "#355a36"); speckle(g.x0, g.z0, g.x1, g.z1, ["#3d6639", "#2f5032", "#46703e", "#2a4a30"], 9000, 2);
   // The Green: lawns in soft mown bands, clover and daisies, leaves under the trees.
-  rect(0, 0, 120, 36, "#558a3a");
+  rect(0, -22, 120, 36, "#558a3a");
+  speckle(0, -22, 120, 0, ["#416743", "#4c7550", "#557b48", "#6c6547"], 8500, .55);
+  for (const a of LAYOUT.FORAGE_AREAS) { const x=dv(a.x),z=dv(a.z); blob(x,z,8,6,"rgba(99,80,55,.26)"); }
   for (let x = 0; x < 120; x += 2.4) rect(x, 0, x + 1.2, 36, "rgba(255,255,230,.03)");
   speckle(0, 0, 120, 36, ["#5d9440", "#4e8036", "#649a44", "#4b7c34"], 16000, .55);
   speckle(0, 0, 120, 36, ["#f6f2e8", "#f5d04a", "#f2a0c0", "#ffffff"], 2600, .16);
@@ -95,6 +106,11 @@ function groundTexture() {
   for (const road of ROADS.filter((x) => x.kind !== "future-spur")) {
     const h = road.width / 2 + .25;
     for (let i = 1; i < road.points.length; i++) { const [ax, az] = road.points[i - 1], [bx, bz] = road.points[i]; rect(Math.min(ax, bx) - h, Math.min(az, bz) - h, Math.max(ax, bx) + h, Math.max(az, bz) + h, "#6d6150"); }
+  }
+  // The clearings use earth and gravel trails rather than another grid of granite setts.
+  for(const road of ROADS.filter(r=>r.kind==="forage"))for(let i=1;i<road.points.length;i++){
+    const [ax,az]=road.points[i-1],[bx,bz]=road.points[i],h=road.width/2;
+    speckle(Math.min(ax,bx)-h,Math.min(az,bz)-h,Math.max(ax,bx)+h,Math.max(az,bz)+h,["#7f735d","#9b896a","#5b5549"],Math.hypot(bx-ax,bz-az)*18,.22);
   }
   rect(SQUARE.x0 - .25, SQUARE.z0 - .25, SQUARE.x1 + .25, SQUARE.z1 + .25, "#6d6150");
   { const p = FIXTURES.pond; blob(p.x, p.z, p.w / 2 + 1.1, p.d / 2 + 1.1, "#4c6a3a"); }
@@ -181,7 +197,7 @@ function squareTexture() {
 // The paving writes no depth and draws after the ground, so overlapping quads never flicker.
 export function buildPaving() {
   const group = new THREE.Group(), pos = [], uv = [], idx = [], quads = [];
-  for (const road of ROADS.filter((x) => x.kind !== "future-spur")) {
+  for (const road of ROADS.filter((x) => !["future-spur", "forage"].includes(x.kind))) {
     const h = road.width / 2;
     for (let i = 1; i < road.points.length; i++) { const [ax, az] = road.points[i - 1], [bx, bz] = road.points[i]; quads.push({ x0: Math.min(ax, bx) - h, z0: Math.min(az, bz) - h, x1: Math.max(ax, bx) + h, z1: Math.max(az, bz) + h, ns: Math.abs(bz - az) > Math.abs(bx - ax) }); }
   }
@@ -249,15 +265,18 @@ const NO_GRASS = [
 // The Moor's big top, tents, wheel and caravan stand on bare ground (in the Moor's own place, moved with it).
 const MOOR_CLEAR = [[97, 42, 5.2], [94, 31.5, 4], [114, 16, 3.4], [115.5, 50, 2.4], [101.6, 48.4, 2.4], [116.6, 24, 2], [116.6, 28.5, 2], [116.6, 33, 2], [116.6, 37.5, 2], [102, 35, 3]].map(([a, b, rr]) => [a + SHIFT.moor[0], b + SHIFT.moor[1], rr]);
 const GRASS = {
+  meadow: { h: .3, flowers: true, colours: [0x557b48,0x6b8853,0x74975a,0x4a734c] },
   lawn: { h: .46, flowers: true, colours: [0x4f8a36, 0x5b9a3e, 0x67a644, 0x46802f, 0x76ad4a, 0x84b04e, 0x9aa848] },
   moss: { h: .36, flowers: true, colours: [0x3a6a52, 0x467a5c, 0x52866a, 0x356048, 0x5a7a5a] },
   heather: { h: .4, flowers: true, colours: [0x6a4a7a, 0x7d5a8a, 0x8a6a9a, 0x9a8a50, 0x5a4a6a, 0xa88ab8] },
 };
 export function grassAt(x, z) {
-  if (x < REALM.x0 + .5 || x > REALM.x1 - .5 || z < .5 || z > REALM.z1 - .5 || isWater(x, z) || rampAt(x, z)) return null;
+  if (x < REALM.x0 + .5 || x > REALM.x1 - .5 || z < REALM.z0 + .5 || z > REALM.z1 - .5 || isWater(x, z) || rampAt(x, z)) return null;
   if (Math.hypot(x - SQUARE.cx, z - SQUARE.cz) < SQUARE.r + .3) return null;
   if (ROADS.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + .25 && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + .25))) return null;
   if (NO_GRASS.some(([a, b, c, d]) => x > a && x < c && z > b && z < d)) return null;
+  if(nearNodeSite(x,z,.45))return null;
+  if(z<0)return Math.sin(x*3.11+z*7.01)>0 ? null : GRASS.meadow;
   const t = terraceAt(x, z)?.id;
   if (t === "quarry" || t === "quarry-top" || t === "manor" || t === "observatory" || t === "moat") return null;
   if (t === "marsh") return MARSH_ISLANDS.some((I) => ((x - I.x) / I.rx) ** 2 + ((z - I.z) / I.rz) ** 2 < .8) ? GRASS.moss : null;
@@ -280,6 +299,7 @@ export const LAMPS = Object.freeze([
   [10, 30.6, 3.6], [22, 30.6, 3.6], [94, 30.6, 3.6], [106, 30.6, 3.6], [118, 30.6, 3.6], [3.4, 44, 3.6], [61.4, 46, 3.6], [61.4, 52, 3.6], [148.6, 92, 3.6], [61.4, 104, 3.6], [148.6, 100, 3.6], [88, 109.4, 3.6], [118, 109.4, 3.6], [3.4, 70, 6.6],
   // The Velvet Bat: its door lanterns, and the lit piers along its terrace.
   [102, 25.4, 2.8], [96.8, 29.6, 2.4], [107.2, 29.6, 2.4], [97.6, 27.4, 5.8], [106.4, 27.4, 5.8],
+  [53,-18,3], [63,-18,3], [53,-7,3], [63,-7,3],
 ].map(([x, z, y]) => Object.freeze({ x, z, y })));
 // A knot garden behind railings: a hedge border, a ring with four arms, flowers
 // in each quarter, a cone of topiary at its heart and balls at its corners.
@@ -308,12 +328,20 @@ export function buildGreen() {
   const v = new ChunkedVoxels(24), R = onGround(v), r = seeded(101), fr = (x, z, facing) => at(v, x, z, facing), cables = [];
   // The south wall with the moth gate, and the carriage waiting inside it.
   stoneWall(R, 0, .6, 53.3, .6, 1.2, r); stoneWall(R, 62.7, .6, 120, .6, 1.2, r);
-  stoneWall(R, .6, 0, .6, 30, 1.2, r); stoneWall(R, 119.4, 0, 119.4, 30, 1.2, r);
+  stoneWall(R, .6, -22, .6, 30, 1.2, r); stoneWall(R, 119.4, -22, 119.4, 30, 1.2, r);
+  stoneWall(R, 0, -22, 53.3, -22, .85, r); stoneWall(R, 62.7, -22, 120, -22, .85, r);
   mothPillar(fr(54, .6, "south"), 0, 0, r); mothPillar(fr(62, .6, "south"), 0, 0, r);
   // Overlapping segments read as an arch from the low decorating camera, not floating cubes.
   for (let i = 0; i <= 32; i++) { const a = i / 32 * Math.PI; R.block(58 + Math.cos(a) * 4, 4.4 + Math.sin(a) * 1.1, .6, .5, .22, .3, C.iron); }
   R.block(58, 5.2, .6, 1.2, .5, .1, C.plum); R.block(58, 5.3, .65, .8, .3, .05, C.gold);
   { const c = FIXTURES.carriage; carriage(fr(c.x - 2.2, c.z, c.facing), 0, 0, r); }
+  // The open arrival meadow gives the camera room to breathe and leads to four forage clearings.
+  for (const [x,z] of [[53,-18],[63,-18],[53,-7],[63,-7]]) { lampPost(R,x,z,3,r,1); jackOLantern(fr(x,z),0,0,.4,r,0,.7); }
+  for (const [x,z] of [[4,-17],[4,-4],[31,-2],[48,-20],[68,-20],[92,-2],[117,-18],[117,-5]]) canopyTree(R,x,z,1.05,r,pick([C.crimson,C.golden,C.violet],r),{cell:.5});
+  for (const a of LAYOUT.FORAGE_AREAS) {
+    const x=dv(a.x),z=dv(a.z);
+    for(let i=0;i<26;i++){const angle=r()*Math.PI*2,rx=x+Math.cos(angle)*(4+r()*4),rz=z+Math.sin(angle)*(3+r()*3);if(nearNodeSite(rx,rz,.7)||ROADS.some(rd=>rd.points.some(p=>Math.hypot(p[0]-rx,p[1]-rz)<2)))continue;flower(R,rx,rz,pick([0x9a6ae0,0xffcf77,0xdec6fa],r),r,.65);}
+  }
   // The square: the Moth Tree at its heart, its lamps, the well, planters, flowers round the edges.
   const F = FIXTURES.tree; mothTree(R, F.x, F.z, r);
   for (const l of LAMPS.slice(0, 4)) lampPost(R, l.x, l.z, 3.4, r, 2);
@@ -339,12 +367,12 @@ export function buildGreen() {
   // Trees round the Green's edges, kept off roads, plots, nodes, the square, the gardens and your plot.
   const roadClear = (x, z, pad) => ROADS.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + pad && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + pad));
   const pondClear = (x, z) => Math.abs(x - FIXTURES.pond.x) < FIXTURES.pond.w / 2 + 1.6 && Math.abs(z - FIXTURES.pond.z) < FIXTURES.pond.d / 2 + 1.6;
-  const keepClear = (x, z, pad = 2.2) => roadClear(x, z, pad) || PLOTS.some((p) => p.kind === "resident" && x > p.x0 - 1 && x < p.x1 + 1 && z > p.z0 - 1 && z < p.z1 + 1) || NODES.some((n) => Math.hypot(n.x - x, n.z - z) < 2.2)
+  const keepClear = (x, z, pad = 2.2) => roadClear(x, z, pad) || PLOTS.some((p) => p.kind === "resident" && x > p.x0 - 1 && x < p.x1 + 1 && z > p.z0 - 1 && z < p.z1 + 1) || nearNodeSite(x,z,1.2)
     || x > SQUARE.x0 - 1.5 && x < SQUARE.x1 + 1.5 && z > 2 && z < SQUARE.z1 + 1 || x > 3 && x < 23 && z > 7 && z < 27 || pondClear(x, z) || Math.hypot(x - FIXTURES.oak.x, z - FIXTURES.oak.z) < 4
     || x > 89.6 - pad && x < 113.6 + pad && z > 10.4 - pad && z < 31;
   const palettes = [C.crimson, C.golden, C.magenta, C.leaves, C.violet, C.violet, C.teal, C.green];
   let planted = 0;
-  for (let i = 0; i < 3000 && planted < 125; i++) {
+  for (let i = 0; i < 3000 && planted < 115; i++) {
     const band = i % 5, x = band === 0 ? 1.5 + r() * 2.5 : band === 1 ? 84 + r() * 34 : band === 2 ? 2 + r() * 116 : band === 3 ? 23 + r() * 4.5 : 84 + r() * 34;
     const z = band === 0 ? 2 + r() * 33 : band === 1 ? 1.5 + r() * 9.5 : band === 2 ? 1.6 + r() * 1.8 : band === 3 ? 3 + r() * 28 : 12 + r() * 18;
     if (keepClear(x, z)) continue;
@@ -531,10 +559,15 @@ export function buildHomes(built) {
   group.userData.visualBudget = { boxes: v.solid.length + v.glow.length, addedLights: 0 };
   return group;
 }
-export function buildNodes(ready) {
-  const v = new Voxels(), r = seeded(307);
-  for (const n of NODES.filter((n) => n.district === "green")) node(at(v, n.x, n.z, ["south", "east", "north", "west"][Math.round(n.x + n.z) % 4]), n.material, ready(n.id), r);
-  return v.build({ glow: GLOW });
+export function buildNodes(ready, state) {
+  const v = new Voxels(), live=[];
+  for (const n of LAYOUT.NODES.filter(n=>n.district==="green")) {
+    const p=villageNodePosition(state,n),x=dv(p.x),z=dv(p.z),on=ready(n.id);
+    const r=seeded([...n.id].reduce((n,c)=>Math.imul(n,31)+c.charCodeAt(0),307)>>>0);
+    node(at(v,x,z,["south","east","north","west"][Math.round(x+z)%4]),n.material,on,r);
+    if(on)live.push({id:n.id,x:p.x,z:p.z});
+  }
+  const built=v.build({glow:GLOW});built.userData.resourceSites=live;return built;
 }
 
 // ---- Beyond the Green: the four districts, after the concept atlas -----------------
@@ -683,7 +716,7 @@ export function buildHorizon() {
   for (let i = 0; i < 360; i++) {
     const side = i % 4, x = side === 0 ? REALM.x0 - 46 + r() * 44 : side === 1 ? REALM.x1 + 2 + r() * 44 : REALM.x0 - 46 + r() * (REALM.x1 - REALM.x0 + 92);
     const z = side === 2 ? REALM.z0 - 40 + r() * 38 : side === 3 ? REALM.z1 + 2 + r() * 40 : REALM.z0 - 40 + r() * (REALM.z1 - REALM.z0 + 80);
-    if (Math.abs(x - 58) < 7 && z > -20 && z < 1) continue;
+    if (x > -2 && x < 122 && z > -32 && z < 1) continue;
     const k = r(); k < .55 ? pine(R, x, z, 1.1 + r() * 1.3, r) : k < .8 ? canopyTree(R, x, z, 1 + r() * .6, r, pick([C.crimson, C.golden, C.violet], r), { cell: .8, litter: false }) : spookyTree(R, x, z, 1.2 + r() * .8, r);
   }
   // Mountains to the north and the sides, dark in the night, their snow catching the moon.

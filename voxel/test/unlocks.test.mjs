@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
 
-const atLevel = (level) => { const s = M.freshState(); s.coins = 1e7; s.earned = M.LEVELS[level - 1].at; s.progression.claimed = M.LEVELS.slice(0, level).map((l) => l.level); return s; };
+const atLevel = (level) => { const s = M.freshState(); s.coins = 1e7; s.earned = M.LEVELS[level - 1].at; s.progression.claimed = M.LEVELS.slice(0, level).map((l) => l.level); s.village.quests["rowan-2"] = { done: true, step: 4, base: null }; return s; };
 
 test("twenty levels, each further than the last, with real rewards", () => {
   assert.equal(M.LEVELS.length, 20);

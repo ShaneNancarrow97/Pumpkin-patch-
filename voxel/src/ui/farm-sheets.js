@@ -104,9 +104,9 @@ export function farmSheets(ui) {
     if (farmSection === "helpers") return `<div class="service-sheet farm-upgrade-sheet" data-menu-view="farm:helpers">${nav}${helperUpgradeCards(s, ui)}</div>`;
     if (farmSection === "boost") return `<div class="service-sheet farm-upgrade-sheet" data-menu-view="farm:boost">${nav}${boostUpgradeCards(s)}</div>`;
     const cards = M.UPGRADES.filter((u) => !["sign", "auto"].includes(u.id)).map((u) => {
-      const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id), at = max ? 0 : opensAt(s, "farm", u.id, level);
-      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.id === "cart" ? `${u.text} ${cartLine(s)}` : u.text}</p>${levelNote(at)}${tiers(level, u.max)}</div>
-        ${at ? levelButton(at) : priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
+      const level = s.upgrades[u.id], max = level >= u.max, price = M.upgradeCost(s, u.id), at = max ? 0 : opensAt(s, "farm", u.id, level), villageGate = max ? null : M.villageFarmGate(s, u.id);
+      return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.id === "cart" ? `${u.text} ${cartLine(s)}` : u.text}</p>${levelNote(at)}${villageGate ? `<p class="small">${villageGate.reason}</p>` : ""}${tiers(level, u.max)}</div>
+        ${villageGate ? `<button class="button" disabled>Village quest</button>` : at ? levelButton(at) : priceButton("buy", u.id, price, s.coins, max && "Owned")}</article>`;
     }).join("");
     return `<div class="service-sheet farm-upgrade-sheet" data-menu-view="farm:patch">${nav}${cards}</div>`;
   }
@@ -123,13 +123,13 @@ export function farmSheets(ui) {
       const on = s.plotCrops.slice(0, open).filter((c) => c === k).length, can = s.plotLevels.slice(0, open).filter((l) => l >= k).length, locked = k > best;
       return `<article class="seed-variety${locked ? " locked" : ""}${wanted === k ? " wanted" : ""}">${ui.thumb(k)}<b>${v.name}${wanted === k ? ' <span class="wanted-mark" aria-label="wanted now">★</span>' : ""}</b><small>${money(v.price)} each · ${grow(k)}</small><small>${locked ? "Buy its seeds on a plot below" : `${on} of ${open} plots`}</small>${!locked && on < can ? `<button class="button" data-crop-all="${k}">Grow on ${can === open ? "every plot" : `${can} plots`}</button>` : ""}</article>`;
     }).join("")}</div>`;
-    const upgradable = s.plots.slice(0, open).map((_, i) => i).filter((i) => M.VARIETIES[s.plotLevels[i] + 1]), allCost = upgradable.reduce((n, i) => n + M.VARIETIES[s.plotLevels[i] + 1].cost, 0);
+    const upgradable = s.plots.slice(0, open).map((_, i) => i).filter((i) => M.VARIETIES[s.plotLevels[i] + 1] && !M.villageFarmGate(s,"variety",i)), allCost = upgradable.reduce((n, i) => n + M.VARIETIES[s.plotLevels[i] + 1].cost, 0);
     const bulk = upgradable.length > 1 ? `<button class="button purchase-button wide" data-plot-all ${s.coins < Math.min(...upgradable.map((i) => M.VARIETIES[s.plotLevels[i] + 1].cost)) ? "disabled" : ""}>Next seeds for every plot · ${money(allCost)}</button>` : "";
     return pinata + varieties + `<h3 class="section">Your plots</h3><p class="small">Rarer pumpkins sell for more and grow more slowly.${wanted !== null ? ` <b>${M.VARIETIES[wanted].name}</b> is wanted now (★): up to ${Math.round(M.WANTED.bonus * 100)}% more.` : ""}</p>${bulk}<div class="plot-grid seed-plots">` + s.plots.slice(0, open).map((p, i) => {
-      const level = s.plotLevels[i], next = M.VARIETIES[level + 1], crop = s.plotCrops[i];
+      const level = s.plotLevels[i], next = M.VARIETIES[level + 1], crop = s.plotCrops[i], villageGate = M.villageFarmGate(s,"variety",i);
       const chips = level ? `<div class="chips" role="group" aria-label="What plot ${i + 1} grows">${M.VARIETIES.slice(0, level + 1).map((v, k) => `<button class="chip${wanted === k ? " wanted" : ""}" data-crop="${i}:${k}" aria-pressed="${crop === k}"${wanted === k ? ` aria-label="${v.name}, wanted now"` : ""}>${v.name}${wanted === k ? ` <span class="wanted-mark" aria-hidden="true">★</span>` : ""}</button>`).join("")}</div>` : "";
       return `<div class="plot-card">${ui.thumb(crop)}<h3>Plot ${i + 1} · ${M.VARIETIES[crop].name}</h3><p>${money(M.VARIETIES[crop].price)} each</p>${chips}
-        ${next ? `<button class="button" data-plot="${i}" ${s.coins < next.cost ? "disabled" : ""}>${next.name} seeds · ${money(next.cost)}</button>` : `<p class="small">Every seed unlocked</p>`}</div>`;
+        ${villageGate ? `<p class="small">${villageGate.reason}</p><button class="button" disabled>Village quest</button>` : next ? `<button class="button" data-plot="${i}" ${s.coins < next.cost ? "disabled" : ""}>${next.name} seeds · ${money(next.cost)}</button>` : `<p class="small">Every seed unlocked</p>`}</div>`;
     }).join("") + (remaining > 0 ? `<div class="plot-card locked"><span class="thumb"><span class="ico i-plots"></span></span><h3>${remaining} more plots to discover</h3><p>Expand the farm to plant a bigger patch.</p><button class="button" data-shoptab="farm">Farm expansion</button></div>` : "") + `</div>`;
   }
 

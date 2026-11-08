@@ -12,6 +12,7 @@ import { buildVillageDecor, letterPage, frame, velvetBatHall, VELVET_HALL, elowe
 import { Voxels } from "./voxels.js";
 import { buildEstateDecor } from "./house-estate-world.js";
 import { VILLAGE_DECOR_BY_ID } from "./content/village-decor.js";
+import { villageNodePosition } from "./content/village-node-sites.js";
 import { FIXTURES, NODES, PLAN_SCALE } from "./content/village.js";
 import { TOUR } from "./content/village-tour.js";
 export { TOUR } from "./content/village-tour.js";
@@ -80,7 +81,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     const works = buildTerrainWorks(), green = buildGreen(), beyond = buildBeyond(), woods = buildWoods();
     // The chimneys the village noted as it was built smoke where they stand.
     const smoke = [green, beyond].flatMap((g) => g.userData.marks?.smoke ?? []).map(([x, y, z]) => ({ x, y, z: -z }));
-    mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: 0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
+    mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: REALM.z0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
     const earth = buildGround(), paving = buildPaving(), water = buildWater();
     root.add(earth, paving, water, works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group);
     atmosphere = createVillageAtmosphere(); root.add(atmosphere.group);
@@ -88,13 +89,13 @@ export function createVillageView(canvas, state, hooks = {}) {
     // Every patch of the built village, with where it is, so those beyond the haze can be skipped.
     root.updateMatrixWorld(true);
     for (const g of [works, green, beyond, woods, horizon]) for (const chunk of g.children) { if (!chunk.isGroup) continue; const box = new THREE.Box3().setFromObject(chunk); if (box.isEmpty()) continue; const sphere = box.getBoundingSphere(new THREE.Sphere()); patches.push({ chunk, sphere }); }
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(122 * K, 38 * K), pickMaterial); ground.rotation.x = -Math.PI / 2; ground.position.copy(W(60 * K, 18 * K, .02)); ground.userData = { type: "village-ground" }; scene.add(ground); pickables.push(ground);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(122 * K, 60 * K), pickMaterial); ground.rotation.x = -Math.PI / 2; ground.position.copy(W(60 * K, 7 * K, .02)); ground.userData = { type: "village-ground" }; scene.add(ground); pickables.push(ground);
     const f = FIXTURES;
     hit(f.stall.d, 4, f.stall.w, { type: "village-stall" }, f.stall.x, f.stall.z);
     hit(f.noticeboard.w, 3.6, f.noticeboard.d, { type: "village-noticeboard" }, f.noticeboard.x, f.noticeboard.z);
     hit(f.well.r * 2, 4.4, f.well.r * 2, { type: "village-well" }, f.well.x, f.well.z);
     hit(f.carriage.w, 4.6, f.carriage.d, { type: "village-carriage" }, f.carriage.x, f.carriage.z);
-    for (const n of NODES.filter((n) => n.district === "green")) hit(2, 1.8, 2, { type: "village-node", id: n.id }, n.x, n.z);
+    for (const n of NODES.filter((n) => n.district === "green")) { const p=villageNodePosition(state,n);hit(.75,.65,.75,{type:"village-node",id:n.id},p.x,p.z); }
     for (const [id, p] of Object.entries(INSIDES)) { const [nx, nz] = DOOR_NORMAL[p.door.facing]; hit(nx ? 1.2 : 3.4, 5.8, nx ? 3.4 : 1.2, { type: "village-door", id }, (p.door.x + nx * .5) * K, (p.door.z + nz * .5) * K); }
   }
   // Rebuilds a part when its key changes.
@@ -110,7 +111,8 @@ export function createVillageView(canvas, state, hooks = {}) {
     part("bench", String(v.effects.includes("bench")), () => buildBench(v.effects.includes("bench")));
     part("homes", JSON.stringify(v.built), () => buildHomes(v.built)); life?.setBuilt(v.built);
     const ready = (id) => nodeReady(state, id);
-    part("nodes", NODES.filter((n) => n.district === "green").map((n) => (ready(n.id) ? 1 : 0)).join(""), () => buildNodes(ready));
+    for(const h of pickables)if(h.userData.type==="village-node"){h.visible=ready(h.userData.id);const p=villageNodePosition(state,h.userData.id);h.position.copy(W(p.x,p.z,.325));}
+    part("nodes", NODES.filter((n) => n.district === "green").map((n) => `${ready(n.id)?1:0}:${state.village.gatherCycles?.[n.id]??0}`).join("|"), () => buildNodes(ready,state));
     // Decor pieces: one group each, as they move.
     const live = new Set(v.decor.placed.map((p) => p.instance));
     for (const [id, item] of decor) if (!live.has(id)) { scene.remove(item.group, item.hit); dispose(item.group); pickables.splice(pickables.indexOf(item.hit), 1); decor.delete(id); }
@@ -187,6 +189,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     for (const texture of villageSpriteTextures()) hooks.warmTexture?.(texture);
   });
   function goInside(id) {
+    gatherTool();
     if (inside?.id === id) return inside;
     if (inside) goOutside();
     inside = buildInside(id); inside.group.visible = true; if (inside.host) inside.host.root.visible = true;
@@ -222,6 +225,29 @@ export function createVillageView(canvas, state, hooks = {}) {
     get following() { return following; },
   };
 
+  // Reusable hand tools sit in world space beside the painted owner's hand. No lights are added.
+  const handTools = new Map(), toolPoint = new THREE.Vector3(), toolSide = new THREE.Vector3();
+  function gatherTool({ actor, material, progress = 0, active: on = false } = {}) {
+    for (const tool of handTools.values()) tool.visible = false;
+    const owner = actor?.root ?? actor;
+    if (!on || !owner?.getWorldPosition) return;
+    const kind = ["logs", "hardwood"].includes(material) ? "axe" : ["stone", "iron", "moonstone", "clay", "star-amber"].includes(material) ? "pickaxe" : null;
+    if (!kind) return;
+    let tool = handTools.get(kind);
+    if (!tool) {
+      const v = new Voxels();
+      v.block(0, -.46, 0, .075, .92, .075, 0x795034); v.block(0, -.46, 0, .09, .15, .09, 0x462b24);
+      if (kind === "axe") { v.block(.14, .3, 0, .36, .28, .09, 0xa5b0c2); v.block(.31, .26, 0, .08, .36, .045, 0xd6dfeb); }
+      else { v.block(0, .35, 0, .62, .11, .1, 0x9caabd); for (const s of [-1, 1]) v.block(s*.32,.27,0,.12,.12,.08,0xd6dfeb); }
+      tool = v.build({ shadows: false }); tool.name = "village-" + kind; scene.add(tool); handTools.set(kind, tool);
+    }
+    owner.getWorldPosition(toolPoint); camera.getWorldDirection(toolSide); toolSide.y = 0; toolSide.normalize();
+    const x = -toolSide.z, z = toolSide.x;
+    tool.position.copy(toolPoint).add(new THREE.Vector3(x*.43, 1.18, z*.43));
+    tool.rotation.set(0, Math.atan2(toolSide.x, toolSide.z), -.35 + Math.sin(Math.min(1, Math.max(0, progress))*Math.PI*4)*.95);
+    tool.visible = true;
+  }
+
   // The grand tour: a smooth flight through TOUR's points, a title rising at each.
   const curve = (key) => new THREE.CatmullRomCurve3(TOUR.map((p) => W(p[key][0], p[key][2], p[key][1])), false, "centripetal");
   const tourPath = { at: null, look: null }, focus = new THREE.Vector3();
@@ -240,7 +266,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     const holding = () => tour.shown >= 0 && performance.now() - tour.cueAt < 40000 && tour.hold();
     if (holding()) return;
     tour.t = Math.min(tour.length, tour.t + dt);
-    const raw = tour.t / tour.length, seg = raw * (TOUR.length - 1), i = Math.floor(seg), f = seg - i, eased = (i + (f < .5 ? 2 * f * f : 1 - 2 * (1 - f) ** 2)) / (TOUR.length - 1);
+    const raw = tour.t / tour.length, seg = raw * (TOUR.length - 1), i = Math.floor(seg), f = seg - i, eased = (i + f * f * f * (f * (f * 6 - 15) + 10)) / (TOUR.length - 1);
     camera.position.copy(tourPath.at.getPoint(Math.min(1, eased))); focus.copy(tourPath.look.getPoint(Math.min(1, eased))); camera.lookAt(focus);
     const near = Math.min(TOUR.length - 1, Math.round(seg));
     if (near !== tour.shown && Math.abs(seg - near) < .35) { tour.shown = near; tour.cueAt = performance.now(); tour.onTitle(TOUR[near], near); }
@@ -303,11 +329,11 @@ export function createVillageView(canvas, state, hooks = {}) {
     if (sky) sky.position.copy(camera.position);
   }
   return {
-    scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt,
+    scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool,
     setCastStyle, get castStyle() { return folk.style; }, spriteReady, spritesReady: spriteReady, spriteTextures: villageSpriteTextures, tapAt,
     goInside, goOutside, get inside() { return inside?.id ?? null; }, hallPoint, insidePlan: (id) => INSIDES[id],
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = !tour; },
-    leave() { active = false; controls.enabled = false; pointers.clear(); multi = false; preview(null); following = false; tour = null; },
+    leave() { gatherTool(); active = false; controls.enabled = false; pointers.clear(); multi = false; preview(null); following = false; tour = null; },
     tick(dt = 0) {
       time += dt; if (!active) return;
       controls.enabled = !tour && !hooks.blocked?.() && !hooks.gesture?.busy?.();

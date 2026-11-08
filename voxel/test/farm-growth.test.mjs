@@ -7,6 +7,7 @@ import { buildFarmAnnex, createFarmExpansion } from "../src/farm-expansion-world
 
 test("south-field purchases preserve the old tiers and open eighteen then twenty-four beds", () => {
   const s = M.freshState(); s.coins = 10000; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
+  s.village.quests["rowan-2"] = { done: true, step: 4, base: null }; // Final field follows workshop restoration.
   assert.equal(M.openPlots(s), 6); assert.equal(s.plots.length, MAX_PLOTS);
   for (const [cost, count] of [[300, 9], [660, 12], [2200, 18], [5500, 24]]) {
     assert.equal(M.upgradeCost(s, "plots"), cost);

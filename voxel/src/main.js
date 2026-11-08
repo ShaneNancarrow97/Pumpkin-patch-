@@ -1,3 +1,4 @@
+import { atVillageGateway, VILLAGE_GATEWAY } from './content/village-gateway.js';
 import { createLifeActivity } from './life-activity.js';
 import { mountBoostDial, renderBoostDial } from './ui/farm-work-ui.js';
 import { createPlayControls } from './ui/play-controls.js';
@@ -65,6 +66,7 @@ function load() {
 let state = load();
 mountBoostDial($("boost"));
 let playControls, homeJourney, lifeActivity, villageGame;
+let villageGateArmed = true;
 const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(M.saveData(state))); } catch {} };
 setInterval(save, 5000);
 document.addEventListener("visibilitychange", () => document.hidden && save());
@@ -129,7 +131,12 @@ const scene = createScene($("world"), state, {
     const handsOn = !!scene.player?.enabled;
     if (handsOn && !state.handsOn && state.upgrades.auto) notice("Helping hands are resting while you're in charge.");
     state.handsOn = handsOn;
-    if (!state.paused) for (const e of M.update(state, dt)) handle(e);
+    if (!state.paused) for (const e of M.update(state, dt, { villageAway: !!villageGame?.active })) handle(e);
+    if (!scene.place && scene.player.enabled && !villageGame?.active) {
+      const atGate = atVillageGateway(scene.player.state().position);
+      if (!atGate) villageGateArmed = true;
+      if (atGate && villageGateArmed && !state.paused && !openTab && !intro.active && !celebration.active && M.patchLevel(state).level >= M.VILLAGE_LEVEL) openVillage();
+    }
     if (villageGame?.active) { villageGame.tick(dt); return; }
     if (!state.paused && !scene.place && scene.player.enabled) {
       const pos = scene.player.state().position;
@@ -189,6 +196,11 @@ const scene = createScene($("world"), state, {
   // A chat marker over a group in the meadow (scene.js syncChats).
   onChat(spot) { guestCard.clear(); chatCard.open(spot); },
   onPick(what) {
+    if (what.type === 'village') {
+      if (playControls?.active && scene.player.enabled) scene.player.walkTo({...VILLAGE_GATEWAY.approach,near:.35,then:()=>openVillage()});
+      else openVillage();
+      return;
+    }
     if (what.type === "village-page") { if(!state.paused)collectVillagePage(what.id); return; }
     // Playing: a tap on a plot, a piece of furniture, or a garden bed or bench
     // walks the owner over and does it there.
@@ -732,7 +744,7 @@ villageGame = createVillageGame({ state: () => state, scene, save, notice, narra
   closeMenus() { closeSheet(); upgradeMenu?.close(); home.tools.select(null); lifeActivity?.cancel(); playControls?.close(); playControls?.cursor.hide(); },
   onLeave() { renderPlace(); render(); }, onRender: renderPlace,
 });
-function openVillage() { return villageGame.open(); }
+function openVillage() { const opened=villageGame.open();if(opened)villageGateArmed=false;return opened; }
 function collectVillagePage(id) { const events=M.findObject(state,id);if(!events)return false;for(const event of events)handle(event);save();notice("A page of Elowen's letter · bring it back to the village");return true; }
 const home = homeSheets(ui), collection = collectionSheets(ui);
 const sheets = { fishing: fishingSheet(ui), ...farmSheets(ui), home: home.home, shelf: home.shelf, ...collection, ...festivalMeadowSheet(ui), ...customerCareSheet(ui), ...estateSheet(ui), ...hollowSheets(ui), ...hayrideSheets(ui), ...cookingSheets(ui), ...contractsSheet(ui), ...carvingStandSheet(ui), ...moreSheet(ui), ...homeLifeSheet(ui), ...settingsSheet(ui) };
@@ -810,6 +822,7 @@ function markTab() {
 const upgradeMenu = createUpgradeMenu({ button: document.querySelector('.tab[data-tab="shop"]'), choose(section) { if(section === "homelife") openSheet("homelife"); else if (section === "contracts") openSheet("contracts"); else if (section === "carving-stand") openSheet("carvingStand"); else if (section === "cooking") openCookingSheet(); else if(section === "cocoa") openCocoaSheet(); else { sheets.shop.setTab(section); openSheet("shop"); } } });
 document.querySelectorAll(".tab").forEach((t) => (t.onclick = () => {
   const tab = t.dataset.tab;
+  if (tab === "village") { upgradeMenu.close(); openVillage(); return; }
   if (tab === "shop") { upgradeMenu.toggle(); return; }
   upgradeMenu.close();
   if (tab === "patch") { leavePlace(); closeSheet(); scene.fitView(); }
@@ -905,6 +918,7 @@ function interactAsPlayer(tool='hand',options={}) {
   if(options.phase && !['tap','start'].includes(options.phase))return false;
   if(tool!=='hand'){notice('Choose Interact for doors, cooking and furniture.');return false;}
   if(t.type==='pumpkin'){boost();scene.player.act('harvest',.7);}
+  else if(t.type==='village')openVillage();
   else if(t.type==='home'){const way=wayOut(w=>w.id==='arch');if(way)passThrough(way);else enterEstate();}
   else if(t.type==='shop'){if(state.shop.unlocked)enterShop();else openShopSheet('shop');}
   else if(t.type==='cooking')openCookingSheet('recipes',t.station??'truck');
@@ -962,7 +976,7 @@ scene.setRenderQuality(prefs.renderQuality); scene.setTvProfile(!!prefs.tvMode);
 render(); renderPlace();
 // For the smoke test and screenshots: `advance` runs the rules forward, since a
 // software-rendered browser only manages a few frames a second.
-const advance = (seconds) => { for (let t = 0; t < seconds; t += 0.1) for (const e of M.update(state, 0.1)) handle(e); render(); };
+const advance = (seconds) => { for (let t = 0; t < seconds; t += 0.1) for (const e of M.update(state, 0.1, { villageAway: !!villageGame?.active })) handle(e); render(); };
 const mazeDiagnostics = {
   open: openMazeRide, start: startMazeRide, close: exitMazeRide, pause: pauseMazeRide, restart: replayMazeRide,
   advance(seconds) { const status = scene.advanceMazeRide(seconds); mazeUI.update(status); return { ...status, audio: mazeAudio.status }; },

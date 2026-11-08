@@ -1,3 +1,4 @@
+import { VILLAGE_GATEWAY } from './content/village-gateway.js';
 import * as THREE from "three";
 import { PLOTS, BIG_PUMPKIN, SHOP, HOMES, PITCH } from "./world.js";
 import { fieldDepth } from "./content/farm-layout.js";
@@ -7,7 +8,7 @@ import { MEADOW, cocoaKioskWidth } from "./content/festival-meadow.js";
 import { openPlots } from "./model.js";
 import { STAND_SITE } from "./carving-stand-world.js";
 import { playWays, wayThrough, inZone, gardenGeometry, gardenTargets } from "./play-ways.js";
-import { gaitPhase } from "./directional-sprite-math.js";
+import { gaitPhase, BASE_OWNER_STRIDE } from "./directional-sprite-math.js";
 
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const SETTLE_SECONDS = 0.8;
@@ -141,6 +142,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
       ...PLOTS.slice(0, openPlots(state)).map((p, index) => ({ type: "plot", index, x: p.x, z: p.z, label: state.plots[index].phase === "ready" ? "Pick pumpkin" : state.plots[index].phase === "growing" ? "Water pumpkin" : "Plant pumpkin" })),
       { type: "pumpkin", label: "Encourage the patch", x: BIG_PUMPKIN.x + 2, z: BIG_PUMPKIN.z },
       { type: "shop", label: "Visit Skyla’s shop", x: SHOP.x, z: SHOP.counterZ + 1.2 },
+      { type: "village", label: "Travel to Mothlight", ...VILLAGE_GATEWAY.approach },
       { type: "home", label: "Go home", x: 20, z: 4.6 },
       ...(state.kitchen?.purchased ? [{ type: "cooking", label: "Cook at Maisie’s truck", x: COOKING_SITE.truck.x, z: COOKING_SITE.truck.z + 2.1 }] : []),
       ...(state.cleanliness?.litter ?? []).map((p, index) => ({ type: "litter", id: p.id, index, label: "Clean up", x: p.x, z: p.z })),
@@ -240,7 +242,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     if (moving || action || pose || intent.x || intent.z) still = 0; else if (!asleep) still += Math.max(0, Number(dt) || 0);
     const shown = still > SETTLE_SECONDS ? "front" : facing;
     animate(a, motionAge, moving, dx, who === "shane" ? 1.7 : 0);
-    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing: shown, angle: facingAngle, phase: gaitPhase(strideAge * 2.3, 1.8), walking: moving, time, age: motionAge, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
+    if (a.userData.playerAnimate) a.userData.playerAnimate({ who, outfit: state.wardrobe.equipped[who], facing: shown, angle: facingAngle, phase: gaitPhase(strideAge * 2.3, BASE_OWNER_STRIDE), walking: moving, time, age: motionAge, dx, action: action?.kind, actionElapsed: action?.elapsed ?? 0, actionProgress: action ? action.elapsed / action.duration : 0, controlled: true });
     const hit = !room() && !inGarden() && actors()[who]?.hit; if (hit) hit.position.set(a.position.x, 1.1, a.position.z);
     target = nearest();
     ring.visible = !asleep; ring.position.set(a.position.x, .075, a.position.z); ringMat.opacity = .6 + Math.sin(time * 2) * .1;

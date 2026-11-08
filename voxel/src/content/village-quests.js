@@ -180,6 +180,18 @@ export const QUESTS = Object.freeze([
         { tone: "playful", text: "Who's washing up?", reply: "The crow volunteered. We'll see." },
         { tone: "curious", text: "What comes next for the village?", reply: "The woods beyond the gate. Mabel and Tansy live out there, behind the brambles. One day soon." }] }] },
     reward: { coins: 300, friendship: { elowen: 60, rowan: 60 }, villageDecor: { "bunting-posts": 2 }, unlock: ["copse-hint"] } },
+  { id: "lantern-keepers", kind: "story", title: "The Lantern Keepers", giver: "elowen", level: 5, needs: ["two-doorbells"],
+    blurb: "Carry Mothlight's lantern night back to your farm, and earn two Moonlit mummy costumes.",
+    intro: [{ who: "elowen", text: "We have doors, a supper table and neighbours who knock. Now I'd like your farm to feel like the village's other home." },
+      { who: "rowan", text: "Bring us timber, stone and a little fibre for lantern night. Then grow a harvest back home. We'll stitch something wonderfully haunted for you both." }],
+    steps: [
+      { kind: "deliver", who: "rowan", cost: { logs: 12, stone: 8, fibre: 6, herbs: 4 }, text: "Bring Rowan 12 logs, 8 stone, 6 fibre and 4 herbs" },
+      { kind: "harvest", n: 24, text: "Harvest 24 pumpkins back at your farm" },
+      { kind: "talk", who: "elowen", text: "Return to Elowen for your Lantern Keeper outfits" },
+    ],
+    talk: { elowen: [{ who: "elowen", text: "Twenty-four little lights for the fields. You haven't just visited Mothlight; you've carried it home." },
+      { who: "rowan", text: "Two Moonlit mummy costumes. Soft linen, good stitching and absolutely no actual curses. I checked twice." }] },
+    reward: { friendship: { elowen: 120, rowan: 120 }, costumes: ["natalie-mummy", "shane-mummy"], villageDecor: { "moon-gate": 1, "moth-lamp": 2 }, effect: "lantern-keepers", coins: 250 } },
 ].map((q) => Object.freeze({ kind: "friendship", needs: [], intro: [], talk: {}, done: [], reward: {}, ...q, steps: Object.freeze(q.steps.map(Object.freeze)) })));
 export const QUEST_BY_ID = Object.freeze(Object.fromEntries(QUESTS.map((q) => [q.id, q])));
 

@@ -39,8 +39,9 @@ test("the hero tree and restored houses retain their original footprints and fin
   for (const draw of [f => workshop(f, false), f => conservatory(f, false)]) assert.equal(record(draw).filter(b => b[7]).length, 0);
 });
 
-test("static polish remains in the existing batches with a measured box ceiling", () => {
-  for (const [group, maxBoxes, maxMeshes] of [[buildGreen(), 35600, 37], [buildHomes({ "rowan-workshop": true, "elowen-conservatory": true }), 5750, 2]]) {
+// The61% larger playable Green adds an arrival meadow and clearings; light count stays fixed.
+test("static polish remains in bounded batches after the Green expansion", () => {
+  for (const [group, maxBoxes, maxMeshes] of [[buildGreen(), 37000, 50], [buildHomes({ "rowan-workshop": true, "elowen-conservatory": true }), 5750, 2]]) {
     let boxes = 0, meshes = 0, lights = 0;
     group.traverse(object => { if (object.isInstancedMesh) boxes += object.count; if (object.isMesh) meshes++; if (object.isLight) lights++; });
     assert.ok(boxes <= maxBoxes); assert.ok(meshes <= maxMeshes); assert.equal(lights, 0);

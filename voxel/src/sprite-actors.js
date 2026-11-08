@@ -6,8 +6,8 @@ import { HOSPITALITY_META } from "./hospitality-cast-meta.js";
 import * as THREE from "three";
 import { crispen, crispTexture } from "./crisp-sprites.js";
 import { createSpecialSprite, animateSpecialSprite, specialPortrait, specialSpriteReady } from "./special-sprites.js";
-import natalieUrl from "../assets/hd-natalie.webp";
-import shaneUrl from "../assets/hd-shane.webp";
+import natalieUrl from "../assets/hd-natalie-empty-idle.webp";
+import shaneUrl from "../assets/hd-shane-empty-idle.webp";
 import skylaUrl from "../assets/hd-skyla.webp";
 import horrorVisitorsUrl from "../assets/hd-horror-visitors.png";
 import { horrorVisitorSheetMeta } from "./visitor-sprite-meta.js";
@@ -28,6 +28,7 @@ import shaneFrankenstein from "../assets/hd-shane-frankenstein.webp";
 import shaneMummy from "../assets/hd-shane-mummy.webp";
 import shaneSlasher from "../assets/hd-shane-slasher.webp";
 import { SHEETS } from "./sprite-meta-hd.js";
+import { OWNER_EMPTY_IDLE_META } from "./content/owner-empty-idle-meta.js";
 import { COSTUME_SHEETS } from "./costume-sprite-meta.js";
 import { COSTUME_URLS } from "./costume-sprite-expansion.js";
 import { LEAN, STRETCH } from "./world.js";
@@ -53,7 +54,7 @@ const URLS = {
 };
 // The court and the diners were drawn a person to the frame, which made them
 // tower over the other guests (about 1.6 units): bring them down to match.
-const METADATA = { ...SHEETS, ...COSTUME_SHEETS, ...WHEELCHAIR_META,
+const METADATA = { ...SHEETS, ...OWNER_EMPTY_IDLE_META, ...COSTUME_SHEETS, ...WHEELCHAIR_META,
   court: { ...HOSPITALITY_META.court, person: 1.72 }, seated: { ...HOSPITALITY_META.seated, person: 1.6 } };
 // Visitor IDs come from the shared, stable voxel roster.
 

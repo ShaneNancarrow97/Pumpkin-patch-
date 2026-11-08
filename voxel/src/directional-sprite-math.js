@@ -2,6 +2,8 @@
 // A row is authored coverage: missing rows/actions return null, never a mirror.
 export const DIRECTION_NAMES = Object.freeze(["front", "frontRight", "right", "backRight", "back", "backLeft", "left", "frontLeft"]);
 export const WALK_PHASES = Object.freeze(["left-contact", "left-down", "left-pass", "left-up", "right-contact", "right-down", "right-pass", "right-up"]);
+// One complete left-and-right owner gait covers this much ground.
+export const BASE_OWNER_STRIDE = 1.8;
 const TURN = Math.PI * 2, SECTOR = TURN / DIRECTION_NAMES.length;
 const finite = n => Number.isFinite(n);
 const wrap = n => ((n % TURN) + TURN) % TURN;

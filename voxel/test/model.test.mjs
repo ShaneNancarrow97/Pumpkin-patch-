@@ -38,6 +38,7 @@ test("the big pumpkin hurries growing plots, and shakes a pumpkin loose every ei
 test("upgrades cost 2.2 times more each level and stop at their maximum", () => {
   const s = M.freshState();
   s.coins = 1e6; s.earned = 2e6; s.progression.claimed = M.LEVELS.map((l) => l.level); 
+  s.village.quests["rowan-2"] = { done: true, step: 4, base: null }; // Isolate price/max tests from the restoration gate.
   assert.equal(M.upgradeCost(s, "tools"), 90);
   assert.ok(M.buyUpgrade(s, "tools"));
   assert.equal(M.upgradeCost(s, "tools"), 198);

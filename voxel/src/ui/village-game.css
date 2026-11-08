@@ -71,3 +71,29 @@ body.in-village .play-prompt,body.in-village .pad-hints,body.in-village .pad-cur
 }
 @media(max-width:370px){.vg-heading>div small{display:none}.vg-heading b{font-size:14px}#vg-coins{display:none}#village-game .vg-heading button{font-size:12px}}
 @media(min-width:600px) and (max-width:1100px) and (min-height:600px){#vg-panel{width:min(430px,calc(60% - 24px))}.vg-heading>div{max-width:250px}.vg-dock{bottom:max(18px,env(safe-area-inset-bottom))}}
+
+/* The village keeps one task, one direction and the farm's away rate visible. */
+#village-game .vg-objective{max-width:min(370px,calc(100% - 152px));display:flex;flex-direction:column;gap:4px}
+#vg-task{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#vg-wayfinding{font-size:12px;color:#ffe0a5;font-weight:600}
+#village-game .vg-farm-rate{position:absolute;top:82px;right:max(14px,env(safe-area-inset-right));display:flex;align-items:center;gap:9px;max-width:126px;padding:8px 11px;background:#271d32ed;border-color:#e6bd773d;box-shadow:0 4px 18px #0002;text-align:left}
+.vg-farm-rate span{font-size:12px;font-weight:400;line-height:1.2;max-width:52px;color:#d9c6dd}.vg-farm-rate b{font-size:14px;color:#ffdfa5;white-space:nowrap}
+#village-game.has-panel .vg-objective,#village-game.has-panel .vg-farm-rate{visibility:hidden}
+#village-game .vg-dock button{padding-inline:12px}
+.vg-gather{position:absolute;bottom:88px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:9px;width:min(250px,calc(100% - 32px));padding:9px 13px;background:#251b31f2;border:1px solid #dbb67950;border-radius:16px;box-shadow:0 5px 22px #0003;pointer-events:none}.vg-gather[hidden]{display:none}.vg-gather>div{min-width:0;flex:1}.vg-gather b{display:block;font-size:13px;font-weight:500;margin-bottom:5px}.vg-gather .village-item-icon{width:32px;height:32px}.vg-gather-track{display:block;height:4px;overflow:hidden;border-radius:4px;background:#0f0a16}.vg-gather-track i{display:block;height:100%;background:linear-gradient(90deg,#b99acb,#f5ce90);border-radius:inherit}
+#village-game.is-gathering :is(.vg-interact,.vg-jog){visibility:hidden}
+@media(max-width:540px){#village-game .vg-objective{max-width:calc(100% - 144px)}#village-game .vg-farm-rate{top:79px;right:10px;width:120px;padding:8px 10px}.vg-gather{bottom:89px}#village-game .vg-dock button{padding-inline:2px!important}}
+@media(max-height:500px) and (orientation:landscape){#village-game .vg-farm-rate{top:66px;right:max(14px,env(safe-area-inset-right))}#village-game .vg-objective{max-width:min(35vw,370px)}.vg-gather{bottom:70px}#village-game .vg-dock{max-width:calc(100% - 320px)}#village-game .vg-dock button{min-width:44px!important;padding-inline:5px!important}}
+
+/* A followed story stays pinned; its details open without taking the player away. */
+#village-game .vg-objective{pointer-events:auto;display:flex;flex-direction:column;padding:0;gap:0;width:370px;max-width:min(370px,calc(100% - 152px));max-height:180px;overflow:hidden;border:1px solid #d7b98335;background:#251d2df2;box-sizing:border-box}
+#village-game .vg-quest-toggle{display:flex;align-items:center;gap:10px;text-align:left;width:100%;min-height:44px;flex-shrink:0;border:0;border-radius:0;padding:9px 12px;background:transparent;box-shadow:none;font-weight:400}
+.vg-quest-copy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}.vg-quest-heading{display:flex;gap:8px;align-items:center;min-width:0}.vg-quest-heading strong{font-size:12px;color:#e8c488;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}#vg-quest-counts{font-size:12px;color:#cbbbce;white-space:nowrap;flex-shrink:0}
+#vg-task{font-size:13px;font-weight:400;line-height:1.35;-webkit-line-clamp:1;color:#f3e7d6}#village-game.quest-expanded #vg-task{-webkit-line-clamp:2}
+.vg-quest-toggle-mark{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;color:#e8c488}.vg-quest-toggle-mark>span{font-size:17px;line-height:16px;transition:transform .15s}.quest-expanded .vg-quest-toggle-mark>span{transform:rotate(180deg)}.vg-quest-toggle-mark small{display:none;font-size:12px;white-space:nowrap;color:#cbbbce}.vg-input-pad .vg-quest-toggle-mark small{display:block}
+.vg-quest-details{min-height:0;overflow:auto;overscroll-behavior:contain;border-top:1px solid #d7b98325;padding:8px 12px 10px;scrollbar-width:thin;flex:1}.vg-quest-details[hidden]{display:none}.vg-quest-details p{margin:6px 0;color:#d8c6df;font-size:12px;line-height:1.4}.vg-quest-requirements{list-style:none;padding:0;margin:0;display:grid;gap:5px}.vg-quest-requirements li{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:#d9c9df}.vg-quest-requirements b{font-size:12px;font-weight:500;color:#efd1a2;white-space:nowrap}.vg-quest-requirements .is-ready b{color:#c9dbad}#village-game #vg-quest-journal{min-height:44px;font-size:12px;padding:8px 10px;margin-top:6px;background:#ad87bd12}
+#vg-wayfinding{flex-shrink:0;padding:0 12px 9px;color:#ffe0a5;font-size:12px;line-height:1.35}
+#village-game.has-panel .vg-objective{visibility:visible}
+body.village-decorating #village-game #vg-objective:not([hidden]){display:flex!important}body.village-decorating .vg-quest-toggle-mark small{display:none}
+@media(max-width:540px){#village-game .vg-objective{width:calc(100% - 144px);max-width:calc(100% - 144px)}#village-game.has-panel .vg-objective{visibility:hidden}.vg-quest-heading{gap:5px}.vg-quest-toggle-mark small{font-size:12px}.vg-quest-toggle-mark>span{font-size:15px}#village-game .vg-quest-toggle{gap:5px;padding:8px 9px}#vg-task{font-size:12px}#vg-wayfinding{padding-inline:9px}}
+@media(max-height:500px) and (orientation:landscape){#village-game .vg-objective{width:min(35vw,370px);max-width:min(35vw,370px);top:66px;max-height:180px}}

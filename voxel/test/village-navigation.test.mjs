@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
-import { ARRIVAL, GATES, NODES, FIXTURES, PLAN_SCALE as K } from "../src/content/village.js";
-import { ELOWEN_HALL, ROWAN_HALL, VELVET_HALL } from "../src/village-models.js";
+import { ARRIVAL, GATES, NODES, FIXTURES, FORAGE_AREAS, DISTRICT_BY_ID, PLAN_SCALE as K } from "../src/content/village.js";
+import { ELOWEN_HALL, ROWAN_HALL, VELVET_HALL, node } from "../src/village-models.js";
 import { villageCellFree, villageWalkObstacles, moveVillageWalker, villageHallFree, moveVillageHallWalker, villageDecorGroundClear, villageDecorWalkClear, VILLAGE_WALK_RADIUS } from "../src/rules/village-navigation.js";
 
 const state=()=>M.freshState(), at=(x,z)=>({x:x*K,z:z*K});
@@ -24,7 +24,8 @@ test("outdoor collisions use the models' rotated realm footprints, including the
   assert.equal(villageCellFree(s,FIXTURES.pond.x,FIXTURES.pond.z),false,"the pond is water");
   assert.equal(villageCellFree(s,...ARRIVAL.spawn),true);
   assert.equal(villageCellFree(s,...ARRIVAL.back),true,"the carriage can be reached through the moth gate");
-  assert.equal(free(s,20,-1),false,"the southern wall has no other exit");
+  assert.equal(free(s,20,-1),true,"the new arrival meadow extends south of the town wall");
+  assert.equal(free(s,20,-23),false,"the new southern boundary remains closed away from the carriage");
 });
 
 test("all Green gathering spots, doors and first neighbours are reachable from the saved arrival",()=>{
@@ -116,4 +117,25 @@ test("fast interior movement stops at desks, bars and chairs instead of tunnelli
   }
   const hall={w:10,d:10,spawn:[0,-1],blocks:[[-4,-5,4,-4.9]]},end=moveVillageHallWalker({hall},{x:0,z:-1},0,-8);
   assert.ok(end.z>-4.9,"a thin workbench is not skipped by a slow frame");
+});
+
+
+test("the arrival meadow expands the Green with four connected forage areas",()=>{
+  const p=DISTRICT_BY_ID.green.polygon;
+  const area=(Math.max(...p.map(q=>q[0]))-Math.min(...p.map(q=>q[0])))*(Math.max(...p.map(q=>q[1]))-Math.min(...p.map(q=>q[1])));
+  assert.ok(area>120*36*K*K*1.6);
+  assert.equal(FORAGE_AREAS.length,4);
+  assert.equal(NODES.filter(n=>n.district==="green").length,32);
+  assert.ok(ARRIVAL.spawn[1]<0,"a broad forecourt precedes the old village gate");
+  for(const a of FORAGE_AREAS)assert.equal(villageCellFree(state(),a.x,a.z),true,a.id);
+});
+
+
+test("gathered resource paintings leave no permanent stump or debris geometry",()=>{
+  for(const material of ["logs","stone","fibre","herbs"]){
+    const boxes=[];node({block:(...args)=>boxes.push(args)},material,false);
+    assert.equal(boxes.length,0,material);
+    node({block:(...args)=>boxes.push(args)},material,true);
+    assert.ok(boxes.length>0,material+" returns when ready");
+  }
 });
