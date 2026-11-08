@@ -1,74 +1,65 @@
 {
-  "builtAt": "2026-11-08T19:09:36.615910+00:00",
-  "sourceBranch": "contractor/village-journey",
-  "codeCommit": "e61180ffd2f7a9304a0af6feb330eff4b8f34c4b",
-  "incrementalBase": "fa3ce1616919d3e75b0488421d42c7df50f0df31",
-  "leadChecked": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
-  "stateVersion": 18,
+  "builtAt": "2026-11-08T20:25:45.519543+00:00",
+  "sourceBranch": "contractor/village-play-polish",
+  "codeCommit": "a1965f00630a78366e555c8c9066921bdde9e0db",
+  "codeTree": "51ce02e81431662807faea1c3ceef1b4d0e3ffb8",
+  "base": "ff6b5803686c449b902d405037f8958d03e3e2d8",
+  "html": {
+    "bytes": 58258944,
+    "sha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e"
+  },
+  "nodeTestsPassed": 961,
   "artifacts": {
-    "Pumpkin-Patch-Village-Journey.html": {
-      "bytes": 57503178,
-      "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
+    "Pumpkin-Patch-Village-Play-Polish.html": {
+      "bytes": 58258944,
+      "sha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e"
     },
-    "Pumpkin-Patch-Furniture-Menu-Icons.zip": {
-      "bytes": 1673222,
-      "sha256": "a04d82f66a219e3cde8d168563be132021d6a5faea4394009f33f04c34abc48c"
+    "Pumpkin-Patch-Controller-Icons.html": {
+      "bytes": 68746,
+      "sha256": "44e71118ed2743aebbf5e5c3c62ab4587915319d1489f91b3b3e3c4b77c5151e"
     },
-    "Pumpkin-Patch-Village-Journey.zip": {
-      "bytes": 41528719,
-      "sha256": "785621ec7919801531a11db37bd090dc32488661fdabb4150ae59da8f3d00cad"
+    "Pumpkin-Patch-Village-Play-Polish.zip": {
+      "bytes": 42070517,
+      "sha256": "5824eeeb66813b598d51d1941b502630b8728e967663f45a9c5d74f4ca92e436"
     },
-    "Pumpkin-Patch-Furniture-Menu-Icons.jpg": {
-      "bytes": 67749,
-      "sha256": "262348bd0f245ab3c11e15b80fa33371b90749c6f36e6eb82ec8c6648c3fb054"
+    "Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip": {
+      "bytes": 10280361,
+      "sha256": "fa38344234a8aa318561e8d418e56dc8a135087f5ba63eec6cb353d11f7937fb"
     },
-    "Pumpkin-Patch-Village-Journey-Claude-Patch.zip": {
-      "bytes": 86062343,
-      "sha256": "75c5acaeaaf39cfb053881b9a2836f70bbdc52f007d7d4c5e0e4f101137630d5"
+    "Pumpkin-Patch-Village-UI-Art.zip": {
+      "bytes": 6124942,
+      "sha256": "1cf76450f3a02dfe1fcaa292df0deaac2633865a8863479c6120ed6bd8bf147e"
     },
-    "Pumpkin-Patch-Owner-Walk-Preview.html": {
-      "bytes": 2399054,
-      "sha256": "115f680376772bf03801725c0bd6da37536cbf8a02c1a5ace359fc33748ebbd8"
+    "Pumpkin-Patch-Village-UI-Icons.html": {
+      "bytes": 505396,
+      "sha256": "97b2a33511149bf095d164f360db217c0ced02e3d6af681008e3511b9a042302"
     },
-    "Pumpkin-Patch-Furniture-Menu-Icons.html": {
-      "bytes": 286787,
-      "sha256": "6e595e34cc0cd212f426d0a7553a1edfc700174d3cf7be141b22eb630b7d226e"
+    "Pumpkin-Patch-Home-Category-Icons.zip": {
+      "bytes": 4092341,
+      "sha256": "50783d46e642cf94afc04c26511133dadfe89970f012228840533118f80b4fb6"
+    },
+    "Pumpkin-Patch-Home-Category-Icons.html": {
+      "bytes": 460248,
+      "sha256": "fd76a88a026912e39ea0addb869de4454ae62e46a8447127c687b8154fd5355b"
     }
   },
-  "verification": "904 automated tests and 21 targeted final-HTML browser checks passed; clean patch replay rebuilt identical HTML. Duplicate broad smoke intentionally stopped for urgent delivery after 8 desktop checks; incomplete.",
-  "patchReplay": {
+  "cleanReplay": {
     "passed": true,
-    "tree": "4090296e3795314ad4ad1dcea98a7783b7764384",
-    "htmlSha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
+    "tree": "51ce02e81431662807faea1c3ceef1b4d0e3ffb8",
+    "htmlSha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e"
   },
   "validation": {
-    "nodeTestsPassed": 904,
-    "nodeTestsFailed": 0,
-    "finalBrowserChecksPassed": 21,
-    "browserErrors": 0,
-    "externalAssetRequests": 0,
-    "desktopPhoneSmoke": {
-      "status": "incomplete",
-      "passedBeforeStop": 8,
-      "failAssertions": 0,
-      "reason": "Stopped intentionally to prioritise urgent HTML delivery; software WebGL was slow."
-    }
-  },
-  "publicDownloadChecks": {
-    "commit": "cc04f8a482d71b134fdf651ec46d66f87710f145",
-    "html": {
-      "bytes": 57503178,
-      "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
-    },
-    "zip": {
-      "bytes": 41528719,
-      "sha256": "785621ec7919801531a11db37bd090dc32488661fdabb4150ae59da8f3d00cad"
-    }
-  },
-  "verificationCommit": "ff6b5803686c449b902d405037f8958d03e3e2d8",
-  "publicPatchDownloadCheck": {
-    "commit": "390ec31f0aed1902285cb3ca0d4c1436e3530c43",
-    "bytes": 86062343,
-    "sha256": "75c5acaeaaf39cfb053881b9a2836f70bbdc52f007d7d4c5e0e4f101137630d5"
+    "nodeTests": 961,
+    "gameplayBrowserChecks": 57,
+    "gameplayHtml": "7514ee4994efecc707b13510e9273cd6e5ab53984774126bf041544b6386351a",
+    "finalCssChecks": 17,
+    "standardSmoke": 54,
+    "finalHtml": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e",
+    "standardSmokeProfile": [
+      "SMOKE_LITE=1",
+      "SMOKE_HOLD_DRAWS=1"
+    ],
+    "pageErrors": 0,
+    "externalAssets": 0
   }
 }

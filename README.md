@@ -1,17 +1,15 @@
-# Pumpkin Patch — Village Journey
+# Pumpkin Patch — Village Play Polish
 
-- [Download full game HTML](Pumpkin-Patch-Village-Journey.html?raw=1)
-- [Download game ZIP](Pumpkin-Patch-Village-Journey.zip?raw=1)
-- [Furniture icon preview](Pumpkin-Patch-Furniture-Menu-Icons.html?raw=1)
-- [Furniture art pack](Pumpkin-Patch-Furniture-Menu-Icons.zip?raw=1)
-- [Owner walking preview](Pumpkin-Patch-Owner-Walk-Preview.html?raw=1)
+- [Download full game HTML](Pumpkin-Patch-Village-Play-Polish.html?raw=1)
+- [Download game ZIP](Pumpkin-Patch-Village-Play-Polish.zip?raw=1)
+- [Claude patch kit](Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip?raw=1)
+- [Village icon preview](Pumpkin-Patch-Village-UI-Icons.html?raw=1)
+- [Home category preview](Pumpkin-Patch-Home-Category-Icons.html?raw=1)
 
-Open the HTML to play the complete offline game. The ZIP contains the same file. Export your existing farm in Settings → Save to a file before moving browsers/file origins; load it in the new game. Save version 18 preserves older saves.
+Extract the ZIP and open its HTML, or download the HTML directly. All assets are included; no account or server is needed. Export your existing farm in Settings before changing browser/file origin, then import the save. Save format 18 preserves older progress.
 
-Includes the expanded village, physical farm gateway, quest HUD, relocated foraging, village-earned home sets, eight furniture illustrations, repaired base walking, grass detail, 26 MIDI songs, actual food-truck checkout, later tills and fountain pumpkins. Future forage sites may return overlapping village decorations to storage; ownership is retained.
+Includes safe farm/village travel, a closer follow camera, farm R3 zoom/pan, spatial map with lock criteria, tree/grass fading, nearby gathering/quest rings, subtle player/NPC glow, two or three roaming visitors, custom village/home/controller icons, improved journal/chat/build controls, stable cursor and catalogue scroll, quieter village music and a ten-minute farm reminder. Future districts remain locked as later chapters.
 
-Source: contractor/village-journey at e61180ffd2f7a9304a0af6feb330eff4b8f34c4b. Handover: voxel/docs/contractor-patches/village-journey/README.md. This branch remains separate from Claude’s active work. All 904 automated tests and 21 targeted browser checks passed. The five-patch kit applies cleanly to its stated parent and rebuilds identical HTML bytes. BUILD.json records exact hashes. Viewport/input checks do not certify physical Fold, Bluetooth or TV hardware.
+Source: contractor/village-play-polish. Read voxel/docs/contractor-patches/village-play-polish/README.md in the repository for the dependency matrix and exact integration boundaries. The game checks are complete; APK packaging is the separate final job. BUILD.json records current hashes and validation.
 
-[Claude patch kit](Pumpkin-Patch-Village-Journey-Claude-Patch.zip?raw=1) includes the ordered source changes, README, dependency matrix and test receipts. The latest source-branch handover includes final browser evidence.
-
-Final source handover and evidence: [contractor/village-journey](https://github.com/ShaneNancarrow97/Pumpkin-patch-/tree/ff6b5803686c449b902d405037f8958d03e3e2d8/voxel/docs/contractor-patches/village-journey). The duplicate broad smoke is explicitly incomplete after eight passing desktop checks; all 21 targeted final-build checks are complete.
+Validation: 961 automated checks, 57 gameplay browser checks, 17 final CSS/layout checks and 54 standard desktop/phone smoke checks passed. Reports distinguish the CSS-only final delta and held drawing in the functional smoke; normal-renderer screenshots and shader checks are separate. Three source patches replay cleanly and rebuild identical HTML bytes. Physical Fold/TV/Bluetooth performance is not certified by browser emulation.
