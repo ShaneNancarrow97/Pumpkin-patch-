@@ -6,6 +6,7 @@ import { PUMPKIN_VARIETIES } from "../content/pumpkin-varieties.js";
 export { VARIETY_COUNT, MAX_VARIETY_INDEX, VARIETY_INDICES } from "../content/pumpkin-varieties.js";
 import { tierOpen } from "./unlocks.js";
 import { plantsPinata, burstPinata } from "./pinata.js";
+import { FOUNTAIN, plantsFountain, burstFountain } from "./fountain.js";
 import { economy } from "../../../src/content/economy.js";
 import { addStock, stockCount } from "./stock.js";
 import { MAX_PLOTS, PLOT_COUNTS } from "../content/farm-layout.js";
@@ -57,10 +58,11 @@ export const upgradeCost = (s, id) => {
 const bestVariety = (s) => Math.max(...s.plotLevels.slice(0, openPlots(s)));
 
 export function plant(s, i) {
-  if (!Number.isInteger(i) || i < 0 || i >= openPlots(s) || s.plots[i].phase !== "empty") return false;
+  if (s.paused || !Number.isInteger(i) || i < 0 || i >= openPlots(s) || s.plots[i].phase !== "empty") return false;
   s.plots[i] = { phase: "growing", progress: 0, variety: s.plotCrops[i] };
-  // Now and then it grows as a piñata (rules/pinata.js).
-  if (plantsPinata(s, i)) s.plots[i].pinata = true;
+  // A fountain roll comes first; a crop never receives both special variants.
+  if (plantsFountain(s, i)) s.plots[i].fountain = true;
+  else if (plantsPinata(s, i)) s.plots[i].pinata = true;
   return true;
 }
 
@@ -93,15 +95,25 @@ function store(s, v, n) {
   return true;
 }
 
+// Fountain rewards need their whole ten pumpkins in the barn; the cart cannot cash them out.
+export const fountainHarvestRoom = (s, i) => !s.plots[i]?.fountain || barnSpace(s) >= FOUNTAIN.pumpkins;
+export function canHarvestPlot(s, i) {
+  const p = s.plots[i];
+  return !s.paused && Number.isInteger(i) && i >= 0 && i < openPlots(s) && p?.phase === "ready"
+    && (p.fountain ? fountainHarvestRoom(s, i) : barnSpace(s) >= harvestSize(s) || cartRoom(s) >= harvestSize(s));
+}
+
 // Returns how many pumpkins were picked (0 if there was nothing to pick).
 export function harvest(s, i) {
   const p = s.plots[i];
-  if (!p || i >= openPlots(s) || p.phase !== "ready") return 0;
-  const n = harvestSize(s);
-  if (!store(s, p.variety, n)) return 0;
+  if (!canHarvestPlot(s, i)) return 0;
+  const n = p.fountain ? FOUNTAIN.pumpkins : harvestSize(s);
+  if (p.fountain) addStock(s, p.variety, n, true);
+  else if (!store(s, p.variety, n)) return 0;
   s.harvested += n;
   // A piñata bursts with pantry ingredients as it's picked.
-  if (p.pinata) burstPinata(s, i);
+  if (p.fountain) burstFountain(s, i, p.variety);
+  else if (p.pinata) burstPinata(s, i);
   s.plots[i] = { phase: "empty", progress: 0, variety: s.plotCrops[i] };
   return n;
 }

@@ -38,3 +38,32 @@ test("gift wrapping raises a new shopper's purse, and quicker browsing shortens 
   assert.ok(a && b); assert.ok(a.originalBudget >= Math.round(b.originalBudget * 1.15), `${a.originalBudget} vs ${b.originalBudget}`);
   a.remaining = 0; M.updateShop(s, .01, []); assert.equal(a.phase, "browsing"); assert.ok(a.remaining <= M.BROWSE_SECONDS[3] + 1e-9);
 });
+
+test("three premium till tiers keep legacy ownership and charge once for each faster checkout", () => {
+  const s = late(); s.shop.checkoutLevel = 7;
+  const old = M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));
+  assert.equal(old.shop.checkoutLevel, 7); assert.equal(M.CHECKOUT_SECONDS[old.shop.checkoutLevel], 1.4);
+  const starting = old.coins, invested = old.shop.invested;
+  const prices = [145000, 215000, 315000], times = [1.1, .85, .65];
+  prices.forEach((price, i) => {
+    assert.equal(M.shopUpgradeCost(old, 'checkout'), price); assert.equal(M.upgradeShop(old, 'checkout'), true);
+    assert.equal(M.CHECKOUT_SECONDS[old.shop.checkoutLevel], times[i]);
+    assert.equal(old.coins, starting - prices.slice(0, i + 1).reduce((a, b) => a + b, 0));
+  });
+  assert.equal(old.shop.invested - invested, 675000);
+  const final = old.coins; assert.equal(M.upgradeShop(old, 'checkout'), false); assert.equal(old.coins, final);
+  const loaded = M.restoreState(JSON.parse(JSON.stringify(M.saveData(old)))); assert.equal(loaded.shop.checkoutLevel, 10);
+});
+
+test("premium till tiers respect affordability, level gates and pause without reducing owned tiers", () => {
+  const s = late(); s.shop.checkoutLevel = 7; s.earned = M.LEVELS[18].at;
+  s.progression.claimed = M.LEVELS.slice(0, 19).map(l => l.level);
+  const coins = s.coins; assert.equal(M.upgradeShop(s, 'checkout'), false); assert.equal(s.coins, coins);
+  s.earned = M.LEVELS[19].at; s.progression.claimed = M.LEVELS.map(l => l.level); s.coins = 144999; assert.equal(M.upgradeShop(s, 'checkout'), false);
+  s.coins = 145000; s.paused = true; assert.equal(M.upgradeShop(s, 'checkout'), false);
+  s.paused = false; assert.equal(M.upgradeShop(s, 'checkout'), true); assert.equal(s.coins, 0);
+  s.stock[0] = 10; s.shop.arrivalTimer = 0; M.updateShop(s, .01, []);
+  const c = s.shop.customers[0]; assert.ok(c);
+  c.phase = 'queue'; c.basket = []; c.remaining = 0;
+  M.updateShop(s, .01, []); assert.equal(c.phase, 'paying'); assert.equal(c.checkoutDuration, 1.1);
+});

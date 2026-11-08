@@ -1,6 +1,6 @@
 # Pumpkin Patch Voxel: context for coding agents
 
-**Contractor Village Journey:** [`docs/contractor-patches/village-journey/README.md`](docs/contractor-patches/village-journey/README.md) connects a physical farm gateway, expanded Green, saved resource relocation/tools, quest HUD and village-earned farm progression. Save version 17 adds resource cycles; read its dependency matrix and migration note before integration.
+**Contractor Village Journey:** [`docs/contractor-patches/village-journey/README.md`](docs/contractor-patches/village-journey/README.md) connects a physical farm gateway, expanded Green, saved resource relocation/tools, quest HUD and village-earned farm progression. Save version 18 adds fountain seeds after version 17 resource cycles; read its dependency matrix and migration note before integration.
 
 **Contractor menu items:** [`docs/contractor-patches/menu-item-sprites/README.md`](docs/contractor-patches/menu-item-sprites/README.md) adds 36 illustrated village item icons in a shared atlas. Read the coverage and dependency matrix before expanding it. Existing gameplay, saves and other menu artwork are unchanged.
 
@@ -116,7 +116,7 @@ Generated files: `src/sprite-meta.js`, `src/sprite-meta-hd.js`, `src/decor-meta.
 - **Rules are pure.** No DOM and no three.js; time comes in only as `dt`. Keep it that way so `npm test` can run them in Node. When a rule changes, add or update a test.
 - **Saves:**
   - The key is `pumpkin-patch-voxel-reference-v1`, separate from the main game's, plus `-prefs` for settings.
-  - `STATE_VERSION` is 17 (Codex's home customisation, after personal farm skills, saved boost heat and crop timing; legacy saves migrate). `restoreState` must accept anything, including junk, older versions and missing fields, and return a valid state.
+  - `STATE_VERSION` is 18 (Codex's home customisation, after personal farm skills, saved boost heat and crop timing; legacy saves migrate). `restoreState` must accept anything, including junk, older versions and missing fields, and return a valid state.
   - If you change the shape of saved state, bump the version, migrate in `restoreState`, and test the round trip. Then run `node tools/save-fixture.mjs` to add that version's save file to `test/fixtures` (never rewrite an old one).
   - **Save files are a promise to the player** (`src/save-file.js`, handover 66): a file saved by any build must load in every later one. `test/save-file.test.mjs` loads every file kept in `test/fixtures`; if it fails, fix `restoreState`, not the fixture. The file's envelope (`format`, `fileVersion`, `stateVersion`, `savedAt`, `summary`, `prefs`, `checksum`, `state`) is a contract: never rename or drop a field, and raise `SAVE_FILE_VERSION` only with a reader for the older shape.
   - Customers and baskets are never saved (`closeForTheNight`).

@@ -1,3 +1,5 @@
+import { fountainStar, createFountainBursts } from './fountain-effects.js';
+import { truckGuestPose } from './content/cooking-visits.js';
 import { buildVillageGateway } from './farm-village-gate.js';
 import { createMaisie, maisieTextures } from "./maisie.js";
 import * as THREE from "three";
@@ -146,7 +148,8 @@ export function createScene(canvas, state, hooks) {
     // The bed itself is part of the ground (ground.js); the plot holds what grows in it.
     const sp = sprout.clone(); sp.position.y = 0.18; g.add(sp);
     // Each plot grows its own shape (content/pumpkin-shapes.js), so the patch isn't all one pumpkin.
-    const pk = VARIETIES.map((_, v) => { const m = pumpkinTemplate(v, 0.62, plotShape(i)).clone(); m.position.y = 0.18; g.add(m); return m; });
+    const pk = VARIETIES.map((_, v) => { const m = pumpkinTemplate(v, 0.62, plotShape(i)).clone(); m.position.y = 0.18; m.userData.fountainTop=new THREE.Box3().setFromObject(m).max.y; g.add(m); return m; });
+    const star=fountainStar();g.add(star);
     // A piñata grows in fiesta stripes instead (rules/pinata.js).
     const pinata = pinataTemplate(0.62, plotShape(i)).clone(); pinata.position.y = 0.18; pinata.visible = false; g.add(pinata);
     const halo = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ color: 0xffffff, map: glowTexture, transparent: true, opacity: 0.0, toneMapped: false, depthWrite: false, blending: THREE.AdditiveBlending }));
@@ -156,8 +159,9 @@ export function createScene(canvas, state, hooks) {
     const hit = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.4, 1.6), new THREE.MeshBasicMaterial({ visible: false }));
     hit.position.y = 0.6; hit.userData = { type: "plot", index: i }; g.add(hit); pickables.push(hit);
     scene.add(g);
-    return { g, sp, pk, pinata, halo, lockedVines };
+    return { g, sp, pk, pinata, halo, lockedVines, star };
   });
+  const fountainBursts=createFountainBursts(scene,pumpkinTemplate);
   const festivalWorld = createFestivalWorld({ scene, state, world, signBoard, createCashier: createSandy });
   const farmExpansion = createFarmExpansion(state, world, lamps);
   // Hills, a treeline and the roads beyond, fading into the night (wilds.js).
@@ -308,16 +312,6 @@ export function createScene(canvas, state, hooks) {
 
   // Visitors.
   const visitorModels = new Map(), outLen = routeLength(ROUTE_OUT), meadowOutLen = routeLength(MEADOW_EXIT);
-  // Guests who buy from Maisie's truck stop at its hatch on the way home: both
-  // ways out pass it at their fifth point (42.5, 6.6), where the walk pauses
-  // for a share of the leaving time while they're served, facing the truck.
-  const HATCH_PAUSE = .24, hatchAt = routeLength(ROUTE_OUT.slice(0, 5));
-  function hatchWalk(t, len) {
-    const f = Math.min(1, hatchAt / len), a = f * (1 - HATCH_PAUSE);
-    if (t < a) return { u: t / a * f, served: false, waiting: false };
-    if (t < a + HATCH_PAUSE) return { u: f, served: t > a + HATCH_PAUSE * .55, waiting: true };
-    return { u: f + (t - a - HATCH_PAUSE) / Math.max(1e-6, 1 - a - HATCH_PAUSE) * (1 - f), served: true, waiting: false };
-  }
   const guestHitGeometry = new THREE.BoxGeometry(1.15, 2.2, .9), guestHitMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const carried = pumpkins.map((t) => { const m = t.clone(); m.scale.setScalar(0.5); return m; });
 
@@ -840,12 +834,13 @@ export function createScene(canvas, state, hooks) {
     plots.forEach((p, i) => {
       const plot = state.plots[i], open = i < openPlots(state);
       p.g.visible = i < (state.upgrades.plots >= 4 ? 24 : state.upgrades.plots >= 3 ? 18 : 12);
-      p.lockedVines.visible = !open; p.sp.visible = false; p.pk.forEach((m) => (m.visible = false)); p.pinata.visible = false; p.halo.material.opacity = 0;
+      p.star.visible=false;p.lockedVines.visible = !open; p.sp.visible = false; p.pk.forEach((m) => (m.visible = false)); p.pinata.visible = false; p.halo.material.opacity = 0;
       if (!open || plot.phase === "empty") return;
       if (plot.phase === "growing" && plot.progress < 0.3) { p.sp.visible = true; p.sp.scale.setScalar(0.6 + plot.progress * 2); return; }
       const m = plot.pinata ? p.pinata : p.pk[plot.variety]; m.visible = true;
       const s = plot.phase === "ready" ? 1 : 0.35 + plot.progress * 0.6;
       m.scale.setScalar(s);
+      if(plot.fountain){p.star.visible=true;p.star.position.set(0,.18+((m.userData.fountainTop??.8)-.18)*s+.18,0);p.star.quaternion.copy(active().quaternion);p.star.scale.setScalar(.9+Math.sin(time*3+i)*.1);}
       if (plot.phase === "ready") {
         m.position.y = 0.18 + Math.abs(Math.sin(time * 2 + i)) * 0.05;
         p.halo.material.color.setHex(plot.pinata ? 0xff5fb0 : VARIETIES[plot.variety].glow);
@@ -853,6 +848,7 @@ export function createScene(canvas, state, hooks) {
       }
     });
 
+    fountainBursts.tick(state.paused?0:dt);
     // Big pumpkin: breathing glow, squash on tap.
     tapPulse = Math.max(0, tapPulse - dt * 4);
     big.scale.set(1 + tapPulse * 0.08, 1 - tapPulse * 0.1, 1 + tapPulse * 0.08);
@@ -900,12 +896,12 @@ export function createScene(canvas, state, hooks) {
       if (!entry.m.visible) continue;
       const leaving = !chat && v.leaveAt !== null && v.age >= v.leaveAt;
       const t = leaving ? (v.age - v.leaveAt) / visitorLeaveSeconds(state) : Math.min(1, v.age / VISIT.arrive);
-      const excursion = chat || hayrideJourney || hollowJourney || v.festival && !v.festival.done;
-      const journey = chat ?? (hayrideJourney ? hayridePose : hollowJourney ? v.hollow : v.festival);
-      const exitLen = state.festival.meadow ? meadowOutLen : outLen, truckGuest = leaving && v.food?.status === "paid" && typeof v.foodOwner === "string";
-      const hatch = truckGuest ? hatchWalk(t, exitLen) : null;
-      const p = excursion ? journey : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, (hatch ? hatch.u : t) * exitLen) : along(routeIn, t * inLen);
-      if (hatch?.waiting) { p.dx = 0; p.dz = -1; }
+      const truckJourney=truckGuestPose(v);
+      const excursion = truckJourney || chat || hayrideJourney || hollowJourney || v.festival && !v.festival.done;
+      const journey = truckJourney ?? chat ?? (hayrideJourney ? hayridePose : hollowJourney ? v.hollow : v.festival);
+      const exitLen = state.festival.meadow ? meadowOutLen : outLen;
+      const hatch = truckJourney;
+      const p = excursion ? journey : leaving ? along(state.festival.meadow ? MEADOW_EXIT : ROUTE_OUT, t * exitLen) : along(routeIn, t * inLen);
       // Parties stand side by side along the counter: each fans out to its own
       // place over the last stretch of the path, and back in as it sets off home.
       const fan = excursion ? 0 : leaving ? Math.max(0, 1 - t * 4) : Math.max(0, (t - 0.8) / 0.2);
@@ -1021,6 +1017,7 @@ export function createScene(canvas, state, hooks) {
       const word = { water: "+12%", clean: "Tidy" }[kind];
       if (word) floatText(word, x, 1.25, z, kind === "water" ? "water" : "crop");
     },
+    fountainBurst(i,variety){const p=PLOTS[i];if(!p)return;fountainBursts.burst(p.x,p.z,variety);if(!view.place){actionFx.burst('harvest',p.x,p.z);floatText('10 pumpkins · +£100',p.x,2.1,p.z,'coin');}},
     harvested(i, n = 1) { if (!view.place) { const p = PLOTS[i]; floatText("+" + n, p.x, 1.4, p.z, "crop"); } },
     // A visitor's remark at the stall, and other words floating up from the farm.
     say(text) { if (!view.place && time >= nextSpeechAt && !document.body.classList.contains("menu-open") && !fx.some(f => f.el.classList.contains("speech"))) { nextSpeechAt = time + 9; floatText(text, SHOP.x - 2.4, 3.6, SHOP.counterZ + 1.8, "speech"); } },

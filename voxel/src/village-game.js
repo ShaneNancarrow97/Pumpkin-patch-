@@ -1,3 +1,4 @@
+import { installFurnitureSetArt } from './ui/furniture-set-icons.js';
 // Mothlight's first saved visit. The scene owns the picture; this controller
 // owns input and calls the village's existing rules for every transaction.
 import * as THREE from "three";
@@ -25,9 +26,9 @@ import { decorIcon } from "./ui/kit.js";
 
 const escape = value => String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=n=>"£"+Math.round(n).toLocaleString("en-GB");
-const GATHER_REACH=2.1;
+const GATHER_REACH=2.1, TALK_REACH=3, HALL_TALK_REACH=3.3;
 export function createVillageGame({ state, scene, save, notice, closeMenus = () => {}, onLeave = () => {}, onRender = () => {}, conversationView = createVillageConversation, portrait = villageSpritePortrait, narration, savePrefs = () => {}, prefs = {}, onFullscreen = () => {}, controlsView = createVillageControls, decorateView = createVillageDecorate, itemArt = item => item.kind === "home" ? decorIcon(item.id, 56) : gardenSpriteIcon(item.id) || villageItemIcon(item.id) }) {
-  installVillageItemArt();
+  installVillageItemArt(); installFurnitureSetArt();
   const root=document.createElement("section");root.id="village-game";root.hidden=true;root.setAttribute("aria-label","Mothlight Village");
   root.innerHTML=`<header class="vg-heading"><button id="vg-home" aria-label="Return to the farm">‹ <span>Farm</span></button><div><small>Mothlight Village</small><b id="vg-place">Hollow Green</b></div><span id="vg-coins" aria-label="Coins"></span><button id="vg-person" aria-label="Switch playable character">Shane</button><button id="vg-fullscreen" aria-label="Toggle fullscreen" title="Fullscreen">⛶</button></header><section id="vg-objective" class="vg-objective" aria-label="Followed quest" hidden><button id="vg-quest-toggle" class="vg-quest-toggle" aria-expanded="false" aria-controls="vg-quest-details" aria-keyshortcuts="T" title="Expand quest details · D-pad Up / T"><span class="vg-quest-copy"><span class="vg-quest-heading"><strong id="vg-quest-title"></strong><small id="vg-quest-counts"></small></span><span id="vg-task"></span></span><span class="vg-quest-toggle-mark" aria-hidden="true"><span>⌄</span><small>D-pad ↑</small></span></button><div id="vg-quest-details" class="vg-quest-details" hidden></div><small id="vg-wayfinding" hidden></small></section><button id="vg-farm-rate" class="vg-farm-rate" aria-label="Farm production while exploring · open workshop"><span>Farm at work</span><b id="vg-rate">2.5%</b></button><div id="vg-gather" class="vg-gather" role="status" aria-live="polite" hidden><span id="vg-gather-art" aria-hidden="true"></span><div><b id="vg-gather-label"></b><span class="vg-gather-track"><i id="vg-gather-fill"></i></span></div></div><div id="vg-tour" class="vg-tour" hidden><b></b><span></span><button id="vg-tour-skip">Skip tour</button></div><nav class="vg-dock" aria-label="Village actions"><button data-vg-page="map">Map</button><button data-vg-page="people" aria-label="Neighbours">People</button><button data-vg-page="journal">Quests</button><button data-vg-page="materials">Satchel</button><button data-vg-page="upgrades">Workshop</button><button id="vg-decorate">Build</button></nav><aside id="vg-panel" hidden role="dialog" aria-modal="false" aria-labelledby="vg-panel-title"><header><div><small id="vg-panel-tag"></small><h2 id="vg-panel-title"></h2></div><button id="vg-panel-close" aria-label="Close village panel">×</button></header><div id="vg-panel-body"></div></aside><div id="vg-stick-zone" aria-label="Movement thumbstick"><div id="vg-stick" hidden><i></i></div></div><button id="vg-interact" class="vg-interact" hidden>Talk</button><button id="vg-look" class="vg-look" aria-label="Centre the camera">◎</button>`;
   document.body.append(root);
@@ -66,15 +67,36 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     cancelGather();releaseInput();closePanel();const f=FOLK_BY_ID[id]??HOST_BY_ID[id];dialogueDone=done;chat=null;view.folk.mood(id,"talk");
     dialogue.open({id,name:f?.name??id,role:f?.role??"",lines,friendship:M.friendshipWith(state(),id),heading:headingText});
   }
+  // Selection names a destination; only standing beside a neighbour starts a
+  // conversation or spends quest items. Roaming residents use their live post.
+  function neighbourPoint(id){
+    const hall=INSIDES[view.inside];
+    if(hall?.host===id){const p=view.hallPoint(...hall.hall.host);return{x:p.x,z:-p.z,inside:view.inside};}
+    if(!view.inside&&["elowen","rowan"].includes(id))return{...view.folk.talkSpot(id),folkId:id};
+    const entry=Object.entries(INSIDES).find(([,plan])=>plan.host===id);
+    if(!entry)return null;const[hallId,plan]=entry,[nx,nz]=DOOR_NORMAL[plan.door.facing];
+    return{x:(plan.door.x+nx*3.2)*K,z:(plan.door.z+nz*3.2)*K,hallId};
+  }
+  function besideNeighbour(id){
+    if(!active||view.director.active||state().paused||decorate.active)return false;
+    const point=neighbourPoint(id),name=(FOLK_BY_ID[id]??HOST_BY_ID[id])?.short??id;
+    const samePlace=point&&(view.inside?point.inside===view.inside:!point.hallId);
+    if(samePlace&&Math.hypot(point.x-pos.x,point.z-pos.z)<(view.inside?HALL_TALK_REACH:TALK_REACH))return true;
+    closePanel();releaseInput();offered=null;
+    if(!point){notice("This neighbour's story opens with a later district.");return false;}
+    guide(point,point.hallId?`${name} · ${INSIDES[point.hallId].name}`:name);centre();
+    notice(view.inside?`Walk over to ${name}, or return to Hollow Green to find them.`:point.hallId?`Find ${name} inside ${INSIDES[point.hallId].name}.`:`Walk to ${name}, then choose Talk beside them.`);
+    return false;
+  }
   function meet(id){
-    if(!active||dialogue.active||view.director.active||state().paused)return;const s=state(),host=HOST_BY_ID[id];
+    if(!active||dialogue.active||view.director.active||state().paused||!besideNeighbour(id))return;const s=state(),host=HOST_BY_ID[id];
     if(host){conversation(id,[host.greet[s.village.visits%host.greet.length]],null);return;}
     if(!s.village.friends[id]){notice("This neighbour's story opens with a later district.");return;}
     const talk=M.talkStep(s,id);if(talk){conversation(id,talk.lines,()=>changed(M.finishTalk(s,talk.quest,id)),QUEST_BY_ID[talk.quest].title);return;}
     showPanel("resident",id);
   }
   function startTalk(id){
-    const s=state(),c=M.nextChat(s,id);if(!M.canChat(s,id)||!c){conversation(id,FOLK_BY_ID[id].greet,null);return;}
+    if(!besideNeighbour(id))return;const s=state(),c=M.nextChat(s,id);if(!M.canChat(s,id)||!c){conversation(id,FOLK_BY_ID[id].greet,null);return;}
     conversation(id,[...c.lines,{choices:c.choices}],null);chat={who:id,id:c.id};
   }
   function closePanel(){if(page)releaseInput();page=null;panelSignature="";$("vg-panel").hidden=true;root.classList.remove("has-panel");}
@@ -101,10 +123,10 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     $("vg-panel-title").textContent=title;$("vg-panel-tag").textContent=tag;$("vg-panel-body").innerHTML=html;
     const on=(sel,fn)=>$("vg-panel-body").querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(b));
     on('[data-vg-meet]',b=>meet(b.dataset.vgMeet));on('[data-vg-chat]',b=>startTalk(b.dataset.vgChat));
-    on('[data-vg-start]',b=>{const q=QUEST_BY_ID[b.dataset.vgStart];changed(M.startQuest(s,q.id));conversation(q.giver,q.intro??[q.blurb],()=>showPanel("journal"),q.title);});
-    on('[data-vg-handover]',b=>{const result=M.doHandOver(s,b.dataset.vgHandover,b.dataset.quest);if(result){changed(result);if(kind==="journal")drawPanel();else meet(b.dataset.vgHandover);}});
-    on('[data-vg-favour]',b=>{const r=M.doFavour(s,b.dataset.vgFavour);if(r){changed(r.events);notice(`Thank you · ${money(r.pay)}`);drawPanel();}});
-    on('[data-vg-gift]',b=>{const r=M.giveGift(s,b.dataset.who,b.dataset.vgGift);if(r){changed(r.events);conversation(b.dataset.who,[r.line],null);}});
+    on('[data-vg-start]',b=>{const q=QUEST_BY_ID[b.dataset.vgStart];if(!q||!besideNeighbour(q.giver))return;changed(M.startQuest(s,q.id));conversation(q.giver,q.intro??[q.blurb],()=>showPanel("journal"),q.title);});
+    on('[data-vg-handover]',b=>{if(!besideNeighbour(b.dataset.vgHandover))return;const result=M.doHandOver(s,b.dataset.vgHandover,b.dataset.quest);if(result){changed(result);if(kind==="journal")drawPanel();else meet(b.dataset.vgHandover);}});
+    on('[data-vg-favour]',b=>{if(!besideNeighbour(b.dataset.vgFavour))return;const r=M.doFavour(s,b.dataset.vgFavour);if(r){changed(r.events);notice(`Thank you · ${money(r.pay)}`);drawPanel();}});
+    on('[data-vg-gift]',b=>{if(!besideNeighbour(b.dataset.who))return;const r=M.giveGift(s,b.dataset.who,b.dataset.vgGift);if(r){changed(r.events);conversation(b.dataset.who,[r.line],null);}});
     on('[data-vg-tour]',()=>tour());on('[data-vg-buy]',b=>{if(M.buyFromStall(s,b.dataset.vgBuy)){changed();drawPanel();}});on('[data-vg-focus]',b=>focus(b.dataset.vgFocus));
     on('[data-vg-page]',b=>showPanel(b.dataset.vgPage));
     on('[data-vg-track]',b=>{prefs.villageTrackedQuest=b.dataset.vgTrack;savePrefs();render();drawPanel();});
@@ -131,7 +153,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
   }
   function pick(hit){if(!active)return;if(decorate.active){decorate.pick(hit);return;}if(busy())return;if(hit.type==="village-folk")meet(hit.id);else if(hit.type==="village-door")enterHall(hit.id);else if(hit.type==="village-carriage")close();else if(hit.type==="village-noticeboard")showPanel("journal");else if(hit.type==="village-stall")showPanel("stall");else if(hit.type==="village-node"){beginGather(hit.id);}else if(hit.type==="village-page"){const e=M.findObject(state(),hit.id);if(e){changed(e);notice("A page of Elowen's letter");}}}
   // A chosen destination stays relative to the walking camera, rather than taking it away.
-  function guide(point,label){waypoint={x:point.x,z:point.z,label,...(point.material&&point.id?{nodeId:point.id}:{})};render();}
+  function guide(point,label){waypoint={x:point.x,z:point.z,label,...(point.material&&point.id?{nodeId:point.id}:{}),...(point.folkId?{folkId:point.folkId}:{})};render();}
   function guideResource(node){const area=FORAGE_AREAS.find(a=>node.x>=a.x0&&node.x<=a.x1&&node.z>=a.z0&&node.z<=a.z1);guide(node,`${MATERIALS.find(m=>m.id===node.material)?.name??node.material} · ${area?.name??"Hollow Green"}`);}
   function gatherTool(material){return ["logs","hardwood"].includes(material)?"axe":["stone","iron","moonstone","clay"].includes(material)?"pickaxe":"hands";}
   function cancelGather(){if(!gather)return;gather=null;view.gatherTool?.({active:false});root.classList.remove("is-gathering");$("vg-gather").hidden=true;placeActor();}
@@ -173,6 +195,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     const toggle=$("vg-quest-toggle");toggle.setAttribute("aria-expanded",String(questExpanded));toggle.setAttribute("aria-label",`${questExpanded?"Collapse":"Expand"} followed quest details`);root.classList.toggle("quest-expanded",questExpanded);$("vg-quest-details").hidden=!questExpanded;
     const hint=q?M.questStepHint(state(),q.id):"Meet Elowen and Rowan to discover the village’s stories.",signature=JSON.stringify([q?.id,rows,hint]);
     if(signature!==questHudSignature){questHudSignature=signature;$("vg-quest-details").innerHTML=`${rows.length?`<ul class="vg-quest-requirements">${rows.map(r=>`<li class="${r.complete?"is-ready":""}"><span>${escape(r.label)}</span><b>${r.key==="coins"?money(r.have)+" / "+money(r.need):`${r.have} / ${r.need}`}</b></li>`).join("")}</ul>`:""}${hint?`<p>${escape(hint)}</p>`:""}<button id="vg-quest-journal">Open quests</button>`;$("vg-quest-journal").onclick=()=>showPanel("journal");}
+    if(waypoint?.folkId&&!view.inside)Object.assign(waypoint,view.folk.talkSpot(waypoint.folkId));
     if(waypoint?.nodeId){if(!M.nodeReady(state(),waypoint.nodeId))waypoint=null;else Object.assign(waypoint,villageNodePosition(state(),waypoint.nodeId));}
     const finder=$("vg-wayfinding");finder.hidden=!waypoint||!!view.inside;
     if(waypoint&&!view.inside){const dx=waypoint.x-pos.x,dz=-(waypoint.z-pos.z),right=new THREE.Vector3(1,0,0).applyQuaternion(view.camera.quaternion),forward=view.camera.getWorldDirection(new THREE.Vector3());right.y=forward.y=0;right.normalize();forward.normalize();const a=Math.atan2(dx*right.x+dz*right.z,dx*forward.x+dz*forward.z),arrows=["↑","↗","→","↘","↓","↙","←","↖"],arrow=arrows[(Math.round(a/(Math.PI/4))+8)%8],distance=Math.hypot(dx,dz);setText("vg-wayfinding",`${distance<(waypoint.nodeId?GATHER_REACH:3)?"●":arrow} ${waypoint.label} · ${Math.round(distance)} m`);}
@@ -203,7 +226,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     const across=heading.x*right.x+heading.z*right.z,away=heading.x*forward.x+heading.z*forward.z,facing=idle>1.2?"front":Math.abs(across)>Math.abs(away)*.75?"side":away>0?"back":"front";
     animateSprite(actor,moving?walkingAge:clock,moving,moving?across:0,who==="shane"?1.7:0);actor.userData.playerAnimate?.({who,outfit:state().wardrobe.equipped[who],facing,angle:Math.atan2(across,-away),phase:gaitPhase(walkingAge*2.3,BASE_OWNER_STRIDE),walking:moving,time:clock,age:moving?walkingAge:clock,dx:moving?across:0,controlled:true});
     const targets=view.inside?[{type:"village-folk",id:INSIDES[view.inside].host,x:view.hallPoint(...INSIDES[view.inside].hall.host).x,z:-view.hallPoint(...INSIDES[view.inside].hall.host).z}]:[...["elowen","rowan"].map(id=>({type:"village-folk",id,...view.folk.talkSpot(id)})),...NODES.filter(n=>n.district==="green"&&M.nodeReady(state(),n.id)).map(n=>({type:"village-node",id:n.id,...villageNodePosition(state(),n)})),...M.storyObjectsHere(state(),"village").map(o=>({type:"village-page",...o})),{type:"village-noticeboard",x:FIXTURES.noticeboard.x,z:FIXTURES.noticeboard.z},{type:"village-stall",x:FIXTURES.stall.x,z:FIXTURES.stall.z},{type:"village-carriage",x:ARRIVAL.back[0],z:ARRIVAL.back[1]},...Object.entries(INSIDES).map(([id,p])=>{const [nx,nz]=DOOR_NORMAL[p.door.facing];return{type:"village-door",id,x:(p.door.x+nx*1.4)*K,z:(p.door.z+nz*1.4)*K};})];
-    const near=targets.map(t=>({...t,d:Math.hypot(t.x-pos.x,t.z-pos.z)})).filter(t=>t.d<(view.inside?3.3:t.type==="village-node"?GATHER_REACH:3)).sort((a,b)=>a.d-b.d)[0];offered=near??null;$("vg-interact").hidden=!near;$("vg-interact").textContent=near?.type==="village-door"?"Enter":near?.type==="village-folk"?"Talk":near?.type==="village-stall"?"Shop":near?.type==="village-noticeboard"?"Journal":near?.type==="village-carriage"?"Farm":near?.type==="village-page"?"Collect":"Gather";
+    const near=targets.map(t=>({...t,d:Math.hypot(t.x-pos.x,t.z-pos.z)})).filter(t=>t.d<(view.inside?HALL_TALK_REACH:t.type==="village-node"?GATHER_REACH:TALK_REACH)).sort((a,b)=>a.d-b.d)[0];offered=near??null;$("vg-interact").hidden=!near;$("vg-interact").textContent=near?.type==="village-door"?"Enter":near?.type==="village-folk"?"Talk":near?.type==="village-stall"?"Shop":near?.type==="village-noticeboard"?"Journal":near?.type==="village-carriage"?"Farm":near?.type==="village-page"?"Collect":"Gather";
   }
   function toggleQuest(){if(!active||dialogue.active||view.director.active||state().paused||gather)return false;questExpanded=!questExpanded;render();return true;}
   function interact(){if(offered)pick(offered);}

@@ -1,3 +1,5 @@
+import grassTileURL from '../assets/terrain/grass-tile.webp';
+import { installGrassDetailTexture } from './grass-detail.js';
 import { atVillageGateway, VILLAGE_GATEWAY } from './content/village-gateway.js';
 import { createLifeActivity } from './life-activity.js';
 import { mountBoostDial, renderBoostDial } from './ui/farm-work-ui.js';
@@ -123,6 +125,7 @@ for (const type of ["pointerdown", "keydown", "wheel"]) addEventListener(type, s
 // Only a standard pad's axes are its sticks; other mappings can rest triggers at -1.
 const padInUse = () => { for (const g of navigator.getGamepads?.() ?? []) if (g?.connected && (g.buttons.some((b) => b.pressed) || (g.mapping === "standard" && g.axes.some((a) => Math.abs(a) > .35)))) return true; return false; };
 
+installGrassDetailTexture(grassTileURL);
 const scene = createScene($("world"), state, {
   onTick(dt) {
     idle += dt;
@@ -257,6 +260,7 @@ const scene = createScene($("world"), state, {
 
 // What the rules report, turned into sights and sounds.
 function handle(e) {
+  if(e.type==='fountain-burst'){scene.fountainBurst(e.index,e.variety);audio.tone(1047);save();return;}
   if (villageGame?.onEvent(e)) { save(); if (villageGame.active) scene.villageView.sync(); }
   if (e.type === "stock-discarded" && state.time - spoilageNoticeAt >= 60) {
     spoilageNoticeAt = state.time;
@@ -304,11 +308,12 @@ function handle(e) {
 
 function pickPlot(i) {
   const n = M.harvest(state, i);
-  if (!n) { if (state.plots[i]?.phase === "ready" && M.barnBlocked(state)) notice(state.upgrades.cart ? "Barn full and the market cart is loaded. It sets off again within the minute." : "Barn full. Ripe pumpkins are safe—sell stock, add storage or buy a market cart in Build."); return 0; }
+  if (!n) { if(state.plots[i]?.fountain && state.plots[i]?.phase==='ready'){notice('A fountain pumpkin needs 10 free barn spaces for its burst.');return 0;} if (state.plots[i]?.phase === "ready" && M.barnBlocked(state)) notice(state.upgrades.cart ? "Barn full and the market cart is loaded. It sets off again within the minute." : "Barn full. Ripe pumpkins are safe—sell stock, add storage or buy a market cart in Build."); return 0; }
   showManualPick(i, n);
   return n;
 }
 function showManualPick(i, n) {
+  for(const e of M.drainFountainBursts(state))handle(e);
   if (!state.handsOn) scene.sendTo(i, farmOwner());
   scene.harvested(i, n);
   audio.tone(650);
@@ -359,6 +364,7 @@ function plantOne() {
 function pickSome(candidates = null) {
   const picked = M.pickBatch(state, farmOwner(), candidates);
   for (const p of picked) showManualPick(p.plot, p.count);
+  if (!picked.length && !state.paused && (candidates ?? state.plots.map((_, i) => i)).some(i => i < M.openPlots(state) && state.plots[i]?.phase === "ready" && state.plots[i].fountain && !M.fountainHarvestRoom(state, i))) notice("A fountain pumpkin needs 10 free barn spaces for its burst.");
   return picked.length;
 }
 
@@ -649,9 +655,11 @@ function render() {
   renderBoostDial($("boost"), M.boostStatus(state));
   $("boost").disabled = state.paused || M.boostStatus(state).overheated; $("boost").classList.toggle("idle", $("boost").disabled);
   // A full barn stacks its note under the label (style.css), so Harvest still fits beside Boost on a phone.
-  const batch = Math.min(ripe, M.helperStatus(state, farmOwner()).capacity);
-  $("harvest-all").classList.toggle("idle", !ripe); $("harvest-all").disabled = !ripe || state.paused; text("harvest-count", full ? "Barn full" : ripe ? batch : 0); $("harvest-all").classList.toggle("barn-full", full);
-  $("harvest-all").setAttribute("aria-label", full ? "Barn full: sell pumpkins, add storage or buy a market cart" : `${farmOwner() === "shane" ? "Shane" : "Natalie"}: pick ${batch} ready ${batch === 1 ? "plot" : "plots"}`);
+  const harvestable = open.filter((_, i) => M.canHarvestPlot(state, i)).length;
+  const starBlocked = ripe > 0 && !harvestable && open.some((p, i) => p.phase === "ready" && p.fountain && !M.fountainHarvestRoom(state, i));
+  const batch = Math.min(harvestable, M.helperStatus(state, farmOwner()).capacity);
+  $("harvest-all").classList.toggle("idle", !harvestable); $("harvest-all").disabled = !harvestable || state.paused; text("harvest-count", starBlocked ? "Need 10 spaces" : full ? "Barn full" : batch); $("harvest-all").classList.toggle("barn-full", full || starBlocked);
+  $("harvest-all").setAttribute("aria-label", starBlocked ? "A fountain pumpkin needs 10 free barn spaces" : full ? "Barn full: sell pumpkins, add storage or buy a market cart" : `${farmOwner() === "shane" ? "Shane" : "Natalie"}: pick ${batch} ready ${batch === 1 ? "plot" : "plots"}`);
   const ready = M.claimable(state), next = M.FAVOURS.find((f) => !state.claimed.includes(f.id));
   $("goal").classList.toggle("ready", ready.length > 0);
   text("goal-text", ready.length ? (ready.length > 1 ? `${ready.length} favours are ready to claim` : ready[0].guest + " has a reward for you") : next ? `${next.title} · ${M.favourProgress(state, next)}/${next.target}` : "Every favour done. The neighbours adore you.");
@@ -912,6 +920,7 @@ function interactAsPlayer(tool='hand',options={}) {
   if(['plot','litter'].includes(t.type)){
     const ok=lifeActivity.handle(tool,options);
     if(!ok&&t.type==='plot'&&['hand','water'].includes(tool)&&wateringStatus(state,t.index).seconds)notice('This crop has had a drink. Try the next one.');
+    else if(!ok&&t.type==='plot'&&state.plots[t.index].phase==='ready'&&state.plots[t.index].fountain&&!M.fountainHarvestRoom(state,t.index))notice('A fountain pumpkin needs 10 free barn spaces for its burst.');
     else if(!ok&&t.type==='plot'&&state.plots[t.index].phase==='ready'&&M.barnBlocked(state))notice('Barn full. Sell stock or expand storage.');
     return ok;
   }

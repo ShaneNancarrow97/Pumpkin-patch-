@@ -84,3 +84,22 @@ test('pause stops direct shop ticks, quotes and payments without releasing paid-
   assert.equal(commitFoodForCustomer(s, a), null); assert.equal(s.kitchen.foodHolds.length, 1); assert.equal(quoteFoodForCustomer(s, guest(1)), null);
   s.paused = false; assert.ok(commitFoodForCustomer(s, a));
 });
+
+test('truck quotes use actual remaining change without deducting an already paid pumpkin twice', () => {
+  const s = setup(), a = guest(7, 11); a.foodOwner = 'visitor-7';
+  a.basket = [{ variety: 0, quantity: 1, price: 12 }]; a.wish = { variety: 0, purse: 12 };
+  assert.equal(quoteFoodForCustomer(s, a), null, 'indoor checkout still reserves unpaid pumpkins');
+  const hold = quoteFoodForCustomer(s, a, a.basket, { pumpkinsPaid: true });
+  assert.ok(hold); assert.equal(hold.quantity, 1); assert.equal(protectedFoodPurse(s, a), 0);
+  assert.ok(commitFoodForCustomer(s, a, { protectedPurse: protectedFoodPurse(s, a) })); assert.equal(a.budget, 0);
+  const b = guest(8, 22); b.foodOwner = 'visitor-8'; b.basket = a.basket; b.wish = { variety: 3, purse: 12 };
+  assert.equal(quoteFoodForCustomer(s, b, b.basket, { pumpkinsPaid: true }), null, 'an unfulfilled wanted purse stays protected');
+});
+
+test('closing the indoor shop before food checkout releases the unpaid meal without income', () => {
+  const s = setup(), a = guest(); quoteFoodForCustomer(s, a); const before = s.coins;
+  s.shop.unlocked = false;
+  assert.equal(commitFoodForCustomer(s, a), null); assert.equal(s.coins, before);
+  assert.equal(s.kitchen.food.wedges, 20); assert.equal(s.kitchen.foodHolds.length, 0);
+  assert.equal(a.budget, 100); assert.equal(s.kitchen.ledger.foodIncome, 0);
+});

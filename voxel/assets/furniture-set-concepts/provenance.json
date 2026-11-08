@@ -1,0 +1,12 @@
+{
+  "purpose": "Premium menu art for the two village-to-farm furniture bundles and their six real pieces",
+  "created": "2026-11-08",
+  "method": "image_gen image generation with viewed local style and actual-model references",
+  "sourceImage": "source.png",
+  "originalGeneratedPath": "/workspace/generated_images/exec-72c35ebf-8a86-41ad-a616-bb65adbad748.png",
+  "prompt": "prompt.txt",
+  "references": ["../home/garden-icons.webp", "../home-furnishings/furnishings.webp"],
+  "actualModelSources": ["../../src/home-furnishings.js", "../../src/household-props.js", "../../src/decor-models/shelving.js"],
+  "technicalProcessing": "Pillow only: equal-grid crop, low-alpha noise cleanup, aspect-preserving normalisation, atlas packing and review contact sheet",
+  "integrationPolicy": "Bundle illustration and contents previews. Existing accurate 3D catalogue thumbnails, selected finishes, item IDs, costs and mechanics remain unchanged."
+}

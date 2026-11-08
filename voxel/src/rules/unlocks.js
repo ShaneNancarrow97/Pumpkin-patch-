@@ -8,7 +8,7 @@ import { patchLevel } from "./levels.js";
 export const UNLOCKS = Object.freeze({
   farm: { tools: [1, 1, 1, 1, 1, 1, 12, 15, 18], yield: [1, 1, 1, 1, 1, 13, 17], plots: [1, 1, 9, 13], storage: [1, 1, 1, 3, 12, 15], cart: [1, 6, 14], sign: [1, 1, 1, 5, 10] },
   visitor: { appetite: [1, 4, 7, 11, 14, 18], crowd: [1, 5, 8, 12, 15, 17, 19, 19, 20], party: [1, 5, 11, 14, 17, 18, 20], lights: [1, 3, 7, 13, 16, 19], loyalty: [1, 15] },
-  shop: { capacity: [1, 6, 13, 14, 16, 19], checkout: [1, 12, 13, 14, 16, 18, 20], browse: [8, 12, 15], wrap: [10, 13, 17] },
+  shop: { capacity: [1, 6, 13, 14, 16, 19], checkout: [1, 12, 13, 14, 16, 18, 20, 20, 20, 20], browse: [8, 12, 15], wrap: [10, 13, 17] },
   // To move on from each house level: to the crooked cottage, the manor, the haven.
   house: [3, 8, 14],
 });

@@ -5,6 +5,7 @@ import { updateDining } from "./rules/cooking-dining.js";
 import { UPGRADES, VARIETIES, MAX_VARIETY_INDEX, VARIETY_COUNT, STREAK, freshPlots, freshStreak, freshUpgrades, updateFarm } from "./rules/farm.js";
 import { MAX_PLOTS } from "./content/farm-layout.js";
 import { freshPinata, restorePinata } from "./rules/pinata.js";
+import { freshFountain, restoreFountain, drainFountainBursts } from "./rules/fountain.js";
 import { freshCarvingStand, restoreCarvingStand, updateCarvingStand } from "./rules/carving-stand.js";
 import { visitorsPerMinute as standFootfall } from "./rules/selling.js";
 import { freshStock, freshBatches, restoreFresh, settleFresh, freshPumpkinAges, freshStockWaste, restorePumpkinAges, restoreStockWaste, settlePumpkinStock } from "./rules/stock.js";
@@ -37,6 +38,7 @@ export * from "./rules/stock.js";
 export * from "./rules/market.js";
 export * from "./rules/orders.js";
 export * from "./rules/pinata.js";
+export * from "./rules/fountain.js";
 export * from "./rules/carving-stand.js";
 export * from "./rules/selling.js";
 export * from "./rules/house.js";
@@ -44,7 +46,7 @@ export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 export * from "./rules/unlocks.js";
 
-export const STATE_VERSION = 17;
+export const STATE_VERSION = 18;
 export * from "./rules/room-extensions.js";
 export * from "./rules/home-media.js";
 export * from "./rules/farm-work.js";
@@ -81,7 +83,7 @@ export function freshState() {
   return {
     version: STATE_VERSION,
     coins: 40, earned: 0, sold: 0, harvested: 0, taps: 0, time: 0, wholesale: 0,
-    plots: freshPlots(), plotLevels: Array(MAX_PLOTS).fill(0), plotCrops: Array(MAX_PLOTS).fill(0), pinata: freshPinata(), carvingStand: freshCarvingStand(),
+    plots: freshPlots(), plotLevels: Array(MAX_PLOTS).fill(0), plotCrops: Array(MAX_PLOTS).fill(0), pinata: freshPinata(), fountain: freshFountain(), carvingStand: freshCarvingStand(),
     upgrades: freshUpgrades(), visitorUpgrades: freshVisitorUpgrades(), helperTimer: 0, streak: freshStreak(), farmWork: freshFarmWork(),
     stock: freshStock(), fresh: freshBatches(), pumpkinAges: freshPumpkinAges(), stockWaste: freshStockWaste(), wanted: freshWanted(), orders: freshOrders(), holds: [],
     visitorEvents: freshVisitorEvents(), stall: freshStall(), visitors: [], arriving: [], nextVisitor: 0, nextParty: 0, visitorTimer: 3,
@@ -118,7 +120,8 @@ export function restoreState(raw) {
     const variety = Math.min(MAX_VARIETY_INDEX, count(p?.variety));
     if (!["growing", "ready"].includes(p?.phase)) return { phase: "empty", progress: 0, variety: s.plotCrops[i] };
     const crop = { phase: p.phase, progress: Math.max(0, Math.min(1, Number(p.progress) || 0)), variety };
-    if (p.pinata === true) crop.pinata = true;
+    if (p.fountain === true) crop.fountain = true;
+    else if (p.pinata === true) crop.pinata = true;
     // Preserve grace and watering through a reload, without accepting future timers.
     if (p.phase === "ready") crop.ripe = Number.isFinite(p.ripe) ? Math.max(0, Math.min(s.time, p.ripe)) : s.time;
     if (p.phase === "growing" && Number.isFinite(p.wateredAt)) crop.wateredAt = Math.max(0, Math.min(s.time, p.wateredAt));
@@ -138,6 +141,7 @@ export function restoreState(raw) {
   s.pumpkinAges = restorePumpkinAges(raw.pumpkinAges, s);
   s.stockWaste = restoreStockWaste(raw.stockWaste, s);
   s.pinata = restorePinata(raw.pinata);
+  s.fountain = restoreFountain(raw.fountain);
   s.carvingStand = restoreCarvingStand(raw.carvingStand);
   settlePumpkinStock(s);
   s.wanted = restoreWanted(raw.wanted, s);
@@ -198,6 +202,7 @@ export function update(s, dt, options = {}) {
   // The streak's boost is read from the clock, so the arrival timers just count down faster while it lasts.
   s.time += dt;
   updateFarm(s, dt, events);
+  drainFountainBursts(s, events);
   settlePumpkinStock(s, events); settleFresh(s); updateWanted(s, events); updateOrders(s, events); updateCarvingStand(s, dt, standFootfall(s), events);
   updateFestival(s);
   updateHollowHouse(s, dt, events);

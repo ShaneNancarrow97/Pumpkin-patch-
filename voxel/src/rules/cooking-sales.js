@@ -41,14 +41,14 @@ export const foodPaymentReserve = (s, customer) => {
 // Guests outdoors buy at Maisie's truck from the day it opens; shop customers
 // only when the player also sells food inside Skyla's shop (sellAt "shop").
 export const sellsInShop = s => !!s.shop?.unlocked && s.kitchen?.sellAt === 'shop';
-export function quoteFoodForCustomer(s, customer, pumpkinLines = customer.basket) {
+export function quoteFoodForCustomer(s, customer, pumpkinLines = customer.basket, { pumpkinsPaid = false } = {}) {
   const k = s.kitchen, outdoors = typeof customer.foodOwner === 'string' && customer.foodOwner.startsWith('visitor-');
   if (s.paused || !k?.purchased || (!outdoors && !sellsInShop(s)) || customer.food?.status === 'paid') return null;
   const existing = heldBy(s, customer);
   if (existing) return existing;
   const hunger = purse(customer.needs?.hunger), value = Math.max(.5, Math.min(1.5, customer.needs?.value ?? 1));
   if (hunger < 40) return null;
-  const change = purse(customer.budget) - amountOf(pumpkinLines) - protectedFoodPurse(s, customer, pumpkinLines);
+  const change = purse(customer.budget) - (pumpkinsPaid ? 0 : amountOf(pumpkinLines)) - protectedFoodPurse(s, customer, pumpkinLines);
   const options = [...new Set(k.displays)].map((id, index) => {
     const recipe = RECIPE_BY_ID[id], price = k.prices[id];
     if (!recipe || !k.recipes.includes(id) || !Number.isSafeInteger(price) || price < 1 || availableFood(s, id) < 1 || price > change) return null;
@@ -77,6 +77,8 @@ export function releaseFoodForCustomer(s, customer) {
 export function commitFoodForCustomer(s, customer, { reserved = 0, protectedPurse = 0 } = {}) {
   if (s.paused || !s.kitchen?.purchased || customer.food?.status === 'paid') return null;
   const k = s.kitchen, h = heldBy(s, customer);
+  const outdoors = typeof customer.foodOwner === 'string' && customer.foodOwner.startsWith('visitor-');
+  if (!outdoors && !sellsInShop(s)) { releaseFoodForCustomer(s, customer); return null; }
   if (!h) return null;
   const amount = h.quantity * h.price;
   if (!RECIPE_BY_ID[h.recipe] || !Number.isSafeInteger(h.quantity) || h.quantity < 1 || h.quantity > 8 || !Number.isSafeInteger(h.price) || h.price < 1 || k.food[h.recipe] < h.quantity || purse(customer.budget) - purse(reserved) - purse(protectedPurse) < amount) {

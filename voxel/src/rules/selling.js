@@ -13,14 +13,7 @@ import { freshGuestNeeds, tickGuestNeeds, enjoyPumpkin } from "./guest-needs.js"
 import { settleCustomerCare } from "./customer-care.js";
 import { quoteFoodForCustomer, commitFoodForCustomer, releaseFoodForCustomer, protectedFoodPurse } from "./cooking-sales.js";
 
-// Maisie's hatch: an outdoor guest who's peckish spends their meal money on a
-// takeaway as they leave the stall. Before, that money went home unspent.
-function buyTakeaway(s, v) {
-  if (!s.kitchen?.purchased || v.food?.status === "paid") return null;
-  v.foodOwner = "visitor-" + v.id;
-  if (!quoteFoodForCustomer(s, v, [])) return null;
-  return commitFoodForCustomer(s, v, { protectedPurse: protectedFoodPurse(s, v, v.basket) });
-}
+import { planTruckVisit, tickTruckVisit } from "./cooking-visits.js";
 import { cocoaAllowance, planFestivalVisit, tickFestivalVisit, meadowFootfallBonus } from "./festival-meadow.js";
 import { planHollowVisit, tickHollowVisit, mazeFootfallBonus } from "./hollow-house.js";
 import { planChat, tickChat, updateChats, chatting } from "./meadow-chat.js";
@@ -234,6 +227,7 @@ export function updateStall(s, dt, events) {
   }
   for (const v of s.visitors) {
     tickGuestNeeds(v, dt, v.festival?.phase === "queue" || v.age > VISIT.arrive + 4 && v.leaveAt === null);
+    if (tickTruckVisit(s, v, dt, events)) continue;
     if (v.social) { tickChat(s, v, dt, events); continue; }                      // chatting in the meadow, then home
     if (tickFestivalVisit(s, v, dt, events)) continue;
     if (v.festival?.justArrived) { v.age = VISIT.arrive; v.festival.justArrived = false; }
@@ -253,7 +247,7 @@ export function updateStall(s, dt, events) {
     if (tickHollowVisit(s, v, dt, events)) continue;
     // A frightened guest has already paid for their attraction visit and leaves
     // at its visible exit. They cannot teleport back to buy another pumpkin.
-    if (v.hollow?.fledHome) continue;
+    if (v.hollow?.fledHome || v.hollow?.wentHome) continue;
     if (v.hollow?.justArrived) { v.age = VISIT.arrive; v.hollow.justArrived = false; }
     v.age += dt;
     if (v.leaveAt !== null && v.age >= v.leaveAt && !v.hayride && !v.hayrideAfterConsidered && !v.hollow) {
@@ -266,6 +260,13 @@ export function updateStall(s, dt, events) {
     if (v.leaveAt !== null && v.age >= v.leaveAt && !v.hollow && !v.mazeAfterConsidered) {
       v.mazeAfterConsidered = true; v.hollow = planHollowVisit(s, v, "after");
       if (v.hollow) continue;
+    }
+    // The prepared meal waits at Maisie's truck, never at Skyla's till. Decide
+    // after attraction returns so this trip starts from the actual counter.
+    // Its own clock/route owns the guest until they leave at the east boundary.
+    if (v.leaveAt !== null && v.age >= v.leaveAt && !v.takeawayConsidered) {
+      v.takeawayConsidered = true;
+      if (planTruckVisit(s, v)) { v.socialConsidered = true; continue; }
     }
     // Then perhaps a chat in the meadow, once everything else is settled.
     if (v.leaveAt !== null && v.age >= v.leaveAt && !v.socialConsidered && (!v.hollow || v.hollow.done && !v.hollow.wentHome) && (!v.hayride || v.hayride.done && !v.hayride.wentHome)) {
@@ -284,20 +285,16 @@ export function updateStall(s, dt, events) {
       s.stall.receipts.unshift({ visitor: v.id, profile: v.profile, party: v.party, size: v.size, amount: receipt.amount, quantity: receipt.quantity, lines: receipt.lines, mug, tip: care.tip, quality: care.quality });
       s.stall.receipts.length = Math.min(20, s.stall.receipts.length);
       events.push({ type: "sale", route: "stall", amount: receipt.amount + mug + care.tip, tip: care.tip, quality: care.quality, quantity: receipt.quantity, mug, visitor: v.id });
-      const food = buyTakeaway(s, v);
-      if (food) events.push({ type: "sale", route: "takeaway", amount: food.amount, quantity: 0, recipe: food.recipe, visitor: v.id });
     } else if (v.age >= VISIT.arrive + stallPatience(s)) {
       v.outcome = available(s) > 0 ? "budget" : "soldout";
       s.stall[v.outcome === "budget" ? "missedBudget" : "missedStock"]++;
       v.leaveAt = v.age + VISIT.linger;
       events.push({ type: "missed", reason: v.outcome, visitor: v.id });
       if (buyMug(s, v, mealPurseReserve(s, v))) events.push({ type: "sale", route: "cocoa", amount: v.mug, quantity: 0, mug: v.mug, visitor: v.id });
-      const food = buyTakeaway(s, v);
-      if (food) events.push({ type: "sale", route: "takeaway", amount: food.amount, quantity: 0, recipe: food.recipe, visitor: v.id });
     }
   }
   updateChats(s, events);
-  s.visitors = s.visitors.filter((v) => v.social ? !v.social.gone : !v.hayride?.wentHome && !v.hollow?.fledHome && !v.hollow?.wentHome && (v.hayride && !v.hayride.done || v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s)));
+  s.visitors = s.visitors.filter((v) => v.takeaway ? !v.takeaway.gone : v.social ? !v.social.gone : !v.hayride?.wentHome && !v.hollow?.fledHome && !v.hollow?.wentHome && (v.hayride && !v.hayride.done || v.leaveAt === null || v.age < v.leaveAt + visitorLeaveSeconds(s)));
 }
 
 // The indoor shop: open it, then add room, display tables and a faster till,
@@ -313,10 +310,10 @@ export const SHOP_UPGRADES = [
   { id: "wrap", name: "Gift wrapping", text: "Ribbon and tissue: customers spend a little more." },
 ];
 export const SHOP_CAPACITY = [...shopCapacity, 8, 10, 12];
-export const CHECKOUT_SECONDS = [...checkoutSeconds, 6, 4.5, 3.2, 2.2, 1.4];
+export const CHECKOUT_SECONDS = [...checkoutSeconds, 6, 4.5, 3.2, 2.2, 1.4, 1.1, .85, .65];
 export const BROWSE_SECONDS = [4, 3, 2.2, 1.5];
 export const WRAP_SPEND = [0, .06, .12, .2];
-const SHOP_COSTS = { ...shopUpgradeCosts, capacity: [...shopUpgradeCosts.capacity, 18000, 34000, 60000], checkout: [...shopUpgradeCosts.checkout, 11000, 21000, 38000, 62000, 98000], browse: [3500, 12000, 30000], wrap: [6000, 20000, 48000] };
+const SHOP_COSTS = { ...shopUpgradeCosts, capacity: [...shopUpgradeCosts.capacity, 18000, 34000, 60000], checkout: [...shopUpgradeCosts.checkout, 11000, 21000, 38000, 62000, 98000, 145000, 215000, 315000], browse: [3500, 12000, 30000], wrap: [6000, 20000, 48000] };
 export const SHOP_LEVEL_KEYS = { capacity: "capacityLevel", displays: "displayLevel", checkout: "checkoutLevel", browse: "browseLevel", wrap: "wrapLevel" };
 export const SHOP_MAX_LEVELS = { capacity: SHOP_CAPACITY.length - 1, displays: 1, checkout: CHECKOUT_SECONDS.length - 1, browse: BROWSE_SECONDS.length - 1, wrap: WRAP_SPEND.length - 1 };
 export const freshShop = () => ({ unlocked: false, capacityLevel: 0, displayLevel: 0, checkoutLevel: 0, browseLevel: 0, wrapLevel: 0, displays: [0, 1, null, null], customers: [], nextCustomer: 0, arrivalTimer: 2, income: 0, itemsSold: 0, served: 0, invested: 0 });
@@ -328,7 +325,7 @@ export const displayCount = (shop) => (shop.displayLevel ? 4 : 2);
 
 export function upgradeShop(s, id) {
   const price = shopUpgradeCost(s, id);
-  if (price === undefined || s.coins < price || (id !== "open" && !s.shop.unlocked) || !tierOpen(s, "shop", id, shopLevel(s.shop, id))) return false;
+  if (s.paused || price === undefined || s.coins < price || (id !== "open" && !s.shop.unlocked) || !tierOpen(s, "shop", id, shopLevel(s.shop, id))) return false;
   s.coins -= price; s.shop.invested += price;
   if (id === "open") s.shop.unlocked = true;
   else s.shop[SHOP_LEVEL_KEYS[id]] = shopLevel(s.shop, id) + 1;

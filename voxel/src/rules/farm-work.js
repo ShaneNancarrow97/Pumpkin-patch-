@@ -1,7 +1,7 @@
 // Farm work is saved progress, not a sprite timer: each owner learns their own
 // skills, and the big pumpkin keeps its heat through a save or scene change.
 import { patchLevel } from "./levels.js";
-import { HELPER_WAIT, openPlots, plant, harvest, barnBlocked } from "./farm.js";
+import { HELPER_WAIT, openPlots, plant, harvest, canHarvestPlot } from "./farm.js";
 import { waterPlot, wateringStatus } from "./hands-on.js";
 
 export const HELPER_IDS = Object.freeze(["shane", "natalie"]);
@@ -135,13 +135,13 @@ function validJob(s, job) {
   if (!job || job.plot < 0 || job.plot >= openPlots(s) || s.plots[job.plot] !== job.crop) return false;
   if (job.kind === "plant") return job.crop.phase === "empty";
   if (job.kind === "water") return wateringStatus(s, job.plot).available;
-  return ripeForHelpers(s, job.plot) && !barnBlocked(s);
+  return ripeForHelpers(s, job.plot) && canHarvestPlot(s, job.plot);
 }
 
 // A cyclic scan shares jobs without permanently favouring the first few beds.
 function nextJob(s, h, reserved) {
   const indices = orderedPlots(s, h).filter(i => !reserved.has(i));
-  const pick = !barnBlocked(s) && indices.find(i => ripeForHelpers(s, i));
+  const pick = indices.find(i => ripeForHelpers(s, i) && canHarvestPlot(s, i));
   if (pick !== false && pick !== undefined) return { kind: "harvest", plot: pick, crop: s.plots[pick] };
   const empty = indices.find(i => s.plots[i].phase === "empty");
   if (empty !== undefined) return { kind: "plant", plot: empty, crop: s.plots[empty] };
@@ -176,10 +176,13 @@ export function updateHelpers(s, dt, events) {
     h.timer = 0; h.kind = null; helperJobs.delete(h); reserved.delete(job.plot);
     if (job.kind === "harvest") {
       // Extra basket places never take another helper's reserved primary crop.
-      const candidates = [job.plot, ...orderedPlots(s, h).filter(i => i !== job.plot && !reserved.has(i) && ripeForHelpers(s, i))];
-      for (const i of candidates.slice(0, status.capacity)) {
+      const candidates = [job.plot, ...orderedPlots(s, h).filter(i => i !== job.plot && !reserved.has(i) && ripeForHelpers(s, i) && canHarvestPlot(s, i))];
+      let picked = 0;
+      for (const i of candidates) {
+        if (picked >= status.capacity) break;
         const count = harvest(s, i);
-        if (!count) break;
+        if (!count) continue;
+        picked++;
         h.cursor = (i + 1) % openPlots(s); events.push({ type: "harvest", owner, plot: i, count });
       }
     } else if (job.kind === "plant" ? plant(s, job.plot) : waterPlot(s, job.plot)) {
