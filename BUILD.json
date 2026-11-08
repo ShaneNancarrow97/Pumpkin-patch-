@@ -1,46 +1,35 @@
 {
-  "builtAt": "2026-11-08T08:59:59.789474+00:00",
-  "sourceBranch": "contractor/directional-character-sheets",
-  "codeCommit": "c2b6a409120fca3b2e1c9bc29e65316ed8570b1e",
-  "codeTree": "2a82ada8f828c243b1484e677c34845c1c0bfba9",
-  "incrementalBase": "8901e18df05367d7ce38f3e0da775d07ce877a21",
+  "builtAt": "2026-11-08T19:09:36.615910+00:00",
+  "sourceBranch": "contractor/village-journey",
+  "codeCommit": "e61180ffd2f7a9304a0af6feb330eff4b8f34c4b",
+  "incrementalBase": "fa3ce1616919d3e75b0488421d42c7df50f0df31",
   "leadChecked": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
-  "characters": 11,
-  "movementCells": 704,
-  "spriteManifest": {
-    "bytes": 892600,
-    "sha256": "eb632460f2ac740783e9245889628b2a6723138e6d3f8cd92da122c5abcfd59c"
-  },
+  "stateVersion": 18,
   "artifacts": {
-    "Pumpkin-Patch-Directional-Characters.html": {
-      "bytes": 54956692,
-      "sha256": "392db73e5daeee1b2c23687e4ea946bce41a7018ab93ca407a182b9944b7c8de"
+    "Pumpkin-Patch-Village-Journey.html": {
+      "bytes": 57503178,
+      "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
     },
-    "Pumpkin-Patch-Directional-Sprite-Preview.html": {
-      "bytes": 12632252,
-      "sha256": "bde41e302931d59e65039b944bfccbf83f634879e8558dcf8a19d29ca0fc4e13"
+    "Pumpkin-Patch-Furniture-Menu-Icons.zip": {
+      "bytes": 1673170,
+      "sha256": "597deafb41631b518ee2ced84427fe04f2f9df203f53c22e24c23f545d6b154e"
     },
-    "Pumpkin-Patch-Directional-Characters.zip": {
-      "bytes": 39749738,
-      "sha256": "920249bc5f888429e2c108a0c91d257d9fd3e1ee3610fda70d49dcb2fc12b39f"
+    "Pumpkin-Patch-Village-Journey.zip": {
+      "bytes": 41528719,
+      "sha256": "785621ec7919801531a11db37bd090dc32488661fdabb4150ae59da8f3d00cad"
     },
-    "Pumpkin-Patch-Directional-Sprite-Pack.zip": {
-      "bytes": 38953781,
-      "sha256": "077e7d4f95007c8e6d6a3694cfc85913c9391fe0b90fca9e3ff678818943ba28"
+    "Pumpkin-Patch-Furniture-Menu-Icons.jpg": {
+      "bytes": 67749,
+      "sha256": "262348bd0f245ab3c11e15b80fa33371b90749c6f36e6eb82ec8c6648c3fb054"
     },
-    "Pumpkin-Patch-Directional-Characters-Claude-Patch.zip": {
-      "bytes": 73328770,
-      "sha256": "8d77aecc8a9c207ddc7dd8677fea4e2a75a261842e5d402ec0fd40ea5cd327dc"
+    "Pumpkin-Patch-Owner-Walk-Preview.html": {
+      "bytes": 2399054,
+      "sha256": "115f680376772bf03801725c0bd6da37536cbf8a02c1a5ace359fc33748ebbd8"
+    },
+    "Pumpkin-Patch-Furniture-Menu-Icons.html": {
+      "bytes": 286787,
+      "sha256": "6e595e34cc0cd212f426d0a7553a1edfc700174d3cf7be141b22eb630b7d226e"
     }
   },
-  "verificationCommit": "7b62cb651eb318229414e2a76fa8d6cd1f538e95",
-  "validation": {
-    "nodeTests": 146,
-    "directionalGameChecks": 60,
-    "desktopPhoneSmokeChecks": 54,
-    "spritePreviewChecks": 4,
-    "residentPhotoChecks": 11,
-    "pageErrors": 0,
-    "cleanPatchReplay": true
-  }
+  "verification": "Final browser checks and patch replay in progress; this is the complete current playable HTML, with no external assets."
 }
