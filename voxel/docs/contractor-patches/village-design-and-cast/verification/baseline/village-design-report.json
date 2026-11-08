@@ -1,0 +1,793 @@
+{
+  "phase": "baseline",
+  "html": "Mothlight-Village-Baseline.html",
+  "date": "2026-11-06T08:40:12.264Z",
+  "bytes": 18361286,
+  "sha256": "6dbe61fe100867e0d0cc7f0bf8ea18bdd4497bcb921ed04336f86a0469792651",
+  "scope": "Actual explorer in Chromium/SwiftShader. Viewport emulation is not physical Fold or controller certification.",
+  "checks": [
+    {
+      "pass": true,
+      "label": "village explorer boots with a live view"
+    },
+    {
+      "pass": true,
+      "label": "desktop: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "interior velvet-bat opens"
+    },
+    {
+      "pass": true,
+      "label": "interior elowen-library opens"
+    },
+    {
+      "pass": true,
+      "label": "interior rowan-workshop opens"
+    },
+    {
+      "pass": true,
+      "label": "Walk places an owner at true village scale"
+    },
+    {
+      "pass": true,
+      "label": "phone: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "landscape: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "fold: page has no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "offline village makes no external font or asset requests",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "village views and interiors have no page or console errors",
+      "detail": []
+    }
+  ],
+  "metrics": [
+    {
+      "name": "desktop",
+      "viewport": [
+        1280,
+        800
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 57.4,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "everyone",
+          "label": "Everyone",
+          "width": 84,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "tour",
+          "label": "Tour",
+          "width": 56.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "restored",
+          "label": "Restored",
+          "width": 82.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Green",
+          "width": 65.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moth Tree",
+          "width": 90.6,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Velvet Bat",
+          "width": 88.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Copse",
+          "width": 65.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Quarry",
+          "width": 70.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moor",
+          "width": 60.8,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Marsh",
+          "width": 66.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Valley",
+          "width": 63.4,
+          "height": 40,
+          "font": 13
+        }
+      ],
+      "smallTargets": [
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 57.4,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "everyone",
+          "label": "Everyone",
+          "width": 84,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "tour",
+          "label": "Tour",
+          "width": 56.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "restored",
+          "label": "Restored",
+          "width": 82.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Green",
+          "width": 65.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moth Tree",
+          "width": 90.6,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Velvet Bat",
+          "width": 88.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Copse",
+          "width": 65.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Quarry",
+          "width": 70.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moor",
+          "width": 60.8,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Marsh",
+          "width": 66.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Valley",
+          "width": 63.4,
+          "height": 40,
+          "font": 13
+        }
+      ],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 19131.7998046875,
+          "x": 14,
+          "y": 12,
+          "w": 310.140625,
+          "h": 61.6875
+        },
+        {
+          "id": "fps",
+          "area": 1139.404296875,
+          "x": 1221.125,
+          "y": 14,
+          "w": 44.875,
+          "h": 25.390625
+        },
+        {
+          "id": "nav",
+          "area": 69120,
+          "x": 0,
+          "y": 734,
+          "w": 1280,
+          "h": 54
+        }
+      ],
+      "approxOverlayRatio": 0.08729609775543212
+    },
+    {
+      "name": "phone",
+      "viewport": [
+        390,
+        844
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 57.4,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "everyone",
+          "label": "Everyone",
+          "width": 84,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "tour",
+          "label": "Tour",
+          "width": 56.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "restored",
+          "label": "Restored",
+          "width": 82.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Green",
+          "width": 65.3,
+          "height": 40,
+          "font": 13
+        }
+      ],
+      "smallTargets": [
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 57.4,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "everyone",
+          "label": "Everyone",
+          "width": 84,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "tour",
+          "label": "Tour",
+          "width": 56.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "restored",
+          "label": "Restored",
+          "width": 82.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Green",
+          "width": 65.3,
+          "height": 40,
+          "font": 13
+        }
+      ],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 8018.12744140625,
+          "x": 14,
+          "y": 12,
+          "w": 191.40625,
+          "h": 41.890625
+        },
+        {
+          "id": "fps",
+          "area": 1139.404296875,
+          "x": 331.125,
+          "y": 14,
+          "w": 44.875,
+          "h": 25.390625
+        },
+        {
+          "id": "nav",
+          "area": 21060,
+          "x": 0,
+          "y": 778,
+          "w": 390,
+          "h": 54
+        }
+      ],
+      "approxOverlayRatio": 0.09180195570021038
+    },
+    {
+      "name": "landscape",
+      "viewport": [
+        844,
+        390
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 57.4,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "everyone",
+          "label": "Everyone",
+          "width": 84,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "tour",
+          "label": "Tour",
+          "width": 56.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "restored",
+          "label": "Restored",
+          "width": 82.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Green",
+          "width": 65.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moth Tree",
+          "width": 90.6,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Velvet Bat",
+          "width": 88.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Copse",
+          "width": 65.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Quarry",
+          "width": 70.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moor",
+          "width": 60.8,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Marsh",
+          "width": 66.5,
+          "height": 40,
+          "font": 13
+        }
+      ],
+      "smallTargets": [
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 57.4,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "everyone",
+          "label": "Everyone",
+          "width": 84,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "tour",
+          "label": "Tour",
+          "width": 56.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "restored",
+          "label": "Restored",
+          "width": 82.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Green",
+          "width": 65.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moth Tree",
+          "width": 90.6,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Velvet Bat",
+          "width": 88.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Copse",
+          "width": 65.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Quarry",
+          "width": 70.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moor",
+          "width": 60.8,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Marsh",
+          "width": 66.5,
+          "height": 40,
+          "font": 13
+        }
+      ],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 19131.7998046875,
+          "x": 14,
+          "y": 12,
+          "w": 310.140625,
+          "h": 61.6875
+        },
+        {
+          "id": "fps",
+          "area": 1139.404296875,
+          "x": 785.125,
+          "y": 14,
+          "w": 44.875,
+          "h": 25.390625
+        },
+        {
+          "id": "nav",
+          "area": 45576,
+          "x": 0,
+          "y": 324,
+          "w": 844,
+          "h": 54
+        }
+      ],
+      "approxOverlayRatio": 0.20004619061113896
+    },
+    {
+      "name": "fold",
+      "viewport": [
+        900,
+        840
+      ],
+      "rootOverflow": false,
+      "buttons": [
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 57.4,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "everyone",
+          "label": "Everyone",
+          "width": 84,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "tour",
+          "label": "Tour",
+          "width": 56.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "restored",
+          "label": "Restored",
+          "width": 82.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Green",
+          "width": 65.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moth Tree",
+          "width": 90.6,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Velvet Bat",
+          "width": 88.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Copse",
+          "width": 65.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Quarry",
+          "width": 70.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moor",
+          "width": 60.8,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Marsh",
+          "width": 66.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Valley",
+          "width": 63.4,
+          "height": 40,
+          "font": 13
+        }
+      ],
+      "smallTargets": [
+        {
+          "id": "walk",
+          "label": "Walk",
+          "width": 57.4,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "everyone",
+          "label": "Everyone",
+          "width": 84,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "tour",
+          "label": "Tour",
+          "width": 56.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "restored",
+          "label": "Restored",
+          "width": 82.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Green",
+          "width": 65.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moth Tree",
+          "width": 90.6,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Velvet Bat",
+          "width": 88.3,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Copse",
+          "width": 65.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Quarry",
+          "width": 70.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Moor",
+          "width": 60.8,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Marsh",
+          "width": 66.5,
+          "height": 40,
+          "font": 13
+        },
+        {
+          "id": "",
+          "label": "Valley",
+          "width": 63.4,
+          "height": 40,
+          "font": 13
+        }
+      ],
+      "smallFonts": [],
+      "fixed": [
+        {
+          "id": "header",
+          "area": 19131.7998046875,
+          "x": 14,
+          "y": 12,
+          "w": 310.140625,
+          "h": 61.6875
+        },
+        {
+          "id": "fps",
+          "area": 1139.404296875,
+          "x": 841.125,
+          "y": 14,
+          "w": 44.875,
+          "h": 25.390625
+        },
+        {
+          "id": "nav",
+          "area": 48600,
+          "x": 0,
+          "y": 774,
+          "w": 900,
+          "h": 54
+        }
+      ],
+      "approxOverlayRatio": 0.09109947632481812
+    }
+  ],
+  "screenshots": [
+    "baseline-desktop-green.png",
+    "baseline-desktop-moth-tree.png",
+    "baseline-desktop-velvet-bat.png",
+    "baseline-inside-velvet-bat.png",
+    "baseline-inside-elowen-library.png",
+    "baseline-inside-rowan-workshop.png",
+    "baseline-desktop-walking.png",
+    "baseline-phone-green.png",
+    "baseline-landscape-green.png",
+    "baseline-fold-green.png"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "passed": true
+}
