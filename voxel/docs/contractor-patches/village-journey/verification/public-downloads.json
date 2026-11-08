@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-11-08T19:15:58.690455+00:00",
+  "codeCommit": "e61180ffd2f7a9304a0af6feb330eff4b8f34c4b",
+  "artifactCommit": "390ec31f0aed1902285cb3ca0d4c1436e3530c43",
+  "html": {
+    "bytes": 57503178,
+    "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
+  },
+  "zip": {
+    "bytes": 41528719,
+    "sha256": "785621ec7919801531a11db37bd090dc32488661fdabb4150ae59da8f3d00cad"
+  },
+  "patch": {
+    "bytes": 86062343,
+    "sha256": "75c5acaeaaf39cfb053881b9a2836f70bbdc52f007d7d4c5e0e4f101137630d5"
+  },
+  "publicDownloadChecks": {
+    "commit": "cc04f8a482d71b134fdf651ec46d66f87710f145",
+    "html": {
+      "bytes": 57503178,
+      "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
+    },
+    "zip": {
+      "bytes": 41528719,
+      "sha256": "785621ec7919801531a11db37bd090dc32488661fdabb4150ae59da8f3d00cad"
+    }
+  },
+  "cleanReplay": {
+    "passed": true,
+    "tree": "4090296e3795314ad4ad1dcea98a7783b7764384",
+    "htmlSha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd"
+  },
+  "validation": {
+    "nodeTestsPassed": 904,
+    "targetedBrowserChecksPassed": 21,
+    "browserErrors": 0,
+    "externalRequests": 0,
+    "broadSmoke": "Intentionally stopped for urgent delivery after 8 desktop checks; incomplete, no FAIL assertions. See final-candidate/smoke-report.json."
+  }
+}

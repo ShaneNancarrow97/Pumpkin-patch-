@@ -15,6 +15,7 @@ import { villageNodePosition, villageNodeCandidates } from '../src/content/villa
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const lateOnly=process.argv.includes('--late-only');
+const lite=process.argv.includes('--lite');
 const filename=path.resolve(process.argv[2]??'/workspace/Pumpkin-Patch-Village-Journey.html');
 const output=path.resolve(process.argv[3]??path.join(root,'docs/contractor-patches/village-journey/verification'));
 await fs.mkdir(output,{recursive:true});
@@ -23,6 +24,7 @@ const fixture=M.freshState();Object.assign(fixture,{introSeen:true,paused:false,
 if(lateOnly){M.inviteToVillage(fixture);M.finishTour(fixture);}
 const report={date:new Date().toISOString(),html:filename,sha256:sha(html),bytes:html.length,sourceCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),workingTree:execFileSync('git',['status','--short'],{cwd:root,encoding:'utf8'}),sourceHashes:{},scope:'Exact standalone HTML bytes on loopback. A declared level-3 save starts uninvited/untoured. Actual Playwright pointer/key events test visible navigation, gateway, gather and workshop controls. Walk setup uses the real collision/controller path with mocked standard-pad axes and accelerated 0.05s steps; farm gateway threshold uses declared teleport immediately before actual keyboard input. Gather snapshots freeze only village controller tick, then call its original tick with explicit dt. Late story state/inventory is explicitly fixture-set, not earned in play. Viewports emulate layout/touch, not physical phone, Fold, TV, Bluetooth or GPU performance.',fixture:{level:3,coins:20000,introSeen:true,invited:false,toured:false},checks:[],screenshots:[],layouts:[],errors:[],externalRequests:[]};
 report.mode=lateOnly?'late-only':'full';
+report.renderPreferences=lite?{glow:false,shadows:false,frameRate:'30'}:{frameRate:'30'};if(lite)report.scope+=' Functional regression uses declared light render preferences (glow/shadows off); normal final screenshots are recorded separately.';
 if(lateOnly){report.fixture.invited=true;report.fixture.toured=true;report.scope=report.scope.replace('A declared level-3 save starts uninvited/untoured.','A declared level-3 save starts invited/toured for the late UI and layout continuation.');}
 for(const name of ['src/main.js','src/model.js','src/village-game.js','src/village-view.js','src/village-world.js','src/village-models.js','src/content/village-node-sites.js','src/content/village.js','src/content/village-gateway.js','src/rules/farm.js','src/rules/village.js','src/rules/wardrobe.js','src/sprite-actors.js','assets/hd-natalie-empty-idle.webp','assets/hd-shane-empty-idle.webp','tools/village-journey-qa.mjs'])report.sourceHashes[name]=sha(await fs.readFile(path.join(root,name)));
 const check=(pass,label,detail)=>{report.checks.push({pass:!!pass,label,...(detail===undefined?{}:{detail})});console.log(`${pass?'PASS':'FAIL'} ${label}`);};
@@ -55,7 +57,7 @@ async function padQuest(menu=false){return page.evaluate(menu=>{const g=PumpkinV
 try{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH??'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});page=await browser.newPage({viewport:{width:1280,height:800},hasTouch:true});page.setDefaultTimeout(30000);
  page.on('pageerror',e=>report.errors.push(e.message));page.on('console',m=>{if(m.type()==='error')report.errors.push(m.text());});page.on('request',r=>{const u=r.url();if(!u.startsWith(origin)&&!u.startsWith('data:')&&!u.startsWith('blob:'))report.externalRequests.push(u);});
- await page.addInitScript(data=>{if(sessionStorage.getItem('journey-qa-seeded'))return;sessionStorage.setItem('journey-qa-seeded','true');const key='pumpkin-patch-voxel-reference-v1';localStorage.setItem(key,JSON.stringify(data));localStorage.setItem(key+'-prefs',JSON.stringify({music:false,sound:false,voiceEnabled:false,frameRate:'30'}));},M.saveData(fixture));
+ await page.addInitScript(({save:data,lite})=>{if(sessionStorage.getItem('journey-qa-seeded'))return;sessionStorage.setItem('journey-qa-seeded','true');const key='pumpkin-patch-voxel-reference-v1';localStorage.setItem(key,JSON.stringify(data));localStorage.setItem(key+'-prefs',JSON.stringify({music:false,sound:false,voiceEnabled:false,frameRate:'30',...(lite?{glow:false,shadows:false}:{})}));}, {save:M.saveData(fixture),lite});
  console.log('BOOT '+report.sha256);await page.goto(origin+'/game.html',{waitUntil:'domcontentloaded',timeout:180000});await page.waitForSelector('body[data-ready]',{timeout:180000});await settle();
  if(!lateOnly){
  check(await page.evaluate(()=>PumpkinVoxel.rules.patchLevel(PumpkinVoxel.state()).level===3),'Declared level-3 save loads');

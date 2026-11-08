@@ -12,3 +12,13 @@ The files in `candidate-21e7270/` apply to SHA-256 `21e7270c572d9cdc6f2abae9eb9a
 - Standard smoke was held pending the next build containing the resource changes.
 
 Final candidate results will be recorded separately by their exact HTML hash.
+
+## Functional revision candidate `018ca02d`
+
+`candidate-018ca02d/village-journey-report.json` records **66/66 passing browser assertions**, no browser errors and no external asset requests for SHA-256 `018ca02d3056ec58e2219173970992f9e101f9762fdb2ac3fc9734a8f0e7a62c`.
+
+This revision verifies small individual resources, matching rendered/hitbox positions, exactly-once gathering and saved cycles, automatic relocation after actual `advance(241)` cooldown progression without an explicit QA scene sync, stable positions through an actual page reload, and another successful gather at a relocated resource. It also checks actual Farm-button return at the physical gateway, staying on the farm across live frames, rearming by walking outside and reentering.
+
+Actual touch and T-key quest toggles pass; a mocked standard gamepad confirms one D-pad-Up toggle per press and menu priority. Expanded quest/rate/dock rectangles do not overlap at phone, unfolded and landscape sizes. At unfolded/landscape sizes the expanded quest also stays clear of the actual open Map panel; phone panels hide the quest card. The phone and unfolded expanded-HUD screenshots and both tool/resource screenshots were visually inspected.
+
+This is the functional revision candidate. Final walking-art verification and the standard smoke run remain separate pending the final rebuilt artifact.

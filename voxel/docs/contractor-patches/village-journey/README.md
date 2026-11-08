@@ -61,3 +61,5 @@ Future spawn sites are reserved to keep the forage routes clear. Existing villag
 Run commands from `voxel/`: `npm test`, `node build.mjs --out /absolute/path/Pumpkin-Patch-Village-Journey.html`, and `CHROMIUM_PATH=/usr/bin/chromium node tools/village-journey-qa.mjs ...`. Some asset tests start Python/Pillow; the managed execution profile must permit child processes.
 
 Browser evidence lives in `verification/`. It distinguishes declared fixture setup from actual taps, keyboard travel, timed gathering and emulated screen sizes. Physical Z Fold 7 hardware, PS5 Bluetooth pairing and TV casting are not certified by viewport tests. The delivery receipt records exact source/artifact hashes and patch replay.
+
+Final delivery: [download links, exact hashes and patch replay](DELIVERY.md). The complete source snapshot passes 904 automated tests and 21 targeted checks against the delivered HTML. Browser reports distinguish normal/light rendering and the incomplete broad repeat smoke.

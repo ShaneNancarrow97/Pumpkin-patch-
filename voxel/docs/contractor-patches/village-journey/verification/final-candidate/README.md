@@ -1,0 +1,13 @@
+# Final candidate verification
+
+Exact standalone runtime SHA-256: `f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd`.
+
+`final-increment-report.json`: **21/21 passing** checks, no browser/console errors and no external asset requests. The runner is `tools/village-journey-final-qa.mjs`; runtime source/asset hashes are in `final-source-hashes.json`.
+
+Checks cover the shared masked farm/village grass shader; 26-track Settings catalogue and new-track selection; actual controller movement advancing both base owners through alternating left/right phases; the visible £1,500 fountain purchase, ten-space barn gate and exactly ten same-variety pumpkins plus £100 paid once; a native finite-wallet hungry guest approaching, queuing, reaching Maisie’s hatch before payment and paying for real held stock once; all eight furniture icons in the actual Workshop; distant People selection guiding to the live villager and a controller route reaching the contextual Talk action.
+
+Fixture limits: the test explicitly loads a level-20/finished-tour farm, stages a star-marked ready crop and a native starving visitor, and accelerates real model/controller steps. It does not claim those milestones were earned by playing. The NPC is frozen at its current live position for the approach check. Physical Fold/TV hardware, PS5 Bluetooth pairing, perceptual audio quality and real-GPU frame rates are not certified.
+
+`10-farm-grass.png` and both `11-*-walk.png` files use the normal renderer. Their initial run was intentionally interrupted to prioritise delivery; `normal-interrupted-report.json` and its log retain the consequent browser-closed exceptions. These are not product failures. The successful final run used declared light preferences (glow/shadows off). Its screenshots are `12-fountain-star.png`, `14-truck-hatch.png` and `15-furniture-menus.png`. The furniture screenshot was visually reviewed: bundle art and the 24px contents remain recognisable against the plum menu. The star screenshot was also reviewed.
+
+The older `candidate-018ca02d` report retains the earlier 66-check journey/layout regression. It predates the final art/music/food/fountain increment and is not represented as a check of these exact bytes. The standard smoke was stopped intentionally at the parent’s request to prioritise urgent delivery: **8 desktop checks passed with zero FAIL assertions** before interruption. `smoke-report.json` is explicitly incomplete; the closing browser produced the retained exception in `smoke.log`. This is **not** a claim that all 54 smoke checks passed on this candidate. The final 21 targeted browser checks are complete.

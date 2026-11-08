@@ -1,0 +1,9 @@
+// Keep the loopback server asynchronous while the stock smoke runner drives it.
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {createServer} from 'node:http';
+import {spawn} from 'node:child_process';
+const html=path.resolve(process.argv[2]??'/workspace/Pumpkin-Patch-Village-Journey.html'),out=path.resolve(process.argv[3]??'docs/contractor-patches/village-journey/verification/final-candidate');await fs.mkdir(out,{recursive:true});const bytes=await fs.readFile(html),sha256=createHash('sha256').update(bytes).digest('hex');
+const server=createServer((req,res)=>{if(req.url==='/favicon.ico'){res.statusCode=204;return res.end();}res.setHeader('Content-Type','text/html');res.end(bytes);});await new Promise(r=>server.listen(0,'127.0.0.1',r));
+let log='',exitCode=-1;try{const cp=spawn(process.execPath,['smoke.mjs',...(process.env.SMOKE_SHOTS?['--shots',out]:[])],{cwd:path.resolve('.'),env:{...process.env,CHROMIUM_PATH:process.env.CHROMIUM_PATH??'/usr/bin/chromium',GAME_URL:`http://127.0.0.1:${server.address().port}/game.html`},stdio:['ignore','pipe','pipe']});cp.stdout.on('data',b=>{const s=b.toString();log+=s;process.stdout.write(s);});cp.stderr.on('data',b=>{const s=b.toString();log+=s;process.stderr.write(s);});exitCode=await new Promise((r,j)=>{cp.once('error',j);cp.once('exit',r);});}finally{await new Promise(r=>server.close(r));await fs.writeFile(path.join(out,'smoke.log'),log);await fs.writeFile(path.join(out,'smoke-report.json'),JSON.stringify({html,sha256,date:new Date().toISOString(),bytes:bytes.length,exitCode,passed:exitCode===0,checks:(log.match(/^ok  /gm)??[]).length,failures:(log.match(/^FAIL/gm)??[]).length,scope:'Unmodified standard smoke.mjs against exact standalone HTML bytes served on loopback. Desktop and phone emulation, software WebGL. No physical hardware claims.'},null,2)+'\n');}process.exitCode=exitCode??1;
