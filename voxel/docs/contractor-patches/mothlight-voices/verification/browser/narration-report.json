@@ -1,0 +1,1288 @@
+{
+  "html": "Pumpkin-Patch-Voiced-Mothlight.html",
+  "date": "2026-11-08T07:20:16.324Z",
+  "sha256": "a921d3fda5332a3a2957ea8accfd6491b6d83d4341684475dc86d812318c9fa3",
+  "bytes": 48374845,
+  "scope": "Packaged game in Chromium/SwiftShader, one browser and one scene load. A declared level-three save stages Two Doorbells at its supper conversation. Recorded lines require native playback; unrecorded authored lines require readable, silent fallback with correct speakers and working choices. Native media events and decoded durations verify playback; this does not claim a human listened to the generated performances. Viewport emulation is not physical-device certification.",
+  "coverage": {
+    "authored": 332,
+    "recorded": 164,
+    "missing": 168,
+    "note": "Passing fallback checks does not establish recorded voice coverage for missing clips."
+  },
+  "fixture": {
+    "level": 3,
+    "coins": 500,
+    "supperStep": 2
+  },
+  "checks": [
+    {
+      "pass": true,
+      "label": "the packaged game exposes narration diagnostics"
+    },
+    {
+      "pass": true,
+      "label": "Watch again opens the title card"
+    },
+    {
+      "pass": true,
+      "label": "Begin: exactly one native audio source plays",
+      "detail": {
+        "key": "natalie-eb5ac376",
+        "speaker": "natalie",
+        "text": "Welcome to our pumpkin patch! It’s always a warm October night here, and our pumpkins glow.",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Begin: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 6.222958,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Next: exactly one native audio source plays",
+      "detail": {
+        "key": "shane-003da683",
+        "speaker": "shane",
+        "text": "And the neighbours are monsters. Lovely ones, honestly. They wander up the path to buy our pumpkins.",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Next: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 7.105958,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Next: previous media source is released"
+    },
+    {
+      "pass": true,
+      "label": "Next: no overlapping sources"
+    },
+    {
+      "pass": true,
+      "label": "Replay: exactly one native audio source plays",
+      "detail": {
+        "key": "shane-003da683",
+        "speaker": "shane",
+        "text": "And the neighbours are monsters. Lovely ones, honestly. They wander up the path to buy our pumpkins.",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Replay: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 7.105958,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Replay: previous media source is released"
+    },
+    {
+      "pass": true,
+      "label": "Replay: no overlapping sources"
+    },
+    {
+      "pass": true,
+      "label": "Replay does not advance the introduction"
+    },
+    {
+      "pass": true,
+      "label": "desktop introduction: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "desktop introduction: controls meet 44px targets",
+      "detail": [
+        {
+          "label": "Skip the introduction",
+          "x": 1198.9375,
+          "y": 12,
+          "width": 69.0625,
+          "height": 44,
+          "font": 14,
+          "icon": false
+        },
+        {
+          "label": "Next",
+          "x": 914.015625,
+          "y": 732,
+          "width": 85.984375,
+          "height": 48,
+          "font": 16,
+          "icon": false
+        },
+        {
+          "label": "Turn voices off",
+          "x": 12,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        },
+        {
+          "label": "Replay this line",
+          "x": 59,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "desktop introduction: controls remain within the viewport"
+    },
+    {
+      "pass": true,
+      "label": "desktop introduction: button text remains at least 12px"
+    },
+    {
+      "pass": true,
+      "label": "phone introduction: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "phone introduction: controls meet 44px targets",
+      "detail": [
+        {
+          "label": "Skip the introduction",
+          "x": 308.9375,
+          "y": 12,
+          "width": 69.0625,
+          "height": 44,
+          "font": 14,
+          "icon": false
+        },
+        {
+          "label": "Next",
+          "x": 292.3125,
+          "y": 776,
+          "width": 85.984375,
+          "height": 48,
+          "font": 16,
+          "icon": false
+        },
+        {
+          "label": "Turn voices off",
+          "x": 12,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        },
+        {
+          "label": "Replay this line",
+          "x": 59,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "phone introduction: controls remain within the viewport"
+    },
+    {
+      "pass": true,
+      "label": "phone introduction: button text remains at least 12px"
+    },
+    {
+      "pass": true,
+      "label": "fold introduction: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "fold introduction: controls meet 44px targets",
+      "detail": [
+        {
+          "label": "Skip the introduction",
+          "x": 878.9375,
+          "y": 12,
+          "width": 69.0625,
+          "height": 44,
+          "font": 14,
+          "icon": false
+        },
+        {
+          "label": "Next",
+          "x": 754.015625,
+          "y": 812,
+          "width": 85.984375,
+          "height": 48,
+          "font": 16,
+          "icon": false
+        },
+        {
+          "label": "Turn voices off",
+          "x": 12,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        },
+        {
+          "label": "Replay this line",
+          "x": 59,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "fold introduction: controls remain within the viewport"
+    },
+    {
+      "pass": true,
+      "label": "fold introduction: button text remains at least 12px"
+    },
+    {
+      "pass": true,
+      "label": "landscape introduction: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "landscape introduction: controls meet 44px targets",
+      "detail": [
+        {
+          "label": "Skip the introduction",
+          "x": 762.9375,
+          "y": 12,
+          "width": 69.0625,
+          "height": 44,
+          "font": 14,
+          "icon": false
+        },
+        {
+          "label": "Next",
+          "x": 696.015625,
+          "y": 322,
+          "width": 85.984375,
+          "height": 48,
+          "font": 16,
+          "icon": false
+        },
+        {
+          "label": "Turn voices off",
+          "x": 12,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        },
+        {
+          "label": "Replay this line",
+          "x": 59,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "landscape introduction: controls remain within the viewport"
+    },
+    {
+      "pass": true,
+      "label": "landscape introduction: button text remains at least 12px"
+    },
+    {
+      "pass": true,
+      "label": "Before Skip: exactly one native audio source plays",
+      "detail": {
+        "key": "shane-003da683",
+        "speaker": "shane",
+        "text": "And the neighbours are monsters. Lovely ones, honestly. They wander up the path to buy our pumpkins.",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Before Skip: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 7.105958,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Skip: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "Skip: previous media source is released"
+    },
+    {
+      "pass": true,
+      "label": "Skip returns to the farm"
+    },
+    {
+      "pass": true,
+      "label": "Settings turns voice narration off"
+    },
+    {
+      "pass": true,
+      "label": "Voice toggle preserves the independent music setting and playback"
+    },
+    {
+      "pass": true,
+      "label": "Voices off leaves the introduction readable"
+    },
+    {
+      "pass": true,
+      "label": "Inline voices on: exactly one native audio source plays",
+      "detail": {
+        "key": "natalie-eb5ac376",
+        "speaker": "natalie",
+        "text": "Welcome to our pumpkin patch! It’s always a warm October night here, and our pumpkins glow.",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Inline voices on: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 6.222958,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Music toggle preserves the independent voice setting"
+    },
+    {
+      "pass": true,
+      "label": "Voice volume changes through Settings"
+    },
+    {
+      "pass": true,
+      "label": "Village tour: exactly one native audio source plays",
+      "detail": {
+        "key": "narrator-931f24e5",
+        "speaker": "narrator",
+        "text": "Mothlight Village. Over the hill from your farm",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Village tour: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 3.065042,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Skip tour: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "Skip tour: previous media source is released"
+    },
+    {
+      "pass": true,
+      "label": "Skip tour returns control to village play"
+    },
+    {
+      "pass": true,
+      "label": "Supper opening: an unrecorded line retains the correct speaker and missing status",
+      "detail": {
+        "key": "rowan-c062e1a9",
+        "speaker": "rowan",
+        "text": "Everyone's here! Well, three of us and some moths. And a crow. That's a crowd in Mothlight!",
+        "available": false,
+        "status": "missing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Supper opening: unrecorded dialogue remains readable"
+    },
+    {
+      "pass": true,
+      "label": "Supper opening silent fallback: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "Supper second speaker: an unrecorded line retains the correct speaker and missing status",
+      "detail": {
+        "key": "elowen-41156af2",
+        "speaker": "elowen",
+        "text": "The almanac's written a whole page. 'The first supper.' Look, it's drawn the bench.",
+        "available": false,
+        "status": "missing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Supper second speaker: unrecorded dialogue remains readable"
+    },
+    {
+      "pass": true,
+      "label": "Supper second speaker silent fallback: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "Conversation Continue: no overlapping sources"
+    },
+    {
+      "pass": true,
+      "label": "Conversation heading follows the current speaker"
+    },
+    {
+      "pass": true,
+      "label": "Reply choices: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "The silent reply prompt disables replay"
+    },
+    {
+      "pass": true,
+      "label": "Supper reply: an unrecorded line retains the correct speaker and missing status",
+      "detail": {
+        "key": "elowen-847c309e",
+        "speaker": "elowen",
+        "text": "To knocking on doors! *clink of mismatched mugs*",
+        "available": false,
+        "status": "missing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Supper reply: unrecorded dialogue remains readable"
+    },
+    {
+      "pass": true,
+      "label": "Supper reply silent fallback: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "An unlabelled reply inherits the current speaker"
+    },
+    {
+      "pass": true,
+      "label": "An unrecorded line disables unavailable replay"
+    },
+    {
+      "pass": true,
+      "label": "Unavailable replay: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "Replaying dialogue does not alter quests or rewards"
+    },
+    {
+      "pass": true,
+      "label": "Conversation Done: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "Done closes the conversation"
+    },
+    {
+      "pass": true,
+      "label": "The supper's readable dialogue still completes its quest callback"
+    },
+    {
+      "pass": true,
+      "label": "The real Elowen chat and selected reply have generated recordings"
+    },
+    {
+      "pass": true,
+      "label": "Recorded chat opening: exactly one native audio source plays",
+      "detail": {
+        "key": "elowen-c0f80a2f",
+        "speaker": "elowen",
+        "text": "The ink in my letters won't stay still. It wanders about the page looking for better words.",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Recorded chat opening: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 5.713958,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Recorded chat Continue: exactly one native audio source plays",
+      "detail": {
+        "key": "elowen-2a9a4948",
+        "speaker": "elowen",
+        "text": "Do you ever write things down, out there on your farm?",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Recorded chat Continue: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 2.92575,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Recorded chat Continue: previous media source is released"
+    },
+    {
+      "pass": true,
+      "label": "Recorded chat Continue: no overlapping sources"
+    },
+    {
+      "pass": true,
+      "label": "desktop recorded dialogue: no horizontal overflow"
+    },
+    {
+      "pass": true,
+      "label": "desktop recorded dialogue: controls meet 44px targets",
+      "detail": [
+        {
+          "label": "Close conversation",
+          "x": 1207,
+          "y": 460.515625,
+          "width": 44,
+          "height": 44,
+          "font": 24,
+          "icon": false
+        },
+        {
+          "label": "Turn voices off",
+          "x": 1068.828125,
+          "y": 652,
+          "width": 44,
+          "height": 44,
+          "font": 13,
+          "icon": true
+        },
+        {
+          "label": "Replay this line",
+          "x": 1115.828125,
+          "y": 652,
+          "width": 44,
+          "height": 44,
+          "font": 13,
+          "icon": true
+        },
+        {
+          "label": "Continue",
+          "x": 1169.828125,
+          "y": 652,
+          "width": 81.171875,
+          "height": 44,
+          "font": 13,
+          "icon": false
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "desktop recorded dialogue: controls remain within the viewport"
+    },
+    {
+      "pass": true,
+      "label": "desktop recorded dialogue: button text remains at least 12px"
+    },
+    {
+      "pass": true,
+      "label": "Recorded chat choices: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "Recorded chat choices: previous media source is released"
+    },
+    {
+      "pass": true,
+      "label": "Recorded chat reply: exactly one native audio source plays",
+      "detail": {
+        "key": "elowen-af64b4e1",
+        "speaker": "elowen",
+        "text": "Truth, mostly. Sometimes rhyme. Once it ran off to underline a pumpkin pie recipe.",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Recorded chat reply: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 5.247708,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Recorded reply replay: exactly one native audio source plays",
+      "detail": {
+        "key": "elowen-af64b4e1",
+        "speaker": "elowen",
+        "text": "Truth, mostly. Sometimes rhyme. Once it ran off to underline a pumpkin pie recipe.",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Recorded reply replay: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 5.247708,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Recorded reply replay: previous media source is released"
+    },
+    {
+      "pass": true,
+      "label": "Recorded reply replay: no overlapping sources"
+    },
+    {
+      "pass": true,
+      "label": "Replaying the recorded reply does not repeat its chat callback"
+    },
+    {
+      "pass": true,
+      "label": "Recorded conversation Done: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "Recorded conversation Done: previous media source is released"
+    },
+    {
+      "pass": true,
+      "label": "Done closes the recorded conversation"
+    },
+    {
+      "pass": true,
+      "label": "Recorded greeting: exactly one native audio source plays",
+      "detail": {
+        "key": "elowen-76499ff1",
+        "speaker": "elowen",
+        "text": "Ah, there you are. The moths said you'd come this way.",
+        "available": true,
+        "status": "playing"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Recorded greeting: bundled MP3 decodes and emits playing",
+      "detail": {
+        "duration": 3.1115,
+        "readyState": 4
+      }
+    },
+    {
+      "pass": true,
+      "label": "Recorded conversation close: narration stops"
+    },
+    {
+      "pass": true,
+      "label": "Recorded conversation close: previous media source is released"
+    },
+    {
+      "pass": true,
+      "label": "Narration and the game make no external requests",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Narration flow has no page or console errors",
+      "detail": []
+    }
+  ],
+  "media": [
+    {
+      "label": "Begin",
+      "current": {
+        "key": "natalie-eb5ac376",
+        "speaker": "natalie",
+        "text": "Welcome to our pumpkin patch! It’s always a warm October night here, and our pumpkins glow.",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 6.222958,
+      "id": 1
+    },
+    {
+      "label": "Next",
+      "current": {
+        "key": "shane-003da683",
+        "speaker": "shane",
+        "text": "And the neighbours are monsters. Lovely ones, honestly. They wander up the path to buy our pumpkins.",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 7.105958,
+      "id": 2
+    },
+    {
+      "label": "Replay",
+      "current": {
+        "key": "shane-003da683",
+        "speaker": "shane",
+        "text": "And the neighbours are monsters. Lovely ones, honestly. They wander up the path to buy our pumpkins.",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 7.105958,
+      "id": 3
+    },
+    {
+      "label": "Before Skip",
+      "current": {
+        "key": "shane-003da683",
+        "speaker": "shane",
+        "text": "And the neighbours are monsters. Lovely ones, honestly. They wander up the path to buy our pumpkins.",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 7.105958,
+      "id": 4
+    },
+    {
+      "label": "Inline voices on",
+      "current": {
+        "key": "natalie-eb5ac376",
+        "speaker": "natalie",
+        "text": "Welcome to our pumpkin patch! It’s always a warm October night here, and our pumpkins glow.",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 6.222958,
+      "id": 5
+    },
+    {
+      "label": "Village tour",
+      "current": {
+        "key": "narrator-931f24e5",
+        "speaker": "narrator",
+        "text": "Mothlight Village. Over the hill from your farm",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 3.065042,
+      "id": 6
+    },
+    {
+      "label": "Recorded chat opening",
+      "current": {
+        "key": "elowen-c0f80a2f",
+        "speaker": "elowen",
+        "text": "The ink in my letters won't stay still. It wanders about the page looking for better words.",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 5.713958,
+      "id": 7
+    },
+    {
+      "label": "Recorded chat Continue",
+      "current": {
+        "key": "elowen-2a9a4948",
+        "speaker": "elowen",
+        "text": "Do you ever write things down, out there on your farm?",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 2.92575,
+      "id": 8
+    },
+    {
+      "label": "Recorded chat reply",
+      "current": {
+        "key": "elowen-af64b4e1",
+        "speaker": "elowen",
+        "text": "Truth, mostly. Sometimes rhyme. Once it ran off to underline a pumpkin pie recipe.",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 5.247708,
+      "id": 9
+    },
+    {
+      "label": "Recorded reply replay",
+      "current": {
+        "key": "elowen-af64b4e1",
+        "speaker": "elowen",
+        "text": "Truth, mostly. Sometimes rhyme. Once it ran off to underline a pumpkin pie recipe.",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 5.247708,
+      "id": 10
+    },
+    {
+      "label": "Recorded greeting",
+      "current": {
+        "key": "elowen-76499ff1",
+        "speaker": "elowen",
+        "text": "Ah, there you are. The moths said you'd come this way.",
+        "available": true,
+        "status": "playing"
+      },
+      "duration": 3.1115,
+      "id": 11
+    }
+  ],
+  "silentFallbacks": [
+    {
+      "label": "Supper opening",
+      "speaker": "rowan",
+      "key": "rowan-c062e1a9"
+    },
+    {
+      "label": "Supper second speaker",
+      "speaker": "elowen",
+      "key": "elowen-41156af2"
+    },
+    {
+      "label": "Supper reply",
+      "speaker": "elowen",
+      "key": "elowen-847c309e"
+    }
+  ],
+  "metrics": [
+    {
+      "name": "desktop introduction",
+      "viewport": [
+        1280,
+        800
+      ],
+      "overflow": false,
+      "controls": [
+        {
+          "label": "Skip the introduction",
+          "x": 1198.9375,
+          "y": 12,
+          "width": 69.0625,
+          "height": 44,
+          "font": 14,
+          "icon": false
+        },
+        {
+          "label": "Next",
+          "x": 914.015625,
+          "y": 732,
+          "width": 85.984375,
+          "height": 48,
+          "font": 16,
+          "icon": false
+        },
+        {
+          "label": "Turn voices off",
+          "x": 12,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        },
+        {
+          "label": "Replay this line",
+          "x": 59,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        }
+      ]
+    },
+    {
+      "name": "phone introduction",
+      "viewport": [
+        390,
+        844
+      ],
+      "overflow": false,
+      "controls": [
+        {
+          "label": "Skip the introduction",
+          "x": 308.9375,
+          "y": 12,
+          "width": 69.0625,
+          "height": 44,
+          "font": 14,
+          "icon": false
+        },
+        {
+          "label": "Next",
+          "x": 292.3125,
+          "y": 776,
+          "width": 85.984375,
+          "height": 48,
+          "font": 16,
+          "icon": false
+        },
+        {
+          "label": "Turn voices off",
+          "x": 12,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        },
+        {
+          "label": "Replay this line",
+          "x": 59,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        }
+      ]
+    },
+    {
+      "name": "fold introduction",
+      "viewport": [
+        960,
+        880
+      ],
+      "overflow": false,
+      "controls": [
+        {
+          "label": "Skip the introduction",
+          "x": 878.9375,
+          "y": 12,
+          "width": 69.0625,
+          "height": 44,
+          "font": 14,
+          "icon": false
+        },
+        {
+          "label": "Next",
+          "x": 754.015625,
+          "y": 812,
+          "width": 85.984375,
+          "height": 48,
+          "font": 16,
+          "icon": false
+        },
+        {
+          "label": "Turn voices off",
+          "x": 12,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        },
+        {
+          "label": "Replay this line",
+          "x": 59,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        }
+      ]
+    },
+    {
+      "name": "landscape introduction",
+      "viewport": [
+        844,
+        390
+      ],
+      "overflow": false,
+      "controls": [
+        {
+          "label": "Skip the introduction",
+          "x": 762.9375,
+          "y": 12,
+          "width": 69.0625,
+          "height": 44,
+          "font": 14,
+          "icon": false
+        },
+        {
+          "label": "Next",
+          "x": 696.015625,
+          "y": 322,
+          "width": 85.984375,
+          "height": 48,
+          "font": 16,
+          "icon": false
+        },
+        {
+          "label": "Turn voices off",
+          "x": 12,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        },
+        {
+          "label": "Replay this line",
+          "x": 59,
+          "y": 12,
+          "width": 44,
+          "height": 44,
+          "font": 14,
+          "icon": true
+        }
+      ]
+    },
+    {
+      "name": "desktop recorded dialogue",
+      "viewport": [
+        1280,
+        800
+      ],
+      "overflow": false,
+      "controls": [
+        {
+          "label": "Close conversation",
+          "x": 1207,
+          "y": 460.515625,
+          "width": 44,
+          "height": 44,
+          "font": 24,
+          "icon": false
+        },
+        {
+          "label": "Turn voices off",
+          "x": 1068.828125,
+          "y": 652,
+          "width": 44,
+          "height": 44,
+          "font": 13,
+          "icon": true
+        },
+        {
+          "label": "Replay this line",
+          "x": 1115.828125,
+          "y": 652,
+          "width": 44,
+          "height": 44,
+          "font": 13,
+          "icon": true
+        },
+        {
+          "label": "Continue",
+          "x": 1169.828125,
+          "y": 652,
+          "width": 81.171875,
+          "height": 44,
+          "font": 13,
+          "icon": false
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    "narration-desktop-intro-controls.png",
+    "narration-phone-intro-controls.png",
+    "narration-fold-intro-controls.png",
+    "narration-landscape-intro-controls.png",
+    "narration-desktop-voice-settings.png",
+    "narration-desktop-tour-controls.png",
+    "narration-desktop-multispeaker-dialogue-controls.png",
+    "narration-desktop-recorded-dialogue-controls.png"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "finalMedia": [
+    {
+      "id": 0,
+      "playingEvents": 0,
+      "decodedDuration": 0,
+      "local": true,
+      "duration": 0,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 1,
+      "playingEvents": 1,
+      "decodedDuration": 6.222958,
+      "local": true,
+      "duration": 6.222958,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 2,
+      "playingEvents": 1,
+      "decodedDuration": 7.105958,
+      "local": true,
+      "duration": 7.105958,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 3,
+      "playingEvents": 1,
+      "decodedDuration": 7.105958,
+      "local": true,
+      "duration": 7.105958,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 4,
+      "playingEvents": 1,
+      "decodedDuration": 7.105958,
+      "local": true,
+      "duration": 7.105958,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 5,
+      "playingEvents": 1,
+      "decodedDuration": 6.222958,
+      "local": true,
+      "duration": 6.222958,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 6,
+      "playingEvents": 1,
+      "decodedDuration": 3.065042,
+      "local": true,
+      "duration": 3.065042,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 7,
+      "playingEvents": 1,
+      "decodedDuration": 5.713958,
+      "local": true,
+      "duration": 5.713958,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 8,
+      "playingEvents": 1,
+      "decodedDuration": 2.92575,
+      "local": true,
+      "duration": 2.92575,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 9,
+      "playingEvents": 1,
+      "decodedDuration": 5.247708,
+      "local": true,
+      "duration": 5.247708,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 10,
+      "playingEvents": 1,
+      "decodedDuration": 5.247708,
+      "local": true,
+      "duration": 5.247708,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    },
+    {
+      "id": 11,
+      "playingEvents": 1,
+      "decodedDuration": 3.1115,
+      "local": true,
+      "duration": 3.1115,
+      "currentTime": 0,
+      "paused": true,
+      "ended": false,
+      "readyState": 0,
+      "hasSource": false,
+      "error": null
+    }
+  ],
+  "passed": true
+}
