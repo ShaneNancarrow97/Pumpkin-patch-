@@ -115,3 +115,35 @@ test('an unavailable optional sheet keeps the legacy costume functional without 
   assert.equal(created.filter(id=>id==='test:natalie-base').length,1);
   assert.equal(await api.loadAuthoredPlayerDirection('missing-costume'),null);
 });
+
+test('village idle can keep both base owners facing away without marching in place',async()=>{
+  // A fresh adapter keeps this success path separate from the failed-image
+  // fixture above. The image/source frames are otherwise the same declarations.
+  fail.delete('test:natalie-base');
+  const idleAPI=await import('data:text/javascript;base64,'+Buffer.from(result.outputFiles[0].text+'\n//village-contact-idle-fixture').toString('base64'));
+  await idleAPI.loadPlayerDirections();
+  for(const who of ['shane','natalie']){
+    await idleAPI.loadAuthoredPlayerDirection(who+'-base');const {group,original}=actor();
+    const draw=options=>idleAPI.applyPlayerDirection(group,{who,angle:Math.PI,walking:false,keepFacingOnIdle:true,...options});
+    draw({phase:.125,age:1,time:1});const geometry=group.userData.geometry,scale=group.scale.x;
+    assert.equal(group.userData.playerDirection,'back');assert.equal(group.userData.playerDirectionFrame,0);
+    assert.equal(group.userData.playerAuthoredIdle,true);assert.equal(group.userData.playerGaitPhase,null);assert.equal(group.userData.playerLeadingLeg,null);
+    for(const time of [2,3,10,100]){draw({phase:.75,age:time,time});assert.equal(group.userData.geometry,geometry,'time and gait cannot animate contact idle');assert.equal(group.scale.x,scale);}
+    draw({angle:Math.PI/2,time:101});assert.equal(group.userData.playerDirection,'right');assert.equal(group.userData.playerDirectionFrame,0);assert.ok(group.scale.x>0);
+    draw({angle:-Math.PI/2,time:102});assert.equal(group.userData.playerDirection,'left');assert.equal(group.userData.playerDirectionFrame,0);assert.ok(group.scale.x>0,'idle left view is not mirrored');
+    draw({angle:0,time:103});assert.equal(group.userData.playerAuthoredIdle,false);assert.equal(group.userData.playerDirection,'front');
+    for(const mesh of group.children[0].children)assert.equal(mesh.material.map,original,'front keeps the approved original idle portrait');
+    draw({walking:true,phase:.75});assert.equal(group.userData.playerAuthoredIdle,false);assert.equal(group.userData.playerDirectionFrame,6,'moving resumes the distance-driven gait');
+    draw({release:true});assert.equal(group.userData.playerAuthoredIdle,false);assert.equal(group.userData.playerStature,null);
+  }
+});
+
+test('village idle is opt-in and never paints a costume in everyday clothes',async()=>{
+  const {group,original}=actor();await api.loadAuthoredPlayerDirection('shane-base');
+  api.applyPlayerDirection(group,{who:'shane',angle:Math.PI,walking:true,phase:.5});
+  api.applyPlayerDirection(group,{who:'shane',angle:Math.PI,walking:false,facing:'back'});
+  assert.equal(group.userData.playerDirection,'front','farm/house default stopping remains unchanged');assert.equal(group.userData.playerAuthoredIdle,false);
+  api.applyPlayerDirection(group,{who:'shane',outfit:'shane-jason',angle:Math.PI,walking:false,facing:'back',keepFacingOnIdle:true});
+  assert.equal(group.userData.playerAuthoredDirection,false,'costume cannot use the base eight-view contact pose');assert.equal(group.userData.playerAuthoredIdle,false);
+  assert.notEqual(group.children[0].children[0].material.map,original,'the actual costume back sheet remains available');
+});

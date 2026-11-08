@@ -20,16 +20,18 @@ export function createPadCursor({ scene, back = () => {}, feel = () => {} } = {}
   el.innerHTML = `<i class="pad-cursor-halo"></i>${TIP}<span class="pad-cursor-label"><b>✕</b><em></em></span>`;
   document.body.append(el);
   const labelText = el.querySelector(".pad-cursor-label em");
-  let on = false, x = innerWidth / 2, y = innerHeight * .45, ramp = 0, lastMove = 0, hoverAt = 0, over = null, shown = "", nudgeAt = 0, nudgeDir = "", then = performance.now(), size = 1;
+  let on = false, x = innerWidth / 2, y = innerHeight * .45, ramp = 0, lastMove = 0, hoverAt = 0, over = null, shown = "", nudgeAt = 0, nudgeDir = "", then = performance.now(), size = 1, steering = false, settleTarget = null, settleUntil = 0;
   // Near the screen's bottom or right edge, the label flips above or to the left of the pointer.
   function place() { el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${size})`; el.classList.toggle("flip-y", y > innerHeight - 76 * size); el.classList.toggle("flip-x", x > innerWidth - 220 * size); }
+  const clearSettle = () => { steering = false; settleTarget = null; settleUntil = 0; };
+  const clampPoint = () => { x = Math.max(2, Math.min(innerWidth - 2, x)); y = Math.max(2, Math.min(innerHeight - 2, y)); };
   function show(v) {
-    on = v; el.hidden = !v; document.body.classList.toggle("pad-cursor-on", v);
+    clearSettle(); on = v; el.hidden = !v; document.body.classList.toggle("pad-cursor-on", v);
     if (v) { size = document.body.classList.contains("tv-mode") ? 1.45 : 1; lastMove = performance.now(); el.classList.remove("idle"); place(); hover(target()); } else hover(null);
   }
   // A finger or the mouse takes over from the pad.
   addEventListener("pointerdown", (e) => { if (on && e.isTrusted) show(false); }, true);
-  addEventListener("resize", () => { x = Math.min(x, innerWidth - 2); y = Math.min(y, innerHeight - 2); if (on) place(); });
+  addEventListener("resize", () => { clearSettle(); clampPoint(); if (on) { place(); hover(target()); } });
   // What's under the pointer: something to click, the world's canvas, or nothing.
   function target() {
     const hit = document.elementFromPoint(x, y);
@@ -50,10 +52,12 @@ export function createPadCursor({ scene, back = () => {}, feel = () => {} } = {}
   }
   function click() {
     el.classList.remove("press"); void el.offsetWidth; el.classList.add("press"); feel("select");
-    const t = target();
+    // A purchase may replace the whole menu. Keep the pointer where it was
+    // pressed; a detached button's zero-sized rectangle must never steer it.
+    const t = target(); clearSettle(); hover(null);
     if (t?.el) { t.el.focus?.({ preventScroll: true }); t.el.click(); }
     else if (t?.canvas) scene?.tapAt?.(x, y);
-    setTimeout(() => hover(target()), 60);
+    hover(target()); setTimeout(() => { if (on) hover(target()); }, 60);
   }
   // The nearest thing under the pointer that scrolls, scrolled.
   function scrollUnder(dx, dy) {
@@ -68,33 +72,41 @@ export function createPadCursor({ scene, back = () => {}, feel = () => {} } = {}
     get at() { return { x, y, label: shown }; },
     hide() { if (on) show(false); },
     // Puts the pointer at a screen point (for tests, and anything that wants to offer it somewhere).
-    moveTo(px, py) { x = px; y = py; lastMove = performance.now(); if (on) { place(); hover(target()); } },
+    moveTo(px, py) { clearSettle(); if (Number.isFinite(px)) x = px; if (Number.isFinite(py)) y = py; clampPoint(); lastMove = performance.now(); if (on) { place(); hover(target()); } },
     // Each frame a pad is connected. Returns true while the pointer has the pad, so nothing else acts on it.
     tick({ pad, down, pressed, canToggle = true, menuOpen = () => false }) {
-      const now = performance.now(), dt = Math.min(.05, (now - then) / 1000); then = now;
+      const now = performance.now(), dt = Math.max(0, Math.min(.05, (now - then) / 1000)); then = now;
       if ((pressed(10) || pressed(11)) && (on || canToggle)) { show(!on); feel(on ? "open" : "select"); return true; }
       if (!on) return false;
+      if (pressed(0) || pressed(1)) clearSettle();
       const scale = Math.min(1.6, Math.max(.75, innerHeight / 900));
       // Steer: curved so small pushes are fine, and quicker the longer it's held right over.
-      const lx = pad.axes[0] ?? 0, ly = pad.axes[1] ?? 0, mag = Math.hypot(lx, ly), dead = .14;
+      const axis = i => Number.isFinite(pad?.axes?.[i]) ? Math.max(-1, Math.min(1, pad.axes[i])) : 0;
+      const lx = axis(0), ly = axis(1), mag = Math.hypot(lx, ly), dead = .14;
       if (mag > dead) {
         const m = Math.min(1, (mag - dead) / (1 - dead)), speed = (230 + 1150 * ramp) * scale * m ** 1.7;
         ramp = m > .85 ? Math.min(1, ramp + dt / .7) : Math.max(0, ramp - dt * 3);
         x += lx / mag * speed * dt; y += ly / mag * speed * dt; lastMove = now;
+        steering = true; settleTarget = null; settleUntil = 0;
       } else {
         ramp = 0;
-        // Just come to rest: settle onto the button it stopped near.
-        if (over?.el && now - lastMove < 700) { const r = over.el.getBoundingClientRect(), cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2, k = 1 - Math.exp(-dt * 9);
-          if (r.width < 260 && r.height < 160) { x += (cx - x) * k; y += (cy - y) * k; } }
+        // Settle only after real steering, towards the same live target under
+        // this point. Reflow, scrolling and new menu markup cancel the pull.
+        const fresh = target();
+        if (steering) { steering = false; settleTarget = fresh?.el ?? null; settleUntil = now + 350; }
+        if (settleTarget && now < settleUntil && settleTarget.isConnected && fresh?.el === settleTarget) {
+          const r = settleTarget.getBoundingClientRect(), k = 1 - Math.exp(-dt * 9);
+          if (r.width > 0 && r.height > 0 && r.width < 260 && r.height < 160) { x += ((r.left + r.right) / 2 - x) * k; y += ((r.top + r.bottom) / 2 - y) * k; }
+        } else { settleTarget = null; settleUntil = 0; }
       }
       // The D-pad nudges a step, repeating while it's held.
       const dir = down[12] ? "u" : down[13] ? "d" : down[14] ? "l" : down[15] ? "r" : "";
-      if (dir && (dir !== nudgeDir || now >= nudgeAt)) { const step = 12 * scale; x += dir === "l" ? -step : dir === "r" ? step : 0; y += dir === "u" ? -step : dir === "d" ? step : 0; nudgeAt = now + (dir !== nudgeDir ? 300 : 55); lastMove = now; }
+      if (dir && (dir !== nudgeDir || now >= nudgeAt)) { clearSettle(); const step = 12 * scale; x += dir === "l" ? -step : dir === "r" ? step : 0; y += dir === "u" ? -step : dir === "d" ? step : 0; nudgeAt = now + (dir !== nudgeDir ? 300 : 55); lastMove = now; }
       nudgeDir = dir;
-      x = Math.max(2, Math.min(innerWidth - 2, x)); y = Math.max(2, Math.min(innerHeight - 2, y)); place();
+      clampPoint(); place();
       // The right stick scrolls what's under the pointer.
-      const rx = pad.axes[2] ?? 0, ry = pad.axes[3] ?? 0;
-      if (Math.abs(rx) > .2 || Math.abs(ry) > .2) { scrollUnder(Math.abs(rx) > .2 ? rx * 900 * dt : 0, Math.abs(ry) > .2 ? ry * 900 * dt : 0); lastMove = now; }
+      const rx = axis(2), ry = axis(3);
+      if (Math.abs(rx) > .2 || Math.abs(ry) > .2) { clearSettle(); scrollUnder(Math.abs(rx) > .2 ? rx * 900 * dt : 0, Math.abs(ry) > .2 ? ry * 900 * dt : 0); lastMove = now; }
       if (now - hoverAt > 80) { hoverAt = now; hover(target()); }
       if (down.some((d, i) => d && pressed(i))) lastMove = now;
       if (pressed(0)) click();

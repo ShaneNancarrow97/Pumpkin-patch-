@@ -4,7 +4,7 @@ export function createMenuMemory(body) {
   // data-keep-scroll name: through redraws, and when the menu opens again on the same list.
   const positions = new Map(), disclosures = new Map(), lists = new Map();
   const detailKey=(d,i)=>d.id||Object.entries(d.dataset).map(([k,v])=>k+'='+v).join('&')||i+':'+d.querySelector('summary')?.textContent.trim().replace(/\d+/g,'#'); let current = null, rangePointer = null, selectOpen = null;
-  const remember = () => { if(current){positions.set(current,body.scrollTop);body.querySelectorAll('[data-keep-scroll]').forEach(el=>lists.set(el.dataset.keepScroll,el.scrollTop));disclosures.set(current,new Map([...body.querySelectorAll('details')].map((d,i)=>[detailKey(d,i),d.open])));} };
+  const remember = () => { if(current){positions.set(current,body.scrollTop);body.querySelectorAll('[data-keep-scroll]').forEach(el=>lists.set(el.dataset.keepScroll,{top:el.scrollTop,left:el.scrollLeft}));disclosures.set(current,new Map([...body.querySelectorAll('details')].map((d,i)=>[detailKey(d,i),d.open])));} };
   body.addEventListener('pointerdown',e=>{if(e.target.matches('input[type="range"]'))rangePointer=e.pointerId;selectOpen=e.target.matches('select')?e.target:null;},true);
   body.addEventListener('change',e=>{if(e.target===selectOpen)selectOpen=null;},true);
   body.addEventListener('focusout',e=>{if(e.target===selectOpen)selectOpen=null;},true);
@@ -18,7 +18,7 @@ export function createMenuMemory(body) {
     after(section){
       const selection=[...body.querySelectorAll('.segmented button[aria-pressed="true"],.estate-finish-tabs button[aria-pressed="true"],.estate-skin-levels button[aria-pressed="true"]')].map(b=>Object.entries(b.dataset).map(([k,v])=>k+'='+v).join('&')).join('|');
       current=section+'|'+(body.querySelector('[data-menu-view]')?.dataset.menuView??'')+'|'+selection;const saved=disclosures.get(current);if(saved)body.querySelectorAll('details').forEach((d,i)=>{const key=detailKey(d,i);if(saved.has(key))d.open=saved.get(key);});body.scrollTop=positions.get(current)??0;
-      body.querySelectorAll('[data-keep-scroll]').forEach(el=>{const top=lists.get(el.dataset.keepScroll);if(top)el.scrollTop=top;});
+      body.querySelectorAll('[data-keep-scroll]').forEach(el=>{const point=lists.get(el.dataset.keepScroll);if(point){el.scrollTop=point.top;el.scrollLeft=point.left;}});
     },
     leave(){remember();current=null;rangePointer=null;selectOpen=null;},
     captureFocus(){

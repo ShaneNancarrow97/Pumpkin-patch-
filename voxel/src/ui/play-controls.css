@@ -210,3 +210,20 @@ body.has-pad #play-controls:is([data-arranging="on"], [data-arranging="ready"]) 
 .arrange-legend > span { display: inline-flex; align-items: center; gap: 5px; }
 .arrange-legend b { display: inline-flex; }
 #play-controls[data-arranging="ready"] .arrange-legend-done { display: none; }
+
+/* Farm camera inspection has its own pad owner; one small edge card explains it. */
+.farm-camera-mode{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:calc(104px + env(safe-area-inset-bottom));max-width:calc(100vw / var(--tv-zoom,1) - 28px);padding:4px;border:1px solid #c4a1d94d;border-radius:19px;background:linear-gradient(155deg,#35243ef5,#1a1321fa);box-shadow:inset 0 1px #fff1d815,0 7px 24px #09050eb3;color:#f5e6d4;--ps5-ink:#dfd7ef;--ps5-frame:#beadcf}
+.farm-camera-mode[hidden]{display:none!important}
+#farm-camera-toggle{display:flex;align-items:center;gap:8px;min-height:44px;padding:5px 11px;border:0;border-radius:14px;background:transparent;color:inherit!important;font-size:13px;font-weight:600;white-space:nowrap}
+.farm-camera-state{font-size:12px;font-weight:600;color:#f4c578;margin-left:5px}
+.farm-camera-state:empty{display:none}
+.farm-camera-instructions{display:none;padding:3px 8px 7px;gap:9px 14px;align-items:center;font-size:12px}
+.farm-camera-instructions>span{display:inline-flex;align-items:center;gap:5px;padding:3px;border-radius:10px;border:1px solid transparent}
+.farm-camera-instructions b{font-weight:600}.farm-camera-instructions i{display:inline-flex;font-style:normal}
+#play-controls[data-farm-camera=on] .farm-camera-mode{border-color:#efbd7794;box-shadow:inset 0 1px #fff1d81f,0 7px 24px #09050eb3,0 0 20px #e6a55316;--ps5-accent:#f5c578}
+#play-controls[data-farm-camera=on] #farm-camera-toggle{background:#dca05214}
+#play-controls[data-farm-camera=on] .farm-camera-instructions{display:flex}
+.farm-camera-instructions .is-used{color:#ffdda0;background:#e4ad5c18;border-color:#e3b36865;--ps5-ink:#ffdda0;--ps5-frame:#e3b368}
+.farm-camera-on .play-legend,.farm-camera-on .play-prompt{display:none!important}
+@media(max-width:640px){.farm-camera-mode{right:max(10px,env(safe-area-inset-right));bottom:calc(158px + env(safe-area-inset-bottom))}.farm-camera-instructions{gap:7px}.farm-camera-instructions>span{gap:3px}}
+@media(prefers-reduced-motion:reduce){.farm-camera-mode{transition:none}}

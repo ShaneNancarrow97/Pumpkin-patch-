@@ -1,4 +1,5 @@
 import { fountainStar, createFountainBursts } from './fountain-effects.js';
+import { createFollowCameraRig } from "./follow-camera.js";
 import { truckGuestPose } from './content/cooking-visits.js';
 import { buildVillageGateway } from './farm-village-gate.js';
 import { createMaisie, maisieTextures } from "./maisie.js";
@@ -386,10 +387,11 @@ export function createScene(canvas, state, hooks) {
   // the manner of a cosy life-sim, rather than the management view's high
   // orthographic shot. Its distance follows the zoom (L2 / R2).
   const followCam = new THREE.PerspectiveCamera(40, 1, 0.3, 160);
-  let followOn = false, farSides = false;
+  let followOn = false, farSides = false, farmCameraOn = false, farmCameraAdjusted = false;
   // The ground's far sides (ground.js) show only while the play camera can turn.
   function showFarSides(on) { farSides = on; scene.traverse((o) => { if (o.userData.groundFar) o.visible = on; }); }
   const FOLLOW = { pitch: THREE.MathUtils.degToRad(27), near: 7.5, far: 19 };
+  const farmFollow = createFollowCameraRig({ pitch: FOLLOW.pitch, distance: 14, minDistance: FOLLOW.near, maxDistance: FOLLOW.far, minPitch: THREE.MathUtils.degToRad(22), maxPitch: THREE.MathUtils.degToRad(66) });
   const active = () => view.place === "village" ? villageView.camera : view.place === "carving" ? carvingView.camera : view.place === "hayride" ? hayrideView.camera : view.place === "maze" ? mazeView.camera : view.place === "estate" ? estateView.camera : view.place === "foyer" ? foyerView.camera : view.place ? roomCam : followOn ? followCam : camera;
   const activeScene = () => view.place === "village" ? villageView.scene : view.place === "carving" ? carvingView.scene : view.place === "hayride" ? hayrideWorld.rideScene : view.place === "maze" ? mazeView.scene : view.place === "estate" ? estateView.scene : view.place === "foyer" ? foyerView.scene : scene;
   const view = { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1, place: null, reach: { x: 0, z: 0 } };
@@ -410,10 +412,17 @@ export function createScene(canvas, state, hooks) {
   function restoreCast(){for(const[o,base]of billboards){o.rotation.y=base.yaw;if(o.children[0]){o.children[0].rotation.x=base.lean;o.children[0].scale.y=base.stretch;}}places.faceCamera?.(0,INTERIOR.pitch);}
   const player = createPlayerControl({ scene, state, actors: () => actors, places, getPlace: () => view.place, getCamera: active, animate: animateSprite,
     wateringTexture, garden: gardenPlay, onWay: (way) => hooks.onWay?.(way) ?? false,
-    cameraLook(x,y,dt){if(view.place==='estate'){estateView.play.look(x,y,dt);return;}Object.assign(playerOrbit,playerOrbitStep(playerOrbit,x,y,dt,view.place==='room'));playerLook.x=playerOrbit.yaw;playerLook.z=playerOrbit.pitch-PITCH;},
+    cameraLook(x,y,dt){if(farmCameraOn&&!view.place)return;if(view.place==='estate'){estateView.play.look(x,y,dt);return;}if(view.place==='room')Object.assign(playerOrbit,playerOrbitStep(playerOrbit,x,y,dt,true));else farmFollow.look(x,y,dt);playerLook.x=playerOrbit.yaw;playerLook.z=playerOrbit.pitch-PITCH;},
     cameraZoom(direction){if(view.place==='estate'){estateView.play.zoom(direction);return;}if(touches.size||kept||!direction)return;const l=cameraLayout(canvas.clientWidth),inside=view.place==='room';view.zoom=THREE.MathUtils.clamp(view.zoom*Math.exp(direction*.13),inside?l.roomMinZoom:l.minZoom,inside?1.9:l.maxZoom);frame();},
-    cameraReset(pos,inside){if(view.place==='estate'){estateView.play.reset(pos);return;}playerOrbit.yaw=0;playerOrbit.pitch=inside?INTERIOR.pitch:FOLLOW.pitch;playerLook.x=playerLook.z=0;view.x=inside?pos.x-places.place.w/2:pos.x;view.z=inside?pos.z-places.place.d*.42:pos.z;view.zoom=inside?1:canvas.clientWidth>=740?2.3:1.35;frame();},
-    follow(pos,dt,inside){if(view.place==='estate'){estateView.play.follow(pos,dt);return;}if(touches.size||kept)return;const k=1-Math.exp(-dt*9);const tx=inside?pos.x-ORIGIN.room.x-places.place.w/2:pos.x,tz=inside?pos.z-ORIGIN.room.z-places.place.d*.42:pos.z;view.x+=(tx-view.x)*k;view.z+=(tz-view.z)*k;frame();},
+    cameraReset(pos,inside,heading){if(view.place==='estate'){estateView.play.reset(pos);return;}
+      if(inside){playerOrbit.yaw=0;playerOrbit.pitch=INTERIOR.pitch;view.x=pos.x-places.place.w/2;view.z=pos.z-places.place.d*.42;view.zoom=1;}
+      else if(followOn&&farmFollow.state.ready)farmFollow.recenter(heading);
+      else {view.zoom=viewW>=740?2.3:1.35;farmFollow.reset(pos,{heading,distance:farmFollowDistance()});const f=farmFollow.state;playerOrbit.yaw=f.yaw;playerOrbit.pitch=f.pitch;view.x=f.target.x;view.z=f.target.z;}
+      playerLook.x=playerLook.z=0;frame();},
+    follow(pos,dt,inside,motion={}){if(farmCameraOn&&!view.place)return;if(view.place==='estate'){estateView.play.follow(pos,dt);return;}if(touches.size||kept)return;
+      if(inside){const k=1-Math.exp(-Math.max(0,dt)*9),tx=pos.x-ORIGIN.room.x-places.place.w/2,tz=pos.z-ORIGIN.room.z-places.place.d*.42;view.x+=(tx-view.x)*k;view.z+=(tz-view.z)*k;}
+      else {farmFollow.setDistance(farmFollowDistance());const f=farmFollow.step(pos,dt,motion);view.x=f.target.x;view.z=f.target.z;playerOrbit.yaw=f.yaw;playerOrbit.pitch=f.pitch;playerLook.x=f.yaw;playerLook.z=f.pitch-PITCH;}
+      frame();},
   });
   let farmView = null;
   let bloomOn = true;
@@ -522,8 +531,33 @@ export function createScene(canvas, state, hooks) {
     boxOnCanvas(box, x0, z0);
     return Math.abs(x - x0) + Math.abs(z - z0) > 0.01 ? { x, z } : null;
   }
+  function farmFollowDistance() {
+    const l=cameraLayout(viewW),z=THREE.MathUtils.clamp((view.zoom-l.minZoom)/Math.max(.01,l.maxZoom-l.minZoom),0,1);
+    return THREE.MathUtils.lerp(FOLLOW.far,FOLLOW.near,z);
+  }
+  // R3 inspection owns the farm camera without enabling/disabling its owner.
+  function setFarmCameraMode(on) {
+    farmCameraOn = !!on && !view.place;
+    if (farmCameraOn) { glide = null; player.input(0,0); player.cameraInput(0,0); }
+    frame(); return farmCameraOn;
+  }
+  function farmCameraInput({ panX = 0, panY = 0, zoom = 0, dt = 0 } = {}) {
+    if (!farmCameraOn || view.place) return false;
+    const t = THREE.MathUtils.clamp(Number.isFinite(dt)?dt:0,0,.1);panX=Number.isFinite(panX)?panX:0;panY=Number.isFinite(panY)?panY:0;
+    const length=Math.max(1,Math.hypot(panX,panY));panX/=length;panY/=length;zoom=Number.isFinite(zoom)?THREE.MathUtils.clamp(zoom,-1,1):0;
+    const current=active(),right=new THREE.Vector3(1,0,0).applyQuaternion(current.quaternion);right.y=0;right.normalize();
+    const ahead=current.getWorldDirection(new THREE.Vector3());ahead.y=0;ahead.normalize();
+    const speed=THREE.MathUtils.clamp((followOn?farmFollow.state.distance:(camera.right-camera.left)*.55)*.72,3,22),before={x:view.x,z:view.z};
+    view.x+=(right.x*panX-ahead.x*panY)*speed*t;view.z+=(right.z*panX-ahead.z*panY)*speed*t;
+    const west=state.hayride.purchased?HAYRIDE_SITE.bounds.x0:HOLLOW_PROPERTY.westEdge,depth=state.hayride.purchased?Math.max(fieldDepth(state),HAYRIDE_SITE.bounds.z1):fieldDepth(state);
+    view.x=THREE.MathUtils.clamp(view.x,west,farmViewWidth());view.z=THREE.MathUtils.clamp(view.z,0,depth);
+    const layout=cameraLayout(viewW);view.zoom=THREE.MathUtils.clamp(view.zoom*Math.exp(zoom*t*1.1),layout.minZoom,layout.maxZoom);
+    if(Math.hypot(view.x-before.x,view.z-before.z)>.00001)farmCameraAdjusted=true;
+    if(followOn){farmFollow.panTarget(view.x-before.x,view.z-before.z);farmFollow.setDistance(farmFollowDistance());farmFollow.step(player.figure()?.position??new THREE.Vector3(),t,{holdTarget:true});}
+    frame();return true;
+  }
   function frame() {
-    const w = canvas.clientWidth, h = canvas.clientHeight, aspect = w / h;
+    const w = viewW, h = viewH, aspect = w / h;
     // The painted farm panorama has finite edges at the woodland's low camera.
     const control = orbiting();
     backdrop.visible = view.place !== "hayride" && !(control && !view.place);
@@ -551,7 +585,7 @@ export function createScene(canvas, state, hooks) {
     camera.lookAt(target);camera.updateMatrixWorld();
     if(control){
       // Zoomed in is close over the shoulder; zoomed out pulls back and up a little.
-      const l = cameraLayout(w), z = THREE.MathUtils.clamp((view.zoom - l.minZoom) / Math.max(.01, l.maxZoom - l.minZoom), 0, 1), d = THREE.MathUtils.lerp(FOLLOW.far, FOLLOW.near, z);
+      const d = farmFollow.state.ready ? farmFollow.state.distance : farmFollowDistance();
       followCam.aspect = aspect; followCam.fov = aspect < 1 ? 52 : 40; followCam.updateProjectionMatrix();
       target.y = 1.3;
       followCam.position.set(target.x+Math.sin(yaw)*Math.cos(pitch)*d, target.y+Math.sin(pitch)*d, target.z+Math.cos(yaw)*Math.cos(pitch)*d);
@@ -721,6 +755,7 @@ export function createScene(canvas, state, hooks) {
     }
     const west = state.hayride.purchased ? HAYRIDE_SITE.bounds.x0 : HOLLOW_PROPERTY.westEdge;
     const depth = state.hayride.purchased ? Math.max(fieldDepth(state), HAYRIDE_SITE.bounds.z1) : fieldDepth(state);
+    if(farmCameraAdjusted){view.x=THREE.MathUtils.clamp(view.x,west,farmViewWidth());view.z=THREE.MathUtils.clamp(view.z,0,depth);return;}
     const halfW = camera.right, vertical = farmVerticalLimits(camera.top, PITCH, depth);
     const maxX = farmViewWidth() + (state.kitchen?.purchased ? 8 : state.hayride.purchased ? 3 : 1) - halfW, minX = west + halfW - (state.hayride.purchased ? 3 : 1);
     view.z = THREE.MathUtils.clamp(view.z, vertical.min, vertical.max);
@@ -975,13 +1010,14 @@ export function createScene(canvas, state, hooks) {
   requestAnimationFrame(tick);
 
   return {
-    tapAt,
+    tapAt, setFarmCameraMode, farmCameraInput,
+    get farmCameraStatus() { return { active: farmCameraOn, available: !view.place, mode: player.enabled ? "play" : "management", x: view.x, z: view.z, zoom: view.zoom, adjusted: farmCameraAdjusted }; },
     player: {
       ...player,
       // A spread copies a getter's value once; these must stay live.
       get enabled() { return player.enabled; },
       get passing() { return player.passing; },
-      setEnabled(on,who){playerLook.x=playerLook.z=0;playerOrbit.yaw=0;playerOrbit.pitch=view.place==='room'?INTERIOR.pitch:PITCH;const result=player.setEnabled(on,who);if(on){const p=player.state().position;view.x=view.place==='room'?p.x-places.place.w/2:p.x;view.z=view.place==='room'?p.z-places.place.d*.42:p.z;}if(!view.place)view.zoom=on?Math.max(view.zoom,canvas.clientWidth>=740?2.3:1.35):1;if(!on)restoreCast();frame();return result;},
+      setEnabled(on,who){playerLook.x=playerLook.z=0;playerOrbit.yaw=0;playerOrbit.pitch=view.place==='room'?INTERIOR.pitch:PITCH;const result=player.setEnabled(on,who);if(on){const p=player.state().position;view.x=view.place==='room'?p.x-places.place.w/2:p.x;view.z=view.place==='room'?p.z-places.place.d*.42:p.z;}if(!view.place){view.zoom=on?Math.max(view.zoom,viewW>=740?2.3:1.35):1;if(on){const f=farmFollow.reset(result.position,{heading:result.heading,distance:farmFollowDistance()});playerOrbit.yaw=f.yaw;playerOrbit.pitch=f.pitch;view.x=f.target.x;view.z=f.target.z;}}if(!on)restoreCast();frame();return result;},
     },
     sendTo(plotIndex, owner) {
       const p = PLOTS[plotIndex]; if (!p) return;
@@ -1028,7 +1064,7 @@ export function createScene(canvas, state, hooks) {
     refreshLooks() { placeActor("natalie"); placeActor("shane"); places.refresh(); gardenPlay.release(); },
     // Stepping inside: a room of the cottage, or the shop floor. leavePlace() comes back out.
     enter(kind, id) {
-      cancelGesture();
+      farmCameraOn = false; cancelGesture();
       if (view.place === "maze") mazeView.leave();
       if (view.place === "hayride") hayrideView.leave();
       if (!view.place) farmView = { x: view.x, z: view.z, zoom: view.zoom };
@@ -1071,8 +1107,9 @@ export function createScene(canvas, state, hooks) {
     get kitchenStatus() { return places.kitchenStatus; },
     get petsStatus() { return places.petsStatus; },
     get cookingStatus() { return { ...cookingWorld.status, displays: places.foodDisplayStatus, receiver: actors.shane?.delivery ?? null, receiverStatus: actors.shane?.delivery ? { order: actors.shane.delivery, x: actors.shane.model.position.x, z: actors.shane.model.position.z, waiting: !!actors.shane.queue[0]?.receive && Math.hypot(actors.shane.model.position.x - 39.65, actors.shane.model.position.z - 4.45) <= .12 } : null }; },
-    get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight, playerLook: { ...playerLook }, playerOrbit: {...playerOrbit,active:orbiting()} }; },
+    get cameraFraming() { return { zoom: view.zoom, x: view.x, z: view.z, span: camera.right - camera.left, roomDistance: view.roomDist, overview: cameraLayout(canvas.clientWidth).overview, width: canvas.clientWidth, height: canvas.clientHeight, playerLook: { ...playerLook }, playerOrbit: {...playerOrbit,active:orbiting(),follow:farmFollow.state}, farmCameraMode:farmCameraOn }; },
     fitView() {
+      if(!view.place){farmCameraOn=false;farmCameraAdjusted=false;}
       if (view.place === "village") { villageView.cameraActions.reset(); return; }
       if (view.place === "maze") { mazeView.setLook(0, 0); mazeView.resize(); return; }
       if (view.place === "hayride") { hayrideView.setLook(0, 0); hayrideView.resize(); return; }
@@ -1082,6 +1119,7 @@ export function createScene(canvas, state, hooks) {
       frame();
     },
     get villageView() { return villageView; },
+    villageVisitor(kind) { return sheets ? spriteVisitor(sheets,kind) : null; },
     villageCharacter(who) { if(!sheets)return null;const actor=spriteActor(sheets,who,activeLook(state,who),state.wardrobe.equipped[who]);actor.userData.kind="person";return actor; },
     refreshRoom() { places.refresh(); },
     refreshEstate() { festivalWorld.sync(); farmExpansion.sync(); frame(); },

@@ -8,6 +8,7 @@
 // Realm (x east, z north) → three (x, -z).
 import * as THREE from "three";
 import { applyGrassDetail } from "./grass-detail.js";
+import { villageTreeVisibility } from "./village-visibility.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { Voxels, ChunkedVoxels, seeded, vary } from "./voxels.js";
 import * as LAYOUT from "./content/village.js";
@@ -336,6 +337,23 @@ function knotGarden(v, x0, z0, x1, z1, roadSide, r, scheme, fountainR = 1) {
   fountain(R, cx, cz, fountainR, r);
   for (const [x, z] of [[ix0, iz0], [ix1, iz0], [ix0, iz1], [ix1, iz1]]) topiary(R, x, z, .55, r);
 }
+const visibilityRigs = new WeakMap();
+// Only the upper hero tree dissolves. Its planted rim remains visible and solid.
+export function tickVillageVisibility(green, player, camera, dt = 0) {
+  const rig=visibilityRigs.get(green);if(!rig)return;
+  const wanted=villageTreeVisibility(player,camera?.position??camera,rig.centre);
+  const elapsed=Number.isFinite(dt)?Math.max(0,Math.min(.25,dt)):0;
+  rig.opacity+=(wanted-rig.opacity)*(1-Math.exp(-elapsed*11));
+  if(Math.abs(rig.opacity-wanted)<.003)rig.opacity=wanted;
+  rig.tree.visible=rig.opacity>.004;
+  for(const mesh of rig.meshes){mesh.material.opacity=rig.opacity;mesh.castShadow=rig.opacity>.985&&mesh.userData.fullShadow;}
+  const status=green.userData.treeVisibility;status.opacity=rig.opacity;status.target=wanted;status.upperVisible=rig.tree.visible;
+}
+export function resetVillageVisibility(green) {
+  const rig=visibilityRigs.get(green);if(!rig)return;
+  rig.opacity=1;rig.tree.visible=true;for(const mesh of rig.meshes){mesh.material.opacity=1;mesh.castShadow=mesh.userData.fullShadow;}
+  const status=green.userData.treeVisibility;status.opacity=1;status.target=1;status.upperVisible=true;
+}
 export function buildGreen() {
   const v = new ChunkedVoxels(24), R = onGround(v), r = seeded(101), fr = (x, z, facing) => at(v, x, z, facing), cables = [];
   // The south wall with the moth gate, and the carriage waiting inside it.
@@ -355,7 +373,10 @@ export function buildGreen() {
     for(let i=0;i<26;i++){const angle=r()*Math.PI*2,rx=x+Math.cos(angle)*(4+r()*4),rz=z+Math.sin(angle)*(3+r()*3);if(nearNodeSite(rx,rz,.7)||ROADS.some(rd=>rd.points.some(p=>Math.hypot(p[0]-rx,p[1]-rz)<2)))continue;flower(R,rx,rz,pick([0x9a6ae0,0xffcf77,0xdec6fa],r),r,.65);}
   }
   // The square: the Moth Tree at its heart, its lamps, the well, planters, flowers round the edges.
-  const F = FIXTURES.tree; mothTree(R, F.x, F.z, r);
+  const F = FIXTURES.tree, upperTree=new Voxels(), crown=onGround(upperTree);
+  // Dispatch the authored tree's high boxes into an isolated material, retaining
+  // the exact random sequence and its low planter/roots in the static world.
+  mothTree({block(x,y,z,w,h,d,c,g){(y>=1.05?crown:R).block(x,y,z,w,h,d,c,g);}},F.x,F.z,r);
   for (const l of LAMPS.slice(0, 4)) lampPost(R, l.x, l.z, 3.4, r, 2);
   const W2 = FIXTURES.well; well(R, W2.x, W2.z, r);
   roundPlanter(R, 49.2, 30.3, .7, r, [0xf08a3a, 0xf6f0f5, 0x9a6ae0], "none"); roundPlanter(R, 65.8, 30.3, .7, r, [0xf5d04a, 0xf08a3a, 0x9a6ae0], "none");
@@ -372,7 +393,7 @@ export function buildGreen() {
   // Crimson maples flanking the gate, the old oak, and a feature maple in Rowan's garden.
   canopyTree(R, 50.2, 4, 1.25, r, C.crimson, { cell: .3 }); canopyTree(R, 65.8, 4, 1.25, r, C.crimson, { cell: .3 });
   for (const [x, z] of [[55.3, 3.2], [60.7, 3.2]]) lampPost(R, x, z, 3.2, r, 1);
-  flowerBed(R, 48.8, 16.1, 54.2, 16.9, r, [0xf28fb5, 0xf6f0f5, 0x9a6ae0], 6); flowerBed(R, 61.8, 16.1, 66.2, 16.9, r, [0xf5d04a, 0xf08a3a, 0xf6f0f5], 6);
+  flowerBed(R, 48.8, 16.1, 50.3, 16.9, r, [0xf28fb5, 0xf6f0f5, 0x9a6ae0], 6); flowerBed(R, 61.8, 16.1, 66.2, 16.9, r, [0xf5d04a, 0xf08a3a, 0xf6f0f5], 6);
   canopyTree(R, FIXTURES.oak.x, FIXTURES.oak.z, 1.75, r, [0x4c8c3c, 0x5b9f45, 0x6db250, 0xd9a441], { cell: .34 });
   // Lamps along the cross road and at the ravine's edge.
   for (const l of LAMPS.slice(10, 16)) lampPost(R, l.x, l.z, 3.4, r, 1);
@@ -450,7 +471,11 @@ export function buildGreen() {
   spookyTree(R, 87.2, 9, 1.15, r); spookyTree(R, 93, 2.8, .9, r);
   lampPost(R, 95.4, 6, 3.2, r, 1);
   const group = v.build({ detailShadows: false, small: SMALL, glow: GLOW }), wire = cableMesh(cables); if (wire) group.add(wire);
-  group.userData.visualBudget = { boxes: v.count, addedLights: 0, textureBytes: 0 };
+  const tree=upperTree.build({detailShadows:false,small:SMALL,glow:GLOW});tree.name="moth-tree-upper";group.add(tree);
+  const meshes=[];tree.traverse(mesh=>{if(!mesh.isMesh)return;mesh.material.alphaHash=true;mesh.userData.fullShadow=mesh.castShadow;meshes.push(mesh);});
+  visibilityRigs.set(group,{tree,meshes,opacity:1,centre:{x:F.x*PLAN_SCALE,y:H(F.x,F.z)*PLAN_SCALE,z:-F.z*PLAN_SCALE}});
+  group.userData.treeVisibility={opacity:1,target:1,upperVisible:true};
+  group.userData.visualBudget = { boxes: v.count+upperTree.solid.length+upperTree.glow.length, addedLights: 0, textureBytes: 0 };
   return group;
 }
 

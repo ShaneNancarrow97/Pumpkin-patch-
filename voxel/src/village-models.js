@@ -572,27 +572,49 @@ export function node(f, material, ready, r = seeded(51)) {
   // A gathered pile disappears completely; only its save timer remains.
   if (!ready) return;
   if (material === "logs") {
-    // One fallen hand-sized log: about46cm in the scaled world, not a stockpile.
-    f.block(0,0,0,.09,.09,.3,vary(0x7a5236,.08,r));
-    // Pale growth rings at both ends remain readable whichever way the log lies.
+    // One fallen log, about 66cm long: bright end grain, bark plates and a twig knot.
+    f.block(0,0,0,.13,.12,.42,vary(0x795039,.08,r));
     for(const end of [-1,1]){
-      f.block(0,.01,end*.153,.07,.07,.006,0xe0bf8e);
-      f.block(.004,.027,end*.157,.037,.037,.003,0xb48a59);
-      f.block(.004,.037,end*.159,.016,.016,.002,0xe8d0a3);
+      f.block(0,.009,end*.214,.112,.1,.008,0xdfbd88);
+      f.block(.004,.026,end*.219,.076,.064,.004,0xad7c4a);
+      f.block(.004,.039,end*.222,.047,.038,.003,0xe5c797);
+      f.block(.008,.048,end*.224,.019,.02,.002,0x9c6c45);
     }
-    f.block(-.047,.015,0,.008,.055,.27,0x4e3428);f.block(.047,.015,0,.008,.055,.27,0x925e39);
-    f.block(0,.085,0,.055,.006,.27,0x9a744f);
+    for(let i=0;i<5;i++){
+      const z=-.165+i*.082;
+      f.block(-.068,.018,z,.011,.075,.067,vary(i%2?0x4b3328:0x66432e,.07,r));
+      f.block(.068,.012,z,.011,.082,.067,vary(i%2?0x8e6644:0x573a2b,.07,r));
+      f.block(-.018,.117,z,.035,.009,.071,vary(0xa17d53,.07,r));
+    }
+    f.block(.024,.12,-.025,.012,.006,.29,0x4d3829);
+    f.block(.074,.065,.07,.035,.045,.043,0x65432d);
+    f.block(.093,.073,.07,.007,.027,.028,0xd6b783);
   } else if (material === "stone") {
-    // A single loose boulder, at most35cm across; mining never leaves rubble.
-    f.block(0,0,0,.23,.14,.21,vary(C.stoneDark[0],.05,r));
-    f.block(.012,.13,-.008,.18,.055,.16,C.stoneDark[1]);
-    f.block(-.05,.185,.03,.025,.008,.025,0xa9c2ce);
+    // A loose, half-metre rock: stepped faces, pale seams and weathered moss.
+    f.block(0,0,0,.31,.16,.28,vary(0x646471,.055,r));
+    f.block(.012,.15,-.008,.25,.075,.22,0x878594);
+    f.block(-.022,.22,.008,.16,.025,.14,0xaaa6ac);
+    f.block(-.158,.035,-.025,.011,.075,.14,0x555664);
+    f.block(.159,.04,.036,.012,.05,.07,0x727785);
+    for(let i=0;i<4;i++)f.block(-.093+i*.047,.06+i*.019,.143,.041,.013,.009,0xb9b7c0);
+    for(const [x,z] of [[-.105,-.056],[.07,.054],[-.04,.08]])f.block(x,.229,z,.03,.008,.027,0x8b9c78);
+    f.block(-.083,.015,.11,.075,.014,.05,0x4c624b);
   } else if (material === "fibre") {
     for (let i = 0; i < 14; i++) f.block((r() - .5) * .8, 0, (r() - .5) * .8, .06, .8 + r() * .6, .06, vary(0xd2be6a, .1, r));
     f.block(0, .5, 0, .5, .08, .5, 0x8a5a3a);
   } else if (material === "herbs") {
-    for (let i = 0; i < 9; i++) { const x = (r() - .5) * .7, z = (r() - .5) * .7; f.block(x, 0, z, .14, .3 + r() * .2, .14, vary(0x6aa84f, .1, r)); }
-    for (let i = 0; i < 5; i++) f.block((r() - .5) * .6, .45, (r() - .5) * .6, .1, .1, .1, pick([0xb77ad8, 0xf6e6a0, 0xf28fb5], r));
+    // Distinct leafy sprigs, a pale midrib and tiny moonflower buds.
+    for(let i=0;i<7;i++){
+      const a=i/7*Math.PI*2,reach=.19+r()*.13,x=Math.cos(a)*reach,z=Math.sin(a)*reach,h=.42+r()*.13;
+      f.block(x,0,z,.025,h,.025,0x49764b);
+      for(let k=0;k<2;k++)for(const side of [-1,1]){
+        const y=.12+k*.16,dx=Math.cos(a)*side,dz=Math.sin(a)*side;
+        f.block(x+dx*.074,y,z+dz*.074,.13,.045,.09,vary(k?0x83ad60:0x5c8c50,.08,r));
+        f.block(x+dx*.07,y+.043,z+dz*.07,.076,.008,.018,0xb1c181);
+      }
+      if(i%2===0){const c=pick([0xc39ce0,0xf3e3ac,0xe3adc5],r);f.block(x,h,z,.09,.06,.09,c);f.block(x+.026,h+.055,z-.012,.045,.04,.045,0xf4e8c1);}
+    }
+
   }
 }
 

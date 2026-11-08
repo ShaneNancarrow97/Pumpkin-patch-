@@ -3,8 +3,9 @@
 // the parts that change rebuilt from their keys, decor pieces, the residents,
 // pages to find, and the grand tour's camera director. Realm (x, z) → three (x, -z).
 import * as THREE from "three";
+import { createFollowCameraRig, followCameraPose } from "./follow-camera.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { buildGround, buildPaving, buildWater, buildGreen, buildBeyond, buildHorizon, buildMist, buildStall, buildBench, buildHomes, buildNodes, buildTerrainWorks, buildWoods, grassAt, LAMPS, SKY } from "./village-world.js";
+import { buildGround, buildPaving, buildWater, buildGreen, buildBeyond, buildHorizon, buildMist, buildStall, buildBench, buildHomes, buildNodes, buildTerrainWorks, buildWoods, grassAt, tickVillageVisibility, resetVillageVisibility, LAMPS, SKY } from "./village-world.js";
 import { createGrass } from "./village-grass.js";
 import { terrainHeight, REALM } from "./village-terrain.js";
 import { createBats } from "./village-bats.js";
@@ -69,7 +70,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   const hit = (w, h, d, data, x, z, y = h / 2) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), pickMaterial); m.position.copy(W(x, z, y)); m.userData = data; scene.add(m); pickables.push(m); return m; };
   const reducedMotion = () => hooks.reducedMotion?.() ?? (typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches);
   const folk = createVillageFolk({ scene, state, getState: () => state, reducedMotion, pickables, pickMaterial, ground: groundAt, everyone: () => !!hooks.everyone?.(), style: hooks.castStyle?.() ?? "sprite" });
-  let atmosphere = null;
+  let atmosphere = null, villageGreen = null, followSubject = null;
   const decor = new Map(), pages = new Map();
   const selection = new THREE.Group(); scene.add(selection); selection.visible = false;
   let outline = null, ghost = null, ghostId = null, override = null, framed = "";
@@ -78,7 +79,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   function buildOnce() {
     if (built) return; built = true;
     horizon = buildHorizon(); sky = horizon.userData.sky; horizon.remove(sky); scene.add(sky);
-    const works = buildTerrainWorks(), green = buildGreen(), beyond = buildBeyond(), woods = buildWoods();
+    const works = buildTerrainWorks(), green = buildGreen(), beyond = buildBeyond(), woods = buildWoods(); villageGreen = green;
     // The chimneys the village noted as it was built smoke where they stand.
     const smoke = [green, beyond].flatMap((g) => g.userData.marks?.smoke ?? []).map(([x, y, z]) => ({ x, y, z: -z }));
     mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: REALM.z0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
@@ -137,7 +138,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   }
   function dispose(object) { object.traverse((o) => { o.geometry?.dispose?.(); if (o.material && o.material !== pickMaterial) [].concat(o.material).forEach((m) => { m.map?.dispose?.(); m.dispose(); }); }); }
 
-  function resize(w = canvas.clientWidth, h = canvas.clientHeight) { camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix(); }
+  function resize(w = canvas.clientWidth, h = canvas.clientHeight) { camera.aspect = w / Math.max(1, h); camera.fov = following && !inside ? (camera.aspect < .9 ? 58 : 48) : 45; camera.updateProjectionMatrix(); }
   function reset() {
     resize(); const far = (camera.aspect < .9 ? 42 : 30) * K;
     controls.target.copy(W(58 * K, 21.5 * K, 1)); camera.position.copy(W(58 * K, 21.5 * K - far * .83, far * .56)); controls.update();
@@ -202,27 +203,45 @@ export function createVillageView(canvas, state, hooks = {}) {
     root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = 1.25; hemi.intensity = .7; scene.userData.exposure = 1.15; following = false; pool.forEach((l) => { l.userData.base = 48; });
   }
 
-  // Play mode: the camera follows the owner, as in the garden.
-  const PLAY_PITCH = THREE.MathUtils.degToRad(34), PLAY_DISTANCE = 14, sphere = new THREE.Spherical(), offset = new THREE.Vector3();
+  // A closer third-person orbit stays on the owner, rather than panning away
+  // under OrbitControls. Interiors keep their wider cutaway-friendly distance.
+  const outsideRig = createFollowCameraRig({ pitch: THREE.MathUtils.degToRad(26), distance: 6.8, minDistance: 4.8, maxDistance: 13 });
+  const hallRig = createFollowCameraRig({ pitch: THREE.MathUtils.degToRad(34), distance: 11, minDistance: 9, maxDistance: 17, yawLimit: .8 });
+  const activeRig = () => inside ? hallRig : outsideRig;
   let following = false;
+  function clearOrbitMomentum() {
+    const damped = controls.enableDamping; controls.enableDamping = false; controls.update(); controls.enableDamping = damped;
+  }
+  function applyFollowPose() {
+    const pose = followCameraPose(activeRig().state);
+    controls.target.set(pose.target.x, pose.target.y, pose.target.z);
+    camera.position.set(pose.position.x, pose.position.y, pose.position.z);
+    if (!inside) camera.position.y = Math.max(camera.position.y, groundAt(camera.position.x, -camera.position.z) + .65);
+    camera.lookAt(controls.target); camera.updateMatrixWorld();
+  }
   const play = {
-    pause() { following = false; },
-    // theta turns the camera round the walker (0 looks north from behind them; π looks back south).
-    reset(pos, theta = 0) { following = true; resize(); controls.target.set(pos.x, (pos.y ?? 0) + 1.3, pos.z); sphere.set(PLAY_DISTANCE, Math.PI / 2 - PLAY_PITCH, theta); camera.position.copy(controls.target).add(offset.setFromSpherical(sphere)); controls.update(); },
-    follow(pos, dt) {
-      if (!following) { play.reset(pos); return; }
-      // Up and down the terraces too, when the walker says how high they stand.
-      const k = 1 - Math.exp(-Math.max(0, dt) * 7), dx = (pos.x - controls.target.x) * k, dz = (pos.z - controls.target.z) * k, dy = pos.y === undefined ? 0 : (pos.y + 1.3 - controls.target.y) * k;
-      controls.target.x += dx; controls.target.y += dy; controls.target.z += dz; camera.position.x += dx; camera.position.y += dy; camera.position.z += dz;
+    pause() { following = false; clearOrbitMomentum(); resize(); },
+    // Old numeric theta callers remain valid; new entries may name their heading.
+    reset(pos, options = {}) {
+      clearOrbitMomentum(); following = true; controls.enabled = false; resize();
+      const setup = typeof options === "number" ? { yaw: options } : options;
+      followSubject = { x: pos.x, y: pos.y ?? 0, z: pos.z };
+      activeRig().reset(pos, inside ? { ...setup, yaw: 0 } : setup); applyFollowPose();
     },
-    look(x, y, dt) {
-      if (!x && !y) return; const t = Math.min(.25, Math.max(0, dt));
-      sphere.setFromVector3(offset.copy(camera.position).sub(controls.target));
-      sphere.theta += x * t * 1.65; sphere.phi = THREE.MathUtils.clamp(sphere.phi - y * t * .85, Math.PI / 2 - THREE.MathUtils.degToRad(66), Math.PI / 2 - THREE.MathUtils.degToRad(20));
-      camera.position.copy(controls.target).add(offset.setFromSpherical(sphere)); controls.update();
+    recenter(pos, heading) {
+      if (!following) { play.reset(pos, { heading }); return; }
+      activeRig().recenter(inside ? { x: 0, z: -1 } : heading);
     },
-    zoom(direction) { if (direction) cameraActions.zoom(Math.exp(Math.sign(direction) * .13)); },
+    follow(pos, dt, motion = {}) {
+      if (!following) { play.reset(pos, { heading: motion.heading }); return; }
+      followSubject = { x: pos.x, y: pos.y ?? 0, z: pos.z };
+      activeRig().step(pos, dt, inside ? { ...motion, worldDirected: false } : motion); applyFollowPose();
+    },
+    look(x, y, dt) { activeRig().look(x, y, dt); },
+    orbit(dx, dy) { activeRig().orbit(dx, dy); },
+    zoom(direction) { if (direction) activeRig().zoom(Math.exp(Math.sign(direction) * .13)); },
     get following() { return following; },
+    get state() { return { ...activeRig().state, following, subject: followSubject && { ...followSubject }, inside: inside?.id ?? null }; },
   };
 
   // Reusable hand tools sit in world space beside the painted owner's hand. No lights are added.
@@ -299,9 +318,26 @@ export function createVillageView(canvas, state, hooks = {}) {
   });
 
   // Taps: residents, gathering spots, the stall and noticeboard, pages, decor, or the ground.
-  const pointers = new Map(); let multi = false;
-  canvas.addEventListener("pointerdown", (e) => { if (!active || tour || hooks.blocked?.()) return; pointers.set(e.pointerId, { x: e.clientX, y: e.clientY, moved: 0 }); if (pointers.size > 1) multi = true; });
-  canvas.addEventListener("pointermove", (e) => { const p = pointers.get(e.pointerId); if (p) p.moved = Math.max(p.moved, Math.hypot(e.clientX - p.x, e.clientY - p.y)); });
+  const pointers = new Map(); let multi = false, pinch = 0;
+  const pinchDistance = () => { const [a, b] = [...pointers.values()]; return b ? Math.hypot(a.lastX - b.lastX, a.lastY - b.lastY) : 0; };
+  canvas.addEventListener("pointerdown", (e) => {
+    if (!active || tour || hooks.blocked?.()) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY, lastX: e.clientX, lastY: e.clientY, moved: 0 });
+    if (pointers.size > 1) { multi = true; pinch = pinchDistance(); }
+    if (following) try { canvas.setPointerCapture(e.pointerId); } catch { /* Synthetic pointers have no browser capture. */ }
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    const p = pointers.get(e.pointerId); if (!p) return;
+    const dx = e.clientX - p.lastX, dy = e.clientY - p.lastY;
+    p.lastX = e.clientX; p.lastY = e.clientY; p.moved = Math.max(p.moved, Math.hypot(e.clientX - p.x, e.clientY - p.y));
+    if (!following || tour || hooks.blocked?.()) return;
+    if (pointers.size > 1) { const next = pinchDistance(); if (next > 3 && pinch > 3) activeRig().zoom(next / pinch); pinch = next; }
+    else if (!multi && p.moved >= 7) { const factor = Math.PI * 2 / Math.max(500, canvas.clientWidth); play.orbit(-dx * factor, dy * factor); }
+  });
+  canvas.addEventListener("wheel", e => {
+    if (!active || !following || tour || hooks.blocked?.()) return;
+    e.preventDefault(); play.zoom(e.deltaY < 0 ? 1 : -1);
+  }, { passive: false });
   function tapAt(clientX, clientY) {
     if (!active || tour || hooks.blocked?.()) return false;
     const b = canvas.getBoundingClientRect(), ray = new THREE.Raycaster(); ray.near = camera.near; ray.far = camera.far;
@@ -312,11 +348,11 @@ export function createVillageView(canvas, state, hooks = {}) {
     hooks.onPick?.({ ...h.object.userData, point: { x: h.point.x, z: -h.point.z } }); return true;
   }
   canvas.addEventListener("pointerup", (e) => {
-    const p = pointers.get(e.pointerId), tap = active && !tour && p && p.moved < 7 && !multi && e.button === 0 && !hooks.blocked?.(); pointers.delete(e.pointerId); if (!pointers.size) multi = false;
+    const p = pointers.get(e.pointerId), tap = active && !tour && p && p.moved < 7 && !multi && e.button === 0 && !hooks.blocked?.(); pointers.delete(e.pointerId); if (!pointers.size) { multi = false; pinch = 0; }
     if (!tap) return;
     tapAt(e.clientX, e.clientY);
   });
-  canvas.addEventListener("pointercancel", (e) => { pointers.delete(e.pointerId); if (!pointers.size) multi = false; });
+  canvas.addEventListener("pointercancel", (e) => { pointers.delete(e.pointerId); if (!pointers.size) { multi = false; pinch = 0; } });
 
   function placeLights() {
     const t = tour ? focus : controls.target;
@@ -335,16 +371,17 @@ export function createVillageView(canvas, state, hooks = {}) {
     setCastStyle, get castStyle() { return folk.style; }, spriteReady, spritesReady: spriteReady, spriteTextures: villageSpriteTextures, tapAt,
     goInside, goOutside, get inside() { return inside?.id ?? null; }, hallPoint, insidePlan: (id) => INSIDES[id],
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = !tour; },
-    leave() { gatherTool(); active = false; controls.enabled = false; pointers.clear(); multi = false; preview(null); following = false; tour = null; },
+    leave() { gatherTool(); active = false; controls.enabled = false; for (const id of pointers.keys()) try { if (canvas.hasPointerCapture?.(id)) canvas.releasePointerCapture(id); } catch { /* A finished pointer may already be gone. */ } pointers.clear(); multi = false; pinch = 0; preview(null); following = false; followSubject = null; resetVillageVisibility(villageGreen); tour = null; },
     tick(dt = 0) {
       time += dt; if (!active) return;
-      controls.enabled = !tour && !hooks.blocked?.() && !hooks.gesture?.busy?.();
-      tickTour(dt); if (!tour) { if (!following) framing.step(); controls.update(); }
+      controls.enabled = !following && !tour && !hooks.blocked?.() && !hooks.gesture?.busy?.();
+      tickTour(dt); if (!tour && !following) { framing.step(); controls.update(); }
       const reach = inside ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog - scene.fog.density) * Math.min(1, dt * 2);
       for (const p of patches) p.chunk.visible = p.sphere.center.distanceTo(camera.position) - p.sphere.radius < reach.far;
       placeLights(); folk.tick(dt, time, camera, { paused: !!inside || !!tour || !!hooks.residentsPaused?.() || !!state.paused, reducedMotion: reducedMotion() });
-      if (!inside) atmosphere?.tick(dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full" });
-      if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera);
+      if (!inside) { atmosphere?.tick(dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full" }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
+      else resetVillageVisibility(villageGreen);
+      if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera, following && !inside ? followSubject : null);
       if (mist) for (const m of mist.children) { const u = m.userData; m.position.x = u.x + Math.sin(time * .07 + u.phase) * 2.5; m.position.z = -u.z + Math.cos(time * .05 + u.phase) * 1.5; }
       for (const p of pages.values()) { p.group.position.y = .05 + Math.sin(time * 2.3 + p.x) * .04; p.group.rotation.y = Math.sin(time * .9 + p.z) * .5; }
     },

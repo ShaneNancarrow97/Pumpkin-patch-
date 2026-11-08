@@ -172,7 +172,7 @@ test("keyboard, touch and pad movement stop behind menus and while paused", t =>
   const h = harness(t); welcome(h); const start = h.game.status.position;
   h.key("keydown", "d"); h.game.tick(.2); assert.ok(h.game.status.position.x > start.x); h.key("keyup", "d");
   const zone = h.$("#vg-stick-zone"); zone.onpointerdown({ pointerId: 1, clientX: 20, clientY: 20 }); zone.onpointermove({ pointerId: 1, clientX: 60, clientY: 20 }); h.game.showPanel("map"); const stopped = h.game.status.position; h.game.tick(.2); assert.deepEqual(h.game.status.position, stopped); h.game.back(); h.game.tick(.2); assert.deepEqual(h.game.status.position, stopped, "menu clears the held thumbstick");
-  h.pad.axes[0] = 1; h.press(2); assert.equal(h.game.status.panel, "map"); const menuAt = h.game.status.position; h.game.tick(.2); assert.deepEqual(h.game.status.position, menuAt, "pad movement cannot pass through a menu"); h.press(13); assert.notEqual(h.doc.activeElement.id, "vg-panel-close", "D-pad moves the focus among menu buttons"); h.pad.axes[0] = 0; h.press(0); assert.equal(h.game.status.panel, null, "confirm activates the focused map destination"); h.press(2); h.press(1); assert.equal(h.game.status.panel, null, "back closes a panel");
+  h.pad.axes[0] = 1; h.press(2); assert.equal(h.game.status.panel, "map"); const menuAt = h.game.status.position; h.game.tick(.2); assert.deepEqual(h.game.status.position, menuAt, "pad movement cannot pass through a menu"); h.press(13); assert.notEqual(h.doc.activeElement.id, "vg-panel-close", "D-pad moves the focus among menu buttons"); h.pad.axes[0] = 0; h.press(0); assert.equal(h.game.status.panel, "map", "confirm opens the selected region criteria without travelling"); assert.equal(h.game.status.panelId, "green"); h.click('[data-vg-focus="arrival"]'); assert.equal(h.game.status.panel, null, "a real landmark shortcut closes the map"); h.press(2); h.press(1); assert.equal(h.game.status.panel, null, "back closes a panel");
   h.state.paused = true; h.key("keydown", "d"); h.pad.axes[0] = 1; const pausedAt = h.game.status.position; h.game.tick(1); assert.deepEqual(h.game.status.position, pausedAt); h.pad.axes[0] = 0; h.state.paused = false; h.game.tick(.1); assert.deepEqual(h.game.status.position, pausedAt);
 });
 
@@ -269,4 +269,26 @@ test("Vesper can only greet the owner beside the tavern counter", t => {
   h.game.enterHall("velvet-bat");h.game.meet("vesper");assert.equal(h.conversation,null,"entering a room alone is not close enough to its host");
   h.game.tick(.1);h.pad.axes[1]=-1;for(let i=0;i<45;i++)h.game.tick(.1);h.pad.axes[1]=0;h.game.tick(.1);h.press(0);
   assert.equal(h.conversation?.id,"vesper");assert.equal(h.game.status.inside,"velvet-bat");
+});
+
+test("Cross at the village return path finishes the frame safely and allows repeated visits", t => {
+  const h=harness(t);h.game.open();h.game.back();h.walkNear({x:ARRIVAL.back[0],z:ARRIVAL.back[1]+1.4});h.game.tick(.05);
+  assert.match(h.$('#vg-interact').textContent,/Farm/);
+  assert.doesNotThrow(()=>h.press(0),'returning during a controller frame cannot touch the removed actor');
+  assert.equal(h.game.active,false);assert.equal(h.scene.place,null);assert.equal(h.owner.enabled,true);assert.equal(h.leaves,1);
+  assert.doesNotThrow(()=>h.game.tick(.1));assert.equal(h.game.open(),true);assert.equal(h.game.active,true);h.game.close();assert.equal(h.leaves,2);
+});
+
+
+test("walking through the carriage threshold returns once without waiting for another button", t => {
+  const h=harness(t);h.game.open();h.game.back();h.walkNear({x:ARRIVAL.back[0],z:ARRIVAL.back[1]+2});
+  h.pad.axes[1]=1;for(let i=0;i<40&&h.game.active;i++)h.game.tick(.1);h.pad.axes[1]=0;
+  assert.equal(h.game.active,false);assert.equal(h.leaves,1);assert.equal(h.scene.place,null);assert.equal(h.owner.enabled,true);
+  for(let i=0;i<5;i++)assert.doesNotThrow(()=>h.game.tick(.1));assert.equal(h.leaves,1);
+});
+
+test("Options opens the six-action village hub and Cross chooses a real menu", t => {
+  const h=harness(t);h.game.open();h.game.back();h.press(9);assert.equal(h.game.status.panel,"navigation");
+  const cards=h.$('#vg-panel-body').querySelectorAll('button');assert.equal(cards.length,6);assert.equal(h.doc.activeElement,cards[0]);
+  h.press(0);assert.equal(h.game.status.panel,"map");h.press(1);assert.equal(h.game.status.panel,null);
 });

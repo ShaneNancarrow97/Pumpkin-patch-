@@ -91,3 +91,14 @@ test("new obstructions stop a walk immediately and a long frame cannot jump thro
   for (let i = 0; i < 500; i++) advanceResidentRoutine(s, r, .1, { obstacles: original });
   assert.notDeepEqual({ x: r.x, z: r.z }, before, "can resume once furniture is removed");
 });
+
+
+test("restoration routes cannot skim a planter or bench corner between coarse samples",()=>{
+  const s=state(true),boxes=villageWalkObstacles(s);
+  // This former smoothed route passed .12-unit samples, then stopped forever
+  // when its next .072-unit stride touched the north-west bench corner.
+  const from={x:53.6*K,z:30.2*K},to={x:50*K,z:24.6*K};
+  assert.equal(residentSegmentFree(s,from,to,boxes),false);
+  const route=findResidentPath(s,from,residentRoute(s,"elowen").stops[0],boxes);
+  assert.ok(route.length>0);let p=from;for(const q of route){assert.equal(residentSegmentFree(s,p,q,boxes),true);p=q;}
+});

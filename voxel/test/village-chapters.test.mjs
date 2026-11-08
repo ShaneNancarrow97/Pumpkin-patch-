@@ -89,3 +89,25 @@ test("farmhouse stock counts all owned copies, not only unplaced pieces", () => 
   const { html } = render(s, "stall");
   assert.match(html, /2 owned/);
 });
+
+test("the followed story leads with the useful gathering action when a delivery is short", () => {
+  const s = village();
+  s.village.quests["rowan-1"] = { step: 2, done: false, base: null };
+  s.village.quests["elowen-1"] = { step: 0, done: false, base: null };
+  Object.assign(s.village.materials, { logs: 0, stone: 0 });
+  const { html } = render(s, "journal", { trackedQuestId: "rowan-1" });
+  assert.ok(html.indexOf('data-quest-card="rowan-1"') < html.indexOf('data-quest-card="elowen-1"'));
+  const gather = card(html, 'data-vg-gather="logs"'), give = card(html, 'data-vg-handover="rowan"');
+  assert.match(gather, /vg-ch-primary/); assert.match(gather, /data-pad-default/); assert.doesNotMatch(gather, /disabled/);
+  assert.match(give, /disabled/); assert.doesNotMatch(give, /data-pad-default/);
+  assert.match(html, /Next step/); assert.match(html, /Village bench restored · £60/);
+});
+
+test("the valuable costume reward is visible before its optional full receipt", () => {
+  const s = village(); s.village.quests["lantern-keepers"] = { step: 0, done: false, base: null };
+  const { html } = render(s, "journal", { trackedQuestId: "lantern-keepers" });
+  const start = html.indexOf('data-quest-card="lantern-keepers"'), end = html.indexOf("</article>", start), quest = html.slice(start, end);
+  assert.ok(quest.indexOf("Moonlit mummy outfits for both") < quest.indexOf('<details class="vg-ch-reward-fold"'));
+  assert.match(quest, /Moonlit mummy outfits for both · £250/);
+  assert.match(quest, /All rewards/); assert.match(quest, /aria-pressed="true"/);
+});

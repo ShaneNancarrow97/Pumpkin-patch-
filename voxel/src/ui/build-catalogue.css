@@ -7,7 +7,7 @@ body:has(.sheet:not([hidden]) .build-cat) #dock{display:none!important}
 /* The title gives way to the tabs; the close button sits at the end of their row. */
 .sheet[data-section="home"]:has(.build-cat) .sheet-head{position:absolute;top:10px;right:12px;padding:0;border:0;z-index:3}
 .sheet[data-section="home"]:has(.build-cat) .sheet-head>div{display:none}
-.sheet[data-section="home"]:has(.build-cat) #sheet-close{width:42px;height:42px;min-width:42px;min-height:42px}
+.sheet[data-section="home"]:has(.build-cat) #sheet-close{width:44px;height:44px;min-width:44px;min-height:44px}
 .sheet[data-section="home"]:has(.build-cat) .sheet-body{overflow:hidden;padding:2px 0 0;gap:8px;flex:1;min-height:0}
 .sheet[data-section="home"]:has(.build-cat) .segmented{position:relative;top:auto;min-height:38px;margin-right:52px}
 
@@ -20,13 +20,13 @@ body:has(.sheet:not([hidden]) .build-cat) #dock{display:none!important}
 .build-room b{color:#f6d89e;font-weight:700}
 
 .build-rail{grid-area:rail;display:flex;flex-direction:column;gap:6px;padding:4px;border-radius:18px;background:#0f0b13a8;border:1px solid #f0d2a21a}
-.build-rail-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px!important;border:0;border-radius:14px;background:transparent;color:#cdb592!important;font:600 10.5px/1.1 var(--body)!important;padding:4px 2px}
+.build-rail-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:62px!important;border:0;border-radius:14px;background:transparent;color:#cdb592!important;font:600 12px/1.1 var(--body)!important;padding:4px 2px}
 .build-rail-tab svg{width:24px;height:24px}
 .build-rail-tab[aria-pressed=true]{background:radial-gradient(circle at 40% 25%,#ffd99a,#c98a45 60%,#8a5228);color:#2a180c!important;box-shadow:inset 0 1px #fff3d466,0 4px 12px #0007}
 
 .build-subs{grid-area:subs;display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px;border-bottom:1px solid #f0d2a21c}
 .build-subs::-webkit-scrollbar{display:none}
-.build-sub{flex:0 0 44px;display:grid;place-items:center;width:44px;height:44px;border:1px solid transparent;border-radius:12px;background:#ffffff08;color:#d9c09a!important}
+.build-sub{flex:0 0 60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:60px;height:62px;min-height:62px;padding:3px;border:1px solid transparent;border-radius:12px;background:#ffffff08;color:#d9c09a!important}
 .build-sub svg{width:22px;height:22px}
 .build-sub[aria-pressed=true]{background:#f2c27a24;border-color:#f2c27a73;color:#ffdca0!important;box-shadow:inset 0 -2px #f2c27a}
 .build-sub:disabled{opacity:.35}
@@ -88,7 +88,7 @@ body:has(.sheet:not([hidden]) .build-cat) #dock{display:none!important}
 }
 @media(max-width:400px){
  .build-cat{grid-template-columns:54px minmax(0,1fr);gap:6px 8px}
- .build-rail-tab span{font-size:9.5px}
+ .build-rail-tab span{font-size:12px}
  .build-grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px}
  .build-room{display:none}
  .build-foot>span{display:none}
@@ -97,3 +97,7 @@ body:has(.sheet:not([hidden]) .build-cat) #dock{display:none!important}
 .build-cat .build-tile>[data-pad-focus]{outline:none!important;box-shadow:none!important}
 .build-cat .build-tile:has(>[data-pad-focus]){outline:2.5px solid var(--gold-bright);outline-offset:2px;box-shadow:0 0 0 6px #f2cf9922,0 0 22px #f2cf9955}
 .tv-mode .build-cat .build-tile:has(>[data-pad-focus]){outline:5px solid #ffe4ad;outline-offset:2px;box-shadow:0 0 0 10px #120b16d9,0 0 34px 10px #ffc56daa;z-index:1}
+
+/* Illustrated categories retain short labels for a sofa-distance glance. */
+.build-sub-label{display:block;max-width:56px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 12px/1.2 var(--body)}
+.sheet[data-section="home"] .segmented button:has(.home-category-icon){min-height:44px;display:flex;align-items:center;justify-content:center;gap:5px}

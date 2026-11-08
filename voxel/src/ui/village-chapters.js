@@ -8,13 +8,15 @@ import { FOLK_BY_ID } from "../content/village-folk.js";
 import { QUESTS, DUTY_BY_ID } from "../content/village-quests.js";
 import { VILLAGE_DECOR_BY_ID } from "../content/village-decor.js";
 import { villageItemIcon } from "./village-item-markup.js";
+import { renderVillageMap } from "./village-map.js";
+import { villageUIIcon } from "./village-ui-icon-markup.js";
 
 const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const money = n => "£" + Math.floor(n).toLocaleString("en-GB");
 const short = id => FOLK_BY_ID[id]?.short ?? id;
-const button = (label, attrs, { disabled = false, primary = false } = {}) => `<button class="vg-ch-action${primary ? " vg-ch-primary" : ""}" ${attrs}${disabled ? " disabled" : ""}>${label}</button>`;
+const button = (label, attrs, { disabled = false, primary = false, preferred = false } = {}) => `<button class="vg-ch-action${primary ? " vg-ch-primary" : ""}" ${attrs}${preferred && !disabled ? " data-pad-default" : ""}${disabled ? " disabled" : ""}>${label}</button>`;
 const actions = html => `<div class="vg-ch-actions">${html}</div>`;
-const pageButton = (kind, label) => button(label, `data-vg-page="${kind}"`);
+const pageButton = (kind, label) => button(`${villageUIIcon(({journal:"quests",materials:"satchel",upgrades:"workshop",stall:"workshop",almanac:"quests"})[kind] ?? kind,24)}<span>${esc(label)}</span>`, `data-vg-page="${kind}"`);
 const paths = {
   book: '<path d="M12 6C8 3 5 3 2 5v15c3-2 6-2 10 1 4-3 7-3 10-1V5c-3-2-6-2-10 1Zm0 0v15M5 8l4 1m6 0 4-1M5 12l4 1m6 0 4-1"/>',
   leaf: '<path d="M5 19c-6-8 1-15 15-15 0 14-8 20-15 15Zm0 0L16 8m-5 5V8m0 5 5 1M3 22l2-3"/>',
@@ -54,27 +56,43 @@ function questRewards(q) {
   for (const u of r.unlock ?? []) gift(({ gathering: "Gathering tools", stall: "Rowan's stall", almanac: "Village almanac" })[u] ?? u, ({ gathering: "gathering-kit", almanac: "almanac" })[u]);
   return gifts.length ? `<div class="vg-ch-rewards">${gifts.join("")}</div>` : "";
 }
-function questAction(s, q, step, rows) {
+function questAction(s, q, step, rows, preferred = false) {
   if (!step) return "";
-  if (step.kind === "tour") return button("Take Elowen’s tour", "data-vg-tour", { primary: true });
-  if (step.kind === "talk") return button(`Talk to ${esc(short(step.who))}`, `data-vg-meet="${esc(step.who)}"`, { primary: true });
+  const next = (label, attrs) => button(label, attrs, { primary: true, preferred });
+  if (step.kind === "tour") return next("Take Elowen’s tour", "data-vg-tour");
+  if (step.kind === "talk") return next(`Talk to ${esc(short(step.who))}`, `data-vg-meet="${esc(step.who)}"`);
   if (["deliver", "give", "pay"].includes(step.kind)) {
     const ready = M.handOver(s, step.who, q.id)?.ok;
-    let html = button(step.kind === "pay" ? `Pay ${money(step.coins)}` : "Hand over", `data-vg-handover="${esc(step.who)}" data-quest="${q.id}"`, { primary: true, disabled: !ready });
+    const handover = button(step.kind === "pay" ? `Pay ${esc(short(step.who))} · ${money(step.coins)}` : `Give to ${esc(short(step.who))}`, `data-vg-handover="${esc(step.who)}" data-quest="${q.id}"`, { primary: !!ready, preferred: preferred && ready, disabled: !ready });
     const missing = rows.find(r => !r.complete && MATERIAL_BY_ID[r.key]);
-    if (missing) html += button(`Find ${esc(MATERIAL_BY_ID[missing.key].name.toLowerCase())}`, `data-vg-gather="${missing.key}"`);
-    else if (!ready && step.kind === "give") html += button("Go to the farm", "data-vg-home");
-    return html;
+    if (missing) return next(`Find ${esc(MATERIAL_BY_ID[missing.key].name.toLowerCase())}`, `data-vg-gather="${missing.key}"`) + handover;
+    if (!ready && step.kind === "give") return next("Continue at the farm", "data-vg-home") + handover;
+    return handover;
   }
-  if (step.kind === "gather") return button(`Find ${esc(MATERIAL_BY_ID[step.material]?.name.toLowerCase() ?? step.material)}`, `data-vg-gather="${step.material}"`, { primary: true });
-  if (step.kind === "place") return button("Make the reading nook", `data-vg-decorate data-near="${esc(step.near)}"`, { primary: true });
-  if (step.kind === "find") return step.item === "page-3" ? button("Return to the farm", "data-vg-home", { primary: true }) : button("Look on the Green", `data-vg-object="${esc(step.item)}"`, { primary: true });
-  if (["cook", "carve", "sell", "harvest", "earn", "fish"].includes(step.kind)) return button("Continue at the farm", "data-vg-home", { primary: true });
-  return button(`Find ${esc(short(q.giver))}`, `data-vg-meet="${q.giver}"`);
+  if (step.kind === "gather") return next(`Find ${esc(MATERIAL_BY_ID[step.material]?.name.toLowerCase() ?? step.material)}`, `data-vg-gather="${step.material}"`);
+  if (step.kind === "place") return next("Make the reading nook", `data-vg-decorate data-near="${esc(step.near)}"`);
+  if (step.kind === "find") return step.item === "page-3" ? next("Return to the farm", "data-vg-home") : next("Look on the Green", `data-vg-object="${esc(step.item)}"`);
+  if (["cook", "carve", "sell", "harvest", "earn", "fish"].includes(step.kind)) return next("Continue at the farm", "data-vg-home");
+  return next(`Find ${esc(short(q.giver))}`, `data-vg-meet="${q.giver}"`);
+}
+// The most distinctive gift stays visible; the full reward receipt is one
+// optional fold below it, so a valuable costume never disappears into a list.
+function questPrize(q) {
+  const r = q.reward ?? {}, outfits = (r.costumes ?? []).map(id => M.costumeById[id]?.name ?? id);
+  let name = outfits.length ? new Set(outfits).size === 1 && outfits.length > 1 ? `${outfits[0]} outfits for both` : outfits.join(" + ") : null;
+  name ??= r.decor?.length ? M.decorById[r.decor[0]]?.name ?? "A farmhouse furnishing" : null;
+  name ??= (r.unlock ?? []).map(id => ({gathering:"Axe & pickaxe",stall:"Rowan’s stall opens",almanac:"Elowen’s almanac"})[id]).find(Boolean);
+  name ??= r.build ? r.build === "rowan-workshop" ? "Rowan’s workshop restored" : "Elowen’s conservatory restored" : null;
+  name ??= r.effect === "bench" ? "Village bench restored" : null;
+  const piece = Object.keys(r.villageDecor ?? {})[0];
+  name ??= piece ? VILLAGE_DECOR_BY_ID[piece]?.name ?? "A village furnishing" : null;
+  name ??= Object.keys(r.friendship ?? {}).length ? "A closer friendship" : null;
+  return [name, r.coins ? money(r.coins) : null].filter(Boolean).join(" · ");
 }
 function questCard(s, q, tracked) {
   const step = M.questStep(s, q.id), rows = M.questRequirementRows(s, q.id), hint = M.questStepHint(s, q.id);
-  return `<article class="vg-ch-card vg-ch-quest${tracked ? " is-tracked" : ""}" data-quest-card="${q.id}"><div class="vg-ch-card-head"><div>${kicker(`${q.kind === "story" ? "Village story" : short(q.giver) + "’s story"}${tracked ? " · Following" : ""}`)}<h3>${esc(q.title)}</h3></div>${button(tracked ? "Following" : "Follow", `data-vg-track="${q.id}" aria-pressed="${tracked}"`)}</div><p class="vg-ch-task">${esc(step?.text ?? "Return to your neighbour")}</p>${requirements(rows)}${hint ? `<p class="vg-ch-hint">${esc(hint)}</p>` : ""}${actions(questAction(s, q, step, rows))}<details class="vg-ch-reward-fold"><summary>On completion</summary>${questRewards(q)}</details></article>`;
+  const index = Math.min(q.steps.length, Math.max(1, (s.village.quests[q.id]?.step ?? 0) + 1)), prize = questPrize(q);
+  return `<article class="vg-ch-card vg-ch-quest${tracked ? " is-tracked" : ""}" data-quest-card="${q.id}"><div class="vg-ch-card-head"><div>${kicker(`${q.kind === "story" ? "Village story" : short(q.giver) + "’s story"}${tracked ? " · Following" : ""}`)}<h3>${esc(q.title)}</h3></div>${button(tracked ? "Following" : "Follow", `data-vg-track="${q.id}" aria-pressed="${tracked}"`)}</div><div class="vg-ch-step"><span>Next step</span><small>${index} / ${q.steps.length}</small></div><p class="vg-ch-task">${esc(step?.text ?? "Return to your neighbour")}</p>${requirements(rows)}${hint ? `<p class="vg-ch-hint">${esc(hint)}</p>` : ""}${actions(questAction(s, q, step, rows, tracked))}${prize ? `<div class="vg-ch-prize-preview">${villageUIIcon("quests",24)}<span><small>On completion</small><b>${esc(prize)}</b></span></div>` : ""}<details class="vg-ch-reward-fold"><summary>All rewards</summary>${questRewards(q)}</details></article>`;
 }
 function friendshipKeepsakes(s) {
   return `<details class="vg-ch-history"><summary>Friendship keepsakes</summary><p class="vg-ch-hint">Each new friendship level brings a gift for your farm or village. A unique item you already own becomes bonus coins.</p>${["elowen", "rowan"].map(id => {
@@ -87,14 +105,14 @@ function friendshipKeepsakes(s) {
 function journal(s, trackedQuestId) {
   const active = M.activeQuests(s), tracked = active.some(q => q.id === trackedQuestId) ? trackedQuestId : M.trackedQuest(s)?.id;
   const done = QUESTS.filter(q => s.village.quests[q.id]?.done), offered = [...M.offeredBy(s, "elowen"), ...M.offeredBy(s, "rowan")];
-  let html = intro("book", "Small acts. A village restored.", "Follow one story at a time. Your farm, friendships and little acts of care all move Mothlight forward.", `${done.length} stories completed`);
-  html += actions(pageButton("almanac", "Almanac") + pageButton("materials", "Satchel") + pageButton("upgrades", "Upgrades"));
-  html += active.map(q => questCard(s, q, q.id === tracked)).join("");
+  let html = intro("book", "Your next chapter", "Follow a story. Its next step stays on screen as you explore.", `${active.length} active · ${done.length} completed`);
+  html += active.slice().sort((a,b) => Number(b.id === tracked) - Number(a.id === tracked)).map(q => questCard(s, q, q.id === tracked)).join("");
   if (!active.length) html += `<p class="vg-ch-empty">${offered.length ? "A neighbour has a new story for you." : "Spend time with Elowen and Rowan. Chats, presents and favours deepen your friendships and open their next chapters."}</p>`;
   if (offered.length) html += `<section class="vg-ch-section"><h3>Someone needs a hand</h3>${offered.map(q => `<button class="vg-ch-link" data-vg-meet="${q.giver}"><span><b>${esc(q.title)}</b><small>${esc(short(q.giver))} has a new quest</small></span><span aria-hidden="true">›</span></button>`).join("")}</section>`;
+  html += actions(pageButton("almanac", "Almanac") + pageButton("map", "Village map"));
   if (done.length) html += `<details class="vg-ch-history"><summary>Finished stories · ${done.length}</summary>${done.map(q => `<article class="vg-ch-receipt">${kicker("Completed · rewards received")}<h3>${esc(q.title)}</h3>${questRewards(q)}</article>`).join("")}</details>`;
   html += friendshipKeepsakes(s);
-  html += `<details class="vg-help"><summary>Ways to explore</summary><dl><dt>Touch</dt><dd>Left thumb moves; right thumb looks. Tap the gold action to interact.</dd><dt>Controller</dt><dd>Left stick moves, right stick looks. Cross interacts, Circle goes back. D-pad moves through menus.</dd><dt>Keyboard</dt><dd>WASD to walk; Q/E to turn; F to interact; Escape to go back.</dd></dl>${button(s.village.toured ? "Take the tour again" : "Take Elowen’s tour", "data-vg-tour")}</details>`;
+  html += `<details class="vg-help"><summary>Ways to explore</summary><dl><dt>Touch</dt><dd>Left thumb moves; right thumb looks. Tap the gold action to interact.</dd><dt>Controller</dt><dd>Left stick moves, right stick looks. Cross interacts, Circle goes back. D-pad moves through menus.</dd><dt>Keyboard</dt><dd>WASD to walk; Q/R to turn; E to interact; C to centre; Escape to go back.</dd></dl>${button(s.village.toured ? "Take the tour again" : "Take Elowen’s tour", "data-vg-tour")}</details>`;
   return { title: "Village journal", tag: "Stories of Hollow Green", html };
 }
 function almanac(s) {
@@ -147,23 +165,7 @@ function stall(s, itemArt) {
   html += '<p class="vg-ch-footnote">Lantern posts and stools are always available. New finds rotate during active play.</p>';
   return { title: "Rattlewood’s stall", tag: s.village.discount ? `${Math.round(s.village.discount * 100)}% friend’s discount` : "Made with care. A little crooked.", html };
 }
-function map(s) {
-  const destinations = [
-    ["arrival", "Carriage home", "Return to your pumpkin patch", "compass"],
-    ["tree", "The Moth Tree", "Lanterns at the heart of the Green", "leaf"],
-    ["elowen-library", "Elowen’s library", s.village.built["elowen-conservatory"] ? "Conservatory restored" : "Help Elowen make a home", "book"],
-    ["rowan-workshop", "Rowan’s workshop", s.village.built["rowan-workshop"] ? "Workshop restored" : "A carpenter’s next chapter", "tools"],
-    ["velvet-bat", "The Velvet Bat", "Vesper keeps a light on", "house"],
-    ["stall", "Rattlewood’s stall", M.stallOpen(s) ? "Decorations and useful upgrades" : "Help Rowan reopen his stall", "lantern"],
-    ...FORAGE_AREAS.map(a => [`forage:${a.id}`, a.name, a.material === "logs" ? "Fallen timber · use your axe" : a.material === "stone" ? "Loose stone · use your pickaxe" : a.material === "fibre" ? "Wild fibres · gather by hand" : "Moonlit herbs · gather by hand", a.material === "logs" || a.material === "stone" ? "tools" : "leaf"]),
-  ];
-  let html = intro("compass", "Find your way around", "Choose a landmark to mark your route. The direction and distance stay beside your quest as you walk. Move or centre the camera to return to your character.");
-  html += `<div class="vg-ch-destinations">${destinations.map(([id, name, sub, icon]) => `<button class="vg-ch-link" data-vg-focus="${id}">${seal(icon)}<span><b>${esc(name)}</b><small>${esc(sub)}</small></span><span aria-hidden="true">›</span></button>`).join("")}</div>`;
-  html += actions(button("Decorate the Green", "data-vg-decorate", { primary: true }) + pageButton("almanac", "Almanac"));
-  html += '<p class="vg-ch-footnote">Explore the Green and its gathering trails. Restore homes, earn exclusive sets and costumes, and improve the farm you return to. Other districts wait for later chapters.</p>';
-  return { title: "Hollow Green", tag: "The first neighbourhood of Mothlight", html };
-}
-export function renderVillageChapter({ kind, state, trackedQuestId, itemArt }) {
+export function renderVillageChapter({ kind, id, state, trackedQuestId, itemArt, position }) {
   const s = typeof state === "function" ? state() : state;
   if (!s?.village) return null;
   if (kind === "journal") return journal(s, trackedQuestId);
@@ -171,6 +173,6 @@ export function renderVillageChapter({ kind, state, trackedQuestId, itemArt }) {
   if (kind === "materials") return materials(s);
   if (kind === "upgrades") return upgrades(s);
   if (kind === "stall") return stall(s, itemArt);
-  if (kind === "map") return map(s);
+  if (kind === "map") return renderVillageMap(s, { selectedDistrict: id, position });
   return null;
 }

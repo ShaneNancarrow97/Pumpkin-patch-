@@ -223,8 +223,11 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     // Collision sliding changes where the feet travel, so draw that heading
     // instead of walking sideways into the wall the stick points towards.
     if (moving) { const n = Math.hypot(pos.x - old.x, pos.z - old.z); heading.x = (pos.x - old.x) / n; heading.z = (pos.z - old.z) / n; }
-    const screenHeading = viewFacing();
     a.position.x = o.x + pos.x; a.position.z = o.z + pos.z;
+    // Frame the subject before choosing its camera-relative sprite view. Orbit
+    // smoothing then cannot leave the drawing one turn behind the camera.
+    if (!asleep) follow?.(a.position, dt, room(), { x: velocity.x, z: velocity.z, moving, heading: { ...heading }, worldDirected: !!walkTarget });
+    const screenHeading = viewFacing();
     if (!pose) positions.set(key, { ...pos });
     // Walking into a doorway, a gate, the stairs or a ladder takes the owner through.
     if (!asleep && !action && !pose && onWay) {
@@ -272,7 +275,6 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
       if (anchor && Number.isFinite(anchor.x) && Number.isFinite(anchor.z)) a.position.set(o.x + anchor.x, Number(anchor.y) || 0, o.z + anchor.z);
       places.playerRest?.(who, pose.kind, pose.target, time);
     }
-    if (!asleep) follow?.(a.position, dt, room(), { x: velocity.x, z: velocity.z, moving });
   }
   // Generated side/back textures must give way to the original autonomous sheet on release.
   function releaseFigure(person) {
@@ -293,7 +295,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     cameraInput(x, y) { lookInput.x = clamp(Number(x) || 0, -1, 1); lookInput.y = clamp(Number(y) || 0, -1, 1); },
     lookBy(x, y) { if (enabled && !blocked && available()) cameraLook?.(clamp(Number(x) || 0, -1, 1), clamp(Number(y) || 0, -1, 1), .16); },
     zoom(direction) { if (enabled && !blocked && available()) cameraZoom?.(Math.sign(Number(direction) || 0)); },
-    recenter() { lookInput.x = lookInput.y = 0; cameraReset?.(localPosition(), room()); },
+    recenter() { lookInput.x = lookInput.y = 0; cameraReset?.(localPosition(), room(), { ...heading }); },
     faceTarget: face,
     rest(kind, t) {
       if (!enabled || blocked || state.paused || !available() || action || !["sit", "read", "pet"].includes(kind) || !t) return false;
@@ -319,7 +321,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
       positions.set(spot.place + ":" + who, { x: spot.x, z: spot.z }); key = null; walkTarget = null; velocity.x = velocity.z = 0;
       if (spot.face) { heading.x = spot.face.x; heading.z = spot.face.z; }
       if (!sync()) return api.state();
-      viewFacing(); still = 0; target = nearest(); cameraReset?.(localPosition(), room());
+      viewFacing(); still = 0; target = nearest(); cameraReset?.(localPosition(), room(), { ...heading });
       return { ...api.state(), from: way?.id ?? null };
     },
     // A way taken by the button rather than on foot: hold still until arrive().
@@ -332,7 +334,7 @@ export function createPlayerControl({ scene, state, actors, places, getPlace, ge
     teleport(x, z) { if (!sync()) return false; const a = model(), o = origin(), p = safeSpot({ x, z }); a.position.set(o.x + p.x, room() ? 0 : .04, o.z + p.z); positions.set(key, p); target = nearest(); return true; },
     // Where the action target is in the world (rooms sit off at their origin), for the prompt over it.
     targetAt() { const t = enabled && available() ? nearest() : null, o = origin(); return t ? { x: o.x + t.x, y: room() ? 1.9 : 1.7, z: o.z + t.z } : null; },
-    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", passing: passing?.id ?? null, room: room() ? places.place?.id : null, position: localPosition(), facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, waterCanStyle:'sprite', waterCanWidth:canWidth, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: Math.abs(can.scale.x), waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
+    state() { return { enabled, who, available: available(), place: getPlace() ?? "farm", passing: passing?.id ?? null, room: room() ? places.place?.id : null, position: localPosition(), heading: { ...heading }, facing, moving, gait, speed: Math.hypot(velocity.x, velocity.z), pose: pose ? {kind: pose.kind, target: pose.target} : null, travelling: !!walkTarget, actionProgress: action ? Math.min(1, action.elapsed / action.duration) : 0, blocked: blocked || !!state.paused, action: action?.kind ?? null, actionTarget: action?.target ?? null, waterCanVisible: tool.visible, wateringVisible: tool.visible, canVisible: tool.visible, waterCanStyle:'sprite', waterCanWidth:canWidth, streamVisible: drops.visible, dropsVisible: drops.visible, canScale: Math.abs(can.scale.x), waterNozzle: {x:nozzle.x,y:nozzle.y,z:nozzle.z}, visualYaw: model()?.rotation.y ?? 0, spriteFrame: model()?.userData.playerDirectionFrame ?? null, spriteDirection: model()?.userData.playerDirection ?? null, spriteStature: model()?.userData.playerStature ?? null, sideFrameCount: model()?.userData.playerSideFrameCount ?? null, target: enabled && available() ? nearest() : null }; },
     // QA can finish a presentation without advancing harvests, deliveries or any other rule.
     advance(seconds) {
       input.x = input.y = 0;

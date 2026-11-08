@@ -6,7 +6,7 @@ import { MUSIC_TRACKS } from "./music-tracks.js";
 export { MUSIC_TRACKS };
 
 export function createAudio(prefs) {
-  let ctx = null, master = null, noise = null, touched = false, timer = null, clip = null, start = 0, cursor = 0, selected = null, duckUntil = 0, sceneGain = 1, narrationActive = false;
+  let ctx = null, master = null, noise = null, touched = false, timer = null, clip = null, start = 0, cursor = 0, selected = null, duckUntil = 0, sceneGain = 1, villageActive = false, narrationActive = false;
   const voices = new Set(), cache = new Map(), queue = createMusicQueue(MUSIC_TRACKS.map((t) => t.id));
   const current = () => MUSIC_TRACKS.find((t) => t.id === prefs.musicTrack) ?? MUSIC_TRACKS[0];
   function ensure() {
@@ -20,7 +20,7 @@ export function createAudio(prefs) {
     }
     if (ctx.state === "suspended") ctx.resume().catch(() => {});
   }
-  const level = () => Math.max(0, Math.min(1, Number(prefs.musicVolume) || 0)) * .22 * sceneGain * (narrationActive ? .25 : 1);
+  const level = () => Math.max(0, Math.min(1, Number(prefs.musicVolume) || 0)) * .22 * sceneGain * (villageActive ? .38 : 1) * (narrationActive ? .25 : 1);
   // Scene attenuation shares the music gain without restarting the MIDI queue.
   function applyMusicGain() {
     if (!master || !ctx) return;
@@ -117,7 +117,8 @@ export function createAudio(prefs) {
     nextTrack() { prefs.musicTrack = queue.next(prefs.musicTrack ?? current().id, prefs.musicShuffle !== false); sync(); },
     setVolume(v) { prefs.musicVolume = Math.max(0, Math.min(1, Number(v) || 0)); applyMusicGain(); },
     setSceneGain(value) { sceneGain = Math.max(0, Math.min(1, Number(value) || 0)); applyMusicGain(); },
+    setVillageActive(on) { villageActive = !!on; applyMusicGain(); },
     setNarrationActive(on) { narrationActive = !!on; applyMusicGain(); },
-    get status() { return { track: selected, playing: !!timer, voices: voices.size, duration: clip?.duration ?? 0, context: ctx?.state ?? "waiting", shuffle: prefs.musicShuffle !== false, sceneGain, narrationActive }; },
+    get status() { return { track: selected, playing: !!timer, voices: voices.size, duration: clip?.duration ?? 0, context: ctx?.state ?? "waiting", shuffle: prefs.musicShuffle !== false, sceneGain, villageActive, narrationActive }; },
   };
 }

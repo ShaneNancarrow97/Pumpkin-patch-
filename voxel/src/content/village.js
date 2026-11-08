@@ -147,7 +147,7 @@ export const GATES = Object.freeze([
 ].map((g) => Object.freeze({ ...g, x: S(g.x), z: S(g.z) })));
 export const BRIDGE = Object.freeze({ ...box(shBox("quarry", { x0: 55, z0: 37, x1: 61, z1: 43 })), ravine: Object.freeze(box(shBox("quarry", { x0: 39, z0: 37, x1: 87, z1: 43 }))) });
 // The carriage stop: where the carriage turns, the step back to the farm, where you arrive (facing north) and the noticeboard.
-export const ARRIVAL = Object.freeze({ carriage: at([58, -24.4]), back: at([58, -21.4]), spawn: at([58, -17]), noticeboard: at([63, 28.8]) });
+export const ARRIVAL = Object.freeze({ carriage: at([58, -24.4]), back: at([58, -21.4]), spawn: at([58, -17]), noticeboard: at([63, 17.5]) });
 
 // The eight residents (roadmap §4): each has a home plot, ten bond ranks and five
 // chapters, opening at CHAPTER_RANKS. Original characters; the Baron is the farm's
@@ -175,13 +175,14 @@ export const STORE_BASE = 40;
 
 // The square's fixtures and landmarks on the Green (rules keep decor off them; the world builds them).
 // The Moth Tree stands at the heart of the round square where the roads meet; the
-// well, the bench by it, Rowan's stall and the noticeboard stand round it.
+// well and noticeboard welcome arrivals below it; the market stall sits on the
+// north-east edge, leaving both sides of the tree open for walking.
 export const FIXTURES = Object.freeze({
   tree: Object.freeze({ x: S(58), z: S(24.6), r: 4.4 }),
-  well: Object.freeze({ x: S(51.4), z: S(27.8), r: 2.5 }),
+  well: Object.freeze({ x: S(52.1), z: S(17.8), r: 2.5 }),
   bench: Object.freeze({ x: S(51.2), z: S(23.6), w: 1.7, d: 3.9, facing: "east" }),
-  stall: Object.freeze({ x: S(64.2), z: S(24.6), w: 4.2, d: 5.1, facing: "west" }),
-  noticeboard: Object.freeze({ x: S(63), z: S(29.8), w: 3.3, d: 1.2, facing: "south" }),
+  stall: Object.freeze({ x: S(64.2), z: S(28.6), w: 4.2, d: 5.1, facing: "west" }),
+  noticeboard: Object.freeze({ x: S(63), z: S(18.5), w: 3.3, d: 1.2, facing: "south" }),
   carriage: Object.freeze({ x: S(58), z: S(-24.4), w: 14, d: 4.8, facing: "east" }),
   oak: Object.freeze({ x: S(25.4), z: S(9.6), r: 2.4 }),
   pond: Object.freeze({ x: S(102), z: S(6), w: S(13), d: S(8) }),
@@ -205,7 +206,7 @@ export const SCENERY = Object.freeze([
   { id: "lamp-nw", x: 54.5, z: 28.1, r: .45 }, { id: "lamp-ne", x: 61.5, z: 28.1, r: .45 },
   { id: "planter-nw", x: 49.2, z: 30.3, r: .7 }, { id: "planter-ne", x: 65.8, z: 30.3, r: .7 },
   { id: "bench-avenue-w", x0: 55.1, z0: 10.2, x1: 56.1, z1: 12.8 }, { id: "bench-avenue-e", x0: 59.9, z0: 10.2, x1: 60.9, z1: 12.8 },
-  { id: "bed-west", x0: 48.8, z0: 16.1, x1: 54.2, z1: 16.9 }, { id: "bed-east", x0: 61.8, z0: 16.1, x1: 66.2, z1: 16.9 },
+  { id: "bed-west", x0: 48.8, z0: 16.1, x1: 50.3, z1: 16.9 }, { id: "bed-east", x0: 61.8, z0: 16.1, x1: 66.2, z1: 16.9 },
   { id: "pumpkin-patch", x0: 67.6, z0: 2.4, x1: 81.4, z1: 8.4 }, { id: "corn-rows", x0: 29.6, z0: 5.6, x1: 46.6, z1: 9.4 }, { id: "moth-yard", x0: 85.5, z0: 1.5, x1: 94.5, z1: 10.5 },
   { id: "velvet-bat", x0: 91.4, z0: 11.6, x1: 111.8, z1: 30 },
 ].map((x) => Object.freeze(x.r ? { ...x, x: S(x.x), z: S(x.z), r: S(x.r) } : box(x))));

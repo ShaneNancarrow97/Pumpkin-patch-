@@ -18,7 +18,7 @@ export function installGrassDetailTexture(url){
 }
 
 // Opaque colour maps carry a grass mask in alpha. Restore opacity before any output pass.
-export function applyGrassDetail(material,{worldUnits=1.6}={}){
+export function applyGrassDetail(material,{worldUnits=2.2}={}){
   const previous=material.onBeforeCompile.bind(material),oldKey=material.customProgramCacheKey.bind(material);
   material.onBeforeCompile=(shader,renderer)=>{
     previous(shader,renderer);
@@ -47,7 +47,7 @@ export function applyGrassDetail(material,{worldUnits=1.6}={}){
         }
       #endif`);
   };
-  material.customProgramCacheKey=()=>oldKey()+'|grass-detail-v1';
+  material.customProgramCacheKey=()=>oldKey()+'|grass-detail-v2';
   material.userData.grassDetail={worldUnits,coverage:'base-map-alpha',sharedTexture:true};
   return material;
 }

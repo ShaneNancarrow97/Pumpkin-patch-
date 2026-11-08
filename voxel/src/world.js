@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Voxels, seeded, vary } from "./voxels.js";
 import { hollowPathDistance } from "./content/hollow-house.js";
+import { onVillageGatewayPath } from "./content/village-gateway.js";
 import { pumpkinBlock } from "./pumpkins.js";
 import { buildGround, grounds } from "./ground.js";
 import { Face } from "./face.js";
@@ -82,7 +83,7 @@ export function yardGround({ width = MAP.w, depth = MAP.d, plotsTier = 0, pathEn
   const pad = (x, z) => x > 31 && x < 32.6 && z > 8.6 && z < 10.6;
   const beds = PLOTS.slice(0, plotsTier >= 4 ? 24 : plotsTier >= 3 ? 18 : 12);
   return buildGround({ x0: -8, x1: width, z0: -1, z1: depth + 5 }, (x, z) => {
-    if (nearPath(x, z, 0.95) || nearArchPath(x, z) || pad(x, z) || hollowPathDistance(x, z) < .85 || plotsTier >= 3 && z >= 24 + DROP && z <= pathEnd + .8 && (Math.abs(x - 33) < .95 || Math.abs(x + 3) < .85) || extraPath(x, z)) return grounds.cobble(x, z, COL.stone, 0.42, 1, 0x2a2430);
+    if (nearPath(x, z, 0.95) || nearArchPath(x, z) || onVillageGatewayPath(x,z) || pad(x, z) || hollowPathDistance(x, z) < .85 || plotsTier >= 3 && z >= 24 + DROP && z <= pathEnd + .8 && (Math.abs(x - 33) < .95 || Math.abs(x + 3) < .85) || extraPath(x, z)) return grounds.cobble(x, z, COL.stone, 0.42, 1, 0x2a2430);
     if (inFarmPatch(x, z, plotsTier)) {
       for (const p of beds) { const b = grounds.bed(x, z, p); if (b) return b; }
       return grounds.soil(x, z);
@@ -741,7 +742,8 @@ export function buildWorld() {
     [23.8, 0.6, 0.95, 0], [26.6, 1.0, 1.05, 2], [29.4, 0.4, 0.9, 1], [36.2, 0.2, 1.15, 0], [40, 1.6, 1.2, 1],
     [-8.4, 6.8, 1.1, 1], [-8.2, 11.5 + DROP, 0.9, 0], [-8.6, 16.4 + DROP, 1.1, 2], [-8.4, 21.8 + DROP, 0.9, 1], [-8.2, 26 + DROP, 1.2, 0], [4.4, 27.2 + DROP, 1.1, 2],
     [37.6, 27 + DROP, 1.1, 1], [41.4, 24 + DROP, 1.2, 0],
-    [40.4, 18.6 + DROP, 1.0, 2], [41, 13.2 + DROP, 1.1, 0], [40.6, 8, 1.0, 1], [6.8, 1.2, 0.8, 2],
+    // The lantern-road forecourt stays clear of the former east-edge crowns.
+    [42.8, 22, 1.0, 2], [43.4, 13, 1.1, 0], [40.6, 8, 1.0, 1], [6.8, 1.2, 0.8, 2],
     [-8.3, 9.4, 0.8, 2],                                                                   // filling the west edge the yard grew into
   ]) {
     const from = v.solid.length;
@@ -762,7 +764,7 @@ export function buildWorld() {
     v.block(x, .05, z, .7, .8 + r() * .15, .34, vary(0x394333, .14, r));
     v.block(x, .85, z, .75, .25, .36, vary(0x515a3d, .1, r));
   }
-  for (const [x, z] of [[29.2, 18.2 + DROP], [33.4, 13.2 + DROP], [36.6, 11.6], [10.8, 9.4]]) lanternPost(v, x, z, lights);
+  for (const [x, z] of [[29.2, 18.2 + DROP], [33.4, 13.2 + DROP], [35.3, 14.2], [10.8, 9.4]]) lanternPost(v, x, z, lights);
   // Lamps along the lantern walk, between the buildings and the patch.
   for (const x of [16, 25]) lanternPost(v, x, 9.7, lights, x === 16);
   // Props round the yard: crates along the back fence, hay and a bench by the front, pumpkins everywhere.
@@ -770,7 +772,7 @@ export function buildWorld() {
   barrel(v, r, 17.2, 3.7); barrel(v, r, 26.2, 3.8);
   hay(v, r, 5, 22.6 + DROP); hay(v, r, 36.4, 23.2 + DROP); hay(v, r, 36.6, 22.4 + DROP, 1.0);
   bench(front, 26.6, 23.6 + DROP); crate(v, r, 37.2, 18.8 + DROP); crate(v, r, 2.6, 23.2 + DROP, 0.9);
-  for (const [x, z] of [[2.4, 17.6], [37.6, 14.8], [11.6, 23.4], [21.2, 23.6]].map(([x, z]) => [x, z + DROP])) jackOLantern(z > 23 + DROP ? front : v, r, x, z, 0.6, null);
+  for (const [x, z] of [[2.4, 17.6], [35.2, 16], [11.6, 23.4], [21.2, 23.6]].map(([x, z]) => [x, z + DROP])) jackOLantern(z > 23 + DROP ? front : v, r, x, z, 0.6, null);
   for (const [x, z, c] of [[3.4, 18.4 + DROP, 0xd9d2ff], [27.8, 22.5 + DROP, 0x9d55e6], [36.8, 21.4 + DROP, 0xf0821e], [26.8, 5.5, 0xf0821e], [8.6, 21.8 + DROP, 0xf0821e]]) pumpkinBlock(v, x, 0, z, 0.55, c, r);
   for (const [x, z] of [[2.2, 12.4 + DROP], [12.4, 23.8 + DROP], [19, 23.8 + DROP], [30, 21 + DROP], [38, 16.6 + DROP], [11.8, 4.2], [28, 4.4], [3.2, 9.4]]) flowers(z > 23 + DROP ? front : v, r, x, z);
   for (let x = 8; x < 32; x += 1.3) for (let k = 0; k < 7; k++)                           // low autumn hedging beyond the front fence

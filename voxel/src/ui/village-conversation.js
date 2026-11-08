@@ -16,8 +16,8 @@ export function conversationPages(lines = [], choices = []) {
 
 export function createVillageConversation({ mount = document.body, onChoice = () => {}, onContinue = () => {}, onClose = () => {}, portrait = () => null, narration, savePrefs = () => {} } = {}) {
   const panel = document.createElement("section"); panel.id = "village-dialogue"; panel.hidden = true;
-  panel.setAttribute("role", "dialog"); panel.setAttribute("aria-modal", "false"); panel.setAttribute("aria-labelledby", "village-dialogue-name"); panel.tabIndex = -1;
-  panel.innerHTML = '<header class="village-dialogue-head"><span class="village-person-art" aria-hidden="true"></span><div class="village-dialogue-person"><h2 id="village-dialogue-name"></h2><p class="village-dialogue-role"></p></div><button class="village-close" data-village-dialogue-close aria-label="Close conversation">×</button></header><div class="village-dialogue-body"><p class="village-dialogue-heading" hidden></p><p class="village-dialogue-line" aria-live="polite"></p><div class="village-dialogue-replies" role="group" aria-label="Your reply"></div><div class="village-dialogue-bond" hidden></div></div><footer class="village-dialogue-footer"><span class="village-dialogue-page"></span><button class="village-dialogue-next" data-village-dialogue-next>Continue</button></footer>';
+  panel.setAttribute("role", "dialog"); panel.setAttribute("aria-modal", "false"); panel.setAttribute("aria-labelledby", "village-dialogue-name"); panel.setAttribute("aria-describedby", "village-dialogue-line"); panel.tabIndex = -1;
+  panel.innerHTML = '<header class="village-dialogue-head"><span class="village-person-art" aria-hidden="true"></span><div class="village-dialogue-person"><h2 id="village-dialogue-name"></h2><p class="village-dialogue-role"></p></div><button class="village-close" data-village-dialogue-close aria-label="Close conversation">×</button></header><div class="village-dialogue-body"><p class="village-dialogue-heading" hidden></p><p id="village-dialogue-line" class="village-dialogue-line" aria-live="polite" aria-atomic="true"></p><div class="village-dialogue-replies" role="group" aria-label="Your reply"></div><div class="village-dialogue-bond" hidden></div></div><footer class="village-dialogue-footer"><span class="village-dialogue-page" aria-label="Conversation progress"></span><button class="village-dialogue-next" data-village-dialogue-next data-pad-default>Continue</button></footer>';
   mount.append(panel);
   const query = selector => panel.querySelector(selector), next = query("[data-village-dialogue-next]");
   let session = null, pages = [], page = 0, answered = false, showingReply = false, previousFocus = null, speaker = null, currentVoice = null;
@@ -49,11 +49,14 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
   function render() {
     if (!session) return;
     const current = pages[page], replies = query(".village-dialogue-replies"); replies.replaceChildren();
+    panel.dataset.dialogueState = current.choices?.length ? "choice" : "speaking";
     speaker = current.who ?? speaker ?? session.id; updatePerson();
     query(".village-dialogue-line").textContent = current.text;
     speak(current.text);
     for (const [index, choice] of (current.choices ?? []).entries()) {
       const button = document.createElement("button"); button.className = "village-reply"; button.type = "button"; button.dataset.villageChoice = String(index);
+      button.dataset.villageTone = Object.hasOwn(TONES, choice.tone) ? choice.tone : "neutral";
+      if (!index) button.setAttribute("data-pad-default", "");
       const tone = document.createElement("small"), words = document.createElement("span"); tone.textContent = TONES[choice.tone] ?? "Reply"; words.textContent = choice.text ?? "Continue"; button.append(tone, words);
       button.addEventListener("click", () => {
         if (!session || answered) return;
@@ -75,6 +78,7 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
     if (!session) return;
     speaker = who ?? speaker ?? session.id; updatePerson();
     showingReply = true; answered = true;
+    panel.dataset.dialogueState = "speaking";
     query(".village-dialogue-line").textContent = String(text ?? "");
     speak(String(text ?? ""));
     query(".village-dialogue-replies").hidden = true; next.hidden = false; next.textContent = page === pages.length - 1 ? "Done" : "Continue"; next.focus({ preventScroll: true });

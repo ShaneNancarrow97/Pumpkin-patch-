@@ -6,6 +6,8 @@
 import { glyphHTML, padFamily } from './glyphs.js';
 import { createPadMenu } from './pad-menu.js';
 import { createPadCursor } from './pad-cursor.js';
+import { createPlayPadBoundary, createFarmCameraMode } from './play-input-boundary.js';
+import { ps5Icon } from './dualsense-icons.js';
 // While the stick cursor is up, the menus still hear L1/R1, L2/R2, Options and the touchpad; never its sticks or ✕ ○.
 const CURSOR_PASS=new Set([4,5,6,7,9,17]),STILL_PAD={axes:[0,0,0,0],buttons:[]};
 import { decorById, footprint } from '../model.js';
@@ -58,7 +60,8 @@ function wedge(i,n,inner=86,outer=166,gap=2.2){
 }
 
 export function createPlayControls({scene,state,tools,action,getActivity=()=>({}),openHome,openManage,openWardrobe,decorate,portrait,notice,back,editNearby,contextAction,feel=()=>{},holdToBuy=null,hubAllowed=()=>true,placement=null,arrange=null,farmAction=null,quick=null}) {
-  let padName='',details=false,previousPiece=null,previousFocus=null,radial=false,tool='hand',keys=new Set(),cameraKeys=new Set(),move={x:0,y:0},look={x:0,y:0},padPrevious=[],selectedIndex=0,repeatAt=0,held=null,suppressClickUntil=0;
+  let padName='',details=false,previousPiece=null,previousFocus=null,radial=false,tool='hand',keys=new Set(),cameraKeys=new Set(),move={x:0,y:0},look={x:0,y:0},selectedIndex=0,repeatAt=0,held=null,suppressClickUntil=0;
+  const padBoundary=createPlayPadBoundary(),farmCamera=createFarmCameraMode();let cameraTick=performance.now();
   let inputMode=matchMedia?.('(pointer: coarse)').matches?'touch':'keyboard',shownMode='',hold=null,wheelItems=[],shownTool='',shownGait='',shownWho='',chain=0,retryFace=0;
   // A prompt over whatever the action button would act on, so the world says what is in reach.
   const prompt=document.createElement('div');prompt.className='play-prompt';prompt.setAttribute('aria-hidden','true');prompt.innerHTML='<span><kbd data-prompt-key>E</kbd><b data-prompt-label></b></span>';document.body.append(prompt);
@@ -74,8 +77,9 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
         <button id="play-gait" class="play-gait face-button" aria-label="Switch between walking and jogging" title="Walk / jog · Shift / L3"><b data-gait-icon></b><small data-gait-label>Walk</small><span data-glyph="gait"></span></button>
         <button id="play-recenter" class="play-recenter face-button" aria-label="Centre the camera on your character" title="Centre camera · C / R3">${svg('recenter')}<span data-glyph="recenter"></span></button>
       </div>
-      <div class="play-legend" aria-hidden="true"><span class="legend-act"><b data-glyph="action"></b><span data-legend-act>Explore</span><i class="legend-bar"><i></i></i></span><span><b data-glyph="tools"></b><span>Tools</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span data-legend-tool>Interact</span></span><span><b data-glyph="gait"></b><span data-legend-gait>Walk</span></span><span><b data-glyph="recenter"></b><span>Camera</span></span><span data-legend-quick-wrap><b data-glyph="play"></b><span data-legend-quick>Menu</span></span><span><b data-glyph="start"></b><span>Menu</span></span></div>
+      <div class="play-legend" aria-hidden="true"><span class="legend-act"><b data-glyph="action"></b><span data-legend-act>Explore</span><i class="legend-bar"><i></i></i></span><span><b data-glyph="tools"></b><span>Tools</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span data-legend-tool>Interact</span></span><span><b data-glyph="gait"></b><span data-legend-gait>Walk</span></span><span><b data-glyph="recenter"></b><span data-legend-camera>Camera</span></span><span data-legend-quick-wrap><b data-glyph="play"></b><span data-legend-quick>Menu</span></span><span><b data-glyph="start"></b><span>Menu</span></span></div>
     </div>
+    <div id="farm-camera-mode" class="farm-camera-mode" hidden role="status" aria-label="Farm camera controls"><button id="farm-camera-toggle" type="button" aria-pressed="false" aria-label="Enter farm zoom and pan mode"><span data-camera-glyph="r3"></span><b>Zoom & pan</b><span class="farm-camera-state">Camera</span></button><div class="farm-camera-instructions"><span data-camera-pan><i data-camera-glyph="ls"></i><b>Pan</b></span><span data-camera-zoom><i data-camera-glyph="rs"></i><b>Zoom</b></span><span><i data-camera-glyph="circle"></i><b>Done</b></span></div></div>
     <button id="play-arrange" class="play-arrange" aria-label="Arrange the nearby furniture" hidden>${svg('move')}<span>Arrange</span></button>
     <div id="furniture-pad" hidden><div class="play-piece-label"></div><div class="play-dpad" role="group" aria-label="Move selected furniture"><button data-nudge="0,-1" aria-label="Move back">${svg('go','up')}</button><button data-nudge="-1,0" aria-label="Move left">${svg('go','left')}</button><button data-nudge="1,0" aria-label="Move right">${svg('go')}</button><button data-nudge="0,1" aria-label="Move forward">${svg('go','down')}</button></div><div class="play-furniture-actions"><button data-turn="-15" aria-label="Rotate left 15 degrees">${svg('rotate','flip')}</button><button id="furniture-wheel" aria-label="Furniture radial menu">${svg('tools')}</button><button data-turn="15" aria-label="Rotate right 15 degrees">${svg('rotate')}</button><button data-finish>${svg('done')}<span>Done</span></button></div></div>
     <div class="place-legend" aria-hidden="true"><span><b data-glyph="lstick"></b><span>Move</span></span><span><b data-glyph="dpad"></b><span>Step</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span data-legend-turn>Turn</span></span><span><b data-glyph="confirm"></b><span>Done</span></span><span><b data-glyph="action"></b><span>Undo</span></span><span class="place-legend-more"><b data-glyph="tools"></b><span>More</span></span></div><div class="arrange-legend" aria-hidden="true"><span><b data-glyph="lstick"></b><b data-glyph="dpad"></b><span data-arrange-choose>Choose</span></span><span><b data-glyph="confirm"></b><span>Pick up</span></span><span><b data-glyph="lb"></b><b data-glyph="rb"></b><span>Next</span></span><span><b data-glyph="tools"></b><span data-arrange-shop>Furnish</span></span><span><b data-glyph="rstick"></b><span>Camera</span></span><span class="arrange-legend-done"><b data-glyph="back"></b><span>Done</span></span></div>
@@ -101,6 +105,8 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     root.dataset.input=mode;root.querySelectorAll('[data-glyph]').forEach(el=>{el.innerHTML=mode==='touch'?'':glyphHTML(el.dataset.glyph,mode);});
     dockGlyph.innerHTML=padName?glyphHTML('start',mode):'';
     document.querySelectorAll('#actions [data-glyph]').forEach(el=>{el.innerHTML=mode==='touch'?'':glyphHTML(el.dataset.glyph,mode);});
+    const family=mode==='dualsense'?'dualsense':mode==='xbox'?'xbox':'keyboard';
+    root.querySelectorAll('[data-camera-glyph]').forEach(el=>{const name=el.dataset.cameraGlyph;el.innerHTML=family==='dualsense'?ps5Icon(name,24):glyphHTML(({r3:'recenter',ls:'lstick',rs:'rstick',circle:'back'})[name],family);});
     if(radial)hintWheel();
   }
 
@@ -124,6 +130,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     if(previousFocus?.isConnected)previousFocus.focus({preventScroll:true});
   }
   function start(who) {
+    if(farmCamera.active)setFarmCamera(false,'character');
     cancelInteraction('character');scene.player?.setEnabled(true,who);tool='hand';close();
     notice(`Playing as ${who==='shane'?'Shane':'Natalie'}. Walk up to a crop, then tap or hold the action button.`);
   }
@@ -194,6 +201,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     button.onclick=e=>{if(e.detail===0&&performance.now()>suppressClickUntil)openWheel(kind);};
   }
   bindHoldOpen($('#play-wheel'));bindHoldOpen($('#furniture-wheel'));
+  $('#farm-camera-toggle').onclick=()=>{if(farmCamera.active)setFarmCamera(false,'done');else if(scene.player?.state().place==='farm'&&!scene.place&&!menus.open&&!radial&&!tools.selected)setFarmCamera(true,'camera');};
   $('#play-toggle').onclick=()=>openWheel('characters');$('.radial-close').onclick=close;$('.radial-dismiss').onclick=close;
   $('#play-gait').onclick=toggleGait;$('#play-recenter').onclick=()=>{scene.player?.recenter?.();feel('select');};
   $('#play-arrange').onclick=()=>{cancelInteraction('arrange');if(editNearby)editNearby();else if(contextAction)contextAction('edit',scene.player?.state().target);else decorate();};
@@ -220,13 +228,14 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     return Object.assign(lift,{show:value=>show(value,element.getBoundingClientRect().width||90),get engaged(){return pointer!==null;}});
   }
   releaseMove=bindStick(stickEl,value=>{move=value;if(Math.hypot(value.x,value.y)>.12&&(held||activity().active))cancelInteraction('movement');});releaseLook=bindStick(lookEl,value=>look=value);
-  addEventListener('blur',()=>{cancelInteraction('blur');keys.clear();cameraKeys.clear();releaseMove();releaseLook();scene.player?.input(0,0);scene.player?.cameraInput?.(0,0);});
+  addEventListener('blur',()=>releaseInput('blur'));
   addEventListener('keyup',e=>{const key=e.key.toLowerCase();keys.delete(key);cameraKeys.delete(key);if(held?.source==='keyboard'&&held.id===key)endInteraction('keyboard',key);if(hold?.source==='keyboard'&&hold.id===key)releaseWheel();});
   // While a key holds the wheel open, the mouse aims it from the screen's centre.
   addEventListener('mousemove',e=>{if(radial&&hold?.source==='keyboard'){const r=disc.getBoundingClientRect();aimAt(e.clientX-r.left-r.width/2,e.clientY-r.top-r.height/2);}});
   function handleKey(e) {
     if(inputField())return false;
     const key=e.key.toLowerCase();
+    if(farmCamera.active){e.preventDefault();if((key==='escape'||key==='c')&&!e.repeat)setFarmCamera(false,'done');return true;}
     if(radial){
       if(key==='escape'||key==='b'){e.preventDefault();close();return true;}
       const step=['arrowleft','arrowup'].includes(key)||key==='tab'&&e.shiftKey?-1:['arrowright','arrowdown','tab'].includes(key)?1:0;
@@ -247,11 +256,27 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     if(key==='escape'){e.preventDefault();if(activity().active||held)cancelInteraction('back');else back?.();return true;}return false;
   }
 
-  return {handleKey,open:()=>openWheel('characters'),close,start,cancel:cancelInteraction,menus,cursor,get active(){return scene.player?.state().enabled;},get radial(){return radial;},get tool(){return tool;},get chain(){return chain;},get hub(){return menus.hubOn;},tick(blocked=false){
+  function rawPad(){return Array.from(navigator.getGamepads?.()??[]).find(g=>g?.connected);}
+  function setFarmCamera(on,reason='camera'){
+    const wanted=!!on&&scene.player?.state().place==='farm'&&!scene.place;
+    const actual=!!scene.setFarmCameraMode?.(wanted);
+    if(actual!==farmCamera.active){if(actual)farmCamera.toggle();else farmCamera.reset();}
+    cancelInteraction(reason);keys.clear();cameraKeys.clear();releaseMove();releaseLook();scene.player?.input(0,0);scene.player?.cameraInput?.(0,0);cursor.hide();padBoundary.release(rawPad());
+    if(actual)scene.player?.setBlocked(true);
+    root.dataset.farmCamera=actual?'on':'';document.body.classList.toggle('farm-camera-on',actual);
+    $('#farm-camera-toggle').setAttribute('aria-pressed',String(actual));$('#farm-camera-toggle').setAttribute('aria-label',actual?'Exit farm zoom and pan mode':'Enter farm zoom and pan mode');
+    setText($('.farm-camera-state'),actual?'Done':'');cameraTick=performance.now();feel('select');return actual;
+  }
+  function releaseInput(reason='handoff'){
+    cancelInteraction(reason);if(farmCamera.active)setFarmCamera(false,reason);close();cursor.hide();menus.leaveHub();menus.rest();padBoundary.release(rawPad());cameraTick=performance.now();
+    scene.player?.input(0,0);scene.player?.cameraInput?.(0,0);
+  }
+
+  return {handleKey,open:()=>openWheel('characters'),close,start,cancel:cancelInteraction,releaseInput,menus,cursor,get cameraMode(){return farmCamera.active;},get cameraDiagnostics(){return{active:farmCamera.active,inputBoundary:padBoundary.state,scene:scene.farmCameraStatus??null};},get active(){return scene.player?.state().enabled;},get radial(){return radial;},get tool(){return tool;},get chain(){return chain;},get hub(){return menus.hubOn;},tick(blocked=false){
     // The hub (the ring on the dock) holds play still, like any menu.
     blocked=blocked||menus.hubOn;
     const p=scene.player?.state()??{},selected=tools.selected,piece=state().house.placed.find(x=>x.instance===selected),job=activity();
-    const pad=Array.from(navigator.getGamepads?.()??[]).find(g=>g?.connected),down=pad?.buttons.map(b=>b.pressed)??[],pressed=i=>down[i]&&!padPrevious[i];
+    const sampled=padBoundary.sample(rawPad()),{pad,down,pressed}=sampled;
     padName=padFamily(pad);
     if(padName!==shownPad){shownPad=padName;document.body.classList.toggle('has-pad',!!padName);document.body.dataset.pad=padName?(padName==='DualSense'?'dualsense':'xbox'):'';}
     showGlyphs();
@@ -284,7 +309,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     if(!held&&!job.active&&!job.travelling)chain=0;
     const streak=$('.play-chain');streak.hidden=chain<2;if(chain>=2)setText(streak,'×'+chain);
     const progress=Math.max(0,Math.min(1,Number(job.progress)||0));interact.style.setProperty('--action-progress',progress);
-    const legend=$('.play-legend');setText($('[data-legend-act]'),shortAction(label||'Explore',p,job,tool));setText($('[data-legend-tool]'),toolNames[tool]);{const q=quick?.label?.();$('[data-legend-quick-wrap]').hidden=!q;if(q)setText($('[data-legend-quick]'),q);}setText($('[data-legend-gait]'),gait==='jog'?'Jog':'Walk');legend.dataset.busy=String(!!job.active);legend.style.setProperty('--p',progress.toFixed(2));legend.dataset.idle=String(!job.active&&!p.target&&!pose);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep going':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
+    const legend=$('.play-legend');setText($('[data-legend-act]'),shortAction(label||'Explore',p,job,tool));setText($('[data-legend-tool]'),toolNames[tool]);{const q=quick?.label?.();$('[data-legend-quick-wrap]').hidden=!q;if(q)setText($('[data-legend-quick]'),q);}setText($('[data-legend-gait]'),gait==='jog'?'Jog':'Walk');setText($('[data-legend-camera]'),p.place==='farm'?'Zoom/pan':'Camera');legend.dataset.busy=String(!!job.active);legend.style.setProperty('--p',progress.toFixed(2));legend.dataset.idle=String(!job.active&&!p.target&&!pose);$('#play-activity-progress').hidden=!job.active;$('#play-activity-progress').style.setProperty('--activity',progress*360+'deg');$('#play-activity-progress').setAttribute('aria-valuenow',String(Math.round(progress*100)));interact.setAttribute('aria-busy',String(!!job.active));interact.setAttribute('aria-label',`${label||'Explore'}${object?' · '+object:''}${holdable?' · tap once or hold to keep going':''}`);interact.disabled=!job.active&&!p.target&&!pose&&p.available!==false;
     // A piece in hand anywhere (a room, the garden, the foyer) takes the pad (ui/pad-placement.js).
     const placing=!blocked&&!radial?placement?.kind??null:null;root.dataset.placing=pad&&placing?placing:'';
     // Arranging (ui/pad-arrange.js): off play mode in a room or the garden, nothing in hand, no menu.
@@ -296,13 +321,23 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     // Menus take the pad first: a menu or the hub keeps its presses from play.
     // The stick cursor (ui/pad-cursor.js) has the pad first while it's up: a stick click brings it up off play
     // mode or over a menu, and play mode with no menu open puts it away. The menus still hear L1/R1 and Options.
-    if(p.enabled&&!menus.open)cursor.hide();
-    const cursorOwns=pad&&!radial&&!piece&&!placing?cursor.tick({pad,down,pressed,canToggle:!p.enabled||menus.open,menuOpen:()=>menus.open}):(cursor.hide(),false);
+    const farmScope=p.place==='farm'&&!scene.place,cameraEligible=!!pad&&farmScope&&!blocked&&!menus.open&&!radial&&!piece&&!placing;
+    const cameraState=farmCamera.update({eligible:cameraEligible,pressed});
+    if(cameraState.changed)setFarmCamera(cameraState.active,'camera');
+    const cameraOwns=cameraState.consumed;
+    $('#farm-camera-mode').hidden=!cameraEligible;
+    if(cameraEligible){root.dataset.farmCamera=farmCamera.active?'on':'';document.body.classList.toggle('farm-camera-on',farmCamera.active);}
+    if(farmCamera.active&&!cameraState.changed){const now=performance.now(),dt=Math.min(.1,Math.max(0,(now-cameraTick)/1000));cameraTick=now;
+      const px=dead(pad.axes[0]??0),py=dead(pad.axes[1]??0),z=-dead(pad.axes[3]??0);
+      scene.farmCameraInput?.({panX:px,panY:py,zoom:z,dt});$('[data-camera-pan]').classList.toggle('is-used',Math.hypot(px,py)>.05);$('[data-camera-zoom]').classList.toggle('is-used',Math.abs(z)>.05);
+    }else cameraTick=performance.now();
+    if(p.enabled&&!menus.open||cameraOwns)cursor.hide();
+    const cursorOwns=pad&&!cameraOwns&&!radial&&!piece&&!placing?cursor.tick({pad,down,pressed:i=>farmScope&&i===11?false:pressed(i),canToggle:!p.enabled||menus.open,menuOpen:()=>menus.open}):(cursor.hide(),false);
     const passing=i=>CURSOR_PASS.has(i);
-    const menuOwns=pad&&!radial&&!piece&&!placing?menus.tick(cursorOwns?{pad:STILL_PAD,down:down.map((d,i)=>passing(i)&&d),pressed:i=>passing(i)&&pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked}:{pad,down,pressed:i=>i===17&&p.enabled&&!blocked&&quick?false:pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked})||cursorOwns:false;
+    const menuOwns=pad&&!cameraOwns&&!radial&&!piece&&!placing?menus.tick(cursorOwns?{pad:STILL_PAD,down:down.map((d,i)=>passing(i)&&d),pressed:i=>passing(i)&&pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked}:{pad,down,pressed:i=>i===17&&p.enabled&&!blocked&&quick?false:pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked})||cursorOwns:false;
     if(!pad&&menus.hubOn)menus.leaveHub();
     if(pad&&(radial||piece||placing))menus.rest();
-    if(pad&&!blocked&&!menuOwns){
+    if(pad&&!blocked&&!menuOwns&&!cameraOwns){
       if(radial){
         // Either stick aims the wheel; letting go of Y/△ after aiming chooses.
         const left=[pad.axes[0]??0,pad.axes[1]??0],right=[pad.axes[2]??0,pad.axes[3]??0],[ax,ay]=Math.hypot(...right)>Math.hypot(...left)?right:left;
@@ -319,7 +354,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
         // L1 / R1 swap the tool in hand, round the wheel's order; Create (or the touchpad) opens what's useful here.
         if(pressed(4)||pressed(5)){const order=['hand','plant','water','harvest','clean'],i=order.indexOf(tool);cancelInteraction('tool');tool=order[(i+(pressed(5)?1:-1)+order.length)%order.length];feel('tick');}
         if((pressed(8)||pressed(17))&&quick){quick.open();feel('select');}
-        if(pressed(10))toggleGait();if(pressed(11)){scene.player?.recenter?.();feel('select');}if(pressed(6))scene.player?.zoom?.(-1);if(pressed(7))scene.player?.zoom?.(1);
+        if(pressed(10))toggleGait();if(pressed(11)&&!farmScope){scene.player?.recenter?.();feel('select');}if(pressed(6))scene.player?.zoom?.(-1);if(pressed(7))scene.player?.zoom?.(1);
       // Off play mode in a room or the garden, the pad arranges the furniture first.
       }else if(arranging&&arrange.tick({pad,down,pressed})){
       // Off play mode: Create starts play; on the farm △ plants, □ boosts and ✕ picks (elsewhere ✕ starts play too).
@@ -328,15 +363,15 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
       else if(pressed(2))farmAction?.('boost');
       else if(pressed(0)&&!farmAction?.('pick'))openWheel('characters');
     }
-    if(!pad&&held?.source==='gamepad')cancelInteraction('disconnect');padPrevious=down;
+    if(!pad&&held?.source==='gamepad')cancelInteraction('disconnect');
     let x=move.x,y=move.y,cx=look.x,cy=look.y;
     if(keys.has('a')||keys.has('arrowleft'))x--;if(keys.has('d')||keys.has('arrowright'))x++;if(keys.has('w')||keys.has('arrowup'))y--;if(keys.has('s')||keys.has('arrowdown'))y++;
     if(cameraKeys.has('j'))cx--;if(cameraKeys.has('l'))cx++;if(cameraKeys.has('i'))cy--;if(cameraKeys.has('k'))cy++;
-    if(pad&&!radial&&!piece&&!placing&&p.enabled){x+=dead(pad.axes[0]??0)+(down[15]?1:0)-(down[14]?1:0);y+=dead(pad.axes[1]??0)+(down[13]?1:0)-(down[12]?1:0);cx+=dead(pad.axes[2]??0);cy+=dead(pad.axes[3]??0);}
+    if(pad&&!cameraOwns&&!radial&&!piece&&!placing&&p.enabled){x+=dead(pad.axes[0]??0)+(down[15]?1:0)-(down[14]?1:0);y+=dead(pad.axes[1]??0)+(down[13]?1:0)-(down[12]?1:0);cx+=dead(pad.axes[2]??0);cy+=dead(pad.axes[3]??0);}
     // Keys and pads move the on-screen sticks too, so the screen shows the push.
-    if(!releaseMove.engaged)releaseMove.show({x:Math.max(-1,Math.min(1,x)),y:Math.max(-1,Math.min(1,y))});
-    if(!releaseLook.engaged)releaseLook.show({x:Math.max(-1,Math.min(1,cx)),y:Math.max(-1,Math.min(1,cy))});
+    if(!padName&&!releaseMove.engaged)releaseMove.show({x:Math.max(-1,Math.min(1,x)),y:Math.max(-1,Math.min(1,y))});
+    if(!padName&&!releaseLook.engaged)releaseLook.show({x:Math.max(-1,Math.min(1,cx)),y:Math.max(-1,Math.min(1,cy))});
     if(Math.hypot(x,y)>.12&&(job.active||held))cancelInteraction('movement');
-    const stop=blocked||radial||!!piece||!!placing||!p.enabled;scene.player?.input(stop?0:x,stop?0:y);scene.player?.cameraInput?.(stop?0:cx,stop?0:cy);
+    const stop=blocked||radial||!!piece||!!placing||cameraOwns||!p.enabled;scene.player?.setBlocked(blocked||radial||!!piece||!!placing||cameraOwns);scene.player?.input(stop?0:x,stop?0:y);scene.player?.cameraInput?.(stop?0:cx,stop?0:cy);
   }};
 }

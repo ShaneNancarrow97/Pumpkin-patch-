@@ -18,7 +18,7 @@ import { playerViewScale, playerStandFrame } from './player-view-size.js';
 import { crispTexture } from './crisp-sprites.js';
 import { recolour } from './sprite-voxels.js';
 import { DIRECTIONAL_SPRITES } from './content/directional-sprite-meta.js';
-import { directionalSpritePose, validDirectionalSprite } from './directional-sprite-math.js';
+import { directionFromAngle, directionalSpritePose, validDirectionalSprite } from './directional-sprite-math.js';
 
 const urls={base:baseURL,'shane-a':shaneA,'shane-b':shaneB,'natalie-a':natalieA,'natalie-b':natalieB};
 const walkUrls={base:walkBase,'shane-a':walkShaneA,'shane-b':walkShaneB,'natalie-a':walkNatalieA,'natalie-b':walkNatalieB,wheelchair:walkWheelchair,water:waterEmpty};
@@ -77,12 +77,15 @@ function setScale(group,amount,sign=1){group.scale.set(amount*sign,amount,amount
 
 // A direction change keeps the same footfall. Every view is painted, so neither
 // the atlas nor asymmetrical clothes/tools are reflected to invent a side.
-function applyAuthoredWalk(group,{id,who,look,angle,phase,age,moving,action,release}){
+function applyAuthoredWalk(group,{id,who,look,angle,phase,age,moving,action,release,keepFacingOnIdle}){
  const meta=authoredMeta[id];
- if(release||action||!moving||!Number.isFinite(angle)||!meta)return false;
+ // The village's third-person camera can hold an existing contact drawing at
+ // rest. It is not an idle animation, and front-facing portraits stay original.
+ const contactIdle=keepFacingOnIdle&&!moving&&(id==='shane-base'||id==='natalie-base')&&Number.isFinite(angle)&&directionFromAngle(angle)!=='front';
+ if(release||action||(!moving&&!contactIdle)||!Number.isFinite(angle)||!meta)return false;
  loadAuthoredPlayerDirection(id);
  const sheet=authoredSheets.get(id);if(!sheet)return false;
- const pose=directionalSpritePose(meta,{angle,phase:Number.isFinite(phase)?phase:age*1.5,walking:true});
+ const pose=directionalSpritePose(meta,{angle,phase:contactIdle?0:Number.isFinite(phase)?phase:age*1.5,walking:true});
  if(!pose)return false;
  const d=group.userData,m=PLAYER_SIDE_WALK_META[id];
  if(!d.playerFrontTexture)d.playerFrontTexture=group.children[0]?.children.find(n=>n.isMesh)?.material.map;
@@ -91,16 +94,16 @@ function applyAuthoredWalk(group,{id,who,look,angle,phase,age,moving,action,rele
  const f=sheet.frames[pose.frame];d.show(f);d.shown=f;d.playerDirectionActive=true;
  const stature=m.targetHeight*2.3/320/(m.frontScale?.idle??1);setScale(group,stature/(meta.height??2.3));
  d.playerDirection=pose.direction;d.playerDirectionFrame=pose.phaseIndex;d.playerSideFrameCount=meta.walk[pose.directionIndex].length;d.playerStature=stature;
- d.playerAuthoredDirection=true;d.playerGaitPhase=pose.phase;d.playerLeadingLeg=pose.leadingLeg;
+ d.playerAuthoredDirection=true;d.playerAuthoredIdle=contactIdle;d.playerGaitPhase=contactIdle?null:pose.phase;d.playerLeadingLeg=contactIdle?null:pose.leadingLeg;
  return true;
 }
 
-export function applyPlayerDirection(group,{who,outfit,facing='front',walking=false,moving=walking,time=0,age=time,dx=0,angle,phase,action=null,actionProgress=0,look,release=false}={}){
+export function applyPlayerDirection(group,{who,outfit,facing='front',walking=false,moving=walking,time=0,age=time,dx=0,angle,phase,action=null,actionProgress=0,look,release=false,keepFacingOnIdle=false}={}){
  const d=group.userData,id=outfit||who+'-base',m=PLAYER_SIDE_WALK_META[id],available=frames[id];
  if(!m||!available||!d.show)return false;
  const kind=typeof action==='string'?action:action?.kind;
- if(applyAuthoredWalk(group,{id,who,look,angle,phase,age,moving,action:kind,release}))return true;
- d.playerAuthoredDirection=false;d.playerGaitPhase=null;d.playerLeadingLeg=null;
+ if(applyAuthoredWalk(group,{id,who,look,angle,phase,age,moving,action:kind,release,keepFacingOnIdle}))return true;
+ d.playerAuthoredDirection=false;d.playerAuthoredIdle=false;d.playerGaitPhase=null;d.playerLeadingLeg=null;
  // Empty-handed art lets the one real voxel watering can remain the only can.
  const actionFrames=available[kind],direction=actionFrames?kind:!moving&&authoredSheets.has(id)&&Number.isFinite(angle)?'front':facing;
  if(release||direction==='front'||!available[direction]){

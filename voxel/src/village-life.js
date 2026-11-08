@@ -9,7 +9,7 @@ import * as THREE from "three";
 import { Voxels, seeded } from "./voxels.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { LAYOUT_DESIGN, LAMPS } from "./village-world.js";
-import { DISTRICT_SHIFT } from "./content/village.js";
+import { DISTRICT_SHIFT, FIXTURES, PLAN_SCALE as K } from "./content/village.js";
 import { C } from "./village-models.js";
 
 const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z);
@@ -19,7 +19,7 @@ const noise = (t) => Math.sin(t) * .5 + Math.sin(t * 2.31 + 1.7) * .3 + Math.sin
 // Where a crow may perch (design grid x, height, z): lamp tops, piers, the well's
 // roof, the noticeboard, the wall and fences, the scarecrows' arms, and the ground.
 const PERCHES_DESIGN = [
-  [54.5, 4.1, 21.1], [61.5, 4.1, 21.1], [54.5, 4.1, 28.1], [61.5, 4.1, 28.1], [51.4, 3.1, 27.8], [63, 2.75, 29.8],
+  [54.5, 4.1, 21.1], [61.5, 4.1, 21.1], [54.5, 4.1, 28.1], [61.5, 4.1, 28.1], [FIXTURES.well.x / K, 3.1, FIXTURES.well.z / K], [FIXTURES.noticeboard.x / K, 2.75, FIXTURES.noticeboard.z / K],
   [54.4, 1.62, 8], [54.4, 1.62, 15.6], [61.6, 1.62, 8], [61.6, 1.62, 15.6], [44, 1.32, .6], [72, 1.32, .6], [34, 1.32, .6],
   [80.6, 2.66, 5.4], [38, 2.66, 7.6], [30, .86, 11], [40, .86, 29], [70, .86, 9], [75, .86, 27],
 ];

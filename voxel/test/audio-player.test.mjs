@@ -34,6 +34,10 @@ test("MIDI endings advance shuffle automatically; mute and repeat remain reliabl
   audio.setSceneGain(1); assert.equal(musicGain(), .5 * .22 * .25);
   audio.setNarrationActive(false); assert.equal(musicGain(), .5 * .22);
   assert.equal(audio.status.track, "parade", "ducking does not restart or advance music");
+  audio.setVillageActive(true); assert.equal(musicGain(), .5 * .22 * .38, "village music is quieter without changing preferences");
+  audio.setNarrationActive(true); assert.equal(musicGain(), .5 * .22 * .38 * .25, "speech still ducks the quieter village bed");
+  audio.setNarrationActive(false); audio.setVillageActive(false); assert.equal(musicGain(), .5 * .22, "farm restores the previous music level");
+  assert.equal(audio.status.track, "parade", "location mix never restarts the song");
   audio.setVolume(.32);
   const played = [];
   for (let i = 0; i < sandbox.module.exports.MUSIC_TRACKS.length; i++) {

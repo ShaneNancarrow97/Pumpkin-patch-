@@ -1,5 +1,7 @@
 # Pumpkin Patch Voxel: context for coding agents
 
+**Contractor Village Play Polish:** [`docs/contractor-patches/village-play-polish/README.md`](docs/contractor-patches/village-play-polish/README.md) records the close follow camera, safe travel, R3 farm camera mode, spatial map, village visibility, illustrated controls/catalogue and dependency matrix. Save version remains 18.
+
 **Contractor Village Journey:** [`docs/contractor-patches/village-journey/README.md`](docs/contractor-patches/village-journey/README.md) connects a physical farm gateway, expanded Green, saved resource relocation/tools, quest HUD and village-earned farm progression. Save version 18 adds fountain seeds after version 17 resource cycles; read its dependency matrix and migration note before integration.
 
 **Contractor menu items:** [`docs/contractor-patches/menu-item-sprites/README.md`](docs/contractor-patches/menu-item-sprites/README.md) adds 36 illustrated village item icons in a shared atlas. Read the coverage and dependency matrix before expanding it. Existing gameplay, saves and other menu artwork are unchanged.

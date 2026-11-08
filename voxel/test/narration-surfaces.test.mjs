@@ -94,6 +94,19 @@ test("missing recordings leave subtitles readable and disable only that line's r
   dialogue.dispose();
 });
 
+test("dialogue exposes its current text and puts controller focus on the visible reply path", t => {
+  const h = harness(t); let answers = 0, completed = 0;
+  const dialogue = createVillageConversation({ onChoice() { answers++; return "Thank you for listening."; }, onContinue() { completed++; } });
+  dialogue.open({ id: "elowen", name: "Elowen Mothwick", lines: [{ choices: [{ tone: "warm", text: "I would love to help." }, { tone: "curious", text: "What happened here?" }] }] });
+  const panel = h.doc.getElementById("village-dialogue"), reply = panel.querySelector(".village-reply"), next = panel.querySelector("[data-village-dialogue-next]");
+  assert.equal(panel.attrs["aria-describedby"], "village-dialogue-line");
+  assert.equal(panel.querySelector(".village-dialogue-line").attrs["aria-atomic"], "true");
+  assert.equal(panel.dataset.dialogueState, "choice"); assert.ok(Object.hasOwn(reply.attrs, "data-pad-default")); assert.equal(next.hidden, true);
+  reply.click(); reply.click(); assert.equal(answers, 1); assert.equal(completed, 0);
+  assert.equal(panel.dataset.dialogueState, "speaking"); assert.equal(h.doc.activeElement, next); assert.equal(next.hidden, false);
+  next.click(); assert.equal(completed, 1); dialogue.dispose();
+});
+
 test("introduction speaks its title and alternating lines; replay and mute do not advance it", t => {
   const h = harness(t), overlay = h.doc.createElement("section"); overlay.id = "intro"; h.doc.body.append(overlay); let released = 0;
   const intro = createIntro({ narration: h.audio, people: { shane: ["Shane", "Farmer"], natalie: ["Natalie", "Farmer"] }, portrait: id => id + ".webp", pumpkin: () => null, hold() {}, release: () => released++, onOpen() {} });

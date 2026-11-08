@@ -12,7 +12,7 @@
 // story object), give (farm items), place (village decor with tags near a
 // spot), build (a blueprint goes up), and farm totals counted from the step's
 // start: sell, harvest, carve, cook, fish, earn.
-import { PLAN_SCALE } from "./village.js";
+import { FIXTURES, PLAN_SCALE } from "./village.js";
 
 export const QUESTS = Object.freeze([
   { id: "invitation", kind: "story", title: "The Moving Address", giver: "elowen", level: 3,
@@ -197,7 +197,7 @@ export const QUEST_BY_ID = Object.freeze(Object.fromEntries(QUESTS.map((q) => [q
 
 // Story objects: the pages of Elowen's letter. The third blows onto the farm, by the patch.
 export const STORY_OBJECTS = Object.freeze([
-  { id: "page-1", place: "village", x: 49.5, z: 25.4, name: "A page of Elowen's letter" },
+  { id: "page-1", place: "village", x: FIXTURES.well.x / PLAN_SCALE + 2.3, z: FIXTURES.well.z / PLAN_SCALE - 1.4, name: "A page of Elowen's letter" },
   { id: "page-2", place: "village", x: 26, z: 7, name: "A page of Elowen's letter" },
   { id: "page-3", place: "farm", x: 3.4, z: 12.6, name: "A page of Elowen's letter" },
 ].map((o) => Object.freeze(o.place === "village" ? { ...o, x: o.x * PLAN_SCALE, z: o.z * PLAN_SCALE } : o)));

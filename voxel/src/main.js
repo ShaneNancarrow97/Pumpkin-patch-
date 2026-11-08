@@ -1,3 +1,4 @@
+import { installHomeCategoryArt } from "./ui/home-category-icons.js";
 import grassTileURL from '../assets/terrain/grass-tile.webp';
 import { installGrassDetailTexture } from './grass-detail.js';
 import { atVillageGateway, VILLAGE_GATEWAY } from './content/village-gateway.js';
@@ -126,6 +127,7 @@ for (const type of ["pointerdown", "keydown", "wheel"]) addEventListener(type, s
 const padInUse = () => { for (const g of navigator.getGamepads?.() ?? []) if (g?.connected && (g.buttons.some((b) => b.pressed) || (g.mapping === "standard" && g.axes.some((a) => Math.abs(a) > .35)))) return true; return false; };
 
 installGrassDetailTexture(grassTileURL);
+installHomeCategoryArt();
 const scene = createScene($("world"), state, {
   onTick(dt) {
     idle += dt;
@@ -749,8 +751,8 @@ setTimeout(() => {
   notice("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
 }, 60000);
 villageGame = createVillageGame({ state: () => state, scene, save, notice, narration, savePrefs, prefs, onFullscreen: () => $("fullscreen").click(),
-  closeMenus() { closeSheet(); upgradeMenu?.close(); home.tools.select(null); lifeActivity?.cancel(); playControls?.close(); playControls?.cursor.hide(); },
-  onLeave() { renderPlace(); render(); }, onRender: renderPlace,
+  closeMenus() { playControls?.releaseInput?.(); closeSheet(); upgradeMenu?.close(); home.tools.select(null); lifeActivity?.cancel(); playControls?.close(); playControls?.cursor.hide(); },
+  onLeave() { playControls?.releaseInput?.(); audio.setVillageActive(false); renderPlace(); render(); }, onRender() { audio.setVillageActive(true); renderPlace(); },
 });
 function openVillage() { const opened=villageGame.open();if(opened)villageGateArmed=false;return opened; }
 function collectVillagePage(id) { const events=M.findObject(state,id);if(!events)return false;for(const event of events)handle(event);save();notice("A page of Elowen's letter · bring it back to the village");return true; }

@@ -1,11 +1,12 @@
 // Grass on Mothlight's lawns (handover 73): tufts of five blades, dark at the root
 // and lit at the tip, grown in clumps (taller where the ground runs wild), with the
 // odd flower among them, and a breeze that rolls across the lawn in waves, worked
-// out on the GPU. No textures and no transparency: a few triangles a tuft, one
+// out on the GPU. No extra textures or blended sorting: a few triangles a tuft, one
 // instanced mesh per patch of ground, patches far from the camera hidden, and no
 // shadows cast. Drawn on the design grid like the rest of the village.
 import * as THREE from "three";
 import { seeded } from "./voxels.js";
+import { VILLAGE_GRASS_FADE as FADE } from "./village-visibility.js";
 
 const PATCH = 20;
 // One tuft: five blades fanned round a point, each a two-part blade that bends; base at y 0, tip at y 1.
@@ -31,21 +32,25 @@ const noise = (x, z) => Math.sin(x * .23 + Math.sin(z * .17) * 1.7) * .5 + Math.
 
 // grow(x, z) says whether grass grows there (and what kind), height(x, z) how high the ground is.
 export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale = 1.5 }) {
-  const group = new THREE.Group(), r = seeded(1213), uniforms = { uTime: { value: 0 } };
-  const material = new THREE.MeshLambertMaterial({ side: THREE.DoubleSide });
+  const group = new THREE.Group(), r = seeded(1213), uniforms = { uTime: { value: 0 }, uGrassPlayer: { value: new THREE.Vector2(1e6,1e6) }, uGrassCamera: { value: new THREE.Vector2(1e6,1e6) } };
+  const material = new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, alphaHash: true });
+  material.customProgramCacheKey=()=>"village-grass-proximity-v1";
   material.onBeforeCompile = (shader) => {
-    shader.uniforms.uTime = uniforms.uTime;
+    Object.assign(shader.uniforms,uniforms);
     shader.vertexShader = shader.vertexShader
-      .replace("#include <common>", "#include <common>\nuniform float uTime; attribute float tip; varying float vTip;")
+      .replace("#include <common>", "#include <common>\nuniform float uTime; uniform vec2 uGrassPlayer; uniform vec2 uGrassCamera; attribute float tip; varying float vTip; varying float vGrassVisibility;")
       .replace("#include <begin_vertex>", `#include <begin_vertex>
         vTip = tip;
         vec4 root = instanceMatrix * vec4(0., 0., 0., 1.);
+        vec4 worldRoot = modelMatrix * root;
+        vGrassVisibility=smoothstep(${FADE.playerNear.toFixed(2)},${FADE.playerFar.toFixed(2)},distance(worldRoot.xz,uGrassPlayer)) * smoothstep(${FADE.cameraNear.toFixed(2)},${FADE.cameraFar.toFixed(2)},distance(worldRoot.xz,uGrassCamera));
+        transformed.y *= mix(.08,1.,vGrassVisibility);
         float wave = sin(uTime * 1.3 - (root.x * .9 + root.z * .5) * .35) * .5 + .5;
         float sway = (sin(uTime * 2.1 + root.x * .7 + root.z * .4) * .35 + wave * .9) * tip * tip;
         transformed.x += sway * .22; transformed.z -= sway * .12;`);
     shader.fragmentShader = shader.fragmentShader
-      .replace("#include <common>", "#include <common>\nvarying float vTip;")
-      .replace("vec4 diffuseColor = vec4( diffuse, opacity );", "vec4 diffuseColor = vec4( diffuse * (.38 + .82 * min(vTip, 1.)) * (vTip > 1.1 ? 1.25 : 1.), opacity );");
+      .replace("#include <common>", "#include <common>\nvarying float vTip; varying float vGrassVisibility;")
+      .replace("vec4 diffuseColor = vec4( diffuse, opacity );", "vec4 diffuseColor = vec4( diffuse * (.38 + .82 * min(vTip, 1.)) * (vTip > 1.1 ? 1.25 : 1.), opacity * vGrassVisibility );");
   };
   const geo = tuftGeometry(), bloom = flowerGeometry(), m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), p = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0), c = new THREE.Color();
   const patches = [], petals = [0xf6f0f5, 0xf5d04a, 0xf28fb5, 0x9a6ae0, 0xf08a3a];
@@ -75,11 +80,15 @@ export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale
     }
     patches.push({ mesh, flowers, x: px + PATCH / 2, z: pz + PATCH / 2 });
   }
+  group.userData.proximityFade={...FADE,mode:"gpu-alpha-hash",worldUnits:true};
   return {
     group,
     // The breeze, and patches beyond the view's reach hidden (the camera in world units).
-    tick(time, camera) {
+    // Player and camera are Three world positions; only shared uniforms change, never blade matrices.
+    tick(time, camera, player) {
       uniforms.uTime.value = time;
+      uniforms.uGrassPlayer.value.set(Number.isFinite(player?.x)?player.x:1e6,Number.isFinite(player?.z)?player.z:1e6);
+      uniforms.uGrassCamera.value.set(Number.isFinite(camera?.position.x)?camera.position.x:1e6,Number.isFinite(camera?.position.z)?camera.position.z:1e6);
       if (!camera) return;
       const cx = camera.position.x / scale, cz = -camera.position.z / scale, far = 30;
       for (const pt of patches) { const on = Math.hypot(pt.x - cx, pt.z - cz) < far; pt.mesh.visible = on; if (pt.flowers) pt.flowers.visible = on; }

@@ -2,6 +2,7 @@
 // the controller takes over only when it is used. Camera and game actions
 // remain with the caller; a connected, idle pad never hides touch controls.
 import { nearestInDirection, choiceKey } from "./pad-menu.js";
+import { villageActionPrompt, villageKeycap } from "./village-action-prompt.js";
 
 const ZERO = () => ({ x: 0, y: 0 });
 const finite = value => Number.isFinite(value) ? value : 0;
@@ -82,11 +83,14 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
   const padState = createVillagePadState(), repeating = createVillageRepeat();
   let source = win.matchMedia?.("(any-pointer: coarse)").matches ? "touch" : "keyboard", suspended = false, forcedBlock = false, wasBlocked = false, sprint = false;
   let menu = null, ring = null, lastKey = null, lastMenuTime = now(), disposed = false;
+  let context = null, explicitContext = false, promptSignature = "", prompt = null;
   const sticks = [];
   const legend = make("div", "vg-pad-legend", "vg-pad-legend");
   legend.setAttribute("aria-label", "Controller controls");
-  legend.innerHTML = '<span class="vg-pad-world"><b>LS</b> Walk <b>RS</b> Look</span><span><b>✕</b> <em>Interact</em></span><span><b>○</b> Back</span><span class="vg-pad-world vg-pad-extra"><b>R2</b> Jog</span><span class="vg-pad-world"><b>↑</b> Quest details</span><span><b>Options</b> Menu</span>';
+  legend.innerHTML = `<span class="vg-pad-world vg-pad-motion">${villageKeycap("ls")} Walk ${villageKeycap("rs")} Camera</span><span class="vg-legend-action">${villageKeycap("cross")}<span class="vg-action-copy"><em></em><small></small></span><i class="vg-legend-progress"><i></i></i></span><span class="vg-legend-back">${villageKeycap("circle")}<em>Back</em></span><span class="vg-pad-world vg-pad-extra">${villageKeycap("r2")} Jog</span><span class="vg-pad-world vg-pad-extra">${villageKeycap("up")} Quest</span><span class="vg-legend-menus">${villageKeycap("options")} Menus</span>`;
   legend.hidden = true;
+  const legendAction = legend.querySelector(".vg-legend-action"), legendActionLabel = legendAction.querySelector("em"), legendTarget = legendAction.querySelector("small"), legendProgress = legendAction.querySelector(".vg-legend-progress i"), legendBack = legend.querySelector(".vg-legend-back em");
+  const interact = root.querySelector("#vg-interact");
   const jog = make("button", "vg-jog", "vg-jog"); jog.type = "button"; jog.textContent = "Jog"; jog.setAttribute("aria-label", "Toggle jogging"); jog.setAttribute("aria-pressed", "false");
   listen(jog, "click", () => { if (isBlocked()) return; setSource("touch"); sprint = !sprint; jog.setAttribute("aria-pressed", String(sprint)); });
 
@@ -96,8 +100,41 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
     root.dataset.input = value; root.classList.toggle("vg-input-pad", value === "pad");
     legend.hidden = value !== "pad";
     if (value !== "pad") setRing(null);
+    updatePrompt();
   }
   function isBlocked() { return disposed || suspended || forcedBlock || root.hidden || blocked(); }
+  // Reconcile context only when its visible words/state change, rather than
+  // rebuilding the button or announcing the same prompt on every drawn frame.
+  function updatePrompt(locked = isBlocked()) {
+    const fallback = !interact?.hidden ? { label: interact?.textContent } : null;
+    prompt = villageActionPrompt(explicitContext ? context : fallback, { source, locked });
+    const signature = JSON.stringify([prompt, source, explicitContext]);
+    if (signature === promptSignature) return;
+    promptSignature = signature;
+    legend.classList.toggle("is-menu", prompt.menu);
+    legendAction.hidden = !prompt.present && !prompt.menu;
+    legendAction.classList.toggle("is-ready", prompt.ready);
+    legendAction.classList.toggle("is-busy", prompt.busy);
+    legendActionLabel.textContent = prompt.action;
+    legendTarget.textContent = prompt.target;
+    legendTarget.hidden = !prompt.target;
+    legendProgress.style.width = `${Math.round((prompt.progress ?? 0) * 100)}%`;
+    legendBack.textContent = prompt.busy ? "Cancel" : "Back";
+    legendAction.setAttribute("aria-label", prompt.accessible);
+    if (!explicitContext || !interact) return;
+    interact.hidden = !prompt.present || prompt.menu;
+    interact.disabled = !prompt.ready;
+    interact.classList.add("vg-action-button");
+    interact.classList.toggle("is-ready", prompt.ready);
+    interact.classList.toggle("is-busy", prompt.busy);
+    interact.setAttribute("aria-label", prompt.accessible);
+    interact.setAttribute("aria-keyshortcuts", "E");
+    interact.title = prompt.hint;
+    if (!interact.querySelector(".vg-action-copy")) interact.innerHTML = `${villageKeycap("e")}<span class="vg-action-copy"><strong></strong><small></small></span>`;
+    interact.querySelector("strong").textContent = prompt.action;
+    interact.querySelector("small").textContent = prompt.target || prompt.hint;
+    interact.querySelector("small").hidden = !prompt.target && !prompt.hint;
+  }
   // Only the pointer owning a stick can release it. Releasing the other
   // thumb, or a camera button, must not stop an ongoing walk.
   function releaseStick(stick) {
@@ -230,16 +267,16 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
       if (locked && !wasBlocked) { clearTouch(); padState.releaseMovement(); }
       wasBlocked = locked; root.classList.toggle("vg-controls-blocked", locked);
       if (input.active && !suspended) { if (source !== "pad") clearTouch(); setSource("pad"); }
-      legend.classList.toggle("is-menu", locked);
-      const label = locked ? "Select" : root.querySelector("#vg-interact:not([hidden])")?.textContent || "Interact";
-      legend.querySelector("em").textContent = label;
+      updatePrompt(locked);
       if (suspended || root.hidden) return { pad: null, move: ZERO(), look: ZERO(), sprint: false, source };
       return { ...input, move: locked ? ZERO() : source === "pad" ? input.move : { ...moveStick.value }, look: locked ? ZERO() : source === "pad" ? input.look : { ...lookStick.value }, sprint: !locked && (source === "pad" ? input.sprint : sprint), source };
     },
     handleMenu, clear, release,
-    reset() { release(); padState.reset(); },
+    setContext(value) { context = value ? { ...value } : null; explicitContext = true; updatePrompt(); return prompt; },
+    reset() { release(); padState.reset(); context = null; explicitContext = true; updatePrompt(); },
     setBlocked(value) { forcedBlock = !!value; if (forcedBlock && !wasBlocked) { clearTouch(); padState.releaseMovement(); } },
     get source() { return source; },
+    get prompt() { return prompt; },
     get element() { return root; },
     dispose() { if (disposed) return; disposed = true; release(); cleanup.forEach(fn => fn()); made.forEach(el => el.remove()); root.classList.remove("vg-input-pad", "vg-controls-blocked"); delete root.dataset.input; },
   };

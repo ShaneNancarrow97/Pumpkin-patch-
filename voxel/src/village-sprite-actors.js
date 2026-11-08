@@ -4,6 +4,7 @@ import { DIRECTIONAL_SPRITES } from "./content/directional-sprite-meta.js";
 import { crispen, crispTexture } from "./crisp-sprites.js";
 import { validVillageSprite, villageFrameShape, villageDirectionalPose, villagePortraitCrop, VILLAGE_PERSON_HEIGHT } from "./village-sprite-math.js";
 import { directionalAngle, gaitPhase, validDirectionalSprite } from "./directional-sprite-math.js";
+import { addSpriteRim } from "./sprite-rim.js";
 
 // One shared texture per sheet, and one cached plane per authored frame.
 // Actors own their transforms only, so changing cast style cannot free another
@@ -34,6 +35,7 @@ function frameGeometry(meta, frame) {
 }
 function buildCast(id, meta, sheet) {
   const material = crispen(new THREE.MeshStandardMaterial({ map: sheet.texture, alphaTest: .42, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveMap: sheet.texture, emissiveIntensity: id === "cinder" ? .22 : .16, side: THREE.DoubleSide }));
+  addSpriteRim(material, meta.w, meta.h);
   const depth = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: sheet.texture, alphaTest: .42, side: THREE.DoubleSide });
   return { meta, sheet, material, depth, frames: meta.frames.map(frame => frameGeometry(meta, frame)) };
 }

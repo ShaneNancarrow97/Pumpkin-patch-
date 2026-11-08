@@ -1,19 +1,20 @@
 // Small Green routines, in realm/world units. They are transient presentation
 // state: quests keep their own clock, and returning to the village resets no save.
-import { PLAN_SCALE as K } from "../content/village.js";
+import { PLAN_SCALE as K, FIXTURES } from "../content/village.js";
 import { villageCellFree, villageWalkObstacles } from "./village-navigation.js";
 
 export const RESIDENT_WALK_RADIUS = .42;
 export const RESIDENT_WALK_SPEED = .72;
 const FACE = { south: 0, east: Math.PI / 2, north: Math.PI, west: -Math.PI / 2 };
 const stop = (x, z, face, wait, activity, extra = {}) => Object.freeze({ x: x * K, z: z * K, face, wait, activity, ...extra });
+const STALL = { x: FIXTURES.stall.x / K, z: FIXTURES.stall.z / K };
 const ROUTES = Object.freeze({
   "elowen-green": [stop(53.6, 30.2, "south", 14, "watching the lanterns"), stop(52.8, 31.4, "west", 8, "reading her almanac"), stop(53.6, 30.2, "south", 12, "greeting neighbours", { wave: true }), stop(53.4, 28.9, "west", 8, "checking the well lantern")],
   "elowen-library": [stop(49.6, 21.6, "east", 16, "at the library"), stop(49.6, 20, "east", 7, "checking the library door"), stop(51, 20.2, "east", 7, "greeting neighbours", { wave: true }), stop(49.6, 20, "north", 0, "returning to the library")],
   "rowan-bench": [stop(53.8, 20.6, "south", 12, "beside the bench"), stop(52.7, 21.2, "north", 0, "walking to the bench"), stop(52.7, 22.4, "west", 10, "checking the bench"), stop(52.7, 21.2, "south", 0, "returning from the bench"), stop(53.8, 20.6, "south", 10, "greeting neighbours", { wave: true }), stop(52.4, 20, "east", 6, "checking his tools")],
   // The narrow passage is measured between the stall and workshop footing.
   // Keep its exact x; a grid-rounded point would put Rowan inside one of them.
-  "rowan-stall": [stop(65.9, 24.6, "west", 18, "at his stall", { reach: 3.8 * K, approach: { x: 65.9 * K, z: 27.5 * K } }), stop(65.9, 27.5, "west", 0, "walking round the awning"), stop(64.6, 27.6, "north", 9, "checking the awning", { wave: true }), stop(65.9, 27.5, "south", 0, "returning to his stall")],
+  "rowan-stall": [stop(STALL.x + 1.7, STALL.z, "west", 18, "at his stall", { reach: 3.8 * K, approach: { x: (STALL.x + 1.7) * K, z: (STALL.z + 2.9) * K } }), stop(STALL.x + 1.7, STALL.z + 2.9, "west", 0, "walking round the awning"), stop(STALL.x + .4, STALL.z + 3, "north", 9, "checking the awning", { wave: true }), stop(STALL.x + 1.7, STALL.z + 2.9, "south", 0, "returning to his stall")],
 });
 Object.values(ROUTES).forEach(Object.freeze);
 
@@ -27,7 +28,23 @@ export function residentRoute(state, id) {
 // skip a fence or cut a corner of newly placed furniture.
 export function residentSegmentFree(state, from, to, obstacles = villageWalkObstacles(state)) {
   if (!from || !to || ![from.x, from.z, to.x, to.z].every(Number.isFinite)) return false;
-  const steps = Math.max(1, Math.ceil(Math.hypot(to.x - from.x, to.z - from.z) / .12));
+  // Fixed bodies use a continuous sweep: coarse samples can otherwise miss a
+  // bench corner that the next short walking step then detects and gets stuck on.
+  const dx=to.x-from.x,dz=to.z-from.z;
+  for(const b of obstacles){
+    if(b.decor)continue;
+    if(b.r!==undefined){const t=Math.max(0,Math.min(1,((b.x-from.x)*dx+(b.z-from.z)*dz)/(dx*dx+dz*dz||1)));
+      if(Math.hypot(from.x+dx*t-b.x,from.z+dz*t-b.z)<b.r+RESIDENT_WALK_RADIUS)return false;
+    }else{
+      let enter=0,exit=1,intersects=true;
+      for(const [start,delta,min,max] of [[from.x,dx,b.x0-RESIDENT_WALK_RADIUS,b.x1+RESIDENT_WALK_RADIUS],[from.z,dz,b.z0-RESIDENT_WALK_RADIUS,b.z1+RESIDENT_WALK_RADIUS]]){
+        if(!delta){if(start<=min||start>=max){intersects=false;break;}}
+        else{const a=(min-start)/delta,c=(max-start)/delta;enter=Math.max(enter,Math.min(a,c));exit=Math.min(exit,Math.max(a,c));if(enter>=exit){intersects=false;break;}}
+      }
+      if(intersects&&enter<exit&&exit>0&&enter<1)return false;
+    }
+  }
+  const steps = Math.max(1, Math.ceil(Math.hypot(dx,dz) / .12));
   for (let i = 0; i <= steps; i++) if (!villageCellFree(state, from.x + (to.x - from.x) * i / steps, from.z + (to.z - from.z) * i / steps, RESIDENT_WALK_RADIUS, obstacles)) return false;
   return true;
 }

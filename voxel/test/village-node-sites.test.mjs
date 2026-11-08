@@ -39,11 +39,12 @@ test('every respawn candidate remains reachable from the new arrival',()=>{
  for(const n of green)for(const p of villageNodeCandidates(n))assert.ok(queue.some(([x,z])=>Math.hypot(x*step-p.x,z*step-p.z)<.85),n.id);
 });
 
-test('logs and boulders are single small pickups and disappear after gathering',()=>{
+test('logs and boulders are readable loose pickups and disappear after gathering',()=>{
  for(const material of ['logs','stone']){
   const boxes=[];node({block:(...b)=>boxes.push(b)},material,true);
   const bounds=boxes.reduce((a,b)=>[Math.min(a[0],b[0]-b[3]/2),Math.max(a[1],b[0]+b[3]/2),Math.min(a[2],b[1]),Math.max(a[3],b[1]+b[4]),Math.min(a[4],b[2]-b[5]/2),Math.max(a[5],b[2]+b[5]/2)],[Infinity,-Infinity,Infinity,-Infinity,Infinity,-Infinity]);
-  assert.ok((bounds[1]-bounds[0])*K<.5);assert.ok((bounds[5]-bounds[4])*K<.5);assert.ok((bounds[3]-bounds[2])*K<.3);
+  assert.ok((bounds[1]-bounds[0])*K<=.52);assert.ok((bounds[5]-bounds[4])*K<=.7);assert.ok((bounds[3]-bounds[2])*K<=.4);
+  assert.ok(boxes.length>=10,'end grain or faceted mineral detail remains visible');
   const spent=[];node({block:(...b)=>spent.push(b)},material,false);assert.equal(spent.length,0);
  }
  const state={village:{gatherCycles:{[green[0].id]:1}}},built=buildNodes(()=>true,state);

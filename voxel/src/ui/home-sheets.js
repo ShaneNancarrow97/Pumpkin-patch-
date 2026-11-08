@@ -1,5 +1,6 @@
 // The Home menu (rooms, the decor catalogue, the house itself), the bookshelf
 // sheet, and the toolbar for moving pieces around a room.
+import { homeCategoryIcon } from "./home-category-icon-markup.js";
 import { setPieceColour, nextPieceColour } from "../rules/piece-colours.js";
 import { canRide, isShelf, nextFinish, intoHostFrame } from "../rules/surfaces.js";
 import { SMALL_PIECES } from "../content/placement.js";
@@ -84,7 +85,7 @@ const BUILD_ICONS = {
   music: "M9 18V5l11-2v13M9 18a3 2 0 1 1-3-2c2 0 3 1 3 2ZM20 16a3 2 0 1 1-3-2c2 0 3 1 3 2ZM9 9l11-2",
   small: "M7 11h10l2 9H5zM9 11V7a3 3 0 0 1 6 0v4M4 5l1-2M19 5l-1-2M12 1v2",
 };
-const buildIcon = (k) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${BUILD_ICONS[k] ?? BUILD_ICONS.all}"/></svg>`;
+const buildIcon = (k) => homeCategoryIcon(k) || `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${BUILD_ICONS[k] ?? BUILD_ICONS.all}"/></svg>`;
 
 // What the next level adds, one line each, in the game's voice.
 function additions(next) {
@@ -153,7 +154,7 @@ function plan(s, level, label) {
 
 export function homeSheets(ui) {
   let tab = "rooms", category = "all", search = "", mode = "function", sub = "all", picked = null, ownedOnly = false, affordable = false;
-  const tabs = () => segmented("hometab", "Home sections", [["rooms", "Rooms"], ["decorate", "Furnish"], ["house", "Expand"]], tab);
+  const tabs = () => segmented("hometab", "Home sections", [["rooms", `${homeCategoryIcon("room", 24)}<span>Rooms</span>`], ["decorate", `${homeCategoryIcon("all", 24)}<span>Furnish</span>`], ["house", `${homeCategoryIcon("room", 24)}<span>Expand</span>`]], tab);
   const here = () => ui.state.house.activeRoom;
 
   function bathroomCard(s, current = false) {
@@ -259,7 +260,8 @@ export function homeSheets(ui) {
     const subs = mode === "room" ? M.houseRooms.map((r) => [r.id, r.name, !M.roomUnlocked(s, r.id)]) : (mode === "owned" ? OWNED : KINDS).map(([k, n]) => [k, n, false]);
     const label = subs.find(([k]) => k === sub)?.[1] ?? "";
     const rail = [["function", "By kind"], ["room", "By room"], ["owned", "Yours"]].map(([k, n]) => `<button class="build-rail-tab" data-mode="${k}" aria-pressed="${mode === k}">${buildIcon(k)}<span>${n}</span></button>`).join("");
-    const row = subs.map(([k, n, locked]) => `<button class="build-sub" data-sub="${k}" aria-pressed="${sub === k}" aria-label="${n}${locked ? " (locked)" : ""}" title="${n}" ${locked ? "disabled" : ""}>${buildIcon(k)}</button>`).join("");
+    const short = { all:"All", seating:"Seating", tables:"Tables", beds:"Beds", storage:"Storage", lighting:"Lights", rugs:"Rugs", wall:"Wall art", small:"Small", curios:"Curios", kitchen:"Kitchen", bathroom:"Bath", electronics:"Screens", laundry:"Laundry", music:"Music", pets:"Pets", books:"Books", wallpaper:"Paper", parlour:"Parlour", bedroom:"Bedroom", attic:"Attic", stored:"Stored", here:"Here", elsewhere:"Other" };
+    const row = subs.map(([k, n, locked]) => `<button class="build-sub" data-sub="${k}" aria-pressed="${sub === k}" aria-label="${n}${locked ? " (locked)" : ""}" title="${n}" ${locked ? "disabled" : ""}>${buildIcon(k)}<span class="build-sub-label">${short[k] ?? n}</span></button>`).join("");
     const tiles = items.map((it) => {
       const owned = s.house.owned.includes(it.id), placed = s.house.placed.some((p) => p.id === it.id);
       return `<div class="build-tile${owned ? " owned" : ""}${placed ? " placed" : ""}${picked === it.id ? " picked" : ""}" data-pad-box><button class="build-pick" data-pick="${it.id}" aria-label="${it.name}" data-pad-label="${padVerb(s, it)}"${picked === it.id ? " data-pad-default" : ""}>${thumbOf(it, 64)}${owned ? `<i class="build-badge" aria-label="${M.ownedCopies(s, it.id)} owned">${["books", "wallpaper"].includes(it.category) ? "✓" : M.ownedCopies(s, it.id)}</i>` : ""}</button><span class="build-name">${it.name}</span>${tileAction(s, it).replace("<button ", "<button data-pad-skip ")}</div>`;
@@ -269,7 +271,7 @@ export function homeSheets(ui) {
     return `<section class="build-cat" aria-label="Build catalogue">
       <div class="build-top">${find}<span class="build-room"><b>${M.roomPieces(s, here()).length}/${M.roomCapacity(s, here())}</b> in the ${roomName(here()).toLowerCase()}</span></div>
       <nav class="build-rail" aria-label="Browse by">${rail}</nav>
-      <div class="build-subs" data-pad-tabs role="group" aria-label="${mode === "room" ? "Rooms" : "Kinds"}">${row}<span class="build-sub-name">${label}</span></div>
+      <div class="build-subs" data-pad-tabs data-keep-scroll="build-categories|${mode}" role="group" aria-label="${mode === "room" ? "Rooms" : "Kinds"}">${row}<span class="build-sub-name">${label}</span></div>
       <div class="build-grid" role="list" data-keep-scroll="build|${where}">${tiles || `<p class="build-empty">Nothing here${search ? ` matches “${search}”` : " yet"}.</p>`}</div>
       <div class="build-detail" aria-live="polite">${detail(s, picked)}</div>
       <div class="build-foot"><button class="build-toggle" data-toggle="owned" aria-pressed="${ownedOnly}"><i></i>Owned only</button><button class="build-toggle" data-toggle="afford" aria-pressed="${affordable}"><i></i>Can afford</button><span>Each purchase adds one copy · store and reuse</span></div>
