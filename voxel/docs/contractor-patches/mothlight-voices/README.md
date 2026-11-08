@@ -4,6 +4,8 @@ This isolated contractor patch adds pre-recorded ElevenLabs dialogue to the exis
 
 ## Integration base
 
+[Verified incremental patch ZIP for Claude](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/7b54b2a205db81e7ea47c1d1ed34883cf484fa28/Pumpkin-Patch-Voices-Claude-Patch.zip) — read the prerequisite below before applying.
+
 - Branch: `contractor/mothlight-voices`.
 - Parent: `b530974120e43c28f0f97424208cc25d6278d2f9` on `contractor/village-design-and-cast`.
 - Last observed lead `voxel-reference`: `604fe2359427fc7e90a3d1248a6c4d1d6b0136c8` (8 November 2026).
