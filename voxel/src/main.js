@@ -141,6 +141,10 @@ const scene = createScene($("world"), state, {
   },
   onVillagePick: what => villageGame?.pick(what),
   villageBlocked: () => !!villageGame?.blocked,
+  villageEditing: () => !!villageGame?.decorating,
+  villageGesture: () => villageGame?.gesture,
+  villageReducedMotion: () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches,
+  villageAtmosphereBudget: () => tv.on ? "tv" : "full",
   selectedPiece: () => home.tools.selected,
   canDragPiece: () => !!home.tools.selected,
   // While arranging, pressing another piece and moving picks that one up instead.
@@ -241,6 +245,7 @@ const scene = createScene($("world"), state, {
 
 // What the rules report, turned into sights and sounds.
 function handle(e) {
+  if (villageGame?.onEvent(e)) { save(); if (villageGame.active) scene.villageView.sync(); }
   if (e.type === "stock-discarded" && state.time - spoilageNoticeAt >= 60) {
     spoilageNoticeAt = state.time;
     whisper("Spoiled pumpkins were discarded. Check stock for fading batches.", "warn");
@@ -723,7 +728,7 @@ setTimeout(() => {
   prefs.saveNudgeAt = new Date().toISOString(); savePrefs();
   notice("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
 }, 60000);
-villageGame = createVillageGame({ state: () => state, scene, save, notice, narration, savePrefs,
+villageGame = createVillageGame({ state: () => state, scene, save, notice, narration, savePrefs, prefs, onFullscreen: () => $("fullscreen").click(),
   closeMenus() { closeSheet(); upgradeMenu?.close(); home.tools.select(null); lifeActivity?.cancel(); playControls?.close(); playControls?.cursor.hide(); },
   onLeave() { renderPlace(); render(); }, onRender: renderPlace,
 });

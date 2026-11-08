@@ -3,7 +3,7 @@
 body.in-village #dock,body.in-village #actions,body.in-village #hud,body.in-village #goal,body.in-village #place-bar,body.in-village #play-controls,body.in-village #play-toggle,body.in-village .home-journey-chip,body.in-village #whispers,body.in-village #dialogue,body.in-village #bubble {display:none!important}
 /* Farm events keep simulating, but their projected cards belong on the farm. */
 body.in-village :is(.npc-reward,.guest-card,.chat-card,.building-context,.estate-controls,#chat-layer,#streak,#fx,.float-text,#stock-popover,#upgrade-menu){display:none!important}
-#village-game{position:fixed;inset:0;z-index:43;pointer-events:none;color:#f6e8d4;font:14px/1.45 var(--body);--vg-panel:#241c2e;--vg-line:#d7b98336}
+#village-game{position:fixed;inset:0;z-index:43;pointer-events:none;color:#f6e8d4;font:14px/1.45 var(--body);--vg-panel:#241c2e;--vg-line:#d7b98336;--vg-muted:#d0bcd5;isolation:isolate}
 #village-game[hidden]{display:none}
 #village-game button,#village-invitation{pointer-events:auto;min-height:44px;min-width:44px;border:1px solid var(--vg-line,#d7b98336);border-radius:13px;background:#271f31f2;color:#f6e8d4;padding:9px 13px;font:600 13px/1.3 var(--body);touch-action:manipulation}
 #village-game button:focus-visible,#village-invitation:focus-visible{outline:2px solid #ffd89c;outline-offset:3px}
@@ -32,4 +32,42 @@ body.in-village :is(.npc-reward,.guest-card,.chat-card,.building-context,.estate
 #village-game .vg-dock,#village-game .vg-heading{z-index:2}#vg-panel{z-index:3}body.in-village #notice{left:50%;top:132px;bottom:auto}
 
 body.in-village .play-prompt,body.in-village .pad-hints,body.in-village .pad-cursor{display:none!important}
-.tv-mode #village-game,.tv-mode #village-invitation{zoom:var(--tv-zoom,1)}
+.tv-mode #village-invitation{zoom:var(--tv-zoom,1)}
+
+/* Keep the village in view: one quiet objective and compact edge furniture,
+   with longer explanations and control help inside the journal. */
+#village-game button{cursor:pointer;box-sizing:border-box;transition:background-color .12s,border-color .12s}
+#village-game button:hover:not(:disabled){border-color:#e0bd8b80}
+#village-game button:active:not(:disabled){filter:brightness(1.12)}
+.vg-heading{gap:7px}
+.vg-heading>div{min-width:0;max-width:290px;padding:7px 17px;background:#21192bdc;border-color:#d7b98326}
+.vg-heading b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#village-game .vg-objective{max-width:min(370px,calc(100vw - 28px));font-size:13px;line-height:1.4;padding:10px 13px;border-radius:14px;background:#251d2ddb;border-color:#d7b98326}
+#vg-panel{background:linear-gradient(145deg,#30243bf5,#1e1728fa);box-shadow:0 12px 48px #09050e55}
+#vg-panel>header{padding:13px 15px}
+#vg-panel-body{padding:12px 16px 18px;scroll-padding-block:12px;scrollbar-color:#aa87b64d transparent}
+#vg-panel-body :is(select,input){min-height:44px;min-width:44px;max-width:100%;font:inherit;color:#f6e8d4;background:#201729;border:1px solid var(--vg-line);border-radius:10px;padding:8px 10px;box-sizing:border-box}
+#vg-panel-body input[type=range]{padding:8px 0;accent-color:#e2b77b;width:100%}
+#vg-panel-body summary{display:flex;align-items:center;gap:8px;line-height:1.4;color:#efddc8;list-style:none}
+#vg-panel-body summary::before{content:'›';color:#e2b77b;font-size:21px;line-height:1;width:14px;flex:0 0 14px}
+#vg-panel-body details[open]>summary::before{transform:rotate(90deg)}
+#vg-panel-body summary:focus-visible{outline:2px solid #ffd89c;outline-offset:3px;border-radius:6px}
+#vg-panel-body :is(p,small){line-height:1.5}
+#vg-panel-body .vg-help{padding:12px 0;color:#d4c3db;font-size:13px}
+#vg-panel-body .vg-help dl{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:10px 0}
+#vg-panel-body .vg-help :is(dt,dd){margin:0}#vg-panel-body .vg-help dt{color:#edc68b;font-weight:600}
+.vg-tour{padding:15px 22px;background:#21172de8}
+.vg-tour b{font-size:23px}
+#village-game .vg-dock button[aria-current=page]{color:#ffdc9d;background:#e8bb7220}
+@media(max-width:540px){
+  .vg-heading{left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));gap:5px}
+  .vg-heading>div{padding:7px 8px;flex:1}
+  .vg-heading small{font-size:12px;white-space:nowrap}
+  #village-game .vg-heading button{padding:8px;flex-shrink:0}
+  #vg-coins{font-size:12px;padding:6px;border-color:transparent;background:transparent}
+  #village-game .vg-objective{left:10px;top:79px;max-width:calc(100% - 20px);font-size:12px;padding:9px 12px}
+  #vg-panel{top:75px;border-radius:20px;bottom:83px}
+  #vg-panel h2{font-size:22px}
+}
+@media(max-width:370px){.vg-heading>div small{display:none}.vg-heading b{font-size:14px}#vg-coins{display:none}#village-game .vg-heading button{font-size:12px}}
+@media(min-width:600px) and (max-width:1100px) and (min-height:600px){#vg-panel{width:min(430px,calc(60% - 24px))}.vg-heading>div{max-width:250px}.vg-dock{bottom:max(18px,env(safe-area-inset-bottom))}}

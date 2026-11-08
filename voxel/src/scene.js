@@ -368,7 +368,12 @@ export function createScene(canvas, state, hooks) {
   const roomCam = new THREE.PerspectiveCamera(INTERIOR.fov, 1, 0.1, 200);
   const estateView = createHouseEstateView(canvas, state, { onPick: what => hooks.onPick(what), editing: () => hooks.estateEditing?.(), gesture: hooks.estateGesture, blocked: () => document.body.classList.contains("menu-open") || !document.getElementById("level-celebration").hidden });
   const gardenPlay = createGardenPlay({ view: estateView, state, character });
-  const villageView = createVillageView(canvas, state, { onPick: what => hooks.onVillagePick?.(what), blocked: () => view.place !== "village" || !!hooks.villageBlocked?.() });
+  const villageView = createVillageView(canvas, state, {
+    onPick: what => hooks.onVillagePick?.(what), blocked: () => view.place !== "village" || !!hooks.villageBlocked?.(),
+    editing: () => !!hooks.villageEditing?.(),
+    gesture: { pose: () => hooks.villageGesture?.()?.pose(), busy: () => !!hooks.villageGesture?.()?.busy(), begin: () => hooks.villageGesture?.()?.begin(), drag: (x,z) => hooks.villageGesture?.()?.drag(x,z), turn: deg => hooks.villageGesture?.()?.turn(deg), end: cancelled => hooks.villageGesture?.()?.end(cancelled) },
+    residentsPaused: () => !!hooks.villageEditing?.(), reducedMotion: () => !!hooks.villageReducedMotion?.(), atmosphereBudget: () => hooks.villageAtmosphereBudget?.() ?? "full",
+  });
   // The bench's view reports to main.js through hooks.carving (cuts, the lid, seeds, sounds).
   const carve = (name) => (...args) => hooks.carving?.[name]?.(...args);
   const carvingView = createCarvingView(canvas, state, Object.assign(Object.fromEntries(["onCut", "onEtch", "onFree", "onFreeMiss", "onLid", "onScooped", "onRevealed", "onTool", "onProgress", "sound", "feel"].map((n) => [n, carve(n)])), { blocked: () => document.body.classList.contains("menu-open") }));

@@ -9,9 +9,12 @@ import * as THREE from "three";
 import * as M from "../src/model.js";
 import { buildSaveFile, readSaveFile } from "../src/save-file.js";
 import { NODES, ARRIVAL, PLAN_SCALE as K } from "../src/content/village.js";
+import { createVillagePadState, normaliseVillageStick } from "../src/ui/village-controls.js";
 
-// The controller is exercised without a renderer or browser. Art URLs are the
-// only substituted imports; its village rules and room plans remain the real ones.
+// The game controller is exercised without a renderer or browser. Rules and
+// room plans stay real; the small DOM adapter below supplies the input port.
+// Real multi-pointer controls, menu geometry, CSS zoom and focus run separately
+// in tools/village-controls-qa.mjs against Chromium.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const bundle = await esbuild.build({ entryPoints: [path.join(root, "src/village-game.js")], bundle: true, platform: "node", format: "esm", write: false, minify: true,
   plugins: [{ name: "headless-art", setup(build) { build.onLoad({ filter: /\.(webp|png|mp3)$/ }, () => ({ contents: 'export default "headless-art"', loader: "js" })); } }], logLevel: "silent" });
@@ -56,6 +59,26 @@ class Element {
   setPointerCapture() {}
 }
 function farm(level = 3) { const s = M.freshState(); M.recordHomeActivity(s, "visit"); s.earned = M.LEVELS[level - 1].at; M.awardLevels(s); return s; }
+function headlessControls({ root, blocked, onRelease }) {
+  const padState = createVillagePadState(), zone = root.querySelector("#vg-stick-zone");
+  let touch = { x: 0, y: 0 }, owner = null, origin = null;
+  zone.onpointerdown = e => { if (blocked()) return; owner = e.pointerId; origin = { x: e.clientX, y: e.clientY }; };
+  zone.onpointermove = e => { if (e.pointerId === owner) touch = normaliseVillageStick((e.clientX - origin.x) / 42, (e.clientY - origin.y) / 42, .05); };
+  const clear = () => { touch = { x: 0, y: 0 }; owner = null; };
+  zone.onpointerup = zone.onpointercancel = e => { if (e.pointerId === owner) clear(); };
+  const release = () => { clear(); padState.release(); onRelease(); };
+  return {
+    poll() { const input = padState.sample(navigator.getGamepads()); if (blocked()) clear(); return { ...input, source: input.active ? "pad" : "touch", move: blocked() ? { x: 0, y: 0 } : input.active ? input.move : touch, look: blocked() ? { x: 0, y: 0 } : input.look }; },
+    handleMenu(surface, pad) {
+      if (!surface || !pad) return false;
+      const buttons = surface.querySelectorAll("button:not(:disabled)").filter(el => el.getClientRects().length);
+      const index = buttons.indexOf(root.doc.activeElement), delta = pad.pressed(13) || pad.pressed(15) ? 1 : pad.pressed(12) || pad.pressed(14) ? -1 : 0;
+      if (delta && buttons.length) buttons[(index + delta + buttons.length) % buttons.length].focus();
+      if (pad.pressed(0)) (buttons[index] ?? buttons[0])?.click(); return true;
+    },
+    clear, release, reset() { release(); padState.reset(); padState.sample(navigator.getGamepads()); }, dispose() { release(); },
+  };
+}
 function harness(t, s = farm(), narration) {
   const doc = { createElement(tag) { return new Element(tag, doc); }, getElementById(id) { return doc.body.querySelector("#" + id); } }; doc.body = new Element("body", doc); doc.activeElement = doc.body;
   const listeners = new Map(), globals = new Map(), pad = { connected: true, mapping: "standard", axes: [0, 0, 0, 0], buttons: Array.from({ length: 18 }, () => ({ pressed: false })) };
@@ -65,7 +88,7 @@ function harness(t, s = farm(), narration) {
   let inside = null, touring = false, finishTour = null, conversation = null, callback = null, menuCloses = 0, leaves = 0;
   const view = { scene: picture, camera, groundAt: () => 0, sync() {}, folk: { mood() {}, talkSpot: id => ({ x: id === "rowan" ? 80 : 81, z: 30 }) }, play: { reset() { cameraCalls.reset++; }, follow() { cameraCalls.follow++; }, look() {}, zoom() {} }, cameraActions: { focus(...args) { cameraCalls.focus.push(args); } }, get inside() { return inside; }, goInside(id) { inside = id; }, goOutside() { inside = null; }, hallPoint(x, z, y = 0) { return new THREE.Vector3(4000 + x * K, y * K, z * K); }, director: { get active() { return touring; }, start(title, done, options) { touring = true; finishTour = done; this.options = options; title({ title: "Mothlight", sub: "Welcome" }); }, skip() { if (!touring) return; touring = false; finishTour(); } } };
   const scene = { villageView: view, place: null, player: { state: () => ({ ...owner }), setEnabled(on, who = owner.who) { owner.enabled = on; owner.who = who; } }, enter(kind) { this.place = { kind }; }, leavePlace() { touring = false; this.place = null; }, villageCharacter() { const actor = new THREE.Group(), frame = new THREE.Group(); actor.add(new THREE.Group()); actor.userData = { idle: [frame], walk: [frame], shown: frame, show() {}, dispose() { actor.userData.disposed = true; } }; actors.push(actor); return actor; } };
-  const game = createVillageGame({ state: () => s, scene, narration, save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: () => null, conversationView(options) { callback = options; return { open(options) { conversation = options; }, close() { if (conversation) { conversation = null; options.onClose(); } }, get active() { return !!conversation; }, dispose() { this.close(); } }; } });
+  const game = createVillageGame({ state: () => s, scene, narration, save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: () => null, itemArt: () => "", controlsView: headlessControls, decorateView: () => ({ active: false, close() {}, dispose() {}, tick() {}, pick() {}, back() {}, open() { return false; } }), conversationView(options) { callback = options; return { open(options) { conversation = options; }, close() { if (conversation) { conversation = null; options.onClose(); } }, get active() { return !!conversation; }, dispose() { this.close(); } }; } });
   const h = { game, state: s, doc, scene, view, cameraCalls, owner, actors, saves, notices, listeners, pad, get conversation() { return conversation; }, get menuCloses() { return menuCloses; }, get leaves() { return leaves; }, complete() { callback.onContinue({ finished: true }); }, choose(index = 0) { return callback.onChoice(index); }, $(selector) { return doc.body.querySelector(selector); }, click(selector) { const el = doc.body.querySelector(selector); assert.ok(el, selector); assert.equal(el.disabled, false, selector + " enabled"); el.click(); }, key(type, key, target = doc.body) { for (const fn of listeners.get(type) ?? []) fn({ key, target, preventDefault() {}, stopImmediatePropagation() {}, repeat: false }); }, press(button) { pad.buttons[button].pressed = true; game.tick(.1); pad.buttons[button].pressed = false; game.tick(.1); } };
   t.after(() => { game.dispose(); for (const [key, desc] of globals) desc ? Object.defineProperty(globalThis, key, desc) : delete globalThis[key]; }); return h;
 }

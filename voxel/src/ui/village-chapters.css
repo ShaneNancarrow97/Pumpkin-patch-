@@ -1,0 +1,77 @@
+/* A readable purple almanac, revealed only when a page is opened. World HUD
+   geometry lives in village-game.css; this sheet never grows the screen UI. */
+#vg-panel-body .vg-ch-intro{display:flex;gap:13px;align-items:flex-start;padding:4px 0 17px}
+#vg-panel-body .vg-ch-intro h3{font:500 23px/1.15 var(--display);margin:2px 0 8px;letter-spacing:-.25px}
+#vg-panel-body .vg-ch-intro p{margin:0;font-size:13px;line-height:1.55;color:#dfcfdf}
+#vg-panel-body .vg-ch-seal{display:flex;align-items:center;justify-content:center;width:46px;height:46px;flex:0 0 46px;color:#e1c294;border:1px solid #c8a47538;border-radius:15px;background:radial-gradient(ellipse at 25% 15%,#c9a9db22,#22172d44);box-shadow:inset 0 1px #ecdac714}
+#vg-panel-body .vg-ch-seal svg{width:27px;height:27px;display:block}
+#vg-panel-body .vg-ch-kicker{display:block;color:#cdb28b;font-size:12px;line-height:1.4;margin-bottom:5px}
+#vg-panel-body .vg-ch-actions{display:flex;flex-wrap:wrap;gap:7px;margin:7px 0 15px;align-items:center}
+#vg-panel-body .vg-ch-action{min-height:44px;margin:0;padding:10px 13px;font-size:13px;line-height:1.25;background:#c4a4d90c;border-color:#b798c534;color:#f0dfeb;box-shadow:inset 0 1px #ffffff05}
+#vg-panel-body .vg-ch-action.vg-ch-primary{background:linear-gradient(130deg,#f4d498,#dfae6e);color:#342019;border-color:#ffe1ad88;box-shadow:inset 0 1px #fff4d2aa,0 3px 12px #10071533;font-weight:700}
+#vg-panel-body .vg-ch-primary:hover:not(:disabled){background:linear-gradient(130deg,#ffdfa5,#efbc79)}
+#vg-panel-body .vg-ch-action:disabled{opacity:1;color:#ad9bb5;background:#33293b;border-color:#ad8cb823;box-shadow:none}
+#vg-panel-body .vg-ch-action[aria-pressed=true]{color:#f4d39f;background:#e4b97a17;border-color:#d6b17e55}
+#vg-panel-body article.vg-ch-card{margin:0 0 12px;padding:15px;border:1px solid #c2a1cd24;border-radius:16px;background:linear-gradient(125deg,#ac84bb0e,#130d1c26)}
+#vg-panel-body article.vg-ch-card.is-tracked{background:linear-gradient(125deg,#ba8ad21c,#56355113);border-color:#dfb7775e;box-shadow:inset 3px 0 #d8ad71}
+#vg-panel-body .vg-ch-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:0 0 7px;min-width:0}
+#vg-panel-body .vg-ch-card-head>div{min-width:0}
+#vg-panel-body .vg-ch-card-head h3{margin:0;font-size:17px;line-height:1.25}
+#vg-panel-body .vg-ch-card-head button{flex-shrink:0;font-size:12px;min-width:63px;padding:8px}
+#vg-panel-body .vg-ch-task{font-size:14px;color:#f3e4d3;line-height:1.45;margin:9px 0}
+#vg-panel-body .vg-ch-requirements{list-style:none;padding:0;margin:12px 0;background:#120b1c20;border-radius:11px;overflow:hidden}
+#vg-panel-body .vg-ch-requirements li{display:grid;grid-template-columns:16px 1fr auto;align-items:center;gap:7px;padding:8px 10px;font-size:12px;line-height:1.35;color:#ddcce1;border-top:1px solid #b694c316}
+#vg-panel-body .vg-ch-requirements li:first-child{border-top:0}
+#vg-panel-body .vg-ch-requirements li>span:first-child{color:#b49bbb;font-size:15px}
+#vg-panel-body .vg-ch-requirements li>b{font-variant-numeric:tabular-nums;font-weight:600;color:#f0ddbd;white-space:nowrap}
+#vg-panel-body .vg-ch-requirements li.is-ready>span:first-child{color:#c7d5a9}
+#vg-panel-body p.vg-ch-hint{font-size:12px;line-height:1.5;color:#ccb7d2;margin:10px 0}
+#vg-panel-body .vg-ch-card>.vg-ch-actions{margin-bottom:0}
+#vg-panel-body details.vg-ch-reward-fold{padding:6px 0 0}
+#vg-panel-body .vg-ch-reward-fold summary{min-height:44px;font-size:12px;color:#c8b1ce}
+#vg-panel-body .vg-ch-rewards{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+#vg-panel-body .vg-ch-rewards>span{display:inline-block;border:1px solid #d8b47a29;border-radius:7px;background:#d8b47a0b;padding:5px 8px;font-size:12px;line-height:1.35;color:#ecd3ad}
+#vg-panel-body .vg-ch-section{margin:20px 0}
+#vg-panel-body .vg-ch-section>h3{color:#dbc0dd;font-size:13px;letter-spacing:.4px;margin:0 0 10px;font-weight:600}
+#vg-panel-body button.vg-ch-link{display:flex;align-items:center;gap:11px;width:100%;min-height:64px;margin:0 0 8px;padding:11px 12px;text-align:left;background:#af8eb60b;border-color:#bf9acb28}
+#vg-panel-body .vg-ch-link>span:not(.vg-ch-seal):first-of-type,#vg-panel-body .vg-ch-link>.vg-ch-seal+span{flex:1;min-width:0}
+#vg-panel-body .vg-ch-link b{display:block;font-weight:600;font-size:14px;color:#f3e5da}
+#vg-panel-body .vg-ch-link small{font-size:12px;line-height:1.4;color:#c9b6d1;margin-top:3px}
+#vg-panel-body .vg-ch-link>span:last-child{margin-left:auto;color:#dab887;font-size:20px}
+#vg-panel-body .vg-ch-link>.vg-ch-seal{width:40px;height:40px;flex-basis:40px;border-radius:12px}
+#vg-panel-body details.vg-ch-history{padding:14px 0 0}
+#vg-panel-body article.vg-ch-receipt{padding:13px 0;border-bottom:1px solid #c8a6d323}
+#vg-panel-body .vg-ch-receipt h3{font-size:15px;margin:3px 0 7px}
+#vg-panel-body .vg-ch-empty{padding:18px 3px;color:#d7c3dc;line-height:1.6}
+#vg-panel-body .vg-ch-prize{border:1px solid #d8b06f3d;border-radius:15px;padding:13px 14px;background:radial-gradient(ellipse at 0 0,#bb8f5326,transparent 85%);margin:0 0 15px}
+#vg-panel-body .vg-ch-prize p{font-size:12px;margin:10px 0 0;color:#cbb6d1}
+#vg-panel-body article.vg-ch-duty{padding:13px 0;border-color:#b18dbe2b}
+#vg-panel-body .vg-ch-duty>div{display:flex;gap:10px;align-items:center;margin-bottom:9px}
+#vg-panel-body .vg-ch-duty>div>span{color:#ccb0df;font-size:20px;flex:0 0 20px}
+#vg-panel-body .vg-ch-duty h3{font-size:14px;line-height:1.4;margin:0;flex:1}
+#vg-panel-body .vg-ch-duty>div>b{color:#e5c38d;font-size:13px;white-space:nowrap}
+#vg-panel-body .vg-ch-duty.is-ready>div>span{color:#c6d2a6}
+#vg-panel-body :is(.vg-ch-duty,.vg-ch-material) meter{appearance:none;display:block;width:100%;height:5px;border:0;border-radius:5px;background:#140e1d;overflow:hidden}
+#vg-panel-body meter::-webkit-meter-bar{height:5px;border:0;border-radius:5px;background:#140e1d}
+#vg-panel-body meter::-webkit-meter-optimum-value{background:linear-gradient(90deg,#a588bc,#edc78f);border-radius:5px}
+#vg-panel-body meter::-moz-meter-bar{background:linear-gradient(90deg,#a588bc,#edc78f);border-radius:5px}
+#vg-panel-body :is(.vg-ch-duty,.vg-ch-material) footer{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:7px}
+#vg-panel-body .vg-ch-footnote{font-size:12px;color:#c4adc9;line-height:1.5;margin:18px 0 4px}
+#vg-panel-body article.vg-ch-material{padding:13px 0;border-color:#b18dbe2b}
+#vg-panel-body .vg-ch-material h3{font-size:15px;font-weight:600}
+#vg-panel-body .vg-ch-material .vg-ch-card-head>b{font-size:15px;line-height:1.4;color:#f1ce91;font-variant-numeric:tabular-nums;white-space:nowrap}
+#vg-panel-body .vg-ch-material .vg-ch-card-head>b>span{font-size:12px;color:#bca4c4;font-weight:400}
+#vg-panel-body .vg-ch-material footer button{min-width:64px}
+#vg-panel-body .vg-ch-owned{display:inline-block;color:#c9d6a9;font-size:12px;margin-top:4px}
+#vg-panel-body article.vg-ch-product{display:flex;align-items:flex-start;gap:13px;padding:14px 0;border-bottom:1px solid #b593bf26}
+#vg-panel-body .vg-ch-product-art{display:grid;place-items:center;flex:0 0 68px;min-height:76px;border-radius:13px;background:radial-gradient(ellipse,#c5a5d01b,transparent 75%);overflow:hidden}
+#vg-panel-body .vg-ch-product-art .vg-ch-seal{width:60px;height:60px;flex-basis:60px;border-radius:16px}
+#vg-panel-body .vg-ch-product-art .vg-ch-seal svg{width:34px;height:34px}
+#vg-panel-body .vg-ch-product-art .thumb{width:64px;height:76px;min-width:0;display:grid;place-items:center}
+#vg-panel-body .vg-ch-product-art .garden-sprite{width:68px;height:68px;min-width:0;margin:0;flex-shrink:0}
+#vg-panel-body .vg-ch-product-body{min-width:0;flex:1}
+#vg-panel-body .vg-ch-product-body h3{font-size:15px;margin:0 0 4px;line-height:1.3}
+#vg-panel-body .vg-ch-product-body p{font-size:12px;line-height:1.5;color:#cfbcd5;margin:7px 0 9px}
+#vg-panel-body .vg-ch-product-body button{margin-top:9px;min-width:82px}
+@media(max-width:380px){#vg-panel-body .vg-ch-card-head{gap:6px}#vg-panel-body article.vg-ch-card{padding:12px}#vg-panel-body .vg-ch-card-head h3{font-size:15px}#vg-panel-body .vg-ch-intro h3{font-size:21px}#vg-panel-body .vg-ch-intro>.vg-ch-seal{display:none}#vg-panel-body .vg-ch-product-art{flex-basis:56px}#vg-panel-body .vg-ch-product-art .garden-sprite{width:56px;height:56px}}
+@media(prefers-reduced-motion:no-preference){#vg-panel-body .vg-ch-primary{transition:background-color .15s,box-shadow .15s}#vg-panel-body .vg-ch-primary:hover:not(:disabled){box-shadow:inset 0 1px #fff4d2aa,0 3px 16px #dfad691e}}
