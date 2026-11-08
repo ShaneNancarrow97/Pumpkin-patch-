@@ -1,0 +1,41 @@
+{
+  "artifactCommit": "62b0f60c9e89f2576fb3560b1bab97d30337b689",
+  "downloads": [
+    {
+      "file": "Pumpkin-Patch-Village-Play-Polish.html",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/62b0f60c9e89f2576fb3560b1bab97d30337b689/Pumpkin-Patch-Village-Play-Polish.html",
+      "bytes": 58259782,
+      "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17",
+      "verified": true
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Play-Polish.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/62b0f60c9e89f2576fb3560b1bab97d30337b689/Pumpkin-Patch-Village-Play-Polish.zip",
+      "bytes": 42067260,
+      "sha256": "121e0228a3d673d88ced09a2e97e41d80aa8261e776723c045a93c7d60a4fbd5",
+      "verified": true
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Play-Polish.apk",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/62b0f60c9e89f2576fb3560b1bab97d30337b689/Pumpkin-Patch-Village-Play-Polish.apk",
+      "bytes": 42068590,
+      "sha256": "bd2876295b40747880a287ff13db558154c06a80c999827372297b237b1c323c",
+      "verified": true
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/62b0f60c9e89f2576fb3560b1bab97d30337b689/Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip",
+      "bytes": 31763499,
+      "sha256": "18b8a185bf3b5ce24eb2caebed5c7ef3ec7e6cb227481fc9e307de6785595ece",
+      "verified": true
+    },
+    {
+      "file": "Pumpkin-Patch-Android-Claude-Patch.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/62b0f60c9e89f2576fb3560b1bab97d30337b689/Pumpkin-Patch-Android-Claude-Patch.zip",
+      "bytes": 254795,
+      "sha256": "3e6bb5057ad9c986e298214ba69df63de0188b191a86d01c20521fe98b7f8e2e",
+      "verified": true
+    }
+  ],
+  "method": "Complete public-file retrieval, streaming SHA-256 and exact byte counts"
+}

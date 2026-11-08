@@ -72,3 +72,7 @@ The current shared-exit build and its exact verification scope are recorded in [
 ## Android delivery
 
 The offline Android host was built last from the checked shared-exit HTML. See [the Android contractor addendum](ANDROID-HANDOVER.md) and [source/rebuild guide](../../../android/README.md) for asset caching, native input, save transfer, signing and the unverified hardware-test scope. The Android code does not change browser game rules or artwork.
+
+## Download files and patch order
+
+[Complete downloads and Claude patch order](FINAL-DOWNLOADS.md) includes the checked HTML, ZIP, Android test build, five game patches and separate native addendum. All public file hashes were verified after pushing.
