@@ -1,20 +1,19 @@
-# Pumpkin Patch — Village Play Polish
+# Pumpkin Patch — Village Menu Refinement
 
-- [Download full offline HTML](Pumpkin-Patch-Village-Play-Polish.html?raw=1)
-- [Download game ZIP](Pumpkin-Patch-Village-Play-Polish.zip?raw=1)
-- [Download Android APK](Pumpkin-Patch-Village-Play-Polish.apk?raw=1)
-- [Claude Android addendum](Pumpkin-Patch-Android-Claude-Patch.zip?raw=1)
-- [Claude game patch kit](Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip?raw=1)
-- [Village icons](Pumpkin-Patch-Village-UI-Icons.html?raw=1) · [Home icons](Pumpkin-Patch-Home-Category-Icons.html?raw=1) · [Controller icons](Pumpkin-Patch-Controller-Icons.html?raw=1)
+[Download offline HTML](Pumpkin-Patch-Village-Menu-Refinement.html?raw=1) · [Download game ZIP](Pumpkin-Patch-Village-Menu-Refinement.zip?raw=1) · [Claude game patch kit](Pumpkin-Patch-Village-Menu-Refinement-Claude-Patch.zip?raw=1)
 
-The village now follows the existing public road past Maisie's site and its eastern extension. The extra side arch/spur is gone. A small grounded waymark, clear forest opening and narrow walk corridor keep travel natural without opening unpurchased land. Walking, clicking, return travel and food service were checked on base, kitchen-only and expanded layouts.
+The song catalogue now includes all five newly supplied MIDI files (31 songs total), available through Settings and Shuffle. Original arrangements are preserved.
 
-Also includes the closer follow camera, farm R3 zoom/pan, spatial village map with honest lock criteria, nearby resource rings and subtle glows, tree/grass fade, a few roaming visitors, illustrated navigation, refined journal/dialogue/build controls, stable cursor/scroll, quieter village music and the ten-minute farm reminder.
+The Village shortcut has a dedicated painted icon. Village pages have clear leading actions and a Back trail that retains focus, scroll and expanded sections. Dialogue keeps its replies reachable. The farm shop road is clear and Maisie’s dining tables and queue use one coherent layout.
 
-Extract the ZIP and open its HTML, or download HTML directly. No account/server is needed. Export your current farm in Settings before changing browser/file origin, then import the save. Format18 preserves older progress. All art/audio is included.
+Click the illustrated level badge for a requirements-first checklist, then browse reward cards. Free gifts are distinct from paid upgrade opportunities. L1/R1, arrows or swipes browse the cards. No reward or currency rules were replaced.
 
-Source: contractor/village-play-polish. Read voxel/docs/contractor-patches/village-play-polish/README.md for Claude's integration/dependency notes and SHARED-EXIT-DELIVERY.md for exact-hash validation. All game jobs and public HTML/ZIP verification finished before the final Android build. APK packaging is complete. [Claude source handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/3b42a9a1f7ff6b0a1fe51f6e33f1fdca13988d72/voxel/docs/contractor-patches/village-play-polish/README.md).
+PS5 controller: L2 from the farm opens the top/action/bottom bars; D-pad navigates; Cross selects; Circle/L2 returns. In the village, the compact legend keeps Quest and Menus visible on the Fold layout and shows D-pad Navigate, Cross Select and Circle Back in panels. Nearby interactions receive amber emphasis.
 
-Validation retains scope: 961 full regression checks plus24 browser checks on the shared-exit logic candidate; 32 focused geometry/gameplay checks plus10 browser/visual checks on the final build. Earlier57/17/54 browser/smoke evidence belongs to the earlier polish release. Browser fixture/held-draw details are explicit; physical Fold/TV/Bluetooth performance is not certified by viewport tests. BUILD.json records hashes and replay.
+The village controller screenshots are normal renders of the exact shipped HTML with a declared test save and mocked native Gamepad input. Hardware Fold7/TV/PS5 Bluetooth certification is not claimed. BUILD.json and the source handover distinguish final evidence from earlier exact-hash candidates.
 
-The Android APK is a separate locally test-signed app: offline bundled media, secure local origin, fullscreen/fold resizing, native controller fallback and document-picker save transfer. It parses about 92.84% fewer HTML bytes without reducing media quality; it still uses WebView/WebGL2. Signature, alignment, CRC and all 273 media hashes pass; 16 extraction/shell checks pass. Cached emulator installation was blocked by its framework/storage and obsolete provider, so physical Fold 7/TV/PS5 testing remains unverified. Export/import your save through Settings when moving from browser to app.
+Extract the ZIP and open index.html, or download HTML directly. All art, music and voices are embedded. Export your farm from Settings before changing browser/file origins, then import it in the destination. Save version18 is preserved.
+
+[Claude source and dependencies](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/contractor/village-menu-refinement/voxel/docs/contractor-patches/village-menu-refinement/README.md). Contractor source branch: contractor/village-menu-refinement, base50afb77c5596189c57c48c7c8a4c379e9baa4b97. The lead working checkout is untouched. The game kit includes ordered binary patches and verification evidence. Optional Android packaging is a separate addendum after game publication.
+
+Previous download archive remains on contractor/village-play-polish-html.

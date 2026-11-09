@@ -1,147 +1,101 @@
 {
-  "sourceBranch": "contractor/village-play-polish",
-  "codeCommit": "8bf4d53b530fd835c20f4515e76913b376b295c9",
-  "codeTree": "c3d63518246339f6e86e71c5ab9e4e855d9f93d9",
-  "base": "ff6b5803686c449b902d405037f8958d03e3e2d8",
-  "html": {
-    "bytes": 58259782,
-    "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
-  },
-  "validation": {
-    "sharedExitLogic": {
-      "node": 961,
-      "browser": 24,
-      "html": "d72d1d63b8946da228708bb9f81bcabf2fbd1c0e69e7d2c6efe2ebcb510e9463"
+  "sourceBranch": "contractor/village-menu-refinement",
+  "base": "50afb77c5596189c57c48c7c8a4c379e9baa4b97",
+  "codeHead": "e96397af3d0de4103a90d7fdde60d297d8f69fbe",
+  "codeTree": "972e2b4109192462376bac708e46b60ff4f75641",
+  "patches": {
+    "0001-Clear-farm-shop-paths-and-share-a-spacious-dining-la.patch": {
+      "bytes": 29137,
+      "sha256": "085cd10e89ce97dda514cbf66c45a95617aa296d167fa47509baeece12084c85"
     },
-    "finalVisualDelta": {
-      "focusedNode": 32,
-      "browser": 10,
-      "html": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
+    "0002-Polish-village-navigation-and-illustrate-level-rewar.patch": {
+      "bytes": 5646784,
+      "sha256": "9513ed09d97e8ead32028cbe4856c06bf4a2169c00dea9b432f10b05ea9da513"
     },
-    "initialPolish": {
-      "node": 961,
-      "gameplayBrowser": 57,
-      "cssBrowser": 17,
-      "standardSmoke": 54,
-      "see": "handover/DELIVERY.md"
+    "0003-Keep-level-requirements-visible-and-clarify-village-.patch": {
+      "bytes": 25694,
+      "sha256": "545cd3e03e81c15ae1933b5cb12dd5d8f1f78bae196cf82e4f0ac44d64896a37"
     },
-    "pageErrors": 0,
-    "externalAssets": 0
-  },
-  "cleanReplay": {
-    "passed": true,
-    "tree": "c3d63518246339f6e86e71c5ab9e4e855d9f93d9",
-    "htmlSha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
-  },
-  "artifacts": {
-    "Pumpkin-Patch-Android-Claude-Patch.zip": {
-      "bytes": 254795,
-      "sha256": "3e6bb5057ad9c986e298214ba69df63de0188b191a86d01c20521fe98b7f8e2e"
+    "0004-Verify-village-presentation-and-sharpen-highlighted-.patch": {
+      "bytes": 39606899,
+      "sha256": "a3bd4eebbcb948d627454a1cbe5d144d1c8727128b724ceb507b93c942d82559"
     },
-    "Pumpkin-Patch-Controller-Icons.html": {
-      "bytes": 68746,
-      "sha256": "44e71118ed2743aebbf5e5c3c62ab4587915319d1489f91b3b3e3c4b77c5151e"
+    "0005-Add-five-supplied-MIDI-songs-to-selection-and-shuffl.patch": {
+      "bytes": 85527,
+      "sha256": "a835fade5bc682e34ee8d150a6689787085725540b908a25218baf8fde75db31"
     },
-    "Pumpkin-Patch-Home-Category-Icons.html": {
-      "bytes": 460248,
-      "sha256": "fd76a88a026912e39ea0addb869de4454ae62e46a8447127c687b8154fd5355b"
-    },
-    "Pumpkin-Patch-Home-Category-Icons.zip": {
-      "bytes": 4092341,
-      "sha256": "50783d46e642cf94afc04c26511133dadfe89970f012228840533118f80b4fb6"
-    },
-    "Pumpkin-Patch-Village-Play-Polish-Claude-Patch.zip": {
-      "bytes": 31763499,
-      "sha256": "18b8a185bf3b5ce24eb2caebed5c7ef3ec7e6cb227481fc9e307de6785595ece"
-    },
-    "Pumpkin-Patch-Village-Play-Polish.apk": {
-      "bytes": 42068590,
-      "sha256": "bd2876295b40747880a287ff13db558154c06a80c999827372297b237b1c323c"
-    },
-    "Pumpkin-Patch-Village-Play-Polish.html": {
-      "bytes": 58259782,
-      "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
-    },
-    "Pumpkin-Patch-Village-Play-Polish.zip": {
-      "bytes": 42067260,
-      "sha256": "121e0228a3d673d88ced09a2e97e41d80aa8261e776723c045a93c7d60a4fbd5"
-    },
-    "Pumpkin-Patch-Village-UI-Art.zip": {
-      "bytes": 6124942,
-      "sha256": "1cf76450f3a02dfe1fcaa292df0deaac2633865a8863479c6120ed6bd8bf147e"
-    },
-    "Pumpkin-Patch-Village-UI-Icons.html": {
-      "bytes": 505396,
-      "sha256": "97b2a33511149bf095d164f360db217c0ced02e3d6af681008e3511b9a042302"
+    "0006-Record-final-song-catalogue-checks-and-contractor-de.patch": {
+      "bytes": 130486,
+      "sha256": "3840095a6ed35f18e275ec378afac2b3baa722e8be8fa7fc5be07ec0745537d2"
     }
   },
-  "sourceHead": "3b42a9a1f7ff6b0a1fe51f6e33f1fdca13988d72",
-  "gameArtifactCommit": "42946eceb72922388a4b3bcd6cf9bd70ac0c27cc",
-  "publicGameDownloadsVerified": true,
-  "android": {
-    "sourceCommit": "3b42a9a1f7ff6b0a1fe51f6e33f1fdca13988d72",
-    "build": {
-      "applicationId": "com.shanenatalie.pumpkinpatch.voxel",
-      "versionCode": 26110801,
-      "minSdk": 26,
-      "targetSdk": 35,
-      "sourceHtml": {
-        "filename": "Pumpkin-Patch-Village-Play-Polish.html",
-        "bytes": 58259782,
-        "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17"
-      },
-      "extractedHtml": {
-        "path": "index.html",
-        "bytes": 4174189,
-        "sha256": "631931d433a6fde8ede6ace66b26a29e02213a48906c1b555bd644beec84f06e"
-      },
-      "packagedHtml": {
-        "bytes": 4174274,
-        "sha256": "321e95387a72122932cb3c5764e790614f0f7e7600f8a1a830cfddac6cf978aa"
-      },
-      "shell": {
-        "bytes": 12351,
-        "sha256": "a54e6c8a07be244da9475f558927a066a059c935f180faa33545550ee382dc46"
-      },
-      "assetStatistics": {
-        "dataUriReferences": 274,
-        "uniqueMediaAssets": 273,
-        "mimeReferenceCounts": {
-          "audio/mpeg": 164,
-          "font/woff": 1,
-          "font/woff2": 2,
-          "image/png": 22,
-          "image/webp": 85
-        },
-        "uniqueDecodedMediaBytes": 40531747,
-        "parseByteReduction": 54085593,
-        "parseByteReductionPercent": 92.8352,
-        "remainingTargetBase64Uris": 0
-      },
-      "apk": {
-        "file": "Pumpkin-Patch-Village-Play-Polish.apk",
-        "bytes": 42068590,
-        "sha256": "bd2876295b40747880a287ff13db558154c06a80c999827372297b237b1c323c"
-      },
-      "checks": {
-        "signature": true,
-        "zipalign": true,
-        "zipCrc": true,
-        "mediaHashes": true,
-        "mediaStoredWithoutRecompression": true
-      },
-      "signing": "Persistent local test signing key and random password are outside source; retain them for in-place app updates.",
-      "runtime": "Android System WebView/WebGL2, not a native3D rewrite; real hardware/performance verification is separate."
-    },
-    "unitChecks": 16,
-    "installVerified": false,
-    "hardwareVerified": false,
-    "emulatorReason": "Cached emulator framework StorageManager failure and no current WebView provider. See source Android verification report."
+  "html": {
+    "bytes": 58911354,
+    "sha256": "e5858bc666dbf4f8160e5d964249044eddfe2e70dc7bc1d0cc9bbfd175c7c4e0"
   },
-  "publicDownloadVerification": {
+  "stateVersion": 18,
+  "cleanReplay": {
     "passed": true,
-    "artifactCommit": "62b0f60c9e89f2576fb3560b1bab97d30337b689",
-    "files": 5,
-    "method": "Complete public-file retrieval, streaming SHA-256 and exact byte counts"
+    "tree": "972e2b4109192462376bac708e46b60ff4f75641",
+    "htmlSha256": "e5858bc666dbf4f8160e5d964249044eddfe2e70dc7bc1d0cc9bbfd175c7c4e0"
+  },
+  "validation": {
+    "uiSourceNode": 995,
+    "finalMusicNode": 6,
+    "catalogueAudit": 31,
+    "musicBrowser": {
+      "passed": 14,
+      "html": "e5858bc666dbf4f8160e5d964249044eddfe2e70dc7bc1d0cc9bbfd175c7c4e0"
+    },
+    "earlierUIEvidence": {
+      "integrated": 105,
+      "standardSmoke": 54,
+      "html": "cf0e1290a90410387380717cee0fc64807932e03b1830de8a02c0c2afc56d636"
+    },
+    "functionalDelta": {
+      "passed": 35,
+      "html": "a77a5d1e79a70361633ca9a658184299fc0d55952d1ed98091027308c1a8f614"
+    },
+    "contrastDelta": {
+      "passed": 9,
+      "steadyFold": 6,
+      "html": "38895eb42cc1e45a9dd9193a7fa42d58d987f264e4a3b6685b004f9eefbc2dcf",
+      "minimumGlyphContrast": 6.89
+    },
+    "pageErrors": 0,
+    "externalAssets": 0,
+    "hardwareScope": "Software viewports/mocked native Gamepad input; physical Fold7/TV/PS5 Bluetooth not certified."
+  },
+  "artifacts": {
+    "Pumpkin-Patch-Village-Menu-Refinement.html": {
+      "bytes": 58911354,
+      "sha256": "e5858bc666dbf4f8160e5d964249044eddfe2e70dc7bc1d0cc9bbfd175c7c4e0"
+    },
+    "Pumpkin-Patch-Village-Menu-Refinement.zip": {
+      "bytes": 42376785,
+      "sha256": "96c91840b91e66c562cac78c5fed7098b5b97cd0d511cf18584cf525232b8f21"
+    },
+    "Pumpkin-Patch-Village-Menu-Refinement-Claude-Patch.zip": {
+      "bytes": 46160469,
+      "sha256": "18ffea6792734983c8f32738439001c0184cdf39eaa414f00f0020548c041923"
+    },
+    "Village-Controller-TV.png": {
+      "bytes": 1548101,
+      "sha256": "c1290c4fb105f45ce115055d9886099b2cd213b7e589522919e1bbcd68912ce9"
+    },
+    "Village-Controller-Menu-a77.png": {
+      "bytes": 1588023,
+      "sha256": "4e1f8e417c736f694b247c2748bcf1fe1261ff0de95d3b33d1138e4845447879"
+    }
+  },
+  "screenshots": {
+    "Village-Controller-TV.png": {
+      "html": "38895eb42cc1e45a9dd9193a7fa42d58d987f264e4a3b6685b004f9eefbc2dcf",
+      "scope": "Normal-render UI before catalogue-only addition, unchanged interface."
+    },
+    "Village-Controller-Menu-a77.png": {
+      "html": "a77a5d1e79a70361633ca9a658184299fc0d55952d1ed98091027308c1a8f614",
+      "scope": "Normal-render panel legend before ready-glyph contrast delta; panel appearance unchanged."
+    }
   }
 }
