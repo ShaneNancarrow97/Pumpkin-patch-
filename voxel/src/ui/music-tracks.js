@@ -25,6 +25,11 @@ import billie_jean from "../../assets/music/billie-jean.mid";
 import africa from "../../assets/music/africa.mid";
 import still_dre from "../../assets/music/still-dre.mid";
 import bohemian_rhapsody from "../../assets/music/bohemian-rhapsody.mid";
+import dancingInTheMoonlight from "../../assets/music/dancing-in-the-moonlight.mid";
+import bitterSweetSymphony from "../../assets/music/bitter-sweet-symphony.mid";
+import duality from "../../assets/music/duality.mid";
+import paintItBlack from "../../assets/music/paint-it-black.mid";
+import fireflies from "../../assets/music/fireflies.mid";
 // Billie Jean and Bohemian Rhapsody include long silent end markers; their
 // explicit trim flag finishes playback after the last note without editing MIDI.
 // The Numb remix file is one four-bar riff (about 7 seconds), so it plays nine
@@ -57,4 +62,9 @@ export const MUSIC_TRACKS = [
   { id: "africa", name: "Africa", credit: "Toto \u00b7 your supplied MIDI", bytes: africa },
   { id: "still-dre", name: "Still D.R.E.", credit: "Dr. Dre \u00b7 your supplied MIDI", bytes: still_dre },
   { id: "bohemian-rhapsody", name: "Bohemian Rhapsody", credit: "Queen \u00b7 your supplied MIDI", bytes: bohemian_rhapsody, trimTail: true },
+  { id: "dancing-in-the-moonlight", name: "Dancing in the Moonlight", credit: "Your supplied MIDI", bytes: dancingInTheMoonlight },
+  { id: "bitter-sweet-symphony", name: "Bitter Sweet Symphony", credit: "The Verve · your supplied MIDI", bytes: bitterSweetSymphony },
+  { id: "duality", name: "Duality", credit: "Slipknot · your supplied MIDI", bytes: duality },
+  { id: "paint-it-black", name: "Paint It, Black", credit: "The Rolling Stones · your supplied MIDI", bytes: paintItBlack },
+  { id: "fireflies", name: "Fireflies", credit: "Owl City · your supplied MIDI", bytes: fireflies },
 ];

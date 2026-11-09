@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import vm from "node:vm";
+import fs from "node:fs";
 import { build } from "esbuild";
+
+const ADDED_TRACKS = ["dancing-in-the-moonlight", "bitter-sweet-symphony", "duality", "paint-it-black", "fireflies"];
 
 test("MIDI endings advance shuffle automatically; mute and repeat remain reliable", async () => {
   const bundle = await build({ entryPoints: [new URL("../src/ui/audio.js", import.meta.url).pathname], bundle: true, platform: "node", format: "cjs", loader: { ".mid": "binary" }, write: false });
@@ -44,10 +47,17 @@ test("MIDI endings advance shuffle automatically; mute and repeat remain reliabl
     const previous = audio.status.track; time += audio.status.duration + .5; scheduled();
     assert.notEqual(audio.status.track, previous, "the end of a song advances without a button press"); played.push(audio.status.track);
   }
-  assert.equal(new Set(played).size, sandbox.module.exports.MUSIC_TRACKS.length, "all songs appear in one shuffle round");
-  for (const [id, upper] of [["crossing-field",90],["billie-jean",300],["africa",270],["still-dre",100],["bohemian-rhapsody",360]]) {
+  assert.deepEqual(new Set(played), new Set(sandbox.module.exports.MUSIC_TRACKS.map(t => t.id)), "every catalogued song appears exactly once in a shuffle round");
+  for (const id of ADDED_TRACKS) {
+    assert.equal(played.filter(track => track === id).length, 1, id + " joins automatic shuffle");
+    const entry = sandbox.module.exports.MUSIC_TRACKS.find(t => t.id === id);
+    assert.ok(entry, id + " has a catalogue entry");
+    assert.deepEqual(Buffer.from(entry.bytes), fs.readFileSync(new URL("../assets/music/" + id + ".mid", import.meta.url)), id + " uses its actual supplied MIDI bytes");
+  }
+  for (const [id, upper] of [["crossing-field",90],["billie-jean",300],["africa",270],["still-dre",100],["bohemian-rhapsody",360],...ADDED_TRACKS.map(id => [id, 300])]) {
     audio.setTrack(id);
     assert.equal(audio.status.track, id, "each supplied song is selectable");
+    assert.equal(audio.status.playing, true, id + " starts the real MIDI scheduling path");
     assert.ok(audio.status.duration > 30 && audio.status.duration < upper, id + " ends at its playable duration");
     assert.equal(prefs.musicVolume, .32, "song selection preserves volume");
   }
