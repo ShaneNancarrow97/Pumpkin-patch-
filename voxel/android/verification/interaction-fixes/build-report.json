@@ -1,0 +1,54 @@
+{
+  "applicationId": "com.shanenatalie.pumpkinpatch.voxel",
+  "versionCode": 26110901,
+  "versionName": "2026.11.09.1",
+  "minSdk": 26,
+  "targetSdk": 35,
+  "sourceHtml": {
+    "filename": "Pumpkin-Patch-Village-Interaction-Fixes.html",
+    "bytes": 59031827,
+    "sha256": "c08029b91f19cb4363b39b0fbb0bbf376dd43656eb46fbaba21b33382198d8f7"
+  },
+  "extractedHtml": {
+    "path": "index.html",
+    "bytes": 4621874,
+    "sha256": "210c62343823418485cd2748d7c6734f2a6bd0c6115eaf8d1cdc680689fc86bd"
+  },
+  "packagedHtml": {
+    "bytes": 4621959,
+    "sha256": "0fc06b8b15b4d46539f87113d7539c1be908a8d3e0eaedd69d6fb43d97d2be3e"
+  },
+  "shell": {
+    "bytes": 12656,
+    "sha256": "49d49e33ce6dbb08bc5dfb65c7811c7ee0d5424d287ab6d45305e8e3f223a01a"
+  },
+  "assetStatistics": {
+    "dataUriReferences": 277,
+    "uniqueMediaAssets": 276,
+    "mimeReferenceCounts": {
+      "audio/mpeg": 164,
+      "font/woff": 1,
+      "font/woff2": 2,
+      "image/png": 22,
+      "image/webp": 88
+    },
+    "uniqueDecodedMediaBytes": 40775147,
+    "parseByteReduction": 54409953,
+    "parseByteReductionPercent": 92.1705,
+    "remainingTargetBase64Uris": 0
+  },
+  "apk": {
+    "file": "Pumpkin-Patch-Village-Play-Polish.apk",
+    "bytes": 42429422,
+    "sha256": "d0d91bfab180dd32c6aada8fc048b7b792585cd07d93390a69550a4379210ceb"
+  },
+  "checks": {
+    "signature": true,
+    "zipalign": true,
+    "zipCrc": true,
+    "mediaHashes": true,
+    "mediaStoredWithoutRecompression": true
+  },
+  "signing": "Persistent local test signing key and random password are outside source; retain them for in-place app updates.",
+  "runtime": "Android System WebView/WebGL2, not a native3D rewrite; real hardware/performance verification is separate."
+}
