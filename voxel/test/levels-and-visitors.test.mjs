@@ -1,13 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
+import {EXPANSION_CHAPTERS} from "../src/content/village-expansion.js";
 // Earnings that reach a level, wherever the thresholds are set.
 const at = (n) => M.LEVELS[n - 1].at;
 
 test("level boundaries, rewards and maximum progress share one source", () => {
   const s = M.freshState();
   s.progression.homeActivities = { visit: 1, wardrobe: 1, cook: 10 }; s.house.level = 3; s.village.quests.invitation = { step: 3, base: null, done: true };
-  s.village.expansion.effects.push("copse-restored", "restaurant-opening", "green-seal", "copse-seal", "quarry-seal", "moor-seal", "marsh-restored");
+  s.village.expansion.effects.push(...EXPANSION_CHAPTERS.filter(c=>!c.optional).flatMap(c=>c.reward?.effects??[]));
+  for(const c of EXPANSION_CHAPTERS.filter(c=>!c.optional))s.village.expansion.chapters[c.id]=true;
   s.house.wallpapers.parlour = "w01"; s.kitchen.recipes = M.RECIPES.map(r => r.id);
   s.house.placed = Array.from({ length: 12 }, (_, i) => ({ id: i === 0 ? "copper-range" : i === 1 ? "gothic-spice-cabinet" : "d03", room: ["kitchen", "kitchen", "parlour", "bedroom", "attic"][i % 5], books: i === 2 ? ["b01", "b02", "b03", "b04", "b05", "b06"] : [] }));
   for (const milestone of M.LEVELS.slice(1)) {
@@ -61,7 +63,8 @@ test("version 3 saves retain progress without replaying historical celebrations"
   assert.equal(loaded.coins, old.coins);
   loaded.earned = at(7); assert.deepEqual(M.awardLevels(loaded), []);
   loaded.house.owned.push("d01", "d03"); M.placeDecor(loaded, "d01", "parlour"); M.placeDecor(loaded, "d03", "parlour");
-  assert.deepEqual(M.awardLevels(loaded), [7]);
+  assert.deepEqual(M.awardLevels(loaded), [], "new levels also need the reachable village chapter");
+  loaded.village.expansion.effects.push("copse-lantern");assert.deepEqual(M.awardLevels(loaded), [7]);
 });
 
 test("outdoor base frequency is fifteen seconds; Spread the word has five tiers and Fairy lights six", () => {

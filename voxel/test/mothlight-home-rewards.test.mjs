@@ -22,7 +22,7 @@ test('Mabel saves and restores both owned looks atomically, including Natalie’
 });
 test('new village level requirements honour old claims and retain blocked earned income',()=>{
  const s=M.freshState();s.progression.claimed=[1,2,3,4,5,6,7,8];s.progression.homeLegacyThrough=8;s.earned=M.LEVELS[8].at;
- assert.equal(M.patchLevel(s).level,8);assert.equal(M.patchLevel(s).blocked,true);const earnings=M.levelEarnings(s);s.village.expansion.effects.push('copse-restored');assert.equal(M.patchLevel(s).level,9);assert.equal(M.levelEarnings(s),earnings);s.progression.claimed.push(9);s.village.expansion.effects=[];assert.equal(M.patchLevel(s).level,9);
+ assert.equal(M.patchLevel(s).level,8);assert.equal(M.patchLevel(s).blocked,true);const earnings=M.levelEarnings(s);s.village.expansion.effects.push('copse-restored','green-seal');assert.equal(M.patchLevel(s).level,9);assert.equal(M.levelEarnings(s),earnings);s.progression.claimed.push(9);s.village.expansion.effects=[];assert.equal(M.patchLevel(s).level,9);
 });
 
 test('Granny’s authored hayride scene remains story-locked and claims only once',()=>{

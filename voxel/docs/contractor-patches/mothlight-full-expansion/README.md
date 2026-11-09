@@ -10,7 +10,7 @@ Three separately rendered cave depths descend beneath the village: Lantern Steps
 
 Activities are performed at their objects. The journal follows and explains a step rather than granting remote completion. Puzzles include remembered sequences, connected light conduits, unordered flavour deduction and assigned stage cues. Hint, Reset and accessible Solve give the same story rewards. The finale delivers twelve real pumpkins and four cooked portions. Completed chapters show a reward receipt, and restoration flags change cached visible village landmarks. Optional neighbour chapters stay behind a disclosure instead of filling the main story list.
 
-The village earns a place in farm progression. Levels 9, 12, 15 and 18 require the Copse, restaurant, four seals and marsh respectively, alongside the original home requirements. Previously claimed levels remain honoured and blocked income remains banked. Farm-away earnings still run at the existing 2.5% to 10% upgrade rate; exploration, mineral regrowth and village actions use full village time. No new free income multiplier bypasses this tradeoff.
+The village earns a place in farm progression. Every level from6 through20 now has a mainline village checkpoint alongside the original home requirements; see MAINLINE-LEVEL-GATES.md for the complete schedule. Previously claimed levels remain honoured and blocked income remains banked. Farm-away earnings still run at the existing 2.5% to 10% upgrade rate; exploration, mineral regrowth and village actions use full village time. No new free income multiplier bypasses this tradeoff.
 
 ## Rewards with a use back home
 
@@ -65,3 +65,5 @@ The first practical review path is a declared level-six farm with the legacy Two
 This is a full contractor implementation of the proposed story and mechanics, with authored voxel environments and generated sprite/icon assets. New dialogue uses clear text and existing voice fallbacks; no new narration recording is claimed. Browser viewport and injected standard-gamepad checks are distinct from physical Fold 7, Bluetooth controller, TV and Android hardware testing. Exact completed checks, screenshots, replay instructions and any remaining limitations are recorded in DELIVERY.md rather than inferred from test counts.
 
 The checked [Android addendum](NATIVE.md) packages the same HTML after game publication; [DELIVERY.md](DELIVERY.md) holds the public download receipts.
+
+Latest progression update: [mainline level checkpoints](MAINLINE-LEVEL-GATES.md).

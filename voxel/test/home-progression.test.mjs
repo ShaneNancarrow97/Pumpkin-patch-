@@ -1,11 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
+import {EXPANSION_CHAPTERS} from "../src/content/village-expansion.js";
 
 // A completed legacy household is useful when testing later milestones alone.
 const reached = (level, legacy = 1) => {
   const s = M.freshState(); s.earned = M.LEVELS[level - 1].at;
   s.progression.homeLegacyThrough = legacy; s.coins = 100000;
+  // These tests isolate home goals with village mainline already completed.
+  for(const c of EXPANSION_CHAPTERS.filter(c=>!c.optional)){s.village.expansion.chapters[c.id]=true;s.village.expansion.effects.push(...(c.reward?.effects??[]));}
   return s;
 };
 test("twenty levels combine earned income and the next useful home task", () => {

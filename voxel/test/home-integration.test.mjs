@@ -123,6 +123,7 @@ test('wall items can use bare wall height while real windows and door apertures 
 
 test('an optional bathroom never substitutes for the original attic in the level20 home task', () => {
   const s = fixture(3); assert.ok(M.buyRoomExtension(s, 'bathroom'));
+  s.village.expansion.effects.push('festival-arrange'); // Isolate the house-room criterion.
   s.earned = M.LEVELS[19].at;
   s.progression.claimed = M.LEVELS.slice(0, 19).map(l => l.level);
   s.house.placed = Array.from({ length: 12 }, (_, i) => ({ instance: `goal-${i}`, id: 'd03', room: ['parlour', 'bedroom', 'kitchen', 'bathroom'][i % 4], x: 0, z: 0, books: [] }));

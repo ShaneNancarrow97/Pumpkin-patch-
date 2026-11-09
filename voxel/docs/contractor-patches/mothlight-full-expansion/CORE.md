@@ -42,7 +42,7 @@ Save version19 adds `village.expansion`: area, effects, completed activities/cha
 
 The model restores expansion/economy before aged stock is settled, retaining purchased cold-store lifetime on load. Economy ticks receive attenuated farm time; cave and village activity clocks receive full village time. Existing save/export authority is unchanged.
 
-Area progression is Green invitation; Copse6 + Two Doorbells; Quarry9 + Copse restored; Moor12 + restaurant opening; Marsh15 + four seals; Acre8 + Copse restored; caves6/9/15 with their story prerequisites. Level requirements9/12/15/18 read Copse/restaurant/four-seals/Marsh completion. Previously claimed levels remain honoured. The level8 Green ward is not required to open Copse6.
+Area progression is Green invitation; Copse6 + Two Doorbells; Quarry9 + Copse restored; Moor12 + restaurant opening; Marsh15 + four seals; Acre8 + Copse restored; caves6/9/15 with their story prerequisites. Level requirements now cover every level6–20 with reachable mainline checkpoints; MAINLINE-LEVEL-GATES.md is authoritative for the current schedule. Previously claimed levels remain honoured. The level8 Green ward is not required to open Copse6.
 
 The four-seal gate derives from the actual Green, Copse, Quarry and Moor seal flags. A stray stored aggregate flag cannot open the Marsh; restoration repairs it, and completing Green after the other three seals opens the Marsh immediately.
 

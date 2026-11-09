@@ -160,4 +160,12 @@ export const EXPANSION_VEINS=Object.freeze(EXPANSION_AREAS.filter(a=>a.layer==='
 export const EXPANSION_VEIN_BY_ID=Object.freeze(Object.fromEntries(EXPANSION_VEINS.map(v=>[v.id,v])));
 export const EXPANSION_CHAPTER_BY_ID=Object.freeze(Object.fromEntries(EXPANSION_CHAPTERS.map(c=>[c.id,c])));
 export const EXPANSION_ACTIVITY_BY_ID=Object.freeze(Object.fromEntries(EXPANSION_ACTIVITIES.map(a=>[a.id,a])));
-export const EXPANSION_LEVEL_GATES=Object.freeze({9:'copse-restored',12:'restaurant-opening',15:'four-seals',18:'marsh-restored'});
+// Every requirement is achievable before the level it gates; friendship stories stay optional.
+export const EXPANSION_LEVEL_GATES=Object.freeze({
+ 6:Object.freeze(['green-research','green-workshop','green-supper']),
+ 7:'copse-lantern',8:'copse-restored',9:Object.freeze(['copse-restored','green-seal']),
+ 10:'quarry-bell',11:'quarry-supper',12:'restaurant-opening',
+ 13:'moor-stage',14:'moor-collection',15:'four-seals',
+ 16:'marsh-reflections',17:'marsh-heart',18:'marsh-restored',
+ 19:'festival-prepare',20:'festival-arrange',
+});

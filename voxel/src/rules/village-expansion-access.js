@@ -6,10 +6,15 @@ export function hasExpansionReward(s,id){const e=s?.village?.expansion;if(!e)ret
 export function requirementMet(s,id){if(!id)return true;if(Array.isArray(id))return id.every(k=>requirementMet(s,k));return id.startsWith('legacy:')?!!s?.village?.quests?.[id.slice(7)]?.done:hasExpansionReward(s,id);}
 // This function only reads flags and honoured levels; it must not call patchLevel.
 export function expansionLevelRequirement(s,level){
- const id=EXPANSION_LEVEL_GATES[level];if(!id)return null;
- const honour=(s?.progression?.claimed??[]).includes(level)||(s?.progression?.homeLegacyThrough??1)>=level;
- const title=({'copse-restored':'Restore Moonroot Copse','restaurant-opening':'Open Cinder’s restaurant','four-seals':'Restore the carnival and four village seals','marsh-restored':'Complete the Mirror Marsh investigation'})[id];
- const met=honour||hasExpansionReward(s,id);return{id:'village:'+id,text:title,current:met?1:0,target:1,met,action:'village',room:'parlour'};
+ const gate=EXPANSION_LEVEL_GATES[level];if(!gate)return null;
+ const ids=Array.isArray(gate)?gate:[gate],honour=(s?.progression?.claimed??[]).includes(level)||(s?.progression?.homeLegacyThrough??1)>=level;
+ const checks=ids.flatMap(id=>id==='four-seals'?EXPANSION_SEAL_FLAGS:[id]);
+ const current=checks.filter(id=>hasExpansionReward(s,id)).length,met=honour||current===checks.length;
+ const sealNames={'green-seal':'Hollow Green','copse-seal':'Moonroot Copse','quarry-seal':'Lantern Quarry','moor-seal':'Carnival Moor'};
+ const label=id=>sealNames[id]?`Restore the ${sealNames[id]} seal`:`Complete “${EXPANSION_CHAPTER_BY_ID[id]?.title??id.replaceAll('-',' ')}”`;
+ const missing=checks.filter(id=>!hasExpansionReward(s,id));
+ const text=gate==='four-seals'?`Restore all four village seals (${honour?4:current}/4)${!met?' · Still needed: '+missing.map(id=>sealNames[id]).join(', '):''}`:(met?checks:missing).map(label).join(' · ');
+ return{id:'village:'+ids.join('+'),text,current:honour?checks.length:current,target:checks.length,met,action:'village',room:'parlour'};
 }
 export function expansionAreaInfo(s,id){
  const a=EXPANSION_AREA_BY_ID[id];if(!a)return null;
