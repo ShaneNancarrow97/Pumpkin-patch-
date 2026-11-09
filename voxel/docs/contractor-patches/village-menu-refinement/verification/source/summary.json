@@ -1,0 +1,30 @@
+{
+  "build": {
+    "passed": true,
+    "log": "contrast-build.txt"
+  },
+  "html": {
+    "bytes": 58603705,
+    "sha256": "38895eb42cc1e45a9dd9193a7fa42d58d987f264e4a3b6685b004f9eefbc2dcf",
+    "delta": "Only the ready PS5 Cross glyph colour variables changed after the 995-test functional source."
+  },
+  "independentIntegrationAudit": "No material save, economy, progression or input issue found; grants remain in rules, proximity guards retained, L2 neutral boundary preserved.",
+  "saveVersion": 18,
+  "hardwareScope": "Software Chromium and mock native Gamepad API do not certify physical Fold7, TV or PS5 Bluetooth.",
+  "initialGameTests": {
+    "passed": 992,
+    "failed": 0,
+    "skipped": 0,
+    "log": "node-tests.txt"
+  },
+  "gameTests": {
+    "passed": 995,
+    "failed": 0,
+    "skipped": 0,
+    "log": "final-node-tests.txt"
+  },
+  "functionalHtmlTested": {
+    "bytes": 58603521,
+    "sha256": "a77a5d1e79a70361633ca9a658184299fc0d55952d1ed98091027308c1a8f614"
+  }
+}

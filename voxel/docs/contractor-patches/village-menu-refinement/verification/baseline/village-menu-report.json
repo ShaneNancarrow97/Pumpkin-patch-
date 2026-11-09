@@ -1,0 +1,304 @@
+{
+  "date": "2026-11-08T23:37:40.424Z",
+  "baseline": true,
+  "html": "/workspace/Pumpkin-Patch-Village-Play-Polish.html",
+  "sha256": "9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17",
+  "bytes": 58259782,
+  "checks": [
+    {
+      "pass": true,
+      "label": "Baseline has no page/shader errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Baseline offline file uses no external assets",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "01-baseline-journal.png",
+    "02-baseline-phone-satchel.png"
+  ],
+  "observations": [
+    {
+      "kind": "journal",
+      "panel": "journal",
+      "panelId": null,
+      "focus": "vg-panel-close",
+      "text": "2 active · 1 completedYour next chapterFollow a story. Its next step stays on screen as you explore.Rowan’s story · FollowingLoose BoardsFollowingNext step1 / 3Gather 4 logs on the Green○Softwood logs0 / 4Find softwood logsOn completionVillage bench restored · £60All rewards£60Rowan +70 friendshipVillage bench restoredElowen’s storyA Letter That Will Not Stay StillFollowNext step1 / 4Find the page by the wellLook for the loose page marked on the Green's map.Look on the GreenOn completionElowen’s almanac · £80All rewards£80Reading standElowen +80 friendshipVillage almanacAlmanacVillage mapFinished stories · 1Completed · rewards receivedThe Moving Address£1502 × Copper lanternElowen +40 friendshipRowan +40 friendshipGathering toolsFriendship keepsakesEach new friendship level brings a gift for your farm or village. A unique item you already own becomes bonus coins.Elowen · Friendship 1Next: friendship 2Moth lampWays to exploreTouchLeft thumb moves; right thumb looks. Tap the gold action to interact.ControllerLeft stick moves, right stick looks. Cross interacts, Circle goes back. D-pad moves through menus.KeyboardWASD to walk; Q/R to turn; E to interact; C to centre; Escape to go back.Take the tour again",
+      "scroll": 0,
+      "cards": [
+        {
+          "id": "rowan-1",
+          "h": 360.9375,
+          "open": true
+        },
+        {
+          "id": "elowen-1",
+          "h": 337.9375,
+          "open": true
+        }
+      ],
+      "backButtons": 0
+    },
+    {
+      "kind": "nestedMapBack",
+      "panel": null,
+      "panelId": null,
+      "focus": "vg-panel-close",
+      "text": "Tap an area to see its story and unlock goals. Select a landmark to follow a route.Five neighbourhoods. One village to bring back to life.NHollow GreenMoonroot CopseLantern QuarryCarnival MoorMirror MarshExplorableLater chapterYou are hereExplorableHollow GreenYour first neighbourhood: neighbours, quiet gardens and gathering trails.✓Patch level 320 / 3✓Accept Elowen’s invitationReceivedChoose a landmark below to follow its route.Around Hollow GreenFarm pathCarriage home›The Moth TreeThe village square›Elowen’s libraryA home for quiet wings›Rowan’s workshopA carpenter’s next chapter›The Velvet BatVesper’s tavern›Rattlewood’s stallHelp Rowan reopen it›Fallen Timber Grove10 gathering spots ready›Flax Hollow8 gathering spots ready›Moonflower Meadow6 gathering spots ready›Old Stone Bank8 gathering spots ready›The map follows the realm’s actual roads and building footprints. North is up.",
+      "scroll": 0
+    },
+    {
+      "kind": "materials",
+      "panel": "materials",
+      "panelId": null,
+      "focus": "vg-panel-close",
+      "text": "40 of each materialExplore the timber groves, stone clearings and herb paths. Bring your finds to neighbours or use them for Rowan’s upgrades.Improve your satchelQuest requirementsSoftwood logs0 / 4010 spots ready · Fallen Timber Grove & Green gardensFindStone0 / 408 spots ready · Old Stone Bank & Green gardensFindFibre0 / 408 spots ready · Flax Hollow & Green gardensFindHerbs0 / 406 spots ready · Moonflower MeadowFindOther materials belong to later districts. They are not needed to restore Hollow Green.",
+      "scroll": 0,
+      "box": {
+        "x": 836,
+        "y": 80,
+        "w": 430,
+        "h": 630
+      },
+      "controls": [
+        {
+          "text": "×",
+          "disabled": false,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Improve your satchel",
+          "disabled": false,
+          "default": false,
+          "h": 46
+        },
+        {
+          "text": "Quest requirements",
+          "disabled": false,
+          "default": false,
+          "h": 46
+        },
+        {
+          "text": "Find",
+          "disabled": false,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Find",
+          "disabled": false,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Find",
+          "disabled": false,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Find",
+          "disabled": false,
+          "default": false,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "kind": "upgrades",
+      "panel": "upgrades",
+      "panelId": null,
+      "focus": "vg-panel-close",
+      "text": "0 / 9 madeMade by RowanBetter tools, more room and rewards for your farmhouse. Your farm currently runs at 2.5% while you explore; improve its away production here.A little further in the storyExtra satchel pocketsCarry 60 of each material, up from 40.✓Coins£30,000 / £120○Fibre0 / 4Reopen Rowan's stallMake · £120A little further in the storyA sturdy satchel frameCarry 80 of each material, up from 60.✓Coins£30,000 / £280○Softwood logs0 / 6○Fibre0 / 6Reopen Rowan's stallMake · £280A little further in the storyA careful gathering kitFallen timber, stone, fibre and herbs return 15% sooner after gathering.✓Coins£30,000 / £200○Softwood logs0 / 4○Fibre0 / 4Reopen Rowan's stallMake · £200A little further in the storyTimber and stone strapsBring back 3 logs or stone from each pile, up from 2.✓Coins£30,000 / £350○Softwood logs0 / 8○Stone0 / 6○Fibre0 / 4Reopen Rowan's stallMake · £350A little further in the storyA farm ledgerA shared ledger keeps the farm running at 5% while you explore Mothlight, up from 2.5%.✓Coins£30,000 / £350○Softwood logs0 / 4○Fibre0 / 4Reopen Rowan's stallMake · £350A little further in the storyA trusted farm stewardRowan's neighbour minds your farm at 7.5% speed while you explore.✓Coins£30,000 / £850○Softwood logs0 / 10○Stone0 / 6○Fibre0 / 6Reopen Rowan's stallMake · £850A little further in the storyThe lantern networkAn organised village crew keeps farm earnings, crops and production at 10% while you explore.✓Coins£30,000 / £1,600○Softwood logs0 / 16○Stone0 / 10○Fibre0 / 8○Herbs0 / 4Reopen Rowan's stallMake · £1,600A little further in the storyMoonlit reading setA reading bench, floating shelf and plum mug for your farmhouse. A little of Elowen's library, brought home.Midnight reading benchLittle floating shelfPlum moth mug✓Coins£30,000 / £650○Softwood logs0 / 8○Fibre0 / 6○Herbs0 / 3Reopen Rowan's stallMake · £650A little further in the storyRattlewood hallway setA lantern console, coat hooks and bracket shelf for your farmhouse, made by Rowan.Lantern entrance consoleMoon brass coat hooksLong bracket shelf✓Coins£30,000 / £700○Softwood logs0 / 12○Stone0 / 4○Fibre0 / 4Reopen Rowan's stallMake · £700Your materialsBrowse the stall",
+      "scroll": 0,
+      "box": {
+        "x": 836,
+        "y": 80,
+        "w": 430,
+        "h": 630
+      },
+      "controls": [
+        {
+          "text": "×",
+          "disabled": false,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Make · £120",
+          "disabled": true,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Make · £280",
+          "disabled": true,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Make · £200",
+          "disabled": true,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Make · £350",
+          "disabled": true,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Make · £350",
+          "disabled": true,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Make · £850",
+          "disabled": true,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Make · £1,600",
+          "disabled": true,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Make · £650",
+          "disabled": true,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Make · £700",
+          "disabled": true,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Your materials",
+          "disabled": false,
+          "default": false,
+          "h": 46
+        },
+        {
+          "text": "Browse the stall",
+          "disabled": false,
+          "default": false,
+          "h": 46
+        }
+      ]
+    },
+    {
+      "kind": "people",
+      "panel": "people",
+      "panelId": null,
+      "focus": "vg-panel-close",
+      "text": "Elowen MothwickAcquaintance›Rowan RattlewoodScarecrow carpenter›Vesper NocturneHost of the Velvet Bat›",
+      "scroll": 0,
+      "box": {
+        "x": 836,
+        "y": 80,
+        "w": 430,
+        "h": 630
+      },
+      "controls": [
+        {
+          "text": "×",
+          "disabled": false,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "Elowen MothwickAcquaintance›",
+          "disabled": false,
+          "default": false,
+          "h": 88
+        },
+        {
+          "text": "Rowan RattlewoodScarecrow carpenter›",
+          "disabled": false,
+          "default": false,
+          "h": 88
+        },
+        {
+          "text": "Vesper NocturneHost of the Velvet Bat›",
+          "disabled": false,
+          "default": false,
+          "h": 88
+        }
+      ]
+    },
+    {
+      "kind": "navigation",
+      "panel": "navigation",
+      "panelId": null,
+      "focus": {
+        "vgPage": "map"
+      },
+      "text": "MapPlaces and routesPeopleFind your neighboursQuestsYour next stepSatchelMaterials and suppliesWorkshopUseful improvementsBuildMake the village yours",
+      "scroll": 0,
+      "box": {
+        "x": 836,
+        "y": 80,
+        "w": 430,
+        "h": 630
+      },
+      "controls": [
+        {
+          "text": "×",
+          "disabled": false,
+          "default": false,
+          "h": 44
+        },
+        {
+          "text": "MapPlaces and routes",
+          "disabled": false,
+          "default": false,
+          "h": 90
+        },
+        {
+          "text": "PeopleFind your neighbours",
+          "disabled": false,
+          "default": false,
+          "h": 90
+        },
+        {
+          "text": "QuestsYour next step",
+          "disabled": false,
+          "default": false,
+          "h": 90
+        },
+        {
+          "text": "SatchelMaterials and supplies",
+          "disabled": false,
+          "default": false,
+          "h": 90
+        },
+        {
+          "text": "WorkshopUseful improvements",
+          "disabled": false,
+          "default": false,
+          "h": 90
+        },
+        {
+          "text": "BuildMake the village yours",
+          "disabled": false,
+          "default": false,
+          "h": 90
+        }
+      ]
+    }
+  ],
+  "scope": "Exact unchanged offline HTML served on loopback. Declared level20, completed-tour save with two active quests, not earned gameplay. Real RAF/menu input; renderer/composer draw calls held only between normal-render screenshots. Software Chromium; viewport and mocked-pad tests do not certify hardware performance/Bluetooth.",
+  "passed": true
+}

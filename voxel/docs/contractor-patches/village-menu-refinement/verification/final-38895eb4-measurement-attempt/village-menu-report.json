@@ -1,0 +1,239 @@
+{
+  "date": "2026-11-09T00:10:58.369Z",
+  "baseline": false,
+  "levelDelta": false,
+  "contrastOnly": true,
+  "html": "/workspace/Pumpkin-Patch-Village-Menu-Refinement.html",
+  "sha256": "38895eb42cc1e45a9dd9193a7fa42d58d987f264e4a3b6685b004f9eefbc2dcf",
+  "bytes": 58603705,
+  "checks": [
+    {
+      "pass": true,
+      "label": "Actual controller route reaches the final contrast resource",
+      "detail": {
+        "route": [
+          {
+            "x": 49.5,
+            "z": -7.5
+          }
+        ],
+        "result": {
+          "steps": 287,
+          "position": {
+            "x": 49.580489538094525,
+            "z": -7.538634978285374
+          }
+        },
+        "method": "Mocked native Gamepad API, real collision/view/controller .05s steps"
+      }
+    },
+    {
+      "pass": false,
+      "label": "fold actual ready Cross uses a dark glyph with at least3:1 contrast",
+      "detail": {
+        "tv": false,
+        "zoom": "1",
+        "ready": true,
+        "ink": "#352332",
+        "accent": "#352332",
+        "frame": "#352332",
+        "stroke": "rgb(53, 35, 50)",
+        "keyBackground": "rgba(0, 0, 0, 0)",
+        "box": {
+          "x": 138.5703125,
+          "y": 603.21875,
+          "w": 586.859375,
+          "h": 60.78125
+        },
+        "dockTop": 666,
+        "overflow": 864,
+        "keys": [
+          "ls",
+          "rs",
+          "cross",
+          "circle",
+          "up",
+          "options"
+        ],
+        "contrastRatio": 1.437847365375316
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold controller screenshot retains its declared actual TV class and scale",
+      "detail": {
+        "tv": false,
+        "zoom": "1",
+        "ready": true,
+        "ink": "#352332",
+        "accent": "#352332",
+        "frame": "#352332",
+        "stroke": "rgb(53, 35, 50)",
+        "keyBackground": "rgba(0, 0, 0, 0)",
+        "box": {
+          "x": 138.5703125,
+          "y": 603.21875,
+          "w": 586.859375,
+          "h": 60.78125
+        },
+        "dockTop": 666,
+        "overflow": 864,
+        "keys": [
+          "ls",
+          "rs",
+          "cross",
+          "circle",
+          "up",
+          "options"
+        ],
+        "contrastRatio": 1.437847365375316
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold final controller legend fits above the dock with essential bindings visible",
+      "detail": {
+        "tv": false,
+        "zoom": "1",
+        "ready": true,
+        "ink": "#352332",
+        "accent": "#352332",
+        "frame": "#352332",
+        "stroke": "rgb(53, 35, 50)",
+        "keyBackground": "rgba(0, 0, 0, 0)",
+        "box": {
+          "x": 138.5703125,
+          "y": 603.21875,
+          "w": 586.859375,
+          "h": 60.78125
+        },
+        "dockTop": 666,
+        "overflow": 864,
+        "keys": [
+          "ls",
+          "rs",
+          "cross",
+          "circle",
+          "up",
+          "options"
+        ],
+        "contrastRatio": 1.437847365375316
+      }
+    },
+    {
+      "pass": false,
+      "label": "tv actual ready Cross uses a dark glyph with at least3:1 contrast",
+      "detail": {
+        "tv": true,
+        "zoom": "1.537",
+        "ready": true,
+        "ink": "#352332",
+        "accent": "#352332",
+        "frame": "#352332",
+        "stroke": "rgb(53, 35, 50)",
+        "keyBackground": "rgba(0, 0, 0, 0)",
+        "box": {
+          "x": 443.53125,
+          "y": 845.515625,
+          "w": 1032.9375,
+          "h": 93.09375
+        },
+        "dockTop": 948.921875,
+        "overflow": 1920,
+        "keys": [
+          "ls",
+          "rs",
+          "cross",
+          "circle",
+          "r2",
+          "up",
+          "options"
+        ],
+        "contrastRatio": 1.437847365375316
+      }
+    },
+    {
+      "pass": true,
+      "label": "tv controller screenshot retains its declared actual TV class and scale",
+      "detail": {
+        "tv": true,
+        "zoom": "1.537",
+        "ready": true,
+        "ink": "#352332",
+        "accent": "#352332",
+        "frame": "#352332",
+        "stroke": "rgb(53, 35, 50)",
+        "keyBackground": "rgba(0, 0, 0, 0)",
+        "box": {
+          "x": 443.53125,
+          "y": 845.515625,
+          "w": 1032.9375,
+          "h": 93.09375
+        },
+        "dockTop": 948.921875,
+        "overflow": 1920,
+        "keys": [
+          "ls",
+          "rs",
+          "cross",
+          "circle",
+          "r2",
+          "up",
+          "options"
+        ],
+        "contrastRatio": 1.437847365375316
+      }
+    },
+    {
+      "pass": true,
+      "label": "tv final controller legend fits above the dock with essential bindings visible",
+      "detail": {
+        "tv": true,
+        "zoom": "1.537",
+        "ready": true,
+        "ink": "#352332",
+        "accent": "#352332",
+        "frame": "#352332",
+        "stroke": "rgb(53, 35, 50)",
+        "keyBackground": "rgba(0, 0, 0, 0)",
+        "box": {
+          "x": 443.53125,
+          "y": 845.515625,
+          "w": 1032.9375,
+          "h": 93.09375
+        },
+        "dockTop": 948.921875,
+        "overflow": 1920,
+        "keys": [
+          "ls",
+          "rs",
+          "cross",
+          "circle",
+          "r2",
+          "up",
+          "options"
+        ],
+        "contrastRatio": 1.437847365375316
+      }
+    },
+    {
+      "pass": true,
+      "label": "Final menus have no page/shader errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Final offline game uses no external assets",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "08-fold-resource-legend.png",
+    "09-tv-resource-legend.png"
+  ],
+  "observations": [],
+  "scope": "Exact unchanged offline HTML served on loopback. Declared level20, completed-tour save with two active quests, not earned gameplay. Real RAF/menu input; renderer/composer draw calls held only between normal-render screenshots. Software Chromium; viewport and mocked-pad tests do not certify hardware performance/Bluetooth. Final CSS contrast and corrected TV resize-fixture delta only; earlier logic/level/menu checks keep their original hashes.",
+  "passed": false
+}
