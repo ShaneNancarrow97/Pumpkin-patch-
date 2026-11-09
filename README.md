@@ -1,4 +1,14 @@
-# Pumpkin Patch — latest balanced progression
+# Pumpkin Patch — idle pause and quest pin fix
+
+[Download latest HTML](Pumpkin-Patch-Idle-Pause.html?raw=1) · [Download latest ZIP](Pumpkin-Patch-Idle-Pause.zip?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/2df1b9b0d6db593ed905f8a586df745b23ec8358/voxel/docs/contractor-patches/mothlight-full-expansion/IDLE-PAUSE.md) · [Quest pin fix](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/2df1b9b0d6db593ed905f8a586df745b23ec8358/voxel/docs/contractor-patches/mothlight-full-expansion/PINNED-QUEST-FIX.md)
+
+Automatic tea break after3½ minutes without input, with a final30-second countdown. Touch, keyboard or controller activity keeps play active and resumes an automatic break; manual pauses stay manual. Both owner ride POVs and the village follow the same break.
+
+Completed village chapters now unpin, their routes/details clear, and stale pins in older saves and UI preferences are repaired. Progress and rewards remain in the journal archive. Includes all earlier balanced progression and village additions. Save version remains20.
+
+1,210 tests,54 standard browser checks,28 feature checks and four focused Rowan workshop checks pass. [Exact build receipt](Pumpkin-Patch-Idle-Pause-Receipt.json). Source: `2df1b9b0d6db593ed905f8a586df745b23ec8358` on `contractor/mothlight-full-expansion`. Extract the ZIP and open index.html, or use the standalone HTML. The older APK below predates these HTML follow-ups.
+
+## Previous balanced progression release
 
 [Download latest HTML](Pumpkin-Patch-Balanced-Progression.html?raw=1) · [Download latest ZIP](Pumpkin-Patch-Balanced-Progression.zip?raw=1) · [Claude balance handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/c5a65f610a5a0c03e2973831881bb6a3965cc6bf/voxel/docs/contractor-patches/mothlight-full-expansion/BALANCED-PROGRESSION.md)
 
