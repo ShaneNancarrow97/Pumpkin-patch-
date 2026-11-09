@@ -1,19 +1,30 @@
 # Full-game expansion playtest
 
-`tools/mothlight-expansion-qa.mjs` refuses to launch without the lead-reviewed standalone HTML SHA:
+The canonical standalone is `/workspace/Pumpkin-Patch-Mothlight-Expansion.html`, 60,328,415 bytes, SHA256 `ab6ac3af9f1a2024693952d6fd987a7ad2473fad622785473022271f1c7ad1a6`.
+
+The [full integration report](verification/final-acceptance/mothlight-expansion-report.json) passes **103 checks with no runtime errors** against those exact bytes, with 20 fresh normal-render photographs. The [focused TV dialogue report](verification/final-acceptance/tv-dialogue/mothlight-expansion-report.json) passes another **4 checks**, including a genuinely open nearby Corvus conversation and fresh controller menu input afterwards. Its [normal dialogue photograph](verification/final-acceptance/tv-dialogue/21-tv-corvus-dialogue-controller.png) shows the actual PS5 prompts. Full-run photo13 is honestly labelled a carnival approach.
+
+Run the full journey with the reviewed artifact hash:
 
 ```sh
-MOTHLIGHT_EXPECTED_SHA=<sha256> node tools/mothlight-expansion-qa.mjs \
-  /workspace/Pumpkin-Patch-Mothlight-Expansion-Candidate.html \
-  docs/contractor-patches/mothlight-full-expansion/verification/browser
+MOTHLIGHT_EXPECTED_SHA=ab6ac3af9f1a2024693952d6fd987a7ad2473fad622785473022271f1c7ad1a6 \
+  node tools/mothlight-expansion-qa.mjs \
+  /workspace/Pumpkin-Patch-Mothlight-Expansion.html \
+  docs/contractor-patches/mothlight-full-expansion/verification/final-acceptance
 ```
 
-The runner captures the supplied HTML bytes once and serves those unchanged bytes on loopback. It uses one Chromium with SwiftShader and the existing Playwright installation. Runtime code and the build are not changed by the runner.
+The runner validates the hash before launching and serves the captured HTML buffer unchanged over loopback. It uses one Chromium with SwiftShader and the existing Playwright installation. Runtime code and the build are not changed. The process needs permission to bind its loopback listener.
 
-Its initial fixture is a declared prepared level6 farm, house1, owned food truck and legacy Two Doorbells completion. The expansion starts fresh. It walks with the real Gamepad input, camera and collision code to complete the first two Copse chapters, then explicitly prepares level7 for the final restoration. Clues, four puzzle types, timed mining, chapter payments, recipe research, cooker output and garden rewards use real world/UI actions. Later prerequisite fixtures are itemised in the report; they are branch samples, not a claimed earned level1–20 campaign.
+The initial fixture is a declared prepared level 6 farm, house 1, owned food truck, four butter and legacy Two Doorbells completion. Its expansion starts fresh. Real Gamepad walking, camera and collision code complete both level 6 Copse chapters, including the guaranteed quest crystal. Level 7 is explicitly prepared for final restoration. Rewards are used in the actual wardrobe, home catalogue, garden controls and cooker. The save19 reload preserves rewards, puzzle choices, receipts and mining cooldowns. Later level/prerequisite fixtures are itemised; this is not a claimed earned level 1–20 campaign.
 
-The JSON report includes the exact HTML SHA, every fixture override, controller routes, failures, external requests and normal screenshots. It deliberately retains failures. Screenshots restore normal renderer/composer calls and real village RAF ticks. Only deterministic logic bursts hold those two drawing calls. Two bounded normal-render samples collect up to60 RAF frames over20 seconds in the cave and Copse; these describe this software environment only.
+Coverage includes all four live puzzle widgets, the level 8 Granny house, three cave layers and locked routes, actual festival consumption of twelve unreserved pumpkins and four cooked portions, final Lantern Night, completed quest tracking, both painted dish menus and actual three-portion cooking outputs. Return checks use held Circle, fresh Circle cancellation and a real walking crossing before Cross confirms the farm transition.
 
-Viewport and mocked Gamepad checks are useful integration evidence. They do not certify physical Fold7, Bluetooth PS5 or TV hardware performance.
+Branch reloads use a one-shot `window.name` bootstrap before the next game module. Writing localStorage before reload is insufficient: the outgoing pagehide autosave can overwrite it. Every declared branch now asserts its actual loaded level and discovery flags. Door/resident checks derive their real interaction positions.
 
-For an isolated rendering investigation, `MOTHLIGHT_QA_MODE=cave-diagnostic` walks a declared level6 fixture to the shallow seam and parks there with normal drawing. The printed loopback-only `/qa/evaluate` endpoint accepts a bounded local JavaScript expression for temporary inspection; `/qa/finish` closes that browser. Diagnostic toggles and pictures belong in a separate folder and do not count as normal acceptance evidence. This endpoint is part of the Node test harness, never the shipped HTML.
+Screenshots restore normal renderer/composer calls and real village RAF ticks. Only deterministic logic bursts hold those two drawing calls. Each photo records camera, actor ground, area, cave mesh bounds and lights. Two bounded normal-render samples collect up to 60 RAF frames over 20 seconds in cave/Copse. Their software timings are retained and do not establish device FPS. Renderer counters describe the final fullscreen composer pass, rather than total world geometry.
+
+Viewports are 864×756, 390×844 and 1920×1080 with the actual TV profile. A mocked standard Gamepad exercises real controls. These checks do not certify physical Fold7, Bluetooth PS5 or TV hardware performance.
+
+`MOTHLIGHT_QA_MODE=tv-dialogue` runs the focused level12 Corvus branch. For isolated rendering investigations, `MOTHLIGHT_QA_MODE=cave-diagnostic` walks a declared level6 fixture to the shallow seam and parks with normal drawing. Its loopback `/qa/evaluate` endpoint accepts bounded local expressions; `/qa/finish` closes that browser. This endpoint belongs to the Node harness, never the shipped HTML. Diagnostic toggles remain separate. Earlier failed/interrupted candidate evidence is retained locally under `/workspace/mothlight-expansion-diagnostics/`, outside the release kit.
+
+The requested direct-file standard smoke is retained in [standard-smoke-file-url-blocked.txt](verification/final-acceptance/standard-smoke-file-url-blocked.txt): managed Chromium rejects `file://` with `ERR_BLOCKED_BY_ADMINISTRATOR`. `tools/mothlight-standard-smoke.mjs` validates the same SHA and runs the unmodified `smoke.mjs` against identical loopback bytes, with drawing held for logic compatibility. All **54 desktop/phone checks pass**, with no page errors. Its [receipt](verification/final-acceptance/standard-smoke-logic.txt) remains separate from normal visual evidence. The canonical file hash was rechecked unchanged after all browsers closed.
