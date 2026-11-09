@@ -249,3 +249,16 @@
 #vg-panel-body .vg-ch-product-body .vg-ch-shortfall{display:block;margin-top:7px;color:#e0b6c6;font-size:12px;line-height:1.4}
 @media(max-width:380px){#vg-panel-body .vg-ch-material-title{gap:8px}#vg-panel-body .vg-ch-material-title>.village-item-icon{width:40px;height:40px;flex-basis:40px}#vg-panel-body .vg-ch-costs{gap:5px}#vg-panel-body .vg-ch-costs>span{padding-inline:6px}}
 @media(prefers-reduced-motion:no-preference){#vg-panel-body .vg-ch-story-fold>summary>i,#vg-panel-body .vg-ch-workshop-fold>summary::before{transition:transform .15s ease}}
+
+/* The blight's three chapters share one compact story index. */
+#vg-panel-body .vg-ch-blight{margin:16px 0;border:1px solid #bf8dbb3d;border-radius:16px;overflow:hidden;background:linear-gradient(130deg,#7c3c6520,#3a243f26)}
+#vg-panel-body .vg-ch-blight>summary{display:flex;align-items:center;gap:10px;min-height:64px;padding:12px 14px;cursor:pointer;color:#f1d5ba}
+#vg-panel-body .vg-ch-blight>summary>span{display:grid;gap:4px;flex:1}
+#vg-panel-body .vg-ch-blight>summary small{font-size:12px;color:#cdb8d3}
+#vg-panel-body .vg-ch-blight>summary>i{font-style:normal;color:#d9b080}
+#vg-panel-body .vg-ch-blight>p{padding:0 14px;margin:2px 0 14px}
+#vg-panel-body .vg-ch-blight article{padding:14px;margin:0;border-top:1px solid #c7a0d01f}
+#vg-panel-body .vg-ch-blight h4{margin:0 0 7px;color:#f6e6d1;font:600 16px/1.35 var(--village-body)}
+#vg-panel-body .vg-ch-blight article p{margin:0 0 11px;color:#d9c7df;font-size:13px;line-height:1.5}
+#vg-panel-body .vg-ch-blight-status{display:block;color:#d1b5d0;font-size:12px;line-height:1.4}
+#vg-panel-body .vg-ch-blight .is-complete .vg-ch-blight-status{color:#bcd9b7}

@@ -34,7 +34,7 @@ const kicker = text => `<span class="vg-ch-kicker">${esc(text)}</span>`;
 const intro = (icon, title, text, meta = "") => `<div class="vg-ch-intro">${seal(icon)}<div>${meta ? kicker(meta) : ""}<h3>${esc(title)}</h3><p>${esc(text)}</p></div></div>`;
 const wait = seconds => seconds < 60 ? `${Math.max(1, Math.ceil(seconds))}s` : `${Math.ceil(seconds / 60)} min`;
 // Only named materials get a material picture; generic quest criteria retain their labels.
-const materialArt = key => { const id = String(key ?? "").replace(/^material:/, ""); return MATERIAL_BY_ID[id] ? villageItemIcon(id) : ""; };
+const materialArt = key => { const id = String(key ?? "").startsWith("blight:") ? "cursed-spores" : String(key ?? "").replace(/^material:/, ""); return MATERIAL_BY_ID[id] ? villageItemIcon(id) : ""; };
 const requirements = rows => rows.length ? `<ul class="vg-ch-requirements" aria-label="Requirements">${rows.map(r => `<li class="${r.complete ? "is-ready" : ""}"><span aria-hidden="true">${r.complete ? "✓" : "○"}</span><span class="vg-ch-requirement-label">${materialArt(r.key)}<span>${esc(r.label)}</span></span><b>${r.key === "coins" ? money(r.have) + " / " + money(r.need) : `${r.have} / ${r.need}`}</b></li>`).join("")}</ul>` : "";
 const rewardName = r => {
   if (r.kind === "coins") return money(r.amount);
@@ -50,6 +50,7 @@ function questRewards(q) {
   for (const [id, n] of Object.entries(r.villageDecor ?? {})) gift(`${n > 1 ? `${n} × ` : ""}${VILLAGE_DECOR_BY_ID[id]?.name ?? id}`, id);
   for (const [id, xp] of Object.entries(r.friendship ?? {})) gift(`${short(id)} +${xp} friendship`);
   for (const id of r.decor ?? []) gift(M.decorById[id]?.name ?? "A farmhouse piece");
+  for (const id of r.recipes ?? []) gift(`${M.RECIPE_BY_ID[id]?.name ?? id} recipe`, "almanac");
   for (const id of r.costumes ?? []) gift(`${M.costumeById[id]?.name ?? id} costume`);
   if (r.effect === "bench") gift("Village bench restored");
   if (r.build) gift(r.build === "rowan-workshop" ? "Rowan’s workshop restored" : "Elowen’s conservatory restored");
@@ -69,6 +70,7 @@ function questAction(s, q, step, rows, preferred = false) {
     if (!ready && step.kind === "give") return next("Continue at the farm", "data-vg-home") + handover;
     return handover;
   }
+  if (step.kind === "root-out") return next("Find cursed fungus", `data-vg-gather="cursed-spores" data-vg-district="${esc(step.district ?? "green")}"`);
   if (step.kind === "gather") return next(`Find ${esc(MATERIAL_BY_ID[step.material]?.name.toLowerCase() ?? step.material)}`, `data-vg-gather="${step.material}"`);
   if (step.kind === "place") return next("Make the reading nook", `data-vg-decorate data-near="${esc(step.near)}"`);
   if (step.kind === "find") return step.item === "page-3" ? next("Return to the farm", "data-vg-home") : next("Look on the Green", `data-vg-object="${esc(step.item)}"`);
@@ -81,6 +83,7 @@ function questPrize(q) {
   const r = q.reward ?? {}, outfits = (r.costumes ?? []).map(id => M.costumeById[id]?.name ?? id);
   let name = outfits.length ? new Set(outfits).size === 1 && outfits.length > 1 ? `${outfits[0]} outfits for both` : outfits.join(" + ") : null;
   name ??= r.decor?.length ? M.decorById[r.decor[0]]?.name ?? "A farmhouse furnishing" : null;
+  name ??= r.recipes?.length ? `${M.RECIPE_BY_ID[r.recipes[0]]?.name ?? r.recipes[0]} recipe` : null;
   name ??= (r.unlock ?? []).map(id => ({gathering:"Axe & pickaxe",stall:"Rowan’s stall opens",almanac:"Elowen’s almanac"})[id]).find(Boolean);
   name ??= r.build ? r.build === "rowan-workshop" ? "Rowan’s workshop restored" : "Elowen’s conservatory restored" : null;
   name ??= r.effect === "bench" ? "Village bench restored" : null;
@@ -102,6 +105,17 @@ function friendshipKeepsakes(s) {
     return `<article class="vg-ch-receipt">${kicker(`${f.short} · Friendship ${bond.level}`)}${next ? `<h3>Next: friendship ${bond.level + 1}</h3>${rewardChips(next)}` : '<h3>A lifelong friend</h3>'}${reached.length ? `<details class="vg-ch-reward-fold" data-vg-details-key="friendship:${id}"><summary>Milestones reached · ${reached.length}</summary>${reached.map(([level, gifts]) => `<div class="vg-ch-friend-reward"><small>Friendship ${level}</small>${rewardChips(gifts)}</div>`).join("")}</details>` : ""}</article>`;
   }).join("")}</details>`;
 }
+function blightChapters(s, tracked) {
+  const chapters = QUESTS.filter(q => q.arc === "blight");
+  if (!chapters.length || !s.village.invited) return "";
+  const completed = chapters.filter(q => M.questStatus(s, q.id) === "done").length;
+  return `<details class="vg-ch-blight" data-vg-details-key="blight-story"><summary>${villageItemIcon("cursed-spores") || villageUIIcon("quests", 28)}<span><b>The cursed bloom</b><small>${completed} / ${chapters.length} chapters restored</small></span><i aria-hidden="true">⌄</i></summary><p class="vg-ch-hint">Red caps and violet spores are taking root beneath Hollow Green. Help Elowen and Rowan trace the blight, study its samples and bring a little of the farm's warmth back to the village.</p>${chapters.map((q, i) => {
+    const status = M.questStatus(s, q.id), missing = q.needs.find(id => !s.village.quests[id]?.done);
+    const reason = M.patchLevel(s).level < q.level ? `Patch level ${q.level}` : missing ? `Finish ${QUESTS.find(other => other.id === missing)?.title ?? "the previous chapter"}` : "A later chapter";
+    const control = status === "offered" ? button(`Talk to ${esc(short(q.giver))}`, `data-vg-meet="${q.giver}"`, { primary: true }) : status === "active" ? button(tracked === q.id ? "Following" : "Follow chapter", `data-vg-track="${q.id}" aria-pressed="${tracked === q.id}"`) : `<span class="vg-ch-blight-status">${status === "done" ? "✓ Restored" : esc(reason)}</span>`;
+    return `<article data-blight-chapter="${q.id}" class="${status === "done" ? "is-complete" : ""}">${kicker(`Chapter ${i + 1} · ${status === "done" ? "Complete" : status === "active" ? "In progress" : status === "offered" ? "Ready to begin" : "Locked"}`)}<h4>${esc(q.title)}</h4><p>${esc(q.blurb)}</p>${control}</article>`;
+  }).join("")}</details>`;
+}
 function journal(s, trackedQuestId) {
   const active = M.activeQuests(s), tracked = active.some(q => q.id === trackedQuestId) ? trackedQuestId : M.trackedQuest(s)?.id;
   const done = QUESTS.filter(q => s.village.quests[q.id]?.done), offered = [...M.offeredBy(s, "elowen"), ...M.offeredBy(s, "rowan")];
@@ -113,7 +127,9 @@ function journal(s, trackedQuestId) {
     return `<details class="vg-ch-story-fold" data-vg-details-key="story:${q.id}"><summary><span><small>${esc(short(q.giver))} · Step ${index} of ${q.steps.length}</small><b>${esc(q.title)}</b><span class="vg-ch-story-task">${esc(step?.text ?? "Return to your neighbour")}</span></span><i aria-hidden="true">⌄</i></summary>${questCard(s, q, false)}</details>`;
   }).join("")}</section>`;
   if (!active.length) html += `<p class="vg-ch-empty">${offered.length ? "A neighbour has a new story for you." : "Spend time with Elowen and Rowan. Chats, presents and favours deepen your friendships and open their next chapters."}</p>`;
-  if (offered.length) html += `<section class="vg-ch-section"><h3>Someone needs a hand</h3>${offered.map(q => `<button class="vg-ch-link" data-vg-meet="${q.giver}"><span><b>${esc(q.title)}</b><small>${esc(short(q.giver))} has a new quest</small></span><span aria-hidden="true">›</span></button>`).join("")}</section>`;
+  const otherOffers = offered.filter(q => q.arc !== "blight");
+  if (otherOffers.length) html += `<section class="vg-ch-section"><h3>Someone needs a hand</h3>${otherOffers.map(q => `<button class="vg-ch-link" data-vg-meet="${q.giver}"><span><b>${esc(q.title)}</b><small>${esc(short(q.giver))} has a new quest</small></span><span aria-hidden="true">›</span></button>`).join("")}</section>`;
+  html += blightChapters(s, tracked);
   html += actions(pageButton("almanac", "Almanac") + pageButton("map", "Village map"));
   if (done.length) html += `<details class="vg-ch-history" data-vg-details-key="finished-stories"><summary>Finished stories · ${done.length}</summary>${done.map(q => `<article class="vg-ch-receipt">${kicker("Completed · rewards received")}<h3>${esc(q.title)}</h3>${questRewards(q)}</article>`).join("")}</details>`;
   html += friendshipKeepsakes(s);
@@ -142,10 +158,10 @@ function materials(s) {
   if (!canGather) html += `<div class="vg-ch-info-note"><b>Your tools are waiting</b><p>Meet Rowan and Elowen to receive your gathering tools.</p>${button("Meet your neighbours", 'data-vg-page="people"', { primary: true, preferred: true })}</div>`;
   html += `<section class="vg-ch-material-list" aria-label="Materials in your satchel">${MATERIALS.filter(m => m.district === "green").map(m => {
     const area = FORAGE_AREAS.find(a => a.material === m.id), nodes = NODES.filter(n => n.material === m.id && n.district === "green").map(n => ({ ...n, ...villageNodePosition(s, n) })), ready = nodes.filter(n => M.nodeReady(s, n.id)).length, next = Math.min(...nodes.map(n => s.village.nodes[n.id] ?? 0)), count = s.village.materials[m.id] ?? 0;
-    const full = count >= cap, available = canGather && !full && ready > 0;
-    const status = full ? "Full" : !canGather ? "Tools needed" : ready ? `${ready} ready` : "Returning";
+    const blight = m.id === "cursed-spores", full = count >= cap, available = canGather && (!full || blight) && ready > 0;
+    const status = full && !blight ? "Full" : !canGather ? "Tools needed" : ready ? `${ready} ready` : "Returning";
     const location = area ? `${area.name}${nodes.some(n => n.x < area.x0 || n.x > area.x1 || n.z < area.z0 || n.z > area.z1) ? " & Green gardens" : ""}` : "Hollow Green";
-    return `<article class="vg-ch-material${full ? " is-full" : available ? " is-ready" : ""}" data-vg-material="${m.id}"><div class="vg-ch-card-head"><div class="vg-ch-material-title">${villageItemIcon(m.id)}<div class="vg-ch-material-copy"><h3>${esc(m.name)}</h3>${needed.has(m.id) ? '<small class="vg-ch-needed">Needed for a quest</small>' : ""}</div></div><b>${count}<span> / ${cap}</span></b></div><meter aria-label="${esc(m.name)} stored" min="0" max="${cap}" value="${count}"></meter><footer><span><b class="vg-ch-availability">${status}</b><small>${full ? "Use some supplies or improve your satchel" : ready ? esc(location) : `Next spot in ${wait(next)}`}</small></span>${button(full ? "Full" : !canGather ? "Find" : ready ? "Find" : "Returning", `data-vg-gather="${m.id}" aria-label="Find ${esc(m.name.toLowerCase())}"`, { disabled: !available, primary: available })}</footer></article>`;
+    return `<article class="vg-ch-material${full ? " is-full" : available ? " is-ready" : ""}" data-vg-material="${m.id}"><div class="vg-ch-card-head"><div class="vg-ch-material-title">${villageItemIcon(m.id)}<div class="vg-ch-material-copy"><h3>${esc(m.name)}</h3>${needed.has(m.id) ? '<small class="vg-ch-needed">Needed for a quest</small>' : ""}</div></div><b>${count}<span> / ${cap}</span></b></div><meter aria-label="${esc(m.name)} stored" min="0" max="${cap}" value="${count}"></meter><footer><span><b class="vg-ch-availability">${status}</b><small>${full ? blight ? "Root out patches even when samples are full" : "Use some supplies or improve your satchel" : ready ? esc(location) : `Next spot in ${wait(next)}`}</small></span>${button(full && !blight ? "Full" : !canGather ? "Find" : ready ? blight ? "Find fungus" : "Find" : "Returning", `data-vg-gather="${m.id}" aria-label="Find ${esc(m.name.toLowerCase())}"`, { disabled: !available, primary: available })}</footer></article>`;
   }).join("")}</section>`;
   html += actions(pageButton("upgrades", "More satchel space") + pageButton("journal", "Quest requirements"));
   const later = MATERIALS.filter(m => m.district !== "green" && s.village.materials[m.id] > 0);

@@ -13,6 +13,7 @@
 // spot), build (a blueprint goes up), and farm totals counted from the step's
 // start: sell, harvest, carve, cook, fish, earn.
 import { FIXTURES, PLAN_SCALE } from "./village.js";
+import { BLIGHT_QUESTS } from "./village-blight.js";
 
 export const QUESTS = Object.freeze([
   { id: "invitation", kind: "story", title: "The Moving Address", giver: "elowen", level: 3,
@@ -192,6 +193,7 @@ export const QUESTS = Object.freeze([
     talk: { elowen: [{ who: "elowen", text: "Twenty-four little lights for the fields. You haven't just visited Mothlight; you've carried it home." },
       { who: "rowan", text: "Two Moonlit mummy costumes. Soft linen, good stitching and absolutely no actual curses. I checked twice." }] },
     reward: { friendship: { elowen: 120, rowan: 120 }, costumes: ["natalie-mummy", "shane-mummy"], villageDecor: { "moon-gate": 1, "moth-lamp": 2 }, effect: "lantern-keepers", coins: 250 } },
+  ...BLIGHT_QUESTS,
 ].map((q) => Object.freeze({ kind: "friendship", needs: [], intro: [], talk: {}, done: [], reward: {}, ...q, steps: Object.freeze(q.steps.map(Object.freeze)) })));
 export const QUEST_BY_ID = Object.freeze(Object.fromEntries(QUESTS.map((q) => [q.id, q])));
 

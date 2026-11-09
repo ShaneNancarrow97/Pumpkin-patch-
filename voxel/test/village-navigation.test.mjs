@@ -125,7 +125,8 @@ test("the arrival meadow expands the Green with four connected forage areas",()=
   const area=(Math.max(...p.map(q=>q[0]))-Math.min(...p.map(q=>q[0])))*(Math.max(...p.map(q=>q[1]))-Math.min(...p.map(q=>q[1])));
   assert.ok(area>120*36*K*K*1.6);
   assert.equal(FORAGE_AREAS.length,4);
-  assert.equal(NODES.filter(n=>n.district==="green").length,32);
+  assert.equal(NODES.filter(n=>n.district==="green"&&n.kind!=="blight").length,32);
+  assert.equal(NODES.filter(n=>n.district==="green"&&n.kind==="blight").length,8);
   assert.ok(ARRIVAL.spawn[1]<0,"a broad forecourt precedes the old village gate");
   for(const a of FORAGE_AREAS)assert.equal(villageCellFree(state(),a.x,a.z),true,a.id);
 });

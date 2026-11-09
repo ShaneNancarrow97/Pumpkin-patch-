@@ -3,7 +3,7 @@
 // are content (content/village*.js). Everything here returns events or
 // results for main.js and the UI to show, and nothing is ever granted twice:
 // rewards are claimed once by key (v.claims).
-import { NODES, NODE_BY_ID, MATERIALS, MATERIAL_BY_ID, PLOTS, PLOT_BY_ID, ROADS, FIXTURES, SCENERY, VILLAGE_LEVEL, STORE_BASE, VILLAGE_BOUNDS, PLAZA, ARRIVAL, GREEN_AREA, MOOR_CORNER, NEAR_DOOR } from "../content/village.js";
+import { NODES, NODE_BY_ID, MATERIALS, MATERIAL_BY_ID, DISTRICT_BY_ID, PLOTS, PLOT_BY_ID, ROADS, FIXTURES, SCENERY, VILLAGE_LEVEL, STORE_BASE, VILLAGE_BOUNDS, PLAZA, ARRIVAL, GREEN_AREA, MOOR_CORNER, NEAR_DOOR } from "../content/village.js";
 import { FOLK, FOLK_BY_ID, FRIEND_XP, FRIENDSHIP, FRIEND_TITLES } from "../content/village-folk.js";
 import { QUESTS, QUEST_BY_ID, STORY_OBJECTS, BLUEPRINTS, FAVOURS, FAVOUR_BY_ID, FAVOUR_WAIT, DUTIES, DUTY_BY_ID, ALMANAC_PRIZES } from "../content/village-quests.js";
 import { VILLAGE_DECOR, VILLAGE_DECOR_BY_ID, STALL } from "../content/village-decor.js";
@@ -80,7 +80,7 @@ export function restoreVillage(raw) {
   for (const p of Array.isArray(raw.decor?.placed) ? raw.decor.placed : []) {
     if (!p || !VILLAGE_DECOR_BY_ID[p.id] || typeof p.instance !== "string" || ![p.x, p.z].every(Number.isFinite)) continue;
     const item = { instance: p.instance.slice(0, 24), id: p.id, x: p.x, z: p.z, rotation: Number.isFinite(p.rotation) ? ((p.rotation % 360) + 360) % 360 : 0 };
-    if (v.decor.placed.some((q) => q.instance === item.instance) || !decorRoom(v, item.id, item.x, item.z, item.rotation, null)) { v.decor.owned[p.id] = Math.min(99, (v.decor.owned[p.id] ?? 0) + 1); continue; }
+    if (v.decor.placed.some((q) => q.instance === item.instance) || !decorRoom(v, item.id, item.x, item.z, item.rotation, null, true)) { v.decor.owned[p.id] = Math.min(99, (v.decor.owned[p.id] ?? 0) + 1); continue; }
     v.decor.placed.push(item);
   }
   for (const id of PLAYABLE) {
@@ -258,6 +258,8 @@ function metric(s, kind) {
   return 0;
 }
 const COUNTED = new Set(["sell", "harvest", "carve", "cook", "fish", "earn"]);
+const countedStep = step => COUNTED.has(step.kind) || step.kind === "root-out";
+const stepMetric = (s, step) => step.kind === "root-out" ? blightClearCount(s, step.district) : metric(s, step.kind);
 // Where a quest stands: locked (not yet), offered (its giver has it), active, or done.
 export function questStatus(s, id) {
   const q = QUEST_BY_ID[id], state = s.village.quests[id]; if (!q) return "locked";
@@ -280,7 +282,7 @@ export function questStep(s, id) { const q = QUEST_BY_ID[id], state = s.village.
 // How far along a step is, for the journal.
 export function stepProgress(s, id) {
   const step = questStep(s, id), state = s.village.quests[id]; if (!step) return null;
-  if (COUNTED.has(step.kind)) return { have: Math.max(0, Math.min(step.n, metric(s, step.kind) - (state.base ?? metric(s, step.kind)))), need: step.n };
+  if (countedStep(step)) return { have: Math.max(0, Math.min(step.n, stepMetric(s, step) - (state.base ?? stepMetric(s, step)))), need: step.n };
   if (step.kind === "gather") return { have: Math.min(step.n, s.village.materials[step.material] ?? 0), need: step.n };
   if (step.kind === "give") return { have: Math.min(step.n, villageItemCount(s, step.item)), need: step.n };
   if (step.kind === "deliver") return { have: Object.entries(step.cost).filter(([m, n]) => s.village.materials[m] >= n).length, need: Object.keys(step.cost).length, cost: step.cost };
@@ -295,11 +297,11 @@ export function advanceQuests(s) {
     const state = v.quests[q.id]; if (!state || state.done) continue;
     for (let guard = 0; guard < 12; guard++) {
       const step = q.steps[state.step]; if (!step) { events.push(...finishQuest(s, q.id)); break; }
-      if (COUNTED.has(step.kind) && state.base === null) state.base = metric(s, step.kind);
+      if (countedStep(step) && state.base === null) state.base = stepMetric(s, step);
       const done = step.kind === "tour" ? v.toured
         : step.kind === "find" ? !!v.found[step.item]
         : step.kind === "gather" ? (v.materials[step.material] ?? 0) >= step.n
-        : COUNTED.has(step.kind) ? metric(s, step.kind) - state.base >= step.n
+        : countedStep(step) ? stepMetric(s, step) - state.base >= step.n
         : step.kind === "build" ? build(s, step.blueprint)
         : step.kind === "place" ? step.tags.every((t) => placedTags(s, step.near).has(t))
         : false;
@@ -321,6 +323,7 @@ function finishQuest(s, id) {
   for (const [d, n] of Object.entries(r.villageDecor ?? {})) { v.decor.owned[d] = (v.decor.owned[d] ?? 0) + n; given.push({ kind: "village-decor", id: d, amount: n }); }
   for (const d of r.decor ?? []) given.push(...grantVillage(s, [{ kind: "decor", id: d }]));
   for (const id of r.costumes ?? []) given.push(...grantVillage(s, [{ kind: "costume", id }]));
+  for (const id of r.recipes ?? []) given.push(...grantVillage(s, [{ kind: "recipe", id }]));
   for (const u of r.unlock ?? []) if (!v.unlocks.includes(u)) v.unlocks.push(u);
   if (r.effect && !v.effects.includes(r.effect)) v.effects.push(r.effect);
   if (r.build) build(s, r.build);
@@ -371,16 +374,28 @@ export function findObject(s, id) {
 
 // ---- Gathering -------------------------------------------------------------
 export const canGather = (s) => s.village.unlocks.includes("gathering");
-export const nodeReady = (s, id) => !!NODE_BY_ID[id] && districtOpen(s, NODE_BY_ID[id].district) && (s.village.nodes[id] ?? 0) <= 0;
+// A new infection never evicts an older decoration. Its fixed socket stays
+// dormant until the existing piece is moved, without consuming a gather cycle.
+function blightCovered(v, node) {
+  return node.kind === "blight" && v.decor.placed.some(p => { const b = villageDecorBounds(p.id, p.x, p.z, p.rotation); return b && node.x + .65 > b.x0 && node.x - .65 < b.x1 && node.z + .65 > b.z0 && node.z - .65 < b.z1; });
+}
+export const nodeReady = (s, id) => !!NODE_BY_ID[id] && districtOpen(s, NODE_BY_ID[id].district) && (s.village.nodes[id] ?? 0) <= 0 && !blightCovered(s.village, NODE_BY_ID[id]);
+// A clearing total uses the existing saved per-node cycles. It never depends
+// on how many samples fit in the satchel or whether they have been handed over.
+export function blightClearCount(s, district) {
+  return NODES.filter(n => n.kind === "blight" && (!district || n.district === district)).reduce((total, n) => total + Math.min(1e9, count(s.village.gatherCycles?.[n.id])), 0);
+}
 export function gatherNode(s, id) {
   const n = NODE_BY_ID[id], v = s.village; if (s.paused || !n || !canGather(s) || !nodeReady(s, id)) return null;
-  const m = MATERIAL_BY_ID[n.material], room = villageMaterialCapacity(s) - (v.materials[m.id] ?? 0); if (room <= 0) return { full: true, material: m.id };
-  const got = Math.min(room, villageGatheringYield(s, m.id)); v.materials[m.id] += got; v.nodes[id] = villageGatheringWait(s, m.id); v.stats.gathered += got;
-  // The next site is chosen only after a successful award, while this node is hidden.
+  const m = MATERIAL_BY_ID[n.material], blight = n.kind === "blight", room = Math.max(0, villageMaterialCapacity(s) - (v.materials[m.id] ?? 0)); if (!blight && room <= 0) return { full: true, material: m.id };
+  // Rooting out a hazard is still useful when no more samples can be stored.
+  // Ordinary resource piles keep their existing full-satchel behaviour.
+  const got = Math.min(room, villageGatheringYield(s, m.id)); v.materials[m.id] = (v.materials[m.id] ?? 0) + got; v.nodes[id] = villageGatheringWait(s, m.id); v.stats.gathered += got;
+  // The next site is chosen only after a successful gather or clear, while hidden.
   v.gatherCycles ??= {};
   const cycle = Number.isSafeInteger(v.gatherCycles[id]) ? Math.max(0, v.gatherCycles[id]) : 0;
-  v.gatherCycles[id] = cycle >= 1e9 ? 0 : cycle + 1;
-  return { material: m.id, amount: got, events: advanceQuests(s) };
+  v.gatherCycles[id] = blight ? Math.min(1e9, cycle + 1) : cycle >= 1e9 ? 0 : cycle + 1;
+  return { material: m.id, amount: got, ...(blight ? { cleared: true, overflow: room <= 0 } : {}), events: advanceQuests(s) };
 }
 export const districtOpen = (s, id) => id === "green" && s.village.invited;
 
@@ -416,12 +431,12 @@ const roadBoxes = ROADS.filter((r) => r.kind !== "future-spur").flatMap((r) => r
 const fixtureBoxes = [...Object.values(FIXTURES), ...SCENERY].map((f) => f.r ? { x0: f.x - f.r, x1: f.x + f.r, z0: f.z - f.r, z1: f.z + f.r } : f.x0 !== undefined ? { x0: f.x0, x1: f.x1, z0: f.z0, z1: f.z1 } : { x0: f.x - f.w / 2, x1: f.x + f.w / 2, z0: f.z - f.d / 2, z1: f.z + f.d / 2 });
 const homeBoxes = PLOTS.filter((p) => p.kind !== "reservation").map((p) => ({ x0: p.x0, x1: p.x1, z0: p.z0, z1: p.z1 }));
 // Keep every possible small-prop site clear, so decorating never moves a visible resource.
-const nodeBoxes = NODES.flatMap(n => villageNodeCandidates(n).map(p => ({ x0: p.x - .55, x1: p.x + .55, z0: p.z - .55, z1: p.z + .55 })));
+const nodeBoxes = NODES.flatMap(n => villageNodeCandidates(n).map(p => ({ x0: p.x - .55, x1: p.x + .55, z0: p.z - .55, z1: p.z + .55, blight: n.kind === "blight" })));
 const MOOR_INSET = MOOR_CORNER;
-function decorRoom(v, id, x, z, rotation, ignore) {
+function decorRoom(v, id, x, z, rotation, ignore, restoring = false) {
   const b = villageDecorBounds(id, x, z, rotation); if (!b) return false;
   if (b.x0 < GREEN.x0 || b.x1 > GREEN.x1 || b.z0 < GREEN.z0 || b.z1 > GREEN.z1 || overlap(b, MOOR_INSET)) return false;
-  if ([...roadBoxes, ...fixtureBoxes, ...homeBoxes, ...nodeBoxes].some((o) => overlap(b, o))) return false;
+  if ([...roadBoxes, ...fixtureBoxes, ...homeBoxes, ...nodeBoxes.filter(n => !restoring || !n.blight)].some((o) => overlap(b, o))) return false;
   if (!villageDecorGroundClear(id, x, z, rotation)) return false;
   return !v.decor.placed.some((p) => p.instance !== ignore && overlap(b, villageDecorBounds(p.id, p.x, p.z, p.rotation), .05));
 }
@@ -452,7 +467,7 @@ export function restoreVillageDecor(s, snapshot) {
   for (const p of v.decor.placed) totals[p.id] = (totals[p.id] ?? 0) + 1;
   for (const p of snapshot.placed) {
     if (!p || typeof p.instance !== "string" || !totals[p.id] || placed.some((q) => q.instance === p.instance)) return false;
-    if (!decorRoom({ decor: { placed } }, p.id, p.x, p.z, p.rotation ?? 0, null)) return false;
+    if (!decorRoom({ decor: { placed } }, p.id, p.x, p.z, p.rotation ?? 0, null, true)) return false;
     totals[p.id]--; placed.push({ instance: p.instance, id: p.id, x: p.x, z: p.z, rotation: p.rotation ?? 0 });
   }
   v.decor.placed = placed; v.decor.owned = totals;
@@ -555,6 +570,7 @@ export function questRequirementRows(s, id) {
   const row = (key, label, have, need) => ({ key, label, have, need, complete: have >= need });
   if (step.kind === "deliver") return Object.entries(step.cost).map(([m, n]) => row(m, MATERIAL_BY_ID[m].name, s.village.materials[m] ?? 0, n));
   if (step.kind === "gather") return [row(step.material, MATERIAL_BY_ID[step.material].name, s.village.materials[step.material] ?? 0, step.n)];
+  if (step.kind === "root-out") { const p = stepProgress(s, id); return [row("blight:" + step.district, "Fresh patches cleared · " + (DISTRICT_BY_ID[step.district]?.name ?? "Mothlight"), p.have, p.need)]; }
   if (step.kind === "give") return [row(step.item, villageItemName(step.item, step.n), villageItemCount(s, step.item), step.n)];
   if (step.kind === "pay") return [row("coins", "Coins", s.coins, step.coins)];
   if (step.kind === "place") { const tags = placedTags(s, step.near), names = { light: "A lamp or lantern", seat: "A stool or bench", books: "A reading stand or book cart" }; return step.tags.map((tag) => row(tag, names[tag] ?? tag, +tags.has(tag), 1)); }
@@ -564,6 +580,7 @@ export function questRequirementRows(s, id) {
 // Practical next actions for farm steps whose equipment is bought elsewhere.
 export function questStepHint(s, id) {
   const step = questStep(s, id); if (!step) return "";
+  if (step.kind === "root-out") return "Look for red-and-purple Blackroot fungus off the paths. Root out the whole patch; only fresh clears since this step began count. A full satchel never prevents clearing.";
   if (step.kind === "cook") return !s.kitchen?.purchased ? `Cooking opens at patch level ${COOKING.level}. Buy Maisie's food truck for £${COOKING.price}; then cook a batch of pumpkin wedges.` : "Return to the farm and finish a batch at Maisie's truck or your home kitchen. Earlier batches do not count.";
   if (step.kind === "carve") return s.estate?.placed?.some((p) => p.id === "carving-bench") ? "Return to your garden's carving bench and finish a new jack-o'-lantern." : "Buy a carving bench for the garden, place it, then finish a jack-o'-lantern at the bench.";
   if (step.kind === "place") return "Place all three pieces within the reading nook by Elowen's door. Rowan always stocks a stool; your letter reward includes a reading stand.";

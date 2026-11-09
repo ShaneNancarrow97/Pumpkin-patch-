@@ -10,7 +10,7 @@ const sites=new Map(),used=NODES.filter(n=>n.district==='green').map(n=>({x:n.x,
 const groups=new Map();
 for(const n of NODES){
   sites.set(n.id,[Object.freeze({x:n.x,z:n.z})]);
-  if(n.district!=='green')continue;
+  if(n.district!=='green'||n.kind==='blight')continue;
   const a=FORAGE_AREAS.find(a=>n.x>=a.x0&&n.x<=a.x1&&n.z>=a.z0&&n.z<=a.z1);
   const area=a??{id:'near-'+n.id,x0:n.x-5,z0:n.z-5,x1:n.x+5,z1:n.z+5};
   if(!groups.has(area.id))groups.set(area.id,{area,nodes:[]});groups.get(area.id).nodes.push(n);

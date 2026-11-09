@@ -604,7 +604,9 @@ export function buildNodes(ready, state) {
     node(at(v,x,z,["south","east","north","west"][Math.round(x+z)%4]),n.material,on,r);
     if(on)live.push({id:n.id,x:p.x,z:p.z});
   }
-  const built=v.build({glow:GLOW});built.userData.resourceSites=live;return built;
+  const built=v.build({glow:GLOW});built.userData.resourceSites=live;
+  built.userData.blightSites=live.filter(p=>LAYOUT.NODE_BY_ID[p.id]?.kind==="blight");
+  return built;
 }
 
 // ---- Beyond the Green: the four districts, after the concept atlas -----------------

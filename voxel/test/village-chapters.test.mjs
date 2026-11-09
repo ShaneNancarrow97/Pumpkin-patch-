@@ -177,3 +177,22 @@ test("stall prices explain insufficient funds and become usable when the quote i
   assert.doesNotMatch(card(html, `data-vg-buy="${item.key}"`), /disabled/);
   assert.ok(html.indexOf(`data-vg-buy="${item.key}"`) < html.indexOf('data-vg-decorate'));
 });
+
+test("Blackroot has honest chapter locks and a real root-out route without changing saved progress", () => {
+  const s = village(); M.startQuest(s, "blight-first-signs"); const before = structuredClone(s);
+  const html = render(s, "journal", { trackedQuestId: "blight-first-signs" }).html;
+  assert.match(html, /data-vg-gather="cursed-spores"/);
+  assert.match(html, /data-vg-details-key="blight-story"/);
+  assert.equal((html.match(/data-blight-chapter=/g) ?? []).length, 3);
+  assert.match(html, /Patch level 5/); assert.match(html, /Patch level 8/);
+  assert.deepEqual(s, before);
+});
+
+test("a full spore satchel still offers fungus removal, and recipe rewards stay visible", () => {
+  const s = village(); s.village.materials["cursed-spores"] = M.villageMaterialCapacity(s);
+  const html = render(s, "materials").html;
+  assert.doesNotMatch(card(html, 'data-vg-gather="cursed-spores"'), /disabled/);
+  assert.match(html, /Root out patches even when samples are full/);
+  done(s, "blight-root-and-remedy");
+  assert.match(render(s, "journal").html, /Garden ghost skillet recipe/i);
+});

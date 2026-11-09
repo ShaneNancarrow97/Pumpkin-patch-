@@ -19,6 +19,8 @@ import { TOUR } from "./content/village-tour.js";
 export { TOUR } from "./content/village-tour.js";
 import { createVillageLife } from "./village-life.js";
 import { createVillageAtmosphere } from "./village-atmosphere.js";
+import { createCursedSporeField } from "./village-blight.js";
+import { createVillageDialogueCamera } from "./village-dialogue-camera.js";
 import { storyObjectsHere, nodeReady } from "./rules/village.js";
 import { attachPieceGestures, createFraming } from "./piece-gestures.js";
 import { createVillageFolk, makeResident } from "./village-folk.js";
@@ -26,6 +28,8 @@ import { readyVillageSprites, villageSpriteTextures } from "./village-sprite-act
 import { visibleVillagePick } from "./village-sprite-math.js";
 
 const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z), K = PLAN_SCALE;
+const NODE_BY_ID = new Map(NODES.map(n => [n.id, n]));
+const BLIGHT_NODES = NODES.filter(n => n.kind === "blight");
 // How high the ground is at a world point (the terrain is drawn on the design grid).
 export const groundAt = (x, z) => terrainHeight(x / K, z / K) * K;
 const TOUR_SECONDS = 4.6;
@@ -69,6 +73,22 @@ export function createVillageView(canvas, state, hooks = {}) {
   const pickables = [], pickMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const hit = (w, h, d, data, x, z, y = h / 2) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), pickMaterial); m.position.copy(W(x, z, y)); m.userData = data; scene.add(m); pickables.push(m); return m; };
   const reducedMotion = () => hooks.reducedMotion?.() ?? (typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const blight = createCursedSporeField({ groundAt }); scene.add(blight.group);
+  const blightRows = BLIGHT_NODES.map(n => ({ id: n.id, x: n.x, z: n.z, ready: false, cycle: 0 }));
+  const dialogueFocus = createVillageDialogueCamera({ camera, controls, reducedMotion, groundAt: (x, z) => inside ? 0 : groundAt(x, z) });
+  const dialoguePlayer = new THREE.Vector3(), dialogueNeighbour = new THREE.Vector3();
+  // Callers use village realm coordinates; the helper owns only the view pose.
+  const dialogueCamera = {
+    begin(player, neighbour) {
+      if (!player || !neighbour) return false;
+      const floor = p => Number.isFinite(p.y) ? p.y : inside ? .12 * K : groundAt(p.x, p.z);
+      dialoguePlayer.set(player.x, floor(player), -player.z); dialogueNeighbour.set(neighbour.x, floor(neighbour), -neighbour.z);
+      return dialogueFocus.begin(dialoguePlayer, dialogueNeighbour);
+    },
+    end(options) { return dialogueFocus.end(options); },
+    get active() { return dialogueFocus.active; },
+    get status() { return dialogueFocus.status; },
+  };
   const folk = createVillageFolk({ scene, state, getState: () => state, reducedMotion, pickables, pickMaterial, ground: groundAt, everyone: () => !!hooks.everyone?.(), style: hooks.castStyle?.() ?? "sprite" });
   let atmosphere = null, villageGreen = null, followSubject = null;
   const decor = new Map(), pages = new Map();
@@ -96,7 +116,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     hit(f.noticeboard.w, 3.6, f.noticeboard.d, { type: "village-noticeboard" }, f.noticeboard.x, f.noticeboard.z);
     hit(f.well.r * 2, 4.4, f.well.r * 2, { type: "village-well" }, f.well.x, f.well.z);
     hit(f.carriage.w, 4.6, f.carriage.d, { type: "village-carriage" }, f.carriage.x, f.carriage.z);
-    for (const n of NODES.filter((n) => n.district === "green")) { const p=villageNodePosition(state,n);hit(.75,.65,.75,{type:"village-node",id:n.id},p.x,p.z); }
+    for (const n of NODES.filter((n) => n.district === "green")) { const p=villageNodePosition(state,n), blighted=n.kind==="blight";hit(blighted?1.35:.75,blighted?1.08:.65,blighted?1.35:.75,{type:"village-node",id:n.id},p.x,p.z,blighted?groundAt(p.x,p.z)+.54:.325); }
     for (const [id, p] of Object.entries(INSIDES)) { const [nx, nz] = DOOR_NORMAL[p.door.facing]; hit(nx ? 1.2 : 3.4, 5.8, nx ? 3.4 : 1.2, { type: "village-door", id }, (p.door.x + nx * .5) * K, (p.door.z + nz * .5) * K); }
   }
   // Rebuilds a part when its key changes.
@@ -112,8 +132,10 @@ export function createVillageView(canvas, state, hooks = {}) {
     part("bench", String(v.effects.includes("bench")), () => buildBench(v.effects.includes("bench")));
     part("homes", JSON.stringify(v.built), () => buildHomes(v.built)); life?.setBuilt(v.built);
     const ready = (id) => nodeReady(state, id);
-    for(const h of pickables)if(h.userData.type==="village-node"){h.visible=ready(h.userData.id);const p=villageNodePosition(state,h.userData.id);h.position.copy(W(p.x,p.z,.325));}
+    for(const h of pickables)if(h.userData.type==="village-node"){h.visible=ready(h.userData.id);const p=villageNodePosition(state,h.userData.id),blighted=NODE_BY_ID.get(h.userData.id)?.kind==="blight";h.position.copy(W(p.x,p.z,blighted?groundAt(p.x,p.z)+.54:.325));}
     part("nodes", NODES.filter((n) => n.district === "green").map((n) => `${ready(n.id)?1:0}:${state.village.gatherCycles?.[n.id]??0}`).join("|"), () => buildNodes(ready,state));
+    for (let i=0;i<blightRows.length;i++) { const row=blightRows[i],p=villageNodePosition(state,row.id);row.x=p.x;row.z=p.z;row.ready=ready(row.id);row.cycle=state.village.gatherCycles?.[row.id]??0; }
+    blight.sync(blightRows);
     // Decor pieces: one group each, as they move.
     const live = new Set(v.decor.placed.map((p) => p.instance));
     for (const [id, item] of decor) if (!live.has(id)) { scene.remove(item.group, item.hit); dispose(item.group); pickables.splice(pickables.indexOf(item.hit), 1); decor.delete(id); }
@@ -138,7 +160,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   }
   function dispose(object) { object.traverse((o) => { o.geometry?.dispose?.(); if (o.material && o.material !== pickMaterial) [].concat(o.material).forEach((m) => { m.map?.dispose?.(); m.dispose(); }); }); }
 
-  function resize(w = canvas.clientWidth, h = canvas.clientHeight) { camera.aspect = w / Math.max(1, h); camera.fov = following && !inside ? (camera.aspect < .9 ? 58 : 48) : 45; camera.updateProjectionMatrix(); }
+  function resize(w = canvas.clientWidth, h = canvas.clientHeight) { camera.aspect = w / Math.max(1, h); camera.fov = following && !inside ? (camera.aspect < .9 ? 58 : 48) : 45; camera.updateProjectionMatrix(); dialogueFocus.resize(); }
   function reset() {
     resize(); const far = (camera.aspect < .9 ? 42 : 30) * K;
     controls.target.copy(W(58 * K, 21.5 * K, 1)); camera.position.copy(W(58 * K, 21.5 * K - far * .83, far * .56)); controls.update();
@@ -190,6 +212,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     for (const texture of villageSpriteTextures()) hooks.warmTexture?.(texture);
   });
   function goInside(id) {
+    dialogueFocus.end({ immediate: true });
     gatherTool();
     if (inside?.id === id) return inside;
     if (inside) goOutside();
@@ -199,6 +222,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     return inside;
   }
   function goOutside() {
+    dialogueFocus.end({ immediate: true });
     if (!inside) return; inside.group.visible = false; if (inside.host) inside.host.root.visible = false; inside = null;
     root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = 1.25; hemi.intensity = .7; scene.userData.exposure = 1.15; following = false; pool.forEach((l) => { l.userData.base = 48; });
   }
@@ -213,6 +237,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     const damped = controls.enableDamping; controls.enableDamping = false; controls.update(); controls.enableDamping = damped;
   }
   function applyFollowPose() {
+    if (dialogueFocus.active) return;
     const pose = followCameraPose(activeRig().state);
     controls.target.set(pose.target.x, pose.target.y, pose.target.z);
     camera.position.set(pose.position.x, pose.position.y, pose.position.z);
@@ -220,9 +245,10 @@ export function createVillageView(canvas, state, hooks = {}) {
     camera.lookAt(controls.target); camera.updateMatrixWorld();
   }
   const play = {
-    pause() { following = false; clearOrbitMomentum(); resize(); },
+    pause() { following = false; if (!dialogueFocus.active) clearOrbitMomentum(); resize(); },
     // Old numeric theta callers remain valid; new entries may name their heading.
     reset(pos, options = {}) {
+      if (dialogueFocus.active) return;
       clearOrbitMomentum(); following = true; controls.enabled = false; resize();
       const setup = typeof options === "number" ? { yaw: options } : options;
       followSubject = { x: pos.x, y: pos.y ?? 0, z: pos.z };
@@ -233,6 +259,7 @@ export function createVillageView(canvas, state, hooks = {}) {
       activeRig().recenter(inside ? { x: 0, z: -1 } : heading);
     },
     follow(pos, dt, motion = {}) {
+      if (dialogueFocus.active) return;
       if (!following) { play.reset(pos, { heading: motion.heading }); return; }
       followSubject = { x: pos.x, y: pos.y ?? 0, z: pos.z };
       activeRig().step(pos, dt, inside ? { ...motion, worldDirected: false } : motion); applyFollowPose();
@@ -248,8 +275,10 @@ export function createVillageView(canvas, state, hooks = {}) {
   const handTools = new Map(), toolPoint = new THREE.Vector3(), toolSide = new THREE.Vector3();
   function gatherTool({ actor, material, progress = 0, active: on = false, target } = {}) {
     for (const tool of handTools.values()) tool.visible = false;
+    blight.rooting();
     const owner = actor?.root ?? actor;
     if (!on || !owner?.getWorldPosition) return;
+    if (material === "cursed-spores" && target) { owner.getWorldPosition(toolPoint);blight.rooting(target.x,target.z,toolPoint.x,toolPoint.y+1.05,toolPoint.z,progress);return; }
     const kind = ["logs", "hardwood"].includes(material) ? "axe" : ["stone", "iron", "moonstone", "clay", "star-amber"].includes(material) ? "pickaxe" : null;
     if (!kind) return;
     let tool = handTools.get(kind);
@@ -274,6 +303,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   const tourPath = { at: null, look: null }, focus = new THREE.Vector3();
   const director = {
     start(onTitle = () => {}, onDone = () => {}, { hold = () => false } = {}) {
+      dialogueFocus.end({ immediate: true });
       buildOnce(); tourPath.at ??= curve("at"); tourPath.look ??= curve("look");
       tour = { t: 0, shown: -1, onTitle, onDone, hold, cueAt: 0, length: (TOUR.length - 1) * TOUR_SECONDS }; controls.enabled = false;
     },
@@ -367,25 +397,28 @@ export function createVillageView(canvas, state, hooks = {}) {
     if (sky) sky.position.copy(camera.position);
   }
   return {
-    scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool,
+    scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool, dialogueCamera,
     setCastStyle, get castStyle() { return folk.style; }, spriteReady, spritesReady: spriteReady, spriteTextures: villageSpriteTextures, tapAt,
     goInside, goOutside, get inside() { return inside?.id ?? null; }, hallPoint, insidePlan: (id) => INSIDES[id],
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = !tour; },
-    leave() { gatherTool(); active = false; controls.enabled = false; for (const id of pointers.keys()) try { if (canvas.hasPointerCapture?.(id)) canvas.releasePointerCapture(id); } catch { /* A finished pointer may already be gone. */ } pointers.clear(); multi = false; pinch = 0; preview(null); following = false; followSubject = null; resetVillageVisibility(villageGreen); tour = null; },
+    leave() { dialogueFocus.end({ immediate: true }); blight.hide(); gatherTool(); active = false; controls.enabled = false; for (const id of pointers.keys()) try { if (canvas.hasPointerCapture?.(id)) canvas.releasePointerCapture(id); } catch { /* A finished pointer may already be gone. */ } pointers.clear(); multi = false; pinch = 0; preview(null); following = false; followSubject = null; resetVillageVisibility(villageGreen); tour = null; },
     tick(dt = 0) {
       time += dt; if (!active) return;
-      controls.enabled = !following && !tour && !hooks.blocked?.() && !hooks.gesture?.busy?.();
-      tickTour(dt); if (!tour && !following) { framing.step(); controls.update(); }
+      controls.enabled = !following && !tour && !dialogueFocus.active && !hooks.blocked?.() && !hooks.gesture?.busy?.();
+      tickTour(dt); if (!tour) dialogueFocus.tick(dt);
+      if (!tour && !following && !dialogueFocus.active) { framing.step(); controls.update(); }
       const reach = inside ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog - scene.fog.density) * Math.min(1, dt * 2);
       for (const p of patches) p.chunk.visible = p.sphere.center.distanceTo(camera.position) - p.sphere.radius < reach.far;
       placeLights(); folk.tick(dt, time, camera, { paused: !!inside || !!tour || !!hooks.residentsPaused?.() || !!state.paused, reducedMotion: reducedMotion() });
       if (!inside) { atmosphere?.tick(dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full" }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
       else resetVillageVisibility(villageGreen);
       if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera, following && !inside ? followSubject : null);
+      blight.tick(dt, camera.position, !inside, reducedMotion(), !!state.paused);
       if (mist) for (const m of mist.children) { const u = m.userData; m.position.x = u.x + Math.sin(time * .07 + u.phase) * 2.5; m.position.z = -u.z + Math.cos(time * .05 + u.phase) * 1.5; }
       for (const p of pages.values()) { p.group.position.y = .05 + Math.sin(time * 2.3 + p.x) * .04; p.group.rotation.y = Math.sin(time * .9 + p.z) * .5; }
     },
     get active() { return active; },
     get atmosphereStats() { return atmosphere?.stats() ?? null; },
+    get blightStats() { return blight.stats; },
   };
 }

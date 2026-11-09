@@ -9,7 +9,7 @@ import {buildNodes} from '../src/village-world.js';
 const green=NODES.filter(n=>n.district==='green');
 test('each Green resource has distinct, bounded and navigation-clear respawn sites',()=>{
  const all=[];
- for(const n of green){
+ for(const n of green.filter(n=>n.kind!=='blight')){
   const choices=villageNodeCandidates(n);assert.ok(choices.length>=2,n.id);
   const area=FORAGE_AREAS.find(a=>n.x>=a.x0&&n.x<=a.x1&&n.z>=a.z0&&n.z<=a.z1);
   for(const p of choices){
@@ -21,6 +21,14 @@ test('each Green resource has distinct, bounded and navigation-clear respawn sit
   }
  }
  for(const n of NODES.filter(n=>n.district!=='green'))assert.deepEqual(villageNodeCandidates(n),[{x:n.x,z:n.z}]);
+});
+
+test('cursed growth returns to its fixed, walkable socket rather than drifting into a path',()=>{
+ for(const n of green.filter(n=>n.kind==='blight')){
+  assert.deepEqual(villageNodeCandidates(n),[{x:n.x,z:n.z}]);
+  for(const cycle of [0,1,9,999])assert.deepEqual(villageNodePosition({village:{gatherCycles:{[n.id]:cycle}}},n),{x:n.x,z:n.z});
+  assert.ok(villageCellFree(null,n.x,n.z,.65),n.id+' clears the walker');
+ }
 });
 
 test('visible resources remain stable through unrelated random rolls; only a harvested node advances',()=>{

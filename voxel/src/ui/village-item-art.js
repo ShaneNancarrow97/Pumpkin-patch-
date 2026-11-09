@@ -1,8 +1,10 @@
 import atlas from '../../assets/menu-items/village-items.webp';
 import { VILLAGE_ITEM_GRID } from '../content/village-item-icon-meta.js';
+import { installVillageBlightArt } from './village-blight-art.js';
 
 // Install one shared atlas; live menu redraws only contain stable, small markup.
 export function installVillageItemArt() {
+  installVillageBlightArt();
   if (typeof document === 'undefined' || !document.head || document.querySelector('style[data-village-item-art]')) return;
   const style = document.createElement('style');
   style.dataset.villageItemArt = '';

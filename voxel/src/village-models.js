@@ -7,6 +7,7 @@
 // autumn evening: limestone, brick and black iron, lush clipped greens, crimson
 // and gold trees, and every lamp and window already lit.
 import { Voxels, seeded, vary } from "./voxels.js";
+import { cursedFungus } from "./village-blight.js";
 
 export const C = Object.freeze({
   stone: [0xc2baae, 0xd0c8bc, 0xb1a99d, 0xdcd5ca], stoneDark: [0x8f887f, 0x9c958b, 0x7f786f], cobble: [0x8d8995, 0x9b97a2, 0x7f7b87, 0xa8a4ad],
@@ -571,7 +572,8 @@ export function conservatory(f, built, r = seeded(47)) {
 export function node(f, material, ready, r = seeded(51)) {
   // A gathered pile disappears completely; only its save timer remains.
   if (!ready) return;
-  if (material === "logs") {
+  if (material === "cursed-spores") cursedFungus(f, r);
+  else if (material === "logs") {
     // One fallen log, about 66cm long: bright end grain, bark plates and a twig knot.
     f.block(0,0,0,.13,.12,.42,vary(0x795039,.08,r));
     for(const end of [-1,1]){

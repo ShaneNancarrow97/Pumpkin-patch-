@@ -7,6 +7,7 @@
 // its quests in content/village-quests.js and its decor in content/village-decor.js.
 // Elowen brings the invitation at level 3 (it was 6 in the plan), and each
 // later district opens three levels on.
+import { BLIGHT_MATERIAL, BLIGHT_NODE_SITES } from "./village-blight.js";
 export const VILLAGE_LEVEL = 3;
 // The village is drawn on a design grid and built at PLAN_SCALE world units to
 // each grid unit, so the owners (2.3 units tall) find its doors, benches and lamps
@@ -42,9 +43,11 @@ export const MATERIALS = Object.freeze([
   { id: "moonstone", name: "Moonstone", district: "moor", yield: 1, respawn: 600 },
   { id: "emberbloom", name: "Emberbloom", district: "moor", yield: 1, respawn: 420 },
   { id: "star-amber", name: "Star amber", district: "marsh", yield: 1, respawn: 900 },
+  BLIGHT_MATERIAL,
 ].map(Object.freeze));
 export const MATERIAL_BY_ID = Object.freeze(Object.fromEntries(MATERIALS.map((m) => [m.id, m])));
-// The 50 authored gathering sockets: each grows one pile at a time, never on a road, a plot or a doorway.
+// Authored gathering sockets: each grows one pile at a time, never on a road,
+// a plot or a doorway. Blackroot patches share their saved cooldown lifecycle.
 export const NODES = Object.freeze([
   { id: "logs-01", material: "logs", x: 9, z: -6, district: "green" },
   { id: "logs-02", material: "logs", x: 15, z: -14, district: "green" },
@@ -96,8 +99,10 @@ export const NODES = Object.freeze([
   { id: "emberbloom-02", material: "emberbloom", x: 114, z: 54, district: "moor" },
   { id: "emberbloom-03", material: "emberbloom", x: 114, z: 58, district: "moor" },
   { id: "star_amber-01", material: "star-amber", x: 112, z: 90, district: "marsh" },
+  ...BLIGHT_NODE_SITES,
 ].map((n) => { const [x, z] = sh(n.district, [n.x, n.z]); return Object.freeze({ ...n, x: S(x), z: S(z) }); }));
 export const NODE_BY_ID = Object.freeze(Object.fromEntries(NODES.map((n) => [n.id, n])));
+export const BLIGHT_NODES = Object.freeze(NODES.filter(n => n.kind === "blight"));
 // Building plots: the full eventual home-and-garden reserve, with a level doorway on its spur road.
 export const PLOTS = Object.freeze([
   { id: "01", kind: "resident", resident: "elowen", building: "Conservatory library", x0: 28, z0: 10, x1: 48, z1: 30, door: [48, 20], facing: "east", district: "green" },
