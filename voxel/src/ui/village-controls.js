@@ -75,6 +75,12 @@ export function createVillageRepeat(first = 360, repeat = 130) {
   };
 }
 
+// Keep the action/back pair together and Quest next to Menus. Optional movement
+// hints can collapse on a small screen without hiding either village shortcut.
+export function villageControllerLegendHTML() {
+  return `<span class="vg-pad-world vg-pad-motion" aria-label="Left stick: Walk. Right stick: Camera."><span class="vg-legend-control">${villageKeycap("ls")}<em>Walk</em></span><span class="vg-legend-control">${villageKeycap("rs")}<em>Camera</em></span></span><span class="vg-legend-primary"><span class="vg-pad-menu vg-legend-control vg-legend-navigate" aria-label="D-pad: Navigate menu choices">${villageKeycap("dpad")}<em>Navigate</em></span><span class="vg-legend-action">${villageKeycap("cross")}<span class="vg-action-copy"><em></em><small></small></span><i class="vg-legend-progress"><i></i></i></span><span class="vg-legend-control vg-legend-back">${villageKeycap("circle")}<em>Back</em></span></span><span class="vg-pad-world vg-pad-extra vg-legend-jog" aria-label="R2: Jog">${villageKeycap("r2")}<em>Jog</em></span><span class="vg-legend-shortcuts"><span class="vg-pad-world vg-legend-control vg-legend-quest" aria-label="D-pad up: Expand or collapse your followed quest">${villageKeycap("up")}<em>Quest</em></span><span class="vg-legend-control vg-legend-menus" aria-label="Options: Open village menus">${villageKeycap("options")}<em>Menus</em></span></span>`;
+}
+
 export function createVillageControls({ root, blocked = () => false, onRelease = () => {}, onSourceChange = () => {}, gamepads = () => navigator.getGamepads?.() ?? [], now = () => performance.now() } = {}) {
   if (!root) throw new TypeError("Village controls need their village root.");
   const doc = root.ownerDocument, win = doc.defaultView, cleanup = [], made = [];
@@ -87,7 +93,7 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
   const sticks = [];
   const legend = make("div", "vg-pad-legend", "vg-pad-legend");
   legend.setAttribute("aria-label", "Controller controls");
-  legend.innerHTML = `<span class="vg-pad-world vg-pad-motion">${villageKeycap("ls")} Walk ${villageKeycap("rs")} Camera</span><span class="vg-legend-action">${villageKeycap("cross")}<span class="vg-action-copy"><em></em><small></small></span><i class="vg-legend-progress"><i></i></i></span><span class="vg-legend-back">${villageKeycap("circle")}<em>Back</em></span><span class="vg-pad-world vg-pad-extra">${villageKeycap("r2")} Jog</span><span class="vg-pad-world vg-pad-extra">${villageKeycap("up")} Quest</span><span class="vg-legend-menus">${villageKeycap("options")} Menus</span>`;
+  legend.innerHTML = villageControllerLegendHTML();
   legend.hidden = true;
   const legendAction = legend.querySelector(".vg-legend-action"), legendActionLabel = legendAction.querySelector("em"), legendTarget = legendAction.querySelector("small"), legendProgress = legendAction.querySelector(".vg-legend-progress i"), legendBack = legend.querySelector(".vg-legend-back em");
   const interact = root.querySelector("#vg-interact");

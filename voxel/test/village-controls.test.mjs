@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { normaliseVillageStick, createVillagePadState, createVillageRepeat } from "../src/ui/village-controls.js";
+import { normaliseVillageStick, createVillagePadState, createVillageRepeat, villageControllerLegendHTML } from "../src/ui/village-controls.js";
 
 const dualSense = () => ({ id: "DualSense Wireless Controller", index: 0, connected: true, mapping: "standard", axes: [0, 0, 0, 0], buttons: Array.from({ length: 18 }, () => ({ pressed: false, value: 0 })) });
 const press = (pad, index, value = 1) => { pad.buttons[index] = { pressed: value > .5, value }; };
@@ -60,4 +60,25 @@ test("menu repeat has one first step, a deliberate delay, and frame-independent 
   assert.equal(repeat.step("down", 3000), true, "a slow frame produces one step, not a backlog");
   assert.equal(repeat.step("right", 3001), true); assert.equal(repeat.step("", 3002), false); assert.equal(repeat.step("right", 3003), true);
   repeat.clear(); assert.equal(repeat.step("right", 3004), true);
+});
+
+test("the village legend keeps Quest and Menus together and separates the optional jogging hint", () => {
+  const html = villageControllerLegendHTML();
+  assert.match(html, /class="vg-legend-shortcuts"><span class="vg-pad-world vg-legend-control vg-legend-quest"/);
+  assert.match(html, /vg-legend-quest" aria-label="D-pad up: Expand or collapse your followed quest"/);
+  assert.match(html, /vg-legend-menus" aria-label="Options: Open village menus"/);
+  const questClasses = html.match(/class="([^"]*vg-legend-quest)"/)[1];
+  assert.equal(questClasses.includes("vg-pad-extra"), false, "the Fold may hide Jog without hiding Quest");
+  assert.equal(questClasses.includes("vg-pad-motion"), false, "a short screen may hide movement hints without hiding Quest");
+  assert.match(html, /vg-pad-world vg-pad-extra vg-legend-jog/);
+  assert.match(html, /data-ps5-icon="up"/); assert.match(html, /data-ps5-icon="options"/);
+});
+
+test("menu legend explicitly names D-pad navigation beside selection and back", () => {
+  const html = villageControllerLegendHTML();
+  assert.match(html, /class="vg-legend-primary"><span class="vg-pad-menu vg-legend-control vg-legend-navigate"/);
+  assert.match(html, /aria-label="D-pad: Navigate menu choices"/);
+  assert.match(html, /data-ps5-icon="dpad"/); assert.match(html, /<em>Navigate<\/em>/);
+  assert.match(html, /class="vg-legend-action"/); assert.match(html, /data-ps5-icon="cross"/);
+  assert.match(html, /vg-legend-back/); assert.match(html, /data-ps5-icon="circle"/);
 });

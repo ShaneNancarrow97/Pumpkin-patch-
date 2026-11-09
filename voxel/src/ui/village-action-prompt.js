@@ -35,7 +35,7 @@ export function villageActionPrompt(context, { source = "keyboard", locked = fal
 // Familiar controller silhouettes remain sharp at every TV/UI scale. They are
 // decorative; the action's complete accessible name is supplied by its control.
 export function villageKeycap(key) {
-  const symbols = {cross:"cross",circle:"circle",options:"options",up:"up",ls:"ls",rs:"rs",r2:"r2"};
+  const symbols = {cross:"cross",circle:"circle",options:"options",dpad:"dpad",up:"up",ls:"ls",rs:"rs",r2:"r2"};
   if(Object.hasOwn(symbols,key))return `<span class="vg-keycap vg-key-${key}" aria-hidden="true">${ps5Icon(symbols[key],26)}</span>`;
   const label = ({ e: "E", ls: "L", rs: "R", r2: "R2" })[key] ?? "?";
   return `<span class="vg-keycap vg-key-${Object.hasOwn({ e: 1, ls: 1, rs: 1, r2: 1 }, key) ? key : "unknown"}" aria-hidden="true">${label}</span>`;

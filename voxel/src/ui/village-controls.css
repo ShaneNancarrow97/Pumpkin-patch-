@@ -19,16 +19,21 @@ body.village-conversation-open #village-game :is(.vg-thumb-zone,.vg-jog,.vg-look
 
 /* A short legend sits above the same village hotbar used by touch. The action
    alone gets amber emphasis; movement and occasional shortcuts stay quiet. */
-.vg-pad-legend{position:absolute;bottom:calc(92px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:15px;max-width:calc(100% - 24px);padding:7px 12px;min-height:44px;box-sizing:border-box;border:1px solid #dfc39629;border-radius:18px;background:#211a2af2;box-shadow:0 6px 24px #0b071d44;color:#ddcde0;font:500 13px/1.2 var(--body);white-space:nowrap;pointer-events:none}
+.vg-pad-legend{position:absolute;bottom:calc(92px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px 15px;width:max-content;max-width:calc(100% - 24px);padding:7px 12px;min-height:44px;box-sizing:border-box;border:1px solid #c9add03d;border-radius:18px;background:linear-gradient(145deg,#33243df2,#211a2af7);box-shadow:inset 0 1px #f6e6ff0d,0 6px 24px #0b071d44;color:#e7d8e9;font:500 13px/1.2 var(--body);white-space:nowrap;pointer-events:none}
 .vg-pad-legend[hidden],.vg-pad-legend [hidden]{display:none!important}
 .vg-pad-legend>span{display:inline-flex;align-items:center;gap:7px}
+.vg-pad-legend .vg-legend-control{display:inline-flex;align-items:center;gap:7px}
+.vg-pad-legend .vg-legend-primary{min-width:0;gap:12px}
+.vg-pad-legend .vg-legend-shortcuts{flex:none;gap:14px}
+.vg-pad-legend .vg-pad-motion{gap:12px}
+.vg-pad-legend .vg-pad-menu{display:none}
 .vg-pad-legend em{font-style:normal;overflow:hidden;text-overflow:ellipsis}
 .vg-keycap{display:inline-flex;align-items:center;justify-content:center;flex:none;box-sizing:border-box;width:26px;height:26px;border:1px solid #ecd4ee65;border-radius:50%;background:linear-gradient(150deg,#51405b,#2b2435);box-shadow:inset 0 1px #f6e6ff18,0 2px 4px #09061155;color:#f9edff;font:700 13px/1 var(--body)}
 .vg-keycap svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .vg-key-options,.vg-key-r2{width:31px;height:23px;border-radius:7px;font-size:12px}
 .vg-key-e{width:26px;height:28px;border-radius:7px}
 .vg-key-circle{color:#f3abb6}.vg-key-cross{color:#b7d8ff}
-.vg-pad-legend .vg-legend-action{position:relative;min-width:0;max-width:220px;gap:9px;padding:5px 9px 6px 5px;border:1px solid transparent;border-radius:13px;color:#cab8cf;transition:background .18s,border-color .18s,color .18s}
+.vg-pad-legend .vg-legend-action{display:inline-flex;align-items:center;position:relative;min-width:0;max-width:220px;gap:9px;padding:5px 9px 6px 5px;border:1px solid transparent;border-radius:13px;color:#cab8cf;transition:background .18s,border-color .18s,color .18s}
 .vg-pad-legend .vg-action-copy{display:flex;flex-direction:column;align-items:flex-start;min-width:0;gap:3px}
 .vg-pad-legend .vg-action-copy em{font-weight:650;max-width:20ch}
 .vg-pad-legend .vg-action-copy small{display:block;font-size:12px;line-height:1.1;max-width:20ch;overflow:hidden;text-overflow:ellipsis;color:inherit;opacity:.83}
@@ -40,6 +45,7 @@ body.village-conversation-open #village-game :is(.vg-thumb-zone,.vg-jog,.vg-look
 .vg-legend-action.is-busy .vg-legend-progress{display:block}
 .vg-pad-legend.is-menu{bottom:calc(16px + env(safe-area-inset-bottom))}
 .vg-pad-legend.is-menu .vg-pad-world{display:none}
+.vg-pad-legend.is-menu .vg-pad-menu{display:inline-flex}
 #village-game.vg-input-pad .vg-dock{display:flex}
 #village-game.vg-input-pad.vg-controls-blocked:not(.is-gathering) .vg-dock{visibility:hidden}
 body.village-conversation-open #village-game.vg-input-pad .vg-dock{visibility:hidden}
@@ -74,8 +80,9 @@ body.village-conversation-open #village-game.vg-input-pad .vg-dock{visibility:hi
   #village-game .vg-jog{left:max(49px,env(safe-area-inset-left))}
   #village-game .vg-look{right:max(49px,env(safe-area-inset-right))}
   #village-game .vg-interact{bottom:calc(287px + env(safe-area-inset-bottom));width:112px;height:72px;min-width:112px}
-  .vg-pad-legend{gap:10px;padding:6px 9px;font-size:12px;bottom:calc(90px + env(safe-area-inset-bottom))}
-  .vg-pad-legend .vg-pad-world{display:none}
+  .vg-pad-legend{gap:5px 10px;padding:6px 9px;font-size:12px;bottom:calc(90px + env(safe-area-inset-bottom))}
+  .vg-pad-legend :is(.vg-pad-motion,.vg-pad-extra){display:none}
+  .vg-pad-legend :is(.vg-legend-primary,.vg-legend-shortcuts){gap:10px}
   .vg-pad-legend .vg-legend-action{max-width:142px;gap:6px;padding-right:6px}
   .vg-pad-legend .vg-action-copy :is(em,small){max-width:10ch}
 }

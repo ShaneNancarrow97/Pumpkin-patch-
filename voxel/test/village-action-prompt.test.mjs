@@ -33,6 +33,7 @@ test("prompt text remains plain data and keycaps only emit known silhouettes", (
   const prompt = villageActionPrompt({ type: "village-node", target: "  A  strange\n shelf  ", tool: "Axe", label: "Gather" });
   assert.equal(prompt.target, "A strange shelf"); assert.equal(prompt.accessible, "Gather · A strange shelf · Axe");
   assert.match(villageKeycap("cross"), /vg-key-cross/); assert.match(villageKeycap("cross"), /aria-hidden="true"/);
+  assert.match(villageKeycap("dpad"), /vg-key-dpad/); assert.match(villageKeycap("dpad"), /data-ps5-icon="dpad"/, "menu navigation uses the full D-pad silhouette");
   assert.equal(villageKeycap('x" onclick="bad').includes("onclick"), false);
   assert.match(villageKeycap("e"), />E<\/span>/);
 });

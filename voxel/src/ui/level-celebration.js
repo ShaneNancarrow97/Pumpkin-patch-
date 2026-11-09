@@ -44,14 +44,21 @@ export function createLevelCelebration({ state, audio, save, openRewards, openHo
     prev.disabled = selected === 0; next.disabled = selected === cards.length - 1;
     overlay.querySelector("[data-level-card-count]").textContent = `Card ${selected + 1} of ${cards.length}`;
     if (focus || document.activeElement === prev && prev.disabled || document.activeElement === next && next.disabled) tabs[selected]?.focus({ preventScroll: true });
-    tabs[selected]?.scrollIntoView?.({ block: "nearest", inline: "nearest", behavior: "instant" });
+    // Reveal only the horizontal dot strip; scrollIntoView would also pull
+    // the requirements above it underneath the fixed receipt header.
+    const tab = tabs[selected], strip = tab?.parentElement;
+    if (strip) {
+      const item = tab.getBoundingClientRect(), frame = strip.getBoundingClientRect();
+      if (item.left < frame.left) strip.scrollLeft += item.left - frame.left;
+      else if (item.right > frame.right) strip.scrollLeft += item.right - frame.right;
+    }
   }
   function requirementsMarkup(s) {
     const view = levelRequirementView(s), next = view.next;
     if (!next) return "";
     const earning = view.earnings, unmet = view.home.filter(row => !row.met), remaining = Math.max(0, earning.need - earning.have);
     const needsVillage = unmet[0]?.action === "village", canVisit = needsVillage ? openVillage : openHome;
-    return `<section class="level-requirements" aria-labelledby="level-requirements-title"><div class="level-requirements-heading"><h3 id="level-requirements-title">To reach level ${next.level}</h3><span>Level ${view.current.level} → ${next.level}</span></div><div class="level-earning-goal"><span>Farm earnings</span><b>${money(earning.have)} <small>/ ${money(earning.need)}</small></b><span class="level-goal-status${earning.met ? " is-met" : ""}">${earning.met ? "Met" : `${money(remaining)} to go`}</span></div><div class="level-earnings-track" role="progressbar" aria-label="Earnings towards next level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(view.current.progress * 100)}"><i style="width:${view.current.progress * 100}%"></i></div><p class="level-requirements-note">Farm earnings count here; bonus reward coins do not.</p>${view.home.length ? `<ul class="level-home-checklist">${view.home.map(row => `<li class="${row.met ? "is-met" : ""}"><span aria-hidden="true">${row.met ? "✓" : "◇"}</span><span>${esc(row.text)}</span><b>${row.met ? "Met" : "Still needed"}</b></li>`).join("")}</ul>` : '<p class="level-requirements-note">No home milestone is needed for this level.</p>'}${unmet.length ? `<div class="level-home-nudge"><p>${earning.met ? "Your earnings are ready. Finish the home milestones above to level up." : "Earnings and the home milestones above are both needed."}</p>${canVisit ? `<button class="button" ${needsVillage ? "data-level-village" : "data-level-home"}>Visit ${needsVillage ? "village" : "home"}</button>` : ""}</div>` : ""}</section>`;
+    return `<section class="level-requirements" aria-labelledby="level-requirements-title"><div class="level-requirements-heading"><h3 id="level-requirements-title">To reach level ${next.level}</h3><span>Level ${view.current.level} → ${next.level}</span></div><div class="level-earning-goal"><span>Farm earnings</span><b>${money(earning.have)} <small>/ ${money(earning.need)}</small></b><span class="level-goal-status${earning.met ? " is-met" : ""}">${earning.met ? "Met" : `${money(remaining)} to go`}</span></div><div class="level-earnings-track" role="progressbar" aria-label="Earnings towards next level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(view.current.progress * 100)}"><i style="width:${view.current.progress * 100}%"></i></div><p class="level-requirements-note">Farm earnings count here; bonus reward coins do not.</p>${view.home.length ? `<ul class="level-home-checklist">${view.home.map(row => `<li class="${row.met ? "is-met" : ""}"><span aria-hidden="true">${row.met ? "✓" : "◇"}</span><span>${esc(row.text)}</span><b>${row.met ? "Met" : "Still needed"}</b></li>`).join("")}</ul>` : '<p class="level-requirements-note">No home milestone is needed for this level.</p>'}${unmet.length ? `<div class="level-home-nudge"><p>${earning.met ? "Your earnings are ready. Finish the requirements above to level up." : "Earnings and the requirements above are both needed."}</p>${canVisit ? `<button class="button" ${needsVillage ? "data-level-village" : "data-level-home"}>Visit ${needsVillage ? "village" : "home"}</button>` : ""}</div>` : ""}</section>`;
   }
   function cardMarkup(card, i) {
     const price = card.price == null ? "" : `<span class="level-card-price">${card.price ? money(card.price) : "Starter recipe"}</span>`;
@@ -80,6 +87,7 @@ export function createLevelCelebration({ state, audio, save, openRewards, openHo
     stage.addEventListener("pointerup", e => { if (!current() || !swipe || swipe.id !== e.pointerId) return; const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y; swipe = null; if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy) * 1.5) selectCard(carousel.index + (dx < 0 ? 1 : -1)); });
     stage.addEventListener("pointercancel", () => { swipe = null; });
     selectCard(0);
+    overlay.querySelector(".level-receipt-body").scrollTop = 0;
     overlay.querySelector(".level-continue").focus({ preventScroll: true });
     if (!preview) { audio.levelUp(); particlesTimer = setTimeout(() => overlay.querySelector(".level-confetti")?.remove(), 2800); }
   }

@@ -60,8 +60,8 @@ test('reward browsing clamps at either end and tolerates an empty collection', (
 // This small DOM exercises the actual modal's callbacks, keyboard and pointer
 // gestures. Only thumbnail rendering is stubbed: the state/rules are real.
 class Element {
-  constructor(tag, doc) { this.tagName = tag.toUpperCase(); this.doc = doc; this.children = []; this.attrs = {}; this.dataset = {}; this.listeners = new Map(); this.hidden = false; this.disabled = false; this.inert = false; this.tabIndex = 0; }
-  setAttribute(k, v) { this.attrs[k] = String(v); if (k === 'id') this.id = v; if (k === 'class') this.className = v; if (k === 'hidden') this.hidden = true; if (k === 'tabindex') this.tabIndex = +v; if (k.startsWith('data-')) this.dataset[k.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = v; }
+  constructor(tag, doc) { this.tagName = tag.toUpperCase(); this.doc = doc; this.children = []; this.attrs = {}; this.dataset = {}; this.listeners = new Map(); this.hidden = false; this.disabled = false; this.inert = false; this.tabIndex = 0; this.scrollLeft = 0; this.scrollTop = 0; }
+  setAttribute(k, v) { this.attrs[k] = String(v); if (k === 'id') this.id = v; if (k === 'class') { this.className = v; if (v === 'level-receipt-body') this.scrollTop = 91; } if (k === 'hidden') this.hidden = true; if (k === 'tabindex') this.tabIndex = +v; if (k.startsWith('data-')) this.dataset[k.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = v; }
   append(el) { el.parentElement = this; this.children.push(el); }
   remove() { if (this.parentElement) this.parentElement.children = this.parentElement.children.filter(el => el !== this); this.parentElement = null; }
   get isConnected() { return this === this.doc.body || !!this.parentElement?.isConnected; }
@@ -85,6 +85,8 @@ class Element {
   emit(type, fields = {}) { const event = { target: this, preventDefault() {}, stopPropagation() {}, ...fields }; for (const fn of this.listeners.get(type) ?? []) fn(event); }
   click() { if (!this.disabled) { this.onclick?.(); this.emit('click'); } }
   focus() { this.doc.activeElement = this; }
+  getBoundingClientRect() { return { left: 0, right: 44 }; }
+  scrollIntoView() { this.doc.verticalScrollCalls = (this.doc.verticalScrollCalls ?? 0) + 1; const body = this.closest('.level-receipt-body'); if (body) body.scrollTop = 250; }
 }
 let compiled;
 async function harness(state = M.freshState()) {
@@ -147,4 +149,19 @@ test('the village invitation blocker points to the village rather than the priva
   assert.equal(h.overlay.querySelector('[data-level-home]'), null);
   const village = h.overlay.querySelector('[data-level-village]'); assert.ok(village); village.click(); village.click();
   assert.equal(h.villages, 1); assert.equal(h.homes, 0); assert.equal(JSON.stringify(s), before); h.ui.dispose();
+});
+
+test('requirements open at the top and carousel browsing scrolls only the horizontal dot strip', async () => {
+  const s = M.freshState(); s.progression.claimed = [1, 2, 3, 4]; s.progression.homeLegacyThrough = 4; s.earned = M.LEVELS[4].at;
+  const h = await harness(s); h.ui.preview();
+  const body = h.overlay.querySelector('.level-receipt-body'), strip = h.overlay.querySelector('.level-card-tabs'), tabs = h.overlay.querySelectorAll('[data-level-card-tab]');
+  assert.equal(body.scrollTop, 0, 'initial selection keeps the requirements heading at the start of the scroll area');
+  assert.equal(h.document.verticalScrollCalls ?? 0, 0, 'opening never asks ancestors to scroll to the dot strip');
+  strip.getBoundingClientRect = () => ({ left: 0, right: 132 });
+  tabs.forEach((tab, i) => { tab.getBoundingClientRect = () => ({ left: i * 44 - strip.scrollLeft, right: (i + 1) * 44 - strip.scrollLeft }); });
+  body.scrollTop = 137; h.overlay.emit('keydown', { key: 'End' });
+  assert.ok(strip.scrollLeft > 0, 'the last dot is brought into view horizontally'); assert.equal(body.scrollTop, 137);
+  h.overlay.emit('keydown', { key: 'Home' }); assert.equal(strip.scrollLeft, 0); assert.equal(body.scrollTop, 137, 'browsing back preserves where requirements were being read');
+  assert.equal(h.document.verticalScrollCalls ?? 0, 0);
+  assert.match(h.overlay.html, /requirements above/); assert.doesNotMatch(h.overlay.html, /home milestones above/); h.ui.dispose();
 });
