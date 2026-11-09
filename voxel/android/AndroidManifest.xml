@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.shanenatalie.pumpkinpatch.voxel" android:versionCode="26110801" android:versionName="2026.11.08">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.shanenatalie.pumpkinpatch.voxel" android:versionCode="26110802" android:versionName="2026.11.08.2">
   <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="35" />
   <uses-feature android:glEsVersion="0x00030000" android:required="true" />
   <uses-feature android:name="android.hardware.touchscreen" android:required="false" />

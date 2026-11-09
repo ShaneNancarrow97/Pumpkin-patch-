@@ -43,9 +43,15 @@ python3 -m unittest discover -s voxel/android/test -p '*_test.py' -v
 node --test voxel/android/test/native-shell.test.mjs
 ```
 
-The six extraction tests cover deduplication, exact binary checksums, escaped CSS/JS strings, malformed inputs, guarded stale cleanup and relative narration-compatible URLs. Ten VM checks cover pad ordering/bounds/release, current game Back actions, backup I/O, all audio contexts, delayed audio completions and repeated dialogue-media cleanup. Signature/ZIP/package checks are performed on the real built APK. Emulator and hardware results are recorded separately; these unit tests are not an install/launch claim.
+The six extraction tests cover deduplication, exact binary checksums, escaped CSS/JS strings, malformed inputs, guarded stale cleanup and relative narration-compatible URLs. Eleven VM checks cover pad ordering/bounds/release, current game Back actions (including visible level-reward receipts), backup I/O, all audio contexts, delayed audio completions and repeated dialogue-media cleanup. Signature/ZIP/package checks are performed on the real built APK. Emulator and hardware results are recorded separately; these unit tests are not an install/launch claim.
 
-## Final packaged game
+## Source update — 26110802
+
+The next Android update uses version code **26110802**, name **2026.11.08.2**. `AndroidManifest.xml` is authoritative; the build report now reads package/version metadata from that manifest instead of keeping a duplicate version literal in the build script.
+
+Native Back dismisses a visible level-reward or next-level receipt through its existing `.level-close` handler before returning from a village/room or offering to quit. Hidden receipts do not consume Back. Eleven shell VM checks and six extraction checks pass. This source-only follow-up does not build an APK: final packaging must wait until the updated game HTML/ZIP have been checked and published.
+
+## Previous packaged game — 26110801
 
 The release is built from game commit `8bf4d53b530fd835c20f4515e76913b376b295c9`, after the shared farm/village exit refinement. Browser HTML SHA-256: `9314af490ecceb32d030b6ac57772927a15013790f910146ff27ccaf0d54ce17`; it remains byte-identical before/after packaging.
 
@@ -54,3 +60,7 @@ Signed APK: **42,068,590 bytes**, SHA-256 `bd2876295b40747880a287ff13db558154c06
 `verification/final-release.json`, `build-report.json`, `asset-manifest.json`, `package-check.txt` and `signature-check.txt` record the exact inputs, outputs and checks. Six extraction tests and ten native-shell VM tests pass.
 
 **Native runtime verification is limited:** the cached emulator was tried with software CPU emulation because no KVM is available. Android 30 booted, but its package installer failed because the framework's StorageManager was null; the current WebView provider was null, with an old 83.0.4103.120 preferred package. The game did not run there. Installation, fold/orientation retention, native save-picker interaction and physical Bluetooth/controller/TV performance therefore remain hardware checks, not claimed passes. The emulator has been stopped. Its raw failure and environment receipt are retained in `verification/emulator-report.json` and the accompanying text logs.
+
+## Latest Blackroot package
+
+Version26110802 /2026.11.08.2 is built last from the verified Blackroot HTML (`e98d2ffc…baaf`). [Latest native evidence](verification/blackroot/release.json) records signature/alignment/CRC and all276 media hashes, plus11 shell and6 extractor checks. Local media retains its original bytes; the HTML document is92.2446% smaller to parse. This remains Android WebView/WebGL2, with physical hardware/Bluetooth/performance unverified. Public release filename is Pumpkin-Patch-Village-Blackroot.apk; the builder’s internal historical filename is unchanged.

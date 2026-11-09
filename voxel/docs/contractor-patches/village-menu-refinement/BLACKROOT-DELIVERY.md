@@ -27,3 +27,9 @@ Important integration details:
 - Phone/Fold/TV sizes and mocked native pad input are software tests, not physical Fold7/TV/Bluetooth or frame-rate certification. Normal screenshots use real rendering. The technical model preview is explicitly an actual-box geometry proof.
 
 The final immutable public receipts are added after publication. Android is packaged last from this exact checked HTML; its native patch and build report stay separate from the browser game.
+
+## Published game receipt
+
+All six public files were retrieved in full and SHA-256/byte-verified at immutable artifact commit `5b4a79e1df6ff68e8cdf20ac136facd987db829d`: [receipt](verification/blackroot-public-game-downloads.json). [Pinned HTML](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5b4a79e1df6ff68e8cdf20ac136facd987db829d/Pumpkin-Patch-Village-Blackroot.html), [ZIP](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5b4a79e1df6ff68e8cdf20ac136facd987db829d/Pumpkin-Patch-Village-Blackroot.zip) and [game kit](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5b4a79e1df6ff68e8cdf20ac136facd987db829d/Pumpkin-Patch-Village-Blackroot-Claude-Patch.zip).
+
+The subsequent native package uses exactly this browser HTML and retains the same media bytes: [Android addendum](ANDROID.md), [native evidence](../../../android/verification/blackroot/release.json). Signature/alignment/CRC and all276 extracted media hashes pass. APK SHA-256 is `6865cf90dcc0cea68213f6ab45cc6c5d5e312dbead38dd1c2188cec84e963b0a` (42,413,038 bytes). Physical hardware remains unverified. Final immutable APK links follow its publication.

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build the offline voxel host with API35 tools; generated assets and signing stay outside source."""
 import argparse, hashlib, json, os, secrets, shutil, subprocess, sys, zipfile
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -56,7 +57,8 @@ with zipfile.ZipFile(apk) as z:
  for item in manifest['assets']:
   entry=z.getinfo('assets/'+item['path']);assert entry.compress_type==zipfile.ZIP_STORED,item['path']
   assert hashlib.sha256(z.read(entry)).hexdigest()==item['sha256'],item['path']
-report={'applicationId':'com.shanenatalie.pumpkinpatch.voxel','versionCode':26110801,'minSdk':26,'targetSdk':35,
+app=ET.parse(ROOT/'AndroidManifest.xml').getroot();android='{http://schemas.android.com/apk/res/android}'
+report={'applicationId':app.attrib['package'],'versionCode':int(app.attrib[android+'versionCode']),'versionName':app.attrib[android+'versionName'],'minSdk':26,'targetSdk':35,
  'sourceHtml':manifest['source'],'extractedHtml':manifest['processedHtml'],'packagedHtml':{'bytes':index.stat().st_size,'sha256':sha(index)},
  'shell':{'bytes':(ROOT/'assets/android-shell.js').stat().st_size,'sha256':sha(ROOT/'assets/android-shell.js')},
  'assetStatistics':manifest['statistics'],'apk':{'file':apk.name,'bytes':apk.stat().st_size,'sha256':sha(apk)},

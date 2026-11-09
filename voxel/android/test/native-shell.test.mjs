@@ -48,6 +48,19 @@ test('native back closes the current voxel surface without leaking a second acti
   assert.equal(h.native.back(),false,'the host may offer its close confirmation only from the base farm');
 });
 
+test('native Back dismisses visible level rewards before leaving the current place or quitting',()=>{
+  const h=harness();let closed=0;
+  const level={hidden:false,getClientRects:()=>[{}],querySelector:selector=>selector==='.level-close'?{click(){closed++;level.hidden=true;}}:null};
+  h.elements.set('level-celebration',level);h.game.village.active=true;
+  assert.equal(h.native.back(),true);assert.equal(closed,1);assert.equal(h.calls.some(c=>c[0]==='villageBack'),false,'reward receipt keeps priority over the village');
+  h.game.village.active=false;h.game.scene.place={kind:'room'};level.hidden=false;
+  assert.equal(h.native.back(),true);assert.equal(closed,2);assert.equal(h.calls.some(c=>c[0]==='leavePlace'),false,'dismissing rewards keeps the player in their room');
+  h.game.scene.place=null;
+  assert.equal(h.native.back(),false);assert.equal(closed,2,'a hidden old receipt cannot consume Back on the farm');
+  level.hidden=false;level.getClientRects=()=>[];
+  assert.equal(h.native.back(),false);assert.equal(closed,2,'an unpainted receipt is not treated as an open overlay');
+});
+
 test('blob downloads export exact JSON and reject unsafe or invalid payloads',async()=>{
   const h=harness(),link={href:'blob:test',download:'farm-save.json'};let stopped=0;
   await h.handlers.get('click')({target:{closest:()=>link},preventDefault(){stopped++;}});

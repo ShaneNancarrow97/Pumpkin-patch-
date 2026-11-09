@@ -137,6 +137,10 @@
     const p = game(); if (!p) return false;
     const cameraMode=!!p.playControls?.cameraMode, radial=!!p.playControls?.radial, hub=!!p.playControls?.hub;
     release('native-back');
+    // Dismiss the top reward receipt through the game's own handler before
+    // leaving a village/room or letting Android offer to close the app.
+    const levelClose=visible('level-celebration')?.querySelector('.level-close');
+    if(levelClose&&!levelClose.disabled){levelClose.click();return true;}
     if (p.village?.active) { p.village.back(); return true; }
     if (cameraMode) return true;
     if (p.intro?.active) { p.intro.skip(); return true; }
