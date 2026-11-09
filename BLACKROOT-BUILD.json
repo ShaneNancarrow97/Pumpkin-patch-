@@ -1,0 +1,119 @@
+{
+  "sourceBranch": "contractor/village-menu-refinement",
+  "base": "50afb77c5596189c57c48c7c8a4c379e9baa4b97",
+  "codeHead": "f4ffe28d11b0eaa1dfd4c9903a523bb78d862eb2",
+  "codeTree": "859d215f9ea87731534f7a705c32170d26213613",
+  "patches": {
+    "0001-Clear-farm-shop-paths-and-share-a-spacious-dining-la.patch": {
+      "bytes": 29137,
+      "sha256": "085cd10e89ce97dda514cbf66c45a95617aa296d167fa47509baeece12084c85"
+    },
+    "0002-Polish-village-navigation-and-illustrate-level-rewar.patch": {
+      "bytes": 5646784,
+      "sha256": "9513ed09d97e8ead32028cbe4856c06bf4a2169c00dea9b432f10b05ea9da513"
+    },
+    "0003-Keep-level-requirements-visible-and-clarify-village-.patch": {
+      "bytes": 25694,
+      "sha256": "545cd3e03e81c15ae1933b5cb12dd5d8f1f78bae196cf82e4f0ac44d64896a37"
+    },
+    "0004-Verify-village-presentation-and-sharpen-highlighted-.patch": {
+      "bytes": 39606899,
+      "sha256": "a3bd4eebbcb948d627454a1cbe5d144d1c8727128b724ceb507b93c942d82559"
+    },
+    "0005-Add-five-supplied-MIDI-songs-to-selection-and-shuffl.patch": {
+      "bytes": 85527,
+      "sha256": "a835fade5bc682e34ee8d150a6689787085725540b908a25218baf8fde75db31"
+    },
+    "0006-Record-final-song-catalogue-checks-and-contractor-de.patch": {
+      "bytes": 130486,
+      "sha256": "3840095a6ed35f18e275ec378afac2b3baa722e8be8fa7fc5be07ec0745537d2"
+    },
+    "0007-Add-the-Blackroot-story-and-detailed-cursed-fungus-t.patch": {
+      "bytes": 2642223,
+      "sha256": "7df9e4f0bb02c8964a1fafe02a3778e6c70e573d885acc2e17f619fcba484716"
+    },
+    "0008-Frame-villagers-in-cinematic-dialogue-and-streamline.patch": {
+      "bytes": 136363,
+      "sha256": "b5b096b188ab956493c93d8d65ef139623374d2fc64aedf31ff949688fd129ff"
+    },
+    "0009-Verify-Blackroot-dialogue-and-keep-all-TV-controls-o.patch": {
+      "bytes": 11046503,
+      "sha256": "fa7ca8cac498c1c0529faaaf8706d7c87f90c5f142a592bcde98871ea28cbccb"
+    }
+  },
+  "html": {
+    "bytes": 58984404,
+    "sha256": "e98d2ffc583051836aa21f33eccb04559ea413b4e4ebec31bd4cc8cd529abaaf"
+  },
+  "stateVersion": 18,
+  "cleanReplay": {
+    "passed": true,
+    "tree": "859d215f9ea87731534f7a705c32170d26213613",
+    "htmlSha256": "e98d2ffc583051836aa21f33eccb04559ea413b4e4ebec31bd4cc8cd529abaaf"
+  },
+  "validation": {
+    "fullNode": {
+      "passed": 1035,
+      "failed": 0,
+      "html": "a154d6b74b0343145f2e66b6b94051ace738393d3869c2ddf086446f9e08f38e"
+    },
+    "finalTVDelta": {
+      "passed": 12,
+      "html": "e98d2ffc583051836aa21f33eccb04559ea413b4e4ebec31bd4cc8cd529abaaf",
+      "scope": "Only TV grid CSS changed after the functional camera/model build."
+    },
+    "cameraModelDelta": {
+      "passed": 34,
+      "html": "a154d6b74b0343145f2e66b6b94051ace738393d3869c2ddf086446f9e08f38e",
+      "finding": "TV screenshot child overflow not covered by old root-only bounds; fixed and checked in final TV delta."
+    },
+    "musicTracks": 31,
+    "priorMusicBrowser": {
+      "passed": 14,
+      "html": "e5858bc666dbf4f8160e5d964249044eddfe2e70dc7bc1d0cc9bbfd175c7c4e0"
+    },
+    "pageErrors": 0,
+    "externalAssets": 0,
+    "hardwareScope": "Software Chromium viewport/mock native Gamepad checks; physical hardware and Bluetooth not certified."
+  },
+  "artifacts": {
+    "Pumpkin-Patch-Village-Blackroot.html": {
+      "bytes": 58984404,
+      "sha256": "e98d2ffc583051836aa21f33eccb04559ea413b4e4ebec31bd4cc8cd529abaaf"
+    },
+    "Pumpkin-Patch-Village-Blackroot.zip": {
+      "bytes": 42412073,
+      "sha256": "3b65261267af892ce27c5c5227a36927307def4d7eeb317ec31f7022db2e4177"
+    },
+    "Pumpkin-Patch-Village-Blackroot-Claude-Patch.zip": {
+      "bytes": 57098268,
+      "sha256": "01ae724b797f5e8f947725a03558a69002d0ebd390947d40399c875b2f3e0869"
+    },
+    "Blackroot-Dialogue-TV.png": {
+      "bytes": 1739928,
+      "sha256": "af76df41f373e93cf6ef352ea7c9ffa7d2933dfd7abcf054c6d90d7800f92fa6"
+    },
+    "Blackroot-Dialogue-Fold.png": {
+      "bytes": 711774,
+      "sha256": "73e0fc89440af20facb79156e0a23724cebb0d27260d1eae59c7ca8f940dec17"
+    },
+    "Blackroot-Mushrooms.png": {
+      "bytes": 702394,
+      "sha256": "18b922f3d6b61252affd220bce2ab2404bf5ccc729a381e5fb04218b58fddef5"
+    }
+  },
+  "screenshots": {
+    "Blackroot-Dialogue-TV.png": {
+      "html": "e98d2ffc583051836aa21f33eccb04559ea413b4e4ebec31bd4cc8cd529abaaf",
+      "scope": "Exact final TV normal render."
+    },
+    "Blackroot-Dialogue-Fold.png": {
+      "html": "a154d6b74b0343145f2e66b6b94051ace738393d3869c2ddf086446f9e08f38e",
+      "scope": "Fold interface unchanged by final TV-only CSS."
+    },
+    "Blackroot-Mushrooms.png": {
+      "html": "a154d6b74b0343145f2e66b6b94051ace738393d3869c2ddf086446f9e08f38e",
+      "scope": "Detailed model unchanged by final TV-only CSS."
+    }
+  }
+}

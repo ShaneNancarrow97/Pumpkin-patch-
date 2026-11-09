@@ -1,19 +1,15 @@
-# Pumpkin Patch — Village Menu Refinement
+# Pumpkin Patch — Blackroot Village
 
-[Download offline HTML](Pumpkin-Patch-Village-Menu-Refinement.html?raw=1) · [Download game ZIP](Pumpkin-Patch-Village-Menu-Refinement.zip?raw=1) · [Claude game patch kit](Pumpkin-Patch-Village-Menu-Refinement-Claude-Patch.zip?raw=1)
+[Download latest HTML](Pumpkin-Patch-Village-Blackroot.html?raw=1) · [Download game ZIP](Pumpkin-Patch-Village-Blackroot.zip?raw=1) · [Claude patch kit](Pumpkin-Patch-Village-Blackroot-Claude-Patch.zip?raw=1)
 
-The song catalogue now includes all five newly supplied MIDI files (31 songs total), available through Settings and Shuffle. Original arrangements are preserved.
+[Fold dialogue view](Blackroot-Dialogue-Fold.png) · [TV dialogue view](Blackroot-Dialogue-TV.png) · [Detailed mushrooms](Blackroot-Mushrooms.png)
 
-The Village shortcut has a dedicated painted icon. Village pages have clear leading actions and a Back trail that retains focus, scroll and expanded sections. Dialogue keeps its replies reachable. The farm shop road is clear and Maisie’s dining tables and queue use one coherent layout.
+Village conversations use a low purple speech ribbon and painted-icon choices, with real chats, quests, presents and neighbour details. The camera frames the actual player/villager and restores exploration smoothly. Quest tracking uses a portrait/checklist. The location plate is smaller; Walk/Camera no longer occupy the village legend.
 
-Click the illustrated level badge for a requirements-first checklist, then browse reward cards. Free gifts are distinct from paid upgrade opportunities. L1/R1, arrows or swipes browse the cards. No reward or currency rules were replaced.
+Blackroot adds eight playable fungus patches, domed caps of varied sizes and thin twisting roots. Three linked chapters at levels3,5,8 connect clearing, research and farm tasks with recipes/house rewards. Old saves and placed furniture are preserved. The catalogue includes all31 songs and the five newest uploads.
 
-PS5 controller: L2 from the farm opens the top/action/bottom bars; D-pad navigates; Cross selects; Circle/L2 returns. In the village, the compact legend keeps Quest and Menus visible on the Fold layout and shows D-pad Navigate, Cross Select and Circle Back in panels. Nearby interactions receive amber emphasis.
+All art/music/voices are embedded. Open the HTML or extract the ZIP and open index.html. Export your farm in Settings before changing browser/file origins or moving to Android, then import. Save version18 is preserved.
 
-The village controller screenshots are normal renders of the exact shipped HTML with a declared test save and mocked native Gamepad input. Hardware Fold7/TV/PS5 Bluetooth certification is not claimed. BUILD.json and the source handover distinguish final evidence from earlier exact-hash candidates.
+[Claude source handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/contractor/village-menu-refinement/voxel/docs/contractor-patches/village-menu-refinement/BLACKROOT-DELIVERY.md). Nine ordered patches replay exactly from50afb77. BLACKROOT-BUILD.json separates exact-hash evidence:1035 functional Node tests and12 final TV checks, plus earlier scoped integration/model/music checks. Normal screenshots use declared test saves and mocked controller input; hardware Fold7/TV/PS5 Bluetooth/performance certification is not claimed.
 
-Extract the ZIP and open index.html, or download HTML directly. All art, music and voices are embedded. Export your farm from Settings before changing browser/file origins, then import it in the destination. Save version18 is preserved.
-
-[Claude source and dependencies](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/contractor/village-menu-refinement/voxel/docs/contractor-patches/village-menu-refinement/README.md). Contractor source branch: contractor/village-menu-refinement, base50afb77c5596189c57c48c7c8a4c379e9baa4b97. The lead working checkout is untouched. The game kit includes ordered binary patches and verification evidence. Optional Android packaging is a separate addendum after game publication.
-
-Previous download archive remains on contractor/village-play-polish-html.
+Existing164 voice recordings remain; new Blackroot lines use the normal fallback and exact pending-recording inventory. Android is a separate addendum after the checked game publication. Previous Menu Refinement downloads remain available by their filenames and pinned release commit9c4c47f.
