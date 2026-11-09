@@ -1,0 +1,26 @@
+{
+  "artifactCommit": "3aa0dca6d06f4afc54c89bbe505c49ad7e711430",
+  "files": [
+    {
+      "name": "Pumpkin-Patch-Village-Interaction-Fixes.html",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/3aa0dca6d06f4afc54c89bbe505c49ad7e711430/Pumpkin-Patch-Village-Interaction-Fixes.html",
+      "bytes": 59031827,
+      "sha256": "c08029b91f19cb4363b39b0fbb0bbf376dd43656eb46fbaba21b33382198d8f7",
+      "status": 200
+    },
+    {
+      "name": "Pumpkin-Patch-Village-Interaction-Fixes.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/3aa0dca6d06f4afc54c89bbe505c49ad7e711430/Pumpkin-Patch-Village-Interaction-Fixes.zip",
+      "bytes": 42425080,
+      "sha256": "bfdb9e2d8e6b76121e5b7403e87cec534e53e43bd101a9a2075000cd419c29bc",
+      "status": 200
+    },
+    {
+      "name": "Pumpkin-Patch-Village-Interaction-Fixes-Claude-Patch.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/3aa0dca6d06f4afc54c89bbe505c49ad7e711430/Pumpkin-Patch-Village-Interaction-Fixes-Claude-Patch.zip",
+      "bytes": 10082333,
+      "sha256": "eaa6bd99b9778795601e25dfcf295b2185d8158dd14661d7d0f32c04351a4f78",
+      "status": 200
+    }
+  ]
+}

@@ -26,3 +26,15 @@ This verifies software behavior and viewport layouts, not physical Fold7, TV, PS
 Read [README.md](README.md) for all parts and the dependency matrix. Preserve the small `main.js` gather callback and `build.mjs` feedback CSS hook when resolving concurrent changes. Saved state stays version18; Cocoa Hospitality keeps its existing internal visitor-upgrade ID, and tipJar extends the same field to five tiers while bags remain at three.
 
 The Claude patch ZIP contains ordered Git patches, the expected base/tree and build hash, and replay instructions. Its clean application and identical HTML rebuild are recorded in the publication receipt. HTML/ZIP/source publication is completed before optional Android packaging; Android has a separate additive handover and patch kit. Private signing files and generated media/build caches are excluded.
+
+## Publication receipt
+
+Game source: `2cb6bad7cfd0be20775b86727e7242aab1867392`. Artifact commit: `3aa0dca6d06f4afc54c89bbe505c49ad7e711430`.
+
+- [Download HTML](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/3aa0dca6d06f4afc54c89bbe505c49ad7e711430/Pumpkin-Patch-Village-Interaction-Fixes.html)
+- [Download ZIP](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/3aa0dca6d06f4afc54c89bbe505c49ad7e711430/Pumpkin-Patch-Village-Interaction-Fixes.zip)
+- [Claude game patch kit](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/3aa0dca6d06f4afc54c89bbe505c49ad7e711430/Pumpkin-Patch-Village-Interaction-Fixes-Claude-Patch.zip)
+
+All three public downloads returned200 and their full byte counts/SHA256 match the originals; see verification/public-game-files.json. Kit:10,082,333bytes, SHA256 `eaa6bd99b9778795601e25dfcf295b2185d8158dd14661d7d0f32c04351a4f78`.
+
+The actual kit patch was applied with git am in the clean owned replay checkout from7bb7639. Its complete tree matches the game source tree `cbfa09f096cf2bf98b41c61eb869fbf593cccab3`; the rebuilt HTML matches the exact final c08029b9 hash. No base assets, private keys or generated native caches are placed in the kit.
