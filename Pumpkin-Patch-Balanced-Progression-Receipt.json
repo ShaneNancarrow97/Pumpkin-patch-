@@ -1,0 +1,25 @@
+{
+  "stateVersion": 20,
+  "sourceBranch": "contractor/mothlight-full-expansion",
+  "sourceBase": "9e012ada26dcc30c389fa6a27c6d9e7c2e2378fe",
+  "html": {
+    "file": "Pumpkin-Patch-Balanced-Progression.html",
+    "bytes": 60332365,
+    "sha256": "7b30a357bba2a262000a71c1424d829ae90bd3b518bfab43d65123d33503542c"
+  },
+  "zip": {
+    "file": "Pumpkin-Patch-Balanced-Progression.zip",
+    "bytes": 43355665,
+    "sha256": "f72652d75eb8e9b7907ccd9042d9447eae06b542ac10dfe157720c9f7edb4297",
+    "members": [
+      "index.html",
+      "READ-ME.txt"
+    ],
+    "crc": "passed",
+    "embeddedHTML": "identical"
+  },
+  "fullTests": 1197,
+  "sourceCommit": "c5a65f610a5a0c03e2973831881bb6a3965cc6bf",
+  "standardBrowserChecks": 54,
+  "focusedBrowserChecks": 15
+}

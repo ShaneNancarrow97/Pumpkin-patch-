@@ -1,4 +1,14 @@
-# Pumpkin Patch — Mothlight Expansion
+# Pumpkin Patch — latest balanced progression
+
+[Download latest HTML](Pumpkin-Patch-Balanced-Progression.html?raw=1) · [Download latest ZIP](Pumpkin-Patch-Balanced-Progression.zip?raw=1) · [Claude balance handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/c5a65f610a5a0c03e2973831881bb6a3965cc6bf/voxel/docs/contractor-patches/mothlight-full-expansion/BALANCED-PROGRESSION.md)
+
+All sales still pay full coins. From the village progression stretch, level progress banks the next rank plus a 25% head start on the one after; later ranks need fresh trade as well as the mainline village story. Existing money, lifetime earnings and already earned ranks are retained. Save version20.
+
+This includes the full Mothlight expansion, grass/journal refinements, compact Skyla display chooser and mandatory village checkpoints for levels6–20. 1,197 tests,54 standard browser smoke checks and15 exact-build browser checks pass. Extract the ZIP and open index.html, or open the standalone HTML.
+
+Source commit: `c5a65f610a5a0c03e2973831881bb6a3965cc6bf` on `contractor/mothlight-full-expansion`. Exact download hashes are in [the receipt](Pumpkin-Patch-Balanced-Progression-Receipt.json). The older APK below predates these HTML follow-ups.
+
+## Original expansion and native release
 
 [Download HTML](Pumpkin-Patch-Mothlight-Expansion.html?raw=1) · [Download game ZIP](Pumpkin-Patch-Mothlight-Expansion.zip?raw=1) · [Claude source patch kit](Pumpkin-Patch-Mothlight-Expansion-Claude-Patch.zip?raw=1) · [Android APK](Pumpkin-Patch-Mothlight-Expansion.apk?raw=1) · [Claude Android addendum](Pumpkin-Patch-Mothlight-Expansion-Android-Patch.zip?raw=1)
 
