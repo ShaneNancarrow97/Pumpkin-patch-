@@ -1,6 +1,6 @@
 # Pumpkin Patch — Mothlight Expansion
 
-[Download HTML](Pumpkin-Patch-Mothlight-Expansion.html?raw=1) · [Download game ZIP](Pumpkin-Patch-Mothlight-Expansion.zip?raw=1) · [Claude source patch kit](Pumpkin-Patch-Mothlight-Expansion-Claude-Patch.zip?raw=1)
+[Download HTML](Pumpkin-Patch-Mothlight-Expansion.html?raw=1) · [Download game ZIP](Pumpkin-Patch-Mothlight-Expansion.zip?raw=1) · [Claude source patch kit](Pumpkin-Patch-Mothlight-Expansion-Claude-Patch.zip?raw=1) · [Android APK](Pumpkin-Patch-Mothlight-Expansion.apk?raw=1) · [Claude Android addendum](Pumpkin-Patch-Mothlight-Expansion-Android-Patch.zip?raw=1)
 
 [Cave view](Mothlight-Cave-Fold.png) · [Granny’s cottage](Mothlight-Granny-Cottage.png) · [TV dialogue](Mothlight-Dialogue-TV.png)
 
@@ -15,3 +15,5 @@ To bring your existing farm across browser/file origins or into Android, export 
 [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/contractor/mothlight-full-expansion/voxel/docs/contractor-patches/mothlight-full-expansion/README.md). The delivery manifest records exact hashes, tests and the checked release. Browser viewport and injected controller checks do not certify physical Fold7, Bluetooth or Android performance.
 
 Earlier releases remain available under their original filenames and pinned commits.
+
+Android version2026.11.09.2 was built last from this same HTML. It retains the previous signing identity and locally packages280 media assets, reducing HTML parsing by92.0888%. Signature/alignment/CRC/media checks and17 native/extraction tests pass. This is an offline WebView/WebGL2 host; physical hardware performance is not certified.

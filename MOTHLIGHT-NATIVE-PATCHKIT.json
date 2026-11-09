@@ -1,0 +1,35 @@
+{
+  "base": "5852e0bc1aa10a8a9fb2134693b7bc9c88db6cd7",
+  "sourceCommit": "9402b207814fd34d229de77cddc00d5a9a7a5cb2",
+  "sourceTree": "3fe3e4400d684c821c39019ef29b72c74862342b",
+  "replayCommit": "545f3611c01e9159178a8fa883ed11d0651676ea",
+  "replayTree": "3fe3e4400d684c821c39019ef29b72c74862342b",
+  "treeIdentical": true,
+  "htmlSHA256": "ab6ac3af9f1a2024693952d6fd987a7ad2473fad622785473022271f1c7ad1a6",
+  "apk": {
+    "file": "Pumpkin-Patch-Mothlight-Expansion.apk",
+    "bytes": 43343342,
+    "sha256": "c280731be9101a2ea605296edb9687e04641f148176a2c3c1c560e787a650890"
+  },
+  "versionCode": 26110902,
+  "versionName": "2026.11.09.2",
+  "tests": {
+    "native": 11,
+    "extractor": 6,
+    "passed": 17,
+    "failed": 0
+  },
+  "patches": [
+    {
+      "name": "0001-Record-verified-public-Mothlight-game-downloads.patch",
+      "bytes": 5837,
+      "sha256": "2cf961a53f0031587d842da6317dc8ee1810701332cf7866bdb4eb75242925be"
+    },
+    {
+      "name": "0002-Package-the-verified-Mothlight-game-for-offline-Andr.patch",
+      "bytes": 245726,
+      "sha256": "e1869e73bf256905fca90e89ee9e6310c37eb874f9f78fe4ea4e3aaf62992329"
+    }
+  ],
+  "hardwareVerified": false
+}

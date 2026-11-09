@@ -48,5 +48,19 @@
       "bytes": 23651272,
       "sha256": "6465b03097c73c8b4da284340f61275c5ad0d70e59c49b4669b83a7b368995d2"
     }
-  ]
+  ],
+  "android": {
+    "release": {
+      "file": "Pumpkin-Patch-Mothlight-Expansion.apk",
+      "bytes": 43343342,
+      "sha256": "c280731be9101a2ea605296edb9687e04641f148176a2c3c1c560e787a650890"
+    },
+    "sourceCommit": "9402b207814fd34d229de77cddc00d5a9a7a5cb2",
+    "versionCode": 26110902,
+    "versionName": "2026.11.09.2",
+    "mediaAssets": 280,
+    "parseByteReductionPercent": 92.0888,
+    "nativeTests": 17,
+    "hardwareVerified": false
+  }
 }
