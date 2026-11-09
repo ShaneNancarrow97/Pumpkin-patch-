@@ -1,0 +1,2581 @@
+{
+  "date": "2026-11-09T00:38:46.939Z",
+  "baseline": false,
+  "levelDelta": false,
+  "contrastOnly": false,
+  "musicDelta": false,
+  "dialogueBlight": true,
+  "html": "/workspace/Pumpkin-Patch-Village-Blackroot.html",
+  "sha256": "222467b59413dcbe626413e924165bd91d96413d3f958d9c90fbb6c72510e891",
+  "bytes": 58981943,
+  "checks": [
+    {
+      "pass": true,
+      "label": "Actual controller route reaches Elowen for the real greeting",
+      "detail": {
+        "route": [
+          {
+            "x": 84,
+            "z": 31.5
+          },
+          {
+            "x": 81,
+            "z": 35.699999999999996
+          },
+          {
+            "x": 80.4,
+            "z": 43.5
+          }
+        ],
+        "result": {
+          "steps": 484,
+          "position": {
+            "x": 80.40899315967098,
+            "z": 43.39127295325474
+          }
+        },
+        "method": "Mocked native Gamepad API, real collision/view/controller .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "A genuine nearby meeting opens real chat, quest, gift, about and leave choices",
+      "detail": [
+        {
+          "id": "chat",
+          "disabled": false,
+          "icon": "chat"
+        },
+        {
+          "id": "quest:start:elowen-1",
+          "disabled": false,
+          "icon": "quest"
+        },
+        {
+          "id": "quest:start:blight-first-signs",
+          "disabled": false,
+          "icon": "quest"
+        },
+        {
+          "id": "gift",
+          "disabled": false,
+          "icon": "gift"
+        },
+        {
+          "id": "about",
+          "disabled": false,
+          "icon": "about"
+        },
+        {
+          "id": "leave",
+          "disabled": false,
+          "icon": "leave"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Every actual greeting choice has its explicit painted icon",
+      "detail": [
+        {
+          "id": "chat",
+          "disabled": false,
+          "icon": "chat"
+        },
+        {
+          "id": "quest:start:elowen-1",
+          "disabled": false,
+          "icon": "quest"
+        },
+        {
+          "id": "quest:start:blight-first-signs",
+          "disabled": false,
+          "icon": "quest"
+        },
+        {
+          "id": "gift",
+          "disabled": false,
+          "icon": "gift"
+        },
+        {
+          "id": "about",
+          "disabled": false,
+          "icon": "about"
+        },
+        {
+          "id": "leave",
+          "disabled": false,
+          "icon": "leave"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "fold speech ribbon and all44px choice controls fit the viewport",
+      "detail": {
+        "box": {
+          "x": 28,
+          "y": 304,
+          "w": 808,
+          "h": 426
+        },
+        "speech": {
+          "x": 28,
+          "y": 505.875,
+          "w": 440.921875,
+          "h": 224.125
+        },
+        "response": {
+          "x": 490.921875,
+          "y": 304,
+          "w": 345.078125,
+          "h": 370
+        },
+        "back": {
+          "x": 740,
+          "y": 686,
+          "w": 96,
+          "h": 44
+        },
+        "head": {
+          "x": 43,
+          "y": 494.875,
+          "w": 270.75,
+          "h": 56.734375
+        },
+        "body": {
+          "x": 29,
+          "y": 551.609375,
+          "w": 438.921875,
+          "h": 113.390625
+        },
+        "bodyScroll": 113,
+        "bodyClient": 113,
+        "repliesScroll": 399,
+        "repliesClient": 345,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 96,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Have a chatA little catch-upCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay StillI'd like to helpCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the GreenI'd like to helpCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "Give a present2 presents leftCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "More about ElowenFriendship, stories and favouritesCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "See you soonCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 864,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 18,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560157,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 377.00052846687277,
+            "y": 114.71583081516998,
+            "right": 502.4159434884199,
+            "bottom": 428.98421579225067
+          },
+          {
+            "x": 362.0546349291487,
+            "y": 120.55422547215048,
+            "right": 486.63191891650496,
+            "bottom": 432.26581596959295
+          }
+        ],
+        "tv": false,
+        "zoom": "1"
+      }
+    },
+    {
+      "pass": true,
+      "label": "fold real DualSense action focus is highlighted and background HUD is hidden",
+      "detail": {
+        "box": {
+          "x": 28,
+          "y": 304,
+          "w": 808,
+          "h": 426
+        },
+        "speech": {
+          "x": 28,
+          "y": 505.875,
+          "w": 440.921875,
+          "h": 224.125
+        },
+        "response": {
+          "x": 490.921875,
+          "y": 304,
+          "w": 345.078125,
+          "h": 370
+        },
+        "back": {
+          "x": 740,
+          "y": 686,
+          "w": 96,
+          "h": 44
+        },
+        "head": {
+          "x": 43,
+          "y": 494.875,
+          "w": 270.75,
+          "h": 56.734375
+        },
+        "body": {
+          "x": 29,
+          "y": 551.609375,
+          "w": 438.921875,
+          "h": 113.390625
+        },
+        "bodyScroll": 113,
+        "bodyClient": 113,
+        "repliesScroll": 399,
+        "repliesClient": 345,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 96,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Have a chatA little catch-upCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay StillI'd like to helpCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the GreenI'd like to helpCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "Give a present2 presents leftCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "More about ElowenFriendship, stories and favouritesCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "See you soonCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 864,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 18,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560157,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 377.00052846687277,
+            "y": 114.71583081516998,
+            "right": 502.4159434884199,
+            "bottom": 428.98421579225067
+          },
+          {
+            "x": 362.0546349291487,
+            "y": 120.55422547215048,
+            "right": 486.63191891650496,
+            "bottom": 432.26581596959295
+          }
+        ],
+        "tv": false,
+        "zoom": "1"
+      }
+    },
+    {
+      "pass": false,
+      "label": "fold real camera keeps both characters clear of the actual bottom UI",
+      "detail": {
+        "box": {
+          "x": 28,
+          "y": 304,
+          "w": 808,
+          "h": 426
+        },
+        "speech": {
+          "x": 28,
+          "y": 505.875,
+          "w": 440.921875,
+          "h": 224.125
+        },
+        "response": {
+          "x": 490.921875,
+          "y": 304,
+          "w": 345.078125,
+          "h": 370
+        },
+        "back": {
+          "x": 740,
+          "y": 686,
+          "w": 96,
+          "h": 44
+        },
+        "head": {
+          "x": 43,
+          "y": 494.875,
+          "w": 270.75,
+          "h": 56.734375
+        },
+        "body": {
+          "x": 29,
+          "y": 551.609375,
+          "w": 438.921875,
+          "h": 113.390625
+        },
+        "bodyScroll": 113,
+        "bodyClient": 113,
+        "repliesScroll": 399,
+        "repliesClient": 345,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 96,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Have a chatA little catch-upCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay StillI'd like to helpCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the GreenI'd like to helpCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "Give a present2 presents leftCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "More about ElowenFriendship, stories and favouritesCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          },
+          {
+            "label": "See you soonCROSS",
+            "w": 337.078125,
+            "h": 58,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 864,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 18,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560157,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 377.00052846687277,
+            "y": 114.71583081516998,
+            "right": 502.4159434884199,
+            "bottom": 428.98421579225067
+          },
+          {
+            "x": 362.0546349291487,
+            "y": 120.55422547215048,
+            "right": 486.63191891650496,
+            "bottom": 432.26581596959295
+          }
+        ],
+        "tv": false,
+        "zoom": "1"
+      }
+    },
+    {
+      "pass": true,
+      "label": "tv speech ribbon and all44px choice controls fit the viewport",
+      "detail": {
+        "box": {
+          "x": 43.03125,
+          "y": 379.140625,
+          "w": 1833.921875,
+          "h": 660.90625
+        },
+        "speech": {
+          "x": 43.03125,
+          "y": 784.21875,
+          "w": 1084.71875,
+          "h": 359.078125
+        },
+        "response": {
+          "x": 1226.109375,
+          "y": 379.140625,
+          "w": 650.828125,
+          "h": 678.09375
+        },
+        "back": {
+          "x": 1729.390625,
+          "y": 1075.671875,
+          "w": 147.546875,
+          "h": 67.625
+        },
+        "head": {
+          "x": 65.546875,
+          "y": 766.78125,
+          "w": 414.921875,
+          "h": 89.65625
+        },
+        "body": {
+          "x": 44.03125,
+          "y": 856.4375,
+          "w": 1082.71875,
+          "h": 187.515625
+        },
+        "bodyScroll": 122,
+        "bodyClient": 122,
+        "repliesScroll": 416,
+        "repliesClient": 416,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 147.546875,
+            "h": 67.625,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 67.625,
+            "h": 67.625,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 67.625,
+            "h": 67.625,
+            "disabled": false
+          },
+          {
+            "label": "Have a chatA little catch-upCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay StillI'd like to helpCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the GreenI'd like to helpCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "Give a present2 presents leftCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "More about ElowenFriendship, stories and favouritesCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "See you soonCROSS",
+            "w": 638.546875,
+            "h": 89.140625,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 1920,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 20,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560161,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 881.4546422226965,
+            "y": 163.87519921035036,
+            "right": 1060.608275593389,
+            "bottom": 612.8058783809474
+          },
+          {
+            "x": 860.0515687750307,
+            "y": 172.2253713587493,
+            "right": 1038.0302141503084,
+            "bottom": 617.5514011278817
+          }
+        ],
+        "tv": true,
+        "zoom": "1.537"
+      }
+    },
+    {
+      "pass": true,
+      "label": "tv real DualSense action focus is highlighted and background HUD is hidden",
+      "detail": {
+        "box": {
+          "x": 43.03125,
+          "y": 379.140625,
+          "w": 1833.921875,
+          "h": 660.90625
+        },
+        "speech": {
+          "x": 43.03125,
+          "y": 784.21875,
+          "w": 1084.71875,
+          "h": 359.078125
+        },
+        "response": {
+          "x": 1226.109375,
+          "y": 379.140625,
+          "w": 650.828125,
+          "h": 678.09375
+        },
+        "back": {
+          "x": 1729.390625,
+          "y": 1075.671875,
+          "w": 147.546875,
+          "h": 67.625
+        },
+        "head": {
+          "x": 65.546875,
+          "y": 766.78125,
+          "w": 414.921875,
+          "h": 89.65625
+        },
+        "body": {
+          "x": 44.03125,
+          "y": 856.4375,
+          "w": 1082.71875,
+          "h": 187.515625
+        },
+        "bodyScroll": 122,
+        "bodyClient": 122,
+        "repliesScroll": 416,
+        "repliesClient": 416,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 147.546875,
+            "h": 67.625,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 67.625,
+            "h": 67.625,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 67.625,
+            "h": 67.625,
+            "disabled": false
+          },
+          {
+            "label": "Have a chatA little catch-upCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay StillI'd like to helpCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the GreenI'd like to helpCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "Give a present2 presents leftCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "More about ElowenFriendship, stories and favouritesCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "See you soonCROSS",
+            "w": 638.546875,
+            "h": 89.140625,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 1920,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 20,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560161,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 881.4546422226965,
+            "y": 163.87519921035036,
+            "right": 1060.608275593389,
+            "bottom": 612.8058783809474
+          },
+          {
+            "x": 860.0515687750307,
+            "y": 172.2253713587493,
+            "right": 1038.0302141503084,
+            "bottom": 617.5514011278817
+          }
+        ],
+        "tv": true,
+        "zoom": "1.537"
+      }
+    },
+    {
+      "pass": true,
+      "label": "tv real camera keeps both characters clear of the actual bottom UI",
+      "detail": {
+        "box": {
+          "x": 43.03125,
+          "y": 379.140625,
+          "w": 1833.921875,
+          "h": 660.90625
+        },
+        "speech": {
+          "x": 43.03125,
+          "y": 784.21875,
+          "w": 1084.71875,
+          "h": 359.078125
+        },
+        "response": {
+          "x": 1226.109375,
+          "y": 379.140625,
+          "w": 650.828125,
+          "h": 678.09375
+        },
+        "back": {
+          "x": 1729.390625,
+          "y": 1075.671875,
+          "w": 147.546875,
+          "h": 67.625
+        },
+        "head": {
+          "x": 65.546875,
+          "y": 766.78125,
+          "w": 414.921875,
+          "h": 89.65625
+        },
+        "body": {
+          "x": 44.03125,
+          "y": 856.4375,
+          "w": 1082.71875,
+          "h": 187.515625
+        },
+        "bodyScroll": 122,
+        "bodyClient": 122,
+        "repliesScroll": 416,
+        "repliesClient": 416,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 147.546875,
+            "h": 67.625,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 67.625,
+            "h": 67.625,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 67.625,
+            "h": 67.625,
+            "disabled": false
+          },
+          {
+            "label": "Have a chatA little catch-upCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay StillI'd like to helpCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the GreenI'd like to helpCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "Give a present2 presents leftCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "More about ElowenFriendship, stories and favouritesCROSS",
+            "w": 638.546875,
+            "h": 94.5,
+            "disabled": false
+          },
+          {
+            "label": "See you soonCROSS",
+            "w": 638.546875,
+            "h": 89.140625,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 1920,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 20,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560161,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 881.4546422226965,
+            "y": 163.87519921035036,
+            "right": 1060.608275593389,
+            "bottom": 612.8058783809474
+          },
+          {
+            "x": 860.0515687750307,
+            "y": 172.2253713587493,
+            "right": 1038.0302141503084,
+            "bottom": 617.5514011278817
+          }
+        ],
+        "tv": true,
+        "zoom": "1.537"
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone speech ribbon and all44px choice controls fit the viewport",
+      "detail": {
+        "box": {
+          "x": 10,
+          "y": 251.609375,
+          "w": 370,
+          "h": 580.390625
+        },
+        "speech": {
+          "x": 10,
+          "y": 251.609375,
+          "w": 370,
+          "h": 196.390625
+        },
+        "response": {
+          "x": 75.421875,
+          "y": 458,
+          "w": 304.578125,
+          "h": 320
+        },
+        "back": {
+          "x": 286,
+          "y": 788,
+          "w": 94,
+          "h": 44
+        },
+        "head": {
+          "x": 23,
+          "y": 240.609375,
+          "w": 218.875,
+          "h": 44
+        },
+        "body": {
+          "x": 11,
+          "y": 284.609375,
+          "w": 368,
+          "h": 103.390625
+        },
+        "bodyScroll": 103,
+        "bodyClient": 103,
+        "repliesScroll": 365,
+        "repliesClient": 298,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 94,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Have a chatA little catch-upCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay StillI'd like to helpCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the GreenI'd like to helpCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "Give a present2 presents leftCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "More about ElowenFriendship, stories and favouritesCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "See you soonCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 390,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 16,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560158,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 142.36563125630835,
+            "y": 186.1493410827902,
+            "right": 255.41580617232898,
+            "bottom": 469.22103578546944
+          },
+          {
+            "x": 135.60794640926468,
+            "y": 190.8842134183838,
+            "right": 246.7424734881932,
+            "bottom": 469.16674198851575
+          }
+        ],
+        "tv": false,
+        "zoom": "1"
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone real DualSense action focus is highlighted and background HUD is hidden",
+      "detail": {
+        "box": {
+          "x": 10,
+          "y": 251.609375,
+          "w": 370,
+          "h": 580.390625
+        },
+        "speech": {
+          "x": 10,
+          "y": 251.609375,
+          "w": 370,
+          "h": 196.390625
+        },
+        "response": {
+          "x": 75.421875,
+          "y": 458,
+          "w": 304.578125,
+          "h": 320
+        },
+        "back": {
+          "x": 286,
+          "y": 788,
+          "w": 94,
+          "h": 44
+        },
+        "head": {
+          "x": 23,
+          "y": 240.609375,
+          "w": 218.875,
+          "h": 44
+        },
+        "body": {
+          "x": 11,
+          "y": 284.609375,
+          "w": 368,
+          "h": 103.390625
+        },
+        "bodyScroll": 103,
+        "bodyClient": 103,
+        "repliesScroll": 365,
+        "repliesClient": 298,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 94,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Have a chatA little catch-upCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay StillI'd like to helpCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the GreenI'd like to helpCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "Give a present2 presents leftCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "More about ElowenFriendship, stories and favouritesCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "See you soonCROSS",
+            "w": 296.578125,
+            "h": 54,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 390,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 16,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560158,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 142.36563125630835,
+            "y": 186.1493410827902,
+            "right": 255.41580617232898,
+            "bottom": 469.22103578546944
+          },
+          {
+            "x": 135.60794640926468,
+            "y": 190.8842134183838,
+            "right": 246.7424734881932,
+            "bottom": 469.16674198851575
+          }
+        ],
+        "tv": false,
+        "zoom": "1"
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape speech ribbon and all44px choice controls fit the viewport",
+      "detail": {
+        "box": {
+          "x": 16,
+          "y": 8,
+          "w": 812,
+          "h": 342
+        },
+        "speech": {
+          "x": 16,
+          "y": 158.234375,
+          "w": 469.171875,
+          "h": 191.765625
+        },
+        "response": {
+          "x": 503.171875,
+          "y": 12.5,
+          "w": 324.828125,
+          "h": 282
+        },
+        "back": {
+          "x": 732,
+          "y": 306,
+          "w": 96,
+          "h": 44
+        },
+        "head": {
+          "x": 31,
+          "y": 151.234375,
+          "w": 206.515625,
+          "h": 40
+        },
+        "body": {
+          "x": 17,
+          "y": 191.234375,
+          "w": 467.171875,
+          "h": 100.765625
+        },
+        "bodyScroll": 101,
+        "bodyClient": 101,
+        "repliesScroll": 363,
+        "repliesClient": 261,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 96,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Have a chatA little catch-upCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay StillI'd like to helpCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the GreenI'd like to helpCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "Give a present2 presents leftCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "More about ElowenFriendship, stories and favouritesCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "See you soonCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 844,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 16,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560161,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 393.6363985804182,
+            "y": 59.1771552704043,
+            "right": 458.33076618650153,
+            "bottom": 221.29101163756437
+          },
+          {
+            "x": 385.9075109465388,
+            "y": 62.19249521288169,
+            "right": 450.1775773320559,
+            "bottom": 223.00467262951287
+          }
+        ],
+        "tv": false,
+        "zoom": "1"
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape real DualSense action focus is highlighted and background HUD is hidden",
+      "detail": {
+        "box": {
+          "x": 16,
+          "y": 8,
+          "w": 812,
+          "h": 342
+        },
+        "speech": {
+          "x": 16,
+          "y": 158.234375,
+          "w": 469.171875,
+          "h": 191.765625
+        },
+        "response": {
+          "x": 503.171875,
+          "y": 12.5,
+          "w": 324.828125,
+          "h": 282
+        },
+        "back": {
+          "x": 732,
+          "y": 306,
+          "w": 96,
+          "h": 44
+        },
+        "head": {
+          "x": 31,
+          "y": 151.234375,
+          "w": 206.515625,
+          "h": 40
+        },
+        "body": {
+          "x": 17,
+          "y": 191.234375,
+          "w": 467.171875,
+          "h": 100.765625
+        },
+        "bodyScroll": 101,
+        "bodyClient": 101,
+        "repliesScroll": 363,
+        "repliesClient": 261,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 96,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Have a chatA little catch-upCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay StillI'd like to helpCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the GreenI'd like to helpCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "Give a present2 presents leftCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "More about ElowenFriendship, stories and favouritesCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "See you soonCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 844,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 16,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560161,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 393.6363985804182,
+            "y": 59.1771552704043,
+            "right": 458.33076618650153,
+            "bottom": 221.29101163756437
+          },
+          {
+            "x": 385.9075109465388,
+            "y": 62.19249521288169,
+            "right": 450.1775773320559,
+            "bottom": 223.00467262951287
+          }
+        ],
+        "tv": false,
+        "zoom": "1"
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone long lines and choices scroll independently while Back stays reachable",
+      "detail": {
+        "box": {
+          "x": 10,
+          "y": 198,
+          "w": 370,
+          "h": 634
+        },
+        "speech": {
+          "x": 10,
+          "y": 198,
+          "w": 370,
+          "h": 250
+        },
+        "response": {
+          "x": 10,
+          "y": 458,
+          "w": 370,
+          "h": 320
+        },
+        "back": {
+          "x": 286,
+          "y": 788,
+          "w": 94,
+          "h": 44
+        },
+        "head": {
+          "x": 23,
+          "y": 187,
+          "w": 218.875,
+          "h": 44
+        },
+        "body": {
+          "x": 11,
+          "y": 231,
+          "w": 368,
+          "h": 157
+        },
+        "bodyScroll": 559,
+        "bodyClient": 157,
+        "repliesScroll": 377,
+        "repliesClient": 298,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 94,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Have a chat — I would like to hear more about your neighbours and the roots beneath the Green.A little catch-upCROSS",
+            "w": 362,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay Still — I would like to hear more about your neighbours and the roots beneath the Green.I'd like to helpCROSS",
+            "w": 362,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the Green — I would like to hear more about your neighbours and the roots beneath the Green.I'd like to helpCROSS",
+            "w": 362,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "Give a present — I would like to hear more about your neighbours and the roots beneath the Green.2 presents leftCROSS",
+            "w": 362,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "More about Elowen — I would like to hear more about your neighbours and the roots beneath the Green.Friendship, stories and favouritesCROSS",
+            "w": 362,
+            "h": 54,
+            "disabled": false
+          },
+          {
+            "label": "See you soon — I would like to hear more about your neighbours and the roots beneath the Green.CROSS",
+            "w": 362,
+            "h": 54,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 390,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 16,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560158,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 142.36563125630835,
+            "y": 186.1493410827902,
+            "right": 255.41580617232898,
+            "bottom": 469.22103578546944
+          },
+          {
+            "x": 135.60794640926468,
+            "y": 190.8842134183838,
+            "right": 246.7424734881932,
+            "bottom": 469.16674198851575
+          }
+        ],
+        "tv": false,
+        "zoom": "1"
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape long lines and choices scroll independently while Back stays reachable",
+      "detail": {
+        "box": {
+          "x": 16,
+          "y": 8,
+          "w": 812,
+          "h": 342
+        },
+        "speech": {
+          "x": 16,
+          "y": 22,
+          "w": 469.171875,
+          "h": 328
+        },
+        "response": {
+          "x": 503.171875,
+          "y": 12.5,
+          "w": 324.828125,
+          "h": 282
+        },
+        "back": {
+          "x": 732,
+          "y": 306,
+          "w": 96,
+          "h": 44
+        },
+        "head": {
+          "x": 31,
+          "y": 15,
+          "w": 206.515625,
+          "h": 40
+        },
+        "body": {
+          "x": 17,
+          "y": 55,
+          "w": 467.171875,
+          "h": 237
+        },
+        "bodyScroll": 449,
+        "bodyClient": 237,
+        "repliesScroll": 435,
+        "repliesClient": 261,
+        "buttons": [
+          {
+            "label": "Close conversation",
+            "w": 96,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Turn voices on",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Replay this line",
+            "w": 44,
+            "h": 44,
+            "disabled": false
+          },
+          {
+            "label": "Have a chat — I would like to hear more about your neighbours and the roots beneath the Green. — I would like to hear more about your neighbours and the roots beneath the Green.A little catch-upCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "A Letter That Will Not Stay Still — I would like to hear more about your neighbours and the roots beneath the Green. — I would like to hear more about your neighbours and the roots beneath the Green.I'd like to helpCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "A Bruise Beneath the Green — I would like to hear more about your neighbours and the roots beneath the Green. — I would like to hear more about your neighbours and the roots beneath the Green.I'd like to helpCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "Give a present — I would like to hear more about your neighbours and the roots beneath the Green. — I would like to hear more about your neighbours and the roots beneath the Green.2 presents leftCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "More about Elowen — I would like to hear more about your neighbours and the roots beneath the Green. — I would like to hear more about your neighbours and the roots beneath the Green.Friendship, stories and favouritesCROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          },
+          {
+            "label": "See you soon — I would like to hear more about your neighbours and the roots beneath the Green. — I would like to hear more about your neighbours and the roots beneath the Green.CROSS",
+            "w": 316.828125,
+            "h": 52,
+            "disabled": false
+          }
+        ],
+        "pageWidth": 844,
+        "intent": "greeting",
+        "input": "dualsense",
+        "focus": "chat",
+        "background": "linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))",
+        "font": 16,
+        "hud": [
+          {
+            "id": "vg-heading",
+            "visible": false
+          },
+          {
+            "id": "vg-objective",
+            "visible": false
+          },
+          {
+            "id": "vg-farm-rate",
+            "visible": false
+          },
+          {
+            "id": "vg-dock",
+            "visible": false
+          },
+          {
+            "id": "vg-pad-legend",
+            "visible": false
+          }
+        ],
+        "shot": {
+          "active": true,
+          "mode": "focused",
+          "fitted": true,
+          "distance": 6.504156286560161,
+          "subjects": [
+            {
+              "x": 80.40899315967098,
+              "y": 0.04,
+              "z": -43.39127295325474
+            },
+            {
+              "x": 80.4,
+              "y": 0,
+              "z": -43.5
+            }
+          ]
+        },
+        "projected": [
+          {
+            "x": 393.6363985804182,
+            "y": 59.1771552704043,
+            "right": 458.33076618650153,
+            "bottom": 221.29101163756437
+          },
+          {
+            "x": 385.9075109465388,
+            "y": 62.19249521288169,
+            "right": 450.1775773320559,
+            "bottom": 223.00467262951287
+          }
+        ],
+        "tv": false,
+        "zoom": "1"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Double-selecting the same greeting action opens one actual daily chat"
+    },
+    {
+      "pass": true,
+      "label": "The actual daily answer grants its chat callback once"
+    },
+    {
+      "pass": true,
+      "label": "Closing chat restores exploration without carrying a held stick into walking",
+      "detail": {
+        "position": [
+          80.54426161187405,
+          4.320923798165726,
+          -37.28097012497103
+        ],
+        "quaternion": [
+          -0.22493727846969258,
+          0.010783204677856597,
+          0.0024894989585134623,
+          0.9743103949186106
+        ],
+        "shot": {
+          "active": false,
+          "mode": "idle",
+          "fitted": true,
+          "distance": 6.800000000000002,
+          "subjects": []
+        },
+        "owner": {
+          "x": 80.40899315967098,
+          "z": 43.39127295325474
+        },
+        "before": {
+          "position": [
+            80.55407484461541,
+            4.320923798165726,
+            -37.16232841793724
+          ],
+          "quaternion": [
+            -0.22493727846969258,
+            0.010783204677856597,
+            0.0024894989585134623,
+            0.9743103949186106
+          ],
+          "owner": {
+            "x": 80.40899315967098,
+            "z": 43.39127295325474
+          }
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Real Give a present opens the correct resident inventory fold"
+    },
+    {
+      "pass": true,
+      "label": "Gift inventory contains actual owned supplies"
+    },
+    {
+      "pass": true,
+      "label": "Real About choice opens this neighbour’s friendship profile"
+    },
+    {
+      "pass": true,
+      "label": "Real Leave restores the exact exploration camera position and quaternion",
+      "detail": {
+        "before": {
+          "position": [
+            80.91933118136049,
+            4.320923798165726,
+            -37.300817435549405
+          ],
+          "quaternion": [
+            -0.22475457160477624,
+            0.04071573340581576,
+            0.009399967721751345,
+            0.9735190045411596
+          ]
+        },
+        "position": [
+          80.91933118136049,
+          4.320923798165726,
+          -37.300817435549405
+        ],
+        "quaternion": [
+          -0.22475457160477624,
+          0.04071573340581576,
+          0.009399967721751345,
+          0.9735190045411596
+        ],
+        "shot": {
+          "active": false,
+          "mode": "idle",
+          "fitted": true,
+          "distance": 6.800000000000002,
+          "subjects": []
+        },
+        "positionError": 0,
+        "quaternionError": 0
+      }
+    },
+    {
+      "pass": true,
+      "label": "Daily chat correctly shows its real cooldown after answering"
+    },
+    {
+      "pass": true,
+      "label": "The actual offered Blackroot choice starts its quest once"
+    },
+    {
+      "pass": true,
+      "label": "The tracked Blackroot chapter provides an actual Find fungus action"
+    },
+    {
+      "pass": true,
+      "label": "All eight canonical Green fungus sockets have real live voxel models",
+      "detail": [
+        "blight-green-01",
+        "blight-green-02",
+        "blight-green-03",
+        "blight-green-04",
+        "blight-green-05",
+        "blight-green-06",
+        "blight-green-07",
+        "blight-green-08"
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Actual controller route reaches Blackroot blight-green-05",
+      "detail": {
+        "route": [
+          {
+            "x": 98.40899315967098,
+            "z": 46.99127295325474
+          },
+          {
+            "x": 106.20899315967098,
+            "z": 45.79127295325474
+          },
+          {
+            "x": 108,
+            "z": 45
+          }
+        ],
+        "result": {
+          "steps": 195,
+          "position": {
+            "x": 107.91629517122325,
+            "z": 45.03575694933118
+          }
+        },
+        "method": "Mocked native Gamepad API, real collision/view/controller .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Root out is the actual timed hand action and animated spore pull",
+      "detail": {
+        "work": {
+          "id": "blight-green-05",
+          "material": "cursed-spores",
+          "progress": 0.35000000000000003,
+          "tool": "hands"
+        },
+        "particles": {
+          "limit": 24,
+          "live": 12,
+          "ambient": 12,
+          "puff": 0,
+          "puffsCreated": 0,
+          "rooting": true,
+          "addedLights": 0,
+          "disposed": false
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Cancelling a partial root-out spends no patch, sample or clearing puff",
+      "detail": {
+        "before": {
+          "cycle": 0,
+          "samples": 0,
+          "clears": 0,
+          "cooldown": 0,
+          "progress": {
+            "have": 0,
+            "need": 3
+          },
+          "coins": 30000,
+          "particles": {
+            "limit": 24,
+            "live": 12,
+            "ambient": 12,
+            "puff": 0,
+            "puffsCreated": 0,
+            "rooting": false,
+            "addedLights": 0,
+            "disposed": false
+          }
+        },
+        "cancelled": {
+          "cycle": 0,
+          "samples": 0,
+          "clears": 0,
+          "cooldown": 0,
+          "progress": {
+            "have": 0,
+            "need": 3
+          },
+          "coins": 30000,
+          "particles": {
+            "limit": 24,
+            "live": 12,
+            "ambient": 12,
+            "puff": 0,
+            "puffsCreated": 0,
+            "rooting": false,
+            "addedLights": 0,
+            "disposed": false
+          }
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "The patch remains intact before its full two-second root-out"
+    },
+    {
+      "pass": true,
+      "label": "Completing root-out adds one fresh clear/sample and removes the voxel patch",
+      "detail": {
+        "before": {
+          "cycle": 0,
+          "samples": 0,
+          "clears": 0,
+          "cooldown": 0,
+          "progress": {
+            "have": 0,
+            "need": 3
+          },
+          "coins": 30000,
+          "particles": {
+            "limit": 24,
+            "live": 12,
+            "ambient": 12,
+            "puff": 0,
+            "puffsCreated": 0,
+            "rooting": false,
+            "addedLights": 0,
+            "disposed": false
+          }
+        },
+        "done": {
+          "cycle": 1,
+          "samples": 1,
+          "clears": 1,
+          "cooldown": 600,
+          "progress": {
+            "have": 1,
+            "need": 3
+          },
+          "coins": 30000,
+          "particles": {
+            "limit": 24,
+            "live": 14,
+            "ambient": 8,
+            "puff": 6,
+            "puffsCreated": 1,
+            "rooting": false,
+            "addedLights": 0,
+            "disposed": false
+          }
+        },
+        "live": [
+          "blight-green-01",
+          "blight-green-02",
+          "blight-green-03",
+          "blight-green-04",
+          "blight-green-06",
+          "blight-green-07",
+          "blight-green-08"
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Clear emits one bounded spore puff without adding lights",
+      "detail": {
+        "limit": 24,
+        "live": 14,
+        "ambient": 8,
+        "puff": 6,
+        "puffsCreated": 1,
+        "rooting": false,
+        "addedLights": 0,
+        "disposed": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Full sample storage still lets the player find a hazard"
+    },
+    {
+      "pass": true,
+      "label": "Actual controller route reaches a fungus patch with full sample storage",
+      "detail": {
+        "route": [
+          {
+            "x": 126,
+            "z": 45
+          }
+        ],
+        "result": {
+          "steps": 125,
+          "position": {
+            "x": 125.9232606212909,
+            "z": 45.0001517369423
+          }
+        },
+        "method": "Mocked native Gamepad API, real collision/view/controller .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Full-satchel root-out clears the hazard and counts work without inventing samples or coins",
+      "detail": {
+        "before": {
+          "cycle": 0,
+          "samples": 40,
+          "clears": 1,
+          "cooldown": 0,
+          "progress": {
+            "have": 1,
+            "need": 3
+          },
+          "coins": 30000,
+          "particles": {
+            "limit": 24,
+            "live": 8,
+            "ambient": 8,
+            "puff": 0,
+            "puffsCreated": 1,
+            "rooting": false,
+            "addedLights": 0,
+            "disposed": false
+          }
+        },
+        "done": {
+          "cycle": 1,
+          "samples": 40,
+          "clears": 2,
+          "cooldown": 600,
+          "progress": {
+            "have": 2,
+            "need": 3
+          },
+          "coins": 30000,
+          "particles": {
+            "limit": 24,
+            "live": 10,
+            "ambient": 4,
+            "puff": 6,
+            "puffsCreated": 2,
+            "rooting": false,
+            "addedLights": 0,
+            "disposed": false
+          }
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual controller route reaches Blackroot blight-green-07",
+      "detail": {
+        "route": [
+          {
+            "x": 127.5,
+            "z": 21
+          }
+        ],
+        "result": {
+          "steps": 166,
+          "position": {
+            "x": 127.49445229745109,
+            "z": 21.084443697394168
+          }
+        },
+        "method": "Mocked native Gamepad API, real collision/view/controller .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Three actual fresh clears advance to the real sample-delivery step"
+    },
+    {
+      "pass": true,
+      "label": "The followed tracker shows its neighbour portrait and a truthful completed sample checklist",
+      "detail": {
+        "portrait": true,
+        "row": "✓Cursed spores3 / 3Complete",
+        "ticks": 1
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual controller route reaches Elowen for actual sample handover",
+      "detail": {
+        "route": [
+          {
+            "x": 123.29445229745109,
+            "z": 40.88444369739417
+          },
+          {
+            "x": 122.09445229745108,
+            "z": 41.48444369739417
+          },
+          {
+            "x": 99.8944522974511,
+            "z": 41.48444369739417
+          },
+          {
+            "x": 98.6944522974511,
+            "z": 39.684443697394165
+          },
+          {
+            "x": 92.09445229745108,
+            "z": 39.684443697394165
+          },
+          {
+            "x": 89.6944522974511,
+            "z": 42.084443697394164
+          },
+          {
+            "x": 80.4,
+            "z": 43.5
+          }
+        ],
+        "result": {
+          "steps": 452,
+          "position": {
+            "x": 80.49831551433545,
+            "z": 43.484553160817434
+          }
+        },
+        "method": "Mocked native Gamepad API, real collision/view/controller .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "The real greeting delivery spends three samples once and unlocks Rowan’s investigation"
+    },
+    {
+      "pass": true,
+      "label": "Exploration legend omits Walk/Camera and keeps the location name compact",
+      "detail": {
+        "legend": "DPADNavigateCROSSTalkElowen MothwickCIRCLEBackR2JogUPQuestOPTIONSMenus",
+        "location": "15px",
+        "version": 18
+      }
+    },
+    {
+      "pass": true,
+      "label": "The expansion keeps the existing version18 save format",
+      "detail": {
+        "legend": "DPADNavigateCROSSTalkElowen MothwickCIRCLEBackR2JogUPQuestOPTIONSMenus",
+        "location": "15px",
+        "version": 18
+      }
+    },
+    {
+      "pass": true,
+      "label": "Final menus have no page/shader errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Final offline game uses no external assets",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "01-fold-neighbour-greeting.png",
+    "02-tv-neighbour-greeting.png",
+    "03-fold-rooting-blackroot.png",
+    "04-fold-blackroot-checklist.png"
+  ],
+  "observations": [
+    {
+      "kind": "long-ribbon-copy-fixture",
+      "scope": "Only displayed DOM copy is lengthened; no choice objects, handlers, styles or transactions change."
+    }
+  ],
+  "scope": "Exact unchanged integrated dialogue/Blackroot HTML. Declared level3/completed-tour/gathering save, supplied gift materials, no claimed Blackroot quest. Actual nearby native-pad approach, transactions, timed clearing and camera/DOM layout; draw calls held only between normal screenshots. Long-copy and full-satchel setup are declared fixtures; no physical hardware/FPS certification.",
+  "passed": false
+}

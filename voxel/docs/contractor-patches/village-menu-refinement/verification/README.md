@@ -9,4 +9,8 @@
 
 - [Final five-song music delta](music-final-e5858bc6/README.md): exact delivered E5858BC6 HTML, 14/14 actual Settings/WebAudio/shuffle checks and 31-source MIDI audit.
 
+- [Initial integrated Blackroot](blackroot-222467b5/README.md):43/44, full actual root-out/cancel/full-storage/three-clear/sample-delivery loop; genuine camera defect retained.
+- [Corrected Blackroot camera/model](blackroot-a154d6b7/README.md):34/34 recorded checks and approved Fold/model photos; subsequent TV child-overflow visual finding retained.
+- [Final Blackroot TV delta](blackroot-tv-e98d2ffc/README.md): exact final E98D2FFC HTML,12/12 explicit child-bound, D-pad scrolling and long-copy checks; approved final normal TV photo.
+
 Each report keeps the bytes it actually tested. Fixtures, drawn/held phases, mocked controllers and hardware/performance limits are documented per run. Earlier hashes are never relabelled as final. All browser/server runs have ended.

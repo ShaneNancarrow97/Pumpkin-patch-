@@ -1,0 +1,21 @@
+✔ outdoor collisions use the models' rotated realm footprints, including their adjoining buildings (6.606889ms)
+✔ all Green gathering spots, doors and first neighbours are reachable from the saved arrival (186.826737ms)
+✔ later district gates and their scenery remain closed even for a rich, far-progressed save (14.256607ms)
+✔ movement substeps stop fast walks at thin fences and slide along solid walls (1.617438ms)
+✔ placed furniture collision follows its saved rotation without mutating the save (1.384168ms)
+✔ turned furniture blocks its body while leaving the enclosing box's empty corners walkable (4.272164ms)
+✔ placement and walking share the solid fences, buildings and water (0.524568ms)
+✔ all hall spawns, doorway thresholds and furniture use local design coordinates (2.656808ms)
+✔ fast interior movement stops at desks, bars and chairs instead of tunnelling (1.360433ms)
+✔ the arrival meadow expands the Green with four connected forage areas (1.65152ms)
+✔ gathered resource paintings leave no permanent stump or debris geometry (1.482585ms)
+✔ published voices match the script, cast and hashes; every missing clip is declared (22.47454ms)
+✔ published clip inspection rejects duplicate and unsupported imports without loading audio (0.184527ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 599.206615

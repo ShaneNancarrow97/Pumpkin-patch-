@@ -40,3 +40,11 @@ node --test test/narration-surfaces.test.mjs test/narration.test.mjs \
 Added regressions cover disabled real actions and first usable focus, explicit handled actions without an invented reply, detached stale choices, and input-family changes during a conversation. Existing narration, choice-once, opener, Tab and callback handoff regressions continue to pass. The icon helper has its own mapping checks from its owner.
 
 No browser, build, commit or generated asset edits were performed by this subtask. Parent integration owns exact-HTML screenshots, long-content/phone/Fold/TV layout verification and the real resident-action flows.
+
+## TV grid correction
+
+The exact-HTML TV check of candidate `a154d6b7` found that the dialogue root stayed inside the 1920×1080 screen at 1.537× UI scale while its speech footer and Back control extended below it. A maximum root height alone left the spanning grid tracks at their intrinsic height.
+
+The TV two-column layout now has a definite available height, a shrinking reply track and a reserved Back row. Speech and response columns are constrained to their assigned tracks, allowing their existing content scrollers to work while their controls remain reachable. The floating speaker nameplate is preserved. Normal phone/Fold styles and narrow portrait stacking are unchanged.
+
+The stylesheet parses without warnings and `git diff --check` passes. This CSS-only correction requires the parent's exact-HTML TV child-bounds regression; the earlier functional tests do not establish visual bounds.

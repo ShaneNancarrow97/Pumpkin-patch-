@@ -1,6 +1,8 @@
-# Village menus, farm space and level rewards — Claude handover
+# Village, Blackroot and cinematic dialogue — Claude handover
 
 Contractor branch: `contractor/village-menu-refinement`. Base: `50afb77c5596189c57c48c7c8a4c379e9baa4b97` (the delivered Village Play Polish source). The lead branch was checked at `604fe2359427fc7e90a3d1248a6c4d1d6b0136c8`; its working checkout is untouched. Review this branch independently before integrating with Claude's concurrent work.
+
+Latest release: [Blackroot delivery and exact verification](BLACKROOT-DELIVERY.md). It includes the earlier menu/music work plus the requested dialogue, camera, quest tracker and fungus story.
 
 ## Result
 
