@@ -14,3 +14,5 @@ Built **after** the checked HTML, ZIP and game patch kit were publicly verified.
 The host uses Android System WebView/WebGL2 with local media assets, fullscreen/system-bar handling, safe-area/Fold resize support, controller Back layering and existing save import/export. It is not a native3D rewrite. Real Fold7, TV, Bluetooth, installation and runtime performance remain unverified on hardware.
 
 Apply this optional kit after the main two-patch game kit. It contains the intervening publication receipt and this native version/evidence commit. Preserve the private signing key/password outside source for future in-place updates. Export your browser save through Settings and import it in the app; browser and app storage are separate. No signing key, API credential or personal save is included.
+
+The [public APK and native-kit downloads](DELIVERY.md#android-publication-completed-last) are verified in full at artifact commit `3b7eccb027ebae058f9076cdc3dffa24dbd3643f`.

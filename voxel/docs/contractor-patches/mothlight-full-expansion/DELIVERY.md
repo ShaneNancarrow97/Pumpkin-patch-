@@ -34,3 +34,11 @@ Final corrections include readable cave lighting, collision-safe camera framing,
 - [Claude kit](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/17b8b245bf4fed5bd953ff8b9bc6c34689d94e0b/Pumpkin-Patch-Mothlight-Expansion-Claude-Patch.zip)
 
 The complete two-patch kit targets source `5852e0bc1aa10a8a9fb2134693b7bc9c88db6cd7`; its replay commit `07050d8b6ddfab21d24244fa7f19dbb1358eeb0a` matches source tree `16fabd44225d8da11ce983f673569e7c1adefaea`, and rebuilds the identical HTML. The later publication/native receipt commits contain delivery information and the optional Android version update; they do not change game behavior.
+
+## Android publication completed last
+
+[Download APK](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/3b7eccb027ebae058f9076cdc3dffa24dbd3643f/Pumpkin-Patch-Mothlight-Expansion.apk) · [Claude native addendum](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/3b7eccb027ebae058f9076cdc3dffa24dbd3643f/Pumpkin-Patch-Mothlight-Expansion-Android-Patch.zip). Both public files were streamed completely with HTTP200 and matching byte/SHA256 checks; [receipt](verification/native-public-downloads.json).
+
+APK:43,343,342bytes, SHA256 `c280731be9101a2ea605296edb9687e04641f148176a2c3c1c560e787a650890`. Version2026.11.09.2/code26110902 preserves the previous certificate. All17 native/extraction checks and signature/alignment/CRC/media validation pass. Local packaging contains280 media assets and reduces HTML parse bytes by92.0888%; the standalone HTML remains unchanged. See [NATIVE.md](NATIVE.md) for the exact boundary and hardware limits.
+
+The optional native kit contains the publication/native commits after source5852e0b and targets `9402b207814fd34d229de77cddc00d5a9a7a5cb2`. Its clean replay `545f3611c01e9159178a8fa883ed11d0651676ea` matches source tree `3fe3e4400d684c821c39019ef29b72c74862342b`. No private signing material or API credentials are included. This final receipt changes documentation only.
