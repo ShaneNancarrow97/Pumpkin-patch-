@@ -63,3 +63,5 @@ The first practical review path is a declared level-six farm with the legacy Two
 ## Review standard and limits
 
 This is a full contractor implementation of the proposed story and mechanics, with authored voxel environments and generated sprite/icon assets. New dialogue uses clear text and existing voice fallbacks; no new narration recording is claimed. Browser viewport and injected standard-gamepad checks are distinct from physical Fold 7, Bluetooth controller, TV and Android hardware testing. Exact completed checks, screenshots, replay instructions and any remaining limitations are recorded in DELIVERY.md rather than inferred from test counts.
+
+The checked [Android addendum](NATIVE.md) packages the same HTML after game publication; [DELIVERY.md](DELIVERY.md) holds the public download receipts.
