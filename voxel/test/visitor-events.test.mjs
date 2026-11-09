@@ -9,16 +9,17 @@ import { LEVELS as LEVEL_TABLE } from "../src/rules/levels.js";
 // Earnings that reach a level, wherever the thresholds are set.
 const at = (n) => LEVEL_TABLE[n - 1].at;
 
-const state = () => ({ coins: 50000, earned: at(12), progression: { bonusEarned: 0 }, paused: false, time: 0, nextParty: 0, kitchen: { purchased: true }, visitorUpgrades: { appetite: 0 }, visitors: [], arriving: [], visitorEvents: V.freshVisitorEvents() });
+const state = () => ({ coins: 50000, earned: at(12), progression: { bonusEarned: 0, claimed: LEVEL_TABLE.slice(0, 12).map(l => l.level) }, paused: false, time: 0, nextParty: 0, kitchen: { purchased: true }, visitorUpgrades: { appetite: 0 }, visitors: [], arriving: [], visitorEvents: V.freshVisitorEvents() });
+const level = (s, n) => { s.earned = at(n); s.progression.claimed = LEVEL_TABLE.slice(0, n).map(l => l.level); };
 const tick = (s, seconds) => { const out = []; s.time += s.paused ? 0 : seconds; V.updateVisitorEvents(s, seconds, out); return out; };
 const entered = (s, a) => { assert.equal(V.finishVisitorEventArrival(s, a), true); };
 
 test("rush and court invitations cost once and obey their current level gates", () => {
-  const s = state(); s.earned = at(6); const money = s.coins;
+  const s = state(); level(s, 6); const money = s.coins;
   assert.equal(V.buyVisitorEventUpgrade(s, "rush"), false); assert.equal(V.buyVisitorEventUpgrade(s, "vip"), false);
-  s.earned = at(7); assert.equal(V.buyVisitorEventUpgrade(s, "rush"), true); assert.equal(s.coins, money - 1600);
+  level(s, 7); assert.equal(V.buyVisitorEventUpgrade(s, "rush"), true); assert.equal(s.coins, money - 1600);
   assert.equal(V.buyVisitorEventUpgrade(s, "rush"), false); assert.equal(V.visitorEventUpgradeCost(s, "rush"), undefined);
-  s.earned = at(10); assert.equal(V.buyVisitorEventUpgrade(s, "vip"), true); assert.equal(s.coins, money - 7600);
+  level(s, 10); assert.equal(V.buyVisitorEventUpgrade(s, "vip"), true); assert.equal(s.coins, money - 7600);
   assert.equal(V.buyVisitorEventUpgrade(s, "constructor"), false); s.paused = true; assert.equal(V.setVisitorEventEnabled(s, "rush", false), false);
 });
 
@@ -107,6 +108,7 @@ test("turning off an occasion does not delete a group which was already invited"
 
 const farm = () => {
   const s = M.freshState(); s.progression.homeLegacyThrough = 12; s.coins = 50000; s.earned = at(12);
+  s.progression.claimed = M.LEVELS.slice(0, 12).map(l => l.level);
   s.visitorEvents = V.freshVisitorEvents(); s.bigSpender.timer = 1e6;
   s.visitorTimer = 1e6; s.shop.arrivalTimer = 1e6;
   return s;

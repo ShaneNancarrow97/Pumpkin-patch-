@@ -10,7 +10,7 @@ const ready = () => { const s=M.freshState();s.village.invited=true;s.village.un
 const reload = s => M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));
 
 test('version19 retains optional gather cycles while legacy saves keep their authored first site', () => {
-  assert.equal(M.STATE_VERSION,19);const s=ready();assert.deepEqual(s.village.gatherCycles,{});
+  assert.ok(M.STATE_VERSION>=19);const s=ready();assert.deepEqual(s.village.gatherCycles,{});
   const raw=M.saveData(s);raw.version=16;delete raw.village.gatherCycles;const old=M.restoreState(raw);
   assert.deepEqual(old.village.gatherCycles,{});assert.deepEqual(villageNodePosition(old,node),{x:node.x,z:node.z});
   assert.ok(fs.existsSync(new URL('./fixtures/save-file-v1-state17.json',import.meta.url)));

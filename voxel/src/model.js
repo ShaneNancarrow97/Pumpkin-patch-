@@ -47,7 +47,7 @@ export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 export * from "./rules/unlocks.js";
 
-export const STATE_VERSION = 19;
+export const STATE_VERSION = 20;
 export * from "./rules/room-extensions.js";
 export * from "./rules/home-media.js";
 export * from "./rules/farm-work.js";
@@ -179,7 +179,7 @@ export function restoreState(raw) {
   const claimed = (Array.isArray(raw.claimed) ? raw.claimed : []).map((id) => (v1 ? OLD_GOALS[id] : id));
   s.claimed = [...new Set(claimed.filter((id) => FAVOURS.some((f) => f.id === id)))];
   s.memories = Array.isArray(raw.memories) ? [...new Set(raw.memories.filter((id) => typeof id === "string"))] : [];
-  s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4), !(raw.version >= 14));
+  s.progression = restoreProgression(raw.progression, s, !(raw.version >= 4), !(raw.version >= 14), !(raw.version >= 20));
   s.farmWork = restoreFarmWork(raw.farmWork, s);
   s.kitchen = restoreKitchen(raw.kitchen, s, raw.version);
   s.visitorEvents = restoreVisitorEvents(raw.visitorEvents, s);

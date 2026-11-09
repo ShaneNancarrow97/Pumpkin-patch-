@@ -7,6 +7,7 @@ import {EXPANSION_CHAPTERS} from "../src/content/village-expansion.js";
 const reached = (level, legacy = 1) => {
   const s = M.freshState(); s.earned = M.LEVELS[level - 1].at;
   s.progression.homeLegacyThrough = legacy; s.coins = 100000;
+  s.progression.claimed = M.LEVELS.slice(0, legacy).map(l => l.level);
   // These tests isolate home goals with village mainline already completed.
   for(const c of EXPANSION_CHAPTERS.filter(c=>!c.optional)){s.village.expansion.chapters[c.id]=true;s.village.expansion.effects.push(...(c.reward?.effects??[]));}
   return s;

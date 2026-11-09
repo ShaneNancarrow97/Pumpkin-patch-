@@ -2,6 +2,8 @@
 
 The core supplies 23 restoration/main-story chapters, plus the cast module’s41 supplemental personal chapters:64 chapters,201 positioned activities and36 renewable cave seams. Main activities belong to the real area where they are performed. Legacy village quests retain their original IDs and rewards.
 
+The later [progression balance follow-up](BALANCED-PROGRESSION.md) adds save version20 bounded level credit. Lifetime trade remains available to quests and statistics; use `patchLevel` for rank/upgrade checks and settle observed trade before granting ranks.
+
 ## Contracts
 
 `content/village-expansion.js` exports `EXPANSION_AREAS`, `EXPANSION_ACTIVITIES`, `EXPANSION_CHAPTERS`, their by-ID maps, `EXPANSION_VEINS`, `EXPANSION_GEMS` and `EXPANSION_LEVEL_GATES`. Surface coordinates and cave-local coordinates are world units, projected from the design grid with PLAN_SCALE1.5 exactly once. `normaliseExpansionActivity` gives authored cast puzzles the same runtime interface as main activities.

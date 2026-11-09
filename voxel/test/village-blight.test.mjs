@@ -65,7 +65,7 @@ function finish(s,id) {
 }
 
 test('version-18 villages acquire blight defaults without reopening old completed stories', () => {
-  assert.equal(M.STATE_VERSION,19);
+  assert.ok(M.STATE_VERSION>=19);
   assert.equal(green.length,32); assert.equal(new Set(BLIGHT_NODES.map(n => n.id)).size,BLIGHT_NODES.length);
   assert.ok(green.every(n => n.material===SPORES && n.kind==='blight' && n.action==='Root out'));
   const raw = M.saveData(farm()); raw.version = 18;
@@ -131,7 +131,7 @@ test('fresh-clearing snapshots, stored samples and cooldowns survive a normal sa
   assert.equal(s.village.quests[FIRST].base,2); assert.deepEqual(M.stepProgress(s,FIRST),{have:0,need:3});
   clear(s,1); assert.deepEqual(M.stepProgress(s,FIRST),{have:1,need:3});
   const before = JSON.parse(JSON.stringify(s.village)); s = reload(s);
-  assert.equal(s.version,19); assert.equal(s.village.quests[FIRST].base,2);
+  assert.equal(s.version,M.STATE_VERSION); assert.equal(s.village.quests[FIRST].base,2);
   assert.deepEqual(s.village.nodes,before.nodes); assert.deepEqual(s.village.gatherCycles,before.gatherCycles);
   assert.deepEqual(s.village.materials,before.materials); assert.deepEqual(s.village.claims,before.claims);
   assert.deepEqual(M.stepProgress(s,FIRST),{have:1,need:3});

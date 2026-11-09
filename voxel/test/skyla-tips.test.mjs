@@ -28,7 +28,7 @@ test('the two additional upgrades spend once, stop at five and round-trip throug
   assert.equal(M.careUpgradeCost(s,'tipJar'),22000);assert.equal(M.buyCareUpgrade(s,'tipJar'),true);assert.equal(s.customerCare.tipJar,5);
   const saved=JSON.stringify(s);assert.equal(M.buyCareUpgrade(s,'tipJar'),false);assert.equal(M.careUpgradeCost(s,'tipJar'),undefined);assert.equal(JSON.stringify(s),saved);
   assert.equal(s.customerCare.invested,31500);assert.equal(s.coins,before-31500);
-  const raw=M.saveData(s);raw.customerCare.tipJar=99;assert.equal(M.restoreState(raw).customerCare.tipJar,5);assert.equal(M.STATE_VERSION,19);
+  const raw=M.saveData(s);raw.customerCare.tipJar=99;assert.equal(M.restoreState(raw).customerCare.tipJar,5);assert.ok(M.STATE_VERSION>=19);
 });
 
 test('new tiers improve real tips without rerolling quality or exceeding the remaining wallet',()=>{

@@ -7,7 +7,8 @@ import { LEVELS as LEVEL_TABLE } from "../src/rules/levels.js";
 // Earnings that reach a level, wherever the thresholds are set.
 const at = (n) => LEVEL_TABLE[n - 1].at;
 
-const state = (earned = at(12)) => ({ time: 0, coins: 50000, earned, progression: { bonusEarned: 0 }, paused: false, stock: [10, 4, 0, 0], fresh: [[], [], [], []], holds: [], house: { level: 0, placed: [] }, kitchen: C.freshKitchen() });
+const state = (earned = at(12)) => ({ time: 0, coins: 50000, earned, progression: { bonusEarned: 0, claimed: LEVEL_TABLE.filter(l => l.at <= earned).map(l => l.level) }, paused: false, stock: [10, 4, 0, 0], fresh: [[], [], [], []], holds: [], house: { level: 0, placed: [] }, kitchen: C.freshKitchen() });
+const level = (s, n) => { s.earned = at(n); s.progression.claimed = LEVEL_TABLE.slice(0, n).map(l => l.level); };
 const purchased = () => { const s = state(); assert.equal(C.buyFoodTruck(s), true); return s; };
 const tick = (s, dt) => { const events = []; s.time += s.paused ? 0 : dt; C.updateKitchen(s, dt, events); return events; };
 
@@ -104,9 +105,9 @@ test("the truck avoids a level-five dead end; the second station needs a real ra
 });
 
 test("research, food shelf selection and price boundaries honour ownership and level gates", () => {
-  const s = purchased(); s.earned = at(5);
+  const s = purchased(); level(s, 5);
   assert.equal(C.researchRecipe(s, "soup"), false); assert.equal(C.assignFoodDisplay(s, 0, "soup"), false);
-  s.earned = at(6); const before = s.coins; assert.equal(C.researchRecipe(s, "soup"), true); assert.equal(s.coins, before - RECIPE_BY_ID.soup.research);
+  level(s, 6); const before = s.coins; assert.equal(C.researchRecipe(s, "soup"), true); assert.equal(s.coins, before - RECIPE_BY_ID.soup.research);
   assert.equal(C.researchRecipe(s, "soup"), false); assert.equal(C.assignFoodDisplay(s, 0, "soup"), true);
   assert.equal(C.assignFoodDisplay(s, 2, "soup"), false); assert.equal(C.setFoodPrice(s, "soup", 0), false);
   assert.equal(C.setFoodPrice(s, "soup", 27), false); assert.equal(C.setFoodPrice(s, "soup", 26), true);
@@ -124,9 +125,9 @@ test("capacity upgrades cost coins and stop at their final tier; speed affects o
 });
 
 test("the hired chef uses real inputs, respects pause and storage, and never orders for free", () => {
-  const s = purchased(); s.earned = at(9);
+  const s = purchased(); level(s, 9);
   assert.equal(C.buyKitchenUpgrade(s, "chef"), false); assert.equal(C.setChefRecipe(s, "wedges"), false);
-  s.earned = at(10); assert.equal(C.buyKitchenUpgrade(s, "chef"), true); assert.equal(C.setChefRecipe(s, "wedges"), true);
+  level(s, 10); assert.equal(C.buyKitchenUpgrade(s, "chef"), true); assert.equal(C.setChefRecipe(s, "wedges"), true);
   const before = s.coins; tick(s, 100); assert.equal(s.kitchen.jobs.truck, null); assert.equal(s.kitchen.orders.length, 0); assert.equal(s.coins, before);
   s.kitchen.pantry.butter = 2; tick(s, 1); assert.equal(s.kitchen.pantry.butter, 1); assert.equal(s.kitchen.jobs.truck.automatic, true);
   s.paused = true; tick(s, 100); assert.equal(s.kitchen.food.wedges, 0); s.paused = false;

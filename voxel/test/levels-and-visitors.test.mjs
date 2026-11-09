@@ -13,8 +13,9 @@ test("level boundaries, rewards and maximum progress share one source", () => {
   s.house.wallpapers.parlour = "w01"; s.kitchen.recipes = M.RECIPES.map(r => r.id);
   s.house.placed = Array.from({ length: 12 }, (_, i) => ({ id: i === 0 ? "copper-range" : i === 1 ? "gothic-spice-cabinet" : "d03", room: ["kitchen", "kitchen", "parlour", "bedroom", "attic"][i % 5], books: i === 2 ? ["b01", "b02", "b03", "b04", "b05", "b06"] : [] }));
   for (const milestone of M.LEVELS.slice(1)) {
-    s.earned = milestone.at - 1; assert.equal(M.patchLevel(s).level, milestone.level - 1);
+    s.earned = milestone.at - 1 + s.progression.bonusEarned; assert.equal(M.patchLevel(s).level, milestone.level - 1);
     s.earned++; assert.equal(M.patchLevel(s).level, milestone.level);
+    assert.deepEqual(M.awardLevels(s), [milestone.level]);
     for (const r of milestone.rewards) {
       if (r.kind === "decor") assert.ok(M.decorById[r.id]);
       if (r.kind === "costume") assert.ok(M.costumeById[r.id]);
@@ -36,10 +37,14 @@ test("a level grants real items once, without reward coins earning another level
   assert.deepEqual(s.progression.pending, []);
 });
 
-test("skipping levels queues every reward, including usable costumes and upgrades", () => {
+test("early skipped levels and later fresh trade queue every real reward", () => {
   const s = M.freshState(); s.earned = at(12);
   s.progression.homeLegacyThrough = 12;
-  assert.equal(M.awardLevels(s).length, 11);
+  assert.deepEqual(M.awardLevels(s), [2, 3, 4, 5, 6]);
+  for (let level = 7; level <= 12; level++) {
+    s.earned += at(level) - M.patchLevel(s).xp;
+    assert.deepEqual(M.awardLevels(s), [level]);
+  }
   assert.equal(s.upgrades.tools, 1); assert.equal(s.upgrades.yield, 1);
   assert.ok(M.wearCostume(s, "natalie-freddy")); assert.ok(M.wearCostume(s, "shane-jason"));
   const saved = JSON.parse(JSON.stringify(M.saveData(s))), loaded = M.restoreState(saved);
@@ -92,7 +97,7 @@ test("the slower pace keeps every level an older save reached, and fills its bar
   loaded.earned = (45000 + p.next.at) / 2; assert.ok(Math.abs(M.patchLevel(loaded).progress - .5) < 1e-9, "and fills on the way to the next");
   assert.deepEqual(M.awardLevels(loaded), [], "no level is given again or taken away");
   const fresh = M.freshState(); fresh.earned = 42000; fresh.progression.homeLegacyThrough = 12;
-  assert.equal(M.patchLevel(fresh).level, 8, "a new game needs more for each level");
+  assert.equal(M.patchLevel(fresh).level, 6, "a new game cannot bank several village-gated ranks");
   const again = M.restoreState(JSON.parse(JSON.stringify(M.saveData(loaded))));
   assert.equal(M.patchLevel(again).level, 10, "the new pace saves and loads");
   assert.equal(again.progression.pace, M.LEVEL_PACE);

@@ -165,3 +165,19 @@ test('requirements open at the top and carousel browsing scrolls only the horizo
   assert.equal(h.document.verticalScrollCalls ?? 0, 0);
   assert.match(h.overlay.html, /requirements above/); assert.doesNotMatch(h.overlay.html, /home milestones above/); h.ui.dispose();
 });
+
+test('a full progress bank explains the head start and preserved coins in the existing checklist', async () => {
+  const s = M.freshState(); s.progression.claimed = [1, 2, 3, 4, 5]; s.progression.homeLegacyThrough = 5; s.earned = 10000000;
+  const h = await harness(s), before = JSON.stringify(s); h.ui.preview();
+  assert.equal(h.ui.status.level, 6); assert.match(h.overlay.html, /Level progress/);
+  assert.match(h.overlay.html, /Progress bank full/); assert.match(h.overlay.html, /25% head start/);
+  assert.match(h.overlay.html, /Further sales still pay coins/); assert.match(h.overlay.html, /£15,375/);
+  assert.equal(JSON.stringify(s), before); h.ui.dispose();
+});
+
+test('the final level does not promise a head start towards a nonexistent level21', async () => {
+  const s = M.freshState(); s.progression.claimed = M.LEVELS.slice(0, 19).map(l => l.level); s.earned = M.LEVELS[19].at;
+  const h = await harness(s); h.ui.preview();
+  assert.equal(h.ui.status.level, 20); assert.doesNotMatch(h.overlay.html, /25% head start/);
+  assert.match(h.overlay.html, /Further sales still pay coins/); h.ui.dispose();
+});

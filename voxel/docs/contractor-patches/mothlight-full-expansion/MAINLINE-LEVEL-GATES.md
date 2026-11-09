@@ -1,6 +1,6 @@
 # Mainline village level checkpoints
 
-Levels6–20 now check village mainline completion as well as the existing earnings and home criteria. Bonus coins still do not count as earned progression. Previously claimed levels and honoured legacy levels are never revoked; unclaimed future levels use the new requirements. No save schema change. New resident personal/friendship arcs and Granny's optional branch are not added as level requirements; original Two Doorbells prerequisites stay intact.
+Levels6–20 now check village mainline completion as well as the existing earnings and home criteria. Bonus coins still do not count as earned progression. Previously claimed levels and honoured legacy levels are never revoked; unclaimed future levels use the new requirements. The checkpoint change itself had no save schema change; its [balance follow-up](BALANCED-PROGRESSION.md) introduces version20 bounded credit while retaining all coins and lifetime takings. New resident personal/friendship arcs and Granny's optional branch are not added as level requirements; original Two Doorbells prerequisites stay intact.
 
 | Reach level | Required story |
 | --- | --- |
@@ -20,7 +20,7 @@ Levels6–20 now check village mainline completion as well as the existing earni
 | 19 | An Invitation for Everyone (fresh farm harvest/cooking) |
 | 20 | The Village Is the Table (including actual supper delivery) |
 
-Lantern Night remains a level20 capstone. It must not gate entry to level20 itself. Each gate's chapter/region is available at an earlier level. The level checklist shows named incomplete chapters, compound progress, and the missing seal regions. Earned income remains banked while blocked.
+Lantern Night remains a level20 capstone. It must not gate entry to level20 itself. Each gate's chapter/region is available at an earlier level. The level checklist shows named incomplete chapters, compound progress, and the missing seal regions. All income remains spendable while blocked; banked level credit follows the bounded head-start policy in BALANCED-PROGRESSION.md.
 
 Dependency boundary: canonical gates in content/village-expansion.js; dependency-light evaluation in rules/village-expansion-access.js; existing homeRequirements combines both sets. Do not call patchLevel from expansionLevelRequirement: that would recurse through homeRequirements. When changing a chapter's level, region or prerequisite, recheck its gate and resource reachability. Economy automation tools must complete/declare mainline progress rather than assuming earnings alone advance every level.
 

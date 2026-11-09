@@ -28,8 +28,9 @@ test("a periodic Baron respects pause, path capacity and one active visit", () =
 test("VIP basket scales within limits, and real sales reconcile stock, purse and separate tips", () => {
   const s = ready(), basic = bigSpenderBasket(s); assert.equal(basic.basketLimit, 8); assert.ok(basic.budget >= 350);
   s.earned = 110000; s.upgrades.storage = 6; s.customerCare.bags = 3; s.plotLevels.fill(3);
+  s.progression.claimed = M.LEVELS.slice(0, 9).map(l => l.level);
   const grown = bigSpenderBasket(s); assert.equal(grown.basketLimit, 20); assert.equal(grown.budget, 800);
-  s.earned = 0; s.customerCare.tipJar = 3; s.stock = [0, 0, 0, 100]; s.bigSpender.timer = 0;
+  s.earned = 0; s.progression.claimed = [1]; s.customerCare.tipJar = 3; s.stock = [0, 0, 0, 100]; s.bigSpender.timer = 0;
   const before = s.coins, events = run(s, 15), arrival = events.find(e => e.type === "vip-arrived"), receipt = s.stall.receipts[0];
   assert.ok(arrival); assert.equal(events.filter(e => e.type === "vip-arrived").length, 1); assert.equal(receipt.visitor, arrival.visitor);
   assert.equal(receipt.amount, receipt.quantity * 70); assert.equal(s.stock[3], 100 - receipt.quantity);

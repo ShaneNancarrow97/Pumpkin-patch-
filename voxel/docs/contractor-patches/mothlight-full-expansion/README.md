@@ -10,7 +10,7 @@ Three separately rendered cave depths descend beneath the village: Lantern Steps
 
 Activities are performed at their objects. The journal follows and explains a step rather than granting remote completion. Puzzles include remembered sequences, connected light conduits, unordered flavour deduction and assigned stage cues. Hint, Reset and accessible Solve give the same story rewards. The finale delivers twelve real pumpkins and four cooked portions. Completed chapters show a reward receipt, and restoration flags change cached visible village landmarks. Optional neighbour chapters stay behind a disclosure instead of filling the main story list.
 
-The village earns a place in farm progression. Every level from6 through20 now has a mainline village checkpoint alongside the original home requirements; see MAINLINE-LEVEL-GATES.md for the complete schedule. Previously claimed levels remain honoured and blocked income remains banked. Farm-away earnings still run at the existing 2.5% to 10% upgrade rate; exploration, mineral regrowth and village actions use full village time. No new free income multiplier bypasses this tradeoff.
+The village earns a place in farm progression. Every level from6 through20 now has a mainline village checkpoint alongside the original home requirements; see MAINLINE-LEVEL-GATES.md for the complete schedule. Previously claimed levels remain honoured. All coins remain spendable; future level progress banks only the next rank plus a 25% head start, so an early farm grind cannot skip later trading. See [balanced progression](BALANCED-PROGRESSION.md). Farm-away earnings still run at the existing 2.5% to 10% upgrade rate; exploration, mineral regrowth and village actions use full village time. No new free income multiplier bypasses this tradeoff.
 
 ## Rewards with a use back home
 
@@ -41,6 +41,7 @@ The village earns a place in farm progression. Every level from6 through20 now h
 | --- | --- | --- |
 | Chapter ID, giver, stage or area | save sanitiser, journal, map, next activity, NPC rewards, all-story tests | Old IDs and once-only receipts remain valid. |
 | Region gate or level requirement | navigation, cave return portals, physical route tests, level screen | No level requires a chapter whose area requires that same level. Claimed levels never regress. |
+| Banked level progress | settled credit, observed trade, reward exclusions, restore, level checklist | Observe overflow before promotion; never recredit old takings. Wallet and lifetime earnings remain intact. |
 | Activity coordinates | terrain, collision, object render, hit targets, guide, distance guards | World units are scaled once. Canvas and pad interactions must recheck actual proximity. |
 | Core imports | access helper and navigation-first import test | Navigation and home requirements use dependency-light access, avoiding module-initialisation cycles. |
 | New dish or preservation | ingredient supply, equipment, research, actual cooker, chef, food props, pricing, expiry | No remote cook button or free stock; farm-time attenuation is applied exactly once. |
@@ -54,7 +55,7 @@ The village earns a place in farm progression. Every level from6 through20 now h
 
 ## Save and integration notes
 
-Save format is **19**. Version 18 migrates additively into `village.expansion`. Restore expansion/economy before settling stock expiry, so purchased storage remains effective on load. Keep fresh-production baselines: earlier cooking cannot complete a new instruction. Granting rewards belongs in rules, never in presentation. New modules are plain JavaScript and use the existing Three.js/Voxels renderer and shared audio; there is no dependency or framework migration.
+Save format is **20**. Version19 added `village.expansion`; version20 adds bounded level credit and its observed-trade counter. Restore expansion/economy before settling stock expiry, so purchased storage remains effective on load. Keep fresh-production baselines: earlier cooking cannot complete a new instruction. Granting rewards belongs in rules, never in presentation. New modules are plain JavaScript and use the existing Three.js/Voxels renderer and shared audio; there is no dependency or framework migration.
 
 Seven additional resident interiors are scene-built and use saved home restoration gates. The surface and caves switch through the expansion view API rather than overloading the old hall state. Close/return must cancel gathering and restore the correct previous landing before the farm confirmation appears.
 
@@ -67,3 +68,5 @@ This is a full contractor implementation of the proposed story and mechanics, wi
 The checked [Android addendum](NATIVE.md) packages the same HTML after game publication; [DELIVERY.md](DELIVERY.md) holds the public download receipts.
 
 Latest progression update: [mainline level checkpoints](MAINLINE-LEVEL-GATES.md).
+
+Latest balance and save migration: [bounded progression banking](BALANCED-PROGRESSION.md).

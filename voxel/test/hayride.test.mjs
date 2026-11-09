@@ -7,7 +7,7 @@ import { LEVELS as LEVEL_TABLE } from "../src/rules/levels.js";
 const at = (n) => LEVEL_TABLE[n - 1].at;
 const atLevel = (s, n) => { s.earned = LEVELS[n - 1].at; s.progression = { ...s.progression, claimed: LEVELS.slice(0, n).map((l) => l.level) }; };
 
-function prepared() { return { hayride: H.freshHayride(), hollowHouse: { purchased: true, status: "ready" }, coins: 100000, earned: 200000, progression: { bonusEarned: 0 }, visitors: [], holds: [], time: 0, nextVisitor: 0, paused: false }; }
+function prepared() { return { hayride: H.freshHayride(), hollowHouse: { purchased: true, status: "ready" }, coins: 100000, earned: 200000, progression: { bonusEarned: 0, claimed: LEVELS.slice(0, 10).map(l => l.level) }, visitors: [], holds: [], time: 0, nextVisitor: 0, paused: false }; }
 function opened() { const s = prepared(); assert.ok(H.buyHayride(s)); assert.ok(H.setHayrideOpen(s, true)); return s; }
 function guest(s, id = s.visitors.length, options = {}) {
   const v = { id, kind: id % 5, budget: 100, originalBudget: 100, basket: [], preferred: [0], basketLimit: 1, spot: id % 8, age: 0, leaveAt: null, needs: { happiness: 70 }, festival: { done: true }, ...options };

@@ -35,11 +35,28 @@ export const LEVELS = [
 export const LEVEL_PACE = 3;
 export const LEGACY_LEVEL_AT = Object.freeze([0, 150, 500, 1000, 2200, 4500, 8500, 15000, 26000, 42000, 70000, 110000, 170000, 250000, 360000, 500000, 680000, 900000, 1200000, 1600000]);
 export const PACE2_LEVEL_AT = Object.freeze([0, 300, 1200, 2800, 6000, 12500, 24000, 42000, 72000, 115000, 180000, 270000, 400000, 580000, 820000, 1120000, 1500000, 1980000, 2600000, 3400000]);
-export const freshProgression = () => ({ claimed: [1], pending: [], receipts: {}, bonusEarned: 0, homeVersion: 1, homeLegacyThrough: 1, homeActivities: freshHomeActivities(), pace: LEVEL_PACE, floorLevel: 1, floorFrom: 0 });
+export const LEVEL_HEAD_START = .25;
+export const freshProgression = () => ({ claimed: [1], pending: [], receipts: {}, bonusEarned: 0, levelCredit: 0, observedTrade: 0, homeVersion: 1, homeLegacyThrough: 1, homeActivities: freshHomeActivities(), pace: LEVEL_PACE, floorLevel: 1, floorFrom: 0 });
 export const levelEarnings = (s) => Math.max(0, s.earned - (s.progression?.bonusEarned ?? 0));
-const keptLevel = (s) => Math.max(1, ...(s.progression?.claimed ?? []).filter((n) => Number.isInteger(n) && n >= 1 && n <= LEVELS.length));
+const keptLevel = (p) => Math.max(1, ...(p?.claimed ?? []).filter((n) => Number.isInteger(n) && n >= 1 && n <= LEVELS.length));
+// Bank the next rank and a small head start, never several village-gated ranks.
+// Lifetime takings and the wallet remain intact, including trade above this cap.
+function progressBalance(s, p = s.progression, ledger = p) {
+  const trade = Math.max(0, s.earned - (p?.bonusEarned ?? 0)), next = LEVELS[Math.max(5, keptLevel(p))], after = next && LEVELS[next.level];
+  const bankLimit = next ? next.at + (after ? (after.at - next.at) * LEVEL_HEAD_START : 0) : null;
+  const valid = Number.isFinite(ledger?.levelCredit) && ledger.levelCredit >= 0 && Number.isFinite(ledger?.observedTrade) && ledger.observedTrade >= 0;
+  const available = valid ? Math.min(trade, ledger.levelCredit) + Math.max(0, trade - ledger.observedTrade) : trade;
+  const xp = Math.min(trade, bankLimit ?? trade, available);
+  return { xp, trade, bankLimit, bankFull: bankLimit !== null && xp >= bankLimit };
+}
+// Consume all observed trade before awarding a rank: overflow cannot be credited
+// again after a quest, a purchase, another tick or a save/reload raises the cap.
+function settleLevelCredit(s, p = s.progression, ledger = p) {
+  const balance = progressBalance(s, p, ledger);
+  p.levelCredit = balance.xp; p.observedTrade = balance.trade;
+}
 export function patchLevel(s) {
-  const xp = levelEarnings(s), kept = keptLevel(s), earned = LEVELS[Math.max(kept, LEVELS.filter(l => l.at <= xp).at(-1).level) - 1];
+  const { xp, bankLimit, bankFull } = progressBalance(s), kept = keptLevel(s.progression), earned = LEVELS[Math.max(kept, LEVELS.filter(l => l.at <= xp).at(-1).level) - 1];
   let current = LEVELS[0];
   for (const l of LEVELS.slice(1)) {
     if (l.level > kept && (l.level > earned.level || (l.level > 12 || s.progression?.homeVersion === 1) && homeRequirements(s, l.level).some(r => !r.met))) break;
@@ -49,14 +66,15 @@ export function patchLevel(s) {
   // The level a save had when the pace changed may sit above what the new pace
   // has earned yet: its bar fills from the earnings it had then, not from zero.
   const floor = s.progression?.floorLevel === current.level ? s.progression.floorFrom : NaN, from = floor < current.at ? floor : current.at;
-  return { ...current, xp, earnedLevel: earned.level, next: next ?? null, requirements, blocked, progress: next ? Math.max(0, Math.min(1, (xp - from) / (next.at - from))) : 1, tagline: blocked ? `Next milestone: ${requirements.find(r => !r.met).text}` : next ? `Next: ${next.name}` : "Every night is Halloween" };
+  return { ...current, xp, bankLimit, bankFull, earnedLevel: earned.level, next: next ?? null, requirements, blocked, progress: next ? Math.max(0, Math.min(1, (xp - from) / (next.at - from))) : 1, tagline: blocked ? `Next milestone: ${requirements.find(r => !r.met).text}` : next ? `Next: ${next.name}` : "Every night is Halloween" };
 }
 // Existing saves keep their level without a backlog of gifts or popups.
-export function restoreProgression(raw, s, legacy = false, legacyHome = false) {
+export function restoreProgression(raw, s, legacy = false, legacyHome = false, legacyCredit = false) {
   const p = freshProgression();
   if (legacy || !raw || typeof raw !== "object") {
     if (legacyHome || legacy) { p.claimed = LEVELS.slice(0, 12).filter(l => LEGACY_LEVEL_AT[l.level - 1] <= s.earned).map(l => l.level); p.homeLegacyThrough = p.claimed.at(-1) ?? 1; }
     p.floorLevel = Math.max(1, ...p.claimed); p.floorFrom = Math.max(0, Number(s.earned) || 0);
+    settleLevelCredit(s, p, null);
     return p;
   }
   p.bonusEarned = Number.isFinite(raw.bonusEarned) ? Math.max(0, Math.min(s.earned, raw.bonusEarned)) : 0;
@@ -80,11 +98,13 @@ export function restoreProgression(raw, s, legacy = false, legacyHome = false) {
     const rewards = LEVELS[level - 1].rewards;
     p.receipts[level] = rewards.map((r, i) => ({ ...r, ...(raw.receipts?.[level]?.[i]?.duplicate === true ? { duplicate: true } : {}) }));
   }
+  settleLevelCredit(s, p, legacyCredit ? null : raw);
   return p;
 }
 export function awardLevels(s) {
   if (s.paused) return [];
   s.progression ??= freshProgression();
+  settleLevelCredit(s);
   const p = s.progression, reached = patchLevel(s).level, unlocked = [];
   const coins = (amount) => { s.coins += amount; s.earned += amount; p.bonusEarned += amount; };
   for (const milestone of LEVELS) {

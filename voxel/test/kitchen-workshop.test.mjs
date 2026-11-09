@@ -9,6 +9,7 @@ import { RECIPE_BY_ID, INGREDIENTS } from "../src/content/cooking.js";
 
 const state = () => {
   const s = M.freshState(); s.progression.homeLegacyThrough = 12; s.coins = 50000; s.earned = 110000; s.house.level = 2;
+  s.progression.claimed = M.LEVELS.slice(0, 9).map(l => l.level);
   s.stock = [100, 10, 0, 0]; s.fresh = [[], [], [], []]; s.holds = [];
   assert.equal(C.buyFoodTruck(s), true); return s;
 };
@@ -117,7 +118,7 @@ test("unknown mixes, wrong methods and malformed or excess ingredient types do n
 
 test("mix discovery cannot bypass level, equipment, home-only or ingredient checks", () => {
   const s = state(); feed(s); assert.equal(X.startCookingMix(s, garden()), false);
-  range(s); s.earned = 1000; assert.equal(X.startCookingMix(s, garden()), false);
+  range(s); s.progression.claimed = [1]; s.earned = 1000; assert.equal(X.startCookingMix(s, garden()), false);
   s.earned = 2200; assert.equal(X.startCookingMix(s, { ...garden(), station: "truck" }), false);
   s.kitchen.pantry.herbs = 0; assert.equal(X.startCookingMix(s, garden()), false);
 });
