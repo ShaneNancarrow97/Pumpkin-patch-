@@ -193,3 +193,27 @@
 .skyla-display-note{margin:11px 0 0;font-size:12px;line-height:1.5;color:#c9b4d1}
 @media(max-width:430px){.skyla-display-heading{gap:9px}.skyla-display-heading h3{font-size:18px}.skyla-display-section .skyla-display-tab{gap:5px 7px;padding:9px;grid-template-columns:44px minmax(0,1fr)}.skyla-display-tab .skyla-display-art{width:44px;height:44px}.skyla-display-table-top{align-items:flex-start;flex-direction:column;gap:2px}.skyla-display-options{padding:11px}.skyla-display-choice-heading{align-items:flex-start;gap:7px}.skyla-display-free{white-space:normal;max-width:68px;text-align:center}.skyla-display-grid{gap:7px}.skyla-display-section .skyla-display-choice{padding-inline:5px}.skyla-display-choice .skyla-display-art{width:58px;height:58px}.skyla-display-choice-copy>b{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.skyla-display-section button{transition:none}}
+
+/* Compact Skyla stock chooser: preserve artwork and selection styling. */
+.skyla-display-section{margin:12px 0 16px}
+.skyla-display-tabs{gap:8px;margin-bottom:9px}
+.skyla-display-section .skyla-display-tab{grid-template-columns:40px minmax(0,1fr);min-height:72px;padding:8px 10px;gap:3px 8px;border-radius:13px}
+.skyla-display-tab .skyla-display-art,.skyla-display-tab>.skyla-display-empty{grid-column:1;grid-row:1/3;width:40px;height:40px}
+.skyla-display-table-top{grid-column:2;flex-direction:row;align-items:baseline;gap:6px}
+.skyla-display-table-copy{grid-column:2;display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 8px}
+.skyla-display-table-copy strong{font-size:13px}
+.skyla-display-tab-mark{display:none}
+.skyla-display-options{padding:10px;border-radius:15px}
+.skyla-display-choice-heading{margin-bottom:8px}
+.skyla-display-choice-heading h4{font-size:14px;margin-top:2px}
+.skyla-display-grid{gap:7px}
+.skyla-display-section .skyla-display-choice{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;min-height:88px;padding:9px 8px;gap:7px;text-align:left;border-radius:12px}
+.skyla-display-choice .skyla-display-art{width:44px;height:44px}
+.skyla-display-choice .skyla-display-empty{width:36px;height:36px;font-size:22px}
+.skyla-display-choice-copy{gap:2px}
+.skyla-display-choice-copy>b{font-size:13px;line-height:1.25}
+.skyla-display-price>span{display:none}
+.skyla-display-choice-status{font-size:12px;line-height:1.25}
+.skyla-display-check{top:4px;right:4px;width:16px;height:16px;font-size:11px}
+.skyla-display-note{margin-top:8px;line-height:1.35}
+@media(max-width:430px){.skyla-display-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.skyla-display-table-top small{font-size:12px}.skyla-display-section .skyla-display-tab{padding:7px}.skyla-display-section .skyla-display-choice{min-height:84px;grid-template-columns:38px minmax(0,1fr);padding:8px 6px;gap:5px}.skyla-display-choice .skyla-display-art{width:38px;height:38px}}
