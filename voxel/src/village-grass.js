@@ -34,23 +34,24 @@ const noise = (x, z) => Math.sin(x * .23 + Math.sin(z * .17) * 1.7) * .5 + Math.
 export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale = 1.5 }) {
   const group = new THREE.Group(), r = seeded(1213), uniforms = { uTime: { value: 0 }, uGrassPlayer: { value: new THREE.Vector2(1e6,1e6) }, uGrassCamera: { value: new THREE.Vector2(1e6,1e6) } };
   const material = new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, alphaHash: true });
-  material.customProgramCacheKey=()=>"village-grass-proximity-v1";
+  material.customProgramCacheKey=()=>"village-grass-distance-v2";
   material.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms,uniforms);
     shader.vertexShader = shader.vertexShader
-      .replace("#include <common>", "#include <common>\nuniform float uTime; uniform vec2 uGrassPlayer; uniform vec2 uGrassCamera; attribute float tip; varying float vTip; varying float vGrassVisibility;")
+      .replace("#include <common>", "#include <common>\nuniform float uTime; uniform vec2 uGrassPlayer; uniform vec2 uGrassCamera; attribute float tip; varying float vTip; varying float vGrassVisibility; varying float vGrassDistanceFade;")
       .replace("#include <begin_vertex>", `#include <begin_vertex>
         vTip = tip;
         vec4 root = instanceMatrix * vec4(0., 0., 0., 1.);
         vec4 worldRoot = modelMatrix * root;
         vGrassVisibility=smoothstep(${FADE.playerNear.toFixed(2)},${FADE.playerFar.toFixed(2)},distance(worldRoot.xz,uGrassPlayer)) * smoothstep(${FADE.cameraNear.toFixed(2)},${FADE.cameraFar.toFixed(2)},distance(worldRoot.xz,uGrassCamera));
+        vGrassDistanceFade = 1. - smoothstep(65., 105., distance(worldRoot.xz,uGrassCamera));
         transformed.y *= mix(.08,1.,vGrassVisibility);
         float wave = sin(uTime * 1.3 - (root.x * .9 + root.z * .5) * .35) * .5 + .5;
         float sway = (sin(uTime * 2.1 + root.x * .7 + root.z * .4) * .35 + wave * .9) * tip * tip;
         transformed.x += sway * .22; transformed.z -= sway * .12;`);
     shader.fragmentShader = shader.fragmentShader
-      .replace("#include <common>", "#include <common>\nvarying float vTip; varying float vGrassVisibility;")
-      .replace("vec4 diffuseColor = vec4( diffuse, opacity );", "vec4 diffuseColor = vec4( diffuse * (.38 + .82 * min(vTip, 1.)) * (vTip > 1.1 ? 1.25 : 1.), opacity * vGrassVisibility );");
+      .replace("#include <common>", "#include <common>\nvarying float vTip; varying float vGrassVisibility; varying float vGrassDistanceFade;")
+      .replace("vec4 diffuseColor = vec4( diffuse, opacity );", "vec4 diffuseColor = vec4( diffuse * (.38 + .82 * min(vTip, 1.)) * (vTip > 1.1 ? 1.25 : 1.), opacity * vGrassVisibility * vGrassDistanceFade );");
   };
   const geo = tuftGeometry(), bloom = flowerGeometry(), m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), p = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0), c = new THREE.Color();
   const patches = [], petals = [0xf6f0f5, 0xf5d04a, 0xf28fb5, 0x9a6ae0, 0xf08a3a];
@@ -90,7 +91,7 @@ export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale
       uniforms.uGrassPlayer.value.set(Number.isFinite(player?.x)?player.x:1e6,Number.isFinite(player?.z)?player.z:1e6);
       uniforms.uGrassCamera.value.set(Number.isFinite(camera?.position.x)?camera.position.x:1e6,Number.isFinite(camera?.position.z)?camera.position.z:1e6);
       if (!camera) return;
-      const cx = camera.position.x / scale, cz = -camera.position.z / scale, far = 30;
+      const cx = camera.position.x / scale, cz = -camera.position.z / scale, far = 105 / scale + Math.SQRT2 * PATCH / 2;
       for (const pt of patches) { const on = Math.hypot(pt.x - cx, pt.z - cz) < far; pt.mesh.visible = on; if (pt.flowers) pt.flowers.visible = on; }
     },
   };
