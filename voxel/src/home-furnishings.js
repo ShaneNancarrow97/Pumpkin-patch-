@@ -1,3 +1,4 @@
+import { EXPANSION_FURNISHING_RECIPES } from "./home-expansion-furnishings.js";
 import { buildModel } from "./decor-models/kit.js";
 import { meshGrid, voxelGroup } from "./voxel-mesh.js";
 import { HOME_FURNISHINGS_BY_ID } from "./content/home-furnishings.js";
@@ -47,6 +48,7 @@ function lantern(k,x,y,z) {
 }
 
 const recipes = {
+  ...EXPANSION_FURNISHING_RECIPES,
   "costume-rack": {width:84,height:102,depth:42,size:.0225,build(k){
     for(const x of [7,77]){
       k.box(x-5,2,3,x+5,6,39,C.wood);k.cyl([x,5,21],[x,91,21],1.7,C.iron);
@@ -160,6 +162,11 @@ function model(id) {
   const entry={geometry,data};cache.set(id,entry);return entry;
 }
 export function homeFurnishingProp(id) {
-  const m=model(id),group=voxelGroup(m.geometry,{shared:true});group.name=id;group.userData={...m.data,sockets:[]};return group;
+  const m=model(id),group=voxelGroup(m.geometry,{shared:true});group.name=id;group.userData={...m.data,sockets:[]};
+  if(id==='mothlight-lantern-night-diorama'){
+    const glows=group.children.filter(o=>o.material?.toneMapped===false).map(o=>{o.material=o.material.clone();return{material:o.material,colour:o.material.color.clone()};});
+    group.userData.tick=time=>{for(const g of glows)g.material.color.copy(g.colour).multiplyScalar(.96+.04*Math.sin(time*.7));};
+  }
+  return group;
 }
 export const homeFurnishingStats=id=>({...model(id).data});

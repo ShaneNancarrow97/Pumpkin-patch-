@@ -1,3 +1,6 @@
+import { expansionRewardOwned } from '../rules/village-expansion-benefits.js';
+import { actExpansionEconomy } from '../rules/village-expansion-economy.js';
+import { renderVillageExpansionEconomy, bindVillageExpansionEconomy } from './village-expansion-economy.js';
 import { SERVICE_OUT, SERVICE_BACK, SERVICE_RIGHT, serviceNav, serviceTabs, serviceHeading, serviceMetrics, serviceNotice, priceStepper, stockMeter } from "./service-kit.js";
 import { recipeShoppingList, kitchenNextStep } from "./kitchen-guide.js";
 import { maisieIcon } from "../maisie.js";
@@ -75,7 +78,7 @@ export function cookingSheets(ui) {
     if (station === "home" && !open) station = "truck";
     const stationMarkup = [station].map(id => {
       const job = s.kitchen.jobs[id], title = id === "home" ? "Home cooker" : "Truck hob";
-      if (!job) return ``; // Idle cookers need no card.
+      if (!job) {const wax=s.village?.expansion?.economy?.waxJob;if(wax?.station!==id)return ``;return `<article class="cooking-station is-busy">${cookingIcon('pumpkin-jam')}<div class="cooking-station-copy"><p class="cooking-kicker">${title} · utility recipe</p><h4>Preservation wax</h4><p class="cooking-note">${seconds(wax.remaining)} left · one pot for a harvest batch</p></div></article>`;} // Idle cookers need no card.
 
       const waiting = job.remaining <= 0, recipe = C.RECIPES.find(r => r.id === job.recipe);
       const runBatches = Math.max(1, count(job.batches || 1)), completed = Math.min(runBatches, count(job.completed));
@@ -97,15 +100,15 @@ export function cookingSheets(ui) {
   // A recipe is a tile in a grid; the chosen one opens a full-width panel under
   // its row with what it needs and one clear Cook button.
   function recipeCard(s, recipe) {
-    const learned=known(s,recipe.id), gated=patchLevel(s).level<recipe.level;
+    const learned=known(s,recipe.id), villageLocked=!learned&&recipe.discovery&&!expansionRewardOwned(s,recipe.discovery), gated=patchLevel(s).level<recipe.level||villageLocked;
     const ready=learned?K.cookingReadiness(s,recipe.id,station,1):null;
     const mood=learned?(ready.ok?"ready":"short"):gated?"locked":"new";
-    const badge=learned?(ready.ok?"Ready":shortReason(ready.reason,ready.missingEquipment.length)):gated?`Level ${recipe.level}`:"New recipe";
+    const badge=learned?(ready.ok?"Ready":shortReason(ready.reason,ready.missingEquipment.length)):villageLocked?`Discover with ${recipe.discovery==='cinder-recipe'?'Cinder':'Granny'}`:gated?`Level ${recipe.level}`:"New recipe";
     return `<article class="recipe-entry recipe-tile is-${mood}${selectedRecipe===recipe.id?' is-selected':''}" data-cooking-recipe="${recipe.id}"><button class="recipe-choice" data-recipe-select="${recipe.id}" aria-pressed="${selectedRecipe===recipe.id}" aria-controls="cooking-chosen-dish">${recipeArt(recipe.id)}<b>${recipe.name}</b><small>${recipe.yield} portions${recipe.homeOnly?' · Home':''}</small><em class="recipe-badge">${badge}</em></button></article>`;
   }
   function chosenDish(s,recipe){
     if(!recipe)return '<div class="cooking-empty">Choose a dish from your recipe book.</div>';
-    const run=batchCount(s,recipe.id),learned=known(s,recipe.id),gated=patchLevel(s).level<recipe.level;
+    const run=batchCount(s,recipe.id),learned=known(s,recipe.id),villageLocked=!learned&&recipe.discovery&&!expansionRewardOwned(s,recipe.discovery),gated=patchLevel(s).level<recipe.level||villageLocked;
     const ready=learned?K.cookingReadiness(s,recipe.id,station,run):null;
     const shopping=recipeShoppingList(s,recipe,run), incoming=Object.entries(recipe.ingredients).some(([id,n])=>count(s.kitchen.pantry[id])<n*run);
     let help='';
@@ -114,16 +117,16 @@ export function cookingSheets(ui) {
     else if(shopping.quantity)help=`<button class="button can-act" data-recipe-order="${recipe.id}">Add missing ingredients to cart</button>`;
     else if(incoming)help='<button class="button" data-cooking-go="deliveries">View incoming delivery</button>';
     const canCook=learned&&editable()&&ready.ok,canLearn=!learned&&editable()&&!gated&&s.coins>=recipe.research;
-    const cta=learned?`<button class="button cook-cta${canCook?' can-act':''}" data-cooking-start="${recipe.id}" data-cooking-at="${station}" ${disabled(canCook)} data-pad-default>Cook ${recipe.yield*run} portions <span aria-hidden="true">→</span></button>`:`<button class="button purchase-button cook-cta${canLearn?' can-act':''}" data-cooking-research="${recipe.id}" ${disabled(canLearn)} data-pad-default>${gated?`Unlocks at level ${recipe.level}`:`Learn recipe · ${money(recipe.research)}`}</button>`;
+    const cta=learned?`<button class="button cook-cta${canCook?' can-act':''}" data-cooking-start="${recipe.id}" data-cooking-at="${station}" ${disabled(canCook)} data-pad-default>Cook ${recipe.yield*run} portions <span aria-hidden="true">→</span></button>`:`<button class="button purchase-button cook-cta${canLearn?' can-act':''}" data-cooking-research="${recipe.id}" ${disabled(canLearn)} data-pad-default>${villageLocked?`Discover with ${recipe.discovery==='cinder-recipe'?'Cinder':'Granny'}`:gated?`Unlocks at level ${recipe.level}`:`Learn recipe · ${money(recipe.research)}`}</button>`;
     return `<article class="recipe-detail cook-dish-hero" id="cooking-chosen-dish"><div class="cook-dish-cover">${recipeArt(recipe.id,128)}<small>${recipe.homeOnly?'Home kitchen recipe':'Maisie’s recipe book'}</small></div><div class="cook-dish-content"><p class="cooking-kicker">${learned?'On the menu':'A new discovery'}</p><h3>${recipe.name}</h3><p class="cook-dish-description">${recipe.text}</p><div class="cook-dish-facts"><span>${recipe.yield*run} portions</span><span>${seconds(recipe.seconds*Math.pow(.85,s.kitchen.upgrades.speed)*run)}</span><span>${money(s.kitchen.prices[recipe.id])} each</span></div>${learned?batchControl(s,recipe.id):''}<div class="cooking-inputs">${inputs(s,recipe,run)}</div>${ready?.missingEquipment.length?requirements(s,recipe):''}${learned&&!ready.ok?`<p class="cooking-note is-warning" data-cooking-ready-reason>${ready.reason}</p>`:''}${learned&&ready.ok&&!editable()?`<p class="cooking-note is-warning cook-paused">Tea break: the farm is paused. <button class="service-inline-link" data-cooking-action="resume">Carry on</button></p>`:''}<div class="cook-dish-actions">${cta}${help}</div><button class="service-inline-link cook-experiment-link" data-cooking-fill-mix="${recipe.id}" ${disabled(!gated)}>Try these in the mixing pot</button></div></article>`;
   }
   function recipes(s) {
-    const level=patchLevel(s).level,learned=C.RECIPES.filter(r=>known(s,r.id)),discover=C.RECIPES.filter(r=>!known(s,r.id)&&r.level<=level),future=C.RECIPES.filter(r=>r.level>level&&!known(s,r.id));
+    const level=patchLevel(s).level,learned=C.RECIPES.filter(r=>known(s,r.id)),discover=C.RECIPES.filter(r=>!known(s,r.id)&&r.level<=level&&(!r.discovery||expansionRewardOwned(s,r.discovery))),future=C.RECIPES.filter(r=>!known(s,r.id)&&(r.level>level||r.discovery&&!expansionRewardOwned(s,r.discovery)));
     const lists={known:learned,new:discover,later:future};
     if(!lists[recipeFilter].length)recipeFilter=learned.length?'known':discover.length?'new':'later';
     const visible=lists[recipeFilter];
     if(!visible.some(r=>r.id===selectedRecipe))selectedRecipe=visible[0]?.id;
-    return `${stations(s)}${chosenDish(s,C.RECIPE_BY_ID[selectedRecipe])}<section class="cooking-section cook-book-section"><div class="service-section-heading"><h3>Recipe book</h3><button class="service-inline-link" data-cooking-go="mix">Mix your own ${SERVICE_OUT}</button></div><div class="cook-book-filters" role="group" aria-label="Recipe collection">${[['known','My recipes',learned.length],['new','Discover',discover.length],['later','Coming later',future.length]].map(([id,label,n])=>`<button data-recipe-filter="${id}" aria-pressed="${recipeFilter===id}">${label}<small>${n}</small></button>`).join('')}</div><div class="recipe-book">${visible.map(r=>recipeCard(s,r)).join('')}</div></section>${nextStep(s)}`;
+    return `${stations(s)}${chosenDish(s,C.RECIPE_BY_ID[selectedRecipe])}<section class="cooking-section cook-book-section"><div class="service-section-heading"><h3>Recipe book</h3><button class="service-inline-link" data-cooking-go="mix">Mix your own ${SERVICE_OUT}</button></div><div class="cook-book-filters" role="group" aria-label="Recipe collection">${[['known','My recipes',learned.length],['new','Discover',discover.length],['later','Coming later',future.length]].map(([id,label,n])=>`<button data-recipe-filter="${id}" aria-pressed="${recipeFilter===id}">${label}<small>${n}</small></button>`).join('')}</div><div class="recipe-book">${visible.map(r=>recipeCard(s,r)).join('')}</div></section>${nextStep(s)}${expansionRewardOwned(s,'preservation-research')||expansionRewardOwned(s,'herb-beds')?`<details class="service-disclosure" data-cooking-disclosure="village-preservation" ${disclosures['village-preservation']?'open':''}><summary>Tansy’s preservation recipes</summary>${renderVillageExpansionEconomy(s,{who:'tansy',station})}</details>`:''}`;
   }
 
   function nextStep(s){
@@ -223,15 +226,16 @@ export function cookingSheets(ui) {
     const s=ui.state;if(!s.kitchen.purchased)return locked(s);
     const group=groupFor(tab),identity=tab==='food'?'Maisie’s menu board':station==='home'?'Your home kitchen':'Maisie’s midnight kitchen';
     const pages={recipes,mix,equipment:progress,deliveries,pantry,food,upgrades:progress};
-    const jobs=Object.entries(s.kitchen.jobs).filter(([,j])=>j),status=jobs.length?`${jobs.length} cooker${jobs.length===1?'':'s'} busy`:'Ready for a little kitchen magic';
+    const jobs=Object.entries(s.kitchen.jobs).filter(([,j])=>j),busyCount=jobs.length+(s.village?.expansion?.economy?.waxJob?1:0),status=busyCount?`${busyCount} cooker${busyCount===1?'':'s'} busy`:'Ready for a little kitchen magic';
     // Away from the Cook tab (which has its own card for the cooker in hand), a
     // strip of what's on the go: the dish, where, the batch, the time left for
     // the whole run and a bar that fills (in 2% steps, so it redraws sparingly).
     const nowCooking=jobs.length&&group!=='cook'?`<div class="cook-now" aria-label="Cooking now">${jobs.map(([where,j])=>{const runs=Math.max(1,count(j.batches||1)),done=Math.min(runs,count(j.completed)),each=Math.max(1,j.duration??C.RECIPE_BY_ID[j.recipe]?.seconds??1),left=Math.max(0,runs-done-1)*each+Math.max(0,Number(j.remaining)||0),filled=Math.round(Math.max(0,Math.min(1,(done+1-Math.max(0,Number(j.remaining)||0)/each)/runs))*50)*2;return `<div class="cook-now-job"><span class="cook-now-art">${recipeArt(j.recipe,40)}</span><span class="cook-now-copy"><b>${C.RECIPE_BY_ID[j.recipe]?.name??'Something new'}</b><small>${where==='home'?'Home kitchen':'The truck'} · ${j.remaining<=0?'ready: make room in the cupboard':`batch ${Math.min(runs,done+1)} of ${runs} · ${seconds(left)} left`}</small><i class="cook-now-bar"><i style="width:${filled}%"></i></i></span></div>`;}).join('')}</div>`:'';
-    return `<div class="cooking-sheet service-sheet cooking-simple" data-cooking-state="owned" data-menu-view="cooking:${tab}"><header class="service-identity service-hero"><div>${station==='home'?cookingIcon('hob'):maisieIcon()}<span><b>${identity}</b><small><span class="service-status${jobs.length?' is-open':''}">${status}</span></small></span></div><button class="service-location" data-cooking-action="${station==='home'&&tab!=='food'?'home':'visit'}" aria-label="View ${station==='home'&&tab!=='food'?'room':'truck'}">${station==='home'&&tab!=='food'?'Room':'Truck'} ${SERVICE_OUT}</button></header>${nowCooking}${(()=>{const act=tabActions(s);return serviceTabs('cooking-section','Kitchen management',tabs,group).replace(/data-cooking-section="(\w+)"/g,(m,id)=>act.has(id)&&id!==group?`${m} data-has-action`:m);})()}${s.paused?'<div class="service-paused"><span>Farm paused · cooking and deliveries wait.</span><button class="service-inline-link" data-cooking-action="resume">Resume</button></div>':''}${tab==='mix'?`<button class="service-inline-link" data-cooking-go="recipes">${SERVICE_BACK} Back to recipes</button>`:''}${pages[tab](s)}</div>`;
+    return `<div class="cooking-sheet service-sheet cooking-simple" data-cooking-state="owned" data-menu-view="cooking:${tab}"><header class="service-identity service-hero"><div>${station==='home'?cookingIcon('hob'):maisieIcon()}<span><b>${identity}</b><small><span class="service-status${busyCount?' is-open':''}">${status}</span></small></span></div><button class="service-location" data-cooking-action="${station==='home'&&tab!=='food'?'home':'visit'}" aria-label="View ${station==='home'&&tab!=='food'?'room':'truck'}">${station==='home'&&tab!=='food'?'Room':'Truck'} ${SERVICE_OUT}</button></header>${nowCooking}${(()=>{const act=tabActions(s);return serviceTabs('cooking-section','Kitchen management',tabs,group).replace(/data-cooking-section="(\w+)"/g,(m,id)=>act.has(id)&&id!==group?`${m} data-has-action`:m);})()}${s.paused?'<div class="service-paused"><span>Farm paused · cooking and deliveries wait.</span><button class="service-inline-link" data-cooking-action="resume">Resume</button></div>':''}${tab==='mix'?`<button class="service-inline-link" data-cooking-go="recipes">${SERVICE_BACK} Back to recipes</button>`:''}${pages[tab](s)}</div>`;
   }
 
   function bind(host) {
+    bindVillageExpansionEconomy(host,(id,action)=>{const result=actExpansionEconomy(ui.state,id.slice(8),action);if(result.ok){ui.save();ui.tone?.(720);}ui.notice?.(result.reason);ui.draw();});
     host.querySelectorAll('[data-cooking-section]').forEach(b=>b.onclick=()=>{tab=({cook:'recipes',supplies:'deliveries',food:'food',improve:station==='home'?'equipment':'upgrades'})[b.dataset.cookingSection];ui.draw();});
     host.querySelectorAll('[data-recipe-filter]').forEach(b=>b.onclick=()=>{recipeFilter=b.dataset.recipeFilter;selectedRecipe=undefined;ui.draw();});
     host.querySelectorAll('[data-recipe-select]').forEach(b=>b.onclick=()=>{selectedRecipe=b.dataset.recipeSelect;ui.draw();});

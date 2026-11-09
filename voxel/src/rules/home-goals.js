@@ -1,3 +1,4 @@
+import { expansionLevelRequirement } from "./village-expansion-access.js";
 // A home earns its place in the farm's story. Requirements read saved activity
 // and useful furniture; the UI decides where to take the player next.
 import { KITCHEN_CAPABILITIES } from "../content/kitchen-equipment.js";
@@ -47,12 +48,14 @@ export const HOME_MILESTONES = Object.freeze([
 // A claimed milestone stays complete even if its furniture is stored later.
 export function homeRequirements(s, level) {
   const m = HOME_MILESTONES.find(m => m.level === level);
-  if (!m) return [];
+  const village = expansionLevelRequirement(s, level);
+  if (!m) return village ? [village] : [];
   const honoured = (s.progression?.homeLegacyThrough ?? 1) >= level || s.progression?.claimed?.includes(level);
-  return m.needs.map(({ read, ...r }) => ({ ...r, current: Math.min(r.target, Math.max(0, read(s))), met: honoured || read(s) >= r.target, honoured }));
+  return [...m.needs.map(({ read, ...r }) => ({ ...r, current: Math.min(r.target, Math.max(0, read(s))), met: honoured || read(s) >= r.target, honoured })), ...(village ? [village] : [])];
 }
 export function homeGoal(s) {
-  for (const m of HOME_MILESTONES) {
+  for (let level=3;level<=20;level++) {
+    const m=HOME_MILESTONES.find(m=>m.level===level)??{level,title:"Follow the lantern road"};
     const requirements = homeRequirements(s, m.level), missing = requirements.find(r => !r.met);
     if (missing) return { level: m.level, title: m.title, text: missing.text, action: missing.action, room: missing.room, requirements };
   }

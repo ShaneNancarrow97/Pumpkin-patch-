@@ -8,7 +8,7 @@
     "similarity_boost": 0.75,
     "style": 0.16,
     "use_speaker_boost": true,
-    "speed": 1.0
+    "speed": 1
   },
   "speakers": {
     "narrator": {
@@ -70,6 +70,11 @@
       "voice_id": "nPczCjzI2devNBz1zQrb",
       "voice_name": "Brian",
       "direction": "Deep, resonant collector"
+    },
+    "granny": {
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "voice_name": "Charlotte",
+      "direction": "Proposed warm, gravelly troll grandmother; unrecorded role, never an impersonation of a real person."
     }
   }
 }

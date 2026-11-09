@@ -42,19 +42,26 @@ export const WATERS = Object.freeze([
   shift("marsh", { id: "marsh", kind: "rect", x0: 38, z0: 76, x1: 122, z1: 98, y: -1.05 }),
 ]);
 // The valley: the realm runs from the Copse's far side to the Moor's, and from the gate to the Marsh; beyond it the hills rise into the woods.
-export const REALM = Object.freeze({ x0: -34, z0: -22, x1: 168, z1: 134 });
+export const REALM = Object.freeze({ x0: -102, z0: -22, x1: 168, z1: 134 });
 const smooth = (t) => t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);
 const inside = (r, x, z) => x >= r.x0 && x <= r.x1 && z >= r.z0 && z <= r.z1;
 // Low rolling rises in the woods between the districts, kept off roads.
 const ROLLS = [[22, 46, 9, 2.2], [92, 48, 10, 2.6], [104, 92, 9, 2], [26, 108, 10, 2.4], [130, 96, 9, 2.2], [-20, 30, 10, 1.8], [-24, 122, 10, 2.4]];
 
+// A continuous timber causeway joins the Marsh clues before its stone restoration.
+export const MARSH_CAUSEWAY=Object.freeze([[58,112],[75,112],[85,116],[77,118],[75,120],[85,122],[94,122]].map(([x,z])=>Object.freeze({x,z})));
+export function onMarshCauseway(x,z){return MARSH_CAUSEWAY.slice(1).some((b,i)=>{const a=MARSH_CAUSEWAY[i],dx=b.x-a.x,dz=b.z-a.z,t=Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/(dx*dx+dz*dz||1)));return Math.hypot(x-a.x-dx*t,z-a.z-dz*t)<1.7;});}
 // How high the ground is at (x, z) on the design grid.
 export function terrainHeight(x, z) {
+  // The western expansion joins the Copse at its existing three-metre shelf.
+  if(x>=-100&&x<=-32&&z>=46&&z<=116)return 3;
+  if(x>=-34&&x<=2&&z>=94&&z<=108)return 3;
   for (const r of RAMPS) if (inside(r, x, z)) {
     if (r.bridge) return 0;
     const t = r.axis === "z" ? (z - r.z0) / (r.z1 - r.z0) : (x - r.x0) / (r.x1 - r.x0);
     return r.from + (r.to - r.from) * Math.min(1, Math.max(0, t));
   }
+  if(onMarshCauseway(x,z))return -.45;
   for (const t of TERRACES) if (inside(t, x, z)) return t.id === "marsh" && islandAt(x, z) ? -.45 : t.y;
   const out = Math.max(REALM.x0 - x, x - REALM.x1, REALM.z0 - z, z - REALM.z1, 0);
   if (out > 0) return smooth(out / 26) * 14 + Math.sin(x * .13) * Math.cos(z * .11) * 1.4 * smooth(out / 10);
@@ -67,6 +74,7 @@ export const terraceAt = (x, z) => TERRACES.find((t) => inside(t, x, z)) ?? null
 export const rampAt = (x, z) => RAMPS.find((r) => inside(r, x, z)) ?? null;
 // Whether a point is open water (nothing grows or stands there).
 export function isWater(x, z) {
+  if(onMarshCauseway(x,z))return false;
   for (const w of WATERS) if (inside(w, x, z) && !(w.inner && inside(w.inner, x, z)) && !rampAt(x, z)) return w.kind === "ring" || !islandAt(x, z);
   return false;
 }

@@ -1,3 +1,4 @@
+import { EXPANSION_FARM_RECIPES } from './village-expansion-economy.js';
 // First playable cooking tier. These gates follow the published twelve-level
 // economy; a future progression pass can change data without replacing saves.
 export const COOKING = Object.freeze({ level: 5, price: 900, deliverySeconds: 60, deliveryFee: 6, orderLimit: 40, maxOrders: 2, pantryBase: 60, foodBase: 30 });
@@ -48,6 +49,7 @@ export const RECIPES = Object.freeze([
   { id: "fish-supper", name: "Lantern fish supper", level: 6, price: 16, yield: 2, seconds: 50, research: 360, ingredients: { fish: 2, flour: 1, butter: 1 }, pumpkins: { 0: 1 }, method: "pan", equipment: ["hob", "pan"], text: "Lake fish in crisp batter, with orange pumpkin wedges on the side." },
   { id: "crayfish-boil", name: "Bog crayfish boil", level: 7, price: 18, yield: 3, seconds: 55, research: 520, ingredients: { crayfish: 2, stock: 1, herbs: 1, spices: 1 }, pumpkins: {}, method: "simmer", equipment: ["hob", "pot"], text: "Crayfish from the traps, simmered red in a spiced cauldron." },
   { id: "witchs-fish-pie", name: "Witch's fish pie", level: 9, price: 25, yield: 3, seconds: 80, research: 1100, ingredients: { fish: 2, milk: 1, flour: 1, butter: 1, herbs: 1 }, pumpkins: {}, method: "bake", equipment: ["oven", "tray"], text: "Lake fish under a golden crust, with a pinch of moonwort." },
+  ...EXPANSION_FARM_RECIPES,
 ].map(r => Object.freeze({ ...r,
   method: r.method ?? (r.id === "wedges" ? "pan" : ["soup", "toffee-apples", "pumpkin-jam"].includes(r.id) ? "simmer" : "bake"),
   equipment: Object.freeze(r.equipment ?? (r.id === "wedges" ? ["hob", "pan"] : ["soup", "toffee-apples", "pumpkin-jam"].includes(r.id) ? ["hob", "pot"] : ["oven", "tray"])),

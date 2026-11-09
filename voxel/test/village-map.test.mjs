@@ -24,29 +24,29 @@ test("the map keeps all five areas visible and uses the current invitation gate"
   assert.ok(open.rows.every(r => r.complete));
 });
 
-test("meeting a future area's level and available quest goals never pretends the chapter is playable", () => {
+test("district map unlocks follow the same restored story and level gates as walking", () => {
   const state = village(20);
   state.village.quests["two-doorbells"] = { done: true, step: 10, base: null };
   state.village.story = ["two-doorbells", "footbridge", "restaurant-opening", "four-stories"];
   const rows = villageMapDistricts(state), copse = rows.find(d => d.id === "copse");
   assert.equal(copse.rows.find(r => r.key === "level").complete, true);
   assert.equal(copse.rows.find(r => r.key === "story").complete, true);
-  assert.equal(copse.open, false); assert.equal(copse.available, false);
-  assert.equal(copse.rows.find(r => r.key === "chapter").complete, false);
+  assert.equal(copse.open, true); assert.equal(copse.available, true);
   for (const district of rows.filter(d => d.id !== "green")) {
     assert.equal(district.open, M.districtOpen(state, district.id));
-    assert.equal(district.stateLabel, "Locked · later chapter");
-    assert.equal(district.rows.find(r => r.key === "chapter").value, "To come");
+    assert.equal(district.stateLabel, district.id==='copse'?"Explorable":"Locked · story & level");
+    assert.ok(district.rows.every(r=>!r.planned),'all shipped chapters have real unlock criteria');
   }
-  // Later story definitions are not yet real quest transactions.
-  assert.ok(rows.find(d => d.id === "quarry").rows.find(r => r.key === "story").planned);
+  assert.match(rows.find(d=>d.id==='quarry').rows.find(r=>r.key==='story').label,/Every Window a Welcome/);
+  for(const flag of ['copse-restored','restaurant-opening','green-seal','copse-seal','quarry-seal','moor-seal'])state.village.expansion.effects.push(flag);
+  for(const district of villageMapDistricts(state)){assert.equal(district.open,true,district.id);assert.ok(district.rows.every(r=>r.complete),district.id);}
 });
 
 test("selected lock details report the real level and quest while keeping the region clickable", () => {
   const state = village(), { html } = renderVillageMap(state, { selectedDistrict: "copse" });
   assert.match(html, /data-vg-map-detail="copse"/);
   assert.match(html, /Patch level 6/); assert.match(html, /Complete Two Doorbells/);
-  assert.match(html, /district itself comes in a later update/);
+  assert.match(html, /follow the physical walking path/);assert.doesNotMatch(html,/comes in a later update/);
   for (const district of DISTRICTS) {
     const pin = html.match(new RegExp(`<button class="vg-map-pin[^>]*data-vg-map-district="${district.id}"[^>]*>`))?.[0];
     assert.ok(pin, `${district.id} has a real button rather than an inaccessible SVG hit target`);

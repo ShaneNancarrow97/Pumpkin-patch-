@@ -61,9 +61,9 @@ export function hayrideSheets(ui) {
   function scenery(s) {
     const h = ride(s), owned = new Set(h.haunts?.owned ?? []), active = new Set(h.haunts?.active ?? []);
     return `<details class="hayride-disclosure" data-hayride-disclosure="scares" ${scaresOpen ? "open" : ""}><summary><span>Scares & scenery<small>Purchase and switch woodland effects</small></span><span class="hayride-disclosure-count">${active.size}/${HAYRIDE_SCARES.length}</span></summary><div class="hayride-scare-list">${HAYRIDE_SCARES.map(p => {
-      const bought = owned.has(p.id), on = bought && active.has(p.id), locked = h.tier < p.tier;
-      const canBuy = !locked && editable(s) && s.coins >= p.cost;
-      return `<article class="hayride-scare${on ? " is-active" : ""}"><div><h4>${p.name}</h4><p>${p.text}</p><small>+${p.scare} scare${locked ? ` · Tier ${p.tier}` : ""}</small></div>${bought ? `<button class="button" data-hayride-scare-toggle="${p.id}" aria-pressed="${on}" ${disabled(editable(s))}>${on ? "On" : "Off"}</button>` : `<button class="button${!locked ? " purchase-button" : ""}" data-hayride-scare-buy="${p.id}" ${disabled(canBuy)}>${locked ? `Tier ${p.tier}` : money(p.cost)}</button>`}</article>`;
+      const bought = owned.has(p.id), on = bought && active.has(p.id), locked = h.tier < p.tier, storyLocked=!!p.requiresVillage&&!s.village?.expansion?.effects?.includes(p.requiresVillage);
+      const canBuy = !locked && !storyLocked && editable(s) && s.coins >= p.cost;
+      return `<article class="hayride-scare${on ? " is-active" : ""}"><div><h4>${p.name}</h4><p>${p.text}</p><small>+${p.scare} scare${locked ? ` · Tier ${p.tier}` : ""}</small></div>${bought ? `<button class="button" data-hayride-scare-toggle="${p.id}" aria-pressed="${on}" ${disabled(editable(s))}>${on ? "On" : "Off"}</button>` : `<button class="button${!locked ? " purchase-button" : ""}" data-hayride-scare-buy="${p.id}" ${disabled(canBuy)}>${storyLocked ? "Granny’s story" : locked ? `Tier ${p.tier}` : p.cost===0 ? "Claim scene" : money(p.cost)}</button>`}</article>`;
     }).join("")}</div><p class="hayride-note">Buy once, then switch each improvement on or off. Every base scene stays on the route.</p></details>`;
   }
 

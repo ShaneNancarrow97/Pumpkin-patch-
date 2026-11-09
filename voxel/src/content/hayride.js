@@ -20,6 +20,7 @@ export const HAYRIDE_SCARES = [
   { id: "bride-procession", name: "The bride's procession", tier: 2, cost: 2200, scare: 17, text: "The manor's bride approaches through a veil of cold mist." },
   { id: "spectral-burst", name: "Spectral pursuit", tier: 2, cost: 3200, scare: 18, text: "The purple gas ghost surges towards the lane before the investigators repel it." },
   { id: "bus-breakout", name: "Prison bus breakout", tier: 3, cost: 4500, scare: 20, text: "Zombie passengers lurch from the prison bus at the final bend." },
+  { id: "grannys-last-light", name: "Granny’s last light", tier: 1, cost: 0, scare: 10, requiresVillage: "granny-invited", text: "Earned in Mothlight: Granny steps from her crooked cottage as the watching scarecrows greet the wagon." },
 ];
 export const HAYRIDE_SCARE_BY_ID = Object.fromEntries(HAYRIDE_SCARES.map(p => [p.id, p]));
 // Extra vehicles run their own paid circuit; quicker loading never skips it.

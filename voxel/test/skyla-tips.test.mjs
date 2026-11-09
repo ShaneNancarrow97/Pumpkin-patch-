@@ -17,18 +17,18 @@ test('the original three tip tiers retain their exact prices and deterministic p
   }
 });
 
-test('the two additional upgrades spend once, stop at five and round-trip through version18',()=>{
+test('the two additional upgrades spend once, stop at five and round-trip through the current save format',()=>{
   let s=ready();s.coins=50000;s.customerCare.tipJar=3;
   assert.equal(M.careUpgradeCost(s,'tipJar'),9500);
   s.paused=true;assert.equal(M.buyCareUpgrade(s,'tipJar'),false);s.paused=false;
   s.shop.unlocked=false;assert.equal(M.buyCareUpgrade(s,'tipJar'),false);s.shop.unlocked=true;
   s.coins=9499;assert.equal(M.buyCareUpgrade(s,'tipJar'),false);s.coins=50000;
   const before=s.coins;assert.equal(M.buyCareUpgrade(s,'tipJar'),true);assert.equal(s.customerCare.tipJar,4);assert.equal(s.coins,before-9500);
-  s=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.equal(s.version,18);assert.equal(s.customerCare.tipJar,4);
+  s=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));assert.equal(s.version,M.STATE_VERSION);assert.equal(s.customerCare.tipJar,4);
   assert.equal(M.careUpgradeCost(s,'tipJar'),22000);assert.equal(M.buyCareUpgrade(s,'tipJar'),true);assert.equal(s.customerCare.tipJar,5);
   const saved=JSON.stringify(s);assert.equal(M.buyCareUpgrade(s,'tipJar'),false);assert.equal(M.careUpgradeCost(s,'tipJar'),undefined);assert.equal(JSON.stringify(s),saved);
   assert.equal(s.customerCare.invested,31500);assert.equal(s.coins,before-31500);
-  const raw=M.saveData(s);raw.customerCare.tipJar=99;assert.equal(M.restoreState(raw).customerCare.tipJar,5);assert.equal(M.STATE_VERSION,18);
+  const raw=M.saveData(s);raw.customerCare.tipJar=99;assert.equal(M.restoreState(raw).customerCare.tipJar,5);assert.equal(M.STATE_VERSION,19);
 });
 
 test('new tiers improve real tips without rerolling quality or exceeding the remaining wallet',()=>{

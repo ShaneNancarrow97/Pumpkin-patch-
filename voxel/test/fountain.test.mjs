@@ -63,12 +63,12 @@ test('a helper basket skips a second star that no longer fits and still picks a 
   assert.equal(s.plots[1].fountain,true);assert.equal(s.fountain.popped,1);assert.equal(M.barnSpace(s),0);
 });
 
-test('version18 retains growing stars, paid seed ownership and serials without replaying bursts',()=>{
+test('current saves retain growing stars, paid seed ownership and serials without replaying bursts',()=>{
   const s=fresh();M.buyFountainSeeds(s,5);s.fountain.planted=178;s.plots[2]={phase:'growing',progress:.4,variety:1,fountain:true};ripe(s,0,3);M.harvest(s,0);
   const raw=JSON.parse(JSON.stringify(M.saveData(s))),back=M.restoreState(raw);
-  assert.equal(back.version,18);assert.equal(back.fountain.owned,true);assert.equal(back.fountain.planted,178);assert.equal(back.fountain.popped,1);assert.equal(back.fountain.coins,100);assert.equal(back.plots[2].fountain,true);assert.equal(back.plots[2].variety,1);assert.equal(back.fountain.last,null);assert.deepEqual(M.drainFountainBursts(back),[]);
+  assert.equal(back.version,M.STATE_VERSION);assert.equal(back.fountain.owned,true);assert.equal(back.fountain.planted,178);assert.equal(back.fountain.popped,1);assert.equal(back.fountain.coins,100);assert.equal(back.plots[2].fountain,true);assert.equal(back.plots[2].variety,1);assert.equal(back.fountain.last,null);assert.deepEqual(M.drainFountainBursts(back),[]);
   const legacy=JSON.parse(fs.readFileSync(new URL('fixtures/save-file-v1-state17.json',import.meta.url),'utf8')).state;
-  const old=M.restoreState(legacy);assert.equal(old.version,18);assert.deepEqual(old.fountain,M.freshFountain());assert.equal(old.coins,legacy.coins);assert.equal(old.earned,legacy.earned);
+  const old=M.restoreState(legacy);assert.equal(old.version,M.STATE_VERSION);assert.deepEqual(old.fountain,M.freshFountain());assert.equal(old.coins,legacy.coins);assert.equal(old.earned,legacy.earned);
   const junk=M.restoreState({...raw,fountain:{owned:'yes',planted:Infinity,popped:-1,coins:'100'},plots:raw.plots.map((p,i)=>i===2?{...p,pinata:true}:p)});
   assert.equal(junk.fountain.owned,false);assert.equal(junk.fountain.planted,0);assert.equal(junk.fountain.popped,0);assert.equal(junk.fountain.coins,0);assert.equal(junk.plots[2].pinata,undefined);
 });

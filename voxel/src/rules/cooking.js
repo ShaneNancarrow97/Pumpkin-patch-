@@ -1,3 +1,4 @@
+import { expansionRewardOwned } from './village-expansion-benefits.js';
 // Rules own money, inventories and timers. The truck/cart scene only reads them.
 import { COOKING, INGREDIENTS, INGREDIENT_BY_ID, RECIPES, RECIPE_BY_ID, KITCHEN_UPGRADES } from "../content/cooking.js";
 import { patchLevel } from "./levels.js";
@@ -59,7 +60,7 @@ export function cancelIngredientOrder(s, id) {
 }
 export function researchRecipe(s, id) {
   const k = s.kitchen, r = RECIPE_BY_ID[id];
-  if (s.paused || !k?.purchased || !r || k.recipes.includes(id) || patchLevel(s).level < r.level || s.coins < r.research) return false;
+  if (s.paused || !k?.purchased || !r || r.discovery && !expansionRewardOwned(s, r.discovery) || k.recipes.includes(id) || patchLevel(s).level < r.level || s.coins < r.research) return false;
   s.coins -= r.research; k.ledger.researchSpend += r.research; k.recipes.push(id); return true;
 }
 // Reserve all paid output, not just the next batch, across both stations.
@@ -73,13 +74,14 @@ function readiness(s, id, station, batches, experiment = false) {
   if (s.paused) return no("Resume the game to cook.");
   if (!k?.purchased) return no("Purchase the food truck first.");
   if (!r || (!experiment && !k.recipes.includes(id))) return no("Learn this recipe or try it in the mixing pot.");
+  if (r.discovery && !k.recipes.includes(id) && !expansionRewardOwned(s,r.discovery)) return no("Discover this recipe with its village neighbour first.");
   if (patchLevel(s).level < r.level) return no(`Opens at patch level ${r.level}.`);
   if (!["truck", "home"].includes(station)) return no("Choose a cooking station.");
   if (r.homeOnly && station !== "home") return no("Cook this dish in your home kitchen.");
   if (station === "home" && !homeKitchenOpen(s)) return no("Upgrade the house to open its kitchen.");
   const equipment = equipmentRequirements(s, r, station); info.missingEquipment = equipment.missing;
   if (!equipment.ok) return no(`Need ${equipment.names.join(" and ").toLowerCase()}${station === "home" ? " placed in the kitchen" : " in the truck"}.`);
-  if (k.jobs[station]) return no("This cooker is busy.");
+  if (k.jobs[station] || s.village?.expansion?.economy?.waxJob?.station === station) return no("This cooker is busy.");
   if (foodCount(s) + info.reservedOutput + r.yield * batches > foodCapacity(s)) return no("Make room in the food cupboard for the whole run first.");
   for (const [ingredient, n] of Object.entries(r.ingredients)) if ((k.pantry[ingredient] ?? 0) < n * batches) return no(`Need ${n * batches} ${INGREDIENT_BY_ID[ingredient].name.toLowerCase()}.`);
   for (const [v, n] of Object.entries(r.pumpkins)) if (available(s, +v) < n * batches) return no(`Grow ${+v === 1 ? "Moonlight" : "Orange"} in a bed, or cook a dish without pumpkins. Need ${n * batches} unreserved ${+v === 1 ? "Moonlight" : "Orange"} pumpkin${n * batches === 1 ? "" : "s"}.`);

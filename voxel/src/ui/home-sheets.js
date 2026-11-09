@@ -40,7 +40,7 @@ export function kindOf(it) {
   if (it.rug || /\brug\b/.test(n)) return "rugs";
   if (it.category === "lights" || /lamp|lantern|candle|chandelier|candelabr|sconce/.test(n)) return "lighting";
   if (/\bbed\b|canopy|wardrobe|costume|vanity|dressing/.test(n)) return "beds";
-  if (/chair|sofa|pouffe|bench|stool|settee/.test(n)) return "seating";
+  if (/chair|rocker|sofa|pouffe|bench|stool|settee/.test(n)) return "seating";
   if (/table|desk|console|island/.test(n)) return "tables";
   if (it.category === "shelves" || /shelf|bookcase|cabinet|dresser|chest|trunk|etagere|whatnot/.test(n)) return "storage";
   if (it.wall || it.wallWidth) return "wall";
@@ -190,6 +190,7 @@ export function homeSheets(ui) {
 
   function statusButton(s, item) {
     const id = item.id, owned = s.house.owned.includes(id);
+    if(!M.decorUnlocked(s,id))return `<button class="button" disabled>Village story reward</button>`;
     if (!owned) return `<button class="button gold" data-decor="${id}" ${s.coins < item.price ? "disabled" : ""}>${money(item.price)}</button>`;
     if (item.category === "wallpaper") return s.house.wallpapers[here()] === id ? `<button class="button" disabled>On these walls</button>` : `<button class="button" data-paper="${id}">Hang here</button>`;
     if (item.category === "books") {

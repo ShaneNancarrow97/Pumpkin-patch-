@@ -45,6 +45,18 @@ function face(L, y0, s, { eye = 0x2a1d2e, mouth = 0x8a3a4a, cheek = 0xe8a5a5, sk
 
 // The eight designs: each returns its parts as box lists (in the part's own frame).
 const DESIGNS = {
+  granny() {
+    const body=[],head=[],moss=0x646f48,skin=0xa1ad74,shawl=0x4e414e;
+    for(const side of[-1,1]){body.push([side*.12,0,.05,.19,.43,.24,0x453a32]);body.push([side*.12,0,.16,.23,.1,.37,0x342c2b]);}
+    for(let i=0;i<6;i++)body.push([0,.3+i*.17,-i*.025,.72-i*.035,.18,.49,i%2?moss:0x74724e]);
+    body.push([0,.68,.27,.47,.52,.04,0x998c6b]);body.push([0,1.17,-.08,.83,.28,.54,shawl]);
+    for(const side of[-1,1]){body.push([side*.39,.8,.02,.18,.45,.22,shawl]);body.push([side*.4,.7,.13,.13,.15,.15,skin]);}
+    body.push([.48,.1,.18,.06,1.1,.06,0x7e6345]);body.push([.45,1.17,.18,.14,.08,.08,0x7e6345]);
+    head.push([0,0,.06,.39,.35,.35,skin]);face(head,0,.38,{eye:0x32282b,mouth:0x584236,cheek:0x8e9b65});
+    head.push([0,.06,.3,.12,.18,.23,skin]);head.push([0,.32,0,.46,.14,.42,0xaea395]);head.push([0,.16,-.15,.44,.25,.15,0xaea395]);
+    for(const side of[-1,1]){head.push([side*.23,.16,.01,.18,.12,.11,skin]);head.push([side*.08,.23,.25,.1,.035,.025,0xc9c0ae]);}
+    return{body,head,height:1.65,posed:true};
+  },
   elowen() {
     const skin = 0xf0d2bf, hair = 0x1f1621, plum = 0x5c2b4a, mauve = 0x8a5a7a, cream = 0xe8dcc6;
     const body = [], head = [], armL = [], armR = [], legs = [];
@@ -199,7 +211,7 @@ export const HOSTS = Object.freeze({ vesper: Object.freeze({ x: 100.2, z: 26, fa
 export function makeResident(id, { style = "sprite" } = {}) {
   const sprite = style === "sprite" && createVillageSprite(id);
   if (sprite) return { root: sprite, hip: sprite.children[0], head: null, design: { sprite: true, height: sprite.userData.height }, id, sprite: true };
-  const d = DESIGNS[id](), root = new THREE.Group(), hip = new THREE.Group(); root.add(hip); root.name = "resident-" + id;
+  const d = (DESIGNS[id]??DESIGNS.elowen)(), root = new THREE.Group(), hip = new THREE.Group(); root.add(hip); root.name = "resident-" + id;
   // Drawn a touch over life size so they stand as tall as Shane and Natalie (2.3 units).
   root.scale.setScalar(FOLK_SCALE);
   const legsTop = d.hip ?? .9;
@@ -221,6 +233,7 @@ export function makeResident(id, { style = "sprite" } = {}) {
 // Where each resident stands, by what's been built; the six who wait stand at their own doors.
 // reach is how far in front of them to stand to talk (Rowan's is across his counter).
 export function residentSpot(state, id) {
+  if(id==='granny')return{x:-68*PLAN_SCALE,z:79.5*PLAN_SCALE,face:'south'};
   const K = PLAN_SCALE, spot = (x, z, face, reach) => ({ x: x * K, z: z * K, face, ...(reach ? { reach: reach * K } : {}) });
   const route = residentRoute(state, id);
   if (route) { const { x, z, face, reach } = route.stops[0]; return { x, z, face, ...(reach ? { reach } : {}) }; }
@@ -247,7 +260,7 @@ export function createVillageFolk({ scene, state, getState, pickables, pickMater
   function sync() {
     const state = readState(); obstacles = villageWalkObstacles(state);
     // Residents of districts that aren't open yet wait out of sight until they are.
-    const here = ["elowen", "rowan", "mabel", "tansy", "opal", "cinder", "corvus", "baron"].filter((id) => everyone() || districtOpen(state, RESIDENT_BY_ID[id].district)).concat(Object.keys(HOSTS));
+    const here = ["elowen", "rowan", "mabel", "tansy", "opal", "cinder", "corvus", "baron", "granny"].filter((id) => everyone() || districtOpen(state, id==="granny"?"acre":RESIDENT_BY_ID[id].district)).concat(Object.keys(HOSTS));
     for (const [id, p] of people) if (!here.includes(id)) p.root.visible = false;
     for (const id of here) {
       let p = people.get(id);

@@ -476,10 +476,13 @@ export function availableCopies(s, id) {
   if (decorById[id]?.category === "wallpaper") return ownedCopies(s, id);
   return Math.max(0, ownedCopies(s, id) - placedCopies(s, id));
 }
+export function decorUnlocked(s,id) {
+  const item=decorById[id];return !!item&&(!item.unlockEffect||ownedCopies(s,id)>0||s.village?.expansion?.effects?.includes(item.unlockEffect));
+}
 export function buyDecor(s, id) {
   const item = decorById[id];
   const owned = ownedCopies(s, id);
-  if (!item || (!copyable(id) && owned) || owned >= 999 || s.coins < item.price) return false;
+  if (!item || !decorUnlocked(s,id) || (!copyable(id) && owned) || owned >= 999 || s.coins < item.price) return false;
   s.coins -= item.price;
   if (!s.house.owned.includes(id)) s.house.owned.push(id);
   s.house.copies ??= {};

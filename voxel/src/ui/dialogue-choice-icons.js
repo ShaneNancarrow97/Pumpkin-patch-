@@ -5,7 +5,7 @@ import { villageUIIcon } from "./village-ui-icon-markup.js";
 const KINDS = Object.freeze({
   chat: "chat", talk: "chat", reply: "chat",
   warm: "chat", curious: "chat", playful: "chat",
-  quest: "quest", gift: "gift", about: "about", info: "about",
+  quest: "quest", workshop: "quest", companion: "about", gift: "gift", about: "about", info: "about",
   leave: "leave", exit: "leave", continue: "continue",
 });
 

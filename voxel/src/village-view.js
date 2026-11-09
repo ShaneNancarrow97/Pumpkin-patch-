@@ -28,6 +28,12 @@ import { storyObjectsHere, nodeReady, nodeGrowthInfo } from "./rules/village.js"
 import { attachPieceGestures, createFraming } from "./piece-gestures.js";
 import { createVillageFolk, makeResident } from "./village-folk.js";
 import { readyVillageSprites, villageSpriteTextures } from "./village-sprite-actors.js";
+import { createVillageExpansionWorld } from './village-expansion-world.js';
+import { EXPANSION_INSIDES, expansionHomeOpen } from './village-expansion-interiors.js';
+import { expansionAreaInfo } from './rules/village-expansion.js';
+import { moveVillageWalker, villageCellFree } from './rules/village-navigation.js';
+import { advanceExpansionCompanion } from './rules/village-expansion-companions.js';
+import { isCaveArea, caveCellFree, constrainCaveCamera, CAVE_CAMERA_PRESET } from './village-expansion-spatial.js';
 import { visibleVillagePick } from "./village-sprite-math.js";
 
 const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z), K = PLAN_SCALE;
@@ -40,6 +46,7 @@ const TOUR_SECONDS = 4.6;
 // who keeps it, and the front door on the design grid.
 // A door's facing is the way out of it; DOOR_NORMAL says which way that is on the grid (x east, z north).
 export const INSIDES = Object.freeze({
+  ...EXPANSION_INSIDES,
   "velvet-bat": Object.freeze({ name: "The Velvet Bat", build: velvetBatHall, hall: VELVET_HALL, host: "vesper", door: Object.freeze({ x: 102, z: 24.4, facing: "north" }) }),
   "elowen-library": Object.freeze({ name: "Elowen's library", build: elowenLibrary, hall: ELOWEN_HALL, host: "elowen", door: Object.freeze({ x: 47.6, z: 18.6, facing: "east" }) }),
   "rowan-workshop": Object.freeze({ name: "Rowan's workshop", build: rowanWorkshop, hall: ROWAN_HALL, host: "rowan", door: Object.freeze({ x: 66.4, z: 20, facing: "west" }) }),
@@ -74,10 +81,14 @@ export function createVillageView(canvas, state, hooks = {}) {
   const patches = [];
   let active = false, built = false, firstView = true, keys = {}, parts = {}, tour = null, time = 0, horizon = null, sky = null, mist = null, bats = null, life = null, grass = null;
   const pickables = [], pickMaterial = new THREE.MeshBasicMaterial({ visible: false });
+  const expansionWorld=createVillageExpansionWorld({scene,state,groundAt,pickMaterial});
+  let companion=null,companionId=null,companionPose=null,ownerHeading={x:0,z:1};
+  function setExpansionCompanion(id){if(id===companionId)return;companion?.root.removeFromParent();companion?.root.userData.dispose?.();companion=null;companionId=id;companionPose=null;if(id){companion=makeResident(id,{style:folk.style});scene.add(companion.root);}}
+
   const hit = (w, h, d, data, x, z, y = h / 2) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), pickMaterial); m.position.copy(W(x, z, y)); m.userData = data; scene.add(m); pickables.push(m); return m; };
   const reducedMotion = () => hooks.reducedMotion?.() ?? (typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches);
   const blight = createCursedSporeField({ groundAt }); scene.add(blight.group);
-  const resources = createVillageResourceLayer({nodes:NODES.filter(n=>n.district==="green"),positionOf:n=>villageNodePosition(state,n),growthOf:id=>nodeGrowthInfo(state,id),groundAt,scale:K});scene.add(resources.group);
+  const resources = createVillageResourceLayer({nodes:NODES,positionOf:n=>villageNodePosition(state,n),growthOf:id=>nodeGrowthInfo(state,id),groundAt,scale:K});scene.add(resources.group);
   const shopMarkers = createVillageShopMarkers({groundAt});scene.add(shopMarkers.group);pickables.push(...shopMarkers.pickables);
   const blightRows = BLIGHT_NODES.map(n => ({ id: n.id, x: n.x, z: n.z, ready: false, cycle: 0 }));
   const dialogueFocus = createVillageDialogueCamera({ camera, controls, reducedMotion, groundAt: (x, z) => inside ? 0 : groundAt(x, z) });
@@ -103,8 +114,9 @@ export function createVillageView(canvas, state, hooks = {}) {
 
   function buildOnce() {
     if (built) return; built = true;
+    expansionWorld.build();pickables.push(...expansionWorld.pickables);
     horizon = buildHorizon(); sky = horizon.userData.sky; horizon.remove(sky); scene.add(sky);
-    const works = buildTerrainWorks(), green = buildGreen(), beyond = buildBeyond(), woods = buildWoods(); villageGreen = green;
+    const works = buildTerrainWorks({gates:false}), green = buildGreen(), beyond = buildBeyond({closedGates:false}), woods = buildWoods(); villageGreen = green;
     // The chimneys the village noted as it was built smoke where they stand.
     const smoke = [green, beyond].flatMap((g) => g.userData.marks?.smoke ?? []).map(([x, y, z]) => ({ x, y, z: -z }));
     mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: REALM.z0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
@@ -121,7 +133,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     hit(f.noticeboard.w, 3.6, f.noticeboard.d, { type: "village-noticeboard" }, f.noticeboard.x, f.noticeboard.z);
     hit(f.well.r * 2, 4.4, f.well.r * 2, { type: "village-well" }, f.well.x, f.well.z);
     hit(f.carriage.w, 4.6, f.carriage.d, { type: "village-carriage" }, f.carriage.x, f.carriage.z);
-    for (const n of NODES.filter((n) => n.district === "green")) { const p=villageNodePosition(state,n),box=villageNodeHitBox(n,p,groundAt);hit(box.w,box.h,box.d,{type:"village-node",id:n.id},p.x,p.z,box.y); }
+    for (const n of NODES) { const p=villageNodePosition(state,n),box=villageNodeHitBox(n,p,groundAt);hit(box.w,box.h,box.d,{type:"village-node",id:n.id},p.x,p.z,box.y); }
     for (const [id, p] of Object.entries(INSIDES)) { const [nx, nz] = DOOR_NORMAL[p.door.facing]; hit(nx ? 1.2 : 3.4, 5.8, nx ? 3.4 : 1.2, { type: "village-door", id }, (p.door.x + nx * .5) * K, (p.door.z + nz * .5) * K); }
   }
   // Rebuilds a part when its key changes.
@@ -137,8 +149,9 @@ export function createVillageView(canvas, state, hooks = {}) {
     part("bench", String(v.effects.includes("bench")), () => buildBench(v.effects.includes("bench")));
     part("homes", JSON.stringify(v.built), () => buildHomes(v.built)); life?.setBuilt(v.built);
     const ready = (id) => nodeReady(state, id);
-    for(const h of pickables)if(h.userData.type==="village-node"){h.visible=ready(h.userData.id);const p=villageNodePosition(state,h.userData.id),box=villageNodeHitBox(NODE_BY_ID.get(h.userData.id),p,groundAt);h.position.set(box.x,box.y,box.z);}
-    resources.sync();shopMarkers.sync(state);
+    for(const h of pickables)if(h.userData.type==="village-door"){const p=INSIDES[h.userData.id];h.visible=!expansionWorld.active&&canEnterInside(h.userData.id);}
+    for(const h of pickables)if(h.userData.type==="village-node"){h.visible=!expansionWorld.active&&ready(h.userData.id);const p=villageNodePosition(state,h.userData.id),box=villageNodeHitBox(NODE_BY_ID.get(h.userData.id),p,groundAt);h.position.set(box.x,box.y,box.z);}
+    resources.sync();shopMarkers.sync(state);expansionWorld.sync();
     for (let i=0;i<blightRows.length;i++) { const row=blightRows[i],p=villageNodePosition(state,row.id);row.x=p.x;row.z=p.z;row.ready=ready(row.id);row.cycle=state.village.gatherCycles?.[row.id]??0; }
     blight.sync(blightRows);
     // Decor pieces: one group each, as they move.
@@ -190,7 +203,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   const hallPoint = (x, z, y = 0) => new THREE.Vector3(x, y, z).multiplyScalar(K).add(INSIDE);
   function buildInside(id) {
     if (insides.has(id)) return insides.get(id);
-    const plan = INSIDES[id], v = new Voxels(); plan.build(frame(v, 0, 0, "south", 0));
+    const plan = INSIDES[id]; if(!plan)return null;const v = new Voxels(); plan.build(frame(v, 0, 0, "south", 0));
     const built = v.build({ glow: 1.6 }), group = new THREE.Group(); group.add(built); group.scale.setScalar(K); group.position.copy(INSIDE); group.visible = false; scene.add(group);
     const lamps = (built.userData.marks.lamp ?? []).map(([x, y, z]) => hallPoint(x, z, y));
     let host = null;
@@ -216,7 +229,9 @@ export function createVillageView(canvas, state, hooks = {}) {
     if (folk.style === "sprite") refreshHallCast();
     for (const texture of villageSpriteTextures()) hooks.warmTexture?.(texture);
   });
+  function canEnterInside(id){return expansionHomeOpen(state,INSIDES[id]);}
   function goInside(id) {
+    if(!canEnterInside(id))return false;
     dialogueFocus.end({ immediate: true });
     resources.group.visible=false;shopMarkers.hide();
     gatherTool();
@@ -230,14 +245,15 @@ export function createVillageView(canvas, state, hooks = {}) {
   function goOutside() {
     dialogueFocus.end({ immediate: true });
     if (!inside) return; inside.group.visible = false; if (inside.host) inside.host.root.visible = false; inside = null;
-    root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = 1.25; hemi.intensity = .7; scene.userData.exposure = 1.15; following = false; pool.forEach((l) => { l.userData.base = 48; });
+    root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = 1.25; hemi.intensity = .7; scene.userData.exposure = 1.15; following = false; pool.forEach((l) => { l.userData.base = 48; l.color.set(0xff9a40); });
   }
 
   // A closer third-person orbit stays on the owner, rather than panning away
   // under OrbitControls. Interiors keep their wider cutaway-friendly distance.
   const outsideRig = createFollowCameraRig({ pitch: THREE.MathUtils.degToRad(26), distance: 6.8, minDistance: 4.8, maxDistance: 13 });
   const hallRig = createFollowCameraRig({ pitch: THREE.MathUtils.degToRad(34), distance: 11, minDistance: 9, maxDistance: 17, yawLimit: .8 });
-  const activeRig = () => inside ? hallRig : outsideRig;
+  const caveRig = createFollowCameraRig(CAVE_CAMERA_PRESET);
+  const activeRig = () => inside ? hallRig : expansionWorld.active ? caveRig : outsideRig;
   let following = false;
   function clearOrbitMomentum() {
     const damped = controls.enableDamping; controls.enableDamping = false; controls.update(); controls.enableDamping = damped;
@@ -247,7 +263,8 @@ export function createVillageView(canvas, state, hooks = {}) {
     const pose = followCameraPose(activeRig().state);
     controls.target.set(pose.target.x, pose.target.y, pose.target.z);
     camera.position.set(pose.position.x, pose.position.y, pose.position.z);
-    if (!inside) camera.position.y = Math.max(camera.position.y, groundAt(camera.position.x, -camera.position.z) + .65);
+    if(expansionWorld.active){const bounded=constrainCaveCamera(expansionWorld.active,pose.target,pose.position);camera.position.set(bounded.x,bounded.y,bounded.z);}
+    if (!inside&&!expansionWorld.active) camera.position.y = Math.max(camera.position.y, groundAt(camera.position.x, -camera.position.z) + .65);
     camera.lookAt(controls.target); camera.updateMatrixWorld();
   }
   const play = {
@@ -258,13 +275,14 @@ export function createVillageView(canvas, state, hooks = {}) {
       clearOrbitMomentum(); following = true; controls.enabled = false; resize();
       const setup = typeof options === "number" ? { yaw: options } : options;
       followSubject = { x: pos.x, y: pos.y ?? 0, z: pos.z };
-      activeRig().reset(pos, inside ? { ...setup, yaw: 0 } : setup); applyFollowPose();
+      activeRig().reset(pos, inside ? { ...setup, yaw: 0 } : expansionWorld.active ? {yaw:CAVE_CAMERA_PRESET.yaw,...setup} : setup); applyFollowPose();
     },
     recenter(pos, heading) {
       if (!following) { play.reset(pos, { heading }); return; }
       activeRig().recenter(inside ? { x: 0, z: -1 } : heading);
     },
     follow(pos, dt, motion = {}) {
+      if(motion.heading)ownerHeading={x:motion.heading.x,z:-motion.heading.z};
       if (dialogueFocus.active) return;
       if (!following) { play.reset(pos, { heading: motion.heading }); return; }
       followSubject = { x: pos.x, y: pos.y ?? 0, z: pos.z };
@@ -392,8 +410,9 @@ export function createVillageView(canvas, state, hooks = {}) {
 
   function placeLights() {
     const t = tour ? focus : controls.target;
-    if (inside) { const near = [...inside.lamps].sort((a, b) => a.distanceToSquared(t) - b.distanceToSquared(t)); pool.forEach((l, i) => { const p = near[i % near.length]; l.position.copy(p); l.visible = true; }); }
-    else { const near = [...LAMPS].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z)); pool.forEach((l, i) => { const lamp = near[i]; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); }); }
+    if(expansionWorld.active){const near=[...expansionWorld.lamps].sort((a,b)=>a.distanceToSquared(t)-b.distanceToSquared(t));pool.forEach((l,i)=>{if(near.length){l.position.copy(near[i%near.length]);l.visible=true;l.userData.base=64;l.color.set(i%2?0x8ebacc:0xe7b77f);}else l.visible=false;});}
+    else if (inside) { const near = [...inside.lamps].sort((a, b) => a.distanceToSquared(t) - b.distanceToSquared(t)); pool.forEach((l, i) => { const p = near[i % near.length]; l.position.copy(p); l.visible = true; }); }
+    else { const near = [...LAMPS].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z)); pool.forEach((l, i) => { const lamp = near[i]; l.visible=true; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); }); }
     sun.target.position.copy(t); sun.position.copy(t).addScaledVector(SUN, 100); sun.target.updateMatrixWorld();
     // Walking, the moon's shadows only matter round the walker: a tighter box draws fewer casters, and sharper.
     const reachShadow = following ? 28 : 44, sc = sun.shadow.camera;
@@ -404,24 +423,33 @@ export function createVillageView(canvas, state, hooks = {}) {
   }
   return {
     scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool, dialogueCamera,
+    enterExpansionArea(id){dialogueFocus.end({immediate:true});if(inside)goOutside();const entry=expansionWorld.enter(id);if(!entry)return false;root.visible=false;for(const p of folk.people.values())p.root.visible=false;resources.group.visible=false;shopMarkers.hide();for(const h of pickables)if(!['expansion-activity','expansion-portal'].includes(h.userData.type))h.visible=false;if(sky)sky.visible=false;sun.intensity=.12;hemi.intensity=1.3;hemi.color.set(0xc6c3dd);hemi.groundColor.set(0x817185);scene.background.set(0x100d19);scene.fog.color.set(0x100d19);scene.userData.exposure=1.2;following=false;return entry;},
+    leaveExpansionArea(){const entry=expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity=1.25;hemi.intensity=.7;hemi.color.set(0x5a68b8);hemi.groundColor.set(0x231b2c);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;following=false;pool.forEach(l=>{l.visible=true;l.userData.base=48;l.color.set(0xff9a40);});sync();return entry;},
+    get activeExpansionArea(){return expansionWorld.active;},get expansionTargets(){return [...expansionWorld.targets,...(!expansionWorld.active?[...folk.people].filter(([,p])=>p.root.visible).map(([id])=>({type:'village-folk',id,...folk.spotOf(id)})):[])];},expansionGroundAt:(x,z)=>expansionWorld.ground(x,z),moveExpansionWalker:(from,dx,dz)=>expansionWorld.active?expansionWorld.move(from,dx,dz):moveVillageWalker(state,from,dx,dz),setExpansionCompanion,
+    get expansionStats(){return expansionWorld.stats;},
     setCastStyle, get castStyle() { return folk.style; }, spriteReady, spritesReady: spriteReady, spriteTextures: villageSpriteTextures, tapAt,
-    goInside, goOutside, get inside() { return inside?.id ?? null; }, hallPoint, insidePlan: (id) => INSIDES[id],
+    goInside, goOutside, canEnterInside, get inside() { return inside?.id ?? null; }, hallPoint, insidePlan: (id) => INSIDES[id],
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = !tour; },
-    leave() { dialogueFocus.end({ immediate: true }); blight.hide();resources.group.visible=false;shopMarkers.hide(); gatherTool(); active = false; controls.enabled = false; for (const id of pointers.keys()) try { if (canvas.hasPointerCapture?.(id)) canvas.releasePointerCapture(id); } catch { /* A finished pointer may already be gone. */ } pointers.clear(); multi = false; pinch = 0; preview(null); following = false; followSubject = null; resetVillageVisibility(villageGreen); tour = null; },
+    leave() { if(expansionWorld.active){expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity=1.25;hemi.intensity=.7;hemi.color.set(0x5a68b8);hemi.groundColor.set(0x231b2c);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;pool.forEach(l=>{l.visible=true;l.color.set(0xff9a40);});}setExpansionCompanion(null);dialogueFocus.end({ immediate: true }); blight.hide();resources.group.visible=false;shopMarkers.hide(); gatherTool(); active = false; controls.enabled = false; for (const id of pointers.keys()) try { if (canvas.hasPointerCapture?.(id)) canvas.releasePointerCapture(id); } catch { /* A finished pointer may already be gone. */ } pointers.clear(); multi = false; pinch = 0; preview(null); following = false; followSubject = null; resetVillageVisibility(villageGreen); tour = null; },
     tick(dt = 0) {
       time += dt; if (!active) return;
       controls.enabled = !following && !tour && !dialogueFocus.active && !hooks.blocked?.() && !hooks.gesture?.busy?.();
+      if(companion&&inside)companion.root.visible=false;
+      expansionWorld.tick(dt,camera,followSubject);
+      for(const d of decor.values())d.group.visible=!expansionWorld.active&&!inside;for(const p of pages.values())p.group.visible=!expansionWorld.active&&!inside;
+      if(expansionWorld.active){root.visible=false;for(const p of folk.people.values())p.root.visible=false;}
       tickTour(dt); if (!tour) dialogueFocus.tick(dt);
       if (!tour && !following && !dialogueFocus.active) { framing.step(); controls.update(); }
-      const reach = inside ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog - scene.fog.density) * Math.min(1, dt * 2);
+      const reach = inside||expansionWorld.active ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog - scene.fog.density) * Math.min(1, dt * 2);
       for (const p of patches) p.chunk.visible = p.sphere.center.distanceTo(camera.position) - p.sphere.radius < reach.far;
       placeLights(); folk.tick(dt, time, camera, { paused: !!inside || !!tour || !!hooks.residentsPaused?.() || !!state.paused, reducedMotion: reducedMotion() });
-      if (!inside) { atmosphere?.tick(dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full" }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
+      if (!inside&&!expansionWorld.active) { atmosphere?.tick(dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full" }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
       else resetVillageVisibility(villageGreen);
-      if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera, following && !inside ? followSubject : null);
-      blight.tick(dt, camera.position, !inside, reducedMotion(), !!state.paused);
-      resources.tick(dt,camera.position,!inside);shopMarkers.tick(state.paused?0:dt,camera,!inside,reducedMotion());
+      if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera, following && !inside&&!expansionWorld.active ? followSubject : null);
+      blight.tick(dt, camera.position, !inside&&!expansionWorld.active, reducedMotion(), !!state.paused);
+      resources.tick(dt,camera.position,!inside&&!expansionWorld.active);shopMarkers.tick(state.paused?0:dt,camera,!inside&&!expansionWorld.active,reducedMotion());
       if (mist) for (const m of mist.children) { const u = m.userData; m.position.x = u.x + Math.sin(time * .07 + u.phase) * 2.5; m.position.z = -u.z + Math.cos(time * .05 + u.phase) * 1.5; }
+      if(companion&&followSubject&&!inside){const owner={x:followSubject.x,z:-followSubject.z};companionPose=advanceExpansionCompanion(companionPose,owner,dt,{area:expansionWorld.active??'surface',heading:ownerHeading,canRegroup:!companion.root.visible,free:(x,z)=>expansionWorld.active?expansionWorld.move({x,z},0,0)&&caveCellFree(x,z):villageCellFree(state,x,z)});if(companionPose){companion.root.visible=companionPose.visible&&!inside;companion.root.position.copy(W(companionPose.x,companionPose.z,expansionWorld.ground(companionPose.x,companionPose.z)));companion.walking=companionPose.walking;companion.heading={x:companionPose.heading.x,z:-companionPose.heading.z};companion.walkDistance=companionPose.distance;folk.animate(companion,dt,time,camera);}}
       for (const p of pages.values()) { p.group.position.y = .05 + Math.sin(time * 2.3 + p.x) * .04; p.group.rotation.y = Math.sin(time * .9 + p.z) * .5; }
     },
     get active() { return active; },

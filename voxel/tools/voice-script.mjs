@@ -6,17 +6,19 @@ import { INTRO_LINES, INTRO_NARRATION } from "../src/content/intro.js";
 import { TOUR, tourVoiceText } from "../src/content/village-tour.js";
 import { FOLK, HOSTS } from "../src/content/village-folk.js";
 import { QUESTS, FAVOURS } from "../src/content/village-quests.js";
+import { CAST_CHAPTERS } from "../src/content/village-expansion-cast.js";
+import { EXPANSION_ACTIVITIES } from "../src/content/village-expansion.js";
 import { normalizeVoiceText, voiceKey } from "../src/ui/voice-key.js";
 
 // Keep captions verbatim, while omitting authored sound/stage directions in speech.
 export const spokenVoiceText = text => normalizeVoiceText(String(text).replace(/\*[^*]*\*/gu, " ")).replace(/\s+([,.!?;:])/gu, "$1");
 
-// These chapters need the later restoration/decorating integration to complete.
+// Preserve existing recording buckets for these gated restoration chapters.
 const LATER_QUESTS = new Set(["rowan-2", "rowan-pumpkins", "elowen-2", "two-doorbells"]);
 export const VOICE_COVERAGE = Object.freeze({
-  playable: "Farm introduction and tour; current Green greetings, chats, gifts and early quest conversations. Progression gates still apply.",
-  authored: "Later restoration chapters, quest completion dialogue and favour request lines; retained for future UI integration.",
-  preview: "The six later residents' existing greetings, available in the unsaved explorer. Their saved-game districts remain closed.",
+  playable: "Farm introduction, tour and active residents' greetings, chats, gifts and early quest conversations. District and friendship gates still apply; a script entry does not imply that audio is recorded.",
+  authored: "Gated restoration/friendship chapters, completion dialogue, expansion reveals and favour requests authored in the current game. Missing clips use the complete text fallback.",
+  preview: "Greetings and dialogue belonging to any residents explicitly marked as preview-only. This bucket is empty when all authored residents have saved-game routes.",
 });
 
 // Source order is stable; repeated speaker/text pairs share one recording.
@@ -58,6 +60,14 @@ export function voiceScript() {
     sequence(quest.done, quest.giver, `${source}.done`, "authored");
   }
   for (const favour of FAVOURS) add(favour.who, favour.line, `src/content/village-quests.js:FAVOURS.${favour.id}.line`, "authored");
+  for (const chapter of CAST_CHAPTERS) {
+    const source=`src/content/village-expansion-cast.js:${chapter.id}`;
+    sequence(chapter.intro,chapter.who,`${source}.intro`,"authored");
+    sequence(chapter.done,chapter.who,`${source}.done`,"authored");
+  }
+  // These are the actual fallback cinematic lines spoken by the runtime.
+  // Puzzle options, clues and player replies remain silent interface text.
+  for(const activity of EXPANSION_ACTIVITIES)if(activity.type==='reveal'&&activity.text)add(activity.who??'elowen',activity.text,`src/content/village-expansion.js:${activity.id}.text`,"authored");
   return Object.freeze([...records.values()]);
 }
 

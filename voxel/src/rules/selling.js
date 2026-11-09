@@ -1,3 +1,4 @@
+import { takeExpansionReservation, expansionReservationReady } from './village-expansion-economy.js';
 import { offerDiningSeat } from "./cooking-dining.js";
 import { cleanlinessFootfall } from "./cleanliness.js";
 // Selling: neighbours walking up the path to Skyla's stall, and, once it is
@@ -204,13 +205,14 @@ export function updateStall(s, dt, events) {
   s.arriving.push(...queueVisitorEventArrivals(s, eventSlots));
   s.visitorTimer -= dt * stallPace(s);
   if (s.visitorTimer <= 0) {
-    const party = s.nextParty, size = partySize(s, party);
+    const party = s.nextParty, reserved = expansionReservationReady(s), size = reserved ? 2 : partySize(s, party);
     // A full path holds the next party at the gate until there is room.
     if (visitorReservations(s) + size > visitorCapacity(s) || visitorWorldCount(s) + size > VISITOR_EVENT_WORLD_CAP) s.visitorTimer = 0;
     else {
       s.visitorTimer += stallArrivalSeconds(s);
       s.nextParty++;
-      for (let place = 0; place < size; place++) s.arriving.push({ party, place, size, wait: place * PARTY_GAP });
+      const reservation = reserved && takeExpansionReservation(s);
+      for (let place = 0; place < size; place++) s.arriving.push({ party, place, size, wait: place * PARTY_GAP, ...(reservation ? {courtier:true,offer:{kind:11+place,budget:200,basketLimit:12}} : {}) });
     }
   }
   // Each member sets off when their beat comes round.

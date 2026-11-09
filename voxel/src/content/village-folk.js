@@ -7,6 +7,8 @@
 // "material:logs". A chat's choices each have a tone; a resident warms most to
 // the tone they like.
 
+import { EXPANSION_FOLK_DETAILS } from './village-expansion-cast.js';
+
 export const TONES = Object.freeze({ warm: "Kind", curious: "Curious", playful: "Playful" });
 
 // Friendship: the XP each level needs (level 1 on meeting), and what raises it.
@@ -17,8 +19,8 @@ export const FRIENDSHIP = Object.freeze({
   favour: 25,
 });
 
-// The eight residents. `playable` ones live on the Green now; the rest are met
-// in their districts as those open (their profiles serve the tour and the journal).
+// Residents keep their friendship state across visits. Their physical presence
+// and conversations are reached through the districts as those open.
 export const FOLK = Object.freeze([
   {
     id: "elowen", name: "Elowen Mothwick", short: "Elowen", role: "Moth witch, archivist and bookbinder", district: "green", playable: true,
@@ -224,7 +226,7 @@ export const FOLK = Object.freeze([
           { tone: "playful", text: "Lopsided is a style. Very modern.", reply: "Avant-garde, that's me. Ask the crows." }] },
     ],
   },
-  // The six met later: profiles for the tour and the journal (their chats and quests come with their districts).
+  // The later neighbours keep their voices and friendship through their district chapters.
   { id: "mabel", name: "Mabel Moonstitch", short: "Mabel", role: "Haunted doll tailor", district: "copse", tone: "warm", colour: "#9b2f4d",
     about: "A porcelain tailor whose treasured coat records every place she was too nervous to visit.", greet: ["Oh! You startled my thimble."], loves: ["pantry:berries", "food:toffee-apples"], likes: ["material:fibre"], dislikes: ["pantry:fish"] },
   { id: "tansy", name: "Tansy Thistledown", short: "Tansy", role: "Hedge gardener", district: "copse", tone: "playful", colour: "#6f9152",
@@ -237,7 +239,11 @@ export const FOLK = Object.freeze([
     about: "A raven showman who has forgotten how to stage a show that's welcoming as well as frightening.", greet: ["Roll up, roll up! Well. Walk up. Gently."], loves: ["pantry:fish"], likes: ["pumpkin:starlight"], dislikes: ["pantry:herbs"] },
   { id: "baron", name: "Baron Brassbolt", short: "The Baron", role: "Wealthy monster and collector", district: "moor", tone: "curious", colour: "#8c1f2e",
     about: "The farm's big spender, settled in Mothlight: a velvet manor full of treasures and almost no memories.", greet: ["Ah, the pumpkin magnates. Charmed, as ever."], loves: ["pumpkin:starlight"], likes: ["food:moonlight-tart"], dislikes: ["food:wedges"] },
-].map((f) => Object.freeze({ playable: false, chats: [], rewards: {}, gift: {}, ...f })));
+  { id: "granny", name: "Granny Brambletooth", short: "Granny", role: "Troll keeper of the Crooked Acre", district: "acre", tone: "warm", colour: "#8c8166",
+    about: "A crooked-house grandmother who keeps scarecrows, difficult biscuits and a chair for the next person brave enough to knock.",
+    greet: ["You remembered the gate. Most visitors remember it while running away.", "Mind the kettle. It has opinions.", "Well? Come in before the crows start charging admission."],
+    loves: ["food:pumpkin-pie", "food:pumpkin-spice-biscuits", "pumpkin:orange"], likes: ["pantry:herbs", "material:fibre"], dislikes: ["food:moonfire-chicken"] },
+].map((f) => Object.freeze({ playable: true, chats: [], rewards: {}, gift: {}, ...f, ...EXPANSION_FOLK_DETAILS[f.id] })));
 export const FOLK_BY_ID = Object.freeze(Object.fromEntries(FOLK.map((f) => [f.id, f])));
 
 // What a friendship level is called, for the journal.

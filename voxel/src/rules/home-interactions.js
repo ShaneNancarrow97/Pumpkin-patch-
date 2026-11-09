@@ -1,7 +1,7 @@
 // Interaction sockets share the furniture's measured, rotated room coordinates.
 import { pieceFootprint, footprint, decorAngle, decorById, roomPieces, roomLayout, hostYaw } from './house.js';
 import { homeMedia, isHomeMediaPiece } from './home-media.js';
-const SEATS = Object.freeze({f01:{front:.34},f02:{front:.28},f03:{front:.3},'midnight-reading-bench':{front:.26}});
+const SEATS = Object.freeze({f01:{front:.34},f02:{front:.28},f03:{front:.3},'midnight-reading-bench':{front:.26},'mothlight-granny-rocker':{front:.3}});
 export const readablePiece = p => Array.isArray(p?.books) && p.books.length > 0;
 export const seatPiece = p => !!p && Object.hasOwn(SEATS,p.id) && !p.on;
 const turn=(x,z,angle)=>({x:x*Math.cos(angle)+z*Math.sin(angle),z:-x*Math.sin(angle)+z*Math.cos(angle)});

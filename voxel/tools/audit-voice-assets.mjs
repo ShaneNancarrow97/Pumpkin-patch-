@@ -52,6 +52,10 @@ export function auditVoiceAssets(root = ROOT) {
   check(records.size === manifest.clips?.length, "Duplicate recordings in voice manifest");
   check(status.version === 1 && status.expectedClips === expected.size && status.recordedClips === records.size, "Recording status counts differ from the current script and manifest");
   check(equal(status.pendingIDs, pendingIDs), "Recording status must list every missing script ID exactly, in sorted order");
+  if(status.pendingReasons){
+    check(equal(sortedKeys(status.pendingReasons),pendingIDs),"Pending reason inventory must match every missing clip exactly");
+    check(Object.values(status.pendingReasons).every(reason=>['prior_quota_exceeded','not_recorded_in_this_contract'].includes(reason)),"Pending reason inventory has an unsupported recording claim");
+  }
   check(pending.length ? status.blockedReason === "quota_exceeded" : status.blockedReason === null, "Recording status must disclose the quota block while clips remain pending");
   check(equal([...published.clips.keys()].sort(), [...records.keys()].sort()), `Published voice module is incomplete or stale: ${published.clips.size}/${records.size} recorded clips`);
   check(published.imports.size === records.size, `Published voice import count differs from the ${records.size} recorded clips`);
@@ -99,7 +103,7 @@ export function auditVoiceAssets(root = ROOT) {
   const summary = summaryVoiceScript();
   const pendingSummary = summaryVoiceScript(pending), pendingSources = {};
   for (const line of pending) {
-    const source = line.source.includes(".chats.") ? "Village chats" : line.source.includes(".gift.") ? "Gift replies" : line.source.includes(".greet[") ? "Greetings" : line.source.includes(":FAVOURS.") ? "Favour requests" : line.source.includes("village-quests.js") ? "Quest dialogue" : line.source.includes("village-tour.js") ? "Village tour" : "Farm introduction";
+    const source = line.source.includes(".chats.") ? "Village chats" : line.source.includes(".gift.") ? "Gift replies" : line.source.includes(".greet[") ? "Greetings" : line.source.includes(":FAVOURS.") ? "Favour requests" : line.source.includes("village-expansion") ? "Expansion story dialogue" : line.source.includes("village-quests.js") ? "Quest dialogue" : line.source.includes("village-tour.js") ? "Village tour" : "Farm introduction";
     const group = pendingSources[source] ??= { clips: 0, characters: 0 };
     group.clips++; group.characters += line.spokenText.length;
   }

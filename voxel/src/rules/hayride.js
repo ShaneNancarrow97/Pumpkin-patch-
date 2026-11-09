@@ -86,7 +86,7 @@ export function upgradeHayride(s) {
 }
 export function buyHayrideScare(s, id) {
   const p = HAYRIDE_SCARE_BY_ID[id], h = s?.hayride;
-  if (!p || !hayrideReady(s) || p.tier > h.tier || h.haunts.owned.includes(id) || !cash(s, p.cost)) return false;
+  if (!p || !hayrideReady(s) || p.requiresVillage && !s.village?.expansion?.effects?.includes(p.requiresVillage) || p.tier > h.tier || h.haunts.owned.includes(id) || !cash(s, p.cost)) return false;
   s.coins -= p.cost; h.invested += p.cost; h.haunts.owned.push(id); h.haunts.active.push(id); return true;
 }
 export function setHayrideScareActive(s, id, on) {

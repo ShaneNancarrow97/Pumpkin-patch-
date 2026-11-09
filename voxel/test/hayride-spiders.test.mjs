@@ -52,7 +52,7 @@ test("the ride's spider cave carries its brood and silk without touching the lan
 
 test("the detailed roadside sets each build their actors and a brood", async () => {
   const { buildRoadsideSet } = await import("../src/hayride-sets.js"), { Voxels, seeded } = await import("../src/voxels.js");
-  for (const [id, n] of [["scarecrows", 4], ["bride", 1], ["pursuit", 1], ["bus", 3], ["graveyard", 6], ["thicket", 12]]) {
+  for (const [id, n] of [["scarecrows", 5], ["bride", 1], ["pursuit", 1], ["bus", 3], ["graveyard", 6], ["thicket", 12]]) {
     const v = new Voxels(), group = new THREE.Group(), set = buildRoadsideSet(id, v, group, seeded(5));
     assert.equal(set.actors.length, n, id);
     assert.ok(v.solid.length + v.glow.length > 100, `${id} is dressed`);

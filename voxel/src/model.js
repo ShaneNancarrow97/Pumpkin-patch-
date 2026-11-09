@@ -1,3 +1,4 @@
+import { updateExpansionEconomy } from "./rules/village-expansion-economy.js";
 import { updateDining } from "./rules/cooking-dining.js";
 // Game rules for the voxel build. Pure: no DOM, no three.js, so the tests run it
 // in Node. One step of update() is a slice of game time. The rules live in
@@ -46,7 +47,7 @@ export * from "./rules/wardrobe.js";
 export * from "./rules/progress.js";
 export * from "./rules/unlocks.js";
 
-export const STATE_VERSION = 18;
+export const STATE_VERSION = 19;
 export * from "./rules/room-extensions.js";
 export * from "./rules/home-media.js";
 export * from "./rules/farm-work.js";
@@ -75,6 +76,10 @@ export * from "./rules/cleanliness.js";
 export * from "./rules/garden-crops.js";
 export * from "./rules/fishing.js";
 export * from "./rules/village.js";
+export * from "./rules/village-expansion.js";
+export * from "./rules/village-expansion-economy.js";
+export * from "./rules/village-expansion-companions.js";
+export * from "./rules/village-outfit-presets.js";
 export * from "./rules/carving.js";
 export * from "./content/carving.js";
 export * from "./content/pumpkin-shapes.js";
@@ -113,6 +118,8 @@ export function restoreState(raw) {
   for (const k of ["sold", "harvested", "taps", "nextVisitor", "nextParty", "wholesale"]) s[k] = count(raw[k]);
   s.time = money(raw.time);
   s.paused = raw.paused === true;
+  // Saved cold storage must be restored before aged pumpkins are settled.
+  s.village = restoreVillage(raw.village);
   s.plotLevels = Array.from({ length: MAX_PLOTS }, (_, i) => Math.min(MAX_VARIETY_INDEX, count(raw.plotLevels?.[i])));
   s.plotCrops = s.plotLevels.map((level, i) => (v1 ? level : Math.min(level, count(raw.plotCrops?.[i]))));
   s.plots = Array.from({ length: MAX_PLOTS }, (_, i) => {
@@ -165,7 +172,6 @@ export function restoreState(raw) {
   s.house = restoreHouse(raw.house);
   s.estate = restoreEstate(raw.estate);
   s.fishing = restoreFishing(raw.fishing);
-  s.village = restoreVillage(raw.village);
   s.hollowHouse = restoreHollowHouse(raw.hollowHouse);
   s.hayride = restoreHayride(raw.hayride);
   s.wardrobe = restoreWardrobe(raw.wardrobe);
@@ -208,6 +214,7 @@ export function update(s, dt, options = {}) {
   updateHollowHouse(s, dt, events);
   updateHayride(s, dt, events);
   updateKitchen(s, dt, events);
+  updateExpansionEconomy(s, dt, events);
   for (const e of events) if (e.type === "cooking-complete" && e.station === "home") recordHomeActivity(s, "cook");
   updateVisitorEvents(s, dt, events);
   updateStall(s, dt, events);

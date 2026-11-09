@@ -32,7 +32,7 @@ function openWestGate(world){
   world.traverse(m=>{if(!m.isInstancedMesh)return;let write=0;for(let i=0;i<m.count;i++){m.getMatrixAt(i,matrix);const a=matrix.elements,x=a[12],z=a[14],w=Math.abs(a[0]),d=Math.abs(a[10]),top=a[13]+Math.abs(a[5])/2;
     if(top>.3&&x+w/2>r.x0&&x-w/2<r.x1&&z+d/2>r.z0&&z-d/2<r.z1){removed++;continue;}m.getColorAt(i,colour);m.setMatrixAt(write,matrix);m.setColorAt(write,colour);write++;}m.count=write;m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;m.computeBoundingBox();m.computeBoundingSphere();});return removed;
 }
-function dispose(group){group.traverse(m=>{if(m.isInstancedMesh)m.dispose();else m.geometry?.dispose();for(const material of Array.isArray(m.material)?m.material:m.material?[m.material]:[]){material.map?.dispose();material.dispose();}});}
+function dispose(group){group.traverse(m=>{m.userData.dispose?.();if(m.isInstancedMesh)m.dispose();else m.geometry?.dispose();for(const material of Array.isArray(m.material)?m.material:m.material?[m.material]:[]){material.map?.dispose();material.dispose();}});}
 // Lanterns on posts every 12.5 units of lane, on alternate sides, clear of the
 // sets and the station. The four nearest ahead light their stretch (createHayrideWorld).
 export const HAYRIDE_LANTERN_GAP=12.5;

@@ -49,7 +49,7 @@ export function patchLevel(s) {
   // The level a save had when the pace changed may sit above what the new pace
   // has earned yet: its bar fills from the earnings it had then, not from zero.
   const floor = s.progression?.floorLevel === current.level ? s.progression.floorFrom : NaN, from = floor < current.at ? floor : current.at;
-  return { ...current, xp, earnedLevel: earned.level, next: next ?? null, requirements, blocked, progress: next ? Math.max(0, Math.min(1, (xp - from) / (next.at - from))) : 1, tagline: blocked ? `Home goal: ${requirements.find(r => !r.met).text}` : next ? `Next: ${next.name}` : "Every night is Halloween" };
+  return { ...current, xp, earnedLevel: earned.level, next: next ?? null, requirements, blocked, progress: next ? Math.max(0, Math.min(1, (xp - from) / (next.at - from))) : 1, tagline: blocked ? `Next milestone: ${requirements.find(r => !r.met).text}` : next ? `Next: ${next.name}` : "Every night is Halloween" };
 }
 // Existing saves keep their level without a backlog of gifts or popups.
 export function restoreProgression(raw, s, legacy = false, legacyHome = false) {

@@ -43,7 +43,7 @@ test('growth uses the saved cooldown clock, survives reload and pauses without c
   let s=ready();M.gatherNode(s,blight.id);const total=s.village.nodes[blight.id];
   M.updateVillage(s,total*.2);assert.equal(M.nodeGrowthInfo(s,blight.id).stage,'spores');
   const info=M.nodeGrowthInfo(s,blight.id),clears=M.blightClearCount(s,'green');s=reload(s);
-  assert.equal(s.version,18);assert.deepEqual(M.nodeGrowthInfo(s,blight.id),info);
+  assert.equal(s.version,M.STATE_VERSION);assert.deepEqual(M.nodeGrowthInfo(s,blight.id),info);
   s.paused=true;M.updateVillage(s,total);assert.deepEqual(M.nodeGrowthInfo(s,blight.id),info);
   s.paused=false;M.updateVillage(s,total*.3);assert.equal(M.nodeGrowthInfo(s,blight.id).stage,'shoots');
   M.updateVillage(s,total*.25);assert.equal(M.nodeGrowthInfo(s,blight.id).stage,'young');

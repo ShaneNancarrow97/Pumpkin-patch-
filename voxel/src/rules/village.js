@@ -3,6 +3,8 @@
 // are content (content/village*.js). Everything here returns events or
 // results for main.js and the UI to show, and nothing is ever granted twice:
 // rewards are claimed once by key (v.claims).
+import { recordCompanionGather } from "./village-expansion-companions.js";
+import { freshVillageExpansion, restoreVillageExpansion, updateVillageExpansion, expansionAreaInfo } from "./village-expansion.js";
 import { NODES, NODE_BY_ID, MATERIALS, MATERIAL_BY_ID, DISTRICT_BY_ID, PLOTS, PLOT_BY_ID, ROADS, FIXTURES, SCENERY, VILLAGE_LEVEL, STORE_BASE, VILLAGE_BOUNDS, PLAZA, ARRIVAL, GREEN_AREA, MOOR_CORNER, NEAR_DOOR } from "../content/village.js";
 import { FOLK, FOLK_BY_ID, FRIEND_XP, FRIENDSHIP, FRIEND_TITLES } from "../content/village-folk.js";
 import { QUESTS, QUEST_BY_ID, STORY_OBJECTS, BLUEPRINTS, FAVOURS, FAVOUR_BY_ID, FAVOUR_WAIT, DUTIES, DUTY_BY_ID, ALMANAC_PRIZES } from "../content/village-quests.js";
@@ -31,6 +33,7 @@ const level = (s) => patchLevel(s).level;
 
 export function freshVillage() {
   return {
+    expansion: freshVillageExpansion(),
     invited: false, toured: false, visits: 0, seed: 20261105, clock: 0,
     quests: {}, claims: {}, unlocks: [], effects: [], built: {}, found: {},
     friends: Object.fromEntries(PLAYABLE.map((id) => [id, { xp: 0, met: false, chatIn: 0, gifts: [], seen: [] }])),
@@ -49,6 +52,7 @@ export function freshVillage() {
 export function restoreVillage(raw) {
   const v = freshVillage();
   if (!raw || typeof raw !== "object") return v;
+  v.expansion = restoreVillageExpansion(raw.expansion);
   v.invited = raw.invited === true; v.toured = raw.toured === true; v.visits = count(raw.visits);
   v.seed = Number.isSafeInteger(raw.seed) ? raw.seed >>> 0 : v.seed; v.clock = time(raw.clock);
   for (const [id, q] of Object.entries(raw.quests ?? {})) {
@@ -405,9 +409,11 @@ export function gatherNode(s, id) {
   v.gatherCycles ??= {};
   const cycle = Number.isSafeInteger(v.gatherCycles[id]) ? Math.max(0, v.gatherCycles[id]) : 0;
   v.gatherCycles[id] = blight ? Math.min(1e9, cycle + 1) : cycle >= 1e9 ? 0 : cycle + 1;
-  return { material: m.id, amount: got, ...(blight ? { cleared: true, overflow: room <= 0 } : {}), events: advanceQuests(s) };
+  const bonus = recordCompanionGather(s, { job: `surface:${id}:${cycle}`, material: m.id, quantity: got, capacity: villageMaterialCapacity(s) });
+  v.stats.gathered += bonus;
+  return { material: m.id, amount: got + bonus, ...(bonus ? { companionBonus: bonus } : {}), ...(blight ? { cleared: true, overflow: room <= 0 } : {}), events: advanceQuests(s) };
 }
-export const districtOpen = (s, id) => id === "green" && s.village.invited;
+export const districtOpen = (s, id) => !!expansionAreaInfo(s, id)?.open;
 
 // ---- Rowan's stall ---------------------------------------------------------
 export const stallOpen = (s) => s.village.unlocks.includes("stall");
@@ -564,6 +570,7 @@ export function updateVillage(s, dt) {
   }
   v.stall.refreshIn -= dt;
   if (v.stall.refreshIn <= 0) { v.stall.rotation++; v.stall.refreshIn = STALL.refresh; v.stall.bought = {}; }
+  updateVillageExpansion(s, dt, events);
   return [...events, ...advanceQuests(s), ...settleAlmanac(s)];
 }
 

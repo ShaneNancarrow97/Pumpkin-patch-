@@ -32,7 +32,7 @@ test("capacity upgrades and stronger owned scares have paid progression and boun
   assert.ok(H.buyHayrideScare(s, "turning-scarecrows")); assert.equal(H.buyHayrideScare(s, "turning-scarecrows"), false); assert.ok(H.hayrideFootfallBonus(s) > base);
   assert.equal(H.buyHayrideScare(s, "bus-breakout"), false); atLevel(s, H.HAYRIDE_TIERS[1].patchLevel - 1); assert.equal(H.upgradeHayride(s), false); atLevel(s, H.HAYRIDE_TIERS[1].patchLevel);
   assert.ok(H.upgradeHayride(s)); assert.equal(H.hayrideConfig(s).seats, 6); assert.equal(H.setHayrideTicketPrice(s, 16), true);
-  atLevel(s, H.HAYRIDE_TIERS[2].patchLevel - 1); assert.equal(H.upgradeHayride(s), false); atLevel(s, H.HAYRIDE_TIERS[2].patchLevel); assert.ok(H.upgradeHayride(s)); for (const p of H.HAYRIDE_SCARES) if (!s.hayride.haunts.owned.includes(p.id)) assert.ok(H.buyHayrideScare(s, p.id));
+  atLevel(s, H.HAYRIDE_TIERS[2].patchLevel - 1); assert.equal(H.upgradeHayride(s), false); atLevel(s, H.HAYRIDE_TIERS[2].patchLevel); assert.ok(H.upgradeHayride(s)); for (const p of H.HAYRIDE_SCARES) if (!p.requiresVillage && !s.hayride.haunts.owned.includes(p.id)) assert.ok(H.buyHayrideScare(s, p.id));
   assert.equal(H.hayrideScareRating(s), 100); assert.equal(H.hayrideFootfallBonus(s), .3); assert.equal(H.upgradeHayride(s), false);
   assert.ok(H.setHayrideScareActive(s, "bus-breakout", false)); assert.ok(H.setHayrideScareActive(s, "hollow-man", false)); assert.ok(H.hayrideScareRating(s) < 100); H.setHayrideOpen(s, false); assert.equal(H.hayrideFootfallBonus(s), 0);
 });

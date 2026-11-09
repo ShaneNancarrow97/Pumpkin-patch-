@@ -1,3 +1,4 @@
+import { buildGrannyRideSet } from "./hayride-granny-set.js";
 import * as THREE from "three";
 import { Voxels, vary } from "./voxels.js";
 import { gourd } from "./world.js";
@@ -447,6 +448,7 @@ export function buildRoadsideSet(id, v, group, r) {
   const actors = [], rigs = [];
   if (id === "scarecrows") {
     const s = scarecrowPatch(v, r); for (const a of s.actors) { group.add(a.object); actors.push(a); }
+    actors.push(buildGrannyRideSet(group));
   } else if (id === "bride") {
     manor(v, r);
     const g = groomActor(rigs), base = new THREE.Vector3(-0.6, 0.5, 0.3); g.root.position.copy(base); group.add(g.root);

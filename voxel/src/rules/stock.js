@@ -1,3 +1,4 @@
+import { pumpkinStockLife } from './village-expansion-benefits.js';
 // Pumpkins waiting to be sold, counted per variety (0 Orange ... 4 Midnight Moon).
 // A shopper's basket is held while they queue, so two shoppers never pick the
 // same pumpkin; the hold is paid for or released. Mirrors src/core/inventory.js.
@@ -64,7 +65,7 @@ export function stockCondition(s, v) {
   const result={fresh:0,stored:0,fading:0,total:0,nextDiscardIn:null};
   const ages=normaliseAges(s.pumpkinAges,s),variants=v===undefined?Array.from({length:VARIETY_COUNT},(_,i)=>i):[v];
   for(const variety of variants)for(const [born,n] of ages[variety]??[]) {
-    const age=Math.max(0,s.time-born),remaining=Math.max(0,STOCK_LIFE.seconds-age);
+    const age=Math.max(0,s.time-born),remaining=Math.max(0,pumpkinStockLife(s,variety,born,STOCK_LIFE.seconds)-age);
     result.total+=n;
     // The existing freshness ledger decides the actual premium; legacy stock
     // can have a new shelf-life without receiving a free freshness premium.
@@ -82,7 +83,7 @@ export function settlePumpkinStock(s, events=[]) {
   for(let v=0;v<VARIETY_COUNT;v++) {
     const kept=[];
     for(const [born,n] of s.pumpkinAges[v]) {
-      const preserve=s.time-born>=STOCK_LIFE.seconds?Math.min(n,protectedAt(s,v,born)):n;
+      const preserve=s.time-born>=pumpkinStockLife(s,v,born,STOCK_LIFE.seconds)?Math.min(n,protectedAt(s,v,born)):n;
       byVariety[v]+=n-preserve;if(preserve)kept.push([born,preserve]);
     }
     s.pumpkinAges[v]=kept;

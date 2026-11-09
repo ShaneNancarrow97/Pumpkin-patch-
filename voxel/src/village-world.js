@@ -13,7 +13,7 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import { Voxels, ChunkedVoxels, seeded, vary } from "./voxels.js";
 import * as LAYOUT from "./content/village.js";
 import { villageNodePosition, villageNodeCandidates } from "./content/village-node-sites.js";
-import { terrainHeight as H, TERRACES, RAMPS, WATERS, REALM, isWater, rampAt, terraceAt, MARSH_ISLANDS } from "./village-terrain.js";
+import { terrainHeight as H, TERRACES, RAMPS, WATERS, REALM, isWater, rampAt, terraceAt, MARSH_ISLANDS, MARSH_CAUSEWAY } from "./village-terrain.js";
 const SHIFT = LAYOUT.DISTRICT_SHIFT;
 import {
   C, shade, frame, realm, lampPost, studio, tavern, bigTent, caravan, manor, stiltHut, canopyTree, pine, twistedTree, deadTree, glowShroom, stoneWall, picketFence, mothPillar, carriage, fountain, well, noticeboard, stall, bench,
@@ -63,7 +63,7 @@ function cableMesh(list) {
 const FOUNTAINS = [{ x: 51.5, z: 11.8, r: 1.05 }, { x: 64, z: 11.8, r: .85 }];
 
 // The ground's extent: the realm and a margin of woods all round.
-export const GROUND = Object.freeze({ x0: -80, x1: 210, z0: -40, z1: 176, scale: 4, step: 1.5 });
+export const GROUND = Object.freeze({ x0: -124, x1: 210, z0: -40, z1: 176, scale: 4, step: 1.5 });
 // The round square, set in rings round the Moth Tree, reaching both doors and the roads.
 export const SQUARE = Object.freeze({ x0: 49.2, z0: 15.8, x1: 66.8, z1: 33.4, cx: FIXTURES.tree.x, cz: FIXTURES.tree.z, r: 8.8 });
 // Where the waterfalls tumble off the Quarry's island into the moat (design grid: x, z, top, foot, facing x).
@@ -482,8 +482,9 @@ export function buildGreen() {
 
 // ---- The terraces' walls, stairs, the moat's bridge and the waterfalls -------------
 const WALL_STYLE = { "quarry": "cliff", "quarry-top": "cliff", manor: "crag", observatory: "crag", copse: "wall", moor: "wall", moat: "bank", marsh: "bank" };
-export function buildTerrainWorks() {
+export function buildTerrainWorks({ gates = true } = {}) {
   const v = new ChunkedVoxels(30), r = seeded(613), R = onGround(v);
+  for(let j=1;j<MARSH_CAUSEWAY.length;j++){const a=MARSH_CAUSEWAY[j-1],b=MARSH_CAUSEWAY[j],dx=b.x-a.x,dz=b.z-a.z,n=Math.ceil(Math.hypot(dx,dz)*2);for(let i=0;i<n;i++){const t=i/n,x=a.x+dx*t,z=a.z+dz*t;v.block(x,H(x,z)-.12,-z,3.2,.18,.6,vary(0x71584b,.12,r));}}
   // A strand of ivy hanging from a wall's top down its face (out along the wall's normal by `face`), wandering a little.
   const ivy = (x, z, nx, nz, along, top, len, face) => { const off = (r() - .5) * .6; for (let y = 0; y < len; y += .22) { const wob = Math.sin(y * 2.6 + x) * .1 + off; v.block(x + (along ? wob : 0) + nx * face, top - y, -(z + (along ? 0 : wob) + nz * face), along ? .2 + r() * .16 : .08, .22, along ? .08 : .2 + r() * .16, vary(pick(C.hedge, r), .1, r)); if (r() < .25) v.block(x + (along ? wob + .14 : 0) + nx * (face + .03), top - y - .05, -(z + (along ? 0 : wob + .14) + nz * (face + .03)), .12, .12, .12, vary(pick(C.hedgeTop, r), .1, r)); } };
   const pale = [0xd8d0c0, 0xcbc2b2, 0xe2dacb, 0xbfb6a6], dark = [0x4a4250, 0x3e3846, 0x564c5c], stone = C.stone;
@@ -546,8 +547,8 @@ export function buildTerrainWorks() {
     for (const pz of [B.z0 + 1.6, B.z1 - 1.6]) for (const side of [-1, 0, 1]) v.block(cx + side * 2.2, -2.4, -pz, 1.2, 1.9, 1.2, vary(pick(pale, r), .04, r));
     for (let a = 0; a <= 8; a++) { const t = a / 8, z = B.z0 + .6 + t * (B.z1 - B.z0 - 1.2), y = -.55 - Math.sin(t * Math.PI) * 0 - (1 - Math.sin(t * Math.PI)) * 1.4; v.block(cx, y - .4, -z, w + .2, .4, .8, vary(pick(pale, r), .05, r)); }
     for (const side of [-1, 1]) { const p = frame(v, cx + side * 3.3, B.z1 - .3, "south", H(cx, B.z1 + .5)); for (let k = 0; k < 6; k++) p.block(0, k * .5, 0, .95, .5, .95, vary(pick(pale, r), .04, r)); p.block(0, 3, 0, 1.15, .16, 1.15, C.stone[3]); lantern(p, 0, 3.16, 0, .9); }
-    for (let i = 0; i < 15; i++) { const x = cx - 2.8 + i * .4, top = 2.3 + Math.sin(i / 14 * Math.PI) * .5; v.block(x, H(cx, B.z1) + .1, -(B.z1 - .3), .05, top, .05, C.iron); if (i % 2) v.block(x, H(cx, B.z1) + .1 + top, -(B.z1 - .3), .08, .12, .08, C.gold); }
-    for (const y of [.5, 1.4, 2.2]) v.block(cx, H(cx, B.z1) + .1 + y, -(B.z1 - .3), 5.8, .05, .05, C.iron); }
+    if(gates)for (let i = 0; i < 15; i++) { const x = cx - 2.8 + i * .4, top = 2.3 + Math.sin(i / 14 * Math.PI) * .5; v.block(x, H(cx, B.z1) + .1, -(B.z1 - .3), .05, top, .05, C.iron); if (i % 2) v.block(x, H(cx, B.z1) + .1 + top, -(B.z1 - .3), .08, .12, .08, C.gold); }
+    if(gates)for (const y of [.5, 1.4, 2.2]) v.block(cx, H(cx, B.z1) + .1 + y, -(B.z1 - .3), 5.8, .05, .05, C.iron); }
   // The moat's railing along the Green's side of the water, gapped for the bridge.
   { const mz = 37.25 + SHIFT.quarry[1]; for (const [a, b] of [[39.5, 54.6], [61.4, 86.4]]) { railing(R, a, mz, b, mz, 1.0); for (let x = a; x <= b; x += 5) brickPier(R, x, mz, 1.3, r, "lamp"); } }
   // The waterfalls' rocks and foam where they land.
@@ -611,7 +612,7 @@ export function buildNodes(ready, state) {
 }
 
 // ---- Beyond the Green: the four districts, after the concept atlas -----------------
-export function buildBeyond() {
+export function buildBeyond({ closedGates = true } = {}) {
   const v = new ChunkedVoxels(28), r = seeded(401), base = onGround(v), cables = [];
   // Each district is drawn in its own place on the grid and moved to where it now stands (SHIFT).
   const district = (d) => { const [dx, dz] = SHIFT[d]; return { R: { block: (x, y, z, w, h, dd, c, g) => { base.block(x + dx, y, z + dz, w, h, dd, c, g); }, mark: (k, x, y, z) => base.mark(k, x + dx, y, z + dz) }, fr: (x, z, facing) => at(v, x + dx, z + dz, facing), road: (x, z, pad) => onRoad(x + dx, z + dz, pad), dx, dz }; };
@@ -639,7 +640,7 @@ export function buildBeyond() {
   for (let i = 0; i < 10; i++) gravestone(fr(8 + (i % 5) * 2.6, 84 + (i / 5 | 0) * 3, "east"), 0, 0, r, i);
   // The bramble arch at the top of the Copse stairs.
   for (let i = 0; i < 17; i++) { const a = i / 16 * Math.PI; R.block(30 + Math.cos(a) * 3.4, Math.sin(a) * 3.8, 40.6, .8, .8, .8, vary(0x3f5a3a, .12, r)); if (i % 2) R.block(30 + Math.cos(a) * 3.4, Math.sin(a) * 3.8 + .5, 40.2, .2, .2, .2, 0x7a2a6a); }
-  for (let i = 0; i < 40; i++) R.block(27 + r() * 6, r() * 2.4, 40.2 + r() * .8, .3, .3, .3, pick([0x3f5a3a, 0x2f4a32, 0x7a2a6a, 0x5a2a4a], r));
+  if(closedGates)for (let i = 0; i < 40; i++) R.block(27 + r() * 6, r() * 2.4, 40.2 + r() * .8, .3, .3, .3, pick([0x3f5a3a, 0x2f4a32, 0x7a2a6a, 0x5a2a4a], r));
 
   }
   {
@@ -726,7 +727,7 @@ export const SKY = Object.freeze({ top: 0x03030c, middle: 0x0b0a24, horizon: 0x2
 const nearRoad = (x, z, pad) => ROADS.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + pad && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + pad));
 export function buildWoods() {
   const v = new ChunkedVoxels(30), R = onGround(v), r = seeded(611);
-  const clear = (x, z) => !terraceAt(x, z) && !rampAt(x, z) && !isWater(x, z) && !(x > -1 && x < 121 && z < GREEN_NORTH+1.5);
+  const clear = (x, z) => !(x>-101&&x<-30&&z>44&&z<118)&&!(x>-37&&x<3&&z>94&&z<109)&&!terraceAt(x, z) && !rampAt(x, z) && !isWater(x, z) && !(x > -1 && x < 121 && z < GREEN_NORTH+1.5);
   const open = (x, z, pad) => clear(x, z) && !nearRoad(x, z, pad) && !GATES.some((g) => Math.hypot(g.x - x, g.z - z) < 7) && [[pad, 0], [-pad, 0], [0, pad], [0, -pad]].every(([a, b]) => clear(x + a, z + b));
   const crowns = [C.violet, C.magenta, C.golden, C.crimson, C.teal, C.leaves, C.violet, C.golden];
   const patch = (x, z) => crowns[Math.floor((Math.sin(x * .085 + z * .047) + Math.sin(z * .103 - x * .041 + 1.3) + 2) * 2) % crowns.length];

@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { VILLAGE_SPRITES } from "./content/village-sprite-meta.js";
 import { DIRECTIONAL_SPRITES } from "./content/directional-sprite-meta.js";
+import { GRANNY_SPRITE, GRANNY_DIRECTIONAL_SPRITE } from "./content/granny-sprite-meta.js";
 import { crispen, crispTexture } from "./crisp-sprites.js";
 import { validVillageSprite, villageFrameShape, villageDirectionalPose, villagePortraitCrop, VILLAGE_PERSON_HEIGHT } from "./village-sprite-math.js";
 import { directionalAngle, gaitPhase, validDirectionalSprite } from "./directional-sprite-math.js";
@@ -10,6 +11,8 @@ import { addSpriteRim } from "./sprite-rim.js";
 // Actors own their transforms only, so changing cast style cannot free another
 // neighbour's texture or a hall host's geometry.
 const sheets = new Map(), cast = new Map(), directionalCast = new Map(), directionalLoads = new Map(), portraits = new Map();
+const villageArt = Object.freeze({ ...VILLAGE_SPRITES, granny: GRANNY_SPRITE });
+const directionalArt = Object.freeze({ ...DIRECTIONAL_SPRITES, granny: GRANNY_DIRECTIONAL_SPRITE });
 let ready = null;
 function loadSheet(url) {
   if (sheets.has(url)) return sheets.get(url);
@@ -43,7 +46,7 @@ function buildCast(id, meta, sheet) {
 // remains visible during loading and if a sheet is absent or fails to load.
 export function readyVillageDirections(id) {
   if (directionalLoads.has(id)) return directionalLoads.get(id);
-  const meta = DIRECTIONAL_SPRITES[id];
+  const meta = directionalArt[id];
   if (!validDirectionalSprite(meta)) return Promise.resolve(null);
   const loading = loadSheet(meta.url).then(sheet => {
     if (!sheet || sheet.image.width !== meta.w || sheet.image.height !== meta.h) return null;
@@ -52,7 +55,7 @@ export function readyVillageDirections(id) {
   directionalLoads.set(id, loading); return loading;
 }
 export function readyVillageSprites() {
-  ready ??= Promise.all(Object.entries(VILLAGE_SPRITES).map(async ([id, meta]) => {
+  ready ??= Promise.all(Object.entries(villageArt).map(async ([id, meta]) => {
     if (!validVillageSprite(meta)) return;
     const sheet = await loadSheet(meta.url); if (!sheet) return;
     cast.set(id, buildCast(id, meta, sheet));

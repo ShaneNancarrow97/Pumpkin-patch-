@@ -62,5 +62,59 @@ export const HOME_FURNISHING_SIZES = {
       0.408,
       1.512
     ]
+  },
+  "mothlight-pattern-table": {
+    "box": [
+      -0.923,
+      0.923,
+      -0.45,
+      0.45,
+      1.372
+    ]
+  },
+  "mothlight-gem-lantern": {
+    "box": [
+      -0.384,
+      0.384,
+      -0.384,
+      0.384,
+      1.68
+    ]
+  },
+  "mothlight-stained-glass": {
+    "box": [
+      -0.576,
+      0.576,
+      0,
+      0.192,
+      1.752
+    ]
+  },
+  "mothlight-granny-rocker": {
+    "box": [
+      -0.528,
+      0.528,
+      -0.576,
+      0.552,
+      1.824
+    ]
+  },
+  "mothlight-cinder-serving-board": {
+    "box": [
+      -0.432,
+      0.432,
+      -0.256,
+      0.256,
+      0.224
+    ]
+  },
+  "mothlight-lantern-night-diorama": {
+    "box": [
+      -0.805,
+      0.805,
+      -0.483,
+      0.483,
+      1.656
+    ]
   }
 };

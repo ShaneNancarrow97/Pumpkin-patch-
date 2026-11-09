@@ -25,7 +25,9 @@ export function validDirectionalSprite(meta) {
   if (!Array.isArray(meta.frames) || !meta.frames.length || !Array.isArray(meta.directions) || !meta.directions.length || meta.directions.some(name => !DIRECTION_NAMES.includes(name)) || new Set(meta.directions).size !== meta.directions.length) return false;
   if (!meta.frames.every(f => f && [f.x, f.y, f.w, f.h, f.ax, f.ay].every(finite) && f.x >= 0 && f.y >= 0 && f.w === meta.cell.w && f.h === meta.cell.h && f.ax === meta.cell.ax && f.ay === meta.cell.ay && f.x + f.w <= meta.w && f.y + f.h <= meta.h && f.ax >= 0 && f.ax <= f.w && f.ay >= 0 && f.ay <= f.h)) return false;
   const validRow = row => Array.isArray(row) && row.every(index => Number.isInteger(index) && index >= 0 && index < meta.frames.length);
-  if (!Array.isArray(meta.walk) || meta.walk.length !== meta.directions.length || !meta.walk.every(row => validRow(row) && row.length === WALK_PHASES.length && new Set(row).size === row.length)) return false;
+  const phases=meta.phases??WALK_PHASES;
+  if(!Array.isArray(phases)||![4,8].includes(phases.length)||new Set(phases).size!==phases.length||phases.some(p=>!WALK_PHASES.includes(p)))return false;
+  if (!Array.isArray(meta.walk) || meta.walk.length !== meta.directions.length || !meta.walk.every(row => validRow(row) && row.length === phases.length && new Set(row).size === row.length)) return false;
   return meta.idle === undefined || Array.isArray(meta.idle) && meta.idle.length === meta.directions.length && meta.idle.every(validRow);
 }
 

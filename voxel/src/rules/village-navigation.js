@@ -1,9 +1,13 @@
 // The first playable district: measured building bodies, water and furniture,
 // rather than the larger garden/decoration reserves round the houses.
-import { PLAN_SCALE as K, DISTRICT_BY_ID, ARRIVAL, FIXTURES, SCENERY } from "../content/village.js";
+import { PLAN_SCALE as K, DISTRICT_BY_ID, ARRIVAL, FIXTURES, SCENERY, ROADS, PLOTS } from "../content/village.js";
 import { VILLAGE_DECOR_BY_ID } from "../content/village-decor.js";
 import { villageDecorBounds, villageDecorContains } from "./village-decor-geometry.js";
 import { isWater } from "../village-terrain.js";
+
+import { expansionAreaInfo } from './village-expansion-access.js';
+import { EXPANSION_AREAS } from '../content/village-expansion.js';
+import { acreCellFree, onExpansionApproach } from '../village-expansion-spatial.js';
 
 export const VILLAGE_WALK_RADIUS = .32;
 const rect = (x0,z0,x1,z1) => ({x0:x0*K,z0:z0*K,x1:x1*K,z1:z1*K});
@@ -45,8 +49,15 @@ for(const side of [-1,1]) {
 tavern.push(modelRect(102,24.4,"north",-3.55,3.82,-1.65,4.58));
 const green=DISTRICT_BY_ID.green.polygon,limits={x0:Math.min(...green.map(p=>p[0])),x1:Math.max(...green.map(p=>p[0])),z0:Math.min(...green.map(p=>p[1])),z1:Math.max(...green.map(p=>p[1]))};
 export function villageWalkObstacles(s) {
-  const boxes=[...scenery,...buildings,...walls,...tavern];
+  const boxes=[...scenery,...buildings,...walls,...tavern,
+    ...PLOTS.filter(p=>p.district!=='green'&&p.kind==='resident').map(p=>modelRect(p.door[0]/K,p.door[1]/K,p.facing,-4.2,-8,4.2,.15)),
+    {x0:-72.5*K,z0:81.5*K,x1:-63.5*K,z1:89*K}
+  ];
   boxes.push(body(FIXTURES.stall),body(FIXTURES.noticeboard),body(FIXTURES.bench),body(FIXTURES.pond),{x:FIXTURES.tree.x,z:FIXTURES.tree.z,r:3.4*K},{x:FIXTURES.well.x,z:FIXTURES.well.z,r:FIXTURES.well.r});
+  for(const[flag,x,z]of[['restaurant-opening',64,74],['lantern-night',52,34]])if(s?.village?.expansion?.effects?.includes(flag)){
+    boxes.push(rect(x-1.7,z-.85,x+1.7,z+.85));for(const[dx,dz]of[[-1,-1.7],[1,1.7]])boxes.push(rect(x+dx-.42,z+dz-.4,x+dx+.42,z+dz+.4));
+  }
+  if(s?.village?.expansion?.effects?.includes('moor-restored'))boxes.push(rect(156,46,162,50));
   for(const p of s?.village?.decor?.placed??[]){const bounds=villageDecorBounds(p.id,p.x,p.z,p.rotation??0);if(bounds)boxes.push({...bounds,decor:p});}
   return boxes;
 }
@@ -72,7 +83,13 @@ export function villageCellFree(s,x,z,r=VILLAGE_WALK_RADIUS,boxes=villageWalkObs
   // The narrow southern exception reaches the carriage through the moth gate.
   const onGreen=x>=limits.x0+r&&x<=limits.x1-r&&z>=limits.z0+r&&z<=limits.z1-r;
   const atCarriage=Math.abs(x-ARRIVAL.spawn[0])<=3*K-r&&z>=ARRIVAL.back[1]-r&&z<=limits.z0+r;
-  if(!onGreen&&!atCarriage)return false;
+  const hasArea=id=>!!s?.village&&!!expansionAreaInfo(s,id)?.open;
+  const onLater=EXPANSION_AREAS.some(a=>!['green','acre'].includes(a.id)&&a.layer!=='cave'&&hasArea(a.id)&&x>=a.bounds[0]+r&&x<=a.bounds[2]-r&&z>=a.bounds[1]+r&&z<=a.bounds[3]-r);
+  const onAcre=hasArea('acre')&&acreCellFree(x,z,r,!!s?.village?.expansion?.effects?.includes('acre-shortcut')),approach=hasArea('copse')&&onExpansionApproach(x,z,r);
+  const onRoad=ROADS.some(road=>{const id=road.id.startsWith('door-')?PLOTS.find(p=>p.id===road.plot)?.district:road.id;if(!['copse','quarry','moor','marsh'].includes(id)||!hasArea(id))return false;return road.points.slice(1).some(([bx,bz],i)=>{const[ax,az]=road.points[i],dx=bx-ax,dz=bz-az,t=Math.max(0,Math.min(1,((x-ax)*dx+(z-az)*dz)/(dx*dx+dz*dz||1)));return Math.hypot(x-ax-dx*t,z-az-dz*t)<=road.width/2-r;});});
+  if(!onGreen&&!atCarriage&&!onLater&&!onAcre&&!approach&&!onRoad)return false;
+  // The field is a maze: its unused land never becomes a shortcut through corn.
+  if(x<-34*K&&z>46*K&&z<114*K&&!onAcre&&!approach)return false;
   if(isWater(x/K,z/K))return false;
   return !boxes.some(b=>b.decor?villageDecorContains(b.decor.id,b.decor.x,b.decor.z,b.decor.rotation??0,x,z,r):b.r!==undefined?Math.hypot(x-b.x,z-b.z)<b.r+r:x>b.x0-r&&x<b.x1+r&&z>b.z0-r&&z<b.z1+r);
 }

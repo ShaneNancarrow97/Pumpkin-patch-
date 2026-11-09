@@ -65,7 +65,7 @@ function finish(s,id) {
 }
 
 test('version-18 villages acquire blight defaults without reopening old completed stories', () => {
-  assert.equal(M.STATE_VERSION,18);
+  assert.equal(M.STATE_VERSION,19);
   assert.equal(green.length,32); assert.equal(new Set(BLIGHT_NODES.map(n => n.id)).size,BLIGHT_NODES.length);
   assert.ok(green.every(n => n.material===SPORES && n.kind==='blight' && n.action==='Root out'));
   const raw = M.saveData(farm()); raw.version = 18;
@@ -95,12 +95,18 @@ test('blight respects invitation, gathering, pause, cooldown and future-district
   s.paused = false; M.updateVillage(s,wait-1); assert.equal(M.nodeReady(s,id),false);
   const ready = M.updateVillage(s,1); assert.equal(ready.filter(e => e.type==='village-resource-ready' && e.id===id).length,1);
   assert.equal(M.nodeReady(s,id),true); assert.equal(M.blightClearCount(s,'green'),1,'regrowth alone never counts as clearing');
-  s.village.quests['two-doorbells'] = {done:true,step:QUEST_BY_ID['two-doorbells'].steps.length,base:null};
   for (const district of ['copse','quarry']) {
     const future = BLIGHT_NODES.filter(n => n.district===district); assert.ok(future.length>0);
     for (const node of future) { assert.equal(M.nodeReady(s,node.id),false); assert.equal(M.gatherNode(s,node.id),null); }
-    assert.equal(M.blightClearCount(s,district),0,'unimplemented district stays closed even at level 20');
+    assert.equal(M.blightClearCount(s,district),0,'story-gated district stays closed even at level 20');
   }
+  s.village.quests['two-doorbells'] = {done:true,step:QUEST_BY_ID['two-doorbells'].steps.length,base:null};
+  const copse = BLIGHT_NODES.find(n=>n.district==='copse'), quarry=BLIGHT_NODES.find(n=>n.district==='quarry');
+  assert.equal(M.nodeReady(s,copse.id),true,'the restored welcome opens the Copse resource sites');
+  assert.equal(M.gatherNode(s,copse.id)?.cleared,true);
+  assert.equal(M.nodeReady(s,quarry.id),false,'the Quarry still needs the actual Copse restoration');
+  s.village.expansion.effects.push('copse-restored');
+  assert.equal(M.nodeReady(s,quarry.id),true);assert.equal(M.gatherNode(s,quarry.id)?.cleared,true);
 });
 
 test('a full satchel can clear hazards once but cannot consume ordinary resource piles', () => {
@@ -125,7 +131,7 @@ test('fresh-clearing snapshots, stored samples and cooldowns survive a normal sa
   assert.equal(s.village.quests[FIRST].base,2); assert.deepEqual(M.stepProgress(s,FIRST),{have:0,need:3});
   clear(s,1); assert.deepEqual(M.stepProgress(s,FIRST),{have:1,need:3});
   const before = JSON.parse(JSON.stringify(s.village)); s = reload(s);
-  assert.equal(s.version,18); assert.equal(s.village.quests[FIRST].base,2);
+  assert.equal(s.version,19); assert.equal(s.village.quests[FIRST].base,2);
   assert.deepEqual(s.village.nodes,before.nodes); assert.deepEqual(s.village.gatherCycles,before.gatherCycles);
   assert.deepEqual(s.village.materials,before.materials); assert.deepEqual(s.village.claims,before.claims);
   assert.deepEqual(M.stepProgress(s,FIRST),{have:1,need:3});

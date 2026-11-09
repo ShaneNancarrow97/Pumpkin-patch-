@@ -158,8 +158,9 @@ test("in-flight deliveries and paid jobs survive reload; new/default saves get n
   assert.equal(C.restoreKitchen({ purchased: false, pantry: { butter: 99 } }, s).pantry.butter, 0);
 });
 
-test("all eight recipes use positive finite costs/times/yields and remain within the published level range", () => {
-  assert.equal(RECIPES.length, 21);
+test("the recipe catalogue retains the original early sequence and valid expansion discoveries", () => {
+  assert.equal(RECIPES.length, 23);
+  assert.deepEqual(RECIPES.slice(-2).map(r => r.id), ["cinders-lantern-stew", "grannys-bramble-pudding"]);
   assert.deepEqual(RECIPES.slice(0,8).map(r => r.level), [5, 6, 7, 8, 9, 10, 11, 12]);
   for (const r of RECIPES) { assert.ok(r.price > 0 && r.yield > 0 && r.seconds > 0); assert.ok(Object.keys(r.ingredients).length > 0); }
 });

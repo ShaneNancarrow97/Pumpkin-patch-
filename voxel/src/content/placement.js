@@ -12,7 +12,7 @@ import { HOUSEHOLD_CATALOG } from "./household-catalog.js";
 import { HOUSEHOLD_SIZES } from "./household-sizes.js";
 
 // Lamps, candles and little curios: small enough to stand on a table top.
-export const SMALL_PIECES = Object.freeze(["d01", "d03", "d05", "d06", "d07", "d08", "d12", "d15", ...HOUSEHOLD_CATALOG.filter(item => item.small).map(item => item.id)]);
+export const SMALL_PIECES = Object.freeze(["mothlight-cinder-serving-board", "d01", "d03", "d05", "d06", "d07", "d08", "d12", "d15", ...HOUSEHOLD_CATALOG.filter(item => item.small).map(item => item.id)]);
 // How much of a small piece must be over its surface: its base, not the spread
 // of a shade, a handle or a bouquet. The rest may reach out over the edge.
 export const BASE = 0.55;

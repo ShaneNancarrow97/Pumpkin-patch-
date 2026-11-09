@@ -1,6 +1,8 @@
 // A measured map of the realm. Its roads, plots and district outlines come
 // from the same coordinates as the world; selecting a gate never opens it.
 import { DISTRICTS, DISTRICT_BY_ID, VILLAGE_BOUNDS, ROADS, PLOTS, FORAGE_AREAS, FIXTURES, ARRIVAL, BRIDGE, MATERIAL_BY_ID, NODES } from "../content/village.js";
+import {EXPANSION_AREA_BY_ID,EXPANSION_CHAPTER_BY_ID} from '../content/village-expansion.js';
+import {expansionAreaInfo,requirementMet} from '../rules/village-expansion-access.js';
 import { QUEST_BY_ID } from "../content/village-quests.js";
 import { patchLevel, districtOpen, stallOpen, nodeReady } from "../model.js";
 import { villageItemIcon } from "./village-item-markup.js";
@@ -17,26 +19,25 @@ const DISTRICT_ART = Object.freeze({ green: "moth-lamp", copse: "hardwood", quar
 const DISTRICT_COPY = Object.freeze({
   green: "Your first neighbourhood: neighbours, quiet gardens and gathering trails.",
   copse: "A woodland neighbourhood for Mabel and Tansy, with hardwood and moth silk.",
-  quarry: "Opal and Cinder’s planned neighbourhood, rich in iron and clay.",
+  quarry: "Opal and Cinder’s neighbourhood, rich in iron and clay.",
   moor: "The road to Corvus and the Baron, with moonstone and emberbloom.",
   marsh: "The farthest chapter of Mothlight, where star amber waits in the mist.",
 });
 const LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4" y="10" width="16" height="12" rx="3"/><path d="M12 15v3"/></svg>';
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>';
 
-// A planned district still has a closed gate after its visible goals are met.
-// districtOpen remains authoritative; the map never invents travel or a cost.
+// Shared saved story gates keep the legacy footprint map and live chapter map consistent.
 export function villageMapDistricts(state) {
-  const level = patchLevel(state).level;
-  return DISTRICTS.map(d => {
-    const open = districtOpen(state, d.id), available = d.id === "green" || open;
-    const quest = d.story && Object.hasOwn(QUEST_BY_ID, d.story) ? QUEST_BY_ID[d.story] : null;
-    const rows = [{ key: "level", label: `Patch level ${d.level}`, complete: level >= d.level, value: `${level} / ${d.level}` }];
-    if (d.id === "green") rows.push({ key: "invitation", label: "Accept Elowen’s invitation", complete: !!state.village.invited, value: state.village.invited ? "Received" : "Not yet" });
-    else if (quest) rows.push({ key: "story", label: `Complete ${quest.title}`, complete: !!state.village.quests[quest.id]?.done, value: state.village.quests[quest.id]?.done ? "Complete" : "Not yet" });
-    else rows.push({ key: "story", label: STORY_NAMES[d.story] ?? "Complete this district’s story", complete: false, planned: true, value: "Later story" });
-    if (!available) rows.push({ key: "chapter", label: "This district’s playable chapter", complete: false, planned: true, value: "To come" });
-    return { ...d, open, available, rows, art: DISTRICT_ART[d.id], description: DISTRICT_COPY[d.id], stateLabel: open ? "Explorable" : available ? "Invitation required" : "Locked · later chapter" };
+  const level=patchLevel(state).level;
+  return DISTRICTS.map(d=>{
+    const area=EXPANSION_AREA_BY_ID[d.id],info=expansionAreaInfo(state,d.id),open=!!info?.open,available=d.id==='green'||open;
+    const rows=[{key:'level',label:`Patch level ${area.level}`,complete:level>=area.level,value:`${level} / ${area.level}`}];
+    if(d.id==='green')rows.push({key:'invitation',label:'Accept Elowen’s invitation',complete:!!state.village.invited,value:state.village.invited?'Received':'Not yet'});
+    else {
+      const id=area.needs,legacy=id?.startsWith('legacy:')?QUEST_BY_ID[id.slice(7)]:null,title=legacy?.title??EXPANSION_CHAPTER_BY_ID[id]?.title??(id==='four-seals'?'the four village seals':id.replaceAll('-',' ')),complete=requirementMet(state,id);
+      rows.push({key:'story',label:`Complete ${title}`,complete,value:complete?'Complete':'Not yet'});
+    }
+    return {...d,level:area.level,open,available,rows,art:DISTRICT_ART[d.id],description:DISTRICT_COPY[d.id],reason:info.reason,stateLabel:open?'Explorable':d.id==='green'?'Invitation required':'Locked · story & level'};
   });
 }
 
@@ -57,10 +58,10 @@ function mapGraphic(districts, selected, position, focusRegion = true) {
     const c = centre(d.polygon), p = villageMapPoint(c.x, c.z), active = d.id === selected;
     return `<button class="vg-map-pin${d.open ? " is-open" : " is-locked"}${active ? " is-selected" : ""}" data-vg-map-district="${d.id}"${active && focusRegion ? " data-pad-default" : ""} aria-pressed="${active}" aria-label="${esc(d.name)} · ${esc(d.stateLabel)} · view requirements" style="--map-x:${round(p.x / width * 100)}%;--map-y:${round(p.y / height * 100)}%"><span class="vg-map-pin-art">${villageItemIcon(d.art)}<i>${d.open ? CHECK : villageUIIcon("lock", 24) || LOCK}</i></span><span class="vg-map-pin-name">${esc(d.name)}</span></button>`;
   }).join("");
-  return `<figure class="vg-map-figure"><figcaption>Five neighbourhoods. One village to bring back to life.</figcaption><div class="vg-map-chart" style="--map-ratio:${width} / ${height}">${svg}${pins}</div><div class="vg-map-key"><span><i class="is-open"></i>Explorable</span><span><i class="is-locked"></i>Later chapter</span>${hasPosition ? '<span><i class="is-player"></i>You are here</span>' : ""}</div></figure>`;
+  return `<figure class="vg-map-figure"><figcaption>Five neighbourhoods. One village to bring back to life.</figcaption><div class="vg-map-chart" style="--map-ratio:${width} / ${height}">${svg}${pins}</div><div class="vg-map-key"><span><i class="is-open"></i>Explorable</span><span><i class="is-locked"></i>Story & level</span>${hasPosition ? '<span><i class="is-player"></i>You are here</span>' : ""}</div></figure>`;
 }
 function districtDetails(d) {
-  return `<section class="vg-map-detail" data-vg-map-detail="${d.id}" aria-labelledby="vg-map-district-title"><div class="vg-map-detail-heading">${villageItemIcon(d.art)}<div><span class="vg-ch-kicker">${esc(d.stateLabel)}</span><h3 id="vg-map-district-title">${esc(d.name)}</h3></div></div><p>${esc(d.description)}</p><ul class="vg-map-requirements" aria-label="${esc(d.name)} unlock requirements">${d.rows.map(row => `<li class="${row.complete ? "is-ready" : row.planned ? "is-planned" : ""}"><span aria-hidden="true">${row.complete ? "✓" : row.planned ? "◇" : "○"}</span><span>${esc(row.label)}</span><b>${esc(row.value)}</b></li>`).join("")}</ul>${!d.available ? '<p class="vg-map-later">This road stays closed in this chapter. Level and story goals prepare the way; the district itself comes in a later update.</p>' : d.open ? '<p class="vg-map-later">Choose a landmark below to follow its route.</p>' : '<p class="vg-map-later">Elowen’s invitation opens the Green from the farm.</p>'}</section>`;
+  return `<section class="vg-map-detail" data-vg-map-detail="${d.id}" aria-labelledby="vg-map-district-title"><div class="vg-map-detail-heading">${villageItemIcon(d.art)}<div><span class="vg-ch-kicker">${esc(d.stateLabel)}</span><h3 id="vg-map-district-title">${esc(d.name)}</h3></div></div><p>${esc(d.description)}</p><ul class="vg-map-requirements" aria-label="${esc(d.name)} unlock requirements">${d.rows.map(row => `<li class="${row.complete ? "is-ready" : row.planned ? "is-planned" : ""}"><span aria-hidden="true">${row.complete ? "✓" : row.planned ? "◇" : "○"}</span><span>${esc(row.label)}</span><b>${esc(row.value)}</b></li>`).join("")}</ul>${!d.available ? `<p class="vg-map-later">${esc(d.reason)} Complete the listed goals, then follow the physical walking path.</p>` : d.open ? '<p class="vg-map-later">Choose a landmark below to follow its route.</p>' : '<p class="vg-map-later">Elowen’s invitation opens the Green from the farm.</p>'}</section>`;
 }
 
 // Existing focus IDs keep every landmark on the real navigation path.
