@@ -5,6 +5,8 @@
 - [Integrated candidate](final-cf0e1290/README.md): 105/105 game/menu/controller checks and normal photos; subsequent visual checklist-heading finding documented.
 - [Standard software logic smoke](standard-smoke/README.md): 54/54, normal saved preferences, held expensive draws, exact CF0E1290 bytes.
 - [Presenter/controller legend delta](final-a77a5d1e/README.md): 35/35, actual level rewards, resource gathering and menu bindings, with the initial fixture acknowledgement retained separately.
-- [Final CSS/TV delta](final-38895eb4/README.md): exact delivered 38895EB4 HTML, 9/9 corrected computed-palette/layout checks, 6.89:1 ready-glyph contrast, proper TV class/zoom, approved normal TV photo and separate steady Fold capture/readback.
+- [Final CSS/TV delta](final-38895eb4/README.md): exact pre-music 38895EB4 UI HTML, 9/9 corrected computed-palette/layout checks, 6.89:1 ready-glyph contrast, proper TV class/zoom, approved normal TV photo and separate steady Fold capture/readback.
+
+- [Final five-song music delta](music-final-e5858bc6/README.md): exact delivered E5858BC6 HTML, 14/14 actual Settings/WebAudio/shuffle checks and 31-source MIDI audit.
 
 Each report keeps the bytes it actually tested. Fixtures, drawn/held phases, mocked controllers and hardware/performance limits are documented per run. Earlier hashes are never relabelled as final. All browser/server runs have ended.

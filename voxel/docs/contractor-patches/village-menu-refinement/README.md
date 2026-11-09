@@ -18,7 +18,7 @@ The village legend uses the existing crisp PS5 glyphs and contextual amber actio
 
 ## Review and integration
 
-Detailed parts: [Village pages](QUESTS.md), [Conversations](CONVERSATIONS.md), [Farm layout](FARM-CORNER.md), [Level rewards](LEVELS.md), [Art sources](LEVEL-ART.md), [Farm controller](FARM-CONTROLLER.md). Download links, exact artifact hashes and final verification are recorded in `DELIVERY.md` when publication completes.
+Detailed parts: [Village pages](QUESTS.md), [Conversations](CONVERSATIONS.md), [Farm layout](FARM-CORNER.md), [Level rewards](LEVELS.md), [Art sources](LEVEL-ART.md), [Farm controller](FARM-CONTROLLER.md), [Five supplied songs](MUSIC.md). Download links, exact artifact hashes and final verification are recorded in `DELIVERY.md` when publication completes.
 
 Start with `git fetch origin contractor/village-menu-refinement`, then inspect in a separate worktree. The patch kit applies in its listed order from the base above. If Claude's lead has advanced, port the affected functions deliberately rather than replacing whole concurrent files. Root integration lives in `src/main.js`, `src/index.html` and the CSS list in `build.mjs`; keep those small hooks when resolving conflicts.
 
@@ -31,6 +31,8 @@ Start with `git fetch origin contractor/village-menu-refinement`, then inspect i
 | Level cards and requirements | Current model tables, saved level receipts, house/village requirements | Read-only descriptions use actual gates/costs. Reward application remains in existing level rules. |
 | Illustrated badges and Village icon | Two compressed runtime images, metadata/helpers, main hook and CSS ordering | Sources/prompts/bakers retained. DOM numerals remain crisp; no numbers baked into the rank art. |
 | L2 farm bars | Existing `pad-menu`, `play-controls`, input boundary and CSS | One existing input owner. Eligibility excludes active work, other menus, cursor, furniture and R3 camera mode. |
+
+The song catalogue also includes all five new uploads, bringing it to 31 tracks. Original MIDI bytes and timing are retained; the existing Settings chooser and shuffle queue consume the expanded registry without another playback system. See MUSIC.md for credits, source hashes and timing checks.
 
 Save version remains **18**. This update adds no persistent fields, dependencies, economy multipliers, progression gates or new purchases. Panel memory is transient. Existing saved furniture, unlocked areas, quests, recipes, stock and rewards retain their format.
 
