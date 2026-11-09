@@ -75,10 +75,10 @@ export function createVillageRepeat(first = 360, repeat = 130) {
   };
 }
 
-// Keep the action/back pair together and Quest next to Menus. Optional movement
-// hints can collapse on a small screen without hiding either village shortcut.
+// Keep the action/back pair together and Quest next to Menus. Basic movement
+// stays off this strip; the optional jogging hint can collapse on small screens.
 export function villageControllerLegendHTML() {
-  return `<span class="vg-pad-world vg-pad-motion" aria-label="Left stick: Walk. Right stick: Camera."><span class="vg-legend-control">${villageKeycap("ls")}<em>Walk</em></span><span class="vg-legend-control">${villageKeycap("rs")}<em>Camera</em></span></span><span class="vg-legend-primary"><span class="vg-pad-menu vg-legend-control vg-legend-navigate" aria-label="D-pad: Navigate menu choices">${villageKeycap("dpad")}<em>Navigate</em></span><span class="vg-legend-action">${villageKeycap("cross")}<span class="vg-action-copy"><em></em><small></small></span><i class="vg-legend-progress"><i></i></i></span><span class="vg-legend-control vg-legend-back">${villageKeycap("circle")}<em>Back</em></span></span><span class="vg-pad-world vg-pad-extra vg-legend-jog" aria-label="R2: Jog">${villageKeycap("r2")}<em>Jog</em></span><span class="vg-legend-shortcuts"><span class="vg-pad-world vg-legend-control vg-legend-quest" aria-label="D-pad up: Expand or collapse your followed quest">${villageKeycap("up")}<em>Quest</em></span><span class="vg-legend-control vg-legend-menus" aria-label="Options: Open village menus">${villageKeycap("options")}<em>Menus</em></span></span>`;
+  return `<span class="vg-legend-primary"><span class="vg-pad-menu vg-legend-control vg-legend-navigate" aria-label="D-pad: Navigate menu choices">${villageKeycap("dpad")}<em>Navigate</em></span><span class="vg-legend-action">${villageKeycap("cross")}<span class="vg-action-copy"><em></em><small></small></span><i class="vg-legend-progress"><i></i></i></span><span class="vg-legend-control vg-legend-back">${villageKeycap("circle")}<em>Back</em></span></span><span class="vg-pad-world vg-pad-extra vg-legend-jog" aria-label="R2: Jog">${villageKeycap("r2")}<em>Jog</em></span><span class="vg-legend-shortcuts"><span class="vg-pad-world vg-legend-control vg-legend-quest" aria-label="D-pad up: Expand or collapse your followed quest">${villageKeycap("up")}<em>Quest</em></span><span class="vg-legend-control vg-legend-menus" aria-label="Options: Open village menus">${villageKeycap("options")}<em>Menus</em></span></span>`;
 }
 
 export function createVillageControls({ root, blocked = () => false, onRelease = () => {}, onSourceChange = () => {}, gamepads = () => navigator.getGamepads?.() ?? [], now = () => performance.now() } = {}) {

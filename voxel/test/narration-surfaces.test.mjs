@@ -20,7 +20,7 @@ class Element {
   get isConnected() { return this === this.doc.body || !!this.parentElement?.isConnected; }
   get nextElementSibling() { return this.parentElement?.children[this.parentElement.children.indexOf(this) + 1]; }
   set innerHTML(value) {
-    this.replaceChildren(); const stack = [this];
+    this.markup = value; this.replaceChildren(); const stack = [this];
     for (const match of value.matchAll(/<\/?[^>]+>/g)) {
       const token = match[0]; if (token.startsWith("</")) { stack.pop(); continue; }
       const tag = /^<([\w-]+)/.exec(token)?.[1]; if (!tag) continue;
@@ -126,11 +126,11 @@ test("a speaking page focuses Continue and replacement conversations keep their 
   const dialogue = createVillageConversation({ narration: h.audio });
   dialogue.open({ id: "rowan", lines: ["A new door.", "A new beginning."] });
   const panel = h.doc.getElementById("village-dialogue"), next = panel.querySelector("[data-village-dialogue-next]"), close = panel.querySelector("[data-village-dialogue-close]");
-  assert.equal(h.doc.activeElement, next); assert.equal(next.textContent, "Continue");
+  assert.equal(h.doc.activeElement, next); assert.equal(panel.querySelector(".village-dialogue-next-label").textContent, "Continue");
   assert.equal(h.key("Tab"), true); assert.equal(h.doc.activeElement, close);
   assert.equal(h.key("Tab", true), true); assert.equal(h.doc.activeElement, next);
   dialogue.open({ id: "elowen", lines: ["And a new story."] });
-  assert.equal(h.doc.activeElement, next); assert.equal(next.textContent, "Finish chat");
+  assert.equal(h.doc.activeElement, next); assert.equal(panel.querySelector(".village-dialogue-next-label").textContent, "Finish chat");
   dialogue.close(); assert.equal(h.doc.activeElement, opener, "replacement never saves the previous dialogue button as its opener");
   dialogue.dispose();
 });
@@ -151,6 +151,43 @@ test("a completed page can open another session without closing or answering the
   const panel = h.doc.getElementById("village-dialogue"), next = panel.querySelector("[data-village-dialogue-next]"); next.click();
   assert.equal(completed, 1); assert.equal(dialogue.active, true); assert.equal(h.doc.activeElement, panel.querySelector(".village-reply"));
   next.click(); assert.equal(completed, 1); assert.equal(answered, 0, "a stale primary action cannot answer the replacement"); dialogue.dispose();
+});
+
+test("a greeting focuses the first usable real action and keeps requirement copy beside disabled choices", t => {
+  const h = harness(t); let answered = 0;
+  const dialogue = createVillageConversation({ onChoice(index, metadata) { answered++; assert.equal(index, 1); assert.equal(metadata.choice.id, "chat"); return { handled: true }; } });
+  dialogue.open({ id: "rowan", intent: "greeting", lines: [{ text: "Good evening.", choices: [{ id: "quest", intent: "quest", text: "Restore the door", description: "Bring 12 logs first", disabled: true }, { id: "chat", intent: "chat", text: "Have a chat" }, { id: "gift", intent: "gift", label: "Give a present" }] }] });
+  const panel = h.doc.getElementById("village-dialogue"), choices = panel.querySelectorAll(".village-reply");
+  assert.equal(panel.dataset.dialogueIntent, "greeting"); assert.equal(h.doc.activeElement, choices[1]); assert.equal(choices[0].disabled, true);
+  assert.equal(choices[0].querySelector(".village-reply-note").textContent, "Bring 12 logs first");
+  assert.equal(choices[2].querySelector(".village-reply-label").textContent, "Give a present");
+  assert.ok(Object.hasOwn(choices[1].attrs, "data-pad-default")); assert.equal(Object.hasOwn(choices[0].attrs, "data-pad-default"), false);
+  assert.equal(choices[0].querySelector(".dialogue-choice-icon").attrs["data-dialogue-icon"], "quest");
+  assert.equal(choices[2].querySelector(".dialogue-choice-icon").attrs["data-dialogue-icon"], "gift");
+  choices[0].click(); assert.equal(answered, 0); choices[1].click(); choices[1].click(); assert.equal(answered, 1);
+  assert.equal(panel.querySelector(".village-dialogue-line").textContent, "Good evening.", "handled actions never invent a Thank-you reply"); dialogue.dispose();
+});
+
+test("detached replies from a replaced conversation cannot spend or answer in the new session", t => {
+  const h = harness(t); let answered = 0;
+  const dialogue = createVillageConversation({ onChoice() { answered++; return "A real reply."; } });
+  dialogue.open({ id: "rowan", lines: [{ choices: [{ id: "gift", intent: "gift", text: "Give a present" }] }] });
+  const panel = h.doc.getElementById("village-dialogue"), stale = panel.querySelector(".village-reply");
+  dialogue.open({ id: "elowen", lines: [{ choices: [{ text: "Tell me about the Green." }] }] });
+  stale.click(); assert.equal(answered, 0); assert.equal(panel.dataset.dialogueState, "choice");
+  panel.querySelector(".village-reply").click(); assert.equal(answered, 1); assert.equal(panel.querySelector(".village-dialogue-line").textContent, "A real reply."); dialogue.dispose();
+});
+
+test("conversation prompts switch with actual input and retain the supplied controller family when opening", t => {
+  const h = harness(t), dialogue = createVillageConversation();
+  dialogue.setInput("pad", { id: "DualSense Wireless Controller" });
+  dialogue.open({ id: "rowan", lines: [{ choices: [{ text: "A friendly word." }] }] });
+  const panel = h.doc.getElementById("village-dialogue"), confirm = () => panel.querySelector(".village-reply").querySelector(".village-dialogue-confirm");
+  assert.equal(panel.dataset.input, "dualsense"); assert.match(confirm().markup, /data-ps5-icon="cross"/);
+  assert.match(panel.querySelector(".village-dialogue-back-glyph").markup, /data-ps5-icon="circle"/);
+  dialogue.setInput("pad", { id: "Xbox Wireless Controller" }); assert.equal(panel.dataset.input, "xbox"); assert.match(confirm().markup, /glyph-xbox-a/); assert.doesNotMatch(confirm().markup, /data-ps5-icon/);
+  dialogue.setInput("keyboard"); assert.match(confirm().markup, />Enter</); assert.doesNotMatch(confirm().markup, />E</, "the conversation uses native Enter, not the world's E action");
+  dialogue.setInput("touch"); assert.equal(confirm().markup, ""); assert.equal(panel.querySelector(".village-dialogue-back-glyph").markup, ""); dialogue.dispose();
 });
 
 test("introduction speaks its title and alternating lines; replay and mute do not advance it", t => {

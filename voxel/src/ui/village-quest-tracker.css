@@ -1,0 +1,31 @@
+/* A small story checklist keeps the world visible beneath its fading edge. */
+#village-game .vg-objective{width:350px;max-width:calc(100% - 28px);border:0;border-radius:15px;background:linear-gradient(100deg,#282033f5,#282033e8 76%,#282033b8);box-shadow:0 5px 24px #09050f33,inset 2px 0 #d6b47b6b;overflow:hidden}
+#village-game .vg-quest-toggle{display:flex;align-items:center;gap:10px;width:100%;min-height:58px;padding:10px 11px;text-align:left;border:0;border-radius:15px;background:none;color:#f7eddf}
+#village-game .vg-quest-portrait{flex:0 0 38px;width:38px;height:38px;display:grid;place-items:center;overflow:hidden;border-radius:50%;border:1px solid #e4c38a99;background:radial-gradient(#705778,#33263e);box-shadow:0 0 0 3px #cbaa7020}
+#village-game .vg-quest-portrait img{display:block;width:100%;height:100%;object-fit:contain}
+#village-game .vg-quest-copy{min-width:0;flex:1}
+#village-game .vg-quest-heading{align-items:center;gap:8px}
+#village-game #vg-quest-title{color:#f8e8cd;font:650 13px/1.4 var(--village-body);letter-spacing:.025em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#village-game #vg-quest-counts{flex:none;font-size:12px;color:#dbc7dc}
+#village-game #vg-task{margin-top:4px;color:#e6d8e8;font-size:13px;line-height:1.45}
+#village-game .vg-quest-toggle-mark{flex:none;gap:4px;color:#e5c58f}
+#village-game .vg-quest-toggle-mark small{font-size:12px;color:#ccbbd3}
+#village-game .vg-quest-details{padding:0 13px 12px 20px;max-height:min(300px,40dvh);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#village-game .vg-quest-requirements{list-style:none;margin:0;padding:3px 0 4px;display:grid;gap:8px}
+#village-game .vg-quest-requirements li{display:grid;grid-template-columns:15px minmax(0,1fr) auto;gap:8px;align-items:start;font-size:13px;line-height:1.45;padding:0;background:none;border:0}
+#village-game .vg-quest-check{padding-top:1px;color:#e4c18c;font-weight:700}
+#village-game .vg-quest-requirement-label{display:flex;align-items:center;gap:6px;min-width:0;color:#f0dcb5}
+#village-game .vg-quest-requirement-label .village-item-icon{width:23px;height:23px;min-width:23px;flex:none}
+#village-game .vg-quest-requirements b{font-weight:600;font-size:12px;color:#e9dbe8;white-space:nowrap;font-variant-numeric:tabular-nums}
+#village-game .vg-quest-requirements .is-ready :is(.vg-quest-check,.vg-quest-requirement-label,b){color:#bbd8bf}
+#village-game .vg-quest-help{margin:8px 0;font-size:12px;line-height:1.5;color:#cbbbd2}
+#village-game #vg-quest-journal{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;width:100%;padding:8px 10px;margin:6px 0 0;border:1px solid #c7a6d12e;border-radius:10px;background:#bea0d00b;color:#ecd5aa;font-size:12px}
+#village-game #vg-wayfinding{margin:0;padding:0 13px 11px 20px;color:#efca8b;font-size:12px;line-height:1.4}
+#village-game .vg-heading>div{align-self:center;min-height:0;padding:7px 12px;border-radius:12px}
+#village-game .vg-heading>div>small{display:none}
+#village-game .vg-heading #vg-place{font-size:15px;line-height:1.2;letter-spacing:0;white-space:nowrap}
+@media(max-width:540px){#village-game .vg-objective{width:310px;max-width:calc(100% - 24px)}#village-game .vg-quest-toggle{min-height:56px;padding:9px 10px;gap:9px}#village-game .vg-quest-portrait{width:32px;height:32px;flex-basis:32px}#village-game .vg-quest-details{padding-left:15px;max-height:32dvh}#village-game .vg-heading>div{padding:6px 9px}#village-game .vg-heading #vg-place{font-size:14px}}
+@media(max-height:500px) and (orientation:landscape){#village-game .vg-objective{width:300px}#village-game .vg-quest-details{max-height:28dvh}#village-game .vg-quest-toggle{min-height:48px;padding-block:7px}}
+.tv-mode #village-game .vg-objective{max-width:min(350px,calc(100vw / var(--vg-ui-zoom,1) - 28px))}
+
+body.village-conversation-open #village-game :is(.vg-heading,.vg-objective,.vg-dock,.vg-farm-rate,.vg-pad-legend,.vg-farm-reminder){visibility:hidden}

@@ -64,6 +64,7 @@ test("menu repeat has one first step, a deliberate delay, and frame-independent 
 
 test("the village legend keeps Quest and Menus together and separates the optional jogging hint", () => {
   const html = villageControllerLegendHTML();
+  assert.doesNotMatch(html, /<em>(?:Walk|Camera)<\/em>/, "basic movement legends stay out of the village strip");
   assert.match(html, /class="vg-legend-shortcuts"><span class="vg-pad-world vg-legend-control vg-legend-quest"/);
   assert.match(html, /vg-legend-quest" aria-label="D-pad up: Expand or collapse your followed quest"/);
   assert.match(html, /vg-legend-menus" aria-label="Options: Open village menus"/);

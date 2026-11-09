@@ -12,7 +12,7 @@ import { villageNodePosition } from "./content/village-node-sites.js";
 import { FOLK_BY_ID, HOST_BY_ID } from "./content/village-folk.js";
 import { QUEST_BY_ID, BLUEPRINTS } from "./content/village-quests.js";
 import { INSIDES, DOOR_NORMAL } from "./village-view.js";
-import { moveVillageWalker, moveVillageHallWalker } from "./rules/village-navigation.js";
+import { moveVillageWalker, moveVillageHallWalker, villageCellFree } from "./rules/village-navigation.js";
 import { animateSprite } from "./sprite-voxels.js";
 import { LEAN } from "./world.js";
 import { gaitPhase, BASE_OWNER_STRIDE } from "./directional-sprite-math.js";
@@ -24,6 +24,7 @@ import { createVillageControls } from "./ui/village-controls.js";
 import { createVillageDecorate } from "./ui/village-decorate.js";
 import { renderVillageChapter } from "./ui/village-chapters.js";
 import { createVillagePanelTrail, villagePanelSection } from "./ui/village-panel-trail.js";
+import { trackerPortraitMarkup, trackerDetailsMarkup } from "./ui/village-quest-tracker.js";
 import { gardenSpriteIcon } from "./ui/garden-icons.js";
 import { villageItemIcon } from "./ui/village-item-markup.js";
 import { installVillageItemArt } from "./ui/village-item-art.js";
@@ -39,21 +40,33 @@ function navigationMarkup(hub=false) {
 export function createVillageGame({ state, scene, save, notice, closeMenus = () => {}, onLeave = () => {}, onRender = () => {}, conversationView = createVillageConversation, portrait = villageSpritePortrait, narration, savePrefs = () => {}, prefs = {}, onFullscreen = () => {}, controlsView = createVillageControls, decorateView = createVillageDecorate, itemArt = item => item.kind === "home" ? decorIcon(item.id, 56) : gardenSpriteIcon(item.id) || villageItemIcon(item.id) }) {
   installVillageItemArt(); installFurnitureSetArt(); installVillageUIArt();
   const root=document.createElement("section");root.id="village-game";root.hidden=true;root.setAttribute("aria-label","Mothlight Village");
-  root.innerHTML=`<header class="vg-heading"><button id="vg-home" aria-label="Return to the farm">${villageUIIcon("farm",24)} <span>Farm</span></button><div><small>Mothlight Village</small><b id="vg-place">Hollow Green</b></div><span id="vg-coins" aria-label="Coins"></span><button id="vg-person" aria-label="Switch playable character">Shane</button><button id="vg-fullscreen" aria-label="Toggle fullscreen" title="Fullscreen">⛶</button></header><section id="vg-objective" class="vg-objective" aria-label="Followed quest" hidden><button id="vg-quest-toggle" class="vg-quest-toggle" aria-expanded="false" aria-controls="vg-quest-details" aria-keyshortcuts="T" title="Expand quest details · D-pad Up / T"><span class="vg-quest-copy"><span class="vg-quest-heading"><strong id="vg-quest-title"></strong><small id="vg-quest-counts"></small></span><span id="vg-task"></span></span><span class="vg-quest-toggle-mark" aria-hidden="true"><span>⌄</span><small>D-pad ↑</small></span></button><div id="vg-quest-details" class="vg-quest-details" hidden></div><small id="vg-wayfinding" hidden></small></section><button id="vg-farm-rate" class="vg-farm-rate" aria-label="Farm production while exploring · open workshop"><span>Farm at work</span><b id="vg-rate">2.5%</b></button><div id="vg-gather" class="vg-gather" role="status" aria-live="polite" hidden><span id="vg-gather-art" aria-hidden="true"></span><div><b id="vg-gather-label"></b><span class="vg-gather-track"><i id="vg-gather-fill"></i></span></div></div><div id="vg-tour" class="vg-tour" hidden><b></b><span></span><button id="vg-tour-skip">Skip tour</button></div><nav class="vg-dock" aria-label="Village actions">${navigationMarkup()}</nav><aside id="vg-panel" hidden role="dialog" aria-modal="false" aria-labelledby="vg-panel-title"><header><button id="vg-panel-back" aria-label="Back to previous page" hidden><span aria-hidden="true">‹</span></button><div class="vg-panel-heading"><small id="vg-panel-tag"></small><h2 id="vg-panel-title"></h2></div><button id="vg-panel-close" aria-label="Close village panel">×</button></header><div id="vg-panel-body"></div></aside><div id="vg-stick-zone" aria-label="Movement thumbstick"><div id="vg-stick" hidden><i></i></div></div><button id="vg-interact" class="vg-interact" hidden>Talk</button><button id="vg-look" class="vg-look" aria-label="Centre the camera">◎</button>`;
+  root.innerHTML=`<header class="vg-heading"><button id="vg-home" aria-label="Return to the farm">${villageUIIcon("farm",24)} <span>Farm</span></button><div><small>Mothlight Village</small><b id="vg-place">Hollow Green</b></div><span id="vg-coins" aria-label="Coins"></span><button id="vg-person" aria-label="Switch playable character">Shane</button><button id="vg-fullscreen" aria-label="Toggle fullscreen" title="Fullscreen">⛶</button></header><section id="vg-objective" class="vg-objective" aria-label="Followed quest" hidden><button id="vg-quest-toggle" class="vg-quest-toggle" aria-expanded="false" aria-controls="vg-quest-details" aria-keyshortcuts="T" title="Expand quest details · D-pad Up / T"><span id="vg-quest-portrait" class="vg-quest-portrait" aria-hidden="true"></span><span class="vg-quest-copy"><span class="vg-quest-heading"><strong id="vg-quest-title"></strong><small id="vg-quest-counts"></small></span><span id="vg-task"></span></span><span class="vg-quest-toggle-mark" aria-hidden="true"><span>⌄</span><small>D-pad ↑</small></span></button><div id="vg-quest-details" class="vg-quest-details" hidden></div><small id="vg-wayfinding" hidden></small></section><button id="vg-farm-rate" class="vg-farm-rate" aria-label="Farm production while exploring · open workshop"><span>Farm at work</span><b id="vg-rate">2.5%</b></button><div id="vg-gather" class="vg-gather" role="status" aria-live="polite" hidden><span id="vg-gather-art" aria-hidden="true"></span><div><b id="vg-gather-label"></b><span class="vg-gather-track"><i id="vg-gather-fill"></i></span></div></div><div id="vg-tour" class="vg-tour" hidden><b></b><span></span><button id="vg-tour-skip">Skip tour</button></div><nav class="vg-dock" aria-label="Village actions">${navigationMarkup()}</nav><aside id="vg-panel" hidden role="dialog" aria-modal="false" aria-labelledby="vg-panel-title"><header><button id="vg-panel-back" aria-label="Back to previous page" hidden><span aria-hidden="true">‹</span></button><div class="vg-panel-heading"><small id="vg-panel-tag"></small><h2 id="vg-panel-title"></h2></div><button id="vg-panel-close" aria-label="Close village panel">×</button></header><div id="vg-panel-body"></div></aside><div id="vg-stick-zone" aria-label="Movement thumbstick"><div id="vg-stick" hidden><i></i></div></div><button id="vg-interact" class="vg-interact" hidden>Talk</button><button id="vg-look" class="vg-look" aria-label="Centre the camera">◎</button>`;
   document.body.append(root);
   const farmReminder=createVillageFarmReminder(),reminder=document.createElement("div");reminder.className="vg-farm-reminder";reminder.hidden=true;reminder.setAttribute("role","status");reminder.setAttribute("aria-live","polite");reminder.innerHTML=`${villageUIIcon("farm",28)}<span>A little check on your farm?<small>Your pumpkins are still growing back home.</small></span>`;root.append(reminder);
   const invitation=document.createElement("button");invitation.id="village-invitation";invitation.hidden=true;invitation.textContent="A letter from Elowen  ›";invitation.onclick=()=>open();document.body.append(invitation);
   const $=id=>root.querySelector("#"+id),view=scene.villageView;
   const proximity=createVillageProximity(view.scene,(x,z)=>view.groundAt(x,z));
   const wanderers=createVillageWanderers({scene:view.scene,state,createVisitor:kind=>scene.villageVisitor?.(kind),groundAt:(x,z)=>view.groundAt(x,z)});
-  let surveying=false,active=false,who="shane",actor=null,walkingAge=0,clock=0,idle=0,page=null,offered=null,oldPlayer=null,dialogueDone=null,chat=null,tourLine=null,waypoint=null,gather=null,questExpanded=false,questHudSignature="";
+  let surveying=false,active=false,who="shane",actor=null,walkingAge=0,clock=0,idle=0,page=null,offered=null,oldPlayer=null,dialogueDone=null,chat=null,greeting=null,dialogueChoices=new Set(),dialogueCameraOwned=false,tourLine=null,waypoint=null,gather=null,questExpanded=false,questHudSignature="";
   const tourVoices=createNarrationControls({mount:$("vg-tour"),narration,savePrefs,line:()=>view.director.active?tourLine:null});
   if(narration){$("vg-tour-skip").setAttribute("data-voice-skip","");tourVoices.element.append($("vg-tour-skip"));}
   const pos={x:ARRIVAL.spawn[0],z:ARRIVAL.spawn[1]},heading={x:0,z:-1},keys=new Set();
-  const dialogue=conversationView({portrait,narration,savePrefs,onChoice(index){
-    if(!chat)return undefined;const result=M.answerChat(state(),chat.who,chat.id,index);if(!result)return false;changed(result.events);chat=null;return result.reply;
-  },onContinue({finished}){if(!finished)return;const done=dialogueDone;dialogueDone=null;dialogue.close();done?.();},onClose(id){if(id)view.folk.mood(id,"idle");dialogueDone=null;chat=null;}});
-  const busy=()=>!!page||dialogue.active||view.director.active||state().paused||!!gather;
+  const spriteRight=new THREE.Vector3(),spriteForward=new THREE.Vector3();
+  const dialogue=conversationView({portrait,narration,savePrefs,onChoice(index,meta){
+    if(meta?.choice&&!dialogueChoices.has(meta.choice))return false;
+    if(greeting){
+      const session=greeting,choice=session.choices[index],run=session.actions[index];
+      if(!choice||choice.disabled||!run||meta&&(meta.id!==session.who||meta.choice!==choice))return false;
+      // Closing clears the old session. Capture its action first, then let a
+      // real transaction open a fresh chat/menu without a generic reply.
+      dialogue.close(false);run();return{handled:true};
+    }
+    // Scripted story answers still use the presenter's own choice.reply.
+    if(!chat)return undefined;if(meta&&(meta.id!==chat.who||meta.choice!==chat.choices[index]))return false;
+    if(!besideNeighbour(chat.who)){dialogue.close(false);return{handled:true};}
+    const result=M.answerChat(state(),chat.who,chat.id,index);if(!result)return false;changed(result.events);chat=null;return result.reply;
+  },onContinue({finished}){if(!finished)return;const done=dialogueDone;dialogueDone=null;dialogue.close();done?.();},onClose(id){if(id)view.folk.mood(id,"idle");releaseInput();view.dialogueCamera?.end();dialogueDone=null;chat=null;greeting=null;dialogueChoices.clear();}});
+  const busy=()=>!!page||dialogue.active||!!view.dialogueCamera?.active||view.director.active||state().paused||!!gather;
   const controls=controlsView({root,blocked:()=>busy()||decorate.active,onRelease:()=>keys.clear()});
   const decorate=decorateView({state,view,root,notice,onMenuInput:(surface,pad)=>controls.handleMenu(surface,pad),onInputReset:()=>controls.release(),onChanged:events=>changed(events),actorPosition:()=>({...pos}),onClose(){releaseInput();centre();render();},onShop:()=>showPanel("stall")});
   let panelSignature="",panelAge=0,panelOpener=null;
@@ -76,9 +89,13 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     return true;
   }
   function changed(events=[]){save();view.sync();render();for(const e of events??[])onEvent(e);}
-  function conversation(id,lines,done,headingText){
-    cancelGather();releaseInput();closePanel();const f=FOLK_BY_ID[id]??HOST_BY_ID[id];dialogueDone=done;chat=null;view.folk.mood(id,"talk");
-    dialogue.open({id,name:f?.name??id,role:f?.role??"",lines,friendship:M.friendshipWith(state(),id),heading:headingText});
+  function conversation(id,lines,done,headingText,options={}){
+    cancelGather();releaseInput();closePanel();const f=FOLK_BY_ID[id]??HOST_BY_ID[id];dialogueDone=done;chat=null;greeting=null;view.folk.mood(id,"talk");
+    dialogueChoices=new Set([...(Array.isArray(lines)?lines:[lines]).flatMap(line=>line?.choices??[]),...(options.choices??[])]);
+    const neighbour=neighbourFeet(id);if(neighbour)view.dialogueCamera?.begin({...pos,y:actor?.position.y},neighbour);
+    dialogueCameraOwned=!!view.dialogueCamera?.active;
+    dialogue.open({id,name:f?.name??id,role:f?.role??"",lines,friendship:M.friendshipWith(state(),id),heading:headingText,...options});
+    updateOwnerView(false,true);
   }
   // Selection names a destination; only standing beside a neighbour starts a
   // conversation or spends quest items. Roaming residents use their live post.
@@ -89,6 +106,13 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     const entry=Object.entries(INSIDES).find(([,plan])=>plan.host===id);
     if(!entry)return null;const[hallId,plan]=entry,[nx,nz]=DOOR_NORMAL[plan.door.facing];
     return{x:(plan.door.x+nx*3.2)*K,z:(plan.door.z+nz*3.2)*K,hallId};
+  }
+  // A talk destination is a clear place to stand, often across a counter.
+  // Cinematic subjects instead use the resident's actual feet in this realm.
+  function neighbourFeet(id){
+    const hall=INSIDES[view.inside];
+    if(hall?.host===id){const p=view.hallPoint(hall.hall.host[0],hall.hall.host[1],.12);return{x:p.x,y:p.y,z:-p.z,inside:view.inside};}
+    const point=view.folk.spotOf?.(id);return point&&Number.isFinite(point.x)&&Number.isFinite(point.z)?{...point,y:Number.isFinite(point.y)?point.y:view.groundAt(point.x,point.z),folkId:id}:null;
   }
   function besideNeighbour(id){
     if(!active||view.director.active||state().paused||decorate.active)return false;
@@ -105,12 +129,38 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     if(!active||dialogue.active||view.director.active||state().paused||!besideNeighbour(id))return;const s=state(),host=HOST_BY_ID[id];
     if(host){conversation(id,[host.greet[s.village.visits%host.greet.length]],null);return;}
     if(!s.village.friends[id]){notice("This neighbour's story opens with a later district.");return;}
-    const talk=M.talkStep(s,id);if(talk){conversation(id,talk.lines,()=>changed(M.finishTalk(s,talk.quest,id)),QUEST_BY_ID[talk.quest].title);return;}
-    showPanel("resident",id);
+    const talk=M.talkStep(s,id);if(talk){conversation(id,talk.lines,()=>{if(besideNeighbour(id))changed(M.finishTalk(state(),talk.quest,id));},QUEST_BY_ID[talk.quest].title);return;}
+    greetNeighbour(id);
+  }
+  function greetNeighbour(id){
+    const s=state(),f=FOLK_BY_ID[id],choices=[],actions=[];
+    const add=(choice,run)=>{choices.push({...choice,text:choice.label});actions.push(run);};
+    const wait=Math.max(0,Math.ceil(s.village.friends[id]?.chatIn??0)),chatReady=M.canChat(s,id)&&!!M.nextChat(s,id);
+    add({id:"chat",intent:"chat",label:"Have a chat",disabled:!chatReady,description:chatReady?"A little catch-up":wait?`Ready in ${wait>=60?`${Math.floor(wait/60)}m `:""}${wait%60}s`:"No new chat just now"},()=>startTalk(id));
+    const delivery=M.handOver(s,id);
+    if(delivery?.ok)add({id:`quest:deliver:${delivery.quest}`,intent:"quest",label:"I brought what you need",description:QUEST_BY_ID[delivery.quest].title},()=>handOverTo(id,delivery.quest));
+    for(const q of M.offeredBy(s,id))add({id:`quest:start:${q.id}`,intent:"quest",label:q.title,description:"I'd like to help"},()=>takeQuest(q.id));
+    const presents=M.giftsLeft(s,id),hasGift=M.giftable(s).length>0;
+    add({id:"gift",intent:"gift",label:"Give a present",disabled:presents<=0||!hasGift,description:presents<=0?"More presents after a little rest":hasGift?`${presents} present${presents===1?"":"s"} left`:"Find a little something for your satchel"},()=>{
+      if(!besideNeighbour(id))return;showPanel("resident",id);
+      const gifts=$("vg-panel-body").querySelector(`[data-vg-details-key="gifts:${id}"]`);if(gifts){gifts.open=true;gifts.scrollIntoView?.({block:"nearest"});gifts.querySelector("button:not(:disabled)")?.focus({preventScroll:true});panelTrail.remember(panelView());}
+    });
+    add({id:"about",intent:"about",label:`More about ${f.short??f.name}`,description:"Friendship, stories and favourites"},()=>{if(besideNeighbour(id))showPanel("resident",id);});
+    add({id:"leave",intent:"leave",label:"See you soon"},()=>{});
+    conversation(id,[{text:f.greet[s.village.visits%f.greet.length],choices}],null,undefined,{intent:"greeting"});
+    greeting={who:id,choices,actions};
+  }
+  function takeQuest(id){
+    const q=QUEST_BY_ID[id];if(!q||!besideNeighbour(q.giver)||M.questStatus(state(),id)!=="offered")return false;
+    changed(M.startQuest(state(),id));conversation(q.giver,q.intro??[q.blurb],()=>showPanel("journal"),q.title,{intent:"quest"});return true;
+  }
+  function handOverTo(id,questId,fromJournal=false){
+    if(!besideNeighbour(id))return false;const result=M.doHandOver(state(),id,questId);if(!result)return false;
+    changed(result);if(fromJournal)drawPanel();else meet(id);return true;
   }
   function startTalk(id){
     if(!besideNeighbour(id))return;const s=state(),c=M.nextChat(s,id);if(!M.canChat(s,id)||!c){conversation(id,FOLK_BY_ID[id].greet,null);return;}
-    conversation(id,[...c.lines,{choices:c.choices}],null);chat={who:id,id:c.id};
+    conversation(id,[...c.lines,{choices:c.choices}],null,undefined,{intent:"chat"});chat={who:id,id:c.id,choices:c.choices};
   }
   // Keep the player's place by logical page/fold/action, even when live counts
   // redraw a menu. Closing a linked map should not discard the quest beneath it.
@@ -167,8 +217,8 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     $("vg-panel-title").textContent=title;$("vg-panel-tag").textContent=tag;$("vg-panel-body").innerHTML=html;
     const on=(sel,fn)=>$("vg-panel-body").querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(b));
     on('[data-vg-meet]',b=>meet(b.dataset.vgMeet));on('[data-vg-chat]',b=>startTalk(b.dataset.vgChat));
-    on('[data-vg-start]',b=>{const q=QUEST_BY_ID[b.dataset.vgStart];if(!q||!besideNeighbour(q.giver))return;changed(M.startQuest(s,q.id));conversation(q.giver,q.intro??[q.blurb],()=>showPanel("journal"),q.title);});
-    on('[data-vg-handover]',b=>{if(!besideNeighbour(b.dataset.vgHandover))return;const result=M.doHandOver(s,b.dataset.vgHandover,b.dataset.quest);if(result){changed(result);if(kind==="journal")drawPanel();else meet(b.dataset.vgHandover);}});
+    on('[data-vg-start]',b=>takeQuest(b.dataset.vgStart));
+    on('[data-vg-handover]',b=>handOverTo(b.dataset.vgHandover,b.dataset.quest,kind==="journal"));
     on('[data-vg-favour]',b=>{if(!besideNeighbour(b.dataset.vgFavour))return;const r=M.doFavour(s,b.dataset.vgFavour);if(r){changed(r.events);notice(`Thank you · ${money(r.pay)}`);drawPanel();}});
     on('[data-vg-gift]',b=>{if(!besideNeighbour(b.dataset.who))return;const r=M.giveGift(s,b.dataset.who,b.dataset.vgGift);if(r){changed(r.events);conversation(b.dataset.who,[r.line],null);}});
     on('[data-vg-tour]',()=>tour());on('[data-vg-buy]',b=>{if(M.buyFromStall(s,b.dataset.vgBuy)){changed();drawPanel();}});on('[data-vg-focus]',b=>focus(b.dataset.vgFocus));
@@ -180,9 +230,9 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     on('[data-vg-home]',close);
     on('[data-vg-object]',b=>{const object=M.storyObjectsHere(s,"village").find(o=>o.id===b.dataset.vgObject);if(object){closePanel();surveying=true;view.cameraActions.focus(object.x,object.z,18);}});
     on('[data-vg-gather]',b=>{
-      const spots=NODES.filter(n=>n.district==="green"&&n.material===b.dataset.vgGather&&M.nodeReady(s,n.id)).map(n=>({...n,...villageNodePosition(s,n)}));
+      const spots=NODES.filter(n=>n.district===(b.dataset.vgDistrict??"green")&&n.material===b.dataset.vgGather&&M.nodeReady(s,n.id)).map(n=>({...n,...villageNodePosition(s,n)})).filter(n=>n.kind!=="blight"||Array.from({length:9},(_,i)=>i?{x:n.x+Math.cos((i-1)*Math.PI/4)*1.4,z:n.z+Math.sin((i-1)*Math.PI/4)*1.4}:n).some(p=>villageCellFree(s,p.x,p.z)));
       const node=spots.sort((a,b)=>Number(M.nodeReady(s,b.id))-Number(M.nodeReady(s,a.id))||Math.hypot(a.x-pos.x,a.z-pos.z)-Math.hypot(b.x-pos.x,b.z-pos.z))[0];
-      if(node){closePanel();guideResource(node);centre();notice("Follow the direction marker, then use your tool beside the resource.");}else notice("These resources are returning. Explore another clearing or check the satchel timer.");
+      if(node){closePanel();guideResource(node);centre();notice(node.kind==="blight"?"Follow the marker, then root out the cursed fungus by hand.":"Follow the direction marker, then use your tool beside the resource.");}else notice("These resources are returning. Explore another clearing or check the satchel timer.");
     });
     const parent=panelTrail.parent,back=$("vg-panel-back");back.hidden=!parent;back.setAttribute("aria-label",parent?`Back to ${{journal:"quests",materials:"satchel",people:"neighbours",map:"map",upgrades:"workshop",navigation:"village menus"}[parent.kind]??"previous page"}`:"Back to previous page");
     restorePanel(savedView,restoreFocus);panelTrail.remember(panelView());
@@ -197,18 +247,18 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
   function pick(hit){if(!active)return;if(decorate.active){decorate.pick(hit);return;}if(busy())return;if(hit.type==="village-folk")meet(hit.id);else if(hit.type==="village-door")enterHall(hit.id);else if(hit.type==="village-carriage")close();else if(hit.type==="village-noticeboard")showPanel("journal");else if(hit.type==="village-stall")showPanel("stall");else if(hit.type==="village-node"){beginGather(hit.id);}else if(hit.type==="village-page"){const e=M.findObject(state(),hit.id);if(e){changed(e);notice("A page of Elowen's letter");}}}
   // A chosen destination stays relative to the walking camera, rather than taking it away.
   function guide(point,label){waypoint={x:point.x,z:point.z,label,...(point.material&&point.id?{nodeId:point.id}:{}),...(point.folkId?{folkId:point.folkId}:{})};render();}
-  function guideResource(node){const area=FORAGE_AREAS.find(a=>node.x>=a.x0&&node.x<=a.x1&&node.z>=a.z0&&node.z<=a.z1);guide(node,`${MATERIALS.find(m=>m.id===node.material)?.name??node.material} · ${area?.name??"Hollow Green"}`);}
+  function guideResource(node){const area=FORAGE_AREAS.find(a=>node.x>=a.x0&&node.x<=a.x1&&node.z>=a.z0&&node.z<=a.z1);guide(node,`${node.kind==="blight"?"Cursed fungus":MATERIALS.find(m=>m.id===node.material)?.name??node.material} · ${area?.name??"Hollow Green"}`);}
   function gatherTool(material){return ["logs","hardwood"].includes(material)?"axe":["stone","iron","moonstone","clay"].includes(material)?"pickaxe":"hands";}
   function cancelGather(){controls.setContext?.(null);if(!gather)return;gather=null;view.gatherTool?.({active:false});root.classList.remove("is-gathering");$("vg-gather").hidden=true;placeActor();}
   function beginGather(id){
     const raw=NODES.find(n=>n.id===id),s=state(),node=raw?{...raw,...villageNodePosition(s,raw)}:null;if(!node||gather||!actor)return false;
     if(!M.canGather(s)){notice("Meet Rowan and Elowen to receive your gathering tools.");return false;}
     if(!M.nodeReady(s,id)){notice("Let this gathering spot return first.");return false;}
-    if((s.village.materials[node.material]??0)>=M.villageMaterialCapacity(s)){notice("Your satchel is full for this material.");return false;}
+    if(node.kind!=="blight"&&(s.village.materials[node.material]??0)>=M.villageMaterialCapacity(s)){notice("Your satchel is full for this material.");return false;}
     guideResource(node);
     if(Math.hypot(node.x-pos.x,node.z-pos.z)>GATHER_REACH){centre();notice("Walk to the marked resource to use your tool.");return false;}
-    releaseInput();offered=null;animateSprite(actor,clock,false,0,who==="shane"?1.7:0);actor?.userData.playerAnimate?.({who,outfit:s.wardrobe.equipped[who],facing:"front",angle:0,phase:0,walking:false,time:clock,age:clock,dx:0,controlled:true});gather={id,material:node.material,target:{x:node.x,z:node.z},elapsed:0,duration:gatherTool(node.material)==="hands"?.55:.95};
-    root.classList.add("is-gathering");$("vg-gather").hidden=false;$("vg-gather-art").innerHTML=villageItemIcon(node.material);$("vg-gather-label").textContent=gatherTool(node.material)==="axe"?"Chopping timber":gatherTool(node.material)==="pickaxe"?"Breaking stone":"Gathering by hand";$("vg-gather-fill").style.width="0%";
+    releaseInput();offered=null;animateSprite(actor,clock,false,0,who==="shane"?1.7:0);actor?.userData.playerAnimate?.({who,outfit:s.wardrobe.equipped[who],facing:"front",angle:0,phase:0,walking:false,time:clock,age:clock,dx:0,controlled:true});gather={id,kind:node.kind,material:node.material,target:{x:node.x,z:node.z},elapsed:0,duration:node.kind==="blight"?2:gatherTool(node.material)==="hands"?.55:.95};
+    root.classList.add("is-gathering");$("vg-gather").hidden=false;$("vg-gather-art").innerHTML=villageItemIcon(node.material);$("vg-gather-label").textContent=node.kind==="blight"?"Rooting out cursed fungus":gatherTool(node.material)==="axe"?"Chopping timber":gatherTool(node.material)==="pickaxe"?"Breaking stone":"Gathering by hand";$("vg-gather-fill").style.width="0%";
     view.gatherTool?.({actor,material:node.material,target:{x:node.x,z:node.z},progress:0,active:true});return true;
   }
   function tickGather(dt){
@@ -216,18 +266,25 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     $("vg-gather-fill").style.width=`${progress*100}%`;view.gatherTool?.({actor,material:work.material,target:work.target,progress,active:true});
     if(progress<1)return;cancelGather();const raw=NODES.find(n=>n.id===work.id),node=raw?{...raw,...villageNodePosition(state(),raw)}:null;
     if(!node||Math.hypot(node.x-pos.x,node.z-pos.z)>GATHER_REACH+.1)return;
-    const result=M.gatherNode(state(),work.id);if(result?.full)notice("Your satchel is full for this material.");else if(result){waypoint=null;changed(result.events);notice(`Gathered ${result.amount} ${MATERIALS.find(m=>m.id===result.material)?.name.toLowerCase()??result.material}`);}
+    const result=M.gatherNode(state(),work.id);if(result?.full)notice("Your satchel is full for this material.");else if(result){waypoint=null;changed(result.events);notice(result.cleared?(result.overflow?"Cursed fungus cleared · sample satchel full":"Cursed fungus cleared · spore sample collected"):`Gathered ${result.amount} ${MATERIALS.find(m=>m.id===result.material)?.name.toLowerCase()??result.material}`);}
   }
   function placeActor(){if(!actor)return;actor.position.set(pos.x,view.inside ? .2 : view.groundAt(pos.x,pos.z)+.04,-pos.z);}
+  function updateOwnerView(moving=false,front=false){
+    if(!actor)return;
+    const dxCam=view.camera.position.x-actor.position.x,dzCam=view.camera.position.z-actor.position.z;actor.rotation.y=Math.atan2(dxCam,dzCam);const lean=actor.children[0];if(lean){lean.rotation.x=-LEAN;const pitch=Math.atan2(view.camera.position.y-actor.position.y-1.2,Math.hypot(dxCam,dzCam));lean.scale.y=Math.min(1.6,1/Math.cos(Math.max(0,pitch-LEAN)));}
+    spriteRight.set(1,0,0).applyQuaternion(view.camera.quaternion);spriteRight.y=0;spriteRight.normalize();view.camera.getWorldDirection(spriteForward);spriteForward.y=0;spriteForward.normalize();
+    const across=heading.x*spriteRight.x+heading.z*spriteRight.z,away=heading.x*spriteForward.x+heading.z*spriteForward.z,baseView=state().wardrobe.equipped[who]===who+"-base",facing=front?"front":idle>1.2&&!baseView?"front":Math.abs(across)>Math.abs(away)*.75?"side":away>0?"back":"front";
+    animateSprite(actor,moving?walkingAge:clock,moving,moving?across:0,who==="shane"?1.7:0);actor.userData.playerAnimate?.({who,outfit:state().wardrobe.equipped[who],facing,angle:front?0:Math.atan2(across,-away),phase:gaitPhase(walkingAge*2.3,BASE_OWNER_STRIDE),keepFacingOnIdle:!front&&baseView,walking:moving,time:clock,age:moving?walkingAge:clock,dx:moving?across:0,controlled:true});
+  }
   function makeActor(){surveying=false;if(actor){view.scene.remove(actor);actor.userData.dispose?.();}actor=scene.villageCharacter(who);if(actor){view.scene.add(actor);actor.visible=!view.director.active;placeActor();if(!view.director.active)view.play.reset(actor.position);}}
   function enterHall(id){const plan=INSIDES[id];if(!active||busy()||!plan)return;narration?.stop();surveying=false;releaseInput();offered=null;closePanel();view.goInside(id);const p=view.hallPoint(...plan.hall.spawn);pos.x=p.x;pos.z=-p.z;placeActor();if(actor)view.play.reset(actor.position);render();}
   function leaveHall(){const plan=INSIDES[view.inside];if(!plan)return;narration?.stop();surveying=false;releaseInput();offered=null;const [nx,nz]=DOOR_NORMAL[plan.door.facing];view.goOutside();pos.x=(plan.door.x+nx*3.2)*K;pos.z=(plan.door.z+nz*3.2)*K;placeActor();if(actor)view.play.reset(actor.position);render();}
-  function tour(){if(!active||dialogue.active)return;proximity.hide();cancelGather();waypoint=null;narration?.stop();surveying=false;releaseInput();offered=null;closePanel();if(view.inside)leaveHall();if(actor)actor.visible=false;$("vg-tour").hidden=false;$("vg-tour-skip").focus({preventScroll:true});view.director.start(k=>{$("vg-tour b").textContent=k.title;$("vg-tour span").textContent=k.sub;tourLine={speaker:"narrator",text:tourVoiceText(k)};narration?.play(tourLine.speaker,tourLine.text);tourVoices.refresh();},()=>{narration?.stop();tourLine=null;$("vg-tour").hidden=true;changed(M.finishTour(state()));if(actor){actor.visible=true;view.play.reset(actor.position);}}, {hold:()=>!!narration?.enabled&&["loading","playing"].includes(narration.current?.status)});}
+  function tour(){if(!active||dialogue.active)return;view.dialogueCamera?.end({immediate:true});proximity.hide();cancelGather();waypoint=null;narration?.stop();surveying=false;releaseInput();offered=null;closePanel();if(view.inside)leaveHall();if(actor)actor.visible=false;$("vg-tour").hidden=false;$("vg-tour-skip").focus({preventScroll:true});view.director.start(k=>{$("vg-tour b").textContent=k.title;$("vg-tour span").textContent=k.sub;tourLine={speaker:"narrator",text:tourVoiceText(k)};narration?.play(tourLine.speaker,tourLine.text);tourVoices.refresh();},()=>{narration?.stop();tourLine=null;$("vg-tour").hidden=true;changed(M.finishTour(state()));if(actor){actor.visible=true;view.play.reset(actor.position);}}, {hold:()=>!!narration?.enabled&&["loading","playing"].includes(narration.current?.status)});}
   function open(){
     const s=state();if(active)return true;if(M.patchLevel(s).level<M.VILLAGE_LEVEL){notice(`Mothlight opens at level ${M.VILLAGE_LEVEL}.`);return false;}if(s.paused){notice("Resume the farm before travelling.");return false;}
     narration?.stop();oldPlayer=scene.player.state();closeMenus();who=oldPlayer.who??who;scene.player.setEnabled(false);releaseInput();controls.reset();if(!M.villageOpen(s))M.inviteToVillage(s);M.arriveInVillage(s);save();farmReminder.reset();reminder.hidden=true;active=true;root.hidden=false;document.body.classList.add("in-village");scene.enter("village");if(view.inside)view.goOutside();pos.x=ARRIVAL.spawn[0];pos.z=ARRIVAL.spawn[1];makeActor();render();onRender();if(!s.village.toured)tour();return true;
   }
-  function close(){if(!active)return;farmReminder.reset();reminder.hidden=true;wanderers.clear();proximity.hide();cancelGather();waypoint=null;narration?.stop();tourLine=null;dialogueDone=null;chat=null;dialogue.close();decorate.close();closePanel();panelTrail.reset();active=false;surveying=false;questExpanded=false;root.hidden=true;$("vg-tour").hidden=true;document.body.classList.remove("in-village");releaseInput();controls.reset();offered=null;if(view.inside)view.goOutside();if(actor){view.scene.remove(actor);actor.userData.dispose?.();actor=null;}save();scene.leavePlace();if(oldPlayer?.enabled)scene.player.setEnabled(true,oldPlayer.who);onLeave();}
+  function close(){if(!active)return;farmReminder.reset();reminder.hidden=true;wanderers.clear();proximity.hide();cancelGather();waypoint=null;narration?.stop();tourLine=null;dialogueDone=null;chat=null;greeting=null;dialogue.close();view.dialogueCamera?.end({immediate:true});decorate.close();closePanel();panelTrail.reset();active=false;surveying=false;questExpanded=false;root.hidden=true;$("vg-tour").hidden=true;document.body.classList.remove("in-village");releaseInput();controls.reset();offered=null;if(view.inside)view.goOutside();if(actor){view.scene.remove(actor);actor.userData.dispose?.();actor=null;}save();scene.leavePlace();if(oldPlayer?.enabled)scene.player.setEnabled(true,oldPlayer.who);onLeave();}
   const setText=(id,text)=>{const el=$(id);if(el.textContent!==text)el.textContent=text;};
   function render(){
     invitation.hidden=active||!!scene.place||!M.villageDue(state());if(!active)return;setText("vg-coins",money(state().coins));setText("vg-place",INSIDES[view.inside]?.name??"Hollow Green");setText("vg-person",who==="shane"?"Shane":"Natalie");
@@ -236,8 +293,8 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     const objective=$("vg-objective");objective.hidden=!!view.director.active;setText("vg-task",text);setText("vg-quest-title",q?.title??"Hollow Green");$("vg-quest-title").title=q?.title??"Hollow Green";
     const count=$("vg-quest-counts");count.hidden=!rows.length;setText("vg-quest-counts",rows.length===1?`${rows[0].key==="coins"?money(Math.min(rows[0].have,rows[0].need)):Math.min(rows[0].have,rows[0].need)}/${rows[0].key==="coins"?money(rows[0].need):rows[0].need}`:rows.length?`${rows.filter(r=>r.complete).length}/${rows.length} ready`:"");
     const toggle=$("vg-quest-toggle");toggle.setAttribute("aria-expanded",String(questExpanded));toggle.setAttribute("aria-label",`${questExpanded?"Collapse":"Expand"} followed quest details`);root.classList.toggle("quest-expanded",questExpanded);$("vg-quest-details").hidden=!questExpanded;
-    const hint=q?M.questStepHint(state(),q.id):"Meet Elowen and Rowan to discover the village’s stories.",signature=JSON.stringify([q?.id,rows,hint]);
-    if(signature!==questHudSignature){questHudSignature=signature;$("vg-quest-details").innerHTML=`${rows.length?`<ul class="vg-quest-requirements">${rows.map(r=>`<li class="${r.complete?"is-ready":""}"><span>${escape(r.label)}</span><b>${r.key==="coins"?money(r.have)+" / "+money(r.need):`${r.have} / ${r.need}`}</b></li>`).join("")}</ul>`:""}${hint?`<p>${escape(hint)}</p>`:""}<button id="vg-quest-journal">Open quests</button>`;$("vg-quest-journal").onclick=()=>showPanel("journal");}
+    const hint=q?M.questStepHint(state(),q.id):"Meet Elowen and Rowan to discover the village’s stories.",questPortrait=q?portrait(q.giver):null,signature=JSON.stringify([q?.id,rows,hint,questPortrait]);
+    if(signature!==questHudSignature){questHudSignature=signature;$("vg-quest-portrait").innerHTML=trackerPortraitMarkup(q,questPortrait);$("vg-quest-details").innerHTML=trackerDetailsMarkup(rows,hint);$("vg-quest-journal").onclick=()=>showPanel("journal");}
     if(waypoint?.folkId&&!view.inside)Object.assign(waypoint,view.folk.talkSpot(waypoint.folkId));
     if(waypoint?.nodeId){if(!M.nodeReady(state(),waypoint.nodeId))waypoint=null;else Object.assign(waypoint,villageNodePosition(state(),waypoint.nodeId));}
     const finder=$("vg-wayfinding");finder.hidden=!waypoint||!!view.inside;
@@ -246,10 +303,15 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
   }
   function tick(dt){
     if(!active)return;clock+=dt;reminder.hidden=!farmReminder.tick(dt,{paused:state().paused,blocked:busy()||decorate.active});wanderers.tick(dt,view.camera,{paused:state().paused,hidden:!!view.inside||view.director.active||decorate.active});render();if(!actor)makeActor();if(!actor)return;
-    const input=controls.poll(),pad=input.pad;
+    const cameraOwns=!!view.dialogueCamera?.active;
+    // A new hold during the return is still a camera gesture. Require neutral
+    // at the exact hand-back, not just when the conversation first opened.
+    if(dialogueCameraOwned&&!cameraOwns)releaseInput();dialogueCameraOwned=cameraOwns;
+    const input=controls.poll(),pad=input.pad;dialogue.setInput?.(input.source,pad?.g);
+    if(dialogue.active||cameraOwns)updateOwnerView(false,true);
     if(decorate.active){decorate.tick(dt,pad);return;}
     if(pad?.pressed(1)){back();return;}if(pad?.pressed(9)&&!dialogue.active&&!view.director.active){page?closePanel():showPanel("navigation");return;}
-    if(gather){controls.setContext?.({type:"village-node",material:gather.material,progress:gather.elapsed/gather.duration,gathering:true});tickGather(dt);return;}
+    if(gather){controls.setContext?.({type:"village-node",material:gather.material,...(gather.kind==="blight"?{label:"Root out",target:"Cursed fungus",tool:"Hands"}:{}),progress:gather.elapsed/gather.duration,gathering:true});tickGather(dt);return;}
     if(page||dialogue.active||view.director.active){
       panelAge+=dt;if(page&&panelAge>.8){panelAge=0;drawPanel();}
       controls.handleMenu(dialogue.active?document.getElementById("village-dialogue"):page?$("vg-panel"):$("vg-tour"),pad);return;
@@ -267,15 +329,12 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     const travelled=Math.hypot(pos.x-before.x,pos.z-before.z),moving=travelled>.0005;
     if(moving){heading.x=(pos.x-before.x)/travelled;heading.z=-(pos.z-before.z)/travelled;walkingAge+=travelled/2.3;idle=0;}else idle+=dt;
     placeActor();view.play.look(input.look.x+k("r")-k("q"),input.look.y,dt);if(!surveying)view.play.follow(actor.position,dt,{heading,moving});
-    const dxCam=view.camera.position.x-actor.position.x,dzCam=view.camera.position.z-actor.position.z;actor.rotation.y=Math.atan2(dxCam,dzCam);const lean=actor.children[0];if(lean){lean.rotation.x=-LEAN;const pitch=Math.atan2(view.camera.position.y-actor.position.y-1.2,Math.hypot(dxCam,dzCam));lean.scale.y=Math.min(1.6,1/Math.cos(Math.max(0,pitch-LEAN)));}
-    right.set(1,0,0).applyQuaternion(view.camera.quaternion);right.y=0;right.normalize();view.camera.getWorldDirection(forward);forward.y=0;forward.normalize();
-    const across=heading.x*right.x+heading.z*right.z,away=heading.x*forward.x+heading.z*forward.z,baseView=state().wardrobe.equipped[who]===who+"-base",facing=idle>1.2&&!baseView?"front":Math.abs(across)>Math.abs(away)*.75?"side":away>0?"back":"front";
-    animateSprite(actor,moving?walkingAge:clock,moving,moving?across:0,who==="shane"?1.7:0);actor.userData.playerAnimate?.({who,outfit:state().wardrobe.equipped[who],facing,angle:Math.atan2(across,-away),phase:gaitPhase(walkingAge*2.3,BASE_OWNER_STRIDE),keepFacingOnIdle:baseView,walking:moving,time:clock,age:moving?walkingAge:clock,dx:moving?across:0,controlled:true});
+    updateOwnerView(moving);
     const targets=view.inside?[{type:"village-folk",id:INSIDES[view.inside].host,x:view.hallPoint(...INSIDES[view.inside].hall.host).x,z:-view.hallPoint(...INSIDES[view.inside].hall.host).z}]:[...["elowen","rowan"].map(id=>({type:"village-folk",id,...view.folk.talkSpot(id)})),...NODES.filter(n=>n.district==="green"&&M.nodeReady(state(),n.id)).map(n=>({type:"village-node",id:n.id,...villageNodePosition(state(),n)})),...M.storyObjectsHere(state(),"village").map(o=>({type:"village-page",...o})),{type:"village-noticeboard",x:FIXTURES.noticeboard.x,z:FIXTURES.noticeboard.z},{type:"village-stall",x:FIXTURES.stall.x,z:FIXTURES.stall.z},{type:"village-carriage",x:ARRIVAL.back[0],z:ARRIVAL.back[1]},...Object.entries(INSIDES).map(([id,p])=>{const [nx,nz]=DOOR_NORMAL[p.door.facing];return{type:"village-door",id,x:(p.door.x+nx*1.4)*K,z:(p.door.z+nz*1.4)*K};})];
     const near=targets.map(t=>({...t,d:Math.hypot(t.x-pos.x,t.z-pos.z)})).filter(t=>t.d<(view.inside?HALL_TALK_REACH:t.type==="village-node"?GATHER_REACH:TALK_REACH)).sort((a,b)=>a.d-b.d)[0];offered=near??null;
-    const material=near?.type==="village-node"?NODES.find(n=>n.id===near.id)?.material:null;
-    const context=near?{...near,material,target:near.type==="village-carriage"?"Farm":near.type==="village-page"?"Letter page":near.type==="village-folk"?(FOLK_BY_ID[near.id]??HOST_BY_ID[near.id])?.name:near.type==="village-door"?INSIDES[near.id]?.name:undefined,available:!material||M.canGather(state()),reason:material&&!M.canGather(state())?"Meet Rowan and Elowen first":undefined}:null;
-    if(controls.setContext)controls.setContext(context);else{$("vg-interact").hidden=!near;$("vg-interact").textContent=near?.type==="village-carriage"?"Farm":near?.type==="village-folk"?"Talk":"Gather";}
+    const nearNode=near?.type==="village-node"?NODES.find(n=>n.id===near.id):null,material=nearNode?.material,blight=nearNode?.kind==="blight";
+    const context=near?{...near,material,...(blight?{label:"Root out",tool:"Hands"}:{}),target:blight?"Cursed fungus":near.type==="village-carriage"?"Farm":near.type==="village-page"?"Letter page":near.type==="village-folk"?(FOLK_BY_ID[near.id]??HOST_BY_ID[near.id])?.name:near.type==="village-door"?INSIDES[near.id]?.name:undefined,available:!material||M.canGather(state()),reason:material&&!M.canGather(state())?"Meet Rowan and Elowen first":undefined}:null;
+    if(controls.setContext)controls.setContext(context);else{$("vg-interact").hidden=!near;$("vg-interact").textContent=near?.type==="village-carriage"?"Farm":near?.type==="village-folk"?"Talk":blight?"Root out":"Gather";}
     proximity.update({position:pos,inside:!!view.inside,time:clock,reducedMotion:!!prefs.reducedMotion,visible:!surveying,targets:targets.filter(t=>["village-node","village-page"].includes(t.type)).map(t=>({...t,quest:t.type==="village-page"}))});
   }
   function toggleQuest(){if(!active||dialogue.active||view.director.active||state().paused||gather)return false;questExpanded=!questExpanded;render();return true;}
