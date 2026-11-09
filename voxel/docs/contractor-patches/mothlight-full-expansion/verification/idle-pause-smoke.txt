@@ -1,0 +1,57 @@
+{"scope":"Unmodified smoke.mjs, draw-held logic only. Managed Chrome blocks file URLs; unchanged captured bytes are served on loopback.","html":"/workspace/Pumpkin-Patch-Idle-Pause.html","sha256":"7d98627500fd97fab432ecc5dffed906339a043fffed6c17983a1002708c7114","bytes":60337037}
+info desktop: renderer/composer draws held; real RAF, simulation and UI continue
+ok   desktop: a new patch opens on the introduction
+ok   desktop: Natalie speaks first
+ok   desktop: Skip hands the farm back
+ok   desktop: characters drawn with the original sprites
+ok   desktop: plant one plot and boost
+ok   desktop: pick one plot at base capacity
+ok   desktop: shop opens
+ok   desktop: wardrobe opens
+ok   desktop: journal opens
+ok   desktop: menu closes
+ok   desktop: voxel characters switch on and off
+ok   desktop: home opens the separate garden
+ok   desktop: home opens the parlour
+ok   desktop: a bought piece is placed in the room
+ok   desktop: placing furniture reveals the room
+ok   desktop: furniture wheel offers More controls
+ok   desktop: flip the piece and finish
+ok   desktop: furniture wheel offers More controls
+ok   desktop: a candelabrum stands on the tea table
+ok   desktop: customers come into the shop
+ok   desktop: back to the patch
+ok   desktop: buy and wear a costume
+ok   desktop: full storage disables picking and keeps a ripe crop instead of paying overflow money
+ok   desktop: one tap on a price buys it
+ok   desktop: paid barn expansion permits harvesting again
+ok   desktop: all five new visitors render and advance through walking frames
+ok   desktop: no page errors
+info phone: renderer/composer draws held; real RAF, simulation and UI continue
+ok   phone: a new patch opens on the introduction
+ok   phone: Natalie speaks first
+ok   phone: Skip hands the farm back
+ok   phone: characters drawn with the original sprites
+ok   phone: plant one plot and boost
+ok   phone: pick one plot at base capacity
+ok   phone: shop opens
+ok   phone: wardrobe opens
+ok   phone: journal opens
+ok   phone: menu closes
+ok   phone: voxel characters switch on and off
+ok   phone: home opens the separate garden
+ok   phone: home opens the parlour
+ok   phone: a bought piece is placed in the room
+ok   phone: placing furniture reveals the room
+ok   phone: furniture wheel offers More controls
+ok   phone: flip the piece and finish
+ok   phone: furniture wheel offers More controls
+ok   phone: a candelabrum stands on the tea table
+ok   phone: customers come into the shop
+ok   phone: back to the patch
+ok   phone: buy and wear a costume
+ok   phone: full storage disables picking and keeps a ripe crop instead of paying overflow money
+ok   phone: one tap on a price buys it
+ok   phone: paid barn expansion permits harvesting again
+ok   phone: all five new visitors render and advance through walking frames
+ok   phone: no page errors

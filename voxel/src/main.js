@@ -1,4 +1,5 @@
 import { installLevelRewardArt, levelBadgeMarkup } from "./ui/level-reward-icons.js";
+import { createIdleBreak } from './ui/idle-break.js';
 import villageShortcutURL from "../assets/village-shortcut/village.webp";
 import { installHomeCategoryArt } from "./ui/home-category-icons.js";
 import grassTileURL from '../assets/terrain/grass-tile.webp';
@@ -113,20 +114,7 @@ const VISITOR_LINES = ["Lovely glow!", "Perfect for tonight.", "Freshly picked!"
 let banterIndex = { natalie: 0, shane: 0 };
 let spoilageNoticeAt = -Infinity;
 
-// Left alone for ten minutes, Shane and Natalie put the kettle on: the farm takes
-// a tea break until you're back, so a window left open overnight doesn't play
-// the whole game without you. Any tap, click or key counts as being here, and
-// so does a controller: a button held or a stick pushed (someone playing on a
-// TV may never touch the phone).
-const IDLE_TEA = 600;
-let idle = 0, idleTea = false, memoryChimeAt = -1e9;
-function stillHere() {
-  idle = 0;
-  if (idleTea) { idleTea = false; state.paused = false; notice("Welcome back! Tea's finished, back to the patch."); }
-}
-for (const type of ["pointerdown", "keydown", "wheel"]) addEventListener(type, stillHere, { capture: true, passive: true });
-// Only a standard pad's axes are its sticks; other mappings can rest triggers at -1.
-const padInUse = () => { for (const g of navigator.getGamepads?.() ?? []) if (g?.connected && (g.buttons.some((b) => b.pressed) || (g.mapping === "standard" && g.axes.some((a) => Math.abs(a) > .35)))) return true; return false; };
+let memoryChimeAt = -1e9;
 
 installGrassDetailTexture(grassTileURL);
 installHomeCategoryArt();
@@ -135,9 +123,7 @@ const villageShortcut=document.querySelector('#dock [data-tab="village"] svg');
 if(villageShortcut){const image=document.createElement("img");image.src=villageShortcutURL;image.alt="";image.className="village-shortcut-art";villageShortcut.replaceWith(image);}
 const scene = createScene($("world"), state, {
   onTick(dt) {
-    idle += dt;
-    if (padInUse()) stillHere();
-    if (idle > IDLE_TEA && !state.paused) { idleTea = true; state.paused = true; notice("You've been away a while, so Shane and Natalie have put the kettle on. Tap or press any button to carry on."); }
+    idleBreak.tick();
     const handsOn = !!scene.player?.enabled;
     if (handsOn && !state.handsOn && state.upgrades.auto) notice("Helping hands are resting while you're in charge.");
     state.handsOn = handsOn;
@@ -262,6 +248,24 @@ const scene = createScene($("world"), state, {
     else if (what.type === "piece") { if (!home.tools.tapPiece(what.instance, what.point)) home.tools.select(what.instance); }
     else if (what.type === "go") goTo(what.to);
     else if (what.type === "floor" || what.type === "wall") { if (home.tools.selected) home.tools.tapCell(scene.cellAt(what.point, what.type, what.wall, home.tools.snap)); }
+  },
+});
+
+// Resume only the ride that this automatic break stopped, never a manual pause.
+let idleRide = null;
+const idleBreak = createIdleBreak({ state: () => state,
+  onPause() {
+    idleRide = scene.place?.kind === 'maze' && !scene.mazeStatus.paused && !scene.mazeStatus.completed ? 'maze' : scene.place?.kind === 'hayride' && !scene.hayrideRideStatus.paused && !scene.hayrideRideStatus.completed ? 'hayride' : null;
+    if (idleRide === 'maze') pauseMazeRide(true);
+    if (idleRide === 'hayride') pauseHayrideRide(true);
+    save();
+  },
+  onResume() {
+    if (idleRide === scene.place?.kind) {
+      if (idleRide === 'maze') pauseMazeRide(false);
+      if (idleRide === 'hayride') pauseHayrideRide(false);
+    }
+    idleRide = null; save(); notice("Welcome back! Tea's finished, back to the patch.");
   },
 });
 
@@ -682,7 +686,7 @@ function render() {
     text("streak", [...words, `${Math.ceil(M.visitorBoostSeconds(state))}s`].filter(Boolean).join(" · "));
     chip.style.setProperty("--fade", on ? 1 : Math.min(1, M.visitorBoostSeconds(state) / M.STREAK.fade).toFixed(2));
   }
-  $("paused").hidden = !state.paused;
+  $("paused").hidden = !state.paused || idleBreak.status.phase === 'paused';
   // A piñata burst (rules/pinata.js): confetti on its plot and what it gave.
   const burst = state.pinata?.last;
   if (burst && burst.serial !== shownPinata) {
@@ -1001,7 +1005,7 @@ const mazeDiagnostics = {
   get config() { return scene.mazeConfig; }, get status() { return { ...scene.mazeStatus, phase: mazeUI.phase, audio: mazeAudio.status }; },
 };
 const hayrideDiagnostics = { open: openHayrideRide, start: startHayrideRide, pause: pauseHayrideRide, close: exitHayrideRide, restart: replayHayrideRide, advance: seconds => scene.advanceHayrideRide(seconds), hold: on => scene.holdHayrideRide(on), get status() { return scene.hayrideRideStatus; } };
-window.PumpkinVoxel = { village: villageGame, openVillage, lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, get fishingUI() { return fishingUI; }, get padArrange() { return padArrange; }, startFishing, emptyLakeTraps, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, openShopSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, narration, levelCelebration: celebration, advance, rules: M, save };
+window.PumpkinVoxel = { idleBreak, village: villageGame, openVillage, lifeActivity, playControls, interactAsPlayer, followHomeGoal, openCarving, closeCarving, get carvingUI() { return carvingUI; }, tendGardenBed, get fishingUI() { return fishingUI; }, get padArrange() { return padArrange; }, startFishing, emptyLakeTraps, maze: mazeDiagnostics, hayride: hayrideDiagnostics, state: () => state, scene, intro, notice, openSheet, closeSheet, enterRoom, enterShop, enterEstate, enterFoyer, leavePlace, openEstateSheet, openHollowSheet, openFoyerSheet, openHayrideSheet, focusHayride, openCookingSheet, openShopSheet, enterKitchen, estateTools, foyerTools, tools: home.tools, audio, narration, levelCelebration: celebration, advance, rules: M, save };
 installPremiumIcons().then(loaded=>{document.body.dataset.premiumIcons=String(loaded);});
 $("place-decorate").innerHTML=premiumIcon("exterior")+"Decorate";
 document.body.dataset.ready = "true";

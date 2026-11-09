@@ -47,7 +47,7 @@ export function restoreVillageExpansion(raw){
  for(const a of ACTIVITIES().filter(a=>a.questGem))if(raw.questItems?.[a.id])e.questItems[a.id]=a.gem;
  synchroniseSeals(e);
  e.seed=Number.isSafeInteger(raw.seed)?raw.seed>>>0:e.seed;e.gemIncome=whole(raw.gemIncome);
- e.tracked=chapterBy(raw.tracked)?raw.tracked:null;e.outfits=restoreOutfitPresets(raw.outfits);e.economy=restoreExpansionEconomy(raw.economy);e.companions=restoreExpansionCompanions(raw.companions);
+ e.tracked=chapterBy(raw.tracked)&&!e.chapters[raw.tracked]&&!e.receipts[raw.tracked]?raw.tracked:null;e.outfits=restoreOutfitPresets(raw.outfits);e.economy=restoreExpansionEconomy(raw.economy);e.companions=restoreExpansionCompanions(raw.companions);
  return e;
 }
 export function enterVillageExpansionArea(s,id){
@@ -147,9 +147,9 @@ function payCost(s,cost){
 }
 function synchroniseSeals(e){const complete=EXPANSION_SEAL_FLAGS.every(flag=>e.effects.includes(flag));e.effects=e.effects.filter(flag=>flag!=='four-seals');if(complete)e.effects.push('four-seals');}
 function settleChapter(s,c){
- const e=ensure(s);if(e.chapters[c.id]||e.receipts[c.id]){e.chapters[c.id]=true;return[];}
+ const e=ensure(s);if(e.chapters[c.id]||e.receipts[c.id]){e.chapters[c.id]=true;if(e.tracked===c.id)e.tracked=null;return[];}
  if(!c.activities.every(id=>e.completed[id]))return[];
- e.chapters[c.id]=true;e.receipts[c.id]={claimed:true};const r=c.reward??{},rows=[];
+ e.chapters[c.id]=true;e.receipts[c.id]={claimed:true};if(e.tracked===c.id)e.tracked=null;const r=c.reward??{},rows=[];
  rows.push(...grantVillage(s,[...(r.coins?[{kind:'coins',amount:r.coins}]:[]),...(r.decor??[]).map(id=>({kind:VILLAGE_DECOR_BY_ID[id]?'village-decor':'decor',id})),...Object.entries(r.villageDecor??{}).map(([id,amount])=>({kind:'village-decor',id,amount})),...(r.costumes??[]).map(id=>({kind:'costume',id})),...(r.recipes??[]).map(id=>({kind:'recipe',id}))]));
  for(const[id,n]of Object.entries(r.materials??{})){const take=Math.min(n,Math.max(0,villageMaterialCapacity(s)-(s.village.materials[id]??0)));if(take){s.village.materials[id]=(s.village.materials[id]??0)+take;rows.push({kind:'material',id,amount:take});}}
  for(const[id,n]of Object.entries(r.estateDecor??{})){s.estate.ownedDecor??={};s.estate.ownedDecor[id]=(s.estate.ownedDecor[id]??0)+n;rows.push({kind:'estate-decor',id,amount:n});}
@@ -163,7 +163,7 @@ function startFarmBaselines(s){const e=ensure(s);for(const c of CHAPTERS())if(['
 export function actVillageExpansion(s,id,action={}){
  if(!s?.village?.invited||s.paused)return no('Resume your farm and follow the village invitation first.');
  if(typeof id==='string'&&id.startsWith('economy:'))return actExpansionEconomy(s,id.slice(8),action);
- if(id==='track'){const c=chapterBy(action.chapter);if(!c)return no('Choose a known chapter.');ensure(s).tracked=c.id;return{ok:true,reason:`Following ${c.title}`,events:[]};}
+ if(id==='track'){const c=chapterBy(action.chapter);if(!c)return no('Choose a known chapter.');if(state(s).chapters[c.id]||state(s).receipts[c.id])return no('That chapter is complete. Choose your next story.');ensure(s).tracked=c.id;return{ok:true,reason:`Following ${c.title}`,events:[]};}
  const definition=activityBy(id);if(definition?.cost?.pumpkins)settlePumpkinStock(s);
  const info=expansionActivityInfo(s,id);if(!info)return no('That activity is not part of Mothlight.');
  if(!info.available||info.done||!near(info,action))return no(info.reason==='Ready'?'Walk closer to this activity.':info.reason);

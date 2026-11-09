@@ -1,0 +1,11 @@
+/* Temporary notice, kept clear of the HUD and scaled with the TV interface. */
+#idle-break { position:fixed; z-index:180; top:calc(max(10px,env(safe-area-inset-top)) + 68px); left:50%; transform:translateX(-50%); width:min(330px,calc(100% - 28px)); padding:12px 15px; border:1px solid #e4bd804d; border-radius:18px; background:linear-gradient(145deg,#382a41f5,#211a2bf5); color:#f8eddb; box-shadow:0 8px 28px #08040e66,inset 0 1px #fff4d911; font:14px/1.4 var(--body,sans-serif); pointer-events:none; }
+#idle-break[hidden] { display:none; }
+.idle-break-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; font-weight:600; }
+#idle-break-time { color:#ffda99; font-size:20px; font-variant-numeric:tabular-nums; line-height:1; }
+#idle-break-copy { margin:5px 0 0; color:#e2d1e4; font-size:12px; }
+#idle-break-resume { display:block; width:100%; min-height:44px; margin-top:11px; pointer-events:auto; }
+#idle-break-resume[hidden] { display:none; }
+#idle-break[data-phase="paused"] { top:50%; transform:translate(-50%,-50%); }
+.tv-mode #idle-break { zoom:var(--tv-zoom,1); }
+@media (max-height:480px) { #idle-break:not([data-phase="paused"]) { top:max(8px,env(safe-area-inset-top)); left:auto; right:max(10px,env(safe-area-inset-right)); transform:none; width:min(260px,calc(100% - 28px)); padding:9px 13px; } }

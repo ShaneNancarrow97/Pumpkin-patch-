@@ -1,5 +1,9 @@
 # Pumpkin Patch Voxel: context for coding agents
 
+**Latest contractor idle pause:** [`docs/contractor-patches/mothlight-full-expansion/IDLE-PAUSE.md`](docs/contractor-patches/mothlight-full-expansion/IDLE-PAUSE.md) replaces the ten-minute tea break with a real-time3½-minute pause and final30-second countdown across farm/village/POVs. Read its input/clock dependency matrix before changing automatic pause or controller activity. Save version remains20.
+
+**Completed village pin fix:** [`docs/contractor-patches/mothlight-full-expansion/PINNED-QUEST-FIX.md`](docs/contractor-patches/mothlight-full-expansion/PINNED-QUEST-FIX.md) clears completed chapter pins in the save and UI preferences, repairs older saves, and keeps completion in a brief receipt and the journal archive. Preserve both tracking stores and waypoint ownership when changing this flow.
+
 **Latest contractor progression balance:** [`docs/contractor-patches/mothlight-full-expansion/BALANCED-PROGRESSION.md`](docs/contractor-patches/mothlight-full-expansion/BALANCED-PROGRESSION.md) bounds banked level progress to the next rank plus a 25% head start. Save version20 keeps all coins, lifetime statistics and earned levels; read the settlement/restore dependency matrix before changing rank or income handling. This work remains on its isolated contractor branch for Claude to inspect.
 
 **Contractor Village Play Polish:** [`docs/contractor-patches/village-play-polish/README.md`](docs/contractor-patches/village-play-polish/README.md) records the close follow camera, safe travel, R3 farm camera mode, spatial map, village visibility, illustrated controls/catalogue and dependency matrix. Save version remains 18.

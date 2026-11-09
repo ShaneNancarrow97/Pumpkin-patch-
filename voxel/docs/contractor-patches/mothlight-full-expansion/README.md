@@ -40,6 +40,7 @@ The village earns a place in farm progression. Every level from6 through20 now h
 | If changing… | Also check… | Invariant |
 | --- | --- | --- |
 | Chapter ID, giver, stage or area | save sanitiser, journal, map, next activity, NPC rewards, all-story tests | Old IDs and once-only receipts remain valid. |
+| Followed chapter / completion | saved pin, UI preference, waypoint, D-pad and journal archive | Clear completed pins from both stores; preserve another active selection and all rewards. |
 | Region gate or level requirement | navigation, cave return portals, physical route tests, level screen | No level requires a chapter whose area requires that same level. Claimed levels never regress. |
 | Banked level progress | settled credit, observed trade, reward exclusions, restore, level checklist | Observe overflow before promotion; never recredit old takings. Wallet and lifetime earnings remain intact. |
 | Activity coordinates | terrain, collision, object render, hit targets, guide, distance guards | World units are scaled once. Canvas and pad interactions must recheck actual proximity. |
@@ -50,6 +51,7 @@ The village earns a place in farm progression. Every level from6 through20 now h
 | Costume presets | ownership, actor refresh, wheelchair, restore | Validate both people before changing either outfit. |
 | Ride effect | owned/active restore, scenery actor, proximity, disposal, appeal | Reward cannot charge twice or reactivate a scene the player switched off. |
 | Village runtime/input | menus, conversation camera, gathering cancellation, cave Back, held inputs | Opening or closing a panel cannot execute another action or freeze fresh movement. |
+| Idle pause and its input clock | held controls, manual tea break, hidden page, village and both POVs | Use210 real seconds, warn for the final30, and resume only an automatic pause. |
 | UI CSS or art | `build.mjs`, lazy sprite imports, Fold portrait/landscape, TV focus | All assets inline offline; 44px targets, 12px minimum copy and safe areas. |
 | Native shell | HTML hash, extraction manifest, signing identity, version | Package the same checked HTML only after the game downloads are published. |
 
@@ -70,3 +72,7 @@ The checked [Android addendum](NATIVE.md) packages the same HTML after game publ
 Latest progression update: [mainline level checkpoints](MAINLINE-LEVEL-GATES.md).
 
 Latest balance and save migration: [bounded progression banking](BALANCED-PROGRESSION.md).
+
+Latest inactivity change: [3½-minute pause and countdown](IDLE-PAUSE.md).
+
+Latest reported bug fix: [completed quest pin cleanup](PINNED-QUEST-FIX.md).
