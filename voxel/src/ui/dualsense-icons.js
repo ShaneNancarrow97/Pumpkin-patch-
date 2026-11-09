@@ -30,7 +30,7 @@ function artwork(id) {
     return shape + letter(id[0], 9, 11) + digit(id[1], 20, 11);
   }
   if (id === "options") return rect(11, 3, 10, 26, 5) + line("M14 11h4m-4 5h4m-4 5h4");
-  if (id === "create") return rect(11, 3, 10, 26, 5) + line("M16 9v10m-3-3 3 3 3-3m-6 6h6");
+  if (id === "create") return `<rect x="12" y="13" width="8" height="17" rx="4" transform="rotate(14 16 21.5)" fill="${INK}" stroke="none"/>` + line("m7 6 3 4") + line("M16 2v5") + line("m25 6-3 4");
   if (id === "touchpad") {
     let dots = "";
     for (let y = 11; y <= 21; y += 5) for (let x = 8; x <= 24; x += 4) dots += `<circle cx="${x}" cy="${y}" r=".65" fill="${INK}" stroke="none"/>`;

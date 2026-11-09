@@ -3,16 +3,18 @@
 import { createMusicQueue } from "./music-queue.js";
 import { decodeMidi, loopClip, trimMidiTail } from "./midi.js";
 import { MUSIC_TRACKS } from "./music-tracks.js";
+import { createVillageGatherAudio } from "./village-gather-audio.js";
 export { MUSIC_TRACKS };
 
 export function createAudio(prefs) {
-  let ctx = null, master = null, noise = null, touched = false, timer = null, clip = null, start = 0, cursor = 0, selected = null, duckUntil = 0, sceneGain = 1, villageActive = false, narrationActive = false;
+  let ctx = null, master = null, limiter = null, noise = null, touched = false, timer = null, clip = null, start = 0, cursor = 0, selected = null, duckUntil = 0, sceneGain = 1, villageActive = false, narrationActive = false;
   const voices = new Set(), cache = new Map(), queue = createMusicQueue(MUSIC_TRACKS.map((t) => t.id));
+  const gathering = createVillageGatherAudio({ enabled: () => !!prefs.sound && touched && sceneGain === 1 && !document.hidden, getAudio: () => { ensure(); return { ctx, output: limiter, noise }; } });
   const current = () => MUSIC_TRACKS.find((t) => t.id === prefs.musicTrack) ?? MUSIC_TRACKS[0];
   function ensure() {
     ctx ??= new (window.AudioContext || window.webkitAudioContext)();
     if (!master) {
-      master = ctx.createGain(); const limiter = ctx.createDynamicsCompressor();
+      master = ctx.createGain(); limiter = ctx.createDynamicsCompressor();
       limiter.threshold.value = -18; limiter.knee.value = 12; limiter.ratio.value = 5;
       master.connect(limiter).connect(ctx.destination);
       noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); const data = noise.getChannelData(0);
@@ -68,6 +70,7 @@ export function createAudio(prefs) {
     }
   }
   function sync() {
+    if (!prefs.sound || document.hidden || sceneGain < 1) gathering.stop();
     if (!touched) return;
     if (!prefs.music || document.hidden) { stop(); return; }
     try {
@@ -93,6 +96,7 @@ export function createAudio(prefs) {
   }
   return {
     sync,
+    gather: event => gathering.event(event),
     tone(freq = 520) { if (!prefs.sound || !touched || sceneGain < 1) return; try { ensure(); blip(freq, ctx.currentTime, .18, .035); } catch {} },
     houseInstrument(kind) {
       if (!prefs.sound || !touched || sceneGain < 1 || !["guitar", "piano"].includes(kind)) return;
@@ -116,9 +120,9 @@ export function createAudio(prefs) {
     setShuffle(on) { prefs.musicShuffle = !!on; queue.reset(); },
     nextTrack() { prefs.musicTrack = queue.next(prefs.musicTrack ?? current().id, prefs.musicShuffle !== false); sync(); },
     setVolume(v) { prefs.musicVolume = Math.max(0, Math.min(1, Number(v) || 0)); applyMusicGain(); },
-    setSceneGain(value) { sceneGain = Math.max(0, Math.min(1, Number(value) || 0)); applyMusicGain(); },
-    setVillageActive(on) { villageActive = !!on; applyMusicGain(); },
+    setSceneGain(value) { sceneGain = Math.max(0, Math.min(1, Number(value) || 0)); if (sceneGain < 1) gathering.stop(); applyMusicGain(); },
+    setVillageActive(on) { villageActive = !!on; if (!villageActive) gathering.stop(); applyMusicGain(); },
     setNarrationActive(on) { narrationActive = !!on; applyMusicGain(); },
-    get status() { return { track: selected, playing: !!timer, voices: voices.size, duration: clip?.duration ?? 0, context: ctx?.state ?? "waiting", shuffle: prefs.musicShuffle !== false, sceneGain, villageActive, narrationActive }; },
+    get status() { return { track: selected, playing: !!timer, voices: voices.size, duration: clip?.duration ?? 0, context: ctx?.state ?? "waiting", shuffle: prefs.musicShuffle !== false, sceneGain, villageActive, narrationActive, gathering: gathering.status }; },
   };
 }

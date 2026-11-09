@@ -1,0 +1,17 @@
+{
+  "html": {
+    "name": "Pumpkin-Patch-Village-Interaction-Fixes.html",
+    "bytes": 59031827,
+    "sha256": "c08029b91f19cb4363b39b0fbb0bbf376dd43656eb46fbaba21b33382198d8f7"
+  },
+  "zip": {
+    "name": "Pumpkin-Patch-Village-Interaction-Fixes.zip",
+    "bytes": 42425080,
+    "sha256": "bfdb9e2d8e6b76121e5b7403e87cec534e53e43bd101a9a2075000cd419c29bc"
+  },
+  "functional_test_html": "c040390b02ffebccd1b346048dea3889ea4b71ee3490d014a8dede8fe9a59103",
+  "functional_tests": 1099,
+  "functional_failures": 0,
+  "final_delta": "CSS only: constrain the existing service-hero sticky navigation to calc(100% - 54px), retaining its 54px close-button clearance. No JS or gameplay changes since the full1099 test run.",
+  "source_base": "7bb7639523083f444da565aa5716b82282e16421"
+}

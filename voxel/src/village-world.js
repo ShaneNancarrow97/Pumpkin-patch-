@@ -34,6 +34,7 @@ const SMALL = .3;
 // (in world units) is read back onto the grid.
 export const PLAN_SCALE = LAYOUT.PLAN_SCALE;
 const dv = (n) => n / PLAN_SCALE;
+const GREEN_NORTH = Math.max(...LAYOUT.DISTRICT_BY_ID.green.polygon.map(p=>dv(p[1])));
 const ROADS = LAYOUT.ROADS.map((r) => ({ ...r, width: dv(r.width), points: r.points.map(([x, z]) => [dv(x), dv(z)]) }));
 const PLOTS = LAYOUT.PLOTS.map((p) => ({ ...p, x0: dv(p.x0), z0: dv(p.z0), x1: dv(p.x1), z1: dv(p.z1), door: p.door.map(dv) }));
 const NODES = LAYOUT.NODES.map((n) => ({ ...n, x: dv(n.x), z: dv(n.z) }));
@@ -85,18 +86,18 @@ function groundTexture() {
   // The woods round the realm.
   rect(g.x0, g.z0, g.x1, g.z1, "#355a36"); speckle(g.x0, g.z0, g.x1, g.z1, ["#3d6639", "#2f5032", "#46703e", "#2a4a30"], 9000, 2);
   // The Green: lawns in soft mown bands, clover and daisies, leaves under the trees.
-  rect(0, -22, 120, 36, "#558a3a");
+  rect(0, -22, 120, GREEN_NORTH, "#558a3a");
   speckle(0, -22, 120, 0, ["#416743", "#4c7550", "#557b48", "#6c6547"], 8500, .55);
   for (const a of LAYOUT.FORAGE_AREAS) { const x=dv(a.x),z=dv(a.z); blob(x,z,8,6,"rgba(99,80,55,.26)"); }
-  for (let x = 0; x < 120; x += 2.4) rect(x, 0, x + 1.2, 36, "rgba(255,255,230,.03)");
-  speckle(0, 0, 120, 36, ["#5d9440", "#4e8036", "#649a44", "#4b7c34"], 16000, .55);
-  speckle(0, 0, 120, 36, ["#f6f2e8", "#f5d04a", "#f2a0c0", "#ffffff"], 2600, .16);
-  for (let i = 0; i < 70; i++) blob(r() * 120, r() * 36, .8 + r() * 1.6, .6 + r() * 1.2, "rgba(40,80,30,.18)");
-  speckle(0, 0, 120, 4, ["#b3352a", "#d0532c", "#e8873a", "#cf8f2c"], 900, .3); speckle(0, 31, 120, 36, ["#b3352a", "#d0532c", "#e8873a", "#cf8f2c"], 700, .3); speckle(0, 0, 4, 36, ["#b3352a", "#e8873a"], 400, .3);
+  for (let x = 0; x < 120; x += 2.4) rect(x, 0, x + 1.2, GREEN_NORTH, "rgba(255,255,230,.03)");
+  speckle(0, 0, 120, GREEN_NORTH, ["#5d9440", "#4e8036", "#649a44", "#4b7c34"], 16000, .55);
+  speckle(0, 0, 120, GREEN_NORTH, ["#f6f2e8", "#f5d04a", "#f2a0c0", "#ffffff"], 2600, .16);
+  for (let i = 0; i < 70; i++) blob(r() * 120, r() * GREEN_NORTH, .8 + r() * 1.6, .6 + r() * 1.2, "rgba(40,80,30,.18)");
+  speckle(0, 0, 120, 4, ["#b3352a", "#d0532c", "#e8873a", "#cf8f2c"], 900, .3); speckle(0, GREEN_NORTH-5, 120, GREEN_NORTH, ["#b3352a", "#d0532c", "#e8873a", "#cf8f2c"], 700, .3); speckle(0, 0, 4, GREEN_NORTH, ["#b3352a", "#e8873a"], 400, .3);
   // The districts, each where it now stands (drawn in its own place, then moved).
   const at = (d, x0, z0, x1, z1) => [x0 + SHIFT[d][0], z0 + SHIFT[d][1], x1 + SHIFT[d][0], z1 + SHIFT[d][1]];
   // The woods between the districts: a dark leafy floor.
-  rect(REALM.x0, 36, REALM.x1, REALM.z1, "#2f4a32"); speckle(REALM.x0, 36, REALM.x1, REALM.z1, ["#355236", "#2a422c", "#3c5a38", "#4a3a2a", "#6a3a26"], 14000, .7);
+  rect(REALM.x0, GREEN_NORTH, REALM.x1, REALM.z1, "#2f4a32"); speckle(REALM.x0, GREEN_NORTH, REALM.x1, REALM.z1, ["#355236", "#2a422c", "#3c5a38", "#4a3a2a", "#6a3a26"], 14000, .7);
   for (let i = 0; i < 90; i++) blob(REALM.x0 + r() * (REALM.x1 - REALM.x0), 36 + r() * 98, 1.5 + r() * 3, 1.5 + r() * 3, "rgba(20,30,20,.25)");
   { const [a, b, c, d] = at("copse", -2, 40, 39, 98); rect(a, b, c, d, "#3a6250"); speckle(a, b, c, d, ["#416c58", "#335a48", "#47735c", "#2f5442"], 9000, .6); speckle(a, b, c, d, ["#a77ad8", "#d6a6ff", "#7fe8d0"], 900, .25); }
   { const [a, b, c, d] = at("quarry", 39, 37, 87, 76); rect(a, b, c, d, "#2a3036"); speckle(a, b, c, d, ["#323840", "#24292e", "#3a4048"], 3000, .7); }
@@ -296,7 +297,7 @@ export function grassAt(x, z) {
   if (t === "moor") return MOOR_CLEAR.some(([a, b, rr]) => Math.hypot(x - a, z - b) < rr) ? null : GRASS.heather;
   if (t === "copse") return GRASS.moss;
   // Lawn on the Green; the woods between the districts grow moss.
-  return x > -1 && x < 121 && z < 37.5 ? GRASS.lawn : GRASS.moss;
+  return x > -1 && x < 121 && z < GREEN_NORTH+1.5 ? GRASS.lawn : GRASS.moss;
 }
 
 // What the life layer animates, on the design grid.
@@ -725,7 +726,7 @@ export const SKY = Object.freeze({ top: 0x03030c, middle: 0x0b0a24, horizon: 0x2
 const nearRoad = (x, z, pad) => ROADS.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + pad && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + pad));
 export function buildWoods() {
   const v = new ChunkedVoxels(30), R = onGround(v), r = seeded(611);
-  const clear = (x, z) => !terraceAt(x, z) && !rampAt(x, z) && !isWater(x, z) && !(x > -1 && x < 121 && z < 37.5);
+  const clear = (x, z) => !terraceAt(x, z) && !rampAt(x, z) && !isWater(x, z) && !(x > -1 && x < 121 && z < GREEN_NORTH+1.5);
   const open = (x, z, pad) => clear(x, z) && !nearRoad(x, z, pad) && !GATES.some((g) => Math.hypot(g.x - x, g.z - z) < 7) && [[pad, 0], [-pad, 0], [0, pad], [0, -pad]].every(([a, b]) => clear(x + a, z + b));
   const crowns = [C.violet, C.magenta, C.golden, C.crimson, C.teal, C.leaves, C.violet, C.golden];
   const patch = (x, z) => crowns[Math.floor((Math.sin(x * .085 + z * .047) + Math.sin(z * .103 - x * .041 + 1.3) + 2) * 2) % crowns.length];

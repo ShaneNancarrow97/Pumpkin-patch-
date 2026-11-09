@@ -19,10 +19,16 @@ export function normaliseVillageStick(x, y, dead = .18) {
   return { x: x / length * strength, y: y / length * strength };
 }
 
+// Follow-rig yaw measures the camera's orbit, opposite the viewing direction.
+// Keep this village input mapping separate from canvas drag and farm controls.
+export function villageCameraLook(look = ZERO()) {
+  return { x: -clamp(finite(look.x), -1, 1) || 0, y: clamp(finite(look.y), -1, 1) };
+}
+
 // Pure pad state makes unplugging, a changed controller and held buttons on
 // reconnect safe. A released menu cannot inherit an already-held stick.
 export function createVillagePadState() {
-  let identity = null, previous = [], suppressed = new Set(), stopMove = false, stopLook = false;
+  let identity = null, previous = [], suppressed = new Set(), stopMove = false, stopLook = false, currentPad = null;
   const idOf = g => `${g.index ?? 0}:${g.id ?? "pad"}`;
   const activity = g => Math.hypot(...(g.axes ?? []).slice(0, 2)) > .2 || Math.hypot(...(g.axes ?? []).slice(2, 4)) > .2 || (g.buttons ?? []).some((_, i) => downAt(g, i));
   return {
@@ -32,10 +38,11 @@ export function createVillagePadState() {
       const g = current && activity(current) ? current : all.find(activity) ?? current ?? all[0];
       if (!g) {
         const disconnected = identity !== null;
-        identity = null; previous = []; suppressed.clear(); stopMove = stopLook = false;
+        identity = null; currentPad = null; previous = []; suppressed.clear(); stopMove = stopLook = false;
         return { pad: null, move: ZERO(), look: ZERO(), sprint: false, active: false, disconnected };
       }
       const down = Array.from(g.buttons ?? [], (_, i) => downAt(g, i));
+      currentPad = g;
       const changed = idOf(g) !== identity;
       if (changed) {
         identity = idOf(g); previous = down.slice(); suppressed = new Set(down.flatMap((value, i) => value ? [i] : []));
@@ -54,9 +61,21 @@ export function createVillagePadState() {
       const active = edges.some(Boolean) || Math.hypot(move.x, move.y, look.x, look.y) > 0;
       return { pad: { g, down: allowed, pressed: i => !!edges[i], active, move, look }, move, look, sprint: !!allowed[7], active, disconnected: false };
     },
-    release() { stopMove = stopLook = true; previous.forEach((value, i) => { if (value) suppressed.add(i); }); },
-    releaseMovement() { stopMove = stopLook = true; },
-    reset() { identity = null; previous = []; suppressed.clear(); stopMove = stopLook = false; },
+    release(gamepads) {
+      const latest = gamepads && Array.from(gamepads).find(g => g && g.connected !== false && idOf(g) === identity);
+      if (latest) currentPad = latest;
+      this.releaseMovement();
+      const held = currentPad ? Array.from(currentPad.buttons ?? [], (_, i) => downAt(currentPad, i)) : previous;
+      held.forEach((value, i) => { if (value) suppressed.add(i); });
+    },
+    releaseMovement() {
+      // A neutral stick at the hand-off has already met the boundary. Forcing
+      // one more neutral poll swallowed the player's next genuine fresh push.
+      const move = currentPad && normaliseVillageStick(currentPad.axes?.[0], currentPad.axes?.[1]);
+      const look = currentPad && normaliseVillageStick(currentPad.axes?.[2], currentPad.axes?.[3]);
+      stopMove = !move || !!(move.x || move.y); stopLook = !look || !!(look.x || look.y);
+    },
+    reset() { identity = null; currentPad = null; previous = []; suppressed.clear(); stopMove = stopLook = false; },
   };
 }
 
@@ -149,7 +168,7 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
   }
   function clearTouch() { sticks.forEach(releaseStick); sprint = false; jog.setAttribute("aria-pressed", "false"); }
   function clear() { clearTouch(); repeating.clear(); menu = null; lastKey = null; setRing(null); }
-  function release() { clear(); padState.release(); onRelease(); }
+  function release() { clear(); let pads; try { pads = gamepads(); } catch { /* An unavailable pad stays safely unarmed. */ } padState.release(pads); onRelease(); }
   function stickControl(kind) {
     const move = kind === "move", zoneId = move ? "vg-stick-zone" : "vg-look-zone", discId = move ? "vg-stick" : "vg-look-stick";
     const zone = root.querySelector(`#${zoneId}`) ?? make("div", zoneId, "vg-thumb-zone");
@@ -181,8 +200,8 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
   }
   const moveStick = stickControl("move"), lookStick = stickControl("look");
   listen(win, "blur", () => { suspended = true; release(); });
-  listen(win, "focus", () => { suspended = false; });
-  listen(doc, "visibilitychange", () => { suspended = doc.hidden; if (suspended) release(); });
+  listen(win, "focus", () => { suspended = false; release(); });
+  listen(doc, "visibilitychange", () => { suspended = doc.hidden; release(); });
   listen(win, "resize", release);
   if (win.visualViewport) listen(win.visualViewport, "resize", release);
   listen(win, "gamepaddisconnected", () => { release(); padState.reset(); if (source === "pad") setSource(win.matchMedia?.("(any-pointer: coarse)").matches ? "touch" : "keyboard"); });

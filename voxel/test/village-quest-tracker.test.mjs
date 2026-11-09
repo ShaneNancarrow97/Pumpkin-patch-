@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as M from '../src/model.js';
-import { trackerPortraitMarkup, trackerDetailsMarkup } from '../src/ui/village-quest-tracker.js';
+import { trackerPortraitMarkup, trackerDetailsMarkup, trackerToggleHintMarkup } from '../src/ui/village-quest-tracker.js';
 
 test('the pinned checklist reads real new-clearing progress without changing the quest', () => {
   const s = M.freshState(); M.recordHomeActivity(s, "visit"); s.earned = M.LEVELS[2].at;
@@ -21,4 +21,11 @@ test('tracker portraits have a safe fallback and checklist text stays literal', 
   const html = trackerDetailsMarkup([{key:'logs',label:'Logs <script>',have:4,need:4,complete:true}],'<b>Keep exploring</b>');
   assert.match(html,/is-ready/); assert.match(html,/4 \/ 4/); assert.match(html,/Logs &lt;script&gt;/);
   assert.doesNotMatch(html,/<script>|<b>Keep exploring/);
+});
+
+test('the quest shortcut exposes the shared Up symbol without duplicating the toggle label',()=>{
+  const html=trackerToggleHintMarkup();
+  assert.match(html,/data-ps5-icon="up"/);assert.match(html,/vg-quest-keycap">T</);assert.match(html,/vg-quest-toggle-mark" aria-hidden="true"/);
+  assert.doesNotMatch(html,/D-pad ↑|<button|onclick|onkeydown/,'the existing accessible toggle owns the action');
+  assert.match(html,/<small class="vg-quest-shortcut-pad">/,'the icon stays outside the rotating chevron span');
 });

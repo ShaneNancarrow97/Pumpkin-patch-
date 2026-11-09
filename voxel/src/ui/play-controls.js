@@ -8,8 +8,6 @@ import { createPadMenu } from './pad-menu.js';
 import { createPadCursor } from './pad-cursor.js';
 import { createPlayPadBoundary, createFarmCameraMode } from './play-input-boundary.js';
 import { ps5Icon } from './dualsense-icons.js';
-// While the stick cursor is up, the menus still hear L1/R1, L2/R2, Options and the touchpad; never its sticks or ✕ ○.
-const CURSOR_PASS=new Set([4,5,6,7,9,17]),STILL_PAD={axes:[0,0,0,0],buttons:[]};
 import { decorById, footprint } from '../model.js';
 const toolNames={hand:'Interact',plant:'Plant',water:'Water',harvest:'Pick',clean:'Clean'};
 const inputField=()=>['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
@@ -66,7 +64,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
   // A prompt over whatever the action button would act on, so the world says what is in reach.
   const prompt=document.createElement('div');prompt.className='play-prompt';prompt.setAttribute('aria-hidden','true');prompt.innerHTML='<span><kbd data-prompt-key>E</kbd><b data-prompt-label></b></span>';document.body.append(prompt);
   const root=document.createElement('div');root.id='play-controls';
-  root.innerHTML=`<button id="play-toggle" class="play-chip" aria-label="Choose a character to play">${svg('play','play-chip-icon')}<span>Play</span><b class="play-chip-glyph" data-glyph="play"></b></button>
+  root.innerHTML=`<button id="play-toggle" class="play-chip" aria-label="Play mode · choose Shane or Natalie">${svg('play','play-chip-icon')}<span>Play mode</span><b class="play-chip-glyph" data-glyph="play" aria-hidden="true"></b></button>
     <div id="play-live" hidden>
       <div class="play-owner"><img data-owner-portrait alt=""><span data-owner></span><button data-play="switch" aria-label="Switch character">${svg('switch')}</button><button data-play="exit" aria-label="Exit control mode">${svg('exit')}<span data-glyph="back"></span></button><span class="play-menu-hint" aria-hidden="true"><span data-glyph="start"></span>Menu</span></div>
       <div id="play-stick" class="play-thumbstick" role="group" aria-label="Movement thumbstick"><b class="stick-ring"></b><b class="stick-arc"></b><i></i><span>MOVE</span></div>
@@ -86,10 +84,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     <div id="play-radial" hidden role="dialog" aria-modal="true" aria-label="Choose an action"><button class="radial-dismiss" aria-label="Close action wheel"></button><div class="radial-disc"><svg class="radial-ring" viewBox="0 0 360 360" aria-hidden="true"><defs><linearGradient id="play-wedge-on" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd593"/><stop offset=".55" stop-color="#d4924b"/><stop offset="1" stop-color="#94562a"/></linearGradient></defs><circle class="radial-rim" cx="180" cy="180" r="174"/><g class="radial-wedges"></g></svg><div class="radial-options"></div><div class="radial-centre"><b class="radial-centre-icon"></b><p class="eyebrow">Your tools</p><h2>Interact</h2><p class="radial-hint"></p></div><button class="radial-close" aria-label="Close action wheel">${svg('exit')}</button></div></div>`;
   document.body.append(root);
   // Every menu on a pad (ui/pad-menu.js); Options brings the ring to the dock, the hub.
-  const menus=createPadMenu({feel,back:()=>back?.(),hold:holdToBuy,hubAllowed,onFarmBarsChange:()=>{
-    cancelInteraction('farm-menus');keys.clear();cameraKeys.clear();releaseMove();releaseLook();cursor.hide();
-    padBoundary.release(rawPad());scene.player?.input(0,0);scene.player?.cameraInput?.(0,0);
-  }});
+  const menus=createPadMenu({feel,back:()=>back?.(),hold:holdToBuy,hubAllowed});
   const cursor=createPadCursor({scene,back:()=>back?.(),feel});
   const dockGlyph=document.createElement('span');dockGlyph.className='dock-glyph';dockGlyph.dataset.glyph='start';document.getElementById('dock')?.append(dockGlyph);
   // Holding a game button is an input gesture, never Android text selection.
@@ -106,6 +101,10 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
   function showGlyphs(){
     const mode=padName?(padName==='DualSense'?'dualsense':'xbox'):inputMode;if(mode===shownMode)return;shownMode=mode;
     root.dataset.input=mode;root.querySelectorAll('[data-glyph]').forEach(el=>{el.innerHTML=mode==='touch'?'':glyphHTML(el.dataset.glyph,mode);});
+    const playHint=$('#play-toggle .play-chip-glyph');
+    playHint.innerHTML=padName?glyphHTML('play',mode)+(padName==='DualSense'?'':'<span>VIEW</span>'):'';
+    const playDescription='Play mode · choose Shane or Natalie'+(padName==='DualSense'?' · Create · small button left of the touchpad':padName?' · View button':'');
+    $('#play-toggle').title=playDescription;$('#play-toggle').setAttribute('aria-label',playDescription);
     dockGlyph.innerHTML=padName?glyphHTML('start',mode):'';
     document.querySelectorAll('#actions [data-glyph]').forEach(el=>{el.innerHTML=mode==='touch'?'':glyphHTML(el.dataset.glyph,mode);});
     const family=mode==='dualsense'?'dualsense':mode==='xbox'?'xbox':'keyboard';
@@ -260,6 +259,10 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
   }
 
   function rawPad(){return Array.from(navigator.getGamepads?.()??[]).find(g=>g?.connected);}
+  function menuBoundary(){
+    cancelInteraction('menu');keys.clear();cameraKeys.clear();releaseMove();releaseLook();cursor.hide();
+    padBoundary.release(rawPad());scene.player?.input(0,0);scene.player?.cameraInput?.(0,0);
+  }
   function setFarmCamera(on,reason='camera'){
     const wanted=!!on&&scene.player?.state().place==='farm'&&!scene.place;
     const actual=!!scene.setFarmCameraMode?.(wanted);
@@ -294,7 +297,7 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
       if(root.dataset.pieceWall!==String(onWall)){root.dataset.pieceWall=String(onWall);root.querySelectorAll('[data-turn]').forEach(b=>b.setAttribute('aria-label',onWall?`Move to the wall on the ${b.dataset.turn<0?'left':'right'}`:`Rotate ${b.dataset.turn<0?'left':'right'} 15 degrees`));setText($('[data-legend-turn]'),onWall?'Next wall':'Turn');}}
     // The portrait can be blank until the sprites load, so keep asking until it is real.
     const face=$('[data-owner-portrait]');if(p.who&&(p.who!==shownWho||!face.naturalWidth&&performance.now()>retryFace)){const url=portrait(p.who);if(url){shownWho=p.who;face.src=url;}retryFace=performance.now()+1500;}
-    setText($('[data-owner]'),p.who==='shane'?'Shane':'Natalie');setText($('#play-toggle span'),'Play');
+    setText($('[data-owner]'),p.who==='shane'?'Shane':'Natalie');setText($('#play-toggle span'),'Play mode');
     const gait=p.gait==='jog'?'jog':'walk';if(gait!==shownGait){shownGait=gait;$('[data-gait-icon]').innerHTML=svg(gait);setText($('[data-gait-label]'),gait==='jog'?'Jog':'Walk');$('#play-gait').setAttribute('aria-pressed',String(gait==='jog'));}
     if(tool!==shownTool){shownTool=tool;$('[data-tool-icon]').innerHTML=svg(tool==='hand'?'tools':tool);setText($('[data-tool-name]'),tool==='hand'?'Tools':toolNames[tool]);$('#play-wheel').setAttribute('aria-label',`${toolNames[tool]} selected. Open radial tools; hold to aim`);$('#play-wheel').dataset.tool=tool;}
     const pose=p.pose&&(typeof p.pose==='string'?p.pose:p.pose.kind),holdable=['plot','litter'].includes(p.target?.type);
@@ -321,24 +324,28 @@ export function createPlayControls({scene,state,tools,action,getActivity=()=>({}
     if(arranging){setText($('[data-arrange-choose]'),arrange.on?'Choose':'Arrange');setText($('[data-arrange-shop]'),arranging==='estate'?'Garden':arranging==='foyer'?'Decorate':'Furnish');}
     scene.player?.setBlocked(blocked||radial||!!piece||!!placing);
     if(blocked){cancelInteraction('menu');keys.clear();cameraKeys.clear();releaseMove();releaseLook();if(radial&&!piece)close();}
-    // Menus take the pad first: a menu or the hub keeps its presses from play.
-    // The stick cursor (ui/pad-cursor.js) has the pad first while it's up: a stick click brings it up off play
-    // mode or over a menu, and play mode with no menu open puts it away. The menus still hear L1/R1 and Options.
+    // Open focus menus own the entire pad. A world cursor is put away before
+    // a shortcut opens a menu, so its stale pointer cannot steal Cross.
     const farmScope=p.place==='farm'&&!scene.place,cameraEligible=!!pad&&farmScope&&!blocked&&!menus.open&&!radial&&!piece&&!placing;
     const cameraState=farmCamera.update({eligible:cameraEligible,pressed});
     if(cameraState.changed)setFarmCamera(cameraState.active,'camera');
     const cameraOwns=cameraState.consumed;
-    $('#farm-camera-mode').hidden=!cameraEligible;
+    $('#farm-camera-mode').hidden=!farmCamera.active;
     if(cameraEligible){root.dataset.farmCamera=farmCamera.active?'on':'';document.body.classList.toggle('farm-camera-on',farmCamera.active);}
     if(farmCamera.active&&!cameraState.changed){const now=performance.now(),dt=Math.min(.1,Math.max(0,(now-cameraTick)/1000));cameraTick=now;
       const px=dead(pad.axes[0]??0),py=dead(pad.axes[1]??0),z=-dead(pad.axes[3]??0);
       scene.farmCameraInput?.({panX:px,panY:py,zoom:z,dt});$('[data-camera-pan]').classList.toggle('is-used',Math.hypot(px,py)>.05);$('[data-camera-zoom]').classList.toggle('is-used',Math.abs(z)>.05);
     }else cameraTick=performance.now();
-    if(p.enabled&&!menus.open||cameraOwns)cursor.hide();
-    const cursorOwns=pad&&!cameraOwns&&!radial&&!piece&&!placing?cursor.tick({pad,down,pressed:i=>farmScope&&i===11?false:pressed(i),canToggle:!p.enabled||menus.open,menuOpen:()=>menus.open}):(cursor.hide(),false);
-    const passing=i=>CURSOR_PASS.has(i);
-    const farmBarsEligible=farmScope&&!blocked&&!menus.open&&!cameraOwns&&!cursorOwns&&!held&&!job.active&&!job.travelling;
-    const menuOwns=pad&&!cameraOwns&&!radial&&!piece&&!placing?menus.tick(cursorOwns?{pad:STILL_PAD,down:down.map((d,i)=>passing(i)&&d),pressed:i=>passing(i)&&pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked}:{pad,down,pressed:i=>i===17&&p.enabled&&!blocked&&quick?false:pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked,farmBarsEligible})||cursorOwns:false;
+    const menuWasOpen=menus.open,hubWasOn=menus.hubOn;
+    const farmBarsEligible=farmScope&&!blocked&&!menuWasOpen&&!cameraOwns&&!held&&!job.active&&!job.travelling;
+    const menuShortcut=hubAllowed()&&(pressed(9)||pressed(17)&&!(p.enabled&&!blocked&&quick)||farmBarsEligible&&pressed(6));
+    const cursorAllowed=pad&&!p.enabled&&!blocked&&!menuWasOpen&&!menuShortcut&&!cameraOwns&&!radial&&!piece&&!placing;
+    const cursorOwns=cursorAllowed?cursor.tick({pad,down,pressed:i=>farmScope&&i===11?false:pressed(i),canToggle:true,menuOpen:()=>false}):(cursor.hide(),false);
+    // A cursor click may itself open a panel. That click belongs only to the
+    // cursor; the new menu starts receiving input on the next frame.
+    const cursorOpenedMenu=cursorOwns&&!menuWasOpen&&menus.open;
+    const menuOwns=pad&&!cameraOwns&&!radial&&!piece&&!placing?(cursorOpenedMenu||menus.tick({pad,down,pressed:i=>i===17&&p.enabled&&!blocked&&quick?false:pressed(i),mode:padName==='DualSense'?'dualsense':'xbox',blocked,farmBarsEligible})||cursorOwns):false;
+    if(menuWasOpen!==menus.open||hubWasOn!==menus.hubOn)menuBoundary();
     if(!pad){if(menus.hubOn)menus.leaveHub();menus.rest();}
     if(pad&&(radial||piece||placing||cameraOwns))menus.rest();
     if(pad&&!blocked&&!menuOwns&&!cameraOwns){

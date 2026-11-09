@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { normaliseVillageStick, createVillagePadState, createVillageRepeat, villageControllerLegendHTML } from "../src/ui/village-controls.js";
+import { normaliseVillageStick, createVillagePadState, createVillageRepeat, villageControllerLegendHTML, villageCameraLook } from "../src/ui/village-controls.js";
+import { createFollowCameraRig, followCameraPose } from "../src/follow-camera.js";
+import * as THREE from "three";
 
 const dualSense = () => ({ id: "DualSense Wireless Controller", index: 0, connected: true, mapping: "standard", axes: [0, 0, 0, 0], buttons: Array.from({ length: 18 }, () => ({ pressed: false, value: 0 })) });
 const press = (pad, index, value = 1) => { pad.buttons[index] = { pressed: value > .5, value }; };
@@ -44,6 +46,34 @@ test("release on a panel, blur or input handover cannot leak a held action into 
   pad.axes[0] = 0; state.sample([pad]); pad.axes[0] = .7;
   assert.ok(state.sample([pad]).move.x > 0, "left stick can rearm without waiting for the right stick");
   assert.equal(state.sample([pad]).look.y, 0);
+});
+
+test("an already-neutral menu hand-off accepts the very next fresh stick push", () => {
+  const state=createVillagePadState(),pad=dualSense();state.sample([pad]);
+  state.release();pad.axes[0]=.8;
+  assert.ok(state.sample([pad]).move.x>0,"known neutral at close must not require another neutral poll");
+  pad.axes[0]=0;state.sample([pad]);state.releaseMovement();pad.axes[3]=-.8;
+  assert.ok(state.sample([pad]).look.y<0,"a fresh look gesture also rearms immediately after known neutral");
+});
+
+test("a hand-off snapshots current raw holds without swallowing independent fresh axes", () => {
+  const state=createVillagePadState(),pad=dualSense();state.sample([pad]);
+  // The DOM can close between pad polls. Read the current device at that event.
+  const fresh={...pad,axes:[.9,0,0,0],buttons:pad.buttons.map(b=>({...b}))};press(fresh,0);
+  state.release([fresh]);fresh.axes[2]=.7;
+  const held=state.sample([fresh]);assert.equal(held.move.x,0);assert.equal(held.pad.pressed(0),false);assert.ok(held.look.x>0);
+  fresh.axes[0]=0;press(fresh,0,0);state.sample([fresh]);fresh.axes[0]=.9;press(fresh,0);
+  const next=state.sample([fresh]);assert.ok(next.move.x>0);assert.equal(next.pad.pressed(0),true);
+});
+
+test("village right-stick directions rotate the actual view right and higher without changing drag/farm orbit", () => {
+  const pos={x:0,y:0,z:0};
+  const direction=rig=>{const pose=followCameraPose(rig.state),camera=new THREE.PerspectiveCamera(48,1,.1,100);camera.position.set(pose.position.x,pose.position.y,pose.position.z);camera.lookAt(pose.target.x,pose.target.y,pose.target.z);return camera.getWorldDirection(new THREE.Vector3());};
+  const right=createFollowCameraRig();right.reset(pos);const before=direction(right),look=villageCameraLook({x:1,y:-1});right.look(look.x,look.y,.2);right.step(pos,.2);const after=direction(right);
+  assert.ok(after.x>before.x,"pushing right turns the viewing ray right");assert.ok(after.y>before.y,"pushing up raises the viewing ray");
+  const left=createFollowCameraRig();left.reset(pos);const back=villageCameraLook({x:-1,y:1});left.look(back.x,back.y,.2);left.step(pos,.2);const other=direction(left);assert.ok(other.x<before.x);assert.ok(other.y<before.y);
+  const drag=createFollowCameraRig();drag.reset(pos);drag.orbit(.3,.1);drag.step(pos,.2);assert.ok(direction(drag).x<0,"the existing canvas/farm orbit convention is untouched");
+  assert.deepEqual(villageCameraLook({x:NaN,y:Infinity}),{x:0,y:0});
 });
 
 test("a second active controller can take over without inheriting held confirm", () => {

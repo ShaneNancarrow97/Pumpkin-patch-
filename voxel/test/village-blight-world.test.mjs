@@ -48,7 +48,7 @@ test('four circular caps have curved crown profiles and varied diameters above t
 });
 
 test('the native node build includes and removes the same canonical cursed sockets',()=>{
- const ids=new Set(NODES.filter(n=>n.kind==='blight'&&n.district==='green').map(n=>n.id));assert.equal(ids.size,8);
+ const ids=new Set(NODES.filter(n=>n.kind==='blight'&&n.district==='green').map(n=>n.id));assert.equal(ids.size,32);
  const live=buildNodes(id=>ids.has(id),{village:{gatherCycles:{}}});
  assert.deepEqual(new Set(live.userData.blightSites.map(p=>p.id)),ids);
  assert.ok(live.children.length<=2,'fungus uses the existing solid/glow batches');

@@ -1,0 +1,360 @@
+{
+  "date": "2026-11-09T02:20:23.213Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Interaction-Fixes.html",
+  "sha256": "c040390b02ffebccd1b346048dea3889ea4b71ee3490d014a8dede8fe9a59103",
+  "bytes": 59031801,
+  "checks": [
+    {
+      "pass": true,
+      "label": "Sandy Upgrade contains exactly one Hospitality card"
+    },
+    {
+      "pass": true,
+      "label": "A single tap buys the original £250 Hospitality tier and updates Now/Next",
+      "detail": {
+        "coins": 99750,
+        "level": 1,
+        "text": "Cocoa hospitality\n\nA warmer welcome: neighbours wait longer for pumpkins and Sandy serves cocoa more quickly.\n\nNow: 2.4s per order · 12s pumpkin patience. Next: 2.1s per order · 20s pumpkin patience.\n\nTier 1 of 3\n\nImprove hospitality · £700"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold Sandy Upgrade has no page horizontal overflow",
+      "detail": {
+        "width": 864,
+        "scroll": 864,
+        "targets": [
+          {
+            "text": "Menu & stock",
+            "w": 172.65625,
+            "h": 48.59375,
+            "x": 170,
+            "right": 342.65625
+          },
+          {
+            "text": "Helpers",
+            "w": 172.671875,
+            "h": 48.59375,
+            "x": 345.65625,
+            "right": 518.328125
+          },
+          {
+            "text": "Upgrade",
+            "w": 172.671875,
+            "h": 48.59375,
+            "x": 521.328125,
+            "right": 694
+          },
+          {
+            "text": "Improve hospitality · £700",
+            "w": 502,
+            "h": 44,
+            "x": 181,
+            "right": 683
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold Sandy Upgrade scrollable controls retain 44 px targets without horizontal clipping",
+      "detail": {
+        "width": 864,
+        "scroll": 864,
+        "targets": [
+          {
+            "text": "Menu & stock",
+            "w": 172.65625,
+            "h": 48.59375,
+            "x": 170,
+            "right": 342.65625
+          },
+          {
+            "text": "Helpers",
+            "w": 172.671875,
+            "h": 48.59375,
+            "x": 345.65625,
+            "right": 518.328125
+          },
+          {
+            "text": "Upgrade",
+            "w": 172.671875,
+            "h": 48.59375,
+            "x": 521.328125,
+            "right": 694
+          },
+          {
+            "text": "Improve hospitality · £700",
+            "w": 502,
+            "h": 44,
+            "x": 181,
+            "right": 683
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Visitors Spending no longer duplicates Cocoa Hospitality"
+    },
+    {
+      "pass": true,
+      "label": "Actual D-pad Up icon stays upright while button12 toggles the quest tracker",
+      "detail": {
+        "quest": {
+          "icon": true,
+          "text": "The Moving Address\nTell Elowen what you think of Mothlight\n⌄",
+          "expanded": "false",
+          "transform": "none",
+          "h": 65
+        },
+        "toggled": {
+          "expanded": "true",
+          "transform": "none"
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual controller reaches Rowan through the central village path",
+      "detail": {
+        "result": {
+          "count": 494,
+          "position": {
+            "x": 93.18743951264815,
+            "z": 42.7892274664309
+          }
+        },
+        "route": [
+          {
+            "x": 90,
+            "z": 31.5
+          },
+          {
+            "x": 93,
+            "z": 35.699999999999996
+          },
+          {
+            "x": 93.6,
+            "z": 41.7
+          },
+          {
+            "x": 93.15,
+            "z": 42.9
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "A real completed quest awards once and displays its actual reward receipt",
+      "detail": {
+        "event": {
+          "type": "quest-done",
+          "quest": "invitation",
+          "rewards": [
+            {
+              "kind": "coins",
+              "amount": 150
+            },
+            {
+              "kind": "village-decor",
+              "id": "lantern-post",
+              "amount": 2
+            }
+          ]
+        },
+        "coins": 150,
+        "decor": 2,
+        "done": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Options and Cross still open the village map on the final candidate"
+    },
+    {
+      "pass": true,
+      "label": "Fresh post-menu stick movement works on the final candidate",
+      "detail": {
+        "before": {
+          "x": 93.18743951264815,
+          "z": 42.7892274664309
+        },
+        "after": {
+          "x": 93.45622199442414,
+          "z": 42.88007205399987
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Circle cancels the final Return prompt"
+    },
+    {
+      "pass": true,
+      "label": "Final Fold Return has no horizontal overflow",
+      "detail": {
+        "w": 864,
+        "h": 756,
+        "scroll": 864,
+        "targets": [
+          {
+            "id": "village-return-confirm",
+            "text": "Return to farm",
+            "x": 252,
+            "y": 433.25,
+            "w": 360,
+            "h": 48
+          },
+          {
+            "id": "village-return-cancel",
+            "text": "Stay in the village",
+            "x": 252,
+            "y": 490.25,
+            "w": 360,
+            "h": 48
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Final Fold Return interactive targets fit and remain at least44px",
+      "detail": {
+        "w": 864,
+        "h": 756,
+        "scroll": 864,
+        "targets": [
+          {
+            "id": "village-return-confirm",
+            "text": "Return to farm",
+            "x": 252,
+            "y": 433.25,
+            "w": 360,
+            "h": 48
+          },
+          {
+            "id": "village-return-cancel",
+            "text": "Stay in the village",
+            "x": 252,
+            "y": 490.25,
+            "w": 360,
+            "h": 48
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Final TV Return has no horizontal overflow",
+      "detail": {
+        "w": 1920,
+        "h": 1080,
+        "scroll": 1920,
+        "targets": [
+          {
+            "id": "village-return-confirm",
+            "text": "Return to farm",
+            "x": 682.796875,
+            "y": 617.203125,
+            "w": 554.40625,
+            "h": 73.765625
+          },
+          {
+            "id": "village-return-cancel",
+            "text": "Stay in the village",
+            "x": 682.796875,
+            "y": 704.796875,
+            "w": 554.40625,
+            "h": 73.765625
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Final TV Return interactive targets fit and remain at least44px",
+      "detail": {
+        "w": 1920,
+        "h": 1080,
+        "scroll": 1920,
+        "targets": [
+          {
+            "id": "village-return-confirm",
+            "text": "Return to farm",
+            "x": 682.796875,
+            "y": 617.203125,
+            "w": 554.40625,
+            "h": 73.765625
+          },
+          {
+            "id": "village-return-cancel",
+            "text": "Stay in the village",
+            "x": 682.796875,
+            "y": 704.796875,
+            "w": 554.40625,
+            "h": 73.765625
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fresh Cross returns to the farm on the final candidate"
+    },
+    {
+      "pass": true,
+      "label": "The exact final standalone HTML requests no external assets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Final integrated runtime has no page or shader errors",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    {
+      "file": "02-fold-sandy-hospitality.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "05-fold-village-central-world.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "06-fold-real-quest-receipt.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "07-fold-village-return.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "08-tv-village-return.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    }
+  ],
+  "fixtures": [
+    {
+      "kind": "farm",
+      "level": 4,
+      "house": 0,
+      "earnings": 9000,
+      "coins": 30000,
+      "description": "Level5 earnings are ready, but the first house upgrade is missing. Visitor arrivals deferred for deterministic UI checks."
+    },
+    {
+      "kind": "services",
+      "description": "Owned meadow, tier1 stand, Bring a friend tier1 and £100000 declared for real menu purchase checks; purchases use existing native handlers, not earned campaign progress."
+    }
+  ],
+  "observations": [
+    "The real quest receipt Open quests button holds focus during its photograph, pausing its built-in expiry exactly as normal keyboard/controller focus does."
+  ],
+  "scope": "Exact unchanged offline HTML on loopback. Declared level4/house0/earnings-ready farm and a prepared invitation-final-step village, not an earned campaign. Native Gamepad API is mocked; real game/menu/cursor/rules/view methods run. Only renderer/composer draw calls are held between normal-render photographs; deterministic input bursts use the real village tick. Normal photos restore real RAF village ticking. Software Chromium viewport checks do not certify Bluetooth, physical PS5/TV hardware or hardware performance. Focused final delta after the first integrated pass: corrected Fold spacing, exact Create artwork, actual service purchases and display selection, quest Up glyph, real quest reward receipt and Return/movement smoke. Earlier broad input/growth cases remain recorded against their original hash.",
+  "passed": true
+}

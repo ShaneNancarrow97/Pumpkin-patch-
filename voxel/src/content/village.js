@@ -8,6 +8,7 @@
 // Elowen brings the invitation at level 3 (it was 6 in the plan), and each
 // later district opens three levels on.
 import { BLIGHT_MATERIAL, BLIGHT_NODE_SITES } from "./village-blight.js";
+import { VILLAGE_RESOURCE_PATCHES, VILLAGE_RESOURCE_AREAS, VILLAGE_RESOURCE_EXCLUSIONS } from "./village-resource-layout.js";
 export const VILLAGE_LEVEL = 3;
 // The village is drawn on a design grid and built at PLAN_SCALE world units to
 // each grid unit, so the owners (2.3 units tall) find its doors, benches and lamps
@@ -23,7 +24,7 @@ const shBox = (d, b) => ({ ...b, x0: b.x0 + DISTRICT_SHIFT[d][0], x1: b.x1 + DIS
 export const VILLAGE_BOUNDS = Object.freeze({ x0: S(-34), z0: S(-22), x1: S(168), z1: S(134) });
 // Each district opens at a patch level and, after the Green, a story beat (STORY_FLAGS).
 export const DISTRICTS = Object.freeze([
-  { id: "green", name: "Hollow Green", level: 3, story: null, polygon: [[0, -22], [120, -22], [120, 36], [0, 36]] },
+  { id: "green", name: "Hollow Green", level: 3, story: null, polygon: [[0, -22], [120, -22], [120, 50], [0, 50]] },
   { id: "copse", name: "Moonroot Copse", level: 6, story: "two-doorbells", polygon: [[0, 36], [40, 36], [40, 96], [0, 96]] },
   { id: "quarry", name: "Lantern Quarry", level: 9, story: "footbridge", polygon: [[40, 36], [84, 36], [84, 74], [40, 74]] },
   { id: "moor", name: "Carnival Moor", level: 12, story: "restaurant-opening", polygon: [[84, 12], [120, 12], [120, 74], [84, 74]] },
@@ -99,6 +100,7 @@ export const NODES = Object.freeze([
   { id: "emberbloom-02", material: "emberbloom", x: 114, z: 54, district: "moor" },
   { id: "emberbloom-03", material: "emberbloom", x: 114, z: 58, district: "moor" },
   { id: "star_amber-01", material: "star-amber", x: 112, z: 90, district: "marsh" },
+  ...VILLAGE_RESOURCE_PATCHES,
   ...BLIGHT_NODE_SITES,
 ].map((n) => { const [x, z] = sh(n.district, [n.x, n.z]); return Object.freeze({ ...n, x: S(x), z: S(z) }); }));
 export const NODE_BY_ID = Object.freeze(Object.fromEntries(NODES.map((n) => [n.id, n])));
@@ -229,3 +231,7 @@ export const FORAGE_AREAS = Object.freeze([
   { id: "moonflower-meadow", name: "Moonflower Meadow", material: "herbs", x: 78, z: -13, x0: 67, z0: -20, x1: 89, z1: -2 },
   { id: "stone-bank", name: "Old Stone Bank", material: "stone", x: 103, z: -14, x0: 90, z0: -21, x1: 116, z1: -2 },
 ].map(p => Object.freeze({ ...box(p), x: S(p.x), z: S(p.z) })));
+// These mixed-material lawns and side gardens supplement the original four
+// forecourt clearings; they are not separate district unlocks.
+export const RESOURCE_AREAS = Object.freeze(VILLAGE_RESOURCE_AREAS.map(p => Object.freeze(box(p))));
+export const RESOURCE_EXCLUSIONS = Object.freeze(VILLAGE_RESOURCE_EXCLUSIONS.map(p => Object.freeze(p.r ? { ...p, x: S(p.x), z: S(p.z), r: S(p.r) } : box(p))));

@@ -1,6 +1,6 @@
-// The stick cursor: click either thumbstick and a pointer comes up that the left stick steers, for anything
-// the menus' ring can't reach and for tapping straight onto the farm. It's there off play mode, and over any
-// menu in play mode, where a stick click otherwise jogs or centres the camera.
+// The world cursor: off play mode, a thumbstick click brings up a pointer that
+// the left stick steers for tapping the farm. The play-controls owner puts it
+// away when a focus menu opens; a menu receives its complete pad input.
 // - Steering: it speeds up the longer the stick is held over, settles onto a button it comes to rest near,
 //   and names what ✕ will do.
 // - ✕ clicks: a button, a tile, a plot or a guest.

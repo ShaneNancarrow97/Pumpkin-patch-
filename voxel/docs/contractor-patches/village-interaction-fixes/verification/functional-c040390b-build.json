@@ -1,0 +1,22 @@
+{
+  "html": "Pumpkin-Patch-Village-Interaction-Fixes.html",
+  "sha256": "c040390b02ffebccd1b346048dea3889ea4b71ee3490d014a8dede8fe9a59103",
+  "bytes": 59031801,
+  "zip": {
+    "name": "Pumpkin-Patch-Village-Interaction-Fixes.zip",
+    "bytes": 42425073,
+    "sha256": "bbcf7641d5ea32255f4229266ff4353d788839d921a387f2173e67ff17e0b91e"
+  },
+  "command": "node build.mjs --out /workspace/Pumpkin-Patch-Village-Interaction-Fixes.html",
+  "source_base": "7bb7639523083f444da565aa5716b82282e16421",
+  "node_test_command": "npm test",
+  "node": {
+    "tests": 1099,
+    "pass": 1099,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "duration_ms": 84956.87473
+  },
+  "scope": "All named tests executed after the final service-menu/tip/glyph changes, with managed additional-network execution profile. No dependency installation. Browser verification is recorded separately."
+}

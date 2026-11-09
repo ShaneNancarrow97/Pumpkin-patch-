@@ -1,19 +1,28 @@
 // Customer care owns bag capacity, pumpkin grading and a separate tips ledger.
 // Grades are drawn once at payment, so waiting or re-rendering cannot reroll them.
+export const TIP_JAR_TIERS = Object.freeze([
+  { name: "No thank-you jar", chance: 0, rate: 0 },
+  { name: "A little thank-you", chance: .25, rate: .04, cost: 250 },
+  { name: "A warm welcome", chance: .38, rate: .065, cost: 1000 },
+  { name: "Lovely hospitality", chance: .5, rate: .09, cost: 3800 },
+  { name: "Velvet hospitality", chance: .6, rate: .115, cost: 9500 },
+  { name: "Moonlit generosity", chance: .68, rate: .14, cost: 22000 },
+].map(Object.freeze));
+export const CUSTOMER_TIP_CAP = 25;
 export const CARE_UPGRADES = [
   { id: "bags", name: "Pumpkin carrier bags", costs: [180, 650, 2200], text: "One extra pumpkin space per tier, at both counters. Each guest still shops within their own budget." },
-  { id: "tipJar", name: "Skyla’s thank-you jar", costs: [250, 1000, 3800], text: "Guests with spare change may tip for lovely pumpkins and quick service. Each tier improves their generosity." },
+  { id: "tipJar", name: "Skyla’s thank-you jar", costs: TIP_JAR_TIERS.slice(1).map(t => t.cost), text: "Lovelier pumpkins and quick service encourage bigger thank-yous from guests with spare change." },
 ];
 export const freshCustomerCare = () => ({ bags: 0, tipJar: 0, serial: 0, invested: 0, tips: { stall: 0, shop: 0 }, tipped: { stall: 0, shop: 0 }, qualityTotal: 0, graded: 0, receipts: [] });
 const count = (n, cap = 1e12) => Number.isSafeInteger(n) ? Math.max(0, Math.min(cap, n)) : 0;
 export function restoreCustomerCare(raw) {
   const c = freshCustomerCare();
   if (!raw || typeof raw !== "object") return c;
-  for (const key of ["bags", "tipJar"]) c[key] = count(raw[key], 3);
+  c.bags = count(raw.bags, 3); c.tipJar = count(raw.tipJar, TIP_JAR_TIERS.length - 1);
   for (const key of ["serial", "invested", "graded"]) c[key] = count(raw[key]);
   c.qualityTotal = Number.isFinite(raw.qualityTotal) ? Math.max(0, Math.min(c.graded * 5, raw.qualityTotal)) : 0;
   for (const route of ["stall", "shop"]) { c.tips[route] = count(raw.tips?.[route]); c.tipped[route] = count(raw.tipped?.[route]); }
-  c.receipts = (Array.isArray(raw.receipts) ? raw.receipts : []).filter(r => r && ["stall", "shop"].includes(r.route)).slice(0, 12).map(r => ({ route: r.route, visitor: count(r.visitor), amount: count(r.amount), quantity: count(r.quantity, 100), tip: count(r.tip, 25), quality: Number.isFinite(r.quality) ? Math.max(1, Math.min(5, r.quality)) : 1, service: Number.isFinite(r.service) ? Math.max(0, Math.min(3600, r.service)) : 0 }));
+  c.receipts = (Array.isArray(raw.receipts) ? raw.receipts : []).filter(r => r && ["stall", "shop"].includes(r.route)).slice(0, 12).map(r => ({ route: r.route, visitor: count(r.visitor), amount: count(r.amount), quantity: count(r.quantity, 100), tip: count(r.tip, CUSTOMER_TIP_CAP), quality: Number.isFinite(r.quality) ? Math.max(1, Math.min(5, r.quality)) : 1, service: Number.isFinite(r.service) ? Math.max(0, Math.min(3600, r.service)) : 0 }));
   return c;
 }
 export const careUpgradeCost = (s, id) => CARE_UPGRADES.find(u => u.id === id)?.costs[s.customerCare[id]];
@@ -28,6 +37,18 @@ function draw(seed) {
   return ((x ^ x >>> 15) >>> 0) / 4294967296;
 }
 export const qualityName = stars => ["Rustic", "Fresh", "Lovely", "Prize", "Showstopper"][Math.max(0, Math.min(4, Math.round(stars) - 1))];
+export const tipJarBenefits = level => TIP_JAR_TIERS[count(level, TIP_JAR_TIERS.length - 1)];
+// The rules and upgrade preview share this conditional offer. Chance still
+// decides whether a guest tips, and their remaining wallet always limits it.
+export function tipJarOffer(level, { amount, quality = 5, route = "shop", serviceSeconds = 0, spare = Infinity } = {}) {
+  const tier = tipJarBenefits(level), service = Number.isFinite(serviceSeconds) ? Math.max(0, serviceSeconds) : 0, target = route === "shop" ? 8 : 4;
+  const grade = Number.isFinite(quality) ? Math.max(1, Math.min(5, quality)) : 1;
+  const speed = service <= target ? 1 : service <= target * 2 ? .7 : .35;
+  const chance = tier.chance * (.45 + .11 * grade) * speed;
+  const desired = tier.rate && Number.isFinite(amount) && amount > 0 ? Math.max(1, Math.floor(amount * tier.rate * grade / 5 * (speed === 1 ? 1.25 : speed))) : 0;
+  const wallet = spare === Infinity ? CUSTOMER_TIP_CAP : Number.isFinite(spare) ? Math.max(0, Math.floor(spare)) : 0;
+  return { chance, amount: Math.min(CUSTOMER_TIP_CAP, wallet, desired), quickSeconds: target };
+}
 // Pure quote: service means waiting at the stall, or queuing plus checkout indoors.
 export function quoteCustomerCare(s, receipt, visitor, route, serviceSeconds) {
   const seed = (s.customerCare.serial + 1) * 104729 + visitor.id * 7919 + (route === "shop" ? 31337 : 0);
@@ -36,12 +57,11 @@ export function quoteCustomerCare(s, receipt, visitor, route, serviceSeconds) {
     const minimum = ([1, 2, 2, 3, 4][line.variety] ?? 1);
     grades += minimum + Math.floor(draw(seed + n * 43) * (6 - minimum)); n++;
   }
-  const quality = n ? grades / n : 1, service = Number.isFinite(serviceSeconds) ? Math.max(0, serviceSeconds) : 0, target = route === "shop" ? 8 : 4;
-  const speed = service <= target ? 1 : service <= target * 2 ? .7 : .35;
-  const level = s.customerCare.tipJar, chance = [0, .25, .38, .5][level] * (.45 + .11 * quality) * speed;
+  const quality = n ? grades / n : 1, service = Number.isFinite(serviceSeconds) ? Math.max(0, serviceSeconds) : 0;
+  const level = s.customerCare.tipJar;
   const spare = Math.max(0, Math.floor(visitor.budget - receipt.amount));
-  const desired = Math.max(1, Math.floor(receipt.amount * [0, .04, .065, .09][level] * quality / 5 * (speed === 1 ? 1.25 : speed)));
-  const tip = n && level && draw(seed + 9749) < chance ? Math.min(25, spare, desired) : 0;
+  const offer = tipJarOffer(level, { amount: receipt.amount, quality, route, serviceSeconds: service, spare });
+  const tip = n && level && draw(seed + 9749) < offer.chance ? offer.amount : 0;
   return { quality, service, tip, grades, graded: n };
 }
 // Called only after stock is committed. Product takings never include tips.

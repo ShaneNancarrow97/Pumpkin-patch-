@@ -1,17 +1,17 @@
 // Fixed world seed plus saved per-node cycles: chats and shop rolls never move visible resources.
-import { NODES, NODE_BY_ID, FORAGE_AREAS, ROADS } from './village.js';
+import { NODES, NODE_BY_ID, FORAGE_AREAS, RESOURCE_AREAS, RESOURCE_EXCLUSIONS, ROADS } from './village.js';
 import { villageCellFree } from '../rules/village-navigation.js';
 
 const hash = text => { let n=2166136261;for(const c of text)n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0; };
 const jitter = (key,axis) => (hash(key+axis)%10001/10000-.5)*.28;
 const distanceToRoad = (x,z,road) => road.points.some(([bx,bz],i)=>{if(!i)return false;const [ax,az]=road.points[i-1],dx=bx-ax,dz=bz-az,t=Math.max(0,Math.min(1,((x-ax)*dx+(z-az)*dz)/(dx*dx+dz*dz||1)));return Math.hypot(x-ax-dx*t,z-az-dz*t)<road.width/2+.6;});
-const clear = (x,z) => villageCellFree(null,x,z,.65)&&!ROADS.some(r=>distanceToRoad(x,z,r));
+const clear = (x,z) => villageCellFree(null,x,z,.65)&&!ROADS.some(r=>distanceToRoad(x,z,r))&&!RESOURCE_EXCLUSIONS.some(b=>b.r?Math.hypot(x-b.x,z-b.z)<b.r+.65:x>b.x0-.4&&x<b.x1+.4&&z>b.z0-.4&&z<b.z1+.4);
 const sites=new Map(),used=NODES.filter(n=>n.district==='green').map(n=>({x:n.x,z:n.z}));
 const groups=new Map();
 for(const n of NODES){
   sites.set(n.id,[Object.freeze({x:n.x,z:n.z})]);
   if(n.district!=='green'||n.kind==='blight')continue;
-  const a=FORAGE_AREAS.find(a=>n.x>=a.x0&&n.x<=a.x1&&n.z>=a.z0&&n.z<=a.z1);
+  const a=RESOURCE_AREAS.find(a=>a.id===n.area)??FORAGE_AREAS.find(a=>n.x>=a.x0&&n.x<=a.x1&&n.z>=a.z0&&n.z<=a.z1);
   const area=a??{id:'near-'+n.id,x0:n.x-5,z0:n.z-5,x1:n.x+5,z1:n.z+5};
   if(!groups.has(area.id))groups.set(area.id,{area,nodes:[]});groups.get(area.id).nodes.push(n);
 }

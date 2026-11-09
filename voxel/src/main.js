@@ -617,7 +617,7 @@ $("boost").onclick = boost;
 // The HUD, actions, goal and streak, every frame (cheap: only text changes).
 let shownPinata;
 const text = (id, value) => { const el = $(id); if (el.textContent !== String(value)) el.textContent = value; };
-const shownLevel = { label: "", fill: "", rank: 0 };
+const shownLevel = { label: "", fill: "", rank: 0, attention: null };
 let sheetDrawnAt = 0;
 function render() {
   villageGame?.render();
@@ -639,7 +639,8 @@ function render() {
   text("level-number", lvl.level);
   if(shownLevel.rank!==lvl.level){shownLevel.rank=lvl.level;$("level-rank-art").innerHTML=levelBadgeMarkup(lvl.level,38);}
   // Written only when they change: an unchanged write still costs a style pass every frame.
-  const levelLabel = `Level ${lvl.level}: ${lvl.name}. ${lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View level requirements and rewards`, levelFill = (lvl.progress * 100).toFixed(1) + "%";
+  const levelLabel = `Level ${lvl.level}: ${lvl.name}. ${lvl.blocked ? "Requirement needs attention: " + lvl.requirements.find(r=>!r.met).text : lvl.next ? Math.round(lvl.progress * 100) + "% to level " + lvl.next.level : "Maximum level"}. View level requirements and rewards`, levelFill = (lvl.progress * 100).toFixed(1) + "%";
+  if(shownLevel.attention!==lvl.blocked){shownLevel.attention=lvl.blocked;$("level-attention").toggleAttribute("hidden",!lvl.blocked);$("open-levels").classList.toggle("needs-attention",lvl.blocked);}
   if (levelLabel !== shownLevel.label) { shownLevel.label = levelLabel; $("open-levels").setAttribute("aria-label", levelLabel); }
   if (levelFill !== shownLevel.fill) { shownLevel.fill = levelFill; $("open-levels").style.setProperty("--progress", levelFill); }
   celebration.tick(mazeUI.active || hayrideUI.active || !!openTab || !!home.tools.selected || state.paused);
@@ -756,7 +757,7 @@ setTimeout(() => {
   prefs.saveNudgeAt = new Date().toISOString(); savePrefs();
   notice("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
 }, 60000);
-villageGame = createVillageGame({ state: () => state, scene, save, notice, narration, savePrefs, prefs, onFullscreen: () => $("fullscreen").click(),
+villageGame = createVillageGame({ state: () => state, scene, save, notice, narration, savePrefs, prefs, onGatherSound: event => audio.gather(event), onFullscreen: () => $("fullscreen").click(),
   closeMenus() { playControls?.releaseInput?.(); closeSheet(); upgradeMenu?.close(); home.tools.select(null); lifeActivity?.cancel(); playControls?.close(); playControls?.cursor.hide(); },
   onLeave() { playControls?.releaseInput?.(); audio.setVillageActive(false); renderPlace(); render(); }, onRender() { audio.setVillageActive(true); renderPlace(); },
 });

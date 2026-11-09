@@ -91,7 +91,7 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
   // choice; never the way out.
   function firstChoice(sf, list) {
     if (sf.farmBars) return list.find((el) => matchesKey(el, farmKey)) ?? list.find((el) => el.id === "open-levels") ?? list.find((el) => el.closest("#hud")) ?? list[0] ?? null;
-    if (sf.hub) return document.querySelector("#dock .tab.active") ?? document.querySelector('#dock .tab[data-tab="shop"]');
+    if (sf.hub) return list.find((el) => el.matches("#dock .tab.active")) ?? list.find((el) => el.matches('#dock .tab[data-tab="shop"]')) ?? list[0] ?? null;
     return list.find((el) => el.matches("[data-pad-default]")) ?? list.find((el) => el.matches('.segmented [aria-pressed="true"]')) ?? list.find((el) => !closer(el)) ?? list[0] ?? null;
   }
   function ring(el) {
@@ -283,8 +283,9 @@ export function createPadMenu({ feel = () => {}, back = () => {}, hold = null, h
       if (sf.farmBars && (pressed(1) || pressed(6))) { toggleHub(false); return true; }
       const stickDir = Math.hypot(lx, ly) > STICK ? (Math.abs(lx) > Math.abs(ly) ? (lx > 0 ? "r" : "l") : (ly > 0 ? "d" : "u")) : "";
       const want = down[12] ? "u" : down[13] ? "d" : down[14] ? "l" : down[15] ? "r" : stickDir;
-      // The first press after touch or keys only shows the ring (○ and Options still act).
-      if (!wasUsing && !pressed(1) && !menuPress) { if (!current || closer(current)) focus(sf, firstChoice(sf, choices(sf))); dir = want; nextAt = now + FIRST_REPEAT; return true; }
+      // Steering after touch first reveals the ring. A fresh confirm selects
+      // its usable target immediately; held buttons are guarded at ownership boundaries.
+      if (!wasUsing && !pressed(0) && !pressed(2) && !pressed(1) && !menuPress) { if (!current || closer(current)) focus(sf, firstChoice(sf, choices(sf))); dir = want; nextAt = now + FIRST_REPEAT; return true; }
 
       // Moving: the D-pad or the left stick, repeating while held.
       if (want && (want !== dir || now >= nextAt)) {

@@ -1,5 +1,6 @@
 import { SERVICE_OUT, SERVICE_BACK, SERVICE_RIGHT, serviceNav, serviceMetrics, serviceHeading } from "./service-kit.js";
 import { hospitalityIcon } from "./hospitality-icons.js";
+import { renderShopDisplayTables } from "./shop-display-tables.js";
 // The Shop menu: farm upgrades, seeds per plot, Skyla's indoor shop, the stall
 // and the visitors.
 import * as M from "../model.js";
@@ -96,6 +97,7 @@ export function farmSheets(ui) {
   const cocoaMenu = festivalMeadowSheet(ui).festival; cocoaMenu.setTab("cocoa");
   let visitorSection="arrivals";
   let farmSection="patch";
+  let displayTable=0;
   const tabs = () => segmented("shoptab", "Shop sections", [["farm", "Farm"], ["seeds", "Seeds"], ["shop", "Shop"], ["cocoa", "Cocoa"], ["stall", "Stock"], ["visitors", "Visitors"]], tab).replace('class="segmented"', 'class="segmented build-sections"');
 
   // Spread the word lives in the Visitors tab with the rest of its kind.
@@ -145,20 +147,15 @@ export function farmSheets(ui) {
     const inside = ui.scene.place?.kind === "shop";
     const visit = `<button class="button gold wide" data-visit="${inside ? "leave" : "shop"}">${inside ? "Back to the patch" : "Step inside the shop"}</button>`;
     const stats = `<div class="stats"><div><b>${sh.served}</b><span>served inside</span></div><div><b>${money(sh.income)}</b><span>pumpkin takings</span></div><div><b>${money(s.customerCare.tips.shop)}</b><span>tips at the till</span></div><div><b>${sh.customers.filter((c) => c.phase !== "leaving").length}/${M.SHOP_CAPACITY[sh.capacityLevel]}</b><span>browsing now</span></div></div>`;
-    const tables = Array.from({ length: M.displayCount(sh) }, (_, i) => {
-      const on = sh.displays[i];
-      return `<div class="table-row"><h4>Table ${i + 1}</h4><div class="chips" role="group" aria-label="What table ${i + 1} shows">${[null, ...M.VARIETIES.map((_, i) => i)].map((v) => {
-        const taken = v !== null && sh.displays.some((d, k) => k !== i && k < M.displayCount(sh) && d === v);
-        return `<button class="chip" data-display="${i}:${v}" aria-pressed="${on === v}" ${taken ? "disabled" : ""}>${v === null ? "Empty" : M.VARIETIES[v].name}${v !== null ? ` <small>${M.available(s, v)}</small>` : ""}</button>`;
-      }).join("")}</div></div>`;
-    }).join("");
+    displayTable=Math.min(displayTable,M.displayCount(sh)-1);
+    const tables=renderShopDisplayTables(s,{selectedTable:displayTable,thumb:ui.thumb});
     const upgrades = M.SHOP_UPGRADES.filter((u) => u.id !== "open").map((u) => {
       const level = sh[SHOP_LEVELS[u.id]], price = M.shopUpgradeCost(s, u.id), max = price === undefined, at = max ? 0 : opensAt(s, "shop", u.id, level);
       const now = u.id === "capacity" ? `${M.SHOP_CAPACITY[level]} browsing` : u.id === "displays" ? `${M.displayCount(sh)} tables` : u.id === "browse" ? `${M.BROWSE_SECONDS[level]}s to choose` : u.id === "wrap" ? `+${Math.round(M.WRAP_SPEND[level] * 100)}% spend` : `${M.CHECKOUT_SECONDS[level]}s at the till`;
       const next = u.id === "checkout" && !max ? ` Next: ${M.CHECKOUT_SECONDS[level + 1]}s per basket.` : "";
       return `<article class="card${max ? " done" : ""}">${icon(u.id)}<div><h3>${u.name}</h3><p>${u.id === "storage" ? `${M.stockCount(s)}/${M.barnCapacity(s)} stored. ${s.upgrades.storage >= u.max ? "Barn fully expanded." : `Next tier adds ${M.STORAGE_BONUS[(s.upgrades.storage||0)+1]-M.STORAGE_BONUS[s.upgrades.storage||0]} spaces.`}` : u.text} Now: ${now}.${next}</p>${levelNote(at)}${tiers(level, SHOP_MAX[u.id])}</div>${at ? levelButton(at) : priceButton("shopup", u.id, price, s.coins, max && "Done")}</article>`;
     }).join("");
-    return tip + visit + stats + `<button class="button wide" data-food-shelves>Food shelves · ${s.kitchen?.purchased ? money(s.kitchen.ledger.foodIncome) + " food takings" : "Start cooking from level 5"}</button><h3 class="section">Display tables</h3>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades + comforts;
+    return tip + visit + stats + `<button class="button wide" data-food-shelves>Food shelves · ${s.kitchen?.purchased ? money(s.kitchen.ledger.foodIncome) + " food takings" : "Start cooking from level 5"}</button>` + tables + `<h3 class="section">Improve the shop</h3>` + upgrades + comforts;
   }
 
   // Who is on the path now, a party at a time.
@@ -188,7 +185,7 @@ export function farmSheets(ui) {
     const hayride = M.hayrideFootfallBonus?.(s) ?? 0, meadow = M.meadowFootfallBonus?.(s) ?? 0, total = M.attractionFootfallBonus?.(s) ?? maze;
     const attraction = maze || hayride || meadow ? `<p class="commerce-inline-note">Attractions bring +${Math.round(total * 100)}% footfall${maze ? ` · Hollow House +${Math.round(maze * 100)}%` : ""}${hayride ? ` · Hayride +${Math.round(hayride * 100)}%` : ""}${meadow ? ` · the meadow’s comforts +${Math.round(meadow * 100)}%` : ""}. Combined appeal is capped at 75%${maze ? "; frightened guests may leave early" : ""}.</p>` : "";
     const streak = `<p class="small streak-note">Quick picking builds a streak, and a streak gets talked about: visitors come 10% more often for each pick up to ×6, then 5% more a pick, to +${Math.round(M.STREAK.cap * 100)}%. It fades over ${M.STREAK.fade}s once you stop. Helping hands don’t count; they’re not showing off.</p>`;
-    const selectedIds=visitorSection==="arrivals"?["sign","lights","party","crowd","janitor"]:["appetite","cocoa","loyalty"];
+    const selectedIds=visitorSection==="arrivals"?["sign","lights","party","crowd","janitor"]:["appetite","loyalty"];
     const cards = selectedIds.map((id) => {
       const sign = id === "sign", u = sign ? M.UPGRADES.find((x) => x.id === id) : M.VISITOR_UPGRADES.find((x) => x.id === id);
       const level = M.visitorUpgradeLevel(s, id), most = sign ? u.max : u.costs.length, done = level >= most;
@@ -255,6 +252,7 @@ export function farmSheets(ui) {
           else ui.notice(M.SHOP_UPGRADES.find((u) => u.id === id).name + " done.");
           ui.draw();
         }));
+        body.querySelectorAll("[data-display-table]").forEach((b)=>(b.onclick=()=>{displayTable=+b.dataset.displayTable;ui.draw();}));
         body.querySelectorAll("[data-display]").forEach((b) => (b.onclick = () => { const [i, v] = b.dataset.display.split(":"); if (M.assignDisplay(s, +i, v === "null" ? null : +v)) ui.draw(); }));
         body.querySelectorAll("[data-visit]").forEach((b) => (b.onclick = () => { if (b.dataset.visit === "shop") ui.enterShop(); else ui.leavePlace(); ui.draw(); }));
       },

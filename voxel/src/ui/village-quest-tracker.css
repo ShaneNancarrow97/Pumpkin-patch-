@@ -10,6 +10,12 @@
 #village-game #vg-task{margin-top:4px;color:#e6d8e8;font-size:13px;line-height:1.45}
 #village-game .vg-quest-toggle-mark{flex:none;gap:4px;color:#e5c58f}
 #village-game .vg-quest-toggle-mark small{font-size:12px;color:#ccbbd3}
+#village-game .vg-quest-toggle-mark{min-width:28px;gap:3px}
+#village-game .vg-quest-toggle-mark .vg-quest-shortcut-pad{display:inline-flex;align-items:center;justify-content:center;line-height:0;--ps5-ink:#decfe4;--ps5-frame:#decfe4;--ps5-accent:#f4cc8a}
+#village-game .vg-quest-toggle-mark .vg-quest-keycap{display:none;align-items:center;justify-content:center;width:23px;height:23px;border:1px solid #d3b6d34f;border-radius:6px;background:#b998ca12;color:#ead9ea;font:600 12px/1 var(--village-body);box-shadow:inset 0 1px #f9edff12}
+#village-game[data-input="keyboard"] .vg-quest-toggle-mark .vg-quest-shortcut-pad,#village-game[data-input="touch"] .vg-quest-toggle-mark .vg-quest-shortcut-pad{display:none}
+#village-game[data-input="keyboard"] .vg-quest-toggle-mark .vg-quest-keycap{display:inline-flex}
+body.village-decorating #village-game .vg-quest-toggle-mark :is(.vg-quest-shortcut-pad,.vg-quest-keycap){display:none}
 #village-game .vg-quest-details{padding:0 13px 12px 20px;max-height:min(300px,40dvh);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
 #village-game .vg-quest-requirements{list-style:none;margin:0;padding:3px 0 4px;display:grid;gap:8px}
 #village-game .vg-quest-requirements li{display:grid;grid-template-columns:15px minmax(0,1fr) auto;gap:8px;align-items:start;font-size:13px;line-height:1.45;padding:0;background:none;border:0}

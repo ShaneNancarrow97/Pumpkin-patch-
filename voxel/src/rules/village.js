@@ -18,7 +18,7 @@ import { RECIPE_BY_ID, INGREDIENT_BY_ID, COOKING } from "../content/cooking.js";
 import { availableFood } from "./cooking-sales.js";
 import { villageMaterialCapacity, villageGatheringYield, villageGatheringWait } from "./village-upgrades.js";
 import { villageDecorBounds } from "./village-decor-geometry.js";
-import { villageNodeCandidates } from "../content/village-node-sites.js";
+import { villageNodeCandidates, villageNodePosition } from "../content/village-node-sites.js";
 import { villageDecorGroundClear } from "./village-navigation.js";
 
 export { VILLAGE_LEVEL };
@@ -374,12 +374,22 @@ export function findObject(s, id) {
 
 // ---- Gathering -------------------------------------------------------------
 export const canGather = (s) => s.village.unlocks.includes("gathering");
-// A new infection never evicts an older decoration. Its fixed socket stays
-// dormant until the existing piece is moved, without consuming a gather cycle.
-function blightCovered(v, node) {
-  return node.kind === "blight" && v.decor.placed.some(p => { const b = villageDecorBounds(p.id, p.x, p.z, p.rotation); return b && node.x + .65 > b.x0 && node.x - .65 < b.x1 && node.z + .65 > b.z0 && node.z - .65 < b.z1; });
+// A new resource site never evicts an older decoration. It stays dormant until
+// the existing piece is moved, without consuming a gather cycle.
+function nodeCovered(s, node) {
+  const at = villageNodePosition(s, node);
+  return (s.village.decor?.placed ?? []).some(p => { const b = villageDecorBounds(p.id, p.x, p.z, p.rotation); return b && at.x + .65 > b.x0 && at.x - .65 < b.x1 && at.z + .65 > b.z0 && at.z - .65 < b.z1; });
 }
-export const nodeReady = (s, id) => !!NODE_BY_ID[id] && districtOpen(s, NODE_BY_ID[id].district) && (s.village.nodes[id] ?? 0) <= 0 && !blightCovered(s.village, NODE_BY_ID[id]);
+export const nodeReady = (s, id) => !!NODE_BY_ID[id] && districtOpen(s, NODE_BY_ID[id].district) && (s.village.nodes[id] ?? 0) <= 0 && !nodeCovered(s, NODE_BY_ID[id]);
+// Growth is a view of the existing cooldown, never a second saved clock. A
+// growing patch stays visible, but becomes pickable only once it is mature.
+export function nodeGrowthInfo(s, id) {
+  const node = Object.hasOwn(NODE_BY_ID, id) ? NODE_BY_ID[id] : null; if (!node) return null;
+  const remaining = time(s.village.nodes[id]), total = villageGatheringWait(s, node.material), ratio = Math.max(0, Math.min(1, 1 - remaining / Math.max(1, total)));
+  const mature = remaining <= 0, suppressed = nodeCovered(s, node), visible = districtOpen(s, node.district) && !suppressed;
+  const age = ratio + 1e-9, stage = mature ? "mature" : node.kind !== "blight" || age < .1 ? "bare" : age < .35 ? "spores" : age < .65 ? "shoots" : "young";
+  return { id, stage, ratio, remaining, total, mature, visible, suppressed, available: visible && mature, cycle: count(s.village.gatherCycles?.[id]), scale: node.scale ?? 1 };
+}
 // A clearing total uses the existing saved per-node cycles. It never depends
 // on how many samples fit in the satchel or whether they have been handed over.
 export function blightClearCount(s, district) {
@@ -431,12 +441,12 @@ const roadBoxes = ROADS.filter((r) => r.kind !== "future-spur").flatMap((r) => r
 const fixtureBoxes = [...Object.values(FIXTURES), ...SCENERY].map((f) => f.r ? { x0: f.x - f.r, x1: f.x + f.r, z0: f.z - f.r, z1: f.z + f.r } : f.x0 !== undefined ? { x0: f.x0, x1: f.x1, z0: f.z0, z1: f.z1 } : { x0: f.x - f.w / 2, x1: f.x + f.w / 2, z0: f.z - f.d / 2, z1: f.z + f.d / 2 });
 const homeBoxes = PLOTS.filter((p) => p.kind !== "reservation").map((p) => ({ x0: p.x0, x1: p.x1, z0: p.z0, z1: p.z1 }));
 // Keep every possible small-prop site clear, so decorating never moves a visible resource.
-const nodeBoxes = NODES.flatMap(n => villageNodeCandidates(n).map(p => ({ x0: p.x - .55, x1: p.x + .55, z0: p.z - .55, z1: p.z + .55, blight: n.kind === "blight" })));
+const nodeBoxes = NODES.flatMap(n => villageNodeCandidates(n).map(p => ({ x0: p.x - .55, x1: p.x + .55, z0: p.z - .55, z1: p.z + .55 })));
 const MOOR_INSET = MOOR_CORNER;
 function decorRoom(v, id, x, z, rotation, ignore, restoring = false) {
   const b = villageDecorBounds(id, x, z, rotation); if (!b) return false;
   if (b.x0 < GREEN.x0 || b.x1 > GREEN.x1 || b.z0 < GREEN.z0 || b.z1 > GREEN.z1 || overlap(b, MOOR_INSET)) return false;
-  if ([...roadBoxes, ...fixtureBoxes, ...homeBoxes, ...nodeBoxes.filter(n => !restoring || !n.blight)].some((o) => overlap(b, o))) return false;
+  if ([...roadBoxes, ...fixtureBoxes, ...homeBoxes, ...(restoring ? [] : nodeBoxes)].some((o) => overlap(b, o))) return false;
   if (!villageDecorGroundClear(id, x, z, rotation)) return false;
   return !v.decor.placed.some((p) => p.instance !== ignore && overlap(b, villageDecorBounds(p.id, p.x, p.z, p.rotation), .05));
 }

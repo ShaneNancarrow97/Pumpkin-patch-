@@ -1,6 +1,7 @@
 // The Blackroot Blight is a parallel village story, never a replacement for
 // an old completed chapter. Coordinates here use the village's design grid.
 export const BLIGHT_MATERIAL = Object.freeze({ id: "cursed-spores", name: "Cursed spores", district: "green", yield: 1, respawn: 600 });
+const patchScale = id => .72 + ([...id].reduce((n, c) => (Math.imul(n, 31) + c.charCodeAt(0)) >>> 0, 307) % 34) / 100;
 export const BLIGHT_NODE_SITES = Object.freeze([
   { id: "blight-green-01", district: "green", x: 12, z: 4 },
   { id: "blight-green-02", district: "green", x: 25, z: 4 },
@@ -10,16 +11,40 @@ export const BLIGHT_NODE_SITES = Object.freeze([
   { id: "blight-green-06", district: "green", x: 84, z: 30 },
   { id: "blight-green-07", district: "green", x: 85, z: 14 },
   { id: "blight-green-08", district: "green", x: 113, z: 14 },
+  { id: "blight-green-09", district: "green", x: 38.8, z: 20.7 },
+  { id: "blight-green-10", district: "green", x: 38.8, z: 26.3 },
+  { id: "blight-green-11", district: "green", x: 80.4, z: 23.5 },
+  { id: "blight-green-12", district: "green", x: 74.8, z: 18.7 },
+  { id: "blight-green-13", district: "green", x: 48.6, z: 42.8 },
+  { id: "blight-green-14", district: "green", x: 39.8, z: 43.6 },
+  { id: "blight-green-15", district: "green", x: 30.2, z: 41.2 },
+  { id: "blight-green-16", district: "green", x: 7.8, z: 43.6 },
+  { id: "blight-green-17", district: "green", x: 17.4, z: 43.6 },
+  { id: "blight-green-18", district: "green", x: 28.6, z: 45.2 },
+  { id: "blight-green-19", district: "green", x: 90.2, z: 46 },
+  { id: "blight-green-20", district: "green", x: 85.4, z: 40.4 },
+  { id: "blight-green-21", district: "green", x: 66.2, z: 46.8 },
+  { id: "blight-green-22", district: "green", x: 79, z: 47.6 },
+  { id: "blight-green-23", district: "green", x: 81.4, z: 45.2 },
+  { id: "blight-green-24", district: "green", x: 95, z: 41.2 },
+  { id: "blight-green-25", district: "green", x: 2, z: 4.3 },
+  { id: "blight-green-26", district: "green", x: 8.4, z: 2.7 },
+  { id: "blight-green-27", district: "green", x: 84.8, z: 12.3 },
+  { id: "blight-green-28", district: "green", x: 88, z: 29.1 },
+  { id: "blight-green-29", district: "green", x: 114.3, z: 18.7 },
+  { id: "blight-green-30", district: "green", x: 85.6, z: 16.3 },
+  { id: "blight-green-31", district: "green", x: 105.6, z: -14.4 },
+  { id: "blight-green-32", district: "green", x: 64, z: -2.4 },
   // Future district sockets remain behind the same unimplemented gates as
   // their ordinary resources. No current quest asks the player to reach them.
   { id: "blight-copse-01", district: "copse", x: 26, z: 58 },
   { id: "blight-copse-02", district: "copse", x: 26, z: 78 },
   { id: "blight-quarry-01", district: "quarry", x: 54, z: 66 },
   { id: "blight-quarry-02", district: "quarry", x: 63, z: 70 },
-].map(n => Object.freeze({ ...n, kind: "blight", action: "Root out", material: BLIGHT_MATERIAL.id })));
+].map(n => Object.freeze({ ...n, kind: "blight", action: "Root out", material: BLIGHT_MATERIAL.id, scale: patchScale(n.id) })));
 
 // Each clearing step counts new work from the moment that step begins. Three,
-// three and two patches fit the eight Green sites without a forced respawn wait.
+// three and two patches fit the Green's many sites without a forced respawn wait.
 export const BLIGHT_QUESTS = Object.freeze([
   { id: "blight-first-signs", kind: "story", arc: "blight", chapter: 1, title: "A Bruise Beneath the Green", giver: "elowen", level: 3, needs: ["invitation"],
     blurb: "Red sap beads on purple fungus around the Green. Elowen needs sealed samples before the roots find your pumpkin fields.",

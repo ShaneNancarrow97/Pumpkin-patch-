@@ -57,6 +57,10 @@
 #level-rank-art::before{content:"";position:absolute;inset:1.5px;border-radius:50%;background:var(--panel,#211e29)}
 #level-rank-art .level-badge{position:relative;z-index:1}
 #open-levels:hover #level-rank-art{filter:brightness(1.12)}
+#open-levels{position:relative}
+#level-attention{position:absolute;right:-3px;top:0;width:17px;height:17px;color:#ffd17a;filter:drop-shadow(0 1px 2px #1b112b);pointer-events:none;z-index:2}
+#level-attention[hidden]{display:none}
+#open-levels.needs-attention #level-rank-art{box-shadow:0 0 0 1px #edbd7180}
 @media(max-height:500px) and (orientation:landscape){#dock .village-shortcut-art{width:24px;height:24px}}
 /* The ready action is amber; its PS5 symbol needs dark ink against that fill. */
 .vg-pad-legend .vg-legend-action.is-ready{--ps5-ink:#352332;--ps5-accent:#352332;--ps5-frame:#352332}

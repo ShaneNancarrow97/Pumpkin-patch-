@@ -5,9 +5,9 @@ const ready=()=>{const s=M.freshState();s.shop.unlocked=true;s.visitorTimer=s.sh
 const run=(s,seconds)=>{const events=[];for(let n=0;n<seconds*10;n++)events.push(...M.update(s,.1));return events;};
 const receipt=()=>({amount:42,quantity:1,lines:[{variety:2,quantity:1,price:42}]});
 test('care upgrades are gated, spend once per tier, respect pause and maximum',()=>{
- const s=M.freshState();s.coins=20000;assert.equal(M.buyCareUpgrade(s,'bags'),false);s.shop.unlocked=true;s.paused=true;assert.equal(M.buyCareUpgrade(s,'bags'),false);s.paused=false;
+ const s=M.freshState();s.coins=100000;assert.equal(M.buyCareUpgrade(s,'bags'),false);s.shop.unlocked=true;s.paused=true;assert.equal(M.buyCareUpgrade(s,'bags'),false);s.paused=false;
  for(const u of M.CARE_UPGRADES)for(const price of u.costs){const before=s.coins;assert.ok(M.buyCareUpgrade(s,u.id));assert.equal(s.coins,before-price);}
- assert.equal(M.buyCareUpgrade(s,'bags'),false);assert.equal(M.buyCareUpgrade(s,'missing'),false);assert.equal(s.customerCare.invested,8080);
+ assert.equal(M.buyCareUpgrade(s,'bags'),false);assert.equal(M.buyCareUpgrade(s,'tipJar'),false);assert.equal(M.buyCareUpgrade(s,'missing'),false);assert.equal(s.customerCare.invested,39580);
 });
 test('bags increase actual capacity, keep budgets finite and never oversell',()=>{
  const a=ready(),b=ready();b.customerCare.bags=3;

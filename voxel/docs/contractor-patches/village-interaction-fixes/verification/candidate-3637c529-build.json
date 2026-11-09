@@ -1,0 +1,13 @@
+{
+  "html": "Pumpkin-Patch-Village-Interaction-Fixes.html",
+  "sha256": "3637c5291aa9d7383e43de6220fb478bf148994805c145e7fe32ce02499aa607",
+  "bytes": 59018388,
+  "command": "node build.mjs --out /workspace/Pumpkin-Patch-Village-Interaction-Fixes.html",
+  "source_base": "7bb7639523083f444da565aa5716b82282e16421",
+  "node_test_command": "npm test",
+  "node_tests": 1086,
+  "node_passed": 1086,
+  "node_failed": 0,
+  "test_duration_ms": 84830.998894,
+  "scope": "Actual named tests executed under the managed additional-network profile; no npm dependency installation or external API call. Browser checks recorded separately."
+}

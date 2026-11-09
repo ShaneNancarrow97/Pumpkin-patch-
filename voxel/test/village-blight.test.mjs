@@ -66,7 +66,7 @@ function finish(s,id) {
 
 test('version-18 villages acquire blight defaults without reopening old completed stories', () => {
   assert.equal(M.STATE_VERSION,18);
-  assert.equal(green.length,8); assert.equal(new Set(BLIGHT_NODES.map(n => n.id)).size,BLIGHT_NODES.length);
+  assert.equal(green.length,32); assert.equal(new Set(BLIGHT_NODES.map(n => n.id)).size,BLIGHT_NODES.length);
   assert.ok(green.every(n => n.material===SPORES && n.kind==='blight' && n.action==='Root out'));
   const raw = M.saveData(farm()); raw.version = 18;
   delete raw.village.materials[SPORES]; delete raw.village.gatherCycles;

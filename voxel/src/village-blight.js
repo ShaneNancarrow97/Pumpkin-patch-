@@ -83,6 +83,43 @@ export function cursedFungus(f, r = () => .5) {
   }
 }
 
+// Early growth has its own roots, shoots and caps; it is not a shrunken adult.
+// Distant mature patches keep rounded silhouettes with fewer columns.
+export function cursedFungusGrowth(f, stage, r = () => .5, detailed = true) {
+  if (stage === 'bare') return;
+  if (stage === 'mature' && detailed) { cursedFungus(f, r); return; }
+  const phase=r()*Math.PI*2, roots=stage==='spores'?3:stage==='shoots'?4:6;
+  for(let a=0;a<roots;a++)for(let k=0;k<4;k++){
+    const angle=phase+a/roots*Math.PI*2+k*.13,d=(k+1)*(stage==='spores'?.035:stage==='shoots'?.045:.072),w=.012-k*.0015;
+    f.block(Math.cos(angle)*d,.008,Math.sin(angle)*d,w+.028,.008,w+.02,ROOT);
+  }
+  if(stage==='spores'){
+    for(let i=0;i<9;i++){const a=i*2.399+phase,d=.025+(i%3)*.033;f.block(Math.cos(a)*d,.015,Math.sin(a)*d,.018+i%2*.008,.018, .02,i%2?PURPLE:CRIMSON,i===2);}
+    return;
+  }
+  if(stage==='shoots'){
+    for(let i=0;i<4;i++){
+      const a=phase+i*2.4,x=Math.cos(a)*.12,z=Math.sin(a)*.12,h=.07+i*.025;
+      for(let k=0;k<3;k++)f.block(x+Math.sin(k*.9)*.012,.013+k*h/3,z,.017,h/3+.001,.019,0x67465f);
+      f.block(x+.01,h+.012,z,.038,.027,.034,i%2?PURPLE:CRIMSON);f.block(x+.01,h+.035,z,.026,.014,.025,CAP_EDGE,i===0);
+    }
+    return;
+  }
+  const mature=stage==='mature',caps=mature?
+    [[-.075,.012,.41,.225],[.215,.175,.255,.145],[.2,-.19,.31,.163],[-.225,-.195,.17,.09]]:
+    [[-.04,.02,.17,.105],[.14,.1,.105,.07],[-.14,-.13,.07,.05]];
+  for(let i=0;i<caps.length;i++){
+    const[x,z,y,radius]=caps[i],steps=mature?2:3,cell=radius/steps;
+    f.block(x,.018,z,mature?.043:.025,y,.035,0x67465f);
+    for(let ix=-steps;ix<=steps;ix++)for(let iz=-steps;iz<=steps;iz++){
+      const d=(ix*ix+iz*iz)/(steps*steps);if(d>1)continue;
+      f.block(x+ix*cell,y,z+iz*cell,cell*1.01,.013+radius*.7*Math.sqrt(1-d),cell*1.01,CAP_TONES[Math.min(4,2+(ix+iz<0?1:0))]);
+    }
+    for(let g=0;g<4;g++){const a=g*Math.PI/2;f.block(x+Math.cos(a)*radius*.6,y-.012,z+Math.sin(a)*radius*.6,.014,.012,.014,GILL);}
+    f.block(x+radius*.78,y-.032,z,.015,.043,.016,CRIMSON,i===0);
+  }
+}
+
 // One instanced pool for nearby drifting spores and at most two clearing puffs.
 // No lights, texture downloads, DOM reads or per-frame allocation are involved.
 export function createCursedSporeField({ groundAt = () => 0 } = {}) {

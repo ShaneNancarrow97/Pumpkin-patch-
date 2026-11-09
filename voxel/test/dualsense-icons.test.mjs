@@ -22,3 +22,7 @@ test('unknown controller symbols cannot inject markup; glyph size is bounded',()
   assert.ok(ps5Icon('cross',-4).includes('inline-size:16px'));assert.ok(ps5Icon('cross',Infinity).includes('inline-size:64px'));
   assert.ok(ps5Icon('cross','invalid').includes('inline-size:24px'));
 });
+
+test('Create matches the supplied solid angled pill and three rays without an internal arrow',()=>{
+  const html=ps5Icon('create');assert.equal((html.match(/<path /g)??[]).length,3);assert.equal((html.match(/<rect /g)??[]).length,1);assert.match(html,/transform="rotate\(14/);assert.match(html,/fill="var\(--ps5-ink,#b7cbd8\)" stroke="none"/);assert.match(html,/<title>CREATE<\/title>/);assert.doesNotMatch(html,/M16 9v10|<text/);
+});

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {NODES,FORAGE_AREAS,ARRIVAL,PLAN_SCALE as K} from '../src/content/village.js';
+import {NODES,FORAGE_AREAS,RESOURCE_AREAS,ARRIVAL,PLAN_SCALE as K} from '../src/content/village.js';
 import {villageNodeCandidates,villageNodePosition} from '../src/content/village-node-sites.js';
 import {villageCellFree,villageWalkObstacles,VILLAGE_WALK_RADIUS} from '../src/rules/village-navigation.js';
 import {node} from '../src/village-models.js';
@@ -11,10 +11,10 @@ test('each Green resource has distinct, bounded and navigation-clear respawn sit
  const all=[];
  for(const n of green.filter(n=>n.kind!=='blight')){
   const choices=villageNodeCandidates(n);assert.ok(choices.length>=2,n.id);
-  const area=FORAGE_AREAS.find(a=>n.x>=a.x0&&n.x<=a.x1&&n.z>=a.z0&&n.z<=a.z1);
+  const area=RESOURCE_AREAS.find(a=>a.id===n.area)??FORAGE_AREAS.find(a=>n.x>=a.x0&&n.x<=a.x1&&n.z>=a.z0&&n.z<=a.z1);
   for(const p of choices){
    assert.ok(villageCellFree(null,p.x,p.z,.65),n.id+' site clear');
-   if(area)assert.ok(p.x>=area.x0&&p.x<=area.x1&&p.z>=area.z0&&p.z<=area.z1,n.id+' original clearing');
+   if(area)assert.ok(p.x>=area.x0&&p.x<=area.x1&&p.z>=area.z0&&p.z<=area.z1,n.id+' named gathering area');
    else assert.ok(Math.abs(p.x-n.x)<=5&&Math.abs(p.z-n.z)<=5,n.id+' local patch');
    for(const q of all)if(q.id!==n.id)assert.ok(Math.hypot(q.x-p.x,q.z-p.z)>=1.64,'different nodes never stack across cycles');
    all.push({...p,id:n.id});

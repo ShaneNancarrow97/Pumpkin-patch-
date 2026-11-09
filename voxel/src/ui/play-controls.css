@@ -176,6 +176,11 @@
 @media (orientation: landscape) and (min-width: 600px), (min-width: 900px) { .play-chip, .inside-place .play-chip { top: var(--top); min-height: 48px; } }
 .play-chip-glyph { display: inline-flex; }
 .play-chip-glyph:empty { display: none; }
+/* The assigned Play button is Create on PS5, View on other standard pads. */
+.play-chip { min-height:44px; background:linear-gradient(155deg,#3a2c4599,#21192aab); border-color:#c8a7d950; box-shadow:inset 0 1px #fff0d812,0 5px 18px #0b061d33; }
+#play-toggle .play-chip-glyph { align-items:center; gap:5px; min-height:25px; padding:2px 6px 2px 3px; border:1px solid #dbc5e653; border-radius:8px; background:#1b142847; color:#f5e9dc; font-size:12px; font-weight:700; letter-spacing:.04em; }
+#play-toggle .play-chip-glyph .glyph { margin:0; }
+@media(max-width:999px){.play-chip,.inside-place .play-chip{top:calc(var(--top) + 58px)}}
 /* The farm's buttons always stand in the bar, faded while there's nothing for
    them to do. A pad's press that can't act shakes the button; one that can pops it. */
 .action.idle { opacity: .42; filter: saturate(.5); box-shadow: none; }

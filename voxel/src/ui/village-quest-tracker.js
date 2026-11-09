@@ -2,9 +2,16 @@
 // authoritative; this view never advances a quest or consumes its materials.
 import { villageUIIcon } from './village-ui-icon-markup.js';
 import { villageItemIcon } from './village-item-markup.js';
+import { ps5Icon } from './dualsense-icons.js';
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const count = value => Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
+
+// Standard D-pad Up applies to PS5 and generic mapped pads. The existing input
+// source attribute selects keyboard/touch hints without another input listener.
+export function trackerToggleHintMarkup() {
+  return `<span class="vg-quest-toggle-mark" aria-hidden="true"><span class="vg-quest-chevron">⌄</span><small class="vg-quest-shortcut-pad">${ps5Icon('up',26)}</small><kbd class="vg-quest-keycap">T</kbd></span>`;
+}
 
 export function trackerPortraitMarkup(quest, portraitURL) {
   const image = typeof portraitURL === 'string' && /^(data:image\/|blob:|https?:\/)/.test(portraitURL);

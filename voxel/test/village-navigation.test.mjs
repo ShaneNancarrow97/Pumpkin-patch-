@@ -54,7 +54,7 @@ test("later district gates and their scenery remain closed even for a rich, far-
     assert.equal(villageCellFree(s,gate.x,gate.z),false,gate.id);
     const moved=moveVillageWalker(s,at(58,34),gate.x-58*K,gate.z-34*K);
     assert.equal(villageCellFree(s,moved.x,moved.z),true,`${gate.id}: motion ends on playable ground`);
-    assert.ok(moved.z<=36*K-VILLAGE_WALK_RADIUS,"cannot cross the Green's northern boundary");
+    assert.ok(moved.z<=50*K-VILLAGE_WALK_RADIUS,"the northern lawns still stop before the first locked gate");
   }
   assert.equal(free(s,-10,62),false,"the Copse");assert.equal(free(s,60,74),false,"the Quarry");assert.equal(free(s,152,46),false,"the Moor");assert.equal(free(s,100,120),false,"the Marsh");
 });
@@ -125,10 +125,24 @@ test("the arrival meadow expands the Green with four connected forage areas",()=
   const area=(Math.max(...p.map(q=>q[0]))-Math.min(...p.map(q=>q[0])))*(Math.max(...p.map(q=>q[1]))-Math.min(...p.map(q=>q[1])));
   assert.ok(area>120*36*K*K*1.6);
   assert.equal(FORAGE_AREAS.length,4);
-  assert.equal(NODES.filter(n=>n.district==="green"&&n.kind!=="blight").length,32);
-  assert.equal(NODES.filter(n=>n.district==="green"&&n.kind==="blight").length,8);
+  assert.equal(NODES.filter(n=>n.district==="green"&&n.kind!=="blight").length,56);
+  assert.equal(NODES.filter(n=>n.district==="green"&&n.kind==="blight").length,32);
   assert.ok(ARRIVAL.spawn[1]<0,"a broad forecourt precedes the old village gate");
   for(const a of FORAGE_AREAS)assert.equal(villageCellFree(state(),a.x,a.z),true,a.id);
+});
+
+test("walkable grass continues past both neighbours into the north lawns without crossing buildings or fences",()=>{
+  const s=state(),routes=[
+    [[49,18.6],[49,27],[48,27],[48,32],[40,32],[40,44]],
+    [[64.6,20],[62.4,20],[62.4,32],[70,32],[70,44]],
+  ];
+  for(const route of routes){
+    let p=at(...route[0]);
+    for(const [x,z]of route.slice(1)){const to=at(x,z);p=moveVillageWalker(s,p,to.x-p.x,to.z-p.z);assert.ok(Math.hypot(p.x-to.x,p.z-to.z)<.01,`grass route reaches ${x},${z}`);}
+    assert.ok(p.z>36*K,"the former invisible northern limit is gone");
+  }
+  for(const [x,z]of [[34,22],[38,14],[75,23],[79.5,12]])assert.ok(free(s,x,z),`a residential garden lawn at ${x},${z} is walkable`);
+  for(const [x,z]of [[28.5,18],[81.5,20],[66.6,20],[47.4,20]])assert.equal(free(s,x,z),false,"real fences and house walls stay solid");
 });
 
 

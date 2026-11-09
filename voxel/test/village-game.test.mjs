@@ -83,19 +83,23 @@ function headlessControls({ root, blocked, onRelease }) {
     clear, release, reset() { release(); padState.reset(); padState.sample(navigator.getGamepads()); }, dispose() { release(); },
   };
 }
-function harness(t, s = farm(), narration) {
+function harness(t, s = farm(), narration, extra = {}) {
   const doc = { createElement(tag) { return new Element(tag, doc); }, getElementById(id) { return doc.body.querySelector("#" + id); } }; doc.body = new Element("body", doc); doc.activeElement = doc.body;
   const listeners = new Map(), globals = new Map(), pad = { connected: true, mapping: "standard", axes: [0, 0, 0, 0], buttons: Array.from({ length: 18 }, () => ({ pressed: false })) };
   for (const [key, value] of Object.entries({ document: doc, navigator: { getGamepads: () => [pad] }, addEventListener(type, fn) { if (!listeners.has(type)) listeners.set(type, new Set()); listeners.get(type).add(fn); }, removeEventListener(type, fn) { listeners.get(type)?.delete(fn); } })) { globals.set(key, Object.getOwnPropertyDescriptor(globalThis, key)); Object.defineProperty(globalThis, key, { configurable: true, writable: true, value }); }
   const cameraCalls = { follow: 0, reset: 0, focus: [], dialogue: [] };
-  const notices = [], saves = [], owner = { enabled: true, who: "natalie" }, actors = [], picture = new THREE.Scene(), camera = new THREE.PerspectiveCamera(); camera.position.set(87, 8, 15); camera.lookAt(87, 1, -4.5);
+  const notices = [], saves = [], gatherSounds = [], receipts = [], receiptTicks = [], owner = { enabled: true, who: "natalie" }, actors = [], picture = new THREE.Scene(), camera = new THREE.PerspectiveCamera(); camera.position.set(87, 8, 15); camera.lookAt(87, 1, -4.5);
   let inside = null, touring = false, finishTour = null, conversation = null, callback = null, menuCloses = 0, leaves = 0;
   const view = { scene: picture, camera, groundAt: () => 0, sync() {}, folk: { mood() {}, talkSpot: id => ({ x: id === "rowan" ? 87 : 89, z: 8 }) }, play: { reset() { cameraCalls.reset++; }, follow() { cameraCalls.follow++; }, look() {}, zoom() {} }, cameraActions: { focus(...args) { cameraCalls.focus.push(args); } }, get inside() { return inside; }, goInside(id) { inside = id; }, goOutside() { inside = null; }, hallPoint(x, z, y = 0) { return new THREE.Vector3(4000 + x * K, y * K, z * K); }, director: { get active() { return touring; }, start(title, done, options) { touring = true; finishTour = done; this.options = options; title({ title: "Mothlight", sub: "Welcome" }); }, skip() { if (!touring) return; touring = false; finishTour(); } } };
   view.folk.spotOf=id=>({x:id==="rowan"?87:89,z:9.8});
   view.dialogueCamera={begin(player,neighbour){cameraCalls.dialogue.push({kind:"begin",player:{...player},neighbour:{...neighbour}});},end(options){cameraCalls.dialogue.push({kind:"end",options});}};
   const scene = { villageView: view, place: null, player: { state: () => ({ ...owner }), setEnabled(on, who = owner.who) { owner.enabled = on; owner.who = who; } }, enter(kind) { this.place = { kind }; }, leavePlace() { touring = false; this.place = null; }, villageCharacter() { const actor = new THREE.Group(), frame = new THREE.Group(); actor.add(new THREE.Group()); actor.userData = { idle: [frame], walk: [frame], shown: frame, show() {}, dispose() { actor.userData.disposed = true; } }; actor.userData.playerAnimate=pose=>{actor.userData.lastPose=pose;actor.userData.poseCount=(actor.userData.poseCount??0)+1;}; actors.push(actor); return actor; } };
-  const game = createVillageGame({ state: () => s, scene, narration, save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: () => null, itemArt: () => "", controlsView: headlessControls, decorateView: () => ({ active: false, close() {}, dispose() {}, tick() {}, pick() {}, back() {}, open() { return false; } }), conversationView(options) { callback = options; return { open(options) { conversation = options; }, close() { if (conversation) { conversation = null; options.onClose(); } }, get active() { return !!conversation; }, dispose() { this.close(); } }; } });
-  const h = { game, state: s, doc, scene, view, cameraCalls, owner, actors, saves, notices, listeners, pad, get conversation() { return conversation; }, get menuCloses() { return menuCloses; }, get leaves() { return leaves; }, complete() { callback.onContinue({ finished: true }); }, choose(index = 0, meta) { return callback.onChoice(index, meta); }, $(selector) { return doc.body.querySelector(selector); }, click(selector) { const el = doc.body.querySelector(selector); assert.ok(el, selector); assert.equal(el.disabled, false, selector + " enabled"); el.click(); }, key(type, key, target = doc.body) { for (const fn of listeners.get(type) ?? []) fn({ key, target, preventDefault() {}, stopImmediatePropagation() {}, repeat: false }); }, press(button) { pad.buttons[button].pressed = true; game.tick(.1); pad.buttons[button].pressed = false; game.tick(.1); } };
+  let returnPrompt;
+  const game = createVillageGame({ state: () => s, scene, narration, save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), onGatherSound:e=>{gatherSounds.push(e);extra.onGatherSound?.(e);}, closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: () => null, itemArt: () => "", controlsView: headlessControls, decorateView: () => ({ active: false, close() {}, dispose() {}, tick() {}, pick() {}, back() {}, open() { return false; } }),
+    returnPromptView(options){const element=doc.createElement("section");element.id="village-return-prompt";element.hidden=true;element.innerHTML='<button class="village-return-confirm" data-pad-default>Return</button><button class="village-return-cancel">Stay</button>';doc.body.append(element);let active=false;returnPrompt={open(){if(active)return false;active=true;element.hidden=false;element.querySelector("button").focus();return true;},close(){active=false;element.hidden=true;},confirm(){if(!active)return;this.close();options.onConfirm();},cancel(){if(!active)return;this.close();options.onCancel();},setInput(){},destroy(){this.close();element.remove();},get active(){return active;},element};element.querySelector(".village-return-confirm").onclick=()=>returnPrompt.confirm();element.querySelector(".village-return-cancel").onclick=()=>returnPrompt.cancel();return returnPrompt;},
+    questReceiptView(){const seen=new Set();return{notify(event){if(!seen.has(event.quest)){seen.add(event.quest);receipts.push(event);}},tick(options){receiptTicks.push(options);},clear(){},destroy(){}};},
+    conversationView(options) { callback = options; return { open(options) { conversation = options; }, close() { if (conversation) { conversation = null; options.onClose(); } }, get active() { return !!conversation; }, dispose() { this.close(); } }; } });
+  const h = { game, state: s, doc, scene, view, cameraCalls, owner, actors, saves, notices, gatherSounds, receipts, receiptTicks, returnPrompt, listeners, pad, get conversation() { return conversation; }, get menuCloses() { return menuCloses; }, get leaves() { return leaves; }, complete() { callback.onContinue({ finished: true }); }, choose(index = 0, meta) { return callback.onChoice(index, meta); }, $(selector) { return doc.body.querySelector(selector); }, click(selector) { const el = doc.body.querySelector(selector); assert.ok(el, selector); assert.equal(el.disabled, false, selector + " enabled"); el.click(); }, key(type, key, target = doc.body) { for (const fn of listeners.get(type) ?? []) fn({ key, target, preventDefault() {}, stopImmediatePropagation() {}, repeat: false }); }, press(button) { pad.buttons[button].pressed = true; game.tick(.1); pad.buttons[button].pressed = false; game.tick(.1); } };
   h.choices = () => conversation?.choices ?? conversation?.lines?.find(line => Array.isArray(line?.choices))?.choices ?? [];
   h.chooseIntent = (intent, id) => {const choices=h.choices(),index=choices.findIndex(choice=>choice.intent===intent&&(id==null||choice.id===id));assert.ok(index>=0,`choice ${intent} ${id??""}`);assert.notEqual(choices[index].disabled,true,"choice enabled");return h.choose(index,{id:conversation.id,choice:choices[index]});};
   // Resource interactions must use the real controller path and finish their swing.
@@ -217,7 +221,7 @@ test("Blackroot uses a two-second hand pull, can be cancelled, and clears even w
   h.game.showPanel("journal");h.click('[data-vg-gather="cursed-spores"]');assert.match(h.game.status.waypoint.label,/Cursed fungus/);
   const node=NODES.find(n=>n.id===h.game.status.waypoint.nodeId);assert.equal(node.kind,"blight");assert.ok(M.nodeReady(h.state,node.id));h.walkNear(node);h.game.tick(.05);assert.equal(h.$("#vg-interact").textContent,"Root out");
   h.game.pick({type:"village-node",id:node.id});assert.equal(h.game.status.gathering.tool,"hands");h.game.tick(.7);assert.equal(M.blightClearCount(h.state,"green"),0);h.game.back();h.game.tick(3);assert.equal(M.blightClearCount(h.state,"green"),0,"cancelled pulling never clears a patch");
-  h.game.pick({type:"village-node",id:node.id});h.game.tick(1);assert.equal(h.game.status.gathering.progress,.5);h.state.paused=true;h.game.tick(20);assert.equal(h.game.status.gathering.progress,.5);h.state.paused=false;h.game.tick(1);
+  h.game.pick({type:"village-node",id:node.id});h.game.tick(1);assert.equal(h.game.status.gathering.progress,.5);h.state.paused=true;h.game.tick(20);assert.equal(h.game.status.gathering,null,"pause cancels a partial pull without a hidden job");assert.equal(M.blightClearCount(h.state,"green"),0);h.state.paused=false;h.game.tick(.05);h.game.pick({type:"village-node",id:node.id});h.game.tick(2);
   assert.equal(M.blightClearCount(h.state,"green"),1);assert.equal(h.state.village.materials["cursed-spores"],1);assert.equal(M.stepProgress(h.state,"blight-first-signs").have,1);h.game.tick(3);assert.equal(M.blightClearCount(h.state,"green"),1,"a finished pull cannot award again");
   const next=NODES.filter(n=>n.kind==="blight"&&n.district==="green"&&M.nodeReady(h.state,n.id)).sort((a,b)=>{const at=h.game.status.position;return Math.hypot(a.x-at.x,a.z-at.z)-Math.hypot(b.x-at.x,b.z-at.z);})[0];h.state.village.materials["cursed-spores"]=M.villageMaterialCapacity(h.state);h.walkNear(next);h.game.pick({type:"village-node",id:next.id});assert.ok(h.game.status.gathering,"full samples do not prevent clearing");h.game.tick(2);
   assert.equal(M.blightClearCount(h.state,"green"),2);assert.equal(h.state.village.materials["cursed-spores"],M.villageMaterialCapacity(h.state));assert.match(h.notices.at(-1),/sample satchel full/);assert.equal(M.stepProgress(h.state,"blight-first-signs").have,2);
@@ -304,7 +308,7 @@ test("resource tools require a nearby owner, finish once, and cancel safely", t 
   h.walkNear(node);h.game.pick({type:"village-node",id:node.id});assert.equal(h.game.status.gathering.tool,"axe");const at=h.game.status.position;
   h.key("keydown","d");h.game.tick(.25);h.key("keyup","d");assert.deepEqual(h.game.status.position,at,"a tool swing does not slide the character");
   h.game.back();assert.equal(h.game.status.gathering,null);h.game.tick(1);assert.equal(h.state.village.materials.logs??0,before,"cancelled tool swing grants nothing");assert.ok(M.nodeReady(h.state,node.id));
-  h.game.pick({type:"village-node",id:node.id});h.state.paused=true;h.game.tick(10);assert.equal(h.game.status.gathering.progress,0,"paused time cannot finish a swing");h.state.paused=false;h.game.tick(1);const after=h.state.village.materials.logs;assert.ok(after>before);h.game.tick(1);assert.equal(h.state.village.materials.logs,after,"completed swing grants once");
+  h.game.pick({type:"village-node",id:node.id});h.state.paused=true;h.game.tick(10);assert.equal(h.game.status.gathering,null,"pause cancels rather than leaving stale work behind");assert.equal(h.state.village.materials.logs??0,before);h.state.paused=false;h.game.tick(.05);h.game.pick({type:"village-node",id:node.id});h.game.tick(1);const after=h.state.village.materials.logs;assert.ok(after>before);h.game.tick(1);assert.equal(h.state.village.materials.logs,after,"completed swing grants once");
   const stone=NODES.find(n=>n.district==="green"&&n.material==="stone");h.walkNear(stone);h.game.pick({type:"village-node",id:stone.id});assert.equal(h.game.status.gathering.tool,"pickaxe");h.game.close();assert.equal(h.game.status.gathering,null);assert.equal(h.state.village.materials.stone??0,0,"leaving cancels mining without an award");
 });
 
@@ -356,24 +360,69 @@ test("Vesper can only greet the owner beside the tavern counter", t => {
   assert.equal(h.conversation?.id,"vesper");assert.equal(h.game.status.inside,"velvet-bat");
 });
 
-test("Cross at the village return path finishes the frame safely and allows repeated visits", t => {
+test("carriage Cross opens confirmation, held Cross cannot leave, and fresh Cross returns once", t => {
   const h=harness(t);h.game.open();h.game.back();h.walkNear({x:ARRIVAL.back[0],z:ARRIVAL.back[1]+1.4});h.game.tick(.05);
   assert.match(h.$('#vg-interact').textContent,/Farm/);
-  assert.doesNotThrow(()=>h.press(0),'returning during a controller frame cannot touch the removed actor');
+  h.pad.buttons[0].pressed=true;assert.doesNotThrow(()=>h.game.tick(.1));
+  assert.equal(h.game.active,true);assert.equal(h.game.status.returnPrompt,true);assert.equal(h.leaves,0);
+  for(let n=0;n<4;n++)h.game.tick(.1);assert.equal(h.game.active,true,"the opener's held Cross cannot confirm");
+  h.pad.buttons[0].pressed=false;h.game.tick(.1);h.press(0);
   assert.equal(h.game.active,false);assert.equal(h.scene.place,null);assert.equal(h.owner.enabled,true);assert.equal(h.leaves,1);
-  assert.doesNotThrow(()=>h.game.tick(.1));assert.equal(h.game.open(),true);assert.equal(h.game.active,true);h.game.close();assert.equal(h.leaves,2);
+  assert.doesNotThrow(()=>h.game.tick(.1));assert.equal(h.game.open(),true);h.game.close();assert.equal(h.leaves,2,"programmatic close stays immediate");
 });
 
+test("root Back and header Farm confirm travel, with a second Circle keeping the village playable", t => {
+  const h=harness(t);welcome(h);const at={...h.game.status.position};
+  h.press(1);assert.equal(h.game.status.returnPrompt,true);assert.equal(h.leaves,0);
+  h.press(1);assert.equal(h.game.status.returnPrompt,false);assert.equal(h.game.active,true);assert.deepEqual(h.game.status.position,at);
+  h.pad.axes[0]=.8;h.game.tick(.1);assert.notDeepEqual(h.game.status.position,at,"a fresh push after a neutral cancel walks without an extra neutral poll");h.pad.axes[0]=0;h.game.tick(.05);
+  h.click('#vg-home');assert.equal(h.game.status.returnPrompt,true);h.click('.village-return-cancel');assert.equal(h.game.active,true);
+  h.click('#vg-home');h.click('.village-return-confirm');assert.equal(h.game.active,false);assert.equal(h.leaves,1);
+});
 
-test("walking through the carriage threshold returns once without waiting for another button", t => {
+test("canceling the walking exit requires leaving and re-entering before another automatic prompt", t => {
   const h=harness(t);h.game.open();h.game.back();h.walkNear({x:ARRIVAL.back[0],z:ARRIVAL.back[1]+2});
-  h.pad.axes[1]=1;for(let i=0;i<40&&h.game.active;i++)h.game.tick(.1);h.pad.axes[1]=0;
-  assert.equal(h.game.active,false);assert.equal(h.leaves,1);assert.equal(h.scene.place,null);assert.equal(h.owner.enabled,true);
-  for(let i=0;i<5;i++)assert.doesNotThrow(()=>h.game.tick(.1));assert.equal(h.leaves,1);
+  h.pad.axes[1]=1;for(let n=0;n<40&&!h.game.status.returnPrompt;n++)h.game.tick(.1);
+  assert.equal(h.game.status.returnPrompt,true);assert.equal(h.game.status.returnPathArmed,false);assert.equal(h.leaves,0);
+  h.pad.axes[1]=0;h.press(1);assert.equal(h.game.status.returnPrompt,false);
+  h.pad.axes[1]=1;for(let n=0;n<8;n++)h.game.tick(.1);assert.equal(h.game.status.returnPrompt,false,"remaining at the exit does not reopen it");
+  h.pad.axes[1]=0;h.game.tick(.05);h.pad.axes[1]=-1;for(let n=0;n<40&&h.game.status.position.z<ARRIVAL.back[1]+2.5;n++)h.game.tick(.1);h.pad.axes[1]=0;h.game.tick(.05);assert.ok(h.game.status.position.z>ARRIVAL.back[1]+1.2,"the real owner can walk back from the carriage edge");assert.equal(h.game.status.returnPathArmed,true);
+  h.pad.axes[1]=1;for(let n=0;n<40&&!h.game.status.returnPrompt;n++)h.game.tick(.1);h.pad.axes[1]=0;assert.equal(h.game.status.returnPrompt,true);h.press(0);
+  assert.equal(h.game.active,false);assert.equal(h.leaves,1);for(let n=0;n<5;n++)assert.doesNotThrow(()=>h.game.tick(.1));
 });
 
 test("Options opens the six-action village hub and Cross chooses a real menu", t => {
   const h=harness(t);h.game.open();h.game.back();h.press(9);assert.equal(h.game.status.panel,"navigation");
   const cards=h.$('#vg-panel-body').querySelectorAll('button');assert.equal(cards.length,6);assert.ok(h.doc.activeElement===cards[0],"the first menu action receives focus");
   h.press(0);assert.equal(h.game.status.panel,"map");h.press(1);assert.equal(h.game.status.panel,"navigation","Circle returns to the menu that opened the map");h.press(1);assert.equal(h.game.status.panel,null);
+});
+
+test("closing a village menu from neutral does not swallow the next movement push", t => {
+  const h=harness(t);welcome(h);h.game.showPanel("navigation");h.game.tick(.1);const at={...h.game.status.position};
+  h.game.back();h.pad.axes[0]=.8;h.game.tick(.1);assert.notDeepEqual(h.game.status.position,at);
+  h.pad.axes[0]=0;h.game.tick(.1);h.game.showPanel("materials");h.game.tick(.1);h.click('#vg-panel-close');const next={...h.game.status.position};h.pad.axes[0]=-.8;h.game.tick(.1);assert.notDeepEqual(h.game.status.position,next);
+});
+
+test("gather sounds follow accepted work contacts, success and cancellation once", t => {
+  const h=harness(t);welcome(h);const node=NODES.find(n=>n.district==="green"&&n.material==="logs");
+  h.game.pick({type:"village-node",id:node.id});assert.deepEqual(h.gatherSounds,[],"a remote request is not a tool contact");
+  h.walkNear(node);h.game.pick({type:"village-node",id:node.id});const job=h.gatherSounds[0].job;
+  assert.deepEqual(h.gatherSounds.map(e=>e.phase),["start"]);h.game.tick(.29);assert.equal(h.gatherSounds.length,1);
+  h.game.tick(.02);h.game.tick(.5);h.game.tick(.2);
+  assert.deepEqual(h.gatherSounds.map(e=>e.phase),["start","strike","strike","complete"]);
+  assert.ok(h.gatherSounds.every(e=>e.id===node.id&&e.material==="logs"&&e.job===job));h.game.tick(3);assert.equal(h.gatherSounds.length,4);
+  const stone=NODES.find(n=>n.district==="green"&&n.material==="stone");h.walkNear(stone);h.game.pick({type:"village-node",id:stone.id});h.game.tick(.4);h.game.back();h.game.tick(3);
+  assert.deepEqual(h.gatherSounds.slice(4).map(e=>e.phase),["start","strike","cancel"]);assert.ok(h.gatherSounds[4].job>job);assert.equal(h.state.village.materials.stone??0,0);
+});
+
+test("pause and teardown cancel gather audio without stale success or reward", t => {
+  const h=harness(t,undefined,undefined,{onGatherSound(){throw Error("audio unavailable");}});welcome(h);const node=NODES.find(n=>n.district==="green"&&n.kind==="blight");h.walkNear(node);h.game.pick({type:"village-node",id:node.id});h.game.tick(.4);h.state.paused=true;assert.doesNotThrow(()=>h.game.tick(.1));
+  assert.equal(h.game.status.gathering,null);assert.deepEqual(h.gatherSounds.map(e=>e.phase),["start","strike","cancel"]);assert.equal(M.blightClearCount(h.state,"green"),0);
+  h.state.paused=false;h.game.tick(.1);h.game.pick({type:"village-node",id:node.id});h.game.close();assert.equal(h.gatherSounds.at(-1).phase,"cancel");assert.equal(M.blightClearCount(h.state,"green"),0);
+});
+
+test("quest completion receipts receive actual awarded events and wait behind interactions", t => {
+  const h=harness(t);welcome(h);const receipt=h.receipts.find(e=>e.quest==="invitation");assert.ok(receipt);assert.equal(receipt.type,"quest-done");assert.ok(Array.isArray(receipt.rewards));
+  const saved=JSON.stringify(M.saveData(h.state));h.game.onEvent(receipt);h.game.onEvent(receipt);assert.equal(JSON.stringify(M.saveData(h.state)),saved,"opening a receipt never grants its reward again");assert.equal(h.receipts.filter(e=>e.quest==="invitation").length,1);
+  h.meet("rowan");h.game.tick(.1);assert.equal(h.receiptTicks.at(-1).blocked,true);h.game.back();h.game.tick(.1);assert.equal(h.receiptTicks.at(-1).blocked,false);
 });
