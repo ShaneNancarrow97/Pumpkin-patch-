@@ -1,0 +1,32 @@
+{
+  "verifiedUTC": "2026-11-09T04:22:52.060392+00:00",
+  "artifactCommit": "17b8b245bf4fed5bd953ff8b9bc6c34689d94e0b",
+  "sourceCommit": "5852e0bc1aa10a8a9fb2134693b7bc9c88db6cd7",
+  "files": [
+    {
+      "name": "Pumpkin-Patch-Mothlight-Expansion.html",
+      "bytes": 60328415,
+      "sha256": "ab6ac3af9f1a2024693952d6fd987a7ad2473fad622785473022271f1c7ad1a6",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/17b8b245bf4fed5bd953ff8b9bc6c34689d94e0b/Pumpkin-Patch-Mothlight-Expansion.html",
+      "httpStatus": 200,
+      "verified": true
+    },
+    {
+      "name": "Pumpkin-Patch-Mothlight-Expansion.zip",
+      "bytes": 43350433,
+      "sha256": "86832680c65dfcba0f531f96d629e02983ee79e493b23beb73bd0487d55a72a9",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/17b8b245bf4fed5bd953ff8b9bc6c34689d94e0b/Pumpkin-Patch-Mothlight-Expansion.zip",
+      "httpStatus": 200,
+      "verified": true
+    },
+    {
+      "name": "Pumpkin-Patch-Mothlight-Expansion-Claude-Patch.zip",
+      "bytes": 23651272,
+      "sha256": "6465b03097c73c8b4da284340f61275c5ad0d70e59c49b4669b83a7b368995d2",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/17b8b245bf4fed5bd953ff8b9bc6c34689d94e0b/Pumpkin-Patch-Mothlight-Expansion-Claude-Patch.zip",
+      "httpStatus": 200,
+      "verified": true
+    }
+  ],
+  "complete": true
+}

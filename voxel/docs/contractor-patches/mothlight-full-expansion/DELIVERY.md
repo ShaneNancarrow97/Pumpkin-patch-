@@ -11,7 +11,7 @@ Game code commit: `367b037c1293c39342f81c56d13051ed6f7b5d88`. Base: `8048fd32e5d
 
 The ZIP has index.html and READ-ME.txt. CRC passes and its HTML is byte-identical to the standalone file. Everything needed for play is embedded. Export your existing save through Settings before changing origins, then import it in the new file/app. Migration is additive to save19; claimed levels remain honoured.
 
-Publication links and full public-byte verification are added in the next receipt. Downloads are on the separate `contractor/mothlight-full-expansion-html` branch, preserving all older release filenames. Android is built last, after game-file publication, and has its own addendum.
+The HTML, ZIP and Claude kit were published at artifact commit `17b8b245bf4fed5bd953ff8b9bc6c34689d94e0b`. Anonymous public downloads were streamed in full and matched each byte count and SHA256; [public receipt](verification/game-public-downloads.json). Downloads are on the separate `contractor/mothlight-full-expansion-html` branch, preserving all older release filenames. Android is built last, after game-file publication, and has its own addendum.
 
 ## Completed verification
 
@@ -26,3 +26,11 @@ Publication links and full public-byte verification are added in the next receip
 The fixtures explicitly declare prepared levels and legacy/branch prerequisites. The runner physically earns the new Copse chapters and performs guarded world/UI transactions; it does not claim an uninterrupted level1–20 campaign or campaign-duration measurement. Software Chromium timings are slow and are not physical-device FPS evidence. Viewport/mocked-pad tests do not certify actual Fold7, TV, Bluetooth or Android performance.
 
 Final corrections include readable cave lighting, collision-safe camera framing, unobstructed cave entry arches, actual four-seal aggregation, a stock-consuming festival delivery and accurate completed-quest/reward presentation. Earlier failed visual/fixture diagnostics remain preserved locally outside the shipping patch; the linked final evidence is authoritative.
+
+## Verified public downloads
+
+- [HTML](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/17b8b245bf4fed5bd953ff8b9bc6c34689d94e0b/Pumpkin-Patch-Mothlight-Expansion.html)
+- [Game ZIP](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/17b8b245bf4fed5bd953ff8b9bc6c34689d94e0b/Pumpkin-Patch-Mothlight-Expansion.zip)
+- [Claude kit](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/17b8b245bf4fed5bd953ff8b9bc6c34689d94e0b/Pumpkin-Patch-Mothlight-Expansion-Claude-Patch.zip)
+
+The complete two-patch kit targets source `5852e0bc1aa10a8a9fb2134693b7bc9c88db6cd7`; its replay commit `07050d8b6ddfab21d24244fa7f19dbb1358eeb0a` matches source tree `16fabd44225d8da11ce983f673569e7c1adefaea`, and rebuilds the identical HTML. The later publication/native receipt commits contain delivery information and the optional Android version update; they do not change game behavior.
