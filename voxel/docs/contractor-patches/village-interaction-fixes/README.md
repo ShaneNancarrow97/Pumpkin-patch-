@@ -48,4 +48,4 @@ Save format remains **18**. Existing quests, inventory, houses, costumes, econom
 - [Skyla’s generosity tiers](SKYLA-TIPS.md)
 - [Quest controller shortcut](QUEST-HINT.md)
 
-`DELIVERY.md` records exact artifact hashes, completed checks, downloadable files and patch order when publication finishes. Browser reports distinguish declared save/controller fixtures from earned gameplay and normal rendering from logic-only draw holding. Viewport/controller simulation does not certify physical Fold 7, TV, Bluetooth or device performance.
+The optional [Android addendum](NATIVE.md) and [checked downloads](DELIVERY.md) are complete. `DELIVERY.md` records exact artifact hashes, completed checks, downloadable files and patch order when publication finishes. Browser reports distinguish declared save/controller fixtures from earned gameplay and normal rendering from logic-only draw holding. Viewport/controller simulation does not certify physical Fold 7, TV, Bluetooth or device performance.

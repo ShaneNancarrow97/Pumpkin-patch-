@@ -38,3 +38,13 @@ Game source: `2cb6bad7cfd0be20775b86727e7242aab1867392`. Artifact commit: `3aa0d
 All three public downloads returned200 and their full byte counts/SHA256 match the originals; see verification/public-game-files.json. Kit:10,082,333bytes, SHA256 `eaa6bd99b9778795601e25dfcf295b2185d8158dd14661d7d0f32c04351a4f78`.
 
 The actual kit patch was applied with git am in the clean owned replay checkout from7bb7639. Its complete tree matches the game source tree `cbfa09f096cf2bf98b41c61eb869fbf593cccab3`; the rebuilt HTML matches the exact final c08029b9 hash. No base assets, private keys or generated native caches are placed in the kit.
+
+## Android publication and final handover
+
+[Download APK](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/79fa5dd3bb9e2a849362ab39aadd236a614a8c23/Pumpkin-Patch-Village-Interaction-Fixes.apk) · [Optional Android patch kit](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/79fa5dd3bb9e2a849362ab39aadd236a614a8c23/Pumpkin-Patch-Village-Interaction-Fixes-Android-Patch.zip). Artifact commit: `79fa5dd3bb9e2a849362ab39aadd236a614a8c23`.
+
+The APK is42,429,422bytes, SHA256 `d0d91bfab180dd32c6aada8fc048b7b792585cd07d93390a69550a4379210ceb`. The Android kit is39,348bytes, SHA256 `841e4babaad2687016f3104c054e0ffecace40d4d8037a45d14a294278d59cd3`. Both full public downloads returned200 and match these sizes/hashes; see verification/public-native-files.json. The APK is signed/package-checked but not physically device-tested. [NATIVE.md](NATIVE.md) records its exact limits and the17 native/extractor checks.
+
+Apply the game kit first, then the two patches in the optional Android kit. This actual sequence was replayed cleanly from7bb7639: game tree `cbfa09f096cf2bf98b41c61eb869fbf593cccab3`, then native source tree `a8a0e82a527bc78d977c55e2500bec7cb99ba7ca` (canonical commit `4929fb9590e621737a6fd26c6729361ef9a4482a`). The native add-on does not change any game source, assets or build script. Later publication-receipt commits add documentation only.
+
+Claude can also fetch `contractor/village-interaction-fixes` directly. All main parts are complete with separate handovers and a dependency matrix; the lead branch/check-out was not modified or merged. The artifact branch is `contractor/village-interaction-fixes-html`.
