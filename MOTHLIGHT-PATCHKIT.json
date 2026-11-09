@@ -1,0 +1,35 @@
+{
+  "createdUTC": "2026-11-09T04:21:29.568926+00:00",
+  "base": "8048fd32e5dbdf33b81d38c78c07b05ecef5be7f",
+  "codeCommit": "367b037c1293c39342f81c56d13051ed6f7b5d88",
+  "sourceCommit": "5852e0bc1aa10a8a9fb2134693b7bc9c88db6cd7",
+  "sourceTree": "16fabd44225d8da11ce983f673569e7c1adefaea",
+  "replayCommit": "07050d8b6ddfab21d24244fa7f19dbb1358eeb0a",
+  "replayTree": "16fabd44225d8da11ce983f673569e7c1adefaea",
+  "treeIdentical": true,
+  "rebuiltHTMLIdentical": true,
+  "htmlSHA256": "ab6ac3af9f1a2024693952d6fd987a7ad2473fad622785473022271f1c7ad1a6",
+  "htmlBytes": 60328415,
+  "saveVersion": 19,
+  "patches": [
+    {
+      "name": "0001-Build-Mothlight-s-connected-village-story-caves-and-.patch",
+      "sha256": "b1e0696e63a0a384def9573e72520989bc5fb7e71ec540eb427cd68bc9624ba1",
+      "bytes": 13973877
+    },
+    {
+      "name": "0002-Verify-the-complete-Mothlight-journey-and-document-C.patch",
+      "sha256": "05b47267baea0e93d2172853eb2508faf91ac60361ffb5984f5522d9693ade30",
+      "bytes": 17152693
+    }
+  ],
+  "verification": {
+    "cleanNodeTests": 1183,
+    "integrationChecks": 103,
+    "tvDialogueChecks": 4,
+    "standardSmokeLogicChecks": 54,
+    "normalPhotos": 21,
+    "errors": 0
+  },
+  "limits": "Declared prepared/branch fixtures, normal rendered photos and mocked standard controller/viewport checks. Managed Chrome blocks file URLs; exact bytes were tested on loopback. Physical Fold7/TV/Bluetooth/Android performance remains unverified."
+}
