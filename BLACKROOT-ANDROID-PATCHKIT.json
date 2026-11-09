@@ -1,0 +1,36 @@
+{
+  "sourceBranch": "contractor/village-menu-refinement",
+  "base": "f4ffe28d11b0eaa1dfd4c9903a523bb78d862eb2",
+  "nativeHead": "8ff2a40aa8846f05043035f0583385e9fc38d526",
+  "nativeTree": "5de532aa462bdb1c8d1f885a80adf1db1d3c1d2a",
+  "cleanReplay": {
+    "passed": true,
+    "tree": "5de532aa462bdb1c8d1f885a80adf1db1d3c1d2a"
+  },
+  "patches": {
+    "0001-Package-verified-Blackroot-game-for-offline-Android-.patch": {
+      "bytes": 255651,
+      "sha256": "fe7a6953c873e7ebadfc95f136eb8d1ce0a1aa75391b5508dc1f05e6ac80b200"
+    }
+  },
+  "htmlSha256": "e98d2ffc583051836aa21f33eccb04559ea413b4e4ebec31bd4cc8cd529abaaf",
+  "apk": {
+    "file": "Pumpkin-Patch-Village-Blackroot.apk",
+    "bytes": 42413038,
+    "sha256": "6865cf90dcc0cea68213f6ab45cc6c5d5e312dbead38dd1c2188cec84e963b0a"
+  },
+  "versionCode": 26110802,
+  "nativeChecks": {
+    "shellTests": 11,
+    "extractorTests": 6,
+    "signature": true,
+    "alignment": true,
+    "zipCrc": true,
+    "all276MediaHashes": true
+  },
+  "gamePublishedFirst": {
+    "artifactCommit": "5b4a79e1df6ff68e8cdf20ac136facd987db829d",
+    "allPublicHashesVerified": true
+  },
+  "hardwareTesting": "Unverified; no physical hardware/Bluetooth performance certification."
+}
