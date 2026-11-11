@@ -119,7 +119,7 @@ function blightChapters(s, tracked) {
 function journal(s, trackedQuestId) {
   const active = M.activeQuests(s), tracked = active.some(q => q.id === trackedQuestId) ? trackedQuestId : M.trackedQuest(s)?.id;
   const done = QUESTS.filter(q => s.village.quests[q.id]?.done), offered = [...M.offeredBy(s, "elowen"), ...M.offeredBy(s, "rowan")];
-  let html = intro("book", "Your next chapter", "Follow a story. Its next step stays on screen as you explore.", `${active.length} active · ${done.length} completed`);
+  let html = intro("book", "Around the Green", "Favours and friendships with your neighbours. Follow one to keep its next step on screen.", `${active.length} active · ${done.length} completed`);
   const followed = active.find(q => q.id === tracked), others = active.filter(q => q.id !== tracked);
   if (followed) html += questCard(s, followed, true);
   if (others.length) html += `<section class="vg-ch-other-stories"><h3>Other stories <span>${others.length}</span></h3>${others.map(q => {

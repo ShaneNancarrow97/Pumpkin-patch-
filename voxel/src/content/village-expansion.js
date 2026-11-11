@@ -1,5 +1,6 @@
 // The expansion uses world-unit positions once; cave rooms have local layers.
 import {CAST_CHAPTERS} from './village-expansion-cast.js';
+import {EXPANSION_STORY,STEP_VERBS} from './village-expansion-story.js';
 const K=1.5, p=(x,z)=>({x:x*K,z:z*K});
 const area=(id,name,level,needs,bounds,spawn,extra={})=>Object.freeze({id,name,level,needs,bounds:bounds.map(n=>n*K),spawn:{...p(...spawn)},layer:'surface',...extra});
 export const EXPANSION_AREAS=Object.freeze([
@@ -21,12 +22,15 @@ export const EXPANSION_GEMS=Object.freeze([
 ].map(Object.freeze));
 const chapters=[],activities=[];
 function chapter(id,title,who,areaId,level,needs,steps,reward){
- const ids=[];
+ const ids=[],story=EXPANSION_STORY[id]??{};
  for(const [i,step]of steps.entries()){
   const [type,name,rawX,rawZ,extra={}]=step, x=(id==='green-supper'||id.startsWith('festival-')||id==='lantern-night')?[53.4,52.8,54][i%3]:id.startsWith('moor-')&&who==='corvus'?150:id==='moor-collection'?149.5:rawX, z=(id==='green-supper'||id.startsWith('festival-')||id==='lantern-night')?[31.4,29.3,32.5][i%3]:rawZ,aid=`${id}:${i+1}`;ids.push(aid);
-  activities.push(Object.freeze({id:aid,name,type,area:areaId,who,chapter:id,order:i,...p(x,z),...extra}));
+  // The story file says what is there before the step (look), what doing it shows (found) and what a puzzle
+  // gives away (clue). A clue found by reading stays with its own step as what was found.
+  const told=story.steps?.[i]??{};
+  activities.push(Object.freeze({id:aid,name,type,area:areaId,who,chapter:id,order:i,...p(x,z),...extra,verb:told.verb??STEP_VERBS[type],look:told.look,found:told.found??(type==='reveal'?undefined:extra.text),clue:told.clue}));
  }
- chapters.push(Object.freeze({id,title,who,area:areaId,level,needs,activities:ids,reward}));
+ chapters.push(Object.freeze({id,title,who,area:areaId,level,needs,activities:ids,reward,blurb:story.blurb,intro:story.intro,done:story.done,change:story.change}));
 }
 chapter('green-research','The Ink Beneath the Roots','elowen','green',3,'legacy:invitation',[
  ['inspect','Read the moth-marked page',49.6,20,{text:'The roots repeat the same three marks: moth, moon, lantern.'}],

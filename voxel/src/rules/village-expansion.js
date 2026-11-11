@@ -10,6 +10,9 @@ import {availableFood} from './cooking-sales.js';
 import {RECIPE_BY_ID} from '../content/cooking.js';
 import {VILLAGE_DECOR_BY_ID} from '../content/village-decor.js';
 import {MATERIAL_BY_ID} from '../content/village.js';
+import {QUEST_BY_ID} from '../content/village-quests.js';
+import {FOLK_BY_ID,HOST_BY_ID} from '../content/village-folk.js';
+import {EFFECT_BENEFITS} from '../content/village-expansion-story.js';
 import {villageMaterialCapacity} from './village-upgrades.js';
 import {freshExpansionEconomy,restoreExpansionEconomy,actExpansionEconomy} from './village-expansion-economy.js';
 import {freshExpansionCompanions,restoreExpansionCompanions,recordCompanionGather} from './village-expansion-companions.js';
@@ -62,6 +65,16 @@ function chapterStatus(s,c){
 }
 const currentId=(s,c)=>c.activities.find(id=>!state(s).completed[id])??null;
 const metric=(s,id)=>id==='cook'?(s.kitchen?.ledger?.batchesCooked??0):id==='harvest'?(s.harvested??0):id==='home-cook'?(s.progression?.homeActivities?.cook??0):id==='sell'?(s.sold??0):0;
+// A puzzle's buttons never sit in the order of its answer: the same shuffle every time for one puzzle, turned
+// once more if chance happens to deal the solution.
+function shownChoices(a){
+ const list=[...(a.choices??[])];if(list.length<2)return list;
+ let n=2166136261;for(const ch of a.id)n=Math.imul(n^ch.charCodeAt(0),16777619)>>>0;
+ for(let i=list.length-1;i>0;i--){n=Math.imul(n^n>>>15,2246822519)>>>0;n=Math.imul(n^n>>>13,3266489917)>>>0;const j=(n^n>>>16)%(i+1);[list[i],list[j]]=[list[j],list[i]];}
+ const answer=Array.isArray(a.solution)?a.solution:[];
+ if(list.slice(0,answer.length).every((v,i)=>v===answer[i]))list.push(list.shift());
+ return list;
+}
 function freshPuzzle(a){return{selected:[],rotations:Object.fromEntries((a.components??[]).map(c=>[c.id,1])),assignments:{},hints:0,attempts:0};}
 export function expansionActivityInfo(s,id){
  const e=state(s),vein=EXPANSION_VEIN_BY_ID[id];
@@ -70,7 +83,7 @@ export function expansionActivityInfo(s,id){
  const costRows=[...(a.cost?.pumpkins?[{id:'pumpkins',need:a.cost.pumpkins,have:stockAvailable(s)}]:[]),...(a.cost?.food?[{id:'cooked-portions',need:a.cost.food,have:foodPortions(s)}]:[]),...(a.cost?.coins?[{id:'coins',need:a.cost.coins,have:s.coins}]:[]),...Object.entries(a.cost?.materials??{}).map(([id,need])=>({id,need,have:s.village.materials[id]??0})),...Object.entries(a.cost?.gems??{}).map(([id,need])=>({id,need,have:e.gems[id]??0}))],affordable=costRows.every(r=>r.have>=r.need);
  const baseline=e.baselines[id],have=a.type==='farm'?Math.max(0,metric(s,a.metric)-(baseline??metric(s,a.metric))):0;
  let reason=done?'Already completed.':available&&!affordable?'Bring '+costRows.filter(r=>r.have<r.need).map(r=>`${r.need} ${r.id.replaceAll('-',' ')} (${r.have} held)`).join(' · '):!available?status==='locked'?'Follow the earlier chapter or farm level first.':'Finish the current chapter step first.':a.type==='farm'&&have<(a.amount??1)?`Head home: ${a.name} (${Math.min(have,a.amount)}/${a.amount}).`:'Ready';
- return{...a,giver:a.who,available,visible:!!expansionAreaInfo(s,a.area)?.open&&(available||done&&['restore','reveal'].includes(a.type)),costRows,affordable,canAct:available&&!s.paused&&affordable&&(a.type!=='farm'||baseline===undefined||have>=a.amount),done,complete:done,reason,description:a.text??a.name,progress:done?1:a.type==='farm'?Math.min(1,have/(a.amount??1)):p.selected.length/Math.max(1,a.solution?.length??1),have,need:a.amount??1,started:baseline!==undefined,options:(a.choices??[]).map((choice,i)=>({id:choice,label:choice,index:i})),selected:[...p.selected],rotations:{...p.rotations},assignments:{...p.assignments},hints:p.hints,attempts:p.attempts};
+ return{...a,giver:a.who,available,visible:!!expansionAreaInfo(s,a.area)?.open&&(available||done&&['restore','reveal'].includes(a.type)),costRows,affordable,canAct:available&&!s.paused&&affordable&&(a.type!=='farm'||baseline===undefined||have>=a.amount),done,complete:done,reason,description:a.look??a.text??a.name,step:(a.order??0)+1,steps:c.activities.length,chapterTitle:c.title,progress:done?1:a.type==='farm'?Math.min(1,have/(a.amount??1)):p.selected.length/Math.max(1,a.solution?.length??1),have,need:a.amount??1,started:baseline!==undefined,options:shownChoices(a).map(choice=>({id:choice,label:choice,index:a.choices.indexOf(choice)})),selected:[...p.selected],rotations:{...p.rotations},assignments:{...p.assignments},hints:p.hints,attempts:p.attempts};
 }
 function rewardRows(r={}){
  const rows=[];if(r.coins)rows.push({kind:'coins',amount:r.coins,label:`£${r.coins} bonus coins`});
@@ -79,10 +92,26 @@ function rewardRows(r={}){
  for(const id of r.recipes??[])rows.push({kind:'recipe',id,label:id.replaceAll('-',' ')+' recipe'});
  for(const[id,amount]of Object.entries(r.villageDecor??{}))rows.push({kind:'village-decor',id,amount,label:`${amount} ${id.replaceAll('-',' ')}`});
  for(const[id,amount]of Object.entries(r.estateDecor??{}))rows.push({kind:'estate-decor',id,amount,label:`${amount} ${id.replaceAll('-',' ')}`});
- for(const id of r.effects??[])rows.push({kind:'capability',id,label:id.replaceAll('-',' ')});
+ for(const id of r.effects??[])if(EFFECT_BENEFITS[id])rows.push({kind:'benefit',id,label:EFFECT_BENEFITS[id],name:EFFECT_BENEFITS[id]});
  return rows;
 }
-export function expansionJournal(s){return CHAPTERS().map(c=>{const status=chapterStatus(s,c),next=currentId(s,c),done=c.activities.filter(id=>state(s).completed[id]).length;return{...c,giver:c.who,status,description:c.blurb??`${c.title} · ${EXPANSION_AREA_BY_ID[c.area]?.name}`,next:next?expansionActivityInfo(s,next):null,rewards:rewardRows(c.reward),progress:done/c.activities.length,completed:done,need:c.activities.length,reason:status==='locked'?expansionAreaInfo(s,c.area)?.reason??'Meet this neighbour and finish earlier chapters.':null};});}
+const personName=id=>(FOLK_BY_ID[id]??HOST_BY_ID[id])?.short??(FOLK_BY_ID[id]??HOST_BY_ID[id])?.name??id;
+// The first thing still standing between the player and a chapter, in words they can act on.
+export function expansionChapterRequirement(s,c){
+ const need=[].concat(c.needs??[]).find(id=>!requirementMet(s,id));
+ if(need){
+  if(need.startsWith('legacy:'))return`Finish “${QUEST_BY_ID[need.slice(7)]?.title??need.slice(7).replaceAll('-',' ')}” with ${personName(QUEST_BY_ID[need.slice(7)]?.giver??'elowen')} first.`;
+  if(need==='four-seals')return'Restore all four districts first: the Green, the Copse, the Quarry and the Moor.';
+  const from=CHAPTERS().find(x=>x.id===need||x.reward?.effects?.includes(need));return`Finish “${from?.title??need.replaceAll('-',' ')}” first.`;
+ }
+ if(patchLevel(s).level<c.level)return`Reach farm level ${c.level}.`;
+ const area=expansionAreaInfo(s,c.area);if(!area?.open)return area?.reason??'This part of Mothlight is still closed.';
+ if(c.rank){const xp=s.village?.friends?.[c.who]?.xp??0,threshold=[0,0,40,100,180,280,400,540,700,880,1080][c.rank]??0;if(xp<threshold)return`Grow closer to ${personName(c.who)}: friendship ${c.rank}.`;}
+ return null;
+}
+export function expansionJournal(s){return CHAPTERS().map(c=>{const status=chapterStatus(s,c),next=currentId(s,c),e=state(s),done=c.activities.filter(id=>e.completed[id]).length;
+ const steps=c.activities.map(id=>{const a=activityBy(id);return{id,name:a.name,verb:a.verb,type:a.type,area:a.area,done:!!e.completed[id],current:status!=='locked'&&status!=='done'&&id===next};});
+ return{...c,giver:c.who,giverName:personName(c.who),areaName:EXPANSION_AREA_BY_ID[c.area]?.name,status,description:c.blurb??`${c.title} · ${EXPANSION_AREA_BY_ID[c.area]?.name}`,next:next?expansionActivityInfo(s,next):null,steps,rewards:rewardRows(c.reward),progress:done/c.activities.length,completed:done,need:c.activities.length,reason:status==='locked'?expansionChapterRequirement(s,c)??'Finish the earlier chapters first.':null};});}
 export function villageExpansionStatus(s){return{area:state(s).area,areas:EXPANSION_AREAS.map(a=>expansionAreaInfo(s,a.id)),chapters:expansionJournal(s),effects:[...state(s).effects],gems:EXPANSION_GEMS.map(g=>({...g,amount:state(s).gems[g.id]??0})),tracked:state(s).tracked};}
 export const expansionStatus=villageExpansionStatus;
 function near(a,action){const p=action.position??action.context??action;return p.area!==undefined&&p.area!==a.area?false:![p.x,p.z].every(finite)||Math.hypot(a.x-p.x,a.z-p.z)<=5;}

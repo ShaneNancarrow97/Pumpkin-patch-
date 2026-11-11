@@ -69,10 +69,11 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
     if (!session && restoreFocus && opener?.isConnected && available(opener)) opener.focus?.({ preventScroll: true });
   }
   function updatePerson() {
-    const person = speaker === session.id ? session : FOLK_BY_ID[speaker] ?? HOST_BY_ID[speaker] ?? { name: speaker };
+    const narrating = speaker === "narrator"; panel.dataset.dialogueVoice = narrating ? "narrator" : "person";
+    const person = narrating ? { name: session.heading ?? "Mothlight", role: "What happens" } : speaker === session.id ? session : FOLK_BY_ID[speaker] ?? HOST_BY_ID[speaker] ?? { name: speaker };
     const art = query(".village-person-art"), url = portrait(speaker); art.replaceChildren();
     if (url) { const image = document.createElement("img"); image.src = url; image.alt = ""; art.append(image); }
-    else art.textContent = person.name?.[0] ?? "M";
+    else art.textContent = narrating ? "✦" : person.name?.[0] ?? "M";
     query("h2").textContent = person.name ?? "A neighbour"; query(".village-dialogue-role").textContent = person.role ?? "Mothlight Village";
     const heading = query(".village-dialogue-heading"); heading.hidden = !session.heading; heading.textContent = session.heading ?? "";
     const bond = query(".village-dialogue-bond"), friend = speaker === session.id ? session.friendship : null; bond.replaceChildren(); bond.hidden = !friend;
