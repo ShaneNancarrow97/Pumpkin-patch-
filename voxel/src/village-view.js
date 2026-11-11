@@ -18,6 +18,7 @@ import { FIXTURES, NODES, PLAN_SCALE } from "./content/village.js";
 import { TOUR } from "./content/village-tour.js";
 export { TOUR } from "./content/village-tour.js";
 import { createVillageLife } from "./village-life.js";
+import { createHallLife } from "./village-hall-life.js";
 import { createVillageAtmosphere } from "./village-atmosphere.js";
 import { createCursedSporeField } from "./village-blight.js";
 import { createVillageResourceLayer } from "./village-resource-layer.js";
@@ -34,7 +35,7 @@ import { expansionAreaInfo } from './rules/village-expansion.js';
 import { moveVillageWalker, villageCellFree, villageCameraBlockers, villageCameraReach } from './rules/village-navigation.js';
 import { advanceExpansionCompanion } from './rules/village-expansion-companions.js';
 import { isCaveArea, caveCellFree, constrainCaveCamera, CAVE_CAMERA_PRESET } from './village-expansion-spatial.js';
-import { OUTSIDE_VIEW, outsideLookLift } from './village-camera.js';
+import { OUTSIDE_VIEW, HALL_VIEW, outsideLookLift } from './village-camera.js';
 import { visibleVillagePick } from "./village-sprite-math.js";
 
 const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z), K = PLAN_SCALE;
@@ -207,9 +208,11 @@ export function createVillageView(canvas, state, hooks = {}) {
     const plan = INSIDES[id]; if(!plan)return null;const v = new Voxels(); plan.build(frame(v, 0, 0, "south", 0));
     const built = v.build({ glow: 1.6 }), group = new THREE.Group(); group.add(built); group.scale.setScalar(K); group.position.copy(INSIDE); group.visible = false; scene.add(group);
     const lamps = (built.userData.marks.lamp ?? []).map(([x, y, z]) => hallPoint(x, z, y));
+    // Fires, candle flames, steam and drifting motes, wherever the hall's builder marked them.
+    const stir = createHallLife(built.userData.marks); group.add(stir.group);
     let host = null;
     if (plan.host) host = hallHost(plan);
-    const entry = { id, plan, group, lamps, host }; insides.set(id, entry); return entry;
+    const entry = { id, plan, group, lamps, host, stir }; insides.set(id, entry); return entry;
   }
   function hallHost(plan) {
     const host = makeResident(plan.host, { style: folk.style });
@@ -256,7 +259,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   // well above the rooftops. The arm shortens rather than pass through a building.
   const outsideRig = createFollowCameraRig({ pitch: OUTSIDE_VIEW.pitch, distance: OUTSIDE_VIEW.distance, minDistance: 4.8, maxDistance: 14, minPitch: OUTSIDE_VIEW.minPitch, maxPitch: OUTSIDE_VIEW.maxPitch });
   const blockers = villageCameraBlockers(); let arm = 1;
-  const hallRig = createFollowCameraRig({ pitch: THREE.MathUtils.degToRad(34), distance: 11, minDistance: 9, maxDistance: 17, yawLimit: .8 });
+  const hallRig = createFollowCameraRig({ pitch: HALL_VIEW.pitch, distance: HALL_VIEW.distance, minDistance: 9, maxDistance: 17, yawLimit: .8, minPitch: HALL_VIEW.minPitch, maxPitch: HALL_VIEW.maxPitch });
   const caveRig = createFollowCameraRig(CAVE_CAMERA_PRESET);
   const activeRig = () => inside ? hallRig : expansionWorld.active ? caveRig : outsideRig;
   let following = false;
@@ -269,7 +272,8 @@ export function createVillageView(canvas, state, hooks = {}) {
     controls.target.set(pose.target.x, pose.target.y, pose.target.z);
     camera.position.set(pose.position.x, pose.position.y, pose.position.z);
     if(expansionWorld.active){const bounded=constrainCaveCamera(expansionWorld.active,pose.target,pose.position);camera.position.set(bounded.x,bounded.y,bounded.z);}
-    if (inside || expansionWorld.active) { camera.lookAt(controls.target); camera.updateMatrixWorld(); return; }
+    if (inside) { camera.lookAt(pose.target.x, pose.target.y + HALL_VIEW.lift, pose.target.z); camera.updateMatrixWorld(); return; }
+    if (expansionWorld.active) { camera.lookAt(controls.target); camera.updateMatrixWorld(); return; }
     // The clear length of the arm: in at once, out gently, so a corner never pops the picture.
     const clear = Math.max(OUTSIDE_VIEW.nearest / rig.distance, villageCameraReach({ x: pose.target.x, z: -pose.target.z }, { x: pose.position.x, z: -pose.position.z }, blockers));
     arm = clear < arm || !dt ? clear : Math.min(clear, arm + (clear - arm) * (1 - Math.exp(-dt * 5)));
@@ -455,6 +459,7 @@ export function createVillageView(canvas, state, hooks = {}) {
       placeLights(); folk.tick(dt, time, camera, { paused: !!inside || !!tour || !!hooks.residentsPaused?.() || !!state.paused, reducedMotion: reducedMotion() });
       if (!inside&&!expansionWorld.active) { atmosphere?.tick(dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full" }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
       else resetVillageVisibility(villageGreen);
+      inside?.stir?.tick(time, { still: reducedMotion() });
       if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera, following && !inside&&!expansionWorld.active ? followSubject : null);
       blight.tick(dt, camera.position, !inside&&!expansionWorld.active, reducedMotion(), !!state.paused);
       resources.tick(dt,camera.position,!inside&&!expansionWorld.active);shopMarkers.tick(state.paused?0:dt,camera,!inside&&!expansionWorld.active,reducedMotion());

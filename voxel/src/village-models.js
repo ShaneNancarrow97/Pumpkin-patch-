@@ -717,7 +717,7 @@ export function velvetBatHall(f, r = seeded(173)) {
   hallFinery(f,W,D,H,0x5a203b);
   const stone = [0x3a3444, 0x433c4e, 0x352f40, 0x4a4256], trim = [0x6a6276, 0x5e566a], oak = [0x3a2418, 0x45291b, 0x2f1d14, 0x50301f];
   const velvet = 0x7a1424, plush = 0x951c30, dark = 0x22140e, iron = 0x1a1418, glass = 0x3a3070;
-  const candle = (x, y, z, lamp = false) => { f.block(x, y, z, .1, .26, .1, 0xf0e6d8); f.block(x, y + .26, z, .06, .1, .06, 0xffb347, true); if (lamp) f.mark?.("lamp", x, y + .5, z); };
+  const candle = (x, y, z, lamp = false) => { f.block(x, y, z, .1, .26, .1, 0xf0e6d8); f.block(x, y + .26, z, .04, .05, .04, 0xffb347, true); f.mark?.("candle", x, y + .27, z); if (lamp) f.mark?.("lamp", x, y + .5, z); };
   // Floor: oak boards in staggered rows; a red runner with gold edges from the door to the bar; the door's step.
   for (let k = 0, z = -D + .25; z < 0; z += .5, k++) for (let x = -hw - (k % 2); x < hw; x += 2) { const x0 = Math.max(-hw, x), x1 = Math.min(hw, x + 2); if (x1 - x0 > .05) f.block((x0 + x1) / 2, 0, z, x1 - x0 - .03, .12, .47, vary(pick(oak, r), .05, r)); }
   f.block(0, .12, -4.4, 1.7, .02, 8.6, velvet); for (const s of [-1, 1]) f.block(s * .82, .13, -4.4, .07, .02, 8.6, C.gold);
@@ -754,7 +754,8 @@ export function velvetBatHall(f, r = seeded(173)) {
   f.block(hx, 0, -6, 1, H, 3.2, stone[3]); for (let y = 0, k = 0; y < H; y += .42, k++) f.block(hx + .5, y, -6, .04, .4, 3.2, vary(pick(stone, r), .06, r));
   f.block(hx + .53, .2, -6, .04, 1.7, 2.1, 0x0a0608); f.block(hx + .9, 0, -6, .8, .14, 3.2, trim[0]);
   for (const dz of [-.35, .35]) f.block(hx + .6, .3, -6 + dz, .5, .2, .7, 0x3a2418);
-  for (const [dz, h, c] of [[-.4, .6, 0xff8a2a], [0, .85, 0xffc04a], [.38, .55, 0xff6a1a], [-.15, .45, 0xffe08a], [.2, .7, 0xff9a3a]]) f.block(hx + .6, .48, -6 + dz, .14, h, .22, c, true);
+  for (const [dz, h, c] of [[-.4, .16, 0xff8a2a], [0, .2, 0xffc04a], [.38, .14, 0xff6a1a]]) f.block(hx + .6, .48, -6 + dz, .14, h, .22, c, true);
+  f.mark?.("fire", hx + .62, .5, -6.3); f.mark?.("fire", hx + .62, .5, -5.7); f.mark?.("motes", -3.6, 2.6, -6); f.mark?.("sparkle", 3.5, 2.6, -11.5); f.mark?.("sparkle", -3.5, 2.6, -11.5);
   f.mark?.("lamp", hx + 1.4, 1.1, -6);
   f.block(hx + .7, 2.15, -6, .5, .2, 3.6, dark); candle(hx + .75, 2.35, -7.4); candle(hx + .75, 2.35, -4.6);
   f.block(hx + .75, 2.35, -6.5, .26, .24, .26, 0xe8e0cc); f.block(hx + .89, 2.45, -6.56, .02, .06, .06, 0x1a1418); f.block(hx + .89, 2.45, -6.44, .02, .06, .06, 0x1a1418);
@@ -803,7 +804,7 @@ function hallFinery(f, w, d, h, accent = C.plum) {
   for(let x=-hw+.4;x<hw-.3;x+=.7)f.block(x,h-.32,-d+.22,.16,.1,.08,C.gold);
 }
 
-function hallShell(f, r, { w, d, h = 4.8, boards, wall, beam = C.beam, doorLamps = false }) {
+export function hallShell(f, r, { w, d, h = 4.8, boards, wall, beam = C.beam, doorLamps = false }) {
   const hw = w / 2;
   hallFinery(f,w,d,h,wall===0x9a86a8?0x5c355e:0x4f392c);
   for (let k = 0, z = -d + .25; z < 0; z += .5, k++) for (let x = -hw - (k % 2); x < hw; x += 2) { const x0 = Math.max(-hw, x), x1 = Math.min(hw, x + 2); if (x1 - x0 > .05) f.block((x0 + x1) / 2, 0, z, x1 - x0 - .03, .12, .47, vary(pick(boards, r), .05, r)); }
@@ -816,7 +817,7 @@ function hallShell(f, r, { w, d, h = 4.8, boards, wall, beam = C.beam, doorLamps
   f.block(0, 0, .3, 2.2, .1, .6, C.stone[1]);
 }
 // Books packed along a shelf from x0 to x1 at height y, their spines facing +z (or leaning now and then).
-function bookRow(f, r, x0, x1, y, z, depth = .3) {
+export function bookRow(f, r, x0, x1, y, z, depth = .3) {
   const spines = [0x6a2f58, 0x2a5a6a, 0xc8a03a, 0x8a1a2a, 0x2a3a6a, 0x5a6a2a, 0x6a4028, 0x3a2a4a, 0xa85a2a];
   for (let x = x0; x < x1 - .06;) { const t = .08 + r() * .07, h = .3 + r() * .2; if (r() < .06) { x += .12; continue; } f.block(x + t / 2, y, z, t - .01, h, depth, vary(pick(spines, r), .08, r)); if (r() < .3) f.block(x + t / 2, y + h * .7, z + depth / 2 + .005, t - .03, .03, .01, C.gold); x += t; }
 }
@@ -841,7 +842,7 @@ export function elowenLibrary(f, r = seeded(177)) {
   // The writing desk: the almanac open under two candles, a quill and ink, a globe, and books stacked about.
   { const x = -1, z = -4.4; f.block(x, 0, z, 2.2, .78, 1.1, dark); f.block(x, .78, z, 2.4, .08, 1.2, 0x2a1810); for (const sx of [-1, 1]) f.block(x + sx * .9, 0, z, .3, .78, 1, 0x2a1810);
     f.block(x, .86, z + .1, .9, .05, .6, 0xe8dcc0, true); f.block(x, .88, z + .1, .04, .04, .62, 0x6a2f58); for (let i = 0; i < 4; i++) f.block(x - .3 + (i % 2) * .6, .9, z - .05 + (i >> 1) * .25, .3, .01, .02, 0x6a5a7a);
-    for (const dx of [-.95, .95]) { f.block(x + dx, .86, z - .3, .1, .3, .1, 0xf0e6d8); f.block(x + dx, 1.16, z - .3, .06, .1, .06, 0xffb347, true); }
+    for (const dx of [-.95, .95]) { f.block(x + dx, .86, z - .3, .1, .3, .1, 0xf0e6d8); f.block(x + dx, 1.16, z - .3, .04, .05, .04, 0xffb347, true); f.mark?.("candle", x + dx, 1.17, z - .3); }
     f.mark?.("lamp", x, 1.6, z); f.block(x + .7, .86, z + .3, .12, .14, .12, 0x1a1a2a); f.block(x + .78, .95, z + .28, .02, .4, .02, 0xe8e0d0);
     f.block(x - .75, .86, z + .25, .08, .3, .08, C.brass); f.block(x - .75, 1.16, z + .25, .36, .36, .36, 0x3a6a8a); f.block(x - .75, 1.2, z + .25, .3, .28, .38, 0x6a8a4a);
     for (const [dx, dz, n] of [[1.6, .4, 5], [-1.9, .7, 3], [1.4, -.6, 4]]) for (let k = 0; k < n; k++) f.block(x + dx + (r() - .5) * .08, k * .12, z + dz, .5, .11, .38, vary(pick([0x6a2f58, 0x2a5a6a, 0xc8a03a, 0x8a1a2a], r), .08, r)); }
@@ -851,10 +852,10 @@ export function elowenLibrary(f, r = seeded(177)) {
     f.block(x, .9, z - .8, .6, .5, .6, C.iron); f.block(x, 1.4, z - .8, .1, .5, .1, C.iron); f.block(x, 1.9, z - .8, .8, .08, .08, C.iron); f.block(x, .9, z + .3, .7, .02, .6, 0x8a4a2a); f.block(x, .92, z + .3, .5, .02, .4, 0x6a3a1a);
     for (const [dz, c] of [[.9, 0xc8302a], [1.1, 0x2a5a8a], [1.25, 0xd8b03a]]) f.block(x - .3, .9, z + dz, .14, .16, .14, c); for (let k = 0; k < 6; k++) f.block(x + .25, .9 + k * .03, z + 1, .4, .03, .5, 0xf0e8d4); }
   // A little iron stove with a kettle and its pipe, and herbs and dried flowers hung from the beam above it.
-  { const x = hw - .9, z = -6.7; f.block(x, 0, z, .9, .9, .9, C.iron); f.block(x - .46, .3, z, .02, .3, .4, 0xff8a3a, true); f.block(x, .9, z, 1, .08, 1, 0x1a1a22); f.block(x + .2, .98, z, .14, H - 1, .14, C.iron); f.block(x - .2, .98, z, .3, .24, .3, 0x6a6a7a); f.block(x - .38, 1.1, z, .14, .04, .04, 0x6a6a7a); f.mark?.("lamp", x - .6, .8, z); }
+  { const x = hw - .9, z = -6.7; f.block(x, 0, z, .9, .9, .9, C.iron); f.block(x - .46, .3, z, .02, .3, .4, 0xff8a3a, true); f.block(x, .9, z, 1, .08, 1, 0x1a1a22); f.block(x + .2, .98, z, .14, H - 1, .14, C.iron); f.block(x - .2, .98, z, .3, .24, .3, 0x6a6a7a); f.block(x - .38, 1.1, z, .14, .04, .04, 0x6a6a7a); f.mark?.("lamp", x - .6, .8, z); f.mark?.("fire", x - .5, .32, z); f.mark?.("steam", x - .4, 1.16, z); }
   for (let i = 0; i < 9; i++) { const x = hw - 2.6 + i * .28, z = -6.1, len = .5 + r() * .5; f.block(x, H - len - .05, z, .02, len, .02, 0x5a4a3a); f.block(x, H - len - .35, z, .16, .32, .12, pick([0x5a7a3a, 0x8a6a9a, 0xb89a4a, 0x7a3a4a], r)); }
   // The moth jar: a glass lantern hung from a beam with moths glowing in it, and moths resting on the walls.
-  { const x = 1.6, z = -3.4, y = 3.2; f.block(x, y + .6, z, .03, H - y - .6, .03, C.iron); f.block(x, y + .5, z, .5, .1, .5, C.brass); f.block(x, y, z, .44, .5, .44, 0x9a9ad0); for (let i = 0; i < 6; i++) f.block(x + (r() - .5) * .3, y + .08 + r() * .34, z + (r() - .5) * .3, .08, .04, .06, 0xfff0b0, true); f.mark?.("lamp", x, y, z); }
+  { const x = 1.6, z = -3.4, y = 3.2; f.block(x, y + .6, z, .03, H - y - .6, .03, C.iron); f.block(x, y + .5, z, .5, .1, .5, C.brass); f.block(x, y, z, .44, .5, .44, 0x9a9ad0); for (let i = 0; i < 6; i++) f.block(x + (r() - .5) * .3, y + .08 + r() * .34, z + (r() - .5) * .3, .08, .04, .06, 0xfff0b0, true); f.mark?.("lamp", x, y, z); f.mark?.("motes", x, y - .2, z); f.mark?.("motes", -4.3, 2.6, -4.5); }
   for (let i = 0; i < 16; i++) { const left = i % 2, x = left ? -hw + .15 : hw - .15, z = -1 - r() * 7, y = 1.2 + r() * 3; f.block(x, y, z, .02, .06, .1, C.moth); f.block(x, y, z - .07, .02, .1, .07, C.moth); f.block(x, y, z + .07, .02, .1, .07, C.moth); }
   // Ferns in pots by the door.
   for (const sx of [-1, 1]) { const x = sx * (hw - .7), z = -.8; f.block(x, 0, z, .5, .45, .5, 0xa05a3a); for (let i = 0; i < 7; i++) { const a = i / 7 * Math.PI * 2; f.block(x + Math.cos(a) * .25, .45 + (i % 3) * .1, z + Math.sin(a) * .25, .28, .1, .1, vary(0x4a7a3a, .1, r)); } }
@@ -889,7 +890,7 @@ export function rowanWorkshop(f, r = seeded(179)) {
   for (const x of [1.3, 2.9]) { for (const s of [-1, 1]) f.block(x, 0, -4.3 + s * .4, .08, .76, .08, C.wood); f.block(x, .76, -4.3, .12, .06, 1, C.wood); } f.block(2.1, .82, -4.3, 2, .1, 1.1, 0x5a7a5a); for (const dx of [-.5, .5]) f.block(2.1 + dx, .92, -4.3, .7, .02, .8, 0x4a6a4a); f.block(2.9, .94, -4.1, .12, .04, .12, C.brass);
   { const x = .2, z = -2.6; for (const [a, b] of [[-.25, -.25], [.25, -.25], [-.25, .25], [.25, .25]]) f.block(x + a, 0, z + b, .07, .5, .07, C.woodLight); f.block(x, .5, z + .25, .56, .06, .06, C.woodLight); f.block(x, .5, z - .25, .56, .06, .06, C.woodLight); for (const a of [-.25, .25]) f.block(x + a, .5, z - .25, .07, .8, .07, C.woodLight); f.block(x, 1.2, z - .25, .56, .1, .06, C.woodLight); }
   // The potbelly stove in the back corner, its door aglow, a kettle on top and the pipe up through the roof.
-  { const x = hw - .9, z = -7.9; f.block(x, 0, z, .7, .3, .7, C.iron); f.block(x, .3, z, .9, .8, .9, C.iron); f.block(x - .46, .5, z, .02, .35, .35, 0xff7a2a, true); f.block(x, 1.1, z, .7, .12, .7, C.iron); f.block(x, 1.22, z, .18, H - 1.2, .18, C.iron); f.block(x - .1, 1.22, z + .2, .28, .22, .28, 0x6a6a7a); f.mark?.("lamp", x - .7, .7, z); }
+  { const x = hw - .9, z = -7.9; f.block(x, 0, z, .7, .3, .7, C.iron); f.block(x, .3, z, .9, .8, .9, C.iron); f.block(x - .46, .5, z, .02, .35, .35, 0xff7a2a, true); f.block(x, 1.1, z, .7, .12, .7, C.iron); f.block(x, 1.22, z, .18, H - 1.2, .18, C.iron); f.block(x - .1, 1.22, z + .2, .28, .22, .28, 0x6a6a7a); f.mark?.("lamp", x - .7, .7, z); f.mark?.("fire", x - .5, .52, z); f.mark?.("steam", x - .1, 1.46, z + .2); f.mark?.("motes", 0, 2.2, -6); f.mark?.("motes", -2.7, 1.6, -2.2); }
   // His bed: a straw-stuffed frame with a patched quilt, a pumpkin for a pillow, and his boots beside it.
   { const x = hw - 1.1, z = -2.2; f.block(x, 0, z, 1.6, .5, 2.6, 0x6a4a2e); f.block(x, .5, z, 1.5, .18, 2.5, 0xd8b85a); for (let i = 0; i < 12; i++) f.block(x - .6 + (i % 3) * .6, .68, z - 1.05 + Math.floor(i / 3) * .5, .58, .05, .48, pick([0x8a3a4a, 0x3a6a8a, 0xc8a03a, 0x5a7a3a, 0x8a6a9a], r)); f.block(x, .73, z - .9, .5, .34, .44, 0xe8771f); f.block(x, 1.07, z - .9, .06, .1, .06, 0x5a7a3a);
     for (const dz of [.6, .85]) f.block(x - 1, 0, z + dz, .2, .3, .14, 0x3a2a1a); }

@@ -10,3 +10,7 @@ export const OUTSIDE_VIEW = Object.freeze({ pitch: rad(12), minPitch: rad(-14), 
 
 // Looking down from above there is nothing to see over the owner's head, so the lift eases away.
 export function outsideLookLift(pitch) { return OUTSIDE_VIEW.lift * (1 - smooth(rad(24), rad(52), pitch)); }
+
+// Inside a hall the lens stands outside its open front, low enough to take in the back wall and its windows as
+// well as the floor, and looks a little above the owner so the room sits in the lower part of the picture.
+export const HALL_VIEW = Object.freeze({ pitch: rad(25), minPitch: rad(14), maxPitch: rad(58), distance: 11.5, lift: .9 });

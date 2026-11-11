@@ -1,6 +1,7 @@
 // Each neighbour has a usable, authored room rather than a shared empty shell.
 import { seeded } from './voxels.js';
 import { expansionAreaInfo } from './rules/village-expansion-access.js';
+import * as Homes from './village-home-interiors.js';
 export function expansionHomeOpen(state,plan){
  if(!plan)return false;if(!plan.area)return true;
  const effects=state.village?.expansion?.effects??[];
@@ -45,4 +46,6 @@ function room(f,who){const r=seeded(792+Object.keys(styles).indexOf(who)),[plast
 }
 const furnitureBlocks=who=>[[-6,-10,-3.7,-6],[3.7,-10,6,-6],[-1.7,-7.7,1.7,-6.3],[-6,-10,6,-9.6],...(who==='mabel'?[[-5.5,-5.4,-3.7,-4.6],[3.7,-5.4,5.5,-4.6]]:who==='granny'?[[-5.5,-7,-3.5,-5],[3.7,-6.6,5.7,-3.4]]:[])];
 const definitions=[['mabel-cottage','Mabel’s haberdashery','mabel',-6,62,'east','copse'],['tansy-cottage','Tansy’s potting room','tansy',-6,82,'east','copse'],['opal-studio','Opal’s stone studio','opal',52,74,'east','quarry'],['cinder-restaurant','Cinder’s restaurant','cinder',66,70,'west','quarry'],['corvus-tent','Corvus’s living tent','corvus',148,46,'east','moor'],['baron-manor','The Baron’s velvet manor','baron',148,68,'east','moor'],['granny-cottage','Granny Brambletooth’s cottage','granny',-68,81.5,'south','acre']];
-export const EXPANSION_INSIDES=Object.freeze(Object.fromEntries(definitions.map(([id,name,host,x,z,facing,area])=>[id,Object.freeze({name,host,area,door:Object.freeze({x,z,facing}),build:f=>room(f,host),hall:Object.freeze({w:12,d:10,host:[0,-5.6],spawn:[0,-1.4],light:.55,exposure:1.1,blocks:Object.freeze(furnitureBlocks(host))})})])));
+// Each neighbour's own room (village-home-interiors.js); the shared shell above stays for any host without one.
+const AUTHORED={mabel:[Homes.mabelHaberdashery,Homes.MABEL_HALL],tansy:[Homes.tansyPottingRoom,Homes.TANSY_HALL],opal:[Homes.opalStudio,Homes.OPAL_HALL],cinder:[Homes.cinderRestaurant,Homes.CINDER_HALL],corvus:[Homes.corvusTent,Homes.CORVUS_HALL],baron:[Homes.baronManor,Homes.BARON_HALL],granny:[Homes.grannyCottage,Homes.GRANNY_HALL]};
+export const EXPANSION_INSIDES=Object.freeze(Object.fromEntries(definitions.map(([id,name,host,x,z,facing,area])=>{const[build,hall]=AUTHORED[host]??[];return[id,Object.freeze({name,host,area,door:Object.freeze({x,z,facing}),build:build&&hall?f=>build(f):f=>room(f,host),hall:build&&hall?hall:Object.freeze({w:12,d:10,host:[0,-5.6],spawn:[0,-1.4],light:.55,exposure:1.1,blocks:Object.freeze(furnitureBlocks(host))})})];})));

@@ -101,7 +101,7 @@ test('seven decorated neighbour interiors preserve a clear spawn, host approach,
   assert.ok(villageHallFree(plan,...plan.hall.spawn),id);assert.ok(villageHallFree(plan,...plan.hall.host),id+' host');
   const exit=moveVillageHallWalker(plan,{x:plan.hall.spawn[0],z:plan.hall.spawn[1]},0,20);assert.ok(exit.z>0&&exit.z<=.6,id+' exit');
   for(const[x0,z0,x1,z1]of plan.hall.blocks)assert.equal(villageHallFree(plan,(x0+x1)/2,(z0+z1)/2),false,id+' furniture');
-  const v=new Voxels();plan.build(v);assert.ok(v.solid.length>350,id+' authored furnishings');assert.equal(v.marks.lamp.length,2);
+  const v=new Voxels();plan.build(v);assert.ok(v.solid.length>350,id+' authored furnishings');assert.ok(v.marks.lamp.length>=2&&v.marks.lamp.length<=8,id+' lamps fit the shared pool of eight');
  }
 });
 test('Granny’s level-eight welcome opens her actual home and all other homes require their saved restoration',()=>{
