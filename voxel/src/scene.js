@@ -9,6 +9,7 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
+import { GradeShader, applyGrade } from "./picture-grade.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import { renderSizing, validRenderQuality } from "./render-quality.js";
@@ -447,6 +448,10 @@ export function createScene(canvas, state, hooks) {
   // but it also softens the sprites' painted detail. At FXAA_BELOW device
   // pixels per CSS pixel and above, the buffer is dense enough without it.
   const antialias = new ShaderPass(FXAAShader), FXAA_BELOW = 1.75; composer.addPass(antialias);
+  // A place may ask for its own glow and a final grade (the village does); the farm keeps these.
+  const BLOOM = { strength: bloom.strength, radius: bloom.radius, threshold: bloom.threshold };
+  const grade = new ShaderPass(GradeShader); grade.enabled = false; composer.addPass(grade);
+  const dress = (place = {}) => { const b = place.bloom ?? BLOOM; bloom.strength = b.strength; bloom.radius = b.radius; bloom.threshold = b.threshold; applyGrade(grade, place.grade ?? null); };
 
   // The room camera: the nearest distance that shows the top of the back wall and
   // the front of the floor, and the room's width (most of it on a narrow phone).
@@ -832,7 +837,7 @@ export function createScene(canvas, state, hooks) {
     // the farm completely, so the unseen farm does not animate or draw beneath it.
     if (view.place === "village") {
       villageView.tick(state.paused ? 0 : dt); renderer.toneMappingExposure = villageView.scene.userData.exposure ?? 1.15;
-      renderPass.scene = villageView.scene; renderPass.camera = villageView.camera;
+      renderPass.scene = villageView.scene; renderPass.camera = villageView.camera; dress(villageView.scene.userData);
       if (bloomOn) composer.render(); else renderer.render(villageView.scene, villageView.camera);
       if (warming.size) warmNext(); requestAnimationFrame(tick); return;
     }
@@ -1002,7 +1007,7 @@ export function createScene(canvas, state, hooks) {
       if (f.t > f.life) { f.el.remove(); fx.splice(i, 1); }
     }
 
-    if (bloomOn) composer.render(); else renderer.render(activeScene(), active());
+    dress(); if (bloomOn) composer.render(); else renderer.render(activeScene(), active());
     if (view.place === "carving") carvingView.afterRender(canvas);
     else if (view.place === "hayride") hayrideView.afterRender(canvas);
     if (warming.size) warmNext();

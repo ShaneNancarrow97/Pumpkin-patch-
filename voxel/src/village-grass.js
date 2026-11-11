@@ -1,4 +1,4 @@
-// Grass on Mothlight's lawns (handover 73): tufts of five blades, dark at the root
+// Grass on Mothlight's lawns (handover 73): tufts of five slim blades, dark at the root
 // and lit at the tip, grown in clumps (taller where the ground runs wild), with the
 // odd flower among them, and a breeze that rolls across the lawn in waves, worked
 // out on the GPU. No extra textures or blended sorting: a few triangles a tuft, one
@@ -9,17 +9,15 @@ import { seeded } from "./voxels.js";
 import { VILLAGE_GRASS_FADE as FADE } from "./village-visibility.js";
 
 const PATCH = 20;
-// One tuft: five blades fanned round a point, each a two-part blade that bends; base at y 0, tip at y 1.
+// One tuft: five slim blades fanned round a point, each bent once and drawn out to a tip; base at y 0, tip near y 1.
+// Two triangles a blade: root to the bend, then the bend to the tip.
 function tuftGeometry() {
   const pos = [], tip = [];
-  for (let b = 0; b < 3; b++) {
-    const a = b / 3 * Math.PI * 2 + (b % 2) * .4, cx = Math.cos(a), cz = Math.sin(a), w = .11 + (b % 3) * .025, px = -cz * w, pz = cx * w, lean = .1 + (b % 2) * .08;
-    const mx = cx * lean, mz = cz * lean, kx = cx * lean * 2.6, kz = cz * lean * 2.6, mh = .55 + (b % 3) * .05, th = .85 + (b % 2) * .15;
-    // Lower part: a quad from the root to the bend; upper part: a triangle to the tip.
-    pos.push(-px, 0, -pz, px, 0, pz, mx + px * .6, mh, mz + pz * .6, -px, 0, -pz, mx + px * .6, mh, mz + pz * .6, mx - px * .6, mh, mz - pz * .6);
-    tip.push(0, 0, mh, 0, mh, mh);
-    pos.push(mx - px * .6, mh, mz - pz * .6, mx + px * .6, mh, mz + pz * .6, kx, th, kz);
-    tip.push(mh, mh, 1);
+  for (let b = 0; b < 5; b++) {
+    const a = b / 5 * Math.PI * 2 + (b % 2) * .5, cx = Math.cos(a), cz = Math.sin(a), w = .05 + (b % 3) * .012, px = -cz * w, pz = cx * w, lean = .07 + (b % 3) * .06;
+    const ox = cx * .05, oz = cz * .05, mx = ox + cx * lean, mz = oz + cz * lean, kx = ox + cx * lean * 3, kz = oz + cz * lean * 3, mh = .5 + (b % 3) * .07, th = .78 + (b % 4) * .075;
+    pos.push(ox - px, 0, oz - pz, ox + px, 0, oz + pz, mx + px * .55, mh, mz + pz * .55, ox - px, 0, oz - pz, mx + px * .55, mh, mz + pz * .55, kx, th, kz);
+    tip.push(0, 0, mh, 0, mh, 1);
   }
   const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute("tip", new THREE.Float32BufferAttribute(tip, 1));
   g.computeVertexNormals(); return g;
@@ -34,7 +32,7 @@ const noise = (x, z) => Math.sin(x * .23 + Math.sin(z * .17) * 1.7) * .5 + Math.
 export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale = 1.5 }) {
   const group = new THREE.Group(), r = seeded(1213), uniforms = { uTime: { value: 0 }, uGrassPlayer: { value: new THREE.Vector2(1e6,1e6) }, uGrassCamera: { value: new THREE.Vector2(1e6,1e6) } };
   const material = new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, alphaHash: true });
-  material.customProgramCacheKey=()=>"village-grass-distance-v2";
+  material.customProgramCacheKey=()=>"village-grass-distance-v3";
   material.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms,uniforms);
     shader.vertexShader = shader.vertexShader
@@ -51,7 +49,7 @@ export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale
         transformed.x += sway * .22; transformed.z -= sway * .12;`);
     shader.fragmentShader = shader.fragmentShader
       .replace("#include <common>", "#include <common>\nvarying float vTip; varying float vGrassVisibility; varying float vGrassDistanceFade;")
-      .replace("vec4 diffuseColor = vec4( diffuse, opacity );", "vec4 diffuseColor = vec4( diffuse * (.38 + .82 * min(vTip, 1.)) * (vTip > 1.1 ? 1.25 : 1.), opacity * vGrassVisibility * vGrassDistanceFade );");
+      .replace("vec4 diffuseColor = vec4( diffuse, opacity );", "vec4 diffuseColor = vec4( diffuse * (.46 + .8 * min(vTip, 1.) * min(vTip, 1.)) * (vTip > 1.1 ? 1.25 : 1.), opacity * vGrassVisibility * vGrassDistanceFade );");
   };
   const geo = tuftGeometry(), bloom = flowerGeometry(), m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), p = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0), c = new THREE.Color();
   const patches = [], petals = [0xf6f0f5, 0xf5d04a, 0xf28fb5, 0x9a6ae0, 0xf08a3a];

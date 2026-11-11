@@ -1,0 +1,44 @@
+# 74: Mothlight's story, interiors and a premium look
+
+Branch: `voxel-reference` (lead), following handover 73 and Codex's expansion (`docs/contractor-patches/mothlight-full-expansion/`). This round took Codex's 54 commits in, then worked through the owner's brief for the village: it should look premium, its story and UI should be clear, and its interiors and buildings should be handsome.
+
+## What the player asked for
+
+- "Check codex handover, they've added a lot. Make sure the village is visually incredible, story and UI is utterly perfect, NPCs act properly, quest and missions are well designed and fleshed out and clear for the end user to understand. Interiors in the village, buildings are much more beautiful and dynamic looking."
+- "Rebuild Shane and Natalie's base sprites pixel by pixel to fix the awkward movements and size differences between the different frames", hand crafted, matching their visible features, with better poses, walking and actions. **Paused** at the owner's request (see the end).
+- "Needs to look even more premium & Dreamlight Valley like", then "focus on the village for now, it needs to look much more premium". Original characters and art only: nothing of Dreamlight Valley's is copied.
+
+## The premium look (this is the newest work)
+
+Photographs of the village showed three things holding it back: walls and roofs were big flat single-colour slabs beside richly painted characters; windows and lamps burned out to white; and away from lamps the owner turned black.
+
+- **A finish for every voxel: `voxel-finish.js`.** Every face of a village model is shaded as if laid from small blocks, an eighth of the design grid across (twelve to an owner's height). Each block has its own tone, a hairline to its neighbours, one in three stands proud or sunk with lit and shaded lips, and broad patches of weathering run across them. Walls darken towards the foot of their own box.
+  - It is all in the fragment shader, in the mesh's own space: no extra boxes, it follows turning models, and it fades where a block would be under a couple of pixels. Faces too small for two blocks are left plain.
+  - Glowing faces become leaded panes, hot in the middle and amber at the frame, so a window keeps its colour.
+  - `finishVoxels(root)` dresses every `Voxels` batch under a root once. The village calls it after its first build, for each part built later, and for each hall. Call it for anything new you build with `Voxels` in the village.
+- **Lamps that warm a wall instead of bleaching it.** The finish also rewrites three.js's light falloff for finished faces: within `near` world units a lamp is taken as if it stood that far off. Out of doors `near` is 4 (`LAMP` in `village-view.js`); halls and caves set it to 0 (`HALL_LAMP`), because their lamps hang clear of the walls. Change lamp strength through `lampAs(spec, scale)`, never on the lights directly.
+- **Glow and grade per place.** `scene.js` now takes a place's own glow settings and a final grade from its scene's `userData` (`bloom`, `grade`) through `dress()`, and restores the farm's for everything else. The village's glow is tighter (strength .36, threshold .9). Its grade (`picture-grade.js`) adds a little colour and contrast, leans shadows to indigo and lights to peach, and draws the corners down.
+- **Lamp glow: `village-glow.js`.** A halo round every lamp's head and a warm pool on the ground under the far ones (the eight nearest already cast real light). Two instanced additive draws, no lights.
+- **A moon rim on the owner: `addMoonRim` in `sprite-rim.js`.** The owner's sprite takes a cool rim along the edge facing the sky and shows half as much again of its own colour, so a dark-haired figure seen from behind no longer melts into the night. It sits beside Codex's warm inner rim (`addSpriteRim`), which the neighbours keep.
+- **Grass, pumpkins and flowers.** Grass tufts are five slim bent blades (the same triangle count as the three wide ones they replace). Pumpkins have a foot, a shoulder and a bent stem; blooms have four petals round a gold eye. Two box budgets in `village-atmosphere.test.mjs` rose by under 3% for them.
+- **The HUD's finish: `ui/village-premium.css`.** Loads last of the village's styles. One family of plum glass with a gilt hairline; the place's name on a plaque; the open dock choice lit from beneath. Colours, borders and type only: it sets no sizes.
+
+Tests: `test/village-finish.test.mjs`.
+
+## Earlier in this round (already pushed)
+
+- **The play camera** (`village-camera.js`): a low arm that looks up at roofs and sky, stops at building walls (`villageCameraReach`), and a great tree that only dissolves when its trunk or crown is truly in the way.
+- **The story** (`content/village-expansion-story.js`): all 23 main chapters have a blurb, an opening scene, a discovery for each step and a closing scene. Cast steps were renamed to say what you do.
+- **The journal and pages** (`ui/village-expansion-pages.js`): main story first, a step checklist, real reward names, exact reasons a chapter is locked. Puzzles shuffle their choices and show their clue.
+- **Guidance**: following a chapter points the way, quest steps win the prompt, each step has its own verb, and a gold beacon stands over the followed step. Quest steps have themed objects (`questProp`).
+- **Interiors**: `village-home-interiors.js` holds real rooms for Mabel, Tansy, Opal and Cinder. `village-hall-life.js` sets fires, candles, steam, motes, sparkles and pendulums moving in every hall from marks its builder leaves.
+
+## Still to do
+
+- **Interiors for Corvus, the Baron and Granny** (they fall back to Codex's shared room). Designs: a striped tent with a stage, footlights and a trapeze; a velvet manor with a marble fireplace, portrait, piano and an empty gilt frame; a crooked cottage with an inglenook, cauldron, dresser and bed alcove.
+- **Buildings**: Granny's house, the Acre's corn and scarecrows, the cave mouth, the district gates and the restored scenery are still crude. The Velvet Bat's striped windows want a proper design.
+- **Camera**: its arm passes through props that aren't buildings (the Moor's booths) and can sit inside rock near the cave mouth.
+- **NPC behaviour** has not been audited. "Talk" at exactly its reach only sets a waypoint.
+- **UI defects**: a blank Enter keycap in dialogue and the return prompt; the farm toast over the tracker; People lists "Hollow Green" for Copse residents; the Map tab is a list; a clipped panel title.
+- **Performance on a phone has not been measured** for the finish, the grade pass or the glow. The finish costs about twenty hashes a fragment and four texture reads per figure for the rim; both can be cut if `tools/perf.mjs` or a real phone says so.
+- **The owners' sprites** (paused): `tools/owner-sprites/` holds a sculptor that draws a figure from signed-distance shapes on a skeleton, from eight sides at one fixed scale (`sculpt.py`, `rig.py`, `parts.py`), and Shane's model (`shane.py`) at the standing art's proportions. His face and jacket need work; Natalie, the walk, jog and action cycles, baking and the game's side are not started. Nothing in the game uses it yet.

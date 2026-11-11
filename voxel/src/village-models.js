@@ -89,11 +89,12 @@ export function lampPost(f, x, z, h = 3.2, r = seeded(1), heads = 2) {
   for (const s of [-1, 1]) { f.block(x + s * .36, h - .32, z, .08, .24, .08, C.iron); f.block(x + s * .52, h - .4, z, .3, .08, .08, C.iron); globe(f, x + s * .64, h - .02, z, 1); }
   f.block(x, h - .02, z, .16, .5, .16, C.iron); f.block(x, h + .48, z, .3, .08, .1, C.gold); f.block(x, h + .56, z, .06, .14, .06, C.gold);
 }
+// A flower: a stalk, and either a spire of florets or an open bloom of four petals round a gold eye.
 export function flower(f, x, z, shade_, r, scale = 1) {
   const k = scale, tall = r() < .3;
   f.block(x, 0, z, .05 * k, (tall ? .5 : .3) * k, .05 * k, 0x3f7a35);
-  if (tall) for (let i = 0; i < 3; i++) f.block(x, (.28 + i * .1) * k, z, (.14 - i * .025) * k, .1 * k, (.14 - i * .025) * k, i ? shade(shade_, 1 + i * .08) : shade_);
-  else { f.block(x, .28 * k, z, .17 * k, .1 * k, .17 * k, shade_); f.block(x, .34 * k, z, .07 * k, .05 * k, .07 * k, 0xf6dc8a); }
+  if (tall) for (let i = 0; i < 3; i++) f.block(x + (i % 2 ? .02 : -.02) * k, (.28 + i * .1) * k, z, (.15 - i * .03) * k, .1 * k, (.15 - i * .03) * k, i ? shade(shade_, 1 + i * .08) : shade(shade_, .9));
+  else { f.block(x, .28 * k, z, .24 * k, .05 * k, .1 * k, shade_); f.block(x, .28 * k, z, .1 * k, .05 * k, .24 * k, shade_); f.block(x, .31 * k, z, .08 * k, .06 * k, .08 * k, 0xf6dc8a); }
 }
 export function bush(f, x, z, size, r, palette = C.green) {
   for (let i = 0; i < 6; i++) { const s = size * (.45 + r() * .4), y = s * .25; f.block(x + (r() - .5) * size * .8, y, z + (r() - .5) * size * .8, s, s * .8, s, vary(shade(pick(palette, r), .8 + y * .5), .06, r)); }
@@ -658,13 +659,15 @@ export function buildVillageDecor(id) {
 
 // ---- Pumpkins and the Halloween dressing ------------------------------------------
 const PUMPKIN = { orange: [0xe8771f, 0xf08a2a, 0xd9661a], white: [0xece4d4, 0xf4ecdc, 0xddd3c2], green: [0x5f7a3a, 0x6f8a44, 0x4f6a30], gold: [0xd9962a, 0xe6a83a, 0xc9861f] };
-// A ribbed pumpkin: a core and two crossed lobes, a dimple and a stem.
+// A ribbed pumpkin, round in the middle and drawn in at its foot and shoulder: a core with a lobe each way,
+// a darker foot, a lit shoulder and a bent stem. Seven boxes, so a patch of them stays cheap.
 export function pumpkin(f, x, z, size = .6, r = seeded(61), kind = "orange", y = 0) {
   const k = size, cols = PUMPKIN[kind] ?? PUMPKIN.orange, c = pick(cols, r);
-  f.block(x, y, z, .9 * k, .72 * k, .9 * k, c);
-  f.block(x, y + .07 * k, z, 1.04 * k, .58 * k, .7 * k, shade(c, .93)); f.block(x, y + .07 * k, z, .7 * k, .58 * k, 1.04 * k, shade(c, .93));
-  f.block(x, y + .72 * k, z, .46 * k, .05 * k, .46 * k, shade(c, .82)); f.block(x, y + .74 * k, z, .1 * k, .2 * k, .1 * k, 0x5a4a2a);
-  if (r() < .5) f.block(x + .08 * k, y + .88 * k, z, .16 * k, .05 * k, .05 * k, 0x5a7a3a);
+  f.block(x, y, z, .62 * k, .18 * k, .62 * k, shade(c, .84)); f.block(x, y + .08 * k, z, .9 * k, .56 * k, .9 * k, c);
+  f.block(x, y + .14 * k, z, 1.04 * k, .44 * k, .7 * k, shade(c, .93)); f.block(x, y + .14 * k, z, .7 * k, .44 * k, 1.04 * k, shade(c, .93));
+  f.block(x, y + .6 * k, z, .64 * k, .14 * k, .64 * k, shade(c, 1.07));
+  f.block(x, y + .74 * k, z, .1 * k, .17 * k, .1 * k, 0x5a4a2a); f.block(x + .04 * k, y + .88 * k, z, .15 * k, .07 * k, .09 * k, 0x6a5630);
+  if (r() < .5) f.block(x + .18 * k, y + .78 * k, z + .04 * k, .2 * k, .04 * k, .12 * k, 0x5a7a3a);
 }
 // A jack-o'-lantern, its face carved on its front (local +z) and lit from inside.
 export function jackOLantern(f, x, z, size = .7, r = seeded(63), face = 0, y = 0) {

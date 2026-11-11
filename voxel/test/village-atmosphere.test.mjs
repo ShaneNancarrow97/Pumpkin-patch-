@@ -41,7 +41,8 @@ test("the hero tree and restored houses retain their original footprints and fin
 
 // The61% larger playable Green adds an arrival meadow and clearings; light count stays fixed.
 test("static polish remains in bounded batches after the Green expansion", () => {
-  for (const [group, maxBoxes, maxMeshes] of [[buildGreen(), 37000, 50], [buildHomes({ "rowan-workshop": true, "elowen-conservatory": true }), 5750, 2]]) {
+  // The limits rose by under 3% when pumpkins gained a foot and shoulder and blooms their four petals.
+  for (const [group, maxBoxes, maxMeshes] of [[buildGreen(), 37600, 50], [buildHomes({ "rowan-workshop": true, "elowen-conservatory": true }), 5900, 2]]) {
     let boxes = 0, meshes = 0, lights = 0;
     group.traverse(object => { if (object.isInstancedMesh) boxes += object.count; if (object.isMesh) meshes++; if (object.isLight) lights++; });
     assert.ok(boxes <= maxBoxes); assert.ok(meshes <= maxMeshes); assert.equal(lights, 0);
