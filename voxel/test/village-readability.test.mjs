@@ -8,13 +8,16 @@ import { FIXTURES, PLAN_SCALE as K } from '../src/content/village.js';
 import { villageCellFree } from '../src/rules/village-navigation.js';
 import { node } from '../src/village-models.js';
 
-test('nearby and intervening tree crowns clear the owner without hiding a distant landmark',()=>{
+test('the great tree stays whole from the street and clears only when it would hide the owner',()=>{
  const tree={x:0,y:0,z:0};
- assert.equal(villageTreeVisibility({x:8,y:0,z:0},{x:22,y:8,z:0},tree),0);
- assert.equal(villageTreeVisibility({x:30,y:0,z:0},{x:44,y:8,z:0},tree),1);
- assert.ok(villageTreeVisibility({x:14,y:0,z:0},{x:27,y:8,z:0},tree)>0);
- assert.ok(villageTreeVisibility({x:14,y:0,z:0},{x:27,y:8,z:0},tree)<1);
+ assert.equal(villageTreeVisibility({x:8,y:0,z:0},{x:15.4,y:2.9,z:0},tree),1,'walking under the crown keeps it overhead');
+ assert.equal(villageTreeVisibility({x:30,y:0,z:0},{x:44,y:8,z:0},tree),1,'a distant landmark is whole');
+ assert.equal(villageTreeVisibility({x:-8,y:0,z:0},{x:8,y:2.9,z:0},tree),0,'the trunk crosses the sight line');
+ assert.equal(villageTreeVisibility({x:8,y:0,z:0},{x:1,y:2.9,z:0},tree),0,'the lens is inside the trunk');
+ assert.equal(villageTreeVisibility({x:6,y:0,z:0},{x:2.4,y:8,z:0},tree),0,'a raised lens sits in the crown');
+ assert.equal(villageTreeVisibility({x:6,y:0,z:0},{x:9.6,y:8,z:0},tree),1,'a raised lens outside the crown leaves it whole');
  assert.equal(villageTreeVisibility({x:-20,y:0,z:0},{x:20,y:15,z:0},tree),0,'crown crosses the camera-owner sightline');
+ const edge=villageTreeVisibility({x:-8,y:0,z:3.2},{x:8,y:2.9,z:3.2},tree);assert.ok(edge>0&&edge<1,'passing the trunk eases');
  assert.equal(villageTreeVisibility(null,{x:0,y:6,z:0},tree),1,'tour keeps the landmark visible');
 });
 
@@ -22,7 +25,7 @@ test('upper tree dissolve owns its materials, restores them and keeps the plante
  const green=buildGreen(),upper=green.getObjectByName('moth-tree-upper'),ordinary=[];
  green.traverse(o=>{if(o.isMesh&&!upper.children.includes(o))ordinary.push({o,material:o.material,opacity:o.material.opacity});});
  const before=green.userData.visualBudget.boxes;
- const player=new Vector3(FIXTURES.tree.x+8,0,-FIXTURES.tree.z),camera={position:new Vector3(FIXTURES.tree.x+16,8,-FIXTURES.tree.z)};
+ const player=new Vector3(FIXTURES.tree.x+8,0,-FIXTURES.tree.z),camera={position:new Vector3(FIXTURES.tree.x+2,8,-FIXTURES.tree.z)};
  for(let i=0;i<10;i++)tickVillageVisibility(green,player,camera,.1);
  assert.equal(upper.visible,false);assert.equal(green.userData.treeVisibility.target,0);
  assert.ok(upper.children.every(o=>o.material.alphaHash&&!o.castShadow));

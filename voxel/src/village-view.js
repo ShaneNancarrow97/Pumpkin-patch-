@@ -31,9 +31,10 @@ import { readyVillageSprites, villageSpriteTextures } from "./village-sprite-act
 import { createVillageExpansionWorld } from './village-expansion-world.js';
 import { EXPANSION_INSIDES, expansionHomeOpen } from './village-expansion-interiors.js';
 import { expansionAreaInfo } from './rules/village-expansion.js';
-import { moveVillageWalker, villageCellFree } from './rules/village-navigation.js';
+import { moveVillageWalker, villageCellFree, villageCameraBlockers, villageCameraReach } from './rules/village-navigation.js';
 import { advanceExpansionCompanion } from './rules/village-expansion-companions.js';
 import { isCaveArea, caveCellFree, constrainCaveCamera, CAVE_CAMERA_PRESET } from './village-expansion-spatial.js';
+import { OUTSIDE_VIEW, outsideLookLift } from './village-camera.js';
 import { visibleVillagePick } from "./village-sprite-math.js";
 
 const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z), K = PLAN_SCALE;
@@ -250,7 +251,11 @@ export function createVillageView(canvas, state, hooks = {}) {
 
   // A closer third-person orbit stays on the owner, rather than panning away
   // under OrbitControls. Interiors keep their wider cutaway-friendly distance.
-  const outsideRig = createFollowCameraRig({ pitch: THREE.MathUtils.degToRad(26), distance: 6.8, minDistance: 4.8, maxDistance: 13 });
+  // Outside, the arm sits low behind the owner and the lens looks over their head, so the street ahead, the
+  // roofs and the sky fill the top of the frame; the look stick tilts it from just under the horizon to
+  // well above the rooftops. The arm shortens rather than pass through a building.
+  const outsideRig = createFollowCameraRig({ pitch: OUTSIDE_VIEW.pitch, distance: OUTSIDE_VIEW.distance, minDistance: 4.8, maxDistance: 14, minPitch: OUTSIDE_VIEW.minPitch, maxPitch: OUTSIDE_VIEW.maxPitch });
+  const blockers = villageCameraBlockers(); let arm = 1;
   const hallRig = createFollowCameraRig({ pitch: THREE.MathUtils.degToRad(34), distance: 11, minDistance: 9, maxDistance: 17, yawLimit: .8 });
   const caveRig = createFollowCameraRig(CAVE_CAMERA_PRESET);
   const activeRig = () => inside ? hallRig : expansionWorld.active ? caveRig : outsideRig;
@@ -258,14 +263,19 @@ export function createVillageView(canvas, state, hooks = {}) {
   function clearOrbitMomentum() {
     const damped = controls.enableDamping; controls.enableDamping = false; controls.update(); controls.enableDamping = damped;
   }
-  function applyFollowPose() {
+  function applyFollowPose(dt = 0) {
     if (dialogueFocus.active) return;
-    const pose = followCameraPose(activeRig().state);
+    const rig = activeRig().state, pose = followCameraPose(rig);
     controls.target.set(pose.target.x, pose.target.y, pose.target.z);
     camera.position.set(pose.position.x, pose.position.y, pose.position.z);
     if(expansionWorld.active){const bounded=constrainCaveCamera(expansionWorld.active,pose.target,pose.position);camera.position.set(bounded.x,bounded.y,bounded.z);}
-    if (!inside&&!expansionWorld.active) camera.position.y = Math.max(camera.position.y, groundAt(camera.position.x, -camera.position.z) + .65);
-    camera.lookAt(controls.target); camera.updateMatrixWorld();
+    if (inside || expansionWorld.active) { camera.lookAt(controls.target); camera.updateMatrixWorld(); return; }
+    // The clear length of the arm: in at once, out gently, so a corner never pops the picture.
+    const clear = Math.max(OUTSIDE_VIEW.nearest / rig.distance, villageCameraReach({ x: pose.target.x, z: -pose.target.z }, { x: pose.position.x, z: -pose.position.z }, blockers));
+    arm = clear < arm || !dt ? clear : Math.min(clear, arm + (clear - arm) * (1 - Math.exp(-dt * 5)));
+    if (arm < .999) { camera.position.lerpVectors(controls.target, camera.position, arm); camera.position.y += (1 - arm) * OUTSIDE_VIEW.tuck; }
+    camera.position.y = Math.max(camera.position.y, groundAt(camera.position.x, -camera.position.z) + .65);
+    camera.lookAt(pose.target.x, pose.target.y + outsideLookLift(rig.pitch), pose.target.z); camera.updateMatrixWorld();
   }
   const play = {
     pause() { following = false; if (!dialogueFocus.active) clearOrbitMomentum(); resize(); },
@@ -286,7 +296,7 @@ export function createVillageView(canvas, state, hooks = {}) {
       if (dialogueFocus.active) return;
       if (!following) { play.reset(pos, { heading: motion.heading }); return; }
       followSubject = { x: pos.x, y: pos.y ?? 0, z: pos.z };
-      activeRig().step(pos, dt, inside ? { ...motion, worldDirected: false } : motion); applyFollowPose();
+      activeRig().step(pos, dt, inside ? { ...motion, worldDirected: false } : motion); applyFollowPose(dt);
     },
     look(x, y, dt) { activeRig().look(x, y, dt); },
     orbit(dx, dy) { activeRig().orbit(dx, dy); },

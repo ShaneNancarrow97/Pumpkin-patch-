@@ -61,6 +61,31 @@ export function villageWalkObstacles(s) {
   for(const p of s?.village?.decor?.placed??[]){const bounds=villageDecorBounds(p.id,p.x,p.z,p.rotation??0);if(bounds)boxes.push({...bounds,decor:p});}
   return boxes;
 }
+// What the play camera can't see through: building bodies only. Railings, hedges, stalls and furniture are
+// low enough to look over, and the great tree clears itself (village-visibility.js).
+export function villageCameraBlockers() {
+  return [...buildings, ...PLOTS.filter(p=>p.district!=='green'&&p.kind==='resident').map(p=>modelRect(p.door[0]/K,p.door[1]/K,p.facing,-4.2,-8,4.2,.15)), {x0:-72.5*K,z0:81.5*K,x1:-63.5*K,z1:89*K}];
+}
+// How far along the arm from the owner to the camera stays clear of those bodies, as a fraction of the arm (1 is
+// all of it). Both points are realm points ({x, z}); pad keeps the lens off the wall. A blocker the owner already
+// stands against is measured from its real wall, so the arm never collapses onto them.
+export function villageCameraReach(from, to, blockers = villageCameraBlockers(), pad = .55) {
+  const dx = to.x - from.x, dz = to.z - from.z; let reach = 1;
+  for (const b of blockers) {
+    let grow = pad;
+    if (from.x > b.x0 - grow && from.x < b.x1 + grow && from.z > b.z0 - grow && from.z < b.z1 + grow) grow = 0;
+    const x0 = b.x0 - grow, x1 = b.x1 + grow, z0 = b.z0 - grow, z1 = b.z1 + grow;
+    if (from.x > x0 && from.x < x1 && from.z > z0 && from.z < z1) continue;
+    let enter = 0, exit = 1, hit = true;
+    for (const [o, d, lo, hi] of [[from.x, dx, x0, x1], [from.z, dz, z0, z1]]) {
+      if (Math.abs(d) < 1e-9) { if (o < lo || o > hi) { hit = false; break; } continue; }
+      const a = (lo - o) / d, c = (hi - o) / d; enter = Math.max(enter, Math.min(a, c)); exit = Math.min(exit, Math.max(a, c));
+      if (enter > exit) { hit = false; break; }
+    }
+    if (hit && enter < reach) reach = enter;
+  }
+  return Math.max(0, reach);
+}
 // Placement shares the actual building, fence and water exclusions with walking.
 // A conservative enclosing box keeps every rotated corner off fixed scenery.
 export function villageDecorGroundClear(id,x,z,rotation=0) {

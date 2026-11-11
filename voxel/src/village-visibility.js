@@ -2,20 +2,24 @@
 const smooth = (a,b,value) => { const t=Math.max(0,Math.min(1,(value-a)/(b-a)));return t*t*(3-2*t); };
 const point = p => p&&Number.isFinite(p.x)&&Number.isFinite(p.z);
 
+// The great tree, measured from its model in world units: the trunk's half-width, where the crown starts and
+// centres above its roots, and how wide and deep the crown is.
+export const HERO_TREE = Object.freeze({ trunk: 2.2, crownFrom: 6.4, crownAt: 10.8, crownWide: 9.6, crownDeep: 4.8 });
+
 // Inputs are Three world positions. The tree centre is its ground point, after realm scaling.
+// From the street the crown hangs overhead and the tree stays whole. It clears only when it would hide the
+// owner: its trunk across the line of sight, the lens inside it, or its crown between a raised lens and them.
 export function villageTreeVisibility(player,camera,tree) {
-  if(!point(player)||!point(tree))return 1;
-  let visible=smooth(10.5,17.5,Math.hypot(player.x-tree.x,player.z-tree.z));
-  if(!point(camera))return visible;
-  visible=Math.min(visible,smooth(6,12,Math.hypot(camera.x-tree.x,camera.z-tree.z)));
-  // A canopy between the camera and the owner must clear even from beyond the plaza.
-  const ay=(player.y??tree.y??0)+1.45,cy=camera.y??ay,ty=(tree.y??0)+9.5;
-  const dx=camera.x-player.x,dy=cy-ay,dz=camera.z-player.z,length=dx*dx+dy*dy+dz*dz;
-  const t=length?((tree.x-player.x)*dx+(ty-ay)*dy+(tree.z-player.z)*dz)/length:0;
-  if(t>.05&&t<.98){
-    const d=Math.hypot(player.x+dx*t-tree.x,ay+dy*t-ty,player.z+dz*t-tree.z);
-    visible=Math.min(visible,smooth(5.5,9,d));
-  }
+  if(!point(player)||!point(tree)||!point(camera))return 1;
+  const base=tree.y??0,ay=(player.y??base)+1.45,cy=camera.y??ay,T=HERO_TREE;
+  const dx=player.x-camera.x,dy=ay-cy,dz=player.z-camera.z,flat=dx*dx+dz*dz;
+  // The trunk: the nearest the sight line passes to it on the ground plan, while still below the crown.
+  const t=flat?Math.max(0,Math.min(1,((tree.x-camera.x)*dx+(tree.z-camera.z)*dz)/flat)):0;
+  let visible=cy+dy*t<base+T.crownFrom+1?smooth(T.trunk,T.trunk+1.8,Math.hypot(camera.x+dx*t-tree.x,camera.z+dz*t-tree.z)):1;
+  // The crown: a wide, shallow ball of leaves. Depth is stretched so one radius measures both ways.
+  const k=T.crownWide/T.crownDeep,ey=dy*k,oy=(cy-base-T.crownAt)*k,all=flat+ey*ey;
+  const u=all?Math.max(0,Math.min(1,-((camera.x-tree.x)*dx+oy*ey+(camera.z-tree.z)*dz)/all)):0;
+  visible=Math.min(visible,smooth(T.crownWide*.82,T.crownWide*1.08,Math.hypot(camera.x+dx*u-tree.x,oy+ey*u,camera.z+dz*u-tree.z)));
   return visible;
 }
 
