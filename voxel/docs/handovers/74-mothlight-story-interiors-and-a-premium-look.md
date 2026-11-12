@@ -68,6 +68,18 @@ How it is applied:
 
 Anything new on the Green must be drawn on the old grid clear of the piece lines (re-run the scan) or drawn on the spread ground directly. Tests write their probes on the old grid and move them with `spreadStep`, `spreadWith` or `spreadWorld`.
 
+## Moonclock Square
+
+The band the spread opened between the cross road and the Quarry now holds the town square (`content/village-town-square.js` has the plan, `village-town-square.js` builds it, straight onto the spread ground):
+
+- **A round plaza** (radius 16 on the design grid) on the Quarry road, laid in rings of setts with rose bands, a brass ring and twelve moon phases, with a kerb round its edge. Moth pillars and low hedges mark the way in from the Green.
+- **The Lantern Fountain** at its heart: a stone basin, two bowls spilling into each other, bronze spouts, and the Lamplighter on top, a hooded verdigris figure with a moth's folded wings raising a lantern on a crook.
+- **The Moonclock**, a gatehouse over the road to the Quarry: piers with long-and-short quoins and climbing ivy, an arch with a gilt-moth keystone, a lancet window, a moon-pale clock on both faces whose hands keep the player's own time (`tick()` each frame), a belfry with its bell, a slate spire and a moth weathervane.
+- **The Moonlit Market** (three stalls of sweets, apples and potions, crates, a pumpkin cart and a sign) on the west side, and **a bandstand** with a copper dome, scalloped frieze and bulbs on the east.
+- Twelve lamps round the edge strung with fairy lights, four of them to the Lamplighter; benches, planters and autumn trees.
+
+It costs about 6,100 boxes in 24 meshes and adds no lights; its lamps join the halos and the light pool (`TOWN_LAMPS`). The walking rules go round the fountain, bandstand, stalls, pillars, planters and the gate's piers, and the camera stops at the piers; the road walks through the arch. It is on the map as Moonclock Square. The flanks of the band either side are still open lawn.
+
 ## Still to do
 
 - **Interiors for the Baron and Granny** (they fall back to Codex's shared room). Designs: a velvet manor with a marble fireplace, portrait, piano and an empty gilt frame; a crooked cottage with an inglenook, cauldron, dresser and bed alcove.

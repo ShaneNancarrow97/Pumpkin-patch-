@@ -69,6 +69,7 @@ export function villageMapLandmarks(state) {
   return [
     { id: "arrival", name: "Farm path", sub: "Carriage home", art: "signpost", ui: "farm" },
     { id: "tree", name: "The Moth Tree", sub: "The village square", art: "moth-lamp", ui: "tree" },
+    { id: "square", name: "Moonclock Square", sub: "The Lantern Fountain and the Moonlit Market", art: "moth-lamp", ui: "tree" },
     { id: "elowen-library", name: "Elowen’s library", sub: state.village.built["elowen-conservatory"] ? "Conservatory restored" : "A home for quiet wings", art: "almanac", ui: "home" },
     { id: "rowan-workshop", name: "Rowan’s workshop", sub: state.village.built["rowan-workshop"] ? "Workshop restored" : "A carpenter’s next chapter", art: "workbench", ui: "workshop" },
     { id: "velvet-bat", name: "The Velvet Bat", sub: "Vesper’s tavern", art: "moth-lamp", ui: "home" },

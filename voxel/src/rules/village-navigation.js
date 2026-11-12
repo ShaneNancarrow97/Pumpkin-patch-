@@ -9,6 +9,7 @@ import { expansionAreaInfo } from './village-expansion-access.js';
 import { EXPANSION_AREAS } from '../content/village-expansion.js';
 import { acreCellFree, onExpansionApproach } from '../village-expansion-spatial.js';
 import { spreadRect, gatherWorld } from './village-spread.js';
+import { townSquareObstacles, townSquareBlockers } from '../content/village-town-square.js';
 
 export const VILLAGE_WALK_RADIUS = .32;
 // Measured on the design grid as drawn, and kept where it now stands: the village was spread apart after it was
@@ -62,7 +63,7 @@ tavern.push(modelRect(102,24.4,"north",-3.55,3.82,-1.65,4.58));
 const green=DISTRICT_BY_ID.green.polygon.map(([x,z])=>gatherWorld(x,z)),limits={x0:Math.min(...green.map(p=>p[0])),x1:Math.max(...green.map(p=>p[0])),z0:Math.min(...green.map(p=>p[1])),z1:Math.max(...green.map(p=>p[1]))};
 export function villageWalkObstacles(s) {
   const boxes=[...scenery,...buildings,...walls,...tavern,
-    ...homes(), GRANNY
+    ...homes(), GRANNY, ...townSquareObstacles()
   ];
   boxes.push(body(FIXTURES.stall),body(FIXTURES.noticeboard),body(FIXTURES.bench),body(FIXTURES.pond),{x:FIXTURES.tree.x,z:FIXTURES.tree.z,r:3.4*K},{x:FIXTURES.well.x,z:FIXTURES.well.z,r:FIXTURES.well.r});
   for(const[flag,x,z]of[['restaurant-opening',64,74],['lantern-night',52,34]])if(s?.village?.expansion?.effects?.includes(flag)){
@@ -75,7 +76,7 @@ export function villageWalkObstacles(s) {
 // What the play camera can't see through: building bodies only. Railings, hedges, stalls and furniture are
 // low enough to look over, and the great tree clears itself (village-visibility.js).
 export function villageCameraBlockers() {
-  return [...buildings, ...homes(), GRANNY];
+  return [...buildings, ...homes(), GRANNY, ...townSquareBlockers()];
 }
 // How far along the arm from the owner to the camera stays clear of those bodies, as a fraction of the arm (1 is
 // all of it). Both points are realm points ({x, z}); pad keeps the lens off the wall. A blocker the owner already

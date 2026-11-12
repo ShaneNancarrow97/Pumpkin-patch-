@@ -15,6 +15,7 @@ import * as LAYOUT from "./content/village.js";
 import { villageNodePosition, villageNodeCandidates } from "./content/village-node-sites.js";
 import { terrainHeight as H, groundHeight as HN, TERRACES, RAMPS, WATERS, REALM, GROUND_REALM, isWater, rampAt, terraceAt, MARSH_ISLANDS, MARSH_CAUSEWAY } from "./village-terrain.js";
 import { spread, gather, spreadRect, spreadBox, pieceAt, pieceOfBox, PIECES, SPREAD, isGap, inTownSquare, TOWN_SQUARE } from "./rules/village-spread.js";
+import { inTownPlaza, inTownGate } from "./content/village-town-square.js";
 const SHIFT = LAYOUT.DISTRICT_SHIFT;
 import {
   C, shade, frame, realm, lampPost, studio, tavern, bigTent, caravan, manor, stiltHut, canopyTree, pine, twistedTree, deadTree, glowShroom, stoneWall, picketFence, mothPillar, carriage, fountain, well, noticeboard, stall, bench,
@@ -276,7 +277,7 @@ export function buildPaving() {
   for (let i = 0; i < du.count; i++) { const x = sq.cx + dp.getX(i), z = sq.cz + dp.getY(i); du.setXY(i, (x - sq.x0) / (sq.x1 - sq.x0), (z - sq.z0) / (sq.z1 - sq.z0)); }
   const plaza = new THREE.Mesh(disc, material(squareTexture())); plaza.rotation.x = -Math.PI / 2; plaza.position.set(sq.cx, .045, -sq.cz); plaza.receiveShadow = true; plaza.renderOrder = 2; group.add(plaza);
   // Kerb-stones along every paved edge that meets the grass, and a ring of them round the square.
-  const v = new Voxels(), R = onSpread(v), r = seeded(829), inside = (x, z) => quads.some((q) => x > q.x0 + .05 && x < q.x1 - .05 && z > q.z0 + .05 && z < q.z1 - .05) || Math.hypot(x - sq.cx, z - sq.cz) < sq.r - .05;
+  const v = new Voxels(), R = onSpread(v), r = seeded(829), inside = (x, z) => quads.some((q) => x > q.x0 + .05 && x < q.x1 - .05 && z > q.z0 + .05 && z < q.z1 - .05) || Math.hypot(x - sq.cx, z - sq.cz) < sq.r - .05 || inTownPlaza(x, z) || inTownGate(x, z);
   for (const q of quads) for (const [ax, az, bx, bz, nx, nz] of [[q.x0, q.z0, q.x1, q.z0, 0, -1], [q.x0, q.z1, q.x1, q.z1, 0, 1], [q.x0, q.z0, q.x0, q.z1, -1, 0], [q.x1, q.z0, q.x1, q.z1, 1, 0]]) {
     const len = Math.hypot(bx - ax, bz - az), n = Math.max(1, Math.round(len / .56)), along = Math.abs(bx - ax) > .01;
     for (let i = 0; i < n; i++) {
@@ -329,7 +330,7 @@ const onRoad = (roads, x, z) => roads.some((rd) => rd.points.some((p, i) => i &&
 export function grassAt(x, z) {
   const [gx, gz] = gather(x, z);
   if (!isGap(x, z)) return grassOnGrid(gx, gz);
-  if (onRoad(ROADS_SPREAD, x, z) || isWater(gx, gz)) return null;
+  if (onRoad(ROADS_SPREAD, x, z) || isWater(gx, gz) || inTownPlaza(x, z) || inTownGate(x, z)) return null;
   if (inTownSquare(x, z)) return GRASS.lawn;
   if (gz < 0) return Math.sin(x * 3.11 + z * 7.01) > 0 ? null : GRASS.meadow;
   return grassOnGrid(gx, gz) ?? (gx > -1 && gx < 121 && gz < GREEN_NORTH + 1.5 ? GRASS.lawn : GRASS.moss);

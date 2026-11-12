@@ -39,6 +39,7 @@ import { gardenSpriteIcon } from "./ui/garden-icons.js";
 import { villageItemIcon } from "./ui/village-item-markup.js";
 import { installVillageItemArt } from "./ui/village-item-art.js";
 import { decorIcon } from "./ui/kit.js";
+import { TOWN } from "./content/village-town-square.js";
 
 const escape = value => String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=n=>"£"+Math.round(n).toLocaleString("en-GB");
@@ -313,8 +314,8 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
   function focus(id){
     if(view.activeExpansionArea){guideExpansion({area:"green",name:"Village above",x:ARRIVAL.spawn[0],z:ARRIVAL.spawn[1]});return;}
     closePanel();const area=FORAGE_AREAS.find(a=>`forage:${a.id}`===id);if(area){guide(area,area.name);surveying=true;view.cameraActions.focus(area.x,area.z,26);return;}
-    const points={arrival:ARRIVAL.spawn,tree:[FIXTURES.tree.x,FIXTURES.tree.z],stall:[FIXTURES.stall.x,FIXTURES.stall.z]};
-    const p=points[id];if(p){guide({x:p[0],z:p[1]},({arrival:"Farm path",tree:"Moth Tree",stall:"Rowan’s stall"})[id]);surveying=true;if(id==="tree")view.cameraActions.focus(...p,34,6);else view.cameraActions.focus(...p);return;}
+    const points={arrival:ARRIVAL.spawn,tree:[FIXTURES.tree.x,FIXTURES.tree.z],stall:[FIXTURES.stall.x,FIXTURES.stall.z],square:[TOWN.cx*K,(TOWN.cz-9)*K]};
+    const p=points[id];if(p){guide({x:p[0],z:p[1]},({arrival:"Farm path",tree:"Moth Tree",stall:"Rowan’s stall",square:"Moonclock Square"})[id]);surveying=true;if(id==="tree")view.cameraActions.focus(...p,34,6);else if(id==="square")view.cameraActions.focus(TOWN.cx*K,TOWN.cz*K,46,8);else view.cameraActions.focus(...p);return;}
     if(INSIDES[id]){const door=INSIDES[id].door,[nx,nz]=DOOR_NORMAL[door.facing];guide({x:(door.x+nx*3.2)*K,z:(door.z+nz*3.2)*K},INSIDES[id].name);surveying=true;const d=INSIDES[id].door;view.cameraActions.focus(d.x*K,d.z*K,26);}
   }
   function guideExpansion(info){

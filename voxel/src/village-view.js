@@ -21,6 +21,8 @@ import { createVillageLife } from "./village-life.js";
 import { createHallLife } from "./village-hall-life.js";
 import { finishVoxels, setLampNear } from "./voxel-finish.js";
 import { spread, gather } from "./rules/village-spread.js";
+import { buildTownSquare } from "./village-town-square.js";
+import { TOWN_LAMPS } from "./content/village-town-square.js";
 import { VILLAGE_GRADE } from "./picture-grade.js";
 import { createLampGlow } from "./village-glow.js";
 import { createVillageAtmosphere } from "./village-atmosphere.js";
@@ -98,10 +100,10 @@ export function createVillageView(canvas, state, hooks = {}) {
   controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
   const patches = [];
   // The lamps where they now stand, and the parts rebuilt as the village changes, moved into place as they are made.
-  const LAMPS_AT = LAMPS.map((l) => { const [x, z] = spread(l.x, l.z); return { ...l, x, z }; });
+  const LAMPS_AT = [...LAMPS.map((l) => { const [x, z] = spread(l.x, l.z); return { ...l, x, z }; }), ...TOWN_LAMPS];
   const oldSpot = (f) => gather(f.x / K, f.z / K);
   function spreadPart(name, g) { if (name === "stall") spreadWhole(g, ...oldSpot(FIXTURES.stall)); else if (name === "bench") spreadWhole(g, ...oldSpot(FIXTURES.bench)); else spreadVillage(g); }
-  let active = false, built = false, firstView = true, keys = {}, parts = {}, tour = null, time = 0, horizon = null, sky = null, mist = null, bats = null, life = null, grass = null, lampGlow = null;
+  let active = false, built = false, firstView = true, keys = {}, parts = {}, tour = null, time = 0, horizon = null, sky = null, mist = null, bats = null, life = null, grass = null, lampGlow = null, town = null;
   const pickables = [], pickMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const expansionWorld=createVillageExpansionWorld({scene,state,groundAt,pickMaterial});
   let companion=null,companionId=null,companionPose=null,ownerHeading={x:0,z:1};
@@ -145,7 +147,9 @@ export function createVillageView(canvas, state, hooks = {}) {
     // The chimneys the village noted as it was built smoke where they now stand.
     const smoke = [green, beyond].flatMap((g) => g.userData.marks?.smoke ?? []).map(([x, y, z]) => ({ x, y, z: -z }));
     mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: REALM.z0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
-    root.add(earth, paving, water, works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group);
+    // The town square in the ground the spread opened north of the Green, drawn there whole.
+    town = buildTownSquare();
+    root.add(earth, paving, water, works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group, town);
     atmosphere = createVillageAtmosphere(); root.add(atmosphere.group);
     // Every built voxel gets the village's finish: finer blocks, joints and weathering shaded onto its faces.
     finishVoxels(scene);
@@ -154,7 +158,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     Object.entries({ ground: earth, paving, water, works, green, beyond, woods, horizon, mist, bats: bats.group, life: life.group, grass: grass.group }).forEach(([n, g]) => { g.name = n; });
     // Every patch of the built village, with where it is, so those beyond the haze can be skipped.
     root.updateMatrixWorld(true);
-    for (const g of [works, green, beyond, woods, horizon]) for (const chunk of g.children) { if (!chunk.isGroup) continue; const box = new THREE.Box3().setFromObject(chunk); if (box.isEmpty()) continue; const sphere = box.getBoundingSphere(new THREE.Sphere()); patches.push({ chunk, sphere }); }
+    for (const g of [works, green, beyond, woods, horizon, town]) for (const chunk of g.children) { if (!chunk.isGroup) continue; const box = new THREE.Box3().setFromObject(chunk); if (box.isEmpty()) continue; const sphere = box.getBoundingSphere(new THREE.Sphere()); patches.push({ chunk, sphere }); }
     const ground = new THREE.Mesh(new THREE.PlaneGeometry(172 * K, 104 * K), pickMaterial); ground.rotation.x = -Math.PI / 2; ground.position.copy(W(60 * K, 29 * K, .02)); ground.userData = { type: "village-ground" }; scene.add(ground); pickables.push(ground);
     const f = FIXTURES;
     hit(f.stall.d, 4, f.stall.w, { type: "village-stall" }, f.stall.x, f.stall.z);
@@ -490,6 +494,7 @@ export function createVillageView(canvas, state, hooks = {}) {
       if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera, following && !inside&&!expansionWorld.active ? followSubject : null);
       blight.tick(dt, camera.position, !inside&&!expansionWorld.active, reducedMotion(), !!state.paused);
       resources.tick(dt,camera.position,!inside&&!expansionWorld.active);shopMarkers.tick(state.paused?0:dt,camera,!inside&&!expansionWorld.active,reducedMotion());
+      town?.userData.tick?.();
       if (mist) for (const m of mist.children) { const u = m.userData; m.position.x = u.x + Math.sin(time * .07 + u.phase) * 2.5; m.position.z = -u.z + Math.cos(time * .05 + u.phase) * 1.5; }
       if(companion&&followSubject&&!inside){const owner={x:followSubject.x,z:-followSubject.z};companionPose=advanceExpansionCompanion(companionPose,owner,dt,{area:expansionWorld.active??'surface',heading:ownerHeading,canRegroup:!companion.root.visible,free:(x,z)=>expansionWorld.active?expansionWorld.move({x,z},0,0)&&caveCellFree(x,z):villageCellFree(state,x,z)});if(companionPose){companion.root.visible=companionPose.visible&&!inside;companion.root.position.copy(W(companionPose.x,companionPose.z,expansionWorld.ground(companionPose.x,companionPose.z)));companion.walking=companionPose.walking;companion.heading={x:companionPose.heading.x,z:-companionPose.heading.z};companion.walkDistance=companionPose.distance;folk.animate(companion,dt,time,camera);}}
       for (const p of pages.values()) { p.group.position.y = .05 + Math.sin(time * 2.3 + p.x) * .04; p.group.rotation.y = Math.sin(time * .9 + p.z) * .5; }
