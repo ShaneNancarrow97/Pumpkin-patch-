@@ -1,6 +1,7 @@
 // Small Green routines, in realm/world units. They are transient presentation
 // state: quests keep their own clock, and returning to the village resets no save.
 import { PLAN_SCALE as K, FIXTURES } from "../content/village.js";
+import { spreadWith, gather } from "./village-spread.js";
 import { villageCellFree, villageWalkObstacles } from "./village-navigation.js";
 
 export const RESIDENT_WALK_RADIUS = .42;
@@ -8,10 +9,14 @@ export const RESIDENT_WALK_SPEED = .72;
 const FACE = { south: 0, east: Math.PI / 2, north: Math.PI, west: -Math.PI / 2 };
 const stop = (x, z, face, wait, activity, extra = {}) => Object.freeze({ x: x * K, z: z * K, face, wait, activity, ...extra });
 const STALL = { x: FIXTURES.stall.x / K, z: FIXTURES.stall.z / K };
+// Stops set on the design grid beside something (the tree, Elowen's door, the bench) move with it now that the
+// village is spread apart (village-spread.js). The stall's are measured from where it stands already.
+const beside = (ax, az) => (x, z, ...rest) => { const [nx, nz] = spreadWith(x, z, ax, az); return stop(nx, nz, ...rest); };
+const byTree = beside(58, 24.6), byLibrary = beside(48, 20), byBench = beside(...gather(FIXTURES.bench.x / K, FIXTURES.bench.z / K));
 const ROUTES = Object.freeze({
-  "elowen-green": [stop(53.6, 30.2, "south", 14, "watching the lanterns"), stop(52.8, 31.4, "west", 8, "reading her almanac"), stop(53.6, 30.2, "south", 12, "greeting neighbours", { wave: true }), stop(53.4, 28.9, "west", 8, "checking the well lantern")],
-  "elowen-library": [stop(49.6, 21.6, "east", 16, "at the library"), stop(49.6, 20, "east", 7, "checking the library door"), stop(51, 20.2, "east", 7, "greeting neighbours", { wave: true }), stop(49.6, 20, "north", 0, "returning to the library")],
-  "rowan-bench": [stop(53.8, 20.6, "south", 12, "beside the bench"), stop(52.7, 21.2, "north", 0, "walking to the bench"), stop(52.7, 22.4, "west", 10, "checking the bench"), stop(52.7, 21.2, "south", 0, "returning from the bench"), stop(53.8, 20.6, "south", 10, "greeting neighbours", { wave: true }), stop(52.4, 20, "east", 6, "checking his tools")],
+  "elowen-green": [byTree(53.6, 30.2, "south", 14, "watching the lanterns"), byTree(52.8, 31.4, "west", 8, "reading her almanac"), byTree(53.6, 30.2, "south", 12, "greeting neighbours", { wave: true }), byTree(53.4, 28.9, "west", 8, "checking the well lantern")],
+  "elowen-library": [byLibrary(49.6, 21.6, "east", 16, "at the library"), byLibrary(49.6, 20, "east", 7, "checking the library door"), byLibrary(51, 20.2, "east", 7, "greeting neighbours", { wave: true }), byLibrary(49.6, 20, "north", 0, "returning to the library")],
+  "rowan-bench": [byBench(53.8, 20.6, "south", 12, "beside the bench"), byBench(52.7, 21.2, "north", 0, "walking to the bench"), byBench(52.7, 22.4, "west", 10, "checking the bench"), byBench(52.7, 21.2, "south", 0, "returning from the bench"), byBench(53.8, 20.6, "south", 10, "greeting neighbours", { wave: true }), byBench(52.4, 20, "east", 6, "checking his tools")],
   // The narrow passage is measured between the stall and workshop footing.
   // Keep its exact x; a grid-rounded point would put Rowan inside one of them.
   "rowan-stall": [stop(STALL.x + 1.7, STALL.z, "west", 18, "at his stall", { reach: 3.8 * K, approach: { x: (STALL.x + 1.7) * K, z: (STALL.z + 2.9) * K } }), stop(STALL.x + 1.7, STALL.z + 2.9, "west", 0, "walking round the awning"), stop(STALL.x + .4, STALL.z + 3, "north", 9, "checking the awning", { wave: true }), stop(STALL.x + 1.7, STALL.z + 2.9, "south", 0, "returning to his stall")],

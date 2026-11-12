@@ -14,6 +14,7 @@ import { villageNodePosition } from "../src/content/village-node-sites.js";
 import { findResidentPath } from "../src/rules/village-resident-life.js";
 import { villageCellFree } from "../src/rules/village-navigation.js";
 import { createVillagePadState, normaliseVillageStick } from "../src/ui/village-controls.js";
+import { spread } from "../src/rules/village-spread.js";
 
 // The game controller is exercised without a renderer or browser. Rules and
 // room plans stay real; the small DOM adapter below supplies the input port.
@@ -270,7 +271,8 @@ test("Map destinations hold their view until movement or camera centre resumes f
   const h = harness(t); welcome(h); h.game.tick(.1);
   const showMap = () => { h.game.showPanel("map"); h.click('[data-vg-focus="elowen-library"]'); };
   showMap(); assert.equal(h.game.status.surveying, true); assert.equal(h.game.status.panel, null);
-  assert.deepEqual(h.cameraCalls.focus.at(-1), [47.6 * K, 18.6 * K, 26]);
+  // The library's door, drawn at 47.6, 18.6, now stands back from the tree with the house.
+  assert.deepEqual(h.cameraCalls.focus.at(-1), [spread(47.6, 18.6)[0] * K, 18.6 * K, 26]);
   const held = { position: h.game.status.position, follows: h.cameraCalls.follow, resets: h.cameraCalls.reset };
   for (let i = 0; i < 5; i++) h.game.tick(.1);
   assert.equal(h.game.status.surveying, true); assert.deepEqual(h.game.status.position, held.position); assert.equal(h.cameraCalls.follow, held.follows, "idle frames leave the selected place in view"); assert.equal(h.cameraCalls.reset, held.resets);

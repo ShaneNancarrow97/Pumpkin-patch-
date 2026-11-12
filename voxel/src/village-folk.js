@@ -5,6 +5,7 @@
 // districts stand posed for the tour. Realm (x, z) → three (x, -z).
 import * as THREE from "three";
 import { FIXTURES, PLAN_SCALE } from "./content/village.js";
+import { spread } from "./rules/village-spread.js";
 import { doorOf, districtOpen } from "./rules/village.js";
 import { RESIDENT_BY_ID } from "./content/village.js";
 import { createVillageSprite, tickVillageSprite, readyVillageSprites, villageSpritePortrait } from "./village-sprite-actors.js";
@@ -205,7 +206,9 @@ const DESIGNS = {
   },
 };
 // Hosts keep a place on the Green rather than a home plot: Vesper the Velvet Bat (design grid).
-export const HOSTS = Object.freeze({ vesper: Object.freeze({ x: 100.2, z: 26, face: "north" }) });
+// Set down on the design grid as drawn; kept where it now stands (rules/village-spread.js).
+const placedAt = (x, z) => { const [nx, nz] = spread(x, z); return { x: nx, z: nz }; };
+export const HOSTS = Object.freeze({ vesper: Object.freeze({ ...placedAt(100.2, 26), face: "north" }) });
 
 // A resident's figure: joints for the head, arms and legs (or a skirt), posed by tick().
 export function makeResident(id, { style = "sprite" } = {}) {
@@ -233,7 +236,7 @@ export function makeResident(id, { style = "sprite" } = {}) {
 // Where each resident stands, by what's been built; the six who wait stand at their own doors.
 // reach is how far in front of them to stand to talk (Rowan's is across his counter).
 export function residentSpot(state, id) {
-  if(id==='granny')return{x:-68*PLAN_SCALE,z:79.5*PLAN_SCALE,face:'south'};
+  if(id==='granny'){const p=placedAt(-68,79.5);return{x:p.x*PLAN_SCALE,z:p.z*PLAN_SCALE,face:'south'};}
   const K = PLAN_SCALE, spot = (x, z, face, reach) => ({ x: x * K, z: z * K, face, ...(reach ? { reach: reach * K } : {}) });
   const route = residentRoute(state, id);
   if (route) { const { x, z, face, reach } = route.stops[0]; return { x, z, face, ...(reach ? { reach } : {}) }; }

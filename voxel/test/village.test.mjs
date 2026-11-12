@@ -5,6 +5,7 @@ import { NODES, FIXTURES } from "../src/content/village.js";
 import { FOLK_BY_ID, FRIENDSHIP } from "../src/content/village-folk.js";
 import { QUESTS, STORY_OBJECTS } from "../src/content/village-quests.js";
 import { VILLAGE_DECOR } from "../src/content/village-decor.js";
+import { spreadWorld, spreadWith } from "../src/rules/village-spread.js";
 
 // A farm at a level, with the home visit done (level 3's own goal).
 function farm(level = 3) { const s = M.freshState(); M.recordHomeActivity(s, "visit"); s.earned = M.LEVELS[level - 1].at; M.awardLevels(s); return s; }
@@ -122,16 +123,18 @@ test("favours take farm produce and pay like a sale, counting towards the level"
 
 test("decor goes anywhere open on the Green, but not on roads, homes, nodes or fixtures", () => {
   const s = invited(); s.village.decor.owned = { "garden-bench": 2, "moth-lamp": 1, "reading-stand": 1 };
-  assert.equal(M.villageDecorFits(s, "garden-bench", 21, 24), true, "your plot");
-  assert.equal(M.villageDecorFits(s, "garden-bench", 87, 18), false, "the arrival road");
-  assert.equal(M.villageDecorFits(s, "garden-bench", 60, 30), false, "Elowen's plot");
+  // Spots as drawn (world units), where they now stand.
+  const at = (x, z) => spreadWorld(x, z), plot = at(21, 24);
+  assert.equal(M.villageDecorFits(s, "garden-bench", ...plot), true, "your plot");
+  assert.equal(M.villageDecorFits(s, "garden-bench", ...at(87, 18)), false, "the arrival road");
+  assert.equal(M.villageDecorFits(s, "garden-bench", ...at(60, 30)), false, "Elowen's plot");
   assert.equal(M.villageDecorFits(s, "garden-bench", FIXTURES.well.x, FIXTURES.well.z), false, "the well");
-  assert.equal(M.villageDecorFits(s, "garden-bench", 77, 18), false, "the avenue's knot garden");
+  assert.equal(M.villageDecorFits(s, "garden-bench", ...at(77, 18)), false, "the avenue's knot garden");
   assert.equal(M.villageDecorFits(s, "garden-bench", NODES[0].x, NODES[0].z), false, "a gathering spot");
-  assert.equal(M.villageDecorFits(s, "garden-bench", 21, 75), false, "the Copse isn't the Green");
-  const placed = M.placeVillageDecor(s, "garden-bench", 21, 24); assert.ok(placed); assert.equal(s.village.decor.owned["garden-bench"], 1);
-  assert.equal(M.placeVillageDecor(s, "garden-bench", 21, 24), null, "not on top of another");
-  assert.equal(M.moveVillageDecor(s, placed.piece.instance, 21, 30, 90), true); assert.equal(M.storeVillageDecor(s, placed.piece.instance), true);
+  assert.equal(M.villageDecorFits(s, "garden-bench", ...at(21, 75)), false, "the Copse isn't the Green");
+  const placed = M.placeVillageDecor(s, "garden-bench", ...plot); assert.ok(placed); assert.equal(s.village.decor.owned["garden-bench"], 1);
+  assert.equal(M.placeVillageDecor(s, "garden-bench", ...plot), null, "not on top of another");
+  assert.equal(M.moveVillageDecor(s, placed.piece.instance, ...at(21, 30), 90), true); assert.equal(M.storeVillageDecor(s, placed.piece.instance), true);
   assert.equal(s.village.decor.owned["garden-bench"], 2);
   for (const d of VILLAGE_DECOR) assert.ok(d.w > 0 && d.d > 0 && d.height > 0 && d.cost > 0, d.id);
 });
@@ -142,8 +145,10 @@ test("A Room for Quiet Wings asks for a reading nook by Elowen's door, made of a
   M.doHandOver(s, "elowen"); M.doHandOver(s, "elowen"); assert.equal(s.village.built["elowen-conservatory"], true);
   assert.deepEqual(M.stepProgress(s, "elowen-2").missing, ["light", "seat", "books"]);
   s.village.decor.owned = { "moth-lamp": 1, "garden-bench": 1, "reading-stand": 1 };
-  assert.ok(M.placeVillageDecor(s, "moth-lamp", 74.4, 36.9)); assert.ok(M.placeVillageDecor(s, "garden-bench", 80.1, 37.2)); assert.equal(M.questStep(s, "elowen-2").kind, "place");
-  assert.ok(M.placeVillageDecor(s, "reading-stand", 74.1, 33.9)); assert.equal(M.questStep(s, "elowen-2").kind, "talk", "light, seat and books: done");
+  // Set out beside her door as drawn, and moved with her house.
+  const byElowen = (x, z) => spreadWith(x / 1.5, z / 1.5, 48, 20).map((v) => v * 1.5);
+  assert.ok(M.placeVillageDecor(s, "moth-lamp", ...byElowen(74.4, 36.9))); assert.ok(M.placeVillageDecor(s, "garden-bench", ...byElowen(80.1, 37.2))); assert.equal(M.questStep(s, "elowen-2").kind, "place");
+  assert.ok(M.placeVillageDecor(s, "reading-stand", ...byElowen(74.1, 33.9))); assert.equal(M.questStep(s, "elowen-2").kind, "talk", "light, seat and books: done");
 });
 
 test("friendship rewards are given once, and turn to coins when they can't be", () => {
@@ -156,10 +161,10 @@ test("friendship rewards are given once, and turn to coins when they can't be", 
 });
 
 test("the village saves and loads, and junk comes back as a fresh village", () => {
-  const s = invited(); M.startQuest(s, "rowan-1"); s.village.decor.owned["moth-lamp"] = 2; M.placeVillageDecor(s, "moth-lamp", 14, 14);
+  const s = invited(); M.startQuest(s, "rowan-1"); s.village.decor.owned["moth-lamp"] = 2; M.placeVillageDecor(s, "moth-lamp", ...spreadWorld(14, 14));
   const back = M.restoreState(JSON.parse(JSON.stringify(M.saveData(s))));
   assert.deepEqual(back.village, s.village);
-  const junk = M.restoreState({ ...JSON.parse(JSON.stringify(M.saveData(s))), village: { invited: "yes", quests: { nope: {}, "rowan-1": { step: 99 } }, decor: { placed: [{ id: "moth-lamp", instance: "x", x: 58, z: 12 }] }, materials: { logs: 9e9 } } });
+  const junk = M.restoreState({ ...JSON.parse(JSON.stringify(M.saveData(s))), village: { invited: "yes", quests: { nope: {}, "rowan-1": { step: 99 } }, decor: { placed: [{ id: "moth-lamp", instance: "x", ...(([x, z]) => ({ x, z }))(spreadWorld(58, 12)) }] }, materials: { logs: 9e9 } } });
   assert.equal(junk.village.invited, false); assert.equal(junk.village.quests.nope, undefined); assert.equal(junk.village.quests["rowan-1"].step, QUESTS.find((q) => q.id === "rowan-1").steps.length);
   assert.equal(junk.village.decor.placed.length, 0, "a piece on a road goes back to storage"); assert.equal(junk.village.decor.owned["moth-lamp"], 1); assert.equal(junk.village.materials.logs, 40);
   assert.deepEqual(M.restoreState(JSON.parse(JSON.stringify(M.saveData(M.freshState())))).village, M.freshState().village);

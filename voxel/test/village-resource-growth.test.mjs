@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import * as M from '../src/model.js';
 import { NODES, NODE_BY_ID, BLIGHT_NODES, RESOURCE_AREAS, PLAN_SCALE as K } from '../src/content/village.js';
 import { villageNodeCandidates, villageNodePosition } from '../src/content/village-node-sites.js';
+import { spread } from '../src/rules/village-spread.js';
 
 const green=BLIGHT_NODES.filter(n=>n.district==='green'),blight=green[0];
 function ready(){const s=M.freshState();s.village.invited=true;s.village.unlocks.push('gathering');return s;}
@@ -12,7 +13,8 @@ test('resources reach both residential gardens and the northern lawns while lega
   const ordinary=NODES.filter(n=>n.district==='green'&&n.kind!=='blight');
   assert.equal(ordinary.length,56);assert.equal(green.length,32);
   const original={"logs-01":[9,-6],"stone-01":[91,-8],"fibre-01":[39,-15],"herbs-01":[72,-7]};
-  for(const [id,[x,z]]of Object.entries(original))assert.deepEqual(villageNodePosition(ready(),id),{x:x*K,z:z*K},id+' retains its old visible first site');
+  // Drawn there, and kept there as the village spread apart round it (village-spread.js).
+  for(const [id,[x,z]]of Object.entries(original)){const [a,b]=spread(x,z);assert.deepEqual(villageNodePosition(ready(),id),{x:a*K,z:b*K},id+' retains its old visible first site');}
   for(const area of RESOURCE_AREAS){
     const nodes=ordinary.filter(n=>n.area===area.id);
     assert.ok(nodes.length>=2,area.name+' has loose pickups');

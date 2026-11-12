@@ -8,6 +8,7 @@
 // Heights are on the design grid (the view scales by PLAN_SCALE). Pure: no
 // three.js, so play mode and the tests can ask how high the ground is anywhere.
 import { DISTRICT_SHIFT } from "./content/village.js";
+import { gather, spreadRect } from "./rules/village-spread.js";
 
 const shift = (district, r) => { const [dx, dz] = DISTRICT_SHIFT[district]; return Object.freeze({ ...r, x0: r.x0 + dx, x1: r.x1 + dx, z0: r.z0 + dz, z1: r.z1 + dz, ...(r.inner ? { inner: Object.freeze({ x0: r.inner.x0 + dx, x1: r.inner.x1 + dx, z0: r.inner.z0 + dz, z1: r.inner.z1 + dz }) } : {}) }); };
 // Flat shelves, highest priority first (each drawn up in its district's own place, then moved); anywhere else is ground at 0.
@@ -83,3 +84,11 @@ const [mx, mz] = DISTRICT_SHIFT.marsh;
 const ISLANDS = [[52, 86, 6, 4], [66, 90, 5, 3.4], [100, 86, 7, 4], [112, 92, 5, 3], [46, 93, 4, 2.6], [85, 88.5, 8, 6.5], [72, 81, 3.6, 2.4], [92, 79, 4, 2.4]].map(([x, z, rx, rz]) => [x + mx, z + mz, rx, rz]);
 export const MARSH_ISLANDS = Object.freeze(ISLANDS.map(([x, z, rx, rz]) => Object.freeze({ x, z, rx, rz })));
 export function islandAt(x, z) { return ISLANDS.some(([ix, iz, rx, rz]) => ((x - ix) / rx) ** 2 + ((z - iz) / rz) ** 2 <= 1) || (z > 109 && z < 115 && x > 55 && x < 155) || z > 128.5 || x > 118.5 + mx || x < 39.5 + mx; }
+
+// ---- The ground as it lies ---------------------------------------------------------------------------------------
+// Everything above is on the old tight grid the village was drawn on, which the world's builders still write in.
+// The village is then spread (rules/village-spread.js); play, walking and the view ask about the ground where it
+// now lies, so these take spread positions and gather them back.
+export const groundHeight = (x, z) => terrainHeight(...gather(x, z));
+export const groundIsWater = (x, z) => isWater(...gather(x, z));
+export const GROUND_REALM = Object.freeze(spreadRect(REALM));

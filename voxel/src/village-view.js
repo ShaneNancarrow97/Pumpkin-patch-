@@ -5,9 +5,9 @@
 import * as THREE from "three";
 import { createFollowCameraRig, followCameraPose } from "./follow-camera.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { buildGround, buildPaving, buildWater, buildGreen, buildBeyond, buildHorizon, buildMist, buildStall, buildBench, buildHomes, buildTerrainWorks, buildWoods, grassAt, tickVillageVisibility, resetVillageVisibility, LAMPS, SKY } from "./village-world.js";
+import { buildGround, buildPaving, buildWater, buildGreen, buildBeyond, buildHorizon, buildMist, buildStall, buildBench, buildHomes, buildTerrainWorks, buildWoods, spreadVillage, spreadWhole, grassAt, tickVillageVisibility, resetVillageVisibility, LAMPS, SKY } from "./village-world.js";
 import { createGrass } from "./village-grass.js";
-import { terrainHeight, REALM } from "./village-terrain.js";
+import { groundHeight as terrainHeight, GROUND_REALM as REALM } from "./village-terrain.js";
 import { createBats } from "./village-bats.js";
 import { buildVillageDecor, letterPage, frame, velvetBatHall, VELVET_HALL, elowenLibrary, ELOWEN_HALL, rowanWorkshop, ROWAN_HALL } from "./village-models.js";
 import { Voxels } from "./voxels.js";
@@ -20,6 +20,7 @@ export { TOUR } from "./content/village-tour.js";
 import { createVillageLife } from "./village-life.js";
 import { createHallLife } from "./village-hall-life.js";
 import { finishVoxels, setLampNear } from "./voxel-finish.js";
+import { spread, gather } from "./rules/village-spread.js";
 import { VILLAGE_GRADE } from "./picture-grade.js";
 import { createLampGlow } from "./village-glow.js";
 import { createVillageAtmosphere } from "./village-atmosphere.js";
@@ -50,11 +51,13 @@ const TOUR_SECONDS = 4.6;
 // Buildings you can go inside: their hall, its plan (size, spawn, host's post, where a walker can't go), the host
 // who keeps it, and the front door on the design grid.
 // A door's facing is the way out of it; DOOR_NORMAL says which way that is on the grid (x east, z north).
+// A door drawn on the old grid, where it now stands (the village is spread apart: rules/village-spread.js).
+function spreadDoor(x, z, facing) { const [nx, nz] = spread(x, z); return Object.freeze({ x: nx, z: nz, facing }); }
 export const INSIDES = Object.freeze({
   ...EXPANSION_INSIDES,
-  "velvet-bat": Object.freeze({ name: "The Velvet Bat", build: velvetBatHall, hall: VELVET_HALL, host: "vesper", door: Object.freeze({ x: 102, z: 24.4, facing: "north" }) }),
-  "elowen-library": Object.freeze({ name: "Elowen's library", build: elowenLibrary, hall: ELOWEN_HALL, host: "elowen", door: Object.freeze({ x: 47.6, z: 18.6, facing: "east" }) }),
-  "rowan-workshop": Object.freeze({ name: "Rowan's workshop", build: rowanWorkshop, hall: ROWAN_HALL, host: "rowan", door: Object.freeze({ x: 66.4, z: 20, facing: "west" }) }),
+  "velvet-bat": Object.freeze({ name: "The Velvet Bat", build: velvetBatHall, hall: VELVET_HALL, host: "vesper", door: spreadDoor(102, 24.4, "north") }),
+  "elowen-library": Object.freeze({ name: "Elowen's library", build: elowenLibrary, hall: ELOWEN_HALL, host: "elowen", door: spreadDoor(47.6, 18.6, "east") }),
+  "rowan-workshop": Object.freeze({ name: "Rowan's workshop", build: rowanWorkshop, hall: ROWAN_HALL, host: "rowan", door: spreadDoor(66.4, 20, "west") }),
 });
 export const DOOR_NORMAL = Object.freeze({ north: [0, 1], south: [0, -1], east: [1, 0], west: [-1, 0] });
 
@@ -94,6 +97,10 @@ export function createVillageView(canvas, state, hooks = {}) {
   controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
   controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
   const patches = [];
+  // The lamps where they now stand, and the parts rebuilt as the village changes, moved into place as they are made.
+  const LAMPS_AT = LAMPS.map((l) => { const [x, z] = spread(l.x, l.z); return { ...l, x, z }; });
+  const oldSpot = (f) => gather(f.x / K, f.z / K);
+  function spreadPart(name, g) { if (name === "stall") spreadWhole(g, ...oldSpot(FIXTURES.stall)); else if (name === "bench") spreadWhole(g, ...oldSpot(FIXTURES.bench)); else spreadVillage(g); }
   let active = false, built = false, firstView = true, keys = {}, parts = {}, tour = null, time = 0, horizon = null, sky = null, mist = null, bats = null, life = null, grass = null, lampGlow = null;
   const pickables = [], pickMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const expansionWorld=createVillageExpansionWorld({scene,state,groundAt,pickMaterial});
@@ -132,21 +139,23 @@ export function createVillageView(canvas, state, hooks = {}) {
     expansionWorld.build();pickables.push(...expansionWorld.pickables);
     horizon = buildHorizon(); sky = horizon.userData.sky; horizon.remove(sky); scene.add(sky);
     const works = buildTerrainWorks({gates:false}), green = buildGreen(), beyond = buildBeyond({closedGates:false}), woods = buildWoods(); villageGreen = green;
-    // The chimneys the village noted as it was built smoke where they stand.
+    const earth = buildGround(), paving = buildPaving(), water = buildWater();
+    // Everything drawn on the old grid moves apart into the spread village; the rest was drawn there already.
+    for (const g of [water, works, green, beyond]) spreadVillage(g);
+    // The chimneys the village noted as it was built smoke where they now stand.
     const smoke = [green, beyond].flatMap((g) => g.userData.marks?.smoke ?? []).map(([x, y, z]) => ({ x, y, z: -z }));
     mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: REALM.z0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
-    const earth = buildGround(), paving = buildPaving(), water = buildWater();
     root.add(earth, paving, water, works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group);
     atmosphere = createVillageAtmosphere(); root.add(atmosphere.group);
     // Every built voxel gets the village's finish: finer blocks, joints and weathering shaded onto its faces.
     finishVoxels(scene);
     // A halo round every lamp's head and a pool of light under the far ones.
-    lampGlow = createLampGlow(LAMPS.map((l) => ({ head: W(l.x * K, l.z * K, (l.y - .2) * K), ground: W(l.x * K, l.z * K, groundAt(l.x * K, l.z * K)) }))); scene.add(lampGlow.group);
+    lampGlow = createLampGlow(LAMPS_AT.map((l) => ({ head: W(l.x * K, l.z * K, (l.y - .2) * K), ground: W(l.x * K, l.z * K, groundAt(l.x * K, l.z * K)) }))); scene.add(lampGlow.group);
     Object.entries({ ground: earth, paving, water, works, green, beyond, woods, horizon, mist, bats: bats.group, life: life.group, grass: grass.group }).forEach(([n, g]) => { g.name = n; });
     // Every patch of the built village, with where it is, so those beyond the haze can be skipped.
     root.updateMatrixWorld(true);
     for (const g of [works, green, beyond, woods, horizon]) for (const chunk of g.children) { if (!chunk.isGroup) continue; const box = new THREE.Box3().setFromObject(chunk); if (box.isEmpty()) continue; const sphere = box.getBoundingSphere(new THREE.Sphere()); patches.push({ chunk, sphere }); }
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(122 * K, 60 * K), pickMaterial); ground.rotation.x = -Math.PI / 2; ground.position.copy(W(60 * K, 7 * K, .02)); ground.userData = { type: "village-ground" }; scene.add(ground); pickables.push(ground);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(172 * K, 104 * K), pickMaterial); ground.rotation.x = -Math.PI / 2; ground.position.copy(W(60 * K, 29 * K, .02)); ground.userData = { type: "village-ground" }; scene.add(ground); pickables.push(ground);
     const f = FIXTURES;
     hit(f.stall.d, 4, f.stall.w, { type: "village-stall" }, f.stall.x, f.stall.z);
     hit(f.noticeboard.w, 3.6, f.noticeboard.d, { type: "village-noticeboard" }, f.noticeboard.x, f.noticeboard.z);
@@ -159,7 +168,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   function part(name, key, make) {
     if (keys[name] === key) return; keys[name] = key;
     if (parts[name]) { root.remove(parts[name]); dispose(parts[name]); }
-    parts[name] = make(); finishVoxels(parts[name]); root.add(parts[name]);
+    parts[name] = make(); spreadPart(name, parts[name]); finishVoxels(parts[name]); root.add(parts[name]);
   }
   function sync() {
     buildOnce();
@@ -443,7 +452,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     const t = tour ? focus : controls.target;
     if(expansionWorld.active){const near=[...expansionWorld.lamps].sort((a,b)=>a.distanceToSquared(t)-b.distanceToSquared(t));pool.forEach((l,i)=>{if(near.length){l.position.copy(near[i%near.length]);l.visible=true;l.userData.base=64;l.color.set(i%2?0x8ebacc:0xe7b77f);}else l.visible=false;});}
     else if (inside) { const near = [...inside.lamps].sort((a, b) => a.distanceToSquared(t) - b.distanceToSquared(t)); pool.forEach((l, i) => { const p = near[i % near.length]; l.position.copy(p); l.visible = true; }); }
-    else { const near = [...LAMPS].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z)); pool.forEach((l, i) => { const lamp = near[i]; l.visible=true; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); }); }
+    else { const near = [...LAMPS_AT].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z)); pool.forEach((l, i) => { const lamp = near[i]; l.visible=true; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); }); }
     sun.target.position.copy(t); sun.position.copy(t).addScaledVector(SUN, 100); sun.target.updateMatrixWorld();
     // Walking, the moon's shadows only matter round the walker: a tighter box draws fewer casters, and sharper.
     const reachShadow = following ? 28 : 44, sc = sun.shadow.camera;

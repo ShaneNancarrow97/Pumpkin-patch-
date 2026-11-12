@@ -13,7 +13,8 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import { Voxels, ChunkedVoxels, seeded, vary } from "./voxels.js";
 import * as LAYOUT from "./content/village.js";
 import { villageNodePosition, villageNodeCandidates } from "./content/village-node-sites.js";
-import { terrainHeight as H, TERRACES, RAMPS, WATERS, REALM, isWater, rampAt, terraceAt, MARSH_ISLANDS, MARSH_CAUSEWAY } from "./village-terrain.js";
+import { terrainHeight as H, groundHeight as HN, TERRACES, RAMPS, WATERS, REALM, GROUND_REALM, isWater, rampAt, terraceAt, MARSH_ISLANDS, MARSH_CAUSEWAY } from "./village-terrain.js";
+import { spread, gather, spreadRect, spreadBox, pieceAt, pieceOfBox, PIECES, SPREAD, isGap, inTownSquare, TOWN_SQUARE } from "./rules/village-spread.js";
 const SHIFT = LAYOUT.DISTRICT_SHIFT;
 import {
   C, shade, frame, realm, lampPost, studio, tavern, bigTent, caravan, manor, stiltHut, canopyTree, pine, twistedTree, deadTree, glowShroom, stoneWall, picketFence, mothPillar, carriage, fountain, well, noticeboard, stall, bench,
@@ -24,6 +25,30 @@ import {
 // on the ground beneath it; at() stands a whole model at the height of its origin.
 const onGround = (v) => ({ block(x, y, z, w, h, d, c, g) { v.block(x, y + H(x, z), -z, w, h, d, c, g); return this; }, mark(k, x, y, z) { v.mark(k, x, y + H(x, z), -z); return this; } });
 const at = (v, x, z, facing = "south") => frame(v, x, z, facing, H(x, z));
+// The village is drawn on its old tight grid and then spread apart (rules/village-spread.js, spreadVillage below).
+// A few things are drawn straight onto the spread ground instead, because they run across the gaps or fill them:
+// the ground and its paint, the paving, the outer walls and hedgerow, the scattered trees, bushes and flowers,
+// the woods and the horizon. Their writers stand blocks on the spread ground, and their batches say so.
+const onSpread = (v) => ({ block(x, y, z, w, h, d, c, g) { v.block(x, y + HN(x, z), -z, w, h, d, c, g); return this; }, mark(k, x, y, z) { v.mark(k, x, y + HN(x, z), -z); return this; } });
+const atSpread = (v, x, z, facing = "south") => frame(v, x, z, facing, HN(x, z));
+const spreadVoxels = (size = 24) => { const v = new ChunkedVoxels(size); v.native = true; return v; };
+const native = (group) => { group.userData.spread = "native"; return group; };
+// Draws on the old grid into a batch on the spread ground: each box lands where its piece now stands (a long one
+// stretched across the gap), as spreadVillage would move it after building, but written straight into the spread
+// batch so the moved village shares one set of chunks with what was drawn there already.
+export class SpreadingVoxels {
+  constructor(target) { this.target = target; }
+  block(x, y, z3, w, h, d, c, g) {
+    const z = -z3, aw = Math.abs(w), ad = Math.abs(d), above = Math.min(y, y + h) - H(x, z);
+    let nx, nz, nw = aw, nd = ad;
+    if (aw >= SPREAD.long || ad >= SPREAD.long) [nx, nz, nw, nd] = spreadBox(x, z, aw, ad);
+    else { const [dx, dz] = PIECES[pieceOfBox(x, above, z, aw, ad)]; nx = x + dx; nz = z + dz; }
+    this.target.block(nx, y, -nz, nw, h, nd, c, g); return this;
+  }
+  box(x, y, z, w, h, d, c, g) { return this.block(x + w / 2, y, z + d / 2, w, h, d, c, g); }
+  mark(k, x, y, z3) { const [nx, nz] = spread(x, -z3); this.target.mark(k, nx, y, -nz); return this; }
+}
+const sx = (x, z) => spread(x, z)[0], sz = (x, z) => spread(x, z)[1];
 // How much brighter than painted the glowing voxels are drawn, so the bloom catches lamps, windows and faces.
 const GLOW = 1.6;
 // Boxes no longer than this on any side (flowers, ivy leaves, bulbs, trim) stay out of the moon's shadow pass:
@@ -34,11 +59,15 @@ const SMALL = .3;
 // (in world units) is read back onto the grid.
 export const PLAN_SCALE = LAYOUT.PLAN_SCALE;
 const dv = (n) => n / PLAN_SCALE;
-const GREEN_NORTH = Math.max(...LAYOUT.DISTRICT_BY_ID.green.polygon.map(p=>dv(p[1])));
-const ROADS = LAYOUT.ROADS.map((r) => ({ ...r, width: dv(r.width), points: r.points.map(([x, z]) => [dv(x), dv(z)]) }));
-const PLOTS = LAYOUT.PLOTS.map((p) => ({ ...p, x0: dv(p.x0), z0: dv(p.z0), x1: dv(p.x1), z1: dv(p.z1), door: p.door.map(dv) }));
-const NODES = LAYOUT.NODES.map((n) => ({ ...n, x: dv(n.x), z: dv(n.z) }));
-const NODE_SITES = LAYOUT.NODES.filter(n=>n.district==="green").flatMap(n=>villageNodeCandidates(n).map(p=>({x:dv(p.x),z:dv(p.z)})));
+// The layout is stored spread (in world units); the builders want it on the old grid, so it is gathered back.
+const gp = ([x, z]) => gather(dv(x), dv(z));
+const GREEN_NORTH = Math.max(...LAYOUT.DISTRICT_BY_ID.green.polygon.map(p => gp(p)[1]));
+const ROADS = LAYOUT.ROADS.map((r) => ({ ...r, width: dv(r.width), points: r.points.map(gp) }));
+// The same roads as they now lie, for what is drawn on the spread ground.
+const ROADS_SPREAD = LAYOUT.ROADS.map((r) => ({ ...r, width: dv(r.width), points: r.points.map(([x, z]) => [dv(x), dv(z)]) }));
+const PLOTS = LAYOUT.PLOTS.map((p) => { const [x0, z0] = gp([p.x0, p.z0]), [x1, z1] = gp([p.x1, p.z1]); return { ...p, x0, z0, x1, z1, door: gp(p.door) }; });
+const NODES = LAYOUT.NODES.map((n) => { const [x, z] = gp([n.x, n.z]); return { ...n, x, z }; });
+const NODE_SITES = LAYOUT.NODES.filter(n=>n.district==="green").flatMap(n=>villageNodeCandidates(n).map(p=>{const[x,z]=gp([p.x,p.z]);return{x,z};}));
 // A small spatial index keeps meadow grass sampling independent of the total site count.
 const SITE_BUCKETS = new Map();
 for(const p of NODE_SITES){const key=Math.floor(p.x/2)+","+Math.floor(p.z/2);if(!SITE_BUCKETS.has(key))SITE_BUCKETS.set(key,[]);SITE_BUCKETS.get(key).push(p);}
@@ -46,8 +75,8 @@ function nearNodeSite(x,z,r){
   for(let a=Math.floor((x-r)/2);a<=Math.floor((x+r)/2);a++)for(let b=Math.floor((z-r)/2);b<=Math.floor((z+r)/2);b++)for(const p of SITE_BUCKETS.get(a+","+b)??[])if((p.x-x)**2+(p.z-z)**2<r*r)return true;
   return false;
 }
-const GATES = LAYOUT.GATES.map((g) => ({ ...g, x: dv(g.x), z: dv(g.z) }));
-const FIXTURES = Object.fromEntries(Object.entries(LAYOUT.FIXTURES).map(([k, f]) => [k, { ...f, x: dv(f.x), z: dv(f.z), ...(f.w ? { w: dv(f.w), d: dv(f.d) } : {}), ...(f.r ? { r: dv(f.r) } : {}) }]));
+const GATES = LAYOUT.GATES.map((g) => { const [x, z] = gp([g.x, g.z]); return { ...g, x, z }; });
+const FIXTURES = Object.fromEntries(Object.entries(LAYOUT.FIXTURES).map(([k, f]) => [k, { ...f, ...(([x, z]) => ({ x, z }))(gp([f.x, f.z])), ...(f.w ? { w: dv(f.w), d: dv(f.d) } : {}), ...(f.r ? { r: dv(f.r) } : {}) }]));
 // The fairy lights' cables: each string a smooth tube along its sag, all of a build's in one mesh.
 // Points are on the design grid relative to the ground (as onGround writes them).
 function cableMesh(list) {
@@ -64,6 +93,8 @@ const FOUNTAINS = [{ x: 51.5, z: 11.8, r: 1.05 }, { x: 64, z: 11.8, r: .85 }];
 
 // The ground's extent: the realm and a margin of woods all round.
 export const GROUND = Object.freeze({ x0: -124, x1: 210, z0: -40, z1: 176, scale: 4, step: 1.5 });
+// The same, where it now lies.
+export const GROUND_SPREAD = Object.freeze({ ...spreadRect(GROUND), scale: GROUND.scale, step: GROUND.step });
 // The round square, set in rings round the Moth Tree, reaching both doors and the roads.
 export const SQUARE = Object.freeze({ x0: 49.2, z0: 15.8, x1: 66.8, z1: 33.4, cx: FIXTURES.tree.x, cz: FIXTURES.tree.z, r: 8.8 });
 // Where the waterfalls tumble off the Quarry's island into the moat (design grid: x, z, top, foot, facing x).
@@ -76,23 +107,28 @@ const pick = (list, r) => list[(r() * list.length) | 0];
 
 // ---- Ground ----------------------------------------------------------------------
 // The ground's colours, painted once: lawns, the districts' own soils and plants, the ravine and the marsh's pools.
+// Its shapes are given on the old grid, and painted where they now stand: a patch moves with its piece, a long one
+// (a lawn, a road, the woods' floor) stretches across the gaps, so the new ground is painted too.
 function groundTexture() {
-  const g = GROUND, W = (g.x1 - g.x0) * g.scale, H = (g.z1 - g.z0) * g.scale, canvas = document.createElement("canvas"); canvas.width = W; canvas.height = H;
+  const g = GROUND_SPREAD, W = (g.x1 - g.x0) * g.scale, H = (g.z1 - g.z0) * g.scale, canvas = document.createElement("canvas"); canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext("2d"), r = seeded(73);
   const P = (x, z) => [(x - g.x0) * g.scale, (g.z1 - z) * g.scale];
-  const rect = (x0, z0, x1, z1, colour) => { const [a, b] = P(x0, z1), [c, d] = P(x1, z0); ctx.fillStyle = colour; ctx.fillRect(a, b, c - a, d - b); };
-  const speckle = (x0, z0, x1, z1, colours, n, size = 1.2) => { for (let i = 0; i < n; i++) { const [px, py] = P(x0 + r() * (x1 - x0), z0 + r() * (z1 - z0)); ctx.fillStyle = colours[(r() * colours.length) | 0]; ctx.fillRect(px, py, size * g.scale * (.4 + r() * .8), size * g.scale * (.3 + r() * .5)); } };
-  const blob = (x, z, rx, rz, colour) => { const [px, py] = P(x, z); ctx.fillStyle = colour; ctx.beginPath(); ctx.ellipse(px, py, rx * g.scale, rz * g.scale, 0, 0, Math.PI * 2); ctx.fill(); };
+  const placed = (x0, z0, x1, z1) => spreadRect({ x0: Math.min(x0, x1), z0: Math.min(z0, z1), x1: Math.max(x0, x1), z1: Math.max(z0, z1) });
+  const rect = (x0, z0, x1, z1, colour) => { const q = placed(x0, z0, x1, z1), [a, b] = P(q.x0, q.z1), [c, d] = P(q.x1, q.z0); ctx.fillStyle = colour; ctx.fillRect(a, b, c - a, d - b); };
+  const speckle = (x0, z0, x1, z1, colours, n, size = 1.2) => { const q = placed(x0, z0, x1, z1), grow = (q.x1 - q.x0) * (q.z1 - q.z0) / Math.max(1e-6, Math.abs((x1 - x0) * (z1 - z0))); n = Math.round(n * grow); for (let i = 0; i < n; i++) { const [px, py] = P(q.x0 + r() * (q.x1 - q.x0), q.z0 + r() * (q.z1 - q.z0)); ctx.fillStyle = colours[(r() * colours.length) | 0]; ctx.fillRect(px, py, size * g.scale * (.4 + r() * .8), size * g.scale * (.3 + r() * .5)); } };
+  const blob = (x, z, rx, rz, colour) => { const [px, py] = P(...spread(x, z)); ctx.fillStyle = colour; ctx.beginPath(); ctx.ellipse(px, py, rx * g.scale, rz * g.scale, 0, 0, Math.PI * 2); ctx.fill(); };
   // The woods round the realm.
   rect(g.x0, g.z0, g.x1, g.z1, "#355a36"); speckle(g.x0, g.z0, g.x1, g.z1, ["#3d6639", "#2f5032", "#46703e", "#2a4a30"], 9000, 2);
   // The Green: lawns in soft mown bands, clover and daisies, leaves under the trees.
   rect(0, -22, 120, GREEN_NORTH, "#558a3a");
   speckle(0, -22, 120, 0, ["#416743", "#4c7550", "#557b48", "#6c6547"], 8500, .55);
-  for (const a of LAYOUT.FORAGE_AREAS) { const x=dv(a.x),z=dv(a.z); blob(x,z,8,6,"rgba(99,80,55,.26)"); }
+  for (const a of LAYOUT.FORAGE_AREAS) { const [x,z]=gp([a.x,a.z]); blob(x,z,8,6,"rgba(99,80,55,.26)"); }
   for (let x = 0; x < 120; x += 2.4) rect(x, 0, x + 1.2, GREEN_NORTH, "rgba(255,255,230,.03)");
   speckle(0, 0, 120, GREEN_NORTH, ["#5d9440", "#4e8036", "#649a44", "#4b7c34"], 16000, .55);
   speckle(0, 0, 120, GREEN_NORTH, ["#f6f2e8", "#f5d04a", "#f2a0c0", "#ffffff"], 2600, .16);
   for (let i = 0; i < 70; i++) blob(r() * 120, r() * GREEN_NORTH, .8 + r() * 1.6, .6 + r() * 1.2, "rgba(40,80,30,.18)");
+  // The room opened for a town square before the Quarry: lawn for now.
+  { const t = TOWN_SQUARE, [a, b] = P(t.x0, t.z1), [c, d] = P(t.x1, t.z0); ctx.fillStyle = "#558a3a"; ctx.fillRect(a, b, c - a, d - b); for (let i = 0; i < 9000; i++) { const [px, py] = P(t.x0 + r() * (t.x1 - t.x0), t.z0 + r() * (t.z1 - t.z0)); ctx.fillStyle = ["#5d9440", "#4e8036", "#649a44", "#4b7c34"][(r() * 4) | 0]; ctx.fillRect(px, py, .55 * g.scale * (.4 + r() * .8), .55 * g.scale * (.3 + r() * .5)); } }
   speckle(0, 0, 120, 4, ["#b3352a", "#d0532c", "#e8873a", "#cf8f2c"], 900, .3); speckle(0, GREEN_NORTH-5, 120, GREEN_NORTH, ["#b3352a", "#d0532c", "#e8873a", "#cf8f2c"], 700, .3); speckle(0, 0, 4, GREEN_NORTH, ["#b3352a", "#e8873a"], 400, .3);
   // The districts, each where it now stands (drawn in its own place, then moved).
   const at = (d, x0, z0, x1, z1) => [x0 + SHIFT[d][0], z0 + SHIFT[d][1], x1 + SHIFT[d][0], z1 + SHIFT[d][1]];
@@ -125,7 +161,7 @@ function groundTexture() {
     const i=(py*W+px)*4,r=rgba[i],green=rgba[i+1],b=rgba[i+2];
     const to=((H-1-py)*W+px)*4;texels[to]=r;texels[to+1]=green;texels[to+2]=b;
     if(green<=r*1.08||green<=b*1.08){texels[to+3]=0;continue;}
-    const x=g.x0+(px+.5)/g.scale,z=g.z1-(py+.5)/g.scale,p=FIXTURES.pond;
+    const [x,z]=gather(g.x0+(px+.5)/g.scale,g.z1-(py+.5)/g.scale),p=FIXTURES.pond;
     const pond=((x-p.x)/(p.w/2))**2+((z-p.z)/(p.d/2))**2<1;
     texels[to+3]=isWater(x,z)||pond?0:255;
   }
@@ -133,12 +169,12 @@ function groundTexture() {
   const t = new THREE.DataTexture(texels,W,H);t.colorSpace=THREE.SRGBColorSpace;t.minFilter=THREE.LinearMipmapLinearFilter;t.magFilter=THREE.LinearFilter;t.generateMipmaps=true;t.anisotropy=4;t.needsUpdate=true;return t;
 }
 export function buildGround() {
-  const g = GROUND, st = g.step, nx = Math.round((g.x1 - g.x0) / st), nz = Math.round((g.z1 - g.z0) / st), pos = new Float32Array((nx + 1) * (nz + 1) * 3), uv = new Float32Array((nx + 1) * (nz + 1) * 2), idx = [];
-  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = g.x0 + i * st, z = g.z0 + j * st, k = j * (nx + 1) + i; pos.set([x, H(x, z), -z], k * 3); uv.set([i / nx, j / nz], k * 2); }
+  const g = GROUND_SPREAD, st = g.step, nx = Math.round((g.x1 - g.x0) / st), nz = Math.round((g.z1 - g.z0) / st), pos = new Float32Array((nx + 1) * (nz + 1) * 3), uv = new Float32Array((nx + 1) * (nz + 1) * 2), idx = [];
+  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = g.x0 + i * st, z = g.z0 + j * st, k = j * (nx + 1) + i; pos.set([x, HN(x, z), -z], k * 3); uv.set([i / nx, j / nz], k * 2); }
   for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, c = a + nx + 1, d = c + 1; idx.push(a, b, c, b, d, c); }
   const geo = new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.BufferAttribute(pos, 3)); geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2)); geo.setIndex(idx); geo.computeVertexNormals();
   const mesh = new THREE.Mesh(geo, applyGrassDetail(new THREE.MeshStandardMaterial({ map: groundTexture(), roughness: 1, metalness: 0 })));
-  mesh.receiveShadow = true; mesh.name = "village-ground"; return mesh;
+  mesh.receiveShadow = true; mesh.name = "village-ground"; return native(mesh);
 }
 
 // ---- Paving -----------------------------------------------------------------------
@@ -211,22 +247,24 @@ function squareTexture() {
 // The paving writes no depth and draws after the ground, so overlapping quads never flicker.
 export function buildPaving() {
   const group = new THREE.Group(), pos = [], uv = [], idx = [], quads = [];
-  for (const road of ROADS.filter((x) => !["future-spur", "forage"].includes(x.kind))) {
+  for (const road of ROADS_SPREAD.filter((x) => !["future-spur", "forage"].includes(x.kind))) {
     const h = road.width / 2;
     for (let i = 1; i < road.points.length; i++) { const [ax, az] = road.points[i - 1], [bx, bz] = road.points[i]; quads.push({ x0: Math.min(ax, bx) - h, z0: Math.min(az, bz) - h, x1: Math.max(ax, bx) + h, z1: Math.max(az, bz) + h, ns: Math.abs(bz - az) > Math.abs(bx - ax) }); }
   }
   quads.push({ x0: 55, z0: -16, x1: 61, z1: 0, ns: true });
-  const stairs = (x, z) => { const r = rampAt(x, z); return r && !r.bridge && r.id !== "moor-ramp"; };
+  // Its roads and square are drawn where they now lie; what the ground is there is asked of the old grid.
+  const rampHere = (x, z) => rampAt(...gather(x, z)), waterHere = (x, z) => isWater(...gather(x, z));
+  const stairs = (x, z) => { const r = rampHere(x, z); return r && !r.bridge && r.id !== "moor-ramp"; };
   // Each road in short strips along its length, each strip at the ground's height there.
   for (const q of quads) {
     const len = q.ns ? q.z1 - q.z0 : q.x1 - q.x0, n = Math.max(1, Math.ceil(len / .5));
     for (let k = 0; k < n; k++) {
       const t0 = k / n, t1 = (k + 1) / n, a = (q.ns ? q.z0 : q.x0) + len * t0, b = (q.ns ? q.z0 : q.x0) + len * t1, m = (a + b) / 2, cx = (q.x0 + q.x1) / 2, cz = (q.z0 + q.z1) / 2;
       if (q.ns ? stairs(cx, m) : stairs(m, cz)) continue;
-      if (q.ns ? isWater(cx, m) && !rampAt(cx, m) : isWater(m, cz) && !rampAt(m, cz)) continue;
+      if (q.ns ? waterHere(cx, m) && !rampHere(cx, m) : waterHere(m, cz) && !rampHere(m, cz)) continue;
       const base = pos.length / 3;
       const corners = q.ns ? [[q.x0, a], [q.x1, a], [q.x1, b], [q.x0, b]] : [[a, q.z0], [b, q.z0], [b, q.z1], [a, q.z1]];
-      for (const [x, z] of corners) { const y = H(q.ns ? cx : x, q.ns ? z : cz) + .03; pos.push(x, y, -z); uv.push(q.ns ? x / TILE : z / TILE, q.ns ? z / TILE : x / TILE); }
+      for (const [x, z] of corners) { const y = HN(q.ns ? cx : x, q.ns ? z : cz) + .03; pos.push(x, y, -z); uv.push(q.ns ? x / TILE : z / TILE, q.ns ? z / TILE : x / TILE); }
       idx.push(base, base + 1, base + 2, base, base + 2, base + 3);
     }
   }
@@ -238,18 +276,18 @@ export function buildPaving() {
   for (let i = 0; i < du.count; i++) { const x = sq.cx + dp.getX(i), z = sq.cz + dp.getY(i); du.setXY(i, (x - sq.x0) / (sq.x1 - sq.x0), (z - sq.z0) / (sq.z1 - sq.z0)); }
   const plaza = new THREE.Mesh(disc, material(squareTexture())); plaza.rotation.x = -Math.PI / 2; plaza.position.set(sq.cx, .045, -sq.cz); plaza.receiveShadow = true; plaza.renderOrder = 2; group.add(plaza);
   // Kerb-stones along every paved edge that meets the grass, and a ring of them round the square.
-  const v = new Voxels(), R = onGround(v), r = seeded(829), inside = (x, z) => quads.some((q) => x > q.x0 + .05 && x < q.x1 - .05 && z > q.z0 + .05 && z < q.z1 - .05) || Math.hypot(x - sq.cx, z - sq.cz) < sq.r - .05;
+  const v = new Voxels(), R = onSpread(v), r = seeded(829), inside = (x, z) => quads.some((q) => x > q.x0 + .05 && x < q.x1 - .05 && z > q.z0 + .05 && z < q.z1 - .05) || Math.hypot(x - sq.cx, z - sq.cz) < sq.r - .05;
   for (const q of quads) for (const [ax, az, bx, bz, nx, nz] of [[q.x0, q.z0, q.x1, q.z0, 0, -1], [q.x0, q.z1, q.x1, q.z1, 0, 1], [q.x0, q.z0, q.x0, q.z1, -1, 0], [q.x1, q.z0, q.x1, q.z1, 1, 0]]) {
     const len = Math.hypot(bx - ax, bz - az), n = Math.max(1, Math.round(len / .56)), along = Math.abs(bx - ax) > .01;
     for (let i = 0; i < n; i++) {
       const t = (i + .5) / n, x = ax + (bx - ax) * t, z = az + (bz - az) * t;
-      if (inside(x + nx * .3, z + nz * .3) || stairs(x, z) || isWater(x, z) || rampAt(x, z)?.bridge) continue;
+      if (inside(x + nx * .3, z + nz * .3) || stairs(x, z) || waterHere(x, z) || rampHere(x, z)?.bridge) continue;
       R.block(x - nx * .1, 0, z - nz * .1, along ? len / n - .04 : .26, .12, along ? .26 : len / n - .04, vary(pick(C.stone, r), .05, r));
     }
   }
   for (let i = 0; i < 96; i++) { const a = i / 96 * Math.PI * 2, x = sq.cx + Math.cos(a) * (sq.r - .1), z = sq.cz + Math.sin(a) * (sq.r - .1); if (quads.some((q) => x > q.x0 - .2 && x < q.x1 + .2 && z > q.z0 - .2 && z < q.z1 + .2)) continue; R.block(x, 0, z, .3, .14, .3, vary(pick(C.stone, r), .05, r)); }
   group.add(v.build({ detailShadows: false }));
-  return group;
+  return native(group);
 }
 
 // Glossy water: the moat round the Quarry's island, the Marsh's pools, the pond, the well and the knot gardens' fountains.
@@ -271,7 +309,7 @@ export function buildWater() {
 // Where grass grows (and which grass), on the design grid: lawns, the Copse's moss and the Moor's heather,
 // never on paving, stairs, water, gardens, under buildings or on the Quarry's stone.
 const NO_GRASS = [
-  [40, 16.2, 47.8, 29.8], [66.2, 15.6, 75.4, 24.6], [48.6, 8, 54.4, 15.6], [61.6, 8, 66.4, 15.6], [48.8, 16.1, 54.2, 16.9], [61.8, 16.1, 66.2, 16.9],
+  [40, 16.2, 47.8, 29.8], [66.2, 15.6, 75.4, 24.6], [48.6, 8, 54.4, 15.6], [61.6, 8, 66.4, 15.6], [48.8, 16.1, 54.2, 16.9], [61.8, 16.1, 65, 16.9],
   [67.6, 2.4, 81.4, 8.4], [29.6, 5.6, 46.6, 9.4], [85.5, 1.5, 94.5, 10.5], [74.8, 14.5, 81.4, 20], [91.4, 11.6, 111.8, 30], [52.4, -6, 63.6, 1.4], [96, 1.6, 108.6, 10.4],
   // The Copse's cottages and gardens, drawn in its own place and moved with it.
   ...[[17, 43.6, 24.4, 52.4], [16.6, 63.6, 24.4, 76.2], [8, 42.6, 20.4, 46.4], [8, 62.4, 21, 72.4]].map(([a, b, c, d]) => [a + SHIFT.copse[0], b + SHIFT.copse[1], c + SHIFT.copse[0], d + SHIFT.copse[1]]),
@@ -284,10 +322,22 @@ const GRASS = {
   moss: { h: .26, flowers: true, colours: [0x3a6a52, 0x467a5c, 0x52866a, 0x356048, 0x5a7a5a] },
   heather: { h: .4, flowers: true, colours: [0x6a4a7a, 0x7d5a8a, 0x8a6a9a, 0x9a8a50, 0x5a4a6a, 0xa88ab8] },
 };
+// Where grass grows, asked on the spread ground. On a piece the old grid decides. Ground let in between the pieces
+// is open: lawn (the town square, the Green), the meadow's tussocks south of the wall, or the moss or heather of the
+// side it opened from, except where a road drawn across it runs or water lies.
+const onRoad = (roads, x, z) => roads.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + .25 && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + .25));
 export function grassAt(x, z) {
+  const [gx, gz] = gather(x, z);
+  if (!isGap(x, z)) return grassOnGrid(gx, gz);
+  if (onRoad(ROADS_SPREAD, x, z) || isWater(gx, gz)) return null;
+  if (inTownSquare(x, z)) return GRASS.lawn;
+  if (gz < 0) return Math.sin(x * 3.11 + z * 7.01) > 0 ? null : GRASS.meadow;
+  return grassOnGrid(gx, gz) ?? (gx > -1 && gx < 121 && gz < GREEN_NORTH + 1.5 ? GRASS.lawn : GRASS.moss);
+}
+function grassOnGrid(x, z) {
   if (x < REALM.x0 + .5 || x > REALM.x1 - .5 || z < REALM.z0 + .5 || z > REALM.z1 - .5 || isWater(x, z) || rampAt(x, z)) return null;
   if (Math.hypot(x - SQUARE.cx, z - SQUARE.cz) < SQUARE.r + .3) return null;
-  if (ROADS.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + .25 && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + .25))) return null;
+  if (onRoad(ROADS, x, z)) return null;
   if (NO_GRASS.some(([a, b, c, d]) => x > a && x < c && z > b && z < d)) return null;
   if(nearNodeSite(x,z,.45))return null;
   if(z<0)return Math.sin(x*3.11+z*7.01)>0 ? null : GRASS.meadow;
@@ -301,6 +351,7 @@ export function grassAt(x, z) {
 }
 
 // What the life layer animates, on the design grid.
+// (On the old grid: the life layer places what it works out there where it now stands.)
 export const LAYOUT_DESIGN = Object.freeze({ tree: FIXTURES.tree, fountains: FOUNTAINS, falls: FALLS, height: H });
 
 // ---- The Green ------------------------------------------------------------------
@@ -356,11 +407,14 @@ export function resetVillageVisibility(green) {
   const status=green.userData.treeVisibility;status.opacity=1;status.target=1;status.upperVisible=true;
 }
 export function buildGreen() {
-  const v = new ChunkedVoxels(24), R = onGround(v), r = seeded(101), fr = (x, z, facing) => at(v, x, z, facing), cables = [];
-  // The south wall with the moth gate, and the carriage waiting inside it.
-  stoneWall(R, 0, .6, 53.3, .6, 1.2, r); stoneWall(R, 62.7, .6, 120, .6, 1.2, r);
-  stoneWall(R, .6, -22, .6, 30, 1.2, r); stoneWall(R, 119.4, -22, 119.4, 30, 1.2, r);
-  stoneWall(R, 0, -22, 53.3, -22, .85, r); stoneWall(R, 62.7, -22, 120, -22, .85, r);
+  // Drawn straight onto the spread ground: the outer walls, the hedgerow and the scattered trees and flowers. The
+  // rest is drawn on the old grid and lands where its piece now stands, in the same chunks.
+  const vn = spreadVoxels(32), Rn = onSpread(vn), place = (x, z) => spread(x, z);
+  const v = new SpreadingVoxels(vn), R = onGround(v), r = seeded(101), fr = (x, z, facing) => at(v, x, z, facing), cables = [];
+  // The south wall with the moth gate, and the carriage waiting inside it. The walls run the Green's new width.
+  stoneWall(Rn, sx(0, .6), .6, 53.3, .6, 1.2, r); stoneWall(Rn, 62.7, .6, sx(120, .6), .6, 1.2, r);
+  stoneWall(Rn, sx(.6, 0), -22, sx(.6, 0), 30, 1.2, r); stoneWall(Rn, sx(119.4, 0), -22, sx(119.4, 0), 30, 1.2, r);
+  stoneWall(Rn, sx(0, -22), -22, 53.3, -22, .85, r); stoneWall(Rn, 62.7, -22, sx(120, -22), -22, .85, r);
   mothPillar(fr(54, .6, "south"), 0, 0, r); mothPillar(fr(62, .6, "south"), 0, 0, r);
   // Overlapping segments read as an arch from the low decorating camera, not floating cubes.
   for (let i = 0; i <= 32; i++) { const a = i / 32 * Math.PI; R.block(58 + Math.cos(a) * 4, 4.4 + Math.sin(a) * 1.1, .6, .5, .22, .3, C.iron); }
@@ -368,9 +422,10 @@ export function buildGreen() {
   { const c = FIXTURES.carriage; carriage(fr(c.x - 2.2, c.z, c.facing), 0, 0, r); }
   // The open arrival meadow gives the camera room to breathe and leads to four forage clearings.
   for (const [x,z] of [[53,-18],[63,-18],[53,-7],[63,-7]]) { lampPost(R,x,z,3,r,1); jackOLantern(fr(x,z),0,0,.4,r,0,.7); }
-  for (const [x,z] of [[4,-17],[4,-4],[31,-2],[48,-20],[68,-20],[92,-2],[117,-18],[117,-5]]) canopyTree(R,x,z,1.05,r,pick([C.crimson,C.golden,C.violet],r),{cell:.5});
+  // Trees about the arrival meadow, each drawn whole where its spot now stands.
+  for (const [x,z] of [[4,-17],[4,-4],[31,-2],[48,-20],[68,-20],[92,-2],[117,-18],[117,-5]]) canopyTree(Rn,...place(x,z),1.05,r,pick([C.crimson,C.golden,C.violet],r),{cell:.5});
   for (const a of LAYOUT.FORAGE_AREAS) {
-    const x=dv(a.x),z=dv(a.z);
+    const [x,z]=gp([a.x,a.z]);
     for(let i=0;i<26;i++){const angle=r()*Math.PI*2,rx=x+Math.cos(angle)*(4+r()*4),rz=z+Math.sin(angle)*(3+r()*3);if(nearNodeSite(rx,rz,.7)||ROADS.some(rd=>rd.points.some(p=>Math.hypot(p[0]-rx,p[1]-rz)<2)))continue;flower(R,rx,rz,pick([0x9a6ae0,0xffcf77,0xdec6fa],r),r,.65);}
   }
   // The square: the Moth Tree at its heart, its lamps, the well, planters, flowers round the edges.
@@ -389,12 +444,13 @@ export function buildGreen() {
   for (const l of LAMPS.slice(4, 8)) lampPost(R, l.x, l.z, 3.2, r, 1);
   // The same moth marks the route from carriage to plaza, mounted on the
   // existing lamps. The cloth starts above 2.2 design units (3.3 world units).
-  for (const l of LAMPS.slice(0, 8)) mothBanner(R, l.x + (l.x < F.x ? -.55 : .55), 2.22, l.z - .05, .78);
+  // The square's lamps hang theirs away from the tree; the avenue's over the road, clear of the gardens.
+  LAMPS.slice(0, 8).forEach((l, i) => mothBanner(R, l.x + (l.x < F.x ? -.55 : .55) * (i < 4 ? 1 : -1), 2.22, l.z - .05, .78));
   parkBench(fr(55.6, 11.5, "east"), 0, 0, r); parkBench(fr(60.4, 11.5, "west"), 0, 0, r);
   // Crimson maples flanking the gate, the old oak, and a feature maple in Rowan's garden.
-  canopyTree(R, 50.2, 4, 1.25, r, C.crimson, { cell: .3 }); canopyTree(R, 65.8, 4, 1.25, r, C.crimson, { cell: .3 });
+  canopyTree(R, 52.2, 4, 1.25, r, C.crimson, { cell: .3 }); canopyTree(R, 63.8, 4, 1.25, r, C.crimson, { cell: .3 });
   for (const [x, z] of [[55.3, 3.2], [60.7, 3.2]]) lampPost(R, x, z, 3.2, r, 1);
-  flowerBed(R, 48.8, 16.1, 50.3, 16.9, r, [0xf28fb5, 0xf6f0f5, 0x9a6ae0], 6); flowerBed(R, 61.8, 16.1, 66.2, 16.9, r, [0xf5d04a, 0xf08a3a, 0xf6f0f5], 6);
+  flowerBed(R, 48.8, 16.1, 50.3, 16.9, r, [0xf28fb5, 0xf6f0f5, 0x9a6ae0], 6); flowerBed(R, 61.8, 16.1, 65, 16.9, r, [0xf5d04a, 0xf08a3a, 0xf6f0f5], 6);
   canopyTree(R, FIXTURES.oak.x, FIXTURES.oak.z, 1.75, r, [0x4c8c3c, 0x5b9f45, 0x6db250, 0xd9a441], { cell: .34 });
   // Lamps along the cross road and at the ravine's edge.
   for (const l of LAMPS.slice(10, 16)) lampPost(R, l.x, l.z, 3.4, r, 1);
@@ -410,11 +466,12 @@ export function buildGreen() {
     const band = i % 5, x = band === 0 ? 1.5 + r() * 2.5 : band === 1 ? 84 + r() * 34 : band === 2 ? 2 + r() * 116 : band === 3 ? 23 + r() * 4.5 : 84 + r() * 34;
     const z = band === 0 ? 2 + r() * 33 : band === 1 ? 1.5 + r() * 9.5 : band === 2 ? 1.6 + r() * 1.8 : band === 3 ? 3 + r() * 28 : 12 + r() * 18;
     if (keepClear(x, z)) continue;
-    planted++; const kind = r(); kind < .7 ? canopyTree(R, x, z, .85 + r() * .5, r, pick(palettes, r), { cell: .56 }) : kind < .86 ? spookyTree(R, x, z, .8 + r() * .5, r) : pine(R, x, z, .7 + r() * .4, r);
+    planted++; const kind = r(), [px, pz] = place(x, z); kind < .7 ? canopyTree(Rn, px, pz, .85 + r() * .5, r, pick(palettes, r), { cell: .56 }) : kind < .86 ? spookyTree(Rn, px, pz, .8 + r() * .5, r) : pine(Rn, px, pz, .7 + r() * .4, r);
   }
-  for (let i = 0; i < 1300; i++) { const x = 1 + r() * 118, z = 1 + r() * 34; if (keepClear(x, z, .6)) continue; r() < .3 ? bush(R, x, z, .9, r) : flower(R, x, z, pick(C.flowers, r), r); }
+  for (let i = 0; i < 1300; i++) { const x = 1 + r() * 118, z = 1 + r() * 34; if (keepClear(x, z, .6)) continue; const [px, pz] = place(x, z); r() < .3 ? bush(Rn, px, pz, .9, r) : flower(Rn, px, pz, pick(C.flowers, r), r); }
   // A hedgerow inside the south wall, and wild flowers along it.
-  for (let x = 2; x < 118; x += .9) { if (Math.abs(x - 58) < 7.5 || pondClear(x, 2)) continue; bush(R, x, 1.7, .9, r, C.hedge); if (r() < .5) flower(R, x + .4, 2.6, pick(C.flowers, r), r); }
+  // (It runs the wall's new length, so it is laid on the spread ground and asks the old grid where the gate and pond are.)
+  for (let x = sx(2, 1.7); x < sx(118, 1.7); x += .9) { const [gx] = gather(x, 1.7); if (Math.abs(gx - 58) < 7.5 || pondClear(gx, 2)) continue; bush(Rn, x, 1.7, .9, r, C.hedge); if (r() < .5) flower(Rn, x + .4, 2.6, pick(C.flowers, r), r); }
   // The pond: a stone rim, reeds, lily pads and a little arched footbridge.
   const P2 = FIXTURES.pond;
   for (let i = 0; i < 44; i++) { const a = i / 44 * Math.PI * 2; R.block(P2.x + Math.cos(a) * (P2.w / 2 + .3), 0, P2.z + Math.sin(a) * (P2.d / 2 + .3), .7, .26 + r() * .2, .7, vary(pick(C.stone, r), .06, r)); }
@@ -437,12 +494,12 @@ export function buildGreen() {
   for (const [a, b] of [[0, 1], [1, 3], [3, 2], [2, 0]]) { const [ax, ay, az] = head(ring[a]), [bx, by, bz] = head(ring[b]); festoon(R, ax, ay, az, bx, by, bz, 14, .55, undefined, cables); }
   for (const l of ring) { const dx = l.x - F.x, dz = l.z - F.z, d = Math.hypot(dx, dz); festoon(R, l.x, l.y + .25, l.z, F.x + dx / d * 1.8, 5.6, F.z + dz / d * 1.8, 9, .3, undefined, cables); }
   for (const z of [3.2, 9, 14.6]) festoon(R, 55.3, z === 3.2 ? 3.3 : 3.5, z, 60.7, z === 3.2 ? 3.3 : 3.5, z, 12, .6, undefined, cables);
-  for (const [x, z] of [[55.3, 3.2], [60.7, 3.2], [55.3, 9], [60.7, 9], [55.3, 14.6], [60.7, 14.6]]) cornSheaf(R, x + (x < 58 ? -.28 : .28), z + .3, 1.7, r);
+  for (const [x, z] of [[55.3, 3.2], [60.7, 3.2], [55.3, 9], [60.7, 9], [55.3, 14.6], [60.7, 14.6]]) cornSheaf(R, x + (x < 58 ? -.05 : .05), z + .3, 1.7, r);
   for (const [x, s] of [[52.6, -1], [63.4, 1]]) { hayBale(R, x, 2.3, r, false); hayBale(R, x + s * .9, 2.3, r, false); hayBale(R, x + s * .45, 2.3, r, false, .55); jackOLantern(fr(x + s * .45, 2.1, "north"), 0, 0, .55, r, face++, 1.1); pumpkin(R, x - s * .8, 3.2, .5, r, "white"); pumpkin(R, x - s * .2, 3.5, .62, r); pumpkin(R, x + s * .5, 3.4, .42, r, "green"); cornSheaf(R, x + s * 1.6, 2.2, 1.9, r); }
   for (const [x0, z0, x1, z1] of [[48.6, 8, 54.4, 15.6], [61.6, 8, 66.4, 15.6]]) for (let i = 0; i < 7; i++) { const x = x0 + 1.2 + r() * (x1 - x0 - 2.4), z = z0 + 1.2 + r() * (z1 - z0 - 2.4); if (Math.hypot(x - (x0 + x1) / 2, z - (z0 + z1) / 2) < 1.6) continue; pumpkin(R, x, z, .32 + r() * .14, r, pick(["orange", "orange", "white", "gold"], r)); }
   pumpkin(R, W2.x + 1.3, W2.z - 1.5, .55, r); pumpkin(R, W2.x + 1.8, W2.z - 1.1, .38, r, "white"); crow(R, W2.x + .4, W2.z, 3.05, r);
   for (const [dx, k] of [[-.7, .5], [-.1, .38], [.5, .46]]) pumpkin(R, FIXTURES.noticeboard.x + dx, FIXTURES.noticeboard.z - .8, k, r, dx > 0 ? "gold" : "orange");
-  for (let i = 0; i < 8; i++) crow(R, 10 + i * 13.7 + r() * 3, .7, 1.32, r);
+  for (let i = 0; i < 8; i++) crow(Rn, sx(10 + i * 13.7 + r() * 3, .7), .7, 1.32, r);
   // The Green's own pumpkin patch, east of the avenue: vines in rows, pumpkins of every size, a scarecrow and a barrow.
   for (let row = 0; row < 4; row++) {
     const z = 3.2 + row * 1.5;
@@ -471,12 +528,13 @@ export function buildGreen() {
   for (let i = 0; i < 12; i++) { const gx = MY.x0 + 1.4 + (i % 4) * 2, gz = MY.z0 + 1.8 + (i >> 2) * 2.6; gravestone(fr(gx + (r() - .5) * .4, gz, "east"), 0, 0, r, i); }
   spookyTree(R, 87.2, 9, 1.15, r); spookyTree(R, 93, 2.8, .9, r);
   lampPost(R, 95.4, 6, 3.2, r, 1);
-  const group = v.build({ detailShadows: false, small: SMALL, glow: GLOW }), wire = cableMesh(cables); if (wire) group.add(wire);
+  // The cables and the tree's crown belong to the tree, which stays where it was: they need no moving either.
+  const group = native(vn.build({ detailShadows: false, small: SMALL, glow: GLOW })), wire = cableMesh(cables); if (wire) group.add(wire);
   const tree=upperTree.build({detailShadows:false,small:SMALL,glow:GLOW});tree.name="moth-tree-upper";group.add(tree);
   const meshes=[];tree.traverse(mesh=>{if(!mesh.isMesh)return;mesh.material.alphaHash=true;mesh.userData.fullShadow=mesh.castShadow;meshes.push(mesh);});
   visibilityRigs.set(group,{tree,meshes,opacity:1,centre:{x:F.x*PLAN_SCALE,y:H(F.x,F.z)*PLAN_SCALE,z:-F.z*PLAN_SCALE}});
   group.userData.treeVisibility={opacity:1,target:1,upperVisible:true};
-  group.userData.visualBudget = { boxes: v.count+upperTree.solid.length+upperTree.glow.length, addedLights: 0, textureBytes: 0 };
+  group.userData.visualBudget = { boxes: vn.count+upperTree.solid.length+upperTree.glow.length, addedLights: 0, textureBytes: 0 };
   return group;
 }
 
@@ -591,8 +649,8 @@ export function buildHomes(built) {
   for (let i = 0; i < 4; i++) { R.block(76 + i * 1.3, 0, 17, .9, .18, 5, 0x5a3e2a); for (let k = 0; k < 6; k++) R.block(76 + i * 1.3, .18, 15 + k * .8, .4, .3, .4, i % 2 ? 0x6aa84f : 0x4f8a3a); }
   for (let k = 0; k < 8; k++) flower(R, 34 + (k % 4) * .6, 16 + (k >> 2) * .6, 0x9a6ae0, r, 1.2);
   // Doorstep lanterns, and a scarecrow in Rowan's vegetables.
-  jackOLantern(at(v, 48.6, 17.6, "east"), 0, 0, .5, r, 0); jackOLantern(at(v, 48.7, 22.2, "east"), 0, 0, .42, r, 2); pumpkin(R, 48.9, 22.9, .34, r, "white");
-  jackOLantern(at(v, 65.4, 18.4, "west"), 0, 0, .5, r, 1); jackOLantern(at(v, 65.4, 21.6, "west"), 0, 0, .44, r, 0); pumpkin(R, 65.1, 17.7, .36, r, "gold");
+  jackOLantern(at(v, 47.95, 17.6, "east"), 0, 0, .5, r, 0); jackOLantern(at(v, 47.95, 22.2, "east"), 0, 0, .42, r, 2); pumpkin(R, 48, 22.9, .34, r, "white");
+  jackOLantern(at(v, 66.05, 18.4, "west"), 0, 0, .5, r, 1); jackOLantern(at(v, 66.05, 21.6, "west"), 0, 0, .44, r, 0); pumpkin(R, 66, 17.7, .36, r, "gold");
   scarecrow(at(v, 80.6, 17.5, "west"), 0, 0, r, 0);
   const group = v.build({ glow: GLOW });
   group.userData.visualBudget = { boxes: v.solid.length + v.glow.length, addedLights: 0 };
@@ -601,12 +659,12 @@ export function buildHomes(built) {
 export function buildNodes(ready, state) {
   const v = new Voxels(), live=[];
   for (const n of LAYOUT.NODES.filter(n=>n.district==="green")) {
-    const p=villageNodePosition(state,n),x=dv(p.x),z=dv(p.z),on=ready(n.id);
+    const p=villageNodePosition(state,n),x=dv(p.x),z=dv(p.z),on=ready(n.id),[ox,oz]=gather(x,z);
     const r=seeded([...n.id].reduce((n,c)=>Math.imul(n,31)+c.charCodeAt(0),307)>>>0);
-    node(at(v,x,z,["south","east","north","west"][Math.round(x+z)%4]),n.material,on,r);
+    node(atSpread(v,x,z,["south","east","north","west"][Math.round(ox+oz)%4]),n.material,on,r);
     if(on)live.push({id:n.id,x:p.x,z:p.z});
   }
-  const built=v.build({glow:GLOW});built.userData.resourceSites=live;
+  const built=native(v.build({glow:GLOW}));built.userData.resourceSites=live;
   built.userData.blightSites=live.filter(p=>LAYOUT.NODE_BY_ID[p.id]?.kind==="blight");
   return built;
 }
@@ -726,43 +784,44 @@ export const SKY = Object.freeze({ top: 0x03030c, middle: 0x0b0a24, horizon: 0x2
 // underneath, lamps along the roads through them and a signpost where the roads part.
 const nearRoad = (x, z, pad) => ROADS.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + pad && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + pad));
 export function buildWoods() {
-  const v = new ChunkedVoxels(30), R = onGround(v), r = seeded(611);
+  const v = spreadVoxels(30), R = onSpread(v), r = seeded(611), RL = GROUND_REALM;
   const clear = (x, z) => !(x>-101&&x<-30&&z>44&&z<118)&&!(x>-37&&x<3&&z>94&&z<109)&&!terraceAt(x, z) && !rampAt(x, z) && !isWater(x, z) && !(x > -1 && x < 121 && z < GREEN_NORTH+1.5);
   const open = (x, z, pad) => clear(x, z) && !nearRoad(x, z, pad) && !GATES.some((g) => Math.hypot(g.x - x, g.z - z) < 7) && [[pad, 0], [-pad, 0], [0, pad], [0, -pad]].every(([a, b]) => clear(x + a, z + b));
   const crowns = [C.violet, C.magenta, C.golden, C.crimson, C.teal, C.leaves, C.violet, C.golden];
   const patch = (x, z) => crowns[Math.floor((Math.sin(x * .085 + z * .047) + Math.sin(z * .103 - x * .041 + 1.3) + 2) * 2) % crowns.length];
   let trees = 0;
-  for (let gx = REALM.x0 + 1.5; gx < REALM.x1 - 1; gx += 4.2) for (let gz = REALM.z0 + 1.5; gz < REALM.z1 - 1; gz += 4.2) {
-    const x = gx + (r() - .5) * 3.4, z = gz + (r() - .5) * 3.4;
-    if (!open(x, z, 2.8)) continue;
-    const edge = Math.min(x - REALM.x0, REALM.x1 - x, z - REALM.z0, REALM.z1 - z), k = r();
+  // Grown over the spread realm, each spot asking the old grid whether it is woodland; the town square stays open.
+  for (let gx = RL.x0 + 1.5; gx < RL.x1 - 1; gx += 4.2) for (let gz = RL.z0 + 1.5; gz < RL.z1 - 1; gz += 4.2) {
+    const x = gx + (r() - .5) * 3.4, z = gz + (r() - .5) * 3.4, [ox, oz] = gather(x, z);
+    if (inTownSquare(x, z) || !open(ox, oz, 2.8)) continue;
+    const edge = Math.min(x - RL.x0, RL.x1 - x, z - RL.z0, RL.z1 - z), k = r();
     if (k < (edge < 14 ? .5 : .2)) pine(R, x, z, .95 + r() * .7, r);
     else if (k < .93) canopyTree(R, x, z, 1 + r() * .65, r, r() < .82 ? patch(x, z) : pick(crowns, r), { cell: .8, litter: false });
     else spookyTree(R, x, z, 1 + r() * .5, r);
     trees++;
-    if (r() < .45) { const a = r() * 6.28, d = 1.4 + r(); if (clear(x + Math.cos(a) * d, z + Math.sin(a) * d)) bush(R, x + Math.cos(a) * d, z + Math.sin(a) * d, .8 + r() * .5, r); }
+    if (r() < .45) { const a = r() * 6.28, d = 1.4 + r(); if (clear(ox + Math.cos(a) * d, oz + Math.sin(a) * d)) bush(R, x + Math.cos(a) * d, z + Math.sin(a) * d, .8 + r() * .5, r); }
     if (r() < .05) glowShroom(R, x + 1, z + .6, r);
   }
   // Lamps along the roads through the woods and the Green's cross road (LAMPS 25 to 38).
-  for (const l of LAMPS.slice(25, 39)) lampPost(R, l.x, l.z, 3.4, r, 1);
+  for (const l of LAMPS.slice(25, 39)) lampPost(R, sx(l.x, l.z), sz(l.x, l.z), 3.4, r, 1);
   // A signpost where the roads part north of the Green: the Quarry ahead, the Copse west, the Moor east.
-  { const x = 62.6, z = 38.4; R.block(x, 0, z, .18, 2.7, .18, C.timber); R.block(x, 2.7, z, .26, .12, .26, C.iron);
+  { const [x, z] = spread(62.6, 38.4); R.block(x, 0, z, .18, 2.7, .18, C.timber); R.block(x, 2.7, z, .26, .12, .26, C.iron);
     for (const [y, dx, dz, col] of [[2.3, 0, .55, 0xc9a25f], [1.9, -.6, 0, 0x5a8a5a], [1.5, .6, 0, 0x9a3a5a]]) { R.block(x + dx, y, z + dz, dx ? 1.1 : .14, .26, dz ? 1.1 : .14, col); R.block(x + dx * 1.55, y + .04, z + dz * 1.55, dx ? .2 : .1, .18, dz ? .2 : .1, col); } }
-  const group = v.build({ detailShadows: false, small: SMALL }); group.userData.trees = trees; return group;
+  const group = native(v.build({ detailShadows: false, small: SMALL })); group.userData.trees = trees; return group;
 }
 
 export function buildHorizon() {
-  const group = new THREE.Group(), v = new ChunkedVoxels(70), r = seeded(503), R = onGround(v);
+  const group = new THREE.Group(), v = spreadVoxels(70), r = seeded(503), R = onSpread(v), REALM = GROUND_REALM;
   // A ring of woods round the realm: dark pines, autumn crowns and bare trees.
   for (let i = 0; i < 360; i++) {
     const side = i % 4, x = side === 0 ? REALM.x0 - 46 + r() * 44 : side === 1 ? REALM.x1 + 2 + r() * 44 : REALM.x0 - 46 + r() * (REALM.x1 - REALM.x0 + 92);
     const z = side === 2 ? REALM.z0 - 40 + r() * 38 : side === 3 ? REALM.z1 + 2 + r() * 40 : REALM.z0 - 40 + r() * (REALM.z1 - REALM.z0 + 80);
-    if (x > -2 && x < 122 && z > -32 && z < 1) continue;
+    if (x > sx(-2, 0) && x < sx(122, 0) && z > -32 && z < 1) continue;
     const k = r(); k < .55 ? pine(R, x, z, 1.1 + r() * 1.3, r) : k < .8 ? canopyTree(R, x, z, 1 + r() * .6, r, pick([C.crimson, C.golden, C.violet], r), { cell: .8, litter: false }) : spookyTree(R, x, z, 1.2 + r() * .8, r);
   }
   // Mountains to the north and the sides, dark in the night, their snow catching the moon.
   for (let i = 0; i < 30; i++) {
-    const x = -70 + i * 9 + r() * 6, z = 158 + r() * 30, h = 16 + r() * 30, w = 16 + r() * 18, steps = 14;
+    const x = -94 + i * 10.6 + r() * 6, z = REALM.z1 + 24 + r() * 30, h = 16 + r() * 30, w = 16 + r() * 18, steps = 14;
     let ox = 0, oz = 0;
     for (let k = 0; k < steps; k++) {
       const t = k / steps, ww = w * (1 - t) ** 1.15, snow = t > .72 && h > 26;
@@ -771,7 +830,7 @@ export function buildHorizon() {
       if (r() < .5 && ww > 3) R.block(x + ox + (r() - .5) * ww * .6, t * h, z + oz - ww * .2, ww * .35, h / steps * 1.6, ww * .3, vary(shade(0x24243e, .8 + t * .5), .06, r));
     }
   }
-  group.add(v.build({ shadows: false }));
+  group.add(native(v.build({ shadows: false })));
   // The sky: a dome shaded from near-black overhead to plum at the horizon, with stars in it.
   const sky = new THREE.Mesh(new THREE.SphereGeometry(600, 32, 16), new THREE.ShaderMaterial({
     side: THREE.BackSide, depthWrite: false, fog: false,
@@ -816,6 +875,41 @@ export function buildMist() {
   const tex = new THREE.CanvasTexture(c), material = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, opacity: .5, color: 0xb8b0e0 });
   const group = new THREE.Group(), r = seeded(557);
   const spots = [[48, 38, 14], [62, 38, 12], [76, 38, 12], [56, 84, 18], [80, 88, 18], [104, 84, 16], [12, 50, 14], [16, 74, 16], [30, 88, 14], [6, 18, 12], [110, 20, 14], [92, 6, 10], [40, 2, 12], [100, 60, 16]];
-  for (const [x, z, size] of spots) { const m = new THREE.Mesh(new THREE.PlaneGeometry(size, size * .7), material); m.rotation.x = -Math.PI / 2; m.position.set(x, .35 + r() * .5, -z); m.userData = { x, z, phase: r() * 6 }; m.renderOrder = 3; group.add(m); }
-  return group;
+  // Drawn where the spots now stand (the view drifts each from its own spot, so it cannot be moved after).
+  for (const [ox, oz, size] of spots) { const [x, z] = spread(ox, oz), m = new THREE.Mesh(new THREE.PlaneGeometry(size, size * .7), material); m.rotation.x = -Math.PI / 2; m.position.set(x, .35 + r() * .5, -z); m.userData = { x, z, phase: r() * 6 }; m.renderOrder = 3; group.add(m); }
+  return native(group);
 }
+
+// ---- Spreading what was drawn on the old grid ------------------------------------------------------------------
+// Every voxel of a group built on the old grid moves with the piece it belongs to (rules/village-spread.js): a small
+// box whole, a long one (a road's edge, a rail) stretched across the gap. Plain meshes (water, the fairy-light
+// cables) move point by point, or whole if they carry their own placement. Marks (chimney smoke and the like) move
+// with their spot. Batches already drawn on the spread ground say so and are left alone; so is a group done once.
+const unitBox = (mesh) => { const p = mesh.geometry?.parameters; return mesh.geometry?.type === "BoxGeometry" && p.width === 1 && p.height === 1 && p.depth === 1; };
+export function spreadVillage(root) {
+  const m = new THREE.Matrix4(), pos = new THREE.Vector3(), quat = new THREE.Quaternion(), scale = new THREE.Vector3();
+  const walk = (o) => {
+    if (o.userData?.spread) return;
+    if (o.isInstancedMesh && unitBox(o)) {
+      for (let i = 0; i < o.count; i++) {
+        o.getMatrixAt(i, m); m.decompose(pos, quat, scale);
+        const w = Math.abs(scale.x), h = Math.abs(scale.y), d = Math.abs(scale.z), x = pos.x, z = -pos.z, y = pos.y - h / 2 - H(x, z);
+        let nx, nz, nw = w, nd = d;
+        if (w >= SPREAD.long || d >= SPREAD.long) [nx, nz, nw, nd] = spreadBox(x, z, w, d);
+        else { const [dx, dz] = PIECES[pieceOfBox(x, y, z, w, d)]; nx = x + dx; nz = z + dz; }
+        pos.set(nx, pos.y, -nz); scale.set(Math.sign(scale.x || 1) * nw, scale.y, Math.sign(scale.z || 1) * nd);
+        o.setMatrixAt(i, m.compose(pos, quat, scale));
+      }
+      o.instanceMatrix.needsUpdate = true; o.computeBoundingSphere(); o.computeBoundingBox?.();
+    } else if (o.isMesh && !o.isInstancedMesh) {
+      const at = o.position, still = !at.x && !at.y && !at.z && !o.rotation.x && !o.rotation.y && !o.rotation.z;
+      if (still) { const a = o.geometry.attributes.position; for (let i = 0; i < a.count; i++) { const [nx, nz] = spread(a.getX(i), -a.getZ(i)); a.setX(i, nx); a.setZ(i, -nz); } a.needsUpdate = true; o.geometry.computeBoundingSphere(); o.geometry.computeBoundingBox(); }
+      else { const [nx, nz] = spread(at.x, -at.z); at.x = nx; at.z = -nz; }
+    }
+    const marks = o.userData?.marks; if (marks && !marks.spread) { for (const list of Object.values(marks)) for (const p of list) { const [nx, nz] = spread(p[0], -p[2]); p[0] = nx; p[2] = -nz; } Object.defineProperty(marks, "spread", { value: true }); }
+    for (const c of o.children) walk(c);
+  };
+  walk(root); root.userData.spread = "done"; return root;
+}
+// A whole object drawn on the old grid (the stall, the bench) moved with the piece its spot belongs to.
+export function spreadWhole(group, x, z) { const [dx, dz] = PIECES[pieceAt(x, z)]; group.position.x += dx; group.position.z -= dz; group.userData.spread = "done"; return group; }

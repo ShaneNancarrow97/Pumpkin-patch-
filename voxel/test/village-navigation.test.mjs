@@ -3,10 +3,15 @@ import assert from "node:assert/strict";
 import * as M from "../src/model.js";
 import { ARRIVAL, GATES, NODES, FIXTURES, FORAGE_AREAS, DISTRICT_BY_ID, PLAN_SCALE as K } from "../src/content/village.js";
 import { ELOWEN_HALL, ROWAN_HALL, VELVET_HALL, node } from "../src/village-models.js";
+import { spreadStep, spreadWith, gather } from "../src/rules/village-spread.js";
 import { villageCellFree, villageWalkObstacles, moveVillageWalker, villageHallFree, moveVillageHallWalker, villageDecorGroundClear, villageDecorWalkClear, VILLAGE_WALK_RADIUS } from "../src/rules/village-navigation.js";
 
-const state=()=>M.freshState(), at=(x,z)=>({x:x*K,z:z*K});
-const free=(s,x,z)=>villageCellFree(s,x*K,z*K);
+// Probes are written on the design grid as drawn and asked where that spot now stands (the village is spread
+// apart: village-spread.js). A spot on the Green goes with what it is beside: Elowen's door, Rowan's or the tree.
+const world=([x,z])=>({x:x*K,z:z*K});
+const state=()=>M.freshState(), at=(x,z)=>world(spreadStep(x,z));
+const free=(s,x,z)=>{const p=at(x,z);return villageCellFree(s,p.x,p.z);};
+const byElowen=(x,z)=>world(spreadWith(x,z,48,20)), byRowan=(x,z)=>world(spreadWith(x,z,66,20));
 const halls=[ELOWEN_HALL,ROWAN_HALL,VELVET_HALL];
 
 test("outdoor collisions use the models' rotated realm footprints, including their adjoining buildings",()=>{
@@ -41,7 +46,7 @@ test("all Green gathering spots, doors and first neighbours are reachable from t
   }
   const targets=[...NODES.filter(n=>n.district==="green"),
     {id:"library door",...at(49,18.6)},{id:"workshop door",...at(64.6,20)},{id:"tavern door",...at(102,26)},
-    {id:"Elowen",x:53.6*K,z:30.2*K-1.8},{id:"Rowan",x:53.8*K,z:20.6*K-1.8},
+    {id:"Elowen",x:53.6*K,z:30.2*K-1.8},{id:"Rowan",...(p=>({x:p.x,z:p.z-1.8}))(world(spreadWith(53.8,20.6,...gather(FIXTURES.bench.x/K,FIXTURES.bench.z/K))))},
     {id:"Elowen after restoration",...at(50.8,21.6)},{id:"Rowan at his stall",...at(62.2,24.6)},
     {id:"Elowen page by the library",...at(49.5,25.4)},
     {id:"carriage",x:ARRIVAL.back[0],z:ARRIVAL.back[1]}];
@@ -54,7 +59,7 @@ test("later district gates and their scenery remain closed even for a rich, far-
     assert.equal(villageCellFree(s,gate.x,gate.z),false,gate.id);
     const moved=moveVillageWalker(s,at(58,34),gate.x-58*K,gate.z-34*K);
     assert.equal(villageCellFree(s,moved.x,moved.z),true,`${gate.id}: motion ends on playable ground`);
-    assert.ok(moved.z<=50*K-VILLAGE_WALK_RADIUS,"the northern lawns still stop before the first locked gate");
+    assert.ok(moved.z<=at(58,50).z-VILLAGE_WALK_RADIUS,"the northern lawns still stop before the first locked gate");
   }
   assert.equal(free(s,-10,62),false,"the Copse");assert.equal(free(s,60,74),false,"the Quarry");assert.equal(free(s,152,46),false,"the Moor");assert.equal(free(s,100,120),false,"the Marsh");
 });
@@ -63,7 +68,7 @@ test("movement substeps stop fast walks at thin fences and slide along solid wal
   const s=state(),from=at(14,7),cross=moveVillageWalker(s,from,0,15*K);
   assert.ok(cross.z<8*K,"a long frame cannot jump into the fenced plot");
   const fromWall=at(49,20),slide=moveVillageWalker(s,fromWall,-5*K,3*K);
-  assert.ok(slide.x>47.81*K,"the library's outer footing blocks westward movement");
+  assert.ok(slide.x>at(47.81,20).x,"the library's outer footing blocks westward movement");
   assert.ok(slide.z>fromWall.z,"the free northward component slides along the wall");
   const exit=moveVillageWalker(s,at(58,4),0,-20*K);
   assert.ok(exit.z>=ARRIVAL.back[1]-VILLAGE_WALK_RADIUS,"a long walk cannot go past the carriage stop");
@@ -89,8 +94,8 @@ test("turned furniture blocks its body while leaving the enclosing box's empty c
 });
 
 test("placement and walking share the solid fences, buildings and water",()=>{
-  for(const [id,x,z,rotation] of [["stool",14*K,8*K,0],["market-crates",44*K,20*K,45],["stool",FIXTURES.pond.x,FIXTURES.pond.z,0]])assert.equal(villageDecorGroundClear(id,x,z,rotation),false,`${id} cannot overlap fixed scenery`);
-  assert.equal(villageDecorGroundClear("stool",14*K,7*K),true,"clear ground remains available");
+  for(const [id,{x,z},rotation] of [["stool",at(14,8),0],["market-crates",at(44,20),45],["stool",FIXTURES.pond,0]])assert.equal(villageDecorGroundClear(id,x,z,rotation),false,`${id} cannot overlap fixed scenery`);
+  assert.equal(villageDecorGroundClear("stool",at(14,7).x,at(14,7).z),true,"clear ground remains available");
   assert.equal(villageDecorGroundClear("stool",NaN,7*K),false);
 });
 
@@ -132,13 +137,14 @@ test("the arrival meadow expands the Green with four connected forage areas",()=
 });
 
 test("walkable grass continues past both neighbours into the north lawns without crossing buildings or fences",()=>{
+  // Each walk is drawn round its own neighbour's house, which now stands back from the tree.
   const s=state(),routes=[
-    [[49,18.6],[49,27],[48,27],[48,32],[40,32],[40,44]],
-    [[64.6,20],[62.4,20],[62.4,32],[70,32],[70,44]],
+    [byElowen,[[49,18.6],[49,27],[48,27],[48,32],[40,32],[40,44]]],
+    [byRowan,[[64.6,20],[62.4,20],[62.4,32],[70,32],[70,44]]],
   ];
-  for(const route of routes){
-    let p=at(...route[0]);
-    for(const [x,z]of route.slice(1)){const to=at(x,z);p=moveVillageWalker(s,p,to.x-p.x,to.z-p.z);assert.ok(Math.hypot(p.x-to.x,p.z-to.z)<.01,`grass route reaches ${x},${z}`);}
+  for(const [here,route] of routes){
+    let p=here(...route[0]);
+    for(const [x,z]of route.slice(1)){const to=here(x,z);p=moveVillageWalker(s,p,to.x-p.x,to.z-p.z);assert.ok(Math.hypot(p.x-to.x,p.z-to.z)<.01,`grass route reaches ${x},${z}`);}
     assert.ok(p.z>36*K,"the former invisible northern limit is gone");
   }
   for(const [x,z]of [[34,22],[38,14],[75,23],[79.5,12]])assert.ok(free(s,x,z),`a residential garden lawn at ${x},${z} is walkable`);

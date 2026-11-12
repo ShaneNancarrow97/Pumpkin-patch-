@@ -4,6 +4,9 @@ import * as M from "../src/model.js";
 import { NODES } from "../src/content/village.js";
 import { QUESTS } from "../src/content/village-quests.js";
 import { villageDecorContains } from "../src/rules/village-decor-geometry.js";
+import { spreadWorld, spreadWith } from "../src/rules/village-spread.js";
+// World units as drawn beside Elowen's door, moved with her house.
+const byElowen = (x, z) => spreadWith(x / 1.5, z / 1.5, 48, 20).map((v) => v * 1.5);
 
 function invited() {
   const s = M.freshState(); M.recordHomeActivity(s, "visit"); s.earned = M.LEVELS[2].at; M.awardLevels(s);
@@ -105,11 +108,12 @@ test("decoration transforms reject invalid and rounded collisions; undo conserve
     assert.equal(M.villageDecorFits(s, "stool", bad, 24), false);
     assert.equal(M.placeVillageDecor(s, "stool", 21, 24, bad), null);
   }
-  const first = M.placeVillageDecor(s, "stool", 21, 24, 10).piece;
-  assert.equal(M.villageDecorFits(s, "stool", 21.806, 24), true);
-  assert.equal(M.placeVillageDecor(s, "stool", 21.806, 24), null, "rounding across the required gap cannot sneak through");
+  // Open lawn west of Elowen's garden (world units as drawn: 21, 24), where it now stands.
+  const [x, z] = spreadWorld(21, 24), first = M.placeVillageDecor(s, "stool", x, z, 10).piece;
+  assert.equal(M.villageDecorFits(s, "stool", x + .806, z), true);
+  assert.equal(M.placeVillageDecor(s, "stool", x + .806, z), null, "rounding across the required gap cannot sneak through");
   const snapshot = structuredClone(s.village.decor), stats = s.village.stats.placed;
-  assert.ok(M.moveVillageDecor(s, first.instance, 21, 30, 90));
+  assert.ok(M.moveVillageDecor(s, first.instance, x, z + 6, 90));
   M.grantVillage(s, [{ kind: "village-decor", id: "stool", amount: 1 }]);
   const next = s.village.decor.next; assert.ok(M.restoreVillageDecor(s, snapshot));
   assert.equal(s.village.decor.owned.stool, 2); assert.equal(s.village.decor.placed[0].z, 24);
@@ -142,9 +146,10 @@ test("both Green restorations reach a playable first supper with the existing fa
   M.startQuest(s, "elowen-1"); for (const id of ["page-3", "page-2", "page-1"]) M.findObject(s, id); M.finishTalk(s, "elowen-1", "elowen");
   M.startQuest(s, "elowen-2"); deliver(s, "elowen-2"); assert.ok(M.doHandOver(s, "elowen", "elowen-2"));
   assert.equal(s.village.built["elowen-conservatory"], true); assert.ok(M.buyFromStall(s, "village:stool"));
-  assert.ok(M.placeVillageDecor(s, "moth-lamp", 74.4, 36.9));
-  assert.ok(M.placeVillageDecor(s, "stool", 80.1, 37.2));
-  assert.ok(M.placeVillageDecor(s, "reading-stand", 74.1, 33.9)); M.finishTalk(s, "elowen-2", "elowen");
+  // The reading nook by Elowen's door, set out where it was drawn beside her door and moved with the house.
+  assert.ok(M.placeVillageDecor(s, "moth-lamp", ...byElowen(74.4, 36.9)));
+  assert.ok(M.placeVillageDecor(s, "stool", ...byElowen(80.1, 37.2)));
+  assert.ok(M.placeVillageDecor(s, "reading-stand", ...byElowen(74.1, 33.9))); M.finishTalk(s, "elowen-2", "elowen");
   s.house.level = 1; s.earned = M.LEVELS[4].at + s.progression.bonusEarned; M.awardLevels(s);
   assert.equal(M.questStatus(s, "two-doorbells"), "offered"); M.startQuest(s, "two-doorbells");
   s.stock[0] = 11; assert.ok(M.doHandOver(s, "elowen", "two-doorbells"));

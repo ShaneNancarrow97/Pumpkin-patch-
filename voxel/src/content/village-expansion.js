@@ -1,8 +1,12 @@
 // The expansion uses world-unit positions once; cave rooms have local layers.
 import {CAST_CHAPTERS} from './village-expansion-cast.js';
 import {EXPANSION_STORY,STEP_VERBS} from './village-expansion-story.js';
-const K=1.5, p=(x,z)=>({x:x*K,z:z*K});
-const area=(id,name,level,needs,bounds,spawn,extra={})=>Object.freeze({id,name,level,needs,bounds:bounds.map(n=>n*K),spawn:{...p(...spawn)},layer:'surface',...extra});
+import {spreadRect,spreadStep} from '../rules/village-spread.js';
+// Surface places were drawn on the village's design grid before it was spread apart (rules/village-spread.js): they
+// are stored where they now stand. Cave rooms keep their own local grid.
+const K=1.5, p=(x,z)=>({x:x*K,z:z*K}), sp=(x,z)=>{const [a,b]=spreadStep(x,z);return{x:a*K,z:b*K};};
+const area=(id,name,level,needs,bounds,spawn,extra={})=>{const cave=extra.layer==='cave',[x0,z0,x1,z1]=bounds,b=cave?{x0,z0,x1,z1}:spreadRect({x0,z0,x1,z1});
+ return Object.freeze({id,name,level,needs,bounds:[b.x0,b.z0,b.x1,b.z1].map(n=>n*K),spawn:{...(cave?p:sp)(...spawn)},layer:'surface',...extra});};
 export const EXPANSION_AREAS=Object.freeze([
  area('green','Hollow Green',3,null,[0,-22,120,50],[58,-17]),
  area('copse','Moonroot Copse',6,'legacy:two-doorbells',[-32,50,12,114],[0,57]),
@@ -10,7 +14,7 @@ export const EXPANSION_AREAS=Object.freeze([
  area('moor','Carnival Moor',12,'restaurant-opening',[126,14,168,82],[132,34]),
  area('marsh','Mirror Marsh',15,'four-seals',[38,108,124,134],[58,112]),
  area('acre','The Crooked Acre',8,'copse-restored',[-98,46,-34,114],[-38,82]),
- area('cave-shallows','The Lantern Steps',6,'legacy:two-doorbells',[-18,-56,18,4],[0,0],{layer:'cave',depth:1,gem:'lantern-amethyst',returnArea:'copse',returnPoint:p(-30,106)}),
+ area('cave-shallows','The Lantern Steps',6,'legacy:two-doorbells',[-18,-56,18,4],[0,0],{layer:'cave',depth:1,gem:'lantern-amethyst',returnArea:'copse',returnPoint:sp(-30,106)}),
  area('cave-workings','The Drowned Workings',9,'quarry-bell',[-18,-56,18,4],[0,0],{layer:'cave',depth:2,gem:'ember-garnet',returnArea:'cave-shallows',returnPoint:p(10,-24)}),
  area('cave-cathedral','The Root Cathedral',15,'four-seals',[-22,-56,22,4],[0,0],{layer:'cave',depth:3,gem:'hollow-opal',returnArea:'cave-workings',returnPoint:p(12,-30)}),
 ]);
@@ -28,7 +32,7 @@ function chapter(id,title,who,areaId,level,needs,steps,reward){
   // The story file says what is there before the step (look), what doing it shows (found) and what a puzzle
   // gives away (clue). A clue found by reading stays with its own step as what was found.
   const told=story.steps?.[i]??{};
-  activities.push(Object.freeze({id:aid,name,type,area:areaId,who,chapter:id,order:i,...p(x,z),...extra,verb:told.verb??STEP_VERBS[type],look:told.look,found:told.found??(type==='reveal'?undefined:extra.text),clue:told.clue}));
+  activities.push(Object.freeze({id:aid,name,type,area:areaId,who,chapter:id,order:i,...(EXPANSION_AREA_BY_ID[areaId]?.layer==='cave'?p:sp)(x,z),...extra,verb:told.verb??STEP_VERBS[type],look:told.look,found:told.found??(type==='reveal'?undefined:extra.text),clue:told.clue}));
  }
  chapters.push(Object.freeze({id,title,who,area:areaId,level,needs,activities:ids,reward,blurb:story.blurb,intro:story.intro,done:story.done,change:story.change}));
 }

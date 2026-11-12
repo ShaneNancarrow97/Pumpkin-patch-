@@ -1,11 +1,16 @@
 // Shared authored paths: the picture, collider and cave floor use this data.
 import { PLAN_SCALE as K, DISTRICT_BY_ID, ROADS } from './content/village.js';
+import { spreadWorld } from './rules/village-spread.js';
 export const CAVE_IDS=Object.freeze(['cave-shallows','cave-workings','cave-cathedral']);
 export const isCaveArea=id=>CAVE_IDS.includes(id);
 export const CAVE_ROOMS=Object.freeze([{x0:-4,z0:-4,x1:4,z1:15},{x0:-14,z0:3,x1:14,z1:17},{x0:-15,z0:13,x1:15,z1:27},{x0:-5,z0:25,x1:5,z1:42},{x0:-15,z0:27,x1:15,z1:39},{x0:-17,z0:39,x1:17,z1:55}].map(Object.freeze));
 export const CAVE_CAMERA_PRESET=Object.freeze({yaw:Math.PI,pitch:34*Math.PI/180,distance:7.2,minDistance:4.8,maxDistance:10,maxPitch:55*Math.PI/180});
 export const CAVE_VEINS=Object.freeze([[-11,17],[-7,22],[9,17],[12,23],[-3,30],[3,36],[-13,44],[-8,50],[0,46],[7,43],[12,50],[2,52]].map(([x,z],i)=>Object.freeze({index:i,x:x*K,z:-z*K})));
-export const CAVE_ENTRY=Object.freeze({x:-30*K,z:106*K});
+// The cave's mouth in the Copse as drawn, and where it now stands (the village is spread apart:
+// rules/village-spread.js). The Acre's paths and predicates below stay on the drawn grid: the walking rules
+// gather a point on the ground back to it first, and its picture is drawn there and moved whole.
+const MOUTH=Object.freeze({x:-30*K,z:106*K});
+export const CAVE_ENTRY=Object.freeze((([x,z])=>({x,z}))(spreadWorld(MOUTH.x,MOUTH.z)));
 export const CAVE_SPAWN=Object.freeze({x:0,z:0});
 const inside=(b,x,z,r=0)=>x>=b.x0+r&&x<=b.x1-r&&z>=b.z0+r&&z<=b.z1-r;
 export function caveGroundAt(id,x,z){const floor=Math.max(0,CAVE_IDS.indexOf(id))*12;return(-floor-Math.min(1,Math.max(0,-z/(12*K)))*6)*K;}
@@ -37,12 +42,14 @@ while(stack.length){const [x,z]=stack.at(-1),next=[[x+1,z],[x-1,z],[x,z+1],[x,z-
 for(let x=5;x<=7;x++)for(let z=6;z<=8;z++){if(x<7)edges.push([[x,z],[x+1,z]]);if(z<8)edges.push([[x,z],[x,z+1]]);}
 const point=([x,z])=>({x:(-92+x*4)*K,z:(54+z*4)*K});
 export const ACRE_PATHS=Object.freeze(edges.map(([a,b])=>Object.freeze([point(a),point(b)])));
-export const ACRE_ENTRY=Object.freeze({x:-40*K,z:82*K});
-export const GRANNY_DOOR=Object.freeze({x:-68*K,z:79.5*K});
+// Points to walk to, where they now stand; the shapes below stay as drawn.
+const placed=(x,z)=>(([a,b])=>Object.freeze({x:a,z:b}))(spreadWorld(x*K,z*K));
+export const ACRE_ENTRY=placed(-40,82);
+export const GRANNY_DOOR=placed(-68,79.5);
 export const ACRE_SHORTCUT=Object.freeze([[-44,82],[-59,82],[-61,79],[-68,79]].map(([x,z])=>Object.freeze({x:x*K,z:z*K})));
 export const ACRE_APPROACH=Object.freeze([[0,92],[0,98],[-36,98],[-36,82],[-40,82],[-44,82]].map(([x,z])=>Object.freeze({x:x*K,z:z*K})));
 const dist=(p,a,b)=>{const dx=b.x-a.x,dz=b.z-a.z,t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.z-a.z)*dz)/(dx*dx+dz*dz||1)));return Math.hypot(p.x-a.x-dx*t,p.z-a.z-dz*t);};
-export function onExpansionApproach(x,z,r=.32){const p={x,z};return ACRE_APPROACH.slice(1).some((b,i)=>dist(p,ACRE_APPROACH[i],b)<2.3*K-r)||dist(p,{x:-30*K,z:98*K},CAVE_ENTRY)<2.3*K-r;}
+export function onExpansionApproach(x,z,r=.32){const p={x,z};return ACRE_APPROACH.slice(1).some((b,i)=>dist(p,ACRE_APPROACH[i],b)<2.3*K-r)||dist(p,{x:-30*K,z:98*K},MOUTH)<2.3*K-r;}
 export function onAcreShortcut(x,z,r=0){return ACRE_SHORTCUT.slice(1).some((b,i)=>dist({x,z},ACRE_SHORTCUT[i],b)<=1.5*K-r);}
 export function acreCellFree(x,z,r=.32,shortcut=false){const p={x,z};if(x>-72.5*K-r&&x<-63.5*K+r&&z>81.5*K-r&&z<89*K+r)return false;return ACRE_PATHS.some(([a,b])=>dist(p,a,b)<=1.5*K-r)||shortcut&&onAcreShortcut(x,z,r)||onExpansionApproach(x,z,r)||inside({x0:-75*K,z0:75*K,x1:-61*K,z1:91*K},x,z,r)&&!(x>-72.5*K-r&&x<-63.5*K+r&&z>81.5*K-r&&z<89*K+r);}
 export function expansionRoadFree(x,z,r=.32){const p={x,z};return ROADS.some(road=>road.points.slice(1).some(([bx,bz],i)=>{const[ax,az]=road.points[i];return dist(p,{x:ax,z:az},{x:bx,z:bz})<road.width/2-r;}));}

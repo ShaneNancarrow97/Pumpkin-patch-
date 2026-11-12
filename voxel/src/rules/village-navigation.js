@@ -3,22 +3,32 @@
 import { PLAN_SCALE as K, DISTRICT_BY_ID, ARRIVAL, FIXTURES, SCENERY, ROADS, PLOTS } from "../content/village.js";
 import { VILLAGE_DECOR_BY_ID } from "../content/village-decor.js";
 import { villageDecorBounds, villageDecorContains } from "./village-decor-geometry.js";
-import { isWater } from "../village-terrain.js";
+import { groundIsWater as isWater } from "../village-terrain.js";
 
 import { expansionAreaInfo } from './village-expansion-access.js';
 import { EXPANSION_AREAS } from '../content/village-expansion.js';
 import { acreCellFree, onExpansionApproach } from '../village-expansion-spatial.js';
+import { spreadRect, gatherWorld } from './village-spread.js';
 
 export const VILLAGE_WALK_RADIUS = .32;
-const rect = (x0,z0,x1,z1) => ({x0:x0*K,z0:z0*K,x1:x1*K,z1:z1*K});
+// Measured on the design grid as drawn, and kept where it now stands: the village was spread apart after it was
+// laid out (village-spread.js), so a drawn rectangle moves with its piece, or stretches if it is long (a fence).
+const scaled = (r) => ({x0:r.x0*K,z0:r.z0*K,x1:r.x1*K,z1:r.z1*K});
+const rect = (x0,z0,x1,z1) => scaled(spreadRect({x0,z0,x1,z1}));
 const body = (f, w=f.w, d=f.d) => ({x0:f.x-w/2,z0:f.z-d/2,x1:f.x+w/2,z1:f.z+d/2});
 // A model's local +z faces out. Keep its rotated footprint in realm (north +z)
 // coordinates; the view alone changes north to Three's negative z.
-function modelRect(x,z,facing,x0,z0,x1,z1) {
+function footprint(x,z,facing,x0,z0,x1,z1) {
   const [c,s] = {south:[1,0],east:[0,1],north:[-1,0],west:[0,-1]}[facing];
   const corners=[[x0,z0],[x0,z1],[x1,z0],[x1,z1]].map(([a,b])=>[x+a*c+b*s,z+a*s-b*c]);
-  return rect(Math.min(...corners.map(p=>p[0])),Math.min(...corners.map(p=>p[1])),Math.max(...corners.map(p=>p[0])),Math.max(...corners.map(p=>p[1])));
+  return {x0:Math.min(...corners.map(p=>p[0])),z0:Math.min(...corners.map(p=>p[1])),x1:Math.max(...corners.map(p=>p[0])),z1:Math.max(...corners.map(p=>p[1]))};
 }
+const modelRect = (...a) => { const f = footprint(...a); return rect(f.x0,f.z0,f.x1,f.z1); };
+// A home on a plot the content already keeps where it stands.
+const homeRect = (p) => scaled(footprint(p.door[0]/K,p.door[1]/K,p.facing,-4.2,-8,4.2,.15));
+const homes = () => PLOTS.filter(p=>p.district!=='green'&&p.kind==='resident').map(homeRect);
+// The Crooked Acre's farmhouse.
+const GRANNY = rect(-72.5,81.5,-63.5,89);
 const scenery=SCENERY.filter(p=>p.id!=="velvet-bat");
 const buildings=[
   modelRect(47.4,20,"east",-3.91,-7.41,3.91,.41), // Library cottage, including its stone footing.
@@ -47,11 +57,12 @@ for(const side of [-1,1]) {
   for(const z of [2.2,4]) tavern.push(modelRect(102,24.4,"north",side*4.6-1.1,z-.55,side*4.6+1.1,z+.55));
 }
 tavern.push(modelRect(102,24.4,"north",-3.55,3.82,-1.65,4.58));
-const green=DISTRICT_BY_ID.green.polygon,limits={x0:Math.min(...green.map(p=>p[0])),x1:Math.max(...green.map(p=>p[0])),z0:Math.min(...green.map(p=>p[1])),z1:Math.max(...green.map(p=>p[1]))};
+// The Green as drawn (its corners gathered back from where they stand): a point is on it if it reads as a point
+// of the drawn Green, which takes in the ground let in between the pieces.
+const green=DISTRICT_BY_ID.green.polygon.map(([x,z])=>gatherWorld(x,z)),limits={x0:Math.min(...green.map(p=>p[0])),x1:Math.max(...green.map(p=>p[0])),z0:Math.min(...green.map(p=>p[1])),z1:Math.max(...green.map(p=>p[1]))};
 export function villageWalkObstacles(s) {
   const boxes=[...scenery,...buildings,...walls,...tavern,
-    ...PLOTS.filter(p=>p.district!=='green'&&p.kind==='resident').map(p=>modelRect(p.door[0]/K,p.door[1]/K,p.facing,-4.2,-8,4.2,.15)),
-    {x0:-72.5*K,z0:81.5*K,x1:-63.5*K,z1:89*K}
+    ...homes(), GRANNY
   ];
   boxes.push(body(FIXTURES.stall),body(FIXTURES.noticeboard),body(FIXTURES.bench),body(FIXTURES.pond),{x:FIXTURES.tree.x,z:FIXTURES.tree.z,r:3.4*K},{x:FIXTURES.well.x,z:FIXTURES.well.z,r:FIXTURES.well.r});
   for(const[flag,x,z]of[['restaurant-opening',64,74],['lantern-night',52,34]])if(s?.village?.expansion?.effects?.includes(flag)){
@@ -64,7 +75,7 @@ export function villageWalkObstacles(s) {
 // What the play camera can't see through: building bodies only. Railings, hedges, stalls and furniture are
 // low enough to look over, and the great tree clears itself (village-visibility.js).
 export function villageCameraBlockers() {
-  return [...buildings, ...PLOTS.filter(p=>p.district!=='green'&&p.kind==='resident').map(p=>modelRect(p.door[0]/K,p.door[1]/K,p.facing,-4.2,-8,4.2,.15)), {x0:-72.5*K,z0:81.5*K,x1:-63.5*K,z1:89*K}];
+  return [...buildings, ...homes(), GRANNY];
 }
 // How far along the arm from the owner to the camera stays clear of those bodies, as a fraction of the arm (1 is
 // all of it). Both points are realm points ({x, z}); pad keeps the lens off the wall. A blocker the owner already
@@ -106,15 +117,17 @@ export function villageCellFree(s,x,z,r=VILLAGE_WALK_RADIUS,boxes=villageWalkObs
   if(![x,z,r].every(Number.isFinite)||r<0)return false;
   // Only the Green is playable; later district scenery never grants passage.
   // The narrow southern exception reaches the carriage through the moth gate.
-  const onGreen=x>=limits.x0+r&&x<=limits.x1-r&&z>=limits.z0+r&&z<=limits.z1-r;
+  const [gx,gz]=gatherWorld(x,z);
+  const onGreen=gx>=limits.x0+r&&gx<=limits.x1-r&&gz>=limits.z0+r&&gz<=limits.z1-r;
   const atCarriage=Math.abs(x-ARRIVAL.spawn[0])<=3*K-r&&z>=ARRIVAL.back[1]-r&&z<=limits.z0+r;
   const hasArea=id=>!!s?.village&&!!expansionAreaInfo(s,id)?.open;
   const onLater=EXPANSION_AREAS.some(a=>!['green','acre'].includes(a.id)&&a.layer!=='cave'&&hasArea(a.id)&&x>=a.bounds[0]+r&&x<=a.bounds[2]-r&&z>=a.bounds[1]+r&&z<=a.bounds[3]-r);
-  const onAcre=hasArea('acre')&&acreCellFree(x,z,r,!!s?.village?.expansion?.effects?.includes('acre-shortcut')),approach=hasArea('copse')&&onExpansionApproach(x,z,r);
+  // The Acre's paths are kept as drawn: ask them of the gathered point.
+  const onAcre=hasArea('acre')&&acreCellFree(gx,gz,r,!!s?.village?.expansion?.effects?.includes('acre-shortcut')),approach=hasArea('copse')&&onExpansionApproach(gx,gz,r);
   const onRoad=ROADS.some(road=>{const id=road.id.startsWith('door-')?PLOTS.find(p=>p.id===road.plot)?.district:road.id;if(!['copse','quarry','moor','marsh'].includes(id)||!hasArea(id))return false;return road.points.slice(1).some(([bx,bz],i)=>{const[ax,az]=road.points[i],dx=bx-ax,dz=bz-az,t=Math.max(0,Math.min(1,((x-ax)*dx+(z-az)*dz)/(dx*dx+dz*dz||1)));return Math.hypot(x-ax-dx*t,z-az-dz*t)<=road.width/2-r;});});
   if(!onGreen&&!atCarriage&&!onLater&&!onAcre&&!approach&&!onRoad)return false;
   // The field is a maze: its unused land never becomes a shortcut through corn.
-  if(x<-34*K&&z>46*K&&z<114*K&&!onAcre&&!approach)return false;
+  if(gx<-34*K&&gz>46*K&&gz<114*K&&!onAcre&&!approach)return false;
   if(isWater(x/K,z/K))return false;
   return !boxes.some(b=>b.decor?villageDecorContains(b.decor.id,b.decor.x,b.decor.z,b.decor.rotation??0,x,z,r):b.r!==undefined?Math.hypot(x-b.x,z-b.z)<b.r+r:x>b.x0-r&&x<b.x1+r&&z>b.z0-r&&z<b.z1+r);
 }

@@ -1,6 +1,8 @@
 // Personal chapters sit beside the restoration story. Their rewards use the
 // ordinary wardrobe, recipe and furnishing catalogues rather than another shop.
-const K=1.5, point=(x,z)=>({x:x*K,z:z*K});
+import {spreadStep} from '../rules/village-spread.js';
+// Homes are on the design grid as drawn; each step is stored where it now stands (rules/village-spread.js).
+const K=1.5, point=(x,z)=>{const [a,b]=spreadStep(x,z);return{x:a*K,z:b*K};};
 const RANKS=[1,3,5,7,10], XP=[100,180,260,540,180];
 const PAIRS={mabel:['shane-chucky','natalie-tiffany'],tansy:['shane-scarecrow','natalie-witch'],opal:['shane-vampire','natalie-vampire'],cinder:['shane-frankenstein','natalie-frankenstein'],corvus:['shane-skeleton','natalie-batqueen'],baron:['shane-jason','natalie-freddy'],granny:['shane-mummy','natalie-mummy']};
 const HOMES={mabel:['copse',-4,62],tansy:['copse',-4,82],opal:['quarry',54,74],cinder:['quarry',64,70],corvus:['moor',150,46],baron:['moor',150,68],granny:['acre',-68,75],elowen:['green',49.6,20],rowan:['green',64.8,20]};

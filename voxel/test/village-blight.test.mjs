@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import * as M from '../src/model.js';
 import { BLIGHT_NODES, MATERIALS, MATERIAL_BY_ID, NODES } from '../src/content/village.js';
 import { QUEST_BY_ID } from '../src/content/village-quests.js';
+import { spreadWorld } from '../src/rules/village-spread.js';
 
 const FIRST = 'blight-first-signs', REMEDY = 'blight-root-and-remedy', WARD = 'blight-lantern-ward';
 const SPORES = 'cursed-spores';
@@ -197,6 +198,8 @@ test('clear totals count only valid blight node cycles in the requested district
   assert.equal(MATERIAL_BY_ID[SPORES].yield,1);
 });
 
+// Open lawn west of Elowen's garden, as drawn (world units), where it now stands.
+const CLEAR = spreadWorld(21, 24);
 test('legacy furniture survives new fungus sockets without consuming or duplicating either item', () => {
   const node = green[0], raw = M.saveData(farm());
   const piece = { instance:'v-legacy-blight', id:'stool', x:node.x, z:node.z, rotation:0 };
@@ -212,11 +215,11 @@ test('legacy furniture survives new fungus sockets without consuming or duplicat
   assert.deepEqual(s.village.decor.placed.find(p => p.instance===piece.instance),piece);
   assert.equal(M.nodeReady(s,node.id),false,'another load keeps the covered socket dormant');
   const snapshot = JSON.parse(JSON.stringify(s.village.decor));
-  assert.equal(M.moveVillageDecor(s,piece.instance,21,24,0),true);
+  assert.equal(M.moveVillageDecor(s,piece.instance,...CLEAR,0),true);
   assert.equal(M.nodeReady(s,node.id),true); assert.equal(s.village.gatherCycles[node.id],2,'moving furniture does not count as clearing');
   assert.equal(M.restoreVillageDecor(s,snapshot),true,'Undo can restore the grandfathered layout');
   assert.equal(M.nodeReady(s,node.id),false); assert.equal(M.blightClearCount(s,'green'),count);
-  assert.equal(M.moveVillageDecor(s,piece.instance,21,24,0),true);
+  assert.equal(M.moveVillageDecor(s,piece.instance,...CLEAR,0),true);
   const result = M.gatherNode(s,node.id);
   assert.equal(result.amount,1); assert.equal(result.cleared,true); assert.equal(s.village.gatherCycles[node.id],3);
   assert.equal(M.blightClearCount(s,'green'),count+1); assert.equal(M.gatherNode(s,node.id),null);

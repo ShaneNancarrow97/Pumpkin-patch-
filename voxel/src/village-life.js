@@ -9,17 +9,23 @@ import * as THREE from "three";
 import { Voxels, seeded } from "./voxels.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { LAYOUT_DESIGN, LAMPS } from "./village-world.js";
+import { spread, gather, pieceAt, spreadWith } from "./rules/village-spread.js";
 import { DISTRICT_SHIFT, FIXTURES, PLAN_SCALE as K } from "./content/village.js";
 import { C } from "./village-models.js";
 
-const W = (x, z, y = 0) => new THREE.Vector3(x, y, -z);
+// Everything here is worked out on the old design grid; W places it where that spot now stands (the village is
+// spread apart, rules/village-spread.js), so a moth orbits its own lamp and a leaf falls under its own tree.
+const W = (x, z, y = 0) => { const [nx, nz] = spread(x, z); return new THREE.Vector3(nx, y, -nz); };
+const placed = (o) => { const [x, z] = spread(o.x, o.z); return { ...o, x, z }; };
+// A point that belongs to something (a leaf to its tree) moves with that thing, wherever it drifts.
+const WBy = (x, z, y, [ax, az]) => { const [nx, nz] = spreadWith(x, z, ax, az); return new THREE.Vector3(nx, y, -nz); };
 const dummy = new THREE.Object3D();
 const noise = (t) => Math.sin(t) * .5 + Math.sin(t * 2.31 + 1.7) * .3 + Math.sin(t * 5.13 + .4) * .2;
 
 // Where a crow may perch (design grid x, height, z): lamp tops, piers, the well's
 // roof, the noticeboard, the wall and fences, the scarecrows' arms, and the ground.
 const PERCHES_DESIGN = [
-  [54.5, 4.1, 21.1], [61.5, 4.1, 21.1], [54.5, 4.1, 28.1], [61.5, 4.1, 28.1], [FIXTURES.well.x / K, 3.1, FIXTURES.well.z / K], [FIXTURES.noticeboard.x / K, 2.75, FIXTURES.noticeboard.z / K],
+  [54.5, 4.1, 21.1], [61.5, 4.1, 21.1], [54.5, 4.1, 28.1], [61.5, 4.1, 28.1], [...(([x, z]) => [x, 3.1, z])(gather(FIXTURES.well.x / K, FIXTURES.well.z / K))], [...(([x, z]) => [x, 2.75, z])(gather(FIXTURES.noticeboard.x / K, FIXTURES.noticeboard.z / K))],
   [54.4, 1.62, 8], [54.4, 1.62, 15.6], [61.6, 1.62, 8], [61.6, 1.62, 15.6], [44, 1.32, .6], [72, 1.32, .6], [34, 1.32, .6],
   [80.6, 2.66, 5.4], [38, 2.66, 7.6], [30, .86, 11], [40, .86, 29], [70, .86, 9], [75, .86, 27],
 ];
@@ -29,7 +35,7 @@ const [cx, cz] = DISTRICT_SHIFT.copse;
 // The Moor's carousel, in the Moor's own place (moved with it).
 export const CAROUSEL = Object.freeze({ x: 102, z: 35 });
 const FLY_ZONES = [[2 + cx, 40 + cz, 38 + cx, 92 + cz], [86, 2, 95, 10], [4, 28, 22, 35], [30, 5, 46, 10], [6, 40, 36, 100], [90, 40, 124, 104], [40, 104, 120, 109]];
-const TREES = [[50.2, 4], [65.8, 4], [70.6, 25.4], [79, 21], [31, 25.5], [31.5, 14.5], [25.4, 9.6], [35.5, 20], [58, 24.6]];
+const TREES = [[52.2, 4], [63.8, 4], [70.6, 25.4], [79, 21], [31, 25.5], [31.5, 14.5], [25.4, 9.6], [35.5, 20], [58, 24.6]];
 
 // Boxes [x, y, z, w, h, d, colour?] merged into one geometry (bottom-centred on y), coloured if asked.
 function mergeBoxes(list, coloured = false) {
@@ -37,7 +43,7 @@ function mergeBoxes(list, coloured = false) {
   const merged = mergeGeometries(geos); geos.forEach((g) => g.dispose()); return merged;
 }
 
-// chimneyTops: noted as the village was built (design grid: x, height, z north).
+// chimneyTops: noted as the village was built, where they now stand (design grid units: x, height, z north).
 export function createVillageLife({ chimneyTops = [] } = {}) {
   const group = new THREE.Group(), r = seeded(907), D = LAYOUT_DESIGN;
   const lit = (c) => new THREE.MeshLambertMaterial({ color: c }), glow = (c, o = 1) => new THREE.MeshBasicMaterial({ color: c, toneMapped: false, transparent: o < 1, opacity: o, depthWrite: o >= 1 });
@@ -61,7 +67,7 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
   leaf.forEach((_, i) => leaves.setColorAt(i, new THREE.Color(leafColours[i % leafColours.length])));
 
   // ---- Chimney smoke: soft puffs rising, swelling and fading, all in one draw of points.
-  const chimneys = [...chimneyTops, { x: 70.7, y: 7.9, z: 22.2, home: "rowan-workshop" }, { x: 43.3, y: 8, z: 18.1, home: "elowen-conservatory" }];
+  const chimneys = [...chimneyTops, ...[{ x: 70.7, y: 7.9, z: 22.2, home: "rowan-workshop" }, { x: 43.3, y: 8, z: 18.1, home: "elowen-conservatory" }].map(placed)];
   const PUFFS = 7, smokeCount = chimneys.length * PUFFS, smokePos = new Float32Array(smokeCount * 3), smokeSize = new Float32Array(smokeCount), smokeAlpha = new Float32Array(smokeCount);
   const smokeGeo = new THREE.BufferGeometry(); smokeGeo.setAttribute("position", new THREE.BufferAttribute(smokePos, 3)); smokeGeo.setAttribute("size", new THREE.BufferAttribute(smokeSize, 1)); smokeGeo.setAttribute("alpha", new THREE.BufferAttribute(smokeAlpha, 1));
   const smoke = new THREE.Points(smokeGeo, new THREE.ShaderMaterial({ transparent: true, depthWrite: false, uniforms: { tint: { value: new THREE.Color(0x9a90b8) } },
@@ -145,7 +151,7 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
   // ---- Fireflies over the Copse, the moth-yard and the Green's edges.
   const flyCount = 160, flyPos = new Float32Array(flyCount * 3), fly = Array.from({ length: flyCount }, (_, i) => {
     const [x0, z0, x1, z1] = FLY_ZONES[i % FLY_ZONES.length], x = x0 + r() * (x1 - x0), z = z0 + r() * (z1 - z0);
-    return { x, z, y: H(x, z) + .4 + r() * 1.6, p: r() * 9, s: .3 + r() * .5 };
+    return placed({ x, z, y: H(x, z) + .4 + r() * 1.6, p: r() * 9, s: .3 + r() * .5 });
   });
   const flyGeo = new THREE.BufferGeometry(); flyGeo.setAttribute("position", new THREE.BufferAttribute(flyPos, 3));
   const fireflies = new THREE.Points(flyGeo, new THREE.PointsMaterial({ color: new THREE.Color(1.6, 1.9, .9), size: .16, transparent: true, opacity: .9, depthWrite: false, toneMapped: false })); fireflies.frustumCulled = false; group.add(fireflies);
@@ -156,7 +162,7 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
   function tickCrow(c, i, time, dt) {
     if (c.fly > 0) {
       c.t += dt / c.fly; const t = Math.min(1, c.t), a = c.from, b = c.to, lift = Math.sin(t * Math.PI) * (2.4 + Math.hypot(b[0] - a[0], b[2] - a[2]) * .12);
-      c.pos.copy(W(a[0] + (b[0] - a[0]) * t, a[2] + (b[2] - a[2]) * t, a[1] + (b[1] - a[1]) * t + lift)); c.rot = Math.atan2(b[0] - a[0], a[2] - b[2]);
+      const A = W(a[0], a[2], a[1]), B = W(b[0], b[2], b[1]); c.pos.lerpVectors(A, B, t); c.pos.y += lift; c.rot = Math.atan2(B.x - A.x, B.z - A.z);
       c.flap = Math.sin(time * 18) * .9 * (t < .9 ? 1 : (1 - t) * 10); c.headYaw = 0; c.headPitch = 0;
       if (t >= 1) { c.fly = 0; c.at = b; c.wait = 3 + Math.random() * 9; c.flap = -.15; }
     } else {
@@ -173,7 +179,7 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
     q.t += dt; const rr = q.rr;
     if (q.state === "sit") {
       q.g.position.copy(W(q.x, q.z, 0)); q.g.rotation.x = -.5 * Math.min(1, q.t * 3); q.tail.rotation.x = Math.sin(time * 6) * .25;
-      if (q.t > q.wait) { q.g.rotation.x = 0; const tree = TREES[(rr() * TREES.length) | 0], a = rr() * 6.28, d = 1.4 + rr() * 2.4; q.tx = tree[0] + Math.cos(a) * d; q.tz = tree[1] + Math.sin(a) * d; q.state = rr() < .25 ? "toClimb" : "run"; q.tree = tree; q.t = 0; }
+      if (q.t > q.wait) { q.g.rotation.x = 0; const home = pieceAt(q.x, q.z), near = TREES.filter((t) => pieceAt(t[0], t[1]) === home), tree = (near.length ? near : TREES)[(rr() * (near.length || TREES.length)) | 0], a = rr() * 6.28, d = 1.4 + rr() * 2.4; q.tx = tree[0] + Math.cos(a) * d; q.tz = tree[1] + Math.sin(a) * d; q.state = rr() < .25 ? "toClimb" : "run"; q.tree = tree; q.t = 0; }
     } else if (q.state === "run" || q.state === "toClimb") {
       const tx = q.state === "toClimb" ? q.tree[0] + .35 : q.tx, tz = q.state === "toClimb" ? q.tree[1] : q.tz, dx = tx - q.x, dz = tz - q.z, d = Math.hypot(dx, dz), step = Math.min(d, dt * 4.2);
       q.x += dx / (d || 1) * step; q.z += dz / (d || 1) * step;
@@ -212,7 +218,7 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
       leaf.forEach((L, i) => {
         let age = time - L.born; if (age > L.life) { L.born = time; age = 0; L.ox = (Math.random() - .5) * 3.4; L.oz = (Math.random() - .5) * 3.4; }
         const fall = Math.min(1, age / (L.h / .7)), y = Math.max(.03, L.h * (1 - fall)), drift = age * .35, sway = Math.sin(age * L.sway * 2 + L.p) * .5;
-        dummy.position.copy(W(L.tree[0] + L.ox + drift + sway, L.tree[1] + L.oz + sway * .4, y));
+        dummy.position.copy(WBy(L.tree[0] + L.ox + drift + sway, L.tree[1] + L.oz + sway * .4, y, L.tree));
         dummy.rotation.set(y > .05 ? Math.sin(age * L.spin) * 1.1 : 0, age * L.spin * .3, y > .05 ? Math.cos(age * L.spin * .7) * .8 : 0); dummy.scale.setScalar(1); dummy.updateMatrix(); leaves.setMatrixAt(i, dummy.matrix);
       });
       leaves.instanceMatrix.needsUpdate = true;

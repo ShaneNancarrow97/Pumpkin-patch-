@@ -3,6 +3,10 @@ import assert from "node:assert/strict";
 import { freshState } from "../src/model.js";
 import { PLAN_SCALE as K, FIXTURES, GATES } from "../src/content/village.js";
 import { villageCellFree, villageWalkObstacles } from "../src/rules/village-navigation.js";
+import { spreadWith, gather } from "../src/rules/village-spread.js";
+// Probes drawn beside something on the Green, moved with it now the village is spread apart.
+const beside = (ax, az) => (x, z) => { const [a, b] = spreadWith(x, z, ax, az); return { x: a * K, z: b * K }; };
+const byElowen = beside(48, 20), byBench = beside(...gather(FIXTURES.bench.x / K, FIXTURES.bench.z / K));
 import { RESIDENT_WALK_RADIUS, RESIDENT_WALK_SPEED, residentRoute, createResidentRoutine, advanceResidentRoutine, residentSegmentFree, findResidentPath, residentTalkPoint } from "../src/rules/village-resident-life.js";
 
 function state(restored = false) {
@@ -76,7 +80,7 @@ test("routes detour around furniture, reject water and gates, and never cut corn
   let previous = from;
   for (const point of path) { assert.ok(residentSegmentFree(s, previous, point, obstacles)); previous = point; }
   assert.deepEqual(path.at(-1), to);
-  for (const target of [FIXTURES.pond, ...GATES, { x: 44 * K, z: 20 * K }]) assert.deepEqual(findResidentPath(s, from, target, obstacles), [], "cannot route into water, a closed district or a home");
+  for (const target of [FIXTURES.pond, ...GATES, byElowen(44, 20)]) assert.deepEqual(findResidentPath(s, from, target, obstacles), [], "cannot route into water, a closed district or a home");
   assert.equal(residentSegmentFree(s, from, { x: Infinity, z: 0 }, obstacles), false);
 });
 
@@ -97,7 +101,8 @@ test("restoration routes cannot skim a planter or bench corner between coarse sa
   const s=state(true),boxes=villageWalkObstacles(s);
   // This former smoothed route passed .12-unit samples, then stopped forever
   // when its next .072-unit stride touched the north-west bench corner.
-  const from={x:53.6*K,z:30.2*K},to={x:50*K,z:24.6*K};
+  // Measured from the bench, which now stands out from the tree with the square's west furniture.
+  const from=byBench(53.6,30.2),to=byBench(50,24.6);
   assert.equal(residentSegmentFree(s,from,to,boxes),false);
   const route=findResidentPath(s,from,residentRoute(s,"elowen").stops[0],boxes);
   assert.ok(route.length>0);let p=from;for(const q of route){assert.equal(residentSegmentFree(s,p,q,boxes),true);p=q;}

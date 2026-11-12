@@ -4,6 +4,7 @@ import { OUTSIDE_VIEW, outsideLookLift } from '../src/village-camera.js';
 import { villageCameraBlockers, villageCameraReach } from '../src/rules/village-navigation.js';
 import { createFollowCameraRig, followCameraPose } from '../src/follow-camera.js';
 import { PLAN_SCALE as K } from '../src/content/village.js';
+import { spreadWith } from '../src/rules/village-spread.js';
 
 const deg = (r) => r * 180 / Math.PI;
 
@@ -22,13 +23,15 @@ test('the outdoor view shows the street and the sky, and can look up at the roof
 test('the camera arm stops at a building instead of passing through it', () => {
   const blockers = villageCameraBlockers();
   assert.ok(blockers.length >= 10, 'every measured building body blocks the arm');
-  // Rowan's workshop stands east of the square (its door at design 66.6, 20). Owner on its doorstep, arm into the house.
-  const door = { x: 66 * K, z: 20 * K }, through = villageCameraReach(door, { x: 73 * K, z: 20 * K }, blockers);
+  // Rowan's workshop stands east of the square (its door drawn at 66.6, 20, and now further back from the tree:
+  // probes are drawn beside it and moved with it). Owner on its doorstep, arm into the house.
+  const rowan = (x, z) => { const [a, b] = spreadWith(x, z, 66, 20); return { x: a * K, z: b * K }; };
+  const door = rowan(66, 20), through = villageCameraReach(door, rowan(73, 20), blockers);
   assert.ok(through < .2, `the arm shortens to the wall (${through.toFixed(2)})`);
-  assert.equal(villageCameraReach(door, { x: 59 * K, z: 20 * K }, blockers), 1, 'out over the square it is clear');
+  assert.equal(villageCameraReach(door, rowan(59, 20), blockers), 1, 'out over the square it is clear');
   // An owner brushing a wall does not lose the arm along it.
-  assert.ok(villageCameraReach({ x: 65.9 * K, z: 20 * K }, { x: 65.9 * K, z: 26 * K }, blockers) > .9);
+  assert.ok(villageCameraReach(rowan(65.9, 20), rowan(65.9, 26), blockers) > .9);
   // A blocker further along the arm clips only its far part.
-  const far = villageCameraReach({ x: 58 * K, z: 20 * K }, { x: 70 * K, z: 20 * K }, blockers);
+  const far = villageCameraReach(rowan(58, 20), rowan(70, 20), blockers);
   assert.ok(far > .3 && far < .8, `part of the arm survives (${far.toFixed(2)})`);
 });

@@ -46,13 +46,27 @@ Not yet redesigned: the lighthouse, the observatory tower, the Ferris wheel and 
 - **Guidance**: following a chapter points the way, quest steps win the prompt, each step has its own verb, and a gold beacon stands over the followed step. Quest steps have themed objects (`questProp`).
 - **Interiors**: `village-home-interiors.js` holds real rooms for Mabel, Tansy, Opal and Cinder. `village-hall-life.js` sets fires, candles, steam, motes, sparkles and pendulums moving in every hall from marks its builder leaves.
 
-## Spreading the village out (started, not applied)
+## Spreading the village out
 
-The owner finds the entrance and Elowen's and Rowan's houses cramped, wants the whole world spread further with free space round the Moth Tree, and plans a central town square before the Quarry. `rules/village-spread.js` is the tool for it: `spread(x, z)` cuts the design grid along lines where nothing stands and moves the land apart (houses 20 further from the tree each side, gardens and well 6, the avenue 8 south, everything north of the square 30 north, the Copse's and Moor's sides 20 out); `gather` is its inverse for anything sampled by position. It is tested but **nothing calls it yet**.
+The owner found the entrance and Elowen's and Rowan's houses cramped, wanted the whole world spread further with free space round the Moth Tree, and plans a central town square before the Quarry. `rules/village-spread.js` cuts the design grid into eight pieces along lines where nothing stands and moves each one whole; nothing changes size, and the gaps between pieces are new ground:
 
-A first attempt applied it to `content/village.js` alone: 25 tests failed, as the other files still held old positions, so it was set aside to keep the game working. Measured size of the job: about 310 grid-to-world conversions across 19 files (`village-world.js` 52, `village-expansion-world.js` 41, `village-expansion-spatial.js` 40, `village-view.js` 31, `rules/village-navigation.js` 29, `village-game.js` 19, and thirteen smaller ones). Two findings from that attempt: the avenue cut (z 16) splits both house plots, so `drop` is 0 for now; and `village-world.js` reads layout values that would already be spread, so it must gather them back and keep writing on the old grid, with its writers (`onGround`, `at`) spreading on the way out. Warping only what is drawn cannot work: the new ground has to exist for walking too.
+| Piece | What it holds | Moves |
+| --- | --- | --- |
+| C | the Moth Tree, its ring of lamps, the avenue, the gate and the maples inside it | stays |
+| SW, SE | the square's furniture: knot gardens, well, noticeboard, bench, stall, planters | out 8 |
+| W, E | Elowen's and Rowan's plots and everything beyond (the Velvet Bat, the Moor) | out 24 |
+| NW, N, NE | everything north of the cross road (Copse, Acre, Quarry, Marsh, the Moor's far side) | north 40 |
 
-Applying it means passing every design-grid position through it, and they are written in many places: `content/village.js` (`at`, `box`, fixtures, scenery, bounds), the writers in `village-world.js` and `village-expansion-world.js`, `LAMPS`, the hall doors in `village-view.js`, `village-terrain.js` (shelves, ramps, waters; `terrainHeight` through `gather`), ground, paving and grass (through `gather`), blight, node and resource layouts, expansion activity positions, the tour and the wanderers. 24 modules and 20 tests depend on the layout. It must land in one piece, or what is drawn and what the rules believe part company. Things that straddle a cut (the R1 spur, the doorstep lanterns at x 48.6 and 65.1 to 65.4) need moving by hand.
+So Elowen's door is now 34 from the tree and Rowan's 32, the avenue runs between open lawns, and a band 40 deep the width of the village lies between the cross road and the Quarry (`TOWN_SQUARE`, lawn for now; the Quarry road runs north through its middle and the Copse road along its west side).
+
+How it is applied:
+
+- **Content stores positions where they now stand.** `content/village.js`, `content/village-expansion.js` and its cast pass every design-grid position through `spread` (a point), `spreadRect` (a rectangle, stretched across a gap only if it is long: a wall, a road) or `spreadStep` (a quest step or a resident's stop on the Green, which goes with what it was set beside: Elowen's door, Rowan's door or the tree). Cave rooms keep their own grid.
+- **The builders still draw on the old grid.** `village-world.js` gathers layout values back (`gp`) and draws as before. The Green writes through `SpreadingVoxels` straight into one batch on the spread ground (32-unit chunks, 39 meshes); the others are moved after building by `spreadVillage` (instance matrices, plain meshes, marks) in `village-view.js`, and the stall, bench and homes as their parts are made. The ground, paving, outer walls, hedgerow, scattered trees and flowers, woods, horizon, mist and gathering spots are drawn on the spread ground itself (`onSpread`, `atSpread`) and flagged `userData.spread = "native"`; the expansion's gates, restorations and cave mouth are drawn at spread points and the Acre moved whole.
+- **Anything asked of the ground by position gathers the point back first**: `groundHeight`, `groundIsWater`, grass, terraces, and in the walking rules the Green's bounds and the Acre's maze (`gatherWorld`). New ground reads as the nearest edge of a piece, carried straight across.
+- **The lines were found by scanning every box the builders write** for boxes whose corners fall in different pieces, and long boxes that would stretch. Where no line could pass: islands (the bench, the planters and the stall go with the furniture; the gate maples stay with the gate), height rules (the tree's crown and Rowan's eaves stay with what they belong to), and a few hand moves (the avenue's corn sheaves bound to their lamp posts, the doorstep lanterns, the arrival meadow's trees drawn whole).
+
+Anything new on the Green must be drawn on the old grid clear of the piece lines (re-run the scan) or drawn on the spread ground directly. Tests write their probes on the old grid and move them with `spreadStep`, `spreadWith` or `spreadWorld`.
 
 ## Still to do
 

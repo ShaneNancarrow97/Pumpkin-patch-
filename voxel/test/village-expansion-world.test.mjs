@@ -8,7 +8,10 @@ import {CAVE_IDS,CAVE_ENTRY,ACRE_PATHS,GRANNY_DOOR,CAVE_CAMERA_PRESET,caveCellFr
 import {createFollowCameraRig,followCameraPose} from '../src/follow-camera.js';
 import {createVillageExpansionWorld,buildExpansionOre} from '../src/village-expansion-world.js';
 import {EXPANSION_INSIDES,expansionHomeOpen} from '../src/village-expansion-interiors.js';
-import {terrainHeight} from '../src/village-terrain.js';
+import {terrainHeight,GROUND_REALM} from '../src/village-terrain.js';
+import {spreadWorld} from '../src/rules/village-spread.js';
+// A point as drawn (world units), where it now stands: the village was spread apart after it was laid out.
+const moved=p=>(([x,z])=>({x,z}))(spreadWorld(p.x,p.z));
 import {Voxels} from '../src/voxels.js';
 
 function openState(){
@@ -19,7 +22,7 @@ function openState(){
  return s;
 }
 function surfaceFlood(s){
- const x0=-102,z0=-22,w=271,h=157,grid=new Uint8Array(w*h),boxes=villageWalkObstacles(s);
+ const x0=Math.floor(GROUND_REALM.x0),z0=Math.floor(GROUND_REALM.z0),w=Math.ceil(GROUND_REALM.x1)-x0+1,h=Math.ceil(GROUND_REALM.z1)-z0+1,grid=new Uint8Array(w*h),boxes=villageWalkObstacles(s);
  for(let x=0;x<w;x++)for(let z=0;z<h;z++)grid[x+z*w]=villageCellFree(s,(x0+x)*K,(z0+z)*K,.32,boxes)?1:0;
  const start=Math.round(ARRIVAL.spawn[0]/K-x0)+Math.round(ARRIVAL.spawn[1]/K-z0)*w,queue=[start];grid[start]=2;
  for(let i=0;i<queue.length;i++){const n=queue[i],x=n%w,z=Math.floor(n/w);for(const[dx,dz]of[[1,0],[-1,0],[0,1],[0,-1]]){const a=x+dx,b=z+dz,index=a+b*w;if(a>=0&&a<w&&b>=0&&b<h&&grid[index]===1){grid[index]=2;queue.push(index);}}}
@@ -30,13 +33,13 @@ test('physical paths connect all six districts, current quest sites and cave mou
  for(const a of M.EXPANSION_AREAS.filter(a=>a.layer!=='cave'))assert.ok(reachable(a.spawn),a.id+' spawn');
  for(const a of M.EXPANSION_ACTIVITIES.filter(a=>!a.area.startsWith('cave')))assert.ok(reachable(a),a.id);
  assert.ok(reachable(CAVE_ENTRY),'the Copse cave mouth');assert.ok(reachable(GRANNY_DOOR),'Granny’s front door');
- for(const [a,b]of ACRE_PATHS)for(const p of[a,b])if(acreCellFree(p.x,p.z))assert.ok(reachable(p),'maze branch '+JSON.stringify(p));
+ for(const [a,b]of ACRE_PATHS)for(const p of[a,b])if(acreCellFree(p.x,p.z))assert.ok(reachable(moved(p)),'maze branch '+JSON.stringify(p));
  assert.deepEqual(M.EXPANSION_AREAS.find(a=>a.id==='cave-shallows').returnPoint,CAVE_ENTRY);
  const copse=M.EXPANSION_AREAS.find(a=>a.id==='copse');assert.ok(CAVE_ENTRY.x>=copse.bounds[0]&&CAVE_ENTRY.x<=copse.bounds[2]);
 });
 test('story and level gates cannot be bypassed through open scenery or the western approach',()=>{
  const s=M.freshState();s.village.invited=true;s.earned=1e9;
- for(const p of[{x:0,z:60*K},{x:58*K,z:66*K},{x:134*K,z:34*K},{x:58*K,z:112*K},CAVE_ENTRY,GRANNY_DOOR])assert.equal(villageCellFree(s,p.x,p.z),false,JSON.stringify(p));
+ for(const p of[...[{x:0,z:60*K},{x:58*K,z:66*K},{x:134*K,z:34*K},{x:58*K,z:112*K}].map(moved),CAVE_ENTRY,GRANNY_DOOR])assert.equal(villageCellFree(s,p.x,p.z),false,JSON.stringify(p));
  const open=openState();assert.equal(villageCellFree(open,CAVE_ENTRY.x,CAVE_ENTRY.z),true);
  const shortcutPoint=Array.from({length:31},(_,i)=>({x:(-59+i*.5)*K,z:82*K})).find(p=>onAcreShortcut(p.x,p.z)&&!acreCellFree(p.x,p.z,.32,false));
  assert.ok(shortcutPoint);assert.equal(acreCellFree(shortcutPoint.x,shortcutPoint.z,.32,true),true);

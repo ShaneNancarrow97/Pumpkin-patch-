@@ -9,19 +9,24 @@
 // later district opens three levels on.
 import { BLIGHT_MATERIAL, BLIGHT_NODE_SITES } from "./village-blight.js";
 import { VILLAGE_RESOURCE_PATCHES, VILLAGE_RESOURCE_AREAS, VILLAGE_RESOURCE_EXCLUSIONS } from "./village-resource-layout.js";
+import { spread, spreadRect } from "../rules/village-spread.js";
 export const VILLAGE_LEVEL = 3;
 // The village is drawn on a design grid and built at PLAN_SCALE world units to
 // each grid unit, so the owners (2.3 units tall) find its doors, benches and lamps
 // their own size and the realm feels big. Everything exported here is in world units.
 export const PLAN_SCALE = 1.5;
-const S = (v) => Math.round(v * PLAN_SCALE * 1000) / 1000, at = ([x, z]) => [S(x), S(z)];
-const box = (b) => ({ ...b, x0: S(b.x0), z0: S(b.z0), x1: S(b.x1), z1: S(b.z1) });
+const S = (v) => Math.round(v * PLAN_SCALE * 1000) / 1000;
+// Every position is drawn on the old tight grid and passed through the village's spread (rules/village-spread.js)
+// on its way to the world: a point moves with its piece; a footprint moves whole, or stretches across a gap if long.
+const at = ([x, z]) => spread(x, z).map(S), xz = (p) => { const [x, z] = at([p.x, p.z]); return { x, z }; };
+const scaled = (b) => ({ ...b, x0: S(b.x0), z0: S(b.z0), x1: S(b.x1), z1: S(b.z1) });
+const box = (b) => scaled(spreadRect(b)), whole = box;
 // Each district sits away from the Green across its own stretch of woods (design grid):
 // the Copse to the north-west, the Quarry's island north, the Moor east, the Marsh beyond the Quarry.
 export const DISTRICT_SHIFT = Object.freeze({ green: [0, 0], copse: [-30, 14], quarry: [0, 20], moor: [44, 4], marsh: [0, 34] });
 const sh = (d, [x, z]) => [x + DISTRICT_SHIFT[d][0], z + DISTRICT_SHIFT[d][1]];
 const shBox = (d, b) => ({ ...b, x0: b.x0 + DISTRICT_SHIFT[d][0], x1: b.x1 + DISTRICT_SHIFT[d][0], z0: b.z0 + DISTRICT_SHIFT[d][1], z1: b.z1 + DISTRICT_SHIFT[d][1] });
-export const VILLAGE_BOUNDS = Object.freeze({ x0: S(-34), z0: S(-22), x1: S(168), z1: S(134) });
+export const VILLAGE_BOUNDS = Object.freeze(box({ x0: -34, z0: -22, x1: 168, z1: 134 }));
 // Each district opens at a patch level and, after the Green, a story beat (STORY_FLAGS).
 export const DISTRICTS = Object.freeze([
   { id: "green", name: "Hollow Green", level: 3, story: null, polygon: [[0, -22], [120, -22], [120, 50], [0, 50]] },
@@ -102,7 +107,7 @@ export const NODES = Object.freeze([
   { id: "star_amber-01", material: "star-amber", x: 112, z: 90, district: "marsh" },
   ...VILLAGE_RESOURCE_PATCHES,
   ...BLIGHT_NODE_SITES,
-].map((n) => { const [x, z] = sh(n.district, [n.x, n.z]); return Object.freeze({ ...n, x: S(x), z: S(z) }); }));
+].map((n) => { const [x, z] = sh(n.district, [n.x, n.z]); return Object.freeze({ ...n, ...xz({ x, z }) }); }));
 export const NODE_BY_ID = Object.freeze(Object.fromEntries(NODES.map((n) => [n.id, n])));
 export const BLIGHT_NODES = Object.freeze(NODES.filter(n => n.kind === "blight"));
 // Building plots: the full eventual home-and-garden reserve, with a level doorway on its spur road.
@@ -151,7 +156,7 @@ export const GATES = Object.freeze([
   { id: "moor-gate", x: 124, z: 34, district: "moor" },
   { id: "marsh-west", x: 58, z: 106, district: "marsh" },
   { id: "marsh-east", x: 152, z: 106, district: "marsh" },
-].map((g) => Object.freeze({ ...g, x: S(g.x), z: S(g.z) })));
+].map((g) => Object.freeze({ ...g, ...xz(g) })));
 export const BRIDGE = Object.freeze({ ...box(shBox("quarry", { x0: 55, z0: 37, x1: 61, z1: 43 })), ravine: Object.freeze(box(shBox("quarry", { x0: 39, z0: 37, x1: 87, z1: 43 }))) });
 // The carriage stop: where the carriage turns, the step back to the farm, where you arrive (facing north) and the noticeboard.
 export const ARRIVAL = Object.freeze({ carriage: at([58, -24.4]), back: at([58, -21.4]), spawn: at([58, -17]), noticeboard: at([63, 17.5]) });
@@ -185,14 +190,14 @@ export const STORE_BASE = 40;
 // well and noticeboard welcome arrivals below it; the market stall sits on the
 // north-east edge, leaving both sides of the tree open for walking.
 export const FIXTURES = Object.freeze({
-  tree: Object.freeze({ x: S(58), z: S(24.6), r: 4.4 }),
-  well: Object.freeze({ x: S(52.1), z: S(17.8), r: 2.5 }),
-  bench: Object.freeze({ x: S(51.2), z: S(23.6), w: 1.7, d: 3.9, facing: "east" }),
-  stall: Object.freeze({ x: S(64.2), z: S(28.6), w: 4.2, d: 5.1, facing: "west" }),
-  noticeboard: Object.freeze({ x: S(63), z: S(18.5), w: 3.3, d: 1.2, facing: "south" }),
-  carriage: Object.freeze({ x: S(58), z: S(-24.4), w: 14, d: 4.8, facing: "east" }),
-  oak: Object.freeze({ x: S(25.4), z: S(9.6), r: 2.4 }),
-  pond: Object.freeze({ x: S(102), z: S(6), w: S(13), d: S(8) }),
+  tree: Object.freeze({ ...xz({ x: 58, z: 24.6 }), r: 4.4 }),
+  well: Object.freeze({ ...xz({ x: 52.1, z: 17.8 }), r: 2.5 }),
+  bench: Object.freeze({ ...xz({ x: 51.2, z: 23.6 }), w: 1.7, d: 3.9, facing: "east" }),
+  stall: Object.freeze({ ...xz({ x: 64.2, z: 28.6 }), w: 4.2, d: 5.1, facing: "west" }),
+  noticeboard: Object.freeze({ ...xz({ x: 63, z: 18.5 }), w: 3.3, d: 1.2, facing: "south" }),
+  carriage: Object.freeze({ ...xz({ x: 58, z: -24.4 }), w: 14, d: 4.8, facing: "east" }),
+  oak: Object.freeze({ ...xz({ x: 25.4, z: 9.6 }), r: 2.4 }),
+  pond: Object.freeze({ ...xz({ x: 102, z: 6 }), w: S(13), d: S(8) }),
 });
 // Planted and built scenery round the square: the avenue's knot gardens behind
 // their railings, the square's lamps, planters and the avenue's benches, the
@@ -213,10 +218,10 @@ export const SCENERY = Object.freeze([
   { id: "lamp-nw", x: 54.5, z: 28.1, r: .45 }, { id: "lamp-ne", x: 61.5, z: 28.1, r: .45 },
   { id: "planter-nw", x: 49.2, z: 30.3, r: .7 }, { id: "planter-ne", x: 65.8, z: 30.3, r: .7 },
   { id: "bench-avenue-w", x0: 55.1, z0: 10.2, x1: 56.1, z1: 12.8 }, { id: "bench-avenue-e", x0: 59.9, z0: 10.2, x1: 60.9, z1: 12.8 },
-  { id: "bed-west", x0: 48.8, z0: 16.1, x1: 50.3, z1: 16.9 }, { id: "bed-east", x0: 61.8, z0: 16.1, x1: 66.2, z1: 16.9 },
+  { id: "bed-west", x0: 48.8, z0: 16.1, x1: 50.3, z1: 16.9 }, { id: "bed-east", x0: 61.8, z0: 16.1, x1: 65, z1: 16.9 },
   { id: "pumpkin-patch", x0: 67.6, z0: 2.4, x1: 81.4, z1: 8.4 }, { id: "corn-rows", x0: 29.6, z0: 5.6, x1: 46.6, z1: 9.4 }, { id: "moth-yard", x0: 85.5, z0: 1.5, x1: 94.5, z1: 10.5 },
   { id: "velvet-bat", x0: 91.4, z0: 11.6, x1: 111.8, z1: 30 },
-].map((x) => Object.freeze(x.r ? { ...x, x: S(x.x), z: S(x.z), r: S(x.r) } : box(x))));
+].map((x) => Object.freeze(x.r ? { ...x, ...xz(x), r: S(x.r) } : whole(x))));
 // The rules' own measures: where on the Green decor may go, the Moor's walled corner, and how near a door counts as "near".
 export const GREEN_AREA = Object.freeze(box({ x0: 1, z0: -21, x1: 119, z1: 35 }));
 export const MOOR_CORNER = Object.freeze({ x0: 1e4, x1: 1e4 + 1, z0: 1e4, z1: 1e4 + 1 });
@@ -230,8 +235,8 @@ export const FORAGE_AREAS = Object.freeze([
   { id: "flax-hollow", name: "Flax Hollow", material: "fibre", x: 42, z: -7, x0: 36, z0: -21, x1: 49, z1: -2 },
   { id: "moonflower-meadow", name: "Moonflower Meadow", material: "herbs", x: 78, z: -13, x0: 67, z0: -20, x1: 89, z1: -2 },
   { id: "stone-bank", name: "Old Stone Bank", material: "stone", x: 103, z: -14, x0: 90, z0: -21, x1: 116, z1: -2 },
-].map(p => Object.freeze({ ...box(p), x: S(p.x), z: S(p.z) })));
+].map(p => Object.freeze({ ...whole(p), ...xz(p) })));
 // These mixed-material lawns and side gardens supplement the original four
 // forecourt clearings; they are not separate district unlocks.
-export const RESOURCE_AREAS = Object.freeze(VILLAGE_RESOURCE_AREAS.map(p => Object.freeze(box(p))));
-export const RESOURCE_EXCLUSIONS = Object.freeze(VILLAGE_RESOURCE_EXCLUSIONS.map(p => Object.freeze(p.r ? { ...p, x: S(p.x), z: S(p.z), r: S(p.r) } : box(p))));
+export const RESOURCE_AREAS = Object.freeze(VILLAGE_RESOURCE_AREAS.map(p => Object.freeze(whole(p))));
+export const RESOURCE_EXCLUSIONS = Object.freeze(VILLAGE_RESOURCE_EXCLUSIONS.map(p => Object.freeze(p.r ? { ...p, ...xz(p), r: S(p.r) } : whole(p))));
