@@ -5,7 +5,7 @@
 // Things that move are left as marks for village-hall-life.js to draw: fire, candle, steam, motes, sparkle and
 // pendulum. A `lamp` mark is where one of the shared lights may stand.
 import { seeded, vary } from "./voxels.js";
-import { C, lantern, hallShell, bookRow, pumpkin, jackOLantern, crow } from "./village-models.js";
+import { C, lantern, hallShell, bookRow, pumpkin, jackOLantern, crow, shade } from "./village-models.js";
 
 const pick = (list, r) => list[(r() * list.length) | 0];
 const TAU = Math.PI * 2;
@@ -283,4 +283,105 @@ export function cinderRestaurant(f, r = seeded(437)) {
   { const x = 3, z = -1; for (const s of [-1, 1]) { f.block(x + s * .3, 0, z + .1, .05, 1.2, .05, 0x8a6a46); f.block(x + s * .3, 0, z - .26, .05, 1, .05, 0x8a6a46); } f.block(x, .3, z + .14, .7, .86, .04, 0x1c2420); f.block(x, 1, z + .17, .44, .07, .01, 0xf4f0e4); for (let k = 0; k < 3; k++) f.block(x, .8 - k * .16, z + .17, .5 - k * .08, .04, .01, 0xe8e4d8); }
   for (const s of [-1, 1]) { const x = s * 2.2, z = -.75; f.block(x, 0, z, .46, .44, .46, 0x7a3a3a); f.block(x, .44, z, .08, .7, .08, 0x5a4030); for (let k = 0; k < 3; k++) f.block(x, 1.1 + k * .22, z, .56 - k * .14, .24, .56 - k * .14, vary(0x3f6a3a, .1, r)); }
   for (const [x, z] of [[-6.3, -.8], [-5.6, -.75]]) { f.block(x, 0, z, .6, .76, .6, 0x6a4a2e); for (const y of [.14, .58]) f.block(x, y, z, .64, .05, .64, C.iron); }
+}
+
+// ---- Corvus's big top -----------------------------------------------------------------------------------------
+// Bigger inside than out: a sawdust ring under a striped roof that climbs out of sight, a horseshoe of seven
+// tiers with a crowd in them, four king poles hung with lights, a high wire and trapezes, and a curtained stage
+// door under a board of bulbs. A carpet runs from the door between a ticket booth and a popcorn cart to the ring.
+// `view` lifts the camera's gaze and widens it, so the height shows; `reach` and `ambient` light so large a room.
+export const CORVUS_HALL = Object.freeze({ w: 30, d: 28, host: [0, -11.6], spawn: [0, -1.4], light: .6, exposure: 1.1, reach: 34, ambient: .8, view: Object.freeze({ lift: 3.2, fov: 56 }),
+  blocks: Object.freeze([[-15, -28, 15, -21.9], [-15, -21.9, -8.1, -6.6], [8.1, -21.9, 15, -6.6], [-8.1, -21.9, -5.7, -19.7], [5.7, -21.9, 8.1, -19.7],
+    [-6.6, -5.3, -3.8, -2.9], [3.8, -5.4, 6.6, -3], [-3.3, -17.4, -2.1, -16.2], [2.1, -17.4, 3.3, -16.2], [-.9, -18.1, .9, -17.2], [2.5, -12.9, 4, -11.6],
+    [-4.75, -9.85, -4.15, -9.25], [4.15, -9.85, 4.75, -9.25], [-4.75, -18.75, -4.15, -18.15], [4.15, -18.75, 4.75, -18.15]]) });
+export function corvusTent(f, r = seeded(439)) {
+  const W = 30, D = 28, cz = -14, RW = 14.3, wallH = 6, peak = 17, ringR = 5.2, deg = Math.PI / 180;
+  const plum = 0x5c3a7c, deep = 0x3c2552, gold = C.gold, cream = 0xe9d3a0, ochre = 0xcfa64a, red = 0xa8172c, wood = [0x7a5a3c, 0x6c4e34, 0x866646];
+  // A point `rad` from the ring's middle, `th` round from the door's side.
+  const polar = (th, rad) => [Math.sin(th) * rad, cz + Math.cos(th) * rad];
+  const stripe = (th) => Math.floor(th / (TAU / 36)) % 2;
+  const bulbs = (ax, ay, az, bx, by, bz, n, sag, colours = [0xffc06a, 0xff8a5a, 0xe8b0ff]) => { for (let i = 1; i < n; i++) { const t = i / n; f.block(ax + (bx - ax) * t, ay + (by - ay) * t - Math.sin(t * Math.PI) * sag, az + (bz - az) * t, .12, .14, .12, colours[i % colours.length], true); } };
+  // ---- The ground: trodden earth, a carpet from the door, and the ring's sawdust with a star at its heart.
+  f.block(0, -.15, -D / 2, W + .6, .2, D + .8, 0x2c211e);
+  for (let x = -15; x < 15; x += 2) for (let z = -28; z < 0; z += 2) f.block(x + 1, 0, z + 1, 1.97, .12, 1.97, vary(pick([0x4a3a30, 0x54423a, 0x43342c], r), .05, r));
+  for (let dz = -ringR + .25; dz < ringR; dz += .5) f.block(0, .12, cz + dz, Math.sqrt(ringR * ringR - dz * dz) * 2, .05, .5, vary(pick([0xd8b878, 0xcfae6c, 0xe0c286], r), .04, r));
+  f.block(0, .12, -4.6, 2.4, .03, 8.2, red); for (const s of [-1, 1]) f.block(s * 1.1, .13, -4.6, .1, .03, 8.2, gold);
+  for (let i = 0; i < 5; i++) { const a = i / 5 * TAU; f.block(Math.sin(a) * .8, .17, cz + Math.cos(a) * .8, .5, .02, .5, red); } f.block(0, .17, cz, 1.1, .025, 1.1, gold); f.block(0, .18, cz, .5, .025, .5, red);
+  // The ring's kerb: red and cream blocks under a gilt rail with bulbs, open at the front and the back.
+  for (let i = 0; i < 44; i++) { const th = (i + .5) / 44 * TAU, [x, z] = polar(th, ringR + .2); if (Math.abs(x) < 1.35) continue; f.block(x, .12, z, .78, .34, .78, i % 2 ? red : cream); f.block(x, .46, z, .84, .07, .84, gold); if (i % 2) f.block(x, .53, z, .1, .1, .1, 0xffc06a, true); }
+  // ---- The seats: seven tiers in a horseshoe, stair aisles in red, and the crowd.
+  const coats = [0x6d4c89, 0x884659, 0x4a6a8a, 0x87916b, 0xb3a082, 0x3d3550, 0xa8553f, 0x4f6a5a], heads = [0xe8b890, 0xd9a078, 0xc98a62, 0xf0c8a4, 0xe8771f, 0xe8e4dc, 0x8fb07a];
+  for (let t = 0; t < 7; t++) {
+    const rad = 8.3 + t * .82, h = .42 * (t + 1), n = Math.round(250 * deg * rad / .92);
+    for (let j = 0; j < n; j++) {
+      const th = (55 + (j + .5) / n * 250) * deg, [x, z] = polar(th, rad), a = th / deg;
+      if (Math.abs(a - 180) < 9.5 && t < 4) continue;                       // the way in from backstage
+      const aisle = Math.abs(a - 118) < 2.6 || Math.abs(a - 242) < 2.6;
+      f.block(x, .12, z, .98, h, .9, vary(t % 2 ? 0x5a2c40 : 0x34406a, .04, r)); f.block(x, .12 + h, z, 1.0, .07, .94, aisle ? red : vary(pick(wood, r), .05, r));
+      if (aisle || r() > .58) continue;
+      const coat = pick(coats, r), y = .19 + h;
+      f.block(x, y, z, .46, .5, .4, coat); f.block(x, y + .5, z, .3, .3, .3, pick(heads, r));
+      const whim = r(); if (whim < .22) { f.block(x, y + .8, z, .36, .08, .36, 0x241c2c); f.block(x, y + .88, z, .22, .2, .22, 0x241c2c); } else if (whim < .4) for (const s of [-1, 1]) f.block(x + s * .3, y + .42, z, .1, .52, .1, coat);
+    }
+  }
+  // ---- The canvas: striped walls open towards the door, a gilt band with bulbs, and the roof climbing to its crown.
+  for (let i = 0; i < 72; i++) { const th = (i + .5) / 72 * TAU, a = th / deg; if (a < 50 || a > 310) continue; const [x, z] = polar(th, RW); f.block(x, 0, z, 1.34, wallH, 1.34, vary(stripe(th) ? plum : ochre, .03, r)); f.block(x, wallH, z, 1.4, .3, 1.4, gold); if (i % 2) { const [bx, bz] = polar(th, RW - .78); f.block(bx, wallH - .2, bz, .14, .14, .14, i % 4 === 1 ? 0xffc06a : 0xe8b0ff, true); } }
+  for (let k = 0; k < 13; k++) {
+    const t = k / 13, t1 = (k + 1) / 13, rad = 1.8 + (RW - 1.8) * (1 - t) ** 1.5, y = wallH + .3 + (peak - wallH - .3) * (1 - (1 - t) ** 1.3), y1 = wallH + .3 + (peak - wallH - .3) * (1 - (1 - t1) ** 1.3);
+    const m = Math.max(10, Math.round(220 * deg * rad / 1.25)), s = 220 * deg * rad / m * 1.14;
+    for (let j = 0; j < m; j++) { const th = (70 + (j + .5) / m * 220) * deg, [x, z] = polar(th, rad); f.block(x, y, z, s, y1 - y + .06, s, shade(stripe(th) ? plum : ochre, .62 + t * .3)); }
+  }
+  for (let i = 0; i < 12; i++) { const a = i / 12 * TAU; f.block(Math.sin(a) * 1.5, peak - .5, cz + Math.cos(a) * 1.5, .5, .3, .5, gold); f.block(Math.sin(a) * 1.25, peak - .9, cz + Math.cos(a) * 1.25, .16, .2, .16, 0xffd28a, true); }
+  f.block(0, peak - 2.4, cz, .06, 2, .06, C.iron); lantern(f, 0, peak - 3.3, cz, 1.6); f.mark?.("sparkle", 0, peak - 2.6, cz);
+  // ---- The king poles: banded masts with a lamp each, lights strung between them and out to the walls.
+  const poles = [[-4.45, -9.55], [4.45, -9.55], [-4.45, -18.45], [4.45, -18.45]];
+  for (const [x, z] of poles) {
+    f.block(x, .12, z, .7, .4, .7, deep); f.block(x, .52, z, .34, peak - 4, .34, 0x6a4a34);
+    for (let y = 2; y < peak - 4; y += 2.2) { f.block(x, y, z, .42, .22, .42, gold); f.block(x, y + .22, z, .4, .5, .4, red); }
+    const inx = -Math.sign(x) * .5, inz = Math.sign(cz - z) * .5;
+    f.block(x + inx, 7.5, z + inz, .5, .5, .5, C.iron); f.block(x + inx * 1.5, 7.56, z + inz * 1.5, .36, .38, .36, 0xffe2a8, true); f.mark?.("lamp", x + inx * 2, 7.4, z + inz * 2);
+    const [wx, wz] = polar(Math.atan2(x, z - cz), RW - .9); bulbs(x, 11.6, z, wx, wallH + .4, wz, 12, 1.1);
+  }
+  bulbs(-4.45, 11.6, -9.55, 4.45, 11.6, -9.55, 12, .9); bulbs(-4.45, 11.6, -18.45, 4.45, 11.6, -18.45, 12, .9); for (const s of [-1, 1]) bulbs(s * 4.45, 11.6, -9.55, s * 4.45, 11.6, -18.45, 12, .9);
+  // The high wire between the back poles' platforms, a walker on it with a pole; two trapezes over the ring.
+  for (const s of [-1, 1]) { f.block(s * 4.45, 8.9, -18.45, 1.3, .1, 1.3, wood[0]); for (const e of [-1, 1]) f.block(s * 4.45 + e * .6, 9, -18.45 - .6, .06, .6, .06, gold); f.block(s * 4.45, 9.56, -19.05, 1.3, .05, .05, gold); for (let k = 0; k < 16; k++) f.block(s * 5.0, .6 + k * .52, -18.45, .34, .04, .05, cream); }
+  f.block(0, 9.02, -18.45, 7.7, .04, .04, 0x1e1a24);
+  f.block(1.1, 9.06, -18.45, .2, .5, .16, deep); f.block(1.1, 9.56, -18.45, .34, .44, .22, 0xd6407a); f.block(1.1, 10.0, -18.45, .24, .24, .22, heads[0]); f.block(1.1, 9.8, -18.45, 2.6, .04, .04, gold);
+  for (const s of [-1, 1]) { const x = s * 2.1; for (const e of [-1, 1]) f.block(x + e * .5, 8.4, cz, .03, 6.4, .03, cream); f.block(x, 8.36, cz, 1.08, .07, .07, gold); }
+  f.block(-2.1, 7.5, cz, .2, .86, .16, 0x4a8ad8); f.block(-2.1, 7.2, cz, .22, .24, .2, heads[3]); for (const e of [-1, 1]) f.block(-2.1 + e * .14, 6.5, cz, .1, .74, .1, 0x4a8ad8);
+  // ---- The stage door: gilt pillars and an arch, velvet drawn back on backstage light, and the board above.
+  const sz = -22.3;
+  for (const s of [-1, 1]) { f.block(s * 2.7, .12, sz, .7, .3, .7, deep); f.block(s * 2.7, .42, sz, .5, 5.6, .5, gold); for (let y = 1.2; y < 5.8; y += 1.3) f.block(s * 2.7, y, sz, .58, .14, .58, red); f.block(s * 2.7, 6.02, sz, .8, .2, .8, cream); f.block(s * 2.7, 6.22, sz, .36, .4, .36, gold); f.block(s * 2.7, 6.62, sz, .24, .24, .24, 0xffd28a, true); }
+  for (let i = 0; i < 11; i++) { const a = i / 10 * Math.PI; f.block(-Math.cos(a) * 2.5, 5.0 + Math.sin(a) * 1.1, sz, .56, .44, .46, i % 2 ? gold : red); }
+  f.block(0, .12, sz - .9, 1.5, 3.4, .1, 0xa8487a, true); f.block(0, .12, sz - 1.4, 5, 6.2, .3, 0x1c1220);
+  for (let i = 0; i < 10; i++) { if (i > 3 && i < 6) continue; f.block(-2.25 + i * .5, .12, sz - .5 + (i % 2) * .12, .5, 5.1, .3, shade(red, .74 + (i % 2) * .22)); }
+  for (const s of [-1, 1]) for (let k = 0; k < 5; k++) f.block(s * (.3 + k * .12), 3.2 + k * .42, sz - .46, .56 - k * .06, .44, .3, shade(red, .8 + (k % 2) * .16));
+  f.block(0, 4.86, sz - .3, 5.0, .46, .4, shade(red, .9)); for (let i = 0; i < 12; i++) f.block(-2.3 + i * .42, 4.7, sz - .12, .14, .2, .06, gold);
+  f.block(0, 6.9, sz, 6.4, 1.7, .34, deep); f.block(0, 6.82, sz + .04, 6.7, .1, .4, gold); f.block(0, 8.6, sz + .04, 6.7, .1, .4, gold);
+  for (let i = 0; i < 16; i++) { f.block(-3 + i * .4, 8.42, sz + .2, .12, .12, .1, i % 2 ? 0xffc06a : 0xff8a5a, true); f.block(-3 + i * .4, 6.98, sz + .2, .12, .12, .1, i % 2 ? 0xff8a5a : 0xffc06a, true); }
+  // A moth in gilt on the board: wings, body and feelers.
+  for (const s of [-1, 1]) { f.block(s * .7, 7.65, sz + .2, 1.0, .5, .06, gold); f.block(s * 1.1, 7.95, sz + .2, .7, .3, .06, cream); f.block(s * .6, 7.3, sz + .2, .7, .34, .06, ochre); f.block(s * .16, 8.1, sz + .2, .05, .26, .05, gold); }
+  f.block(0, 7.3, sz + .22, .2, .86, .08, 0x241c2c); f.mark?.("sparkle", 0, 7.7, sz + .4);
+  for (const s of [-1, 1]) { const x = s * 3.9, z = sz + 1; f.block(x, .12, z, .16, 1.3, .16, C.iron); f.block(x, 1.42, z, .6, .14, .6, C.iron); f.block(x, 1.56, z, .44, .1, .44, 0x5a2a1c); f.mark?.("fire", x, 1.66, z); f.mark?.("lamp", x, 2.3, z + .3); }
+  // Long banners hanging before the seats.
+  for (const a of [96, 134, 226, 264]) { const [x, z] = polar(a * deg, 12.6), side = Math.abs(Math.sin(a * deg)) > .8; f.block(x, 12.6, z, side ? .08 : 1.5, .1, side ? 1.5 : .08, gold); f.block(x, 8.2, z, side ? .06 : 1.3, 4.4, side ? 1.3 : .06, a % 4 ? plum : red); f.block(x, 8.0, z, side ? .08 : .7, .26, side ? .7 : .08, gold); f.block(x, 10.2, z, side ? .08 : .6, .6, side ? .6 : .08, cream); }
+  // ---- In the ring: two painted tubs, a hoop of fire on its stand, a star ball and a cannon.
+  for (const s of [-1, 1]) { const x = s * 2.7, z = -16.8; f.block(x, .16, z, 1.0, .56, 1.0, s > 0 ? 0x34406a : red); for (const y of [.16, .64]) f.block(x, y, z, 1.06, .08, 1.06, gold); f.block(x, .72, z, .9, .05, .9, cream); f.block(x, .77, z, .4, .02, .4, gold); }
+  f.block(0, .16, -17.65, 1.5, .12, .5, deep); for (const s of [-1, 1]) f.block(s * 1.02, .28, -17.65, .1, 1.8, .1, C.iron);
+  for (let i = 0; i < 14; i++) { const a = i / 14 * TAU; f.block(Math.sin(a) * .95, 2.0 + Math.cos(a) * .95, -17.65, .2, .2, .16, C.iron); if (i % 2) f.block(Math.sin(a) * 1.08, 2.0 + Math.cos(a) * 1.08, -17.65, .14, .16, .12, 0xff9a3a, true); }
+  f.mark?.("fire", 0, 2.95, -17.65); f.mark?.("fire", 0, 1.0, -17.65);
+  f.block(-2.4, .2, -12.3, .74, .44, .74, 0x4a8ad8); f.block(-2.4, .12, -12.3, .5, .62, .5, 0x4a8ad8); f.block(-2.4, .26, -12.3, .82, .3, .5, 0x4a8ad8); f.block(-2.4, .26, -12.3, .5, .3, .82, 0x4a8ad8); f.block(-2.4, .3, -12.3, .76, .2, .2, gold); f.block(-2.4, .3, -12.3, .2, .2, .76, gold);
+  { const x = 3.2, z = -12.25; for (const e of [-1, 1]) for (let i = 0; i < 8; i++) { const a = i / 8 * TAU; f.block(x + e * .5, .56 + Math.sin(a) * .4, z + Math.cos(a) * .4, .1, .16, .16, gold); } f.block(x, .5, z, .9, .12, .12, C.iron);
+    for (let k = 0; k < 6; k++) f.block(x, .5 + k * .2, z - .3 + k * .26, .56 - k * .03, .34, .4, k % 2 ? deep : plum); f.block(x, 1.66, z + 1.16, .66, .2, .16, gold); }
+  // ---- By the door: the canvas kick-wall and its posts, a ticket booth, a popcorn cart and roped posts.
+  for (const s of [-1, 1]) { const len = W / 2 - 1.15; f.block(s * (1.15 + len / 2), 0, 0, len, .7, .3, plum); f.block(s * (1.15 + len / 2), .7, 0, len + .1, .08, .36, gold); f.block(s * 1.2, 0, 0, .34, 1.4, .34, deep); f.block(s * 1.2, 1.4, 0, .44, .1, .44, gold); lantern(f, s * 1.2, 1.5, 0, .6); f.mark?.("lamp", s * 1.2, 2.1, .3); }
+  f.block(0, 0, .3, 2.2, .1, .6, C.stone[1]);
+  { const x = -5.2, z = -4.1; for (let i = 0; i < 6; i++) f.block(x - 1 + i * .4, .12, z, .4, 2.3, 2.0, i % 2 ? red : cream); f.block(x, 1.0, z + 1.06, 1.5, .1, .3, wood[0]); f.block(x, 1.14, z + 1.02, 1.3, .9, .06, 0xffd9a0, true); f.block(x, 1.14, z + 1.05, .05, .9, .04, deep); f.block(x, 2.42, z, 2.9, .12, 2.5, deep);
+    for (let i = 0; i < 7; i++) f.block(x - 1.2 + i * .4, 2.2 - (i % 2) * .08, z + 1.26, .4, .22 + (i % 2) * .08, .08, i % 2 ? gold : red); f.block(x, 2.54, z + .9, 2.2, .6, .12, deep); f.block(x, 2.62, z + .98, 1.9, .44, .04, cream); for (let i = 0; i < 8; i++) f.block(x - .98 + i * .28, 3.16, z + .98, .1, .1, .1, i % 2 ? 0xffc06a : 0xff8a5a, true); }
+  { const x = 5.2, z = -4.2; f.block(x, .5, z, 2.2, .9, 1.5, red); for (const y of [.5, 1.32]) f.block(x, y, z, 2.28, .08, 1.58, gold); f.block(x, 1.4, z, 2.0, 1.0, 1.3, 0xffe2a8, true); for (let i = 0; i < 9; i++) f.block(x - .8 + (i % 3) * .8, 1.4, z + .67, .5, .16 + (i % 2) * .2, .04, 0xfff4d8);
+    for (const sx of [-1, 1]) for (const sz2 of [-1, 1]) f.block(x + sx * 1.04, 1.4, z + sz2 * .7, .08, 1.5, .08, gold); for (let i = 0; i < 6; i++) f.block(x - 1 + i * .4, 2.9, z, .4, .14, 1.8, i % 2 ? cream : red); f.block(x, 2.84, z, 2.5, .07, 1.9, gold);
+    for (const sx of [-1, 1]) { for (let i = 0; i < 8; i++) { const a = i / 8 * TAU; f.block(x + sx * .7, .5 + Math.sin(a) * .38, z + .8 + Math.cos(a) * .38 * 0, .14, .14, .1, C.iron); } f.block(x + sx * .7, .12, z + .8, .5, .76, .1, 0x3a2a24); }
+    f.mark?.("steam", x, 3.1, z); }
+  for (const s of [-1, 1]) for (const z of [-1.6, -3.6, -5.6, -7.6]) { f.block(s * 1.7, .12, z, .3, .06, .3, C.brass); f.block(s * 1.7, .18, z, .1, .8, .1, C.brass); f.block(s * 1.7, .98, z, .18, .16, .18, C.brass); if (z < -1.7) f.block(s * 1.7, .82, z + 1, .07, .07, 1.9, red); }
+  for (const [x, y, z] of [[-3, 4.5, -11], [3.5, 5, -16], [0, 6.5, -20]]) f.mark?.("motes", x, y, z);
 }

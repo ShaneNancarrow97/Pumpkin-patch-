@@ -34,6 +34,8 @@ The owner asked for "an overall build upgrade to the superstructures, design and
 - **Corvus's caravan**: a bow top, framed and gilded panels, shuttered windows with flower boxes, spoked wheels, a stable door and folding steps.
 - **The marsh huts**: braced stilts, a railed deck, board walls, deep thatch, a ladder and a line of fish.
 
+- **Corvus's big top, inside** (`corvusTent`, `CORVUS_HALL` in `village-home-interiors.js`): the owner asked for the tent to be bigger inside than out, an epic circus amphitheatre. It is 30 by 28: a sawdust ring, a horseshoe of seven tiers with a crowd, four king poles with lamps and strung bulbs, a high wire with a walker, trapezes, a curtained stage door under a board of bulbs, and a ticket booth and popcorn cart by the door. A hall may now carry `view` (`lift`, `fov`) to raise and widen the camera's gaze, `reach` for its lamps and `ambient` for its fill light; the big top uses all three.
+
 Not yet redesigned: the lighthouse, the observatory tower, the Ferris wheel and carousel, the townhouses, the district gates, and the Acre (Granny's house, corn, watchers).
 
 ## Earlier in this round (already pushed)
@@ -46,7 +48,7 @@ Not yet redesigned: the lighthouse, the observatory tower, the Ferris wheel and 
 
 ## Still to do
 
-- **Interiors for Corvus, the Baron and Granny** (they fall back to Codex's shared room). Designs: a striped tent with a stage, footlights and a trapeze; a velvet manor with a marble fireplace, portrait, piano and an empty gilt frame; a crooked cottage with an inglenook, cauldron, dresser and bed alcove.
+- **Interiors for the Baron and Granny** (they fall back to Codex's shared room). Designs: a velvet manor with a marble fireplace, portrait, piano and an empty gilt frame; a crooked cottage with an inglenook, cauldron, dresser and bed alcove.
 - **Buildings**: Granny's house, the Acre's corn and scarecrows, the cave mouth, the district gates and the restored scenery are still crude. The Velvet Bat's striped windows want a proper design.
 - **Camera**: its arm passes through props that aren't buildings (the Moor's booths) and can sit inside rock near the cave mouth.
 - **NPC behaviour** has not been audited. "Talk" at exactly its reach only sets a waypoint.

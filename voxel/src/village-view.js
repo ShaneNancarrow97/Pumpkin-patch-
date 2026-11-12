@@ -197,7 +197,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   }
   function dispose(object) { object.traverse((o) => { o.geometry?.dispose?.(); if (o.material && o.material !== pickMaterial) [].concat(o.material).forEach((m) => { m.map?.dispose?.(); m.dispose(); }); }); }
 
-  function resize(w = canvas.clientWidth, h = canvas.clientHeight) { camera.aspect = w / Math.max(1, h); camera.fov = following && !inside ? (camera.aspect < .9 ? 58 : 48) : 45; camera.updateProjectionMatrix(); dialogueFocus.resize(); }
+  function resize(w = canvas.clientWidth, h = canvas.clientHeight) { camera.aspect = w / Math.max(1, h); camera.fov = following && !inside ? (camera.aspect < .9 ? 58 : 48) : inside?.plan.hall.view?.fov ?? 45; camera.updateProjectionMatrix(); dialogueFocus.resize(); }
   function reset() {
     resize(); const far = (camera.aspect < .9 ? 42 : 30) * K;
     controls.target.copy(W(58 * K, 21.5 * K, 1)); camera.position.copy(W(58 * K, 21.5 * K - far * .83, far * .56)); controls.update();
@@ -260,13 +260,13 @@ export function createVillageView(canvas, state, hooks = {}) {
     if (inside) goOutside();
     inside = buildInside(id); inside.group.visible = true; if (inside.host) inside.host.root.visible = true;
     root.visible = false; if (sky) sky.visible = false; scene.background.set(0x0a070d); scene.fog.color.set(0x0a070d); scene.fog.density = REACH.inside.fog;
-    const glow = inside.plan.hall.light ?? 1; lampAs(HALL_LAMP, glow); sun.intensity = .08; hemi.intensity = .32; scene.userData.exposure = inside.plan.hall.exposure ?? 1.3; following = false;
+    const hall = inside.plan.hall, glow = hall.light ?? 1; lampAs({ ...HALL_LAMP, reach: hall.reach ?? HALL_LAMP.reach }, glow); sun.intensity = .08; hemi.intensity = hall.ambient ?? .32; scene.userData.exposure = hall.exposure ?? 1.3; following = false; resize();
     return inside;
   }
   function goOutside() {
     dialogueFocus.end({ immediate: true });
     if (!inside) return; inside.group.visible = false; if (inside.host) inside.host.root.visible = false; inside = null;
-    root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = NIGHT.sun; hemi.intensity = NIGHT.hemi; scene.userData.exposure = 1.15; following = false; lampAs(LAMP); pool.forEach((l) => { l.color.set(0xff9a40); });
+    root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = NIGHT.sun; hemi.intensity = NIGHT.hemi; scene.userData.exposure = 1.15; following = false; lampAs(LAMP); pool.forEach((l) => { l.color.set(0xff9a40); }); resize();
   }
 
   // A closer third-person orbit stays on the owner, rather than panning away
@@ -289,7 +289,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     controls.target.set(pose.target.x, pose.target.y, pose.target.z);
     camera.position.set(pose.position.x, pose.position.y, pose.position.z);
     if(expansionWorld.active){const bounded=constrainCaveCamera(expansionWorld.active,pose.target,pose.position);camera.position.set(bounded.x,bounded.y,bounded.z);}
-    if (inside) { camera.lookAt(pose.target.x, pose.target.y + HALL_VIEW.lift, pose.target.z); camera.updateMatrixWorld(); return; }
+    if (inside) { camera.lookAt(pose.target.x, pose.target.y + (inside.plan.hall.view?.lift ?? HALL_VIEW.lift), pose.target.z); camera.updateMatrixWorld(); return; }
     if (expansionWorld.active) { camera.lookAt(controls.target); camera.updateMatrixWorld(); return; }
     // The clear length of the arm: in at once, out gently, so a corner never pops the picture.
     const clear = Math.max(OUTSIDE_VIEW.nearest / rig.distance, villageCameraReach({ x: pose.target.x, z: -pose.target.z }, { x: pose.position.x, z: -pose.position.z }, blockers));
