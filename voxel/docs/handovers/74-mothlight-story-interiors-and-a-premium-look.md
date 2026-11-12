@@ -46,6 +46,12 @@ Not yet redesigned: the lighthouse, the observatory tower, the Ferris wheel and 
 - **Guidance**: following a chapter points the way, quest steps win the prompt, each step has its own verb, and a gold beacon stands over the followed step. Quest steps have themed objects (`questProp`).
 - **Interiors**: `village-home-interiors.js` holds real rooms for Mabel, Tansy, Opal and Cinder. `village-hall-life.js` sets fires, candles, steam, motes, sparkles and pendulums moving in every hall from marks its builder leaves.
 
+## Spreading the village out (started, not applied)
+
+The owner finds the entrance and Elowen's and Rowan's houses cramped, wants the whole world spread further with free space round the Moth Tree, and plans a central town square before the Quarry. `rules/village-spread.js` is the tool for it: `spread(x, z)` cuts the design grid along lines where nothing stands and moves the land apart (houses 20 further from the tree each side, gardens and well 6, the avenue 8 south, everything north of the square 30 north, the Copse's and Moor's sides 20 out); `gather` is its inverse for anything sampled by position. It is tested but **nothing calls it yet**.
+
+Applying it means passing every design-grid position through it, and they are written in many places: `content/village.js` (`at`, `box`, fixtures, scenery, bounds), the writers in `village-world.js` and `village-expansion-world.js`, `LAMPS`, the hall doors in `village-view.js`, `village-terrain.js` (shelves, ramps, waters; `terrainHeight` through `gather`), ground, paving and grass (through `gather`), blight, node and resource layouts, expansion activity positions, the tour and the wanderers. 24 modules and 20 tests depend on the layout. It must land in one piece, or what is drawn and what the rules believe part company. Things that straddle a cut (the R1 spur, the doorstep lanterns at x 48.6 and 65.1 to 65.4) need moving by hand.
+
 ## Still to do
 
 - **Interiors for the Baron and Granny** (they fall back to Codex's shared room). Designs: a velvet manor with a marble fireplace, portrait, piano and an empty gilt frame; a crooked cottage with an inglenook, cauldron, dresser and bed alcove.
