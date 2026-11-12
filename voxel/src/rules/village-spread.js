@@ -4,8 +4,7 @@
 // ground let in between. Nothing changes size; only the gaps grow.
 //
 //   South of the square's north edge (the Green): the houses' side of each cut moves out from the tree, and a
-//   second pair of cuts beside the avenue moves its gardens, the well and the bench out too. The avenue and
-//   gate move south, so the square is deeper as well as wider.
+//   second pair of cuts beside the avenue moves its gardens, the well and the bench out too.
 //   North of it: everything moves north, leaving room for a town square before the Quarry, and the Copse's and
 //   the Moor's sides move out to keep clear of the wider Green.
 //
@@ -15,7 +14,7 @@
 export const SPREAD = Object.freeze({
   north: 30.9,                       // the cut along the square's north edge
   rise: 30,                          // how far everything beyond it moves north
-  avenue: 16, drop: 8,               // the cut between the avenue and the square, and how far the avenue moves south
+  avenue: 16, drop: 0,               // a cut between the avenue and the square; unused (0) while the house plots straddle it
   inner: [54.45, 61.55], innerGap: 6, // cuts beside the avenue's road: gardens, well and bench move out
   outer: [48.05, 65.95], outerGap: 14, // cuts at the two doorsteps: the houses and all beyond them move further
   far: [20, 110], farGap: 20,        // north of the square: the Copse's side and the Moor's side

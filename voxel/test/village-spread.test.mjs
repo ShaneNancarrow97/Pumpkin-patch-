@@ -7,7 +7,7 @@ test('the tree stays put while both houses, the gardens and the avenue move away
   const [elowen] = spread(48, 20), [rowan] = spread(66, 20);
   assert.equal(58 - elowen, 30); assert.equal(rowan - 58, 28);
   assert.equal(spread(52.1, 17.8)[0], 46.1, 'the well moves out of the ring round the tree');
-  assert.deepEqual(spread(58, 4), [58, -4], 'the gate moves south, on the same road');
+  assert.deepEqual(spread(58, 4), [58, 4], 'the gate stays on its road');
   assert.deepEqual(spread(58, 34), [58, 64], 'the cross road moves north, leaving room for a town square');
   assert.equal(spread(0, 62)[0], -SPREAD.farGap); assert.equal(spread(152, 46)[0], 152 + SPREAD.farGap);
 });
@@ -19,7 +19,6 @@ test('gather undoes spread everywhere, and new ground reads as the edge of its c
   }
   assert.equal(gather(40, 20)[0], SPREAD.outer[0]); assert.equal(gather(76, 20)[0], SPREAD.outer[1]);
   assert.ok(Math.abs(gather(58, 45)[1] - SPREAD.north) < .02, 'the town square is the old square carried north');
-  assert.equal(gather(58, 12)[1], SPREAD.avenue);
 });
 
 test('boxes move whole or stretch, as asked', () => {
