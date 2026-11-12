@@ -1070,56 +1070,201 @@ export function tavern(f, r = seeded(93)) {
   f.block(hw + .4, 0, -1.2, 1.4, 1.6, 2.4, 0x6a4a34); f.block(hw + .4, 1.6, -1.2, 1.7, .14, 2.7, pick(slate, r));
   f.block(-hw - .4, 0, 1.2, .5, 1.3, .1, 0x2a2228); f.block(-hw - .4, .35, 1.26, .38, .8, .02, 0xf0e8d8);
 }
-// A big striped circus tent with a raised walled skirt, a peaked crown, pennants and a lit doorway.
+// A pointed window in a stone surround: two lights under an arch that steps in to a point, a transom and a
+// sill. It faces ±z (face) or, with side set, ±x.
+export function lancet(f, x, y, z, { face = 1, side = 0, wide = .74, tall = 1.25, glass = C.window, lit = true, stone = C.stone[2], dark = 0x2a1a24 } = {}) {
+  const put = (u, dy, out, w, h, d, c, g = false) => side ? f.block(x + side * out, y + dy, z + u, d, h, w, c, g) : f.block(x + u, y + dy, z + face * out, w, h, d, c, g);
+  const g = lit ? glass : dark;
+  put(0, -.12, .1, wide + .34, .12, .22, stone); put(0, 0, .05, wide + .22, tall, .08, stone);
+  for (const s of [-1, 1]) put(s * wide / 4, .06, .1, wide / 2 - .07, tall - .06, .05, g, lit);
+  put(0, tall * .55, .13, wide, .05, .04, stone);
+  let yy = tall; for (const [k, h] of [[1, .26], [.72, .22], [.4, .2]]) { put(0, yy, .05, wide * k + .22, h, .08, stone); put(0, yy, .1, Math.max(.08, wide * k - .06), h - .05, .05, g, lit); yy += h; }
+  put(0, yy, .06, .16, .16, .1, stone);
+}
+// A big striped circus tent: a kickboard, panelled walls under a scalloped valance, a roof that swoops up to a
+// gilt crown with a pennant, bulbs down its seams, and a curtained doorway under a lit marquee board.
 export function bigTent(f, x, z, R = 4.2, H = 6.8, a = 0xa8172c, b = 0xf3e6c8, r = seeded(95)) {
-  const n = 28, wall = 2;
-  for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2, c = (i >> 1) % 2 ? a : b; f.block(x + Math.cos(t) * R, 0, z + Math.sin(t) * R, R * .26, wall, R * .26, c); f.block(x + Math.cos(t) * (R + .05), wall - .2, z + Math.sin(t) * (R + .05), R * .27, .22, R * .27, C.gold); }
-  f.block(x, 0, z, R * 1.7, wall - .05, R * 1.7, shade(a, .5));
-  for (let k = 0; k < 10; k++) { const rr = R * (1 - (k / 10) ** 1.2) + .2, y = wall + k * (H - wall) / 10; for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2, c = (i >> 1) % 2 ? a : b; f.block(x + Math.cos(t) * rr, y, z + Math.sin(t) * rr, R * .27 * (1 - k / 13), (H - wall) / 10 + .03, R * .27 * (1 - k / 13), shade(c, .82 + k * .03)); } }
-  f.block(x, H, z, .16, 1.6, .16, C.iron); f.block(x + .4, H + 1.15, z, .7, .42, .04, b); f.block(x, H + 1.6, z, .3, .3, .3, C.gold);
-  for (let i = 0; i < 8; i++) { const t = i / 8 * Math.PI * 2; f.block(x + Math.cos(t) * R * .55, wall + (H - wall) * .5, z + Math.sin(t) * R * .55, .1, 1.2, .1, C.iron); f.block(x + Math.cos(t) * R * .55 + .25, wall + (H - wall) * .5 + .9, z + Math.sin(t) * R * .55, .5, .3, .03, [0xf0c252, 0xd6407a, 0x6a8ef0][i % 3]); }
-  f.block(x, 0, z + R + .02, 1.8, 2.6, .1, 0xffc070, true); for (const s of [-1, 1]) f.block(x + s * 1.05, 0, z + R + .1, .4, 2.8, .2, a);
-  for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2; if (i % 2) f.block(x + Math.cos(t) * (R + .3), wall + .2, z + Math.sin(t) * (R + .3), .12, .12, .12, [0xffc06a, 0xe8b0ff][i % 4 > 1 ? 1 : 0], true); }
+  const n = 36, wall = 2, seg = R * 6.283 / n * 1.16, rings = 16, stripe = (i) => (i >> 1) % 2 ? a : b;
+  f.block(x, 0, z, R * 1.72, wall - .05, R * 1.72, shade(a, .5));
+  for (let i = 0; i < n; i++) {
+    const t = (i + .5) / n * Math.PI * 2, cx = Math.cos(t), sz = Math.sin(t), c = stripe(i);
+    f.block(x + cx * R, 0, z + sz * R, seg, .22, seg, 0x4a3324); f.block(x + cx * R, .22, z + sz * R, seg * .96, wall - .22, seg * .96, vary(c, .03, r));
+    // The valance: a gilt band, and a scallop that hangs lower on every other panel.
+    f.block(x + cx * (R + .08), wall - .1, z + sz * (R + .08), seg, .16, seg, C.gold); f.block(x + cx * (R + .1), wall - (i % 2 ? .42 : .3), z + sz * (R + .1), seg * .8, i % 2 ? .32 : .2, seg * .8, stripe(i + 2));
+  }
+  for (let k = 0; k < rings; k++) {
+    const t = k / rings, rr = .3 + (R - .1) * (1 - t) ** 1.55, y = wall + (H - wall) * (1 - (1 - t) ** 1.25), y1 = wall + (H - wall) * (1 - (1 - (k + 1) / rings) ** 1.25), s2 = Math.max(.24, rr * 6.283 / n * 1.2);
+    const count = rr < 1 ? 12 : rr < 2 ? 18 : n;
+    for (let i = 0; i < count; i++) {
+      const j = Math.floor(i * n / count), ang = (j + .5) / n * Math.PI * 2;
+      f.block(x + Math.cos(ang) * rr, y, z + Math.sin(ang) * rr, s2 * n / count * (count === n ? 1 : .62), y1 - y + .04, s2 * n / count * (count === n ? 1 : .62), shade(stripe(j), .84 + t * .22));
+      if (count === n && j % 6 === 0 && k % 2 && k < rings - 3) f.block(x + Math.cos(ang) * (rr + s2 * .5), y + .1, z + Math.sin(ang) * (rr + s2 * .5), .12, .12, .12, k % 4 === 1 ? 0xffc06a : 0xe8b0ff, true);
+    }
+    if (k) f.block(x, y - .2, z, rr * 1.5, y1 - y + .2, rr * 1.5, shade(a, .45));
+  }
+  // The crown: a gilt collar and ball, and a pennant on its pole.
+  f.block(x, H - .12, z, .7, .2, .7, C.gold); f.block(x, H + .08, z, .44, .16, .44, shade(C.gold, .8)); f.block(x, H + .2, z, .12, 1.7, .12, C.iron); f.block(x, H + 1.9, z, .26, .26, .26, C.gold);
+  for (let i = 0; i < 4; i++) f.block(x + .22 + i * .2, H + 1.42 - i * .04, z, .22, .44 - i * .09, .04, i % 2 ? b : a);
+  // Flag poles round the shoulder of the roof.
+  for (let i = 0; i < 8; i++) { const t = i / 8 * Math.PI * 2 + .2, px = x + Math.cos(t) * R * .62, pz = z + Math.sin(t) * R * .62, py = wall + (H - wall) * .42; f.block(px, py, pz, .08, 1.3, .08, C.iron); f.block(px + .2, py + 1.02, pz, .36, .24, .03, [0xf0c252, 0xd6407a, 0x6a8ef0][i % 3]); f.block(px + .44, py + 1.06, pz, .14, .14, .03, [0xf0c252, 0xd6407a, 0x6a8ef0][i % 3]); f.block(px, py + 1.3, pz, .12, .12, .12, C.gold); }
+  // The doorway: lamplight within, curtains drawn back in folds, a scalloped awning and a board of bulbs.
+  const zz = z + R;
+  f.block(x, .1, zz + .5, 2.6, .12, 1.1, 0x5a3f2c); f.block(x, 0, zz + 1.1, 2.2, .1, .4, 0x4a3324);
+  f.block(x, .22, zz + .06, 1.7, 2.3, .1, 0xffc070, true);
+  for (const s of [-1, 1]) { for (let k = 0; k < 6; k++) f.block(x + s * (.5 + k * .09), .22 + k * .4, zz + .14, .7 - k * .1, .42, .14, shade(a, .78 + (k % 2) * .14)); f.block(x + s * 1.04, .22, zz + .16, .2, 2.7, .22, 0x4a3324); f.block(x + s * 1.04, 2.92, zz + .16, .28, .12, .3, C.gold); f.block(x + s * .82, 1.02, zz + .22, .2, .1, .08, C.gold); }
+  for (let i = 0; i < 7; i++) f.block(x - .96 + i * .32, 2.5 - (i % 2) * .1, zz + .5, .32, .14 + (i % 2) * .1, .7, i % 2 ? b : a);
+  f.block(x, 2.66, zz + .5, 2.4, .08, .8, C.gold); f.block(x, 2.98, zz + .2, 2.2, .62, .12, shade(a, .6)); f.block(x, 3.04, zz + .27, 1.96, .5, .04, b);
+  for (let i = 0; i < 8; i++) { f.block(x - .98 + i * .28, 3.62, zz + .27, .1, .1, .1, i % 2 ? 0xffc06a : 0xff8a5a, true); f.block(x - .98 + i * .28, 2.96, zz + .27, .1, .1, .1, i % 2 ? 0xff8a5a : 0xffc06a, true); }
+  for (let i = 0; i < 5; i++) f.block(x - .6 + i * .3, 3.16 + (i % 2) * .08, zz + .3, .16, .22, .03, shade(a, .7));
 }
-// Corvus's living wagon: a painted caravan on spoked wheels with a lit window and a little chimney.
+// Corvus's living wagon: a bow-topped caravan on spoked wheels, panelled and gilded, with a shuttered window
+// and a box of flowers each side, a stable door over folding steps, a porch lantern and a little stovepipe.
 export function caravan(f, r = seeded(97)) {
-  f.block(0, .9, 0, 2.2, 1.9, 4, 0x4b3a8a); for (let i = 0; i < 6; i++) f.block(1.12, .95 + i * .3, 0, .04, .05, 3.9, C.gold);
-  for (let k = 0; k < 5; k++) { const t = k / 4, half = Math.cos(t * Math.PI / 2) * 1.25; f.block(0, 2.8 + t * .7, 0, half * 2, .16, 4.2, k % 2 ? 0xa8172c : 0x8a1426); }
-  for (const s of [-1, 1]) { f.block(s * 1.12, 1.4, -.6, .04, .8, .9, C.window, true); f.block(s * 1.13, 1.4, -.6, .04, .8, .06, C.gold); f.block(s * 1.13, 1.8, -.6, .04, .06, .9, C.gold); }
-  for (const s of [-1, 1]) for (const t of [-1.3, 1.3]) { f.block(s * 1.18, .1, t, .14, 1.1, 1.1, 0xd9a441); f.block(s * 1.18, .55, t, .16, .2, .2, C.iron); for (let i = 0; i < 4; i++) f.block(s * 1.2, .55, t, .08, .06, 1, 0x8a6a3a); }
-  f.block(0, .9, 2.1, 1.2, 1.6, .1, 0xd9a441); f.block(0, .9, 2.15, .8, 1.3, .06, 0x6a2a4a); for (let k = 0; k < 4; k++) f.block(0, .7 - k * .2, 2.4 + k * .3, 1, .1, .3, C.wood);
-  f.block(-.6, 3.4, -1.2, .3, .9, .3, C.iron); f.block(-.6, 4.3, -1.2, .4, .1, .4, C.iron); f.mark?.("smoke", -.6, 4.4, -1.2); lantern(f, .9, 2.0, 2.2, .7);
+  const body = 0x4b3a8a, deep = shade(body, .72), red = 0xa8172c, gilt = C.gold, w = 2.2, len = 4, hw = w / 2, hl = len / 2, base = .95;
+  // Underframe, axles and shafts.
+  f.block(0, base - .16, 0, w - .5, .16, len + .2, 0x3a2a24); for (const t of [-1.3, 1.3]) f.block(0, .5, t, w + .3, .12, .12, C.iron);
+  for (const s of [-1, 1]) f.block(s * .5, base - .3, hl + 1.2, .1, .1, 2.2, 0x6a4a34);
+  // The body: its sides lean out a little towards the eaves, in framed panels.
+  f.block(0, base, 0, w, 1.0, len, body); f.block(0, base + 1.0, 0, w + .16, .9, len, shade(body, 1.08));
+  for (const s of [-1, 1]) {
+    for (const y of [base + .04, base + .98, base + 1.82]) f.block(s * (hw + .09), y, 0, .06, .08, len + .04, gilt);
+    for (let i = 0; i <= 4; i++) f.block(s * (hw + .09), base, -hl + i * len / 4, .06, 1.9, .08, i % 4 ? deep : gilt);
+    for (let i = 0; i < 4; i++) { const zc = -hl + (i + .5) * len / 4; f.block(s * (hw + .04), base + .2, zc, .05, .62, len / 4 - .28, i % 2 ? red : shade(body, 1.25)); f.block(s * (hw + .07), base + .44, zc, .04, .14, .14, gilt); }
+    // A window with shutters and a flower box.
+    f.block(s * (hw + .12), base + 1.12, -.5, .05, .62, .86, C.cream); f.block(s * (hw + .15), base + 1.17, -.5, .04, .52, .74, C.window, true);
+    f.block(s * (hw + .18), base + 1.17, -.5, .03, .52, .05, C.cream); f.block(s * (hw + .18), base + 1.41, -.5, .03, .05, .74, C.cream);
+    for (const e of [-1, 1]) f.block(s * (hw + .14), base + 1.14, -.5 + e * .56, .05, .58, .22, red);
+    f.block(s * (hw + .24), base + .98, -.5, .2, .16, .9, 0x6a4a34); for (let i = 0; i < 5; i++) f.block(s * (hw + .26), base + 1.14, -.86 + i * .18, .1, .12, .1, pick(C.flowers, r));
+    // Wheels: an iron-shod rim of twelve felloes, spokes and a brass hub; the back pair is larger.
+    for (const [t, rad] of [[-1.3, .62], [1.3, .5]]) {
+      for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; f.block(s * (hw + .22), rad + Math.sin(a) * rad - .09, t + Math.cos(a) * rad, .12, .18, .2, i % 2 ? 0xd9a441 : 0xc9942f); }
+      f.block(s * (hw + .22), rad - .04, t, .08, .08, rad * 1.8, 0x8a6a3a); f.block(s * (hw + .22), .1, t, .08, rad * 1.8, .08, 0x8a6a3a);
+      for (const e of [-1, 1]) f.block(s * (hw + .22), rad - .04 + e * rad * .32, t + e * rad * .32, .07, .08, rad * .9, 0x8a6a3a);
+      f.block(s * (hw + .26), rad - .12, t, .14, .24, .24, C.brass);
+    }
+  }
+  // The bow top: ribs of canvas in two reds over deep eaves, a gilt bargeboard at each end.
+  f.block(0, base + 1.9, 0, w + .5, .1, len + .5, deep);
+  for (let k = 0; k < 9; k++) { const t = k / 8, half = Math.cos(t * Math.PI / 2) * (hw + .22) + .06; f.block(0, base + 2.0 + Math.sin(t * Math.PI / 2) * .86, 0, half * 2, .14, len + .4, k % 2 ? red : 0x8a1426); }
+  for (const e of [-1, 1]) for (let k = 0; k < 8; k++) { const t = k / 8, half = Math.cos(t * Math.PI / 2) * (hw + .2); f.block(0, base + 1.98 + Math.sin(t * Math.PI / 2) * .86, e * (hl + .24), half * 2 + .1, .12, .08, gilt); f.block(0, base + 1.9 + Math.sin(t * Math.PI / 2) * .8, e * (hl + .02), Math.max(.1, half * 2 - .2), .14, .06, shade(body, 1.2)); }
+  // The front: a porch board, a stable door with a lit top light, a lantern and folding steps.
+  f.block(0, base - .06, hl + .34, w + .1, .1, .7, 0x6a4a34); for (const s of [-1, 1]) { f.block(s * (hw - .06), base, hl + .62, .08, .7, .08, gilt); f.block(s * (hw - .06), base + 1.2, hl + .3, .08, .08, .7, deep); }
+  f.block(0, base + .02, hl + .05, 1.0, 1.72, .08, gilt); f.block(0, base + .06, hl + .09, .84, .8, .06, 0x6a2a4a); f.block(0, base + .9, hl + .09, .84, .76, .06, shade(0x6a2a4a, 1.2));
+  f.block(0, base + 1.1, hl + .13, .5, .44, .03, C.window, true); f.block(0, base + 1.3, hl + .15, .5, .04, .03, gilt); f.block(.3, base + .62, hl + .14, .07, .07, .05, C.brass);
+  for (let k = 0; k < 4; k++) { f.block(0, base - .3 - k * .22, hl + .82 + k * .3, .9, .08, .3, C.wood); for (const s of [-1, 1]) f.block(s * .46, base - .36 - k * .22, hl + .82 + k * .3, .06, .2, .34, 0x6a4a34); }
+  lantern(f, .86, base + 1.05, hl + .3, .7);
+  // The back: framed panels, a small round-topped window and a rack with a trunk.
+  for (const sx of [-1, 0, 1]) f.block(sx * (hw - .04), base, -hl - .03, .08, 1.9, .06, sx ? gilt : deep); for (const y of [base + .04, base + .98, base + 1.82]) f.block(0, y, -hl - .03, w + .1, .08, .06, gilt);
+  for (const sx of [-1, 1]) f.block(sx * hw / 2, base + .2, -hl - .02, hw - .34, .62, .05, sx > 0 ? red : shade(body, 1.25));
+  f.block(0, base + 1.14, -hl - .05, .7, .5, .05, C.cream); f.block(0, base + 1.19, -hl - .08, .58, .4, .04, C.window, true); f.block(0, base + 1.59, -hl - .08, .36, .12, .04, C.window, true); f.block(0, base + 1.19, -hl - .11, .05, .52, .03, C.cream);
+  f.block(0, base - .1, -hl - .4, 1.5, .08, .6, 0x6a4a34); f.block(-.2, base - .02, -hl - .4, .8, .46, .46, 0x7a4a2c); for (const e of [-1, 1]) f.block(-.2 + e * .28, base - .02, -hl - .4, .06, .48, .5, C.brass); f.block(.5, base - .02, -hl - .42, .36, .36, .36, 0x5a6a3a);
+  // The stovepipe, with a rain cap.
+  f.block(-.6, base + 2.6, -1.2, .26, 1.0, .26, C.iron); f.block(-.6, base + 3.1, -1.2, .32, .06, .32, C.brass); f.block(-.6, base + 3.6, -1.2, .1, .14, .1, C.iron); f.block(-.6, base + 3.74, -1.2, .46, .08, .46, C.iron); f.mark?.("smoke", -.6, base + 3.84, -1.2);
 }
-// The Baron's velvet manor: dark stone and plum slate, two spired towers, a dome with a
-// telescope, iron cresting, rows of red-lit windows, a red carpet up its front steps.
+// The Baron's velvet manor: three storeys of dark stone between pilasters, rows of pointed windows lit red, a
+// columned porch under a balcony and a rose window, a mansard of plum slate with dormers and iron cresting, a
+// brass observatory dome, and two towers with battlements and tall spires. A red carpet runs up its steps.
 export function manor(f, r = seeded(99)) {
-  const w = 12, d = 8, hw = w / 2, wall = [0x3d2a4a, 0x46324f, 0x352540], slate = C.slatePlum, red = 0xff7a5a;
-  for (let k = 0; k < 3; k++) f.block(0, k * 3, -d / 2, w - k * .2, 3, d - k * .2, vary(pick(wall, r), .03, r));
-  for (let k = 1; k < 3; k++) f.block(0, k * 3 - .1, -d / 2, w + .2, .2, d + .2, 0x5a4a62);
-  for (let k = 0; k < 3; k++) for (let i = 0; i < 7; i++) { const x = -hw + 1 + i * (w - 2) / 6, y = .7 + k * 3, lit = (i + k) % 4 !== 1; if (k === 0 && i === 3) continue; for (const [z, s] of [[0, 1], [-d, -1]]) { f.block(x, y, z + s * .05, .9, 1.7, .06, C.stone[2]); f.block(x, y + .08, z + s * .08, .7, 1.5, .05, lit ? red : 0x2a1a24, lit); f.block(x, y + .82, z + s * .1, .7, .05, .03, C.stone[2]); f.block(x, y + 1.7, z + s * .08, .5, .3, .05, C.stone[2]); } }
-  for (let k = 0; k < 3; k++) for (const s of [-1, 1]) for (let i = 0; i < 3; i++) { const z = -1.4 - i * 2.6, y = .7 + k * 3; f.block(s * (hw + .05), y, z, .06, 1.7, .9, C.stone[2]); f.block(s * (hw + .08), y + .08, z, .05, 1.5, .7, (i + k) % 3 ? red : 0x2a1a24, (i + k) % 3 > 0); }
-  f.block(0, 0, .08, 1.6, 2.6, .12, C.stone[2]); f.block(0, 0, .12, 1.3, 2.4, .1, 0x5a1a28); f.block(0, 2.4, .1, 2.2, .5, .5, C.stone[2]);
-  for (let k = 0; k < 6; k++) { f.block(0, -k * .22 - .05, .6 + k * .4, 3.4 + k * .3, .22, .4, C.stone[1]); f.block(0, -k * .22 + .17, .6 + k * .4, 1.4, .03, .4, 0xa8172c); }
-  for (let i = 0; i < 8; i++) { const t = i / 8, half = (1 - t) * (d / 2 + .5); f.block(0, 9 + i * .5, -d / 2, w + .6 - t * 2, .5, half * 2, vary(pick(slate, r), .04, r)); }
-  for (let i = 0; i < 24; i++) f.block(-hw + .5 + i * .5, 13, -d / 2, .06, .4, .06, C.iron);
+  const w = 12, d = 8, hw = w / 2, hd = d / 2, wall = [0x3d2a4a, 0x46324f, 0x352540], trim = 0x5a4a62, pale = 0x7d6c8a, slate = C.slatePlum, red = 0xff7a5a, amber = 0xffb06a, top = 9;
+  // A plinth, three storeys, and a moulded course between them.
+  f.block(0, 0, -hd, w + .36, .5, d + .36, C.stoneDark[1]); f.block(0, .5, -hd, w + .2, .12, d + .2, trim);
+  for (let k = 0; k < 3; k++) f.block(0, k * 3, -hd, w, 3, d, vary(pick(wall, r), .03, r));
+  for (let k = 1; k < 3; k++) { f.block(0, k * 3 - .12, -hd, w + .24, .14, d + .24, trim); f.block(0, k * 3 + .02, -hd, w + .14, .08, d + .14, pale); }
+  // Pilasters between the bays, front and back, with bases and capitals; rusticated corners.
+  const bay = (w - 2) / 6;
+  for (let i = 0; i <= 7; i++) { const x = Math.max(-hw + .16, Math.min(hw - .16, -hw + 1 - bay / 2 + i * bay)); for (const [z, s] of [[0, 1], [-d, -1]]) { f.block(x, .62, z + s * .07, .26, top - .92, .14, trim); f.block(x, .62, z + s * .09, .4, .18, .18, pale); f.block(x, top - .5, z + s * .09, .4, .16, .18, pale); } }
+  for (const sx of [-1, 1]) for (const zz of [0, -d]) for (let k = 0; k < 20; k++) f.block(sx * (hw - (k % 2 ? .1 : .2)), .62 + k * .41, zz + (zz ? .08 : -.08) * (k % 2 ? 1 : 2), k % 2 ? .34 : .52, .38, k % 2 ? .5 : .34, vary(trim, .06, r));
+  // Windows: seven bays on three floors; the middle of the front is kept for the porch, balcony and rose.
+  for (let k = 0; k < 3; k++) for (let i = 0; i < 7; i++) {
+    const x = -hw + 1 + i * bay, y = .74 + k * 3, lit = (i + k) % 4 !== 1;
+    for (const [z, s] of [[0, 1], [-d, -1]]) {
+      if (s > 0 && i === 3) continue;
+      lancet(f, x, y, z, { face: s, glass: red, lit, stone: pale });
+      if (k === 1 && s > 0) { f.block(x, y - .26, z + .3, 1.14, .08, .34, trim); for (let b = 0; b < 5; b++) f.block(x - .5 + b * .25, y - .18, z + .44, .05, .34, .05, C.iron); f.block(x, y + .16, z + .44, 1.14, .05, .07, C.iron); }
+    }
+  }
+  for (let k = 0; k < 3; k++) for (const s of [-1, 1]) for (const z of [-1.35, -d + 1.35]) lancet(f, s * hw, .74 + k * 3, z, { side: s, glass: red, lit: (k + (z < -4 ? 1 : 0)) % 3 > 0, stone: pale });
+  // The steps and their carpet, between low walls with urns.
+  for (let k = 0; k < 6; k++) { f.block(0, -k * .22 - .05, .6 + k * .4, 3.4 + k * .3, .22, .4, C.stone[1]); f.block(0, -k * .22 + .17, .6 + k * .4, 1.4, .03, .4, 0xa8172c); for (const s of [-1, 1]) { f.block(s * .72, -k * .22 + .17, .6 + k * .4, .05, .035, .4, C.gold); f.block(s * (1.9 + k * .15), -k * .22 - .05, .6 + k * .4, .3, .62, .42, pale); } }
+  for (const s of [-1, 1]) { f.block(s * 2.75, -1.4, 3.0, .5, 1.1, .5, trim); f.block(s * 2.75, -.3, 3.0, .62, .12, .62, pale); f.block(s * 2.75, -.18, 3.0, .3, .22, .3, C.stone[2]); f.block(s * 2.75, .04, 3.0, .5, .26, .5, C.stone[2]); f.block(s * 2.75, .3, 3.0, .36, .22, .36, C.hedge[0]); }
+  // The porch: four columns, an entablature, a balustraded balcony; double doors under a lit fanlight.
+  f.block(0, 0, .1, 1.96, 2.95, .16, pale); for (const s of [-1, 1]) { f.block(s * .37, 0, .18, .7, 2.3, .08, 0x5a1a28); f.block(s * .37, .3, .23, .46, .7, .03, 0x74202f); f.block(s * .37, 1.25, .23, .46, .8, .03, 0x74202f); f.block(s * .1, 1.15, .25, .06, .2, .05, C.gold); }
+  f.block(0, 2.32, .18, 1.42, .3, .06, amber, true); f.block(0, 2.62, .18, .96, .22, .06, amber, true); f.block(0, 2.32, .22, .05, .52, .03, pale);
+  for (const s of [-1, 1]) for (const zc of [.42, 1.12]) { f.block(s * 1.45, .12, zc, .42, .16, .42, pale); f.block(s * 1.45, .28, zc, .26, 2.5, .26, C.stone[2]); f.block(s * 1.45, 2.78, zc, .42, .16, .42, pale); }
+  f.block(0, 2.94, .76, 3.5, .3, 1.16, trim); f.block(0, 3.24, .76, 3.76, .1, 1.36, pale); for (let i = 0; i < 9; i++) f.block(-1.6 + i * .4, 2.82, 1.36, .14, .12, .1, pale);
+  for (let i = 0; i < 9; i++) f.block(-1.6 + i * .4, 3.34, 1.36, .1, .4, .1, pale); for (const s of [-1, 1]) for (let i = 0; i < 3; i++) f.block(s * 1.78, 3.34, .4 + i * .4, .1, .4, .1, pale);
+  f.block(0, 3.74, 1.36, 3.7, .08, .16, pale); for (const s of [-1, 1]) { f.block(s * 1.78, 3.74, .78, .16, .08, 1.3, pale); lantern(f, s * 1.45, 1.9, 1.36, .75); }
+  lancet(f, 0, 3.5, 0, { wide: 1.1, tall: 1.5, glass: amber, stone: pale });
+  // The rose window: a wheel of red and amber lights in a stone ring.
+  for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2; f.block(Math.cos(a) * 1.02, 7.3 + Math.sin(a) * 1.02 - .11, .08, .24, .22, .1, pale); }
+  for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; f.block(Math.cos(a) * .64, 7.3 + Math.sin(a) * .64 - .15, .09, .3, .3, .05, i % 2 ? red : amber, true); }
+  f.block(0, 7.14, .1, .34, .32, .05, amber, true); f.block(0, 6.3, .06, 2.3, 2.1, .04, shade(wall[0], .8));
+  // The cornice, with dentils and a gargoyle at each front corner.
+  f.block(0, top - .22, -hd, w + .3, .16, d + .3, trim); f.block(0, top - .06, -hd, w + .56, .14, d + .56, pale);
+  for (let i = 0; i < 25; i++) for (const zz of [.2, -d - .2]) f.block(-hw + i * .5, top - .36, zz, .18, .14, .12, pale);
+  for (const s of [-1, 1]) { f.block(s * (hw - .9), top - .5, .5, .3, .26, .7, 0x4a3c56); f.block(s * (hw - .9), top - .36, .9, .22, .2, .22, 0x4a3c56); for (const e of [-1, 1]) f.block(s * (hw - .9) + e * .26, top - .3, .44, .3, .06, .3, 0x3d3148); }
+  // The mansard: seven courses of slate stepping in, a flat deck within iron cresting.
+  for (let i = 0; i < 7; i++) { const c = vary(pick(slate, r), .05, r); f.block(0, top + .08 + i * .36, -hd, w + .4 - i * .44, .37, d + .4 - i * .44, c); f.block(0, top + .06 + i * .36, -hd, w + .46 - i * .44, .05, d + .46 - i * .44, shade(c, .6)); }
+  const deck = top + 2.6, dw = w - 2.7, dd = d - 2.7;
+  f.block(0, deck, -hd, dw, .14, dd, trim);
+  for (let i = 0; i <= 18; i++) for (const zz of [-hd + dd / 2, -hd - dd / 2]) { const x = -dw / 2 + i * dw / 18; f.block(x, deck + .14, zz, .06, i % 3 ? .34 : .56, .06, C.iron); if (i % 3 === 0) f.block(x, deck + .7, zz, .12, .12, .12, C.gold); }
+  for (let i = 0; i <= 10; i++) for (const xx of [-dw / 2, dw / 2]) f.block(xx, deck + .14, -hd - dd / 2 + i * dd / 10, .06, i % 3 ? .34 : .56, .06, C.iron);
+  f.block(0, deck + .3, -hd + dd / 2, dw, .04, .04, C.iron); f.block(0, deck + .3, -hd - dd / 2, dw, .04, .04, C.iron);
+  // Dormers in the mansard, lit amber: two in front beside the gable, three behind.
+  for (const [x, s] of [[-3.7, 1], [3.7, 1], [-3.4, -1], [0, -1], [3.4, -1]]) {
+    const zf = s > 0 ? -.1 : -d + .1;
+    f.block(x, top + .3, zf, 1.04, 1.2, 1.0, wall[1]); f.block(x, top + .46, zf + s * .51, .64, .8, .05, amber, true); f.block(x, top + .46, zf + s * .54, .05, .8, .03, pale); f.block(x, top + .84, zf + s * .54, .64, .05, .03, pale); f.block(x, top + .36, zf + s * .56, .84, .08, .12, pale);
+    for (let i = 0; i < 4; i++) for (const e of [-1, 1]) f.block(x + e * (.56 - i * .15), top + 1.46 + i * .14, zf, .3, .15, 1.16, vary(pick(slate, r), .05, r));
+  }
+  // A stepped gable over the middle of the front, with a lit oculus and a finial.
+  for (let i = 0; i < 6; i++) { f.block(0, top + .08 + i * .44, -.14, 3.6 - i * .6, .45, .62, vary(wall[1], .03, r)); f.block(0, top + .5 + i * .44, .14, 3.76 - i * .6, .07, .14, pale); }
+  f.block(0, top + .7, .2, .56, .56, .05, amber, true); f.block(0, top + .94, .23, .56, .05, .03, pale); f.block(0, top + .7, .23, .05, .56, .03, pale);
+  f.block(0, top + 2.72, -.14, .16, .7, .16, C.iron); f.block(0, top + 3.4, -.14, .26, .26, .26, C.gold);
+  // The observatory dome on the deck: brass ribs, and a telescope looking out of its slot.
+  for (let k = 0; k < 8; k++) { const t = k / 8, rr = 1.7 * Math.cos(t * Math.PI / 2) + .1, y = deck + .14 + Math.sin(t * Math.PI / 2) * 1.7; for (let i = 0; i < 16; i++) { const a = (i + .5) / 16 * Math.PI * 2; if (i === 3 && k > 1 && k < 6) continue; f.block(Math.cos(a) * rr, y, -hd - .4 + Math.sin(a) * rr, rr * .46 + .1, .34, rr * .46 + .1, i % 4 ? (k % 2 ? 0xa87a3a : 0x9a6c30) : C.brass); } }
+  f.block(0, deck + .14, -hd - .4, 2.6, .5, 2.6, shade(trim, .8)); f.block(0, deck + 1.92, -hd - .4, .3, .2, .3, C.brass);
+  f.block(.7, deck + 1.1, -hd + .7, .34, .34, 1.5, C.brass); f.block(.7, deck + 1.06, -hd + 1.4, .44, .42, .16, shade(C.brass, .75));
+  // Chimneys with banded tops and pots.
+  for (const cx of [-4.1, 4.1]) { for (let k = 0; k < 10; k++) f.block(cx, top + .9 + k * .36, -hd - 1.1, .86, .36, .86, vary(pick(C.brick, r), .05, r)); f.block(cx, top + 4.5, -hd - 1.1, 1.06, .14, 1.06, trim); f.block(cx, top + 4.64, -hd - 1.1, .9, .1, .9, pale); for (const s of [-1, 1]) f.block(cx + s * .2, top + 4.74, -hd - 1.1, .24, .34, .24, 0xa0583a); f.mark?.("smoke", cx, top + 5.08, -hd - 1.1); }
+  // The towers: chamfered shafts with a band at every floor, pointed windows on three faces, battlements on
+  // corbels, and a spire with lit lucarnes, a finial and a pennant.
   for (const s of [-1, 1]) {
     const tx = s * (hw + .4);
-    for (let k = 0; k < 16; k++) f.block(tx, k * .8, -d / 2, 2.6, .8, 2.6, vary(pick(wall, r), .03, r));
-    for (let k = 0; k < 4; k++) for (const [dx, dz, ww, dd] of [[1.32, 0, .06, .7], [-1.32, 0, .06, .7], [0, 1.32, .7, .06]]) f.block(tx + dx, 1.4 + k * 3, -d / 2 + dz, ww, 1.3, dd, k % 2 ? red : 0xffb06a, true);
-    for (let k = 0; k < 9; k++) f.block(tx, 12.8 + k * .6, -d / 2, 2.8 - k * .3, .6, 2.8 - k * .3, vary(pick(slate, r), .04, r));
-    f.block(tx, 18.2, -d / 2, .12, 1.2, .12, C.iron); f.block(tx + .3, 19, -d / 2, .5, .3, .04, 0xa8172c);
+    for (let k = 0; k < 16; k++) { const c = vary(pick(wall, r), .03, r); f.block(tx, k * .8, -hd, 2.6, .8, 2.04, c); f.block(tx, k * .8, -hd, 2.04, .8, 2.6, c); }
+    for (const y of [0, 2.9, 5.9, 8.9, 11.9]) { f.block(tx, y, -hd, 2.74, y ? .16 : .5, 2.16, y ? trim : C.stoneDark[1]); f.block(tx, y, -hd, 2.16, y ? .16 : .5, 2.74, y ? trim : C.stoneDark[1]); }
+    for (let k = 0; k < 4; k++) { const y = 1.0 + k * 3, glass = k % 2 ? red : amber; lancet(f, tx, y, -hd + 1.3, { wide: .5, tall: 1.0, glass, stone: pale }); lancet(f, tx, y, -hd - 1.3, { face: -1, wide: .5, tall: 1.0, glass, lit: k !== 1, stone: pale }); lancet(f, tx + s * 1.3, y, -hd, { side: s, wide: .5, tall: 1.0, glass, stone: pale }); }
+    f.block(tx, 12.5, -hd, 2.9, .2, 2.3, trim); f.block(tx, 12.5, -hd, 2.3, .2, 2.9, trim); f.block(tx, 12.7, -hd, 3.1, .22, 2.5, pale); f.block(tx, 12.7, -hd, 2.5, .22, 3.1, pale);
+    for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; f.block(tx + Math.cos(a) * 1.36, 12.92, -hd + Math.sin(a) * 1.36, .4, .46, .4, i % 2 ? pale : trim); }
+    for (let k = 0; k < 13; k++) { const t = k / 13, sz = .2 + 2.5 * (1 - t) ** 1.25; f.block(tx, 12.92 + k * .54, -hd, sz, .56, sz, vary(pick(slate, r), .04, r)); }
+    for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { f.block(tx + dx * 1.02, 13.5, -hd + dz * 1.02, dx ? .34 : .5, .62, dz ? .34 : .5, wall[1]); f.block(tx + dx * 1.2, 13.58, -hd + dz * 1.2, dx ? .05 : .3, .4, dz ? .05 : .3, amber, true); f.block(tx + dx * 1.02, 14.12, -hd + dz * 1.02, dx ? .44 : .6, .14, dz ? .44 : .6, slate[0]); }
+    f.block(tx, 19.9, -hd, .12, 1.5, .12, C.iron); f.block(tx, 20.5, -hd, .28, .28, .28, C.gold); for (let i = 0; i < 3; i++) f.block(tx + .22 + i * .2, 21.0 - i * .03, -hd, .22, .34 - i * .08, .04, 0xa8172c);
   }
-  for (let k = 0; k < 6; k++) { const rr = 2 * Math.cos(k / 6 * Math.PI / 2), y = 9.2 + Math.sin(k / 6 * Math.PI / 2) * 1.8; for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2; f.block(-2 + Math.cos(a) * rr, y, -d * .7 + Math.sin(a) * rr, .5, .32, .5, k % 2 ? C.brass : 0xa87a3a); } }
-  f.block(-2 + .9, 10.6, -d * .7 + .6, 1.6, .3, .3, C.brass);
-  for (const cx of [-1, 3.5]) { for (let k = 0; k < 7; k++) f.block(cx, 9.6 + k * .4, -d * .3, .9, .4, .9, vary(pick(C.brick, r), .05, r)); f.block(cx, 12.4, -d * .3, 1.05, .14, 1.05, 0x5a4a62); f.mark?.("smoke", cx, 12.54, -d * .3); }
 }
-// A marsh hut on stilts with a lit window, a ladder and a lantern on a pole.
+// A marsh hut on braced stilts: a railed deck, weathered board walls, a shuttered lit window and a plank door,
+// a deep thatch with a ridge pole, a ladder, drying fish on a line and a lantern on a leaning pole.
 export function stiltHut(f, r = seeded(101)) {
-  for (const [x, z] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) f.block(x, -1.4, z, .18, 2.6, .18, C.timber);
-  f.block(0, 1.2, 0, 2.6, .14, 2.6, C.wood); f.block(0, 1.34, 0, 2, 1.7, 2, 0x6a5444); for (let k = 0; k < 5; k++) f.block(0, 3 + k * .26, 0, 2.6 - k * .5, .26, 2.6 - k * .5, vary(0x4a5a3a, .08, r));
-  f.block(0, 1.7, 1.02, .6, .6, .05, C.window, true); f.block(-.5, 1.34, 1.02, .5, 1.1, .05, 0x3a2a24);
-  for (let k = 0; k < 6; k++) f.block(1.5, -.2 + k * .25, 1.4, .5, .05, .1, C.wood); for (const s of [-1, 1]) f.block(1.5 + s * .22, -.3, 1.4, .05, 1.6, .05, C.wood);
-  f.block(-1.6, -1, -1.2, .1, 3.8, .1, C.timber); lantern(f, -1.6, 2.8, -1.2, .7);
+  const board = [0x6a5444, 0x5e4a3c, 0x75604e], thatch = [0x4a5a3a, 0x56663f, 0x414f33];
+  for (const [x, z] of [[-1.1, -1.1], [1.1, -1.1], [-1.1, 1.1], [1.1, 1.1]]) { f.block(x, -1.4, z, .2, 2.6, .2, C.timber); f.block(x, -1.4, z, .34, .3, .34, 0x3d4a3a); f.block(x, 1.0, z, .3, .2, .3, C.wood); }
+  for (const s of [-1, 1]) { for (let k = 0; k < 6; k++) { f.block(s * 1.1, -.9 + k * .32, -.9 + k * .36, .08, .1, .44, C.wood); f.block(-.9 + k * .36, -.9 + k * .32, s * 1.1, .44, .1, .08, C.wood); } }
+  // The deck, wider than the hut, with a rail on three sides.
+  f.block(0, 1.2, .2, 3.2, .14, 3.4, C.wood); for (let i = 0; i < 8; i++) f.block(-1.4 + i * .4, 1.34, .2, .03, .012, 3.4, shade(C.wood, .7));
+  for (const [x, z] of [[-1.5, 1.8], [-.5, 1.8], [.5, 1.8], [1.5, 1.8], [-1.5, .6], [1.5, .6]]) f.block(x, 1.34, z, .1, .7, .1, C.timber);
+  f.block(-1, 2.0, 1.8, 1.1, .08, .1, C.woodLight); f.block(1.3, 2.0, 1.8, .5, .08, .1, C.woodLight); for (const s of [-1, 1]) f.block(s * 1.5, 2.0, 1.2, .1, .08, 1.3, C.woodLight);
+  // Board walls, each plank its own weathered tone.
+  f.block(0, 1.34, -.3, 2.1, 1.8, 2.1, board[1]);
+  for (let i = 0; i < 8; i++) { const u = -.92 + i * .263; for (const s of [-1, 1]) { f.block(u, 1.34, -.3 + s * 1.06, .24, 1.8, .06, vary(pick(board, r), .08, r)); f.block(s * 1.06, 1.34, -.3 + u, .06, 1.8, .24, vary(pick(board, r), .08, r)); } }
+  f.block(.45, 1.9, .8, .7, .7, .05, C.cream); f.block(.45, 1.96, .83, .56, .58, .04, C.window, true); f.block(.45, 1.96, .86, .05, .58, .03, C.cream); f.block(.45, 2.22, .86, .56, .05, .03, C.cream);
+  for (const s of [-1, 1]) f.block(.45 + s * .47, 1.92, .82, .2, .64, .04, 0x4f6a5a); f.block(.45, 1.82, .88, .8, .07, .14, C.woodLight);
+  f.block(-.5, 1.34, .8, .62, 1.25, .06, 0x3a2a24); for (let i = 0; i < 3; i++) f.block(-.7 + i * .2, 1.38, .84, .03, 1.16, .02, 0x2a1e1a); f.block(-.3, 1.9, .85, .06, .06, .04, C.brass); f.block(-.5, 2.6, .82, .8, .08, .12, C.woodLight);
+  // Thatch in seven layers under a ridge pole, shaggy at the eaves.
+  for (let k = 0; k < 7; k++) { const sz = 3.0 - k * .42; f.block(0, 3.1 + k * .24, -.3, sz, .26, sz, vary(pick(thatch, r), .08, r)); }
+  for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2; f.block(Math.cos(a) * 1.46, 2.94, -.3 + Math.sin(a) * 1.46, .22, .2 + r() * .14, .22, vary(thatch[2], .1, r)); }
+  f.block(0, 4.76, -.3, .5, .12, .5, 0x39452e); f.block(0, 4.86, -.3, .12, .3, .12, C.timber);
+  // The ladder, a line of fish, and the lantern pole.
+  for (let k = 0; k < 9; k++) f.block(1.2, -1.2 + k * .28, 2.0, .5, .05, .08, C.wood); for (const s of [-1, 1]) f.block(1.2 + s * .24, -1.4, 2.0, .06, 2.7, .06, C.wood);
+  f.block(-.9, 2.5, 1.82, 1.3, .02, .02, 0x2a2228); for (let i = 0; i < 4; i++) { f.block(-1.4 + i * .32, 2.24, 1.82, .08, .26, .04, 0xa9b6c0); f.block(-1.4 + i * .32, 2.18, 1.82, .12, .08, .04, 0x8795a0); }
+  f.block(-1.75, -1, -1.3, .1, 4.2, .1, C.timber); f.block(-1.55, 3.1, -1.3, .5, .07, .07, C.timber); lantern(f, -1.4, 2.6, -1.3, .7);
+  for (let i = 0; i < 8; i++) f.block(-1.6 + r() * 3.2, -1.4, -1.6 + r() * 3.2, .05, .7 + r() * .9, .05, vary(0x55703f, .12, r));
 }
 
 // The Velvet Bat: an old gothic tavern kept by a vampire. Dark stone in courses

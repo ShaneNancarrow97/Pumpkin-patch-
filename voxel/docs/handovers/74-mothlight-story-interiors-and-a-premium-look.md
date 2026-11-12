@@ -25,6 +25,17 @@ Photographs of the village showed three things holding it back: walls and roofs 
 
 Tests: `test/village-finish.test.mjs`.
 
+## Landmarks rebuilt
+
+The owner asked for "an overall build upgrade to the superstructures, design and fidelity". First batch, in `village-models.js`, all on their old footprints:
+
+- **The Baron's manor**: pilasters between seven bays, pointed windows (`lancet`, reusable), a columned porch under a balustraded balcony, a rose window, a dentilled cornice with gargoyles, a slate mansard with dormers and iron cresting, a brass observatory dome, and chamfered towers with battlements and lucarned spires.
+- **The circus tents** (`bigTent`): a kickboard, panelled walls, a scalloped valance, a swooping roof with seam bulbs, a gilt crown, and a curtained doorway under a marquee board.
+- **Corvus's caravan**: a bow top, framed and gilded panels, shuttered windows with flower boxes, spoked wheels, a stable door and folding steps.
+- **The marsh huts**: braced stilts, a railed deck, board walls, deep thatch, a ladder and a line of fish.
+
+Not yet redesigned: the lighthouse, the observatory tower, the Ferris wheel and carousel, the townhouses, the district gates, and the Acre (Granny's house, corn, watchers).
+
 ## Earlier in this round (already pushed)
 
 - **The play camera** (`village-camera.js`): a low arm that looks up at roofs and sky, stops at building walls (`villageCameraReach`), and a great tree that only dissolves when its trunk or crown is truly in the way.
