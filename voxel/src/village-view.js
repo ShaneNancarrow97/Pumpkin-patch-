@@ -70,9 +70,11 @@ export function createVillageView(canvas, state, hooks = {}) {
   scene.userData.exposure = 1.15;
   // The village's own glow (tighter than the farm's, so windows and lamps keep their colour) and its final grade.
   scene.userData.bloom = { strength: .36, radius: .55, threshold: .9 }; scene.userData.grade = VILLAGE_GRADE;
-  const hemi = new THREE.HemisphereLight(0x5a68b8, 0x231b2c, .7); scene.add(hemi);
+  // The night's own light: enough moon and sky that an unlit lane reads as moonlit blue, never black.
+  const NIGHT = { hemi: .98, sun: 1.32, sky: 0x6474c8, ground: 0x2e243c };
+  const hemi = new THREE.HemisphereLight(NIGHT.sky, NIGHT.ground, NIGHT.hemi); scene.add(hemi);
   const SUN = new THREE.Vector3(.42, .78, .46).normalize();
-  const sun = new THREE.DirectionalLight(0xb8c2ff, 1.25); sun.castShadow = true;
+  const sun = new THREE.DirectionalLight(0xb8c2ff, NIGHT.sun); sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -44, right: 44, top: 44, bottom: -44, near: 1, far: 170 }); sun.shadow.normalBias = .04; sun.shadow.bias = -.0004;
   scene.add(sun, sun.target); sun.shadow.autoUpdate = false;
   let shadowTick = 0;
@@ -264,7 +266,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   function goOutside() {
     dialogueFocus.end({ immediate: true });
     if (!inside) return; inside.group.visible = false; if (inside.host) inside.host.root.visible = false; inside = null;
-    root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = 1.25; hemi.intensity = .7; scene.userData.exposure = 1.15; following = false; lampAs(LAMP); pool.forEach((l) => { l.color.set(0xff9a40); });
+    root.visible = true; if (sky) sky.visible = true; scene.background.set(SKY.top); scene.fog.color.set(0x1d1430); sun.intensity = NIGHT.sun; hemi.intensity = NIGHT.hemi; scene.userData.exposure = 1.15; following = false; lampAs(LAMP); pool.forEach((l) => { l.color.set(0xff9a40); });
   }
 
   // A closer third-person orbit stays on the owner, rather than panning away
@@ -453,13 +455,13 @@ export function createVillageView(canvas, state, hooks = {}) {
   return {
     scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool, dialogueCamera,
     enterExpansionArea(id){dialogueFocus.end({immediate:true});if(inside)goOutside();const entry=expansionWorld.enter(id);if(!entry)return false;setLampNear(0);root.visible=false;for(const p of folk.people.values())p.root.visible=false;resources.group.visible=false;shopMarkers.hide();for(const h of pickables)if(!['expansion-activity','expansion-portal'].includes(h.userData.type))h.visible=false;if(sky)sky.visible=false;sun.intensity=.12;hemi.intensity=1.3;hemi.color.set(0xc6c3dd);hemi.groundColor.set(0x817185);scene.background.set(0x100d19);scene.fog.color.set(0x100d19);scene.userData.exposure=1.2;following=false;return entry;},
-    leaveExpansionArea(){const entry=expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity=1.25;hemi.intensity=.7;hemi.color.set(0x5a68b8);hemi.groundColor.set(0x231b2c);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;following=false;lampAs(LAMP);pool.forEach(l=>{l.visible=true;l.color.set(0xff9a40);});sync();return entry;},
+    leaveExpansionArea(){const entry=expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity = NIGHT.sun;hemi.intensity = NIGHT.hemi;hemi.color.set(NIGHT.sky);hemi.groundColor.set(NIGHT.ground);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;following=false;lampAs(LAMP);pool.forEach(l=>{l.visible=true;l.color.set(0xff9a40);});sync();return entry;},
     get activeExpansionArea(){return expansionWorld.active;},get expansionTargets(){return [...expansionWorld.targets,...(!expansionWorld.active?[...folk.people].filter(([,p])=>p.root.visible).map(([id])=>({type:'village-folk',id,...folk.spotOf(id)})):[])];},expansionGroundAt:(x,z)=>expansionWorld.ground(x,z),moveExpansionWalker:(from,dx,dz)=>expansionWorld.active?expansionWorld.move(from,dx,dz):moveVillageWalker(state,from,dx,dz),setExpansionCompanion,
     get expansionStats(){return expansionWorld.stats;},
     setCastStyle, get castStyle() { return folk.style; }, spriteReady, spritesReady: spriteReady, spriteTextures: villageSpriteTextures, tapAt,
     goInside, goOutside, canEnterInside, get inside() { return inside?.id ?? null; }, hallPoint, insidePlan: (id) => INSIDES[id],
     enter() { active = true; sync(); resize(); if (firstView) { reset(); firstView = false; } controls.enabled = !tour; },
-    leave() { if(expansionWorld.active){expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity=1.25;hemi.intensity=.7;hemi.color.set(0x5a68b8);hemi.groundColor.set(0x231b2c);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;lampAs(LAMP);pool.forEach(l=>{l.visible=true;l.color.set(0xff9a40);});}setExpansionCompanion(null);dialogueFocus.end({ immediate: true }); blight.hide();resources.group.visible=false;shopMarkers.hide(); gatherTool(); active = false; controls.enabled = false; for (const id of pointers.keys()) try { if (canvas.hasPointerCapture?.(id)) canvas.releasePointerCapture(id); } catch { /* A finished pointer may already be gone. */ } pointers.clear(); multi = false; pinch = 0; preview(null); following = false; followSubject = null; resetVillageVisibility(villageGreen); tour = null; },
+    leave() { if(expansionWorld.active){expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity = NIGHT.sun;hemi.intensity = NIGHT.hemi;hemi.color.set(NIGHT.sky);hemi.groundColor.set(NIGHT.ground);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;lampAs(LAMP);pool.forEach(l=>{l.visible=true;l.color.set(0xff9a40);});}setExpansionCompanion(null);dialogueFocus.end({ immediate: true }); blight.hide();resources.group.visible=false;shopMarkers.hide(); gatherTool(); active = false; controls.enabled = false; for (const id of pointers.keys()) try { if (canvas.hasPointerCapture?.(id)) canvas.releasePointerCapture(id); } catch { /* A finished pointer may already be gone. */ } pointers.clear(); multi = false; pinch = 0; preview(null); following = false; followSubject = null; resetVillageVisibility(villageGreen); tour = null; },
     tick(dt = 0) {
       time += dt; if (!active) return;
       controls.enabled = !following && !tour && !dialogueFocus.active && !hooks.blocked?.() && !hooks.gesture?.busy?.();

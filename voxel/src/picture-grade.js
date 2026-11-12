@@ -3,7 +3,7 @@
 // middle. It works on the picture as displayed, after tone mapping, and costs one pass.
 import * as THREE from "three";
 
-export const VILLAGE_GRADE = Object.freeze({ saturation: 1.1, contrast: 1.07, vignette: .26, shadows: [-.012, -.004, .026], lights: [.022, .008, -.016] });
+export const VILLAGE_GRADE = Object.freeze({ saturation: 1.1, contrast: 1.05, vignette: .24, shadows: [.004, .006, .03], lights: [.02, .008, -.014] });
 
 export const GradeShader = {
   name: "GradeShader",
