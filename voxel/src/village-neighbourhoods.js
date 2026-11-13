@@ -173,9 +173,27 @@ function pergola(f, p, r) {
   }
   for (const sz of [-1, 1]) f.block(0, h, sz * pz, w, .23, .25, C.beam);
   for (let x = -px - .2; x <= px + .2; x += .68) { f.block(x, h + .23, 0, .16, .17, d, vary(C.woodLight, .05, r)); f.block(x, h + .19, -d / 2 + .125, .24, .12, .25, C.wood); f.block(x, h + .19, d / 2 - .125, .24, .12, .25, C.wood); }
-  // A narrow cloth shade and trained vines leave the roof airy from above.
-  f.block(0, h + .4, 0, w * .43, .045, d * .85, C.plumDeep);
-  for (const x of [-w * .2, w * .2]) f.block(x, h + .43, 0, .055, .025, d * .85, C.gold);
+  // A low slate canopy covers the table while the surrounding timber lattice
+  // stays open. Gable trusses carry its ridge into the existing post frame.
+  const roofW = w * .9, roofD = d * .7, course = roofD / 14;
+  for (const sx of [-1, 1]) {
+    f.block(sx * (roofW / 2 - .16), h + .23, 0, .16, .15, roofD + .2, C.beam);
+    f.block(sx * (roofW / 2 - .16), h + .38, 0, .14, .56, .14, C.woodLight);
+  }
+  for (const side of [-1, 1]) {
+    f.block(0, h + .37, side * (roofD / 2 + .04), roofW + .22, .12, .13, C.woodLight);
+    for (let row = 0; row < 7; row++) {
+      const z = side * (row + .5) * course, y = h + .83 - row * .07;
+      f.block(0, y, z, roofW, .085, course + .035, C.slate[row % 3]);
+      for (const sx of [-1, 1]) f.block(sx * (roofW / 2 - .16), y - .14, z, .18, .15, course + .04, C.wood);
+      for (let x = -roofW / 2 + .3 + (row % 2) * .28; x < roofW / 2 - .1; x += .62) {
+        const ww = Math.min(.56, roofW / 2 - x);
+        f.block(x, y + .085, z, ww, .018, course - .035, vary(C.slate[(row + 1) % 3], .08, r));
+      }
+    }
+  }
+  f.block(0, h + .8, 0, roofW + .1, .14, .2, C.beam); f.block(0, h + .95, 0, roofW + .12, .08, .25, C.slate[1]);
+  for (const sx of [-1, 1]) f.block(sx * (roofW / 2 - .1), h + .95, 0, .12, .1, .28, C.brass);
   for (const sx of [-1, 1]) {
     for (let j = 0; j < 6; j++) f.block(sx * px, .55 + j * .35, -pz, .06, .4, .07, C.beam);
     for (let i = 0; i < 12; i++) {
