@@ -235,7 +235,7 @@ function frame(now) {
   else if (walking && actor) walk(dt, time);
   view.tick(dt); if (walking && actor) faceCamera(actor);
   renderer.toneMappingExposure = view.scene.userData.exposure ?? 1;
-  if (!villageRenderer.draw(view.scene, view.camera)) composer.render();
+  if (!villageRenderer.draw(view.scene, view.camera, { shadows: renderer.shadowMap.enabled })) composer.render();
   frames++; if (now - fpsAt > 1000) { $("fps").textContent = `${Math.round(frames * 1000 / (now - fpsAt))} fps`; frames = 0; fpsAt = now; }
   requestAnimationFrame(frame);
 }

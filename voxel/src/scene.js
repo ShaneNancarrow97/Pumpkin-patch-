@@ -842,7 +842,7 @@ export function createScene(canvas, state, hooks) {
     if (view.place === "village") {
       villageView.tick(state.paused ? 0 : dt); renderer.toneMappingExposure = villageView.scene.userData.exposure ?? 1.15;
       renderPass.scene = villageView.scene; renderPass.camera = villageView.camera; dress(villageView.scene.userData);
-      if (!villageRenderer.draw(villageView.scene, villageView.camera, { bloom: bloomOn, tvProfile, glowScale, antialias: antialias.enabled })) {
+      if (!villageRenderer.draw(villageView.scene, villageView.camera, { bloom: bloomOn, shadows: renderer.shadowMap.enabled, tvProfile, glowScale, antialias: antialias.enabled })) {
         if (bloomOn) composer.render(); else renderer.render(villageView.scene, villageView.camera);
       }
       if (warming.size) warmNext(); requestAnimationFrame(tick); return;
@@ -1227,7 +1227,7 @@ export function createScene(canvas, state, hooks) {
     ambience,
     setVoxelCharacters(on) { if (on !== voxelCharacters) { voxelCharacters = on; placeCharacters(); } },
     get characterStyle() { return skyla ? (voxelCharacters ? "voxels" : "sprites") : "loading"; },
-    setShadows(on) { renderer.shadowMap.enabled = on; for (const viewScene of [scene, estateView.scene, foyerView.scene, mazeView.scene]) viewScene.traverse((o) => { if (o.material) o.material.needsUpdate = true; }); },
+    setShadows(on) { renderer.shadowMap.enabled = on; for (const viewScene of [scene, estateView.scene, foyerView.scene, mazeView.scene, villageView.scene]) viewScene.traverse((o) => { if (o.material) o.material.needsUpdate = true; }); },
     renderer,
   };
 }

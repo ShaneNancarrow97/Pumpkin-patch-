@@ -33,6 +33,7 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   if (!renderer.backend.isWebGPUBackend) throw new Error("Renderer selected a non-WebGPU backend");
   // r169 starts a bookkeeping RAF even with no animation callback. The game
   // already owns a paced RAF; advance its node frame once per actual draw here.
+  if (typeof renderer._animation?.dispose !== "function" || typeof renderer._nodes?.nodeFrame?.update !== "function") throw new Error(`Unsupported Three ${GPU.REVISION} node-frame lifecycle`);
   renderer._animation.dispose();
   // Pinned r169 bakes global node IDs into otherwise identical UBO type and
   // variable names. Normalize only validated generated pairs before the stage
@@ -88,6 +89,14 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   device?.lost.then(info => { if (!disposed) onFailure?.(new Error(`WebGPU device lost: ${info.message || info.reason}`)); });
   function sync(source, camera, options = {}) {
     mirror.sync(source, camera); renderer.toneMappingExposure = source.userData.exposure ?? 1.15;
+    const shadows = options.shadows !== false;
+    if (renderer.shadowMap.enabled !== shadows) {
+      renderer.shadowMap.enabled = shadows;
+      mirror.scene.traverse(object => {
+        for (const material of [].concat(object.material ?? [])) material.needsUpdate = true;
+        if (shadows && object.shadow) object.shadow.needsUpdate = true;
+      });
+    }
     const g = source.userData.grade ?? {};
     saturation.value = g.saturation ?? 1; contrast.value = g.contrast ?? 1; vignette.value = g.vignette ?? 0;
     shadowTint.value.fromArray(g.shadows ?? [0, 0, 0]); lightTint.value.fromArray(g.lights ?? [0, 0, 0]);
@@ -131,7 +140,7 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
     },
     render(source, camera, options) { if (disposed || !prepared) throw new Error("WebGPU presentation is not ready"); sync(source, camera, options); draw(); },
     resize(w, h, r) { if (width === w && height === h && ratio === r) return; width = w; height = h; ratio = r; renderer.setPixelRatio(r); renderer.setSize(w, h, false); scenePass.setPixelRatio(r); scenePass.setSize(w, h); },
-    stats() { return { actualBackend: "webgpu", renderFrames, ...mirror.stats(), materials: materials.stats, ...frameStats, shaderCache: { ...shaderCache, vertexPrograms: renderer._pipelines?.programs?.vertex?.size ?? 0, fragmentPrograms: renderer._pipelines?.programs?.fragment?.size ?? 0 }, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { hdr: usePost, bloom: usePost, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
+    stats() { return { actualBackend: "webgpu", renderFrames, ...mirror.stats(), materials: materials.stats, ...frameStats, shaderCache: { ...shaderCache, vertexPrograms: renderer._pipelines?.programs?.vertex?.size ?? 0, fragmentPrograms: renderer._pipelines?.programs?.fragment?.size ?? 0 }, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { hdr: usePost, bloom: usePost, shadows: renderer.shadowMap.enabled, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
     dispose,
   };
   } catch (error) { dispose(); throw error; }
