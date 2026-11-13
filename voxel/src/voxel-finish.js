@@ -8,6 +8,7 @@
 // (the wheel, the carousel) and lines up with the design grid. It fades out where a block would be smaller
 // than a couple of pixels, and leaves alone any face too small to hold two blocks.
 import * as THREE from "three";
+import { dressVoxelAOMaterial } from "./rendering/voxel-ao-material.js";
 
 export const VOXEL_FINISH = Object.freeze({
   pitch: .1875,   // one block, in world units: an eighth of the design grid, twelve to an owner's height
@@ -94,6 +95,7 @@ function patch(material, body, key) {
   };
   material.customProgramCacheKey = () => key;
   material.userData.voxelFinish = true; material.needsUpdate = true;
+  if (material.userData.voxelAO) dressVoxelAOMaterial(material, { ...material.userData.voxelAO, refresh: true });
 }
 
 // Whether a mesh is one of `Voxels`' batches: unit boxes placed by their instance matrices.

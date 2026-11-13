@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import { bakeVoxelAmbientOcclusion, createVoxelAOIndex } from "./rendering/voxel-ambient-occlusion.js";
+import { attachVoxelAO } from "./rendering/voxel-ao-material.js";
 
 const BOX = new THREE.BoxGeometry(1, 1, 1);
 const matrix = new THREE.Matrix4(), position = new THREE.Vector3(), scale = new THREE.Vector3(), quat = new THREE.Quaternion();
@@ -29,8 +31,14 @@ export class Voxels {
 
   // glow brightens the glowing voxels past white so the bloom catches them (1 leaves them as painted).
   // small: how big a box can be (its longest side) and still count as detail, kept out of the shadow pass.
-  build({ shadows = true, detailShadows = true, glow = 1, small: smallSide = 0.16 } = {}) {
+  build({ shadows = true, detailShadows = true, glow = 1, small: smallSide = 0.16, ambientOcclusion = false, _voxelAOIndex = null } = {}) {
     const group = new THREE.Group();
+    const started = ambientOcclusion ? (globalThis.performance?.now?.() ?? Date.now()) : 0;
+    // Opt-in: the large farm retains its existing startup cost. A village that
+    // spreads instance matrices later installs AO on the completed static scope.
+    const aoOptions = typeof ambientOcclusion === "object" && ambientOcclusion ? ambientOcclusion : {};
+    const aoIndex = ambientOcclusion ? _voxelAOIndex ?? createVoxelAOIndex(this.solid) : null;
+    let aoBytes = 0, aoMeshes = 0, aoBakeMs = 0;
     const make = (list, material, cast) => {
       if (!list.length) return;
       const mesh = new THREE.InstancedMesh(BOX, material, list.length);
@@ -41,6 +49,10 @@ export class Voxels {
       });
       mesh.castShadow = cast && shadows;
       mesh.receiveShadow = shadows;
+      if (aoIndex && material.isMeshStandardMaterial) {
+        const ao = bakeVoxelAmbientOcclusion(list, { ...aoOptions, index: aoIndex });
+        attachVoxelAO(mesh, ao.packed, aoOptions); aoBytes += ao.packed.byteLength; aoMeshes++; aoBakeMs += ao.stats.bakeMs;
+      }
       group.add(mesh);
     };
     // detailShadows: false leaves detail voxels (every side under 0.16 units)
@@ -51,6 +63,7 @@ export class Voxels {
     else { make(this.solid.filter((b) => !small(b)), lit, true); make(this.solid.filter(small), lit, false); }
     make(this.glow, new THREE.MeshBasicMaterial({ toneMapped: false, color: new THREE.Color(glow, glow, glow) }), false);
     group.userData.marks = this.marks ?? {};
+    if (aoIndex) group.userData.voxelAOStats = { ...aoIndex.stats, bakeMs: aoBakeMs, totalBuildMs: (globalThis.performance?.now?.() ?? Date.now()) - started, bytes: aoBytes, meshes: aoMeshes, instances: this.solid.length, mode: "face-corner-indirect" };
     return group;
   }
 }
@@ -65,7 +78,20 @@ export class ChunkedVoxels {
   block(x, y, z, w, h, d, color, glow = false) { this.at(x, z).block(x, y, z, w, h, d, color, glow); return this; }
   mark(kind, x, y, z) { ((this.marks ??= {})[kind] ??= []).push([x, y, z]); return this; }
   get count() { let n = 0; for (const v of this.chunks.values()) n += v.solid.length + v.glow.length; return n; }
-  build(options) { const group = new THREE.Group(); for (const v of this.chunks.values()) group.add(v.build(options)); group.userData.marks = this.marks ?? {}; return group; }
+  build(options = {}) {
+    const group = new THREE.Group();
+    // Neighbours across chunk boundaries and detail-shadow batches use one
+    // occupancy index. Geometry is still culled/rendered in its original chunks.
+    const aoIndex = options.ambientOcclusion ? createVoxelAOIndex([...this.chunks.values()].flatMap(v => v.solid)) : null;
+    let bytes = 0, meshes = 0, instances = 0;
+    for (const v of this.chunks.values()) {
+      const child = v.build({ ...options, _voxelAOIndex: aoIndex }); group.add(child);
+      const ao = child.userData.voxelAOStats; if (ao) { bytes += ao.bytes; meshes += ao.meshes; instances += ao.instances; }
+    }
+    group.userData.marks = this.marks ?? {};
+    if (aoIndex) group.userData.voxelAOStats = { ...aoIndex.stats, bytes, meshes, instances, mode: "face-corner-indirect" };
+    return group;
+  }
 }
 
 // Small deterministic random numbers, so the world looks the same every load.
@@ -89,7 +115,10 @@ export function chunkedVoxels(size = 16) {
   const chunks = new Map();
   return {
     at(x, z) { const key = `${Math.floor(x / size)},${Math.floor(z / size)}`; let v = chunks.get(key); if (!v) chunks.set(key, v = new Voxels()); return v; },
-    build(root) { for (const v of chunks.values()) root.add(v.build()); return root; },
+    build(root, options = {}) {
+      const index = options.ambientOcclusion ? createVoxelAOIndex([...chunks.values()].flatMap(v => v.solid)) : null;
+      for (const v of chunks.values()) root.add(v.build({ ...options, _voxelAOIndex: index })); return root;
+    },
     get boxes() { let n = 0; for (const v of chunks.values()) n += v.solid.length + v.glow.length; return n; },
     get count() { return chunks.size; },
   };
