@@ -164,7 +164,9 @@ function createVillageNodeMaterials({ renderer } = {}) {
     }
     const shader = captureShader(source, renderer), key = source.customProgramCacheKey?.() ?? "", data = source.userData ?? {};
     const finish = !!data.voxelFinish, grass = key.includes("village-grass-distance"), water = !!data.villageWater, ground = !!data.grassDetail, native = !!shader.uniforms.neighbourhoodVisibility;
-    const crisp = key.includes("crisp-sprite"), rim = !!data.villageRim, moon = !!data.moonRim, voxelCast = shader.fragmentShader.includes("totalEmissiveRadiance += vColor.rgb * 0.28");
+    // crispen can expand the emissive include before a later moon-rim hook
+    // attempts to patch it. Match the composed GL picture, not dormant metadata.
+    const crisp = key.includes("crisp-sprite"), rim = !!data.villageRim, moon = !!data.moonRim && shader.fragmentShader.includes("totalEmissiveRadiance += rimColour * rimStrength"), voxelCast = shader.fragmentShader.includes("totalEmissiveRadiance += vColor.rgb * 0.28");
     const known = finish || grass || water || ground || native || crisp || rim || moon || voxelCast || !!data.voxelAO || !!data.voxelPbr;
     const custom = source.onBeforeCompile !== GL.Material.prototype.onBeforeCompile;
     if (custom && !known) {

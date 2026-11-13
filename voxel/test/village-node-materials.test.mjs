@@ -142,7 +142,7 @@ test("native blocker ids use bounded opacity-array discard while full physical s
     disposeGroup(group);
   }
 });
-test("crisp painted cast retain bias, warm/moon rims and alpha-tested node shadows", () => {
+test("crisp painted cast retain bias, warm rims and alpha-tested node shadows", () => {
   const h = harness(), texture = new GL.DataTexture(new Uint8Array([255, 200, 150, 255]), 1, 1), source = new GL.Mesh(new GL.PlaneGeometry(), crispen(new GL.MeshStandardMaterial({ map: texture, emissiveMap: texture, emissive: 16777215, emissiveIntensity: 0.16, alphaTest: 0.42, side: GL.DoubleSide })));
   addSpriteRim(source.material, 1024, 512);
   const group = new GL.Group();
@@ -153,7 +153,7 @@ test("crisp painted cast retain bias, warm/moon rims and alpha-tested node shado
     assert.match(out.fragment, /textureSampleBias/);
     assert.ok(out.material.shadowNode);
     assert.equal(h.bridge.stats.roles["sprite-rim"], 1);
-    assert.equal(h.bridge.stats.roles["moon-rim"], 1);
+    assert.equal(h.bridge.stats.roles["moon-rim"], undefined, "expanded legacy emissive hook has no moon outline");
     source.material.emissiveIntensity = 0.4;
     h.bridge.sync();
     assert.equal(out.material.emissiveIntensity, 0.4);
@@ -174,7 +174,7 @@ test("owner walking atlases update every sprite node binding without rebuilding 
   try {
     const out = generate(h, source), version = out.material.version;
     const sampled = out.builder.nodes.filter(node => node.isTextureNode && node.value.image === idle.image);
-    assert.ok(sampled.length >= 8, "colour, emissive and both edge treatments sample the owner's atlas");
+    assert.ok(sampled.length >= 6, "colour, emissive and emitted edge treatments sample the owner's atlas");
     const idleWrapper = out.material.map;
     for (const atlas of [walk, idle, walk, idle]) {
       // The shared GL actor swaps maps as its authored facing/action changes.
@@ -189,6 +189,23 @@ test("owner walking atlases update every sprite node binding without rebuilding 
     assert.equal(h.bridge.stats.converted, 1);
   } finally {
     h.bridge.dispose(); idle.dispose(); walk.dispose(); source.geometry.dispose(); source.material.dispose();
+  }
+});
+test("moon rims match the emitted legacy shader after sprite hooks compose", () => {
+  for (const crisp of [false, true]) {
+    const h = harness(), texture = new GL.DataTexture(new Uint8Array([140, 90, 50, 255]), 1, 1);
+    const material = new GL.MeshStandardMaterial({ map: texture, emissiveMap: texture, alphaTest: .5 });
+    const source = new GL.Mesh(new GL.PlaneGeometry(), crisp ? crispen(material) : material);
+    addMoonRim(source);
+    const shader = { uniforms: {}, vertexShader: GL.ShaderLib.standard.vertexShader, fragmentShader: GL.ShaderLib.standard.fragmentShader };
+    material.onBeforeCompile(shader, h.renderer);
+    const emitted = shader.fragmentShader.includes("totalEmissiveRadiance += rimColour * rimStrength");
+    // crispen expands the emissive include before the optional rim hook runs.
+    assert.equal(emitted, !crisp);
+    try {
+      generate(h, source);
+      assert.equal(!!h.bridge.stats.roles["moon-rim"], emitted, "metadata alone cannot enable a rim absent from the legacy picture");
+    } finally { h.bridge.dispose(); texture.dispose(); source.geometry.dispose(); material.dispose(); }
   }
 });
 test("packed corner AO and real PBR atlas compose with finish without changing source material/geometry ownership", () => {

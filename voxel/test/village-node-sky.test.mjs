@@ -52,7 +52,7 @@ test('sky port borrows all eight exact uniform refs and preserves dome render st
   assert.equal(bindings.size, 8);
   for (const [key, ref] of Object.entries(source.uniforms)) {
     assert.ok(bindings.has(ref), key);
-    assert.equal(bindings.get(ref).type, key === 'villageDuskArt' ? 'texture' : key.startsWith('villageDusk') ? 'float' : 'vec3');
+    assert.equal(bindings.get(ref).type, key === 'villageDuskArt' ? 'texture' : key.startsWith('villageDusk') ? 'float' : key === 'moon' ? 'vec3' : 'color');
   }
   assert.equal(material.isNodeMaterial, true);
   assert.equal(material.side, GPU.BackSide);
@@ -129,4 +129,28 @@ test('clock, palette, readiness and texture bindings stay live without rebuildin
   assert.equal(textureNodes.length, 2);
   for (const node of textureNodes) assert.equal(node.value, replacement);
   assert.equal(builder.fragmentShader, shader);
+});
+
+test('the real WGSL uniform groups upload finite linear RGB palette bytes', () => {
+  const { mesh, source, bindings } = fixture();
+  const builder = build(mesh);
+  const groups = builder.getBindings().flatMap(group => group.bindings).filter(group => group.isUniformsGroup);
+  let colours = 0;
+  for (const group of groups) for (const uniform of group.uniforms) {
+    const value = uniform.getValue();
+    if (!value?.isColor) continue;
+    group.updateByType(uniform);
+    const uploaded = [...group.buffer.slice(uniform.offset, uniform.offset + 3)];
+    assert.ok(uploaded.every(Number.isFinite), 'THREE.Color must upload r/g/b, never missing x/y/z');
+    assert.deepEqual(uploaded, value.toArray().map(Math.fround));
+    colours++;
+  }
+  assert.equal(colours, 4, 'top, middle, horizon and low all reach the actual upload layout');
+  source.uniforms.middle.value.setRGB(.06, .025, .12);
+  bindings.get(source.uniforms.middle).node.value.copy(source.uniforms.middle.value);
+  const middle = groups.flatMap(group => group.uniforms.map(uniform => ({ group, uniform })))
+    .find(({ uniform }) => uniform.getValue() === bindings.get(source.uniforms.middle).node.value);
+  assert.ok(middle);
+  middle.group.updateByType(middle.uniform);
+  assert.deepEqual([...middle.group.buffer.slice(middle.uniform.offset, middle.uniform.offset + 3)], [.06, .025, .12].map(Math.fround));
 });

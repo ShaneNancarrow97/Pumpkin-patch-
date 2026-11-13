@@ -29,10 +29,12 @@ const duskNoise = Fn(([point]) => {
 /** Port the existing dome fragment without owning its geometry, texture or clocks. */
 export function createVillageSkyNodeMaterial(sourceMaterial, bindUniform) {
   const source = sourceMaterial.uniforms;
-  const top = bindUniform(source.top, 'vec3');
-  const middle = bindUniform(source.middle, 'vec3');
-  const horizon = bindUniform(source.horizon, 'vec3');
-  const low = bindUniform(source.low, 'vec3');
+  // Both types compile to vec3, but Three's Color uploader reads r/g/b.
+  // Explicit vec3 would read missing x/y/z and poison the sky with NaN.
+  const top = bindUniform(source.top, 'color');
+  const middle = bindUniform(source.middle, 'color');
+  const horizon = bindUniform(source.horizon, 'color');
+  const low = bindUniform(source.low, 'color');
   const moon = bindUniform(source.moon, 'vec3');
   const time = bindUniform(source.villageDuskTime, 'float');
   const art = bindUniform(source.villageDuskArt, 'texture');
