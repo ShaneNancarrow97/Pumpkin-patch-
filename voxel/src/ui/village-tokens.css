@@ -1,0 +1,37 @@
+/* Village overlays own their palette; the farm keeps its existing tokens. */
+.village-root,#village-game,#village-dialogue,#village-return-prompt,#village-quest-receipt,#village-invitation{
+  --village-night:#21182c;
+  --village-surface:#30243bf2;
+  --village-surface-raised:#493253f2;
+  --village-surface-deep:#241b30f7;
+  --village-ink:#fff1df;
+  --village-muted:#dfcfe5;
+  --village-gold:#f1cf97;
+  --village-amber:#efc889;
+  --village-amber-hover:#ffdfaa;
+  --village-action-ink:#332331;
+  --village-action-muted:#57404d;
+  --village-success:#d3e3bd;
+  --village-danger:#ffc4cc;
+  --village-line:#e7c7ed55;
+  --village-focus:#ffe0a2;
+  --village-keycap:#31263f;
+  --village-keycap-ink:#fff1df;
+  --village-keycap-line:#cbb1d7;
+  --village-body:"DM Sans",system-ui,sans-serif;
+  --village-display:Fraunces,Georgia,serif;
+  --village-text:var(--village-ink);
+  --village-panel:var(--village-surface);
+  --village-raised:var(--village-surface-raised);
+  --village-edge:var(--village-line);
+  --village-space-1:4px;--village-space-2:8px;--village-space-3:12px;--village-space-4:16px;--village-space-5:24px;
+  --village-type-small:12px;--village-type-body:14px;--village-type-title:24px;
+  --village-radius-small:12px;--village-radius-panel:22px;
+  --village-shadow-small:0 5px 18px #0d071b44;
+  --village-shadow-panel:0 14px 44px #0d071b66;
+  --village-motion-fast:120ms;--village-motion-panel:200ms;--village-motion-slow:320ms;
+  --village-ease:cubic-bezier(.2,.7,.2,1);
+  color-scheme:dark;
+}
+/* Keep key names readable when their parent changes to an amber action. */
+.village-root .glyph-keyboard,#village-game .glyph-keyboard,#village-dialogue .glyph-keyboard,#village-return-prompt .glyph-keyboard,#village-quest-receipt .glyph-keyboard{color:var(--village-keycap-ink);background:var(--village-keycap);border:1px solid var(--village-keycap-line);border-radius:6px;display:inline-grid;place-items:center;min-width:30px;min-height:26px;height:auto;padding:4px 6px;font:700 12px/1.2 var(--village-body);font-style:normal;white-space:nowrap;box-sizing:border-box}
