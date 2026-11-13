@@ -68,7 +68,9 @@ try {
       p.village.place(pose.x, pose.z, { x: 0, z: -1 });
       p.scene.villageView.play.reset(p.scene.villageView.play.state.subject, { yaw: pose.yaw, pitch: pose.pitch, distance: pose.distance });
     }, { pose: report.staging.referencePose, duskClock });
-    await page.waitForFunction(() => ["ready", "fallback", "disabled"].includes(PumpkinVoxel.scene.villageRendererStatus?.stage), null, { timeout: 180000 });
+    // Cold software Dawn compiles hundreds of scene/shadow variants. The
+    // complete source fixture still renders natively while this gate waits.
+    await page.waitForFunction(() => ["ready", "fallback", "disabled"].includes(PumpkinVoxel.scene.villageRendererStatus?.stage), null, { timeout: 600000 });
     const status = await readStatus();
     check(webgl ? "Explicit WebGL preference keeps the legacy renderer" : "A real WebGPU pipeline finishes its first frame", webgl ? status.requested === "webgl" && status.stage === "disabled" && status.backend === "webgl" : status.stage === "ready" && status.actualBackend === "webgpu", status);
     if (!webgl) await page.waitForFunction(() => { const s = PumpkinVoxel.scene.villageRendererStatus; return s.stage === "fallback" || s.backend === "webgpu" && s.frames >= 3; }, null, { timeout: 180000 });
