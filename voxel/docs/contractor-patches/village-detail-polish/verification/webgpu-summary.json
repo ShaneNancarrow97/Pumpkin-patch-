@@ -1,0 +1,1889 @@
+{
+  "file": "/tmp/Pumpkin-Patch-Village-Detail-Polish.html",
+  "htmlSha256": "3eee0d5a4a66c86b85b6f1fc07e670915377bfbe7710da1f304db77e5f347c02",
+  "bytes": 61806768,
+  "harnessSha256": "f6b9d4aeb22509f41325423a7d68c6906c08b623d8b8af98afda9225b40837f6",
+  "fixtureSha256": "d46bf1d296b8663e0650175f0c024839a4884fd8e2816bc9abbd26bbf1f0cade",
+  "viewport": {
+    "width": 960,
+    "height": 540
+  },
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageTrackedQuest": "green-research"
+  },
+  "pose": {
+    "x": 87,
+    "z": -16.5,
+    "yaw": 0,
+    "pitch": 0.20943951023931953,
+    "distance": 7.6
+  },
+  "launchArgs": [
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--enable-unsafe-webgpu",
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader",
+    "--ignore-gpu-blocklist",
+    "--enable-features=Vulkan",
+    "--use-vulkan=swiftshader",
+    "--disable-vulkan-surface"
+  ],
+  "expectedBackend": "webgpu",
+  "acceptancePath": "webgpu-canvas-readback",
+  "scope": "Exact offline game HTML on loopback, one native village entry, genuine keyboard walking, public hall entry/exit and native game RAF/rendering. No held draws, advance(), manual tick or manual render. Stationary counter checks are conditional on exactly unchanged horizontal camera/target; changing smoothing poses are reported, with exact stationary behavior covered by Node tests. GPU acceptance reads actual canvas pixels because this software Chromium runner has a separately reproduced page-compositor defect; raw success does not certify page compositing or physical phone/TV FPS.",
+  "checks": [
+    {
+      "label": "Requested renderer becomes ready",
+      "pass": true,
+      "actual": {
+        "requested": "auto",
+        "backend": "webgl",
+        "stage": "ready",
+        "reason": null,
+        "failureStack": null,
+        "frames": 1,
+        "actualBackend": "webgpu",
+        "renderFrames": 2,
+        "completedFrames": 1,
+        "inFlight": true,
+        "maxFramesInFlight": 1,
+        "skippedSubmissions": 2,
+        "mirroredObjects": 2526,
+        "ownedGeometryViews": 588,
+        "geometryViewsCreated": 588,
+        "geometryViewsRetired": 0,
+        "ownedLineGeometries": 0,
+        "lights": {
+          "point": 8,
+          "hemisphere": 1,
+          "directional": 2,
+          "ambient": 0
+        },
+        "materials": {
+          "ready": true,
+          "converted": 1885,
+          "effectMaterials": 6,
+          "unsupported": 0,
+          "roles": {
+            "ground-detail": 1,
+            "finish": 1097,
+            "pbr-atlas": 717,
+            "water": 14,
+            "voxel-ao": 111,
+            "alpha-hash": 434,
+            "grass": 306,
+            "native-fade": 2,
+            "crisp-sprite": 17,
+            "sprite-rim": 12,
+            "cutout-shadow": 17
+          },
+          "derivedInstanceBytes": 4950132,
+          "textureSynchronizations": 2315,
+          "textureUploads": 29,
+          "textureWrappers": 29
+        },
+        "calls": 372,
+        "triangles": 1824274,
+        "renderPasses": 16,
+        "shaderCache": {
+          "normalizedStages": 261,
+          "builders": 357,
+          "vertexPrograms": 200,
+          "fragmentPrograms": 49
+        },
+        "textures": 48,
+        "bufferWidth": 960,
+        "bufferHeight": 540,
+        "post": {
+          "hdr": true,
+          "bloom": true,
+          "shadows": true,
+          "displayGrade": true,
+          "fxaa": true,
+          "glowScale": 1,
+          "toneMapping": "ACES",
+          "output": "sRGB"
+        }
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "entrance.png: actual GPU colour buffer is opaque",
+      "pass": true,
+      "actual": 1
+    },
+    {
+      "label": "Native dusk sky retains violet cloud colour",
+      "pass": true,
+      "actual": 1
+    },
+    {
+      "label": "Grass, ambient and lamp diagnostics are available",
+      "pass": true
+    },
+    {
+      "label": "Distance detail still reduces grass vertices",
+      "pass": true,
+      "actual": {
+        "patches": 159,
+        "activePatches": 33,
+        "fullPatches": 12,
+        "middlePatches": 8,
+        "farPatches": 13,
+        "vertices": 422988,
+        "fullVertices": 757800,
+        "visible": true,
+        "selectionPasses": 1,
+        "patchChecks": 159
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Stationary camera avoids repeated grass selection",
+      "pass": true
+    },
+    {
+      "label": "Stationary target avoids repeated nearest-lamp searches",
+      "pass": true
+    },
+    {
+      "label": "Visible ambient animation continues during native stationary frames",
+      "pass": true,
+      "actual": {
+        "before": {
+          "ticks": 1577,
+          "hiddenTicks": 0,
+          "visible": true,
+          "bufferUpdates": 25232,
+          "matrixWrites": 1094438,
+          "pointWrites": 373749,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        },
+        "after": {
+          "ticks": 2764,
+          "hiddenTicks": 0,
+          "visible": true,
+          "bufferUpdates": 44224,
+          "matrixWrites": 1918216,
+          "pointWrites": 655068,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        }
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "walking.png: actual GPU colour buffer is opaque",
+      "pass": true,
+      "actual": 1
+    },
+    {
+      "label": "walking.png: actual GPU world pixels change",
+      "pass": true,
+      "actual": {
+        "changedPixels": 101742,
+        "changedFraction": 0.9933414043583535,
+        "meanMaxChannelDelta": 91.09920526439116
+      }
+    },
+    {
+      "label": "Genuine movement advances Natalie through alternating authored steps",
+      "pass": true,
+      "actual": {
+        "distance": 47.90279999999987,
+        "geometryFrames": 8,
+        "legs": [
+          "left",
+          "right"
+        ]
+      }
+    },
+    {
+      "label": "Moving the camera refreshes grass and lamp selection",
+      "pass": true
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Releasing movement restores an authored idle without recompiling its material",
+      "pass": true,
+      "actual": {
+        "authored": true,
+        "idle": true,
+        "direction": "back",
+        "frame": 0,
+        "leg": null,
+        "geometry": "2b4f1204-9a80-4478-bd3d-7ad184c3188f",
+        "map": "83b4130a-12b6-4f3a-95c4-115cbc2ff629",
+        "material": "4b6b5ef8-3aae-46f2-9d4e-d47824629e9d",
+        "materialVersion": 2
+      }
+    },
+    {
+      "label": "GPU submission remains bounded and all materials supported",
+      "pass": true,
+      "actual": {
+        "ready": true,
+        "converted": 1889,
+        "effectMaterials": 6,
+        "unsupported": 0,
+        "roles": {
+          "ground-detail": 1,
+          "finish": 1097,
+          "pbr-atlas": 717,
+          "water": 14,
+          "voxel-ao": 111,
+          "alpha-hash": 434,
+          "grass": 306,
+          "native-fade": 2,
+          "crisp-sprite": 19,
+          "sprite-rim": 14,
+          "cutout-shadow": 19
+        },
+        "derivedInstanceBytes": 4950132,
+        "textureSynchronizations": 2811,
+        "textureUploads": 31,
+        "textureWrappers": 31
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "The hidden outdoor surface stops grass selection",
+      "pass": true,
+      "actual": {
+        "before": {
+          "patches": 159,
+          "activePatches": 43,
+          "fullPatches": 18,
+          "middlePatches": 12,
+          "farPatches": 13,
+          "vertices": 650052,
+          "fullVertices": 1072920,
+          "visible": false,
+          "selectionPasses": 501,
+          "patchChecks": 79659
+        },
+        "after": {
+          "patches": 159,
+          "activePatches": 43,
+          "fullPatches": 18,
+          "middlePatches": 12,
+          "farPatches": 13,
+          "vertices": 650052,
+          "fullVertices": 1072920,
+          "visible": false,
+          "selectionPasses": 501,
+          "patchChecks": 79659
+        }
+      }
+    },
+    {
+      "label": "The hidden outdoor life stops instance and point updates",
+      "pass": true,
+      "actual": {
+        "before": {
+          "ticks": 4878,
+          "hiddenTicks": 78,
+          "visible": false,
+          "bufferUpdates": 76800,
+          "matrixWrites": 3331200,
+          "pointWrites": 1137600,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        },
+        "after": {
+          "ticks": 5063,
+          "hiddenTicks": 263,
+          "visible": false,
+          "bufferUpdates": 76800,
+          "matrixWrites": 3331200,
+          "pointWrites": 1137600,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        }
+      }
+    },
+    {
+      "label": "The interior retains a finite fixed pool of eight lights",
+      "pass": true,
+      "actual": [
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 21.89525915679709
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 19.31688351818067
+        },
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 20.63330029138907
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 18.786065975914624
+        },
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 21.658208167897104
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 20.235832691453957
+        },
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 22.796193429502107
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 20.0360696062244
+        }
+      ]
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "rowan-interior.png: actual GPU colour buffer is opaque",
+      "pass": true,
+      "actual": 1
+    },
+    {
+      "label": "rowan-interior.png: actual GPU world pixels change",
+      "pass": true,
+      "actual": {
+        "changedPixels": 102027,
+        "changedFraction": 0.9961239553229712,
+        "meanMaxChannelDelta": 95.44393892056549
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "Returning outdoors refreshes grass and resumes ambient life",
+      "pass": true,
+      "actual": {
+        "grass": {
+          "patches": 159,
+          "activePatches": 46,
+          "fullPatches": 19,
+          "middlePatches": 12,
+          "farPatches": 15,
+          "vertices": 671106,
+          "fullVertices": 1225650,
+          "visible": true,
+          "selectionPasses": 502,
+          "patchChecks": 79818
+        },
+        "life": {
+          "ticks": 5651,
+          "hiddenTicks": 406,
+          "visible": true,
+          "bufferUpdates": 83920,
+          "matrixWrites": 3640030,
+          "pointWrites": 1243065,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        }
+      }
+    },
+    {
+      "label": "Returning outdoors refreshes the surface lamp selection",
+      "pass": true,
+      "actual": {
+        "selections": 503,
+        "cacheHits": 5148,
+        "distanceChecks": 36146,
+        "candidates": 72
+      }
+    },
+    {
+      "label": "Native GPU frames continue without fallback",
+      "pass": true
+    },
+    {
+      "label": "surface-return.png: actual GPU colour buffer is opaque",
+      "pass": true,
+      "actual": 1
+    },
+    {
+      "label": "surface-return.png: actual GPU world pixels change",
+      "pass": true,
+      "actual": {
+        "changedPixels": 93338,
+        "changedFraction": 0.9112903225806451,
+        "meanMaxChannelDelta": 71.35217331875342
+      }
+    },
+    {
+      "label": "Closing the village restores the farm",
+      "pass": true
+    },
+    {
+      "label": "No page, shader or loading errors",
+      "pass": true,
+      "actual": {
+        "errors": [],
+        "consoleErrors": [],
+        "externalRequests": [],
+        "failedRequests": []
+      }
+    }
+  ],
+  "visualCaptures": [
+    {
+      "file": "entrance.png",
+      "pageSha256": "47833d85eee07e9031371efb7e705b5959b0ebe9552e5c9230a7512be21cacb4",
+      "pageWorldSha256": "5af508ede1354a2588dd8461da410cfcb6b57d536ae8a94909c73c724f22bfc1",
+      "state": {
+        "segment": "initial",
+        "position": {
+          "x": 87,
+          "z": -16.5
+        },
+        "inside": null,
+        "camera": [
+          87,
+          2.9201288502149705,
+          23.933921765576923
+        ],
+        "target": [
+          87,
+          1.34,
+          16.5
+        ],
+        "grass": {
+          "patches": 159,
+          "activePatches": 33,
+          "fullPatches": 12,
+          "middlePatches": 8,
+          "farPatches": 13,
+          "vertices": 422988,
+          "fullVertices": 757800,
+          "visible": true,
+          "selectionPasses": 1,
+          "patchChecks": 159
+        },
+        "life": {
+          "ticks": 1572,
+          "hiddenTicks": 0,
+          "visible": true,
+          "bufferUpdates": 25152,
+          "matrixWrites": 1090968,
+          "pointWrites": 372564,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        },
+        "lamps": {
+          "selections": 1,
+          "cacheHits": 1571,
+          "distanceChecks": 72,
+          "candidates": 72
+        },
+        "lighting": [
+          {
+            "visible": true,
+            "position": [
+              81,
+              4.199999999999999,
+              -1.9500000000000002
+            ],
+            "intensity": 42.912703794450834
+          },
+          {
+            "visible": true,
+            "position": [
+              93,
+              4.199999999999999,
+              -1.9500000000000002
+            ],
+            "intensity": 43.11425253915111
+          },
+          {
+            "visible": true,
+            "position": [
+              67.5,
+              4.199999999999999,
+              10.5
+            ],
+            "intensity": 42.590451567722816
+          },
+          {
+            "visible": true,
+            "position": [
+              106.5,
+              4.199999999999999,
+              10.5
+            ],
+            "intensity": 40.42402810211669
+          },
+          {
+            "visible": true,
+            "position": [
+              67.5,
+              4.199999999999999,
+              27
+            ],
+            "intensity": 39.818313040593026
+          },
+          {
+            "visible": true,
+            "position": [
+              106.5,
+              4.199999999999999,
+              27
+            ],
+            "intensity": 38.92436022039186
+          },
+          {
+            "visible": true,
+            "position": [
+              82.94999999999999,
+              5.1,
+              -13.5
+            ],
+            "intensity": 41.63208901579616
+          },
+          {
+            "visible": true,
+            "position": [
+              91.05000000000001,
+              5.1,
+              -13.5
+            ],
+            "intensity": 41.48195331037232
+          }
+        ],
+        "actor": {
+          "authored": true,
+          "idle": true,
+          "direction": "back",
+          "frame": 0,
+          "leg": null,
+          "geometry": "2b4f1204-9a80-4478-bd3d-7ad184c3188f",
+          "map": "83b4130a-12b6-4f3a-95c4-115cbc2ff629",
+          "material": "4b6b5ef8-3aae-46f2-9d4e-d47824629e9d",
+          "materialVersion": 2
+        },
+        "renderer": {
+          "requested": "auto",
+          "backend": "webgpu",
+          "stage": "ready",
+          "reason": null,
+          "failureStack": null,
+          "frames": 6,
+          "actualBackend": "webgpu",
+          "renderFrames": 7,
+          "completedFrames": 6,
+          "inFlight": true,
+          "maxFramesInFlight": 1,
+          "skippedSubmissions": 1542,
+          "mirroredObjects": 2526,
+          "ownedGeometryViews": 591,
+          "geometryViewsCreated": 595,
+          "geometryViewsRetired": 4,
+          "ownedLineGeometries": 0,
+          "lights": {
+            "point": 8,
+            "hemisphere": 1,
+            "directional": 2,
+            "ambient": 0
+          },
+          "materials": {
+            "ready": true,
+            "converted": 1888,
+            "effectMaterials": 6,
+            "unsupported": 0,
+            "roles": {
+              "ground-detail": 1,
+              "finish": 1097,
+              "pbr-atlas": 717,
+              "water": 14,
+              "voxel-ao": 111,
+              "alpha-hash": 434,
+              "grass": 306,
+              "native-fade": 2,
+              "crisp-sprite": 18,
+              "sprite-rim": 13,
+              "cutout-shadow": 18
+            },
+            "derivedInstanceBytes": 4950132,
+            "textureSynchronizations": 2468,
+            "textureUploads": 30,
+            "textureWrappers": 30
+          },
+          "calls": 372,
+          "triangles": 1824274,
+          "renderPasses": 16,
+          "shaderCache": {
+            "normalizedStages": 261,
+            "builders": 361,
+            "vertexPrograms": 200,
+            "fragmentPrograms": 49
+          },
+          "textures": 50,
+          "bufferWidth": 960,
+          "bufferHeight": 540,
+          "post": {
+            "hdr": true,
+            "bloom": true,
+            "shadows": true,
+            "displayGrade": true,
+            "fxaa": true,
+            "glowScale": 1,
+            "toneMapping": "ACES",
+            "output": "sRGB"
+          }
+        }
+      },
+      "gpu": {
+        "file": "entrance-webgpu-canvas.png",
+        "pngSha256": "3753fc79319817dc78cb47bb33d328c9561fb1a99ab85bfa0fc8d8c6fcc264de",
+        "worldPixelSha256": "59424332d1a166b39b9f3dabd2b3f309831693b8481223d42097a65104c0b4c4",
+        "opaqueFraction": 1,
+        "style": {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1"
+        }
+      },
+      "violetSkyFraction": 1
+    },
+    {
+      "file": "walking.png",
+      "pageSha256": "5c26672273ebbd0dd829134364640b6ce153eb82411e626abf00b99924a0ee50",
+      "pageWorldSha256": "5af508ede1354a2588dd8461da410cfcb6b57d536ae8a94909c73c724f22bfc1",
+      "state": {
+        "segment": "walk",
+        "position": {
+          "x": 87,
+          "z": 31.402799999999875
+        },
+        "inside": null,
+        "camera": [
+          87,
+          2.9201288502149705,
+          -23.968878234422952
+        ],
+        "target": [
+          87,
+          1.34,
+          -31.402799999999875
+        ],
+        "grass": {
+          "patches": 159,
+          "activePatches": 43,
+          "fullPatches": 18,
+          "middlePatches": 12,
+          "farPatches": 13,
+          "vertices": 650052,
+          "fullVertices": 1072920,
+          "visible": true,
+          "selectionPasses": 501,
+          "patchChecks": 79659
+        },
+        "life": {
+          "ticks": 3642,
+          "hiddenTicks": 0,
+          "visible": true,
+          "bufferUpdates": 58272,
+          "matrixWrites": 2527548,
+          "pointWrites": 863154,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        },
+        "lamps": {
+          "selections": 501,
+          "cacheHits": 3141,
+          "distanceChecks": 36072,
+          "candidates": 72
+        },
+        "lighting": [
+          {
+            "visible": true,
+            "position": [
+              81.75,
+              4.8,
+              -31.650000000000002
+            ],
+            "intensity": 44.56285597399341
+          },
+          {
+            "visible": true,
+            "position": [
+              92.25,
+              4.8,
+              -31.650000000000002
+            ],
+            "intensity": 38.90898780564848
+          },
+          {
+            "visible": true,
+            "position": [
+              82.94999999999999,
+              5.1,
+              -21.9
+            ],
+            "intensity": 42.14566255857995
+          },
+          {
+            "visible": true,
+            "position": [
+              91.05000000000001,
+              5.1,
+              -21.9
+            ],
+            "intensity": 36.469498537605254
+          },
+          {
+            "visible": true,
+            "position": [
+              81.75,
+              4.8,
+              -42.150000000000006
+            ],
+            "intensity": 43.66995942797373
+          },
+          {
+            "visible": true,
+            "position": [
+              92.25,
+              4.8,
+              -42.150000000000006
+            ],
+            "intensity": 38.65588826747642
+          },
+          {
+            "visible": true,
+            "position": [
+              82.94999999999999,
+              5.1,
+              -13.5
+            ],
+            "intensity": 47.051756096411715
+          },
+          {
+            "visible": true,
+            "position": [
+              91.05000000000001,
+              5.1,
+              -13.5
+            ],
+            "intensity": 38.82825805657829
+          }
+        ],
+        "actor": {
+          "authored": true,
+          "idle": true,
+          "direction": "back",
+          "frame": 0,
+          "leg": null,
+          "geometry": "2b4f1204-9a80-4478-bd3d-7ad184c3188f",
+          "map": "83b4130a-12b6-4f3a-95c4-115cbc2ff629",
+          "material": "4b6b5ef8-3aae-46f2-9d4e-d47824629e9d",
+          "materialVersion": 2
+        },
+        "renderer": {
+          "requested": "auto",
+          "backend": "webgpu",
+          "stage": "ready",
+          "reason": null,
+          "failureStack": null,
+          "frames": 13,
+          "actualBackend": "webgpu",
+          "renderFrames": 14,
+          "completedFrames": 13,
+          "inFlight": true,
+          "maxFramesInFlight": 1,
+          "skippedSubmissions": 3605,
+          "mirroredObjects": 2526,
+          "ownedGeometryViews": 593,
+          "geometryViewsCreated": 603,
+          "geometryViewsRetired": 10,
+          "ownedLineGeometries": 0,
+          "lights": {
+            "point": 8,
+            "hemisphere": 1,
+            "directional": 2,
+            "ambient": 0
+          },
+          "materials": {
+            "ready": true,
+            "converted": 1889,
+            "effectMaterials": 6,
+            "unsupported": 0,
+            "roles": {
+              "ground-detail": 1,
+              "finish": 1097,
+              "pbr-atlas": 717,
+              "water": 14,
+              "voxel-ao": 111,
+              "alpha-hash": 434,
+              "grass": 306,
+              "native-fade": 2,
+              "crisp-sprite": 19,
+              "sprite-rim": 14,
+              "cutout-shadow": 19
+            },
+            "derivedInstanceBytes": 4950132,
+            "textureSynchronizations": 2687,
+            "textureUploads": 31,
+            "textureWrappers": 31
+          },
+          "calls": 333,
+          "triangles": 1808086,
+          "renderPasses": 16,
+          "shaderCache": {
+            "normalizedStages": 294,
+            "builders": 407,
+            "vertexPrograms": 225,
+            "fragmentPrograms": 50
+          },
+          "textures": 51,
+          "bufferWidth": 960,
+          "bufferHeight": 540,
+          "post": {
+            "hdr": true,
+            "bloom": true,
+            "shadows": true,
+            "displayGrade": true,
+            "fxaa": true,
+            "glowScale": 1,
+            "toneMapping": "ACES",
+            "output": "sRGB"
+          }
+        }
+      },
+      "pageChange": {
+        "changedPixels": 0,
+        "changedFraction": 0,
+        "meanMaxChannelDelta": 0
+      },
+      "gpu": {
+        "file": "walking-webgpu-canvas.png",
+        "pngSha256": "5d6ed3d467b491c360968a5d4423c016c0a67241bae188520e4528dd68d3f054",
+        "worldPixelSha256": "d201f7cbb94aad6bbba82598f8a9d82faf30409415892597a942690f2e95e620",
+        "opaqueFraction": 1,
+        "style": {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1"
+        },
+        "change": {
+          "changedPixels": 101742,
+          "changedFraction": 0.9933414043583535,
+          "meanMaxChannelDelta": 91.09920526439116
+        }
+      }
+    },
+    {
+      "file": "rowan-interior.png",
+      "pageSha256": "f9d60efce7f80093593648691e1aa100a4056c0bb2ab3597a35ca4423685b958",
+      "pageWorldSha256": "32057cf608298fd8f16cd49a5e659b91cd0fb03e9c1b6d7fd8a6581f56727249",
+      "state": {
+        "segment": "idle",
+        "position": {
+          "x": 4000,
+          "z": 2.0999999999999996
+        },
+        "inside": "rowan-workshop",
+        "camera": [
+          4000,
+          6.360110010018044,
+          8.322539550921475
+        ],
+        "target": [
+          4000,
+          1.5,
+          -2.0999999999999996
+        ],
+        "grass": {
+          "patches": 159,
+          "activePatches": 43,
+          "fullPatches": 18,
+          "middlePatches": 12,
+          "farPatches": 13,
+          "vertices": 650052,
+          "fullVertices": 1072920,
+          "visible": false,
+          "selectionPasses": 501,
+          "patchChecks": 79659
+        },
+        "life": {
+          "ticks": 5203,
+          "hiddenTicks": 403,
+          "visible": false,
+          "bufferUpdates": 76800,
+          "matrixWrites": 3331200,
+          "pointWrites": 1137600,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        },
+        "lamps": {
+          "selections": 502,
+          "cacheHits": 4701,
+          "distanceChecks": 36074,
+          "candidates": 2
+        },
+        "lighting": [
+          {
+            "visible": true,
+            "position": [
+              3996.85,
+              2.7,
+              -9.375
+            ],
+            "intensity": 19.0389798369819
+          },
+          {
+            "visible": true,
+            "position": [
+              4005.85,
+              1.0499999999999998,
+              -11.850000000000001
+            ],
+            "intensity": 20.57537841267632
+          },
+          {
+            "visible": true,
+            "position": [
+              3996.85,
+              2.7,
+              -9.375
+            ],
+            "intensity": 19.059042931432423
+          },
+          {
+            "visible": true,
+            "position": [
+              4005.85,
+              1.0499999999999998,
+              -11.850000000000001
+            ],
+            "intensity": 22.020777685598127
+          },
+          {
+            "visible": true,
+            "position": [
+              3996.85,
+              2.7,
+              -9.375
+            ],
+            "intensity": 20.348768907513765
+          },
+          {
+            "visible": true,
+            "position": [
+              4005.85,
+              1.0499999999999998,
+              -11.850000000000001
+            ],
+            "intensity": 22.87826787747366
+          },
+          {
+            "visible": true,
+            "position": [
+              3996.85,
+              2.7,
+              -9.375
+            ],
+            "intensity": 19.402041390812762
+          },
+          {
+            "visible": true,
+            "position": [
+              4005.85,
+              1.0499999999999998,
+              -11.850000000000001
+            ],
+            "intensity": 21.636381231394626
+          }
+        ],
+        "actor": {
+          "authored": true,
+          "idle": true,
+          "direction": "back",
+          "frame": 0,
+          "leg": null,
+          "geometry": "2b4f1204-9a80-4478-bd3d-7ad184c3188f",
+          "map": "83b4130a-12b6-4f3a-95c4-115cbc2ff629",
+          "material": "4b6b5ef8-3aae-46f2-9d4e-d47824629e9d",
+          "materialVersion": 2
+        },
+        "renderer": {
+          "requested": "auto",
+          "backend": "webgpu",
+          "stage": "ready",
+          "reason": null,
+          "failureStack": null,
+          "frames": 24,
+          "actualBackend": "webgpu",
+          "renderFrames": 25,
+          "completedFrames": 24,
+          "inFlight": true,
+          "maxFramesInFlight": 1,
+          "skippedSubmissions": 5155,
+          "mirroredObjects": 2542,
+          "ownedGeometryViews": 597,
+          "geometryViewsCreated": 613,
+          "geometryViewsRetired": 16,
+          "ownedLineGeometries": 0,
+          "lights": {
+            "point": 8,
+            "hemisphere": 1,
+            "directional": 2,
+            "ambient": 0
+          },
+          "materials": {
+            "ready": true,
+            "converted": 1899,
+            "effectMaterials": 6,
+            "unsupported": 0,
+            "roles": {
+              "ground-detail": 1,
+              "finish": 1099,
+              "pbr-atlas": 718,
+              "water": 14,
+              "voxel-ao": 112,
+              "alpha-hash": 434,
+              "grass": 306,
+              "native-fade": 2,
+              "crisp-sprite": 20,
+              "sprite-rim": 15,
+              "cutout-shadow": 20
+            },
+            "derivedInstanceBytes": 4957344,
+            "textureSynchronizations": 3035,
+            "textureUploads": 31,
+            "textureWrappers": 31
+          },
+          "calls": 33,
+          "triangles": 15270,
+          "renderPasses": 16,
+          "shaderCache": {
+            "normalizedStages": 303,
+            "builders": 418,
+            "vertexPrograms": 232,
+            "fragmentPrograms": 50
+          },
+          "textures": 51,
+          "bufferWidth": 960,
+          "bufferHeight": 540,
+          "post": {
+            "hdr": true,
+            "bloom": true,
+            "shadows": true,
+            "displayGrade": true,
+            "fxaa": true,
+            "glowScale": 1,
+            "toneMapping": "ACES",
+            "output": "sRGB"
+          }
+        }
+      },
+      "pageChange": {
+        "changedPixels": 174,
+        "changedFraction": 0.0016988205889244708,
+        "meanMaxChannelDelta": 0.04755721315316723
+      },
+      "gpu": {
+        "file": "rowan-interior-webgpu-canvas.png",
+        "pngSha256": "8474195549f7e17f041d3efd205917e03fb8b475200dc9a1635b7ca1680d1535",
+        "worldPixelSha256": "f8ac820b72afd856997d5bce691c30cae2c83ab0394b21234465590f8bd8b37b",
+        "opaqueFraction": 1,
+        "style": {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1"
+        },
+        "change": {
+          "changedPixels": 102027,
+          "changedFraction": 0.9961239553229712,
+          "meanMaxChannelDelta": 95.44393892056549
+        }
+      }
+    },
+    {
+      "file": "surface-return.png",
+      "pageSha256": "f9eb45773a75ad10eaf860409184406bb195310e1062a172576a7dc56917d115",
+      "pageWorldSha256": "d90a377f272df7024f0265cfb93675696ab6b401244a992ac948197a1fcda79b",
+      "state": {
+        "segment": "idle",
+        "position": {
+          "x": 130.8,
+          "z": 30
+        },
+        "inside": null,
+        "camera": [
+          130.8,
+          2.9201288502149705,
+          -22.566078234423077
+        ],
+        "target": [
+          130.8,
+          1.34,
+          -30
+        ],
+        "grass": {
+          "patches": 159,
+          "activePatches": 46,
+          "fullPatches": 19,
+          "middlePatches": 12,
+          "farPatches": 15,
+          "vertices": 671106,
+          "fullVertices": 1225650,
+          "visible": true,
+          "selectionPasses": 502,
+          "patchChecks": 79818
+        },
+        "life": {
+          "ticks": 6375,
+          "hiddenTicks": 406,
+          "visible": true,
+          "bufferUpdates": 95504,
+          "matrixWrites": 4142486,
+          "pointWrites": 1414653,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        },
+        "lamps": {
+          "selections": 503,
+          "cacheHits": 5872,
+          "distanceChecks": 36146,
+          "candidates": 72
+        },
+        "lighting": [
+          {
+            "visible": true,
+            "position": [
+              129.75,
+              3.0749999999999997,
+              -13.5
+            ],
+            "intensity": 38.90478348525856
+          },
+          {
+            "visible": true,
+            "position": [
+              141,
+              5.1,
+              -45.900000000000006
+            ],
+            "intensity": 39.925026949740435
+          },
+          {
+            "visible": true,
+            "position": [
+              153,
+              5.1,
+              -45.900000000000006
+            ],
+            "intensity": 40.51226201547918
+          },
+          {
+            "visible": true,
+            "position": [
+              92.25,
+              4.8,
+              -31.650000000000002
+            ],
+            "intensity": 42.932139644590364
+          },
+          {
+            "visible": true,
+            "position": [
+              92.25,
+              4.8,
+              -42.150000000000006
+            ],
+            "intensity": 42.87214483195636
+          },
+          {
+            "visible": true,
+            "position": [
+              91.05000000000001,
+              5.1,
+              -21.9
+            ],
+            "intensity": 43.08400705679157
+          },
+          {
+            "visible": true,
+            "position": [
+              91.05000000000001,
+              5.1,
+              -13.5
+            ],
+            "intensity": 40.3285396284343
+          },
+          {
+            "visible": true,
+            "position": [
+              92.4,
+              5.1,
+              -54.900000000000006
+            ],
+            "intensity": 40.24930883574537
+          }
+        ],
+        "actor": {
+          "authored": true,
+          "idle": true,
+          "direction": "back",
+          "frame": 0,
+          "leg": null,
+          "geometry": "2b4f1204-9a80-4478-bd3d-7ad184c3188f",
+          "map": "83b4130a-12b6-4f3a-95c4-115cbc2ff629",
+          "material": "4b6b5ef8-3aae-46f2-9d4e-d47824629e9d",
+          "materialVersion": 2
+        },
+        "renderer": {
+          "requested": "auto",
+          "backend": "webgpu",
+          "stage": "ready",
+          "reason": null,
+          "failureStack": null,
+          "frames": 29,
+          "actualBackend": "webgpu",
+          "renderFrames": 30,
+          "completedFrames": 29,
+          "inFlight": true,
+          "maxFramesInFlight": 1,
+          "skippedSubmissions": 6322,
+          "mirroredObjects": 2542,
+          "ownedGeometryViews": 597,
+          "geometryViewsCreated": 619,
+          "geometryViewsRetired": 22,
+          "ownedLineGeometries": 0,
+          "lights": {
+            "point": 8,
+            "hemisphere": 1,
+            "directional": 2,
+            "ambient": 0
+          },
+          "materials": {
+            "ready": true,
+            "converted": 1899,
+            "effectMaterials": 6,
+            "unsupported": 0,
+            "roles": {
+              "ground-detail": 1,
+              "finish": 1099,
+              "pbr-atlas": 718,
+              "water": 14,
+              "voxel-ao": 112,
+              "alpha-hash": 434,
+              "grass": 306,
+              "native-fade": 2,
+              "crisp-sprite": 20,
+              "sprite-rim": 15,
+              "cutout-shadow": 20
+            },
+            "derivedInstanceBytes": 4957344,
+            "textureSynchronizations": 3190,
+            "textureUploads": 31,
+            "textureWrappers": 31
+          },
+          "calls": 302,
+          "triangles": 1655558,
+          "renderPasses": 16,
+          "shaderCache": {
+            "normalizedStages": 324,
+            "builders": 443,
+            "vertexPrograms": 245,
+            "fragmentPrograms": 51
+          },
+          "textures": 52,
+          "bufferWidth": 960,
+          "bufferHeight": 540,
+          "post": {
+            "hdr": true,
+            "bloom": true,
+            "shadows": true,
+            "displayGrade": true,
+            "fxaa": true,
+            "glowScale": 1,
+            "toneMapping": "ACES",
+            "output": "sRGB"
+          }
+        }
+      },
+      "pageChange": {
+        "changedPixels": 1842,
+        "changedFraction": 0.017984066234476296,
+        "meanMaxChannelDelta": 3.4543368741701164
+      },
+      "gpu": {
+        "file": "surface-return-webgpu-canvas.png",
+        "pngSha256": "c5bf134efe2643dd22e4961ea177ec0e4cfd4f8794ff92b4782ef7412ea2410b",
+        "worldPixelSha256": "e56376a5bea20d98f7ba6933093440b29fecf230b5f6e808c74cb26c756682b2",
+        "opaqueFraction": 1,
+        "style": {
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1"
+        },
+        "change": {
+          "changedPixels": 93338,
+          "changedFraction": 0.9112903225806451,
+          "meanMaxChannelDelta": 71.35217331875342
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "warnings": [
+    "[.WebGL-0x3d9c001bee00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x3d9c001bee00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x3d9c001bee00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x3d9c001bee00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+    "WARNING: Multiple instances of Three.js being imported."
+  ],
+  "externalRequests": [],
+  "failedRequests": [],
+  "browserVersion": "154.0.8037.57",
+  "textureCounters": {
+    "initial": {
+      "ready": true,
+      "converted": 1888,
+      "effectMaterials": 6,
+      "unsupported": 0,
+      "roles": {
+        "ground-detail": 1,
+        "finish": 1097,
+        "pbr-atlas": 717,
+        "water": 14,
+        "voxel-ao": 111,
+        "alpha-hash": 434,
+        "grass": 306,
+        "native-fade": 2,
+        "crisp-sprite": 18,
+        "sprite-rim": 13,
+        "cutout-shadow": 18
+      },
+      "derivedInstanceBytes": 4950132,
+      "textureSynchronizations": 2498,
+      "textureUploads": 30,
+      "textureWrappers": 30
+    },
+    "returned": {
+      "ready": true,
+      "converted": 1899,
+      "effectMaterials": 6,
+      "unsupported": 0,
+      "roles": {
+        "ground-detail": 1,
+        "finish": 1099,
+        "pbr-atlas": 718,
+        "water": 14,
+        "voxel-ao": 112,
+        "alpha-hash": 434,
+        "grass": 306,
+        "native-fade": 2,
+        "crisp-sprite": 20,
+        "sprite-rim": 15,
+        "cutout-shadow": 20
+      },
+      "derivedInstanceBytes": 4957344,
+      "textureSynchronizations": 3128,
+      "textureUploads": 31,
+      "textureWrappers": 31
+    },
+    "note": "Observed counters only: first-use textures and hall material creation make an exact per-frame ratio inappropriate."
+  },
+  "passed": true,
+  "pageCompositorLimitationObserved": true,
+  "rawReport": {
+    "file": "webgpu-browser.json.gz",
+    "uncompressedBytes": 1216336,
+    "sha256": "da42277b9062e74ced60ece953085726c171468aa5d04b022b20ecb6b738e0be"
+  },
+  "walkSummary": {
+    "before": {
+      "segment": "walk",
+      "position": {
+        "x": 87,
+        "z": -16.5
+      },
+      "inside": null,
+      "camera": [
+        87,
+        2.9201288502149705,
+        23.933921765576923
+      ],
+      "target": [
+        87,
+        1.34,
+        16.5
+      ],
+      "grass": {
+        "patches": 159,
+        "activePatches": 33,
+        "fullPatches": 12,
+        "middlePatches": 8,
+        "farPatches": 13,
+        "vertices": 422988,
+        "fullVertices": 757800,
+        "visible": true,
+        "selectionPasses": 1,
+        "patchChecks": 159
+      },
+      "life": {
+        "ticks": 2764,
+        "hiddenTicks": 0,
+        "visible": true,
+        "bufferUpdates": 44224,
+        "matrixWrites": 1918216,
+        "pointWrites": 655068,
+        "matricesPerTick": 694,
+        "pointsPerTick": 237
+      },
+      "lamps": {
+        "selections": 1,
+        "cacheHits": 2763,
+        "distanceChecks": 72,
+        "candidates": 72
+      },
+      "lighting": [
+        {
+          "visible": true,
+          "position": [
+            81,
+            4.199999999999999,
+            -1.9500000000000002
+          ],
+          "intensity": 40.42079408362041
+        },
+        {
+          "visible": true,
+          "position": [
+            93,
+            4.199999999999999,
+            -1.9500000000000002
+          ],
+          "intensity": 40.33706730412294
+        },
+        {
+          "visible": true,
+          "position": [
+            67.5,
+            4.199999999999999,
+            10.5
+          ],
+          "intensity": 44.10483980208624
+        },
+        {
+          "visible": true,
+          "position": [
+            106.5,
+            4.199999999999999,
+            10.5
+          ],
+          "intensity": 41.779809262575185
+        },
+        {
+          "visible": true,
+          "position": [
+            67.5,
+            4.199999999999999,
+            27
+          ],
+          "intensity": 43.87754819737985
+        },
+        {
+          "visible": true,
+          "position": [
+            106.5,
+            4.199999999999999,
+            27
+          ],
+          "intensity": 38.74538027597024
+        },
+        {
+          "visible": true,
+          "position": [
+            82.94999999999999,
+            5.1,
+            -13.5
+          ],
+          "intensity": 41.20074857024508
+        },
+        {
+          "visible": true,
+          "position": [
+            91.05000000000001,
+            5.1,
+            -13.5
+          ],
+          "intensity": 37.719132546692094
+        }
+      ],
+      "actor": {
+        "authored": true,
+        "idle": true,
+        "direction": "back",
+        "frame": 0,
+        "leg": null,
+        "geometry": "2b4f1204-9a80-4478-bd3d-7ad184c3188f",
+        "map": "83b4130a-12b6-4f3a-95c4-115cbc2ff629",
+        "material": "4b6b5ef8-3aae-46f2-9d4e-d47824629e9d",
+        "materialVersion": 2
+      },
+      "renderer": {
+        "requested": "auto",
+        "backend": "webgpu",
+        "stage": "ready",
+        "reason": null,
+        "failureStack": null,
+        "frames": 10,
+        "actualBackend": "webgpu",
+        "renderFrames": 11,
+        "completedFrames": 10,
+        "inFlight": true,
+        "maxFramesInFlight": 1,
+        "skippedSubmissions": 2730,
+        "mirroredObjects": 2526,
+        "ownedGeometryViews": 591,
+        "geometryViewsCreated": 598,
+        "geometryViewsRetired": 7,
+        "ownedLineGeometries": 0,
+        "lights": {
+          "point": 8,
+          "hemisphere": 1,
+          "directional": 2,
+          "ambient": 0
+        },
+        "materials": {
+          "ready": true,
+          "converted": 1889,
+          "effectMaterials": 6,
+          "unsupported": 0,
+          "roles": {
+            "ground-detail": 1,
+            "finish": 1097,
+            "pbr-atlas": 717,
+            "water": 14,
+            "voxel-ao": 111,
+            "alpha-hash": 434,
+            "grass": 306,
+            "native-fade": 2,
+            "crisp-sprite": 19,
+            "sprite-rim": 14,
+            "cutout-shadow": 19
+          },
+          "derivedInstanceBytes": 4950132,
+          "textureSynchronizations": 2594,
+          "textureUploads": 31,
+          "textureWrappers": 31
+        },
+        "calls": 371,
+        "triangles": 1824144,
+        "renderPasses": 16,
+        "shaderCache": {
+          "normalizedStages": 261,
+          "builders": 362,
+          "vertexPrograms": 200,
+          "fragmentPrograms": 49
+        },
+        "textures": 51,
+        "bufferWidth": 960,
+        "bufferHeight": 540,
+        "post": {
+          "hdr": true,
+          "bloom": true,
+          "shadows": true,
+          "displayGrade": true,
+          "fxaa": true,
+          "glowScale": 1,
+          "toneMapping": "ACES",
+          "output": "sRGB"
+        }
+      }
+    },
+    "after": {
+      "segment": "walk",
+      "position": {
+        "x": 87,
+        "z": 31.402799999999875
+      },
+      "inside": null,
+      "camera": [
+        87,
+        2.9201288502149705,
+        -23.968878234422952
+      ],
+      "target": [
+        87,
+        1.34,
+        -31.402799999999875
+      ],
+      "grass": {
+        "patches": 159,
+        "activePatches": 43,
+        "fullPatches": 18,
+        "middlePatches": 12,
+        "farPatches": 13,
+        "vertices": 650052,
+        "fullVertices": 1072920,
+        "visible": true,
+        "selectionPasses": 501,
+        "patchChecks": 79659
+      },
+      "life": {
+        "ticks": 3646,
+        "hiddenTicks": 0,
+        "visible": true,
+        "bufferUpdates": 58336,
+        "matrixWrites": 2530324,
+        "pointWrites": 864102,
+        "matricesPerTick": 694,
+        "pointsPerTick": 237
+      },
+      "lamps": {
+        "selections": 501,
+        "cacheHits": 3145,
+        "distanceChecks": 36072,
+        "candidates": 72
+      },
+      "lighting": [
+        {
+          "visible": true,
+          "position": [
+            81.75,
+            4.8,
+            -31.650000000000002
+          ],
+          "intensity": 40.0028961498865
+        },
+        {
+          "visible": true,
+          "position": [
+            92.25,
+            4.8,
+            -31.650000000000002
+          ],
+          "intensity": 44.15405749157322
+        },
+        {
+          "visible": true,
+          "position": [
+            82.94999999999999,
+            5.1,
+            -21.9
+          ],
+          "intensity": 41.88077456701596
+        },
+        {
+          "visible": true,
+          "position": [
+            91.05000000000001,
+            5.1,
+            -21.9
+          ],
+          "intensity": 43.72452529885442
+        },
+        {
+          "visible": true,
+          "position": [
+            81.75,
+            4.8,
+            -42.150000000000006
+          ],
+          "intensity": 38.94283924160744
+        },
+        {
+          "visible": true,
+          "position": [
+            92.25,
+            4.8,
+            -42.150000000000006
+          ],
+          "intensity": 41.100054118111146
+        },
+        {
+          "visible": true,
+          "position": [
+            82.94999999999999,
+            5.1,
+            -13.5
+          ],
+          "intensity": 37.690570231160905
+        },
+        {
+          "visible": true,
+          "position": [
+            91.05000000000001,
+            5.1,
+            -13.5
+          ],
+          "intensity": 43.04159134272474
+        }
+      ],
+      "actor": {
+        "authored": true,
+        "idle": true,
+        "direction": "back",
+        "frame": 0,
+        "leg": null,
+        "geometry": "2b4f1204-9a80-4478-bd3d-7ad184c3188f",
+        "map": "83b4130a-12b6-4f3a-95c4-115cbc2ff629",
+        "material": "4b6b5ef8-3aae-46f2-9d4e-d47824629e9d",
+        "materialVersion": 2
+      },
+      "renderer": {
+        "requested": "auto",
+        "backend": "webgpu",
+        "stage": "ready",
+        "reason": null,
+        "failureStack": null,
+        "frames": 14,
+        "actualBackend": "webgpu",
+        "renderFrames": 15,
+        "completedFrames": 14,
+        "inFlight": true,
+        "maxFramesInFlight": 1,
+        "skippedSubmissions": 3608,
+        "mirroredObjects": 2526,
+        "ownedGeometryViews": 593,
+        "geometryViewsCreated": 604,
+        "geometryViewsRetired": 11,
+        "ownedLineGeometries": 0,
+        "lights": {
+          "point": 8,
+          "hemisphere": 1,
+          "directional": 2,
+          "ambient": 0
+        },
+        "materials": {
+          "ready": true,
+          "converted": 1889,
+          "effectMaterials": 6,
+          "unsupported": 0,
+          "roles": {
+            "ground-detail": 1,
+            "finish": 1097,
+            "pbr-atlas": 717,
+            "water": 14,
+            "voxel-ao": 111,
+            "alpha-hash": 434,
+            "grass": 306,
+            "native-fade": 2,
+            "crisp-sprite": 19,
+            "sprite-rim": 14,
+            "cutout-shadow": 19
+          },
+          "derivedInstanceBytes": 4950132,
+          "textureSynchronizations": 2718,
+          "textureUploads": 31,
+          "textureWrappers": 31
+        },
+        "calls": 333,
+        "triangles": 1808086,
+        "renderPasses": 16,
+        "shaderCache": {
+          "normalizedStages": 294,
+          "builders": 407,
+          "vertexPrograms": 225,
+          "fragmentPrograms": 50
+        },
+        "textures": 51,
+        "bufferWidth": 960,
+        "bufferHeight": 540,
+        "post": {
+          "hdr": true,
+          "bloom": true,
+          "shadows": true,
+          "displayGrade": true,
+          "fxaa": true,
+          "glowScale": 1,
+          "toneMapping": "ACES",
+          "output": "sRGB"
+        }
+      }
+    },
+    "distance": 47.90279999999987,
+    "legs": [
+      "left",
+      "right"
+    ],
+    "geometryFrames": 8
+  }
+}

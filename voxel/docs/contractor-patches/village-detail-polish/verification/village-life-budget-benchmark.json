@@ -1,0 +1,57 @@
+{
+  "scope": "Instrumented real village-life module, 120 visible + 120 hidden ticks. Counts explicit Vector3/Matrix4 construction in this module only; other code/JS allocations and physical frame rate are not measured.",
+  "results": [
+    {
+      "name": "before",
+      "visible": {
+        "ticks": 120,
+        "explicitTransformAllocations": {
+          "vectors": 79080,
+          "matrices": 1920
+        },
+        "matrixWrites": 83280,
+        "bufferVersionIncrements": 1920
+      },
+      "hidden": {
+        "ticks": 120,
+        "explicitTransformAllocations": {
+          "vectors": 79147,
+          "matrices": 1920
+        },
+        "matrixWrites": 83280,
+        "bufferVersionIncrements": 1920
+      }
+    },
+    {
+      "name": "after",
+      "visible": {
+        "ticks": 120,
+        "explicitTransformAllocations": {
+          "vectors": 0,
+          "matrices": 0
+        },
+        "matrixWrites": 83280,
+        "bufferVersionIncrements": 1920
+      },
+      "hidden": {
+        "ticks": 120,
+        "explicitTransformAllocations": {
+          "vectors": 0,
+          "matrices": 0
+        },
+        "matrixWrites": 0,
+        "bufferVersionIncrements": 0
+      },
+      "stats": {
+        "ticks": 240,
+        "hiddenTicks": 120,
+        "visible": false,
+        "bufferUpdates": 1920,
+        "matrixWrites": 83280,
+        "pointWrites": 21720,
+        "matricesPerTick": 694,
+        "pointsPerTick": 181
+      }
+    }
+  ]
+}

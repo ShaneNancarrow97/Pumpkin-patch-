@@ -1,0 +1,51 @@
+{
+  "scope": "Synthetic CPU-only material synchronisation fixture. No browser, GPU draws or device FPS measurement.",
+  "baselineCommit": "7181cc4343fa3d538b4d5c510e9375df065c0093",
+  "fixture": {
+    "meshes": 240,
+    "materialType": "MeshStandardMaterial",
+    "uniqueAtlases": 1,
+    "atlasSize": [
+      2,
+      2
+    ],
+    "slotsPerMaterial": [
+      "map",
+      "emissiveMap"
+    ],
+    "syncCycles": 30,
+    "sourceImageGetterInstrumentation": true
+  },
+  "before": {
+    "sourceImageReads": 57720,
+    "sourceImageReadsPerSync": 1924,
+    "textureWrappers": 1,
+    "medianSyncMs": 1.4676429999999812,
+    "p95SyncMs": 4.725022999999993
+  },
+  "after": {
+    "sourceImageReads": 30,
+    "sourceImageReadsPerSync": 1,
+    "textureWrappers": 1,
+    "medianSyncMs": 0.8502960000000144,
+    "p95SyncMs": 2.3304280000000404
+  },
+  "interpretation": "The stable result is one texture inspection per material-sync batch rather than repeated inspection per shared sampler slot. Four source.image reads per legacy ready-texture inspection are also reduced to one captured source image. Timing is a local synthetic sample, not a whole-game or physical-device speed claim.",
+  "validation": {
+    "command": "node --test --test-concurrency=1 test/village-node-textures.test.mjs test/village-node-materials.test.mjs",
+    "networkEnabledExecution": true,
+    "tests": 19,
+    "passed": 19,
+    "failed": 0,
+    "covers": [
+      "shared atlas batching",
+      "same-layout live atlas replacement",
+      "generated WGSL unchanged",
+      "unversioned UV and sampler edits",
+      "new and asynchronously decoded leases",
+      "source image replacement",
+      "error unwind",
+      "owned-only disposal"
+    ]
+  }
+}

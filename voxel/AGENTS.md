@@ -1,5 +1,7 @@
 # Pumpkin Patch Voxel: context for coding agents
 
+**Latest village detail polish:** [`docs/contractor-patches/village-detail-polish/README.md`](docs/contractor-patches/village-detail-polish/README.md) covers exact cached lamp selection, stationary/hidden grass selection, hidden outdoor animation buffers, scratch transforms and once-per-material-sync atlas inspection. Read its dependency matrix before changing camera caches, surface visibility, lamp power or texture batching. Saves remain version 20.
+
 **Latest village recovery and shared rewards:** [`docs/contractor-patches/village-recovery/README.md`](docs/contractor-patches/village-recovery/README.md) covers live WebGPU walking atlases, bounded animation geometry, distance-based grass/effect budgets, restrained sky highlights, HUD pacing and optional paired farm/village colour keepsakes. Read its dependency matrix before changing these paths. Saves remain version 20.
 
 **Latest contractor village UI:** [`docs/contractor-patches/village-ui-couture/README.md`](docs/contractor-patches/village-ui-couture/README.md) covers the shared plum/gilt interface, illustrated residents, journal/dialogue hierarchy, catalogue and trade parity, contextual controller action labels and responsive furniture/map/travel surfaces. Read its feature/dependency matrix before changing semantic action attributes, focus restoration, disclosure keys, narration or TV zoom. Save version remains 20; the rendering pipeline is unchanged.

@@ -288,3 +288,35 @@ test("same-layout directional geometries reuse variants while version changes re
     source.material.dispose();
   }
 });
+
+test("per-mesh atlas bindings share one texture inspection per sync without freezing live swaps", () => {
+  const h = harness(), geometry = new GL.BoxGeometry(), sources = [], targets = [];
+  function atlas(value) {
+    let reads = 0, pixels = { data: new Uint8Array([value, value, value, 255]), width: 1, height: 1 };
+    const texture = new GL.DataTexture(pixels.data, 1, 1); texture.needsUpdate = true;
+    Object.defineProperty(texture, "image", { get() { reads++; return pixels; }, set(image) { pixels = image; } });
+    return { texture, get reads() { return reads; }, reset() { reads = 0; } };
+  }
+  const first = atlas(80), next = atlas(160);
+  try {
+    for (let i = 0; i < 64; i++) {
+      const source = new GL.MeshStandardMaterial({ map: i === 0 ? next.texture : first.texture, emissiveMap: first.texture });
+      sources.push(source); targets.push(h.bridge.convert(source, new GL.Mesh(geometry, source)));
+    }
+    first.reset(); next.reset(); h.bridge.sync();
+    assert.equal(first.reads, 1, "a shared atlas is inspected once, not once per material slot");
+    assert.equal(next.reads, 1);
+    const variants = h.bridge.stats.converted, versions = targets.map(target => target.version), oldMap = targets[1].map;
+    for (const source of sources) { source.map = next.texture; source.emissiveMap = next.texture; }
+    next.texture.offset.set(.25, .5); next.texture.minFilter = GL.LinearFilter; next.texture.colorSpace = GL.SRGBColorSpace;
+    first.reset(); next.reset(); h.bridge.sync();
+    assert.equal(first.reads, 1); assert.equal(next.reads, 1);
+    assert.ok(targets.every(target => target.map === targets[0].map && target.emissiveMap === targets[0].map));
+    assert.notEqual(targets[1].map, oldMap); assert.deepEqual(targets[1].map.offset.toArray(), [.25, .5]);
+    assert.equal(targets[1].map.colorSpace, GL.SRGBColorSpace); assert.equal(targets[1].map.minFilter, GL.LinearFilter);
+    assert.equal(h.bridge.stats.converted, variants); assert.deepEqual(targets.map(target => target.version), versions);
+    assert.equal(h.bridge.stats.textureWrappers, 2);
+  } finally {
+    h.bridge.dispose(); geometry.dispose(); sources.forEach(source => source.dispose()); first.texture.dispose(); next.texture.dispose();
+  }
+});

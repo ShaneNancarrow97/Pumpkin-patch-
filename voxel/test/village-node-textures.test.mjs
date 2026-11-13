@@ -88,3 +88,58 @@ test("pending image replacements preserve the last valid GPU image and reject in
   assert.throws(() => bridge.sync(), /resident-sheet.*invalid decoded dimensions undefinedxundefined/);
   bridge.dispose(); source.dispose();
 });
+
+test("shared atlas batches inspect each wrapper once and preserve live changes between submissions", () => {
+  const source = new GL.DataTexture(new Uint8Array(16), 2, 2); source.needsUpdate = true;
+  const bridge = createVillageNodeTextures(), wrapper = bridge.resolve(source), status = wrapper.userData.villageTextureSource;
+  let scans = bridge.stats.synchronizations, uploads = bridge.stats.uploads;
+  bridge.batch(() => {
+    for (let i = 0; i < 240; i++) assert.equal(bridge.resolve(source), wrapper);
+    bridge.batch(() => bridge.resolve(source)); bridge.sync();
+  });
+  assert.equal(bridge.stats.synchronizations - scans, 1, "all users and the final sweep share one inspection");
+  assert.equal(bridge.stats.uploads, uploads, "unchanged bindings never upload their pixels again");
+  source.offset.set(.3, .2); source.repeat.set(4, 2); source.center.set(.5, .5); source.rotation = .4; source.updateMatrix();
+  source.colorSpace = GL.SRGBColorSpace; source.minFilter = GL.LinearFilter; source.magFilter = GL.NearestFilter;
+  source.wrapS = GL.RepeatWrapping; source.wrapT = GL.MirroredRepeatWrapping; source.anisotropy = 2; source.flipY = true;
+  scans = bridge.stats.synchronizations;
+  bridge.batch(() => { bridge.resolve(source); bridge.sync(); });
+  assert.equal(bridge.stats.synchronizations - scans, 1);
+  assert.deepEqual(wrapper.offset.toArray(), source.offset.toArray()); assert.deepEqual(wrapper.repeat.toArray(), source.repeat.toArray());
+  assert.deepEqual(wrapper.center.toArray(), source.center.toArray()); assert.deepEqual(wrapper.matrix.toArray(), source.matrix.toArray());
+  for (const key of ["rotation", "colorSpace", "minFilter", "magFilter", "wrapS", "wrapT", "anisotropy", "flipY"]) assert.equal(wrapper[key], source[key], key);
+  assert.equal(bridge.stats.uploads, uploads + 1, "unversioned sampler changes combine into one upload");
+  assert.equal(wrapper.userData.villageTextureSource, status, "diagnostic identity is retained");
+  source.image = { data: new Uint8Array(64), width: 4, height: 4 }; source.needsUpdate = true;
+  bridge.batch(() => { bridge.resolve(source); bridge.sync(); });
+  assert.equal(wrapper.image, source.image); assert.equal(status.width, 4); assert.equal(status.sourceVersion, source.version);
+  bridge.dispose(); source.dispose();
+});
+
+test("new pending leases participate in a batch and decode on the following submission", () => {
+  const bridge = createVillageNodeTextures(), first = new GL.Texture(), next = new GL.Texture();
+  let a, b;
+  bridge.batch(() => { a = bridge.resolve(first); b = bridge.resolve(next); bridge.resolve(first); bridge.resolve(next); bridge.sync(); });
+  assert.equal(bridge.stats.synchronizations, 2); assert.equal(bridge.stats.wrappers, 2);
+  assert.equal(a.version, 0); assert.equal(b.version, 0);
+  next.image = { width: 8, height: 16, complete: true }; next.needsUpdate = true;
+  bridge.batch(() => { bridge.resolve(next); bridge.resolve(first); bridge.sync(); });
+  assert.equal(bridge.stats.synchronizations, 4); assert.equal(a.version, 0); assert.equal(b.version, 1);
+  assert.equal(b.image, next.image); assert.equal(b.userData.villageTextureSource.ready, true);
+  bridge.dispose(); first.dispose(); next.dispose();
+});
+
+test("failed batches release their snapshot and disposal never touches borrowed textures", () => {
+  const source = new GL.Texture({ width: 4, height: 4 }); source.needsUpdate = true;
+  const bridge = createVillageNodeTextures(), wrapper = bridge.resolve(source); let sourceDisposed = 0, wrapperDisposed = 0;
+  source.addEventListener("dispose", () => sourceDisposed++); wrapper.addEventListener("dispose", () => wrapperDisposed++);
+  assert.throws(() => bridge.batch(() => { bridge.resolve(source); throw Error("interrupted material conversion"); }), /interrupted/);
+  source.offset.set(.7, .8); bridge.resolve(source);
+  assert.deepEqual(wrapper.offset.toArray(), [.7, .8], "standalone resolve is immediate after an error");
+  source.image = {}; source.needsUpdate = true;
+  assert.throws(() => bridge.batch(() => bridge.resolve(source)), /invalid decoded dimensions/);
+  source.image = { width: 16, height: 8 }; source.needsUpdate = true;
+  bridge.batch(() => { bridge.resolve(source); bridge.sync(); }); assert.equal(wrapper.image, source.image);
+  bridge.dispose(); bridge.dispose(); assert.equal(wrapperDisposed, 1); assert.equal(sourceDisposed, 0);
+  assert.throws(() => bridge.batch(() => {}), /disposed/); source.dispose();
+});
