@@ -73,7 +73,7 @@ test("actual model tags keep all geometry unchanged and independently identify 2
 test("per-instance alpha hashing composes with the voxel finish and preserves physical shadows", () => {
   const group = install(VILLAGE_NEIGHBOURHOODS), material = group.children[0].material, shader = shaderFor(material);
   assert.equal(material.transparent, false); assert.equal(material.alphaHash, true); assert.equal(material.opacity, 1);
-  assert.match(material.customProgramCacheKey(), /voxel-finish-lit\|native-neighbourhood-visibility-30/);
+  assert.match(material.customProgramCacheKey(), /voxel-finish-lit-fidelity-1\|native-neighbourhood-visibility-30/);
   assert.ok(shader.uniforms.finPitch && shader.uniforms.finNear, "finish and lamp uniforms remain installed");
   assert.match(shader.fragmentShader, /finTone/);
   assert.match(shader.vertexShader, /neighbourhoodVisibility\[30\]/);

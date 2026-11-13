@@ -11,10 +11,11 @@ import * as THREE from "three";
 
 export const VOXEL_FINISH = Object.freeze({
   pitch: .1875,   // one block, in world units: an eighth of the design grid, twelve to an owner's height
-  tone: .11,      // how far one block's tone strays from the next
-  patch: .15,     // weathering in broad patches
-  joint: .055,    // how dark the hairline between blocks is
-  relief: .13,    // the lit and shaded lips of blocks that sit proud of their neighbours, or sunk among them
+  tone: .085,     // how far one block's tone strays from the next
+  patch: .105,    // weathering in broad patches
+  joint: .05,     // how dark the hairline between blocks is
+  relief: .105,   // the lit and shaded lips of blocks that sit proud of their neighbours, or sunk among them
+  grain: .055,    // fine neutral-stone flecks, filtered away before they alias
   foot: .16,      // how much a wall darkens at the foot of its box
   pane: .5,       // the lead between panes of a glowing face
   frame: .42,     // how much a glowing face dims towards its frame
@@ -67,10 +68,14 @@ const LIT = `
     float finShape = finTop * (finHere > finAbove ? 1. : finHere < finAbove ? -1.5 : 0.) - finBottom * (finHere > finBelow ? .7 : 0.)
       + finL * (finHere > finLeft ? .6 : finHere < finLeft ? -.5 : 0.) - finR * (finHere > finRight ? .5 : finHere < finRight ? .6 : 0.);
     float finWear = finNoise(finQ * .19) - .5 + sin(finQ.x * .21 + 1.3) * sin(finQ.y * .17 + .7) * sin(finQ.z * .19 + 2.1) * .4;
-    float finTone = 1. + ((finH - .5) * ${VOXEL_FINISH.tone.toFixed(3)} - finJoint * ${VOXEL_FINISH.joint.toFixed(3)} + finShape * ${VOXEL_FINISH.relief.toFixed(3)} + finHere * .035) * finFine
+    float finTone = 1. + ((finH - .5) * ${VOXEL_FINISH.tone.toFixed(3)} - finJoint * ${VOXEL_FINISH.joint.toFixed(3)} * (.82 + finH * .36) + finShape * ${VOXEL_FINISH.relief.toFixed(3)} + finHere * .035) * finFine
       + finWear * ${VOXEL_FINISH.patch.toFixed(3)} * (1. - smoothstep(1., 3., finPx)) * finRoom;
     finTone *= 1. - (1. - finUp) * ${VOXEL_FINISH.foot.toFixed(3)} * (1. - smoothstep(0., 3.2, (vFinL.y + .5) * finSize.y)) * finRoom;
     float finHue = (finHash(finCell + 17.3) - .5) * .06 * finFine;
+    float finBright = max(diffuseColor.r, max(diffuseColor.g, diffuseColor.b));
+    float finNeutral = 1. - smoothstep(.12, .5, (finBright - min(diffuseColor.r, min(diffuseColor.g, diffuseColor.b))) / max(.08, finBright));
+    float finGrainShow = (1. - smoothstep(.14, .5, finPx * 4.)) * finRoom * finNeutral;
+    if (finGrainShow > .001) finTone *= 1. + (finHash(floor(finQ * 4.) + 11.7) - .5) * ${VOXEL_FINISH.grain.toFixed(3)} * finGrainShow;
     diffuseColor.rgb *= finTone * vec3(1. + finHue, 1., 1. - finHue); }`;
 // A band of glass too narrow for two panes still takes its leads if it is long (a striped window's courses).
 const GLOWING = `
@@ -103,7 +108,7 @@ export function finishVoxels(root) {
   root.traverse((mesh) => {
     if (!isVoxelBatch(mesh)) return;
     const material = mesh.material; if (!material || material.userData.voxelFinish || seen.has(material)) return; seen.add(material);
-    if (material.isMeshStandardMaterial) patch(material, LIT, "voxel-finish-lit");
+    if (material.isMeshStandardMaterial) patch(material, LIT, "voxel-finish-lit-fidelity-1");
     else if (material.isMeshBasicMaterial && !material.transparent) patch(material, GLOWING, "voxel-finish-glow");
     else return;
     count++;
