@@ -7,11 +7,11 @@ export function villageRendererPreference(search = "") {
 }
 
 export function createVillageRenderer({ canvas, load = () => import("./village-webgpu-pipeline.js"), gpu = globalThis.navigator?.gpu, preference = villageRendererPreference(globalThis.location?.search), onFallback } = {}) {
-  let pipeline = null, overlay = null, pending = null, active = false, retired = false;
+  let pipeline = null, overlay = null, pending = null, active = false, retired = false, revealAfter = null;
   let width = 1, height = 1, pixelRatio = 1, failure = null, failureStack = null, stage = "idle", frames = 0, generation = 0;
   let rect = null;
   const status = () => ({ requested: preference, backend: active ? "webgpu" : "webgl", stage, reason: failure, failureStack, frames, ...(pipeline?.stats?.() ?? {}) });
-  const conceal = () => { active = false; if (overlay) overlay.hidden = true; };
+  const conceal = () => { active = false; revealAfter = null; if (overlay) overlay.hidden = true; };
   function fail(error) {
     if (retired) return;
     conceal(); stage = "fallback"; failure = String(error?.message ?? error ?? "WebGPU unavailable");
@@ -60,8 +60,18 @@ export function createVillageRenderer({ canvas, load = () => import("./village-w
       if (retired || stage === "fallback" || stage === "disabled") return false;
       if (!pipeline || stage !== "ready") { prepare(scene, camera, options); return false; }
       try {
+        const revealIfComplete = () => {
+          if (active || revealAfter === null) return;
+          const stats = pipeline.stats?.() ?? {};
+          if (stats.completedFrames === undefined || stats.completedFrames >= revealAfter) { active = true; revealAfter = null; overlay.hidden = false; }
+        };
+        revealIfComplete();
         const submitted = pipeline.render(scene, camera, options);
-        if (submitted !== false) { frames++; active = true; overlay.hidden = false; }
+        if (submitted !== false) {
+          frames++;
+          if (!active && revealAfter === null) revealAfter = pipeline.stats?.().renderFrames ?? frames;
+          revealIfComplete();
+        }
         return active;
       } catch (error) { fail(error); return false; }
     },

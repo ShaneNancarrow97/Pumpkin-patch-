@@ -71,3 +71,19 @@ test("a busy GPU keeps its current picture without counting or revealing an old 
     service.dispose();
   } finally { restore(); }
 });
+
+test("re-entry reveals only a newly submitted frame whose GPU fence has completed", async () => {
+  const restore = dom(), f = fixture(); let submitted = 1, completed = 1;
+  f.pipeline.stats = () => ({ actualBackend: "webgpu", renderFrames: submitted, completedFrames: completed });
+  f.pipeline.render = () => { if (completed < submitted) return false; submitted++; return true; };
+  try {
+    const service = createVillageRenderer(f); service.draw({}, {}); await settle();
+    assert.equal(service.draw({}, {}), false); assert.equal(submitted, 2); assert.equal(f.nodes[0].hidden, true);
+    completed = 2; assert.equal(service.draw({}, {}), true); assert.equal(submitted, 3);
+    service.hide(); assert.equal(service.draw({}, {}), false);
+    completed = 3; assert.equal(service.draw({}, {}), false, "the frame submitted before hiding cannot reveal re-entry");
+    assert.equal(submitted, 4); assert.equal(f.nodes[0].hidden, true);
+    completed = 4; assert.equal(service.draw({}, {}), true); assert.equal(f.nodes[0].hidden, false);
+    service.dispose();
+  } finally { restore(); }
+});
