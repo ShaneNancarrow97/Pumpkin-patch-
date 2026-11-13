@@ -58,3 +58,16 @@ test("retiring during initialization disposes a late presentation exactly once",
     assert.equal(f.calls.filter(c => c[0] === "dispose").length, 1); assert.equal(f.nodes[0].hidden, true);
   } finally { restore(); }
 });
+
+test("a busy GPU keeps its current picture without counting or revealing an old queued frame", async () => {
+  const restore = dom(), f = fixture();
+  try {
+    const service = createVillageRenderer(f); service.draw({}, {}); await settle();
+    service.draw({}, {}); assert.equal(service.status.frames, 1);
+    f.pipeline.render = () => false;
+    assert.equal(service.draw({}, {}), true); assert.equal(service.status.frames, 1); assert.equal(f.nodes[0].hidden, false);
+    service.hide(); assert.equal(service.draw({}, {}), false); assert.equal(f.nodes[0].hidden, true);
+    f.pipeline.render = () => true; assert.equal(service.draw({}, {}), true); assert.equal(service.status.frames, 2);
+    service.dispose();
+  } finally { restore(); }
+});

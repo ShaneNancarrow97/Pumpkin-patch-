@@ -60,8 +60,9 @@ export function createVillageRenderer({ canvas, load = () => import("./village-w
       if (retired || stage === "fallback" || stage === "disabled") return false;
       if (!pipeline || stage !== "ready") { prepare(scene, camera, options); return false; }
       try {
-        pipeline.render(scene, camera, options); frames++; active = true; overlay.hidden = false;
-        return true;
+        const submitted = pipeline.render(scene, camera, options);
+        if (submitted !== false) { frames++; active = true; overlay.hidden = false; }
+        return active;
       } catch (error) { fail(error); return false; }
     },
     hide: conceal,

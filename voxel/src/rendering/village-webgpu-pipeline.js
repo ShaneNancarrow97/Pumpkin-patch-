@@ -80,6 +80,7 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   const outputs = new Map([[false, gradeFor(display)]]);
   post = new GPU.PostProcessing(renderer, outputs.get(false)); post.outputColorTransform = false;
   let prepared = false, width = 1, height = 1, ratio = 1, renderFrames = 0;
+  let inFlight = false, pendingFrame = null, completedFrames = 0, skippedSubmissions = 0;
   let frameStats = { calls: 0, triangles: 0, renderPasses: 0 };
   let usePost = true, useAntialias = false, glowScale = 1;
   const originalBloomSize = glow.setSize.bind(glow);
@@ -121,7 +122,14 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
     const toneMapping = renderer.toneMapping, output = renderer.outputColorSpace;
     const autoReset = renderer.info.autoReset, previousCalls = renderer.info.render.calls;
     renderer.info.autoReset = false; renderer.info.reset();
-    try { if (usePost) post.render(); else renderer.render(mirror.scene, mirror.camera); renderFrames++; mirror.afterRender(); }
+    try {
+      if (usePost) post.render(); else renderer.render(mirror.scene, mirror.camera);
+      renderFrames++; mirror.afterRender(); inFlight = true;
+      pendingFrame = device.queue.onSubmittedWorkDone().then(() => { inFlight = false; completedFrames++; }, error => { inFlight = false; if (!disposed) onFailure?.(error); throw error; });
+      // The first frame awaits this same fence; later frames report failure
+      // through onFailure without an unhandled rejected promise.
+      pendingFrame.catch(() => {});
+    }
     finally { frameStats = { calls: renderer.info.render.drawCalls, triangles: renderer.info.render.triangles, renderPasses: renderer.info.render.calls - previousCalls }; renderer.info.autoReset = autoReset; renderer.toneMapping = toneMapping; renderer.outputColorSpace = output; }
   }
   return {
@@ -131,16 +139,16 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
       // shadow render target has sized its DepthTexture. A normal first draw
       // runs shadow updateBefore in the right order and compiles the same real
       // pipelines. Validate that complete hidden frame before revealing it.
-      try { draw(); await device.queue.onSubmittedWorkDone(); }
+      try { draw(); await pendingFrame; }
       finally {
         const error = await device.popErrorScope();
         if (error) throw new Error(`WebGPU first-frame validation: ${error.message}`);
       }
       prepared = true;
     },
-    render(source, camera, options) { if (disposed || !prepared) throw new Error("WebGPU presentation is not ready"); sync(source, camera, options); draw(); },
+    render(source, camera, options) { if (disposed || !prepared) throw new Error("WebGPU presentation is not ready"); if (inFlight) { skippedSubmissions++; return false; } sync(source, camera, options); draw(); return true; },
     resize(w, h, r) { if (width === w && height === h && ratio === r) return; width = w; height = h; ratio = r; renderer.setPixelRatio(r); renderer.setSize(w, h, false); scenePass.setPixelRatio(r); scenePass.setSize(w, h); },
-    stats() { return { actualBackend: "webgpu", renderFrames, ...mirror.stats(), materials: materials.stats, ...frameStats, shaderCache: { ...shaderCache, vertexPrograms: renderer._pipelines?.programs?.vertex?.size ?? 0, fragmentPrograms: renderer._pipelines?.programs?.fragment?.size ?? 0 }, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { hdr: usePost, bloom: usePost, shadows: renderer.shadowMap.enabled, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
+    stats() { return { actualBackend: "webgpu", renderFrames, completedFrames, inFlight, maxFramesInFlight: 1, skippedSubmissions, ...mirror.stats(), materials: materials.stats, ...frameStats, shaderCache: { ...shaderCache, vertexPrograms: renderer._pipelines?.programs?.vertex?.size ?? 0, fragmentPrograms: renderer._pipelines?.programs?.fragment?.size ?? 0 }, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { hdr: usePost, bloom: usePost, shadows: renderer.shadowMap.enabled, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
     dispose,
   };
   } catch (error) { dispose(); throw error; }

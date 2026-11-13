@@ -38,10 +38,13 @@ await fs.writeFile(path.join(out, "fixture.json"), JSON.stringify({ save: fixtur
 const server = createServer((req, res) => { if (req.url === "/favicon.ico") return res.writeHead(204).end(); res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" }); res.end(html); });
 await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
 const origin = `http://127.0.0.1:${server.address().port}`;
-let browser, page;
+let browser, page, activity;
 try {
   browser = await chromium.launch({ executablePath: report.executablePath, args: launchArgs, timeout: 30000 }); report.browserVersion = browser.version();
   page = await browser.newPage({ viewport: report.viewport, deviceScaleFactor: 1 }); page.setDefaultTimeout(180000);
+  // Software compilation may exceed the real 3.5-minute idle threshold. Use
+  // genuine harmless keyboard activity instead of disabling the game's gate.
+  activity = setInterval(() => { page.keyboard.press("Shift").catch(() => {}); }, 30000);
   page.on("pageerror", error => boundedLog("errors", error.stack ?? error.message));
   page.on("console", message => { if (message.type() === "error") boundedLog("consoleErrors", message.text()); else if (message.type() === "warning") boundedLog("warnings", message.text(), 32); });
   page.on("request", request => { if (/^https?:/.test(request.url()) && !request.url().startsWith(origin + "/")) boundedLog("externalRequests", request.url()); });
@@ -88,6 +91,7 @@ try {
   check("The village owns one shared three-channel PBR atlas set", report.surface.material.pbr.textures === 3 && report.surface.material.pbr.additionalDraws === 0 && report.surface.material.pbr.bytes > 0, report.surface.material.pbr);
   if (!webgl) {
     const s = report.surface.renderer;
+    check("GPU work stays bounded to one submitted frame", s.maxFramesInFlight === 1 && s.completedFrames >= 2, { completed: s.completedFrames, inFlight: s.inFlight, skipped: s.skippedSubmissions, limit: s.maxFramesInFlight });
     check("GPU materials actually consume finish, AO, PBR and custom effects", s.materials.ready && s.materials.unsupported === 0 && s.materials.roles["voxel-ao"] > 0 && s.materials.roles["pbr-atlas"] > 0 && s.materials.roles.finish > 0 && s.materials.effectMaterials > 0, s.materials);
     check("The GPU mirror retains all eight actual point lights", s.lights?.point === report.surface.pointLights.length, s.lights);
     check("HDR bloom and the display grade run in the real GPU post pipeline", s.post?.hdr && s.post.bloom && s.post.displayGrade && s.post.toneMapping === "ACES" && s.post.output === "sRGB", s.post);
@@ -146,6 +150,7 @@ try {
     await page.screenshot({ path: path.join(out, "failure.png"), timeout: 30000 }).then(() => report.screenshots.push("failure.png")).catch(() => {});
   }
 } finally {
+  clearInterval(activity);
   report.passed = !report.failure && report.checks.length > 0 && report.checks.every(c => c.pass);
   await fs.writeFile(path.join(out, "browser.json"), JSON.stringify(report, null, 2));
   await browser?.close(); await new Promise(resolve => server.close(resolve));
