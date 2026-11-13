@@ -33,6 +33,9 @@ import { VILLAGE_GRADE } from "./picture-grade.js";
 import { createLampGlow } from "./village-glow.js";
 import { createVillageAtmosphere } from "./village-atmosphere.js";
 import { dressVillageDuskSky } from "./village-dusk-sky.js";
+import { attachVillageSkyArt } from "./village-sky-art.js";
+import duskSkyArtUrl from "../assets/village-fidelity/dusk-sky.webp";
+import { VILLAGE_SKY_ART_META } from "./content/village-sky-art-meta.js";
 import { createVillageLightAir, VILLAGE_DUSK_LIGHTING } from "./village-light-air.js";
 import { createCursedSporeField } from "./village-blight.js";
 import { createVillageResourceLayer } from "./village-resource-layer.js";
@@ -152,6 +155,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     if (built) return; built = true;
     expansionWorld.build();pickables.push(...expansionWorld.pickables);
     horizon = buildHorizon(); sky = horizon.userData.sky; duskSky = dressVillageDuskSky(sky); horizon.remove(sky); scene.add(sky);
+    attachVillageSkyArt(sky.material, duskSky, duskSkyArtUrl, { encodedBytes: VILLAGE_SKY_ART_META.encodedBytes });
     const works = buildTerrainWorks({gates:false}), green = buildGreen(), beyond = buildBeyond({closedGates:false}), woods = buildWoods(); villageGreen = green;
     const earth = buildGround(), paving = buildPaving(), water = buildWater({ waterClock });
     // Everything drawn on the old grid moves apart into the spread village; the rest was drawn there already.

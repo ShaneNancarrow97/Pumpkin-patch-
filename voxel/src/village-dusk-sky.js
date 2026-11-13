@@ -3,8 +3,19 @@
 export const VILLAGE_DUSK_SKY = Object.freeze({
   cloudOctaves: 4, cloudWarpSamples: 1, cloudHashes: 20, silhouetteLayers: 3,
   addedMeshes: 0, addedDrawCalls: 0, addedLights: 0, addedTextures: 0, addedPasses: 0,
-  maxLinearChannel: .68, maxTimeStep: .25,
+  maxLinearChannel: .68, maxTimeStep: .25, artSamples: 2, maxArtLongSide: 1024,
 });
+export const VILLAGE_DUSK_ART = Object.freeze({ driftTurnsPerSecond: .00012, seamWidth: .06, strength: .86 });
+// Full world-direction panorama: -Z/entry is its centre; +Z is the wrapped
+// seam. Translation and camera yaw never project a flat picture onto the view.
+export function villageDuskArtUv({ x, y, z }, time = 0) {
+  const length = Math.hypot(x, y, z);
+  if (!Number.isFinite(length) || !length) throw new TypeError("Village sky projection needs a finite direction.");
+  const horizontalSq = (x / length) ** 2 + (z / length) ** 2;
+  const angle = horizontalSq > 1e-8 ? Math.atan2(x, -z) : 0;
+  const turn = .5 + angle / (Math.PI * 2) + (Number.isFinite(time) ? time : 0) * VILLAGE_DUSK_ART.driftTurnsPerSecond;
+  return [turn - Math.floor(turn), .5 + Math.asin(Math.max(-1, Math.min(1, y / length))) / Math.PI];
+}
 export const VILLAGE_DUSK_CLOUDS = Object.freeze({ lowerElevation: .108, lowerWarp: .10, lowerCore: .018, lowerEdge: .070,
   upperElevation: .205, upperWarp: .14, upperCore: .025, upperEdge: .095, upperStrength: .82,
   densityFrom: .25, densityTo: .55, minimumDensity: .48 });
@@ -28,6 +39,8 @@ const dressed = new WeakMap();
 const FRAGMENT = `
   uniform vec3 top, middle, horizon, low, moon;
   uniform float villageDuskTime;
+  uniform sampler2D villageDuskArt;
+  uniform float villageDuskArtReady;
   varying vec3 vDir;
 
   float duskHash(vec3 p) {
@@ -87,6 +100,24 @@ const FRAGMENT = `
       colour = mix(colour, rim, veil * .14);
     }
 
+    if (villageDuskArtReady > .5) {
+      float artAngle = dot(d.xz, d.xz) > .00000001 ? atan(d.x, -d.z) : 0.;
+      float artU = fract(.5 + artAngle / 6.28318530718 + villageDuskTime * ${VILLAGE_DUSK_ART.driftTurnsPerSecond});
+      float artV = clamp(.5 + asin(clamp(y, -1., 1.)) / 3.14159265359, .001, .999);
+      // Two bounded samples repair a generated panorama's horizontal edge.
+      // At the rear seam both sides fade smoothly to the same central strip;
+      // the entry composition retains its original, unshifted painting.
+      vec3 painted = texture2D(villageDuskArt, vec2(artU, artV)).rgb;
+      vec3 otherEdge = texture2D(villageDuskArt, vec2(fract(artU + .5), artV)).rgb;
+      float seam = 1. - smoothstep(0., ${VILLAGE_DUSK_ART.seamWidth}, min(artU, 1. - artU));
+      painted = mix(painted, otherEdge, seam);
+      // sRGB image textures are decoded by Three/WebGL's SRGB8_ALPHA8 format.
+      // Keep the existing procedural shade, authored palette and moon beneath
+      // the fine painted billows, with no extra encoding or synthetic jitter.
+      float artBand = smoothstep(-.08, .025, y) * (1. - smoothstep(.94, .995, y));
+      colour = mix(colour, painted * (1. - cloud * .05), artBand * ${VILLAGE_DUSK_ART.strength});
+    }
+
     // Sparse, small stars sit behind the clouds, with no shimmer animation.
     vec3 starCell = floor(d * 190.); float star = duskHash(starCell);
     if (star > .9982 && y > .12) {
@@ -121,25 +152,38 @@ export function dressVillageDuskSky(mesh) {
   if (!mesh?.isMesh || !material?.isShaderMaterial || !material.vertexShader.includes("vDir") || !["top", "middle", "horizon", "low", "moon"].every(key => material.uniforms[key]?.value)) {
     throw new TypeError("Village dusk needs the existing horizon sky and its authored colour uniforms.");
   }
-  const previous = { fragment: material.fragmentShader, key: material.customProgramCacheKey, time: material.uniforms.villageDuskTime, data: mesh.userData.villageDuskSky };
-  const key = material.customProgramCacheKey(), time = { value: 0 }, stats = { ...VILLAGE_DUSK_SKY, time: 0 };
+  const uniformKeys = ["villageDuskTime", "villageDuskArt", "villageDuskArtReady"];
+  const previous = { fragment: material.fragmentShader, key: material.customProgramCacheKey, uniforms: Object.fromEntries(uniformKeys.map(key => [key, material.uniforms[key]])), data: mesh.userData.villageDuskSky };
+  const key = material.customProgramCacheKey(), time = { value: 0 }, art = { value: null }, ready = { value: 0 }, stats = { ...VILLAGE_DUSK_SKY, time: 0, artReady: false, artWidth: 0, artHeight: 0, textureBytes: 0, artEncodedBytes: 0 };
   material.uniforms.villageDuskTime = time;
+  material.uniforms.villageDuskArt = art; material.uniforms.villageDuskArtReady = ready;
   material.fragmentShader = FRAGMENT;
-  material.customProgramCacheKey = () => `${key}|village-dusk-sky-v2`;
+  material.customProgramCacheKey = () => `${key}|village-dusk-sky-v3`;
   material.needsUpdate = true;
   mesh.userData.villageDuskSky = stats;
   let disposed = false;
+  const clearArt = () => { art.value = null; ready.value = 0; Object.assign(stats, { artReady: false, addedTextures: 0, artWidth: 0, artHeight: 0, textureBytes: 0, artEncodedBytes: 0 }); };
   const layer = { stats,
+    setArt(texture, { width = texture?.image?.width, height = texture?.image?.height, textureBytes = 0, encodedBytes = 0 } = {}) {
+      if (disposed) return false;
+      if (!texture?.isTexture || !Number.isInteger(width) || !Number.isInteger(height) || width !== height * 2 || width < 2 || width > VILLAGE_DUSK_SKY.maxArtLongSide) throw new TypeError("Village dusk art needs a borrowed 2:1 texture up to 1024 pixels.");
+      art.value = texture; ready.value = 1;
+      Object.assign(stats, { artReady: true, addedTextures: 1, artWidth: width, artHeight: height, textureBytes, artEncodedBytes: encodedBytes });
+      return true;
+    },
+    clearArt() { if (!disposed) clearArt(); },
     tick(dt = 0, { paused = false, reducedMotion = false } = {}) {
       if (disposed || paused || reducedMotion || !Number.isFinite(dt) || dt <= 0) return;
       time.value += Math.min(VILLAGE_DUSK_SKY.maxTimeStep, dt); stats.time = time.value;
     },
     dispose() {
       if (disposed) return;
-      disposed = true; dressed.delete(mesh);
+      disposed = true; dressed.delete(mesh); clearArt();
       material.fragmentShader = previous.fragment; material.customProgramCacheKey = previous.key;
-      if (previous.time === undefined) delete material.uniforms.villageDuskTime;
-      else material.uniforms.villageDuskTime = previous.time;
+      for (const name of uniformKeys) {
+        if (previous.uniforms[name] === undefined) delete material.uniforms[name];
+        else material.uniforms[name] = previous.uniforms[name];
+      }
       if (previous.data === undefined) delete mesh.userData.villageDuskSky;
       else mesh.userData.villageDuskSky = previous.data;
       material.needsUpdate = true;

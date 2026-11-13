@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import { buildHorizon, SKY } from "../src/village-world.js";
-import { dressVillageDuskSky, VILLAGE_DUSK_SKY, VILLAGE_DUSK_CLOUDS, VILLAGE_DUSK_COLOURS, villageDuskCloudCoverage } from "../src/village-dusk-sky.js";
+import { dressVillageDuskSky, VILLAGE_DUSK_SKY, VILLAGE_DUSK_CLOUDS, VILLAGE_DUSK_COLOURS, villageDuskCloudCoverage, villageDuskArtUv, VILLAGE_DUSK_ART } from "../src/village-dusk-sky.js";
 import { createFollowCameraRig, followCameraPose } from "../src/follow-camera.js";
 import { outsideLookLift } from "../src/village-camera.js";
 
@@ -57,13 +57,15 @@ test("fixed clouds, sparse stars and three distant bands stay bounded in the exi
   const mesh = skyFixture(), layer = dressVillageDuskSky(mesh), fragment = mesh.material.fragmentShader;
   assert.equal(layer.stats.cloudOctaves, 4); assert.equal(layer.stats.cloudWarpSamples, 1); assert.equal(layer.stats.cloudHashes, 20); assert.equal(layer.stats.silhouetteLayers, 3);
   assert.equal((fragment.match(/duskNoise\(/g) ?? []).length - 1, 5, "one warp and four explicit fixed samples");
-  assert.equal((fragment.match(/sin\(/g) ?? []).length, 7, "three distant profiles use seven bounded harmonics");
-  assert.doesNotMatch(fragment, /sampler|texture2D|texture\(|gl_FragCoord|for\s*\(/, "no texture, screen-space grain, raymarch or variable work");
+  assert.equal((fragment.match(/\bsin\(/g) ?? []).length, 7, "three distant profiles use seven bounded harmonics");
+  assert.doesNotMatch(fragment, /gl_FragCoord|for\s*\(/, "no screen-space grain, raymarch or variable work");
+  assert.equal((fragment.match(/texture2D\(/g) ?? []).length, 2, "one optional panorama and its fixed rear-seam sample");
+  assert.match(fragment, /if \(villageDuskArtReady > \.5\)/, "no panorama sampling in the procedural fallback");
   assert.match(fragment, /float star = duskHash\(starCell\)/); assert.match(fragment, /star > \.9982/); assert.match(fragment, /\(1\. - cloud\)/, "clouds hide stars");
   assert.match(fragment, /if \(y < \.08\)/, "distant profiles are restricted to the low horizon");
   assert.match(fragment, /clamp\(colour, vec3\(0\.\), vec3\(0\.68\)\)/, "new sky light remains below the existing .9 bloom threshold");
   assert.match(fragment, /uniform vec3 top, middle, horizon, low, moon/); assert.match(fragment, /varying vec3 vDir/);
-  assert.match(mesh.material.customProgramCacheKey(), /village-dusk-sky-v2/);
+  assert.match(mesh.material.customProgramCacheKey(), /village-dusk-sky-v3/);
   assert.ok(VILLAGE_DUSK_SKY.maxLinearChannel < .9);
   layer.dispose(); release(mesh);
 });
@@ -107,7 +109,7 @@ test("disposal restores the exact prior shader contract without disposing the do
   material.customProgramCacheKey = oldKey; material.uniforms.villageDuskTime = oldTime; mesh.userData.villageDuskSky = oldData;
   let geometryDisposals = 0, materialDisposals = 0;
   mesh.geometry.addEventListener("dispose", () => geometryDisposals++); material.addEventListener("dispose", () => materialDisposals++);
-  const layer = dressVillageDuskSky(mesh); assert.equal(material.customProgramCacheKey(), "authored-dome|village-dusk-sky-v2");
+  const layer = dressVillageDuskSky(mesh); assert.equal(material.customProgramCacheKey(), "authored-dome|village-dusk-sky-v3");
   layer.tick(.1); layer.dispose(); layer.dispose();
   assert.equal(material.fragmentShader, original); assert.equal(material.customProgramCacheKey, oldKey); assert.equal(material.uniforms.villageDuskTime, oldTime); assert.equal(mesh.userData.villageDuskSky, oldData);
   assert.deepEqual([geometryDisposals, materialDisposals], [0, 0]);
@@ -170,4 +172,54 @@ test("the actual entrance's exposed sky probes retain strong cloud bodies and cl
   const coverage = probes.map(p => villageDuskCloudCoverage(...p)).sort((a, b) => a - b);
   assert.ok(coverage[11] > .3, "the rejected .235-height bank had a median of only .051 here");
   assert.ok(coverage.filter(value => value < .1).length >= 3, "layered clouds retain open sky instead of becoming a flat overcast sheet");
+});
+
+test("painted sky projection follows world direction through a complete turn and keeps the entry on rich near-horizon art", () => {
+  for (const [direction, expected] of [[{ x: 0, y: 0, z: -1 }, [.5, .5]], [{ x: 1, y: 0, z: 0 }, [.75, .5]], [{ x: 0, y: 0, z: 1 }, [0, .5]], [{ x: -1, y: 0, z: 0 }, [.25, .5]], [{ x: 0, y: 1, z: 0 }, [.5, 1]], [{ x: 0, y: -1, z: 0 }, [.5, 0]]]) assert.deepEqual(villageDuskArtUv(direction), expected);
+  for (let yaw = -Math.PI; yaw <= Math.PI; yaw += .07) for (const y of [-.8, -.1, .099, .196, .8]) {
+    const horizontal = Math.sqrt(1 - y * y), direction = { x: Math.sin(yaw) * horizontal, y, z: -Math.cos(yaw) * horizontal }, uv = villageDuskArtUv(direction);
+    const azimuth = (uv[0] - .5) * Math.PI * 2, elevation = (uv[1] - .5) * Math.PI;
+    const reconstructed = { x: Math.sin(azimuth) * Math.cos(elevation), y: Math.sin(elevation), z: -Math.cos(azimuth) * Math.cos(elevation) };
+    for (const axis of ["x", "y", "z"]) assert.ok(Math.abs(reconstructed[axis] - direction[axis]) < 1e-12, "projection has no camera-relative distortion");
+    assert.deepEqual(villageDuskArtUv({ x: direction.x * 37, y: y * 37, z: direction.z * 37 }).map(v => v.toFixed(10)), uv.map(v => v.toFixed(10)), "distance cannot change the panorama");
+  }
+  for (const y of [.099, .196]) {
+    const uv = villageDuskArtUv({ x: 0, y, z: -Math.sqrt(1 - y * y) }), imageRow = (1 - uv[1]) * 512;
+    assert.ok(imageRow > 223 && imageRow < 241, "the actual exposed entrance rays sample painted billows, not an unrelated zenith strip");
+  }
+  const cycle = 1 / VILLAGE_DUSK_ART.driftTurnsPerSecond;
+  assert.ok(Math.abs(villageDuskArtUv({ x: 0, y: .1, z: -1 }, cycle)[0] - .5) < 1e-12);
+  for (const bad of [{ x: 0, y: 0, z: 0 }, { x: NaN, y: 1, z: 0 }]) assert.throws(() => villageDuskArtUv(bad), /finite direction/);
+});
+
+test("optional art becomes ready without recompiling, owns no borrowed texture and restores prior uniform objects exactly", () => {
+  const mesh = skyFixture(), oldSampler = { value: "authored" }, oldReady = { value: .3 };
+  Object.assign(mesh.material.uniforms, { villageDuskArt: oldSampler, villageDuskArtReady: oldReady });
+  const layer = dressVillageDuskSky(mesh), texture = new THREE.Texture({ width: 1024, height: 512 }); let disposals = 0;
+  texture.addEventListener("dispose", () => disposals++); const version = mesh.material.version;
+  layer.tick(.12); const phase = layer.stats.time;
+  assert.equal(layer.stats.artReady, false); assert.equal(mesh.material.uniforms.villageDuskArtReady.value, 0);
+  assert.equal(layer.setArt(texture, { width: 1024, height: 512, textureBytes: 2796204, encodedBytes: 34878 }), true);
+  assert.equal(mesh.material.uniforms.villageDuskArt.value, texture); assert.equal(mesh.material.uniforms.villageDuskArtReady.value, 1);
+  assert.equal(layer.stats.addedTextures, 1); assert.equal(layer.stats.artReady, true); assert.equal(layer.stats.artWidth, 1024); assert.equal(layer.stats.artHeight, 512); assert.equal(layer.stats.textureBytes, 2796204); assert.equal(layer.stats.artEncodedBytes, 34878);
+  layer.tick(.2, { paused: true }); layer.tick(.2, { reducedMotion: true });
+  assert.equal(layer.stats.time, phase); assert.equal(mesh.material.version, version, "loading is a uniform update rather than a program change");
+  assert.throws(() => layer.setArt(new THREE.Texture({ width: 2048, height: 1024 })), /1024/); assert.equal(mesh.material.uniforms.villageDuskArt.value, texture);
+  layer.clearArt(); assert.equal(layer.stats.artReady, false); assert.equal(layer.stats.addedTextures, 0); assert.equal(layer.stats.time, phase); assert.equal(disposals, 0);
+  layer.setArt(texture); layer.dispose(); layer.dispose(); assert.equal(disposals, 0, "only the resource lease may dispose the borrowed image");
+  assert.equal(mesh.material.uniforms.villageDuskArt, oldSampler); assert.equal(mesh.material.uniforms.villageDuskArtReady, oldReady); assert.equal(layer.setArt(texture), false);
+  texture.dispose(); release(mesh);
+});
+
+test("the optional panorama has a bounded seamless rear join and one linear colour decode", () => {
+  const mesh = skyFixture(), layer = dressVillageDuskSky(mesh), shader = mesh.material.fragmentShader;
+  assert.equal((shader.match(/texture2D\(/g) ?? []).length, 2); assert.equal(layer.stats.artSamples, 2);
+  assert.match(shader, /fract\(artU \+ \.5\)/); assert.match(shader, /min\(artU, 1\. - artU\)/); assert.match(shader, /dot\(d\.xz, d\.xz\) > \.00000001/, "poles cannot feed atan(0,0)");
+  assert.doesNotMatch(shader, /pow\(painted|sRGBTransferEOTF|LinearTosRGB/, "sRGB image upload already decodes into linear light");
+  // A deliberately mismatched ramp has a jump at wrap. The second sample
+  // crosses its centre continuously and the first is fully masked at wrap.
+  const fract = value => value - Math.floor(value), sample = u => u, smooth = t => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
+  const joined = u => { u = fract(u); const primary = smooth(Math.min(u, 1 - u) / VILLAGE_DUSK_ART.seamWidth); return sample(fract(u + .5)) * (1 - primary) + sample(u) * primary; };
+  assert.ok(Math.abs(joined(-1e-6) - joined(1e-6)) < 3e-6); assert.equal(joined(.5), .5); assert.equal(joined(.25), .25);
+  layer.dispose(); release(mesh);
 });
