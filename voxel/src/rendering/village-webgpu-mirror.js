@@ -50,6 +50,10 @@ export function createVillageGpuMirror(materials) {
     else if (source.isAmbientLight) object = new GPU.AmbientLight();
     else if (source.isLight) throw new Error(`Unported village light: ${source.type}`);
     else object = new GPU.Group();
+    // The legacy renderer may already have cleared the source's paced shadow
+    // flag. This light owns a brand-new GPU shadow target and must initialize
+    // it once before honoring that schedule.
+    if (object.isLight && object.shadow) object.shadow.needsUpdate = true;
     object.matrixAutoUpdate = false; object.name = source.name; object.userData.sourceUuid = source.uuid;
     objects.set(source, object); mirrorCount++; return object;
   }
