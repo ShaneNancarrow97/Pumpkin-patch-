@@ -39,6 +39,15 @@ export function buildGrannyExterior(voxels, random = seeded(671229)) {
   for (const side of [-1, 1]) for (let i = 0; i < 13; i++) put(-68 + side * i * .42, 8.69 - i * .147, 80.98, .5, .18, .18, wood);
   for (const [x, z] of [[-72.8, 86.8], [-72.1, 87.4], [-71.8, 88], [-64, 84.8], [-63.6, 85.4]]) put(x, 8.96 - Math.abs(x + 68) * .35 - .13 * Math.sin((z - 81) / 9 * Math.PI), z, .42, .045, .52, 0x66664d);
 
+  // Close the attic beneath each pitch. Thin overlapping courses follow the
+  // roof's taper; the existing roof thickness covers their stepped shoulders.
+  feature = 'gables';
+  for (const z of [82, 89]) {
+    const ridge = 8.8 - .13 * Math.sin((z - 81) / 9 * Math.PI);
+    for (let y = 7.28, course = 0; y < ridge; y += .14, course++) put(-68, y, z, 2 * (ridge - y) / .35, Math.min(.145, ridge - y + .06), .4, course % 3 ? 0x827465 : 0x8b7c6b);
+    put(-68, 7.26, z === 82 ? 81.78 : 89.12, .15, ridge - 7.26 + .045, .12, wood);
+  }
+
   feature = 'beams';
   for (const x of [-72.35, -69.12, -66.88, -63.65]) for (let i = 0; i < 7; i++) put(x + Math.sin(i * .8) * .035, 3.35 + i * .54, 81.89, .17, .55, .16, wood);
   for (const [y, width] of [[3.72, 9.05], [6.48, 9.05], [7.05, 8.8]]) put(-68, y, 81.91, width, .16, .18, wood);

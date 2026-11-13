@@ -24,7 +24,7 @@ test('Granny has deterministic recessed windows, joined door and planted detail 
   assert.ok(a.metadata.boxes <= 1481, 'the previous cottage used 1,481 boxes');
   assert.equal(a.metadata.boxes, a.voxels.solid.length + a.voxels.glow.length);
   assert.equal(a.voxels.glow.length, 12, 'two six-pane warm interior cards');
-  for (const name of ['shell', 'roof', 'beams', 'stonework', 'windows', 'herb-boxes', 'door', 'chimney']) assert.ok(a.metadata.features[name].boxes > 0, name);
+  for (const name of ['shell', 'roof', 'gables', 'beams', 'stonework', 'windows', 'herb-boxes', 'door', 'chimney']) assert.ok(a.metadata.features[name].boxes > 0, name);
   assert.ok(a.metadata.bounds.x0 >= -73.7 && a.metadata.bounds.x1 <= -62.4);
   assert.ok(a.metadata.bounds.z0 >= 80.75 && a.metadata.bounds.z1 <= 90.25, 'original roof footprint');
   assert.ok(a.metadata.bounds.y1 < 11, 'only a modest cowl above the old chimney');
@@ -41,6 +41,20 @@ test('Granny has deterministic recessed windows, joined door and planted detail 
   const group = a.voxels.build({ detailShadows: false });
   assert.equal(group.children.length, 3, 'existing solid, fine-detail and glow batches');
   assert.equal(a.metadata.addedLights, 0); assert.equal(group.getObjectsByProperty('isLight', true).length, 0);
+  group.traverse(object => object.material?.dispose());
+});
+
+test('both attic gables occlude actual rays below the roof and above the wall courses', () => {
+  const { voxels } = model(), group = voxels.build({ detailShadows: false }); group.updateMatrixWorld(true);
+  for (const [face, z, direction, limit] of [['front', 79, -1, 82.3], ['back', 92, 1, 88.7]]) {
+    for (const [x, y] of [[-68, 8], [-70.2, 7.6], [-65.8, 7.6], [-68, 8.55]]) {
+      const ray = new THREE.Raycaster(new THREE.Vector3(x * K, y * K, -z * K), new THREE.Vector3(0, 0, direction), 0, Math.abs(limit - z) * K);
+      const hits = ray.intersectObject(group, true);
+      assert.ok(hits.length, `${face} attic is closed at ${x}, ${y}`);
+      const wall = face === 'front' ? 82 : 89;
+      assert.ok(Math.abs(-hits[0].point.z / K - wall) <= .31, 'the ray hits this gable or its centre timber, not the opposite wall or a distant roof');
+    }
+  }
   group.traverse(object => object.material?.dispose());
 });
 
