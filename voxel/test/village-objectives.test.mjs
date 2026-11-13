@@ -43,3 +43,11 @@ test("the selected legacy HUD record does not inspect unrelated chapter descript
   const chapters=new Proxy([],{get(){throw Error('Unrelated journal catalogue inspected');}});
   assert.equal(villageObjective(s,'rowan-1',chapters).id,'rowan-1');
 });
+test("inherited object names and non-string preferences cannot become legacy quest IDs",()=>{
+  const s=village(),before=structuredClone(s),records=villageObjectives(s);
+  for(const id of ['__proto__','constructor','toString',null,{},[],42]){
+    assert.equal(villageObjective(s,id,[]),null);
+    assert.equal(selectVillageObjective(records,{preferredId:id,fallbackLegacyId:'invitation'}).id,'invitation');
+  }
+  assert.deepEqual(s,before);
+});

@@ -663,3 +663,34 @@ test('finishing the followed main chapter through its real action follows the ne
  assert.equal(h.game.status.trackedQuest,'green-workshop');assert.equal(prefs.villageTrackedQuest,'green-workshop');assert.equal(h.game.status.waypoint.chapter,'green-workshop');
  const expected=JSON.parse(after);expected.village.expansion.tracked='green-workshop';assert.equal(JSON.stringify(M.saveData(s)),JSON.stringify(expected),'the closing scene only follows the next story');h.game.tick(.1);assert.equal(h.chapterReceipts.length,1);
 });
+
+test('a partially gathered followed story immediately guides the remaining supplies',t=>{
+ const s=expansionFarm();s.village.quests['rowan-1']={step:0,done:false,base:null};const h=harness(t,s,null,{prefs:{villageTrackedQuest:'rowan-1'}});h.game.open();
+ const first=h.game.status.waypoint;assert.ok(first.nodeId);h.game.place(first.x,first.z);h.game.pick({type:'village-node',id:first.nodeId});h.game.tick(1);
+ assert.equal(s.village.materials.logs,2);assert.equal(s.village.quests['rowan-1'].step,0);assert.equal(h.game.status.trackedQuest,'rowan-1');
+ const next=h.game.status.waypoint;assert.ok(next?.nodeId);assert.notEqual(next.nodeId,first.nodeId);assert.equal(next.objectiveId,'rowan-1');assert.ok(M.nodeReady(s,next.nodeId));
+ h.game.tick(.1);assert.equal(s.village.materials.logs,2,'retargeting cannot gather again');
+});
+
+test('a persisted legacy follow restores its current route on the next village visit',t=>{
+ const s=expansionFarm();s.village.quests['rowan-1']={step:0,done:false,base:null};const prefs={villageTrackedQuest:'rowan-1'},h=harness(t,s,null,{prefs});h.game.open();assert.ok(h.game.status.waypoint?.nodeId);
+ h.game.close();h.game.open();assert.equal(h.game.status.trackedQuest,'rowan-1');assert.equal(h.game.status.waypoint?.objectiveId,'rowan-1');assert.ok(h.game.status.waypoint?.nodeId);assert.ok(M.nodeReady(s,h.game.status.waypoint.nodeId));
+});
+
+test('a returning resource restores a previously unavailable followed gather route',t=>{
+ const s=expansionFarm();s.village.quests['rowan-1']={step:0,done:false,base:null};const logs=NODES.filter(node=>node.district==='green'&&node.material==='logs');for(const node of logs)s.village.nodes[node.id]=80;
+ const h=harness(t,s,null,{prefs:{villageTrackedQuest:'rowan-1'}});h.game.open();assert.equal(h.game.status.waypoint,null);h.game.render();assert.equal(h.game.status.waypoint,null);
+ s.village.nodes[logs[0].id]=0;const before=JSON.stringify(M.saveData(s));h.game.onEvent({type:'village-resource-ready',id:logs[0].id});
+ assert.equal(h.game.status.waypoint?.nodeId,logs[0].id);assert.equal(h.game.status.waypoint.objectiveId,'rowan-1');assert.equal(JSON.stringify(M.saveData(s)),before);
+});
+
+test('resource refresh keeps manually chosen garden and resident routes over the followed story',t=>{
+ const s=expansionFarm();s.village.quests['rowan-1']={step:0,done:false,base:null};const h=harness(t,s,null,{prefs:{villageTrackedQuest:'rowan-1'}});h.game.open();h.game.showPanel('map');h.click('[data-vg-focus="reading-court"]');
+ const route=h.game.status.waypoint;assert.equal(route.placeId,'reading-court');h.game.onEvent({type:'village-resource-ready',id:'logs-01'});h.game.render();assert.deepEqual(h.game.status.waypoint,route);assert.equal(h.game.status.trackedQuest,'rowan-1');
+ h.game.showPanel('people');h.click('[data-vg-meet="rowan"]');const residentRoute=h.game.status.waypoint;assert.equal(residentRoute.folkId,'rowan');assert.equal(residentRoute.objectiveId,undefined);h.game.onEvent({type:'village-resource-ready',id:'logs-01'});assert.deepEqual(h.game.status.waypoint,residentRoute);
+});
+
+for(const invalid of ['__proto__','constructor','toString'])test(`malformed persisted follow ${invalid} safely falls back to a real story`,t=>{
+ const s=expansionFarm();s.village.quests['rowan-1']={step:0,done:false,base:null};const prefs=JSON.parse(JSON.stringify({villageTrackedQuest:invalid})),h=harness(t,s,null,{prefs});
+ assert.equal(h.game.open(),true);assert.equal(h.game.status.trackedQuest,'rowan-1');assert.equal(h.$('#vg-quest-title').textContent,'Loose Boards');const before=JSON.stringify(M.saveData(s));h.game.showPanel('journal');h.game.render();assert.equal(JSON.stringify(M.saveData(s)),before);assert.ok(h.game.status.waypoint?.nodeId);
+});

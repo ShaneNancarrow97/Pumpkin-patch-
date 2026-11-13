@@ -6,11 +6,12 @@ import { FOLK_BY_ID } from "./content/village-folk.js";
 
 const short = id => FOLK_BY_ID[id]?.short ?? id;
 const open = record => record.status === "active" || record.status === "available";
+const legacyQuest = id => typeof id === "string" && Object.hasOwn(QUEST_BY_ID, id) ? QUEST_BY_ID[id] : null;
 function legacyReason(state, quest) {
   if (!state.village.invited) return "Follow the invitation to Mothlight first.";
   if (quest.level && M.patchLevel(state).level < quest.level) return `Reach farm level ${quest.level}.`;
   const previous = quest.needs.find(id => !state.village.quests[id]?.done);
-  if (previous) return `Finish “${QUEST_BY_ID[previous]?.title ?? previous}”.`;
+  if (previous) return `Finish “${legacyQuest(previous)?.title ?? previous}”.`;
   return `Get to know ${short(quest.giver)} · friendship ${quest.friendship ?? 1}.`;
 }
 function legacyObjective(state, quest) {
@@ -33,7 +34,8 @@ export function villageObjectives(state, chapters = M.expansionJournal(state)) {
 }
 // HUD updates resolve only their selected record; the catalogue is for menus.
 export function villageObjective(state, id, chapters) {
-  if (QUEST_BY_ID[id]) return legacyObjective(state, QUEST_BY_ID[id]);
+  const quest = legacyQuest(id);
+  if (quest) return legacyObjective(state, quest);
   const chapter = (chapters ?? M.expansionJournal(state)).find(record => record.id === id);
   return chapter ? chapterObjective(chapter) : null;
 }

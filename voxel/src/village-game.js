@@ -50,6 +50,8 @@ const escape = value => String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<
 const money=n=>"£"+Math.round(n).toLocaleString("en-GB");
 const GATHER_REACH=2.1, TALK_REACH=RESIDENT_TALK_REACH;
 const GATHER_CONTACTS=Object.freeze([.3,.8,1.3]);
+const legacyQuest=id=>typeof id==="string"&&Object.hasOwn(QUEST_BY_ID,id)?QUEST_BY_ID[id]:null;
+const expansionChapter=id=>typeof id==="string"&&Object.hasOwn(Expansion.EXPANSION_CHAPTER_BY_ID,id)?Expansion.EXPANSION_CHAPTER_BY_ID[id]:null;
 const NAVIGATION = [["map","Map","map","Places and routes"],["people","People","people","Find your neighbours"],["journal","Quests","quests","Your next step"],["materials","Satchel","satchel","Materials and supplies"],["upgrades","Workshop","workshop","Useful improvements"],["decorate","Build","build","Make the village yours"]];
 function navigationMarkup(hub=false) {
   return NAVIGATION.map(([id,label,icon,hint])=>`<button ${id==="decorate"?(hub?'data-vg-decorate':'id="vg-decorate"'):`data-vg-page="${id}"`} class="${hub?'vg-nav-card':'vg-nav-button'}">${villageUIIcon(icon,hub?36:28)}<span><b>${label}</b>${hub?`<small>${hint}</small>`:""}</span></button>`).join("");
@@ -101,17 +103,17 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
   function objectiveRecords(){return villageObjectives(state(),expansionRecords());}
   function followedObjectiveId(){
     for(const id of [prefs.villageTrackedQuest,state().village.expansion?.tracked]){
-      if(QUEST_BY_ID[id]){if(M.questStatus(state(),id)!=="done")return id;}
+      if(legacyQuest(id)){if(M.questStatus(state(),id)!=="done")return id;}
       else if(expansionRecords().some(record=>record.id===id&&record.status!=="done"))return id;
     }
     return M.trackedQuest(state())?.id??null;
   }
   function followedObjective(){return villageObjective(state(),followedObjectiveId(),expansionRecords());}
-  function trackedExpansion(){const id=followedObjectiveId();return !QUEST_BY_ID[id]?expansionRecords().find(record=>record.id===id)??null:null;}
+  function trackedExpansion(){const id=followedObjectiveId();return !legacyQuest(id)?expansionRecords().find(record=>record.id===id)??null:null;}
   // Repair both tracking stores from old builds without replacing another
   // story the player followed. Completion belongs in the brief receipt.
   function clearCompletedTracking(){
-    const e=state().village.expansion,done=id=>!!QUEST_BY_ID[id]?!!state().village.quests[id]?.done:!!Expansion.EXPANSION_CHAPTER_BY_ID[id]&&!!(e?.chapters?.[id]||e?.receipts?.[id]);let cleared=false;
+    const e=state().village.expansion,done=id=>legacyQuest(id)?!!state().village.quests[id]?.done:!!expansionChapter(id)&&!!(e?.chapters?.[id]||e?.receipts?.[id]);let cleared=false;
     if(done(prefs.villageTrackedQuest)){prefs.villageTrackedQuest=null;savePrefs();cleared=true;}
     if(done(e?.tracked)){e.tracked=null;save();cleared=true;}
     if(done(waypoint?.objectiveId??waypoint?.chapter)){waypoint=null;cleared=true;}
@@ -125,7 +127,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     if(old!==id){prefs.villageTrackedQuest=id;savePrefs();waypoint=null;questHudSignature="";}
     if(changedSave)save();return true;
   }
-  function followExpansion(id){return !!Expansion.EXPANSION_CHAPTER_BY_ID[id]&&followObjective(id);}
+  function followExpansion(id){return !!expansionChapter(id)&&followObjective(id);}
   function currentArea(){if(view.activeExpansionArea)return view.activeExpansionArea;return Expansion.EXPANSION_AREAS.find(a=>a.layer!=="cave"&&pos.x>=a.bounds[0]&&pos.x<=a.bounds[2]&&pos.z>=a.bounds[1]&&pos.z<=a.bounds[3])?.id??(state().village.expansion?.area&&!state().village.expansion.area.startsWith("cave")?state().village.expansion.area:"green");}
   function expansionContext(){return{area:currentArea(),x:pos.x,z:pos.z};}
   function nearActivity(info){return !!info&&!view.inside&&info.area===currentArea()&&Math.hypot(info.x-pos.x,info.z-pos.z)<=TALK_REACH;}
@@ -139,7 +141,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     }
     if(e.type?.startsWith("expansion-")){expansionCachedAt=-1;return true;}
 
-    if(e.type==="village-resource-ready"){if(active)view.sync();render();return true;}
+    if(e.type==="village-resource-ready"){guidedObjectiveStep=null;if(active)view.sync();render();return true;}
     if(e.type==="quest-done"){clearCompletedTracking();if(active){questReceipts.notify(e);render();}else notice(`${QUEST_BY_ID[e.quest]?.title??"Quest"} complete · rewards received`);}
     else if(e.type==="friend-level")rewardNotice(`friend:${e.who}:${e.level??M.friendshipWith(state(),e.who)?.level}`,`${FOLK_BY_ID[e.who]?.short??e.who} · ${M.friendshipWith(state(),e.who)?.title??"Friendship grew"}`);
     else if(e.type==="almanac-page")rewardNotice(`almanac:${e.page??state().village.almanac.pages}`,`Almanac page complete · keepsakes added to your collection`);
@@ -214,7 +216,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     greeting={who:id,choices,actions};
   }
   function takeQuest(id){
-    const q=QUEST_BY_ID[id];if(!q||!besideNeighbour(q.giver)||M.questStatus(state(),id)!=="offered")return false;
+    const q=legacyQuest(id);if(!q||!besideNeighbour(q.giver)||M.questStatus(state(),id)!=="offered")return false;
     changed(M.startQuest(state(),id));followObjective(id);conversation(q.giver,q.intro??[q.blurb],()=>showPanel("journal"),q.title,{intent:"quest"});return true;
   }
   function handOverTo(id,questId,fromJournal=false){
@@ -360,9 +362,9 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     }
     if(!Number.isFinite(info.x)||!Number.isFinite(info.z))return;guide(info,info.name??info.title??"Your next discovery");centre();notice("Follow the marker, then interact beside the discovery.");
   }
-  function enterExpansion(id){if(!active||busy())return false;const check=M.expansionAreaInfo?.(state(),id);if(check&&!check.open){notice(check.reason);return false;}const sceneResult=view.enterExpansionArea?.(id);if(!sceneResult){notice("This route is not ready yet.");return false;}const result=M.enterVillageExpansionArea?.(state(),id);if(result&&!result.ok){view.leaveExpansionArea?.();notice(result.reason);return false;}cancelGather();releaseInput();closePanel();offered=null;waypoint=null;pos.x=sceneResult.spawn.x;pos.z=sceneResult.spawn.z;placeActor();if(actor)view.play.reset(actor.position);changed(result?.events??[]);return true;}
+  function enterExpansion(id){if(!active||busy())return false;const check=M.expansionAreaInfo?.(state(),id);if(check&&!check.open){notice(check.reason);return false;}const sceneResult=view.enterExpansionArea?.(id);if(!sceneResult){notice("This route is not ready yet.");return false;}const result=M.enterVillageExpansionArea?.(state(),id);if(result&&!result.ok){view.leaveExpansionArea?.();notice(result.reason);return false;}cancelGather();releaseInput();closePanel();offered=null;waypoint=null;guidedObjectiveStep=null;pos.x=sceneResult.spawn.x;pos.z=sceneResult.spawn.z;placeActor();if(actor)view.play.reset(actor.position);changed(result?.events??[]);return true;}
   function leaveExpansion(){
-    cancelGather();const previous=Expansion.EXPANSION_AREA_BY_ID[view.activeExpansionArea],result=view.leaveExpansionArea?.();if(!result)return false;releaseInput();closePanel();offered=null;waypoint=null;
+    cancelGather();const previous=Expansion.EXPANSION_AREA_BY_ID[view.activeExpansionArea],result=view.leaveExpansionArea?.();if(!result)return false;releaseInput();closePanel();offered=null;waypoint=null;guidedObjectiveStep=null;
     const backArea=previous?.returnArea,backScene=backArea?.startsWith("cave")?view.enterExpansionArea?.(backArea):null,spawn=backScene?(previous.returnPoint??backScene.spawn):result.spawn;
     pos.x=spawn.x;pos.z=spawn.z;const area=view.activeExpansionArea??backArea??"copse";M.enterVillageExpansionArea?.(state(),area);placeActor();if(actor)view.play.reset(actor.position);changed();return true;
   }
@@ -442,7 +444,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     $("vg-gather-fill").style.width=`${progress*100}%`;view.gatherTool?.({actor,material:work.material,target:work.target,progress,active:true});
     if(progress<1)return;cancelGather({silent:true});if(work.expansion){const info=expansionInfo(work.id);if(!nearActivity(info)){gatherSound(work,"cancel");return;}const result=M.actVillageExpansion?.(state(),work.id,{context:expansionContext()});if(result?.ok){gatherSound(work,"complete");changed(result.events);notice(result.message??"A discovery for your satchel.");}else{gatherSound(work,"cancel");notice(result?.reason??"This vein needs a little more time.");}return;}const raw=NODES.find(n=>n.id===work.id),node=raw?{...raw,...villageNodePosition(state(),raw)}:null;
     if(!node||Math.hypot(node.x-pos.x,node.z-pos.z)>GATHER_REACH+.1){gatherSound(work,"cancel");return;}
-    const result=M.gatherNode(state(),work.id);if(result?.full){gatherSound(work,"cancel");notice("Your satchel is full for this material.");}else if(result){gatherSound(work,"complete");waypoint=null;changed(result.events);notice(result.cleared?(result.overflow?"Cursed fungus cleared · sample satchel full":"Cursed fungus cleared · spore sample collected"):`Gathered ${result.amount} ${MATERIALS.find(m=>m.id===result.material)?.name.toLowerCase()??result.material}`);}else gatherSound(work,"cancel");
+    const result=M.gatherNode(state(),work.id);if(result?.full){gatherSound(work,"cancel");notice("Your satchel is full for this material.");}else if(result){gatherSound(work,"complete");waypoint=null;guidedObjectiveStep=null;changed(result.events);notice(result.cleared?(result.overflow?"Cursed fungus cleared · sample satchel full":"Cursed fungus cleared · spore sample collected"):`Gathered ${result.amount} ${MATERIALS.find(m=>m.id===result.material)?.name.toLowerCase()??result.material}`);}else gatherSound(work,"cancel");
   }
   function placeActor(){if(!actor)return;actor.position.set(pos.x,view.inside ? .2 : (view.expansionGroundAt?.(pos.x,pos.z)??view.groundAt(pos.x,pos.z))+.04,-pos.z);}
   function updateOwnerView(moving=false,front=false){
@@ -455,13 +457,13 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
   function makeActor(){surveying=false;if(actor){view.scene.remove(actor);actor.userData.dispose?.();}actor=scene.villageCharacter(who);if(actor){addMoonRim(actor,{lift:1.5});view.scene.add(actor);actor.visible=!view.director.active;placeActor();if(!view.director.active)view.play.reset(actor.position);}}
   function enterHall(id){const plan=INSIDES[id];if(!active||busy()||!plan)return false;if(plan.area){const gate=M.expansionAreaInfo?.(state(),plan.area);if(!gate?.open){notice(gate?.reason??"Restore the path to this home first.");return false;}const[nx,nz]=DOOR_NORMAL[plan.door.facing],door={x:(plan.door.x+nx*1.4)*K,z:(plan.door.z+nz*1.4)*K,area:plan.area,name:plan.name};if(view.activeExpansionArea||view.inside||Math.hypot(pos.x-door.x,pos.z-door.z)>TALK_REACH){guideExpansion(door);return false;}}narration?.stop();surveying=false;releaseInput();offered=null;closePanel();if(view.goInside(id)===false)return false;const p=view.hallPoint(...plan.hall.spawn);pos.x=p.x;pos.z=-p.z;placeActor();if(actor)view.play.reset(actor.position);render();}
   function leaveHall(){const plan=INSIDES[view.inside];if(!plan)return;narration?.stop();surveying=false;releaseInput();offered=null;const [nx,nz]=DOOR_NORMAL[plan.door.facing];view.goOutside();pos.x=(plan.door.x+nx*3.2)*K;pos.z=(plan.door.z+nz*3.2)*K;placeActor();if(actor)view.play.reset(actor.position);render();}
-  function tour(){if(!active||dialogue.active)return;view.dialogueCamera?.end({immediate:true});proximity.hide();cancelGather();waypoint=null;narration?.stop();surveying=false;releaseInput();offered=null;closePanel();if(view.inside)leaveHall();while(view.activeExpansionArea)leaveExpansion();if(actor)actor.visible=false;$("vg-tour").hidden=false;$("vg-tour-skip").focus({preventScroll:true});view.director.start(k=>{$("vg-tour b").textContent=k.title;$("vg-tour span").textContent=k.sub;tourLine={speaker:"narrator",text:tourVoiceText(k)};narration?.play(tourLine.speaker,tourLine.text);tourVoices.refresh();},()=>{narration?.stop();tourLine=null;$("vg-tour").hidden=true;changed(M.finishTour(state()));if(actor){actor.visible=true;view.play.reset(actor.position);}}, {hold:()=>!!narration?.enabled&&["loading","playing"].includes(narration.current?.status)});}
+  function tour(){if(!active||dialogue.active)return;view.dialogueCamera?.end({immediate:true});proximity.hide();cancelGather();waypoint=null;guidedObjectiveStep=null;narration?.stop();surveying=false;releaseInput();offered=null;closePanel();if(view.inside)leaveHall();while(view.activeExpansionArea)leaveExpansion();if(actor)actor.visible=false;$("vg-tour").hidden=false;$("vg-tour-skip").focus({preventScroll:true});view.director.start(k=>{$("vg-tour b").textContent=k.title;$("vg-tour span").textContent=k.sub;tourLine={speaker:"narrator",text:tourVoiceText(k)};narration?.play(tourLine.speaker,tourLine.text);tourVoices.refresh();},()=>{narration?.stop();tourLine=null;$("vg-tour").hidden=true;changed(M.finishTour(state()));if(actor){actor.visible=true;view.play.reset(actor.position);}}, {hold:()=>!!narration?.enabled&&["loading","playing"].includes(narration.current?.status)});}
   function open(){
     const s=state();if(active)return true;if(M.patchLevel(s).level<M.VILLAGE_LEVEL){notice(`Mothlight opens at level ${M.VILLAGE_LEVEL}.`);return false;}if(s.paused){notice("Resume the farm before travelling.");return false;}
-    clearCompletedTracking();
+    guidedObjectiveStep=null;clearCompletedTracking();
     narration?.stop();oldPlayer=scene.player.state();closeMenus();who=oldPlayer.who??who;scene.player.setEnabled(false);releaseInput();controls.reset();if(!M.villageOpen(s))M.inviteToVillage(s);M.arriveInVillage(s);save();farmReminder.reset();reminder.hidden=true;returnPathArmed=true;wasPaused=!!s.paused;active=true;root.hidden=false;document.body.classList.add("in-village");scene.enter("village");if(view.inside)view.goOutside();if(view.activeExpansionArea)view.leaveExpansionArea?.();M.enterVillageExpansionArea?.(s,"green");pos.x=ARRIVAL.spawn[0];pos.z=ARRIVAL.spawn[1];makeActor();view.setExpansionCompanion?.(s.village.expansion?.companions?.selected??null);render();onRender();if(!s.village.toured)tour();return true;
   }
-  function close(){if(!active)return;returnPrompt.close({restoreFocus:false});questReceipts.clear();farmReminder.reset();reminder.hidden=true;wanderers.clear();proximity.hide();cancelGather();waypoint=null;narration?.stop();tourLine=null;dialogueDone=null;chat=null;greeting=null;dialogue.close();view.dialogueCamera?.end({immediate:true});decorate.close();closePanel();panelTrail.reset();active=false;surveying=false;questExpanded=false;root.hidden=true;$("vg-tour").hidden=true;document.body.classList.remove("in-village");releaseInput();controls.reset();offered=null;latestPad=null;dialogueCameraOwned=false;if(view.inside)view.goOutside();if(view.activeExpansionArea)view.leaveExpansionArea?.();if(actor){view.scene.remove(actor);actor.userData.dispose?.();actor=null;}save();scene.leavePlace();if(oldPlayer?.enabled)scene.player.setEnabled(true,oldPlayer.who);onLeave();}
+  function close(){if(!active)return;returnPrompt.close({restoreFocus:false});questReceipts.clear();farmReminder.reset();reminder.hidden=true;wanderers.clear();proximity.hide();cancelGather();waypoint=null;guidedObjectiveStep=null;narration?.stop();tourLine=null;dialogueDone=null;chat=null;greeting=null;dialogue.close();view.dialogueCamera?.end({immediate:true});decorate.close();closePanel();panelTrail.reset();active=false;surveying=false;questExpanded=false;root.hidden=true;$("vg-tour").hidden=true;document.body.classList.remove("in-village");releaseInput();controls.reset();offered=null;latestPad=null;dialogueCameraOwned=false;if(view.inside)view.goOutside();if(view.activeExpansionArea)view.leaveExpansionArea?.();if(actor){view.scene.remove(actor);actor.userData.dispose?.();actor=null;}save();scene.leavePlace();if(oldPlayer?.enabled)scene.player.setEnabled(true,oldPlayer.who);onLeave();}
   const setText=(id,text)=>{const el=$(id);if(el.textContent!==text)el.textContent=text;};
   function render(){
     invitation.hidden=active||!!scene.place||!M.villageDue(state());if(!active)return;const surface=villageResidentLocation(pos),local=["green","square"].includes(surface?.area)?villagePlaceAt(pos.x,pos.z):null;setText("vg-coins",money(state().coins));setText("vg-place",INSIDES[view.inside]?.name??Expansion.EXPANSION_AREA_BY_ID[view.activeExpansionArea]?.name??local?.name??surface?.name??"Hollow Green");setText("vg-person",who==="shane"?"Shane":"Natalie");
