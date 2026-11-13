@@ -1,12 +1,17 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as M from "../src/model.js";
-import { DISTRICTS, ROADS, VILLAGE_BOUNDS, ARRIVAL, NODES } from "../src/content/village.js";
+import { DISTRICTS, VILLAGE_BOUNDS, ARRIVAL, NODES } from "../src/content/village.js";
 import { renderVillageChapter } from "../src/ui/village-chapters.js";
 import { TOWN } from "../src/content/village-town-square.js";
-import { CAVE_ENTRY, ACRE_ENTRY } from "../src/village-expansion-spatial.js";
+import { CAVE_ENTRY } from "../src/village-expansion-spatial.js";
 import { EXPANSION_AREA_BY_ID } from "../src/content/village-expansion.js";
-import { villageMapDistricts, villageMapAreas, villageMapLivePins, villageMapPoint, villageMapLandmarks, renderVillageMap, VILLAGE_MAP_SIZE, VILLAGE_MAP_BOUNDS } from "../src/ui/village-map.js";
+import { villageMapDistricts, villageMapAreas, villageMapLivePins, villageMapPoint, villageMapSnapshotPoint, villageMapLandmarks, renderVillageMap as renderMap, VILLAGE_MAP_SIZE, VILLAGE_MAP_BOUNDS } from "../src/ui/village-map.js";
+
+// A deterministic projection stub tests the renderer independently of WebGL.
+const snapshot = { url: "blob:captured-world", width: VILLAGE_MAP_SIZE.width, height: VILLAGE_MAP_SIZE.height, projectPoint: ({ x, z }) => ({ ...villageMapPoint(x, z), visible: true }) };
+const renderVillageMap = (state, options = {}) => renderMap(state, { snapshot, ...options });
+const percent = n => Math.round(n * 100) / 100;
 
 function level(state, n) {
   state.earned = M.LEVELS[n - 1].at;
@@ -62,22 +67,20 @@ test("selected lock details report the real level and quest while keeping the re
   assert.doesNotMatch(html, /data-vg-focus="(?:copse|quarry|moor|marsh)"/);
 });
 
-test("the SVG uses the world's actual north-up footprints and roads", () => {
-  const state = village(), { html } = renderVillageMap(state);
-  const westSouth = villageMapPoint(VILLAGE_BOUNDS.x0, VILLAGE_BOUNDS.z0), eastNorth = villageMapPoint(VILLAGE_BOUNDS.x1, VILLAGE_BOUNDS.z1);
-  assert.ok(westSouth.x < eastNorth.x); assert.ok(westSouth.y > eastNorth.y);
-  for (const district of DISTRICTS) {
-    const points = district.polygon.map(([x, z]) => { const p = villageMapPoint(x, z); return `${p.x},${p.y}`; }).join(" ");
-    assert.ok(html.includes(`data-vg-map-polygon="${district.id}" points="${points}"`), district.id);
-  }
-  for (const road of ROADS) assert.ok(html.includes(`data-vg-map-road="${road.id}"`), road.id);
-  assert.match(html, new RegExp(`viewBox="0 0 ${VILLAGE_MAP_SIZE.width} ${VILLAGE_MAP_SIZE.height}"`));
+test("the map uses the captured world image and its own pixel projection", () => {
+  const state = village(), capture = { url: "blob:real-world-image", width: 1600, height: 1100, projectPoint: () => ({ x: 400, y: 220, visible: true }) };
+  const { html } = renderVillageMap(state, { snapshot: capture });
+  assert.match(html, /data-vg-map-snapshot src="blob:real-world-image" width="1600" height="1100"/);
+  assert.match(html, /--map-ratio:1600 \/ 1100/);
+  assert.match(html, /--map-x:25%;--map-y:20%/);
+  assert.doesNotMatch(html, /<svg[^>]*viewBox="0 0 (?:[3-9]\d{2}|\d{4})|vg-map-road|vg-map-region|vg-map-polygon/);
+  assert.deepEqual(villageMapSnapshotPoint({ x: 87, z: 35 }, capture), { x: 25, y: 20 });
 });
 
 test("the live position uses realm coordinates and rejects invalid or off-map points", () => {
   const state = village(), position = { x: ARRIVAL.spawn[0], z: ARRIVAL.spawn[1] }, p = villageMapPoint(position.x, position.z);
   const { html } = renderVillageMap(state, { position });
-  assert.ok(html.includes(`data-vg-map-position cx="${p.x}" cy="${p.y}"`)); assert.match(html, /You are here/);
+  assert.ok(html.includes(`data-vg-map-position style="--map-x:${percent(p.x / snapshot.width * 100)}%;--map-y:${percent(p.y / snapshot.height * 100)}%"`)); assert.match(html, /You are here/);
   for (const position of [{ x: NaN, z: 0 }, { x: Infinity, z: 0 }, { x: 0, z: VILLAGE_BOUNDS.z1 + 1 }]) assert.doesNotMatch(renderVillageMap(state, { position }).html, /data-vg-map-position/);
 });
 
@@ -134,12 +137,8 @@ test("the Acre, Moonclock Square and single cave mouth use the actual spread sur
   const acreX = Number(mapX) / 100 * VILLAGE_MAP_SIZE.width + VILLAGE_MAP_BOUNDS.x0 - 14;
   const acreZ = VILLAGE_MAP_BOUNDS.z1 + 14 - Number(mapY) / 100 * VILLAGE_MAP_SIZE.height;
   assert.ok(acreX >= x0 && acreX <= x1 && acreZ >= z0 && acreZ <= z1, "the Acre area label remains within its real surface footprint");
-  assert.match(html, /data-vg-map-polygon="acre"/);
-  assert.match(html, /data-vg-map-road="acre-approach"/);
-  const acreEntry = villageMapPoint(ACRE_ENTRY.x, ACRE_ENTRY.z);
-  assert.ok(html.includes(`data-vg-map-acre-entry cx="${acreEntry.x}" cy="${acreEntry.y}"`));
-  const square = villageMapPoint(TOWN.cx * 1.5, TOWN.cz * 1.5);
-  assert.ok(html.includes(`data-vg-map-square cx="${square.x}" cy="${square.y}"`));
+  const square = { x: TOWN.cx * 1.5, z: TOWN.cz * 1.5 };
+  assert.ok(html.match(/<button[^>]*data-vg-focus="square"[^>]*>/)?.[0].includes(style(square)));
   assert.equal(areas.filter(a => a.layer === "cave").length, 3);
   assert.equal(html.match(/class="vg-map-pin[^>]*data-vg-map-district="cave-/g)?.length, 1);
   for (const id of ["cave-workings", "cave-cathedral"]) {
@@ -165,7 +164,7 @@ test("live pins show observed residents and route a followed underground objecti
   assert.equal(pins.find(p => p.kind === "objective").x, CAVE_ENTRY.x);
   assert.equal(pins.find(p => p.kind === "objective").z, CAVE_ENTRY.z);
   assert.equal(pins.find(p => p.kind === "objective").viaEntrance, true);
-  const { html } = renderVillageMap(state, { residents, objective, currentArea: "cave-shallows", position: { x: 0, z: -12 } });
+  const { html } = renderVillageMap(state, { residents, objective, currentArea: "cave-shallows", position: { x: 0, z: -12 }, showResidents: true });
   assert.match(html, /data-vg-map-resident="elowen" data-vg-meet="elowen"/);
   assert.match(html, /data-vg-map-objective="copse-lantern:2"/);
   assert.match(html, /data-vgx-guide="copse-lantern" aria-label="Show walking route to Free the singing crystal"/);
@@ -181,8 +180,32 @@ test("surface objective pins retain live world coordinates and reject off-map or
 });
 
 test("resident portraits are escaped image sources rather than visible URL text", () => {
-  const portrait = 'data:image/png;base64,cG9ydHJhaXQ=', { html } = renderVillageMap(village(), { residents: [{ id: "elowen", short: "Elowen", x: 43, z: 30, area: "green" }], portrait: () => portrait });
+  const portrait = 'data:image/png;base64,cG9ydHJhaXQ=', { html } = renderVillageMap(village(), { residents: [{ id: "elowen", short: "Elowen", x: 43, z: 30, area: "green" }], portrait: () => portrait, showResidents: true });
   assert.ok(html.includes(`<img src="${portrait}" alt="">`));
   assert.doesNotMatch(html, />data:image/);
-  assert.doesNotMatch(renderVillageMap(village(), { residents: [{ id: "elowen", x: 43, z: 30 }], portrait: () => 'bad" onerror="bad' }).html, /src="bad" onerror/);
+  assert.doesNotMatch(renderVillageMap(village(), { residents: [{ id: "elowen", x: 43, z: 30 }], portrait: () => 'bad" onerror="bad', showResidents: true }).html, /src="bad" onerror/);
+});
+
+test("neighbour pins are optional so destination markers lead the captured view", () => {
+  const residents = [{ id: "elowen", short: "Elowen", x: 43, z: 30, area: "green" }];
+  const closed = renderVillageMap(village(), { residents }).html, open = renderVillageMap(village(), { residents, showResidents: true }).html;
+  assert.match(closed, /data-vg-map-neighbours aria-pressed="false"/);
+  assert.doesNotMatch(closed, /data-vg-map-resident="elowen"/);
+  assert.match(open, /data-vg-map-neighbours aria-pressed="true"/);
+  assert.match(open, /data-vg-map-resident="elowen"/);
+});
+
+test("missing or failed captures show honest status text without a diagram fallback", () => {
+  const pending = renderMap(village()).html, failed = renderMap(village(), { snapshotError: true }).html;
+  assert.match(pending, /Preparing the village view/);
+  assert.match(failed, /Map picture unavailable. Close and reopen the map to try again/);
+  for (const html of [pending, failed]) assert.doesNotMatch(html, /data-vg-map-snapshot|vg-map-chart|vg-map-region|vg-map-road/);
+});
+
+test("invalid or hidden image projections cannot place invented markers", () => {
+  for (const projectPoint of [() => ({ x: NaN, y: 5 }), () => ({ x: 2, y: 3, visible: false }), () => ({ x: -1, y: 3 }), () => ({ x: 1601, y: 3 }), () => { throw new Error("Camera unavailable"); }]) {
+    const capture = { url: "blob:captured", width: 1600, height: 1100, projectPoint };
+    assert.equal(villageMapSnapshotPoint({ x: 1, z: 2 }, capture), null);
+    assert.doesNotMatch(renderVillageMap(village(), { snapshot: capture }).html, /class="vg-map-pin |data-vg-map-position|data-vg-focus="square" style=/);
+  }
 });
