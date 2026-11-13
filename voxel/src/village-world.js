@@ -9,6 +9,7 @@
 import * as THREE from "three";
 import { applyGrassDetail } from "./grass-detail.js";
 import { villageTreeVisibility } from "./village-visibility.js";
+import { createVillageWaterClock, createVillageWaterMaterial } from "./village-water-material.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { Voxels, ChunkedVoxels, seeded, vary } from "./voxels.js";
 import * as LAYOUT from "./content/village.js";
@@ -16,6 +17,7 @@ import { villageNodePosition, villageNodeCandidates } from "./content/village-no
 import { terrainHeight as H, groundHeight as HN, TERRACES, RAMPS, WATERS, REALM, GROUND_REALM, isWater, rampAt, terraceAt, MARSH_ISLANDS, MARSH_CAUSEWAY } from "./village-terrain.js";
 import { spread, gather, spreadRect, spreadBox, pieceAt, pieceOfBox, PIECES, SPREAD, isGap, inTownSquare, TOWN_SQUARE } from "./rules/village-spread.js";
 import { inTownPlaza, inTownGate } from "./content/village-town-square.js";
+import { inVillageNeighbourhood } from "./content/village-neighbourhoods.js";
 const SHIFT = LAYOUT.DISTRICT_SHIFT;
 import {
   C, shade, frame, realm, lampPost, studio, tavern, bigTent, caravan, manor, stiltHut, canopyTree, pine, twistedTree, deadTree, glowShroom, stoneWall, picketFence, mothPillar, carriage, fountain, well, noticeboard, stall, bench,
@@ -169,11 +171,79 @@ function groundTexture() {
   // Typed pixels preserve RGB under zero coverage; canvas premultiplication would lose it.
   const t = new THREE.DataTexture(texels,W,H);t.colorSpace=THREE.SRGBColorSpace;t.minFilter=THREE.LinearMipmapLinearFilter;t.magFilter=THREE.LinearFilter;t.generateMipmaps=true;t.anisotropy=4;t.needsUpdate=true;return t;
 }
-export function buildGround() {
+// Stone stair solids replace the ground inside their actual tread envelope.
+// A coarse terrain triangle can otherwise borrow height from the neighbouring
+// terrace and cut through several risers, even though HN's walking slope is right.
+const STAIR_TREAD_INSET = .05, STAIR_TREAD_OVERHANG = .01;
+const STAIR_GROUND_CUTS = RAMPS.filter(r => !r.bridge && r.id !== "moor-ramp").map(r => {
+  const q = spreadRect(r), along = r.axis === "z", seam = .00001;
+  return { x0: q.x0 + (along ? STAIR_TREAD_INSET : -STAIR_TREAD_OVERHANG) - seam,
+    x1: q.x1 + (along ? -STAIR_TREAD_INSET : STAIR_TREAD_OVERHANG) + seam,
+    z0: q.z0 + (along ? -STAIR_TREAD_OVERHANG : STAIR_TREAD_INSET) - seam,
+    z1: q.z1 + (along ? STAIR_TREAD_OVERHANG : -STAIR_TREAD_INSET) + seam };
+});
+// Convex half-plane clipping carries the original position, UV and smooth
+// normal through each cut. Vertex index8 is assigned only when a piece survives.
+function groundHalfPlane(polygon, axis, edge, greater) {
+  if (!polygon.length) return [];
+  const out = []; let a = polygon[polygon.length - 1], aIn = greater ? a[axis] >= edge : a[axis] <= edge;
+  for (const b of polygon) {
+    const bIn = greater ? b[axis] >= edge : b[axis] <= edge;
+    if (aIn !== bIn) {
+      const t = (edge - a[axis]) / (b[axis] - a[axis]), cut = new Array(9);
+      for (let k = 0; k < 8; k++) cut[k] = a[k] + (b[k] - a[k]) * t;
+      cut[axis] = edge; cut[8] = -1; out.push(cut);
+    }
+    if (bIn) out.push(b);
+    a = b; aIn = bIn;
+  }
+  return out;
+}
+function groundOutsideStair(polygon, cut) {
+  let remainder = polygon; const outside = [];
+  for (const [axis, edge, greater] of [[0, cut.x0, true], [0, cut.x1, false], [2, cut.z0, true], [2, cut.z1, false]]) {
+    const piece = groundHalfPlane(remainder, axis, edge, !greater);
+    if (piece.length >= 3) outside.push(piece);
+    remainder = groundHalfPlane(remainder, axis, edge, greater);
+    if (remainder.length < 3) break;
+  }
+  return outside;
+}
+
+// DOM-free so the actual emitted triangles can be checked against the real
+// treads. The original grid, UVs and smooth normals outside cuts stay unchanged.
+export function buildGroundGeometry() {
   const g = GROUND_SPREAD, st = g.step, nx = Math.round((g.x1 - g.x0) / st), nz = Math.round((g.z1 - g.z0) / st), pos = new Float32Array((nx + 1) * (nz + 1) * 3), uv = new Float32Array((nx + 1) * (nz + 1) * 2), idx = [];
   for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = g.x0 + i * st, z = g.z0 + j * st, k = j * (nx + 1) + i; pos.set([x, HN(x, z), -z], k * 3); uv.set([i / nx, j / nz], k * 2); }
   for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, c = a + nx + 1, d = c + 1; idx.push(a, b, c, b, d, c); }
   const geo = new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.BufferAttribute(pos, 3)); geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2)); geo.setIndex(idx); geo.computeVertexNormals();
+  const originalNormals = geo.attributes.normal.array, positions = Array.from(pos), uvs = Array.from(uv), normals = Array.from(originalNormals), kept = [];
+  const vertex = i => [pos[i * 3], pos[i * 3 + 1], -pos[i * 3 + 2], uv[i * 2], uv[i * 2 + 1], originalNormals[i * 3], originalNormals[i * 3 + 1], originalNormals[i * 3 + 2], i];
+  const index = v => {
+    if (v[8] >= 0) return v[8];
+    v[8] = positions.length / 3; positions.push(v[0], v[1], -v[2]); uvs.push(v[3], v[4]);
+    const length = Math.hypot(v[5], v[6], v[7]) || 1; normals.push(v[5] / length, v[6] / length, v[7] / length); return v[8];
+  };
+  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
+    const x = g.x0 + i * st, z = g.z0 + j * st, a = j * (nx + 1) + i, b = a + 1, c = a + nx + 1, d = c + 1;
+    let cuts = null;
+    for (const cut of STAIR_GROUND_CUTS) if (x < cut.x1 && x + st > cut.x0 && z < cut.z1 && z + st > cut.z0) (cuts ??= []).push(cut);
+    if (!cuts) { kept.push(a, b, c, b, d, c); continue; }
+    for (const triangle of [[a, b, c], [b, d, c]]) {
+      let pieces = [triangle.map(vertex)];
+      for (const cut of cuts) pieces = pieces.flatMap(piece => groundOutsideStair(piece, cut));
+      for (const polygon of pieces) for (let k = 1; k < polygon.length - 1; k++) {
+        const v = polygon[0], w = polygon[k], q = polygon[k + 1], area = (w[0] - v[0]) * (q[2] - v[2]) - (w[2] - v[2]) * (q[0] - v[0]);
+        if (Math.abs(area) > 1e-10) kept.push(index(v), index(w), index(q));
+      }
+    }
+  }
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3)); geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2)); geo.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3)); geo.setIndex(kept);
+  geo.userData.stairCutouts = { count: STAIR_GROUND_CUTS.length, originalVertices: pos.length / 3, originalTriangles: idx.length / 3 };
+  return geo;
+}
+export function buildGround() {
+  const geo = buildGroundGeometry();
   const mesh = new THREE.Mesh(geo, applyGrassDetail(new THREE.MeshStandardMaterial({ map: groundTexture(), roughness: 1, metalness: 0 })));
   mesh.receiveShadow = true; mesh.name = "village-ground"; return native(mesh);
 }
@@ -292,9 +362,9 @@ export function buildPaving() {
 }
 
 // Glossy water: the moat round the Quarry's island, the Marsh's pools, the pond, the well and the knot gardens' fountains.
-export function buildWater() {
-  const group = new THREE.Group(), material = new THREE.MeshPhongMaterial({ color: 0x2f6f9c, emissive: 0x0b2236, specular: 0xc8d0ff, shininess: 90, transparent: true, opacity: .92 });
-  const marsh = new THREE.MeshPhongMaterial({ color: 0x1f5a60, emissive: 0x0a2a2e, specular: 0xb0ffe8, shininess: 70, transparent: true, opacity: .9 });
+export function buildWater({ waterClock = createVillageWaterClock() } = {}) {
+  const group = new THREE.Group(), material = createVillageWaterMaterial({ clock: waterClock });
+  const marsh = createVillageWaterMaterial({ clock: waterClock, color: 0x1f5a60, emissive: 0x0a2a2e, specular: 0x566d63, shininess: 85, opacity: .9 });
   const disc = (x, z, rx, rz, y, m = material) => { const geo = new THREE.CircleGeometry(1, 40); geo.scale(rx, rz, 1); const mesh = new THREE.Mesh(geo, m); mesh.rotation.x = -Math.PI / 2; mesh.position.set(x, y, -z); mesh.receiveShadow = true; group.add(mesh); };
   const sheet = (x0, z0, x1, z1, y, m = material) => { const mesh = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), m); mesh.rotation.x = -Math.PI / 2; mesh.position.set((x0 + x1) / 2, y, -(z0 + z1) / 2); mesh.receiveShadow = true; group.add(mesh); };
   for (const w of WATERS) {
@@ -320,6 +390,7 @@ const MOOR_CLEAR = [[97, 42, 5.2], [94, 31.5, 4], [114, 16, 3.4], [115.5, 50, 2.
 const GRASS = {
   meadow: { h: .22, flowers: true, colours: [0x557b48,0x6b8853,0x74975a,0x4a734c] },
   lawn: { h: .32, flowers: true, colours: [0x4f8a36, 0x5b9a3e, 0x67a644, 0x46802f, 0x76ad4a, 0x84b04e, 0x9aa848] },
+  park: { h: .14, flowers: false, colours: [0x496f3b, 0x557b43, 0x63884b, 0x416737] },
   moss: { h: .26, flowers: true, colours: [0x3a6a52, 0x467a5c, 0x52866a, 0x356048, 0x5a7a5a] },
   heather: { h: .4, flowers: true, colours: [0x6a4a7a, 0x7d5a8a, 0x8a6a9a, 0x9a8a50, 0x5a4a6a, 0xa88ab8] },
 };
@@ -328,10 +399,11 @@ const GRASS = {
 // side it opened from, except where a road drawn across it runs or water lies.
 const onRoad = (roads, x, z) => roads.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + .25 && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + .25));
 export function grassAt(x, z) {
+  if (inVillageNeighbourhood(x, z)) return null;
   const [gx, gz] = gather(x, z);
   if (!isGap(x, z)) return grassOnGrid(gx, gz);
   if (onRoad(ROADS_SPREAD, x, z) || isWater(gx, gz) || inTownPlaza(x, z) || inTownGate(x, z)) return null;
-  if (inTownSquare(x, z)) return GRASS.lawn;
+  if (inTownSquare(x, z)) return GRASS.park;
   if (gz < 0) return Math.sin(x * 3.11 + z * 7.01) > 0 ? null : GRASS.meadow;
   return grassOnGrid(gx, gz) ?? (gx > -1 && gx < 121 && gz < GREEN_NORTH + 1.5 ? GRASS.lawn : GRASS.moss);
 }
@@ -591,8 +663,8 @@ export function buildTerrainWorks({ gates = true } = {}) {
     for (let k = 0; k < steps; k++) {
       const t0 = k / steps, t1 = (k + 1) / steps, a = (along ? S.z0 : S.x0) + len * t0, b = (along ? S.z0 : S.x0) + len * t1, y = S.from + (S.to - S.from) * ((t0 + t1) / 2) + Math.abs(S.to - S.from) / steps / 2, m = (a + b) / 2;
       const cx = along ? (S.x0 + S.x1) / 2 : m, cz = along ? m : (S.z0 + S.z1) / 2;
-      v.block(cx, base, -cz, along ? wid - .1 : b - a + .02, y - base, along ? b - a + .02 : wid - .1, vary(pick(pal, r), .04, r));
-      v.block(cx, y - .04, -cz, along ? wid - .1 : b - a + .02, .06, along ? b - a + .02 : wid - .1, vary(pick(pal, r), .03, r));
+      v.block(cx, base, -cz, along ? wid - STAIR_TREAD_INSET * 2 : b - a + STAIR_TREAD_OVERHANG * 2, y - base, along ? b - a + STAIR_TREAD_OVERHANG * 2 : wid - STAIR_TREAD_INSET * 2, vary(pick(pal, r), .04, r));
+      v.block(cx, y - .04, -cz, along ? wid - STAIR_TREAD_INSET * 2 : b - a + STAIR_TREAD_OVERHANG * 2, .06, along ? b - a + STAIR_TREAD_OVERHANG * 2 : wid - STAIR_TREAD_INSET * 2, vary(pick(pal, r), .03, r));
     }
     for (const side of [-1, 1]) {
       for (let k = 0; k <= Math.round(len / .7); k++) { const t = k / Math.round(len / .7), y = S.from + (S.to - S.from) * t, x = along ? (side < 0 ? S.x0 : S.x1) : S.x0 + len * t, z = along ? S.z0 + len * t : (side < 0 ? S.z0 : S.z1); v.block(x, base, -z, .5, y + .9 - base, .5, vary(pick(pal, r), .05, r)); v.block(x, y + .9, -z, .58, .1, .58, C.stone[3]); }

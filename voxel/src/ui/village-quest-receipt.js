@@ -7,6 +7,7 @@ import { decorById } from "../rules/house.js";
 import { costumeById } from "../rules/wardrobe.js";
 import { villageItemIcon } from "./village-item-markup.js";
 import { villageUIIcon } from "./village-ui-icon-markup.js";
+import { expansionRewardMarkup } from "./village-expansion-pages.js";
 
 const money = amount => "£" + Math.floor(amount).toLocaleString("en-GB");
 const humanise = id => String(id ?? "Reward").replace(/[-_:]+/g, " ");
@@ -30,33 +31,64 @@ export function villageQuestReceiptData(event) {
 export function createVillageQuestReceipt({ mount = document.body, onOpenQuests, now = () => performance.now(), duration = 5000 } = {}) {
   const host = document.createElement("aside"); host.id = "village-quest-receipt"; host.hidden = true;
   host.setAttribute("role", "status"); host.setAttribute("aria-live", "polite"); host.setAttribute("aria-atomic", "true");
-  host.innerHTML = `<div class="village-receipt-heading"><i class="village-receipt-seal" aria-hidden="true">${villageUIIcon("quests", 36)}<b>✓</b></i><div><small class="village-feedback-kicker">Quest complete</small><h2 class="village-receipt-title"></h2></div><button type="button" class="village-receipt-dismiss" aria-label="Dismiss quest receipt">×</button></div><div class="village-receipt-rewards" aria-label="Rewards received"></div><p class="village-receipt-note">Rewards added to your collection.</p><button type="button" class="village-receipt-journal" hidden>Open quests</button>`;
+  host.innerHTML = `<div class="village-receipt-heading"><i class="village-receipt-seal" aria-hidden="true">${villageUIIcon("quests", 36)}<b>✓</b></i><div><small class="village-feedback-kicker">Quest complete</small><h2 class="village-receipt-title"></h2></div><button type="button" class="village-receipt-dismiss" aria-label="Dismiss notification">×</button></div><div class="village-receipt-rewards" aria-label="Rewards received"></div><div class="village-receipt-chapter-rewards" hidden></div><p class="village-receipt-note">Rewards added to your collection.</p><p class="village-receipt-next" hidden><small></small><b></b><span></span></p><button type="button" class="village-receipt-journal" hidden>Open quests</button>`;
   mount.append(host);
   const title = host.querySelector(".village-receipt-title"), rewards = host.querySelector(".village-receipt-rewards"), note = host.querySelector(".village-receipt-note"), journal = host.querySelector(".village-receipt-journal");
+  const kicker = host.querySelector(".village-feedback-kicker"), chapterRewards = host.querySelector(".village-receipt-chapter-rewards"), next = host.querySelector(".village-receipt-next");
   const seen = new Set(), queue = []; let current = null, remaining = 0, last = now(), fadeAt = null, blocked = false, disposed = false;
   const life = Math.min(8000, Math.max(3000, Number(duration) || 5000));
   function hide() { host.hidden = true; host.classList.remove("is-leaving"); current = null; fadeAt = null; }
   function show(data) {
-    current = data; remaining = life; fadeAt = null; last = now();
-    host.classList.remove("is-leaving"); host.dataset.quest = data.id; title.textContent = data.title; rewards.replaceChildren();
+    current = data; remaining = data.duration ?? life; fadeAt = null; last = now();
+    host.classList.remove("is-leaving"); host.dataset.quest = data.id; host.dataset.kind = data.kind ?? "quest"; title.textContent = data.title; rewards.replaceChildren();
+    kicker.textContent = data.kind === "chapter" ? "Chapter complete" : data.kind === "message" ? "Village news" : data.kind === "milestone" ? "Back at the farm" : "Quest complete";
     for (const reward of data.rewards) {
       const chip = document.createElement("span"); chip.className = "village-receipt-chip";
       if (reward.icon) { const art = document.createElement("i"); art.setAttribute("aria-hidden", "true"); art.innerHTML = villageItemIcon(reward.icon); chip.append(art); }
       const label = document.createElement("span"); label.textContent = reward.label; chip.append(label); rewards.append(chip);
     }
     rewards.hidden = !data.rewards.length; rewards.scrollTop = 0;
-    note.textContent = data.rewards.length ? "Rewards added to your collection." : "Your story journal is up to date.";
-    journal.hidden = typeof onOpenQuests !== "function"; host.hidden = blocked;
+    chapterRewards.hidden = !data.rewardMarkup; chapterRewards.innerHTML = data.rewardMarkup ?? "";
+    note.textContent = data.detail ?? (data.rewards.length ? "Rewards added to your collection." : "Your story journal is up to date."); note.hidden = ["message", "milestone"].includes(data.kind);
+    next.hidden = !data.next;
+    next.querySelector("small").textContent = data.next?.open ? "Next chapter" : "Coming next";
+    next.querySelector("b").textContent = data.next?.title ?? "";
+    next.querySelector("span").textContent = data.next?.open ? "" : data.next?.reason ?? "";
+    journal.hidden = ["message", "milestone"].includes(data.kind) || typeof onOpenQuests !== "function"; host.hidden = blocked;
+  }
+  function enqueue(data, key) {
+    if (disposed || !data || seen.has(key)) return false;
+    const important = data.kind !== "message";
+    if (queue.length + (current ? 1 : 0) >= 4) {
+      // A friendship update must not consume the chapter's only receipt slot.
+      const routine = important ? queue.findLastIndex(row => row.kind === "message") : -1;
+      if (routine >= 0) queue.splice(routine, 1);
+      else if (important && current?.kind === "message") hide();
+      else return false;
+    }
+    seen.add(key);
+    const routine = important ? queue.findIndex(row => row.kind === "message") : -1;
+    if (routine >= 0) queue.splice(routine, 0, data); else queue.push(data);
+    return true;
   }
   host.querySelector(".village-receipt-dismiss").addEventListener("click", hide);
   journal.addEventListener("click", () => { if (!current || blocked || disposed) return; const id = current.id; hide(); onOpenQuests?.(id); });
   return {
     notify(event) {
-      if (disposed) return false;
-      const data = villageQuestReceiptData(event); if (!data || seen.has(data.id)) return false;
-      seen.add(data.id);
-      if (queue.length + (current ? 1 : 0) >= 4) return false;
-      queue.push(data); return true;
+      const data = villageQuestReceiptData(event);
+      return enqueue(data, `quest:${data?.id}`);
+    },
+    // Snapshot presentation only: the rule transaction has already settled.
+    // Both kinds share one queue and keep their full visible reading time.
+    notifyChapter(data) {
+      if (!data?.id || !data.title) return false;
+      return enqueue({ id: String(data.id), kind: "chapter", title: String(data.title), rewards: [], duration: 9000,
+        detail: String(data.change ?? "The village remembers what you did."), rewardMarkup: expansionRewardMarkup(data.rewards ?? []),
+        next: data.next ? { title: String(data.next.title ?? ""), open: !!data.next.open, reason: String(data.next.reason ?? "") } : null }, `chapter:${data.id}`);
+    },
+    notifyMessage(data) {
+      if (!data?.id || !data.title) return false;
+      return enqueue({ id: String(data.id), kind: data.important ? "milestone" : "message", title: String(data.title), rewards: [], duration: life }, `message:${data.id}`);
     },
     tick({ blocked: suspended = false } = {}) {
       if (disposed) return;

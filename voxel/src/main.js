@@ -61,6 +61,7 @@ import { leaveHouse } from "./play-ways.js";
 import { createPlaceVeil } from "./ui/place-veil.js";
 import { createCarvingUI } from "./ui/carving-ui.js";
 import { createVillageGame } from "./village-game.js";
+import { createDeferredFarmNews } from "./ui/deferred-farm-news.js";
 
 const SAVE_KEY = "pumpkin-patch-voxel-reference-v1";
 
@@ -280,8 +281,8 @@ function handle(e) {
   if (e.type === "cooking-started") showFirstCooking(state,e.recipe,e.station,save);
   if (e.type === "visitor-event") whisper(`${e.event === "vip" ? "The midnight court" : "Harvest rush"}: ${e.count} guests on their way`, "guest");
   if (e.type === "vip-arrived") whisper("Baron Brassbolt has arrived, purse bulging", "guest");
-  if (e.type === "hollow-restored") { notice("Restoration complete. The Hollow House is ready to open."); save(); audio.tone(880); }
-  if (e.type === "recipe-discovered") { notice(`Recipe discovered: ${M.RECIPE_BY_ID[e.recipe]?.name ?? "a new dish"}.`); save(); audio.tone(880); }
+  if (e.type === "hollow-restored") { farmNews("Restoration complete. The Hollow House is ready to open.", "hollow-restored"); save(); audio.tone(880); }
+  if (e.type === "recipe-discovered") { farmNews(`Recipe discovered: ${M.RECIPE_BY_ID[e.recipe]?.name ?? "a new dish"}.`, `recipe:${e.recipe}`); save(); audio.tone(880); }
   if (e.type === "ingredient-delivery") { whisper("Ingredients delivered to the pantry", "kitchen"); save(); audio.tone(660); }
   if (e.type === "cooking-complete") { whisper("A fresh batch is ready", "kitchen"); save(); }
   if (e.type === "carving-sold") { scene.sale(e.fee, "carving"); audio.tone(760); if (state.carvingStand.carved === 1) whisper(`Your first guest lantern: ${M.STAND_DESIGN_BY_ID[e.design].name} for ${money(e.fee)}`, "coin"); }
@@ -298,7 +299,7 @@ function handle(e) {
   if (e.type === "order-missed") whisper(`${M.orderFrom(e.order)}’s contract ran out of time`, "warn");
   if (e.type === "wanted") {
     const name = M.VARIETIES[e.variety].name, more = Math.round(M.WANTED.bonus * 100);
-    notice(`Wanted now: ${name} pumpkins · up to ${more}% more for ${Math.round(M.WANTED.seconds / 60)} minutes`);
+    farmNews(`Wanted now: ${name} pumpkins · up to ${more}% more for ${Math.round(M.WANTED.seconds / 60)} minutes`);
     if (state.wanted.serial === 1) say("natalie", `The village has gone mad for ${name} pumpkins! Keep some in the barn and they’ll pay up to ${more}% more for them.`);
   }
   if (e.type === "chat-line") scene.chatLine(e);
@@ -308,7 +309,7 @@ function handle(e) {
   if (e.type === "water") { scene.sendTo(e.plot, e.owner); const p = PLOTS[e.plot]; if (p) scene.actionBurst("water", p.x, p.z); }
   if (e.type === "memory") {
     const m = M.MEMORIES.find((x) => x.id === e.id);
-    notice("New scrapbook memory: " + m.title);
+    farmNews("New scrapbook memory: " + m.title, `memory:${e.id}`);
     // An older save can meet several new memories at once: chime only once.
     if (performance.now() - memoryChimeAt > 800) { audio.tone(880); memoryChimeAt = performance.now(); }
     if (e.id === "first") say("shane", "Five pumpkins in! Told you this spade was a solid investment.");
@@ -410,7 +411,14 @@ function litterHint() {
 // Farm news that needs no answer (arrivals, deliveries, a new contract): a
 // slim line under the HUD that slips away, three at most, so the farm stays
 // in view. notice() is for the replies to what the player just did.
+const deferredFarmNews = createDeferredFarmNews();
+function farmNews(text, milestone) {
+  if (!villageGame?.active) { notice(text); return; }
+  if (milestone) villageGame.onEvent({ type: "farm-milestone", id: milestone, title: text });
+  else whisper(text, "farm");
+}
 function whisper(text, kind = "") {
+  if (villageGame?.active) { deferredFarmNews.add(text, kind); return; }
   const box = $("whispers"), line = document.createElement("p");
   line.className = "whisper" + (kind ? " " + kind : ""); line.textContent = text; box.append(line);
   while (box.children.length > 3) box.firstElementChild.remove();
@@ -759,11 +767,11 @@ setTimeout(() => {
   const day = 864e5, last = Date.parse(prefs.lastExport ?? "") || 0, nudged = Date.parse(prefs.saveNudgeAt ?? "") || 0;
   if (state.earned < 2000 || Date.now() - last < 7 * day || Date.now() - nudged < day) return;
   prefs.saveNudgeAt = new Date().toISOString(); savePrefs();
-  notice("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
+  farmNews("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
 }, 60000);
 villageGame = createVillageGame({ state: () => state, scene, save, notice, narration, savePrefs, prefs, onGatherSound: event => audio.gather(event), onFullscreen: () => $("fullscreen").click(),
   closeMenus() { playControls?.releaseInput?.(); closeSheet(); upgradeMenu?.close(); home.tools.select(null); lifeActivity?.cancel(); playControls?.close(); playControls?.cursor.hide(); },
-  onLeave() { playControls?.releaseInput?.(); audio.setVillageActive(false); renderPlace(); render(); }, onRender() { audio.setVillageActive(true); renderPlace(); },
+  onLeave() { playControls?.releaseInput?.(); audio.setVillageActive(false); renderPlace(); render(); for (const row of deferredFarmNews.take()) whisper(row.text, row.kind); }, onRender() { clearTimeout(noticeTimer); $("notice").classList.remove("show"); audio.setVillageActive(true); renderPlace(); },
 });
 function openVillage() { const opened=villageGame.open();if(opened)villageGateArmed=false;return opened; }
 function collectVillagePage(id) { const events=M.findObject(state,id);if(!events)return false;for(const event of events)handle(event);save();notice("A page of Elowen's letter · bring it back to the village");return true; }

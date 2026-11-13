@@ -22,6 +22,12 @@ import { createHallLife } from "./village-hall-life.js";
 import { finishVoxels, setLampNear } from "./voxel-finish.js";
 import { spread, gather } from "./rules/village-spread.js";
 import { buildTownSquare } from "./village-town-square.js";
+import { buildVillageNeighbourhoods } from "./village-neighbourhoods.js";
+import { installVillageNeighbourhoodVisibility, tickVillageNeighbourhoodVisibility, withVillageNeighbourhoodVisibilityRestored } from "./village-neighbourhood-visibility.js";
+import { createVillageDistrictAtmosphere } from "./village-district-atmosphere.js";
+import { createVillageContactShadows, createVillageContactActorSource, createVillageHallContactGround, createVillageContactSurfaceIndex } from "./village-contact-shadows.js";
+import { createVillageWaterClock } from "./village-water-material.js";
+import { villageNeighbourhoodClusters } from "./content/village-neighbourhoods.js";
 import { TOWN_LAMPS } from "./content/village-town-square.js";
 import { VILLAGE_GRADE } from "./picture-grade.js";
 import { createLampGlow } from "./village-glow.js";
@@ -91,6 +97,9 @@ export function createVillageView(canvas, state, hooks = {}) {
   const HALL_LAMP = { ...LAMP, near: 0 };
   const lampAs = (spec, scale = 1) => { setLampNear(spec.near); pool.forEach((l) => { l.userData.base = spec.power * scale; l.distance = spec.reach; l.decay = spec.decay; }); };
   const pool = Array.from({ length: 8 }, () => { const l = new THREE.PointLight(0xff9a40, LAMP.power, LAMP.reach, LAMP.decay); scene.add(l); return l; });
+  const districtAtmosphere = createVillageDistrictAtmosphere({ scene, hemi, sun, lamps: pool }), atmospherePoint = { x: 0, z: 0 }, waterClock = createVillageWaterClock();
+  const contactShadows = createVillageContactShadows(), contactActors = createVillageContactActorSource(); scene.add(contactShadows.group);
+  const surfaceContactGround = createVillageContactSurfaceIndex(groundAt);
   setLampNear(LAMP.near);
   const camera = new THREE.PerspectiveCamera(45, 1, .2, 900);
   const controls = new OrbitControls(camera, canvas); controls.enabled = false; controls.enableDamping = true; controls.dampingFactor = .12;
@@ -101,6 +110,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   const patches = [];
   // The lamps where they now stand, and the parts rebuilt as the village changes, moved into place as they are made.
   const LAMPS_AT = [...LAMPS.map((l) => { const [x, z] = spread(l.x, l.z); return { ...l, x, z }; }), ...TOWN_LAMPS];
+  let surfaceLamps = LAMPS_AT;
   const oldSpot = (f) => gather(f.x / K, f.z / K);
   function spreadPart(name, g) { if (name === "stall") spreadWhole(g, ...oldSpot(FIXTURES.stall)); else if (name === "bench") spreadWhole(g, ...oldSpot(FIXTURES.bench)); else spreadVillage(g); }
   let active = false, built = false, firstView = true, keys = {}, parts = {}, tour = null, time = 0, horizon = null, sky = null, mist = null, bats = null, life = null, grass = null, lampGlow = null, town = null;
@@ -130,7 +140,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     get status() { return dialogueFocus.status; },
   };
   const folk = createVillageFolk({ scene, state, getState: () => state, reducedMotion, pickables, pickMaterial, ground: groundAt, everyone: () => !!hooks.everyone?.(), style: hooks.castStyle?.() ?? "sprite" });
-  let atmosphere = null, villageGreen = null, followSubject = null;
+  let atmosphere = null, villageGreen = null, followSubject = null, neighbourhoods = null;
   const decor = new Map(), pages = new Map();
   const selection = new THREE.Group(); scene.add(selection); selection.visible = false;
   let outline = null, ghost = null, ghostId = null, override = null, framed = "";
@@ -141,15 +151,17 @@ export function createVillageView(canvas, state, hooks = {}) {
     expansionWorld.build();pickables.push(...expansionWorld.pickables);
     horizon = buildHorizon(); sky = horizon.userData.sky; horizon.remove(sky); scene.add(sky);
     const works = buildTerrainWorks({gates:false}), green = buildGreen(), beyond = buildBeyond({closedGates:false}), woods = buildWoods(); villageGreen = green;
-    const earth = buildGround(), paving = buildPaving(), water = buildWater();
+    const earth = buildGround(), paving = buildPaving(), water = buildWater({ waterClock });
     // Everything drawn on the old grid moves apart into the spread village; the rest was drawn there already.
     for (const g of [water, works, green, beyond]) spreadVillage(g);
     // The chimneys the village noted as it was built smoke where they now stand.
     const smoke = [green, beyond].flatMap((g) => g.userData.marks?.smoke ?? []).map(([x, y, z]) => ({ x, y, z: -z }));
     mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: REALM.z0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
     // The town square in the ground the spread opened north of the Green, drawn there whole.
-    town = buildTownSquare();
+    town = buildTownSquare({ waterClock });
     root.add(earth, paving, water, works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group, town);
+    surfaceContactGround.replace("acre", scene.getObjectByName("The Crooked Acre"));
+    surfaceContactGround.replace("terrain-works", works);
     atmosphere = createVillageAtmosphere(); root.add(atmosphere.group);
     // Every built voxel gets the village's finish: finer blocks, joints and weathering shaded onto its faces.
     finishVoxels(scene);
@@ -169,6 +181,19 @@ export function createVillageView(canvas, state, hooks = {}) {
     for (const [id, p] of Object.entries(INSIDES)) { const [nx, nz] = DOOR_NORMAL[p.door.facing]; hit(nx ? 1.2 : 3.4, 5.8, nx ? 3.4 : 1.2, { type: "village-door", id }, (p.door.x + nx * .5) * K, (p.door.z + nz * .5) * K); }
   }
   // Rebuilds a part when its key changes.
+  // Native gardens yield to saved furniture; rebuilding only when that mask
+  // changes keeps routine gathering and story refreshes out of this batch.
+  function syncNeighbourhoods() {
+    const clusters = villageNeighbourhoodClusters(state), key = clusters.map(c => c.id).join("|");
+    if (keys.neighbourhoods === key) return;
+    keys.neighbourhoods = key;
+    // The new walks borrow the existing eight-light pool, and hidden clusters
+    // leave no invisible light source beside the player's own furniture.
+    surfaceLamps = [...LAMPS_AT, ...clusters.flatMap(c => (c.lanterns ?? []).map(l => ({ x: l.x, z: l.z, y: 2.25 })))];
+    if (neighbourhoods) { root.remove(neighbourhoods); neighbourhoods.userData.dispose?.(); }
+    neighbourhoods = buildVillageNeighbourhoods(clusters); finishVoxels(neighbourhoods); installVillageNeighbourhoodVisibility(neighbourhoods); root.add(neighbourhoods);
+    surfaceContactGround.replace("neighbourhoods", neighbourhoods);
+  }
   function part(name, key, make) {
     if (keys[name] === key) return; keys[name] = key;
     if (parts[name]) { root.remove(parts[name]); dispose(parts[name]); }
@@ -177,6 +202,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   function sync() {
     buildOnce();
     const v = state.village;
+    syncNeighbourhoods();
     part("stall", String(v.unlocks.includes("stall")), () => buildStall(v.unlocks.includes("stall")));
     part("bench", String(v.effects.includes("bench")), () => buildBench(v.effects.includes("bench")));
     part("homes", JSON.stringify(v.built), () => buildHomes(v.built)); life?.setBuilt(v.built);
@@ -242,7 +268,8 @@ export function createVillageView(canvas, state, hooks = {}) {
     const stir = createHallLife(built.userData.marks); group.add(stir.group);
     let host = null;
     if (plan.host) host = hallHost(plan);
-    const entry = { id, plan, group, lamps, host, stir }; insides.set(id, entry); return entry;
+    const contactGround = createVillageHallContactGround(v.solid, { scale: K, originX: INSIDE.x, originZ: INSIDE.z });
+    const entry = { id, plan, group, lamps, host, stir, contactGround }; insides.set(id, entry); return entry;
   }
   function hallHost(plan) {
     const host = makeResident(plan.host, { style: folk.style });
@@ -456,7 +483,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     const t = tour ? focus : controls.target;
     if(expansionWorld.active){const near=[...expansionWorld.lamps].sort((a,b)=>a.distanceToSquared(t)-b.distanceToSquared(t));pool.forEach((l,i)=>{if(near.length){l.position.copy(near[i%near.length]);l.visible=true;l.userData.base=64;l.color.set(i%2?0x8ebacc:0xe7b77f);}else l.visible=false;});}
     else if (inside) { const near = [...inside.lamps].sort((a, b) => a.distanceToSquared(t) - b.distanceToSquared(t)); pool.forEach((l, i) => { const p = near[i % near.length]; l.position.copy(p); l.visible = true; }); }
-    else { const near = [...LAMPS_AT].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z)); pool.forEach((l, i) => { const lamp = near[i]; l.visible=true; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); }); }
+    else { const near = [...surfaceLamps].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z)); pool.forEach((l, i) => { const lamp = near[i]; l.visible=true; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); }); }
     sun.target.position.copy(t); sun.position.copy(t).addScaledVector(SUN, 100); sun.target.updateMatrixWorld();
     // Walking, the moon's shadows only matter round the walker: a tighter box draws fewer casters, and sharper.
     const reachShadow = following ? 28 : 44, sc = sun.shadow.camera;
@@ -465,8 +492,47 @@ export function createVillageView(canvas, state, hooks = {}) {
     if (++shadowTick % 2 === 0 || tour) sun.shadow.needsUpdate = true;
     if (sky) sky.position.copy(camera.position);
   }
+  const contactGroundAt = (x, z) => inside ? inside.contactGround.heightAt(x, -z) : expansionWorld.active ? expansionWorld.ground(x, z) : surfaceContactGround.heightAt(x, z);
+  function updateContactShadows() {
+    contactShadows.update(contactActors.collect(scene, contactGroundAt));
+  }
+  // Surface visibility and moonlight are borrowed only for a single off-screen map photograph.
+  function withMapSurface(fn) {
+    buildOnce();
+    const visibility = [], opacity = new Map();
+    scene.traverse(o => { visibility.push([o, o.visible]); });
+    const background = scene.background, fog = scene.fog, exposure = scene.userData.exposure;
+    const lights = [hemi, sun, ...pool].map(l => ({ light: l, intensity: l.intensity, colour: l.color.clone(), ground: l.groundColor?.clone(), position: l.position.clone() }));
+    const target = sun.target.position.clone();
+    try {
+      root.visible = true; root.traverse(o => { if (o.isGroup) o.visible = true; });
+      for (const p of patches) p.chunk.visible = true;
+      const upper = root.getObjectByName('moth-tree-upper');
+      upper?.traverse(o => { o.visible = true; for (const m of [].concat(o.material ?? [])) { if (!opacity.has(m)) opacity.set(m, m.opacity); m.opacity = 1; } });
+      for (const g of [sky, horizon, mist, bats?.group, life?.group, grass?.group, atmosphere?.group, contactShadows.group, blight.group, shopMarkers.group, lampGlow?.group, selection, companion?.root, ...handTools.values()]) if (g) g.visible = false;
+      for (const person of folk.people.values()) person.root.visible = false;
+      for (const entry of insides.values()) { entry.group.visible = false; if (entry.host) entry.host.root.visible = false; }
+      for (const d of decor.values()) d.group.visible = true;
+      for (const p of pages.values()) p.group.visible = false;
+      // Resources use the current play camera's bounded batch; omit that moving batch from this structural image.
+      resources.group.visible = false;
+      scene.background = new THREE.Color(0x100c1c); scene.fog = null; scene.userData.exposure = 1.2;
+      hemi.intensity = NIGHT.hemi; hemi.color.set(NIGHT.sky); hemi.groundColor.set(NIGHT.ground); sun.intensity = NIGHT.sun; sun.color.set(0xb8c2ff);
+      sun.target.position.set((REALM.x0 + REALM.x1) * K / 2, 0, -(REALM.z0 + REALM.z1) * K / 2); sun.position.copy(sun.target.position).addScaledVector(SUN, 100);
+      for (const l of pool) { l.intensity = 0; l.visible = true; }
+      scene.updateMatrixWorld(true);
+      return districtAtmosphere.withAtlasGrade(() => withVillageNeighbourhoodVisibilityRestored(neighbourhoods, () => expansionWorld.withMapSurface(fn)));
+    } finally {
+      for (const [o, visible] of visibility) o.visible = visible;
+      for (const [m, value] of opacity) m.opacity = value;
+      scene.background = background; scene.fog = fog; scene.userData.exposure = exposure;
+      for (const s of lights) { s.light.intensity = s.intensity; s.light.color.copy(s.colour); if (s.ground) s.light.groundColor.copy(s.ground); s.light.position.copy(s.position); }
+      sun.target.position.copy(target); scene.updateMatrixWorld(true);
+    }
+  }
   return {
-    scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool, dialogueCamera,
+    scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool, dialogueCamera, withMapSurface,
+    get neighbourhoodStatus() { return neighbourhoods?.userData ?? null; },
     enterExpansionArea(id){dialogueFocus.end({immediate:true});if(inside)goOutside();const entry=expansionWorld.enter(id);if(!entry)return false;setLampNear(0);root.visible=false;for(const p of folk.people.values())p.root.visible=false;resources.group.visible=false;shopMarkers.hide();for(const h of pickables)if(!['expansion-activity','expansion-portal'].includes(h.userData.type))h.visible=false;if(sky)sky.visible=false;sun.intensity=.12;hemi.intensity=1.3;hemi.color.set(0xc6c3dd);hemi.groundColor.set(0x817185);scene.background.set(0x100d19);scene.fog.color.set(0x100d19);scene.userData.exposure=1.2;following=false;return entry;},
     leaveExpansionArea(){const entry=expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity = NIGHT.sun;hemi.intensity = NIGHT.hemi;hemi.color.set(NIGHT.sky);hemi.groundColor.set(NIGHT.ground);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;following=false;lampAs(LAMP);pool.forEach(l=>{l.visible=true;l.color.set(0xff9a40);});sync();return entry;},
     get activeExpansionArea(){return expansionWorld.active;},get expansionTargets(){return [...expansionWorld.targets,...(!expansionWorld.active?[...folk.people].filter(([,p])=>p.root.visible).map(([id])=>({type:'village-folk',id,...folk.spotOf(id)})):[])];},expansionGroundAt:(x,z)=>expansionWorld.ground(x,z),moveExpansionWalker:(from,dx,dz)=>expansionWorld.active?expansionWorld.move(from,dx,dz):moveVillageWalker(state,from,dx,dz),setExpansionCompanion,
@@ -484,12 +550,21 @@ export function createVillageView(canvas, state, hooks = {}) {
       if(expansionWorld.active){root.visible=false;for(const p of folk.people.values())p.root.visible=false;}
       tickTour(dt); if (!tour) dialogueFocus.tick(dt);
       if (!tour && !following && !dialogueFocus.active) { framing.step(); controls.update(); }
-      const reach = inside||expansionWorld.active ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog - scene.fog.density) * Math.min(1, dt * 2);
+      const surface = !inside && !expansionWorld.active, still = reducedMotion(), at = tour ? focus : following && followSubject ? followSubject : controls.target;
+      atmospherePoint.x = at.x; atmospherePoint.z = -at.z;
+      const fogScale = surface ? districtAtmosphere.update(atmospherePoint, state.village?.clock ?? 0, { reducedMotion: still }) : 1;
+      if (surface) waterClock.tick(state.paused ? 0 : dt, { reducedMotion: still });
+      else {
+        scene.userData.grade = VILLAGE_GRADE; sun.color.set(0xb8c2ff);
+        if (inside) { hemi.color.set(NIGHT.sky); hemi.groundColor.set(NIGHT.ground); for (const lamp of pool) lamp.color.set(0xff9a40); }
+      }
+      const reach = inside||expansionWorld.active ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog * fogScale - scene.fog.density) * Math.min(1, dt * 2);
       for (const p of patches) p.chunk.visible = p.sphere.center.distanceTo(camera.position) - p.sphere.radius < reach.far;
       placeLights(); folk.tick(dt, time, camera, { paused: !!inside || !!tour || !!hooks.residentsPaused?.() || !!state.paused, reducedMotion: reducedMotion() });
       if (lampGlow) { lampGlow.group.visible = !inside && !expansionWorld.active; lampGlow.tick(time, { density: scene.fog.density, still: reducedMotion() }); }
       if (!inside&&!expansionWorld.active) { atmosphere?.tick(dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full" }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
       else resetVillageVisibility(villageGreen);
+      tickVillageNeighbourhoodVisibility(neighbourhoods, following && !tour && !inside && !expansionWorld.active ? followSubject : null, camera, dt, { reducedMotion: reducedMotion() });
       inside?.stir?.tick(time, { still: reducedMotion() });
       if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera, following && !inside&&!expansionWorld.active ? followSubject : null);
       blight.tick(dt, camera.position, !inside&&!expansionWorld.active, reducedMotion(), !!state.paused);
@@ -498,9 +573,13 @@ export function createVillageView(canvas, state, hooks = {}) {
       if (mist) for (const m of mist.children) { const u = m.userData; m.position.x = u.x + Math.sin(time * .07 + u.phase) * 2.5; m.position.z = -u.z + Math.cos(time * .05 + u.phase) * 1.5; }
       if(companion&&followSubject&&!inside){const owner={x:followSubject.x,z:-followSubject.z};companionPose=advanceExpansionCompanion(companionPose,owner,dt,{area:expansionWorld.active??'surface',heading:ownerHeading,canRegroup:!companion.root.visible,free:(x,z)=>expansionWorld.active?expansionWorld.move({x,z},0,0)&&caveCellFree(x,z):villageCellFree(state,x,z)});if(companionPose){companion.root.visible=companionPose.visible&&!inside;companion.root.position.copy(W(companionPose.x,companionPose.z,expansionWorld.ground(companionPose.x,companionPose.z)));companion.walking=companionPose.walking;companion.heading={x:companionPose.heading.x,z:-companionPose.heading.z};companion.walkDistance=companionPose.distance;folk.animate(companion,dt,time,camera);}}
       for (const p of pages.values()) { p.group.position.y = .05 + Math.sin(time * 2.3 + p.x) * .04; p.group.rotation.y = Math.sin(time * .9 + p.z) * .5; }
+      updateContactShadows();
     },
     get active() { return active; },
     get atmosphereStats() { return atmosphere?.stats() ?? null; },
+    get districtAtmosphereStats() { return districtAtmosphere.status; },
+    get contactShadowStats() { return contactShadows.stats; },
+    get waterStats() { return { time: waterClock.uniform.value, addedLights: 0, addedMeshes: 0 }; },
     get blightStats() { return blight.stats; },
     get resourceStats() { return resources.stats; },
     get shopMarkerStats() { return shopMarkers.stats; },

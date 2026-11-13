@@ -225,3 +225,5 @@ export function renderVillageChapter({ kind, id, state, trackedQuestId, itemArt,
   if (kind === "map") return renderVillageMap(s, { selectedDistrict: id, position });
   return null;
 }
+// The shared journal reuses these receipts and actions without copying rules.
+export { questCard as legacyQuestCardMarkup, questRewards as legacyQuestRewardsMarkup, friendshipKeepsakes as friendshipKeepsakesMarkup };

@@ -1,14 +1,25 @@
 import { ps5Icon } from "./dualsense-icons.js";
 // The same nearby action is named on the touch button, key prompt and pad legend.
-const clean = (value, limit = 64) => String(value ?? "").replace(/\s+/g, " ").trim().slice(0, limit);
+const clean = value => String(value ?? "").replace(/\s+/g, " ").trim();
 const RESOURCES = {
   logs: ["Softwood logs", "Axe"], stone: ["Stone", "Pickaxe"], herbs: ["Wild herbs", "Hands"],
   fibre: ["Meadow fibre", "Hands"], mushrooms: ["Mushrooms", "Hands"], clay: ["Clay", "Pickaxe"],
 };
 const ACTIONS = {
   "village-folk": "Talk", "village-node": "Gather", "village-door": "Enter", "village-stall": "Shop",
-  "village-noticeboard": "Quests", "village-carriage": "Return", "village-page": "Collect",
+  "village-noticeboard": "Read", "village-carriage": "Return", "village-page": "Collect",
 };
+const TARGETS = { "village-noticeboard": "Noticeboard", "village-stall": "Village stall", "village-carriage": "Farm", "village-page": "Letter page" };
+
+// Put a short verb above the complete object name, including older contexts
+// which supplied both words as one label. Neither visible nor spoken names lose
+// their ending when a story uses a longer title.
+function actionWords(context, resource) {
+  const label = clean(context?.label), target = clean(context?.target);
+  const named = /^(Read|Examine|Inspect|Collect|Gather|Enter|Search|Study|Listen|Light|Open|Solve|Repair|Restore|Visit|Follow|Place|Hang|Mine|Lift|Watch|Join|Secure|Share)\s+(.+)$/i.exec(label);
+  if (named) return { action: named[1], target: target || named[2] };
+  return { action: label || ACTIONS[context?.type] || "Interact", target: target || resource?.[0] || TARGETS[context?.type] || "" };
+}
 
 // A locked game can still use Cross in its menu. A running gather instead names
 // its progress and keeps that action unavailable until the tool swing finishes.
@@ -19,12 +30,13 @@ export function villageActionPrompt(context, { source = "keyboard", locked = fal
   const busy = !!context?.gathering || hasProgress;
   const progress = busy ? Math.max(0, Math.min(1, hasProgress ? context.progress : 0)) : null;
   const menu = !busy && (!!context?.menu || locked);
-  const action = menu ? "Select" : busy ? "Gathering" : clean(context?.label, 28) || ACTIONS[context?.type] || "Interact";
-  const target = menu ? "" : clean(context?.target ?? resource?.[0]);
-  const tool = menu ? "" : clean(context?.tool ?? resource?.[1], 28);
+  const words = actionWords(context, resource);
+  const action = menu ? "Select" : busy ? "Gathering" : words.action;
+  const target = menu ? "" : words.target;
+  const tool = menu ? "" : clean(context?.tool ?? resource?.[1]);
   const available = present && context?.available !== false;
   const ready = menu || (available && !busy && !locked);
-  const reason = !available && present ? clean(context?.reason, 100) || "Not ready yet" : "";
+  const reason = !available && present ? clean(context?.reason) || "Not ready yet" : "";
   const hint = busy ? `${Math.round(progress * 100)}%` : reason || tool;
   return { present, action, target, tool, ready, busy, menu, progress, hint,
     key: source === "pad" ? "cross" : "e",

@@ -66,7 +66,9 @@ export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale
     if (!spots.length) continue;
     const mesh = new THREE.InstancedMesh(geo, material, spots.length);
     spots.forEach(([x, z, kind, wild], i) => {
-      const h = kind.h * (.65 + r() * .5) * (1 + Math.max(0, wild) * .7), w = .85 + r() * .5;
+      // Mown grass keeps the shape of a blade. Flattening only its height
+      // used to leave wide, star-shaped fans across the short park lawn.
+      const h = kind.h * (.65 + r() * .5) * (1 + Math.max(0, wild) * .7), w = (.85 + r() * .5) * Math.min(1, Math.max(.16, h * 1.35));
       m.compose(p.set(x, height(x, z) + .01, -z), q.setFromAxisAngle(up, r() * 6.283), s.set(w, h, w)); mesh.setMatrixAt(i, m);
       mesh.setColorAt(i, c.set(kind.colours[(r() * kind.colours.length) | 0]).multiplyScalar(.92 + r() * .16));
     });

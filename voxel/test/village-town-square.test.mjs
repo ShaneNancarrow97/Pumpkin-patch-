@@ -59,7 +59,8 @@ test("the road walks from the Green through the square and under the Moonclock t
 
 test("grass grows round the square but not on its setts", () => {
   assert.equal(grassAt(TOWN.cx + 7, TOWN.cz + 6), null); assert.equal(grassAt(TOWN.cx, TOWN.gate.z), null);
-  assert.ok(grassAt(TOWN.cx - TOWN.r - 3, TOWN.cz), "lawn beyond the plaza");
+  assert.equal(grassAt(TOWN.cx - TOWN.r - 3, TOWN.cz), null, "the orchard path meets the square without grass through its gravel");
+  assert.ok(grassAt(TOWN.cx - TOWN.r - 3, TOWN.cz + 4), "open lawn remains between the garden path and plaza");
   assert.equal(inTownPlaza(TOWN.cx + TOWN.r - .5, TOWN.cz), true);
 });
 

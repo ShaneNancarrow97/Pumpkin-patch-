@@ -1,6 +1,6 @@
 # 75 — Plan: a better look, a better story, a UI facelift, a voxel upgrade, secret places
 
-Status: **plan for Codex**. Nothing here is built yet. Read handovers 73 and 74 first, then this. Each work
+Status: **roadmap for Codex**. The Done records below identify delivered portions; the remaining packages are plans. Read handovers 73 and 74 first, then this. Each work
 package (WP) below is sized to be one `contractor/*` branch and one PR into `voxel-reference`. Do them in the
 order of the roadmap at the end unless Claude Code says otherwise; each one must leave the game shippable.
 
@@ -450,4 +450,11 @@ and phone viewport), `qa/perf.mjs` numbers for look changes, the tests listed, a
 file under "Done" with anything the next package needs to know.
 
 ## Done
-(nothing yet)
+
+Atmosphere and story-presentation package: A1 district/saved-clock palettes, A3 shared ripple water and the people portion of A4 use existing render objects plus one bounded contact draw. A6 supplies both missing interiors, Granny's detailed exterior/closed attic gables and once-spread home entry gates. An exact terrain-mesh cut clears all nine stone stair footprints, including the reported Quarry defect, while retaining every original ground attribute and all walking heights. The journal now presents one followed task across legacy/main/friend stories, with folded history, consistent live HUD/map/routes and ready parallel handovers; it keeps both rule engines. B2's spine and complete 77-entry index are proposals for Claude's review, not shipped story changes. [`Atmosphere handover`](../contractor-patches/village-atmosphere/README.md) records the dependency matrix, component commits, measured budgets and exact-build validation. Full B1 migration, new puzzle families, secrets/costumes and animal contacts remain separate work.
+
+Village refinement follow-up: five named public gardens use the existing folded map list and live clear walking approaches; the compact location plaque identifies them. Individual native fruit crowns and the pavilion roof fade along blocked owner sightlines while trunks, posts, furniture and physical shadows remain. Short grass has finer proportions. Nearby world Talk prompts reject provably distant residents before collision clearance, preserving canonical boundary/counter results. [`Village refinement handover`](../contractor-patches/village-refinement/README.md) records shader/snapshot/disposal and route dependencies, exact-build verification and the scoped resolver benchmark. No new saved fields, quest or economy changes.
+
+Village cohesion follow-up: the spread gaps now have linked orchard/garden walks, 28 fruit trees, community beds, a roofed lantern pavilion, picnic and reading/work courts, meadow edges and a garden share of the existing cosmetic foot traffic. Three new scenery meshes, no extra lights; the eight-light pool follows active native lanterns. The full intended eastern town park is walkable, while all 676 resource positions, saved decor and district gates remain compatible. [`Village cohesion handover`](../contractor-patches/village-cohesion/README.md) records the shared layout/collision/grass/mask rules and verification. This is world infill, not the B1/B2 migration or new business/secret-place work.
+
+Contractor village clarity, based on lead `8da66cb`: scoped C1 tokens and input contrast; C3's map rebuilt as a cached photograph of the actual surface through a tilted orthographic camera, with projected selectable markers, Square/Acre/cave entrances and optional neighbours; C6 truthful resident whereabouts and one live approach resolver shared with activation/guidance; shared C2/C8 completion/news presentation retaining existing reading times; A9 same-route normal-renderer baseline tooling. Also repairs the signed puzzle shuffle that made authored options disappear. Full details, dependency matrix, exact-build verification and remaining scope: [`../contractor-patches/village-clarity/README.md`](../contractor-patches/village-clarity/README.md). B1/B2, new shapes, look-system changes and secret places are not included in this contract.

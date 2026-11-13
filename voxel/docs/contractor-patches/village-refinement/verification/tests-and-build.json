@@ -1,0 +1,53 @@
+{
+  "runtime_source_head": "7f06105cb49a96d9519c94245e4ec2dbd7e9796b",
+  "base_source_head": "96b40832a0d29229820526d2761d27b170f3bf02",
+  "save_version": 20,
+  "html": {
+    "bytes": 60541720,
+    "sha256": "e34c817796fa9e9fe0175357dfe8827f5d91ec587da2e8c0708553a86f6401fc"
+  },
+  "full_tests": {
+    "command": "npm test",
+    "passed": 1305,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 482525.593487,
+    "log_sha256": "8c8ec9c37c42c4e0e4d0d5c565ba5d2ed45267af496539d4a87de4308458944a"
+  },
+  "normal_browser": {
+    "command": "node tools/village-refinement-qa.mjs /tmp/Pumpkin-Patch-Village-Refined.html /tmp/village-refinement-qa/release",
+    "checks": 20,
+    "failed": 0,
+    "receipt": "browser.json",
+    "log_sha256": "55bfd7907b719b26272d0ca0b086dc7c2e4467534504ba39412f590c3b542688",
+    "harness_sha256": "fa9abb4a24f7c06331b437c27b4b70eba70c2829c6d91fe52229ead539b6d25a",
+    "ordinary_rendering": true,
+    "shader_and_console_errors": 0
+  },
+  "compatibility_checks": 54,
+  "compatibility": {
+    "command": "MOTHLIGHT_EXPECTED_SHA=e34c817796fa9e9fe0175357dfe8827f5d91ec587da2e8c0708553a86f6401fc node tools/mothlight-standard-smoke.mjs /tmp/Pumpkin-Patch-Village-Refined.html",
+    "checks": 54,
+    "failed": 0,
+    "draws_held": true,
+    "log_sha256": "4df0efcfc2f7de98d3f1e7e4dac23b60c740a574602733595ee8b8965ed98ae2"
+  },
+  "rebuild_verification": {
+    "byte_identical_to_frozen_runtime_build": true,
+    "log_sha256": "cb68c63d74bcc19086d2152bf431eba0f75acb704173a002b2629939aaabd194"
+  },
+  "layout": {
+    "boxes": 6232,
+    "meshes": 3,
+    "new_lights": 0,
+    "pooled_lights": 8,
+    "camera_blockers": 29,
+    "resource_positions_unchanged": 676
+  },
+  "limitations": [
+    "Normal SwiftShader and injected DOM/keyboard checks are not hardware FPS or Bluetooth controller certification.",
+    "Resolver benchmark timings exclude whole-game controller and rendering costs; use deterministic counts and descriptor parity for its evidence.",
+    "Four inherited Baron/Granny missing-export build warnings remain; existing room fallbacks are used.",
+    "No APK rebuilt."
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "html": "/tmp/Pumpkin-Patch-Village-Clarity.html",
+  "sha256": "1134d587b5cc32a2af38837c96d7bb59ad532da5aaa5c52b5243d71868de2d2a",
+  "bytes": 60512602,
+  "scope": "Exact HTML served unchanged on loopback; normal SwiftShader renderer, not draw-held. Declared progressed farm fixture; direct place() stages interaction boundary and camera screenshots. Synthetic completion events verify presentation and no re-awarding, not actual story progress. Native controller transactions are covered by the separate rule/controller tests.",
+  "checks": [
+    {
+      "label": "World snapshot caches without changing the save, play camera or render target",
+      "pass": true,
+      "actual": {
+        "milliseconds": 17943.5,
+        "cacheMilliseconds": 2.3999999999068677,
+        "cached": true,
+        "width": 1280,
+        "height": 800,
+        "rendererTargetRestored": true,
+        "playCameraRestored": true,
+        "stateUnchanged": true
+      }
+    },
+    {
+      "label": "One actual world snapshot with Square, Acre and cave markers",
+      "pass": true,
+      "actual": {
+        "pictures": 1,
+        "imageWidth": 1280,
+        "diagrams": 0,
+        "routeBooks": 0,
+        "square": true,
+        "acre": true,
+        "cave": true,
+        "residents": 0
+      }
+    },
+    {
+      "label": "Default map keeps neighbour clutter hidden",
+      "pass": true
+    },
+    {
+      "label": "Neighbour toggle shows image pins without raw image URL text",
+      "pass": true
+    },
+    {
+      "label": "Selected cave keeps the snapshot and explains its locked requirements",
+      "pass": true
+    },
+    {
+      "label": "People distinguishes known homes from live whereabouts",
+      "pass": true
+    },
+    {
+      "label": "Talk activates at the exact inclusive outdoor boundary",
+      "pass": true
+    },
+    {
+      "label": "Rowan workshop opens with movement available",
+      "pass": true
+    },
+    {
+      "label": "Shared completion receipt waits behind the journal",
+      "pass": true
+    },
+    {
+      "label": "Chapter uses the shared presenter and never the old separate milestone overlay",
+      "pass": true
+    },
+    {
+      "label": "Presentation leaves earned coins and chapter receipts unchanged",
+      "pass": true
+    },
+    {
+      "label": "Return requires explicit confirmation",
+      "pass": true
+    },
+    {
+      "label": "Cancel stays in the village",
+      "pass": true
+    },
+    {
+      "label": "Confirm returns to an unblocked farm",
+      "pass": true
+    },
+    {
+      "label": "No page errors",
+      "pass": true,
+      "actual": []
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "phone-spatial-map.png",
+    "phone-people.png",
+    "desktop-resident-dialogue.png",
+    "desktop-shared-receipt.png"
+  ],
+  "capture": {
+    "milliseconds": 17943.5,
+    "cacheMilliseconds": 2.3999999999068677,
+    "cached": true,
+    "width": 1280,
+    "height": 800,
+    "rendererTargetRestored": true,
+    "playCameraRestored": true,
+    "stateUnchanged": true
+  },
+  "passed": true
+}

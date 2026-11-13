@@ -1,0 +1,604 @@
+{
+  "schema": 1,
+  "createdAt": "2026-11-13T02:23:54.436Z",
+  "baseline": {
+    "report": "perf-baseline.json",
+    "htmlSha256": "176b71baab3c5eda93f2c52cb2a54d9389cd0b10a9be45eaaac8794dbd936e16",
+    "htmlBytes": 60487011,
+    "sourceCommit": "8da66cb"
+  },
+  "final": {
+    "report": "perf-final.json",
+    "htmlSha256": "4583bcc6840f2e4e721327bdb9c09f94dedae07c1e2d29f0596852ff9ff2fd40",
+    "htmlBytes": 60512598,
+    "sourceCommit": "dac0685"
+  },
+  "contract": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "dpr": 1,
+    "preferences": {
+      "music": false,
+      "sound": false,
+      "voiceEnabled": false,
+      "renderQuality": "sharp",
+      "frameRate": "30",
+      "glow": true,
+      "shadows": true,
+      "voxelCharacters": false,
+      "mist": true,
+      "lakeLights": true,
+      "tvMode": false
+    },
+    "stepSeconds": 0.1,
+    "stepsPerActualDraw": 18,
+    "stationaryDrawsPerLeg": 12
+  },
+  "parity": {
+    "harness": true,
+    "fixture": true,
+    "route": true,
+    "contract": true,
+    "browser": true,
+    "context": true,
+    "ownerPositions": true,
+    "legAndStageSchedule": true
+  },
+  "renderQuantilesUnchanged": true,
+  "context": {
+    "vendor": "WebKit",
+    "renderer": "WebKit WebGL",
+    "unmaskedVendor": "Google Inc. (Google)",
+    "unmaskedRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "shadingLanguage": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+    "timerQueryAvailable": true,
+    "dpr": 1,
+    "drawingBuffer": {
+      "width": 390,
+      "height": 844
+    },
+    "pixelRatio": 1
+  },
+  "calculation": "Nearest-rank quantiles from the unchanged harness; deltaPercent=(final/baseline-1)*100. Interval sample count excludes the first drawn frame.",
+  "result": "Draw-call and triangle p50/p95 quantiles are unchanged for both passes and every route leg. Software wall-time intervals are lower in this run, while the accelerated RAF callback CPU workload is higher; this mixed timing result does not establish a normal-gameplay speedup or unchanged CPU cost.",
+  "followUp": "Profile resident approach and clearance resolution during ordinary, unaccelerated gameplay before attributing or optimising the CPU change. It is a possible hotspot for investigation; this run does not establish the cause.",
+  "limitations": [
+    "A single sequential headless Chromium/SwiftShader trial per artifact; no phone, LG TV or hardware FPS certification.",
+    "Eighteen native 0.1 s controller/view steps execute per actual rendered frame, including stationary samples; this artificial CPU workload is identical in both builds and is not normal gameplay CPU time.",
+    "Intervals measure wall time between actual drawn RAF callbacks; drawCpuMs measures JavaScript submission and does not wait for GPU completion.",
+    "The fixture and every owner-position sample match exactly. Folk/view animation clocks persist across re-entry and a few unrecorded normal frames may run during completion polling, so full scene animation is not bit-for-bit deterministic.",
+    "Warmed means a second traversal with retained GPU resources and restored save fixture; owner re-entry still adds 3 programmes and 6 large texture uploads in both artifacts.",
+    "Menus remain closed on the measured walking route; opening the new captured map is covered by separate functional QA."
+  ],
+  "phases": [
+    {
+      "phase": "first-use",
+      "samples": {
+        "drawnFrames": 57,
+        "intervalSamples": 56,
+        "stationaryDrawnFrames": 36,
+        "stationaryPerLeg": 12
+      },
+      "allDrawnFrames": {
+        "drawnFrameIntervalMs": {
+          "baseline": {
+            "p50": 2653.9,
+            "p95": 4114.5
+          },
+          "final": {
+            "p50": 1871.6,
+            "p95": 3021.6
+          },
+          "deltaPercent": {
+            "p50": -29.48,
+            "p95": -26.56
+          }
+        },
+        "rafCallbackCpuMs": {
+          "baseline": {
+            "p50": 180.8,
+            "p95": 1608.2
+          },
+          "final": {
+            "p50": 272.4,
+            "p95": 2486.6
+          },
+          "deltaPercent": {
+            "p50": 50.66,
+            "p95": 54.62
+          }
+        },
+        "drawCpuMs": {
+          "baseline": {
+            "p50": 4.9,
+            "p95": 1202.3
+          },
+          "final": {
+            "p50": 4.7,
+            "p95": 735.3
+          },
+          "deltaPercent": {
+            "p50": -4.08,
+            "p95": -38.84
+          }
+        },
+        "drawCalls": {
+          "baseline": {
+            "p50": 170,
+            "p95": 230
+          },
+          "final": {
+            "p50": 170,
+            "p95": 230
+          },
+          "deltaPercent": {
+            "p50": 0,
+            "p95": 0
+          }
+        },
+        "triangles": {
+          "baseline": {
+            "p50": 811714,
+            "p95": 1326778
+          },
+          "final": {
+            "p50": 811714,
+            "p95": 1326778
+          },
+          "deltaPercent": {
+            "p50": 0,
+            "p95": 0
+          }
+        }
+      },
+      "stationaryDrawnFrames": {
+        "drawnFrameIntervalMs": {
+          "baseline": {
+            "p50": 2653.9,
+            "p95": 3466.9
+          },
+          "final": {
+            "p50": 1950.1,
+            "p95": 3021.6
+          },
+          "deltaPercent": {
+            "p50": -26.52,
+            "p95": -12.84
+          }
+        },
+        "rafCallbackCpuMs": {
+          "baseline": {
+            "p50": 153.6,
+            "p95": 302.4
+          },
+          "final": {
+            "p50": 262.6,
+            "p95": 394.2
+          },
+          "deltaPercent": {
+            "p50": 70.96,
+            "p95": 30.36
+          }
+        },
+        "drawCpuMs": {
+          "baseline": {
+            "p50": 4,
+            "p95": 37.6
+          },
+          "final": {
+            "p50": 4.3,
+            "p95": 35.9
+          },
+          "deltaPercent": {
+            "p50": 7.5,
+            "p95": -4.52
+          }
+        },
+        "drawCalls": {
+          "baseline": {
+            "p50": 170,
+            "p95": 201
+          },
+          "final": {
+            "p50": 170,
+            "p95": 201
+          },
+          "deltaPercent": {
+            "p50": 0,
+            "p95": 0
+          }
+        },
+        "triangles": {
+          "baseline": {
+            "p50": 811714,
+            "p95": 1226818
+          },
+          "final": {
+            "p50": 811714,
+            "p95": 1226818
+          },
+          "deltaPercent": {
+            "p50": 0,
+            "p95": 0
+          }
+        }
+      },
+      "renderWorkByLeg": {
+        "Green": {
+          "drawCalls": {
+            "baseline": {
+              "p50": 201,
+              "p95": 231
+            },
+            "final": {
+              "p50": 201,
+              "p95": 231
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          },
+          "triangles": {
+            "baseline": {
+              "p50": 1226818,
+              "p95": 1330322
+            },
+            "final": {
+              "p50": 1226818,
+              "p95": 1330322
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          }
+        },
+        "Moonclock Square": {
+          "drawCalls": {
+            "baseline": {
+              "p50": 170,
+              "p95": 198
+            },
+            "final": {
+              "p50": 170,
+              "p95": 198
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          },
+          "triangles": {
+            "baseline": {
+              "p50": 811714,
+              "p95": 1088470
+            },
+            "final": {
+              "p50": 811714,
+              "p95": 1088470
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          }
+        },
+        "Quarry": {
+          "drawCalls": {
+            "baseline": {
+              "p50": 148,
+              "p95": 163
+            },
+            "final": {
+              "p50": 148,
+              "p95": 163
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          },
+          "triangles": {
+            "baseline": {
+              "p50": 711610,
+              "p95": 829942
+            },
+            "final": {
+              "p50": 711610,
+              "p95": 829942
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          }
+        }
+      },
+      "perFrameRenderDifferences": {
+        "drawCalls": {
+          "changedFrames": 0,
+          "maxAbsoluteDelta": 0
+        },
+        "triangles": {
+          "changedFrames": 0,
+          "maxAbsoluteDelta": 0
+        }
+      },
+      "programmeAdditions": {
+        "baseline": 32,
+        "final": 32
+      },
+      "largeTextureUploads": {
+        "baseline": 28,
+        "final": 27
+      }
+    },
+    {
+      "phase": "warmed",
+      "samples": {
+        "drawnFrames": 57,
+        "intervalSamples": 56,
+        "stationaryDrawnFrames": 36,
+        "stationaryPerLeg": 12
+      },
+      "allDrawnFrames": {
+        "drawnFrameIntervalMs": {
+          "baseline": {
+            "p50": 1882.9,
+            "p95": 3344.6
+          },
+          "final": {
+            "p50": 1832.1,
+            "p95": 2354.8
+          },
+          "deltaPercent": {
+            "p50": -2.7,
+            "p95": -29.59
+          }
+        },
+        "rafCallbackCpuMs": {
+          "baseline": {
+            "p50": 154,
+            "p95": 385.1
+          },
+          "final": {
+            "p50": 264.4,
+            "p95": 394.1
+          },
+          "deltaPercent": {
+            "p50": 71.69,
+            "p95": 2.34
+          }
+        },
+        "drawCpuMs": {
+          "baseline": {
+            "p50": 4.6,
+            "p95": 54.1
+          },
+          "final": {
+            "p50": 4.2,
+            "p95": 38.4
+          },
+          "deltaPercent": {
+            "p50": -8.7,
+            "p95": -29.02
+          }
+        },
+        "drawCalls": {
+          "baseline": {
+            "p50": 170,
+            "p95": 230
+          },
+          "final": {
+            "p50": 170,
+            "p95": 230
+          },
+          "deltaPercent": {
+            "p50": 0,
+            "p95": 0
+          }
+        },
+        "triangles": {
+          "baseline": {
+            "p50": 811714,
+            "p95": 1326778
+          },
+          "final": {
+            "p50": 811714,
+            "p95": 1326778
+          },
+          "deltaPercent": {
+            "p50": 0,
+            "p95": 0
+          }
+        }
+      },
+      "stationaryDrawnFrames": {
+        "drawnFrameIntervalMs": {
+          "baseline": {
+            "p50": 2018.9,
+            "p95": 3344.6
+          },
+          "final": {
+            "p50": 1833.2,
+            "p95": 2296.4
+          },
+          "deltaPercent": {
+            "p50": -9.2,
+            "p95": -31.34
+          }
+        },
+        "rafCallbackCpuMs": {
+          "baseline": {
+            "p50": 159,
+            "p95": 385.1
+          },
+          "final": {
+            "p50": 233.5,
+            "p95": 368.8
+          },
+          "deltaPercent": {
+            "p50": 46.86,
+            "p95": -4.23
+          }
+        },
+        "drawCpuMs": {
+          "baseline": {
+            "p50": 4.3,
+            "p95": 54.1
+          },
+          "final": {
+            "p50": 4,
+            "p95": 35.8
+          },
+          "deltaPercent": {
+            "p50": -6.98,
+            "p95": -33.83
+          }
+        },
+        "drawCalls": {
+          "baseline": {
+            "p50": 170,
+            "p95": 201
+          },
+          "final": {
+            "p50": 170,
+            "p95": 201
+          },
+          "deltaPercent": {
+            "p50": 0,
+            "p95": 0
+          }
+        },
+        "triangles": {
+          "baseline": {
+            "p50": 811714,
+            "p95": 1226818
+          },
+          "final": {
+            "p50": 811714,
+            "p95": 1226818
+          },
+          "deltaPercent": {
+            "p50": 0,
+            "p95": 0
+          }
+        }
+      },
+      "renderWorkByLeg": {
+        "Green": {
+          "drawCalls": {
+            "baseline": {
+              "p50": 201,
+              "p95": 230
+            },
+            "final": {
+              "p50": 201,
+              "p95": 230
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          },
+          "triangles": {
+            "baseline": {
+              "p50": 1226818,
+              "p95": 1330322
+            },
+            "final": {
+              "p50": 1226818,
+              "p95": 1330322
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          }
+        },
+        "Moonclock Square": {
+          "drawCalls": {
+            "baseline": {
+              "p50": 170,
+              "p95": 198
+            },
+            "final": {
+              "p50": 170,
+              "p95": 198
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          },
+          "triangles": {
+            "baseline": {
+              "p50": 811714,
+              "p95": 1088470
+            },
+            "final": {
+              "p50": 811714,
+              "p95": 1088470
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          }
+        },
+        "Quarry": {
+          "drawCalls": {
+            "baseline": {
+              "p50": 148,
+              "p95": 163
+            },
+            "final": {
+              "p50": 148,
+              "p95": 163
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          },
+          "triangles": {
+            "baseline": {
+              "p50": 711610,
+              "p95": 829942
+            },
+            "final": {
+              "p50": 711610,
+              "p95": 829942
+            },
+            "deltaPercent": {
+              "p50": 0,
+              "p95": 0
+            }
+          }
+        }
+      },
+      "perFrameRenderDifferences": {
+        "drawCalls": {
+          "changedFrames": 0,
+          "maxAbsoluteDelta": 0
+        },
+        "triangles": {
+          "changedFrames": 0,
+          "maxAbsoluteDelta": 0
+        }
+      },
+      "programmeAdditions": {
+        "baseline": 3,
+        "final": 3
+      },
+      "largeTextureUploads": {
+        "baseline": 6,
+        "final": 6
+      }
+    }
+  ]
+}
