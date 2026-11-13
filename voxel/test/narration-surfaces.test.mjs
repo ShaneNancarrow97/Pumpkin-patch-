@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createIntro } from "../src/ui/intro.js";
 import { INTRO_NARRATION, INTRO_LINES } from "../src/content/intro.js";
-import { createVillageConversation, conversationPages } from "../src/ui/village-conversation.js";
+import { createVillageConversation, conversationPages, conversationChoiceSection } from "../src/ui/village-conversation.js";
 import { FOLK_BY_ID } from "../src/content/village-folk.js";
 
 // These DOM tests exercise the actual page/choice callbacks with fake audio.
@@ -188,6 +188,63 @@ test("conversation prompts switch with actual input and retain the supplied cont
   dialogue.setInput("pad", { id: "Xbox Wireless Controller" }); assert.equal(panel.dataset.input, "xbox"); assert.match(confirm().markup, /glyph-xbox-a/); assert.doesNotMatch(confirm().markup, /data-ps5-icon/);
   dialogue.setInput("keyboard"); assert.match(confirm().markup, />Enter</); assert.doesNotMatch(confirm().markup, />E</, "the conversation uses native Enter, not the world's E action");
   dialogue.setInput("touch"); assert.equal(confirm().markup, ""); assert.equal(panel.querySelector(".village-dialogue-back-glyph").markup, ""); dialogue.dispose();
+});
+
+test("greeting section headings preserve disabled, unknown and canonical action order with once-only callbacks", t => {
+  const h = harness(t), game = h.doc.createElement("section"); game.id = "village-game"; h.doc.body.append(game);
+  const choices = [
+    { id: "chat", intent: "chat", label: "Have a chat", disabled: true, description: "Ready in 20s" },
+    { id: "quest:start:rowan-1", intent: "quest", label: "Loose Boards" },
+    { id: "stories", intent: "stories", label: "Other stories" },
+    { id: "farm-gifts", intent: "workshop", label: "Bring a discovery home" },
+    { id: "companion", intent: "companion", label: "Come exploring with me" },
+    { id: "gift", intent: "gift", label: "Give a present" },
+    { id: "unknown", intent: "future-intent", label: "An authored action" },
+    { id: "leave", intent: "leave", label: "See you soon" },
+  ], snapshot = JSON.stringify(choices);
+  let accepted = 0;
+  const dialogue = createVillageConversation({ onChoice(index, metadata) { accepted++; assert.equal(index, 4); assert.equal(metadata.choice, choices[4]); return { handled: true }; } });
+  dialogue.open({ id: "rowan", intent: "greeting", lines: [{ text: "Good evening.", choices }] });
+  const panel = h.doc.getElementById("village-dialogue"), buttons = panel.querySelectorAll(".village-reply"), sections = panel.querySelectorAll(".village-response-section");
+  assert.deepEqual(buttons.map(button => button.dataset.villageChoiceId), choices.map(choice => choice.id));
+  assert.deepEqual(buttons.map(button => button.dataset.villageChoice), choices.map((_, index) => String(index)));
+  assert.equal(buttons[0].disabled, true); assert.equal(h.doc.activeElement, buttons[1]);
+  for (const [index, art, semantic] of [[0, "chat", "chat"], [1, "journal", "quest"], [2, "chat", "chat"], [3, "satchel", "quest"], [4, "compass", "about"], [5, "satchel", "gift"], [7, "back", "leave"]]) {
+    const icon = buttons[index].querySelector(".dialogue-choice-icon");
+    assert.equal(icon.dataset.dialogueIcon, semantic); assert.ok(icon.querySelector(".vf-art-" + art), `the ${choices[index].intent} picture keeps its semantic wrapper`);
+  }
+  assert.equal(buttons[6].querySelector(".vf-art"), null, "unknown metadata keeps its canonical fallback icon");
+  assert.deepEqual(sections.map(section => section.querySelector("h3").textContent), ["Stories", "Activities"]);
+  assert.deepEqual(sections[0].querySelectorAll("button").map(button => button.dataset.villageChoiceId), ["quest:start:rowan-1", "stories"]);
+  assert.deepEqual(sections[1].querySelectorAll("button").map(button => button.dataset.villageChoiceId), ["farm-gifts", "companion"]);
+  for (const section of sections) { const title = section.querySelector("h3"); assert.equal(section.attrs["role"], "group"); assert.equal(section.attrs["aria-labelledby"], title.id); assert.equal(Object.hasOwn(title.attrs, "tabindex"), false); }
+  assert.equal(buttons[6].parentElement, panel.querySelector(".village-dialogue-replies"), "unknown metadata is not assigned a guessed category");
+  buttons[4].click(); buttons[4].click(); assert.equal(accepted, 1); assert.equal(JSON.stringify(choices), snapshot);
+  dialogue.dispose();
+});
+
+test("section labels rely on greeting intents while ordinary written replies retain their original path", t => {
+  const h = harness(t), dialogue = createVillageConversation();
+  assert.equal(conversationChoiceSection("quest"), "Stories"); assert.equal(conversationChoiceSection("stories"), "Stories");
+  assert.equal(conversationChoiceSection("workshop"), "Activities"); assert.equal(conversationChoiceSection("companion"), "Activities");
+  for (const intent of [undefined, "chat", "gift", "warm", "future-intent"]) assert.equal(conversationChoiceSection(intent), null);
+  dialogue.open({ id: "elowen", intent: "chat", lines: [{ choices: [{ id: "written", intent: "quest", tone: "curious", text: "What happened next?" }, { id: "reply", tone: "warm", text: "I am listening." }] }] });
+  const panel = h.doc.getElementById("village-dialogue");
+  assert.equal(panel.querySelectorAll(".village-response-section").length, 0);
+  assert.deepEqual(panel.querySelectorAll(".village-reply").map(button => button.dataset.villageChoiceId), ["written", "reply"]);
+  assert.equal(panel.querySelector(".village-reply-tone").textContent, "Curious"); dialogue.dispose();
+});
+
+test("the speech header shows only the supplied current speaker's real friendship metadata", t => {
+  const h = harness(t), friend = { level: 4, title: "Pal", progress: .375 }, before = JSON.stringify(friend);
+  const dialogue = createVillageConversation({ portrait: id => id + ".webp" });
+  dialogue.open({ id: "rowan", friendship: friend, lines: [{ text: "A familiar face." }, { who: "elowen", text: "A different neighbour." }] });
+  const panel = h.doc.getElementById("village-dialogue"), bond = panel.querySelector(".village-dialogue-bond"), next = panel.querySelector("[data-village-dialogue-next]");
+  assert.equal(bond.parentElement, panel.querySelector(".village-dialogue-head")); assert.equal(bond.hidden, false);
+  assert.equal(bond.querySelector("span").textContent, "Level 4 · Pal"); assert.equal(bond.querySelector("meter").value, .375);
+  next.click(); assert.equal(bond.hidden, true); assert.equal(bond.children.length, 0, "another speaker never inherits Rowan's progress");
+  dialogue.open({ id: "vesper", lines: ["Welcome to the Velvet Bat."] }); assert.equal(bond.hidden, true); assert.equal(bond.children.length, 0);
+  assert.equal(JSON.stringify(friend), before); dialogue.dispose();
 });
 
 test("introduction speaks its title and alternating lines; replay and mute do not advance it", t => {

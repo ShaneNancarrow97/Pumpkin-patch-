@@ -9,6 +9,7 @@
 import * as THREE from "three";
 import { applyGrassDetail } from "./grass-detail.js";
 import { villageTreeVisibility } from "./village-visibility.js";
+import { villageEntrance, entranceAutumnTree } from "./village-entrance-dressing.js";
 import { createVillageWaterClock, createVillageWaterMaterial } from "./village-water-material.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { Voxels, ChunkedVoxels, seeded, vary } from "./voxels.js";
@@ -112,12 +113,13 @@ const pick = (list, r) => list[(r() * list.length) | 0];
 // The ground's colours, painted once: lawns, the districts' own soils and plants, the ravine and the marsh's pools.
 // Its shapes are given on the old grid, and painted where they now stand: a patch moves with its piece, a long one
 // (a lawn, a road, the woods' floor) stretches across the gaps, so the new ground is painted too.
-function groundTexture() {
+export function buildVillageGroundTexture() {
   const g = GROUND_SPREAD, W = (g.x1 - g.x0) * g.scale, H = (g.z1 - g.z0) * g.scale, canvas = document.createElement("canvas"); canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext("2d"), r = seeded(73);
   const P = (x, z) => [(x - g.x0) * g.scale, (g.z1 - z) * g.scale];
   const placed = (x0, z0, x1, z1) => spreadRect({ x0: Math.min(x0, x1), z0: Math.min(z0, z1), x1: Math.max(x0, x1), z1: Math.max(z0, z1) });
-  const rect = (x0, z0, x1, z1, colour) => { const q = placed(x0, z0, x1, z1), [a, b] = P(q.x0, q.z1), [c, d] = P(q.x1, q.z0); ctx.fillStyle = colour; ctx.fillRect(a, b, c - a, d - b); };
+  const nativeRect = (x0, z0, x1, z1, colour) => { const [a, b] = P(x0, z1), [c, d] = P(x1, z0); ctx.fillStyle = colour; ctx.fillRect(a, b, c - a, d - b); };
+  const rect = (x0, z0, x1, z1, colour) => { const q = placed(x0, z0, x1, z1); nativeRect(q.x0, q.z0, q.x1, q.z1, colour); };
   const speckle = (x0, z0, x1, z1, colours, n, size = 1.2) => { const q = placed(x0, z0, x1, z1), grow = (q.x1 - q.x0) * (q.z1 - q.z0) / Math.max(1e-6, Math.abs((x1 - x0) * (z1 - z0))); n = Math.round(n * grow); for (let i = 0; i < n; i++) { const [px, py] = P(q.x0 + r() * (q.x1 - q.x0), q.z0 + r() * (q.z1 - q.z0)); ctx.fillStyle = colours[(r() * colours.length) | 0]; ctx.fillRect(px, py, size * g.scale * (.4 + r() * .8), size * g.scale * (.3 + r() * .5)); } };
   const blob = (x, z, rx, rz, colour) => { const [px, py] = P(...spread(x, z)); ctx.fillStyle = colour; ctx.beginPath(); ctx.ellipse(px, py, rx * g.scale, rz * g.scale, 0, 0, Math.PI * 2); ctx.fill(); };
   // The woods round the realm.
@@ -146,8 +148,12 @@ function groundTexture() {
   { const [a, b, c, d] = at("marsh", 38, 76, 122, 98); rect(a, b, c, d, "#355e52"); speckle(a, b, c, d, ["#3c6a5c", "#2f5448", "#4a7458"], 9000, .6); }
   // Bare earth under where the paving meets the grass, so a gap never shows green.
   for (const road of ROADS.filter((x) => x.kind !== "future-spur")) {
-    const h = road.width / 2 + .25;
-    for (let i = 1; i < road.points.length; i++) { const [ax, az] = road.points[i - 1], [bx, bz] = road.points[i]; rect(Math.min(ax, bx) - h, Math.min(az, bz) - h, Math.max(ax, bx) + h, Math.max(az, bz) + h, "#6d6150"); }
+    // The arrival's padded width crosses two spread seams: spreading that
+    // rectangle turns its 6.5-unit soil strip into 22.5 units of bare forecourt.
+    // Its paving already uses this native centreline, with the same fixed width.
+    const nativeArrival = road.id === "arrival" ? ROADS_SPREAD.find(r => r.id === road.id) : null;
+    const route = nativeArrival ?? road, paint = nativeArrival ? nativeRect : rect, h = route.width / 2 + .25;
+    for (let i = 1; i < route.points.length; i++) { const [ax, az] = route.points[i - 1], [bx, bz] = route.points[i]; paint(Math.min(ax, bx) - h, Math.min(az, bz) - h, Math.max(ax, bx) + h, Math.max(az, bz) + h, "#6d6150"); }
   }
   // The clearings use earth and gravel trails rather than another grid of granite setts.
   for(const road of ROADS.filter(r=>r.kind==="forage"))for(let i=1;i<road.points.length;i++){
@@ -244,7 +250,7 @@ export function buildGroundGeometry() {
 }
 export function buildGround() {
   const geo = buildGroundGeometry();
-  const mesh = new THREE.Mesh(geo, applyGrassDetail(new THREE.MeshStandardMaterial({ map: groundTexture(), roughness: 1, metalness: 0 })));
+  const mesh = new THREE.Mesh(geo, applyGrassDetail(new THREE.MeshStandardMaterial({ map: buildVillageGroundTexture(), roughness: 1, metalness: 0 })));
   mesh.receiveShadow = true; mesh.name = "village-ground"; return native(mesh);
 }
 
@@ -488,10 +494,11 @@ export function buildGreen() {
   stoneWall(Rn, sx(0, .6), .6, 53.3, .6, 1.2, r); stoneWall(Rn, 62.7, .6, sx(120, .6), .6, 1.2, r);
   stoneWall(Rn, sx(.6, 0), -22, sx(.6, 0), 30, 1.2, r); stoneWall(Rn, sx(119.4, 0), -22, sx(119.4, 0), 30, 1.2, r);
   stoneWall(Rn, sx(0, -22), -22, 53.3, -22, .85, r); stoneWall(Rn, 62.7, -22, sx(120, -22), -22, .85, r);
-  mothPillar(fr(54, .6, "south"), 0, 0, r); mothPillar(fr(62, .6, "south"), 0, 0, r);
-  // Overlapping segments read as an arch from the low decorating camera, not floating cubes.
-  for (let i = 0; i <= 32; i++) { const a = i / 32 * Math.PI; R.block(58 + Math.cos(a) * 4, 4.4 + Math.sin(a) * 1.1, .6, .5, .22, .3, C.iron); }
-  R.block(58, 5.2, .6, 1.2, .5, .1, C.plum); R.block(58, 5.3, .65, .8, .3, .05, C.gold);
+  // Retain the old pillars' random draws before replacing their geometry, so
+  // every later tree, garden and festival detail keeps its authored seed.
+  const consumePillar = { block() {} };
+  mothPillar(consumePillar, 0, 0, r); mothPillar(consumePillar, 0, 0, r);
+  villageEntrance(Rn);
   { const c = FIXTURES.carriage; carriage(fr(c.x - 2.2, c.z, c.facing), 0, 0, r); }
   // The open arrival meadow gives the camera room to breathe and leads to four forage clearings.
   for (const [x,z] of [[53,-18],[63,-18],[53,-7],[63,-7]]) { lampPost(R,x,z,3,r,1); jackOLantern(fr(x,z),0,0,.4,r,0,.7); }
@@ -520,8 +527,8 @@ export function buildGreen() {
   // The square's lamps hang theirs away from the tree; the avenue's over the road, clear of the gardens.
   LAMPS.slice(0, 8).forEach((l, i) => mothBanner(R, l.x + (l.x < F.x ? -.55 : .55) * (i < 4 ? 1 : -1), 2.22, l.z - .05, .78));
   parkBench(fr(55.6, 11.5, "east"), 0, 0, r); parkBench(fr(60.4, 11.5, "west"), 0, 0, r);
-  // Crimson maples flanking the gate, the old oak, and a feature maple in Rowan's garden.
-  canopyTree(R, 52.2, 4, 1.25, r, C.crimson, { cell: .3 }); canopyTree(R, 63.8, 4, 1.25, r, C.crimson, { cell: .3 });
+  // Copper/gold maples flanking the gate, the old oak, and a feature maple in Rowan's garden.
+  entranceAutumnTree(R, 52.2, 4, 1.25, r); entranceAutumnTree(R, 63.8, 4, 1.25, r);
   for (const [x, z] of [[55.3, 3.2], [60.7, 3.2]]) lampPost(R, x, z, 3.2, r, 1);
   flowerBed(R, 48.8, 16.1, 50.3, 16.9, r, [0xf28fb5, 0xf6f0f5, 0x9a6ae0], 6); flowerBed(R, 61.8, 16.1, 65, 16.9, r, [0xf5d04a, 0xf08a3a, 0xf6f0f5], 6);
   canopyTree(R, FIXTURES.oak.x, FIXTURES.oak.z, 1.75, r, [0x4c8c3c, 0x5b9f45, 0x6db250, 0xd9a441], { cell: .34 });

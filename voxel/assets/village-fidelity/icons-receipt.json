@@ -1,0 +1,183 @@
+{
+  "source_sha256": "8def0259eabab97b54549bd03c2d348b8477cef75123475e9f3239199dcc9d8a",
+  "runtime_sha256": "3d302a51fe181fa79437b5e0024f22b5e3a9e530bec867e6dff7d5799276b2ed",
+  "size": [
+    768,
+    768
+  ],
+  "bytes": 211462,
+  "processing": "Connected-illustration isolation, transparent-margin crop, aspect-preserving Lanczos resize and atlas packing; no repainting.",
+  "icons": [
+    {
+      "id": "journal",
+      "source_rect": [
+        0,
+        0,
+        407,
+        378
+      ],
+      "cell": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "painted_size": [
+        222,
+        181
+      ]
+    },
+    {
+      "id": "moth",
+      "source_rect": [
+        407,
+        0,
+        821,
+        378
+      ],
+      "cell": [
+        256,
+        0,
+        256,
+        256
+      ],
+      "painted_size": [
+        222,
+        161
+      ]
+    },
+    {
+      "id": "map",
+      "source_rect": [
+        821,
+        0,
+        1254,
+        378
+      ],
+      "cell": [
+        512,
+        0,
+        256,
+        256
+      ],
+      "painted_size": [
+        222,
+        187
+      ]
+    },
+    {
+      "id": "people",
+      "source_rect": [
+        0,
+        378,
+        411,
+        777
+      ],
+      "cell": [
+        0,
+        256,
+        256,
+        256
+      ],
+      "painted_size": [
+        222,
+        214
+      ]
+    },
+    {
+      "id": "satchel",
+      "source_rect": [
+        411,
+        378,
+        821,
+        777
+      ],
+      "cell": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "painted_size": [
+        222,
+        214
+      ]
+    },
+    {
+      "id": "workshop",
+      "source_rect": [
+        821,
+        378,
+        1254,
+        777
+      ],
+      "cell": [
+        512,
+        256,
+        256,
+        256
+      ],
+      "painted_size": [
+        222,
+        193
+      ]
+    },
+    {
+      "id": "build",
+      "source_rect": [
+        0,
+        777,
+        440,
+        1254
+      ],
+      "cell": [
+        0,
+        512,
+        256,
+        256
+      ],
+      "painted_size": [
+        220,
+        222
+      ]
+    },
+    {
+      "id": "lantern",
+      "source_rect": [
+        440,
+        777,
+        833,
+        1254
+      ],
+      "cell": [
+        256,
+        512,
+        256,
+        256
+      ],
+      "painted_size": [
+        167,
+        222
+      ]
+    },
+    {
+      "id": "leaf",
+      "source_rect": [
+        833,
+        777,
+        1254,
+        1254
+      ],
+      "cell": [
+        512,
+        512,
+        256,
+        256
+      ],
+      "painted_size": [
+        195,
+        222
+      ]
+    }
+  ]
+}

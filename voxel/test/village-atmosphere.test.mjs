@@ -43,7 +43,9 @@ test("the hero tree and restored houses retain their original footprints and fin
 test("static polish remains in bounded batches after the Green expansion", () => {
   // The limits rose by under 3% when pumpkins gained a foot and shoulder and blooms their four petals, and the
   // Green's by 3% more when the village was spread apart: its walls and hedgerow run the wider Green.
-  for (const [group, maxBoxes, maxMeshes] of [[buildGreen(), 38900, 50], [buildHomes({ "rowan-workshop": true, "elowen-conservatory": true }), 5900, 2]]) {
+  // The native entrance adds 621 boxes for dressed stone/heraldry; its soft
+  // nearfield forecourt adds 640 more, using the same 39 meshes/light pool.
+  for (const [group, maxBoxes, maxMeshes] of [[buildGreen(), 40150, 50], [buildHomes({ "rowan-workshop": true, "elowen-conservatory": true }), 5900, 2]]) {
     let boxes = 0, meshes = 0, lights = 0;
     group.traverse(object => { if (object.isInstancedMesh) boxes += object.count; if (object.isMesh) meshes++; if (object.isLight) lights++; });
     assert.ok(boxes <= maxBoxes); assert.ok(meshes <= maxMeshes); assert.equal(lights, 0);
@@ -55,7 +57,7 @@ test("atmosphere has two bounded batches, fixed resources and a smaller TV budge
   const atmosphere = createVillageAtmosphere(), repeat = createVillageAtmosphere();
   assert.deepEqual(matrices(atmosphere), matrices(repeat));
   const meshes = atmosphere.group.children, geometry = meshes.map(mesh => mesh.geometry), materials = meshes.map(mesh => mesh.material);
-  assert.equal(meshes.length, 2); assert.equal(atmosphere.stats().instances, 70); assert.equal(atmosphere.stats().triangles, 840);
+  assert.equal(meshes.length, 2); assert.equal(atmosphere.stats().instances, 46); assert.equal(atmosphere.stats().triangles, 552);
   assert.ok(meshes.every(mesh => mesh.isInstancedMesh && !mesh.castShadow && !mesh.receiveShadow && mesh.frustumCulled));
   assert.ok(meshes.every(mesh => !mesh.material.map && !mesh.material.transparent));
   assert.equal(VILLAGE_ATMOSPHERE_BUDGET.lights, 0);
@@ -75,8 +77,8 @@ test("atmosphere has two bounded batches, fixed resources and a smaller TV budge
     }
   }
   atmosphere.tick(0, { budget: "tv" });
-  assert.equal(atmosphere.stats().instances, 35); assert.equal(atmosphere.stats().triangles, 420);
-  atmosphere.tick(0, { budget: "full" }); assert.equal(atmosphere.stats().instances, 70);
+  assert.equal(atmosphere.stats().instances, 23); assert.equal(atmosphere.stats().triangles, 276);
+  atmosphere.tick(0, { budget: "full" }); assert.equal(atmosphere.stats().instances, 46);
 });
 
 test("reduced motion freezes animation and buffer uploads; invalid deltas stay finite", () => {

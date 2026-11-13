@@ -6,7 +6,7 @@ import { seeded } from "./voxels.js";
 import { FIXTURES, PLAN_SCALE } from "./content/village.js";
 
 export const VILLAGE_ATMOSPHERE_BUDGET = Object.freeze({
-  moths: 6, particles: 40, tvMoths: 3, tvParticles: 20,
+  moths: 6, particles: 16, tvMoths: 3, tvParticles: 8,
   boxesPerMoth: 5, drawCalls: 2, lights: 0, maxEmissiveChannel: 1.35,
 });
 

@@ -14,6 +14,8 @@
 .village-return-actions button:hover{background:var(--village-surface-raised);border-color:#ebc9e27d}
 .village-return-actions .village-return-confirm:hover{background:var(--village-amber-hover);border-color:#ffe7b5}
 .village-return-actions button:is(:focus-visible,[data-pad-focus]){outline:2px solid #ffe0a2;outline-offset:3px;box-shadow:0 0 0 5px #b7824a22}
+/* Keep the primary label readable above TV mode's translucent pad tint. */
+#village-return-prompt .village-return-confirm:is(:focus,[data-pad-focus]):not(:disabled){background:linear-gradient(110deg,var(--village-amber-hover),var(--village-amber))}
 .village-return-actions i{display:inline-flex;align-items:center;justify-content:center;min-width:24px;font-style:normal;--ps5-ink:currentColor;--ps5-frame:currentColor;--ps5-accent:currentColor}
 .village-return-actions .glyph:not(.glyph-keyboard){color:inherit}
 #village-return-prompt:is([data-input=touch],[data-input=pointer]) .village-return-actions i{display:none}

@@ -4,6 +4,9 @@ import { TONES, FOLK_BY_ID, HOST_BY_ID } from "../content/village-folk.js";
 import { createNarrationControls } from "./narration-controls.js";
 import { dialogueChoiceIcon, dialogueChoiceKind } from "./dialogue-choice-icons.js";
 import { glyphHTML, padFamily } from "./glyphs.js";
+import { fidelityIcon } from "./village-fidelity-icon-markup.js";
+
+const GREETING_ART = Object.freeze({ chat: "chat", quest: "journal", stories: "chat", workshop: "satchel", companion: "compass", gift: "satchel", about: "moth", leave: "back" });
 
 export function conversationPages(lines = [], choices = []) {
   const pages = (Array.isArray(lines) ? lines : [lines]).flatMap(line => {
@@ -16,10 +19,16 @@ export function conversationPages(lines = [], choices = []) {
   return pages.length ? pages : [{ text: "Good evening. It is lovely to see you." }];
 }
 
+// Section labels describe supplied greeting intents. Unknown actions and
+// written replies keep their original position without an invented category.
+export function conversationChoiceSection(intent) {
+  return intent === "quest" || intent === "stories" ? "Stories" : intent === "workshop" || intent === "companion" ? "Activities" : null;
+}
+
 export function createVillageConversation({ mount = document.body, onChoice = () => {}, onContinue = () => {}, onClose = () => {}, portrait = () => null, narration, savePrefs = () => {} } = {}) {
   const panel = document.createElement("section"); panel.id = "village-dialogue"; panel.hidden = true;
   panel.setAttribute("role", "dialog"); panel.setAttribute("aria-modal", "true"); panel.setAttribute("aria-labelledby", "village-dialogue-name"); panel.setAttribute("aria-describedby", "village-dialogue-line"); panel.tabIndex = -1;
-  panel.innerHTML = '<button class="village-close village-dialogue-back" data-village-dialogue-close aria-label="Close conversation"><i class="village-dialogue-back-glyph" aria-hidden="true"></i><span>Back</span></button><div class="village-dialogue-speech"><header class="village-dialogue-head"><span class="village-person-art" aria-hidden="true"></span><div class="village-dialogue-person"><h2 id="village-dialogue-name"></h2><p class="village-dialogue-role"></p></div></header><div class="village-dialogue-body"><p class="village-dialogue-heading" hidden></p><p id="village-dialogue-line" class="village-dialogue-line" aria-live="polite" aria-atomic="true"></p><div class="village-dialogue-bond" hidden></div></div><footer class="village-dialogue-footer"><span class="village-dialogue-page" aria-label="Conversation progress"></span><button class="village-dialogue-next" data-village-dialogue-next data-pad-default><i class="village-dialogue-confirm" aria-hidden="true"></i><span class="village-dialogue-next-label">Continue</span></button></footer></div><div class="village-dialogue-response"><p class="village-dialogue-choice-heading"></p><div class="village-dialogue-replies" role="group" aria-label="Your reply"></div></div>';
+  panel.innerHTML = '<button class="village-close village-dialogue-back" data-village-dialogue-close aria-label="Close conversation"><i class="village-dialogue-back-glyph" aria-hidden="true"></i><span>Back</span></button><div class="village-dialogue-speech"><header class="village-dialogue-head"><span class="village-person-art" aria-hidden="true"></span><div class="village-dialogue-person"><h2 id="village-dialogue-name"></h2><p class="village-dialogue-role"></p></div><div class="village-dialogue-bond" hidden></div></header><div class="village-dialogue-body"><p class="village-dialogue-heading" hidden></p><p id="village-dialogue-line" class="village-dialogue-line" aria-live="polite" aria-atomic="true"></p></div><footer class="village-dialogue-footer"><span class="village-dialogue-page" aria-label="Conversation progress"></span><button class="village-dialogue-next" data-village-dialogue-next data-pad-default><i class="village-dialogue-confirm" aria-hidden="true"></i><span class="village-dialogue-next-label">Continue</span></button></footer></div><div class="village-dialogue-response"><p class="village-dialogue-choice-heading"></p><div class="village-dialogue-replies" role="group" aria-label="Your reply"></div></div>';
   mount.append(panel);
   const query = selector => panel.querySelector(selector), next = query("[data-village-dialogue-next]");
   let session = null, pages = [], page = 0, answered = false, showingReply = false, previousFocus = null, closingOpener = null, speaker = null, currentVoice = null, inputSource = "keyboard", inputMode = "", inputFamily = "";
@@ -87,8 +96,18 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
     speaker = current.who ?? speaker ?? session.id; updatePerson();
     query(".village-dialogue-line").textContent = current.text;
     speak(current.text);
-    let preferred = false;
+    let preferred = false, section = null, sectionName = null;
     for (const [index, choice] of (current.choices ?? []).entries()) {
+      const category = session.intent === "greeting" ? conversationChoiceSection(choice.intent) : null;
+      if (category !== sectionName) {
+        sectionName = category; section = null;
+        if (category) {
+          section = document.createElement("section"); section.className = "village-response-section";
+          const heading = document.createElement("h3"), headingId = `village-response-section-${index}`;
+          heading.className = "village-response-section-title"; heading.setAttribute("id", headingId); heading.textContent = category;
+          section.setAttribute("role", "group"); section.setAttribute("aria-labelledby", headingId); section.append(heading); replies.append(section);
+        }
+      }
       const button = document.createElement("button"); button.className = "village-reply"; button.type = "button"; button.dataset.villageChoice = String(index);
       button.disabled = !!choice.disabled; button.dataset.villageIntent = dialogueChoiceKind(choice.intent ?? choice.tone);
       if (choice.id != null) button.dataset.villageChoiceId = String(choice.id);
@@ -96,6 +115,12 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
       if (!preferred && !button.disabled) { button.setAttribute("data-pad-default", ""); preferred = true; }
       const art = document.createElement("i"), words = document.createElement("span"), label = document.createElement("b"), confirm = document.createElement("i");
       art.className = "village-reply-art"; art.setAttribute("aria-hidden", "true"); art.innerHTML = dialogueChoiceIcon(choice.intent ?? choice.tone, 32);
+      // The saved game installs this shared atlas; the standalone explorer
+      // retains its existing icons without loading another picture here.
+      if (session.intent === "greeting" && document.getElementById("village-game")) {
+        const picture = fidelityIcon(GREETING_ART[choice.intent]);
+        if (picture) art.querySelector(".dialogue-choice-icon").innerHTML = picture;
+      }
       words.className = "village-reply-copy"; label.className = "village-reply-label"; label.textContent = choice.text ?? choice.label ?? "Continue"; words.append(label);
       if (Object.hasOwn(TONES, choice.tone)) { const tone = document.createElement("small"); tone.className = "village-reply-tone"; tone.textContent = TONES[choice.tone]; words.append(tone); }
       const hint = choice.description ?? choice.hint ?? choice.requires;
@@ -109,7 +134,7 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
         if (result === false) { answered = false; return; }
         if (session !== currentSession || showingReply || result?.handled) return;
         reply(typeof result === "string" ? result : result?.reply ?? choice.reply ?? "Thank you.", choice.who);
-      }); replies.append(button);
+      }); (section ?? replies).append(button);
     }
     replies.hidden = !current.choices?.length || showingReply;
     query(".village-dialogue-response").hidden = replies.hidden;

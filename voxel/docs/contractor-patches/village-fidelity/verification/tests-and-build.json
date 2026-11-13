@@ -1,0 +1,36 @@
+{
+  "runtime_source": "3e17f9e66816277213842763b173dfec50a30555",
+  "base_source": "bebcb1910a1794db70d7c2c91c67550603119739",
+  "save_version": 20,
+  "html": {
+    "bytes": 61066768,
+    "sha256": "6c71a20fd4858fbd4fb99e4aeae71e79a1350d37c138be7e0818b916208ecc63"
+  },
+  "full_tests": {
+    "source": "538e8127d04027a4ea137a2b6fe7564326ac4cf3",
+    "passed": 1416,
+    "failed": 0,
+    "log_sha256": "b4e08c254ab00aa2bda4b706fe69fc479de78f1f8c66bceefef48a191d10e002",
+    "scope": "World/UI candidate before final two CSS changes; final CSS received focused style/narration tests and exact-HTML browser checks."
+  },
+  "world_and_journal_candidate_checks": 24,
+  "final_exact_conversation_checks": 19,
+  "final_exact_return_checks": 7,
+  "compatibility_checks": 54,
+  "smoke_draws_held": true,
+  "smoke_log_sha256": "4a449e9dadc9b1d0188012c4c8091f2dd4cfbdcc9c47466e308fd44789b0bea2",
+  "source_rebuild_byte_identical": true,
+  "delta": {
+    "world_candidate_source": "538e8127d04027a4ea137a2b6fe7564326ac4cf3",
+    "world_candidate_html_sha256": "acc98f1af8ccf87f3ee2d2d36e9702f6bff527db5d9f575e5ae8b8a82a4aa07e",
+    "final_runtime_source": "3e17f9e66816277213842763b173dfec50a30555",
+    "final_html_sha256": "6c71a20fd4858fbd4fb99e4aeae71e79a1350d37c138be7e0818b916208ecc63",
+    "product_delta": [
+      "src/ui/village-feedback.css",
+      "src/ui/village-conversation.css"
+    ],
+    "scope": "Final CSS fixes preserve opaque TV Return focus and bound dialogue grids on desktop/Fold/landscape/TV and short portrait. No world, camera, economy, save or quest code changed after the tested world candidate. QA-only corrections distinguish addEventListener from onclick property handlers."
+  },
+  "performance": "No after-performance traversal is asserted for this checkpoint. Baseline first-use/warmed software timings exist separately. No device FPS claim.",
+  "delivery": "This verified fidelity checkpoint is included in the subsequent combined WebGPU/PBR release; no separate binary or APK is published here."
+}

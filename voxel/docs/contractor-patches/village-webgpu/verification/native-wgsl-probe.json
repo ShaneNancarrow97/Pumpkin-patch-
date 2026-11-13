@@ -1,0 +1,109 @@
+{
+  "adapter": "swiftshader",
+  "results": [
+    {
+      "name": "0780cf6a-346f-4572-8a1f-0d9d6ea38c58.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "0780cf6a-346f-4572-8a1f-0d9d6ea38c58.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "1a196b71-1b5a-4b0d-8acc-6259f8825709.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "1a196b71-1b5a-4b0d-8acc-6259f8825709.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "2708200c-3997-4854-bed0-8d07c545b6b1.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "2708200c-3997-4854-bed0-8d07c545b6b1.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "3d6cc47b-c331-4757-8bd3-7e898b63eb1b.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "3d6cc47b-c331-4757-8bd3-7e898b63eb1b.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "b0317475-7ff2-4145-8145-67b18778785b.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "b0317475-7ff2-4145-8145-67b18778785b.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "bddf5633-1566-4ba6-90b7-ac1d2e158c2c.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "bddf5633-1566-4ba6-90b7-ac1d2e158c2c.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "c2c92e30-7ff1-419e-8b3a-e4ab2acdf62e.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "c2c92e30-7ff1-419e-8b3a-e4ab2acdf62e.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "c453b28e-7842-4283-85d3-07cee3c5b5bf.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "c453b28e-7842-4283-85d3-07cee3c5b5bf.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "d18915ef-7a9d-4218-a1ea-6e87b7d4f0c3.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "d18915ef-7a9d-4218-a1ea-6e87b7d4f0c3.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "e67d5733-09b0-4718-a31c-a37acc7bd884.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "e67d5733-09b0-4718-a31c-a37acc7bd884.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "eb52fc80-a047-4903-b74c-95ff2f392a6b.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "eb52fc80-a047-4903-b74c-95ff2f392a6b.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "ed3f5868-ae3c-47f4-b531-ca0686c9bb5a.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "ed3f5868-ae3c-47f4-b531-ca0686c9bb5a.vertex.wgsl",
+      "messages": []
+    },
+    {
+      "name": "f1f95451-7a8b-47d4-8d9c-e4c2650ef524.fragment.wgsl",
+      "messages": []
+    },
+    {
+      "name": "f1f95451-7a8b-47d4-8d9c-e4c2650ef524.vertex.wgsl",
+      "messages": []
+    }
+  ]
+}

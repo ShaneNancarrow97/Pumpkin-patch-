@@ -1,0 +1,88 @@
+{
+  "source_sha256": "cb2787d13350266951028a9a6a5588399a63ca07e7c609a1d49b3da122adc2d9",
+  "runtime_sha256": "e908fc0eeaf52ec24f94bf65d364dbfd070e8908ca93fd6a8a35828a41baa12f",
+  "size": [
+    512,
+    512
+  ],
+  "bytes": 73932,
+  "processing": "Connected-illustration isolation, transparent-margin crop, aspect-preserving Lanczos resize and atlas packing; no repainting.",
+  "icons": [
+    {
+      "id": "chat",
+      "source_rect": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "cell": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "painted_size": [
+        222,
+        196
+      ]
+    },
+    {
+      "id": "compass",
+      "source_rect": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "cell": [
+        256,
+        0,
+        256,
+        256
+      ],
+      "painted_size": [
+        176,
+        222
+      ]
+    },
+    {
+      "id": "bond",
+      "source_rect": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "cell": [
+        0,
+        256,
+        256,
+        256
+      ],
+      "painted_size": [
+        222,
+        166
+      ]
+    },
+    {
+      "id": "back",
+      "source_rect": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "cell": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "painted_size": [
+        216,
+        222
+      ]
+    }
+  ]
+}

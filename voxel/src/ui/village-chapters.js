@@ -226,4 +226,4 @@ export function renderVillageChapter({ kind, id, state, trackedQuestId, itemArt,
   return null;
 }
 // The shared journal reuses these receipts and actions without copying rules.
-export { questCard as legacyQuestCardMarkup, questRewards as legacyQuestRewardsMarkup, friendshipKeepsakes as friendshipKeepsakesMarkup };
+export { questCard as legacyQuestCardMarkup, questAction as legacyQuestActionMarkup, questRewards as legacyQuestRewardsMarkup, friendshipKeepsakes as friendshipKeepsakesMarkup };

@@ -12,6 +12,7 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import * as M from "./model.js";
 import { createVillageView, TOUR, INSIDES, DOOR_NORMAL } from "./village-view.js";
+import { createVillageRenderer } from "./rendering/village-renderer.js";
 import { loadSpriteSheets, spriteActor } from "./sprite-actors.js";
 import { animateSprite } from "./sprite-voxels.js";
 import { LEAN } from "./world.js";
@@ -37,6 +38,7 @@ let everyone = false;
 let shell = null, dialogue = null, talking = null;
 const blocked = () => !!shell?.blocked || !!dialogue?.active;
 const view = createVillageView(canvas, state, { blocked, everyone: () => everyone, onPick: (hit) => { if (blocked()) return; if (hit.type === "village-folk") meet(hit.id); if (hit.type === "village-door") goIn(hit.id); } });
+const villageRenderer = createVillageRenderer({ canvas });
 // The preview uses the same authored conversations as the saved village. Its
 // temporary state stays in this page; travelling in the real game saves it.
 function meet(id) {
@@ -60,6 +62,7 @@ composer.addPass(new RenderPass(view.scene, view.camera)); composer.addPass(bloo
 function fit() {
   const w = innerWidth, h = innerHeight, ratio = Math.min(devicePixelRatio || 1, 1.5);
   renderer.setPixelRatio(ratio); renderer.setSize(w, h, false); composer.setPixelRatio(ratio); composer.setSize(w, h);
+  villageRenderer.resize(w, h, ratio);
   bloom.resolution.set(w / 4, h / 4); view.resize(w, h);
 }
 addEventListener("resize", fit); view.enter(); fit();
@@ -231,7 +234,8 @@ function frame(now) {
   if (blocked()) { keys.clear(); move.x = move.y = 0; stick.classList.remove("shown"); }
   else if (walking && actor) walk(dt, time);
   view.tick(dt); if (walking && actor) faceCamera(actor);
-  renderer.toneMappingExposure = view.scene.userData.exposure ?? 1; composer.render();
+  renderer.toneMappingExposure = view.scene.userData.exposure ?? 1;
+  if (!villageRenderer.draw(view.scene, view.camera, { shadows: renderer.shadowMap.enabled })) composer.render();
   frames++; if (now - fpsAt > 1000) { $("fps").textContent = `${Math.round(frames * 1000 / (now - fpsAt))} fps`; frames = 0; fpsAt = now; }
   requestAnimationFrame(frame);
 }

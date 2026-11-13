@@ -705,3 +705,45 @@ test('a ready later handover wins a blocked earlier quest and settles its exact 
  h.chooseIntent('quest','quest:deliver:blight-root-and-remedy');assert.equal(s.village.materials.herbs,0);assert.equal(s.village.materials.fibre,0);assert.equal(s.village.materials.logs,0);assert.equal(s.village.materials.stone,0);assert.equal(s.village.quests['rowan-1'].step,2);assert.equal(s.village.quests['blight-root-and-remedy'].step,2);assert.equal(s.coins,coins);
  const after=JSON.stringify(M.saveData(s)),saves=h.saves.length;assert.equal(h.choose(index,stale),false);assert.equal(JSON.stringify(M.saveData(s)),after);assert.equal(h.saves.length,saves);
 });
+
+
+test('journal tabs keep accessible selection and view history without changing stories or leaking movement',t=>{
+ const s=expansionFarm();s.village.quests['rowan-1']={step:0,done:false,base:null};const h=harness(t,s,null,{prefs:{villageTrackedQuest:'rowan-1'}});h.game.open();h.game.showPanel('journal');
+ const before=JSON.stringify(M.saveData(s)),position={...h.game.status.position},follow=h.cameraCalls.follow;let looks=0;h.view.play.look=()=>looks++;
+ assert.equal(h.game.status.journalTab,'active');assert.equal(h.$('#vf-tab-active').attributes['aria-selected'],'true');assert.equal(h.$('#vf-page-active').hidden,false);assert.equal(h.$('#vf-page-discover').hidden,true);
+ h.click('[data-vg-journal-tab="discover"]');assert.equal(h.game.status.journalTab,'discover');assert.equal(h.doc.activeElement.id,'vf-tab-discover');assert.equal(h.$('#vf-tab-discover').attributes.tabindex,'0');assert.equal(h.$('#vf-tab-active').attributes.tabindex,'-1');assert.equal(h.$('#vf-page-discover').hidden,false);assert.equal(h.$('#vf-page-active').hidden,true);
+ let prevented=0,stopped=0;h.$('#vf-tab-discover').onkeydown({key:'End',preventDefault(){prevented++;},stopPropagation(){stopped++;}});
+ assert.equal(h.game.status.journalTab,'completed');assert.equal(h.doc.activeElement.id,'vf-tab-completed');assert.equal(prevented,1);assert.equal(stopped,1);
+ h.$('#vf-tab-completed').onkeydown({key:'ArrowRight',preventDefault(){},stopPropagation(){}});assert.equal(h.game.status.journalTab,'active');
+ h.click('[data-vg-journal-tab="discover"]');const fold=h.$('[data-vg-details-key="objective:green-research"]');assert.ok(fold);fold.open=true;h.$('#vg-panel-body').scrollTop=147;
+ h.game.showPanel('materials');h.game.back();assert.equal(h.game.status.panel,'journal');assert.equal(h.game.status.journalTab,'discover');assert.equal(h.$('[data-vg-details-key="objective:green-research"]').open,true);assert.equal(h.$('#vg-panel-body').scrollTop,147);assert.equal(h.doc.activeElement.id,'vf-tab-discover');
+ h.pad.axes=[.9,.7,.8,.6];h.key('keydown','w',h.$('#vf-tab-discover'));h.game.tick(.1);assert.deepEqual(h.game.status.position,position);assert.equal(looks,0);assert.equal(h.cameraCalls.follow,follow);assert.equal(JSON.stringify(M.saveData(s)),before);assert.equal(h.game.status.trackedQuest,'rowan-1');
+ h.pad.axes=[0,0,0,0];h.key('keyup','w');
+});
+
+
+test('Discover keeps an available legacy story behind its live neighbour approach and explicit conversation choice',t=>{
+ const s=expansionFarm();Object.assign(s.village.friends.elowen,{xp:40,met:true});const h=harness(t,s);h.game.open();h.game.showPanel('journal','elowen');h.click('[data-vg-journal-tab="discover"]');
+ assert.equal(M.questStatus(s,'elowen-1'),'offered');const before=JSON.stringify(M.saveData(s));h.click('[data-vg-meet="elowen"]');
+ assert.equal(h.game.status.panel,null);assert.equal(h.game.status.waypoint.folkId,'elowen');assert.equal(h.conversation,null);assert.equal(JSON.stringify(M.saveData(s)),before);
+ h.game.place(89,8);h.game.showPanel('journal','elowen');h.click('[data-vg-journal-tab="discover"]');h.click('[data-vg-meet="elowen"]');
+ assert.equal(h.conversation.id,'elowen');assert.equal(M.questStatus(s,'elowen-1'),'offered','opening the story greeting does not accept it');assert.ok(h.choices().some(choice=>choice.id==='quest:start:elowen-1'));
+});
+
+
+test('the owner chip keeps the existing equipped portrait while names and character switches render',t=>{
+ const s=expansionFarm(),h=harness(t,s);h.scene.portrait=id=>`portrait:${id}`;h.game.open();const who=h.game.status.who,before=JSON.stringify(M.saveData(s)),position={...h.game.status.position};
+ const image=h.$('#vg-person-portrait').querySelector('img');assert.ok(image);assert.equal(image.attributes.src,`portrait:${s.wardrobe.equipped[who]??who}`);assert.equal(h.$('#vg-person-name').textContent,who==='shane'?'Shane':'Natalie');
+ h.game.render();assert.equal(h.$('#vg-person-portrait').querySelector('img'),image,'a repeated render preserves cached portrait markup');
+ h.click('#vg-person');const next=h.game.status.who;assert.notEqual(next,who);assert.equal(h.$('#vg-person-name').textContent,next==='shane'?'Shane':'Natalie');assert.equal(h.$('#vg-person-portrait').querySelector('img').attributes.src,`portrait:${s.wardrobe.equipped[next]??next}`);assert.deepEqual(h.game.status.position,position);assert.equal(JSON.stringify(M.saveData(s)),before);
+});
+
+
+test('the compact location phase follows the saved village clock and journal title art survives redraws',t=>{
+ const s=expansionFarm(),h=harness(t,s);h.game.open();
+ assert.equal(h.$('#vg-coins').parentElement,h.$('#vg-header-tools'));assert.equal(h.$('#vg-person').parentElement,h.$('#vg-header-tools'));assert.equal(h.$('#vg-fullscreen').parentElement,h.$('#vg-header-tools'));
+ assert.equal(h.$('#vg-clock').closest('.vf-clock').parentElement,h.$('#vg-location'));
+ for(const [clock,label] of [[0,'Night'],[900,'Dawn'],[1800,'Dusk'],[2700,'Night']]){s.village.clock=clock;const before=JSON.stringify(M.saveData(s));h.game.render();assert.equal(h.$('#vg-clock').textContent,label);assert.equal(JSON.stringify(M.saveData(s)),before);}
+ h.game.showPanel('journal');const titleArt=h.$('.vf-panel-title-art');assert.ok(titleArt.querySelector('.vf-art-moth'));assert.equal(titleArt.attributes['aria-hidden'],'true');
+ h.click('[data-vg-journal-tab="discover"]');h.click('[data-vg-journal-tab="active"]');assert.equal(h.$('.vf-panel-title-art'),titleArt);assert.ok(h.$('.vf-panel-title-art').querySelector('.vf-art-moth'));
+});

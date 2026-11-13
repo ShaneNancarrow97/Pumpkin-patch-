@@ -1,0 +1,765 @@
+{
+  "file": "/tmp/Pumpkin-Patch-Mothlight-WebGPU.html",
+  "htmlSha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+  "bytes": 61710319,
+  "harnessSha256": "8ff271b98bbaca6be31f68b7cd5288107be7e4f38e9bebdea6ef49619b62878a",
+  "fixtureSha256": "8c4f22501f3217f4d466c57b95ca0988a8d10f7c92275719177c27fc533790be",
+  "stateVersion": 20,
+  "expectedBackend": "webgl",
+  "executablePath": "/usr/bin/chromium",
+  "launchArgs": [
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--enable-unsafe-webgpu",
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader",
+    "--ignore-gpu-blocklist",
+    "--enable-features=Vulkan",
+    "--use-vulkan=swiftshader",
+    "--disable-vulkan-surface"
+  ],
+  "viewport": {
+    "width": 960,
+    "height": 540
+  },
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageTrackedQuest": "green-research"
+  },
+  "staging": {
+    "owner": "natalie",
+    "duskClock": 1800,
+    "wallClock": "2026-11-13T21:00:00Z",
+    "randomSeed": 20261113,
+    "referencePose": {
+      "x": 87,
+      "z": -16.5,
+      "yaw": 0,
+      "pitch": 0.20943951023931953,
+      "distance": 7.6
+    }
+  },
+  "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+  "checks": [
+    {
+      "label": "Explicit WebGL preference keeps the legacy renderer",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "requested": "webgl",
+        "backend": "webgl",
+        "stage": "disabled",
+        "reason": null,
+        "failureStack": null,
+        "frames": 0
+      }
+    },
+    {
+      "label": "The source village retains exactly eight pooled point lights",
+      "pass": true,
+      "fatal": true,
+      "actual": [
+        {
+          "uuid": "13b207ce-62f6-4a27-a5e8-c3ce8c64f07c",
+          "intensity": 37.805050513698745,
+          "distance": 17
+        },
+        {
+          "uuid": "3b548bc7-6a22-4e1b-8d54-b0e5d4554b70",
+          "intensity": 41.28795992610706,
+          "distance": 17
+        },
+        {
+          "uuid": "633beb48-72cf-4e76-b54e-d2ed1c708cbe",
+          "intensity": 40.872602495845726,
+          "distance": 17
+        },
+        {
+          "uuid": "8b07b03a-7a1d-4d17-9d74-db8264d378b5",
+          "intensity": 43.65207688636088,
+          "distance": 17
+        },
+        {
+          "uuid": "b3587636-822c-4dd1-8568-b156ac9f797b",
+          "intensity": 42.92667096222471,
+          "distance": 17
+        },
+        {
+          "uuid": "dbce6ea9-8a1c-4730-adc8-edf7f4f41b24",
+          "intensity": 41.60253256007373,
+          "distance": 17
+        },
+        {
+          "uuid": "030ade46-920d-4748-9535-5e683cf39054",
+          "intensity": 40.71807157424209,
+          "distance": 17
+        },
+        {
+          "uuid": "2baa9cca-9a1f-4d90-bd50-848384ba2d78",
+          "intensity": 38.272332151720335,
+          "distance": 17
+        }
+      ]
+    },
+    {
+      "label": "Real instance attributes contain bounded neighbour AO",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "meshes": 111,
+        "instances": 81699,
+        "bytes": 653592
+      }
+    },
+    {
+      "label": "The village owns one shared three-channel PBR atlas set",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "textures": 3,
+        "size": 256,
+        "surfaces": 4,
+        "bytes": 1048572,
+        "materialsSeen": 547,
+        "additionalDraws": 0
+      }
+    },
+    {
+      "label": "The real HTML journal opens above the renderer",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "The legacy actual-world atlas restores source camera, save, materials and output",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "width": 1280,
+        "height": 800,
+        "cached": true,
+        "saveRestored": true,
+        "cameraRestored": true,
+        "materialsRestored": true,
+        "gradeRestored": true,
+        "paletteRestored": true,
+        "fidelityRestored": true,
+        "targetRestored": true,
+        "outputRestored": true
+      }
+    },
+    {
+      "label": "The map is an actual bounded PNG snapshot",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "width": 1280,
+        "height": 800
+      }
+    },
+    {
+      "label": "Portrait keeps the real journal and renderer within the viewport",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "Returning to the farm removes the GPU overlay and restores farm play",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "active": false,
+        "bodyVillage": false,
+        "overlays": [],
+        "renderer": {
+          "requested": "webgl",
+          "backend": "webgl",
+          "stage": "disabled",
+          "reason": null,
+          "failureStack": null,
+          "frames": 0
+        },
+        "playerEnabled": true
+      }
+    },
+    {
+      "label": "Explicit WebGL preference keeps the legacy renderer",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "requested": "webgl",
+        "backend": "webgl",
+        "stage": "disabled",
+        "reason": null,
+        "failureStack": null,
+        "frames": 0
+      }
+    },
+    {
+      "label": "The run has no product page, shader/console or external request errors",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "errors": [],
+        "consoleErrors": [],
+        "externalRequests": [],
+        "failedRequests": []
+      }
+    }
+  ],
+  "screenshots": [
+    "webgl-world.png",
+    "webgl-journal.png",
+    "legacy-actual-world-atlas.png",
+    "webgl-portrait.png",
+    "returned-farm.png",
+    "webgl-warm-world.png"
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "warnings": [
+    "[.WebGL-0x8e4001c0a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x8e4001c0a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x8e4001c0a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x8e4001c0a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."
+  ],
+  "externalRequests": [],
+  "failedRequests": [],
+  "logCounts": {
+    "warnings": 5
+  },
+  "browserVersion": "154.0.8037.57",
+  "capability": {
+    "secureContext": true,
+    "gpuApi": true,
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36"
+  },
+  "firstUse": {
+    "finalStatus": {
+      "requested": "webgl",
+      "backend": "webgl",
+      "stage": "disabled",
+      "reason": null,
+      "failureStack": null,
+      "frames": 0
+    },
+    "elapsedWallMs": 51093
+  },
+  "surface": {
+    "pointLights": [
+      {
+        "uuid": "13b207ce-62f6-4a27-a5e8-c3ce8c64f07c",
+        "intensity": 37.805050513698745,
+        "distance": 17
+      },
+      {
+        "uuid": "3b548bc7-6a22-4e1b-8d54-b0e5d4554b70",
+        "intensity": 41.28795992610706,
+        "distance": 17
+      },
+      {
+        "uuid": "633beb48-72cf-4e76-b54e-d2ed1c708cbe",
+        "intensity": 40.872602495845726,
+        "distance": 17
+      },
+      {
+        "uuid": "8b07b03a-7a1d-4d17-9d74-db8264d378b5",
+        "intensity": 43.65207688636088,
+        "distance": 17
+      },
+      {
+        "uuid": "b3587636-822c-4dd1-8568-b156ac9f797b",
+        "intensity": 42.92667096222471,
+        "distance": 17
+      },
+      {
+        "uuid": "dbce6ea9-8a1c-4730-adc8-edf7f4f41b24",
+        "intensity": 41.60253256007373,
+        "distance": 17
+      },
+      {
+        "uuid": "030ade46-920d-4748-9535-5e683cf39054",
+        "intensity": 40.71807157424209,
+        "distance": 17
+      },
+      {
+        "uuid": "2baa9cca-9a1f-4d90-bd50-848384ba2d78",
+        "intensity": 38.272332151720335,
+        "distance": 17
+      }
+    ],
+    "ao": {
+      "meshes": 111,
+      "instances": 81699,
+      "bytes": 653592
+    },
+    "material": {
+      "pbr": {
+        "textures": 3,
+        "size": 256,
+        "surfaces": 4,
+        "bytes": 1048572,
+        "materialsSeen": 547,
+        "additionalDraws": 0
+      },
+      "ao": {
+        "scopes": {
+          "green": {
+            "boxes": 29998,
+            "levels": 9,
+            "buckets": 35237,
+            "entries": 116849,
+            "samples": 1874076,
+            "candidateTests": 27266034,
+            "boundsBytes": 1439904,
+            "buildMs": 36.399999998509884,
+            "bakeMs": 525.2999999970198,
+            "bytes": 239984,
+            "instances": 29998,
+            "darkCorners": 451469,
+            "radius": 0.18,
+            "mode": "face-corner-indirect",
+            "meshes": 26,
+            "skipped": 0,
+            "strength": 0.24,
+            "totalBuildMs": 573.6000000014901
+          },
+          "works": {
+            "boxes": 14543,
+            "levels": 10,
+            "buckets": 16262,
+            "entries": 56169,
+            "samples": 995741,
+            "candidateTests": 10776508,
+            "boundsBytes": 698064,
+            "buildMs": 14.5,
+            "bakeMs": 295,
+            "bytes": 116344,
+            "instances": 14543,
+            "darkCorners": 167493,
+            "radius": 0.18,
+            "mode": "face-corner-indirect",
+            "meshes": 45,
+            "skipped": 0,
+            "strength": 0.24,
+            "totalBuildMs": 317.20000000298023
+          },
+          "beyond": {
+            "boxes": 25616,
+            "levels": 9,
+            "buckets": 33949,
+            "entries": 110337,
+            "samples": 1609884,
+            "candidateTests": 26025981,
+            "boundsBytes": 1229568,
+            "buildMs": 18.700000002980232,
+            "bakeMs": 522.8999999985099,
+            "bytes": 204928,
+            "instances": 25616,
+            "darkCorners": 392885,
+            "radius": 0.18,
+            "mode": "face-corner-indirect",
+            "meshes": 26,
+            "skipped": 0,
+            "strength": 0.24,
+            "totalBuildMs": 548
+          },
+          "town": {
+            "boxes": 5772,
+            "levels": 10,
+            "buckets": 8219,
+            "entries": 22159,
+            "samples": 379564,
+            "candidateTests": 4644916,
+            "boundsBytes": 277056,
+            "buildMs": 3,
+            "bakeMs": 106,
+            "bytes": 46176,
+            "instances": 5772,
+            "darkCorners": 74203,
+            "radius": 0.18,
+            "mode": "face-corner-indirect",
+            "meshes": 11,
+            "skipped": 0,
+            "strength": 0.24,
+            "totalBuildMs": 112
+          },
+          "neighbourhoods": {
+            "mode": "face-corner-indirect",
+            "instances": 0,
+            "bytes": 0,
+            "meshes": 0,
+            "skipped": 0,
+            "buildMs": 0.10000000149011612
+          },
+          "stall": {
+            "boxes": 39,
+            "levels": 7,
+            "buckets": 53,
+            "entries": 117,
+            "samples": 2700,
+            "candidateTests": 23323,
+            "boundsBytes": 1872,
+            "buildMs": 0,
+            "bakeMs": 0.7999999970197678,
+            "bytes": 312,
+            "instances": 39,
+            "darkCorners": 288,
+            "radius": 0.18,
+            "mode": "face-corner-indirect",
+            "meshes": 1,
+            "skipped": 0,
+            "strength": 0.24,
+            "totalBuildMs": 1.1000000014901161
+          },
+          "bench": {
+            "boxes": 14,
+            "levels": 3,
+            "buckets": 16,
+            "entries": 26,
+            "samples": 1005,
+            "candidateTests": 4088,
+            "boundsBytes": 672,
+            "buildMs": 0,
+            "bakeMs": 0.20000000298023224,
+            "bytes": 112,
+            "instances": 14,
+            "darkCorners": 80,
+            "radius": 0.18,
+            "mode": "face-corner-indirect",
+            "meshes": 1,
+            "skipped": 0,
+            "strength": 0.24,
+            "totalBuildMs": 0.20000000298023224
+          },
+          "homes": {
+            "boxes": 5717,
+            "levels": 9,
+            "buckets": 8399,
+            "entries": 21565,
+            "samples": 374971,
+            "candidateTests": 9022456,
+            "boundsBytes": 274416,
+            "buildMs": 5,
+            "bakeMs": 129.10000000149012,
+            "bytes": 45736,
+            "instances": 5717,
+            "darkCorners": 78332,
+            "radius": 0.18,
+            "mode": "face-corner-indirect",
+            "meshes": 1,
+            "skipped": 0,
+            "strength": 0.24,
+            "totalBuildMs": 136.60000000149012
+          }
+        },
+        "instances": 81699,
+        "bytes": 653592,
+        "addedDraws": 0
+      }
+    },
+    "renderer": {
+      "requested": "webgl",
+      "backend": "webgl",
+      "stage": "disabled",
+      "reason": null,
+      "failureStack": null,
+      "frames": 0
+    },
+    "village": {
+      "area": "green",
+      "expansionTracked": {
+        "id": "green-research",
+        "title": "The Ink Beneath the Roots",
+        "who": "elowen",
+        "area": "green",
+        "level": 3,
+        "needs": "legacy:invitation",
+        "activities": [
+          "green-research:1",
+          "green-research:2",
+          "green-research:3"
+        ],
+        "reward": {
+          "coins": 60,
+          "effects": [
+            "green-research"
+          ],
+          "decor": [
+            "moth-lamp"
+          ]
+        },
+        "blurb": "Ink is seeping up through the roots of the great tree and writing on Elowen's pages by itself. She thinks the village is trying to remember something.",
+        "intro": [
+          {
+            "who": "elowen",
+            "text": "The almanac has started writing itself. I leave a page out at night, and by morning the roots have signed it."
+          },
+          {
+            "who": "elowen",
+            "text": "There is one pinned by my door, stamped with a moth. Read it for me? I have looked at it so often the marks have stopped meaning anything."
+          }
+        ],
+        "done": [
+          {
+            "who": "elowen",
+            "text": "A ward lantern. We used to light one for every door that had somebody behind it."
+          },
+          {
+            "who": "elowen",
+            "text": "Take this lamp home with you. If the roots are remembering, we had better give them something worth writing down."
+          }
+        ],
+        "change": "The first ward lantern burns on Hollow Green.",
+        "giver": "elowen",
+        "giverName": "Elowen",
+        "areaName": "Hollow Green",
+        "status": "available",
+        "description": "Ink is seeping up through the roots of the great tree and writing on Elowen's pages by itself. She thinks the village is trying to remember something.",
+        "next": {
+          "id": "green-research:1",
+          "name": "Read the moth-marked page",
+          "type": "inspect",
+          "area": "green",
+          "who": "elowen",
+          "chapter": "green-research",
+          "order": 0,
+          "x": 38.400000000000006,
+          "z": 30,
+          "text": "The roots repeat the same three marks: moth, moon, lantern.",
+          "verb": "Read",
+          "look": "A damp page pinned beside Elowen's door. Root-ink has stamped it with three small marks, over and over.",
+          "found": "The roots repeat the same three marks: moth, moon, lantern.",
+          "puzzleKind": null,
+          "giver": "elowen",
+          "available": true,
+          "visible": true,
+          "costRows": [],
+          "affordable": true,
+          "canAct": true,
+          "done": false,
+          "complete": false,
+          "reason": "Ready",
+          "description": "A damp page pinned beside Elowen's door. Root-ink has stamped it with three small marks, over and over.",
+          "step": 1,
+          "steps": 3,
+          "chapterTitle": "The Ink Beneath the Roots",
+          "progress": 0,
+          "have": 0,
+          "need": 1,
+          "started": false,
+          "options": [],
+          "selected": [],
+          "rotations": {},
+          "assignments": {},
+          "hints": 0,
+          "attempts": 0
+        },
+        "steps": [
+          {
+            "id": "green-research:1",
+            "name": "Read the moth-marked page",
+            "verb": "Read",
+            "type": "inspect",
+            "area": "green",
+            "done": false,
+            "current": true
+          },
+          {
+            "id": "green-research:2",
+            "name": "Put the remembered lights in order",
+            "verb": "Solve",
+            "type": "puzzle",
+            "area": "green",
+            "done": false,
+            "current": false
+          },
+          {
+            "id": "green-research:3",
+            "name": "Light the first ward lantern",
+            "verb": "Light",
+            "type": "restore",
+            "area": "green",
+            "done": false,
+            "current": false
+          }
+        ],
+        "rewards": [
+          {
+            "kind": "coins",
+            "amount": 60,
+            "label": "£60 bonus coins"
+          },
+          {
+            "kind": "decor",
+            "id": "moth-lamp",
+            "label": "moth lamp",
+            "name": "Moth lamp"
+          }
+        ],
+        "progress": 0,
+        "completed": 0,
+        "need": 3,
+        "reason": null
+      },
+      "returnPrompt": false,
+      "returnPathArmed": true,
+      "panelDepth": 0,
+      "panelParent": null,
+      "proximity": {
+        "visible": true,
+        "rings": [],
+        "limit": 12,
+        "lights": 0
+      },
+      "wanderers": {
+        "count": 2,
+        "maximum": 3,
+        "people": [
+          {
+            "id": "village-stroll-0",
+            "kind": "ghost",
+            "lane": "lantern-common",
+            "x": 178.5,
+            "z": 87,
+            "walking": false,
+            "wait": 0.37299999999999967,
+            "distance": 0,
+            "visible": true
+          },
+          {
+            "id": "village-stroll-1",
+            "kind": "werewolf",
+            "lane": "green-avenue",
+            "x": 87.975,
+            "z": 13.649999999999999,
+            "walking": false,
+            "wait": 0.22299999999999962,
+            "distance": 0,
+            "visible": true
+          }
+        ]
+      },
+      "active": true,
+      "inside": null,
+      "who": "natalie",
+      "position": {
+        "x": 87,
+        "z": -16.5
+      },
+      "panel": null,
+      "panelId": null,
+      "journalTab": null,
+      "touring": false,
+      "surveying": false,
+      "decorating": false,
+      "input": "keyboard",
+      "questExpanded": false,
+      "trackedQuest": "green-research",
+      "waypoint": {
+        "id": "green-research:1",
+        "name": "Read the moth-marked page",
+        "type": "inspect",
+        "area": "green",
+        "who": "elowen",
+        "chapter": "green-research",
+        "order": 0,
+        "x": 38.400000000000006,
+        "z": 30,
+        "text": "The roots repeat the same three marks: moth, moon, lantern.",
+        "verb": "Read",
+        "look": "A damp page pinned beside Elowen's door. Root-ink has stamped it with three small marks, over and over.",
+        "found": "The roots repeat the same three marks: moth, moon, lantern.",
+        "puzzleKind": null,
+        "giver": "elowen",
+        "available": true,
+        "visible": true,
+        "costRows": [],
+        "affordable": true,
+        "canAct": true,
+        "done": false,
+        "complete": false,
+        "reason": "Ready",
+        "description": "A damp page pinned beside Elowen's door. Root-ink has stamped it with three small marks, over and over.",
+        "step": "green-research:1",
+        "steps": 3,
+        "chapterTitle": "The Ink Beneath the Roots",
+        "progress": 0,
+        "have": 0,
+        "need": 1,
+        "started": false,
+        "options": [],
+        "selected": [],
+        "rotations": {},
+        "assignments": {},
+        "hints": 0,
+        "attempts": 0,
+        "objectiveId": "green-research",
+        "objectiveStep": "expansion:green-research:available:0",
+        "label": "Read the moth-marked page"
+      },
+      "gathering": null
+    },
+    "sky": {
+      "cloudOctaves": 4,
+      "cloudWarpSamples": 1,
+      "cloudHashes": 20,
+      "silhouetteLayers": 3,
+      "addedMeshes": 0,
+      "addedDrawCalls": 0,
+      "addedLights": 0,
+      "addedTextures": 1,
+      "addedPasses": 0,
+      "maxLinearChannel": 0.68,
+      "maxTimeStep": 0.25,
+      "artSamples": 2,
+      "maxArtLongSide": 1024,
+      "artLongitudeRepeats": 2,
+      "time": 1.3,
+      "artReady": true,
+      "artWidth": 1024,
+      "artHeight": 512,
+      "textureBytes": 2796204,
+      "artEncodedBytes": 34878
+    }
+  },
+  "atlas": {
+    "width": 1280,
+    "height": 800,
+    "cached": true,
+    "saveRestored": true,
+    "cameraRestored": true,
+    "materialsRestored": true,
+    "gradeRestored": true,
+    "paletteRestored": true,
+    "fidelityRestored": true,
+    "targetRestored": true,
+    "outputRestored": true
+  },
+  "warmed": {
+    "initialStatus": {
+      "requested": "webgl",
+      "backend": "webgl",
+      "stage": "disabled",
+      "reason": null,
+      "failureStack": null,
+      "frames": 0
+    },
+    "finalStatus": {
+      "requested": "webgl",
+      "backend": "webgl",
+      "stage": "disabled",
+      "reason": null,
+      "failureStack": null,
+      "frames": 0
+    },
+    "elapsedWallMs": 38200
+  },
+  "passed": true
+}
