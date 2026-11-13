@@ -3,7 +3,10 @@ import assert from "node:assert/strict";
 import * as M from "../src/model.js";
 import { DISTRICTS, ROADS, VILLAGE_BOUNDS, ARRIVAL, NODES } from "../src/content/village.js";
 import { renderVillageChapter } from "../src/ui/village-chapters.js";
-import { villageMapDistricts, villageMapPoint, villageMapLandmarks, renderVillageMap, VILLAGE_MAP_SIZE } from "../src/ui/village-map.js";
+import { TOWN } from "../src/content/village-town-square.js";
+import { CAVE_ENTRY, ACRE_ENTRY } from "../src/village-expansion-spatial.js";
+import { EXPANSION_AREA_BY_ID } from "../src/content/village-expansion.js";
+import { villageMapDistricts, villageMapAreas, villageMapLivePins, villageMapPoint, villageMapLandmarks, renderVillageMap, VILLAGE_MAP_SIZE, VILLAGE_MAP_BOUNDS } from "../src/ui/village-map.js";
 
 function level(state, n) {
   state.earned = M.LEVELS[n - 1].at;
@@ -48,14 +51,14 @@ test("selected lock details report the real level and quest while keeping the re
   assert.match(html, /Patch level 6/); assert.match(html, /Complete Two Doorbells/);
   assert.match(html, /follow the physical walking path/);assert.doesNotMatch(html,/comes in a later update/);
   for (const district of DISTRICTS) {
-    const pin = html.match(new RegExp(`<button class="vg-map-pin[^>]*data-vg-map-district="${district.id}"[^>]*>`))?.[0];
+    const pin = html.match(new RegExp(`<button[^>]*class="vg-map-pin[^>]*data-vg-map-district="${district.id}"[^>]*>`))?.[0];
     assert.ok(pin, `${district.id} has a real button rather than an inaccessible SVG hit target`);
     assert.doesNotMatch(pin, /disabled/);
     assert.match(pin, /aria-label="[^"]+view requirements"/);
     assert.match(pin, new RegExp(`aria-pressed="${district.id === "copse"}"`));
   }
-  assert.match(html, /data-vg-map-district="overview" data-pad-default>‹ Back to map/);
-  assert.ok(html.indexOf('data-vg-map-detail="copse"') < html.indexOf('class="vg-map-figure"'), "selected lock criteria are immediately visible above the map");
+  assert.ok(html.indexOf('class="vg-map-figure"') < html.indexOf('data-vg-map-detail="copse"'), "selecting a place retains the spatial overview first");
+  assert.doesNotMatch(html, /data-vgx-way-area="copse"/, "a locked area cannot offer a route action");
   assert.doesNotMatch(html, /data-vg-focus="(?:copse|quarry|moor|marsh)"/);
 });
 
@@ -100,10 +103,86 @@ test("chapter integration reads only state and validates selected IDs", () => {
 });
 
 
-test("the Green pin reveals nearby routes, and Back restores the spatial overview", () => {
-  const state = village(), selected = renderVillageMap(state, { selectedDistrict: "green" }).html, overview = renderVillageMap(state, { selectedDistrict: "overview" }).html;
-  assert.ok(selected.indexOf('class="vg-map-landmarks"') < selected.indexOf('class="vg-map-figure"'));
-  assert.match(selected, /data-vg-map-district="overview" data-pad-default/);
-  assert.ok(overview.indexOf('class="vg-map-figure"') < overview.indexOf('class="vg-map-detail"'));
-  assert.doesNotMatch(overview, /Back to map/);
+test("every area selection keeps one spatial overview with inline criteria and walking guidance", () => {
+  const state = village();
+  for (const selectedDistrict of ["overview", ...villageMapAreas(state).map(a => a.id)]) {
+    const { html } = renderVillageMap(state, { selectedDistrict });
+    assert.equal(html.match(/class="vg-map-figure"/g)?.length, 1);
+    assert.ok(html.indexOf('class="vg-map-figure"') < html.indexOf('class="vg-map-detail"'));
+    assert.ok(html.indexOf('class="vg-map-detail"') < html.indexOf('class="vg-map-landmarks"'));
+    assert.match(html, /Walking route/);
+    assert.doesNotMatch(html, /Back to map|vgx-route-book|data-vg-map-district="overview"/);
+  }
+  assert.match(renderVillageMap(state).html, /data-vgx-way-area="green"/);
+});
+
+test("the Acre, Moonclock Square and single cave mouth use the actual spread surface coordinates", () => {
+  const state = village(), { html } = renderVillageMap(state), areas = villageMapAreas(state);
+  assert.ok(VILLAGE_MAP_BOUNDS.x0 <= EXPANSION_AREA_BY_ID.acre.bounds[0]);
+  assert.ok(VILLAGE_MAP_BOUNDS.x1 >= VILLAGE_BOUNDS.x1);
+  const style = p => {
+    const point = villageMapPoint(p.x, p.z), round = n => Math.round(n * 100) / 100;
+    return `--map-x:${round(point.x / VILLAGE_MAP_SIZE.width * 100)}%;--map-y:${round(point.y / VILLAGE_MAP_SIZE.height * 100)}%`;
+  };
+  const [x0, z0, x1, z1] = EXPANSION_AREA_BY_ID.acre.bounds;
+  for (const [id, point] of [["cave-shallows", CAVE_ENTRY]]) {
+    const button = html.match(new RegExp(`<button[^>]*data-vg-map-district="${id}"[^>]*>`))?.[0];
+    assert.ok(button?.includes(style(point)), id);
+  }
+  const acrePin = html.match(/<button[^>]*data-vg-map-district="acre"[^>]*>/)?.[0];
+  const [, mapX, mapY] = acrePin.match(/--map-x:([\d.]+)%;--map-y:([\d.]+)%/);
+  const acreX = Number(mapX) / 100 * VILLAGE_MAP_SIZE.width + VILLAGE_MAP_BOUNDS.x0 - 14;
+  const acreZ = VILLAGE_MAP_BOUNDS.z1 + 14 - Number(mapY) / 100 * VILLAGE_MAP_SIZE.height;
+  assert.ok(acreX >= x0 && acreX <= x1 && acreZ >= z0 && acreZ <= z1, "the Acre area label remains within its real surface footprint");
+  assert.match(html, /data-vg-map-polygon="acre"/);
+  assert.match(html, /data-vg-map-road="acre-approach"/);
+  const acreEntry = villageMapPoint(ACRE_ENTRY.x, ACRE_ENTRY.z);
+  assert.ok(html.includes(`data-vg-map-acre-entry cx="${acreEntry.x}" cy="${acreEntry.y}"`));
+  const square = villageMapPoint(TOWN.cx * 1.5, TOWN.cz * 1.5);
+  assert.ok(html.includes(`data-vg-map-square cx="${square.x}" cy="${square.y}"`));
+  assert.equal(areas.filter(a => a.layer === "cave").length, 3);
+  assert.equal(html.match(/class="vg-map-pin[^>]*data-vg-map-district="cave-/g)?.length, 1);
+  for (const id of ["cave-workings", "cave-cathedral"]) {
+    const selected = renderVillageMap(state, { selectedDistrict: id }).html;
+    assert.ok(selected.includes(`data-vg-map-detail="${id}"`));
+    assert.ok(selected.includes(`Patch level ${EXPANSION_AREA_BY_ID[id].level}`));
+    assert.match(selected, /Cave landings/);
+    assert.doesNotMatch(selected, /data-vgx-way-area=/);
+  }
+});
+
+test("live pins show observed residents and route a followed underground objective through the real entrance", () => {
+  const state = village(), residents = [
+    { id: "elowen", name: "Elowen Mothwick", x: 43, z: 35, area: "green", live: true, available: true },
+    { id: "rowan", x: 110, z: 35, area: "green", live: false },
+    { id: "mabel", x: -30, z: 120, area: "copse", available: false },
+    { id: "tansy", x: 0, z: -20, area: "cave-shallows" },
+    { id: "vesper", x: 3, z: 3, area: "green", hall: "velvet-bat" },
+    { id: "lost", x: Infinity, z: 5, area: "green" },
+  ], objective = { id: "copse-lantern:2", chapter: "copse-lantern", name: "Free the singing crystal", area: "cave-shallows", x: -10.5, z: -18 };
+  const before = JSON.stringify({ state, residents, objective }), pins = villageMapLivePins({ residents, objective });
+  assert.deepEqual(pins.filter(p => p.kind === "resident").map(p => p.id), ["elowen"]);
+  assert.equal(pins.find(p => p.kind === "objective").x, CAVE_ENTRY.x);
+  assert.equal(pins.find(p => p.kind === "objective").z, CAVE_ENTRY.z);
+  assert.equal(pins.find(p => p.kind === "objective").viaEntrance, true);
+  const { html } = renderVillageMap(state, { residents, objective, currentArea: "cave-shallows", position: { x: 0, z: -12 } });
+  assert.match(html, /data-vg-map-resident="elowen" data-vg-meet="elowen"/);
+  assert.match(html, /data-vg-map-objective="copse-lantern:2"/);
+  assert.match(html, /data-vgx-guide="copse-lantern" aria-label="Show walking route to Free the singing crystal"/);
+  assert.match(html, /The marker shows the cave entrance/);
+  assert.doesNotMatch(html, /data-vg-map-position|data-vg-map-resident="(?:rowan|mabel|tansy|vesper|lost)"/);
+  assert.equal(JSON.stringify({ state, residents, objective }), before);
+});
+
+test("surface objective pins retain live world coordinates and reject off-map or unknown-layer observations", () => {
+  const objective = { id: "green-research:1", chapter: "green-research", name: "Read the page", x: 75, z: 30, area: "green" };
+  assert.deepEqual(villageMapLivePins({ objective })[0], { ...objective, kind: "objective", label: "Read the page" });
+  for (const objective of [{ x: NaN, z: 0 }, { x: VILLAGE_MAP_BOUNDS.x0 - 1, z: 0 }, { x: 0, z: 0, area: "invented-hall" }]) assert.deepEqual(villageMapLivePins({ objective }), []);
+});
+
+test("resident portraits are escaped image sources rather than visible URL text", () => {
+  const portrait = 'data:image/png;base64,cG9ydHJhaXQ=', { html } = renderVillageMap(village(), { residents: [{ id: "elowen", short: "Elowen", x: 43, z: 30, area: "green" }], portrait: () => portrait });
+  assert.ok(html.includes(`<img src="${portrait}" alt="">`));
+  assert.doesNotMatch(html, />data:image/);
+  assert.doesNotMatch(renderVillageMap(village(), { residents: [{ id: "elowen", x: 43, z: 30 }], portrait: () => 'bad" onerror="bad' }).html, /src="bad" onerror/);
 });
