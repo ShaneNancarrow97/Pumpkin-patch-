@@ -7,6 +7,7 @@ import { expansionAreaInfo, expansionActivityInfo } from './rules/village-expans
 import { CAVE_IDS,CAVE_ROOMS,CAVE_ENTRY,ACRE_PATHS,ACRE_SHORTCUT,onAcreShortcut,isCaveArea,caveGroundAt,caveCellFree,stepExpansionWalker } from './village-expansion-spatial.js';
 // The surface pieces were placed on the village's design grid; each is drawn where it now stands (rules/village-spread.js).
 import { spread, PIECES, pieceAt } from './rules/village-spread.js';
+import { buildGrannyExterior } from './village-granny-exterior.js';
 const ALL_ACTIVITIES=[...EXPANSION_ACTIVITIES,...EXPANSION_VEINS];
 const ACTIVITY_BY_ID=new Map(ALL_ACTIVITIES.map(a=>[a.id,a]));
 const W=(x,z,y=0)=>new THREE.Vector3(x,y,-z), palettes=[{rock:0x746778,gem:0xb882e7,light:0xf2b875},{rock:0x566675,gem:0xe76a55,light:0x80c9d5},{rock:0x6b5876,gem:0x94d9d7,light:0xc9b0f0}];
@@ -80,14 +81,8 @@ function buildAcre(){const v=new ChunkedVoxels(8),shortcutVoxels=new ChunkedVoxe
  const onPath=(x,z)=>paths.some(([a,b])=>{const dx=b.x-a.x,dz=b.z-a.z,t=Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/(dx*dx+dz*dz||1)));return Math.hypot(x-a.x-dx*t,z-a.z-dz*t)<1.4;})||(x>-76&&x<-60&&z>74&&z<92);
  for(let x=-94;x<-40;x+=1.3)for(let z=50;z<112;z+=1.3)if(!onPath(x,z)){const target=onAcreShortcut(x*K,z*K)?shortcutVoxels:v,h=2.2+r()*.9;put(target,x,3,z,.09,h,.09,0x62713e);for(let j=0;j<3;j++){put(target,x-.18,3.7+j*.45,z,.5,.08,.17,0x6c7940);put(target,x+.16,3.8+j*.45,z,.45,.08,.17,0x809047);}put(target,x,3+h-.4,z,.18,.35,.18,0xc39a48);}
  for(const[a,b]of paths){const n=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)));for(let i=0;i<n;i++){const t=i/n;put(floor,a.x+(b.x-a.x)*t,3.005,a.z+(b.z-a.z)*t,2.7,.025,2.7,vary(0x8a7150,.1,r));}}
- for(let x=-73;x<-63;x+=.5)for(let z=82;z<89;z+=.5)put(house,x+.25,3,z+.25,.5,.3,.5,0x65505b);
- for(const x of [-72.5,-63.5])for(let z=82;z<89;z+=.5)for(let y=3.3;y<7;y+=.45)put(house,x,y,z,.4,.44,.5,vary(0x67534d,.14,r));
- for(let x=-72.5;x<-63.4;x+=.5)for(let y=3.3;y<7;y+=.45){put(house,x,y,89,.5,.44,.4,vary(0x68554c,.12,r));if(Math.abs(x+68)>1.1)put(house,x,y,82,.5,.44,.4,vary(0x827465,.14,r));}
- for(let x=-73.5;x<-62.5;x+=.35){const h=8.8-Math.abs(x+68)*.35;for(let z=81;z<90;z+=.45)put(house,x,h,z,.4,.15,.5,vary(0x413b4b,.14,r));}
- for(const x of [-70.6,-65.4]){put(house,x,4.5,81.75,1.2,1.5,.1,0xe9aa64,true);for(const dx of [-.65,.65])put(house,x+dx,4.35,81.6,.13,1.8,.2,0x3e2636);put(house,x,5.1,81.55,1.4,.08,.2,0x3e2636);}
- put(house,-68,3.3,82,.85,2.4,.13,0x4c293d);put(house,-67.7,4.4,81.8,.08,.08,.1,0xe9c183,true);
+ const grannyExterior=buildGrannyExterior(house,r);
  for(let i=0;i<5;i++)put(house,-68,3-i*.12,81.5-i*.35,2.2,.18,.42,0x9b8163);
- put(house,-64.3,7.7,87.5,1,2.8,1,0x58454d);
  for(let i=0;i<22;i++){const x=-74+r()*12,z=76+r()*5;put(house,x,3,z,.5,.6,.5,0xc77535);put(house,x,3.6,z,.08,.18,.08,0x645b36);}
  for(const [x,z]of [[-44,82],[-60,74],[-77,82],[-68,96]]){lantern(house,x,z,3,0xe9b16d);lamps.push(W(x*K,z*K,4.2*K));}
  // Three unmistakable watchers are the maze's landmarks, not intrusive text signs.
@@ -95,7 +90,7 @@ function buildAcre(){const v=new ChunkedVoxels(8),shortcutVoxels=new ChunkedVoxe
  const group=new THREE.Group(),corn=v.build({glow:1.1,detailShadows:false});corn.name='Acre corn';const shortcutCorn=shortcutVoxels.build({detailShadows:false});group.add(floor.build({detailShadows:false}),corn,shortcutCorn,house.build({glow:1.2,detailShadows:false}));
  // Drawn where the Acre was laid out, then moved whole to where it now stands, its lamps with it.
  const [dx,dz]=PIECES[pieceAt(-68,82)];group.position.set(dx*K,0,-dz*K);group.updateMatrixWorld(true);for(const l of lamps){l.x+=dx*K;l.z-=dz*K;}
- const fades=[];corn.updateMatrixWorld(true);corn.traverse(o=>{if(o.isMesh){o.material.alphaHash=true;const centre=new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3());fades.push({mesh:o,centre});}});group.name='The Crooked Acre';return{group,corn,shortcutCorn,fades,lamps};}
+ const fades=[];corn.updateMatrixWorld(true);corn.traverse(o=>{if(o.isMesh){o.material.alphaHash=true;const centre=new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3());fades.push({mesh:o,centre});}});group.name='The Crooked Acre';group.userData.grannyExterior=grannyExterior;return{group,corn,shortcutCorn,fades,lamps};}
 // Voxel instances share the global unit-box geometry with the rest of the game.
 // Releasing an expansion must never dispose that shared geometry or pick material.
 const dispose=group=>group.traverse(o=>{o.dispose?.();if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose?.();});
