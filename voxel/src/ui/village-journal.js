@@ -16,7 +16,7 @@ function fold(state, record, followed, portrait) {
   return `<details class="vg-ch-story-fold" data-vg-details-key="objective:${esc(record.id)}"><summary><span><small>${esc(byline(record))} · ${record.status === "active" ? "In progress" : "Ready to begin"}</small><b>${esc(record.title)}</b><span class="vg-ch-story-task">${esc(record.task)}</span></span><i aria-hidden="true">⌄</i></summary>${card(state, record, followed, portrait)}</details>`;
 }
 export function renderVillageJournal({ state, records, followed = null, who = null, portrait = null }) {
-  const entries = who ? records.filter(record => record.giver === who) : records;
+  const entries = who ? records.filter(record => record.giver === who || record.status === "active" && record.legacy?.steps[record.completed]?.who === who) : records;
   const selected = entries.find(record => record.id === followed?.id && open(record));
   const current = entries.filter(record => open(record) && record.id !== selected?.id), done = entries.filter(record => record.status === "done"), locked = entries.filter(record => record.status === "locked");
   let html = '<section class="vg-journal" aria-label="Village stories">';

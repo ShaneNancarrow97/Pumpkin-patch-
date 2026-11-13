@@ -694,3 +694,14 @@ for(const invalid of ['__proto__','constructor','toString'])test(`malformed pers
  const s=expansionFarm();s.village.quests['rowan-1']={step:0,done:false,base:null};const prefs=JSON.parse(JSON.stringify({villageTrackedQuest:invalid})),h=harness(t,s,null,{prefs});
  assert.equal(h.game.open(),true);assert.equal(h.game.status.trackedQuest,'rowan-1');assert.equal(h.$('#vg-quest-title').textContent,'Loose Boards');const before=JSON.stringify(M.saveData(s));h.game.showPanel('journal');h.game.render();assert.equal(JSON.stringify(M.saveData(s)),before);assert.ok(h.game.status.waypoint?.nodeId);
 });
+
+test('a ready later handover wins a blocked earlier quest and settles its exact supplies once nearby',t=>{
+ const s=expansionFarm();s.village.quests['blight-first-signs']={step:3,done:true,base:null};s.village.quests['rowan-1']={step:2,done:false,base:null};s.village.quests['blight-root-and-remedy']={step:1,done:false,base:null};Object.assign(s.village.materials,{logs:0,stone:0,herbs:3,fibre:4});
+ assert.equal(M.handOver(s,'rowan').quest,'rowan-1');assert.equal(M.handOver(s,'rowan').ok,false);assert.equal(M.handOver(s,'rowan','blight-root-and-remedy').ok,true);
+ const h=harness(t,s,null,{prefs:{villageTrackedQuest:'rowan-1'}});h.game.open();h.game.place(87,8);h.game.meet('rowan');
+ assert.deepEqual(h.choices().filter(choice=>choice.intent==='quest').map(choice=>choice.id),['quest:deliver:blight-root-and-remedy']);
+ const post=h.view.folk.talkSpot,beforeRemote=JSON.stringify(M.saveData(s));h.view.folk.talkSpot=id=>id==='rowan'?{x:140,z:90}:post(id);h.chooseIntent('quest','quest:deliver:blight-root-and-remedy');assert.equal(JSON.stringify(M.saveData(s)),beforeRemote,'the ready quote cannot spend remotely');
+ h.view.folk.talkSpot=post;h.game.place(87,8);h.game.meet('rowan');const choices=h.choices(),index=choices.findIndex(choice=>choice.id==='quest:deliver:blight-root-and-remedy'),stale={id:'rowan',choice:choices[index]},coins=s.coins;
+ h.chooseIntent('quest','quest:deliver:blight-root-and-remedy');assert.equal(s.village.materials.herbs,0);assert.equal(s.village.materials.fibre,0);assert.equal(s.village.materials.logs,0);assert.equal(s.village.materials.stone,0);assert.equal(s.village.quests['rowan-1'].step,2);assert.equal(s.village.quests['blight-root-and-remedy'].step,2);assert.equal(s.coins,coins);
+ const after=JSON.stringify(M.saveData(s)),saves=h.saves.length;assert.equal(h.choose(index,stale),false);assert.equal(JSON.stringify(M.saveData(s)),after);assert.equal(h.saves.length,saves);
+});

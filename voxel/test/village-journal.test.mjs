@@ -30,3 +30,8 @@ test("completed stories retain their named rewards and world changes inside the 
   const state=setup();state.village.expansion.chapters['green-research']=true;const records=villageObjectives(state),before=JSON.stringify(M.saveData(state)),html=renderVillageJournal({state,records}).html;
   assert.match(html,/data-vg-finished-story="invitation"/);assert.match(html,/data-vg-finished-story="green-research"/);assert.match(html,/The first ward lantern burns/);assert.match(html,/rewards received/);assert.equal(JSON.stringify(M.saveData(state)),before);
 });
+test("a neighbour's secondary handovers remain visible when another resident gave the story",()=>{
+  const state=setup();state.village.quests['lantern-keepers']={step:0,done:false,base:null};state.village.quests['rowan-stall']={step:2,done:false,base:null};state.coins=500;Object.assign(state.village.materials,{logs:12,stone:8,fibre:6,herbs:4});
+  const before=JSON.stringify(M.saveData(state)),html=renderVillageJournal({state,records:villageObjectives(state),who:'rowan'}).html;
+  assert.match(html,/data-vg-details-key="objective:lantern-keepers"/);assert.match(html,/data-vg-handover="rowan" data-quest="lantern-keepers"/);assert.match(html,/data-vg-handover="rowan" data-quest="rowan-stall"/);assert.equal(JSON.stringify(M.saveData(state)),before);
+});
