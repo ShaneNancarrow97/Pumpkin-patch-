@@ -1,0 +1,125 @@
+{
+  "runtimeCommit": "03f638e99b559dd7fcaa7363b388bd12bf4dc633",
+  "sourceBranch": "contractor/village-detail-polish",
+  "baseBranch": "contractor/farm-village-bonds",
+  "baseCommit": "7181cc4343fa3d538b4d5c510e9375df065c0093",
+  "claudeLeadChecked": "8da66cb93893047d56bad874583f509ba0209d7a",
+  "saveVersion": 20,
+  "artifacts": {
+    "Pumpkin-Patch-Village-Detail-Polish.html": {
+      "bytes": 61806768,
+      "sha256": "3eee0d5a4a66c86b85b6f1fc07e670915377bfbe7710da1f304db77e5f347c02"
+    },
+    "Pumpkin-Patch-Village-Detail-Polish.zip": {
+      "bytes": 43988669,
+      "sha256": "6ad00d9ce77a65d65057d69cfebfa5c8ead15e6e05db6be25329ce960237d3cb"
+    }
+  },
+  "tests": {
+    "runtimeCommit": "03f638e99b559dd7fcaa7363b388bd12bf4dc633",
+    "command": "node --test --test-concurrency=2 'test/**/*.test.mjs'",
+    "tests": 1549,
+    "passed": 1549,
+    "failed": 0,
+    "durationMs": 237597.753767,
+    "logSha256": "264d65719c03bc4257340d629df1fb72d2b1ad8d969c5d863f03e19fe85022ca"
+  },
+  "reproducibleBuild": {
+    "runtimeCommit": "03f638e99b559dd7fcaa7363b388bd12bf4dc633",
+    "htmlSha256": "3eee0d5a4a66c86b85b6f1fc07e670915377bfbe7710da1f304db77e5f347c02",
+    "bytes": 61806768,
+    "independentBuildIdentical": true
+  },
+  "zipIntegrity": {
+    "crcValid": true,
+    "containedHtmlSha256": "3eee0d5a4a66c86b85b6f1fc07e670915377bfbe7710da1f304db77e5f347c02",
+    "zip": {
+      "bytes": 43988669,
+      "sha256": "6ad00d9ce77a65d65057d69cfebfa5c8ead15e6e05db6be25329ce960237d3cb"
+    }
+  },
+  "nativeBrowser": [
+    {
+      "backend": "webgpu",
+      "viewport": {
+        "width": 960,
+        "height": 540
+      },
+      "checks": 35,
+      "passed": true,
+      "errors": [],
+      "acceptancePath": "webgpu-canvas-readback",
+      "report": "webgpu-summary.json",
+      "captures": [
+        {
+          "file": "entrance-webgpu-canvas.png",
+          "bytes": 792142,
+          "sha256": "3753fc79319817dc78cb47bb33d328c9561fb1a99ab85bfa0fc8d8c6fcc264de"
+        },
+        {
+          "file": "walking-webgpu-canvas.png",
+          "bytes": 935817,
+          "sha256": "5d6ed3d467b491c360968a5d4423c016c0a67241bae188520e4528dd68d3f054"
+        },
+        {
+          "file": "rowan-interior-webgpu-canvas.png",
+          "bytes": 649632,
+          "sha256": "8474195549f7e17f041d3efd205917e03fb8b475200dc9a1635b7ca1680d1535"
+        },
+        {
+          "file": "surface-return-webgpu-canvas.png",
+          "bytes": 637180,
+          "sha256": "c5bf134efe2643dd22e4961ea177ec0e4cfd4f8794ff92b4782ef7412ea2410b"
+        }
+      ]
+    },
+    {
+      "backend": "webgl",
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "checks": 19,
+      "passed": true,
+      "errors": [],
+      "acceptancePath": "visible-page-composite",
+      "report": "webgl-summary.json",
+      "captures": [
+        {
+          "file": "entrance-webgl-mobile.png",
+          "bytes": 393450,
+          "sha256": "1ac2975eedda648feb34a7824d1532a6a211273be7e3ac03704b3e2eec0cb207"
+        },
+        {
+          "file": "walking-webgl-mobile.png",
+          "bytes": 410899,
+          "sha256": "ef52714a56e181c07f2dce1e478b446170c5dce91cc2269dada33ff5991a2786"
+        },
+        {
+          "file": "rowan-interior-webgl-mobile.png",
+          "bytes": 323744,
+          "sha256": "b4520057cf8a0d5f9a84c35074db61063ed16e46f1d8f89f832db8a3681db2be"
+        },
+        {
+          "file": "surface-return-webgl-mobile.png",
+          "bytes": 331802,
+          "sha256": "ab96124bff1e7237c2ced140955576bae0ad5f8de7a42eb2158bb09cb561c86d"
+        }
+      ]
+    }
+  ],
+  "compatibilitySmoke": {
+    "checks": 54,
+    "passed": true,
+    "scope": "Unmodified smoke.mjs; draws held, native simulation and UI. Logic/UI compatibility only, not native rendering or performance.",
+    "htmlSha256": "3eee0d5a4a66c86b85b6f1fc07e670915377bfbe7710da1f304db77e5f347c02",
+    "logSha256": "610c160c0d526ba53b86914a347225ec68df04b00c95cb0ca98e0ac8524d0ac1"
+  },
+  "limitations": [
+    "Software browser fixtures are not physical phone/TV frame-rate measurements.",
+    "WebGPU acceptance uses actual GPU canvas readback; the runner has a separately reproduced stale page-compositor limitation.",
+    "No APK is rebuilt in this pass."
+  ],
+  "sourceReviewCommit": "2ac520a510eee2deb4ceb1a253c69bfd16248f02",
+  "handover": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/2ac520a510eee2deb4ceb1a253c69bfd16248f02/voxel/docs/contractor-patches/village-detail-polish/README.md"
+}
