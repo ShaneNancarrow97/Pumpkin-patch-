@@ -15,6 +15,8 @@ import { findResidentPath } from "../src/rules/village-resident-life.js";
 import { villageCellFree } from "../src/rules/village-navigation.js";
 import { createVillagePadState, normaliseVillageStick } from "../src/ui/village-controls.js";
 import { spread } from "../src/rules/village-spread.js";
+import { resolveVillageResidentInteraction, villageResidentLocation, withinResidentReach } from "../src/village-resident-interaction.js";
+import { EXPANSION_AREAS } from "../src/content/village-expansion.js";
 
 // The game controller is exercised without a renderer or browser. Rules and
 // room plans stay real; the small DOM adapter below supplies the input port.
@@ -89,18 +91,19 @@ function harness(t, s = farm(), narration, extra = {}) {
   const listeners = new Map(), globals = new Map(), pad = { connected: true, mapping: "standard", axes: [0, 0, 0, 0], buttons: Array.from({ length: 18 }, () => ({ pressed: false })) };
   for (const [key, value] of Object.entries({ document: doc, navigator: { getGamepads: () => [pad] }, addEventListener(type, fn) { if (!listeners.has(type)) listeners.set(type, new Set()); listeners.get(type).add(fn); }, removeEventListener(type, fn) { listeners.get(type)?.delete(fn); } })) { globals.set(key, Object.getOwnPropertyDescriptor(globalThis, key)); Object.defineProperty(globalThis, key, { configurable: true, writable: true, value }); }
   const cameraCalls = { follow: 0, reset: 0, focus: [], dialogue: [] };
-  const notices = [], saves = [], gatherSounds = [], receipts = [], receiptTicks = [], owner = { enabled: true, who: "natalie" }, actors = [], picture = new THREE.Scene(), camera = new THREE.PerspectiveCamera(); camera.position.set(87, 8, 15); camera.lookAt(87, 1, -4.5);
+  const notices = [], saves = [], gatherSounds = [], receipts = [], chapterReceipts = [], messageReceipts = [], receiptTicks = [], owner = { enabled: true, who: "natalie" }, actors = [], picture = new THREE.Scene(), camera = new THREE.PerspectiveCamera(); camera.position.set(87, 8, 15); camera.lookAt(87, 1, -4.5);
   let inside = null, touring = false, finishTour = null, conversation = null, callback = null, menuCloses = 0, leaves = 0;
   const view = { scene: picture, camera, groundAt: () => 0, sync() {}, folk: { mood() {}, talkSpot: id => ({ x: id === "rowan" ? 87 : 89, z: 8 }) }, play: { reset() { cameraCalls.reset++; }, follow() { cameraCalls.follow++; }, look() {}, zoom() {} }, cameraActions: { focus(...args) { cameraCalls.focus.push(args); } }, get inside() { return inside; }, goInside(id) { inside = id; }, goOutside() { inside = null; }, hallPoint(x, z, y = 0) { return new THREE.Vector3(4000 + x * K, y * K, z * K); }, director: { get active() { return touring; }, start(title, done, options) { touring = true; finishTour = done; this.options = options; title({ title: "Mothlight", sub: "Welcome" }); }, skip() { if (!touring) return; touring = false; finishTour(); } } };
   view.folk.spotOf=id=>({x:id==="rowan"?87:89,z:9.8});
+  Object.defineProperty(view,"expansionTargets",{configurable:true,get:()=>["rowan","elowen"].map(id=>({type:"village-folk",id,...view.folk.spotOf(id)}))});
   view.dialogueCamera={begin(player,neighbour){cameraCalls.dialogue.push({kind:"begin",player:{...player},neighbour:{...neighbour}});},end(options){cameraCalls.dialogue.push({kind:"end",options});}};
   const scene = { villageView: view, place: null, player: { state: () => ({ ...owner }), setEnabled(on, who = owner.who) { owner.enabled = on; owner.who = who; } }, enter(kind) { this.place = { kind }; }, leavePlace() { touring = false; this.place = null; }, villageCharacter() { const actor = new THREE.Group(), frame = new THREE.Group(); actor.add(new THREE.Group()); actor.userData = { idle: [frame], walk: [frame], shown: frame, show() {}, dispose() { actor.userData.disposed = true; } }; actor.userData.playerAnimate=pose=>{actor.userData.lastPose=pose;actor.userData.poseCount=(actor.userData.poseCount??0)+1;}; actors.push(actor); return actor; } };
   let returnPrompt;
   const game = createVillageGame({ state: () => s, scene, narration, prefs: extra.prefs??{}, savePrefs: extra.savePrefs??(()=>{}), save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), onGatherSound:e=>{gatherSounds.push(e);extra.onGatherSound?.(e);}, closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: extra.portrait??(() => null), itemArt: () => "", controlsView: headlessControls, decorateView: () => ({ active: false, close() {}, dispose() {}, tick() {}, pick() {}, back() {}, open() { return false; } }),
     returnPromptView(options){const element=doc.createElement("section");element.id="village-return-prompt";element.hidden=true;element.innerHTML='<button class="village-return-confirm" data-pad-default>Return</button><button class="village-return-cancel">Stay</button>';doc.body.append(element);let active=false;returnPrompt={open(){if(active)return false;active=true;element.hidden=false;element.querySelector("button").focus();return true;},close(){active=false;element.hidden=true;},confirm(){if(!active)return;this.close();options.onConfirm();},cancel(){if(!active)return;this.close();options.onCancel();},setInput(){},destroy(){this.close();element.remove();},get active(){return active;},element};element.querySelector(".village-return-confirm").onclick=()=>returnPrompt.confirm();element.querySelector(".village-return-cancel").onclick=()=>returnPrompt.cancel();return returnPrompt;},
-    questReceiptView(){const seen=new Set();return{notify(event){if(!seen.has(event.quest)){seen.add(event.quest);receipts.push(event);}},tick(options){receiptTicks.push(options);},clear(){},destroy(){}};},
+    questReceiptView(){const seen=new Set(),add=(key,value,list)=>{if(!seen.has(key)){seen.add(key);list.push(value);}};return{notify(event){add(`quest:${event.quest}`,event,receipts);},notifyChapter(event){add(`chapter:${event.id}`,event,chapterReceipts);},notifyMessage(event){add(`message:${event.id}`,event,messageReceipts);},tick(options){receiptTicks.push(options);},clear(){},destroy(){},get active(){return !!extra.receiptActive;}};},
     conversationView(options) { callback = options; return { open(options) { conversation = options; }, close() { if (conversation) { conversation = null; options.onClose(); } }, get active() { return !!conversation; }, dispose() { this.close(); } }; } });
-  const h = { game, state: s, doc, scene, view, cameraCalls, owner, actors, saves, notices, gatherSounds, receipts, receiptTicks, returnPrompt, listeners, pad, get conversation() { return conversation; }, get menuCloses() { return menuCloses; }, get leaves() { return leaves; }, complete() { callback.onContinue({ finished: true }); }, choose(index = 0, meta) { return callback.onChoice(index, meta); }, $(selector) { return doc.body.querySelector(selector); }, click(selector) { const el = doc.body.querySelector(selector); assert.ok(el, selector); assert.equal(el.disabled, false, selector + " enabled"); el.click(); }, key(type, key, target = doc.body) { for (const fn of listeners.get(type) ?? []) fn({ key, target, preventDefault() {}, stopImmediatePropagation() {}, repeat: false }); }, press(button) { pad.buttons[button].pressed = true; game.tick(.1); pad.buttons[button].pressed = false; game.tick(.1); } };
+  const h = { game, state: s, doc, scene, view, cameraCalls, owner, actors, saves, notices, gatherSounds, receipts, chapterReceipts, messageReceipts, receiptTicks, returnPrompt, listeners, pad, get conversation() { return conversation; }, get menuCloses() { return menuCloses; }, get leaves() { return leaves; }, complete() { callback.onContinue({ finished: true }); }, choose(index = 0, meta) { return callback.onChoice(index, meta); }, $(selector) { return doc.body.querySelector(selector); }, click(selector) { const el = doc.body.querySelector(selector); assert.ok(el, selector); assert.equal(el.disabled, false, selector + " enabled"); el.click(); }, key(type, key, target = doc.body) { for (const fn of listeners.get(type) ?? []) fn({ key, target, preventDefault() {}, stopImmediatePropagation() {}, repeat: false }); }, press(button) { pad.buttons[button].pressed = true; game.tick(.1); pad.buttons[button].pressed = false; game.tick(.1); } };
   h.choices = () => conversation?.choices ?? conversation?.lines?.find(line => Array.isArray(line?.choices))?.choices ?? [];
   h.chooseIntent = (intent, id) => {const choices=h.choices(),index=choices.findIndex(choice=>choice.intent===intent&&(id==null||choice.id===id));assert.ok(index>=0,`choice ${intent} ${id??""}`);assert.notEqual(choices[index].disabled,true,"choice enabled");return h.choose(index,{id:conversation.id,choice:choices[index]});};
   // Resource interactions must use the real controller path and finish their swing.
@@ -145,6 +148,64 @@ test("nearby greetings open real chat and gift actions, and each chat answer sav
   const xp = h.state.village.friends.rowan.xp; h.chooseIntent("chat"); assert.equal(h.conversation.id, "rowan"); assert.equal(typeof h.choose(0), "string"); const after = h.state.village.friends.rowan.xp; assert.ok(after > xp); h.choose(0); assert.equal(h.state.village.friends.rowan.xp, after); h.complete();
   h.meet("rowan"); h.chooseIntent("gift"); assert.equal(h.$('[data-vg-details-key="gifts:rowan"]').open,true); h.click('[data-vg-gift="pumpkin:orange"]'); assert.equal(h.state.stock[0], 2); assert.equal(h.state.village.friends.rowan.gifts.length, 1); assert.ok(h.conversation.lines[0]); h.complete();
   assert.equal(h.$("#vg-coins").textContent, "£" + Math.round(h.state.coins).toLocaleString("en-GB"));
+});
+
+test("production feet targets and distinct clear approaches share Talk, People and camera anchors", t => {
+  const h=harness(t);welcome(h);h.game.place(87,5);h.game.tick(.05);
+  assert.equal(h.$("#vg-interact").hidden,false);assert.equal(h.$("#vg-interact").textContent,"Talk");
+  h.game.showPanel("people");assert.equal(h.$('[data-vg-meet="rowan"]').dataset.padLabel,"Talk to Rowan");
+  h.click('[data-vg-meet="rowan"]');assert.equal(h.conversation?.id,"rowan","the inclusive three-metre approach boundary activates the advertised Talk");
+  const shot=h.cameraCalls.dialogue.at(-1);assert.deepEqual({x:shot.neighbour.x,z:shot.neighbour.z},h.view.folk.spotOf("rowan"));
+  assert.ok(Math.hypot(shot.player.x-shot.neighbour.x,shot.player.z-shot.neighbour.z)>3,"camera keeps the actual feet beyond interaction reach");
+  h.game.back();h.game.place(87,5-2e-6);h.game.tick(.05);h.game.showPanel("people");
+  assert.equal(h.$('[data-vg-meet="rowan"]').dataset.padLabel,"Find Rowan");const before=JSON.stringify(M.saveData(h.state));h.click('[data-vg-meet="rowan"]');
+  assert.equal(h.conversation,null);assert.equal(JSON.stringify(M.saveData(h.state)),before);assert.equal(h.game.status.waypoint.z,8);
+  h.view.folk.talkSpot=id=>id==="rowan"?{x:87,z:12}:{x:500,z:500};h.game.render();assert.equal(h.game.status.waypoint.z,12,"Find follows the same live approach used to activate Talk");
+});
+
+test("resident feet alone never advertise a duplicate Talk target", t => {
+  const h=harness(t);welcome(h);h.view.folk.spotOf=id=>id==="rowan"?{x:87,z:9.8}:{x:500,z:500};h.view.folk.talkSpot=id=>id==="rowan"?{x:87,z:15}:{x:500,z:500};
+  h.game.place(87,9.8);h.game.tick(.05);assert.ok(h.$("#vg-interact").hidden||h.$("#vg-interact").textContent!=="Talk");
+  h.game.showPanel("people");assert.equal(h.$('[data-vg-meet="rowan"]').dataset.padLabel,"Find Rowan");h.click('[data-vg-meet="rowan"]');assert.equal(h.conversation,null);assert.equal(h.game.status.waypoint.z,15);
+});
+
+test("resident descriptor uses inclusive boundaries and preserves hall and cave identity", () => {
+  const s=farm();M.inviteToVillage(s);const plan={host:"rowan",name:"Rowan’s room",hall:{w:20,d:20,host:[0,-4],blocks:[]},door:{x:0,z:0,facing:"south"}};
+  const view={inside:"rowan-room",folk:{},groundAt:()=>0,hallPoint:(x,z,y=0)=>({x:4000+x*K,z:z*K,y:y*K}),expansionTargets:[]};
+  const resolve=position=>resolveVillageResidentInteraction({id:"rowan",state:s,view,position,insides:{"rowan-room":plan},doorNormal:{south:[0,-1]}});
+  const host=resolve({x:4000,z:6});assert.equal(host.location,"Rowan’s room");assert.equal(host.realm,"hall:rowan-room");assert.deepEqual(host.point,{x:4000,z:6});
+  for(const offset of [3.3-1e-7,3.3,3.3+5e-7])assert.equal(resolve({x:4000+offset,z:6}).nearby,true,`hall boundary ${offset}`);
+  assert.equal(resolve({x:4000+3.3+2e-6,z:6}).nearby,false);assert.equal(withinResidentReach(3+5e-7,3),true);assert.equal(withinResidentReach(3+2e-6,3),false);
+  view.inside="another-room";assert.equal(resolve({x:4000,z:6}).nearby,false,"matching coordinates in another hall cannot talk to this host");
+  view.inside=null;view.activeExpansionArea="cave-shallows";view.expansionTargets=[{type:"village-folk",id:"rowan",x:87,z:9.8}];view.folk={spotOf:()=>({x:87,z:9.8}),talkSpot:()=>({x:87,z:8})};
+  assert.equal(resolve({x:87,z:8}).nearby,false,"a surface approach cannot be activated from a cave at the same coordinates");
+  view.activeExpansionArea=null;view.folk.people=new Map([["rowan",{root:{visible:false}}]]);assert.equal(resolve({x:87,z:8}).nearby,false,"an invisible resident cannot inherit a stale rendered target");
+  view.folk.people.get("rowan").root.visible=true;view.folk.spotOf=()=>({x:-45,z:153});view.folk.talkSpot=()=>({x:-45,z:151.2});assert.equal(resolve({x:-45,z:151.2}).available,false,"a Green resident in a locked live district cannot transact");
+});
+
+test("hall People and prompt share the inclusive reach and stale gifts cannot cross halls", t => {
+  const h=harness(t);welcome(h);h.state.stock[0]=3;h.game.enterHall("rowan-workshop");
+  const feet=h.view.hallPoint(-.4,-5.1);h.game.place(feet.x,-feet.z-3.3);h.game.tick(.05);
+  assert.equal(h.$("#vg-interact").hidden,false);assert.equal(h.$("#vg-interact").textContent,"Talk");h.game.showPanel("people");assert.equal(h.$('[data-vg-meet="rowan"]').dataset.padLabel,"Talk to Rowan");assert.match(h.$("#vg-panel-body").innerHTML,/Rowan&#39;s workshop/);
+  h.click('[data-vg-meet="rowan"]');assert.equal(h.conversation?.id,"rowan");h.chooseIntent("gift");const gift=h.$('[data-vg-gift="pumpkin:orange"]'),before=JSON.stringify(M.saveData(h.state));
+  h.view.goInside("elowen-library");gift.click();assert.equal(JSON.stringify(M.saveData(h.state)),before);assert.equal(h.state.stock[0],3);assert.equal(h.conversation,null,"a stale resident transaction cannot use matching hall-local coordinates");
+});
+
+test("People uses live spread districts and the Square, and labels unknown or locked homes honestly", t => {
+  const h=harness(t);welcome(h);const locations={elowen:{x:87,z:87},rowan:{x:87,z:8},mabel:{x:-45,z:153},tansy:{x:-45,z:183},opal:{x:78,z:171},cinder:{x:99,z:165},corvus:{x:258,z:69},baron:{x:258,z:102},granny:{x:-138,z:181}};
+  const original=h.view.folk.spotOf;h.view.folk.spotOf=id=>locations[id]??original(id);h.view.folk.talkSpot=id=>({...h.view.folk.spotOf(id),z:h.view.folk.spotOf(id).z-1.8});
+  Object.defineProperty(h.view,"expansionTargets",{configurable:true,get:()=>Object.keys(locations).map(id=>({type:"village-folk",id,...h.view.folk.spotOf(id)}))});
+  const row=id=>new RegExp('<button[^>]*data-vg-meet="'+id+'"[^>]*>[\\s\\S]*?</button>').exec(h.$("#vg-panel-body").innerHTML)?.[0]??"";
+  h.game.showPanel("people");
+  assert.match(row("elowen"),/Moonclock Square/);assert.match(row("mabel"),/Moonroot Copse/);assert.match(row("opal"),/Lantern Quarry/);assert.match(row("corvus"),/Carnival Moor/);assert.match(row("granny"),/The Crooked Acre/);
+  assert.equal(h.$('[data-vg-meet="mabel"]').dataset.padLabel,"Find Mabel");assert.match(row("mabel"),/Opens at farm level 6/);
+  h.game.back();h.game.place(locations.mabel.x,locations.mabel.z-1.8);const before=JSON.stringify(M.saveData(h.state));h.game.meet("mabel");assert.equal(h.conversation,null);assert.equal(JSON.stringify(M.saveData(h.state)),before,"rendered but locked residents cannot grant any transaction");
+  Object.defineProperty(h.view,"expansionTargets",{configurable:true,value:[]});h.game.showPanel("people");assert.match(row("mabel"),/Known home · Mabel’s haberdashery · Moonroot Copse/);assert.doesNotMatch(row("mabel"),/\d+ m/);assert.equal(h.$('[data-vg-meet="rowan"]').dataset.padLabel,"Find Rowan");assert.match(row("rowan"),/Whereabouts unconfirmed/);
+});
+
+test("surface location gives nested districts precedence over Hollow Green", () => {
+  for(const id of ["copse","quarry","moor","acre","marsh"]){const area=EXPANSION_AREAS.find(a=>a.id===id),point={x:(area.bounds[0]+area.bounds[2])/2,z:(area.bounds[1]+area.bounds[3])/2};assert.equal(villageResidentLocation(point).area,id,id);}
+  assert.equal(villageResidentLocation({x:58*K,z:58*K}).area,"square");
 });
 
 test("initial greeting choices expose only real offers and the actual chat cooldown", t => {
@@ -429,6 +490,14 @@ test("quest completion receipts receive actual awarded events and wait behind in
   h.meet("rowan");h.game.tick(.1);assert.equal(h.receiptTicks.at(-1).blocked,true);h.game.back();h.game.tick(.1);assert.equal(h.receiptTicks.at(-1).blocked,false);
 });
 
+test("farm unlocks and friendship feedback share the presenter without granting rewards", t => {
+  const h=harness(t);welcome(h);const before=JSON.stringify(M.saveData(h.state));
+  assert.equal(h.game.onEvent({type:"farm-milestone",id:"recipe:new-stew",title:"A new recipe for your kitchen"}),true);
+  assert.deepEqual(h.messageReceipts.at(-1),{id:"recipe:new-stew",title:"A new recipe for your kitchen",important:true});
+  h.game.onEvent({type:"friend-level",who:"mabel",level:2});assert.equal(h.messageReceipts.at(-1).important,undefined);assert.match(h.messageReceipts.at(-1).title,/Mabel/);
+  assert.equal(JSON.stringify(M.saveData(h.state)),before,"notification routing only presents already-awarded changes");
+});
+
 function expansionFarm(){
  const s=farm();s.earned=M.LEVELS.at(-1).at;s.progression.claimed=M.LEVELS.map(l=>l.level);s.progression.homeLegacyThrough=20;s.village.invited=true;s.village.toured=true;s.village.quests.invitation={step:3,done:true,base:null};s.village.quests['two-doorbells']={step:3,done:true,base:null};s.village.unlocks.push('gathering');return s;
 }
@@ -467,16 +536,16 @@ test('a saved expansion follow and a journal walking route show the actual chapt
 });
 test('a completed chapter leaves the tracker and keeps its archived named rewards',t=>{
  const s=expansionFarm();M.actVillageExpansion(s,'track',{chapter:'green-research'});for(const id of ['green-research:1','green-research:2','green-research:3'])assert.equal(M.actVillageExpansion(s,id,id.endsWith(':2')?{solve:true}:{}).ok,true);const prefs={villageTrackedQuest:'green-research'},h=harness(t,s,null,{prefs});h.game.open();assert.equal(s.village.expansion.tracked,null);assert.equal(prefs.villageTrackedQuest,null);assert.notEqual(h.game.status.trackedQuest,'green-research');assert.notEqual(h.$('#vg-quest-title').textContent,'The Ink Beneath the Roots');assert.equal(h.game.status.questExpanded,false);
- h.game.showPanel('journal');const html=h.$('#vg-panel-body').innerHTML;assert.match(html,/The first ward lantern burns/);assert.match(html,/Finish “Two Doorbells”|Reach farm level|A Door Worth Knocking On/);assert.doesNotMatch(html,/>mothlight pattern table</);h.game.back();const rewards=[{kind:'decor',id:'mothlight-pattern-table',label:'mothlight pattern table'},{kind:'costume',id:'natalie-mummy',label:'natalie mummy'},{kind:'recipe',id:'cinders-lantern-stew',label:'cinders lantern stew'}],before=JSON.stringify(M.saveData(s));h.game.onEvent({type:'expansion-chapter-complete',chapter:'test-presentation',title:'A name worth keeping',rewards});const receipt=h.$('#village-game').children.find(el=>el.className==='vgx-milestone').innerHTML;for(const [id,catalog]of [['mothlight-pattern-table',M.decorById],['natalie-mummy',M.costumeById],['cinders-lantern-stew',M.RECIPE_BY_ID]])assert.ok(receipt.includes(catalog[id].name),id);assert.equal(JSON.stringify(M.saveData(s)),before,'presenting a receipt does not settle a reward again');
+ h.game.showPanel('journal');const html=h.$('#vg-panel-body').innerHTML;assert.match(html,/The first ward lantern burns/);assert.match(html,/Finish “Two Doorbells”|Reach farm level|A Door Worth Knocking On/);assert.doesNotMatch(html,/>mothlight pattern table</);h.game.back();const rewards=[{kind:'decor',id:'mothlight-pattern-table',label:'mothlight pattern table'},{kind:'costume',id:'natalie-mummy',label:'natalie mummy'},{kind:'recipe',id:'cinders-lantern-stew',label:'cinders lantern stew'}],before=JSON.stringify(M.saveData(s));h.game.onEvent({type:'expansion-chapter-complete',chapter:'test-presentation',title:'A name worth keeping',rewards});const receipt=JSON.stringify(h.chapterReceipts.at(-1));for(const [id,catalog]of [['mothlight-pattern-table',M.decorById],['natalie-mummy',M.costumeById],['cinders-lantern-stew',M.RECIPE_BY_ID]])assert.ok(receipt.includes(catalog[id].name),id);assert.equal(JSON.stringify(M.saveData(s)),before,'presenting a receipt does not settle a reward again');
 });
 
-test('live chapter completion clears the pin, expanded details and route while a brief receipt fades',t=>{
+test('live chapter completion clears the pin, expanded details and route and queues one receipt',t=>{
  const s=expansionFarm(),prefs={},h=harness(t,s,null,{prefs});h.game.open();h.game.showPanel('journal');h.click('[data-vgx-guide="green-research"]');h.click('#vg-quest-toggle');
  assert.equal(h.game.status.trackedQuest,'green-research');assert.equal(h.game.status.questExpanded,true);assert.equal(h.game.status.waypoint.chapter,'green-research');
  const events=[];for(const id of ['green-research:1','green-research:2','green-research:3']){const result=M.actVillageExpansion(s,id,id.endsWith(':2')?{solve:true}:{});assert.ok(result.ok);events.push(...result.events);}
  const after=JSON.stringify(M.saveData(s));for(const event of events)h.game.onEvent(event);h.game.tick(.1);
  assert.equal(prefs.villageTrackedQuest,null);assert.notEqual(h.game.status.trackedQuest,'green-research');assert.equal(h.game.status.questExpanded,false);assert.equal(h.game.status.waypoint,null);
- const receipt=h.$('#village-game').children.find(el=>el.className==='vgx-milestone');assert.equal(receipt.hidden,false);assert.match(receipt.innerHTML,/Chapter complete/);h.game.tick(9.1);assert.equal(receipt.hidden,true);assert.equal(JSON.stringify(M.saveData(s)),after,'clearing the marker never grants rewards again');
+ const receipt=h.chapterReceipts.at(-1);assert.equal(receipt.id,'green-research');assert.equal(receipt.title,'The Ink Beneath the Roots');assert.equal(h.$('#village-game').children.some(el=>el.className==='vgx-milestone'),false,'chapter receipts share the notification presenter');h.game.tick(9.1);assert.equal(h.chapterReceipts.length,1);assert.equal(JSON.stringify(M.saveData(s)),after,'clearing the marker never grants rewards again');
 });
 
 test('an imported completed pin is removed and an empty tracker cannot expand with the D-pad',t=>{
