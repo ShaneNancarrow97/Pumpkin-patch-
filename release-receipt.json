@@ -1,0 +1,59 @@
+{
+  "sourceRepository": "ShaneNancarrow97/Pumpkin-patch-",
+  "sourceBranch": "contractor/farm-village-bonds",
+  "runtimeCommit": "dd92061f634e2c553ec226fa50e1ced1457dee06",
+  "reviewBase": "248217094354059a35fd9379189e4940d79776b5",
+  "claudeRemoteLeadChecked": "8da66cb93893047d56bad874583f509ba0209d7a",
+  "saveVersion": 20,
+  "artifacts": {
+    "Pumpkin-Patch-Mothlight-Recovery.html": {
+      "bytes": 61805422,
+      "sha256": "4476b90884a37b4cf86c0009fb856281f9fed3e3b5551e02968f59596901dd5c"
+    },
+    "Pumpkin-Patch-Mothlight-Recovery.zip": {
+      "bytes": 43993292,
+      "sha256": "33e0337029a4dc0c430a4c1560b187a6137253249a5334f4eed7c1c25a5d74a9"
+    }
+  },
+  "verification": {
+    "rules": {
+      "tests": 1532,
+      "passed": 1532,
+      "failed": 0
+    },
+    "webgpu": {
+      "checks": 36,
+      "passed": true,
+      "htmlSha256": "4476b90884a37b4cf86c0009fb856281f9fed3e3b5551e02968f59596901dd5c",
+      "acceptance": "Native actual GPU canvas pixels; genuine keyboard movement",
+      "pageCompositeAccepted": false,
+      "pageCompositorLimitationObserved": true
+    },
+    "webgl": {
+      "checks": 22,
+      "passed": true,
+      "htmlSha256": "1dc528d3d7082a198134546c298cdeef6ae99fd25018bec3340f27241e83f64b",
+      "acceptance": "Native visible-page pixels on prior candidate; final adapter corrections affect WebGPU only"
+    },
+    "responsiveUI": {
+      "checks": 15,
+      "passed": true,
+      "htmlSha256": "4476b90884a37b4cf86c0009fb856281f9fed3e3b5551e02968f59596901dd5c",
+      "scope": "World draws held after native startup; UI only"
+    },
+    "compatibility": {
+      "checks": 54,
+      "passed": true,
+      "scope": "Unmodified compatibility smoke at desktop and phone sizes, renderer/composer draws held; native RAF, simulation and UI continue. Not visual/performance acceptance."
+    },
+    "independentBuildIdentical": true,
+    "zipIntegrityPassed": true
+  },
+  "limitations": [
+    "Physical Samsung Fold/TV frame rates are not measured.",
+    "This software Chromium runner does not reliably composite WebGPU into page screenshots; actual GPU buffer acceptance is separate.",
+    "No APK was rebuilt."
+  ],
+  "sourceReviewCommit": "689d612519ccd32460f8dc795528046d38065c4d",
+  "handoverUrl": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/689d612519ccd32460f8dc795528046d38065c4d/voxel/docs/contractor-patches/village-recovery/README.md"
+}
