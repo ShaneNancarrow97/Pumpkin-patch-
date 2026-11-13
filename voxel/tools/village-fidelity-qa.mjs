@@ -11,7 +11,7 @@ import { OUTSIDE_VIEW } from '../src/village-camera.js';
 import { VILLAGE_SKY_ART_META } from '../src/content/village-sky-art-meta.js';
 
 const argv = process.argv.slice(2), file = path.resolve(argv[0]), out = path.resolve(argv[1]);
-const baseline = argv.includes('--baseline'), tvOnly = argv.includes('--tv-only'), referenceOnly = argv.includes('--reference-only'), conversationOnly = argv.includes('--conversation-only'), uiOnly = tvOnly || conversationOnly || argv.includes('--ui-only'), worldOnly = argv.includes('--world-only');
+const baseline = argv.includes('--baseline'), tvOnly = argv.includes('--tv-only'), referenceOnly = argv.includes('--reference-only'), conversationOnly = argv.includes('--conversation-only'), returnOnly = argv.includes('--return-only'), uiOnly = tvOnly || conversationOnly || returnOnly || argv.includes('--ui-only'), worldOnly = argv.includes('--world-only');
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const duskClock = VILLAGE_ATMOSPHERE_CYCLE_SECONDS * 2 / 3;
 if (villageAtmosphereAt(null, duskClock).phase !== 'dusk') throw Error('The existing saved-clock dusk contract changed');
@@ -29,7 +29,7 @@ const views = { entrance: { x: 87, z: -7.5, yaw: 0, pitch: .30, distance: 13 }, 
 // Keep the original wide comparison unchanged. This additional view uses the
 // shipped follow-camera numbers rather than shrinking or faking the owner.
 const referenceEntrance = { x: 87, z: -16.5, yaw: 0, pitch: OUTSIDE_VIEW.pitch, distance: OUTSIDE_VIEW.distance };
-const report = { file, baseline, uiOnly, tvOnly, worldOnly, referenceOnly, conversationOnly, htmlSha256: sha(html), bytes: html.length, harnessSha256: sha(await fs.readFile(new URL(import.meta.url))), fixtureSha256: sha(JSON.stringify(fixture)), stateVersion: state.version, preferences, skyAssetExpectation: baseline ? null : VILLAGE_SKY_ART_META, staging: { duskClock, period: VILLAGE_ATMOSPHERE_CYCLE_SECONDS, phase: 'dusk', owner: 'natalie', views, referenceEntrance, referenceComparison: { baselineAndFinalUseSamePose: true, cameraSource: 'OUTSIDE_VIEW.pitch and OUTSIDE_VIEW.distance', wideComparisonPoseUnchanged: true }, wallClock: '2026-11-13T21:00:00Z', randomSeed: 20261113 }, scope: 'Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.', checks: [], errors: [], consoleErrors: [], externalRequests: [], screenshots: [], views: [] };
+const report = { file, baseline, uiOnly, tvOnly, worldOnly, referenceOnly, conversationOnly, returnOnly, htmlSha256: sha(html), bytes: html.length, harnessSha256: sha(await fs.readFile(new URL(import.meta.url))), fixtureSha256: sha(JSON.stringify(fixture)), stateVersion: state.version, preferences, skyAssetExpectation: baseline ? null : VILLAGE_SKY_ART_META, staging: { duskClock, period: VILLAGE_ATMOSPHERE_CYCLE_SECONDS, phase: 'dusk', owner: 'natalie', views, referenceEntrance, referenceComparison: { baselineAndFinalUseSamePose: true, cameraSource: 'OUTSIDE_VIEW.pitch and OUTSIDE_VIEW.distance', wideComparisonPoseUnchanged: true }, wallClock: '2026-11-13T21:00:00Z', randomSeed: 20261113 }, scope: 'Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.', checks: [], errors: [], consoleErrors: [], externalRequests: [], screenshots: [], views: [] };
 const check = (label, pass, actual, fatal = true) => { report.checks.push({ label, pass: !!pass, fatal, ...(actual === undefined ? {} : { actual }) }); console.log(`${pass ? 'ok' : 'FAIL'} ${label}`); if (!pass && fatal) throw Error(label); };
 await fs.mkdir(out, { recursive: true });
 const server = createServer((req, res) => { if (req.url === '/favicon.ico') { res.writeHead(204).end(); return; } res.setHeader('Content-Type', 'text/html'); res.end(html); });
@@ -54,7 +54,8 @@ try {
   const stage = async (id, pose = views[id]) => { await page.keyboard.press('Shift'); await page.evaluate(({ pose, clock }) => { const p = PumpkinVoxel, v = p.scene.villageView; while (p.village.status.panel) p.village.back(); p.state().village.clock = clock; p.village.place(pose.x, pose.z, { x: 0, z: -1 }); v.play.reset(v.play.state.subject, { yaw: pose.yaw, pitch: pose.pitch, distance: pose.distance }); v.tick(.1); }, { pose, clock: duskClock }); await frames(); };
   const shot = async (name, { preserveInput = false } = {}) => { if (!preserveInput) await page.keyboard.press('Shift'); await frames(); await page.screenshot({ path: path.join(out, name), timeout: 180000 }); report.screenshots.push(name); console.log(`shot ${name}`); };
   const viewInfo = () => page.evaluate(() => { const v = PumpkinVoxel.scene.villageView, renderer = PumpkinVoxel.scene.debug.renderer; let meshes = 0, instances = 0; v.scene.traverse(o => { if (o.isMesh) meshes++; if (o.isInstancedMesh) instances += o.count; }); return { position: PumpkinVoxel.village.status.position, who: PumpkinVoxel.village.status.who, atmosphere: v.districtAtmosphereStats, fidelity: v.fidelityStats ?? null, contact: v.contactShadowStats, lights: v.scene.children.filter(o => o.isPointLight).length, meshes, instances, memory: { ...renderer.info.memory }, programs: renderer.info.programs.length, lastRenderPass: { ...renderer.info.render } }; });
-  if (referenceOnly) {
+  if (returnOnly) await returnPromptChecks(page, check, frames, shot);
+  if (referenceOnly && !returnOnly) {
     await stage('reference-entrance', referenceEntrance); await shot('entrance-reference-world.png'); report.views.push({ id: 'reference-entrance', ...await viewInfo() });
     await page.evaluate(() => PumpkinVoxel.village.showPanel('journal')); await shot('entrance-reference-journal.png');
     if (!baseline) {
@@ -66,6 +67,13 @@ try {
     }
   }
   if (!uiOnly && !referenceOnly) {
+    // Keep matched wide comparisons and the shipped close-camera composition
+    // in one normal-render session, with both poses explicit in the receipt.
+    if (!baseline) {
+      await stage('reference-entrance', referenceEntrance); await shot('entrance-reference-world.png');
+      report.views.push({ id: 'reference-entrance', ...await viewInfo() });
+      await page.evaluate(() => PumpkinVoxel.village.showPanel('journal')); await shot('entrance-reference-journal.png');
+    }
     await stage('entrance'); await shot('entrance-world.png'); const entrance = await viewInfo(); report.views.push({ id: 'entrance', ...entrance });
     check('The staged entrance is the playable Natalie village at the existing dusk phase', entrance.who === 'natalie' && entrance.atmosphere.phase === 'dusk' && entrance.lights === 8, entrance);
     await page.evaluate(() => PumpkinVoxel.village.showPanel('journal')); await shot('entrance-journal.png');
@@ -88,7 +96,7 @@ try {
       await fs.writeFile(path.join(out, 'actual-world-atlas.png'), Buffer.from(snapshot.url.split(',')[1], 'base64')); report.screenshots.push('actual-world-atlas.png');
     }
   }
-  if (!worldOnly && !referenceOnly) {
+  if (!worldOnly && !referenceOnly && !returnOnly) {
     if (!conversationOnly) { await stage('entrance'); await page.evaluate(() => PumpkinVoxel.village.showPanel('journal')); }
     if (!tvOnly) {
       if (!conversationOnly) {
@@ -306,4 +314,42 @@ async function conversationScreens(page, check, frames, shot) {
   }
   await page.keyboard.press('Escape'); await page.waitForFunction(() => !document.querySelector('#village-dialogue:not([hidden])') && !PumpkinVoxel.village.blocked);
   check('Closing a conversation releases actual village control', await page.evaluate(() => PumpkinVoxel.village.active && !PumpkinVoxel.village.blocked));
+}
+
+// Verify a final confirmation-style delta on exact HTML without repeating
+// unrelated world/journal screenshots. All choices still use native pad edges.
+async function returnPromptChecks(page, check, frames, shot) {
+  await page.evaluate(() => PumpkinVoxel.village.close()); await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.evaluate(() => PumpkinVoxel.openSheet('settings'));
+  if (!await page.evaluate(() => document.body.classList.contains('tv-mode'))) await page.locator('#toggle-tv').click();
+  await page.locator('#sheet-close').click(); await page.evaluate(() => PumpkinVoxel.openVillage());
+  await page.evaluate(() => {
+    window.__fidelityPad = { id: 'DualSense Wireless Controller QA', index: 0, connected: true, mapping: 'standard', axes: [0, 0, 0, 0], buttons: Array.from({ length: 18 }, () => ({ pressed: false, value: 0 })) };
+    Object.defineProperty(navigator, 'getGamepads', { configurable: true, value: () => [window.__fidelityPad] });
+  });
+  const release = async index => { await page.evaluate(i => { window.__fidelityPad.buttons[i] = { pressed: false, value: 0 }; }, index); await frames(); };
+  const press = index => page.evaluate(i => { window.__fidelityPad.buttons[i] = { pressed: true, value: 1 }; }, index);
+  await release(1); await press(1); await page.waitForFunction(() => PumpkinVoxel.village.status.returnPrompt); await release(1);
+  await page.waitForFunction(() => document.querySelector('#village-return-prompt')?.dataset.input === 'dualsense' && document.activeElement?.matches('.village-return-confirm'));
+  await shot('return-tv-confirm.png', { preserveInput: true });
+  const appearance = await page.evaluate(() => {
+    const host = document.querySelector('#village-return-prompt'), button = host.querySelector('.village-return-confirm'), label = button.querySelector(':scope > span'), glyph = button.querySelector('[data-ps5-icon=cross]');
+    const style = getComputedStyle(button), rgb = value => [...value.matchAll(/rgba?\(([^)]+)\)/g)].map(m => m[1].split(/[, /]+/).filter(Boolean).map(Number));
+    const luminance = c => c.slice(0, 3).map(v => { v /= 255; return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
+    const backgrounds = rgb(style.backgroundImage), labelInk = rgb(getComputedStyle(label).color)[0];
+    const glyphInks = [...(glyph?.querySelectorAll('svg path,svg circle,svg rect') ?? [])].map(el => ({ tag: el.tagName, stroke: getComputedStyle(el).stroke })).flatMap(item => rgb(item.stroke).map(colour => ({ ...item, colour }))).filter(item => (item.colour[3] ?? 1) > 0);
+    const contrast = ink => backgrounds.map(background => { const a = luminance(background), b = luminance(ink); return (Math.max(a, b) + .05) / (Math.min(a, b) + .05); });
+    const labelRatios = labelInk ? contrast(labelInk) : [], glyphRatios = glyphInks.flatMap(item => contrast(item.colour));
+    const targets = [...host.querySelectorAll('.village-return-actions button')].map(el => { const b = el.getBoundingClientRect(); return { label: el.textContent.trim(), width: b.width, height: b.height }; });
+    let zoom = label.currentCSSZoom; if (!Number.isFinite(zoom)) { zoom = 1; for (let node = label; node; node = node.parentElement) zoom *= parseFloat(getComputedStyle(node).zoom) || 1; }
+    return { tv: document.body.classList.contains('tv-mode'), viewport: [innerWidth, innerHeight], mode: host.dataset.input, focused: document.activeElement === button, padFocusAttribute: button.hasAttribute('data-pad-focus'), confirmIcon: glyph?.dataset.ps5Icon ?? null, cancelIcon: host.querySelector('.village-return-cancel [data-ps5-icon=circle]')?.dataset.ps5Icon ?? null, backgroundImage: style.backgroundImage, backgroundColour: style.backgroundColor, opaque: backgrounds.length >= 2 && backgrounds.every(c => (c[3] ?? 1) >= .96), labelInk, glyphInks, labelMinimumContrast: labelRatios.length ? Math.min(...labelRatios) : 0, glyphMinimumContrast: glyphRatios.length ? Math.min(...glyphRatios) : 0, physicalLabelFont: parseFloat(getComputedStyle(label).fontSize) * zoom, targets };
+  });
+  check('The real TV confirmation focuses Return with assigned DualSense Cross and Circle glyphs', appearance.tv && appearance.viewport[0] === 1920 && appearance.viewport[1] === 1080 && appearance.mode === 'dualsense' && appearance.focused && appearance.confirmIcon === 'cross' && appearance.cancelIcon === 'circle', appearance);
+  check('Focused farm return keeps an opaque gradient and readable label and glyph contrast', appearance.opaque && appearance.labelMinimumContrast >= 4.5 && appearance.glyphMinimumContrast >= 4.5, appearance, false);
+  check('TV return confirmation keeps physical44px targets and12px label text', appearance.targets.every(t => t.width >= 44 - 1e-6 && t.height >= 44 - 1e-6) && appearance.physicalLabelFont >= 12 - 1e-6, appearance, false);
+  await press(1); await page.waitForFunction(() => !PumpkinVoxel.village.status.returnPrompt); await release(1);
+  check('Circle cancels Return without leaving or locking the village', await page.evaluate(() => PumpkinVoxel.village.active && !PumpkinVoxel.village.blocked && !document.querySelector('#village-return-prompt:not([hidden])')));
+  await press(1); await page.waitForFunction(() => PumpkinVoxel.village.status.returnPrompt); await release(1);
+  await press(0); await page.waitForFunction(() => !PumpkinVoxel.village.active); await release(0);
+  check('Cross confirms the second Return request and reaches the farm', await page.evaluate(() => !PumpkinVoxel.village.active && !document.body.classList.contains('in-village')));
 }
