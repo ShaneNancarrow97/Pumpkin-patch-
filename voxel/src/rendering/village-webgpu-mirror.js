@@ -5,9 +5,27 @@ import * as GPU from "three/webgpu";
 // or disposed here. In particular, rendering must not change the source
 // camera's coordinate system or replace the source scene's GLSL materials.
 export function createVillageGpuMirror(materials) {
-  const objects = new Map(), ownedGeometry = new Set();
+  const objects = new Map(), ownedGeometry = new Set(), geometryViews = new Map();
   const scene = new GPU.Scene(), camera = new GPU.PerspectiveCamera();
   let mirrorCount = 0;
+  function geometryFor(source) {
+    if (!source) return undefined;
+    let geometry = geometryViews.get(source);
+    if (!geometry) {
+      geometry = source.isInstancedBufferGeometry ? new GPU.InstancedBufferGeometry() : new GPU.BufferGeometry();
+      geometry.name = `GPU:${source.name || source.type}`; geometryViews.set(source, geometry);
+    }
+    // Own the listener target, borrow the arrays. Persistent WebGL geometry
+    // must not retain the retired GPU renderer through dispose listeners.
+    geometry.index = source.index;
+    for (const key of Object.keys(geometry.attributes)) if (!source.attributes[key]) geometry.deleteAttribute(key);
+    for (const [key, value] of Object.entries(source.attributes)) if (geometry.getAttribute(key) !== value) geometry.setAttribute(key, value);
+    geometry.morphAttributes = source.morphAttributes; geometry.morphTargetsRelative = source.morphTargetsRelative;
+    geometry.groups = source.groups; geometry.drawRange = source.drawRange;
+    geometry.boundingBox = source.boundingBox; geometry.boundingSphere = source.boundingSphere;
+    if (source.isInstancedBufferGeometry) geometry.instanceCount = source.instanceCount;
+    return geometry;
+  }
   function create(source) {
     let object, descriptor = materials.convertObject?.(source);
     if (descriptor) {
@@ -15,17 +33,17 @@ export function createVillageGpuMirror(materials) {
       if (descriptor.kind === "instanced-quads") object = new GPU.Mesh(descriptor.geometry, descriptor.material);
       object.userData.presentationDescriptor = descriptor;
     } else if (source.isInstancedMesh) {
-      object = new GPU.InstancedMesh(source.geometry, convert(source), source.instanceMatrix.count);
+      object = new GPU.InstancedMesh(geometryFor(source.geometry), convert(source), source.instanceMatrix.count);
       object.instanceMatrix = source.instanceMatrix; object.instanceColor = source.instanceColor;
-    } else if (source.isMesh) object = new GPU.Mesh(source.geometry, convert(source));
+    } else if (source.isMesh) object = new GPU.Mesh(geometryFor(source.geometry), convert(source));
     else if (source.isSprite) object = new GPU.Sprite(materials.convert(source.material, source));
     else if (source.isPoints) throw new Error(`Unported village Points: ${source.name || source.uuid}`);
     else if (source.isLineLoop) {
       const geometry = source.geometry.clone(), position = geometry.getAttribute("position"), index = Array.from({ length: position.count }, (_, i) => i); index.push(0);
       geometry.setIndex(index); ownedGeometry.add(geometry);
       object = new GPU.Line(geometry, materials.convert(source.material, source));
-    } else if (source.isLineSegments) object = new GPU.LineSegments(source.geometry, materials.convert(source.material, source));
-    else if (source.isLine) object = new GPU.Line(source.geometry, materials.convert(source.material, source));
+    } else if (source.isLineSegments) object = new GPU.LineSegments(geometryFor(source.geometry), materials.convert(source.material, source));
+    else if (source.isLine) object = new GPU.Line(geometryFor(source.geometry), materials.convert(source.material, source));
     else if (source.isHemisphereLight) object = new GPU.HemisphereLight();
     else if (source.isDirectionalLight) object = new GPU.DirectionalLight();
     else if (source.isPointLight) object = new GPU.PointLight();
@@ -58,7 +76,7 @@ export function createVillageGpuMirror(materials) {
     const descriptor = object.userData.presentationDescriptor;
     if (descriptor) descriptor.sync?.(object);
     else if (source.isMesh || source.isSprite || source.isLine) {
-      if (!source.isLineLoop) object.geometry = source.geometry;
+      if (!source.isLineLoop) object.geometry = geometryFor(source.geometry);
       object.material = convert(source);
       if (source.isInstancedMesh) {
         object.count = source.count; object.instanceMatrix = source.instanceMatrix; object.instanceColor = source.instanceColor;
@@ -83,6 +101,8 @@ export function createVillageGpuMirror(materials) {
         // rather than accumulating until the entire renderer is disposed.
         if (ownedGeometry.delete(object.geometry)) object.geometry.dispose();
       }
+      const liveGeometry = new Set([...seen].map(object => object.geometry).filter(Boolean));
+      for (const [original, geometry] of geometryViews) if (!liveGeometry.has(original)) { geometry.dispose(); geometryViews.delete(original); }
       for (const [original, object] of objects) if (original.isDirectionalLight) {
         const target = objects.get(original.target);
         if (target) object.target = target;
@@ -95,7 +115,7 @@ export function createVillageGpuMirror(materials) {
       materials.sync(); scene.updateMatrixWorld();
     },
     afterRender() { for (const [source] of objects) if (source.isLight && source.shadow) source.shadow.needsUpdate = false; },
-    stats() { return { mirroredObjects: mirrorCount, ownedLineGeometries: ownedGeometry.size }; },
-    dispose() { ownedGeometry.forEach(g => g.dispose()); ownedGeometry.clear(); scene.clear(); objects.clear(); mirrorCount = 0; },
+    stats() { const lights = { point: 0, hemisphere: 0, directional: 0, ambient: 0 }; for (const object of objects.values()) { if (object.isPointLight) lights.point++; else if (object.isHemisphereLight) lights.hemisphere++; else if (object.isDirectionalLight) lights.directional++; else if (object.isAmbientLight) lights.ambient++; } return { mirroredObjects: mirrorCount, ownedGeometryViews: geometryViews.size, ownedLineGeometries: ownedGeometry.size, lights }; },
+    dispose() { ownedGeometry.forEach(g => g.dispose()); ownedGeometry.clear(); geometryViews.forEach(g => g.dispose()); geometryViews.clear(); scene.clear(); objects.clear(); mirrorCount = 0; },
   };
 }

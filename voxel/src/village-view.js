@@ -20,6 +20,8 @@ export { TOUR } from "./content/village-tour.js";
 import { createVillageLife } from "./village-life.js";
 import { createHallLife } from "./village-hall-life.js";
 import { finishVoxels, setLampNear } from "./voxel-finish.js";
+import { installVoxelAmbientOcclusion } from "./rendering/voxel-ao-material.js";
+import { installVillagePbr } from "./rendering/voxel-pbr-atlas.js";
 import { spread, gather } from "./rules/village-spread.js";
 import { buildTownSquare } from "./village-town-square.js";
 import { buildVillageNeighbourhoods } from "./village-neighbourhoods.js";
@@ -119,6 +121,16 @@ export function createVillageView(canvas, state, hooks = {}) {
   const oldSpot = (f) => gather(f.x / K, f.z / K);
   function spreadPart(name, g) { if (name === "stall") spreadWhole(g, ...oldSpot(FIXTURES.stall)); else if (name === "bench") spreadWhole(g, ...oldSpot(FIXTURES.bench)); else spreadVillage(g); }
   let active = false, built = false, firstView = true, keys = {}, parts = {}, tour = null, time = 0, horizon = null, sky = null, duskSky = null, lightAir = null, mist = null, bats = null, life = null, grass = null, lampGlow = null, town = null;
+  let pbr = null;
+  const aoScopes = new Map();
+  function finishSurface(scope, name) {
+    finishVoxels(scope);
+    // Bake once after all spread/placement transforms. Far woodland, animated
+    // scenery and alpha-hashed crowns keep their existing cheaper shading.
+    scope.updateWorldMatrix(true, true);
+    aoScopes.set(name, installVoxelAmbientOcclusion(scope));
+    pbr?.refresh(scope);
+  }
   const pickables = [], pickMaterial = new THREE.MeshBasicMaterial({ visible: false });
   const expansionWorld=createVillageExpansionWorld({scene,state,groundAt,pickMaterial});
   let companion=null,companionId=null,companionPose=null,ownerHeading={x:0,z:1};
@@ -172,6 +184,8 @@ export function createVillageView(canvas, state, hooks = {}) {
     lightAir = createVillageLightAir({ lamps: LAMPS_AT.map(l => ({ x: l.x * K, y: (l.y - .2) * K, z: -l.z * K })) }); scene.add(lightAir.group);
     // Every built voxel gets the village's finish: finer blocks, joints and weathering shaded onto its faces.
     finishVoxels(scene);
+    pbr = installVillagePbr(scene);
+    for (const [name, scope] of Object.entries({ green, works, beyond, town })) finishSurface(scope, name);
     // A halo round every lamp's head and a pool of light under the far ones.
     lampGlow = createLampGlow(LAMPS_AT.map((l) => ({ head: W(l.x * K, l.z * K, (l.y - .2) * K), ground: W(l.x * K, l.z * K, groundAt(l.x * K, l.z * K)) }))); scene.add(lampGlow.group);
     Object.entries({ ground: earth, paving, water, works, green, beyond, woods, horizon, mist, bats: bats.group, life: life.group, grass: grass.group }).forEach(([n, g]) => { g.name = n; });
@@ -199,12 +213,13 @@ export function createVillageView(canvas, state, hooks = {}) {
     surfaceLamps = [...LAMPS_AT, ...clusters.flatMap(c => (c.lanterns ?? []).map(l => ({ x: l.x, z: l.z, y: 2.25 })))];
     if (neighbourhoods) { root.remove(neighbourhoods); neighbourhoods.userData.dispose?.(); }
     neighbourhoods = buildVillageNeighbourhoods(clusters); finishVoxels(neighbourhoods); installVillageNeighbourhoodVisibility(neighbourhoods); root.add(neighbourhoods);
+    finishSurface(neighbourhoods, "neighbourhoods");
     surfaceContactGround.replace("neighbourhoods", neighbourhoods);
   }
   function part(name, key, make) {
     if (keys[name] === key) return; keys[name] = key;
     if (parts[name]) { root.remove(parts[name]); dispose(parts[name]); }
-    parts[name] = make(); spreadPart(name, parts[name]); finishVoxels(parts[name]); root.add(parts[name]);
+    parts[name] = make(); spreadPart(name, parts[name]); root.add(parts[name]); finishSurface(parts[name], name);
   }
   function sync() {
     buildOnce();
@@ -269,7 +284,8 @@ export function createVillageView(canvas, state, hooks = {}) {
   function buildInside(id) {
     if (insides.has(id)) return insides.get(id);
     const plan = INSIDES[id]; if(!plan)return null;const v = new Voxels(); plan.build(frame(v, 0, 0, "south", 0));
-    const built = v.build({ glow: 1.6 }), group = new THREE.Group(); finishVoxels(built); group.add(built); group.scale.setScalar(K); group.position.copy(INSIDE); group.visible = false; scene.add(group);
+    const built = v.build({ glow: 1.6 }), group = new THREE.Group(); group.add(built); group.scale.setScalar(K); group.position.copy(INSIDE); scene.add(group);
+    finishSurface(built, `inside:${id}`); group.visible = false;
     const lamps = (built.userData.marks.lamp ?? []).map(([x, y, z]) => hallPoint(x, z, y));
     // Fires, candle flames, steam and drifting motes, wherever the hall's builder marked them.
     const stir = createHallLife(built.userData.marks); group.add(stir.group);
@@ -588,6 +604,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     get active() { return active; },
     get atmosphereStats() { return atmosphere?.stats() ?? null; },
     get fidelityStats() { return { sky: duskSky?.stats ?? null, air: lightAir?.stats() ?? null, lighting: VILLAGE_DUSK_LIGHTING }; },
+    get surfaceMaterialStats() { const scopes = Object.fromEntries(aoScopes); return { pbr: pbr?.stats ?? null, ao: { scopes, instances: [...aoScopes.values()].reduce((n, s) => n + (s.instances ?? 0), 0), bytes: [...aoScopes.values()].reduce((n, s) => n + (s.bytes ?? 0), 0), addedDraws: 0 } }; },
     get districtAtmosphereStats() { return districtAtmosphere.status; },
     get contactShadowStats() { return contactShadows.stats; },
     get waterStats() { return { time: waterClock.uniform.value, addedLights: 0, addedMeshes: 0 }; },

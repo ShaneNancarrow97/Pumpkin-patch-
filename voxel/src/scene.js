@@ -42,6 +42,7 @@ import { cameraLayout, controlledRoomFraming, farmVerticalLimits } from "./camer
 import { createHouseEstateView } from "./house-estate-view.js";
 import { createGardenPlay } from "./garden-play.js";
 import { createVillageView } from "./village-view.js";
+import { createVillageRenderer } from "./rendering/village-renderer.js";
 import { captureVillageMap } from "./village-map-snapshot.js";
 import { letterPage } from "./village-models.js";
 import { createCarvingView } from "./carving-view.js";
@@ -380,6 +381,7 @@ export function createScene(canvas, state, hooks) {
     gesture: { pose: () => hooks.villageGesture?.()?.pose(), busy: () => !!hooks.villageGesture?.()?.busy(), begin: () => hooks.villageGesture?.()?.begin(), drag: (x,z) => hooks.villageGesture?.()?.drag(x,z), turn: deg => hooks.villageGesture?.()?.turn(deg), end: cancelled => hooks.villageGesture?.()?.end(cancelled) },
     residentsPaused: () => !!hooks.villageEditing?.(), reducedMotion: () => !!hooks.villageReducedMotion?.(), atmosphereBudget: () => hooks.villageAtmosphereBudget?.() ?? "full",
   });
+  const villageRenderer = createVillageRenderer({ canvas, onFallback: () => villageView.scene.traverse(object => { if (object.isLight && object.shadow) object.shadow.needsUpdate = true; }) });
   // The bench's view reports to main.js through hooks.carving (cuts, the lid, seeds, sounds).
   const carve = (name) => (...args) => hooks.carving?.[name]?.(...args);
   const carvingView = createCarvingView(canvas, state, Object.assign(Object.fromEntries(["onCut", "onEtch", "onFree", "onFreeMiss", "onLid", "onScooped", "onRevealed", "onTool", "onProgress", "sound", "feel"].map((n) => [n, carve(n)])), { blocked: () => document.body.classList.contains("menu-open") }));
@@ -612,6 +614,7 @@ export function createScene(canvas, state, hooks) {
     glowScale = tvProfile ? renderSizing(w, h, window.devicePixelRatio, renderQuality, view.place === "carving").pixelRatio / sizing.pixelRatio : 1;
     if (renderer.getPixelRatio() !== sizing.pixelRatio) renderer.setPixelRatio(sizing.pixelRatio);
     renderer.setSize(w, h, false);
+    villageRenderer.resize(w, h, sizing.pixelRatio);
     if (postprocessRatio !== sizing.pixelRatio) { composer.setPixelRatio(sizing.pixelRatio); postprocessRatio = sizing.pixelRatio; }
     composer.setSize(w, h);
     antialias.uniforms.resolution.value.set(1 / sizing.bufferWidth, 1 / sizing.bufferHeight); antialias.enabled = !tvProfile && sizing.pixelRatio < FXAA_BELOW;
@@ -839,7 +842,9 @@ export function createScene(canvas, state, hooks) {
     if (view.place === "village") {
       villageView.tick(state.paused ? 0 : dt); renderer.toneMappingExposure = villageView.scene.userData.exposure ?? 1.15;
       renderPass.scene = villageView.scene; renderPass.camera = villageView.camera; dress(villageView.scene.userData);
-      if (bloomOn) composer.render(); else renderer.render(villageView.scene, villageView.camera);
+      if (!villageRenderer.draw(villageView.scene, villageView.camera, { bloom: bloomOn, tvProfile, glowScale, antialias: antialias.enabled })) {
+        if (bloomOn) composer.render(); else renderer.render(villageView.scene, villageView.camera);
+      }
       if (warming.size) warmNext(); requestAnimationFrame(tick); return;
     }
     syncFarmPages(); ambience.tick(time);
@@ -1079,7 +1084,7 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "foyer") foyerView.leave();
       if (view.place === "carving") carvingView.leave();
       if (view.place === "village") villageView.leave();
-      view.place = kind; playerOrbit.yaw=0;playerOrbit.pitch=kind==="room"?INTERIOR.pitch:PITCH;
+      villageRenderer.hide(); view.place = kind; playerOrbit.yaw=0;playerOrbit.pitch=kind==="room"?INTERIOR.pitch:PITCH;
       if (kind === "village") { places.leave(); villageView.enter(); warm(...(villageView.spriteTextures?.() ?? [])); }
       else if (kind === "estate") { places.leave(); estateView.enter(); }
       else if (kind === "carving") { places.leave(); carvingView.enter(); }
@@ -1100,7 +1105,7 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "carving") carvingView.leave();
       if (view.place === "village") villageView.leave();
       places.leave();
-      view.place = null; glide = null; playerOrbit.yaw=0;playerOrbit.pitch=PITCH;
+      villageRenderer.hide(); view.place = null; glide = null; playerOrbit.yaw=0;playerOrbit.pitch=PITCH;
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
       if (renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, false, tvProfile).pixelRatio) resize(); else frame();
     },
@@ -1126,6 +1131,7 @@ export function createScene(canvas, state, hooks) {
       frame();
     },
     get villageView() { return villageView; },
+    get villageRendererStatus() { return villageRenderer.status; },
     captureVillageMap() { return captureVillageMap(renderer, villageView, state); },
     villageVisitor(kind) { return sheets ? spriteVisitor(sheets,kind) : null; },
     villageCharacter(who) { if(!sheets)return null;const actor=spriteActor(sheets,who,activeLook(state,who),state.wardrobe.equipped[who]);actor.userData.kind="person";return actor; },
