@@ -121,6 +121,11 @@ test("chapter integration reads only state and validates selected IDs", () => {
   }
 });
 
+test("a followed legacy objective uses its story route action and current surface coordinates",()=>{
+ const state=village(),before=JSON.stringify(M.saveData(state)),objective={objectiveId:'rowan-1',id:'logs-01',name:'Gather 4 logs on the Green',area:'green',x:87,z:8};
+ const {html}=renderVillageMap(state,{objective});assert.match(html,/data-vg-objective-guide="rowan-1"/);assert.match(html,/Gather 4 logs on the Green/);assert.doesNotMatch(html,/data-vgx-find-activity="logs-01"/);assert.equal(JSON.stringify(M.saveData(state)),before);
+});
+
 
 test("every area selection keeps one spatial overview with inline criteria and walking guidance", () => {
   const state = village();

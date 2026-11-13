@@ -326,7 +326,7 @@ test("a fresh stick hold introduced during the camera return needs neutral befor
 });
 
 test("Blackroot uses a two-second hand pull, can be cancelled, and clears even when samples are full", t => {
-  const h=harness(t);welcome(h);h.meet("elowen");h.chooseIntent("quest","quest:start:blight-first-signs");
+  const h=harness(t);welcome(h);h.meet("elowen");h.chooseIntent("stories");h.click('[data-vg-track="blight-first-signs"]');h.game.back();h.meet("elowen");h.chooseIntent("quest","quest:start:blight-first-signs");
   const answer=h.choices()[0];assert.ok(answer.reply);const saved=JSON.stringify(M.saveData(h.state));assert.equal(h.choose(0,{id:"elowen",choice:answer}),undefined,"scripted story choices keep their own written reply");assert.equal(JSON.stringify(M.saveData(h.state)),saved);h.complete();h.game.back();
   h.game.showPanel("journal");h.click('[data-vg-gather="cursed-spores"]');assert.match(h.game.status.waypoint.label,/Cursed fungus/);
   const node=NODES.find(n=>n.id===h.game.status.waypoint.nodeId);assert.equal(node.kind,"blight");assert.ok(M.nodeReady(h.state,node.id));h.walkNear(node);h.game.tick(.05);assert.equal(h.$("#vg-interact").textContent,"Root out");
@@ -629,4 +629,37 @@ test('an imported completed pin is removed and an empty tracker cannot expand wi
  for(const q of Object.values(QUEST_BY_ID))s.village.quests[q.id]={done:true,step:q.steps.length,base:null};
  const restored=M.restoreState(JSON.parse(JSON.stringify(M.saveData(s)))),prefs={villageTrackedQuest:'green-research'},h=harness(t,restored,null,{prefs});h.game.open();
  assert.equal(prefs.villageTrackedQuest,null);assert.equal(h.game.status.trackedQuest,null);assert.equal(h.$('#vg-objective').hidden,true);h.press(12);assert.equal(h.game.status.questExpanded,false);
+});
+
+test('following a legacy story replaces the chapter in the journal, HUD, map and live walking route',t=>{
+ const s=expansionFarm();s.village.quests['rowan-1']={step:0,done:false,base:null};M.actVillageExpansion(s,'track',{chapter:'green-research'});
+ const prefs={},h=harness(t,s,null,{prefs});h.game.open();h.game.showPanel('journal');const before=structuredClone(M.saveData(s)),position={...h.game.status.position};
+ h.click('[data-vg-track="rowan-1"]');assert.equal(prefs.villageTrackedQuest,'rowan-1');assert.equal(s.village.expansion.tracked,null);assert.equal(h.game.status.trackedQuest,'rowan-1');assert.equal(h.$('#vg-quest-title').textContent,'Loose Boards');assert.equal(h.game.status.waypoint.objectiveId,'rowan-1');assert.ok(h.game.status.waypoint.nodeId);
+ before.village.expansion.tracked=null;assert.deepEqual(M.saveData(s),before,'following changes tracking metadata only');assert.deepEqual(h.game.status.position,position);
+ h.game.showPanel('map');assert.ok(h.$('[data-vg-objective-guide="rowan-1"]'));h.click('[data-vg-objective-guide="rowan-1"]');assert.equal(h.game.status.waypoint.objectiveId,'rowan-1');assert.equal(h.game.status.trackedQuest,'rowan-1');assert.deepEqual(M.saveData(s),before);
+ h.game.showPanel('journal');h.click('[data-vgx-track="green-research"]');assert.equal(h.game.status.trackedQuest,'green-research');assert.equal(s.village.expansion.tracked,'green-research');assert.equal(h.game.status.waypoint.chapter,'green-research');assert.equal(h.$('#vg-quest-title').textContent,'The Ink Beneath the Roots');
+});
+
+test('a followed legacy delivery keeps the canonical current recipient approach and rejects a stale map target',t=>{
+ const s=expansionFarm();s.village.quests['rowan-1']={step:2,done:false,base:null};Object.assign(s.village.materials,{logs:4,stone:2});
+ const prefs={villageTrackedQuest:'rowan-1'},h=harness(t,s,null,{prefs});h.game.open();assert.equal(h.game.status.waypoint.folkId,'rowan');assert.equal(h.game.status.waypoint.objectiveId,'rowan-1');
+ h.game.showPanel('map');const old=h.$('[data-vg-objective-guide="rowan-1"]'),before=JSON.stringify(M.saveData(s));h.view.folk.spotOf=id=>({x:id==='rowan'?130:89,z:9.8});h.view.folk.talkSpot=id=>({x:id==='rowan'?130:89,z:8});old.click();assert.equal(h.game.status.waypoint.x,130);assert.equal(h.game.status.waypoint.folkId,'rowan');assert.equal(JSON.stringify(M.saveData(s)),before);assert.equal(h.conversation,null);
+ h.game.pick({type:'village-folk',id:'rowan',x:87,z:8});assert.equal(JSON.stringify(M.saveData(s)),before);assert.equal(h.conversation,null,'the old offered coordinates cannot spend materials');
+});
+
+test('mixed resident stories have one primary quest action and every secondary story remains reachable',t=>{
+ const s=expansionFarm(),prefs={},h=harness(t,s,null,{prefs});h.game.open();h.game.place(89,8);h.game.meet('elowen');
+ assert.equal(h.choices().filter(choice=>choice.intent==='quest').length,1);assert.ok(h.choices().some(choice=>choice.intent==='stories'));
+ h.chooseIntent('stories');assert.equal(h.game.status.panel,'journal');assert.equal(h.game.status.panelId,'elowen');
+ for(const id of ['elowen-1','lantern-keepers','blight-first-signs','green-research'])assert.ok(h.$('#vg-panel-body').innerHTML.includes(`objective:${id}`),id);
+ const before=JSON.stringify(M.saveData(s));h.click('[data-vg-track="blight-first-signs"]');assert.equal(JSON.stringify(M.saveData(s)),before,'choosing a story does not accept it');h.game.back();h.game.meet('elowen');assert.deepEqual(h.choices().filter(choice=>choice.intent==='quest').map(choice=>choice.id),['quest:start:blight-first-signs']);
+ h.chooseIntent('quest','quest:start:blight-first-signs');assert.equal(M.questStatus(s,'blight-first-signs'),'active');assert.equal(prefs.villageTrackedQuest,'blight-first-signs');assert.equal(h.conversation.heading,QUEST_BY_ID['blight-first-signs'].title);
+});
+
+test('finishing the followed main chapter through its real action follows the next main story once',t=>{
+ const s=expansionFarm();for(const id of ['green-research:1','green-research:2'])assert.equal(M.actVillageExpansion(s,id,{solve:true}).ok,true);
+ M.actVillageExpansion(s,'track',{chapter:'green-research'});const prefs={villageTrackedQuest:'green-research'},h=harness(t,s,null,{prefs});h.game.open();const activity=M.expansionActivityInfo(s,'green-research:3');h.game.place(activity.x,activity.z);h.game.pick({type:'expansion-activity',id:activity.id});h.click('[data-vgx-act="green-research:3"]');
+ assert.ok(s.village.expansion.chapters['green-research']);assert.equal(h.chapterReceipts.length,1);const after=JSON.stringify(M.saveData(s));h.complete();
+ assert.equal(h.game.status.trackedQuest,'green-workshop');assert.equal(prefs.villageTrackedQuest,'green-workshop');assert.equal(h.game.status.waypoint.chapter,'green-workshop');
+ const expected=JSON.parse(after);expected.village.expansion.tracked='green-workshop';assert.equal(JSON.stringify(M.saveData(s)),JSON.stringify(expected),'the closing scene only follows the next story');h.game.tick(.1);assert.equal(h.chapterReceipts.length,1);
 });

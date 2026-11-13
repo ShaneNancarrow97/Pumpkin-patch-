@@ -100,7 +100,7 @@ export function villageMapSnapshotPoint(point, snapshot) {
   return { x: round(p.x / snapshot.width * 100), y: round(p.y / snapshot.height * 100) };
 }
 const pinStyle = p => `--map-x:${p.x}%;--map-y:${p.y}%`;
-const objectiveAction = p => p.chapter ? `data-vgx-guide="${esc(p.chapter)}"` : p.focus ? `data-vg-focus="${esc(p.focus)}"` : p.who ? `data-vg-meet="${esc(p.who)}"` : p.id ? `data-vgx-find-activity="${esc(p.id)}"` : `data-vg-map-district="${esc(EXPANSION_AREA_BY_ID[p.area] ? p.area : "green")}"`;
+const objectiveAction = p => p.chapter ? `data-vgx-guide="${esc(p.chapter)}"` : p.objectiveId ? `data-vg-objective-guide="${esc(p.objectiveId)}"` : p.focus ? `data-vg-focus="${esc(p.focus)}"` : p.who ? `data-vg-meet="${esc(p.who)}"` : p.id ? `data-vgx-find-activity="${esc(p.id)}"` : `data-vg-map-district="${esc(EXPANSION_AREA_BY_ID[p.area] ? p.area : "green")}"`;
 function mapGraphic(areas, selected, position, pins, portrait, snapshot, snapshotError, showResidents) {
   const ready = hasSnapshot(snapshot);
   if (!ready) return `<figure class="vg-map-figure"><div class="vg-map-picture-status" role="status" aria-live="polite"><span aria-hidden="true">${villageUIIcon("map", 40)}</span><p>${snapshotError ? "Map picture unavailable. Close and reopen the map to try again." : "Preparing the village view…"}</p></div></figure>`;

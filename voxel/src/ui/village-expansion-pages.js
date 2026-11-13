@@ -30,10 +30,14 @@ function stepsMarkup(c) {
 // What still stands in the way of the current step, when it is not simply "go there".
 const blocker = c => { const reason = c.next?.reason; return reason && reason !== 'Ready' && c.next?.canAct === false ? `<p class="vgx-need">${esc(reason)}</p>` : ''; };
 
-function storyCard(c, tracked, portrait) {
+function storyCard(c, tracked, portrait, { focused = false } = {}) {
   const following = tracked === c.id;
-  return `<article class="vgx-story-card${following ? ' is-following' : ''}" data-vgx-chapter="${esc(c.id)}"><header>${face(c, portrait)}<div><small>${following ? 'Following · ' : ''}${byline(c)}</small><h3>${esc(c.title)}</h3></div><span class="vgx-story-count" aria-label="${c.completed ?? 0} of ${c.need ?? 1} steps done">${c.completed ?? 0}/${c.need ?? 1}</span></header><p class="vgx-story-blurb">${esc(c.description ?? c.blurb)}</p>${stepsMarkup(c)}${blocker(c)}${expansionRewardMarkup(c.rewards)}<div class="vgx-actions">${button(following ? '✓ Following' : 'Follow chapter', `data-vgx-track="${esc(c.id)}" aria-pressed="${following}"`)}${button('Show the way', `data-vgx-guide="${esc(c.id)}"${following ? ' data-pad-default' : ''}`)}</div></article>`;
+  const actions = `<div class="vgx-actions">${button(following ? '✓ Following' : 'Follow chapter', `data-vgx-track="${esc(c.id)}" aria-pressed="${following}"`)}${button('Show the way', `data-vgx-guide="${esc(c.id)}"${following ? ' data-pad-default' : ''}`)}</div>`;
+  const story = `<p class="vgx-story-blurb">${esc(c.description ?? c.blurb)}</p>${stepsMarkup(c)}${expansionRewardMarkup(c.rewards)}`;
+  const body = focused ? `<p class="vgx-next"><small>Next step</small><b>${esc(c.next?.name ?? c.nextText ?? '')}</b></p>${blocker(c)}${costMarkup(c.next ?? {})}${actions}<details class="vg-ch-reward-fold" data-vg-details-key="objective-story:${esc(c.id)}"><summary>Story, steps and rewards</summary>${story}</details>` : `${story}${blocker(c)}${actions}`;
+  return `<article class="vgx-story-card${following ? ' is-following' : ''}" data-vgx-chapter="${esc(c.id)}"><header>${face(c, portrait)}<div><small>${following ? 'Following · ' : ''}${byline(c)}</small><h3>${esc(c.title)}</h3></div><span class="vgx-story-count" aria-label="${c.completed ?? 0} of ${c.need ?? 1} steps done">${c.completed ?? 0}/${c.need ?? 1}</span></header>${body}</article>`;
 }
+export { storyCard as expansionStoryCardMarkup };
 const lockedRow = c => `<div class="vgx-locked"><b>${esc(c.title)}</b><small><i aria-hidden="true">🔒</i> ${esc(c.reason ?? `Reach farm level ${c.level}.`)}</small></div>`;
 const finishedRow = c => `<div class="vgx-finished-row"><i aria-hidden="true">✓</i><span><b>${esc(c.title)}</b>${c.change ? `<small>${esc(c.change)}</small>` : ''}</span></div>`;
 
