@@ -1,4 +1,16 @@
-# Pumpkin Patch — Living Mothlight
+# Pumpkin Patch — Village Refined
+
+[Download game ZIP](Pumpkin-Patch-Garden-Refinements.zip?raw=1) · [Standalone HTML](Pumpkin-Patch-Garden-Refinements.html?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/4ac1572f05e0db7a5858316c5ecb7bb083595461/voxel/docs/contractor-patches/village-refinement/README.md) · [Review PR](https://github.com/ShaneNancarrow97/Pumpkin-patch-/pull/3)
+
+Explore five named garden places through clear walking guides. Native tree crowns and the pavilion roof now fade individually when they block your character, and the short grass has finer proportions. Nearby Talk prompts avoid unnecessary distant clearance checks while retaining canonical interaction results.
+
+Save version 20, all 676 resource positions and the existing economy/progression remain compatible. 1,305 tests, 20 normal-render checks and 54 compatibility checks pass. [Exact-byte receipt](Pumpkin-Patch-Garden-Refinements-Receipt.json). The ZIP includes index.html, the Claude handover, verification and actual game previews. The older APK below is not updated.
+
+Source `4ac1572f05e0db7a5858316c5ecb7bb083595461` on `contractor/village-clarity`. Export/import through Settings when moving a farm between browser/file origins.
+
+---
+
+## Previous release — Living Mothlight
 
 [Download game ZIP](Pumpkin-Patch-Living-Village.zip?raw=1) · [Standalone HTML](Pumpkin-Patch-Living-Village.html?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/96b40832a0d29229820526d2761d27b170f3bf02/voxel/docs/contractor-patches/village-cohesion/README.md) · [Review PR](https://github.com/ShaneNancarrow97/Pumpkin-patch-/pull/3)
 

@@ -1,0 +1,48 @@
+{
+  "name": "Pumpkin Patch \u2014 Village Refined",
+  "source_commit": "4ac1572f05e0db7a5858316c5ecb7bb083595461",
+  "runtime_source_commit": "7f06105cb49a96d9519c94245e4ec2dbd7e9796b",
+  "source_branch": "contractor/village-clarity",
+  "base_source_commit": "96b40832a0d29229820526d2761d27b170f3bf02",
+  "save_version": 20,
+  "html": {
+    "bytes": 60541720,
+    "sha256": "e34c817796fa9e9fe0175357dfe8827f5d91ec587da2e8c0708553a86f6401fc"
+  },
+  "before_preview": {
+    "file": "preview/before-orchard-walk.png",
+    "source_commit": "96b40832a0d29229820526d2761d27b170f3bf02",
+    "html_sha256": "a2885c22f16f1cb65d84a2cb6460dda79c34d92297fc2c6d1382f4b50b8cd96d"
+  },
+  "layout": {
+    "clusters": 22,
+    "fruit_trees": 28,
+    "overhead_fade_groups": 29,
+    "solid_footprints": 59,
+    "boxes": 6232,
+    "new_meshes": 3,
+    "added_lights": 0,
+    "existing_point_light_pool": 8
+  },
+  "validation": {
+    "full_tests_passed": 1305,
+    "exact_normal_render_browser_checks": 20,
+    "exact_compatibility_checks": 54,
+    "resource_positions_preserved": 676,
+    "nearby_descriptor_parity": true,
+    "clearance_sweeps_per_microbenchmark_trial": {
+      "before": 17162,
+      "after": 29
+    }
+  },
+  "limitations": [
+    "Normal software WebGL and functional input checks are not physical phone/Fold/TV FPS or PS5 Bluetooth certification.",
+    "Preview images use a declared progressed test farm.",
+    "Resident timing is a resolver microbenchmark, not whole-game FPS.",
+    "No APK was rebuilt."
+  ],
+  "zip": {
+    "bytes": 50760720,
+    "sha256": "006b71c27176914a4259a5744d1d4c7dd69a80c3e9cbfc7d1270efc1444ea10e"
+  }
+}
