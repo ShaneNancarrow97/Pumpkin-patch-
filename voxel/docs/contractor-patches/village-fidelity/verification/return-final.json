@@ -1,0 +1,326 @@
+{
+  "file": "/tmp/Pumpkin-Patch-Mothlight-Gilded-Village.html",
+  "baseline": false,
+  "uiOnly": true,
+  "tvOnly": false,
+  "worldOnly": false,
+  "referenceOnly": false,
+  "conversationOnly": false,
+  "returnOnly": true,
+  "htmlSha256": "6c71a20fd4858fbd4fb99e4aeae71e79a1350d37c138be7e0818b916208ecc63",
+  "bytes": 61066768,
+  "harnessSha256": "882ba88ec05690efa24c9faa05d10a9c7d6fad3c542d64159bf7ed34d32473b0",
+  "fixtureSha256": "8c4f22501f3217f4d466c57b95ca0988a8d10f7c92275719177c27fc533790be",
+  "stateVersion": 20,
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageTrackedQuest": "green-research"
+  },
+  "skyAssetExpectation": {
+    "width": 1024,
+    "height": 512,
+    "encodedBytes": 34878,
+    "baseRgbaBytes": 2097152,
+    "estimatedMipRgbaBytes": 2796204,
+    "sha256": "c8bba551b3d9fb2336ca7aeb2478126060dd45e05f0dcb99cb34f30ba88fa22e"
+  },
+  "staging": {
+    "duskClock": 1800,
+    "period": 2700,
+    "phase": "dusk",
+    "owner": "natalie",
+    "views": {
+      "entrance": {
+        "x": 87,
+        "z": -7.5,
+        "yaw": 0,
+        "pitch": 0.3,
+        "distance": 13
+      },
+      "detail": {
+        "x": 83,
+        "z": -3,
+        "yaw": -0.12,
+        "pitch": 0.3,
+        "distance": 8
+      },
+      "granny": {
+        "x": -138,
+        "z": 179.25,
+        "yaw": 0,
+        "pitch": 0.24,
+        "distance": 12
+      },
+      "square": {
+        "x": 87,
+        "z": 78,
+        "yaw": 0,
+        "pitch": 0.3,
+        "distance": 13
+      }
+    },
+    "referenceEntrance": {
+      "x": 87,
+      "z": -16.5,
+      "yaw": 0,
+      "pitch": 0.20943951023931953,
+      "distance": 7.6
+    },
+    "referenceComparison": {
+      "baselineAndFinalUseSamePose": true,
+      "cameraSource": "OUTSIDE_VIEW.pitch and OUTSIDE_VIEW.distance",
+      "wideComparisonPoseUnchanged": true
+    },
+    "wallClock": "2026-11-13T21:00:00Z",
+    "randomSeed": 20261113
+  },
+  "scope": "Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.",
+  "checks": [
+    {
+      "label": "The original sky art decodes within one bounded world texture",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "cloudOctaves": 4,
+        "cloudWarpSamples": 1,
+        "cloudHashes": 20,
+        "silhouetteLayers": 3,
+        "addedMeshes": 0,
+        "addedDrawCalls": 0,
+        "addedLights": 0,
+        "addedTextures": 1,
+        "addedPasses": 0,
+        "maxLinearChannel": 0.68,
+        "maxTimeStep": 0.25,
+        "artSamples": 2,
+        "maxArtLongSide": 1024,
+        "artLongitudeRepeats": 2,
+        "time": 0.30000000000000004,
+        "artReady": true,
+        "artWidth": 1024,
+        "artHeight": 512,
+        "textureBytes": 2796204,
+        "artEncodedBytes": 34878
+      }
+    },
+    {
+      "label": "The real TV confirmation focuses Return with assigned DualSense Cross and Circle glyphs",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "tv": true,
+        "viewport": [
+          1920,
+          1080
+        ],
+        "mode": "dualsense",
+        "focused": true,
+        "padFocusAttribute": false,
+        "confirmIcon": "cross",
+        "cancelIcon": "circle",
+        "backgroundImage": "linear-gradient(110deg, rgb(255, 223, 170), rgb(239, 200, 137))",
+        "backgroundColour": "rgba(0, 0, 0, 0)",
+        "opaque": true,
+        "labelInk": [
+          51,
+          35,
+          49
+        ],
+        "glyphInks": [
+          {
+            "tag": "circle",
+            "stroke": "rgb(51, 35, 49)",
+            "colour": [
+              51,
+              35,
+              49
+            ]
+          },
+          {
+            "tag": "path",
+            "stroke": "rgb(51, 35, 49)",
+            "colour": [
+              51,
+              35,
+              49
+            ]
+          }
+        ],
+        "labelMinimumContrast": 9.325048251284153,
+        "glyphMinimumContrast": 9.325048251284153,
+        "physicalLabelFont": 23.054999113082886,
+        "targets": [
+          {
+            "label": "CROSSReturn to farm",
+            "width": 554.40625,
+            "height": 73.765625
+          },
+          {
+            "label": "CIRCLEStay in the village",
+            "width": 554.40625,
+            "height": 73.765625
+          }
+        ]
+      }
+    },
+    {
+      "label": "Focused farm return keeps an opaque gradient and readable label and glyph contrast",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "tv": true,
+        "viewport": [
+          1920,
+          1080
+        ],
+        "mode": "dualsense",
+        "focused": true,
+        "padFocusAttribute": false,
+        "confirmIcon": "cross",
+        "cancelIcon": "circle",
+        "backgroundImage": "linear-gradient(110deg, rgb(255, 223, 170), rgb(239, 200, 137))",
+        "backgroundColour": "rgba(0, 0, 0, 0)",
+        "opaque": true,
+        "labelInk": [
+          51,
+          35,
+          49
+        ],
+        "glyphInks": [
+          {
+            "tag": "circle",
+            "stroke": "rgb(51, 35, 49)",
+            "colour": [
+              51,
+              35,
+              49
+            ]
+          },
+          {
+            "tag": "path",
+            "stroke": "rgb(51, 35, 49)",
+            "colour": [
+              51,
+              35,
+              49
+            ]
+          }
+        ],
+        "labelMinimumContrast": 9.325048251284153,
+        "glyphMinimumContrast": 9.325048251284153,
+        "physicalLabelFont": 23.054999113082886,
+        "targets": [
+          {
+            "label": "CROSSReturn to farm",
+            "width": 554.40625,
+            "height": 73.765625
+          },
+          {
+            "label": "CIRCLEStay in the village",
+            "width": 554.40625,
+            "height": 73.765625
+          }
+        ]
+      }
+    },
+    {
+      "label": "TV return confirmation keeps physical44px targets and12px label text",
+      "pass": true,
+      "fatal": false,
+      "actual": {
+        "tv": true,
+        "viewport": [
+          1920,
+          1080
+        ],
+        "mode": "dualsense",
+        "focused": true,
+        "padFocusAttribute": false,
+        "confirmIcon": "cross",
+        "cancelIcon": "circle",
+        "backgroundImage": "linear-gradient(110deg, rgb(255, 223, 170), rgb(239, 200, 137))",
+        "backgroundColour": "rgba(0, 0, 0, 0)",
+        "opaque": true,
+        "labelInk": [
+          51,
+          35,
+          49
+        ],
+        "glyphInks": [
+          {
+            "tag": "circle",
+            "stroke": "rgb(51, 35, 49)",
+            "colour": [
+              51,
+              35,
+              49
+            ]
+          },
+          {
+            "tag": "path",
+            "stroke": "rgb(51, 35, 49)",
+            "colour": [
+              51,
+              35,
+              49
+            ]
+          }
+        ],
+        "labelMinimumContrast": 9.325048251284153,
+        "glyphMinimumContrast": 9.325048251284153,
+        "physicalLabelFont": 23.054999113082886,
+        "targets": [
+          {
+            "label": "CROSSReturn to farm",
+            "width": 554.40625,
+            "height": 73.765625
+          },
+          {
+            "label": "CIRCLEStay in the village",
+            "width": 554.40625,
+            "height": 73.765625
+          }
+        ]
+      }
+    },
+    {
+      "label": "Circle cancels Return without leaving or locking the village",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "Cross confirms the second Return request and reaches the farm",
+      "pass": true,
+      "fatal": true
+    },
+    {
+      "label": "Normal rendering completes without page, console, shader or external-request errors",
+      "pass": true,
+      "fatal": true,
+      "actual": {
+        "count": 87,
+        "failed": []
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "return-tv-confirm.png"
+  ],
+  "views": [],
+  "programs": {
+    "count": 87,
+    "failed": []
+  },
+  "passed": true,
+  "visualFailures": []
+}
