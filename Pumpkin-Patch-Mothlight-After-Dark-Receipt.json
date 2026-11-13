@@ -1,0 +1,50 @@
+{
+  "name": "Pumpkin Patch \u2014 Mothlight After Dark",
+  "source_commit": "bebcb1910a1794db70d7c2c91c67550603119739",
+  "runtime_source_commit": "f7f15d3901d0ecd5af96248f6356e252e43c076e",
+  "source_branch": "contractor/village-atmosphere",
+  "base_source_commit": "4ac1572f05e0db7a5858316c5ecb7bb083595461",
+  "save_version": 20,
+  "html": {
+    "bytes": 60582366,
+    "sha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+  },
+  "validation": {
+    "full_tests_passed": 1370,
+    "world_checks": 15,
+    "ui_checks": 17,
+    "compatibility_checks": 54,
+    "normal_render_and_controller_scope": "World candidate before a dialogue-only contrast correction; final exact HTML UI uses ordinary SwiftShader draws and standard Gamepad API injection. See verification for both hashes and scopes."
+  },
+  "budgets": {
+    "ground_vertices": 44736,
+    "original_ground_vertices": 44032,
+    "ground_triangles": 87328,
+    "original_ground_triangles": 87210,
+    "cut_stair_footprints": 9,
+    "unchanged_terrain_work_boxes": 14766,
+    "contact_draws": 1,
+    "contact_capacity": 32,
+    "contact_max_triangles": 64,
+    "new_lights": 0,
+    "existing_light_pool": 8,
+    "water_new_meshes": 0,
+    "water_new_textures": 0,
+    "baron_room_boxes": 765,
+    "granny_room_boxes": 977,
+    "granny_exterior_boxes": 1432,
+    "original_granny_exterior_boxes": 1481,
+    "unchanged_resource_positions": 676,
+    "unified_story_entries": 77
+  },
+  "limitations": [
+    "Software-rendered QA and an injected standard Gamepad API verify flows, not physical Bluetooth/controller/phone/TV FPS.",
+    "World screenshots use a declared fully unlocked visual fixture.",
+    "Full B1 migration/new puzzle stories/secret rooms/costumes and animal contacts remain separate roadmap work.",
+    "No APK rebuilt."
+  ],
+  "zip": {
+    "bytes": 62553766,
+    "sha256": "d169f6d42ad05486bc672523f5f3b528f13aa6b25034c5a69f56ef09f1886fda"
+  }
+}

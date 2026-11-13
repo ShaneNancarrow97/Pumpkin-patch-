@@ -1,4 +1,18 @@
-# Pumpkin Patch — Village Refined
+# Pumpkin Patch — Mothlight After Dark
+
+[Download full game ZIP](Pumpkin-Patch-Mothlight-After-Dark.zip?raw=1) · [Standalone HTML](Pumpkin-Patch-Mothlight-After-Dark.html?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/bebcb1910a1794db70d7c2c91c67550603119739/voxel/docs/contractor-patches/village-atmosphere/README.md)
+
+The Quarry stairs are clear of terrain, and all seven expansion home entries align with the spread world. Granny and the Baron have bespoke interiors; Granny’s cottage has detailed windows and closed attic gables. District/time palettes, subtle ripple water and soft contact shadows make the village feel more alive.
+
+A unified journal keeps the followed task above folded story details. HUD, map and live routes stay together, partial gathering retargets supplies, and ready parallel handovers are offered correctly. Both authoritative quest engines, all 77 story IDs, economy, district gates, all 676 resource positions and save version 20 remain compatible. The Stopped Hour spine/index are proposals for Claude’s review.
+
+1,370 tests, 15 world checks on the rendering candidate, 17 UI/controller checks across scoped builds and 54 compatibility checks pass. The ZIP contains index.html, handover, exact verification and before/after previews. [Exact-byte receipt](Pumpkin-Patch-Mothlight-After-Dark-Receipt.json). The older APK below is not updated.
+
+Source `bebcb1910a1794db70d7c2c91c67550603119739` on `contractor/village-atmosphere`, based on `4ac1572`. Export/import through Settings when moving a farm between browser/file origins.
+
+---
+
+## Previous release — Village Refined
 
 [Download game ZIP](Pumpkin-Patch-Garden-Refinements.zip?raw=1) · [Standalone HTML](Pumpkin-Patch-Garden-Refinements.html?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/4ac1572f05e0db7a5858316c5ecb7bb083595461/voxel/docs/contractor-patches/village-refinement/README.md) · [Review PR](https://github.com/ShaneNancarrow97/Pumpkin-patch-/pull/3)
 
