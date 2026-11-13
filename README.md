@@ -1,3 +1,15 @@
+# Pumpkin Patch — Mothlight Couture
+
+[Download full game ZIP](Pumpkin-Patch-Mothlight-Couture.zip?raw=1) · [Standalone HTML](Pumpkin-Patch-Mothlight-Couture.html?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/248217094354059a35fd9379189e4940d79776b5/voxel/docs/contractor-patches/village-ui-couture/README.md)
+
+A complete village UI pass: plum parchment and gilt frames, illustrated resident cards, clearer journal and dialogue, organised inventory/workshop/trading, polished map and decorating controls. Canonical stories, rewards, prices, requirements, purchases and save version 20 are preserved. Controller prompts name the focused action.
+
+1,489 tests pass. Exact-HTML verification is separated into 7 native-render hero checks and 81 broad UI/controller checks with world draws explicitly held. The independent source rebuild is byte-identical. The ZIP includes the full offline game, Claude handover, verification, three native-render previews and one clearly labelled UI-only stall preview. Rendering is unchanged from e99cd6e: village WebGPU capability selection with WebGL fallback; farm, house, rides and map use WebGL. This UI release is checked with actual software WebGL, not a new WebGPU/device performance certification. No APK was rebuilt.
+
+[Exact-byte receipt](Pumpkin-Patch-Mothlight-Couture-Receipt.json). Source `248217094354059a35fd9379189e4940d79776b5`; frozen runtime `6f6666a015666cdb15d3cde4dde2dadff0788ae9` on `contractor/village-ui-couture`. Export/import saves in Settings when changing browser/file origins.
+
+---
+
 # Pumpkin Patch — Mothlight WebGPU
 
 [Download full game ZIP](Pumpkin-Patch-Mothlight-WebGPU.zip?raw=1) · [Standalone HTML](Pumpkin-Patch-Mothlight-WebGPU.html?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/e99cd6e84d409e318392db2019d407487abba4ee/voxel/docs/contractor-patches/village-webgpu/README.md)

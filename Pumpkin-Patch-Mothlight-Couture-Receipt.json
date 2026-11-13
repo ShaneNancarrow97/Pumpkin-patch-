@@ -1,0 +1,105 @@
+{
+  "name": "Pumpkin Patch \u2014 Mothlight Couture",
+  "source_commit": "248217094354059a35fd9379189e4940d79776b5",
+  "runtime_source_commit": "6f6666a015666cdb15d3cde4dde2dadff0788ae9",
+  "source_branch": "contractor/village-ui-couture",
+  "incremental_base": "e99cd6e84d409e318392db2019d407487abba4ee",
+  "save_version": 20,
+  "html": {
+    "bytes": 61789302,
+    "sha256": "232535a2d4fdb6a3273314b8f152e10a175ae8db1ff7bbdbe81d3d725d2e1290"
+  },
+  "independent_rebuild": {
+    "byte_identical": true,
+    "bytes": 61789302,
+    "sha256": "232535a2d4fdb6a3273314b8f152e10a175ae8db1ff7bbdbe81d3d725d2e1290"
+  },
+  "validation": {
+    "full_tests": {
+      "tests": 1489,
+      "pass": 1489,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 456808.367082,
+      "log_sha256": "b8ae20629d17a46c44e112eaee82ac6df2f37730996616795dbcb4e4a3da270e"
+    },
+    "browser_checks": 88,
+    "native_hero_checks": 7,
+    "held_draw_ui_controller_checks": 81,
+    "browser_reports": [
+      {
+        "archive": "verification/browser-1.json",
+        "sha256": "28184578f704b6247ff8c03c837de4385bb9b4ce94bef01cdfd7614e5ea8dba2",
+        "checks": 81,
+        "fixture_sha256": "c92d0cd5e2e59569b76ddfcbc991195cbe8d018232d962bf293980a4bcee417c",
+        "draw_held": true,
+        "native_hero_only": false,
+        "scope": "Exact unchanged offline HTML over loopback; declared level20 supplied-inventory fixture, not earned progression. UI-only coverage: first native village-frame verification precedes explicit renderer/composer draw holding; the broad pass omits a separate HUD image. All held screenshots are prefixed ui-only; camera/world pixels during these checks are not normal-render proof. Input, simulation and DOM still use native game RAF; no manual game ticks or UI replacement. The separate native hero report provides world-rendered UI evidence. Map capture, if requested, temporarily restores native draws to create the genuine world snapshot, then holds again before marker selection and its UI-only screenshot. Explicit WebGL fallback isolates the HTML/CSS change from GPU compilation. Viewports and software rendering do not certify physical Bluetooth, Fold or TV performance."
+      },
+      {
+        "archive": "verification/browser-2.json",
+        "sha256": "ed6b1b19347a033c572e4e3fba83705e52484b8516c3df6a5792f7e6af9df559",
+        "checks": 7,
+        "fixture_sha256": "c92d0cd5e2e59569b76ddfcbc991195cbe8d018232d962bf293980a4bcee417c",
+        "draw_held": false,
+        "native_hero_only": true,
+        "scope": "Exact unchanged offline HTML over loopback; declared level20 supplied-inventory fixture, not earned progression. Actual DOM clicks and keyboard use native game RAF with actual WebGL throughout; no held draws, patched renderer, manual game ticks or UI replacement. Limited native hero pass: desktop journal, real nearby Rowan dialogue and portrait journal only; full UI parity belongs to the separate broad report. Explicit WebGL fallback isolates the HTML/CSS change from GPU compilation. Viewports and software rendering do not certify physical Bluetooth, Fold or TV performance."
+      }
+    ]
+  },
+  "renderer_scope": "Rendering is unchanged from e99cd6e: village WebGPU capability selection with WebGL fallback; farm, house, rides and map use WebGL. This UI release is checked with actual software WebGL, not a new WebGPU/device performance certification.",
+  "ui": "HTML/CSS with reused original icons and portraits; no new runtime artwork texture",
+  "previews": [
+    {
+      "archive": "preview/native-render/native-desktop-journal.png",
+      "bytes": 911149,
+      "sha256": "927c77e1e3d066fd5150eb57717394e6518e6b9fb39178f06a0f904deae1064b",
+      "html_sha256": "232535a2d4fdb6a3273314b8f152e10a175ae8db1ff7bbdbe81d3d725d2e1290",
+      "backend": "webgl",
+      "draw_held": false,
+      "capture_scope": "Native actual WebGL with game RAF",
+      "report_scope": "Exact unchanged offline HTML over loopback; declared level20 supplied-inventory fixture, not earned progression. Actual DOM clicks and keyboard use native game RAF with actual WebGL throughout; no held draws, patched renderer, manual game ticks or UI replacement. Limited native hero pass: desktop journal, real nearby Rowan dialogue and portrait journal only; full UI parity belongs to the separate broad report. Explicit WebGL fallback isolates the HTML/CSS change from GPU compilation. Viewports and software rendering do not certify physical Bluetooth, Fold or TV performance."
+    },
+    {
+      "archive": "preview/native-render/native-desktop-dialogue.png",
+      "bytes": 805675,
+      "sha256": "84c7c3bd95025e8c6ca74d325cb29cfa70eb80b2c49a8813e7e8b454850555ef",
+      "html_sha256": "232535a2d4fdb6a3273314b8f152e10a175ae8db1ff7bbdbe81d3d725d2e1290",
+      "backend": "webgl",
+      "draw_held": false,
+      "capture_scope": "Native actual WebGL with game RAF",
+      "report_scope": "Exact unchanged offline HTML over loopback; declared level20 supplied-inventory fixture, not earned progression. Actual DOM clicks and keyboard use native game RAF with actual WebGL throughout; no held draws, patched renderer, manual game ticks or UI replacement. Limited native hero pass: desktop journal, real nearby Rowan dialogue and portrait journal only; full UI parity belongs to the separate broad report. Explicit WebGL fallback isolates the HTML/CSS change from GPU compilation. Viewports and software rendering do not certify physical Bluetooth, Fold or TV performance."
+    },
+    {
+      "archive": "preview/native-render/native-portrait-journal.png",
+      "bytes": 287424,
+      "sha256": "da5b0b419906ae23186b76e235556d5906737f4ef52899d1cac5d9df95759aa0",
+      "html_sha256": "232535a2d4fdb6a3273314b8f152e10a175ae8db1ff7bbdbe81d3d725d2e1290",
+      "backend": "webgl",
+      "draw_held": false,
+      "capture_scope": "Native actual WebGL with game RAF",
+      "report_scope": "Exact unchanged offline HTML over loopback; declared level20 supplied-inventory fixture, not earned progression. Actual DOM clicks and keyboard use native game RAF with actual WebGL throughout; no held draws, patched renderer, manual game ticks or UI replacement. Limited native hero pass: desktop journal, real nearby Rowan dialogue and portrait journal only; full UI parity belongs to the separate broad report. Explicit WebGL fallback isolates the HTML/CSS change from GPU compilation. Viewports and software rendering do not certify physical Bluetooth, Fold or TV performance."
+    },
+    {
+      "archive": "preview/ui-only/ui-only-desktop-stall.png",
+      "bytes": 956749,
+      "sha256": "36125f0f99db5e6fbf84d52857cb0f16b4c1670198106e177d6624b0af86b3ed",
+      "html_sha256": "232535a2d4fdb6a3273314b8f152e10a175ae8db1ff7bbdbe81d3d725d2e1290",
+      "backend": "webgl",
+      "draw_held": true,
+      "capture_scope": "HTML/CSS and input only; world draws held",
+      "report_scope": "Exact unchanged offline HTML over loopback; declared level20 supplied-inventory fixture, not earned progression. UI-only coverage: first native village-frame verification precedes explicit renderer/composer draw holding; the broad pass omits a separate HUD image. All held screenshots are prefixed ui-only; camera/world pixels during these checks are not normal-render proof. Input, simulation and DOM still use native game RAF; no manual game ticks or UI replacement. The separate native hero report provides world-rendered UI evidence. Map capture, if requested, temporarily restores native draws to create the genuine world snapshot, then holds again before marker selection and its UI-only screenshot. Explicit WebGL fallback isolates the HTML/CSS change from GPU compilation. Viewports and software rendering do not certify physical Bluetooth, Fold or TV performance."
+    }
+  ],
+  "limitations": [
+    "Software rendering and injected controller inputs do not certify physical Fold, TV, Bluetooth or device FPS.",
+    "No APK was rebuilt.",
+    "Export/import your save in Settings when moving between browser/file origins."
+  ],
+  "zip": {
+    "bytes": 46965512,
+    "sha256": "24be9c10bca90e884154b348f8f408e3dd05f3b8fe63ebfc2bd2f5ee7f57deda"
+  }
+}
