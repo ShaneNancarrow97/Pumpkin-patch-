@@ -58,11 +58,11 @@ function cluster(c) {
 export const VILLAGE_NEIGHBOURHOODS = freeze([
   // A working orchard fills the western approach; the open lanes run between the trees and gathering sockets.
   cluster({ id: 'cider-orchard-south', kind: 'orchard', x: -6, z: 51, w: 25, d: 24, seed: 7801,
-    trees: [{ x: -16, z: 44 }, { x: -7, z: 43 }, { x: 4, z: 46 }, { x: -16, z: 57 }, { x: -3, z: 60 }] }),
+    trees: [{ x: -16, z: 44 }, { x: -7, z: 43 }, { x: 4, z: 46 }, { x: -16, z: 57 }, { x: -3, z: 60 }, { x: -11, z: 56 }, { x: 7, z: 56 }] }),
   cluster({ id: 'cider-orchard-north', kind: 'orchard', x: -5, z: 71, w: 21, d: 8, seed: 7802,
-    trees: [{ x: -12, z: 71 }, { x: 2, z: 72 }] }),
+    trees: [{ x: -12, z: 71 }, { x: 2, z: 72 }, { x: -5, z: 68 }] }),
   cluster({ id: 'market-orchard', kind: 'orchard', x: 27, z: 52, w: 19, d: 24, seed: 7803,
-    trees: [{ x: 20, z: 44 }, { x: 32, z: 44 }, { x: 33, z: 61 }] }),
+    trees: [{ x: 20, z: 44 }, { x: 32, z: 44 }, { x: 33, z: 61 }, { x: 13, z: 42 }, { x: 25, z: 47 }, { x: 37, z: 42 }, { x: 19, z: 56 }, { x: 37, z: 74 }] }),
   cluster({ id: 'community-pumpkin-garden', kind: 'garden', x: 26, z: 71, w: 12, d: 8, produce: 'pumpkins', seed: 7804,
     hedges: [{ x: 26, z: 75.5, w: 14, d: .55, h: .65 }, { x: 33, z: 71.5, w: .55, d: 8, h: .65 }] }),
   cluster({ id: 'community-herb-garden', kind: 'garden', x: 12, z: 65, w: 12, d: 8, seed: 7805,
@@ -85,7 +85,7 @@ export const VILLAGE_NEIGHBOURHOODS = freeze([
   cluster({ id: 'lantern-south-border', kind: 'meadow', x: 91, z: 45, w: 19, d: 12, soil: true, count: 24, seed: 7817 }),
   cluster({ id: 'lantern-north-border', kind: 'meadow', x: 109, z: 74, w: 20, d: 6, soil: true, count: 22, seed: 7818 }),
   cluster({ id: 'lantern-grove', kind: 'orchard', x: 134, z: 60, w: 14, d: 36, seed: 7816,
-    trees: [{ x: 132, z: 44 }, { x: 138, z: 64 }, { x: 130, z: 73 }] }),
+    trees: [{ x: 132, z: 44 }, { x: 138, z: 64 }, { x: 130, z: 73 }, { x: 88, z: 42 }, { x: 100, z: 42 }, { x: 112, z: 47 }, { x: 124, z: 47 }, { x: 88, z: 63 }, { x: 106, z: 63 }, { x: 112, z: 69 }] }),
   cluster({ id: 'lantern-walk', kind: 'path', x: 0, z: 0, w: 0, d: 0, seed: 7815,
     paths: [
       { points: [[77, 58], [100, 58], [124, 58], [141, 49], [141, 37]], width: 2.6 },
