@@ -8,6 +8,7 @@ import { chromium } from 'playwright';
 import * as M from '../src/model.js';
 import { VILLAGE_ATMOSPHERE_CYCLE_SECONDS, villageAtmosphereAt } from '../src/content/village-grade.js';
 import { OUTSIDE_VIEW } from '../src/village-camera.js';
+import { VILLAGE_SKY_ART_META } from '../src/content/village-sky-art-meta.js';
 
 const argv = process.argv.slice(2), file = path.resolve(argv[0]), out = path.resolve(argv[1]);
 const baseline = argv.includes('--baseline'), tvOnly = argv.includes('--tv-only'), referenceOnly = argv.includes('--reference-only'), conversationOnly = argv.includes('--conversation-only'), uiOnly = tvOnly || conversationOnly || argv.includes('--ui-only'), worldOnly = argv.includes('--world-only');
@@ -28,7 +29,7 @@ const views = { entrance: { x: 87, z: -7.5, yaw: 0, pitch: .30, distance: 13 }, 
 // Keep the original wide comparison unchanged. This additional view uses the
 // shipped follow-camera numbers rather than shrinking or faking the owner.
 const referenceEntrance = { x: 87, z: -16.5, yaw: 0, pitch: OUTSIDE_VIEW.pitch, distance: OUTSIDE_VIEW.distance };
-const report = { file, baseline, uiOnly, tvOnly, worldOnly, referenceOnly, conversationOnly, htmlSha256: sha(html), bytes: html.length, harnessSha256: sha(await fs.readFile(new URL(import.meta.url))), fixtureSha256: sha(JSON.stringify(fixture)), stateVersion: state.version, preferences, staging: { duskClock, period: VILLAGE_ATMOSPHERE_CYCLE_SECONDS, phase: 'dusk', owner: 'natalie', views, referenceEntrance, referenceComparison: { baselineAndFinalUseSamePose: true, cameraSource: 'OUTSIDE_VIEW.pitch and OUTSIDE_VIEW.distance', wideComparisonPoseUnchanged: true }, wallClock: '2026-11-13T21:00:00Z', randomSeed: 20261113 }, scope: 'Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.', checks: [], errors: [], consoleErrors: [], externalRequests: [], screenshots: [], views: [] };
+const report = { file, baseline, uiOnly, tvOnly, worldOnly, referenceOnly, conversationOnly, htmlSha256: sha(html), bytes: html.length, harnessSha256: sha(await fs.readFile(new URL(import.meta.url))), fixtureSha256: sha(JSON.stringify(fixture)), stateVersion: state.version, preferences, skyAssetExpectation: baseline ? null : VILLAGE_SKY_ART_META, staging: { duskClock, period: VILLAGE_ATMOSPHERE_CYCLE_SECONDS, phase: 'dusk', owner: 'natalie', views, referenceEntrance, referenceComparison: { baselineAndFinalUseSamePose: true, cameraSource: 'OUTSIDE_VIEW.pitch and OUTSIDE_VIEW.distance', wideComparisonPoseUnchanged: true }, wallClock: '2026-11-13T21:00:00Z', randomSeed: 20261113 }, scope: 'Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.', checks: [], errors: [], consoleErrors: [], externalRequests: [], screenshots: [], views: [] };
 const check = (label, pass, actual) => { report.checks.push({ label, pass: !!pass, ...(actual === undefined ? {} : { actual }) }); console.log(`${pass ? 'ok' : 'FAIL'} ${label}`); if (!pass) throw Error(label); };
 await fs.mkdir(out, { recursive: true });
 const server = createServer((req, res) => { if (req.url === '/favicon.ico') { res.writeHead(204).end(); return; } res.setHeader('Content-Type', 'text/html'); res.end(html); });
@@ -41,6 +42,14 @@ try {
   await page.addInitScript(({ save, preferences }) => { localStorage.setItem('pumpkin-patch-voxel-reference-v1', JSON.stringify(save)); localStorage.setItem('pumpkin-patch-voxel-reference-v1-prefs', JSON.stringify(preferences)); const NativeDate = Date, wall = new NativeDate('2026-11-13T21:00:00Z').getTime(); window.Date = class extends NativeDate { constructor(...args) { super(...(args.length ? args : [wall])); } static now() { return wall; } }; let seed = 20261113; Math.random = () => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return seed / 4294967296; }; }, { save: fixture, preferences });
   await page.goto(`http://127.0.0.1:${server.address().port}`, { waitUntil: 'domcontentloaded', timeout: 180000 }); await page.waitForSelector('body[data-ready]'); console.log('ready');
   await page.evaluate(() => { const p = PumpkinVoxel; p.scene.player.setEnabled(true, 'natalie'); p.openVillage(); });
+  if (!baseline) {
+    // Successful-art captures must wait for the real inlined picture to decode.
+    // Loader failures remain a unit-tested procedural fallback, not a passing
+    // painted-sky browser capture. Old baselines have no such hook or wait.
+    await page.waitForFunction(() => PumpkinVoxel.scene.villageView.fidelityStats?.sky?.artReady === true, null, { timeout: 180000 });
+    const sky = await page.evaluate(() => PumpkinVoxel.scene.villageView.fidelityStats.sky);
+    check('The original sky art decodes within one bounded world texture', sky.artReady === true && sky.addedTextures <= 1 && sky.artWidth === VILLAGE_SKY_ART_META.width && sky.artHeight === VILLAGE_SKY_ART_META.height && Math.max(sky.artWidth, sky.artHeight) <= 1024 && sky.artEncodedBytes === VILLAGE_SKY_ART_META.encodedBytes && sky.textureBytes > 0 && sky.textureBytes <= 2796204, sky);
+  }
   const frames = () => page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
   const stage = async (id, pose = views[id]) => { await page.keyboard.press('Shift'); await page.evaluate(({ pose, clock }) => { const p = PumpkinVoxel, v = p.scene.villageView; while (p.village.status.panel) p.village.back(); p.state().village.clock = clock; p.village.place(pose.x, pose.z, { x: 0, z: -1 }); v.play.reset(v.play.state.subject, { yaw: pose.yaw, pitch: pose.pitch, distance: pose.distance }); v.tick(.1); }, { pose, clock: duskClock }); await frames(); };
   const shot = async (name, { preserveInput = false } = {}) => { if (!preserveInput) await page.keyboard.press('Shift'); await frames(); await page.screenshot({ path: path.join(out, name), timeout: 180000 }); report.screenshots.push(name); console.log(`shot ${name}`); };
@@ -66,7 +75,7 @@ try {
     if (!baseline) {
       check('The actual ground texture keeps native arrival lawns green and roads bare', ...(await groundTextureCheck(page)));
       const stats = await page.evaluate(() => PumpkinVoxel.scene.villageView.fidelityStats);
-      check('Fidelity keeps sky on its existing draw and air within two bounded batches', stats?.sky?.addedDrawCalls === 0 && stats.sky.addedTextures === 0 && stats.sky.addedLights === 0 && stats.sky.addedPasses === 0 && stats.air.drawCalls <= 2 && stats.air.triangles <= 76 && stats.air.lights === 0 && stats.air.textures === 0, stats);
+      check('Fidelity keeps sky on its existing draw and air within two bounded batches', stats?.sky?.addedDrawCalls === 0 && stats.sky.addedTextures <= 1 && stats.sky.artReady === true && Math.max(stats.sky.artWidth, stats.sky.artHeight) <= 1024 && stats.sky.textureBytes <= 2796204 && stats.sky.addedLights === 0 && stats.sky.addedPasses === 0 && stats.air.drawCalls <= 2 && stats.air.triangles <= 76 && stats.air.lights === 0 && stats.air.textures === 0, stats);
       const paused = await page.evaluate(() => { const p = PumpkinVoxel, v = p.scene.villageView; p.state().paused = true; const before = JSON.stringify(v.fidelityStats); v.tick(.25); const after = JSON.stringify(v.fidelityStats); p.state().paused = false; return { held: before === after }; });
       check('New sky and air clocks hold while the game is paused', paused.held, paused);
       await page.emulateMedia({ reducedMotion: 'reduce' });
