@@ -264,7 +264,7 @@ export function buildTownSquare({ waterClock = createVillageWaterClock() } = {})
   for (const ez of [1, -1]) for (const [len, w, kind] of [[1.1, .2, "h"], [1.62, .13, "m"]]) {
     const hv = new Voxels(); hv.block(0, -.2, 0, w, len + .2, .05, C.iron); hv.block(0, len - .25, 0, w * .7, .2, .06, C.gold);
     // Just proud of the face: the tower is 3.6 deep, its faces 1.85 either side of the gate's middle.
-    const hand = hv.build({ detailShadows: false }); hand.position.set(G.x, HN(G.x, G.z) + G.clock - .12, -G.z + ez * 1.95); hand.userData = { kind, face: ez }; group.add(hand); hands.push(hand);
+    const hand = hv.build({ detailShadows: false }); hand.position.set(G.x, HN(G.x, G.z) + G.clock - .12, -G.z + ez * 1.95); hand.userData = { kind, face: ez, voxelAOMovable: true }; group.add(hand); hands.push(hand);
   }
   group.userData.tick = (now = new Date()) => {
     const m = now.getMinutes() + now.getSeconds() / 60, h = (now.getHours() % 12) + m / 60;

@@ -6,6 +6,8 @@ import { TOWN, TOWN_GATE_PIERS, TOWN_LAMPS, inTownPlaza, townSquareObstacles } f
 import { TOWN_SQUARE, isGap } from "../src/rules/village-spread.js";
 import { villageCellFree, moveVillageWalker, villageCameraBlockers } from "../src/rules/village-navigation.js";
 import { grassAt } from "../src/village-world.js";
+import { finishVoxels } from "../src/voxel-finish.js";
+import { installVoxelAmbientOcclusion } from "../src/rendering/voxel-ao-material.js";
 
 // The builder paints the plaza's setts on a canvas; Node has none, so a stand-in that takes every call.
 const ctx = new Proxy({}, { get: (t, k) => (k in t ? t[k] : () => {}), set: (t, k, v) => { t[k] = v; return true; } });
@@ -79,4 +81,19 @@ test("the square is built in bounded batches, adds no lights and its clock keeps
   group.userData.tick(new Date(2026, 9, 31, 9, 30, 0));
   assert.ok(Math.abs(south("m").rotation.z + Math.PI) < 1e-9, "half past: the minute hand points down");
   assert.ok(TOWN_LAMPS.length >= 14, "the square's lamps light it");
+});
+
+test("an exactly aligned Moonclock never bakes its moving hands into static AO", () => {
+  const group = buildTownSquare(); group.userData.tick(new Date(2026, 10, 13, 21, 0, 0));
+  finishVoxels(group);
+  const stats = installVoxelAmbientOcclusion(group), hands = [];
+  group.traverse(o => { if (o.userData?.kind) hands.push(o); });
+  assert.ok(stats.instances > 1000, "the static square genuinely receives AO");
+  assert.equal(hands.length, 4);
+  for (const hand of hands) hand.traverse(o => {
+    if (o.isInstancedMesh) assert.equal(o.geometry.getAttribute("voxelAO"), undefined, "right-angle hands remain outside static occupancy");
+  });
+  const before = hands.map(h => h.rotation.z);
+  group.userData.tick(new Date(2026, 10, 13, 21, 7, 23));
+  assert.ok(hands.every((hand, i) => hand.rotation.z !== before[i]), "all four hands still advance independently of the static bake");
 });
