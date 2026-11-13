@@ -1,0 +1,141 @@
+{
+  "file": "/tmp/Pumpkin-Patch-Mothlight-After-Dark.html",
+  "baseline": true,
+  "uiOnly": false,
+  "tvOnly": false,
+  "worldOnly": false,
+  "referenceOnly": true,
+  "conversationOnly": false,
+  "htmlSha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786",
+  "bytes": 60582366,
+  "harnessSha256": "baf04e87a700b69da41230fd179e5232f525fc8b0b164799fd284371f4a5885e",
+  "fixtureSha256": "8c4f22501f3217f4d466c57b95ca0988a8d10f7c92275719177c27fc533790be",
+  "stateVersion": 20,
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageTrackedQuest": "green-research"
+  },
+  "staging": {
+    "duskClock": 1800,
+    "period": 2700,
+    "phase": "dusk",
+    "owner": "natalie",
+    "views": {
+      "entrance": {
+        "x": 87,
+        "z": -7.5,
+        "yaw": 0,
+        "pitch": 0.3,
+        "distance": 13
+      },
+      "detail": {
+        "x": 83,
+        "z": -3,
+        "yaw": -0.12,
+        "pitch": 0.3,
+        "distance": 8
+      },
+      "granny": {
+        "x": -138,
+        "z": 179.25,
+        "yaw": 0,
+        "pitch": 0.24,
+        "distance": 12
+      },
+      "square": {
+        "x": 87,
+        "z": 78,
+        "yaw": 0,
+        "pitch": 0.3,
+        "distance": 13
+      }
+    },
+    "referenceEntrance": {
+      "x": 87,
+      "z": -16.5,
+      "yaw": 0,
+      "pitch": 0.20943951023931953,
+      "distance": 7.6
+    },
+    "referenceComparison": {
+      "baselineAndFinalUseSamePose": true,
+      "cameraSource": "OUTSIDE_VIEW.pitch and OUTSIDE_VIEW.distance",
+      "wideComparisonPoseUnchanged": true
+    },
+    "wallClock": "2026-11-13T21:00:00Z",
+    "randomSeed": 20261113
+  },
+  "scope": "Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.",
+  "checks": [
+    {
+      "label": "Normal rendering completes without page, console, shader or external-request errors",
+      "pass": true,
+      "actual": {
+        "count": 87,
+        "failed": []
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "screenshots": [
+    "entrance-reference-world.png",
+    "entrance-reference-journal.png"
+  ],
+  "views": [
+    {
+      "id": "reference-entrance",
+      "position": {
+        "x": 87,
+        "z": -16.5
+      },
+      "who": "natalie",
+      "atmosphere": {
+        "district": "green",
+        "phase": "dusk",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "fidelity": null,
+      "contact": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 2
+      },
+      "lights": 8,
+      "meshes": 1884,
+      "instances": 385758,
+      "memory": {
+        "geometries": 217,
+        "textures": 54
+      },
+      "programs": 87,
+      "lastRenderPass": {
+        "frame": 268,
+        "calls": 1,
+        "triangles": 1,
+        "points": 0,
+        "lines": 0
+      }
+    }
+  ],
+  "programs": {
+    "count": 87,
+    "failed": []
+  },
+  "passed": true
+}
