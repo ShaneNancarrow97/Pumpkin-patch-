@@ -32,7 +32,8 @@
 #village-dialogue .village-reply[data-village-tone=warm] .village-reply-tone{color:var(--village-success)}
 #village-dialogue .village-reply[data-village-tone=curious] .village-reply-tone{color:var(--village-muted)}
 #village-dialogue .village-reply:hover:not(:disabled){border-color:#e9c586a6;background:var(--village-surface-raised);box-shadow:inset 0 1px #ffe9b726,0 4px 16px #e4ac591a}
-#village-dialogue .village-reply:is(:focus,[data-pad-focus]){border-color:#ffe1a4;outline:2px solid #f3ce8c;outline-offset:1px;background:var(--village-amber);box-shadow:inset 0 1px #fff1cfb3,0 4px 22px #e9b95a2e;color:var(--village-action-ink)}
+/* Keep dialogue actions opaque above TV mode's translucent focus colour. */
+#village-dialogue :is(.village-reply,.village-dialogue-next):is(:focus,[data-pad-focus]):not(:disabled){--ps5-ink:var(--village-action-ink);--ps5-accent:var(--village-action-ink);--ps5-frame:var(--village-action-ink);border-color:#ffe1a4;outline:2px solid #f3ce8c;outline-offset:1px;background:linear-gradient(110deg,var(--village-amber-hover),var(--village-amber));box-shadow:inset 0 1px #fff1cfb3,0 4px 22px #e9b95a2e;color:var(--village-action-ink)}
 #village-dialogue .village-reply:is(:focus,[data-pad-focus]) :is(.village-reply-tone,.village-reply-note){color:var(--village-action-muted)}
 #village-dialogue .village-reply:disabled{opacity:.66;cursor:default;background:#2b2337dc;border-color:#bcabca28}
 #village-dialogue .village-reply:disabled .village-reply-art{filter:grayscale(.45);opacity:.65}
