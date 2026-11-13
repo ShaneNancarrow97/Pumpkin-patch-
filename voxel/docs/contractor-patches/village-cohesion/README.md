@@ -29,11 +29,11 @@ Save version remains **20**. Farm income, level and quest gates, inventories, pu
 
 Verification receipts are recorded in `verification/` after the final build. The normal-render browser harness is `tools/village-cohesion-qa.mjs`: it captures the actual atlas, checks the batch/light budget, walks across the former east-park limit using real keyboard input, checks owned-decor suppression/restoration and cosmetic garden movement, then photographs the orchards, commons, court and Fold-sized map. It uses declared staging positions and direct ticks for functional checks, not a device performance claim.
 
-The full suite passed **1,282 tests**. After the final tree/pavilion planting, the five affected model, navigation, resource, square and wanderer files passed **26 tests** again. The final exact HTML passed **eight normal-render browser checks**, with no page errors. Its SHA-256 is `a2885c22f16f1cb65d84a2cb6460dda79c34d92297fc2c6d1382f4b50b8cd96d` (60,533,183 bytes). See [`verification/tests-and-build.json`](verification/tests-and-build.json) for scopes and log fingerprints.
+The full suite passed **1,282 tests**. After the final tree/pavilion planting, the five affected model, navigation, resource, square and wanderer files passed **26 tests** again. The final exact HTML passed **eight normal-render browser checks** and **54 unchanged compatibility checks** (draw-held logic scope), with no page errors. Its SHA-256 is `a2885c22f16f1cb65d84a2cb6460dda79c34d92297fc2c6d1382f4b50b8cd96d` (60,533,183 bytes). See [`verification/tests-and-build.json`](verification/tests-and-build.json) for scopes and log fingerprints.
 
 The model tests enforce bounded batches, rendered/protected footprint agreement and safe disposal. Navigation checks preserve every old resource point and route, test the full new walks and pavilion approaches, and verify the park boundary and all locked districts. Browser screenshots are review artifacts in temp/ignored paths and the downloadable ZIP, not source game assets.
 
-The published standalone HTML and ZIP include all earlier village clarity fixes. The ZIP carries the handover, exact-byte receipt and before/after world previews. The older APK is not updated by this contract. Export/import a farm through Settings when moving between browser/file origins.
+The published standalone HTML and ZIP include all earlier village clarity fixes. The ZIP carries the handover, exact-byte receipt and world/ground-level previews. The older APK is not updated by this contract. Export/import a farm through Settings when moving between browser/file origins.
 
 ## For the next contractor
 

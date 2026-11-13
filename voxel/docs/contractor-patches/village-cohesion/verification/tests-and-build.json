@@ -45,7 +45,13 @@
   },
   "limitations": [
     "SwiftShader images and functional input checks are not hardware FPS or PS5 Bluetooth certification.",
-    "The original compatibility smoke is run again against the published HTML; delivery receipt records its result.",
     "No APK was rebuilt."
-  ]
+  ],
+  "compatibility_browser": {
+    "checks": 54,
+    "failed": 0,
+    "exact_html_sha256": "a2885c22f16f1cb65d84a2cb6460dda79c34d92297fc2c6d1382f4b50b8cd96d",
+    "draws_held": true,
+    "log_sha256": "94c64f5928441cd75138e0660267132bbb289e1908fd5056bc7ea9dde38aebaf"
+  }
 }
