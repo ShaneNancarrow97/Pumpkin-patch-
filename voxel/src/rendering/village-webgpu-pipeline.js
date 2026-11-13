@@ -30,6 +30,15 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   renderer = new GPU.WebGPURenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   await renderer.init(); device = renderer.backend.device;
   if (!renderer.backend.isWebGPUBackend) throw new Error("Renderer selected a non-WebGPU backend");
+  const createTexture = renderer.backend.createTexture.bind(renderer.backend);
+  renderer.backend.createTexture = (texture, options) => {
+    try { return createTexture(texture, options); }
+    catch (error) {
+      const image = texture.image;
+      error.message = `Village texture ${texture.name || texture.uuid} (${image?.constructor?.name ?? "missing image"}, ${image?.width}x${image?.height}, target:${!!texture.isRenderTargetTexture}, depth:${!!texture.isDepthTexture}, data:${!!texture.isDataTexture}): ${error.message}`;
+      throw error;
+    }
+  };
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = GPU.PCFSoftShadowMap;
   renderer.toneMapping = GPU.ACESFilmicToneMapping; renderer.outputColorSpace = GPU.SRGBColorSpace;
   materials = createVillageNodeMaterials({ renderer }); mirror = createVillageGpuMirror(materials);
@@ -84,7 +93,11 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   return {
     async firstFrame(source, camera, options) {
       sync(source, camera, options); device.pushErrorScope("validation");
-      try { await renderer.compileAsync(mirror.scene, mirror.camera); draw(); await device.queue.onSubmittedWorkDone(); }
+      // r169 compileAsync initializes shadow sampler bindings before the new
+      // shadow render target has sized its DepthTexture. A normal first draw
+      // runs shadow updateBefore in the right order and compiles the same real
+      // pipelines. Validate that complete hidden frame before revealing it.
+      try { draw(); await device.queue.onSubmittedWorkDone(); }
       finally {
         const error = await device.popErrorScope();
         if (error) throw new Error(`WebGPU first-frame validation: ${error.message}`);

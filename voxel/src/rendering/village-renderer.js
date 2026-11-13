@@ -8,13 +8,14 @@ export function villageRendererPreference(search = "") {
 
 export function createVillageRenderer({ canvas, load = () => import("./village-webgpu-pipeline.js"), gpu = globalThis.navigator?.gpu, preference = villageRendererPreference(globalThis.location?.search), onFallback } = {}) {
   let pipeline = null, overlay = null, pending = null, active = false, retired = false;
-  let width = 1, height = 1, pixelRatio = 1, failure = null, stage = "idle", frames = 0, generation = 0;
+  let width = 1, height = 1, pixelRatio = 1, failure = null, failureStack = null, stage = "idle", frames = 0, generation = 0;
   let rect = null;
-  const status = () => ({ requested: preference, backend: active ? "webgpu" : "webgl", stage, reason: failure, frames, ...(pipeline?.stats?.() ?? {}) });
+  const status = () => ({ requested: preference, backend: active ? "webgpu" : "webgl", stage, reason: failure, failureStack, frames, ...(pipeline?.stats?.() ?? {}) });
   const conceal = () => { active = false; if (overlay) overlay.hidden = true; };
   function fail(error) {
     if (retired) return;
     conceal(); stage = "fallback"; failure = String(error?.message ?? error ?? "WebGPU unavailable");
+    failureStack = error?.stack?.slice(0, 3000) ?? null;
     // Dispose only owned presentation resources. The source scene, geometry,
     // textures and original WebGL renderer continue to serve the game.
     pipeline?.dispose(); pipeline = null;

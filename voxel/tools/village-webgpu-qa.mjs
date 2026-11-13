@@ -32,7 +32,7 @@ const report = {
   checks: [], screenshots: [], errors: [], consoleErrors: [], warnings: [], externalRequests: [], failedRequests: [], logCounts: {},
 };
 const boundedLog = (kind, value, limit = 48) => { report.logCounts[kind] = (report.logCounts[kind] ?? 0) + 1; if (report[kind].length < limit) report[kind].push(String(value).slice(0, 12000)); };
-const check = (label, pass, actual, fatal = true) => { report.checks.push({ label, pass: !!pass, fatal, ...(actual === undefined ? {} : { actual }) }); console.log(`${pass ? "ok" : "FAIL"} ${label}`); if (!pass && fatal) throw new Error(label); };
+const check = (label, pass, actual, fatal = true) => { report.checks.push({ label, pass: !!pass, fatal, ...(actual === undefined ? {} : { actual }) }); console.log(`${pass ? "ok" : "FAIL"} ${label}`); if (!pass) console.log(JSON.stringify(actual)); if (!pass && fatal) throw new Error(label); };
 await fs.mkdir(out, { recursive: true });
 await fs.writeFile(path.join(out, "fixture.json"), JSON.stringify({ save: fixture, preferences, staging: report.staging }, null, 2));
 const server = createServer((req, res) => { if (req.url === "/favicon.ico") return res.writeHead(204).end(); res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" }); res.end(html); });
