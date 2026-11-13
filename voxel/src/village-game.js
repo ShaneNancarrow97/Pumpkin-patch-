@@ -85,7 +85,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
   const busy=()=>returnPrompt.active||!!page||dialogue.active||!!view.dialogueCamera?.active||view.director.active||state().paused||!!gather;
   const controls=controlsView({root,blocked:()=>busy()||decorate.active,onRelease:()=>keys.clear()});
   const decorate=decorateView({state,view,root,notice,onMenuInput:(surface,pad)=>controls.handleMenu(surface,pad),onInputReset:()=>controls.release(),onChanged:events=>changed(events),actorPosition:()=>({...pos}),onClose(){releaseInput();centre();render();},onShop:()=>showPanel("stall")});
-  let panelSignature="",panelAge=0,panelOpener=null;
+  let panelSignature="",panelAge=0,panelOpener=null,mapSnapshot,mapSnapshotError=false,mapPresentation=null,mapShowResidents=false;
   const panelTrail=createVillagePanelTrail();
   function openDecorate(options={}) {
     if(!active||returnPrompt.active||view.director.active||dialogue.active||state().paused)return false;
@@ -219,10 +219,21 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
   function showPanel(kind,id,{root:topLevel=false}={}){
     if(!active||returnPrompt.active||view.director.active||dialogue.active)return;
     if(!page||topLevel)panelOpener=document.activeElement;const viewState=page?panelView():null;
+    const openingMap=kind==="map"&&page?.kind!=="map";
     cancelGather();decorate.close();releaseInput();page=panelTrail.open(kind,id,{root:topLevel,replace:page?.kind===kind&&page.id!=null&&id!=null,view:viewState});
+    if(openingMap)captureMapSnapshot();
     $("vg-panel").hidden=false;root.classList.add("has-panel");root.dataset.panel=kind;panelSignature="";drawPanel(true);
   }
-  function panelBack(){const previous=panelTrail.back(panelView());if(!previous){closePanel(true);return;}releaseInput();page=previous;root.dataset.panel=page.kind;panelSignature="";drawPanel(true);}
+  // The scene caches structural changes. Opening a map may capture once;
+  // live pin and panel updates only reuse its image and projection.
+  function captureMapSnapshot(){
+    const followed=trackedExpansion();
+    // Keep the pins with this opening's picture. Their buttons still resolve
+    // the resident or story live before choosing a route or talking.
+    mapPresentation={position:view.inside?null:{...pos},currentArea:view.activeExpansionArea??"surface",residents:residentInteractions().map(r=>({...r,...r.point,hall:r.inside})),objective:followed?.next?{...followed.next,chapter:followed.id}:null};
+    mapSnapshot=undefined;mapSnapshotError=false;if(!scene.captureVillageMap)return;try{mapSnapshot=scene.captureVillageMap();mapSnapshotError=!mapSnapshot;}catch{mapSnapshot=null;mapSnapshotError=true;}
+  }
+  function panelBack(){const previous=panelTrail.back(panelView());if(!previous){closePanel(true);return;}const openingMap=previous.kind==="map"&&page?.kind!=="map";releaseInput();page=previous;if(openingMap)captureMapSnapshot();root.dataset.panel=page.kind;panelSignature="";drawPanel(true);}
   function dockPage(kind){if(page?.kind===kind&&!page.id){closePanel(true);return;}showPanel(kind,undefined,{root:true});}
   function requestReturn(reason="button"){
     if(!active||returnPrompt.active)return false;
@@ -252,7 +263,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
       const gifts=M.giftable(s);html+=`<details data-vg-details-key="gifts:${id}"><summary>Give a present · ${M.giftsLeft(s,id)} left</summary><p class="vg-menu-lead">A small gift helps your friendship grow.</p><div class="vg-choice-list">${gifts.map(g=>button(escape(M.villageItemName(g.item)),`data-vg-gift="${escape(g.item)}" data-who="${id}"`,M.giftsLeft(s,id)<=0)).join("")||"Gather a little something for your satchel first."}</div></details><details data-vg-details-key="about:${id}"><summary>About ${escape(f.short??f.name)}</summary><p>${escape(f.about)}</p></details>`;
     }
     if(kind==="navigation"){title="Mothlight Village";tag="Choose where to look";html=`<div class="vg-navigation-hub">${navigationMarkup(true)}</div>`;}
-    const chapter=kind==="map"?renderVillageMap(s,{selectedDistrict:id,position:view.inside?null:pos,currentArea:view.activeExpansionArea??"surface",portrait,residents:residentInteractions().map(r=>({...r,...r.point,hall:r.inside})),objective:trackedExpansion()?.next?{...trackedExpansion().next,chapter:trackedExpansion().id}:null}):renderVillageChapter({kind,id,state:s,portrait,trackedQuestId:prefs.villageTrackedQuest,itemArt,position:pos});
+    const chapter=kind==="map"?renderVillageMap(s,{...mapPresentation,selectedDistrict:id,portrait,snapshot:mapSnapshot,snapshotError:mapSnapshotError,showResidents:mapShowResidents}):renderVillageChapter({kind,id,state:s,portrait,trackedQuestId:prefs.villageTrackedQuest,itemArt,position:pos});
     if(chapter)({title,tag,html}=chapter);
     if(kind==="journal"){const followed=trackedExpansion();html=expansionJournalMarkup(expansionRecords(),followed?.id??null,{portrait})+html;}
     if(kind==="materials"||kind==="stall"){const gems=state().village.expansion?.gems??{};html+=`<section class="vgx-journal"><header class="vgx-section-head">${expansionIcon('gemcraft',36)}<div><small>Discoveries from below</small><h3>Your rare gems</h3><p>Story crystals are kept separately and cannot be sold.</p></div></header><div class="vgx-gems">${Expansion.EXPANSION_GEMS.map(g=>`<article>${expansionIcon(g.id,44)}<span><b>${escape(g.name)}</b><small>${gems[g.id]??0} in your satchel · ${money(g.price)} each</small></span>${kind==="stall"?`<button class="vgx-action" data-vgx-sell-gem="${escape(g.id)}"${(gems[g.id]??0)>0?"":" disabled"}>Sell one</button>`:""}</article>`).join('')}</div></section>`;}
@@ -286,6 +297,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     on('[data-vg-tour]',()=>tour());on('[data-vg-buy]',b=>{if(M.buyFromStall(s,b.dataset.vgBuy)){changed();drawPanel();}});on('[data-vg-focus]',b=>focus(b.dataset.vgFocus));
     on('[data-vg-page]',b=>showPanel(b.dataset.vgPage));
     on('[data-vg-map-district]',b=>showPanel("map",b.dataset.vgMapDistrict||undefined));
+    on('[data-vg-map-neighbours]',()=>{mapShowResidents=!mapShowResidents;drawPanel(true);});
     on('[data-vg-track]',b=>{prefs.villageTrackedQuest=b.dataset.vgTrack;savePrefs();render();drawPanel();});
     on('[data-vg-decorate]',()=>openDecorate());
     on('[data-vg-upgrade]',b=>{if(M.buyVillageUpgrade(s,b.dataset.vgUpgrade)){changed();notice("Rowan's improvement is ready.");drawPanel();}});
@@ -398,9 +410,8 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     root.querySelectorAll('.vg-dock [data-vg-page]').forEach(b=>b.setAttribute("aria-current",villagePanelSection(page?.kind)===b.dataset.vgPage?"page":"false"));
   }
   function tick(dt){
-    if(!active)return;clock+=dt;reminder.hidden=!farmReminder.tick(dt,{paused:state().paused,blocked:busy()||decorate.active||!!questReceipts.active});wanderers.tick(dt,view.camera,{paused:state().paused,hidden:!!view.inside||!!view.activeExpansionArea||view.director.active||decorate.active});render();if(!actor)makeActor();if(!actor)return;
+    if(!active)return;clock+=dt;questReceipts.tick({blocked:busy()||decorate.active});reminder.hidden=!farmReminder.tick(dt,{paused:state().paused,blocked:busy()||decorate.active||!!questReceipts.active});wanderers.tick(dt,view.camera,{paused:state().paused,hidden:!!view.inside||!!view.activeExpansionArea||view.director.active||decorate.active});render();if(!actor)makeActor();if(!actor)return;
     const paused=!!state().paused;if(paused!==wasPaused){if(paused&&gather)cancelGather();else releaseInput();wasPaused=paused;}
-    questReceipts.tick({blocked:busy()||decorate.active});
     const cameraOwns=!!view.dialogueCamera?.active;
     // A new hold during the return is still a camera gesture. Require neutral
     // at the exact hand-back, not just when the conversation first opened.

@@ -98,10 +98,13 @@ function harness(t, s = farm(), narration, extra = {}) {
   Object.defineProperty(view,"expansionTargets",{configurable:true,get:()=>["rowan","elowen"].map(id=>({type:"village-folk",id,...view.folk.spotOf(id)}))});
   view.dialogueCamera={begin(player,neighbour){cameraCalls.dialogue.push({kind:"begin",player:{...player},neighbour:{...neighbour}});},end(options){cameraCalls.dialogue.push({kind:"end",options});}};
   const scene = { villageView: view, place: null, player: { state: () => ({ ...owner }), setEnabled(on, who = owner.who) { owner.enabled = on; owner.who = who; } }, enter(kind) { this.place = { kind }; }, leavePlace() { touring = false; this.place = null; }, villageCharacter() { const actor = new THREE.Group(), frame = new THREE.Group(); actor.add(new THREE.Group()); actor.userData = { idle: [frame], walk: [frame], shown: frame, show() {}, dispose() { actor.userData.disposed = true; } }; actor.userData.playerAnimate=pose=>{actor.userData.lastPose=pose;actor.userData.poseCount=(actor.userData.poseCount??0)+1;}; actors.push(actor); return actor; } };
+  // Supply the scene's image/projection port so pad tests use the real map UI.
+  // The capture helper and browser checks verify the rendered world itself.
+  scene.captureVillageMap=()=>({url:"data:image/png;base64,headless-world-map",width:1200,height:900,projectPoint:({x,z})=>({x:(x+200)*1.8,y:(320-z)*1.8,visible:true})});
   let returnPrompt;
   const game = createVillageGame({ state: () => s, scene, narration, prefs: extra.prefs??{}, savePrefs: extra.savePrefs??(()=>{}), save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), onGatherSound:e=>{gatherSounds.push(e);extra.onGatherSound?.(e);}, closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: extra.portrait??(() => null), itemArt: () => "", controlsView: headlessControls, decorateView: () => ({ active: false, close() {}, dispose() {}, tick() {}, pick() {}, back() {}, open() { return false; } }),
     returnPromptView(options){const element=doc.createElement("section");element.id="village-return-prompt";element.hidden=true;element.innerHTML='<button class="village-return-confirm" data-pad-default>Return</button><button class="village-return-cancel">Stay</button>';doc.body.append(element);let active=false;returnPrompt={open(){if(active)return false;active=true;element.hidden=false;element.querySelector("button").focus();return true;},close(){active=false;element.hidden=true;},confirm(){if(!active)return;this.close();options.onConfirm();},cancel(){if(!active)return;this.close();options.onCancel();},setInput(){},destroy(){this.close();element.remove();},get active(){return active;},element};element.querySelector(".village-return-confirm").onclick=()=>returnPrompt.confirm();element.querySelector(".village-return-cancel").onclick=()=>returnPrompt.cancel();return returnPrompt;},
-    questReceiptView(){const seen=new Set(),add=(key,value,list)=>{if(!seen.has(key)){seen.add(key);list.push(value);}};return{notify(event){add(`quest:${event.quest}`,event,receipts);},notifyChapter(event){add(`chapter:${event.id}`,event,chapterReceipts);},notifyMessage(event){add(`message:${event.id}`,event,messageReceipts);},tick(options){receiptTicks.push(options);},clear(){},destroy(){},get active(){return !!extra.receiptActive;}};},
+    questReceiptView(){const seen=new Set(),add=(key,value,list)=>{if(!seen.has(key)){seen.add(key);list.push(value);}};return{notify(event){add(`quest:${event.quest}`,event,receipts);},notifyChapter(event){add(`chapter:${event.id}`,event,chapterReceipts);},notifyMessage(event){add(`message:${event.id}`,event,messageReceipts);},tick(options){receiptTicks.push(options);extra.onReceiptTick?.(options);},clear(){},destroy(){},get active(){return !!extra.receiptActive;}};},
     conversationView(options) { callback = options; return { open(options) { conversation = options; }, close() { if (conversation) { conversation = null; options.onClose(); } }, get active() { return !!conversation; }, dispose() { this.close(); } }; } });
   const h = { game, state: s, doc, scene, view, cameraCalls, owner, actors, saves, notices, gatherSounds, receipts, chapterReceipts, messageReceipts, receiptTicks, returnPrompt, listeners, pad, get conversation() { return conversation; }, get menuCloses() { return menuCloses; }, get leaves() { return leaves; }, complete() { callback.onContinue({ finished: true }); }, choose(index = 0, meta) { return callback.onChoice(index, meta); }, $(selector) { return doc.body.querySelector(selector); }, click(selector) { const el = doc.body.querySelector(selector); assert.ok(el, selector); assert.equal(el.disabled, false, selector + " enabled"); el.click(); }, key(type, key, target = doc.body) { for (const fn of listeners.get(type) ?? []) fn({ key, target, preventDefault() {}, stopImmediatePropagation() {}, repeat: false }); }, press(button) { pad.buttons[button].pressed = true; game.tick(.1); pad.buttons[button].pressed = false; game.tick(.1); } };
   h.choices = () => conversation?.choices ?? conversation?.lines?.find(line => Array.isArray(line?.choices))?.choices ?? [];
@@ -344,6 +347,28 @@ test("Map destinations hold their view until movement or camera centre resumes f
   showMap(); h.game.close(); h.game.open(); assert.equal(h.game.status.surveying, false, "a new visit starts at the carriage");
 });
 
+test("the world map captures on opening, freezes its pins and resolves resident clicks live", t => {
+  const h=harness(t);let captures=0;const snapshot={url:"data:image/png;base64,world-map-fixture",width:1200,height:800,projectPoint:({x,z})=>({x:x+200,y:400-z,visible:true})};
+  h.scene.captureVillageMap=()=>{captures++;return snapshot;};h.game.open();h.game.back();assert.equal(captures,0,"entering the village does not capture a map");
+  h.game.showPanel("map");assert.equal(captures,1);assert.match(h.$("#vg-panel-body").innerHTML,/world-map-fixture/);h.click('[data-vg-map-neighbours]');assert.equal(captures,1,"showing neighbours only changes the overlay");
+  const opened=h.$("#vg-panel-body").innerHTML;h.view.folk.spotOf=id=>id==="rowan"?{x:130,z:11}:{x:89,z:9.8};h.view.folk.talkSpot=id=>id==="rowan"?{x:130,z:9.2}:{x:89,z:8};h.game.tick(1);
+  assert.equal(captures,1);assert.equal(h.$("#vg-panel-body").innerHTML,opened,"moving residents do not reparse the captured image during panel refresh");
+  h.click('[data-vg-map-resident="rowan"]');assert.equal(h.conversation,null);assert.equal(h.game.status.waypoint.x,130,"a cached resident pin follows the current live approach");
+  h.game.showPanel("map");assert.equal(captures,2);h.game.showPanel("map","copse");h.game.tick(1);assert.equal(captures,2,"area selection and panel ticks reuse the opening's capture");
+  h.game.showPanel("people");h.game.back();assert.equal(h.game.status.panel,"map");assert.equal(captures,3,"returning to Map takes a fresh cached-scene snapshot");
+});
+
+test("a failed map capture leaves play and routes usable and retries on reopening", t => {
+  const h=harness(t);h.game.open();h.game.back();let captures=0;h.scene.captureVillageMap=()=>{captures++;throw Error("capture fixture");};const before=JSON.stringify(M.saveData(h.state)),at=h.game.status.position;
+  assert.doesNotThrow(()=>h.game.showPanel("map"));assert.equal(captures,1);assert.match(h.$("#vg-panel-body").innerHTML,/Map picture unavailable/);assert.equal(JSON.stringify(M.saveData(h.state)),before);assert.deepEqual(h.game.status.position,at);
+  h.game.showPanel("map","green");assert.equal(captures,1);h.click('[data-vg-focus="arrival"]');assert.equal(h.game.status.panel,null,"walking destinations remain available when the picture fails");
+  h.game.showPanel("map");assert.equal(captures,2);h.game.close();assert.equal(h.game.active,false);
+});
+
+test("a scene without a map capture hook keeps the map's destination controls available", t => {
+  const h=harness(t);delete h.scene.captureVillageMap;h.game.open();h.game.back();assert.doesNotThrow(()=>h.game.showPanel("map"));assert.match(h.$("#vg-panel-body").innerHTML,/Preparing the village view/);h.click('[data-vg-focus="arrival"]');assert.equal(h.game.status.panel,null);
+});
+
 test("tour narration can replay and mute without completing the tour; leaving cancels it", t => {
   const listeners = new Set(), voice = { enabled: true, playing: false, current: null,
     emit() { for (const fn of listeners) fn(); }, subscribe(fn) { listeners.add(fn); fn(); return () => listeners.delete(fn); },
@@ -496,6 +521,12 @@ test("farm unlocks and friendship feedback share the presenter without granting 
   assert.deepEqual(h.messageReceipts.at(-1),{id:"recipe:new-stew",title:"A new recipe for your kitchen",important:true});
   h.game.onEvent({type:"friend-level",who:"mabel",level:2});assert.equal(h.messageReceipts.at(-1).important,undefined);assert.match(h.messageReceipts.at(-1).title,/Mabel/);
   assert.equal(JSON.stringify(M.saveData(h.state)),before,"notification routing only presents already-awarded changes");
+});
+
+test("a receipt becoming visible this frame keeps the farm reminder waiting", t => {
+  const options={receiptActive:false,onReceiptTick(){options.receiptActive=true;}},h=harness(t,farm(),null,options);h.game.open();h.game.back();h.game.tick(600);
+  const reminder=h.$("#village-game").children.find(el=>el.className==="vg-farm-reminder");assert.equal(reminder.hidden,true,"the receipt tick runs before deciding the reminder's visibility");
+  options.onReceiptTick=null;options.receiptActive=false;h.game.tick(.1);assert.equal(reminder.hidden,false,"the deferred reminder resumes after the receipt");
 });
 
 function expansionFarm(){
