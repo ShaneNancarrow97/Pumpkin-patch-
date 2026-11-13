@@ -1,0 +1,183 @@
+{
+  "name": "Pumpkin Patch \u2014 Mothlight WebGPU",
+  "source_commit": "e99cd6e84d409e318392db2019d407487abba4ee",
+  "runtime_source_commit": "b1915b64c111b4085a91997e7a35208bb3565813",
+  "source_branch": "contractor/village-webgpu",
+  "save_version": 20,
+  "html": {
+    "bytes": 61710319,
+    "sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849"
+  },
+  "independent_rebuild": {
+    "byte_identical": true,
+    "bytes": 61710319,
+    "sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849"
+  },
+  "validation": {
+    "full_tests_passed": 1483,
+    "full_tests_failed": 0,
+    "gpu_checks": 20,
+    "webgl_checks": 11,
+    "compatibility_checks": 54,
+    "gpu_fixture_sha256": "8c4f22501f3217f4d466c57b95ca0988a8d10f7c92275719177c27fc533790be",
+    "webgl_fixture_sha256": "8c4f22501f3217f4d466c57b95ca0988a8d10f7c92275719177c27fc533790be",
+    "scope": "Exact final HTML; normal native game RAF and actual software Dawn WebGPU/WebGL execution. Software GPU and injected controller QA do not certify physical Fold, TV, Bluetooth or device FPS."
+  },
+  "renderer_coverage": {
+    "village": "Automatic WebGPU when the secure browser exposes a compatible adapter and the full first frame validates; original WebGL fallback otherwise.",
+    "farm_house_rides": "Existing WebGL presentation",
+    "canonical_village_atlas": "Retained WebGL snapshot with exact source restoration",
+    "ui": "HTML/CSS, outside the 3D post-processing pipeline"
+  },
+  "pbr_atlas": {
+    "maps": 3,
+    "size": [
+      256,
+      256
+    ],
+    "decoded_bytes_with_mips": 1048572,
+    "channels": [
+      "albedo",
+      "height-derived normal",
+      "AO/roughness/metalness"
+    ]
+  },
+  "voxel_ao": {
+    "neighbour_based": true,
+    "bytes_per_eligible_instance": 8,
+    "added_draws": 0
+  },
+  "previews": [
+    {
+      "archive": "preview/webgpu-release/webgpu-world.png",
+      "bytes": 559848,
+      "sha256": "ebaa5d135a4763fbfa18348305acc9038ebcb13b73a7f58dfca718bfd231b5f0",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgpu"
+    },
+    {
+      "archive": "preview/webgpu-release/webgpu-journal.png",
+      "bytes": 539777,
+      "sha256": "e88b3e19249117e08d1c269249e30da5a50c33aefb9ddf399c6e3e4cfa2d991a",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgpu"
+    },
+    {
+      "archive": "preview/webgpu-release/legacy-actual-world-atlas.png",
+      "bytes": 1547813,
+      "sha256": "a9924a25b97cc1cb1e7db593b99ddc81edfdeb024b58a684649e38f04597dbad",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgpu"
+    },
+    {
+      "archive": "preview/webgpu-release/webgpu-portrait.png",
+      "bytes": 239124,
+      "sha256": "8a00d23b05501f857550f853e3a2986640ba3cf64ddcbddc0572a14856c38637",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgpu"
+    },
+    {
+      "archive": "preview/webgpu-release/returned-farm.png",
+      "bytes": 531917,
+      "sha256": "fa73671ac3e06f628d791efa5316debe9b48a1f1f77158828943aa04f0bcd74f",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgpu"
+    },
+    {
+      "archive": "preview/webgpu-release/webgpu-warm-world.png",
+      "bytes": 558898,
+      "sha256": "3403f344ec8ecdacef46e2e9f98b8cb079a00bf9f6bbaa486d0208e0aaf7bf6d",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgpu"
+    },
+    {
+      "archive": "preview/webgl-release/webgl-world.png",
+      "bytes": 559490,
+      "sha256": "db45d5783111d7d3627435329e02ab4eb83f579b90fc62201479561f993274c0",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgl"
+    },
+    {
+      "archive": "preview/webgl-release/webgl-journal.png",
+      "bytes": 539454,
+      "sha256": "d887a599c8d31a6e6a6754979ecb39485b57e89313f9e5ec65f7839c344e6a51",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgl"
+    },
+    {
+      "archive": "preview/webgl-release/legacy-actual-world-atlas.png",
+      "bytes": 1547802,
+      "sha256": "6c635241c77e119080fcf7f21f4caa9653dc9c0fbd17d2b0591567be8933366a",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgl"
+    },
+    {
+      "archive": "preview/webgl-release/webgl-portrait.png",
+      "bytes": 279441,
+      "sha256": "5dff297374924372f1f682d3ca56d2f7c63883383ddc911d0764c2c5296f77f1",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgl"
+    },
+    {
+      "archive": "preview/webgl-release/returned-farm.png",
+      "bytes": 531179,
+      "sha256": "1a775beb277c4aab17a0d321a1c27cc4c310109a95de8114217dd0dc5736202e",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgl"
+    },
+    {
+      "archive": "preview/webgl-release/webgl-warm-world.png",
+      "bytes": 558858,
+      "sha256": "e88de57f54d662b2b16c4384ea6a981b5f22b45a452a88aa2202fdb8eaf05251",
+      "html_sha256": "56dc1a9a99b354c46ac9b8beef379a769669171e34c10cecf9d53a55cf88f849",
+      "scope": "Exact offline HTML served unchanged over loopback; declared progressed fixture, real native RAF/rendering and HTML UI. No held draws, manual game renders or device-FPS claim. Legacy atlas uses the shipped user-facing synchronous capture, then restores source state. Dawn SwiftShader is software WebGPU; this does not certify physical phone/TV/Bluetooth performance.",
+      "expected_backend": "webgl"
+    },
+    {
+      "archive": "preview/fidelity-checkpoint/conversation-desktop.png",
+      "bytes": 844537,
+      "sha256": "fc6a91ea1d964c731c4fefd999646eb31f39ac883f86cf7314d8b2a165f200bf",
+      "html_sha256": "6c71a20fd4858fbd4fb99e4aeae71e79a1350d37c138be7e0818b916208ecc63",
+      "scope": "Earlier verified fidelity checkpoint, not a capture of this new WebGPU HTML. Its HTML/CSS dialogue layout is inherited by this release.",
+      "expected_backend": "legacy-webgl"
+    },
+    {
+      "archive": "preview/fidelity-checkpoint/conversation-tv.png",
+      "bytes": 1562888,
+      "sha256": "4d46dd7140f844ddbd8999e6e1bba8c8397b46fd0e4add7adb1a019d1c30a61d",
+      "html_sha256": "6c71a20fd4858fbd4fb99e4aeae71e79a1350d37c138be7e0818b916208ecc63",
+      "scope": "Earlier verified fidelity checkpoint, not a capture of this new WebGPU HTML. Its HTML/CSS dialogue layout is inherited by this release.",
+      "expected_backend": "legacy-webgl"
+    },
+    {
+      "archive": "preview/fidelity-checkpoint/conversation-phone.png",
+      "bytes": 282967,
+      "sha256": "7f664c2dbb5f8a93d0897cce97bb02b0345df8aeecf517da86de516418338b55",
+      "html_sha256": "6c71a20fd4858fbd4fb99e4aeae71e79a1350d37c138be7e0818b916208ecc63",
+      "scope": "Earlier verified fidelity checkpoint, not a capture of this new WebGPU HTML. Its HTML/CSS dialogue layout is inherited by this release.",
+      "expected_backend": "legacy-webgl"
+    }
+  ],
+  "limitations": [
+    "This phase migrates village presentation; farm, house, rides and map capture retain WebGL.",
+    "WebGPU availability depends on browser, adapter and origin. File/content URLs may use the compatibility renderer.",
+    "The three dialogue previews under fidelity-checkpoint show the earlier exact 6c71a20f HTML, not this new release.",
+    "Save version 20 is retained; export/import through Settings when moving between browser/file origins.",
+    "No APK was rebuilt for this renderer release."
+  ],
+  "zip": {
+    "bytes": 54721408,
+    "sha256": "bb631987b8370104ba5352a8776b43646d6302fc2a4c06bbf55e4febd8730d14"
+  }
+}

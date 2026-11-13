@@ -1,3 +1,17 @@
+# Pumpkin Patch — Mothlight WebGPU
+
+[Download full game ZIP](Pumpkin-Patch-Mothlight-WebGPU.zip?raw=1) · [Standalone HTML](Pumpkin-Patch-Mothlight-WebGPU.html?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/e99cd6e84d409e318392db2019d407487abba4ee/voxel/docs/contractor-patches/village-webgpu/README.md)
+
+The village automatically uses genuine WebGPU where the browser and adapter support it, with a working WebGL fallback. Neighbour-based voxel ambient occlusion, shared albedo/normal/ORM atlases, custom node shaders and HDR post-processing preserve the instanced world. The detailed dusk gateway, plum-and-brass journal and dialogue interface remain HTML/CSS.
+
+The farm, house, rides and canonical village map capture retain WebGL. Save version 20, quests, rewards and economy stay compatible. Export/import in Settings when moving between file/browser origins. Local file/content URLs may use WebGL when WebGPU is unavailable.
+
+1,483 tests pass, along with 20 exact-final-HTML WebGPU checks, 11 WebGL checks and 54 compatibility checks. The source rebuild is byte-identical. The ZIP includes the full index.html, both Claude handovers, exact verification and labelled preview provenance. Software GPU and injected controller checks do not certify physical device performance. The three older fidelity-checkpoint dialogue previews are explicitly labelled; no APK was rebuilt.
+
+[Exact-byte receipt](Pumpkin-Patch-Mothlight-WebGPU-Receipt.json). Source `e99cd6e84d409e318392db2019d407487abba4ee`; compiled runtime `b1915b64c111b4085a91997e7a35208bb3565813` on `contractor/village-webgpu`.
+
+---
+
 # Pumpkin Patch — Mothlight After Dark
 
 [Download full game ZIP](Pumpkin-Patch-Mothlight-After-Dark.zip?raw=1) · [Standalone HTML](Pumpkin-Patch-Mothlight-After-Dark.html?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/bebcb1910a1794db70d7c2c91c67550603119739/voxel/docs/contractor-patches/village-atmosphere/README.md)
