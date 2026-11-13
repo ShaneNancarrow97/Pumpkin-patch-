@@ -44,7 +44,7 @@ test("known point families become one four-vertex instanced draw without mutatin
     assert.deepEqual(Array.from(d.geometry.attributes.pointPosition.array), Array.from(source.geometry.attributes.position.array));
     assert.notEqual(d.geometry.attributes.pointPosition.array, source.geometry.attributes.position.array);
     assert.equal(source.material, originalMaterial); assert.deepEqual(source.geometry.toJSON(), before);
-    assert.equal(d.material.depthWrite, false); assert.equal(d.material.transparent, true); assert.equal(d.material.fog, source.material.fog);
+    assert.equal(d.material.depthWrite, false); assert.equal(d.material.transparent, true); assert.equal(d.material.fog, smoke ? false : source.material.fog);
     assert.equal(d.material.userData.villageNodePoints.rawOutput, smoke);
     if (smoke) assert.equal(bound, source.material.uniforms.tint);
     let sourceDisposals = 0; source.geometry.addEventListener("dispose", () => sourceDisposals++); source.material.addEventListener("dispose", () => sourceDisposals++);

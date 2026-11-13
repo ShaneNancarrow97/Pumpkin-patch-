@@ -33,6 +33,9 @@ export function createVillagePointsDescriptor(source, bindUniform, { renderer } 
   const attenuation = TSL.uniform(original.sizeAttenuation !== false ? 1 : 0);
   const material = new GPU.NodeMaterial();
   for (const key of ["transparent", "depthWrite", "depthTest", "blending", "blendSrc", "blendDst", "blendEquation", "blendSrcAlpha", "blendDstAlpha", "blendEquationAlpha", "premultipliedAlpha", "toneMapped", "fog", "visible", "colorWrite", "depthFunc", "polygonOffset", "polygonOffsetFactor", "polygonOffsetUnits"]) material[key] = original[key];
+  // The smoke's ShaderMaterial defaults fog=true, but its authored fragment
+  // has no fog chunk. Only the vanilla PointsMaterial actually fogs.
+  if (family === "smoke") material.fog = false;
   material.name = `village-${family}-quads`;
   material.vertexNode = TSL.Fn(() => {
     const center = TSL.attribute("pointPosition", "vec3");
