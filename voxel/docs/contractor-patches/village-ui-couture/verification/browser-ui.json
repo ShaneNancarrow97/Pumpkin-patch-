@@ -1,0 +1,1737 @@
+{
+  "date": "2026-11-13T13:51:04.912Z",
+  "html": "/tmp/Pumpkin-Patch-Mothlight-Couture.html",
+  "htmlSha256": "232535a2d4fdb6a3273314b8f152e10a175ae8db1ff7bbdbe81d3d725d2e1290",
+  "bytes": 61789302,
+  "harnessSha256": "9ace3365510d15c06895e12d991fc62fbbc30eaeac3c141f72d6cde884bc4f33",
+  "fixtureSha256": "c92d0cd5e2e59569b76ddfcbc991195cbe8d018232d962bf293980a4bcee417c",
+  "stateVersion": 20,
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageTrackedQuest": "green-research"
+  },
+  "quick": false,
+  "heroOnly": false,
+  "holdDrawsRequested": true,
+  "drawHeld": true,
+  "mapIncluded": true,
+  "scope": "Exact unchanged offline HTML over loopback; declared level20 supplied-inventory fixture, not earned progression. UI-only coverage: first native village-frame verification precedes explicit renderer/composer draw holding; the broad pass omits a separate HUD image. All held screenshots are prefixed ui-only; camera/world pixels during these checks are not normal-render proof. Input, simulation and DOM still use native game RAF; no manual game ticks or UI replacement. The separate native hero report provides world-rendered UI evidence. Map capture, if requested, temporarily restores native draws to create the genuine world snapshot, then holds again before marker selection and its UI-only screenshot. Explicit WebGL fallback isolates the HTML/CSS change from GPU compilation. Viewports and software rendering do not certify physical Bluetooth, Fold or TV performance.",
+  "fixtureNotes": [
+    "Completed introduction/tour and staged restoration entries including Rowan’s stall",
+    "Both original mainline and expansion stories available",
+    "30 of each material, 2 moth lamps and 1 stool supplied for catalogue states; gathering kit owned",
+    "One actual one-tap stall purchase is verified against its canonical quoted price",
+    "Read-only resizing, navigation and Other stories must not grant rewards or consume resources"
+  ],
+  "checks": [
+    {
+      "label": "The tested HTML retains its actual explicit WebGL village fallback",
+      "pass": true,
+      "detail": {
+        "requested": "webgl",
+        "backend": "webgl",
+        "stage": "disabled",
+        "reason": null,
+        "failureStack": null,
+        "frames": 0
+      }
+    },
+    {
+      "label": "All six illustrated village destinations remain reachable",
+      "pass": true,
+      "detail": [
+        {
+          "page": "map",
+          "label": "Map",
+          "art": true
+        },
+        {
+          "page": "people",
+          "label": "People",
+          "art": true
+        },
+        {
+          "page": "journal",
+          "label": "Quests",
+          "art": true
+        },
+        {
+          "page": "materials",
+          "label": "Satchel",
+          "art": true
+        },
+        {
+          "page": "upgrades",
+          "label": "Workshop",
+          "art": true
+        },
+        {
+          "page": "decorate",
+          "label": "Build",
+          "art": true
+        }
+      ]
+    },
+    {
+      "label": "journal opens through its actual dock button",
+      "pass": true
+    },
+    {
+      "label": "Desktop journal has readable targets and a contained drawer",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 820,
+          "y": 82,
+          "right": 1260,
+          "bottom": 698,
+          "width": 440,
+          "height": 616
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "journal Escape restores focus to the visible dock opener",
+      "pass": true
+    },
+    {
+      "label": "people opens through its actual dock button",
+      "pass": true
+    },
+    {
+      "label": "Desktop people has readable targets and a contained drawer",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 823.7465209960938,
+          "y": 82,
+          "right": 1263.74658203125,
+          "bottom": 698,
+          "width": 440.00006103515625,
+          "height": 616
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "people Escape restores focus to the visible dock opener",
+      "pass": true
+    },
+    {
+      "label": "materials opens through its actual dock button",
+      "pass": true
+    },
+    {
+      "label": "Desktop materials has readable targets and a contained drawer",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 826.1421508789062,
+          "y": 82,
+          "right": 1266.14208984375,
+          "bottom": 698,
+          "width": 439.99993896484375,
+          "height": 616
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "materials Escape restores focus to the visible dock opener",
+      "pass": true
+    },
+    {
+      "label": "upgrades opens through its actual dock button",
+      "pass": true
+    },
+    {
+      "label": "Desktop upgrades has readable targets and a contained drawer",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 820,
+          "y": 82,
+          "right": 1260,
+          "bottom": 698,
+          "width": 440,
+          "height": 616
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "upgrades Escape restores focus to the visible dock opener",
+      "pass": true
+    },
+    {
+      "label": "Build retains owned collections, category choices, stall access and undo",
+      "pass": true
+    },
+    {
+      "label": "Desktop Build catalogue has readable controls",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 876,
+          "y": 80,
+          "right": 1266,
+          "bottom": 780,
+          "width": 390,
+          "height": 700
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vd-list",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "The actual stall retains readable prices and product cards",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 829,
+          "y": 82,
+          "right": 1269,
+          "bottom": 698,
+          "width": 440,
+          "height": 616
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Every canonical stall item still has its purchase control",
+      "pass": true,
+      "detail": [
+        "village:lantern-post",
+        "village:stool",
+        "village:bird-bath",
+        "village:witch-cauldron",
+        "village:book-cart",
+        "village:bat-hedge"
+      ]
+    },
+    {
+      "label": "960×540 opens the tracked title and primary Show the way fully above the fold",
+      "pass": true,
+      "detail": {
+        "scrollTop": 0,
+        "body": {
+          "left": 501,
+          "top": 127,
+          "right": 939,
+          "bottom": 439,
+          "width": 438,
+          "height": 312
+        },
+        "title": {
+          "left": 583,
+          "top": 223.09375,
+          "right": 896,
+          "bottom": 245.484375,
+          "width": 313,
+          "height": 22.390625
+        },
+        "action": {
+          "left": 526,
+          "top": 345.78125,
+          "right": 904,
+          "bottom": 389.78125,
+          "width": 378,
+          "height": 44
+        },
+        "titleText": "The Ink Beneath the Roots",
+        "actionText": "Show the way",
+        "titleVisible": true,
+        "actionVisible": true,
+        "targetValid": true
+      }
+    },
+    {
+      "label": "960×540 journal retains visible 44px controls and 12px text",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 500,
+          "y": 70,
+          "right": 940,
+          "bottom": 440,
+          "width": 440,
+          "height": 370
+        },
+        "viewport": [
+          960,
+          540
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Journal retains Active, Discover and Completed tabs",
+      "pass": true,
+      "detail": [
+        {
+          "id": "active",
+          "selected": "true",
+          "control": "vf-page-active"
+        },
+        {
+          "id": "discover",
+          "selected": "false",
+          "control": "vf-page-discover"
+        },
+        {
+          "id": "completed",
+          "selected": "false",
+          "control": "vf-page-completed"
+        }
+      ]
+    },
+    {
+      "label": "discover tab selects exactly its own page",
+      "pass": true
+    },
+    {
+      "label": "completed tab selects exactly its own page",
+      "pass": true
+    },
+    {
+      "label": "active tab selects exactly its own page",
+      "pass": true
+    },
+    {
+      "label": "The followed story exposes its original rewards and details on demand",
+      "pass": true
+    },
+    {
+      "label": "Satchel links to Workshop with a real back trail",
+      "pass": true
+    },
+    {
+      "label": "Back returns to the same Satchel page",
+      "pass": true
+    },
+    {
+      "label": "Opening and reading menus does not spend or grant resources",
+      "pass": true
+    },
+    {
+      "label": "One actual tap buys exactly one item at its canonical price",
+      "pass": true,
+      "detail": {
+        "item": "village:lantern-post",
+        "price": 85,
+        "before": {
+          "coins": 30000,
+          "bought": 0
+        },
+        "after": {
+          "coins": 29915,
+          "bought": 1
+        }
+      }
+    },
+    {
+      "label": "390×844 journal retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 10,
+          "y": 88,
+          "right": 380,
+          "bottom": 670.359375,
+          "width": 370,
+          "height": 582.359375
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "390×844 people retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 10,
+          "y": 88,
+          "right": 380,
+          "bottom": 750,
+          "width": 370,
+          "height": 662
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "390×844 materials retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 10,
+          "y": 93.46710205078125,
+          "right": 380,
+          "bottom": 755.4671020507812,
+          "width": 370,
+          "height": 662
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "390×844 upgrades retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 10,
+          "y": 88,
+          "right": 380,
+          "bottom": 750,
+          "width": 370,
+          "height": 662
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "390×844 Build catalogue remains contained",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 10,
+          "y": 394.75,
+          "right": 380,
+          "bottom": 834,
+          "width": 370,
+          "height": 439.25
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vd-list",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "844×390 journal retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 394.19171142578125,
+          "y": 10,
+          "right": 834.1917114257812,
+          "bottom": 380,
+          "width": 440,
+          "height": 370
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "844×390 people retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 395.4197998046875,
+          "y": 10,
+          "right": 835.4197998046875,
+          "bottom": 380,
+          "width": 440,
+          "height": 370
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "844×390 materials retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 394.5604553222656,
+          "y": 10,
+          "right": 834.5604248046875,
+          "bottom": 380,
+          "width": 439.9999694824219,
+          "height": 370
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "844×390 upgrades retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 394.19134521484375,
+          "y": 10,
+          "right": 834.1913452148438,
+          "bottom": 380,
+          "width": 440,
+          "height": 370
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "844×390 Build catalogue remains contained",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 475,
+          "y": 10,
+          "right": 830,
+          "bottom": 380,
+          "width": 355,
+          "height": 370
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vd-list",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "720×900 journal retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 288,
+          "y": 84,
+          "right": 708,
+          "bottom": 800,
+          "width": 420,
+          "height": 716
+        },
+        "viewport": [
+          720,
+          900
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "720×900 people retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 294.15447998046875,
+          "y": 84,
+          "right": 714.1544799804688,
+          "bottom": 800,
+          "width": 420,
+          "height": 716
+        },
+        "viewport": [
+          720,
+          900
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "720×900 materials retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 288,
+          "y": 84,
+          "right": 708,
+          "bottom": 800,
+          "width": 420,
+          "height": 716
+        },
+        "viewport": [
+          720,
+          900
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "720×900 upgrades retains readable controls without horizontal overflow",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 288,
+          "y": 84,
+          "right": 708,
+          "bottom": 800,
+          "width": 420,
+          "height": 716
+        },
+        "viewport": [
+          720,
+          900
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "720×900 Build catalogue remains contained",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 316,
+          "y": 80,
+          "right": 706,
+          "bottom": 880,
+          "width": 390,
+          "height": 800
+        },
+        "viewport": [
+          720,
+          900
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vd-list",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Nearby People opens Rowan with canonical chat, story and activity choices",
+      "pass": true,
+      "detail": [
+        {
+          "id": "chat",
+          "disabled": false
+        },
+        {
+          "id": "quest:deliver:rowan-1",
+          "disabled": false
+        },
+        {
+          "id": "stories",
+          "disabled": false
+        },
+        {
+          "id": "farm-gifts",
+          "disabled": false
+        },
+        {
+          "id": "companion",
+          "disabled": false
+        },
+        {
+          "id": "gift",
+          "disabled": false
+        },
+        {
+          "id": "about",
+          "disabled": false
+        },
+        {
+          "id": "leave",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "label": "1280×800 dialogue remains readable",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 28,
+          "y": 214,
+          "right": 1252,
+          "bottom": 774,
+          "width": 1224,
+          "height": 560
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "village-dialogue-body",
+            "x": 0
+          },
+          {
+            "class": "village-dialogue-replies",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "1280×800 keeps every reply and its availability",
+      "pass": true
+    },
+    {
+      "label": "390×844 dialogue remains readable",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 10,
+          "y": 222.40625,
+          "right": 380,
+          "bottom": 832,
+          "width": 370,
+          "height": 609.59375
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "village-dialogue-body",
+            "x": 0
+          },
+          {
+            "class": "village-dialogue-replies",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "390×844 keeps every reply and its availability",
+      "pass": true
+    },
+    {
+      "label": "844×390 dialogue remains readable",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 16,
+          "y": 68,
+          "right": 828,
+          "bottom": 378,
+          "width": 812,
+          "height": 310
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "village-dialogue-body",
+            "x": 0
+          },
+          {
+            "class": "village-dialogue-replies",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "844×390 keeps every reply and its availability",
+      "pass": true
+    },
+    {
+      "label": "720×900 dialogue remains readable",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 28,
+          "y": 314,
+          "right": 692,
+          "bottom": 874,
+          "width": 664,
+          "height": 560
+        },
+        "viewport": [
+          720,
+          900
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "village-dialogue-body",
+            "x": 0
+          },
+          {
+            "class": "village-dialogue-replies",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "720×900 keeps every reply and its availability",
+      "pass": true
+    },
+    {
+      "label": "Other stories opens Rowan’s real journal without granting or consuming anything",
+      "pass": true
+    },
+    {
+      "label": "More about Rowan retains friendship, gifts and his original resident actions",
+      "pass": true
+    },
+    {
+      "label": "Resident details remain readable and usable",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 829,
+          "y": 82,
+          "right": 1269,
+          "bottom": 698,
+          "width": 440,
+          "height": 616
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Rowan’s discovery action opens his actual Workshop improvements",
+      "pass": true
+    },
+    {
+      "label": "Rowan’s Workshop destination retains readable upgrade cards",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 826.13916015625,
+          "y": 82,
+          "right": 1266.13916015625,
+          "bottom": 698,
+          "width": 440,
+          "height": 616
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "The actual nearby Opal greeting offers its discovery action",
+      "pass": true
+    },
+    {
+      "label": "Opal’s discovery page contains her real cold-store blueprint and transaction",
+      "pass": true
+    },
+    {
+      "label": "Reading Opal’s blueprint neither buys the upgrade nor consumes resources",
+      "pass": true
+    },
+    {
+      "label": "Opal’s actual village discovery shares the readable drawer",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 829,
+          "y": 82,
+          "right": 1269,
+          "bottom": 698,
+          "width": 440,
+          "height": 616
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Map snapshot is acquired while the original native renderer is restored",
+      "pass": true,
+      "detail": {
+        "beforeSnapshot": {
+          "frame": 215,
+          "native": true
+        },
+        "snapshot": {
+          "frame": 319,
+          "native": true,
+          "png": true,
+          "bytes": 2072202,
+          "width": "1280",
+          "height": "800"
+        }
+      }
+    },
+    {
+      "label": "Map retains its actual-world snapshot and selectable requirements markers",
+      "pass": true
+    },
+    {
+      "label": "A map marker opens the canonical district requirements",
+      "pass": true
+    },
+    {
+      "label": "Map drawer, marker controls and requirements remain legible",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 410,
+          "y": 82,
+          "right": 1260,
+          "bottom": 698,
+          "width": 850,
+          "height": 616
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "scale": 1,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "TV tests use the actual Settings TV mode",
+      "pass": true
+    },
+    {
+      "label": "Real TV mode keeps journal legible at its effective zoom",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 1136.140625,
+          "y": 126.03125,
+          "right": 1889.265625,
+          "bottom": 923.21875,
+          "width": 753.125,
+          "height": 797.1875
+        },
+        "viewport": [
+          1920,
+          1080
+        ],
+        "scale": 1.5369999408721924,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Real TV mode keeps people legible at its effective zoom",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 1136.140625,
+          "y": 126.03125,
+          "right": 1889.265625,
+          "bottom": 923.21875,
+          "width": 753.125,
+          "height": 797.1875
+        },
+        "viewport": [
+          1920,
+          1080
+        ],
+        "scale": 1.5369999408721924,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Real TV mode keeps materials legible at its effective zoom",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 1136.140625,
+          "y": 126.03125,
+          "right": 1889.265625,
+          "bottom": 923.21875,
+          "width": 753.125,
+          "height": 797.1875
+        },
+        "viewport": [
+          1920,
+          1080
+        ],
+        "scale": 1.5369999408721924,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Real TV mode keeps upgrades legible at its effective zoom",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 1145.5672607421875,
+          "y": 126.03125,
+          "right": 1898.6922607421875,
+          "bottom": 923.21875,
+          "width": 753.125,
+          "height": 797.1875
+        },
+        "viewport": [
+          1920,
+          1080
+        ],
+        "scale": 1.5369999408721924,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "vg-panel-body",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "DualSense Options opens the real navigation hub",
+      "pass": true
+    },
+    {
+      "label": "D-pad chooses and Cross activates the real menu destination",
+      "pass": true,
+      "detail": {
+        "destination": "journal"
+      }
+    },
+    {
+      "label": "Circle returns through the same panel trail",
+      "pass": true
+    },
+    {
+      "label": "Options dismisses the hub and restores focus outside hidden content",
+      "pass": true
+    },
+    {
+      "label": "R1 moves the real journal tab and leaves one page visible",
+      "pass": true
+    },
+    {
+      "label": "Real TV dialogue preserves readable reply targets",
+      "pass": true,
+      "detail": {
+        "pass": true,
+        "box": {
+          "x": 43.03125,
+          "y": 179.328125,
+          "right": 1876.953125,
+          "bottom": 1040.046875,
+          "width": 1833.921875,
+          "height": 860.71875
+        },
+        "viewport": [
+          1920,
+          1080
+        ],
+        "scale": 1.5369999408721924,
+        "tiny": [],
+        "small": [],
+        "overflow": [
+          {
+            "class": "village-dialogue-body",
+            "x": 0
+          },
+          {
+            "class": "village-dialogue-replies",
+            "x": 0
+          }
+        ],
+        "documentOverflow": 0
+      }
+    },
+    {
+      "label": "Circle cancels travel without leaving the village",
+      "pass": true
+    },
+    {
+      "label": "Cross confirms travel and returns cleanly to the farm",
+      "pass": true
+    },
+    {
+      "label": "Reduced-motion mode removes nonessential panel animation",
+      "pass": true,
+      "detail": {
+        "reduced": true,
+        "animation": "none",
+        "animationDuration": "0s",
+        "transitionDuration": "0s"
+      }
+    },
+    {
+      "label": "No page, console, failed or external requests occur in the offline build",
+      "pass": true,
+      "detail": {
+        "page": 0,
+        "console": 0,
+        "failed": 0,
+        "external": 0
+      }
+    }
+  ],
+  "screenshots": [
+    "ui-only-desktop-journal.png",
+    "ui-only-desktop-people.png",
+    "ui-only-desktop-materials.png",
+    "ui-only-desktop-upgrades.png",
+    "ui-only-desktop-build.png",
+    "ui-only-desktop-stall.png",
+    "ui-only-short-desktop-journal.png",
+    "ui-only-phone-journal.png",
+    "ui-only-phone-materials.png",
+    "ui-only-phone-build.png",
+    "ui-only-landscape-journal.png",
+    "ui-only-fold-journal.png",
+    "ui-only-desktop-dialogue.png",
+    "ui-only-phone-dialogue.png",
+    "ui-only-landscape-dialogue.png",
+    "ui-only-desktop-resident.png",
+    "ui-only-desktop-rowan-workshop.png",
+    "ui-only-desktop-opal-discoveries.png",
+    "ui-only-desktop-map.png",
+    "ui-only-tv-journal.png",
+    "ui-only-tv-upgrades.png",
+    "ui-only-tv-dialogue.png"
+  ],
+  "captures": [
+    {
+      "file": "ui-only-desktop-journal.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-desktop-people.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-desktop-materials.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-desktop-upgrades.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-desktop-build.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-desktop-stall.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-short-desktop-journal.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-phone-journal.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-phone-materials.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-phone-build.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-landscape-journal.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-fold-journal.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-desktop-dialogue.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-phone-dialogue.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-landscape-dialogue.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-desktop-resident.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-desktop-rowan-workshop.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-desktop-opal-discoveries.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-desktop-map.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-tv-journal.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-tv-upgrades.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    },
+    {
+      "file": "ui-only-tv-dialogue.png",
+      "drawHeld": true,
+      "scope": "HTML/CSS and input only; world draws held"
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "failedRequests": [],
+  "observations": [
+    {
+      "stage": "launching Chromium",
+      "elapsedMs": 0,
+      "at": "2026-11-13T13:51:04.955Z"
+    },
+    {
+      "stage": "loading offline HTML",
+      "elapsedMs": 822,
+      "at": "2026-11-13T13:51:05.777Z"
+    },
+    {
+      "stage": "DOM loaded; waiting for game ready",
+      "elapsedMs": 20641,
+      "at": "2026-11-13T13:51:25.596Z"
+    },
+    {
+      "stage": "game ready; building the actual village",
+      "elapsedMs": 21214,
+      "at": "2026-11-13T13:51:26.169Z"
+    },
+    {
+      "stage": "village constructed; waiting for native frames",
+      "elapsedMs": 39422,
+      "at": "2026-11-13T13:51:44.377Z"
+    },
+    {
+      "stage": "village native frames ready",
+      "elapsedMs": 62221,
+      "at": "2026-11-13T13:52:07.176Z"
+    },
+    {
+      "stage": "holding world draws for explicitly UI-only checks",
+      "elapsedMs": 62228,
+      "at": "2026-11-13T13:52:07.183Z"
+    },
+    {
+      "stage": "navigation",
+      "elapsedMs": 62230,
+      "at": "2026-11-13T13:52:07.185Z"
+    },
+    {
+      "stage": "navigation finished",
+      "elapsedMs": 83025,
+      "at": "2026-11-13T13:52:27.980Z"
+    },
+    {
+      "stage": "short desktop journal",
+      "elapsedMs": 83026,
+      "at": "2026-11-13T13:52:27.981Z"
+    },
+    {
+      "stage": "short desktop journal finished",
+      "elapsedMs": 84045,
+      "at": "2026-11-13T13:52:29.000Z"
+    },
+    {
+      "stage": "journal and read-only parity",
+      "elapsedMs": 84046,
+      "at": "2026-11-13T13:52:29.001Z"
+    },
+    {
+      "stage": "journal and read-only parity finished",
+      "elapsedMs": 86892,
+      "at": "2026-11-13T13:52:31.847Z"
+    },
+    {
+      "stage": "one-tap purchase",
+      "elapsedMs": 86893,
+      "at": "2026-11-13T13:52:31.848Z"
+    },
+    {
+      "stage": "one-tap purchase finished",
+      "elapsedMs": 88480,
+      "at": "2026-11-13T13:52:33.435Z"
+    },
+    {
+      "stage": "responsive drawers",
+      "elapsedMs": 88482,
+      "at": "2026-11-13T13:52:33.437Z"
+    },
+    {
+      "stage": "responsive drawers finished",
+      "elapsedMs": 97810,
+      "at": "2026-11-13T13:52:42.765Z"
+    },
+    {
+      "stage": "dialogue",
+      "elapsedMs": 97810,
+      "at": "2026-11-13T13:52:42.765Z"
+    },
+    {
+      "stage": "dialogue finished",
+      "elapsedMs": 107221,
+      "at": "2026-11-13T13:52:52.176Z"
+    },
+    {
+      "stage": "map",
+      "elapsedMs": 107223,
+      "at": "2026-11-13T13:52:52.178Z"
+    },
+    {
+      "stage": "restored native world draws",
+      "elapsedMs": 107231,
+      "at": "2026-11-13T13:52:52.186Z"
+    },
+    {
+      "stage": "holding world draws for explicitly UI-only checks",
+      "elapsedMs": 156782,
+      "at": "2026-11-13T13:53:41.737Z"
+    },
+    {
+      "stage": "map snapshot provenance",
+      "beforeSnapshot": {
+        "frame": 215,
+        "native": true
+      },
+      "snapshot": {
+        "frame": 319,
+        "native": true,
+        "png": true,
+        "bytes": 2072202,
+        "width": "1280",
+        "height": "800"
+      },
+      "uiScreenshotDrawHeld": true,
+      "scope": "Actual map-button snapshot acquired with original WebGL render function restored. Marker selection and the following UI-only capture may hold world draws; the inlined map picture itself is the genuine snapshot."
+    },
+    {
+      "stage": "map finished",
+      "elapsedMs": 184236,
+      "at": "2026-11-13T13:54:09.191Z"
+    },
+    {
+      "stage": "TV and controller",
+      "elapsedMs": 184237,
+      "at": "2026-11-13T13:54:09.192Z"
+    },
+    {
+      "stage": "TV and controller finished",
+      "elapsedMs": 206035,
+      "at": "2026-11-13T13:54:30.990Z"
+    },
+    {
+      "stage": "reduced motion",
+      "elapsedMs": 206037,
+      "at": "2026-11-13T13:54:30.992Z"
+    },
+    {
+      "stage": "reduced motion finished",
+      "elapsedMs": 206979,
+      "at": "2026-11-13T13:54:31.934Z"
+    }
+  ],
+  "browserVersion": "154.0.8037.57",
+  "launchArgs": [
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader",
+    "--ignore-gpu-blocklist"
+  ],
+  "renderer": {
+    "requested": "webgl",
+    "backend": "webgl",
+    "stage": "disabled",
+    "reason": null,
+    "failureStack": null,
+    "frames": 0
+  },
+  "passed": true
+}
