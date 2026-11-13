@@ -465,8 +465,41 @@ export function createVillageView(canvas, state, hooks = {}) {
     if (++shadowTick % 2 === 0 || tour) sun.shadow.needsUpdate = true;
     if (sky) sky.position.copy(camera.position);
   }
+  // Surface visibility and moonlight are borrowed only for a single off-screen map photograph.
+  function withMapSurface(fn) {
+    const visibility = [], opacity = new Map();
+    scene.traverse(o => { visibility.push([o, o.visible]); });
+    const background = scene.background, fog = scene.fog, exposure = scene.userData.exposure;
+    const lights = [hemi, sun, ...pool].map(l => ({ light: l, intensity: l.intensity, colour: l.color.clone(), ground: l.groundColor?.clone(), position: l.position.clone() }));
+    const target = sun.target.position.clone();
+    try {
+      root.visible = true; root.traverse(o => { if (o.isGroup) o.visible = true; });
+      for (const p of patches) p.chunk.visible = true;
+      const upper = root.getObjectByName('moth-tree-upper');
+      upper?.traverse(o => { o.visible = true; for (const m of [].concat(o.material ?? [])) { if (!opacity.has(m)) opacity.set(m, m.opacity); m.opacity = 1; } });
+      for (const g of [sky, horizon, mist, bats?.group, life?.group, grass?.group, atmosphere?.group, blight.group, shopMarkers.group, lampGlow?.group, selection, companion?.root, ...handTools.values()]) if (g) g.visible = false;
+      for (const person of folk.people.values()) person.root.visible = false;
+      for (const entry of insides.values()) { entry.group.visible = false; if (entry.host) entry.host.root.visible = false; }
+      for (const d of decor.values()) d.group.visible = true;
+      for (const p of pages.values()) p.group.visible = false;
+      // Resources use the current play camera's bounded batch; omit that moving batch from this structural image.
+      resources.group.visible = false;
+      scene.background = new THREE.Color(0x100c1c); scene.fog = null; scene.userData.exposure = 1.2;
+      hemi.intensity = NIGHT.hemi; hemi.color.set(NIGHT.sky); hemi.groundColor.set(NIGHT.ground); sun.intensity = NIGHT.sun;
+      sun.target.position.set((REALM.x0 + REALM.x1) * K / 2, 0, -(REALM.z0 + REALM.z1) * K / 2); sun.position.copy(sun.target.position).addScaledVector(SUN, 100);
+      for (const l of pool) { l.intensity = 0; l.visible = true; }
+      scene.updateMatrixWorld(true);
+      return expansionWorld.withMapSurface(fn);
+    } finally {
+      for (const [o, visible] of visibility) o.visible = visible;
+      for (const [m, value] of opacity) m.opacity = value;
+      scene.background = background; scene.fog = fog; scene.userData.exposure = exposure;
+      for (const s of lights) { s.light.intensity = s.intensity; s.light.color.copy(s.colour); if (s.ground) s.light.groundColor.copy(s.ground); s.light.position.copy(s.position); }
+      sun.target.position.copy(target); scene.updateMatrixWorld(true);
+    }
+  }
   return {
-    scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool, dialogueCamera,
+    scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool, dialogueCamera, withMapSurface,
     enterExpansionArea(id){dialogueFocus.end({immediate:true});if(inside)goOutside();const entry=expansionWorld.enter(id);if(!entry)return false;setLampNear(0);root.visible=false;for(const p of folk.people.values())p.root.visible=false;resources.group.visible=false;shopMarkers.hide();for(const h of pickables)if(!['expansion-activity','expansion-portal'].includes(h.userData.type))h.visible=false;if(sky)sky.visible=false;sun.intensity=.12;hemi.intensity=1.3;hemi.color.set(0xc6c3dd);hemi.groundColor.set(0x817185);scene.background.set(0x100d19);scene.fog.color.set(0x100d19);scene.userData.exposure=1.2;following=false;return entry;},
     leaveExpansionArea(){const entry=expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity = NIGHT.sun;hemi.intensity = NIGHT.hemi;hemi.color.set(NIGHT.sky);hemi.groundColor.set(NIGHT.ground);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;following=false;lampAs(LAMP);pool.forEach(l=>{l.visible=true;l.color.set(0xff9a40);});sync();return entry;},
     get activeExpansionArea(){return expansionWorld.active;},get expansionTargets(){return [...expansionWorld.targets,...(!expansionWorld.active?[...folk.people].filter(([,p])=>p.root.visible).map(([id])=>({type:'village-folk',id,...folk.spotOf(id)})):[])];},expansionGroundAt:(x,z)=>expansionWorld.ground(x,z),moveExpansionWalker:(from,dx,dz)=>expansionWorld.active?expansionWorld.move(from,dx,dz):moveVillageWalker(state,from,dx,dz),setExpansionCompanion,

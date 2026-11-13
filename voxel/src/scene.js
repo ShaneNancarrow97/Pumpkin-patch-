@@ -42,6 +42,7 @@ import { cameraLayout, controlledRoomFraming, farmVerticalLimits } from "./camer
 import { createHouseEstateView } from "./house-estate-view.js";
 import { createGardenPlay } from "./garden-play.js";
 import { createVillageView } from "./village-view.js";
+import { captureVillageMap } from "./village-map-snapshot.js";
 import { letterPage } from "./village-models.js";
 import { createCarvingView } from "./carving-view.js";
 import { HOLLOW_PROPERTY } from "./content/hollow-house.js";
@@ -1125,6 +1126,7 @@ export function createScene(canvas, state, hooks) {
       frame();
     },
     get villageView() { return villageView; },
+    captureVillageMap() { return captureVillageMap(renderer, villageView, state); },
     villageVisitor(kind) { return sheets ? spriteVisitor(sheets,kind) : null; },
     villageCharacter(who) { if(!sheets)return null;const actor=spriteActor(sheets,who,activeLook(state,who),state.wardrobe.equipped[who]);actor.userData.kind="person";return actor; },
     refreshRoom() { places.refresh(); },
