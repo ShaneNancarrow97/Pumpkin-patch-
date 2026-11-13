@@ -55,6 +55,7 @@ test("low forecourt islands leave every road and both forage cross-paths uncover
   assert.equal(VILLAGE_FORECOURT_BUDGET.lights, 0);
   for (const b of boxes) {
     assert.ok(b[1] + b[4] < VILLAGE_FORECOURT_BUDGET.maxHeight, "short groundcover keeps the approach and camera open");
+    assert.ok(Math.max(b[3], b[5]) <= .3, "fine leaf, flower and pebble details cannot become broad lawn-covering tiles");
     assert.ok(!b[7], "the forecourt adds no emissive surfaces or new lamp candidates");
     for (const road of ROADS) for (let i = 1; i < road.points.length; i++) {
       const [ax, az] = road.points[i - 1].map(v => v / K), [bx, bz] = road.points[i].map(v => v / K), half = road.width / K / 2;

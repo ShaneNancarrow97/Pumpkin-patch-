@@ -129,22 +129,20 @@ export function villageForecourt(f) {
     return [x + Math.cos(a) * rx * d, z + Math.sin(a) * rz * d];
   };
   for (const [x, z, rx, rz] of clusters) {
-    const pads = [];
-    // Overlapping low, uneven moss cushions leave broken earth edges, with no
-    // rectangular bed outline. Each is small and confined to this flat meadow.
+    // Fine clover leaves sit within the continuous textured lawn. Groundcover
+    // adds small upward faces rather than broad, flat patches over the grass.
     for (let i = 0; i < 13; i++) {
       const [px, pz] = point(x, z, rx, rz, i, 13);
-      const w = .7 + r() * .45, h = .035 + r() * .025, d = .45 + r() * .4;
-      pads.push({ x: px, z: pz, w, d, top: .008 + h });
+      const w = .1 + r() * .11, h = .05 + r() * .05, d = .08 + r() * .08;
       f.block(px, .008, pz, w, h, d, vary(moss[i % 4], .06, r));
     }
     for (let i = 0; i < 8; i++) {
       const [px, pz] = point(x, z, rx, rz, i, 8), green = moss[(i + 1) % 4];
       // Small sage/thyme rosettes spread sideways, below a walking boot.
-      f.block(px, .06, pz, .4, .05, .13, green);
-      f.block(px, .08, pz, .13, .05, .38, shade(green, 1.1));
-      f.block(px + .12, .12, pz + .09, .19, .045, .16, shade(green, 1.17));
-      f.block(px - .1, .11, pz - .07, .18, .04, .14, shade(green, .9));
+      f.block(px, .035, pz, .25, .05, .08, green);
+      f.block(px, .055, pz, .08, .06, .24, shade(green, 1.1));
+      f.block(px + .075, .09, pz + .055, .13, .045, .1, shade(green, 1.17));
+      f.block(px - .065, .08, pz - .04, .12, .04, .09, shade(green, .9));
     }
     for (let i = 0; i < 4; i++) {
       const [px, pz] = point(x, z, rx, rz, i, 4, .65);
@@ -152,8 +150,7 @@ export function villageForecourt(f) {
     }
     for (let i = 0; i < 9; i++) {
       const [px, pz] = point(x, z, rx, rz, i, 9, .9);
-      const top = pads.reduce((height, p) => Math.abs(px - p.x) < p.w / 2 && Math.abs(pz - p.z) < p.d / 2 ? Math.max(height, p.top) : height, 0);
-      f.block(px, top + .008, pz, i % 2 ? .18 : .08, .018, i % 2 ? .08 : .18, [0xb37b3d, 0xd3a250, 0x89523b][i % 3]);
+      f.block(px, .008, pz, i % 2 ? .18 : .08, .018, i % 2 ? .08 : .18, [0xb37b3d, 0xd3a250, 0x89523b][i % 3]);
     }
     for (let i = 0; i < 2; i++) {
       const [px, pz] = point(x, z, rx, rz, i, 2, .55);

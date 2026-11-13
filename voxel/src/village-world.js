@@ -113,12 +113,13 @@ const pick = (list, r) => list[(r() * list.length) | 0];
 // The ground's colours, painted once: lawns, the districts' own soils and plants, the ravine and the marsh's pools.
 // Its shapes are given on the old grid, and painted where they now stand: a patch moves with its piece, a long one
 // (a lawn, a road, the woods' floor) stretches across the gaps, so the new ground is painted too.
-function groundTexture() {
+export function buildVillageGroundTexture() {
   const g = GROUND_SPREAD, W = (g.x1 - g.x0) * g.scale, H = (g.z1 - g.z0) * g.scale, canvas = document.createElement("canvas"); canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext("2d"), r = seeded(73);
   const P = (x, z) => [(x - g.x0) * g.scale, (g.z1 - z) * g.scale];
   const placed = (x0, z0, x1, z1) => spreadRect({ x0: Math.min(x0, x1), z0: Math.min(z0, z1), x1: Math.max(x0, x1), z1: Math.max(z0, z1) });
-  const rect = (x0, z0, x1, z1, colour) => { const q = placed(x0, z0, x1, z1), [a, b] = P(q.x0, q.z1), [c, d] = P(q.x1, q.z0); ctx.fillStyle = colour; ctx.fillRect(a, b, c - a, d - b); };
+  const nativeRect = (x0, z0, x1, z1, colour) => { const [a, b] = P(x0, z1), [c, d] = P(x1, z0); ctx.fillStyle = colour; ctx.fillRect(a, b, c - a, d - b); };
+  const rect = (x0, z0, x1, z1, colour) => { const q = placed(x0, z0, x1, z1); nativeRect(q.x0, q.z0, q.x1, q.z1, colour); };
   const speckle = (x0, z0, x1, z1, colours, n, size = 1.2) => { const q = placed(x0, z0, x1, z1), grow = (q.x1 - q.x0) * (q.z1 - q.z0) / Math.max(1e-6, Math.abs((x1 - x0) * (z1 - z0))); n = Math.round(n * grow); for (let i = 0; i < n; i++) { const [px, py] = P(q.x0 + r() * (q.x1 - q.x0), q.z0 + r() * (q.z1 - q.z0)); ctx.fillStyle = colours[(r() * colours.length) | 0]; ctx.fillRect(px, py, size * g.scale * (.4 + r() * .8), size * g.scale * (.3 + r() * .5)); } };
   const blob = (x, z, rx, rz, colour) => { const [px, py] = P(...spread(x, z)); ctx.fillStyle = colour; ctx.beginPath(); ctx.ellipse(px, py, rx * g.scale, rz * g.scale, 0, 0, Math.PI * 2); ctx.fill(); };
   // The woods round the realm.
@@ -147,8 +148,12 @@ function groundTexture() {
   { const [a, b, c, d] = at("marsh", 38, 76, 122, 98); rect(a, b, c, d, "#355e52"); speckle(a, b, c, d, ["#3c6a5c", "#2f5448", "#4a7458"], 9000, .6); }
   // Bare earth under where the paving meets the grass, so a gap never shows green.
   for (const road of ROADS.filter((x) => x.kind !== "future-spur")) {
-    const h = road.width / 2 + .25;
-    for (let i = 1; i < road.points.length; i++) { const [ax, az] = road.points[i - 1], [bx, bz] = road.points[i]; rect(Math.min(ax, bx) - h, Math.min(az, bz) - h, Math.max(ax, bx) + h, Math.max(az, bz) + h, "#6d6150"); }
+    // The arrival's padded width crosses two spread seams: spreading that
+    // rectangle turns its 6.5-unit soil strip into 22.5 units of bare forecourt.
+    // Its paving already uses this native centreline, with the same fixed width.
+    const nativeArrival = road.id === "arrival" ? ROADS_SPREAD.find(r => r.id === road.id) : null;
+    const route = nativeArrival ?? road, paint = nativeArrival ? nativeRect : rect, h = route.width / 2 + .25;
+    for (let i = 1; i < route.points.length; i++) { const [ax, az] = route.points[i - 1], [bx, bz] = route.points[i]; paint(Math.min(ax, bx) - h, Math.min(az, bz) - h, Math.max(ax, bx) + h, Math.max(az, bz) + h, "#6d6150"); }
   }
   // The clearings use earth and gravel trails rather than another grid of granite setts.
   for(const road of ROADS.filter(r=>r.kind==="forage"))for(let i=1;i<road.points.length;i++){
@@ -245,7 +250,7 @@ export function buildGroundGeometry() {
 }
 export function buildGround() {
   const geo = buildGroundGeometry();
-  const mesh = new THREE.Mesh(geo, applyGrassDetail(new THREE.MeshStandardMaterial({ map: groundTexture(), roughness: 1, metalness: 0 })));
+  const mesh = new THREE.Mesh(geo, applyGrassDetail(new THREE.MeshStandardMaterial({ map: buildVillageGroundTexture(), roughness: 1, metalness: 0 })));
   mesh.receiveShadow = true; mesh.name = "village-ground"; return native(mesh);
 }
 
