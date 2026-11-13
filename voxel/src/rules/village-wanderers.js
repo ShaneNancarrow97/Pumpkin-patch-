@@ -1,7 +1,8 @@
-// A few transient passers-by keep to the Green's broad paving. They never
+// A few transient passers-by keep to the Green and its garden walks. They never
 // become customers, quest givers, colliders or members of a saved ledger.
 import { PLAN_SCALE as K, ROADS } from "../content/village.js";
 import { VISITOR_ROSTER } from "../content/visitors.js";
+import { villageNeighbourhoodClusters, villageNeighbourhoodPaths } from "../content/village-neighbourhoods.js";
 import { villageCellFree, villageWalkObstacles } from "./village-navigation.js";
 import { residentSegmentFree, RESIDENT_WALK_RADIUS } from "./village-resident-life.js";
 
@@ -13,6 +14,10 @@ export const VILLAGE_STROLL_LANES = Object.freeze([
   Object.freeze({ id: "lantern-avenue", road: "arrival", stops: Object.freeze([point(57.35, -12.5), point(58.6, -5), point(57.7, 1), point(58.55, -7.4)]) }),
   Object.freeze({ id: "green-avenue", road: "arrival", stops: Object.freeze([point(58.55, 4.2), point(57.35, 11.8), point(58.4, 17.8), point(58.65, 9.1)]) }),
   Object.freeze({ id: "north-crossroad", road: "copse", stops: Object.freeze([point(36, 33.7), point(51, 34.35), point(65, 33.65), point(82, 34.2)]) }),
+  // These lanes follow the new walks straight through the orchard and common;
+  // stopping short of their bends keeps every possible leg on the paving.
+  Object.freeze({ id: "cider-orchard", neighbourhood: "orchard-walk", stops: Object.freeze([point(-15, 51), point(-4, 51), point(7, 51), point(18, 51)]) }),
+  Object.freeze({ id: "lantern-common", neighbourhood: "lantern-walk", stops: Object.freeze([point(83, 58), point(95, 58), point(107, 58), point(119, 58)]) }),
 ]);
 const normalKinds = VISITOR_ROSTER.flatMap((kind, index) => kind.vip ? [] : [index]);
 
@@ -24,14 +29,53 @@ function next(routine) {
 }
 const visitSeed = state => Math.imul((Math.floor(Number(state?.village?.visits) || 0) >>> 0) + 1, 0x9e3779b1) ^ 0x57414c4b;
 
+function shuffle(lanes, random) {
+  for (let i = lanes.length - 1; i > 0; i--) { const j = Math.floor(next(random) * (i + 1)); [lanes[i], lanes[j]] = [lanes[j], lanes[i]]; }
+  return lanes;
+}
+
+// Saved furniture may divide a walk even when its individual posts stay clear.
+// Pick a mutually reachable group, so all later random goals remain safe.
+function clearStops(state, lane, obstacles) {
+  const stops = lane.stops.filter(p => villageCellFree(state, p.x, p.z, RESIDENT_WALK_RADIUS, obstacles));
+  const links = stops.map(() => []);
+  const linked = (i, j) => links[i][j] ?? (links[i][j] = links[j][i] = residentSegmentFree(state, stops[i], stops[j], obstacles));
+  // One swept segment proves a straight lane's shorter legs too. This avoids
+  // repeatedly sampling the same long garden walk when the visit opens.
+  if (stops.length >= 2) {
+    let first = 0, last = 1, longest = 0;
+    for (let i = 0; i < stops.length; i++) for (let j = i + 1; j < stops.length; j++) {
+      const length = Math.hypot(stops[j].x - stops[i].x, stops[j].z - stops[i].z);
+      if (length > longest) { first = i; last = j; longest = length; }
+    }
+    const a = stops[first], b = stops[last];
+    if (stops.every(p => Math.abs((p.x - a.x) * (b.z - a.z) - (p.z - a.z) * (b.x - a.x)) < 1e-8) && linked(first, last)) return stops;
+  }
+  const groups = stops.map((_, first) => {
+    const group = [first];
+    for (let i = 0; i < stops.length; i++) if (i !== first && group.every(j => linked(i, j))) group.push(i);
+    return group.map(i => stops[i]);
+  });
+  return groups.sort((a, b) => b.length - a.length)[0] ?? [];
+}
+
 // Count, painted identities, lane and opening post are stable within a visit.
 export function villageWandererPlans(state) {
   const random = { seed: visitSeed(state) }, kinds = normalKinds.slice(), count = 2 + (next(random) > .5 ? 1 : 0);
-  const lanes = VILLAGE_STROLL_LANES.slice();
-  for (let i = lanes.length - 1; i > 0; i--) { const j = Math.floor(next(random) * (i + 1)); [lanes[i], lanes[j]] = [lanes[j], lanes[i]]; }
+  const active = new Set(villageNeighbourhoodClusters(state).map(c => c.id)), obstacles = villageWalkObstacles(state);
+  const available = VILLAGE_STROLL_LANES.filter(lane => !lane.neighbourhood || active.has(lane.neighbourhood));
+  const gardens = shuffle(available.filter(lane => lane.neighbourhood), random), green = shuffle(available.filter(lane => !lane.neighbourhood), random);
+  let garden = null;
+  for (const lane of gardens) {
+    const stops = clearStops(state, lane, obstacles);
+    if (stops.length >= 2) { garden = { ...lane, stops }; break; }
+  }
+  // Share the same small crowd with the new spaces, retaining the original
+  // Green/arrival walks. If the player covers a path, its visitors stay away.
+  const lanes = garden ? [garden, ...green, ...gardens.filter(lane => lane.id !== garden.id)] : green;
   const plans = [];
   for (const lane of lanes) {
-    const stops = lane.stops.filter(p => villageCellFree(state, p.x, p.z, RESIDENT_WALK_RADIUS));
+    const stops = lane === garden ? garden.stops : clearStops(state, lane, obstacles);
     if (stops.length < 2) continue;
     const kind = kinds.splice(Math.floor(next(random) * kinds.length), 1)[0];
     plans.push({ id: "village-stroll-" + plans.length, lane: lane.id, kind, stops,
@@ -74,9 +118,11 @@ export function advanceVillageWanderer(state, plan, routine, dt, { paused = fals
   return routine;
 }
 
-// Used by checks and tooling: every authored post lies on a broad main road.
-export function villageStrollOnPaving(point) {
-  return ROADS.filter(road => road.kind === "main").some(road => road.points.slice(1).some(([bx, bz], i) => {
+// Roads are world units already; the native garden paths use the spread design
+// grid and are converted once here. The optional state follows hidden scenery.
+export function villageStrollOnPaving(point, state = null) {
+  const paths = villageNeighbourhoodPaths(state).map(path => ({ width: path.width * K, points: path.points.map(([x, z]) => [x * K, z * K]) }));
+  return [...ROADS.filter(road => road.kind === "main"), ...paths].some(road => road.points.slice(1).some(([bx, bz], i) => {
     const [ax, az] = road.points[i], dx = bx - ax, dz = bz - az;
     const t = Math.max(0, Math.min(1, ((point.x - ax) * dx + (point.z - az) * dz) / (dx * dx + dz * dz || 1)));
     return Math.hypot(point.x - ax - dx * t, point.z - az - dz * t) <= road.width / 2 - RESIDENT_WALK_RADIUS;

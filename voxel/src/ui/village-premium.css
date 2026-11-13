@@ -1,14 +1,13 @@
-/* Mothlight's finish: every control over the village is one family of dark plum glass with a gilt hairline,
-   lit along its top edge and lifted off the scene by a soft shadow. Colours, borders and type only: sizes and
-   places stay as the layers before this set them. Loads last of the village's styles. */
-#village-game{--vg-gilt:#e9c88c;--vg-gilt-soft:#e9c88c5c;--vg-gilt-faint:#e9c88c26;--vg-glass:linear-gradient(165deg,#3a2a48f2,#231a30f5 46%,#17111ff7);--vg-lift:0 10px 30px #06030a66,0 2px 6px #06030a40;--vg-rim:inset 0 1px #fff3d51f,inset 0 0 0 1px #ffffff08}
+/* Mothlight's shared plum surfaces and clear cream type. Loads last of the
+   village's styles; layout and touch sizes belong to the earlier layers. */
+#village-game{--vg-gilt:var(--village-gold);--vg-gilt-soft:var(--village-line);--vg-gilt-faint:#e9c88c26;--vg-glass:linear-gradient(165deg,var(--village-surface),var(--village-surface-deep));--vg-lift:var(--village-shadow-small);--vg-rim:inset 0 1px #fff3d51f,inset 0 0 0 1px #ffffff08;--vg-paper:var(--village-surface);--vg-paper-deep:var(--village-surface-deep);--vg-cream:var(--village-ink);--vg-secondary:var(--village-muted);--vg-amber:var(--village-amber)}
 #village-game :is(.vg-heading>div,.vg-heading>button,#vg-coins,.vg-dock,.vg-farm-rate,.vg-objective,.vg-gather,.vg-tour){border:1px solid var(--vg-gilt-soft);background:var(--vg-glass);box-shadow:var(--vg-lift),var(--vg-rim)}
 /* The place's name sits on a plaque: a small spaced caption over a gilt title, a diamond at either end. */
 #village-game .vg-heading>div{position:relative;padding:7px 34px 8px;border-radius:18px;border-color:#e9c88c85;background:linear-gradient(180deg,#3d2c4bf5,#1d1528f7)}
 #village-game .vg-heading>div::before,#village-game .vg-heading>div::after{content:"";position:absolute;top:50%;width:7px;height:7px;margin-top:-4px;transform:rotate(45deg);background:linear-gradient(135deg,#ffe6b4,#c9964c);box-shadow:0 0 8px #f0c27a66}
 #village-game .vg-heading>div::before{left:13px}#village-game .vg-heading>div::after{right:13px}
 #village-game .vg-heading small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#cdb6d6}
-#village-game .vg-heading b{font:500 20px/1.15 var(--display);letter-spacing:.005em;background:linear-gradient(180deg,#fff1cf,#e7bf7d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 #0000004d)}
+#village-game .vg-heading b{font:500 20px/1.3 var(--village-display);letter-spacing:.005em;color:var(--village-ink)}
 #village-game .vg-heading>button{border-radius:15px;color:#f8ead3}
 #village-game .vg-heading>button:hover{border-color:var(--vg-gilt);background:linear-gradient(165deg,#4a3659f2,#2a1f38f5)}
 #village-game #vg-coins{color:#ffe2a8;font-weight:600;font-variant-numeric:tabular-nums}
@@ -21,17 +20,20 @@
 #village-game .vg-nav-button[aria-current=page]::after{content:"";position:absolute;left:28%;right:28%;bottom:3px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#ffdc9c,transparent)}
 /* The round controls: gilt rings on glass, the action button a lit lantern. */
 #village-game :is(.vg-look,#vg-sprint,.vg-jog){border:1px solid var(--vg-gilt-soft);background:radial-gradient(circle at 35% 25%,#46345a,#1c1528);box-shadow:var(--vg-lift),var(--vg-rim)}
-#village-game .vg-interact{border:2px solid #fff0c8cc;background:radial-gradient(circle at 38% 24%,#fff0c4,#f0bf73 52%,#c98d45);box-shadow:0 0 0 4px #f3c98026,0 8px 26px #08030d6b,inset 0 2px #fffbe6cc,inset 0 -6px 12px #a8662a55}
+#village-game .vg-interact{border:2px solid #fff0c8cc;background:var(--village-amber);box-shadow:0 0 0 4px #f3c98026,0 8px 26px #08030d6b,inset 0 2px #fffbe6cc}
+#village-game .vg-interact:hover:not(:disabled){background:var(--village-amber-hover)}
 #vg-stick{border-color:#f4d5a57a;background:radial-gradient(circle,#2a1f3880,#17101f59);box-shadow:inset 0 0 26px #e6bc762b,0 0 0 1px #00000026}
 #vg-stick i{background:radial-gradient(circle at 38% 28%,#ffe6b0,#d9a55a);border-color:#fff0cc;box-shadow:0 3px 10px #0000004d}
 /* Pages: the same glass, a gilt rule under the heading. */
-#vg-panel{border-color:#e9c88c66;background:linear-gradient(160deg,#35263ffa,#1f1729fb 48%,#16101dfb);box-shadow:0 18px 60px #05020a80,var(--vg-rim)}
+#village-game #vg-panel{border-color:var(--village-line);background:var(--vg-glass);box-shadow:var(--village-shadow-panel),var(--vg-rim)}
 #vg-panel>header{border-bottom:0;background:linear-gradient(180deg,#ffffff0a,transparent);position:relative}
 #vg-panel>header::after{content:"";position:absolute;left:17px;right:17px;bottom:0;height:1px;background:linear-gradient(90deg,#e9c88c99,#e9c88c26 70%,transparent)}
-#vg-panel h2{background:linear-gradient(180deg,#fff1cf,#e7bf7d);-webkit-background-clip:text;background-clip:text;color:transparent}
+#vg-panel h2{font-family:var(--village-display);line-height:1.3;color:var(--village-ink);background:none;overflow-wrap:anywhere}
 #vg-panel-tag{letter-spacing:.08em;text-transform:uppercase}
 #village-game :is(#vg-panel-close,#vg-panel-back){border-color:var(--vg-gilt-faint);background:#ffffff0a}
 #village-game :is(#vg-panel-close,#vg-panel-back):hover{border-color:var(--vg-gilt);background:#ffffff14}
 #village-game .vg-farm-rate b{color:#ffe2a8}
 #village-game .vg-objective{border-color:#e9c88c70}
+#vg-panel-tag{color:var(--village-muted)}
+#village-game .vg-legend-action.is-ready,#village-game .vg-action-button.is-ready{--ps5-ink:var(--village-action-ink);--ps5-accent:var(--village-action-ink);--ps5-frame:var(--village-action-ink)}
 @media(prefers-reduced-motion:reduce){#village-game .vg-nav-button{transition:none}#village-game .vg-nav-button:active{transform:none}}

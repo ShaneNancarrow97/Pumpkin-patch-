@@ -103,6 +103,49 @@ test("opening quests from a receipt is optional and runs once without completing
   const quiet = createVillageQuestReceipt({ now: () => 0 }); quiet.notify(example("invitation")); quiet.tick(); assert.equal(quiet.element.querySelector(".village-receipt-journal").hidden, true); quiet.destroy();
 });
 
+test("chapter, quest and village news share one queue with full visible reading time", t => {
+  const h = harness(t); let clock = 0;
+  const receipt = createVillageQuestReceipt({ now: () => clock });
+  const chapter = { id: "green-research", title: "The first ward", change: "A lantern burns over the square.", rewards: [{ kind: "coins", amount: 250 }], next: { title: "A new door", open: false, reason: "Reach farm level 6" } };
+  const snapshot = JSON.stringify(chapter);
+  assert.equal(receipt.notifyChapter(chapter), true);
+  assert.equal(receipt.notify(example("invitation")), true);
+  assert.equal(receipt.notifyMessage({ id: "rowan:friend:2", title: "Rowan · A familiar face" }), true);
+  assert.equal(receipt.notifyChapter(chapter), false);
+  assert.equal(JSON.stringify(chapter), snapshot, "receipt presentation never settles rewards or mutates rule data");
+  chapter.next.title = "Changed afterwards"; chapter.title = "Changed afterwards";
+  receipt.tick({ blocked: true }); clock = 30000; receipt.tick({ blocked: true });
+  assert.equal(receipt.active, false);
+  receipt.tick(); assert.equal(receipt.element.dataset.kind, "chapter");
+  assert.equal(receipt.element.querySelector(".village-receipt-title").textContent, "The first ward");
+  assert.equal(receipt.element.querySelector(".village-receipt-next").querySelector("b").textContent, "A new door");
+  assert.match(receipt.element.querySelector(".village-receipt-chapter-rewards").markup, /250/);
+  for (let i = 0; i < 8; i++) { clock += 1000; receipt.tick(); }
+  assert.equal(receipt.element.classList.contains("is-leaving"), false, "chapter keeps the lead build's nine seconds");
+  receipt.tick({ blocked: true }); clock += 20000; receipt.tick({ blocked: true }); receipt.tick();
+  assert.equal(receipt.element.classList.contains("is-leaving"), false);
+  clock += 1000; receipt.tick(); clock += 250; receipt.tick(); receipt.tick();
+  assert.equal(receipt.element.dataset.kind, "quest");
+  receipt.element.querySelector(".village-receipt-dismiss").click(); receipt.tick();
+  assert.equal(receipt.element.dataset.kind, "message");
+  assert.equal(receipt.element.querySelector(".village-receipt-note").hidden, true);
+  assert.equal(receipt.element.querySelector(".village-receipt-chapter-rewards").hidden, true);
+  assert.equal(receipt.element.querySelector(".village-receipt-next").hidden, true);
+  receipt.destroy();
+});
+
+test("routine village news cannot crowd a completion receipt out of its bounded queue", t => {
+  harness(t);
+  const receipt = createVillageQuestReceipt({ now: () => 0 });
+  for (let i = 0; i < 4; i++) assert.equal(receipt.notifyMessage({ id: `news:${i}`, title: `News ${i}` }), true);
+  assert.equal(receipt.notifyChapter({ id: "green-research", title: "A ward restored" }), true);
+  assert.equal(receipt.notify(example("invitation")), true);
+  receipt.tick(); assert.equal(receipt.element.dataset.kind, "chapter");
+  receipt.element.querySelector(".village-receipt-dismiss").click(); receipt.tick();
+  assert.equal(receipt.element.dataset.kind, "quest");
+  receipt.destroy();
+});
+
 test("Return focuses the real confirm action and a confirmation runs once before releasing the modal", t => {
   const h = harness(t), opener = h.doc.createElement("button"); h.doc.body.append(opener); opener.focus(); let confirmations = 0, cancellations = 0;
   const prompt = createVillageReturnPrompt({ onConfirm() { confirmations++; assert.equal(prompt.active, false); }, onCancel() { cancellations++; } });

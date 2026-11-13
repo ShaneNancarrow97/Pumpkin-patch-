@@ -453,7 +453,10 @@ function decorRoom(v, id, x, z, rotation, ignore, restoring = false) {
   const b = villageDecorBounds(id, x, z, rotation); if (!b) return false;
   if (b.x0 < GREEN.x0 || b.x1 > GREEN.x1 || b.z0 < GREEN.z0 || b.z1 > GREEN.z1 || overlap(b, MOOR_INSET)) return false;
   if ([...roadBoxes, ...fixtureBoxes, ...homeBoxes, ...(restoring ? [] : nodeBoxes)].some((o) => overlap(b, o))) return false;
-  if (!villageDecorGroundClear(id, x, z, rotation)) return false;
+  // A saved piece takes precedence over newly dressed scenery, including the
+  // first piece restored and an undo snapshot that differs from the live save.
+  const sceneryState = { village: { decor: { placed: restoring ? [...v.decor.placed, { id, x, z, rotation }] : v.decor.placed } } };
+  if (!villageDecorGroundClear(id, x, z, rotation, sceneryState)) return false;
   return !v.decor.placed.some((p) => p.instance !== ignore && overlap(b, villageDecorBounds(p.id, p.x, p.z, p.rotation), .05));
 }
 export const villageDecorFits = (s, id, x, z, rotation = 0, ignore = null) => decorRoom(s.village, id, x, z, rotation, ignore);
