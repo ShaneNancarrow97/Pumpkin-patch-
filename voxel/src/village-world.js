@@ -9,6 +9,7 @@
 import * as THREE from "three";
 import { applyGrassDetail } from "./grass-detail.js";
 import { villageTreeVisibility } from "./village-visibility.js";
+import { villageEntrance, entranceAutumnTree } from "./village-entrance-dressing.js";
 import { createVillageWaterClock, createVillageWaterMaterial } from "./village-water-material.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { Voxels, ChunkedVoxels, seeded, vary } from "./voxels.js";
@@ -488,10 +489,11 @@ export function buildGreen() {
   stoneWall(Rn, sx(0, .6), .6, 53.3, .6, 1.2, r); stoneWall(Rn, 62.7, .6, sx(120, .6), .6, 1.2, r);
   stoneWall(Rn, sx(.6, 0), -22, sx(.6, 0), 30, 1.2, r); stoneWall(Rn, sx(119.4, 0), -22, sx(119.4, 0), 30, 1.2, r);
   stoneWall(Rn, sx(0, -22), -22, 53.3, -22, .85, r); stoneWall(Rn, 62.7, -22, sx(120, -22), -22, .85, r);
-  mothPillar(fr(54, .6, "south"), 0, 0, r); mothPillar(fr(62, .6, "south"), 0, 0, r);
-  // Overlapping segments read as an arch from the low decorating camera, not floating cubes.
-  for (let i = 0; i <= 32; i++) { const a = i / 32 * Math.PI; R.block(58 + Math.cos(a) * 4, 4.4 + Math.sin(a) * 1.1, .6, .5, .22, .3, C.iron); }
-  R.block(58, 5.2, .6, 1.2, .5, .1, C.plum); R.block(58, 5.3, .65, .8, .3, .05, C.gold);
+  // Retain the old pillars' random draws before replacing their geometry, so
+  // every later tree, garden and festival detail keeps its authored seed.
+  const consumePillar = { block() {} };
+  mothPillar(consumePillar, 0, 0, r); mothPillar(consumePillar, 0, 0, r);
+  villageEntrance(Rn);
   { const c = FIXTURES.carriage; carriage(fr(c.x - 2.2, c.z, c.facing), 0, 0, r); }
   // The open arrival meadow gives the camera room to breathe and leads to four forage clearings.
   for (const [x,z] of [[53,-18],[63,-18],[53,-7],[63,-7]]) { lampPost(R,x,z,3,r,1); jackOLantern(fr(x,z),0,0,.4,r,0,.7); }
@@ -520,8 +522,8 @@ export function buildGreen() {
   // The square's lamps hang theirs away from the tree; the avenue's over the road, clear of the gardens.
   LAMPS.slice(0, 8).forEach((l, i) => mothBanner(R, l.x + (l.x < F.x ? -.55 : .55) * (i < 4 ? 1 : -1), 2.22, l.z - .05, .78));
   parkBench(fr(55.6, 11.5, "east"), 0, 0, r); parkBench(fr(60.4, 11.5, "west"), 0, 0, r);
-  // Crimson maples flanking the gate, the old oak, and a feature maple in Rowan's garden.
-  canopyTree(R, 52.2, 4, 1.25, r, C.crimson, { cell: .3 }); canopyTree(R, 63.8, 4, 1.25, r, C.crimson, { cell: .3 });
+  // Copper/gold maples flanking the gate, the old oak, and a feature maple in Rowan's garden.
+  entranceAutumnTree(R, 52.2, 4, 1.25, r); entranceAutumnTree(R, 63.8, 4, 1.25, r);
   for (const [x, z] of [[55.3, 3.2], [60.7, 3.2]]) lampPost(R, x, z, 3.2, r, 1);
   flowerBed(R, 48.8, 16.1, 50.3, 16.9, r, [0xf28fb5, 0xf6f0f5, 0x9a6ae0], 6); flowerBed(R, 61.8, 16.1, 65, 16.9, r, [0xf5d04a, 0xf08a3a, 0xf6f0f5], 6);
   canopyTree(R, FIXTURES.oak.x, FIXTURES.oak.z, 1.75, r, [0x4c8c3c, 0x5b9f45, 0x6db250, 0xd9a441], { cell: .34 });
