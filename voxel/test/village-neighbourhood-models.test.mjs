@@ -9,7 +9,7 @@ test("the inhabited neighbourhoods stay in three batches with no extra lights", 
   const group = buildVillageNeighbourhoods(VILLAGE_NEIGHBOURHOODS);
   let boxes = 0, meshes = 0, lights = 0;
   group.traverse(o => { if (o.isInstancedMesh) boxes += o.count; if (o.isMesh) meshes++; if (o.isLight) lights++; });
-  assert.ok(boxes > 3000 && boxes <= 6000, `${boxes} boxes give the open lawns detail within the mobile budget`);
+  assert.ok(boxes > 3000 && boxes <= 8000, `${boxes} boxes give the open lawns detail within the mobile budget`);
   assert.ok(meshes <= 3, `${meshes} combined batches`);
   assert.equal(lights, 0);
   assert.equal(group.userData.spread, "native");

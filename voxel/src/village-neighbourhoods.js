@@ -66,11 +66,17 @@ function herbPot(f, x, y, z, r, k = 1) {
 // A garden bed has individual stone edging, mixed herbs and moonflowers, and a
 // tiny written plant marker. The main cross between the beds stays open.
 function plantedBed(f, x, z, w, d, r, moon, produce) {
-  f.block(x, .035, z, w - .12, .12, d - .12, 0x4a392d);
+  f.block(x, .035, z, w - .12, .12, d - .12, 0x68503b);
   for (const side of [-1, 1]) {
     const nx = Math.ceil(w / .62), nz = Math.ceil(d / .62);
     for (let i = 0; i < nx; i++) f.block(x - w / 2 + (i + .5) * w / nx, 0, z + side * d / 2, w / nx - .035, .22, .23, vary(pick(C.stone, r), .07, r));
     for (let i = 0; i < nz; i++) f.block(x + side * w / 2, 0, z - d / 2 + (i + .5) * d / nz, .23, .22, d / nz - .035, vary(pick(C.stone, r), .07, r));
+  }
+  // A broad carpet of leaves makes the beds read as planted from the map as
+  // well as from the path; the individual stems still rise out of the carpet.
+  if (produce !== "pumpkins") {
+    f.block(x, .155, z, w - .6, .07, d - .6, moon ? 0x617252 : 0x728b5d);
+    for (const side of [-1, 1]) f.block(x, .19, z + side * (d / 2 - .36), w - .7, .1, .25, moon ? 0x879878 : 0x91a875);
   }
   if (produce === "pumpkins") {
     for (let i = 0; i < 3; i++) {
@@ -82,10 +88,10 @@ function plantedBed(f, x, z, w, d, r, moon, produce) {
   const count = produce === "pumpkins" ? 0 : Math.min(24, Math.round(w * d * 2));
   for (let i = 0; i < count; i++) {
     const px = x + (r() - .5) * (w - .6), pz = z + (r() - .5) * (d - .6);
-    if (moon) flower(lift(f, .15), px, pz, pick(MOON, r), r, .9 + r() * .3);
+    if (moon) flower(lift(f, .2), px, pz, pick(MOON, r), r, 1.25 + r() * .3);
     else {
-      const h = .22 + r() * .3, c = pick(HERBS, r);
-      f.block(px, .15, pz, .07, h, .07, 0x456344); f.block(px - .1, .2 + h * .4, pz, .22, .1, .12, c); f.block(px + .07, .25 + h * .6, pz, .13, .12, .23, shade(c, 1.12));
+      const h = .32 + r() * .3, c = pick(HERBS, r);
+      f.block(px, .2, pz, .07, h, .07, 0x456344); f.block(px - .1, .23 + h * .4, pz, .38, .15, .21, c); f.block(px + .07, .28 + h * .6, pz, .23, .16, .36, shade(c, 1.12));
       if (i % 3 === 0) f.block(px, .15 + h, pz, .1, .14, .1, pick(MOON, r));
     }
   }
@@ -105,18 +111,21 @@ function garden(f, p, r) {
 // Compact fruit trees keep their branches legible and their crowns below the
 // landmark roofs. Layered lobes leave air between neighbouring trees.
 function fruitTree(f, x, z, r, k = 1) {
-  const wood = 0x63452e, palette = r() < .55 ? C.golden : C.leaves, h = 1.65 * k;
+  const wood = 0x63452e, palette = r() < .55 ? C.golden : C.leaves, h = 2.4 * k, crown = 1.6;
   f.block(x, 0, z, .36 * k, h, .36 * k, wood);
-  for (const s of [-1, 1]) { f.block(x + s * .3 * k, h * .68, z, .62 * k, .16 * k, .18 * k, wood); f.block(x, h * .82, z + s * .3 * k, .16 * k, .16 * k, .65 * k, wood); }
+  for (const s of [-1, 1]) {
+    f.block(x + s * .3 * k * crown, h * .87, z, .62 * k * crown, .2 * k, .18 * k, wood); f.block(x, h * .94, z + s * .3 * k * crown, .18 * k, .2 * k, .65 * k * crown, wood);
+    f.block(x + s * .27 * k, h * .7, z, .18 * k, h * .24, .18 * k, wood);
+  }
   const lobes = [[0, .3, 0, 1.05], [-.68, 0, .1, .76], [.62, .07, -.12, .8], [.1, .05, .64, .73], [-.08, .1, -.61, .72]];
   for (const [dx, dy, dz, size] of lobes) for (const [level, width] of [[0, .65], [.33, 1], [.66, .86], [.92, .52]]) {
-    const y = h + (dy + level * size) * k, s = size * width * k, c = vary(shade(pick(palette, r), .84 + level * .22), .08, r);
-    f.block(x + dx * k, y, z + dz * k, s * 1.4, .37 * k, s, c);
-    f.block(x + dx * k, y, z + dz * k, s, .37 * k, s * 1.4, shade(c, .96));
+    const y = h + (dy + level * size) * k * 1.25, s = size * width * k * crown, c = vary(shade(pick(palette, r), .88 + level * .24), .08, r);
+    f.block(x + dx * k * crown, y, z + dz * k * crown, s * 1.4, .44 * k, s, c);
+    f.block(x + dx * k * crown, y, z + dz * k * crown, s, .43 * k, s * 1.4, shade(c, .96));
   }
   for (let i = 0; i < 9; i++) {
-    const a = i / 9 * Math.PI * 2, px = x + Math.cos(a) * .92 * k, pz = z + Math.sin(a) * .92 * k;
-    f.block(px, h + (.12 + r() * .6) * k, pz, .17 * k, .19 * k, .17 * k, pick(C.crimson, r));
+    const a = i / 9 * Math.PI * 2, px = x + Math.cos(a) * .92 * k * crown, pz = z + Math.sin(a) * .92 * k * crown;
+    f.block(px, h + (.12 + r() * .7) * k, pz, .22 * k, .24 * k, .22 * k, pick(C.crimson, r));
     if (i % 2 === 0) f.block(px, .025, pz, .16, .11, .16, pick(C.crimson, r));
   }
   for (let i = 0; i < 8; i++) f.block(x + (r() - .5) * 2.5 * k, .012, z + (r() - .5) * 2.5 * k, .17 + r() * .12, .025, .15, pick(palette, r));
@@ -246,6 +255,25 @@ function reading(f, p, r) {
 // give the lawn a tended edge without replacing its walkable open ground.
 function meadow(f, p, r) {
   const w = p.w ?? (p.r ?? 3) * 2, d = p.d ?? (p.r ?? 3) * 2, count = p.count ?? Math.min(70, Math.round(w * d * .6));
+  if (p.soil) {
+    // Five touching strips soften the island's outline without overlapping
+    // differently shaded faces. All earth stays below the walking path tiles.
+    const soil = 0x77674c;
+    f.block(0, .001, 0, w * .88, .014, d * .45, soil);
+    for (const side of [-1, 1]) {
+      f.block(0, .001, side * d * .3, w * .77, .014, d * .15, soil);
+      f.block(0, .001, side * d * .415, w * .58, .014, d * .08, soil);
+    }
+    // Soft flowering clumps carry the colour across the island; fine stems
+    // between them are detail, rather than the only planting in a large bed.
+    const clumps = Math.min(16, Math.max(4, Math.round(w * d / 18)));
+    for (let i = 0; i < clumps; i++) {
+      const a = r() * Math.PI * 2, radius = Math.sqrt(r()), x = Math.cos(a) * radius * w * .32, z = Math.sin(a) * radius * d * .32, k = .8 + r() * .4, c = pick([0xb9adca, 0xd0c2ca, 0x9d89b2, 0xd5c389], r);
+      f.block(x, .025, z, 1.1 * k, .12, .85 * k, 0x627851); f.block(x + .1, .14, z, .8 * k, .17, .73 * k, 0x8d9c70);
+      f.block(x - .24 * k, .28, z, .42 * k, .12, .48 * k, c); f.block(x + .22 * k, .32, z + .13 * k, .42 * k, .12, .36 * k, shade(c, 1.08));
+      f.block(x + .02, .4, z - .17 * k, .22 * k, .1, .24 * k, C.cream);
+    }
+  }
   for (let i = 0; i < count; i++) {
     const a = r() * Math.PI * 2, radius = Math.sqrt(r()), x = Math.cos(a) * radius * w * .44, z = Math.sin(a) * radius * d * .44;
     if (i % 7 === 0) {
@@ -253,7 +281,7 @@ function meadow(f, p, r) {
     } else if (i % 3 === 0) {
       const h = .35 + r() * .36; f.block(x, 0, z, .045, h, .045, 0x87946a); f.block(x, h - .08, z, .12, .16, .1, 0xc8b98a);
       f.block(x - .1, h * .45, z, .2, .045, .09, HERBS[2]);
-    } else flower(f, x, z, pick([C.violet[1], C.cream, C.golden[1], 0xb7a8cb], r), r, .7 + r() * .4);
+    } else flower(f, x, z, pick([C.violet[1], C.cream, C.golden[1], 0xb7a8cb], r), r, p.soil ? 1 + r() * .35 : .7 + r() * .4);
   }
   for (let i = 0; i < 6; i++) f.block((r() - .5) * w * .8, .014, (r() - .5) * d * .8, .2, .025, .13, pick(C.leaves, r));
 }
