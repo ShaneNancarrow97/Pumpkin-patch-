@@ -1,0 +1,10 @@
+{
+  "runtimeCommit": "dd92061f634e2c553ec226fa50e1ced1457dee06",
+  "command": "node --test --test-concurrency=2 'test/**/*.test.mjs'",
+  "tests": 1532,
+  "passed": 1532,
+  "failed": 0,
+  "durationMs": 368520.908854,
+  "logSha256": "16c36bf8ef002851ed29f828858474f4e79fb5873e5b8167e5ff8a76372b4068",
+  "note": "Final full run including actual GPU colour-upload and composed moon-rim regressions; environment permits test child processes."
+}
