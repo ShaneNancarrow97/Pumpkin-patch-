@@ -8,6 +8,7 @@ import { ChunkedVoxels, Voxels, seeded, vary } from "./voxels.js";
 import { C, shade, frame, lantern, lampPost, parkBench, roundPlanter, canopyTree, festoon, mothPillar, marketStall, mothBanner, hedge, pumpkin, hayBale } from "./village-models.js";
 import { groundHeight as HN } from "./village-terrain.js";
 import { TOWN } from "./content/village-town-square.js";
+import { createVillageWaterClock, createVillageWaterMaterial } from "./village-water-material.js";
 
 const pick = (list, r) => list[(r() * list.length) | 0];
 // Writers on the spread ground: realm coordinates (z north), standing on the ground there.
@@ -221,7 +222,7 @@ function plazaTexture() {
   const t = new THREE.CanvasTexture(canvas); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 }
 
-export function buildTownSquare() {
+export function buildTownSquare({ waterClock = createVillageWaterClock() } = {}) {
   const v = new ChunkedVoxels(32), R = ground(v), r = seeded(4401), list = [], F = TOWN.fountain, G = TOWN.gate;
   lanternFountain(R, F, r);
   moonclockGate(at(v, G.x, G.z, "south"), G, seeded(4407));
@@ -256,7 +257,7 @@ export function buildTownSquare() {
   for (let i = 0; i < 200; i++) { const a = i / 200 * Math.PI * 2, x = TOWN.cx + Math.cos(a) * (TOWN.r - .12), z = TOWN.cz + Math.sin(a) * (TOWN.r - .12); if (Math.abs(x - TOWN.cx) < 3.15) continue; K.block(x, 0, z, .34, .13, .34, vary(pick(C.stone, r), .05, r)); }
   group.add(kerb.build({ detailShadows: false }));
   // Water in the basin and both bowls.
-  const water = new THREE.MeshPhongMaterial({ color: 0x2f6f9c, emissive: 0x0b2236, specular: 0xc8d0ff, shininess: 90, transparent: true, opacity: .9 });
+  const water = createVillageWaterMaterial({ clock: waterClock, opacity: .9 });
   for (const [rad, y] of [[F.r - .25, .5], [2.15, 1.42], [1.2, 3.07]]) { const m = new THREE.Mesh(new THREE.CircleGeometry(rad, 48), water); m.rotation.x = -Math.PI / 2; m.position.set(F.x, HN(F.x, F.z) + y, -F.z); group.add(m); }
   // The Moonclock's hands, on both faces, turned to the time each frame by tick().
   const hands = [];

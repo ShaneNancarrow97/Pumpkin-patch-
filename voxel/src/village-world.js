@@ -9,6 +9,7 @@
 import * as THREE from "three";
 import { applyGrassDetail } from "./grass-detail.js";
 import { villageTreeVisibility } from "./village-visibility.js";
+import { createVillageWaterClock, createVillageWaterMaterial } from "./village-water-material.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { Voxels, ChunkedVoxels, seeded, vary } from "./voxels.js";
 import * as LAYOUT from "./content/village.js";
@@ -293,9 +294,9 @@ export function buildPaving() {
 }
 
 // Glossy water: the moat round the Quarry's island, the Marsh's pools, the pond, the well and the knot gardens' fountains.
-export function buildWater() {
-  const group = new THREE.Group(), material = new THREE.MeshPhongMaterial({ color: 0x2f6f9c, emissive: 0x0b2236, specular: 0xc8d0ff, shininess: 90, transparent: true, opacity: .92 });
-  const marsh = new THREE.MeshPhongMaterial({ color: 0x1f5a60, emissive: 0x0a2a2e, specular: 0xb0ffe8, shininess: 70, transparent: true, opacity: .9 });
+export function buildWater({ waterClock = createVillageWaterClock() } = {}) {
+  const group = new THREE.Group(), material = createVillageWaterMaterial({ clock: waterClock });
+  const marsh = createVillageWaterMaterial({ clock: waterClock, color: 0x1f5a60, emissive: 0x0a2a2e, specular: 0x566d63, shininess: 85, opacity: .9 });
   const disc = (x, z, rx, rz, y, m = material) => { const geo = new THREE.CircleGeometry(1, 40); geo.scale(rx, rz, 1); const mesh = new THREE.Mesh(geo, m); mesh.rotation.x = -Math.PI / 2; mesh.position.set(x, y, -z); mesh.receiveShadow = true; group.add(mesh); };
   const sheet = (x0, z0, x1, z1, y, m = material) => { const mesh = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0), m); mesh.rotation.x = -Math.PI / 2; mesh.position.set((x0 + x1) / 2, y, -(z0 + z1) / 2); mesh.receiveShadow = true; group.add(mesh); };
   for (const w of WATERS) {
