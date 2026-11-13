@@ -86,7 +86,7 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
     query("h2").textContent = person.name ?? "A neighbour"; query(".village-dialogue-role").textContent = person.role ?? "Mothlight Village";
     const heading = query(".village-dialogue-heading"); heading.hidden = !session.heading; heading.textContent = session.heading ?? "";
     const bond = query(".village-dialogue-bond"), friend = speaker === session.id ? session.friendship : null; bond.replaceChildren(); bond.hidden = !friend;
-    if (friend) { const label = document.createElement("span"), meter = document.createElement("meter"); label.textContent = `Level ${friend.level ?? 0} · ${friend.title ?? "Neighbour"}`; meter.min = 0; meter.max = 1; meter.value = Math.max(0, Math.min(1, Number(friend.progress) || 0)); meter.setAttribute("aria-label", "Friendship progress"); bond.append(label, meter); }
+    if (friend) { const crest = document.createElement("i"), label = document.createElement("span"), meter = document.createElement("meter"); crest.className = "vc-bond-crest"; crest.setAttribute("aria-hidden", "true"); crest.innerHTML = fidelityIcon("bond"); label.textContent = `Level ${friend.level ?? 0} · ${friend.title ?? "Neighbour"}`; meter.min = 0; meter.max = 1; meter.value = Math.max(0, Math.min(1, Number(friend.progress) || 0)); meter.setAttribute("aria-label", "Friendship progress"); bond.append(label, meter, crest); }
   }
   function render() {
     if (!session) return;
@@ -125,7 +125,7 @@ export function createVillageConversation({ mount = document.body, onChoice = ()
       if (Object.hasOwn(TONES, choice.tone)) { const tone = document.createElement("small"); tone.className = "village-reply-tone"; tone.textContent = TONES[choice.tone]; words.append(tone); }
       const hint = choice.description ?? choice.hint ?? choice.requires;
       if (hint) { const note = document.createElement("small"); note.className = "village-reply-note"; note.textContent = String(hint); words.append(note); }
-      confirm.className = "village-dialogue-confirm"; confirm.setAttribute("aria-hidden", "true"); button.append(art, words, confirm);
+      confirm.className = "village-dialogue-confirm"; confirm.setAttribute("aria-hidden", "true"); const arrow = document.createElement("i"); arrow.className = "vc-reply-arrow"; arrow.setAttribute("aria-hidden", "true"); arrow.innerHTML = '<svg viewBox="0 0 20 20" focusable="false"><path d="m7 4 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'; button.append(art, words, confirm, arrow);
       button.addEventListener("click", () => {
         if (session !== renderedSession || page !== renderedPage || pages[page]?.choices?.[index] !== choice || !button.isConnected || answered || button.disabled) return;
         narration?.stop();

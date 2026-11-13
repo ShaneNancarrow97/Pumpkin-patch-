@@ -13,6 +13,7 @@ import { expansionActivityMarkup, expansionRewardMarkup } from './ui/village-exp
 import { villageObjectives, villageObjective, residentObjectivePriority } from './village-objectives.js';
 import { renderVillageJournal, JOURNAL_TABS, nextJournalTab } from './ui/village-journal.js';
 import { fidelityIcon } from './ui/village-fidelity-icon-markup.js';
+import { villageNeighbourCards, villagePanelArt } from './ui/village-menu-presentation.js';
 import { installVillageFidelityArt } from './ui/village-fidelity-art.js';
 import { createVillageGradeSample, villageAtmosphereAt } from './content/village-grade.js';
 // Mothlight's first saved visit. The scene owns the picture; this controller
@@ -207,7 +208,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     const primary=stories.find(story=>story.objectiveId===(delivery?.ok?delivery.quest:null))??priority.map(record=>stories.find(story=>story.objectiveId===record.id)).find(Boolean)??stories[0];
     if(primary)add(primary.choice,primary.run);
     if(stories.length>1)add({id:"stories",intent:"stories",label:`Other stories · ${stories.length-1}`,description:`Choose another story with ${f.short??f.name}`},()=>{if(besideNeighbour(id))showPanel("journal",id);});
-    if(["rowan","tansy","opal","cinder","granny"].includes(id))add({id:"farm-gifts",intent:"workshop",label:id==="cinder"?"Restaurant orders":"Bring a discovery home",description:"Useful recipes, equipment and commissions"},()=>{if(besideNeighbour(id))showPanel("farm-gifts",id);});
+    if(["rowan","tansy","opal","cinder","granny"].includes(id))add({id:"farm-gifts",intent:"workshop",label:id==="cinder"?"Restaurant orders":"Bring a discovery home",description:"Useful recipes, equipment and commissions"},()=>{if(besideNeighbour(id))showPanel(id==="rowan"?"upgrades":"farm-gifts",id==="rowan"?undefined:id);});
     const companion=companionInfo(s,id,currentArea(),{areaOpen:area=>!!M.expansionAreaInfo?.(s,area)?.open});
     add({id:"companion",intent:"companion",label:companion.selected?"Explore on my own":"Come exploring with me",disabled:!companion.selected&&!companion.canSelect,description:companion.reason},()=>{if(!besideNeighbour(id))return;const result=selectVillageCompanion(state(),companion.selected?null:id,currentArea(),{areaOpen:area=>!!M.expansionAreaInfo?.(state(),area)?.open});if(result.ok){changed(result.events);view.setExpansionCompanion?.(companion.selected?null:id);notice(companion.selected?"See you soon.":`${f.short??f.name} is exploring with you.`);}else notice(result.reason);});
     const presents=M.giftsLeft(s,id),hasGift=M.giftable(s).length>0;
@@ -288,10 +289,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     let title="",tag="Hollow Green",html="";
     if(kind==="people") {
       title="Your neighbours";tag="People of Hollow Green";
-      html='<p class="vg-menu-lead">Choose a neighbour to talk nearby, or mark the way to them.</p>'+residentInteractions().map(resident=>{
-        const {id,nearby,distance}=resident,f=FOLK_BY_ID[id]??HOST_BY_ID[id],bond=M.friendshipWith(s,id),image=portrait(id),offers=M.offeredBy(s,id);
-        return `<button class="vg-neighbour" data-vg-meet="${id}" data-pad-label="${nearby?"Talk to":"Find"} ${escape(f.short??f.name)}">${image?`<img src="${image}" alt="">`:""}<span><b>${escape(f.name)}</b><small>${escape(bond?.met?`Friendship ${bond.level} · ${bond.title}`:f.role)}</small><span class="vg-neighbour-place">${escape(resident.location)}${distance!=null?` · ${Math.round(distance)} m`:""}${!resident.available?` · ${escape(resident.reason)}`:offers.length?' · New story':""}</span></span><em>${nearby?"Talk":"Find"}<span aria-hidden="true"> ›</span></em></button>`;
-      }).join("");
+      html=villageNeighbourCards(residentInteractions().map(resident=>({...resident,person:FOLK_BY_ID[resident.id]??HOST_BY_ID[resident.id],bond:M.friendshipWith(s,resident.id),image:portrait(resident.id),offers:M.offeredBy(s,resident.id)})));
     }
     if(kind==="resident"){
       const f=FOLK_BY_ID[id],bond=M.friendshipWith(s,id),delivery=M.handOver(s,id),offers=M.offeredBy(s,id),fav=M.favourOf(s,id),priority=delivery?.ok?"delivery":offers.length?"quest":"chat",image=portrait(id);title=f.name;tag=`Friendship ${bond.level} · ${bond.title}`;
@@ -301,7 +299,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
       if(fav)html+=`<article class="vg-resident-task"><small>A little favour</small><h3>${escape(fav.text??fav.title??`${fav.n} ${M.villageItemName(fav.item,fav.n)}`)}</h3><p>${fav.n} ${escape(M.villageItemName(fav.item,fav.n))} · ${money(fav.pay)}</p>${button("Deliver",`data-vg-favour="${id}"`,M.villageItemCount(s,fav.item)<fav.n)}</article>`;
       const gifts=M.giftable(s);html+=`<details data-vg-details-key="gifts:${id}"><summary>Give a present · ${M.giftsLeft(s,id)} left</summary><p class="vg-menu-lead">A small gift helps your friendship grow.</p><div class="vg-choice-list">${gifts.map(g=>button(escape(M.villageItemName(g.item)),`data-vg-gift="${escape(g.item)}" data-who="${id}"`,M.giftsLeft(s,id)<=0)).join("")||"Gather a little something for your satchel first."}</div></details><details data-vg-details-key="about:${id}"><summary>About ${escape(f.short??f.name)}</summary><p>${escape(f.about)}</p></details>`;
     }
-    if(kind==="navigation"){title="Mothlight Village";tag="Choose where to look";html=`<div class="vg-navigation-hub">${navigationMarkup(true)}</div>`;}
+    if(kind==="navigation"){title="Mothlight Village";tag="Your village, at a glance";html=`<div class="vc-hub-intro">${fidelityIcon("moth")}<p>Where will the evening take you?</p></div><div class="vg-navigation-hub">${navigationMarkup(true)}</div>`;}
     const chapter=kind==="journal"?renderVillageJournal({state:s,records:objectiveRecords(),followed:followedObjective(),who:id,portrait,tab:journalTab}):kind==="map"?renderVillageMap(s,{...mapPresentation,selectedDistrict:id,portrait,snapshot:mapSnapshot,snapshotError:mapSnapshotError,showResidents:mapShowResidents}):renderVillageChapter({kind,id,state:s,portrait,trackedQuestId:prefs.villageTrackedQuest,itemArt,position:pos});
     if(chapter)({title,tag,html}=chapter);
     if(kind==="materials"||kind==="stall"){const gems=state().village.expansion?.gems??{};html+=`<section class="vgx-journal"><header class="vgx-section-head">${expansionIcon('gemcraft',36)}<div><small>Discoveries from below</small><h3>Your rare gems</h3><p>Story crystals are kept separately and cannot be sold.</p></div></header><div class="vgx-gems">${Expansion.EXPANSION_GEMS.map(g=>`<article>${expansionIcon(g.id,44)}<span><b>${escape(g.name)}</b><small>${gems[g.id]??0} in your satchel · ${money(g.price)} each</small></span>${kind==="stall"?`<button class="vgx-action" data-vgx-sell-gem="${escape(g.id)}"${(gems[g.id]??0)>0?"":" disabled"}>Sell one</button>`:""}</article>`).join('')}</div></section>`;}
@@ -310,7 +308,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
 
     const signature=kind+":"+id+":"+html;
     if(!initial&&signature===panelSignature)return;panelSignature=signature;
-    $("vg-panel-title").textContent=title;$("vg-panel-tag").textContent=tag;$("vg-panel-body").innerHTML=html;
+    root.querySelector(".vf-panel-title-art").innerHTML=villagePanelArt(kind);$("vg-panel-title").textContent=title;$("vg-panel-tag").textContent=tag;$("vg-panel-body").innerHTML=html;
     const on=(sel,fn)=>$("vg-panel-body").querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(b));
     bindVillageExpansionEconomy(body,(key,action)=>{const command=key.slice(8),owner=command==='cold-store'?'opal':command.startsWith('cinder-')?'cinder':command.startsWith('granny-')?'granny':'tansy';if(!besideNeighbour(owner))return;const result=M.actVillageExpansion?.(state(),key,{...action,context:expansionContext()});if(result?.ok){changed(result.events);notice(result.message??"Your village discovery is ready.");drawPanel();}else notice(result?.reason??"Gather the supplies shown first.");});
     on('[data-vgx-sell-gem]',b=>{if(view.inside||view.activeExpansionArea||Math.hypot(pos.x-FIXTURES.stall.x,pos.z-FIXTURES.stall.z)>TALK_REACH){closePanel();guide(FIXTURES.stall,"Rowan’s stall");notice("Bring your spare gems to Rowan’s stall.");return;}const result=M.sellExpansionGem?.(state(),b.dataset.vgxSellGem,1);if(result?.ok){changed(result.events);notice(result.reason);drawPanel();}else notice(result?.reason??"Choose an unreserved gem.");});
@@ -509,7 +507,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     if(dialogue.active||cameraOwns)updateOwnerView(false,true);
     if(returnPrompt.active){returnPrompt.setInput(input.source,pad?.g);if(pad?.pressed(1)){returnPrompt.cancel();return;}if(pad?.pressed(0)){returnPrompt.confirm();return;}return;}
     if(decorate.active){decorate.tick(dt,pad);return;}
-    if(pad?.pressed(1)){back();return;}if(pad?.pressed(9)&&!dialogue.active&&!view.director.active){page?closePanel():showPanel("navigation");return;}
+    if(pad?.pressed(1)){back();return;}if(pad?.pressed(9)&&!dialogue.active&&!view.director.active){page?closePanel(true):showPanel("navigation");return;}
     if(gather){controls.setContext?.({type:"village-node",material:gather.material,...(gather.kind==="blight"?{label:"Root out",target:"Cursed fungus",tool:"Hands"}:{}),progress:gather.elapsed/gather.duration,gathering:true});tickGather(dt);return;}
     if(page||dialogue.active||view.director.active){
       panelAge+=dt;if(page&&panelAge>.8){panelAge=0;drawPanel();}

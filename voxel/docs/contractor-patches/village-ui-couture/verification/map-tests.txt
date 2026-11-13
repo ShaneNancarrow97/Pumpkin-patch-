@@ -1,0 +1,25 @@
+✔ the map keeps all five areas visible and uses the current invitation gate (8.92812ms)
+✔ district map unlocks follow the same restored story and level gates as walking (2.063399ms)
+✔ selected lock details report the real level and quest while keeping the region clickable (4.904477ms)
+✔ the map uses the captured world image and its own pixel projection (2.392794ms)
+✔ the live position uses realm coordinates and rejects invalid or off-map points (5.263736ms)
+✔ landmark shortcuts preserve the existing routes and current gathering readiness (83.34024ms)
+✔ five public gardens join the folded landmark list without crowding district pins (99.469697ms)
+✔ chapter integration reads only state and validates selected IDs (6.727946ms)
+✔ a followed legacy objective uses its story route action and current surface coordinates (46.250361ms)
+✔ every area selection keeps one spatial overview with inline criteria and walking guidance (13.89483ms)
+✔ the Acre, Moonclock Square and single cave mouth use the actual spread surface coordinates (4.682963ms)
+✔ live pins show observed residents and route a followed underground objective through the real entrance (3.543172ms)
+✔ surface objective pins retain live world coordinates and reject off-map or unknown-layer observations (0.227071ms)
+✔ resident portraits are escaped image sources rather than visible URL text (1.766784ms)
+✔ neighbour pins are optional so destination markers lead the captured view (1.518311ms)
+✔ missing or failed captures show honest status text without a diagram fallback (2.434837ms)
+✔ invalid or hidden image projections cannot place invented markers (5.795104ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1590.215993

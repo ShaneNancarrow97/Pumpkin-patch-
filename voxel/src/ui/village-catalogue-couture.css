@@ -1,0 +1,165 @@
+/* Illustrated shelves and workshop leaves share the village's plum-and-gilt
+   materials. Action attributes and the underlying purchase quotes stay native. */
+#village-game #vg-panel-body{
+ --vc-catalogue-small:max(12px,calc(12px / var(--vg-ui-zoom,1)));
+ --vc-catalogue-body:max(14px,calc(14px / var(--vg-ui-zoom,1)));
+ --vc-catalogue-target:max(44px,calc(44px / var(--vg-ui-zoom,1)));
+}
+#village-game #vg-panel-body :is(.vc-inventory-heading,.vc-workshop-heading,.vc-stall-heading){display:flex;align-items:center;gap:12px;min-width:0;margin:0 0 16px;padding:0 0 14px;border-bottom:1px solid #d6b47730}
+#village-game #vg-panel-body :is(.vc-inventory-heading,.vc-workshop-heading)>div{min-width:0;flex:1}
+#village-game #vg-panel-body :is(.vc-inventory-heading,.vc-workshop-heading,.vc-stall-heading)>div>b{display:block;font:500 18px/1.25 var(--village-display);color:var(--village-ink)}
+#village-game #vg-panel-body :is(.vc-inventory-heading,.vc-workshop-heading)>div>span,#village-game #vg-panel-body .vc-stall-heading small{display:block;margin-top:5px;font:400 var(--vc-catalogue-small)/1.5 var(--village-body);color:var(--village-muted)}
+#village-game #vg-panel-body .vc-inventory-total{display:grid;flex:none;min-width:54px;text-align:right;color:var(--village-gold)}
+#village-game #vg-panel-body .vc-inventory-total>b{font:500 24px/1.2 var(--village-display);font-variant-numeric:tabular-nums}
+#village-game #vg-panel-body .vc-inventory-total>small{font-size:var(--vc-catalogue-small);color:var(--village-muted)}
+#village-game #vg-panel-body :is(.vc-inventory-heading,.vc-workshop-heading)>.vg-ch-seal{width:52px;height:52px;flex-basis:52px;background:radial-gradient(ellipse,#e5bd7526,transparent 74%);border:0;box-shadow:none}
+#village-game #vg-panel-body .vg-ch-material-list{display:grid;gap:10px}
+#village-game #vg-panel-body article.vg-ch-material{position:relative;padding:12px;border:1px solid #d9b98424;border-radius:10px;background:linear-gradient(115deg,#e6bd7910,transparent 65%),#1b142139;box-shadow:inset 0 1px #ffe2af0a}
+#village-game #vg-panel-body article.vg-ch-material.vc-material-needed{border-color:#cfa56174;background:radial-gradient(ellipse at 0 0,#ddb57214,transparent 75%),#291b3070}
+#village-game #vg-panel-body .vg-ch-material-title{gap:9px}
+#village-game #vg-panel-body .vg-ch-material-title>.village-item-icon{width:48px;height:48px;flex-basis:48px;filter:drop-shadow(0 3px 3px #08030c66)}
+#village-game #vg-panel-body .vg-ch-material h3{font:500 18px/1.25 var(--village-display);color:var(--village-ink);margin:0}
+#village-game #vg-panel-body .vg-ch-material .vg-ch-card-head>b{font:500 20px/1.3 var(--village-display);font-variant-numeric:tabular-nums;color:var(--village-gold)}
+#village-game #vg-panel-body .vg-ch-material .vg-ch-card-head>b>span{font:400 var(--vc-catalogue-small)/1.4 var(--village-body);color:var(--village-muted)}
+#village-game #vg-panel-body .vg-ch-needed{font:500 var(--vc-catalogue-small)/1.35 var(--village-body);color:var(--village-gold);margin-top:3px}
+#village-game #vg-panel-body .vg-ch-material footer{gap:8px;padding-top:6px;align-items:center}
+#village-game #vg-panel-body .vg-ch-material footer>span{flex:1;min-width:0}
+#village-game #vg-panel-body .vg-ch-material footer small{font:400 var(--vc-catalogue-small)/1.4 var(--village-body);color:var(--village-muted);margin:2px 0 0;overflow-wrap:anywhere}
+#village-game #vg-panel-body .vg-ch-material footer .vg-ch-availability{display:block;font:500 var(--vc-catalogue-small)/1.4 var(--village-body);color:var(--village-gold)}
+#village-game #vg-panel-body .vg-ch-material footer>button{min-height:var(--vc-catalogue-target);max-width:42%;padding:7px 12px;border-radius:8px;white-space:normal;flex-shrink:0;font-size:var(--vc-catalogue-small)}
+#village-game #vg-panel-body .vg-ch-material meter{height:3px;margin:7px 0 0;border-radius:2px;background:#120d1a}
+#village-game #vg-panel-body .vg-ch-material meter::-webkit-meter-bar{height:3px;border-radius:2px;background:#120d1a}
+#village-game #vg-panel-body .vg-ch-material meter::-webkit-meter-optimum-value{background:linear-gradient(90deg,#81618e,#dfbd80)}
+#village-game #vg-panel-body .vg-ch-material meter::-moz-meter-bar{background:linear-gradient(90deg,#81618e,#dfbd80)}
+#village-game #vg-panel-body .vg-ch-summary-band{display:flex;gap:16px;border:0;border-bottom:1px solid #d6b47730;border-radius:0;background:none;margin:0 0 18px;padding:0 0 14px}
+#village-game #vg-panel-body .vg-ch-summary-band>span{flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;border:0;background:none;padding:0}
+#village-game #vg-panel-body .vg-ch-summary-band>span+span{border-left:1px solid #d6b47730;padding-left:16px}
+#village-game #vg-panel-body .vg-ch-summary-band small{font:400 var(--vc-catalogue-small)/1.4 var(--village-body);color:var(--village-muted)}
+#village-game #vg-panel-body .vg-ch-summary-band b{font:500 22px/1.2 var(--village-display);color:var(--village-gold);white-space:nowrap}
+#village-game #vg-panel-body :is(.vg-ch-section-title,.vc-stall-section>h3,.vc-commission-section>h3){display:flex;align-items:center;gap:10px;margin:20px 0 10px;font:500 17px/1.3 var(--village-display);color:var(--village-gold);letter-spacing:.02em}
+#village-game #vg-panel-body :is(.vg-ch-section-title,.vc-stall-section>h3)::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#cfa66e66,transparent)}
+#village-game #vg-panel-body :is(.vg-ch-section-title,.vc-stall-section>h3)>span{font:400 var(--vc-catalogue-small)/1.4 var(--village-body);letter-spacing:0;color:var(--village-muted)}
+#village-game #vg-panel-body article.vg-ch-upgrade{padding:14px;margin-bottom:12px;border:1px solid #d6b4773c;border-radius:12px;background:radial-gradient(ellipse at 0 0,#b68f5d12,transparent 65%),linear-gradient(145deg,#38273e66,#1c142440);box-shadow:inset 0 1px #fff1d014}
+#village-game #vg-panel-body article.vg-ch-upgrade.is-ready{border-color:#d5ad727a;box-shadow:inset 0 1px #ffecc027,0 5px 12px #07030d1c}
+#village-game #vg-panel-body .vc-upgrade-art{display:grid;place-items:center;flex:none;width:66px;height:66px;border:0;background:radial-gradient(ellipse,#d7ae6e22,transparent 70%);filter:drop-shadow(0 4px 3px #10091860)}
+#village-game #vg-panel-body .vc-upgrade-art>.village-item-icon{width:60px;height:60px}
+#village-game #vg-panel-body .vg-ch-upgrade-head{gap:12px;margin-bottom:9px;align-items:center}
+#village-game #vg-panel-body .vg-ch-upgrade-head h3{font:500 21px/1.25 var(--village-display);color:var(--village-ink)}
+#village-game #vg-panel-body .vg-ch-upgrade-head .vg-ch-kicker{font:400 var(--vc-catalogue-small)/1.4 var(--village-body);color:var(--village-gold);margin:0 0 4px}
+#village-game #vg-panel-body .vg-ch-upgrade>p{font:400 var(--vc-catalogue-body)/1.5 var(--village-body);margin:8px 0 12px;color:var(--village-muted)}
+#village-game #vg-panel-body .vg-ch-upgrade>.vg-ch-hint{font-size:var(--vc-catalogue-small);margin:8px 0;color:var(--village-muted)}
+#village-game #vg-panel-body .vg-ch-upgrade>.vg-ch-hint.is-ready{color:var(--village-success)}
+#village-game #vg-panel-body .vg-ch-upgrade .vg-ch-costs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+#village-game #vg-panel-body .vg-ch-upgrade .vg-ch-costs>span{display:flex;align-items:center;gap:4px;min-width:0;max-width:100%;font:400 var(--vc-catalogue-small)/1.35 var(--village-body);color:var(--village-ink);background:#0f0a173b;border:1px solid #d4ac6b2a;border-radius:6px;padding:5px 7px}
+#village-game #vg-panel-body .vg-ch-upgrade .vg-ch-costs .village-item-icon{width:24px;height:24px;flex:none}
+#village-game #vg-panel-body .vg-ch-upgrade .vg-ch-costs .is-short{border-color:#dba38c5a;color:#efc2b4}
+#village-game #vg-panel-body :is(.vg-ch-costs b,.vg-ch-workshop-fold>summary>b,.vg-ch-made p){font-size:var(--vc-catalogue-small)}
+#village-game #vg-panel-body .vg-ch-made h3{font-size:var(--vc-catalogue-body)}
+#village-game #vg-panel-body .vg-ch-upgrade .vg-ch-actions{margin:9px 0 0}
+#village-game #vg-panel-body .vg-ch-upgrade .vg-ch-actions>button{width:100%;min-height:var(--vc-catalogue-target);font-size:var(--vc-catalogue-body);border-radius:8px}
+#village-game #vg-panel-body .vg-ch-upgrade.vc-story-locked{border-style:dashed;background:#1b132838;box-shadow:none}
+#village-game #vg-panel-body :is(.vc-catalogue-note,.vc-included-pieces){border:0;border-top:1px solid #d6b47730;border-radius:0;background:none;padding:0;margin:12px 0 0}
+#village-game #vg-panel-body :is(.vc-catalogue-note,.vc-included-pieces)>summary{min-height:var(--vc-catalogue-target);font:500 var(--vc-catalogue-small)/1.4 var(--village-body);color:var(--village-gold);padding:10px 0;box-sizing:border-box}
+#village-game #vg-panel-body .vc-included-pieces>summary{font-weight:400;color:var(--village-muted)}
+#village-game #vg-panel-body .vc-catalogue-note>p{font:400 var(--vc-catalogue-small)/1.6 var(--village-body);color:var(--village-muted);margin:6px 0 12px}
+#village-game #vg-panel-body .vc-stall-heading{align-items:flex-start;justify-content:space-between}
+#village-game #vg-panel-body .vc-stall-heading>div:first-child{flex:1;min-width:0}
+#village-game #vg-panel-body .vc-stall-heading .vg-ch-wallet{display:grid;justify-items:end;flex:none;gap:4px;padding:0;margin:0;border:0;background:none;border-radius:0}
+#village-game #vg-panel-body .vc-stall-heading .vg-ch-wallet>span{font-size:var(--vc-catalogue-small);color:var(--village-muted)}
+#village-game #vg-panel-body .vc-stall-heading .vg-ch-wallet>b{font:500 22px/1.25 var(--village-display);color:var(--village-gold);font-variant-numeric:tabular-nums}
+#village-game #vg-panel-body .vc-stall-section{margin:12px 0 20px}
+#village-game #vg-panel-body .vc-product-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
+#village-game #vg-panel-body .vc-product-grid>.vg-ch-product{display:flex;flex-direction:column;align-items:stretch;gap:0;min-width:0;padding:0;margin:0;border:1px solid #d5ae703b;border-radius:11px;overflow:hidden;background:linear-gradient(150deg,#44304266,#20162899);box-shadow:inset 0 1px #fff2d219}
+#village-game #vg-panel-body .vc-product-grid .vg-ch-product-art{position:relative;display:grid;place-items:center;flex:auto;min-height:116px;max-height:116px;margin:0;border-radius:0;border-bottom:1px solid #d6b47724;background:radial-gradient(ellipse at 50% 45%,#e1ba7b21,transparent 72%),linear-gradient(180deg,#130c2011,#180e2033)}
+#village-game #vg-panel-body .vc-product-grid .vg-ch-product-art :is(.village-item-icon,.garden-sprite){width:90px;height:90px;flex-basis:90px;filter:drop-shadow(0 4px 3px #0b061c77)}
+#village-game #vg-panel-body .vc-product-grid .vg-ch-product-art .thumb{width:96px;height:96px;filter:drop-shadow(0 4px 3px #0b061c77)}
+#village-game #vg-panel-body .vc-product-grid .vg-ch-product-art .thumb>img{max-width:100%;max-height:100%;object-fit:contain}
+#village-game #vg-panel-body .vc-owned-count{position:absolute;bottom:6px;right:6px;max-width:calc(100% - 12px);font-size:var(--vc-catalogue-small);line-height:1.3;background:#251a2eef;border:1px solid #dec08a55;color:var(--village-gold);border-radius:5px;padding:3px 6px;box-sizing:border-box}
+#village-game #vg-panel-body .vc-product-grid .vg-ch-product-body{display:flex;flex-direction:column;gap:5px;padding:12px;min-width:0;flex:1}
+#village-game #vg-panel-body .vc-product-grid .vg-ch-product-body h3{font:500 18px/1.22 var(--village-display);color:var(--village-ink);margin:0;overflow-wrap:anywhere}
+#village-game #vg-panel-body .vc-product-grid .vg-ch-product-body>p{font:400 var(--vc-catalogue-small)/1.5 var(--village-body);color:var(--village-muted);margin:2px 0 8px;overflow-wrap:anywhere}
+#village-game #vg-panel-body .vc-product-stock{font:400 var(--vc-catalogue-small)/1.4 var(--village-body);color:var(--village-gold);margin:0}
+#village-game #vg-panel-body .vc-product-grid .vg-ch-product-body>footer{display:grid;gap:6px;margin-top:auto;padding-top:5px}
+#village-game #vg-panel-body .vc-product-grid .vg-ch-product-body button{width:100%;min-height:var(--vc-catalogue-target);padding:8px 6px;margin:0;border-radius:7px;min-width:0;font-size:var(--vc-catalogue-small);white-space:normal}
+#village-game #vg-panel-body .vc-product-grid .vg-ch-shortfall{font:400 var(--vc-catalogue-small)/1.35 var(--village-body);color:#edc2b2;text-align:center}
+/* Farm discoveries use the same card hierarchy as the workshop, with the
+   actual held-food and supply quotes visible beside their actions. */
+#village-game #vg-panel-body .vc-discoveries{display:grid;gap:13px}
+#village-game #vg-panel-body .vc-discovery-card{display:block;padding:15px;margin:0;border:1px solid #d2aa733e;border-radius:12px;background:radial-gradient(ellipse at 0 0,#d6af7312,transparent 62%),linear-gradient(140deg,#412b4166,#1f152c88);box-shadow:inset 0 1px #fff3db13;min-width:0}
+#village-game #vg-panel-body .vc-discovery-card.is-ready{border-color:#d5ad727a}
+#village-game #vg-panel-body .vc-discovery-heading{display:flex;align-items:center;gap:11px;min-width:0;margin-bottom:12px}
+#village-game #vg-panel-body .vc-discovery-art{display:grid;place-items:center;flex:0 0 56px;width:56px;height:56px;background:radial-gradient(ellipse,#c9a26827,transparent 74%);filter:drop-shadow(0 3px 3px #09031255)}
+#village-game #vg-panel-body .vc-discovery-art>.village-item-icon{width:56px;height:56px}
+#village-game #vg-panel-body .vc-discovery-heading>div{min-width:0}
+#village-game #vg-panel-body .vc-discovery-heading small{font:400 var(--vc-catalogue-small)/1.35 var(--village-body);color:var(--village-gold);margin:0 0 4px;display:block}
+#village-game #vg-panel-body .vc-discovery-heading h3{font:500 21px/1.2 var(--village-display);color:var(--village-ink);margin:0;overflow-wrap:anywhere}
+#village-game #vg-panel-body .vc-discovery-card>p{font:400 var(--vc-catalogue-body)/1.55 var(--village-body);color:var(--village-muted);margin:8px 0 12px}
+#village-game #vg-panel-body .vc-discovery-counts{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;margin:10px 0;border-block:1px solid #d6b4772b}
+#village-game #vg-panel-body .vc-discovery-counts>span{display:grid;gap:4px;flex:1;min-width:0}
+#village-game #vg-panel-body .vc-discovery-counts>span:last-child{text-align:right}
+#village-game #vg-panel-body .vc-discovery-counts b{font:500 23px/1.2 var(--village-display);color:var(--village-gold);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#village-game #vg-panel-body .vc-discovery-counts small{font:400 var(--vc-catalogue-small)/1.4 var(--village-body);color:var(--village-muted)}
+#village-game #vg-panel-body .vc-discovery-counts>i{font:400 22px/1 var(--village-display);color:#d6ae78}
+#village-game #vg-panel-body .vc-discovery-card>.button{display:flex;align-items:center;justify-content:center;width:100%;min-height:var(--vc-catalogue-target);margin:10px 0 0;font:500 var(--vc-catalogue-body)/1.35 var(--village-body);padding:9px 12px;white-space:normal;border-radius:8px;border:1px solid #c4a3754f;background:#3b2a4566;color:var(--village-ink)}
+#village-game #vg-panel-body .vc-discovery-card>.button.gold{background:linear-gradient(135deg,#efcc91,#dbac67);border-color:#f5dcb280;color:#38231f;box-shadow:inset 0 1px #fff0ca77,0 3px 9px #08041130;font-weight:600}
+#village-game #vg-panel-body .vc-discovery-card>.button:disabled{background:#21172a66;color:#cab5cf;border-color:#c5a6ce25;box-shadow:none;opacity:1}
+#village-game #vg-panel-body .vc-discovery-note,#village-game #vg-panel-body .vc-discovery-card>.vc-discovery-note{font:400 var(--vc-catalogue-small)/1.5 var(--village-body);color:var(--village-muted);margin:10px 0}
+#village-game #vg-panel-body .vc-discovery-note.is-ready,#village-game #vg-panel-body .vc-discovery-owned{color:var(--village-success)}
+#village-game #vg-panel-body .vc-discovery-recipe{display:flex;align-items:center;gap:8px;font-size:var(--vc-catalogue-small);color:var(--village-ink)}
+#village-game #vg-panel-body .vc-discovery-recipe .village-item-icon{width:28px;height:28px}
+#village-game #vg-panel-body .vc-discovery-recipe i{font-style:normal;color:var(--village-gold);margin:0 5px}
+#village-game #vg-panel-body .vc-discovery-progress{display:flex;flex-wrap:wrap;gap:7px;justify-content:space-between;align-items:center;font-size:var(--vc-catalogue-small);color:var(--village-gold);margin:14px 0}
+#village-game #vg-panel-body .vc-discovery-progress>b{font-weight:500;flex:1;min-width:0;color:var(--village-ink)}
+#village-game #vg-panel-body .vc-discovery-progress>meter{width:100%;height:5px;border:0;background:#140d1f;accent-color:#e0bc7d}
+#village-game #vg-panel-body .vc-discovery-costs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:12px 0}
+#village-game #vg-panel-body .vc-discovery-costs>span{display:flex;align-items:center;gap:6px;min-width:0;padding:7px;border:1px solid #d2aa7330;border-radius:6px;background:#160e202f}
+#village-game #vg-panel-body .vc-discovery-costs>span.is-short{border-color:#d69e8655}
+#village-game #vg-panel-body .vc-discovery-costs>span>span:last-child{display:grid;gap:3px;min-width:0;overflow-wrap:anywhere;font-size:var(--vc-catalogue-small);line-height:1.35;text-transform:capitalize;color:var(--village-muted)}
+#village-game #vg-panel-body .vc-discovery-costs b{color:var(--village-gold);font-size:var(--vc-catalogue-small);font-variant-numeric:tabular-nums}
+#village-game #vg-panel-body .vc-discovery-costs .village-item-icon{width:26px;height:26px;flex:none}
+#village-game #vg-panel-body .vc-commission-section{display:grid;gap:13px;min-width:0}
+#village-game #vg-panel-body .vc-commission-section>h3{margin:10px 0 0}
+#village-game #vg-panel-body .vc-commission-section>.vc-discovery-note{margin:0}
+/* A mystery reads as a scene and a decision, with optional help below. */
+#village-game #vg-panel-body .vc-activity-header{display:flex;align-items:center;gap:13px;margin:0 0 18px;padding:0 0 14px;border-bottom:1px solid #d6b47735}
+#village-game #vg-panel-body .vc-activity-header>.vgx-activity-seal{flex:none;margin:0;width:66px;height:66px;background:radial-gradient(ellipse,#ddbc7833,transparent 70%);display:grid;place-items:center}
+#village-game #vg-panel-body .vc-activity-header>div:last-child{min-width:0}
+#village-game #vg-panel-body .vc-activity-header small{display:block;color:var(--village-gold);font:500 var(--vc-catalogue-small)/1.4 var(--village-body);margin-bottom:4px}
+#village-game #vg-panel-body .vc-activity-header .vgx-description{font:400 var(--vc-catalogue-body)/1.55 var(--village-body);color:var(--village-ink);margin:0}
+#village-game #vg-panel-body .vc-activity :is(.vgx-clue,.vgx-found){border:1px solid #d3ad713c;border-left:2px solid #d3ad718c;border-radius:2px 10px 10px 2px;background:linear-gradient(90deg,#dfb77b0d,transparent);padding:12px 14px;margin:14px 0}
+#village-game #vg-panel-body .vc-activity :is(.vgx-clue,.vgx-found)>small{font-size:var(--vc-catalogue-small);color:var(--village-gold);letter-spacing:.04em}
+#village-game #vg-panel-body .vc-activity :is(.vgx-clue,.vgx-found)>p{font:400 18px/1.5 var(--village-display);color:var(--village-ink);margin:5px 0 0}
+#village-game #vg-panel-body .vc-activity-controls{margin:16px 0}
+#village-game #vg-panel-body .vc-activity-controls :is(.vgx-action,.vgx-conduit){min-height:var(--vc-catalogue-target);font-size:var(--vc-catalogue-body);border-radius:8px}
+#village-game #vg-panel-body .vc-activity-controls>.vgx-action{width:100%}
+#village-game #vg-panel-body .vc-activity .vgx-board-note{font-size:var(--vc-catalogue-body);line-height:1.5;color:var(--village-muted)}
+#village-game #vg-panel-body .vc-activity .vgx-help{border:0;border-top:1px solid #d6b47730;border-radius:0;background:none;padding:0}
+#village-game #vg-panel-body .vc-activity .vgx-help>summary{min-height:var(--vc-catalogue-target);font-size:var(--vc-catalogue-small);color:var(--village-gold)}
+#village-game #vg-panel-body .vc-activity-rewards{margin-top:18px;border-top:1px solid #d6b47730;padding-top:12px}
+#village-game #vg-panel-body .vc-activity-rewards>h4{font:500 17px/1.3 var(--village-display);color:var(--village-gold);margin:0 0 9px}
+#village-game #vg-panel-body .vc-cost-name{display:flex;align-items:center;gap:7px;min-width:0}
+#village-game #vg-panel-body .vc-cost-name>.village-item-icon{width:24px;height:24px;flex:none}
+#village-game #vg-panel-body .vgx-rewards>span{display:flex;align-items:center;gap:7px;min-width:0;max-width:100%}
+#village-game #vg-panel-body .vgx-rewards>span>span:last-child{display:grid;gap:2px;min-width:0;overflow-wrap:anywhere}
+#village-game #vg-panel-body .vgx-rewards .village-item-icon{width:28px;height:28px;flex:none}
+#village-game #vg-panel-body .vgx-rewards :is(small,b){font-size:var(--vc-catalogue-small);line-height:1.4}
+#village-game #vg-panel-body .vc-activity .vgx-costs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#village-game #vg-panel-body .vc-activity .vgx-costs>li{display:flex;align-items:center;gap:9px;border:1px solid #b594682b;background:#160f202e;border-radius:6px;padding:7px;font-size:var(--vc-catalogue-small);line-height:1.4}
+#village-game #vg-panel-body .vc-activity .vgx-costs>li>b{flex:none;font-size:var(--vc-catalogue-small);color:var(--village-gold);font-variant-numeric:tabular-nums}
+#village-game #vg-panel-body .vc-activity .vgx-costs>li.is-met>b{color:var(--village-success)}
+@media (max-width:380px){
+ #village-game #vg-panel-body .vc-product-grid{gap:8px}
+ #village-game #vg-panel-body .vc-product-grid .vg-ch-product-body{padding:9px}
+ #village-game #vg-panel-body .vc-product-grid .vg-ch-product-body h3{font-size:17px}
+ #village-game #vg-panel-body .vc-stall-heading{display:grid;grid-template-columns:minmax(0,1fr)}
+ #village-game #vg-panel-body .vc-stall-heading .vg-ch-wallet{display:flex;align-items:center;justify-content:space-between}
+ #village-game #vg-panel-body .vc-inventory-heading>.vg-ch-seal{display:none}
+ #village-game #vg-panel-body .vc-discovery-costs{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:no-preference){
+ #village-game #vg-panel-body .vc-product-grid>.vg-ch-product{transition:border-color 140ms ease,background-color 140ms ease}
+ #village-game #vg-panel-body .vc-product-grid>.vg-ch-product:focus-within{border-color:#efcd91aa;background-color:#61434c30}
+}
+
+/* Completion receipts reuse reward markup outside the open menu. */
+#village-quest-receipt .vgx-rewards .vc-reward-copy{display:grid;gap:2px;min-width:0;overflow-wrap:anywhere}

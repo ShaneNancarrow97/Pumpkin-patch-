@@ -94,6 +94,17 @@ export function createVillageRepeat(first = 360, repeat = 130) {
   };
 }
 
+// The legend names the focused transaction without repeating a whole card's
+// description. Keep the complete name for assistive text and the hover title.
+export function villageMenuActionCopy({ label, accessible, heading, text, tag, expanded } = {}) {
+  const clean = value => String(value ?? "").replace(/\s+/g, " ").trim();
+  let name = [label, accessible, heading, text].map(clean).find(Boolean) || "Select";
+  if (tag === "SUMMARY") name = `${expanded ? "Collapse" : "Expand"} ${name}`;
+  if (name.length <= 42) return { label: name, accessible: name };
+  const short = name.slice(0, 41), space = short.lastIndexOf(" ");
+  return { label: (space >= 24 ? short.slice(0, space) : short).trimEnd() + "…", accessible: name };
+}
+
 // Keep the action/back pair together and Quest next to Menus. Basic movement
 // stays off this strip; the optional jogging hint can collapse on small screens.
 export function villageControllerLegendHTML() {
@@ -108,7 +119,7 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
   const padState = createVillagePadState(), repeating = createVillageRepeat();
   let source = win.matchMedia?.("(any-pointer: coarse)").matches ? "touch" : "keyboard", suspended = false, forcedBlock = false, wasBlocked = false, sprint = false;
   let menu = null, ring = null, lastKey = null, lastMenuTime = now(), disposed = false;
-  let context = null, explicitContext = false, promptSignature = "", prompt = null;
+  let context = null, explicitContext = false, promptSignature = "", prompt = null, menuAction = null;
   const sticks = [];
   const legend = make("div", "vg-pad-legend", "vg-pad-legend");
   legend.setAttribute("aria-label", "Controller controls");
@@ -133,19 +144,20 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
   function updatePrompt(locked = isBlocked()) {
     const fallback = !interact?.hidden ? { label: interact?.textContent } : null;
     prompt = villageActionPrompt(explicitContext ? context : fallback, { source, locked });
-    const signature = JSON.stringify([prompt, source, explicitContext]);
+    const signature = JSON.stringify([prompt, source, explicitContext, prompt.menu ? menuAction : null]);
     if (signature === promptSignature) return;
     promptSignature = signature;
     legend.classList.toggle("is-menu", prompt.menu);
     legendAction.hidden = !prompt.present && !prompt.menu;
     legendAction.classList.toggle("is-ready", prompt.ready);
     legendAction.classList.toggle("is-busy", prompt.busy);
-    legendActionLabel.textContent = prompt.action;
+    legendActionLabel.textContent = prompt.menu && menuAction ? menuAction.label : prompt.action;
     legendTarget.textContent = prompt.target;
     legendTarget.hidden = !prompt.target;
     legendProgress.style.width = `${Math.round((prompt.progress ?? 0) * 100)}%`;
     legendBack.textContent = prompt.busy ? "Cancel" : "Back";
-    legendAction.setAttribute("aria-label", prompt.accessible);
+    legendAction.setAttribute("aria-label", prompt.menu && menuAction ? menuAction.accessible : prompt.accessible);
+    legendAction.title = prompt.menu && menuAction ? menuAction.accessible : "";
     if (!explicitContext || !interact) return;
     interact.hidden = !prompt.present || prompt.menu;
     interact.disabled = !prompt.ready;
@@ -167,7 +179,7 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
     if (id !== null && stick.zone.hasPointerCapture?.(id)) try { stick.zone.releasePointerCapture(id); } catch { /* A cancelled pointer may already have gone. */ }
   }
   function clearTouch() { sticks.forEach(releaseStick); sprint = false; jog.setAttribute("aria-pressed", "false"); }
-  function clear() { clearTouch(); repeating.clear(); menu = null; lastKey = null; setRing(null); }
+  function clear() { clearTouch(); repeating.clear(); menu = null; menuAction = null; lastKey = null; setRing(null); }
   function release() { clear(); let pads; try { pads = gamepads(); } catch { /* An unavailable pad stays safely unarmed. */ } padState.release(pads); onRelease(); }
   function stickControl(kind) {
     const move = kind === "move", zoneId = move ? "vg-stick-zone" : "vg-look-zone", discId = move ? "vg-stick" : "vg-look-stick";
@@ -242,6 +254,12 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
     }
     return false;
   }
+  function nameMenuAction(surface) {
+    const el = doc.activeElement;
+    menuAction = surface.contains(el) && !surface.closest('[hidden],[inert]') && el.getClientRects().length && !el.disabled
+      ? villageMenuActionCopy({ label: el.dataset?.padLabel, accessible: el.getAttribute("aria-label"), heading: el.querySelector("[data-pad-name],b,strong,h3,h4")?.textContent, text: el.textContent, tag: el.tagName, expanded: el.tagName === "SUMMARY" && el.parentElement?.open }) : null;
+    updatePrompt();
+  }
   function handleMenu(surface, pad) {
     if (!surface || surface.hidden || !pad || suspended) return false;
     if (pad.active) setSource("pad");
@@ -281,6 +299,8 @@ export function createVillageControls({ root, blocked = () => false, onRelease =
       const index = Math.max(0, tabs.findIndex(el => el.getAttribute("aria-selected") === "true" || el.getAttribute("aria-pressed") === "true"));
       const next = tabs[(index + (pad.pressed(5) ? 1 : -1) + tabs.length) % tabs.length]; focus(surface, next); next.click();
     }
+    // A click may redraw or close the panel. Resolve the actual focus afterwards.
+    nameMenuAction(surface);
     return true;
   }
 
