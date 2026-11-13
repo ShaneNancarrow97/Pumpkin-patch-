@@ -10,6 +10,7 @@ import { EXPANSION_AREAS } from '../content/village-expansion.js';
 import { acreCellFree, onExpansionApproach } from '../village-expansion-spatial.js';
 import { spreadRect, gatherWorld } from './village-spread.js';
 import { townSquareObstacles, townSquareBlockers } from '../content/village-town-square.js';
+import { villageNeighbourhoodObstacles } from '../content/village-neighbourhoods.js';
 
 export const VILLAGE_WALK_RADIUS = .32;
 // Measured on the design grid as drawn, and kept where it now stands: the village was spread apart after it was
@@ -63,7 +64,7 @@ tavern.push(modelRect(102,24.4,"north",-3.55,3.82,-1.65,4.58));
 const green=DISTRICT_BY_ID.green.polygon.map(([x,z])=>gatherWorld(x,z)),limits={x0:Math.min(...green.map(p=>p[0])),x1:Math.max(...green.map(p=>p[0])),z0:Math.min(...green.map(p=>p[1])),z1:Math.max(...green.map(p=>p[1]))};
 export function villageWalkObstacles(s) {
   const boxes=[...scenery,...buildings,...walls,...tavern,
-    ...homes(), GRANNY, ...townSquareObstacles()
+    ...homes(), GRANNY, ...townSquareObstacles(), ...villageNeighbourhoodObstacles(s)
   ];
   boxes.push(body(FIXTURES.stall),body(FIXTURES.noticeboard),body(FIXTURES.bench),body(FIXTURES.pond),{x:FIXTURES.tree.x,z:FIXTURES.tree.z,r:3.4*K},{x:FIXTURES.well.x,z:FIXTURES.well.z,r:FIXTURES.well.r});
   for(const[flag,x,z]of[['restaurant-opening',64,74],['lantern-night',52,34]])if(s?.village?.expansion?.effects?.includes(flag)){
@@ -100,10 +101,10 @@ export function villageCameraReach(from, to, blockers = villageCameraBlockers(),
 }
 // Placement shares the actual building, fence and water exclusions with walking.
 // A conservative enclosing box keeps every rotated corner off fixed scenery.
-export function villageDecorGroundClear(id,x,z,rotation=0) {
+export function villageDecorGroundClear(id,x,z,rotation=0,state=null) {
   const bounds=villageDecorBounds(id,x,z,rotation),def=VILLAGE_DECOR_BY_ID[id];if(!bounds||!def)return false;
   const {x0,z0,x1,z1}=bounds;
-  if(villageWalkObstacles(null).some(b=>b.r!==undefined?Math.hypot(Math.max(x0,Math.min(x1,b.x))-b.x,Math.max(z0,Math.min(z1,b.z))-b.z)<b.r:x0<b.x1&&x1>b.x0&&z0<b.z1&&z1>b.z0))return false;
+  if(villageWalkObstacles(state).some(b=>!b.decor&&(b.r!==undefined?Math.hypot(Math.max(x0,Math.min(x1,b.x))-b.x,Math.max(z0,Math.min(z1,b.z))-b.z)<b.r:x0<b.x1&&x1>b.x0&&z0<b.z1&&z1>b.z0)))return false;
   const a=rotation*Math.PI/180,c=Math.cos(a),sn=Math.sin(a),nx=Math.max(1,Math.ceil(def.w/.4)),nz=Math.max(1,Math.ceil(def.d/.4));
   for(let i=0;i<=nx;i++)for(let j=0;j<=nz;j++){const u=(i/nx-.5)*def.w,w=(j/nz-.5)*def.d;if(isWater((x+u*c+w*sn)/K,(z-u*sn+w*c)/K))return false;}
   return true;
