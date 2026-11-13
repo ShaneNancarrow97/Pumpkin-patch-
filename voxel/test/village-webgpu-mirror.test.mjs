@@ -45,3 +45,15 @@ test("closed selection-line geometry retires when the selection is removed", () 
   assert.equal(mirror.stats().ownedLineGeometries, 0); assert.equal(retired, 1);
   mirror.dispose(); assert.equal(retired, 1);
 });
+
+test("animated fog values retain the GPU node-cache identity and never mutate source fog", () => {
+  const source = new GL.Scene(), camera = new GL.PerspectiveCamera(); source.fog = new GL.FogExp2(0x261435, .004);
+  const mirror = createVillageGpuMirror(factory()); mirror.sync(source, camera);
+  const ownFog = mirror.scene.fog; assert.notEqual(ownFog, source.fog);
+  source.fog.density = .009; source.fog.color.set(0x392448); mirror.sync(source, camera);
+  assert.equal(mirror.scene.fog, ownFog); assert.equal(ownFog.density, .009); assert.equal(ownFog.color.getHex(), 0x392448);
+  source.fog = new GL.Fog(0x221133, 5, 90); mirror.sync(source, camera);
+  assert.notEqual(mirror.scene.fog, ownFog); const rangeFog = mirror.scene.fog;
+  source.fog.far = 80; mirror.sync(source, camera); assert.equal(mirror.scene.fog, rangeFog); assert.equal(rangeFog.far, 80);
+  source.fog = null; mirror.sync(source, camera); assert.equal(mirror.scene.fog, null); mirror.dispose();
+});

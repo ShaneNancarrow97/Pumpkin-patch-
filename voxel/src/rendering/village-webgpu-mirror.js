@@ -96,7 +96,15 @@ export function createVillageGpuMirror(materials) {
     sync(source, sourceCamera) {
       source.updateMatrixWorld(); sourceCamera.updateMatrixWorld();
       scene.background = source.background; scene.environment = source.environment;
-      scene.fog = source.fog?.clone() ?? null;
+      // Node cache identity includes the fog node. Replacing this object every
+      // frame rebuilds every affected shader even when its values are equal.
+      if (!source.fog) scene.fog = null;
+      else {
+        if (!scene.fog || !!scene.fog.isFogExp2 !== !!source.fog.isFogExp2) scene.fog = source.fog.clone();
+        scene.fog.color.copy(source.fog.color);
+        if (source.fog.isFogExp2) scene.fog.density = source.fog.density;
+        else { scene.fog.near = source.fog.near; scene.fog.far = source.fog.far; }
+      }
       const seen = new Set(); for (const child of source.children) synchronize(child, scene, seen);
       for (const [original, object] of objects) if (!seen.has(original)) {
         object.removeFromParent(); objects.delete(original); mirrorCount--;
