@@ -7,6 +7,7 @@ import {
 import {
   VILLAGE_DUSK_ART as ART, VILLAGE_DUSK_CLOUDS as CLOUDS,
   VILLAGE_DUSK_COLOURS as COLOURS,
+  VILLAGE_SKY_HIGHLIGHTS as HIGHLIGHTS,
 } from '../village-dusk-sky.js';
 
 const duskHash = Fn(([point]) => {
@@ -28,10 +29,12 @@ const duskNoise = Fn(([point]) => {
 /** Port the existing dome fragment without owning its geometry, texture or clocks. */
 export function createVillageSkyNodeMaterial(sourceMaterial, bindUniform) {
   const source = sourceMaterial.uniforms;
-  const top = bindUniform(source.top, 'vec3');
-  const middle = bindUniform(source.middle, 'vec3');
-  const horizon = bindUniform(source.horizon, 'vec3');
-  const low = bindUniform(source.low, 'vec3');
+  // Both types compile to vec3, but Three's Color uploader reads r/g/b.
+  // Explicit vec3 would read missing x/y/z and poison the sky with NaN.
+  const top = bindUniform(source.top, 'color');
+  const middle = bindUniform(source.middle, 'color');
+  const horizon = bindUniform(source.horizon, 'color');
+  const low = bindUniform(source.low, 'color');
   const moon = bindUniform(source.moon, 'vec3');
   const time = bindUniform(source.villageDuskTime, 'float');
   const art = bindUniform(source.villageDuskArt, 'texture');
@@ -142,7 +145,11 @@ export function createVillageSkyNodeMaterial(sourceMaterial, bindUniform) {
       colour.assign(mix(colour, vec3(.045, .028, .075), float(1).sub(smoothstep(middleRidge.sub(.003), middleRidge.add(.003), y)).mul(.8)));
       colour.assign(mix(colour, vec3(.025, .018, .043), float(1).sub(smoothstep(nearRidge.sub(.003), nearRidge.add(.003), y)).mul(.86)));
     });
-    return vec4(clamp(colour, vec3(0), vec3(.68)), 1);
+    colour.assign(clamp(colour, vec3(0), vec3(.68)));
+    const peak = max(colour.r, max(colour.g, colour.b)).toVar();
+    const excess = max(0, peak.sub(HIGHLIGHTS.knee)).toVar();
+    const shoulder = excess.div(float(1).add(excess.div(HIGHLIGHTS.shoulder))).add(HIGHLIGHTS.knee);
+    return vec4(colour.mul(min(1, shoulder.div(max(peak, .00001)))), 1);
   })();
   return material;
 }

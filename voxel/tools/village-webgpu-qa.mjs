@@ -97,7 +97,7 @@ try {
     check("GPU materials actually consume finish, AO, PBR and custom effects", s.materials.ready && s.materials.unsupported === 0 && s.materials.roles["voxel-ao"] > 0 && s.materials.roles["pbr-atlas"] > 0 && s.materials.roles.finish > 0 && s.materials.effectMaterials > 0, s.materials);
     check("The GPU mirror retains all eight actual point lights", s.lights?.point === report.surface.pointLights.length, s.lights);
     check("HDR bloom and the display grade run in the real GPU post pipeline", s.post?.hdr && s.post.bloom && s.post.displayGrade && s.post.toneMapping === "ACES" && s.post.output === "sRGB", s.post);
-    check("The presentation canvas leaves HTML controls interactive", await page.locator(".village-webgpu-canvas").evaluate(c => !c.hidden && getComputedStyle(c).pointerEvents === "none" && c.getAttribute("aria-hidden") === "true"));
+    check("The visible presentation canvas leaves HTML controls interactive", await page.locator(".village-webgpu-canvas").evaluate(c => { const s = getComputedStyle(c), r = c.getBoundingClientRect(); return s.display !== "none" && s.visibility === "visible" && Number(s.opacity) > 0 && r.width > 0 && r.height > 0 && s.pointerEvents === "none" && c.getAttribute("aria-hidden") === "true"; }));
   }
   await shot(`${webgl ? "webgl" : "webgpu"}-world.png`);
   await page.locator('.vg-dock [data-vg-page="journal"]').click(); await page.waitForFunction(() => PumpkinVoxel.village.status.panel === "journal");
@@ -133,8 +133,8 @@ try {
   }
 
   await page.evaluate(() => PumpkinVoxel.village.close()); await frames();
-  const closed = await page.evaluate(() => ({ active: PumpkinVoxel.village.active, bodyVillage: document.body.classList.contains("in-village"), overlays: [...document.querySelectorAll(".village-webgpu-canvas")].map(c => ({ hidden: c.hidden })), renderer: PumpkinVoxel.scene.villageRendererStatus, playerEnabled: PumpkinVoxel.scene.player.enabled }));
-  check("Returning to the farm removes the GPU overlay and restores farm play", !closed.active && !closed.bodyVillage && closed.overlays.every(c => c.hidden) && closed.renderer.backend === "webgl" && closed.playerEnabled, closed);
+  const closed = await page.evaluate(() => ({ active: PumpkinVoxel.village.active, bodyVillage: document.body.classList.contains("in-village"), overlays: [...document.querySelectorAll(".village-webgpu-canvas")].map(c => { const s = getComputedStyle(c); return { hiddenAttribute: c.hidden, display: s.display, visibility: s.visibility, opacity: s.opacity, concealed: s.display === "none" || s.visibility === "hidden" || s.visibility === "collapse" || Number(s.opacity) === 0 }; }), renderer: PumpkinVoxel.scene.villageRendererStatus, playerEnabled: PumpkinVoxel.scene.player.enabled }));
+  check("Returning to the farm conceals the GPU overlay and restores farm play", !closed.active && !closed.bodyVillage && closed.overlays.every(c => c.concealed) && closed.renderer.backend === "webgl" && closed.playerEnabled, closed);
   await shot("returned-farm.png");
   const warmed = Date.now(), beforeWarm = await readStatus(); report.warmed = { initialStatus: beforeWarm, finalStatus: await open(), elapsedWallMs: Date.now() - warmed };
   if (!webgl) {

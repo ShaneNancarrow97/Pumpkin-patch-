@@ -8,6 +8,7 @@
 // Realm (x east, z north) → three (x, -z).
 import * as THREE from "three";
 import { applyGrassDetail } from "./grass-detail.js";
+import { VILLAGE_SKY_HIGHLIGHTS } from "./village-dusk-sky.js";
 import { villageTreeVisibility } from "./village-visibility.js";
 import { villageEntrance, entranceAutumnTree } from "./village-entrance-dressing.js";
 import { createVillageWaterClock, createVillageWaterMaterial } from "./village-water-material.js";
@@ -944,8 +945,9 @@ export function buildHorizon() {
   const dir = new THREE.Vector3(.36, .42, -.83).normalize(); moon.position.copy(dir).multiplyScalar(420).add(new THREE.Vector3(60, 0, -40)); moon.lookAt(60, 0, -40); group.add(moon);
   const hc = document.createElement("canvas"); hc.width = hc.height = 128; const h2 = hc.getContext("2d"), grad = h2.createRadialGradient(64, 64, 10, 64, 64, 64);
   grad.addColorStop(0, "rgba(255,240,220,.5)"); grad.addColorStop(.35, "rgba(190,170,255,.16)"); grad.addColorStop(1, "rgba(90,70,160,0)"); h2.fillStyle = grad; h2.fillRect(0, 0, 128, 128);
-  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(hc), transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending }));
-  halo.scale.set(150, 150, 1); halo.position.copy(moon.position).addScaledVector(dir, -2); group.add(halo);
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(hc), transparent: true, opacity: VILLAGE_SKY_HIGHLIGHTS.haloOpacity, depthWrite: false, fog: false, blending: THREE.AdditiveBlending }));
+  halo.name = "village-moon-halo";
+  halo.scale.set(VILLAGE_SKY_HIGHLIGHTS.haloSize, VILLAGE_SKY_HIGHLIGHTS.haloSize, 1); halo.position.copy(moon.position).addScaledVector(dir, -2); group.add(halo);
   return group;
 }
 // Low mist drifting over the ravine, the marsh, the Copse and the Green's edges (the view drifts it).

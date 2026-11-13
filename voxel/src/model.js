@@ -14,7 +14,8 @@ import { freshWanted, restoreWanted, updateWanted } from "./rules/market.js";
 import { freshOrders, restoreOrders, updateOrders } from "./rules/orders.js";
 import { VISITOR_UPGRADES, SHOP_LEVEL_KEYS, SHOP_MAX_LEVELS, closeForTheNight, freshShop, freshStall, freshVisitorUpgrades, freshBigSpender, restoreBigSpender, updateShop, updateStall } from "./rules/selling.js";
 import { freshHouse, restoreHouse } from "./rules/house.js";
-import { freshLooks, freshWardrobe, restoreWardrobe } from "./rules/wardrobe.js";
+import { freshLooks, freshWardrobe, restoreLooks, restoreWardrobe } from "./rules/wardrobe.js";
+import { awardHomecomingLooks } from "./rules/homecoming.js";
 import { awardLevels, freshProgression, restoreProgression } from "./rules/levels.js";
 import { recordHomeActivity } from "./rules/home-goals.js";
 import { freshFestival, restoreFestival, updateFestival } from "./rules/festival-meadow.js";
@@ -44,6 +45,8 @@ export * from "./rules/carving-stand.js";
 export * from "./rules/selling.js";
 export * from "./rules/house.js";
 export * from "./rules/wardrobe.js";
+export * from "./rules/homecoming.js";
+export * from "./content/homecoming.js";
 export * from "./rules/progress.js";
 export * from "./rules/unlocks.js";
 
@@ -175,7 +178,7 @@ export function restoreState(raw) {
   s.hollowHouse = restoreHollowHouse(raw.hollowHouse);
   s.hayride = restoreHayride(raw.hayride);
   s.wardrobe = restoreWardrobe(raw.wardrobe);
-  if (raw.looks && Array.isArray(raw.looks.owned)) s.looks = { natalie: raw.looks.natalie ?? "olive", shane: raw.looks.shane ?? "black", owned: [...new Set(["olive", "black", ...raw.looks.owned])] };
+  s.looks = restoreLooks(raw.looks);
   const claimed = (Array.isArray(raw.claimed) ? raw.claimed : []).map((id) => (v1 ? OLD_GOALS[id] : id));
   s.claimed = [...new Set(claimed.filter((id) => FAVOURS.some((f) => f.id === id)))];
   s.memories = Array.isArray(raw.memories) ? [...new Set(raw.memories.filter((id) => typeof id === "string"))] : [];
@@ -226,6 +229,7 @@ export function update(s, dt, options = {}) {
   for (const e of updateVillage(s, villageDt)) events.push({ ...e, village: true });
   updateDining(s, dt);
   checkMemories(s, events);
+  awardHomecomingLooks(s, events);
   for (const level of awardLevels(s)) events.push({ type: "level-up", level });
   recordNews(s, events);
   return events;

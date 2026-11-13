@@ -1,0 +1,244 @@
+{
+  "scope": "Small genuine WebGPU fixture with production mirror/post/overlay",
+  "fullCss": null,
+  "errors": [],
+  "checks": [
+    {
+      "label": "Visible world pixels change after real camera and actor motion",
+      "pass": false,
+      "before": "6f337f5a733b379d1be4dc5aa90785b8e31503889fc49f4a8ce275f6717833e8",
+      "after": "6f337f5a733b379d1be4dc5aa90785b8e31503889fc49f4a8ce275f6717833e8"
+    },
+    {
+      "label": "Post and FXAA are genuinely active",
+      "pass": true
+    },
+    {
+      "label": "Actual GPU colour-buffer pixels change after camera and actor motion",
+      "pass": true,
+      "before": "40688d9e99b60dec8bc64fc7e7b76fab545716aab98f8c04e5d428a3c53d389a",
+      "after": "58f6b67267976eba469eb9cad0d0a5b82c0c327efc79d9635831222f055412cb"
+    }
+  ],
+  "ready": {
+    "requested": "auto",
+    "backend": "webgpu",
+    "stage": "ready",
+    "reason": null,
+    "failureStack": null,
+    "frames": 4,
+    "actualBackend": "webgpu",
+    "renderFrames": 5,
+    "completedFrames": 4,
+    "inFlight": true,
+    "maxFramesInFlight": 1,
+    "skippedSubmissions": 31,
+    "mirroredObjects": 5,
+    "ownedGeometryViews": 3,
+    "geometryViewsCreated": 3,
+    "geometryViewsRetired": 0,
+    "ownedLineGeometries": 0,
+    "lights": {
+      "point": 0,
+      "hemisphere": 1,
+      "directional": 1,
+      "ambient": 0
+    },
+    "materials": {
+      "ready": true,
+      "converted": 3,
+      "effectMaterials": 0,
+      "unsupported": 0,
+      "roles": {},
+      "derivedInstanceBytes": 0,
+      "textureWrappers": 0
+    },
+    "calls": 17,
+    "triangles": 206,
+    "renderPasses": 15,
+    "shaderCache": {
+      "normalizedStages": 6,
+      "builders": 12,
+      "vertexPrograms": 7,
+      "fragmentPrograms": 11
+    },
+    "textures": 26,
+    "bufferWidth": 640,
+    "bufferHeight": 400,
+    "post": {
+      "hdr": true,
+      "bloom": true,
+      "shadows": false,
+      "displayGrade": true,
+      "fxaa": true,
+      "glowScale": 1,
+      "toneMapping": "ACES",
+      "output": "sRGB"
+    }
+  },
+  "before": {
+    "status": {
+      "requested": "auto",
+      "backend": "webgpu",
+      "stage": "ready",
+      "reason": null,
+      "failureStack": null,
+      "frames": 4,
+      "actualBackend": "webgpu",
+      "renderFrames": 5,
+      "completedFrames": 4,
+      "inFlight": true,
+      "maxFramesInFlight": 1,
+      "skippedSubmissions": 31,
+      "mirroredObjects": 5,
+      "ownedGeometryViews": 3,
+      "geometryViewsCreated": 3,
+      "geometryViewsRetired": 0,
+      "ownedLineGeometries": 0,
+      "lights": {
+        "point": 0,
+        "hemisphere": 1,
+        "directional": 1,
+        "ambient": 0
+      },
+      "materials": {
+        "ready": true,
+        "converted": 3,
+        "effectMaterials": 0,
+        "unsupported": 0,
+        "roles": {},
+        "derivedInstanceBytes": 0,
+        "textureWrappers": 0
+      },
+      "calls": 17,
+      "triangles": 206,
+      "renderPasses": 15,
+      "shaderCache": {
+        "normalizedStages": 6,
+        "builders": 12,
+        "vertexPrograms": 7,
+        "fragmentPrograms": 11
+      },
+      "textures": 26,
+      "bufferWidth": 640,
+      "bufferHeight": 400,
+      "post": {
+        "hdr": true,
+        "bloom": true,
+        "shadows": false,
+        "displayGrade": true,
+        "fxaa": true,
+        "glowScale": 1,
+        "toneMapping": "ACES",
+        "output": "sRGB"
+      }
+    },
+    "canvases": [
+      {
+        "class": "",
+        "hidden": false,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 640,
+          "height": 400,
+          "top": 0,
+          "right": 640,
+          "bottom": 400,
+          "left": 0
+        },
+        "filter": "none",
+        "zIndex": "auto",
+        "display": "block"
+      },
+      {
+        "class": "village-webgpu-canvas",
+        "hidden": false,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 640,
+          "height": 400,
+          "top": 0,
+          "right": 640,
+          "bottom": 400,
+          "left": 0
+        },
+        "filter": "none",
+        "zIndex": "auto",
+        "display": "block"
+      }
+    ]
+  },
+  "after": {
+    "requested": "auto",
+    "backend": "webgpu",
+    "stage": "ready",
+    "reason": null,
+    "failureStack": null,
+    "frames": 9,
+    "actualBackend": "webgpu",
+    "renderFrames": 10,
+    "completedFrames": 9,
+    "inFlight": true,
+    "maxFramesInFlight": 1,
+    "skippedSubmissions": 82,
+    "mirroredObjects": 5,
+    "ownedGeometryViews": 3,
+    "geometryViewsCreated": 3,
+    "geometryViewsRetired": 0,
+    "ownedLineGeometries": 0,
+    "lights": {
+      "point": 0,
+      "hemisphere": 1,
+      "directional": 1,
+      "ambient": 0
+    },
+    "materials": {
+      "ready": true,
+      "converted": 3,
+      "effectMaterials": 0,
+      "unsupported": 0,
+      "roles": {},
+      "derivedInstanceBytes": 0,
+      "textureWrappers": 0
+    },
+    "calls": 17,
+    "triangles": 206,
+    "renderPasses": 15,
+    "shaderCache": {
+      "normalizedStages": 6,
+      "builders": 12,
+      "vertexPrograms": 7,
+      "fragmentPrograms": 11
+    },
+    "textures": 26,
+    "bufferWidth": 640,
+    "bufferHeight": 400,
+    "post": {
+      "hdr": true,
+      "bloom": true,
+      "shadows": false,
+      "displayGrade": true,
+      "fxaa": true,
+      "glowScale": 1,
+      "toneMapping": "ACES",
+      "output": "sRGB"
+    }
+  },
+  "raw": [
+    {
+      "class": "",
+      "hash": "1035d4270579d911b7d3488e8edcd64c8c71bc27469e27bdea4efc8ae65b8b33"
+    },
+    {
+      "class": "village-webgpu-canvas",
+      "hash": "58f6b67267976eba469eb9cad0d0a5b82c0c327efc79d9635831222f055412cb"
+    }
+  ],
+  "nativeControl": {
+    "visiblePixelsChanged": false,
+    "red": "9abfacbe76fb52d46a1b095b5d563fa001c4bb9cd27a935daf95405a9090d8a2",
+    "blue": "9abfacbe76fb52d46a1b095b5d563fa001c4bb9cd27a935daf95405a9090d8a2"
+  }
+}

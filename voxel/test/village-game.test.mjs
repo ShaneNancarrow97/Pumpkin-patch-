@@ -99,11 +99,14 @@ function harness(t, s = farm(), narration, extra = {}) {
   Object.defineProperty(view,"expansionTargets",{configurable:true,get:()=>["rowan","elowen"].map(id=>({type:"village-folk",id,...view.folk.spotOf(id)}))});
   view.dialogueCamera={begin(player,neighbour){cameraCalls.dialogue.push({kind:"begin",player:{...player},neighbour:{...neighbour}});},end(options){cameraCalls.dialogue.push({kind:"end",options});}};
   const scene = { villageView: view, place: null, player: { state: () => ({ ...owner }), setEnabled(on, who = owner.who) { owner.enabled = on; owner.who = who; } }, enter(kind) { this.place = { kind }; }, leavePlace() { touring = false; this.place = null; }, villageCharacter() { const actor = new THREE.Group(), frame = new THREE.Group(); actor.add(new THREE.Group()); actor.userData = { idle: [frame], walk: [frame], shown: frame, show() {}, dispose() { actor.userData.disposed = true; } }; actor.userData.playerAnimate=pose=>{actor.userData.lastPose=pose;actor.userData.poseCount=(actor.userData.poseCount??0)+1;}; actors.push(actor); return actor; } };
+  const lookListeners = new Set();
+  scene.onLooksChanged = listener => { lookListeners.add(listener); return () => lookListeners.delete(listener); };
+  scene.refreshLooks = () => { for (const listener of lookListeners) listener(); };
   // Supply the scene's image/projection port so pad tests use the real map UI.
   // The capture helper and browser checks verify the rendered world itself.
   scene.captureVillageMap=()=>({url:"data:image/png;base64,headless-world-map",width:1200,height:900,projectPoint:({x,z})=>({x:(x+200)*1.8,y:(320-z)*1.8,visible:true})});
   let returnPrompt;
-  const game = createVillageGame({ state: () => s, scene, narration, prefs: extra.prefs??{}, savePrefs: extra.savePrefs??(()=>{}), save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), onGatherSound:e=>{gatherSounds.push(e);extra.onGatherSound?.(e);}, closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: extra.portrait??(() => null), itemArt: () => "", controlsView: headlessControls, decorateView: () => ({ active: false, close() {}, dispose() {}, tick() {}, pick() {}, back() {}, open() { return false; } }),
+  const game = createVillageGame({ state: () => s, scene, narration, now: extra.now, prefs: extra.prefs??{}, savePrefs: extra.savePrefs??(()=>{}), save: () => saves.push(M.saveData(s)), notice: n => notices.push(n), onGatherSound:e=>{gatherSounds.push(e);extra.onGatherSound?.(e);}, closeMenus: () => menuCloses++, onLeave: () => leaves++, portrait: extra.portrait??(() => null), itemArt: () => "", controlsView: headlessControls, decorateView: () => ({ active: false, close() {}, dispose() {}, tick() {}, pick() {}, back() {}, open() { return false; } }),
     returnPromptView(options){const element=doc.createElement("section");element.id="village-return-prompt";element.hidden=true;element.innerHTML='<button class="village-return-confirm" data-pad-default>Return</button><button class="village-return-cancel">Stay</button>';doc.body.append(element);let active=false;returnPrompt={open(){if(active)return false;active=true;element.hidden=false;element.querySelector("button").focus();return true;},close(){active=false;element.hidden=true;},confirm(){if(!active)return;this.close();options.onConfirm();},cancel(){if(!active)return;this.close();options.onCancel();},setInput(){},destroy(){this.close();element.remove();},get active(){return active;},element};element.querySelector(".village-return-confirm").onclick=()=>returnPrompt.confirm();element.querySelector(".village-return-cancel").onclick=()=>returnPrompt.cancel();return returnPrompt;},
     questReceiptView(){const seen=new Set(),add=(key,value,list)=>{if(!seen.has(key)){seen.add(key);list.push(value);}};return{notify(event){add(`quest:${event.quest}`,event,receipts);},notifyChapter(event){add(`chapter:${event.id}`,event,chapterReceipts);},notifyMessage(event){add(`message:${event.id}`,event,messageReceipts);},tick(options){receiptTicks.push(options);extra.onReceiptTick?.(options);},clear(){},destroy(){},get active(){return !!extra.receiptActive;}};},
     conversationView(options) { callback = options; return { open(options) { conversation = options; }, close() { if (conversation) { conversation = null; options.onClose(); } }, get active() { return !!conversation; }, dispose() { this.close(); } }; } });
@@ -316,6 +319,45 @@ test("the owner billboard and idle pose keep facing a moving dialogue camera and
   assert.equal(actor.rotation.y,Math.atan2(5,-6));assert.ok(actor.userData.poseCount>initialCount);assert.equal(actor.userData.lastPose.walking,false);assert.equal(actor.userData.lastPose.facing,"front");assert.equal(actor.userData.lastPose.keepFacingOnIdle,false);assert.equal(actor.userData.lastPose.phase,phase);assert.deepEqual(h.game.status.position,at);
   h.game.back();h.view.dialogueCamera.active=true;turnCamera(-7,3);h.game.tick(.1);
   assert.equal(actor.rotation.y,Math.atan2(-7,3));assert.equal(actor.userData.lastPose.walking,false);assert.equal(actor.userData.lastPose.phase,phase);assert.deepEqual(h.game.status.position,at,"camera return updates art without walking the owner");
+});
+
+test("wardrobe refresh replaces only an active changed village appearance without resetting movement or camera", t => {
+  const h=harness(t);h.scene.refreshLooks();assert.equal(h.actors.length,0,"farm-only refresh never creates a village actor");
+  h.game.open();h.game.back();h.key("keydown","w");h.game.tick(.1);
+  const previous=h.actors.at(-1),pose=previous.userData.lastPose,position=previous.position.clone(),rotation=previous.rotation.clone(),resets=h.cameraCalls.reset;
+  const status=h.game.status,camera=h.view.camera.matrixWorld.toArray(),saves=h.saves.length;
+  assert.equal(pose.walking,true);
+  assert.equal(M.wearCostume(h.state,"natalie-wheelchair"),true);
+  const saved=JSON.stringify(M.saveData(h.state));h.scene.refreshLooks();
+  const current=h.actors.at(-1);
+  assert.notEqual(current,previous);assert.equal(previous.userData.disposed,true);
+  assert.equal(current.userData.lastPose.outfit,"natalie-wheelchair");
+  assert.equal(current.userData.lastPose.phase,pose.phase);assert.equal(current.userData.lastPose.walking,true);
+  assert.deepEqual(current.position,position);assert.deepEqual(current.rotation.toArray(),rotation.toArray());
+  assert.deepEqual(h.game.status,status);assert.equal(h.cameraCalls.reset,resets);assert.deepEqual(h.view.camera.matrixWorld.toArray(),camera);
+  assert.equal(JSON.stringify(M.saveData(h.state)),saved);assert.equal(h.saves.length,saves,"appearance is presentation only");
+  h.scene.refreshLooks();assert.equal(h.actors.at(-1),current,"unchanged look does not rebuild");
+  h.state.looks.owned.push("plum");h.state.looks.natalie="plum";h.scene.refreshLooks();assert.equal(h.actors.at(-1),current,"a recolour never replaces an equipped wheelchair");
+  h.game.tick(.1);assert.notDeepEqual(h.game.status.position,status.position,"held keyboard input survives the refresh");h.key("keyup","w");
+  M.wearCostume(h.state,"natalie-base");h.scene.refreshLooks();assert.notEqual(h.actors.at(-1),current);
+  const base=h.actors.at(-1);h.state.looks.natalie="olive";h.scene.refreshLooks();assert.notEqual(h.actors.at(-1),base,"effective base recolours refresh immediately");
+  h.game.close();const count=h.actors.length;h.scene.refreshLooks();assert.equal(h.actors.length,count,"returning to farm disables village replacement");
+});
+
+test("appearance refresh preserves tour hiding and an in-progress gathering tool", t => {
+  const h=harness(t);h.game.open();
+  assert.equal(h.actors.at(-1).visible,false);const resets=h.cameraCalls.reset;
+  M.wearCostume(h.state,"natalie-wheelchair");h.scene.refreshLooks();
+  assert.equal(h.actors.at(-1).visible,false);assert.equal(h.cameraCalls.reset,resets);assert.equal(h.game.status.touring,true);
+  h.game.back();for(const who of ["rowan","elowen"]){h.meet(who);h.complete();}
+  const tools=[];h.view.gatherTool=options=>tools.push(options);
+  const node=NODES.find(n=>n.material==="logs"&&M.nodeReady(h.state,n.id));h.walkNear(node);h.game.pick({type:"village-node",id:node.id});h.game.tick(.2);
+  const work=h.game.status.gathering,events=h.gatherSounds.length,saves=h.saves.length;
+  M.wearCostume(h.state,"natalie-base");const saved=JSON.stringify(M.saveData(h.state));h.scene.refreshLooks();
+  assert.deepEqual(h.game.status.gathering,work);assert.equal(tools.at(-1).actor,h.actors.at(-1));assert.equal(tools.at(-1).progress,work.progress);assert.equal(tools.at(-1).active,true);
+  assert.equal(h.actors.at(-1).userData.lastPose.walking,false);assert.equal(h.actors.at(-1).userData.lastPose.facing,"front");
+  assert.equal(h.gatherSounds.length,events);assert.equal(h.saves.length,saves);assert.equal(JSON.stringify(M.saveData(h.state)),saved);
+  const before=h.state.village.materials.logs??0;h.game.tick(.8);assert.equal(h.game.status.gathering,null);assert.ok(h.state.village.materials.logs>before);assert.equal(h.gatherSounds.filter(e=>e.phase==="complete").length,1);
 });
 
 test("a fresh stick hold introduced during the camera return needs neutral before walking resumes", t => {
@@ -763,4 +805,33 @@ test("Rowan’s discovery action opens his real workshop and still requires a ne
   assert.equal(h.game.status.panel,null,"a stale distant conversation cannot open the workshop");
   assert.equal(h.game.status.waypoint.folkId,"rowan");
   assert.equal(JSON.stringify(M.saveData(h.state)),beforeRemote);
+});
+
+test("HUD refreshes at ten hertz while every movement frame still updates the owner and camera", t => {
+  let time = 0;
+  const h = harness(t, farm(), undefined, { now: () => time }); h.game.open(); h.game.back(); h.game.tick(0);
+  const rate = h.$("#vg-farm-rate"), setAttribute = rate.setAttribute.bind(rate); let draws = 0;
+  rate.setAttribute = (key, value) => { if (key === "aria-label") draws++; setAttribute(key, value); };
+  const actor = h.actors.at(-1), poses = actor.userData.poseCount, follows = h.cameraCalls.follow, before = h.game.status.position;
+  h.pad.axes[1] = -.6;
+  for (let frame = 1; frame <= 60; frame++) { time = frame * 1000 / 60; h.game.tick(1 / 60); }
+  assert.ok(draws >= 9 && draws <= 10, `one second of HUD: ${draws} refreshes`);
+  assert.equal(actor.userData.poseCount - poses, 60); assert.equal(h.cameraCalls.follow - follows, 60);
+  assert.ok(Math.hypot(h.game.status.position.x - before.x, h.game.status.position.z - before.z) > .5);
+  const last = draws; h.state.coins += 37; h.game.render();
+  assert.equal(draws, last + 1, "an explicit action refreshes immediately");
+  assert.equal(h.$("#vg-coins").textContent, "£" + Math.round(h.state.coins).toLocaleString("en-GB"));
+  time += 1; h.game.tick(1 / 1000); assert.equal(draws, last + 1, "the next tick does not repeat the action's refresh");
+});
+
+test("HUD cadence never delays a nearby Talk action or stops paused UI updates", t => {
+  let time = 0;
+  const h = harness(t, farm(), undefined, { now: () => time }); welcome(h); h.game.place(87, 5);
+  time = 1; h.game.tick(.001);
+  assert.equal(h.$("#vg-interact").hidden, false); assert.equal(h.$("#vg-interact").textContent, "Talk");
+  h.pad.buttons[0].pressed = true; time = 2; h.game.tick(.001);
+  assert.equal(h.conversation?.id, "rowan", "controller confirm remains live between HUD heartbeats");
+  h.pad.buttons[0].pressed = false; h.game.back(); h.state.paused = true; h.state.coins += 42;
+  time = 102; h.game.tick(0);
+  assert.equal(h.$("#vg-coins").textContent, "£" + Math.round(h.state.coins).toLocaleString("en-GB"), "real-time HUD still refreshes with zero simulation delta");
 });

@@ -7,14 +7,23 @@ import * as GPU from "three/webgpu";
 export function createVillageGpuMirror(materials) {
   const objects = new Map(), ownedGeometry = new Set(), geometryViews = new Map();
   const scene = new GPU.Scene(), camera = new GPU.PerspectiveCamera();
-  let mirrorCount = 0;
+  const seen = new Set(), liveGeometry = new Set(), syncedGeometry = new Set();
+  // This presentation root never moves. Keeping it clean lets unchanged world
+  // matrices survive the explicit sync and the renderer's subsequent traversal.
+  scene.matrixAutoUpdate = false;
+  let mirrorCount = 0, geometryViewsCreated = 0, geometryViewsRetired = 0;
   function geometryFor(source) {
     if (!source) return undefined;
+    liveGeometry.add(source);
     let geometry = geometryViews.get(source);
     if (!geometry) {
       geometry = source.isInstancedBufferGeometry ? new GPU.InstancedBufferGeometry() : new GPU.BufferGeometry();
-      geometry.name = `GPU:${source.name || source.type}`; geometryViews.set(source, geometry);
+      geometry.name = `GPU:${source.name || source.type}`; geometryViews.set(source, geometry); geometryViewsCreated++;
     }
+    // Voxel batches and sprite layers share geometry. Copy its live metadata
+    // once per submitted frame, while still noticing edits on the next frame.
+    if (syncedGeometry.has(source)) return geometry;
+    syncedGeometry.add(source);
     // Own the listener target, borrow the arrays. Persistent WebGL geometry
     // must not retain the retired GPU renderer through dispose listeners.
     geometry.index = source.index;
@@ -60,9 +69,11 @@ export function createVillageGpuMirror(materials) {
   function convert(source) { return Array.isArray(source.material) ? source.material.map(m => materials.convert(m, source)) : materials.convert(source.material, source); }
   function synchronize(source, parent, seen) {
     let object = objects.get(source) ?? create(source); seen.add(source);
-    if (object.parent !== parent) parent.add(object);
-    if (source.matrixAutoUpdate) source.updateMatrix(); object.matrix.copy(source.matrix);
-    object.matrixWorldNeedsUpdate = true; object.visible = source.visible;
+    if (object.parent !== parent) { parent.add(object); object.matrixWorldNeedsUpdate = true; }
+    // source.updateMatrixWorld() already composed every local matrix. Copy only
+    // changed transforms; moving parents still propagate to their descendants.
+    if (!object.matrix.equals(source.matrix)) { object.matrix.copy(source.matrix); object.matrixWorldNeedsUpdate = true; }
+    object.visible = source.visible;
     object.layers.mask = source.layers.mask; object.frustumCulled = source.frustumCulled; object.renderOrder = source.renderOrder;
     object.castShadow = source.castShadow; object.receiveShadow = source.receiveShadow;
     if (source.isLight) {
@@ -81,6 +92,14 @@ export function createVillageGpuMirror(materials) {
     if (descriptor) descriptor.sync?.(object);
     else if (source.isMesh || source.isSprite || source.isLine) {
       if (!source.isLineLoop) object.geometry = geometryFor(source.geometry);
+      // Authored walk frames cycle through plane geometries. Retiring the old
+      // one each step forces buffer/pipeline work when that frame returns. Keep
+      // a bounded history on the actor's front plane, not on scenery or layers.
+      if (source.customDepthMaterial && source.geometry?.type === "PlaneGeometry" && typeof source.parent?.parent?.userData.show === "function") {
+        const frames = object.userData.frameGeometries ??= new Set();
+        if (!frames.has(source.geometry)) { frames.add(source.geometry); if (frames.size > 64) frames.delete(frames.values().next().value); }
+        for (const frame of frames) liveGeometry.add(frame);
+      }
       object.material = convert(source);
       if (source.isInstancedMesh) {
         object.count = source.count; object.instanceMatrix = source.instanceMatrix; object.instanceColor = source.instanceColor;
@@ -94,6 +113,7 @@ export function createVillageGpuMirror(materials) {
   return {
     scene, camera,
     sync(source, sourceCamera) {
+      seen.clear(); liveGeometry.clear(); syncedGeometry.clear();
       source.updateMatrixWorld(); sourceCamera.updateMatrixWorld();
       scene.background = source.background; scene.environment = source.environment;
       // Node cache identity includes the fog node. Replacing this object every
@@ -105,7 +125,7 @@ export function createVillageGpuMirror(materials) {
         if (source.fog.isFogExp2) scene.fog.density = source.fog.density;
         else { scene.fog.near = source.fog.near; scene.fog.far = source.fog.far; }
       }
-      const seen = new Set(); for (const child of source.children) synchronize(child, scene, seen);
+      for (const child of source.children) synchronize(child, scene, seen);
       for (const [original, object] of objects) if (!seen.has(original)) {
         object.removeFromParent(); objects.delete(original); mirrorCount--;
         // Selection outlines are rebuilt repeatedly. Their closed-loop GPU
@@ -113,8 +133,7 @@ export function createVillageGpuMirror(materials) {
         // rather than accumulating until the entire renderer is disposed.
         if (ownedGeometry.delete(object.geometry)) object.geometry.dispose();
       }
-      const liveGeometry = new Set([...seen].map(object => object.geometry).filter(Boolean));
-      for (const [original, geometry] of geometryViews) if (!liveGeometry.has(original)) { geometry.dispose(); geometryViews.delete(original); }
+      for (const [original, geometry] of geometryViews) if (!liveGeometry.has(original)) { geometry.dispose(); geometryViews.delete(original); geometryViewsRetired++; }
       for (const [original, object] of objects) if (original.isDirectionalLight) {
         const target = objects.get(original.target);
         if (target) object.target = target;
@@ -127,7 +146,7 @@ export function createVillageGpuMirror(materials) {
       materials.sync(); scene.updateMatrixWorld();
     },
     afterRender() { for (const [source] of objects) if (source.isLight && source.shadow) source.shadow.needsUpdate = false; },
-    stats() { const lights = { point: 0, hemisphere: 0, directional: 0, ambient: 0 }; for (const object of objects.values()) { if (object.isPointLight) lights.point++; else if (object.isHemisphereLight) lights.hemisphere++; else if (object.isDirectionalLight) lights.directional++; else if (object.isAmbientLight) lights.ambient++; } return { mirroredObjects: mirrorCount, ownedGeometryViews: geometryViews.size, ownedLineGeometries: ownedGeometry.size, lights }; },
-    dispose() { ownedGeometry.forEach(g => g.dispose()); ownedGeometry.clear(); geometryViews.forEach(g => g.dispose()); geometryViews.clear(); scene.clear(); objects.clear(); mirrorCount = 0; },
+    stats() { const lights = { point: 0, hemisphere: 0, directional: 0, ambient: 0 }; for (const object of objects.values()) { if (object.isPointLight) lights.point++; else if (object.isHemisphereLight) lights.hemisphere++; else if (object.isDirectionalLight) lights.directional++; else if (object.isAmbientLight) lights.ambient++; } return { mirroredObjects: mirrorCount, ownedGeometryViews: geometryViews.size, geometryViewsCreated, geometryViewsRetired, ownedLineGeometries: ownedGeometry.size, lights }; },
+    dispose() { ownedGeometry.forEach(g => g.dispose()); ownedGeometry.clear(); geometryViews.forEach(g => g.dispose()); geometryViewsRetired += geometryViews.size; geometryViews.clear(); scene.clear(); objects.clear(); seen.clear(); liveGeometry.clear(); syncedGeometry.clear(); mirrorCount = 0; },
   };
 }

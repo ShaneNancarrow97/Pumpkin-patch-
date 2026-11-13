@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import { buildHorizon, SKY } from "../src/village-world.js";
-import { dressVillageDuskSky, VILLAGE_DUSK_SKY, VILLAGE_DUSK_CLOUDS, VILLAGE_DUSK_COLOURS, villageDuskCloudCoverage, villageDuskArtUv, VILLAGE_DUSK_ART } from "../src/village-dusk-sky.js";
+import { dressVillageDuskSky, VILLAGE_DUSK_SKY, VILLAGE_DUSK_CLOUDS, VILLAGE_DUSK_COLOURS, villageDuskCloudCoverage, villageDuskArtUv, VILLAGE_DUSK_ART, VILLAGE_SKY_HIGHLIGHTS, villageSkyHighlightScale } from "../src/village-dusk-sky.js";
 import { createFollowCameraRig, followCameraPose } from "../src/follow-camera.js";
 import { outsideLookLift, OUTSIDE_VIEW } from "../src/village-camera.js";
 
@@ -65,7 +65,7 @@ test("fixed clouds, sparse stars and three distant bands stay bounded in the exi
   assert.match(fragment, /if \(y < \.08\)/, "distant profiles are restricted to the low horizon");
   assert.match(fragment, /clamp\(colour, vec3\(0\.\), vec3\(0\.68\)\)/, "new sky light remains below the existing .9 bloom threshold");
   assert.match(fragment, /uniform vec3 top, middle, horizon, low, moon/); assert.match(fragment, /varying vec3 vDir/);
-  assert.match(mesh.material.customProgramCacheKey(), /village-dusk-sky-v4/);
+  assert.match(mesh.material.customProgramCacheKey(), /village-dusk-sky-v5/);
   assert.ok(VILLAGE_DUSK_SKY.maxLinearChannel < .9);
   layer.dispose(); release(mesh);
 });
@@ -109,7 +109,7 @@ test("disposal restores the exact prior shader contract without disposing the do
   material.customProgramCacheKey = oldKey; material.uniforms.villageDuskTime = oldTime; mesh.userData.villageDuskSky = oldData;
   let geometryDisposals = 0, materialDisposals = 0;
   mesh.geometry.addEventListener("dispose", () => geometryDisposals++); material.addEventListener("dispose", () => materialDisposals++);
-  const layer = dressVillageDuskSky(mesh); assert.equal(material.customProgramCacheKey(), "authored-dome|village-dusk-sky-v4");
+  const layer = dressVillageDuskSky(mesh); assert.equal(material.customProgramCacheKey(), "authored-dome|village-dusk-sky-v5");
   layer.tick(.1); layer.dispose(); layer.dispose();
   assert.equal(material.fragmentShader, original); assert.equal(material.customProgramCacheKey, oldKey); assert.equal(material.uniforms.villageDuskTime, oldTime); assert.equal(mesh.userData.villageDuskSky, oldData);
   assert.deepEqual([geometryDisposals, materialDisposals], [0, 0]);
@@ -242,4 +242,23 @@ test("the optional panorama has bounded seamless tiled joins and one linear colo
   const joined = u => { u = fract(u); const primary = smooth(Math.min(u, 1 - u) / VILLAGE_DUSK_ART.seamWidth); return sample(fract(u + .5)) * (1 - primary) + sample(u) * primary; };
   assert.ok(Math.abs(joined(-1e-6) - joined(1e-6)) < 3e-6); assert.equal(joined(.5), .5); assert.equal(joined(.25), .25);
   layer.dispose(); release(mesh);
+});
+
+
+test("sky highlights retain cloud colour and dark detail without a bright full-sky wash", () => {
+  for (const peak of [0, .001, .018, .04, .12]) assert.equal(villageSkyHighlightScale(peak), 1);
+  let previous = 0;
+  for (let peak = .001; peak < 2; peak += .001) {
+    const scale = villageSkyHighlightScale(peak), mapped = peak * scale;
+    assert.ok(scale > 0 && scale <= 1);
+    assert.ok(mapped > previous, "highlight detail is compressed, never clipped flat");
+    assert.ok(mapped < VILLAGE_SKY_HIGHLIGHTS.knee + VILLAGE_SKY_HIGHLIGHTS.shoulder);
+    previous = mapped;
+  }
+  const violet = [.31, .16, .54], scale = villageSkyHighlightScale(Math.max(...violet));
+  assert.ok(Math.abs(violet[0] * scale / (violet[2] * scale) - violet[0] / violet[2]) < 1e-12);
+  const horizon = actualHorizon(), halo = horizon.getObjectByName("village-moon-halo");
+  assert.equal(halo.scale.x, 88); assert.equal(halo.material.opacity, .34);
+  assert.equal(halo.material.blending, THREE.AdditiveBlending);
+  releaseHorizon(horizon);
 });

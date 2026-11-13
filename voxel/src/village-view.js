@@ -587,7 +587,7 @@ export function createVillageView(canvas, state, hooks = {}) {
       for (const p of patches) p.chunk.visible = p.sphere.center.distanceTo(camera.position) - p.sphere.radius < reach.far;
       placeLights(); folk.tick(dt, time, camera, { paused: !!inside || !!tour || !!hooks.residentsPaused?.() || !!state.paused, reducedMotion: reducedMotion() });
       if (lampGlow) { lampGlow.group.visible = !inside && !expansionWorld.active; lampGlow.tick(time, { density: scene.fog.density, still: reducedMotion() }); }
-      if (!inside&&!expansionWorld.active) { atmosphere?.tick(state.paused ? 0 : dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full" }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
+      if (!inside&&!expansionWorld.active) { atmosphere?.tick(state.paused ? 0 : dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full", camera }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
       else resetVillageVisibility(villageGreen);
       tickVillageNeighbourhoodVisibility(neighbourhoods, following && !tour && !inside && !expansionWorld.active ? followSubject : null, camera, dt, { reducedMotion: reducedMotion() });
       if (lightAir) { lightAir.group.visible = surface; lightAir.tick(dt, { paused: !!state.paused || !surface, reducedMotion: still, density: scene.fog.density, budget: hooks.atmosphereBudget?.() ?? "full", treeVisibility: villageGreen?.userData.treeVisibility?.opacity ?? 1 }); }
@@ -603,6 +603,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     },
     get active() { return active; },
     get atmosphereStats() { return atmosphere?.stats() ?? null; },
+    get grassDetailStats() { return grass?.stats() ?? null; },
     get fidelityStats() { return { sky: duskSky?.stats ?? null, air: lightAir?.stats() ?? null, lighting: VILLAGE_DUSK_LIGHTING }; },
     get surfaceMaterialStats() { const scopes = Object.fromEntries(aoScopes); return { pbr: pbr?.stats ?? null, ao: { scopes, instances: [...aoScopes.values()].reduce((n, s) => n + (s.instances ?? 0), 0), bytes: [...aoScopes.values()].reduce((n, s) => n + (s.bytes ?? 0), 0), addedDraws: 0 } }; },
     get districtAtmosphereStats() { return districtAtmosphere.status; },

@@ -1,0 +1,43 @@
+{
+  "scope": "Synthetic CPU mirror sync only; not device FPS or GPU timing",
+  "fixture": "640 shared static boxes; 16 walking figures with 5 layers and 8 authored frames",
+  "baselineModule": "file:///tmp/village-mirror-before.js",
+  "before": {
+    "measuredFrames": 240,
+    "sourceObjects": 752,
+    "geometryWrappersCreated": 1089,
+    "geometryWrappersRetiredDuringWalk": 1072,
+    "medianSyncMs": 0.395,
+    "p95SyncMs": 0.733,
+    "final": {
+      "mirroredObjects": 752,
+      "ownedGeometryViews": 17,
+      "ownedLineGeometries": 0,
+      "lights": {
+        "point": 0,
+        "hemisphere": 0,
+        "directional": 0,
+        "ambient": 0
+      }
+    }
+  },
+  "after": {
+    "measuredFrames": 240,
+    "sourceObjects": 752,
+    "geometryWrappersCreated": 129,
+    "geometryWrappersRetiredDuringWalk": 0,
+    "medianSyncMs": 0.237,
+    "p95SyncMs": 1.559,
+    "final": {
+      "mirroredObjects": 752,
+      "ownedGeometryViews": 129,
+      "ownedLineGeometries": 0,
+      "lights": {
+        "point": 0,
+        "hemisphere": 0,
+        "directional": 0,
+        "ambient": 0
+      }
+    }
+  }
+}

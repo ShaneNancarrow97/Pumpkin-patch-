@@ -80,6 +80,7 @@ function along(route, d) {
 }
 
 export function createScene(canvas, state, hooks) {
+  const lookListeners = new Set();
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   // Foldables get the same detail as other high-density displays. A pixel
   // budget protects large viewports; a lower quality is an explicit choice.
@@ -1073,7 +1074,8 @@ export function createScene(canvas, state, hooks) {
     // Floats a word over a point in whichever place is showing (the garden's beds).
     floatHere(text, x, y, z, cls = "") { floatText(text, x, y, z, cls); },
     portrait(id) { return sheets && id ? portraitURL(sheets, id) : null; },
-    refreshLooks() { placeActor("natalie"); placeActor("shane"); places.refresh(); gardenPlay.release(); },
+    refreshLooks() { placeActor("natalie"); placeActor("shane"); places.refresh(); gardenPlay.release(); for (const listener of lookListeners) listener(); },
+    onLooksChanged(listener) { lookListeners.add(listener); return () => lookListeners.delete(listener); },
     // Stepping inside: a room of the cottage, or the shop floor. leavePlace() comes back out.
     enter(kind, id) {
       farmCameraOn = false; cancelGesture();
