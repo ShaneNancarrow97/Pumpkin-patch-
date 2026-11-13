@@ -729,3 +729,11 @@ test('Discover keeps an available legacy story behind its live neighbour approac
  h.game.place(89,8);h.game.showPanel('journal','elowen');h.click('[data-vg-journal-tab="discover"]');h.click('[data-vg-meet="elowen"]');
  assert.equal(h.conversation.id,'elowen');assert.equal(M.questStatus(s,'elowen-1'),'offered','opening the story greeting does not accept it');assert.ok(h.choices().some(choice=>choice.id==='quest:start:elowen-1'));
 });
+
+
+test('the owner chip keeps the existing equipped portrait while names and character switches render',t=>{
+ const s=expansionFarm(),h=harness(t,s);h.scene.portrait=id=>`portrait:${id}`;h.game.open();const who=h.game.status.who,before=JSON.stringify(M.saveData(s)),position={...h.game.status.position};
+ const image=h.$('#vg-person-portrait').querySelector('img');assert.ok(image);assert.equal(image.attributes.src,`portrait:${s.wardrobe.equipped[who]??who}`);assert.equal(h.$('#vg-person-name').textContent,who==='shane'?'Shane':'Natalie');
+ h.game.render();assert.equal(h.$('#vg-person-portrait').querySelector('img'),image,'a repeated render preserves cached portrait markup');
+ h.click('#vg-person');const next=h.game.status.who;assert.notEqual(next,who);assert.equal(h.$('#vg-person-name').textContent,next==='shane'?'Shane':'Natalie');assert.equal(h.$('#vg-person-portrait').querySelector('img').attributes.src,`portrait:${s.wardrobe.equipped[next]??next}`);assert.deepEqual(h.game.status.position,position);assert.equal(JSON.stringify(M.saveData(s)),before);
+});

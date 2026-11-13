@@ -66,6 +66,8 @@ test("a tracked hero shows its own portrait and real chapter progress before the
   assert.ok(html.indexOf('Next objective')<html.indexOf('objective-story:rowan-1'));
   assert.match(html,/class="vf-show-way" data-vg-objective-guide="rowan-1"/);
   assert.doesNotMatch(html,/data-vg-claim/);
+  assert.match(html,/Step 2 of 3/);assert.equal((html.match(/class="is-done"><\/i>/g)??[]).length,1);assert.equal((html.match(/class="is-current"><\/i>/g)??[]).length,1);
+  assert.match(html,/<svg class="vf-route-arrow"[^>]*aria-hidden="true"/);assert.doesNotMatch(html,/↗/);
 });
 
 test("journal keyboard tabs wrap and support Home and End without treating movement keys as tab commands",()=>{
