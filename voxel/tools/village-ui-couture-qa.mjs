@@ -34,7 +34,7 @@ const views = quick ? [['desktop', 1280, 800], ['phone', 390, 844]] : [['desktop
 const report = {
   date: new Date().toISOString(), html: file, htmlSha256: hash(html), bytes: html.length, harnessSha256: hash(await fs.readFile(new URL(import.meta.url))), fixtureSha256: hash(JSON.stringify(fixture)),
   stateVersion: s.version, preferences: prefs, quick, heroOnly, holdDrawsRequested: holdDraws, drawHeld: false, mapIncluded: !heroOnly && !args.includes('--no-map'),
-  scope: 'Exact unchanged offline HTML over loopback; declared level20 supplied-inventory fixture, not earned progression. ' + (holdDraws ? 'UI-only coverage: first native village frame and HUD capture precede explicit renderer/composer draw holding. All subsequent held screenshots are prefixed ui-only; camera/world pixels during these checks are not normal-render proof. Input, simulation and DOM still use native game RAF; no manual game ticks or UI replacement. Map capture, if requested, temporarily restores native draws and is labelled separately. ' : 'Actual DOM clicks and keyboard use native game RAF with actual WebGL throughout; no held draws, patched renderer, manual game ticks or UI replacement. ' + (heroOnly ? 'Limited native hero pass: desktop journal, real nearby Rowan dialogue and portrait journal only; full UI parity belongs to the separate broad report. ' : 'Injected standard Gamepad API exercises the actual controller path. ')) + 'Explicit WebGL fallback isolates the HTML/CSS change from GPU compilation. Viewports and software rendering do not certify physical Bluetooth, Fold or TV performance.',
+  scope: 'Exact unchanged offline HTML over loopback; declared level20 supplied-inventory fixture, not earned progression. ' + (holdDraws ? 'UI-only coverage: first native village-frame verification precedes explicit renderer/composer draw holding; the broad pass omits a separate HUD image. All held screenshots are prefixed ui-only; camera/world pixels during these checks are not normal-render proof. Input, simulation and DOM still use native game RAF; no manual game ticks or UI replacement. The separate native hero report provides world-rendered UI evidence. Map capture, if requested, temporarily restores native draws to create the genuine world snapshot, then holds again before marker selection and its UI-only screenshot. ' : 'Actual DOM clicks and keyboard use native game RAF with actual WebGL throughout; no held draws, patched renderer, manual game ticks or UI replacement. ' + (heroOnly ? 'Limited native hero pass: desktop journal, real nearby Rowan dialogue and portrait journal only; full UI parity belongs to the separate broad report. ' : 'Injected standard Gamepad API exercises the actual controller path. ')) + 'Explicit WebGL fallback isolates the HTML/CSS change from GPU compilation. Viewports and software rendering do not certify physical Bluetooth, Fold or TV performance.',
   fixtureNotes: ['Completed introduction/tour and staged restoration entries including Rowan’s stall', 'Both original mainline and expansion stories available', '30 of each material, 2 moth lamps and 1 stool supplied for catalogue states; gathering kit owned', ...(heroOnly ? [] : ['One actual one-tap stall purchase is verified against its canonical quoted price', 'Read-only resizing, navigation and Other stories must not grant rewards or consume resources'])],
   checks: [], screenshots: [], captures: [], errors: [], consoleErrors: [], externalRequests: [], failedRequests: [], observations: [],
 };
@@ -173,6 +173,7 @@ try {
   await stage('village native frames ready');
   report.renderer = await page.evaluate(() => PumpkinVoxel.scene.villageRendererStatus);
   check('The tested HTML retains its actual explicit WebGL village fallback', report.renderer.backend === 'webgl' && report.renderer.requested === 'webgl', report.renderer);
+  if (holdDraws) await hold();
   const originalResources = await readResources();
 
   if (heroOnly) await section('native hero surfaces', async () => {
@@ -188,8 +189,7 @@ try {
   await section('navigation', async () => {
     const nav = await page.locator('.vg-dock button').evaluateAll(items => items.map(el => ({ page: el.dataset.vgPage || (el.id === 'vg-decorate' ? 'decorate' : null), label: el.getAttribute('aria-label'), art: !!el.querySelector('.vf-art') })));
     check('All six illustrated village destinations remain reachable', nav.length === 6 && nav.map(x => x.page).join() === 'map,people,journal,materials,upgrades,decorate' && nav.every(x => x.art && x.label), nav);
-    await shot('01-village-hud');
-    await hold();
+    if (!holdDraws) await shot('01-village-hud');
     for (const kind of ['journal', 'people', 'materials', 'upgrades']) {
       await panel(kind); check(`${kind} opens through its actual dock button`, await page.evaluate(id => PumpkinVoxel.village.status.panel === id && document.querySelector(`.vg-dock [data-vg-page="${id}"]`).getAttribute('aria-current') === 'page', kind));
       await checkLayout(`Desktop ${kind} has readable targets and a contained drawer`); await shot(`desktop-${kind}`);
@@ -300,8 +300,15 @@ try {
   if (!args.includes('--no-map')) await section('map', async () => {
     const wasHeld = drawsHeld;
     try {
+    await closeSurfaces(); await page.setViewportSize({ width: 1280, height: 800 });
     await resume();
-    await page.setViewportSize({ width: 1280, height: 800 }); await panel('map');
+    const beforeSnapshot = await page.evaluate(() => ({ frame: PumpkinVoxel.scene.debug.renderer.info.render.frame, native: !window.__coutureDraw || PumpkinVoxel.scene.debug.renderer.render === window.__coutureDraw.renderer }));
+    await page.locator('.vg-dock [data-vg-page="map"]').click();
+    await page.waitForFunction(() => PumpkinVoxel.village.status.panel === 'map');
+    const snapshot = await page.evaluate(() => { const img = document.querySelector('[data-vg-map-snapshot]'); return { frame: PumpkinVoxel.scene.debug.renderer.info.render.frame, native: !window.__coutureDraw || PumpkinVoxel.scene.debug.renderer.render === window.__coutureDraw.renderer, png: !!img?.src.startsWith('data:image/png;base64,'), bytes: img?.src.length ?? 0, width: img?.getAttribute('width'), height: img?.getAttribute('height') }; });
+    if (wasHeld) await hold();
+    report.observations.push({ stage: 'map snapshot provenance', beforeSnapshot, snapshot, uiScreenshotDrawHeld: drawsHeld, scope: 'Actual map-button snapshot acquired with original WebGL render function restored. Marker selection and the following UI-only capture may hold world draws; the inlined map picture itself is the genuine snapshot.' });
+    check('Map snapshot is acquired while the original native renderer is restored', beforeSnapshot.native && snapshot.native && snapshot.png && snapshot.bytes > 1000 && snapshot.frame > beforeSnapshot.frame, { beforeSnapshot, snapshot });
     check('Map retains its actual-world snapshot and selectable requirements markers', await page.evaluate(() => document.querySelector('[data-vg-map-snapshot]')?.src.startsWith('data:image/png;base64,') && document.querySelectorAll('[data-vg-map-district]').length >= 5));
     await page.locator('[data-vg-map-district="quarry"]').first().click(); await frames();
     check('A map marker opens the canonical district requirements', await page.locator('[data-vg-map-detail="quarry"] .vg-map-requirements').count() === 1);

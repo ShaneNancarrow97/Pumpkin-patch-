@@ -126,6 +126,7 @@
 #vg-panel-body .vg-map-intro{font-size:var(--vc-small);color:var(--vc-muted);margin:0 0 12px}
 #vg-panel-body .vg-map-figure{border:1px solid var(--vc-rule);border-radius:12px;overflow:hidden;background:#150e20;box-shadow:inset 0 0 0 3px #c69e6514}
 #vg-panel-body .vg-map-toolbar{padding:8px 12px;background:#34213d;border-bottom:1px solid var(--vc-rule-soft);color:var(--vc-muted);font-size:var(--vc-small)}
+#village-game #vg-panel-body :is(.vg-map-pin-name,.vg-map-square-pin b,.vg-map-neighbour-toggle small){font-size:var(--vc-small)}
 #vg-panel-body .vg-map-key{padding:10px 12px;gap:7px 12px;font-size:var(--vc-small);color:var(--vc-muted)}
 #village-game #vg-panel-body .vg-map-detail{border:1px solid var(--vc-rule-soft);border-radius:12px;background:linear-gradient(140deg,#9b6e4120,#37233e22);padding:15px}
 #vg-panel-body .vg-map-detail h3{font:500 24px/1.15 var(--village-display);color:var(--vc-ink)}
