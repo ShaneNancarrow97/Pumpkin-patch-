@@ -28,7 +28,7 @@ const views = { entrance: { x: 87, z: -7.5, yaw: 0, pitch: .30, distance: 13 }, 
 // Keep the original wide comparison unchanged. This additional view uses the
 // shipped follow-camera numbers rather than shrinking or faking the owner.
 const referenceEntrance = { x: 87, z: -16.5, yaw: 0, pitch: OUTSIDE_VIEW.pitch, distance: OUTSIDE_VIEW.distance };
-const report = { file, baseline, uiOnly, tvOnly, worldOnly, referenceOnly, conversationOnly, htmlSha256: sha(html), bytes: html.length, harnessSha256: sha(await fs.readFile(new URL(import.meta.url))), fixtureSha256: sha(JSON.stringify(fixture)), stateVersion: state.version, preferences, staging: { duskClock, period: VILLAGE_ATMOSPHERE_CYCLE_SECONDS, phase: 'dusk', owner: 'natalie', views, referenceEntrance, wallClock: '2026-11-13T21:00:00Z', randomSeed: 20261113 }, scope: 'Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.', checks: [], errors: [], consoleErrors: [], externalRequests: [], screenshots: [], views: [] };
+const report = { file, baseline, uiOnly, tvOnly, worldOnly, referenceOnly, conversationOnly, htmlSha256: sha(html), bytes: html.length, harnessSha256: sha(await fs.readFile(new URL(import.meta.url))), fixtureSha256: sha(JSON.stringify(fixture)), stateVersion: state.version, preferences, staging: { duskClock, period: VILLAGE_ATMOSPHERE_CYCLE_SECONDS, phase: 'dusk', owner: 'natalie', views, referenceEntrance, referenceComparison: { baselineAndFinalUseSamePose: true, cameraSource: 'OUTSIDE_VIEW.pitch and OUTSIDE_VIEW.distance', wideComparisonPoseUnchanged: true }, wallClock: '2026-11-13T21:00:00Z', randomSeed: 20261113 }, scope: 'Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.', checks: [], errors: [], consoleErrors: [], externalRequests: [], screenshots: [], views: [] };
 const check = (label, pass, actual) => { report.checks.push({ label, pass: !!pass, ...(actual === undefined ? {} : { actual }) }); console.log(`${pass ? 'ok' : 'FAIL'} ${label}`); if (!pass) throw Error(label); };
 await fs.mkdir(out, { recursive: true });
 const server = createServer((req, res) => { if (req.url === '/favicon.ico') { res.writeHead(204).end(); return; } res.setHeader('Content-Type', 'text/html'); res.end(html); });
@@ -186,8 +186,17 @@ async function controllerChecks(page, check, frames) {
 // reconstructed painter or a design-grid guess at its texture coordinates.
 async function groundTextureCheck(page) {
   const actual = await page.evaluate(() => {
-    const mesh = PumpkinVoxel.scene.villageView.scene.getObjectByName('village-ground'), material = mesh?.material, map = material?.map, image = map?.image;
-    if (!mesh?.geometry?.index || !material?.userData?.grassDetail || !map?.isDataTexture || !image?.data) return { pass: false, reason: 'Rendered grass-detail DataTexture not found' };
+    const scene = PumpkinVoxel.scene.villageView.scene, qualifies = object => object?.isMesh && !!object.geometry?.index && !!object.material?.userData?.grassDetail && !!object.material?.map?.isDataTexture && !!object.material.map.image?.data;
+    // The view names the earth mesh 'ground'; do not confuse it with the
+    // separate invisible picking plane whose userData says village-ground.
+    const candidates = []; let mesh = [scene.getObjectByName('ground'), scene.getObjectByName('village-ground')].find(qualifies);
+    scene.traverse(object => {
+      if (!object.isMesh || !(/ground/i.test(object.name) || object.material?.userData?.grassDetail)) return;
+      candidates.push({ name: object.name, indexed: !!object.geometry?.index, vertices: object.geometry?.getAttribute('position')?.count ?? 0, grassDetail: !!object.material?.userData?.grassDetail, dataTexture: !!object.material?.map?.isDataTexture, imageData: !!object.material?.map?.image?.data, stairCutouts: object.geometry?.userData?.stairCutouts?.count ?? null });
+      if (!mesh && qualifies(object) && object.geometry.userData.stairCutouts) mesh = object;
+    });
+    if (!mesh) return { pass: false, reason: 'No indexed rendered ground with grass-detail DataTexture', candidates };
+    const material = mesh.material, map = material.map, image = map.image;
     const geometry = mesh.geometry, positions = geometry.getAttribute('position'), uv = geometry.getAttribute('uv'), indices = geometry.index.array, samples = [];
     mesh.updateWorldMatrix(true, false);
     for (const [id, worldX, logicalZ, lawn] of [['west-lawn', 78, -9, true], ['east-lawn', 96, -8.25, true], ['arrival-road', 87, -9, false], ['forage-path', 78, -16.5, false]]) {
@@ -203,7 +212,7 @@ async function groundTextureCheck(page) {
       }
       samples.push(found ?? { id, world: [worldX, logicalZ], pass: false, reason: 'No rendered XZ triangle' });
     }
-    return { pass: samples.every(s => s.pass), texture: { width: image.width, height: image.height, channels: image.data.length / image.width / image.height, flipY: map.flipY, grassDetail: material.userData.grassDetail }, samples };
+    return { pass: samples.every(s => s.pass), selectedMesh: mesh.name, candidates, texture: { width: image.width, height: image.height, channels: image.data.length / image.width / image.height, flipY: map.flipY, grassDetail: material.userData.grassDetail }, samples };
   });
   return [actual.pass, actual];
 }
