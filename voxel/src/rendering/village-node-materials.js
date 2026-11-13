@@ -34,7 +34,7 @@ function createVillageNodeMaterials({ renderer } = {}) {
   const instances = /* @__PURE__ */ new WeakMap();
   const owned = /* @__PURE__ */ new Set(), entries = /* @__PURE__ */ new Set(), cache = /* @__PURE__ */ new WeakMap(), bindings = /* @__PURE__ */ new Set(), derived = /* @__PURE__ */ new Set();
   let disposed = false;
-  const stats = { ready: true, converted: 0, effectMaterials: 0, unsupported: 0, roles: {}, derivedInstanceBytes: 0 };
+  const stats = { ready: true, converted: 0, effectMaterials: 0, unsupported: 0, roles: {}, derivedInstanceBytes: 0, textureSynchronizations: 0, textureUploads: 0 };
   const textures = createVillageNodeTextures(), resolveTexture = textures.resolve;
   const effects = createVillageNodeEffects({ renderer, resolveTexture });
   let currentBindings = null;
@@ -338,13 +338,17 @@ function createVillageNodeMaterials({ renderer } = {}) {
   }
   return { convert, convertObject: (source) => effects.convertObject(source), sync() {
     if (disposed) return;
-    for (const fn of bindings) fn();
-    if (lampNearRef) lampNear.value = lampNearRef.value;
-    for (const record of derived) updateDerived(record);
-    for (const entry of entries) copyProperties(entry.source, entry.material, resolveTexture);
-    effects.sync();
-    textures.sync();
+    textures.batch(() => {
+      for (const fn of bindings) fn();
+      if (lampNearRef) lampNear.value = lampNearRef.value;
+      for (const record of derived) updateDerived(record);
+      for (const entry of entries) copyProperties(entry.source, entry.material, resolveTexture);
+      effects.sync();
+      textures.sync();
+    });
     stats.textureWrappers = textures.stats.wrappers;
+    stats.textureSynchronizations = textures.stats.synchronizations;
+    stats.textureUploads = textures.stats.uploads;
   }, dispose() {
     if (disposed) return;
     disposed = true;

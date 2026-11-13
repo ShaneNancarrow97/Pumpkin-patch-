@@ -33,6 +33,7 @@ import { villageNeighbourhoodClusters } from "./content/village-neighbourhoods.j
 import { TOWN_LAMPS } from "./content/village-town-square.js";
 import { VILLAGE_GRADE } from "./picture-grade.js";
 import { createLampGlow } from "./village-glow.js";
+import { createVillageLightSelection } from "./village-light-selection.js";
 import { createVillageAtmosphere } from "./village-atmosphere.js";
 import { dressVillageDuskSky } from "./village-dusk-sky.js";
 import { attachVillageSkyArt } from "./village-sky-art.js";
@@ -104,6 +105,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   const HALL_LAMP = { ...LAMP, near: 0 };
   const lampAs = (spec, scale = 1) => { setLampNear(spec.near); pool.forEach((l) => { l.userData.base = spec.power * scale; l.distance = spec.reach; l.decay = spec.decay; }); };
   const pool = Array.from({ length: 8 }, () => { const l = new THREE.PointLight(0xff9a40, LAMP.power, LAMP.reach, LAMP.decay); scene.add(l); return l; });
+  const lampSelection = createVillageLightSelection(pool.length);
   const districtAtmosphere = createVillageDistrictAtmosphere({ scene, hemi, sun, lamps: pool }), atmospherePoint = { x: 0, z: 0 }, waterClock = createVillageWaterClock();
   const contactShadows = createVillageContactShadows(), contactActors = createVillageContactActorSource(); scene.add(contactShadows.group);
   const surfaceContactGround = createVillageContactSurfaceIndex(groundAt);
@@ -118,6 +120,8 @@ export function createVillageView(canvas, state, hooks = {}) {
   // The lamps where they now stand, and the parts rebuilt as the village changes, moved into place as they are made.
   const LAMPS_AT = [...LAMPS.map((l) => { const [x, z] = spread(l.x, l.z); return { ...l, x, z }; }), ...TOWN_LAMPS];
   let surfaceLamps = LAMPS_AT;
+  const lampPositions = lamps => lamps.map(l => W(l.x * K, l.z * K, (l.y - .2) * K));
+  let surfaceLampPositions = lampPositions(surfaceLamps);
   const oldSpot = (f) => gather(f.x / K, f.z / K);
   function spreadPart(name, g) { if (name === "stall") spreadWhole(g, ...oldSpot(FIXTURES.stall)); else if (name === "bench") spreadWhole(g, ...oldSpot(FIXTURES.bench)); else spreadVillage(g); }
   let active = false, built = false, firstView = true, keys = {}, parts = {}, tour = null, time = 0, horizon = null, sky = null, duskSky = null, lightAir = null, mist = null, bats = null, life = null, grass = null, lampGlow = null, town = null;
@@ -211,6 +215,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     // The new walks borrow the existing eight-light pool, and hidden clusters
     // leave no invisible light source beside the player's own furniture.
     surfaceLamps = [...LAMPS_AT, ...clusters.flatMap(c => (c.lanterns ?? []).map(l => ({ x: l.x, z: l.z, y: 2.25 })))];
+    surfaceLampPositions = lampPositions(surfaceLamps);
     if (neighbourhoods) { root.remove(neighbourhoods); neighbourhoods.userData.dispose?.(); }
     neighbourhoods = buildVillageNeighbourhoods(clusters); finishVoxels(neighbourhoods); installVillageNeighbourhoodVisibility(neighbourhoods); root.add(neighbourhoods);
     finishSurface(neighbourhoods, "neighbourhoods");
@@ -504,9 +509,17 @@ export function createVillageView(canvas, state, hooks = {}) {
 
   function placeLights() {
     const t = tour ? focus : controls.target;
-    if(expansionWorld.active){const near=[...expansionWorld.lamps].sort((a,b)=>a.distanceToSquared(t)-b.distanceToSquared(t));pool.forEach((l,i)=>{if(near.length){l.position.copy(near[i%near.length]);l.visible=true;l.userData.base=64;l.color.set(i%2?0x8ebacc:0xe7b77f);}else l.visible=false;});}
-    else if (inside) { const near = [...inside.lamps].sort((a, b) => a.distanceToSquared(t) - b.distanceToSquared(t)); pool.forEach((l, i) => { const p = near[i % near.length]; l.position.copy(p); l.visible = true; }); }
-    else { const near = [...surfaceLamps].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z)); pool.forEach((l, i) => { const lamp = near[i]; l.visible=true; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); }); }
+    const expanded = expansionWorld.active, enclosed = !!expanded || !!inside;
+    const near = lampSelection.select(expanded ? expansionWorld.lamps : inside ? inside.lamps : surfaceLampPositions, t, !enclosed);
+    const power = expanded ? 64 : LAMP.power * (inside?.plan.hall.light ?? 1);
+    pool.forEach((lamp, i) => {
+      const point = near[enclosed ? i % near.length : i];
+      // Empty rooms keep the same shader light count; their pooled lights are
+      // dark until there is a real lamp to place them at.
+      lamp.visible = true; lamp.userData.base = point ? power : 0;
+      if (point) lamp.position.copy(point); else lamp.intensity = 0;
+      if (expanded) lamp.color.set(i % 2 ? 0x8ebacc : 0xe7b77f);
+    });
     sun.target.position.copy(t); sun.position.copy(t).addScaledVector(SUN, 100); sun.target.updateMatrixWorld();
     // Walking, the moon's shadows only matter round the walker: a tighter box draws fewer casters, and sharper.
     const reachShadow = following ? 28 : 44, sc = sun.shadow.camera;
@@ -604,6 +617,8 @@ export function createVillageView(canvas, state, hooks = {}) {
     get active() { return active; },
     get atmosphereStats() { return atmosphere?.stats() ?? null; },
     get grassDetailStats() { return grass?.stats() ?? null; },
+    get lampSelectionStats() { return lampSelection.stats; },
+    get lifeDetailStats() { return life?.stats() ?? null; },
     get fidelityStats() { return { sky: duskSky?.stats ?? null, air: lightAir?.stats() ?? null, lighting: VILLAGE_DUSK_LIGHTING }; },
     get surfaceMaterialStats() { const scopes = Object.fromEntries(aoScopes); return { pbr: pbr?.stats ?? null, ao: { scopes, instances: [...aoScopes.values()].reduce((n, s) => n + (s.instances ?? 0), 0), bytes: [...aoScopes.values()].reduce((n, s) => n + (s.bytes ?? 0), 0), addedDraws: 0 } }; },
     get districtAtmosphereStats() { return districtAtmosphere.status; },

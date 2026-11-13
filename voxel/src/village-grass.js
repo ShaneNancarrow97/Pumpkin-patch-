@@ -96,7 +96,9 @@ export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale
     patches.push({ mesh, flowers, x: px + PATCH / 2, z: pz + PATCH / 2, detail: 5 });
   }
   group.userData.proximityFade={...FADE,mode:"gpu-alpha-hash",worldUnits:true};
-  const stats = { patches: patches.length, activePatches: 0, fullPatches: 0, middlePatches: 0, farPatches: 0, vertices: 0, fullVertices: 0 };
+  // Counts describe the last selected surface; visible marks a hidden ancestor.
+  const stats = { patches: patches.length, activePatches: 0, fullPatches: 0, middlePatches: 0, farPatches: 0, vertices: 0, fullVertices: 0, visible: true, selectionPasses: 0, patchChecks: 0 };
+  let selectedX = NaN, selectedZ = NaN, wasVisible = false;
   group.userData.distanceDetail = stats;
   return {
     group,
@@ -107,6 +109,18 @@ export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale
       uniforms.uGrassPlayer.value.set(Number.isFinite(player?.x)?player.x:1e6,Number.isFinite(player?.z)?player.z:1e6);
       uniforms.uGrassCamera.value.set(Number.isFinite(camera?.position.x)?camera.position.x:1e6,Number.isFinite(camera?.position.z)?camera.position.z:1e6);
       if (!camera) return;
+      // Interiors hide the surface at an ancestor. Keep the breeze/proximity
+      // uniforms current, but don't inspect every lawn while it cannot draw.
+      stats.visible = true;
+      for (let parent = group; parent; parent = parent.parent) if (!parent.visible) { stats.visible = false; break; }
+      if (!stats.visible) { wasVisible = false; return; }
+      // Only horizontal camera movement changes this existing LOD policy.
+      // Returning from a hidden surface always refreshes the kept selection.
+      const sameView = wasVisible && selectedX === camera.position.x && selectedZ === camera.position.z;
+      wasVisible = true;
+      if (sameView) return;
+      selectedX = camera.position.x; selectedZ = camera.position.z;
+      stats.selectionPasses++; stats.patchChecks += patches.length;
       const cx = camera.position.x / scale, cz = -camera.position.z / scale;
       // The +1 design metre covers clumps which grow just outside their tile.
       const radius = (Math.SQRT2 * PATCH / 2 + 1) * scale;

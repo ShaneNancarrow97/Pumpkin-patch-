@@ -15,10 +15,10 @@ import { C } from "./village-models.js";
 
 // Everything here is worked out on the old design grid; W places it where that spot now stands (the village is
 // spread apart, rules/village-spread.js), so a moth orbits its own lamp and a leaf falls under its own tree.
-const W = (x, z, y = 0) => { const [nx, nz] = spread(x, z); return new THREE.Vector3(nx, y, -nz); };
+const W = (x, z, y = 0, target = new THREE.Vector3()) => { const [nx, nz] = spread(x, z); return target.set(nx, y, -nz); };
 const placed = (o) => { const [x, z] = spread(o.x, o.z); return { ...o, x, z }; };
 // A point that belongs to something (a leaf to its tree) moves with that thing, wherever it drifts.
-const WBy = (x, z, y, [ax, az]) => { const [nx, nz] = spreadWith(x, z, ax, az); return new THREE.Vector3(nx, y, -nz); };
+const WBy = (x, z, y, [ax, az], target = new THREE.Vector3()) => { const [nx, nz] = spreadWith(x, z, ax, az); return target.set(nx, y, -nz); };
 const dummy = new THREE.Object3D();
 const noise = (t) => Math.sin(t) * .5 + Math.sin(t * 2.31 + 1.7) * .3 + Math.sin(t * 5.13 + .4) * .2;
 
@@ -157,87 +157,95 @@ export function createVillageLife({ chimneyTops = [] } = {}) {
   const fireflies = new THREE.Points(flyGeo, new THREE.PointsMaterial({ color: new THREE.Color(1.6, 1.9, .9), size: .16, transparent: true, opacity: .9, depthWrite: false, toneMapped: false })); fireflies.frustumCulled = false; group.add(fireflies);
 
   let built = {};
-  const v3 = new THREE.Vector3();
+  // Scratch transforms belong to this layer, never to an individual animal.
+  const v3 = new THREE.Vector3(), crowEnd = new THREE.Vector3(), headOffset = new THREE.Vector3(0, .37, .2), unitScale = new THREE.Vector3(1, 1, 1), wingTurn = new THREE.Matrix4();
   const cm = new THREE.Matrix4(), cl = new THREE.Matrix4(), co = new THREE.Matrix4(), cq = new THREE.Quaternion(), ce = new THREE.Euler(), cs = new THREE.Vector3(1.1, 1.1, 1.1), flipY = new THREE.Matrix4().makeRotationY(Math.PI);
   function tickCrow(c, i, time, dt) {
     if (c.fly > 0) {
       c.t += dt / c.fly; const t = Math.min(1, c.t), a = c.from, b = c.to, lift = Math.sin(t * Math.PI) * (2.4 + Math.hypot(b[0] - a[0], b[2] - a[2]) * .12);
-      const A = W(a[0], a[2], a[1]), B = W(b[0], b[2], b[1]); c.pos.lerpVectors(A, B, t); c.pos.y += lift; c.rot = Math.atan2(B.x - A.x, B.z - A.z);
+      const A = W(a[0], a[2], a[1], v3), B = W(b[0], b[2], b[1], crowEnd); c.pos.lerpVectors(A, B, t); c.pos.y += lift; c.rot = Math.atan2(B.x - A.x, B.z - A.z);
       c.flap = Math.sin(time * 18) * .9 * (t < .9 ? 1 : (1 - t) * 10); c.headYaw = 0; c.headPitch = 0;
       if (t >= 1) { c.fly = 0; c.at = b; c.wait = 3 + Math.random() * 9; c.flap = -.15; }
     } else {
       c.wait -= dt; const [x, y, z] = c.at;
-      c.pos.copy(W(x, z, y)); c.rot = c.yaw + Math.sin(time * .5 + c.yaw) * .3; c.headYaw = Math.sin(time * 1.3 + c.yaw * 3) * .7; c.headPitch = 0; c.flap = -.15;
+      W(x, z, y, c.pos); c.rot = c.yaw + Math.sin(time * .5 + c.yaw) * .3; c.headYaw = Math.sin(time * 1.3 + c.yaw * 3) * .7; c.headPitch = 0; c.flap = -.15;
       if (c.wait <= 0) { let next; do next = PERCHES[(Math.random() * PERCHES.length) | 0]; while (next === c.at); c.from = c.at; c.to = next; c.t = 0; c.fly = 1.6 + Math.hypot(next[0] - x, next[2] - z) * .09; c.yaw = Math.random() * 6; }
     }
     cm.compose(c.pos, cq.setFromEuler(ce.set(0, c.rot, 0)), cs); crowBody.setMatrixAt(i, cm);
-    co.multiplyMatrices(cm, cl.compose(new THREE.Vector3(0, .37, .2), cq.setFromEuler(ce.set(c.headPitch, c.headYaw, 0)), new THREE.Vector3(1, 1, 1))); crowHead.setMatrixAt(i, co); crowEyes.setMatrixAt(i, co);
-    cl.makeTranslation(0, .24, 0).multiply(new THREE.Matrix4().makeRotationZ(c.flap)); crowWings.setMatrixAt(i * 2, co.multiplyMatrices(cm, cl));
-    cl.makeTranslation(0, .24, 0).multiply(flipY).multiply(new THREE.Matrix4().makeRotationZ(c.flap)); crowWings.setMatrixAt(i * 2 + 1, co.multiplyMatrices(cm, cl));
+    co.multiplyMatrices(cm, cl.compose(headOffset, cq.setFromEuler(ce.set(c.headPitch, c.headYaw, 0)), unitScale)); crowHead.setMatrixAt(i, co); crowEyes.setMatrixAt(i, co);
+    wingTurn.makeRotationZ(c.flap);
+    cl.makeTranslation(0, .24, 0).multiply(wingTurn); crowWings.setMatrixAt(i * 2, co.multiplyMatrices(cm, cl));
+    cl.makeTranslation(0, .24, 0).multiply(flipY).multiply(wingTurn); crowWings.setMatrixAt(i * 2 + 1, co.multiplyMatrices(cm, cl));
   }
   function tickSquirrel(q, time, dt) {
     q.t += dt; const rr = q.rr;
     if (q.state === "sit") {
-      q.g.position.copy(W(q.x, q.z, 0)); q.g.rotation.x = -.5 * Math.min(1, q.t * 3); q.tail.rotation.x = Math.sin(time * 6) * .25;
+      W(q.x, q.z, 0, q.g.position); q.g.rotation.x = -.5 * Math.min(1, q.t * 3); q.tail.rotation.x = Math.sin(time * 6) * .25;
       if (q.t > q.wait) { q.g.rotation.x = 0; const home = pieceAt(q.x, q.z), near = TREES.filter((t) => pieceAt(t[0], t[1]) === home), tree = (near.length ? near : TREES)[(rr() * (near.length || TREES.length)) | 0], a = rr() * 6.28, d = 1.4 + rr() * 2.4; q.tx = tree[0] + Math.cos(a) * d; q.tz = tree[1] + Math.sin(a) * d; q.state = rr() < .25 ? "toClimb" : "run"; q.tree = tree; q.t = 0; }
     } else if (q.state === "run" || q.state === "toClimb") {
       const tx = q.state === "toClimb" ? q.tree[0] + .35 : q.tx, tz = q.state === "toClimb" ? q.tree[1] : q.tz, dx = tx - q.x, dz = tz - q.z, d = Math.hypot(dx, dz), step = Math.min(d, dt * 4.2);
       q.x += dx / (d || 1) * step; q.z += dz / (d || 1) * step;
-      q.g.position.copy(W(q.x, q.z, Math.abs(Math.sin(time * 14)) * .14)); q.g.rotation.y = Math.atan2(dx, -dz); q.tail.rotation.x = -.3 + Math.sin(time * 14) * .2;
+      W(q.x, q.z, Math.abs(Math.sin(time * 14)) * .14, q.g.position); q.g.rotation.y = Math.atan2(dx, -dz); q.tail.rotation.x = -.3 + Math.sin(time * 14) * .2;
       if (d < .05) { q.state = q.state === "toClimb" ? "climb" : "sit"; q.t = 0; q.wait = 1.5 + rr() * 4; }
     } else if (q.state === "climb") {
       const up = q.t < 2.4 ? q.t / 2.4 : q.t < 5 ? 1 : Math.max(0, 1 - (q.t - 5) / 2), y = up * 2.6;
-      q.g.position.copy(W(q.x, q.z, y)); q.g.rotation.set(-Math.PI / 2 * (q.t < 5 ? 1 : -1), Math.PI / 2, 0); q.tail.rotation.x = Math.sin(time * 9) * .3;
+      W(q.x, q.z, y, q.g.position); q.g.rotation.set(-Math.PI / 2 * (q.t < 5 ? 1 : -1), Math.PI / 2, 0); q.tail.rotation.x = Math.sin(time * 9) * .3;
       if (q.t > 7) { q.g.rotation.set(0, 0, 0); q.state = "sit"; q.t = 0; q.wait = 1 + rr() * 3; q.x -= .6; }
     }
   }
+  // The surface remains in memory inside homes/caves. Its invisible particle
+  // buffers need no posing/upload work, but the shared indoor lamps still flicker.
+  let ticks = 0, hiddenTicks = 0, bufferUpdates = 0, matrixWrites = 0, pointWrites = 0, visible = true;
+  const matricesPerTick = water.count + splash.count + falls.count + moths.count + leaves.count + CROWS * 5 + HORSES + GONDOLAS * 2;
+  const animatedBuffers = [water.instanceMatrix, splash.instanceMatrix, falls.instanceMatrix, moths.instanceMatrix, leaves.instanceMatrix,
+    smokeGeo.attributes.position, smokeGeo.attributes.size, smokeGeo.attributes.alpha, crowBody.instanceMatrix, crowHead.instanceMatrix,
+    crowEyes.instanceMatrix, crowWings.instanceMatrix, horses.instanceMatrix, gondolas.instanceMatrix, gondolaLamps.instanceMatrix, flyGeo.attributes.position];
   return {
     group,
     // Which homes are built, so their chimneys smoke.
     setBuilt(b) { built = b ?? {}; },
+    stats() { return { ticks, hiddenTicks, visible, bufferUpdates, matrixWrites, pointWrites, matricesPerTick, pointsPerTick: smokeCount + flyCount }; },
     tick(time, dt, camera, pool) {
+      ticks++; visible = true;
+      // Candlelight belongs to the current place, not to the hidden surface.
+      pool?.forEach((l, i) => { l.intensity = (l.userData.base ?? 48) * (.86 + .14 * noise(time * 7.3 + i * 3.1)); });
+      for (let parent = group; parent; parent = parent.parent) if (!parent.visible) { visible = false; hiddenTicks++; return; }
+      matrixWrites += matricesPerTick; pointWrites += smokeCount + flyCount;
       // Water: beads along each arc, cycling; splashes where they land; a little jet over the moth.
       FS.forEach((F, fi) => {
         const k = F.r / 2.4, g = H(F.x, F.z);
         for (let a = 0; a < arcs; a++) {
           const ang = (a + .5) / arcs * Math.PI * 2;
-          for (let b = 0; b < beads; b++) { const t = ((time * .9 + b / beads + a * .13) % 1), d = (1.08 + t * .82) * k, y = g + (1.5 + .2 * Math.sin(t * Math.PI * .6) - t * t * 1.08) * k; dummy.position.copy(W(F.x + Math.cos(ang) * d, F.z + Math.sin(ang) * d, y)); dummy.scale.set(1, 1 + t, 1); dummy.rotation.set(0, 0, 0); dummy.updateMatrix(); water.setMatrixAt((fi * arcs + a) * beads + b, dummy.matrix); }
-          const s = .6 + .4 * Math.sin(time * 7 + a); dummy.position.copy(W(F.x + Math.cos(ang) * 1.92 * k, F.z + Math.sin(ang) * 1.92 * k, g + .45 * k)); dummy.scale.set(s, 1, s); dummy.updateMatrix(); splash.setMatrixAt(fi * arcs + a, dummy.matrix);
+          for (let b = 0; b < beads; b++) { const t = ((time * .9 + b / beads + a * .13) % 1), d = (1.08 + t * .82) * k, y = g + (1.5 + .2 * Math.sin(t * Math.PI * .6) - t * t * 1.08) * k; W(F.x + Math.cos(ang) * d, F.z + Math.sin(ang) * d, y, dummy.position); dummy.scale.set(1, 1 + t, 1); dummy.rotation.set(0, 0, 0); dummy.updateMatrix(); water.setMatrixAt((fi * arcs + a) * beads + b, dummy.matrix); }
+          const s = .6 + .4 * Math.sin(time * 7 + a); W(F.x + Math.cos(ang) * 1.92 * k, F.z + Math.sin(ang) * 1.92 * k, g + .45 * k, dummy.position); dummy.scale.set(s, 1, s); dummy.updateMatrix(); splash.setMatrixAt(fi * arcs + a, dummy.matrix);
         }
       });
-      water.instanceMatrix.needsUpdate = splash.instanceMatrix.needsUpdate = true;
       // Waterfalls: each bead pours over the lip, falls and quickens, then starts again at the top.
-      D.falls.forEach((f, fi) => { for (let i = 0; i < fallBeads; i++) { const b = fallSpot[fi * fallBeads + i], t = (time * .55 * b.s + b.p) % 1, y = f.top + .1 - (f.top - f.foot) * t * t; const out = .25 + b.out + t * .5, k = f.w / 2.2; dummy.position.copy(W(f.x + f.nx * out + (f.nx ? 0 : b.z * k), f.z + f.nz * out + (f.nx ? b.z * k : 0), y)); dummy.rotation.set(0, 0, 0); const thin = f.w < 2 && i % 3 ? 0 : 1; dummy.scale.set(thin, (1 + t * 1.5) * thin, thin); dummy.updateMatrix(); falls.setMatrixAt(fi * fallBeads + i, dummy.matrix); } });
-      falls.instanceMatrix.needsUpdate = true;
-      // Candlelight: each pooled light breathes on its own.
-      pool?.forEach((l, i) => { l.intensity = (l.userData.base ?? 48) * (.86 + .14 * noise(time * 7.3 + i * 3.1)); });
+      D.falls.forEach((f, fi) => { for (let i = 0; i < fallBeads; i++) { const b = fallSpot[fi * fallBeads + i], t = (time * .55 * b.s + b.p) % 1, y = f.top + .1 - (f.top - f.foot) * t * t; const out = .25 + b.out + t * .5, k = f.w / 2.2; W(f.x + f.nx * out + (f.nx ? 0 : b.z * k), f.z + f.nz * out + (f.nx ? b.z * k : 0), y, dummy.position); dummy.rotation.set(0, 0, 0); const thin = f.w < 2 && i % 3 ? 0 : 1; dummy.scale.set(thin, (1 + t * 1.5) * thin, thin); dummy.updateMatrix(); falls.setMatrixAt(fi * fallBeads + i, dummy.matrix); } });
       // Moths.
-      mothHome.forEach((m, i) => { const t = time * m.s + m.p; dummy.position.copy(W(m.x + Math.cos(t) * m.r + noise(t * 2.3) * .15, m.z + Math.sin(t * 1.3) * m.r, m.y + Math.sin(t * 2.1) * .35)); dummy.rotation.set(0, -t, Math.sin(time * 40 + i) * .9); dummy.scale.setScalar(1); dummy.updateMatrix(); moths.setMatrixAt(i, dummy.matrix); });
-      moths.instanceMatrix.needsUpdate = true;
+      mothHome.forEach((m, i) => { const t = time * m.s + m.p; W(m.x + Math.cos(t) * m.r + noise(t * 2.3) * .15, m.z + Math.sin(t * 1.3) * m.r, m.y + Math.sin(t * 2.1) * .35, dummy.position); dummy.rotation.set(0, -t, Math.sin(time * 40 + i) * .9); dummy.scale.setScalar(1); dummy.updateMatrix(); moths.setMatrixAt(i, dummy.matrix); });
       // Leaves.
       leaf.forEach((L, i) => {
         let age = time - L.born; if (age > L.life) { L.born = time; age = 0; L.ox = (Math.random() - .5) * 3.4; L.oz = (Math.random() - .5) * 3.4; }
         const fall = Math.min(1, age / (L.h / .7)), y = Math.max(.03, L.h * (1 - fall)), drift = age * .35, sway = Math.sin(age * L.sway * 2 + L.p) * .5;
-        dummy.position.copy(WBy(L.tree[0] + L.ox + drift + sway, L.tree[1] + L.oz + sway * .4, y, L.tree));
+        WBy(L.tree[0] + L.ox + drift + sway, L.tree[1] + L.oz + sway * .4, y, L.tree, dummy.position);
         dummy.rotation.set(y > .05 ? Math.sin(age * L.spin) * 1.1 : 0, age * L.spin * .3, y > .05 ? Math.cos(age * L.spin * .7) * .8 : 0); dummy.scale.setScalar(1); dummy.updateMatrix(); leaves.setMatrixAt(i, dummy.matrix);
       });
-      leaves.instanceMatrix.needsUpdate = true;
       // Smoke.
-      chimneys.forEach((c, ci) => { const on = !c.home || built[c.home]; for (let k = 0; k < PUFFS; k++) { const i = ci * PUFFS + k, p = k / PUFFS, t = (time * .12 + p) % 1; smokePos.set([c.x + t * 1.6 + Math.sin(time * .5 + p * 6) * .2, c.y + .3 + t * 3.2, -(c.z - t * .4)], i * 3); smokeSize[i] = .6 + t * 2.2; smokeAlpha[i] = on ? .34 * (1 - t) * Math.min(1, t * 6) : 0; } });
-      smokeGeo.attributes.position.needsUpdate = smokeGeo.attributes.size.needsUpdate = smokeGeo.attributes.alpha.needsUpdate = true;
+      chimneys.forEach((c, ci) => { const on = !c.home || built[c.home]; for (let k = 0; k < PUFFS; k++) { const i = ci * PUFFS + k, p = k / PUFFS, t = (time * .12 + p) % 1; const j = i * 3; smokePos[j] = c.x + t * 1.6 + Math.sin(time * .5 + p * 6) * .2; smokePos[j + 1] = c.y + .3 + t * 3.2; smokePos[j + 2] = -(c.z - t * .4); smokeSize[i] = .6 + t * 2.2; smokeAlpha[i] = on ? .34 * (1 - t) * Math.min(1, t * 6) : 0; } });
       // Birds and squirrels.
-      crows.forEach((c, i) => tickCrow(c, i, time, dt)); crowBody.instanceMatrix.needsUpdate = crowHead.instanceMatrix.needsUpdate = crowEyes.instanceMatrix.needsUpdate = crowWings.instanceMatrix.needsUpdate = true;
+      crows.forEach((c, i) => tickCrow(c, i, time, dt));
       owl.head.rotation.y = Math.sin(time * .35) * 1.4 + (Math.sin(time * .9) > .97 ? .6 : 0);
       for (const q of squirrels) tickSquirrel(q, time, dt);
       // The spire turns its beam; the wheel turns.
       beam.rotation.y = time * .35; wheel.rotation.z = time * .12; carousel.rotation.y = time * .4;
       for (let i = 0; i < HORSES; i++) { const t = i / HORSES * Math.PI * 2; dummy.position.set(Math.cos(t) * 1.85, 1.05 + Math.sin(time * 2.2 + i * 1.7) * .18, Math.sin(t) * 1.85); dummy.rotation.set(0, Math.PI / 2 - t, 0); dummy.scale.setScalar(1); dummy.updateMatrix(); horses.setMatrixAt(i, dummy.matrix); }
-      horses.instanceMatrix.needsUpdate = true;
       for (let i = 0; i < GONDOLAS; i++) { const t = i / GONDOLAS * Math.PI * 2 + wheel.rotation.z; dummy.position.set(Math.cos(t) * WR, Math.sin(t) * WR, 0); dummy.rotation.set(0, 0, 0); dummy.scale.setScalar(1); dummy.updateMatrix(); gondolas.setMatrixAt(i, dummy.matrix); dummy.position.y -= .04; dummy.updateMatrix(); gondolaLamps.setMatrixAt(i, dummy.matrix); }
-      gondolas.instanceMatrix.needsUpdate = gondolaLamps.instanceMatrix.needsUpdate = true;
       // Fireflies.
-      fly.forEach((f, i) => { const t = time * f.s + f.p; flyPos.set([f.x + Math.sin(t) * .8, f.y + Math.sin(t * 1.7) * .3, -(f.z + Math.cos(t * .8) * .8)], i * 3); });
-      flyGeo.attributes.position.needsUpdate = true; fireflies.material.opacity = .6 + .3 * Math.sin(time * 2.2);
+      fly.forEach((f, i) => { const t = time * f.s + f.p; const j = i * 3; flyPos[j] = f.x + Math.sin(t) * .8; flyPos[j + 1] = f.y + Math.sin(t * 1.7) * .3; flyPos[j + 2] = -(f.z + Math.cos(t * .8) * .8); });
+      fireflies.material.opacity = .6 + .3 * Math.sin(time * 2.2);
+      for (const buffer of animatedBuffers) buffer.needsUpdate = true;
+      bufferUpdates += animatedBuffers.length;
     },
   };
 }
