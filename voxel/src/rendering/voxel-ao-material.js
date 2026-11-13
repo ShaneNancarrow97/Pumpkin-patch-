@@ -13,6 +13,10 @@ export function dressVoxelAOMaterial(material, { strength = VOXEL_AO.strength, r
   if (!material?.isMeshStandardMaterial || material.userData.voxelAO && (!refresh || dressedHooks.get(material) === material.onBeforeCompile)) return material;
   strength = Math.max(0, Math.min(.6, Number.isFinite(strength) ? strength : VOXEL_AO.strength));
   const before = material.onBeforeCompile.bind(material), key = material.customProgramCacheKey.bind(material);
+  // A cloned/rotated batch can share this material while remaining outside the
+  // static bake. Its absent attribute must read as unoccluded in legacy GL,
+  // rather than inheriting an unrelated generic vertex-attribute value.
+  material.defaultAttributeValues = { ...material.defaultAttributeValues, [VOXEL_AO.attribute]: [0, 0] };
   material.onBeforeCompile = (shader, renderer) => {
     before(shader, renderer);
     shader.vertexShader = shader.vertexShader.replace("#include <common>", `#include <common>

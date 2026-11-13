@@ -140,6 +140,7 @@ test("WebGL AO composes previous hooks and shades only indirect lighting", () =>
   assert.doesNotMatch(shader.fragmentShader, /\b(?:directDiffuse|directSpecular|diffuseColor) \*= voxelAOFactor/);
   assert.match(material.customProgramCacheKey(), /prior-finish\|voxel-neighbour-ao/);
   assert.equal(material.userData.voxelAO.strength, .24);
+  assert.deepEqual(material.defaultAttributeValues.voxelAO, [0, 0]);
 });
 
 test("a later village finish retains opt-in AO exactly once", () => {
