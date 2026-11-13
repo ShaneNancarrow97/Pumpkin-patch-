@@ -40,6 +40,8 @@ Screenshots were inspected under `/tmp/village-clarity-qa` and the UI fixture's 
 
 The performance harness records the exact HTML hash, fixture, preferences, software renderer and measurement limits. Final same-route results are in its verification receipts; compare like-for-like rather than treating them as device FPS. Warm re-entry retains scene animation clocks and may render unrecorded polling frames, so the repeatability claim is the fixture, owner route and picture contract, not bit-for-bit animations or GPU timing. The build retains the lead's existing missing-export warnings for bespoke Baron/Granny home interiors and their existing fallback.
 
+The final route has the same draw-call/triangle quantiles and identical sampled owner positions. Software wall intervals were lower, while the accelerated 18-step RAF callback's CPU time was higher; this is a mixed result, **not a speedup claim**. A next performance pass should profile resident approach clearance and other per-tick work on a normal unaccelerated run before attributing that CPU difference or adding caches that could weaken live interaction checks.
+
 Build with `node build.mjs --out /tmp/Pumpkin-Patch-Village-Clarity.html`. `tools/village-clarity-qa.mjs` reproduces the normal-render feature check; `VILLAGE_QA_DPR=2 VILLAGE_QA_CAPTURE_ONLY=1` limits it to the high-density atlas check. `tools/village-ui-clarity-qa.mjs` runs the lightweight real-view UI fixture. The performance tool accepts its baseline JSON through `--fixture`.
 
 The delivery branch `contractor/village-clarity-html` contains the standalone HTML, a ZIP with `index.html`, README and exact-byte receipt, and links back to this source handover. The older APK is not a build of this pass.
