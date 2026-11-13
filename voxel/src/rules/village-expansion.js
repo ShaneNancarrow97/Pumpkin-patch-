@@ -70,7 +70,8 @@ const metric=(s,id)=>id==='cook'?(s.kitchen?.ledger?.batchesCooked??0):id==='har
 function shownChoices(a){
  const list=[...(a.choices??[])];if(list.length<2)return list;
  let n=2166136261;for(const ch of a.id)n=Math.imul(n^ch.charCodeAt(0),16777619)>>>0;
- for(let i=list.length-1;i>0;i--){n=Math.imul(n^n>>>15,2246822519)>>>0;n=Math.imul(n^n>>>13,3266489917)>>>0;const j=(n^n>>>16)%(i+1);[list[i],list[j]]=[list[j],list[i]];}
+ // Keep the mixed hash unsigned so every swap stays inside the list.
+ for(let i=list.length-1;i>0;i--){n=Math.imul(n^n>>>15,2246822519)>>>0;n=Math.imul(n^n>>>13,3266489917)>>>0;const j=((n^n>>>16)>>>0)%(i+1);[list[i],list[j]]=[list[j],list[i]];}
  const answer=Array.isArray(a.solution)?a.solution:[];
  if(list.slice(0,answer.length).every((v,i)=>v===answer[i]))list.push(list.shift());
  return list;
