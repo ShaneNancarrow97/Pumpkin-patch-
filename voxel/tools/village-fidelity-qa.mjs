@@ -61,9 +61,10 @@ try {
     if (!baseline) {
       check('The actual ground texture keeps native arrival lawns green and roads bare', ...(await groundTextureCheck(page)), false);
       await openRowan(page, frames); await dialoguePadInput(page, frames); await shot('conversation-desktop.png', { preserveInput: true });
-      check('The reference conversation preserves its canonical greeting choices', ...(await dialogueChoiceCheck(page)));
+      check('The reference conversation preserves its canonical greeting choices', ...(await dialogueChoiceCheck(page)), false);
       check('The reference conversation has readable, contained desktop surfaces', ...(await conversationLayoutCheck(page)), false);
       check('The selected reference reply has an opaque readable gold surface', ...(await dialogueContrastCheck(page)), false);
+      await passiveOtherStoriesCheck(page, check);
     }
   }
   if (!uiOnly && !referenceOnly) {
@@ -120,9 +121,10 @@ try {
     }
     if (!baseline) {
       await openRowan(page, frames); await dialoguePadInput(page, frames); await shot('conversation-tv.png', { preserveInput: true });
-      check('TV conversation preserves its canonical greeting choices', ...(await dialogueChoiceCheck(page)));
+      check('TV conversation preserves its canonical greeting choices', ...(await dialogueChoiceCheck(page)), false);
       check('TV conversation text and controls stay legible and contained', ...(await conversationLayoutCheck(page)), false);
       check('The selected TV reply keeps opaque gold and readable label and note contrast', ...(await dialogueContrastCheck(page)), false);
+      await passiveOtherStoriesCheck(page, check);
     }
     report.views.push({ id: 'tv', ...await viewInfo() });
     if (!baseline) { const budget = await page.evaluate(() => PumpkinVoxel.scene.villageView.fidelityStats?.air); check('TV air uses its reduced bounded workload', budget?.shafts <= 3 && budget.fireflies <= 16 && budget.triangles <= 38, budget); }
@@ -271,9 +273,9 @@ async function dialogueChoiceCheck(page) {
   const actual = await page.evaluate(() => {
     const panel = document.querySelector('#village-dialogue'), choices = [...panel.querySelectorAll('.village-reply')], semantic = choices.map(el => ({ id: el.dataset.villageChoiceId, disabled: el.disabled, label: el.querySelector('.village-reply-label')?.textContent.trim() }));
     const previous = window.__fidelityGreetingChoices;
-    return { name: panel.querySelector('h2')?.textContent.trim(), intent: panel.dataset.dialogueIntent, input: panel.dataset.input, unchanged: JSON.stringify(semantic) === JSON.stringify(previous), semantic, primaryStories: semantic.filter(c => /^(quest|expansion):/.test(c.id ?? '')).length, otherStories: semantic.filter(c => /Other stories/.test(c.label ?? '')).length, bound: choices.every(el => typeof el.onclick === 'function') };
+    return { name: panel.querySelector('h2')?.textContent.trim(), intent: panel.dataset.dialogueIntent, input: panel.dataset.input, unchanged: JSON.stringify(semantic) === JSON.stringify(previous), semantic, primaryStories: semantic.filter(c => /^(quest|expansion):/.test(c.id ?? '')).length, otherStories: semantic.filter(c => /Other stories/.test(c.label ?? '')).length };
   });
-  return [actual.name === 'Rowan Rattlewood' && actual.unchanged && actual.bound && actual.primaryStories === 1 && actual.otherStories === 1, actual];
+  return [actual.name === 'Rowan Rattlewood' && actual.unchanged && actual.primaryStories === 1 && actual.otherStories === 1, actual];
 }
 async function conversationLayoutCheck(page) {
   const actual = await page.locator('#village-dialogue').evaluate(panel => {
@@ -309,11 +311,10 @@ async function conversationScreens(page, check, frames, shot) {
     if (name !== 'desktop') { await page.dispatchEvent('#village-dialogue .village-dialogue-person', 'pointerdown', { pointerType: 'touch', button: 0 }); await frames(); }
     await shot(`conversation-${name}.png`, { preserveInput: true });
     check(`${width}×${height} conversation keeps text, controls and panels readable`, ...(await conversationLayoutCheck(page)), false);
-    check(`${width}×${height} conversation retains the canonical reply order and availability`, ...(await dialogueChoiceCheck(page)));
+    check(`${width}×${height} conversation retains the canonical reply order and availability`, ...(await dialogueChoiceCheck(page)), false);
     if (name === 'desktop') check('Desktop selected reply preserves opaque gold and readable contrast', ...(await dialogueContrastCheck(page)), false);
   }
-  await page.keyboard.press('Escape'); await page.waitForFunction(() => !document.querySelector('#village-dialogue:not([hidden])') && !PumpkinVoxel.village.blocked);
-  check('Closing a conversation releases actual village control', await page.evaluate(() => PumpkinVoxel.village.active && !PumpkinVoxel.village.blocked));
+  await passiveOtherStoriesCheck(page, check);
 }
 
 // Verify a final confirmation-style delta on exact HTML without repeating
@@ -352,4 +353,21 @@ async function returnPromptChecks(page, check, frames, shot) {
   await press(1); await page.waitForFunction(() => PumpkinVoxel.village.status.returnPrompt); await release(1);
   await press(0); await page.waitForFunction(() => !PumpkinVoxel.village.active); await release(0);
   check('Cross confirms the second Return request and reaches the farm', await page.evaluate(() => !PumpkinVoxel.village.active && !document.body.classList.contains('in-village')));
+}
+
+// Event handlers may use addEventListener rather than the onclick property.
+// Prove the passive story action works without accepting or settling a quest.
+async function passiveOtherStoriesCheck(page, check) {
+  const resources = () => page.evaluate(() => {
+    const s = PumpkinVoxel.state(), v = s.village, e = v.expansion;
+    return JSON.stringify({ coins: s.coins, earned: s.earned, stock: s.stock, pantry: s.kitchen.pantry, food: s.kitchen.food, recipes: s.kitchen.recipes, ownedDecor: s.house.owned, decorCopies: s.house.copies, outfits: s.wardrobe.owned, rankClaims: s.progression.claimed, rankReceipts: s.progression.receipts, materials: v.materials, quests: v.quests, claims: v.claims, unlocks: v.unlocks, effects: v.effects, built: v.built, completed: e.completed, chapters: e.chapters, gems: e.gems, questItems: e.questItems, receipts: e.receipts, tracked: e.tracked });
+  });
+  const before = await resources();
+  await page.locator('#village-dialogue .village-reply[data-village-choice-id="stories"]').click();
+  await page.waitForFunction(() => PumpkinVoxel.village.status.panel === 'journal' && PumpkinVoxel.village.status.panelId === 'rowan');
+  const after = await resources();
+  check('Other stories activates the real Rowan journal without resource, reward or quest side effects', before === after, { actualDOMActivation: true, panel: 'journal', panelId: 'rowan', unchangedResourcesAndClaims: before === after, beforeSha256: sha(before), afterSha256: sha(after) });
+  await page.locator('#vg-panel-close').click();
+  await page.waitForFunction(() => PumpkinVoxel.village.active && !PumpkinVoxel.village.status.panel && !PumpkinVoxel.village.blocked);
+  check('Closing the passive story journal releases actual village control', await page.evaluate(() => PumpkinVoxel.village.active && !PumpkinVoxel.village.blocked));
 }
