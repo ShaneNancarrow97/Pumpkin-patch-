@@ -8,7 +8,7 @@ import { groundIsWater as isWater } from "../village-terrain.js";
 import { expansionAreaInfo } from './village-expansion-access.js';
 import { EXPANSION_AREAS } from '../content/village-expansion.js';
 import { acreCellFree, onExpansionApproach } from '../village-expansion-spatial.js';
-import { spreadRect, gatherWorld } from './village-spread.js';
+import { spreadRect, gatherWorld, TOWN_SQUARE } from './village-spread.js';
 import { townSquareObstacles, townSquareBlockers } from '../content/village-town-square.js';
 import { villageNeighbourhoodObstacles } from '../content/village-neighbourhoods.js';
 
@@ -62,6 +62,7 @@ tavern.push(modelRect(102,24.4,"north",-3.55,3.82,-1.65,4.58));
 // The Green as drawn (its corners gathered back from where they stand): a point is on it if it reads as a point
 // of the drawn Green, which takes in the ground let in between the pieces.
 const green=DISTRICT_BY_ID.green.polygon.map(([x,z])=>gatherWorld(x,z)),limits={x0:Math.min(...green.map(p=>p[0])),x1:Math.max(...green.map(p=>p[0])),z0:Math.min(...green.map(p=>p[1])),z1:Math.max(...green.map(p=>p[1]))};
+const townLimits = scaled(TOWN_SQUARE);
 export function villageWalkObstacles(s) {
   const boxes=[...scenery,...buildings,...walls,...tavern,
     ...homes(), GRANNY, ...townSquareObstacles(), ...villageNeighbourhoodObstacles(s)
@@ -121,13 +122,16 @@ export function villageCellFree(s,x,z,r=VILLAGE_WALK_RADIUS,boxes=villageWalkObs
   // The narrow southern exception reaches the carriage through the moth gate.
   const [gx,gz]=gatherWorld(x,z);
   const onGreen=gx>=limits.x0+r&&gx<=limits.x1-r&&gz>=limits.z0+r&&gz<=limits.z1-r;
+  // The park fills spread ground whose eastern edge can gather to the Moor.
+  // Its native bounds are Green land; the district gates remain beyond them.
+  const onTown=x>=townLimits.x0+r&&x<=townLimits.x1-r&&z>=townLimits.z0+r&&z<=townLimits.z1-r;
   const atCarriage=Math.abs(x-ARRIVAL.spawn[0])<=3*K-r&&z>=ARRIVAL.back[1]-r&&z<=limits.z0+r;
   const hasArea=id=>!!s?.village&&!!expansionAreaInfo(s,id)?.open;
   const onLater=EXPANSION_AREAS.some(a=>!['green','acre'].includes(a.id)&&a.layer!=='cave'&&hasArea(a.id)&&x>=a.bounds[0]+r&&x<=a.bounds[2]-r&&z>=a.bounds[1]+r&&z<=a.bounds[3]-r);
   // The Acre's paths are kept as drawn: ask them of the gathered point.
   const onAcre=hasArea('acre')&&acreCellFree(gx,gz,r,!!s?.village?.expansion?.effects?.includes('acre-shortcut')),approach=hasArea('copse')&&onExpansionApproach(gx,gz,r);
   const onRoad=ROADS.some(road=>{const id=road.id.startsWith('door-')?PLOTS.find(p=>p.id===road.plot)?.district:road.id;if(!['copse','quarry','moor','marsh'].includes(id)||!hasArea(id))return false;return road.points.slice(1).some(([bx,bz],i)=>{const[ax,az]=road.points[i],dx=bx-ax,dz=bz-az,t=Math.max(0,Math.min(1,((x-ax)*dx+(z-az)*dz)/(dx*dx+dz*dz||1)));return Math.hypot(x-ax-dx*t,z-az-dz*t)<=road.width/2-r;});});
-  if(!onGreen&&!atCarriage&&!onLater&&!onAcre&&!approach&&!onRoad)return false;
+  if(!onGreen&&!onTown&&!atCarriage&&!onLater&&!onAcre&&!approach&&!onRoad)return false;
   // The field is a maze: its unused land never becomes a shortcut through corn.
   if(gx<-34*K&&gz>46*K&&gz<114*K&&!onAcre&&!approach)return false;
   if(isWater(x/K,z/K))return false;

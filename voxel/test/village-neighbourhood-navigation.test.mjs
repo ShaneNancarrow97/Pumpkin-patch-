@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import * as M from '../src/model.js';
-import { NODES, ROADS, ARRIVAL, PLAN_SCALE as K } from '../src/content/village.js';
+import { NODES, ROADS, ARRIVAL, GATES, PLAN_SCALE as K } from '../src/content/village.js';
 import { villageNodeCandidates } from '../src/content/village-node-sites.js';
-import { villageNeighbourhoodClusters, villageNeighbourhoodObstacles } from '../src/content/village-neighbourhoods.js';
-import { villageCellFree, villageWalkObstacles, moveVillageWalker, villageDecorGroundClear, villageCameraReach } from '../src/rules/village-navigation.js';
+import { villageNeighbourhoodClusters, villageNeighbourhoodObstacles, villageNeighbourhoodPaths } from '../src/content/village-neighbourhoods.js';
+import { villageCellFree, villageWalkObstacles, moveVillageWalker, villageDecorGroundClear, villageCameraReach, VILLAGE_WALK_RADIUS } from '../src/rules/village-navigation.js';
+import { TOWN_SQUARE } from '../src/rules/village-spread.js';
 
 test('the village dressing preserves every authored and saved-cycle resource position', () => {
   // Recorded before the new scenery: a gather cycle must still resolve to the
@@ -46,6 +47,45 @@ test('new solid features leave the full width of every established road clear', 
       : b.x0 < lane.x1 && b.x1 > lane.x0 && b.z0 < lane.z1 && b.z1 > lane.z0;
     assert.equal(overlaps, false, `${b.neighbourhood} keeps ${road.id} open`);
   }
+});
+
+test('every new garden path and the eastern pergola can be walked from the arrival', () => {
+  const s = M.freshState(), obstacles = villageWalkObstacles(s), step = .75;
+  const start = ARRIVAL.spawn.map(v => Math.round(v / step)), queue = [start], key = (x, z) => `${x},${z}`, seen = new Set([key(...start)]);
+  for (let i = 0; i < queue.length; i++) {
+    const [x, z] = queue[i];
+    for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const nx = x + dx, nz = z + dz, k = key(nx, nz);
+      if (seen.has(k) || !villageCellFree(s, nx * step, nz * step, VILLAGE_WALK_RADIUS, obstacles)) continue;
+      seen.add(k); queue.push([nx, nz]);
+    }
+  }
+  const reaches = p => {
+    const x = Math.round(p.x / step), z = Math.round(p.z / step);
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) if (seen.has(key(x + dx, z + dz))) {
+      const from = { x: (x + dx) * step, z: (z + dz) * step }, end = moveVillageWalker(s, from, p.x - from.x, p.z - from.z);
+      if (Math.hypot(end.x - p.x, end.z - p.z) < 1e-7) return true;
+    }
+    return false;
+  };
+  for (const path of villageNeighbourhoodPaths()) {
+    let p = { x: path.points[0][0] * K, z: path.points[0][1] * K };
+    assert.ok(reaches(p), 'the path connects to the playable village at ' + JSON.stringify(path.points[0]));
+    for (const [x, z] of path.points.slice(1)) {
+      p = moveVillageWalker(s, p, x * K - p.x, z * K - p.z);
+      assert.ok(Math.hypot(p.x - x * K, p.z - z * K) < 1e-7, `the owner walks the new path to ${x},${z}`);
+    }
+  }
+  for (const [x, z] of [[124, 59.5], [124, 62], [124, 67.2], [134, 64]]) assert.ok(reaches({ x: x * K, z: z * K }), `eastern garden approach ${x},${z}`);
+});
+
+test('the native town park ends before every closed district and keeps the eastern boundary solid', () => {
+  const s = M.freshState(); s.earned = M.LEVELS[19].at; s.progression.claimed = M.LEVELS.map(l => l.level); s.village.invited = true;
+  for (const gate of GATES) assert.equal(villageCellFree(s, gate.x, gate.z), false, gate.id + ' remains closed');
+  const from = { x: 141 * K, z: 72 * K }, end = moveVillageWalker(s, from, 12 * K, 0);
+  assert.ok(end.x <= TOWN_SQUARE.x1 * K - VILLAGE_WALK_RADIUS + 1e-7, 'walking east stops at the park edge');
+  assert.ok(end.x > 142 * K, 'the formerly unreachable eastern park is playable');
+  assert.equal(villageCellFree(s, (TOWN_SQUARE.x1 + 1) * K, from.z), false, 'the park does not grant passage into the Moor');
 });
 
 test('saved furniture suppresses new scenery on reload and undo without losing the piece', () => {
