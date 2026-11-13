@@ -4,7 +4,7 @@ import * as THREE from "three";
 import { buildHorizon, SKY } from "../src/village-world.js";
 import { dressVillageDuskSky, VILLAGE_DUSK_SKY, VILLAGE_DUSK_CLOUDS, VILLAGE_DUSK_COLOURS, villageDuskCloudCoverage, villageDuskArtUv, VILLAGE_DUSK_ART } from "../src/village-dusk-sky.js";
 import { createFollowCameraRig, followCameraPose } from "../src/follow-camera.js";
-import { outsideLookLift } from "../src/village-camera.js";
+import { outsideLookLift, OUTSIDE_VIEW } from "../src/village-camera.js";
 
 function skyFixture() {
   return new THREE.Mesh(new THREE.SphereGeometry(600, 8, 4), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false,
@@ -65,7 +65,7 @@ test("fixed clouds, sparse stars and three distant bands stay bounded in the exi
   assert.match(fragment, /if \(y < \.08\)/, "distant profiles are restricted to the low horizon");
   assert.match(fragment, /clamp\(colour, vec3\(0\.\), vec3\(0\.68\)\)/, "new sky light remains below the existing .9 bloom threshold");
   assert.match(fragment, /uniform vec3 top, middle, horizon, low, moon/); assert.match(fragment, /varying vec3 vDir/);
-  assert.match(mesh.material.customProgramCacheKey(), /village-dusk-sky-v3/);
+  assert.match(mesh.material.customProgramCacheKey(), /village-dusk-sky-v4/);
   assert.ok(VILLAGE_DUSK_SKY.maxLinearChannel < .9);
   layer.dispose(); release(mesh);
 });
@@ -109,7 +109,7 @@ test("disposal restores the exact prior shader contract without disposing the do
   material.customProgramCacheKey = oldKey; material.uniforms.villageDuskTime = oldTime; mesh.userData.villageDuskSky = oldData;
   let geometryDisposals = 0, materialDisposals = 0;
   mesh.geometry.addEventListener("dispose", () => geometryDisposals++); material.addEventListener("dispose", () => materialDisposals++);
-  const layer = dressVillageDuskSky(mesh); assert.equal(material.customProgramCacheKey(), "authored-dome|village-dusk-sky-v3");
+  const layer = dressVillageDuskSky(mesh); assert.equal(material.customProgramCacheKey(), "authored-dome|village-dusk-sky-v4");
   layer.tick(.1); layer.dispose(); layer.dispose();
   assert.equal(material.fragmentShader, original); assert.equal(material.customProgramCacheKey, oldKey); assert.equal(material.uniforms.villageDuskTime, oldTime); assert.equal(mesh.userData.villageDuskSky, oldData);
   assert.deepEqual([geometryDisposals, materialDisposals], [0, 0]);
@@ -122,7 +122,7 @@ test("invalid targets fail before changing unrelated meshes or materials", () =>
   assert.equal(ordinary.material, material); assert.equal(ordinary.userData.villageDuskSky, undefined); release(ordinary);
 });
 
-test("the normal entry camera exposes the lower layered cloud banks instead of only the horizon tint", () => {
+test("the wide entry camera exposes the lower layered cloud banks instead of only the horizon tint", () => {
   const rig = createFollowCameraRig({ minPitch: -.3, maxPitch: 1.1 }); rig.reset({ x: 87, y: 0, z: 7.5 }, { yaw: 0, pitch: .30, distance: 13 });
   const pose = followCameraPose(rig.state), camera = new THREE.PerspectiveCamera(48, 1280 / 720, .2, 900); camera.position.set(pose.position.x, pose.position.y, pose.position.z); camera.lookAt(pose.target.x, pose.target.y + outsideLookLift(.30), pose.target.z); camera.updateMatrixWorld(true);
   const elevations = [], coverage = [];
@@ -174,13 +174,14 @@ test("the actual entrance's exposed sky probes retain strong cloud bodies and cl
   assert.ok(coverage.filter(value => value < .1).length >= 3, "layered clouds retain open sky instead of becoming a flat overcast sheet");
 });
 
-test("painted sky projection follows world direction through a complete turn and keeps the entry on rich near-horizon art", () => {
-  for (const [direction, expected] of [[{ x: 0, y: 0, z: -1 }, [.5, .5]], [{ x: 1, y: 0, z: 0 }, [.75, .5]], [{ x: 0, y: 0, z: 1 }, [0, .5]], [{ x: -1, y: 0, z: 0 }, [.25, .5]], [{ x: 0, y: 1, z: 0 }, [.5, 1]], [{ x: 0, y: -1, z: 0 }, [.5, 0]]]) assert.deepEqual(villageDuskArtUv(direction), expected);
+test("painted sky projection tiles longitude twice per world turn and keeps the entry on rich near-horizon art", () => {
+  for (const [direction, expected] of [[{ x: 0, y: 0, z: -1 }, [.5, .5]], [{ x: 1, y: 0, z: 0 }, [0, .5]], [{ x: 0, y: 0, z: 1 }, [.5, .5]], [{ x: -1, y: 0, z: 0 }, [0, .5]], [{ x: 0, y: 1, z: 0 }, [.5, 1]], [{ x: 0, y: -1, z: 0 }, [.5, 0]]]) assert.deepEqual(villageDuskArtUv(direction), expected);
   for (let yaw = -Math.PI; yaw <= Math.PI; yaw += .07) for (const y of [-.8, -.1, .099, .196, .8]) {
     const horizontal = Math.sqrt(1 - y * y), direction = { x: Math.sin(yaw) * horizontal, y, z: -Math.cos(yaw) * horizontal }, uv = villageDuskArtUv(direction);
     const azimuth = (uv[0] - .5) * Math.PI * 2, elevation = (uv[1] - .5) * Math.PI;
-    const reconstructed = { x: Math.sin(azimuth) * Math.cos(elevation), y: Math.sin(elevation), z: -Math.cos(azimuth) * Math.cos(elevation) };
-    for (const axis of ["x", "y", "z"]) assert.ok(Math.abs(reconstructed[axis] - direction[axis]) < 1e-12, "projection has no camera-relative distortion");
+    assert.ok(Math.abs(Math.sin(azimuth) - Math.sin(yaw * 2)) < 1e-12);
+    assert.ok(Math.abs(Math.cos(azimuth) - Math.cos(yaw * 2)) < 1e-12, "world longitude tiles twice without camera-relative distortion");
+    assert.ok(Math.abs(Math.sin(elevation) - y) < 1e-12, "latitude is unchanged by the longitude calibration");
     assert.deepEqual(villageDuskArtUv({ x: direction.x * 37, y: y * 37, z: direction.z * 37 }).map(v => v.toFixed(10)), uv.map(v => v.toFixed(10)), "distance cannot change the panorama");
   }
   for (const y of [.099, .196]) {
@@ -189,7 +190,26 @@ test("painted sky projection follows world direction through a complete turn and
   }
   const cycle = 1 / VILLAGE_DUSK_ART.driftTurnsPerSecond;
   assert.ok(Math.abs(villageDuskArtUv({ x: 0, y: .1, z: -1 }, cycle)[0] - .5) < 1e-12);
+  assert.equal(VILLAGE_DUSK_ART.longitudeRepeats, 2); assert.equal(VILLAGE_DUSK_SKY.artLongitudeRepeats, 2);
+  for (const angle of [-Math.PI, -Math.PI / 2, Math.PI / 2, Math.PI]) {
+    const before = villageDuskArtUv({ x: Math.sin(angle - 1e-7), y: .1, z: -Math.cos(angle - 1e-7) })[0], after = villageDuskArtUv({ x: Math.sin(angle + 1e-7), y: .1, z: -Math.cos(angle + 1e-7) })[0];
+    const distance = Math.abs(before - after); assert.ok(Math.min(distance, 1 - distance) < 1e-6, "both tiled seams and the original world seam close modulo one");
+  }
   for (const bad of [{ x: 0, y: 0, z: 0 }, { x: NaN, y: 1, z: 0 }]) assert.throws(() => villageDuskArtUv(bad), /finite direction/);
+});
+
+test("the actual close reference camera uses twice the source columns while keeping its latitude and centre cloud composition", () => {
+  const rig = createFollowCameraRig(); rig.reset({ x: 87, y: 0, z: 16.5 }, { yaw: 0, pitch: OUTSIDE_VIEW.pitch, distance: OUTSIDE_VIEW.distance });
+  const pose = followCameraPose(rig.state), camera = new THREE.PerspectiveCamera(48, 1280 / 720, .2, 900); camera.position.set(pose.position.x, pose.position.y, pose.position.z); camera.lookAt(pose.target.x, pose.target.y + outsideLookLift(OUTSIDE_VIEW.pitch), pose.target.z); camera.updateMatrixWorld(true);
+  const ray = (x, y) => new THREE.Vector3(x / 640 - 1, 1 - y / 360, .5).unproject(camera).sub(camera.position).normalize();
+  const left = villageDuskArtUv(ray(0, 40)), right = villageDuskArtUv(ray(1280, 40)), centre = villageDuskArtUv(ray(640, 40));
+  assert.ok(Math.abs(centre[0] - .5) < 1e-12, "the same painted billow stays above the gateway centre");
+  const sourceColumns = (right[0] - left[0]) * 1024;
+  assert.ok(sourceColumns > 417 && sourceColumns < 419, "the full 1280px frame now spans 418 source columns rather than 209");
+  assert.ok(left[0] > .29 && right[0] < .71, "the entrance never encounters a tiled seam");
+  const upperRow = (1 - villageDuskArtUv(ray(640, 0))[1]) * 512, lowerRow = (1 - villageDuskArtUv(ray(640, 120))[1]) * 512;
+  assert.ok(upperRow > 222 && upperRow < 223 && lowerRow > 243 && lowerRow < 245, "latitude detail remains unchanged; doubling longitude cannot claim extra vertical resolution");
+  const mesh = skyFixture(), layer = dressVillageDuskSky(mesh); assert.match(mesh.material.fragmentShader, /artAngle \/ 6\.28318530718 \* 2\./); layer.dispose(); release(mesh);
 });
 
 test("optional art becomes ready without recompiling, owns no borrowed texture and restores prior uniform objects exactly", () => {
@@ -211,7 +231,7 @@ test("optional art becomes ready without recompiling, owns no borrowed texture a
   texture.dispose(); release(mesh);
 });
 
-test("the optional panorama has a bounded seamless rear join and one linear colour decode", () => {
+test("the optional panorama has bounded seamless tiled joins and one linear colour decode", () => {
   const mesh = skyFixture(), layer = dressVillageDuskSky(mesh), shader = mesh.material.fragmentShader;
   assert.equal((shader.match(/texture2D\(/g) ?? []).length, 2); assert.equal(layer.stats.artSamples, 2);
   assert.match(shader, /fract\(artU \+ \.5\)/); assert.match(shader, /min\(artU, 1\. - artU\)/); assert.match(shader, /dot\(d\.xz, d\.xz\) > \.00000001/, "poles cannot feed atan(0,0)");

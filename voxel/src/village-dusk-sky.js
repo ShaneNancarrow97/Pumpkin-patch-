@@ -1,19 +1,20 @@
 // A painted-looking dusk on the existing sky dome: broad cloud banks, a warm
 // horizon and distant ridges. The village itself still supplies every near view.
+export const VILLAGE_DUSK_ART = Object.freeze({ longitudeRepeats: 2, driftTurnsPerSecond: .00012, seamWidth: .06, strength: .86 });
 export const VILLAGE_DUSK_SKY = Object.freeze({
   cloudOctaves: 4, cloudWarpSamples: 1, cloudHashes: 20, silhouetteLayers: 3,
   addedMeshes: 0, addedDrawCalls: 0, addedLights: 0, addedTextures: 0, addedPasses: 0,
-  maxLinearChannel: .68, maxTimeStep: .25, artSamples: 2, maxArtLongSide: 1024,
+  maxLinearChannel: .68, maxTimeStep: .25, artSamples: 2, maxArtLongSide: 1024, artLongitudeRepeats: VILLAGE_DUSK_ART.longitudeRepeats,
 });
-export const VILLAGE_DUSK_ART = Object.freeze({ driftTurnsPerSecond: .00012, seamWidth: .06, strength: .86 });
-// Full world-direction panorama: -Z/entry is its centre; +Z is the wrapped
-// seam. Translation and camera yaw never project a flat picture onto the view.
+// World-direction longitude tiling doubles the billow detail of the same 1K
+// painting. -Z/entry stays centred; +/-X carry its two repaired wrap seams.
+// Translation and camera yaw never project a flat picture onto the view.
 export function villageDuskArtUv({ x, y, z }, time = 0) {
   const length = Math.hypot(x, y, z);
   if (!Number.isFinite(length) || !length) throw new TypeError("Village sky projection needs a finite direction.");
   const horizontalSq = (x / length) ** 2 + (z / length) ** 2;
   const angle = horizontalSq > 1e-8 ? Math.atan2(x, -z) : 0;
-  const turn = .5 + angle / (Math.PI * 2) + (Number.isFinite(time) ? time : 0) * VILLAGE_DUSK_ART.driftTurnsPerSecond;
+  const turn = .5 + angle / (Math.PI * 2) * VILLAGE_DUSK_ART.longitudeRepeats + (Number.isFinite(time) ? time : 0) * VILLAGE_DUSK_ART.driftTurnsPerSecond;
   return [turn - Math.floor(turn), .5 + Math.asin(Math.max(-1, Math.min(1, y / length))) / Math.PI];
 }
 export const VILLAGE_DUSK_CLOUDS = Object.freeze({ lowerElevation: .108, lowerWarp: .10, lowerCore: .018, lowerEdge: .070,
@@ -102,10 +103,10 @@ const FRAGMENT = `
 
     if (villageDuskArtReady > .5) {
       float artAngle = dot(d.xz, d.xz) > .00000001 ? atan(d.x, -d.z) : 0.;
-      float artU = fract(.5 + artAngle / 6.28318530718 + villageDuskTime * ${VILLAGE_DUSK_ART.driftTurnsPerSecond});
+      float artU = fract(.5 + artAngle / 6.28318530718 * ${VILLAGE_DUSK_ART.longitudeRepeats}. + villageDuskTime * ${VILLAGE_DUSK_ART.driftTurnsPerSecond});
       float artV = clamp(.5 + asin(clamp(y, -1., 1.)) / 3.14159265359, .001, .999);
       // Two bounded samples repair a generated panorama's horizontal edge.
-      // At the rear seam both sides fade smoothly to the same central strip;
+      // At each tiled seam both sides fade smoothly to the same central strip;
       // the entry composition retains its original, unshifted painting.
       vec3 painted = texture2D(villageDuskArt, vec2(artU, artV)).rgb;
       vec3 otherEdge = texture2D(villageDuskArt, vec2(fract(artU + .5), artV)).rgb;
@@ -158,7 +159,7 @@ export function dressVillageDuskSky(mesh) {
   material.uniforms.villageDuskTime = time;
   material.uniforms.villageDuskArt = art; material.uniforms.villageDuskArtReady = ready;
   material.fragmentShader = FRAGMENT;
-  material.customProgramCacheKey = () => `${key}|village-dusk-sky-v3`;
+  material.customProgramCacheKey = () => `${key}|village-dusk-sky-v4`;
   material.needsUpdate = true;
   mesh.userData.villageDuskSky = stats;
   let disposed = false;
