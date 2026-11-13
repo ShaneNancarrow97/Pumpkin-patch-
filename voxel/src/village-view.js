@@ -161,6 +161,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     town = buildTownSquare({ waterClock });
     root.add(earth, paving, water, works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group, town);
     surfaceContactGround.replace("acre", scene.getObjectByName("The Crooked Acre"));
+    surfaceContactGround.replace("terrain-works", works);
     atmosphere = createVillageAtmosphere(); root.add(atmosphere.group);
     // Every built voxel gets the village's finish: finer blocks, joints and weathering shaded onto its faces.
     finishVoxels(scene);

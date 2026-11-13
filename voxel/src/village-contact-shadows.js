@@ -2,10 +2,12 @@
 // Their artwork, animation, logical feet and hit boxes are never changed.
 import * as THREE from "three";
 
-export const VILLAGE_CONTACT_SHADOW_BUDGET = Object.freeze({ capacity: 32, drawCalls: 1, triangles: 64, lights: 0, textures: 0, maxHeight: 1.2 });
+export const VILLAGE_CONTACT_SHADOW_BUDGET = Object.freeze({ capacity: 32, drawCalls: 1, triangles: 64, lights: 0, textures: 0, maxHeight: 1.2, maxInset: .5 });
 const finitePoint = p => p && Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.z);
 export function villageContactOpacity(height) {
-  if (!Number.isFinite(height) || height < -.25 || height >= VILLAGE_CONTACT_SHADOW_BUDGET.maxHeight) return 0;
+  // Navigation stays on its continuous ramp while stone treads quantise that
+  // slope by up to .42 world units. Keep contact on the visible tread top.
+  if (!Number.isFinite(height) || height < -VILLAGE_CONTACT_SHADOW_BUDGET.maxInset || height >= VILLAGE_CONTACT_SHADOW_BUDGET.maxHeight) return 0;
   const t = Math.max(0, height) / VILLAGE_CONTACT_SHADOW_BUDGET.maxHeight;
   return .34 * (1 - t) * (1 - t);
 }
