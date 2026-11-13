@@ -1,0 +1,28 @@
+{
+  "artifactCommit": "4f3d8e2027d7db57dbdebbf8a55348fe1571684f",
+  "sourceReviewCommit": "2ac520a510eee2deb4ceb1a253c69bfd16248f02",
+  "files": [
+    {
+      "file": "Pumpkin-Patch-Village-Detail-Polish.html",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/4f3d8e2027d7db57dbdebbf8a55348fe1571684f/Pumpkin-Patch-Village-Detail-Polish.html",
+      "status": 200,
+      "bytes": 61806768,
+      "sha256": "3eee0d5a4a66c86b85b6f1fc07e670915377bfbe7710da1f304db77e5f347c02"
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Detail-Polish.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/4f3d8e2027d7db57dbdebbf8a55348fe1571684f/Pumpkin-Patch-Village-Detail-Polish.zip",
+      "status": 200,
+      "bytes": 43988669,
+      "sha256": "6ad00d9ce77a65d65057d69cfebfa5c8ead15e6e05db6be25329ce960237d3cb"
+    },
+    {
+      "file": "release-receipt.json",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/4f3d8e2027d7db57dbdebbf8a55348fe1571684f/release-receipt.json",
+      "status": 200,
+      "bytes": 4495,
+      "sha256": "fd1a39068d9f28a9bb8714eb9082b3fdc7811810418633f16a211c9878688086"
+    }
+  ],
+  "verified": true
+}

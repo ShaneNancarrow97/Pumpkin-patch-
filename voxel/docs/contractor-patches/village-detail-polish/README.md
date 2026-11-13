@@ -50,3 +50,13 @@ The native WebGL fallback passes **19 checks** at **844 × 390** with touch enab
 The unmodified compatibility smoke passes **54 desktop/phone checks** on the same HTML. Renderer draws are held for this separate logic/UI run; it covers planting, harvesting, storage limits, shop/wardrobe/journal menus, home travel, furniture placement, visitors and one-tap purchases. These checks do not substitute for the native rendering runs above. The ZIP passes CRC validation and contains the exact tested HTML. Full artifact hashes and verification scope are in [`verification/release.json`](verification/release.json).
 
 Native world captures must use the game’s own RAF and renderer. The known software-Chromium WebGPU page compositor limitation remains: actual GPU canvas readback is recorded separately from page screenshots. UI-only or draw-held compatibility checks must not be presented as native-rendering or performance evidence. No APK is rebuilt in this pass.
+
+## Verified downloads
+
+Public downloads at artifact commit `4f3d8e2027d7db57dbdebbf8a55348fe1571684f` were fetched again and match the tested local bytes. The source review commit is `2ac520a510eee2deb4ceb1a253c69bfd16248f02`; later handover-only commits do not change the runtime or build.
+
+- [HTML](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/4f3d8e2027d7db57dbdebbf8a55348fe1571684f/Pumpkin-Patch-Village-Detail-Polish.html) — 61,806,768 bytes, HTTP 200.
+- [ZIP](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/4f3d8e2027d7db57dbdebbf8a55348fe1571684f/Pumpkin-Patch-Village-Detail-Polish.zip) — 43,988,669 bytes, HTTP 200.
+- [Release receipt](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/4f3d8e2027d7db57dbdebbf8a55348fe1571684f/release-receipt.json) — 4,495 bytes, HTTP 200.
+
+Exact hashes and the public download proof are in [`verification/public-downloads.json`](verification/public-downloads.json).
