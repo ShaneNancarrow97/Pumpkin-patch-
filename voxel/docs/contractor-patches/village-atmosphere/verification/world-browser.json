@@ -1,0 +1,532 @@
+{
+  "htmlSha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb",
+  "bytes": 60582082,
+  "runtime_source": "ccbfcbbfcf1040b7f9d986a4f39efd0e7ac80c26",
+  "final_component_delta": {
+    "source_commit": "f7f15d3901d0ecd5af96248f6356e252e43c076e",
+    "path": "src/ui/village-conversation.css",
+    "scope": "Final component-only opaque gold gradient and hover precedence for focused TV dialogue replies. No scene, gameplay, renderer or route code changed after the world/performance candidate. Full tests, normal UI/controller/contrast and compatibility smoke cover the final HTML.",
+    "world_candidate_sha256": "b415649f8ae46d4dc6083a6eb48dec4ccca8241cc3698aace27cc42e3c6305cb",
+    "final_sha256": "0ebe0c57436becfccd44f87b47bf36e1ab8e01b8edfc58421cf38be4a33ac786"
+  },
+  "scope": "Normal world rendering candidate before the final dialogue-only CSS correction. Fifteen world/home/water/palette/atlas/journal-leading checks passed. This run stopped at an ambiguous nested summary selector in the QA harness; the corrected final-HTML UI run completed separately. No product runtime, console or shader error was recorded.",
+  "checks": [
+    {
+      "label": "green uses its world palette and the existing eight-light pool",
+      "pass": true,
+      "actual": {
+        "atmosphere": {
+          "district": "green",
+          "phase": "night",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        },
+        "lights": 8
+      }
+    },
+    {
+      "label": "square uses its world palette and the existing eight-light pool",
+      "pass": true,
+      "actual": {
+        "atmosphere": {
+          "district": "square",
+          "phase": "night",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        },
+        "lights": 8
+      }
+    },
+    {
+      "label": "copse uses its world palette and the existing eight-light pool",
+      "pass": true,
+      "actual": {
+        "atmosphere": {
+          "district": "copse",
+          "phase": "night",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        },
+        "lights": 8
+      }
+    },
+    {
+      "label": "quarry uses its world palette and the existing eight-light pool",
+      "pass": true,
+      "actual": {
+        "atmosphere": {
+          "district": "quarry",
+          "phase": "night",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        },
+        "lights": 8
+      }
+    },
+    {
+      "label": "moor uses its world palette and the existing eight-light pool",
+      "pass": true,
+      "actual": {
+        "atmosphere": {
+          "district": "moor",
+          "phase": "night",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        },
+        "lights": 8
+      }
+    },
+    {
+      "label": "marsh uses its world palette and the existing eight-light pool",
+      "pass": true,
+      "actual": {
+        "atmosphere": {
+          "district": "marsh",
+          "phase": "night",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        },
+        "lights": 8
+      }
+    },
+    {
+      "label": "acre uses its world palette and the existing eight-light pool",
+      "pass": true,
+      "actual": {
+        "atmosphere": {
+          "district": "acre",
+          "phase": "night",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        },
+        "lights": 8
+      }
+    },
+    {
+      "label": "baron home opens through its existing gate",
+      "pass": true
+    },
+    {
+      "label": "baron room grounds its owner and host within the single contact batch",
+      "pass": true,
+      "actual": {
+        "capacity": 32,
+        "count": 5,
+        "drawCalls": 1,
+        "triangles": 10,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 61
+      }
+    },
+    {
+      "label": "granny home opens through its existing gate",
+      "pass": true
+    },
+    {
+      "label": "granny room grounds its owner and host within the single contact batch",
+      "pass": true,
+      "actual": {
+        "capacity": 32,
+        "count": 5,
+        "drawCalls": 1,
+        "triangles": 10,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 62
+      }
+    },
+    {
+      "label": "Shared water moves on the view clock and rests during pause",
+      "pass": true,
+      "actual": {
+        "before": 7.299899999999964,
+        "moving": 7.549899999999964,
+        "paused": 7.549899999999964,
+        "stats": {
+          "time": 7.549899999999964,
+          "addedLights": 0,
+          "addedMeshes": 0
+        }
+      }
+    },
+    {
+      "label": "The saved village clock controls the subtle time palette without changing district",
+      "pass": true,
+      "actual": {
+        "dusk": {
+          "district": "square",
+          "phase": "dusk",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        },
+        "restored": {
+          "district": "square",
+          "phase": "night",
+          "worldUnits": true,
+          "cycleSeconds": 2700,
+          "addedLights": 0,
+          "addedPasses": 0
+        }
+      }
+    },
+    {
+      "label": "The actual-world atlas restores save, camera, grade, palette and render target",
+      "pass": true
+    },
+    {
+      "label": "One followed story leads the journal; future and finished information starts folded",
+      "pass": true
+    }
+  ],
+  "places": [
+    {
+      "id": "green",
+      "position": {
+        "x": 87,
+        "z": 12
+      },
+      "atmosphere": {
+        "district": "green",
+        "phase": "night",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "contacts": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 2
+      },
+      "grade": {
+        "saturation": 1.06,
+        "contrast": 1.04,
+        "vignette": 0.21,
+        "shadows": [
+          0.006,
+          0.004,
+          0.012
+        ],
+        "lights": [
+          0.01800010437060739,
+          0.009000033398594365,
+          -0.005
+        ]
+      },
+      "fog": [
+        0.02217388479338738,
+        0.016807375752887384,
+        0.03433980680868217
+      ],
+      "lights": 8
+    },
+    {
+      "id": "square",
+      "position": {
+        "x": 87,
+        "z": 78
+      },
+      "atmosphere": {
+        "district": "square",
+        "phase": "night",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "contacts": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 6
+      },
+      "grade": {
+        "saturation": 1.08,
+        "contrast": 1.04,
+        "vignette": 0.21,
+        "shadows": [
+          0.01,
+          0.002,
+          0.012
+        ],
+        "lights": [
+          0.02500022130568329,
+          0.012000070817818653,
+          -0.007
+        ]
+      },
+      "fog": [
+        0.033104766570885055,
+        0.018500220128379697,
+        0.03954623527673284
+      ],
+      "lights": 8
+    },
+    {
+      "id": "copse",
+      "position": {
+        "x": -36,
+        "z": 145.5
+      },
+      "atmosphere": {
+        "district": "copse",
+        "phase": "night",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "contacts": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 15
+      },
+      "grade": {
+        "saturation": 1.06,
+        "contrast": 1.04,
+        "vignette": 0.21,
+        "shadows": [
+          0.001,
+          0.01,
+          0.007
+        ],
+        "lights": [
+          0.011000390283384467,
+          0.016000124890683032,
+          0.002
+        ]
+      },
+      "fog": [
+        0.012983032342173012,
+        0.0295568344378088,
+        0.028426039504420793
+      ],
+      "lights": 8
+    },
+    {
+      "id": "quarry",
+      "position": {
+        "x": 87,
+        "z": 156
+      },
+      "atmosphere": {
+        "district": "quarry",
+        "phase": "night",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "contacts": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 24
+      },
+      "grade": {
+        "saturation": 1.02,
+        "contrast": 1.04,
+        "vignette": 0.21,
+        "shadows": [
+          0.001,
+          0.007,
+          0.012
+        ],
+        "lights": [
+          0.008000628786311569,
+          0.0130002012116197,
+          0.009999999999999998
+        ]
+      },
+      "fog": [
+        0.017641954488384078,
+        0.033104766570885055,
+        0.046665086336880095
+      ],
+      "lights": 8
+    },
+    {
+      "id": "moor",
+      "position": {
+        "x": 234,
+        "z": 51
+      },
+      "atmosphere": {
+        "district": "moor",
+        "phase": "night",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "contacts": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 33
+      },
+      "grade": {
+        "saturation": 0.98,
+        "contrast": 1.04,
+        "vignette": 0.21,
+        "shadows": [
+          0.009,
+          0.002,
+          0.012
+        ],
+        "lights": [
+          0.014000923701954915,
+          0.008000295584625573,
+          0.003
+        ]
+      },
+      "fog": [
+        0.03433980680868217,
+        0.027320891639074894,
+        0.046665086336880095
+      ],
+      "lights": 8
+    },
+    {
+      "id": "marsh",
+      "position": {
+        "x": 87,
+        "z": 228
+      },
+      "atmosphere": {
+        "district": "marsh",
+        "phase": "night",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "contacts": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 42
+      },
+      "grade": {
+        "saturation": 1.01,
+        "contrast": 1.04,
+        "vignette": 0.21,
+        "shadows": [
+          0.001,
+          0.01,
+          0.013
+        ],
+        "lights": [
+          0.008001274929178705,
+          0.015000407977337185,
+          0.011
+        ]
+      },
+      "fog": [
+        0.017641954488384078,
+        0.043735029256973465,
+        0.043735029256973465
+      ],
+      "lights": 8
+    },
+    {
+      "id": "acre",
+      "position": {
+        "x": -93,
+        "z": 183
+      },
+      "atmosphere": {
+        "district": "acre",
+        "phase": "night",
+        "worldUnits": true,
+        "cycleSeconds": 2700,
+        "addedLights": 0,
+        "addedPasses": 0
+      },
+      "contacts": {
+        "capacity": 32,
+        "count": 13,
+        "drawCalls": 1,
+        "triangles": 26,
+        "lights": 0,
+        "textures": 0,
+        "uploads": 51
+      },
+      "grade": {
+        "saturation": 1.03,
+        "contrast": 1.04,
+        "vignette": 0.21,
+        "shadows": [
+          0.008,
+          0.007,
+          0.0010000000000000009
+        ],
+        "lights": [
+          0.022001646251297986,
+          0.014000526800415357,
+          -0.004
+        ]
+      },
+      "fog": [
+        0.033104766570885055,
+        0.026241221894849898,
+        0.026241221894849898
+      ],
+      "lights": 8
+    }
+  ],
+  "screenshots": [
+    "district-green.png",
+    "district-square.png",
+    "district-copse.png",
+    "district-quarry.png",
+    "district-moor.png",
+    "district-marsh.png",
+    "district-acre.png",
+    "granny-cottage-exterior.png",
+    "baron-interior.png",
+    "granny-interior.png",
+    "village-world-atlas.png",
+    "desktop-journal.png"
+  ],
+  "qa_harness_stop": "Nested summary matched both story and reward folds; fixed to :scope > summary. Final UI run passes independently; its primary story choice selector also excludes the workshop icon.",
+  "original_preflight_report_sha256": "ce53e7a831966d0cd15bb5bf43fe2152f4ebc4c15aa31c6bd876d34e627f9491",
+  "recorded_runtime_errors": []
+}
