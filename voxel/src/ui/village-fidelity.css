@@ -2,23 +2,24 @@
    the world, conversation input and farm surfaces retain their own contracts. */
 #village-game{--vf-paper:#231b2d;--vf-deep:#17131f;--vf-brass:#c6a16b;--vf-rule:#c6a16b4d;--vf-ivory:#fff1da;--vf-muted:#d6c5d7;--vf-gold:#edcb8a;--vf-target:44px;--vf-small:12px}
 #village-game .vg-heading{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);top:max(14px,env(safe-area-inset-top));left:max(20px,env(safe-area-inset-left));right:max(20px,env(safe-area-inset-right));gap:10px;align-items:start}
-#village-game .vg-heading>button,#village-game .vf-header-tools>button,#village-game #vg-coins{min-height:44px;border:1px solid var(--vf-rule);border-radius:9px;background:linear-gradient(155deg,#2e2235f5,#1d1725fa);box-shadow:inset 0 1px #ffeac91a,0 3px 12px #08050d38;color:var(--vf-ivory)}
+#village-game .vg-heading>button,#village-game .vf-header-tools>button,#village-game #vg-coins{min-height:44px;border:1px solid var(--vf-rule);border-radius:22px;background:linear-gradient(155deg,#4a3146f7,#2b2036fc);box-shadow:inset 0 1px #ffeac91a,0 3px 12px #08050d38;color:var(--vf-ivory)}
 #village-game .vg-heading button{padding:7px 10px;font-size:12px}
 #village-game #vg-home{grid-column:1;grid-row:1;justify-self:start}
-#village-game .vg-heading>.vf-location{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:180px;max-width:320px;margin:0;padding:4px 18px 5px;border-radius:14px;border-color:#d7b68080;background:linear-gradient(150deg,#3b2b40f7,#211927fc);text-align:center;box-shadow:inset 0 0 0 3px #c69d5a0c,inset 0 1px #ffeac933,0 3px 15px #08050d38}
-#village-game .vf-location::before,#village-game .vf-location::after,#village-game .vf-header-tools::before,#village-game .vf-header-tools::after{display:none}
+#village-game .vg-heading>#vg-location{grid-column:2;grid-row:1;position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:180px;max-width:320px;margin:0;padding:4px 18px 5px;border-radius:14px;border-color:#d7b68080;background:linear-gradient(150deg,#3b2b40f7,#211927fc);text-align:center;box-shadow:inset 0 0 0 3px #c69d5a0c,inset 0 1px #ffeac933,0 3px 15px #08050d38}
+#village-game #vg-location::before,#village-game #vg-location::after,#village-game #vg-header-tools::before,#village-game #vg-header-tools::after{display:none}
 #village-game .vf-place-line{display:flex;align-items:center;justify-content:center;gap:9px;min-width:0;max-width:100%}
 #village-game .vf-place-line>.vf-art{--vf-art-size:22px;opacity:.85}
 #village-game .vf-place-line>.vf-art:last-child{transform:scaleX(-1)}
 #village-game .vg-heading #vg-place{display:block;max-width:240px;font:500 22px/1.15 var(--village-display);letter-spacing:.015em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#village-game .vf-clock{display:inline-flex;align-items:center;justify-content:center;gap:3px;min-height:18px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;white-space:nowrap;font-size:12px;line-height:1.2;letter-spacing:.035em;text-transform:none;color:var(--vf-gold)}
+#village-game .vg-heading>#vg-location>small.vf-clock{position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;justify-content:center;gap:3px;min-height:18px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;white-space:nowrap;font-size:12px;line-height:1.2;letter-spacing:.035em;text-transform:none;color:var(--vf-gold);text-shadow:0 1px 4px #120a20}
 #village-game .vf-clock .vf-art{--vf-art-size:18px}
-#village-game .vg-heading>.vf-header-tools{grid-column:3;grid-row:1;justify-self:end;display:flex;flex-direction:row;align-items:center;gap:7px;min-width:0;max-width:none;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;text-align:left}
+#village-game .vg-heading>#vg-header-tools{grid-column:3;grid-row:1;justify-self:end;display:flex;flex-direction:row;align-items:center;gap:7px;min-width:0;max-width:none;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;text-align:left}
 #village-game #vg-coins{display:inline-flex;align-items:center;padding:8px 12px;font-size:13px;color:var(--vf-gold);font-variant-numeric:tabular-nums}
 #village-game #vg-person{display:flex;align-items:center;justify-content:center;gap:6px;padding:3px 10px 3px 4px}
-#village-game #vg-person>.vf-owner-portrait{display:grid;place-items:center;width:32px;height:36px;flex:none;overflow:hidden;border:1px solid #c5a36e55;border-radius:17px 17px 6px 6px;background:#19131f}
+#village-game #vg-person>.vf-owner-portrait{display:grid;place-items:center;width:32px;height:36px;flex:none;overflow:hidden;border:1px solid #c5a36e55;border-radius:50%;background:#241a2e}
 #village-game #vg-person>.vf-owner-portrait[hidden]{display:none!important}
 #village-game .vf-owner-portrait>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 8%}
+#village-game #vg-fullscreen{border-radius:50%;min-width:44px;padding-inline:10px}
 #village-game #vg-person-name{display:inline;font-size:12px;white-space:nowrap}
 #village-game .vg-dock{width:520px;max-width:calc(100% - 40px);box-sizing:border-box;gap:3px;padding:5px 8px;border:1px solid #d3b27980;border-radius:18px;box-shadow:0 5px 22px #08040d66,inset 0 0 0 3px #b88b4b0b,inset 0 1px #ffeac940;background:linear-gradient(180deg,#39293ff7,#1b1523fc);bottom:max(16px,env(safe-area-inset-bottom))}
 #village-game .vg-dock .vg-nav-button{flex:1 1 0;min-width:74px;min-height:66px;width:auto;padding:5px 7px;border-radius:11px;gap:3px;line-height:1.1;box-shadow:none}
@@ -35,7 +36,7 @@
 #village-game #vg-task{font-size:13px;line-height:1.35;color:var(--vf-ivory)}
 #village-game .vg-farm-rate{top:82px;border-radius:7px;border-color:var(--vf-rule);background:#241c2df7;box-shadow:none}
 /* The journal occupies just under one third of a 1280px playfield. */
-#village-game[data-panel=journal] #vg-panel{left:auto;right:max(20px,env(safe-area-inset-right));top:82px;bottom:96px;width:min(400px,calc(100vw - 40px));max-width:none;max-height:none;border:1px solid #d4b37b85;border-radius:8px;background:linear-gradient(150deg,#302238fa,#1c1626fc 54%,#211929fc);box-shadow:0 14px 42px #08040d66,inset 0 0 0 4px #1a14233b;overflow:hidden;isolation:isolate}
+#village-game[data-panel=journal] #vg-panel{left:auto;right:max(20px,env(safe-area-inset-right));top:82px;bottom:96px;width:min(400px,calc(100vw - 40px));max-width:none;max-height:none;border:1px solid #d4b37b85;border-radius:8px;background:radial-gradient(ellipse at 4% 0%,#e2b47c1b,transparent 60%),linear-gradient(150deg,#443044,#32243d 54%,#291e34);box-shadow:0 14px 42px #08040d66,inset 0 0 0 4px #23162d33,inset 0 1px #ffeac724;overflow:hidden;isolation:isolate}
 #village-game[data-panel=journal] #vg-panel::before{content:"";position:absolute;inset:5px;border:1px solid #d8b78022;border-radius:4px;pointer-events:none;z-index:5}
 #village-game[data-panel=journal] #vg-panel::after{content:"";position:absolute;inset:9px;pointer-events:none;z-index:6;background:linear-gradient(var(--vf-brass),var(--vf-brass)) left top/19px 1px no-repeat,linear-gradient(var(--vf-brass),var(--vf-brass)) left top/1px 19px no-repeat,linear-gradient(var(--vf-brass),var(--vf-brass)) right top/19px 1px no-repeat,linear-gradient(var(--vf-brass),var(--vf-brass)) right top/1px 19px no-repeat,linear-gradient(var(--vf-brass),var(--vf-brass)) left bottom/19px 1px no-repeat,linear-gradient(var(--vf-brass),var(--vf-brass)) left bottom/1px 19px no-repeat,linear-gradient(var(--vf-brass),var(--vf-brass)) right bottom/19px 1px no-repeat,linear-gradient(var(--vf-brass),var(--vf-brass)) right bottom/1px 19px no-repeat;opacity:.8}
 #village-game[data-panel=journal] #vg-panel>header{min-height:56px;padding:6px 17px;gap:7px;flex:none;background:linear-gradient(180deg,#e2c18b08,transparent)}
@@ -45,10 +46,11 @@
 #village-game[data-panel=journal] #vg-panel :is(#vg-panel-close,#vg-panel-back){min-width:44px;min-height:44px;flex-basis:44px;border-radius:5px;border-color:transparent;background:transparent;color:var(--vf-ivory);font-size:23px}
 #village-game[data-panel=journal] #vg-panel-body{padding:0 17px 12px;scroll-padding:14px;scrollbar-gutter:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;min-width:0}
 #vg-panel-body .vf-journal{min-width:0;color:var(--vf-ivory)}
-#vg-panel-body .vf-journal-seal{display:flex;align-items:center;justify-content:center;height:18px;position:relative;margin:0 4px 4px}
-#vg-panel-body .vf-journal-seal::before,#vg-panel-body .vf-journal-seal::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,#c6a16b66)}
-#vg-panel-body .vf-journal-seal::after{transform:scaleX(-1)}
-#vg-panel-body .vf-journal-seal>.vf-art{--vf-art-size:28px;margin-inline:7px;opacity:.85}
+#village-game .vf-panel-title-line{display:flex;align-items:center;gap:8px;min-width:0}
+#village-game .vf-panel-title-art{display:none;flex:none;line-height:0}
+#village-game[data-panel=journal] .vf-panel-title-art{display:inline-block}
+#village-game .vf-panel-title-art>.vf-art{--vf-art-size:28px}
+#village-game .vf-panel-title-line>#vg-panel-title{min-width:0;flex:1}
 #vg-panel-body .vf-journal-tabs{display:flex;border-block:1px solid var(--vf-rule);margin-bottom:10px;min-width:0;gap:0}
 #village-game #vg-panel-body .vf-journal-tabs>[role=tab]{position:relative;flex:1;min-width:0;min-height:var(--vf-target);padding:8px 3px;border:0;border-radius:0;background:transparent;color:var(--vf-muted);font-size:13px;font-weight:500;box-shadow:none;display:flex;align-items:center;justify-content:center;gap:5px}
 #vg-panel-body .vf-journal-tabs>[role=tab]>small{display:inline;font-size:12px;line-height:1;color:#bca9c3}
@@ -57,14 +59,16 @@
 #vg-panel-body .vf-journal-page{min-width:0;outline:none}
 #vg-panel-body .vf-journal-page[hidden]{display:none!important}
 #vg-panel-body .vf-journal-page:focus-visible{outline:1px solid var(--vf-brass);outline-offset:3px}
-#vg-panel-body .vf-story-hero{padding:10px;border:1px solid #c9a66b3d;border-radius:12px;background:radial-gradient(ellipse at 0 0,#ad7d7620,transparent 68%),linear-gradient(150deg,#322438a6,#211929b8);box-shadow:inset 0 1px #ffe4b00c;min-width:0}
+#vg-panel-body .vf-story-hero{padding:10px;border:1px solid #d0ae7461;border-radius:12px;background:radial-gradient(ellipse at 100% 0%,#e4b77620,transparent 65%),linear-gradient(145deg,#573b4acc,#392940ee);box-shadow:inset 0 1px #ffe7bb1a,0 3px 9px #170c251a;min-width:0}
 #vg-panel-body .vf-journal-following{margin-bottom:10px}
-#vg-panel-body .vf-story-hero>header{display:flex;align-items:center;gap:10px;min-width:0;margin-bottom:8px}
+#vg-panel-body .vf-story-hero>header{position:relative;display:flex;align-items:center;gap:9px;min-width:0;min-height:72px;padding-right:84px;margin-bottom:8px}
+#vg-panel-body .vf-hero-book{position:absolute;right:-3px;top:-4px;width:80px;height:80px;pointer-events:none;filter:drop-shadow(0 3px 5px #140b2244)}
+#vg-panel-body .vf-hero-book>.vf-art{--vf-art-size:80px;display:block}
 #vg-panel-body .vf-story-portrait{display:grid;place-items:center;width:60px;height:66px;flex:0 0 60px;border:1px solid #bc965c66;border-radius:36px 36px 5px 5px;background:radial-gradient(ellipse at 50% 20%,#73506744,#211827 76%);box-shadow:inset 0 0 0 3px #201725,0 3px 11px #0b07174d;overflow:hidden}
 #vg-panel-body .vf-story-portrait>img{height:100%;width:100%;object-fit:cover;object-position:center 8%;padding:0;box-sizing:border-box;filter:drop-shadow(0 3px 3px #07040c88)}
 #vg-panel-body .vf-story-hero>header>div{min-width:0;flex:1}
-#vg-panel-body .vf-story-hero>header small{color:var(--vf-gold);font-size:12px;line-height:1.3;margin-bottom:5px}
-#vg-panel-body .vf-story-hero h3{font:500 21px/1.18 var(--village-display);letter-spacing:.01em;color:var(--vf-ivory);margin:0 0 6px;overflow-wrap:anywhere}
+#vg-panel-body .vf-story-hero>header small{color:var(--vf-gold);font-size:12px;line-height:1.2;margin-bottom:4px}
+#vg-panel-body .vf-story-hero h3{font:500 20px/1.16 var(--village-display);letter-spacing:.01em;color:var(--vf-ivory);margin:0;overflow-wrap:anywhere}
 #vg-panel-body .vf-story-kind{display:block;font-size:12px;line-height:1.3;color:var(--vf-muted)}
 #vg-panel-body .vf-story-progress{display:flex;align-items:center;flex-wrap:wrap;position:relative;gap:6px;color:var(--vf-muted);font-size:12px;min-height:18px;margin-bottom:9px}
 #vg-panel-body .vf-checkpoints{position:relative;display:flex;align-items:center;gap:12px;min-height:14px;margin-left:auto;padding-inline:2px}
@@ -105,6 +109,7 @@
 #vg-panel-body .vf-story-actions{display:flex;gap:7px;flex-wrap:wrap}
 #vg-panel-body .vf-journal-others{margin-top:10px}
 #vg-panel-body .vf-journal-others>h3{font:500 16px var(--village-display);color:var(--vf-gold);margin:0 0 7px;display:flex;align-items:center;gap:8px}
+#vg-panel-body .vf-journal-others>h3>.vf-art{--vf-art-size:22px;margin-left:auto;opacity:.45}
 #vg-panel-body .vf-journal-others>h3>small{font-size:12px;color:var(--vf-muted)}
 #vg-panel-body .vf-story-row{border-bottom:1px solid #b5936233;margin:0;background:transparent}
 #vg-panel-body .vf-story-row>summary{display:flex;align-items:center;gap:10px;min-height:64px;box-sizing:border-box;padding:8px 0;list-style:none}
@@ -159,9 +164,9 @@
 .tv-mode #vg-panel-body .vf-journal :is(.vf-next-objective>p,.vf-story-rewards>h4,.vf-row-copy>b,.vf-completed-story b,.vf-locked-story>b,.vf-journal-others>h3,.vf-show-way){font-size:max(15px,var(--vf-small))}
 .tv-mode #vg-panel-body .vf-journal-empty>p{font-size:max(19px,var(--vf-small))}
 .tv-mode #village-game[data-panel=journal] #vg-panel-tag{font-size:var(--vf-small)}
-@media(min-width:541px) and (max-width:900px) and (min-height:501px){#village-game[data-panel=journal] #vg-panel{width:min(400px,calc(56vw - 12px));right:12px;top:84px;bottom:94px}#vg-panel-body .vf-story-hero h3{font-size:20px}#vg-panel-body .vf-story-portrait{width:58px;height:70px;flex-basis:58px}}
+@media(min-width:541px) and (max-width:900px) and (min-height:501px){#village-game[data-panel=journal] #vg-panel{width:min(400px,calc(56vw - 12px));right:12px;top:84px;bottom:94px}#vg-panel-body .vf-story-hero h3{font-size:20px}#vg-panel-body .vf-story-portrait{width:50px;height:64px;flex-basis:50px}#vg-panel-body .vf-story-hero>header{padding-right:68px}#vg-panel-body .vf-hero-book{width:64px;height:64px;top:2px}#vg-panel-body .vf-hero-book>.vf-art{--vf-art-size:64px}}
 @media(min-width:541px) and (max-width:760px){
- #village-game .vg-heading>.vf-header-tools{display:grid;grid-template-columns:repeat(2,var(--vf-target));grid-template-rows:var(--vf-target) 18px;gap:2px 6px}
+ #village-game .vg-heading>#vg-header-tools{display:grid;grid-template-columns:repeat(2,var(--vf-target));grid-template-rows:var(--vf-target) 18px;gap:2px 6px}
  #village-game #vg-person{grid-column:1;grid-row:1;min-width:var(--vf-target);width:var(--vf-target);padding:3px}
  #village-game #vg-person-name{display:none}
  #village-game #vg-fullscreen{grid-column:2;grid-row:1;width:var(--vf-target);padding:5px}
@@ -170,16 +175,16 @@
 @media(max-width:540px){
  #village-game .vg-heading{display:grid;grid-template-columns:var(--vf-target) minmax(0,1fr) var(--vf-target) var(--vf-target);grid-template-rows:var(--vf-target) 24px;gap:2px 5px;left:10px;right:10px;top:max(8px,env(safe-area-inset-top))}
  #village-game #vg-home{grid-column:1;grid-row:1;width:var(--vf-target);padding:8px}
- #village-game .vg-heading>.vf-location{grid-column:2;grid-row:1;min-width:0;max-width:none;width:100%;padding:3px 6px;box-sizing:border-box;gap:0}
+ #village-game .vg-heading>#vg-location{grid-column:2;grid-row:1;min-width:0;max-width:none;width:100%;padding:3px 6px;box-sizing:border-box;gap:0}
  #village-game .vf-place-line>.vf-art{display:none}
- #village-game .vg-heading>.vf-header-tools{display:contents}
+ #village-game .vg-heading>#vg-header-tools{display:contents}
  #village-game .vf-place-line{width:100%}
  #village-game .vg-heading #vg-place{max-width:100%;font-size:max(16px,var(--vf-small))}
  #village-game .vf-location small{font-size:12px;letter-spacing:0;white-space:nowrap}
  #village-game #vg-person{grid-column:3;grid-row:1;min-width:var(--vf-target);width:var(--vf-target);padding:3px;font-size:12px}
  #village-game #vg-person-name{display:none}
  #village-game #vg-fullscreen{grid-column:4;grid-row:1;padding:5px;width:var(--vf-target)}
- #village-game .vf-clock{min-height:18px;padding:0;border:0;background:none;box-shadow:none}
+ #village-game .vg-heading>#vg-location>small.vf-clock{position:static;transform:none;min-height:18px;padding:0;border:0;background:none;box-shadow:none}
  #village-game .vf-clock>.vf-art{--vf-art-size:18px}
  #village-game #vg-coins{grid-column:2/5;grid-row:2;justify-self:end;min-height:24px;padding:0 5px;font-size:12px;border:0;background:none;box-shadow:none}
  #village-game .vg-objective,#village-game .vg-farm-rate{top:88px}
@@ -190,12 +195,15 @@
  #village-game[data-panel=journal] #vg-panel>header{min-height:58px;padding:8px 14px}
  #village-game[data-panel=journal] #vg-panel-title{font-size:22px}
  #village-game[data-panel=journal] #vg-panel-body{padding-inline:14px}
- #vg-panel-body .vf-story-portrait{width:58px;height:68px;flex-basis:58px}
+ #vg-panel-body .vf-story-portrait{width:50px;height:64px;flex-basis:50px}
+ #vg-panel-body .vf-story-hero>header{padding-right:68px}
+ #vg-panel-body .vf-hero-book{width:64px;height:64px;top:2px}
+ #vg-panel-body .vf-hero-book>.vf-art{--vf-art-size:64px}
  #vg-panel-body .vf-story-hero h3{font-size:20px}
 }
 @media(max-height:500px) and (orientation:landscape){
  #village-game .vg-heading{top:8px;left:12px;right:12px}
- #village-game .vg-heading>.vf-location{max-width:210px;padding-block:3px}
+ #village-game .vg-heading>#vg-location{max-width:210px;padding-block:3px}
  #village-game .vg-heading .vf-location small{display:inline-flex}
  #village-game .vg-heading #vg-place{font-size:max(16px,var(--vf-small))}
  #village-game .vg-dock,#village-game:not(.vg-input-pad) .vg-dock{left:12px;right:auto;bottom:10px;transform:none;width:auto;max-width:calc(46vw - 20px);overflow-x:auto}

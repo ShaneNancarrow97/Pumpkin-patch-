@@ -67,6 +67,8 @@ test("a tracked hero shows its own portrait and real chapter progress before the
   assert.match(html,/class="vf-show-way" data-vg-objective-guide="rowan-1"/);
   assert.doesNotMatch(html,/data-vg-claim/);
   assert.match(html,/Step 2 of 3/);assert.equal((html.match(/class="is-done"><\/i>/g)??[]).length,1);assert.equal((html.match(/class="is-current"><\/i>/g)??[]).length,1);
+  assert.match(html,/<aside class="vf-hero-book" aria-hidden="true"><span class="vf-art vf-art-journal"/);
+  assert.doesNotMatch(html,/vf-journal-seal/);
   assert.match(html,/<svg class="vf-route-arrow"[^>]*aria-hidden="true"/);assert.doesNotMatch(html,/↗/);
 });
 

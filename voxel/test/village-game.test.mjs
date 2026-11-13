@@ -737,3 +737,13 @@ test('the owner chip keeps the existing equipped portrait while names and charac
  h.game.render();assert.equal(h.$('#vg-person-portrait').querySelector('img'),image,'a repeated render preserves cached portrait markup');
  h.click('#vg-person');const next=h.game.status.who;assert.notEqual(next,who);assert.equal(h.$('#vg-person-name').textContent,next==='shane'?'Shane':'Natalie');assert.equal(h.$('#vg-person-portrait').querySelector('img').attributes.src,`portrait:${s.wardrobe.equipped[next]??next}`);assert.deepEqual(h.game.status.position,position);assert.equal(JSON.stringify(M.saveData(s)),before);
 });
+
+
+test('the compact location phase follows the saved village clock and journal title art survives redraws',t=>{
+ const s=expansionFarm(),h=harness(t,s);h.game.open();
+ assert.equal(h.$('#vg-coins').parentElement,h.$('#vg-header-tools'));assert.equal(h.$('#vg-person').parentElement,h.$('#vg-header-tools'));assert.equal(h.$('#vg-fullscreen').parentElement,h.$('#vg-header-tools'));
+ assert.equal(h.$('#vg-clock').closest('.vf-clock').parentElement,h.$('#vg-location'));
+ for(const [clock,label] of [[0,'Night'],[900,'Dawn'],[1800,'Dusk'],[2700,'Night']]){s.village.clock=clock;const before=JSON.stringify(M.saveData(s));h.game.render();assert.equal(h.$('#vg-clock').textContent,label);assert.equal(JSON.stringify(M.saveData(s)),before);}
+ h.game.showPanel('journal');const titleArt=h.$('.vf-panel-title-art');assert.ok(titleArt.querySelector('.vf-art-moth'));assert.equal(titleArt.attributes['aria-hidden'],'true');
+ h.click('[data-vg-journal-tab="discover"]');h.click('[data-vg-journal-tab="active"]');assert.equal(h.$('.vf-panel-title-art'),titleArt);assert.ok(h.$('.vf-panel-title-art').querySelector('.vf-art-moth'));
+});
