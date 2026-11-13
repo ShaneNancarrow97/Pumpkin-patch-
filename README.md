@@ -1,4 +1,16 @@
-# Pumpkin Patch — idle pause and quest pin fix
+# Pumpkin Patch — voxel world atlas and village clarity
+
+[Download HTML](Pumpkin-Patch-Village-Clarity.html?raw=1) · [Download ZIP](Pumpkin-Patch-Village-Clarity.zip?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/ac16208b9dcdf4d0d22da67c8b0b2aab6c968487/voxel/docs/contractor-patches/village-clarity/README.md) · [Review PR](https://github.com/ShaneNancarrow97/Pumpkin-patch-/pull/3)
+
+A snapshot of the actual saved voxel village, tilted gently away, with selectable markers and inline unlock requirements. Neighbour pins are optional. Includes clearer purple menus and button legends, consistent Talk/guidance anchors, truthful resident locations, shared completion notices and the puzzle-choice repair.
+
+1,269 tests and54 exact-build compatibility checks pass, plus final DPR2 map checks and an eight-viewport UI review. The ZIP contains index.html, a Claude handover, verification receipts and actual map preview images. [Exact-byte receipt](Pumpkin-Patch-Village-Clarity-Receipt.json).
+
+Source `ac16208b9dcdf4d0d22da67c8b0b2aab6c968487` on `contractor/village-clarity`, based on Claude's `8da66cb`. Save version20; export/import through Settings to move an existing farm between browser/file origins. The older APK below predates this update.
+
+---
+
+## Previous release — idle pause and quest pin fix
 
 [Download latest HTML](Pumpkin-Patch-Idle-Pause.html?raw=1) · [Download latest ZIP](Pumpkin-Patch-Idle-Pause.zip?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/2df1b9b0d6db593ed905f8a586df745b23ec8358/voxel/docs/contractor-patches/mothlight-full-expansion/IDLE-PAUSE.md) · [Quest pin fix](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/2df1b9b0d6db593ed905f8a586df745b23ec8358/voxel/docs/contractor-patches/mothlight-full-expansion/PINNED-QUEST-FIX.md)
 

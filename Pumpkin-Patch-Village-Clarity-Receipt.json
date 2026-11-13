@@ -1,0 +1,32 @@
+{
+  "name": "Pumpkin Patch \u2014 Village Clarity",
+  "source_commit": "ac16208b9dcdf4d0d22da67c8b0b2aab6c968487",
+  "runtime_source_commit": "dac0685",
+  "base_commit": "8da66cb93893047d56bad874583f509ba0209d7a",
+  "source_branch": "contractor/village-clarity",
+  "save_version": 20,
+  "html": {
+    "bytes": 60512598,
+    "sha256": "4583bcc6840f2e4e721327bdb9c09f94dedae07c1e2d29f0596852ff9ff2fd40"
+  },
+  "validation": {
+    "node_tests_passed": 1269,
+    "compatibility_browser_checks_passed": 54,
+    "normal_render_village_preflight_checks": 15,
+    "exact_final_map_checks_dpr2": 6,
+    "ui_viewports": 8,
+    "keyboard_glyph_states": 15,
+    "perf_frames_per_pass": 57,
+    "perf_steady_frames_per_pass": 36,
+    "frame_by_frame_draw_budgets_match": true
+  },
+  "limitations": [
+    "Software WebGL and injected-controller checks do not certify physical Fold, PS5 Bluetooth, TV or Android performance.",
+    "The wider story migration, new shape library and secret places are separate future work.",
+    "This release does not include a new APK."
+  ],
+  "zip": {
+    "bytes": 46034681,
+    "sha256": "b3d5900fb614a3af8d1c8c0907c802180404cebd371c9cfdb153630152676505"
+  }
+}
