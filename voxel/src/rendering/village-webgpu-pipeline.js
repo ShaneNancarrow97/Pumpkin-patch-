@@ -31,6 +31,9 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   renderer = new GPU.WebGPURenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   await renderer.init(); device = renderer.backend.device;
   if (!renderer.backend.isWebGPUBackend) throw new Error("Renderer selected a non-WebGPU backend");
+  // r169 starts a bookkeeping RAF even with no animation callback. The game
+  // already owns a paced RAF; advance its node frame once per actual draw here.
+  renderer._animation.dispose();
   // Pinned r169 bakes global node IDs into otherwise identical UBO type and
   // variable names. Normalize only validated generated pairs before the stage
   // cache sees them; numeric group/binding slots and all calculations stay put.
@@ -105,6 +108,7 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   // r169 PostProcessing temporarily changes renderer output state without a
   // finally. Guard it here so a failed node/pass cannot leak that state.
   function draw() {
+    renderer._nodes.nodeFrame.update(); renderer.info.frame = renderer._nodes.nodeFrame.frameId;
     const toneMapping = renderer.toneMapping, output = renderer.outputColorSpace;
     const autoReset = renderer.info.autoReset, previousCalls = renderer.info.render.calls;
     renderer.info.autoReset = false; renderer.info.reset();
