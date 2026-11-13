@@ -24,6 +24,9 @@ import { spread, gather } from "./rules/village-spread.js";
 import { buildTownSquare } from "./village-town-square.js";
 import { buildVillageNeighbourhoods } from "./village-neighbourhoods.js";
 import { installVillageNeighbourhoodVisibility, tickVillageNeighbourhoodVisibility, withVillageNeighbourhoodVisibilityRestored } from "./village-neighbourhood-visibility.js";
+import { createVillageDistrictAtmosphere } from "./village-district-atmosphere.js";
+import { createVillageContactShadows, createVillageContactActorSource, createVillageHallContactGround, createVillageContactSurfaceIndex } from "./village-contact-shadows.js";
+import { createVillageWaterClock } from "./village-water-material.js";
 import { villageNeighbourhoodClusters } from "./content/village-neighbourhoods.js";
 import { TOWN_LAMPS } from "./content/village-town-square.js";
 import { VILLAGE_GRADE } from "./picture-grade.js";
@@ -94,6 +97,9 @@ export function createVillageView(canvas, state, hooks = {}) {
   const HALL_LAMP = { ...LAMP, near: 0 };
   const lampAs = (spec, scale = 1) => { setLampNear(spec.near); pool.forEach((l) => { l.userData.base = spec.power * scale; l.distance = spec.reach; l.decay = spec.decay; }); };
   const pool = Array.from({ length: 8 }, () => { const l = new THREE.PointLight(0xff9a40, LAMP.power, LAMP.reach, LAMP.decay); scene.add(l); return l; });
+  const districtAtmosphere = createVillageDistrictAtmosphere({ scene, hemi, sun, lamps: pool }), atmospherePoint = { x: 0, z: 0 }, waterClock = createVillageWaterClock();
+  const contactShadows = createVillageContactShadows(), contactActors = createVillageContactActorSource(); scene.add(contactShadows.group);
+  const surfaceContactGround = createVillageContactSurfaceIndex(groundAt);
   setLampNear(LAMP.near);
   const camera = new THREE.PerspectiveCamera(45, 1, .2, 900);
   const controls = new OrbitControls(camera, canvas); controls.enabled = false; controls.enableDamping = true; controls.dampingFactor = .12;
@@ -145,15 +151,16 @@ export function createVillageView(canvas, state, hooks = {}) {
     expansionWorld.build();pickables.push(...expansionWorld.pickables);
     horizon = buildHorizon(); sky = horizon.userData.sky; horizon.remove(sky); scene.add(sky);
     const works = buildTerrainWorks({gates:false}), green = buildGreen(), beyond = buildBeyond({closedGates:false}), woods = buildWoods(); villageGreen = green;
-    const earth = buildGround(), paving = buildPaving(), water = buildWater();
+    const earth = buildGround(), paving = buildPaving(), water = buildWater({ waterClock });
     // Everything drawn on the old grid moves apart into the spread village; the rest was drawn there already.
     for (const g of [water, works, green, beyond]) spreadVillage(g);
     // The chimneys the village noted as it was built smoke where they now stand.
     const smoke = [green, beyond].flatMap((g) => g.userData.marks?.smoke ?? []).map(([x, y, z]) => ({ x, y, z: -z }));
     mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: REALM.z0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
     // The town square in the ground the spread opened north of the Green, drawn there whole.
-    town = buildTownSquare();
+    town = buildTownSquare({ waterClock });
     root.add(earth, paving, water, works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group, town);
+    surfaceContactGround.replace("acre", scene.getObjectByName("The Crooked Acre"));
     atmosphere = createVillageAtmosphere(); root.add(atmosphere.group);
     // Every built voxel gets the village's finish: finer blocks, joints and weathering shaded onto its faces.
     finishVoxels(scene);
@@ -184,6 +191,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     surfaceLamps = [...LAMPS_AT, ...clusters.flatMap(c => (c.lanterns ?? []).map(l => ({ x: l.x, z: l.z, y: 2.25 })))];
     if (neighbourhoods) { root.remove(neighbourhoods); neighbourhoods.userData.dispose?.(); }
     neighbourhoods = buildVillageNeighbourhoods(clusters); finishVoxels(neighbourhoods); installVillageNeighbourhoodVisibility(neighbourhoods); root.add(neighbourhoods);
+    surfaceContactGround.replace("neighbourhoods", neighbourhoods);
   }
   function part(name, key, make) {
     if (keys[name] === key) return; keys[name] = key;
@@ -259,7 +267,8 @@ export function createVillageView(canvas, state, hooks = {}) {
     const stir = createHallLife(built.userData.marks); group.add(stir.group);
     let host = null;
     if (plan.host) host = hallHost(plan);
-    const entry = { id, plan, group, lamps, host, stir }; insides.set(id, entry); return entry;
+    const contactGround = createVillageHallContactGround(v.solid, { scale: K, originX: INSIDE.x, originZ: INSIDE.z });
+    const entry = { id, plan, group, lamps, host, stir, contactGround }; insides.set(id, entry); return entry;
   }
   function hallHost(plan) {
     const host = makeResident(plan.host, { style: folk.style });
@@ -482,6 +491,10 @@ export function createVillageView(canvas, state, hooks = {}) {
     if (++shadowTick % 2 === 0 || tour) sun.shadow.needsUpdate = true;
     if (sky) sky.position.copy(camera.position);
   }
+  const contactGroundAt = (x, z) => inside ? inside.contactGround.heightAt(x, -z) : expansionWorld.active ? expansionWorld.ground(x, z) : surfaceContactGround.heightAt(x, z);
+  function updateContactShadows() {
+    contactShadows.update(contactActors.collect(scene, contactGroundAt));
+  }
   // Surface visibility and moonlight are borrowed only for a single off-screen map photograph.
   function withMapSurface(fn) {
     buildOnce();
@@ -495,7 +508,7 @@ export function createVillageView(canvas, state, hooks = {}) {
       for (const p of patches) p.chunk.visible = true;
       const upper = root.getObjectByName('moth-tree-upper');
       upper?.traverse(o => { o.visible = true; for (const m of [].concat(o.material ?? [])) { if (!opacity.has(m)) opacity.set(m, m.opacity); m.opacity = 1; } });
-      for (const g of [sky, horizon, mist, bats?.group, life?.group, grass?.group, atmosphere?.group, blight.group, shopMarkers.group, lampGlow?.group, selection, companion?.root, ...handTools.values()]) if (g) g.visible = false;
+      for (const g of [sky, horizon, mist, bats?.group, life?.group, grass?.group, atmosphere?.group, contactShadows.group, blight.group, shopMarkers.group, lampGlow?.group, selection, companion?.root, ...handTools.values()]) if (g) g.visible = false;
       for (const person of folk.people.values()) person.root.visible = false;
       for (const entry of insides.values()) { entry.group.visible = false; if (entry.host) entry.host.root.visible = false; }
       for (const d of decor.values()) d.group.visible = true;
@@ -503,11 +516,11 @@ export function createVillageView(canvas, state, hooks = {}) {
       // Resources use the current play camera's bounded batch; omit that moving batch from this structural image.
       resources.group.visible = false;
       scene.background = new THREE.Color(0x100c1c); scene.fog = null; scene.userData.exposure = 1.2;
-      hemi.intensity = NIGHT.hemi; hemi.color.set(NIGHT.sky); hemi.groundColor.set(NIGHT.ground); sun.intensity = NIGHT.sun;
+      hemi.intensity = NIGHT.hemi; hemi.color.set(NIGHT.sky); hemi.groundColor.set(NIGHT.ground); sun.intensity = NIGHT.sun; sun.color.set(0xb8c2ff);
       sun.target.position.set((REALM.x0 + REALM.x1) * K / 2, 0, -(REALM.z0 + REALM.z1) * K / 2); sun.position.copy(sun.target.position).addScaledVector(SUN, 100);
       for (const l of pool) { l.intensity = 0; l.visible = true; }
       scene.updateMatrixWorld(true);
-      return withVillageNeighbourhoodVisibilityRestored(neighbourhoods, () => expansionWorld.withMapSurface(fn));
+      return districtAtmosphere.withAtlasGrade(() => withVillageNeighbourhoodVisibilityRestored(neighbourhoods, () => expansionWorld.withMapSurface(fn)));
     } finally {
       for (const [o, visible] of visibility) o.visible = visible;
       for (const [m, value] of opacity) m.opacity = value;
@@ -536,7 +549,15 @@ export function createVillageView(canvas, state, hooks = {}) {
       if(expansionWorld.active){root.visible=false;for(const p of folk.people.values())p.root.visible=false;}
       tickTour(dt); if (!tour) dialogueFocus.tick(dt);
       if (!tour && !following && !dialogueFocus.active) { framing.step(); controls.update(); }
-      const reach = inside||expansionWorld.active ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog - scene.fog.density) * Math.min(1, dt * 2);
+      const surface = !inside && !expansionWorld.active, still = reducedMotion(), at = tour ? focus : following && followSubject ? followSubject : controls.target;
+      atmospherePoint.x = at.x; atmospherePoint.z = -at.z;
+      const fogScale = surface ? districtAtmosphere.update(atmospherePoint, state.village?.clock ?? 0, { reducedMotion: still }) : 1;
+      if (surface) waterClock.tick(state.paused ? 0 : dt, { reducedMotion: still });
+      else {
+        scene.userData.grade = VILLAGE_GRADE; sun.color.set(0xb8c2ff);
+        if (inside) { hemi.color.set(NIGHT.sky); hemi.groundColor.set(NIGHT.ground); for (const lamp of pool) lamp.color.set(0xff9a40); }
+      }
+      const reach = inside||expansionWorld.active ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog * fogScale - scene.fog.density) * Math.min(1, dt * 2);
       for (const p of patches) p.chunk.visible = p.sphere.center.distanceTo(camera.position) - p.sphere.radius < reach.far;
       placeLights(); folk.tick(dt, time, camera, { paused: !!inside || !!tour || !!hooks.residentsPaused?.() || !!state.paused, reducedMotion: reducedMotion() });
       if (lampGlow) { lampGlow.group.visible = !inside && !expansionWorld.active; lampGlow.tick(time, { density: scene.fog.density, still: reducedMotion() }); }
@@ -551,9 +572,13 @@ export function createVillageView(canvas, state, hooks = {}) {
       if (mist) for (const m of mist.children) { const u = m.userData; m.position.x = u.x + Math.sin(time * .07 + u.phase) * 2.5; m.position.z = -u.z + Math.cos(time * .05 + u.phase) * 1.5; }
       if(companion&&followSubject&&!inside){const owner={x:followSubject.x,z:-followSubject.z};companionPose=advanceExpansionCompanion(companionPose,owner,dt,{area:expansionWorld.active??'surface',heading:ownerHeading,canRegroup:!companion.root.visible,free:(x,z)=>expansionWorld.active?expansionWorld.move({x,z},0,0)&&caveCellFree(x,z):villageCellFree(state,x,z)});if(companionPose){companion.root.visible=companionPose.visible&&!inside;companion.root.position.copy(W(companionPose.x,companionPose.z,expansionWorld.ground(companionPose.x,companionPose.z)));companion.walking=companionPose.walking;companion.heading={x:companionPose.heading.x,z:-companionPose.heading.z};companion.walkDistance=companionPose.distance;folk.animate(companion,dt,time,camera);}}
       for (const p of pages.values()) { p.group.position.y = .05 + Math.sin(time * 2.3 + p.x) * .04; p.group.rotation.y = Math.sin(time * .9 + p.z) * .5; }
+      updateContactShadows();
     },
     get active() { return active; },
     get atmosphereStats() { return atmosphere?.stats() ?? null; },
+    get districtAtmosphereStats() { return districtAtmosphere.status; },
+    get contactShadowStats() { return contactShadows.stats; },
+    get waterStats() { return { time: waterClock.uniform.value, addedLights: 0, addedMeshes: 0 }; },
     get blightStats() { return blight.stats; },
     get resourceStats() { return resources.stats; },
     get shopMarkerStats() { return shopMarkers.stats; },
