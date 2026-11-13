@@ -1,0 +1,43 @@
+{
+  "artifactCommit": "85a963c246a5e982a793f29c894e0a60f46a8ced",
+  "runtimeCommit": "c2b6a409120fca3b2e1c9bc29e65316ed8570b1e",
+  "verificationCommit": "7b62cb651eb318229414e2a76fa8d6cd1f538e95",
+  "passed": true,
+  "downloads": [
+    {
+      "file": "Pumpkin-Patch-Directional-Characters.html",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/85a963c246a5e982a793f29c894e0a60f46a8ced/Pumpkin-Patch-Directional-Characters.html",
+      "httpStatus": 200,
+      "bytes": 54956692,
+      "sha256": "392db73e5daeee1b2c23687e4ea946bce41a7018ab93ca407a182b9944b7c8de"
+    },
+    {
+      "file": "Pumpkin-Patch-Directional-Sprite-Preview.html",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/85a963c246a5e982a793f29c894e0a60f46a8ced/Pumpkin-Patch-Directional-Sprite-Preview.html",
+      "httpStatus": 200,
+      "bytes": 12632252,
+      "sha256": "bde41e302931d59e65039b944bfccbf83f634879e8558dcf8a19d29ca0fc4e13"
+    },
+    {
+      "file": "Pumpkin-Patch-Directional-Characters.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/85a963c246a5e982a793f29c894e0a60f46a8ced/Pumpkin-Patch-Directional-Characters.zip",
+      "httpStatus": 200,
+      "bytes": 39749738,
+      "sha256": "920249bc5f888429e2c108a0c91d257d9fd3e1ee3610fda70d49dcb2fc12b39f"
+    },
+    {
+      "file": "Pumpkin-Patch-Directional-Sprite-Pack.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/85a963c246a5e982a793f29c894e0a60f46a8ced/Pumpkin-Patch-Directional-Sprite-Pack.zip",
+      "httpStatus": 200,
+      "bytes": 38953781,
+      "sha256": "077e7d4f95007c8e6d6a3694cfc85913c9391fe0b90fca9e3ff678818943ba28"
+    },
+    {
+      "file": "Pumpkin-Patch-Directional-Characters-Claude-Patch.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/85a963c246a5e982a793f29c894e0a60f46a8ced/Pumpkin-Patch-Directional-Characters-Claude-Patch.zip",
+      "httpStatus": 200,
+      "bytes": 73328770,
+      "sha256": "8d77aecc8a9c207ddc7dd8677fea4e2a75a261842e5d402ec0fd40ea5cd327dc"
+    }
+  ]
+}

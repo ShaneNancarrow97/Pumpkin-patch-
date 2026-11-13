@@ -1,0 +1,26 @@
+ok   desktop: a new patch opens on the introduction
+ok   desktop: Natalie speaks first
+ok   desktop: Skip hands the farm back
+ok   desktop: characters drawn with the original sprites
+ok   desktop: plant one plot and boost
+ok   desktop: pick one plot at base capacity
+ok   desktop: shop opens
+ok   desktop: wardrobe opens
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Target page, context or browser has been closed
+Call log:
+[2m  - waiting for locator('[data-more="journal"]')[22m
+[2m    - locator resolved to <button class="more-link" data-more="journal">…</button>[22m
+[2m  - attempting click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m    - element is visible, enabled and stable[22m
+[2m    - scrolling into view if needed[22m
+[2m    - done scrolling[22m
+[2m    - performing click action[22m
+
+    at /workspace/pumpkin-menu-item-sprites/voxel/smoke.mjs:56:122
+
+Node.js v24.19.0

@@ -1,0 +1,60 @@
+{
+  "method": "Manual visual estimates in per-cell source pixels, uncertainty approximately8px; annotated anatomical identities are visual judgments, not automated rig labels.",
+  "right": {
+    "0": {
+      "contactHeel": [
+        294,
+        421
+      ],
+      "trailingToe": [
+        134,
+        421
+      ],
+      "leading": "far anatomical left",
+      "nearArm": "forward"
+    },
+    "2": {
+      "raisedBootToe": [
+        260,
+        367
+      ],
+      "supportBootToe": [
+        253,
+        417
+      ],
+      "swingKnee": [
+        290,
+        265
+      ],
+      "swing": "near anatomical right"
+    },
+    "4": {
+      "contactHeel": [
+        288,
+        419
+      ],
+      "trailingToe": [
+        122,
+        420
+      ],
+      "leading": "near anatomical right",
+      "nearArm": "back"
+    },
+    "6": {
+      "raisedBootToe": [
+        136,
+        340
+      ],
+      "supportBootToe": [
+        278,
+        419
+      ],
+      "swing": "far anatomical left"
+    }
+  },
+  "bodyHeightPhase0": 418,
+  "bodyHeightPhase4": 415,
+  "fullStrideEstimateWorld": 1.8,
+  "supportingWorldBodyHeight": 2.3,
+  "supportsExistingCycle": 1.8
+}

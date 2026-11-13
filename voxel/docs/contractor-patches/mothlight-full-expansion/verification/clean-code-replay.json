@@ -1,0 +1,24 @@
+{
+  "codeCommit": "367b037c1293c39342f81c56d13051ed6f7b5d88",
+  "sourceTree": "1fbffa4fbee46a87115abeea503c308ecbf7201c",
+  "base": "8048fd32e5dbdf33b81d38c78c07b05ecef5be7f",
+  "replayCommit": "9b680502acd54fe6a3ef1618da2aa9a325d89e4e",
+  "replayTree": "1fbffa4fbee46a87115abeea503c308ecbf7201c",
+  "treeIdentical": true,
+  "htmlRebuildIdentical": true,
+  "htmlSHA256": "ab6ac3af9f1a2024693952d6fd987a7ad2473fad622785473022271f1c7ad1a6",
+  "htmlBytes": 60328415,
+  "zipSHA256": "86832680c65dfcba0f531f96d629e02983ee79e493b23beb73bd0487d55a72a9",
+  "zipBytes": 43350433,
+  "zipCRC": true,
+  "zipHTMLIdentical": true,
+  "tests": {
+    "command": "npm test",
+    "worktreeCommit": "9b680502acd54fe6a3ef1618da2aa9a325d89e4e",
+    "total": 1183,
+    "passed": 1183,
+    "failed": 0,
+    "durationMs": 216174.003077,
+    "receipt": "clean-replay-tests.txt"
+  }
+}

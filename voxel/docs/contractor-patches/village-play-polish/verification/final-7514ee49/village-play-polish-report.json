@@ -1,0 +1,3800 @@
+{
+  "mode": "final",
+  "date": "2026-11-08T20:21:31.023Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Play-Polish.html",
+  "sha256": "7514ee4994efecc707b13510e9273cd6e5ab53984774126bf041544b6386351a",
+  "bytes": 58258926,
+  "sourceCommit": "07c3eb8caf36de2eee27d81820de066ce8ce8732",
+  "checks": [
+    {
+      "pass": true,
+      "label": "Village opens in closer owner-centred third person",
+      "detail": {
+        "active": true,
+        "place": {
+          "kind": "village",
+          "id": "mothlight"
+        },
+        "play": {
+          "ready": true,
+          "target": {
+            "x": 87,
+            "y": 1.34,
+            "z": 25.5
+          },
+          "yaw": 0,
+          "pitch": 0.4537856055185257,
+          "distance": 6.8,
+          "wantedYaw": 0,
+          "wantedPitch": 0.4537856055185257,
+          "wantedDistance": 6.8,
+          "freeLook": 0,
+          "following": true,
+          "subject": {
+            "x": 87,
+            "y": 0.04,
+            "z": 25.5
+          },
+          "inside": null
+        },
+        "music": {
+          "track": null,
+          "playing": false,
+          "voices": 0,
+          "duration": 0,
+          "context": "waiting",
+          "shuffle": true,
+          "sceneGain": 1,
+          "villageActive": true,
+          "narrationActive": false
+        },
+        "nav": [
+          {
+            "id": "map",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          },
+          {
+            "id": "people",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          },
+          {
+            "id": "quests",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          },
+          {
+            "id": "satchel",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          },
+          {
+            "id": "workshop",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          },
+          {
+            "id": "build",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          }
+        ],
+        "proximity": {
+          "visible": true,
+          "rings": [],
+          "limit": 12,
+          "lights": 0
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Village music mix and six custom navigation icons install on entry",
+      "detail": {
+        "active": true,
+        "place": {
+          "kind": "village",
+          "id": "mothlight"
+        },
+        "play": {
+          "ready": true,
+          "target": {
+            "x": 87,
+            "y": 1.34,
+            "z": 25.5
+          },
+          "yaw": 0,
+          "pitch": 0.4537856055185257,
+          "distance": 6.8,
+          "wantedYaw": 0,
+          "wantedPitch": 0.4537856055185257,
+          "wantedDistance": 6.8,
+          "freeLook": 0,
+          "following": true,
+          "subject": {
+            "x": 87,
+            "y": 0.04,
+            "z": 25.5
+          },
+          "inside": null
+        },
+        "music": {
+          "track": null,
+          "playing": false,
+          "voices": 0,
+          "duration": 0,
+          "context": "waiting",
+          "shuffle": true,
+          "sceneGain": 1,
+          "villageActive": true,
+          "narrationActive": false
+        },
+        "nav": [
+          {
+            "id": "map",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          },
+          {
+            "id": "people",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          },
+          {
+            "id": "quests",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          },
+          {
+            "id": "satchel",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          },
+          {
+            "id": "workshop",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          },
+          {
+            "id": "build",
+            "image": "url(\"data:image/webp;base64,UklGRj7"
+          }
+        ],
+        "proximity": {
+          "visible": true,
+          "rings": [],
+          "limit": 12,
+          "lights": 0
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Follow remains on owner while right stick pans independently",
+      "detail": {
+        "rows": [
+          {
+            "pos": {
+              "x": 87,
+              "z": -25.375243902439024
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 25.46905806834874
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 25.375243902439024
+              },
+              "inside": null
+            },
+            "targetError": 0.09381416590971625
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -25.25048780487805
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 25.395788276669474
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 25.25048780487805
+              },
+              "inside": null
+            },
+            "targetError": 0.14530047179142613
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -25.125731707317073
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 25.299288462875875
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 25.125731707317073
+              },
+              "inside": null
+            },
+            "targetError": 0.17355675555880268
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -25.000975609756097
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 25.19003974263921
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 25.000975609756097
+              },
+              "inside": null
+            },
+            "targetError": 0.1890641328831144
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -24.87621951219512
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 25.073794274199116
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 24.87621951219512
+              },
+              "inside": null
+            },
+            "targetError": 0.19757476200399537
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -24.751463414634145
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 24.953708908930164
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 24.751463414634145
+              },
+              "inside": null
+            },
+            "targetError": 0.2022454942960188
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -24.62670731707317
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 24.831516163600128
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 24.62670731707317
+              },
+              "inside": null
+            },
+            "targetError": 0.20480884652695863
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -24.501951219512193
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 24.708166863570902
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 24.501951219512193
+              },
+              "inside": null
+            },
+            "targetError": 0.20621564405870885
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -24.377195121951218
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 24.58418283286498
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 24.377195121951218
+              },
+              "inside": null
+            },
+            "targetError": 0.20698771091376145
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -24.25243902439024
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 24.459850454577897
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 24.25243902439024
+              },
+              "inside": null
+            },
+            "targetError": 0.20741143018765484
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -24.127682926829266
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 24.335326899084873
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 24.127682926829266
+              },
+              "inside": null
+            },
+            "targetError": 0.2076439722556067
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -24.00292682926829
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 24.210698423316668
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 24.00292682926829
+              },
+              "inside": null
+            },
+            "targetError": 0.20777159404837775
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -23.878170731707314
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 24.086012366080585
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 23.878170731707314
+              },
+              "inside": null
+            },
+            "targetError": 0.20784163437327052
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -23.75341463414634
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 23.961294707464905
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 23.75341463414634
+              },
+              "inside": null
+            },
+            "targetError": 0.20788007331856662
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -23.628658536585363
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 23.836559705644387
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 23.628658536585363
+              },
+              "inside": null
+            },
+            "targetError": 0.20790116905902423
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -23.503902439024387
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 23.71181518567125
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 23.503902439024387
+              },
+              "inside": null
+            },
+            "targetError": 0.207912746646862
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -23.37914634146341
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 23.587065442025196
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 23.37914634146341
+              },
+              "inside": null
+            },
+            "targetError": 0.2079191005617851
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -23.254390243902435
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 23.462312831566663
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 23.254390243902435
+              },
+              "inside": null
+            },
+            "targetError": 0.20792258766422833
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -23.12963414634146
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 23.337558647768084
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 23.12963414634146
+              },
+              "inside": null
+            },
+            "targetError": 0.20792450142662489
+          },
+          {
+            "pos": {
+              "x": 87,
+              "z": -23.004878048780483
+            },
+            "cam": {
+              "ready": true,
+              "target": {
+                "x": 87,
+                "y": 1.34,
+                "z": 23.21280360050218
+              },
+              "yaw": 0,
+              "pitch": 0.4537856055185257,
+              "distance": 6.8,
+              "wantedYaw": 0,
+              "wantedPitch": 0.4537856055185257,
+              "wantedDistance": 6.8,
+              "freeLook": 0,
+              "following": true,
+              "subject": {
+                "x": 87,
+                "y": 0.04,
+                "z": 23.004878048780483
+              },
+              "inside": null
+            },
+            "targetError": 0.20792555172169713
+          }
+        ],
+        "before": {
+          "ready": true,
+          "target": {
+            "x": 87,
+            "y": 1.34,
+            "z": 23.11899001100662
+          },
+          "yaw": 0,
+          "pitch": 0.4537856055185257,
+          "distance": 6.8,
+          "wantedYaw": 0,
+          "wantedPitch": 0.4537856055185257,
+          "wantedDistance": 6.8,
+          "freeLook": 0,
+          "following": true,
+          "subject": {
+            "x": 87,
+            "y": 0.04,
+            "z": 23.004878048780483
+          },
+          "inside": null
+        },
+        "orbited": {
+          "ready": true,
+          "target": {
+            "x": 87,
+            "y": 1.34,
+            "z": 23.00487805455059
+          },
+          "yaw": 1.2474225515501391,
+          "pitch": 0.4537856055185257,
+          "distance": 6.8,
+          "wantedYaw": 1.2475609756097565,
+          "wantedPitch": 0.4537856055185257,
+          "wantedDistance": 6.8,
+          "freeLook": 0.44999999999999973,
+          "following": true,
+          "subject": {
+            "x": 87,
+            "y": 0.04,
+            "z": 23.004878048780483
+          },
+          "inside": null
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "R3 smoothly recentres behind northbound owner"
+    },
+    {
+      "pass": true,
+      "label": "Options opens an illustrated six-action menu hub"
+    },
+    {
+      "pass": true,
+      "label": "Cross activates spatial five-district map with owner marker",
+      "detail": {
+        "panel": "map",
+        "regions": [
+          "green",
+          "copse",
+          "quarry",
+          "moor",
+          "marsh"
+        ],
+        "pins": [
+          {
+            "id": "green",
+            "disabled": false
+          },
+          {
+            "id": "copse",
+            "disabled": false
+          },
+          {
+            "id": "quarry",
+            "disabled": false
+          },
+          {
+            "id": "moor",
+            "disabled": false
+          },
+          {
+            "id": "marsh",
+            "disabled": false
+          }
+        ],
+        "player": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Locked district tap reveals honest level/story/chapter criteria without scrolling",
+      "detail": {
+        "text": "Locked · later chapterMoonroot CopseA woodland neighbourhood for Mabel and Tansy, with hardwood and moth silk.✓Patch level 620 / 6○Complete Two DoorbellsNot yet◇This district’s playable chapterTo comeThis road stays closed in this chapter. Level and story goals prepare the way; the district itself comes in a later update.",
+        "top": 232.09375,
+        "parentTop": 157.09375
+      }
+    },
+    {
+      "pass": true,
+      "label": "Real controller route reaches clear approach to Moth Tree",
+      "detail": {
+        "route": [
+          {
+            "x": 87,
+            "z": 26.9
+          }
+        ],
+        "result": {
+          "left": false,
+          "count": 344,
+          "position": {
+            "x": 87,
+            "z": 26.794071980963682
+          }
+        },
+        "method": "Native Gamepad API mock, real collision/owner/view .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Moth Tree canopy dissolves on its clear nearby approach",
+      "detail": {
+        "tree": {
+          "opacity": 0,
+          "target": 0,
+          "upperVisible": false
+        },
+        "grass": [],
+        "rim": [
+          {
+            "texel": [
+              0.00087890625,
+              0.00421875
+            ],
+            "extraMeshes": 0,
+            "extraLights": 0
+          },
+          {
+            "texel": [
+              0.001318359375,
+              0.0009588068181818183
+            ],
+            "extraMeshes": 0,
+            "extraLights": 0
+          },
+          {
+            "texel": [
+              0.00087890625,
+              0.00421875
+            ],
+            "extraMeshes": 0,
+            "extraLights": 0
+          },
+          {
+            "texel": [
+              0.0006835443037974684,
+              0.0029605263157894738
+            ],
+            "extraMeshes": 0,
+            "extraLights": 0
+          },
+          {
+            "texel": [
+              0.0006835443037974684,
+              0.0029605263157894738
+            ],
+            "extraMeshes": 0,
+            "extraLights": 0
+          }
+        ],
+        "proximity": {
+          "visible": true,
+          "rings": [],
+          "limit": 12,
+          "lights": 0
+        },
+        "camera": {
+          "ready": true,
+          "target": {
+            "x": 87,
+            "y": 1.34,
+            "z": -26.67768993590121
+          },
+          "yaw": 2.212705750264958e-125,
+          "pitch": 0.4537856055185257,
+          "distance": 6.8,
+          "wantedYaw": 0,
+          "wantedPitch": 0.4537856055185257,
+          "wantedDistance": 6.8,
+          "freeLook": 0,
+          "following": true,
+          "subject": {
+            "x": 87,
+            "y": 0.04,
+            "z": -26.794071980963682
+          },
+          "inside": null
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Player footlight is active with no extra scene lights",
+      "detail": {
+        "visible": true,
+        "rings": [],
+        "limit": 12,
+        "lights": 0
+      }
+    },
+    {
+      "pass": true,
+      "label": "Neighbours use restrained painted-edge rim without duplicate meshes/lights",
+      "detail": [
+        {
+          "texel": [
+            0.00087890625,
+            0.00421875
+          ],
+          "extraMeshes": 0,
+          "extraLights": 0
+        },
+        {
+          "texel": [
+            0.001318359375,
+            0.0009588068181818183
+          ],
+          "extraMeshes": 0,
+          "extraLights": 0
+        },
+        {
+          "texel": [
+            0.00087890625,
+            0.00421875
+          ],
+          "extraMeshes": 0,
+          "extraLights": 0
+        },
+        {
+          "texel": [
+            0.0006835443037974684,
+            0.0029605263157894738
+          ],
+          "extraMeshes": 0,
+          "extraLights": 0
+        },
+        {
+          "texel": [
+            0.0006835443037974684,
+            0.0029605263157894738
+          ],
+          "extraMeshes": 0,
+          "extraLights": 0
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Real controller route reaches larger timber resource",
+      "detail": {
+        "route": [
+          {
+            "x": 87,
+            "z": -25.5
+          },
+          {
+            "x": 36.7,
+            "z": -7.5
+          }
+        ],
+        "result": {
+          "left": false,
+          "count": 729,
+          "position": {
+            "x": 36.80421427683239,
+            "z": -7.537124212234785
+          }
+        },
+        "method": "Native Gamepad API mock, real collision/owner/view .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Nearby timber gains a ring and highlighted contextual gather prompt",
+      "detail": {
+        "label": "Gather · Softwood logs · Axe",
+        "ready": true,
+        "rings": [
+          {
+            "id": "logs-08",
+            "quest": false,
+            "distance": 0.6967754155378385
+          },
+          {
+            "id": "logs-10",
+            "quest": false,
+            "distance": 5.304344191479906
+          },
+          {
+            "id": "logs-03",
+            "quest": false,
+            "distance": 5.8642396404884725
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Cross starts the actual nearby axe action"
+    },
+    {
+      "pass": true,
+      "label": "Gather completes once and pays real material yield"
+    },
+    {
+      "pass": true,
+      "label": "Real controller route reaches glowing letter page",
+      "detail": {
+        "route": [
+          {
+            "x": 80.60421427683238,
+            "z": -0.3371242122347855
+          },
+          {
+            "x": 84.8042142768324,
+            "z": 15.262875787765216
+          },
+          {
+            "x": 84.8042142768324,
+            "z": 21.26287578776521
+          },
+          {
+            "x": 83,
+            "z": 24.6
+          }
+        ],
+        "result": {
+          "left": false,
+          "count": 486,
+          "position": {
+            "x": 83.05415880121922,
+            "z": 24.49740174134779
+          }
+        },
+        "method": "Native Gamepad API mock, real collision/owner/view .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Nearby quest page gains a warm ring and contextual Collect prompt",
+      "detail": {
+        "label": "Collect · Letter page",
+        "rings": [
+          {
+            "id": "page-1",
+            "quest": true,
+            "distance": 1.4577737210698343
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Cross collects the actual page and removes its proximity ring"
+    },
+    {
+      "pass": true,
+      "label": "Real controller route reaches Rowan live talk point",
+      "detail": {
+        "route": [
+          {
+            "x": 80.69999999999999,
+            "z": 29.1
+          }
+        ],
+        "result": {
+          "left": false,
+          "count": 35,
+          "position": {
+            "x": 80.75305844650832,
+            "z": 28.996265828210248
+          }
+        },
+        "method": "Native Gamepad API mock, real collision/owner/view .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Village conversation is clear, fitted and controller/touch readable",
+      "detail": {
+        "visible": true,
+        "text": "Rowan RattlewoodScarecrow carpenter×You've noticed my door. Everyone notices my door.Level 0 · 1 / 3Tap replay to hear voices.Continue",
+        "box": {
+          "x": 742,
+          "y": 425.5625,
+          "w": 520,
+          "h": 292.4375
+        },
+        "buttons": [
+          {
+            "text": "×",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "text": "",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "text": "",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "text": "Continue",
+            "w": 112,
+            "h": 46
+          }
+        ],
+        "font": 17
+      }
+    },
+    {
+      "pass": true,
+      "label": "Quest journal names the next task and clear follow action"
+    },
+    {
+      "pass": true,
+      "label": "phone: visible controls fit and retain44px targets",
+      "detail": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "input": "touch",
+        "buttons": [
+          {
+            "id": "vg-home",
+            "font": 13,
+            "x": 10,
+            "y": 15.890625,
+            "w": 44,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "id": "vg-person",
+            "font": 13,
+            "x": 270.265625,
+            "y": 15.890625,
+            "w": 60.734375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "id": "vg-fullscreen",
+            "font": 13,
+            "x": 336,
+            "y": 15.890625,
+            "w": 44,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "id": "vg-quest-toggle",
+            "font": 13,
+            "x": 11,
+            "y": 80,
+            "w": 244,
+            "h": 50.78125,
+            "visible": true
+          },
+          {
+            "id": "vg-farm-rate",
+            "font": 13,
+            "x": 260,
+            "y": 79,
+            "w": 120,
+            "h": 46.78125,
+            "visible": true
+          },
+          {
+            "id": "map",
+            "font": 12,
+            "x": 16,
+            "y": 764,
+            "w": 57.15625,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "people",
+            "font": 12,
+            "x": 76.15625,
+            "y": 764,
+            "w": 57.171875,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "journal",
+            "font": 12,
+            "x": 136.328125,
+            "y": 764,
+            "w": 57.15625,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "materials",
+            "font": 12,
+            "x": 196.484375,
+            "y": 764,
+            "w": 57.171875,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "upgrades",
+            "font": 12,
+            "x": 256.65625,
+            "y": 764,
+            "w": 57.171875,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "vg-decorate",
+            "font": 12,
+            "x": 316.828125,
+            "y": 764,
+            "w": 57.171875,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "vg-interact",
+            "font": 13,
+            "x": 261,
+            "y": 485,
+            "w": 112,
+            "h": 72,
+            "visible": true
+          },
+          {
+            "id": "vg-look",
+            "font": 23,
+            "x": 295,
+            "y": 572,
+            "w": 46,
+            "h": 46,
+            "visible": true
+          },
+          {
+            "id": "vg-jog",
+            "font": 12,
+            "x": 49,
+            "y": 574,
+            "w": 52,
+            "h": 44,
+            "visible": true
+          }
+        ],
+        "rects": {
+          "dock": {
+            "x": 10,
+            "y": 758,
+            "w": 370,
+            "h": 72,
+            "visible": true
+          },
+          "legend": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "visible": false
+          },
+          "objective": {
+            "x": 10,
+            "y": 79,
+            "w": 246,
+            "h": 77.96875,
+            "visible": true
+          },
+          "rate": {
+            "x": 260,
+            "y": 79,
+            "w": 120,
+            "h": 46.78125,
+            "visible": true
+          }
+        },
+        "nav": [
+          {
+            "id": "map",
+            "x": 16,
+            "y": 764,
+            "w": 57.15625,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "people",
+            "x": 76.15625,
+            "y": 764,
+            "w": 57.171875,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "journal",
+            "x": 136.328125,
+            "y": 764,
+            "w": 57.15625,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "materials",
+            "x": 196.484375,
+            "y": 764,
+            "w": 57.171875,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "upgrades",
+            "x": 256.65625,
+            "y": 764,
+            "w": 57.171875,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "vg-decorate",
+            "x": 316.828125,
+            "y": 764,
+            "w": 57.171875,
+            "h": 60,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone: all six custom-icon navigation buttons stay available",
+      "detail": [
+        {
+          "id": "map",
+          "x": 16,
+          "y": 764,
+          "w": 57.15625,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "x": 76.15625,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "x": 136.328125,
+          "y": 764,
+          "w": 57.15625,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "x": 196.484375,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "x": 256.65625,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "x": 316.828125,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "phone: map panel fits its viewport",
+      "detail": {
+        "x": 10,
+        "y": 75,
+        "width": 370,
+        "height": 686
+      }
+    },
+    {
+      "pass": true,
+      "label": "unfolded: visible controls fit and retain44px targets",
+      "detail": {
+        "innerWidth": 864,
+        "innerHeight": 756,
+        "scrollWidth": 864,
+        "input": "touch",
+        "buttons": [
+          {
+            "id": "vg-home",
+            "font": 13,
+            "x": 14,
+            "y": 17.03125,
+            "w": 88.34375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "id": "vg-person",
+            "font": 13,
+            "x": 728.265625,
+            "y": 17.03125,
+            "w": 70.734375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "id": "vg-fullscreen",
+            "font": 13,
+            "x": 806,
+            "y": 17.03125,
+            "w": 44,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "id": "vg-quest-toggle",
+            "font": 13,
+            "x": 15,
+            "y": 83,
+            "w": 368,
+            "h": 54.140625,
+            "visible": true
+          },
+          {
+            "id": "vg-farm-rate",
+            "font": 13,
+            "x": 733.734375,
+            "y": 82,
+            "w": 116.265625,
+            "h": 46.78125,
+            "visible": true
+          },
+          {
+            "id": "map",
+            "font": 13,
+            "x": 182.875,
+            "y": 672,
+            "w": 80,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "people",
+            "font": 13,
+            "x": 265.875,
+            "y": 672,
+            "w": 80,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "journal",
+            "font": 13,
+            "x": 348.875,
+            "y": 672,
+            "w": 80,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "materials",
+            "font": 13,
+            "x": 431.875,
+            "y": 672,
+            "w": 80,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "upgrades",
+            "font": 13,
+            "x": 514.875,
+            "y": 672,
+            "w": 83.25,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "vg-decorate",
+            "font": 13,
+            "x": 601.125,
+            "y": 672,
+            "w": 80,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "vg-interact",
+            "font": 13,
+            "x": 723,
+            "y": 373,
+            "w": 124,
+            "h": 76,
+            "visible": true
+          },
+          {
+            "id": "vg-look",
+            "font": 23,
+            "x": 762,
+            "y": 466,
+            "w": 46,
+            "h": 46,
+            "visible": true
+          },
+          {
+            "id": "vg-jog",
+            "font": 12,
+            "x": 56,
+            "y": 468,
+            "w": 52,
+            "h": 44,
+            "visible": true
+          }
+        ],
+        "rects": {
+          "dock": {
+            "x": 176.875,
+            "y": 666,
+            "w": 510.25,
+            "h": 72,
+            "visible": true
+          },
+          "legend": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "visible": false
+          },
+          "objective": {
+            "x": 14,
+            "y": 82,
+            "w": 370,
+            "h": 81.328125,
+            "visible": true
+          },
+          "rate": {
+            "x": 733.734375,
+            "y": 82,
+            "w": 116.265625,
+            "h": 46.78125,
+            "visible": true
+          }
+        },
+        "nav": [
+          {
+            "id": "map",
+            "x": 182.875,
+            "y": 672,
+            "w": 80,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "people",
+            "x": 265.875,
+            "y": 672,
+            "w": 80,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "journal",
+            "x": 348.875,
+            "y": 672,
+            "w": 80,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "materials",
+            "x": 431.875,
+            "y": 672,
+            "w": 80,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "upgrades",
+            "x": 514.875,
+            "y": 672,
+            "w": 83.25,
+            "h": 60,
+            "visible": true
+          },
+          {
+            "id": "vg-decorate",
+            "x": 601.125,
+            "y": 672,
+            "w": 80,
+            "h": 60,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "unfolded: all six custom-icon navigation buttons stay available",
+      "detail": [
+        {
+          "id": "map",
+          "x": 182.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "x": 265.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "x": 348.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "x": 431.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "x": 514.875,
+          "y": 672,
+          "w": 83.25,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "x": 601.125,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "unfolded: map panel fits its viewport",
+      "detail": {
+        "x": 420,
+        "y": 80,
+        "width": 430,
+        "height": 586
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape: visible controls fit and retain44px targets",
+      "detail": {
+        "innerWidth": 844,
+        "innerHeight": 390,
+        "scrollWidth": 844,
+        "input": "touch",
+        "buttons": [
+          {
+            "id": "vg-home",
+            "font": 13,
+            "x": 14,
+            "y": 12,
+            "w": 88.34375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "id": "vg-person",
+            "font": 13,
+            "x": 708.265625,
+            "y": 12,
+            "w": 70.734375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "id": "vg-fullscreen",
+            "font": 13,
+            "x": 786,
+            "y": 12,
+            "w": 44,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "id": "vg-quest-toggle",
+            "font": 13,
+            "x": 15,
+            "y": 67,
+            "w": 293.390625,
+            "h": 54.140625,
+            "visible": true
+          },
+          {
+            "id": "vg-farm-rate",
+            "font": 13,
+            "x": 713.734375,
+            "y": 66,
+            "w": 116.265625,
+            "h": 46.78125,
+            "visible": true
+          },
+          {
+            "id": "map",
+            "font": 12,
+            "x": 245.6796875,
+            "y": 311.40625,
+            "w": 44,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "people",
+            "font": 12,
+            "x": 292.6796875,
+            "y": 311.40625,
+            "w": 56.328125,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "journal",
+            "font": 12,
+            "x": 352.0078125,
+            "y": 311.40625,
+            "w": 57.140625,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "materials",
+            "font": 12,
+            "x": 412.1484375,
+            "y": 311.40625,
+            "w": 58.34375,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "upgrades",
+            "font": 12,
+            "x": 473.4921875,
+            "y": 311.40625,
+            "w": 75.25,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "vg-decorate",
+            "font": 12,
+            "x": 551.7421875,
+            "y": 311.40625,
+            "w": 46.578125,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "vg-interact",
+            "font": 13,
+            "x": 629,
+            "y": 293,
+            "w": 72,
+            "h": 72,
+            "visible": true
+          },
+          {
+            "id": "vg-look",
+            "font": 23,
+            "x": 752,
+            "y": 189,
+            "w": 46,
+            "h": 46,
+            "visible": true
+          },
+          {
+            "id": "vg-jog",
+            "font": 12,
+            "x": 46,
+            "y": 191,
+            "w": 52,
+            "h": 44,
+            "visible": true
+          }
+        ],
+        "rects": {
+          "dock": {
+            "x": 239.6796875,
+            "y": 305.40625,
+            "w": 364.640625,
+            "h": 72.59375,
+            "visible": true
+          },
+          "legend": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "visible": false
+          },
+          "objective": {
+            "x": 14,
+            "y": 66,
+            "w": 295.390625,
+            "h": 81.328125,
+            "visible": true
+          },
+          "rate": {
+            "x": 713.734375,
+            "y": 66,
+            "w": 116.265625,
+            "h": 46.78125,
+            "visible": true
+          }
+        },
+        "nav": [
+          {
+            "id": "map",
+            "x": 245.6796875,
+            "y": 311.40625,
+            "w": 44,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "people",
+            "x": 292.6796875,
+            "y": 311.40625,
+            "w": 56.328125,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "journal",
+            "x": 352.0078125,
+            "y": 311.40625,
+            "w": 57.140625,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "materials",
+            "x": 412.1484375,
+            "y": 311.40625,
+            "w": 58.34375,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "upgrades",
+            "x": 473.4921875,
+            "y": 311.40625,
+            "w": 75.25,
+            "h": 60.59375,
+            "visible": true
+          },
+          {
+            "id": "vg-decorate",
+            "x": 551.7421875,
+            "y": 311.40625,
+            "w": 46.578125,
+            "h": 60.59375,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape: all six custom-icon navigation buttons stay available",
+      "detail": [
+        {
+          "id": "map",
+          "x": 245.6796875,
+          "y": 311.40625,
+          "w": 44,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "x": 292.6796875,
+          "y": 311.40625,
+          "w": 56.328125,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "x": 352.0078125,
+          "y": 311.40625,
+          "w": 57.140625,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "x": 412.1484375,
+          "y": 311.40625,
+          "w": 58.34375,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "x": 473.4921875,
+          "y": 311.40625,
+          "w": 75.25,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "x": 551.7421875,
+          "y": 311.40625,
+          "w": 46.578125,
+          "h": 60.59375,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "landscape: map panel fits its viewport",
+      "detail": {
+        "x": 390,
+        "y": 10,
+        "width": 440,
+        "height": 370
+      }
+    },
+    {
+      "pass": true,
+      "label": "tv-controller: visible controls fit and retain44px targets",
+      "detail": {
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "input": "pad",
+        "buttons": [
+          {
+            "id": "vg-home",
+            "font": 13,
+            "x": 21.515625,
+            "y": 25.640625,
+            "w": 134.625,
+            "h": 67.625,
+            "visible": true
+          },
+          {
+            "id": "vg-person",
+            "font": 13,
+            "x": 1712.546875,
+            "y": 25.640625,
+            "w": 107.5625,
+            "h": 67.625,
+            "visible": true
+          },
+          {
+            "id": "vg-fullscreen",
+            "font": 13,
+            "x": 1830.859375,
+            "y": 25.640625,
+            "w": 67.625,
+            "h": 67.625,
+            "visible": true
+          },
+          {
+            "id": "vg-quest-toggle",
+            "font": 13,
+            "x": 22.515625,
+            "y": 127.03125,
+            "w": 566.6875,
+            "h": 83.203125,
+            "visible": true
+          },
+          {
+            "id": "vg-farm-rate",
+            "font": 13,
+            "x": 1789.734375,
+            "y": 82,
+            "w": 116.265625,
+            "h": 46.78125,
+            "visible": true
+          },
+          {
+            "id": "map",
+            "font": 13,
+            "x": 577.671875,
+            "y": 957.59375,
+            "w": 122.953125,
+            "h": 92.21875,
+            "visible": true
+          },
+          {
+            "id": "people",
+            "font": 13,
+            "x": 705.234375,
+            "y": 957.59375,
+            "w": 122.953125,
+            "h": 92.21875,
+            "visible": true
+          },
+          {
+            "id": "journal",
+            "font": 13,
+            "x": 832.796875,
+            "y": 957.59375,
+            "w": 122.953125,
+            "h": 92.21875,
+            "visible": true
+          },
+          {
+            "id": "materials",
+            "font": 13,
+            "x": 960.359375,
+            "y": 957.59375,
+            "w": 122.953125,
+            "h": 92.21875,
+            "visible": true
+          },
+          {
+            "id": "upgrades",
+            "font": 13,
+            "x": 1087.921875,
+            "y": 957.59375,
+            "w": 126.84375,
+            "h": 92.21875,
+            "visible": true
+          },
+          {
+            "id": "vg-decorate",
+            "font": 13,
+            "x": 1219.375,
+            "y": 957.59375,
+            "w": 122.953125,
+            "h": 92.21875,
+            "visible": true
+          }
+        ],
+        "rects": {
+          "dock": {
+            "x": 569,
+            "y": 948.921875,
+            "w": 782,
+            "h": 109.5625,
+            "visible": true
+          },
+          "legend": {
+            "x": 424.6015625,
+            "y": 845.515625,
+            "w": 1070.796875,
+            "h": 93.09375,
+            "visible": true
+          },
+          "objective": {
+            "x": 21.515625,
+            "y": 126.03125,
+            "w": 568.6875,
+            "h": 123.921875,
+            "visible": true
+          },
+          "rate": {
+            "x": 1789.734375,
+            "y": 82,
+            "w": 116.265625,
+            "h": 46.78125,
+            "visible": true
+          }
+        },
+        "nav": [
+          {
+            "id": "map",
+            "x": 577.671875,
+            "y": 957.59375,
+            "w": 122.953125,
+            "h": 92.21875,
+            "visible": true
+          },
+          {
+            "id": "people",
+            "x": 705.234375,
+            "y": 957.59375,
+            "w": 122.953125,
+            "h": 92.21875,
+            "visible": true
+          },
+          {
+            "id": "journal",
+            "x": 832.796875,
+            "y": 957.59375,
+            "w": 122.953125,
+            "h": 92.21875,
+            "visible": true
+          },
+          {
+            "id": "materials",
+            "x": 960.359375,
+            "y": 957.59375,
+            "w": 122.953125,
+            "h": 92.21875,
+            "visible": true
+          },
+          {
+            "id": "upgrades",
+            "x": 1087.921875,
+            "y": 957.59375,
+            "w": 126.84375,
+            "h": 92.21875,
+            "visible": true
+          },
+          {
+            "id": "vg-decorate",
+            "x": 1219.375,
+            "y": 957.59375,
+            "w": 122.953125,
+            "h": 92.21875,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "tv-controller: all six custom-icon navigation buttons stay available",
+      "detail": [
+        {
+          "id": "map",
+          "x": 577.671875,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "x": 705.234375,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "x": 832.796875,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "x": 960.359375,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "x": 1087.921875,
+          "y": 957.59375,
+          "w": 126.84375,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "x": 1219.375,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "tv-controller: controller legend and navigation do not overlap",
+      "detail": {
+        "dock": {
+          "x": 569,
+          "y": 948.921875,
+          "w": 782,
+          "h": 109.5625,
+          "visible": true
+        },
+        "legend": {
+          "x": 424.6015625,
+          "y": 845.515625,
+          "w": 1070.796875,
+          "h": 93.09375,
+          "visible": true
+        },
+        "objective": {
+          "x": 21.515625,
+          "y": 126.03125,
+          "w": 568.6875,
+          "h": 123.921875,
+          "visible": true
+        },
+        "rate": {
+          "x": 1789.734375,
+          "y": 82,
+          "w": 116.265625,
+          "h": 46.78125,
+          "visible": true
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "tv-controller: map panel fits its viewport",
+      "detail": {
+        "x": 1063.171875,
+        "y": 129.09375,
+        "width": 799.234375,
+        "height": 840.25
+      }
+    },
+    {
+      "pass": true,
+      "label": "Real controller route reaches village carriage return",
+      "detail": {
+        "route": [
+          {
+            "x": 84.95305844650832,
+            "z": 18.79626582821025
+          },
+          {
+            "x": 87,
+            "z": -30.700000000000003
+          }
+        ],
+        "result": {
+          "left": false,
+          "count": 418,
+          "position": {
+            "x": 86.99543890615227,
+            "z": -30.591353461742813
+          }
+        },
+        "method": "Native Gamepad API mock, real collision/owner/view .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Cross at carriage returns to live farm, restores play and music, and keeps rendering",
+      "detail": {
+        "active": false,
+        "place": null,
+        "music": {
+          "track": null,
+          "playing": false,
+          "voices": 0,
+          "duration": 0,
+          "context": "waiting",
+          "shuffle": true,
+          "sceneGain": 1,
+          "villageActive": false,
+          "narrationActive": false
+        },
+        "drawn": 78,
+        "enabled": true,
+        "inVillage": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Visible Farm button also returns without freezing"
+    },
+    {
+      "pass": true,
+      "label": "Circle from free village play returns without freezing"
+    },
+    {
+      "pass": true,
+      "label": "Real controller route reaches walk-through farm threshold",
+      "detail": {
+        "route": [
+          {
+            "x": 87,
+            "z": -30.700000000000003
+          }
+        ],
+        "result": {
+          "left": false,
+          "count": 36,
+          "position": {
+            "x": 87,
+            "z": -30.621216537775133
+          }
+        },
+        "method": "Native Gamepad API mock, real collision/owner/view .05s steps"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actually walking through the farm threshold returns seamlessly",
+      "detail": {
+        "active": false,
+        "place": null,
+        "at": {
+          "x": 87,
+          "z": -31.86877751338489
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Farm returns to normal simulation rate after village exit",
+      "detail": 3.999999999999999
+    },
+    {
+      "pass": true,
+      "label": "Farm planting controls still respond after repeated village exits"
+    },
+    {
+      "pass": true,
+      "label": "Farm R3 enters dedicated Zoom & pan mode",
+      "detail": {
+        "active": true,
+        "inputBoundary": {
+          "moveBlocked": false,
+          "lookBlocked": false,
+          "suppressed": [],
+          "connected": true
+        },
+        "scene": {
+          "active": true,
+          "available": true,
+          "mode": "play",
+          "x": 13.2,
+          "z": 16.6,
+          "zoom": 2.3,
+          "adjusted": false
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Farm sticks pan/zoom while the owner stays put",
+      "detail": {
+        "before": {
+          "active": true,
+          "available": true,
+          "mode": "play",
+          "x": 13.2,
+          "z": 16.6,
+          "zoom": 2.3,
+          "adjusted": false
+        },
+        "after": {
+          "camera": {
+            "active": true,
+            "available": true,
+            "mode": "play",
+            "x": 11.289083509030943,
+            "z": 16.6,
+            "zoom": 2.7050952464486646,
+            "adjusted": true
+          },
+          "position": {
+            "x": 13.2,
+            "z": 16.6
+          },
+          "planted": 1
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Circle exits camera mode and preserves playable owner"
+    },
+    {
+      "pass": true,
+      "label": "Actual home catalogue includes18 illustrated labelled category tabs",
+      "detail": [
+        {
+          "id": "all",
+          "icon": "all",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 82.953125,
+          "h": 62
+        },
+        {
+          "id": "seating",
+          "icon": "seating",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "tables",
+          "icon": "tables",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "beds",
+          "icon": "beds",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "storage",
+          "icon": "storage",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "lighting",
+          "icon": "lighting",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "rugs",
+          "icon": "rugs",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "wall",
+          "icon": "wall",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "small",
+          "icon": "small",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "curios",
+          "icon": "curios",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "kitchen",
+          "icon": "kitchen",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "bathroom",
+          "icon": "bathroom",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "electronics",
+          "icon": "electronics",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "laundry",
+          "icon": "laundry",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "music",
+          "icon": "music",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "pets",
+          "icon": "pets",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "books",
+          "icon": "books",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        },
+        {
+          "id": "wallpaper",
+          "icon": "wallpaper",
+          "image": "url(\"data:image/webp;base64,Uk",
+          "w": 60,
+          "h": 62
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Home catalogue includes five illustrated room tabs"
+    },
+    {
+      "pass": true,
+      "label": "Owned furniture filters use four matching icons"
+    },
+    {
+      "pass": true,
+      "label": "House placement uses a fitted premium PS5 legend with a clear primary action",
+      "detail": {
+        "visible": true,
+        "x": 320,
+        "y": 684,
+        "w": 640,
+        "h": 100,
+        "text": "LSMoveDPADStepL1R1TurnCROSSDoneSQUAREUndoTRIANGLEMore",
+        "svg": 7,
+        "font": 13,
+        "phase": "house"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Visible management hotbar exposes direct Village action",
+      "detail": {
+        "classes": "premium-icons-ready has-pad",
+        "place": null,
+        "enabled": false,
+        "hub": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Real Village hotbar click enters Mothlight"
+    },
+    {
+      "pass": true,
+      "label": "Real Options press exposes farm navigation while controlling an owner",
+      "detail": {
+        "before": {
+          "classes": "premium-icons-ready has-pad control-mode",
+          "diag": {
+            "active": false,
+            "inputBoundary": {
+              "moveBlocked": false,
+              "lookBlocked": false,
+              "suppressed": [],
+              "connected": true
+            },
+            "scene": {
+              "active": false,
+              "available": true,
+              "mode": "play",
+              "x": 13.2,
+              "z": 16.6,
+              "zoom": 2.3,
+              "adjusted": true
+            }
+          },
+          "hub": false
+        },
+        "hub": {
+          "classes": "premium-icons-ready has-pad control-mode pad-hub",
+          "hub": true,
+          "diag": {
+            "active": false,
+            "inputBoundary": {
+              "moveBlocked": false,
+              "lookBlocked": false,
+              "suppressed": [],
+              "connected": true
+            },
+            "scene": {
+              "active": false,
+              "available": true,
+              "mode": "play",
+              "x": 13.2,
+              "z": 16.6,
+              "zoom": 2.3,
+              "adjusted": true
+            }
+          },
+          "dock": "flex",
+          "visible": true,
+          "modals": [
+            {
+              "id": "intro",
+              "hidden": true
+            },
+            {
+              "id": "level-celebration",
+              "hidden": true
+            },
+            {
+              "id": "house-goal-modal",
+              "hidden": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual owner walk crosses physical farm gateway into the village",
+      "detail": {
+        "fixture": "Owner placed at authored gateway approach, real walkTo traversal through authored gate centre",
+        "gateway": {
+          "accepted": true,
+          "state": {
+            "enabled": true,
+            "who": "natalie",
+            "available": true,
+            "place": "farm",
+            "passing": null,
+            "room": null,
+            "position": {
+              "x": 37.8,
+              "z": 16.7
+            },
+            "heading": {
+              "x": 0,
+              "z": 1
+            },
+            "facing": "back",
+            "moving": false,
+            "gait": "walk",
+            "speed": 0,
+            "pose": null,
+            "travelling": true,
+            "actionProgress": 0,
+            "blocked": false,
+            "action": null,
+            "actionTarget": null,
+            "waterCanVisible": false,
+            "wateringVisible": false,
+            "canVisible": false,
+            "waterCanStyle": "sprite",
+            "waterCanWidth": 0.82,
+            "streamVisible": false,
+            "dropsVisible": false,
+            "canScale": 1,
+            "waterNozzle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "visualYaw": -3.141592653589793,
+            "spriteFrame": 1,
+            "spriteDirection": "front",
+            "spriteStature": 2.2784368734298597,
+            "sideFrameCount": 4,
+            "target": {
+              "type": "village",
+              "label": "Travel to Mothlight",
+              "x": 37.8,
+              "z": 16.7,
+              "distance": 0,
+              "score": 0
+            }
+          },
+          "hub": false
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Village leisurely visitors stroll and remain bounded to at most three",
+      "detail": {
+        "start": {
+          "count": 2,
+          "maximum": 3,
+          "people": [
+            {
+              "id": "village-stroll-0",
+              "kind": "scarecrow",
+              "lane": "north-crossroad",
+              "x": 76.5,
+              "z": 51.525000000000006,
+              "walking": false,
+              "wait": 3.5880000000000005,
+              "distance": 0,
+              "visible": true
+            },
+            {
+              "id": "village-stroll-1",
+              "kind": "dead-pirate",
+              "lane": "lantern-avenue",
+              "x": 86.025,
+              "z": -18.75,
+              "walking": false,
+              "wait": 3.4090000000000003,
+              "distance": 0,
+              "visible": true
+            }
+          ]
+        },
+        "after": {
+          "count": 2,
+          "maximum": 3,
+          "people": [
+            {
+              "id": "village-stroll-0",
+              "kind": "scarecrow",
+              "lane": "north-crossroad",
+              "x": 92.53143794736985,
+              "z": 51.4474285260616,
+              "walking": false,
+              "wait": 0,
+              "distance": 16.031625619193616,
+              "visible": true
+            },
+            {
+              "id": "village-stroll-1",
+              "kind": "dead-pirate",
+              "lane": "lantern-avenue",
+              "x": 87.41075676176428,
+              "z": -10.435459429413266,
+              "walking": false,
+              "wait": 0,
+              "distance": 14.435439363877089,
+              "visible": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Village Build placement has a compact readable PS5 legend and clear commit phase",
+      "detail": {
+        "visible": true,
+        "x": 874,
+        "y": 577.71875,
+        "w": 390,
+        "h": 206.28125,
+        "svg": 7,
+        "text": "CROSSPlaceLSDPADMoveL1R1RotateCIRCLECancelSQUAREStore",
+        "font": 12,
+        "ready": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "No browser or shader errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Offline HTML uses no external assets",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    {
+      "file": "01-closer-village.png",
+      "preferences": "normal glow/shadows enabled for this shot unless identified in report"
+    },
+    {
+      "file": "04-build-house.png",
+      "preferences": "normal glow/shadows enabled for this shot unless identified in report"
+    },
+    {
+      "file": "04-build-village.png",
+      "preferences": "normal glow/shadows enabled for this shot unless identified in report"
+    }
+  ],
+  "layouts": [
+    {
+      "name": "phone",
+      "pad": false,
+      "tv": false,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "scrollWidth": 390,
+      "input": "touch",
+      "buttons": [
+        {
+          "id": "vg-home",
+          "font": 13,
+          "x": 10,
+          "y": 15.890625,
+          "w": 44,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "id": "vg-person",
+          "font": 13,
+          "x": 270.265625,
+          "y": 15.890625,
+          "w": 60.734375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "id": "vg-fullscreen",
+          "font": 13,
+          "x": 336,
+          "y": 15.890625,
+          "w": 44,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "id": "vg-quest-toggle",
+          "font": 13,
+          "x": 11,
+          "y": 80,
+          "w": 244,
+          "h": 50.78125,
+          "visible": true
+        },
+        {
+          "id": "vg-farm-rate",
+          "font": 13,
+          "x": 260,
+          "y": 79,
+          "w": 120,
+          "h": 46.78125,
+          "visible": true
+        },
+        {
+          "id": "map",
+          "font": 12,
+          "x": 16,
+          "y": 764,
+          "w": 57.15625,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "font": 12,
+          "x": 76.15625,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "font": 12,
+          "x": 136.328125,
+          "y": 764,
+          "w": 57.15625,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "font": 12,
+          "x": 196.484375,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "font": 12,
+          "x": 256.65625,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "font": 12,
+          "x": 316.828125,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "vg-interact",
+          "font": 13,
+          "x": 261,
+          "y": 485,
+          "w": 112,
+          "h": 72,
+          "visible": true
+        },
+        {
+          "id": "vg-look",
+          "font": 23,
+          "x": 295,
+          "y": 572,
+          "w": 46,
+          "h": 46,
+          "visible": true
+        },
+        {
+          "id": "vg-jog",
+          "font": 12,
+          "x": 49,
+          "y": 574,
+          "w": 52,
+          "h": 44,
+          "visible": true
+        }
+      ],
+      "rects": {
+        "dock": {
+          "x": 10,
+          "y": 758,
+          "w": 370,
+          "h": 72,
+          "visible": true
+        },
+        "legend": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "visible": false
+        },
+        "objective": {
+          "x": 10,
+          "y": 79,
+          "w": 246,
+          "h": 77.96875,
+          "visible": true
+        },
+        "rate": {
+          "x": 260,
+          "y": 79,
+          "w": 120,
+          "h": 46.78125,
+          "visible": true
+        }
+      },
+      "nav": [
+        {
+          "id": "map",
+          "x": 16,
+          "y": 764,
+          "w": 57.15625,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "x": 76.15625,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "x": 136.328125,
+          "y": 764,
+          "w": 57.15625,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "x": 196.484375,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "x": 256.65625,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "x": 316.828125,
+          "y": 764,
+          "w": 57.171875,
+          "h": 60,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "unfolded",
+      "pad": false,
+      "tv": false,
+      "innerWidth": 864,
+      "innerHeight": 756,
+      "scrollWidth": 864,
+      "input": "touch",
+      "buttons": [
+        {
+          "id": "vg-home",
+          "font": 13,
+          "x": 14,
+          "y": 17.03125,
+          "w": 88.34375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "id": "vg-person",
+          "font": 13,
+          "x": 728.265625,
+          "y": 17.03125,
+          "w": 70.734375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "id": "vg-fullscreen",
+          "font": 13,
+          "x": 806,
+          "y": 17.03125,
+          "w": 44,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "id": "vg-quest-toggle",
+          "font": 13,
+          "x": 15,
+          "y": 83,
+          "w": 368,
+          "h": 54.140625,
+          "visible": true
+        },
+        {
+          "id": "vg-farm-rate",
+          "font": 13,
+          "x": 733.734375,
+          "y": 82,
+          "w": 116.265625,
+          "h": 46.78125,
+          "visible": true
+        },
+        {
+          "id": "map",
+          "font": 13,
+          "x": 182.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "font": 13,
+          "x": 265.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "font": 13,
+          "x": 348.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "font": 13,
+          "x": 431.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "font": 13,
+          "x": 514.875,
+          "y": 672,
+          "w": 83.25,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "font": 13,
+          "x": 601.125,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "vg-interact",
+          "font": 13,
+          "x": 723,
+          "y": 373,
+          "w": 124,
+          "h": 76,
+          "visible": true
+        },
+        {
+          "id": "vg-look",
+          "font": 23,
+          "x": 762,
+          "y": 466,
+          "w": 46,
+          "h": 46,
+          "visible": true
+        },
+        {
+          "id": "vg-jog",
+          "font": 12,
+          "x": 56,
+          "y": 468,
+          "w": 52,
+          "h": 44,
+          "visible": true
+        }
+      ],
+      "rects": {
+        "dock": {
+          "x": 176.875,
+          "y": 666,
+          "w": 510.25,
+          "h": 72,
+          "visible": true
+        },
+        "legend": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "visible": false
+        },
+        "objective": {
+          "x": 14,
+          "y": 82,
+          "w": 370,
+          "h": 81.328125,
+          "visible": true
+        },
+        "rate": {
+          "x": 733.734375,
+          "y": 82,
+          "w": 116.265625,
+          "h": 46.78125,
+          "visible": true
+        }
+      },
+      "nav": [
+        {
+          "id": "map",
+          "x": 182.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "x": 265.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "x": 348.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "x": 431.875,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "x": 514.875,
+          "y": 672,
+          "w": 83.25,
+          "h": 60,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "x": 601.125,
+          "y": 672,
+          "w": 80,
+          "h": 60,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "landscape",
+      "pad": false,
+      "tv": false,
+      "innerWidth": 844,
+      "innerHeight": 390,
+      "scrollWidth": 844,
+      "input": "touch",
+      "buttons": [
+        {
+          "id": "vg-home",
+          "font": 13,
+          "x": 14,
+          "y": 12,
+          "w": 88.34375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "id": "vg-person",
+          "font": 13,
+          "x": 708.265625,
+          "y": 12,
+          "w": 70.734375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "id": "vg-fullscreen",
+          "font": 13,
+          "x": 786,
+          "y": 12,
+          "w": 44,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "id": "vg-quest-toggle",
+          "font": 13,
+          "x": 15,
+          "y": 67,
+          "w": 293.390625,
+          "h": 54.140625,
+          "visible": true
+        },
+        {
+          "id": "vg-farm-rate",
+          "font": 13,
+          "x": 713.734375,
+          "y": 66,
+          "w": 116.265625,
+          "h": 46.78125,
+          "visible": true
+        },
+        {
+          "id": "map",
+          "font": 12,
+          "x": 245.6796875,
+          "y": 311.40625,
+          "w": 44,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "font": 12,
+          "x": 292.6796875,
+          "y": 311.40625,
+          "w": 56.328125,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "font": 12,
+          "x": 352.0078125,
+          "y": 311.40625,
+          "w": 57.140625,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "font": 12,
+          "x": 412.1484375,
+          "y": 311.40625,
+          "w": 58.34375,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "font": 12,
+          "x": 473.4921875,
+          "y": 311.40625,
+          "w": 75.25,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "font": 12,
+          "x": 551.7421875,
+          "y": 311.40625,
+          "w": 46.578125,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "vg-interact",
+          "font": 13,
+          "x": 629,
+          "y": 293,
+          "w": 72,
+          "h": 72,
+          "visible": true
+        },
+        {
+          "id": "vg-look",
+          "font": 23,
+          "x": 752,
+          "y": 189,
+          "w": 46,
+          "h": 46,
+          "visible": true
+        },
+        {
+          "id": "vg-jog",
+          "font": 12,
+          "x": 46,
+          "y": 191,
+          "w": 52,
+          "h": 44,
+          "visible": true
+        }
+      ],
+      "rects": {
+        "dock": {
+          "x": 239.6796875,
+          "y": 305.40625,
+          "w": 364.640625,
+          "h": 72.59375,
+          "visible": true
+        },
+        "legend": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "visible": false
+        },
+        "objective": {
+          "x": 14,
+          "y": 66,
+          "w": 295.390625,
+          "h": 81.328125,
+          "visible": true
+        },
+        "rate": {
+          "x": 713.734375,
+          "y": 66,
+          "w": 116.265625,
+          "h": 46.78125,
+          "visible": true
+        }
+      },
+      "nav": [
+        {
+          "id": "map",
+          "x": 245.6796875,
+          "y": 311.40625,
+          "w": 44,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "x": 292.6796875,
+          "y": 311.40625,
+          "w": 56.328125,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "x": 352.0078125,
+          "y": 311.40625,
+          "w": 57.140625,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "x": 412.1484375,
+          "y": 311.40625,
+          "w": 58.34375,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "x": 473.4921875,
+          "y": 311.40625,
+          "w": 75.25,
+          "h": 60.59375,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "x": 551.7421875,
+          "y": 311.40625,
+          "w": 46.578125,
+          "h": 60.59375,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "tv-controller",
+      "pad": true,
+      "tv": true,
+      "innerWidth": 1920,
+      "innerHeight": 1080,
+      "scrollWidth": 1920,
+      "input": "pad",
+      "buttons": [
+        {
+          "id": "vg-home",
+          "font": 13,
+          "x": 21.515625,
+          "y": 25.640625,
+          "w": 134.625,
+          "h": 67.625,
+          "visible": true
+        },
+        {
+          "id": "vg-person",
+          "font": 13,
+          "x": 1712.546875,
+          "y": 25.640625,
+          "w": 107.5625,
+          "h": 67.625,
+          "visible": true
+        },
+        {
+          "id": "vg-fullscreen",
+          "font": 13,
+          "x": 1830.859375,
+          "y": 25.640625,
+          "w": 67.625,
+          "h": 67.625,
+          "visible": true
+        },
+        {
+          "id": "vg-quest-toggle",
+          "font": 13,
+          "x": 22.515625,
+          "y": 127.03125,
+          "w": 566.6875,
+          "h": 83.203125,
+          "visible": true
+        },
+        {
+          "id": "vg-farm-rate",
+          "font": 13,
+          "x": 1789.734375,
+          "y": 82,
+          "w": 116.265625,
+          "h": 46.78125,
+          "visible": true
+        },
+        {
+          "id": "map",
+          "font": 13,
+          "x": 577.671875,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "font": 13,
+          "x": 705.234375,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "font": 13,
+          "x": 832.796875,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "font": 13,
+          "x": 960.359375,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "font": 13,
+          "x": 1087.921875,
+          "y": 957.59375,
+          "w": 126.84375,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "font": 13,
+          "x": 1219.375,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        }
+      ],
+      "rects": {
+        "dock": {
+          "x": 569,
+          "y": 948.921875,
+          "w": 782,
+          "h": 109.5625,
+          "visible": true
+        },
+        "legend": {
+          "x": 424.6015625,
+          "y": 845.515625,
+          "w": 1070.796875,
+          "h": 93.09375,
+          "visible": true
+        },
+        "objective": {
+          "x": 21.515625,
+          "y": 126.03125,
+          "w": 568.6875,
+          "h": 123.921875,
+          "visible": true
+        },
+        "rate": {
+          "x": 1789.734375,
+          "y": 82,
+          "w": 116.265625,
+          "h": 46.78125,
+          "visible": true
+        }
+      },
+      "nav": [
+        {
+          "id": "map",
+          "x": 577.671875,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "people",
+          "x": 705.234375,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "journal",
+          "x": 832.796875,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "materials",
+          "x": 960.359375,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "upgrades",
+          "x": 1087.921875,
+          "y": 957.59375,
+          "w": 126.84375,
+          "h": 92.21875,
+          "visible": true
+        },
+        {
+          "id": "vg-decorate",
+          "x": 1219.375,
+          "y": 957.59375,
+          "w": 122.953125,
+          "h": 92.21875,
+          "visible": true
+        }
+      ]
+    }
+  ],
+  "scope": "Exact standalone HTML bytes served unchanged over loopback, headless Chromium software WebGL. Explicit level20, finished-tour/gathering quest fixture; milestones were not earned in play. Initial village entry uses the public openVillage() diagnostic command after starting the declared playable owner; visible hotbar/physical entry is a separate check. Functional sections hold only renderer/composer draw calls while real controller/model/view ticks run in accelerated .05s steps. Draws are restored for normal-renderer photographs and shader checks. Standard Gamepad API input is mocked; viewports emulate phone/Fold/TV and do not certify physical Bluetooth, TV or device performance.",
+  "workingTree": "?? docs/contractor-patches/village-play-polish/verification/\n?? tools/pad-cursor-dom-qa.mjs\n?? tools/village-play-polish-qa.mjs\n",
+  "sourceHashes": {
+    "src/main.js": {
+      "bytes": 79664,
+      "sha256": "5feaf046e63fb4088def68b468107d2a18eacde12bd9355e3f28a34200cc16ec"
+    },
+    "src/scene.js": {
+      "bytes": 94160,
+      "sha256": "597311a5a0f428ce113a6ebb1759c9a712a93b67f4d74863a8381ccc2a1afd0f"
+    },
+    "src/player-control.js": {
+      "bytes": 27447,
+      "sha256": "9205679c7ef2c0eddb7fd826773886fc426f1954fe479ca16092b1f2789acd60"
+    },
+    "src/village-game.js": {
+      "bytes": 39090,
+      "sha256": "1ce8190dc0b7e83b029a6ec36e2657913ce323dcf37c0558b470c4b25935d53c"
+    },
+    "src/village-view.js": {
+      "bytes": 32499,
+      "sha256": "76e18249086f6a78a0833ba42ad8434ac2076b3eab14b3a3144ab1d1af845d12"
+    },
+    "src/village-world.js": {
+      "bytes": 87445,
+      "sha256": "bcac6db35e10c1b94c32788ff2d761c8f24ef1be67271a7c1d5587eebea00de3"
+    },
+    "src/village-grass.js": {
+      "bytes": 7193,
+      "sha256": "aa39ea4a3a40f6425852ac86bb80285addb0190c31377ce4fb910121636d881d"
+    },
+    "src/village-visibility.js": {
+      "bytes": 1711,
+      "sha256": "1baaf9b7d1275d4d4c1acc503d549a7169f144b006c36a273b3604177c4a6770"
+    },
+    "src/village-proximity.js": {
+      "bytes": 3437,
+      "sha256": "b398a24f33e14e221e601512bc77c534fe6e075e22cf60f1a00ad8ed71e84f5d"
+    },
+    "src/village-wanderers.js": {
+      "bytes": 4033,
+      "sha256": "e677531d1f9acf7cdb2afd8e0e0b5c92113a1a87a0010dfcaa504192333e2bc5"
+    },
+    "src/sprite-rim.js": {
+      "bytes": 1416,
+      "sha256": "532cda9e0ae0f1d543b4072452551b57a14682d3104e5d40624e8cd18639001d"
+    },
+    "src/ui/village-controls.js": {
+      "bytes": 20213,
+      "sha256": "a5b2d84ae2503f3377be74827dbdcd22f9d02d1e53b27cac96c3663e11f6548f"
+    },
+    "src/ui/village-controls.css": {
+      "bytes": 11075,
+      "sha256": "0ec2ebfbd41fb7d3c8d735a35d0d388c056f13607a22092f135b6ea029c5d3cc"
+    },
+    "src/ui/village-map.js": {
+      "bytes": 12061,
+      "sha256": "0bf23fc68eb625ae4be45554e614ec0d8c1f1567015c8175a2ce495283c1fd70"
+    },
+    "src/ui/village-chapters.js": {
+      "bytes": 22322,
+      "sha256": "df1b5370dba7b9800c3fb61fbad81c269dff72032929dff33d568665195cabc7"
+    },
+    "src/ui/village-conversation.js": {
+      "bytes": 8361,
+      "sha256": "c449a1d3694512a99bf58a0d02e48b2fd0085ad8438eccc7a6225f0fa7f19a27"
+    },
+    "src/ui/village-conversation.css": {
+      "bytes": 6395,
+      "sha256": "9dfcc9564b5e37b3bb39a42b62a735f2570213b21d222e712d4d165d4bc391ea"
+    },
+    "src/ui/pad-cursor.js": {
+      "bytes": 9376,
+      "sha256": "e94e45e88ae2ed03d3a0bde24c876f6c3b35008124d37029dada4db628ac18b5"
+    },
+    "src/ui/home-sheets.js": {
+      "bytes": 60570,
+      "sha256": "cb7972bd95ed8ba5a60e70e378a4bbbca6256a3f3f2137425bc1a300e216ce1a"
+    },
+    "assets/terrain/grass-tile.webp": {
+      "bytes": 101386,
+      "sha256": "ccc2158587d4a03d1e7f51e811b6655fdc7f07b1a3cd2f46341bf5d67f95d2a0"
+    },
+    "assets/village-ui-icons/village-ui.webp": {
+      "bytes": 185926,
+      "sha256": "30a3161c98941584c485fded006d80a98722f20c86945045e9b67cba82277347"
+    }
+  },
+  "passed": true
+}

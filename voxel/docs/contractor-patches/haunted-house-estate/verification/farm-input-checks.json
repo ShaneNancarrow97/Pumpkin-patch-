@@ -1,0 +1,61 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Input-QA.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "right and middle pumpkin clicks perform no farm actions"
+    },
+    {
+      "ok": true,
+      "label": "left pumpkin click still boosts"
+    },
+    {
+      "ok": true,
+      "label": "context-menu interruption cancels a pending tap"
+    },
+    {
+      "ok": true,
+      "label": "lost capture does not turn its later release into a tap"
+    },
+    {
+      "ok": true,
+      "label": "window interruption clears a pending gesture"
+    },
+    {
+      "ok": true,
+      "label": "coincident two-touch pinch leaves the camera finite",
+      "data": {
+        "x": 333.33333333333337,
+        "y": 450.3156426185493,
+        "starts": [
+          {
+            "id": 2,
+            "x": 500,
+            "y": 450
+          },
+          {
+            "id": 3,
+            "x": 500,
+            "y": 450
+          }
+        ],
+        "finite": true
+      }
+    },
+    {
+      "ok": true,
+      "label": "an untracked release does not cancel the real active pointer"
+    },
+    {
+      "ok": true,
+      "label": "normal tapping works after interrupted and coincident gestures"
+    },
+    {
+      "ok": true,
+      "label": "no browser runtime errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium SwiftShader; performance profile, bloom/shadows off; actual mouse buttons and CDP touch input"
+}

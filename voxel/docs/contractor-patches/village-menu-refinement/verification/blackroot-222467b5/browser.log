@@ -1,0 +1,51 @@
+VILLAGE ready
+PASS Actual controller route reaches Elowen for the real greeting
+PASS A genuine nearby meeting opens real chat, quest, gift, about and leave choices
+PASS Every actual greeting choice has its explicit painted icon
+PASS fold speech ribbon and all44px choice controls fit the viewport
+PASS fold real DualSense action focus is highlighted and background HUD is hidden
+FAIL fold real camera keeps both characters clear of the actual bottom UI
+{"box":{"x":28,"y":304,"w":808,"h":426},"speech":{"x":28,"y":505.875,"w":440.921875,"h":224.125},"response":{"x":490.921875,"y":304,"w":345.078125,"h":370},"back":{"x":740,"y":686,"w":96,"h":44},"head":{"x":43,"y":494.875,"w":270.75,"h":56.734375},"body":{"x":29,"y":551.609375,"w":438.921875,"h":113.390625},"bodyScroll":113,"bodyClient":113,"repliesScroll":399,"repliesClient":345,"buttons":[{"label":"Close conversation","w":96,"h":44,"disabled":false},{"label":"Turn voices on","w":44,"h":44,"disabled":false},{"label":"Replay this line","w":44,"h":44,"disabled":false},{"label":"Have a chatA little catch-upCROSS","w":337.078125,"h":58,"disabled":false},{"label":"A Letter That Will Not Stay StillI'd like to helpCROSS","w":337.078125,"h":58,"disabled":false},{"label":"A Bruise Beneath the GreenI'd like to helpCROSS","w":337.078125,"h":58,"disabled":false},{"label":"Give a present2 presents leftCROSS","w":337.078125,"h":58,"disabled":false},{"label":"More about ElowenFriendship, stories and favouritesCROSS","w":337.078125,"h":58,"disabled":false},{"label":"See you soonCROSS","w":337.078125,"h":58,"disabled":false}],"pageWidth":864,"intent":"greeting","input":"dualsense","focus":"chat","background":"linear-gradient(105deg, rgba(228, 189, 124, 0.96), rgba(242, 213, 153, 0.96))","font":18,"hud":[{"id":"vg-heading","visible":false},{"id":"vg-objective","visible":false},{"id":"vg-farm-rate","visible":false},{"id":"vg-dock","visible":false},{"id":"vg-pad-legend","visible":false}],"shot":{"active":true,"mode":"focused","fitted":true,"distance":6.504156286560157,"subjects":[{"x":80.40899315967098,"y":0.04,"z":-43.39127295325474},{"x":80.4,"y":0,"z":-43.5}]},"projected":[{"x":377.00052846687277,"y":114.71583081516998,"right":502.4159434884199,"bottom":428.98421579225067},{"x":362.0546349291487,"y":120.55422547215048,"right":486.63191891650496,"bottom":432.26581596959295}],"tv":false,"zoom":"1"}
+SHOT 01-fold-neighbour-greeting
+PASS tv speech ribbon and all44px choice controls fit the viewport
+PASS tv real DualSense action focus is highlighted and background HUD is hidden
+PASS tv real camera keeps both characters clear of the actual bottom UI
+SHOT 02-tv-neighbour-greeting
+PASS phone speech ribbon and all44px choice controls fit the viewport
+PASS phone real DualSense action focus is highlighted and background HUD is hidden
+PASS landscape speech ribbon and all44px choice controls fit the viewport
+PASS landscape real DualSense action focus is highlighted and background HUD is hidden
+PASS phone long lines and choices scroll independently while Back stays reachable
+PASS landscape long lines and choices scroll independently while Back stays reachable
+PASS Double-selecting the same greeting action opens one actual daily chat
+PASS The actual daily answer grants its chat callback once
+PASS Closing chat restores exploration without carrying a held stick into walking
+PASS Real Give a present opens the correct resident inventory fold
+PASS Gift inventory contains actual owned supplies
+PASS Real About choice opens this neighbour’s friendship profile
+PASS Real Leave restores the exact exploration camera position and quaternion
+PASS Daily chat correctly shows its real cooldown after answering
+PASS The actual offered Blackroot choice starts its quest once
+PASS The tracked Blackroot chapter provides an actual Find fungus action
+PASS All eight canonical Green fungus sockets have real live voxel models
+PASS Actual controller route reaches Blackroot blight-green-05
+PASS Root out is the actual timed hand action and animated spore pull
+PASS Cancelling a partial root-out spends no patch, sample or clearing puff
+PASS The patch remains intact before its full two-second root-out
+SHOT 03-fold-rooting-blackroot
+PASS Completing root-out adds one fresh clear/sample and removes the voxel patch
+PASS Clear emits one bounded spore puff without adding lights
+PASS Full sample storage still lets the player find a hazard
+PASS Actual controller route reaches a fungus patch with full sample storage
+PASS Full-satchel root-out clears the hazard and counts work without inventing samples or coins
+PASS Actual controller route reaches Blackroot blight-green-07
+PASS Three actual fresh clears advance to the real sample-delivery step
+PASS The followed tracker shows its neighbour portrait and a truthful completed sample checklist
+SHOT 04-fold-blackroot-checklist
+PASS Actual controller route reaches Elowen for actual sample handover
+PASS The real greeting delivery spends three samples once and unlocks Rowan’s investigation
+PASS Exploration legend omits Walk/Camera and keeps the location name compact
+PASS The expansion keeps the existing version18 save format
+PASS Final menus have no page/shader errors
+PASS Final offline game uses no external assets
+{"passed":false,"checks":44,"errors":0,"sha256":"222467b59413dcbe626413e924165bd91d96413d3f958d9c90fbb6c72510e891"}

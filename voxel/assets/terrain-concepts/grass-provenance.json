@@ -1,0 +1,11 @@
+{
+  "generator": "image_gen",
+  "original": "/workspace/generated_images/exec-5043e80e-5c70-4693-9f83-461acc89ff45.png",
+  "reference": "docs/contractor-patches/village-journey/verification/candidate-018ca02d/04-gather-axe.png",
+  "runtime": "assets/terrain/grass-tile.webp",
+  "runtimeSize": [
+    512,
+    512
+  ],
+  "prompt": "Generate a seamless tileable square grass ground ALBEDO TEXTURE for a premium cosy Halloween voxel life-simulation game. This is a FLAT TOP-DOWN TEXTURE TILE, full bleed opaque, no perspective, no scenery, no objects, no frame or text. The reference screenshot is for the muted emerald / moss-green palette and stylised game family only; do not reproduce the scene or characters. A beautiful dense carpet of fine short grass blades, tiny soft moss patches, small clover details, subtle earthy flecks, gentle painted voxel/pixel clusters that retain detail when viewed close. Refined hand-painted game texture, softly defined individual blades, rich but restrained forest/olive green hues with subtle desaturated sage highlights and dark plum-green shade. Much more intricate and organic than flat green squares, no big triangular grass spikes. Even diffuse illumination across the entire tile: NO baked shadows, NO central vignette, NO obvious light spot or directional gradients. Very few tiny dried amber leaf flecks (under 1% coverage), no pumpkins, flowers, rocks, trees or logs. ALL FOUR EDGES must repeat perfectly with their opposite edge; design specifically for seamless repetition, no lines or visible square boundaries. Small-scale consistent distribution, no large recognisable repeated motifs. Output a clean square seamless material texture, appropriate as the base of dark moonlit grass with warm lanterns. Opaque full-bleed, not a transparent sprite."
+}

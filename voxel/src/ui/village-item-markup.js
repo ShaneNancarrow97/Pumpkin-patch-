@@ -1,0 +1,12 @@
+// Pure markup keeps menu rendering available to Node and preserves text fallbacks.
+import { VILLAGE_ITEM_ICONS, VILLAGE_ITEM_GRID } from '../content/village-item-icon-meta.js';
+
+export function villageItemIcon(id) {
+  if (id === 'cursed-spores') return '<span class="village-item-icon village-blight-icon" data-village-item-icon="cursed-spores" aria-hidden="true"></span>';
+  id = ({'away-ledger':'almanac','away-steward':'gathering-kit','away-network':'moth-lantern-string','moonlit-reading-set':'reading-stand','rattlewood-workshop-set':'workbench'})[id] ?? id;
+  const icon = Object.hasOwn(VILLAGE_ITEM_ICONS, id) && VILLAGE_ITEM_ICONS[id];
+  if (!icon) return '';
+  const x = icon.column / (VILLAGE_ITEM_GRID.columns - 1) * 100;
+  const y = icon.row / (VILLAGE_ITEM_GRID.rows - 1) * 100;
+  return `<span class="village-item-icon" data-village-item-icon="${id}" style="--vi-x:${x}%;--vi-y:${y}%" aria-hidden="true"></span>`;
+}

@@ -1,0 +1,104 @@
+PASS the packaged game exposes narration diagnostics
+PASS Watch again opens the title card
+PASS Begin: exactly one native audio source plays
+PASS Begin: bundled MP3 decodes and emits playing
+PASS Next: exactly one native audio source plays
+PASS Next: bundled MP3 decodes and emits playing
+PASS Next: previous media source is released
+PASS Next: no overlapping sources
+PASS Replay: exactly one native audio source plays
+PASS Replay: bundled MP3 decodes and emits playing
+PASS Replay: previous media source is released
+PASS Replay: no overlapping sources
+PASS Replay does not advance the introduction
+PASS desktop introduction: no horizontal overflow
+PASS desktop introduction: controls meet 44px targets
+PASS desktop introduction: controls remain within the viewport
+PASS desktop introduction: button text remains at least 12px
+SHOT narration-desktop-intro-controls.png
+PASS phone introduction: no horizontal overflow
+PASS phone introduction: controls meet 44px targets
+PASS phone introduction: controls remain within the viewport
+PASS phone introduction: button text remains at least 12px
+SHOT narration-phone-intro-controls.png
+PASS fold introduction: no horizontal overflow
+PASS fold introduction: controls meet 44px targets
+PASS fold introduction: controls remain within the viewport
+PASS fold introduction: button text remains at least 12px
+SHOT narration-fold-intro-controls.png
+PASS landscape introduction: no horizontal overflow
+PASS landscape introduction: controls meet 44px targets
+PASS landscape introduction: controls remain within the viewport
+PASS landscape introduction: button text remains at least 12px
+SHOT narration-landscape-intro-controls.png
+PASS Before Skip: exactly one native audio source plays
+PASS Before Skip: bundled MP3 decodes and emits playing
+PASS Skip: narration stops
+PASS Skip: previous media source is released
+PASS Skip returns to the farm
+PASS Settings turns voice narration off
+PASS Voice toggle preserves the independent music setting and playback
+PASS Voices off leaves the introduction readable
+PASS Inline voices on: exactly one native audio source plays
+PASS Inline voices on: bundled MP3 decodes and emits playing
+PASS Music toggle preserves the independent voice setting
+PASS Voice volume changes through Settings
+SHOT narration-desktop-voice-settings.png
+PASS Village tour: exactly one native audio source plays
+PASS Village tour: bundled MP3 decodes and emits playing
+SHOT narration-desktop-tour-controls.png
+PASS Skip tour: narration stops
+PASS Skip tour: previous media source is released
+PASS Skip tour returns control to village play
+PASS Supper opening: an unrecorded line retains the correct speaker and missing status
+PASS Supper opening: unrecorded dialogue remains readable
+PASS Supper opening silent fallback: narration stops
+PASS Supper second speaker: an unrecorded line retains the correct speaker and missing status
+PASS Supper second speaker: unrecorded dialogue remains readable
+PASS Supper second speaker silent fallback: narration stops
+PASS Conversation Continue: no overlapping sources
+PASS Conversation heading follows the current speaker
+SHOT narration-desktop-multispeaker-dialogue-controls.png
+PASS Reply choices: narration stops
+PASS The silent reply prompt disables replay
+PASS Supper reply: an unrecorded line retains the correct speaker and missing status
+PASS Supper reply: unrecorded dialogue remains readable
+PASS Supper reply silent fallback: narration stops
+PASS An unlabelled reply inherits the current speaker
+PASS An unrecorded line disables unavailable replay
+PASS Unavailable replay: narration stops
+PASS Replaying dialogue does not alter quests or rewards
+PASS Conversation Done: narration stops
+PASS Done closes the conversation
+PASS The supper's readable dialogue still completes its quest callback
+PASS The real Elowen chat and selected reply have generated recordings
+PASS Recorded chat opening: exactly one native audio source plays
+PASS Recorded chat opening: bundled MP3 decodes and emits playing
+PASS Recorded chat Continue: exactly one native audio source plays
+PASS Recorded chat Continue: bundled MP3 decodes and emits playing
+PASS Recorded chat Continue: previous media source is released
+PASS Recorded chat Continue: no overlapping sources
+PASS desktop recorded dialogue: no horizontal overflow
+PASS desktop recorded dialogue: controls meet 44px targets
+PASS desktop recorded dialogue: controls remain within the viewport
+PASS desktop recorded dialogue: button text remains at least 12px
+SHOT narration-desktop-recorded-dialogue-controls.png
+PASS Recorded chat choices: narration stops
+PASS Recorded chat choices: previous media source is released
+PASS Recorded chat reply: exactly one native audio source plays
+PASS Recorded chat reply: bundled MP3 decodes and emits playing
+PASS Recorded reply replay: exactly one native audio source plays
+PASS Recorded reply replay: bundled MP3 decodes and emits playing
+PASS Recorded reply replay: previous media source is released
+PASS Recorded reply replay: no overlapping sources
+PASS Replaying the recorded reply does not repeat its chat callback
+PASS Recorded conversation Done: narration stops
+PASS Recorded conversation Done: previous media source is released
+PASS Done closes the recorded conversation
+PASS Recorded greeting: exactly one native audio source plays
+PASS Recorded greeting: bundled MP3 decodes and emits playing
+PASS Recorded conversation close: narration stops
+PASS Recorded conversation close: previous media source is released
+PASS Narration and the game make no external requests
+PASS Narration flow has no page or console errors
+{"passed":true,"checks":95,"errors":0,"screenshots":8,"sha256":"a921d3fda5332a3a2957ea8accfd6491b6d83d4341684475dc86d812318c9fa3"}

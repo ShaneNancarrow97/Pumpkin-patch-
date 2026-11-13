@@ -1,0 +1,20 @@
+{
+  "builtAt": "2026-11-08T08:12:53.187929+00:00",
+  "sourceBranch": "contractor/mothlight-living-village",
+  "codeCommit": "a9a84150aadf84eafcb71c5c56bc354a0bce3586",
+  "codeTree": "18203904edd79829f499ebacde0c73f6a8431386",
+  "incrementalBase": "e2cd697a993ae46d372420d7f966c1b99b5519ab",
+  "leadBase": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
+  "artifacts": {
+    "Pumpkin-Patch-Living-Mothlight.html": {
+      "bytes": 48455659,
+      "sha256": "6cfd4e648a2f79ff499895f1957190a59fc3566415d98c9c4c214b94012fa9c8"
+    },
+    "Pumpkin-Patch-Living-Mothlight.zip": {
+      "bytes": 34828925,
+      "sha256": "fbbbe680d66f81ea8ef38f6163ab238918f8d7bcdd83e45bf1e903c5d7b4ec47"
+    }
+  },
+  "delivery": "One offline full-game HTML, including existing recorded narration. No API key required.",
+  "hardwareLimit": "Viewport and standard-mapped gamepad emulation; physical Fold 7, Bluetooth pairing and TV casting not verified."
+}

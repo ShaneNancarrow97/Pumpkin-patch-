@@ -1,0 +1,9 @@
+{
+  "base": "8901e18df05367d7ce38f3e0da775d07ce877a21",
+  "codeCommit": "c2b6a409120fca3b2e1c9bc29e65316ed8570b1e",
+  "expectedTree": "2a82ada8f828c243b1484e677c34845c1c0bfba9",
+  "appliedTree": "2a82ada8f828c243b1484e677c34845c1c0bfba9",
+  "htmlSha256": "392db73e5daeee1b2c23687e4ea946bce41a7018ab93ca407a182b9944b7c8de",
+  "replayedHtmlSha256": "392db73e5daeee1b2c23687e4ea946bce41a7018ab93ca407a182b9944b7c8de",
+  "passed": true
+}

@@ -1,0 +1,3 @@
+# Local billing/recovery state; complete MP3s and voice-manifest.json are shipped.
+.generate-voices.lock
+.recording-state/

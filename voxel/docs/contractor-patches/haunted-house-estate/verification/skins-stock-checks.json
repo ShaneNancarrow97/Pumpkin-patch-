@@ -1,0 +1,117 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Skins-Stock-Sharp.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "stock popover lists exact per-variety pumpkin and cocoa/snack counts",
+      "data": [
+        "13",
+        "8",
+        "5",
+        "2",
+        "7",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    },
+    {
+      "ok": true,
+      "label": "cocoa section follows the visible stock divider"
+    },
+    {
+      "ok": true,
+      "label": "top-bar stock and open counts update live"
+    },
+    {
+      "ok": true,
+      "label": "Escape closes stock counts and returns focus"
+    },
+    {
+      "ok": true,
+      "label": "stock/HUD 390×844: fits with separate touch targets",
+      "data": {
+        "fit": true,
+        "overflow": false,
+        "targets": true,
+        "overlap": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "stock/HUD 320×740: fits with separate touch targets",
+      "data": {
+        "fit": true,
+        "overflow": false,
+        "targets": true,
+        "overlap": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "stock/HUD 844×390: fits with separate touch targets",
+      "data": {
+        "fit": true,
+        "overflow": false,
+        "targets": true,
+        "overlap": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fresh cottage shows all eight skins with only two unlocked for purchase"
+    },
+    {
+      "ok": true,
+      "label": "harvest-haunt: exact price buys and applies real voxel details"
+    },
+    {
+      "ok": true,
+      "label": "moonlit-cottage: exact price buys and applies real voxel details"
+    },
+    {
+      "ok": true,
+      "label": "witchwood: exact price buys and applies real voxel details"
+    },
+    {
+      "ok": true,
+      "label": "candy-coven: exact price buys and applies real voxel details"
+    },
+    {
+      "ok": true,
+      "label": "vampire-manor: exact price buys and applies real voxel details"
+    },
+    {
+      "ok": true,
+      "label": "storm-laboratory: exact price buys and applies real voxel details"
+    },
+    {
+      "ok": true,
+      "label": "pumpkin-palace: exact price buys and applies real voxel details"
+    },
+    {
+      "ok": true,
+      "label": "midnight-crypt: exact price buys and applies real voxel details"
+    },
+    {
+      "ok": true,
+      "label": "owned early skin re-equips free on the upgraded house"
+    },
+    {
+      "ok": true,
+      "label": "individual finish editing remains available"
+    },
+    {
+      "ok": true,
+      "label": "save/reload retains all purchased skins and applied look"
+    },
+    {
+      "ok": true,
+      "label": "no browser runtime errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium SwiftShader; core UI/skin captures Performance with glow/shadows off; purchases staged; sharp pipeline verified separately"
+}

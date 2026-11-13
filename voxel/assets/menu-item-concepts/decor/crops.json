@@ -1,0 +1,210 @@
+{
+  "decor-a": {
+    "rowEdges": [
+      0,
+      418,
+      836,
+      1254
+    ],
+    "columnEdges": [
+      [
+        0,
+        418,
+        790,
+        1254
+      ],
+      [
+        0,
+        390,
+        840,
+        1254
+      ],
+      [
+        0,
+        440,
+        800,
+        1254
+      ]
+    ],
+    "ids": [
+      "moth-lamp",
+      "toadstool-lamp",
+      "moth-lantern-string",
+      "signpost",
+      "market-crates",
+      "reading-stand",
+      "book-cart",
+      "stool",
+      "timber-gate"
+    ],
+    "crops": [
+      {
+        "id": "moth-lamp",
+        "x": 0,
+        "y": 0,
+        "w": 418,
+        "h": 418
+      },
+      {
+        "id": "toadstool-lamp",
+        "x": 418,
+        "y": 0,
+        "w": 372,
+        "h": 418
+      },
+      {
+        "id": "moth-lantern-string",
+        "x": 790,
+        "y": 0,
+        "w": 464,
+        "h": 418
+      },
+      {
+        "id": "signpost",
+        "x": 0,
+        "y": 418,
+        "w": 390,
+        "h": 418
+      },
+      {
+        "id": "market-crates",
+        "x": 390,
+        "y": 418,
+        "w": 450,
+        "h": 418
+      },
+      {
+        "id": "reading-stand",
+        "x": 840,
+        "y": 418,
+        "w": 414,
+        "h": 418
+      },
+      {
+        "id": "book-cart",
+        "x": 0,
+        "y": 836,
+        "w": 440,
+        "h": 418
+      },
+      {
+        "id": "stool",
+        "x": 440,
+        "y": 836,
+        "w": 360,
+        "h": 418
+      },
+      {
+        "id": "timber-gate",
+        "x": 800,
+        "y": 836,
+        "w": 454,
+        "h": 418
+      }
+    ]
+  },
+  "decor-b": {
+    "rowEdges": [
+      0,
+      420,
+      810,
+      1254
+    ],
+    "columnEdges": [
+      [
+        0,
+        460,
+        800,
+        1254
+      ],
+      [
+        0,
+        425,
+        840,
+        1254
+      ],
+      [
+        0,
+        390,
+        835,
+        1254
+      ]
+    ],
+    "ids": [
+      "flower-barrow",
+      "sundial",
+      "bunting-posts",
+      "workbench",
+      "wheelbarrow",
+      "moth-statue",
+      "scarecrow-statue",
+      "pumpkin-arch",
+      "moon-gate"
+    ],
+    "crops": [
+      {
+        "id": "flower-barrow",
+        "x": 0,
+        "y": 0,
+        "w": 460,
+        "h": 420
+      },
+      {
+        "id": "sundial",
+        "x": 460,
+        "y": 0,
+        "w": 340,
+        "h": 420
+      },
+      {
+        "id": "bunting-posts",
+        "x": 800,
+        "y": 0,
+        "w": 454,
+        "h": 420
+      },
+      {
+        "id": "workbench",
+        "x": 0,
+        "y": 420,
+        "w": 425,
+        "h": 390
+      },
+      {
+        "id": "wheelbarrow",
+        "x": 425,
+        "y": 420,
+        "w": 415,
+        "h": 390
+      },
+      {
+        "id": "moth-statue",
+        "x": 840,
+        "y": 420,
+        "w": 414,
+        "h": 390
+      },
+      {
+        "id": "scarecrow-statue",
+        "x": 0,
+        "y": 810,
+        "w": 390,
+        "h": 444
+      },
+      {
+        "id": "pumpkin-arch",
+        "x": 390,
+        "y": 810,
+        "w": 445,
+        "h": 444
+      },
+      {
+        "id": "moon-gate",
+        "x": 835,
+        "y": 810,
+        "w": 419,
+        "h": 444
+      }
+    ]
+  }
+}

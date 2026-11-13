@@ -1,0 +1,101 @@
+ok   desktop: a new patch opens on the introduction
+ok   desktop: Natalie speaks first
+ok   desktop: Skip hands the farm back
+ok   desktop: characters drawn with the original sprites
+ok   desktop: plant and boost
+ok   desktop: harvest
+ok   desktop: shop opens
+ok   desktop: wardrobe opens
+ok   desktop: journal opens
+ok   desktop: menu closes
+ok   desktop: voxel characters switch on and off
+ok   desktop: home opens the separate garden
+ok   desktop: home opens the parlour
+ok   desktop: a bought piece is placed in the room
+ok   desktop: placing furniture reveals the room
+ok   desktop: flip the piece and finish
+ok   desktop: a candelabrum stands on the tea table
+ok   desktop: customers come into the shop
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Target page, context or browser has been closed
+Browser logs:
+
+<launching> /usr/bin/chromium --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=ImprovedCookieControls,LazyFrameLoading,GlobalMediaControls,DestroyProfileOnBrowserClose,MediaRouter,DialMediaRouteProvider,AcceptCHFrame,AutoExpandDetailsElement,CertificateTransparencyComponentUpdater,AvoidUnnecessaryBeforeUnloadCheckSync,Translate,HttpsUpgrades,PaintHolding,ThirdPartyStoragePartitioning,LensOverlay,PlzDedicatedWorker --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --enable-automation --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist --user-data-dir=/tmp/playwright_chromiumdev_profile-c6IB4S --remote-debugging-pipe --no-startup-window
+<launched> pid=3134
+[pid=3134][err] [3134:3134:1025/144551.896621:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open /home/agent/.config/chromium/Crash Reports/settings.dat: Read-only file system (30)
+[pid=3134][err] [3134:3134:1025/144551.896792:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open /home/agent/.config/chromium/Crash Reports/settings.dat: Read-only file system (30)
+[pid=3134][err] [3134:3164:1025/144551.986166:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=3134][err] [3134:3164:1025/144551.986212:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=3134][err] [3134:3164:1025/144551.995103:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=3134][err] [3134:3164:1025/144551.995139:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=3134][err] [3134:3164:1025/144551.995147:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=3134][err] [3134:3174:1025/144552.003105:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:300] Failed to adjust OOM score of renderer with pid 3177: Read-only file system (30)
+[pid=3134][err] [3134:3160:1025/144552.013086:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:208] open /home/agent/.config/chromium/Crash Reports/settings.dat: Read-only file system (30)
+[pid=3134][err] [3134:3164:1025/144552.086042:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=3134][err] [3134:3174:1025/144552.089528:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:300] Failed to adjust OOM score of renderer with pid 3195: Read-only file system (30)
+[pid=3134][err] [3134:3134:1025/144552.128691:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[pid=3134][err] [3134:3134:1025/144552.128859:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[pid=3134][err] [3134:3164:1025/144552.129389:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=3134][err] [3134:3164:1025/144552.129450:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=3134][err] [3134:3134:1025/144552.135051:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[pid=3134][err] [3134:3164:1025/144552.135242:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=3134][err] [3134:3134:1025/144552.144271:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[pid=3134][err] [3134:3134:1025/144552.144300:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[pid=3134][err] [3134:3164:1025/144552.145833:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=3134][err] [3134:3164:1025/144552.145870:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
+[pid=3134][err] [3134:3164:1025/144552.145882:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=3134][err] [3134:3134:1025/144552.149803:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[pid=3134][err] [3134:3134:1025/144552.150850:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: unknown error type:
+[pid=3134][err] [3134:3134:1025/144552.150868:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[pid=3134][err] [3134:3164:1025/144552.150939:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=3134][err] [3134:3134:1025/144552.159097:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[pid=3134][err] [3134:3164:1025/144552.159249:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[pid=3134][err] [3134:3134:1025/144552.163781:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[pid=3134][err]
+[pid=3134][err] (process:3134): dconf-CRITICAL **: 14:45:52.180: unable to create file '/home/agent/.cache/dconf/user': Read-only file system.  dconf will not work properly.
+[pid=3134][err]
+[pid=3134][err] (process:3134): dconf-CRITICAL **: 14:45:52.180: unable to create file '/home/agent/.cache/dconf/user': Read-only file system.  dconf will not work properly.
+[pid=3134][err]
+[pid=3134][err] (process:3134): dconf-CRITICAL **: 14:45:52.180: unable to create file '/home/agent/.cache/dconf/user': Read-only file system.  dconf will not work properly.
+[pid=3134][err] [3134:3174:1025/144552.218916:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:300] Failed to adjust OOM score of renderer with pid 3214: Read-only file system (30)
+[pid=3134][err] [3134:3174:1025/144552.265182:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:300] Failed to adjust OOM score of renderer with pid 3223: Read-only file system (30)
+[pid=3134][err] [3134:3160:1025/144552.279382:ERROR:crypto/nss_util.cc:256] Error initializing NSS with a persistent database (sql:/home/agent/.pki/nssdb): NSS error code: -8126
+[pid=3134][err] [3134:3174:1025/144552.284185:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:300] Failed to adjust OOM score of renderer with pid 3224: Read-only file system (30)
+[pid=3134][err] [3184:3196:1025/144552.303762:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144552.308718:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144552.315065:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144553.254891:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144556.281110:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144602.160048:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144604.510263:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144629.689776:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144652.219510:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144721.649228:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144743.920254:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144747.398034:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144833.615271:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/144841.202796:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3134:3174:1025/144852.049238:ERROR:content/browser/zygote_host/zygote_host_impl_linux.cc:300] Failed to adjust OOM score of renderer with pid 3281: Read-only file system (30)
+[pid=3134][err] Warning: vkCreateInstance: Found no drivers!
+[pid=3134][err] Warning: vkCreateInstance failed with VK_ERROR_INCOMPATIBLE_DRIVER
+[pid=3134][err]     at CheckVkSuccessImpl (../../third_party/dawn/src/dawn/native/vulkan/VulkanError.cpp:106)
+[pid=3134][err]
+[pid=3134][err] [3134:3134:1025/144852.069820:ERROR:services/on_device_model/public/cpp/service_client.cc:37] Unexpected on_device_model service disconnect; reason: 1, description: Error loading backend.
+[pid=3134][err] [3184:3196:1025/145023.248656:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/145114.448276:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134][err] [3184:3196:1025/145120.050097:ERROR:net/socket/ssl_client_socket_impl.cc:949] handshake failed; returned -1, SSL error code 1, net_error -202
+[pid=3134] <gracefully close start>
+[pid=3134] <process did exit: exitCode=0, signal=null>
+[pid=3134] starting temporary directories cleanup
+Call log:
+[2m  - waiting for locator('#place-back')[22m
+[2m    - locator resolved to <button class="button" id="place-back" aria-label="Back to the patch">…</button>[22m
+[2m  - attempting click action[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+
+    at /workspace/hollow-exterior/voxel/smoke.mjs:86:37
+
+Node.js v24.19.0

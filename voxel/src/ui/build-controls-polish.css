@@ -1,0 +1,98 @@
+/* Last-layer finish for shared furniture editing. Positions remain on the
+   edges; a single current phase gets the controller's primary emphasis. */
+:root{--build-surface:#251c2ef5;--build-edge:#d5bfdf2e;--build-ink:#f6ebdf;--build-soft:#c6b5d0;--build-gold:#edc387}
+body.has-pad #play-controls:is([data-placing="house"],[data-placing="estate"],[data-placing="foyer"],[data-arranging="on"],[data-arranging="ready"]) :is(.place-legend,.arrange-legend){top:auto;bottom:calc(var(--dock-h,76px) + 12px + env(safe-area-inset-bottom));gap:10px;flex-wrap:wrap;justify-content:center;width:max-content;max-width:min(920px,calc(100vw - 24px));padding:8px 12px;border:1px solid var(--build-edge);border-radius:19px;background:linear-gradient(130deg,#35273d,#211a2b);box-shadow:inset 0 1px #fff8e80b,0 8px 30px #09051066;backdrop-filter:blur(12px);font:550 13px/1.25 var(--body);color:var(--build-soft)}
+body.has-pad #play-controls[data-placing="house"] .place-legend{bottom:calc(16px + env(safe-area-inset-bottom))}
+#play-controls :is(.place-legend,.arrange-legend)::before{display:block;flex:none;padding:6px 8px;border-right:1px solid var(--build-edge);color:#d8c2e1;font-size:12px;line-height:1;letter-spacing:.09em;font-weight:650}
+#play-controls .place-legend::before{content:"POSITION"}#play-controls .arrange-legend::before{content:"ARRANGE"}
+#play-controls :is(.place-legend,.arrange-legend)>span{min-height:36px;gap:7px;padding:3px 6px;border:1px solid transparent;border-radius:11px;box-sizing:border-box}
+#play-controls :is(.place-legend,.arrange-legend) b{display:inline-flex;align-items:center;justify-content:center;line-height:0}
+#play-controls :is(.place-legend,.arrange-legend) .glyph-dualsense{border:0;background:transparent;box-shadow:none;padding:0;width:auto;height:auto}
+#play-controls .place-legend>span:nth-child(4),#play-controls[data-arranging="on"] .arrange-legend>span:nth-child(2),#play-controls[data-arranging="ready"] .arrange-legend>span:first-child{background:linear-gradient(145deg,#f4d4a2,#d9ac70);border-color:#ffe5b8c4;color:#332133;font-weight:700;--ps5-ink:#3b2940;--ps5-accent:#3b2940;--ps5-frame:#6e475b}
+#play-controls[data-arranging="ready"] .arrange-legend>span:nth-child(2){opacity:.45}
+/* A world action legend should not appear beside a furniture action legend. */
+body.has-pad #play-controls:is([data-placing="house"],[data-placing="estate"],[data-placing="foyer"],[data-arranging="on"],[data-arranging="ready"]) .play-legend{display:none!important}
+body.has-pad #play-controls[data-placing="house"] .play-piece-label{bottom:calc(85px + env(safe-area-inset-bottom));padding:8px 14px;border-color:var(--build-edge);border-radius:13px;background:var(--build-surface);color:var(--build-ink);font-size:13px;box-shadow:0 4px 16px #08040f44}
+/* Garden/foyer touch tools give way to the pad legend, retaining only the
+   selected piece's name and validity just above it. */
+body.has-pad:has(#play-controls:is([data-arranging="on"],[data-arranging="ready"])) .estate-controls{display:none!important}
+body.has-pad:has(#play-controls:is([data-placing="estate"],[data-placing="foyer"])) .estate-controls{left:auto;right:14px;bottom:calc(var(--dock-h,76px) + 82px);width:min(360px,calc(100% - 28px));gap:0}
+body.has-pad:has(#play-controls:is([data-placing="estate"],[data-placing="foyer"])) .estate-controls .estate-bottom-tools,body.has-pad:has(#play-controls:is([data-placing="estate"],[data-placing="foyer"])) .estate-placement>:not(header){display:none!important}
+body.has-pad:has(#play-controls:is([data-placing="estate"],[data-placing="foyer"])) .estate-placement header{padding:0;border:0}
+body.has-pad:has(#play-controls:is([data-placing="estate"],[data-placing="foyer"])) .estate-placement header small{display:none}
+body.has-pad:not(.furniture-radial):has(#piece-bar:not([hidden])) #play-controls[data-placing="house"] .place-legend{display:none!important}
+
+/* Touch keeps real controls comfortably sized; decoration is quiet until an
+   action commits the position. Existing bindings and slider hit areas stay. */
+#furniture-pad .play-dpad button,#furniture-pad .play-furniture-actions button{min-width:44px;min-height:44px;border:1px solid var(--build-edge);border-radius:14px;background:linear-gradient(145deg,#3b2c45,#271e32);box-shadow:inset 0 1px #fff7ed0c,0 4px 13px #09051055;color:var(--build-ink)!important}
+#furniture-pad .play-furniture-actions [data-finish]{background:linear-gradient(145deg,#f2d09c,#d6a96b);border-color:#ffe4b48c;color:#322332!important}
+#furniture-pad :is(.play-dpad,.play-furniture-actions) button:focus-visible{outline:2px solid #ffe1a4;outline-offset:3px}
+.piece-bar,.estate-placement{border-color:var(--build-edge);background:linear-gradient(140deg,#30233bf7,#211a2bf7);border-radius:19px;box-shadow:inset 0 1px #fff4e90b,0 10px 30px #08041055}
+.piece-bar .piece-heading,.estate-placement header{padding-bottom:7px;border-bottom:1px solid #d7c2e01c}
+.piece-bar .piece-name b,.estate-placement header b{font-size:14px;font-weight:650;color:var(--build-ink)}
+.piece-bar .piece-name small,.estate-placement header small{color:var(--build-soft);font-size:12px;line-height:1.35}
+.estate-placement .estate-tool,.piece-bar :is(.button,.icon-button){min-height:44px;min-width:44px;border-radius:12px;border-color:#e0cce20c;background:#d6b6e508;color:var(--build-ink)}
+.estate-placement footer :is([data-estate-control="done"],[data-foyer-control="done"]),.piece-bar .tool-done{background:linear-gradient(145deg,#f4d5a4,#d9aa6d);border-color:#ffe2b296;color:#332332;box-shadow:inset 0 1px #fff7df66;font-weight:700}
+.estate-placement footer :is([data-estate-control="store"],[data-foyer-control="store"]){color:#d0bad5;background:transparent}
+.estate-placement footer{gap:7px;flex-wrap:wrap;border-color:#d9c4df1d;padding-top:9px}
+.estate-placement footer .estate-tool{flex:0 1 auto;min-width:58px}
+.estate-placement footer :is([data-estate-control="done"],[data-foyer-control="done"]){margin-left:auto;min-width:86px}
+.estate-placement .rotation-tools,.piece-bar .rotation-tools{background:#120d1b50;border:1px solid #d6bcdf17}
+.estate-placement .rotation-dial,.piece-bar .rotation-dial{background:radial-gradient(circle,#49334f,#271c32 70%);border-color:#d4ae7480;color:#f1d3a7;box-shadow:inset 0 1px #fff0db18}
+
+/* The village uses the same three phases: collection, preview, committed.
+   Controller hints replace duplicate touch rows while a piece is in hand. */
+#village-decorate .vd-catalogue,#village-decorate .vd-placement{border-color:var(--build-edge);background:linear-gradient(135deg,#35273dfb,#211a2bfb);box-shadow:inset 0 1px #fff7e70b,0 12px 34px #08051066;border-radius:20px}
+#village-decorate header{padding:12px 15px;border-color:#d8c2e41c}
+#village-decorate h2{font-size:23px;color:var(--build-ink)}
+#village-decorate .vd-placement{left:auto;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));transform:none;width:min(390px,calc(100% - 28px));padding:0 13px 12px}
+#village-decorate .vd-placement header{margin:0 -13px;padding:11px 13px!important}
+#village-decorate .vd-placement header>div{min-width:0;flex:1}
+#village-decorate .vd-placement h2{font-size:19px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#village-decorate .vd-piece-phase{font-size:12px;letter-spacing:.09em;color:#d0b5d7}
+#village-decorate .vd-close{flex:none;width:44px;height:44px;min-width:44px;padding:0;border-color:transparent;background:transparent;font-size:24px;font-weight:400;color:#e1d0e7}
+#village-decorate .vd-placement-status{margin:9px 0;color:#ddc6e2;font-size:12px;line-height:1.35}
+#village-decorate .vd-placement-status:not(.is-invalid)::before{content:"✓";display:inline-block;margin-right:6px;color:#dbbe87}
+#village-decorate .vd-placement-status.is-invalid{color:#f5ac96}
+#village-decorate .vd-angle{padding:6px;border-radius:10px;font-size:12px;color:#dec8e5;background:#d5b1df08}
+#village-decorate .vd-placement-tools{gap:6px}
+#village-decorate .vd-placement-tools button{min-height:44px;font-size:12px;flex-shrink:0}
+#village-decorate .vd-placement-tools .vd-primary{min-width:98px;border-radius:13px;background:linear-gradient(145deg,#f4d5a4,#d9aa6d)!important;border-color:#ffe3b29c!important;color:#342434!important}
+#village-decorate .vd-placement-secondary{gap:6px;margin-top:7px}
+#village-decorate .vd-placement-secondary button{min-height:44px;padding:7px 9px;color:#d6bfdd;background:transparent;border-color:#d8b5e51e;font-size:12px}
+#village-decorate .vd-catalogue header [data-vd-action="done"]{background:linear-gradient(145deg,#f4d5a4,#d9aa6d);border-color:#ffe3b29c;color:#342434}
+#village-decorate .vd-build-legend{gap:6px;flex-wrap:wrap;align-items:center;margin:0;padding:10px 0 0;border-top:1px solid #d8c1e11c}
+#village-game.vg-input-pad #village-decorate .vd-build-legend{display:flex!important}
+#village-decorate .vd-catalogue .vd-build-legend{padding:10px 13px;border-top:1px solid #d8c1e11c}
+#village-decorate .vd-build-hint{display:inline-flex;align-items:center;gap:5px;min-height:34px;box-sizing:border-box;padding:5px 7px;border:1px solid transparent;border-radius:11px;color:#cdb8d6;font:550 12px/1.1 var(--body);white-space:nowrap}
+#village-decorate .vd-build-hint .ps5-icon+ .ps5-icon{margin-left:-4px}
+#village-decorate :is(.vd-build-hint.is-ready,[data-vd-hint="choose"]){background:linear-gradient(145deg,#efd1a0,#d7ab70);border-color:#ffe0b280;color:#372435;font-weight:700;--ps5-ink:#3b2940;--ps5-accent:#3b2940;--ps5-frame:#6e475b}
+#village-decorate [data-vd-hint="confirm"]:not(.is-ready){opacity:.45}
+#village-game.vg-input-pad #village-decorate .vd-placement{position:absolute}
+#village-game.vg-input-pad #village-decorate .vd-placement header>div{padding-right:36px}
+#village-game.vg-input-pad #village-decorate .vd-placement-tools{position:absolute;top:15px;right:65px;margin:0}
+#village-game.vg-input-pad #village-decorate :is(.vd-placement-tools button,.vd-placement-secondary){display:none!important}
+#village-game.vg-input-pad #village-decorate .vd-placement-status{margin:8px 0 10px}
+
+@media(max-width:600px){
+  body.has-pad #play-controls:is([data-placing="house"],[data-placing="estate"],[data-placing="foyer"],[data-arranging="on"],[data-arranging="ready"]) :is(.place-legend,.arrange-legend){gap:5px;padding:7px 8px;font-size:12px;border-radius:16px}
+  #play-controls :is(.place-legend,.arrange-legend)::before{padding:6px;font-size:12px}
+  #play-controls :is(.place-legend,.arrange-legend)>span{gap:4px;padding:2px 4px;min-height:32px}
+  body.has-pad #play-controls[data-placing="house"] .play-piece-label{bottom:calc(124px + env(safe-area-inset-bottom));max-width:calc(100vw - 28px)}
+  body.has-pad:has(#play-controls:is([data-placing="estate"],[data-placing="foyer"])) .estate-controls{bottom:calc(var(--dock-h,76px) + 124px)}
+  #village-decorate .vd-placement{left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));width:auto}
+  #village-decorate .vd-placement-tools .vd-primary{min-width:94px}
+}
+.tv-mode #play-controls :is(.place-legend,.arrange-legend){max-width:calc(100vw / var(--tv-zoom,1) - 24px)}
+@media(min-width:1600px) and (min-height:900px){
+  .tv-mode #play-controls :is(.place-legend,.arrange-legend){gap:13px;font-size:14px;padding:9px 15px}
+  .tv-mode #village-decorate .vd-placement{right:22px;bottom:22px}
+}
+@media(max-height:480px) and (orientation:landscape){
+  body.has-pad #play-controls:is([data-placing="house"],[data-placing="estate"],[data-placing="foyer"],[data-arranging="on"],[data-arranging="ready"]) :is(.place-legend,.arrange-legend){bottom:calc(var(--dock-h,64px) + 8px);gap:6px;padding:6px 9px;font-size:12px}
+  body.has-pad #play-controls[data-placing="house"] .place-legend{bottom:10px}
+  body.has-pad #play-controls[data-placing="house"] .play-piece-label{bottom:72px;padding:6px 10px}
+  #village-decorate .vd-placement{left:auto;right:12px;bottom:12px;width:360px}
+}
+@media(any-pointer:coarse){.piece-bar,.estate-placement,#village-decorate :is(.vd-placement,.vd-catalogue){backdrop-filter:none}}
+@media(prefers-reduced-motion:reduce){#furniture-pad button,#village-decorate button{transition:none}}

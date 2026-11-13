@@ -1,0 +1,56 @@
+{
+  "sourceRuntimeCommit": "ba99b87a5a6d7a94e8ba584d32fca42970828c30",
+  "jobUrl": "https://github.com/ShaneNancarrow97/Pumpkin-patch-/actions/runs/40255935938/job/121357656460",
+  "conclusion": "success",
+  "smokeChecks": 48,
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/checkout@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/setup-node@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npm ci",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npm test",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npm run build",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npx playwright install --with-deps chromium",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run npm run smoke",
+      "conclusion": "success"
+    },
+    {
+      "name": "Run actions/upload-artifact@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/setup-node@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Run actions/checkout@v4",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "codeCommit": "c2b6a409120fca3b2e1c9bc29e65316ed8570b1e",
+  "codeTree": "2a82ada8f828c243b1484e677c34845c1c0bfba9",
+  "incrementalBase": "8901e18df05367d7ce38f3e0da775d07ce877a21",
+  "leadChecked": "604fe2359427fc7e90a3d1248a6c4d1d6b0136c8",
+  "leadIsAncestor": true,
+  "html": {
+    "file": "Pumpkin-Patch-Directional-Characters.html",
+    "bytes": 54956692,
+    "sha256": "392db73e5daeee1b2c23687e4ea946bce41a7018ab93ca407a182b9944b7c8de"
+  },
+  "scope": {
+    "characters": 11,
+    "directionsPerCharacter": 8,
+    "framesPerDirection": 8,
+    "walkingCells": 640,
+    "floatingCells": 64,
+    "newCostumes": false,
+    "newToolActions": false,
+    "newPetAnimations": false
+  },
+  "automatedTests": {
+    "fullSuitePassed": 146,
+    "fullSuiteFailed": 0,
+    "finalAssetRecheckPassed": true
+  },
+  "hardwareTested": false
+}

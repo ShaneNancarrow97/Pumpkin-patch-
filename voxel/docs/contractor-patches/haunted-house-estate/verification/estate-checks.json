@@ -1,0 +1,185 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Haunted-Homestead-Latest.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "a fresh or migrated save starts with five garden pieces"
+    },
+    {
+      "ok": true,
+      "label": "tapping the physical farm gate enters the separate estate"
+    },
+    {
+      "ok": true,
+      "label": "orbit controls complete a full 360-degree circuit",
+      "data": {
+        "startAngle": 0.6544097669759484,
+        "angles": [
+          1.4398079303733968,
+          2.2252060937708453,
+          3.0106042571682936,
+          -2.4871828866138443,
+          -1.701784723216396,
+          -0.9163865598189478,
+          -0.13098839642149954,
+          0.6544097669759488
+        ]
+      }
+    },
+    {
+      "ok": true,
+      "label": "dragging really orbits the camera and does not enter the house on release"
+    },
+    {
+      "ok": true,
+      "label": "tapping the house enters the existing interior with a garden return"
+    },
+    {
+      "ok": true,
+      "label": "leaving an interior returns to the same garden scene"
+    },
+    {
+      "ok": true,
+      "label": "Home navigation reaches the estate from the farm"
+    },
+    {
+      "ok": true,
+      "label": "garden expansion waits for the matching house upgrade"
+    },
+    {
+      "ok": true,
+      "label": "buying a garden piece charges once and adds one stored item"
+    },
+    {
+      "ok": true,
+      "label": "a real ground tap places the paid item and consumes one inventory copy"
+    },
+    {
+      "ok": true,
+      "label": "rotation persists and Done removes the selection footprint"
+    },
+    {
+      "ok": true,
+      "label": "the front entrance path rejects a move without losing the valid placement"
+    },
+    {
+      "ok": true,
+      "label": "Cancel restores an existing piece’s original pose and clears selection"
+    },
+    {
+      "ok": true,
+      "label": "storing returns exactly one reusable copy"
+    },
+    {
+      "ok": true,
+      "label": "cancelling a newly placed copy conserves garden inventory"
+    },
+    {
+      "ok": true,
+      "label": "house upgrade 1 charges correctly and rebuilds the exterior"
+    },
+    {
+      "ok": true,
+      "label": "garden expansion 1 is a separate paid purchase"
+    },
+    {
+      "ok": true,
+      "label": "house upgrade 2 charges correctly and rebuilds the exterior"
+    },
+    {
+      "ok": true,
+      "label": "garden expansion 2 is a separate paid purchase"
+    },
+    {
+      "ok": true,
+      "label": "house upgrade 3 charges correctly and rebuilds the exterior"
+    },
+    {
+      "ok": true,
+      "label": "garden expansion 3 is a separate paid purchase"
+    },
+    {
+      "ok": true,
+      "label": "every house and plot upgrade preserves all earlier garden placements"
+    },
+    {
+      "ok": true,
+      "label": "walls finish is bought once and applied to its own exterior part"
+    },
+    {
+      "ok": true,
+      "label": "roof finish is bought once and applied to its own exterior part"
+    },
+    {
+      "ok": true,
+      "label": "trim finish is bought once and applied to its own exterior part"
+    },
+    {
+      "ok": true,
+      "label": "door finish is bought once and applied to its own exterior part"
+    },
+    {
+      "ok": true,
+      "label": "fence finish is bought once and applied to its own exterior part"
+    },
+    {
+      "ok": true,
+      "label": "phone: estate controls fit with 44px touch targets",
+      "data": {
+        "width": 390,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: garden catalogue is scrollable without horizontal overflow",
+      "data": {
+        "width": 390,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: estate controls fit with 44px touch targets",
+      "data": {
+        "width": 874,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: garden catalogue is scrollable without horizontal overflow",
+      "data": {
+        "width": 874,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: estate controls fit with 44px touch targets",
+      "data": {
+        "width": 844,
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: garden catalogue is scrollable without horizontal overflow",
+      "data": {
+        "width": 844,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "save/reload preserves the house, plot, purchased finishes, stored items and placements"
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium/SwiftShader; core content QA bloom/shadows off, final Fold capture on; staged progression is not a pacing measurement"
+}

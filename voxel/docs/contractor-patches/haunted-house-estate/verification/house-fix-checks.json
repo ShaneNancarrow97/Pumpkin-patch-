@@ -1,0 +1,124 @@
+{
+  "file": "/workspace/Pumpkin-Patch-House-Fix.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "default farm has five compact navigation choices and no permanent quest banner"
+    },
+    {
+      "ok": true,
+      "label": "derelict property purchase stays locked at level five"
+    },
+    {
+      "ok": true,
+      "label": "property purchase is separate from restoration"
+    },
+    {
+      "ok": true,
+      "label": "tea break pauses restoration"
+    },
+    {
+      "ok": true,
+      "label": "restoration prepares a closed foyer without free tickets or automatic opening"
+    },
+    {
+      "ok": true,
+      "label": "tapping the voxel building opens the compact contextual card"
+    },
+    {
+      "ok": true,
+      "label": "the foyer is a real room with Mortimer behind its working desk"
+    },
+    {
+      "ok": true,
+      "label": "live guests pay the posted price and ticket takings reconcile"
+    },
+    {
+      "ok": true,
+      "label": "the same live visitor IDs appear in reception"
+    },
+    {
+      "ok": true,
+      "label": "foyer guests open the live mood, intention and money card"
+    },
+    {
+      "ok": true,
+      "label": "a paid foyer item snaps into a valid real floor position"
+    },
+    {
+      "ok": true,
+      "label": "Undo restores the previous pose and Done removes the foyer selection"
+    },
+    {
+      "ok": true,
+      "label": "a portrait mounts onto a real side wall with the correct orientation"
+    },
+    {
+      "ok": true,
+      "label": "foyer upgrade 2 is a paid increase in space and capacity"
+    },
+    {
+      "ok": true,
+      "label": "foyer upgrade 3 is a paid increase in space and capacity"
+    },
+    {
+      "ok": true,
+      "label": "foyer upgrade 4 is a paid increase in space and capacity"
+    },
+    {
+      "ok": true,
+      "label": "foyer upgrade 5 is a paid increase in space and capacity"
+    },
+    {
+      "ok": true,
+      "label": "floors, walls, reception, lights, entrance and effects are genuinely purchasable finishes"
+    },
+    {
+      "ok": true,
+      "label": "phone: compact foyer interface fits with touch-sized controls",
+      "data": {
+        "width": 390,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "phone: decoration catalogue has no horizontal overflow"
+    },
+    {
+      "ok": true,
+      "label": "fold: compact foyer interface fits with touch-sized controls",
+      "data": {
+        "width": 874,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: decoration catalogue has no horizontal overflow"
+    },
+    {
+      "ok": true,
+      "label": "landscape: compact foyer interface fits with touch-sized controls",
+      "data": {
+        "width": 844,
+        "small": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "landscape: decoration catalogue has no horizontal overflow"
+    },
+    {
+      "ok": true,
+      "label": "reload preserves all foyer customisation, tier and ticket accounting"
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium/SwiftShader; core QA bloom/shadows off, final Fold image on; money/levels are staged"
+}

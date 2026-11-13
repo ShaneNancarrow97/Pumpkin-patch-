@@ -1,0 +1,19 @@
+{
+  "html": "/workspace/Pumpkin-Patch-Village-Journey.html",
+  "sha256": "f6a755b2b692f899d132df07b148dacba229711c8a1c67a7d8bcdeacaacf2edd",
+  "date": "2026-11-08T19:15:49.400Z",
+  "bytes": 57503178,
+  "exitCode": 1,
+  "passed": false,
+  "checks": 8,
+  "failures": 0,
+  "scope": "Unmodified standard smoke.mjs against exact standalone HTML bytes served on loopback. Desktop and phone emulation, software WebGL. No physical hardware claims.",
+  "status": "incomplete",
+  "stoppedIntentionally": true,
+  "stopReason": "Duplicate broad smoke stopped at parent request to prioritise urgent HTML delivery; software rendering made menu/screenshots slow. Eight checks passed, zero FAIL assertions. Browser-closed exception follows intentional termination, not a product error.",
+  "renderPreferences": {
+    "glow": false,
+    "shadows": false,
+    "music": false
+  }
+}

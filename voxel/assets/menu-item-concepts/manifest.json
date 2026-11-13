@@ -1,0 +1,210 @@
+{
+  "version": 1,
+  "reference": "assets/home/garden-icons.webp",
+  "output": {
+    "columns": 6,
+    "rows": 6,
+    "cell": 128,
+    "inset": 10
+  },
+  "sheets": [
+    {
+      "id": "materials",
+      "file": "materials/source.png",
+      "columns": 4,
+      "rows": 3,
+      "ids": [
+        "logs",
+        "stone",
+        "fibre",
+        "herbs",
+        "hardwood",
+        "moth-silk",
+        "iron",
+        "clay",
+        "moonstone",
+        "emberbloom",
+        "star-amber",
+        "satchel"
+      ]
+    },
+    {
+      "id": "decor-a",
+      "file": "decor/decor-a.png",
+      "columns": 3,
+      "rows": 3,
+      "ids": [
+        "moth-lamp",
+        "toadstool-lamp",
+        "moth-lantern-string",
+        "signpost",
+        "market-crates",
+        "reading-stand",
+        "book-cart",
+        "stool",
+        "timber-gate"
+      ],
+      "crops": [
+        {
+          "id": "moth-lamp",
+          "x": 0,
+          "y": 0,
+          "w": 418,
+          "h": 418
+        },
+        {
+          "id": "toadstool-lamp",
+          "x": 418,
+          "y": 0,
+          "w": 372,
+          "h": 418
+        },
+        {
+          "id": "moth-lantern-string",
+          "x": 790,
+          "y": 0,
+          "w": 464,
+          "h": 418
+        },
+        {
+          "id": "signpost",
+          "x": 0,
+          "y": 418,
+          "w": 390,
+          "h": 418
+        },
+        {
+          "id": "market-crates",
+          "x": 390,
+          "y": 418,
+          "w": 450,
+          "h": 418
+        },
+        {
+          "id": "reading-stand",
+          "x": 840,
+          "y": 418,
+          "w": 414,
+          "h": 418
+        },
+        {
+          "id": "book-cart",
+          "x": 0,
+          "y": 836,
+          "w": 440,
+          "h": 418
+        },
+        {
+          "id": "stool",
+          "x": 440,
+          "y": 836,
+          "w": 360,
+          "h": 418
+        },
+        {
+          "id": "timber-gate",
+          "x": 800,
+          "y": 836,
+          "w": 454,
+          "h": 418
+        }
+      ]
+    },
+    {
+      "id": "decor-b",
+      "file": "decor/decor-b.png",
+      "columns": 3,
+      "rows": 3,
+      "ids": [
+        "flower-barrow",
+        "sundial",
+        "bunting-posts",
+        "workbench",
+        "wheelbarrow",
+        "moth-statue",
+        "scarecrow-statue",
+        "pumpkin-arch",
+        "moon-gate"
+      ],
+      "crops": [
+        {
+          "id": "flower-barrow",
+          "x": 0,
+          "y": 0,
+          "w": 460,
+          "h": 420
+        },
+        {
+          "id": "sundial",
+          "x": 460,
+          "y": 0,
+          "w": 340,
+          "h": 420
+        },
+        {
+          "id": "bunting-posts",
+          "x": 800,
+          "y": 0,
+          "w": 454,
+          "h": 420
+        },
+        {
+          "id": "workbench",
+          "x": 0,
+          "y": 420,
+          "w": 425,
+          "h": 390
+        },
+        {
+          "id": "wheelbarrow",
+          "x": 425,
+          "y": 420,
+          "w": 415,
+          "h": 390
+        },
+        {
+          "id": "moth-statue",
+          "x": 840,
+          "y": 420,
+          "w": 414,
+          "h": 390
+        },
+        {
+          "id": "scarecrow-statue",
+          "x": 0,
+          "y": 810,
+          "w": 390,
+          "h": 444
+        },
+        {
+          "id": "pumpkin-arch",
+          "x": 390,
+          "y": 810,
+          "w": 445,
+          "h": 444
+        },
+        {
+          "id": "moon-gate",
+          "x": 835,
+          "y": 810,
+          "w": 419,
+          "h": 444
+        }
+      ]
+    },
+    {
+      "id": "upgrades",
+      "file": "upgrades/upgrade-icons-source.png",
+      "columns": 3,
+      "rows": 2,
+      "ids": [
+        "satchel-pockets",
+        "satchel-frame",
+        "gathering-kit",
+        "gathering-straps",
+        "almanac",
+        "wandering-letter"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-09T00:21:37.612365+00:00",
+  "artifactCommit": "9c4c47f8c4a3558de3c30cb075906e7083418634",
+  "allPassed": true,
+  "files": [
+    {
+      "file": "Pumpkin-Patch-Village-Menu-Refinement.html",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/9c4c47f8c4a3558de3c30cb075906e7083418634/Pumpkin-Patch-Village-Menu-Refinement.html",
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "bytes": 58911354,
+      "sha256": "e5858bc666dbf4f8160e5d964249044eddfe2e70dc7bc1d0cc9bbfd175c7c4e0",
+      "passed": true
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Menu-Refinement.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/9c4c47f8c4a3558de3c30cb075906e7083418634/Pumpkin-Patch-Village-Menu-Refinement.zip",
+      "status": 200,
+      "contentType": "application/zip",
+      "bytes": 42376785,
+      "sha256": "96c91840b91e66c562cac78c5fed7098b5b97cd0d511cf18584cf525232b8f21",
+      "passed": true
+    },
+    {
+      "file": "Pumpkin-Patch-Village-Menu-Refinement-Claude-Patch.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/9c4c47f8c4a3558de3c30cb075906e7083418634/Pumpkin-Patch-Village-Menu-Refinement-Claude-Patch.zip",
+      "status": 200,
+      "contentType": "application/zip",
+      "bytes": 46160469,
+      "sha256": "18ffea6792734983c8f32738439001c0184cdf39eaa414f00f0020548c041923",
+      "passed": true
+    },
+    {
+      "file": "Village-Controller-TV.png",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/9c4c47f8c4a3558de3c30cb075906e7083418634/Village-Controller-TV.png",
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 1548101,
+      "sha256": "c1290c4fb105f45ce115055d9886099b2cd213b7e589522919e1bbcd68912ce9",
+      "passed": true
+    },
+    {
+      "file": "Village-Controller-Menu-a77.png",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/9c4c47f8c4a3558de3c30cb075906e7083418634/Village-Controller-Menu-a77.png",
+      "status": 200,
+      "contentType": "image/png",
+      "bytes": 1588023,
+      "sha256": "4e1f8e417c736f694b247c2748bcf1fe1261ff0de95d3b33d1138e4845447879",
+      "passed": true
+    }
+  ]
+}

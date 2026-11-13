@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#130f1b">
+<title>Mothlight Village</title>
+<style>/* @build:style */</style>
+</head>
+<body class="village-root">
+<canvas aria-label="Mothlight Village, a lantern-lit woodland village"></canvas>
+<div class="veil" role="status"><span class="village-loader" aria-hidden="true"></span><p>Lighting the lanterns…</p></div>
+<header class="village-header">
+  <span class="village-crest" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 19C11 7 3 11 5 20c1 6 9 8 15 3C26 28 34 26 35 20c2-9-6-13-15-1Z"/><path d="M20 17v14m-3-16-3-4m9 4 3-4M9 18l6 3m16-3-6 3"/></svg></span>
+  <div><h1>Mothlight <span>Village</span></h1><p id="village-location">Hollow Green</p></div>
+</header>
+<div id="card" class="village-greeting" role="status"><h2 id="card-name"></h2><p class="role" id="card-role"></p><p class="line" id="card-line"></p></div>
+<div id="title" class="village-tour-title"><h2 id="title-name"></h2><p id="title-sub"></p></div>
+<div id="pad"></div>
+<div id="stick" aria-hidden="true"><div id="knob"></div></div>
+<p class="hint">Move on the left · look on the right</p>
+<button id="act" class="act" hidden></button>
+<button id="leave" class="leave" hidden>Leave building</button>
+<div id="fade"></div>
+<nav class="village-dock" aria-label="Village controls">
+  <button id="village-map-toggle" aria-controls="village-map" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2Zm6-2v16m6-14v16"/></svg><span>Map</span></button>
+  <button id="village-neighbours-toggle" aria-controls="village-neighbours" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm8-1a3 3 0 1 0 0-6M2 21v-3a6 6 0 0 1 12 0v3m2-8a5 5 0 0 1 6 5v3"/></svg><span>Neighbours</span></button>
+  <button id="walk" class="primary" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm-5 6 3-3 4 2 3 4M11 8l-1 7-4 7m4-7 5 2 2 5"/></svg><span>Walk</span></button>
+  <button id="who">Shane</button>
+  <button id="village-more-toggle" aria-controls="village-more" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>More</span></button>
+</nav>
+<aside id="village-map" class="village-drawer" aria-labelledby="village-map-title" hidden>
+  <header class="village-panel-head"><div><p class="village-eyebrow">The lantern roads</p><h2 id="village-map-title">Explore Mothlight</h2></div><button class="village-close" data-village-close aria-label="Close map">×</button></header>
+  <div class="village-drawer-body"><div class="village-map-grid" role="group" aria-label="Village viewpoints">
+    <button data-place="green" class="on" aria-pressed="true"><span class="village-map-emblem" aria-hidden="true">⌂</span><span><b>Hollow Green</b><small>Our village square</small></span></button>
+    <button data-place="tree" aria-pressed="false"><span class="village-map-emblem" aria-hidden="true">✧</span><span><b>The Moth Tree</b><small>Lanterns in the branches</small></span></button>
+    <button data-place="bat" aria-pressed="false"><span class="village-map-emblem" aria-hidden="true">☽</span><span><b>The Velvet Bat</b><small>A candlelit welcome</small></span></button>
+    <button data-place="copse" aria-pressed="false"><span class="village-map-emblem" aria-hidden="true">❧</span><span><b>Moonroot Copse</b><small>Among the silver woods</small></span></button>
+    <button data-place="quarry" aria-pressed="false"><span class="village-map-emblem" aria-hidden="true">◇</span><span><b>Lantern Quarry</b><small>Across the moonlit moat</small></span></button>
+    <button data-place="moor" aria-pressed="false"><span class="village-map-emblem" aria-hidden="true">♧</span><span><b>Carnival Moor</b><small>Where the fair wakes</small></span></button>
+    <button data-place="marsh" aria-pressed="false"><span class="village-map-emblem" aria-hidden="true">≈</span><span><b>Mirror Marsh</b><small>Beyond the willow banks</small></span></button>
+    <button data-place="valley" aria-pressed="false"><span class="village-map-emblem" aria-hidden="true">✦</span><span><b>The whole valley</b><small>A view from above</small></span></button>
+  </div><p class="village-panel-note">Choose a view, then close the map and wander.</p></div>
+</aside>
+<aside id="village-neighbours" class="village-drawer" aria-labelledby="village-neighbours-title" hidden>
+  <header class="village-panel-head"><div><p class="village-eyebrow">Familiar faces</p><h2 id="village-neighbours-title">Your neighbours</h2></div><button class="village-close" data-village-close aria-label="Close neighbours">×</button></header>
+  <div id="village-neighbours-list" class="village-drawer-body village-neighbour-list"></div>
+</aside>
+<aside id="village-more" class="village-drawer village-more-drawer" aria-labelledby="village-more-title" hidden>
+  <header class="village-panel-head"><div><p class="village-eyebrow">Make yourself at home</p><h2 id="village-more-title">A little more</h2></div><button class="village-close" data-village-close aria-label="Close more controls">×</button></header>
+  <div class="village-drawer-body">
+    <button id="village-fullscreen" class="village-setting-row"><span><b>Fill the screen</b><small>More room for the village</small></span><span aria-hidden="true">⛶</span></button>
+    <button id="tour" class="village-setting-row"><span><b>Take the grand tour</b><small>Let Elowen show you around</small></span><span aria-hidden="true">→</span></button>
+    <details class="village-help"><summary>How to explore</summary><p>Drag to look around. Pinch or scroll to zoom. With two fingers, drag to pan.</p><p>Walking: left thumb moves, right thumb looks. Keyboard: WASD, Q/E to turn, Shift to jog. Controller: left stick to move, right stick to look, ✕ to interact.</p><p>Walk to a door or tap it to enter. The library, workshop and Velvet Bat welcome visitors.</p></details>
+    <details class="village-help village-preview-options"><summary>Explorer preview</summary><p>This explorer previews Mothlight before the farm journey is connected.</p><button id="everyone" class="village-setting-row" aria-pressed="false"><span><b>Show all neighbours</b><small>Include the later districts</small></span><span class="village-switch" aria-hidden="true"></span></button><button id="restored" class="village-setting-row" aria-pressed="false"><span><b>Preview restored homes</b><small>See the work to come</small></span><span class="village-switch" aria-hidden="true"></span></button><p class="village-performance">Drawing the village <output id="fps">– fps</output></p></details>
+  </div>
+</aside>
+<script>/* @build:script */</script>
+</body>
+</html>

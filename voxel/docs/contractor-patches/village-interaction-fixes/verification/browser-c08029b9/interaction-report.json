@@ -1,0 +1,664 @@
+{
+  "date": "2026-11-09T02:23:05.722Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Interaction-Fixes.html",
+  "sha256": "c08029b91f19cb4363b39b0fbb0bbf376dd43656eb46fbaba21b33382198d8f7",
+  "bytes": 59031827,
+  "checks": [
+    {
+      "pass": true,
+      "label": "Final CSS Fold farm has no horizontal overflow",
+      "detail": {
+        "w": 864,
+        "h": 756,
+        "scroll": 864,
+        "targets": [
+          {
+            "id": "open-stock",
+            "text": "0⌄",
+            "x": 411.71875,
+            "y": 11,
+            "w": 64,
+            "h": 44
+          },
+          {
+            "id": "open-levels",
+            "text": "4Level4",
+            "x": 525,
+            "y": 11,
+            "w": 46,
+            "h": 44
+          },
+          {
+            "id": "fullscreen",
+            "text": "",
+            "x": 571,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "open-settings",
+            "text": "",
+            "x": 615,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "tab active",
+            "text": "Farm",
+            "x": 192,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Manage",
+            "x": 260.703125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Rides",
+            "x": 329.421875,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Home",
+            "x": 398.125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Outfits",
+            "x": 466.84375,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Village",
+            "x": 535.5625,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "More",
+            "x": 604.28125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "play-toggle",
+            "text": "Play modeCREATE",
+            "x": 688.109375,
+            "y": 66,
+            "w": 165.890625,
+            "h": 44
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Final CSS Fold farm interactive targets fit and remain at least44px",
+      "detail": {
+        "w": 864,
+        "h": 756,
+        "scroll": 864,
+        "targets": [
+          {
+            "id": "open-stock",
+            "text": "0⌄",
+            "x": 411.71875,
+            "y": 11,
+            "w": 64,
+            "h": 44
+          },
+          {
+            "id": "open-levels",
+            "text": "4Level4",
+            "x": 525,
+            "y": 11,
+            "w": 46,
+            "h": 44
+          },
+          {
+            "id": "fullscreen",
+            "text": "",
+            "x": 571,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "open-settings",
+            "text": "",
+            "x": 615,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "tab active",
+            "text": "Farm",
+            "x": 192,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Manage",
+            "x": 260.703125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Rides",
+            "x": 329.421875,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Home",
+            "x": 398.125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Outfits",
+            "x": 466.84375,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Village",
+            "x": 535.5625,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "More",
+            "x": 604.28125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "play-toggle",
+            "text": "Play modeCREATE",
+            "x": 688.109375,
+            "y": 66,
+            "w": 165.890625,
+            "h": 44
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold scrolled Sandy tabs remain separate from Close",
+      "detail": {
+        "width": 864,
+        "height": 756,
+        "scroll": 864,
+        "close": {
+          "x": 663,
+          "y": 80,
+          "w": 44,
+          "h": 44,
+          "right": 707,
+          "bottom": 124
+        },
+        "tabs": [
+          {
+            "text": "Menu & stock",
+            "x": 170,
+            "y": 101,
+            "w": 154.65625,
+            "h": 48.59375,
+            "right": 324.65625,
+            "bottom": 149.59375
+          },
+          {
+            "text": "Helpers",
+            "x": 327.65625,
+            "y": 101,
+            "w": 154.671875,
+            "h": 48.59375,
+            "right": 482.328125,
+            "bottom": 149.59375
+          },
+          {
+            "text": "Upgrade",
+            "x": 485.328125,
+            "y": 101,
+            "w": 154.671875,
+            "h": 48.59375,
+            "right": 640,
+            "bottom": 149.59375
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold Sandy tabs/Close fit with at least 44 px targets and no horizontal overflow",
+      "detail": {
+        "width": 864,
+        "height": 756,
+        "scroll": 864,
+        "close": {
+          "x": 663,
+          "y": 80,
+          "w": 44,
+          "h": 44,
+          "right": 707,
+          "bottom": 124
+        },
+        "tabs": [
+          {
+            "text": "Menu & stock",
+            "x": 170,
+            "y": 101,
+            "w": 154.65625,
+            "h": 48.59375,
+            "right": 324.65625,
+            "bottom": 149.59375
+          },
+          {
+            "text": "Helpers",
+            "x": 327.65625,
+            "y": 101,
+            "w": 154.671875,
+            "h": 48.59375,
+            "right": 482.328125,
+            "bottom": 149.59375
+          },
+          {
+            "text": "Upgrade",
+            "x": 485.328125,
+            "y": 101,
+            "w": 154.671875,
+            "h": 48.59375,
+            "right": 640,
+            "bottom": 149.59375
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Phone scrolled Sandy tabs remain separate from Close",
+      "detail": {
+        "width": 393,
+        "height": 852,
+        "scroll": 393,
+        "close": {
+          "x": 326,
+          "y": 261.765625,
+          "w": 44,
+          "h": 44,
+          "right": 370,
+          "bottom": 305.765625
+        },
+        "tabs": [
+          {
+            "text": "Menu & stock",
+            "x": 26,
+            "y": 263.765625,
+            "w": 93.65625,
+            "h": 52,
+            "right": 119.65625,
+            "bottom": 315.765625
+          },
+          {
+            "text": "Helpers",
+            "x": 122.65625,
+            "y": 263.765625,
+            "w": 93.671875,
+            "h": 52,
+            "right": 216.328125,
+            "bottom": 315.765625
+          },
+          {
+            "text": "Upgrade",
+            "x": 219.328125,
+            "y": 263.765625,
+            "w": 93.65625,
+            "h": 52,
+            "right": 312.984375,
+            "bottom": 315.765625
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Phone Sandy tabs/Close fit with at least 44 px targets and no horizontal overflow",
+      "detail": {
+        "width": 393,
+        "height": 852,
+        "scroll": 393,
+        "close": {
+          "x": 326,
+          "y": 261.765625,
+          "w": 44,
+          "h": 44,
+          "right": 370,
+          "bottom": 305.765625
+        },
+        "tabs": [
+          {
+            "text": "Menu & stock",
+            "x": 26,
+            "y": 263.765625,
+            "w": 93.65625,
+            "h": 52,
+            "right": 119.65625,
+            "bottom": 315.765625
+          },
+          {
+            "text": "Helpers",
+            "x": 122.65625,
+            "y": 263.765625,
+            "w": 93.671875,
+            "h": 52,
+            "right": 216.328125,
+            "bottom": 315.765625
+          },
+          {
+            "text": "Upgrade",
+            "x": 219.328125,
+            "y": 263.765625,
+            "w": 93.65625,
+            "h": 52,
+            "right": 312.984375,
+            "bottom": 315.765625
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Landscape scrolled Sandy tabs remain separate from Close",
+      "detail": {
+        "width": 864,
+        "height": 393,
+        "scroll": 864,
+        "close": {
+          "x": 653,
+          "y": 22,
+          "w": 44,
+          "h": 44,
+          "right": 697,
+          "bottom": 66
+        },
+        "tabs": [
+          {
+            "text": "Menu & stock",
+            "x": 180,
+            "y": 30,
+            "w": 148,
+            "h": 48.59375,
+            "right": 328,
+            "bottom": 78.59375
+          },
+          {
+            "text": "Helpers",
+            "x": 331,
+            "y": 30,
+            "w": 148,
+            "h": 48.59375,
+            "right": 479,
+            "bottom": 78.59375
+          },
+          {
+            "text": "Upgrade",
+            "x": 482,
+            "y": 30,
+            "w": 148,
+            "h": 48.59375,
+            "right": 630,
+            "bottom": 78.59375
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Landscape Sandy tabs/Close fit with at least 44 px targets and no horizontal overflow",
+      "detail": {
+        "width": 864,
+        "height": 393,
+        "scroll": 864,
+        "close": {
+          "x": 653,
+          "y": 22,
+          "w": 44,
+          "h": 44,
+          "right": 697,
+          "bottom": 66
+        },
+        "tabs": [
+          {
+            "text": "Menu & stock",
+            "x": 180,
+            "y": 30,
+            "w": 148,
+            "h": 48.59375,
+            "right": 328,
+            "bottom": 78.59375
+          },
+          {
+            "text": "Helpers",
+            "x": 331,
+            "y": 30,
+            "w": 148,
+            "h": 48.59375,
+            "right": 479,
+            "bottom": 78.59375
+          },
+          {
+            "text": "Upgrade",
+            "x": 482,
+            "y": 30,
+            "w": 148,
+            "h": 48.59375,
+            "right": 630,
+            "bottom": 78.59375
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "TV scrolled Sandy tabs remain separate from Close",
+      "detail": {
+        "width": 1920,
+        "height": 1080,
+        "scroll": 1920,
+        "close": {
+          "x": 1521.53125,
+          "y": 34.796875,
+          "w": 92.21875,
+          "h": 92.21875,
+          "right": 1613.75,
+          "bottom": 127.015625
+        },
+        "tabs": [
+          {
+            "text": "Menu & stock",
+            "x": 328.734375,
+            "y": 45.015625,
+            "w": 390.09375,
+            "h": 71.59375,
+            "right": 718.828125,
+            "bottom": 116.609375
+          },
+          {
+            "text": "Helpers",
+            "x": 723.4375,
+            "y": 45.015625,
+            "w": 390.09375,
+            "h": 71.59375,
+            "right": 1113.53125,
+            "bottom": 116.609375
+          },
+          {
+            "text": "Upgrade",
+            "x": 1118.140625,
+            "y": 45.015625,
+            "w": 390.109375,
+            "h": 71.59375,
+            "right": 1508.25,
+            "bottom": 116.609375
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "TV Sandy tabs/Close fit with at least 44 px targets and no horizontal overflow",
+      "detail": {
+        "width": 1920,
+        "height": 1080,
+        "scroll": 1920,
+        "close": {
+          "x": 1521.53125,
+          "y": 34.796875,
+          "w": 92.21875,
+          "h": 92.21875,
+          "right": 1613.75,
+          "bottom": 127.015625
+        },
+        "tabs": [
+          {
+            "text": "Menu & stock",
+            "x": 328.734375,
+            "y": 45.015625,
+            "w": 390.09375,
+            "h": 71.59375,
+            "right": 718.828125,
+            "bottom": 116.609375
+          },
+          {
+            "text": "Helpers",
+            "x": 723.4375,
+            "y": 45.015625,
+            "w": 390.09375,
+            "h": 71.59375,
+            "right": 1113.53125,
+            "bottom": 116.609375
+          },
+          {
+            "text": "Upgrade",
+            "x": 1118.140625,
+            "y": 45.015625,
+            "w": 390.109375,
+            "h": 71.59375,
+            "right": 1508.25,
+            "bottom": 116.609375
+          }
+        ],
+        "overlaps": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual controller reaches the open central arrival path",
+      "detail": {
+        "result": {
+          "count": 223,
+          "position": {
+            "x": 87,
+            "z": 5.887888161808434
+          }
+        },
+        "route": [
+          {
+            "x": 87,
+            "z": 6
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Final CSS-only build preserves Return cancel"
+    },
+    {
+      "pass": true,
+      "label": "Final CSS-only build still returns to the farm"
+    },
+    {
+      "pass": true,
+      "label": "The exact final standalone HTML requests no external assets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Final integrated runtime has no page or shader errors",
+      "detail": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    {
+      "file": "01-final-fold-farm-controller.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "02-final-fold-sandy-hospitality.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "03-final-fold-open-village-path.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    }
+  ],
+  "fixtures": [
+    {
+      "kind": "farm",
+      "level": 4,
+      "house": 0,
+      "earnings": 9000,
+      "coins": 30000,
+      "description": "Level5 earnings are ready, but the first house upgrade is missing. Visitor arrivals deferred for deterministic UI checks."
+    }
+  ],
+  "observations": [],
+  "scope": "Exact unchanged offline HTML on loopback. Declared level4/house0/earnings-ready farm and a prepared invitation-final-step village, not an earned campaign. Native Gamepad API is mocked; real game/menu/cursor/rules/view methods run. Only renderer/composer draw calls are held between normal-render photographs; deterministic input bursts use the real village tick. Normal photos restore real RAF village ticking. Software Chromium viewport checks do not certify Bluetooth, physical PS5/TV hardware or hardware performance. Focused final delta after the first integrated pass: corrected Fold spacing, exact Create artwork, actual service purchases and display selection, quest Up glyph, real quest reward receipt and Return/movement smoke. Earlier broad input/growth cases remain recorded against their original hash.",
+  "passed": true
+}

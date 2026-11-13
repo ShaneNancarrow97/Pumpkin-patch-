@@ -1,0 +1,25 @@
+{
+  "verifiedUTC": "2026-11-09T04:25:53.778906+00:00",
+  "sourceCommit": "9402b207814fd34d229de77cddc00d5a9a7a5cb2",
+  "artifactCommit": "3b7eccb027ebae058f9076cdc3dffa24dbd3643f",
+  "files": [
+    {
+      "name": "Pumpkin-Patch-Mothlight-Expansion.apk",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/3b7eccb027ebae058f9076cdc3dffa24dbd3643f/Pumpkin-Patch-Mothlight-Expansion.apk",
+      "bytes": 43343342,
+      "sha256": "c280731be9101a2ea605296edb9687e04641f148176a2c3c1c560e787a650890",
+      "httpStatus": 200,
+      "verified": true
+    },
+    {
+      "name": "Pumpkin-Patch-Mothlight-Expansion-Android-Patch.zip",
+      "url": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/3b7eccb027ebae058f9076cdc3dffa24dbd3643f/Pumpkin-Patch-Mothlight-Expansion-Android-Patch.zip",
+      "bytes": 41068,
+      "sha256": "3a73cd743b9e92e0589bd248307604007dfd7e2deac34e3303f2d000e4d2880e",
+      "httpStatus": 200,
+      "verified": true
+    }
+  ],
+  "complete": true,
+  "htmlUnchanged": true
+}

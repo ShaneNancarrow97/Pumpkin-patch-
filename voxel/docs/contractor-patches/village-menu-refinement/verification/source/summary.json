@@ -1,0 +1,40 @@
+{
+  "build": {
+    "passed": true,
+    "log": "music-build.txt"
+  },
+  "html": {
+    "bytes": 58911354,
+    "sha256": "e5858bc666dbf4f8160e5d964249044eddfe2e70dc7bc1d0cc9bbfd175c7c4e0",
+    "delta": "Five supplied MIDI assets and track entries added after the verified UI; no further UI/render/input changes."
+  },
+  "independentIntegrationAudit": "No material save, economy, progression or input issue found; grants remain in rules, proximity guards retained, L2 neutral boundary preserved.",
+  "saveVersion": 18,
+  "hardwareScope": "Software Chromium and mock native Gamepad API do not certify physical Fold7, TV or PS5 Bluetooth.",
+  "initialGameTests": {
+    "passed": 992,
+    "failed": 0,
+    "skipped": 0,
+    "log": "node-tests.txt"
+  },
+  "gameTests": {
+    "passed": 995,
+    "failed": 0,
+    "skipped": 0,
+    "log": "final-node-tests.txt"
+  },
+  "functionalHtmlTested": {
+    "bytes": 58603521,
+    "sha256": "a77a5d1e79a70361633ca9a658184299fc0d55952d1ed98091027308c1a8f614"
+  },
+  "uiHtmlTested": {
+    "bytes": 58603705,
+    "sha256": "38895eb42cc1e45a9dd9193a7fa42d58d987f264e4a3b6685b004f9eefbc2dcf",
+    "delta": "Only the ready PS5 Cross glyph colour variables changed after the 995-test functional source."
+  },
+  "music": {
+    "focusedNodePassed": 6,
+    "catalogueTracksPassed": 31,
+    "see": "../music-source/"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "operation": "whole-frame crop, shared source scalar, root alignment; no redrawing/mirroring",
+  "cell": [
+    160,
+    192
+  ],
+  "anchor": [
+    80,
+    180
+  ],
+  "characters": {
+    "baron": {
+      "frontFrameOrder": [
+        "front:0",
+        "front:1",
+        "front:2",
+        "front:3",
+        "front:4",
+        "front:5",
+        "left-pass-swing:0",
+        "left-pass-swing:1"
+      ],
+      "baseScale": 0.993103448275862,
+      "frontStripScale": 0.3257918552036199,
+      "pairScale": 0.16901408450704225,
+      "sha256": "ff8773436510d56a61e9c86892b0bbd5c714703277b6b4b33305087bc3685c2d"
+    },
+    "corvus": {
+      "frontFrameOrder": [
+        "front:0",
+        "front:1",
+        "front:6",
+        "front:5",
+        "right-contact:0",
+        "front:7",
+        "front:2",
+        "front:3"
+      ],
+      "baseScale": 1.0,
+      "frontStripScale": 0.3341645885286783,
+      "pairScale": 0.15783274440518258,
+      "sha256": "41e3e6cd6769b9e850f3a9b06a71f13b5c3fb2483ad24d8713a9c370cfa5b057"
+    }
+  }
+}

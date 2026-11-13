@@ -1,0 +1,13 @@
+✔ delivery poses follow saved phase; waits and queued orders do not invent travel (1.55432ms)
+✔ purchased world is native, read-only, bounded, and leaves pedestrian exit clear (103.25579ms)
+✔ receiving entrance clears only bounded obstacles and preserves ground and distant props (31.159975ms)
+✔ eight native foods and both shop cabinets have finite positive geometry and wall mounting depth (11.170585ms)
+✔ service plot replaces only tagged tree instances even after a previous mesh compaction (45.531308ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 200.311166

@@ -1,0 +1,884 @@
+{
+  "passed": true,
+  "multi": {
+    "both": {
+      "move": {
+        "x": 0.8320502943378436,
+        "y": -0.5547001962252291
+      },
+      "look": {
+        "x": -0.7940202434372561,
+        "y": 0.4764121460623536
+      },
+      "sprint": false,
+      "source": "touch"
+    },
+    "wrong": {
+      "move": {
+        "x": 0.8320502943378436,
+        "y": -0.5547001962252291
+      },
+      "look": {
+        "x": -0.7940202434372561,
+        "y": 0.4764121460623536
+      },
+      "sprint": false,
+      "source": "touch"
+    },
+    "one": {
+      "move": {
+        "x": 0.8320502943378436,
+        "y": -0.5547001962252291
+      },
+      "look": {
+        "x": 0,
+        "y": 0
+      },
+      "sprint": false,
+      "source": "touch"
+    },
+    "bound": {
+      "move": {
+        "x": 0.7071067811865475,
+        "y": -0.7071067811865475
+      },
+      "look": {
+        "x": 0,
+        "y": 0
+      },
+      "sprint": false,
+      "source": "touch"
+    },
+    "released": {
+      "move": {
+        "x": 0,
+        "y": 0
+      },
+      "look": {
+        "x": 0,
+        "y": 0
+      },
+      "sprint": false,
+      "source": "touch"
+    }
+  },
+  "pad": {
+    "idle": {
+      "move": {
+        "x": 0,
+        "y": 0
+      },
+      "look": {
+        "x": 0,
+        "y": 0
+      },
+      "sprint": false,
+      "source": "touch"
+    },
+    "used": {
+      "move": {
+        "x": 0,
+        "y": 0
+      },
+      "look": {
+        "x": 0,
+        "y": 0
+      },
+      "sprint": false,
+      "source": "pad"
+    },
+    "hidden": true,
+    "summaryOpened": true,
+    "rangeFirst": "3",
+    "rangeWait": "3",
+    "rangeRepeat": "4",
+    "selected": 2,
+    "scrolled": 80,
+    "disconnected": {
+      "move": {
+        "x": 0,
+        "y": 0
+      },
+      "look": {
+        "x": 0,
+        "y": 0
+      },
+      "sprint": false,
+      "source": "touch"
+    }
+  },
+  "lifecycle": {
+    "moving": {
+      "move": {
+        "x": 0.975328947368421,
+        "y": 0
+      },
+      "look": {
+        "x": 0,
+        "y": 0
+      },
+      "sprint": false,
+      "source": "touch"
+    },
+    "blurred": {
+      "move": {
+        "x": 0,
+        "y": 0
+      },
+      "look": {
+        "x": 0,
+        "y": 0
+      },
+      "sprint": false,
+      "source": "touch"
+    },
+    "resumed": {
+      "move": {
+        "x": 0,
+        "y": 0
+      },
+      "look": {
+        "x": 0,
+        "y": 0
+      },
+      "sprint": false,
+      "source": "touch"
+    },
+    "remaining": false
+  },
+  "profiles": [
+    {
+      "name": "cover",
+      "width": 390,
+      "height": 844,
+      "zoom": 1,
+      "bounds": [
+        {
+          "id": "vg-stick",
+          "x": 23,
+          "y": 646,
+          "width": 98,
+          "height": 98
+        },
+        {
+          "id": "vg-look-stick",
+          "x": 269,
+          "y": 646,
+          "width": 98,
+          "height": 98
+        },
+        {
+          "id": "vg-home",
+          "x": 10,
+          "y": 15.890625,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "id": "vg-person",
+          "x": 273.984375,
+          "y": 15.890625,
+          "width": 57.015625,
+          "height": 44
+        },
+        {
+          "id": "⛶",
+          "x": 336,
+          "y": 15.890625,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "id": "A place for every neighbour",
+          "x": 10,
+          "y": 79,
+          "width": 172.09375,
+          "height": 44
+        },
+        {
+          "id": "Map",
+          "x": 17,
+          "y": 780,
+          "width": 71.1875,
+          "height": 44
+        },
+        {
+          "id": "Neighbours",
+          "x": 88.1875,
+          "y": 780,
+          "width": 71.203125,
+          "height": 44
+        },
+        {
+          "id": "Journal",
+          "x": 159.390625,
+          "y": 780,
+          "width": 71.203125,
+          "height": 44
+        },
+        {
+          "id": "Satchel",
+          "x": 230.59375,
+          "y": 780,
+          "width": 71.203125,
+          "height": 44
+        },
+        {
+          "id": "Decorate",
+          "x": 301.796875,
+          "y": 780,
+          "width": 71.203125,
+          "height": 44
+        },
+        {
+          "id": "vg-interact",
+          "x": 309,
+          "y": 493,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "id": "vg-look",
+          "x": 295,
+          "y": 572,
+          "width": 46,
+          "height": 46
+        },
+        {
+          "id": "vg-jog",
+          "x": 49,
+          "y": 574,
+          "width": 52,
+          "height": 44
+        }
+      ],
+      "panel": {
+        "x": 10,
+        "y": 75,
+        "width": 370,
+        "height": 686
+      },
+      "padSurface": {
+        "x": 10,
+        "y": 75,
+        "width": 370,
+        "height": 686,
+        "rootZoom": "1",
+        "zoom": "1",
+        "childZoom": "1",
+        "focus": true
+      }
+    },
+    {
+      "name": "narrow",
+      "width": 360,
+      "height": 800,
+      "zoom": 1,
+      "bounds": [
+        {
+          "id": "vg-stick",
+          "x": 23,
+          "y": 602,
+          "width": 98,
+          "height": 98
+        },
+        {
+          "id": "vg-look-stick",
+          "x": 239,
+          "y": 602,
+          "width": 98,
+          "height": 98
+        },
+        {
+          "id": "vg-home",
+          "x": 10,
+          "y": 12,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "id": "vg-person",
+          "x": 246.984375,
+          "y": 12,
+          "width": 54.015625,
+          "height": 44
+        },
+        {
+          "id": "⛶",
+          "x": 306,
+          "y": 12,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "id": "A place for every neighbour",
+          "x": 10,
+          "y": 79,
+          "width": 172.09375,
+          "height": 44
+        },
+        {
+          "id": "Map",
+          "x": 17,
+          "y": 736,
+          "width": 65.1875,
+          "height": 44
+        },
+        {
+          "id": "Neighbours",
+          "x": 82.1875,
+          "y": 736,
+          "width": 65.203125,
+          "height": 44
+        },
+        {
+          "id": "Journal",
+          "x": 147.390625,
+          "y": 736,
+          "width": 65.203125,
+          "height": 44
+        },
+        {
+          "id": "Satchel",
+          "x": 212.59375,
+          "y": 736,
+          "width": 65.203125,
+          "height": 44
+        },
+        {
+          "id": "Decorate",
+          "x": 277.796875,
+          "y": 736,
+          "width": 65.203125,
+          "height": 44
+        },
+        {
+          "id": "vg-interact",
+          "x": 279,
+          "y": 449,
+          "width": 64,
+          "height": 64
+        },
+        {
+          "id": "vg-look",
+          "x": 265,
+          "y": 528,
+          "width": 46,
+          "height": 46
+        },
+        {
+          "id": "vg-jog",
+          "x": 49,
+          "y": 530,
+          "width": 52,
+          "height": 44
+        }
+      ],
+      "panel": {
+        "x": 10,
+        "y": 75,
+        "width": 340,
+        "height": 642
+      },
+      "padSurface": {
+        "x": 10,
+        "y": 75,
+        "width": 340,
+        "height": 642,
+        "rootZoom": "1",
+        "zoom": "1",
+        "childZoom": "1",
+        "focus": true
+      }
+    },
+    {
+      "name": "fold",
+      "width": 768,
+      "height": 884,
+      "zoom": 1,
+      "bounds": [
+        {
+          "id": "vg-stick",
+          "x": 26,
+          "y": 674,
+          "width": 104,
+          "height": 104
+        },
+        {
+          "id": "vg-look-stick",
+          "x": 638,
+          "y": 674,
+          "width": 104,
+          "height": 104
+        },
+        {
+          "id": "vg-home",
+          "x": 14,
+          "y": 17.03125,
+          "width": 67.75,
+          "height": 44
+        },
+        {
+          "id": "vg-person",
+          "x": 635.984375,
+          "y": 17.03125,
+          "width": 67.015625,
+          "height": 44
+        },
+        {
+          "id": "⛶",
+          "x": 710,
+          "y": 17.03125,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "id": "A place for every neighbour",
+          "x": 14,
+          "y": 82,
+          "width": 186.28125,
+          "height": 44
+        },
+        {
+          "id": "Map",
+          "x": 162.0625,
+          "y": 816,
+          "width": 80,
+          "height": 44
+        },
+        {
+          "id": "Neighbours",
+          "x": 247.0625,
+          "y": 816,
+          "width": 100.234375,
+          "height": 44
+        },
+        {
+          "id": "Journal",
+          "x": 352.296875,
+          "y": 816,
+          "width": 80,
+          "height": 44
+        },
+        {
+          "id": "Satchel",
+          "x": 437.296875,
+          "y": 816,
+          "width": 80,
+          "height": 44
+        },
+        {
+          "id": "Decorate",
+          "x": 522.296875,
+          "y": 816,
+          "width": 83.640625,
+          "height": 44
+        },
+        {
+          "id": "vg-interact",
+          "x": 681,
+          "y": 507,
+          "width": 70,
+          "height": 70
+        },
+        {
+          "id": "vg-look",
+          "x": 666,
+          "y": 594,
+          "width": 46,
+          "height": 46
+        },
+        {
+          "id": "vg-jog",
+          "x": 56,
+          "y": 596,
+          "width": 52,
+          "height": 44
+        }
+      ],
+      "panel": {
+        "x": 322,
+        "y": 80,
+        "width": 432,
+        "height": 714
+      },
+      "padSurface": {
+        "x": 322,
+        "y": 80,
+        "width": 432,
+        "height": 714,
+        "rootZoom": "1",
+        "zoom": "1",
+        "childZoom": "1",
+        "focus": true
+      }
+    },
+    {
+      "name": "landscape",
+      "width": 844,
+      "height": 390,
+      "zoom": 1,
+      "bounds": [
+        {
+          "id": "vg-stick",
+          "x": 21,
+          "y": 261,
+          "width": 96,
+          "height": 96
+        },
+        {
+          "id": "vg-look-stick",
+          "x": 727,
+          "y": 261,
+          "width": 96,
+          "height": 96
+        },
+        {
+          "id": "vg-home",
+          "x": 14,
+          "y": 12,
+          "width": 67.75,
+          "height": 44
+        },
+        {
+          "id": "vg-person",
+          "x": 711.984375,
+          "y": 12,
+          "width": 67.015625,
+          "height": 44
+        },
+        {
+          "id": "⛶",
+          "x": 786,
+          "y": 12,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "id": "A place for every neighbour",
+          "x": 14,
+          "y": 66,
+          "width": 186.28125,
+          "height": 44
+        },
+        {
+          "id": "Map",
+          "x": 251.96875,
+          "y": 328,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "id": "Neighbours",
+          "x": 300.96875,
+          "y": 328,
+          "width": 84.671875,
+          "height": 44
+        },
+        {
+          "id": "Journal",
+          "x": 390.640625,
+          "y": 328,
+          "width": 61.34375,
+          "height": 44
+        },
+        {
+          "id": "Satchel",
+          "x": 456.984375,
+          "y": 328,
+          "width": 60.6875,
+          "height": 44
+        },
+        {
+          "id": "Decorate",
+          "x": 522.671875,
+          "y": 328,
+          "width": 69.359375,
+          "height": 44
+        },
+        {
+          "id": "vg-interact",
+          "x": 639,
+          "y": 303,
+          "width": 62,
+          "height": 62
+        },
+        {
+          "id": "vg-look",
+          "x": 752,
+          "y": 189,
+          "width": 46,
+          "height": 46
+        },
+        {
+          "id": "vg-jog",
+          "x": 46,
+          "y": 191,
+          "width": 52,
+          "height": 44
+        }
+      ],
+      "panel": {
+        "x": 388,
+        "y": 10,
+        "width": 442,
+        "height": 370
+      },
+      "padSurface": {
+        "x": 388,
+        "y": 10,
+        "width": 442,
+        "height": 370,
+        "rootZoom": "1",
+        "zoom": "1",
+        "childZoom": "1",
+        "focus": true
+      }
+    },
+    {
+      "name": "tv",
+      "width": 1920,
+      "height": 1080,
+      "zoom": 1.54,
+      "bounds": [
+        {
+          "id": "vg-stick",
+          "x": 26,
+          "y": 870,
+          "width": 104,
+          "height": 104
+        },
+        {
+          "id": "vg-look-stick",
+          "x": 1790,
+          "y": 870,
+          "width": 104,
+          "height": 104
+        },
+        {
+          "id": "vg-home",
+          "x": 21.546875,
+          "y": 25.6875,
+          "width": 103.21875,
+          "height": 67.75
+        },
+        {
+          "id": "vg-person",
+          "x": 1717.828125,
+          "y": 25.6875,
+          "width": 102.109375,
+          "height": 67.75
+        },
+        {
+          "id": "⛶",
+          "x": 1830.703125,
+          "y": 25.6875,
+          "width": 67.75,
+          "height": 67.75
+        },
+        {
+          "id": "A place for every neighbour",
+          "x": 21.546875,
+          "y": 126.265625,
+          "width": 285.71875,
+          "height": 67.75
+        },
+        {
+          "id": "Map",
+          "x": 619.375,
+          "y": 982.015625,
+          "width": 123.1875,
+          "height": 67.75
+        },
+        {
+          "id": "Neighbours",
+          "x": 750.25,
+          "y": 982.015625,
+          "width": 153.234375,
+          "height": 67.75
+        },
+        {
+          "id": "Journal",
+          "x": 911.171875,
+          "y": 982.015625,
+          "width": 123.1875,
+          "height": 67.75
+        },
+        {
+          "id": "Satchel",
+          "x": 1042.046875,
+          "y": 982.015625,
+          "width": 123.1875,
+          "height": 67.75
+        },
+        {
+          "id": "Decorate",
+          "x": 1172.921875,
+          "y": 982.015625,
+          "width": 127.703125,
+          "height": 67.75
+        },
+        {
+          "id": "vg-interact",
+          "x": 1833,
+          "y": 703,
+          "width": 70,
+          "height": 70
+        },
+        {
+          "id": "vg-look",
+          "x": 1818,
+          "y": 790,
+          "width": 46,
+          "height": 46
+        },
+        {
+          "id": "vg-jog",
+          "x": 56,
+          "y": 792,
+          "width": 52,
+          "height": 44
+        }
+      ],
+      "panel": {
+        "x": 1059.609375,
+        "y": 129.359375,
+        "width": 802.796875,
+        "height": 839.765625
+      },
+      "padSurface": {
+        "x": 1059.609375,
+        "y": 129.359375,
+        "width": 802.796875,
+        "height": 839.765625,
+        "rootZoom": "1",
+        "zoom": "1.54",
+        "childZoom": "1",
+        "focus": true
+      }
+    },
+    {
+      "name": "mirror",
+      "width": 844,
+      "height": 390,
+      "zoom": 0.557,
+      "bounds": [
+        {
+          "id": "vg-stick",
+          "x": 21,
+          "y": 261,
+          "width": 96,
+          "height": 96
+        },
+        {
+          "id": "vg-look-stick",
+          "x": 727,
+          "y": 261,
+          "width": 96,
+          "height": 96
+        },
+        {
+          "id": "vg-home",
+          "x": 14,
+          "y": 12,
+          "width": 67.75,
+          "height": 44
+        },
+        {
+          "id": "vg-person",
+          "x": 711.984375,
+          "y": 12,
+          "width": 67.015625,
+          "height": 44
+        },
+        {
+          "id": "⛶",
+          "x": 786,
+          "y": 12,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "id": "A place for every neighbour",
+          "x": 14,
+          "y": 66,
+          "width": 186.28125,
+          "height": 44
+        },
+        {
+          "id": "Map",
+          "x": 251.96875,
+          "y": 328,
+          "width": 44,
+          "height": 44
+        },
+        {
+          "id": "Neighbours",
+          "x": 300.96875,
+          "y": 328,
+          "width": 84.671875,
+          "height": 44
+        },
+        {
+          "id": "Journal",
+          "x": 390.640625,
+          "y": 328,
+          "width": 61.34375,
+          "height": 44
+        },
+        {
+          "id": "Satchel",
+          "x": 456.984375,
+          "y": 328,
+          "width": 60.6875,
+          "height": 44
+        },
+        {
+          "id": "Decorate",
+          "x": 522.671875,
+          "y": 328,
+          "width": 69.359375,
+          "height": 44
+        },
+        {
+          "id": "vg-interact",
+          "x": 639,
+          "y": 303,
+          "width": 62,
+          "height": 62
+        },
+        {
+          "id": "vg-look",
+          "x": 752,
+          "y": 189,
+          "width": 46,
+          "height": 46
+        },
+        {
+          "id": "vg-jog",
+          "x": 46,
+          "y": 191,
+          "width": 52,
+          "height": 44
+        }
+      ],
+      "panel": {
+        "x": 288,
+        "y": 12,
+        "width": 542,
+        "height": 312
+      },
+      "padSurface": {
+        "x": 533.4375,
+        "y": 6.671875,
+        "width": 302.765625,
+        "height": 347.125,
+        "rootZoom": "1",
+        "zoom": "0.557",
+        "childZoom": "1",
+        "focus": true
+      }
+    }
+  ],
+  "errors": []
+}

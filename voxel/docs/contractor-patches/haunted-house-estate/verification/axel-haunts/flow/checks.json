@@ -1,0 +1,140 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Axel-Maze.html",
+  "checks": [
+    {
+      "ok": true,
+      "label": "unowned haunted house opens without freezing"
+    },
+    {
+      "ok": true,
+      "label": "purchase, restoration and deliberate opening preserve attraction gating"
+    },
+    {
+      "ok": true,
+      "label": "five generated-icon haunts can be purchased and enabled directly"
+    },
+    {
+      "ok": true,
+      "label": "scare rating displays capped footfall bonus"
+    },
+    {
+      "ok": true,
+      "label": "owned prefab toggles off without repurchase"
+    },
+    {
+      "ok": true,
+      "label": "Axel and native haunt installations render in the foyer",
+      "data": {
+        "active": true,
+        "built": true,
+        "tier": 5,
+        "decor": 3,
+        "visitors": 0,
+        "guests": [],
+        "host": "Axel",
+        "hostSprite": "axel",
+        "hostFrame": 2,
+        "haunts": [
+          "cobweb-canopy",
+          "whispering-portraits",
+          "spectral-parade",
+          "thunder-chamber",
+          "phantom-finale"
+        ],
+        "scareRating": 100,
+        "mortimer": "idle"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Skyla carrier bags available directly in Shop"
+    },
+    {
+      "ok": true,
+      "label": "Cocoa land and stand purchase available directly in Build Cocoa"
+    },
+    {
+      "ok": true,
+      "label": "24-plot land updates map terrain, boundary and gate",
+      "data": {
+        "tier": 2,
+        "depth": 36,
+        "pathEnd": 39,
+        "plots": 24
+      }
+    },
+    {
+      "ok": true,
+      "label": "rare Baron loads all four walking frames"
+    },
+    {
+      "ok": true,
+      "label": "one-finger touch drag commits furniture without a menu",
+      "data": {
+        "initial": {
+          "instance": "piece-0",
+          "id": "f01",
+          "room": "parlour",
+          "x": 2,
+          "z": 2,
+          "flip": false,
+          "books": [],
+          "rotation": 15
+        },
+        "moved": {
+          "instance": "piece-0",
+          "id": "f01",
+          "room": "parlour",
+          "x": 1.1,
+          "z": 1.3,
+          "flip": false,
+          "books": [],
+          "rotation": 15
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "drag has one-step Undo"
+    },
+    {
+      "ok": true,
+      "label": "two-finger turn rotates selected furniture"
+    },
+    {
+      "ok": true,
+      "label": "two-finger turn has one-step Undo"
+    },
+    {
+      "ok": true,
+      "label": "placement toolbar fits 390×844",
+      "data": {
+        "left": 8,
+        "right": 382,
+        "bottom": 764,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "placement toolbar fits 844×390",
+      "data": {
+        "left": 464,
+        "right": 834,
+        "bottom": 310,
+        "overflow": false
+      }
+    },
+    {
+      "ok": true,
+      "label": "Done closes placement tools and selection"
+    },
+    {
+      "ok": true,
+      "label": "no browser errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "rendering": "Chromium SwiftShader, Performance profile for flow checks; staged level and purchases; actual CDP touch"
+}

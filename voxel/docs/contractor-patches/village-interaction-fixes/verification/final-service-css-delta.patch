@@ -1,0 +1,5 @@
+--- a/voxel/src/ui/service-premium.css
++++ b/voxel/src/ui/service-premium.css
+@@ -150 +150 @@
+-.sheet:has(.service-hero) .service-sheet > .service-nav:first-of-type { margin-right: 54px; }
++.sheet:has(.service-hero) .service-sheet > .service-nav:first-of-type { width: calc(100% - 54px); margin-right: 54px; }

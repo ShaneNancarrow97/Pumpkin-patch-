@@ -1,0 +1,19 @@
+✔ the original farm property requires level and paid restoration before opening (2.053675ms)
+✔ all five foyer tiers have level gates and paid capacity/space progression (1.586431ms)
+✔ a visit charges once from the same purse and completes while offscreen (6.399496ms)
+✔ bounded reception and maze continue draining under a crowd without return deadlock (30.285409ms)
+✔ paid maze visits survive save/load without charging again or creating a second visitor (10.491934ms)
+✔ an approach reload keeps its original route and closing does not charge waiting guests (4.954798ms)
+✔ foyer stock, rotation, surfaces and wall decoration persist with collision-safe placement (2.032193ms)
+✔ restoring legacy saves adds a locked attraction and a free estate without changing core progress (0.519813ms)
+✔ foyer expansion keeps portraits on their walls and preserves the exact saved arrangement (3.247335ms)
+✔ a larger admission lane returns obstructed decor to owned storage without losing the purchase (0.432892ms)
+✔ maze guests leave down the west path and resume at the shop gate after a timed transfer (2.938078ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 71.137565

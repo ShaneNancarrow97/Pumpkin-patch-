@@ -1,0 +1,14 @@
+{
+  "created": "2026-11-08",
+  "method": "image_gen image generation using viewed local art references",
+  "originalGeneratedPath": "/workspace/generated_images/exec-170e0139-a9cc-4f9a-9db5-8e27e8cf3879.png",
+  "source": "source.png",
+  "sourceSha256": "03f5298106f0f3349ce5a557fcf9bc84d3192c46fcf37ff330acd5c5c7c494bd",
+  "prompt": "prompt.txt",
+  "references": [
+    "../home/garden-icons.webp",
+    "../furniture-set-icons/contact-preview.jpg"
+  ],
+  "technicalProcessing": "Pillow equal-grid cropping, alpha<24 cleanup, aspect-preserving packing, WebP atlas and review contact sheet; no artwork drawn in code.",
+  "coverage": "18 function categories plus room and owned modes. Room/ownership aliases reuse the corresponding art; search/directional controls retain simple SVGs. Item thumbnails and furniture models remain unchanged."
+}

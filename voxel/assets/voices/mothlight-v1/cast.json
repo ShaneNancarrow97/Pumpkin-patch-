@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "provider": "ElevenLabs",
+  "model": "eleven_multilingual_v2",
+  "description": "Stock voice performances for Pumpkin Patch and Mothlight. Character names are fictional roles; these are not impersonations of the owners.",
+  "settings": {
+    "stability": 0.55,
+    "similarity_boost": 0.75,
+    "style": 0.16,
+    "use_speaker_boost": true,
+    "speed": 1
+  },
+  "speakers": {
+    "narrator": {
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "direction": "Warm British fireside storyteller"
+    },
+    "natalie": {
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "voice_name": "Alice",
+      "direction": "Friendly, clear British host"
+    },
+    "shane": {
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "voice_name": "Daniel",
+      "direction": "Dry, friendly British host"
+    },
+    "elowen": {
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "direction": "Velvety, thoughtful moth witch"
+    },
+    "rowan": {
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "direction": "Warm, weathered, kindly carpenter"
+    },
+    "vesper": {
+      "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+      "voice_name": "Callum",
+      "direction": "Husky, gently mischievous tavern host"
+    },
+    "mabel": {
+      "voice_id": "XrExE9yKIg1WjnnlVkGX",
+      "voice_name": "Matilda",
+      "direction": "Bright, careful doll tailor"
+    },
+    "tansy": {
+      "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+      "voice_name": "Laura",
+      "direction": "Playful hedge gardener"
+    },
+    "opal": {
+      "voice_id": "EXAVITQu4vr4xnSDxMaL",
+      "voice_name": "Sarah",
+      "direction": "Cool, composed stonemason"
+    },
+    "cinder": {
+      "voice_id": "iP95p4xoKVk53GoZ742B",
+      "voice_name": "Chris",
+      "direction": "Warm, welcoming ghost chef"
+    },
+    "corvus": {
+      "voice_id": "SOYHLrjzK2X1ezoPC6cr",
+      "voice_name": "Harry",
+      "direction": "Bold raven showman"
+    },
+    "baron": {
+      "voice_id": "nPczCjzI2devNBz1zQrb",
+      "voice_name": "Brian",
+      "direction": "Deep, resonant collector"
+    },
+    "granny": {
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "voice_name": "Charlotte",
+      "direction": "Proposed warm, gravelly troll grandmother; unrecorded role, never an impersonation of a real person."
+    }
+  }
+}

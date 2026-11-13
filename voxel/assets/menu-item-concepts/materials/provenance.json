@@ -1,0 +1,24 @@
+{
+  "generator": "image_gen",
+  "reference": "voxel/assets/home/garden-icons.webp",
+  "original": "/workspace/generated_images/exec-8a6fcd47-a5bf-49f3-ad24-a846521c4dbb.png",
+  "grid": {
+    "columns": 4,
+    "rows": 3
+  },
+  "ids": [
+    "logs",
+    "stone",
+    "fibre",
+    "herbs",
+    "hardwood",
+    "moth-silk",
+    "iron",
+    "clay",
+    "moonstone",
+    "emberbloom",
+    "star-amber",
+    "satchel"
+  ],
+  "prompt": "Create a production GAME MENU ITEM SPRITE SHEET, matching the attached existing garden item icon art: detailed painterly voxel-inspired storybook Halloween sprites, softly stepped texture, lovely warm amber highlights and plum shadows, creamy edge lighting, isolated objects in three-quarter isometric view. This is NEW item artwork, not a page design. Exactly 12 different objects, uniform 4 columns by 3 rows, each centred within its equal square cell. Each icon occupies at most 75% of its cell with completely transparent generous gutters; no overlap, no labels, no words, no borders, no bases or background scenery. Full true alpha background, no baked checkerboard, shadow only small subtle contact shadow below each object. Designs must read clearly at 48–64px; one strong simple silhouette with rich close detail. Row1 LEFT TO RIGHT: (1) logs: three short rustic cut brown logs tied with cream twine, pale ring ends; (2) stone: cluster of three smooth cool grey stones, plainly ordinary rock; (3) fibre: small loose golden flax bundle with two loose curling strands, no leaves; (4) herbs: tied bunch of fresh sage-green leaves with a tiny violet flower. Row2: (5) hardwood: two dark mahogany split timber chunks with angular gold-brown cut ends, clearly darker and sturdier than logs; (6) moth silk: a soft pearl-lilac thread spool and curling silken ribbon, tiny moth-wing motif; (7) iron: three rough blue-grey iron ore nuggets with metallic silver seams, NOT gold; (8) clay: rounded warm terracotta clay lumps with one smooth swirl. Row3: (9) moonstone: a pale icy lilac crystalline stone with small crescent-shaped bright inclusion, cool glow contained within its slot; (10) emberbloom: a single flower with burnt-orange petals, amber centre and dark purple leaves; (11) star amber: translucent honey-gold amber crystal containing a tiny star shaped bright inclusion, warm NOT purple; (12) satchel: compact deep plum leather gathering bag with amber brass moth clasp and shoulder strap, closed simple main bag. Match the reference style faithfully. All 12 must be distinct, clean alpha, no glyphs/text or UI panels. Equal square slots, 4x3 grid."
+}

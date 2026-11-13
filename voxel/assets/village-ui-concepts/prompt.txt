@@ -1,0 +1,23 @@
+Create a production-ready transparent game UI sprite atlas for the existing cosy Halloween voxel game shown in the two supplied art references. Match their detailed painted voxel / miniature carved-object appearance, warm brass, walnut, deep plum, muted cream, amber lantern glow, softly bevelled block edges. These are premium readable navigation icons, NOT buttons or tiles: no border, no card, no background, no captions, no letters, no words.
+
+EXACTLY TWELVE independent icon illustrations in a regular 4-column by 3-row grid on a TRANSPARENT canvas. Each icon sits fully inside its own equal rectangular cell, generous transparent margin on every side, no overlap, centred and roughly equal visual weight. Slightly isometric view as in reference. Crisp strong silhouette, compact detail readable when reduced to 28–36 pixels. Avoid wispy effects extending out of cell and avoid dark muddy shading.
+
+Row 1 left to right:
+1 MAP: an open folded deep-plum parchment map with a clear warm gold winding route and a single little amber location pin, no writing.
+2 PEOPLE: two friendly stylised Halloween neighbour portrait bust miniatures, one in plum hood and one in copper scarf, clear two-person silhouette, no existing specific person portrait.
+3 QUESTS: a closed plum leather story/quest journal with brass corner mounts, bright cream crescent on cover and orange ribbon bookmark.
+4 SATCHEL: a plump walnut leather messenger satchel with plum flap, brass buckle and one small rolled parchment tucked inside.
+
+Row 2 left to right:
+5 WORKSHOP: compact little wooden crafting bench with warm lantern, visible brass cogwheel and upright tools; one recognisable workshop miniature, simple silhouette.
+6 BUILD: crossed polished brass hammer and purple-handled paintbrush, tasteful Halloween carved detail, no building behind them.
+7 FARM: three plump orange pumpkins with sage-green leaves on a small dark soil clod, one pumpkin with a tiny warm smile glow.
+8 HOME: a tiny cosy gothic walnut cottage with steep plum roof, warm amber doorway and lit window, distinct house silhouette.
+
+Row 3 left to right:
+9 TREE: a charming gnarled miniature moth tree, violet and burgundy autumn canopy, amber hollow in trunk and tiny cream moth, self-contained icon.
+10 LOCK: ornate but clear gold/brass padlock, keyhole dark plum, small crescent engraving, polished highlights.
+11 AXE: small sturdy chopping axe, copper-dark steel head and walnut handle wrapped in plum leather, diagonal silhouette.
+12 PICKAXE: sturdy silver-grey quarry pickaxe with brass collar and walnut/plum grip, diagonal silhouette different from chopping axe.
+
+Keep every object separated. Preserve transparent background. No extra objects, no scenery, no contact sheet labels, no real photography. The final icon art should belong to the same world as the referenced lanterns and furniture.

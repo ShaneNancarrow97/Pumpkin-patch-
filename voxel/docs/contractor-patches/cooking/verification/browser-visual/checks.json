@@ -1,0 +1,471 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Cooking-Final.html",
+  "sha256": "4d47c0003b9325fb16e65eac13ee9e33acee71c524785f70d9b9fee2a4b81659",
+  "focus": "visual-regression",
+  "started": "2026-10-26T01:42:05.005Z",
+  "fixture": "QA-only funds and level gates; game rules, UI handlers and HTML are unmodified",
+  "passed": true,
+  "checks": [
+    {
+      "ok": true,
+      "label": "final service area shows the purchased truck and unloading cart",
+      "data": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": 4.199999999999999,
+          "yaw": 0,
+          "progress": 1,
+          "distance": 10.2,
+          "unloading": true,
+          "unloadProgress": 0.33333333333333337,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 230,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null
+      }
+    },
+    {
+      "ok": true,
+      "label": "final terrain refinement retains the physical truck interaction"
+    },
+    {
+      "ok": true,
+      "label": "phone: menu fits with 44px touch targets",
+      "data": {
+        "width": 390,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "fold: menu fits with 44px touch targets",
+      "data": {
+        "width": 874,
+        "overflow": false,
+        "clipped": [],
+        "small": []
+      }
+    },
+    {
+      "ok": true,
+      "label": "both native food wall displays remain installed"
+    },
+    {
+      "ok": true,
+      "label": "visual scene changes and terrain focus cannot alter saved stock, cash or delivery progress"
+    },
+    {
+      "ok": true,
+      "label": "one main WebGL canvas remains"
+    },
+    {
+      "ok": true,
+      "label": "standalone HTML fetches no external runtime assets",
+      "data": []
+    },
+    {
+      "ok": true,
+      "label": "no page or console errors",
+      "data": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "samples": [
+    {
+      "name": "desktop-truck-service-pad",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": 4.199999999999999,
+          "yaw": 0,
+          "progress": 1,
+          "distance": 10.2,
+          "unloading": true,
+          "unloadProgress": 0.33333333333333337,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 230,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 36,
+        "triangles": 501522,
+        "geometries": 62,
+        "textures": 19
+      }
+    },
+    {
+      "name": "phone-delivery-menu",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": 4.199999999999999,
+          "yaw": 0,
+          "progress": 1,
+          "distance": 10.2,
+          "unloading": true,
+          "unloadProgress": 0.33333333333333337,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 230,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 390,
+        "bufferHeight": 844,
+        "postprocessWidth": 390,
+        "postprocessHeight": 844,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.002564102564102564,
+          0.001184834123222749
+        ],
+        "touchDevice": true,
+        "calls": 24,
+        "triangles": 499030,
+        "geometries": 62,
+        "textures": 19
+      }
+    },
+    {
+      "name": "phone-truck-service-pad",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": 4.199999999999999,
+          "yaw": 0,
+          "progress": 1,
+          "distance": 10.2,
+          "unloading": true,
+          "unloadProgress": 0.33333333333333337,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 230,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 390,
+        "bufferHeight": 844,
+        "postprocessWidth": 390,
+        "postprocessHeight": 844,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.002564102564102564,
+          0.001184834123222749
+        ],
+        "touchDevice": true,
+        "calls": 37,
+        "triangles": 505530,
+        "geometries": 62,
+        "textures": 19
+      }
+    },
+    {
+      "name": "fold-delivery-menu",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": 4.199999999999999,
+          "yaw": 0,
+          "progress": 1,
+          "distance": 10.2,
+          "unloading": true,
+          "unloadProgress": 0.33333333333333337,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 230,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 114,
+        "triangles": 616406,
+        "geometries": 66,
+        "textures": 19
+      }
+    },
+    {
+      "name": "fold-truck-service-pad",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": 4.199999999999999,
+          "yaw": 0,
+          "progress": 1,
+          "distance": 10.2,
+          "unloading": true,
+          "unloadProgress": 0.33333333333333337,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 230,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 874,
+        "bufferHeight": 787,
+        "postprocessWidth": 874,
+        "postprocessHeight": 787,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.0011441647597254005,
+          0.0012706480304955528
+        ],
+        "touchDevice": true,
+        "calls": 44,
+        "triangles": 504462,
+        "geometries": 67,
+        "textures": 19
+      }
+    },
+    {
+      "name": "desktop-food-wall-displays",
+      "status": {
+        "purchased": true,
+        "built": true,
+        "bounds": {
+          "x0": 37.8,
+          "x1": 46.1,
+          "z0": 0.8,
+          "z1": 5.4
+        },
+        "route": {
+          "x0": 38.08,
+          "x1": 39.52,
+          "z0": -6.9,
+          "z1": 4.9
+        },
+        "receiverPoint": {
+          "x": 39.65,
+          "z": 4.45
+        },
+        "cart": {
+          "visible": true,
+          "x": 38.8,
+          "z": 4.199999999999999,
+          "yaw": 0,
+          "progress": 1,
+          "distance": 10.2,
+          "unloading": true,
+          "unloadProgress": 0.33333333333333337,
+          "orderId": 1
+        },
+        "chefVisible": false,
+        "boxes": 230,
+        "cleared": 434,
+        "lights": 0,
+        "displays": [
+          {
+            "slot": 0,
+            "x": 0.07999999999998408,
+            "y": 1.55,
+            "z": 1.45,
+            "yaw": 1.5707963267948966
+          },
+          {
+            "slot": 1,
+            "x": 9.920000000000016,
+            "y": 1.75,
+            "z": 4.7,
+            "yaw": -1.5707963267948966
+          }
+        ],
+        "receiver": null
+      },
+      "rendering": {
+        "quality": "performance",
+        "pixelRatio": 1,
+        "postprocessRatio": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 800,
+        "postprocessWidth": 1280,
+        "postprocessHeight": 800,
+        "antialias": "canvas",
+        "antialiasResolution": [
+          0.00078125,
+          0.00125
+        ],
+        "touchDevice": true,
+        "calls": 26,
+        "triangles": 249620,
+        "geometries": 83,
+        "textures": 19
+      }
+    }
+  ],
+  "rendering": "Single Chromium/SwiftShader process; performance/DPR1, bloom/shadows/mist/lake lights off. Viewport checks do not prove physical Fold frame rate. Managed policy prevents direct file:// and native fullscreen."
+}

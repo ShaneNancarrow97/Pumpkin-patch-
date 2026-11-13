@@ -1,0 +1,250 @@
+[
+  {
+    "id": "copper-range",
+    "source": "furniture",
+    "cell": 0,
+    "size": [
+      453,
+      495
+    ],
+    "anchor": [
+      226,
+      495
+    ],
+    "mount": "floor",
+    "suggestedPrice": 14000,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "preserves-dresser",
+    "source": "furniture",
+    "cell": 1,
+    "size": [
+      512,
+      506
+    ],
+    "anchor": [
+      256,
+      506
+    ],
+    "mount": "floor",
+    "suggestedPrice": 10000,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "copper-sink-island",
+    "source": "furniture",
+    "cell": 2,
+    "size": [
+      499,
+      404
+    ],
+    "anchor": [
+      250,
+      404
+    ],
+    "mount": "floor",
+    "suggestedPrice": 12000,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "moon-canopy-bed",
+    "source": "furniture",
+    "cell": 3,
+    "size": [
+      483,
+      499
+    ],
+    "anchor": [
+      242,
+      499
+    ],
+    "mount": "floor",
+    "suggestedPrice": 22000,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "moon-wardrobe",
+    "source": "furniture",
+    "cell": 4,
+    "size": [
+      429,
+      483
+    ],
+    "anchor": [
+      214,
+      483
+    ],
+    "mount": "floor",
+    "suggestedPrice": 16000,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "moon-vanity",
+    "source": "furniture",
+    "cell": 5,
+    "size": [
+      430,
+      494
+    ],
+    "anchor": [
+      215,
+      494
+    ],
+    "mount": "floor",
+    "suggestedPrice": 18000,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "copper-pan-rail",
+    "source": "wall-decor",
+    "cell": 0,
+    "size": [
+      499,
+      411
+    ],
+    "anchor": [
+      250,
+      206
+    ],
+    "mount": "wall",
+    "suggestedPrice": 4500,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "gothic-spice-cabinet",
+    "source": "wall-decor",
+    "cell": 1,
+    "size": [
+      512,
+      504
+    ],
+    "anchor": [
+      256,
+      252
+    ],
+    "mount": "wall",
+    "suggestedPrice": 6500,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "iron-utensil-rack",
+    "source": "wall-decor",
+    "cell": 2,
+    "size": [
+      481,
+      446
+    ],
+    "anchor": [
+      240,
+      223
+    ],
+    "mount": "wall",
+    "suggestedPrice": 3500,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "recipe-teapot-shelf",
+    "source": "wall-decor",
+    "cell": 3,
+    "size": [
+      495,
+      362
+    ],
+    "anchor": [
+      248,
+      181
+    ],
+    "mount": "wall",
+    "suggestedPrice": 5000,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "crescent-mirror",
+    "source": "wall-decor",
+    "cell": 4,
+    "size": [
+      512,
+      487
+    ],
+    "anchor": [
+      256,
+      244
+    ],
+    "mount": "wall",
+    "suggestedPrice": 8000,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "haunted-manor-painting",
+    "source": "wall-decor",
+    "cell": 5,
+    "size": [
+      489,
+      490
+    ],
+    "anchor": [
+      244,
+      245
+    ],
+    "mount": "wall",
+    "suggestedPrice": 11000,
+    "status": "art-ready; catalogue registration pending"
+  },
+  {
+    "id": "natalie-freddy",
+    "frames": [
+      "natalie-freddy-0.webp",
+      "natalie-freddy-1.webp",
+      "natalie-freddy-2.webp",
+      "natalie-freddy-3.webp",
+      "natalie-freddy-4.webp",
+      "natalie-freddy-5.webp",
+      "natalie-freddy-6.webp",
+      "natalie-freddy-7.webp",
+      "natalie-freddy-8.webp"
+    ],
+    "idle": [
+      0,
+      1,
+      2
+    ],
+    "walk": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "status": "direct original-sprite edit; runtime anchor normalization pending"
+  },
+  {
+    "id": "shane-jason",
+    "frames": [
+      "shane-jason-0.webp",
+      "shane-jason-1.webp",
+      "shane-jason-2.webp",
+      "shane-jason-3.webp",
+      "shane-jason-4.webp",
+      "shane-jason-5.webp",
+      "shane-jason-6.webp",
+      "shane-jason-7.webp",
+      "shane-jason-8.webp"
+    ],
+    "idle": [
+      0,
+      1,
+      2
+    ],
+    "walk": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "status": "direct original-sprite edit; runtime anchor normalization pending"
+  }
+]

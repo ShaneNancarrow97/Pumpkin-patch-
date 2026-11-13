@@ -1,0 +1,4206 @@
+{
+  "version": 1,
+  "generator": "OpenAI image generation; original paintings supplied as style references",
+  "baker": {
+    "file": "tools/bake-village-sprites.py",
+    "pillowVersion": "12.3.0",
+    "alphaCutoff": 32,
+    "bodyAlphaCutoff": 108,
+    "resize": "Lanczos; one common scalar per character",
+    "webp": {
+      "quality": 90,
+      "method": 6,
+      "exact": true
+    }
+  },
+  "cell": {
+    "width": 256,
+    "height": 320,
+    "anchor": [
+      128,
+      300
+    ],
+    "targetVisibleHeight": 256
+  },
+  "sources": {
+    "green": {
+      "file": "assets/village-cast-concepts/green-raw.png",
+      "generatedFile": "exec-5d2ff10b-31d0-4dd5-8d62-628420521ad8.png",
+      "sha256": "1b6f8906be21395240037226112f71af864f1b7ce63203a87ae539c45336b83d",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA"
+    },
+    "copse": {
+      "file": "assets/village-cast-concepts/copse-raw.png",
+      "generatedFile": "exec-4dafbc14-c256-47ff-ac7f-195e055158c3.png",
+      "sha256": "f2a411a212a4e9b83e4cc69fb2f24c4cb9983a78315a60ce017cbae3995c1472",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA"
+    },
+    "night": {
+      "file": "assets/village-cast-concepts/night-raw.png",
+      "generatedFile": "village-night-raw.png",
+      "sha256": "e72654c9d3fb0763e61d5c40d81591b7a66537999ec85d1d7693358a5703ccaf",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA"
+    },
+    "approved-cast": {
+      "file": "assets/village-cast-concepts/approved-cast.png",
+      "generatedFile": "exec-e195d883-c557-480c-8beb-dec25c39a00e.png",
+      "sha256": "57877f70e4b10fd86fc7552211a6608dad9fa7ac993cf864ec728f7c642ad9b0",
+      "width": 1226,
+      "height": 1283,
+      "mode": "RGBA"
+    }
+  },
+  "characters": {
+    "elowen": {
+      "source": "green",
+      "sourceRow": 0,
+      "sharedScale": 0.9142857142857143,
+      "sourceVisibleHeight": 280,
+      "rows": 256,
+      "height": 2.3,
+      "runtime": {
+        "file": "assets/village/elowen.webp",
+        "sha256": "bf1e6b5cf962092f2699b73cc38bfddbb410f5e4a81e665b6eebb2ee8c0715ea",
+        "width": 1536,
+        "height": 320,
+        "bytes": 146586
+      },
+      "frames": [
+        {
+          "pose": "idle",
+          "sourceGridBox": [
+            0,
+            0,
+            296,
+            296
+          ],
+          "sourceCropBox": [
+            0,
+            0,
+            296,
+            296
+          ],
+          "sourceAlphaBounds": [
+            78,
+            10,
+            271,
+            287
+          ],
+          "sourceCleanAlphaBounds": [
+            78,
+            10,
+            271,
+            287
+          ],
+          "sourceBodyBounds": [
+            78,
+            10,
+            270,
+            286
+          ],
+          "sourceAnchor": [
+            172,
+            287
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            271,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.40625,
+            296.40625
+          ],
+          "outputOffset": [
+            -29,
+            38
+          ],
+          "outputAlphaBounds": [
+            40,
+            45,
+            221,
+            303
+          ],
+          "outputBodyBounds": [
+            43,
+            47,
+            218,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-contact",
+          "sourceGridBox": [
+            296,
+            0,
+            591,
+            296
+          ],
+          "sourceCropBox": [
+            296,
+            0,
+            591,
+            296
+          ],
+          "sourceAlphaBounds": [
+            70,
+            10,
+            284,
+            290
+          ],
+          "sourceCleanAlphaBounds": [
+            70,
+            10,
+            284,
+            290
+          ],
+          "sourceBodyBounds": [
+            71,
+            10,
+            284,
+            290
+          ],
+          "sourceAnchor": [
+            169,
+            290
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "left",
+          "resizeDimensions": [
+            270,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.3125,
+            296.40625
+          ],
+          "outputOffset": [
+            -27,
+            35
+          ],
+          "outputAlphaBounds": [
+            37,
+            42,
+            235,
+            303
+          ],
+          "outputBodyBounds": [
+            38,
+            44,
+            232,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-pass",
+          "sourceGridBox": [
+            591,
+            0,
+            887,
+            296
+          ],
+          "sourceCropBox": [
+            591,
+            0,
+            887,
+            296
+          ],
+          "sourceAlphaBounds": [
+            72,
+            8,
+            271,
+            287
+          ],
+          "sourceCleanAlphaBounds": [
+            72,
+            8,
+            271,
+            287
+          ],
+          "sourceBodyBounds": [
+            73,
+            8,
+            271,
+            287
+          ],
+          "sourceAnchor": [
+            168,
+            287
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            271,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.40625,
+            296.40625
+          ],
+          "outputOffset": [
+            -26,
+            38
+          ],
+          "outputAlphaBounds": [
+            38,
+            43,
+            224,
+            303
+          ],
+          "outputBodyBounds": [
+            41,
+            46,
+            221,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-contact",
+          "sourceGridBox": [
+            887,
+            0,
+            1183,
+            296
+          ],
+          "sourceCropBox": [
+            887,
+            0,
+            1183,
+            296
+          ],
+          "sourceAlphaBounds": [
+            72,
+            9,
+            281,
+            288
+          ],
+          "sourceCleanAlphaBounds": [
+            72,
+            9,
+            281,
+            288
+          ],
+          "sourceBodyBounds": [
+            72,
+            9,
+            280,
+            287
+          ],
+          "sourceAnchor": [
+            167,
+            288
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "right",
+          "resizeDimensions": [
+            271,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.40625,
+            296.40625
+          ],
+          "outputOffset": [
+            -25,
+            37
+          ],
+          "outputAlphaBounds": [
+            38,
+            43,
+            232,
+            302
+          ],
+          "outputBodyBounds": [
+            41,
+            45,
+            231,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-pass",
+          "sourceGridBox": [
+            1183,
+            0,
+            1478,
+            296
+          ],
+          "sourceCropBox": [
+            1183,
+            0,
+            1478,
+            296
+          ],
+          "sourceAlphaBounds": [
+            66,
+            8,
+            273,
+            286
+          ],
+          "sourceCleanAlphaBounds": [
+            66,
+            8,
+            273,
+            286
+          ],
+          "sourceBodyBounds": [
+            67,
+            8,
+            272,
+            285
+          ],
+          "sourceAnchor": [
+            168,
+            286
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            270,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.3125,
+            296.40625
+          ],
+          "outputOffset": [
+            -26,
+            39
+          ],
+          "outputAlphaBounds": [
+            32,
+            44,
+            226,
+            303
+          ],
+          "outputBodyBounds": [
+            35,
+            47,
+            223,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "wave",
+          "sourceGridBox": [
+            1478,
+            0,
+            1774,
+            296
+          ],
+          "sourceCropBox": [
+            1478,
+            0,
+            1774,
+            296
+          ],
+          "sourceAlphaBounds": [
+            48,
+            8,
+            252,
+            288
+          ],
+          "sourceCleanAlphaBounds": [
+            48,
+            8,
+            252,
+            288
+          ],
+          "sourceBodyBounds": [
+            49,
+            9,
+            251,
+            287
+          ],
+          "sourceAnchor": [
+            158,
+            288
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            271,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.40625,
+            296.40625
+          ],
+          "outputOffset": [
+            -16,
+            37
+          ],
+          "outputAlphaBounds": [
+            26,
+            42,
+            217,
+            303
+          ],
+          "outputBodyBounds": [
+            28,
+            45,
+            213,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        }
+      ]
+    },
+    "rowan": {
+      "source": "green",
+      "sourceRow": 1,
+      "sharedScale": 0.9343065693430657,
+      "sourceVisibleHeight": 274,
+      "rows": 255,
+      "height": 2.3,
+      "runtime": {
+        "file": "assets/village/rowan.webp",
+        "sha256": "58359d48e4e4e77aef372731f953e205afade982926dc2b89ccc4f2f6d883349",
+        "width": 1536,
+        "height": 320,
+        "bytes": 145742
+      },
+      "frames": [
+        {
+          "pose": "idle",
+          "sourceGridBox": [
+            0,
+            296,
+            296,
+            591
+          ],
+          "sourceCropBox": [
+            0,
+            296,
+            296,
+            591
+          ],
+          "sourceAlphaBounds": [
+            70,
+            3,
+            261,
+            295
+          ],
+          "sourceCleanAlphaBounds": [
+            70,
+            3,
+            261,
+            276
+          ],
+          "sourceBodyBounds": [
+            71,
+            3,
+            260,
+            276
+          ],
+          "sourceAnchor": [
+            166,
+            276
+          ],
+          "removedEdgeFragments": [
+            {
+              "pixels": 49,
+              "bounds": [
+                156,
+                292,
+                178,
+                295
+              ]
+            }
+          ],
+          "contactSide": null,
+          "resizeDimensions": [
+            277,
+            276
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4765625,
+            295.40625
+          ],
+          "outputOffset": [
+            -27,
+            42
+          ],
+          "outputAlphaBounds": [
+            36,
+            42,
+            219,
+            302
+          ],
+          "outputBodyBounds": [
+            39,
+            45,
+            216,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-contact",
+          "sourceGridBox": [
+            296,
+            296,
+            591,
+            591
+          ],
+          "sourceCropBox": [
+            296,
+            296,
+            591,
+            591
+          ],
+          "sourceAlphaBounds": [
+            61,
+            5,
+            264,
+            275
+          ],
+          "sourceCleanAlphaBounds": [
+            61,
+            5,
+            264,
+            275
+          ],
+          "sourceBodyBounds": [
+            62,
+            5,
+            264,
+            275
+          ],
+          "sourceAnchor": [
+            163,
+            275
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "left",
+          "resizeDimensions": [
+            276,
+            276
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.40625,
+            295.40625
+          ],
+          "outputOffset": [
+            -24,
+            43
+          ],
+          "outputAlphaBounds": [
+            33,
+            45,
+            225,
+            302
+          ],
+          "outputBodyBounds": [
+            34,
+            48,
+            222,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-pass",
+          "sourceGridBox": [
+            591,
+            296,
+            887,
+            591
+          ],
+          "sourceCropBox": [
+            591,
+            296,
+            887,
+            591
+          ],
+          "sourceAlphaBounds": [
+            52,
+            4,
+            258,
+            295
+          ],
+          "sourceCleanAlphaBounds": [
+            52,
+            4,
+            258,
+            277
+          ],
+          "sourceBodyBounds": [
+            52,
+            5,
+            257,
+            277
+          ],
+          "sourceAnchor": [
+            162,
+            277
+          ],
+          "removedEdgeFragments": [
+            {
+              "pixels": 48,
+              "bounds": [
+                144,
+                292,
+                165,
+                295
+              ]
+            }
+          ],
+          "contactSide": null,
+          "resizeDimensions": [
+            277,
+            276
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4765625,
+            295.40625
+          ],
+          "outputOffset": [
+            -23,
+            41
+          ],
+          "outputAlphaBounds": [
+            23,
+            42,
+            219,
+            302
+          ],
+          "outputBodyBounds": [
+            26,
+            46,
+            217,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-contact",
+          "sourceGridBox": [
+            887,
+            296,
+            1183,
+            591
+          ],
+          "sourceCropBox": [
+            887,
+            296,
+            1183,
+            591
+          ],
+          "sourceAlphaBounds": [
+            57,
+            5,
+            253,
+            295
+          ],
+          "sourceCleanAlphaBounds": [
+            57,
+            5,
+            253,
+            278
+          ],
+          "sourceBodyBounds": [
+            58,
+            5,
+            253,
+            277
+          ],
+          "sourceAnchor": [
+            160,
+            278
+          ],
+          "removedEdgeFragments": [
+            {
+              "pixels": 12,
+              "bounds": [
+                141,
+                294,
+                153,
+                295
+              ]
+            }
+          ],
+          "contactSide": "right",
+          "resizeDimensions": [
+            277,
+            276
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4765625,
+            295.40625
+          ],
+          "outputOffset": [
+            -21,
+            40
+          ],
+          "outputAlphaBounds": [
+            30,
+            42,
+            218,
+            302
+          ],
+          "outputBodyBounds": [
+            33,
+            45,
+            215,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-pass",
+          "sourceGridBox": [
+            1183,
+            296,
+            1478,
+            591
+          ],
+          "sourceCropBox": [
+            1183,
+            296,
+            1478,
+            591
+          ],
+          "sourceAlphaBounds": [
+            59,
+            3,
+            253,
+            295
+          ],
+          "sourceCleanAlphaBounds": [
+            59,
+            3,
+            253,
+            277
+          ],
+          "sourceBodyBounds": [
+            59,
+            3,
+            252,
+            276
+          ],
+          "sourceAnchor": [
+            159,
+            277
+          ],
+          "removedEdgeFragments": [
+            {
+              "pixels": 52,
+              "bounds": [
+                143,
+                292,
+                166,
+                295
+              ]
+            }
+          ],
+          "contactSide": null,
+          "resizeDimensions": [
+            276,
+            276
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.40625,
+            295.40625
+          ],
+          "outputOffset": [
+            -21,
+            41
+          ],
+          "outputAlphaBounds": [
+            32,
+            41,
+            218,
+            302
+          ],
+          "outputBodyBounds": [
+            34,
+            44,
+            215,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "wave",
+          "sourceGridBox": [
+            1478,
+            296,
+            1774,
+            591
+          ],
+          "sourceCropBox": [
+            1478,
+            296,
+            1774,
+            591
+          ],
+          "sourceAlphaBounds": [
+            57,
+            6,
+            229,
+            295
+          ],
+          "sourceCleanAlphaBounds": [
+            57,
+            6,
+            229,
+            278
+          ],
+          "sourceBodyBounds": [
+            58,
+            6,
+            229,
+            278
+          ],
+          "sourceAnchor": [
+            155,
+            278
+          ],
+          "removedEdgeFragments": [
+            {
+              "pixels": 31,
+              "bounds": [
+                135,
+                293,
+                153,
+                295
+              ]
+            }
+          ],
+          "contactSide": null,
+          "resizeDimensions": [
+            277,
+            276
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4765625,
+            295.40625
+          ],
+          "outputOffset": [
+            -17,
+            40
+          ],
+          "outputAlphaBounds": [
+            34,
+            43,
+            197,
+            302
+          ],
+          "outputBodyBounds": [
+            37,
+            46,
+            197,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        }
+      ]
+    },
+    "vesper": {
+      "source": "green",
+      "sourceRow": 2,
+      "sharedScale": 0.89198606271777,
+      "sourceVisibleHeight": 287,
+      "rows": 255,
+      "height": 2.3,
+      "runtime": {
+        "file": "assets/village/vesper.webp",
+        "sha256": "d76a85039d2fa4cd33fd3c8968d0dc17568a522a694a56fb0091a21a5ecc225b",
+        "width": 1536,
+        "height": 320,
+        "bytes": 148066
+      },
+      "frames": [
+        {
+          "pose": "idle",
+          "sourceGridBox": [
+            0,
+            591,
+            296,
+            887
+          ],
+          "sourceCropBox": [
+            0,
+            584,
+            296,
+            887
+          ],
+          "sourceAlphaBounds": [
+            69,
+            4,
+            270,
+            291
+          ],
+          "sourceCleanAlphaBounds": [
+            69,
+            4,
+            270,
+            291
+          ],
+          "sourceBodyBounds": [
+            69,
+            5,
+            270,
+            291
+          ],
+          "sourceAnchor": [
+            166,
+            291
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            264,
+            270
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.96875,
+            302.6953125
+          ],
+          "outputOffset": [
+            -20,
+            40
+          ],
+          "outputAlphaBounds": [
+            39,
+            41,
+            223,
+            302
+          ],
+          "outputBodyBounds": [
+            42,
+            44,
+            221,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-contact",
+          "sourceGridBox": [
+            296,
+            591,
+            591,
+            887
+          ],
+          "sourceCropBox": [
+            296,
+            584,
+            591,
+            887
+          ],
+          "sourceAlphaBounds": [
+            61,
+            7,
+            280,
+            291
+          ],
+          "sourceCleanAlphaBounds": [
+            61,
+            7,
+            280,
+            291
+          ],
+          "sourceBodyBounds": [
+            61,
+            7,
+            279,
+            290
+          ],
+          "sourceAnchor": [
+            164,
+            291
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "left",
+          "resizeDimensions": [
+            263,
+            270
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            294.84765625,
+            302.6953125
+          ],
+          "outputOffset": [
+            -18,
+            40
+          ],
+          "outputAlphaBounds": [
+            34,
+            44,
+            234,
+            302
+          ],
+          "outputBodyBounds": [
+            37,
+            47,
+            231,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-pass",
+          "sourceGridBox": [
+            591,
+            591,
+            887,
+            887
+          ],
+          "sourceCropBox": [
+            591,
+            584,
+            887,
+            887
+          ],
+          "sourceAlphaBounds": [
+            60,
+            4,
+            268,
+            290
+          ],
+          "sourceCleanAlphaBounds": [
+            60,
+            4,
+            268,
+            290
+          ],
+          "sourceBodyBounds": [
+            60,
+            5,
+            268,
+            290
+          ],
+          "sourceAnchor": [
+            163,
+            290
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            264,
+            270
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.96875,
+            302.6953125
+          ],
+          "outputOffset": [
+            -17,
+            41
+          ],
+          "outputAlphaBounds": [
+            34,
+            42,
+            224,
+            302
+          ],
+          "outputBodyBounds": [
+            37,
+            45,
+            222,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-contact",
+          "sourceGridBox": [
+            887,
+            591,
+            1183,
+            887
+          ],
+          "sourceCropBox": [
+            887,
+            584,
+            1183,
+            887
+          ],
+          "sourceAlphaBounds": [
+            52,
+            6,
+            267,
+            291
+          ],
+          "sourceCleanAlphaBounds": [
+            52,
+            6,
+            267,
+            291
+          ],
+          "sourceBodyBounds": [
+            53,
+            6,
+            266,
+            290
+          ],
+          "sourceAnchor": [
+            163,
+            291
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "right",
+          "resizeDimensions": [
+            264,
+            270
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.96875,
+            302.6953125
+          ],
+          "outputOffset": [
+            -17,
+            40
+          ],
+          "outputAlphaBounds": [
+            27,
+            43,
+            223,
+            302
+          ],
+          "outputBodyBounds": [
+            30,
+            46,
+            221,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-pass",
+          "sourceGridBox": [
+            1183,
+            591,
+            1478,
+            887
+          ],
+          "sourceCropBox": [
+            1183,
+            584,
+            1478,
+            887
+          ],
+          "sourceAlphaBounds": [
+            53,
+            4,
+            262,
+            290
+          ],
+          "sourceCleanAlphaBounds": [
+            53,
+            4,
+            262,
+            290
+          ],
+          "sourceBodyBounds": [
+            54,
+            4,
+            262,
+            290
+          ],
+          "sourceAnchor": [
+            162,
+            290
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            263,
+            270
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            294.84765625,
+            302.6953125
+          ],
+          "outputOffset": [
+            -17,
+            41
+          ],
+          "outputAlphaBounds": [
+            28,
+            42,
+            219,
+            302
+          ],
+          "outputBodyBounds": [
+            31,
+            45,
+            216,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "wave",
+          "sourceGridBox": [
+            1478,
+            591,
+            1774,
+            887
+          ],
+          "sourceCropBox": [
+            1478,
+            584,
+            1774,
+            887
+          ],
+          "sourceAlphaBounds": [
+            47,
+            5,
+            249,
+            291
+          ],
+          "sourceCleanAlphaBounds": [
+            47,
+            5,
+            249,
+            291
+          ],
+          "sourceBodyBounds": [
+            48,
+            5,
+            248,
+            291
+          ],
+          "sourceAnchor": [
+            162,
+            291
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            264,
+            270
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.96875,
+            302.6953125
+          ],
+          "outputOffset": [
+            -17,
+            40
+          ],
+          "outputAlphaBounds": [
+            23,
+            42,
+            207,
+            302
+          ],
+          "outputBodyBounds": [
+            26,
+            45,
+            204,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        }
+      ]
+    },
+    "mabel": {
+      "source": "copse",
+      "sourceRow": 0,
+      "sharedScale": 0.924187725631769,
+      "sourceVisibleHeight": 277,
+      "rows": 254,
+      "height": 2.3,
+      "runtime": {
+        "file": "assets/village/mabel.webp",
+        "sha256": "5e12fc34ad395d33daad7c769541ab27ffc5c7db27018dc340e15e0c777ae4fa",
+        "width": 1536,
+        "height": 320,
+        "bytes": 128138
+      },
+      "frames": [
+        {
+          "pose": "idle",
+          "sourceGridBox": [
+            0,
+            0,
+            296,
+            296
+          ],
+          "sourceCropBox": [
+            0,
+            0,
+            296,
+            296
+          ],
+          "sourceAlphaBounds": [
+            89,
+            8,
+            252,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            89,
+            8,
+            252,
+            283
+          ],
+          "sourceBodyBounds": [
+            89,
+            8,
+            251,
+            282
+          ],
+          "sourceAnchor": [
+            174,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            274,
+            274
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4765625,
+            296.4765625
+          ],
+          "outputOffset": [
+            -33,
+            38
+          ],
+          "outputAlphaBounds": [
+            47,
+            43,
+            202,
+            302
+          ],
+          "outputBodyBounds": [
+            50,
+            46,
+            199,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-contact",
+          "sourceGridBox": [
+            296,
+            0,
+            591,
+            296
+          ],
+          "sourceCropBox": [
+            296,
+            0,
+            591,
+            296
+          ],
+          "sourceAlphaBounds": [
+            91,
+            7,
+            253,
+            284
+          ],
+          "sourceCleanAlphaBounds": [
+            91,
+            7,
+            253,
+            284
+          ],
+          "sourceBodyBounds": [
+            91,
+            7,
+            252,
+            283
+          ],
+          "sourceAnchor": [
+            171,
+            284
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "left",
+          "resizeDimensions": [
+            273,
+            274
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.39453125,
+            296.4765625
+          ],
+          "outputOffset": [
+            -30,
+            38
+          ],
+          "outputAlphaBounds": [
+            52,
+            42,
+            206,
+            303
+          ],
+          "outputBodyBounds": [
+            55,
+            45,
+            203,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-pass",
+          "sourceGridBox": [
+            591,
+            0,
+            887,
+            296
+          ],
+          "sourceCropBox": [
+            591,
+            0,
+            887,
+            296
+          ],
+          "sourceAlphaBounds": [
+            78,
+            8,
+            246,
+            284
+          ],
+          "sourceCleanAlphaBounds": [
+            78,
+            8,
+            246,
+            284
+          ],
+          "sourceBodyBounds": [
+            80,
+            8,
+            245,
+            283
+          ],
+          "sourceAnchor": [
+            170,
+            284
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            274,
+            274
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4765625,
+            296.4765625
+          ],
+          "outputOffset": [
+            -29,
+            38
+          ],
+          "outputAlphaBounds": [
+            41,
+            43,
+            201,
+            303
+          ],
+          "outputBodyBounds": [
+            45,
+            46,
+            197,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-contact",
+          "sourceGridBox": [
+            887,
+            0,
+            1183,
+            296
+          ],
+          "sourceCropBox": [
+            887,
+            0,
+            1183,
+            296
+          ],
+          "sourceAlphaBounds": [
+            77,
+            9,
+            243,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            77,
+            9,
+            243,
+            283
+          ],
+          "sourceBodyBounds": [
+            78,
+            10,
+            243,
+            283
+          ],
+          "sourceAnchor": [
+            170,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "right",
+          "resizeDimensions": [
+            274,
+            274
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4765625,
+            296.4765625
+          ],
+          "outputOffset": [
+            -29,
+            38
+          ],
+          "outputAlphaBounds": [
+            40,
+            44,
+            198,
+            302
+          ],
+          "outputBodyBounds": [
+            43,
+            47,
+            195,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-pass",
+          "sourceGridBox": [
+            1183,
+            0,
+            1478,
+            296
+          ],
+          "sourceCropBox": [
+            1183,
+            0,
+            1478,
+            296
+          ],
+          "sourceAlphaBounds": [
+            66,
+            9,
+            237,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            66,
+            9,
+            237,
+            283
+          ],
+          "sourceBodyBounds": [
+            66,
+            9,
+            236,
+            282
+          ],
+          "sourceAnchor": [
+            169,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            273,
+            274
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.39453125,
+            296.4765625
+          ],
+          "outputOffset": [
+            -28,
+            38
+          ],
+          "outputAlphaBounds": [
+            32,
+            44,
+            192,
+            302
+          ],
+          "outputBodyBounds": [
+            33,
+            47,
+            191,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "wave",
+          "sourceGridBox": [
+            1478,
+            0,
+            1774,
+            296
+          ],
+          "sourceCropBox": [
+            1478,
+            0,
+            1774,
+            296
+          ],
+          "sourceAlphaBounds": [
+            56,
+            7,
+            218,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            56,
+            7,
+            218,
+            283
+          ],
+          "sourceBodyBounds": [
+            57,
+            8,
+            218,
+            282
+          ],
+          "sourceAnchor": [
+            166,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            274,
+            274
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4765625,
+            296.4765625
+          ],
+          "outputOffset": [
+            -25,
+            38
+          ],
+          "outputAlphaBounds": [
+            24,
+            42,
+            179,
+            302
+          ],
+          "outputBodyBounds": [
+            27,
+            45,
+            176,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        }
+      ]
+    },
+    "tansy": {
+      "source": "copse",
+      "sourceRow": 1,
+      "sharedScale": 0.9175627240143369,
+      "sourceVisibleHeight": 279,
+      "rows": 255,
+      "height": 2.3,
+      "runtime": {
+        "file": "assets/village/tansy.webp",
+        "sha256": "e7c43f8a0a548503573f53a539f94968a7105d467be87f6d033e42fcef3f1300",
+        "width": 1536,
+        "height": 320,
+        "bytes": 141354
+      },
+      "frames": [
+        {
+          "pose": "idle",
+          "sourceGridBox": [
+            0,
+            296,
+            296,
+            591
+          ],
+          "sourceCropBox": [
+            0,
+            296,
+            296,
+            591
+          ],
+          "sourceAlphaBounds": [
+            69,
+            2,
+            260,
+            281
+          ],
+          "sourceCleanAlphaBounds": [
+            69,
+            2,
+            260,
+            281
+          ],
+          "sourceBodyBounds": [
+            70,
+            3,
+            260,
+            280
+          ],
+          "sourceAnchor": [
+            169,
+            281
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            272,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4375,
+            295.34765625
+          ],
+          "outputOffset": [
+            -27,
+            42
+          ],
+          "outputAlphaBounds": [
+            34,
+            42,
+            214,
+            302
+          ],
+          "outputBodyBounds": [
+            37,
+            45,
+            211,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-contact",
+          "sourceGridBox": [
+            296,
+            296,
+            591,
+            591
+          ],
+          "sourceCropBox": [
+            296,
+            296,
+            591,
+            591
+          ],
+          "sourceAlphaBounds": [
+            60,
+            4,
+            264,
+            281
+          ],
+          "sourceCleanAlphaBounds": [
+            60,
+            4,
+            264,
+            281
+          ],
+          "sourceBodyBounds": [
+            60,
+            5,
+            262,
+            280
+          ],
+          "sourceAnchor": [
+            164,
+            281
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "left",
+          "resizeDimensions": [
+            271,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.34765625,
+            295.34765625
+          ],
+          "outputOffset": [
+            -22,
+            42
+          ],
+          "outputAlphaBounds": [
+            33,
+            43,
+            222,
+            302
+          ],
+          "outputBodyBounds": [
+            33,
+            47,
+            218,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-pass",
+          "sourceGridBox": [
+            591,
+            296,
+            887,
+            591
+          ],
+          "sourceCropBox": [
+            591,
+            296,
+            887,
+            591
+          ],
+          "sourceAlphaBounds": [
+            61,
+            2,
+            255,
+            281
+          ],
+          "sourceCleanAlphaBounds": [
+            61,
+            2,
+            255,
+            281
+          ],
+          "sourceBodyBounds": [
+            61,
+            3,
+            255,
+            281
+          ],
+          "sourceAnchor": [
+            163,
+            281
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            272,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4375,
+            295.34765625
+          ],
+          "outputOffset": [
+            -22,
+            42
+          ],
+          "outputAlphaBounds": [
+            33,
+            42,
+            212,
+            302
+          ],
+          "outputBodyBounds": [
+            34,
+            45,
+            212,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-contact",
+          "sourceGridBox": [
+            887,
+            296,
+            1183,
+            591
+          ],
+          "sourceCropBox": [
+            887,
+            296,
+            1183,
+            591
+          ],
+          "sourceAlphaBounds": [
+            45,
+            4,
+            244,
+            281
+          ],
+          "sourceCleanAlphaBounds": [
+            45,
+            4,
+            244,
+            281
+          ],
+          "sourceBodyBounds": [
+            45,
+            5,
+            243,
+            280
+          ],
+          "sourceAnchor": [
+            160,
+            281
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "right",
+          "resizeDimensions": [
+            272,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4375,
+            295.34765625
+          ],
+          "outputOffset": [
+            -19,
+            42
+          ],
+          "outputAlphaBounds": [
+            20,
+            43,
+            207,
+            302
+          ],
+          "outputBodyBounds": [
+            23,
+            46,
+            204,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-pass",
+          "sourceGridBox": [
+            1183,
+            296,
+            1478,
+            591
+          ],
+          "sourceCropBox": [
+            1183,
+            296,
+            1478,
+            591
+          ],
+          "sourceAlphaBounds": [
+            50,
+            3,
+            239,
+            281
+          ],
+          "sourceCleanAlphaBounds": [
+            50,
+            3,
+            239,
+            281
+          ],
+          "sourceBodyBounds": [
+            51,
+            4,
+            238,
+            281
+          ],
+          "sourceAnchor": [
+            158,
+            281
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            271,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.34765625,
+            295.34765625
+          ],
+          "outputOffset": [
+            -17,
+            42
+          ],
+          "outputAlphaBounds": [
+            27,
+            42,
+            205,
+            302
+          ],
+          "outputBodyBounds": [
+            30,
+            45,
+            201,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "wave",
+          "sourceGridBox": [
+            1478,
+            296,
+            1774,
+            591
+          ],
+          "sourceCropBox": [
+            1478,
+            296,
+            1774,
+            591
+          ],
+          "sourceAlphaBounds": [
+            48,
+            3,
+            227,
+            281
+          ],
+          "sourceCleanAlphaBounds": [
+            48,
+            3,
+            227,
+            281
+          ],
+          "sourceBodyBounds": [
+            49,
+            4,
+            226,
+            281
+          ],
+          "sourceAnchor": [
+            157,
+            281
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            272,
+            271
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4375,
+            295.34765625
+          ],
+          "outputOffset": [
+            -16,
+            42
+          ],
+          "outputAlphaBounds": [
+            28,
+            42,
+            195,
+            302
+          ],
+          "outputBodyBounds": [
+            29,
+            45,
+            192,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        }
+      ]
+    },
+    "opal": {
+      "source": "copse",
+      "sourceRow": 2,
+      "sharedScale": 0.920863309352518,
+      "sourceVisibleHeight": 278,
+      "rows": 256,
+      "height": 2.3,
+      "runtime": {
+        "file": "assets/village/opal.webp",
+        "sha256": "e4fa1e4550e7ff6178bf34bab46e29de390ab9617b1cf2382506db55301a61e8",
+        "width": 1536,
+        "height": 320,
+        "bytes": 117020
+      },
+      "frames": [
+        {
+          "pose": "idle",
+          "sourceGridBox": [
+            0,
+            591,
+            296,
+            887
+          ],
+          "sourceCropBox": [
+            0,
+            591,
+            296,
+            887
+          ],
+          "sourceAlphaBounds": [
+            84,
+            7,
+            236,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            84,
+            7,
+            236,
+            283
+          ],
+          "sourceBodyBounds": [
+            85,
+            7,
+            236,
+            283
+          ],
+          "sourceAnchor": [
+            171,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            273,
+            273
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4609375,
+            296.4609375
+          ],
+          "outputOffset": [
+            -29,
+            39
+          ],
+          "outputAlphaBounds": [
+            46,
+            43,
+            191,
+            302
+          ],
+          "outputBodyBounds": [
+            49,
+            46,
+            188,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-contact",
+          "sourceGridBox": [
+            296,
+            591,
+            591,
+            887
+          ],
+          "sourceCropBox": [
+            296,
+            591,
+            591,
+            887
+          ],
+          "sourceAlphaBounds": [
+            78,
+            8,
+            246,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            78,
+            8,
+            246,
+            283
+          ],
+          "sourceBodyBounds": [
+            79,
+            10,
+            245,
+            282
+          ],
+          "sourceAnchor": [
+            169,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "left",
+          "resizeDimensions": [
+            272,
+            273
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.375,
+            296.4609375
+          ],
+          "outputOffset": [
+            -28,
+            39
+          ],
+          "outputAlphaBounds": [
+            42,
+            44,
+            201,
+            302
+          ],
+          "outputBodyBounds": [
+            45,
+            48,
+            198,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-pass",
+          "sourceGridBox": [
+            591,
+            591,
+            887,
+            887
+          ],
+          "sourceCropBox": [
+            591,
+            591,
+            887,
+            887
+          ],
+          "sourceAlphaBounds": [
+            75,
+            5,
+            237,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            75,
+            5,
+            237,
+            283
+          ],
+          "sourceBodyBounds": [
+            76,
+            6,
+            236,
+            283
+          ],
+          "sourceAnchor": [
+            168,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            273,
+            273
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4609375,
+            296.4609375
+          ],
+          "outputOffset": [
+            -27,
+            39
+          ],
+          "outputAlphaBounds": [
+            42,
+            41,
+            193,
+            302
+          ],
+          "outputBodyBounds": [
+            43,
+            44,
+            190,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-contact",
+          "sourceGridBox": [
+            887,
+            591,
+            1183,
+            887
+          ],
+          "sourceCropBox": [
+            887,
+            591,
+            1183,
+            887
+          ],
+          "sourceAlphaBounds": [
+            66,
+            11,
+            236,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            66,
+            11,
+            236,
+            283
+          ],
+          "sourceBodyBounds": [
+            66,
+            12,
+            236,
+            283
+          ],
+          "sourceAnchor": [
+            169,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "right",
+          "resizeDimensions": [
+            273,
+            273
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4609375,
+            296.4609375
+          ],
+          "outputOffset": [
+            -28,
+            39
+          ],
+          "outputAlphaBounds": [
+            30,
+            47,
+            192,
+            302
+          ],
+          "outputBodyBounds": [
+            33,
+            50,
+            189,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-pass",
+          "sourceGridBox": [
+            1183,
+            591,
+            1478,
+            887
+          ],
+          "sourceCropBox": [
+            1183,
+            591,
+            1478,
+            887
+          ],
+          "sourceAlphaBounds": [
+            56,
+            6,
+            220,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            56,
+            6,
+            220,
+            283
+          ],
+          "sourceBodyBounds": [
+            57,
+            7,
+            219,
+            283
+          ],
+          "sourceAnchor": [
+            165,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            272,
+            273
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.375,
+            296.4609375
+          ],
+          "outputOffset": [
+            -24,
+            39
+          ],
+          "outputAlphaBounds": [
+            25,
+            42,
+            181,
+            302
+          ],
+          "outputBodyBounds": [
+            29,
+            45,
+            178,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "wave",
+          "sourceGridBox": [
+            1478,
+            591,
+            1774,
+            887
+          ],
+          "sourceCropBox": [
+            1478,
+            591,
+            1774,
+            887
+          ],
+          "sourceAlphaBounds": [
+            55,
+            7,
+            222,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            55,
+            7,
+            222,
+            283
+          ],
+          "sourceBodyBounds": [
+            56,
+            8,
+            222,
+            283
+          ],
+          "sourceAnchor": [
+            163,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            273,
+            273
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4609375,
+            296.4609375
+          ],
+          "outputOffset": [
+            -22,
+            39
+          ],
+          "outputAlphaBounds": [
+            26,
+            43,
+            185,
+            302
+          ],
+          "outputBodyBounds": [
+            29,
+            46,
+            182,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        }
+      ]
+    },
+    "cinder": {
+      "source": "night",
+      "sourceRow": 0,
+      "sharedScale": 0.9411764705882353,
+      "sourceVisibleHeight": 272,
+      "rows": 255,
+      "height": 2.3,
+      "runtime": {
+        "file": "assets/village/cinder.webp",
+        "sha256": "4cf87cdb5bd74573abe575897334f8dbf775d14deb06787a63db7f4fce6280b0",
+        "width": 1536,
+        "height": 320,
+        "bytes": 123750
+      },
+      "frames": [
+        {
+          "pose": "idle",
+          "sourceGridBox": [
+            0,
+            0,
+            296,
+            296
+          ],
+          "sourceCropBox": [
+            0,
+            0,
+            296,
+            296
+          ],
+          "sourceAlphaBounds": [
+            108,
+            11,
+            272,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            108,
+            11,
+            272,
+            283
+          ],
+          "sourceBodyBounds": [
+            109,
+            12,
+            272,
+            282
+          ],
+          "sourceAnchor": [
+            179,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            279,
+            279
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4375,
+            296.4375
+          ],
+          "outputOffset": [
+            -40,
+            34
+          ],
+          "outputAlphaBounds": [
+            59,
+            42,
+            216,
+            303
+          ],
+          "outputBodyBounds": [
+            63,
+            45,
+            216,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-contact",
+          "sourceGridBox": [
+            296,
+            0,
+            591,
+            296
+          ],
+          "sourceCropBox": [
+            296,
+            0,
+            591,
+            296
+          ],
+          "sourceAlphaBounds": [
+            95,
+            13,
+            268,
+            270
+          ],
+          "sourceCleanAlphaBounds": [
+            95,
+            13,
+            268,
+            270
+          ],
+          "sourceBodyBounds": [
+            96,
+            14,
+            268,
+            270
+          ],
+          "sourceAnchor": [
+            174,
+            270
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "left",
+          "resizeDimensions": [
+            278,
+            279
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.375,
+            296.4375
+          ],
+          "outputOffset": [
+            -36,
+            46
+          ],
+          "outputAlphaBounds": [
+            51,
+            56,
+            219,
+            302
+          ],
+          "outputBodyBounds": [
+            54,
+            59,
+            216,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-pass",
+          "sourceGridBox": [
+            591,
+            0,
+            887,
+            296
+          ],
+          "sourceCropBox": [
+            591,
+            0,
+            887,
+            296
+          ],
+          "sourceAlphaBounds": [
+            86,
+            12,
+            249,
+            269
+          ],
+          "sourceCleanAlphaBounds": [
+            86,
+            12,
+            249,
+            269
+          ],
+          "sourceBodyBounds": [
+            86,
+            12,
+            249,
+            269
+          ],
+          "sourceAnchor": [
+            170,
+            269
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            279,
+            279
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4375,
+            296.4375
+          ],
+          "outputOffset": [
+            -32,
+            47
+          ],
+          "outputAlphaBounds": [
+            48,
+            56,
+            205,
+            303
+          ],
+          "outputBodyBounds": [
+            49,
+            58,
+            202,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-contact",
+          "sourceGridBox": [
+            887,
+            0,
+            1183,
+            296
+          ],
+          "sourceCropBox": [
+            887,
+            0,
+            1183,
+            296
+          ],
+          "sourceAlphaBounds": [
+            32,
+            15,
+            242,
+            268
+          ],
+          "sourceCleanAlphaBounds": [
+            32,
+            15,
+            242,
+            268
+          ],
+          "sourceBodyBounds": [
+            33,
+            15,
+            242,
+            268
+          ],
+          "sourceAnchor": [
+            163,
+            268
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "right",
+          "resizeDimensions": [
+            279,
+            279
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4375,
+            296.4375
+          ],
+          "outputOffset": [
+            -25,
+            48
+          ],
+          "outputAlphaBounds": [
+            3,
+            60,
+            205,
+            303
+          ],
+          "outputBodyBounds": [
+            6,
+            62,
+            203,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-pass",
+          "sourceGridBox": [
+            1183,
+            0,
+            1478,
+            296
+          ],
+          "sourceCropBox": [
+            1183,
+            0,
+            1478,
+            296
+          ],
+          "sourceAlphaBounds": [
+            63,
+            9,
+            238,
+            265
+          ],
+          "sourceCleanAlphaBounds": [
+            63,
+            9,
+            238,
+            265
+          ],
+          "sourceBodyBounds": [
+            64,
+            9,
+            238,
+            265
+          ],
+          "sourceAnchor": [
+            161,
+            265
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            278,
+            279
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.375,
+            296.4375
+          ],
+          "outputOffset": [
+            -24,
+            51
+          ],
+          "outputAlphaBounds": [
+            33,
+            57,
+            200,
+            303
+          ],
+          "outputBodyBounds": [
+            36,
+            60,
+            200,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "wave",
+          "sourceGridBox": [
+            1478,
+            0,
+            1774,
+            296
+          ],
+          "sourceCropBox": [
+            1478,
+            0,
+            1774,
+            296
+          ],
+          "sourceAlphaBounds": [
+            53,
+            12,
+            219,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            53,
+            12,
+            219,
+            283
+          ],
+          "sourceBodyBounds": [
+            54,
+            13,
+            218,
+            282
+          ],
+          "sourceAnchor": [
+            164,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            279,
+            279
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.4375,
+            296.4375
+          ],
+          "outputOffset": [
+            -26,
+            34
+          ],
+          "outputAlphaBounds": [
+            22,
+            43,
+            182,
+            303
+          ],
+          "outputBodyBounds": [
+            24,
+            46,
+            179,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        }
+      ]
+    },
+    "corvus": {
+      "source": "night",
+      "sourceRow": 1,
+      "sharedScale": 0.9624060150375939,
+      "sourceVisibleHeight": 266,
+      "rows": 255,
+      "height": 2.3,
+      "runtime": {
+        "file": "assets/village/corvus.webp",
+        "sha256": "74b27f97f50c73c8433de8ef3b2322b5560e5354a978c41ca5cc2e3d55afdea7",
+        "width": 1536,
+        "height": 320,
+        "bytes": 144528
+      },
+      "frames": [
+        {
+          "pose": "idle",
+          "sourceGridBox": [
+            0,
+            296,
+            296,
+            591
+          ],
+          "sourceCropBox": [
+            0,
+            296,
+            296,
+            591
+          ],
+          "sourceAlphaBounds": [
+            75,
+            6,
+            262,
+            269
+          ],
+          "sourceCleanAlphaBounds": [
+            75,
+            6,
+            262,
+            269
+          ],
+          "sourceBodyBounds": [
+            76,
+            6,
+            262,
+            269
+          ],
+          "sourceAnchor": [
+            173,
+            269
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            285,
+            284
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.1328125,
+            295.09375
+          ],
+          "outputOffset": [
+            -38,
+            41
+          ],
+          "outputAlphaBounds": [
+            32,
+            44,
+            216,
+            302
+          ],
+          "outputBodyBounds": [
+            35,
+            47,
+            214,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-contact",
+          "sourceGridBox": [
+            296,
+            296,
+            591,
+            591
+          ],
+          "sourceCropBox": [
+            296,
+            296,
+            591,
+            591
+          ],
+          "sourceAlphaBounds": [
+            51,
+            5,
+            270,
+            267
+          ],
+          "sourceCleanAlphaBounds": [
+            51,
+            5,
+            270,
+            267
+          ],
+          "sourceBodyBounds": [
+            52,
+            5,
+            270,
+            266
+          ],
+          "sourceAnchor": [
+            167,
+            267
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "left",
+          "resizeDimensions": [
+            284,
+            284
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.09375,
+            295.09375
+          ],
+          "outputOffset": [
+            -33,
+            43
+          ],
+          "outputAlphaBounds": [
+            14,
+            45,
+            229,
+            300
+          ],
+          "outputBodyBounds": [
+            17,
+            48,
+            227,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-pass",
+          "sourceGridBox": [
+            591,
+            296,
+            887,
+            591
+          ],
+          "sourceCropBox": [
+            591,
+            296,
+            887,
+            591
+          ],
+          "sourceAlphaBounds": [
+            62,
+            3,
+            258,
+            269
+          ],
+          "sourceCleanAlphaBounds": [
+            62,
+            3,
+            258,
+            269
+          ],
+          "sourceBodyBounds": [
+            62,
+            4,
+            257,
+            269
+          ],
+          "sourceAnchor": [
+            165,
+            269
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            285,
+            284
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.1328125,
+            295.09375
+          ],
+          "outputOffset": [
+            -31,
+            41
+          ],
+          "outputAlphaBounds": [
+            26,
+            42,
+            220,
+            302
+          ],
+          "outputBodyBounds": [
+            29,
+            44,
+            217,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-contact",
+          "sourceGridBox": [
+            887,
+            296,
+            1183,
+            591
+          ],
+          "sourceCropBox": [
+            887,
+            296,
+            1183,
+            591
+          ],
+          "sourceAlphaBounds": [
+            49,
+            7,
+            238,
+            269
+          ],
+          "sourceCleanAlphaBounds": [
+            49,
+            7,
+            238,
+            269
+          ],
+          "sourceBodyBounds": [
+            50,
+            7,
+            238,
+            268
+          ],
+          "sourceAnchor": [
+            164,
+            269
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "right",
+          "resizeDimensions": [
+            285,
+            284
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.1328125,
+            295.09375
+          ],
+          "outputOffset": [
+            -30,
+            41
+          ],
+          "outputAlphaBounds": [
+            15,
+            45,
+            200,
+            302
+          ],
+          "outputBodyBounds": [
+            18,
+            48,
+            199,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-pass",
+          "sourceGridBox": [
+            1183,
+            296,
+            1478,
+            591
+          ],
+          "sourceCropBox": [
+            1183,
+            296,
+            1478,
+            591
+          ],
+          "sourceAlphaBounds": [
+            48,
+            5,
+            236,
+            269
+          ],
+          "sourceCleanAlphaBounds": [
+            48,
+            5,
+            236,
+            269
+          ],
+          "sourceBodyBounds": [
+            49,
+            5,
+            235,
+            269
+          ],
+          "sourceAnchor": [
+            158,
+            269
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            284,
+            284
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.09375,
+            295.09375
+          ],
+          "outputOffset": [
+            -24,
+            41
+          ],
+          "outputAlphaBounds": [
+            20,
+            43,
+            205,
+            302
+          ],
+          "outputBodyBounds": [
+            23,
+            46,
+            203,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "wave",
+          "sourceGridBox": [
+            1478,
+            296,
+            1774,
+            591
+          ],
+          "sourceCropBox": [
+            1478,
+            296,
+            1774,
+            591
+          ],
+          "sourceAlphaBounds": [
+            31,
+            7,
+            221,
+            269
+          ],
+          "sourceCleanAlphaBounds": [
+            31,
+            7,
+            221,
+            269
+          ],
+          "sourceBodyBounds": [
+            32,
+            7,
+            221,
+            268
+          ],
+          "sourceAnchor": [
+            159,
+            269
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            285,
+            284
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.1328125,
+            295.09375
+          ],
+          "outputOffset": [
+            -25,
+            41
+          ],
+          "outputAlphaBounds": [
+            3,
+            45,
+            190,
+            302
+          ],
+          "outputBodyBounds": [
+            6,
+            48,
+            187,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        }
+      ]
+    },
+    "baron": {
+      "source": "night",
+      "sourceRow": 2,
+      "sharedScale": 0.9078014184397163,
+      "sourceVisibleHeight": 282,
+      "rows": 255,
+      "height": 2.3,
+      "runtime": {
+        "file": "assets/village/baron.webp",
+        "sha256": "33ed60f3299d8c8cf30c0bef72dd68c17022795c99fc282c7afc81048da89c25",
+        "width": 1536,
+        "height": 320,
+        "bytes": 129658
+      },
+      "frames": [
+        {
+          "pose": "idle",
+          "sourceGridBox": [
+            0,
+            591,
+            296,
+            887
+          ],
+          "sourceCropBox": [
+            0,
+            591,
+            296,
+            887
+          ],
+          "sourceAlphaBounds": [
+            75,
+            1,
+            254,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            75,
+            1,
+            254,
+            283
+          ],
+          "sourceBodyBounds": [
+            75,
+            1,
+            254,
+            283
+          ],
+          "sourceAnchor": [
+            166,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            269,
+            269
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.3203125,
+            296.3203125
+          ],
+          "outputOffset": [
+            -23,
+            43
+          ],
+          "outputAlphaBounds": [
+            43,
+            43,
+            210,
+            302
+          ],
+          "outputBodyBounds": [
+            45,
+            44,
+            207,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-contact",
+          "sourceGridBox": [
+            296,
+            591,
+            591,
+            887
+          ],
+          "sourceCropBox": [
+            296,
+            591,
+            591,
+            887
+          ],
+          "sourceAlphaBounds": [
+            68,
+            6,
+            252,
+            284
+          ],
+          "sourceCleanAlphaBounds": [
+            68,
+            6,
+            252,
+            284
+          ],
+          "sourceBodyBounds": [
+            68,
+            6,
+            251,
+            283
+          ],
+          "sourceAnchor": [
+            161,
+            284
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "left",
+          "resizeDimensions": [
+            268,
+            269
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.21875,
+            296.3203125
+          ],
+          "outputOffset": [
+            -18,
+            42
+          ],
+          "outputAlphaBounds": [
+            41,
+            45,
+            213,
+            302
+          ],
+          "outputBodyBounds": [
+            44,
+            48,
+            210,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "left-pass",
+          "sourceGridBox": [
+            591,
+            591,
+            887,
+            887
+          ],
+          "sourceCropBox": [
+            591,
+            591,
+            887,
+            887
+          ],
+          "sourceAlphaBounds": [
+            53,
+            4,
+            244,
+            282
+          ],
+          "sourceCleanAlphaBounds": [
+            53,
+            4,
+            244,
+            282
+          ],
+          "sourceBodyBounds": [
+            53,
+            5,
+            243,
+            281
+          ],
+          "sourceAnchor": [
+            160,
+            282
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            269,
+            269
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.3203125,
+            296.3203125
+          ],
+          "outputOffset": [
+            -17,
+            44
+          ],
+          "outputAlphaBounds": [
+            29,
+            45,
+            207,
+            301
+          ],
+          "outputBodyBounds": [
+            31,
+            48,
+            204,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-contact",
+          "sourceGridBox": [
+            887,
+            591,
+            1183,
+            887
+          ],
+          "sourceCropBox": [
+            887,
+            591,
+            1183,
+            887
+          ],
+          "sourceAlphaBounds": [
+            47,
+            5,
+            233,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            47,
+            5,
+            233,
+            283
+          ],
+          "sourceBodyBounds": [
+            48,
+            6,
+            233,
+            283
+          ],
+          "sourceAnchor": [
+            160,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": "right",
+          "resizeDimensions": [
+            269,
+            269
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.3203125,
+            296.3203125
+          ],
+          "outputOffset": [
+            -17,
+            43
+          ],
+          "outputAlphaBounds": [
+            23,
+            45,
+            197,
+            302
+          ],
+          "outputBodyBounds": [
+            26,
+            48,
+            194,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "right-pass",
+          "sourceGridBox": [
+            1183,
+            591,
+            1478,
+            887
+          ],
+          "sourceCropBox": [
+            1183,
+            591,
+            1478,
+            887
+          ],
+          "sourceAlphaBounds": [
+            35,
+            4,
+            219,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            35,
+            4,
+            219,
+            283
+          ],
+          "sourceBodyBounds": [
+            36,
+            5,
+            219,
+            282
+          ],
+          "sourceAnchor": [
+            155,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            268,
+            269
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            295.21875,
+            296.3203125
+          ],
+          "outputOffset": [
+            -13,
+            43
+          ],
+          "outputAlphaBounds": [
+            16,
+            44,
+            188,
+            302
+          ],
+          "outputBodyBounds": [
+            19,
+            48,
+            186,
+            299
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        },
+        {
+          "pose": "wave",
+          "sourceGridBox": [
+            1478,
+            591,
+            1774,
+            887
+          ],
+          "sourceCropBox": [
+            1478,
+            591,
+            1774,
+            887
+          ],
+          "sourceAlphaBounds": [
+            35,
+            3,
+            217,
+            283
+          ],
+          "sourceCleanAlphaBounds": [
+            35,
+            3,
+            217,
+            283
+          ],
+          "sourceBodyBounds": [
+            35,
+            4,
+            217,
+            283
+          ],
+          "sourceAnchor": [
+            153,
+            283
+          ],
+          "removedEdgeFragments": [],
+          "contactSide": null,
+          "resizeDimensions": [
+            269,
+            269
+          ],
+          "resizeSourceBox": [
+            0,
+            0,
+            296.3203125,
+            296.3203125
+          ],
+          "outputOffset": [
+            -11,
+            43
+          ],
+          "outputAlphaBounds": [
+            18,
+            44,
+            187,
+            302
+          ],
+          "outputBodyBounds": [
+            21,
+            47,
+            186,
+            300
+          ],
+          "contactFoot": [
+            128,
+            300
+          ],
+          "anchor": [
+            128,
+            300
+          ]
+        }
+      ]
+    }
+  }
+}

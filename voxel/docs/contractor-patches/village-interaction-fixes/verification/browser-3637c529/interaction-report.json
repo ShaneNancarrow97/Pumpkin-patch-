@@ -1,0 +1,952 @@
+{
+  "date": "2026-11-09T02:05:08.127Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Interaction-Fixes.html",
+  "sha256": "3637c5291aa9d7383e43de6220fb478bf148994805c145e7fe32ce02499aa607",
+  "bytes": 59018388,
+  "checks": [
+    {
+      "pass": true,
+      "label": "World cursor is genuinely active before the Options regression"
+    },
+    {
+      "pass": true,
+      "label": "Options transfers cursor ownership to the D-pad focus hub",
+      "detail": {
+        "tab": "shop",
+        "cursor": false,
+        "hub": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Cross opens the actual Manage menu"
+    },
+    {
+      "pass": true,
+      "label": "Cross selects the actual Farm upgrades sheet"
+    },
+    {
+      "pass": true,
+      "label": "L2 highlights the level badge"
+    },
+    {
+      "pass": true,
+      "label": "Cross opens the real level requirement checklist"
+    },
+    {
+      "pass": true,
+      "label": "Blocked level4 save uses the small warning triangle without a Next chapter pill",
+      "detail": {
+        "label": "Play mode · choose Shane or Natalie · Create · small button left of the touchpad",
+        "text": "Play modeCREATECREATE",
+        "background": "linear-gradient(155deg, rgba(58, 44, 69, 0.6), rgba(33, 25, 42, 0.67))",
+        "minHeight": 44,
+        "warning": true,
+        "nextChapter": false,
+        "camera": false,
+        "blocked": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Play mode names its actual CREATE assignment with a translucent chip and no idle camera card",
+      "detail": {
+        "label": "Play mode · choose Shane or Natalie · Create · small button left of the touchpad",
+        "text": "Play modeCREATECREATE",
+        "background": "linear-gradient(155deg, rgba(58, 44, 69, 0.6), rgba(33, 25, 42, 0.67))",
+        "minHeight": 44,
+        "warning": true,
+        "nextChapter": false,
+        "camera": false,
+        "blocked": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold farm has no horizontal overflow",
+      "detail": {
+        "w": 864,
+        "h": 756,
+        "scroll": 864,
+        "targets": [
+          {
+            "id": "open-stock",
+            "text": "0⌄",
+            "x": 411.71875,
+            "y": 11,
+            "w": 64,
+            "h": 44
+          },
+          {
+            "id": "open-levels",
+            "text": "4Level4",
+            "x": 525,
+            "y": 11,
+            "w": 46,
+            "h": 44
+          },
+          {
+            "id": "fullscreen",
+            "text": "",
+            "x": 571,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "open-settings",
+            "text": "",
+            "x": 615,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "tab active",
+            "text": "Farm",
+            "x": 192,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Manage",
+            "x": 260.703125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Rides",
+            "x": 329.421875,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Home",
+            "x": 398.125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Outfits",
+            "x": 466.84375,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Village",
+            "x": 535.5625,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "More",
+            "x": 604.28125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "play-toggle",
+            "text": "Play modeCREATECREATE",
+            "x": 637.65625,
+            "y": 8,
+            "w": 216.34375,
+            "h": 44
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold farm interactive targets fit and remain at least44px",
+      "detail": {
+        "w": 864,
+        "h": 756,
+        "scroll": 864,
+        "targets": [
+          {
+            "id": "open-stock",
+            "text": "0⌄",
+            "x": 411.71875,
+            "y": 11,
+            "w": 64,
+            "h": 44
+          },
+          {
+            "id": "open-levels",
+            "text": "4Level4",
+            "x": 525,
+            "y": 11,
+            "w": 46,
+            "h": 44
+          },
+          {
+            "id": "fullscreen",
+            "text": "",
+            "x": 571,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "open-settings",
+            "text": "",
+            "x": 615,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "tab active",
+            "text": "Farm",
+            "x": 192,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Manage",
+            "x": 260.703125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Rides",
+            "x": 329.421875,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Home",
+            "x": 398.125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Outfits",
+            "x": 466.84375,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "Village",
+            "x": 535.5625,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "tab",
+            "text": "More",
+            "x": 604.28125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48
+          },
+          {
+            "id": "play-toggle",
+            "text": "Play modeCREATECREATE",
+            "x": 637.65625,
+            "y": 8,
+            "w": 216.34375,
+            "h": 44
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "The real paid house upgrade resolves the requirement",
+      "detail": {
+        "result": {
+          "level": 1,
+          "moved": [],
+          "stored": []
+        },
+        "paid": 650,
+        "level": {
+          "level": 5,
+          "at": 9000,
+          "name": "Lantern keeper",
+          "rewards": [
+            {
+              "kind": "coins",
+              "amount": 150
+            },
+            {
+              "kind": "decor",
+              "id": "w04"
+            }
+          ],
+          "xp": 9000,
+          "earnedLevel": 5,
+          "next": {
+            "level": 6,
+            "at": 12500,
+            "name": "Midnight market",
+            "rewards": [
+              {
+                "kind": "coins",
+                "amount": 225
+              },
+              {
+                "kind": "costume",
+                "id": "shane-skeleton"
+              }
+            ]
+          },
+          "requirements": [
+            {
+              "id": "wardrobe",
+              "text": "Use a costume rack or wardrobe at home",
+              "target": 1,
+              "action": "wardrobe",
+              "room": "parlour",
+              "current": 0,
+              "met": false,
+              "honoured": false
+            }
+          ],
+          "blocked": false,
+          "progress": 0,
+          "tagline": "Next: Midnight market"
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "The warning triangle disappears when the rule requirement is met"
+    },
+    {
+      "pass": true,
+      "label": "Village Options opens its real hub"
+    },
+    {
+      "pass": true,
+      "label": "Village Cross opens the actual map"
+    },
+    {
+      "pass": true,
+      "label": "A fresh post-menu stick push moves immediately without an extra neutral cycle",
+      "detail": {
+        "before": {
+          "x": 87,
+          "z": -25.5
+        },
+        "after": {
+          "x": 87.28371951219512,
+          "z": -25.5
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Right-stick right turns the actual village view to the right",
+      "detail": {
+        "before": {
+          "bearing": 0,
+          "rig": {
+            "ready": true,
+            "target": {
+              "x": 87.21151389207013,
+              "y": 1.34,
+              "z": 25.5
+            },
+            "yaw": 0,
+            "pitch": 0.4537856055185257,
+            "distance": 6.8,
+            "wantedYaw": 0,
+            "wantedPitch": 0.4537856055185257,
+            "wantedDistance": 6.8,
+            "freeLook": 0,
+            "following": true,
+            "subject": {
+              "x": 87.28371951219512,
+              "y": 0.04,
+              "z": 25.5
+            },
+            "inside": null
+          }
+        },
+        "after": {
+          "bearing": 0.3583452934105874,
+          "rig": {
+            "ready": true,
+            "target": {
+              "x": 87.28339338966731,
+              "y": 1.34,
+              "z": 25.5
+            },
+            "yaw": -0.3583452934105885,
+            "pitch": 0.4537856055185257,
+            "distance": 6.8,
+            "wantedYaw": -0.3782926829268292,
+            "wantedPitch": 0.4537856055185257,
+            "wantedDistance": 6.8,
+            "freeLook": 0.7999999999999999,
+            "following": true,
+            "subject": {
+              "x": 87.28371951219512,
+              "y": 0.04,
+              "z": 25.5
+            },
+            "inside": null
+          }
+        },
+        "turn": 0.3583452934105874
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual quest completion awards £150 and two lantern posts once",
+      "detail": {
+        "event": {
+          "type": "quest-done",
+          "quest": "invitation",
+          "rewards": [
+            {
+              "kind": "coins",
+              "amount": 150
+            },
+            {
+              "kind": "village-decor",
+              "id": "lantern-post",
+              "amount": 2
+            }
+          ]
+        },
+        "coins": 150,
+        "decor": 2,
+        "done": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "The real quest-done event produces one completion receipt"
+    },
+    {
+      "pass": true,
+      "label": "Repeated completion input/event neither regrants nor duplicates the receipt",
+      "detail": {
+        "unchanged": true,
+        "events": [],
+        "receipts": 1,
+        "text": "✓Quest completeThe Moving Address×+£1502 × Copper lanternRewards added to your collection.Open quests"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Receipt Open quests opens the actual journal"
+    },
+    {
+      "pass": true,
+      "label": "Opening village includes northern resources with bounded detailed batches",
+      "detail": {
+        "resources": {
+          "patches": 57,
+          "detailed": 0,
+          "detailLimit": 8,
+          "solidBoxes": 2899,
+          "glowBoxes": 17,
+          "prototypeCount": 64,
+          "uploads": 1,
+          "meshCount": 2,
+          "addedLights": 0,
+          "disposed": false
+        },
+        "markers": {
+          "limit": 1,
+          "count": 1,
+          "visible": false,
+          "iconLoaded": false,
+          "iconFailed": false,
+          "addedLights": 0,
+          "disposed": false,
+          "rotation": 0
+        },
+        "north": 24,
+        "markerUserData": {
+          "type": "village-stall",
+          "id": "rowan-stall",
+          "shopMarker": true
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Unlocked stall marker retains the actual shop pick hook",
+      "detail": {
+        "limit": 1,
+        "count": 1,
+        "visible": false,
+        "iconLoaded": false,
+        "iconFailed": false,
+        "addedLights": 0,
+        "disposed": false,
+        "rotation": 0
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual renderer synchronises all saved fungus growth stages",
+      "detail": {
+        "fixture": "Cooldown fractions sampled directly, not elapsed campaign play",
+        "growth": [
+          {
+            "id": "blight-green-01",
+            "stage": "bare",
+            "ratio": 0,
+            "remaining": 600,
+            "total": 600,
+            "mature": false,
+            "visible": true,
+            "suppressed": false,
+            "available": false,
+            "cycle": 0,
+            "scale": 0.75
+          },
+          {
+            "id": "blight-green-01",
+            "stage": "spores",
+            "ratio": 0.19999999999999996,
+            "remaining": 480,
+            "total": 600,
+            "mature": false,
+            "visible": true,
+            "suppressed": false,
+            "available": false,
+            "cycle": 0,
+            "scale": 0.75
+          },
+          {
+            "id": "blight-green-01",
+            "stage": "shoots",
+            "ratio": 0.5,
+            "remaining": 300,
+            "total": 600,
+            "mature": false,
+            "visible": true,
+            "suppressed": false,
+            "available": false,
+            "cycle": 0,
+            "scale": 0.75
+          },
+          {
+            "id": "blight-green-01",
+            "stage": "young",
+            "ratio": 0.8,
+            "remaining": 119.99999999999997,
+            "total": 600,
+            "mature": false,
+            "visible": true,
+            "suppressed": false,
+            "available": false,
+            "cycle": 0,
+            "scale": 0.75
+          },
+          {
+            "id": "blight-green-01",
+            "stage": "mature",
+            "ratio": 1,
+            "remaining": 0,
+            "total": 600,
+            "mature": true,
+            "visible": true,
+            "suppressed": false,
+            "available": true,
+            "cycle": 0,
+            "scale": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual controller reaches the visible farm return action",
+      "detail": {
+        "result": {
+          "count": 35,
+          "position": {
+            "x": 87.00613750395725,
+            "z": -30.391838529014752
+          }
+        },
+        "route": [
+          {
+            "x": 87,
+            "z": -30.5
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Holding the action opener does not confirm the new Return prompt",
+      "detail": {
+        "active": true,
+        "prompt": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold Return prompt has no horizontal overflow",
+      "detail": {
+        "w": 864,
+        "h": 756,
+        "scroll": 864,
+        "targets": [
+          {
+            "id": "village-return-confirm",
+            "text": "CROSSReturn to farm",
+            "x": 252,
+            "y": 433.25,
+            "w": 360,
+            "h": 48
+          },
+          {
+            "id": "village-return-cancel",
+            "text": "CIRCLEStay in the village",
+            "x": 252,
+            "y": 490.25,
+            "w": 360,
+            "h": 48
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Fold Return prompt interactive targets fit and remain at least44px",
+      "detail": {
+        "w": 864,
+        "h": 756,
+        "scroll": 864,
+        "targets": [
+          {
+            "id": "village-return-confirm",
+            "text": "CROSSReturn to farm",
+            "x": 252,
+            "y": 433.25,
+            "w": 360,
+            "h": 48
+          },
+          {
+            "id": "village-return-cancel",
+            "text": "CIRCLEStay in the village",
+            "x": 252,
+            "y": 490.25,
+            "w": 360,
+            "h": 48
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "TV Return prompt has no horizontal overflow",
+      "detail": {
+        "w": 1920,
+        "h": 1080,
+        "scroll": 1920,
+        "targets": [
+          {
+            "id": "village-return-confirm",
+            "text": "CROSSReturn to farm",
+            "x": 682.796875,
+            "y": 617.203125,
+            "w": 554.40625,
+            "h": 73.765625
+          },
+          {
+            "id": "village-return-cancel",
+            "text": "CIRCLEStay in the village",
+            "x": 682.796875,
+            "y": 704.796875,
+            "w": 554.40625,
+            "h": 73.765625
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "TV Return prompt interactive targets fit and remain at least44px",
+      "detail": {
+        "w": 1920,
+        "h": 1080,
+        "scroll": 1920,
+        "targets": [
+          {
+            "id": "village-return-confirm",
+            "text": "CROSSReturn to farm",
+            "x": 682.796875,
+            "y": 617.203125,
+            "w": 554.40625,
+            "h": 73.765625
+          },
+          {
+            "id": "village-return-cancel",
+            "text": "CIRCLEStay in the village",
+            "x": 682.796875,
+            "y": 704.796875,
+            "w": 554.40625,
+            "h": 73.765625
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Circle stays in the village"
+    },
+    {
+      "pass": true,
+      "label": "Fresh Cross returns to the farm without automatic re-entry",
+      "detail": {
+        "active": false,
+        "place": null,
+        "visits": 1
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual controller reaches the walking exit approach",
+      "detail": {
+        "result": {
+          "count": 35,
+          "position": {
+            "x": 87,
+            "z": -30.394312908982744
+          }
+        },
+        "route": [
+          {
+            "x": 87,
+            "z": -30.5
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Walking through the exit asks before leaving",
+      "detail": {
+        "returnPrompt": true,
+        "returnPathArmed": false,
+        "panelDepth": 0,
+        "panelParent": null,
+        "proximity": {
+          "visible": true,
+          "rings": [],
+          "limit": 12,
+          "lights": 0
+        },
+        "wanderers": {
+          "count": 2,
+          "maximum": 3,
+          "people": [
+            {
+              "id": "village-stroll-0",
+              "kind": "ghost",
+              "lane": "north-crossroad",
+              "x": 54.52406553969081,
+              "z": 50.57270950671991,
+              "walking": true,
+              "wait": 0,
+              "distance": 0.5245573482345789,
+              "visible": true
+            },
+            {
+              "id": "village-stroll-1",
+              "kind": "witch",
+              "lane": "green-avenue",
+              "x": 87.82499999999999,
+              "z": 6.300000000000001,
+              "walking": false,
+              "wait": 1.5400000000000076,
+              "distance": 0,
+              "visible": true
+            }
+          ]
+        },
+        "active": true,
+        "inside": null,
+        "who": "natalie",
+        "position": {
+          "x": 87,
+          "z": -31.812910469958343
+        },
+        "panel": null,
+        "panelId": null,
+        "touring": false,
+        "surveying": false,
+        "decorating": false,
+        "input": "pad",
+        "questExpanded": false,
+        "trackedQuest": null,
+        "waypoint": null,
+        "gathering": null
+      }
+    },
+    {
+      "pass": true,
+      "label": "Cancelling a walking exit does not reopen the prompt while still in the gate",
+      "detail": {
+        "returnPrompt": false,
+        "returnPathArmed": false,
+        "panelDepth": 0,
+        "panelParent": null,
+        "proximity": {
+          "visible": true,
+          "rings": [],
+          "limit": 12,
+          "lights": 0
+        },
+        "wanderers": {
+          "count": 2,
+          "maximum": 3,
+          "people": [
+            {
+              "id": "village-stroll-0",
+              "kind": "ghost",
+              "lane": "north-crossroad",
+              "x": 54.9732645737115,
+              "z": 50.592174798194115,
+              "walking": true,
+              "wait": 0,
+              "distance": 0.9741779324356463,
+              "visible": true
+            },
+            {
+              "id": "village-stroll-1",
+              "kind": "witch",
+              "lane": "green-avenue",
+              "x": 87.82499999999999,
+              "z": 6.300000000000001,
+              "walking": false,
+              "wait": 0.940000000000007,
+              "distance": 0,
+              "visible": true
+            }
+          ]
+        },
+        "active": true,
+        "inside": null,
+        "who": "natalie",
+        "position": {
+          "x": 87,
+          "z": -31.812910469958343
+        },
+        "panel": null,
+        "panelId": null,
+        "touring": false,
+        "surveying": false,
+        "decorating": false,
+        "input": "pad",
+        "questExpanded": false,
+        "trackedQuest": null,
+        "waypoint": null,
+        "gathering": null
+      }
+    },
+    {
+      "pass": true,
+      "label": "The unchanged standalone HTML requests no external assets",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "The integrated runtime reports no page/shader errors",
+      "detail": []
+    },
+    {
+      "pass": false,
+      "label": "Play mode and the top HUD have no overlapping targets",
+      "detail": {
+        "play": {
+          "id": "play-toggle",
+          "text": "Play modeCREATECREATE",
+          "x": 637.65625,
+          "y": 8,
+          "w": 216.34375,
+          "h": 44
+        },
+        "overlap": [
+          {
+            "id": "open-settings",
+            "text": "",
+            "x": 615,
+            "y": 11,
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "source": "Computed from the recorded same-photo target geometry after visual review; this is a real defect in this older HTML hash."
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "screenshots": [
+    {
+      "file": "01-fold-farm-controller.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "02-fold-village-return.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "03-tv-village-return.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    },
+    {
+      "file": "04-fold-village-world.png",
+      "render": "Actual normal renderer/composer, glow and shadows enabled, real RAF village tick restored."
+    }
+  ],
+  "fixtures": [
+    {
+      "kind": "farm",
+      "level": 4,
+      "house": 0,
+      "earnings": 9000,
+      "coins": 30000,
+      "description": "Level5 earnings are ready, but the first house upgrade is missing. Visitor arrivals deferred for deterministic UI checks."
+    },
+    {
+      "kind": "village",
+      "description": "Prepared invitation last step using inviteToVillage/finishTour/finishTalk(Rowan), and an already-open stall fixture for marker picking. Real final quest rule event will award the receipt."
+    }
+  ],
+  "observations": [
+    {
+      "kind": "close-exit-view-limitation",
+      "file": "04-fold-village-world.png",
+      "detail": "This normal-render photo is the actual close return-gate view after cancelling a walking exit. The large purple entrance structure obstructs the owner. It is retained as evidence, not used as a hero world photo; final normal world photography will walk/recenter into clear central Green."
+    }
+  ],
+  "scope": "Exact unchanged offline HTML on loopback. Declared level4/house0/earnings-ready farm and a prepared invitation-final-step village, not an earned campaign. Native Gamepad API is mocked; real game/menu/cursor/rules/view methods run. Only renderer/composer draw calls are held between normal-render photographs; deterministic input bursts use the real village tick. Normal photos restore real RAF village ticking. Software Chromium viewport checks do not certify Bluetooth, physical PS5/TV hardware or hardware performance.",
+  "passed": false
+}

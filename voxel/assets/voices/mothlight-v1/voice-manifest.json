@@ -1,0 +1,4598 @@
+{
+  "version": 1,
+  "provider": "ElevenLabs",
+  "clips": [
+    {
+      "id": "elowen-01819c91",
+      "speaker": "elowen",
+      "text": "When the Green was full, we held a lantern night every autumn. Every window lit, every door open.",
+      "spokenText": "When the Green was full, we held a lantern night every autumn. Every window lit, every door open.",
+      "source": "src/content/village-folk.js:elowen.chats.e-festival[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 25271441,
+      "duration": 6.288,
+      "bytes": 50540,
+      "sha256": "bae1d8eeff606d0f2732c28756fd125cab7896a84a85389258209b1446509326",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-07fd6f6b",
+      "speaker": "elowen",
+      "text": "Takings are a kind of story too. Every coin was a visitor who smiled.",
+      "spokenText": "Takings are a kind of story too. Every coin was a visitor who smiled.",
+      "source": "src/content/village-folk.js:elowen.chats.e-ink[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 134049643,
+      "duration": 4.848,
+      "bytes": 39020,
+      "sha256": "b6fef2dab7ec972d9f8bec4dd8c64c9b93c791f7289af493613578d800cba937",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-0854a291",
+      "speaker": "elowen",
+      "text": "I think he's afraid that if he finishes his own house, he'll have to live in it.",
+      "spokenText": "I think he's afraid that if he finishes his own house, he'll have to live in it.",
+      "source": "src/content/village-folk.js:elowen.chats.e-rowan[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 139764369,
+      "duration": 4.248,
+      "bytes": 34220,
+      "sha256": "65d8f1570e6046825a7c019787948919d5da6b638552a757ae87c2e00d1379fe",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-098e7625",
+      "speaker": "elowen",
+      "text": "The night I stayed up with a sick moth and it lived. I felt enormous.",
+      "spokenText": "The night I stayed up with a sick moth and it lived. I felt enormous.",
+      "source": "src/content/village-folk.js:elowen.chats.e-wings[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 160331301,
+      "duration": 4.512,
+      "bytes": 36332,
+      "sha256": "67b583897f4db84c187c18a805eab9bef15bcbb218ccc727b62382130cad8564",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-09b0a87b",
+      "speaker": "elowen",
+      "text": "The moon over Mothlight is the same one over your farm, you know. Just closer.",
+      "spokenText": "The moon over Mothlight is the same one over your farm, you know. Just closer.",
+      "source": "src/content/village-folk.js:elowen.chats.e-moon[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 162572411,
+      "duration": 4.704,
+      "bytes": 37868,
+      "sha256": "596a5e33ded120b2956cc4b31c4c454f4d1bcd192cd17a563788f6fa1cd2f8e6",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-0b4b552d",
+      "speaker": "elowen",
+      "text": "I've started a study for the village children. Well, child. Well, ghost child.",
+      "spokenText": "I've started a study for the village children. Well, child. Well, ghost child.",
+      "source": "src/content/village-folk.js:elowen.chats.e-study[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 189486381,
+      "duration": 5.208,
+      "bytes": 41900,
+      "sha256": "3f38f1f18c78699a3fefc46d60908bf57d3345edd8dadc3a571a031185e4120f",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-0bbb2be0",
+      "speaker": "elowen",
+      "text": "That's exactly what I hoped you'd say. I've a new nib ready.",
+      "spokenText": "That's exactly what I hoped you'd say. I've a new nib ready.",
+      "source": "src/content/village-folk.js:elowen.chats.e-almanac[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 196815840,
+      "duration": 3.168,
+      "bytes": 25580,
+      "sha256": "9c6554eae9a1519f13fac230886e2ef29899c16e876fb48346b65b993aaeac4a",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-0c182baa",
+      "speaker": "elowen",
+      "text": "By the way they circle a lamp. Parsnip goes widdershins. He's a rebel.",
+      "spokenText": "By the way they circle a lamp. Parsnip goes widdershins. He's a rebel.",
+      "source": "src/content/village-folk.js:elowen.chats.e-moths[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 202910634,
+      "duration": 4.704,
+      "bytes": 37868,
+      "sha256": "6697c8393767fcf71f5e85942f217f48a978105ccbb26cc79dcf94d922456975",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-0d13fbfd",
+      "speaker": "elowen",
+      "text": "Old harvest songs. I think your pumpkins would like to hear them.",
+      "spokenText": "Old harvest songs. I think your pumpkins would like to hear them.",
+      "source": "src/content/village-folk.js:elowen.chats.e-farmvisit[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 219413501,
+      "duration": 3.6,
+      "bytes": 29036,
+      "sha256": "73b5984a5e09d623b467c2a5ad911db8462b057646e219a0089da7b40d8adc26",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-0e4f7675",
+      "speaker": "elowen",
+      "text": "Rowan mends everybody's things but his own. His door's been on one hinge since spring.",
+      "spokenText": "Rowan mends everybody's things but his own. His door's been on one hinge since spring.",
+      "source": "src/content/village-folk.js:elowen.chats.e-rowan[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 240088693,
+      "duration": 4.656,
+      "bytes": 37484,
+      "sha256": "0ae7da185494bcf6dfb0267230061dc367616e183481aa101c520f846e99a442",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-0eaf33fd",
+      "speaker": "elowen",
+      "text": "I'd bring biscuits.",
+      "spokenText": "I'd bring biscuits.",
+      "source": "src/content/village-folk.js:elowen.chats.e-farmvisit[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 246363133,
+      "duration": 1.32,
+      "bytes": 10796,
+      "sha256": "37e84578439d632d563c9066f20cb4703026b1e6faf35c4dfec302956436cf87",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-10461a18",
+      "speaker": "elowen",
+      "text": "I've seen your teacups. That's not fear, that's chaos.",
+      "spokenText": "I've seen your teacups. That's not fear, that's chaos.",
+      "source": "src/content/village-folk.js:elowen.chats.e-fear[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 273029656,
+      "duration": 3.168,
+      "bytes": 25580,
+      "sha256": "79c74ab2ca8b7b4c88a0447dcf330c1720515ab9557498e5bad17e818bb9a418",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-1791cd70",
+      "speaker": "elowen",
+      "text": "Thank you. From you, that means a great deal.",
+      "spokenText": "Thank you. From you, that means a great deal.",
+      "source": "src/content/village-folk.js:elowen.chats.e-wings[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 395431280,
+      "duration": 2.808,
+      "bytes": 22700,
+      "sha256": "d752b688a79efb4b02aa5100926ed5a7af32cda1b56ccb0ef2f0b043e78ba853",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-1969bb18",
+      "speaker": "elowen",
+      "text": "...That's horribly charming. I'll consider it.",
+      "spokenText": "...That's horribly charming. I'll consider it.",
+      "source": "src/content/village-folk.js:elowen.chats.e-letter[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 426359576,
+      "duration": 2.76,
+      "bytes": 22316,
+      "sha256": "02ee7e9244db5dfb300bb7a2bd47fa25deb80084771a5aae8dba914a4be121dc",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-19dd8d0c",
+      "speaker": "elowen",
+      "text": "I bind another. I've never been happier to buy glue.",
+      "spokenText": "I bind another. I've never been happier to buy glue.",
+      "source": "src/content/village-folk.js:elowen.chats.e-thanks[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 433949964,
+      "duration": 3.072,
+      "bytes": 24812,
+      "sha256": "0ede9b298d983ea098351e9784a5ba5ff7f0f3ab005a483a9900c1e56091cd50",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-23bcf9ca",
+      "speaker": "elowen",
+      "text": "My lantern's flame is a moth that never sleeps. Don't worry, she volunteered.",
+      "spokenText": "My lantern's flame is a moth that never sleeps. Don't worry, she volunteered.",
+      "source": "src/content/village-folk.js:elowen.chats.e-lantern[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 599587274,
+      "duration": 4.464,
+      "bytes": 35948,
+      "sha256": "d00bb4bd2a0b41e0fb48a87aba6c7131eb06ee1dfece8f51939f6067e060b526",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-25d4f40b",
+      "speaker": "elowen",
+      "text": "Then she should come and sell some to Rowan's door hinge.",
+      "spokenText": "Then she should come and sell some to Rowan's door hinge.",
+      "source": "src/content/village-folk.js:elowen.chats.e-skyla[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 634713099,
+      "duration": 3.072,
+      "bytes": 24812,
+      "sha256": "6262bf5030cd7feb19db44063e092c89b81fc636d5e674b9fd5bfc3462ab4120",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-27c68687",
+      "speaker": "elowen",
+      "text": "She reads upside down and insists it's the correct way.",
+      "spokenText": "She reads upside down and insists it's the correct way.",
+      "source": "src/content/village-folk.js:elowen.chats.e-study[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 667321991,
+      "duration": 3.168,
+      "bytes": 25580,
+      "sha256": "18284d73436ef031f7587b8b6922f27e56ab6505577ebbfea7540f9ccd9b43bb",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-2a5ba0ba",
+      "speaker": "elowen",
+      "text": "Yes. If I finish it, someone might read it. Someone might not come.",
+      "spokenText": "Yes. If I finish it, someone might read it. Someone might not come.",
+      "source": "src/content/village-folk.js:elowen.chats.e-fear[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 710647994,
+      "duration": 4.248,
+      "bytes": 34220,
+      "sha256": "deceff4a5d4f9c8b8cd2f4fca7f2c0d156572bd5c83dd3246b054a48f7aac5c1",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-2a9a4948",
+      "speaker": "elowen",
+      "text": "Do you ever write things down, out there on your farm?",
+      "spokenText": "Do you ever write things down, out there on your farm?",
+      "source": "src/content/village-folk.js:elowen.chats.e-ink[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 714754376,
+      "duration": 2.976,
+      "bytes": 24044,
+      "sha256": "aa876737ed808f68ada7b5202bf38d01e156487e829c39082b490bfc5446cde2",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-2b035cd7",
+      "speaker": "elowen",
+      "text": "Finished things can't change any more. Unfinished things can still become anything.",
+      "spokenText": "Finished things can't change any more. Unfinished things can still become anything.",
+      "source": "src/content/village-folk.js:elowen.chats.e-fear[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 721640663,
+      "duration": 5.16,
+      "bytes": 41516,
+      "sha256": "88a4775891d420417f7f233394cc730e3d4e1334cd4743b4b177c15e765f001d",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-315295f1",
+      "speaker": "elowen",
+      "text": "I believe you. You can tell by the faces. Kind hands carve kind smiles.",
+      "spokenText": "I believe you. You can tell by the faces. Kind hands carve kind smiles.",
+      "source": "src/content/village-folk.js:elowen.chats.e-farm[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 827495921,
+      "duration": 5.4,
+      "bytes": 43436,
+      "sha256": "fa7d835ff6c21434257f962a97931ad64608b918eb8ff0e54ab343d95bad2a52",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-34a73b8c",
+      "speaker": "elowen",
+      "text": "I have. They stained. We don't talk about it.",
+      "spokenText": "I have. They stained. We don't talk about it.",
+      "source": "src/content/village-folk.js:elowen.chats.e-pages[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 883374988,
+      "duration": 2.712,
+      "bytes": 21932,
+      "sha256": "05abe522bd86317f02f93ff13871debdb5ced3058bdbb91ce38e017cb8a84c8d",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-39e4bbb6",
+      "speaker": "elowen",
+      "text": "Ha! Clever ink. I'd stay put for a cat too.",
+      "spokenText": "Ha! Clever ink. I'd stay put for a cat too.",
+      "source": "src/content/village-folk.js:elowen.chats.e-ink[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 971291574,
+      "duration": 2.856,
+      "bytes": 23084,
+      "sha256": "f047ee615d94f95f27e2ce922fcb0ec1b9507aa8f3f51ac2a450675a40fa6a4b",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-3e9dc23f",
+      "speaker": "elowen",
+      "text": "This is going on the good shelf. Thank you, truly.",
+      "spokenText": "This is going on the good shelf. Thank you, truly.",
+      "source": "src/content/village-folk.js:elowen.gift.loved[2]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1050526271,
+      "duration": 3.672,
+      "bytes": 29612,
+      "sha256": "30445cd6633aa11e1d6c8187f8a79dc025925cc5eb7a6ce6d2d0a545ebb34042",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-3ffabd5a",
+      "speaker": "elowen",
+      "text": "Biscuits are never optional. But thank you. I'll bring the good ones.",
+      "spokenText": "Biscuits are never optional. But thank you. I'll bring the good ones.",
+      "source": "src/content/village-folk.js:elowen.chats.e-farmvisit[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1073397082,
+      "duration": 3.864,
+      "bytes": 31148,
+      "sha256": "ddb76f55e6aff6b1f7a6594a6f0f0bf583ac25577c8606011f59b2d2d0523c91",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-429a6a37",
+      "speaker": "elowen",
+      "text": "Good evening. Mind the ink on the noticeboard; it's still deciding what it says.",
+      "spokenText": "Good evening. Mind the ink on the noticeboard; it's still deciding what it says.",
+      "source": "src/content/village-folk.js:elowen.greet[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1117415991,
+      "duration": 4.656,
+      "bytes": 37484,
+      "sha256": "2f2a8bd8cfb7314ee12e08fe26e054f0c8ec414b54955859f3716237c44c95c8",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-4486afdb",
+      "speaker": "elowen",
+      "text": "You've brought the smell of pumpkins with you. The moths approve.",
+      "spokenText": "You've brought the smell of pumpkins with you. The moths approve.",
+      "source": "src/content/village-folk.js:elowen.greet[2]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1149677531,
+      "duration": 3.456,
+      "bytes": 27884,
+      "sha256": "c8160f222aae7884daaa78f442aefafc4297b6e4c29bfba488ba4755b661fae6",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-4525856c",
+      "speaker": "elowen",
+      "text": "The Green feels like the Green again. Doors knocking, lanterns lit, Rowan whistling.",
+      "spokenText": "The Green feels like the Green again. Doors knocking, lanterns lit, Rowan whistling.",
+      "source": "src/content/village-folk.js:elowen.chats.e-thanks[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1160086892,
+      "duration": 5.736,
+      "bytes": 46124,
+      "sha256": "5747bce12d04c8d98ebdae958bcaaaf4ba1a850a587d8f915082255986faa86b",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-4835892d",
+      "speaker": "elowen",
+      "text": "Lovely. That'll keep a long night's reading company.",
+      "spokenText": "Lovely. That'll keep a long night's reading company.",
+      "source": "src/content/village-folk.js:elowen.gift.liked[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1211468077,
+      "duration": 3.168,
+      "bytes": 25580,
+      "sha256": "9a9f4786fbc2454374698137a76f9fd73faff3b2367f86967311ce7f4cf78776",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-4a159bea",
+      "speaker": "elowen",
+      "text": "Don't tell him I said so.",
+      "spokenText": "Don't tell him I said so.",
+      "source": "src/content/village-folk.js:elowen.chats.e-rowan[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1242930154,
+      "duration": 1.488,
+      "bytes": 12140,
+      "sha256": "04e38aa023876ab9571282dc12271bb31697b81dbe8558c32c20fbd1413ecf08",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-520c15af",
+      "speaker": "elowen",
+      "text": "Then it'll be the brightest the Green has ever been. Promise me a seat by the well.",
+      "spokenText": "Then it'll be the brightest the Green has ever been. Promise me a seat by the well.",
+      "source": "src/content/village-folk.js:elowen.chats.e-festival[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1376523695,
+      "duration": 4.848,
+      "bytes": 39020,
+      "sha256": "022464a72844e333e82c6b98f6ba057cab6c56c81fd410370ac765ad08a3c234",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-58002607",
+      "speaker": "elowen",
+      "text": "I've ordered one the size of a door. Rowan's building the shelf.",
+      "spokenText": "I've ordered one the size of a door. Rowan's building the shelf.",
+      "source": "src/content/village-folk.js:elowen.chats.e-thanks[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1476404743,
+      "duration": 3.672,
+      "bytes": 29612,
+      "sha256": "9b8e027c963d2839262294b1cf646eafac64e8d53663ad08d7334420084bc845",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-582c31ad",
+      "speaker": "elowen",
+      "text": "He's offering two dusts and a compliment. I'd take it.",
+      "spokenText": "He's offering two dusts and a compliment. I'd take it.",
+      "source": "src/content/village-folk.js:elowen.chats.e-lamp[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1479291309,
+      "duration": 3.624,
+      "bytes": 29228,
+      "sha256": "0e5546dcbe7fc99b4cc18a76596b6afc76e870102f39aa0baa798024dfdfdd6d",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-5dbfde73",
+      "speaker": "elowen",
+      "text": "He'll remember that. Moths have long memories for short lives.",
+      "spokenText": "He'll remember that. Moths have long memories for short lives.",
+      "source": "src/content/village-folk.js:elowen.chats.e-moths[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1572855411,
+      "duration": 3.768,
+      "bytes": 30380,
+      "sha256": "5923a9d95d47530ec1128265bf95a17c12cf05a106bc54e58bac8e36da4fc71b",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-5f825e26",
+      "speaker": "elowen",
+      "text": "She can spell 'hello' in smoke. Badly. She's working on the 'h'.",
+      "spokenText": "She can spell 'hello' in smoke. Badly. She's working on the 'h'.",
+      "source": "src/content/village-folk.js:elowen.chats.e-lantern[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1602379302,
+      "duration": 4.464,
+      "bytes": 35948,
+      "sha256": "8dc135f34a152a44401c9a1aaac4641e89542efd44a2a32c94b58c131e0a4694",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-602e5d1f",
+      "speaker": "elowen",
+      "text": "He knows. He told the others. You may get more lodgers.",
+      "spokenText": "He knows. He told the others. You may get more lodgers.",
+      "source": "src/content/village-folk.js:elowen.chats.e-lamp[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1613651231,
+      "duration": 2.976,
+      "bytes": 24044,
+      "sha256": "90ef50c6359bedf99fba6f3bab55d195fddbc026f458731324b29e4cc9b72209",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-61dfa22d",
+      "speaker": "elowen",
+      "text": "You've no idea how long I've wanted one of these. The moths are dancing, look.",
+      "spokenText": "You've no idea how long I've wanted one of these. The moths are dancing, look.",
+      "source": "src/content/village-folk.js:elowen.gift.loved[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1642045997,
+      "duration": 4.248,
+      "bytes": 34220,
+      "sha256": "e61fbb242ab49e3c6b61d3dfabd9099b3bf98ff7b0094364938ffd1594bf2ae9",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-66be3790",
+      "speaker": "elowen",
+      "text": "For ghosts it is. Gravity's more of a suggestion when you're mostly mist.",
+      "spokenText": "For ghosts it is. Gravity's more of a suggestion when you're mostly mist.",
+      "source": "src/content/village-folk.js:elowen.chats.e-study[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1723742096,
+      "duration": 4.752,
+      "bytes": 38252,
+      "sha256": "e92465cd890ec27b0399eeb1487e76fe63119c9d5cc7d9e8d185a550e3959151",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-67645387",
+      "speaker": "elowen",
+      "text": "Shh. Listen. That's the almanac turning a page by itself.",
+      "spokenText": "Shh. Listen. That's the almanac turning a page by itself.",
+      "source": "src/content/village-folk.js:elowen.greet[3]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1734628231,
+      "duration": 3.72,
+      "bytes": 29996,
+      "sha256": "abdbf8da9c1a99fa5c568f7c07508d54358df0ce7ca18b987b2d997e01a13636",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-67ab8ac8",
+      "speaker": "elowen",
+      "text": "People stopped visiting one another. Nobody quarrelled; we simply forgot to knock.",
+      "spokenText": "People stopped visiting one another. Nobody quarrelled; we simply forgot to knock.",
+      "source": "src/content/village-folk.js:elowen.chats.e-almanac[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1739295432,
+      "duration": 4.512,
+      "bytes": 36332,
+      "sha256": "6a82cfaa3f78bdcd66bd431219940ca02d11a68e0f35908575cf9321fbfbff0a",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-68791107",
+      "speaker": "elowen",
+      "text": "At dawn she naps in the wick. That's why mornings look so pale.",
+      "spokenText": "At dawn she naps in the wick. That's why mornings look so pale.",
+      "source": "src/content/village-folk.js:elowen.chats.e-lantern[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1752764679,
+      "duration": 4.248,
+      "bytes": 34220,
+      "sha256": "50137b297ac19420397394f9f88d50ec75a0afc66c4c68258f05c07c395a588e",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-6a7907d5",
+      "speaker": "elowen",
+      "text": "The almanac's run out of pages twice this month.",
+      "spokenText": "The almanac's run out of pages twice this month.",
+      "source": "src/content/village-folk.js:elowen.chats.e-thanks[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1786316757,
+      "duration": 2.904,
+      "bytes": 23468,
+      "sha256": "6395dfd7d14debbd77b76794d1642a5f0e1c13ed08e1f43b57189c9a80c93c7a",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-6f2d62c1",
+      "speaker": "elowen",
+      "text": "I watched your patch from the hill road. All those lanterns in the dark, like a second sky.",
+      "spokenText": "I watched your patch from the hill road. All those lanterns in the dark, like a second sky.",
+      "source": "src/content/village-folk.js:elowen.chats.e-farm[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1865245377,
+      "duration": 6.192,
+      "bytes": 49772,
+      "sha256": "ae2efe18fa7b0ec1e35649eda894f73e249e8eb0520822081ab3b16a89205ed4",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-6fa14d54",
+      "speaker": "elowen",
+      "text": "She heard. See? Positively golden.",
+      "spokenText": "She heard. See? Positively golden.",
+      "source": "src/content/village-folk.js:elowen.chats.e-lantern[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1872842068,
+      "duration": 2.208,
+      "bytes": 17900,
+      "sha256": "ff8719a79f7b332b5a3074cfbcca81e5115de30d31dabe5f6c2d72370bd2ebc4",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-7174a8cf",
+      "speaker": "elowen",
+      "text": "Parsnip has decided he lives on your hat now. I've updated the ledger.",
+      "spokenText": "Parsnip has decided he lives on your hat now. I've updated the ledger.",
+      "source": "src/content/village-folk.js:elowen.chats.e-lamp[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1903470799,
+      "duration": 4.344,
+      "bytes": 34988,
+      "sha256": "6ad967a50012fd0697aad1dc2a03b7f06937b5c6445c92cb76576100c83a22ad",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-7506a1df",
+      "speaker": "elowen",
+      "text": "You're closer than you think. They flutter whenever you walk past the shelves.",
+      "spokenText": "You're closer than you think. They flutter whenever you walk past the shelves.",
+      "source": "src/content/village-folk.js:elowen.chats.e-pages[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1963368927,
+      "duration": 4.296,
+      "bytes": 34604,
+      "sha256": "699c7840b88cee7a0c88e664cdb9ca45cc4e7290c358ed09db931455cf415109",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-75238a34",
+      "speaker": "elowen",
+      "text": "Moth, Parsnip. Address: hat, pumpkin farmer.",
+      "spokenText": "Moth, Parsnip. Address: hat, pumpkin farmer.",
+      "source": "src/content/village-folk.js:elowen.chats.e-lamp[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1965263412,
+      "duration": 3.12,
+      "bytes": 25196,
+      "sha256": "14b840c71c6fbcc4425ffc804290ecd29b99bce9915d869012aa3d63732e2fc5",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-76499ff1",
+      "speaker": "elowen",
+      "text": "Ah, there you are. The moths said you'd come this way.",
+      "spokenText": "Ah, there you are. The moths said you'd come this way.",
+      "source": "src/content/village-folk.js:elowen.greet[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1984536561,
+      "duration": 3.168,
+      "bytes": 25580,
+      "sha256": "d38dcfd03f884c0cc777eeb5f830e08c484bdbe4e7133fa4ff181c7da1033713",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-79159d93",
+      "speaker": "elowen",
+      "text": "It records shared naps. Rowan once filled three pages on a bench.",
+      "spokenText": "It records shared naps. Rowan once filled three pages on a bench.",
+      "source": "src/content/village-folk.js:elowen.chats.e-almanac[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2031459731,
+      "duration": 4.464,
+      "bytes": 35948,
+      "sha256": "2ee5b85aac01b8e8e50c799e295b58fc2842180dcc3a120079f380ae9a2adc34",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-7a6e5da6",
+      "speaker": "elowen",
+      "text": "Fewer windows, then fewer lanterns, then nobody to light them. These things fade quietly.",
+      "spokenText": "Fewer windows, then fewer lanterns, then nobody to light them. These things fade quietly.",
+      "source": "src/content/village-folk.js:elowen.chats.e-festival[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2054053286,
+      "duration": 5.856,
+      "bytes": 47084,
+      "sha256": "397a539d14c38908bdf09c5373027134196b3df05e849ba20a499fb6e8dd4ae1",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-7b867eb8",
+      "speaker": "elowen",
+      "text": "That's kind of you. I'm sure someone will treasure it.",
+      "spokenText": "That's kind of you. I'm sure someone will treasure it.",
+      "source": "src/content/village-folk.js:elowen.gift.neutral[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2072411832,
+      "duration": 3.12,
+      "bytes": 25196,
+      "sha256": "9ecefaa5cdffc24f084036fcae004a03992afccf70c85cc78a6cab24916f2d95",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-80a730dd",
+      "speaker": "elowen",
+      "text": "Maybe it does. You've found three pages already. Perhaps the fourth is shy of me, not you.",
+      "spokenText": "Maybe it does. You've found three pages already. Perhaps the fourth is shy of me, not you.",
+      "source": "src/content/village-folk.js:elowen.chats.e-letter[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2158440669,
+      "duration": 6.048,
+      "bytes": 48620,
+      "sha256": "42eabf0bbcd1b63cad7af3e04627f777211d80999829038110d270bb695b6cd4",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-86b59c6c",
+      "speaker": "elowen",
+      "text": "The almanac only records things that are truly shared. Suppers, repairs, good mornings.",
+      "spokenText": "The almanac only records things that are truly shared. Suppers, repairs, good mornings.",
+      "source": "src/content/village-folk.js:elowen.chats.e-almanac[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2260049004,
+      "duration": 5.16,
+      "bytes": 41516,
+      "sha256": "dae69ec39cacc68b5921b6eed97f905b233fc151c6ffecf2d7633b19e1df8353",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-88d95504",
+      "speaker": "elowen",
+      "text": "Not lost, I think. Hiding until someone's ready to read them.",
+      "spokenText": "Not lost, I think. Hiding until someone's ready to read them.",
+      "source": "src/content/village-folk.js:elowen.chats.e-pages[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2295944452,
+      "duration": 3.6,
+      "bytes": 29036,
+      "sha256": "f089de2871abc0ec7f85c2919563be2f6ac241b789c73360fd3713e5c7b1f503",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-89b03ab4",
+      "speaker": "elowen",
+      "text": "...Yes. I think that's the line I was missing. Thank you.",
+      "spokenText": "...Yes. I think that's the line I was missing. Thank you.",
+      "source": "src/content/village-folk.js:elowen.chats.e-fear[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2310027956,
+      "duration": 3.504,
+      "bytes": 28268,
+      "sha256": "a5547e0e6442eca4861ac87ae0c40f5eb90164d82b8c85df18a45290a191eb94",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-8c38b7dd",
+      "speaker": "elowen",
+      "text": "The pages do. They're terribly fussy. One waited forty years for a librarian with clean gloves.",
+      "spokenText": "The pages do. They're terribly fussy. One waited forty years for a librarian with clean gloves.",
+      "source": "src/content/village-folk.js:elowen.chats.e-pages[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2352527325,
+      "duration": 5.808,
+      "bytes": 46700,
+      "sha256": "fe5d59fa2921e182bc60b9b5f2fe70b794c684cc8a5cc295a4492a997dc13703",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-8e931d80",
+      "speaker": "elowen",
+      "text": "A moth in a top hat. He was very dashing. I was nine.",
+      "spokenText": "A moth in a top hat. He was very dashing. I was nine.",
+      "source": "src/content/village-folk.js:elowen.chats.e-trust[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2392006016,
+      "duration": 3.864,
+      "bytes": 31148,
+      "sha256": "20a16a29948eacb86a5287f059cd8b392e56d2ee2921fe04dc0fff0383987e39",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-8f520169",
+      "speaker": "elowen",
+      "text": "Do the pumpkins mind being carved?",
+      "spokenText": "Do the pumpkins mind being carved?",
+      "source": "src/content/village-folk.js:elowen.chats.e-farm[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2404516201,
+      "duration": 2.112,
+      "bytes": 17132,
+      "sha256": "92d430f8bf80a0c7bb3956c77afdeefb382db32f00b7d31abf5ac4884251a1e8",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-8f57267b",
+      "speaker": "elowen",
+      "text": "But I'd like you to see it.",
+      "spokenText": "But I'd like you to see it.",
+      "source": "src/content/village-folk.js:elowen.chats.e-trust[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2404853371,
+      "duration": 1.368,
+      "bytes": 11180,
+      "sha256": "490da19e88bba66ca3fed246566ab3db0260821338f2825c635d9ea1b4982033",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-94021b27",
+      "speaker": "elowen",
+      "text": "Gently is how it was written. Look: 'Mothlight, where everybody knocks.'",
+      "spokenText": "Gently is how it was written. Look: 'Mothlight, where everybody knocks.'",
+      "source": "src/content/village-folk.js:elowen.chats.e-trust[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2483165991,
+      "duration": 4.608,
+      "bytes": 37100,
+      "sha256": "d8010ecb08698d7d39f4ba84a648adcb2ef621b0c9703dbf82680056e478cc75",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-94bb9475",
+      "speaker": "elowen",
+      "text": "You're there. Fully ripened.",
+      "spokenText": "You're there. Fully ripened.",
+      "source": "src/content/village-folk.js:elowen.chats.e-wings[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2495321205,
+      "duration": 1.92,
+      "bytes": 15596,
+      "sha256": "acdc7d3fe8623fa57463792f3d4ea59ea407e33343916316bdfb02a0c6640a81",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-9a69c50f",
+      "speaker": "elowen",
+      "text": "They called me the moth witch as a joke once. I decided to keep it.",
+      "spokenText": "They called me the moth witch as a joke once. I decided to keep it.",
+      "source": "src/content/village-folk.js:elowen.chats.e-wings[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2590622991,
+      "duration": 4.056,
+      "bytes": 32684,
+      "sha256": "201cb0db974812883461de09830dda1306d7781cee4597ea94e144c439d32393",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-9b581e9b",
+      "speaker": "elowen",
+      "text": "It's been blank for years. Lately it's been filling up.",
+      "spokenText": "It's been blank for years. Lately it's been filling up.",
+      "source": "src/content/village-folk.js:elowen.chats.e-almanac[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2606243483,
+      "duration": 3.024,
+      "bytes": 24428,
+      "sha256": "96cd807e56e059894e638e16f9228513a05497fa25197a1d3114d7cd8628d6bb",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-9e682987",
+      "speaker": "elowen",
+      "text": "Would you mind if I visited your farm one evening? Just to sit by the patch and read.",
+      "spokenText": "Would you mind if I visited your farm one evening? Just to sit by the patch and read.",
+      "source": "src/content/village-folk.js:elowen.chats.e-farmvisit[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2657626503,
+      "duration": 4.992,
+      "bytes": 40172,
+      "sha256": "00817d2b3248b34e758252aede8f19d9966e36e95a0281a3ede79c73f5676cf3",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-a0100323",
+      "speaker": "elowen",
+      "text": "Thank you. Small kindnesses are the best ink.",
+      "spokenText": "Thank you. Small kindnesses are the best ink.",
+      "source": "src/content/village-folk.js:elowen.gift.liked[2]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2685403939,
+      "duration": 2.808,
+      "bytes": 22700,
+      "sha256": "a699c97c1a19c2862a4fdd182d479d56bd8079047cff43727d888dbb25b5bf94",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-aa4efac9",
+      "speaker": "elowen",
+      "text": "Parsnip. He's a dreadful gossip, but he's never been wrong.",
+      "spokenText": "Parsnip. He's a dreadful gossip, but he's never been wrong.",
+      "source": "src/content/village-folk.js:elowen.chats.e-skyla[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2857302729,
+      "duration": 3.264,
+      "bytes": 26348,
+      "sha256": "c47fcafb62426db3207a6787ed38f645c2e44db634f195d0ff04046560874539",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-aec0d805",
+      "speaker": "elowen",
+      "text": "Quietly is the only way. He'd bolt like a spooked hen otherwise.",
+      "spokenText": "Quietly is the only way. He'd bolt like a spooked hen otherwise.",
+      "source": "src/content/village-folk.js:elowen.chats.e-rowan[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2931873797,
+      "duration": 3.6,
+      "bytes": 29036,
+      "sha256": "8450b17a4a9f6affdbd35bd0199e5f929e8857326e0053e81d22e6c40ffc2a19",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-af64b4e1",
+      "speaker": "elowen",
+      "text": "Truth, mostly. Sometimes rhyme. Once it ran off to underline a pumpkin pie recipe.",
+      "spokenText": "Truth, mostly. Sometimes rhyme. Once it ran off to underline a pumpkin pie recipe.",
+      "source": "src/content/village-folk.js:elowen.chats.e-ink[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2942612705,
+      "duration": 5.304,
+      "bytes": 42668,
+      "sha256": "9caf93781d8e0acb975331117e136962f9183c1d3911ad7da41ab156773e60fd",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-b05b7fef",
+      "speaker": "elowen",
+      "text": "Oh! For me? I'll press a page of the almanac around it so it's remembered properly.",
+      "spokenText": "Oh! For me? I'll press a page of the almanac around it so it's remembered properly.",
+      "source": "src/content/village-folk.js:elowen.gift.loved[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2958786543,
+      "duration": 4.464,
+      "bytes": 35948,
+      "sha256": "5c851e821c12f3827e9be5d882ed1106219b6abbc8fe6ef6301971a625b67947",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-b0b8e3e7",
+      "speaker": "elowen",
+      "text": "How thoughtful. I'll make a note of it in the margins.",
+      "spokenText": "How thoughtful. I'll make a note of it in the margins.",
+      "source": "src/content/village-folk.js:elowen.gift.liked[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2964906983,
+      "duration": 3.216,
+      "bytes": 25964,
+      "sha256": "5684750b8a51e1916b4429a44d317bfedce33351181a72d7655cf9d9287074ce",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-b3181378",
+      "speaker": "elowen",
+      "text": "He says he'll pay in dust. That's how moths pay everything.",
+      "spokenText": "He says he'll pay in dust. That's how moths pay everything.",
+      "source": "src/content/village-folk.js:elowen.chats.e-moths[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3004699512,
+      "duration": 2.856,
+      "bytes": 23084,
+      "sha256": "232ab6910e198587b103d851aa22fa9aa6cd6d534f640e858d72284dd21c4e52",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-b5172715",
+      "speaker": "elowen",
+      "text": "Thank you, I think. Perhaps Rowan would like it more.",
+      "spokenText": "Thank you, I think. Perhaps Rowan would like it more.",
+      "source": "src/content/village-folk.js:elowen.gift.disliked[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3038193429,
+      "duration": 3.024,
+      "bytes": 24428,
+      "sha256": "d9ee69943b4ee4566ecc751d2d2d849beff959b39412f83adf0721777a31c76f",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-b5f01ded",
+      "speaker": "elowen",
+      "text": "Your Skyla sounds formidable. The moths say she sold a pumpkin to a fog bank.",
+      "spokenText": "Your Skyla sounds formidable. The moths say she sold a pumpkin to a fog bank.",
+      "source": "src/content/village-folk.js:elowen.chats.e-skyla[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3052412397,
+      "duration": 5.04,
+      "bytes": 40556,
+      "sha256": "1d29d286c5aa38e4243f04dc47a532d8c966ebc9607cbca3426e790b5a213584",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-b91ed91e",
+      "speaker": "elowen",
+      "text": "Can I tell you something silly? I'm frightened of finishing things.",
+      "spokenText": "Can I tell you something silly? I'm frightened of finishing things.",
+      "source": "src/content/village-folk.js:elowen.chats.e-fear[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3105806622,
+      "duration": 3.768,
+      "bytes": 30380,
+      "sha256": "6dfcb7020cd1044f2877d9a00817fde508ad0db22e9f9ca6dfb7e3bef96bcec4",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-b95f0543",
+      "speaker": "elowen",
+      "text": "As long as the light's kind. Yours seems very kind.",
+      "spokenText": "As long as the light's kind. Yours seems very kind.",
+      "source": "src/content/village-folk.js:elowen.chats.e-lamp[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3110012227,
+      "duration": 3.456,
+      "bytes": 27884,
+      "sha256": "dfc746a9269deb4e6a89d2869f623315b304b6d42039517af3e54c8408a4594a",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-b999ddd6",
+      "speaker": "elowen",
+      "text": "Every moth in Mothlight has a name. I keep them in a ledger.",
+      "spokenText": "Every moth in Mothlight has a name. I keep them in a ledger.",
+      "source": "src/content/village-folk.js:elowen.chats.e-moths[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3113868758,
+      "duration": 3.36,
+      "bytes": 27116,
+      "sha256": "989465fe2d991c26080768c67375971a8cd89fb81e0af2664ec1d8ff32d7fcf0",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-b99cab31",
+      "speaker": "elowen",
+      "text": "I've been rebinding the village's old stories. Some of the pages are missing.",
+      "spokenText": "I've been rebinding the village's old stories. Some of the pages are missing.",
+      "source": "src/content/village-folk.js:elowen.chats.e-pages[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3114052401,
+      "duration": 4.416,
+      "bytes": 35564,
+      "sha256": "94e29e8eec8956986e5d47a3d871d425b37faf8b543ca16e4e90a06be3ea25ee",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-b9ac8b9f",
+      "speaker": "elowen",
+      "text": "Is that true?",
+      "spokenText": "Is that true?",
+      "source": "src/content/village-folk.js:elowen.chats.e-skyla[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3115092895,
+      "duration": 1.08,
+      "bytes": 8876,
+      "sha256": "57233d522b0d727779260c7b3b2d9bac9e61820ab46443a26b1fea643d55209f",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-bbc48e8d",
+      "speaker": "elowen",
+      "text": "I keep thinking the last line will come to me, and then it hides.",
+      "spokenText": "I keep thinking the last line will come to me, and then it hides.",
+      "source": "src/content/village-folk.js:elowen.chats.e-letter[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3150220941,
+      "duration": 3.408,
+      "bytes": 27500,
+      "sha256": "d34e75fb8887d164dfcabe4c2d7289e26485db7a643018b651a35eef196cc88f",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-bc893aee",
+      "speaker": "elowen",
+      "text": "Wicked. Accurate, but wicked.",
+      "spokenText": "Wicked. Accurate, but wicked.",
+      "source": "src/content/village-folk.js:elowen.chats.e-rowan[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3163110126,
+      "duration": 2.064,
+      "bytes": 16748,
+      "sha256": "1d9cb0edc31da09ccfbb135a2d72001fdbd4214921cccea19d144d634170583b",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-c0f80a2f",
+      "speaker": "elowen",
+      "text": "The ink in my letters won't stay still. It wanders about the page looking for better words.",
+      "spokenText": "The ink in my letters won't stay still. It wanders about the page looking for better words.",
+      "source": "src/content/village-folk.js:elowen.chats.e-ink[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3237481007,
+      "duration": 5.784,
+      "bytes": 46508,
+      "sha256": "9256400787dcfc8a79b77787e511a0aaafe7433a3109be233bd42e7a7b726ae1",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-c1afc580",
+      "speaker": "elowen",
+      "text": "Of course it did. Fog has no pockets but excellent manners.",
+      "spokenText": "Of course it did. Fog has no pockets but excellent manners.",
+      "source": "src/content/village-folk.js:elowen.chats.e-skyla[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3249522048,
+      "duration": 3.36,
+      "bytes": 27116,
+      "sha256": "0070f66ebffe0a9e31505c1f4aa3b804a72389a03db046317fd1fc6c5f92ab3d",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-c20db526",
+      "speaker": "elowen",
+      "text": "Ah. It's... very fragrant. The pages may never recover.",
+      "spokenText": "Ah. It's... very fragrant. The pages may never recover.",
+      "source": "src/content/village-folk.js:elowen.gift.disliked[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3255678246,
+      "duration": 4.296,
+      "bytes": 34604,
+      "sha256": "06821b84ce64ebaa71489fa0bab304d69d85a574548d9e9ac10445a8f43f7954",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-c346e135",
+      "speaker": "elowen",
+      "text": "Something like 'come home'. But softer. Home is a heavy word on paper.",
+      "spokenText": "Something like 'come home'. But softer. Home is a heavy word on paper.",
+      "source": "src/content/village-folk.js:elowen.chats.e-letter[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3276202293,
+      "duration": 4.848,
+      "bytes": 39020,
+      "sha256": "61b64da40cf0ec57c34089be44e92e64601e84e6c047c5311c6a0967963153bc",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-ccc8ceb4",
+      "speaker": "elowen",
+      "text": "Oh, thank you. I'll find a place for it.",
+      "spokenText": "Oh, thank you. I'll find a place for it.",
+      "source": "src/content/village-folk.js:elowen.gift.neutral[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3435712180,
+      "duration": 2.208,
+      "bytes": 17900,
+      "sha256": "e89b54145edaa453c7a2b611e4faa19ba1ba4619fec0d8a336c1fb930d24cf87",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-ce4e325f",
+      "speaker": "elowen",
+      "text": "Ours. That's the word the almanac keeps writing. Ours.",
+      "spokenText": "Ours. That's the word the almanac keeps writing. Ours.",
+      "source": "src/content/village-folk.js:elowen.chats.e-thanks[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3461231199,
+      "duration": 4.296,
+      "bytes": 34604,
+      "sha256": "ccf236e9345d32437823673a1a52796181af3ef870a29b216c23252f4447dc82",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-cf72a201",
+      "speaker": "elowen",
+      "text": "On clear nights I swear I can see your scarecrow waving.",
+      "spokenText": "On clear nights I swear I can see your scarecrow waving.",
+      "source": "src/content/village-folk.js:elowen.chats.e-moon[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3480396289,
+      "duration": 3.264,
+      "bytes": 26348,
+      "sha256": "20056748eb9de215056db284bf7b9b5c59d8af080e3dd4ef04c22617a414bfb6",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-cffdfc1b",
+      "speaker": "elowen",
+      "text": "So do I. It makes the road between us feel shorter.",
+      "spokenText": "So do I. It makes the road between us feel shorter.",
+      "source": "src/content/village-folk.js:elowen.chats.e-moon[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3489528859,
+      "duration": 3.36,
+      "bytes": 27116,
+      "sha256": "afac46f20425e9d5e55749af66f08888025005378d3f8bf50a0a175610f91a6c",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-d1cf8b73",
+      "speaker": "elowen",
+      "text": "Ha! A fair toll. I'll pay it gladly.",
+      "spokenText": "Ha! A fair toll. I'll pay it gladly.",
+      "source": "src/content/village-folk.js:elowen.chats.e-farmvisit[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3520039795,
+      "duration": 2.568,
+      "bytes": 20780,
+      "sha256": "5e7bb99fe8a6b88c940207ae8a5b2d65cd71cb1cc87a9ae8069f39ff2ffb57f2",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-dc5951f8",
+      "speaker": "elowen",
+      "text": "I'm lucky to have her. She asks the best questions.",
+      "spokenText": "I'm lucky to have her. She asks the best questions.",
+      "source": "src/content/village-folk.js:elowen.chats.e-study[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3696841208,
+      "duration": 2.928,
+      "bytes": 23660,
+      "sha256": "9c19bb99bfc183dc7cb4feb90ac2f704769abbbefd720fc1768820ee1031e415",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-e100afce",
+      "speaker": "elowen",
+      "text": "A list of everyone in the village and what made them laugh. I'd forgotten half of it.",
+      "spokenText": "A list of everyone in the village and what made them laugh. I'd forgotten half of it.",
+      "source": "src/content/village-folk.js:elowen.chats.e-trust[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3774918606,
+      "duration": 4.344,
+      "bytes": 34988,
+      "sha256": "59551884bab867d8db93a27796f8f4bb46bfadb1a2d94771a73d9e2137dab61c",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-e24ed1f9",
+      "speaker": "elowen",
+      "text": "That was more or less the whole programme, yes.",
+      "spokenText": "That was more or less the whole programme, yes.",
+      "source": "src/content/village-folk.js:elowen.chats.e-festival[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3796816377,
+      "duration": 2.904,
+      "bytes": 23468,
+      "sha256": "f76d92ce9fc5228b235ac3dac560ee2385524f11158077cc0242cdfcf353a308",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-e8238439",
+      "speaker": "elowen",
+      "text": "Mothlight sits a little nearer the edge of the map. Things are closer at the edges.",
+      "spokenText": "Mothlight sits a little nearer the edge of the map. Things are closer at the edges.",
+      "source": "src/content/village-folk.js:elowen.chats.e-moon[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3894641721,
+      "duration": 4.416,
+      "bytes": 35564,
+      "sha256": "28c8e983be5ba71b80b67b876f0f452eaa76c2d2c956b1a7625c58167772919e",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-e9b60d09",
+      "speaker": "elowen",
+      "text": "She likes you. She's burning a shade warmer.",
+      "spokenText": "She likes you. She's burning a shade warmer.",
+      "source": "src/content/village-folk.js:elowen.chats.e-lantern[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3921022217,
+      "duration": 2.76,
+      "bytes": 22316,
+      "sha256": "0d25d4fe7267095e041e247aeecb67000c12bf09ac407e2d12f34fd3ad642c8b",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-ebfcd533",
+      "speaker": "elowen",
+      "text": "Then the whole of the Moonlight row is in trouble.",
+      "spokenText": "Then the whole of the Moonlight row is in trouble.",
+      "source": "src/content/village-folk.js:elowen.chats.e-farm[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3959215411,
+      "duration": 2.76,
+      "bytes": 22316,
+      "sha256": "3e93fd8cc97a05e3783128b4543ec08b6234c610291d88068b813fd7dcd153db",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-ec92e432",
+      "speaker": "elowen",
+      "text": "Then you two will get on famously.",
+      "spokenText": "Then you two will get on famously.",
+      "source": "src/content/village-folk.js:elowen.chats.e-study[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3969049650,
+      "duration": 2.16,
+      "bytes": 17516,
+      "sha256": "57905547b5e16016b1724d40f22ce063b19a66fe62d803f2635f003f1b3202d8",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-eeaca2e4",
+      "speaker": "elowen",
+      "text": "Then he waves beautifully. Very convincing straw.",
+      "spokenText": "Then he waves beautifully. Very convincing straw.",
+      "source": "src/content/village-folk.js:elowen.chats.e-moon[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4004291300,
+      "duration": 3.12,
+      "bytes": 25196,
+      "sha256": "1614739f67638a005e49c62eee353026d43359972a7ca1d73fe52978a14eab8e",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-f1eb26dd",
+      "speaker": "elowen",
+      "text": "The letter I wrote to the village, years ago. I never finished it.",
+      "spokenText": "The letter I wrote to the village, years ago. I never finished it.",
+      "source": "src/content/village-folk.js:elowen.chats.e-letter[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4058719965,
+      "duration": 3.456,
+      "bytes": 27884,
+      "sha256": "c57be9d9e4c7f7ade7571960267cb6c971623e888407a200b8fb4a7d238f6605",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-f2a92c63",
+      "speaker": "elowen",
+      "text": "That one on your shoulder is Parsnip.",
+      "spokenText": "That one on your shoulder is Parsnip.",
+      "source": "src/content/village-folk.js:elowen.chats.e-moths[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4071173219,
+      "duration": 2.208,
+      "bytes": 17900,
+      "sha256": "d000b2ebae90dd8d12087d3480d27ec312512020aa72bbeeb33bb8eaeb5fa94e",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-f8b71843",
+      "speaker": "elowen",
+      "text": "I don't show anyone the almanac's first page. It's in my handwriting from when I was very young.",
+      "spokenText": "I don't show anyone the almanac's first page. It's in my handwriting from when I was very young.",
+      "source": "src/content/village-folk.js:elowen.chats.e-trust[0]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4172748867,
+      "duration": 5.808,
+      "bytes": 46700,
+      "sha256": "fbc162cec5a91d9ecf93649efd501c28847d1b3de02549056e3322710f16c42f",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-f8c47339",
+      "speaker": "elowen",
+      "text": "A name is only a costume until you grow into it.",
+      "spokenText": "A name is only a costume until you grow into it.",
+      "source": "src/content/village-folk.js:elowen.chats.e-wings[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4173624121,
+      "duration": 2.808,
+      "bytes": 22700,
+      "sha256": "14413285272169f761dd4ae597ed478f6c5e62facfeb5b5b3c31381767089df5",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-fcbdca79",
+      "speaker": "elowen",
+      "text": "I think they feel chosen. There are worse things to be.",
+      "spokenText": "I think they feel chosen. There are worse things to be.",
+      "source": "src/content/village-folk.js:elowen.chats.e-farm[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4240296569,
+      "duration": 3.216,
+      "bytes": 25964,
+      "sha256": "47024c1de047f741f4d096284047d4ced0293206b75463313719c2aa2543649c",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "elowen-fd23bc3c",
+      "speaker": "elowen",
+      "text": "I'd love to see it again.",
+      "spokenText": "I'd love to see it again.",
+      "source": "src/content/village-folk.js:elowen.chats.e-festival[1]",
+      "availability": "playable",
+      "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+      "voice_name": "Lily",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4246977596,
+      "duration": 1.488,
+      "bytes": 12140,
+      "sha256": "1fbc673ea520ed0f236c4858da1f20823545aafd89534b6bee78cbee26faaab1",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-15f705cf",
+      "speaker": "narrator",
+      "text": "Elowen's library. A conservatory, one day",
+      "spokenText": "Elowen's library. A conservatory, one day",
+      "source": "src/content/village-tour.js:TOUR[4]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 368510415,
+      "duration": 2.928,
+      "bytes": 23660,
+      "sha256": "40455d01a5eb6ed04d92375ac5d6c9e9f4738ef068262417bcb04b0b2a8c000b",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-1d6e78ca",
+      "speaker": "narrator",
+      "text": "Carnival Moor. Corvus's tents and the Baron's manor · level 12",
+      "spokenText": "Carnival Moor. Corvus's tents and the Baron's manor · level 12",
+      "source": "src/content/village-tour.js:TOUR[7]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 493779146,
+      "duration": 4.8,
+      "bytes": 38636,
+      "sha256": "9403d60221ad795eec3d35485075b7569ca0d8512e32f8e6556a5a0ccec57c01",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-257260a6",
+      "speaker": "narrator",
+      "text": "Moonroot Copse. Mabel and Tansy, behind the brambles · level 6",
+      "spokenText": "Moonroot Copse. Mabel and Tansy, behind the brambles · level 6",
+      "source": "src/content/village-tour.js:TOUR[10]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 628252838,
+      "duration": 5.04,
+      "bytes": 40556,
+      "sha256": "2ee2efee31ba6838d389a3128503afe652b5dd5c80247c71066032c527261cf6",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-3301d3ef",
+      "speaker": "narrator",
+      "text": "Rowan's workshop. More plans than walls",
+      "spokenText": "Rowan's workshop. More plans than walls",
+      "source": "src/content/village-tour.js:TOUR[5]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 855757807,
+      "duration": 2.712,
+      "bytes": 21932,
+      "sha256": "2b225f3764e4e3b193c8bde9078d7b5318abac669cbc59bf1a8f042fada720bc",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-6c295b07",
+      "speaker": "narrator",
+      "text": "Welcome to Mothlight",
+      "spokenText": "Welcome to Mothlight",
+      "source": "src/content/village-tour.js:TOUR[12]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1814649607,
+      "duration": 1.416,
+      "bytes": 11564,
+      "sha256": "50dca697983b1305ba5a988cb1729603114a3ff9e5248681678911d3b5db47b4",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-6ce3e809",
+      "speaker": "narrator",
+      "text": "Mirror Marsh. Where the observatory waits · level 15",
+      "spokenText": "Mirror Marsh. Where the observatory waits · level 15",
+      "source": "src/content/village-tour.js:TOUR[8]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1826875401,
+      "duration": 4.608,
+      "bytes": 37100,
+      "sha256": "161a5367b5c208316b8ce4bfc0121905e3cb74c19418edad795a8a331ac145f7",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-931f24e5",
+      "speaker": "narrator",
+      "text": "Mothlight Village. Over the hill from your farm",
+      "spokenText": "Mothlight Village. Over the hill from your farm",
+      "source": "src/content/village-tour.js:TOUR[0]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2468291813,
+      "duration": 3.12,
+      "bytes": 25196,
+      "sha256": "437bf4f9086cf3770701b7c5c66d0f2762fcac38e26d945c58b2b0ee629ecffe",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-b4064982",
+      "speaker": "narrator",
+      "text": "Lantern Quarry. Beyond the broken bridge · opens at level 9",
+      "spokenText": "Lantern Quarry. Beyond the broken bridge · opens at level 9",
+      "source": "src/content/village-tour.js:TOUR[9]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3020310914,
+      "duration": 3.912,
+      "bytes": 31532,
+      "sha256": "edd4ee8823a7cf905973bf2fa4f29a747eb258afa1144da1b3cca125254de85d",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-cd00124a",
+      "speaker": "narrator",
+      "text": "The Velvet Bat. A tavern for bats and night folk · Vesper keeps the door",
+      "spokenText": "The Velvet Bat. A tavern for bats and night folk · Vesper keeps the door",
+      "source": "src/content/village-tour.js:TOUR[6]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3439333962,
+      "duration": 5.208,
+      "bytes": 41900,
+      "sha256": "1c4408a5f709531a6eb2fd25260259f04acb91b15de7f0c547a1c7818720264a",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-dc501e11",
+      "speaker": "narrator",
+      "text": "Hollow Green. The square, the well and the noticeboard",
+      "spokenText": "Hollow Green. The square, the well and the noticeboard",
+      "source": "src/content/village-tour.js:TOUR[3]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3696238097,
+      "duration": 3.6,
+      "bytes": 29036,
+      "sha256": "bb09f98656249766fb5047c8fecace79f233d2a656922ec6a12fcb6fbe6d3bc0",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "narrator-f86727c8",
+      "speaker": "narrator",
+      "text": "…and beyond",
+      "spokenText": "…and beyond",
+      "source": "src/content/village-tour.js:TOUR[11]",
+      "availability": "playable",
+      "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+      "voice_name": "George",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4167509960,
+      "duration": 1.128,
+      "bytes": 9260,
+      "sha256": "f7c60c3572f190719bfa7b8ca3defef06f0971384004bbf95b715b132830c3ea",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "natalie-3f203679",
+      "speaker": "natalie",
+      "text": "Shane & Natalie’s Pumpkin Patch. A little darkness, a lot of heart.",
+      "spokenText": "Shane & Natalie’s Pumpkin Patch. A little darkness, a lot of heart.",
+      "source": "src/content/intro.js:INTRO_NARRATION",
+      "availability": "playable",
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "voice_name": "Alice",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1059075705,
+      "duration": 4.848,
+      "bytes": 39020,
+      "sha256": "c3d10ce42c4c2adaa231803bee475d6e8f632e5b435611050b7d369e69cefa60",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "natalie-5a46a113",
+      "speaker": "natalie",
+      "text": "Coins go on upgrades for the farm, and on turning our little cottage into a wonderfully haunted home.",
+      "spokenText": "Coins go on upgrades for the farm, and on turning our little cottage into a wonderfully haunted home.",
+      "source": "src/content/intro.js:INTRO_LINES[4].text",
+      "availability": "playable",
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "voice_name": "Alice",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1514578195,
+      "duration": 6.288,
+      "bytes": 50540,
+      "sha256": "a4afaa199b45c410fff96d584e23038dfb9f83023b5f286091f93179b4863530",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "natalie-9efb1fe5",
+      "speaker": "natalie",
+      "text": "Plant the plots, then tap the big pumpkin or Boost to hurry them along. Harvest when they’re ripe.",
+      "spokenText": "Plant the plots, then tap the big pumpkin or Boost to hurry them along. Harvest when they’re ripe.",
+      "source": "src/content/intro.js:INTRO_LINES[2].text",
+      "availability": "playable",
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "voice_name": "Alice",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2667257829,
+      "duration": 6,
+      "bytes": 48236,
+      "sha256": "8bb2c1504e7aac7daf961a0047f00e5602785db7a9a286529bb55f7b7c0299eb",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "natalie-a2ddd6e3",
+      "speaker": "natalie",
+      "text": "The goal? The most loved pumpkin patch in the valley. Not world domination, Shane.",
+      "spokenText": "The goal? The most loved pumpkin patch in the valley. Not world domination, Shane.",
+      "source": "src/content/intro.js:INTRO_LINES[6].text",
+      "availability": "playable",
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "voice_name": "Alice",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2732447459,
+      "duration": 5.256,
+      "bytes": 42284,
+      "sha256": "c92dd6c99a420a0edbe12d4b5e6ae6b70fed17772367c320013da120652ffb1c",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "natalie-eb5ac376",
+      "speaker": "natalie",
+      "text": "Welcome to our pumpkin patch! It’s always a warm October night here, and our pumpkins glow.",
+      "spokenText": "Welcome to our pumpkin patch! It’s always a warm October night here, and our pumpkins glow.",
+      "source": "src/content/intro.js:INTRO_LINES[0].text",
+      "availability": "playable",
+      "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+      "voice_name": "Alice",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3948594038,
+      "duration": 6.288,
+      "bytes": 50540,
+      "sha256": "74588ca04958089bd4004f8f6a8a9dd08ba74f55e30ec19a3ab7abd3871ff7e4",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-026e6b5b",
+      "speaker": "rowan",
+      "text": "You'd do that? Oh, my stuffing's gone all wobbly.",
+      "spokenText": "You'd do that? Oh, my stuffing's gone all wobbly.",
+      "source": "src/content/village-folk.js:rowan.chats.r-pumpkins[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 40790875,
+      "duration": 3.912,
+      "bytes": 31532,
+      "sha256": "b8312da26030bf18e27fbe0a2d108c32d7ce3115aeaf368343da70d0b9fb8db5",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-0f32f585",
+      "speaker": "rowan",
+      "text": "I'll keep this right by the workbench where I can see it. Thank you, friend.",
+      "spokenText": "I'll keep this right by the workbench where I can see it. Thank you, friend.",
+      "source": "src/content/village-folk.js:rowan.gift.loved[2]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 254997893,
+      "duration": 4.752,
+      "bytes": 38252,
+      "sha256": "8a0e0026e8bbf4bacb4e62eb9189063ddf3eab4b6957dc2ef28e9cf2b35893f4",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-184c700c",
+      "speaker": "rowan",
+      "text": "Only Tuesdays. Tuesday crows are a law unto themselves.",
+      "spokenText": "Only Tuesdays. Tuesday crows are a law unto themselves.",
+      "source": "src/content/village-folk.js:rowan.chats.r-crows[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 407662604,
+      "duration": 4.416,
+      "bytes": 35564,
+      "sha256": "5f4c85f8ce93d2587b8bd891dbd7b0ce6f5a35687dfd0c6e7eede768d51a98da",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-2fa82e35",
+      "speaker": "rowan",
+      "text": "That's kind of you. I'll find it a nice shelf.",
+      "spokenText": "That's kind of you. I'll find it a nice shelf.",
+      "source": "src/content/village-folk.js:rowan.gift.neutral[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 799551029,
+      "duration": 2.856,
+      "bytes": 23084,
+      "sha256": "4af11390d9f25de74f950745f6e39f37b049652f81ca8ad5ec250261fdaf1566",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-4cdf62c6",
+      "speaker": "rowan",
+      "text": "A medium pumpkin in a medium barrow. The dream.",
+      "spokenText": "A medium pumpkin in a medium barrow. The dream.",
+      "source": "src/content/village-folk.js:rowan.chats.r-pumpkins[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1289708230,
+      "duration": 4.248,
+      "bytes": 34220,
+      "sha256": "088ddadc4611200accb2793e3908e67cb381c64d1b5aa12157d61051e5628d05",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-540d0cfc",
+      "speaker": "rowan",
+      "text": "We are. They sing at the sawmill. Out of tune, but with feeling.",
+      "spokenText": "We are. They sing at the sawmill. Out of tune, but with feeling.",
+      "source": "src/content/village-folk.js:rowan.chats.r-crows[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1410141436,
+      "duration": 5.4,
+      "bytes": 43436,
+      "sha256": "4f691b903cc6272233e6e85608eff9b33ca838541b7a19e257ac7be8533a47e6",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-57a84730",
+      "speaker": "rowan",
+      "text": "Then the road got quiet.",
+      "spokenText": "Then the road got quiet.",
+      "source": "src/content/village-folk.js:rowan.chats.r-farmers[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1470646064,
+      "duration": 1.584,
+      "bytes": 12908,
+      "sha256": "4c9b12e680d9926597caac55dc40817d5b73820558bc0619e7bdba851c05b4e1",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-5b659356",
+      "speaker": "rowan",
+      "text": "Their lawyer. Big fellow, very glossy. Charged me in buttons.",
+      "spokenText": "Their lawyer. Big fellow, very glossy. Charged me in buttons.",
+      "source": "src/content/village-folk.js:rowan.chats.r-crows[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1533383510,
+      "duration": 5.736,
+      "bytes": 46124,
+      "sha256": "b8cbcaeb1300261c472fb90b513bcfc19be644dec1e753797f27ebad3583711b",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-5cd84235",
+      "speaker": "rowan",
+      "text": "Well, that's grand. Thank you kindly.",
+      "spokenText": "Well, that's grand. Thank you kindly.",
+      "source": "src/content/village-folk.js:rowan.gift.liked[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1557676597,
+      "duration": 2.52,
+      "bytes": 20396,
+      "sha256": "62a8fff786f43b1e551150484dc3be7ae9aa29d175951964d8f69631b8362064",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-61e3fcca",
+      "speaker": "rowan",
+      "text": "Evening! Mind the sawdust, it's got ideas.",
+      "spokenText": "Evening! Mind the sawdust, it's got ideas.",
+      "source": "src/content/village-folk.js:rowan.greet[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1642331338,
+      "duration": 3.36,
+      "bytes": 27116,
+      "sha256": "22897434799dcb4fc07af146f9e463838c8f35f14f434ea19414357f31dc518d",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-696e390d",
+      "speaker": "rowan",
+      "text": "Is it true you grow pumpkins the size of a wheelbarrow?",
+      "spokenText": "Is it true you grow pumpkins the size of a wheelbarrow?",
+      "source": "src/content/village-folk.js:rowan.chats.r-pumpkins[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1768831245,
+      "duration": 3.672,
+      "bytes": 29612,
+      "sha256": "eab0b8f9f871b3cc90de424b4741308f82cf05628dd866bae1c98fd281661bc4",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-6d3fd078",
+      "speaker": "rowan",
+      "text": "Ah, hello! I was just about to start something and not finish it.",
+      "spokenText": "Ah, hello! I was just about to start something and not finish it.",
+      "source": "src/content/village-folk.js:rowan.greet[2]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 1832898680,
+      "duration": 3.912,
+      "bytes": 31532,
+      "sha256": "a2e82a04c22158d57da9e4d3c256eaaa87c54e52c588b8b09b8da033ec243b7b",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-7a352398",
+      "speaker": "rowan",
+      "text": "Thank you! I'm sure it'll come in handy for something.",
+      "spokenText": "Thank you! I'm sure it'll come in handy for something.",
+      "source": "src/content/village-folk.js:rowan.gift.neutral[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2050302872,
+      "duration": 3.552,
+      "bytes": 28652,
+      "sha256": "04f06b1d29f8fd2a834ead7f51f1c288765fca59a317e485eb38d6c216d69945",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-7a6ffac8",
+      "speaker": "rowan",
+      "text": "Bit of a worry near bonfires, mind.",
+      "spokenText": "Bit of a worry near bonfires, mind.",
+      "source": "src/content/village-folk.js:rowan.chats.r-straw[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2054159048,
+      "duration": 2.664,
+      "bytes": 21548,
+      "sha256": "252e8b7e49e80ff377b24a76fecc620f65a9d718f4688ceaabdb6a668f31ac7c",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-7c546a9c",
+      "speaker": "rowan",
+      "text": "Strictly business.",
+      "spokenText": "Strictly business.",
+      "source": "src/content/village-folk.js:rowan.chats.r-crows[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2085907100,
+      "duration": 1.32,
+      "bytes": 10796,
+      "sha256": "45211c15bc9de44f55568dfd17d742431c7f5e7bdb8c11f205d76cc691b2a738",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-83f0bd81",
+      "speaker": "rowan",
+      "text": "You've noticed my door. Everyone notices my door.",
+      "spokenText": "You've noticed my door. Everyone notices my door.",
+      "source": "src/content/village-folk.js:rowan.chats.r-hinge[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2213592449,
+      "duration": 3.552,
+      "bytes": 28652,
+      "sha256": "eeaf6523fda286209f810537fcb0e3a9af313ae602d6a527b555b05937d27ab2",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-85f51331",
+      "speaker": "rowan",
+      "text": "Now that's the best thing I've heard since the crows learned harmony.",
+      "spokenText": "Now that's the best thing I've heard since the crows learned harmony.",
+      "source": "src/content/village-folk.js:rowan.chats.r-farmers[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2247430961,
+      "duration": 3.72,
+      "bytes": 29996,
+      "sha256": "5e802b70681dff66296a930b1c680994b93c8c14fee9e9f5b3b87ba22e5f44b6",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-8e5bb140",
+      "speaker": "rowan",
+      "text": "Blast! Pip'll be famous now. He'll be insufferable.",
+      "spokenText": "Blast! Pip'll be famous now. He'll be insufferable.",
+      "source": "src/content/village-folk.js:rowan.chats.r-tools[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2388373824,
+      "duration": 4.152,
+      "bytes": 33452,
+      "sha256": "e3c561d155b3fa3495e131434ec9b4ae22498435cfdcf480b6b6b78e20c25083",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-93913ca4",
+      "speaker": "rowan",
+      "text": "Lovely! That'll go down a treat after a long day of sawing.",
+      "spokenText": "Lovely! That'll go down a treat after a long day of sawing.",
+      "source": "src/content/village-folk.js:rowan.gift.liked[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2475768996,
+      "duration": 4.008,
+      "bytes": 32300,
+      "sha256": "3c5b16eff77741c26221f58a4781686ae9a52ebb556156adee81f659735d052e",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-94811866",
+      "speaker": "rowan",
+      "text": "Ha! Bring a horn. The owls'll love it.",
+      "spokenText": "Ha! Bring a horn. The owls'll love it.",
+      "source": "src/content/village-folk.js:rowan.chats.r-farmers[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2491488358,
+      "duration": 3.072,
+      "bytes": 24812,
+      "sha256": "5194015570317ed1d5b8eb0fd393897f51dd0fe9194727c4f35193da744e3551",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-976c638f",
+      "speaker": "rowan",
+      "text": "Don't tell Elowen. She'll want to write them in a ledger.",
+      "spokenText": "Don't tell Elowen. She'll want to write them in a ledger.",
+      "source": "src/content/village-folk.js:rowan.chats.r-tools[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2540462991,
+      "duration": 3.312,
+      "bytes": 26732,
+      "sha256": "f0852616daf3c7f0b93aadc9511ba67415bc480283d4e8f78b21b5f492db643a",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-98f8a697",
+      "speaker": "rowan",
+      "text": "Thank you. I'll keep it at arm's length. For safety.",
+      "spokenText": "Thank you. I'll keep it at arm's length. For safety.",
+      "source": "src/content/village-folk.js:rowan.gift.disliked[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2566432407,
+      "duration": 3.6,
+      "bytes": 29036,
+      "sha256": "c01357b3574f2e82e051acd97781193ef24fdd0cd312a8852d7b7f3f7165d2bc",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-9cc9de65",
+      "speaker": "rowan",
+      "text": "For me? You shouldn't have. No, really, I'll be unbearable about it.",
+      "spokenText": "For me? You shouldn't have. No, really, I'll be unbearable about it.",
+      "source": "src/content/village-folk.js:rowan.gift.loved[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2630475365,
+      "duration": 5.808,
+      "bytes": 46700,
+      "sha256": "5b4c4fb28a4612fc85fb15ead4de77e7cd5bedb6a679b8caee92f7e5596c4f30",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-a3160da8",
+      "speaker": "rowan",
+      "text": "Every tool in my box has a name. That's Mallory the mallet, and that's Pip the plane.",
+      "spokenText": "Every tool in my box has a name. That's Mallory the mallet, and that's Pip the plane.",
+      "source": "src/content/village-folk.js:rowan.chats.r-tools[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2736131496,
+      "duration": 6.096,
+      "bytes": 49004,
+      "sha256": "a9411d281e68bf58eb2fcecd3e606a6dd6b3d1b7a8b5fc312471936ebdf39ec0",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-b2292167",
+      "speaker": "rowan",
+      "text": "Ha! They're a grand crew. Never late, never complain. Unlike me.",
+      "spokenText": "Ha! They're a grand crew. Never late, never complain. Unlike me.",
+      "source": "src/content/village-folk.js:rowan.chats.r-tools[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2989039975,
+      "duration": 6.696,
+      "bytes": 53804,
+      "sha256": "14c42de0aa9a2591da973215a7d70368a79c8167502025ca50f69d626ac47227",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-b33dfbf8",
+      "speaker": "rowan",
+      "text": "Carve it into a doorway. My own pumpkin door. Smells better than oak.",
+      "spokenText": "Carve it into a doorway. My own pumpkin door. Smells better than oak.",
+      "source": "src/content/village-folk.js:rowan.chats.r-pumpkins[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3007183864,
+      "duration": 5.64,
+      "bytes": 45356,
+      "sha256": "72f6b22178fe6913b67f06d718fa7f0f925323ba4380c0d1abd6872f8d7d1629",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-b50f5963",
+      "speaker": "rowan",
+      "text": "Oh, now that's the good stuff. My stuffing's all a-flutter.",
+      "spokenText": "Oh, now that's the good stuff. My stuffing's all a-flutter.",
+      "source": "src/content/village-folk.js:rowan.gift.loved[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3037682019,
+      "duration": 3.72,
+      "bytes": 29996,
+      "sha256": "21f26eeaacd31aaa590b9856d3ea7b460c94744c93013d250498e0d896d1dcaa",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-b8d7a75c",
+      "speaker": "rowan",
+      "text": "I've been dying to build a wheelbarrow the size of a pumpkin.",
+      "spokenText": "I've been dying to build a wheelbarrow the size of a pumpkin.",
+      "source": "src/content/village-folk.js:rowan.chats.r-pumpkins[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3101140828,
+      "duration": 3.36,
+      "bytes": 27116,
+      "sha256": "6e204783405e9df04d7da2fadb4c9c11803af96ad44071259abd52b9c404a463",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-cb77c2aa",
+      "speaker": "rowan",
+      "text": "The bridge washed out, then the farmer moved on, then... well. Roads forget, if no one walks them.",
+      "spokenText": "The bridge washed out, then the farmer moved on, then... well. Roads forget, if no one walks them.",
+      "source": "src/content/village-folk.js:rowan.chats.r-farmers[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3413623466,
+      "duration": 8.232,
+      "bytes": 66092,
+      "sha256": "60dddf3a08d16d3a24c740ba66105c39131580ac0504838a0d5811ba386e770c",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-d0030848",
+      "speaker": "rowan",
+      "text": "It's not broken, it's... resting.",
+      "spokenText": "It's not broken, it's... resting.",
+      "source": "src/content/village-folk.js:rowan.chats.r-hinge[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3489859656,
+      "duration": 2.928,
+      "bytes": 23660,
+      "sha256": "0f5040c16741940334ead62321412014f084e77bd84df1c1de5bb9bbd3182a3a",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-d1ab194f",
+      "speaker": "rowan",
+      "text": "Ah. That's a bit... warm, for a fellow made of straw.",
+      "spokenText": "Ah. That's a bit... warm, for a fellow made of straw.",
+      "source": "src/content/village-folk.js:rowan.gift.disliked[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3517651279,
+      "duration": 4.704,
+      "bytes": 37868,
+      "sha256": "9c847358efa4e4ba6c05d3a7b64227bf0fe7dfce042e6ae48a619b4bfc3db090",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-d4a79711",
+      "speaker": "rowan",
+      "text": "Old Crook the chisel. She's chipped, but she knows where the grain wants to go.",
+      "spokenText": "Old Crook the chisel. She's chipped, but she knows where the grain wants to go.",
+      "source": "src/content/village-folk.js:rowan.chats.r-tools[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3567752977,
+      "duration": 5.448,
+      "bytes": 43820,
+      "sha256": "3a5d68b9395562d36cf4d984bedcb51398f207c15329f15ec3c4d8e66229121d",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-d615b2fb",
+      "speaker": "rowan",
+      "text": "You're too good to me. Don't stop.",
+      "spokenText": "You're too good to me. Don't stop.",
+      "source": "src/content/village-folk.js:rowan.gift.liked[2]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3591746299,
+      "duration": 2.328,
+      "bytes": 18860,
+      "sha256": "44e9ec915aa189cde90487b13bdef62f2f561ab5c1447ad34caadc200bd9f4b4",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-d6b8acbd",
+      "speaker": "rowan",
+      "text": "One day, aye. One day I'll let someone help me. Gosh, that sounded brave.",
+      "spokenText": "One day, aye. One day I'll let someone help me. Gosh, that sounded brave.",
+      "source": "src/content/village-folk.js:rowan.chats.r-hinge[2].choices[1].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3602427069,
+      "duration": 6.432,
+      "bytes": 51692,
+      "sha256": "032951a56c1df3ba054238b090bfdd93b7f1e2a5558e5e1739dac5c45b96e947",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-e02ed421",
+      "speaker": "rowan",
+      "text": "It's a very relaxed door. I'm jealous, honestly.",
+      "spokenText": "It's a very relaxed door. I'm jealous, honestly.",
+      "source": "src/content/village-folk.js:rowan.chats.r-hinge[2].choices[0].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3761165345,
+      "duration": 3.864,
+      "bytes": 31148,
+      "sha256": "01d2b326d7fcc6ad78e0a92da39f6b75175d281dbc46cde389aba42a24776cbd",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-e4a2193c",
+      "speaker": "rowan",
+      "text": "There's my favourite farmer. Don't tell the crows.",
+      "spokenText": "There's my favourite farmer. Don't tell the crows.",
+      "source": "src/content/village-folk.js:rowan.greet[1]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3835828540,
+      "duration": 3.912,
+      "bytes": 31532,
+      "sha256": "2e7453f320ba6163aaaddfea59ffcfe8a32e27e16d0155a51ed9be0dccb54e07",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-e7fc375c",
+      "speaker": "rowan",
+      "text": "Come in, come in. Well, there's no door. Come near, then.",
+      "spokenText": "Come in, come in. Well, there's no door. Come near, then.",
+      "source": "src/content/village-folk.js:rowan.greet[3]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 3892066140,
+      "duration": 4.008,
+      "bytes": 32300,
+      "sha256": "39494aaedb9b45a7a909b447557b68a7af6c5acd05552779c448f03aaac52262",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-f89f1ee7",
+      "speaker": "rowan",
+      "text": "People think being made of straw's a nuisance. It's not. I never need a pillow.",
+      "spokenText": "People think being made of straw's a nuisance. It's not. I never need a pillow.",
+      "source": "src/content/village-folk.js:rowan.chats.r-straw[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4171177703,
+      "duration": 5.496,
+      "bytes": 44204,
+      "sha256": "ab32f8e92c3e2bdb94b3c9f1083129bfc02a33bf073876ba839c2e3c7e6a22cb",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-fa6b618b",
+      "speaker": "rowan",
+      "text": "I lent it to Mabel for a hat. She made the hat. I made a draught.",
+      "spokenText": "I lent it to Mabel for a hat. She made the hat. I made a draught.",
+      "source": "src/content/village-folk.js:rowan.chats.r-hinge[2].choices[2].reply",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4201341323,
+      "duration": 5.16,
+      "bytes": 41516,
+      "sha256": "2082ad5f559ba3333a0cb0b6a2401b3cbb68a4b1493eb5a6feeef93a583f023b",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-fec13396",
+      "speaker": "rowan",
+      "text": "We used to get a cart from your side of the hill every week. Pumpkins, apples, gossip.",
+      "spokenText": "We used to get a cart from your side of the hill every week. Pumpkins, apples, gossip.",
+      "source": "src/content/village-folk.js:rowan.chats.r-farmers[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4274074518,
+      "duration": 6.432,
+      "bytes": 51692,
+      "sha256": "a3509d37e2005b1f1b5f88960bfbae71c82e2fad2fe09df41b53c535f88472f6",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "rowan-ff43d037",
+      "speaker": "rowan",
+      "text": "The crows and I have an arrangement. They don't eat my stuffing, I don't flap at them.",
+      "spokenText": "The crows and I have an arrangement. They don't eat my stuffing, I don't flap at them.",
+      "source": "src/content/village-folk.js:rowan.chats.r-crows[0]",
+      "availability": "playable",
+      "voice_id": "pqHfZKP75CvOlQylNhV4",
+      "voice_name": "Bill",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4282634295,
+      "duration": 5.256,
+      "bytes": 42284,
+      "sha256": "a44fb29c4ace1d409390025c576bbfcf322b43f5c21e4c072cd9f6fab73e4e22",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "shane-003da683",
+      "speaker": "shane",
+      "text": "And the neighbours are monsters. Lovely ones, honestly. They wander up the path to buy our pumpkins.",
+      "spokenText": "And the neighbours are monsters. Lovely ones, honestly. They wander up the path to buy our pumpkins.",
+      "source": "src/content/intro.js:INTRO_LINES[1].text",
+      "availability": "playable",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "voice_name": "Daniel",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 4040323,
+      "duration": 7.176,
+      "bytes": 57644,
+      "sha256": "7348ebb48b742d84dc9b2c41a375243f8724432676a95ec1ccb49b953a94c4b8",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "shane-2c45b56b",
+      "speaker": "shane",
+      "text": "The neighbours ask favours too. Nat keeps them in the journal, very neatly. And as the patch levels up, new attractions open.",
+      "spokenText": "The neighbours ask favours too. Nat keeps them in the journal, very neatly. And as the patch levels up, new attractions open.",
+      "source": "src/content/intro.js:INTRO_LINES[5].text",
+      "availability": "playable",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "voice_name": "Daniel",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 742765931,
+      "duration": 9.264,
+      "bytes": 74348,
+      "sha256": "9c1d759732e761c57effea52bea1e2425eaad36e6a1a92cf69f2d1496eb86e94",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    },
+    {
+      "id": "shane-b296fa90",
+      "speaker": "shane",
+      "text": "Skyla sells them at her stall, and later in our own shop, the Honest Pumpkin. She runs the till. Mostly by sitting on it.",
+      "spokenText": "Skyla sells them at her stall, and later in our own shop, the Honest Pumpkin. She runs the till. Mostly by sitting on it.",
+      "source": "src/content/intro.js:INTRO_LINES[3].text",
+      "availability": "playable",
+      "voice_id": "onwK4e9ZLuTAKqWW03F9",
+      "voice_name": "Daniel",
+      "model": "eleven_multilingual_v2",
+      "settings": {
+        "stability": 0.55,
+        "similarity_boost": 0.75,
+        "style": 0.16,
+        "use_speaker_boost": true,
+        "speed": 1
+      },
+      "seed": 2996238992,
+      "duration": 8.688,
+      "bytes": 69740,
+      "sha256": "b125a998c68c8cdcac6d7ebee48b5da8b915351b896a261bee474981e68a07da",
+      "processing": {
+        "filter": "loudnorm=I=-18:TP=-2:LRA=9",
+        "channels": 1,
+        "sample_rate": 24000,
+        "bit_rate": "64k"
+      }
+    }
+  ]
+}

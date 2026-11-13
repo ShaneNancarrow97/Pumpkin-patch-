@@ -1,0 +1,297 @@
+{
+  "file": "/workspace/Pumpkin-Patch-Hollow-Exterior.html",
+  "sha256": "3746b39255a19d454ab0da99ae174de58d8f595f65e9bbff29379341fc633d10",
+  "started": "2026-10-25T14:27:11.383Z",
+  "fixture": "QA-only funds; gate derived from current content",
+  "checks": [
+    {
+      "ok": true,
+      "label": "the farm exposes exterior diagnostics"
+    },
+    {
+      "ok": true,
+      "label": "an unpurchased attraction remains visibly derelict"
+    },
+    {
+      "ok": true,
+      "label": "purchase retains the current level gate"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "purchase"
+    },
+    {
+      "ok": true,
+      "label": "buying the house spends once and does not restore or open it"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "restore"
+    },
+    {
+      "ok": true,
+      "label": "paid restoration has its own visible stage"
+    },
+    {
+      "ok": true,
+      "label": "the farm model follows actual restoration status"
+    },
+    {
+      "ok": true,
+      "label": "paused restoration remains paused while visuals can be inspected"
+    },
+    {
+      "ok": true,
+      "label": "restoration finishes into a closed attraction without ticket income"
+    },
+    {
+      "ok": true,
+      "label": "restored tier one replaces the restoration model"
+    },
+    {
+      "ok": true,
+      "label": "world target is visible",
+      "data": {
+        "x": 506.311111111111,
+        "y": 342.997979044874
+      }
+    },
+    {
+      "ok": true,
+      "label": "the facade opens its compact context card"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "Close attraction details"
+    },
+    {
+      "ok": true,
+      "label": "world target is visible",
+      "data": {
+        "x": 639.9999999999999,
+        "y": 407.18756845570346
+      }
+    },
+    {
+      "ok": true,
+      "label": "the highlighted physical door enters the existing foyer"
+    },
+    {
+      "ok": true,
+      "label": "owner door entry cannot create a paid ticket"
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "upgrade"
+    },
+    {
+      "ok": true,
+      "label": "paid tier 2 immediately refreshes its farm exterior",
+      "data": {
+        "status": "ready",
+        "tier": 2,
+        "rebuilds": 4,
+        "boxes": 2327,
+        "reducedMotion": false,
+        "doorReady": true,
+        "pooledLamps": 2,
+        "effects": {
+          "reducedMotion": false,
+          "active": true,
+          "time": 3.2667000000000272,
+          "shutters": 4,
+          "silhouettes": 0,
+          "ghost": false
+        },
+        "footprint": {
+          "w": 8,
+          "d": 5
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "upgrade"
+    },
+    {
+      "ok": true,
+      "label": "paid tier 3 immediately refreshes its farm exterior",
+      "data": {
+        "status": "ready",
+        "tier": 3,
+        "rebuilds": 5,
+        "boxes": 2401,
+        "reducedMotion": false,
+        "doorReady": true,
+        "pooledLamps": 2,
+        "effects": {
+          "reducedMotion": false,
+          "active": true,
+          "time": 3.3667000000000273,
+          "shutters": 4,
+          "silhouettes": 0,
+          "ghost": false
+        },
+        "footprint": {
+          "w": 8,
+          "d": 5
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "upgrade"
+    },
+    {
+      "ok": true,
+      "label": "paid tier 4 immediately refreshes its farm exterior",
+      "data": {
+        "status": "ready",
+        "tier": 4,
+        "rebuilds": 6,
+        "boxes": 2535,
+        "reducedMotion": false,
+        "doorReady": true,
+        "pooledLamps": 2,
+        "effects": {
+          "reducedMotion": false,
+          "active": true,
+          "time": 4.200000000000045,
+          "shutters": 4,
+          "silhouettes": 0,
+          "ghost": false
+        },
+        "footprint": {
+          "w": 8,
+          "d": 5
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "interaction target is available",
+      "data": "upgrade"
+    },
+    {
+      "ok": true,
+      "label": "paid tier 5 immediately refreshes its farm exterior",
+      "data": {
+        "status": "ready",
+        "tier": 5,
+        "rebuilds": 7,
+        "boxes": 2636,
+        "reducedMotion": false,
+        "doorReady": true,
+        "pooledLamps": 2,
+        "effects": {
+          "reducedMotion": false,
+          "active": true,
+          "time": 4.350000000000044,
+          "shutters": 4,
+          "silhouettes": 0,
+          "ghost": false
+        },
+        "footprint": {
+          "w": 8,
+          "d": 5
+        }
+      }
+    },
+    {
+      "ok": true,
+      "label": "the five restored appearances have distinct geometry signatures",
+      "data": [
+        2254,
+        2327,
+        2401,
+        2535,
+        2636
+      ]
+    },
+    {
+      "ok": true,
+      "label": "idle effects and repeated refreshes cannot alter any saved farm data or ledgers"
+    },
+    {
+      "ok": true,
+      "label": "an unchanged exterior is cached rather than rebuilt each frame",
+      "data": {
+        "beforeStatus": {
+          "status": "ready",
+          "tier": 5,
+          "rebuilds": 7,
+          "boxes": 2636,
+          "reducedMotion": false,
+          "doorReady": true,
+          "pooledLamps": 2,
+          "effects": {
+            "reducedMotion": false,
+            "active": true,
+            "time": 5.083400000000065,
+            "shutters": 4,
+            "silhouettes": 0,
+            "ghost": false
+          },
+          "footprint": {
+            "w": 8,
+            "d": 5
+          }
+        },
+        "afterStatus": {
+          "status": "ready",
+          "tier": 5,
+          "rebuilds": 7,
+          "boxes": 2636,
+          "reducedMotion": false,
+          "doorReady": true,
+          "pooledLamps": 2,
+          "effects": {
+            "reducedMotion": false,
+            "active": true,
+            "time": 5.383400000000064,
+            "shutters": 4,
+            "silhouettes": 0,
+            "ghost": false
+          },
+          "footprint": {
+            "w": 8,
+            "d": 5
+          }
+        }
+      }
+    },
+    {
+      "ok": false,
+      "label": "OS reduced motion immediately stills the exterior effects",
+      "data": {
+        "status": "ready",
+        "tier": 5,
+        "rebuilds": 7,
+        "boxes": 2636,
+        "reducedMotion": false,
+        "doorReady": true,
+        "pooledLamps": 2,
+        "effects": {
+          "reducedMotion": false,
+          "active": true,
+          "time": 5.483400000000064,
+          "shutters": 4,
+          "silhouettes": 0,
+          "ghost": false
+        },
+        "footprint": {
+          "w": 8,
+          "d": 5
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "externalRequests": []
+}

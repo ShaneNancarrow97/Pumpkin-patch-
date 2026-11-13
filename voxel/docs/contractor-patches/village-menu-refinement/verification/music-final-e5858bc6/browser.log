@@ -1,0 +1,16 @@
+MUSIC ready
+PASS All five exact song titles are in the actual31-track music chooser
+PASS Dancing in the Moonlight selects, decodes and schedules through actual WebAudio within the64-voice bound
+PASS Bitter Sweet Symphony selects, decodes and schedules through actual WebAudio within the64-voice bound
+PASS Duality selects, decodes and schedules through actual WebAudio within the64-voice bound
+PASS Paint It, Black selects, decodes and schedules through actual WebAudio within the64-voice bound
+PASS Fireflies selects, decodes and schedules through actual WebAudio within the64-voice bound
+PASS Native music chooser typeahead can find Fireflies
+PASS Actual Next song buttons traverse a full shuffled round including the five additions without repeats
+PASS Shuffle also avoids a repeat across its next-round boundary
+PASS Actual Shuffle button disables shuffle
+PASS Unshuffled Next song wraps to the first catalogue entry
+PASS Actual Music mute stops scheduling and preserves shuffle preference
+PASS Final menus have no page/shader errors
+PASS Final offline game uses no external assets
+{"passed":true,"checks":14,"errors":0,"sha256":"e5858bc666dbf4f8160e5d964249044eddfe2e70dc7bc1d0cc9bbfd175c7c4e0"}

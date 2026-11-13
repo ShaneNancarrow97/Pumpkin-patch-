@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-11-08T20:50:31.094972+00:00",
+  "status": "environment-blocked",
+  "emulator": "Android30 x86_64, emulator37.3.4, forcedTCG softwareCPU, SwiftShader graphics",
+  "hardwareAcceleration": "/dev/kvm absent; normal launch rejects missing CPU accelerator, explicit ANDROID_I_WANT_MY_TCG=yes booted Android",
+  "observed": {
+    "sdk": 30,
+    "boot_completed": "1",
+    "openGlesVersion": 196608,
+    "preferredWebView": "com.android.webview83.0.4103.120",
+    "currentWebViewPackage": null,
+    "packageInstall": "failed in emulator PackageInstallerService: StorageManager was null while resolving install volumes"
+  },
+  "runtimeVerified": false,
+  "installVerified": false,
+  "launchVerified": false,
+  "foldRetentionVerified": false,
+  "realBluetoothVerified": false,
+  "performanceVerified": false,
+  "reason": "Emulator framework/storage service is incomplete and its preferredWebView83 predates modern game APIs. This is not an observed game failure. The APK remains independently signature/alignment/CRC/media-hash verified. Use an up-to-date Android System WebView; physical Fold/TV/controller checks remain.",
+  "preflightApk": {
+    "sha256": "96699b66b9ede6a2b027c0859b472210c8af94ed81afbfbe95800b5ce9034aff",
+    "bytes": 42068590,
+    "sourceHtmlSha256": "bc7d34a08760e36b9e1004a48dae2b63d74b576dcce6622de648c3d3b60cd79e",
+    "note": "Preflight wrapper build, before the later shared-exit game delta. Installation failed before game code ran."
+  }
+}

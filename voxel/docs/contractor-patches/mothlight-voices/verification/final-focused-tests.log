@@ -1,0 +1,16 @@
+✔ test/audio-player.test.mjs (136.223682ms)
+✔ test/intro.test.mjs (129.933229ms)
+✔ test/narration-surfaces.test.mjs (112.294879ms)
+✔ test/narration.test.mjs (60.647536ms)
+✔ test/save-file.test.mjs (131.09605ms)
+✔ test/village-game.test.mjs (437.70214ms)
+✔ test/voice-assets.test.mjs (76.263623ms)
+✔ test/voice-script.test.mjs (65.391157ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1159.744246

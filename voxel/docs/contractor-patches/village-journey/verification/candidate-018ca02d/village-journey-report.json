@@ -1,0 +1,3357 @@
+{
+  "date": "2026-11-08T18:43:42.205Z",
+  "html": "/workspace/Pumpkin-Patch-Village-Journey.html",
+  "sha256": "018ca02d3056ec58e2219173970992f9e101f9762fdb2ac3fc9734a8f0e7a62c",
+  "bytes": 56985501,
+  "sourceCommit": "dc6725ee749709d4babcac0a7dcf01609435459d",
+  "workingTree": " M AGENTS.md\n M assets/voices/mothlight-v1/recording-status.json\n M assets/voices/mothlight-v1/voice-manifest.json\n M src/content/village-quests.js\n M src/content/village-tour.js\n M src/content/village-upgrades.js\n M src/content/village.js\n M src/cooking-world.js\n M src/directional-sprite-math.js\n M src/festival-meadow-world.js\n M src/hayride-world.js\n M src/index.html\n M src/main.js\n M src/model.js\n M src/owner-walk-motion.js\n M src/player-control.js\n M src/rules/farm.js\n M src/rules/village-navigation.js\n M src/rules/village-upgrades.js\n M src/rules/village.js\n M src/rules/wardrobe.js\n M src/scene.js\n M src/sprite-actors.js\n M src/style.css\n M src/ui/collection-sheets.js\n M src/ui/farm-sheets.js\n M src/ui/village-chapters.js\n M src/ui/village-controls.css\n M src/ui/village-controls.js\n M src/ui/village-game.css\n M src/ui/village-item-markup.js\n M src/village-game.js\n M src/village-models.js\n M src/village-terrain.js\n M src/village-view.js\n M src/village-world.js\n M test/farm-growth.test.mjs\n M test/midnight-moon.test.mjs\n M test/model.test.mjs\n M test/unlocks.test.mjs\n M test/village-atmosphere.test.mjs\n M test/village-game.test.mjs\n M test/village-navigation.test.mjs\n?? assets/hd-natalie-empty-idle.webp\n?? assets/hd-shane-empty-idle.webp\n?? assets/owner-idle-concepts/\n?? assets/owner-walk-repair-concepts/\n?? docs/contractor-patches/village-journey/\n?? src/content/owner-empty-idle-meta.js\n?? src/content/village-gateway.js\n?? src/content/village-node-sites.js\n?? src/farm-village-gate.js\n?? test/fixtures/save-file-v1-state17.json\n?? test/owner-empty-idle.test.mjs\n?? test/village-away-progression.test.mjs\n?? test/village-node-sites.test.mjs\n?? test/village-resource-cycles.test.mjs\n?? tools/bake-owner-empty-idle.py\n?? tools/village-journey-qa.mjs\n",
+  "sourceHashes": {
+    "src/main.js": "653785ea94d2a0af49fa8171f4ab11b2252cdd7dae3514c2e82fefe5dc0323e1",
+    "src/model.js": "b024c2662c91d1f99f418b4435295f1ab7f0453e796b8ef07f45964c321fee4a",
+    "src/village-game.js": "99713aeba7000eff703db1e3745791741a5bde89384a3967e2b6828c7388d3ee",
+    "src/village-view.js": "913d9030c75682701ec02bf0d044c08527d00b9de2a2eedd1706d8f716a05a8e",
+    "src/village-world.js": "5cff4c3aaa5e3be753de45a37762bd3a0342854bf39eef52fe111381ae242f09",
+    "src/village-models.js": "5fd385aaa002b7700232ea990208762712aaef7cced1519855031b3d8f71f7d7",
+    "src/content/village-node-sites.js": "9f8ac0d7771c271aa2dee33f45f8260167870d7998281e64fe4837d13ce7e6ee",
+    "src/content/village.js": "79eeca7e364d5c09da45d532a55b5c3b8b92d90f72297ca018aa1a911c0339d5",
+    "src/content/village-gateway.js": "ef4babb1f62fb20d03c4d4116c6351c0a375b6e16ef70431fef3ea4792b9eba1",
+    "src/rules/farm.js": "925dc66ceaeb63c6b03ecb01bebb37ee2a31a1884e710f6696892dfa1b4a4ff1",
+    "src/rules/village.js": "8d17af7cb2156c56f08292b59085d86e76aeabdf38603bfbc50a955f059ce6de",
+    "src/rules/wardrobe.js": "da06fd058f2d78477657a5e17cc56d11356ec6e419b4e70dce09ba834fa89a90",
+    "src/sprite-actors.js": "8956f8020ab386a0623a9f886a6d6772a52753569e4623f6c2830862dda066f2",
+    "assets/hd-natalie-empty-idle.webp": "57c139643fa52fdfc160a36cfd7dbd1af7cb7d5a4b4f09c8bd28bb43b9e494b9",
+    "assets/hd-shane-empty-idle.webp": "cddc935ad5c2001c0ee72709a2112d2bcf2ce967f5b788039900e084c876ab4c",
+    "tools/village-journey-qa.mjs": "66bc65681b98a60ea39246b8a09fd863ff4978a980e78b250a6efcb7d4969218"
+  },
+  "scope": "Exact standalone HTML bytes on loopback. A declared level-3 save starts uninvited/untoured. Actual Playwright pointer/key events test visible navigation, gateway, gather and workshop controls. Walk setup uses the real collision/controller path with mocked standard-pad axes and accelerated 0.05s steps; farm gateway threshold uses declared teleport immediately before actual keyboard input. Gather snapshots freeze only village controller tick, then call its original tick with explicit dt. Late story state/inventory is explicitly fixture-set, not earned in play. Viewports emulate layout/touch, not physical phone, Fold, TV, Bluetooth or GPU performance.",
+  "fixture": {
+    "level": 3,
+    "coins": 20000,
+    "introSeen": true,
+    "invited": false,
+    "toured": false
+  },
+  "checks": [
+    {
+      "pass": true,
+      "label": "Declared level-3 save loads"
+    },
+    {
+      "pass": true,
+      "label": "Visible Village hotbar opens directly at level 3 and starts first-visit flight"
+    },
+    {
+      "pass": true,
+      "label": "Visible Skip tour restores playable owner and saves tour"
+    },
+    {
+      "pass": true,
+      "label": "Farm at work indicator displays base 2.5%"
+    },
+    {
+      "pass": true,
+      "label": "Source content supplies four forage clearings and 32 Green nodes",
+      "detail": {
+        "areas": [
+          {
+            "id": "fallen-timber",
+            "name": "Fallen Timber Grove",
+            "material": "logs",
+            "x": 27,
+            "z": -12,
+            "x0": 6,
+            "z0": -30,
+            "x1": 51,
+            "z1": -3
+          },
+          {
+            "id": "flax-hollow",
+            "name": "Flax Hollow",
+            "material": "fibre",
+            "x": 63,
+            "z": -10.5,
+            "x0": 54,
+            "z0": -31.5,
+            "x1": 73.5,
+            "z1": -3
+          },
+          {
+            "id": "moonflower-meadow",
+            "name": "Moonflower Meadow",
+            "material": "herbs",
+            "x": 117,
+            "z": -19.5,
+            "x0": 100.5,
+            "z0": -30,
+            "x1": 133.5,
+            "z1": -3
+          },
+          {
+            "id": "stone-bank",
+            "name": "Old Stone Bank",
+            "material": "stone",
+            "x": 154.5,
+            "z": -21,
+            "x0": 135,
+            "z0": -31.5,
+            "x1": 174,
+            "z1": -3
+          }
+        ],
+        "greenPolygon": [
+          [
+            0,
+            -33
+          ],
+          [
+            180,
+            -33
+          ],
+          [
+            180,
+            54
+          ],
+          [
+            0,
+            54
+          ]
+        ],
+        "arrival": {
+          "carriage": [
+            87,
+            -36.6
+          ],
+          "back": [
+            87,
+            -32.1
+          ],
+          "spawn": [
+            87,
+            -25.5
+          ],
+          "noticeboard": [
+            94.5,
+            43.2
+          ]
+        },
+        "areaGrowth": 61.111111111111114
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual canvas click on gateway enters Mothlight",
+      "detail": {
+        "point": {
+          "x": 1180.4444444444443,
+          "y": 334.2099056375796
+        },
+        "visible": "Mothlight village road",
+        "position": [
+          38,
+          1.75,
+          10.4
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Real keyboard walk across gateway threshold autoenters",
+      "detail": {
+        "fixture": "Farm player teleported to (38,10.9), then actual w key crosses threshold"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Returning through Farm stays on farm for multiple live ticks at the threshold",
+      "detail": {
+        "active": false,
+        "place": null,
+        "position": {
+          "x": 38,
+          "z": 10.64191834068979
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Real keyboard walk leaves threshold and rearms gateway",
+      "detail": {
+        "active": false,
+        "position": {
+          "x": 38,
+          "z": 12.085737529856791
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Reentering threshold after leaving enters village again"
+    },
+    {
+      "pass": true,
+      "label": "Distant resource pick guides without gathering or granting inventory",
+      "detail": {
+        "before": {
+          "x": 87,
+          "z": -25.5
+        },
+        "after": {
+          "active": true,
+          "inside": null,
+          "who": "shane",
+          "position": {
+            "x": 87,
+            "z": -25.5
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "questExpanded": false,
+          "trackedQuest": null,
+          "waypoint": {
+            "x": 13.5,
+            "z": -9,
+            "label": "Softwood logs · Fallen Timber Grove",
+            "nodeId": "logs-01"
+          },
+          "gathering": null
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Controller route reaches logs-08",
+      "detail": {
+        "method": "Mock standard pad, actual collision/controller, accelerated .05s steps",
+        "route": [
+          {
+            "x": 36.8,
+            "z": -7.5
+          }
+        ],
+        "steps": 368,
+        "position": {
+          "x": 36.863352489483404,
+          "z": -7.522716032085683
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: model and hitbox match saved-cycle position",
+      "detail": {
+        "id": "logs-08",
+        "material": "logs",
+        "x": 37.5,
+        "z": -7.5,
+        "district": "green"
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: visible Gather starts timed action with no immediate award",
+      "detail": {
+        "before": {
+          "logs": 0,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "started": {
+          "active": true,
+          "inside": null,
+          "who": "shane",
+          "position": {
+            "x": 36.863352489483404,
+            "z": -7.522716032085683
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "questExpanded": false,
+          "trackedQuest": null,
+          "waypoint": {
+            "x": 37.5,
+            "z": -7.5,
+            "label": "Softwood logs · Fallen Timber Grove",
+            "nodeId": "logs-08"
+          },
+          "gathering": {
+            "id": "logs-08",
+            "material": "logs",
+            "progress": 0,
+            "tool": "axe"
+          }
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: partial action shows axe and no early inventory",
+      "detail": {
+        "status": {
+          "active": true,
+          "inside": null,
+          "who": "shane",
+          "position": {
+            "x": 36.863352489483404,
+            "z": -7.522716032085683
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "questExpanded": false,
+          "trackedQuest": null,
+          "waypoint": {
+            "x": 37.5,
+            "z": -7.5,
+            "label": "Softwood logs · Fallen Timber Grove",
+            "nodeId": "logs-08"
+          },
+          "gathering": {
+            "id": "logs-08",
+            "material": "logs",
+            "progress": 0.4210526315789474,
+            "tool": "axe"
+          }
+        },
+        "materials": {
+          "logs": 0,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "nodes": {
+          "logs-01": 0,
+          "logs-02": 0,
+          "logs-03": 0,
+          "logs-04": 0,
+          "logs-05": 0,
+          "logs-06": 0,
+          "logs-07": 0,
+          "logs-08": 0,
+          "stone-01": 0,
+          "stone-02": 0,
+          "stone-03": 0,
+          "stone-04": 0,
+          "stone-05": 0,
+          "stone-06": 0,
+          "fibre-01": 0,
+          "fibre-02": 0,
+          "fibre-03": 0,
+          "fibre-04": 0,
+          "fibre-05": 0,
+          "fibre-06": 0,
+          "herbs-01": 0,
+          "herbs-02": 0,
+          "herbs-03": 0,
+          "herbs-04": 0,
+          "logs-09": 0,
+          "logs-10": 0,
+          "stone-07": 0,
+          "stone-08": 0,
+          "fibre-07": 0,
+          "fibre-08": 0,
+          "herbs-05": 0,
+          "herbs-06": 0,
+          "hardwood-01": 0,
+          "hardwood-02": 0,
+          "hardwood-03": 0,
+          "hardwood-04": 0,
+          "moth_silk-01": 0,
+          "moth_silk-02": 0,
+          "iron-01": 0,
+          "iron-02": 0,
+          "iron-03": 0,
+          "clay-01": 0,
+          "clay-02": 0,
+          "clay-03": 0,
+          "moonstone-01": 0,
+          "moonstone-02": 0,
+          "emberbloom-01": 0,
+          "emberbloom-02": 0,
+          "emberbloom-03": 0,
+          "star_amber-01": 0
+        },
+        "gatherCycles": {},
+        "hits": [
+          {
+            "id": "logs-01",
+            "visible": true,
+            "x": 13.5,
+            "z": -9
+          },
+          {
+            "id": "logs-02",
+            "visible": true,
+            "x": 22.5,
+            "z": -21
+          },
+          {
+            "id": "logs-03",
+            "visible": true,
+            "x": 33,
+            "z": -12
+          },
+          {
+            "id": "logs-04",
+            "visible": true,
+            "x": 42,
+            "z": -22.5
+          },
+          {
+            "id": "logs-05",
+            "visible": true,
+            "x": 49.5,
+            "z": -7.5
+          },
+          {
+            "id": "logs-06",
+            "visible": true,
+            "x": 13.5,
+            "z": 43.5
+          },
+          {
+            "id": "logs-07",
+            "visible": true,
+            "x": 28.5,
+            "z": 43.5
+          },
+          {
+            "id": "logs-08",
+            "visible": true,
+            "x": 37.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-01",
+            "visible": true,
+            "x": 136.5,
+            "z": -12
+          },
+          {
+            "id": "stone-02",
+            "visible": true,
+            "x": 153,
+            "z": -24
+          },
+          {
+            "id": "stone-03",
+            "visible": true,
+            "x": 160.5,
+            "z": -6
+          },
+          {
+            "id": "stone-04",
+            "visible": true,
+            "x": 132,
+            "z": -25.5
+          },
+          {
+            "id": "stone-05",
+            "visible": true,
+            "x": 166.5,
+            "z": 3
+          },
+          {
+            "id": "stone-06",
+            "visible": true,
+            "x": 169.5,
+            "z": -24
+          },
+          {
+            "id": "fibre-01",
+            "visible": true,
+            "x": 58.5,
+            "z": -22.5
+          },
+          {
+            "id": "fibre-02",
+            "visible": true,
+            "x": 60,
+            "z": -7.5
+          },
+          {
+            "id": "fibre-03",
+            "visible": true,
+            "x": 69,
+            "z": -25.5
+          },
+          {
+            "id": "fibre-04",
+            "visible": true,
+            "x": 46.5,
+            "z": -10.5
+          },
+          {
+            "id": "fibre-05",
+            "visible": true,
+            "x": 37.5,
+            "z": 42
+          },
+          {
+            "id": "fibre-06",
+            "visible": true,
+            "x": 63,
+            "z": -10.5
+          },
+          {
+            "id": "herbs-01",
+            "visible": true,
+            "x": 108,
+            "z": -10.5
+          },
+          {
+            "id": "herbs-02",
+            "visible": true,
+            "x": 117,
+            "z": -25.5
+          },
+          {
+            "id": "herbs-03",
+            "visible": true,
+            "x": 127.5,
+            "z": -6
+          },
+          {
+            "id": "herbs-04",
+            "visible": true,
+            "x": 105,
+            "z": -24
+          },
+          {
+            "id": "logs-09",
+            "visible": true,
+            "x": 10.5,
+            "z": -25.5
+          },
+          {
+            "id": "logs-10",
+            "visible": true,
+            "x": 31.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-07",
+            "visible": true,
+            "x": 148.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-08",
+            "visible": true,
+            "x": 162,
+            "z": -25.5
+          },
+          {
+            "id": "fibre-07",
+            "visible": true,
+            "x": 60,
+            "z": -30
+          },
+          {
+            "id": "fibre-08",
+            "visible": true,
+            "x": 70.5,
+            "z": -7.5
+          },
+          {
+            "id": "herbs-05",
+            "visible": true,
+            "x": 121.5,
+            "z": -12
+          },
+          {
+            "id": "herbs-06",
+            "visible": true,
+            "x": 130.5,
+            "z": -22.5
+          }
+        ],
+        "sites": [
+          {
+            "id": "logs-01",
+            "x": 13.5,
+            "z": -9
+          },
+          {
+            "id": "logs-02",
+            "x": 22.5,
+            "z": -21
+          },
+          {
+            "id": "logs-03",
+            "x": 33,
+            "z": -12
+          },
+          {
+            "id": "logs-04",
+            "x": 42,
+            "z": -22.5
+          },
+          {
+            "id": "logs-05",
+            "x": 49.5,
+            "z": -7.5
+          },
+          {
+            "id": "logs-06",
+            "x": 13.5,
+            "z": 43.5
+          },
+          {
+            "id": "logs-07",
+            "x": 28.5,
+            "z": 43.5
+          },
+          {
+            "id": "logs-08",
+            "x": 37.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-01",
+            "x": 136.5,
+            "z": -12
+          },
+          {
+            "id": "stone-02",
+            "x": 153,
+            "z": -24
+          },
+          {
+            "id": "stone-03",
+            "x": 160.5,
+            "z": -6
+          },
+          {
+            "id": "stone-04",
+            "x": 132,
+            "z": -25.5
+          },
+          {
+            "id": "stone-05",
+            "x": 166.5,
+            "z": 3
+          },
+          {
+            "id": "stone-06",
+            "x": 169.5,
+            "z": -24
+          },
+          {
+            "id": "fibre-01",
+            "x": 58.5,
+            "z": -22.5
+          },
+          {
+            "id": "fibre-02",
+            "x": 60,
+            "z": -7.5
+          },
+          {
+            "id": "fibre-03",
+            "x": 69,
+            "z": -25.5
+          },
+          {
+            "id": "fibre-04",
+            "x": 46.5,
+            "z": -10.5
+          },
+          {
+            "id": "fibre-05",
+            "x": 37.5,
+            "z": 42
+          },
+          {
+            "id": "fibre-06",
+            "x": 63,
+            "z": -10.5
+          },
+          {
+            "id": "herbs-01",
+            "x": 108,
+            "z": -10.5
+          },
+          {
+            "id": "herbs-02",
+            "x": 117,
+            "z": -25.5
+          },
+          {
+            "id": "herbs-03",
+            "x": 127.5,
+            "z": -6
+          },
+          {
+            "id": "herbs-04",
+            "x": 105,
+            "z": -24
+          },
+          {
+            "id": "logs-09",
+            "x": 10.5,
+            "z": -25.5
+          },
+          {
+            "id": "logs-10",
+            "x": 31.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-07",
+            "x": 148.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-08",
+            "x": 162,
+            "z": -25.5
+          },
+          {
+            "id": "fibre-07",
+            "x": 60,
+            "z": -30
+          },
+          {
+            "id": "fibre-08",
+            "x": 70.5,
+            "z": -7.5
+          },
+          {
+            "id": "herbs-05",
+            "x": 121.5,
+            "z": -12
+          },
+          {
+            "id": "herbs-06",
+            "x": 130.5,
+            "z": -22.5
+          }
+        ],
+        "tools": [
+          {
+            "name": "village-axe",
+            "visible": true,
+            "position": [
+              37.293352489483404,
+              1.22,
+              7.522716032085683
+            ]
+          }
+        ],
+        "actor": {
+          "direction": "front",
+          "map": [
+            1777,
+            662
+          ]
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: overlapping second gather cannot replace action"
+    },
+    {
+      "pass": true,
+      "label": "logs-08: completion awards once and spent repeat awards nothing",
+      "detail": {
+        "before": {
+          "logs": 0,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "finished": {
+          "logs": 2,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "repeat": {
+          "logs": 2,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: spent resource hit and held tool disappear",
+      "detail": {
+        "id": "logs-08",
+        "visible": false,
+        "x": 37.81,
+        "z": -13.64
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: saved cycle advances once while resource geometry is absent",
+      "detail": {
+        "cycle": 1
+      }
+    },
+    {
+      "pass": true,
+      "label": "Controller route reaches stone-07",
+      "detail": {
+        "method": "Mock standard pad, actual collision/controller, accelerated .05s steps",
+        "route": [
+          {
+            "x": 147.8,
+            "z": -7.5
+          }
+        ],
+        "steps": 765,
+        "position": {
+          "x": 147.69505748302032,
+          "z": -7.500021488639114
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: model and hitbox match saved-cycle position",
+      "detail": {
+        "id": "stone-07",
+        "material": "stone",
+        "x": 148.5,
+        "z": -7.5,
+        "district": "green"
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: visible Gather starts timed action with no immediate award",
+      "detail": {
+        "before": {
+          "logs": 2,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "started": {
+          "active": true,
+          "inside": null,
+          "who": "shane",
+          "position": {
+            "x": 147.69505748302032,
+            "z": -7.500021488639114
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "questExpanded": false,
+          "trackedQuest": null,
+          "waypoint": {
+            "x": 148.5,
+            "z": -7.5,
+            "label": "Stone · Old Stone Bank",
+            "nodeId": "stone-07"
+          },
+          "gathering": {
+            "id": "stone-07",
+            "material": "stone",
+            "progress": 0,
+            "tool": "pickaxe"
+          }
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: partial action shows pickaxe and no early inventory",
+      "detail": {
+        "status": {
+          "active": true,
+          "inside": null,
+          "who": "shane",
+          "position": {
+            "x": 147.69505748302032,
+            "z": -7.500021488639114
+          },
+          "panel": null,
+          "touring": false,
+          "surveying": false,
+          "decorating": false,
+          "input": "pointer",
+          "questExpanded": false,
+          "trackedQuest": null,
+          "waypoint": {
+            "x": 148.5,
+            "z": -7.5,
+            "label": "Stone · Old Stone Bank",
+            "nodeId": "stone-07"
+          },
+          "gathering": {
+            "id": "stone-07",
+            "material": "stone",
+            "progress": 0.4210526315789474,
+            "tool": "pickaxe"
+          }
+        },
+        "materials": {
+          "logs": 2,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "nodes": {
+          "logs-01": 0,
+          "logs-02": 0,
+          "logs-03": 0,
+          "logs-04": 0,
+          "logs-05": 0,
+          "logs-06": 0,
+          "logs-07": 0,
+          "logs-08": 179.8,
+          "stone-01": 0,
+          "stone-02": 0,
+          "stone-03": 0,
+          "stone-04": 0,
+          "stone-05": 0,
+          "stone-06": 0,
+          "fibre-01": 0,
+          "fibre-02": 0,
+          "fibre-03": 0,
+          "fibre-04": 0,
+          "fibre-05": 0,
+          "fibre-06": 0,
+          "herbs-01": 0,
+          "herbs-02": 0,
+          "herbs-03": 0,
+          "herbs-04": 0,
+          "logs-09": 0,
+          "logs-10": 0,
+          "stone-07": 0,
+          "stone-08": 0,
+          "fibre-07": 0,
+          "fibre-08": 0,
+          "herbs-05": 0,
+          "herbs-06": 0,
+          "hardwood-01": 0,
+          "hardwood-02": 0,
+          "hardwood-03": 0,
+          "hardwood-04": 0,
+          "moth_silk-01": 0,
+          "moth_silk-02": 0,
+          "iron-01": 0,
+          "iron-02": 0,
+          "iron-03": 0,
+          "clay-01": 0,
+          "clay-02": 0,
+          "clay-03": 0,
+          "moonstone-01": 0,
+          "moonstone-02": 0,
+          "emberbloom-01": 0,
+          "emberbloom-02": 0,
+          "emberbloom-03": 0,
+          "star_amber-01": 0
+        },
+        "gatherCycles": {
+          "logs-08": 1
+        },
+        "hits": [
+          {
+            "id": "logs-01",
+            "visible": true,
+            "x": 13.5,
+            "z": -9
+          },
+          {
+            "id": "logs-02",
+            "visible": true,
+            "x": 22.5,
+            "z": -21
+          },
+          {
+            "id": "logs-03",
+            "visible": true,
+            "x": 33,
+            "z": -12
+          },
+          {
+            "id": "logs-04",
+            "visible": true,
+            "x": 42,
+            "z": -22.5
+          },
+          {
+            "id": "logs-05",
+            "visible": true,
+            "x": 49.5,
+            "z": -7.5
+          },
+          {
+            "id": "logs-06",
+            "visible": true,
+            "x": 13.5,
+            "z": 43.5
+          },
+          {
+            "id": "logs-07",
+            "visible": true,
+            "x": 28.5,
+            "z": 43.5
+          },
+          {
+            "id": "logs-08",
+            "visible": false,
+            "x": 37.81,
+            "z": -13.64
+          },
+          {
+            "id": "stone-01",
+            "visible": true,
+            "x": 136.5,
+            "z": -12
+          },
+          {
+            "id": "stone-02",
+            "visible": true,
+            "x": 153,
+            "z": -24
+          },
+          {
+            "id": "stone-03",
+            "visible": true,
+            "x": 160.5,
+            "z": -6
+          },
+          {
+            "id": "stone-04",
+            "visible": true,
+            "x": 132,
+            "z": -25.5
+          },
+          {
+            "id": "stone-05",
+            "visible": true,
+            "x": 166.5,
+            "z": 3
+          },
+          {
+            "id": "stone-06",
+            "visible": true,
+            "x": 169.5,
+            "z": -24
+          },
+          {
+            "id": "fibre-01",
+            "visible": true,
+            "x": 58.5,
+            "z": -22.5
+          },
+          {
+            "id": "fibre-02",
+            "visible": true,
+            "x": 60,
+            "z": -7.5
+          },
+          {
+            "id": "fibre-03",
+            "visible": true,
+            "x": 69,
+            "z": -25.5
+          },
+          {
+            "id": "fibre-04",
+            "visible": true,
+            "x": 46.5,
+            "z": -10.5
+          },
+          {
+            "id": "fibre-05",
+            "visible": true,
+            "x": 37.5,
+            "z": 42
+          },
+          {
+            "id": "fibre-06",
+            "visible": true,
+            "x": 63,
+            "z": -10.5
+          },
+          {
+            "id": "herbs-01",
+            "visible": true,
+            "x": 108,
+            "z": -10.5
+          },
+          {
+            "id": "herbs-02",
+            "visible": true,
+            "x": 117,
+            "z": -25.5
+          },
+          {
+            "id": "herbs-03",
+            "visible": true,
+            "x": 127.5,
+            "z": -6
+          },
+          {
+            "id": "herbs-04",
+            "visible": true,
+            "x": 105,
+            "z": -24
+          },
+          {
+            "id": "logs-09",
+            "visible": true,
+            "x": 10.5,
+            "z": -25.5
+          },
+          {
+            "id": "logs-10",
+            "visible": true,
+            "x": 31.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-07",
+            "visible": true,
+            "x": 148.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-08",
+            "visible": true,
+            "x": 162,
+            "z": -25.5
+          },
+          {
+            "id": "fibre-07",
+            "visible": true,
+            "x": 60,
+            "z": -30
+          },
+          {
+            "id": "fibre-08",
+            "visible": true,
+            "x": 70.5,
+            "z": -7.5
+          },
+          {
+            "id": "herbs-05",
+            "visible": true,
+            "x": 121.5,
+            "z": -12
+          },
+          {
+            "id": "herbs-06",
+            "visible": true,
+            "x": 130.5,
+            "z": -22.5
+          }
+        ],
+        "sites": [
+          {
+            "id": "logs-01",
+            "x": 13.5,
+            "z": -9
+          },
+          {
+            "id": "logs-02",
+            "x": 22.5,
+            "z": -21
+          },
+          {
+            "id": "logs-03",
+            "x": 33,
+            "z": -12
+          },
+          {
+            "id": "logs-04",
+            "x": 42,
+            "z": -22.5
+          },
+          {
+            "id": "logs-05",
+            "x": 49.5,
+            "z": -7.5
+          },
+          {
+            "id": "logs-06",
+            "x": 13.5,
+            "z": 43.5
+          },
+          {
+            "id": "logs-07",
+            "x": 28.5,
+            "z": 43.5
+          },
+          {
+            "id": "stone-01",
+            "x": 136.5,
+            "z": -12
+          },
+          {
+            "id": "stone-02",
+            "x": 153,
+            "z": -24
+          },
+          {
+            "id": "stone-03",
+            "x": 160.5,
+            "z": -6
+          },
+          {
+            "id": "stone-04",
+            "x": 132,
+            "z": -25.5
+          },
+          {
+            "id": "stone-05",
+            "x": 166.5,
+            "z": 3
+          },
+          {
+            "id": "stone-06",
+            "x": 169.5,
+            "z": -24
+          },
+          {
+            "id": "fibre-01",
+            "x": 58.5,
+            "z": -22.5
+          },
+          {
+            "id": "fibre-02",
+            "x": 60,
+            "z": -7.5
+          },
+          {
+            "id": "fibre-03",
+            "x": 69,
+            "z": -25.5
+          },
+          {
+            "id": "fibre-04",
+            "x": 46.5,
+            "z": -10.5
+          },
+          {
+            "id": "fibre-05",
+            "x": 37.5,
+            "z": 42
+          },
+          {
+            "id": "fibre-06",
+            "x": 63,
+            "z": -10.5
+          },
+          {
+            "id": "herbs-01",
+            "x": 108,
+            "z": -10.5
+          },
+          {
+            "id": "herbs-02",
+            "x": 117,
+            "z": -25.5
+          },
+          {
+            "id": "herbs-03",
+            "x": 127.5,
+            "z": -6
+          },
+          {
+            "id": "herbs-04",
+            "x": 105,
+            "z": -24
+          },
+          {
+            "id": "logs-09",
+            "x": 10.5,
+            "z": -25.5
+          },
+          {
+            "id": "logs-10",
+            "x": 31.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-07",
+            "x": 148.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-08",
+            "x": 162,
+            "z": -25.5
+          },
+          {
+            "id": "fibre-07",
+            "x": 60,
+            "z": -30
+          },
+          {
+            "id": "fibre-08",
+            "x": 70.5,
+            "z": -7.5
+          },
+          {
+            "id": "herbs-05",
+            "x": 121.5,
+            "z": -12
+          },
+          {
+            "id": "herbs-06",
+            "x": 130.5,
+            "z": -22.5
+          }
+        ],
+        "tools": [
+          {
+            "name": "village-axe",
+            "visible": false,
+            "position": [
+              37.293352489483404,
+              1.22,
+              7.522716032085683
+            ]
+          },
+          {
+            "name": "village-pickaxe",
+            "visible": true,
+            "position": [
+              148.12505748302033,
+              1.22,
+              7.500021488639114
+            ]
+          }
+        ],
+        "actor": {
+          "direction": "front",
+          "map": [
+            1777,
+            662
+          ]
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: overlapping second gather cannot replace action"
+    },
+    {
+      "pass": true,
+      "label": "stone-07: completion awards once and spent repeat awards nothing",
+      "detail": {
+        "before": {
+          "logs": 2,
+          "stone": 0,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "finished": {
+          "logs": 2,
+          "stone": 2,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        },
+        "repeat": {
+          "logs": 2,
+          "stone": 2,
+          "fibre": 0,
+          "herbs": 0,
+          "hardwood": 0,
+          "moth-silk": 0,
+          "iron": 0,
+          "clay": 0,
+          "moonstone": 0,
+          "emberbloom": 0,
+          "star-amber": 0
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: spent resource hit and held tool disappear",
+      "detail": {
+        "id": "stone-07",
+        "visible": false,
+        "x": 151.42,
+        "z": -19.43
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: saved cycle advances once while resource geometry is absent",
+      "detail": {
+        "cycle": 1
+      }
+    },
+    {
+      "pass": true,
+      "label": "logs-08: actual app advance respawns at a new model/hit position without explicit view sync",
+      "detail": {
+        "old": {
+          "x": 37.5,
+          "z": -7.5
+        },
+        "next": {
+          "id": "logs-08",
+          "material": "logs",
+          "x": 37.81,
+          "z": -13.64,
+          "district": "green"
+        },
+        "candidates": 12
+      }
+    },
+    {
+      "pass": true,
+      "label": "stone-07: actual app advance respawns at a new model/hit position without explicit view sync",
+      "detail": {
+        "old": {
+          "x": 148.5,
+          "z": -7.5
+        },
+        "next": {
+          "id": "stone-07",
+          "material": "stone",
+          "x": 151.42,
+          "z": -19.43,
+          "district": "green"
+        },
+        "candidates": 12
+      }
+    },
+    {
+      "pass": true,
+      "label": "Respawning resources leave stall, noticeboard and doors fixed",
+      "detail": [
+        {
+          "type": "village-stall",
+          "position": [
+            96.3,
+            2,
+            -36.9
+          ]
+        },
+        {
+          "type": "village-noticeboard",
+          "position": [
+            94.5,
+            1.8,
+            -44.7
+          ]
+        },
+        {
+          "type": "village-door",
+          "id": "velvet-bat",
+          "position": [
+            153,
+            2.9,
+            -37.349999999999994
+          ]
+        },
+        {
+          "type": "village-door",
+          "id": "elowen-library",
+          "position": [
+            72.15,
+            2.9,
+            -27.900000000000002
+          ]
+        },
+        {
+          "type": "village-door",
+          "id": "rowan-workshop",
+          "position": [
+            98.85000000000001,
+            2.9,
+            -30
+          ]
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "label": "Saved cycle positions persist through actual page reload",
+      "detail": {
+        "cycles": {
+          "logs-08": 1,
+          "stone-07": 1
+        },
+        "sites": [
+          {
+            "id": "logs-01",
+            "x": 13.5,
+            "z": -9
+          },
+          {
+            "id": "logs-02",
+            "x": 22.5,
+            "z": -21
+          },
+          {
+            "id": "logs-03",
+            "x": 33,
+            "z": -12
+          },
+          {
+            "id": "logs-04",
+            "x": 42,
+            "z": -22.5
+          },
+          {
+            "id": "logs-05",
+            "x": 49.5,
+            "z": -7.5
+          },
+          {
+            "id": "logs-06",
+            "x": 13.5,
+            "z": 43.5
+          },
+          {
+            "id": "logs-07",
+            "x": 28.5,
+            "z": 43.5
+          },
+          {
+            "id": "logs-08",
+            "x": 37.81,
+            "z": -13.64
+          },
+          {
+            "id": "stone-01",
+            "x": 136.5,
+            "z": -12
+          },
+          {
+            "id": "stone-02",
+            "x": 153,
+            "z": -24
+          },
+          {
+            "id": "stone-03",
+            "x": 160.5,
+            "z": -6
+          },
+          {
+            "id": "stone-04",
+            "x": 132,
+            "z": -25.5
+          },
+          {
+            "id": "stone-05",
+            "x": 166.5,
+            "z": 3
+          },
+          {
+            "id": "stone-06",
+            "x": 169.5,
+            "z": -24
+          },
+          {
+            "id": "fibre-01",
+            "x": 58.5,
+            "z": -22.5
+          },
+          {
+            "id": "fibre-02",
+            "x": 60,
+            "z": -7.5
+          },
+          {
+            "id": "fibre-03",
+            "x": 69,
+            "z": -25.5
+          },
+          {
+            "id": "fibre-04",
+            "x": 46.5,
+            "z": -10.5
+          },
+          {
+            "id": "fibre-05",
+            "x": 37.5,
+            "z": 42
+          },
+          {
+            "id": "fibre-06",
+            "x": 63,
+            "z": -10.5
+          },
+          {
+            "id": "herbs-01",
+            "x": 108,
+            "z": -10.5
+          },
+          {
+            "id": "herbs-02",
+            "x": 117,
+            "z": -25.5
+          },
+          {
+            "id": "herbs-03",
+            "x": 127.5,
+            "z": -6
+          },
+          {
+            "id": "herbs-04",
+            "x": 105,
+            "z": -24
+          },
+          {
+            "id": "logs-09",
+            "x": 10.5,
+            "z": -25.5
+          },
+          {
+            "id": "logs-10",
+            "x": 31.5,
+            "z": -7.5
+          },
+          {
+            "id": "stone-07",
+            "x": 151.42,
+            "z": -19.43
+          },
+          {
+            "id": "stone-08",
+            "x": 162,
+            "z": -25.5
+          },
+          {
+            "id": "fibre-07",
+            "x": 60,
+            "z": -30
+          },
+          {
+            "id": "fibre-08",
+            "x": 70.5,
+            "z": -7.5
+          },
+          {
+            "id": "herbs-05",
+            "x": 121.5,
+            "z": -12
+          },
+          {
+            "id": "herbs-06",
+            "x": 130.5,
+            "z": -22.5
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Controller route reaches respawned logs-08",
+      "detail": {
+        "method": "Mock standard pad, actual collision/controller, accelerated .05s steps",
+        "route": [
+          {
+            "x": 37.11,
+            "z": -13.64
+          }
+        ],
+        "steps": 353,
+        "position": {
+          "x": 37.244621852203394,
+          "z": -13.672002709303111
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "Visible Gather works at relocated resource and increments the next cycle"
+    },
+    {
+      "pass": true,
+      "label": "Actual touch expands pinned quest with current requirements and counts",
+      "detail": {
+        "fixture": "rowan-1 delivery step, logs2/4,stone0/2"
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual T key collapses pinned quest"
+    },
+    {
+      "pass": true,
+      "label": "Mock standard D-pad Up toggles once per press and ignores held repeats",
+      "detail": {
+        "menu": false,
+        "before": false,
+        "first": true,
+        "held": true,
+        "second": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "T and D-pad Up retain menu priority while Map is open",
+      "detail": {
+        "menu": true,
+        "before": false,
+        "first": false,
+        "held": false,
+        "second": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual app advance obeys 2.5% farm rate and keeps village clock full speed",
+      "detail": {
+        "delta": 0.0999999999999801,
+        "villageDelta": 3.9999999999997726,
+        "rate": 0.025,
+        "display": "2.5%",
+        "effects": []
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual app advance obeys 5% farm rate and keeps village clock full speed after visible workshop purchase",
+      "detail": {
+        "delta": 0.20000000000003126,
+        "villageDelta": 4.000000000000824,
+        "rate": 0.05,
+        "display": "5%",
+        "effects": [
+          "upgrade:away-ledger"
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual app advance obeys 7.5% farm rate and keeps village clock full speed after visible workshop purchase",
+      "detail": {
+        "delta": 0.30000000000001137,
+        "villageDelta": 4.0000000000009095,
+        "rate": 0.075,
+        "display": "7.5%",
+        "effects": [
+          "upgrade:away-ledger",
+          "upgrade:away-steward"
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Actual app advance obeys 10% farm rate and keeps village clock full speed after visible workshop purchase",
+      "detail": {
+        "delta": 0.3999999999999915,
+        "villageDelta": 4.0000000000009095,
+        "rate": 0.1,
+        "display": "10%",
+        "effects": [
+          "upgrade:away-ledger",
+          "upgrade:away-steward",
+          "upgrade:away-network"
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "Late final plot purchase explains workshop story gate",
+      "detail": {
+        "containsWorkshopReason": true
+      }
+    },
+    {
+      "pass": true,
+      "label": "Late Midnight Moon seeds explain Lantern Keepers story gate"
+    },
+    {
+      "pass": true,
+      "label": "Mummy wardrobe purchase explains village story gate"
+    },
+    {
+      "pass": true,
+      "label": "House Natalie uses HD empty-handed idle sheet",
+      "detail": {
+        "direction": "front",
+        "map": [
+          1562,
+          662
+        ],
+        "can": false
+      }
+    },
+    {
+      "pass": true,
+      "label": "Library interior opens and renders"
+    },
+    {
+      "pass": true,
+      "label": "phone village: six village controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "nav": {
+          "x": 11,
+          "y": 774,
+          "w": 368,
+          "h": 56,
+          "scrollWidth": 366,
+          "clientWidth": 366
+        },
+        "buttons": [
+          {
+            "text": "Map",
+            "x": 17,
+            "y": 780,
+            "w": 59.328125,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "People",
+            "x": 76.328125,
+            "y": 780,
+            "w": 59.34375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Quests",
+            "x": 135.671875,
+            "y": 780,
+            "w": 59.328125,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Satchel",
+            "x": 195,
+            "y": 780,
+            "w": 59.34375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Workshop",
+            "x": 254.34375,
+            "y": 780,
+            "w": 59.328125,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Build",
+            "x": 313.671875,
+            "y": 780,
+            "w": 59.328125,
+            "h": 44,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone village: expanded quest stays clear of rate, dock and active panel",
+      "detail": {
+        "expanded": true,
+        "title": "Loose Boards",
+        "counts": "1/2 ready",
+        "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+        "rects": {
+          "quest": {
+            "x": 10,
+            "y": 79,
+            "w": 246,
+            "h": 180,
+            "visible": true
+          },
+          "rate": {
+            "x": 260,
+            "y": 79,
+            "w": 120,
+            "h": 46.78125,
+            "visible": true
+          },
+          "nav": {
+            "x": 11,
+            "y": 774,
+            "w": 368,
+            "h": 56,
+            "visible": true
+          },
+          "panel": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "visible": false
+          }
+        },
+        "overlaps": {
+          "questRate": false,
+          "questNav": false,
+          "questPanel": false
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone: actual village Map touch target opens panel"
+    },
+    {
+      "pass": true,
+      "label": "phone village with Map: expanded quest stays clear of rate, dock and active panel",
+      "detail": {
+        "expanded": true,
+        "title": "Loose Boards",
+        "counts": "1/2 ready",
+        "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+        "rects": {
+          "quest": {
+            "x": 10,
+            "y": 79,
+            "w": 246,
+            "h": 180,
+            "visible": false
+          },
+          "rate": {
+            "x": 260,
+            "y": 79,
+            "w": 120,
+            "h": 46.78125,
+            "visible": false
+          },
+          "nav": {
+            "x": 11,
+            "y": 774,
+            "w": 368,
+            "h": 56,
+            "visible": true
+          },
+          "panel": {
+            "x": 10,
+            "y": 75,
+            "w": 370,
+            "h": 686,
+            "visible": true
+          }
+        },
+        "overlaps": {
+          "questRate": false,
+          "questNav": false,
+          "questPanel": false
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone farm: seven farm controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "scrollWidth": 390,
+        "nav": {
+          "x": 8,
+          "y": 778,
+          "w": 374,
+          "h": 58,
+          "scrollWidth": 372,
+          "clientWidth": 372
+        },
+        "buttons": [
+          {
+            "text": "Farm",
+            "x": 13,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Manage",
+            "x": 65.140625,
+            "y": 783,
+            "w": 51.15625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Rides",
+            "x": 117.296875,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Home",
+            "x": 169.4375,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Outfits",
+            "x": 221.578125,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Village",
+            "x": 273.71875,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "More",
+            "x": 325.859375,
+            "y": 783,
+            "w": 51.140625,
+            "h": 48,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "phone: actual Village hotbar button returns to village"
+    },
+    {
+      "pass": true,
+      "label": "unfolded village: six village controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 864,
+        "innerHeight": 756,
+        "scrollWidth": 864,
+        "nav": {
+          "x": 169.484375,
+          "y": 682,
+          "w": 525.03125,
+          "h": 56,
+          "scrollWidth": 523,
+          "clientWidth": 523
+        },
+        "buttons": [
+          {
+            "text": "Map",
+            "x": 175.484375,
+            "y": 688,
+            "w": 80,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "People",
+            "x": 260.484375,
+            "y": 688,
+            "w": 80,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Quests",
+            "x": 345.484375,
+            "y": 688,
+            "w": 80,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Satchel",
+            "x": 430.484375,
+            "y": 688,
+            "w": 80,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Workshop",
+            "x": 515.484375,
+            "y": 688,
+            "w": 88.03125,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Build",
+            "x": 608.515625,
+            "y": 688,
+            "w": 80,
+            "h": 44,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "unfolded village: expanded quest stays clear of rate, dock and active panel",
+      "detail": {
+        "expanded": true,
+        "title": "Loose Boards",
+        "counts": "1/2 ready",
+        "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+        "rects": {
+          "quest": {
+            "x": 14,
+            "y": 82,
+            "w": 370,
+            "h": 180,
+            "visible": true
+          },
+          "rate": {
+            "x": 737.453125,
+            "y": 82,
+            "w": 112.546875,
+            "h": 46.78125,
+            "visible": true
+          },
+          "nav": {
+            "x": 169.484375,
+            "y": 682,
+            "w": 525.03125,
+            "h": 56,
+            "visible": true
+          },
+          "panel": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "visible": false
+          }
+        },
+        "overlaps": {
+          "questRate": false,
+          "questNav": false,
+          "questPanel": false
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "unfolded: actual village Map touch target opens panel"
+    },
+    {
+      "pass": true,
+      "label": "unfolded village with Map: expanded quest stays clear of rate, dock and active panel",
+      "detail": {
+        "expanded": true,
+        "title": "Loose Boards",
+        "counts": "1/2 ready",
+        "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+        "rects": {
+          "quest": {
+            "x": 14,
+            "y": 82,
+            "w": 370,
+            "h": 180,
+            "visible": true
+          },
+          "rate": {
+            "x": 737.453125,
+            "y": 82,
+            "w": 112.546875,
+            "h": 46.78125,
+            "visible": false
+          },
+          "nav": {
+            "x": 169.484375,
+            "y": 682,
+            "w": 525.03125,
+            "h": 56,
+            "visible": true
+          },
+          "panel": {
+            "x": 420,
+            "y": 80,
+            "w": 430,
+            "h": 586,
+            "visible": true
+          }
+        },
+        "overlaps": {
+          "questRate": false,
+          "questNav": false,
+          "questPanel": false
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "unfolded farm: seven farm controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 864,
+        "innerHeight": 756,
+        "scrollWidth": 864,
+        "nav": {
+          "x": 187,
+          "y": 690,
+          "w": 490,
+          "h": 58,
+          "scrollWidth": 488,
+          "clientWidth": 488
+        },
+        "buttons": [
+          {
+            "text": "Farm",
+            "x": 192,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Manage",
+            "x": 260.703125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Rides",
+            "x": 329.421875,
+            "y": 695,
+            "w": 67.703125,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Home",
+            "x": 398.125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Outfits",
+            "x": 466.84375,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "Village",
+            "x": 535.5625,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48,
+            "visible": true
+          },
+          {
+            "text": "More",
+            "x": 604.28125,
+            "y": 695,
+            "w": 67.71875,
+            "h": 48,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "unfolded: actual Village hotbar button returns to village"
+    },
+    {
+      "pass": true,
+      "label": "landscape village: six village controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 844,
+        "innerHeight": 390,
+        "scrollWidth": 844,
+        "nav": {
+          "x": 234.6796875,
+          "y": 322,
+          "w": 374.640625,
+          "h": 56,
+          "scrollWidth": 373,
+          "clientWidth": 373
+        },
+        "buttons": [
+          {
+            "text": "Map",
+            "x": 240.6796875,
+            "y": 328,
+            "w": 44,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "People",
+            "x": 289.6796875,
+            "y": 328,
+            "w": 56.328125,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Quests",
+            "x": 351.0078125,
+            "y": 328,
+            "w": 57.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Satchel",
+            "x": 413.1484375,
+            "y": 328,
+            "w": 58.34375,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Workshop",
+            "x": 476.4921875,
+            "y": 328,
+            "w": 75.25,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Build",
+            "x": 556.7421875,
+            "y": 328,
+            "w": 46.578125,
+            "h": 44,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape village: expanded quest stays clear of rate, dock and active panel",
+      "detail": {
+        "expanded": true,
+        "title": "Loose Boards",
+        "counts": "1/2 ready",
+        "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+        "rects": {
+          "quest": {
+            "x": 14,
+            "y": 66,
+            "w": 295.390625,
+            "h": 180,
+            "visible": true
+          },
+          "rate": {
+            "x": 717.453125,
+            "y": 66,
+            "w": 112.546875,
+            "h": 46.78125,
+            "visible": true
+          },
+          "nav": {
+            "x": 234.6796875,
+            "y": 322,
+            "w": 374.640625,
+            "h": 56,
+            "visible": true
+          },
+          "panel": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "visible": false
+          }
+        },
+        "overlaps": {
+          "questRate": false,
+          "questNav": false,
+          "questPanel": false
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape: actual village Map touch target opens panel"
+    },
+    {
+      "pass": true,
+      "label": "landscape village with Map: expanded quest stays clear of rate, dock and active panel",
+      "detail": {
+        "expanded": true,
+        "title": "Loose Boards",
+        "counts": "1/2 ready",
+        "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+        "rects": {
+          "quest": {
+            "x": 14,
+            "y": 66,
+            "w": 295.390625,
+            "h": 180,
+            "visible": true
+          },
+          "rate": {
+            "x": 717.453125,
+            "y": 66,
+            "w": 112.546875,
+            "h": 46.78125,
+            "visible": false
+          },
+          "nav": {
+            "x": 234.6796875,
+            "y": 322,
+            "w": 374.640625,
+            "h": 56,
+            "visible": false
+          },
+          "panel": {
+            "x": 390,
+            "y": 10,
+            "w": 440,
+            "h": 370,
+            "visible": true
+          }
+        },
+        "overlaps": {
+          "questRate": false,
+          "questNav": false,
+          "questPanel": false
+        }
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape farm: seven farm controls fit with 44px touch targets",
+      "detail": {
+        "innerWidth": 844,
+        "innerHeight": 390,
+        "scrollWidth": 844,
+        "nav": {
+          "x": 207,
+          "y": 330,
+          "w": 430,
+          "h": 54,
+          "scrollWidth": 428,
+          "clientWidth": 428
+        },
+        "buttons": [
+          {
+            "text": "Farm",
+            "x": 212,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Manage",
+            "x": 272.140625,
+            "y": 335,
+            "w": 59.15625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Rides",
+            "x": 332.296875,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Home",
+            "x": 392.4375,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Outfits",
+            "x": 452.578125,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "Village",
+            "x": 512.71875,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          },
+          {
+            "text": "More",
+            "x": 572.859375,
+            "y": 335,
+            "w": 59.140625,
+            "h": 44,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "pass": true,
+      "label": "landscape: actual Village hotbar button returns to village"
+    },
+    {
+      "pass": true,
+      "label": "Browser produced no JavaScript or console errors",
+      "detail": []
+    },
+    {
+      "pass": true,
+      "label": "Standalone HTML requested no external assets",
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "01-intro-flight.png",
+      "kind": "Actual first visit, live flight path"
+    },
+    {
+      "file": "02-expanded-arrival.png",
+      "kind": "Normal arrival camera after skipping intro"
+    },
+    {
+      "file": "03-farm-gateway.png",
+      "kind": "Grounded physical gateway at x38 z10.4, management camera staged with scene.focus"
+    },
+    {
+      "file": "04-gather-axe.png",
+      "kind": "Visible Gather action; controller clock held at 0.4s of 0.95s to inspect tool"
+    },
+    {
+      "file": "05-gather-pickaxe.png",
+      "kind": "Visible Gather action; controller clock held at 0.4s of 0.95s to inspect tool"
+    },
+    {
+      "file": "06-workshop-rates.png",
+      "kind": "Real workshop purchase results, explicit materials and completed prerequisites fixture"
+    },
+    {
+      "file": "07-house-empty-hands.png",
+      "kind": "Actual house idle in default Natalie outfit, normal follow camera"
+    },
+    {
+      "file": "08-library-interior.png",
+      "kind": "Actual detailed library interior entered via village controller API"
+    },
+    {
+      "file": "09-phone-quest-hud.png",
+      "kind": "Expanded followed quest, production rate and six village controls in touch viewport"
+    },
+    {
+      "file": "09-unfolded-quest-hud.png",
+      "kind": "Expanded followed quest, production rate and six village controls in touch viewport"
+    }
+  ],
+  "layouts": [
+    {
+      "name": "phone village",
+      "village": true,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "scrollWidth": 390,
+      "nav": {
+        "x": 11,
+        "y": 774,
+        "w": 368,
+        "h": 56,
+        "scrollWidth": 366,
+        "clientWidth": 366
+      },
+      "buttons": [
+        {
+          "text": "Map",
+          "x": 17,
+          "y": 780,
+          "w": 59.328125,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "People",
+          "x": 76.328125,
+          "y": 780,
+          "w": 59.34375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Quests",
+          "x": 135.671875,
+          "y": 780,
+          "w": 59.328125,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Satchel",
+          "x": 195,
+          "y": 780,
+          "w": 59.34375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Workshop",
+          "x": 254.34375,
+          "y": 780,
+          "w": 59.328125,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Build",
+          "x": 313.671875,
+          "y": 780,
+          "w": 59.328125,
+          "h": 44,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "phone village",
+      "hud": true,
+      "panel": false,
+      "expanded": true,
+      "title": "Loose Boards",
+      "counts": "1/2 ready",
+      "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+      "rects": {
+        "quest": {
+          "x": 10,
+          "y": 79,
+          "w": 246,
+          "h": 180,
+          "visible": true
+        },
+        "rate": {
+          "x": 260,
+          "y": 79,
+          "w": 120,
+          "h": 46.78125,
+          "visible": true
+        },
+        "nav": {
+          "x": 11,
+          "y": 774,
+          "w": 368,
+          "h": 56,
+          "visible": true
+        },
+        "panel": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "visible": false
+        }
+      },
+      "overlaps": {
+        "questRate": false,
+        "questNav": false,
+        "questPanel": false
+      }
+    },
+    {
+      "name": "phone village with Map",
+      "hud": true,
+      "panel": true,
+      "expanded": true,
+      "title": "Loose Boards",
+      "counts": "1/2 ready",
+      "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+      "rects": {
+        "quest": {
+          "x": 10,
+          "y": 79,
+          "w": 246,
+          "h": 180,
+          "visible": false
+        },
+        "rate": {
+          "x": 260,
+          "y": 79,
+          "w": 120,
+          "h": 46.78125,
+          "visible": false
+        },
+        "nav": {
+          "x": 11,
+          "y": 774,
+          "w": 368,
+          "h": 56,
+          "visible": true
+        },
+        "panel": {
+          "x": 10,
+          "y": 75,
+          "w": 370,
+          "h": 686,
+          "visible": true
+        }
+      },
+      "overlaps": {
+        "questRate": false,
+        "questNav": false,
+        "questPanel": false
+      }
+    },
+    {
+      "name": "phone farm",
+      "village": false,
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "scrollWidth": 390,
+      "nav": {
+        "x": 8,
+        "y": 778,
+        "w": 374,
+        "h": 58,
+        "scrollWidth": 372,
+        "clientWidth": 372
+      },
+      "buttons": [
+        {
+          "text": "Farm",
+          "x": 13,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Manage",
+          "x": 65.140625,
+          "y": 783,
+          "w": 51.15625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Rides",
+          "x": 117.296875,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Home",
+          "x": 169.4375,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Outfits",
+          "x": 221.578125,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Village",
+          "x": 273.71875,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "More",
+          "x": 325.859375,
+          "y": 783,
+          "w": 51.140625,
+          "h": 48,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "unfolded village",
+      "village": true,
+      "innerWidth": 864,
+      "innerHeight": 756,
+      "scrollWidth": 864,
+      "nav": {
+        "x": 169.484375,
+        "y": 682,
+        "w": 525.03125,
+        "h": 56,
+        "scrollWidth": 523,
+        "clientWidth": 523
+      },
+      "buttons": [
+        {
+          "text": "Map",
+          "x": 175.484375,
+          "y": 688,
+          "w": 80,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "People",
+          "x": 260.484375,
+          "y": 688,
+          "w": 80,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Quests",
+          "x": 345.484375,
+          "y": 688,
+          "w": 80,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Satchel",
+          "x": 430.484375,
+          "y": 688,
+          "w": 80,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Workshop",
+          "x": 515.484375,
+          "y": 688,
+          "w": 88.03125,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Build",
+          "x": 608.515625,
+          "y": 688,
+          "w": 80,
+          "h": 44,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "unfolded village",
+      "hud": true,
+      "panel": false,
+      "expanded": true,
+      "title": "Loose Boards",
+      "counts": "1/2 ready",
+      "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+      "rects": {
+        "quest": {
+          "x": 14,
+          "y": 82,
+          "w": 370,
+          "h": 180,
+          "visible": true
+        },
+        "rate": {
+          "x": 737.453125,
+          "y": 82,
+          "w": 112.546875,
+          "h": 46.78125,
+          "visible": true
+        },
+        "nav": {
+          "x": 169.484375,
+          "y": 682,
+          "w": 525.03125,
+          "h": 56,
+          "visible": true
+        },
+        "panel": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "visible": false
+        }
+      },
+      "overlaps": {
+        "questRate": false,
+        "questNav": false,
+        "questPanel": false
+      }
+    },
+    {
+      "name": "unfolded village with Map",
+      "hud": true,
+      "panel": true,
+      "expanded": true,
+      "title": "Loose Boards",
+      "counts": "1/2 ready",
+      "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+      "rects": {
+        "quest": {
+          "x": 14,
+          "y": 82,
+          "w": 370,
+          "h": 180,
+          "visible": true
+        },
+        "rate": {
+          "x": 737.453125,
+          "y": 82,
+          "w": 112.546875,
+          "h": 46.78125,
+          "visible": false
+        },
+        "nav": {
+          "x": 169.484375,
+          "y": 682,
+          "w": 525.03125,
+          "h": 56,
+          "visible": true
+        },
+        "panel": {
+          "x": 420,
+          "y": 80,
+          "w": 430,
+          "h": 586,
+          "visible": true
+        }
+      },
+      "overlaps": {
+        "questRate": false,
+        "questNav": false,
+        "questPanel": false
+      }
+    },
+    {
+      "name": "unfolded farm",
+      "village": false,
+      "innerWidth": 864,
+      "innerHeight": 756,
+      "scrollWidth": 864,
+      "nav": {
+        "x": 187,
+        "y": 690,
+        "w": 490,
+        "h": 58,
+        "scrollWidth": 488,
+        "clientWidth": 488
+      },
+      "buttons": [
+        {
+          "text": "Farm",
+          "x": 192,
+          "y": 695,
+          "w": 67.703125,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Manage",
+          "x": 260.703125,
+          "y": 695,
+          "w": 67.71875,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Rides",
+          "x": 329.421875,
+          "y": 695,
+          "w": 67.703125,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Home",
+          "x": 398.125,
+          "y": 695,
+          "w": 67.71875,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Outfits",
+          "x": 466.84375,
+          "y": 695,
+          "w": 67.71875,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "Village",
+          "x": 535.5625,
+          "y": 695,
+          "w": 67.71875,
+          "h": 48,
+          "visible": true
+        },
+        {
+          "text": "More",
+          "x": 604.28125,
+          "y": 695,
+          "w": 67.71875,
+          "h": 48,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "landscape village",
+      "village": true,
+      "innerWidth": 844,
+      "innerHeight": 390,
+      "scrollWidth": 844,
+      "nav": {
+        "x": 234.6796875,
+        "y": 322,
+        "w": 374.640625,
+        "h": 56,
+        "scrollWidth": 373,
+        "clientWidth": 373
+      },
+      "buttons": [
+        {
+          "text": "Map",
+          "x": 240.6796875,
+          "y": 328,
+          "w": 44,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "People",
+          "x": 289.6796875,
+          "y": 328,
+          "w": 56.328125,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Quests",
+          "x": 351.0078125,
+          "y": 328,
+          "w": 57.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Satchel",
+          "x": 413.1484375,
+          "y": 328,
+          "w": 58.34375,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Workshop",
+          "x": 476.4921875,
+          "y": 328,
+          "w": 75.25,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Build",
+          "x": 556.7421875,
+          "y": 328,
+          "w": 46.578125,
+          "h": 44,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "landscape village",
+      "hud": true,
+      "panel": false,
+      "expanded": true,
+      "title": "Loose Boards",
+      "counts": "1/2 ready",
+      "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+      "rects": {
+        "quest": {
+          "x": 14,
+          "y": 66,
+          "w": 295.390625,
+          "h": 180,
+          "visible": true
+        },
+        "rate": {
+          "x": 717.453125,
+          "y": 66,
+          "w": 112.546875,
+          "h": 46.78125,
+          "visible": true
+        },
+        "nav": {
+          "x": 234.6796875,
+          "y": 322,
+          "w": 374.640625,
+          "h": 56,
+          "visible": true
+        },
+        "panel": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "visible": false
+        }
+      },
+      "overlaps": {
+        "questRate": false,
+        "questNav": false,
+        "questPanel": false
+      }
+    },
+    {
+      "name": "landscape village with Map",
+      "hud": true,
+      "panel": true,
+      "expanded": true,
+      "title": "Loose Boards",
+      "counts": "1/2 ready",
+      "details": "Softwood logs2 / 4Stone16 / 2Bring the full amount to Rowan Rattlewood; it is taken only when you hand it over.Open quests",
+      "rects": {
+        "quest": {
+          "x": 14,
+          "y": 66,
+          "w": 295.390625,
+          "h": 180,
+          "visible": true
+        },
+        "rate": {
+          "x": 717.453125,
+          "y": 66,
+          "w": 112.546875,
+          "h": 46.78125,
+          "visible": false
+        },
+        "nav": {
+          "x": 234.6796875,
+          "y": 322,
+          "w": 374.640625,
+          "h": 56,
+          "visible": false
+        },
+        "panel": {
+          "x": 390,
+          "y": 10,
+          "w": 440,
+          "h": 370,
+          "visible": true
+        }
+      },
+      "overlaps": {
+        "questRate": false,
+        "questNav": false,
+        "questPanel": false
+      }
+    },
+    {
+      "name": "landscape farm",
+      "village": false,
+      "innerWidth": 844,
+      "innerHeight": 390,
+      "scrollWidth": 844,
+      "nav": {
+        "x": 207,
+        "y": 330,
+        "w": 430,
+        "h": 54,
+        "scrollWidth": 428,
+        "clientWidth": 428
+      },
+      "buttons": [
+        {
+          "text": "Farm",
+          "x": 212,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Manage",
+          "x": 272.140625,
+          "y": 335,
+          "w": 59.15625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Rides",
+          "x": 332.296875,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Home",
+          "x": 392.4375,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Outfits",
+          "x": 452.578125,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "Village",
+          "x": 512.71875,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        },
+        {
+          "text": "More",
+          "x": 572.859375,
+          "y": 335,
+          "w": 59.140625,
+          "h": 44,
+          "visible": true
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "mode": "full",
+  "rates": [
+    {
+      "id": null,
+      "delta": 0.0999999999999801,
+      "villageDelta": 3.9999999999997726,
+      "rate": 0.025,
+      "display": "2.5%",
+      "effects": []
+    },
+    {
+      "id": "away-ledger",
+      "delta": 0.20000000000003126,
+      "villageDelta": 4.000000000000824,
+      "rate": 0.05,
+      "display": "5%",
+      "effects": [
+        "upgrade:away-ledger"
+      ]
+    },
+    {
+      "id": "away-steward",
+      "delta": 0.30000000000001137,
+      "villageDelta": 4.0000000000009095,
+      "rate": 0.075,
+      "display": "7.5%",
+      "effects": [
+        "upgrade:away-ledger",
+        "upgrade:away-steward"
+      ]
+    },
+    {
+      "id": "away-network",
+      "delta": 0.3999999999999915,
+      "villageDelta": 4.0000000000009095,
+      "rate": 0.1,
+      "display": "10%",
+      "effects": [
+        "upgrade:away-ledger",
+        "upgrade:away-steward",
+        "upgrade:away-network"
+      ]
+    }
+  ],
+  "passed": true
+}

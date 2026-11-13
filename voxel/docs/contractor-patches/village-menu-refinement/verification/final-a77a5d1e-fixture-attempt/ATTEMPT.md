@@ -1,0 +1,3 @@
+# Fixture acknowledgement needed
+
+This first focused run used exact final A77A5D1E bytes. Its 16 level checks passed, including the new heading/scroll guard and all responsive card inputs. A deliberately regressed level-3 invitation fixture then triggered the existing automatic house-goal milestone prompt; the runner tried to click the covered HUD instead of choosing its actual Later control. Village entry was consequently never reached, so the dependent legend section also timed out. These two staging errors are retained in the report. The corrected runner acknowledges the real prompt before continuing. This attempt is not presented as a passing final report.

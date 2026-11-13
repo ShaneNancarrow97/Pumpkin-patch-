@@ -1,0 +1,1 @@
+The first music-only harness boot missed serialising its new mode flag into the browser startup callback. It stopped before any music actions, with a ReferenceError in the QA callback, then closed Chromium. No game source changed. The corrected final run passes both flags explicitly; this startup attempt is retained separately.

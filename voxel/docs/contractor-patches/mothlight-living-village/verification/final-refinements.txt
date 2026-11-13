@@ -1,0 +1,11 @@
+✔ test/village-atmosphere.test.mjs (311.773635ms)
+✔ test/village-game.test.mjs (503.508164ms)
+✔ test/village-window-detail.test.mjs (104.235738ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 928.393662
