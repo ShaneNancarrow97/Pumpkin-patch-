@@ -22,6 +22,8 @@ import { createHallLife } from "./village-hall-life.js";
 import { finishVoxels, setLampNear } from "./voxel-finish.js";
 import { spread, gather } from "./rules/village-spread.js";
 import { buildTownSquare } from "./village-town-square.js";
+import { buildVillageNeighbourhoods } from "./village-neighbourhoods.js";
+import { villageNeighbourhoodClusters } from "./content/village-neighbourhoods.js";
 import { TOWN_LAMPS } from "./content/village-town-square.js";
 import { VILLAGE_GRADE } from "./picture-grade.js";
 import { createLampGlow } from "./village-glow.js";
@@ -101,6 +103,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   const patches = [];
   // The lamps where they now stand, and the parts rebuilt as the village changes, moved into place as they are made.
   const LAMPS_AT = [...LAMPS.map((l) => { const [x, z] = spread(l.x, l.z); return { ...l, x, z }; }), ...TOWN_LAMPS];
+  let surfaceLamps = LAMPS_AT;
   const oldSpot = (f) => gather(f.x / K, f.z / K);
   function spreadPart(name, g) { if (name === "stall") spreadWhole(g, ...oldSpot(FIXTURES.stall)); else if (name === "bench") spreadWhole(g, ...oldSpot(FIXTURES.bench)); else spreadVillage(g); }
   let active = false, built = false, firstView = true, keys = {}, parts = {}, tour = null, time = 0, horizon = null, sky = null, mist = null, bats = null, life = null, grass = null, lampGlow = null, town = null;
@@ -130,7 +133,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     get status() { return dialogueFocus.status; },
   };
   const folk = createVillageFolk({ scene, state, getState: () => state, reducedMotion, pickables, pickMaterial, ground: groundAt, everyone: () => !!hooks.everyone?.(), style: hooks.castStyle?.() ?? "sprite" });
-  let atmosphere = null, villageGreen = null, followSubject = null;
+  let atmosphere = null, villageGreen = null, followSubject = null, neighbourhoods = null;
   const decor = new Map(), pages = new Map();
   const selection = new THREE.Group(); scene.add(selection); selection.visible = false;
   let outline = null, ghost = null, ghostId = null, override = null, framed = "";
@@ -169,6 +172,18 @@ export function createVillageView(canvas, state, hooks = {}) {
     for (const [id, p] of Object.entries(INSIDES)) { const [nx, nz] = DOOR_NORMAL[p.door.facing]; hit(nx ? 1.2 : 3.4, 5.8, nx ? 3.4 : 1.2, { type: "village-door", id }, (p.door.x + nx * .5) * K, (p.door.z + nz * .5) * K); }
   }
   // Rebuilds a part when its key changes.
+  // Native gardens yield to saved furniture; rebuilding only when that mask
+  // changes keeps routine gathering and story refreshes out of this batch.
+  function syncNeighbourhoods() {
+    const clusters = villageNeighbourhoodClusters(state), key = clusters.map(c => c.id).join("|");
+    if (keys.neighbourhoods === key) return;
+    keys.neighbourhoods = key;
+    // The new walks borrow the existing eight-light pool, and hidden clusters
+    // leave no invisible light source beside the player's own furniture.
+    surfaceLamps = [...LAMPS_AT, ...clusters.flatMap(c => (c.lanterns ?? []).map(l => ({ x: l.x, z: l.z, y: 2.25 })))];
+    if (neighbourhoods) { root.remove(neighbourhoods); neighbourhoods.userData.dispose?.(); }
+    neighbourhoods = buildVillageNeighbourhoods(clusters); finishVoxels(neighbourhoods); root.add(neighbourhoods);
+  }
   function part(name, key, make) {
     if (keys[name] === key) return; keys[name] = key;
     if (parts[name]) { root.remove(parts[name]); dispose(parts[name]); }
@@ -177,6 +192,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   function sync() {
     buildOnce();
     const v = state.village;
+    syncNeighbourhoods();
     part("stall", String(v.unlocks.includes("stall")), () => buildStall(v.unlocks.includes("stall")));
     part("bench", String(v.effects.includes("bench")), () => buildBench(v.effects.includes("bench")));
     part("homes", JSON.stringify(v.built), () => buildHomes(v.built)); life?.setBuilt(v.built);
@@ -456,7 +472,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     const t = tour ? focus : controls.target;
     if(expansionWorld.active){const near=[...expansionWorld.lamps].sort((a,b)=>a.distanceToSquared(t)-b.distanceToSquared(t));pool.forEach((l,i)=>{if(near.length){l.position.copy(near[i%near.length]);l.visible=true;l.userData.base=64;l.color.set(i%2?0x8ebacc:0xe7b77f);}else l.visible=false;});}
     else if (inside) { const near = [...inside.lamps].sort((a, b) => a.distanceToSquared(t) - b.distanceToSquared(t)); pool.forEach((l, i) => { const p = near[i % near.length]; l.position.copy(p); l.visible = true; }); }
-    else { const near = [...LAMPS_AT].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z)); pool.forEach((l, i) => { const lamp = near[i]; l.visible=true; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); }); }
+    else { const near = [...surfaceLamps].sort((a, b) => Math.hypot(a.x * K - t.x, -a.z * K - t.z) - Math.hypot(b.x * K - t.x, -b.z * K - t.z)); pool.forEach((l, i) => { const lamp = near[i]; l.visible=true; l.position.copy(W(lamp.x * K, lamp.z * K, (lamp.y - .2) * K)); }); }
     sun.target.position.copy(t); sun.position.copy(t).addScaledVector(SUN, 100); sun.target.updateMatrixWorld();
     // Walking, the moon's shadows only matter round the walker: a tighter box draws fewer casters, and sharper.
     const reachShadow = following ? 28 : 44, sc = sun.shadow.camera;
@@ -501,6 +517,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   }
   return {
     scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool, dialogueCamera, withMapSurface,
+    get neighbourhoodStatus() { return neighbourhoods?.userData ?? null; },
     enterExpansionArea(id){dialogueFocus.end({immediate:true});if(inside)goOutside();const entry=expansionWorld.enter(id);if(!entry)return false;setLampNear(0);root.visible=false;for(const p of folk.people.values())p.root.visible=false;resources.group.visible=false;shopMarkers.hide();for(const h of pickables)if(!['expansion-activity','expansion-portal'].includes(h.userData.type))h.visible=false;if(sky)sky.visible=false;sun.intensity=.12;hemi.intensity=1.3;hemi.color.set(0xc6c3dd);hemi.groundColor.set(0x817185);scene.background.set(0x100d19);scene.fog.color.set(0x100d19);scene.userData.exposure=1.2;following=false;return entry;},
     leaveExpansionArea(){const entry=expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity = NIGHT.sun;hemi.intensity = NIGHT.hemi;hemi.color.set(NIGHT.sky);hemi.groundColor.set(NIGHT.ground);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;following=false;lampAs(LAMP);pool.forEach(l=>{l.visible=true;l.color.set(0xff9a40);});sync();return entry;},
     get activeExpansionArea(){return expansionWorld.active;},get expansionTargets(){return [...expansionWorld.targets,...(!expansionWorld.active?[...folk.people].filter(([,p])=>p.root.visible).map(([id])=>({type:'village-folk',id,...folk.spotOf(id)})):[])];},expansionGroundAt:(x,z)=>expansionWorld.ground(x,z),moveExpansionWalker:(from,dx,dz)=>expansionWorld.active?expansionWorld.move(from,dx,dz):moveVillageWalker(state,from,dx,dz),setExpansionCompanion,

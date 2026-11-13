@@ -16,6 +16,7 @@ import { villageNodePosition, villageNodeCandidates } from "./content/village-no
 import { terrainHeight as H, groundHeight as HN, TERRACES, RAMPS, WATERS, REALM, GROUND_REALM, isWater, rampAt, terraceAt, MARSH_ISLANDS, MARSH_CAUSEWAY } from "./village-terrain.js";
 import { spread, gather, spreadRect, spreadBox, pieceAt, pieceOfBox, PIECES, SPREAD, isGap, inTownSquare, TOWN_SQUARE } from "./rules/village-spread.js";
 import { inTownPlaza, inTownGate } from "./content/village-town-square.js";
+import { inVillageNeighbourhood } from "./content/village-neighbourhoods.js";
 const SHIFT = LAYOUT.DISTRICT_SHIFT;
 import {
   C, shade, frame, realm, lampPost, studio, tavern, bigTent, caravan, manor, stiltHut, canopyTree, pine, twistedTree, deadTree, glowShroom, stoneWall, picketFence, mothPillar, carriage, fountain, well, noticeboard, stall, bench,
@@ -320,6 +321,7 @@ const MOOR_CLEAR = [[97, 42, 5.2], [94, 31.5, 4], [114, 16, 3.4], [115.5, 50, 2.
 const GRASS = {
   meadow: { h: .22, flowers: true, colours: [0x557b48,0x6b8853,0x74975a,0x4a734c] },
   lawn: { h: .32, flowers: true, colours: [0x4f8a36, 0x5b9a3e, 0x67a644, 0x46802f, 0x76ad4a, 0x84b04e, 0x9aa848] },
+  park: { h: .14, flowers: false, colours: [0x496f3b, 0x557b43, 0x63884b, 0x416737] },
   moss: { h: .26, flowers: true, colours: [0x3a6a52, 0x467a5c, 0x52866a, 0x356048, 0x5a7a5a] },
   heather: { h: .4, flowers: true, colours: [0x6a4a7a, 0x7d5a8a, 0x8a6a9a, 0x9a8a50, 0x5a4a6a, 0xa88ab8] },
 };
@@ -328,10 +330,11 @@ const GRASS = {
 // side it opened from, except where a road drawn across it runs or water lies.
 const onRoad = (roads, x, z) => roads.some((rd) => rd.points.some((p, i) => i && Math.abs(x - (p[0] + rd.points[i - 1][0]) / 2) < Math.abs(p[0] - rd.points[i - 1][0]) / 2 + rd.width / 2 + .25 && Math.abs(z - (p[1] + rd.points[i - 1][1]) / 2) < Math.abs(p[1] - rd.points[i - 1][1]) / 2 + rd.width / 2 + .25));
 export function grassAt(x, z) {
+  if (inVillageNeighbourhood(x, z)) return null;
   const [gx, gz] = gather(x, z);
   if (!isGap(x, z)) return grassOnGrid(gx, gz);
   if (onRoad(ROADS_SPREAD, x, z) || isWater(gx, gz) || inTownPlaza(x, z) || inTownGate(x, z)) return null;
-  if (inTownSquare(x, z)) return GRASS.lawn;
+  if (inTownSquare(x, z)) return GRASS.park;
   if (gz < 0) return Math.sin(x * 3.11 + z * 7.01) > 0 ? null : GRASS.meadow;
   return grassOnGrid(gx, gz) ?? (gx > -1 && gx < 121 && gz < GREEN_NORTH + 1.5 ? GRASS.lawn : GRASS.moss);
 }
