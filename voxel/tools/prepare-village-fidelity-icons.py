@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Pack generated original illustrations into consistent runtime cells.
 
-Only crop transparent source margins, preserve aspect, and resize. The source
-painting stays unchanged in the concepts folder; rerun after regenerating it.
+Isolate connected props from neighbouring fragments, crop transparent margins,
+and resize with aspect preserved. The source painting stays unchanged in the
+concepts folder; rerun after regenerating it.
 """
 from pathlib import Path
 import argparse, hashlib, json
@@ -41,12 +42,12 @@ def isolate(tile):
     tile.putalpha(ImageChops.multiply(alpha, connected))
     return tile
 
-def prepare(source=SOURCE):
+def prepare(source=SOURCE, cells=CELLS, columns=3, filename='icons.webp'):
     original = Image.open(source).convert('RGBA')
     assert original.width == original.height
-    atlas = Image.new('RGBA', (768, 768))
+    atlas = Image.new('RGBA', (columns * 256, columns * 256))
     records = []
-    for index, (name, rect) in enumerate(CELLS.items()):
+    for index, (name, rect) in enumerate(cells.items()):
         box = tuple(round(v * original.width / 1280) for v in rect)
         tile = isolate(original.crop(box))
         # Ignore near-transparent generation dust when measuring the prop.
@@ -54,16 +55,20 @@ def prepare(source=SOURCE):
         assert bounds, name
         tile = tile.crop(bounds)
         tile.thumbnail((222, 222), Image.Resampling.LANCZOS)
-        x, y = index % 3 * 256, index // 3 * 256
+        x, y = index % columns * 256, index // columns * 256
         atlas.alpha_composite(tile, (x + (256 - tile.width) // 2, y + (256 - tile.height) // 2))
         records.append({'id': name, 'source_rect': box, 'cell': [x, y, 256, 256], 'painted_size': list(tile.size)})
-    target = ROOT / 'assets/village-fidelity/icons.webp'
+    target = ROOT / 'assets/village-fidelity' / filename
     target.parent.mkdir(parents=True, exist_ok=True)
     atlas.save(target, 'WEBP', quality=90, method=6, exact=True)
-    meta = {'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(), 'runtime_sha256': hashlib.sha256(target.read_bytes()).hexdigest(), 'size': [768, 768], 'bytes': target.stat().st_size, 'processing': 'Connected-illustration isolation, transparent-margin crop, aspect-preserving Lanczos resize and atlas packing; no repainting.', 'icons': records}
-    (target.parent / 'icons-receipt.json').write_text(json.dumps(meta, indent=2) + '\n')
+    meta = {'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(), 'runtime_sha256': hashlib.sha256(target.read_bytes()).hexdigest(), 'size': list(atlas.size), 'bytes': target.stat().st_size, 'processing': 'Connected-illustration isolation, transparent-margin crop, aspect-preserving Lanczos resize and atlas packing; no repainting.', 'icons': records}
+    (target.parent / (target.stem + '-receipt.json')).write_text(json.dumps(meta, indent=2) + '\n')
     print(json.dumps({'runtime': str(target), 'bytes': meta['bytes'], 'icons': len(records)}))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(); parser.add_argument('--source', type=Path, default=SOURCE)
     prepare(parser.parse_args().source)
+    dialogue = ROOT / 'assets/village-fidelity-concepts/dialogue-source.png'
+    if dialogue.exists():
+        cells = {'chat': (0, 0, 640, 640), 'compass': (640, 0, 1280, 640), 'bond': (0, 640, 640, 1280), 'back': (640, 640, 1280, 1280)}
+        prepare(dialogue, cells, columns=2, filename='dialogue.webp')
