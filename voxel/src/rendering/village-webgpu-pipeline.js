@@ -1,6 +1,7 @@
 import * as GPU from "three/webgpu";
 import { createVillageNodeMaterials } from "./village-node-materials.js";
 import { createVillageGpuMirror } from "./village-webgpu-mirror.js";
+import { canonicalizeVillageWgsl } from "./village-wgsl-cache.js";
 
 // HDR bloom replaces the WebGL composer. Tone mapping and sRGB conversion run
 // exactly once, followed by the existing display-space village grade. The DOM
@@ -30,6 +31,23 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   renderer = new GPU.WebGPURenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   await renderer.init(); device = renderer.backend.device;
   if (!renderer.backend.isWebGPUBackend) throw new Error("Renderer selected a non-WebGPU backend");
+  // Pinned r169 bakes global node IDs into otherwise identical UBO type and
+  // variable names. Normalize only validated generated pairs before the stage
+  // cache sees them; numeric group/binding slots and all calculations stay put.
+  const shaderCache = { normalizedStages: 0, builders: 0 };
+  const createNodeBuilder = renderer.backend.createNodeBuilder.bind(renderer.backend);
+  renderer.backend.createNodeBuilder = (...args) => {
+    const builder = createNodeBuilder(...args), build = builder.build;
+    builder.build = function(...args) {
+      const result = build.apply(this, args); shaderCache.builders++;
+      for (const key of ["vertexShader", "fragmentShader"]) if (typeof this[key] === "string") {
+        const normalized = canonicalizeVillageWgsl(this[key], GPU.REVISION);
+        if (normalized !== this[key]) { this[key] = normalized; shaderCache.normalizedStages++; }
+      }
+      return result;
+    };
+    return builder;
+  };
   const createTexture = renderer.backend.createTexture.bind(renderer.backend);
   renderer.backend.createTexture = (texture, options) => {
     try { return createTexture(texture, options); }
@@ -58,6 +76,7 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   const outputs = new Map([[false, gradeFor(display)]]);
   post = new GPU.PostProcessing(renderer, outputs.get(false)); post.outputColorTransform = false;
   let prepared = false, width = 1, height = 1, ratio = 1, renderFrames = 0;
+  let frameStats = { calls: 0, triangles: 0, renderPasses: 0 };
   let usePost = true, useAntialias = false, glowScale = 1;
   const originalBloomSize = glow.setSize.bind(glow);
   glow.setSize = (w, h) => originalBloomSize(Math.max(1, Math.round(w * glowScale)), Math.max(1, Math.round(h * glowScale)));
@@ -87,8 +106,10 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   // finally. Guard it here so a failed node/pass cannot leak that state.
   function draw() {
     const toneMapping = renderer.toneMapping, output = renderer.outputColorSpace;
+    const autoReset = renderer.info.autoReset, previousCalls = renderer.info.render.calls;
+    renderer.info.autoReset = false; renderer.info.reset();
     try { if (usePost) post.render(); else renderer.render(mirror.scene, mirror.camera); renderFrames++; mirror.afterRender(); }
-    finally { renderer.toneMapping = toneMapping; renderer.outputColorSpace = output; }
+    finally { frameStats = { calls: renderer.info.render.drawCalls, triangles: renderer.info.render.triangles, renderPasses: renderer.info.render.calls - previousCalls }; renderer.info.autoReset = autoReset; renderer.toneMapping = toneMapping; renderer.outputColorSpace = output; }
   }
   return {
     async firstFrame(source, camera, options) {
@@ -106,7 +127,7 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
     },
     render(source, camera, options) { if (disposed || !prepared) throw new Error("WebGPU presentation is not ready"); sync(source, camera, options); draw(); },
     resize(w, h, r) { if (width === w && height === h && ratio === r) return; width = w; height = h; ratio = r; renderer.setPixelRatio(r); renderer.setSize(w, h, false); scenePass.setPixelRatio(r); scenePass.setSize(w, h); },
-    stats() { return { actualBackend: "webgpu", renderFrames, ...mirror.stats(), materials: materials.stats, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { hdr: usePost, bloom: usePost, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
+    stats() { return { actualBackend: "webgpu", renderFrames, ...mirror.stats(), materials: materials.stats, ...frameStats, shaderCache: { ...shaderCache, vertexPrograms: renderer._pipelines?.programs?.vertex?.size ?? 0, fragmentPrograms: renderer._pipelines?.programs?.fragment?.size ?? 0 }, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { hdr: usePost, bloom: usePost, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
     dispose,
   };
   } catch (error) { dispose(); throw error; }
