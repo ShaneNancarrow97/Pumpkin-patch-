@@ -1,4 +1,4 @@
-# 75 — Plan: a better look, a better story, a UI facelift, a voxel upgrade
+# 75 — Plan: a better look, a better story, a UI facelift, a voxel upgrade, secret places
 
 Status: **plan for Codex**. Nothing here is built yet. Read handovers 73 and 74 first, then this. Each work
 package (WP) below is sized to be one `contractor/*` branch and one PR into `voxel-reference`. Do them in the
@@ -365,6 +365,69 @@ budget check: the Moth Tree (curving boughs, lantern canopy), the Moonclock (tur
 moth weathervane), the Velvet Bat (sagging hipped roof, bay window, hanging sign), Granny's house (thatch,
 crooked chimney, overgrown garden) and the manor (turrets, swept roofs, a glasshouse).
 
+## E. Secret places and hidden costumes
+
+Little hidden areas off the beaten path, each with a glowing present inside that unlocks a special costume for
+Shane or Natalie. No quest marker points to them; the world hints at them instead. Finding one should feel like a
+small treasure, not a chore.
+
+### E1. The secret places (eight to start, original designs)
+Each is a small, hand-dressed pocket (one room or clearing), entered through something you could walk past:
+
+| # | Place | Where / how you get in | Hint in the world | Costume (suggested) |
+|---|-------|------------------------|-------------------|---------------------|
+| 1 | **The Old Bunker** | Moor: a rusted hatch half hidden in the heather behind the standing stones; opens after you clear the brambles | A survey map pinned in the Velvet Bat with an X on it | Shane: wartime ARP warden, tin hat and lamp |
+| 2 | **Glowworm Cave** | Quarry: a crack behind the waterfall/spoil heap; squeeze through (short crouch-walk) | Moths flying into the rock at night | Natalie: cave-glow explorer, lantern hood with glowing threads |
+| 3 | **The Drowned Chapel** | Lake: stepping stones that only show at low water (dawn), to a tiny ruin on an islet | A painting in Elowen's house of a chapel on the water | Natalie: moonlit choir robe |
+| 4 | **Smugglers' Cellar** | Under the Velvet Bat: a loose barrel in the cellar rolls aside | Vesper "doesn't know" why the cellar is so cold | Shane: smuggler's coat and tricorn |
+| 5 | **The Fairy Ring** | Copse: walk the ring of mushrooms clockwise at midnight; the ring glows and opens a glade | A rhyme on the notice board | Natalie: moth-fairy wings (the wings flutter on the sprite) |
+| 6 | **Clocktower Loft** | Moonclock: a ladder that only appears after Act III repairs the clock | The clock's gears glimpsed through a slit | Shane: clockmaker's apron and loupe |
+| 7 | **The Burrow** | Green: a hollow under the Moth Tree's roots, only after A/D's root flare is built | Rabbits vanishing into the roots at dusk | Both: matching rabbit onesies (one present each) |
+| 8 | **The Scarecrow's Shed** | Farm edge (back on the pumpkin patch): a padlocked shed whose key is found in the bunker | The key itself, with a farm label | Shane: patchwork scarecrow |
+
+Rename freely; keep every costume original (no film or game characters). Later sets can follow the seasons.
+
+### E2. The present
+- A floating, slowly spinning present at the heart of each place: a voxel box with a ribbon and bow in the
+  costume's colours, bobbing on a sine wave, spinning ~1 turn every 4 s, glowing (glow voxels + a halo card, no
+  real light), with sparkles drifting up and a faint chime that gets louder as you near it (spatial audio).
+- Once found it stays as an opened, empty box with the ribbon undone, so you know you've been there.
+- Interact prompt: "Open the present".
+
+### E3. The pop-up
+- On opening: the screen dims, the present bursts (a ribbon unwinds, confetti of moths and stars), and a card rises:
+  the costume's name, a large render of Shane or Natalie in it turning slowly, one line of story about where it
+  came from, the place's name ("Found in the Old Bunker"), and two buttons: **Wear now** and **Later**.
+- "Wear now" changes the outfit straight away (with a puff of sparkles on the sprite).
+- Built on the C1 tokens and C2 toast queue; works on pad (✕ wear, ○ later), touch and TV; respects reduced motion.
+
+### E4. Rules, saves and tracking
+- `content/village-secrets.js`: each secret `{ id, name, district, entry, hint, costume, requires }` where
+  `requires` is a story condition (B7), never a level.
+- `rules/village-secrets.js`: `secretFound(s, id)`, `openSecret(s, id)` that adds the costume to
+  `s.wardrobe.owned` (reuse `wardrobe.js`; add the new costumes to `EXTRA_COSTUMES` in `costume-expansion.js`
+  with `price: 0` and a `secret` field so the shop hides them until found).
+- Save: `s.village.secrets = { found: [], opened: [] }` with a default and migration (Saves rule).
+- A **Secrets** page in the journal (C5) and the wardrobe: a silhouette per secret costume with its hint once
+  you've seen the hint ("Something hums under the Moor…"), filled in when found; "6 of 8 found".
+- Map (C3): found secret places get a small present pin; unfound ones never show.
+
+### E5. Building the places
+- Each place is a small native build (like the town square) or an interior using the home-interior system
+  (`village-home-interiors.js`) for the bunker, cellar and loft, with an entrance through the existing doorway
+  blur transition.
+- Dress them richly: the bunker with bunks, a ration shelf, a radio that crackles, a map table; the cave with
+  glowing crystals, a pool and dripping water; the chapel with broken pews, a rose window and lily pads.
+- Costume art: new sprite costumes in the existing costume sprite pipeline (`costume-sprite-expansion.js`,
+  `costume-sprite-meta.js`, plus the walk/direction meta files), checked at the same stature in every
+  direction (the play-mode sprite size tests).
+
+### E6. Tests
+- Each secret's entry is reachable on foot and blocked until its `requires` is met.
+- Opening a present grants exactly one costume, once; reopening does nothing; old saves load with nothing found.
+- No secret costume can be bought in the shop before it's found.
+- Every secret has a hint placed somewhere in the world (content lint, B9).
+
 ## Roadmap (suggested order)
 
 | Step | Packages | Why first |
@@ -377,7 +440,7 @@ crooked chimney, overgrown garden) and the manor (turrets, swept roofs, a glassh
 | 5 | A2 grass, A3 water, A5 light, A6 buildings with D5 detail, D3 trees and ground | The look pass proper |
 | 5b | D7 hero landmarks, D6 world-building (district by district, with the story acts) | Make it a place |
 | 6 | B3 templates, B4 puzzle families (2 at a time), B5 arcs, B7 gates | Content rewrite, act by act |
-| 7 | C3 drawn map, C7 trays, A7 square flanks + life, B8 market/requests | New places and systems |
+| 7 | C3 drawn map, C7 trays, A7 square flanks + life, B8 market/requests, E1–E6 secret places (two at a time) | New places and systems |
 | 8 | A8 camera moments, B6 world changes, Act III Moonclock + Lantern Night | The payoff |
 | 9 | C8 motion, C9 access sweep | Polish everything at the end |
 
