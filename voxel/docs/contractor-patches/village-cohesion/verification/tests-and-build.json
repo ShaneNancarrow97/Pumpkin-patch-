@@ -1,0 +1,51 @@
+{
+  "runtime_source_commit": "1b53b2262a9abbf2e92ee355b6b5891f9854507d",
+  "html": {
+    "bytes": 60533183,
+    "sha256": "a2885c22f16f1cb65d84a2cb6460dda79c34d92297fc2c6d1382f4b50b8cd96d"
+  },
+  "full_suite": {
+    "command": "npm test",
+    "passed": 1282,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 361930.805128,
+    "log_sha256": "d6cd623ed2eae8e1b3d9579d745078deb58ab450c6114426f1821601510750de",
+    "scope": "Full cohesion code suite passed; final planting/pavilion data were then checked again with the affected focused files."
+  },
+  "final_focused": {
+    "command": "node --test --test-isolation=none test/village-neighbourhood-navigation.test.mjs test/village-neighbourhood-models.test.mjs test/village-wanderers.test.mjs test/village-town-square.test.mjs test/village-node-sites.test.mjs",
+    "passed": 26,
+    "failed": 0,
+    "duration_ms": 11329.05697,
+    "log_sha256": "3636b9480f6a663a83f98a721d2a02fb23d82354aa2ff2aa704c5d8a36e9feea"
+  },
+  "normal_browser": {
+    "checks": 8,
+    "passed": true,
+    "receipt": "browser.json",
+    "draws_held": false
+  },
+  "layout": {
+    "clusters": 22,
+    "fruit_trees": 28,
+    "solid_footprints": 59,
+    "boxes": 6232,
+    "meshes": 3,
+    "added_lights": 0,
+    "existing_point_light_pool": 8
+  },
+  "compatibility": {
+    "save_version": 20,
+    "resource_positions": 676,
+    "resource_position_fingerprint": "d1d5703ef8acb22b8f389a7e1871dc6b92c3de9c68f146f7cb3ef6a4f6259c61",
+    "new_paths_reachable": true,
+    "district_gates_preserved": true,
+    "owned_decor_wins": true
+  },
+  "limitations": [
+    "SwiftShader images and functional input checks are not hardware FPS or PS5 Bluetooth certification.",
+    "The original compatibility smoke is run again against the published HTML; delivery receipt records its result.",
+    "No APK was rebuilt."
+  ]
+}

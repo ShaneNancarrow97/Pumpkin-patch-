@@ -1,5 +1,7 @@
 # Pumpkin Patch Voxel: context for coding agents
 
+**Latest contractor village cohesion:** [`docs/contractor-patches/village-cohesion/README.md`](docs/contractor-patches/village-cohesion/README.md) fills the spread gaps with linked gardens, orchard, lantern commons, resident courts and cosmetic garden strolls. Read its dependency matrix before changing native scenery, path/grass masks, save-compatible decoration suppression, the eight-light pool or resource clearance. All 676 gather positions are retained; save version remains20.
+
 **Latest contractor village clarity:** [`docs/contractor-patches/village-clarity/README.md`](docs/contractor-patches/village-clarity/README.md) covers the complete puzzle-choice repair, live resident interaction anchors, a tilted snapshot of the actual world with projected map markers, scoped village UI tokens and a shared notification queue on Claude's 8da66cb lead. Read its dependency matrix before changing resident reach, snapshot renderer restoration/cache, map coordinates, receipt lifetimes or input glyph contrast. Save version remains20; the handover75 story/shape/secret-place plans remain separate work.
 
 **Latest contractor idle pause:** [`docs/contractor-patches/mothlight-full-expansion/IDLE-PAUSE.md`](docs/contractor-patches/mothlight-full-expansion/IDLE-PAUSE.md) replaces the ten-minute tea break with a real-time3½-minute pause and final30-second countdown across farm/village/POVs. Read its input/clock dependency matrix before changing automatic pause or controller activity. Save version remains20.
