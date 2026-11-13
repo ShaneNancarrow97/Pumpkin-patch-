@@ -30,7 +30,7 @@ const views = { entrance: { x: 87, z: -7.5, yaw: 0, pitch: .30, distance: 13 }, 
 // shipped follow-camera numbers rather than shrinking or faking the owner.
 const referenceEntrance = { x: 87, z: -16.5, yaw: 0, pitch: OUTSIDE_VIEW.pitch, distance: OUTSIDE_VIEW.distance };
 const report = { file, baseline, uiOnly, tvOnly, worldOnly, referenceOnly, conversationOnly, htmlSha256: sha(html), bytes: html.length, harnessSha256: sha(await fs.readFile(new URL(import.meta.url))), fixtureSha256: sha(JSON.stringify(fixture)), stateVersion: state.version, preferences, skyAssetExpectation: baseline ? null : VILLAGE_SKY_ART_META, staging: { duskClock, period: VILLAGE_ATMOSPHERE_CYCLE_SECONDS, phase: 'dusk', owner: 'natalie', views, referenceEntrance, referenceComparison: { baselineAndFinalUseSamePose: true, cameraSource: 'OUTSIDE_VIEW.pitch and OUTSIDE_VIEW.distance', wideComparisonPoseUnchanged: true }, wallClock: '2026-11-13T21:00:00Z', randomSeed: 20261113 }, scope: 'Exact offline HTML served unchanged over loopback. Normal native RAF, renderer and composer throughout; no held draws or manual renders. A declared progressed fixture opens existing gates without claiming authored story completion. place() and saved-clock staging compose matching views; keyboard and injected standard Gamepad API exercise actual input. No physical Bluetooth or device FPS certification.', checks: [], errors: [], consoleErrors: [], externalRequests: [], screenshots: [], views: [] };
-const check = (label, pass, actual) => { report.checks.push({ label, pass: !!pass, ...(actual === undefined ? {} : { actual }) }); console.log(`${pass ? 'ok' : 'FAIL'} ${label}`); if (!pass) throw Error(label); };
+const check = (label, pass, actual, fatal = true) => { report.checks.push({ label, pass: !!pass, fatal, ...(actual === undefined ? {} : { actual }) }); console.log(`${pass ? 'ok' : 'FAIL'} ${label}`); if (!pass && fatal) throw Error(label); };
 await fs.mkdir(out, { recursive: true });
 const server = createServer((req, res) => { if (req.url === '/favicon.ico') { res.writeHead(204).end(); return; } res.setHeader('Content-Type', 'text/html'); res.end(html); });
 await new Promise(r => server.listen(0, '127.0.0.1', r)); let browser;
@@ -58,11 +58,11 @@ try {
     await stage('reference-entrance', referenceEntrance); await shot('entrance-reference-world.png'); report.views.push({ id: 'reference-entrance', ...await viewInfo() });
     await page.evaluate(() => PumpkinVoxel.village.showPanel('journal')); await shot('entrance-reference-journal.png');
     if (!baseline) {
-      check('The actual ground texture keeps native arrival lawns green and roads bare', ...(await groundTextureCheck(page)));
+      check('The actual ground texture keeps native arrival lawns green and roads bare', ...(await groundTextureCheck(page)), false);
       await openRowan(page, frames); await dialoguePadInput(page, frames); await shot('conversation-desktop.png', { preserveInput: true });
       check('The reference conversation preserves its canonical greeting choices', ...(await dialogueChoiceCheck(page)));
-      check('The reference conversation has readable, contained desktop surfaces', ...(await conversationLayoutCheck(page)));
-      check('The selected reference reply has an opaque readable gold surface', ...(await dialogueContrastCheck(page)));
+      check('The reference conversation has readable, contained desktop surfaces', ...(await conversationLayoutCheck(page)), false);
+      check('The selected reference reply has an opaque readable gold surface', ...(await dialogueContrastCheck(page)), false);
     }
   }
   if (!uiOnly && !referenceOnly) {
@@ -73,7 +73,7 @@ try {
     await stage('granny'); await shot('granny-cottage.png'); report.views.push({ id: 'granny', ...await viewInfo() });
     await stage('square'); await shot('moonclock-square.png'); report.views.push({ id: 'square', ...await viewInfo() });
     if (!baseline) {
-      check('The actual ground texture keeps native arrival lawns green and roads bare', ...(await groundTextureCheck(page)));
+      check('The actual ground texture keeps native arrival lawns green and roads bare', ...(await groundTextureCheck(page)), false);
       const stats = await page.evaluate(() => PumpkinVoxel.scene.villageView.fidelityStats);
       check('Fidelity keeps sky on its existing draw and air within two bounded batches', stats?.sky?.addedDrawCalls === 0 && stats.sky.addedTextures <= 1 && stats.sky.artReady === true && Math.max(stats.sky.artWidth, stats.sky.artHeight) <= 1024 && stats.sky.textureBytes <= 2796204 && stats.sky.addedLights === 0 && stats.sky.addedPasses === 0 && stats.air.drawCalls <= 2 && stats.air.triangles <= 76 && stats.air.lights === 0 && stats.air.textures === 0, stats);
       const paused = await page.evaluate(() => { const p = PumpkinVoxel, v = p.scene.villageView; p.state().paused = true; const before = JSON.stringify(v.fidelityStats); v.tick(.25); const after = JSON.stringify(v.fidelityStats); p.state().paused = false; return { held: before === after }; });
@@ -96,7 +96,7 @@ try {
       if (!baseline) await journalChecks(page, check);
       for (const [name, width, height] of [['phone', 390, 844], ['landscape', 844, 390], ['fold', 720, 900]]) {
         await page.setViewportSize({ width, height }); await page.locator('#vg-panel-body').evaluate(el => { el.scrollTop = 0; }); await shot(`journal-${name}.png`);
-        if (!baseline) check(`${width}×${height} keeps legible controls in one vertical reading flow`, ...(await layoutCheck(page)));
+        if (!baseline) check(`${width}×${height} keeps legible controls in one vertical reading flow`, ...(await layoutCheck(page)), false);
       }
       await page.setViewportSize({ width: 1280, height: 720 });
       if (!baseline) await routeChecks(page, check);
@@ -108,13 +108,13 @@ try {
     await page.locator('#sheet-close').click(); await page.evaluate(() => { const p = PumpkinVoxel; p.state().village.clock = 1800; p.openVillage(); p.village.showPanel('journal'); });
     if (!conversationOnly) {
       await shot('journal-tv.png');
-      if (!baseline) { check('The final journal uses the real TV mode and its accessible layout', await page.evaluate(() => document.body.classList.contains('tv-mode'))); check('TV journal keeps readable controls and contained text', ...(await layoutCheck(page))); await controllerChecks(page, check, frames); }
+      if (!baseline) { check('The final journal uses the real TV mode and its accessible layout', await page.evaluate(() => document.body.classList.contains('tv-mode'))); check('TV journal keeps readable controls and contained text', ...(await layoutCheck(page)), false); await controllerChecks(page, check, frames); }
     }
     if (!baseline) {
       await openRowan(page, frames); await dialoguePadInput(page, frames); await shot('conversation-tv.png', { preserveInput: true });
       check('TV conversation preserves its canonical greeting choices', ...(await dialogueChoiceCheck(page)));
-      check('TV conversation text and controls stay legible and contained', ...(await conversationLayoutCheck(page)));
-      check('The selected TV reply keeps opaque gold and readable label and note contrast', ...(await dialogueContrastCheck(page)));
+      check('TV conversation text and controls stay legible and contained', ...(await conversationLayoutCheck(page)), false);
+      check('The selected TV reply keeps opaque gold and readable label and note contrast', ...(await dialogueContrastCheck(page)), false);
     }
     report.views.push({ id: 'tv', ...await viewInfo() });
     if (!baseline) { const budget = await page.evaluate(() => PumpkinVoxel.scene.villageView.fidelityStats?.air); check('TV air uses its reduced bounded workload', budget?.shafts <= 3 && budget.fireflies <= 16 && budget.triangles <= 38, budget); }
@@ -124,6 +124,7 @@ try {
 } catch (error) { report.errors.push(error.stack ?? String(error)); }
 finally { await browser?.close(); await new Promise(r => server.close(r)); }
 report.passed = !report.errors.length && !report.consoleErrors.length && report.checks.every(c => c.pass);
+report.visualFailures = report.checks.filter(c => !c.pass && !c.fatal);
 await fs.writeFile(path.join(out, 'browser.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({ passed: report.passed, checks: report.checks.length, errors: report.errors, screenshots: report.screenshots }));
 if (!report.passed) process.exitCode = 1;
@@ -139,21 +140,22 @@ async function journalChecks(page, check) {
     check(`${key} selects ${id} without exposing another journal page`, selection.selected === id && selection.focused === id && selection.panels.length === 1 && selection.panels[0] === `vf-page-${id}`, selection);
   }
   const hero = await page.locator('.vf-story-hero').evaluate(el => ({ id: el.dataset.questCard, portrait: !!el.querySelector('.vf-story-portrait img'), guideButtons: el.querySelectorAll('.vf-show-way').length, folded: !el.querySelector('.vf-story-fold').open, progress: { value: el.querySelector('meter').value, max: el.querySelector('meter').max }, text: el.querySelector('.vf-next-objective').textContent.trim() }));
-  check('One portrait-led followed task exposes its actual progress and one primary route action', await page.locator('.vg-journal-following').count() === 1 && hero.id === 'green-research' && hero.portrait && hero.guideButtons === 1 && hero.folded && hero.progress.max > hero.progress.value && hero.text.length > 15, hero);
+  check('One portrait-led followed task exposes its actual progress and one primary route action', await page.locator('.vg-journal-following').count() === 1 && hero.id === 'green-research' && hero.portrait && hero.guideButtons === 1 && hero.folded && hero.progress.max > hero.progress.value && hero.text.length > 15, hero, false);
   const layout = await page.locator('#vg-panel').evaluate(el => { const b = el.getBoundingClientRect(); return { width: b.width, height: b.height, left: b.left, right: b.right, viewportWidth: innerWidth, viewportHeight: innerHeight }; });
-  check('The desktop journal leaves most of the world visible', layout.width <= 430 && layout.width / layout.viewportWidth <= .34 && layout.left >= layout.viewportWidth * .62 && layout.height <= layout.viewportHeight - 140, layout);
-  check('Desktop journal text and controls remain legible', ...(await layoutCheck(page)));
+  check('The desktop journal leaves most of the world visible', layout.width <= 430 && layout.width / layout.viewportWidth <= .34 && layout.left >= layout.viewportWidth * .62 && layout.height <= layout.viewportHeight - 140, layout, false);
+  check('Desktop journal text and controls remain legible', ...(await layoutCheck(page)), false);
   const hud = await page.evaluate(() => { const r = s => { const b = document.querySelector(s).getBoundingClientRect(); return { left: b.left, top: b.top, right: b.right, bottom: b.bottom, width: b.width, height: b.height }; }; return { header: r('.vg-heading'), dock: r('.vg-dock'), objective: r('#vg-objective'), area: innerWidth * innerHeight }; });
-  check('Default village chrome stays compact at the edges', hud.header.height <= 70 && hud.dock.height <= 86 && hud.dock.width <= 520 && hud.objective.width <= 360 && (hud.header.width * hud.header.height + hud.dock.width * hud.dock.height + hud.objective.width * hud.objective.height) / hud.area < .23, hud);
+  check('Default village chrome stays compact at the edges', hud.header.height <= 70 && hud.dock.height <= 86 && hud.dock.width <= 520 && hud.objective.width <= 360 && (hud.header.width * hud.header.height + hud.dock.width * hud.dock.height + hud.objective.width * hud.objective.height) / hud.area < .23, hud, false);
 }
 async function layoutCheck(page) {
   const actual = await page.locator('#vg-panel').evaluate(panel => {
+    let scale = panel.currentCSSZoom; if (!Number.isFinite(scale)) { scale = 1; for (let node = panel; node; node = node.parentElement) scale *= parseFloat(getComputedStyle(node).zoom) || 1; }
     const visible = el => { const style = getComputedStyle(el); if (el.closest('[hidden]') || style.visibility === 'hidden' || style.display === 'none') return false; const b = el.getBoundingClientRect(); return b.width > 0 && b.height > 0; };
     const controls = [...panel.querySelectorAll('button,summary')].filter(visible), text = [...panel.querySelectorAll('p,b,strong,small,h2,h3,h4,summary,[role=tab]')].filter(visible);
     const targets = controls.map(el => { const b = el.getBoundingClientRect(); return { label: (el.getAttribute('aria-label') || el.textContent).trim().slice(0, 60), width: b.width, height: b.height }; });
-    const small = text.map(el => ({ text: el.textContent.trim().slice(0, 60), font: parseFloat(getComputedStyle(el).fontSize) })).filter(x => x.text && x.font < 12);
+    const small = text.map(el => ({ text: el.textContent.trim().slice(0, 60), cssFont: parseFloat(getComputedStyle(el).fontSize), physicalFont: parseFloat(getComputedStyle(el).fontSize) * scale })).filter(x => x.text && x.physicalFont < 12 - 1e-6);
     const body = panel.querySelector('#vg-panel-body'), b = panel.getBoundingClientRect();
-    return { overflow: body.scrollWidth - body.clientWidth, targets: targets.filter(t => t.width < 43.5 || t.height < 43.5), small, panel: { x: b.x, y: b.y, right: b.right, bottom: b.bottom, width: b.width, height: b.height }, viewport: { width: innerWidth, height: innerHeight } };
+    return { overflow: body.scrollWidth - body.clientWidth, targets: targets.filter(t => t.width < 44 - 1e-6 || t.height < 44 - 1e-6), small, panel: { x: b.x, y: b.y, right: b.right, bottom: b.bottom, width: b.width, height: b.height }, viewport: { width: innerWidth, height: innerHeight } };
   });
   return [actual.overflow <= 1 && !actual.targets.length && !actual.small.length && actual.panel.x >= -1 && actual.panel.y >= -1 && actual.panel.right <= actual.viewport.width + 1 && actual.panel.bottom <= actual.viewport.height + 1, actual];
 }
@@ -217,7 +219,17 @@ async function groundTextureCheck(page) {
         if (Math.min(wa, wb, wc) < -1e-7 || Math.max(wa, wb, wc) > 1.0000001) continue;
         const u = uv.getX(a) * wa + uv.getX(b) * wb + uv.getX(c) * wc, v = uv.getY(a) * wa + uv.getY(b) * wb + uv.getY(c) * wc, mapped = map.transformUv(map.offset.clone().set(u, v));
         const x = Math.max(0, Math.min(image.width - 1, Math.floor(mapped.x * image.width))), y = Math.max(0, Math.min(image.height - 1, Math.floor(mapped.y * image.height))), at = (y * image.width + x) * 4, rgba = Array.from(image.data.slice(at, at + 4));
-        found = { id, world: [worldX, logicalZ], local: [point.x, point.z], triangle: [a, b, c], barycentric: [wa, wb, wc], uv: [u, v], transformedUv: [mapped.x, mapped.y], pixel: [x, y], rgba, lawn, pass: lawn ? rgba[1] > rgba[0] && rgba[3] > 128 : rgba[3] === 0 }; break;
+        // A painted lawn deliberately includes dry flecks. Match the semantic
+        // area and normal filtering footprint rather than one nearest texel.
+        const totals = [0, 0, 0, 0]; let count = 0, covered = 0, green = 0;
+        for (let py = Math.max(0, y - 3); py <= Math.min(image.height - 1, y + 3); py++) for (let px = Math.max(0, x - 3); px <= Math.min(image.width - 1, x + 3); px++) {
+          const offset = (py * image.width + px) * 4, sample = Array.from(image.data.slice(offset, offset + 4)); count++;
+          sample.forEach((channel, i) => { totals[i] += channel; });
+          if (sample[3] > 128) { covered++; if (sample[1] > sample[0]) green++; }
+        }
+        const meanRgba = totals.map(total => total / count), coverageFraction = covered / count, greenFraction = green / count;
+        const neighbourhood = { size: [7, 7], count, meanRgba, coverageFraction, greenFraction, minimumLawnGreenFraction: .55, maximumTrailCoverageFraction: .05 };
+        found = { id, world: [worldX, logicalZ], local: [point.x, point.z], triangle: [a, b, c], barycentric: [wa, wb, wc], uv: [u, v], transformedUv: [mapped.x, mapped.y], pixel: [x, y], rgba, centreRgba: rgba, neighbourhood, lawn, pass: lawn ? greenFraction >= .55 && meanRgba[1] > meanRgba[0] : rgba[3] === 0 && coverageFraction <= .05 }; break;
       }
       samples.push(found ?? { id, world: [worldX, logicalZ], pass: false, reason: 'No rendered XZ triangle' });
     }
@@ -257,13 +269,14 @@ async function dialogueChoiceCheck(page) {
 }
 async function conversationLayoutCheck(page) {
   const actual = await page.locator('#village-dialogue').evaluate(panel => {
-    const root = panel.getBoundingClientRect(), scale = root.width / (panel.offsetWidth || root.width), visible = el => { const b = el.getBoundingClientRect(), style = getComputedStyle(el); return !el.closest('[hidden],.sr,.sr-only,[aria-hidden=true]') && style.visibility !== 'hidden' && style.display !== 'none' && b.width > 0 && b.height > 0; };
+    let scale = panel.currentCSSZoom; if (!Number.isFinite(scale)) { scale = 1; for (let node = panel; node; node = node.parentElement) scale *= parseFloat(getComputedStyle(node).zoom) || 1; }
+    const visible = el => { const b = el.getBoundingClientRect(), style = getComputedStyle(el); return !el.closest('[hidden],.sr,.sr-only,[aria-hidden=true]') && style.visibility !== 'hidden' && style.display !== 'none' && b.width > 0 && b.height > 0; };
     const box = el => { const b = el.getBoundingClientRect(); return { left: b.left, top: b.top, right: b.right, bottom: b.bottom, width: b.width, height: b.height }; };
     const surfaces = ['.village-dialogue-speech', '.village-dialogue-response', '.village-dialogue-back'].map(selector => ({ selector, el: panel.querySelector(selector) })).filter(({ el }) => el && visible(el)).map(({ selector, el }) => ({ selector, ...box(el) }));
     const controls = [...panel.querySelectorAll('button')].filter(visible).map(el => ({ label: (el.getAttribute('aria-label') || el.textContent).trim().slice(0, 60), ...box(el) }));
-    const small = [...panel.querySelectorAll('p,small,h2,h3,.village-reply-label,.village-reply-tone,.village-reply-note,.village-dialogue-role,.village-dialogue-page,.village-dialogue-bond span,.village-response-section-title,.village-dialogue-back>span,.village-dialogue-next-label')].filter(visible).map(el => ({ text: el.textContent.trim().slice(0, 70), cssFont: parseFloat(getComputedStyle(el).fontSize), physicalFont: parseFloat(getComputedStyle(el).fontSize) * scale })).filter(item => item.text && item.physicalFont < 11.8);
+    const small = [...panel.querySelectorAll('p,small,h2,h3,.village-reply-label,.village-reply-tone,.village-reply-note,.village-dialogue-role,.village-dialogue-page,.village-dialogue-bond span,.village-response-section-title,.village-dialogue-back>span,.village-dialogue-next-label')].filter(visible).map(el => ({ text: el.textContent.trim().slice(0, 70), cssFont: parseFloat(getComputedStyle(el).fontSize), physicalFont: parseFloat(getComputedStyle(el).fontSize) * scale })).filter(item => item.text && item.physicalFont < 12 - 1e-6);
     const overflow = ['.village-dialogue-body', '.village-dialogue-replies'].map(selector => { const el = panel.querySelector(selector); return { selector, amount: el ? el.scrollWidth - el.clientWidth : 0 }; });
-    const clipped = surfaces.filter(b => b.left < -1 || b.top < -1 || b.right > innerWidth + 1 || b.bottom > innerHeight + 1), tinyTargets = controls.filter(b => b.width < 43.5 || b.height < 43.5);
+    const clipped = surfaces.filter(b => b.left < -1 || b.top < -1 || b.right > innerWidth + 1 || b.bottom > innerHeight + 1), tinyTargets = controls.filter(b => b.width < 44 - 1e-6 || b.height < 44 - 1e-6);
     const speech = surfaces.find(b => b.selector === '.village-dialogue-speech'), replies = surfaces.find(b => b.selector === '.village-dialogue-response');
     const overlap = speech && replies ? Math.max(0, Math.min(speech.right, replies.right) - Math.max(speech.left, replies.left)) * Math.max(0, Math.min(speech.bottom, replies.bottom) - Math.max(speech.top, replies.top)) : 0;
     return { pass: !clipped.length && !tinyTargets.length && !small.length && overflow.every(x => x.amount <= 1) && overlap <= 1, viewport: [innerWidth, innerHeight], scale, surfaces, clipped, tinyTargets, small, overflow, overlap };
@@ -287,9 +300,9 @@ async function conversationScreens(page, check, frames, shot) {
     await page.setViewportSize({ width, height });
     if (name !== 'desktop') { await page.dispatchEvent('#village-dialogue .village-dialogue-person', 'pointerdown', { pointerType: 'touch', button: 0 }); await frames(); }
     await shot(`conversation-${name}.png`, { preserveInput: true });
-    check(`${width}×${height} conversation keeps text, controls and panels readable`, ...(await conversationLayoutCheck(page)));
+    check(`${width}×${height} conversation keeps text, controls and panels readable`, ...(await conversationLayoutCheck(page)), false);
     check(`${width}×${height} conversation retains the canonical reply order and availability`, ...(await dialogueChoiceCheck(page)));
-    if (name === 'desktop') check('Desktop selected reply preserves opaque gold and readable contrast', ...(await dialogueContrastCheck(page)));
+    if (name === 'desktop') check('Desktop selected reply preserves opaque gold and readable contrast', ...(await dialogueContrastCheck(page)), false);
   }
   await page.keyboard.press('Escape'); await page.waitForFunction(() => !document.querySelector('#village-dialogue:not([hidden])') && !PumpkinVoxel.village.blocked);
   check('Closing a conversation releases actual village control', await page.evaluate(() => PumpkinVoxel.village.active && !PumpkinVoxel.village.blocked));
