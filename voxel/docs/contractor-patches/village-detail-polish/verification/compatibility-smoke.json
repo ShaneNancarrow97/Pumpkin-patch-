@@ -1,0 +1,7 @@
+{
+  "checks": 54,
+  "passed": true,
+  "scope": "Unmodified smoke.mjs; draws held, native simulation and UI. Logic/UI compatibility only, not native rendering or performance.",
+  "htmlSha256": "3eee0d5a4a66c86b85b6f1fc07e670915377bfbe7710da1f304db77e5f347c02",
+  "logSha256": "610c160c0d526ba53b86914a347225ec68df04b00c95cb0ca98e0ac8524d0ac1"
+}
