@@ -6,6 +6,8 @@
 // pendulum. A `lamp` mark is where one of the shared lights may stand.
 import { seeded, vary } from "./voxels.js";
 import { C, lantern, hallShell, bookRow, pumpkin, jackOLantern, crow, shade } from "./village-models.js";
+export { baronManor, BARON_HALL } from './village-manor-interior.js';
+export { grannyCottage, GRANNY_HALL } from './village-granny-interior.js';
 
 const pick = (list, r) => list[(r() * list.length) | 0];
 const TAU = Math.PI * 2;
