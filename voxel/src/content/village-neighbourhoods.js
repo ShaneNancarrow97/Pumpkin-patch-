@@ -75,7 +75,7 @@ export const VILLAGE_NEIGHBOURHOODS = freeze([
       { points: [[0, 51], [0, 68], [1, 70], [11, 72], [19, 72]], width: 2.2 },
     ], lanterns: [{ x: -20, z: 53 }, { x: -1, z: 70 }, { x: 34, z: 51 }] }),
   cluster({ id: 'orchard-loop', kind: 'path', x: 0, z: 0, w: 0, d: 0, seed: 7809,
-    paths: [{ points: [[-21, 51], [-21, 66], [-12, 76], [11, 76], [17, 76], [17, 72], [19, 72]], width: 2.4 }] }),
+    paths: [{ points: [[-21, 51], [-18, 51], [-18, 56], [-21, 61], [-21, 66], [-12, 76], [11, 76], [17, 76], [17, 72], [19, 72]], width: 2.4 }] }),
   // The east is a lantern common: supper under a vine pergola, an open picnic and a florist's seasonal beds.
   cluster({ id: 'lantern-pergola', kind: 'pergola', x: 124, z: 64, w: 10, d: 8, seed: 7811,
     hedges: [{ x: 124, z: 70, w: 14, d: .55, h: .65 }, { x: 131, z: 66, w: .55, d: 8, h: .65 }] }),
@@ -94,7 +94,7 @@ export const VILLAGE_NEIGHBOURHOODS = freeze([
     ], lanterns: [{ x: 82, z: 61 }, { x: 110, z: 60 }, { x: 136, z: 54 }] }),
   cluster({ id: 'lantern-loop', kind: 'path', x: 0, z: 0, w: 0, d: 0, seed: 7819,
     // The northern bow and eastern bend keep existing fruit-tree trunks at (130,73) and (138,64)
-    // outside the paving, including its full walkable width, without moving either gathering landscape.
+    // outside the paving, including its full walkable width, while keeping existing resource sites in place.
     paths: [{ points: [[78, 58], [83, 72], [106, 74], [124, 74], [128, 76], [134, 76], [139, 72], [141, 67], [141, 61], [139, 56], [139, 53], [139, 50]], width: 2.4 }] }),
   // Small courts extend the residents' trades into the Green, clear of the door spurs and all chapter anchors.
   cluster({ id: 'library-reading-court', kind: 'reading', x: 33, z: 27, w: 8, d: 6, seed: 7821,
