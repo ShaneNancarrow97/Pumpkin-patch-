@@ -6,6 +6,8 @@ import { villageCellFree, villageWalkObstacles } from "./village-navigation.js";
 
 export const RESIDENT_WALK_RADIUS = .42;
 export const RESIDENT_WALK_SPEED = .72;
+const TALK_OFFSETS = Object.freeze([1.8, 1.1, .6]);
+const MAX_TALK_OFFSET = Math.max(...TALK_OFFSETS);
 const FACE = { south: 0, east: Math.PI / 2, north: Math.PI, west: -Math.PI / 2 };
 const stop = (x, z, face, wait, activity, extra = {}) => Object.freeze({ x: x * K, z: z * K, face, wait, activity, ...extra });
 const STALL = { x: FIXTURES.stall.x / K, z: FIXTURES.stall.z / K };
@@ -130,6 +132,13 @@ export function advanceResidentRoutine(state, routine, dt, { obstacles = village
   return routine;
 }
 
+// The prompt broad phase shares the exact candidate offsets below. Unknown
+// authored reaches stay unbounded so they cannot hide a nearby conversation.
+export function residentTalkOffsetBound(pose) {
+  if (!pose || (pose.reach != null && !Number.isFinite(pose.reach))) return Infinity;
+  return Math.max(MAX_TALK_OFFSET, Math.abs(pose.reach ?? 0));
+}
+
 // Follow the live figure, preferring the way it faces. Near furniture, try a
 // clear side instead of offering a conversation point inside a wall or planter.
 export function residentTalkPoint(state, pose, obstacles = villageWalkObstacles(state)) {
@@ -138,7 +147,7 @@ export function residentTalkPoint(state, pose, obstacles = villageWalkObstacles(
     const across = { x: pose.x + Math.sin(yaw) * pose.reach, z: pose.z - Math.cos(yaw) * pose.reach };
     if (villageCellFree(state, across.x, across.z, RESIDENT_WALK_RADIUS, obstacles)) return across;
   }
-  for (const reach of [1.8, 1.1, .6]) for (const turn of [0, Math.PI / 2, -Math.PI / 2, Math.PI, Math.PI / 4, -Math.PI / 4]) {
+  for (const reach of TALK_OFFSETS) for (const turn of [0, Math.PI / 2, -Math.PI / 2, Math.PI, Math.PI / 4, -Math.PI / 4]) {
     const point = { x: pose.x + Math.sin(yaw + turn) * reach, z: pose.z - Math.cos(yaw + turn) * reach };
     if (residentSegmentFree(state, pose, point, obstacles)) return point;
   }

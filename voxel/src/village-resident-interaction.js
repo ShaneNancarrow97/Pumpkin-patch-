@@ -6,12 +6,20 @@ import { FOLK_BY_ID, HOST_BY_ID } from "./content/village-folk.js";
 import { expansionAreaInfo } from "./rules/village-expansion-access.js";
 import { inTownSquare } from "./rules/village-spread.js";
 import { villageHallFree } from "./rules/village-navigation.js";
+import { residentTalkOffsetBound } from "./rules/village-resident-life.js";
 
 export const RESIDENT_TALK_REACH = 3;
 export const RESIDENT_HALL_TALK_REACH = 3.3;
 export const RESIDENT_REACH_EPSILON = 1e-6;
 const finitePoint = point => Number.isFinite(point?.x) && Number.isFinite(point?.z);
 export const withinResidentReach = (distance, reach) => Number.isFinite(distance) && distance <= reach + RESIDENT_REACH_EPSILON;
+
+// Every clear approach is within this offset of the current feet. Only reject
+// a prompt candidate when none of those approaches could reach the owner.
+export function mayBeWithinResidentReach(position, pose, reach = RESIDENT_TALK_REACH) {
+  if (!finitePoint(position) || !finitePoint(pose) || !Number.isFinite(reach)) return true;
+  return withinResidentReach(Math.hypot(pose.x - position.x, pose.z - position.z), reach + residentTalkOffsetBound(pose));
+}
 
 // Spread district rectangles can overlap the Green. Prefer the smallest
 // containing district; the added Square has its own name on the spread grid.
@@ -37,11 +45,21 @@ function hallApproach(plan) {
   return null;
 }
 
-export function resolveVillageResidentInteraction({ id, state, view, position, insides, doorNormal, targets = view.expansionTargets ?? [] }) {
+export function resolveVillageResidentInteraction(options) { return resolveResidentInteraction(options, false); }
+
+// World prompts need only nearby residents. Menus, navigation and transactions
+// retain the full live resolver, including destinations for faraway neighbours.
+export function resolveNearbyVillageResidentInteraction(options) {
+  const resident = resolveResidentInteraction(options, true);
+  return resident?.nearby ? resident : null;
+}
+
+function resolveResidentInteraction({ id, state, view, position, insides, doorNormal, targets = view.expansionTargets ?? [] }, nearbyOnly) {
   const person = FOLK_BY_ID[id] ?? HOST_BY_ID[id], entry = Object.entries(insides).find(([, plan]) => plan.host === id);
   const [homeId, homePlan] = entry ?? [], homeArea = homePlan?.area ?? person?.district ?? "green";
   const gate = expansionAreaInfo(state, homeArea), home = homePlan ? { id: homeId, name: homePlan.name, area: homeArea } : null;
   const currentHall = insides[view.inside], here = currentHall?.host === id;
+  if (nearbyOnly && !here && (view.inside || view.activeExpansionArea)) return null;
   let point = null, feet = null, inside = null, realm = "surface", live = false, area = homeArea, location = null;
 
   if (here) {
@@ -56,7 +74,9 @@ export function resolveVillageResidentInteraction({ id, state, view, position, i
     const target = targets.find(t => t.type === "village-folk" && t.id === id && !t.inside && !t.hallId && !t.area?.startsWith("cave"));
     const present = view.folk.people ? !!rendered?.root?.visible : !!target;
     if (present) {
-      const actual = view.folk.spotOf?.(id) ?? target, approach = view.folk.talkSpot?.(id);
+      const pose = view.folk.spotOf?.(id), actual = pose ?? target;
+      if (nearbyOnly && !mayBeWithinResidentReach(position, pose)) return null;
+      const approach = view.folk.talkSpot?.(id);
       if (finitePoint(actual) && finitePoint(approach)) {
         point = { x: approach.x, z: approach.z };
         feet = { ...actual, y: Number.isFinite(actual.y) ? actual.y : view.groundAt?.(actual.x, actual.z) ?? 0, folkId: id };
