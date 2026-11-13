@@ -2,7 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import { buildHorizon, SKY } from "../src/village-world.js";
-import { dressVillageDuskSky, VILLAGE_DUSK_SKY } from "../src/village-dusk-sky.js";
+import { dressVillageDuskSky, VILLAGE_DUSK_SKY, VILLAGE_DUSK_CLOUDS, VILLAGE_DUSK_COLOURS, villageDuskCloudCoverage } from "../src/village-dusk-sky.js";
+import { createFollowCameraRig, followCameraPose } from "../src/follow-camera.js";
+import { outsideLookLift } from "../src/village-camera.js";
 
 function skyFixture() {
   return new THREE.Mesh(new THREE.SphereGeometry(600, 8, 4), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false,
@@ -61,7 +63,7 @@ test("fixed clouds, sparse stars and three distant bands stay bounded in the exi
   assert.match(fragment, /if \(y < \.08\)/, "distant profiles are restricted to the low horizon");
   assert.match(fragment, /clamp\(colour, vec3\(0\.\), vec3\(0\.68\)\)/, "new sky light remains below the existing .9 bloom threshold");
   assert.match(fragment, /uniform vec3 top, middle, horizon, low, moon/); assert.match(fragment, /varying vec3 vDir/);
-  assert.match(mesh.material.customProgramCacheKey(), /village-dusk-sky-v1/);
+  assert.match(mesh.material.customProgramCacheKey(), /village-dusk-sky-v2/);
   assert.ok(VILLAGE_DUSK_SKY.maxLinearChannel < .9);
   layer.dispose(); release(mesh);
 });
@@ -105,7 +107,7 @@ test("disposal restores the exact prior shader contract without disposing the do
   material.customProgramCacheKey = oldKey; material.uniforms.villageDuskTime = oldTime; mesh.userData.villageDuskSky = oldData;
   let geometryDisposals = 0, materialDisposals = 0;
   mesh.geometry.addEventListener("dispose", () => geometryDisposals++); material.addEventListener("dispose", () => materialDisposals++);
-  const layer = dressVillageDuskSky(mesh); assert.equal(material.customProgramCacheKey(), "authored-dome|village-dusk-sky-v1");
+  const layer = dressVillageDuskSky(mesh); assert.equal(material.customProgramCacheKey(), "authored-dome|village-dusk-sky-v2");
   layer.tick(.1); layer.dispose(); layer.dispose();
   assert.equal(material.fragmentShader, original); assert.equal(material.customProgramCacheKey, oldKey); assert.equal(material.uniforms.villageDuskTime, oldTime); assert.equal(mesh.userData.villageDuskSky, oldData);
   assert.deepEqual([geometryDisposals, materialDisposals], [0, 0]);
@@ -116,4 +118,56 @@ test("invalid targets fail before changing unrelated meshes or materials", () =>
   const ordinary = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial()), material = ordinary.material;
   for (const target of [undefined, null, ordinary, new THREE.Group()]) assert.throws(() => dressVillageDuskSky(target), /existing horizon sky/);
   assert.equal(ordinary.material, material); assert.equal(ordinary.userData.villageDuskSky, undefined); release(ordinary);
+});
+
+test("the normal entry camera exposes the lower layered cloud banks instead of only the horizon tint", () => {
+  const rig = createFollowCameraRig({ minPitch: -.3, maxPitch: 1.1 }); rig.reset({ x: 87, y: 0, z: 7.5 }, { yaw: 0, pitch: .30, distance: 13 });
+  const pose = followCameraPose(rig.state), camera = new THREE.PerspectiveCamera(48, 1280 / 720, .2, 900); camera.position.set(pose.position.x, pose.position.y, pose.position.z); camera.lookAt(pose.target.x, pose.target.y + outsideLookLift(.30), pose.target.z); camera.updateMatrixWorld(true);
+  const elevations = [], coverage = [];
+  for (const y of [0, 20, 40, 60, 80]) for (const x of [-.75, -.4, 0, .4, .75]) {
+    const ray = new THREE.Vector3(x, 1 - y / 360, .5).unproject(camera).sub(camera.position).normalize(); elevations.push(ray.y);
+    // These independent density fixtures include the low .30–.49 range found
+    // in the rejected actual frame, not only conveniently dense cloud noise.
+    for (const noise of [.30, .36, .42, .49]) coverage.push(villageDuskCloudCoverage(ray.y, noise, noise + .03, noise - .04, noise + .06));
+  }
+  assert.ok(Math.min(...elevations) > .09 && Math.max(...elevations) < .20);
+  assert.ok(VILLAGE_DUSK_CLOUDS.lowerElevation >= .09 && VILLAGE_DUSK_CLOUDS.upperElevation < .25);
+  assert.ok(coverage.filter(value => value > .3).length / coverage.length > .6, "most exposed entry sky retains a definite bank even at the observed sparse densities");
+  assert.ok(Math.max(...coverage) - Math.min(...coverage) > .35, "separate bodies and open sky retain real variation");
+});
+
+test("cloud bodies stay darker than the exposed cool-plum sky and warm rims cannot flatten their contrast", () => {
+  const luminance = c => c[0] * .2126 + c[1] * .7152 + c[2] * .0722, colours = VILLAGE_DUSK_COLOURS;
+  assert.ok(colours.upper[2] > colours.upper[0] * 2 && colours.upper[1] > colours.upper[0] * .65, "upper dusk is cool plum with a restrained magenta component");
+  assert.ok(luminance(colours.cloudShadow) < luminance(colours.upper) * .55); assert.ok(luminance(colours.cloudBody) < luminance(colours.horizon) * .65);
+  const mesh = skyFixture(), layer = dressVillageDuskSky(mesh);
+  assert.match(mesh.material.fragmentShader, /colour = mix\(colour, body, cloud \* \.96\)/);
+  assert.match(mesh.material.fragmentShader, /colour = mix\(colour, rim, litEdge \* \.10\)/);
+  assert.doesNotMatch(mesh.material.fragmentShader, /colour \+= rim \* edge/, "rim brightness cannot cancel the body across a broad noise threshold");
+  assert.match(mesh.material.fragmentShader, /smoothstep\(\.004, \.065, abs\(y \+ \.002\)\)/, "rose warmth stays in a narrow true-horizon strip"); layer.dispose(); release(mesh);
+});
+
+test("the actual entrance's exposed sky probes retain strong cloud bodies and clear gaps", () => {
+  // Evenly spaced rays from the1,594 exposed-sky samples in the rejected entry
+  // screenshot, with their time0 float32 noise probes. Keeping the same mask
+  // avoids accidentally dropping corrected dark clouds from a colour filter.
+  // Rows: direction.y, broad, billows, folds, fine. This is a CPU coverage
+  // regression; normal GPU screenshots remain the visual acceptance check.
+  const probes = [
+    [.17336612, .19083402, .47125879, .85589116, .11427799], [.19126648, .16696950, .88865201, .58029991, .52774313],
+    [.19419785, .35144012, .67786906, .77193988, .44756248], [.17530023, .43945296, .37806276, .78213255, .72735906],
+    [.16582782, .23871133, .53794660, .57938061, .22206525], [.18503952, .14372517, .82320497, .38836590, .40101931],
+    [.19155590, .29494963, .66595686, .27744546, .42013864], [.17499144, .45106299, .40183058, .58728100, .69567715],
+    [.15736071, .30769984, .61990224, .43713167, .54683649], [.18020668, .13304998, .78466613, .30351125, .21011241],
+    [.18732781, .29753028, .67614526, .35407655, .40651271], [.17064038, .45047927, .41733022, .54608865, .68351872],
+    [.16145566, .20218532, .53424898, .72567791, .26314340], [.17894275, .14846809, .89077776, .23159208, .41477056],
+    [.18018756, .37247379, .60842955, .96198683, .45171413], [.16176501, .43900011, .43493543, .73932603, .57689880],
+    [.17474604, .14167183, .88703121, .12699153, .28888532], [.17117987, .40057339, .55058061, .21831458, .53864173],
+    [.17301243, .16873350, .86733113, .67927803, .82990601], [.16020938, .10242296, .62872916, .27423522, .71667363],
+    [.16347948, .38393068, .55685863, .28241159, .50087142], [.16581885, .18259474, .74201574, .72567343, .62263634],
+    [.15922333, .34911479, .58162623, .96645333, .89010751], [.15002958, .34965907, .55731861, .81247641, .24052277],
+  ];
+  const coverage = probes.map(p => villageDuskCloudCoverage(...p)).sort((a, b) => a - b);
+  assert.ok(coverage[11] > .3, "the rejected .235-height bank had a median of only .051 here");
+  assert.ok(coverage.filter(value => value < .1).length >= 3, "layered clouds retain open sky instead of becoming a flat overcast sheet");
 });

@@ -5,6 +5,24 @@ export const VILLAGE_DUSK_SKY = Object.freeze({
   addedMeshes: 0, addedDrawCalls: 0, addedLights: 0, addedTextures: 0, addedPasses: 0,
   maxLinearChannel: .68, maxTimeStep: .25,
 });
+export const VILLAGE_DUSK_CLOUDS = Object.freeze({ lowerElevation: .108, lowerWarp: .10, lowerCore: .018, lowerEdge: .070,
+  upperElevation: .205, upperWarp: .14, upperCore: .025, upperEdge: .095, upperStrength: .82,
+  densityFrom: .25, densityTo: .55, minimumDensity: .48 });
+export const VILLAGE_DUSK_COLOURS = Object.freeze({
+  zenith: Object.freeze([.018, .015, .045]), upper: Object.freeze([.045, .032, .105]), horizon: Object.freeze([.115, .052, .10]), below: Object.freeze([.032, .022, .055]),
+  cloudShadow: Object.freeze([.015, .016, .038]), cloudBody: Object.freeze([.045, .034, .075]), moonRim: Object.freeze([.10, .083, .15]), warmRim: Object.freeze([.14, .068, .092]),
+});
+const C = VILLAGE_DUSK_CLOUDS, colour = key => `vec3(${VILLAGE_DUSK_COLOURS[key].join(", ")})`;
+const smooth = (a, b, value) => { const t = Math.max(0, Math.min(1, (value - a) / (b - a))); return t * t * (3 - 2 * t); };
+// Analytical coverage reference for the camera-cone regression. The shader
+// uses these same bank dimensions and existing four noise samples; no CPU work
+// is added to a drawn frame. A low camera must see depth, not just a rose base.
+export function villageDuskCloudCoverage(y, broad, billows, folds, fine) {
+  const lowerCentre = C.lowerElevation + (broad - .45) * C.lowerWarp, upperCentre = C.upperElevation + (billows - .45) * C.upperWarp;
+  const lower = 1 - smooth(C.lowerCore, C.lowerEdge, Math.abs(y - lowerCentre)), upper = 1 - smooth(C.upperCore, C.upperEdge, Math.abs(y - upperCentre));
+  const density = broad * .55 + billows * .25 + folds * .14 + fine * .06, envelope = smooth(-.015, .055, y) * (1 - smooth(.58, .92, y));
+  return Math.max(lower, upper * C.upperStrength) * (C.minimumDensity + (1 - C.minimumDensity) * smooth(C.densityFrom, C.densityTo, density)) * envelope;
+}
 const dressed = new WeakMap();
 
 const FRAGMENT = `
@@ -24,17 +42,17 @@ const FRAGMENT = `
   void main() {
     vec3 d = normalize(vDir); float y = d.y;
     // Keep the authored colour uniforms live beneath a richer violet dusk.
-    vec3 zenith = mix(top, vec3(.034, .014, .078), .82);
-    vec3 upper = mix(middle, vec3(.14, .044, .22), .78);
-    vec3 dusk = mix(horizon, vec3(.37, .11, .20), .82);
-    vec3 below = mix(low, vec3(.065, .028, .11), .76);
+    vec3 zenith = mix(top, ${colour("zenith")}, .82);
+    vec3 upper = mix(middle, ${colour("upper")}, .78);
+    vec3 dusk = mix(horizon, ${colour("horizon")}, .82);
+    vec3 below = mix(low, ${colour("below")}, .76);
     vec3 colour = y > .28 ? mix(upper, zenith, smoothstep(.28, .94, y))
       : y > 0. ? mix(dusk, upper, smoothstep(0., .28, y))
       : mix(dusk, below, smoothstep(0., .3, -y));
     float warmFacing = max(dot(d.xz, vec2(-.77, .638)), 0.);
     warmFacing *= warmFacing; warmFacing *= warmFacing;
-    float horizonGlow = 1. - smoothstep(.015, .23, abs(y - .018));
-    colour += vec3(.19, .085, .022) * horizonGlow * warmFacing;
+    float horizonGlow = 1. - smoothstep(.004, .065, abs(y + .002));
+    colour += vec3(.09, .042, .015) * horizonGlow * warmFacing;
 
     float cloud = 0.;
     if (y > -.015 && y < .94) {
@@ -48,15 +66,23 @@ const FRAGMENT = `
       float folds = duskNoise(q * 2.87 - vec2(4.3, 6.8));
       float fine = duskNoise(q * 5.7 + vec2(2.2, 9.4));
       float density = broad * .55 + billows * .25 + folds * .14 + fine * .06;
-      float bank = smoothstep(-.015, .07, y) * (1. - smoothstep(.58, .92, y));
-      cloud = smoothstep(.39, .66, density) * bank;
-      float edge = smoothstep(.39, .49, density) * (1. - smoothstep(.49, .66, density));
+      float lowerCentre = ${C.lowerElevation} + (broad - .45) * ${C.lowerWarp};
+      float upperCentre = ${C.upperElevation} + (billows - .45) * ${C.upperWarp};
+      float lowerBank = 1. - smoothstep(${C.lowerCore}, ${C.lowerEdge}, abs(y - lowerCentre));
+      float upperBank = 1. - smoothstep(${C.upperCore}, ${C.upperEdge}, abs(y - upperCentre));
+      float bank = smoothstep(-.015, .055, y) * (1. - smoothstep(.58, .92, y));
+      cloud = max(lowerBank, upperBank * ${C.upperStrength}) * (${C.minimumDensity} + ${1 - C.minimumDensity} * smoothstep(${C.densityFrom}, ${C.densityTo}, density)) * bank;
       float relief = clamp((billows - broad) * 2.7 + .45, 0., 1.);
-      vec3 shadow = mix(middle, vec3(.055, .018, .095), .88);
-      vec3 rim = mix(vec3(.24, .075, .20), vec3(.30, .13, .17), warmFacing);
-      vec3 body = mix(shadow, rim, relief * (.28 + .48 * horizonGlow));
-      colour = mix(colour, body, cloud * .86);
-      colour += rim * edge * bank * .16 * (.35 + .65 * horizonGlow);
+      vec3 shadow = mix(middle, ${colour("cloudShadow")}, .92);
+      vec3 rim = mix(${colour("moonRim")}, ${colour("warmRim")}, warmFacing);
+      vec3 body = mix(shadow, ${colour("cloudBody")}, relief * .56);
+      colour = mix(colour, body, cloud * .96);
+      // Only the upper lips catch light. A broad additive rim would cancel
+      // the very cloud shadow that gives a low-angle entrance view its depth.
+      float lowerLip = smoothstep(.018, .045, y - lowerCentre) * (1. - smoothstep(.045, .075, y - lowerCentre));
+      float upperLip = smoothstep(.025, .065, y - upperCentre) * (1. - smoothstep(.065, .105, y - upperCentre));
+      float litEdge = max(lowerLip, upperLip) * (.35 + .65 * fine) * bank;
+      colour = mix(colour, rim, litEdge * .10);
       float veil = smoothstep(.54, .77, billows) * smoothstep(.28, .55, y) * (1. - smoothstep(.72, .94, y));
       colour = mix(colour, rim, veil * .14);
     }
@@ -99,7 +125,7 @@ export function dressVillageDuskSky(mesh) {
   const key = material.customProgramCacheKey(), time = { value: 0 }, stats = { ...VILLAGE_DUSK_SKY, time: 0 };
   material.uniforms.villageDuskTime = time;
   material.fragmentShader = FRAGMENT;
-  material.customProgramCacheKey = () => `${key}|village-dusk-sky-v1`;
+  material.customProgramCacheKey = () => `${key}|village-dusk-sky-v2`;
   material.needsUpdate = true;
   mesh.userData.villageDuskSky = stats;
   let disposed = false;
