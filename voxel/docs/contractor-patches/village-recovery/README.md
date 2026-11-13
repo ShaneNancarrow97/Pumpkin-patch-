@@ -2,6 +2,12 @@
 
 This branch is stacked on `contractor/village-ui-couture` at `2482170`. Claude’s `voxel-reference` checkout is separate; it was not edited. This pass first addresses the reported village lag, Natalie’s frozen walk and bright sky, then completes the shared farm/village cosmetic keepsakes. Save version remains **20**.
 
+## Verified downloads
+
+[Offline HTML](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5c5707e3975d123eab7298c1d286f191b1caba83/Pumpkin-Patch-Mothlight-Recovery.html) · [ZIP](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5c5707e3975d123eab7298c1d286f191b1caba83/Pumpkin-Patch-Mothlight-Recovery.zip) · [Release receipt](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/5c5707e3975d123eab7298c1d286f191b1caba83/release-receipt.json)
+
+All three public URLs returned HTTP 200 and matched their local byte counts and SHA-256 hashes. See [public download verification](verification/public-downloads.json). The immutable package was built from runtime `dd92061`; later source commits contain QA, handover and delivery records only.
+
 ## Rendering and movement
 
 Explicit WebGPU sprite samplers previously retained the atlas they were built with. Changing `material.map` alone did not update those TSL texture nodes. Colour, emissive, rim and shadow samples now follow the live atlas without rebuilding their material. The source movement, authored leg frames, distances and actions remain authoritative in both renderers.
