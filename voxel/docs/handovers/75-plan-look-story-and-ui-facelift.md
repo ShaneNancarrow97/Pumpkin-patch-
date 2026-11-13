@@ -1,4 +1,4 @@
-# 75 — Plan: a better look, a better story, a UI facelift
+# 75 — Plan: a better look, a better story, a UI facelift, a voxel upgrade
 
 Status: **plan for Codex**. Nothing here is built yet. Read handovers 73 and 74 first, then this. Each work
 package (WP) below is sized to be one `contractor/*` branch and one PR into `voxel-reference`. Do them in the
@@ -273,6 +273,98 @@ wall of text.
 
 ---
 
+## D. Voxel upgrade: shapes, curves, detail and world-building
+
+Why everything looks boxy: every model is axis-aligned boxes in one `InstancedMesh` of `BoxGeometry`
+(`src/voxels.js` `Voxels.box/block`), finished by the block shader in `src/voxel-finish.js`. Roofs are worst:
+`cottage()` (`src/village-models.js` ~line 431) lays `steps = 12` box courses per side, each shorter than the one
+below, so every roof is a staircase with a flat underside. Trees are stacked cubes, the ground is flat sheets,
+fences are straight rows.
+
+The aim is the "storybook voxel" look: still clearly built from blocks up close, but with silhouettes that
+curve: swept and sagging roofs, rounded canopies, crooked fences, rolling ground.
+
+### D1. More shapes than the box — *the foundation, do it first*
+- Add a small set of shape primitives to `Voxels`, each its own `InstancedMesh` (one draw call per shape per
+  batch, same colour-per-instance and the same finish shader):
+  - **wedge** (half-box cut on the diagonal) for roof pitches, buttresses and steps that ramp;
+  - **quarter-round** and **half-round** (an 8-segment cylinder slice) for bellcast eaves, thatch rolls, arches,
+    barrel vaults, cushions and barrels;
+  - **cone/pyramid** (4- and 8-sided) for turrets, spires, haystacks and finials;
+  - **bevelled box** (chamfered edges, 0.04) for beams, posts, stones and furniture, so edges catch the light.
+- API: `v.shape("wedge", x, y, z, w, h, d, colour, { rot })` with a yaw in quarter turns plus an optional
+  pitch, so a wedge can lie on any face. Keep `box()` unchanged; nothing existing has to move.
+- `voxel-finish.js`: make sure the block pattern follows a sloped face (use the face normal to pick the two axes
+  the blocks run along) so tiles run *down* the roof, not across it.
+- Budgets: a new test counts draw calls per built model; shapes add at most four meshes per batch.
+- Tests: each shape's bounding box equals the box it was asked for; a rotated wedge still sits inside its box.
+
+### D2. Curved roofs
+Rewrite the roof part of `cottage()` as a `roof(f, plan)` helper that takes a profile and builds smooth pitches
+from wedges plus thin tile courses laid *on* the slope (each tile a thin bevelled box tilted to the pitch angle),
+so the roof is one continuous surface with tiles on it, not stairs.
+- **Profiles**, picked per building in content (`roofStyle`):
+  - `swept`: bellcast eaves that flare out at the bottom (the slope's angle eases from 50° to 25° over the last
+    third), the main storybook look for cottages;
+  - `sagging`: a ridge that dips a little in the middle and pitches that bow, for old houses (Granny's, the
+    Velvet Bat);
+  - `thatch`: thick, rounded with half-round rolls at ridge and eaves and a scalloped edge, for the Copse;
+  - `catslide`: one side swept long and low over a lean-to (the workshop, Rowan's stall);
+  - `turret`: an 8-sided cone with a flared skirt and a finial, for the manor and the Moonclock's lantern;
+  - `hipped`: four pitches, for the tavern and the Square's market hall if one is added.
+- Details on every roof: bargeboards that follow the curve, ridge tiles with a finial or a moth, crooked
+  chimneys with pots and a cowl, moss in patches on north faces, a few slipped or missing tiles on shabby homes,
+  snow/leaf caps by season (thin layer of the same profile in white/orange).
+- Keep the dormer, chimney marks (`v.mark("chimney"…)`) and the eave/plaster join the current code has.
+- Accept: side-by-side screenshots of every house with old and new roofs; no visible steps in silhouette at the
+  play camera; box/mesh budgets pass; the tear scan still reads zero (roofs near the tree use the EAVES rule).
+
+### D3. Organic forms: trees, hedges, rocks and ground
+- **Trees**: canopies built as clusters of overlapping rounded blobs (bevelled boxes and half-rounds, three sizes,
+  jittered), with a darker core and lighter top. Trunks taper and bend; roots flare into the ground. The Moth Tree
+  gets hanging lanterns on curving branches. Give each species a silhouette: round apple, tall poplar, weeping
+  willow by water, gnarled oak in the Copse, wind-bent hawthorn on the Moor.
+- **Hedges and bushes**: rounded tops, uneven, with flowers in clusters.
+- **Rocks**: bevelled, stacked at angles, moss on top faces.
+- **Ground**: gentle rises and dips outside the paths (the ground already has a height function, `groundHeight`;
+  give it low-frequency noise away from roads, plots and the Square), banks along streams, worn hollows by doors.
+  Paths become cobbles or flagstones with mossy gaps and a soft edge into the grass, not a hard strip.
+
+### D4. Hand-made irregularity
+Nothing in a storybook village is straight. A shared `wobble(r)` helper adds small seeded leans and offsets:
+fences and posts lean ±3°, walls bow a little, shutters hang slightly open at different angles, roof ridges
+aren't perfectly level, window frames are a touch off-square. Keep the seed per building so it's stable between
+loads.
+
+### D5. A finer detail layer
+- Close-up objects (doors, windows, signs, stalls, lamps, props) get a detail pass at half the current block size:
+  carved door panels, iron hinges and studs, leaded window cames, window boxes with trailing flowers, shop signs
+  with painted lettering (canvas texture on a plank), hanging baskets, lamp brackets with scrolls.
+- Bake a cheap ambient occlusion per instance: darken a box's colour where it touches or sits under another
+  (computed once at build from neighbour overlap), so joins and undersides read without an AO pass.
+- Window glow: deep reveals (the glass set back into the wall), a curtain shape and a warm interior card behind.
+
+### D6. World-building you can see
+Every district should tell you who lives there and what happened, without a word of dialogue.
+- **Lived-in clutter** round homes: log piles, washing lines, boots by doors, a bicycle, pumpkins on steps, a
+  sleeping cat, a half-finished project in the garden. Each resident's clutter matches their voice sheet (B5).
+- **Signs and notices**: a notice board on the Square with real notices (market days, lost cat, Lantern Night),
+  district signposts with carved names and distances, shop signs.
+- **History in the landscape** (ties to the Stopped Hour, B2): old lamp posts that are dark and overgrown until
+  their district is restored; a ruined watchtower on the Moor; the Lamplighter's first lamp in the Copse; carved
+  moth stones marking the old boundaries; a dry fountain that fills again.
+- **Things that connect places**: a stream running from the Moor through the village to the lake, with a stone
+  bridge, a footbridge and stepping stones; a cart track to the Quarry with ruts; a hedge-lined lane to the Copse.
+- **Edges and skyline**: hills, a far ridge and silhouetted trees past every edge of the playable ground (layered
+  cards, darker and bluer with distance), a church-like spire or windmill on the horizon to steer by.
+- **Wildlife**: ducks on the pond, rabbits on the lawns at dusk, owls in the Copse, sheep on the Moor, bats at night.
+
+### D7. Hero landmarks
+Rebuild the five things the player will remember with the new shapes, one at a time, each with screenshots and a
+budget check: the Moth Tree (curving boughs, lantern canopy), the Moonclock (turreted gatehouse, curved arch,
+moth weathervane), the Velvet Bat (sagging hipped roof, bay window, hanging sign), Granny's house (thatch,
+crooked chimney, overgrown garden) and the manor (turrets, swept roofs, a glasshouse).
+
 ## Roadmap (suggested order)
 
 | Step | Packages | Why first |
@@ -281,7 +373,9 @@ wall of text.
 | 2 | C2 HUD/tracker, A1 grading, A4 contact shadows, B5 Mabel/Tansy fix | Biggest felt change per hour of work |
 | 3 | B2 spine doc → Claude Code review, B9 lint | Agree the story before writing content |
 | 4 | C4 dialogue, C5 journal, C6 people | The screens players see most |
-| 5 | A2 grass, A3 water, A5 light, A6 buildings | The look pass proper |
+| 4b | D1 shape primitives, D2 curved roofs (cottages first), D4 wobble | The single biggest visual upgrade |
+| 5 | A2 grass, A3 water, A5 light, A6 buildings with D5 detail, D3 trees and ground | The look pass proper |
+| 5b | D7 hero landmarks, D6 world-building (district by district, with the story acts) | Make it a place |
 | 6 | B3 templates, B4 puzzle families (2 at a time), B5 arcs, B7 gates | Content rewrite, act by act |
 | 7 | C3 drawn map, C7 trays, A7 square flanks + life, B8 market/requests | New places and systems |
 | 8 | A8 camera moments, B6 world changes, Act III Moonclock + Lantern Night | The payoff |
