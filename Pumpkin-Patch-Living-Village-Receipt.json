@@ -1,0 +1,40 @@
+{
+  "name": "Pumpkin Patch \u2014 Living Mothlight",
+  "source_commit": "96b40832a0d29229820526d2761d27b170f3bf02",
+  "runtime_source_commit": "1b53b2262a9abbf2e92ee355b6b5891f9854507d",
+  "source_branch": "contractor/village-clarity",
+  "base_clarity_commit": "ac16208b9dcdf4d0d22da67c8b0b2aab6c968487",
+  "save_version": 20,
+  "html": {
+    "bytes": 60533183,
+    "sha256": "a2885c22f16f1cb65d84a2cb6460dda79c34d92297fc2c6d1382f4b50b8cd96d"
+  },
+  "layout": {
+    "clusters": 22,
+    "fruit_trees": 28,
+    "solid_footprints": 59,
+    "boxes": 6232,
+    "new_meshes": 3,
+    "added_lights": 0,
+    "existing_point_light_pool": 8
+  },
+  "validation": {
+    "full_tests_passed": 1282,
+    "final_affected_tests_passed": 26,
+    "exact_normal_render_browser_checks": 8,
+    "exact_compatibility_checks": 54,
+    "resource_positions_preserved": 676,
+    "old_and_new_routes_walkable": true,
+    "district_gates_preserved": true,
+    "existing_decor_preserved": true
+  },
+  "limitations": [
+    "Software WebGL and functional input checks are not physical device FPS or PS5 Bluetooth certification.",
+    "Preview images use a declared progressed test farm.",
+    "No APK was rebuilt."
+  ],
+  "zip": {
+    "bytes": 48048795,
+    "sha256": "ea4370ef76f068b4e5c4a839f6a9f68d5ce1a7493b22df602eb43130c7a4ad1d"
+  }
+}

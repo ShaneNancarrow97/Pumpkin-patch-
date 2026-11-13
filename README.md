@@ -1,4 +1,16 @@
-# Pumpkin Patch — voxel world atlas and village clarity
+# Pumpkin Patch — Living Mothlight
+
+[Download game ZIP](Pumpkin-Patch-Living-Village.zip?raw=1) · [Standalone HTML](Pumpkin-Patch-Living-Village.html?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/96b40832a0d29229820526d2761d27b170f3bf02/voxel/docs/contractor-patches/village-cohesion/README.md) · [Review PR](https://github.com/ShaneNancarrow97/Pumpkin-patch-/pull/3)
+
+The village's open lawns are now connected orchard and garden neighbourhoods:28 fruit trees, pumpkin and herb beds, a roofed lantern pavilion, picnic areas, Elowen's reading court, Rowan's workyard and planted meadow edges. Walk the full eastern town park; quiet cosmetic visitors share the garden paths. The atlas captures this actual scenery.
+
+22 clusters use three scenery meshes and no additional lights. All676 gathering positions, district gates and existing owned decoration remain compatible; save version20. Full suite1282 passes, final affected checks26 pass, and the exact HTML passes eight normal-render village checks plus54 compatibility checks. [Exact-byte receipt](Pumpkin-Patch-Living-Village-Receipt.json).
+
+The ZIP includes index.html, handover, verification and actual world/ground-level previews. Source `96b40832a0d29229820526d2761d27b170f3bf02` on `contractor/village-clarity`. Export/import through Settings to move an old farm between browser/file origins. The older APK below predates this update.
+
+---
+
+## Previous release — voxel world atlas and village clarity
 
 [Download HTML](Pumpkin-Patch-Village-Clarity.html?raw=1) · [Download ZIP](Pumpkin-Patch-Village-Clarity.zip?raw=1) · [Claude handover](https://github.com/ShaneNancarrow97/Pumpkin-patch-/blob/ac16208b9dcdf4d0d22da67c8b0b2aab6c968487/voxel/docs/contractor-patches/village-clarity/README.md) · [Review PR](https://github.com/ShaneNancarrow97/Pumpkin-patch-/pull/3)
 
