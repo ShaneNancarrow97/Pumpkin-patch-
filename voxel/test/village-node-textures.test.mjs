@@ -65,3 +65,26 @@ test("empty samplers remain empty and unknown compressed formats fail explicitly
   assert.throws(() => bridge.resolve(new GL.Texture()), /disposed/);
   source.dispose();
 });
+
+test("pending source textures keep version zero until decoded data is marked ready", () => {
+  const source = new GL.Texture(), bridge = createVillageNodeTextures(), wrapper = bridge.resolve(source);
+  assert.equal(source.version, 0); assert.equal(wrapper.version, 0);
+  bridge.sync(); assert.equal(wrapper.version, 0);
+  assert.equal(wrapper.userData.villageTextureSource.ready, false);
+  source.image = { width: 32, height: 16, complete: true }; source.needsUpdate = true;
+  bridge.sync(); assert.equal(wrapper.version, 1); assert.equal(wrapper.image, source.image);
+  assert.deepEqual(wrapper.userData.villageTextureSource, { uuid: source.uuid, name: source.name, type: "Texture", sourceVersion: 1, width: 32, height: 16, ready: true });
+  bridge.dispose(); source.dispose();
+});
+
+test("pending image replacements preserve the last valid GPU image and reject invalid decoded sizes by name", () => {
+  const first = { width: 32, height: 16, complete: true }, source = new GL.Texture(first); source.name = "resident-sheet"; source.needsUpdate = true;
+  const bridge = createVillageNodeTextures(), wrapper = bridge.resolve(source), version = wrapper.version;
+  source.image = { width: 0, height: 0, complete: false }; source.needsUpdate = true;
+  bridge.sync(); assert.equal(wrapper.image, first); assert.equal(wrapper.version, version);
+  source.image = { width: 64, height: 32, complete: true }; source.needsUpdate = true;
+  bridge.sync(); assert.equal(wrapper.image, source.image); assert.ok(wrapper.version > version);
+  source.image = {}; source.needsUpdate = true;
+  assert.throws(() => bridge.sync(), /resident-sheet.*invalid decoded dimensions undefinedxundefined/);
+  bridge.dispose(); source.dispose();
+});
