@@ -5,10 +5,15 @@
 import { seeded, vary } from "./voxels.js";
 import { C, shade, canopyTree, lantern, mothRelief } from "./village-models.js";
 
-export const VILLAGE_ENTRANCE_BUDGET = Object.freeze({ boxes: 750, lights: 0, textureBytes: 0 });
+export const VILLAGE_ENTRANCE_BUDGET = Object.freeze({ boxes: 1500, lights: 0, textureBytes: 0 });
+export const VILLAGE_FORECOURT_BUDGET = Object.freeze({ boxes: 700, lights: 0, maxHeight: .7 });
 export const VILLAGE_ENTRANCE_PLANTING = Object.freeze([
   Object.freeze({ x0: 50.8, z0: 2.7, x1: 53.5, z1: 5.8 }),
   Object.freeze({ x0: 62.5, z0: 2.7, x1: 65.1, z1: 5.8 }),
+]);
+export const VILLAGE_FORECOURT_AREAS = Object.freeze([
+  Object.freeze({ x0: 49.4, z0: -14, x1: 54.8, z1: 0 }),
+  Object.freeze({ x0: 61.2, z0: -14, x1: 66.8, z1: 0 }),
 ]);
 
 function banner(f, x, z, side) {
@@ -104,6 +109,57 @@ export function villageEntrance(f) {
     for (let i = 0; i < 27; i++) {
       const x = area.x0 + .15 + r() * (area.x1 - area.x0 - .3), z = area.z0 + .15 + r() * (area.z1 - area.z0 - .3), wide = i % 2 === 0;
       f.block(x, .012, z, wide ? .17 : .075, .018, wide ? .075 : .17, [0xa85c32, 0xc48a3c, 0x774137, 0xd3a454][i % 4]);
+    }
+  }
+  villageForecourt(f);
+}
+
+// Soft, irregular islands fill the nearfield seen on the approach. The forage
+// cross-path at z=-11 remains open across both sides; nothing here becomes a
+// new hedge, raised bed or collision surface. A separate seed keeps the gate
+// and every existing village random draw unchanged.
+export function villageForecourt(f) {
+  const r = seeded(75402), moss = [0x536348, 0x6c7951, 0x455944, 0x78845a];
+  const clusters = [
+    [52.6, -13.2, 1.5, .3], [51.8, -8, 1.65, .9], [53, -4.65, 1.25, 1.7], [52.4, -1.15, 1.6, .75],
+    [63.7, -13.2, 1.5, .3], [64.5, -8, 1.65, .9], [62.9, -4.65, 1.15, 1.7], [64, -1.15, 1.65, .75],
+  ];
+  const point = (x, z, rx, rz, i, n, inset = .7) => {
+    const a = i * 2.399963 + r() * .35, d = Math.sqrt((i + .35) / n) * inset;
+    return [x + Math.cos(a) * rx * d, z + Math.sin(a) * rz * d];
+  };
+  for (const [x, z, rx, rz] of clusters) {
+    const pads = [];
+    // Overlapping low, uneven moss cushions leave broken earth edges, with no
+    // rectangular bed outline. Each is small and confined to this flat meadow.
+    for (let i = 0; i < 13; i++) {
+      const [px, pz] = point(x, z, rx, rz, i, 13);
+      const w = .7 + r() * .45, h = .035 + r() * .025, d = .45 + r() * .4;
+      pads.push({ x: px, z: pz, w, d, top: .008 + h });
+      f.block(px, .008, pz, w, h, d, vary(moss[i % 4], .06, r));
+    }
+    for (let i = 0; i < 8; i++) {
+      const [px, pz] = point(x, z, rx, rz, i, 8), green = moss[(i + 1) % 4];
+      // Small sage/thyme rosettes spread sideways, below a walking boot.
+      f.block(px, .06, pz, .4, .05, .13, green);
+      f.block(px, .08, pz, .13, .05, .38, shade(green, 1.1));
+      f.block(px + .12, .12, pz + .09, .19, .045, .16, shade(green, 1.17));
+      f.block(px - .1, .11, pz - .07, .18, .04, .14, shade(green, .9));
+    }
+    for (let i = 0; i < 4; i++) {
+      const [px, pz] = point(x, z, rx, rz, i, 4, .65);
+      fineFlower(f, px, pz, i % 3, r);
+    }
+    for (let i = 0; i < 9; i++) {
+      const [px, pz] = point(x, z, rx, rz, i, 9, .9);
+      const top = pads.reduce((height, p) => Math.abs(px - p.x) < p.w / 2 && Math.abs(pz - p.z) < p.d / 2 ? Math.max(height, p.top) : height, 0);
+      f.block(px, top + .008, pz, i % 2 ? .18 : .08, .018, i % 2 ? .08 : .18, [0xb37b3d, 0xd3a250, 0x89523b][i % 3]);
+    }
+    for (let i = 0; i < 2; i++) {
+      const [px, pz] = point(x, z, rx, rz, i, 2, .55);
+      f.block(px, .015, pz, .3, .08, .24, C.stoneDark[i]);
+      f.block(px - .04, .095, pz - .035, .17, .025, .13, moss[i]);
+      f.block(px + .08, .09, pz + .05, .08, .025, .07, moss[i + 1]);
     }
   }
 }

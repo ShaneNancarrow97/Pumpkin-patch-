@@ -3,14 +3,14 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import * as THREE from "three";
 import * as M from "../src/model.js";
-import { ARRIVAL, NODES, PLAN_SCALE as K } from "../src/content/village.js";
+import { ARRIVAL, NODES, ROADS, PLAN_SCALE as K } from "../src/content/village.js";
 import { villageNodeCandidates } from "../src/content/village-node-sites.js";
 import { moveVillageWalker } from "../src/rules/village-navigation.js";
 import { C, canopyTree } from "../src/village-models.js";
 import { seeded } from "../src/voxels.js";
 import { groundHeight } from "../src/village-terrain.js";
 import { buildGreen } from "../src/village-world.js";
-import { villageEntrance, entranceAutumnTree, VILLAGE_ENTRANCE_BUDGET, VILLAGE_ENTRANCE_PLANTING } from "../src/village-entrance-dressing.js";
+import { villageEntrance, villageForecourt, entranceAutumnTree, VILLAGE_ENTRANCE_BUDGET, VILLAGE_ENTRANCE_PLANTING, VILLAGE_FORECOURT_BUDGET, VILLAGE_FORECOURT_AREAS } from "../src/village-entrance-dressing.js";
 
 function record(draw) {
   const boxes = [];
@@ -23,7 +23,7 @@ const overlaps = (b, x0, z0, x1, z1) => b[0] + b[3] / 2 > x0 && b[0] - b[3] / 2 
 test("the dressed native gate has finite bounded geometry and leaves the full arrival lane open", () => {
   const boxes = entrance();
   assert.deepEqual(boxes, entrance());
-  assert.equal(boxes.length, 716);
+  assert.equal(boxes.length, 1356);
   assert.ok(boxes.length <= VILLAGE_ENTRANCE_BUDGET.boxes);
   assert.equal(VILLAGE_ENTRANCE_BUDGET.lights, 0);
   assert.equal(VILLAGE_ENTRANCE_BUDGET.textureBytes, 0);
@@ -35,15 +35,31 @@ test("the dressed native gate has finite bounded geometry and leaves the full ar
     assert.ok(b[1] >= 0 && b[1] + b[4] < 6);
     if (b[7]) assert.ok(b[3] * b[4] * b[5] < .025, "only the old lantern's small panes emit");
     if (b[1] < 2.3 / K && b[1] + b[4] > .1) {
-      assert.equal(overlaps(b, 55, -3, 61, 8), false, "visible art leaves the six-unit road clear");
+      assert.equal(overlaps(b, 55, -15, 61, 8), false, "visible art leaves the full six-unit arrival road clear");
       const inPier = [54, 62].some(x => b[0] - b[3] / 2 >= x - .7 - 1e-9 && b[0] + b[3] / 2 <= x + .7 + 1e-9 && b[2] - b[5] / 2 >= -.1 - 1e-9 && b[2] + b[5] / 2 <= 1.3 + 1e-9);
-      const inPlanting = VILLAGE_ENTRANCE_PLANTING.some(a => b[0] - b[3] / 2 >= a.x0 && b[0] + b[3] / 2 <= a.x1 && b[2] - b[5] / 2 >= a.z0 && b[2] + b[5] / 2 <= a.z1);
+      const inPlanting = [...VILLAGE_ENTRANCE_PLANTING, ...VILLAGE_FORECOURT_AREAS].some(a => b[0] - b[3] / 2 >= a.x0 && b[0] + b[3] / 2 <= a.x1 && b[2] - b[5] / 2 >= a.z0 && b[2] + b[5] / 2 <= a.z1);
       assert.ok(inPier || inPlanting, "low details stay in the old piers or soft underplanting");
     }
   }
   for (const n of NODES) for (const p of villageNodeCandidates(n)) for (const b of boxes) {
     const dx = Math.max(0, Math.abs(p.x / K - b[0]) - b[3] / 2), dz = Math.max(0, Math.abs(p.z / K - b[2]) - b[5] / 2);
     assert.ok(Math.hypot(dx, dz) * K > .65, n.id + " keeps every saved-cycle approach clear");
+  }
+});
+
+test("low forecourt islands leave every road and both forage cross-paths uncovered", () => {
+  const boxes = record(villageForecourt);
+  assert.deepEqual(boxes, record(villageForecourt));
+  assert.equal(boxes.length, 640);
+  assert.ok(boxes.length <= VILLAGE_FORECOURT_BUDGET.boxes);
+  assert.equal(VILLAGE_FORECOURT_BUDGET.lights, 0);
+  for (const b of boxes) {
+    assert.ok(b[1] + b[4] < VILLAGE_FORECOURT_BUDGET.maxHeight, "short groundcover keeps the approach and camera open");
+    assert.ok(!b[7], "the forecourt adds no emissive surfaces or new lamp candidates");
+    for (const road of ROADS) for (let i = 1; i < road.points.length; i++) {
+      const [ax, az] = road.points[i - 1].map(v => v / K), [bx, bz] = road.points[i].map(v => v / K), half = road.width / K / 2;
+      assert.equal(overlaps(b, Math.min(ax, bx) - half, Math.min(az, bz) - half, Math.max(ax, bx) + half, Math.max(az, bz) + half), false, road.id + " retains all of its visible paving");
+    }
   }
 });
 
@@ -71,13 +87,14 @@ test("the actual Green contains the entrance once and leaves all other geometry 
       const a = Array.from(m.instanceMatrix.array.slice(i * 16, i * 16 + 16)), c = Array.from(m.instanceColor.array.slice(i * 3, i * 3 + 3));
       const key = JSON.stringify([a[0], a[5], a[10], a[12], a[13], -a[14], ...c]);
       actual.set(key, (actual.get(key) ?? 0) + 1);
-      if (!(a[12] >= 48 && a[12] <= 68 && -a[14] >= -3 && -a[14] <= 8)) outside.push([...a, ...c]);
+      if (!(a[12] >= 48 && a[12] <= 68 && -a[14] >= -15 && -a[14] <= 8)) outside.push([...a, ...c]);
     }
   });
   assert.equal(green.userData.spread, "native");
-  assert.equal(boxes, 39449); assert.equal(meshes, 39); assert.equal(lights, 0);
+  assert.equal(boxes, 40089); assert.equal(meshes, 39); assert.equal(lights, 0);
   assert.equal(green.userData.visualBudget.boxes, boxes);
-  // Baseline recorded on bebcb19, excluding only the entrance and its crowns.
+  // Baseline recorded before dressing on bebcb19. The narrow entrance/crown
+  // exclusion now also spans its forecourt; it contained no earlier Green boxes.
   outside.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
   assert.equal(outside.length, 36655);
   assert.equal(createHash("sha256").update(JSON.stringify(outside)).digest("hex"), "5d04f61ec0afc79e80d3d91fcf635586c7c074beeb3df3035eabf90ca0bd232f");
