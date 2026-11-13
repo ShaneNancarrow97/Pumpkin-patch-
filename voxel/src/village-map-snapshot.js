@@ -58,7 +58,6 @@ export function projectVillageMapPoint(matrix, width, height, point, groundAt = 
 export function captureVillageMap(renderer, villageView, state, { createCanvas = () => document.createElement('canvas') } = {}) {
   const signature = villageMapSnapshotSignature(state), old = cache.get(villageView);
   if (old?.signature === signature) return old.snapshot;
-  villageView.sync();
   const { width, height } = VILLAGE_MAP_SNAPSHOT_SIZE, bounds = { ...(villageView.mapBounds ?? VILLAGE_MAP_SURFACE_BOUNDS) };
   const camera = createVillageMapCamera(bounds, width, height), matrix = Object.freeze(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).toArray());
   const previous = {

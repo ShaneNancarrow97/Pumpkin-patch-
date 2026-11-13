@@ -79,13 +79,21 @@ test('one actual scene draw and readback are cached; image rows and immutable pi
   f.verifyRestored(); assert.equal(snapshot.url, 'data:image/png;base64,c25hcHNob3Q='); assert.equal(f.status().renders, 2); assert.equal(f.status().reads, 1);
   assert.equal(f.status().encoded[0], 41); assert.equal(f.status().encoded[(size.height - 1) * size.width * 4], 19, 'WebGL rows are flipped into the PNG');
   const projected = snapshot.projectPoint({ x: 50, z: 60 }); f.view.camera.position.set(100, 200, 300); f.state.village.clock += 1;
-  assert.equal(captureVillageMap(f.renderer, f.view, f.state, f), snapshot); assert.deepEqual(snapshot.projectPoint({ x: 50, z: 60 }), projected); assert.equal(f.status().reads, 1); assert.equal(f.status().syncs, 1);
+  assert.equal(captureVillageMap(f.renderer, f.view, f.state, f), snapshot); assert.deepEqual(snapshot.projectPoint({ x: 50, z: 60 }), projected); assert.equal(f.status().reads, 1); assert.equal(f.status().syncs, 0);
   f.state.village.clock -= 1; assert.equal(JSON.stringify(f.state), before, 'capture never changes the save');
   f.state.village.expansion.effects.push('acre-shortcut'); assert.notEqual(captureVillageMap(f.renderer, f.view, f.state, f), snapshot); assert.equal(f.status().reads, 2);
 });
 
 for (const fail of ['render', 'encode']) test(`capture restores the renderer, visibility and resources after ${fail} failure`, () => {
   const f = fixture({ fail }); assert.throws(() => captureVillageMap(f.renderer, f.view, f.state, f), new RegExp(`${fail} failed`)); f.verifyRestored();
+});
+
+test('opening the map from a cave never resyncs, unhides or relocates the paused surface residents', () => {
+  const f = fixture(), resident = new THREE.Group(); resident.visible = false; resident.position.set(130, 4.5, -188); f.view.scene.add(resident);
+  f.view.activeExpansionArea = 'cave-shallows';
+  f.view.sync = () => { resident.visible = true; resident.position.set(0, 0, 0); };
+  const before = resident.position.toArray(); captureVillageMap(f.renderer, f.view, f.state, f);
+  assert.equal(resident.visible, false); assert.deepEqual(resident.position.toArray(), before); assert.equal(f.view.activeExpansionArea, 'cave-shallows'); f.verifyRestored();
 });
 
 test('the real expansion surface adapter hides cave-local rooms and restores every visibility and Acre fade after failure', () => {

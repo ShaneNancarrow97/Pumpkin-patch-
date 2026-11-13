@@ -467,6 +467,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   }
   // Surface visibility and moonlight are borrowed only for a single off-screen map photograph.
   function withMapSurface(fn) {
+    buildOnce();
     const visibility = [], opacity = new Map();
     scene.traverse(o => { visibility.push([o, o.visible]); });
     const background = scene.background, fog = scene.fog, exposure = scene.userData.exposure;
