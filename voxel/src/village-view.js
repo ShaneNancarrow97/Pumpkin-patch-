@@ -23,6 +23,7 @@ import { finishVoxels, setLampNear } from "./voxel-finish.js";
 import { spread, gather } from "./rules/village-spread.js";
 import { buildTownSquare } from "./village-town-square.js";
 import { buildVillageNeighbourhoods } from "./village-neighbourhoods.js";
+import { installVillageNeighbourhoodVisibility, tickVillageNeighbourhoodVisibility, withVillageNeighbourhoodVisibilityRestored } from "./village-neighbourhood-visibility.js";
 import { villageNeighbourhoodClusters } from "./content/village-neighbourhoods.js";
 import { TOWN_LAMPS } from "./content/village-town-square.js";
 import { VILLAGE_GRADE } from "./picture-grade.js";
@@ -182,7 +183,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     // leave no invisible light source beside the player's own furniture.
     surfaceLamps = [...LAMPS_AT, ...clusters.flatMap(c => (c.lanterns ?? []).map(l => ({ x: l.x, z: l.z, y: 2.25 })))];
     if (neighbourhoods) { root.remove(neighbourhoods); neighbourhoods.userData.dispose?.(); }
-    neighbourhoods = buildVillageNeighbourhoods(clusters); finishVoxels(neighbourhoods); root.add(neighbourhoods);
+    neighbourhoods = buildVillageNeighbourhoods(clusters); finishVoxels(neighbourhoods); installVillageNeighbourhoodVisibility(neighbourhoods); root.add(neighbourhoods);
   }
   function part(name, key, make) {
     if (keys[name] === key) return; keys[name] = key;
@@ -506,7 +507,7 @@ export function createVillageView(canvas, state, hooks = {}) {
       sun.target.position.set((REALM.x0 + REALM.x1) * K / 2, 0, -(REALM.z0 + REALM.z1) * K / 2); sun.position.copy(sun.target.position).addScaledVector(SUN, 100);
       for (const l of pool) { l.intensity = 0; l.visible = true; }
       scene.updateMatrixWorld(true);
-      return expansionWorld.withMapSurface(fn);
+      return withVillageNeighbourhoodVisibilityRestored(neighbourhoods, () => expansionWorld.withMapSurface(fn));
     } finally {
       for (const [o, visible] of visibility) o.visible = visible;
       for (const [m, value] of opacity) m.opacity = value;
@@ -541,6 +542,7 @@ export function createVillageView(canvas, state, hooks = {}) {
       if (lampGlow) { lampGlow.group.visible = !inside && !expansionWorld.active; lampGlow.tick(time, { density: scene.fog.density, still: reducedMotion() }); }
       if (!inside&&!expansionWorld.active) { atmosphere?.tick(dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full" }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
       else resetVillageVisibility(villageGreen);
+      tickVillageNeighbourhoodVisibility(neighbourhoods, following && !tour && !inside && !expansionWorld.active ? followSubject : null, camera, dt, { reducedMotion: reducedMotion() });
       inside?.stir?.tick(time, { still: reducedMotion() });
       if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera, following && !inside&&!expansionWorld.active ? followSubject : null);
       blight.tick(dt, camera.position, !inside&&!expansionWorld.active, reducedMotion(), !!state.paused);

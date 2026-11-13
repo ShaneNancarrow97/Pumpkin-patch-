@@ -110,33 +110,34 @@ function garden(f, p, r) {
 
 // Compact fruit trees keep their branches legible and their crowns below the
 // landmark roofs. Layered lobes leave air between neighbouring trees.
-function fruitTree(f, x, z, r, k = 1) {
+function fruitTree(f, x, z, r, k = 1, viewBlocker = writer => writer) {
   const wood = 0x63452e, palette = r() < .55 ? C.golden : C.leaves, h = 2.4 * k, crown = 1.6;
   f.block(x, 0, z, .36 * k, h, .36 * k, wood);
   for (const s of [-1, 1]) {
     f.block(x + s * .3 * k * crown, h * .87, z, .62 * k * crown, .2 * k, .18 * k, wood); f.block(x, h * .94, z + s * .3 * k * crown, .18 * k, .2 * k, .65 * k * crown, wood);
     f.block(x + s * .27 * k, h * .7, z, .18 * k, h * .24, .18 * k, wood);
   }
+  const upper = viewBlocker(f, "crown");
   const lobes = [[0, .3, 0, 1.05], [-.68, 0, .1, .76], [.62, .07, -.12, .8], [.1, .05, .64, .73], [-.08, .1, -.61, .72]];
   for (const [dx, dy, dz, size] of lobes) for (const [level, width] of [[0, .65], [.33, 1], [.66, .86], [.92, .52]]) {
     const y = h + (dy + level * size) * k * 1.25, s = size * width * k * crown, c = vary(shade(pick(palette, r), .88 + level * .24), .08, r);
-    f.block(x + dx * k * crown, y, z + dz * k * crown, s * 1.4, .44 * k, s, c);
-    f.block(x + dx * k * crown, y, z + dz * k * crown, s, .43 * k, s * 1.4, shade(c, .96));
+    upper.block(x + dx * k * crown, y, z + dz * k * crown, s * 1.4, .44 * k, s, c);
+    upper.block(x + dx * k * crown, y, z + dz * k * crown, s, .43 * k, s * 1.4, shade(c, .96));
   }
   for (let i = 0; i < 9; i++) {
     const a = i / 9 * Math.PI * 2, px = x + Math.cos(a) * .92 * k * crown, pz = z + Math.sin(a) * .92 * k * crown;
-    f.block(px, h + (.12 + r() * .7) * k, pz, .22 * k, .24 * k, .22 * k, pick(C.crimson, r));
+    upper.block(px, h + (.12 + r() * .7) * k, pz, .22 * k, .24 * k, .22 * k, pick(C.crimson, r));
     if (i % 2 === 0) f.block(px, .025, pz, .16, .11, .16, pick(C.crimson, r));
   }
   for (let i = 0; i < 8; i++) f.block(x + (r() - .5) * 2.5 * k, .012, z + (r() - .5) * 2.5 * k, .17 + r() * .12, .025, .15, pick(palette, r));
 }
 
-function orchard(f, p, r, G) {
+function orchard(f, p, r, G, viewBlocker) {
   const w = p.w ?? 12, d = p.d ?? 9;
   const trees = p.trees ?? [{ x: -w * .3, z: -d * .24 }, { x: w * .3, z: -d * .24 }, { x: -w * .3, z: d * .24 }, { x: w * .3, z: d * .24 }];
   for (const t of trees) {
-    if (p.trees) fruitTree(G, t.x, t.z, r, t.size ?? .9 + r() * .16);
-    else fruitTree(f, t.x, t.z, r, t.size ?? .9 + r() * .16);
+    if (p.trees) fruitTree(G, t.x, t.z, r, t.size ?? .9 + r() * .16, viewBlocker);
+    else fruitTree(f, t.x, t.z, r, t.size ?? .9 + r() * .16, viewBlocker);
   }
   if (p.props === false) return;
   crate(f, -.4, 0, -d / 2 + .6, r); crate(f, .45, 0, -d / 2 + .65, r);
@@ -159,47 +160,48 @@ function picnicTable(f, x, z, r, length = 4.1) {
   for (const [dx, dz] of [[-1.25, .15], [1.25, -.22]]) { f.block(x + dx, .99, z + dz, .19, .15, .19, C.cream); f.block(x + dx + .12, 1.03, z + dz, .1, .07, .09, C.cream); }
 }
 
-function pergola(f, p, r) {
+function pergola(f, p, r, G, viewBlocker) {
   const w = Math.min(p.w ?? 10, 10), d = Math.min(p.d ?? 8, 8), px = w / 2 - .7, pz = d / 2 - .65, h = 3.15;
   if (p.roof === false) {
     picnicTable(f, 0, -.1, r, Math.min(4.6, w - 3));
     for (const side of [-1, 1]) herbPot(f, side * (w / 2 - .7), 0, -d / 2 + .7, r, 1.1);
     return;
   }
+  const roof = viewBlocker(f, "pavilion");
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
     const x = sx * px, z = sz * pz;
     f.block(x, 0, z, .52, .24, .52, C.stone[2]); f.block(x, .24, z, .24, h - .24, .24, C.timber); f.block(x, h - .2, z, .36, .22, .36, C.woodLight);
-    f.block(x - sx * .2, h - .52, z, .55, .16, .2, C.wood); f.block(x, h - .52, z - sz * .2, .2, .16, .55, C.wood);
+    roof.block(x - sx * .2, h - .52, z, .55, .16, .2, C.wood); roof.block(x, h - .52, z - sz * .2, .2, .16, .55, C.wood);
   }
-  for (const sz of [-1, 1]) f.block(0, h, sz * pz, w, .23, .25, C.beam);
-  for (let x = -px - .2; x <= px + .2; x += .68) { f.block(x, h + .23, 0, .16, .17, d, vary(C.woodLight, .05, r)); f.block(x, h + .19, -d / 2 + .125, .24, .12, .25, C.wood); f.block(x, h + .19, d / 2 - .125, .24, .12, .25, C.wood); }
+  for (const sz of [-1, 1]) roof.block(0, h, sz * pz, w, .23, .25, C.beam);
+  for (let x = -px - .2; x <= px + .2; x += .68) { roof.block(x, h + .23, 0, .16, .17, d, vary(C.woodLight, .05, r)); roof.block(x, h + .19, -d / 2 + .125, .24, .12, .25, C.wood); roof.block(x, h + .19, d / 2 - .125, .24, .12, .25, C.wood); }
   // A low slate canopy covers the table while the surrounding timber lattice
   // stays open. Gable trusses carry its ridge into the existing post frame.
   const roofW = w * .9, roofD = d * .7, course = roofD / 14;
   for (const sx of [-1, 1]) {
-    f.block(sx * (roofW / 2 - .16), h + .23, 0, .16, .15, roofD + .2, C.beam);
-    f.block(sx * (roofW / 2 - .16), h + .38, 0, .14, .56, .14, C.woodLight);
+    roof.block(sx * (roofW / 2 - .16), h + .23, 0, .16, .15, roofD + .2, C.beam);
+    roof.block(sx * (roofW / 2 - .16), h + .38, 0, .14, .56, .14, C.woodLight);
   }
   for (const side of [-1, 1]) {
-    f.block(0, h + .37, side * (roofD / 2 + .04), roofW + .22, .12, .13, C.woodLight);
+    roof.block(0, h + .37, side * (roofD / 2 + .04), roofW + .22, .12, .13, C.woodLight);
     for (let row = 0; row < 7; row++) {
       const z = side * (row + .5) * course, y = h + .83 - row * .07;
-      f.block(0, y, z, roofW, .085, course + .035, C.slate[row % 3]);
-      for (const sx of [-1, 1]) f.block(sx * (roofW / 2 - .16), y - .14, z, .18, .15, course + .04, C.wood);
+      roof.block(0, y, z, roofW, .085, course + .035, C.slate[row % 3]);
+      for (const sx of [-1, 1]) roof.block(sx * (roofW / 2 - .16), y - .14, z, .18, .15, course + .04, C.wood);
       for (let x = -roofW / 2 + .3 + (row % 2) * .28; x < roofW / 2 - .1; x += .62) {
         const ww = Math.min(.56, roofW / 2 - x);
-        f.block(x, y + .085, z, ww, .018, course - .035, vary(C.slate[(row + 1) % 3], .08, r));
+        roof.block(x, y + .085, z, ww, .018, course - .035, vary(C.slate[(row + 1) % 3], .08, r));
       }
     }
   }
-  f.block(0, h + .8, 0, roofW + .1, .14, .2, C.beam); f.block(0, h + .95, 0, roofW + .12, .08, .25, C.slate[1]);
-  for (const sx of [-1, 1]) f.block(sx * (roofW / 2 - .1), h + .95, 0, .12, .1, .28, C.brass);
+  roof.block(0, h + .8, 0, roofW + .1, .14, .2, C.beam); roof.block(0, h + .95, 0, roofW + .12, .08, .25, C.slate[1]);
+  for (const sx of [-1, 1]) roof.block(sx * (roofW / 2 - .1), h + .95, 0, .12, .1, .28, C.brass);
   for (const sx of [-1, 1]) {
     for (let j = 0; j < 6; j++) f.block(sx * px, .55 + j * .35, -pz, .06, .4, .07, C.beam);
     for (let i = 0; i < 12; i++) {
       const x = sx * (px - r() * 1.4), z = -pz + (r() - .5) * .6, y = h + .3 + r() * .15;
-      f.block(x, y, z, .38 + r() * .22, .13, .3 + r() * .25, pick(C.hedge, r));
-      if (i % 4 === 0) f.block(x, y + .14, z, .16, .1, .15, pick(MOON, r));
+      roof.block(x, y, z, .38 + r() * .22, .13, .3 + r() * .25, pick(C.hedge, r));
+      if (i % 4 === 0) roof.block(x, y + .14, z, .16, .1, .15, pick(MOON, r));
     }
     lantern(f, sx * px, h - .8, pz, .85); f.block(sx * px, h - .26, pz, .04, .27, .04, C.iron);
     herbPot(f, sx * (px - .65), 0, -pz + .4, r, 1.05);
@@ -309,13 +311,38 @@ const BUILDERS = { garden, orchard, pergola, workyard, reading, meadow, path() {
 // The view supplies only clusters clear of saved player decorations. Combining
 // them here bounds the entire neighbourhood layer to three instanced draws.
 export function buildVillageNeighbourhoods(selectedClusters = []) {
-  const clusters = Array.isArray(selectedClusters) ? selectedClusters : selectedClusters.clusters ?? [], v = new Voxels(), G = ground(v), featureBoxes = {}, paths = [], pathTiles = new Set();
+  const clusters = Array.isArray(selectedClusters) ? selectedClusters : selectedClusters.clusters ?? [], v = new Voxels(), featureBoxes = {}, paths = [], pathTiles = new Set(), viewBlockers = [];
+  let blockerID = 0;
+  // A box keeps its view-only ID through Voxels' solid/detail batching. Bounds
+  // come from the actual written boxes, including terrain lift and orientation.
+  const writer = { block(...args) {
+    const list = args[7] ? v.glow : v.solid, before = list.length;
+    v.block(...args);
+    if (blockerID && list.length > before) {
+      const b = list[list.length - 1], bounds = viewBlockers[blockerID - 1].bounds;
+      b[7] = blockerID;
+      for (let axis = 0; axis < 3; axis++) {
+        bounds.min[axis] = Math.min(bounds.min[axis], b[axis] - b[axis + 3] / 2);
+        bounds.max[axis] = Math.max(bounds.max[axis], b[axis] + b[axis + 3] / 2);
+      }
+    }
+    return this;
+  } };
+  const G = ground(writer), viewBlocker = (f, kind) => {
+    const id = viewBlockers.length + 1;
+    viewBlockers.push({ id, kind, bounds: { min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] } });
+    return { block(...args) {
+      const previous = blockerID; blockerID = id;
+      try { f.block(...args); } finally { blockerID = previous; }
+      return this;
+    } };
+  };
   for (let i = 0; i < clusters.length; i++) {
     const p = clusters[i], builder = BUILDERS[p.kind];
     if (!builder) continue;
-    const r = seeded(p.seed ?? seedFor(p.id ?? p.kind)), before = v.solid.length + v.glow.length, x = p.x ?? 0, z = p.z ?? 0, f = frame(v, x, z, p.facing ?? "south", groundHeight(x, z));
+    const r = seeded(p.seed ?? seedFor(p.id ?? p.kind)), before = v.solid.length + v.glow.length, x = p.x ?? 0, z = p.z ?? 0, f = frame(writer, x, z, p.facing ?? "south", groundHeight(x, z));
     for (const path of p.paths ?? []) { footpath(G, path, r, pathTiles); paths.push(path); }
-    builder(f, p, r, G);
+    builder(f, p, r, G, viewBlocker);
     for (const h of p.hedges ?? []) hedge(G, h.x, h.z, h.w, h.d, h.h ?? .68, r);
     for (const l of p.lanterns ?? []) {
       G.block(l.x, 0, l.z, .45, .18, .45, C.stone[1]); G.block(l.x, .18, l.z, .1, 1.55, .1, C.iron); G.block(l.x, 1.55, l.z, .23, .08, .23, C.gold); lantern(G, l.x, 1.73, l.z, .88);
@@ -323,12 +350,16 @@ export function buildVillageNeighbourhoods(selectedClusters = []) {
     featureBoxes[p.id ?? `${p.kind}-${i}`] = v.solid.length + v.glow.length - before;
   }
   const group = v.build({ detailShadows: false, small: .3, glow: 1.6 }), boxes = v.solid.length + v.glow.length;
+  const small = b => Math.max(b[3], b[4], b[5]) < .3;
+  const batches = [v.solid.filter(b => !small(b)), v.solid.filter(small), v.glow].filter(list => list.length);
+  for (let i = 0; i < batches.length; i++) group.children[i].userData.neighbourhoodVisibilityIDs = Uint16Array.from(batches[i], b => b[7] ?? 0);
   group.name = "village neighbourhoods";
   group.userData.spread = "native";
   group.userData.activeIDs = clusters.filter(p => BUILDERS[p.kind]).map(p => p.id);
   group.userData.paths = paths;
   group.userData.obstacles = clusters.flatMap(p => p.solids ?? []);
   group.userData.featureBoxes = featureBoxes;
+  group.userData.viewBlockers = viewBlockers;
   group.userData.visualBudget = { boxes, meshes: group.children.length, addedLights: 0 };
   // All Voxels share their cube geometry; only these instances and materials
   // belong to this layer when the view rebuilds it around saved decorations.
