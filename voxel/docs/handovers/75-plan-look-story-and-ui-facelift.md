@@ -450,4 +450,5 @@ and phone viewport), `qa/perf.mjs` numbers for look changes, the tests listed, a
 file under "Done" with anything the next package needs to know.
 
 ## Done
-(nothing yet)
+
+Contractor village clarity, based on lead `8da66cb`: scoped C1 tokens and input contrast; C3's map rebuilt as a cached photograph of the actual surface through a tilted orthographic camera, with projected selectable markers, Square/Acre/cave entrances and optional neighbours; C6 truthful resident whereabouts and one live approach resolver shared with activation/guidance; shared C2/C8 completion/news presentation retaining existing reading times; A9 same-route normal-renderer baseline tooling. Also repairs the signed puzzle shuffle that made authored options disappear. Full details, dependency matrix, exact-build verification and remaining scope: [`../contractor-patches/village-clarity/README.md`](../contractor-patches/village-clarity/README.md). B1/B2, new shapes, look-system changes and secret places are not included in this contract.

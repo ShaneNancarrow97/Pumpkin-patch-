@@ -1,5 +1,7 @@
 # Pumpkin Patch Voxel: context for coding agents
 
+**Latest contractor village clarity:** [`docs/contractor-patches/village-clarity/README.md`](docs/contractor-patches/village-clarity/README.md) covers the complete puzzle-choice repair, live resident interaction anchors, a tilted snapshot of the actual world with projected map markers, scoped village UI tokens and a shared notification queue on Claude's 8da66cb lead. Read its dependency matrix before changing resident reach, snapshot renderer restoration/cache, map coordinates, receipt lifetimes or input glyph contrast. Save version remains20; the handover75 story/shape/secret-place plans remain separate work.
+
 **Latest contractor idle pause:** [`docs/contractor-patches/mothlight-full-expansion/IDLE-PAUSE.md`](docs/contractor-patches/mothlight-full-expansion/IDLE-PAUSE.md) replaces the ten-minute tea break with a real-time3½-minute pause and final30-second countdown across farm/village/POVs. Read its input/clock dependency matrix before changing automatic pause or controller activity. Save version remains20.
 
 **Completed village pin fix:** [`docs/contractor-patches/mothlight-full-expansion/PINNED-QUEST-FIX.md`](docs/contractor-patches/mothlight-full-expansion/PINNED-QUEST-FIX.md) clears completed chapter pins in the save and UI preferences, repairs older saves, and keeps completion in a brief receipt and the journal archive. Preserve both tracking stores and waypoint ownership when changing this flow.
