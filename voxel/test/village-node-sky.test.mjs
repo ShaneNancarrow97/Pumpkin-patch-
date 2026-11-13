@@ -86,7 +86,9 @@ test('full sky graph generates WGSL with original cloud, art, star and ridge bud
   assert.match(main, /0\.9982/);
   assert.match(main, /pow\( [^,]+, 24\.0 \)/);
   assert.match(main, /pow\( [^,]+, 96\.0 \)/);
-  assert.match(main, /vec3<f32>\( 0\.68, 0\.68, 0\.68 \) \), 1\.0/);
+  assert.match(main, /vec3<f32>\( 0\.68, 0\.68, 0\.68 \)/);
+  assert.match(main, /0\.12/, 'the shared cloud highlight knee reaches WGSL');
+  assert.match(main, /0\.24/, 'the shared highlight shoulder reaches WGSL');
   assert.doesNotMatch(code, /NaN|undefined|textureLoad|textureStore/);
 });
 

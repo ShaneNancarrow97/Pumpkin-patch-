@@ -2,6 +2,7 @@ import * as GPU from "three/webgpu";
 import * as T from "three/tsl";
 import * as GL from "three";
 import { VILLAGE_GRASS_FADE } from "../village-visibility.js";
+import { VILLAGE_DETAIL_DISTANCE as DETAIL } from "../village-distance-detail.js";
 import { nodeFinish, nodeAlphaHash, nodeWaterNormal, nodeGrassDeform, nodeAoCorner, nodePbrClassify, nodePbrTangentNormal } from "./village-node-surface-functions.js";
 import { createVillageNodeEffects } from "./village-node-effects.js";
 import { createVillageNodeTextures } from "./village-node-textures.js";
@@ -172,6 +173,20 @@ function createVillageNodeMaterials({ renderer } = {}) {
       throw new UnsupportedVillageMaterial(source, mesh, `unknown shader hook (${key.slice(0, 90)})`);
     }
     const material = generic(source, mesh);
+    // Owners swap between standing, directional-walk and action atlases without
+    // changing material identity. Explicit TSL samples must follow those maps,
+    // just as material.map does; capturing the initial texture freezes the art
+    // on WebGPU even though the shared actor continues advancing its UV frames.
+    const liveTextures = new Map();
+    function materialTexture(key, uv = T.uv()) {
+      let node = liveTextures.get(key);
+      if (!node) {
+        node = T.texture(resolveTexture(source[key]), T.uv());
+        liveTextures.set(key, node);
+        addBinding(() => { if (source[key]) node.value = resolveTexture(source[key]); });
+      }
+      return node.uv(uv);
+    }
     let colour = T.materialColor, emissive = T.materialEmissive, normal = T.normalView, ao = T.float(1);
     const instColor = mesh?.instanceColor ? T.varyingProperty("vec3", "vInstanceColor") : T.vec3(1);
     const authored = T.materialColor.rgb.mul(instColor);
@@ -192,7 +207,7 @@ function createVillageNodeMaterials({ renderer } = {}) {
       addBinding(() => {
         tile.value = resolveTexture(texture.value);
       });
-      const coverage = T.texture(resolveTexture(source.map), T.uv()).a.mul(T.step(0.75, T.varying(T.normalGeometry).y));
+      const coverage = materialTexture("map").a.mul(T.step(0.75, T.varying(T.normalGeometry).y));
       colour = T.vec4(T.mix(T.materialColor.rgb, tile.rgb, coverage.mul(strength)), 1);
       material.opacity = source.opacity;
     }
@@ -206,27 +221,28 @@ function createVillageNodeMaterials({ renderer } = {}) {
     }
     if (crisp && source.map) {
       role("crisp-sprite");
-      colour = T.vec4(T.uniform(source.color, "color").mul(T.texture(resolveTexture(source.map), T.uv()).bias(-0.85).rgb), T.texture(resolveTexture(source.map), T.uv()).bias(-0.85).a);
+      const sampled = materialTexture("map").bias(-0.85);
+      colour = T.vec4(T.uniform(source.color, "color").mul(sampled.rgb), sampled.a);
       if (source.emissiveMap) {
         const intensity = T.uniform(source.emissiveIntensity);
         addBinding(() => {
           intensity.value = source.emissiveIntensity;
         });
-        emissive = T.uniform(source.emissive, "color").mul(intensity).mul(T.texture(resolveTexture(source.emissiveMap), T.uv()).bias(-0.85).rgb);
+        emissive = T.uniform(source.emissive, "color").mul(intensity).mul(materialTexture("emissiveMap").bias(-0.85).rgb);
       }
     }
     if (rim && source.map) {
       role("sprite-rim");
       const step = T.uniform(new GPU.Vector2(...data.villageRim.texel));
-      const alpha = (offset) => T.texture(resolveTexture(source.map), T.uv().add(offset)).bias(-0.85).a;
+      const alpha = (offset) => materialTexture("map", T.uv().add(offset)).bias(-0.85).a;
       const neighbour = T.min(T.min(alpha(T.vec2(step.x, 0)), alpha(T.vec2(step.x.negate(), 0))), T.min(alpha(T.vec2(0, step.y)), alpha(T.vec2(0, step.y.negate()))));
       emissive = emissive.add(T.vec3(0.26, 0.18, 0.105).mul(T.smoothstep(0.05, 0.7, T.float(1).sub(neighbour))));
     }
     if (moon && source.map) {
       role("moon-rim");
       const u = data.moonRim, tint = bind(u.colour, "color"), strength = bind(u.strength, "float"), width = bind(u.width, "float");
-      const step = T.vec2(width).div(T.textureSize(T.texture(resolveTexture(source.map)), 0));
-      const alpha = (offset) => T.texture(resolveTexture(source.map), T.uv().add(offset)).a;
+      const step = T.vec2(width).div(T.textureSize(materialTexture("map"), 0));
+      const alpha = (offset) => materialTexture("map", T.uv().add(offset)).a;
       const up = T.float(1).sub(alpha(T.vec2(0, step.y))), side = T.float(2).sub(alpha(T.vec2(step.x, 0))).sub(alpha(T.vec2(step.x.negate(), 0))), high = T.float(1).sub(alpha(T.vec2(0, step.y.mul(2.2))));
       emissive = emissive.add(tint.mul(strength).mul(up.mul(0.7).add(high.mul(0.45)).add(side.mul(0.3)).clamp(0, 1)));
     }
@@ -277,8 +293,12 @@ function createVillageNodeMaterials({ renderer } = {}) {
       role("grass");
       const u = shader.uniforms, time = bind(u.uTime, "float"), player = bind(u.uGrassPlayer, "vec2"), camera = bind(u.uGrassCamera, "vec2"), root = instanceData(mesh, "root"), worldRoot = T.modelWorldMatrix.mul(T.vec4(root, 1)), tip = T.attribute("tip", "float");
       const vis = T.smoothstep(VILLAGE_GRASS_FADE.playerNear, VILLAGE_GRASS_FADE.playerFar, worldRoot.xz.distance(player)).mul(T.smoothstep(VILLAGE_GRASS_FADE.cameraNear, VILLAGE_GRASS_FADE.cameraFar, worldRoot.xz.distance(camera)));
-      const far = T.float(1).sub(T.smoothstep(65, 105, worldRoot.xz.distance(camera)));
-      visibility = visibility.mul(T.varying(vis.mul(far)));
+      const distance = worldRoot.xz.distance(camera), detail = T.attribute("bladeDetail", "float");
+      const far = T.float(1).sub(T.smoothstep(DETAIL.grassFarFrom, DETAIL.grassFarTo, distance));
+      const fine = T.float(1).sub(T.smoothstep(DETAIL.grassNearFrom, DETAIL.grassNearTo, distance));
+      const middle = T.float(1).sub(T.smoothstep(DETAIL.grassMiddleFrom, DETAIL.grassMiddleTo, distance));
+      const bladeFade = T.mix(T.mix(1, middle, T.step(.5, detail)), fine, T.step(1.5, detail));
+      visibility = visibility.mul(T.varying(vis.mul(far).mul(bladeFade)));
       const vTip = T.varying(tip);
       colour = colour.mul(T.float(0.46).add(vTip.min(1).pow(2).mul(0.8))).mul(vTip.greaterThan(1.1).select(1.25, 1));
       material.setupPosition = function(builder) {
@@ -303,7 +323,7 @@ function createVillageNodeMaterials({ renderer } = {}) {
     if (source.emissive) material.emissiveNode = emissive;
     if (source.isMeshStandardMaterial) material.aoNode = ao;
     if (source.map && source.alphaTest > 0) {
-      const sample = T.texture(resolveTexture(source.map), T.uv());
+      const sample = materialTexture("map");
       material.shadowNode = T.Fn(() => {
         sample.a.lessThanEqual(source.alphaTest).discard();
         return T.vec4(0, 0, 0, 1);

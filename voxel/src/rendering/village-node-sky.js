@@ -7,6 +7,7 @@ import {
 import {
   VILLAGE_DUSK_ART as ART, VILLAGE_DUSK_CLOUDS as CLOUDS,
   VILLAGE_DUSK_COLOURS as COLOURS,
+  VILLAGE_SKY_HIGHLIGHTS as HIGHLIGHTS,
 } from '../village-dusk-sky.js';
 
 const duskHash = Fn(([point]) => {
@@ -142,7 +143,11 @@ export function createVillageSkyNodeMaterial(sourceMaterial, bindUniform) {
       colour.assign(mix(colour, vec3(.045, .028, .075), float(1).sub(smoothstep(middleRidge.sub(.003), middleRidge.add(.003), y)).mul(.8)));
       colour.assign(mix(colour, vec3(.025, .018, .043), float(1).sub(smoothstep(nearRidge.sub(.003), nearRidge.add(.003), y)).mul(.86)));
     });
-    return vec4(clamp(colour, vec3(0), vec3(.68)), 1);
+    colour.assign(clamp(colour, vec3(0), vec3(.68)));
+    const peak = max(colour.r, max(colour.g, colour.b)).toVar();
+    const excess = max(0, peak.sub(HIGHLIGHTS.knee)).toVar();
+    const shoulder = excess.div(float(1).add(excess.div(HIGHLIGHTS.shoulder))).add(HIGHLIGHTS.knee);
+    return vec4(colour.mul(min(1, shoulder.div(max(peak, .00001)))), 1);
   })();
   return material;
 }

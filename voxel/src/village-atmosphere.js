@@ -4,6 +4,7 @@
 import * as THREE from "three";
 import { seeded } from "./voxels.js";
 import { FIXTURES, PLAN_SCALE } from "./content/village.js";
+import { VILLAGE_DETAIL_DISTANCE as DETAIL, villageDetailFade } from "./village-distance-detail.js";
 
 export const VILLAGE_ATMOSPHERE_BUDGET = Object.freeze({
   moths: 6, particles: 16, tvMoths: 3, tvParticles: 8,
@@ -47,10 +48,11 @@ export function createVillageAtmosphere() {
     moths.setColorAt(i * B.boxesPerMoth + part, colour.set(part === 0 ? 0x8c6243 : part < 3 ? 0xf0ddbc : 0xc49b72));
   }
   for (let i = 0; i < B.particles; i++) particles.setColorAt(i, colour.set(i % 7 ? 0xffd198 : 0xa5d2c3));
-  let time = 0, currentBudget = null, posed = false, updates = 0;
+  let time = 0, currentBudget = null, posed = false, updates = 0, distanceFade = 1;
+  const worldCentre = new THREE.Vector3(), worldScale = new THREE.Vector3();
   const write = (mesh, index, x, y, z, w, h, d, rx = 0, ry = 0, rz = 0) => {
     rotation.setFromEuler(euler.set(rx, ry, rz));
-    matrix.compose(position.set(x, y, -z), rotation, scale.set(w, h, d));
+    matrix.compose(position.set(x, y, -z), rotation, scale.set(w * distanceFade, h * distanceFade, d * distanceFade));
     mesh.setMatrixAt(index, matrix);
   };
   function pose() {
@@ -75,7 +77,7 @@ export function createVillageAtmosphere() {
     moths.instanceMatrix.needsUpdate = true; particles.instanceMatrix.needsUpdate = true;
     posed = true; updates++;
   }
-  function tick(dt = 0, { reducedMotion = false, budget = "full" } = {}) {
+  function tick(dt = 0, { reducedMotion = false, budget = "full", camera } = {}) {
     const nextBudget = budget === "tv" ? "tv" : "full", changed = currentBudget !== nextBudget;
     if (changed) {
       currentBudget = nextBudget;
@@ -85,14 +87,31 @@ export function createVillageAtmosphere() {
     // Pausing decorative motion freezes its clock as well as buffer uploads.
     // A slow/background frame cannot jump a whole orbit on resuming.
     const delta = Number.isFinite(dt) ? Math.min(.1, Math.max(0, dt)) : 0;
+    // Use conservative world bounds, not the current wing positions. The
+    // miniature silhouettes shrink continuously over30m before both draws and
+    // matrix uploads stop. Their private clock rests offscreen, so returning
+    // never fast-forwards the flight or touches gameplay/atmosphere clocks.
+    let nearest = Infinity;
+    if (camera?.position) {
+      group.updateWorldMatrix(true, false); group.getWorldScale(worldScale);
+      const k = Math.max(Math.abs(worldScale.x), Math.abs(worldScale.y), Math.abs(worldScale.z));
+      for (const mesh of [moths, particles]) {
+        worldCentre.copy(mesh.boundingSphere.center).applyMatrix4(group.matrixWorld);
+        nearest = Math.min(nearest, worldCentre.distanceTo(camera.position) - mesh.boundingSphere.radius * k);
+      }
+    }
+    const nextFade = camera?.position ? villageDetailFade(Math.max(0, nearest), DETAIL.lifeFrom, DETAIL.lifeTo) : 1;
+    const fadeChanged = nextFade !== distanceFade; distanceFade = nextFade;
+    group.visible = distanceFade > 0;
+    if (!group.visible) return;
     if (!reducedMotion && delta > 0) time += delta;
-    if (!posed || changed || !reducedMotion && delta > 0) pose();
+    if (!posed || changed || fadeChanged || !reducedMotion && delta > 0) pose();
   }
   function stats() {
     return { budget: currentBudget, moths: moths.count / B.boxesPerMoth, particles: particles.count,
-      instances: moths.count + particles.count, drawCalls: B.drawCalls,
-      triangles: (moths.count + particles.count) * 12, lights: 0, textures: 0,
-      maxEmissiveChannel: B.maxEmissiveChannel, time, bufferUpdates: updates };
+      instances: moths.count + particles.count, drawCalls: group.visible ? B.drawCalls : 0,
+      triangles: group.visible ? (moths.count + particles.count) * 12 : 0, lights: 0, textures: 0,
+      maxEmissiveChannel: B.maxEmissiveChannel, time, bufferUpdates: updates, distanceFade, visible: group.visible };
   }
   tick(0);
   group.userData.visualBudget = { boxes: B.moths * B.boxesPerMoth + B.particles, drawCalls: B.drawCalls, addedLights: 0 };

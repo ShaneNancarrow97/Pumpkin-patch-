@@ -57,3 +57,83 @@ test("animated fog values retain the GPU node-cache identity and never mutate so
   source.fog.far = 80; mirror.sync(source, camera); assert.equal(mirror.scene.fog, rangeFog); assert.equal(rangeFog.far, 80);
   source.fog = null; mirror.sync(source, camera); assert.equal(mirror.scene.fog, null); mirror.dispose();
 });
+
+test("shared voxel geometry is synchronized once a frame and still follows edits", () => {
+  const source = new GL.Scene(), camera = new GL.PerspectiveCamera(), geometry = new GL.BoxGeometry();
+  let scans = 0;
+  geometry.attributes = new Proxy(geometry.attributes, { ownKeys(target) { scans++; return Reflect.ownKeys(target); } });
+  for (let i = 0; i < 48; i++) source.add(new GL.Mesh(geometry, new GL.MeshBasicMaterial()));
+  const mirror = createVillageGpuMirror(factory()); mirror.sync(source, camera);
+  assert.equal(scans, 1, "one attribute walk for 48 shared batches");
+  const wrapper = mirror.scene.children[0].geometry;
+  assert.ok(mirror.scene.children.every(mesh => mesh.geometry === wrapper));
+  const uv = new GL.Float32BufferAttribute(new Float32Array(48), 2);
+  geometry.setAttribute("uv", uv); geometry.deleteAttribute("normal"); geometry.setDrawRange(3, 9);
+  scans = 0; mirror.sync(source, camera);
+  assert.equal(scans, 1); assert.equal(wrapper.getAttribute("uv"), uv);
+  assert.equal(wrapper.getAttribute("normal"), undefined); assert.deepEqual(wrapper.drawRange, { start: 3, count: 9 });
+  mirror.dispose();
+});
+
+test("source transforms compose once and unchanged presentation matrices remain clean", () => {
+  const source = new GL.Scene(), camera = new GL.PerspectiveCamera(), parent = new GL.Group();
+  const child = new GL.Mesh(new GL.BoxGeometry(), new GL.MeshBasicMaterial()); parent.add(child); source.add(parent);
+  const mirror = createVillageGpuMirror(factory()); mirror.sync(source, camera);
+  const ownParent = mirror.scene.children[0], ownChild = ownParent.children[0];
+  let compositions = 0, multiplies = 0;
+  const compose = child.updateMatrix.bind(child); child.updateMatrix = () => { compositions++; compose(); };
+  for (const object of [ownParent, ownChild]) {
+    const multiply = object.matrixWorld.multiplyMatrices.bind(object.matrixWorld);
+    object.matrixWorld.multiplyMatrices = (...args) => { multiplies++; return multiply(...args); };
+  }
+  mirror.sync(source, camera); mirror.scene.updateMatrixWorld();
+  assert.equal(compositions, 1); assert.equal(multiplies, 0);
+  child.position.set(2, 3, 4); mirror.sync(source, camera);
+  assert.deepEqual(ownChild.matrixWorld.toArray(), child.matrixWorld.toArray()); assert.equal(multiplies, 1);
+  parent.position.set(-4, 1, 8); mirror.sync(source, camera);
+  assert.deepEqual(ownChild.matrixWorld.toArray(), child.matrixWorld.toArray()); assert.equal(multiplies, 3);
+  const other = new GL.Group(); other.position.set(12, 0, -3); source.add(other); other.add(child); mirror.sync(source, camera);
+  assert.deepEqual(ownChild.matrixWorld.toArray(), child.matrixWorld.toArray()); mirror.dispose();
+});
+
+function animatedFigure(frames) {
+  const actor = new GL.Group(), lean = new GL.Group(), plane = new GL.Mesh(frames[0], new GL.MeshBasicMaterial());
+  plane.customDepthMaterial = new GL.MeshDepthMaterial();
+  actor.userData.show = geometry => { plane.geometry = geometry; };
+  actor.add(lean); lean.add(plane); return { actor, plane };
+}
+
+test("walking-frame wrappers survive repeated steps and retire with their actor", () => {
+  const source = new GL.Scene(), camera = new GL.PerspectiveCamera();
+  const frames = Array.from({ length: 8 }, () => new GL.PlaneGeometry());
+  const { actor, plane } = animatedFigure(frames); source.add(actor);
+  let sourceDisposals = 0, wrapperDisposals = 0;
+  for (const frame of frames) frame.addEventListener("dispose", () => sourceDisposals++);
+  const wrappers = new Map(), mirror = createVillageGpuMirror(factory());
+  for (let step = 0; step < 40; step++) {
+    plane.geometry = frames[step % frames.length]; mirror.sync(source, camera);
+    const wrapper = mirror.scene.children[0].children[0].children[0].geometry;
+    if (!wrappers.has(plane.geometry)) { wrappers.set(plane.geometry, wrapper); wrapper.addEventListener("dispose", () => wrapperDisposals++); }
+    else assert.equal(wrapper, wrappers.get(plane.geometry), "a later gait cycle reuses the same GPU frame");
+  }
+  assert.equal(mirror.stats().ownedGeometryViews, 8); assert.equal(wrapperDisposals, 0);
+  assert.equal(mirror.stats().geometryViewsCreated, 8); assert.equal(mirror.stats().geometryViewsRetired, 0);
+  source.remove(actor); mirror.sync(source, camera);
+  assert.equal(mirror.stats().ownedGeometryViews, 0); assert.equal(wrapperDisposals, 8);
+  assert.equal(mirror.stats().geometryViewsRetired, 8);
+  mirror.dispose(); assert.equal(sourceDisposals, 0); assert.equal(wrapperDisposals, 8);
+});
+
+test("animated geometry retention is bounded and does not retain replaced scenery", () => {
+  const source = new GL.Scene(), camera = new GL.PerspectiveCamera();
+  const { actor, plane } = animatedFigure([new GL.PlaneGeometry()]); source.add(actor);
+  const scenery = new GL.Mesh(new GL.BoxGeometry(), new GL.MeshBasicMaterial()); source.add(scenery);
+  const mirror = createVillageGpuMirror(factory()); mirror.sync(source, camera);
+  const oldScenery = mirror.scene.children[1].geometry; let retired = 0; oldScenery.addEventListener("dispose", () => retired++);
+  scenery.geometry = new GL.BoxGeometry(2, 2, 2);
+  for (let frame = 0; frame < 100; frame++) { plane.geometry = new GL.PlaneGeometry(); mirror.sync(source, camera); }
+  assert.equal(mirror.stats().ownedGeometryViews, 65, "at most 64 actor frames plus the live scenery");
+  assert.equal(retired, 1, "ordinary replaced geometry retires immediately");
+  source.remove(actor, scenery); mirror.sync(source, camera); assert.equal(mirror.stats().ownedGeometryViews, 0);
+  mirror.dispose();
+});

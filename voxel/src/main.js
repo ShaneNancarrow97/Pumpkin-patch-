@@ -283,6 +283,13 @@ function handle(e) {
   if (e.type === "vip-arrived") whisper("Baron Brassbolt has arrived, purse bulging", "guest");
   if (e.type === "hollow-restored") { farmNews("Restoration complete. The Hollow House is ready to open.", "hollow-restored"); save(); audio.tone(880); }
   if (e.type === "recipe-discovered") { farmNews(`Recipe discovered: ${M.RECIPE_BY_ID[e.recipe]?.name ?? "a new dish"}.`, `recipe:${e.recipe}`); save(); audio.tone(880); }
+  if (e.type === "homecoming-unlocked") {
+    const bond = M.HOME_BONDS.find(b => b.id === e.id);
+    if (bond) {
+      farmNews(`${bond.name}: matching knit & beanie colours unlocked. Find them in Outfits.`, `homecoming:${e.id}`);
+      save();
+    }
+  }
   if (e.type === "ingredient-delivery") { whisper("Ingredients delivered to the pantry", "kitchen"); save(); audio.tone(660); }
   if (e.type === "cooking-complete") { whisper("A fresh batch is ready", "kitchen"); save(); }
   if (e.type === "carving-sold") { scene.sale(e.fee, "carving"); audio.tone(760); if (state.carvingStand.carved === 1) whisper(`Your first guest lantern: ${M.STAND_DESIGN_BY_ID[e.design].name} for ${money(e.fee)}`, "coin"); }

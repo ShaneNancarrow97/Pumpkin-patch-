@@ -1,6 +1,15 @@
 // A painted-looking dusk on the existing sky dome: broad cloud banks, a warm
 // horizon and distant ridges. The village itself still supplies every near view.
 export const VILLAGE_DUSK_ART = Object.freeze({ longitudeRepeats: 2, driftTurnsPerSecond: .00012, seamWidth: .06, strength: .86 });
+// Compress only the dome's brightest clouds before the shared ACES pass. A
+// single scale preserves violet/rose ratios; lamps and the moon stay luminous.
+export const VILLAGE_SKY_HIGHLIGHTS = Object.freeze({ knee: .12, shoulder: .24, haloSize: 88, haloOpacity: .34 });
+export function villageSkyHighlightScale(peak) {
+  const { knee, shoulder } = VILLAGE_SKY_HIGHLIGHTS;
+  if (!Number.isFinite(peak) || peak <= knee) return 1;
+  const excess = peak - knee;
+  return (knee + excess / (1 + excess / shoulder)) / peak;
+}
 export const VILLAGE_DUSK_SKY = Object.freeze({
   cloudOctaves: 4, cloudWarpSamples: 1, cloudHashes: 20, silhouetteLayers: 3,
   addedMeshes: 0, addedDrawCalls: 0, addedLights: 0, addedTextures: 0, addedPasses: 0,
@@ -142,7 +151,12 @@ const FRAGMENT = `
       colour = mix(colour, vec3(.045, .028, .075), (1. - smoothstep(middleRidge - .003, middleRidge + .003, y)) * .8);
       colour = mix(colour, vec3(.025, .018, .043), (1. - smoothstep(nearRidge - .003, nearRidge + .003, y)) * .86);
     }
-    gl_FragColor = vec4(clamp(colour, vec3(0.), vec3(${VILLAGE_DUSK_SKY.maxLinearChannel})), 1.);
+    colour = clamp(colour, vec3(0.), vec3(${VILLAGE_DUSK_SKY.maxLinearChannel}));
+    float peak = max(colour.r, max(colour.g, colour.b));
+    float excess = max(0., peak - ${VILLAGE_SKY_HIGHLIGHTS.knee});
+    float shoulder = ${VILLAGE_SKY_HIGHLIGHTS.knee} + excess / (1. + excess / ${VILLAGE_SKY_HIGHLIGHTS.shoulder});
+    colour *= min(1., shoulder / max(peak, .00001));
+    gl_FragColor = vec4(colour, 1.);
   }`;
 
 // Dress only the existing buildHorizon().userData.sky. Its uniform objects,
@@ -159,7 +173,7 @@ export function dressVillageDuskSky(mesh) {
   material.uniforms.villageDuskTime = time;
   material.uniforms.villageDuskArt = art; material.uniforms.villageDuskArtReady = ready;
   material.fragmentShader = FRAGMENT;
-  material.customProgramCacheKey = () => `${key}|village-dusk-sky-v4`;
+  material.customProgramCacheKey = () => `${key}|village-dusk-sky-v5`;
   material.needsUpdate = true;
   mesh.userData.villageDuskSky = stats;
   let disposed = false;

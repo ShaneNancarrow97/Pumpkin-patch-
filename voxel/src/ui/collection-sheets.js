@@ -1,4 +1,5 @@
 import { renderOutfitPresets, bindOutfitPresets } from "./village-outfit-presets.js";
+import { renderHomecoming, renderWardrobeColours } from "./homecoming.js";
 // The wardrobe, the journal (favours, the scrapbook and the library) and the book reader.
 import * as M from "../model.js";
 import { money, segmented, decorIcon } from "./kit.js";
@@ -23,13 +24,8 @@ export function collectionSheets(ui) {
       return `<article class="card outfit${wearing ? " current" : ""}">${portrait(c.id)}<div><h3>${c.name}</h3><p>${c.description}</p>${c.collection === "90s-horror" ? `<p class="small">90s Halloween</p>` : ""}</div>
         ${gate ? `<div><span class="small">${gate.reason}</span><button class="button" disabled>Village quest</button></div>` : wearing ? `<button class="button" disabled>Wearing</button>` : owned ? `<button class="button" data-wear="${c.id}">Wear</button>` : `<button class="button gold" data-costume="${c.id}" ${s.coins < c.price ? "disabled" : ""}>${money(c.price)}${s.coins < c.price ? `<small>need ${money(c.price - s.coins)}</small>` : ""}</button>`}</article>`;
     }).join("");
-    const key = who === "natalie" ? "sweater" : "beanie";
-    const colours = worn === who + "-base" ? `<h3 class="section">${who === "natalie" ? "Natalie’s knit" : "Shane’s beanie"}</h3>` + M.LOOKS[who].map((l) => {
-      const owned = s.looks.owned.includes(l.id), wearing = s.looks[who] === l.id;
-      return `<article class="card"><span class="thumb"><span class="swatch" style="background:#${l[key].toString(16).padStart(6, "0")}"></span></span><div><h3>${l.name}</h3><p>${wearing ? "Wearing now" : owned ? "In the wardrobe" : "A new colour for the original outfit"}</p></div>
-        <button class="button ${wearing ? "" : owned ? "" : "gold"}" data-look="${who}:${l.id}" ${wearing || (!owned && s.coins < l.price) ? "disabled" : ""}>${wearing ? "Worn" : owned ? "Wear" : money(l.price)}</button></article>`;
-    }).join("") : `<p class="small">Colours for the knit and beanie show with the original outfit.</p>`;
-    return people + sets + cards + colours;
+    const colours = renderWardrobeColours(s, who, M.LOOKS[who]);
+    return people + sets + cards + colours + renderHomecoming(s);
   }
 
   function favours(s) {

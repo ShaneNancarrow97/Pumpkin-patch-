@@ -1,0 +1,32 @@
+/* A quiet shared ledger fold, beneath the task or wardrobe the player opened. */
+.homecoming-discoveries{--keepsake-small:var(--vf-small,max(12px,calc(12px / var(--tv-zoom,1))));--keepsake-target:var(--vf-target,max(44px,calc(44px / var(--tv-zoom,1))));--keepsake-ink:#f8e9d2;--keepsake-muted:#d5c2d8;--keepsake-gold:#e7c48b;margin-top:18px;border-top:1px solid #d4ae7540;color:var(--keepsake-ink)}
+.homecoming-discoveries>summary{display:flex;align-items:center;gap:10px;min-height:var(--keepsake-target);padding:9px 0;list-style:none;cursor:pointer;font-size:var(--keepsake-small)}
+.homecoming-discoveries>summary::-webkit-details-marker{display:none}
+.homecoming-discoveries>summary>span{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
+.homecoming-discoveries>summary .vf-art{--vf-art-size:26px}
+.homecoming-discoveries>summary b{font-weight:500;line-height:1.4;text-wrap:pretty}
+.homecoming-discoveries>summary>small{font-size:inherit;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--keepsake-gold)}
+.homecoming-discoveries>summary>i{font-style:normal;color:var(--keepsake-gold);transition:transform .16s ease}
+.homecoming-discoveries[open]>summary>i{transform:rotate(180deg)}
+.homecoming-discoveries>summary:focus-visible{outline:2px solid #ffe0a5;outline-offset:4px;border-radius:4px}
+.homecoming-discoveries .homecoming-intro,.homecoming-discoveries .homecoming-footnote{margin:5px 0 14px;font-size:var(--keepsake-small);line-height:1.55;color:var(--keepsake-muted)}
+.homecoming-card{padding:13px 0;border-top:1px solid #d4ae7526}
+.homecoming-card>header{display:flex;gap:10px;align-items:center}
+.homecoming-card>header>.vf-art{--vf-art-size:36px}
+.homecoming-card>header>div{min-width:0;flex:1}
+.homecoming-card>header small{display:block;font-size:var(--keepsake-small);color:var(--keepsake-gold);line-height:1.4}
+.homecoming-card>header h3{margin:3px 0 0;font:500 max(18px,var(--keepsake-small))/1.25 var(--village-display,Georgia,serif);color:var(--keepsake-ink)}
+.homecoming-count{flex:none;font-size:var(--keepsake-small);font-variant-numeric:tabular-nums;color:var(--keepsake-gold)}
+.homecoming-card>p{margin:10px 0;font-size:var(--keepsake-small);line-height:1.5;color:var(--keepsake-muted)}
+.homecoming-steps{display:grid;gap:8px;margin:11px 0 0;padding:0;list-style:none}
+.homecoming-steps>li{display:flex;align-items:center;gap:8px;font-size:var(--keepsake-small);line-height:1.4;color:var(--keepsake-muted)}
+.homecoming-step-mark{flex:0 0 16px;text-align:center;color:var(--keepsake-gold)}
+.homecoming-steps>li>span:nth-child(2){flex:1;min-width:0}
+.homecoming-steps small{display:block;font-size:inherit;color:#c6aecc}
+.homecoming-steps b{flex:none;font-size:inherit;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.homecoming-steps>.is-complete .homecoming-step-mark,.homecoming-steps>.is-complete b{color:#d8e3b7}
+.homecoming-colours{display:flex;flex-wrap:wrap;gap:8px 14px;margin:10px 0;font-size:var(--keepsake-small);line-height:1.4;color:var(--keepsake-ink)}
+.homecoming-colours>span{display:flex;gap:7px;align-items:center}
+.homecoming-colours i{width:18px;height:18px;flex:none;border-radius:50%;background:var(--keepsake-colour);border:1px solid #efd6a666;box-shadow:inset 0 1px #fff2c73b}
+.homecoming-look{border-color:#d3ae7566}
+@media(prefers-reduced-motion:reduce){.homecoming-discoveries>summary>i{transition:none}}
