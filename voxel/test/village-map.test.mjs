@@ -6,6 +6,7 @@ import { renderVillageChapter } from "../src/ui/village-chapters.js";
 import { TOWN } from "../src/content/village-town-square.js";
 import { CAVE_ENTRY } from "../src/village-expansion-spatial.js";
 import { EXPANSION_AREA_BY_ID } from "../src/content/village-expansion.js";
+import { VILLAGE_PLACES } from "../src/content/village-places.js";
 import { villageMapDistricts, villageMapAreas, villageMapLivePins, villageMapPoint, villageMapSnapshotPoint, villageMapLandmarks, renderVillageMap as renderMap, VILLAGE_MAP_SIZE, VILLAGE_MAP_BOUNDS } from "../src/ui/village-map.js";
 
 // A deterministic projection stub tests the renderer independently of WebGL.
@@ -92,6 +93,21 @@ test("landmark shortcuts preserve the existing routes and current gathering read
   assert.equal(villageMapLandmarks(state).find(p => p.id === "forage:fallen-timber").sub, "0 gathering spots ready");
   state.village.nodes[logs[0].id] = 0;
   assert.equal(villageMapLandmarks(state).find(p => p.id === "forage:fallen-timber").sub, "1 gathering spots ready");
+});
+
+test("five public gardens join the folded landmark list without crowding district pins", () => {
+  const state = village(), before = JSON.stringify(M.saveData(state)), { html } = renderVillageMap(state);
+  const list = html.slice(html.indexOf('<details class="vg-map-landmarks"'));
+  assert.match(list, /Landmarks, gardens &amp; gathering paths|Landmarks, gardens & gathering paths/);
+  for (const place of VILLAGE_PLACES) {
+    assert.match(list, new RegExp(`data-vg-focus="${place.id}" data-pad-label="Show walking route to `));
+    assert.ok(list.includes(place.name));
+    assert.doesNotMatch(html.slice(0, html.indexOf('<details class="vg-map-landmarks"')), new RegExp(`data-vg-focus="${place.id}"`));
+  }
+  assert.doesNotMatch(list.slice(0, list.indexOf('<summary>')), / open[ =>]/, 'the longer list stays folded by default');
+  assert.equal(JSON.stringify(M.saveData(state)), before);
+  state.village.decor.placed.push({ instance: 'court-replacement', id: 'market-crates', x: 49.5, z: 40.5, rotation: 0 });
+  assert.equal(villageMapLandmarks(state).find(p => p.id === 'reading-court').sub, 'The public garden beside Elowen’s library');
 });
 
 test("chapter integration reads only state and validates selected IDs", () => {

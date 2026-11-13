@@ -17,6 +17,7 @@ import { createVillagePadState, normaliseVillageStick } from "../src/ui/village-
 import { spread } from "../src/rules/village-spread.js";
 import { resolveVillageResidentInteraction, villageResidentLocation, withinResidentReach } from "../src/village-resident-interaction.js";
 import { EXPANSION_AREAS } from "../src/content/village-expansion.js";
+import { VILLAGE_PLACES } from "../src/content/village-places.js";
 
 // The game controller is exercised without a renderer or browser. Rules and
 // room plans stay real; the small DOM adapter below supplies the input port.
@@ -209,6 +210,50 @@ test("People uses live spread districts and the Square, and labels unknown or lo
 test("surface location gives nested districts precedence over Hollow Green", () => {
   for(const id of ["copse","quarry","moor","acre","marsh"]){const area=EXPANSION_AREAS.find(a=>a.id===id),point={x:(area.bounds[0]+area.bounds[2])/2,z:(area.bounds[1]+area.bounds[3])/2};assert.equal(villageResidentLocation(point).area,id,id);}
   assert.equal(villageResidentLocation({x:58*K,z:58*K}).area,"square");
+});
+
+test('public garden routes use pad confirm and the existing back flow without moving or saving the owner', t => {
+  const h = harness(t); welcome(h); const before = JSON.stringify(M.saveData(h.state)), saves = h.saves.length;
+  const position = h.game.status.position;
+  for (const place of VILLAGE_PLACES) {
+    h.press(9); h.press(0); assert.equal(h.game.status.panel, 'map');
+    const landmark = h.$(`[data-vg-focus="${place.id}"]`);
+    assert.ok(landmark); landmark.focus(); h.press(0);
+    assert.equal(h.game.status.panel, null, place.id + ' returns to the walking view');
+    assert.equal(h.game.status.surveying, false, 'the route retains the walking camera');
+    assert.equal(h.game.status.waypoint.placeId, place.id);
+    assert.equal(h.game.status.waypoint.label, place.name);
+    assert.deepEqual(h.game.status.position, position, 'choosing a garden never teleports');
+    h.press(9); h.press(0); h.press(1);
+    assert.equal(h.game.status.panel, 'navigation', 'Circle returns from Map to its existing parent');
+    h.press(1); assert.equal(h.game.status.panel, null);
+  }
+  assert.equal(JSON.stringify(M.saveData(h.state)), before);
+  assert.equal(h.saves.length, saves, 'public routes do not save story or relationship progress');
+});
+
+test('garden markers follow a newly blocked approach and header names the local surface place', t => {
+  const h = harness(t); welcome(h);
+  for (const place of VILLAGE_PLACES) {
+    h.game.showPanel('map'); h.click(`[data-vg-focus="${place.id}"]`);
+    const target = h.game.status.waypoint;
+    h.game.place(target.x, target.z); assert.equal(h.$('#vg-place').textContent, place.name);
+    h.state.village.decor.placed.push({ instance: 'live-' + place.id, id: 'market-crates', x: target.x, z: target.z, rotation: 0 });
+    const before = JSON.stringify(M.saveData(h.state)); h.game.render(); const next = h.game.status.waypoint;
+    assert.ok(next); assert.ok(Math.hypot(next.x - target.x, next.z - target.z) > 0);
+    assert.ok(villageCellFree(h.state, next.x, next.z));
+    assert.equal(JSON.stringify(M.saveData(h.state)), before);
+  }
+  h.game.place(58 * K, 76.7 * K); assert.equal(h.$('#vg-place').textContent, 'Moonclock Square', 'the gate retains the Square name');
+  for (const id of ['copse', 'quarry', 'moor', 'marsh', 'acre']) {
+    const area = EXPANSION_AREAS.find(a => a.id === id);
+    h.game.place((area.bounds[0] + area.bounds[2]) / 2, (area.bounds[1] + area.bounds[3]) / 2);
+    assert.equal(h.$('#vg-place').textContent, area.name, id + ' retains its district identity');
+  }
+  h.game.enterHall('elowen-library'); assert.equal(h.$('#vg-place').textContent, "Elowen's library");
+  h.game.leaveHall(); h.view.activeExpansionArea = 'cave-shallows';
+  h.game.place(33 * K, 24 * K); assert.equal(h.$('#vg-place').textContent, 'The Lantern Steps', 'cave identity wins over surface coordinates');
+  h.view.activeExpansionArea = null;
 });
 
 test("initial greeting choices expose only real offers and the actual chat cooldown", t => {

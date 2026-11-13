@@ -6,6 +6,7 @@ import {expansionAreaInfo,requirementMet} from '../rules/village-expansion-acces
 import { QUEST_BY_ID } from "../content/village-quests.js";
 import { patchLevel, stallOpen, nodeReady } from "../model.js";
 import { TOWN } from "../content/village-town-square.js";
+import { villagePlaces } from "../content/village-places.js";
 import { CAVE_ENTRY } from "../village-expansion-spatial.js";
 import { villageItemIcon } from "./village-item-markup.js";
 import { villageUIIcon } from "./village-ui-icon-markup.js";
@@ -145,6 +146,7 @@ export function villageMapLandmarks(state) {
     { id: "rowan-workshop", name: "Rowan’s workshop", sub: state.village.built["rowan-workshop"] ? "Workshop restored" : "A carpenter’s next chapter", art: "workbench", ui: "workshop" },
     { id: "velvet-bat", name: "The Velvet Bat", sub: "Vesper’s tavern", art: "moth-lamp", ui: "home" },
     { id: "stall", name: "Rattlewood’s stall", sub: stallOpen(state) ? "Decorations & upgrades" : "Help Rowan reopen it", art: "market-crates" },
+    ...villagePlaces(state),
     ...FORAGE_AREAS.map(area => ({ id: `forage:${area.id}`, name: area.name, sub: `${NODES.filter(n => n.district === "green" && n.material === area.material && nodeReady(state, n.id)).length} gathering spots ready`, art: area.material, material: MATERIAL_BY_ID[area.material]?.name })),
   ];
 }
@@ -154,7 +156,7 @@ export function renderVillageMap(state, { selectedDistrict, position = null, res
   const pins = villageMapLivePins({ residents, objective }), landmarks = villageMapLandmarks(state);
   const objectivePin = pins.find(p => p.kind === "objective");
   const followed = objectivePin ? `<div class="vg-map-followed"><span aria-hidden="true">✦</span><div><small>Following${objectivePin.viaEntrance ? " · below the Copse" : ""}</small><b>${esc(objectivePin.label)}</b>${objectivePin.viaEntrance ? '<p>The marker shows the cave entrance. Follow the stairs below to your next step.</p>' : ""}</div><button type="button" ${objectiveAction(objectivePin)} aria-label="Show walking route to ${esc(objectivePin.label)}">Show route <span aria-hidden="true">↗</span></button></div>` : "";
-  const places = `<details class="vg-map-landmarks" data-vg-details-key="map-landmarks"><summary>Landmarks & gathering paths <span aria-hidden="true">⌄</span></summary><div>${landmarks.map(place => `<button type="button" class="vg-map-place" data-vg-focus="${place.id}">${villageUIIcon(place.ui, 38) || villageItemIcon(place.art) || villageItemIcon("moth-lamp")}<span><b>${esc(place.name)}</b><small>${esc(place.sub)}</small></span><i aria-hidden="true">›</i></button>`).join("")}</div></details>`;
+  const places = `<details class="vg-map-landmarks" data-vg-details-key="map-landmarks"><summary>Landmarks, gardens & gathering paths <span aria-hidden="true">⌄</span></summary><div>${landmarks.map(place => `<button type="button" class="vg-map-place" data-vg-focus="${place.id}" data-pad-label="Show walking route to ${esc(place.name)}">${villageUIIcon(place.ui, 38) || villageItemIcon(place.art) || villageItemIcon("moth-lamp")}<span><b>${esc(place.name)}</b><small>${esc(place.sub)}</small></span><i aria-hidden="true">›</i></button>`).join("")}</div></details>`;
   const html = `<div class="vg-map-page"><p class="vg-map-intro">Choose a place in the village for its story, requirements and walking route.</p><div class="vg-map-board">${mapGraphic(areas, selected, isSurface(currentArea) ? position : null, pins, portrait, snapshot, snapshotError, showResidents)}${districtDetails(district, areas)}</div>${followed}${places}<p class="vg-ch-footnote">A picture of the village when you opened the map. Caves are marked at their surface entrance.</p></div>`;
   return { title: "Mothlight map", tag: "The village & its walking paths", html };
 }
