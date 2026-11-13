@@ -20,7 +20,7 @@ function familyOf(material, mesh) {
 }
 
 /** Explicit ports of village custom shaders. Source resources and clocks remain borrowed. */
-export function createVillageNodeEffects({ renderer, trackMaterial = () => {}, trackGeometry = () => {} } = {}) {
+export function createVillageNodeEffects({ renderer, trackMaterial = () => {}, trackGeometry = () => {}, resolveTexture = value => value } = {}) {
   const materials = new Set(), geometries = new Set(), bindings = [], bufferBindings = [], descriptors = new Map(), cache = new Map();
   const stats = { materials: 0, geometries: 0, pointsDraws: 0, fallbackTextures: 0, families: {} };
   let fallback = null, disposed = false;
@@ -32,8 +32,8 @@ export function createVillageNodeEffects({ renderer, trackMaterial = () => {}, t
         fallback.needsUpdate = true;
         stats.fallbackTextures = 1;
       }
-      const node = T.texture(ref.value || fallback);
-      bindings.push(() => { node.value = ref.value || fallback; });
+      const node = T.texture(resolveTexture(ref.value) || fallback);
+      bindings.push(() => { node.value = resolveTexture(ref.value) || fallback; });
       return node;
     }
     const value = ref.value?.clone ? ref.value.clone() : ref.value;

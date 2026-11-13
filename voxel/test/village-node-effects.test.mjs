@@ -115,11 +115,20 @@ test('sky starts with a bounded fallback sampler and follows atlas-style palette
       villageDuskArt: { value: null }, villageDuskArtReady: { value: 0 },
     },
   });
-  const mesh = new THREE.Mesh(new THREE.SphereGeometry(600, 8, 6), source), effects = createVillageNodeEffects();
+  let resolved = 0;
+  const wrappers = new Map();
+  const resolveTexture = texture => {
+    resolved++;
+    if (!texture) return null;
+    if (!wrappers.has(texture)) wrappers.set(texture, new GPU.Texture(texture.image));
+    return wrappers.get(texture);
+  };
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(600, 8, 6), source), effects = createVillageNodeEffects({ resolveTexture });
   const art = new THREE.DataTexture(new Uint8Array([80, 30, 110, 255]), 1, 1); art.colorSpace = THREE.SRGBColorSpace;
   let artDisposed = 0; art.addEventListener('dispose', () => artDisposed++);
   try {
     const material = effects.convert(source, mesh), generated = build(material, mesh);
+    assert.equal(resolved, 1, 'initial texture binding uses the shared resolver');
     assert.equal(effects.stats.fallbackTextures, 1);
     assert.equal((generated.fragment.match(/textureSample\(/g) || []).length, 2);
     const textureNodes = generated.builder.nodes.filter(node => node.isTextureNode && node.uvNode !== null);
@@ -127,9 +136,10 @@ test('sky starts with a bounded fallback sampler and follows atlas-style palette
     assert.ok(textureNodes.every(node => node.value.image.width === 1));
     source.uniforms.villageDuskArt.value = art; source.uniforms.villageDuskArtReady.value = 1;
     source.uniforms.middle.value.setRGB(.02, .01, .06); source.uniforms.villageDuskTime.value = 4.5; effects.sync();
-    assert.ok(textureNodes.every(node => node.value === art));
+    assert.ok(textureNodes.every(node => node.value === wrappers.get(art)));
+    assert.equal(resolved, 2, 'live texture binding uses the shared resolver');
     source.uniforms.villageDuskArt.value = null; source.uniforms.villageDuskArtReady.value = 0; effects.sync();
     assert.ok(textureNodes.every(node => node.value !== art && node.value.isDataTexture));
     effects.dispose(); assert.equal(artDisposed, 0);
-  } finally { effects.dispose(); art.dispose(); source.dispose(); mesh.geometry.dispose(); }
+  } finally { effects.dispose(); for (const wrapper of wrappers.values()) wrapper.dispose(); art.dispose(); source.dispose(); mesh.geometry.dispose(); }
 });
