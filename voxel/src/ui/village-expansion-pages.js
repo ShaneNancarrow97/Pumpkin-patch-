@@ -2,6 +2,7 @@
 // village controller; browsing a reward or a locked route cannot award it.
 import { villageUIIcon } from './village-ui-icon-markup.js';
 import { expansionIcon } from './village-expansion-icon-markup.js';
+import { villageItemIcon } from './village-item-markup.js';
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const button = (label, attrs = '', disabled = false) => `<button type="button" class="vgx-action" ${attrs}${disabled ? ' disabled' : ''}>${label}</button>`;
 const list = value => Array.isArray(value) ? value : [];
@@ -14,7 +15,8 @@ export const expansionRewardMarkup = rewards => {
   if (!rows.length) return '';
   return `<div class="vgx-rewards" aria-label="Rewards">${rows.map(r => {
     const label = r.kind === 'coins' ? `£${r.amount ?? ''}` : `${r.amount > 1 ? r.amount + ' × ' : ''}${r.name ?? r.title ?? r.label ?? r.id?.replaceAll('-', ' ') ?? 'A keepsake'}`;
-    return `<span class="vgx-reward-${esc(r.kind)}"><small>${esc(REWARD_KINDS[r.kind] ?? 'A keepsake')}</small><b>${esc(label)}</b></span>`;
+    const art = villageItemIcon(r.id) || expansionIcon(r.id, 28);
+    return `<span class="vgx-reward-${esc(r.kind)}${art ? " vc-reward-illustrated" : ""}">${art}<span class="vc-reward-copy"><small>${esc(REWARD_KINDS[r.kind] ?? 'A keepsake')}</small><b>${esc(label)}</b></span></span>`;
   }).join('')}</div>`;
 };
 
@@ -74,7 +76,7 @@ function actLabel(info, type) {
   if (type === 'farm') return info.started ? info.verb ?? 'Report back' : 'I’ll see to it';
   return info.verb ?? (['mine', 'vein', 'story-vein'].includes(type) ? 'Mine this vein' : type === 'build' || type === 'restore' ? 'Restore this place' : type === 'talk' ? 'Continue the story' : 'Look closer');
 }
-const costMarkup = info => list(info.costRows).length ? `<ul class="vgx-costs" aria-label="What this needs">${info.costRows.map(r => `<li class="${r.have >= r.need ? 'is-met' : ''}"><span>${esc(String(r.id).replaceAll('-', ' '))}</span><b>${Math.min(r.have, r.need)}/${r.need}</b></li>`).join('')}</ul>` : '';
+const costMarkup = info => list(info.costRows).length ? `<ul class="vgx-costs" aria-label="What this needs">${info.costRows.map(r => `<li class="${r.have >= r.need ? 'is-met' : ''}"><span class="vc-cost-name">${villageItemIcon(r.id) || expansionIcon(r.id,24)}<span>${esc(String(r.id).replaceAll('-', ' '))}</span></span><b>${Math.min(r.have, r.need)}/${r.need}</b></li>`).join('')}</ul>` : '';
 
 export function expansionActivityMarkup(info, { nearby = false, slot = null } = {}) {
   if (!info) return { title: 'A place waiting for its story', tag: 'Mothlight', html: '<p>Follow the lanterns to another discovery.</p>' };
@@ -101,7 +103,7 @@ export function expansionActivityMarkup(info, { nearby = false, slot = null } = 
   const errand = type === 'farm' && nearby && !complete && info.started && info.canAct === false ? `<div class="vgx-actions">${button('Return to your farm', 'data-vg-home data-pad-default')}</div>` : '';
   const help = puzzle && nearby && !complete ? `<details class="vgx-help" data-vg-details-key="puzzle-help:${esc(info.id)}"><summary>A little help</summary><p>${esc(info.hint ?? 'Look closely at the objects around you. Their shapes and order tell a story.')}</p>${button('Show me the solution', `data-vgx-solve="${esc(info.id)}"`)}</details>` : '';
   const found = complete && info.found ? `<div class="vgx-found"><small>What you found</small><p>${esc(info.found)}</p></div>` : '';
-  return { title: info.name ?? info.title ?? 'A new discovery', tag, html: `<section class="vgx-activity"><div class="vgx-activity-seal" aria-hidden="true">${icon}</div><p class="vgx-description">${esc(info.description ?? info.text ?? info.blurb)}</p>${reason}${costMarkup(info)}${clue}${picked}${controls}${errand}${found}${help}${expansionRewardMarkup(info.rewards)}</section>` };
+  return { title: info.name ?? info.title ?? 'A new discovery', tag, html: `<section class="vgx-activity vc-activity${complete ? " is-complete" : ""}"><header class="vc-activity-header"><div class="vgx-activity-seal" aria-hidden="true">${icon}</div><div><small>${complete ? "A memory restored" : puzzle ? "A Mothlight mystery" : ["mine","vein","story-vein"].includes(type) ? "Beneath the lanterns" : "Your next discovery"}</small><p class="vgx-description">${esc(info.description ?? info.text ?? info.blurb)}</p></div></header>${reason}${costMarkup(info)}${clue}${picked}<div class="vc-activity-controls">${controls}${errand}</div>${found}${help}${list(info.rewards).length ? `<section class="vc-activity-rewards"><h4>${complete ? "Keepsakes received" : "This discovery brings"}</h4>${expansionRewardMarkup(info.rewards)}</section>` : ""}</section>` };
 }
 
 // The card shown for a few seconds when a chapter ends: what changed, what it brought, and what comes next.

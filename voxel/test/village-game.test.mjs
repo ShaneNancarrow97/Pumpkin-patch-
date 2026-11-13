@@ -744,6 +744,23 @@ test('the compact location phase follows the saved village clock and journal tit
  assert.equal(h.$('#vg-coins').parentElement,h.$('#vg-header-tools'));assert.equal(h.$('#vg-person').parentElement,h.$('#vg-header-tools'));assert.equal(h.$('#vg-fullscreen').parentElement,h.$('#vg-header-tools'));
  assert.equal(h.$('#vg-clock').closest('.vf-clock').parentElement,h.$('#vg-location'));
  for(const [clock,label] of [[0,'Night'],[900,'Dawn'],[1800,'Dusk'],[2700,'Night']]){s.village.clock=clock;const before=JSON.stringify(M.saveData(s));h.game.render();assert.equal(h.$('#vg-clock').textContent,label);assert.equal(JSON.stringify(M.saveData(s)),before);}
- h.game.showPanel('journal');const titleArt=h.$('.vf-panel-title-art');assert.ok(titleArt.querySelector('.vf-art-moth'));assert.equal(titleArt.attributes['aria-hidden'],'true');
- h.click('[data-vg-journal-tab="discover"]');h.click('[data-vg-journal-tab="active"]');assert.equal(h.$('.vf-panel-title-art'),titleArt);assert.ok(h.$('.vf-panel-title-art').querySelector('.vf-art-moth'));
+ h.game.showPanel('journal');const titleArt=h.$('.vf-panel-title-art');assert.ok(titleArt.querySelector('.vf-art-journal'));assert.equal(titleArt.attributes['aria-hidden'],'true');
+ h.click('[data-vg-journal-tab="discover"]');h.click('[data-vg-journal-tab="active"]');assert.equal(h.$('.vf-panel-title-art'),titleArt);assert.ok(h.$('.vf-panel-title-art').querySelector('.vf-art-journal'));
+});
+
+
+test("Rowan’s discovery action opens his real workshop and still requires a nearby conversation", t => {
+  const h=harness(t);welcome(h);h.meet("rowan");
+  const before=JSON.stringify(M.saveData(h.state));
+  h.chooseIntent("workshop","farm-gifts");
+  assert.equal(h.game.status.panel,"upgrades");
+  assert.equal(h.game.status.panelId,null);
+  assert.ok(h.$("#vg-panel-body").querySelectorAll("[data-vg-upgrade]").length>0,"the workshop exposes actual improvements instead of an empty economy page");
+  assert.equal(JSON.stringify(M.saveData(h.state)),before,"opening the workshop cannot spend or grant anything");
+  h.game.back();h.meet("rowan");
+  const spot=h.view.folk.talkSpot;h.view.folk.talkSpot=id=>id==="rowan"?{x:87,z:30}:spot(id);
+  const beforeRemote=JSON.stringify(M.saveData(h.state));h.chooseIntent("workshop","farm-gifts");
+  assert.equal(h.game.status.panel,null,"a stale distant conversation cannot open the workshop");
+  assert.equal(h.game.status.waypoint.folkId,"rowan");
+  assert.equal(JSON.stringify(M.saveData(h.state)),beforeRemote);
 });
