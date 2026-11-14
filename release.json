@@ -1,0 +1,48 @@
+{
+  "runtimeCommit": "7be8eed82e04bb1c8d891a3aa6a0bf1cc9948cdf",
+  "sourceBranch": "contractor/village-settings",
+  "baseCommit": "ce9183589acd4940f0aead8d2b8703cb86208c75",
+  "htmlFile": "Pumpkin-Patch-Village-Settings.html",
+  "htmlSha256": "43057ebb2980cf22982859fd08f6ffa0e87a651baa9781504db1eaf2aa0a1ed4",
+  "bytes": 61832139,
+  "saveVersion": 20,
+  "fullTests": {
+    "passed": 1602,
+    "failed": 0,
+    "skipped": 0
+  },
+  "verification": {
+    "ui": {
+      "passed": true,
+      "checks": 16,
+      "evidence": "verification/ui-browser.json"
+    },
+    "native-webgl": {
+      "passed": true,
+      "checks": 11,
+      "evidence": "verification/native-webgl-phase.json"
+    },
+    "native-webgpu": {
+      "passed": true,
+      "checks": 17,
+      "evidence": "verification/native-webgpu-browser.json"
+    },
+    "compatibility-smoke": {
+      "passed": true,
+      "checks": 54,
+      "evidence": "verification/compatibility-smoke.json"
+    }
+  },
+  "independentBuildIdentical": true,
+  "deviceFpsCertified": false,
+  "zip": {
+    "file": "Pumpkin-Patch-Village-Settings.zip",
+    "bytes": 43994581,
+    "sha256": "37ff51d6d1faafd45cf61a92eff04c6552054a38a9b18416b2e958d636315a64",
+    "crcPassed": true,
+    "htmlInsideMatches": true,
+    "htmlSha256": "43057ebb2980cf22982859fd08f6ffa0e87a651baa9781504db1eaf2aa0a1ed4"
+  },
+  "nativeScope": "Completed WebGL phase retained from the exact artifact; GPU continuation rerun after correcting a test assumption about the mandatory ACES/sRGB output call. Original counter-review report retained. Native buffer 480x270; no physical-device FPS claim.",
+  "sourceReviewCommit": "134fb53ab46b488888ad97421f025c963a759897"
+}
