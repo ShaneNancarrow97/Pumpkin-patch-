@@ -62,3 +62,9 @@ The runtime is `b63b369971f8a4a4eb7a6c0d8922e41794051215`. Two independent build
 - ZIP CRC verification passes, and its contained HTML has the same SHA-256. See `release.json`, the compressed complete reports and the selected captures in `verification/`.
 
 The actual GPU entrance, walking, workshop and return captures were visually reviewed. Separate UI-only captures were reviewed at phone, desktop and TV sizes. The compressed browser reports retain exact fixture and harness hashes. Native WebGPU acceptance uses actual GPU canvas pixels because this software Chromium runner has a separately reproduced stale page-compositor limitation. UI draw-held screenshots are labelled separately and are not rendering or performance evidence. No APK is rebuilt in this pass.
+
+## Downloads
+
+[HTML](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ad2e841c406a7f64d2cd17529ae5b18d5988e851/Pumpkin-Patch-Smooth-Village.html) · [ZIP](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ad2e841c406a7f64d2cd17529ae5b18d5988e851/Pumpkin-Patch-Smooth-Village.zip)
+
+Published from isolated artifact commit `ad2e841c406a7f64d2cd17529ae5b18d5988e851`. Both public downloads returned HTTP 200 with the exact tested bytes and SHA-256. The ZIP contains the same HTML and opening/save-transfer instructions.

@@ -42,5 +42,10 @@
     "zipSha256": "4657f025f84b94e6b5828e7d4f245f494d808d4dcbea49c3ccd7472fcab6bf12",
     "crcPassed": true,
     "htmlInsideMatches": true
+  },
+  "downloadCommit": "ad2e841c406a7f64d2cd17529ae5b18d5988e851",
+  "downloads": {
+    "Pumpkin-Patch-Smooth-Village.html": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ad2e841c406a7f64d2cd17529ae5b18d5988e851/Pumpkin-Patch-Smooth-Village.html",
+    "Pumpkin-Patch-Smooth-Village.zip": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ad2e841c406a7f64d2cd17529ae5b18d5988e851/Pumpkin-Patch-Smooth-Village.zip"
   }
 }
