@@ -43,5 +43,12 @@
     "htmlInsideMatches": true,
     "htmlSha256": "43057ebb2980cf22982859fd08f6ffa0e87a651baa9781504db1eaf2aa0a1ed4"
   },
-  "nativeScope": "Completed WebGL phase retained from the exact artifact; GPU continuation rerun after correcting a test assumption about the mandatory ACES/sRGB output call. Original counter-review report retained. Native buffer 480x270; no physical-device FPS claim."
+  "nativeScope": "Completed WebGL phase retained from the exact artifact; GPU continuation rerun after correcting a test assumption about the mandatory ACES/sRGB output call. Original counter-review report retained. Native buffer 480x270; no physical-device FPS claim.",
+  "sourceReviewCommit": "134fb53ab46b488888ad97421f025c963a759897",
+  "downloadCommit": "ea29a1cb2b6ece76e8e3c80cbed1c1907762831c",
+  "downloads": {
+    "Pumpkin-Patch-Village-Settings.html": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ea29a1cb2b6ece76e8e3c80cbed1c1907762831c/Pumpkin-Patch-Village-Settings.html",
+    "Pumpkin-Patch-Village-Settings.zip": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ea29a1cb2b6ece76e8e3c80cbed1c1907762831c/Pumpkin-Patch-Village-Settings.zip"
+  },
+  "publicVerification": "verification/public-downloads.json"
 }

@@ -2,7 +2,7 @@
 
 This pass starts from `ce9183589acd4940f0aead8d2b8703cb86208c75` on `contractor/village-settings`. It adds a village settings gear and one compact page for renderer, post effects, shadows, render distance and grass quality. Settings apply live and save automatically. The farm keeps its own graphics choices. Save version remains **20**; progression, economy, quests and artwork are unchanged.
 
-Runtime `7be8eed82e04bb1c8d891a3aa6a0bf1cc9948cdf` is built and verified below. Publication receipts are added after immutable download verification. Read the preceding [frame-budget handover](../village-frame-budget/README.md) and [renderer ownership handover](../village-webgpu/README.md) before extending the rendering paths.
+Runtime `7be8eed82e04bb1c8d891a3aa6a0bf1cc9948cdf` is built and verified below. Both public downloads return HTTP200 and match the verified bytes and hashes. Read the preceding [frame-budget handover](../village-frame-budget/README.md) and [renderer ownership handover](../village-webgpu/README.md) before extending the rendering paths.
 
 ## Player controls and preferences
 
@@ -87,4 +87,9 @@ MOTHLIGHT_EXPECTED_SHA=43057ebb2980cf22982859fd08f6ffa0e87a651baa9781504db1eaf2a
 
 Read `release.json` for machine-readable receipts and `verification/` for reports and captures. The source stays on an isolated contractor branch above `contractor/village-frame-budget`; Claude's lead checkout is untouched. The last remote check found `voxel-reference` at `8da66cb93893047d56bad874583f509ba0209d7a` and the base at `ce9183589acd4940f0aead8d2b8703cb86208c75`.
 
-DOWNLOAD_LINKS_PENDING
+## Verified downloads
+
+- [Pumpkin-Patch-Village-Settings.html](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ea29a1cb2b6ece76e8e3c80cbed1c1907762831c/Pumpkin-Patch-Village-Settings.html) — 61,832,139 bytes, HTTP200 and SHA-256 verified.
+- [Pumpkin-Patch-Village-Settings.zip](https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ea29a1cb2b6ece76e8e3c80cbed1c1907762831c/Pumpkin-Patch-Village-Settings.zip) — 43,994,581 bytes, HTTP200 and SHA-256 verified.
+
+Extract the ZIP and open its HTML. Use the existing save-file export/import to transfer a farm between browser/file locations. The ZIP includes these instructions. Artifact commit: `ea29a1cb2b6ece76e8e3c80cbed1c1907762831c`.
