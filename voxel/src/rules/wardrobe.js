@@ -15,10 +15,11 @@ export const VILLAGE_COSTUME_GATES = Object.freeze({
   "natalie-mummy": { quest: "lantern-keepers", title: "The Lantern Keepers" },
   "shane-mummy": { quest: "lantern-keepers", title: "The Lantern Keepers" },
 });
+// These are granted rewards, including later level rewards, never a cash unlock.
 // Existing owned costumes are always kept, including saves made before the village gate.
 export function costumeVillageGate(s, id) {
   const gate = typeof id === "string" && Object.hasOwn(VILLAGE_COSTUME_GATES, id) ? VILLAGE_COSTUME_GATES[id] : null;
-  return !gate || s?.wardrobe?.owned?.includes(id) || s?.village?.quests?.[gate.quest]?.done ? null : { ...gate, reason: `Earn in Mothlight: ${gate.title}` };
+  return !gate || s?.wardrobe?.owned?.includes(id) ? null : { ...gate, reason: `Earn in Mothlight: ${gate.title}` };
 }
 export function buyCostume(s, id) {
   if (costumeVillageGate(s, id)) return false;
@@ -88,6 +89,17 @@ export function buyLook(s, who, id) {
     s.coins -= look.price;
     s.looks.owned.push(id);
   }
+  s.looks[who] = id;
+  return true;
+}
+// An explicit Wear look action equips the original outfit and an already earned
+// colour together. Discovering the keepsake itself never changes either outfit.
+export function wearVillageLook(s, who, id) {
+  const look = lookFor(who, id), base = who + "-base";
+  if (!s || s.paused || !look?.secret || !Array.isArray(s.looks?.owned) || !s.looks.owned.includes(id)
+    || !Array.isArray(s.wardrobe?.owned) || !s.wardrobe.owned.includes(base) || !s.wardrobe.equipped || typeof s.wardrobe.equipped !== "object" || Array.isArray(s.wardrobe.equipped)
+    || (s.wardrobe.equipped[who] === base && s.looks[who] === id)) return false;
+  s.wardrobe.equipped[who] = base;
   s.looks[who] = id;
   return true;
 }

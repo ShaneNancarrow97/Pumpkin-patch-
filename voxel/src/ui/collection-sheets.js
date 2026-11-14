@@ -16,16 +16,20 @@ export function collectionSheets(ui) {
 
   function wardrobe(s) {
     const people = segmented("who", "Whose wardrobe", [["natalie", "Natalie"], ["shane", "Shane"]], who);
-    const sets = segmented("set", "Collections", [["all", "Everything"], ["classic", "Classic"], ["90s-horror", "90s Halloween"]], collection);
-    const outfits = M.costumeCatalog.filter((c) => c.character === who && (collection === "all" || (collection === "classic" ? c.collection !== "90s-horror" : c.collection === collection)));
+    const sets = segmented("set", "Collections", [["all", "Everything"], ["classic", "Classic"], ["90s-horror", "90s Halloween"], ["village", "Village"]], collection);
+    const village = collection === "village", rewardFor = id => Object.hasOwn(M.VILLAGE_COSTUME_GATES, id) ? M.VILLAGE_COSTUME_GATES[id] : null;
+    const outfits = M.costumeCatalog.filter((c) => c.character === who && (village ? rewardFor(c.id) : collection === "all" || (collection === "classic" ? c.collection !== "90s-horror" : c.collection === collection)));
     const worn = s.wardrobe.equipped[who];
     const cards = outfits.map((c) => {
-      const owned = s.wardrobe.owned.includes(c.id), wearing = worn === c.id, gate = M.costumeVillageGate(s, c.id);
-      return `<article class="card outfit${wearing ? " current" : ""}">${portrait(c.id)}<div><h3>${c.name}</h3><p>${c.description}</p>${c.collection === "90s-horror" ? `<p class="small">90s Halloween</p>` : ""}</div>
-        ${gate ? `<div><span class="small">${gate.reason}</span><button class="button" disabled>Village quest</button></div>` : wearing ? `<button class="button" disabled>Wearing</button>` : owned ? `<button class="button" data-wear="${c.id}">Wear</button>` : `<button class="button gold" data-costume="${c.id}" ${s.coins < c.price ? "disabled" : ""}>${money(c.price)}${s.coins < c.price ? `<small>need ${money(c.price - s.coins)}</small>` : ""}</button>`}</article>`;
+      const owned = s.wardrobe.owned.includes(c.id), wearing = worn === c.id, gate = M.costumeVillageGate(s, c.id), reward = rewardFor(c.id);
+      return `<article class="card outfit${wearing ? " current" : ""}${reward ? " village-reward-outfit" : ""}">${portrait(c.id)}<div><h3>${c.name}</h3><p>${c.description}</p>${reward ? `<p class="small">Village route · ${reward.title}</p><p class="small">Matching outfits for Shane &amp; Natalie</p>` : c.collection === "90s-horror" ? `<p class="small">90s Halloween</p>` : ""}</div>
+        ${gate ? `<button class="button" disabled aria-label="Earn Moonlit mummy through ${gate.title}">Reward outfit</button>` : wearing ? `<button class="button" disabled>Wearing</button>` : owned ? `<button class="button" data-wear="${c.id}"${s.paused ? " disabled" : ""}>Wear</button>` : `<button class="button gold" data-costume="${c.id}" ${s.paused || s.coins < c.price ? "disabled" : ""}>${money(c.price)}${s.coins < c.price ? `<small>need ${money(c.price - s.coins)}</small>` : ""}</button>`}</article>`;
     }).join("");
-    const colours = renderWardrobeColours(s, who, M.LOOKS[who]);
-    return people + sets + cards + colours + renderHomecoming(s);
+    const colours = renderWardrobeColours(s, who, M.LOOKS[who], { villageCollection: village });
+    const collected = village ? outfits.filter(c => s.wardrobe.owned.includes(c.id)).length + M.LOOKS[who].filter(look => look.secret && s.looks.owned.includes(look.id)).length : 0;
+    const heading = village ? `<header class="village-wardrobe-heading"><span class="ico i-outfits" aria-hidden="true"></span><div><h3>Village rewards</h3><p>Outfits and secret colours to bring home. Earned for both, wearable in both worlds.</p></div><span>${collected} / 4<span class="sr"> collected for ${who === "natalie" ? "Natalie" : "Shane"}</span></span></header>` : "";
+    const content = heading + cards + colours + renderHomecoming(s);
+    return people + sets + (village ? `<section class="village-wardrobe" aria-label="Village rewards for ${who === "natalie" ? "Natalie" : "Shane"}">${content}</section>` : content);
   }
 
   function favours(s) {
@@ -103,7 +107,7 @@ export function collectionSheets(ui) {
     read(id) { reading = id; ui.openSheet("reader"); },
     wardrobe: {
       eyebrow: "Dress for the witching hour", title: "Wardrobe",
-      body() { return renderOutfitPresets(ui.state)+wardrobe(ui.state); },
+      body() { return collection === "village" ? wardrobe(ui.state)+renderOutfitPresets(ui.state) : renderOutfitPresets(ui.state)+wardrobe(ui.state); },
       bind(body) {
         const s = ui.state;
         bindOutfitPresets(body,ui);
@@ -118,6 +122,7 @@ export function collectionSheets(ui) {
         }));
         body.querySelectorAll("[data-wear]").forEach((b) => (b.onclick = () => { if (M.wearCostume(s, b.dataset.wear)) { ui.tone(600); ui.scene.refreshLooks(); ui.draw(); } }));
         body.querySelectorAll("[data-look]").forEach((b) => (b.onclick = () => { const [w, id] = b.dataset.look.split(":"); if (M.buyLook(s, w, id)) { ui.tone(600); ui.scene.refreshLooks(); ui.draw(); } }));
+        body.querySelectorAll("[data-village-look]").forEach((b) => (b.onclick = () => { const [w, id] = b.dataset.villageLook.split(":"); if (M.wearVillageLook(s, w, id)) { ui.tone(600); ui.scene.refreshLooks(); ui.draw(); } }));
       },
     },
     journal: {
