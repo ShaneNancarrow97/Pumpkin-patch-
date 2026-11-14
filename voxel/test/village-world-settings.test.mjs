@@ -94,6 +94,21 @@ test("off stops grass work and a later enable selects the current view before dr
   camera.position.set(15, 5, -15); grass.tick(43, camera); assert.ok(grass.stats().vertices > 0); assert.equal(uniforms.uTime.value, 43);
 });
 
+test("quality round trips preserve exact stationary detail at every hysteresis boundary", () => {
+  for (const nearest of [53, 79, 106]) {
+    const grass = createGrass({ x0: 0, z0: 0, x1: 20, z1: 20, density: .2, scale: 1.5,
+      grow: () => ({ h: .5, colours: [0x527042], flowers: true }), height: () => 0 });
+    const camera = new THREE.PerspectiveCamera(), radius = (Math.SQRT2 * 10 + 1) * 1.5;
+    camera.position.set(15 + radius + nearest, 5, -15); grass.tick(0, camera);
+    const before = grass.stats(), submitted = grass.group.children.map(m => ({ count: m.count, visible: m.visible, geometry: m.geometry }));
+    assert.equal(before.activePatches, 1, `initial patch retained in the ${nearest}m boundary band`);
+    for (const quality of ["low", "balanced", "off", "high"]) { grass.setQuality(quality); grass.tick(1, camera); }
+    const after = grass.stats();
+    for (const key of ["instances", "vertices", "flowerInstances", "activePatches", "fullPatches", "middlePatches", "farPatches"]) assert.equal(after[key], before[key], `${key} restored at ${nearest}m without moving the camera`);
+    assert.deepEqual(grass.group.children.map(m => ({ count: m.count, visible: m.visible, geometry: m.geometry })), submitted);
+  }
+});
+
 test("changing quality inside a hidden surface preserves its ownership and refreshes on return", () => {
   const { grass, scene, camera } = grassFixture(); grass.tick(0, camera); const initial = grass.stats();
   scene.visible = false; grass.setQuality("low"); grass.tick(1, camera);

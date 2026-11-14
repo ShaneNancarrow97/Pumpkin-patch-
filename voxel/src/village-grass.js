@@ -99,7 +99,7 @@ export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale
       blooms.forEach(([x, z, kind], i) => { m.compose(p.set(x, height(x, z) + .01, -z), q.identity(), s.set(1, kind.h * 1.3, 1)); flowers.setMatrixAt(i, m); flowers.setColorAt(i, c.set(petals[(r() * petals.length) | 0])); });
       flowers.castShadow = false; flowers.computeBoundingSphere(); group.add(flowers);
     }
-    patches.push({ mesh, flowers, count: spots.length, flowerCount: blooms.length, x: px + PATCH / 2, z: pz + PATCH / 2, detail: 5 });
+    patches.push({ mesh, flowers, count: spots.length, flowerCount: blooms.length, x: px + PATCH / 2, z: pz + PATCH / 2, detail: 5, rangeVisible: true, flowerRangeVisible: true });
   }
   group.userData.proximityFade={...FADE,mode:"gpu-alpha-hash",worldUnits:true};
   // Counts describe the last selected surface; visible marks a hidden ancestor.
@@ -153,15 +153,21 @@ export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale
       stats.activePatches = stats.fullPatches = stats.middlePatches = stats.farPatches = stats.vertices = stats.fullVertices = stats.instances = stats.fullInstances = stats.flowerInstances = 0;
       for (const pt of patches) {
         const nearest = Math.max(0, Math.hypot(pt.x - cx, pt.z - cz) * scale - radius);
-        const on = nearest < DETAIL.grassFarTo + (pt.mesh.visible ? DETAIL.switchMargin : 0);
-        pt.detail = Math.min(setting.blades, villageGrassDetailLevel(nearest, pt.detail));
-        pt.mesh.geometry = detailGeometry[pt.detail]; pt.mesh.visible = on;
+        // Keep distance hysteresis separate from the quality cap. Turning a
+        // lawn off or drawing one blade must not erase its saved range state.
+        const on = nearest < DETAIL.grassFarTo + (pt.rangeVisible ? DETAIL.switchMargin : 0);
+        pt.rangeVisible = on; pt.detail = villageGrassDetailLevel(nearest, pt.detail);
+        const drawnDetail = Math.min(setting.blades, pt.detail);
+        pt.mesh.geometry = detailGeometry[drawnDetail]; pt.mesh.visible = on;
         // Flower heads share the close-detail fade and are not submitted once
         // every head in the patch is invisible. No plant or collision is removed.
-        if (pt.flowers) pt.flowers.visible = setting.flowers && on && nearest < DETAIL.grassNearTo + (pt.flowers.visible ? DETAIL.switchMargin : 0);
+        if (pt.flowers) {
+          pt.flowerRangeVisible = on && nearest < DETAIL.grassNearTo + (pt.flowerRangeVisible ? DETAIL.switchMargin : 0);
+          pt.flowers.visible = setting.flowers && pt.flowerRangeVisible;
+        }
         if (on) {
-          stats.activePatches++; stats[pt.detail === 5 ? "fullPatches" : pt.detail === 3 ? "middlePatches" : "farPatches"]++;
-          stats.vertices += pt.mesh.count * pt.detail * 6; stats.fullVertices += pt.count * 30;
+          stats.activePatches++; stats[drawnDetail === 5 ? "fullPatches" : drawnDetail === 3 ? "middlePatches" : "farPatches"]++;
+          stats.vertices += pt.mesh.count * drawnDetail * 6; stats.fullVertices += pt.count * 30;
           stats.instances += pt.mesh.count; stats.fullInstances += pt.count;
           if (pt.flowers?.visible) stats.flowerInstances += pt.flowers.count;
         }
