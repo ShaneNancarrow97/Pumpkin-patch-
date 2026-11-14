@@ -1,0 +1,329 @@
+{
+  "htmlSha256": "43057ebb2980cf22982859fd08f6ffa0e87a651baa9781504db1eaf2aa0a1ed4",
+  "bytes": 61832139,
+  "harnessSha256": "b56b5339446ea373daf63d2a3ad45e0ea7b60be2bdb15ba182b4917042d45fad",
+  "fixtureSha256": "4bad58a02093143a30c234f7c636366779dc3f37c4782322e954445f9e166153",
+  "display": {
+    "viewport": [
+      960,
+      540
+    ],
+    "deviceScaleFactor": 0.5,
+    "nativePixelScope": "Native 480x270 buffer bounds software GPU cost; this validates rendering behaviour, not full-resolution visual quality or device FPS."
+  },
+  "scope": "Exact HTML on loopback. Native game RAF/rendering; no held draws, manual tick, advance or manual render. Graphics choices use actual HTML controls. Actual WebGPU canvas pixels are captured separately because this software Chromium runner has a known stale page-compositor limitation. No physical phone/TV FPS claim.",
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageRenderer": "webgl",
+    "villagePost": "balanced",
+    "villageShadows": true,
+    "villageDistance": "far",
+    "villageGrass": "high"
+  },
+  "browserVersion": "154.0.8037.57",
+  "launchArgs": [
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader",
+    "--ignore-gpu-blocklist",
+    "--enable-unsafe-webgpu",
+    "--enable-features=Vulkan",
+    "--use-vulkan=swiftshader",
+    "--disable-vulkan-surface"
+  ],
+  "mode": "native-webgl-completed-phase",
+  "passed": true,
+  "checks": [
+    {
+      "label": "Initial village uses the compatible renderer",
+      "pass": true
+    },
+    {
+      "label": "Header gear opens five village graphics controls",
+      "pass": true
+    },
+    {
+      "label": "Post choices adjust the real WebGL glow strength",
+      "pass": true,
+      "actual": {
+        "subtle": {
+          "enabled": true,
+          "bloomStrength": 0.162,
+          "gradeEnabled": true
+        },
+        "rich": {
+          "enabled": true,
+          "bloomStrength": 0.44999999999999996,
+          "gradeEnabled": true
+        }
+      }
+    },
+    {
+      "label": "Post Off bypasses village post processing",
+      "pass": true
+    },
+    {
+      "label": "Village shadow choice changes the actual WebGL shadow setting",
+      "pass": true
+    },
+    {
+      "label": "Low grass reduces actual submitted instances and vertices while stationary",
+      "pass": true,
+      "actual": {
+        "high": {
+          "patches": 159,
+          "activePatches": 33,
+          "fullPatches": 12,
+          "middlePatches": 8,
+          "farPatches": 13,
+          "vertices": 422988,
+          "fullVertices": 757800,
+          "instances": 25260,
+          "fullInstances": 25260,
+          "flowerInstances": 326,
+          "visible": true,
+          "quality": "high",
+          "selectionPasses": 1,
+          "patchChecks": 159
+        },
+        "low": {
+          "patches": 159,
+          "activePatches": 33,
+          "fullPatches": 0,
+          "middlePatches": 0,
+          "farPatches": 33,
+          "vertices": 68112,
+          "fullVertices": 757800,
+          "instances": 11352,
+          "fullInstances": 25260,
+          "flowerInstances": 0,
+          "visible": true,
+          "quality": "low",
+          "selectionPasses": 2,
+          "patchChecks": 318
+        }
+      }
+    },
+    {
+      "label": "Grass Off removes blade work and stops selection",
+      "pass": true,
+      "actual": {
+        "patches": 159,
+        "activePatches": 0,
+        "fullPatches": 0,
+        "middlePatches": 0,
+        "farPatches": 0,
+        "vertices": 0,
+        "fullVertices": 0,
+        "instances": 0,
+        "fullInstances": 0,
+        "flowerInstances": 0,
+        "visible": false,
+        "quality": "off",
+        "selectionPasses": 2,
+        "patchChecks": 318
+      }
+    },
+    {
+      "label": "High grass returns immediately at a stationary camera",
+      "pass": true,
+      "actual": {
+        "patches": 159,
+        "activePatches": 33,
+        "fullPatches": 12,
+        "middlePatches": 8,
+        "farPatches": 13,
+        "vertices": 422988,
+        "fullVertices": 757800,
+        "instances": 25260,
+        "fullInstances": 25260,
+        "flowerInstances": 326,
+        "visible": true,
+        "quality": "high",
+        "selectionPasses": 3,
+        "patchChecks": 477
+      }
+    },
+    {
+      "label": "Near distance reduces actual chunk range behind graduated fog",
+      "pass": true,
+      "actual": {
+        "before": {
+          "requested": "far",
+          "effective": "far",
+          "mode": "play",
+          "targetDistance": 250,
+          "drawDistance": 250,
+          "fogDensity": 0.007628099416981928,
+          "visiblePatches": 111,
+          "totalPatches": 135
+        },
+        "after": {
+          "requested": "near",
+          "effective": "near",
+          "mode": "play",
+          "targetDistance": 150,
+          "drawDistance": 158.50961539810652,
+          "fogDensity": 0.012036599789258511,
+          "visiblePatches": 46,
+          "totalPatches": 135
+        }
+      }
+    },
+    {
+      "label": "Opening the real map preserves the selected distance and grass policy",
+      "pass": true
+    },
+    {
+      "label": "Far restores the original chunk range",
+      "pass": true
+    }
+  ],
+  "states": {
+    "baseline": {
+      "preferences": {
+        "villageRenderer": "webgl",
+        "villagePost": "balanced",
+        "villageShadows": true,
+        "villageDistance": "far",
+        "villageGrass": "high"
+      },
+      "renderer": {
+        "requested": "webgl",
+        "backend": "webgl",
+        "stage": "disabled",
+        "reason": null,
+        "failureStack": null,
+        "frames": 0
+      },
+      "world": {
+        "distance": {
+          "requested": "far",
+          "effective": "far",
+          "mode": "play",
+          "targetDistance": 250,
+          "drawDistance": 250,
+          "fogDensity": 0.007628099416981928,
+          "visiblePatches": 111,
+          "totalPatches": 135
+        },
+        "grass": {
+          "patches": 159,
+          "activePatches": 33,
+          "fullPatches": 12,
+          "middlePatches": 8,
+          "farPatches": 13,
+          "vertices": 422988,
+          "fullVertices": 757800,
+          "instances": 25260,
+          "fullInstances": 25260,
+          "flowerInstances": 326,
+          "visible": true,
+          "quality": "high",
+          "selectionPasses": 1,
+          "patchChecks": 159
+        }
+      },
+      "active": true,
+      "post": {
+        "enabled": true,
+        "bloomStrength": 0.36,
+        "gradeEnabled": true
+      },
+      "shadows": true,
+      "farm": {
+        "bloom": true,
+        "shadows": true
+      },
+      "position": {
+        "x": 87,
+        "z": -16.5
+      },
+      "place": {
+        "kind": "village",
+        "id": "mothlight"
+      },
+      "glShadows": true
+    },
+    "near": {
+      "preferences": {
+        "villageRenderer": "webgl",
+        "villagePost": "off",
+        "villageShadows": false,
+        "villageDistance": "near",
+        "villageGrass": "high"
+      },
+      "renderer": {
+        "requested": "webgl",
+        "backend": "webgl",
+        "stage": "disabled",
+        "reason": null,
+        "failureStack": null,
+        "frames": 0
+      },
+      "world": {
+        "distance": {
+          "requested": "near",
+          "effective": "near",
+          "mode": "play",
+          "targetDistance": 150,
+          "drawDistance": 158.50961539810652,
+          "fogDensity": 0.012036599789258511,
+          "visiblePatches": 46,
+          "totalPatches": 135
+        },
+        "grass": {
+          "patches": 159,
+          "activePatches": 33,
+          "fullPatches": 12,
+          "middlePatches": 8,
+          "farPatches": 13,
+          "vertices": 422988,
+          "fullVertices": 757800,
+          "instances": 25260,
+          "fullInstances": 25260,
+          "flowerInstances": 326,
+          "visible": true,
+          "quality": "high",
+          "selectionPasses": 3,
+          "patchChecks": 477
+        }
+      },
+      "active": true,
+      "post": {
+        "enabled": false,
+        "bloomStrength": 0,
+        "gradeEnabled": false
+      },
+      "shadows": false,
+      "farm": {
+        "bloom": true,
+        "shadows": true
+      },
+      "position": {
+        "x": 87,
+        "z": -16.5
+      },
+      "place": {
+        "kind": "village",
+        "id": "mothlight"
+      },
+      "glShadows": false
+    }
+  },
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "failedRequests": [],
+  "completePhaseOnly": true,
+  "parentRun": "native-transition-counter-review.json.gz",
+  "parentRunOutcome": "The subsequent WebGPU phase stopped at a test assumption of one render call. Three r169 correctly uses a scene call plus a mandatory ACES/sRGB output call. No runtime fix was needed; the corrected GPU phase is rerun separately on the same HTML."
+}

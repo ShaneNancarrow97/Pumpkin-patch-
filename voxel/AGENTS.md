@@ -1,5 +1,7 @@
 # Pumpkin Patch Voxel: context for coding agents
 
+**Latest village graphics settings:** [`docs/contractor-patches/village-settings/README.md`](docs/contractor-patches/village-settings/README.md) covers live renderer selection, village-only post/shadow choices, fog-backed render distance, grass budgets and the settings drawer. Read its dependency matrix before changing async cancellation, local preferences, farm/village isolation, map capture or control focus. Save version remains 20; exact-build verification and release receipts are recorded in that handover.
+
 **Latest village frame budget:** [`docs/contractor-patches/village-frame-budget/README.md`](docs/contractor-patches/village-frame-budget/README.md) covers nearby controller targets, detached GPU material retirement, shared layout inspection and accepted-frame shadow pacing. Read its dependency matrix before changing source ownership, proximity reach or shadow invalidation. Saves remain version 20.
 
 **Latest village detail polish:** [`docs/contractor-patches/village-detail-polish/README.md`](docs/contractor-patches/village-detail-polish/README.md) covers exact cached lamp selection, stationary/hidden grass selection, hidden outdoor animation buffers, scratch transforms and once-per-material-sync atlas inspection. Read its dependency matrix before changing camera caches, surface visibility, lamp power or texture batching. Saves remain version 20.
