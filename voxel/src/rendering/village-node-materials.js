@@ -32,9 +32,9 @@ function createVillageNodeMaterials({ renderer } = {}) {
   // Source materials remain the authoritative legacy/atlas view. Variants are
   // owned per material + mesh, with layout-based reuse across directional frames.
   const instances = /* @__PURE__ */ new WeakMap();
-  const owned = /* @__PURE__ */ new Set(), entries = /* @__PURE__ */ new Set(), cache = /* @__PURE__ */ new WeakMap(), bindings = /* @__PURE__ */ new Set(), derived = /* @__PURE__ */ new Set();
-  let disposed = false;
-  const stats = { ready: true, converted: 0, effectMaterials: 0, unsupported: 0, roles: {}, derivedInstanceBytes: 0, textureSynchronizations: 0, textureUploads: 0 };
+  const owned = /* @__PURE__ */ new Set(), entries = /* @__PURE__ */ new Set(), cache = /* @__PURE__ */ new WeakMap(), bindings = /* @__PURE__ */ new Set(), derived = /* @__PURE__ */ new Set(), meshEntries = /* @__PURE__ */ new WeakMap(), effectEntries = /* @__PURE__ */ new WeakMap(), layouts = /* @__PURE__ */ new Map();
+  let disposed = false, layoutDepth = 0;
+  const stats = { ready: true, converted: 0, effectMaterials: 0, unsupported: 0, roles: {}, derivedInstanceBytes: 0, textureSynchronizations: 0, textureUploads: 0, activeMaterials: 0, materialRetirements: 0, layoutScans: 0 };
   const textures = createVillageNodeTextures(), resolveTexture = textures.resolve;
   const effects = createVillageNodeEffects({ renderer, resolveTexture });
   let currentBindings = null;
@@ -42,12 +42,26 @@ function createVillageNodeMaterials({ renderer } = {}) {
     bindings.add(fn);
     currentBindings?.add(fn);
   };
-  const layout = (mesh) => Object.entries(mesh?.geometry?.attributes ?? {}).sort(([a], [b]) => a.localeCompare(b)).map(([name, a]) => `${name}:${a.itemSize}:${!!a.normalized}:${!!a.isInstancedBufferAttribute}`).join("|") + `|instances:${!!mesh?.instanceMatrix}|colours:${!!mesh?.instanceColor}`;
+  function layout(mesh) {
+    const geometry = mesh?.geometry;
+    let shape = layoutDepth ? layouts.get(geometry) : undefined;
+    if (shape === undefined) {
+      shape = Object.entries(geometry?.attributes ?? {}).sort(([a], [b]) => a.localeCompare(b)).map(([name, a]) => `${name}:${a.itemSize}:${!!a.normalized}:${!!a.isInstancedBufferAttribute}`).join("|");
+      stats.layoutScans++;
+      if (layoutDepth) layouts.set(geometry, shape);
+    }
+    return shape + `|instances:${!!mesh?.instanceMatrix}|colours:${!!mesh?.instanceColor}`;
+  }
   function retire(entry) {
+    if (!entries.has(entry)) return;
     for (const fn of entry.bindings ?? []) bindings.delete(fn);
     entries.delete(entry);
+    meshEntries.get(entry.mesh)?.delete(entry);
+    const byMesh = cache.get(entry.source), key = entry.mesh ?? entry.source;
+    if (byMesh?.get(key) === entry) byMesh.delete(key);
     owned.delete(entry.material);
     entry.material.dispose();
+    stats.activeMaterials = owned.size; stats.materialRetirements++;
   }
   const lampNear = T.uniform(0);
   let lampNearRef = null;
@@ -76,8 +90,13 @@ function createVillageNodeMaterials({ renderer } = {}) {
     owned.add(material);
     const entry = { source, material, mesh, bindings: currentBindings, version: source.version, layout: layout(mesh) };
     entries.add(entry);
+    if (mesh) {
+      let related = meshEntries.get(mesh);
+      if (!related) meshEntries.set(mesh, related = new Set());
+      related.add(entry);
+    }
     currentBindings = null;
-    stats.converted++;
+    stats.converted++; stats.activeMaterials = owned.size;
     return entry;
   }
   function instanceData(mesh, kind) {
@@ -157,7 +176,11 @@ function createVillageNodeMaterials({ renderer } = {}) {
         stats.ready = false;
         throw new UnsupportedVillageMaterial(source, mesh, "unknown custom shader");
       }
-      byMesh.set(cacheObject, { material: result, effect: true });
+      const entry = { material: result, effect: true };
+      byMesh.set(cacheObject, entry);
+      let related = effectEntries.get(cacheObject);
+      if (!related) effectEntries.set(cacheObject, related = new Set());
+      related.add({ byMesh, cacheObject, entry });
       currentBindings = null;
       stats.effectMaterials++;
       return result;
@@ -336,7 +359,29 @@ function createVillageNodeMaterials({ renderer } = {}) {
     byMesh.set(cacheObject, entry);
     return material;
   }
-  return { convert, convertObject: (source) => effects.convertObject(source), sync() {
+  return { convert, convertObject: (source) => effects.convertObject(source),
+  // Shared geometry is inspected once in this synchronous mirror snapshot.
+  // Standalone conversion remains immediate, and a failed sync cannot cache it.
+  batchLayouts(read) {
+    if (disposed) throw new Error("Village material bridge is disposed");
+    layoutDepth++;
+    try { return read(); }
+    finally { if (--layoutDepth === 0) layouts.clear(); }
+  },
+  // Only detached sources are released; hidden homes/scenery retain their lease.
+  // Source materials, geometry, textures and their shared atlas wrappers survive.
+  releaseObject(mesh) {
+    for (const entry of meshEntries.get(mesh) ?? []) retire(entry);
+    meshEntries.delete(mesh);
+    const slots = instances.get(mesh);
+    if (slots) for (const record of slots.values()) {
+      derived.delete(record); stats.derivedInstanceBytes -= record.array.byteLength;
+    }
+    instances.delete(mesh);
+    for (const { byMesh, cacheObject, entry } of effectEntries.get(mesh) ?? []) if (byMesh.get(cacheObject) === entry) byMesh.delete(cacheObject);
+    effectEntries.delete(mesh);
+    effects.releaseObject(mesh);
+  }, sync() {
     if (disposed) return;
     textures.batch(() => {
       for (const fn of bindings) fn();
@@ -349,16 +394,21 @@ function createVillageNodeMaterials({ renderer } = {}) {
     stats.textureWrappers = textures.stats.wrappers;
     stats.textureSynchronizations = textures.stats.synchronizations;
     stats.textureUploads = textures.stats.uploads;
+    stats.activeEffectMaterials = effects.stats.materials;
+    stats.activePointGeometries = effects.stats.geometries;
+    stats.activeBindings = bindings.size + effects.stats.bindings + effects.stats.bufferBindings;
   }, dispose() {
     if (disposed) return;
     disposed = true;
     effects.dispose();
     textures.dispose();
-    for (const material of owned) material.dispose();
+    for (const entry of entries) retire(entry);
     owned.clear();
     entries.clear();
     bindings.clear();
     derived.clear();
+    layouts.clear(); stats.derivedInstanceBytes = 0;
+    stats.activeBindings = stats.activeEffectMaterials = stats.activePointGeometries = stats.textureWrappers = 0;
     if (renderer?.nodes?.library?.lightNodes && oldPoint) renderer.nodes.library.lightNodes.set(GPU.PointLight, oldPoint);
   }, stats };
 }

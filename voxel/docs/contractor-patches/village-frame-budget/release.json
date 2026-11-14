@@ -1,0 +1,51 @@
+{
+  "runtimeCommit": "b63b369971f8a4a4eb7a6c0d8922e41794051215",
+  "sourceBranch": "contractor/village-frame-budget",
+  "baseCommit": "5046b4bab3f30fad978f8fc33100230b6fd0f65d",
+  "htmlFile": "Pumpkin-Patch-Smooth-Village.html",
+  "htmlSha256": "ac84f3f317131a77c4efc1c1994d621626d683f5db6aeaa4538b357330caf4a0",
+  "bytes": 61815329,
+  "saveVersion": 20,
+  "fullTests": {
+    "passed": 1574,
+    "failed": 0,
+    "skipped": 0
+  },
+  "verification": {
+    "native-webgpu": {
+      "passed": true,
+      "checks": 44,
+      "evidence": "verification/native-webgpu.json"
+    },
+    "native-webgl": {
+      "passed": true,
+      "checks": 21,
+      "evidence": "verification/native-webgl.json"
+    },
+    "wardrobe-ui": {
+      "passed": true,
+      "checks": 32,
+      "evidence": "verification/wardrobe-ui.json"
+    },
+    "compatibility-smoke": {
+      "passed": true,
+      "checks": 54,
+      "evidence": "verification/compatibility-smoke.json"
+    }
+  },
+  "independentBuildIdentical": true,
+  "deviceFpsCertified": false,
+  "newCostumeArtwork": false,
+  "zip": {
+    "zipFile": "Pumpkin-Patch-Smooth-Village.zip",
+    "zipBytes": 43995712,
+    "zipSha256": "4657f025f84b94e6b5828e7d4f245f494d808d4dcbea49c3ccd7472fcab6bf12",
+    "crcPassed": true,
+    "htmlInsideMatches": true
+  },
+  "downloadCommit": "ad2e841c406a7f64d2cd17529ae5b18d5988e851",
+  "downloads": {
+    "Pumpkin-Patch-Smooth-Village.html": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ad2e841c406a7f64d2cd17529ae5b18d5988e851/Pumpkin-Patch-Smooth-Village.html",
+    "Pumpkin-Patch-Smooth-Village.zip": "https://raw.githubusercontent.com/ShaneNancarrow97/Pumpkin-patch-/ad2e841c406a7f64d2cd17529ae5b18d5988e851/Pumpkin-Patch-Smooth-Village.zip"
+  }
+}

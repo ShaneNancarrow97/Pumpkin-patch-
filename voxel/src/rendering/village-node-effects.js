@@ -21,9 +21,43 @@ function familyOf(material, mesh) {
 
 /** Explicit ports of village custom shaders. Source resources and clocks remain borrowed. */
 export function createVillageNodeEffects({ renderer, trackMaterial = () => {}, trackGeometry = () => {}, resolveTexture = value => value } = {}) {
-  const materials = new Set(), geometries = new Set(), bindings = [], bufferBindings = [], descriptors = new Map(), cache = new Map();
-  const stats = { materials: 0, geometries: 0, pointsDraws: 0, fallbackTextures: 0, families: {} };
-  let fallback = null, disposed = false;
+  const materials = new Set(), geometries = new Set(), bindings = new Set(), bufferBindings = new Set(), descriptors = new Map(), cache = new Map(), owners = new WeakMap();
+  const stats = { materials: 0, geometries: 0, pointsDraws: 0, fallbackTextures: 0, bindings: 0, bufferBindings: 0, families: {} };
+  let fallback = null, disposed = false, currentOwner = null;
+  function addBinding(fn, buffer = false) {
+    (buffer ? bufferBindings : bindings).add(fn);
+    (buffer ? currentOwner?.buffers : currentOwner?.bindings)?.add(fn);
+    stats.bindings = bindings.size; stats.bufferBindings = bufferBindings.size;
+  }
+  function removeOwner(owner) {
+    for (const fn of owner.bindings) bindings.delete(fn);
+    for (const fn of owner.buffers) bufferBindings.delete(fn);
+    if (owner.material && materials.delete(owner.material)) owner.material.dispose();
+    if (owner.geometry && geometries.delete(owner.geometry)) owner.geometry.dispose();
+    if (owner.sourceMaterial) {
+      const sources = cache.get(owner.sourceMaterial);
+      if (sources?.get(owner.mesh) === owner.material) sources.delete(owner.mesh);
+      if (sources?.size === 0) cache.delete(owner.sourceMaterial);
+    }
+    if (owner.descriptor && descriptors.get(owner.mesh) === owner.descriptor) descriptors.delete(owner.mesh);
+    stats.materials = materials.size; stats.geometries = geometries.size; stats.pointsDraws = descriptors.size;
+    stats.bindings = bindings.size; stats.bufferBindings = bufferBindings.size;
+  }
+  // Every per-mesh conversion owns its bindings. Shared legacy sources never
+  // imply shared GPU materials: instance nodes and point descriptors are local.
+  function withOwner(mesh, sourceMaterial, build) {
+    const previous = currentOwner, owner = { mesh, sourceMaterial, bindings: new Set(), buffers: new Set() };
+    currentOwner = owner;
+    try {
+      const value = build(owner);
+      if (!value) { removeOwner(owner); return value; }
+      let entries = owners.get(mesh);
+      if (!entries) owners.set(mesh, entries = new Set());
+      entries.add(owner);
+      return value;
+    } catch (error) { removeOwner(owner); throw error; }
+    finally { currentOwner = previous; }
+  }
   function bindUniform(ref, type) {
     if (!ref) throw new Error('Village node effect is missing a required source uniform');
     if (type === 'texture') {
@@ -33,12 +67,12 @@ export function createVillageNodeEffects({ renderer, trackMaterial = () => {}, t
         stats.fallbackTextures = 1;
       }
       const node = T.texture(resolveTexture(ref.value) || fallback);
-      bindings.push(() => { node.value = resolveTexture(ref.value) || fallback; });
+      addBinding(() => { node.value = resolveTexture(ref.value) || fallback; });
       return node;
     }
     const value = ref.value?.clone ? ref.value.clone() : ref.value;
     const node = T.uniform(value, type);
-    bindings.push(() => {
+    addBinding(() => {
       if (node.value?.copy && ref.value) node.value.copy(ref.value);
       else node.value = ref.value;
     });
@@ -46,6 +80,7 @@ export function createVillageNodeEffects({ renderer, trackMaterial = () => {}, t
   }
   function ownMaterial(material, family) {
     materials.add(material); stats.materials = materials.size;
+    if (currentOwner) currentOwner.material = material;
     stats.families[family] = (stats.families[family] || 0) + 1;
     material.userData.villageNodeEffect = family;
     trackMaterial(material);
@@ -58,20 +93,20 @@ export function createVillageNodeEffects({ renderer, trackMaterial = () => {}, t
     const data = new GPU.InstancedInterleavedBuffer(source.array, 16, 1).setUsage(source.usage);
     const attribute = source.usage === GPU.DynamicDrawUsage ? T.instancedDynamicBufferAttribute : T.instancedBufferAttribute;
     const matrix = T.mat4(...[0, 4, 8, 12].map(offset => attribute(data, 'vec4', 16, offset)));
-    bufferBindings.push(() => {
+    addBinding(() => {
       if (mesh.instanceMatrix.array !== data.array) throw new Error('Village effect instance capacity changed; rebuild its mirror');
       data.version = mesh.instanceMatrix.version;
-    });
+    }, true);
     let tint = T.vec3(1);
     if (mesh.instanceColor) {
       const sourceColor = mesh.instanceColor;
       const colour = new GPU.InstancedBufferAttribute(sourceColor.array, 3).setUsage(sourceColor.usage);
       const colourAttribute = sourceColor.usage === GPU.DynamicDrawUsage ? T.instancedDynamicBufferAttribute : T.instancedBufferAttribute;
       tint = colourAttribute(colour, 'vec3', 3, 0);
-      bufferBindings.push(() => {
+      addBinding(() => {
         if (mesh.instanceColor.array !== colour.array) throw new Error('Village effect colour capacity changed; rebuild its mirror');
         colour.version = mesh.instanceColor.version;
-      });
+      }, true);
     }
     return { matrix, tint };
   }
@@ -179,19 +214,31 @@ export function createVillageNodeEffects({ renderer, trackMaterial = () => {}, t
       let sources = cache.get(sourceMaterial);
       if (!sources) cache.set(sourceMaterial, sources = new Map());
       if (sources.has(sourceMesh)) return sources.get(sourceMesh);
-      const result = family === 'sky' ? createVillageSkyNodeMaterial(sourceMaterial, bindUniform) : instancedMaterial(sourceMaterial, sourceMesh, family);
-      ownMaterial(result, family); sources.set(sourceMesh, result);
-      return result;
+      return withOwner(sourceMesh ?? sourceMaterial, sourceMaterial, owner => {
+        // A standalone sky conversion uses its material as the lease key.
+        owner.mesh = sourceMesh;
+        const result = family === 'sky' ? createVillageSkyNodeMaterial(sourceMaterial, bindUniform) : instancedMaterial(sourceMaterial, sourceMesh, family);
+        ownMaterial(result, family); sources.set(sourceMesh, result);
+        return result;
+      });
     },
     convertObject(sourceMesh) {
       if (disposed) throw new Error('Village node effects are disposed');
+      if (!sourceMesh?.isPoints) return null;
       if (descriptors.has(sourceMesh)) return descriptors.get(sourceMesh);
-      const descriptor = createVillagePointsDescriptor(sourceMesh, bindUniform, { renderer });
-      if (!descriptor) return null;
-      ownMaterial(descriptor.material, descriptor.material.userData.villageNodePoints.family);
-      geometries.add(descriptor.geometry); stats.geometries = geometries.size; stats.pointsDraws++;
-      trackGeometry(descriptor.geometry); descriptors.set(sourceMesh, descriptor);
-      return descriptor;
+      return withOwner(sourceMesh, null, owner => {
+        const descriptor = createVillagePointsDescriptor(sourceMesh, bindUniform, { renderer });
+        if (!descriptor) return null;
+        owner.geometry = descriptor.geometry; owner.descriptor = descriptor;
+        ownMaterial(descriptor.material, descriptor.material.userData.villageNodePoints.family);
+        geometries.add(descriptor.geometry); stats.geometries = geometries.size;
+        trackGeometry(descriptor.geometry); descriptors.set(sourceMesh, descriptor); stats.pointsDraws = descriptors.size;
+        return descriptor;
+      });
+    },
+    releaseObject(sourceMesh) {
+      for (const owner of owners.get(sourceMesh) ?? []) removeOwner(owner);
+      owners.delete(sourceMesh);
     },
     sync() {
       if (disposed) return;
@@ -205,8 +252,10 @@ export function createVillageNodeEffects({ renderer, trackMaterial = () => {}, t
       for (const material of materials) material.dispose();
       for (const geometry of geometries) geometry.dispose();
       fallback?.dispose();
-      bindings.length = bufferBindings.length = 0;
+      bindings.clear(); bufferBindings.clear();
       cache.clear(); descriptors.clear(); materials.clear(); geometries.clear();
+      stats.materials = stats.geometries = stats.pointsDraws = 0;
+      stats.bindings = stats.bufferBindings = 0;
     },
   };
 }

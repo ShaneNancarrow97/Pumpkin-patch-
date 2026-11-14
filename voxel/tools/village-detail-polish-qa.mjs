@@ -10,7 +10,7 @@ import * as M from '../src/model.js';
 import { VILLAGE_ATMOSPHERE_CYCLE_SECONDS } from '../src/content/village-grade.js';
 import { OUTSIDE_VIEW } from '../src/village-camera.js';
 
-const args = process.argv.slice(2), webgl = args.includes('--webgl'), gpuReadback = args.includes('--gpu-readback');
+const args = process.argv.slice(2), webgl = args.includes('--webgl'), gpuReadback = args.includes('--gpu-readback'), frameBudget = args.includes('--frame-budget');
 if (!args[0] || !args[1] || webgl === gpuReadback) throw Error('Usage: node tools/village-detail-polish-qa.mjs HTML OUT (--webgl | --gpu-readback) [--mobile]');
 const file = path.resolve(args[0]), out = path.resolve(args[1]), hash = value => createHash('sha256').update(value).digest('hex');
 const viewport = args.includes('--mobile') ? { width: 844, height: 390 } : { width: 960, height: 540 };
@@ -95,14 +95,23 @@ try {
   report.ready = await status(); check('Requested renderer becomes ready', webgl ? report.ready.stage === 'disabled' && report.ready.backend === 'webgl' : report.ready.stage === 'ready' && report.ready.actualBackend === 'webgpu', report.ready);
   await nativeFrames(); await page.waitForFunction(() => PumpkinVoxel.scene.villageView.fidelityStats.sky.artReady);
   await page.evaluate(() => {
-    const q = window.__detailQA = { segment: 'initial', samples: [], stopped: false };
+    const q = window.__detailQA = { segment: 'initial', samples: [], gpuFrames: [], stopped: false };
     q.read = () => {
       const p = PumpkinVoxel, v = p.scene.villageView, actor = v.scene.children.find(o => typeof o.userData?.playerAnimate === 'function'), d = actor?.userData, mesh = actor?.children[0]?.children.find(o => o.isMesh), target = v.play.state.target;
-      return { segment: q.segment, position: { ...p.village.status.position }, inside: v.inside, camera: v.camera.position.toArray(), target: [target.x, target.y, target.z], grass: v.grassDetailStats, life: v.lifeDetailStats, lamps: { ...v.lampSelectionStats },
+      return { segment: q.segment, position: { ...p.village.status.position }, targetScan: p.village.status.targetScan, inside: v.inside, camera: v.camera.position.toArray(), target: [target.x, target.y, target.z], grass: v.grassDetailStats, life: v.lifeDetailStats, lamps: { ...v.lampSelectionStats },
         lighting: v.scene.children.filter(o => o.isPointLight).map(o => ({ visible: o.visible, position: o.position.toArray(), intensity: o.intensity })),
         actor: { authored: !!d?.playerAuthoredDirection, idle: !!d?.playerAuthoredIdle, direction: d?.playerDirection, frame: d?.playerDirectionFrame, leg: d?.playerLeadingLeg, geometry: mesh?.geometry?.uuid, map: mesh?.material?.map?.uuid, material: mesh?.material?.uuid, materialVersion: mesh?.material?.version }, renderer: p.scene.villageRendererStatus };
     };
-    const observe = () => { if (q.stopped) return; const value = q.read(), last = q.samples.at(-1); if (!last || last.segment !== value.segment || last.actor.geometry !== value.actor.geometry || last.actor.map !== value.actor.map || last.renderer.completedFrames !== value.renderer.completedFrames) { q.samples.push(value); if (q.samples.length > 800) q.samples.shift(); } requestAnimationFrame(observe); }; requestAnimationFrame(observe);
+    const observe = () => {
+      if (q.stopped) return;
+      const value = q.read(), last = q.samples.at(-1), r = value.renderer;
+      if (r.renderFrames && q.gpuFrames.at(-1)?.renderFrames !== r.renderFrames) {
+        q.gpuFrames.push({ segment: q.segment, renderFrames: r.renderFrames, completedFrames: r.completedFrames, renderPasses: r.renderPasses, calls: r.calls, triangles: r.triangles, shadowBudget: r.shadowBudget ? { ...r.shadowBudget } : null });
+        if (q.gpuFrames.length > 256) q.gpuFrames.shift();
+      }
+      if (!last || last.segment !== value.segment || last.actor.geometry !== value.actor.geometry || last.actor.map !== value.actor.map || last.renderer.completedFrames !== value.renderer.completedFrames) { q.samples.push(value); if (q.samples.length > 800) q.samples.shift(); }
+      requestAnimationFrame(observe);
+    }; requestAnimationFrame(observe);
   });
   const read = () => page.evaluate(() => window.__detailQA.read());
   const worldClip = { x: Math.round(viewport.width * .35), y: Math.round(viewport.height * .31), width: Math.round(viewport.width * .43), height: Math.round(viewport.height * .46) };
@@ -129,12 +138,44 @@ try {
   await shot('entrance.png', true);
   report.initial = await read(); check('Grass, ambient and lamp diagnostics are available', report.initial.grass && report.initial.life && report.initial.lamps && Number.isFinite(report.initial.life.bufferUpdates));
   check('Distance detail still reduces grass vertices', report.initial.grass.vertices > 0 && report.initial.grass.vertices < report.initial.grass.fullVertices, report.initial.grass);
-  const stillBefore = await read(); await nativeFrames(3); const stillAfter = await read();
+  const stillBefore = await read(); await nativeFrames(frameBudget ? 6 : 3); const stillAfter = await read();
   const cameraStill = [0, 2].every(i => stillBefore.camera[i] === stillAfter.camera[i]), targetStill = [0, 2].every(i => stillBefore.target[i] === stillAfter.target[i]);
   report.stationary = { before: stillBefore, after: stillAfter, cameraStill, targetStill, note: 'Exact stationary assertions run only when the native pose is unchanged; smoothing movement is not suppressed.' };
   if (cameraStill) check('Stationary camera avoids repeated grass selection', stillAfter.grass.selectionPasses === stillBefore.grass.selectionPasses && stillAfter.grass.patchChecks === stillBefore.grass.patchChecks);
   if (targetStill) check('Stationary target avoids repeated nearest-lamp searches', stillAfter.lamps.selections === stillBefore.lamps.selections && stillAfter.lamps.cacheHits > stillBefore.lamps.cacheHits);
   check('Visible ambient animation continues during native stationary frames', stillAfter.life.bufferUpdates > stillBefore.life.bufferUpdates, { before: stillBefore.life, after: stillAfter.life });
+  if (frameBudget) {
+    const a = stillBefore.targetScan, b = stillAfter.targetScan;
+    const checked = b.nodePositionsChecked - a.nodePositionsChecked, eligible = b.nodeEligibilityChecks - a.nodeEligibilityChecks;
+    check('Nearby target broad phase avoids distant readiness work', checked > 0 && eligible < checked * .2, { positionsChecked: checked, readinessChecks: eligible });
+    if (!webgl && targetStill) {
+      const a = stillBefore.renderer.shadowBudget, b = stillAfter.renderer.shadowBudget;
+      check('Stationary GPU shadows defer redundant requests between accepted frames', b.frames > a.frames && b.deferred > a.deferred && b.refreshes - a.refreshes < b.frames - a.frames, { before: a, after: b });
+    }
+    if (!webgl) {
+      // Exercise real mirror attachment/removal without changing authored scenery.
+      // Hidden attached meshes must retain a lease; detached ones must release it.
+      const count = 24, before = (await read()).renderer.materials;
+      await page.evaluate(count => {
+        const scene = PumpkinVoxel.scene.villageView.scene; let source;
+        scene.traverse(o => { if (!source && o.type === 'Mesh' && o.material?.isMeshBasicMaterial) source = o; });
+        if (!source) throw Error('No ordinary village mesh for native lifetime check');
+        window.__detailQA.leaseProbes = Array.from({ length: count }, () => {
+          const mesh = new source.constructor(source.geometry, source.material); mesh.visible = false; mesh.name = 'qa-material-lease'; scene.add(mesh); return mesh;
+        });
+      }, count);
+      try {
+        await nativeFrames(2); const attached = (await read()).renderer.materials;
+        check('Hidden attached native meshes retain their presentation materials', attached.activeMaterials >= before.activeMaterials + count, { before: before.activeMaterials, attached: attached.activeMaterials });
+        await page.evaluate(() => { for (const mesh of window.__detailQA.leaseProbes) mesh.removeFromParent(); });
+        await nativeFrames(2); const detached = (await read()).renderer.materials;
+        check('Detached native meshes retire materials and bindings', detached.materialRetirements >= attached.materialRetirements + count && detached.activeMaterials <= attached.activeMaterials - count && detached.activeBindings < attached.activeBindings, { attached, detached });
+        report.nativeMaterialLifetime = { count, before, attached, detached };
+      } finally {
+        await page.evaluate(() => { for (const mesh of window.__detailQA.leaseProbes ?? []) mesh.removeFromParent(); delete window.__detailQA.leaseProbes; });
+      }
+    }
+  }
   const walkBefore = await page.evaluate(() => { window.__detailQA.segment = 'walk'; return window.__detailQA.read(); });
   try {
     await page.keyboard.down('w');
@@ -155,12 +196,18 @@ try {
   check('The hidden outdoor surface stops grass selection', !hallAfter.grass.visible && hallAfter.grass.patchChecks === hallBefore.grass.patchChecks, { before: hallBefore.grass, after: hallAfter.grass });
   check('The hidden outdoor life stops instance and point updates', !hallAfter.life.visible && hallAfter.life.hiddenTicks > hallBefore.life.hiddenTicks && ['bufferUpdates', 'matrixWrites', 'pointWrites'].every(key => hallAfter.life[key] === hallBefore.life[key]), { before: hallBefore.life, after: hallAfter.life });
   check('The interior retains a finite fixed pool of eight lights', hallAfter.lighting.length === 8 && hallAfter.lighting.every(l => l.visible && Number.isFinite(l.intensity) && l.position.every(Number.isFinite)), hallAfter.lighting);
+  if (frameBudget) {
+    check('Interior frames stop surface resource target scans', hallAfter.targetScan.nodePositionsChecked === hallBefore.targetScan.nodePositionsChecked);
+    if (!webgl) check('Entering the workshop refreshes its shadow context', hallAfter.renderer.shadowBudget.invalidations > report.idle.renderer.shadowBudget.invalidations);
+  }
   await shot('rowan-interior.png');
   await page.evaluate(() => PumpkinVoxel.village.leaveHall()); await page.waitForFunction(() => !PumpkinVoxel.village.status.inside); await nativeFrames();
   report.returned = await read();
   check('Returning outdoors refreshes grass and resumes ambient life', report.returned.grass.visible && report.returned.life.visible && report.returned.grass.selectionPasses > hallAfter.grass.selectionPasses && report.returned.life.bufferUpdates > hallAfter.life.bufferUpdates, { grass: report.returned.grass, life: report.returned.life });
   check('Returning outdoors refreshes the surface lamp selection', report.returned.lamps.selections > hallAfter.lamps.selections && report.returned.lighting.length === 8, report.returned.lamps);
+  if (frameBudget && !webgl) check('Returning outside refreshes its shadow context', report.returned.renderer.shadowBudget.invalidations > hallAfter.renderer.shadowBudget.invalidations);
   await shot('surface-return.png');
+  report.submittedFrames = await page.evaluate(() => window.__detailQA.gpuFrames);
   report.textureCounters = { initial: report.initial.renderer.materials, returned: report.returned.renderer.materials, note: 'Observed counters only: first-use textures and hall material creation make an exact per-frame ratio inappropriate.' };
   await page.evaluate(() => { window.__detailQA.stopped = true; PumpkinVoxel.village.close(); });
   await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));

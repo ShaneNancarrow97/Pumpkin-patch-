@@ -1,0 +1,6 @@
+{
+  "htmlSha256": "ac84f3f317131a77c4efc1c1994d621626d683f5db6aeaa4538b357330caf4a0",
+  "passed": true,
+  "checks": 54,
+  "scope": "Unmodified smoke.mjs via exact bytes on loopback. Draw-held logic/UI only; no renderer or FPS evidence."
+}

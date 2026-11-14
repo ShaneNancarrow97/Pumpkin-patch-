@@ -110,9 +110,7 @@ export function createVillageGpuMirror(materials) {
     for (const child of source.children) synchronize(child, object, seen);
     return object;
   }
-  return {
-    scene, camera,
-    sync(source, sourceCamera) {
+  function sync(source, sourceCamera) {
       seen.clear(); liveGeometry.clear(); syncedGeometry.clear();
       source.updateMatrixWorld(); sourceCamera.updateMatrixWorld();
       scene.background = source.background; scene.environment = source.environment;
@@ -128,6 +126,7 @@ export function createVillageGpuMirror(materials) {
       for (const child of source.children) synchronize(child, scene, seen);
       for (const [original, object] of objects) if (!seen.has(original)) {
         object.removeFromParent(); objects.delete(original); mirrorCount--;
+        materials.releaseObject?.(original);
         // Selection outlines are rebuilt repeatedly. Their closed-loop GPU
         // geometry is owned here and must retire with the removed outline,
         // rather than accumulating until the entire renderer is disposed.
@@ -144,9 +143,12 @@ export function createVillageGpuMirror(materials) {
       camera.view = sourceCamera.view ? { ...sourceCamera.view } : null; camera.layers.mask = sourceCamera.layers.mask;
       camera.coordinateSystem = GPU.WebGPUCoordinateSystem; camera.updateProjectionMatrix(); camera.updateMatrixWorld();
       materials.sync(); scene.updateMatrixWorld();
-    },
+  }
+  return {
+    scene, camera,
+    sync(source, sourceCamera) { return materials.batchLayouts ? materials.batchLayouts(() => sync(source, sourceCamera)) : sync(source, sourceCamera); },
     afterRender() { for (const [source] of objects) if (source.isLight && source.shadow) source.shadow.needsUpdate = false; },
     stats() { const lights = { point: 0, hemisphere: 0, directional: 0, ambient: 0 }; for (const object of objects.values()) { if (object.isPointLight) lights.point++; else if (object.isHemisphereLight) lights.hemisphere++; else if (object.isDirectionalLight) lights.directional++; else if (object.isAmbientLight) lights.ambient++; } return { mirroredObjects: mirrorCount, ownedGeometryViews: geometryViews.size, geometryViewsCreated, geometryViewsRetired, ownedLineGeometries: ownedGeometry.size, lights }; },
-    dispose() { ownedGeometry.forEach(g => g.dispose()); ownedGeometry.clear(); geometryViews.forEach(g => g.dispose()); geometryViewsRetired += geometryViews.size; geometryViews.clear(); scene.clear(); objects.clear(); seen.clear(); liveGeometry.clear(); syncedGeometry.clear(); mirrorCount = 0; },
+    dispose() { for (const original of objects.keys()) materials.releaseObject?.(original); ownedGeometry.forEach(g => g.dispose()); ownedGeometry.clear(); geometryViews.forEach(g => g.dispose()); geometryViewsRetired += geometryViews.size; geometryViews.clear(); scene.clear(); objects.clear(); seen.clear(); liveGeometry.clear(); syncedGeometry.clear(); mirrorCount = 0; },
   };
 }

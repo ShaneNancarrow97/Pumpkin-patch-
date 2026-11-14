@@ -1,0 +1,49 @@
+{
+  "scope": "Pure controller target selection using shipped nodes and existing nodeReady rules. Work counts and synthetic CPU timings only, not physical-device FPS.",
+  "nodes": 110,
+  "authoredSites": 676,
+  "positions": 22,
+  "rounds": 6,
+  "cases": [
+    {
+      "decorations": 0,
+      "sameNearestRingIDs": true,
+      "modes": [
+        {
+          "mode": "before",
+          "nodeEligibilityChecks": 14520,
+          "decorationBoundsChecks": 0,
+          "targetRecords": 13464,
+          "medianMillisecondsPerPosition": 0.16144004545454685
+        },
+        {
+          "mode": "after",
+          "nodeEligibilityChecks": 180,
+          "decorationBoundsChecks": 0,
+          "targetRecords": 180,
+          "medianMillisecondsPerPosition": 0.015077181818180014
+        }
+      ]
+    },
+    {
+      "decorations": 120,
+      "sameNearestRingIDs": true,
+      "modes": [
+        {
+          "mode": "before",
+          "nodeEligibilityChecks": 14520,
+          "decorationBoundsChecks": 1615680,
+          "targetRecords": 13464,
+          "medianMillisecondsPerPosition": 0.852163772727274
+        },
+        {
+          "mode": "after",
+          "nodeEligibilityChecks": 180,
+          "decorationBoundsChecks": 21600,
+          "targetRecords": 180,
+          "medianMillisecondsPerPosition": 0.02162836363636829
+        }
+      ]
+    }
+  ]
+}

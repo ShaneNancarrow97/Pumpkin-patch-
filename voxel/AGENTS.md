@@ -1,5 +1,7 @@
 # Pumpkin Patch Voxel: context for coding agents
 
+**Latest village frame budget:** [`docs/contractor-patches/village-frame-budget/README.md`](docs/contractor-patches/village-frame-budget/README.md) covers nearby controller targets, detached GPU material retirement, shared layout inspection and accepted-frame shadow pacing. Read its dependency matrix before changing source ownership, proximity reach or shadow invalidation. Saves remain version 20.
+
 **Latest village detail polish:** [`docs/contractor-patches/village-detail-polish/README.md`](docs/contractor-patches/village-detail-polish/README.md) covers exact cached lamp selection, stationary/hidden grass selection, hidden outdoor animation buffers, scratch transforms and once-per-material-sync atlas inspection. Read its dependency matrix before changing camera caches, surface visibility, lamp power or texture batching. Saves remain version 20.
 
 **Latest village recovery and shared rewards:** [`docs/contractor-patches/village-recovery/README.md`](docs/contractor-patches/village-recovery/README.md) covers live WebGPU walking atlases, bounded animation geometry, distance-based grass/effect budgets, restrained sky highlights, HUD pacing and optional paired farm/village colour keepsakes. Read its dependency matrix before changing these paths. Saves remain version 20.
