@@ -1,0 +1,387 @@
+{
+  "htmlSha256": "ac84f3f317131a77c4efc1c1994d621626d683f5db6aeaa4538b357330caf4a0",
+  "harnessSha256": "cadb4971162086630d3bb91b62885516a203448324fed88f9852df2150ad0dee",
+  "fixtureSha256": "587a0875e64207c9a75f921b9845ed60744090f67028e0cc5825a4cd54746082",
+  "bytes": 61815329,
+  "scope": "UI-only exact HTML acceptance. Two native village RAFs precede explicit renderer/composer draw holding. World pixels in ui-only screenshots are stale and are not renderer/performance evidence. Input, DOM and simulation use native game RAF. Supplied level20 fixture starts with no hidden keepsakes or mummy outfits. The real Lantern Keepers handover, 24 harvests and completion rule grant the paired outfits; legitimate eligibility counters are then staged and the native model update awards six colours. Real wardrobe buttons test each owner and explicit outfit/colour switching. TV layout is enabled through the actual Settings control. No real progression pacing or physical device certification is claimed.",
+  "passed": true,
+  "checks": [
+    {
+      "label": "Discoveries start collapsed below the active objective",
+      "pass": true
+    },
+    {
+      "label": "Locked journal hides all secret colour names and swatches",
+      "pass": true
+    },
+    {
+      "label": "desktop: discovery text, targets and scrolling fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 820,
+          "top": 82,
+          "right": 1260,
+          "bottom": 698
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "phone: discovery text, targets and scrolling fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 10,
+          "top": 88,
+          "right": 380,
+          "bottom": 670.359375
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "landscape: discovery text, targets and scrolling fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 394,
+          "top": 10,
+          "right": 834,
+          "bottom": 380
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "Reading and resizing the ledger changes no ownership or currency",
+      "pass": true
+    },
+    {
+      "label": "natalie: village mummy route is clear and not sold as a cash unlock",
+      "pass": true
+    },
+    {
+      "label": "natalie: all unearned colour names remain secret",
+      "pass": true
+    },
+    {
+      "label": "shane: village mummy route is clear and not sold as a cash unlock",
+      "pass": true
+    },
+    {
+      "label": "shane: all unearned colour names remain secret",
+      "pass": true
+    },
+    {
+      "label": "desktop: locked Village collection and owner controls fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 350,
+          "top": 66,
+          "right": 930,
+          "bottom": 718
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "phone: locked Village collection and owner controls fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 8,
+          "top": 244.734375,
+          "right": 382,
+          "bottom": 768
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "landscape: locked Village collection and owner controls fit",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 142,
+          "top": 8,
+          "right": 702,
+          "bottom": 310
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "Browsing both locked wardrobes changes no ownership or currency",
+      "pass": true
+    },
+    {
+      "label": "Real Lantern Keepers rules grant both mummy outfits without automatic equipping",
+      "pass": true,
+      "actual": {
+        "handedOver": true,
+        "harvested": 24,
+        "done": true,
+        "owned": true,
+        "unchangedOutfits": true
+      }
+    },
+    {
+      "label": "Native model awards all three paired keepsakes",
+      "pass": true
+    },
+    {
+      "label": "Earned colours reveal in the shared journal",
+      "pass": true
+    },
+    {
+      "label": "natalie: earned mummy is wearable while all three colour choices remain accessible",
+      "pass": true
+    },
+    {
+      "label": "natalie: one explicit Wear look tap equips the earned colour and original outfit",
+      "pass": true
+    },
+    {
+      "label": "shane: earned mummy is wearable while all three colour choices remain accessible",
+      "pass": true
+    },
+    {
+      "label": "shane: one explicit Wear look tap equips the earned colour and original outfit",
+      "pass": true
+    },
+    {
+      "label": "Wearing the paired village rewards charges no currency",
+      "pass": true
+    },
+    {
+      "label": "desktop: natalie earned reward collection fits",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 350,
+          "top": 66,
+          "right": 930,
+          "bottom": 718
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "desktop: shane earned reward collection fits",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 350,
+          "top": 66,
+          "right": 930,
+          "bottom": 718
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "phone: natalie earned reward collection fits",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 8,
+          "top": 244.734375,
+          "right": 382,
+          "bottom": 768
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "phone: shane earned reward collection fits",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 8,
+          "top": 244.734375,
+          "right": 382,
+          "bottom": 768
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "landscape: natalie earned reward collection fits",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 142,
+          "top": 8,
+          "right": 702,
+          "bottom": 310
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "landscape: shane earned reward collection fits",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 142,
+          "top": 8,
+          "right": 702,
+          "bottom": 310
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "TV layout uses the real Settings toggle",
+      "pass": true
+    },
+    {
+      "label": "tv: natalie earned reward collection fits",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 283.71875,
+          "top": 15.359375,
+          "right": 1636.265625,
+          "bottom": 953.96875
+        },
+        "viewport": [
+          1920,
+          1080
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "tv: shane earned reward collection fits",
+      "pass": true,
+      "actual": {
+        "pass": true,
+        "box": {
+          "left": 283.71875,
+          "top": 15.359375,
+          "right": 1636.265625,
+          "bottom": 953.96875
+        },
+        "viewport": [
+          1920,
+          1080
+        ],
+        "tiny": [],
+        "small": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0
+      }
+    },
+    {
+      "label": "Offline UI completes without page or loading errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "failedRequests": []
+}

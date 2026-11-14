@@ -1,0 +1,349 @@
+{
+  "htmlSha256": "ac84f3f317131a77c4efc1c1994d621626d683f5db6aeaa4538b357330caf4a0",
+  "harnessSha256": "0f3989acf8bad9f779bc0ba5f83198698ad638f138656ad35ca6cd22b4822e3f",
+  "fixtureSha256": "d46bf1d296b8663e0650175f0c024839a4884fd8e2816bc9abbd26bbf1f0cade",
+  "bytes": 61815329,
+  "viewport": {
+    "width": 844,
+    "height": 390
+  },
+  "scope": "Exact offline game HTML on loopback, one native village entry, genuine keyboard walking, public hall entry/exit and native game RAF/rendering. No held draws, advance(), manual tick or manual render. Stationary counter checks are conditional on exactly unchanged horizontal camera/target; changing smoothing poses are reported, with exact stationary behavior covered by Node tests. GPU acceptance reads actual canvas pixels because this software Chromium runner has a separately reproduced page-compositor defect; raw success does not certify page compositing or physical phone/TV FPS.",
+  "acceptancePath": "visible-page-composite",
+  "passed": true,
+  "checks": [
+    {
+      "label": "Requested renderer becomes ready",
+      "pass": true,
+      "actual": {
+        "requested": "webgl",
+        "backend": "webgl",
+        "stage": "disabled",
+        "reason": null,
+        "failureStack": null,
+        "frames": 0
+      }
+    },
+    {
+      "label": "Grass, ambient and lamp diagnostics are available",
+      "pass": true
+    },
+    {
+      "label": "Distance detail still reduces grass vertices",
+      "pass": true,
+      "actual": {
+        "patches": 159,
+        "activePatches": 33,
+        "fullPatches": 12,
+        "middlePatches": 8,
+        "farPatches": 13,
+        "vertices": 422988,
+        "fullVertices": 757800,
+        "visible": true,
+        "selectionPasses": 1,
+        "patchChecks": 159
+      }
+    },
+    {
+      "label": "Stationary camera avoids repeated grass selection",
+      "pass": true
+    },
+    {
+      "label": "Stationary target avoids repeated nearest-lamp searches",
+      "pass": true
+    },
+    {
+      "label": "Visible ambient animation continues during native stationary frames",
+      "pass": true,
+      "actual": {
+        "before": {
+          "ticks": 24,
+          "hiddenTicks": 0,
+          "visible": true,
+          "bufferUpdates": 384,
+          "matrixWrites": 16656,
+          "pointWrites": 5688,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        },
+        "after": {
+          "ticks": 31,
+          "hiddenTicks": 0,
+          "visible": true,
+          "bufferUpdates": 496,
+          "matrixWrites": 21514,
+          "pointWrites": 7347,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        }
+      }
+    },
+    {
+      "label": "Nearby target broad phase avoids distant readiness work",
+      "pass": true,
+      "actual": {
+        "positionsChecked": 770,
+        "readinessChecks": 0
+      }
+    },
+    {
+      "label": "walking.png: visible world pixels change",
+      "pass": true,
+      "actual": {
+        "changedPixels": 56332,
+        "changedFraction": 0.8669529218030996,
+        "meanMaxChannelDelta": 47.205565046093234
+      }
+    },
+    {
+      "label": "Genuine movement advances Natalie through alternating authored steps",
+      "pass": true,
+      "actual": {
+        "distance": 6.99599999999997,
+        "geometryFrames": 8,
+        "legs": [
+          "left",
+          "right"
+        ]
+      }
+    },
+    {
+      "label": "Moving the camera refreshes grass and lamp selection",
+      "pass": true
+    },
+    {
+      "label": "Releasing movement restores an authored idle without recompiling its material",
+      "pass": true,
+      "actual": {
+        "authored": true,
+        "idle": true,
+        "direction": "back",
+        "frame": 0,
+        "leg": null,
+        "geometry": "2b4f1204-9a80-4478-bd3d-7ad184c3188f",
+        "map": "83b4130a-12b6-4f3a-95c4-115cbc2ff629",
+        "material": "4b6b5ef8-3aae-46f2-9d4e-d47824629e9d",
+        "materialVersion": 2
+      }
+    },
+    {
+      "label": "The hidden outdoor surface stops grass selection",
+      "pass": true,
+      "actual": {
+        "before": {
+          "patches": 159,
+          "activePatches": 34,
+          "fullPatches": 12,
+          "middlePatches": 10,
+          "farPatches": 12,
+          "vertices": 450612,
+          "fullVertices": 790620,
+          "visible": false,
+          "selectionPasses": 32,
+          "patchChecks": 5088
+        },
+        "after": {
+          "patches": 159,
+          "activePatches": 34,
+          "fullPatches": 12,
+          "middlePatches": 10,
+          "farPatches": 12,
+          "vertices": 450612,
+          "fullVertices": 790620,
+          "visible": false,
+          "selectionPasses": 32,
+          "patchChecks": 5088
+        }
+      }
+    },
+    {
+      "label": "The hidden outdoor life stops instance and point updates",
+      "pass": true,
+      "actual": {
+        "before": {
+          "ticks": 70,
+          "hiddenTicks": 6,
+          "visible": false,
+          "bufferUpdates": 1024,
+          "matrixWrites": 44416,
+          "pointWrites": 15168,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        },
+        "after": {
+          "ticks": 74,
+          "hiddenTicks": 10,
+          "visible": false,
+          "bufferUpdates": 1024,
+          "matrixWrites": 44416,
+          "pointWrites": 15168,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        }
+      }
+    },
+    {
+      "label": "The interior retains a finite fixed pool of eight lights",
+      "pass": true,
+      "actual": [
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 20.999291720355764
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 21.908737888357276
+        },
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 20.996782019140056
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 20.446214631535703
+        },
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 19.62520270290576
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 19.816797776773377
+        },
+        {
+          "visible": true,
+          "position": [
+            3996.85,
+            2.7,
+            -9.375
+          ],
+          "intensity": 20.378855654706214
+        },
+        {
+          "visible": true,
+          "position": [
+            4005.85,
+            1.0499999999999998,
+            -11.850000000000001
+          ],
+          "intensity": 21.368255161144493
+        }
+      ]
+    },
+    {
+      "label": "Interior frames stop surface resource target scans",
+      "pass": true
+    },
+    {
+      "label": "rowan-interior.png: visible world pixels change",
+      "pass": true,
+      "actual": {
+        "changedPixels": 63652,
+        "changedFraction": 0.9796081690444312,
+        "meanMaxChannelDelta": 101.50374747987749
+      }
+    },
+    {
+      "label": "Returning outdoors refreshes grass and resumes ambient life",
+      "pass": true,
+      "actual": {
+        "grass": {
+          "patches": 159,
+          "activePatches": 46,
+          "fullPatches": 19,
+          "middlePatches": 11,
+          "farPatches": 16,
+          "vertices": 657474,
+          "fullVertices": 1225650,
+          "visible": true,
+          "selectionPasses": 33,
+          "patchChecks": 5247
+        },
+        "life": {
+          "ticks": 90,
+          "hiddenTicks": 21,
+          "visible": true,
+          "bufferUpdates": 1104,
+          "matrixWrites": 47886,
+          "pointWrites": 16353,
+          "matricesPerTick": 694,
+          "pointsPerTick": 237
+        }
+      }
+    },
+    {
+      "label": "Returning outdoors refreshes the surface lamp selection",
+      "pass": true,
+      "actual": {
+        "selections": 34,
+        "cacheHits": 56,
+        "distanceChecks": 2378,
+        "candidates": 72
+      }
+    },
+    {
+      "label": "surface-return.png: visible world pixels change",
+      "pass": true,
+      "actual": {
+        "changedPixels": 57270,
+        "changedFraction": 0.8813887991135325,
+        "meanMaxChannelDelta": 68.98357880480785
+      }
+    },
+    {
+      "label": "Closing the village restores the farm",
+      "pass": true
+    },
+    {
+      "label": "No page, shader or loading errors",
+      "pass": true,
+      "actual": {
+        "errors": [],
+        "consoleErrors": [],
+        "externalRequests": [],
+        "failedRequests": []
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "failedRequests": [],
+  "pageCompositorLimitationObserved": false,
+  "submittedFramePassCounts": {},
+  "submittedFrameCount": 0,
+  "stationary": {
+    "cameraStill": true,
+    "targetStill": true
+  },
+  "shadowBudget": null
+}
