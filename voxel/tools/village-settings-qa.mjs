@@ -10,16 +10,16 @@ import * as M from '../src/model.js';
 import { VILLAGE_GRAPHICS_KEYS } from '../src/village-graphics.js';
 import { OUTSIDE_VIEW } from '../src/village-camera.js';
 
-const args = process.argv.slice(2), uiOnly = args.includes('--ui'), gpu = args.includes('--gpu');
-if (!args[0] || !args[1] || uiOnly === args.includes('--native') || gpu && uiOnly) throw Error('Usage: node tools/village-settings-qa.mjs HTML OUT (--ui | --native [--gpu])');
+const args = process.argv.slice(2), uiOnly = args.includes('--ui'), gpu = args.includes('--gpu'), gpuOnly = args.includes('--gpu-only');
+if (!args[0] || !args[1] || uiOnly === args.includes('--native') || gpu && uiOnly || gpuOnly && !gpu) throw Error('Usage: node tools/village-settings-qa.mjs HTML OUT (--ui | --native [--gpu [--gpu-only]])');
 const file = path.resolve(args[0]), out = path.resolve(args[1]), hash = value => createHash('sha256').update(value).digest('hex'), html = await fs.readFile(file);
 const s = M.freshState(); Object.assign(s, { introSeen: true, coins: 30000, earned: M.LEVELS[19].at, visitorTimer: 1e9 }); s.shop.arrivalTimer = 1e9;
 s.progression.claimed = M.LEVELS.map(l => l.level); s.progression.pending = []; s.progression.homeLegacyThrough = 20;
 M.inviteToVillage(s); M.finishTour(s); s.village.clock = 1800;
 s.village.quests.invitation = { step: 3, done: true }; s.village.quests['two-doorbells'] = { step: 3, done: true };
 s.village.built['elowen-library'] = s.village.built['rowan-workshop'] = true;
-const fixture = M.saveData(s), preferences = { music: false, sound: false, voiceEnabled: false, frameRate: '30', renderQuality: 'sharp', voxelCharacters: false, glow: true, shadows: true, villageRenderer: 'webgl', villagePost: 'balanced', villageShadows: true, villageDistance: 'far', villageGrass: 'high' };
-const report = { file, htmlSha256: hash(html), bytes: html.length, harnessSha256: hash(await fs.readFile(new URL(import.meta.url))), fixtureSha256: hash(JSON.stringify(fixture)), mode: uiOnly ? 'ui-only' : gpu ? 'native-webgl-and-webgpu' : 'native-webgl',
+const fixture = M.saveData(s), preferences = { music: false, sound: false, voiceEnabled: false, frameRate: '30', renderQuality: 'sharp', voxelCharacters: false, glow: true, shadows: true, villageRenderer: 'webgl', villagePost: gpuOnly ? 'off' : 'balanced', villageShadows: !gpuOnly, villageDistance: 'far', villageGrass: gpuOnly ? 'off' : 'high' };
+const report = { file, htmlSha256: hash(html), bytes: html.length, harnessSha256: hash(await fs.readFile(new URL(import.meta.url))), fixtureSha256: hash(JSON.stringify(fixture)), mode: uiOnly ? 'ui-only' : gpuOnly ? 'native-webgpu' : gpu ? 'native-webgl-and-webgpu' : 'native-webgl',
   display: { viewport: uiOnly ? [1280,800] : [960,540], deviceScaleFactor: uiOnly ? 1 : .5, nativePixelScope: 'Native 480x270 buffer bounds software GPU cost; this validates rendering behaviour, not full-resolution visual quality or device FPS.' },
   scope: uiOnly ? 'Exact HTML UI/controller acceptance, native RAF and simulation; renderer/composer draws held only after native village startup. World pixels in UI captures are stale, not graphics or FPS evidence. Standard Gamepad API injection is not physical Bluetooth certification.' : 'Exact HTML on loopback. Native game RAF/rendering; no held draws, manual tick, advance or manual render. Graphics choices use actual HTML controls. Actual WebGPU canvas pixels are captured separately because this software Chromium runner has a known stale page-compositor limitation. No physical phone/TV FPS claim.',
   preferences, checks: [], screenshots: [], states: {}, errors: [], consoleErrors: [], warnings: [], externalRequests: [], failedRequests: [] };
@@ -113,6 +113,7 @@ try {
     // Leave this UI-only run on GL; native WebGPU is tested by --native --gpu.
     await choose('villageRenderer','webgl');
   }else{
+    if(!gpuOnly){
     report.states.baseline=await read();await choose('villagePost','low');const subtle=await read();await choose('villagePost','high');const rich=await read();check('Post choices adjust the real WebGL glow strength',subtle.post.enabled&&rich.post.enabled&&rich.post.bloomStrength>subtle.post.bloomStrength*2,{subtle:subtle.post,rich:rich.post});await choose('villagePost','off');await choose('villageShadows','off');
     check('Post Off bypasses village post processing',(await read()).post.enabled===false);
     check('Village shadow choice changes the actual WebGL shadow setting',!(await read()).glShadows);
@@ -124,9 +125,14 @@ try {
     await screenshot('native-webgl-settings.png');
     await page.locator('.vg-dock [data-vg-page="map"]').click();await page.waitForFunction(()=>PumpkinVoxel.village.status.panel==='map');const afterMap=await read();check('Opening the real map preserves the selected distance and grass policy',afterMap.preferences.villageDistance==='near'&&afterMap.world.distance.requested==='near'&&afterMap.preferences.villageGrass==='high');await openSettings();
     await choose('villageDistance','far');await page.waitForFunction(()=>PumpkinVoxel.scene.villageGraphicsStatus.world.distance.targetDistance===250);check('Far restores the original chunk range', (await read()).world.distance.drawDistance===250);
+    }
     if(gpu){
       await choose('villageGrass','off');await choose('villageRenderer','webgpu');console.log('Waiting for the real WebGPU first frame');
-      await page.waitForFunction(()=>['ready','fallback'].includes(PumpkinVoxel.scene.villageRendererStatus.stage),null,{timeout:600000});check('Explicit WebGPU overrides the initial WebGL query and becomes ready',(await read()).renderer.stage==='ready'&&(await read()).renderer.requested==='webgpu');await gpuFrames();report.states.gpuOff=await read();check('Post Off uses direct GPU drawing without shadow/post passes',report.states.gpuOff.renderer.post.hdr===false&&report.states.gpuOff.renderer.post.shadows===false&&report.states.gpuOff.renderer.renderPasses===1,report.states.gpuOff.renderer.post);await gpuShot('native-gpu-effects-off.png');
+      await page.waitForFunction(()=>['ready','fallback'].includes(PumpkinVoxel.scene.villageRendererStatus.stage),null,{timeout:600000});check('Explicit WebGPU overrides the initial WebGL query and becomes ready',(await read()).renderer.stage==='ready'&&(await read()).renderer.requested==='webgpu');await gpuFrames();report.states.gpuOff=await read();
+      // Three r169 still draws its required ACES/sRGB output quad when optional
+      // post effects are Off: one scene render plus one display conversion.
+      const direct=report.states.gpuOff.renderer;
+      check('Post Off skips optional bloom, grade and FXAA; scene and display conversion remain',direct.post.effects==='off'&&!direct.post.hdr&&!direct.post.bloom&&!direct.post.displayGrade&&!direct.post.fxaa&&!direct.post.shadows&&direct.shadowBudget.refreshes===0&&direct.renderPasses===2,{post:direct.post,renderPasses:direct.renderPasses,shadowBudget:direct.shadowBudget});await gpuShot('native-gpu-effects-off.png');
       await choose('villagePost','balanced');await gpuFrames();report.states.gpuBalanced=await read();check('Increasing post effects enables the actual GPU post pipeline',report.states.gpuBalanced.renderer.post.hdr&&report.states.gpuBalanced.renderer.renderPasses>report.states.gpuOff.renderer.renderPasses,report.states.gpuBalanced.renderer.post);await gpuShot('native-gpu-effects-balanced.png');
       const framesBefore=(await read()).renderer.completedFrames;await choose('villageRenderer','auto');await gpuFrames();check('Automatic retains the healthy GPU with a single overlay',(await read()).renderer.completedFrames>framesBefore&&await page.locator('.village-webgpu-canvas').count()===1);
       await choose('villageRenderer','webgl');await page.waitForFunction(()=>PumpkinVoxel.scene.villageRendererStatus.stage==='disabled');check('Switching back to WebGL removes the GPU presentation canvas',await page.locator('.village-webgpu-canvas').count()===0&&(await read()).renderer.backend==='webgl');
