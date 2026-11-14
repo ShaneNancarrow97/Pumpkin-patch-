@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
 export const PROXIMITY_RING_LIMIT = 12;
-export function proximityStrength(distance, reach = 7) {
+export const PROXIMITY_REACH = 7;
+export function proximityStrength(distance, reach = PROXIMITY_REACH) {
   if (!Number.isFinite(distance) || distance < 0) return 0;
   const t = Math.max(0, Math.min(1, (reach - distance) / Math.max(.001, reach - 2.5)));
   return t * t * (3 - 2 * t);

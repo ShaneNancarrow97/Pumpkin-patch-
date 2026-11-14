@@ -75,7 +75,7 @@ export function createVillageRenderer({ canvas, load = () => import("./village-w
         return active;
       } catch (error) { fail(error); return false; }
     },
-    hide: conceal,
+    hide() { conceal(); pipeline?.invalidateShadows?.(); },
     get status() { return status(); },
     dispose() { retired = true; generation++; conceal(); pipeline?.dispose(); pipeline = null; overlay?.remove(); overlay = null; stage = "disposed"; },
   };

@@ -2,6 +2,7 @@ import * as GPU from "three/webgpu";
 import { createVillageNodeMaterials } from "./village-node-materials.js";
 import { createVillageGpuMirror } from "./village-webgpu-mirror.js";
 import { canonicalizeVillageWgsl } from "./village-wgsl-cache.js";
+import { createVillageShadowBudget } from "./village-shadow-budget.js";
 
 // HDR bloom replaces the WebGL composer. Tone mapping and sRGB conversion run
 // exactly once, followed by the existing display-space village grade. The DOM
@@ -82,6 +83,8 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   let prepared = false, width = 1, height = 1, ratio = 1, renderFrames = 0;
   let inFlight = false, pendingFrame = null, completedFrames = 0, skippedSubmissions = 0;
   let frameStats = { calls: 0, triangles: 0, renderPasses: 0 };
+  const shadowBudget = createVillageShadowBudget(), pendingShadows = new Set();
+  let shadowContext = null, shadowRevision = null;
   let usePost = true, useAntialias = false, glowScale = 1;
   const originalBloomSize = glow.setSize.bind(glow);
   glow.setSize = (w, h) => originalBloomSize(Math.max(1, Math.round(w * glowScale)), Math.max(1, Math.round(h * glowScale)));
@@ -89,13 +92,32 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   device?.addEventListener?.("uncapturederror", uncaptured);
   device?.lost.then(info => { if (!disposed) onFailure?.(new Error(`WebGPU device lost: ${info.message || info.reason}`)); });
   function sync(source, camera, options = {}) {
+    // A resized r169 depth target may retain its own refresh request. Capture
+    // it before the mirror adds requests accumulated by skipped source ticks.
+    pendingShadows.clear();
+    for (const light of mirror.scene.children) if (light.castShadow && light.shadow?.needsUpdate) pendingShadows.add(light.userData.sourceUuid);
     mirror.sync(source, camera); renderer.toneMappingExposure = source.userData.exposure ?? 1.15;
     const shadows = options.shadows !== false;
     if (renderer.shadowMap.enabled !== shadows) {
+      shadowBudget.invalidate();
       renderer.shadowMap.enabled = shadows;
       mirror.scene.traverse(object => {
         for (const material of [].concat(object.material ?? [])) material.needsUpdate = true;
         if (shadows && object.shadow) object.shadow.needsUpdate = true;
+      });
+    }
+    const context = source.userData.villageShadowContext ?? source.uuid, revision = source.userData.villageShadowRevision ?? 0;
+    if (context !== shadowContext || revision !== shadowRevision) { shadowBudget.invalidate(); shadowContext = context; shadowRevision = revision; }
+    shadowBudget.beginFrame();
+    if (shadows) for (const light of mirror.scene.children) {
+      const shadow = light.shadow;
+      if (!light.castShadow || !shadow || shadow.autoUpdate) continue;
+      const p = light.matrixWorld.elements, t = light.target?.matrixWorld.elements ?? p;
+      shadow.needsUpdate = shadowBudget.select(light.userData.sourceUuid, {
+        requested: shadow.needsUpdate, rendererPending: pendingShadows.has(light.userData.sourceUuid),
+        force: !!options.forceShadows || !!source.userData.villageShadowContinuous, context,
+        shape: [shadow.mapSize.x, shadow.mapSize.y, shadow.bias, shadow.normalBias, shadow.radius, ...shadow.camera.projectionMatrix.elements],
+        position: [p[12], p[13], p[14]], target: [t[12], t[13], t[14]],
       });
     }
     const g = source.userData.grade ?? {};
@@ -147,8 +169,9 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
       prepared = true;
     },
     render(source, camera, options) { if (disposed || !prepared) throw new Error("WebGPU presentation is not ready"); if (inFlight) { skippedSubmissions++; return false; } sync(source, camera, options); draw(); return true; },
-    resize(w, h, r) { if (width === w && height === h && ratio === r) return; width = w; height = h; ratio = r; renderer.setPixelRatio(r); renderer.setSize(w, h, false); scenePass.setPixelRatio(r); scenePass.setSize(w, h); },
-    stats() { return { actualBackend: "webgpu", renderFrames, completedFrames, inFlight, maxFramesInFlight: 1, skippedSubmissions, ...mirror.stats(), materials: materials.stats, ...frameStats, shaderCache: { ...shaderCache, vertexPrograms: renderer._pipelines?.programs?.vertex?.size ?? 0, fragmentPrograms: renderer._pipelines?.programs?.fragment?.size ?? 0 }, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { hdr: usePost, bloom: usePost, shadows: renderer.shadowMap.enabled, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
+    resize(w, h, r) { if (width === w && height === h && ratio === r) return; shadowBudget.invalidate(); width = w; height = h; ratio = r; renderer.setPixelRatio(r); renderer.setSize(w, h, false); scenePass.setPixelRatio(r); scenePass.setSize(w, h); },
+    invalidateShadows() { shadowBudget.invalidate(); },
+    stats() { return { actualBackend: "webgpu", renderFrames, completedFrames, inFlight, maxFramesInFlight: 1, skippedSubmissions, ...mirror.stats(), materials: materials.stats, ...frameStats, shadowBudget: { ...shadowBudget.stats }, shaderCache: { ...shaderCache, vertexPrograms: renderer._pipelines?.programs?.vertex?.size ?? 0, fragmentPrograms: renderer._pipelines?.programs?.fragment?.size ?? 0 }, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { hdr: usePost, bloom: usePost, shadows: renderer.shadowMap.enabled, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
     dispose,
   };
   } catch (error) { dispose(); throw error; }

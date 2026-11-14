@@ -510,6 +510,10 @@ export function createVillageView(canvas, state, hooks = {}) {
   function placeLights() {
     const t = tour ? focus : controls.target;
     const expanded = expansionWorld.active, enclosed = !!expanded || !!inside;
+    // The GPU shadow budget must refresh on travel, even between halls that
+    // share the same off-map coordinates; cinematic tours retain every frame.
+    scene.userData.villageShadowContext = expanded ?? inside?.id ?? "surface";
+    scene.userData.villageShadowContinuous = !!tour;
     const near = lampSelection.select(expanded ? expansionWorld.lamps : inside ? inside.lamps : surfaceLampPositions, t, !enclosed);
     const power = expanded ? 64 : LAMP.power * (inside?.plan.hall.light ?? 1);
     pool.forEach((lamp, i) => {
