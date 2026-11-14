@@ -67,7 +67,7 @@ test("the owner's moon rim sits beside the neighbours' rim and lifts their own c
 test('the village presentation layers follow their foundation and keep its touch and text contracts', () => {
   const build = fs.readFileSync(new URL('../build.mjs', import.meta.url), 'utf8'), css = fs.readFileSync(new URL('../src/ui/village-premium.css', import.meta.url), 'utf8');
   const order = [...build.matchAll(/"src\/ui\/(village-[a-z-]+\.css)"/g)].map((m) => m[1]);
-  assert.deepEqual(order.slice(-4), ['village-fidelity.css', 'village-couture.css', 'village-story-couture.css', 'village-catalogue-couture.css']);
+  assert.deepEqual(order.slice(-5), ['village-fidelity.css', 'village-couture.css', 'village-story-couture.css', 'village-catalogue-couture.css', 'village-settings.css']);
   assert.ok(order.indexOf('village-premium.css') < order.indexOf('village-fidelity.css'));
   assert.doesNotMatch(css, /min-(?:width|height)/, 'touch targets keep the sizes the earlier layers gave them');
   for (const size of css.matchAll(/font(?:-size)?:[^;}]*?(\d+)px/g)) assert.ok(Number(size[1]) >= 12, 'no text under 12px');

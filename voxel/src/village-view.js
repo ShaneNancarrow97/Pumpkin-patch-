@@ -6,7 +6,8 @@ import * as THREE from "three";
 import { createFollowCameraRig, followCameraPose } from "./follow-camera.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { buildGround, buildPaving, buildWater, buildGreen, buildBeyond, buildHorizon, buildMist, buildStall, buildBench, buildHomes, buildTerrainWorks, buildWoods, spreadVillage, spreadWhole, grassAt, tickVillageVisibility, resetVillageVisibility, LAMPS, SKY } from "./village-world.js";
-import { createGrass } from "./village-grass.js";
+import { createGrass, VILLAGE_GRASS_QUALITY } from "./village-grass.js";
+import { createVillageDistanceSettings } from "./village-graphics-distance.js";
 import { groundHeight as terrainHeight, GROUND_REALM as REALM } from "./village-terrain.js";
 import { createBats } from "./village-bats.js";
 import { buildVillageDecor, letterPage, frame, velvetBatHall, VELVET_HALL, elowenLibrary, ELOWEN_HALL, rowanWorkshop, ROWAN_HALL } from "./village-models.js";
@@ -83,7 +84,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   // A plum haze thickens with distance, so far things melt into the night instead of popping in;
   // past its reach whole patches of the village aren't drawn at all (thicker and nearer in play mode).
   const scene = new THREE.Scene(); scene.background = new THREE.Color(SKY.top); scene.fog = new THREE.FogExp2(0x1d1430, .0045);
-  const REACH = { look: { fog: .0042, far: 400 }, play: { fog: .0072, far: 250 }, inside: { fog: .0015, far: 0 } };
+  const INSIDE_FOG = .0015;
   // The village is built on its design grid and scaled into the world here; people, decor and pages stand in the world itself.
   const root = new THREE.Group(); root.scale.setScalar(K); scene.add(root);
   scene.userData.exposure = 1.15;
@@ -117,6 +118,8 @@ export function createVillageView(canvas, state, hooks = {}) {
   controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
   controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
   const patches = [];
+  const distanceSettings = createVillageDistanceSettings({ scene, camera, patches });
+  let grassQuality = "high";
   // The lamps where they now stand, and the parts rebuilt as the village changes, moved into place as they are made.
   const LAMPS_AT = [...LAMPS.map((l) => { const [x, z] = spread(l.x, l.z); return { ...l, x, z }; }), ...TOWN_LAMPS];
   let surfaceLamps = LAMPS_AT;
@@ -179,6 +182,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     // The chimneys the village noted as it was built smoke where they now stand.
     const smoke = [green, beyond].flatMap((g) => g.userData.marks?.smoke ?? []).map(([x, y, z]) => ({ x, y, z: -z }));
     mist = buildMist(); bats = createBats(); life = createVillageLife({ chimneyTops: smoke }); grass = createGrass({ x0: REALM.x0, z0: REALM.z0, x1: REALM.x1, z1: REALM.z1, density: 3, grow: grassAt, height: terrainHeight, scale: K });
+    grass.setQuality(grassQuality);
     // The town square in the ground the spread opened north of the Green, drawn there whole.
     town = buildTownSquare({ waterClock });
     root.add(earth, paving, water, works, green, beyond, woods, horizon, mist, bats.group, life.group, grass.group, town);
@@ -327,7 +331,7 @@ export function createVillageView(canvas, state, hooks = {}) {
     if (inside?.id === id) return inside;
     if (inside) goOutside();
     inside = buildInside(id); inside.group.visible = true; if (inside.host) inside.host.root.visible = true;
-    root.visible = false; if (sky) sky.visible = false; scene.background.set(0x0a070d); scene.fog.color.set(0x0a070d); scene.fog.density = REACH.inside.fog;
+    root.visible = false; if (sky) sky.visible = false; scene.background.set(0x0a070d); scene.fog.color.set(0x0a070d); scene.fog.density = INSIDE_FOG;
     const hall = inside.plan.hall, glow = hall.light ?? 1; lampAs({ ...HALL_LAMP, reach: hall.reach ?? HALL_LAMP.reach }, glow); sun.intensity = .08; hemi.intensity = hall.ambient ?? .32; scene.userData.exposure = hall.exposure ?? 1.3; following = false; resize();
     return inside;
   }
@@ -572,6 +576,15 @@ export function createVillageView(canvas, state, hooks = {}) {
   }
   return {
     scene, camera, cameraActions, play, director, folk, sync, resize, preview, groundAt, gatherTool, dialogueCamera, withMapSurface,
+    setGraphics(options = {}) {
+      if (Object.hasOwn(options, "distance")) distanceSettings.setQuality(options.distance);
+      if (Object.hasOwn(options, "grass")) {
+        grassQuality = Object.hasOwn(VILLAGE_GRASS_QUALITY, options.grass) ? options.grass : "high";
+        grass?.setQuality(grassQuality);
+      }
+      return { distance: distanceSettings.status.requested, grass: grassQuality };
+    },
+    get graphicsStatus() { return { distance: distanceSettings.status, grass: grass?.stats() ?? { quality: grassQuality, visible: false } }; },
     get neighbourhoodStatus() { return neighbourhoods?.userData ?? null; },
     enterExpansionArea(id){dialogueFocus.end({immediate:true});if(inside)goOutside();const entry=expansionWorld.enter(id);if(!entry)return false;setLampNear(0);root.visible=false;for(const p of folk.people.values())p.root.visible=false;resources.group.visible=false;shopMarkers.hide();for(const h of pickables)if(!['expansion-activity','expansion-portal'].includes(h.userData.type))h.visible=false;if(sky)sky.visible=false;sun.intensity=.12;hemi.intensity=1.3;hemi.color.set(0xc6c3dd);hemi.groundColor.set(0x817185);scene.background.set(0x100d19);scene.fog.color.set(0x100d19);scene.userData.exposure=1.2;following=false;return entry;},
     leaveExpansionArea(){const entry=expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity = NIGHT.sun;hemi.intensity = NIGHT.hemi;hemi.color.set(NIGHT.sky);hemi.groundColor.set(NIGHT.ground);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;following=false;lampAs(LAMP);pool.forEach(l=>{l.visible=true;l.color.set(0xff9a40);});sync();return entry;},
@@ -600,8 +613,7 @@ export function createVillageView(canvas, state, hooks = {}) {
         scene.userData.grade = VILLAGE_GRADE; sun.color.set(0xb8c2ff);
         if (inside) { hemi.color.set(NIGHT.sky); hemi.groundColor.set(NIGHT.ground); for (const lamp of pool) lamp.color.set(0xff9a40); }
       }
-      const reach = inside||expansionWorld.active ? REACH.inside : following ? REACH.play : REACH.look; scene.fog.density += (reach.fog * fogScale - scene.fog.density) * Math.min(1, dt * 2);
-      for (const p of patches) p.chunk.visible = p.sphere.center.distanceTo(camera.position) - p.sphere.radius < reach.far;
+      distanceSettings.tick(dt, { following, enclosed: !!inside || !!expansionWorld.active, tour: !!tour, fogScale });
       placeLights(); folk.tick(dt, time, camera, { paused: !!inside || !!tour || !!hooks.residentsPaused?.() || !!state.paused, reducedMotion: reducedMotion() });
       if (lampGlow) { lampGlow.group.visible = !inside && !expansionWorld.active; lampGlow.tick(time, { density: scene.fog.density, still: reducedMotion() }); }
       if (!inside&&!expansionWorld.active) { atmosphere?.tick(state.paused ? 0 : dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full", camera }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
