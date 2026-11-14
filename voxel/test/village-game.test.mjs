@@ -566,9 +566,9 @@ test("canceling the walking exit requires leaving and re-entering before another
   assert.equal(h.game.active,false);assert.equal(h.leaves,1);for(let n=0;n<5;n++)assert.doesNotThrow(()=>h.game.tick(.1));
 });
 
-test("Options opens the six-action village hub and Cross chooses a real menu", t => {
+test("Options opens the village hub with Settings and Cross chooses a real menu", t => {
   const h=harness(t);h.game.open();h.game.back();h.press(9);assert.equal(h.game.status.panel,"navigation");
-  const cards=h.$('#vg-panel-body').querySelectorAll('button');assert.equal(cards.length,6);assert.ok(h.doc.activeElement===cards[0],"the first menu action receives focus");
+  const cards=h.$('#vg-panel-body').querySelectorAll('button');assert.equal(cards.length,7);assert.ok(h.doc.activeElement===cards[0],"the first menu action receives focus");
   h.press(0);assert.equal(h.game.status.panel,"map");h.press(1);assert.equal(h.game.status.panel,"navigation","Circle returns to the menu that opened the map");h.press(1);assert.equal(h.game.status.panel,null);
 });
 
@@ -834,4 +834,49 @@ test("HUD cadence never delays a nearby Talk action or stops paused UI updates",
   h.pad.buttons[0].pressed = false; h.game.back(); h.state.paused = true; h.state.coins += 42;
   time = 102; h.game.tick(0);
   assert.equal(h.$("#vg-coins").textContent, "£" + Math.round(h.state.coins).toLocaleString("en-GB"), "real-time HUD still refreshes with zero simulation delta");
+});
+
+test('village settings apply once, preserve select focus and never mutate progression', t => {
+  const prefs = { glow: false, shadows: false, music: false }, saved = [], applied = [];
+  const h = harness(t, farm(), undefined, { prefs, savePrefs: () => saved.push({ ...prefs }) });
+  h.scene.setVillageGraphics = value => applied.push(value);
+  h.scene.villageRendererStatus = { requested: 'webgl', backend: 'webgl', stage: 'disabled' };
+  h.game.open(); h.game.back(); const before = JSON.stringify(M.saveData(h.state));
+  h.$('#vg-settings').isConnected = true; h.$('#vg-settings').focus(); h.click('#vg-settings');
+  assert.equal(h.game.status.panel, 'settings'); assert.equal(h.game.blocked, true);
+  assert.equal(h.$('#vg-settings').attributes['aria-expanded'], 'true');
+  const select = h.$('#vg-setting-villagePost'); select.focus(); select.value = 'low'; select.onchange();
+  assert.equal(prefs.villagePost, 'low'); assert.equal(prefs.villageShadows, false);
+  assert.equal(saved.length, 1); assert.equal(applied.length, 1);
+  assert.ok(h.doc.activeElement === h.$('#vg-setting-villagePost'), 'selection keeps its focused control');
+  assert.equal(JSON.stringify(M.saveData(h.state)), before);
+  assert.equal(prefs.glow, false); assert.equal(prefs.music, false);
+  const kept = h.$('#vg-setting-villagePost');
+  h.scene.villageRendererStatus = { requested: 'webgpu', backend: 'webgl', stage: 'fallback' }; h.game.render();
+  assert.ok(h.$('#vg-setting-villagePost') === kept, 'async status keeps the native select instance');
+  assert.ok(h.doc.activeElement === kept, 'status does not steal focus');
+  h.game.back(); assert.equal(h.game.status.panel, null);
+  assert.ok(h.doc.activeElement === h.$('#vg-settings'), 'closing restores the connected opener');
+  assert.equal(h.$('#vg-settings').attributes['aria-expanded'], 'false');
+});
+
+test('village settings are reachable from controller menus and stop held walking', t => {
+  const h = harness(t); h.game.open(); h.game.back(); h.press(9);
+  assert.equal(h.game.status.panel, 'navigation');
+  h.click('[data-vg-page="settings"]'); assert.equal(h.game.status.panel, 'settings');
+  const before = h.game.status.position; h.pad.axes[1] = -.8; h.game.tick(.1);
+  assert.deepEqual(h.game.status.position, before); h.pad.axes[1] = 0;
+  h.press(1); assert.equal(h.game.status.panel, 'navigation');
+  h.press(1); assert.equal(h.game.status.panel, null);
+});
+
+test('restore village defaults changes only village presentation preferences', t => {
+  const prefs = { villageRenderer: 'webgl', villagePost: 'off', villageShadows: false, villageDistance: 'near', villageGrass: 'off', glow: false, shadows: false, musicVolume: .2 };
+  let saved = 0; const applied = [];
+  const h = harness(t, farm(), undefined, { prefs, savePrefs: () => saved++ }); h.scene.setVillageGraphics = value => applied.push(value);
+  h.game.open(); h.game.back(); h.click('#vg-settings'); const before = JSON.stringify(M.saveData(h.state));
+  h.click('[data-village-settings-reset]');
+  assert.equal(prefs.villageRenderer, 'auto'); assert.equal(prefs.villagePost, 'balanced'); assert.equal(prefs.villageShadows, true); assert.equal(prefs.villageDistance, 'far'); assert.equal(prefs.villageGrass, 'high');
+  assert.equal(prefs.glow, false); assert.equal(prefs.shadows, false); assert.equal(prefs.musicVolume, .2);
+  assert.equal(saved, 1); assert.equal(applied.length, 1); assert.equal(JSON.stringify(M.saveData(h.state)), before);
 });

@@ -3,6 +3,7 @@ import { createVillageNodeMaterials } from "./village-node-materials.js";
 import { createVillageGpuMirror } from "./village-webgpu-mirror.js";
 import { canonicalizeVillageWgsl } from "./village-wgsl-cache.js";
 import { createVillageShadowBudget } from "./village-shadow-budget.js";
+import { villagePostProfile, scaleVillageGrade } from "../village-graphics.js";
 
 // HDR bloom replaces the WebGL composer. Tone mapping and sRGB conversion run
 // exactly once, followed by the existing display-space village grade. The DOM
@@ -68,6 +69,7 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   scenePass = GPU.pass(mirror.scene, mirror.camera); const color = scenePass.getTextureNode("output");
   glow = GPU.bloom(color, .36, .55, .9);
   const saturation = GPU.uniform(1.1), contrast = GPU.uniform(1.05), vignette = GPU.uniform(.24);
+  const gradeState = { saturation: 1, contrast: 1, vignette: 0, shadows: [0, 0, 0], lights: [0, 0, 0] };
   const shadowTint = GPU.uniform(new GPU.Vector3(.004, .006, .03)), lightTint = GPU.uniform(new GPU.Vector3(.02, .008, -.014));
   const display = GPU.renderOutput(color.add(glow), GPU.ACESFilmicToneMapping, GPU.SRGBColorSpace);
   const gradeFor = display => GPU.Fn(() => {
@@ -85,7 +87,7 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
   let frameStats = { calls: 0, triangles: 0, renderPasses: 0 };
   const shadowBudget = createVillageShadowBudget(), pendingShadows = new Set();
   let shadowContext = null, shadowRevision = null;
-  let usePost = true, useAntialias = false, glowScale = 1;
+  let usePost = true, useAntialias = false, glowScale = 1, postProfile = villagePostProfile("balanced");
   const originalBloomSize = glow.setSize.bind(glow);
   glow.setSize = (w, h) => originalBloomSize(Math.max(1, Math.round(w * glowScale)), Math.max(1, Math.round(h * glowScale)));
   uncaptured = event => { if (!disposed) onFailure?.(new Error(`WebGPU validation: ${event.error?.message ?? "uncaptured device error"}`)); };
@@ -120,12 +122,14 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
         position: [p[12], p[13], p[14]], target: [t[12], t[13], t[14]],
       });
     }
-    const g = source.userData.grade ?? {};
-    saturation.value = g.saturation ?? 1; contrast.value = g.contrast ?? 1; vignette.value = g.vignette ?? 0;
-    shadowTint.value.fromArray(g.shadows ?? [0, 0, 0]); lightTint.value.fromArray(g.lights ?? [0, 0, 0]);
+    postProfile = villagePostProfile(options.postEffects);
+    const g = scaleVillageGrade(source.userData.grade, postProfile.grade, gradeState);
+    saturation.value = g.saturation; contrast.value = g.contrast; vignette.value = g.vignette;
+    shadowTint.value.fromArray(g.shadows); lightTint.value.fromArray(g.lights);
     const b = source.userData.bloom ?? {};
-    glow.strength.value = b.strength ?? .36; glow.radius.value = b.radius ?? .55; glow.threshold.value = b.threshold ?? .9;
-    usePost = options.bloom !== false;
+    glow.strength.value = (b.strength ?? .36) * postProfile.bloom;
+    glow.radius.value = b.radius ?? .55; glow.threshold.value = b.threshold ?? .9;
+    usePost = options.bloom !== false && postProfile.enabled;
     glowScale = options.glowScale ?? 1;
     const antialias = !!options.antialias && !options.tvProfile;
     if (antialias !== useAntialias) {
@@ -171,7 +175,7 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
     render(source, camera, options) { if (disposed || !prepared) throw new Error("WebGPU presentation is not ready"); if (inFlight) { skippedSubmissions++; return false; } sync(source, camera, options); draw(); return true; },
     resize(w, h, r) { if (width === w && height === h && ratio === r) return; shadowBudget.invalidate(); width = w; height = h; ratio = r; renderer.setPixelRatio(r); renderer.setSize(w, h, false); scenePass.setPixelRatio(r); scenePass.setSize(w, h); },
     invalidateShadows() { shadowBudget.invalidate(); },
-    stats() { return { actualBackend: "webgpu", renderFrames, completedFrames, inFlight, maxFramesInFlight: 1, skippedSubmissions, ...mirror.stats(), materials: materials.stats, ...frameStats, shadowBudget: { ...shadowBudget.stats }, shaderCache: { ...shaderCache, vertexPrograms: renderer._pipelines?.programs?.vertex?.size ?? 0, fragmentPrograms: renderer._pipelines?.programs?.fragment?.size ?? 0 }, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { hdr: usePost, bloom: usePost, shadows: renderer.shadowMap.enabled, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
+    stats() { return { actualBackend: "webgpu", renderFrames, completedFrames, inFlight, maxFramesInFlight: 1, skippedSubmissions, ...mirror.stats(), materials: materials.stats, ...frameStats, shadowBudget: { ...shadowBudget.stats }, shaderCache: { ...shaderCache, vertexPrograms: renderer._pipelines?.programs?.vertex?.size ?? 0, fragmentPrograms: renderer._pipelines?.programs?.fragment?.size ?? 0 }, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { effects: postProfile.id, bloomStrength: glow.strength.value, gradeAmount: postProfile.grade, hdr: usePost, bloom: usePost, shadows: renderer.shadowMap.enabled, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
     dispose,
   };
   } catch (error) { dispose(); throw error; }

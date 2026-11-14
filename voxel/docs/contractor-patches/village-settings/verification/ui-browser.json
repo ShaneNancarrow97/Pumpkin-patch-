@@ -1,0 +1,418 @@
+{
+  "file": "/tmp/Pumpkin-Patch-Village-Settings.html",
+  "htmlSha256": "43057ebb2980cf22982859fd08f6ffa0e87a651baa9781504db1eaf2aa0a1ed4",
+  "bytes": 61832139,
+  "harnessSha256": "b56b5339446ea373daf63d2a3ad45e0ea7b60be2bdb15ba182b4917042d45fad",
+  "fixtureSha256": "4bad58a02093143a30c234f7c636366779dc3f37c4782322e954445f9e166153",
+  "mode": "ui-only",
+  "display": {
+    "viewport": [
+      1280,
+      800
+    ],
+    "deviceScaleFactor": 1,
+    "nativePixelScope": "Native 480x270 buffer bounds software GPU cost; this validates rendering behaviour, not full-resolution visual quality or device FPS."
+  },
+  "scope": "Exact HTML UI/controller acceptance, native RAF and simulation; renderer/composer draws held only after native village startup. World pixels in UI captures are stale, not graphics or FPS evidence. Standard Gamepad API injection is not physical Bluetooth certification.",
+  "preferences": {
+    "music": false,
+    "sound": false,
+    "voiceEnabled": false,
+    "frameRate": "30",
+    "renderQuality": "sharp",
+    "voxelCharacters": false,
+    "glow": true,
+    "shadows": true,
+    "villageRenderer": "webgl",
+    "villagePost": "balanced",
+    "villageShadows": true,
+    "villageDistance": "far",
+    "villageGrass": "high"
+  },
+  "checks": [
+    {
+      "label": "Initial village uses the compatible renderer",
+      "pass": true
+    },
+    {
+      "label": "Header gear opens five village graphics controls",
+      "pass": true
+    },
+    {
+      "label": "Options and D-pad reach the village Settings card",
+      "pass": true
+    },
+    {
+      "label": "Settings opens with a reachable post-effects select",
+      "pass": true
+    },
+    {
+      "label": "Cross and D-pad change real settings immediately",
+      "pass": true
+    },
+    {
+      "label": "Movement input cannot move the owner underneath Settings",
+      "pass": true,
+      "actual": {
+        "before": {
+          "x": 87,
+          "z": -16.5
+        },
+        "after": {
+          "x": 87,
+          "z": -16.5
+        }
+      }
+    },
+    {
+      "label": "Circle returns from Settings without leaving the village",
+      "pass": true
+    },
+    {
+      "label": "desktop: village controls and header remain readable and fit",
+      "pass": true,
+      "actual": {
+        "box": {
+          "left": 820,
+          "top": 82,
+          "right": 1260,
+          "bottom": 698
+        },
+        "viewport": [
+          1280,
+          800
+        ],
+        "tiny": [],
+        "small": [],
+        "header": [
+          {
+            "id": "vg-home",
+            "x": 20,
+            "y": 14,
+            "right": 99.9375,
+            "bottom": 58
+          },
+          {
+            "id": "vg-location",
+            "x": 530.125,
+            "y": 19,
+            "right": 749.859375,
+            "bottom": 53
+          },
+          {
+            "id": "vg-coins",
+            "x": 983.765625,
+            "y": 14,
+            "right": 1057.5625,
+            "bottom": 58
+          },
+          {
+            "id": "vg-person",
+            "x": 1064.5625,
+            "y": 14,
+            "right": 1158,
+            "bottom": 58
+          },
+          {
+            "id": "vg-fullscreen",
+            "x": 1165,
+            "y": 14,
+            "right": 1209,
+            "bottom": 58
+          },
+          {
+            "id": "vg-settings",
+            "x": 1216,
+            "y": 14,
+            "right": 1260,
+            "bottom": 58
+          }
+        ],
+        "overlaps": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0,
+        "pass": true
+      }
+    },
+    {
+      "label": "phone: village controls and header remain readable and fit",
+      "pass": true,
+      "actual": {
+        "box": {
+          "left": 10,
+          "top": 88,
+          "right": 380,
+          "bottom": 750
+        },
+        "viewport": [
+          390,
+          844
+        ],
+        "tiny": [],
+        "small": [],
+        "header": [
+          {
+            "id": "vg-home",
+            "x": 10,
+            "y": 8,
+            "right": 54,
+            "bottom": 52
+          },
+          {
+            "id": "vg-location",
+            "x": 59,
+            "y": 6.65625,
+            "right": 233,
+            "bottom": 53.34375
+          },
+          {
+            "id": "vg-coins",
+            "x": 325.890625,
+            "y": 54,
+            "right": 380,
+            "bottom": 78
+          },
+          {
+            "id": "vg-person",
+            "x": 238,
+            "y": 8,
+            "right": 282,
+            "bottom": 52
+          },
+          {
+            "id": "vg-fullscreen",
+            "x": 287,
+            "y": 8,
+            "right": 331,
+            "bottom": 52
+          },
+          {
+            "id": "vg-settings",
+            "x": 336,
+            "y": 8,
+            "right": 380,
+            "bottom": 52
+          }
+        ],
+        "overlaps": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0,
+        "pass": true
+      }
+    },
+    {
+      "label": "landscape: village controls and header remain readable and fit",
+      "pass": true,
+      "actual": {
+        "box": {
+          "left": 394.3382873535156,
+          "top": 10,
+          "right": 834.3382568359375,
+          "bottom": 380
+        },
+        "viewport": [
+          844,
+          390
+        ],
+        "tiny": [],
+        "small": [],
+        "header": [
+          {
+            "id": "vg-home",
+            "x": 12,
+            "y": 8,
+            "right": 91.9375,
+            "bottom": 52
+          },
+          {
+            "id": "vg-location",
+            "x": 317,
+            "y": 24.5,
+            "right": 527,
+            "bottom": 55.5
+          },
+          {
+            "id": "vg-coins",
+            "x": 781.890625,
+            "y": 54,
+            "right": 832,
+            "bottom": 72
+          },
+          {
+            "id": "vg-person",
+            "x": 688,
+            "y": 8,
+            "right": 732,
+            "bottom": 52
+          },
+          {
+            "id": "vg-fullscreen",
+            "x": 738,
+            "y": 8,
+            "right": 782,
+            "bottom": 52
+          },
+          {
+            "id": "vg-settings",
+            "x": 788,
+            "y": 8,
+            "right": 832,
+            "bottom": 52
+          }
+        ],
+        "overlaps": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0,
+        "pass": true
+      }
+    },
+    {
+      "label": "TV layout uses the real Settings toggle",
+      "pass": true
+    },
+    {
+      "label": "tv: village controls and header remain readable and fit",
+      "pass": true,
+      "actual": {
+        "box": {
+          "left": 1149.9736328125,
+          "top": 126.03125,
+          "right": 1903.0986328125,
+          "bottom": 923.21875
+        },
+        "viewport": [
+          1920,
+          1080
+        ],
+        "tiny": [],
+        "small": [],
+        "header": [
+          {
+            "id": "vg-home",
+            "x": 30.734375,
+            "y": 21.515625,
+            "right": 152.453125,
+            "bottom": 89.140625
+          },
+          {
+            "id": "vg-location",
+            "x": 781.484375,
+            "y": 27.984375,
+            "right": 1138.515625,
+            "bottom": 82.671875
+          },
+          {
+            "id": "vg-coins",
+            "x": 1461.96875,
+            "y": 21.515625,
+            "right": 1574.25,
+            "bottom": 89.140625
+          },
+          {
+            "id": "vg-person",
+            "x": 1585,
+            "y": 21.515625,
+            "right": 1732.515625,
+            "bottom": 89.140625
+          },
+          {
+            "id": "vg-fullscreen",
+            "x": 1743.265625,
+            "y": 21.515625,
+            "right": 1810.890625,
+            "bottom": 89.140625
+          },
+          {
+            "id": "vg-settings",
+            "x": 1821.640625,
+            "y": 21.515625,
+            "right": 1889.265625,
+            "bottom": 89.140625
+          }
+        ],
+        "overlaps": [],
+        "documentOverflow": 0,
+        "contentOverflow": 0,
+        "pass": true
+      }
+    },
+    {
+      "label": "All five choices save without changing farm glow or shadows",
+      "pass": true,
+      "actual": {
+        "villageRenderer": "webgl",
+        "villagePost": "low",
+        "villageShadows": false,
+        "villageDistance": "near",
+        "villageGrass": "low",
+        "glow": true,
+        "shadows": true
+      }
+    },
+    {
+      "label": "Reload restores the selected village settings without a query override",
+      "pass": true,
+      "actual": {
+        "villageRenderer": "webgl",
+        "villagePost": "low",
+        "villageShadows": false,
+        "villageDistance": "near",
+        "villageGrass": "low"
+      }
+    },
+    {
+      "label": "Reset restores village defaults and keeps farm preferences",
+      "pass": true,
+      "actual": {
+        "villageRenderer": "auto",
+        "villagePost": "balanced",
+        "villageShadows": true,
+        "villageDistance": "far",
+        "villageGrass": "high",
+        "glow": true,
+        "shadows": true
+      }
+    },
+    {
+      "label": "Settings finish without page, shader or loading errors",
+      "pass": true
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "ui-only-desktop-settings.png",
+      "drawHeld": true
+    },
+    {
+      "file": "ui-only-phone-settings.png",
+      "drawHeld": true
+    },
+    {
+      "file": "ui-only-landscape-settings.png",
+      "drawHeld": true
+    },
+    {
+      "file": "ui-only-tv-settings.png",
+      "drawHeld": true
+    }
+  ],
+  "states": {},
+  "errors": [],
+  "consoleErrors": [],
+  "warnings": [
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+    "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+    "No available adapters."
+  ],
+  "externalRequests": [],
+  "failedRequests": [],
+  "browserVersion": "154.0.8037.57",
+  "launchArgs": [
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader",
+    "--ignore-gpu-blocklist"
+  ],
+  "passed": true
+}

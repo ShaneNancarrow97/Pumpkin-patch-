@@ -10,6 +10,12 @@ import { VILLAGE_GRASS_FADE as FADE } from "./village-visibility.js";
 import { VILLAGE_DETAIL_DISTANCE as DETAIL, villageGrassDetailLevel } from "./village-distance-detail.js";
 
 const PATCH = 20;
+export const VILLAGE_GRASS_QUALITY = Object.freeze({
+  off: Object.freeze({ density: 0, blades: 1, flowers: false }),
+  low: Object.freeze({ density: .45, blades: 1, flowers: false }),
+  balanced: Object.freeze({ density: .72, blades: 3, flowers: true }),
+  high: Object.freeze({ density: 1, blades: 5, flowers: true }),
+});
 // One tuft: five slim blades fanned round a point, each bent once and drawn out to a tip; base at y 0, tip near y 1.
 // Two triangles a blade: root to the bend, then the bend to the tip.
 function tuftGeometry() {
@@ -93,18 +99,38 @@ export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale
       blooms.forEach(([x, z, kind], i) => { m.compose(p.set(x, height(x, z) + .01, -z), q.identity(), s.set(1, kind.h * 1.3, 1)); flowers.setMatrixAt(i, m); flowers.setColorAt(i, c.set(petals[(r() * petals.length) | 0])); });
       flowers.castShadow = false; flowers.computeBoundingSphere(); group.add(flowers);
     }
-    patches.push({ mesh, flowers, x: px + PATCH / 2, z: pz + PATCH / 2, detail: 5 });
+    patches.push({ mesh, flowers, count: spots.length, flowerCount: blooms.length, x: px + PATCH / 2, z: pz + PATCH / 2, detail: 5, rangeVisible: true, flowerRangeVisible: true });
   }
   group.userData.proximityFade={...FADE,mode:"gpu-alpha-hash",worldUnits:true};
   // Counts describe the last selected surface; visible marks a hidden ancestor.
-  const stats = { patches: patches.length, activePatches: 0, fullPatches: 0, middlePatches: 0, farPatches: 0, vertices: 0, fullVertices: 0, visible: true, selectionPasses: 0, patchChecks: 0 };
-  let selectedX = NaN, selectedZ = NaN, wasVisible = false;
+  const stats = { patches: patches.length, activePatches: 0, fullPatches: 0, middlePatches: 0, farPatches: 0, vertices: 0, fullVertices: 0, instances: 0, fullInstances: 0, flowerInstances: 0, visible: true, quality: "high", selectionPasses: 0, patchChecks: 0 };
+  let selectedX = NaN, selectedZ = NaN, wasVisible = false, quality = "high";
   group.userData.distanceDetail = stats;
   return {
     group,
+    // The deterministic instance order is spatially scattered. Its prefix is
+    // a thinner lawn without buffer edits, new meshes or shader variants.
+    setQuality(value) {
+      const next = Object.hasOwn(VILLAGE_GRASS_QUALITY, value) ? value : "high";
+      if (next === quality) return quality;
+      quality = next; stats.quality = next; wasVisible = false;
+      const setting = VILLAGE_GRASS_QUALITY[next];
+      for (const patch of patches) {
+        patch.mesh.count = Math.floor(patch.count * setting.density);
+        if (patch.flowers) patch.flowers.count = setting.flowers ? Math.floor(patch.flowerCount * setting.density) : 0;
+        if (!setting.density) { patch.mesh.visible = false; if (patch.flowers) patch.flowers.visible = false; }
+      }
+      if (!setting.density) {
+        stats.visible = false;
+        stats.activePatches = stats.fullPatches = stats.middlePatches = stats.farPatches = stats.vertices = stats.fullVertices = stats.instances = stats.fullInstances = stats.flowerInstances = 0;
+      }
+      return quality;
+    },
     // The breeze, and patches beyond the view's reach hidden (the camera in world units).
     // Player and camera are Three world positions; only shared uniforms change, never blade matrices.
     tick(time, camera, player) {
+      if (quality === "off") return;
+      const setting = VILLAGE_GRASS_QUALITY[quality];
       uniforms.uTime.value = time;
       uniforms.uGrassPlayer.value.set(Number.isFinite(player?.x)?player.x:1e6,Number.isFinite(player?.z)?player.z:1e6);
       uniforms.uGrassCamera.value.set(Number.isFinite(camera?.position.x)?camera.position.x:1e6,Number.isFinite(camera?.position.z)?camera.position.z:1e6);
@@ -124,18 +150,26 @@ export function createGrass({ x0, z0, x1, z1, density = 3.2, grow, height, scale
       const cx = camera.position.x / scale, cz = -camera.position.z / scale;
       // The +1 design metre covers clumps which grow just outside their tile.
       const radius = (Math.SQRT2 * PATCH / 2 + 1) * scale;
-      stats.activePatches = stats.fullPatches = stats.middlePatches = stats.farPatches = stats.vertices = stats.fullVertices = 0;
+      stats.activePatches = stats.fullPatches = stats.middlePatches = stats.farPatches = stats.vertices = stats.fullVertices = stats.instances = stats.fullInstances = stats.flowerInstances = 0;
       for (const pt of patches) {
         const nearest = Math.max(0, Math.hypot(pt.x - cx, pt.z - cz) * scale - radius);
-        const on = nearest < DETAIL.grassFarTo + (pt.mesh.visible ? DETAIL.switchMargin : 0);
-        pt.detail = villageGrassDetailLevel(nearest, pt.detail);
-        pt.mesh.geometry = detailGeometry[pt.detail]; pt.mesh.visible = on;
+        // Keep distance hysteresis separate from the quality cap. Turning a
+        // lawn off or drawing one blade must not erase its saved range state.
+        const on = nearest < DETAIL.grassFarTo + (pt.rangeVisible ? DETAIL.switchMargin : 0);
+        pt.rangeVisible = on; pt.detail = villageGrassDetailLevel(nearest, pt.detail);
+        const drawnDetail = Math.min(setting.blades, pt.detail);
+        pt.mesh.geometry = detailGeometry[drawnDetail]; pt.mesh.visible = on;
         // Flower heads share the close-detail fade and are not submitted once
         // every head in the patch is invisible. No plant or collision is removed.
-        if (pt.flowers) pt.flowers.visible = on && nearest < DETAIL.grassNearTo + (pt.flowers.visible ? DETAIL.switchMargin : 0);
+        if (pt.flowers) {
+          pt.flowerRangeVisible = on && nearest < DETAIL.grassNearTo + (pt.flowerRangeVisible ? DETAIL.switchMargin : 0);
+          pt.flowers.visible = setting.flowers && pt.flowerRangeVisible;
+        }
         if (on) {
-          stats.activePatches++; stats[pt.detail === 5 ? "fullPatches" : pt.detail === 3 ? "middlePatches" : "farPatches"]++;
-          stats.vertices += pt.mesh.count * pt.detail * 6; stats.fullVertices += pt.mesh.count * 30;
+          stats.activePatches++; stats[drawnDetail === 5 ? "fullPatches" : drawnDetail === 3 ? "middlePatches" : "farPatches"]++;
+          stats.vertices += pt.mesh.count * drawnDetail * 6; stats.fullVertices += pt.count * 30;
+          stats.instances += pt.mesh.count; stats.fullInstances += pt.count;
+          if (pt.flowers?.visible) stats.flowerInstances += pt.flowers.count;
         }
       }
     },

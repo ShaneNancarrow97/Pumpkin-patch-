@@ -1,5 +1,6 @@
 import { installLevelRewardArt, levelBadgeMarkup } from "./ui/level-reward-icons.js";
 import { createIdleBreak } from './ui/idle-break.js';
+import { normaliseVillageGraphics, VILLAGE_GRAPHICS_OPTIONS } from './village-graphics.js';
 import villageShortcutURL from "../assets/village-shortcut/village.webp";
 import { installHomeCategoryArt } from "./ui/home-category-icons.js";
 import grassTileURL from '../assets/terrain/grass-tile.webp';
@@ -85,6 +86,10 @@ const prefs = (() => {
   try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; }
 })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
+Object.assign(prefs, normaliseVillageGraphics(prefs));
+// An explicit QA/browser URL selects the initial renderer; later menu changes win.
+const initialVillageRenderer = new URLSearchParams(location.search).get("villageRenderer");
+if (VILLAGE_GRAPHICS_OPTIONS.villageRenderer.some(option => option.id === initialVillageRenderer)) prefs.villageRenderer = initialVillageRenderer;
 // TV mode (ui/tv-mode.js): a phone mirrored to a TV and played with a controller.
 // TV mode also lightens the picture and paces the frames for a cast (scene.js, frame-pacing.js).
 const tv = createTvMode({ prefs, savePrefs, notice: (text) => notice(text), onChange: (on) => { try { scene.setTvProfile(on); scene.setFramePacing({ mode: prefs.frameRate, tv: on }); } catch { /* the scene isn't made yet; it takes TV mode as it starts */ } } });
@@ -1010,6 +1015,7 @@ playControls=createPlayControls({feel:playFeel,holdToBuy,farmAction,arrange:padA
   open(){const k=scene.place?.kind;if(k==='room'){sheets.home.setTab('decorate');openSheet('home');}else if(k==='estate')openEstateSheet('garden');else if(!scene.place)$('open-stock').click();}},placement:createPadPlacement({scene,state:()=>state,house:home.tools,estate:()=>estateTools,foyer:()=>foyerTools,feel:playFeel,placed:(id)=>padArrange.focus(id)}),hubAllowed:()=>!carvingUI?.isOpen&&!mazeUI.active&&!hayrideUI.active&&!homeJourney?.active,getActivity:()=>lifeActivity.state(),scene,state:()=>state,tools:home.tools,action:interactAsPlayer,openHome,openManage:()=>{closeSheet();upgradeMenu.toggle();},editNearby(){const t=scene.player.state().target;scene.player.stand();if(t?.instance)home.tools.select(t.instance);else {notice("Walk close to a piece of furniture to move it.");}},openWardrobe(){if(scene.place?.kind==='room')M.recordHomeActivity?.(state,'wardrobe');save();openSheet('wardrobe');},decorate(){scene.player.stand();if(scene.place?.kind!=='room')enterRoom(state.house.activeRoom);sheets.home.setTab('decorate');openSheet('home');},portrait:who=>scene.portrait(state.wardrobe.equipped[who]),notice,back(){if(fishingUI?.isOpen){queueMicrotask(()=>fishingUI.close());return;}if(carvingUI?.isOpen){queueMicrotask(closeCarving);return;}if(lifeActivity.state().active){lifeActivity.cancel();return;}if(intro.active)intro.skip();else if(homeJourney?.active)homeJourney.close();else if(celebration.active)document.querySelector(".level-continue")?.click();else if(hayrideUI.active){if(hayrideUI.stage==="running")hayrideUI.pause(true);else if(hayrideUI.stage==="pause")hayrideUI.pause(false);else exitHayrideRide();}else if(stockPopover.open)stockPopover.close(true);else if(upgradeMenu.open)upgradeMenu.close();else if(openTab)closeSheet();else if(home.tools.selected)home.tools.act("done");else if(scene.player.state().pose)scene.player.stand();else if(scene.place)leavePlace();else scene.player.setEnabled(false);}});
 homeJourney=createHomeJourney({state:()=>state,blocked:()=>!!openTab||celebration.active||intro.active||mazeUI.active||hayrideUI.active||!!home.tools.selected||!!playControls.radial||state.paused,follow:followHomeGoal,open:()=>openSheet('homelife')});
 scene.setRenderQuality(prefs.renderQuality); scene.setTvProfile(!!prefs.tvMode); scene.setFramePacing({ mode: prefs.frameRate, tv: !!prefs.tvMode }); scene.setBloom(prefs.glow); scene.setAmbience({ mist: prefs.mist, lake: prefs.lakeLights }); if (!prefs.shadows) scene.setShadows(false); scene.setVoxelCharacters(prefs.voxelCharacters);
+scene.setVillageGraphics(prefs);
 render(); renderPlace();
 // For the smoke test and screenshots: `advance` runs the rules forward, since a
 // software-rendered browser only manages a few frames a second.

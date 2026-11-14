@@ -1,55 +1,82 @@
 // Capability-selected village presentation. Simulation, input and the DOM HUD
 // retain their existing owners. A second canvas is necessary: a canvas which
 // already owns WebGL cannot subsequently acquire a WebGPU context.
+const validPreference = value => value === "webgl" || value === "webgpu" ? value : "auto";
 export function villageRendererPreference(search = "") {
-  const value = new URLSearchParams(search).get("villageRenderer");
-  return value === "webgl" ? "webgl" : "auto";
+  return validPreference(new URLSearchParams(search).get("villageRenderer"));
 }
 
 export function createVillageRenderer({ canvas, load = () => import("./village-webgpu-pipeline.js"), gpu = globalThis.navigator?.gpu, preference = villageRendererPreference(globalThis.location?.search), onFallback } = {}) {
-  let pipeline = null, overlay = null, pending = null, active = false, retired = false, revealAfter = null;
+  preference = validPreference(preference);
+  let pipeline = null, overlay = null, pending = null, owner = null, active = false, retired = false, revealAfter = null;
   let width = 1, height = 1, pixelRatio = 1, failure = null, failureStack = null, stage = "idle", frames = 0, generation = 0;
   let rect = null;
   const status = () => ({ requested: preference, backend: active ? "webgpu" : "webgl", stage, reason: failure, failureStack, frames, ...(pipeline?.stats?.() ?? {}) });
   const conceal = () => { active = false; revealAfter = null; if (overlay) overlay.hidden = true; };
-  function fail(error) {
-    if (retired) return;
+  const current = entry => !!entry && !retired && entry === owner && entry.token === generation && preference !== "webgl";
+  function release(entry) {
+    if (!entry) return;
+    // A late factory result belongs to its original attempt, never a newer one.
+    const owned = entry.pipeline, node = entry.overlay;
+    entry.pipeline = entry.overlay = null;
+    if (pipeline === owned) pipeline = null;
+    if (overlay === node) overlay = null;
+    try { owned?.dispose(); } catch { /* a lost device must not block returning to WebGL */ }
+    finally { node?.remove(); }
+  }
+  function fail(error, entry) {
+    if (!current(entry)) { release(entry); return; }
     conceal(); stage = "fallback"; failure = String(error?.message ?? error ?? "WebGPU unavailable");
     failureStack = error?.stack?.slice(0, 3000) ?? null;
-    // Dispose only owned presentation resources. The source scene, geometry,
-    // textures and original WebGL renderer continue to serve the game.
-    pipeline?.dispose(); pipeline = null;
-    onFallback?.(failure);
+    owner = null; generation++;
+    // Dispose only owned presentation resources; WebGL remains playable.
+    release(entry); onFallback?.(failure);
   }
-  async function prepare(scene, camera, options) {
+  function prepare(scene, camera, options) {
     if (retired || pending || pipeline || stage === "fallback") return pending;
     if (preference === "webgl") { stage = "disabled"; return; }
     if (!gpu?.requestAdapter) { stage = "fallback"; failure = "WebGPU API unavailable"; return; }
-    const token = ++generation; stage = "initializing";
-    pending = (async () => {
+    const entry = { token: ++generation, pipeline: null, overlay: null }; owner = entry; stage = "initializing";
+    const job = (async () => {
       const adapter = await gpu.requestAdapter({ powerPreference: "high-performance" });
+      if (!current(entry)) return;
       if (!adapter) throw new Error("No compatible WebGPU adapter");
-      if (retired || token !== generation) return;
       const module = await load();
-      if (retired || token !== generation) return;
-      overlay = document.createElement("canvas"); overlay.className = "village-webgpu-canvas";
-      overlay.setAttribute("aria-hidden", "true"); overlay.hidden = true;
+      if (!current(entry)) return;
+      const node = document.createElement("canvas"); entry.overlay = overlay = node;
+      node.className = "village-webgpu-canvas"; node.setAttribute("aria-hidden", "true"); node.hidden = true;
       rect ??= canvas.getBoundingClientRect();
-      Object.assign(overlay.style, { position: "fixed", left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px`, pointerEvents: "none" });
-      canvas.insertAdjacentElement("afterend", overlay);
-      const owned = await module.createVillageWebGpuPipeline({ canvas: overlay, onFailure: fail });
-      if (retired || token !== generation) { owned.dispose(); return; }
-      pipeline = owned; pipeline.resize(width, height, pixelRatio);
+      Object.assign(node.style, { position: "fixed", left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px`, pointerEvents: "none" });
+      canvas.insertAdjacentElement("afterend", node);
+      entry.pipeline = await module.createVillageWebGpuPipeline({ canvas: node, onFailure: error => fail(error, entry) });
+      if (!current(entry)) { release(entry); return; }
+      pipeline = entry.pipeline; pipeline.resize(width, height, pixelRatio);
       await pipeline.firstFrame(scene, camera, options);
-      if (retired || token !== generation || !pipeline) return;
+      if (!current(entry) || !pipeline) return;
       stage = "ready";
-      // The next existing game draw reveals this canvas with a current pose;
-      // a completed background compilation must never flash a stale scene.
-    })().catch(fail).finally(() => { pending = null; });
-    return pending;
+      // Reveal only after the next current game picture has completed.
+    })().catch(error => fail(error, entry)).finally(() => {
+      if (!current(entry)) release(entry);
+      if (pending === job) pending = null;
+    });
+    pending = job; return job;
   }
   return {
     prepare,
+    setPreference(value) {
+      const next = validPreference(value);
+      if (retired || next === preference) return preference;
+      preference = next;
+      // Auto and explicit WebGPU share a healthy device and any current warmup.
+      if (next !== "webgl" && owner && (pipeline || pending) && stage !== "fallback") return preference;
+      const old = owner, hadPresentation = !!overlay;
+      generation++; conceal(); owner = null; release(old);
+      failure = failureStack = null; stage = next === "webgl" ? "disabled" : "idle";
+      if (hadPresentation) onFallback?.(null);
+      // A cancelled factory drains before another starts. Three r169's post
+      // material is shared, so a late old disposal must not reset a new graph.
+      return preference;
+    },
     resize(w, h, ratio = 1) {
       width = Math.max(1, w); height = Math.max(1, h); pixelRatio = Math.max(.25, ratio);
       rect = canvas.getBoundingClientRect();
@@ -73,10 +100,10 @@ export function createVillageRenderer({ canvas, load = () => import("./village-w
           revealIfComplete();
         }
         return active;
-      } catch (error) { fail(error); return false; }
+      } catch (error) { fail(error, owner); return false; }
     },
     hide() { conceal(); pipeline?.invalidateShadows?.(); },
     get status() { return status(); },
-    dispose() { retired = true; generation++; conceal(); pipeline?.dispose(); pipeline = null; overlay?.remove(); overlay = null; stage = "disposed"; },
+    dispose() { if (retired) return; retired = true; generation++; conceal(); const old = owner; owner = null; release(old); stage = "disposed"; },
   };
 }

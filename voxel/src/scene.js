@@ -11,6 +11,7 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { GradeShader, applyGrade } from "./picture-grade.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { normaliseVillageGraphics, villagePostProfile, scaleVillageGrade } from "./village-graphics.js";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import { renderSizing, validRenderQuality } from "./render-quality.js";
 import { createPacer } from "./frame-pacing.js";
@@ -431,7 +432,9 @@ export function createScene(canvas, state, hooks) {
       frame();},
   });
   let farmView = null;
-  let bloomOn = true;
+  let bloomOn = true, shadowsOn = true;
+  let villageGraphics = normaliseVillageGraphics();
+  const villageGrade = { saturation: 1, contrast: 1, vignette: 0, shadows: [0, 0, 0], lights: [0, 0, 0] };
   const composer = new EffectComposer(renderer);
   // The scene buffer must match the canvas. Bloom already downsamples its
   // own blur chain; shrinking the composer makes every object look soft.
@@ -455,7 +458,17 @@ export function createScene(canvas, state, hooks) {
   // A place may ask for its own glow and a final grade (the village does); the farm keeps these.
   const BLOOM = { strength: bloom.strength, radius: bloom.radius, threshold: bloom.threshold };
   const grade = new ShaderPass(GradeShader); grade.enabled = false; composer.addPass(grade);
-  const dress = (place = {}) => { const b = place.bloom ?? BLOOM; bloom.strength = b.strength; bloom.radius = b.radius; bloom.threshold = b.threshold; applyGrade(grade, place.grade ?? null); };
+  const dress = (place = {}, effects = null) => { const b = place.bloom ?? BLOOM; bloom.strength = b.strength * (effects?.bloom ?? 1); bloom.radius = b.radius; bloom.threshold = b.threshold; applyGrade(grade, place.grade ? effects ? scaleVillageGrade(place.grade, effects.grade, villageGrade) : place.grade : null); };
+  // The shared WebGL renderer follows the active world's shadow preference.
+  // Only a real change invalidates materials; returning home restores its choice.
+  function applyShadowMode(on) {
+    on = !!on; if (renderer.shadowMap.enabled === on) return;
+    renderer.shadowMap.enabled = on;
+    for (const world of [scene, estateView.scene, foyerView.scene, mazeView.scene, villageView.scene]) world.traverse(o => {
+      if (o.material) for (const material of [].concat(o.material)) material.needsUpdate = true;
+      if (on && o.shadow) o.shadow.needsUpdate = true;
+    });
+  }
 
   // The room camera: the nearest distance that shows the top of the back wall and
   // the front of the floor, and the room's width (most of it on a narrow phone).
@@ -838,13 +851,15 @@ export function createScene(canvas, state, hooks) {
     // a negative time would pick a walk frame that doesn't exist.
     const dt = THREE.MathUtils.clamp((now - last) / 1000, 0, 0.1); last = now; time += dt;
     hooks.onTick(dt);
+    applyShadowMode(view.place === "village" ? villageGraphics.villageShadows : shadowsOn);
     // The saved village shares this renderer and clock. Its own scene replaces
     // the farm completely, so the unseen farm does not animate or draw beneath it.
     if (view.place === "village") {
       villageView.tick(state.paused ? 0 : dt); renderer.toneMappingExposure = villageView.scene.userData.exposure ?? 1.15;
-      renderPass.scene = villageView.scene; renderPass.camera = villageView.camera; dress(villageView.scene.userData);
-      if (!villageRenderer.draw(villageView.scene, villageView.camera, { bloom: bloomOn, shadows: renderer.shadowMap.enabled, tvProfile, glowScale, antialias: antialias.enabled })) {
-        if (bloomOn) composer.render(); else renderer.render(villageView.scene, villageView.camera);
+      const effects = villagePostProfile(villageGraphics.villagePost);
+      renderPass.scene = villageView.scene; renderPass.camera = villageView.camera; dress(villageView.scene.userData, effects);
+      if (!villageRenderer.draw(villageView.scene, villageView.camera, { bloom: effects.enabled, postEffects: effects.id, shadows: villageGraphics.villageShadows, tvProfile, glowScale, antialias: antialias.enabled })) {
+        if (effects.enabled) composer.render(); else renderer.render(villageView.scene, villageView.camera);
       }
       if (warming.size) warmNext(); requestAnimationFrame(tick); return;
     }
@@ -1086,7 +1101,7 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "foyer") foyerView.leave();
       if (view.place === "carving") carvingView.leave();
       if (view.place === "village") villageView.leave();
-      villageRenderer.hide(); view.place = kind; playerOrbit.yaw=0;playerOrbit.pitch=kind==="room"?INTERIOR.pitch:PITCH;
+      villageRenderer.hide(); view.place = kind; applyShadowMode(kind === "village" ? villageGraphics.villageShadows : shadowsOn); playerOrbit.yaw=0;playerOrbit.pitch=kind==="room"?INTERIOR.pitch:PITCH;
       if (kind === "village") { places.leave(); villageView.enter(); warm(...(villageView.spriteTextures?.() ?? [])); }
       else if (kind === "estate") { places.leave(); estateView.enter(); }
       else if (kind === "carving") { places.leave(); carvingView.enter(); }
@@ -1107,7 +1122,7 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "carving") carvingView.leave();
       if (view.place === "village") villageView.leave();
       places.leave();
-      villageRenderer.hide(); view.place = null; glide = null; playerOrbit.yaw=0;playerOrbit.pitch=PITCH;
+      villageRenderer.hide(); view.place = null; applyShadowMode(shadowsOn); glide = null; playerOrbit.yaw=0;playerOrbit.pitch=PITCH;
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
       if (renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, false, tvProfile).pixelRatio) resize(); else frame();
     },
@@ -1134,6 +1149,14 @@ export function createScene(canvas, state, hooks) {
     },
     get villageView() { return villageView; },
     get villageRendererStatus() { return villageRenderer.status; },
+    get villageGraphicsStatus() { const active = view.place === "village", postOn = active ? villagePostProfile(villageGraphics.villagePost).enabled : bloomOn; return { preferences: { ...villageGraphics }, renderer: villageRenderer.status, world: villageView.graphicsStatus, active, post: { enabled: postOn, bloomStrength: bloom.strength, gradeEnabled: postOn && grade.enabled }, shadows: renderer.shadowMap.enabled, farm: { bloom: bloomOn, shadows: shadowsOn } }; },
+    setVillageGraphics(values) {
+      villageGraphics = normaliseVillageGraphics({ ...villageGraphics, ...values });
+      villageRenderer.setPreference(villageGraphics.villageRenderer);
+      villageView.setGraphics({ distance: villageGraphics.villageDistance, grass: villageGraphics.villageGrass });
+      if (view.place === "village") applyShadowMode(villageGraphics.villageShadows);
+      return { ...villageGraphics };
+    },
     captureVillageMap() { return captureVillageMap(renderer, villageView, state); },
     villageVisitor(kind) { return sheets ? spriteVisitor(sheets,kind) : null; },
     villageCharacter(who) { if(!sheets)return null;const actor=spriteActor(sheets,who,activeLook(state,who),state.wardrobe.equipped[who]);actor.userData.kind="person";return actor; },
@@ -1229,7 +1252,7 @@ export function createScene(canvas, state, hooks) {
     ambience,
     setVoxelCharacters(on) { if (on !== voxelCharacters) { voxelCharacters = on; placeCharacters(); } },
     get characterStyle() { return skyla ? (voxelCharacters ? "voxels" : "sprites") : "loading"; },
-    setShadows(on) { renderer.shadowMap.enabled = on; for (const viewScene of [scene, estateView.scene, foyerView.scene, mazeView.scene, villageView.scene]) viewScene.traverse((o) => { if (o.material) o.material.needsUpdate = true; }); },
+    setShadows(on) { shadowsOn = !!on; applyShadowMode(view.place === "village" ? villageGraphics.villageShadows : shadowsOn); },
     renderer,
   };
 }
