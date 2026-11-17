@@ -51,7 +51,14 @@ const ROLLS = [[22, 46, 9, 2.2], [92, 48, 10, 2.6], [104, 92, 9, 2], [26, 108, 1
 
 // A continuous timber causeway joins the Marsh clues before its stone restoration.
 export const MARSH_CAUSEWAY=Object.freeze([[58,112],[75,112],[85,116],[77,118],[75,120],[85,122],[94,122]].map(([x,z])=>Object.freeze({x,z})));
-export function onMarshCauseway(x,z){return MARSH_CAUSEWAY.slice(1).some((b,i)=>{const a=MARSH_CAUSEWAY[i],dx=b.x-a.x,dz=b.z-a.z,t=Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/(dx*dx+dz*dz||1)));return Math.hypot(x-a.x-dx*t,z-a.z-dz*t)<1.7;});}
+// Asked for every grass tuft and ground texel near water, so it rules out the rest of the valley at once.
+let causewayBounds=null;
+export function onMarshCauseway(x,z){
+  causewayBounds??=MARSH_CAUSEWAY.reduce((b,p)=>({x0:Math.min(b.x0,p.x-1.7),z0:Math.min(b.z0,p.z-1.7),x1:Math.max(b.x1,p.x+1.7),z1:Math.max(b.z1,p.z+1.7)}),{x0:Infinity,z0:Infinity,x1:-Infinity,z1:-Infinity});
+  if(!(x>=causewayBounds.x0&&x<=causewayBounds.x1&&z>=causewayBounds.z0&&z<=causewayBounds.z1))return false;
+  for(let i=1;i<MARSH_CAUSEWAY.length;i++){const a=MARSH_CAUSEWAY[i-1],b=MARSH_CAUSEWAY[i],dx=b.x-a.x,dz=b.z-a.z,t=Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/(dx*dx+dz*dz||1)));if(Math.hypot(x-a.x-dx*t,z-a.z-dz*t)<1.7)return true;}
+  return false;
+}
 // How high the ground is at (x, z) on the design grid.
 export function terrainHeight(x, z) {
   // The western expansion joins the Copse at its existing three-metre shelf.
@@ -75,8 +82,8 @@ export const terraceAt = (x, z) => TERRACES.find((t) => inside(t, x, z)) ?? null
 export const rampAt = (x, z) => RAMPS.find((r) => inside(r, x, z)) ?? null;
 // Whether a point is open water (nothing grows or stands there).
 export function isWater(x, z) {
-  if(onMarshCauseway(x,z))return false;
-  for (const w of WATERS) if (inside(w, x, z) && !(w.inner && inside(w.inner, x, z)) && !rampAt(x, z)) return w.kind === "ring" || !islandAt(x, z);
+  // The causeway is asked only where water would otherwise be: the same answer, without walking it for dry land.
+  for (const w of WATERS) if (inside(w, x, z) && !(w.inner && inside(w.inner, x, z)) && !rampAt(x, z)) return !onMarshCauseway(x, z) && (w.kind === "ring" || !islandAt(x, z));
   return false;
 }
 // The Marsh's islands and banks: where reeds, trees and huts stand clear of its pools.

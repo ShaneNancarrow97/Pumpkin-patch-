@@ -121,17 +121,50 @@ export function villageNeighbourhoodObstacles(state = null) {
     : { x0: b.x0 * K, z0: b.z0 * K, x1: b.x1 * K, z1: b.z1 * K, neighbourhood: c.id }));
 }
 export const villageNeighbourhoodPaths = (state = null) => villageNeighbourhoodClusters(state).flatMap(c => c.paths ?? []);
-const onPath = (x, z, path) => path.points.slice(1).some(([bx, bz], i) => {
-  const [ax, az] = path.points[i], dx = bx - ax, dz = bz - az;
-  const t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1)));
-  return Math.hypot(x - ax - dx * t, z - az - dz * t) < path.width / 2 + .32;
-});
+const onPath = (x, z, path) => {
+  const points = path.points, reach = path.width / 2 + .32;
+  for (let i = 1; i < points.length; i++) {
+    const [ax, az] = points[i - 1], [bx, bz] = points[i], dx = bx - ax, dz = bz - az;
+    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1)));
+    if (Math.hypot(x - ax - dx * t, z - az - dz * t) < reach) return true;
+  }
+  return false;
+};
+const TENDED = new Set(['garden', 'pergola', 'reading', 'workyard']);
+const inCluster = (x, z, c) => (c.paths ?? []).some(p => onPath(x, z, p))
+  || ((TENDED.has(c.kind) || c.soil) && Math.abs(x - c.x) < c.w / 2 + .18 && Math.abs(z - c.z) < c.d / 2 + .18)
+  || c.solids.some(b => b.r !== undefined ? Math.hypot(x - b.x, z - b.z) < b.r + .12 : x > b.x0 - .08 && x < b.x1 + .08 && z > b.z0 - .08 && z < b.z1 + .08);
+// Each grass tuft asks this, so a frozen cluster list gets a coarse grid of the clusters each cell could touch,
+// built once. Every cluster's paths, plot and solids lie inside its bounds, so the answer is the same.
+const CELL = 6, indexes = new WeakMap(), cellKey = (ix, iz) => (ix + 4096) * 8192 + iz + 4096;
+function clusterBounds(c) {
+  const b = { x0: Infinity, z0: Infinity, x1: -Infinity, z1: -Infinity }, grow = (x0, z0, x1, z1) => { b.x0 = Math.min(b.x0, x0); b.z0 = Math.min(b.z0, z0); b.x1 = Math.max(b.x1, x1); b.z1 = Math.max(b.z1, z1); };
+  for (const p of c.paths ?? []) { const r = p.width / 2 + .32; for (const [x, z] of p.points) grow(x - r, z - r, x + r, z + r); }
+  if (Number.isFinite(c.x) && Number.isFinite(c.w)) grow(c.x - c.w / 2 - .18, c.z - c.d / 2 - .18, c.x + c.w / 2 + .18, c.z + c.d / 2 + .18);
+  for (const s of c.solids ?? []) { if (s.r !== undefined) grow(s.x - s.r - .12, s.z - s.r - .12, s.x + s.r + .12, s.z + s.r + .12); else grow(s.x0 - .08, s.z0 - .08, s.x1 + .08, s.z1 + .08); }
+  return b;
+}
+function clusterIndex(clusters) {
+  let index = indexes.get(clusters);
+  if (index) return index;
+  index = new Map();
+  for (const c of clusters) {
+    const b = clusterBounds(c);
+    if (![b.x0, b.z0, b.x1, b.z1].every(Number.isFinite)) return null;
+    for (let ix = Math.floor(b.x0 / CELL); ix <= Math.floor(b.x1 / CELL); ix++) for (let iz = Math.floor(b.z0 / CELL); iz <= Math.floor(b.z1 / CELL); iz++) {
+      const key = cellKey(ix, iz); let list = index.get(key); if (!list) index.set(key, list = []); list.push(c);
+    }
+  }
+  indexes.set(clusters, index);
+  return index;
+}
 // Ground/grass queries stay in the spread DESIGN grid. The static default is intentional: a hidden cluster
 // leaves quiet tended ground below the player's decoration and never adds a per-tuft state dependency.
 export function inVillageNeighbourhood(x, z, clusters = VILLAGE_NEIGHBOURHOODS) {
-  return clusters.some(c => (c.paths ?? []).some(p => onPath(x, z, p))
-    || ((['garden', 'pergola', 'reading', 'workyard'].includes(c.kind) || c.soil) && Math.abs(x - c.x) < c.w / 2 + .18 && Math.abs(z - c.z) < c.d / 2 + .18)
-    || c.solids.some(b => b.r !== undefined ? Math.hypot(x - b.x, z - b.z) < b.r + .12 : x > b.x0 - .08 && x < b.x1 + .08 && z > b.z0 - .08 && z < b.z1 + .08));
+  const index = Object.isFrozen(clusters) ? clusterIndex(clusters) : null;
+  if (!index) return clusters.some(c => inCluster(x, z, c));
+  const near = index.get(cellKey(Math.floor(x / CELL), Math.floor(z / CELL)));
+  return !!near && near.some(c => inCluster(x, z, c));
 }
 export const visibleNeighbourhoods = villageNeighbourhoodClusters;
 export const neighbourhoodClearsGrass = inVillageNeighbourhood;

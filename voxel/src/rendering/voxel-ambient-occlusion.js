@@ -40,18 +40,23 @@ export function createVoxelAOIndex(boxes, { minCell = .125 } = {}) {
   // are harmless: every candidate still passes its exact six-bound test.
   const scales = [...levels].sort(([a], [b]) => a - b).map(([, level]) => level);
   stats.levels = scales.length; stats.buildMs = now() - started;
+  // Millions of samples on the first visit: plain arrays and counted loops keep each one cheap.
+  const inverses = scales.map(level => level.inverse), cellMaps = scales.map(level => level.cells), levelCount = scales.length;
+  let tests = 0;
   const occupied = (x, y, z, ignore = -1) => {
     stats.samples++;
-    for (const { inverse, cells } of scales) {
-      const cell = cells.get(key(Math.floor(x * inverse), Math.floor(y * inverse), Math.floor(z * inverse)));
-      if (!cell) continue;
-      for (const id of cell) {
+    for (let s = 0; s < levelCount; s++) {
+      const inverse = inverses[s], cell = cellMaps[s].get(key(Math.floor(x * inverse), Math.floor(y * inverse), Math.floor(z * inverse)));
+      if (cell === undefined) continue;
+      for (let i = 0; i < cell.length; i++) {
+        const id = cell[i];
         if (id === ignore) continue;
-        stats.candidateTests++;
+        tests++;
         const p = id * 6;
-        if (x >= bounds[p] && x < bounds[p + 3] && y >= bounds[p + 1] && y < bounds[p + 4] && z >= bounds[p + 2] && z < bounds[p + 5]) return true;
+        if (x >= bounds[p] && x < bounds[p + 3] && y >= bounds[p + 1] && y < bounds[p + 4] && z >= bounds[p + 2] && z < bounds[p + 5]) { stats.candidateTests = tests; return true; }
       }
     }
+    stats.candidateTests = tests;
     return false;
   };
   return { occupied, ids, stats };

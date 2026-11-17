@@ -119,7 +119,7 @@ export function createVillageView(canvas, state, hooks = {}) {
   controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
   const patches = [];
   const distanceSettings = createVillageDistanceSettings({ scene, camera, patches });
-  let grassQuality = "high";
+  let grassQuality = "high", atmosphereMode = "full";
   // The lamps where they now stand, and the parts rebuilt as the village changes, moved into place as they are made.
   const LAMPS_AT = [...LAMPS.map((l) => { const [x, z] = spread(l.x, l.z); return { ...l, x, z }; }), ...TOWN_LAMPS];
   let surfaceLamps = LAMPS_AT;
@@ -582,9 +582,15 @@ export function createVillageView(canvas, state, hooks = {}) {
         grassQuality = Object.hasOwn(VILLAGE_GRASS_QUALITY, options.grass) ? options.grass : "high";
         grass?.setQuality(grassQuality);
       }
-      return { distance: distanceSettings.status.requested, grass: grassQuality };
+      // A new shadow map size takes effect at the next shadow refresh, on either renderer.
+      if (Object.hasOwn(options, "shadowMap")) {
+        const size = options.shadowMap === 1024 ? 1024 : 2048;
+        if (sun.shadow.mapSize.x !== size) { sun.shadow.mapSize.set(size, size); sun.shadow.map?.dispose(); sun.shadow.map = null; sun.shadow.needsUpdate = true; }
+      }
+      if (Object.hasOwn(options, "atmosphere")) atmosphereMode = ["full", "light", "off"].includes(options.atmosphere) ? options.atmosphere : "full";
+      return { distance: distanceSettings.status.requested, grass: grassQuality, shadowMap: sun.shadow.mapSize.x, atmosphere: atmosphereMode };
     },
-    get graphicsStatus() { return { distance: distanceSettings.status, grass: grass?.stats() ?? { quality: grassQuality, visible: false } }; },
+    get graphicsStatus() { return { distance: distanceSettings.status, grass: grass?.stats() ?? { quality: grassQuality, visible: false }, shadowMap: sun.shadow.mapSize.x, atmosphere: atmosphereMode }; },
     get neighbourhoodStatus() { return neighbourhoods?.userData ?? null; },
     enterExpansionArea(id){dialogueFocus.end({immediate:true});if(inside)goOutside();const entry=expansionWorld.enter(id);if(!entry)return false;setLampNear(0);root.visible=false;for(const p of folk.people.values())p.root.visible=false;resources.group.visible=false;shopMarkers.hide();for(const h of pickables)if(!['expansion-activity','expansion-portal'].includes(h.userData.type))h.visible=false;if(sky)sky.visible=false;sun.intensity=.12;hemi.intensity=1.3;hemi.color.set(0xc6c3dd);hemi.groundColor.set(0x817185);scene.background.set(0x100d19);scene.fog.color.set(0x100d19);scene.userData.exposure=1.2;following=false;return entry;},
     leaveExpansionArea(){const entry=expansionWorld.leave();root.visible=true;if(sky)sky.visible=true;sun.intensity = NIGHT.sun;hemi.intensity = NIGHT.hemi;hemi.color.set(NIGHT.sky);hemi.groundColor.set(NIGHT.ground);scene.background.set(SKY.top);scene.fog.color.set(0x1d1430);scene.userData.exposure=1.15;following=false;lampAs(LAMP);pool.forEach(l=>{l.visible=true;l.color.set(0xff9a40);});sync();return entry;},
@@ -616,10 +622,13 @@ export function createVillageView(canvas, state, hooks = {}) {
       distanceSettings.tick(dt, { following, enclosed: !!inside || !!expansionWorld.active, tour: !!tour, fogScale });
       placeLights(); folk.tick(dt, time, camera, { paused: !!inside || !!tour || !!hooks.residentsPaused?.() || !!state.paused, reducedMotion: reducedMotion() });
       if (lampGlow) { lampGlow.group.visible = !inside && !expansionWorld.active; lampGlow.tick(time, { density: scene.fog.density, still: reducedMotion() }); }
-      if (!inside&&!expansionWorld.active) { atmosphere?.tick(state.paused ? 0 : dt, { reducedMotion: reducedMotion(), budget: hooks.atmosphereBudget?.() ?? "full", camera }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
+      // Atmosphere Off leaves a still, clear night; Light keeps the TV's smaller share.
+      const air = atmosphereMode !== "off", airBudget = atmosphereMode === "light" ? "tv" : hooks.atmosphereBudget?.() ?? "full";
+      if (atmosphere) atmosphere.group.visible = air;
+      if (!inside&&!expansionWorld.active) { if (air) atmosphere?.tick(state.paused ? 0 : dt, { reducedMotion: reducedMotion(), budget: airBudget, camera }); tickVillageVisibility(villageGreen, following ? followSubject : null, camera, dt); }
       else resetVillageVisibility(villageGreen);
       tickVillageNeighbourhoodVisibility(neighbourhoods, following && !tour && !inside && !expansionWorld.active ? followSubject : null, camera, dt, { reducedMotion: reducedMotion() });
-      if (lightAir) { lightAir.group.visible = surface; lightAir.tick(dt, { paused: !!state.paused || !surface, reducedMotion: still, density: scene.fog.density, budget: hooks.atmosphereBudget?.() ?? "full", treeVisibility: villageGreen?.userData.treeVisibility?.opacity ?? 1 }); }
+      if (lightAir) { lightAir.group.visible = surface && air; if (air) lightAir.tick(dt, { paused: !!state.paused || !surface, reducedMotion: still, density: scene.fog.density, budget: airBudget, treeVisibility: villageGreen?.userData.treeVisibility?.opacity ?? 1 }); }
       inside?.stir?.tick(time, { still: reducedMotion() });
       if (inside?.host?.root.visible) folk.animate(inside.host, dt, time, camera); bats?.tick(time); life?.tick(time, dt, camera, pool); grass?.tick(time, camera, following && !inside&&!expansionWorld.active ? followSubject : null);
       blight.tick(dt, camera.position, !inside&&!expansionWorld.active, reducedMotion(), !!state.paused);

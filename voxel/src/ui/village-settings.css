@@ -39,3 +39,46 @@
  #village-game #vg-settings{grid-column:5;grid-row:1}
  #village-game #vg-coins{grid-column:2/6}
 }
+/* Tabs, the renderer card, quick setup, switches, sliders and the key lists. */
+#village-game .vg-settings{gap:0}
+#village-game #vg-panel-body .vg-settings-tabs{position:sticky;top:-1px;z-index:2;margin:0 0 12px;background:linear-gradient(180deg,#30203a,#2b1d35);box-shadow:0 6px 10px -6px #0d081499}
+#village-game .vg-settings-page{display:flex;flex-direction:column;gap:14px;min-width:0}
+#village-game .vg-settings-heading{margin:6px 0 -6px;font:500 max(15px,var(--vc-small))/1.3 var(--village-display,serif);letter-spacing:.02em;color:var(--vc-gold)}
+#village-game .vg-renderer-card{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--vc-rule);border-radius:13px;background:linear-gradient(140deg,#b48c4826,#21162b40);min-width:0}
+#village-game .vg-renderer-card>header{display:flex;flex-direction:column;gap:8px;min-width:0}
+#village-game .vg-renderer-card h3{margin:0;font:500 max(17px,var(--vc-body))/1.25 var(--village-display,serif);color:var(--vc-ink)}
+#village-game .vg-renderer-card .vg-renderer-status{padding:9px 10px;background:#140d2033}
+#village-game .vg-segmented{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;min-width:0}
+#village-game #vg-panel-body .vg-segmented>button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;min-height:max(52px,var(--vc-target));padding:8px 6px;border:1px solid #c5a06b66;border-radius:10px;background:linear-gradient(135deg,#67485250,#302238c0);color:var(--vc-ink);text-align:center;cursor:pointer;touch-action:manipulation;white-space:normal}
+#village-game #vg-panel-body .vg-segmented>button>b{font:500 var(--vc-small)/1.25 var(--village-body);color:inherit}
+#village-game #vg-panel-body .vg-segmented>button>small{font-size:max(12px,calc(var(--vc-small) * .9));line-height:1.25;color:var(--vc-muted)}
+#village-game #vg-panel-body .vg-segmented>button:hover{border-color:var(--vc-gold)}
+#village-game #vg-panel-body .vg-segmented>button[aria-pressed=true]{border-color:var(--vc-gold);background:linear-gradient(135deg,#a8784c99,#4a2f44);box-shadow:inset 0 1px #ffedc540,0 0 0 1px #e9bc7633}
+#village-game #vg-panel-body .vg-segmented>button[aria-pressed=true]>b{color:var(--vc-gold)}
+#village-game #vg-panel-body .vg-segmented>button[aria-pressed=true]>small{color:var(--vc-ink)}
+#village-game #vg-panel-body .vg-live{margin:0;font-size:var(--vc-small);line-height:1.4;color:var(--vc-muted);font-variant-numeric:tabular-nums}
+#village-game #vg-panel-body .vg-preset-note{margin:-6px 0 0;font-size:var(--vc-small);line-height:1.4;color:var(--vc-muted)}
+#village-game .vg-settings-row .vg-settings-label{font-size:var(--vc-body);font-weight:500;line-height:1.35;min-width:0;color:var(--vc-ink)}
+#village-game .vg-setting-choice>select:disabled,#village-game #vg-panel-body .vg-switch:disabled,#village-game #vg-panel-body .vg-settings-button:disabled,#village-game .vg-range>input:disabled{opacity:.48;cursor:default}
+#village-game #vg-panel-body .vg-switch{justify-self:stretch;width:100%;justify-content:space-between;display:inline-flex;align-items:center;gap:9px;min-width:var(--vc-target);min-height:var(--vc-target);padding:6px 12px 6px 8px;border:1px solid #c5a06b80;border-radius:999px;background:#140d2047;color:var(--vc-muted);font:500 var(--vc-small)/1 var(--village-body);cursor:pointer;touch-action:manipulation}
+#village-game #vg-panel-body .vg-switch>i{position:relative;width:38px;height:22px;border-radius:999px;background:#5b4a62;box-shadow:inset 0 1px 2px #0006;transition:background .16s}
+#village-game #vg-panel-body .vg-switch>i::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#e9dfe9;box-shadow:0 1px 2px #0008;transition:transform .16s}
+#village-game #vg-panel-body .vg-switch[aria-checked=true]{color:var(--vc-gold);border-color:var(--vc-gold)}
+#village-game #vg-panel-body .vg-switch[aria-checked=true]>i{background:linear-gradient(90deg,#b98a4e,#e8bf7b)}
+#village-game #vg-panel-body .vg-switch[aria-checked=true]>i::after{transform:translateX(16px);background:#fff6e4}
+#village-game .vg-range{display:flex;align-items:center;gap:10px;min-width:0}
+#village-game .vg-range>input{flex:1;min-width:0;height:var(--vc-target);margin:0;background:transparent;-webkit-appearance:none;appearance:none;cursor:pointer;touch-action:pan-y}
+#village-game .vg-range>input::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(90deg,#e0b876 var(--fill,50%),#5b4a62 var(--fill,50%))}
+#village-game .vg-range>input::-moz-range-track{height:6px;border-radius:999px;background:linear-gradient(90deg,#e0b876 var(--fill,50%),#5b4a62 var(--fill,50%))}
+#village-game .vg-range>input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-8px;border-radius:50%;border:2px solid #fff3dc;background:#c9955a;box-shadow:0 1px 3px #0009}
+#village-game .vg-range>input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;border:2px solid #fff3dc;background:#c9955a}
+#village-game .vg-range>output{flex:none;min-width:3.2em;text-align:right;font-size:var(--vc-small);color:var(--vc-muted);font-variant-numeric:tabular-nums}
+#village-game #vg-panel-body .vg-settings-button{justify-self:stretch;width:100%;min-width:var(--vc-target);min-height:var(--vc-target);padding:9px 14px;border:1px solid var(--vc-rule);border-radius:10px;background:#140d2047;color:var(--vc-ink);font:500 var(--vc-small)/1.3 var(--village-body);white-space:normal;cursor:pointer}
+#village-game #vg-panel-body .vg-settings-button.is-gold{border-color:var(--vc-gold);background:linear-gradient(135deg,#a8784c99,#4a2f44);color:var(--vc-gold)}
+#village-game .vg-keys .vg-settings-heading{margin:2px 0 8px}
+#village-game .vg-keys dl{display:grid;gap:0;margin:0;border-top:1px solid var(--vc-rule-soft)}
+#village-game .vg-keys dl>div{display:grid;grid-template-columns:minmax(0,44%) minmax(0,1fr);gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--vc-rule-soft)}
+#village-game .vg-keys dt,#village-game .vg-keys dd{margin:0;min-width:0}
+#village-game .vg-keys kbd{display:inline-block;max-width:100%;padding:3px 8px;border:1px solid #c5a06b80;border-radius:7px;background:#140d2047;color:var(--vc-gold);font:500 var(--vc-small)/1.35 var(--village-body);white-space:normal}
+#village-game .vg-keys dd{font-size:var(--vc-small);line-height:1.4;color:var(--vc-ink)}
+@media(max-width:360px){#village-game .vg-segmented{gap:4px}#village-game #vg-panel-body .vg-segmented>button{padding-inline:3px}}

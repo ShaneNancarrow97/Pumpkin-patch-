@@ -10,8 +10,8 @@ export function createVillageRenderer({ canvas, load = () => import("./village-w
   preference = validPreference(preference);
   let pipeline = null, overlay = null, pending = null, owner = null, active = false, retired = false, revealAfter = null;
   let width = 1, height = 1, pixelRatio = 1, failure = null, failureStack = null, stage = "idle", frames = 0, generation = 0;
-  let rect = null;
-  const status = () => ({ requested: preference, backend: active ? "webgpu" : "webgl", stage, reason: failure, failureStack, frames, ...(pipeline?.stats?.() ?? {}) });
+  let rect = null, adapterName = null;
+  const status = () => ({ requested: preference, backend: active ? "webgpu" : "webgl", stage, reason: failure, failureStack, frames, adapter: adapterName, ...(pipeline?.stats?.() ?? {}) });
   const conceal = () => { active = false; revealAfter = null; if (overlay) overlay.hidden = true; };
   const current = entry => !!entry && !retired && entry === owner && entry.token === generation && preference !== "webgl";
   function release(entry) {
@@ -41,6 +41,8 @@ export function createVillageRenderer({ canvas, load = () => import("./village-w
       const adapter = await gpu.requestAdapter({ powerPreference: "high-performance" });
       if (!current(entry)) return;
       if (!adapter) throw new Error("No compatible WebGPU adapter");
+      // The adapter's own description of the chip, where the browser shares one, for Settings.
+      try { const info = adapter.info ?? {}; adapterName = String(info.description || [info.vendor, info.architecture].filter(Boolean).join(" ") || "").slice(0, 60) || null; } catch { adapterName = null; }
       const module = await load();
       if (!current(entry)) return;
       const node = document.createElement("canvas"); entry.overlay = overlay = node;
@@ -102,6 +104,8 @@ export function createVillageRenderer({ canvas, load = () => import("./village-w
         return active;
       } catch (error) { fail(error, owner); return false; }
     },
+    // Frames WebGPU has finished while it is on screen; null while WebGL draws the village.
+    shownFrames() { return active && pipeline ? pipeline.completedFrames ?? null : null; },
     hide() { conceal(); pipeline?.invalidateShadows?.(); },
     get status() { return status(); },
     dispose() { if (retired) return; retired = true; generation++; conceal(); const old = owner; owner = null; release(old); stage = "disposed"; },

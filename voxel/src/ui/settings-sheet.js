@@ -9,6 +9,7 @@ import { TV_SIZES, CAST_STEPS, bigScreen } from "./tv-mode.js";
 import { readSaveFile, saveSummary } from "../save-file.js";
 import { money } from "./kit.js";
 import { padFamily } from "./glyphs.js";
+import { MOTION_CHOICES, validMotion } from "../motion-preference.js";
 
 const TV_ART = `<svg viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="6" width="54" height="32" rx="4"/><path d="M24 44h16M32 38v6"/><path d="M27 27c0-4 2.5-7 5-7s5 3 5 7-2.5 5-5 5-5-1-5-5Z" fill="#e8964a" stroke="#f6c27d"/><path d="M32 20v-3l2-1" stroke="#9ccf7a"/><path d="M45 13a7 7 0 0 1 5 5M45 9a11 11 0 0 1 9 9" stroke="#f2cf99"/></svg>`;
 // A farm in a line, and when, for the save cards.
@@ -106,7 +107,7 @@ export function settingsSheet(ui) {
           `<div class="setting"><span>Voice volume</span><input id="voice-volume" type="range" min="0" max="1" step="0.05" value="${p.voiceVolume}" aria-label="Voice volume"></div>` +
           `<div class="setting"><span>Listen to a voice</span><button class="button" id="preview-voice" ${!p.voiceEnabled || p.voiceVolume === 0 ? "disabled" : ""}>${ui.narration.playing || ui.narration.current?.status === "loading" ? "Stop voice" : "Preview voice"}</button></div>` +
           toggle("toggle-pause", "Tea break", "Pause the farm. Nothing grows and nobody visits.", !!s.paused) +
-          `<label class="setting"><span>Render detail<small>Sharp keeps fine edges. Lower settings save battery and reduce graphics load.</small></span><select id="render-quality" aria-label="Render detail">${RENDER_QUALITIES.map(q=>`<option value="${q.id}" ${q.id===validRenderQuality(p.renderQuality)?"selected":""}>${q.name}</option>`).join("")}</select></label>` +
+          `<label class="setting"><span>Render detail<small>Automatic draws sharp and lowers detail only while frames fall behind. Sharp keeps fine edges; lower settings save battery.</small></span><select id="render-quality" aria-label="Render detail">${RENDER_QUALITIES.map(q=>`<option value="${q.id}" ${q.id===validRenderQuality(p.renderQuality)?"selected":""}>${q.name}</option>`).join("")}</select></label>` +
           `<label class="setting"><span>Frame rate<small>${frameNote(p)}</small></span><select id="frame-rate" aria-label="Frame rate">${FRAME_RATES.map(([id, name]) => `<option value="${id}" ${id === validFrameRate(p.frameRate) ? "selected" : ""}>${name}</option>`).join("")}</select></label>` +
           toggle("toggle-glow", "Glow", "Bloom on lanterns, windows and ripe pumpkins", p.glow) +
           toggle("toggle-mist", "Drifting mist", "A thin mist that rolls across the farm, clears and comes back", p.mist) +
@@ -114,6 +115,7 @@ export function settingsSheet(ui) {
           `<div class="setting"><span>Introduction<small>Shane and Natalie explain the patch again</small></span><button class="button" id="watch-intro">Watch again</button></div>` +
           `<div class="setting"><span>Camera framing<small>See more of the scene. Pinch or scroll to inspect.</small></span><button class="button" id="fit-view">Fit view</button></div>` +
           toggle("toggle-shadows", "Moonlit shadows", "Turn off on slower phones", p.shadows) +
+          `<label class="setting"><span>Motion<small>Reduced keeps camera moves, water, mist and moths gentler. Match device follows your phone's setting.</small></span><select id="reduce-motion" aria-label="Motion">${MOTION_CHOICES.map(([id, name]) => `<option value="${id}" ${id === validMotion(p.reduceMotion) ? "selected" : ""}>${name}</option>`).join("")}</select></label>` +
           toggle("toggle-voxel-characters", "Voxel characters", "Build Shane, Natalie, Skyla and the visitors from voxels instead of the original sprites", p.voxelCharacters) +
           `<h3 class="section" id="save-section">Your farm’s save</h3><p class="small">The farm saves itself on this device as you play. To take it to a new version of the game or another device, save it to a file, then load that file there. Files from older versions always load.</p>
           <article class="save-card"><p class="save-kicker">This farm</p><h4>${farmLine(here)}</h4><p>Last saved to a file: <b>${ago(p.lastExport)}</b></p><div class="save-actions"><button class="button gold" id="save-file">Save to a file</button>${ui.files.canShare() ? '<button class="button" id="share-save">Share…</button>' : ""}<button class="button" id="load-file">Load a save file</button></div></article>` +
@@ -149,6 +151,7 @@ export function settingsSheet(ui) {
         body.querySelector("#fit-view").onclick = () => { ui.scene.fitView(); ui.closeSheet(); };
         body.querySelector("#watch-intro").onclick = () => { ui.closeSheet(); ui.intro.play(); };
         body.querySelector("#toggle-shadows").onclick = flip("shadows", (on) => ui.scene.setShadows(on));
+        body.querySelector("#reduce-motion").onchange = e => { p.reduceMotion = validMotion(e.target.value); ui.savePrefs(); ui.draw(); };
         body.querySelector("#toggle-voxel-characters").onclick = flip("voxelCharacters", (on) => ui.scene.setVoxelCharacters(on));
         // Save files (ui/save-files.js).
         const said = { saved: "Saved. Load that file into any version of the game, on any device.", downloaded: "Saved to your downloads. Load that file into any version of the game, on any device.", shared: "Save file shared." };

@@ -116,7 +116,8 @@ const pick = (list, r) => list[(r() * list.length) | 0];
 // (a lawn, a road, the woods' floor) stretches across the gaps, so the new ground is painted too.
 export function buildVillageGroundTexture() {
   const g = GROUND_SPREAD, W = (g.x1 - g.x0) * g.scale, H = (g.z1 - g.z0) * g.scale, canvas = document.createElement("canvas"); canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext("2d"), r = seeded(73);
+  // Painted once and read straight back below: a canvas kept in memory reads back without a trip to the graphics card.
+  const ctx = canvas.getContext("2d", { willReadFrequently: true }), r = seeded(73);
   const P = (x, z) => [(x - g.x0) * g.scale, (g.z1 - z) * g.scale];
   const placed = (x0, z0, x1, z1) => spreadRect({ x0: Math.min(x0, x1), z0: Math.min(z0, z1), x1: Math.max(x0, x1), z1: Math.max(z0, z1) });
   const nativeRect = (x0, z0, x1, z1, colour) => { const [a, b] = P(x0, z1), [c, d] = P(x1, z0); ctx.fillStyle = colour; ctx.fillRect(a, b, c - a, d - b); };

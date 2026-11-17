@@ -11,10 +11,11 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { GradeShader, applyGrade } from "./picture-grade.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { normaliseVillageGraphics, villagePostProfile, scaleVillageGrade } from "./village-graphics.js";
+import { normaliseVillageGraphics, villagePostProfile, scaleVillageGrade, villageShadowMapSize } from "./village-graphics.js";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import { renderSizing, validRenderQuality } from "./render-quality.js";
 import { createPacer } from "./frame-pacing.js";
+import { createResolutionGovernor } from "./dynamic-resolution.js";
 import { Voxels, seeded, vary } from "./voxels.js";
 import { createSandy, sandyTextures } from "./sandy.js";
 import { specialSpriteReady, specialSpriteTexture } from "./special-sprites.js";
@@ -86,8 +87,13 @@ export function createScene(canvas, state, hooks) {
   // Foldables get the same detail as other high-density displays. A pixel
   // budget protects large viewports; a lower quality is an explicit choice.
   const touchDevice = window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
-  let renderQuality = "sharp", tvProfile = false;
+  let renderQuality = "sharp", tvProfile = false, menuOpen = false, gpuName;
   renderer.setPixelRatio(renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality).pixelRatio);
+  // Automatic detail keeps its own level for the village and for everywhere else: their loads differ.
+  const governors = { village: createResolutionGovernor(), other: createResolutionGovernor() };
+  const governorHere = () => view.place === "village" ? governors.village : governors.other;
+  const detailScale = () => renderQuality === "auto" ? governorHere().scale : 1;
+  const sizingHere = (close = view.place === "carving", tv = tvProfile) => renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, close, tv, detailScale());
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -352,6 +358,23 @@ export function createScene(canvas, state, hooks) {
   const warming = new Set();
   const warm = (...textures) => textures.forEach((t) => t?.isTexture && warming.add(t));
   function warmNext() { for (const t of warming) if (t.version > 0 && t.image) { renderer.initTexture(t); warming.delete(t); return; } }
+  // The village's own shaders compile in the background as it opens, and its pictures go up one a frame,
+  // so the first walk round doesn't stop at each new material. WebGPU builds its own; this is for WebGL.
+  let villageWarmed = "";
+  const TEXTURE_SLOTS = ["map", "emissiveMap", "normalMap", "roughnessMap", "metalnessMap", "aoMap", "alphaMap", "bumpMap", "lightMap", "envMap"];
+  function warmVillage() {
+    if (view.place !== "village" || villageRenderer.shownFrames() !== null) return;
+    // Where WebGPU is about to take over, WebGL's programs would go unused.
+    if (villageGraphics.villageRenderer !== "webgl" && typeof navigator !== "undefined" && navigator.gpu && villageRenderer.status.stage !== "fallback") return;
+    const post = villagePostProfile(villageGraphics.villagePost).enabled, key = `${post}|${renderer.shadowMap.enabled}`;
+    if (villageWarmed === key) return;
+    const first = !villageWarmed; villageWarmed = key;
+    const target = renderer.getRenderTarget();
+    try { renderer.setRenderTarget(post ? composer.readBuffer : null); renderer.compileAsync(villageView.scene, villageView.camera).catch(() => {}); }
+    catch { /* a compile problem shows when the material is drawn, as before */ }
+    finally { renderer.setRenderTarget(target); }
+    if (first) villageView.scene.traverse((o) => { for (const m of Array.isArray(o.material) ? o.material : o.material ? [o.material] : []) for (const slot of TEXTURE_SLOTS) warm(m[slot]); });
+  }
   function warmShaders() {
     // Compiled for where the farm is drawn (the glow pass's buffer, or the
     // screen), or none of them would match.
@@ -383,7 +406,7 @@ export function createScene(canvas, state, hooks) {
     gesture: { pose: () => hooks.villageGesture?.()?.pose(), busy: () => !!hooks.villageGesture?.()?.busy(), begin: () => hooks.villageGesture?.()?.begin(), drag: (x,z) => hooks.villageGesture?.()?.drag(x,z), turn: deg => hooks.villageGesture?.()?.turn(deg), end: cancelled => hooks.villageGesture?.()?.end(cancelled) },
     residentsPaused: () => !!hooks.villageEditing?.(), reducedMotion: () => !!hooks.villageReducedMotion?.(), atmosphereBudget: () => hooks.villageAtmosphereBudget?.() ?? "full",
   });
-  const villageRenderer = createVillageRenderer({ canvas, onFallback: () => villageView.scene.traverse(object => { if (object.isLight && object.shadow) object.shadow.needsUpdate = true; }) });
+  const villageRenderer = createVillageRenderer({ canvas, onFallback: () => { villageView.scene.traverse(object => { if (object.isLight && object.shadow) object.shadow.needsUpdate = true; }); warmVillage(); } });
   // The bench's view reports to main.js through hooks.carving (cuts, the lid, seeds, sounds).
   const carve = (name) => (...args) => hooks.carving?.[name]?.(...args);
   const carvingView = createCarvingView(canvas, state, Object.assign(Object.fromEntries(["onCut", "onEtch", "onFree", "onFreeMiss", "onLid", "onScooped", "onRevealed", "onTool", "onProgress", "sound", "feel"].map((n) => [n, carve(n)])), { blocked: () => document.body.classList.contains("menu-open") }));
@@ -623,9 +646,9 @@ export function createScene(canvas, state, hooks) {
   // per frame after the DOM has been written, they would force a layout each time.
   let viewW = canvas.clientWidth || 1, viewH = canvas.clientHeight || 1, viewRect = canvas.getBoundingClientRect();
   function resize() {
-    const sizing = renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, view.place === "carving", tvProfile), w = sizing.width, h = sizing.height;
+    const sizing = sizingHere(), w = sizing.width, h = sizing.height;
     viewW = w; viewH = h; viewRect = canvas.getBoundingClientRect();
-    glowScale = tvProfile ? renderSizing(w, h, window.devicePixelRatio, renderQuality, view.place === "carving").pixelRatio / sizing.pixelRatio : 1;
+    glowScale = tvProfile ? sizingHere(view.place === "carving", false).pixelRatio / sizing.pixelRatio : 1;
     if (renderer.getPixelRatio() !== sizing.pixelRatio) renderer.setPixelRatio(sizing.pixelRatio);
     renderer.setSize(w, h, false);
     villageRenderer.resize(w, h, sizing.pixelRatio);
@@ -641,8 +664,11 @@ export function createScene(canvas, state, hooks) {
     firstResize = false; lastOverview = overview;                                                      // portrait: frame the pumpkin and the patch
     frame();
   }
-  window.addEventListener("resize", resize);
-  if (typeof ResizeObserver !== "undefined") new ResizeObserver(resize).observe(canvas);
+  // A new size starts Automatic detail from the top again.
+  let sizedFor = "";
+  const resized = () => { const key = `${canvas.clientWidth}x${canvas.clientHeight}@${window.devicePixelRatio}`; if (key !== sizedFor) { sizedFor = key; governors.village.restart(); governors.other.restart(); } resize(); };
+  window.addEventListener("resize", resized);
+  if (typeof ResizeObserver !== "undefined") new ResizeObserver(resized).observe(canvas);
   resize();
 
   // Input: drag to pan, wheel or pinch to zoom, tap to act.
@@ -844,9 +870,22 @@ export function createScene(canvas, state, hooks) {
   // nothing at all, and the next one runs the rules for the whole time since.
   const pacer = createPacer();
   let drawnFrames = 0;
+  // Frames that reached the screen: WebGL's drawn frames, or WebGPU's finished ones while it shows the village.
+  let shownFrames = 0, gpuShown = null;
+  function countShown(gpu) {
+    const done = gpu ? villageRenderer.shownFrames() : null;
+    if (done === null) { gpuShown = null; shownFrames++; return; }
+    if (gpuShown !== null && done >= gpuShown) shownFrames += done - gpuShown;
+    gpuShown = done;
+  }
+  function adaptDetail(now, started) {
+    if (renderQuality !== "auto") return;
+    const next = governorHere().sample(now, shownFrames, { capFps: pacer.cap, cpuMs: performance.now() - started, ignore: menuOpen || document.hidden || ["maze", "hayride", "carving"].includes(view.place) });
+    if (next !== null) resize();
+  }
   function tick(now) {
     if (!pacer.draw(now)) { requestAnimationFrame(tick); return; }
-    drawnFrames++;
+    drawnFrames++; const started = performance.now();
     // The first frame's timestamp can come before the scene finished building, and
     // a negative time would pick a walk frame that doesn't exist.
     const dt = THREE.MathUtils.clamp((now - last) / 1000, 0, 0.1); last = now; time += dt;
@@ -858,9 +897,9 @@ export function createScene(canvas, state, hooks) {
       villageView.tick(state.paused ? 0 : dt); renderer.toneMappingExposure = villageView.scene.userData.exposure ?? 1.15;
       const effects = villagePostProfile(villageGraphics.villagePost);
       renderPass.scene = villageView.scene; renderPass.camera = villageView.camera; dress(villageView.scene.userData, effects);
-      if (!villageRenderer.draw(villageView.scene, villageView.camera, { bloom: effects.enabled, postEffects: effects.id, shadows: villageGraphics.villageShadows, tvProfile, glowScale, antialias: antialias.enabled })) {
-        if (effects.enabled) composer.render(); else renderer.render(villageView.scene, villageView.camera);
-      }
+      const onGpu = villageRenderer.draw(villageView.scene, villageView.camera, { bloom: effects.enabled, postEffects: effects.id, shadows: villageGraphics.villageShadows, tvProfile, glowScale, antialias: antialias.enabled });
+      if (!onGpu) { if (effects.enabled) composer.render(); else renderer.render(villageView.scene, villageView.camera); }
+      countShown(onGpu); adaptDetail(now, started);
       if (warming.size) warmNext(); requestAnimationFrame(tick); return;
     }
     syncFarmPages(); ambience.tick(time);
@@ -871,7 +910,7 @@ export function createScene(canvas, state, hooks) {
       const to = aimAtPiece();
       if (to) {
         view.reach.x = Math.max(view.reach.x, Math.abs(to.x) - roomAlong()); view.reach.z = Math.max(view.reach.z, to.z - 1.2);
-        glide = { x: view.x, z: view.z, to, t: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 0 };
+        glide = { x: view.x, z: view.z, to, t: (hooks.villageReducedMotion?.() ?? window.matchMedia("(prefers-reduced-motion: reduce)").matches) ? 1 : 0 };
       }
     }
     if (glide) {
@@ -1032,6 +1071,7 @@ export function createScene(canvas, state, hooks) {
     dress(); if (bloomOn) composer.render(); else renderer.render(activeScene(), active());
     if (view.place === "carving") carvingView.afterRender(canvas);
     else if (view.place === "hayride") hayrideView.afterRender(canvas);
+    countShown(false); adaptDetail(now, started);
     if (warming.size) warmNext();
     requestAnimationFrame(tick);
   }
@@ -1102,7 +1142,7 @@ export function createScene(canvas, state, hooks) {
       if (view.place === "carving") carvingView.leave();
       if (view.place === "village") villageView.leave();
       villageRenderer.hide(); view.place = kind; applyShadowMode(kind === "village" ? villageGraphics.villageShadows : shadowsOn); playerOrbit.yaw=0;playerOrbit.pitch=kind==="room"?INTERIOR.pitch:PITCH;
-      if (kind === "village") { places.leave(); villageView.enter(); warm(...(villageView.spriteTextures?.() ?? [])); }
+      if (kind === "village") { places.leave(); villageView.enter(); warm(...(villageView.spriteTextures?.() ?? [])); warmVillage(); }
       else if (kind === "estate") { places.leave(); estateView.enter(); }
       else if (kind === "carving") { places.leave(); carvingView.enter(); }
       else if (kind === "foyer") { places.leave(); foyerView.enter(); }
@@ -1111,7 +1151,7 @@ export function createScene(canvas, state, hooks) {
       else if (kind === "room") places.enterRoom(id); else places.enterShop();
       Object.assign(view, { x: 0, z: 0, zoom: 1, reach: { x: 0, z: 0 } }); glide = null;
       // The bench draws at a sharper pixel ratio than the rest (renderSizing's `close`).
-      if (kind === "carving" || renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, false, tvProfile).pixelRatio) resize(); else frame();
+      if (kind === "carving" || renderer.getPixelRatio() !== sizingHere(false).pixelRatio) resize(); else frame();
     },
     leavePlace() {
       if (!view.place) return;
@@ -1124,7 +1164,7 @@ export function createScene(canvas, state, hooks) {
       places.leave();
       villageRenderer.hide(); view.place = null; applyShadowMode(shadowsOn); glide = null; playerOrbit.yaw=0;playerOrbit.pitch=PITCH;
       Object.assign(view, farmView ?? { x: (fieldWidth(state) + HOLLOW_PROPERTY.westEdge) / 2, z: 8.4, zoom: 1 });
-      if (renderer.getPixelRatio() !== renderSizing(canvas.clientWidth, canvas.clientHeight, window.devicePixelRatio, renderQuality, false, tvProfile).pixelRatio) resize(); else frame();
+      if (renderer.getPixelRatio() !== sizingHere(false).pixelRatio) resize(); else frame();
     },
     get place() { return view.place === "village" ? { kind: "village", id: "mothlight" } : view.place === "carving" ? { kind: "carving", id: "bench" } : view.place === "hayride" ? { kind: "hayride", id: "woodland" } : view.place === "maze" ? { kind: "maze", id: "hollow-ride" } : view.place === "estate" ? { kind: "estate", id: "garden" } : view.place === "foyer" ? { kind: "foyer", id: "hollow" } : places.place; },
     get lastPick() { return lastPick; },
@@ -1153,8 +1193,8 @@ export function createScene(canvas, state, hooks) {
     setVillageGraphics(values) {
       villageGraphics = normaliseVillageGraphics({ ...villageGraphics, ...values });
       villageRenderer.setPreference(villageGraphics.villageRenderer);
-      villageView.setGraphics({ distance: villageGraphics.villageDistance, grass: villageGraphics.villageGrass });
-      if (view.place === "village") applyShadowMode(villageGraphics.villageShadows);
+      villageView.setGraphics({ distance: villageGraphics.villageDistance, grass: villageGraphics.villageGrass, shadowMap: villageShadowMapSize(villageGraphics.villageShadowDetail, touchDevice), atmosphere: villageGraphics.villageAtmosphere });
+      if (view.place === "village") { applyShadowMode(villageGraphics.villageShadows); warmVillage(); }
       return { ...villageGraphics };
     },
     captureVillageMap() { return captureVillageMap(renderer, villageView, state); },
@@ -1210,12 +1250,21 @@ export function createScene(canvas, state, hooks) {
     get world() { return scene; },
     get carvingStandStatus() { return carvingStand?.status; },
     get renderStatus() { return { quality: renderQuality, pixelRatio: renderer.getPixelRatio(), postprocessRatio, bufferWidth: canvas.width, bufferHeight: canvas.height, postprocessWidth: Math.floor(composer.renderTarget1.width), postprocessHeight: Math.floor(composer.renderTarget1.height), antialias: bloomOn ? antialias.enabled ? "FXAA" : "density" : "canvas", antialiasResolution: antialias.uniforms.resolution.value.toArray(), touchDevice, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures }; },
-    setRenderQuality(value) { renderQuality = validRenderQuality(value); resize(); return renderQuality; },
+    setRenderQuality(value) { renderQuality = validRenderQuality(value); governors.village.restart(); governors.other.restart(); resize(); return renderQuality; },
+    // The graphics chip by name where the browser shares it ("Adreno (TM) 830"), for Settings.
+    get gpuName() {
+      if (gpuName !== undefined) return gpuName;
+      try { const gl = renderer.getContext(), ext = gl.getExtension("WEBGL_debug_renderer_info"), raw = String(ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) ?? "");
+        const angle = raw.match(/^ANGLE \(([^,]*),\s*([^,(]*(?:\([^)]*\)[^,(]*)*)/); gpuName = (angle ? angle[2] : raw).replace(/\s*Direct3D.*$|\s*OpenGL.*$|\s*Vulkan.*$/i, "").replace(/\s*\(0x[0-9a-f]+\)/gi, "").trim().slice(0, 60) || null; }
+      catch { gpuName = null; }
+      return gpuName;
+    },
+    get detailStatus() { return { quality: renderQuality, scale: detailScale(), villageScale: governors.village.scale, otherScale: governors.other.scale, shownFrames, pixelRatio: renderer.getPixelRatio() }; },
     // TV mode's lighter picture (render-quality.js TV_RENDER, a half-size glow, no FXAA) and its frame pacing.
     setTvProfile(on) { if (tvProfile === !!on) return; tvProfile = !!on; resize(); },
     setFramePacing(options) { pacer.set(options); },
     // A centred menu dims the farm: it draws at most 24 frames a second behind it.
-    setMenuOpen(on) { pacer.setMenu(on); },
+    setMenuOpen(on) { menuOpen = !!on; pacer.setMenu(on); },
     get pacing() { return { cap: pacer.cap, settled: pacer.settled, tv: tvProfile, drawn: drawnFrames, bloomWidth: bloom.renderTargetsHorizontal?.[0]?.width ?? 0, fxaa: antialias.enabled }; },
     selectPiece(instance) { places.select(instance); },
     // The pad's arrange ring (ui/pad-arrange.js, handover 72): where each piece

@@ -21,7 +21,9 @@ import * as M from "./model.js";
 import { createScene } from "./scene.js";
 import { pumpkinTemplate } from "./pumpkins.js";
 import { createLevelCelebration } from "./ui/level-celebration.js";
-import { createAudio } from "./ui/audio.js";
+import { createAudio, MUSIC_TRACKS } from "./ui/audio.js";
+import { prefersReducedMotion, validMotion } from "./motion-preference.js";
+import { validFrameRate } from "./frame-pacing.js";
 import { createNarration } from "./ui/narration.js";
 import { VOICE_CLIPS } from "./ui/voice-clips.js";
 import { createMazeRideUI } from "./ui/maze-ride-ui.js";
@@ -51,7 +53,7 @@ import { fishingSheet } from "./ui/fishing-sheet.js";
 import { createFishingOverlay } from "./ui/fishing-overlay.js";
 import { createFoyerControls } from "./ui/foyer-controls.js";
 import { settingsSheet } from "./ui/settings-sheet.js";
-import { createTvMode } from "./ui/tv-mode.js";
+import { createTvMode, TV_SIZES } from "./ui/tv-mode.js";
 import { createSaveFiles } from "./ui/save-files.js";
 import { createPadPlacement } from "./ui/pad-placement.js";
 import { createPadArrange } from "./ui/pad-arrange.js";
@@ -82,8 +84,13 @@ document.addEventListener("visibilitychange", () => document.hidden && save());
 const prefs = (() => {
   // Mist and the moving lake start off for anyone who has asked for less motion.
   const still = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const base = { renderQuality: "sharp", frameRate: "auto", glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false, voiceEnabled: true, voiceVolume: .85, mist: !still, lakeLights: !still, mazeSound: true, mazeVolume: .45 };
-  try { return { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") }; } catch { return base; }
+  const base = { renderQuality: "auto", detailVersion: 1, frameRate: "auto", glow: true, shadows: true, voxelCharacters: false, music: true, musicVolume: 0.32, musicTrack: "lantern", musicShuffle: true, sound: false, voiceEnabled: true, voiceVolume: .85, mist: !still, lakeLights: !still, mazeSound: true, mazeVolume: .45 };
+  try {
+    const kept = { ...base, ...JSON.parse(localStorage.getItem(SAVE_KEY + "-prefs") || "{}") };
+    // Sharp was the only default before Automatic: move it on once, then respect any choice.
+    if (kept.detailVersion !== 1) { if (kept.renderQuality === "sharp") kept.renderQuality = "auto"; kept.detailVersion = 1; }
+    return kept;
+  } catch { return base; }
 })();
 const savePrefs = () => { try { localStorage.setItem(SAVE_KEY + "-prefs", JSON.stringify(prefs)); } catch {} };
 Object.assign(prefs, normaliseVillageGraphics(prefs));
@@ -152,7 +159,7 @@ const scene = createScene($("world"), state, {
   villageBlocked: () => !!villageGame?.blocked,
   villageEditing: () => !!villageGame?.decorating,
   villageGesture: () => villageGame?.gesture,
-  villageReducedMotion: () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches,
+  villageReducedMotion: () => prefersReducedMotion(prefs),
   villageAtmosphereBudget: () => tv.on ? "tv" : "full",
   selectedPiece: () => home.tools.selected,
   canDragPiece: () => !!home.tools.selected,
@@ -781,7 +788,52 @@ setTimeout(() => {
   prefs.saveNudgeAt = new Date().toISOString(); savePrefs();
   farmNews("Keep your farm safe: Settings, then Save to a file. You can load that file into any new version of the game.");
 }, 60000);
-villageGame = createVillageGame({ state: () => state, scene, save, notice, narration, savePrefs, prefs, onGatherSound: event => audio.gather(event), onFullscreen: () => $("fullscreen").click(),
+// The village's Settings applies game and sound choices through the farm's own handlers.
+const villageSettingsHost = (() => {
+  let sample = { at: 0, shown: 0, fps: null };
+  const ago = (iso) => { const t = Date.parse(iso ?? ""); if (Number.isNaN(t)) return ""; const days = Math.floor((Date.now() - t) / 864e5); return days <= 0 ? "today" : days === 1 ? "yesterday" : `${days} days ago`; };
+  const fps = () => {
+    const now = performance.now(), shown = scene.detailStatus?.shownFrames ?? scene.pacing?.drawn ?? 0;
+    if (!sample.at || now - sample.at > 6000) sample = { at: now, shown, fps: sample.fps };
+    else if (now - sample.at >= 1500) sample = { at: now, shown, fps: (shown - sample.shown) * 1000 / (now - sample.at) };
+    return sample.fps;
+  };
+  const toggles = {
+    paused() { state.paused = !state.paused; notice(state.paused ? "Tea break. Mothlight and the farm will wait for you." : "Back to it!"); save(); },
+    tvMode() { tv.set(!prefs.tvMode); },
+    music() { prefs.music = !prefs.music; audio.sync(); },
+    musicShuffle() { audio.setShuffle(prefs.musicShuffle === false); },
+    sound() { prefs.sound = !prefs.sound; },
+    voiceEnabled() { narration.setEnabled(!prefs.voiceEnabled); },
+  };
+  return {
+    info() {
+      const render = scene.renderStatus ?? {}, status = scene.villageRendererStatus ?? {};
+      return { tracks: MUSIC_TRACKS, paused: !!state.paused, tvSizes: TV_SIZES, lastExport: ago(prefs.lastExport), canSave: !!ui.files, voicePlaying: !!(narration.playing || narration.current?.status === "loading"),
+        fps: fps(), bufferWidth: status.backend === "webgpu" ? status.bufferWidth : render.bufferWidth, bufferHeight: status.backend === "webgpu" ? status.bufferHeight : render.bufferHeight, scale: scene.detailStatus?.scale, gpu: status.backend === "webgpu" ? status.adapter || null : scene.gpuName };
+    },
+    setPref(key, value) {
+      if (key === "renderQuality") prefs.renderQuality = scene.setRenderQuality(value);
+      else if (key === "frameRate") { prefs.frameRate = validFrameRate(value); scene.setFramePacing({ mode: prefs.frameRate, tv: !!prefs.tvMode }); }
+      else if (key === "tvSize") { if (!TV_SIZES.some(([id]) => id === value)) return; prefs.tvSize = value; tv.apply(); }
+      else if (key === "reduceMotion") prefs.reduceMotion = validMotion(value);
+      else if (key === "musicTrack") audio.setTrack(value);
+      else return;
+      savePrefs();
+    },
+    toggle(key) { if (!Object.hasOwn(toggles, key)) return; toggles[key](); savePrefs(); },
+    setRange(key, value) { if (key === "musicVolume") audio.setVolume(value); else if (key === "voiceVolume") narration.setVolume(value); else return; savePrefs(); },
+    async action(id) {
+      if (id === "next-song") { audio.nextTrack(); savePrefs(); }
+      else if (id === "preview-voice") { if (narration.playing || narration.current?.status === "loading") narration.stop(); else ui.previewVoice().then(() => villageGame?.render?.()); }
+      else if (id === "save-file") {
+        const how = await ui.files.saveToFile(), said = { saved: "Saved. Load that file into any version of the game, on any device.", downloaded: "Saved to your downloads. Load that file into any version of the game, on any device.", shared: "Save file shared." };
+        if (said[how]) notice(said[how]); else if (how === "failed") notice("The file couldn't be saved here. Try the farm's Settings: Share, or Backup as text.");
+      }
+    },
+  };
+})();
+villageGame = createVillageGame({ state: () => state, scene, save, notice, narration, savePrefs, prefs, settingsHost: villageSettingsHost, onGatherSound: event => audio.gather(event), onFullscreen: () => $("fullscreen").click(),
   closeMenus() { playControls?.releaseInput?.(); closeSheet(); upgradeMenu?.close(); home.tools.select(null); lifeActivity?.cancel(); playControls?.close(); playControls?.cursor.hide(); },
   onLeave() { playControls?.releaseInput?.(); audio.setVillageActive(false); renderPlace(); render(); for (const row of deferredFarmNews.take()) whisper(row.text, row.kind); }, onRender() { clearTimeout(noticeTimer); $("notice").classList.remove("show"); audio.setVillageActive(true); renderPlace(); },
 });

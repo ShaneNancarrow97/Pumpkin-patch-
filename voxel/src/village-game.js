@@ -15,7 +15,7 @@ import { expansionActivityMarkup, expansionRewardMarkup } from './ui/village-exp
 import { villageObjectives, villageObjective, residentObjectivePriority } from './village-objectives.js';
 import { renderVillageJournal, JOURNAL_TABS, nextJournalTab } from './ui/village-journal.js';
 import { fidelityIcon } from './ui/village-fidelity-icon-markup.js';
-import { villageSettingsMarkup, bindVillageSettings, updateVillageSettingsStatus, villageSettingsIcon } from './ui/village-settings.js';
+import { villageSettingsMarkup, bindVillageSettings, updateVillageSettingsStatus, villageSettingsIcon, VILLAGE_SETTINGS_TABS } from './ui/village-settings.js';
 import { normaliseVillageGraphics, DEFAULT_VILLAGE_GRAPHICS, VILLAGE_GRAPHICS_KEYS } from './village-graphics.js';
 import { villageNeighbourCards, villagePanelArt } from './ui/village-menu-presentation.js';
 import { installVillageFidelityArt } from './ui/village-fidelity-art.js';
@@ -64,7 +64,7 @@ const NAVIGATION = [["map","Map","map","Places and routes"],["people","People","
 function navigationMarkup(hub=false) {
   return NAVIGATION.map(([id,label,icon,hint])=>`<button ${id==="decorate"?(hub?'data-vg-decorate':'id="vg-decorate"'):`data-vg-page="${id}"`} class="${hub?'vg-nav-card':'vg-nav-button'}" aria-label="${label}" title="${label}">${fidelityIcon(id==="journal"?"journal":icon)}<span><b>${label}</b>${hub?`<small>${hint}</small>`:""}</span></button>`).join("")+(hub?`<button data-vg-page="settings" class="vg-nav-card" data-pad-label="Village settings">${villageSettingsIcon()}<span><b>Settings</b><small>Graphics for your device</small></span></button>`:"");
 }
-export function createVillageGame({ state, scene, save, notice, closeMenus = () => {}, onLeave = () => {}, onRender = () => {}, onGatherSound = () => {}, conversationView = createVillageConversation, portrait = villageSpritePortrait, narration, savePrefs = () => {}, prefs = {}, onFullscreen = () => {}, now = () => performance.now(), controlsView = createVillageControls, decorateView = createVillageDecorate, returnPromptView = createVillageReturnPrompt, questReceiptView = createVillageQuestReceipt, itemArt = item => item.kind === "home" ? decorIcon(item.id, 56) : gardenSpriteIcon(item.id) || villageItemIcon(item.id) }) {
+export function createVillageGame({ state, scene, save, notice, closeMenus = () => {}, onLeave = () => {}, onRender = () => {}, onGatherSound = () => {}, conversationView = createVillageConversation, portrait = villageSpritePortrait, narration, savePrefs = () => {}, prefs = {}, onFullscreen = () => {}, now = () => performance.now(), controlsView = createVillageControls, decorateView = createVillageDecorate, returnPromptView = createVillageReturnPrompt, questReceiptView = createVillageQuestReceipt, itemArt = item => item.kind === "home" ? decorIcon(item.id, 56) : gardenSpriteIcon(item.id) || villageItemIcon(item.id), settingsHost = null }) {
   installVillageItemArt(); installFurnitureSetArt(); installVillageUIArt(); installVillageExpansionArt(); installVillageFidelityArt();
   const root=document.createElement("section");root.id="village-game";root.hidden=true;root.setAttribute("aria-label","Mothlight Village");
   root.innerHTML=`<header class="vg-heading"><button id="vg-home" aria-label="Return to the farm">${villageUIIcon("farm",24)} <span>Farm</span></button><div id="vg-location" class="vf-location"><span class="vf-place-line">${fidelityIcon("moth")}<b id="vg-place">Hollow Green</b>${fidelityIcon("moth")}</span><small class="vf-clock" aria-label="Active village time" title="Active village time">${fidelityIcon("lantern")}<span id="vg-clock">Night</span></small></div><div id="vg-header-tools" class="vf-header-tools"><span id="vg-coins" aria-label="Coins"></span><button id="vg-person" aria-label="Switch playable character"><span id="vg-person-portrait" class="vf-owner-portrait" aria-hidden="true"></span><span id="vg-person-name">Shane</span></button><button id="vg-fullscreen" aria-label="Toggle fullscreen" title="Fullscreen">⛶</button><button id="vg-settings" aria-label="Village settings" title="Village settings" aria-expanded="false" aria-controls="vg-panel" data-pad-label="Village settings">${villageSettingsIcon()}</button></div></header><section id="vg-objective" class="vg-objective" aria-label="Followed quest" hidden><button id="vg-quest-toggle" class="vg-quest-toggle" aria-expanded="false" aria-controls="vg-quest-details" aria-keyshortcuts="T" title="Expand quest details · D-pad Up / T"><span id="vg-quest-portrait" class="vg-quest-portrait" aria-hidden="true"></span><span class="vg-quest-copy"><span class="vg-quest-heading"><strong id="vg-quest-title"></strong><small id="vg-quest-counts"></small></span><span id="vg-task"></span></span>${trackerToggleHintMarkup()}</button><div id="vg-quest-details" class="vg-quest-details" hidden></div><small id="vg-wayfinding" hidden></small></section><button id="vg-farm-rate" class="vg-farm-rate" aria-label="Farm production while exploring · open workshop"><span>Farm at work</span><b id="vg-rate">2.5%</b></button><div id="vg-gather" class="vg-gather" role="status" aria-live="polite" hidden><span id="vg-gather-art" aria-hidden="true"></span><div><b id="vg-gather-label"></b><span class="vg-gather-track"><i id="vg-gather-fill"></i></span></div></div><div id="vg-tour" class="vg-tour" hidden><b></b><span></span><button id="vg-tour-skip">Skip tour</button></div><nav class="vg-dock" aria-label="Village actions">${navigationMarkup()}</nav><aside id="vg-panel" hidden role="dialog" aria-modal="false" aria-labelledby="vg-panel-title"><header><button id="vg-panel-back" aria-label="Back to previous page" hidden><span aria-hidden="true">‹</span></button><div class="vg-panel-heading"><small id="vg-panel-tag"></small><div class="vf-panel-title-line"><span class="vf-panel-title-art" aria-hidden="true">${fidelityIcon("moth")}</span><h2 id="vg-panel-title"></h2></div></div><button id="vg-panel-close" aria-label="Close village panel">×</button></header><div id="vg-panel-body"></div></aside><div id="vg-stick-zone" aria-label="Movement thumbstick"><div id="vg-stick" hidden><i></i></div></div><button id="vg-interact" class="vg-interact" hidden>Talk</button><button id="vg-look" class="vg-look" aria-label="Centre the camera">◎</button>`;
@@ -100,6 +100,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
   const busy=()=>returnPrompt.active||!!page||dialogue.active||!!view.dialogueCamera?.active||view.director.active||state().paused||!!gather;
   const controls=controlsView({root,blocked:()=>busy()||decorate.active,onRelease:()=>keys.clear()});
   const decorate=decorateView({state,view,root,notice,onMenuInput:(surface,pad)=>controls.handleMenu(surface,pad),onInputReset:()=>controls.release(),onChanged:events=>changed(events),actorPosition:()=>({...pos}),onClose(){releaseInput();centre();render();},onShop:()=>showPanel("stall")});
+  let settingsTab="graphics";
   let panelSignature="",settingsSignature="",panelAge=0,panelOpener=null,mapSnapshot,mapSnapshotError=false,mapPresentation=null,mapShowResidents=false;
   const panelTrail=createVillagePanelTrail();
   let journalTab="active",ownerPortraitUrl=null;
@@ -293,13 +294,20 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     const next=normaliseVillageGraphics({...prefs,...values});
     Object.assign(prefs,next);scene.setVillageGraphics?.(next);savePrefs();drawPanel();
   }
+  // Game and sound choices belong to the whole game: the farm's own handlers apply them.
+  const settingsInfo=()=>settingsHost?.info?.()??{};
+  function settingsSignatureNow(){
+    const info=settingsInfo(),keep=["renderQuality","frameRate","reduceMotion","tvMode","tvSize","music","musicTrack","musicShuffle","sound","voiceEnabled"];
+    return JSON.stringify([settingsTab,normaliseVillageGraphics(prefs),keep.map(k=>prefs[k]),!!info.paused,!!info.voicePlaying,info.lastExport??"",!!info.canSave,!!prefs.music&&!!prefs.musicVolume,!!prefs.voiceEnabled&&!!Number(prefs.voiceVolume)]);
+  }
+  function selectSettingsTab(tab){if(!VILLAGE_SETTINGS_TABS.includes(tab))return;settingsTab=tab;$("vg-panel-body").scrollTop=0;drawPanel();$("vg-panel-body").querySelector(`#vg-settings-tab-${tab}`)?.focus({preventScroll:true});}
   function drawPanel(initial=false){
     if(!page)return;const s=state(),{kind,id}=page,body=$("vg-panel-body"),scroll=body.scrollTop,focused=document.activeElement;
     $("vg-settings").setAttribute("aria-expanded",String(kind==="settings"));
     // Async renderer status may change while a native select is open. Patch
     // that line without replacing the controls or stealing their focus.
-    const graphicsKey=kind==="settings"?JSON.stringify(normaliseVillageGraphics(prefs)):"";
-    if(kind==="settings"&&!initial&&graphicsKey===settingsSignature){updateVillageSettingsStatus(body,scene.villageRendererStatus,prefs);return;}
+    const graphicsKey=kind==="settings"?settingsSignatureNow():"";
+    if(kind==="settings"&&!initial&&graphicsKey===settingsSignature){updateVillageSettingsStatus(body,scene.villageRendererStatus,prefs,settingsInfo());return;}
     if(kind==="settings")settingsSignature=graphicsKey;
     const savedView=initial?panelTrail.view():panelView(),restoreFocus=initial||focused?.closest?.("#vg-panel-body")===body;
     if(kind==="journal"&&initial&&JOURNAL_TABS.includes(savedView?.journalTab))journalTab=savedView.journalTab;
@@ -319,7 +327,7 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     if(kind==="navigation"){title="Mothlight Village";tag="Your village, at a glance";html=`<div class="vc-hub-intro">${fidelityIcon("moth")}<p>Where will the evening take you?</p></div><div class="vg-navigation-hub">${navigationMarkup(true)}</div>`;}
     const chapter=kind==="journal"?renderVillageJournal({state:s,records:objectiveRecords(),followed:followedObjective(),who:id,portrait,tab:journalTab}):kind==="map"?renderVillageMap(s,{...mapPresentation,selectedDistrict:id,portrait,snapshot:mapSnapshot,snapshotError:mapSnapshotError,showResidents:mapShowResidents}):renderVillageChapter({kind,id,state:s,portrait,trackedQuestId:prefs.villageTrackedQuest,itemArt,position:pos});
     if(chapter)({title,tag,html}=chapter);
-    if(kind==="settings"){title="Village settings";tag="Your view of Mothlight";html=villageSettingsMarkup({prefs,status:scene.villageRendererStatus});}
+    if(kind==="settings"){title="Settings";tag="Graphics, game, sound and controls";html=villageSettingsMarkup({prefs,status:scene.villageRendererStatus,tab:settingsTab,info:settingsInfo()});}
     if(kind==="materials"||kind==="stall"){const gems=state().village.expansion?.gems??{};html+=`<section class="vgx-journal"><header class="vgx-section-head">${expansionIcon('gemcraft',36)}<div><small>Discoveries from below</small><h3>Your rare gems</h3><p>Story crystals are kept separately and cannot be sold.</p></div></header><div class="vgx-gems">${Expansion.EXPANSION_GEMS.map(g=>`<article>${expansionIcon(g.id,44)}<span><b>${escape(g.name)}</b><small>${gems[g.id]??0} in your satchel · ${money(g.price)} each</small></span>${kind==="stall"?`<button class="vgx-action" data-vgx-sell-gem="${escape(g.id)}"${(gems[g.id]??0)>0?"":" disabled"}>Sell one</button>`:""}</article>`).join('')}</div></section>`;}
     if(kind==="farm-gifts"){title="Bring Mothlight home";tag=FOLK_BY_ID[id]?.name??"Village discoveries";html=renderVillageExpansionEconomy(s,{who:id});}
     if(kind==="expansion"){const activity=expansionInfo(id);({title,tag,html}=expansionActivityMarkup(activity,{nearby:nearActivity(activity),slot:expansionSlot}));}
@@ -328,7 +336,16 @@ export function createVillageGame({ state, scene, save, notice, closeMenus = () 
     if(!initial&&signature===panelSignature)return;panelSignature=signature;
     root.querySelector(".vf-panel-title-art").innerHTML=kind==="settings"?villageSettingsIcon():villagePanelArt(kind);$("vg-panel-title").textContent=title;$("vg-panel-tag").textContent=tag;$("vg-panel-body").innerHTML=html;
     const on=(sel,fn)=>$("vg-panel-body").querySelectorAll(sel).forEach(b=>b.onclick=()=>fn(b));
-    if(kind==="settings")bindVillageSettings(body,{onChange(key,value){if(VILLAGE_GRAPHICS_KEYS.includes(key))changeGraphics({[key]:value});},onReset(){changeGraphics(DEFAULT_VILLAGE_GRAPHICS);}});
+    if(kind==="settings")bindVillageSettings(body,{
+      onChange(key,value){if(VILLAGE_GRAPHICS_KEYS.includes(key))changeGraphics({[key]:value});},
+      onReset(){settingsHost?.setPref?.("renderQuality","auto");changeGraphics(DEFAULT_VILLAGE_GRAPHICS);},
+      onPreset(preset){const{renderQuality,...graphics}=preset.values;if(renderQuality)settingsHost?.setPref?.("renderQuality",renderQuality);changeGraphics(graphics);notice(`${preset.name} graphics: ${preset.note.toLowerCase()}.`);},
+      onTab:selectSettingsTab,
+      onPref(key,value){settingsHost?.setPref?.(key,value);drawPanel();},
+      onToggle(key){settingsHost?.toggle?.(key);drawPanel();},
+      onRange(key,value){settingsHost?.setRange?.(key,value);},
+      async onAction(id){await settingsHost?.action?.(id);drawPanel();},
+    });
     bindVillageExpansionEconomy(body,(key,action)=>{const command=key.slice(8),owner=command==='cold-store'?'opal':command.startsWith('cinder-')?'cinder':command.startsWith('granny-')?'granny':'tansy';if(!besideNeighbour(owner))return;const result=M.actVillageExpansion?.(state(),key,{...action,context:expansionContext()});if(result?.ok){changed(result.events);notice(result.message??"Your village discovery is ready.");drawPanel();}else notice(result?.reason??"Gather the supplies shown first.");});
     on('[data-vgx-sell-gem]',b=>{if(view.inside||view.activeExpansionArea||Math.hypot(pos.x-FIXTURES.stall.x,pos.z-FIXTURES.stall.z)>TALK_REACH){closePanel();guide(FIXTURES.stall,"Rowan’s stall");notice("Bring your spare gems to Rowan’s stall.");return;}const result=M.sellExpansionGem?.(state(),b.dataset.vgxSellGem,1);if(result?.ok){changed(result.events);notice(result.reason);drawPanel();}else notice(result?.reason??"Choose an unreserved gem.");});
     const selectJournalTab=id=>{if(!JOURNAL_TABS.includes(id))return;journalTab=id;body.scrollTop=0;drawPanel();$("vg-panel-body").querySelector(`[data-vg-journal-tab="${id}"]`)?.focus({preventScroll:true});panelTrail.remember(panelView());};

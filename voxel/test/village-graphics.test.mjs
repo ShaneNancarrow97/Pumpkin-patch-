@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { DEFAULT_VILLAGE_GRAPHICS, normaliseVillageGraphics, villagePostProfile, scaleVillageGrade } from "../src/village-graphics.js";
+import { DEFAULT_VILLAGE_GRAPHICS, normaliseVillageGraphics, villagePostProfile, scaleVillageGrade, villageShadowMapSize } from "../src/village-graphics.js";
 import { buildSaveFile, readSaveFile } from "../src/save-file.js";
 import { freshState } from "../src/model.js";
 
@@ -14,11 +14,11 @@ test("older device settings keep disabled glow and shadows without changing farm
 
 test("invalid village graphics cannot select an unknown backend or disable detail accidentally", () => {
   for (const bad of [null, undefined, [], "low", 0]) assert.deepEqual(normaliseVillageGraphics(bad), DEFAULT_VILLAGE_GRAPHICS);
-  assert.deepEqual(normaliseVillageGraphics({ villageRenderer: "constructor", villagePost: "__proto__", villageDistance: -10, villageGrass: null, villageShadows: "off" }), DEFAULT_VILLAGE_GRAPHICS);
+  assert.deepEqual(normaliseVillageGraphics({ villageRenderer: "constructor", villagePost: "__proto__", villageDistance: -10, villageGrass: null, villageShadows: "off", villageShadowDetail: "toString", villageAtmosphere: 3 }), DEFAULT_VILLAGE_GRAPHICS);
 });
 
 test("all village overrides survive preferences serialization and save-file recording", () => {
-  const prefs = { villageRenderer: "webgl", villagePost: "low", villageDistance: "near", villageGrass: "off", villageShadows: false };
+  const prefs = { villageRenderer: "webgl", villagePost: "low", villageDistance: "near", villageGrass: "off", villageShadows: false, villageShadowDetail: "soft", villageAtmosphere: "light" };
   assert.deepEqual(normaliseVillageGraphics(JSON.parse(JSON.stringify(prefs))), prefs);
   const farm = freshState(), file = buildSaveFile(farm, { prefs }), read = readSaveFile(JSON.stringify(file));
   assert.equal(read.ok, true); assert.equal(file.stateVersion, 20);
@@ -36,4 +36,10 @@ test("post quality scales actual grading and preserves the authored balanced fin
   assert.ok(villagePostProfile("low").bloom < villagePostProfile("balanced").bloom);
   assert.ok(villagePostProfile("high").grade > villagePostProfile("balanced").grade);
   assert.equal(villagePostProfile("__proto__").id, "balanced");
+});
+
+test("shadow detail picks a quarter of the shadow pixels on phones unless asked for sharp", () => {
+  assert.equal(villageShadowMapSize("auto", true), 1024); assert.equal(villageShadowMapSize("auto", false), 2048);
+  assert.equal(villageShadowMapSize("soft", false), 1024); assert.equal(villageShadowMapSize("sharp", true), 2048);
+  assert.equal(villageShadowMapSize("nonsense", false), 2048);
 });

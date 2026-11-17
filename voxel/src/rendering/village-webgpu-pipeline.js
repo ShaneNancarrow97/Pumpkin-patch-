@@ -175,6 +175,8 @@ export async function createVillageWebGpuPipeline({ canvas, onFailure }) {
     render(source, camera, options) { if (disposed || !prepared) throw new Error("WebGPU presentation is not ready"); if (inFlight) { skippedSubmissions++; return false; } sync(source, camera, options); draw(); return true; },
     resize(w, h, r) { if (width === w && height === h && ratio === r) return; shadowBudget.invalidate(); width = w; height = h; ratio = r; renderer.setPixelRatio(r); renderer.setSize(w, h, false); scenePass.setPixelRatio(r); scenePass.setSize(w, h); },
     invalidateShadows() { shadowBudget.invalidate(); },
+    // Frames the GPU has finished, read every frame by Automatic resolution without building stats.
+    get completedFrames() { return completedFrames; },
     stats() { return { actualBackend: "webgpu", renderFrames, completedFrames, inFlight, maxFramesInFlight: 1, skippedSubmissions, ...mirror.stats(), materials: materials.stats, ...frameStats, shadowBudget: { ...shadowBudget.stats }, shaderCache: { ...shaderCache, vertexPrograms: renderer._pipelines?.programs?.vertex?.size ?? 0, fragmentPrograms: renderer._pipelines?.programs?.fragment?.size ?? 0 }, textures: renderer.info.memory.textures, bufferWidth: canvas.width, bufferHeight: canvas.height, post: { effects: postProfile.id, bloomStrength: glow.strength.value, gradeAmount: postProfile.grade, hdr: usePost, bloom: usePost, shadows: renderer.shadowMap.enabled, displayGrade: usePost, fxaa: usePost && useAntialias, glowScale, toneMapping: "ACES", output: "sRGB" } }; },
     dispose,
   };
